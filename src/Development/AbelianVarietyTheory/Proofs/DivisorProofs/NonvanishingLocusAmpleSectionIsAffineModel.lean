@@ -50,7 +50,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory GlobalTheory.ArInt GlobalTheory.CxPts GlobalTheory.Cartier GlobalTheory.VolBr GlobalTheory.HSAmp
 open ReciprocityTheory.ChartRestriction.G.DVR.FlatBC (algX)
 
-set_option autoImplicit false
 noncomputable section
 namespace GlobalTheory.AffModel
 

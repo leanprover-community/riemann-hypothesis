@@ -58,11 +58,6 @@ def iC : ACris.ACris ℂ_[l] l →+* BdR l :=
 
 def tQ : BdR l := iC l (tA l)
 
-def uQ : BdR l := algebraMap (BdRp l) (BdR l) (uBdR l)
-
-def Bst : Subring (BdR l) :=
-  Subring.closure (Set.range (iC l) ∪ {((l : BdR l))⁻¹, (tQ l)⁻¹, uQ l})
-
 variable {l}
 
 def IsAdm (S : Set (BdR l)) {d : ℕ} (G : Subgroup (PadicAlgCl l ≃ₐ[ℚ_[l]] PadicAlgCl l))
@@ -71,4 +66,3 @@ def IsAdm (S : Set (BdR l)) {d : ℕ} (G : Subgroup (PadicAlgCl l ≃ₐ[ℚ_[l]
     ∀ σ : G, (r σ).map (qQ l) * P.map (σD σ.1) = P
 
 end DeRhamPotentiallySemistable.DRPst
-

@@ -57,12 +57,6 @@ private theorem norm_intCast_padicAlgCl_lt_one_iff_dvd (p : ℕ) [Fact p.Prime] 
   rw [← map_intCast (algebraMap ℚ_[p] (PadicAlgCl p)) k, PadicAlgCl.norm_extends]
   exact Padic.norm_intCast_lt_one_iff
 
-private theorem norm_intCast_cp_lt_one_iff_dvd (p : ℕ) [Fact p.Prime] (k : ℤ) :
-    ‖(k : ℂ_[p])‖ < 1 ↔ (p : ℤ) ∣ k := by
-  rw [← map_intCast (algebraMap (PadicAlgCl p) ℂ_[p]) k, ← PadicComplex.coe_eq,
-    PadicComplex.norm_extends]
-  exact norm_intCast_padicAlgCl_lt_one_iff_dvd p k
-
 private theorem not_dvd_den_of_norm_le_one_padicAlgCl (p : ℕ) [Fact p.Prime] (q : ℚ) (hq : ‖(q : PadicAlgCl p)‖ ≤ 1) :
     ¬ p ∣ q.den := by
   intro hd
@@ -85,34 +79,21 @@ private theorem not_dvd_den_of_norm_le_one_padicAlgCl (p : ℕ) [Fact p.Prime] (
   rw [Rat.cast_def, norm_div, hnum1, div_le_iff₀ hden0, one_mul] at hq
   linarith
 
-private theorem norm_multiset_prod_le_one_of_forall_norm_le_one {K : Type*} [NormedField K] (s : Multiset K) :
-    (∀ y ∈ s, ‖y‖ ≤ 1) → ‖s.prod‖ ≤ 1 := by
-  refine Multiset.induction_on s ?_ ?_
-  · intro _
-    simp
-  · intro a s ih h
-    rw [Multiset.prod_cons, norm_mul]
-    exact mul_le_one₀ (h a (by simp)) (norm_nonneg _) (ih fun y hy => h y (by simp [hy]))
-
-private theorem norm_multiset_sum_le_one_of_ultrametric {K : Type*} [NormedField K] [IsUltrametricDist K] (s : Multiset K) :
-    (∀ y ∈ s, ‖y‖ ≤ 1) → ‖s.sum‖ ≤ 1 := by
-  refine Multiset.induction_on s ?_ ?_
-  · intro _
-    simp
-  · intro a s ih h
-    rw [Multiset.sum_cons]
-    exact (IsUltrametricDist.norm_add_le_max _ _).trans
-      (max_le (h a (by simp)) (ih fun y hy => h y (by simp [hy])))
-
-private theorem norm_esymm_le_one_of_forall_norm_le_one {K : Type*} [NormedField K] [IsUltrametricDist K] (s : Multiset K)
-    (h : ∀ y ∈ s, ‖y‖ ≤ 1) (k : ℕ) : ‖s.esymm k‖ ≤ 1 := by
+private theorem norm_esymm_le_one_of_forall_norm_le_one {K : Type*} [NormedField K]
+    [IsUltrametricDist K] (s : Multiset K) (h : ∀ y ∈ s, ‖y‖ ≤ 1) (k : ℕ) :
+    ‖s.esymm k‖ ≤ 1 := by
   rw [Multiset.esymm]
-  apply norm_multiset_sum_le_one_of_ultrametric
-  intro y hy
-  obtain ⟨t, ht, rfl⟩ := Multiset.mem_map.mp hy
-  apply norm_multiset_prod_le_one_of_forall_norm_le_one
-  intro z hz
-  exact h z (Multiset.mem_of_le (Multiset.mem_powersetCard.mp ht).1 hz)
+  rcases eq_or_ne (s.powersetCard k) 0 with h0 | hne
+  · simp [h0]
+  · obtain ⟨t, ht, hle⟩ :=
+      IsUltrametricDist.exists_norm_multiset_sum_le (s.powersetCard k) (f := Multiset.prod)
+    refine hle.trans ?_
+    have : ‖t.prod‖₊ ≤ 1 := by
+      rw [Multiset.nnNorm_prod]
+      refine (Multiset.prod_le_pow_card (t.map nnNorm) 1 fun r hr => ?_).trans (by simp)
+      obtain ⟨z, hz, rfl⟩ := Multiset.mem_map.mp hr
+      exact_mod_cast h z (Multiset.mem_of_le (Multiset.mem_powersetCard.mp (ht hne)).1 hz)
+    exact_mod_cast this
 
 
 theorem _root_.GlobalTheory.CompanionTheory.Relay.padic_integral_iff_denominator : ∀ (E : Type) [Field E] [NumberField E] (p : Nat.Primes) (x : E), ((∀ j : E →+* ℂ_[p], ‖j x‖ ≤ 1) ↔ ∃ (n : ℕ) (a : 𝓞 E), ¬ (p : ℕ) ∣ n ∧ (n : E) * x = a) := by
@@ -189,11 +170,9 @@ theorem _root_.GlobalTheory.CompanionTheory.Relay.padic_integral_iff_denominator
     exact ⟨m, ⟨(m : E) * x, hI'⟩, hm, rfl⟩
   · rintro ⟨n, a, hpn, hna⟩ j
     have hn : ‖((n : ℕ) : ℂ_[p])‖ = 1 := by
-      have h1 := IsUltrametricDist.norm_natCast_le_one ℂ_[p] n
-      have h2 : ¬ ‖((n : ℕ) : ℂ_[p])‖ < 1 := by
-        rw [← Int.cast_natCast, norm_intCast_cp_lt_one_iff_dvd]
-        exact fun h => hpn (Int.natCast_dvd_natCast.mp h)
-      linarith [not_lt.mp h2]
+      rw [← map_natCast (algebraMap ℚ_[p] ℂ_[p]) n]
+      exact (PadicComplex.norm_extends' (p : ℕ) (n : ℚ_[p])).trans
+        (Padic.norm_natCast_eq_one_iff.mpr (p.2.coprime_iff_not_dvd.mpr hpn))
     have ha : ‖j (a : E)‖ ≤ 1 := by
       have h1 := GlobalTheory.CompanionTheory.Ar.HT.LatBasic.val_le_one (NormedField.valuation (K := ℂ_[p])) j a
       rw [NormedField.valuation_apply] at h1

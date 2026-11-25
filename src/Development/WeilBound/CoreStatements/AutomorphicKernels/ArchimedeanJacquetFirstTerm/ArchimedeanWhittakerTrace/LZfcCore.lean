@@ -121,18 +121,12 @@ theorem rat_of_ker (hcm : IsCMExt F E σ) {ψ : AddChar (AF F) ℂ} (hψ : IsStd
     intro i j e
     have h1 := h _ (tst_mem hcm ε (Matrix.single j i (-(e / 2))))
     rw [trace_tst ε _ β hβ, trace_incM_single, map_add (f := _), trace_cA hcm] at h1
-    have hI : ∀ c : E, inclR (F := F) (AF F) c = (1 : AF F) ⊗ₜ[F] c := fun c => rfl
-    have hadd : ∀ a c : E, Algebra.trace (AF F) (AE F E) ((1 : AF F) ⊗ₜ[F] (a + c) * β i j) =
-        Algebra.trace (AF F) (AE F E) ((1 : AF F) ⊗ₜ[F] a * β i j) +
-          Algebra.trace (AF F) (AE F E) ((1 : AF F) ⊗ₜ[F] c * β i j) := fun a c => by
-      rw [TensorProduct.tmul_add, add_mul, map_add (f := _)]
-    have hneg : ∀ a : E, Algebra.trace (AF F) (AE F E) ((1 : AF F) ⊗ₜ[F] (-a) * β i j) =
-        -Algebra.trace (AF F) (AE F E) ((1 : AF F) ⊗ₜ[F] a * β i j) := fun a => by
-      rw [TensorProduct.tmul_neg, neg_mul, map_neg]
     have h2 : -(Algebra.trace (AF F) (AE F E) (inclR (F := F) (AF F) (-(e / 2)) * β i j) +
         Algebra.trace (AF F) (AE F E) (inclR (F := F) (AF F) (-(e / 2)) * β i j)) =
         Algebra.trace (AF F) (AE F E) ((1 : AF F) ⊗ₜ[F] e * β i j) := by
-      rw [hI, ← hadd, ← hneg]
+      have hI : ∀ c : E, inclR (F := F) (AF F) c = (1 : AF F) ⊗ₜ[F] c := fun _ => rfl
+      rw [hI, TensorProduct.tmul_neg, neg_mul, map_neg, neg_add, neg_neg,
+        ← map_add (f := _), ← add_mul, ← TensorProduct.tmul_add]
       congr 3
       ring
     rw [h2] at h1

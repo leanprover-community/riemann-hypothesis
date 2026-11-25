@@ -56,18 +56,6 @@ private theorem unf_meas_strip : MeasurableSet strip := by
   exact (measurableSet_le measurable_const UpperHalfPlane.continuous_re.measurable).inter
     (measurableSet_lt UpperHalfPlane.continuous_re.measurable measurable_const)
 
-private theorem unf_meas_smul (γ : SL(2, ℤ)) : Measurable (fun z : ℍ => γ • z) := by
-  refine Continuous.measurable ?_
-  rw [UpperHalfPlane.isOpenEmbedding_coe.isEmbedding.continuous_iff]
-  have h : (UpperHalfPlane.coe ∘ fun z : ℍ => γ • z) = fun z : ℍ =>
-      (((algebraMap ℤ ℝ (γ 0 0) : ℂ) * z + (algebraMap ℤ ℝ (γ 0 1) : ℂ)) /
-      ((algebraMap ℤ ℝ (γ 1 0) : ℂ) * z + (algebraMap ℤ ℝ (γ 1 1) : ℂ))) :=
-    funext fun z => UpperHalfPlane.coe_specialLinearGroup_apply γ z
-  rw [h]
-  refine Continuous.div₀ (by fun_prop) (by fun_prop) fun z => ?_
-  have := UpperHalfPlane.denom_ne_zero (Matrix.SpecialLinearGroup.mapGL ℝ γ) z
-  simpa [UpperHalfPlane.denom] using this
-
 private theorem unf_countable : Countable SL(2, ℤ) := @Subtype.countable (Matrix (Fin 2) (Fin 2) ℤ) (show Countable (Fin 2 → Fin 2 → ℤ) from inferInstance) _
 
 end UpperTheory.V.Af.Rs
@@ -84,7 +72,9 @@ private theorem hasSum_integral_fd_smul_eq_two_integral {E : Type*} [NormedAddCo
   rw [hU, two_smul, integral_add_measure hfi hfi, ← two_smul ℝ] at h1
   convert h1 using 1
   funext γ
-  rw [integral_map (UpperTheory.V.Af.Rs.unf_meas_smul γ).aemeasurable hfm.aestronglyMeasurable]
+  rw [integral_map (φ := fun z : ℍ => γ • z)
+    (continuous_const_smul (Matrix.SpecialLinearGroup.mapGL ℝ γ)).measurable.aemeasurable
+    hfm.aestronglyMeasurable]
 
 open UpperTheory.V.Af.Rs in
 theorem UpperTheory.V.Af.Rs.unfold :
@@ -114,8 +104,9 @@ theorem UpperTheory.V.Af.Rs.unfold :
   have hint : ∀ c : {γ // g γ = x},
       Integrable (fun z => f (c.1 • z)) (volume.restrict ModularGroup.fd) := by
     intro c
-    refine Integrable.mono (hΦ x)
-      ((hfm.comp_measurable (unf_meas_smul c.1)).aestronglyMeasurable) (ae_of_all _ fun z => ?_)
+    refine Integrable.mono (hΦ x) ((hfm.comp_measurable
+      ((continuous_const_smul (Matrix.SpecialLinearGroup.mapGL ℝ c.1)).measurable :
+        Measurable fun z : ℍ => c.1 • z)).aestronglyMeasurable) (ae_of_all _ fun z => ?_)
     have hrow : row c.1 = x := congrArg Subtype.val c.2
     rw [hfγ]
     split_ifs

@@ -6,8 +6,6 @@ import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open ReciprocityTheory.ChartRestriction.G.FD NumberField Matrix Formalism.L2.Pj.FJ Complex

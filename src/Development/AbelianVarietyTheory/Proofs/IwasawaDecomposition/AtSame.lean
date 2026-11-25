@@ -39,7 +39,6 @@ import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.Strict
 @[expose] public section
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.Inhab Formalism.L2.Host GlobalTheory.EX GlobalTheory.EX.OB GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl NumberField IsDedekindDomain
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.HeightCounting.Up GlobalTheory.Mem.SRe GlobalTheory.Mem.R3.Rw
 open GlobalTheory.HeightCounting GlobalTheory.Mem.R3.Tr
 
@@ -163,8 +162,7 @@ def Mv.all {C : NChoice D} (a : NAllC D C) : NAllC m.D (m.ch C) := @_root_.Globa
       (lamG := (by with_unfolding_all exact (a.chi.lamG :))))
     (rho := @_root_.Formalism.L2.NR.NRhoTied.mk (_)
       (rbarSS := (by with_unfolding_all exact (a.rho.rbarSS :)))
-      (rbar := (by with_unfolding_all exact (a.rho.rbar :)))
-      (rhoS := (by with_unfolding_all exact (a.rho.rhoS :))))
+      (rbar := (by with_unfolding_all exact (a.rho.rbar :))))
     (types := @_root_.Formalism.L2.NormalizedTypesCompatibility.mk (_) (_)
       (eM := (by with_unfolding_all exact (a.types.eM :)))
       (eM_K := (by with_unfolding_all exact (a.types.eM_K :)))

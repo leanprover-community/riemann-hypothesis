@@ -10,20 +10,8 @@ public import Formalism.LocalToGlobal.Columns.HeckeSp
 public import Formalism.LocalToGlobal.Columns.HeckeSpCount
 public import Lemmata.GeneralBFactRightMore.Imports
 public import Formalism.LocalToGlobal.Divisibility.Tuples
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.Tactic.Lemma
-import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Sheaves.Presheaf
 import Formalism.FlagUnipotentLattices.MemOfOrthogonalAnisotropic
 import Formalism.HermitianLattices.HermitianLatticesProofs.DualBasic
-import Mathlib.LinearAlgebra.FreeModule.IdealQuotient
-import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.Etale.Weakly
-import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.RingTheory.TotallySplit
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.FlagUnipotentLattices.MinkowskiFactorialBounds.ColonCountWeighted, Formalism.FlagUnipotentLattices.IdealCountLeWAsm, Formalism.LocalToGlobal.Columns.WmpNatCardQuotEqPowFinrank
@@ -226,7 +214,7 @@ lemma zdual_relIndex {V : Type*} [AddCommGroup V] [Module ℚ V] [FiniteDimensio
     intro x i
     rw [hS2, Module.Basis.repr_sum_self]
   have hinj : Function.Injective S := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro x hx
     apply hnd
     have h0 : t x = 0 := by
@@ -664,20 +652,10 @@ theorem wmp_isHeckeNbr_symm {P : HeightOneSpectrum (𝓞 E)} {i : ℕ} {N N₁ :
   · rw [wmp_card_quot, ← wmp_relIndex_inf_eq hN hN₁ hu hu₁ hB, ← wmp_card_quot, inf_comm,
       Nat.card_congr e.toEquiv, Nat.card_fun, Nat.card_eq_fintype_card (α := Fin i), Fintype.card_fin, card_quot_conjP]
 
-theorem wmp_hStd_osmul_right (u z : Sp E n) (s : 𝓞 E) :
-    hStd E n u (s • z) = algebraMap (𝓞 E) E s * hStd E n u z := by
-  rw [← algebraMap_smul E s z, map_smul, smul_eq_mul]
-
-theorem wmp_hStd_osmul_left (u z : Sp E n) (s : 𝓞 E) :
-    hStd E n (s • u) z = algebraMap (𝓞 E) E (cO E s) * hStd E n u z := by
-  rw [← algebraMap_smul E s u, LinearMap.map_smulₛₗ, LinearMap.smul_apply, smul_eq_mul, algebraMap_cO]
-  rfl
-
 end WmPSym
 
 open NumberField IsDedekindDomain Formalism.HermitianLatticesTheory Module Pointwise
 
-open NumberField IsDedekindDomain Formalism.HermitianLatticesTheory Module Pointwise
 
 section WmPK
 variable {E : Type} [Field E] [NumberField E] [StarRing E]
@@ -700,11 +678,8 @@ theorem card_wmpToK (p : Submodule (𝓞 E) V) : Nat.card (wmpToK P p) = Nat.car
 
 end WmPK
 
-open NumberField IsDedekindDomain Formalism.HermitianLatticesTheory Module Pointwise
 
-open NumberField IsDedekindDomain Formalism.HermitianLatticesTheory Module Pointwise
 
-open NumberField IsDedekindDomain Formalism.HermitianLatticesTheory Module
 
 end Formalism.L2.Col
 end -- clump:auto

@@ -48,8 +48,6 @@ namespace GlobalTheory.IndefiniteRowSideFullHecke.L2SquaredNorms
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj MeasureTheory NumberField
 open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 section Norms
 
 variable {K₁ : Type} [Field K₁]
@@ -77,9 +75,6 @@ end Norms
 section Line
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H}
-
-def valLineLogNorm (n : ℤ) (mu : ArcLt Dw →₀ ℕ) (thSq : ℝ) (ℓ : ∀ τ : E →+* ℂ, Fin (Dw.mult τ) → ℝ) : ℝ :=
-  -((n : ℝ) / 2) * Real.log thSq - mu.sum fun x m => (m : ℝ) * ℓ x.1 x.2.2
 
 variable {K₁ : Type} [Field K₁]
 

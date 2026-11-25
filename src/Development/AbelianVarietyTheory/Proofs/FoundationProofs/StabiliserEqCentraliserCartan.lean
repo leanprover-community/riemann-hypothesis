@@ -225,8 +225,6 @@ theorem mem_stabArch_iff_unitary (h : IsCMExt F E σ) (τ : EmbOver E w) (J : Ma
 
 end Place
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 def frameInv (θ : InfFam D) (V : HSp D) (a : GL (Fin V.rank) (AE D)) (τ : D.what₂.Tau) :

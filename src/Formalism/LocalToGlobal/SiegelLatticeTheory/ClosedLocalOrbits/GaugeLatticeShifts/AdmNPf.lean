@@ -15,8 +15,6 @@ namespace Formalism.L2.SG.NormCut
 
 section InAtAlg
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} (X : Formalism.L2.SG.HidaSetting.HidaSetting D)
 
 theorem natCast_mem_Int (c : ℕ) : ((c : X.B.I.E ⊗[X.B.I.F] Af X.B.I.F)) ∈ IntAf X.B.I.F X.B.I.E := by
@@ -111,8 +109,6 @@ theorem inclE_int (ξ : 𝓞 D.host.E) :
 end InAtAlg
 
 section AdmNMain
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7} (X : Formalism.L2.SG.HidaSetting.HidaSetting D)
 

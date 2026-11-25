@@ -75,10 +75,6 @@ private theorem zpow_congr_of_dvd {u : kˣ} {n : ℕ} (hu : u ^ n = 1) {a b : �
   have hab : a = b + n * c := by linarith
   rw [hab, zpow_add, zpow_mul, zpow_natCast, hu, one_zpow, _root_.mul_one]
 
-private theorem prim_zpow {u : kˣ} {n : ℕ} (hu : IsPrimitiveRoot u n) {v : ℤ}
-    (hc : IsCoprime v (n : ℤ)) : IsPrimitiveRoot (u ^ v) n := by
-  exact hu.zpow_of_gcd_eq_one v (Int.isCoprime_iff_gcd_eq_one.mp hc)
-
 end Twist
 
 end UpperTheory.Lev
@@ -102,7 +98,7 @@ theorem UpperTheory.exists_gTateIso_twist_of_similitude :
   refine ⟨⟨fun n => I.ζ n ^ g.ν n, ?_, ?_, fun n x => if n = 0 then I.ev 0 x else I.ev n (g.f n x),
     ?_, ?_, ?_, ?_, ?_, ?_⟩, ?_⟩
   · intro n hn
-    exact Lev.prim_zpow (I.ζ_prim n hn) (g.sim n hn).cop
+    exact (I.ζ_prim n hn).zpow_of_gcd_eq_one _ (Int.isCoprime_iff_gcd_eq_one.mp (g.sim n hn).cop)
   · intro n m hn hm
     rw [← zpow_natCast, ← zpow_mul, mul_comm (g.ν _), zpow_mul, zpow_natCast, I.ζ_pow n m hn hm]
     exact Lev.zpow_congr_of_dvd (I.ζ_prim n hn).pow_eq_one (g.νtower n m hn hm)

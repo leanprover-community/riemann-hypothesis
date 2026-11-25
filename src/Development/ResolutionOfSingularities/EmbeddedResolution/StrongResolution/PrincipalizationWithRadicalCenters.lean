@@ -594,28 +594,11 @@ theorem isLocallyMonomialPrincipalization_monomialPrincipalization
     (hGeom : MonomialGeometryHypotheses.{u}) (hinv : ComapIsoInvariance.{u}) (P : ℕ → Prop) :
     MonomialCenter.IsLocallyMonomialPrincipalization P (monomialPrincipalization hinv) := by
   have hmonomial := isMonomialCasePrincipalization_monomialPrincipalization hGeom hinv
-  have hne : ∀ T : MarkedIdealWithBoundary.{u}, MonomialCenter.IsLocallyMonomialTriple T →
-      ∀ i : ℕ, i < (monomialPrincipalization hinv T).length →
-        (monomialPrincipalization hinv T).center i ≠ ⊤ := fun T hT i hi =>
-    (Scheme.IdealSheafData.support_nonempty_iff_ne_top _).mp
-      (monomialPrincipalization_center_support_nonempty hGeom hinv T hT i hi)
-  refine
-    { center_subset_boundaryLocus := fun T hT _ => hmonomial.center_subset_boundaryLocus T hT
-      cert := fun T hT _ => hmonomial.cert T hT
-      center_eq := fun T hT _ => hmonomial.center_eq T hT
-      minLevel_ne_zero := fun T hT _ => hmonomial.minLevel_ne_zero T hT
-      key_le := fun T hT _ => hmonomial.key_le T hT
-      monomial_near := fun T hT _ => hmonomial.monomial_near T hT
+  exact
+    { cert := fun T hT _ => hmonomial.cert T hT
       center_nonempty := fun T hT _ => hmonomial.center_nonempty T hT
       resolves := fun T hT _ => hmonomial.resolves T hT
-      smooth_pullback := ?_
-      smooth_pullback_strict := ?_
       trivial_of_coSupport_empty := fun T hT _ => hmonomial.trivial_of_coSupport_empty T hT }
-  · intro T hT _ Y q h hsmooth hq E' hE hT' _
-    exact monomialPrincipalization_isPullbackBlowupSequence_of_smooth hGeom hinv T hT Y q h hq E' hE hT'
-  · intro T hT _ Y q h hsmooth instSurj hq E' hE hT' _
-    exact (monomialPrincipalization_isPullbackBlowupSequence_of_smooth hGeom hinv T hT Y q h hq E' hE
-      hT').isStrictPullback_of_surjective (hne T hT)
 
 end FunctorialResolution.EmbeddedResolution
 end -- clump:auto

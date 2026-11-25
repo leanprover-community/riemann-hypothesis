@@ -456,13 +456,6 @@ def arcIn : ArcIn (hypDatum H) l (RingHom.id c.F) k bF where
       exact equiv_refl_split k F _
     exact ⟨tateIsoQ H k ζ hp hc, hζ l.A l.A_pos z hz, key _, fun a _ => key _ a⟩
 
-theorem arcIn_be_apply (y z : 𝓞 E) : (arcIn c k bF).be y z = 2 * l.M' * trForm H y z := rfl
-
-theorem arcIn_eta_equiv_iff (a b : HypLattice H) :
-    QkPt.Equiv _ _ ((arcIn c k bF).eta a) ((arcIn c k bF).eta b) ↔ ∃ e, a = b + l.M • e :=
-  equiv_qkPt k (isPrimitiveRoot_arcRoot c k bF _).pow_eq_one (lt_of_lt_of_le three_pos l.three_le)
-    (isPrimitiveRoot_arcRoot c k bF _) a b
-
 end GlobalTheory.HostModel
 end -- clump:auto
 end -- clump:auto

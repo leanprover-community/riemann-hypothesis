@@ -41,8 +41,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
-set_option autoImplicit false
-
 namespace UpperTheory.Gal.FiniteEtaleModels.O
 
 section Form
@@ -54,13 +52,10 @@ private lemma skew (alt : ∀ x, B x x = 0) (x y : M) : B x y = - B y x := by
   simp only [map_add (f := _), LinearMap.add_apply, alt x, alt y, zero_add, add_zero] at h
   exact eq_neg_of_add_eq_zero_right h
 
-private lemma bezout {e n : ℕ} (hc : e.Coprime n) : ∃ a b : ℤ, a * e + b * n = 1 :=
-  Nat.isCoprime_iff_coprime.2 hc
-
-private lemma first {n e : ℕ} (hn : 0 < n) (hc : e.Coprime n) (nd : Function.Injective B)
+private lemma first {n e : ℕ} (hc : e.Coprime n) (nd : Function.Injective B)
     (perf : ∀ f : M →ₗ[ℤ] ℤ, ∃ x, B x = e • f) (x : M) (h : ∀ y, (n : ℤ) ∣ B x y) :
     ∃ z, x = n • z := by
-  obtain ⟨a, b, hab⟩ := bezout hc
+  obtain ⟨a, b, hab⟩ := Nat.isCoprime_iff_coprime.2 hc
   let f : M →ₗ[ℤ] ℤ :=
     { toFun := fun y => B x y / n
       map_add' := fun y y' => by
@@ -87,7 +82,7 @@ private lemma first {n e : ℕ} (hn : 0 < n) (hc : e.Coprime n) (nd : Function.I
 private lemma second {n e : ℕ} (hc : e.Coprime n) (nd : Function.Injective B)
     (alt : ∀ x, B x x = 0) (perf : ∀ f : M →ₗ[ℤ] ℤ, ∃ x, B x = e • f) (h : M →+ M) :
     ∃ k : M →+ M, ∀ x y, (n : ℤ) ∣ B (h x) y - B x (k y) := by
-  obtain ⟨a, b, hab⟩ := bezout hc
+  obtain ⟨a, b, hab⟩ := Nat.isCoprime_iff_coprime.2 hc
   let F : M → M →ₗ[ℤ] ℤ := fun y => (B.flip y) ∘ₗ h.toIntLinearMap
   have hF : ∀ y x, F y x = B (h x) y := fun y x => rfl
   choose w hw using fun y => perf (F y)
@@ -152,7 +147,7 @@ theorem adj : UpperTheory.Gal.FiniteEtaleModels.O.Adj := by
   have hn : 0 < q ^ e := pow_pos (Fact.out : Nat.Prime q).pos e
   have fst : ∀ x : D.La, (∀ y, ((q ^ e : ℕ) : ℤ) ∣ D.EF x y) → Cg (q ^ e) x 0 := by
     intro x hx
-    obtain ⟨z, hz⟩ := first D.EF hn hc D.nondeg perf x hx
+    obtain ⟨z, hz⟩ := first D.EF hc D.nondeg perf x hx
     exact ⟨z, by rw [zero_add]; exact hz⟩
   refine ⟨fst, ?_, ?_⟩
   · intro h
@@ -175,7 +170,7 @@ theorem adj : UpperTheory.Gal.FiniteEtaleModels.O.Adj := by
   · intro g hg
     have ginj : ∀ x z, g x = (q ^ e) • z → ∃ w, x = (q ^ e) • w := by
       intro x z hz
-      apply first D.EF hn hc D.nondeg perf x
+      apply first D.EF hc D.nondeg perf x
       intro y
       have h3 := hg x y
       rw [hz, map_nsmul, LinearMap.smul_apply, nsmul_eq_mul] at h3

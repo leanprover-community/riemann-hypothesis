@@ -973,17 +973,7 @@ variable {D : D7}
 
 theorem continuous_realPt {θ : InfFam D} (hθ : IsInfFam θ) {W : HSp D} (hW : W.SigOK) {Fr : Frames W}
     (hFr : IsFrames W Fr) : Continuous fun b : (∀ ρ, Upq W ρ) => realElt θ W fun ρ => realMat W Fr ρ (b ρ) := by
-  obtain ⟨h1, h2, h3⟩ := Formalism.IndefR.Eqv.G5.af_facts D.host.F
-  obtain ⟨h1, -, -, -, -⟩ := Formalism.IndefR.Eqv.G5.ha_facts (AF D.host.F) D.sp.cm.deg2 D.sp.cm.sig W.gram
-  unfold realElt
-  refine continuous_list_prod _ fun ρ _ => ?_
-  have hm : Continuous fun b : (∀ ρ, Upq W ρ) => UpqT.mat (b ρ) :=
-    (Units.continuous_val.comp continuous_subtype_val).comp (continuous_apply ρ)
-  refine (GlobalTheory.PointAtPlaceHom.continuousOn_atTau hθ W ρ).comp_continuous
-    (continuous_const.matrix_mul ((continuous_const.matrix_mul hm).matrix_mul continuous_const)) fun b => ?_
-  refine conjFrame_mem_UH _ _ _ (sig_sum W hW (tauE D ρ)) _ _ (hFr ρ) ?_ (b ρ)
-  rw [gramAt, ← RingHom.mapMatrix_apply, ← RingHom.map_det]
-  exact ((map_ne_zero _).2 (GlobalTheory.DefiniteQuotient.gram_hermND W).2).isUnit
+  first | exact _root_.GlobalTheory.RealBoxMeasure.continuous_realElt | exact @_root_.GlobalTheory.RealBoxMeasure.continuous_realElt | apply _root_.GlobalTheory.RealBoxMeasure.continuous_realElt <;> assumption
 
 theorem finE_toFin (W : HSp D) (h : GA D W) : finE W h = finE W (GlobalTheory.AutMult.toFin W h : GA D W) := by
   conv_lhs => rw [← GlobalTheory.AutMult.toInf_mul_toFin h]

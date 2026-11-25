@@ -1,5 +1,6 @@
 module
 
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerOrbitVolume.DetAdmA
 public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -68,11 +69,7 @@ section Local
 
 variable {F : Type} [Field F] [NumberField F] (v : HeightOneSpectrum (𝓞 F))
 
-theorem isCompact_intV : IsCompact (v.adicCompletionIntegers F : Set (Fv F v)) :=
-  ReciprocityTheory.GeneralLinearIntegers.GeneralLinearIntegersOpenCompact.isCompact_integers v
-
-theorem isClopen_intV : IsClopen (v.adicCompletionIntegers F : Set (Fv F v)) := by
-  exact Valued.isClopen_valuationSubring _
+export PI.VolStabSW.DeterminantAdmissible (isCompact_intV isClopen_intV)
 
 instance lc_Fv : LocallyCompactSpace (Fv F v) :=
   (isCompact_intV v).locallyCompactSpace_of_mem_nhds_of_addGroup

@@ -106,18 +106,6 @@ theorem isOpen_Tset (ho' : IsOrth X x1') (hb1 : b1 ∈ Bor X.Ψ r) {ρ : ℝ}
   exact (D.hz.continuousOn.isOpen_inter_preimage (ExtFPf.isOpen_cell D) Metric.isOpen_ball).preimage
     (cont_uL X b1)
 
-private lemma lact_lact_eq_lact_mul (γ δ : GL (Fin r) E) (x : Frame X.Ψ r) :
-    lact γ (lact δ x) = lact (γ * δ) x := by
-  funext τ
-  show (γ : Matrix (Fin r) (Fin r) E).map τ.1 * ((δ : Matrix (Fin r) (Fin r) E).map τ.1 * mat x τ) =
-    ((γ * δ : GL (Fin r) E) : Matrix (Fin r) (Fin r) E).map τ.1 * mat x τ
-  rw [Units.val_mul, Matrix.map_mul, Matrix.mul_assoc]
-
-private lemma lact_one_upper_bounds (x : Frame X.Ψ r) : lact (1 : GL (Fin r) E) x = x := by
-  funext τ
-  show ((1 : GL (Fin r) E) : Matrix (Fin r) (Fin r) E).map τ.1 * mat x τ = mat x τ
-  rw [Units.val_one, Matrix.map_one _ (map_zero _) (map_one _), Matrix.one_mul]
-
 theorem sat_eq (x1 : Frame X.Ψ r) (ρ : ℝ) :
     {x | ∃ γ ∈ X.Γ, ∃ b ∈ Bor X.Ψ r, ∃ z' ∈ Metric.ball (0 : V (nd X)) ρ, x = lact γ (rmul (cpt X x1 z') b)} =
       ⋃ γ : X.Γ, lact γ.1⁻¹ ⁻¹' Tset X x1 ρ := by
@@ -128,12 +116,12 @@ theorem sat_eq (x1 : Frame X.Ψ r) (ρ : ℝ) :
   · rintro ⟨γ, hγ, b, hb, z', hz', rfl⟩
     refine ⟨⟨γ, hγ⟩, z', b, ⟨hz', hb⟩, ?_⟩
     show _ = lact γ⁻¹ (lact γ _)
-    rw [lact_lact_eq_lact_mul, inv_mul_cancel, lact_one_upper_bounds]
+    rw [KU.lact_lact X, inv_mul_cancel, KU.lact_one X]
   · rintro ⟨⟨γ, hγ⟩, z', b, ⟨hz', hb⟩, h⟩
     refine ⟨γ, hγ, b, hb, z', hz', ?_⟩
     have h' : lact γ (lact γ⁻¹ x) = lact γ (rmul (cpt X x1 z') b) := by
       rw [← h]
-    rw [lact_lact_eq_lact_mul, mul_inv_cancel, lact_one_upper_bounds] at h'
+    rw [KU.lact_lact X, mul_inv_cancel, KU.lact_one X] at h'
     exact h'
 
 include D in

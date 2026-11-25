@@ -103,7 +103,3 @@ theorem main (O : Type) [CommRing O] (R : Type) [AddCommGroup R] [Module O R]
   gcongr
 
 end Formalism.KernelCokernelLengths.LengthSplittingLemmas
-
-theorem Formalism.KernelCokernelLengths.length_splits_additively : Formalism.KernelCokernelLengths.LenSplit := by
-  intro O _ R _ _ π R' R'' h
-  exact Formalism.KernelCokernelLengths.LengthSplittingLemmas.main O R π R' R'' h

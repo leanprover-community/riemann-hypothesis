@@ -87,8 +87,6 @@ open scoped TensorProduct
 open GlobalTheory.AV GlobalTheory.AV.AbVar
 open scoped CategoryTheory.Obj CategoryTheory.MonObj
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.AV.AbVar.DegNorm

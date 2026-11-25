@@ -47,8 +47,6 @@ open Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.Ind
 
 namespace GlobalTheory.IndefiniteRowSideFullHecke.ThetaTranslateSize
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 def SizeOK (D : D7) : Prop := 8 * D.R.f * D.R.r + 4 ≤ D.R.nV
 
 variable {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T : Type} {A : FamIn D.what₂.LL G Pl0 T D.R.m}

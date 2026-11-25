@@ -159,25 +159,4 @@ theorem resCmpChar1' {G H : Type} [Group G] [TopologicalSpace G] [IsTopologicalG
         Ev v (Submodule.Quotient.mk z) = cohomologyπ _ 1 x) :=
   resCmp1_with_representatives θ lam hlam φ ev hev1 hev2 hev rho hc A eM hM
 
-theorem resCmpChar2' {G H : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [Group H]
-    [TopologicalSpace H] [IsTopologicalGroup H] (θ : G ≃ₜ* H) {ι : Type} {Lv Hv : ι → Type}
-    [∀ v, Group (Lv v)] [∀ v, TopologicalSpace (Lv v)] [∀ v, IsTopologicalGroup (Lv v)]
-    [∀ v, Group (Hv v)] [∀ v, TopologicalSpace (Hv v)] [∀ v, IsTopologicalGroup (Hv v)]
-    (lam : ∀ v, Lv v →* G) (hlam : ∀ v, Continuous (lam v)) (φ : ∀ v, Hv v →ₜ* H)
-    (ev : ∀ v, Hv v ≃* Lv v) (hev1 : ∀ v, Continuous (ev v)) (hev2 : ∀ v, Continuous (ev v).symm)
-    (hev : ∀ v σ, θ (lam v (ev v σ)) = φ v σ) {R M : Type} [CommRing R] [AddCommGroup M] [Module R M]
-    [TopologicalSpace M] [DiscreteTopology M] (rho : Representation R G M) (hc : ContAction rho)
-    (A : Rep.{0} (ULift.{0} ℤ) H) [IsDiscreteRep A] (eM : M ≃+ A.V)
-    (hM : ∀ g m, eM (rho g m) = A.ρ (θ g) (eM m)) :
-    ∃ (E : H2 rho ≃+ cohomology A 2)
-      (Ev : ∀ v, H2 (rho.comp (lam v)) ≃+ cohomology (Rep.res (φ v).toMonoidHom A) 2),
-      (∀ v x, Ev v (resH2 rho (lam v) (hlam v) x) = ptRes φ A v 2 (E x)) ∧
-      (∀ (z : ↥(Z2 rho)) (x : cocycles A 2),
-        (∀ s : Fin 2 → H, cochainOf A (cocycleι A 2 x) s = eM (z.1 (θ.symm (s 0), θ.symm (s 1)))) →
-        E (Submodule.Quotient.mk z) = cohomologyπ A 2 x) ∧
-      (∀ v (z : ↥(Z2 (rho.comp (lam v)))) (x : cocycles (Rep.res (φ v).toMonoidHom A) 2),
-        (∀ s : Fin 2 → Hv v, cochainOf _ (cocycleι _ 2 x) s = eM (z.1 (ev v (s 0), ev v (s 1)))) →
-        Ev v (Submodule.Quotient.mk z) = cohomologyπ _ 2 x) :=
-  resCmp2_with_representatives θ lam hlam φ ev hev1 hev2 hev rho hc A eM hM
-
 end PositivityTheory.Lit1.PTN

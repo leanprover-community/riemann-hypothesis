@@ -49,8 +49,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH NumberField IsDedekindDoma
 open Formalism.MainNotions.ZetaProductPairs (qE zetaProd idxPar Lpair)
 open Classical
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 abbrev Pl (D : D7) : Type := HeightOneSpectrum (𝓞 D.host.F)
 
 structure Loc (D : D7) where

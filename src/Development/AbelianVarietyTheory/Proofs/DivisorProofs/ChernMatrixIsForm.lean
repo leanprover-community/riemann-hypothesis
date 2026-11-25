@@ -54,8 +54,6 @@ open GlobalTheory.FlagFibre (Low uni dens)
 open ReciprocityTheory.L2DbarEstimates (V cHess)
 open scoped ContDiff ComplexOrder Classical
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.MixDens

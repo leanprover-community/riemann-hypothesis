@@ -47,8 +47,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open GlobalTheory.Grow GlobalTheory.Size GlobalTheory.Mem.AutSpace
 open scoped ENNReal NNReal
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 namespace GlobalTheory.IndefiniteRowSideFullHecke.RapidDecayLift
 
 variable {D : D7}

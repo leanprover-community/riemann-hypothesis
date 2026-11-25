@@ -83,22 +83,12 @@ lemma hpk_unit : IsUnit (Hpk k r) := ⟨⟨Hpk k r, Hpk k r, Hpk_sq k r, Hpk_sq 
 lemma hpk_hh (A : Mx k r) : Hpk k r * (Hpk k r * A) = A := by rw [← mul_assoc, Hpk_sq, one_mul]
 
 lemma hpart1_skew (Z : Mx k r) :
-    (hpart1 (Hpk k r) Z)ᴴ = -(Hpk k r * hpart1 (Hpk k r) Z * Hpk k r) := by
-  unfold hpart1
-  rw [hpk_inv]
-  have hs : star (1 / 2 : ℂ) = 1 / 2 := by simp
-  simp only [conjTranspose_smul, conjTranspose_sub, conjTranspose_mul, conjTranspose_conjTranspose, Hpk_herm, hs,
-    mul_smul_comm, smul_mul_assoc, mul_sub, sub_mul, mul_assoc, hpk_hh, Hpk_sq, mul_one]
-  rw [← smul_neg, neg_sub]
+    (hpart1 (Hpk k r) Z)ᴴ = -(Hpk k r * hpart1 (Hpk k r) Z * Hpk k r) :=
+  _root_.Formalism.FourierDecayAlt.Q.EabLie.hpart1_skew Z
 
 lemma hpart2_skew (Z : Mx k r) :
-    (hpart2 (Hpk k r) Z)ᴴ = -(Hpk k r * hpart2 (Hpk k r) Z * Hpk k r) := by
-  unfold hpart2
-  rw [hpk_inv]
-  have hs : star (1 / (2 * Complex.I) : ℂ) = -(1 / (2 * Complex.I)) := by simp
-  simp only [conjTranspose_smul, conjTranspose_add, conjTranspose_mul, conjTranspose_conjTranspose, Hpk_herm, hs,
-    mul_smul_comm, smul_mul_assoc, mul_add, add_mul, mul_assoc, hpk_hh, Hpk_sq, mul_one]
-  rw [neg_smul, add_comm Zᴴ]
+    (hpart2 (Hpk k r) Z)ᴴ = -(Hpk k r * hpart2 (Hpk k r) Z * Hpk k r) :=
+  _root_.Formalism.FourierDecayAlt.Q.EabLie.hpart2_skew Z
 
 lemma skew_real (X : Mx k r) (hX : Xᴴ = -(Hpk k r * X * Hpk k r)) (t : ℝ) :
     ((t : ℂ) • X)ᴴ = -(Hpk k r * ((t : ℂ) • X) * Hpk k r) := by
@@ -106,28 +96,16 @@ lemma skew_real (X : Mx k r) (hX : Xᴴ = -(Hpk k r * X * Hpk k r)) (t : ℝ) :
   simp [Complex.conj_ofReal]
 
 lemma exp_mem_UH (Y : Mx k r) (hY : Yᴴ = -(Hpk k r * Y * Hpk k r)) :
-    NormedSpace.exp Y ∈ UH (Hpk k r) := by
-  show (NormedSpace.exp Y)ᴴ * Hpk k r * NormedSpace.exp Y = Hpk k r
-  have e1 : Yᴴ = Hpk k r * (-Y) * (Hpk k r)⁻¹ := by
-    rw [hY, hpk_inv, mul_neg, neg_mul]
-  rw [← Matrix.exp_conjTranspose, e1, Matrix.exp_conj _ _ hpk_unit, hpk_inv]
-  simp only [mul_assoc, hpk_hh]
-  rw [← Matrix.exp_add_of_commute _ _ (Commute.refl Y).neg_left, neg_add_cancel, NormedSpace.exp_zero, mul_one]
+    NormedSpace.exp Y ∈ UH (Hpk k r) :=
+  _root_.Formalism.FourierDecayAlt.Q.EabLie.exp_mem_UH Y hY
 
 lemma exp_fix (Y : Mx k r) (c : Fin (2 * r + k + 1)) (hY : ∀ x, Y x c = 0) :
     NormedSpace.exp Y *ᵥ bvec c = bvec c := by
   apply Formalism.FourierDecayAlt.Q.EabLie.exp_fix <;> assumption
 
 lemma glev_mul {i : Fin (r + 1)} {g h : Mx k r} (hg : g ∈ Glev k r i) (hh : h ∈ Glev k r i) :
-    g * h ∈ Glev k r i := by
-  simp only [Glev, UH, Set.mem_setOf_eq] at hg hh ⊢
-  obtain ⟨hgU, hgF⟩ := hg
-  obtain ⟨hhU, hhF⟩ := hh
-  refine ⟨?_, fun a ha => ⟨?_, ?_⟩⟩
-  · rw [conjTranspose_mul, show hᴴ * gᴴ * Hpk k r * (g * h) = hᴴ * (gᴴ * Hpk k r * g) * h by
-      simp only [mul_assoc], hgU, hhU]
-  · rw [← Matrix.mulVec_mulVec, (hhF a ha).1, (hgF a ha).1]
-  · rw [← Matrix.mulVec_mulVec, (hhF a ha).2, (hgF a ha).2]
+    g * h ∈ Glev k r i :=
+  _root_.Formalism.FourierDecayAlt.Q.EabLie.glev_mul hg hh
 
 lemma exp_mem_glev (i : Fin (r + 1)) (X : Mx k r) (hX : Xᴴ = -(Hpk k r * X * Hpk k r))
     (hc : ∀ a : Fin r, a.val < i.val → ∀ x, X x (eI k r a) = 0 ∧ X x (esI k r a) = 0) (t : ℝ) :
@@ -138,13 +116,8 @@ lemma exp_mem_glev (i : Fin (r + 1)) (X : Mx k r) (hX : Xᴴ = -(Hpk k r * X * H
   · rw [Matrix.smul_apply, (hc a ha x).2, smul_zero]
 
 lemma hpk_zero (i : Fin (r + 1)) (p : Fin (mdim k r i)) (a : Fin r) (ha : a.val < i.val) :
-    Hpk k r (posL k r i p) (eI k r a) = 0 ∧ Hpk k r (posL k r i p) (esI k r a) = 0 := by
-  have hp := p.isLt
-  have ha' := a.isLt
-  have hi := i.isLt
-  unfold mdim at hp
-  simp only [Hpk, posL, eI, esI, Fin.mk.injEq]
-  constructor <;> split_ifs <;> first | rfl | (exfalso; omega)
+    Hpk k r (posL k r i p) (eI k r a) = 0 ∧ Hpk k r (posL k r i p) (esI k r a) = 0 :=
+  _root_.Formalism.FourierDecayAlt.Q.EabLie.hpk_zero i p a ha
 
 lemma unit_col (i : Fin (r + 1)) (p q : Fin (mdim k r i)) (c : Fin (2 * r + k + 1))
     (hcq : c ≠ posL k r i q) (hHc : Hpk k r (posL k r i p) c = 0) (x : Fin (2 * r + k + 1)) :
@@ -163,14 +136,8 @@ lemma unit_col (i : Fin (r + 1)) (p q : Fin (mdim k r i)) (c : Fin (2 * r + k + 
       rw [h0, zero_mul]
 
 lemma posL_ne (i : Fin (r + 1)) (q : Fin (mdim k r i)) (a : Fin r) (ha : a.val < i.val) :
-    eI k r a ≠ posL k r i q ∧ esI k r a ≠ posL k r i q := by
-  have hq := q.isLt
-  have ha' := a.isLt
-  unfold mdim at hq
-  refine ⟨fun h => ?_, fun h => ?_⟩ <;>
-  · have h2 := congrArg Fin.val h
-    simp only [eI, esI, posL] at h2
-    omega
+    eI k r a ≠ posL k r i q ∧ esI k r a ≠ posL k r i q :=
+  _root_.Formalism.FourierDecayAlt.Q.EabLie.posL_ne i q a ha
 
 lemma hpart_cols (i : Fin (r + 1)) (p q : Fin (mdim k r i)) :
     (∀ a : Fin r, a.val < i.val → ∀ x,

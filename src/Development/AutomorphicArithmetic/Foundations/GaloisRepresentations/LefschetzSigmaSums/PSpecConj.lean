@@ -40,8 +40,6 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsGDatumOneOneO
 
 @[expose] public section
 
-set_option autoImplicit false
-
 open UpperTheory.Gal.LocalSmoothExtension
 open UpperTheory.Gal.CertificateRingHomMap (wop wmul wmap)
 open Matrix NumberField Polynomial GlobalTheory.LKTrip GlobalTheory.LKRes GlobalTheory.LKMid GlobalTheory.LKCx GlobalTheory.LKDef GlobalTheory.RootSumWeights GlobalTheory.UPel.HT GlobalTheory.UPel.HT.Gen

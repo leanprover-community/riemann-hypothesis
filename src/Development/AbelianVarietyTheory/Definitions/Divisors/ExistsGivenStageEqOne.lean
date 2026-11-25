@@ -63,8 +63,6 @@ namespace GlobalTheory.FunObj
 
 open GlobalTheory.ChiGrid GlobalTheory.SplitFlip GlobalTheory.SplitWeil GlobalTheory.StepData GlobalTheory.StdFrames Formalism.L2.Host Formalism.L2.DIV ValuativeRel
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 def flipOrder (m : ℕ) : List (ℕ × ℕ) := (List.range m).flatMap fun i => (List.range m).map fun j => (i, j)
 
 def midEdge (m i j p : ℕ) : Edge :=
@@ -140,13 +138,9 @@ variable {D : D7} {T : Type} {L : LevCh D T} {sc : Consts}
 
 abbrev Kw (w : Pl D.host.E) : Type := w.adicCompletion D.host.E
 
-@[reducible] def borelKw (w : Pl D.host.E) : MeasurableSpace (Kw w) := borel _
+@[reducible] instance borelKw (w : Pl D.host.E) : MeasurableSpace (Kw w) := borel _
 
-attribute [local instance] borelKw
-
-theorem borelSpaceKw (w : Pl D.host.E) : BorelSpace (Kw w) := ⟨rfl⟩
-
-attribute [local instance] borelSpaceKw
+instance borelSpaceKw (w : Pl D.host.E) : BorelSpace (Kw w) := ⟨rfl⟩
 
 def unifAt (w : Pl D.host.E) : (Kw w)ˣ := atFin w (unif w)
 

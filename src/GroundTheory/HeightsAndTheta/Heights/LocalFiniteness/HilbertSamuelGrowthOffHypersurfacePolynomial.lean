@@ -1064,29 +1064,6 @@ namespace GroundTheory.Heights₂.Heights.NumbersDVR
 
 universe u
 
-private theorem length_self_eq_of_ringEquiv {S T : Type*} [CommRing S] [CommRing T] (e : S ≃+* T) :
-    Module.length S S = Module.length T T := by
-  rw [Module.length_eq_coheight, Module.length_eq_coheight]
-  have := Ideal.coheight_comap_of_surjective (e : S →+* T) e.surjective ⊥
-  have hb : Ideal.comap (e : S →+* T) ⊥ = ⊥ := Ideal.comap_bot_of_injective _ e.injective
-  rw [hb] at this
-  exact this
-
-private theorem length_localizedModule_quot {R : Type*} [CommRing R] (J W : Ideal R) [W.IsPrime] :
-    Module.length (Localization.AtPrime W) (LocalizedModule W.primeCompl (R ⧸ J)) =
-      Module.length (Localization.AtPrime W ⧸ J.map (algebraMap R (Localization.AtPrime W)))
-        (Localization.AtPrime W ⧸ J.map (algebraMap R (Localization.AtPrime W))) := by
-  let S := Localization.AtPrime W
-  have hJ : (J : Submodule R R).localized' S W.primeCompl (Algebra.linearMap R S) =
-      J.map (algebraMap R S) := by
-    rw [Submodule.localized'_eq_span, Ideal.map]
-    rfl
-  let e := (IsLocalizedModule.linearEquiv W.primeCompl
-    ((J : Submodule R R).toLocalizedQuotient' S W.primeCompl (Algebra.linearMap R S))
-    (LocalizedModule.mkLinearMap W.primeCompl (R ⧸ J))).extendScalarsOfIsLocalization W.primeCompl S
-  rw [← e.length_eq, (Submodule.quotEquivOfEq _ _ hJ).length_eq]
-  exact Module.length_eq_of_surjective Ideal.Quotient.mk_surjective
-
 theorem LocCycleLocalQuot.proof (h₂ : LocalQuotPrimes.Statement.{u}) : LocCycleLocalQuot.Statement.{u} := by
   intro R _ P U _ J W hPJ hW hPW hWU
   obtain ⟨hup, hdown⟩ := h₂ R P U (hPW.trans hWU)
@@ -1184,8 +1161,15 @@ theorem LocCycleLocalQuot.proof (h₂ : LocalQuotPrimes.Statement.{u}) : LocCycl
   have hg : Function.Surjective g := Ideal.Quotient.mk_surjective.comp hψ
   have hgk : J.map (algebraMap R (Localization.AtPrime W)) = RingHom.ker g := by
     rw [← RingHom.comap_ker, Ideal.mk_ker, hI, Ideal.comap_map_of_surjective _ hψ, sup_eq_left.mpr hker]
-  have key := length_self_eq_of_ringEquiv ((Ideal.quotEquivOfEq hgk).trans (RingHom.quotientKerEquivOfSurjective hg))
-  rw [← length_localizedModule_quot, ← length_localizedModule_quot] at key
+  have key :=
+    ObjectsChow.VerticalPartMultiplicity.length_self_eq_of_ringEquiv
+      ((Ideal.quotEquivOfEq hgk).trans (RingHom.quotientKerEquivOfSurjective hg))
+  conv_lhs at key =>
+    rw [← Module.length_eq_of_surjective Ideal.Quotient.mk_surjective,
+      ← length_localizedModule_quotient_eq]
+  conv_rhs at key =>
+    rw [← Module.length_eq_of_surjective Ideal.Quotient.mk_surjective,
+      ← length_localizedModule_quotient_eq]
   subst hp
   exact congrArg (fun n : ℕ∞ => ((n.toNat : ℕ) : ℤ)) key
 
@@ -1455,22 +1439,6 @@ namespace GroundTheory.Heights₂.Heights.NumbersDVR
 
 universe u
 
-private theorem enat_eq_two_of_le_of_lt {x : ℕ∞} (h2 : 2 ≤ x) (h3 : x < 3) : x = 2 := by
-  induction x using ENat.recTopCoe with
-  | top => exact absurd h3 (by simp)
-  | coe n =>
-    have a : 2 ≤ n := by exact_mod_cast h2
-    have b : n < 3 := by exact_mod_cast h3
-    have : n = 2 := by omega
-    subst this; rfl
-
-private theorem enat_le_one_of_add_one_le_two {x : ℕ∞} (h : x + 1 ≤ 2) : x ≤ 1 := by
-  induction x using ENat.recTopCoe with
-  | top => exact absurd h (by simp)
-  | coe n =>
-    have : n + 1 ≤ 2 := by exact_mod_cast h
-    exact_mod_cast (by omega : n ≤ 1)
-
 theorem LocalDomainDimTwo.proof : LocalDomainDimTwo.Statement := by
   intro A _ _ _ _ hno hQ
   obtain ⟨Q, hQp, h0, hQm⟩ := hQ
@@ -1500,7 +1468,9 @@ theorem LocalDomainDimTwo.proof : LocalDomainDimTwo.Statement := by
       (p.toFun _).isPrime (p.toFun _).isPrime ?_ ((PrimeSpectrum.asIdeal_lt_asIdeal _ _).mpr s1)
       ((PrimeSpectrum.asIdeal_lt_asIdeal _ _).mpr s2)
     exact lt_of_le_of_lt bot_le ((PrimeSpectrum.asIdeal_lt_asIdeal _ _).mpr s0)
-  have hm : (IsLocalRing.maximalIdeal A).height = 2 := enat_eq_two_of_le_of_lt hm2 hm3
+  have hm : (IsLocalRing.maximalIdeal A).height = 2 := by
+    generalize (IsLocalRing.maximalIdeal A).height = h at hm2 hm3
+    enat_to_nat; omega
   refine ⟨?_, hm, ?_⟩
   · rw [← IsLocalRing.maximalIdeal_height_eq_ringKrullDim, hm]
     rfl
@@ -1508,8 +1478,8 @@ theorem LocalDomainDimTwo.proof : LocalDomainDimTwo.Statement := by
     have := hQ'
     have f1 := Ideal.height_add_one_le_of_lt_of_isPrime h0'
     have f2 := Ideal.height_add_one_le_of_lt_of_isPrime hQm'
-    rw [hm] at f2
-    exact le_antisymm (enat_le_one_of_add_one_le_two f2) (le_trans le_add_self f1)
+    rw [hm, ← one_add_one_eq_two] at f2
+    exact le_antisymm ((ENat.add_le_add_iff_right ENat.one_ne_top).mp f2) (le_trans le_add_self f1)
 
 end GroundTheory.Heights₂.Heights.NumbersDVR
 end -- clump:auto

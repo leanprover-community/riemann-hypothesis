@@ -531,18 +531,9 @@ theorem π_desc (f : X ⟶ Z) (hf : ∀ g, (ρ g).asIso.hom ≫ f = f) : π ρ �
 
 theorem hom_ext {a b : finiteQuotient ρ ⟶ Z} (e : π ρ ≫ a = π ρ ≫ b) : a = b := by exact (isAffineQuotient ρ).hom_ext e
 
-theorem comp_π_eq_iff {k : Type u} [Field k] (x y : Spec (.of k) ⟶ X) :
-    x ≫ π ρ = y ≫ π ρ ↔ ∃ g, x ≫ (ρ g).asIso.hom = y := by exact (isAffineQuotient ρ).comp_eq_comp_iff x y
-
 section Free
 
 variable {ρ}
-
-theorem isFinite_π_of_isFreeAction (hρ : IsFreeAction ρ) : IsFinite (π ρ) := by exact (isAffineQuotient ρ).isFinite_of_isFreeAction hρ
-
-theorem etale_π (hρ : IsFreeAction ρ) : Etale (π ρ) := by exact (isAffineQuotient ρ).etale_of_isFreeAction hρ
-
-theorem finrank_π (hρ : IsFreeAction ρ) (y : finiteQuotient ρ) : (π ρ).finrank y = Nat.card G := by exact (isAffineQuotient ρ).finrank_of_isFreeAction hρ y
 
 end Free
 
@@ -596,11 +587,6 @@ theorem map_comp {K : Type*} [Group K] [Finite K] (σ : K →* Aut Z) [OrbitsInA
   simp
 
 end Functoriality
-
-noncomputable def specIso (B A : Type u) [CommRing B] [CommRing A]
-    [MulSemiringAction G A] [Algebra B A] [SMulCommClass G B A] [FaithfulSMul B A]
-    [Algebra.IsInvariant B A G] : finiteQuotient (specAction G A) ≅ Spec (.of B) :=
-  (isAffineQuotient _).uniqueIso (isAffineQuotient_spec B A)
 
 end finiteQuotient
 

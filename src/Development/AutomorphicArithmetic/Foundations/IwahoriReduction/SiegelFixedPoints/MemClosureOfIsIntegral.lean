@@ -541,21 +541,12 @@ private theorem eisF_mem (F : IntermediateField ℚ Ω) (j M N : ℕ) (ζ : Ω) 
         exact h _
       · exact zero_mem _
 
-private theorem zpow_memF (F : IntermediateField ℚ Ω) {x : Ω} (hx : x ∈ F) (k : ℤ) : x ^ k ∈ F := by
-  cases k with
-  | ofNat a =>
-    rw [Int.ofNat_eq_natCast, zpow_natCast]
-    exact pow_mem hx a
-  | negSucc a =>
-    rw [zpow_negSucc]
-    exact inv_mem (pow_mem hx _)
-
 private theorem smF_mem (F : IntermediateField ℚ Ω) (c : ℤ) (j M N : ℕ) (ζ : Ω) (a₁ a₂ : ℤ) (n : ℕ)
     (hd : (N : ℤ) ∣ a₂) (h : ∀ k : ℤ, ζ ^ ((N : ℤ) * k) ∈ F) : smF c j M ζ a₁ a₂ n ∈ F := by
   obtain ⟨b, rfl⟩ := hd
   unfold smF
   refine sub_mem (mul_mem (pow_mem (intCast_mem F c) _) (eisF_mem F j M N ζ a₁ b n h))
-    (mul_mem (zpow_memF F (intCast_mem F c) _) ?_)
+    (mul_mem (zpow_mem (intCast_mem F c) _) ?_)
   rw [show c * ((N : ℤ) * b) = (N : ℤ) * (c * b) by ring]
   exact eisF_mem F j M N ζ _ _ n h
 

@@ -51,14 +51,9 @@ noncomputable section
 namespace BranchChartInt
 
 theorem analyticOnNhd_of_differentiableOn {k m : ℕ} {U : Set (Fin k → ℂ)} {f : (Fin k → ℂ) → Fin m → ℂ}
-    (hU : IsOpen U) (hf : DifferentiableOn ℂ f U) : AnalyticOnNhd ℂ f U := by
-  refine analyticOnNhd_pi_iff.2 fun j => ?_
-  have hj : DifferentiableOn ℂ (fun t => f t j) U := differentiableOn_pi.1 hf j
-  refine IndefiniteRowSideFullHecke.ComplexSets.analyticOnNhd_of_continuousOn_of_separately hU hj.continuousOn fun w hw i => ?_
-  have hw : DifferentiableAt ℂ (fun t => f t j) (Function.update w i (w i)) := by
-    rw [Function.update_eq_self]
-    exact (hj w hw).differentiableAt (hU.mem_nhds hw)
-  exact hw.comp (w i) (hasFDerivAt_update w (w i)).differentiableAt
+    (hU : IsOpen U) (hf : DifferentiableOn ℂ f U) : AnalyticOnNhd ℂ f U :=
+  analyticOnNhd_pi_iff.2 fun j =>
+    ReciprocityTheory.AnForm.Osgood.osgood k U _ hU (differentiableOn_pi.1 hf j)
 
 theorem differentiable_mulVec {d n : ℕ} (A : Matrix (Fin d) (Fin n) ℂ) :
     Differentiable ℂ (fun x : Fin n → ℂ => A *ᵥ x) :=

@@ -50,8 +50,6 @@ open scoped TensorProduct ComplexConjugate
 
 namespace GlobalTheory.AdSpan
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} {S T : HSp D}
 
 def RealScal (C : Ctx S T) (om : GA D S × GA D T →* Module.End ℂ (WO S T → ℂ)) (B : C.Bas) (a : GA D T) (z : ℂ) : Prop :=

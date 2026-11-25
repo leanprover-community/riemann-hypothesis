@@ -12,8 +12,6 @@ open scoped TensorProduct ContDiff InnerProductSpace
 
 namespace Formalism.IndefR.Mult
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} (θ : D.what₂.Tau → (Ainf D.host.F ⊗[D.host.F] D.host.E →+* ℂ)) (V : HSp D)
 
 theorem rder_zero (τ : D.what₂.Tau) (X : Matrix (Fin V.rank) (Fin V.rank) ℂ) :

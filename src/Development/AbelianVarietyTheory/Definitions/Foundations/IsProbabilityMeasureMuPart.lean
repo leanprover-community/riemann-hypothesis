@@ -705,9 +705,9 @@ theorem subTower {K R : Type} [Field K] [CommRing R] [Algebra K R] [Algebra (�
 
 variable {K : Type} [Field K] (pts : ∀ (S : Type) [CommRing S] [Algebra K S], Type) (C : Submodule K (Rules pts))
 
-instance (priority := high) subRulesModuleInt : Module (𝓞 K) C := subModuleInt C
+instance subRulesModuleInt : Module (𝓞 K) C := subModuleInt C
 
-instance (priority := high) subRulesTower :
+instance subRulesTower :
     @IsScalarTower (𝓞 K) K C Algebra.toSMul _ (subRulesModuleInt pts C).toSMul := subTower C
 
 end Inst

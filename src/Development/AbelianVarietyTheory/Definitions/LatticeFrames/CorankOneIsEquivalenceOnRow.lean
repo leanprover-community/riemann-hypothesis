@@ -50,8 +50,6 @@ open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Fo
 
 namespace GlobalTheory.Core.One
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 def scT {τ Rw I H H₁ : Type} [Fintype I] [NormedAddCommGroup H] [InnerProductSpace ℂ H] [NormedAddCommGroup H₁]
     [InnerProductSpace ℂ H₁] (X : PB.Terms τ Rw I H H₁) : PB.Terms τ Rw I H H₁ :=
   { X with scal := fun _ _ => True }

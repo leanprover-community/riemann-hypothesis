@@ -1016,7 +1016,7 @@ theorem export_bound_of_admissible (P : ParameterChoice' D L) {C : ℝ} (hL : La
   have hPar : ParametersPolynomiallyBounded L C P := hA.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2
   have habs : |C| = C := abs_of_pos hC
   rw [habs]
-  have h1 := etaSum_le L tb C P hA (gset_ne_two L P) hsumm hj
+  have h1 := etaSum_le L tb C P hA hsumm hj
   set S := (L.supp.filter (fun w => D.what₂.muAt w ≠ D.what₂.mu0)).image (fun w => D.what₂.places.resChar w) with hSdef
   have hSp : ∀ l ∈ S, l.Prime := by
     intro l hl

@@ -52,7 +52,6 @@ open scoped TensorProduct
 
 namespace GlobalTheory.CentralOps
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 attribute [local instance 100] LieRing.ofAssociativeRing
 
 section Fields

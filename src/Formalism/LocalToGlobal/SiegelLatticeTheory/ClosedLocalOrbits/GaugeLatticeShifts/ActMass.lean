@@ -18,8 +18,6 @@ namespace Formalism.L2.SG.Pf.Act
 
 section Mass
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 open Formalism.L2.SG.Pf.LatDict
 
 variable {D : D7} {X : Formalism.L2.SG.HidaSetting.HidaSetting D} {u : D.what₂.Word}
@@ -168,8 +166,6 @@ end Formalism.L2.SG.Pf.Act
 namespace Formalism.L2.SG.Pf.Act
 
 section Mass2
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 open Formalism.L2.SG.Pf.LatDict Formalism.L2.SG.Pf.LatDictK
 

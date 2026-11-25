@@ -6,6 +6,7 @@ import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.NatCardEqPowLength
+import GroundTheory.HeightsAndTheta.Heights.HeightComparison.IsMultiHomogIdealIff
 
 @[expose] public section
 
@@ -54,21 +55,8 @@ theorem sum_single_chart_apply (k' : K) (j : ι k') (b : ℕ) (k : K) :
     exact h (Sigma.mk.inj_iff.mp he).1
 
 theorem isMultiHomog_curveChartMono (c : ∀ k, ι k) (d : K → ℕ) :
-    IsMultiHomog (curveChartMono c d) d := by
-  classical
-  have h : curveChartMono c d = monomial (∑ k, Finsupp.single (⟨k, c k⟩ : Σ k, ι k) (d k)) (1 : ℤ) := by
-    rw [curveChartMono, monomial_sum_one]
-    exact Finset.prod_congr rfl fun k _ => X_pow_eq_monomial
-  have hd : (fun k => ∑ i, (∑ k', Finsupp.single (⟨k', c k'⟩ : Σ k, ι k) (d k')) ⟨k, i⟩) = d := by
-    funext k
-    simp only [Finsupp.finsetSum_apply]
-    rw [Finset.sum_comm]
-    simp only [sum_single_chart_apply, Finset.sum_ite_eq', Finset.mem_univ, if_true]
-  rw [h]
-  have hm := ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.isMultiHomog_monomial (ι := ι)
-    (∑ k, Finsupp.single (⟨k, c k⟩ : Σ k, ι k) (d k)) (1 : ℤ)
-  rw [hd] at hm
-  exact hm
+    IsMultiHomog (curveChartMono c d) d :=
+  GroundTheory.Heights₂.Heights.Bridge.isMultiHomog_chartMono c d
 
 
 omit [∀ k, Fintype (ι k)] in

@@ -66,7 +66,7 @@ theorem smooth_admissible_form_one_side : CompanionTheory.Lime.BM.AtFormAdmOneOf
     simp only [ContinuousLinearMap.smulRight_apply, innerSL_apply_apply] at hNv
     rw [hdeg w0 hw0n] at hNv
     rw [hdeg x hx0]
-    refine DDSmoothness.l2_norm_scaling _ _ (l v) _ _ (by positivity) hNv (hae.mono fun g hg => ?_)
+    refine DDSmoothness.l2_norm_scaling _ _ (l v) _ _ hNv (hae.mono fun g hg => ?_)
     rw [hI v hv _ (PI.UnitaryGroupMassFormula.CapelliEig.smooth_right_action k r ε lam H σ hσ x hx _ hg)]
     simp only [ContinuousLinearMap.smulRight_apply, innerSL_apply_apply]
   · push_neg at hnz
@@ -131,7 +131,7 @@ theorem discrete_form_one_side : CompanionTheory.Lime.BM.DDFormOneOfSteps := by
     simp only [ContinuousLinearMap.smulRight_apply, innerSL_apply_apply] at hNv
     rw [hdeg w0 hw0n] at hNv
     rw [hdeg x hx0]
-    refine l2_norm_scaling _ _ (l v) _ _ (by positivity) hNv (hae.mono fun g hg => ?_)
+    refine l2_norm_scaling _ _ (l v) _ _ hNv (hae.mono fun g hg => ?_)
     rw [hid _ (PI.UnitaryGroupMassFormula.CapelliEig.smooth_right_action k r ε lam H σ hσ x (hsm x hx) _ hg) v hv]
     simp only [ContinuousLinearMap.smulRight_apply, innerSL_apply_apply]
   · push_neg at hnz

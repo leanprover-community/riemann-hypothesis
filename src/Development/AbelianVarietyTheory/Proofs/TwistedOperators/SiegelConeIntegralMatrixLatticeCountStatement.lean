@@ -66,10 +66,7 @@ open scoped TensorProduct ENNReal
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.SquareComm
 open scoped Pointwise
-open Formalism.IndefR.Datum
-open GlobalTheory.Grid
 namespace GlobalTheory.LatCount
-open scoped ENNReal
 
 theorem tail_term {b : ℝ} (hb : 0 < b) (i : ℕ) :
     ((1 + b * ((i : ℝ) + 1)) ^ 2)⁻¹ ≤ 1 / b * ((1 + b * (i : ℝ))⁻¹ - (1 + b * ((i : ℝ) + 1))⁻¹) := by
@@ -112,7 +109,6 @@ theorem tail_le {b : ℝ} (hb : 0 < b) :
 end GlobalTheory.LatCount
 
 namespace GlobalTheory.LatCount
-open scoped ENNReal
 
 theorem tsum_int_split (g : ℤ → ℝ≥0∞) :
     ∑' z : ℤ, g z = g 0 + ∑' n : ℕ, g ((n : ℤ) + 1) + ∑' n : ℕ, g (-((n : ℤ) + 1)) := by
@@ -152,7 +148,6 @@ end GlobalTheory.LatCount
 
 namespace GlobalTheory.LatCount
 
-open scoped ENNReal
 
 theorem cone_pow_le {r : ℕ} {c : ℝ} (hc : 0 < c) {t : Fin r → ℝ}
     (ht : t ∈ GlobalTheory.SiegelSet.cone r c) (k : Fin r) : min c 1 ^ r ≤ t k := by
@@ -219,8 +214,6 @@ end GlobalTheory.LatCount
 
 namespace GlobalTheory.LatCount
 
-open scoped ENNReal
-open NumberField
 
 theorem repr_int {D : D7} {x : D.host.E} (hx : IsIntegral ℤ x)
     (l : Module.Free.ChooseBasisIndex ℤ (𝓞 D.host.E)) :
@@ -389,8 +382,6 @@ open scoped TensorProduct ENNReal
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.SquareComm
 open scoped Pointwise
-open Formalism.IndefR.Datum
-open GlobalTheory.Grid
 
 theorem _root_.GlobalTheory.T.siegelCone_integral_matrix_lattice_count : ∀ {D : D7} (θ : InfFam D), IsInfFam θ → ∀ (m r : ℕ) (c : ℝ), 0 < c →
     ∃ (N A : ℕ) (C : ℝ), 0 ≤ C ∧ ∀ L : ℕ, 0 < L → ∀ t ∈ GlobalTheory.SiegelSet.cone r c,

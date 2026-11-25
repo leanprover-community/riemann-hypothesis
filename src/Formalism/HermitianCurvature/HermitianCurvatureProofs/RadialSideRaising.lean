@@ -59,7 +59,7 @@ namespace Formalism.FourierDecayAlt.P.PBN
 
 open Formalism.FourierDecayAlt Formalism.REAL Formalism.QuantumDeterminants
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 section cell
 

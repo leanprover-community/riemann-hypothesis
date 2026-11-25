@@ -52,15 +52,8 @@ theorem isTanX_dir {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Recip
     {ι : Type} [Fintype ι] (y : FrPt Xo c K) (X : Sp (TrivSqZeroExt K (ι → K)) ⟶ Xo.X)
     (h1 : X ≫ Xo.s = sOf c _) (h2 : spMap (TrivSqZeroExt.fstHom c.F K (ι → K)).toRingHom ≫ X = y.x)
     (M : ι → K) : GlobalTheory.FlagTan.IsTanX y (spMap (GlobalTheory.FlagTan.dir c M).toRingHom ≫ X) := by
-  refine ⟨?_, ?_⟩
-  · rw [Category.assoc, h1]
-    unfold sOf
-    have e : (GlobalTheory.FlagTan.dir c M).toRingHom.comp (algebraMap c.F (TrivSqZeroExt K (ι → K))) =
-        algebraMap c.F (DualNumber K) := (GlobalTheory.FlagTan.dir c M).comp_algebraMap
-    rw [_root_.GlobalTheory.spMap_comp_ring, ← RingHom.comp_assoc, e]
-  · rw [← Category.assoc, _root_.GlobalTheory.spMap_comp_ring, ← h2]
-    congr 2
-    ext z <;> simp
+  intros
+  apply _root_.GlobalTheory.FlagTan.KSUniv.isTanX_dir <;> assumption
 
 theorem ksIso_psiSet : GlobalTheory.CovTop.Hypotheses₂ → GlobalTheory.Published.GrothendieckDeformation → ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (K : Type) [Field K] [Algebra c.F K] (y : FrPt Xo c K), 1 ≤ Dw.p + Dw.q → GlobalTheory.FlagTan.KSIso (GlobalTheory.FlagTan.psiSet H) y := by
   intro hP hG E _ _ _ H Dw l Xo c K _ _ y hpq

@@ -46,8 +46,6 @@ open scoped InnerProductSpace
 
 namespace GlobalTheory.Mem
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T : Type} {A : FamIn D.what₂.LL G Pl0 T D.R.m}
   {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL]
 
@@ -214,14 +212,6 @@ section Basic
 variable {K : Type} [Field K] [NumberField K] [StarRing K] (S : CSD K) (r : Representation K G S.Forms)
 
 end Basic
-
-theorem inner_of_norm_sq {F : Face D A} {b : Bool} {V W : Type} [NormedAddCommGroup V] [InnerProductSpace ℂ V]
-    [NormedAddCommGroup W] [InnerProductSpace ℂ W] (e : V →ₗ[ℂ] W) (h : ∀ x, ‖e x‖ ^ 2 = RealDat.nP F b * ‖x‖ ^ 2) (x y : V) :
-    ⟪e x, e y⟫_ℂ = ((RealDat.nP F b : ℝ) : ℂ) * ⟪x, y⟫_ℂ := by
-  have h' : ∀ x, ((‖e x‖ : ℝ) : ℂ) ^ 2 = ((RealDat.nP F b : ℝ) : ℂ) * ((‖x‖ : ℝ) : ℂ) ^ 2 := fun x => by exact_mod_cast h x
-  rw [inner_eq_sum_norm_sq_div_four, inner_eq_sum_norm_sq_div_four, ← map_add (f := _), ← map_sub, ← map_smul, ← map_sub, ← map_add (f := _)]
-  simp only [Complex.coe_algebraMap, h']
-  ring
 
 namespace SideTie
 

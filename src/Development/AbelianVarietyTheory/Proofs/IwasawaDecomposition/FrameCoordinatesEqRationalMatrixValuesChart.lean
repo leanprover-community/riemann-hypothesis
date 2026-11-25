@@ -47,8 +47,6 @@ open AlgebraicGeometry CategoryTheory NumberField ReciprocityTheory.ChartRestric
 open Filter Topology
 open scoped Matrix
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.LieBase.ChartCoords

@@ -53,8 +53,6 @@ open Classical
 open GlobalTheory GlobalTheory.Cartier GlobalTheory.ProjVar GlobalTheory.CxPts GlobalTheory.ChartGlue GlobalTheory.FlagBundle GlobalTheory.HermFrame
 open MeasureTheory Formalism.DegreeFormula GlobalTheory.TrueCx
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.UnifHolo

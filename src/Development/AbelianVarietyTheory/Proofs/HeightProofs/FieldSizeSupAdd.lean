@@ -63,8 +63,6 @@ import Mathlib.Tactic.ENatToNat
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
-
 open NumberField IsDedekindDomain
 open scoped IntermediateField nonZeroDivisors
 
@@ -204,8 +202,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain GlobalTheory.FieldSize
 open scoped IntermediateField nonZeroDivisors
-
-set_option autoImplicit false
 
 namespace GlobalTheory.FieldSize
 

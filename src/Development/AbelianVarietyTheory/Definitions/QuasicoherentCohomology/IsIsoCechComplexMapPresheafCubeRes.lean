@@ -104,9 +104,6 @@ theorem cechOpen_insert [DecidableEq ι] (i : ι) (s : Finset ι) :
     cechOpen V U (insert i s) = U i ⊓ cechOpen V U s := by
   rw [cechOpen, cechOpen, Finset.iInf_insert, inf_left_comm]
 
-theorem cechOpen_pair [DecidableEq ι] (i j : ι) : cechOpen V U {i, j} = V ⊓ (U i ⊓ U j) := by
-  rw [cechOpen_insert, cechOpen_singleton, inf_left_comm]
-
 theorem cechOpen_union [DecidableEq ι] (s t : Finset ι) :
     cechOpen V U (s ∪ t) = cechOpen V U s ⊓ cechOpen V U t := by
   ext x

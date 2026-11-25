@@ -57,10 +57,6 @@ open scoped Classical
 
 namespace GlobalTheory.GLq.Label
 
-theorem ip_add_right {G : Type} [Group G] [Fintype G] (a b c : G → ℂ) : ip a (b + c) = ip a b + ip a c := by
-  unfold ip
-  simp only [Pi.add_apply, mul_add, Finset.sum_add_distrib]
-
 theorem ip_irr_sum {G : Type} [Group G] [Fintype G] (χ : G → ℂ) (hχ : IsIrr χ) (B : List (G → ℂ))
     (hB : ∀ ρ ∈ B, IsIrr ρ) : ∃ m : ℕ, ip χ B.sum = m ∧ (m ≠ 0 ↔ χ ∈ B) := by
   induction B with
@@ -69,7 +65,7 @@ theorem ip_irr_sum {G : Type} [Group G] [Fintype G] (χ : G → ℂ) (hχ : IsIr
     obtain ⟨m, hm, hmB⟩ := ih (fun r hr => hB r (by simp [hr]))
     have hρ : IsIrr ρ := hB ρ (by simp)
     refine ⟨(if χ = ρ then 1 else 0) + m, ?_, ?_⟩
-    · rw [List.sum_cons, ip_add_right, (_root_.GlobalTheory.GLq.ZOrth.zorth G χ ρ hχ hρ).2.2, hm]
+    · rw [List.sum_cons, GlobalTheory.CharDec.ip_add_right, (_root_.GlobalTheory.GLq.ZOrth.zorth G χ ρ hχ hρ).2.2, hm]
       split_ifs <;> push_cast <;> ring
     · rw [List.mem_cons, ← hmB]
       by_cases h : χ = ρ

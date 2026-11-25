@@ -47,8 +47,6 @@ open GlobalTheory GlobalTheory.CechPic GlobalTheory.CompHS GlobalTheory.CovTop
 open GlobalTheory.AllWt (Psi)
 open GlobalTheory.HSApp
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.NefStep

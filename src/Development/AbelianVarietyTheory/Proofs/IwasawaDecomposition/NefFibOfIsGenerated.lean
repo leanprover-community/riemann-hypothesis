@@ -52,8 +52,6 @@ import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.RingKr
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open CategoryTheory AlgebraicGeometry TopologicalSpace NumberField IsDedekindDomain

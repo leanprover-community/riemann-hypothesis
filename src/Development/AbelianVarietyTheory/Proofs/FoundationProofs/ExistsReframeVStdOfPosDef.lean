@@ -98,8 +98,6 @@ theorem exists_orthFrame (V : HSpace E) {n : ℕ} (hn : V.rank = n) (h : Formali
 
 end Space
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem hLat_one {D : D7} (V : HSp D) : Bridge.hLat V 1 = GlobalTheory.Member.latC V := by
   obtain ⟨-, -, hfg, hsp, -⟩ := GlobalTheory.Member.latHat_eq_hat_and_gram D V
   have key := (GlobalTheory.AdLat.hat_rational_points_and_approx D.host.F D.host.E V.rank _ hfg hsp).1

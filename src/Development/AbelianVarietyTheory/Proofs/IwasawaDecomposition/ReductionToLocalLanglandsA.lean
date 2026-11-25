@@ -42,8 +42,6 @@ noncomputable section
 
 namespace GlobalTheory.HeightCounting.Up
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 
 
 

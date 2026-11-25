@@ -53,8 +53,6 @@ open GlobalTheory GlobalTheory.CechPic GlobalTheory.CxPts GlobalTheory.Cartier G
 open MeasureTheory GlobalTheory.Points
 open scoped ENNReal
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.ArchPull

@@ -45,10 +45,6 @@ import Mathlib.Topology.Sheaves.Init
 
 open Formalism.WeaklyAdmissibleFiltrations Formalism.MainNotions.N Formalism.BasicNotions Formalism.BasicNotions.Loc ReciprocityTheory.Gal TensorProduct Module UpperTheory.V.Loc Topology
 
-private theorem idx_GK {l : ℕ} [Fact l.Prime] (K : IntermediateField ℚ_[l] (Om l)) :
-    K.fixingSubgroup.index = finrank ℚ_[l] K :=
-  (IntermediateField.finrank_eq_fixingSubgroup_index (Om l) K).symm
-
 private theorem sup_Iq {l : ℕ} [Fact l.Prime] (K : FinExt l) :
     GK K ⊔ Iq l = (K0 K).fixingSubgroup := by
   haveI := K.2
@@ -92,6 +88,7 @@ theorem UpperTheory.V.Loc.isCrIff :
     rw [this]
   constructor
   · unfold IsCr Crys IsCrys
-    rw [hC, Subgroup.range_subtype, sup_Iq, idx_GK]
+    rw [hC, Subgroup.range_subtype, sup_Iq, ← IntermediateField.finrank_eq_fixingSubgroup_index]
   · unfold IsDr DeRham IsDR
-    rw [hD, Subgroup.range_subtype, show (GK K).index = finrank ℚ_[l] K.1 from idx_GK K.1]
+    rw [hD, Subgroup.range_subtype, show (GK K).index = finrank ℚ_[l] K.1 from
+      (IntermediateField.finrank_eq_fixingSubgroup_index _ _).symm]

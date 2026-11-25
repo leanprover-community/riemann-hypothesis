@@ -58,10 +58,6 @@ open CategoryTheory AlgebraicGeometry GlobalTheory.LogCris DividedPowers GlobalT
 
 namespace GlobalTheory.CompanionTheory.PDCrit
 
-private theorem pq_isStd_eta {B : Type} [CommRing B] {J : Ideal B} (δ : DividedPowers J) :
-    (pq B).IsStd δ (eta δ) :=
-  Classical.choose_spec (FubiniStudyChowHeightFormula₂.Adr.exists_std B J δ (pq B))
-
 theorem repr_sum {B : Type} [CommRing B] {J : Ideal B} (δ : DividedPowers J) (b : ℕ →₀ B) :
     (pq B).e.repr (b.sum fun k c => algebraMap B (pq B).P c * (eta δ).dpow k ((pq B).e 1)) = b := by
   have hs := _root_.CrystallineSemistableComparison.Pb.Site.eta_std δ
@@ -96,7 +92,8 @@ theorem mem_fil_sup_iff {B : Type} [CommRing B] {J : Ideal B} (δ : DividedPower
     (z : (pq B).P) :
     z ∈ fil (eta δ) r ⊔ Ideal.span {algebraMap B (pq B).P c} ↔
       ∀ k, (pq B).e.repr z k ∈ fil δ (r - k) ⊔ Ideal.span {c} := by
-  have hT := (_root_.GlobalTheory.CompanionTheory.PDFil.fil_pdPoly δ (pq B) (eta δ) (pq_isStd_eta δ)).2.2.2
+  have hT := (_root_.GlobalTheory.CompanionTheory.PDFil.fil_pdPoly δ (pq B) (eta δ)
+    (_root_.CrystallineSemistableComparison.Pb.Site.eta_std δ)).2.2.2
   constructor
   · intro hz k
     obtain ⟨a, ha, s, hs, rfl⟩ := Submodule.mem_sup.1 hz
@@ -128,7 +125,8 @@ theorem mem_fil_sup_iff {B : Type} [CommRing B] {J : Ideal B} (δ : DividedPower
 
 theorem coeff_criteria : ∀ {B : Type} [CommRing B] {J : Ideal B} (δ : DividedPowers J) (b : ℕ →₀ B) (r : ℕ) (c : B), ((b.sum fun k c => algebraMap B (pq B).P c * (eta δ).dpow k ((pq B).e 1)) ∈ fil (eta δ) r ↔ ∀ k, b k ∈ fil δ (r - k)) ∧ ((b.sum fun k c => algebraMap B (pq B).P c * (eta δ).dpow k ((pq B).e 1)) ∈ fil (eta δ) r ⊔ Ideal.span {algebraMap B (pq B).P c} ↔ ∀ k, b k ∈ fil δ (r - k) ⊔ Ideal.span {c}) ∧ ((b.sum fun k c => algebraMap B (pq B).P c * (eta δ).dpow k ((pq B).e 1)) ∈ Ideal.span {algebraMap B (pq B).P c} ↔ ∀ k, b k ∈ Ideal.span {c}) ∧ ((b.sum fun k c => algebraMap B (pq B).P c * (eta δ).dpow k ((pq B).e 1)) = 0 ↔ ∀ k, b k = 0) := by
   intro B _ J δ b r c
-  have hT := (_root_.GlobalTheory.CompanionTheory.PDFil.fil_pdPoly δ (pq B) (eta δ) (pq_isStd_eta δ)).2.2.2
+  have hT := (_root_.GlobalTheory.CompanionTheory.PDFil.fil_pdPoly δ (pq B) (eta δ)
+    (_root_.CrystallineSemistableComparison.Pb.Site.eta_std δ)).2.2.2
   have hr := repr_sum δ b
   refine ⟨?_, ?_, ?_, ?_⟩
   · rw [hT, hr]
@@ -171,7 +169,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
 set_option linter.unusedVariables false
 

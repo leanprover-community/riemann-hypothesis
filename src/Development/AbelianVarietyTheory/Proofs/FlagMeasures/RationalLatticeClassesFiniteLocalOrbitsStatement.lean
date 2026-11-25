@@ -1295,7 +1295,7 @@ private theorem localLattice_fg_span (Z : LocDat D) (Λ : LV D) (h : Submodule.I
   rw [GlobalTheory.Unfold.LatLoc.localLattice_eq]
   exact this
 
-private theorem isFullLattice_of_local_span {D : D7} (Z : LocDat D) (p : PlF D) (Λ : LV D)
+protected theorem isFullLattice_of_local_span {D : D7} (Z : LocDat D) (p : PlF D) (Λ : LV D)
     (hΛ : Submodule.IsLattice D.host.E Λ)
     (hspan : Submodule.span (D.s.atP p).Ep (lattice₂ D Z.M p Λ : Set (Vp D p)) = ⊤) :
     Submodule.IsFullLattice D.host.E Λ := by
@@ -1366,7 +1366,7 @@ theorem lattice_between_parts : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u
         (g : Vp D p →ₗ[(D.s.atP p).Ep] Vp D p) '' (lattice₂ D Z.M p Λ₀ : Set (Vp D p)) := rfl
     rw [e, Submodule.span_image, hspan₀, Submodule.map_top, LinearMap.range_eq_top]
     exact g.surjective
-  have hΛfull := isFullLattice_of_local_span Z p Λ hΛ hspan
+  have hΛfull := FrameProj.isFullLattice_of_local_span Z p Λ hΛ hspan
   have hlat' : Submodule.IsLattice D.host.E (Λ ⊔ Λ.map (Q.restrictScalars (𝓞 D.host.E))) :=
     Submodule.IsLattice.of_fg D.host.E (hΛ.fg.sup (hΛ.fg.map _))
   have hlatFull : Submodule.IsFullLattice D.host.E (Λ ⊔ Λ.map (Q.restrictScalars (𝓞 D.host.E))) := by

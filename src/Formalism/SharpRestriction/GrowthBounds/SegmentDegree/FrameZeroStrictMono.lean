@@ -124,7 +124,7 @@ theorem sum_fac_LL (F : SumFacts X p K) (h5 : 0 ≤ 1 - 5 / X.Y) (h1 : 0 ≤ 1 -
   have : (1 - 5 / X.Y) * (1 - 1 / X.Y) ≤ 1 - 5 / X.Y := by nlinarith
   nlinarith [mul_nonneg h5 h1]
 
-theorem sum_fac_fr (F : SumFacts X p K) (hr : 0 < r) (h5 : 0 ≤ 1 - 5 / X.Y) (h1 : 0 ≤ 1 - 1 / X.Y)
+theorem sum_fac_fr (F : SumFacts X p K) (hr : 0 < r) (h1 : 0 ≤ 1 - 1 / X.Y)
     (hr0 : 0 ≤ 1 - (r : ℝ) / (2 * X.Y)) (j : ℤ) (i : Fin r) :
     sumEta r X.Y * sumBin r K (X.deg (posOf n' (X.F.fr j i.val))) ≤
       sumBin r K ((X.Bw p K (j + 1) (X.F.fr j i.val) - (X.m0 K : ℤ)).toNat) *
@@ -302,7 +302,7 @@ theorem restSum_of (hF : ∀ (p n' r K : ℕ) [NeZero n'] [NeZero r] [NeZero K] 
       simp only [add_sub_cancel_right, mul_pow]
     rw [e]
     exact Finset.prod_le_prod₀ (fun i _ => mul_nonneg heta0 (zero_le_one.trans (sum_one_le_bin _ _ _))) fun i _ =>
-      sum_fac_fr F hr h5 h1 hr0 (j : ℤ) i
+      sum_fac_fr F hr h1 hr0 (j : ℤ) i
 
 end Main
 

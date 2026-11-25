@@ -49,8 +49,6 @@ open scoped Classical
 
 
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace PositivityTheory.Rg.BcB.F.FX.Bo
 
 theorem AdmProd_holds : AdmProd := by

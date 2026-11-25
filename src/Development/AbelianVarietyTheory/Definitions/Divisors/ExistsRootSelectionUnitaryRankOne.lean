@@ -242,10 +242,6 @@ def IsSel (G : HTGroup p) (sel : Polynomial G.F → ℂ) : Prop :=
   ∀ v : InfinitePlace G.F, sigPosH (G.gram_herm v) = 1 → ∀ P : Polynomial G.F, P.Monic → P.natDegree = G.n →
     P.eval₂ v.embedding (sel P) = 0
 
-def fullSum (G : HTGroup p) (wt : Polynomial G.F → ℂ) (Kf : Subgroup G.GAf) (f : G.GAf → ℂ) (r : ℕ)
-    (K : Subgroup (Gr G r)) (φ : Gr G r → ℂ) : ℂ :=
-  ∑ᶠ q : Cls G, if ∃ μ, (Quot.out q).Mark μ then wt (Quot.out q).pol * (Quot.out q).term Kf f r K φ else 0
-
 def IsSimple (G : HTGroup p) : Prop := (∀ x : G.C, x ≠ 0 → IsUnit x) ∧ G.a = 1
 
 end GlobalTheory.LKMid
@@ -258,52 +254,10 @@ variable {p : ℕ} [Fact p.Prime]
 
 def scal (G : HTGroup p) (a : G.Fˣ) : G.Cˣ := Units.map (algebraMap G.F G.C).toMonoidHom a
 
-theorem scal_val (G : HTGroup p) (a : G.Fˣ) : ((scal G a : G.Cˣ) : G.C) = algebraMap G.F G.C a := rfl
-
 theorem sh_algebraMap (G : HTGroup p) (x : G.F) :
     sh G (algebraMap G.F G.C x) = algebraMap G.F G.C (IsCMField.complexConj G.F x) := G.star_F x
 
 theorem sh_one_eq (G : HTGroup p) : sh G 1 = 1 := by simp [sh]
-
-def Pair.ofScalar (G : HTGroup p) (hn : G.n = 1) (a : G.Fˣ) (c : ℚˣ)
-    (h : (a : G.F) * IsCMField.complexConj G.F a = algebraMap ℚ G.F c) : Pair G where
-  β := 1
-  γ := scal G a
-  c := c
-  sym := sh_one_eq G
-  sim := by
-    rw [scal_val, Units.val_one, mul_one, mul_one, sh_algebraMap, ← map_mul, h]
-    exact (IsScalarTower.algebraMap_apply ℚ G.F G.C _).symm
-  reg := by
-    rw [scal_val, minpoly.eq_X_sub_C, hn]
-    exact ⟨Polynomial.natDegree_X_sub_C _, Polynomial.separable_X_sub_C⟩
-  trivAf := ⟨1, 1, by simp [Triv, inC]⟩
-  trivR := ⟨1, by simp [Triv, inC]⟩
-
-theorem Pair.ofScalar_pol (G : HTGroup p) (hn : G.n = 1) (a : G.Fˣ) (c : ℚˣ)
-    (h : (a : G.F) * IsCMField.complexConj G.F a = algebraMap ℚ G.F c) :
-    (Pair.ofScalar G hn a c h).pol = Polynomial.X - Polynomial.C (a : G.F) := by
-  show minpoly G.F (algebraMap G.F G.C (a : G.F)) = _
-  exact minpoly.eq_X_sub_C _ _
-
-theorem exists_isSel (G : HTGroup p) (h : G.a ≤ 1) : ∃ sel, IsSel G sel := by
-  by_cases h0 : ∃ v : InfinitePlace G.F, sigPosH (G.gram_herm v) = 1
-  · obtain ⟨v0, hv0⟩ := h0
-    refine ⟨fun P => if hP : 0 < (P.map v0.embedding).degree then (Complex.exists_root hP).choose else 0, ?_⟩
-    intro v hv P hm hd
-    have h1 : Fintype.card {v : InfinitePlace G.F // sigPosH (G.gram_herm v) = 1} ≤ 1 := h
-    have hvv : v = v0 := congrArg Subtype.val (Fintype.card_le_one_iff.1 h1 ⟨v, hv⟩ ⟨v0, hv0⟩)
-    subst hvv
-    have hP : 0 < (P.map v.embedding).degree := by
-      rw [Polynomial.degree_eq_natDegree (hm.map _).ne_zero, hm.natDegree_map, hd]
-      exact_mod_cast G.n_pos
-    simp only [dif_pos hP]
-    rw [← Polynomial.eval_map]
-    exact (Complex.exists_root hP).choose_spec
-  · exact ⟨0, fun v hv _ _ _ => absurd ⟨v, hv⟩ h0⟩
-
-theorem exists_isSel_of_isSimple (G : HTGroup p) (h : IsSimple G) : ∃ sel, IsSel G sel :=
-  exists_isSel G h.2.le
 
 theorem isTest_indicator {H : Type} [Group H] (θ : H →* H) (K : Subgroup H) (hK : K.map θ ≤ K) :
     IsTest θ K K (Set.indicator (K : Set H) 1) := by
@@ -327,41 +281,6 @@ namespace Example
 open GlobalTheory.LKTrip.Example
 
 abbrev gi : QI := IsCyclotomicExtension.zeta 4 ℚ QI
-
-theorem conj_gi : IsCMField.complexConj QI gi = -gi := by
-  let φ : QI →+* ℂ := Classical.arbitrary _
-  apply φ.injective
-  rw [IsCMField.complexEmbedding_complexConj, map_neg]
-  have h3 : φ gi ^ 2 = Complex.I ^ 2 := by
-    rw [← map_pow, zeta_sq, map_neg, map_one, Complex.I_sq]
-  rcases sq_eq_sq_iff_eq_or_eq_neg.1 h3 with h | h <;> rw [h] <;> simp
-
-theorem two_add_gi_ne_zero : (2 + gi : QI) ≠ 0 := by
-  intro h
-  have e : gi = -2 := by linear_combination h
-  have h2 : gi ^ 2 = -1 := zeta_sq
-  rw [e] at h2
-  norm_num at h2
-
-def a21 : QIˣ := Units.mk0 (2 + gi) two_add_gi_ne_zero
-
-theorem norm_gaussian_element_eq_five : ((a21 : QI)) * IsCMField.complexConj QI a21 = algebraMap ℚ QI ((Units.mk0 (5 : ℚ) (by norm_num) : ℚˣ) : ℚ) := by
-  show (2 + gi) * IsCMField.complexConj QI (2 + gi) = algebraMap ℚ QI 5
-  rw [map_add (f := _), conj_gi, map_ofNat, map_ofNat]
-  linear_combination (-1 : QI) * zeta_sq
-
-theorem isSimple_unitaryRankOne : IsSimple (ex 1 one_ne_zero) := by
-  refine ⟨fun x hx => ?_, a_ex_one⟩
-  have key : ∀ y : Matrix (Fin 1) (Fin 1) QI, y ≠ 0 → IsUnit y := by
-    intro y hy
-    rw [Matrix.isUnit_iff_isUnit_det, Matrix.det_unique]
-    refine isUnit_iff_ne_zero.2 fun h => hy ?_
-    ext i j
-    rw [Subsingleton.elim i default, Subsingleton.elim j default, h]
-    rfl
-  exact key x hx
-
-theorem exists_rootSelection_unitaryRankOne : ∃ sel, IsSel (ex 1 one_ne_zero) sel := exists_isSel_of_isSimple _ isSimple_unitaryRankOne
 
 end Example
 

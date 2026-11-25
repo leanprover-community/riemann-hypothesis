@@ -48,23 +48,6 @@ public import Mathlib.RingTheory.Localization.Basic
 
 namespace FunctorialResolution.EmbeddedResolution
 
-private theorem prod_notMem_of_isPrime {R : Type*} [CommRing R] {ι : Type*} [DecidableEq ι]
-    {I : Ideal R} (hI : I.IsPrime) (g : ι → R) (t : Finset ι) :
-    (∀ j ∈ t, g j ∉ I) → ∏ j ∈ t, g j ∉ I := by
-  induction t using Finset.induction_on with
-  | empty =>
-      intro _ h1
-      rw [Finset.prod_empty] at h1
-      refine hI.ne_top ?_
-      rw [Ideal.eq_top_iff_one]
-      exact h1
-  | @insert a u ha ih =>
-      intro h hmem
-      rw [Finset.prod_insert ha] at hmem
-      rcases hI.mem_or_mem hmem with h1 | h1
-      · exact h a (Finset.mem_insert_self a u) h1
-      · exact ih (fun j hj => h j (Finset.mem_insert_of_mem hj)) h1
-
 private theorem span_singleton_mul_eq_inf {R : Type*} [CommRing R] {a b : R}
     (hpa : (Ideal.span ({a} : Set R)).IsPrime) (hb : b ∉ Ideal.span ({a} : Set R)) :
     Ideal.span ({a * b} : Set R) = Ideal.span ({a} : Set R) ⊓ Ideal.span ({b} : Set R) := by
@@ -94,11 +77,10 @@ theorem span_singleton_prod_eq_biInf {R : Type*} [CommRing R] {ι : Type*} [Deci
   | @insert a u ha ih =>
       intro hp hdvd
       have hpa : (Ideal.span ({f a} : Set R)).IsPrime := hp a (Finset.mem_insert_self a u)
-      have hP : (∏ i ∈ u, f i) ∉ Ideal.span ({f a} : Set R) := by
-        refine prod_notMem_of_isPrime hpa f u ?_
-        intro j hj
+      have hP : (∏ i ∈ u, f i) ∉ Ideal.span ({f a} : Set R) := fun hmem => by
+        obtain ⟨j, hj, hjm⟩ := (Ideal.IsPrime.prod_mem_iff (hp := hpa)).mp hmem
         exact hdvd a (Finset.mem_insert_self a u) j (Finset.mem_insert_of_mem hj)
-          (by rintro rfl; exact ha hj)
+          (by rintro rfl; exact ha hj) hjm
       have ihu := ih (fun i hi => hp i (Finset.mem_insert_of_mem hi))
         (fun i hi j hj hij =>
           hdvd i (Finset.mem_insert_of_mem hi) j (Finset.mem_insert_of_mem hj) hij)

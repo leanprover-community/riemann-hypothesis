@@ -51,19 +51,6 @@ open scoped TensorProduct
 
 namespace UpperTheory.Gal.TranscendenceTraces.FiniteSectionsSeparable
 
-private theorem sepClosed_of_isAlgebraic (K L : Type) [Field K] [Field L] [Algebra K L]
-    [Algebra.IsAlgebraic K L] [IsSepClosed K] : IsSepClosed L := by
-  refine IsSepClosed.of_exists_root _ fun p hm hirr hsep => ?_
-  have hdeg : p.degree ≠ 0 := fun h => hirr.not_isUnit (Polynomial.isUnit_iff_degree_eq_zero.2 h)
-  obtain ⟨r, hr⟩ := IsAlgClosed.exists_aeval_eq_zero (AlgebraicClosure L) p hdeg
-  haveI : Algebra.IsAlgebraic K (AlgebraicClosure L) := Algebra.IsAlgebraic.trans K L _
-  haveI : IsPurelyInseparable L (AlgebraicClosure L) :=
-    IsPurelyInseparable.tower_top K L (AlgebraicClosure L)
-  have hs : IsSeparable L r := Polynomial.Separable.of_dvd hsep (minpoly.dvd L r hr)
-  obtain ⟨x, rfl⟩ := IsPurelyInseparable.inseparable' r hs
-  refine ⟨x, (algebraMap L (AlgebraicClosure L)).injective ?_⟩
-  rw [map_zero, ← hr, Polynomial.aeval_algebraMap_apply_eq_algebraMap_eval]
-
 private theorem sh_of_finite (O T : Type) [CommRing O] [CommRing T] [Algebra O T]
     [Module.Finite O T] (hO : SH O) (hT : HenselianLocalRing T) : SH T := by
   obtain ⟨hH, hS⟩ := hO
@@ -86,7 +73,7 @@ private theorem sh_of_finite (O T : Type) [CommRing O] [CommRing T] [Algebra O T
     have h2 : (algebraMap (IsLocalRing.ResidueField O) (IsLocalRing.ResidueField T)).comp
         (IsLocalRing.residue O) = (IsLocalRing.residue T).comp (algebraMap O T) := rfl
     rw [h2, ← Polynomial.hom_eval₂, h0, map_zero]
-  exact sepClosed_of_isAlgebraic (IsLocalRing.ResidueField O) _
+  exact Algebra.IsAlgebraic.isSepClosed (F := IsLocalRing.ResidueField O)
 
 private theorem exists_ringHom (hS : SHSec) (B C T : Type) [CommRing B] [CommRing C] [CommRing T]
     [Algebra B C] [Algebra.Etale B C] [Module.FaithfullyFlat B C] [Algebra B T] (hT : SH T) :

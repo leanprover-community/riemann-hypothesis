@@ -97,27 +97,8 @@ theorem coord_ne {z : (Σ k, ι k) → ℂ} {q : Σ k, ι k} (h : (X q : MRing �
 theorem comp_mem_mcPts {K₁ : Type} [Fintype K₁] {ι₁ : K₁ → Type} [∀ k, Fintype (ι₁ k)] {κ : K₁ → K}
     {v : (Σ k, ι₁ k) → (Σ k, ι k)} (hb : IsBlockMap κ v) {Ω₁ Ω : Type} [Field Ω₁] [Field Ω] (φ : Ω₁ →+* Ω)
     {x₁ : (Σ k, ι₁ k) → Ω₁} {x : (Σ k, ι k) → Ω} (hx : ∀ q, x (v q) = φ (x₁ q)) {z : (Σ k, ι k) → ℂ}
-    (hz : z ∈ mcPts (mCoordIdeal x)) : z ∘ v ∈ mcPts (mCoordIdeal x₁) := by
-  refine ⟨fun k => ?_, fun f hf => ?_⟩
-  · obtain ⟨i, hi⟩ := hz.1 (κ k)
-    obtain ⟨⟨k', i'⟩, hp⟩ := hb.2.2.2 ⟨κ k, i⟩ ⟨k, rfl⟩
-    have hk : k' = k := hb.1 (by simpa [hp] using (hb.2.2.1 ⟨k', i'⟩).symm)
-    subst hk
-    exact ⟨i', by simpa [Function.comp, hp] using hi⟩
-  · let ρ : MvPolynomial K₁ Ω₁ →+* MvPolynomial K Ω :=
-      (MvPolynomial.map φ).comp (rename κ : MvPolynomial K₁ Ω₁ →ₐ[Ω₁] MvPolynomial K Ω₁).toRingHom
-    have e : (mConeMap x).comp (rename v) = ρ.toIntAlgHom.comp (mConeMap x₁) := by
-      apply MvPolynomial.algHom_ext
-      intro p
-      show mConeMap x (rename v (X p)) = ρ (mConeMap x₁ (X p))
-      simp [mConeMap, ρ, hx, hb.2.2.1 p]
-    have hf' : mConeMap x₁ f = 0 := hf
-    have hr : rename v f ∈ mCoordIdeal x := by
-      show mConeMap x (rename v f) = 0
-      have e' : mConeMap x (rename v f) = ρ (mConeMap x₁ f) := DFunLike.congr_fun e f
-      rw [e', hf', map_zero]
-    have := hz.2 _ hr
-    rwa [MvPolynomial.map_rename, MvPolynomial.eval_rename] at this
+    (hz : z ∈ mcPts (mCoordIdeal x)) : z ∘ v ∈ mcPts (mCoordIdeal x₁) :=
+  CPts.comp_mem_mcPts hb φ (funext hx) hz
 
 end Orbits
 

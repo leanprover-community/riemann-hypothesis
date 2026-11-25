@@ -50,8 +50,6 @@ import Mathlib.Algebra.Order.Star.Real
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
-
 open Filter Topology GlobalTheory.VolBr
 
 namespace GlobalTheory.VolBr

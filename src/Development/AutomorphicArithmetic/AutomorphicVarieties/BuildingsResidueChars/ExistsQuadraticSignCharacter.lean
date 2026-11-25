@@ -47,13 +47,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 
 open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.MainNotions.N Polynomial GlobalTheory.CuspRep GlobalTheory.HeckeGal GlobalTheory.GalOfCusp UpperTheory.V UpperTheory.V.Af UpperTheory.V.Af.Bc UpperTheory.V.Published
 
-private theorem int_le {Ω : Type} [Field Ω] (A : ValuationSubring Ω) {b : Ω} (hb : IsIntegral ℤ b) :
-    A.valuation b ≤ 1 := by
-  have h : IsIntegral A b := hb.tower_top
-  obtain ⟨y, hy⟩ := IsIntegrallyClosed.isIntegral_iff.1 h
-  rw [A.valuation_le_one_iff, ← hy]
-  exact y.2
-
 private theorem exists_gen (F E : Type) [Field F] [NumberField F] [Field E] [Algebra F E]
     (h : Module.finrank F E = 2) :
     ∃ (d : 𝓞 F) (t : E), d ≠ 0 ∧ t * t = algebraMap F E d ∧ (∀ c : F, algebraMap F E c ≠ t) ∧
@@ -143,7 +136,8 @@ theorem UpperTheory.exists_quadratic_sign_character :
     have hle : A.valuation θ ≤ 1 := by
       have h1 : A.valuation (θ * θ) ≤ 1 := by
         rw [hθ2]
-        exact int_le A (map_isIntegral_int (algebraMap F Ω) d.isIntegral_coe)
+        exact (ValuationRing.integers A Ω).isIntegral_iff_v_le_one.1
+          (map_isIntegral_int (algebraMap F Ω) d.isIntegral_coe).tower_top
       rw [map_mul] at h1
       by_contra h2
       exact absurd h1 (not_le.2 (one_lt_mul'' (not_le.1 h2) (not_le.1 h2)))

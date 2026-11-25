@@ -47,8 +47,6 @@ import Formalism.SharpRestriction.Divisibility.GeneratorPowers.CIndSt
 
 @[expose] public section
 
-set_option autoImplicit false
-
 open NumberField ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj Formalism.MainNotions.ModuliIntegralCharts.H1 GlobalTheory.RunIn
 
 namespace GlobalTheory

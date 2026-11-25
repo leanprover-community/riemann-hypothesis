@@ -53,8 +53,6 @@ open PositivityTheory.Rg.BcB.SpectralAccumulation (Hf)
 open PositivityTheory.Rg.BcB.F.Tail (I2)
 open scoped Classical
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace PositivityTheory.Rg.BcB.F.Rd.LevOC
 
 open PositivityTheory.Rg.BcB.F

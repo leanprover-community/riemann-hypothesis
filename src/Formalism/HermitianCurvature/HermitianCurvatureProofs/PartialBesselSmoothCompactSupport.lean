@@ -76,7 +76,7 @@ namespace Formalism.FourierDecayAlt.P.PartialBesselLeftWordLemmas
 
 open Formalism.FourierDecayAlt Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 section iota
 
@@ -118,7 +118,7 @@ namespace Formalism.FourierDecayAlt.P.PartialBesselLeftWordLemmas
 
 open Formalism.FourierDecayAlt Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.P.B4
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 section words
 
@@ -178,7 +178,7 @@ namespace Formalism.FourierDecayAlt.P.PartialBesselLeftWordLemmas
 
 open Formalism.FourierDecayAlt Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.P.B4
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 section comp
 
@@ -266,7 +266,7 @@ namespace Formalism.FourierDecayAlt.P.PartialBesselLeftWordLemmas
 
 open Formalism.FourierDecayAlt Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.P.B4
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 section main
 
@@ -316,7 +316,7 @@ namespace Formalism.FourierDecayAlt.P.PartialBesselLeftWordLemmas
 
 open Formalism.FourierDecayAlt Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.P.B4
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 theorem fmc_RC (k p ρ : ℕ) : IsFiniteMeasureOnCompacts (U.muRC k p ρ) := by
   unfold U.muRC
@@ -553,7 +553,7 @@ namespace Formalism.FourierDecayAlt.P.PartialBesselLeftWordLemmas
 
 open Formalism.FourierDecayAlt Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.P.B4
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 section fin
 

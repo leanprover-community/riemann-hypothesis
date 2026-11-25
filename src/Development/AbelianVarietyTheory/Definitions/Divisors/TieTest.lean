@@ -44,8 +44,6 @@ open GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.RowTest
 
 namespace GlobalTheory.BigTop.Fun
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : Formalism.MainNotions.G.Inst D L} {Gl : Formalism.MainNotions.G.LatInst D} {Kc : Formalism.MainNotions.G.Consts} {Y : DivX D} {cX : ExtraC} {ex : Extra D L hT Gi Gl Kc Y cX} {Csz : ℝ}
 
 def eV0 (p : PtAt ex Csz) (t : Tup p) : (Fin ((Df p).nV t) → D.what₂.LL) →ₗ[D.what₂.LL] p.P.A3.A.fam.amb.FR t :=

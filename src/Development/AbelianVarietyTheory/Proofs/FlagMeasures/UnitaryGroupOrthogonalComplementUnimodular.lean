@@ -641,24 +641,12 @@ theorem qrefl_mem (L : LocE F E) {n : ℕ} {Hm : Matrix (Fin n) (Fin n) E} (hH :
     rwa [this] at hv
   · rw [hfix v hv]; simp
 
-theorem conj_self {G : Type} [Group G] {H : Subgroup G} {h : G} (hh : h ∈ H) :
-    MulAut.conj h • H = H := by
-  ext y
-  rw [Subgroup.mem_pointwise_smul_iff_inv_smul_mem]
-  simp only [MulAut.smul_def, MulAut.inv_apply, MulAut.conj_symm_apply]
-  constructor
-  · intro hy
-    have := H.mul_mem (H.mul_mem hh hy) (H.inv_mem hh)
-    simpa [mul_assoc] using this
-  · intro hy
-    exact H.mul_mem (H.mul_mem (H.inv_mem hh) hy) hh
-
 variable [IsNonarchimedeanLocalField F] [CharZero F]
 
 theorem inf_stab_smul (L : LocE F E) {n : ℕ} (H : Subgroup ((Fin n → E) ≃ₗ[E] (Fin n → E)))
     {Λ : Submodule L.O (Fin n → E)} (hΛ : IsLat L Λ) {h} (hh : h ∈ H) :
     H ⊓ stabL L (h • Λ) = MulAut.conj h • (H ⊓ stabL L Λ) := by
-  rw [((_root_.GlobalTheory.LatComm.stab_commensurable L Λ Λ hΛ hΛ H).2 h).2, Subgroup.smul_inf, conj_self hh]
+  rw [((_root_.GlobalTheory.LatComm.stab_commensurable L Λ Λ hΛ hΛ H).2 h).2, Subgroup.smul_inf, Subgroup.conj_smul_eq_self_of_mem hh]
 
 theorem comm_conj (L : LocE F E) {n : ℕ} (H : Subgroup ((Fin n → E) ≃ₗ[E] (Fin n → E)))
     {Λ : Submodule L.O (Fin n → E)} (hΛ : IsLat L Λ) : ∀ h ∈ H,

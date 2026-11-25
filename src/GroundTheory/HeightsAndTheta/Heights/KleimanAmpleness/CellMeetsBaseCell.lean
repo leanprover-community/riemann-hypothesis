@@ -16,26 +16,13 @@ variable {S : Type} [CommRing S] {K : Type} {ι : K → Type} {Ω : Type} [Field
 
 theorem cellSec_mono [∀ k, Fintype (ι k)] (y : (Σ k, ι k) → Ω) (γ : K → ℤ) {I I' : ∀ k, Finset (ι k)} (h : ∀ k, I k ⊆ I' k)
     (hI' : CellMeets y I') : cellSec S y γ I ≤ cellSec S y γ I' := by
-  classical
-  unfold cellSec
-  rw [if_pos hI']
-  split_ifs with hI
-  · refine Submodule.span_mono ?_
-    rintro z ⟨g, t, a, ht, hta, hγ, hg, rfl⟩
-    refine ⟨g, t, a, ?_, hta, hγ, hg, rfl⟩
-    refine Submonoid.closure_mono ?_ ht
-    rintro f ⟨k, i, hi, rfl⟩
-    exact ⟨k, i, h k hi, rfl⟩
-  · exact bot_le
+  apply RowLocCover.cellSec_mono <;> assumption
 
 variable [LinearOrder K] [∀ k, LinearOrder (ι k)]
 
 theorem subset_baseCell (k₀ : K) {N : ℕ} (e : ι k₀ ≃ Fin (N + 1)) (J : Finset (Fin (N + 1)))
     (I : ∀ k, Finset (ι k)) (k : K) : I k ⊆ baseCell k₀ e J I k := by
-  unfold baseCell
-  by_cases hk : k = k₀
-  · subst hk; rw [Function.update_self]; exact Finset.subset_union_left
-  · rw [Function.update_of_ne hk]
+  apply RowLocCover.subset_baseCell
 
 theorem baseCell_mono (k₀ : K) {N : ℕ} (e : ι k₀ ≃ Fin (N + 1)) {J J' : Finset (Fin (N + 1))}
     {I I' : ∀ k, Finset (ι k)} (hJ : J ⊆ J') (hI : ∀ k, I k ⊆ I' k) (k : K) :

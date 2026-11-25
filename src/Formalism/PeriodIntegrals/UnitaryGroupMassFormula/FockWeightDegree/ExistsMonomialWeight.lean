@@ -1,6 +1,5 @@
 module
 
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.FockDegreeOne.OmEDiagMonomial
 public import Formalism.PeriodIntegrals.FockDegreeTwoParts
 import Aesop.Frontend.Tactic
 import Aesop.Main
@@ -141,7 +140,21 @@ theorem sum_diag_of {p q r s : ℕ} (M : Matrix (Ln p q r s) (Ln p q r s) ℂ)
 
 theorem fockAct1_diag (p q r s : ℕ) (a : Ix p q) :
     fockAct1 p q r s (Eab a a) = ∑ c : Ix r s, omE ((a, c) : Ln p q r s) (a, c) := by
-  apply PI.FockOneDegW.Diag.fockAct1_diag
+  classical
+  unfold FockH1Action.fockAct1
+  rw [LinearMap.comp_apply, LinearMap.flip_apply, Matrix.kroneckerMapBilinear_apply_apply, omAct_apply']
+  rw [sum_diag_of _ (fun l : FockH1Action.Ln p q r s => l.1 = a)]
+  · rw [show (∑ l : FockH1Action.Ln p q r s, if l.1 = a then FockH1Action.omE l l else 0) =
+        ∑ x : FockH1Action.Ix p q, ∑ y : FockH1Action.Ix r s,
+          if x = a then FockH1Action.omE ((x, y) : FockH1Action.Ln p q r s) (x, y) else 0 from Fintype.sum_prod_type _]
+    rw [Fintype.sum_eq_single a (fun x hx => by simp [hx])]
+    simp
+  · intro l l'
+    obtain ⟨x, y⟩ := l
+    obtain ⟨x', y'⟩ := l'
+    simp only [Matrix.kroneckerMap_apply, LinearMap.mul_apply', FockH1Action.Eab, Matrix.single_apply,
+      Matrix.one_apply, Prod.mk.injEq]
+    split_ifs <;> aesop
 
 theorem fockAct2_diag (p q r s : ℕ) (c : Ix r s) :
     fockAct2 p q r s (Eab c c) = ∑ a : Ix p q, omE ((a, c) : Ln p q r s) (a, c) := by

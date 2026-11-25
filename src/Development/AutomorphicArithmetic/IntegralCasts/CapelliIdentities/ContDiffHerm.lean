@@ -138,7 +138,7 @@ noncomputable def AAop.{u_1} {E : Type u_1} [NormedAddCommGroup E] [NormedSpace 
 
 section
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 private theorem Hpk_herm (k r : ℕ) : (Hpk k r).conjTranspose = Hpk k r := by
   ext i j

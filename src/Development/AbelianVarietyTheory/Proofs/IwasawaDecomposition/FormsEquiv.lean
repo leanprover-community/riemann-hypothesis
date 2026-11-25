@@ -92,8 +92,6 @@ theorem forms_equiv (S S' : GStep E K n) (hS : S.Free) (hS' : S'.Free) (hF : (S.
     rfl
 end Gen
 
-attribute [local instance] GlobalTheory.Mem.Col2.starE
-
 
 
 theorem law0 : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok → ∀ l : I.Laws, I.Law0 l := by

@@ -612,17 +612,7 @@ theorem trI_of (x : X.B.I.Ginf) (τ : D.what₂.Tau) :
 theorem vOf_pl (v : InfinitePlace X.B.I.F) : vOf X (X.pl v) = v := X.pl.symm_apply_apply v
 
 theorem trI_mul (a b : X.B.I.Ginf) : trI C (a * b) = GlobalTheory.DegVol.mulP (trI C a) (trI C b) := by
-  funext τ
-  apply Matrix.of.injective
-  show Matrix.of (trI C (a * b) τ) = Matrix.of (trI C a τ) * Matrix.of (trI C b τ)
-  rw [trI_of, trI_of, trI_of]
-  rw [show Formalism.MainNotions.S.uMat ((a * b) (vOf X τ)) = Formalism.MainNotions.S.uMat (a (vOf X τ)) * Formalism.MainNotions.S.uMat (b (vOf X τ)) from rfl]
-  generalize Formalism.MainNotions.S.uMat (a (vOf X τ)) = A
-  generalize Formalism.MainNotions.S.uMat (b (vOf X τ)) = B
-  have h := (C.isT τ).2.1
-  calc C.Qi τ * (A * B) * C.Q τ = C.Qi τ * A * (C.Q τ * C.Qi τ) * B * C.Q τ := by
-        rw [h]; simp only [Matrix.mul_one, Matrix.mul_assoc]
-    _ = C.Qi τ * A * C.Q τ * (C.Qi τ * B * C.Q τ) := by simp only [Matrix.mul_assoc]
+  apply _root_.GlobalTheory.CovGrp.trI_mul <;> assumption
 
 theorem trI_inj : Function.Injective (trI C) := by
   intro a b h

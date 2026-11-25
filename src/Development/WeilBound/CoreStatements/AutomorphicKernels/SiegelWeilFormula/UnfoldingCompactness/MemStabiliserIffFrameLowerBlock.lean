@@ -65,16 +65,8 @@ namespace PositivityTheory.SiegelWeilFormula.kunf
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E} {n : ℕ}
   {Y : Spc F E n} {b : GL (Fin n ⊕ Fin n) E} {nb : nA σ Y b → G2 σ Y}
 
-theorem toBlocks₁₁_mul' {R : Type} [CommRing R] (X Z : Matrix (Fin n ⊕ Fin n) (Fin n ⊕ Fin n) R) :
-    (X * Z).toBlocks₁₁ = X.toBlocks₁₁ * Z.toBlocks₁₁ + X.toBlocks₁₂ * Z.toBlocks₂₁ := by
-  conv_lhs => rw [← Matrix.fromBlocks_toBlocks X, ← Matrix.fromBlocks_toBlocks Z]
-  rw [Matrix.fromBlocks_multiply, Matrix.toBlocks_fromBlocks₁₁]
-
 theorem incM_GL_mul_inv (t₀ : GL (Fin n) E) : incM F t₀.1 * incM F (t₀⁻¹).1 = 1 := by
   rw [← incM_mul', Units.mul_inv]; ext i j; simp [incM, Matrix.one_apply]
-
-theorem incM_GL_inv_mul (t₀ : GL (Fin n) E) : incM F (t₀⁻¹).1 * incM F t₀.1 = 1 := by
-  rw [← incM_mul', Units.inv_mul]; ext i j; simp [incM, Matrix.one_apply]
 
 theorem mem_stabiliser_iff_frame_lower_block (hb : IsFrame2 σ Y b) (p : G2 σ Y) : p ∈ par2 σ Y ↔ (inFrame b p).toBlocks₂₁ = 0 := by
   apply PositivityTheory.SiegelWeilFormula.Act.ComplexParameterFamilyContinuity.mem_stabiliser_iff_frame_lower_block <;> assumption

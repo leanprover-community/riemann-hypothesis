@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HasSumUnramifiedZetaSumUnitaryInert
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsPairingSingleNe
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ConstMemBddAut
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsSymmetricElementaryDivisorsUnitary
@@ -342,21 +343,8 @@ theorem exists_cartanU {L : Type} [Field L] [Valued L (WithZero (Multiplicative 
     {ϖ : L} {σ : L →+* L} {q : ℕ} (hU : IsUnramInv ϖ σ q) {n : ℕ} (g : GU σ n) :
     ∃ (d : Fin n → ℤ) (t : GU σ n), t.1.1 = Matrix.diagonal (fun i => ϖ ^ d i) ∧
       ∃ k₁ ∈ KU σ n, ∃ k₂ ∈ KU σ n, g = k₁ * t * k₂ := by
-  obtain ⟨d, hd, a, ha, b, hb, e⟩ := GlobalTheory.LFun.UnitaryDiv.exists_good_div L ϖ σ q n hU g
-  obtain ⟨t, ht, -⟩ := Formalism.UG.P.fSatake_diag_exists (σ := σ)
-    (fun i : Fin n => ϖ ^ d.getD i.1 0) (fun i => by
-      have hϖ : ϖ ≠ 0 := by
-        intro h
-        have hv := hU.2.2.2.1
-        rw [h, Valuation.map_zero] at hv
-        exact absurd hv WithZero.zero_ne_coe
-      rw [map_zpow₀, hU.2.2.1, GlobalTheory.InertThetaCompare.Good.rev hd,
-        ← zpow_add₀ hϖ, add_neg_cancel, zpow_zero])
-  refine ⟨fun i => d.getD i.1 0, t, ht, ?_⟩
-  refine GlobalTheory.UnramDoubleCoset.doubleCoset_GU_of_GL L ϖ σ q n hU t g a b ha hb ?_
-  apply Units.ext
-  simp only [Units.val_mul]
-  rw [e, ht]
+  intros
+  apply _root_.GlobalTheory.ZetaSumU.cartan_complete <;> assumption
 
 end GlobalTheory.ChainOnto.CayleyVac
 

@@ -163,27 +163,6 @@ private theorem isKFin_zero {n : ℕ} {ε : Fin n → Bool} {H : Type} [NormedAd
   rw [hx, map_zero]
   exact Submodule.zero_mem _
 
-private theorem dw_apply_sigma_eq_sigma_dw_conj {n : ℕ} {ε : Fin n → Bool} {H : Type} [NormedAddCommGroup H]
-    [InnerProductSpace ℂ H] [CompleteSpace H] {σ : Mx n → (H →L[ℂ] H)} (h : Std ε σ) {g : Mx n}
-    (hg : g ∈ UJset ε) (l : List (Mx n)) (hl : ∀ X ∈ l, X ∈ lieSet ε) {w : H} (hw : Sm ε σ w) :
-    Dw σ l (σ g w) = σ g (Dw σ (l.map fun X => g⁻¹ * X * g) w) := by
-  have hG : IsUnit (Formalism.REAL.Jm ε) := GlobalTheory.SmVec.gram_unit (ε := ε) (P := 1) isUnit_one (by simp)
-  induction l with
-  | nil => rfl
-  | cons X l ih =>
-    have hl' : ∀ Y ∈ l, Y ∈ lieSet ε := fun Y hY => hl Y (List.mem_cons_of_mem X hY)
-    have hX : X ∈ lieSet ε := hl X (by simp)
-    change dRep σ X (Dw σ l (σ g w)) =
-      σ g (dRep σ (g⁻¹ * X * g) (Dw σ (l.map fun X => g⁻¹ * X * g) w))
-    rw [ih hl']
-    have hs : Dw σ (l.map fun X => g⁻¹ * X * g) w ∈ GlobalTheory.SmVec.smSub (Formalism.REAL.Jm ε) σ := by
-      have hl'' : ∀ Y ∈ l.map (fun X => g⁻¹ * X * g), Y ∈ GlobalTheory.SmVec.lieG (Formalism.REAL.Jm ε) := by
-        intro Y hY
-        obtain ⟨Z, hZ, rfl⟩ := List.mem_map.1 hY
-        exact GlobalTheory.SmVec.conj_mem_lieG hG hg (hl' Z hZ)
-      exact GlobalTheory.SmVec.word_mem hG h.1 hl'' hw
-    exact GlobalTheory.SmVec.dRep_rep hG h.1 hs hg hX
-
 end SlopeTestRemainingChoices
 
 theorem casselmanWallach_banach : GlobalTheory.Published.CasselmanWallach → ∀ (n : ℕ) (ε : Fin n → Bool) (H : Type) [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H] (σ : Mx n → (H →L[ℂ] H)), Std ε σ → ∀ (E : Type) [NormedAddCommGroup E] [NormedSpace ℂ E] [CompleteSpace E] (ρ : Mx n → (E →L[ℂ] E)), ModRep ε ρ → ∀ T₀ : H →ₗ[ℂ] E, (∀ k ∈ Kset ε, ∀ v, IsKFin ε σ v → T₀ (σ k v) = ρ k (T₀ v)) → (∀ X ∈ lieSet ε, ∀ v, IsKFin ε σ v → HasDerivAt (fun t : ℝ => ρ (NormedSpace.exp (t • X)) (T₀ v)) (T₀ (dRep σ X v)) 0) → ∃ T : H →ₗ[ℂ] E, (∀ v, IsKFin ε σ v → T v = T₀ v) ∧ (∀ g ∈ UJset ε, ∀ w, Sm ε σ w → T (σ g w) = ρ g (T w)) ∧ ∃ (S : List (List (Mx n))) (C : ℝ), Words (lieSet ε) S ∧ ∀ w, Sm ε σ w → ‖T w‖ ≤ C * sobNorm σ S w := by
@@ -234,7 +213,8 @@ theorem casselmanWallach_banach : GlobalTheory.Published.CasselmanWallach → �
       rw [hT₁v _ hkv, hT₁v _ hv]
       apply Subtype.ext
       funext l
-      rw [hπ k hk' (J ⟨v, hv⟩) l, hJ, hJ, dw_apply_sigma_eq_sigma_dw_conj hσ hk' _ (cwb_val_mem l) (hσ.2.2.1 _ hv)]
+      rw [hπ k hk' (J ⟨v, hv⟩) l, hJ, hJ,
+        Dw_translate hσ.1 hk' (hσ.2.2.1 _ hv) (cwb_val_mem l)]
       have hl : (l.map Subtype.val).map (fun X => k⁻¹ * X * k) = (l.map (adInv hk')).map Subtype.val := by
         simp only [List.map_map]
         rfl

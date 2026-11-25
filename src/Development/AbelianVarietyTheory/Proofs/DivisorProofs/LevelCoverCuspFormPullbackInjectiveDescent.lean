@@ -180,8 +180,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.EtaleGeomDescent
@@ -235,8 +233,6 @@ open AlgebraicGeometry CategoryTheory Limits NumberField ReciprocityTheory.Chart
 open MonoidalCategory CartesianMonoidalCategory MonObj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi
 open scoped CategoryTheory.Obj TensorProduct
-
-set_option autoImplicit false
 
 noncomputable section
 
@@ -515,8 +511,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 local instance (priority := high) instAlgebraTRing_CoverDesc {K : Type} [Field K] (p : Formalism.L2.Pj.TRing K) :
@@ -779,7 +773,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
 set_option synthInstance.maxHeartbeats 200000
 
 noncomputable section

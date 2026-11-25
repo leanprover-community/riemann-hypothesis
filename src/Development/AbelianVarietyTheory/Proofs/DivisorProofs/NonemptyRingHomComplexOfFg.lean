@@ -57,8 +57,6 @@ public import Mathlib.FieldTheory.IsAlgClosed.AlgebraicClosure
 
 @[expose] public section
 
-set_option autoImplicit false
-
 namespace GlobalTheory.FGFieldEmb
 
 open Cardinal

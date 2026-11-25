@@ -743,15 +743,8 @@ theorem prod_tφ (a : D.P.A ⟶ D.P.A) (n j : ℤ) (β : D.X) (ρ : B ⟶ D.P.A)
     (h : (B.left ⟶ D.P.A.left) → U) : ∏ i, h (ρ.left ≫ tφ D a β i) ^ tε n j i =
       h ρ.left ^ (n - 1) * h (ρ * DVR.cP D B β).left * (h (DVR.cP D B β).left)⁻¹ * h (1 : B ⟶ D.P.A).left *
         h (ρ ≫ a).left ^ j := by
-  have e₀ : ρ.left ≫ tφ D a β 0 = ρ.left := Category.comp_id _
-  have e₁ : ρ.left ≫ tφ D a β 1 = (ρ * DVR.cP D B β).left :=
-    congrArg (fun q => q.left) ((MonObj.comp_mul ρ (𝟙 D.P.A) (DVR.cP D _ β)).trans (by rw [DVR.comp_cP, Category.comp_id]))
-  have e₂ : ρ.left ≫ tφ D a β 2 = (DVR.cP D B β).left := congrArg (fun q => q.left) (DVR.comp_cP D ρ β)
-  have e₃ : ρ.left ≫ tφ D a β 3 = (1 : B ⟶ D.P.A).left :=
-    congrArg (fun q : B ⟶ D.P.A => q.left) (MonObj.comp_one (M := D.P.A) ρ)
-  rw [Fin.prod_univ_five, e₀, e₁, e₂, e₃]
-  show _ ^ (n - 1) * _ ^ (1 : ℤ) * _ ^ (-1 : ℤ) * _ ^ (1 : ℤ) * _ ^ j = _
-  rw [zpow_one, zpow_one, zpow_neg_one]; rfl
+  intros
+  apply _root_.GlobalTheory.TwFac.prod_t <;> assumption
 
 variable (ρ₀ ρ₁ : T ⟶ B) {z : T.left} {J : (T.left ⟶ D.P.A.left) → D.P.L.ι} (hJ : Good D.P.L z J)
 

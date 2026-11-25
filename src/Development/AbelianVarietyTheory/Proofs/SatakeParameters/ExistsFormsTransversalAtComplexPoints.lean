@@ -62,8 +62,6 @@ import Mathlib.AlgebraicGeometry.Sites.Fpqc
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open CategoryTheory AlgebraicGeometry Topology Filter
@@ -169,8 +167,6 @@ section -- clump:auto
 @[expose] public section
 
 open CategoryTheory AlgebraicGeometry ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory
-
-set_option autoImplicit false
 
 noncomputable section
 
@@ -375,7 +371,6 @@ section -- clump:auto
 
 open CategoryTheory AlgebraicGeometry ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory
 
-set_option autoImplicit false
 noncomputable section
 open TopologicalSpace Set Filter Topology MeasureTheory
 open ReciprocityTheory.ChartRestriction.G.DVR.FlatBC (algX)
@@ -456,8 +451,6 @@ section -- clump:auto
 open CategoryTheory AlgebraicGeometry ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory
 
 open ReciprocityTheory.ChartRestriction.G.DVR.FlatBC (algX)
-
-set_option autoImplicit false
 
 noncomputable section
 
@@ -566,8 +559,6 @@ section -- clump:auto
 open CategoryTheory AlgebraicGeometry ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory
 
 open ReciprocityTheory.ChartRestriction.G.DVR.FlatBC (algX)
-
-set_option autoImplicit false
 
 noncomputable section
 
@@ -697,8 +688,6 @@ section -- clump:auto
 @[expose] public section
 
 open CategoryTheory AlgebraicGeometry ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory
-
-set_option autoImplicit false
 
 noncomputable section
 

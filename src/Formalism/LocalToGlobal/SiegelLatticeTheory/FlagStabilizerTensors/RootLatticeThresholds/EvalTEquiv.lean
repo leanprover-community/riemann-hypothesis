@@ -19,8 +19,6 @@ open scoped InnerProductSpace TensorProduct
 
 namespace Formalism.L2.SG.EvalTEquiv
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} {V : HSp D} {S : D.what₂.Tau → SPar} (M : DSModel V S)
 
 theorem sm_stable_uh (τ : D.what₂.Tau) {g : Matrix (Fin V.rank) (Fin V.rank) ℂ}

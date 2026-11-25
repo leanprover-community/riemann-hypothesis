@@ -54,7 +54,6 @@ open NumberField IsDedekindDomain Matrix MeasureTheory GlobalTheory.Mem GlobalTh
 open scoped TensorProduct Classical ComplexOrder
 
 namespace GlobalTheory.AdForm.PinInhab
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 def stdSp {D : D7} (V : HSp D) : DefSp V :=
   ⟨fun _ => 1, fun _ => 1, GlobalTheory.PlaceModel.latFrame V, (GlobalTheory.Unf.VolExist.nonempty_vol V).some⟩

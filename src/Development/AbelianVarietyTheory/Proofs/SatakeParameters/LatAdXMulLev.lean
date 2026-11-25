@@ -47,8 +47,6 @@ noncomputable section
 
 namespace GlobalTheory.TwU
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem hatStab_of_lev {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
     {σ : E →ₐ[F] E} {n : ℕ} {J : Matrix (Fin n) (Fin n) E} {T f : ℕ} {bad : Set (HeightOneSpectrum (𝓞 F))}
     (S : StepLevel F E σ J T f bad) (κ : S.U) : HatStab S.Lb κ.1 := by

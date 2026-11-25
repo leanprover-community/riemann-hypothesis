@@ -42,7 +42,6 @@ noncomputable section
 
 open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N
 open GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.Pst GlobalTheory.LocLanglands GlobalTheory.HeckeGal GlobalTheory.LocGL GlobalTheory.GalOfCusp
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 open GlobalTheory.GalCut GlobalTheory.UnitaryBC
 
 namespace GlobalTheory.Cong
@@ -51,14 +50,6 @@ variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAl
 
 def NonSplitSet (T : Finset (HeightOneSpectrum (𝓞 E))) : Prop :=
   ∀ w ∈ T, ¬ IsSplitAt w
-
-def GoodOffT (l : ℕ) (T : Finset (HeightOneSpectrum (𝓞 E))) (π : CuspSub E a) : Prop :=
-  (∃ x : E, ∃ d : ℕ, 0 < d ∧ x ^ 2 = -(d : E)) ∧ Even (Module.finrank ℚ (maximalRealSubfield E)) ∧
-    ∀ w : HeightOneSpectrum (𝓞 E), ¬ IsSplitAt w → ((l : ℕ) : 𝓞 E) ∉ w.asIdeal ∧
-      Algebra.IsUnramifiedAt (𝓞 (maximalRealSubfield E)) w.asIdeal ∧ (w ∉ T → ∃ B, (CG.mk π).HasSat w B)
-
-def ScopeOffT (l : ℕ) (T : Finset (HeightOneSpectrum (𝓞 E))) (π : CuspSub E a) : Prop :=
-  (CG.mk π).IsRegAlg ∧ GlobalTheory.ContraPair.PolarizedPair π (quadChar E ^ a) ∧ GoodOffT l T π
 
 structure MatchOffT (U : Submodule ℂ (UA E a → ℂ)) (π : CuspSub E a) (T : Finset (HeightOneSpectrum (𝓞 E))) : Prop where
   aut : IsAutRepU U

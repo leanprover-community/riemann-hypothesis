@@ -215,12 +215,6 @@ theorem dual_apply_smul_comm [Module.Invertible A M] (f : Module.Dual A M) (x y 
     (Module.Invertible.tmul_comm (R := A) (m₁ := x) (m₂ := y))
   simpa using this
 
-theorem exists_sum_dual_apply_eq_one (A M : Type*) [CommRing A] [AddCommGroup M] [Module A M]
-    [Module.Invertible A M] : ∃ s : Finset (Module.Dual A M × M), ∑ p ∈ s, p.1 p.2 = 1 := by
-  obtain ⟨s, hs⟩ := ((Module.Invertible.linearEquiv A M).symm 1).exists_finset
-  refine ⟨s, Eq.symm ?_⟩
-  simpa [LinearEquiv.symm_apply_eq, Module.Invertible.linearEquiv] using hs
-
 theorem free_of_invertible_of_finite_maximalSpectrum (A M : Type*) [CommRing A] [AddCommGroup M]
     [Module A M] [Finite (MaximalSpectrum A)] [Module.Invertible A M] : Module.Free A M :=
   Module.free_of_flat_of_finrank_eq _ _ 1

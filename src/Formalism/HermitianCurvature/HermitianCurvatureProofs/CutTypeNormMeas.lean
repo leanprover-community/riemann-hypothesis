@@ -45,6 +45,7 @@ import Mathlib.Topology.Sheaves.Init
 namespace Formalism.FourierDecayAlt.P.CutBP.TNM
 
 open Formalism.FourierDecayAlt Formalism.REAL Formalism.QuantumDeterminants Filter Topology MeasureTheory Matrix
+open scoped Formalism.DoubleCosetMeasures
 
 noncomputable section
 

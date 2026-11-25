@@ -202,8 +202,6 @@ section Record
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.IndefR.Links Formalism.L2.JoinChr
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} {c : (AE D)ˣ →* Circle}
 
 theorem unrAt_of_unramEverywhere (h : UnramEverywhere D c) (w : HeightOneSpectrum (𝓞 D.host.E)) : UnrAt c w := by

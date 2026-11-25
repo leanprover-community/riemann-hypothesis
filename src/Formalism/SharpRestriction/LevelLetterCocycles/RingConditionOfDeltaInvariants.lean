@@ -499,23 +499,6 @@ section Complete
 
 variable {R : Type} [CommRing R] (J : Ideal R)
 
-theorem mem_smul_top_pi (k : ℕ) (x : Fin k → R) :
-    x ∈ (J • ⊤ : Submodule R (Fin k → R)) ↔ ∀ i, x i ∈ J := by
-  constructor
-  · intro hx
-    have hle : (J • ⊤ : Submodule R (Fin k → R)) ≤
-        Submodule.pi Set.univ (fun _ => (J : Submodule R R)) := by
-      rw [Submodule.smul_le]
-      intro r hr m _
-      rw [Submodule.mem_pi]
-      intro j _
-      simpa [smul_eq_mul] using J.mul_mem_right (m j) hr
-    intro i
-    exact (Submodule.mem_pi.mp (hle hx)) i (Set.mem_univ i)
-  · intro hx
-    rw [pi_eq_sum_univ x]
-    exact sum_mem fun i _ => Submodule.smul_mem_smul (hx i) Submodule.mem_top
-
 theorem precomplete_pi [IsPrecomplete J R] (k : ℕ) : IsPrecomplete J (Fin k → R) := by
   apply AdicCompletion.of_surjective_iff.mp
   intro x

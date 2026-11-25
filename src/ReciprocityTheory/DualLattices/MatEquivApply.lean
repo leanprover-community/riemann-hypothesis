@@ -383,11 +383,6 @@ lemma hasLen_pi {C : Type} [Field C] (v : Valuation C NNReal) [Algebra R C] {d :
       (∏ j, v (algebraMap R C (a j))) :=
   ⟨d, a, ⟨Submodule.quotientPi _⟩, rfl⟩
 
-private lemma hasLen_of_linearEquiv' {C : Type} [Field C] {v : Valuation C NNReal} [Algebra R C]
-    {M M' : Type} [AddCommGroup M] [Module R M] [AddCommGroup M'] [Module R M'] {x : NNReal}
-    (h : HasLen v R M x) (e : M ≃ₗ[R] M') : HasLen v R M' x := by
-  obtain ⟨m, c, ⟨e0⟩, hc⟩ := h
-  exact ⟨m, c, ⟨e.symm.trans e0⟩, hc⟩
 
 theorem dualLen_fin {C : Type} [Field C] {v : Valuation C NNReal} [Algebra R C]
     (hv : v.Integers R) {d n : ℕ} (A : Matrix (Fin d) (Fin n) R) (c : R) (hc : c ≠ 0)
@@ -587,9 +582,9 @@ theorem dualLen_fin {C : Type} [Field C] {v : Valuation C NNReal} [Algebra R C]
               Matrix.transpose_one, Matrix.one_mulVec]
         _ = _ := by rw [h1, Matrix.mulVec_smul]
   have hA1 : HasLen v R ((Fin d → R) ⧸ LinearMap.range A.mulVecLin)
-      (∏ j, v (algebraMap R C (a j))) := hasLen_of_linearEquiv' (hasLen_pi v a) e1.symm
+      (∏ j, v (algebraMap R C (a j))) := hasLen_of_equiv e1 (hasLen_pi v a)
   have hc1 := hasLen_unique hv hc₁ hA1
-  refine ⟨∏ j, v (algebraMap R C (b j)), hasLen_of_linearEquiv' (hasLen_pi v b) e2.symm, ?_⟩
+  refine ⟨∏ j, v (algebraMap R C (b j)), hasLen_of_equiv e2 (hasLen_pi v b), ?_⟩
   rw [hc1, ← Finset.prod_mul_distrib]
   simp_rw [← map_mul, mul_comm (b _) (a _), hb]
   rw [Finset.prod_const, Finset.card_univ, Fintype.card_fin]

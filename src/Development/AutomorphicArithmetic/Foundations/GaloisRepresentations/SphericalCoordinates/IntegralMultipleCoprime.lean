@@ -61,24 +61,6 @@ private def unitBall (p : ℕ) [Fact p.Prime] : Subring (PadicAlgCl p) where
   zero_mem' := by simp
   neg_mem' := by simp
 
-private theorem den_of_norm {p : ℕ} [hp : Fact p.Prime] (q : ℚ) (h : ‖(q : ℚ_[p])‖ ≤ 1) :
-    ¬ p ∣ q.den := by
-  intro hd
-  have hnum : ¬ (p : ℤ) ∣ q.num := by
-    intro hn
-    have h1 : p ∣ q.num.natAbs := Int.natCast_dvd.mp hn
-    have h2 := Nat.dvd_gcd h1 hd
-    rw [Nat.Coprime.gcd_eq_one q.reduced] at h2
-    exact hp.out.one_lt.ne' (Nat.dvd_one.mp h2)
-  have hn1 : ‖(q.num : ℚ_[p])‖ = 1 :=
-    le_antisymm (Padic.norm_int_le_one _)
-      (not_lt.mp fun hlt => hnum (Padic.norm_intCast_lt_one_iff.mp hlt))
-  have hd1 : ‖(q.den : ℚ_[p])‖ < 1 := Padic.norm_natCast_lt_one_iff.mpr hd
-  have heq : (q : ℚ_[p]) * q.den = q.num := by exact_mod_cast Rat.mul_den_eq_num q
-  have hn := congrArg norm heq
-  rw [norm_mul, hn1] at hn
-  nlinarith [norm_nonneg (q.den : ℚ_[p]), norm_nonneg (q : ℚ_[p])]
-
 private theorem coeff_den {p : ℕ} [Fact p.Prime] {F : Type} [Field F] [NumberField F] (x : F)
     (h : ∀ τ : F →+* PadicAlgCl p, ‖τ x‖ ≤ 1) (i : ℕ) : ¬ p ∣ ((minpoly ℚ x).coeff i).den := by
   have hx : IsIntegral ℚ x := Algebra.IsIntegral.isIntegral x
@@ -107,12 +89,15 @@ private theorem coeff_den {p : ℕ} [Fact p.Prime] {F : Type} [Field F] [NumberF
     rw [← hy]
     exact y.2
   rw [hP, Polynomial.coeff_map] at hn
-  apply den_of_norm
+  intro hd
   have hc : algebraMap ℚ (PadicAlgCl p) ((minpoly ℚ x).coeff i)
       = algebraMap ℚ_[p] (PadicAlgCl p) (((minpoly ℚ x).coeff i : ℚ) : ℚ_[p]) := by
     simp only [eq_ratCast, map_ratCast]
   rw [hc] at hn
-  exact (PadicAlgCl.norm_extends p _).symm.trans_le hn
+  have h1 : ‖(((minpoly ℚ x).coeff i).den : ℤ_[p])‖ = 1 :=
+    PadicInt.isUnit_iff.mp <|
+      PadicInt.isUnit_den _ ((PadicAlgCl.norm_extends p _).symm.trans_le hn)
+  exact (PadicInt.norm_natCast_lt_one_iff.mpr hd).ne h1
 
 private theorem integral_multiple_coprime {p : ℕ} [Fact p.Prime] {F : Type} [Field F] [NumberField F] (x : F)
     (h : ∀ i, ¬ p ∣ ((minpoly ℚ x).coeff i).den) :

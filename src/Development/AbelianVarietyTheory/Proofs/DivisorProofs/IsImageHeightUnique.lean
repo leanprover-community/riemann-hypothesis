@@ -47,8 +47,6 @@ import Mathlib.Tactic.Polynomial.Basic
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open MvPolynomial NumberField Module GlobalTheory.ChowHt GlobalTheory.CompHt

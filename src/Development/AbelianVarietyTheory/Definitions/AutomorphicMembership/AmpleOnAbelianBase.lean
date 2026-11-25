@@ -269,19 +269,6 @@ structure GlobSt (M : ℕ → Type) : Type 1 where
   ampleGen : Met → Prop
   limRA : Met → Prop
 
-def GlobSt.projLine {M : ℕ → Type} (m : ∀ p, M p) : GlobSt M where
-  Xg := Unit
-  bc p _ := m p
-  DivG _ := ℤ
-  effD n := 0 ≤ n
-  noVertD _ := True
-  posBdD n := 0 < n
-  ampleOnAbelianBase _ m₀ n := n < m₀
-  Met := ℚ
-  nefFibM d := 0 ≤ d
-  ampleGen d := 0 < d
-  limRA d := 0 ≤ d
-
 structure AdmSt (D : D7) (N j : ℕ) (jC : ∀ (p : ℕ) [Fact p.Prime], PlL D p → (DV.KW p →+* ℂ)) : Type 1 where
   admitted : ∀ (p : ℕ) [Fact p.Prime], PlL D p → Type
   mdl : ∀ (p : ℕ) [Fact p.Prime] (la : PlL D p), admitted p la → DV.Mdl D p N (DV.rkOf (DV.PsiOf D (jC p la)) N j)

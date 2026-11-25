@@ -70,58 +70,6 @@ namespace DegreePositive
 
 variable {F : Type} [Field F] {ι₀ : Type} [Fintype ι₀]
 
-theorem ringKrullDim_of_mem_minimalPrimes (q W : Ideal (MRing (fun _ : Unit => ι₀) F)) [q.IsPrime]
-    (x : MRing (fun _ : Unit => ι₀) F) (hx : x ∉ q) (e : ℕ)
-    (hdim : ringKrullDim (MRing (fun _ : Unit => ι₀) F ⧸ q) = ((e + 1 : ℕ) : WithBot ℕ∞))
-    (hmin : W ∈ (q ⊔ Ideal.span {x}).minimalPrimes) :
-    ringKrullDim (MRing (fun _ : Unit => ι₀) F ⧸ W) = ((e : ℕ) : WithBot ℕ∞) := by
-  have hWprime : W.IsPrime := hmin.1.1
-  have hIW : q ≤ W := le_sup_left.trans hmin.1.2
-  have hxW : x ∈ W := (le_sup_right.trans hmin.1.2) (Ideal.mem_span_singleton_self _)
-  set B := MRing (fun _ : Unit => ι₀) F ⧸ q
-  have _ : Algebra.FiniteType F B :=
-    Algebra.FiniteType.of_surjective (Ideal.Quotient.mkₐ F q) (Ideal.Quotient.mkₐ_surjective F q)
-  set W' : Ideal B := W.map (Ideal.Quotient.mk q)
-  have hW'prime : W'.IsPrime :=
-    Ideal.map_isPrime_of_surjective Ideal.Quotient.mk_surjective (by rwa [Ideal.mk_ker])
-  have hW'ne : W' ≠ ⊥ := by
-    intro h
-    apply hx
-    rw [← Ideal.Quotient.eq_zero_iff_mem]
-    have : Ideal.Quotient.mk q x ∈ W' := Ideal.mem_map_of_mem _ hxW
-    rw [h, Ideal.mem_bot] at this
-    exact this
-  have hht : W'.height ≤ 1 := Ideal.map_height_le_one_of_mem_minimalPrimes hmin
-  have hquot : ringKrullDim (B ⧸ W') = ringKrullDim (MRing (fun _ : Unit => ι₀) F ⧸ W) :=
-    ringKrullDim_eq_of_ringEquiv (DoubleQuot.quotQuotEquivQuotOfLE hIW)
-  have hform := GroundTheory.Arith.Abelian.Jacobian.height_add_ringKrullDim_quotient (k := F) W'
-  have hdrop := GroundTheory.Arith.Abelian.Jacobian.ringKrullDim_quotient_add_one_le W' hW'ne
-  rw [hquot] at hform hdrop
-  change ringKrullDim B = _ at hdim
-  rw [hdim] at hform hdrop
-  obtain ⟨y, hy⟩ : ∃ y : ℕ∞, ringKrullDim (MRing (fun _ : Unit => ι₀) F ⧸ W) = y := by
-    cases h : ringKrullDim (MRing (fun _ : Unit => ι₀) F ⧸ W) with
-    | bot =>
-      have := ringKrullDim_nonneg_of_nontrivial (R := MRing (fun _ : Unit => ι₀) F ⧸ W)
-      rw [h] at this
-      exact absurd this (by simp)
-    | coe y => exact ⟨y, rfl⟩
-  rw [hy] at hform hdrop ⊢
-  have h1 : y + 1 ≤ ((e + 1 : ℕ) : ℕ∞) := by exact_mod_cast hdrop
-  have h2 : W'.height + y = ((e + 1 : ℕ) : ℕ∞) := by exact_mod_cast hform
-  have hyle : y ≤ e := by
-    have : y + 1 ≤ (e : ℕ∞) + 1 := by exact_mod_cast h1
-    exact (ENat.add_le_add_iff_right ENat.one_ne_top).mp this
-  obtain ⟨m, rfl⟩ : ∃ m : ℕ, (m : ℕ∞) = y := ENat.ne_top_iff_exists.mp (ne_top_of_le_ne_top
-    (ENat.natCast_ne_top e) hyle)
-  have h3 : ((e + 1 : ℕ) : ℕ∞) ≤ 1 + m := by rw [← h2]; gcongr
-  have h4 : e + 1 ≤ 1 + m := by exact_mod_cast h3
-  have h5 : m ≤ e := by exact_mod_cast hyle
-  have : m = e := by omega
-  subst this
-  rfl
-
-
 omit [Fintype ι₀] in
 theorem isRelevant_of_ringKrullDim (W : Ideal (MRing (fun _ : Unit => ι₀) F)) [W.IsPrime] (e : ℕ)
     (hW : ringKrullDim (MRing (fun _ : Unit => ι₀) F ⧸ W) = ((e + 1 : ℕ) : WithBot ℕ∞)) :
@@ -183,7 +131,7 @@ theorem pos (D : ℕ) : ∀ q : Ideal (MRing (fun _ : Unit => ι₀) F), IsMulti
       by_cases hc : W ∈ J.minimalPrimes ∧ IsRelevant W
       · rw [dite_eq_left hc] at hW ⊢
         have hWp : W.IsPrime := hc.1.1.1
-        have hWd := ringKrullDim_of_mem_minimalPrimes q W x hX (D + 1) hd hc.1
+        have hWd := Kleiman.ProjDegreePositive.ringKrullDim_of_mem_minimalPrimes q W x hX (D + 1) hd hc.1
         have hWq : IsMultiProjPrime W :=
           ⟨hWp, MinimalPrimeMultiHomog.full F Unit (fun _ => ι₀) J W hJh hc.1, hc.2⟩
         exact ⟨lt_of_le_of_ne (by positivity) (Ne.symm hW), ih W hWq hWd⟩
@@ -206,7 +154,7 @@ theorem pos (D : ℕ) : ∀ q : Ideal (MRing (fun _ : Unit => ι₀) F), IsMulti
       (RingHom.ker_isMaximal_of_surjective _ fun a => ⟨C a, by simp⟩).isPrime
     obtain ⟨W, hmin, -⟩ := Ideal.exists_minimalPrimes_le hJm
     have hWp : W.IsPrime := hmin.1.1
-    have hWd := ringKrullDim_of_mem_minimalPrimes q W x hX (D + 1) hd hmin
+    have hWd := Kleiman.ProjDegreePositive.ringKrullDim_of_mem_minimalPrimes q W x hX (D + 1) hd hmin
     have hrel := isRelevant_of_ringKrullDim W D hWd
     have hne : divCycle q x W ≠ 0 := by
       unfold divCycle

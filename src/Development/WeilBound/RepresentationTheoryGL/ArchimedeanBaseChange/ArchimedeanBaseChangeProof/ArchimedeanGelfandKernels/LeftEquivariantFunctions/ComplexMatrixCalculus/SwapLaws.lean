@@ -50,7 +50,7 @@ namespace PositivityTheory.RgBcC
 
 open PositivityTheory.RgTw (Mat hb)
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 def HbOrtho : Prop := ∀ n : ℕ, (∀ p q : Md n, (hbM p * hbM q).trace = if p = q then 1 else 0) ∧ ∀ p : Md n, (hbM p).IsHermitian
 

@@ -94,9 +94,6 @@ def sigRes (n r : ℕ) : GL (Fin n) (KQ p K r) →* GL (Fin n) (KQ p K r) :=
 def Kres (n r : ℕ) : Subgroup (GL (Fin n) (KQ p K r)) :=
   (GeneralLinearGroup.map (intKQ p K r).subtype).range
 
-def nrmRes (n r : ℕ) (δ : GL (Fin n) (KQ p K r)) : GL (Fin n) (KQ p K r) :=
-  (List.map (fun i => (⇑(sigRes p K n r))^[i] δ) (List.range r)).prod
-
 abbrev GHT (m n r : ℕ) (Kw : Fin m → IntermediateField ℚ_[p] (PadicAlgCl p)) : Type :=
   GL (Fin 1) (Qr p r) × ((i : Fin m) → GL (Fin n) (KQ p (Kw i) r))
 

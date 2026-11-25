@@ -274,17 +274,6 @@ variable {bar φ X}
 theorem IsCone.isCell {γ : Fin m → LinearMap.BilinForm ℤ X} (h : IsCone bar φ γ) : IsCell bar φ γ :=
   ⟨h.mem, h.nonneg, h.linear, h.strict⟩
 
-theorem IsPolFanOn.isPolyFanOn (h : IsPolFanOn bar φ X) : IsPolyFanOn bar φ X := by
-  refine ⟨h.homog, h.superadd, h.integral, h.pos, ?_⟩
-  obtain ⟨S, hS, h1⟩ := h.finite
-  refine ⟨S, hS, fun B hB => ?_⟩
-  obtain ⟨m, γ, c, hγ, hc, rfl⟩ := h.cover B hB
-  obtain ⟨e, he⟩ := h1 m γ hγ
-  refine ⟨e, m, _, c, (hγ.pull_equiv e).isCell, he, hc, LinearMap.ext₂ fun a b => ?_⟩
-  simp [LinearMap.sum_apply]
-
-theorem isPolyFan_minVal_one : IsPolyFan id 1 (InvFun.minVal ℤ) := fun X _ _ _ _ hX => (isPolFan_minVal_one X hX).isPolyFanOn
-
 end Poly
 
 section Cover

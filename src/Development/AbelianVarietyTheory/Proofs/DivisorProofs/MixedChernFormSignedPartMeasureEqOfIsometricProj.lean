@@ -52,8 +52,6 @@ open ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.R
 open GlobalTheory GlobalTheory.Cartier GlobalTheory.CxPts GlobalTheory.Points GlobalTheory.CechPic GlobalTheory.ChartGlue GlobalTheory.Mix
 open ReciprocityTheory.L2DbarEstimates (V cHess)
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.Mix

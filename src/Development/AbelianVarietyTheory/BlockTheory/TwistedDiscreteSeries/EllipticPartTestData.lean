@@ -278,8 +278,6 @@ section Record
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.IndefR.Mult
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 def IsTestData (V : HSp D) (lam : D.what₂.Tau → Fin V.rank → ℤ) {S : D.what₂.Tau → SPar} (M : DSModel V S)

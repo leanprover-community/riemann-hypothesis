@@ -58,20 +58,6 @@ namespace GlobalTheory.CrisPeriods
 
 variable {l : ℕ} [Fact l.Prime]
 
-private theorem padicInt_hom_ext (f g : ℤ_[l] →+* Per.Ainf l) (z : ℤ_[l]) : f z = g z := by
-  have hH : IsHausdorff (Ideal.span {((l : ℕ) : Per.Ainf l)}) (Per.Ainf l) := inferInstance
-  rw [← sub_eq_zero]
-  refine hH.haus _ fun n => ?_
-  obtain ⟨w, hw⟩ := Ideal.mem_span_singleton'.1 (PadicInt.appr_spec n z)
-  have hz : z = w * (l : ℤ_[l]) ^ n + (z.appr n : ℤ_[l]) := by rw [hw]; ring
-  rw [SModEq.zero, smul_eq_mul, Ideal.mul_top, Ideal.span_singleton_pow, Ideal.mem_span_singleton']
-  refine ⟨f w - g w, ?_⟩
-  have hf := congrArg f hz
-  have hg := congrArg g hz
-  simp only [map_add (f := _), map_mul, map_pow, map_natCast] at hf hg
-  rw [hf, hg]
-  ring
-
 theorem map_smul_ring {R S : Type} [CommRing R] [CommRing S] {n : Type} (f : R →+* S) (c : R)
     (M : Matrix n n R) : (c • M).map f = f c • M.map f := by
   ext i j
@@ -165,7 +151,7 @@ theorem periods_over_Acris : ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (P : Lo
         (algebraMap (Per.Acris l) (Per.Bcris l)) = (ρ g).map (Per.zB l) := by
       ext i j
       simp only [Matrix.map_apply, RingHom.comp_apply]
-      rw [GlobalTheory.RingIface.zB_eq_aB_zA, GlobalTheory.RingIface.aB_eq_alg, padicInt_hom_ext (Per.zA l) (algebraMap ℤ_[l] (Ainf l))]
+      rw [← GlobalTheory.RingIface.aB_algebraMap_padicInt, GlobalTheory.RingIface.aB_eq_alg]
     have ht : algebraMap (Per.Acris l) (Per.Bcris l) (sigA (g : GQ l) C.t) =
         Per.σB (g : GQ l) (algebraMap (Per.Acris l) (Per.Bcris l) C.t) :=
       (AL.2.2.2.2.2.2.2.2.2.2.2.1 _ C.t).symm

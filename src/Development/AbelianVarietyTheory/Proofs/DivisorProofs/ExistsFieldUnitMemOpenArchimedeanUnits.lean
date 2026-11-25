@@ -71,24 +71,4 @@ theorem denseRange_embeddings' : DenseRange fun (x : E) (w : InfinitePlace E) =>
   rw [← this]
   rfl
 
-theorem exists_unit_mem_open :
-    ∀ (E : Type) [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] (V : Set (Cinf E)ˣ), IsOpen V → V.Nonempty →
-      ∃ α : Eˣ, Units.map ((pInf E).comp (algebraMap E (Ad E))).toMonoidHom α ∈ V := by
-  intro E _ _ _ V hV ⟨v, hv⟩
-  have hU : IsOpen (Units.val '' V) := Units.isOpenEmbedding_val.isOpenMap V hV
-  have hd : DenseRange fun x : E => pInf E (algebraMap E (Ad E) x) := by
-    have : (fun x : E => pInf E (algebraMap E (Ad E) x)) = fun (x : E) (w : InfinitePlace E) => w.embedding x := by
-      funext x w; exact pInf_algebraMap x w
-    rw [this]; exact denseRange_embeddings'
-  obtain ⟨x, u, hu, hxu⟩ := hd.exists_mem_open hU ⟨v.1, v, hv, rfl⟩
-  have hx : x ≠ 0 := by
-    rintro rfl
-    simp only [map_zero] at hxu
-    haveI : Nonempty (InfinitePlace E) := inferInstance
-    exact u.ne_zero hxu
-  refine ⟨Units.mk0 x hx, ?_⟩
-  convert hu using 1
-  ext
-  simp [hxu]
-
 end GlobalTheory.UnitsDense

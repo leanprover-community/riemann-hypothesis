@@ -53,8 +53,6 @@ import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.CoeEqAlgebraM
 
 open CategoryTheory AlgebraicGeometry ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory GlobalTheory.HodgeCoh GlobalTheory.CechDR KaehlerDifferential GlobalTheory.W1
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.SmoothComponents

@@ -52,8 +52,6 @@ open scoped TensorProduct InnerProductSpace
 
 namespace GlobalTheory.St.WittT
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Witt
 
 variable {D : D7}

@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ThetaConstantsTorusTranslatesTwistedSumsStatement
 public import Development.AbelianVarietyTheory.Definitions.Divisors.HasTraitsOnOfHasTraitsP
 public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.ExistsNumberFieldQkPointsComplexDegeneration
 public import Development.AbelianVarietyTheory.Definitions.Divisors.TwistAtEach
@@ -676,30 +677,7 @@ theorem affine_zero {G : Type} [AddCommGroup G] {M : ℕ} (hM : Odd M) (S : Set 
     (hne : S.Nonempty) (κ : ZMod M) (h : AddSubgroup.closure S →+ ZMod M)
     (hz : ∀ s (hs : s ∈ S), κ + h ⟨s, AddSubgroup.subset_closure hs⟩ = 0) :
     ∀ a (ha : a ∈ AddSubgroup.closure S), κ + h ⟨a, ha⟩ = 0 := by
-  obtain ⟨s₀, hs₀⟩ := hne
-  have h1 := hz s₀ hs₀
-  have h2 := hz (-s₀) (hS s₀ hs₀)
-  have hneg : (⟨-s₀, AddSubgroup.subset_closure (hS s₀ hs₀)⟩ : AddSubgroup.closure S) =
-      -⟨s₀, AddSubgroup.subset_closure hs₀⟩ := rfl
-  rw [hneg, map_neg] at h2
-  have h2κ : (2 : ZMod M) * κ = 0 := by linear_combination h1 + h2
-  have hcop : Nat.Coprime 2 M := (Nat.coprime_two_left).2 hM
-  have hκ : κ = 0 := by
-    have hu : IsUnit (2 : ZMod M) := by
-      have := (ZMod.unitOfCoprime 2 hcop).isUnit
-      rwa [ZMod.coe_unitOfCoprime, Nat.cast_ofNat] at this
-    exact hu.mul_right_eq_zero.1 h2κ
-  subst hκ
-  intro a ha
-  rw [zero_add]
-  refine AddSubgroup.closure_induction (p := fun x hx => h ⟨x, hx⟩ = 0) (fun x hx => ?_) ?_
-    (fun x y hx hy h1 h2 => ?_) (fun x hx h1 => ?_) ha
-  · simpa using hz x hx
-  · exact map_zero h
-  · have : (⟨x + y, add_mem hx hy⟩ : AddSubgroup.closure S) = ⟨x, hx⟩ + ⟨y, hy⟩ := rfl
-    rw [this, map_add (f := _), h1, h2, add_zero]
-  · have : (⟨-x, neg_mem hx⟩ : AddSubgroup.closure S) = -⟨x, hx⟩ := rfl
-    rw [this, map_neg, h1, neg_zero]
+  apply _root_.GlobalTheory.Poinc.Sep.TwistIndep.affine_zero <;> assumption
 
 end GlobalTheory.GSep.TwistIndep
 

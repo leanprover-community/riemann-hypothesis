@@ -54,8 +54,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 open KaehlerDifferential GlobalTheory.CechDR GlobalTheory.PD GlobalTheory.WH GlobalTheory.W1 UpperTheory.Gal.productCup_of_system
 open scoped TensorProduct
 
-set_option autoImplicit false
-
 namespace UpperTheory.Gal.productCup_of_system
 
 private theorem delta_const' {ι E : Type} [LinearOrder ι] [AddCommGroup E] [Module ℂ E] (v : E) :

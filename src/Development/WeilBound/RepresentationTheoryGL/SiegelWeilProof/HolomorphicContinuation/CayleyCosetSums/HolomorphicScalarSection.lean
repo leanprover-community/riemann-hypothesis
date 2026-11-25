@@ -50,7 +50,7 @@ open PositivityTheory.Rg.Sw PositivityTheory.Rg.Sw.LVs PositivityTheory.Rg.Sw.HS
 
 variable {n : ℕ}
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 def holomorphicScalarSection (m : ℕ) (e : ℤ) (x : M2 n) : ℂ := x.det ^ e * (u1 x).det ^ (-(m : ℤ))
 

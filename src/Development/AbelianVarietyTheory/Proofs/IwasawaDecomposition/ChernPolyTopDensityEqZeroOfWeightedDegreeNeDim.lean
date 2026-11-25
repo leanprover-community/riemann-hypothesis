@@ -49,8 +49,6 @@ open AlgebraicGeometry CategoryTheory MvPolynomial NumberField ReciprocityTheory
 open Classical
 open GlobalTheory GlobalTheory.Cartier GlobalTheory.ProjVar GlobalTheory.CxPts GlobalTheory.ChartGlue GlobalTheory.FlagBundle GlobalTheory.HermFrame
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.GoodMetric.ChernDegree

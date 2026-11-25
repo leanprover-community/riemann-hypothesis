@@ -55,8 +55,6 @@ open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Fo
 
 namespace GlobalTheory.SnPos
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 def GenCutP : Prop :=
   ∀ Cg cb Cw cT CT C0 A : ℝ, 0 < cb → 0 < cT → ∃ (C1 C0n Aexp : ℕ) (CB CSt Cgs CTs : ℝ), 0 ≤ CB ∧ 0 ≤ CSt ∧ 0 ≤ Cgs ∧ 0 ≤ CTs ∧
     C1 + C0n + 38 ≤ Aexp ∧ ∃ C'₀ Cl₀ : ℝ, ∀ C' Cl : ℝ, C'₀ ≤ C' → Cl₀ ≤ Cl →

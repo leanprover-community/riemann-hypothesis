@@ -42,8 +42,6 @@ import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.BddGood
 
 @[expose] public section
 
-set_option autoImplicit false
-
 namespace GlobalTheory.ScalarUnit
 
 open AlgebraicGeometry CategoryTheory NumberField IsDedekindDomain MvPolynomial

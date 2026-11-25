@@ -223,8 +223,6 @@ open AlgebraicGeometry CategoryTheory Limits NumberField ReciprocityTheory.Chart
 open ReciprocityTheory.ChartRestriction.G.FD (Data Frame Bor rmul lact mat col dmin Wt)
 open scoped CategoryTheory.MonObj
 
-set_option autoImplicit false
-
 noncomputable section
 
 open GlobalTheory.ShFam.Hor.LogCh

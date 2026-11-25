@@ -59,6 +59,22 @@ namespace PositivityTheory.RgHe3
 
 open ReciprocityTheory.ChartRestriction.DS
 
+private theorem commute_E_casimir_of_isGlRep {n : ℕ} {M : Type}
+    [NormedAddCommGroup M] [InnerProductSpace ℂ M]
+    {E : Fin n → Fin n → Module.End ℂ M} (hE : IsGlRep E) (c d : Fin n) :
+    Commute (E c d) (casimir E) := by
+  have key : ∀ a b, E c d * (E a b * E b a) - E a b * E b a * E c d =
+      ((if d = a then E c b else 0) - (if b = c then E a d else 0)) * E b a +
+        E a b * ((if d = b then E c a else 0) - (if a = c then E b d else 0)) := by
+    intro a b
+    rw [← hE c d a b, ← hE c d b a]
+    noncomm_ring
+  show E c d * casimir E = casimir E * E c d
+  rw [← sub_eq_zero, casimir, Finset.mul_sum, Finset.sum_mul, ← Finset.sum_sub_distrib]
+  simp only [Finset.mul_sum, Finset.sum_mul, ← Finset.sum_sub_distrib, key]
+  simp [sub_mul, mul_sub, Finset.sum_add_distrib, Finset.sum_sub_distrib, ite_mul,
+    mul_ite]
+
 namespace CompactOperatorsAlt
 
 variable {n : ℕ} {M : Type} [NormedAddCommGroup M] [InnerProductSpace ℂ M]
@@ -125,21 +141,9 @@ theorem Qop_eq (ε : Fin n → Bool) (E : Fin n → Fin n → Module.End ℂ M) 
   simp only [key, Finset.sum_add_distrib, Finset.sum_ite_eq, Finset.mem_univ, if_true]
 
 theorem comm_casimir_casimirK {E : Fin n → Fin n → Module.End ℂ M} (hE : IsGlRep E) (ε : Fin n → Bool) :
-    Commute (casimirK ε E) (casimir E) := by
-  have hc : ∀ c d, Commute (E c d) (casimir E) := by
-    intro c d
-    have key : ∀ a b, E c d * (E a b * E b a) - E a b * E b a * E c d =
-        ((if d = a then E c b else 0) - (if b = c then E a d else 0)) * E b a +
-          E a b * ((if d = b then E c a else 0) - (if a = c then E b d else 0)) := by
-      intro a b
-      rw [← hE c d a b, ← hE c d b a]
-      noncomm_ring
-    show E c d * casimir E = casimir E * E c d
-    rw [← sub_eq_zero, casimir, Finset.mul_sum, Finset.sum_mul, ← Finset.sum_sub_distrib]
-    simp only [Finset.mul_sum, Finset.sum_mul, ← Finset.sum_sub_distrib, key]
-    simp [sub_mul, mul_sub, Finset.sum_add_distrib, Finset.sum_sub_distrib, ite_mul,
-      mul_ite]
-  exact Commute.sum_left _ _ _ fun a _ => Commute.sum_left _ _ _ fun b _ => (hc a b).mul_left (hc b a)
+    Commute (casimirK ε E) (casimir E) :=
+  Commute.sum_left _ _ _ fun a _ => Commute.sum_left _ _ _ fun b _ =>
+    (commute_E_casimir_of_isGlRep hE a b).mul_left (commute_E_casimir_of_isGlRep hE b a)
 
 theorem comm_Qop {E : Fin n → Fin n → Module.End ℂ M} (ε : Fin n → Bool) (μ : Fin n → ℝ)
     (A : Module.End ℂ M) (hA1 : Commute A (casimirK ε E)) (hA2 : Commute A (casimir E)) (hA3 : ∀ a, Commute A (E a a)) :
@@ -175,21 +179,6 @@ def Aop (ε : Fin n → Bool) (E : Fin n → Fin n → Module.End ℂ M) : Optio
   | some c => E c c
 
 end CompactOperatorsAlt
-
-private theorem commute_E_casimir_of_isGlRep {n : ℕ} {M : Type} [NormedAddCommGroup M] [InnerProductSpace ℂ M]
-    {E : Fin n → Fin n → Module.End ℂ M} (hE : IsGlRep E) (c d : Fin n) :
-    Commute (E c d) (casimir E) := by
-  have key : ∀ a b, E c d * (E a b * E b a) - E a b * E b a * E c d =
-      ((if d = a then E c b else 0) - (if b = c then E a d else 0)) * E b a +
-        E a b * ((if d = b then E c a else 0) - (if a = c then E b d else 0)) := by
-    intro a b
-    rw [← hE c d a b, ← hE c d b a]
-    noncomm_ring
-  show E c d * casimir E = casimir E * E c d
-  rw [← sub_eq_zero, casimir, Finset.mul_sum, Finset.sum_mul, ← Finset.sum_sub_distrib]
-  simp only [Finset.mul_sum, Finset.sum_mul, ← Finset.sum_sub_distrib, key]
-  simp [sub_mul, mul_sub, Finset.sum_add_distrib, Finset.sum_sub_distrib, ite_mul,
-    mul_ite]
 
 private theorem commute_E_diag_E_mul_E_of_isGlRep {n : ℕ} {M : Type} [NormedAddCommGroup M] [InnerProductSpace ℂ M]
     {E : Fin n → Fin n → Module.End ℂ M} (hE : IsGlRep E) (c a b : Fin n) :

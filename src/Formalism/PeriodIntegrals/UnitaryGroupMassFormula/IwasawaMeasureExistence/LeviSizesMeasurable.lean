@@ -111,31 +111,6 @@ open IsDedekindDomain IsDedekindDomain.HeightOneSpectrum NumberField Topology
 
 variable {F : Type} [Field F] [NumberField F]
 
-theorem val_algebraMap_F (v : HeightOneSpectrum (𝓞 F)) (t : F) :
-    Valued.v (algebraMap F (v.adicCompletion F) t) = v.valuation F t := by
-  rw [algebraMap_adicCompletion]
-  simp
-
-theorem exists_int_near (v : HeightOneSpectrum (𝓞 F)) (x : v.adicCompletion F)
-    (hx : Valued.v x ≤ 1) :
-    ∃ a : 𝓞 F, Valued.v (x - algebraMap F (v.adicCompletion F) (algebraMap (𝓞 F) F a)) < 1 := by
-  apply PI.WAU.exists_int_near <;> assumption
-
-def toOv (v : HeightOneSpectrum (𝓞 F)) : 𝓞 F →+* Valued.integer (v.adicCompletion F) :=
-  ((algebraMap F (v.adicCompletion F)).comp (algebraMap (𝓞 F) F)).codRestrict _ (fun a => by
-    show Valued.v (_ : v.adicCompletion F) ≤ 1
-    simp only [RingHom.comp_apply]
-    rw [val_algebraMap_F, valuation_of_algebraMap]
-    exact intValuation_le_one v a)
-
-theorem toOv_coe (v : HeightOneSpectrum (𝓞 F)) (a : 𝓞 F) :
-    ((toOv v a : Valued.integer (v.adicCompletion F)) : v.adicCompletion F) =
-      algebraMap F (v.adicCompletion F) (algebraMap (𝓞 F) F a) := rfl
-
-theorem isUnit_integer_iff (v : HeightOneSpectrum (𝓞 F)) (x : Valued.integer (v.adicCompletion F)) :
-    IsUnit x ↔ Valued.v (x : v.adicCompletion F) = 1 :=
-  (Valuation.integer.integers (Valued.v : Valuation (v.adicCompletion F) _)).isUnit_iff_valuation_eq_one
-
 theorem finite_residue (v : HeightOneSpectrum (𝓞 F)) :
     Finite (IsLocalRing.ResidueField (Valued.integer (v.adicCompletion F))) := by
   apply PI.WAU.finite_residue

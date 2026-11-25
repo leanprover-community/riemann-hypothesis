@@ -578,12 +578,7 @@ theorem fock_eq_sum (P Q : MvPolynomial σ ℂ) (s : Finset (σ →₀ ℕ)) (hs
 
 theorem fock_add_left (P P' Q : MvPolynomial σ ℂ) :
     Formalism.E.fock (P + P') Q = Formalism.E.fock P Q + Formalism.E.fock P' Q := by
-  classical
-  rw [fock_eq_sum (P + P') Q (P.support ∪ P'.support) support_add,
-    fock_eq_sum P Q (P.support ∪ P'.support) Finset.subset_union_left,
-    fock_eq_sum P' Q (P.support ∪ P'.support) Finset.subset_union_right, ← Finset.sum_add_distrib]
-  refine Finset.sum_congr rfl fun m _ => ?_
-  rw [MvPolynomial.coeff_add]; ring
+  apply _root_.GlobalTheory.JointHarm.fock_add_left <;> assumption
 
 theorem fock_sum_left {ι : Type} (s : Finset ι) (P : ι → MvPolynomial σ ℂ) (Q : MvPolynomial σ ℂ) :
     Formalism.E.fock (∑ i ∈ s, P i) Q = ∑ i ∈ s, Formalism.E.fock (P i) Q := by

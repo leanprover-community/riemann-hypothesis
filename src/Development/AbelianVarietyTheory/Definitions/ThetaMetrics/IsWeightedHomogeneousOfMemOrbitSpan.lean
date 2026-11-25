@@ -168,17 +168,6 @@ noncomputable def minorProd [Fintype T] (c : T → Fin p → ℕ) (c' : T → Fi
 def IsPerp (ε : T → Fin p → κ → R) (φ : T → Fin q → κ → R) : Prop :=
   ∀ t a b, ε t a ⬝ᵥ φ t b = 0
 
-theorem laplacian_xForm_mul_yForm (t : T) (a : Fin p) (b : Fin q) (ε φ : κ → R) :
-    laplacian t a b (xForm t a ε * yForm t b φ : Poly R T p q κ) = C (ε ⬝ᵥ φ) := by
-  classical
-  have h1 (k : κ) : pderiv (yVar t b k) (xForm t a ε : Poly R T p q κ) = 0 := by
-    simp [xForm_apply, pderiv_X]
-  have h2 (k : κ) : pderiv (yVar t b k) (yForm t b φ : Poly R T p q κ) = C (φ k) := by
-    simp [yForm_apply, pderiv_X, Pi.single_apply]
-  have h3 (k : κ) : pderiv (xVar t a k) (xForm t a ε : Poly R T p q κ) = C (ε k) := by
-    simp [xForm_apply, pderiv_X, Pi.single_apply]
-  simp [laplacian_apply, h1, h2, h3, dotProduct, mul_comm]
-
 theorem map_rowForm (f : R →+* S) (t : T) (r : Fin p ⊕ Fin q) (v : κ → R) :
     MvPolynomial.map f (rowForm t r v) = rowForm t r (f ∘ v) := by
   simp [rowForm_apply]
@@ -451,12 +440,6 @@ noncomputable def colRep : Representation R (T → GL κ R) (Poly R T p q κ) wh
   toFun g := (colAct R T p q κ g).toLinearMap
   map_one' := by rw [map_one]; rfl
   map_mul' g h := by rw [map_mul]; rfl
-
-theorem colAct_xForm (g : T → GL κ R) (t : T) (a : Fin p) (ε : κ → R) :
-    colAct R T p q κ g (xForm t a ε) = xForm t a (covecAct (g t) ε) := colSubst_xForm _ _ _ _ _
-
-theorem colAct_yForm (g : T → GL κ R) (t : T) (b : Fin q) (φ : κ → R) :
-    colAct R T p q κ g (yForm t b φ) = yForm t b (vecAct (g t) φ) := colSubst_yForm _ _ _ _ _
 
 theorem colAct_minorProd [Fintype T] (g : T → GL κ R) (c : T → Fin p → ℕ) (c' : T → Fin q → ℕ)
     (ε : T → Fin p → κ → R) (φ : T → Fin q → κ → R) :

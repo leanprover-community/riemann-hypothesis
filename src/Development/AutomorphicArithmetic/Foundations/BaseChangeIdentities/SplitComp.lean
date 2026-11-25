@@ -44,8 +44,6 @@ noncomputable section
 
 open NumberField IsDedekindDomain GlobalTheory.CuspRep GlobalTheory.PRep GlobalTheory.UnitaryBC
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace UpperTheory.BaseChangeIdentities
 
 theorem splitComp (H : GlobalTheory.BcSpeh.BcSpeh) (E : Type) [Field E] [NumberField E] [IsCMField E]

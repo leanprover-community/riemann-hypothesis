@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RelAmpleDiagonalPullbackBaseChange
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ClsLinCombSingle
 public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.ExistsGenThetaOfIsAbelianScheme
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsPolAVHypSRetract
@@ -178,16 +179,8 @@ theorem cls_diag_lam_pull {S S' : Scheme.{0}} {G : Over S} {H : Over S'} [GrpObj
 theorem diag_square {S S' : Scheme.{0}} {A : Over S'} {B : Over S} {φ : A.left ⟶ B.left}
     {φ₂ : (A ⊗ A).left ⟶ (B ⊗ B).left} (hs : IsSquare φ φ₂) :
     (lift (𝟙 A) (𝟙 A)).left ≫ φ₂ = φ ≫ (lift (𝟙 B) (𝟙 B)).left := by
-  have a₁ := congrArg (fun q => q.left) (lift_fst (𝟙 B) (𝟙 B))
-  have a₂ := congrArg (fun q => q.left) (lift_snd (𝟙 B) (𝟙 B))
-  have b₁ := congrArg (fun q => q.left) (lift_fst (𝟙 A) (𝟙 A))
-  have b₂ := congrArg (fun q => q.left) (lift_snd (𝟙 A) (𝟙 A))
-  simp only [Over.comp_left, Over.id_left] at a₁ a₂ b₁ b₂
-  apply pullback.hom_ext
-  · show (_ ≫ _) ≫ (fst B B).left = (_ ≫ _) ≫ (fst B B).left
-    rw [Category.assoc, hs.1, ← Category.assoc, b₁, Category.assoc, a₁]; simp
-  · show (_ ≫ _) ≫ (snd B B).left = (_ ≫ _) ≫ (snd B B).left
-    rw [Category.assoc, hs.2, ← Category.assoc, b₂, Category.assoc, a₂]; simp
+  intros
+  apply _root_.GlobalTheory.DiagAmpleBC.diag_comp <;> assumption
 
 theorem eq_of_lam_of_torsion : ∀ (V : Type) [CommRing V] [IsDomain V] [CharZero V] (D : DegPre V) {S : Scheme.{0}} (B : Over S) [GrpObj B] [IsCommMonObj B] (P : LB (G2 B).left), P.IsLB → ∀ (t : Sp V ⟶ S) (a₁ a₂ : D.P.A.left ⟶ B.left) (aa₁ aa₂ : (G2 D.P.A).left ⟶ (G2 B).left), IsGrpPullback D.P.A B t a₁ → IsGrpPullback D.P.A B t a₂ → IsSquare a₁ aa₁ → IsSquare a₂ aa₂ → LBIso (abelian₂ D.P.A D.P.L) (P.pull aa₁) → LBIso (abelian₂ D.P.A D.P.L) (P.pull aa₂) → ∀ n : ℕ, 3 ≤ n → ∀ (F : Type) [Field F] [IsAlgClosed F] [Algebra (FractionRing V) F], (∀ x : TF (R := V) F ⟶ D.P.A, x ^ n = 1 → x.left ≫ a₁ = x.left ≫ a₂) → a₁ = a₂ := by
   intro V _ _ _ D S B _ _ P hP t a₁ a₂ aa₁ aa₂ g₁ g₂ s₁ s₂ w₁ w₂ n hn F _ _ _ hfix
@@ -1100,8 +1093,6 @@ theorem gm_const {S S₀ : Scheme.{0}} (i : S ⟶ S₀) (B₀ : Over S₀) [GrpO
   rw [gm_val c z ⊤ trivial, gm_val c' z ⊤ trivial]
   exact (congrArg (S.presheaf.germ ⊤ z trivial).hom ((key c hc).trans (key c' hc').symm))
 
-private theorem inv_mul_cancel_left' {G : Type} [Group G] (a s b : G) : a * s⁻¹ * (s * b) = a * b := by group
-
 theorem exists_const {K : Type} [Field K] (k₀ : Subfield K) {B₀ B₁ : Scheme.{0}} {M₀ : LB B₀} {M₁ : LB B₁} (hM₀ : M₀.IsLB)
     (hM₁ : M₁.IsLB) {κ₀ : B₀ ⟶ B₁} {v : LB.Iso M₀ (M₁.pull κ₀)} (hv : v.IsGen) (p : Fin 4 → (Sp k₀ ⟶ B₀))
     (τ₁ : LB.Gen (LB.LinComb M₀ p ![-1, 1, 1, -1])) (hτ : τ₁.IsGen) (z : Sp K) (m : Fin 4 → M₁.ι)
@@ -1137,7 +1128,7 @@ theorem exists_const {K : Type} [Field K] (k₀ : Subfield K) {B₀ B₁ : Schem
   simp only [trF, Fin.prod_univ_four, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val, zpow_neg, zpow_one,
     mul_inv, inv_inv]
   generalize val τ₁ i z I = s
-  rw [mul_comm _ s, inv_mul_cancel_left' _ s]
+  rw [mul_comm _ s, mul_inv_mul_mul_cancel _ s]
   ac_rfl
 
 theorem main : ∀ (R : Type) [CommRing R] [IsDomain R]

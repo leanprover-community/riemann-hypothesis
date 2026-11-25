@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EtaleHomotopyInvariantTwistsOfRingEquiv
 public import Development.AbelianVarietyTheory.Definitions.Divisors.PullHlComp
 public import Mathlib.RingTheory.PicardGroup
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ChernClassKummerClassAdditive
@@ -288,21 +289,7 @@ namespace GlobalTheory.EtC.GmAic
 
 theorem pull_spMap_bijective (R : Type) [CommRing R] {A A' : Type} [CommRing A] [CommRing A'] (e : A ≃+* A')
     (F : Shv R) (n : ℤ) : Function.Bijective (pull R (spMap (e : A →+* A')) F n) := by
-  have key : ∀ {B B' : Type} [CommRing B] [CommRing B'] (g : B ≃+* B') (x : H R (sp B') F n),
-      pull R (spMap (g : B →+* B')) F n (pull R (spMap (g.symm : B' →+* B)) F n x) = x := by
-    intro B B' _ _ g x
-    rw [← pull_comp]
-    have h : spMap (g : B →+* B') ≫ spMap (g.symm : B' →+* B) = 𝟙 _ := by
-      rw [← Functor.map_comp, ← Spec.map_comp]
-      have h' : CommRingCat.ofHom (g.symm : B' →+* B) ≫ CommRingCat.ofHom (g : B →+* B') = 𝟙 _ := by
-        ext y; simp
-      rw [h', Spec.map_id, CategoryTheory.Functor.map_id]
-    rw [h, pull_id]
-  refine ⟨fun x y hxy => ?_, fun x => ⟨_, key e x⟩⟩
-  have hx := key e.symm x
-  have hy := key e.symm y
-  simp only [RingEquiv.symm_symm] at hx hy
-  rw [← hx, ← hy, hxy]
+  apply _root_.GlobalTheory.EtC.HInvIso.pull_spMap_bij <;> assumption
 
 def laurentEquiv (hC3 : C3) (q : ℕ) [NeZero q] (T : Type) [CommRing T] [IsDomain T] [IsLocalRing T] (hA : AIC T)
     (hq : IsUnit (q : T)) (n i : ℤ) :

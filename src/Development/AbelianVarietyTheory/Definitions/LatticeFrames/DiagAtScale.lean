@@ -49,8 +49,6 @@ namespace GlobalTheory.Core.Diag
 def TrueS (D : D7) : Prop :=
   Formalism.BasicNotions.Ties D ∧ Formalism.MainNotions.LocalBesselAndTopKernel.FamilyMidVolume D ∧ Formalism.L2.SG.Pf.LocCP.LocTied D ∧ Nonempty (Formalism.L2.SG.SpectralTiesReal.STies D)
 
-def e0 (D : D7) (C0 : ℝ) : ℝ := 2 * C0 / AdmissibleBoundsFromSource.Gam D + 2 * AdmissibleBoundsFromSource.xK D
-
 def gamL (D : D7) (L C : ℝ) : ℝ := Real.exp (C * (D.R.m : ℝ) ^ 5 * D.R.f * L)
 
 def SDiagAt (D : D7) (u : D.what₂.Word) (Γ c : ℝ) : Prop :=

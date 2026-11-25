@@ -1023,7 +1023,7 @@ open scoped ENNReal Pointwise
 
 private theorem inv_map_sub {G P : Type} [Group G] [Group P] [MeasurableSpace G] [MeasurableSpace P]
     [MeasurableInv G] [MeasurableInv P] (μ : Measure G) [μ.IsInvInvariant] (U : Subgroup G)
-    (f : G →* P) (hf : Measurable f) (hU : MeasurableSet (U : Set G)) (E : Set P) (hE : MeasurableSet E) :
+    (f : G →* P) (hf : Measurable f) (E : Set P) (hE : MeasurableSet E) :
     ((μ.restrict (U : Set G)).map f) E⁻¹ = ((μ.restrict (U : Set G)).map f) E := by
   rw [Measure.map_apply hf hE.inv, Measure.map_apply hf hE, Measure.restrict_apply (hf hE.inv),
     Measure.restrict_apply (hf hE)]
@@ -1054,9 +1054,8 @@ theorem UpperTheory.local_unimodular_of_exists_haar_measure :
       have h2 : Measurable fun g : G => fun v : S => p v g :=
         Measurable.of_eval fun v => (hRP.cp v).measurable
       exact h1.prodMk h2
-    have hU : MeasurableSet (US p K S : Set G) := (hRP.opnU S).measurableSet
     have h1 := inv_all ((μ.restrict (US p K S : Set G)).map (prS q p S))
-      (inv_map_sub μ (US p K S) (prS q p S) hf hU) (A ×ˢ Set.pi Set.univ B)
+      (inv_map_sub μ (US p K S) (prS q p S) hf) (A ×ˢ Set.pi Set.univ B)
     have hset : (A ×ˢ Set.pi Set.univ B)⁻¹ = A⁻¹ ×ˢ Set.pi Set.univ (fun v => (B v)⁻¹) := by
       ext ⟨x, y⟩
       simp [Set.mem_prod, Set.mem_pi, Set.mem_inv]

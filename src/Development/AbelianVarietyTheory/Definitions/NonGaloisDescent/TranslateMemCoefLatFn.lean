@@ -53,8 +53,6 @@ open scoped TensorProduct
 
 namespace GlobalTheory.ExportSeries
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} {m n : ℕ}
 
 abbrev GLR (D : D7) (n : ℕ) : Type := D.what₂.Tau → GL (Fin n) ℂ
@@ -278,14 +276,6 @@ def Weight.first (D : D7) (n : ℕ) (p q : D.what₂.Tau → ℕ) (c : D.what₂
     have : i.val ≤ j.val := hij
     dsimp only
     split_ifs <;> omega⟩
-
-theorem Weight.first_good {p q : D.what₂.Tau → ℕ} (c : D.what₂.Tau → ℤ) (hp : ∀ τ, 0 < p τ) (h : ∀ τ, p τ + q τ ≤ n) :
-    (Weight.first D n p q c).Good := by
-  refine ⟨h, ?_⟩
-  intro τ i
-  have := hp τ
-  simp only [Weight.first]
-  split_ifs <;> omega
 
 end GlobalTheory.ExportSeries
 

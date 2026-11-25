@@ -854,7 +854,7 @@ theorem thetaVectorUpToUnits_thZero_of_even : ∀ (D : D7) (cc : Ideal (𝓞 D.h
   obtain ⟨n', hn'⟩ := hN'
   obtain rfl : N = n * 2 := by omega
   obtain rfl : N' = n' * 2 := by omega
-  have hS : B.StdOK := Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.SO.stdOK B hcc hδ
+  have hS : B.StdOK := GlobalTheory.FourthRootStd.stdOK B hcc hδ
   refine ⟨bas B n n', B.kappa ^ (n' * n), _root_.GlobalTheory.BaseVacuum.onB_bas D cc δ B n n', _root_.GlobalTheory.KappaPowMod.kappa_pow_mod1All D cc δ B _, ?_⟩
   funext z
   obtain ⟨hsc', hF0', hidx', hprod⟩ := _root_.GlobalTheory.BaseVacuum.prod_blk_inter B.L B.ω₀ B.cq (Fin n' × Fin n) (Fin 4 × D.what₂.Tau)
@@ -1110,11 +1110,7 @@ namespace GlobalTheory.SelfDualDetNorm
 
 theorem star_eq_conj (D : D7) (x : D.host.E) :
     (letI := D.host.cmStar; star x) = D.host.conj x := by
-  letI := D.host.cmStar
-  apply D.host.φ₀.injective
-  letI := D.host.isCMField_hostE
-  show D.host.φ₀ (IsCMField.complexConj D.host.E x) = _
-  rw [NumberField.IsCMField.complexEmbedding_complexConj, Formalism.HC.HostAx.conjE_apply]
+  apply _root_.GlobalTheory.CharModOne.star_eq_conj <;> assumption
 
 theorem isSdLat_of_isSDLat {E : Type} [Field E] [NumberField E] [StarRing E] {n : ℕ}
     (L : Submodule (𝓞 E) (Fin n → E)) (hL : IsSDLat E n L) : Formalism.L2.Col.IsSdLat (E := E) L := by

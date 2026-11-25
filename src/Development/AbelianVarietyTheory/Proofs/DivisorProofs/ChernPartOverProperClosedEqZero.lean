@@ -73,8 +73,6 @@ import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
-
 open scoped TensorProduct
 
 namespace GlobalTheory.WeilIntegral

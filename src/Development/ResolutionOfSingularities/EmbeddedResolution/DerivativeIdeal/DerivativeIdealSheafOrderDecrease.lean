@@ -212,15 +212,10 @@ theorem isNoetherianRing_stalk (k : Type u) [Field k] {X : Scheme.{u}}
   have : IsLocallyNoetherian X := ⟨fun U => isNoetherianRing_sections_of_smooth k p U.1 U.2⟩
   infer_instance
 
-private theorem exists_isAffineOpen_mem (X : Scheme.{u}) (x : X) :
-    ∃ U : X.Opens, x ∈ U ∧ IsAffineOpen U :=
-  ⟨(X.affineCover.f (X.affineCover.idx x)).opensRange, X.affineCover.covers x,
-    isAffineOpen_opensRange _⟩
-
 theorem formallySmooth_stalk (k : Type u) [Field k] {X : Scheme.{u}}
     (p : X ⟶ Spec (CommRingCat.of k)) [AlgebraicGeometry.Smooth p] (x : X) :
     @Algebra.FormallySmooth k _ _ _ (stalkAlgebra k p x) := by
-  obtain ⟨U, hxU, hU⟩ := exists_isAffineOpen_mem X x
+  obtain ⟨⟨U, hU⟩, hxU⟩ := Scheme.exists_affineOpens_mem x
   let algU : Algebra k Γ(X, U) := sectionsAlgebra k p U
   let algStalk : Algebra k (X.presheaf.stalk x) := stalkAlgebra k p x
   let algGerm : Algebra Γ(X, U) (X.presheaf.stalk x) := (X.presheaf.germ U x hxU).hom.toAlgebra
@@ -251,7 +246,7 @@ theorem finite_kaehlerDifferential_stalk (k : Type u) [Field k] {X : Scheme.{u}}
     Module.Finite (X.presheaf.stalk x) (KaehlerDifferential k (X.presheaf.stalk x)) := by
   let algStalk : Algebra k (X.presheaf.stalk x) := stalkAlgebra k p x
   show Module.Finite (X.presheaf.stalk x) (KaehlerDifferential k (X.presheaf.stalk x))
-  obtain ⟨U, hxU, hUaff⟩ := exists_isAffineOpen_mem X x
+  obtain ⟨⟨U, hUaff⟩, hxU⟩ := Scheme.exists_affineOpens_mem x
   let algSections : Algebra k Γ(X, U) := sectionsAlgebra k p U
   let algGerm : Algebra Γ(X, U) (X.presheaf.stalk x) := (X.presheaf.germ U x hxU).hom.toAlgebra
   have : IsScalarTower k Γ(X, U) (X.presheaf.stalk x) :=
@@ -292,71 +287,19 @@ theorem isUnit_natCast_stalk (k : Type u) [Field k] [CharZero k] {X : Scheme.{u}
   have h := hk.map (stalkAlgebraMap k p x)
   rwa [map_natCast] at h
 
-private theorem formallySmooth_of_isAlgebraic (k : Type u) [Field k] [CharZero k] (L : Type u)
-    [Field L] [Algebra k L] (A₀ : Type u) [CommRing A₀] [IsDomain A₀] [Algebra k A₀] [Algebra A₀ L]
-    [IsScalarTower k A₀ L] [Algebra.FormallySmooth k A₀] [Algebra.IsAlgebraic A₀ L]
-    (hinj : Function.Injective (algebraMap A₀ L)) :
-    Algebra.FormallySmooth k L := by
-  have hunit : ∀ y : nonZeroDivisors A₀, IsUnit (algebraMap A₀ L y) := by
-    intro y
-    refine isUnit_iff_ne_zero.mpr (fun hy => ?_)
-    have h0 : (y : A₀) = 0 := hinj (by rw [hy, map_zero])
-    exact nonZeroDivisors.coe_ne_zero y h0
-  let algFL : Algebra (FractionRing A₀) L := (IsLocalization.lift hunit).toAlgebra
-  have _twr1 : IsScalarTower k A₀ (FractionRing A₀) := inferInstance
-  have _twr2 : IsScalarTower A₀ (FractionRing A₀) L :=
-    IsScalarTower.of_algebraMap_eq (fun a => (IsLocalization.lift_eq hunit a).symm)
-  have _twr3 : IsScalarTower k (FractionRing A₀) L := by
-    refine IsScalarTower.of_algebraMap_eq (fun c => ?_)
-    rw [IsScalarTower.algebraMap_apply k A₀ (FractionRing A₀) c,
-      ← IsScalarTower.algebraMap_apply A₀ (FractionRing A₀) L,
-      ← IsScalarTower.algebraMap_apply k A₀ L]
-  have _fs1 : Algebra.FormallySmooth A₀ (FractionRing A₀) :=
-    Algebra.FormallySmooth.of_isLocalization (nonZeroDivisors A₀)
-  have _fs2 : Algebra.FormallySmooth k (FractionRing A₀) :=
-    Algebra.FormallySmooth.comp k A₀ (FractionRing A₀)
-  have _hchar : CharZero (FractionRing A₀) :=
-    charZero_of_injective_algebraMap (RingHom.injective (algebraMap k (FractionRing A₀)))
-  have _halgF : Algebra.IsAlgebraic (FractionRing A₀) L := by
-    refine ⟨fun a => ?_⟩
-    obtain ⟨q, hq0, hqa⟩ := (Algebra.IsAlgebraic.isAlgebraic a : IsAlgebraic A₀ a)
-    refine ⟨q.map (algebraMap A₀ (FractionRing A₀)), ?_, ?_⟩
-    · exact (Polynomial.map_ne_zero_iff
-        (IsFractionRing.injective A₀ (FractionRing A₀))).mpr hq0
-    · rw [Polynomial.aeval_map_algebraMap]
-      exact hqa
-  have _hsep : Algebra.IsSeparable (FractionRing A₀) L := by
-    refine ⟨fun a => ?_⟩
-    exact (minpoly.irreducible
-      ((Algebra.IsAlgebraic.isAlgebraic a : IsAlgebraic (FractionRing A₀) a).isIntegral)).separable
-  have _fet : Algebra.FormallyEtale (FractionRing A₀) L :=
-    Algebra.FormallyEtale.of_isSeparable ..
-  have _fs3 : Algebra.FormallySmooth (FractionRing A₀) L := inferInstance
-  exact Algebra.FormallySmooth.comp k (FractionRing A₀) L
-
-private theorem formallySmooth_of_isTranscendenceBasis (k : Type u) [Field k] [CharZero k]
-    (L : Type u) [Field L] [Algebra k L] {ι : Type u} {x : ι → L}
-    (hx : IsTranscendenceBasis k x) : Algebra.FormallySmooth k L := by
-  have hai : AlgebraicIndependent k x := hx.1
-  have _fsA : Algebra.FormallySmooth k ↥(Algebra.adjoin k (Set.range x)) :=
-    Algebra.FormallySmooth.of_equiv hai.aevalEquiv
-  have _halg : Algebra.IsAlgebraic ↥(Algebra.adjoin k (Set.range x)) L := hx.isAlgebraic
-  have _hdom : IsDomain ↥(Algebra.adjoin k (Set.range x)) := inferInstance
-  exact formallySmooth_of_isAlgebraic k L ↥(Algebra.adjoin k (Set.range x))
-    (fun a b h => Subtype.ext h)
-
-private theorem formallySmooth_of_charZero (k : Type u) [Field k] [CharZero k] (L : Type u) [Field L]
-    [Algebra k L] : Algebra.FormallySmooth k L := by
-  obtain ⟨B, hB⟩ := exists_isTranscendenceBasis k L
-  exact formallySmooth_of_isTranscendenceBasis k L hB
-
 theorem formallySmooth_residueField (k : Type u) [Field k] [CharZero k] {X : Scheme.{u}}
     (p : X ⟶ Spec (CommRingCat.of k)) [AlgebraicGeometry.Smooth p] (x : X)
     [Algebra k (IsLocalRing.ResidueField (X.presheaf.stalk x))]
     (_h : algebraMap k (IsLocalRing.ResidueField (X.presheaf.stalk x)) =
       (IsLocalRing.residue (X.presheaf.stalk x)).comp (stalkAlgebraMap k p x)) :
-    Algebra.FormallySmooth k (IsLocalRing.ResidueField (X.presheaf.stalk x)) :=
-  formallySmooth_of_charZero k (IsLocalRing.ResidueField (X.presheaf.stalk x))
+    Algebra.FormallySmooth k (IsLocalRing.ResidueField (X.presheaf.stalk x)) := by
+  let L := IsLocalRing.ResidueField (X.presheaf.stalk x)
+  obtain ⟨B, hB⟩ := exists_isTranscendenceBasis k L
+  have : Algebra.IsAlgebraic (IntermediateField.adjoin k (Set.range ((↑) : B → L))) L :=
+    hB.isAlgebraic_field
+  have : CharZero (IntermediateField.adjoin k (Set.range ((↑) : B → L))) :=
+    charZero_of_injective_algebraMap (algebraMap k _).injective
+  exact Algebra.FormallySmooth.of_algebraicIndependent_of_isSeparable hB.1
 
 theorem orderAt_derivIdealSheafIterate_eq_sub (k : Type u) [Field k] [CharZero k] {X : Scheme.{u}}
     (p : X ⟶ Spec (CommRingCat.of k)) [AlgebraicGeometry.Smooth p] (I : X.IdealSheafData)
@@ -448,32 +391,6 @@ theorem isClosed_orderAtLeastLocus (k : Type u) [Field k] [CharZero k] {X : Sche
     rw [← support_derivIdealSheafIterate_eq_orderAtLeastLocus k p I hm1]
     exact (derivIdealSheafIterate k p (m - 1) I).support.2
 
-private theorem ideal_eq_top_of_support_eq_empty {X : Scheme.{u}} (J : X.IdealSheafData)
-    (hJ : (J.support : Set X) = (∅ : Set X)) (U : X.affineOpens) :
-    J.ideal U = ⊤ := by
-  have hcover : (⨆ f : (J.ideal U : Set Γ(X, U.1)), X.basicOpen (f : Γ(X, U.1))) = U.1 := by
-    refine le_antisymm (iSup_le fun f => X.basicOpen_le (f : Γ(X, U.1))) ?_
-    rw [SetLike.le_def]
-    intro x hxU
-    have hxs : x ∉ J.support := by
-      intro hc
-      have hmem : x ∈ (J.support : Set X) := hc
-      rw [hJ] at hmem
-      simp at hmem
-    have hnle : ¬ stalkIdeal J x ≤ IsLocalRing.maximalIdeal (X.presheaf.stalk x) := fun hc =>
-      hxs ((mem_support_iff_stalkIdeal_le_maximalIdeal J x).mpr hc)
-    rw [stalkIdeal_eq_map_germ J x U hxU, Ideal.map_le_iff_le_comap,
-      SetLike.not_le_iff_exists] at hnle
-    obtain ⟨a, ha, ha2⟩ := hnle
-    have hbo : x ∈ X.basicOpen a := by
-      refine (X.mem_basicOpen a x hxU).mpr ?_
-      by_contra hc
-      exact ha2 (Ideal.mem_comap.mpr ((IsLocalRing.mem_maximalIdeal _).mpr
-        (mem_nonunits_iff.mpr hc)))
-    exact Opens.mem_iSup.mpr ⟨⟨a, ha⟩, hbo⟩
-  have hspan := (IsAffineOpen.iSup_basicOpen_eq_self_iff U.2).mp hcover
-  rwa [Ideal.span_eq] at hspan
-
 theorem derivIdealSheafIterate_eq_top_of_orderAtLeastLocus_eq_empty (k : Type u) [Field k] [CharZero k] {X : Scheme.{u}}
     (p : X ⟶ Spec (CommRingCat.of k)) [AlgebraicGeometry.Smooth p] (I : X.IdealSheafData)
     (m : ℕ) (h : orderAtLeastLocus I (m + 1) = (∅ : Set X)) :
@@ -482,9 +399,7 @@ theorem derivIdealSheafIterate_eq_top_of_orderAtLeastLocus_eq_empty (k : Type u)
     have h2 := support_derivIdealSheafIterate_eq_orderAtLeastLocus k p I (m := m + 1) (Nat.le_add_left 1 m)
     simp only [Nat.add_sub_cancel] at h2
     exact h2.trans h
-  refine le_antisymm le_top ?_
-  intro U
-  rw [ideal_eq_top_of_support_eq_empty (derivIdealSheafIterate k p m I) hsupp U]
-  exact le_top
+  rw [← Scheme.IdealSheafData.support_eq_bot_iff, SetLike.ext'_iff]
+  simpa using hsupp
 
 end FunctorialResolution.EmbeddedResolution

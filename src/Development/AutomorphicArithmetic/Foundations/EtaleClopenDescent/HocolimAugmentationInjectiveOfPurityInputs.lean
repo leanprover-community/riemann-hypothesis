@@ -461,9 +461,6 @@ theorem main : EtaleAugInjAt := by
 
 end UpperTheory.Cb.ConeDifferentials
 
-theorem UpperTheory.Cb.hocolimAugmentation_injective_of_purity_inputs :
-    LateralTheory.CohomologicalPurity.LeafAW → LateralTheory.CohomologicalPurity.LeafBd → LateralTheory.CohomologicalPurity.LeafExc → LateralTheory.CohomologicalPurity.LeafHens → LateralTheory.CohomologicalPurity.LeafIndExc → LateralTheory.CohomologicalPurity.LeafThom → LateralTheory.CohomologicalPurity.LeafChart → LateralTheory.CohomologicalPurity.LeafCl → LateralTheory.CohomologicalPurity.TubeCut.EtaleAugInjAt :=
-  fun _ _ _ _ _ _ _ _ => UpperTheory.Cb.ConeDifferentials.main
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto

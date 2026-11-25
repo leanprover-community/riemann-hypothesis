@@ -51,8 +51,6 @@ public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LevelLi
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open NumberField IsDedekindDomain
@@ -69,8 +67,6 @@ open scoped TensorProduct
 
 
 namespace GlobalTheory.BigOn.Exp.TupLe
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 def AllPts (Q : ∀ {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : Formalism.MainNotions.G.Inst D L} {Gl : Formalism.MainNotions.G.LatInst D} {Kc : Formalism.MainNotions.G.Consts}
     {Y : DivX D} {cX : ExtraC} {ex : Extra D L hT Gi Gl Kc Y cX} {Csz : ℝ}, PtAt ex Csz → Fin D.R.m → Prop) : Prop :=

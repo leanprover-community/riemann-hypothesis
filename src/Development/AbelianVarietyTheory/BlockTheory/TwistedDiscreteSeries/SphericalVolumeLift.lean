@@ -51,8 +51,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open GlobalTheory.AutomorphicL2Unitary GlobalTheory.Cusp GlobalTheory.AdelicU GlobalTheory.AutMult GlobalTheory.Cont
 open GlobalTheory.Mem.Th (CptF)
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 abbrev FinPl (D : D7) : Type := HeightOneSpectrum (𝓞 D.host.F)

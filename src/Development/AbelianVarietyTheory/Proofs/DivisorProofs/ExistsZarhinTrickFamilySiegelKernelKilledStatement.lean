@@ -965,10 +965,7 @@ theorem act_natCast (hr : IsRAct A act) (n : ℕ) : act (n : O) = 𝟙 A ^ n := 
 
 theorem act_sum (hr : IsRAct A act) {κ : Type} (s : Finset κ) (f : κ → O) :
     act (∑ i ∈ s, f i) = ∏ i ∈ s, act (f i) := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => rw [Finset.sum_empty, Finset.prod_empty, act_zero hr]
-  | insert a s ha ih => rw [Finset.sum_insert ha, Finset.prod_insert ha, hr.2.2.2, ih]
+  apply _root_.GlobalTheory.ZarhinUniqIso.act_sum' <;> assumption
 
 end Act
 

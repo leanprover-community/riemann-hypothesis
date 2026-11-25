@@ -251,16 +251,10 @@ theorem map_slope_mu : MapMu := by
 theorem scale_sandwich_bound : ScaleSandwich := by
   intro K V ι _ _ _ _ _ _ _ _ _ _ b X hX A B n hA hA0 hn hBA hnA
   have hne : Nonempty ι := by
-    by_contra h
-    rw [not_nonempty_iff] at h
-    apply hA0
-    rw [eq_bot_iff]
-    intro x _
-    have : x = 0 := b.repr.injective (by ext i; exact (h.false i).elim)
-    exact (Submodule.mem_bot _).2 this
-  have hBfg : B.FG := by
-    have : IsNoetherian (𝓞 K) A := isNoetherian_of_fg_of_noetherian A hA
-    exact (isNoetherian_submodule.1 this) B hBA
+    obtain ⟨x, -, hx⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hA0
+    have := nontrivial_of_ne x 0 hx
+    exact b.index_nonempty
+  have hBfg : B.FG := hA.of_le hBA
   set φ : V →ₗ[K] V := (n : K) • (LinearMap.id : V →ₗ[K] V) with hφ
   have hφx : ∀ x, φ x = (n : 𝓞 K) • x := by
     intro x
@@ -323,9 +317,7 @@ theorem scale_sandwich_bound : ScaleSandwich := by
 theorem levelCompare_statement : LevelCompare := by
   intro K V ι _ _ _ _ _ _ _ _ _ _ b X hX R R' h hR hR'0 hh hle hhR
   have hR0 : R ≠ ⊥ := fun e => hR'0 (le_bot_iff.mp (e ▸ hle))
-  have hR'fg : R'.FG := by
-    have : IsNoetherian (𝓞 K) R := isNoetherian_of_fg_of_noetherian R hR
-    exact (isNoetherian_submodule.1 this) R' hle
+  have hR'fg : R'.FG := hR.of_le hle
   obtain ⟨-, h1, h2, h3, h4⟩ := scale_sandwich_bound K V ι b X hX R R' h hR hR0 hh hle hhR
   have hh' : (0 : ℝ) < h := by exact_mod_cast hh
   have hs : 0 < Real.sqrt h := Real.sqrt_pos.2 hh'

@@ -19,8 +19,6 @@ open Formalism.L2.Forms Formalism.L2.KerInert.SecondKernelInstances
 
 namespace Formalism.L2.PairingIndexBounds.F
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Gen
 
 variable {p : ℕ} [Fact p.Prime] (X : Sys p) [IsFractionRing X.G.O X.G.Kf] (E : CEmbC X.G) (D : D7)

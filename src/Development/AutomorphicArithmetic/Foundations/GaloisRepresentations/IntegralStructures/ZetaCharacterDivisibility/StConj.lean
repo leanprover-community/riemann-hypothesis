@@ -53,7 +53,6 @@ open Formalism.MainNotions.SumRepresentations.At (sumRep)
 open GlobalTheory.TripleGal (rk1)
 open UpperTheory.V.Af (FrobEig algSat RepIso)
 open UpperTheory.Gal.crystallineComparison (GenericMul rootPol)
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 open GlobalTheory.PRep Formalism.UG GlobalTheory.DefU
 

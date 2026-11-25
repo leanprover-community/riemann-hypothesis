@@ -492,17 +492,7 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory.HTLat GlobalTheory.Published GlobalTheory.Published.AbVarRed IsLocalRing
 attribute [local instance] Over.cartesianMonoidalCategory
 
-set_option autoImplicit false
-
 namespace GlobalTheory.FixInertUnram
-
-theorem mem_nonunits_iff' {F : Type} [Field F] (A : ValuationSubring F) (x : F) :
-    x ∈ A.nonunits ↔ x = 0 ∨ x⁻¹ ∉ A := by
-  rw [ValuationSubring.mem_nonunits_iff]
-  rcases eq_or_ne x 0 with rfl | hx
-  · simp
-  · rw [← A.valuation_le_one_iff, map_inv₀, not_le, one_lt_inv₀ ((Valuation.pos_iff _).2 hx)]
-    simp [hx]
 
 theorem div_uniformizer_mem : ∀ (R K Ω : Type) [CommRing R] [IsDomain R] [IsDiscreteValuationRing R]
     [PerfectField (ResidueField R)] [Field K] [Algebra R K] [IsFractionRing R K] [Field Ω] [Algebra K Ω]
@@ -527,7 +517,7 @@ theorem div_uniformizer_mem : ∀ (R K Ω : Type) [CommRing R] [IsDomain R] [IsD
     rw [← he y]
     exact (IntermediateField.mem_fixedField_iff _ _).1 hx σ hσ
   have hyW : y ∈ W.nonunits := by
-    rw [mem_nonunits_iff'] at hxV ⊢
+    rw [ValuationSubring.mem_nonunits_iff_or] at hxV ⊢
     rcases hxV with h | h
     · exact Or.inl (Subtype.ext h)
     · refine Or.inr fun h' => h ?_

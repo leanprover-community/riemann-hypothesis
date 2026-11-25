@@ -55,7 +55,7 @@ open scoped InnerProductSpace ComplexConjugate ContDiff
 open PositivityTheory.RgTw (Mat G th IsThetaOp)
 open PositivityTheory.RgBcC PositivityTheory.RgBcC.Real PositivityTheory.RgBcC.RealD UpperTheory.RealTr
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 theorem UpperTheory.RealTr.lgCpt :
     ∀ (n : ℕ) (R : ℝ), IsCompact {y : G n | lg y.val ≤ R} := by

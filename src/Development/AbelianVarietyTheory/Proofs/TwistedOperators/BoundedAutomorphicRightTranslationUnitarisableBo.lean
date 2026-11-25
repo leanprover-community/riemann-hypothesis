@@ -64,8 +64,6 @@ open scoped TensorProduct
 
 namespace GlobalTheory.FinZeta
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section
 
 variable {D : D7} {V : HSp D} {ν : Measure (GA D V)} {𝓕 : Set (GA D V)}

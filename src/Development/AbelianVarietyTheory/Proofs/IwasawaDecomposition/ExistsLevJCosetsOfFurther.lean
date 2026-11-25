@@ -582,28 +582,19 @@ def uQ (H0 : Formalism.L2.Herm.StepLevel hc S gp T f) (Q : Finset (HeightOneSpec
 def mkLevQ (H0 : Formalism.L2.Herm.StepLevel hc S gp T f) (Q : Finset (HeightOneSpectrum (𝓞 F)))
     (W : ∀ v, v ∈ Q → Subgroup (GL (Fin S.rank) (E ⊗[F] v.adicCompletion F)))
     (hWl : ∀ v hv, W v hv ≤ levelVL hc.sig S.gram v H0.Lb)
-    (hWQ : ∀ v hv, ∃ N : ℕ, 0 < N ∧ ∀ x, Formalism.L2.Herm.InPrinc hc S v N H0.Lb x → x ∈ W v hv)
-    (hQg : ∀ v ∈ Q, ∀ i, (gp i : 𝓞 F) ∉ v.asIdeal) (hQT : ∀ v ∈ Q, (T : 𝓞 F) ∉ v.asIdeal) :
+    (_hWQ : ∀ v hv, ∃ N : ℕ, 0 < N ∧ ∀ x, Formalism.L2.Herm.InPrinc hc S v N H0.Lb x → x ∈ W v hv)
+    (_hQg : ∀ v ∈ Q, ∀ i, (gp i : 𝓞 F) ∉ v.asIdeal) (_hQT : ∀ v ∈ Q, (T : 𝓞 F) ∉ v.asIdeal) :
     Formalism.L2.Herm.StepLevelQ hc S gp T f Q where
   Lb := H0.Lb
   Lb_fin := H0.Lb_fin
-  Lb_span := H0.Lb_span
   Lb_int := H0.Lb_int
   Lb_dual := H0.Lb_dual
-  Lb_index := H0.Lb_index
   Uloc := ulocQ H0 Q W
   Uloc_lev v := by
     by_cases h : v ∈ Q
     · rw [ulocQ_pos H0 Q W h]; exact hWl v h
     · rw [ulocQ_neg H0 Q W h]; exact H0.Uloc_lev v
   Uloc_hyp v h0 h1 hT hQ := by rw [ulocQ_neg H0 Q W hQ]; exact H0.Uloc_hyp v h0 h1 hT
-  Uloc_g i v h x hx := by
-    rw [ulocQ_neg H0 Q W (fun hq => hQg v hq i h)]; exact H0.Uloc_g i v h x hx
-  UlocAlt v h x := by
-    rw [ulocQ_neg H0 Q W (fun hq => hQT v hq h)]; exact H0.UlocAlt v h x
-  Uloc_Q v hv := by
-    obtain ⟨N, hN, h⟩ := hWQ v hv
-    exact ⟨N, hN, fun x hx => by rw [ulocQ_pos H0 Q W hv]; exact h x hx⟩
   U := uQ H0 Q W
   U_eq _ := Iff.rfl
 

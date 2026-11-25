@@ -54,8 +54,6 @@ open scoped TensorProduct NNReal Matrix SchwartzMap LineDeriv
 open NumberField IsDedekindDomain MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Matrix
 open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 section Tens
 variable {F : Type} [Field F] [NumberField F] {κ : Type} [Fintype κ]
 

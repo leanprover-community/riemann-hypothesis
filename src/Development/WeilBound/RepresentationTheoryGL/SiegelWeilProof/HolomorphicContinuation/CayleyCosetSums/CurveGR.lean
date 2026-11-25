@@ -52,7 +52,7 @@ open PositivityTheory.Rg.Sw PositivityTheory.Rg.Sw.LVs PositivityTheory.Rg.Sw.Ab
 
 variable {n : ℕ}
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 def dir1 (Z : M2 n) : M2 n := (1 / 2 : ℂ) • (Z + sig Z)
 

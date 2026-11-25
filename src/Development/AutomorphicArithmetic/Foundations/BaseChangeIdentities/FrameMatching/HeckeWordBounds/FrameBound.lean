@@ -1288,11 +1288,11 @@ theorem one_left (hKK : K' ≤ K) (hN : K'.relIndex K ≠ 0) (f : H → ℂ) (h 
     intro x k hk
     simp only [one, Set.indicator_apply, SetLike.mem_coe, K'.mul_mem_cancel_right hk]
   rw [conv_eq hKK hN _ _ hr h, finsum_eq_single _ (((1 : H)) : H ⧸ K')]
-  · have h1 : (((1 : H)) : H ⧸ K').out ∈ K' := (PositivityTheory.Rg.BcB.F.Hint.out_mem K' _).2 rfl
+  · have h1 : (((1 : H)) : H ⧸ K').out ∈ K' := (QuotientGroup.out_mem_iff (s := K')).2 rfl
     rw [one, Set.indicator_of_mem (show _ ∈ (K' : Set H) from h1), h _ (K'.inv_mem h1), ← mul_assoc,
       inv_mul_cancel₀ (Nat.cast_ne_zero.2 hN), one_mul]
   · intro q hq
-    have : q.out ∉ (K' : Set H) := fun hm => hq ((PositivityTheory.Rg.BcB.F.Hint.out_mem K' q).1 hm)
+    have : q.out ∉ (K' : Set H) := fun hm => hq ((QuotientGroup.out_mem_iff (s := K') (a := q)).1 hm)
     rw [one, Set.indicator_of_notMem this, zero_mul]
 
 theorem conv_assoc (hKK : K' ≤ K) (hN : K'.relIndex K ≠ 0) (hO : IsOpen (K' : Set H)) (f₁ f₂ f₃ : H → ℂ)

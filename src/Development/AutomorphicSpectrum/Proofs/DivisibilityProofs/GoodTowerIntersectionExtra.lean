@@ -681,51 +681,6 @@ theorem lat_core (𝔐 : HodgeCpt Y S y) (ψ : Ω₀ →+* Ω) (j : Li₀ →+ �
 
 end
 
-private theorem coordLat_lemma {S : Scheme} {R : Type} [CommRing R] {G : Over S} [GrpObj G]
-    {x : Spec (CommRingCat.of R) ⟶ S} {V : Type} [AddCommGroup V] [Module R V] (M : LieModel G x V)
-    {O : Type} [CommRing O] (act : OAct O G) : ∃ ρ : O →+* Module.End R V, M.IsActOf act.act ρ := by
-  have htan : ∀ (a : O) (e : V), IsTanAt G x (M.pt e ≫ act.act a) := by
-    intro a e
-    haveI := act.hom a
-    have h1 := M.tan e
-    simp only [IsTanAt] at h1 ⊢
-    rw [Over.comp_left, ← Category.assoc, h1, ← Over.comp_left, MonObj.one_comp]
-  choose F hF using fun a e => M.onto _ (htan a e)
-  have hadd : ∀ a e e', F a (e + e') = F a e + F a e' := by
-    intro a e e'
-    haveI := act.hom a
-    apply M.inj
-    rw [hF, M.add, M.add, hF, hF, MonObj.mul_comp]
-  have hsmul : ∀ a (r : R) e, F a (r • e) = r • F a e := by
-    intro a r e
-    apply M.inj
-    apply Over.OverMorphism.ext
-    simp only [hF, Over.comp_left, M.smul, Category.assoc]
-  let L : O → Module.End R V := fun a =>
-    { toFun := F a, map_add' := hadd a, map_smul' := hsmul a }
-  have hL : ∀ a e, M.pt (L a e) = M.pt e ≫ act.act a := hF
-  have hone : L 1 = 1 := by
-    ext e
-    apply M.inj
-    rw [hL, act.one, Category.comp_id]
-    rfl
-  have hmul : ∀ a b, L (a * b) = L a * L b := by
-    intro a b
-    ext e
-    apply M.inj
-    rw [Module.End.mul_apply, hL, hL, hL, show a * b = b * a from mul_comm a b, act.mul, Category.assoc]
-  have haddL : ∀ a b, L (a + b) = L a + L b := by
-    intro a b
-    ext e
-    apply M.inj
-    rw [LinearMap.add_apply, M.add, hL, hL, hL, act.add, MonObj.comp_mul]
-  have hzero : L 0 = 0 := by
-    have h := haddL 0 0
-    rw [add_zero] at h
-    exact add_left_cancel (h.symm.trans (add_zero _).symm)
-  exact ⟨{ toFun := L, map_one' := hone, map_mul' := hmul, map_zero' := hzero, map_add' := haddL },
-    fun a e => hL a e⟩
-
 private theorem coordLat_lemma_2 {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {X X' : Scheme}
     {t : SAB H X} {t' : SAB H X'} {f : X' ⟶ X} (m : SABMap t' t f) {Ω₀ Ω : Type} [Field Ω₀] [Field Ω]
     {ξ₀ : Sp Ω₀ ⟶ X} {ξ : Sp Ω ⟶ X'} {ψ : Ω₀ →+* Ω} {V V' : Type} [AddCommGroup V] [Module Ω₀ V]
@@ -751,7 +706,8 @@ theorem coordLat : CoordLat := by
   haveI : NumberField c.F := ⟨⟩
   haveI : CharZero 𝔐'.Ω₀ := (RingHom.charZero_iff 𝔐'.fn.injective).mpr
     ((RingHom.charZero_iff 𝔐'.cst.injective).mp inferInstance)
-  obtain ⟨ρ₀, hact⟩ := coordLat_lemma Fl.M₀ Y.t.act
+  obtain ⟨ρ₀, hact, -⟩ := lieModel_exists_unique_act _ _ _ _ _ Fl.M₀
+    _ Y.t.act.act Y.t.act.hom Y.t.act.one Y.t.act.mul Y.t.act.add
   have hβ : Function.Injective (algebraMap (𝓞 c.F) c.F) := IsFractionRing.injective _ _
   obtain ⟨r, hr⟩ : ∃ r : 𝓞 c.F →+* 𝔐'.Ω₀, 𝔐'.ξ₀ ≫ Y.s = spMap r :=
     ⟨(Spec.preimage (𝔐'.ξ₀ ≫ Y.s)).hom, by simp [spMap, Spec.map_preimage]⟩

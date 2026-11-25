@@ -76,7 +76,6 @@ theorem nontrivial_piTensor {ι : Type} [Fintype ι] {X : ι → Type} [∀ a, A
   exact ⟨PiTensorProduct.tprod ℂ v, 0, fun h0 => h (by rw [h0, map_zero])⟩
 
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField in
 theorem nontrivial_locProd {c : ℕ} {N : Fin c → ℕ} (h : ∑ i, N i = n) (w : HeightOneSpectrum (𝓞 E))
     (σ : ∀ i, SmIrr (GL (Fin (N i)) (w.adicCompletion E))) :
     Nontrivial (GlobalTheory.SmGL.IndSp (GlobalTheory.SmGL.stdBlocks N h) (GlobalTheory.SmGL.piTensor fun i => (σ i).ρ)) := by
@@ -88,7 +87,6 @@ theorem nontrivial_locProd {c : ℕ} {N : Fin c → ℕ} (h : ∑ i, N i = n) (w
   exact ⟨f, 0, fun h0 => hu (by rw [← hf, h0]; rfl)⟩
 
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField in
 theorem isSmooth_locProd {c : ℕ} {N : Fin c → ℕ} (h : ∑ i, N i = n) (w : HeightOneSpectrum (𝓞 E))
     (σ : ∀ i, SmIrr (GL (Fin (N i)) (w.adicCompletion E))) : IsSmooth (locProd h w σ) :=
   GlobalTheory.SmGL.isSmooth_parInd _ _

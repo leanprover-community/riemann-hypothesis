@@ -46,8 +46,6 @@ import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
-set_option autoImplicit false
-
 namespace GlobalTheory.FieldSize
 
 open NumberField IsDedekindDomain GlobalTheory.FieldSize

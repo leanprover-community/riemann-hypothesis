@@ -59,8 +59,6 @@ open scoped TensorProduct
 
 namespace GlobalTheory.FunObj
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem fix_of_pow_eq_one {R V : Type} [CommRing R] [IsDomain R] [AddCommGroup V] [Module R V] [Module.IsTorsionFree R V]
     {M : Submodule R V} (hM : M.FG) {𝔭 : Ideal R} (h𝔭 : 𝔭.IsMaximal) {δ : Module.End R V}
     (hδ : ∀ x ∈ M, δ x - x ∈ 𝔭 • M) {m : ℕ} (hm : (m : R) ∉ 𝔭) (h1 : δ ^ m = 1) : ∀ x ∈ M, δ x = x := by

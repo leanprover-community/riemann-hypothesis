@@ -15,8 +15,6 @@ namespace Formalism.L2.SG.WConst
 
 open Matrix NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.L2.SG.RealObj Formalism.MainNotions.S.LocalSplitGroups
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Blocks
 
 def eSum {K : Type} (r : ℕ) : ℕ → List (ℕ × K) → ℕ

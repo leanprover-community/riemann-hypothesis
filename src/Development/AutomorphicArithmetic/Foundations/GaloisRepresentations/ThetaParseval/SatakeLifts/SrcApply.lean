@@ -76,8 +76,6 @@ def LiftIso : Prop :=
     IsSmooth σ → σ.IsIrreducible → IsUnitarisable σ → IsSmooth π → π.IsIrreducible → IsLift ν b σ π →
     Nonempty ((contra π).Equiv (prod₂ (contra (src (ν * b) σ)) (detRep (Fin t) b⁻¹)))
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 def LiftSat : Prop :=
   ∀ (K : Type) [Field K] [NumberField K] (w : HeightOneSpectrum (𝓞 K)) (n d : ℕ) (ν b : (w.adicCompletion K)ˣ →* ℂˣ)
     (V : Type) [AddCommGroup V] [Module ℂ V] (W : Type) [AddCommGroup W] [Module ℂ W]

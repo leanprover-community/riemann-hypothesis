@@ -49,8 +49,6 @@ namespace Formalism.MainNotions.DiscreteSeriesWeylDimension
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 def HasTypeU (k : ℕ) (u : Fin k → ℝ) : Prop :=
   ∃ (H : Type) (_ : NormedAddCommGroup H) (_ : InnerProductSpace ℂ H)
     (π : Matrix (Fin k) (Fin k) ℂ → (H →L[ℂ] H)), IsHCTypeU k u π

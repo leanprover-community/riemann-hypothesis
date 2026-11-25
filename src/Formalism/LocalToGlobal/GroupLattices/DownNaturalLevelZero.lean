@@ -11,8 +11,6 @@ open scoped TensorProduct
 
 namespace Formalism.L2.Forms
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 structure Forms0 (D : D7) (u : D.what₂.Word) where
   atT : AtTTied u
 

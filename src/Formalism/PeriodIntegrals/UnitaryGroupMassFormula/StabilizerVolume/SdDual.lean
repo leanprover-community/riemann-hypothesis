@@ -1,6 +1,6 @@
 module
 
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerOrbitVolume.SdDual
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerOrbitVolume.SdDual
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerVolume.SdUniq
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerVolume.PosNear
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicLocalCompactness.T2SpaceTensorProductFiniteExtension
@@ -86,47 +86,13 @@ def latSub (a M : ℕ) : AddSubgroup (Fin a → Fin M → Fv F v ⊗[F] E) where
     intro p i k
     simpa [map_neg] using neg_mem (hX p i k)
 
-theorem crd_smul (s : Fv F v) (z : Fv F v ⊗[F] E) (k : Fin d) :
-    crd b (Fv F v) (s • z) k = s * crd b (Fv F v) z k := by
-  simp [crd]
-
-theorem sigR_smul (σ : E →ₐ[F] E) (s : Fv F v) (z : Fv F v ⊗[F] E) :
-    sigR (Fv F v) σ (s • z) = s • sigR (Fv F v) σ z := by
-  rw [Algebra.smul_def, Algebra.smul_def, map_mul]
-  congr 1
-  simp [sigR, Algebra.TensorProduct.algebraMap_apply]
-
-theorem BR_smul_left (σ : E →ₐ[F] E) {M n : ℕ} (J : Matrix (Fin M) (Fin M) E) (s : Fv F v)
-    (X Y : Fin n → Fin M → Fv F v ⊗[F] E) :
-    BR (Fv F v) σ J (s • X) Y = s * BR (Fv F v) σ J X Y := by
-  simp only [BR, hR, Formalism.UG.hform, Pi.smul_apply, sigR_smul, smul_mul_assoc, ← Finset.smul_sum,
-    map_smul, smul_eq_mul, Finset.mul_sum]
-
-theorem BR_add_right (σ : E →ₐ[F] E) {M n : ℕ} (J : Matrix (Fin M) (Fin M) E)
-    (X Y Y' : Fin n → Fin M → Fv F v ⊗[F] E) :
-    BR (Fv F v) σ J X (Y + Y') = BR (Fv F v) σ J X Y + BR (Fv F v) σ J X Y' := by
-  simp only [BR, hR, Formalism.UG.hform, Pi.add_apply, mul_add, Finset.sum_add_distrib, map_add (f := _)]
-
-theorem BR_smul_right (σ : E →ₐ[F] E) {M n : ℕ} (J : Matrix (Fin M) (Fin M) E) (s : Fv F v)
-    (X Y : Fin n → Fin M → Fv F v ⊗[F] E) :
-    BR (Fv F v) σ J X (s • Y) = s * BR (Fv F v) σ J X Y := by
-  simp only [BR, hR, Formalism.UG.hform, Pi.smul_apply, mul_smul_comm, ← Finset.smul_sum, map_smul,
-    smul_eq_mul, Finset.mul_sum]
+export PI.VolStabSW.SdDualW (crd_smul sigR_smul BR_smul_left BR_add_right BR_smul_right)
 
 section Nondeg
 
 variable [FiniteDimensional F E]
 
-theorem trace_one_tmul (e : E) :
-    Algebra.trace (Fv F v) (Fv F v ⊗[F] E) ((1 : Fv F v) ⊗ₜ[F] e) =
-      algebraMap F (Fv F v) (Algebra.trace F E e) := by
-  rw [Algebra.trace_apply, Algebra.trace_apply, ← LinearMap.trace_baseChange]
-  congr 1
-  refine LinearMap.ext fun x => ?_
-  induction x using TensorProduct.induction_on with
-  | zero => simp
-  | tmul k y => simp [Algebra.TensorProduct.tmul_mul_tmul]
-  | add x y hx hy => rw [map_add (f := _), map_add (f := _), hx, hy]
+export PI.VolStabSW.SdDualW (trace_one_tmul)
 
 
 include b in
@@ -140,56 +106,9 @@ section Dual
 
 variable [FiniteDimensional F E] (σ : E →ₐ[F] E) {M a : ℕ} (J : Matrix (Fin M) (Fin M) E)
 
-def eT (q : Fin a × Fin M × Fin d) : Fin a → Fin M → Fv F v ⊗[F] E :=
-  Pi.single q.1 (Pi.single q.2.1 ((1 : Fv F v) ⊗ₜ[F] b q.2.2))
+export PI.VolStabSW.SdDualW (eT eT_mem sum_eT)
 
-theorem eT_mem (q : Fin a × Fin M × Fin d) : eT v b q ∈ latSub v b a M := by
-  show ∀ p i l, (Algebra.TensorProduct.basis (Fv F v) b).repr (eT v b q p i) l ∈
-    v.adicCompletionIntegers F
-  intro p i l
-  have hB : ∀ k, (Algebra.TensorProduct.basis (Fv F v) b) k = (1 : Fv F v) ⊗ₜ[F] b k :=
-    fun k => Algebra.TensorProduct.basis_apply _ _
-  by_cases h1 : p = q.1
-  · subst h1
-    by_cases h2 : i = q.2.1
-    · subst h2
-      simp only [eT, Pi.single_eq_same]
-      rw [← hB, Module.Basis.repr_self, Finsupp.single_apply]
-      split_ifs
-      · exact one_mem _
-      · exact zero_mem _
-    · simp [eT, h2]
-  · simp [eT, h1]
-
-theorem sum_eT (X : Fin a → Fin M → Fv F v ⊗[F] E) :
-    X = ∑ q : Fin a × Fin M × Fin d, crd b (Fv F v) (X q.1 q.2.1) q.2.2 • eT v b q := by
-  funext p i
-  rw [Finset.sum_apply, Finset.sum_apply, Fintype.sum_prod_type, Finset.sum_eq_single p]
-  · rw [Fintype.sum_prod_type, Finset.sum_eq_single i]
-    · simp only [eT, Pi.smul_apply, Pi.single_eq_same]
-      exact eq_sum_crd b (Fv F v) (X p i)
-    · intro j _ hj
-      refine Finset.sum_eq_zero fun k _ => ?_
-      simp [eT, hj]
-    · simp
-  · intro x _ hx
-    refine Finset.sum_eq_zero fun y _ => ?_
-    simp [eT, Ne.symm hx]
-  · simp
-
-def brL (Y : Fin a → Fin M → Fv F v ⊗[F] E) : (Fin a → Fin M → Fv F v ⊗[F] E) →ₗ[Fv F v] Fv F v
-    where
-  toFun X := BR (Fv F v) σ J X Y
-  map_add' X X' := by rw [add_comm X X', BR_add, add_comm]
-  map_smul' s X := by rw [BR_smul_left]; rfl
-
-theorem BR_expand (X Y : Fin a → Fin M → Fv F v ⊗[F] E) :
-    BR (Fv F v) σ J X Y =
-      ∑ q : Fin a × Fin M × Fin d, crd b (Fv F v) (X q.1 q.2.1) q.2.2 * BR (Fv F v) σ J (eT v b q) Y := by
-  have h := congrArg (brL v σ J Y) (sum_eT v b X)
-
-  simp only [map_sum, map_smul, smul_eq_mul] at h
-  exact h
+export PI.VolStabSW.SdDualW (BR_expand)
 
 def phiL : (Fin a → Fin M → Fv F v ⊗[F] E) →ₗ[Fv F v] (Fin a × Fin M × Fin d → Fv F v) where
   toFun Y q := BR (Fv F v) σ J (eT v b q) Y
@@ -216,10 +135,7 @@ section NondegBR
 
 variable [FiniteDimensional F E]
 
-theorem nondeg_BR [Algebra.IsSeparable F E] (σ : E →ₐ[F] E) (hσ : ∀ x, σ (σ x) = x) {M a : ℕ}
-    (J : Matrix (Fin M) (Fin M) E) (hJ : J.det ≠ 0) (Y : Fin a → Fin M → Fv F v ⊗[F] E)
-    (h : ∀ X, BR (Fv F v) σ J X Y = 0) : Y = 0 := by
-  apply PI.VolStabSW.SdDualW.nondeg_BR <;> assumption
+export PI.VolStabSW.SdDualW (nondeg_BR)
 
 end NondegBR
 
@@ -237,25 +153,7 @@ def latA : AddSubgroup (Fv F v ⊗[F] E) where
     intro x hx k
     simpa [crd, map_neg] using neg_mem (hx k)
 
-theorem isOpen_latA : IsOpen (latA v b : Set (Fv F v ⊗[F] E)) := by
-  have e : (latA v b : Set (Fv F v ⊗[F] E)) = ⋂ k, (fun z => crd b (Fv F v) z k) ⁻¹'
-      (v.adicCompletionIntegers F : Set (Fv F v)) := by
-    ext z; simp [latA]
-  rw [e]
-  exact isOpen_iInter_of_finite fun k =>
-    (ReciprocityTheory.GeneralLinearIntegers.GeneralLinearIntegersOpenCompact.isOpen_integers v).preimage (continuous_crd b (Fv F v) k)
-
-theorem isCompact_latA : IsCompact (latA v b : Set (Fv F v ⊗[F] E)) := by
-  have e : (latA v b : Set (Fv F v ⊗[F] E)) =
-      (fun Y : Fin 1 → Fin 1 → Fv F v ⊗[F] E => Y 0 0) '' latV (M := 1) (n := 1) b v := by
-    ext z
-    constructor
-    · intro hz
-      exact ⟨fun _ _ => z, fun p i k => hz k, rfl⟩
-    · rintro ⟨Y, hY, rfl⟩ k
-      exact hY 0 0 k
-  rw [e]
-  exact (isCompact_latV b v 1 1).image ((continuous_apply 0).comp (continuous_apply 0))
+export PI.VolStabSW.SdDualW (isOpen_latA isCompact_latA)
 
 def latS (σ : E →ₐ[F] E) : AddSubgroup (Fv F v ⊗[F] E) :=
   latA v b ⊔ (latA v b).map (sigR (Fv F v) σ).toAddMonoidHom
@@ -338,27 +236,7 @@ theorem latH_eq (σ : E →ₐ[F] E) (a : ℕ) :
   ext S
   exact ⟨fun h p _ q _ => h p q, fun h p q => h p (Set.mem_univ _) q (Set.mem_univ _)⟩
 
-def iota (σ : E →ₐ[F] E) {a : ℕ} (X : Fin a → Fin a → Fv F v ⊗[F] E) :
-    Matrix (Fin a) (Fin a) (Fv F v ⊗[F] E) :=
-  fun p q => sigR (Fv F v) σ (X p q) + X q p
-
-theorem iota_mem (σ : E →ₐ[F] E) (hσ : ∀ x, σ (σ x) = x) {a : ℕ}
-    (X : Fin a → Fin a → Fv F v ⊗[F] E) : iota v σ X ∈ HermR (Fv F v) σ a := by
-  intro p q
-  simp only [iota, map_add (f := _), sigR_invol (Fv F v) σ hσ]
-  exact add_comm _ _
-
-theorem pairHerm_iota (σ : E →ₐ[F] E) (hσ : ∀ x, σ (σ x) = x) {a : ℕ}
-    (X : Fin a → Fin a → Fv F v ⊗[F] E) (T : HermR (Fv F v) σ a) :
-    pairHerm (Fv F v) σ a ⟨iota v σ X, iota_mem v σ hσ X⟩ T =
-      BR (Fv F v) σ (1 : Matrix (Fin a) (Fin a) E) X
-        (fun p i => (T : Matrix (Fin a) (Fin a) (Fv F v ⊗[F] E)) i p) := by
-  apply PI.VolStabSW.SdDualW.pairHerm_iota <;> assumption
-
-include b in
-theorem dualAt_H [Algebra.IsSeparable F E] (σ : E →ₐ[F] E) (hσ : ∀ x, σ (σ x) = x) (a : ℕ) :
-    DualAt v (pairHerm (Fv F v) σ a) := by
-  apply PI.VolStabSW.SdDualW.dualAt_H <;> assumption
+export PI.VolStabSW.SdDualW (iota iota_mem pairHerm_iota dualAt_H)
 
 end Herm
 

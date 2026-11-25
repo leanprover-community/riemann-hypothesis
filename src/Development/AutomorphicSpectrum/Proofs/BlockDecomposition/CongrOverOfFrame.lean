@@ -355,8 +355,6 @@ section Ad
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR.Datum GlobalTheory.AdelicU GlobalTheory.MixModel
 open PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctions.BC PositivityTheory.Rg.Rsw PositivityTheory.Rg.Rsw.L IsDedekindDomain NumberField
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 theorem gram_herm (V : HSp D) : ∀ i j, D.sp.cm.sig (V.gram i j) = V.gram j i := by

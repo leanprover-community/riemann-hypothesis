@@ -47,21 +47,6 @@ open NumberField IsDedekindDomain MeasureTheory Matrix Topology Filter
 open Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual GlobalTheory.CuspRep GlobalTheory.GalOfCusp UpperTheory.V UpperTheory.V.Af UpperTheory.V.Published GroundTheory.Global GroundTheory.Automorphic.GJMatrix
 open UpperTheory.ConvolutionTheory.R2 UpperTheory.ConvolutionTheory.R2.Ff UpperTheory.ConvolutionTheory.RankTwoDescent UpperTheory.ConvolutionTheory.RankTwoDescent.Cp UpperTheory.ConvolutionTheory.RankTwoDescent.Cp.Fb
 open scoped Classical ENNReal NNReal
-private theorem continuous_gl' : Continuous (gl : G1 ℚ → GL (Fin 2) (A ℚ)) := by
-  refine Units.continuous_iff.2 ⟨continuous_subtype_val, ?_⟩
-  have h : (fun g : G1 ℚ => (((gl g)⁻¹ : GL (Fin 2) (A ℚ)) : Matrix (Fin 2) (Fin 2) (A ℚ))) =
-      fun g : G1 ℚ => ((g⁻¹ : G1 ℚ) : Matrix (Fin 2) (Fin 2) (A ℚ)) := by
-    funext g
-    have : (gl g)⁻¹ = gl g⁻¹ := by
-      rw [inv_eq_iff_mul_eq_one]
-      exact Units.ext (by
-        change (g : Matrix (Fin 2) (Fin 2) (A ℚ)) * ((g⁻¹ : G1 ℚ) : Matrix (Fin 2) (Fin 2) (A ℚ)) = 1
-        rw [← Matrix.SpecialLinearGroup.coe_mul, mul_inv_cancel, Matrix.SpecialLinearGroup.coe_one])
-    rw [this]
-    rfl
-  rw [show (fun x : G1 ℚ => ((((gl x)⁻¹ : GL (Fin 2) (A ℚ))) : Matrix (Fin 2) (Fin 2) (A ℚ))) = _ from h]
-  exact continuous_subtype_val.comp (continuous_inv : Continuous fun g : G1 ℚ => g⁻¹)
-
 private theorem dM_inv' (t : (A ℚ)ˣ) : (dM t)⁻¹ = dM t⁻¹ := by
   rw [inv_eq_iff_mul_eq_one, ← dM_mul, mul_inv_cancel]
   apply Units.ext
@@ -143,7 +128,8 @@ theorem UpperTheory.isOpenEmbedding_projection :
     IsOpenEmbedding pm := by
   have hf : Topology.IsEmbedding (fun p : G1 ℚ × (A ℚ)ˣ => gl p.1 * dM p.2) :=
     Function.LeftInverse.isEmbedding rt_pre continuous_rt
-      ((continuous_gl'.comp continuous_fst).mul (continuous_dM'.comp continuous_snd))
+      ((Matrix.SpecialLinearGroup.continuous_toGL.comp continuous_fst).mul
+        (continuous_dM'.comp continuous_snd))
   have hu : Topology.IsEmbedding (Prod.map id Subtype.val : G1 ℚ × US → G1 ℚ × (A ℚ)ˣ) :=
     Topology.IsEmbedding.id.prodMap Topology.IsEmbedding.subtypeVal
   have he : (Subtype.val ∘ pm : G1 ℚ × US → GL (Fin 2) (A ℚ)) =

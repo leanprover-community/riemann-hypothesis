@@ -11,8 +11,6 @@ noncomputable section
 open scoped TensorProduct
 open MeasureTheory NumberField Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta ReciprocityTheory.ChartRestriction.G.FD
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 namespace Formalism.L2.Pj
 
 variable {D : D7} {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} {Comp : Type}

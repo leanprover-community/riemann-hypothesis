@@ -56,8 +56,6 @@ import Development.AbelianVarietyTheory.Definitions.PlaceAdaptation.AdaptStd
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
-
 namespace GlobalTheory.ConjugateMultiplicitySum
 
 open NumberField ReciprocityTheory.ChartRestriction.G.Geo.Tor

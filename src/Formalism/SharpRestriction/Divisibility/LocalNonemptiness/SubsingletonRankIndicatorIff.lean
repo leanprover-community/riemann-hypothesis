@@ -2,49 +2,7 @@ module
 
 public import Formalism.SharpRestriction.Divisibility.ModuliIntegralCharts
 public import Mathlib.Algebra.Ring.BooleanRing
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Algebra.Order.Star.Int
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
-import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -113,39 +71,11 @@ theorem beO_bal (c c' : 𝓞 D.host.E) (h : (c' : D.host.E) = D.host.conj (c : D
   rw [e1, e2, map_mul, map_mul, map_mul, hc, Complex.conj_conj]
   ring
 
-theorem beO_self (a : 𝓞 D.host.E) : beO D a a = ∑ σ : D.host.E →ₐ[ℚ] ℂ, Complex.normSq (σ (a : D.host.E)) := by
-  apply Complex.ofReal_injective
-  rw [beO_eq, Complex.ofReal_sum]
-  simp only [Complex.mul_conj]
-
-theorem beO_nonneg (a : 𝓞 D.host.E) : 0 ≤ beO D a a := by
-  rw [beO_self]
-  exact Finset.sum_nonneg fun σ _ => Complex.normSq_nonneg _
-
-theorem beO_pos (a : 𝓞 D.host.E) (h : a ≠ 0) : 0 < beO D a a := by
-  rw [beO_self]
-  let σ0 : D.host.E →ₐ[ℚ] ℂ := D.host.φ₀.toRatAlgHom
-  have ha : (a : D.host.E) ≠ 0 := by exact_mod_cast h
-  have hs : σ0 (a : D.host.E) ≠ 0 := (map_ne_zero σ0).mpr ha
-  exact lt_of_lt_of_le (Complex.normSq_pos.mpr hs)
-    (Finset.single_le_sum (f := fun σ : D.host.E →ₐ[ℚ] ℂ => Complex.normSq (σ (a : D.host.E)))
-      (fun σ _ => Complex.normSq_nonneg _) (Finset.mem_univ σ0))
-
 def beK (k : ℕ) : (Fin k → 𝓞 D.host.E) →ₗ[ℤ] (Fin k → 𝓞 D.host.E) →ₗ[ℤ] ℝ :=
   ∑ i, (beO D).compl₁₂ (LinearMap.proj i) (LinearMap.proj i)
 
 theorem beK_apply (k : ℕ) (a b : Fin k → 𝓞 D.host.E) : beK D k a b = ∑ i, beO D (a i) (b i) := by
   simp [beK, LinearMap.sum_apply, LinearMap.compl₁₂_apply]
-
-theorem beK_int (k : ℕ) (a b : Fin k → 𝓞 D.host.E) : ∃ z : ℤ, beK D k a b = z := by
-  refine ⟨∑ i, Algebra.trace ℤ (𝓞 D.host.E) (a i * cjO D (b i)), ?_⟩
-  rw [beK_apply, Int.cast_sum]
-  rfl
-
-theorem beK_pos (k : ℕ) (a : Fin k → 𝓞 D.host.E) (h : a ≠ 0) : 0 < beK D k a a := by
-  rw [beK_apply]
-  obtain ⟨i, hi⟩ := Function.ne_iff.mp h
-  exact Finset.sum_pos' (fun j _ => beO_nonneg D _) ⟨i, Finset.mem_univ _, beO_pos D _ hi⟩
 
 theorem beO_sum {ι : Type} [Fintype ι] (a : ι → 𝓞 D.host.E) (c : ι → ℝ) :
     ∑ i, ∑ j, c i * c j * beO D (a i) (a j) =
@@ -439,105 +369,50 @@ variable (D : D7) (r j p : ℕ) (M : MP D p)
   FlagData := fun _ => Unit
   flagCl := fun _ _ => ()
   allFlags := ()
-  YY_eq := rfl
   Idl := fun _ => Unit
   blowUp := fun _ _ => ()
-  powP := fun _ => True
-  pbPrinc := fun _ _ => True
   Corr := fun _ _ => Unit
-  diagCl := fun _ _ _ => ()
   IvD := fun _ => Unit
-  jIdl := fun _ _ => ()
   ZP := fun _ => M.Gn
   spz := fun _ _ => True
   abP := fun x => M.ab x
   inQ := fun _ => False
   isGenP := fun _ => False
-  isGenP_ab := fun _ h => h.elim
   gpt := fun η => η
-  abAt_iff := fun _ => Iff.rfl
-  gpt_notQ := fun _ h => h
-  genFin := fun _ => M.fin
   genNe := fun _ => M.ne
   redK := fun _ y => y
-  dvRho_pos_iff := fun _ y => by
-    change M.Gn at y
-    show 0 < rk01 (M.ab y) ↔ ¬ M.ab y
-    by_cases h : M.ab y <;> simp [rk01, h]
   genK := fun η => η
-  redK_genK := fun _ => rfl
   imgM := fun χ => Empty.elim χ
   imgU := fun χ => Empty.elim χ
-  img_spz := fun χ => Empty.elim χ
-  imgU_inQ := fun χ => Empty.elim χ
-  chAt_imgM := fun χ => Empty.elim χ
-  chAbExact_imgU := fun χ => Empty.elim χ
   RFam := fun _ _ => Unit
-  chFam := fun _ => ()
   ptK := fun _ y => y
-  ptK_good := fun _ y => by
-    change M.Gn at y
-    show Subsingleton (Fin (rk01 (M.ab y)) → 𝓞 D.host.E) ↔ rk01 (M.ab y) = 0
-    rw [subsingleton_rank_indicator_iff]
-    by_cases h : M.ab y <;> simp [rk01, h]
   vpi := fun _ => 1
-  vpi_pos := by intros; exact zero_lt_one
-  ordGe := fun _ _ _ _ => True
   yEta := fun η => η
-  yEta_good := fun η => subsingleton_rank_indicator_iff D (M.ab η)
   homSh := fun _ _ => ()
-  homSh_inv := by intros <;> simp_all
   isoSec := fun _ => 0
-  nrm_isoSec := fun φ => Empty.elim φ
   isoSymm := fun φ => Empty.elim φ
-  vrat_symm := fun φ => Empty.elim φ
   LieV := fun _ => PUnit
   lvAdd := fun _ => inferInstance
   lvMod := fun _ => inferInstance
   lieL := fun _ => ⊤
   eig := fun _ _ => ⊤
   Wst := fun _ _ _ => ⊤
-  Wst_le := by intros <;> simp_all
   taut := fun _ _ _ => ⊤
-  taut_eq := by intros <;> simp_all
   nrmIn := fun _ _ _ _ => 0
-  nrmRef_def := by intros <;> simp_all
-  nrm_Lb_def := by intros <;> simp_all
-  om_smul := by intros <;> simp_all
   TC := fun _ => PUnit
   tcAdd := fun _ => inferInstance
   tcMod := fun _ => inferInstance
   iT := fun _ => 0
-  iT_span := by
-    intros
-    apply le_antisymm le_top
-    intro x hx
-    have : x = 0 := Subsingleton.elim _ _
-    rw [this]
-    exact Submodule.zero_mem _
   htC := fun _ => 0
-  htC_iT := by intros <;> simp_all
-  psiC := fun _ => 0
-  lieGt1 := fun _ => ⊤
-  eT := fun _ _ => 0
   HTn := fun _ => Empty
   htEval := fun h => Empty.elim h
   htIdl := fun _ => ()
-  IsHTBlowup_def := fun n Z' _ => ⟨fun h => h.elim, fun ⟨h, _⟩ => Empty.elim h⟩
-  wFib := fun _ _ _ => ⊤
-  htFlags := fun _ => ()
-  omSh := fun _ => ()
   omPat := fun _ => ⊤
-  omPat_def := fun _ _ _ h => h.elim
   BPt := fun _ => Empty
   bfld := fun _ => M.K
   OmB := fun _ => PUnit
   obAdd := fun _ => inferInstance
   obMod := fun _ => inferInstance
-  omB := fun _ => ⊤
-  omPB := fun _ => ⊤
-  eOmB := fun _ _ => ⊤
-  eB := fun _ _ => 0
   YsP := fun _ => Empty
   ysBd := fun _ => True
   FlP := Unit
@@ -547,22 +422,11 @@ variable (D : D7) (r j p : ℕ) (M : MP D p)
   flDim := fun _ => 0
   Sum1 := Unit
   locus := fun _ => ()
-  bdryLoci_def := fun _ => ⟨fun _ => ⟨∅, Set.finite_empty, fun x => Empty.elim x, by simp⟩, fun _ => trivial⟩
   CrvS := fun _ => Empty
   degGr := fun _ _ _ => 0
-  nefHT_def := fun _ _ => ⟨fun _ C => Empty.elim C, fun _ => trivial⟩
   CrvQ := Empty
   degGrQ := fun _ _ _ => 0
-  nefQ_def := fun _ => ⟨fun _ C => Empty.elim C, fun _ => trivial⟩
   degGrD := fun c => M.dg c
-  degLdR_def := fun _ _ => rfl
-  degLie_f := fun _ _ => rfl
-  degLie_alt := fun _ _ => rfl
-  eDeg_def := fun _ _ => rfl
-  Pm_head := fun c τ i _ h2 => le_trans (le_abs_self _)
-    (abs_le_pmM D (M.dg c) (r + j) τ _ (Finset.Icc_subset_Icc le_rfl (by omega)))
-  Pm_tail := fun c τ i _ _ => le_trans (neg_le_abs _)
-    (abs_le_pmM D (M.dg c) (r + j) τ _ (Finset.Icc_subset_Icc (by omega) (by omega)))
 
 def mpTrivialAb (K : CF p) : MP D p where
   K := K

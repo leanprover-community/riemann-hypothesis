@@ -57,8 +57,6 @@ open NumberField IsDedekindDomain Formalism.MainNotions.S Formalism.MainNotions.
 open scoped BigOperators ComplexOrder
 open Classical
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : Formalism.BasicNotions.D7}
 
 def CNT {Y : TermTie D} {δ : ∀ p : PlF D, (D.s.atP p).Fp}
@@ -98,8 +96,6 @@ namespace Formalism.MainNotions.LocalBesselAndTopKernel
 
 open Formalism.BasicNotions Formalism.MainNotions.S NumberField IsDedekindDomain
 open scoped nonZeroDivisors
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 def hyp (D : D7) (large₂ : SizeData₂ D) (C0 C' Cl Cg cb Cu cT CT : ℝ) : Prop :=
   StandingNumericalData D C0 ∧ StandingHypotheses D large₂ C' Cl Cg cb Cu cT CT ∧ 1 ≤ C0

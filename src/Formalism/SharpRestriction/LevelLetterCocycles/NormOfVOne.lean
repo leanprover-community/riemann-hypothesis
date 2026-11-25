@@ -55,11 +55,6 @@ open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.Basi
 
 variable {l : ℕ} [hl : Fact l.Prime]
 
-theorem zetaQ_pow (P : LocPrime l) (j k : ℕ) : P.ζQ (j + k) ^ (l ^ k) = P.ζQ j := by
-  induction k with
-  | zero => simp
-  | succ k ih => rw [← add_assoc, pow_succ', pow_mul, P.ζQ_succ, ih]
-
 theorem chiQ_norm (P : LocPrime l) (h : GQ l) : ‖(P.χQ h : ℚ_[l])‖ = 1 := by
   apply Formalism.MainNotions.N.Ln03.Pf.norm_chiQ
 

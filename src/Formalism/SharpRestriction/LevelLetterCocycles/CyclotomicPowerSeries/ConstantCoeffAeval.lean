@@ -1,48 +1,10 @@
 module
 
 public import Formalism.SharpRestriction.LevelLetterCocycles.CyclotomicPowerSeries.ConstSectionStatement
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.Henselian
 public import Mathlib.RingTheory.PowerSeries.WeierstrassPreparation
-import Mathlib.RingTheory.Radical.NatInt
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -79,47 +41,22 @@ theorem eq_of_X_mul_eq {S : Type} [CommRing S] {f g : PowerSeries S}
   first
   | (ext n; simpa [PowerSeries.coeff_succ_X_mul] using congrArg (PowerSeries.coeff (n + 1)) h)
 
-private theorem map_coe_eq_X_pow_lemma {O K : Type} [CommRing O] [CommRing K] (I : Ideal O) (f : O →+* K)
-    (hf : ∀ c ∈ I, f c = 0) (P : Polynomial O) (hP : P.IsDistinguishedAt I) :
-    PowerSeries.map f (P : PowerSeries O) = X ^ P.natDegree := by
-  have hmon : P.Monic := by first | exact hP.monic
-  have hmem : ∀ {n : ℕ}, n < P.natDegree → P.coeff n ∈ I := by
-    intro n hn
-    first | exact hP.mem hn
-  ext n
-  rw [PowerSeries.coeff_map, Polynomial.coeff_coe, PowerSeries.coeff_X_pow]
-  split_ifs with hn
-  · rw [hn, hmon.coeff_natDegree, map_one]
-  · rcases Nat.lt_or_gt_of_ne hn with h | h
-    · exact hf _ (hmem h)
-    · rw [Polynomial.coeff_eq_zero_of_natDegree_lt h, map_zero]
-
-private theorem exists_weierstrass_div_lemma_2 {O : Type} [CommRing O] [IsLocalRing O]
-    [IsAdicComplete (maximalIdeal O) O] (P : Polynomial O) (hP : P.IsDistinguishedAt (maximalIdeal O))
-    (a : PowerSeries O) :
-    ∃ (q : PowerSeries O) (r : Polynomial O), r.degree < P.natDegree ∧
-      a = (P : PowerSeries O) * q + r := by
-  have h1 : PowerSeries.map (residue O) (P : PowerSeries O) = X ^ P.natDegree :=
-    map_coe_eq_X_pow_lemma _ _ (fun c hc => (residue_eq_zero_iff c).2 hc) P hP
-  have h2 : (PowerSeries.map (residue O) (P : PowerSeries O)).order.toNat = P.natDegree := by
-    rw [h1, PowerSeries.order_X_pow]; rfl
-  have h3 : PowerSeries.map (residue O) (P : PowerSeries O) ≠ 0 := by
-    rw [h1]; exact pow_ne_zero _ PowerSeries.X_ne_zero
-  obtain ⟨q, r, hr, he⟩ := PowerSeries.exists_isWeierstrassDivision (f := a) h3
-  have h2' : (PowerSeries.map (Ideal.Quotient.mk (maximalIdeal O)) (P : PowerSeries O)).order.toNat =
-      P.natDegree := by
-    first
-      | exact h2
-  refine ⟨q, r, ?_, he⟩
-  first
-    | (rw [h2'] at hr; exact hr)
-
 theorem rhoCompl : RhoComplStatement := by
   intro O LL S _ _ _ _ _ _ _ _ _ _ _ P hP ρ hunit hann
   have hmon : P.Monic := by first | exact hP.monic
+  have hd := hP.isWeierstrassDivisorAt (maximalIdeal.isMaximal O).ne_top
+  have hord : ((P : PowerSeries O).map (Ideal.Quotient.mk (maximalIdeal O))).order.toNat =
+      P.natDegree :=
+    (congrArg ENat.toNat (hP.coe_natDegree_eq_order_map (P : PowerSeries O) 1
+      (by simp)
+      (mul_one _).symm)).symm
   have key : ∀ a : PowerSeries O, (X : PowerSeries S) ∣ ρ a → (P : PowerSeries O) ∣ a := by
     intro a ha
-    obtain ⟨q, r, hr, he⟩ := exists_weierstrass_div_lemma_2 P hP a
+    let q := hd.div a
+    let r := hd.mod a
+    have hdiv := hd.isWeierstrassDivisionAt_div_mod a
+    have hr : r.degree < P.natDegree := by rw [← hord]; exact hdiv.degree_lt
+    have he : a = (P : PowerSeries O) * q + r := hdiv.eq_mul_add
     obtain ⟨w, hw⟩ := hunit
     have hρa : ρ a = (w : PowerSeries S) * X * ρ q + Polynomial.aeval (ρ X) r := by
       rw [he, map_add (f := _), map_mul, hw, algHom_coe_eq_aeval]

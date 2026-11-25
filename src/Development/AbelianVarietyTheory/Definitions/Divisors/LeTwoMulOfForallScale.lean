@@ -221,11 +221,6 @@ theorem gnorm_mulVec_le (hH : H.PosDef) (hK : K.PosSemidef) (T : Matrix n m ℂ)
     rw [← div_le_iff₀ hp]
     exact le_csInf (exists_bound hH hK T) fun C hC => (div_le_iff₀ hp).2 (hC.2 v)
 
-theorem opNorm_le_iff (hH : H.PosDef) (hK : K.PosSemidef) {T : Matrix n m ℂ} {C : ℝ} :
-    opNorm H K T ≤ C ↔ 0 ≤ C ∧ ∀ v, gnorm K (T *ᵥ v) ≤ C * gnorm H v :=
-  ⟨fun h => ⟨(opNorm_nonneg H K T).trans h, fun v => (gnorm_mulVec_le hH hK T v).trans
-    (mul_le_mul_of_nonneg_right h (gnorm_nonneg _ _))⟩, fun h => opNorm_le_of_bound h.1 h.2⟩
-
 theorem opNorm_add_le (hH : H.PosDef) (hK : K.PosSemidef) (S T : Matrix n m ℂ) :
     opNorm H K (S + T) ≤ opNorm H K S + opNorm H K T :=
   opNorm_le_of_bound (add_nonneg (opNorm_nonneg _ _ _) (opNorm_nonneg _ _ _)) fun v => by
@@ -371,14 +366,7 @@ def orthLift (H : Matrix (m ⊕ l) (m ⊕ l) ℂ) : Matrix (m ⊕ l) l ℂ := fr
 
 def orthProj (H : Matrix (m ⊕ l) (m ⊕ l) ℂ) : Matrix m (m ⊕ l) ℂ := fromCols 1 (orthCoeff H)
 
-def blockQS (T : Matrix (m ⊕ l) (m ⊕ l) ℂ) : Matrix l m ℂ :=
-  quotMap (m := m) (l := l) * T * incl (m := m) (l := l)
-
 variable {H : Matrix (m ⊕ l) (m ⊕ l) ℂ}
-
-theorem blockQS_eq (T : Matrix (m ⊕ l) (m ⊕ l) ℂ) : blockQS T = T.toBlocks₂₁ := by
-  conv_lhs => rw [← fromBlocks_toBlocks T]
-  simp [blockQS, quotMap, incl, fromCols_mul_fromBlocks, fromCols_mul_fromRows]
 
 theorem quotMap_mul_orthLift (H : Matrix (m ⊕ l) (m ⊕ l) ℂ) :
     quotMap (m := m) (l := l) * orthLift H = 1 := by

@@ -153,13 +153,6 @@ theorem dirC_eval {ι : Type} [Fintype ι] [DecidableEq ι] (φ : ι → E n →
     congr 1
     exact Finset.sum_congr rfl fun x _ => by ring
 
-theorem hc_eq (w : Fin n → Fin n → ℂ) :
-    herm (fun a b => (w a b).re) + Complex.I • herm (fun a b => (w a b).im) =
-      fun i j => (1 + Complex.I) / 2 * w i j + (1 - Complex.I) / 2 * w j i := by
-  ext i j
-  simp only [Matrix.add_apply, Matrix.smul_apply, herm, smul_eq_mul]
-  apply Complex.ext <;> simp <;> ring
-
 theorem hc_vkl (k l : Fin n) :
     herm (fun a b => (vkl k l a b).re) + Complex.I • herm (fun a b => (vkl k l a b).im) = Matrix.single l k 1 := by
   apply PositivityTheory.Rg.Sw.WR.K.GB.herm_re_im_vkl

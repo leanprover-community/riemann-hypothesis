@@ -3,7 +3,7 @@ module
 public import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.ZelevinskyJacquet.ZelevinskyCosocles.LUnlinkedComm
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.IrreducibleAdmissibleGL
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsListPairwiseNotRel
-public import Development.WeilBound.CoreStatements.AutomorphicKernels.SquareIntegrableSegments.SegmentProductEquivalence.ReorderCommon
+public import CompanionTheory.AutomorphicTheory.ProductFormulaTheory.SquareIntegrableSegments.SegmentReordering.CsOrderfree
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -57,6 +57,6 @@ theorem cs_reorderord : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSp
     · have := hΓσ (σ.symm b) (σ.symm a) hba
       simp only [Equiv.apply_symm_apply] at this
       exact this hp
-  exact reach_of_inv hUC hd hseg _ σ rfl hnl hd'
+  exact CompanionTheory.PfEss.Zc2.reach_of_inv hUC hd hseg _ σ rfl hnl hd'
 
 end PositivityTheory.PfEss.Zc2

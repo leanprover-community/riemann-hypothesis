@@ -132,11 +132,6 @@ theorem trForm_nondegenerate (H : Host E) : (trForm H).Nondegenerate := by
 theorem trForm_injective (H : Host E) : Function.Injective (trForm H) :=
   LinearMap.ker_eq_bot.1 (trForm_nondegenerate H).ker_eq_bot
 
-theorem trForm_one_one (H : Host E) : trForm H 1 1 = Module.finrank ℚ E := by
-  apply Int.cast_injective (α := ℝ)
-  rw [trForm_self_eq_sum]
-  simp [Embeddings.card]
-
 def realEmb (τ : E →+* ℂ) : ℝ ⊗[ℤ] 𝓞 E →ₐ[ℝ] ℂ :=
   Algebra.TensorProduct.lift (Algebra.ofId ℝ ℂ) (τ.comp (algebraMap (𝓞 E) E)).toIntAlgHom
     fun _ _ => Commute.all _ _
@@ -190,13 +185,6 @@ theorem trForm_baseChange_pos (H : Host E) {v : ℝ ⊗[ℤ] 𝓞 E} (hv : v ≠
   refine (trForm_baseChange_nondegenerate H).1 v fun w => Complex.ofReal_injective ?_
   rw [trForm_baseChange_eq_sum]
   simp [h0]
-
-theorem trForm_rt_rt (H : Host E) : trForm H H.rt H.rt = H.d * Module.finrank ℚ E := by
-  have h : H.bar H.rt * H.rt = (H.d : ℤ) • (H.bar 1 * 1) := by
-    rw [bar_rt, map_one]
-    simp only [mul_one, zsmul_eq_mul, Int.cast_natCast]
-    linear_combination -H.rt_sq
-  rw [trForm_apply, h, map_smul, ← trForm_apply, trForm_one_one, smul_eq_mul]
 
 end GlobalTheory.HostModel
 

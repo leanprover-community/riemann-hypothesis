@@ -63,32 +63,11 @@ open MvPowerSeries GlobalTheory.RowLawSquare ReciprocityTheory.ChartRestriction.
 
 variable {C : Type} [Field C] {dd : ℕ} {τ : Type}
 
-open scoped MvPowerSeries.WithPiTopology in
-private theorem pderiv_subst_of_zero_constantCoeff {σ : Type} [Fintype σ]
-    {a : σ → MvPowerSeries τ C} (ha : ∀ s, constantCoeff (a s) = 0)
-    (f : MvPowerSeries σ C) (t : τ) :
-    pderiv t (subst a f) = ∑ s, subst a (pderiv s f) * pderiv t (a s) := by
-  let : UniformSpace C := ⊥
-  let : DiscreteUniformity C := ⟨rfl⟩
-  have hsubst : Continuous (subst a : MvPowerSeries σ C → MvPowerSeries τ C) :=
-    continuous_subst (hasSubst_of_constantCoeff_zero ha)
-  have hderiv {ι : Type} (i : ι) :
-      Continuous (pderiv (R := C) i : MvPowerSeries ι C → MvPowerSeries ι C) := by
-    apply continuous_pi
-    intro d
-    change Continuous (fun g : MvPowerSeries ι C => coeff d (pderiv i g))
-    simp only [coeff_pderiv]
-    exact (WithPiTopology.continuous_coeff C _).mul continuous_const
-  refine WithPiTopology.denseRange_toMvPowerSeries.induction_on f
-    (isClosed_eq ((hderiv t).comp hsubst) (continuous_finsetSum _ fun s _ =>
-      (hsubst.comp (hderiv s)).mul continuous_const)) ?_
-  intro p
-  simpa only [pderiv_coe, subst_coe] using Formalism.G.LogCR.pderiv_aeval p a t
-
 theorem pderiv_substPointsPowerSeries_one {a : Fin dd → MvPowerSeries τ C} (ha : Zc a) (f : PS C 1 dd) (t : τ) :
     pderiv (R := C) t (sb ![a] f) = ∑ l, sb ![a] (pderiv (R := C) ((0 : Fin 1), l) f) * pderiv (R := C) t (a l) := by
   unfold sb
-  rw [pderiv_subst_of_zero_constantCoeff (fun p : Fin 1 × Fin dd => zc1 ha p.1 p.2),
+  rw [_root_.ReciprocityTheory.ChartRestriction.G.TB.LogPf.pderiv_subst
+      (fun p : Fin 1 × Fin dd => zc1 ha p.1 p.2),
     Fintype.sum_prod_type, Fin.sum_univ_one]
   rfl
 
@@ -96,7 +75,8 @@ theorem pderiv_substPointsPowerSeries_two {a b : Fin dd → MvPowerSeries τ C} 
     pderiv (R := C) t (sb ![a, b] f) = ∑ l, sb ![a, b] (pderiv (R := C) ((0 : Fin 2), l) f) * pderiv (R := C) t (a l) +
       ∑ l, sb ![a, b] (pderiv (R := C) ((1 : Fin 2), l) f) * pderiv (R := C) t (b l) := by
   unfold sb
-  rw [pderiv_subst_of_zero_constantCoeff (fun p : Fin 2 × Fin dd => zc2 ha hb p.1 p.2),
+  rw [_root_.ReciprocityTheory.ChartRestriction.G.TB.LogPf.pderiv_subst
+      (fun p : Fin 2 × Fin dd => zc2 ha hb p.1 p.2),
     Fintype.sum_prod_type, Fin.sum_univ_two]
   rfl
 
@@ -247,8 +227,9 @@ theorem subst_ex_DofN : ∀ (C : Type) [Field C] [CharZero C] (V : VF C) (O : Ty
   have hR : ∑ w, co w • pderiv (R := C) w (sb E G) =
       ∑ p : Fin n × Fin dd, sb E (pderiv (R := C) p G) * ∑ w, co w • pderiv (R := C) w (E p.1 p.2) := by
     unfold sb
-    simp only [pderiv_subst_of_zero_constantCoeff (a := fun p : Fin n × Fin dd => E p.1 p.2)
-      (fun p => hE p.1 p.2), Finset.smul_sum, ← mul_smul_comm, Finset.mul_sum]
+    simp only [_root_.ReciprocityTheory.ChartRestriction.G.TB.LogPf.pderiv_subst
+        (a := fun p : Fin n × Fin dd => E p.1 p.2) (fun p => hE p.1 p.2),
+      Finset.smul_sum, ← mul_smul_comm, Finset.mul_sum]
     exact Finset.sum_comm
   rw [hR, Fintype.sum_prod_type, Finset.sum_eq_single b]
   · unfold DofN

@@ -72,7 +72,7 @@ def cosetIn {X : Fields} {Pr : Primes X} {R : Ranks} {sel : HeightOneSpectrum (�
     (P : rowSG Pr sel mu) : Set (Sp X.E (R.N j)) :=
   {z | ∃ y ∈ q.1.2, ((qOf P.1 : X.E) ^ (if P.1 ∈ Pr.vGs then 0 else cst.M))⁻¹ • (z - (frsF sel mu q.1.1 P).symm y) ∈ stdAt X.E (R.N j) P.1}
 
-@[reducible] def starE (B : Base) : StarRing B.fields.E := B.fields.starE
+@[reducible] instance starE (B : Base) : StarRing B.fields.E := B.fields.starE
 
 attribute [local instance] starE
 

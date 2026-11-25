@@ -275,7 +275,6 @@ end Formalism.MainNotions.UnusedSlot80.Relay2
 
 noncomputable section
 
-open Classical
 
 namespace Formalism.MainNotions.UnusedSlot80.Relay2
 
@@ -453,7 +452,6 @@ end Formalism.MainNotions.UnusedSlot80.Relay2
 
 noncomputable section
 
-open Classical
 
 namespace Formalism.MainNotions.UnusedSlot80.Relay2
 
@@ -665,7 +663,6 @@ end Formalism.MainNotions.UnusedSlot80.Relay2
 
 noncomputable section
 
-open Classical
 
 namespace Formalism.MainNotions.UnusedSlot80.Relay2
 
@@ -792,7 +789,6 @@ end Formalism.MainNotions.UnusedSlot80.Relay2
 
 noncomputable section
 
-open Classical
 
 namespace Formalism.MainNotions.UnusedSlot80.Relay2
 
@@ -873,7 +869,6 @@ end Formalism.MainNotions.UnusedSlot80.Relay2
 
 noncomputable section
 
-open Classical
 
 namespace Formalism.MainNotions.UnusedSlot80.Relay2
 
@@ -979,7 +974,6 @@ end Formalism.MainNotions.UnusedSlot80.Relay2
 
 noncomputable section
 
-open Classical
 
 namespace Formalism.MainNotions.UnusedSlot80.Relay2
 
@@ -1115,7 +1109,6 @@ end Formalism.MainNotions.UnusedSlot80.Relay2
 
 noncomputable section
 
-open Classical
 
 namespace Formalism.MainNotions.UnusedSlot80.Relay2
 
@@ -1227,7 +1220,6 @@ end Formalism.MainNotions.UnusedSlot80.Relay2
 
 noncomputable section
 
-open Classical
 
 namespace Formalism.MainNotions.UnusedSlot80.Relay2
 

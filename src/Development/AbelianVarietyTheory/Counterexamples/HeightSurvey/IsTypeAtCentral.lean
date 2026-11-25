@@ -48,8 +48,6 @@ open scoped TensorProduct
 
 namespace GlobalTheory.TypeAtTest
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Rep
 variable {n : ℕ} {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
 

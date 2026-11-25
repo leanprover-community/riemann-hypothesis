@@ -93,8 +93,6 @@ open scoped nonZeroDivisors
 attribute [local instance] Over.cartesianMonoidalCategory
 open MonObj
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.LamT.TanRel

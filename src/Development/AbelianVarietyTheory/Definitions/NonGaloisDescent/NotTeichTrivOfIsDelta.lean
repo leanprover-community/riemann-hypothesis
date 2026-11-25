@@ -65,13 +65,6 @@ theorem isUnitAt_of_pow_eq_one {E : Type} [Field E] [NumberField E] {w : HeightO
   simp only [Units.val_pow_eq_pow_val, map_pow, Units.val_one, map_one] at this
   exact (pow_eq_one_iff_left h1).1 this
 
-namespace TeichTriv
-
-theorem of_unr (h : ∀ w, OverP H H.pde w ∨ OverP H H.pde' w → χ.UnrAt w) : TeichTriv H χ :=
-  fun w hw x hx => h w hw x (isUnitAt_of_pow_eq_one hx)
-
-end TeichTriv
-
 end Host
 
 namespace LamDat

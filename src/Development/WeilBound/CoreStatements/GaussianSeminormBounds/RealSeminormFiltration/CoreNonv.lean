@@ -1,5 +1,6 @@
 module
 
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.FockJointMultiplicity.LoweringPartRightActionInlInr
 public import Formalism.LocalToGlobal.ThetaOperatorCommutation.RealTh
 public import Development.WeilBound.CoreStatements.GaussianSeminormBounds.RealSeminormFiltration.CoreDefs
 public import Mathlib.Analysis.InnerProductSpace.Orthogonal
@@ -255,20 +256,7 @@ theorem dl_omR (a b : Ix p q) (k : Fin s) (f : Pol p q r s) :
 
 theorem act_unit (a b : Ix p q) :
     fockAct1 p q r s (Eab a b) = ∑ c : Ix r s, omE ((a, c) : Ln p q r s) (b, c) := by
-  simp only [fockAct1, LinearMap.comp_apply, LinearMap.flip_apply, kroneckerMapBilinear_apply_apply, omAct,
-    LinearMap.sum_apply, LinearMap.smulRight_apply, entryLinearMap_apply]
-  rw [Fintype.sum_prod_type]
-  simp only [kroneckerMap_apply, Eab, Matrix.single_apply, Matrix.one_apply, LinearMap.mul_apply']
-  rw [Finset.sum_eq_single a]
-  · refine Finset.sum_congr rfl (fun c _ => ?_)
-    rw [Finset.sum_eq_single (b, c)]
-    · simp
-    · rintro ⟨x2, d⟩ _ hl
-      by_cases h1 : b = x2 <;> by_cases h2 : c = d <;> simp_all
-    · simp
-  · intro x1 _ hx
-    simp [Ne.symm hx]
-  · simp
+  apply _root_.PI.WFJM.fockAct1_Eab <;> assumption
 
 section Form
 

@@ -62,7 +62,7 @@ private lemma quad_smul {ι : Type} [Fintype ι] (M : ι → ι → ℝ) (a : �
   rw [Finset.mul_sum]; refine Finset.sum_congr rfl fun j _ => ?_
   simp only [Pi.smul_apply, smul_eq_mul]; ring
 
-private lemma quad_err {ι : Type} [Fintype ι] (E : ι → ι → ℝ) (η : ℝ) (_hη : 0 ≤ η)
+private lemma quad_err {ι : Type} [Fintype ι] (E : ι → ι → ℝ) (η : ℝ)
     (hE : ∀ i j, |E i j| ≤ η) (c : ι → ℝ) :
     |∑ i, ∑ j, c i * c j * E i j| ≤ (Fintype.card ι : ℝ) ^ 2 * (‖c‖ ^ 2 * η) := by
   have hc : ∀ i, |c i| ≤ ‖c‖ := fun i => by
@@ -115,8 +115,7 @@ theorem posDef_quad_margin {ι : Type} [Fintype ι] (M : ι → ι → ℝ)
   have hK0 : 0 ≤ K := sq_nonneg _
   refine ⟨μ / (2 * K + 1), div_pos hμpos (by linarith), ?_⟩
   intro E hE c hc
-  have hη0 : 0 ≤ μ / (2 * K + 1) := (div_pos hμpos (by linarith)).le
-  have herr := quad_err E _ hη0 hE c
+  have herr := quad_err E _ hE c
   have hs : 0 < ‖c‖ := norm_pos_iff.mpr hc
   have hsplit : ∑ i, ∑ j, c i * c j * (M i j + E i j)
       = q c + ∑ i, ∑ j, c i * c j * E i j := by

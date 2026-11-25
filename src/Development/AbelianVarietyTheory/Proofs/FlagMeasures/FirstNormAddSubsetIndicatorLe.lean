@@ -151,10 +151,6 @@ theorem eq_zero_of_hh (Γ : Matrix ι ι ℂ) (hΓ : Γ * Γ = 1) (R : Rep k r) 
   rw [← h3]
   simp [h2]
 
-theorem SmMap_zero {R R' : Rep k r} {T : R.H → R'.H} (hT : SmMap R R' T) : T 0 = 0 := by
-  have := hT.smul 0 0 R.smSub.zero_mem
-  simpa using this
-
 omit [DecidableEq ι] [DecidableEq κ] in
 theorem raw_scale {ρ : Mx k r → Matrix ι ι ℂ} {R : Rep k r} {RI : κ → Rep k r}
     {io : ∀ I, ι → (RI I).H → R.H} {pr : ∀ I, ι → R.H → (RI I).H} (h : TensRaw ρ R RI io pr)

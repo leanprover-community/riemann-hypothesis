@@ -75,12 +75,12 @@ open CochainComplex CochainComplex.HomComplex
 
 namespace LateralTheory.E.LeafKumFieldPf.H0Naturality
 
-set_option backward.isDefEq.respectTransparency false in
 theorem resι_nat {F G : Shv ℤ} (φ : F ⟶ G) : resι ℤ F ≫ (resMap ℤ φ).f 0 = φ ≫ resι ℤ G := by
   have h := congrArg (fun f => HomologicalComplex.Hom.f f 0)
     (InjectiveResolution.desc_commutes φ (injectiveResolution G) (injectiveResolution F))
   simp only [HomologicalComplex.comp_f] at h
-  simp only [resι, resMap, InjectiveResolution.ι'_f_zero, InjectiveResolution.cochainComplexXIso]
+  simp only [resι, resMap, res, InjectiveResolution.ι'_f_zero, InjectiveResolution.cochainComplexXIso,
+    InjectiveResolution.cochainComplex]
   rw [HomologicalComplex.extendMap_f _ _ (i := 0) (by rfl)]
   simp only [Category.assoc, Iso.inv_hom_id_assoc, Iso.inv_hom_id_assoc]
   rw [reassoc_of% h]

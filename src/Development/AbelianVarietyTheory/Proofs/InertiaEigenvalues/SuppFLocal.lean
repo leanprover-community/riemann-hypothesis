@@ -42,7 +42,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice MeasureTheory IsDedekindDomain NumberField Matrix
 open Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR.Mult Formalism.IndefR.Datum
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 

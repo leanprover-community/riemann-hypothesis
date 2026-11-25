@@ -51,10 +51,6 @@ import ReciprocityTheory.GaloisValuations.GlobalA
 
 open Matrix Filter NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal UpperTheory.V.Alg UpperTheory.V.W UpperTheory.V.Pa
 
-private theorem card_ker_mul_card_range_eq_card {G H : Type} [AddGroup G] [AddGroup H] (f : G →+ H) :
-    Nat.card f.ker * Nat.card f.range = Nat.card G := by
-  rw [← AddSubgroup.index_ker, AddSubgroup.card_mul_index]
-
 theorem UpperTheory.V.Pa.cCount :
     ∀ (R Γ M : Type) [CommRing R] [Group Γ] [AddCommGroup M] [Module R M] [Finite M] (ρ : Representation R Γ M) (c : Γ), c * c = 1 → IsUnit (2 : R) → (∀ Z : AddSubgroup (Γ → M), Finite Z → (Bl ρ).toAddSubgroup ≤ Z → (∀ z ∈ Z, ∀ g h, z (g * h) = z g + ρ g (z h)) → Nat.card Z * Nat.card {m : M // ρ c m = m} = {z | z ∈ Z ∧ z c = 0}.ncard * Nat.card M) ∧ Nat.card (Bl ρ) * Nat.card ρ.invariants = Nat.card M ∧ {z | z ∈ Bl ρ ∧ z c = 0}.ncard * Nat.card ρ.invariants = Nat.card {m : M // ρ c m = m} := by
   intro R Γ M _ _ _ _ _ ρ c hc h2
@@ -96,7 +92,7 @@ theorem UpperTheory.V.Pa.cCount :
       rw [AddMonoidHom.mem_ker, hd, sub_eq_zero]))
   have hdM : Nat.card d.range * Nat.card {m : M // ρ c m = m} = Nat.card M := by
     rw [cardFix, mul_comm]
-    exact card_ker_mul_card_range_eq_card d
+    exact AddSubgroup.card_ker_mul_card_range d
   let Mc : AddSubgroup M :=
     { carrier := {m | ρ c m = m}
       add_mem' := by
@@ -187,8 +183,8 @@ theorem UpperTheory.V.Pa.cCount :
         rw [hf, hd]
     have cardRangeEv : Nat.card ev.range = Nat.card d.range :=
       Nat.card_congr (Equiv.subtypeEquivRight rangeEv)
-    rw [← kerEv, ← card_ker_mul_card_range_eq_card ev, cardRangeEv, mul_assoc, hdM]
+    rw [← kerEv, ← AddSubgroup.card_ker_mul_card_range ev, cardRangeEv, mul_assoc, hdM]
   · rw [cardBl, cardInv, mul_comm]
-    exact card_ker_mul_card_range_eq_card f
+    exact AddSubgroup.card_ker_mul_card_range f
   · rw [← cardR', ← cardKer', cardMc, mul_comm]
-    exact card_ker_mul_card_range_eq_card f'
+    exact AddSubgroup.card_ker_mul_card_range f'

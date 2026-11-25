@@ -61,8 +61,6 @@ local elab "exact_by_kernel " term:term : tactic =>
     -- The kernel checks this when the declaration is added.
     pure value
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T : Type} {A : FamIn D.what₂.LL G Pl0 T D.R.m}
   {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL]
 

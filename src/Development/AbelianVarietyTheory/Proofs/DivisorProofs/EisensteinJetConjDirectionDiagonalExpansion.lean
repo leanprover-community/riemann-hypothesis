@@ -58,8 +58,6 @@ import Mathlib.Topology.Sheaves.Init
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open NumberField UpperHalfPlane GlobalTheory.HilbFam GlobalTheory.QFam
@@ -159,8 +157,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.DefiningCoordinates (iterD partialD
 open scoped Classical MatrixGroups nonZeroDivisors
 open GlobalTheory.LatVal (Sz)
 open GlobalTheory.LatJet (EisExp IsEis FR)
-
-set_option autoImplicit false
 
 namespace GlobalTheory.HilbFam
 

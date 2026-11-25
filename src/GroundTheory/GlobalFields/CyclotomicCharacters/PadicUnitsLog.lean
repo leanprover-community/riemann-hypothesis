@@ -272,14 +272,8 @@ theorem toZModPow_padicUnitsLog (u : ℤ_[ℓ]ˣ) (n : ℕ) :
       Multiplicative.toAdd (logMod ℓ n (redUnits ℓ (n + unitsLevel ℓ) u)) :=
   toZModPow_limFamilies ℓ _ n
 
-theorem continuous_redUnits (k : ℕ) : Continuous (redUnits ℓ k) := by
-  rw [Units.continuous_iff]
-  refine ⟨(_root_.UpperTheory.Reformulated.B.Yde3.continuous_toZModPow k).comp Units.continuous_val, ?_⟩
-  have : (fun u : ℤ_[ℓ]ˣ => ((redUnits ℓ k u)⁻¹ : (ZMod (ℓ ^ k))ˣ).val) =
-      fun u => PadicInt.toZModPow k ((u⁻¹ : ℤ_[ℓ]ˣ) : ℤ_[ℓ]) := by
-    funext u; rw [← map_inv]; rfl
-  rw [this]
-  exact (_root_.UpperTheory.Reformulated.B.Yde3.continuous_toZModPow k).comp (Units.continuous_val.comp continuous_inv)
+theorem continuous_redUnits (k : ℕ) : Continuous (redUnits ℓ k) :=
+  Units.continuous_map (_root_.UpperTheory.Reformulated.B.Yde3.continuous_toZModPow k)
 
 theorem continuous_padicUnitsLog : Continuous (padicUnitsLog ℓ) := by
   have hc : Continuous fun u : ℤ_[ℓ]ˣ => Multiplicative.toAdd (padicUnitsLog ℓ u) :=

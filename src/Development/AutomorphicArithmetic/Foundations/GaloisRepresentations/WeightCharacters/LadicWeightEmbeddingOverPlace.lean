@@ -1473,7 +1473,7 @@ open UpperTheory.Gal.Wt
 theorem UpperTheory.Gal.Wt.qR_of :
     UpperTheory.Gal.Wt.QR := by
   intro a y
-  obtain ⟨k, hk, b, hg, hb⟩ := _root_.GlobalTheory.CompanionTheory.QR.exists_unitary_mul_blockTriangular (y : Matrix (Fin a) (Fin a) ℂ) y.isUnit
+  obtain ⟨k, hk, b, hg, hb⟩ := _root_.GlobalTheory.CompanionTheory.QR.exists_unitary_mul_blockTriangular (y : Matrix (Fin a) (Fin a) ℂ)
   let u : Matrix.unitaryGroup (Fin a) ℂ := ⟨k, hk⟩
   have hu : ((unitaryIncl a u : GL (Fin a) ℂ) : Matrix (Fin a) (Fin a) ℂ) = k := rfl
   refine ⟨u, (unitaryIncl a u)⁻¹ * y, ?_, (mul_inv_cancel_left _ _).symm⟩

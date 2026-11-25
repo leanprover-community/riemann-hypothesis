@@ -59,8 +59,6 @@ open scoped Classical ComplexConjugate
 
 namespace GlobalTheory.VacuumFockLaws
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem multiFact_add_single {ι : Type} (k : ι →₀ ℕ) (v : ι) :
     multiFact (k + Finsupp.single v 1) = (k v + 1) * multiFact k := by
   classical

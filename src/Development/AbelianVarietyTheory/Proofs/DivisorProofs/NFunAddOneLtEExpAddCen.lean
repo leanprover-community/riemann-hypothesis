@@ -53,8 +53,6 @@ open GlobalTheory.ChiGrid Formalism.L2.Host
 
 namespace GlobalTheory.BigTop.Fun
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} {T : Type} {Lc : LevCh D T} {sc : Consts}
 
 theorem natCast_mem_of_under {w : HeightOneSpectrum (𝓞 D.host.E)} {p : ℕ}

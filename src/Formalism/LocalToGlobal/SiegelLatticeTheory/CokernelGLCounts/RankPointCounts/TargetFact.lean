@@ -16,8 +16,6 @@ open NumberField IsDedekindDomain ValuativeRel Formalism.BasicNotions Formalism.
 
 namespace Formalism.L2.SG.Pf.PCountEx
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Helpers
 
 variable {K : Type*} [CommRing K] {n : ℕ}

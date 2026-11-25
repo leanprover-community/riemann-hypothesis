@@ -145,7 +145,7 @@ theorem ten_basisO (O Kf : Type) [CommRing O] [IsDomain O] [Field Kf] [Algebra O
   have : ∀ s, Finite ↥(ssIdx (m + 1) (m + 1) (nuOf (lamAt lam0 s))) :=
     fun s => (sSIdxFinite _ _ _).to_subtype
   have : ∀ s, Fintype ↥(ssIdx (m + 1) (m + 1) (nuOf (lamAt lam0 s))) := fun s => Fintype.ofFinite _
-  have : IsFractionRing Kf Kf := jr_KK Kf
+  have : IsFractionRing Kf Kf := instIsFractionRing (R := Kf)
   set P : (∀ s : Fin n', ↥(ssIdx (m + 1) (m + 1) (nuOf (lamAt lam0 s)))) →
       MvPolynomial (Fin n' × (Fin (m + 1) × Fin (m + 1))) Kf :=
     fun i => ∏ s, blockEmb Kf s (X s (i s)) with hP

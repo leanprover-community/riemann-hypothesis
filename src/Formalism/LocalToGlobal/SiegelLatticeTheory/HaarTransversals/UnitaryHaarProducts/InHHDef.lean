@@ -209,8 +209,6 @@ end Sig
 
 section SettingDef
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem phi_hform (I : AutInst) (v : InfinitePlace I.F) (x y : Fin I.n → I.E) :
     I.φ v (Formalism.UG.hform (starRingEnd I.E) I.J x y) = hJ (I.ε v) (rv I v x) (rv I v y) := by
   have hP := I.P_spec v

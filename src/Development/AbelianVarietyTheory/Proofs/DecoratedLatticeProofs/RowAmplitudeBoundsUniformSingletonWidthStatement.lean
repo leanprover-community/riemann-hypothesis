@@ -661,20 +661,7 @@ theorem gap_near {N : ℕ} (ε : Fin N → Bool) (l ν : Fin N → ℝ) (G ρ : 
 theorem gap_lamD (D : D7) (large₂ : SizeData₂ D) {C' Cl Cg cb Cu cT CT C0 : ℝ}
     (hH : Cnt.Hyp0 D large₂ C' Cl Cg cb Cu cT CT C0) (τ : D.what₂.Tau) :
     GapAtLeast (epsSH D.R) (lamD D τ) (Cl * (D.R.r : ℝ) ^ 19 * (D.R.f : ℝ) ^ 5 * large₂.sc.L) := by
-  obtain ⟨_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, hbnd, _, _, _, _, hstep, _, _, _, hCl⟩ := hH.1
-  have hL := one_lt_scL large₂
-  have hG0 : 0 ≤ Cl * (D.R.r : ℝ) ^ 19 * (D.R.f : ℝ) ^ 5 * large₂.sc.L := by
-    have : 0 ≤ Cl := hCl.le
-    have : 0 ≤ large₂.sc.L := by linarith
-    positivity
-  have hv : ∀ l, 1 ≤ l → l ≤ D.R.k - 1 → 0 ≤ vOne D τ l := fun l h1 h2 => (hH.2.1.1 τ l h1 h2).1
-  have hm := D.R.two_le_m
-  have hb1 : 0 ≤ bOne D τ 1 := by
-    have h := (hbnd τ 1 le_rfl (by omega)).1
-    exact le_trans (le_trans (Real.rpow_nonneg (Nat.cast_nonneg _) _) (le_max_left _ _)) h
-  have g := gapAtLeast_of τ _ hG0 hv hb1 (hstep τ)
-  intro a b hab
-  exact g (Fin.cast (dimS_eq D.R) a) (Fin.cast (dimS_eq D.R) b) hab
+  first | exact _root_.Formalism.MainNotions.BridgeLemma.std_ncgap | exact @_root_.Formalism.MainNotions.BridgeLemma.std_ncgap | apply _root_.Formalism.MainNotions.BridgeLemma.std_ncgap <;> assumption
 
 theorem deg_eq_fdegHC (D : D7) (ht : cdScaleTie D) {W : LocW D.R.k D.R.rS}
     (l : Fin (2 * D.R.rS + D.R.k + 1) → ℝ) (A : LocS W) (hA : GoodS D l A) (h : ℝ)

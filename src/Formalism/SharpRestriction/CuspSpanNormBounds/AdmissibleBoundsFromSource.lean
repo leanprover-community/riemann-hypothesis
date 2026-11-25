@@ -49,8 +49,6 @@ export Formalism.MainNotions.S.UnitaryVolumeMass (f3 Kpp)
 open Formalism.BasicNotions Formalism.MainNotions.S NumberField IsDedekindDomain
 open scoped InnerProductSpace nonZeroDivisors
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Letters
 
 variable (D : D7) (large₂ : SizeData₂ D)

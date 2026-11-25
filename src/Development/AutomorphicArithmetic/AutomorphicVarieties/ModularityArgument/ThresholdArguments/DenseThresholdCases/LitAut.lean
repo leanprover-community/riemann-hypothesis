@@ -77,22 +77,9 @@ structure LiteratureAutomorphyHypothesis : Prop where
   chA : HeckeLAdicCharacterAbove
   chW : AlgebraicCharacterWD
   berger : DeRhamPotSemistable
-structure LiteratureCMHypothesis : Prop where
-  gm : GrothendieckDeformation
-  dr : AbelianDeRham
-  dual : AbelianDualCrystal
-  per : PeriodComparison
-  gmp : GaussManinPeriods
-  st : SerreTateGoodReductionSt
-  cm : EllipticMainTheoremCM
-  hj : HilbertClassFieldJ
-  dri : SiegelKlingenDeligneRibet
-  pz : PartialZetaFunctionalEquation
-  fe : HeckeTateFunctionalEquation
 structure LiteratureRankNHypothesis : Prop where
   loc : _root_.GlobalTheory.Mem.LiteralAutomorphy.LitLocAlt
   aut : _root_.GlobalTheory.Mem.LiteralAutomorphy.LiteratureAutomorphyHypothesis
   coh : LitCoh
-  cm : _root_.GlobalTheory.Mem.LiteralAutomorphy.LiteratureCMHypothesis
 end GlobalTheory.Mem.LiteralAutomorphy
 end

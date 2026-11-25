@@ -318,7 +318,6 @@ private theorem fix_of_dec {Ω : Type} [Field Ω] [Algebra ℚ Ω] (A : Valuatio
     have h1 : (1 : _) ≤ A.valuation (l : Ω) := by
       have h3 := (A.valuation_le_one_iff _).2 hli
       rw [map_inv₀] at h3
-      haveI : Nontrivial A.ValueGroup := GroupWithZero.toNontrivial
       have hne : A.valuation (l : Ω) ≠ 0 := fun h0 =>
         (Nat.cast_ne_zero (R := Ω)).2 hl0 ((Valuation.zero_iff A.valuation).1 h0)
       exact (inv_le_one₀ (pos_iff_ne_zero.2 hne)).1 h3

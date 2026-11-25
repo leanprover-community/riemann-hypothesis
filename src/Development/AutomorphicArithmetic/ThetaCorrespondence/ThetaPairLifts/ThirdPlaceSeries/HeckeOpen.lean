@@ -71,7 +71,6 @@ structure AUSideAlt (D : D7) where
         Polynomial.C ((-1 : ℂ) ^ k * ((normV w : ℕ) : ℂ) ^ (k * (k - 1) / 2) * c k) * X ^ (D.R.nV - k) =
       galPol D.naut (D.naut.lpTw (D.nbc.locAU j (cls j h1 h2 π) w) ((1 - (D.R.nV : ℝ)) / 2))
 section
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 def AutomorphicSideRealised (hL : _root_.UpperTheory.Zero.LLC.RecTExists) (D : D7) (T : GlobalTheory.RowTie.WDTie D.nd D.naut) (A : _root_.GlobalTheory.HeightCounting.AUSideAlt D) : Prop :=
   ∀ j h1 h2 π (s : SplitPlace D.host.E) σ, IsLocS π.S s σ → T.e s.w (D.nbc.locAU j (A.cls j h1 h2 π) s.w) =
     _root_.GlobalTheory.CuspRep.ParLawsT.locRecT hL (D.nd.plOm.2 s.w) (GlobalTheory.LocLanglands.cls σ)

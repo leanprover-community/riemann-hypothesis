@@ -58,10 +58,6 @@ private theorem det_map_star' {g : ℕ} (A : Matrix (Fin g) (Fin g) ℂ) :
     (A.map star).det = star A.det := by
   exact (RingHom.map_det (starRingEnd ℂ) A).symm
 
-private theorem hermForm_mulVec_mulVec {g : ℕ} (M H : Matrix (Fin g) (Fin g) ℂ) (z w : Fin g → ℂ) :
-    hermForm M (H *ᵥ z) (H *ᵥ w) = hermForm (Hᵀ * M * H.map star) z w := by
-  rw [PerCoordU.herm_mulVec_left, PerCoordU.herm_mulVec_right]
-
 private theorem eq_of_mulVec_period_eq {O : Type} [Ring O] {bar : O → O} {D : PLat O bar} {g : ℕ}
     {ρ : O →+* Matrix (Fin g) (Fin g) ℂ} {P : D.La →+ Fin g → ℂ} (hP : PELU.IsPeriod D ρ P)
     {A B : Matrix (Fin g) (Fin g) ℂ} (h : ∀ x, A *ᵥ P x = B *ᵥ P x) : A = B := by
@@ -101,7 +97,8 @@ theorem UpperTheory.Gal.W2.adExists_of :
     intro x y
     have hs : hermForm ((m : ℂ) • M₀) (P₀ x) (P₀ y) = (m : ℂ) * hermForm M₀ (P₀ x) (P₀ y) := by
       simp [hermForm, Matrix.smul_mulVec, dotProduct_smul]
-    rw [← hermForm_mulVec_mulVec, ← hga x, ← hga y, hIm, hEF, hs, Complex.mul_im, hIm]
+    rw [← PerCoordU.herm_mulVec_right, ← PerCoordU.herm_mulVec_left,
+      ← hga x, ← hga y, hIm, hEF, hs, Complex.mul_im, hIm]
     simp
   have hdM : M₀.det ≠ 0 := PeriodCoord.det_ne_zero_of_pos hpos
   have hdet : H.det ≠ 0 := by

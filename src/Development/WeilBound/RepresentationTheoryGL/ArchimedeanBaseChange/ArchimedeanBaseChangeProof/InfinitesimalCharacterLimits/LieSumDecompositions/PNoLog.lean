@@ -692,7 +692,7 @@ theorem IsSS.adjoin {s : Set A} (hs : ∀ x ∈ s, IsSS x) (hc : ∀ x ∈ s, �
 
 
 set_option linter.deprecated false in
-theorem isSS_coeff_fun (m : Multiset ℂ) (hm : m.Nodup) (r s : ℕ) (_hrs : Multiset.card m = r + s) (c₁ c₂ : ℂ)
+theorem isSS_coeff_fun (m : Multiset ℂ) (hm : m.Nodup) (r s : ℕ) (c₁ c₂ : ℂ)
     (a b : ℕ → A) (ha : a r = 1) (hb : b s = 1)
     (hcomm : ∀ i j, Commute (a i) (a j) ∧ Commute (a i) (b j) ∧ Commute (b i) (b j))
     (hrel : ∀ u : ℂ, (∑ k ∈ Finset.range (r + 1), (u + c₁) ^ k • a k) *
@@ -1005,7 +1005,7 @@ theorem trace_ss (hm : ∀ τ, (m τ).Nodup ∧ Multiset.card (m τ) = r + s) (�
   have ha1' : π (aP r) = 1 := by
     rw [show aP r = 1 from Subtype.ext ha1, map_one]
   have hss : ∀ k ≤ r, IsSS (π (aP k)) := fun k hk =>
-    (isSS_coeff_fun (m τ) (hm τ).1 s r (by rw [(hm τ).2, add_comm]) 0 0 (fun k => π (bP k)) (fun k => π (aP k))
+    (isSS_coeff_fun (m τ) (hm τ).1 s r 0 0 (fun k => π (bP k)) (fun k => π (aP k))
       hb1' ha1' (fun i j => ⟨((hcab i j).2.2).map π, ((hcab j i).2.1).symm.map π, ((hcab i j).1).map π⟩)
       hrel k).2 hk
 

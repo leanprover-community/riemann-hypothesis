@@ -57,8 +57,6 @@ import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.IsStandardSmoot
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj

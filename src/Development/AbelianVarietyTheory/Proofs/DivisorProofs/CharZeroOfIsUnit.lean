@@ -60,8 +60,6 @@ open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.UPel.HT GlobalTheory.UPel.HT.Hecke GlobalTheory.UPel.HT.ES GlobalTheory.IwLevel
 open ReciprocityTheory.ChartRestriction.G.Out (RingAct)
 
-set_option autoImplicit false
-
 namespace GlobalTheory.UPel.HT.ES.KerUPart
 
 theorem exists_elt {O : Type} [CommRing O] (I J : Ideal O) (q : O) (h : IsCoprime I J)

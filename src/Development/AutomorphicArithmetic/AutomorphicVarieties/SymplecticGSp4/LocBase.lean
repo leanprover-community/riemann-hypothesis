@@ -103,13 +103,9 @@ private theorem lb_graded [Finite σ] [Finite τ] {G : Type} [AddCommGroup G] (w
   · rw [hf d hd, zero_smul]
 
 private theorem lb_const [Finite σ] (x : MvPowerSeries σ O →ₐ[O] O) (h0 : ∀ s, x (X s) = 0) (f : MvPowerSeries σ O) :
-    x f = constantCoeff f := by
-  let k : MvPowerSeries σ O →ₐ[O] O :=
-    { (constantCoeff : MvPowerSeries σ O →+* O) with commutes' := fun a => by simp [MvPowerSeries.algebraMap_apply] }
-  have := GlobalTheory.algHom_sub_mem_pow x k (J := (⊥ : Ideal O)) (fun s => h0 s) (fun s => by simp [k])
-    (n := 1) (fun s => by simp [h0, k]) f
-  rw [pow_one, Ideal.mem_bot, sub_eq_zero] at this
-  exact this
+    x f = constantCoeff f :=
+  sub_eq_zero.1 (Ideal.mem_bot.1
+    (GlobalTheory.algHom_sub_constantCoeff_mem x (K := ⊥) (fun s => Ideal.mem_bot.2 (h0 s)) f))
 
 private theorem lb_max {K : Type} [Field K] : maximalIdeal (MvPowerSeries τ K) = GlobalTheory.germIdeal τ K := by
   ext f
@@ -280,14 +276,11 @@ variable {R R' : Type} [CommRing R] [CommRing R']
 private theorem prj_hom {A A' : Type} [CommRing A] [CommRing A'] (f : A →+* A') (F : GradeZeroInterpolatingElement.M4 A →+* GradeZeroInterpolatingElement.M4 A')
     (hF : ∀ (a : A) X, F (a • X) = f a • F X) (c : Fin 4 → A) (X : GradeZeroInterpolatingElement.M4 A) (i : Fin 4) :
     prj (fun a => f (c a)) (F X) i = F (prj c X i) := by
-  have key : ∀ p : Polynomial A, Polynomial.aeval (F X) (p.map f) = F (Polynomial.aeval X p) := fun p => by
-    induction p using Polynomial.induction_on' with
-    | add p q hp hq => rw [Polynomial.map_add (f := _), map_add (f := _), map_add (f := _), map_add (f := _), hp, hq]
-    | monomial n a =>
-      rw [Polynomial.map_monomial, Polynomial.aeval_monomial, Polynomial.aeval_monomial, ← Algebra.smul_def,
-        ← Algebra.smul_def, hF, map_pow]
+  have hcomp : F.comp (algebraMap A _) = (algebraMap A' _).comp f :=
+    RingHom.ext fun a => by simp [Algebra.algebraMap_eq_smul_one, hF]
   unfold prj
-  rw [← key, Polynomial.map_prod]
+  rw [Polynomial.aeval_def, Polynomial.aeval_def, Polynomial.hom_eval₂, hcomp,
+    ← Polynomial.eval₂_map, Polynomial.map_prod]
   simp
 
 private theorem smul_map' (f : R →+* R') (a : R) (X : GradeZeroInterpolatingElement.M4 R) : f.mapMatrix (a • X) = f a • f.mapMatrix X := by
@@ -439,10 +432,6 @@ private theorem frac_alg (l : ℕ) [Fact l.Prime] (O : Type) [CommRing O] [IsDom
   exact ⟨inferInstance, inferInstance,
     Module.Finite.of_isLocalization ℤ_[l] O (nonZeroDivisors ℤ_[l])⟩
 
-private theorem union_iff {α : Type} {S T : Set α} {p : α → Prop} :
-    ((∀ x ∈ S, p x) ∧ ∀ x ∈ T, p x) ↔ ∀ x ∈ S ∪ T, p x :=
-  ⟨fun h x hx => hx.elim (h.1 x) (h.2 x), fun h => ⟨fun x hx => h x (.inl hx), fun x hx => h x (.inr hx)⟩⟩
-
 section Main
 
 variable {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] {l : ℕ} [hl : Fact l.Prime] {c : Coef l} (D : Raw Ω c)
@@ -500,7 +489,7 @@ private theorem closedL : D.condL.IsClosed := closed_of_set _ fun R _ _ _ r => b
   refine ⟨{x | ∃ (g : D.Gp _) (i j : Fin 4),
       x = (adj (r.hom g) * r.hom g - algebraMap c.O R (D.th g) • (1 : GradeZeroInterpolatingElement.M4 R)) i j} ∪
     ordSet ((D.Ip l).subgroupOf (D.Gp l)) (fun i g => algebraMap c.O R (D.ps i g)) D.s0 r.hom,
-    fun R' _ _ _ f => Iff.trans (and_congr (mult_iff D r f) ?_) union_iff⟩
+    fun R' _ _ _ f => Iff.trans (and_congr (mult_iff D r f) ?_) Set.forall_mem_union.symm⟩
   have := ord_iff (f : R →+* R') ((D.Ip l).subgroupOf (D.Gp l)) (fun i g => algebraMap c.O R (D.ps i g)) D.s0 r.hom
   simp only [RingHom.coe_coe, AlgHom.commutes] at this
   exact this
@@ -509,20 +498,19 @@ private theorem closedP (p : ℕ) : (D.condP p).IsClosed := closed_of_set _ fun 
   refine ⟨{x | ∃ (g : D.Gp _) (i j : Fin 4),
       x = (adj (r.hom g) * r.hom g - algebraMap c.O R (D.th g) • (1 : GradeZeroInterpolatingElement.M4 R)) i j} ∪
     {x | ∃ (g : D.Gp p) (i j : Fin 4), (g : G ℚ Ω) ∈ D.Ip p ⊓ D.ψ.ker ∧ x = (r.hom g - 1) i j},
-    fun R' _ _ _ f => Iff.trans (and_congr (mult_iff D r f) ?_) union_iff⟩
+    fun R' _ _ _ f => Iff.trans (and_congr (mult_iff D r f) ?_) Set.forall_mem_union.symm⟩
   refine ⟨?_, fun h g hg => (one_iff (f : R →+* R') (r.hom g)).2 fun i j => h _ ⟨g, i, j, hg, rfl⟩⟩
   rintro h _ ⟨g, i, j, hg, rfl⟩
   exact (one_iff (f : R →+* R') (r.hom g)).1 (h g hg) i j
-
-private theorem diagonal_rep_off_diagonal_zero (v : ℕ) (g : D.Gp v) (a b : Fin 4) (h : a ≠ b) : D.r0At v g a b = 0 :=
-  Matrix.diagonal_apply_ne (fun i => (D.ps i g : c.O)) h
 
 private theorem pkL (hD : D.Good) (hP : Loc.LocalPublishedTheorems) : Nonempty (Pk D.condL (D.r0At l) dimL) := by
   obtain ⟨ρ₀, -, hpt⟩ := r0pt D hD
   obtain ⟨R, _, _, _, ρ, hrep⟩ := rep_ex D hD hP l hl.out _ (closedL D) _ ((ptMap D hD c.O ρ₀).1 hpt).atL
   obtain ⟨_, _, _⟩ := frac_alg l c.O
   obtain ⟨x, P, w, φ, hx, hφ, hy, hu, hw⟩ := Loc.spChartL hP D hD (FractionRing c.O) R ρ hrep
-  refine pk_of _ _ (diagonal_rep_off_diagonal_zero D l) _ R ρ hrep (tstable hrep fun R' _ _ _ r r' s hr h => ⟨fun g => ?_, ?_⟩)
+  refine pk_of D.condL (D.r0At l)
+    (fun g _ _ => Matrix.diagonal_apply_ne fun i => (D.ps i g : c.O)) _ R ρ hrep
+    (tstable hrep fun R' _ _ _ r r' s hr h => ⟨fun g => ?_, ?_⟩)
     x P w φ hx hφ hy hu hw
   · rw [hr]
     exact gsp_conj s (h.1 g)
@@ -536,7 +524,9 @@ private theorem pkP (hD : D.Good) (hP : Loc.LocalPublishedTheorems) (p : ℕ) (h
     (((ptMap D hD c.O ρ₀).1 hpt).atP p hp)
   obtain ⟨_, _, _⟩ := frac_alg l c.O
   obtain ⟨x, P, w, φ, hx, hφ, hy, hu, hw⟩ := Loc.spChartP D hD p hp (FractionRing c.O) R ρ hrep
-  refine pk_of _ _ (diagonal_rep_off_diagonal_zero D p) _ R ρ hrep (tstable hrep fun R' _ _ _ r r' s hr h => ⟨fun g => ?_, fun g hg => ?_⟩)
+  refine pk_of (D.condP p) (D.r0At p)
+    (fun g _ _ => Matrix.diagonal_apply_ne fun i => (D.ps i g : c.O)) _ R ρ hrep
+    (tstable hrep fun R' _ _ _ r r' s hr h => ⟨fun g => ?_, fun g hg => ?_⟩)
     x P w φ hx hφ hy hu hw
   · rw [hr]
     exact gsp_conj s (h.1 g)

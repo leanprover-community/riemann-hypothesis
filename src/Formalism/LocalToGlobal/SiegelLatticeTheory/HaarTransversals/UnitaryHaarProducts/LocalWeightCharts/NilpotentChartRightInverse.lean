@@ -407,24 +407,9 @@ theorem cB_psi (g : Mx k r) : cB (psiC g) = bB g := by
   rfl
 
 theorem adj_eq {g : Mx k r} (hc : ColB g) (hu : g ∈ UH (Hpk k r)) : (bA g).adjugate = (bF g)ᴴ := by
-  have hu' : gᴴ * Hpk k r * g = Hpk k r := hu
-  have hAF : (bA g)ᴴ * bF g = 1 := by
-    ext a b
-    have h := congrFun (congrFun hu' (posE k r (Sum.inl a))) (posE k r (Sum.inr (Sum.inr b)))
-    rw [uhE_lemma_4, hpkE_lemma] at h
-    have hw : ∀ j, g (posE k r (Sum.inr (Sum.inl j))) (posE k r (Sum.inl a)) = 0 := fun j => hc.wa j a
-    have hs : ∀ c, g (posE k r (Sum.inr (Sum.inr c))) (posE k r (Sum.inl a)) = 0 := fun c => hc.sa c a
-    simp only [hw, hs, star_zero, zero_mul, Finset.sum_const_zero, add_zero, (posE k r).apply_eq_iff_eq,
-      Sum.inr.injEq, @eq_comm _ b a] at h
-    rw [Matrix.mul_apply, Matrix.one_apply]
-    simp only [Matrix.conjTranspose_apply]
-    exact h
-  have hFA : (bF g)ᴴ * bA g = 1 := by
-    have := congrArg Matrix.conjTranspose hAF
-    rwa [Matrix.conjTranspose_mul, Matrix.conjTranspose_conjTranspose, Matrix.conjTranspose_one] at this
-  have hdet : (bA g).det = 1 := det_of_lowId (fun a b hba => hc.aa a b hba)
-  calc (bA g).adjugate = (bF g)ᴴ * bA g * (bA g).adjugate := by rw [hFA, Matrix.one_mul]
-    _ = (bF g)ᴴ := by rw [Matrix.mul_assoc, Matrix.mul_adjugate, hdet, one_smul, Matrix.mul_one]
+  calc (bA g).adjugate = (bF g)ᴴ * bA g * (bA g).adjugate := by rw [rel_F hc hu, Matrix.one_mul]
+    _ = (bF g)ᴴ := by
+      rw [Matrix.mul_assoc, Matrix.mul_adjugate, bA_det hc, one_smul, Matrix.mul_one]
 
 theorem cF_psi {g : Mx k r} (hc : ColB g) (hu : g ∈ UH (Hpk k r)) : cF (psiC g) = bF g := by
   unfold cF
@@ -505,40 +490,12 @@ theorem cC_psi {g : Mx k r} (hc : ColB g) (hu : g ∈ UH (Hpk k r)) : cC (psiC g
   unfold cC
   rw [cA_psi hc, cM_psi hc hu]
   unfold mof
-  have hdet : (bA g).det = 1 := det_of_lowId (fun a b hba => hc.aa a b hba)
-  rw [← Matrix.mul_assoc, ← adj_eq hc hu, Matrix.mul_adjugate, hdet, one_smul, Matrix.one_mul]
+  rw [← Matrix.mul_assoc, ← adj_eq hc hu, Matrix.mul_adjugate, bA_det hc, one_smul, Matrix.one_mul]
 
 theorem nilpotent_chart_left_inverse {g : Mx k r} (hg : g ∈ Nset k r) : phi0 (psiC g) (psiR g) = g := by
-  obtain ⟨hu, h1, h2⟩ := hg
-  have hc : ColB g := by
-    refine ⟨fun a b hba => ?_, fun j b => ?_, fun a b => ?_, fun j c => ?_, fun a j => ?_⟩
-    · rw [h1 b (eI k r a) hba]
-      simp only [show (eI k r a = eI k r b) = (posE k r (Sum.inl a) = posE k r (Sum.inl b)) from rfl,
-        (posE k r).apply_eq_iff_eq, Sum.inl.injEq]
-    · have hb := b.isLt
-      rw [h1 b (wI k r j) (by show (b : ℕ) ≤ r + j; omega)]
-      simp only [show (wI k r j = eI k r b) = (posE k r (Sum.inr (Sum.inl j)) = posE k r (Sum.inl b)) from rfl,
-        (posE k r).apply_eq_iff_eq, reduceCtorEq, ↓reduceIte]
-    · have ha := a.isLt
-      have hb := b.isLt
-      rw [h1 b (esI k r a) (by show (b : ℕ) ≤ 2 * r + k - a; omega)]
-      simp only [show (esI k r a = eI k r b) = (posE k r (Sum.inr (Sum.inr a)) = posE k r (Sum.inl b)) from rfl,
-        (posE k r).apply_eq_iff_eq, reduceCtorEq, ↓reduceIte]
-    · have hc' := c.isLt
-      rw [h2 (wI k r j) (wI k r c) (by show r ≤ r + (c : ℕ); omega) (by show r + (c : ℕ) ≤ r + k; omega)
-        (by show r ≤ r + (j : ℕ); omega)]
-      simp only [show (wI k r j = wI k r c) =
-        (posE k r (Sum.inr (Sum.inl j)) = posE k r (Sum.inr (Sum.inl c))) from rfl,
-        (posE k r).apply_eq_iff_eq, Sum.inr.injEq, Sum.inl.injEq]
-    · have ha := a.isLt
-      have hj := j.isLt
-      rw [h2 (esI k r a) (wI k r j) (by show r ≤ r + (j : ℕ); omega) (by show r + (j : ℕ) ≤ r + k; omega)
-        (by show r ≤ 2 * r + k - a; omega)]
-      simp only [show (esI k r a = wI k r j) =
-        (posE k r (Sum.inr (Sum.inr a)) = posE k r (Sum.inr (Sum.inl j))) from rfl,
-        (posE k r).apply_eq_iff_eq, Sum.inr.injEq, reduceCtorEq, ↓reduceIte]
+  have hc : ColB g := colB_of_mem hg
   unfold phi0
-  rw [cA_psi hc, cB_psi, cC_psi hc hu, cE_psi hc hu, cF_psi hc hu]
+  rw [cA_psi hc, cB_psi, cC_psi hc hg.1, cE_psi hc hg.1, cF_psi hc hg.1]
   exact mk_blocks hc
 
 theorem continuous_cA : Continuous (cA (k := k) (r := r)) := by

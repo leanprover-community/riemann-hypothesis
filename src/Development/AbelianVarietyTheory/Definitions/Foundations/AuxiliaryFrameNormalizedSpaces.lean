@@ -79,34 +79,6 @@ theorem pde_split :
 
 end Pre
 
-section Spaces
-
-open DiagSp
-
-variable (R : Ranks) {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [StarRing E]
-  [Algebra F E] (cm : CMData F E) (T : ℕ) (hT : T.Prime) (pz : E) (hpz : star pz * pz = T)
-
-def spacesNorm : Spaces R F E :=
-  { spacesStd R cm T hT pz hpz (fun _ => false) with
-    z := Pi.single (⟨R.rankY R.m, by rw [N_top]; omega⟩ : Fin (R.N R.m)) pz
-    z_anis := by
-      refine ne_of_eq_of_ne (diag_single_single _ (fun _ => false) _ _ pz pz) ?_
-      rw [if_pos rfl]
-      simp only [sgn, Bool.false_eq_true, if_false, mul_one, hpz]
-      exact_mod_cast hT.ne_zero
-    z_orth := fun x => diag_ext_single _ _ (fun _ => false) x _ pz le_rfl }
-
-theorem spacesNorm_Y_sig (j : ℕ) (τ : E →+* ℂ) : ((spacesNorm R cm T hT pz hpz).Y j).sig τ = sigYD R j := spY_sig R j τ
-
-theorem spacesNorm_z_norm : ((spacesNorm R cm T hT pz hpz).X R.m).hT (spacesNorm R cm T hT pz hpz).z
-    (spacesNorm R cm T hT pz hpz).z = (T : E) := by
-  refine (diag_single_single (R.N R.m) (fun _ => false)
-    (⟨R.rankY R.m, by rw [N_top]; omega⟩ : Fin (R.N R.m)) _ pz pz).trans ?_
-  rw [if_pos rfl]
-  simp only [sgn, Bool.false_eq_true, if_false, mul_one, hpz]
-
-end Spaces
-
 theorem exists_finset_capitulation (E : Type) [Field E] [NumberField E] (τ : E →+* ℂ) :
     ∃ S : Finset ℂ, (∀ z ∈ S, IsAlgebraic ℚ z) ∧ ∀ (K : IntermediateField ℚ ℂ) [FiniteDimensional ℚ K],
       (∀ z ∈ S, z ∈ K) → (∀ x, τ x ∈ K) → ∀ 𝔞 : Ideal (𝓞 E), ∃ β : K,

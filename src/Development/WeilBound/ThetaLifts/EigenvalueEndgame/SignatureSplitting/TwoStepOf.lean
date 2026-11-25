@@ -177,8 +177,6 @@ theorem uniq_sub {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G
   have : SecondCountableTopology S := TopologicalSpace.Subtype.secondCountableTopology _
   exact L.isAv_uniq h h'
 
-theorem first_of (G : Type) [TopologicalSpace G] [SecondCountableTopology G] : FirstCountableTopology G := inferInstance
-
 theorem uni_map {R S : Type} [CommRing R] [CommRing S] (f : R →+* S) (ξ : R) :
     uni (.ofAdd (f ξ)) = Matrix.SpecialLinearGroup.map f (uni (.ofAdd ξ)) :=
   Subtype.ext (Matrix.ext fun i j => by
@@ -380,7 +378,7 @@ theorem two_kill (hd : W.J.det ≠ 0) (hJ₁ : ∀ i j, σ (W₁.J j i) = -W₁.
   have : T2Space (Multiplicative (AE F E)) := t2AE
   letI : MeasurableSpace SL(2, AE F E) := borel _
   have : BorelSpace SL(2, AE F E) := ⟨rfl⟩
-  have := first_of (UA σ W.J)
+  have := TopologicalSpace.SecondCountableTopology.to_firstCountableTopology (UA σ W.J)
   let m := emb2 h hJ hH hH₁
   have mc : Continuous m := continuous_SL2_embedding h hJ hH hH₁
   have ur := uni_map (inclR (F := F) (E := E) (AF F))

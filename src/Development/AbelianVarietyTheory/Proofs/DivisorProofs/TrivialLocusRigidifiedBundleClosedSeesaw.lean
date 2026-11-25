@@ -209,11 +209,6 @@ open scoped CategoryTheory.Obj
 namespace GlobalTheory.ClosedGlue
 open Scheme TopologicalSpace
 
-theorem restrict_app_eq_zero_iff {T S : Scheme.{0}} (f : T ⟶ S) (U : S.Opens) (V : U.toScheme.Opens)
-    (a : Γ(S, U.ι ''ᵁ V)) : ((f ∣_ U).app V).hom a = 0 ↔ (f.app (U.ι ''ᵁ V)).hom a = 0 := by
-  rw [morphismRestrict_app]
-  exact map_eq_zero_iff (T.presheaf.map _).hom (ConcreteCategory.bijective_of_isIso _).1
-
 def killIdeal {S : Scheme.{0}} (Φ : ∀ (T : Scheme.{0}), (T ⟶ S) → Prop) (W : S.Opens) :
     Ideal Γ(S, W) :=
   ⨅ (T : Scheme.{0}) (t : T ⟶ S) (_ : Φ T t), RingHom.ker (t.app W).hom
@@ -395,37 +390,7 @@ namespace GlobalTheory.TrivLocusLocal
 open ReciprocityTheory.ChartRestriction.G.Pdiv.PullbackComparison in
 theorem exists_gen_pull_pull_iff {X Y Z : Scheme.{0}} (N : LB X) (a : Y ⟶ X) (b : Z ⟶ Y) :
     (∃ s : ((N.pull a).pull b).Gen, s.IsGen) ↔ ∃ s : (N.pull (b ≫ a)).Gen, s.IsGen := by
-  have hb : ∀ z : Z, (b ≫ a).base z = a.base (b.base z) := fun z => rfl
-  have m1 : ∀ (j : PUnit.{1} → N.ι) (z : Z), z ∈ (N.pull (b ≫ a)).U j →
-      z ∈ ((N.pull a).pull b).U (fun _ _ => j PUnit.unit) := by
-    intro j z hz
-    have h1 : (b ≫ a).base z ∈ N.U (j PUnit.unit) := (mem_wchart_pu N (b ≫ a) j z).1 hz
-    have h2 : b.base z ∈ (N.pull a).U (fun _ => j PUnit.unit) :=
-      (mem_wchart_pu N a (fun _ => j PUnit.unit) (b.base z)).2 (by rw [← hb]; exact h1)
-    exact (mem_wchart_pu (N.pull a) b (fun _ _ => j PUnit.unit) z).2 h2
-  have m2 : ∀ (j : PUnit.{1} → PUnit.{1} → N.ι) (z : Z), z ∈ ((N.pull a).pull b).U j →
-      z ∈ (N.pull (b ≫ a)).U (fun _ => j PUnit.unit PUnit.unit) := by
-    intro j z hz
-    have h2 : b.base z ∈ (N.pull a).U (j PUnit.unit) := (mem_wchart_pu (N.pull a) b j z).1 hz
-    have h1 : a.base (b.base z) ∈ N.U (j PUnit.unit PUnit.unit) :=
-      (mem_wchart_pu N a (j PUnit.unit) (b.base z)).1 h2
-    exact (mem_wchart_pu N (b ≫ a) (fun _ => j PUnit.unit PUnit.unit) z).2 (by rw [hb]; exact h1)
-  constructor
-  · intro h
-    refine exists_gen_transfer (L := (N.pull a).pull b) (L' := N.pull (b ≫ a))
-      (fun j _ _ => j PUnit.unit) m1 ?_ h
-    intro i j y hy
-    have hy' := pull_inf_le N (b ≫ a) i j hy
-    exact (germ_pull N (b ≫ a) i j y hy hy').trans
-      (germ_pull_pull N a b (fun _ _ => i PUnit.unit) (fun _ _ => j PUnit.unit) y ⟨m1 i y hy.1, m1 j y hy.2⟩ hy').symm
-  · intro h
-    refine exists_gen_transfer (L := N.pull (b ≫ a)) (L' := (N.pull a).pull b)
-      (fun j _ => j PUnit.unit PUnit.unit) m2 ?_ h
-    intro i j y hy
-    have hy2 : y ∈ (N.pull (b ≫ a)).U (fun _ => i PUnit.unit PUnit.unit) ⊓
-        (N.pull (b ≫ a)).U (fun _ => j PUnit.unit PUnit.unit) := ⟨m2 i y hy.1, m2 j y hy.2⟩
-    have hy' := pull_inf_le N (b ≫ a) _ _ hy2
-    exact (germ_pull_pull N a b i j y hy hy').trans (germ_pull N (b ≫ a) _ _ y hy2 hy').symm
+  apply _root_.GlobalTheory.TrivSubscheme.triv_pull_iff <;> assumption
 
 end GlobalTheory.TrivLocusLocal
 

@@ -19,19 +19,8 @@ public import Mathlib.RingTheory.DedekindDomain.AdicValuation.Valuation
 public import Mathlib.RingTheory.Valuation.Integral
 public import Formalism.LocalToGlobal.GlobalTheory.GL3.PFamily
 import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.AnalyticIdentityTheorems.QuasiPeriodConstUniqueOf
-import Mathlib.Algebra.Order.Star.Rat
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Algebra.Ring.IsFormallyReal
 import Formalism.LocalRingCardinality.SpanPowerMembership.ExampleLayerExistsGenerators
-import Mathlib.Tactic.TypeStar
 import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.QuadraticSemicharacterIdentityReformulated2
-import Mathlib.RingTheory.Etale.Weakly
-import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
-import Mathlib.RingTheory.TotallySplit
-import Mathlib.RingTheory.PicardGroup
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.SelfDualLatticeNorms.KapNon, Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.CayleyGaussianIntegrals.RelIndexNeZeroOfNsmulMem, Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.SelfDualLatticeNorms.KapDet, Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.SelfDualLatticeNorms.KapSplit, Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.SelfDualLatticeNorms.KapVal, Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.SelfDualLatticeNorms.LiftOneFormsToCompatibleApply, Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.SelfDualLatticeNorms.KapAll
@@ -339,10 +328,10 @@ theorem entries_in_K (hδ0 : δ ≠ 0) (hcc : cc ≠ ⊥) (u : (Fin 4 × D.what�
     ∃ x : D.host.K, u (Pi.single j 1) i = D.host.φ₀ (x : D.host.E) := by
   obtain ⟨c, hc, hc0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot (p := cc) hcc
   set ω : ℂ := δ * D.host.φ₀ (((c : D.host.K) : D.host.E)) with hω
-  have hωL : ω ∈ B.L.lattice := (Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.SO.mem_iff B ω).2 (AddSubgroup.subset_closure ⟨c, hc, rfl⟩)
+  have hωL : ω ∈ B.L.lattice := (GlobalTheory.FourthRootStd.mem_iff B ω).2 (AddSubgroup.subset_closure ⟨c, hc, rfl⟩)
   set Lt := stdLat B.L (Fin 4 × D.what₂.Tau) with hLt
   set M := imgLat (u : (Fin 4 × D.what₂.Tau → ℂ) →ₗ[ℂ] (Fin 4 × D.what₂.Tau → ℂ)) B.latA with hM
-  have hk2 : relIdx B.latA Lt ≠ 0 := Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.SO.idx₂ B
+  have hk2 : relIdx B.latA Lt ≠ 0 := GlobalTheory.FourthRootStd.idx₂ B
   have hv : (Pi.single j ω : Fin 4 × D.what₂.Tau → ℂ) ∈ Lt := by
     rw [hLt, mem_stdLat']
     intro t
@@ -364,7 +353,7 @@ theorem entries_in_K (hδ0 : δ ≠ 0) (hcc : cc ≠ ⊥) (u : (Fin 4 × D.what�
     rw [hveq, map_nsmul, map_smul]
     simp only [Pi.smul_apply, nsmul_eq_mul, Pi.mul_apply, Pi.natCast_apply, smul_eq_mul]
     ring
-  obtain ⟨c', -, hc'⟩ := Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.FL.lam_mem D cc δ _ ((Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.SO.mem_iff B _).1 ((mem_stdLat'.1 h4) i))
+  obtain ⟨c', -, hc'⟩ := Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.FL.lam_mem D cc δ _ ((GlobalTheory.FourthRootStd.mem_iff B _).1 ((mem_stdLat'.1 h4) i))
   rw [hz] at hc'
   have hcK : ((c : D.host.K)) ≠ 0 := by
     intro h
@@ -637,7 +626,7 @@ theorem good_stdLat_comp_extC (p : ℕ) [hp : Fact p.Prime] (γ : IsoK D) (hγ :
   rw [← Finset.univ_sum_single x]
   refine Finset.sum_induction _ _ (fun a b => good_add hp.out _ _) (good_zero hp.out _ _) ?_
   intro j _
-  have hω : x j ∈ TaylorLogMetric.lamOf D cc δ := (SO.mem_iff B _).1 ((mem_std B.L x).1 hx j)
+  have hω : x j ∈ TaylorLogMetric.lamOf D cc δ := (GlobalTheory.FourthRootStd.mem_iff B _).1 ((mem_std B.L x).1 hx j)
   obtain ⟨s, hs, hmem⟩ := hγ.2 (Pi.single j 1) (by
     intro w
     by_cases h : w = j
@@ -683,8 +672,8 @@ theorem good_lat (p : ℕ) [hp : Fact p.Prime] (γ : IsoK D) (hγ : γ.AtP p) :
     rw [e, mem_std]
     intro i
     obtain ⟨o, ho⟩ := hr i
-    have h1 := SO.lam_mul o hw
-    rw [SO.mem_iff]
+    have h1 := GlobalTheory.FourthRootStd.lam_mul o hw
+    rw [GlobalTheory.FourthRootStd.mem_iff]
     have e2 : D.host.φ₀ (((o : D.host.K) : D.host.E)) = (s : ℂ) * fK D (γ.g y i) := by
       have : fK D (algebraMap (𝓞 D.host.K) D.host.K o) = fK D ((s : D.host.K) * γ.g y i) := by rw [ho]
       rw [map_mul, map_natCast] at this
@@ -1384,7 +1373,7 @@ theorem kappaAt_of (hsd : IsSelfDual (Formalism.L2.Th1.H.stdH B.L (Fin 4 × D.wh
 
 theorem kappaAt (hcc : TaylorLogMetric.IsCurveIdeal D cc) (hδ : TaylorLogMetric.IsDiscriminantTwelfthRootOfIdealLattice D cc δ) (p : ℕ) [Fact p.Prime] (ι : ℂ ≃+* ℂ_[p]) :
     B.KappaAt p ι :=
-  kappaAt_of B (Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.SO.selfDual B hcc hδ) hcc.1 (Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.base_linkage_nonempty D cc δ B) p ι
+  kappaAt_of B (GlobalTheory.FourthRootStd.selfDual B hcc hδ) hcc.1 (Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.base_linkage_nonempty D cc δ B) p ι
 
 theorem kappaAll (D : D7) : KappaAll D :=
   fun _ _ B hcc hδ p _ ι _ => kappaAt B hcc hδ p ι

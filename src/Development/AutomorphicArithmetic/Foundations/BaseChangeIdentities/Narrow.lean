@@ -81,8 +81,6 @@ def AscComp : Prop :=
     ∀ V : Submodule ℂ (Sm E N), IsDiscrete V → ∀ (a d : ℕ) (π : CuspSub E a),
       IsNormalised π → AscEmb V π d → HasSpehComp V π d
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 
 open GlobalTheory.BaseChangeBridge in
 theorem definiteN_of : BaseChangeIsobaricN → DefiniteN := by

@@ -50,8 +50,6 @@ open CategoryTheory Limits AlgebraicGeometry GlobalTheory.EtC LateralTheory.E.t_
 
 namespace LateralTheory.E.StalkContPf
 
-set_option backward.isDefEq.respectTransparency false
-
 variable {X S : Scheme.{0}}
 
 theorem diagram_map_eq (p : X ⟶ S) (s : S) {V W : AffNhd s} (i : V ⟶ W) :
@@ -81,10 +79,10 @@ theorem StalkCont_of : StalkCont := by
   have hc := (nonempty_isLimit (IsPullback.of_hasPullback p (S.fromSpecStalk s))).some
   have hcpt : ∀ V : AffNhd s, CompactSpace ((diagram s p).obj V) := fun V => by
     have : IsAffine V.1.toScheme := V.2.2
-    exact QuasiCompact.compactSpace_of_compactSpace (pullback.snd p V.1.ι)
+    exact (QuasiCompact.compactSpace_of_compactSpace (pullback.snd p V.1.ι) :)
   have hqs : ∀ V : AffNhd s, QuasiSeparatedSpace ((diagram s p).obj V) := fun V => by
     have : IsAffine V.1.toScheme := V.2.2
-    exact quasiSeparatedSpace_of_quasiSeparated (pullback.snd p V.1.ι)
+    exact (quasiSeparatedSpace_of_quasiSeparated (pullback.snd p V.1.ι) :)
   have hu : ∀ V : AffNhd s, IsUnit (q : Γ((diagram s p).obj V, ⊤)) := fun V => by
     have := hq.map ((pullback.fst p V.1.ι ≫ p).appTop).hom
     simp only [map_natCast] at this

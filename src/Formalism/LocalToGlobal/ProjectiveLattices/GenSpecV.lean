@@ -27,7 +27,6 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestric
 
 attribute [local instance] Over.cartesianMonoidalCategory
 
-open ReciprocityTheory.ChartRestriction.G.Geo.Tor
 
 attribute [local instance] Over.cartesianMonoidalCategory
 

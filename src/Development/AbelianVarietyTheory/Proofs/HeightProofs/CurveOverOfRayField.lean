@@ -52,8 +52,6 @@ public import Mathlib.NumberTheory.NumberField.Basic
 
 @[expose] public section
 
-set_option autoImplicit false
-
 open NumberField IsDedekindDomain GlobalTheory.FieldSize
 open scoped IntermediateField
 

@@ -15,7 +15,6 @@ open Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.DIV F
 
 alias Base.stdOK := _root_.Formalism.L2.Ker.Cd.IntegralLatticeDensity.SO.stdOK
 
-open Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.DIV Formalism.L2.Col
 
 section Nat
 
@@ -37,7 +36,6 @@ variable {D : Car} (s : Seam D X) {cc : Ideal (𝓞 D.host.K)} {δ : ℂ} (B : B
 
 end InstN
 
-open Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.DIV Formalism.L2.Col Formalism.L2.Host Formalism.FrobeniusOrbits
 
 section InstN
 

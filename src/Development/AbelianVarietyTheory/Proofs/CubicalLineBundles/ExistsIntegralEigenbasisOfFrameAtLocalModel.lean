@@ -45,8 +45,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped ComplexOrder
 open GlobalTheory GlobalTheory.CM GlobalTheory.Frames GlobalTheory.LamT
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.LamT.LocLie

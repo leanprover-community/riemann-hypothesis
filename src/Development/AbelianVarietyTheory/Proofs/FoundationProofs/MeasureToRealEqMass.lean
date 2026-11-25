@@ -57,8 +57,6 @@ open scoped TensorProduct
 
 namespace GlobalTheory.Mass.Levels
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem exists_upq_extends {p q n : ℕ} (A : Matrix (Fin p ⊕ Fin q) (Fin n) ℂ) (G g : Matrix (Fin n) (Fin n) ℂ)
     (hA : Aᴴ * Jpq p q * A = G) (hG : G.det ≠ 0) (hg : gᴴ * G * g = G) :
     ∃ b : UpqT p q, UpqT.mat b * A = A * g := by

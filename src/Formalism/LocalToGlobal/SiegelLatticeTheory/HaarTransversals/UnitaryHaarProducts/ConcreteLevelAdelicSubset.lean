@@ -888,7 +888,6 @@ end T2
 
 section Fold
 
-open MeasureTheory
 
 variable (I : AutInst)
 
@@ -1101,8 +1100,6 @@ end GinfDisc
 section Terms
 
 open Formalism.MainNotions.S.Lat Formalism.L2.SG.TermOp Formalism.L2.SG.TermDef NumberField
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 section Gen
 
@@ -1382,8 +1379,6 @@ end NO
 section RO
 
 open NumberField Formalism.MainNotions.S.Lat Formalism.L2.SG.TermOp Formalism.L2.SG.HidaSetting
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : Formalism.BasicNotions.D7} (X : Formalism.L2.SG.HidaSetting.HidaSetting D)
 

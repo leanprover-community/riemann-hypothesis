@@ -700,7 +700,7 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Gal.Mod.galEx : UpperTheory.Gal.Mod.GalEx := UpperTheory.Gal.G3.pGalClosD (UpperTheory.Gal.G3.pSplitsPts UpperTheory.Gal.G3.pIsoPts)
-  (UpperTheory.Gal.G3.pOrdEx UpperTheory.Gal.G3.pOrdStep)
+  (UpperTheory.Gal.G3.pOrdEx)
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.BasicOpenSections.PGalEx =====

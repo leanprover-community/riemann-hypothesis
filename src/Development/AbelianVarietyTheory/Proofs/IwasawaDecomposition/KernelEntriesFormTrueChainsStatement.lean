@@ -106,8 +106,6 @@ open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions F
 attribute [local instance] GlobalTheory.Mem.Col2.starE Formalism.BasicNotions.Host.cmStar
 open Classical
 
-set_option autoImplicit false
-
 
 noncomputable section
 

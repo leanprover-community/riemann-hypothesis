@@ -54,6 +54,7 @@ import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
+import Mathlib.Geometry.Manifold.PartitionOfUnity
 import Mathlib.Geometry.Manifold.StructureGroupoid
 
 @[expose] public section
@@ -283,47 +284,6 @@ theorem disjoint_image {y : (Σ k, ι k) → Ω} {φ : F →+* Ω} (hO : OverInt
   obtain ⟨c, hc, rfl⟩ := orbit_of_prMap_eq (unitBlocks_subset hzu) (unitBlocks_subset hzu') he.symm
   exact hne ((_root_.GlobalTheory.CompanionTheory.Ar.Flat.existsUnique_ptOver K ι Ω F y φ hO _ hzp'.1).unique (ptOver_smul hzp c hc) hzp')
 
-private theorem exists_smooth_sep_lemma {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E]
-    [FiniteDimensional ℝ E] {s t : Set E} (hs : IsClosed s) (ht : IsClosed t) (hd : Disjoint s t) :
-    ∃ f : E → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) f ∧ (∀ᶠ x in 𝓝ˢ s, f x = 1) ∧
-      ∀ᶠ x in 𝓝ˢ t, f x = 0 := by
-  obtain ⟨U, hU, hsU, hUt⟩ := normal_exists_closure_subset hs ht.isOpen_compl hd.subset_compl_right
-  obtain ⟨W, hW, htW, hWU⟩ := normal_exists_closure_subset ht (isClosed_closure (s := U)).isOpen_compl
-    (fun x hx hxU => hUt hxU hx)
-  obtain ⟨g1, hg1s, hg1, hg1r⟩ := (isClosed_closure (s := W)).isOpen_compl.exists_contDiff_support_eq (n := ⊤)
-  obtain ⟨g2, hg2s, hg2, hg2r⟩ := (isClosed_closure (s := U)).isOpen_compl.exists_contDiff_support_eq (n := ⊤)
-  have hnn1 : ∀ x, 0 ≤ g1 x := fun x => (hg1r ⟨x, rfl⟩).1
-  have hnn2 : ∀ x, 0 ≤ g2 x := fun x => (hg2r ⟨x, rfl⟩).1
-  have hpos : ∀ x, g1 x + g2 x ≠ 0 := by
-    intro x
-    by_cases hx : x ∈ closure U
-    · have h1 : x ∈ Function.support g1 := by
-        rw [hg1s]
-        exact fun hxW => hWU hxW hx
-      exact (add_pos_of_pos_of_nonneg (lt_of_le_of_ne (hnn1 x) (Ne.symm h1)) (hnn2 x)).ne'
-    · have h2 : x ∈ Function.support g2 := by
-        rw [hg2s]
-        exact hx
-      exact (add_pos_of_nonneg_of_pos (hnn1 x) (lt_of_le_of_ne (hnn2 x) (Ne.symm h2))).ne'
-  refine ⟨fun x => g1 x / (g1 x + g2 x), hg1.div (hg1.add hg2) hpos, ?_, ?_⟩
-  · filter_upwards [hU.mem_nhdsSet.mpr hsU] with x hx
-    have h2 : g2 x = 0 := by
-      by_contra h
-      have h' : x ∈ Function.support g2 := h
-      rw [hg2s] at h'
-      exact h' (subset_closure hx)
-    have h1 : x ∈ Function.support g1 := by
-      rw [hg1s]
-      exact fun hxW => hWU hxW (subset_closure hx)
-    rw [h2, add_zero, div_self h1]
-  · filter_upwards [hW.mem_nhdsSet.mpr htW] with x hx
-    have h1 : g1 x = 0 := by
-      by_contra h
-      have h' : x ∈ Function.support g1 := h
-      rw [hg1s] at h'
-      exact h' (subset_closure hx)
-    rw [h1, zero_div]
-
 theorem exists_smooth_sep {A E : Type} [Finite A] [NormedAddCommGroup E] [NormedSpace ℝ E]
     [FiniteDimensional ℝ E] (S : A → Set E) (hS : ∀ a, IsClosed (S a))
     (hd : ∀ a b, a ≠ b → Disjoint (S a) (S b)) (t : A → ℝ) :
@@ -339,7 +299,12 @@ theorem exists_smooth_sep {A E : Type} [Finite A] [NormedAddCommGroup E] [Normed
     intro x hxa hx
     obtain ⟨b, hb, hxb⟩ := Set.mem_iUnion₂.mp hx
     exact Set.disjoint_left.mp (hd b a hb) hxb hxa
-  choose f hf hf1 hf0 using fun a => exists_smooth_sep_lemma (hS a) (hT a) (hdis a)
+  have hsep : ∀ a, ∃ f : E → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) f ∧
+      (∀ᶠ x in 𝓝ˢ (S a), f x = 1) ∧ ∀ᶠ x in 𝓝ˢ (T a), f x = 0 := fun a => by
+    obtain ⟨f, h0, h1, -⟩ := exists_contMDiffMap_zero_one_nhds_of_isClosed 𝓘(ℝ, E) (n := ⊤)
+      (hT a) (hS a) (hdis a).symm
+    exact ⟨f, contMDiff_iff_contDiff.mp f.contMDiff, h1, h0⟩
+  choose f hf hf1 hf0 using hsep
   refine ⟨fun x => ∑ b, t b * f b x, ?_, fun a => ?_⟩
   · exact ContDiff.sum fun b _ => contDiff_const.mul (hf b)
   · have h : ∀ᶠ x in 𝓝ˢ (S a), ∀ b, f b x = if b = a then 1 else 0 := by

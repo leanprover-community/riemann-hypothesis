@@ -203,9 +203,6 @@ def rPsharp : LevFam X.E X.K R.r Pr.vGs := fun w =>
     (psiU (Ch.psi0 w) R.r).comp (Subgroup.inclusion inf_le_left)⟩
 
 
-variable (X Pr R) in
-def rKg : LevFam X.E X.K R.r Pr.vGs := fun _ => ⟨⊥, 1⟩
-
 end RBlock
 
 section Types

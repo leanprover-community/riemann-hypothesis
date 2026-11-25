@@ -50,7 +50,6 @@ open UpperTheory.V.Af (algSat tw)
 open UpperTheory.Gal.TP.Sub (Cl unrPol)
 open UpperTheory.Gal.crystallineComparison (heckePol rootPol)
 open UpperTheory.Gal.Int.Div (CrysAt PhiKilled HTRichEx JumpsOcc VBase)
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 open GlobalTheory.UPel.HT GlobalTheory.UPel.HT.Gen GlobalTheory.LKTrip GlobalTheory.LKGeo
 open UpperTheory.Gal.LocalSmoothExtension (Spec IsHExp conjWt epsOf)
 

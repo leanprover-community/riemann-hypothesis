@@ -44,8 +44,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open CategoryTheory GlobalTheory.PDiv GlobalTheory.PDivGroup
@@ -63,15 +61,6 @@ def HasLogDeg (f : G ⟶ H) (e : ℕ) : Prop :=
   ∃ N : ℕ, ∀ n, N ≤ n → Module.finrank k (G.A n ⧸ kerIdeal (f.app n)) = p ^ e
 
 end Isogeny
-
-structure IsDM {p : ℕ} [Fact p.Prime] {k : Type} [Field k] [CharP k p] [PerfectRing k p]
-    {N : Type} [AddCommGroup N] [Module (WittVector p k) N]
-    (F : N →ₛₗ[(WittVector.frobenius : WittVector p k →+* WittVector p k)] N)
-    (V : N →ₛₗ[((WittVector.frobeniusEquiv p k).symm : WittVector p k →+* WittVector p k)] N) : Prop where
-  free : Module.Free (WittVector p k) N
-  finite : Module.Finite (WittVector p k) N
-  F_V : ∀ x, F (V x) = p • x
-  V_F : ∀ x, V (F x) = p • x
 
 theorem p_eq_zero (p : ℕ) (k : Type) [Field k] [CharP k p] : (p : k) = 0 := CharP.cast_eq_zero k p
 

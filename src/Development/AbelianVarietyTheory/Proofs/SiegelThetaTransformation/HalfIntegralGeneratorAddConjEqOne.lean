@@ -70,7 +70,6 @@ open GlobalTheory.SW hiding Level
 open Formalism.L2.Pj hiding Unf GoodEmb IsUnf rdU laU
 open Formalism.L2.PjFree
 open scoped ComplexConjugate Classical
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.Dict
 
 namespace GlobalTheory.Dict.ShortRead

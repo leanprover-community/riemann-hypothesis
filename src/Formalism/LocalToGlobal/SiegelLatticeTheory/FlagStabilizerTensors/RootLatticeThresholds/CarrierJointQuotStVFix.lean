@@ -141,8 +141,6 @@ section FixGlob
 
 variable {D : D7}
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem stVFix_holds (X : Formalism.L2.SG.HidaSetting.HidaSetting D) (u u' : D.what₂.Word) : StVFix X u u' := by
   classical
   intro w hw v y hy hF hGF

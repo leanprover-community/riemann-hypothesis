@@ -618,7 +618,7 @@ theorem formsTiedSym_std : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok 
       (lam : ∀ j v h, H j v h →* ℂˣ), ∀ hi : i ≤ B.R.m, Nonempty (GLevH (K u i hi β).lev G H lam) := by
     intro u i β
     by_cases hi : i ≤ B.R.m
-    · obtain ⟨H, lam, h⟩ := GlobalTheory.Mem.Col2.ChartLevel.chart_gLevH I hOk hPins l Z u G i hi (Ch u i) (chOf u i) (K u i hi) hG (hRK u i hi) β
+    · obtain ⟨H, lam, h⟩ := GlobalTheory.Mem.Col2.ChartLevel.chart_gLevH I hOk hPins l Z u G i hi (Ch u i) (chOf u i) (K u i hi) (hRK u i hi) β
       exact ⟨H, lam, fun _ => h⟩
     · exact ⟨fun _ _ _ => ⊤, fun _ _ _ => 1, fun h => absurd h hi⟩
   choose Hc lamC hGH using hHex
@@ -1498,8 +1498,8 @@ theorem colsTiedSym_std : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok �
       carC := hH0.carC, carM := hH0.carM
       sp := fun u => by show _ = (lev0 u).splitG; rw [hsp u]; exact hH0.sp u
       fr0 := fun u => by show ∀ i v h, _ = reGL _ _ ((lev0 u).frG i v h); rw [hfrG u]; exact hH0.fr0 u }
-  obtain ⟨A, hT, hAd, hSt⟩ := GlobalTheory.T.exists_hermitian_data_carT_of_std I hOk hP l Z H F hF hH
-  obtain ⟨hCof, hBase, ⟨hFv⟩, X0, hX0⟩ := GlobalTheory.T.hermitianColumns_generators_baseLattices_functionals I hOk hP l Z H F A hF hH hT
+  obtain ⟨A, hT, _, _⟩ := GlobalTheory.T.exists_hermitian_data_carT_of_std I hOk hP l Z H F hF hH
+  obtain ⟨_, hBase, _, X0, hX0⟩ := GlobalTheory.T.hermitianColumns_generators_baseLattices_functionals I hOk hP l Z H F A hF hH hT
     (fun u w h a ha m => hpi u w h a (by rw [ha, hT.piU u]) m)
   have hStd := (GlobalTheory.Mem.Col2.TC.spaces_in_coordinates I hOk hP l Z).1
   have hpiG : ∀ u u', (X0 u).piG = (X0 u').piG := fun u u' => by rw [hX0 u, hX0 u']
@@ -1512,8 +1512,8 @@ theorem colsTiedSym_std : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok �
     rw [(hF u).1.frP, (hF u').1.frP]
   refine ⟨
     { herm :=
-        { base := H, atT := A, levelZeroCompatibility := X0, ad := hAd, cof := hCof, piG := hpiG,
-          stabMap := hSt, fvI := hFv, std := hStd, baseL := hBase }
+        { base := H, atT := A, levelZeroCompatibility := X0, piG := hpiG, std := hStd,
+          baseL := hBase }
       forms := F
       eV := hH.eV
       piU := hT.piU

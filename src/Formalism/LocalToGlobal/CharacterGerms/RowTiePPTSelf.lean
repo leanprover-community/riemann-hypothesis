@@ -271,7 +271,7 @@ theorem cg_one_pow_lk {δ : ℝ} (hδ : 0 < δ) {e : C} (h : Cg V δ e 1) (k : �
     push_cast
     linarith
 
-theorem tendsto_pow_lk {δ : ℝ} (hδ : 0 < δ) {e ε : C} (_he : V.Ge 0 e) (hε : ε = 0 ∨ ε = 1) (h : Cg V δ e ε) :
+theorem tendsto_pow_lk {δ : ℝ} (hδ : 0 < δ) {e ε : C} (hε : ε = 0 ∨ ε = 1) (h : Cg V δ e ε) :
     ∀ K : ℝ, ∃ k0 : ℕ, ∀ k ≥ k0, V.Ge K (ε - e ^ (V.l ^ k)) := by
   have hlt : ∀ k : ℕ, k < V.l ^ k := by
     intro k
@@ -594,11 +594,11 @@ theorem ind_gen (em : ZMod d → O →+* C) (hint : ∀ a x, V.Ge 0 (em a x))
     simp only [P, mfac, Finset.prod_apply]
   refine hlim (fun k => P ^ (V.l ^ k)) _ (fun k => hpowM P hP _) ?_
   intro K s n
-  obtain ⟨hint0, hcg⟩ := entry_cg em hint xs hδ0 hδ1 hfrob hxs a (ty n) s
+  obtain ⟨-, hcg⟩ := entry_cg em hint xs hδ0 hδ1 hfrob hxs a (ty n) s
   have hε : (if ty n = a + (s : ZMod d) then (1 : C) else 0) = 0 ∨
       (if ty n = a + (s : ZMod d) then (1 : C) else 0) = 1 := by
     split_ifs <;> simp
-  obtain ⟨k0, hk0⟩ := tendsto_pow_lk hδ0 hint0 hε hcg K
+  obtain ⟨k0, hk0⟩ := tendsto_pow_lk hδ0 hε hcg K
   refine ⟨k0, fun k hk => ?_⟩
   simp only [Pi.pow_apply]
   rw [hPsn]

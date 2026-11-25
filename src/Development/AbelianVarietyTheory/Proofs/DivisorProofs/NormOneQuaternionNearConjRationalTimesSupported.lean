@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.StrongApproximationSL2Adeles
 public import Development.AbelianVarietyTheory.Definitions.Divisors.OneMemH0WeightZero
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsCongrIffTraceFormsIsometricCm
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.HasseNormTheoremQuadraticExtension
@@ -1047,19 +1048,7 @@ namespace GlobalTheory.QSAStep
 
 theorem idem_of_isPlacesIdem {F : Type} [Field F] [NumberField F] {S₁ : Finset (InfinitePlace F)}
     {S₂ : Finset (HeightOneSpectrum (𝓞 F))} {ε : AF F} (h : IsPlacesIdem S₁ S₂ ε) : ε * ε = ε := by
-  obtain ⟨h1, h2, h3, h4⟩ := h
-  refine Prod.ext ?_ ?_
-  · funext w
-    change fstA F ε w * fstA F ε w = fstA F ε w
-    by_cases hw : w ∈ S₁
-    · rw [h1 w hw, one_mul]
-    · rw [h2 w hw, zero_mul]
-  · apply RestrictedProduct.ext
-    intro v
-    change evalV F v (sndA F ε) * evalV F v (sndA F ε) = evalV F v (sndA F ε)
-    by_cases hv : v ∈ S₂
-    · rw [h3 v hv, one_mul]
-    · rw [h4 v hv, zero_mul]
+  apply _root_.GlobalTheory.StrongApproximationSL2.idem_of_isPlacesIdem <;> assumption
 
 variable {R : Type*} [CommRing R] {a b : R}
 

@@ -620,13 +620,7 @@ theorem br_eq {a b : ℕ} (M : Matrix (Fin (a + b)) (Fin (a + b)) K) :
 
 theorem inPar_mul {a n : ℕ} {x y : GL (Fin n) K} (hx : InPar a x) (hy : InPar a y) :
     InPar a (x * y) := by
-  intro i j hj hi
-  rw [Units.val_mul, Matrix.mul_apply]
-  apply Finset.sum_eq_zero
-  intro k _
-  by_cases hk : (k : ℕ) < a
-  · rw [hx i k hk hi, zero_mul]
-  · rw [hy k j hj (by omega), mul_zero]
+  apply _root_.GlobalTheory.Shin.FlagDesc.inPar_mul <;> assumption
 
 theorem inPar_one {a n : ℕ} : InPar a (1 : GL (Fin n) K) := by
   intro i j hj hi
@@ -634,16 +628,7 @@ theorem inPar_one {a n : ℕ} : InPar a (1 : GL (Fin n) K) := by
   intro h; subst h; omega
 
 theorem inPar_inv {a n : ℕ} {x : GL (Fin n) K} (hx : InPar a x) : InPar a x⁻¹ := by
-  have hB : Matrix.BlockTriangular (x : Matrix (Fin n) (Fin n) K)
-      (fun i : Fin n => if a ≤ (i : ℕ) then 1 else 0) := by
-    intro i j hij
-    simp only at hij
-    split_ifs at hij with h1 h2 <;> first | omega | exact hx i j (by omega) (by omega)
-  haveI : Invertible (x : Matrix (Fin n) (Fin n) K) := x.invertible
-  have := Matrix.blockTriangular_inv_of_blockTriangular hB
-  intro i j hj hi
-  rw [Matrix.coe_units_inv]
-  exact this (by simp only; rw [if_pos hi, if_neg (by omega)]; exact Nat.zero_lt_one)
+  apply _root_.GlobalTheory.Shin.FlagDesc.inPar_inv <;> assumption
 
 theorem tl_mul {a b : ℕ} {x y : GL (Fin (a + b)) K} (hy : InPar a y) :
     tl a (x * y).val = tl a x.val * tl a y.val := by

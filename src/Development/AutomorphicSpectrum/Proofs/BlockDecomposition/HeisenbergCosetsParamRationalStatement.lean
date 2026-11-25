@@ -558,7 +558,7 @@ end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SiegelParabolicQuotientIffRowsStatement =====
 
 -- ===== clump member: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnitaryBlockInvertibleCriterion =====
--- clump-header: {"m": "Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnitaryBlockInvertibleCriterion", "h": "module\n\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RowD\nimport Development.AbelianVarietyTheory.PublishedTheorems.SiegelWeil₂.AdelicConjTransposeBlockMatrixTwoByTwoFin\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.BigCellCosetsHermitianParam\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\n\n"}
+-- clump-header: {"m": "Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnitaryBlockInvertibleCriterion", "h": "module\n\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RowD\nimport Development.AbelianVarietyTheory.PublishedTheorems.SiegelWeil₂.AdelicConjTransposeBlockMatrixTwoByTwoFin\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.BigCellCosetsHermitianParam\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\nimport Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PartialConstantTermBound\n\n"}
 section -- clump:auto
 @[expose] public section
 
@@ -602,25 +602,6 @@ theorem cTc (σ : K →+* K) (hσ : ∀ x, σ (σ x) = x) {a b : ℕ} (x : Matri
     cT σ (cT σ x) = x := by
   ext i j
   simp [cT, hσ]
-
-theorem mulB {R : Type} [CommRing R] (hn : ρ + p = n) (a a' : Matrix (Fin ρ) (Fin ρ) R)
-    (b b' : Matrix (Fin ρ) (Fin p) R) (c c' : Matrix (Fin p) (Fin ρ) R) (d d' : Matrix (Fin p) (Fin p) R) :
-    bl hn a b c d * bl hn a' b' c' d' =
-      bl hn (a * a' + b * c') (a * b' + b * d') (c * a' + d * c') (c * b' + d * d') := by
-  unfold bl
-  rw [Matrix.submatrix_mul_equiv, Matrix.fromBlocks_multiply]
-
-theorem addB {R : Type} [CommRing R] (hn : ρ + p = n) (a a' : Matrix (Fin ρ) (Fin ρ) R)
-    (b b' : Matrix (Fin ρ) (Fin p) R) (c c' : Matrix (Fin p) (Fin ρ) R) (d d' : Matrix (Fin p) (Fin p) R) :
-    bl hn a b c d + bl hn a' b' c' d' = bl hn (a + a') (b + b') (c + c') (d + d') := by
-  unfold bl
-  rw [← Matrix.fromBlocks_add]
-  rfl
-
-theorem oneB {R : Type} [CommRing R] (hn : ρ + p = n) :
-    bl hn (1 : Matrix (Fin ρ) (Fin ρ) R) 0 0 (1 : Matrix (Fin p) (Fin p) R) = 1 := by
-  unfold bl
-  rw [Matrix.fromBlocks_one, Matrix.submatrix_one_equiv]
 
 theorem injB {R : Type} (hn : ρ + p = n) {a a' : Matrix (Fin ρ) (Fin ρ) R}
     {b b' : Matrix (Fin ρ) (Fin p) R} {c c' : Matrix (Fin p) (Fin ρ) R} {d d' : Matrix (Fin p) (Fin p) R}
@@ -810,9 +791,9 @@ theorem normal_form : ∀ {K : Type} [Field K] (σ : K →+* K), (∀ x, σ (σ 
   intro K _ σ hσ n ρ p hn a₁ b₁ Z a₂ b₂ X Y a₃ b₃ W a₄ b₄ c' d' hu _
   obtain ⟨f1, f2, f3⟩ := what₂ σ hu
   have hm1 : cT σ (-1 : Matrix (Fin ρ) (Fin ρ) K) = -1 := by rw [cTn, BigCell.cT_one_sq]
-  rw [cTB, cTB, mulB, mulB] at f1
-  rw [cTB, cTB, mulB, mulB, ← oneB hn, addB] at f2
-  rw [cTB, cTB, mulB, mulB] at f3
+  rw [cTB, cTB, GlobalTheory.CompanionTheory.PcB.blockMatrix_multiply, GlobalTheory.CompanionTheory.PcB.blockMatrix_multiply] at f1
+  rw [cTB, cTB, GlobalTheory.CompanionTheory.PcB.blockMatrix_multiply, GlobalTheory.CompanionTheory.PcB.blockMatrix_multiply, ← GlobalTheory.CompanionTheory.PcB.blockMatrix_one hn, GlobalTheory.CompanionTheory.PcB.blockMatrix_add'] at f2
+  rw [cTB, cTB, GlobalTheory.CompanionTheory.PcB.blockMatrix_multiply, GlobalTheory.CompanionTheory.PcB.blockMatrix_multiply] at f3
   obtain ⟨-, -, -, h7⟩ := injB hn f1
   obtain ⟨-, -, h6, h5⟩ := injB hn f2
   obtain ⟨h1, h2, -, h4⟩ := injB hn f3
@@ -828,10 +809,10 @@ theorem normal_form : ∀ {K : Type} [Field K] (σ : K →+* K), (∀ x, σ (σ 
   have hη : -cT σ (-cT σ W) = W := by rw [cTn, cTc σ hσ, neg_neg]
   refine ⟨-Z + T * W, -cT σ W, bl hn 1 T 0 1, Matrix.isUnit_det_of_left_inverse (y_inv σ hσ r1 r2 h4),
     y_unit σ hσ r1 r2 h4, herm_zeta σ hσ hX hY h1 r1 r2 h4, ?_, ?_⟩
-  · rw [rowC, mulB]
+  · rw [rowC, GlobalTheory.CompanionTheory.PcB.blockMatrix_multiply]
     simp only [Matrix.one_mul, Matrix.zero_mul, Matrix.mul_zero, Matrix.neg_mul, neg_neg, add_zero, zero_add]
     rw [← hX]
-  · rw [rowD, mulB, hη]
+  · rw [rowD, GlobalTheory.CompanionTheory.PcB.blockMatrix_multiply, hη]
     simp only [Matrix.one_mul, Matrix.zero_mul, Matrix.neg_mul, neg_neg, zero_add]
     have e1 : -(-Z + T * W) + T * W = Z := by abel
     rw [e1, ← hY]

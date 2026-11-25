@@ -1034,7 +1034,6 @@ theorem meanLoc_eq (D : Formalism.BasicNotions.D7) (K : Consts) (s : Formalism.B
   refine Finset.sum_congr rfl fun aw _ => ?_
   exact sum_boxLoc TT (Formalism.MainNotions.flipOneThree.IbZ bl bu) (fun bb => κ (fun t => aw t) bb)
 
-open Formalism.MainNotions.G Formalism.BasicNotions
 
 def ibW (D : D7) (K : Consts) (s : Scale) : ℝ := Nstar D s * s.x ^ s.eps * La K s * s.b' / D.R.k
 
@@ -1623,7 +1622,6 @@ theorem weylSandwich_of_model (D : D7) (h : ModelSandwichG D) : WeylSandwichG D 
     rw [(Submodule.mem_bot _).1 hx, smul_zero]
     exact Submodule.zero_mem _
 
-open Formalism.MainNotions.G Formalism.BasicNotions
 
 theorem foldr_map_comp {α β : Type*} (f : α → β → β) (l : List α) (x : β) :
     (l.map f).foldr (fun g h => g ∘ h) id x = l.foldr (fun a y => f a y) x := by
@@ -1663,7 +1661,6 @@ theorem type_one_hypothesis_of_bounds (D : D7) (L : SizeData₂ D) (X : Inst D L
 theorem isotypic_multiplicity_of_reducibility_alt (D : Formalism.BasicNotions.D7) (h : Formalism.MainNotions.CovariantDegrees.ValuationLemmaField D) (h2 : Formalism.MainNotions.CovariantDegrees.adm2 D) : Formalism.MainNotions.PlaneGramData.adm1 D :=
   isotypic_multiplicity_of_reducibility D h (polIsoDecompB_of D h2)
 
-open Formalism.MainNotions.G Formalism.BasicNotions
 
 theorem expBound_of (D : D7) (L : SizeData₂ D) (X : Inst D L) (Ce : ℝ) (hCe : 1 ≤ Ce) (hEp : EpDef X Ce)
     (P : ParameterChoice' D L) (T : GatTies D) : ExpBoundG D X := by
@@ -1747,7 +1744,6 @@ theorem expBound_of (D : D7) (L : SizeData₂ D) (X : Inst D L) (Ce : ℝ) (hCe 
         mul_le_mul_of_nonneg_right hCe hx
     _ = _ := by ring
 
-open Formalism.MainNotions.G Formalism.BasicNotions
 
 theorem LPprime_cast {W Qq O Kf : Type*} [CommRing W] [Field Qq] [Algebra W Qq] [CommRing O] [Field Kf]
     [Algebra O Kf] {p : ℕ} {ι : Qq →+* Kf} {σ : Qq ≃+* Qq} {w : O} {r t Dd : ℕ} {κ : ℝ} {cStar : ℕ}

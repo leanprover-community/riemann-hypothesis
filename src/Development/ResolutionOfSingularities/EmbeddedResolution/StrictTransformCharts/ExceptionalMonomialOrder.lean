@@ -654,32 +654,14 @@ theorem pow_span_image_le_chartMonomialIdeal {A : Type*} [CommRing A] {m : ℕ} 
       intro r hr y hy
       exact mul_mem_chartMonomialIdeal_succ x S s c r (ih hr) y hy
 
-private theorem map_C_eq_ker_map_quotientMk {R : Type*} [CommRing R] (P : Ideal R)
-    (σ : Type*) :
-    Ideal.map (MvPolynomial.C : R →+* MvPolynomial σ R) P =
-      RingHom.ker (MvPolynomial.map (Ideal.Quotient.mk P) :
-        MvPolynomial σ R →+* MvPolynomial σ (R ⧸ P)) := by
-  rw [MvPolynomial.ker_map, Ideal.mk_ker]
-
 theorem isPrime_map_C {R : Type*} [CommRing R] (P : Ideal R) [P.IsPrime] (σ : Type*) :
     (Ideal.map (MvPolynomial.C : R →+* MvPolynomial σ R) P).IsPrime := by
-  have hdom : IsDomain (R ⧸ P) := inferInstance
-  have hdom2 : IsDomain (MvPolynomial σ (R ⧸ P)) := inferInstance
-  rw [map_C_eq_ker_map_quotientMk P σ]
-  refine ⟨?_, ?_⟩
-  · rw [Ideal.ne_top_iff_one]
-    intro hmem
-    have h1 : (MvPolynomial.map (Ideal.Quotient.mk P) :
-        MvPolynomial σ R →+* MvPolynomial σ (R ⧸ P)) 1 = 0 := RingHom.mem_ker.mp hmem
-    rw [map_one] at h1
-    have h2 := congrArg (fun f : MvPolynomial σ (R ⧸ P) => MvPolynomial.constantCoeff f) h1
-    simp only [map_one, map_zero] at h2
-    exact one_ne_zero h2
-  · intro x y hxy
-    rw [RingHom.mem_ker, map_mul] at hxy
-    rcases mul_eq_zero.mp hxy with h | h
-    · exact Or.inl (RingHom.mem_ker.mpr h)
-    · exact Or.inr (RingHom.mem_ker.mpr h)
+  have hker : Ideal.map (MvPolynomial.C : R →+* MvPolynomial σ R) P =
+      RingHom.ker (MvPolynomial.map (Ideal.Quotient.mk P) :
+        MvPolynomial σ R →+* MvPolynomial σ (R ⧸ P)) := by
+    rw [MvPolynomial.ker_map, Ideal.mk_ker]
+  rw [hker]
+  exact RingHom.ker_isPrime _
 
 private theorem C_coeff_mem_of_minimal_prime {R : Type*} [CommRing R] {σ : Type*}
     (Pp : Ideal (MvPolynomial σ R)) [Pp.IsPrime]
@@ -719,19 +701,10 @@ theorem ideal_le_comap_pow_succ_of_map_le_span_pow_mul {A B : Type*} [CommRing A
     (hmap : Ideal.map φ J ≤ Ideal.span {y s ^ c} * J') :
     J ≤ Ideal.comap φ P ^ (c + 1) := by
   classical
-  obtain ⟨Ψ, hΨsurj, hΨ⟩ :
-      ∃ Ψ : B →+* MvPolynomial ↥(S.erase s) (A ⧸ Ideal.span (x '' (S : Set (Fin m)))),
-        Function.Surjective Ψ ∧
-          ∀ b : B, Ψ b = e (Ideal.Quotient.mk (Ideal.span {y s}) b) := by
-    refine ⟨e.toRingHom.comp (Ideal.Quotient.mk (Ideal.span {y s})), ?_, ?_⟩
-    · intro q
-      obtain ⟨z, hz⟩ := e.surjective q
-      obtain ⟨b, hb⟩ := Ideal.Quotient.mk_surjective z
-      refine ⟨b, ?_⟩
-      show e (Ideal.Quotient.mk (Ideal.span {y s}) b) = q
-      rw [hb, hz]
-    · intro b
-      simp
+  let Ψ : B →+* MvPolynomial ↥(S.erase s) (A ⧸ Ideal.span (x '' (S : Set (Fin m)))) :=
+    e.toRingHom.comp (Ideal.Quotient.mk (Ideal.span {y s}))
+  have hΨsurj : Function.Surjective Ψ := e.surjective.comp Ideal.Quotient.mk_surjective
+  have hΨ : ∀ b : B, Ψ b = e (Ideal.Quotient.mk (Ideal.span {y s}) b) := fun _ => rfl
   have hΨ0 : Ψ (y s) = 0 := by
     rw [hΨ, Ideal.Quotient.eq_zero_iff_mem.mpr (Ideal.mem_span_singleton_self (y s)), map_zero]
   have hΨC : ∀ a : A, Ψ (φ a)
@@ -756,37 +729,9 @@ theorem ideal_le_comap_pow_succ_of_map_le_span_pow_mul {A B : Type*} [CommRing A
     exact Ideal.span_le.mpr (Set.singleton_subset_iff.mpr hyP)
       (Ideal.Quotient.eq_zero_iff_mem.mp hb1)
   have hcomapP : Ideal.comap Ψ (Ideal.map Ψ P) ≤ P := by
-    intro b hb
-    obtain ⟨p0, hp0P, hp0b⟩ :=
-      (Ideal.mem_map_iff_of_surjective Ψ hΨsurj).mp (Ideal.mem_comap.mp hb)
-    have hkb : b - p0 ∈ RingHom.ker Ψ := by
-      rw [RingHom.mem_ker, map_sub, hp0b, sub_self]
-    have hsum2 : (b - p0) + p0 ∈ P := P.add_mem (hkerP hkb) hp0P
-    simpa using hsum2
-  have hPprime : (Ideal.map Ψ P).IsPrime := by
-    constructor
-    · intro htop
-      have h1 : (1 : MvPolynomial ↥(S.erase s) (A ⧸ Ideal.span (x '' (S : Set (Fin m)))))
-          ∈ Ideal.map Ψ P := by
-        rw [htop]
-        exact Submodule.mem_top
-      have h2 : (1 : B) ∈ Ideal.comap Ψ (Ideal.map Ψ P) := by
-        rw [Ideal.mem_comap, map_one]
-        exact h1
-      have hPtop : P = ⊤ := by
-        rw [Ideal.eq_top_iff_one]
-        exact hcomapP h2
-      exact Ideal.IsPrime.ne_top ‹P.IsPrime› hPtop
-    · intro p q hpq
-      obtain ⟨b, rfl⟩ := hΨsurj p
-      obtain ⟨b', rfl⟩ := hΨsurj q
-      have hb : b * b' ∈ P := by
-        apply hcomapP
-        rw [Ideal.mem_comap, map_mul]
-        exact hpq
-      rcases Ideal.IsPrime.mem_or_mem ‹P.IsPrime› hb with h | h
-      · exact Or.inl (Ideal.mem_map_of_mem Ψ h)
-      · exact Or.inr (Ideal.mem_map_of_mem Ψ h)
+    rw [Ideal.comap_map_of_surjective' Ψ hΨsurj]
+    exact sup_le le_rfl hkerP
+  have hPprime : (Ideal.map Ψ P).IsPrime := Ideal.map_isPrime_of_surjective hΨsurj hkerP
   have hmin : ∀ K : Ideal (MvPolynomial ↥(S.erase s)
       (A ⧸ Ideal.span (x '' (S : Set (Fin m))))),
       K.IsPrime → K ≤ Ideal.map Ψ P → Ideal.map Ψ P ≤ K := by

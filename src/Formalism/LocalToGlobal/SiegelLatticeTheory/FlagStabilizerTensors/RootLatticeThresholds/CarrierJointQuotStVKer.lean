@@ -21,8 +21,6 @@ open Formalism.L2.SG.RealObj
 
 variable {D : D7}
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem blkOf_ptPar {K : Type*} [Zero K] : ∀ (bs : List (K × ℕ)) (x : ℕ), x < (bs.map Prod.snd).sum →
     blkOf bs (ptPar bs x) = blkOf bs x
   | [], x, hx => by simp at hx

@@ -108,7 +108,6 @@ import Mathlib.Tactic.Linter.Style
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
 set_option linter.unusedVariables false
 
@@ -326,8 +325,6 @@ section -- clump:auto
 
 open CrystallineSemistableComparison.Onto
 
-set_option autoImplicit false
-
 namespace GlobalTheory.CompanionTheory.OntoDLog
 
 variable {K A : Type} [CommRing K] [CommRing A] [Algebra K A]
@@ -411,7 +408,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
@@ -523,19 +519,6 @@ theorem cechHom_col {A B : Sy.{w} R ι} (m : A.Hom B)
   prod_bij (fun i : Fin (p + 1) → ι => m.φ (ent i))
     (fun i n => h _ ⟨i 0, Finset.mem_image_of_mem _ (Finset.mem_univ _)⟩ n) q
 
-theorem upTo_one {M : Type w} {N : Type w'} [AddCommGroup M] [AddCommGroup N] [Module R M] [Module R N]
-    (f : M →ₗ[R] N) : UpTo (1 : R) f ↔ Function.Bijective f := by
-  constructor
-  · rintro ⟨h1, h2⟩
-    refine ⟨(injective_iff_map_eq_zero f).2 fun x hx => ?_, fun y => ?_⟩
-    · simpa using h1 x hx
-    · simpa using h2 y
-  · intro h
-    refine ⟨fun x hx => ?_, fun y => ?_⟩
-    · rw [one_smul]
-      exact (injective_iff_map_eq_zero f).1 h.1 x hx
-    · simpa using h.2 y
-
 theorem cls_congr {K : Cx.{w} R} {n : ℕ} {a b : K.X n} (h : a = b) (ha : K.d n a = 0) (hb : K.d n b = 0) :
     K.cls a ha = K.cls b hb := by
   subst h; rfl
@@ -562,15 +545,15 @@ theorem mapH_empty_bij {A B : Sy.{w} R ι} (m : A.Hom B) (hA : A.Desc) (hB : B.D
   have eA : Function.Bijective ((cechAug A hA).edge.mapH n) := by
     have := CrystallineSemistableComparison.P.dc_row (cechAug A hA) 1 (cechAug_row A hA) n
     rw [one_pow] at this
-    exact (upTo_one _).1 this
+    exact (CrystallineSemistableComparison.Onto.IsoBijectionLift.upTo_one_iff _).1 this
   have eB : Function.Bijective ((cechAug B hB).edge.mapH n) := by
     have := CrystallineSemistableComparison.P.dc_row (cechAug B hB) 1 (cechAug_row B hB) n
     rw [one_pow] at this
-    exact (upTo_one _).1 this
+    exact (CrystallineSemistableComparison.Onto.IsoBijectionLift.upTo_one_iff _).1 this
   have eT : Function.Bijective ((cechHom m).tot.mapH n) := by
-    have := CrystallineSemistableComparison.P.dc_map_col (cechHom m) 1 n fun p q _ => (upTo_one _).2 (cechHom_col m h p q)
+    have := CrystallineSemistableComparison.P.dc_map_col (cechHom m) 1 n fun p q _ => (CrystallineSemistableComparison.Onto.IsoBijectionLift.upTo_one_iff _).2 (cechHom_col m h p q)
     rw [one_pow] at this
-    exact (upTo_one _).1 this
+    exact (CrystallineSemistableComparison.Onto.IsoBijectionLift.upTo_one_iff _).1 this
   have sq : ∀ x, (cechAug B hB).edge.mapH n ((m.φ ∅).mapH n x) =
       (cechHom m).tot.mapH n ((cechAug A hA).edge.mapH n x) := by
     intro x
@@ -609,7 +592,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
 set_option linter.unusedVariables false
 
@@ -809,7 +791,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
@@ -935,7 +916,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
@@ -1166,7 +1146,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
@@ -1230,7 +1209,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
 set_option linter.unusedVariables false
 
@@ -1428,7 +1406,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
 set_option linter.unusedVariables false
 
@@ -1441,13 +1418,6 @@ namespace CrystallineSemistableComparison.Onto.EquivalenceOnIso
 open Pb HT
 
 variable {K : Type} [CommRing K] {W Z : Scheme.{0}} {q : Z ⟶ Spec (CommRingCat.of K)} {i : W ⟶ Z}
-
-theorem obj_ext {C : Type 1} [Category.{0} C] {P : ObjectProperty C} (a b : P.FullSubcategory) (h : a.obj = b.obj) :
-    a = b := by
-  obtain ⟨a, ha⟩ := a
-  obtain ⟨b, hb⟩ := b
-  subst h
-  rfl
 
 def preim [Mono i] {T₁ T₂ : Thick (smFun W (i ≫ q))}
     (g : (smS (p := q) i rfl).G.obj T₁ ⟶ (smS (p := q) i rfl).G.obj T₂) : T₁ ⟶ T₂ :=
@@ -1491,7 +1461,7 @@ theorem essSurj [Mono i] (U : ObjectProperty (Thick (smFun Z q))) (U' : ObjectPr
     have hY : (U ⊓ On q i) Y.obj := Y.property
     obtain ⟨w, hw⟩ := hY.2
     have hY' : U' (lift Y.obj w hw) := hU _ (by rw [G_lift]; exact hY.1)
-    exact ⟨⟨lift Y.obj w hw, hY'⟩, ⟨eqToIso (obj_ext _ _ (G_lift Y.obj w hw))⟩⟩
+    exact ⟨⟨lift Y.obj w hw, hY'⟩, ⟨eqToIso (CategoryTheory.ObjectProperty.FullSubcategory.ext (G_lift Y.obj w hw))⟩⟩
 
 theorem full [Mono i] {U : ObjectProperty (Thick (smFun Z q))} {U' : ObjectProperty (Thick (smFun W (i ≫ q)))}
     (h : ∀ T, U' T → (U ⊓ On q i) ((smS i rfl).G.obj T)) (a : ℕ) : (morV i rfl a h).G.Full where
@@ -1539,7 +1509,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
@@ -1711,7 +1680,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
 set_option linter.unusedVariables false
 
@@ -1813,7 +1781,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
 
 noncomputable section

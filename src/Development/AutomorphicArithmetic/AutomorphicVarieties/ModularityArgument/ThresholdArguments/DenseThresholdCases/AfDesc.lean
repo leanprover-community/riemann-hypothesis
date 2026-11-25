@@ -45,14 +45,12 @@ noncomputable section
 open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N Polynomial
 open GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.Pst GlobalTheory.LocLanglands GlobalTheory.HeckeGal GlobalTheory.LocGL GlobalTheory.GalOfCusp GlobalTheory.UnitaryBC UpperTheory.V.Af
 open scoped Matrix TensorProduct
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 namespace UpperTheory.V.Af
 open UpperTheory.V.Published
 structure HypothesesH' : Prop extends toClassicalTheorems : _root_.UpperTheory.V.Af.Hypotheses' where
   descU : Z.Desc.DescWeak
   cyc : Z.Bc.CycC
   cyc2 : Z.Bc.Desc2
-  quat : DefQuatExists
   ssR : CuspSemisimpleReal
 def AutBridgeAlt : Prop :=
   ∀ (F Ω : Type) [Field F] [NumberField F] [Field Ω] [Algebra F Ω] (l : ℕ) [Fact l.Prime] (ι : Qbar l ≃+* ℂ) (n : ℕ)

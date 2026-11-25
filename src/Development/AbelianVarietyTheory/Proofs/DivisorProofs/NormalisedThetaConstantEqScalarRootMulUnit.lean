@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsTorsionNe
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ThetaVV
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsIsTorsFrameOfSymLift
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsUniqueScalar
@@ -207,17 +208,7 @@ variable {V : Type} [CommRing V] [IsDomain V] {D : DegPre V}
 
 theorem prod_famB {T : Over (Spec (CommRingCat.of V))} (p : T ⟶ D.P.A) {U : Type} [CommGroup U]
     (h : (T.left ⟶ D.P.A.left) → U) : ∏ i, h (p.left ≫ D.famφB 0 i) ^ DegPre.famε 1 i = h p.left := by
-  rw [Fin.prod_univ_four]
-  have e₀ : p.left ≫ D.famφB 0 0 = p.left := Category.comp_id _
-  have e₁ : p.left ≫ D.famφB 0 1 = p.left := by
-    refine (Over.comp_left _ _ _ p (padd D.P.A (𝟙 D.P.A) (toUnit _ ≫ D.c 0))).symm.trans (congrArg (fun q : T ⟶ D.P.A => q.left) ?_)
-    rw [_root_.GlobalTheory.IndivisibleSection.c_zero_eq_one, MonObj.comp_one]
-    exact (congrArg (p ≫ ·) (_root_.mul_one (𝟙 D.P.A))).trans (Category.comp_id p)
-  have e₂ : D.famφB 0 2 = D.famφB 0 3 := by
-    show (toUnit D.P.A ≫ D.c 0).left = (toUnit D.P.A ≫ η[D.P.A]).left
-    rw [_root_.GlobalTheory.IndivisibleSection.c_zero_eq_one, eta_eq]
-  rw [e₀, e₁, e₂]
-  simp [DegPre.famε]
+  apply _root_.GlobalTheory.Poinc.Sep.Coef.prod_famφB_zero <;> assumption
 
 theorem exists_kap_of_torsFrame {N : ℕ} {ρ₀ : LB.Gen (D.P.L.pull (eSec D.P.A))} (hρ : ρ₀.IsGen)
     {T : Over (Spec (CommRingCat.of V))} {x : T ⟶ D.P.A} {τ} (H : IsTorsFrame D.P ρ₀ N x τ) :

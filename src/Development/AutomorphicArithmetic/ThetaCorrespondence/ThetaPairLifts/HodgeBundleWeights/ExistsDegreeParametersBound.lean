@@ -709,7 +709,6 @@ open GlobalTheory.Vanishing.H0
 
 set_option autoImplicit false
 noncomputable section
-open GlobalTheory.Vanishing.H0 GlobalTheory.CompHS
 
 namespace GlobalTheory.HSApp
 

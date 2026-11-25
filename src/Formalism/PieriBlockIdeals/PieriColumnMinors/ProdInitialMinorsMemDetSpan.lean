@@ -9,54 +9,9 @@ import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LBidetLemmas
 public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LDlatLemmas
 import Mathlib.Algebra.AffineMonoid.Basic
 import Mathlib.Algebra.AffineMonoid.UniqueSums
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Algebra.Ring.IsFormallyReal
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
 import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
-import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
@@ -347,20 +302,12 @@ theorem la_smul_monLat {n : ℕ} (s : Fin n) (d N : ℕ) (hN : ∀ i ≤ d, d.ch
     (y : MvPolynomial (Fin 2 × Fin n) ℤ) (hy : y ∈ la_monLat ℤ s d) :
     ((N : ℕ) : ℤ) • y ∈ la_binLat ℤ s d := by
   rw [la_monLat] at hy
-  induction hy using Submodule.span_induction with
-  | mem x hx =>
-    obtain ⟨p, q, hpq, rfl⟩ := hx
-    rw [zsmul_eq_mul, Int.cast_natCast]
-    exact la_mem_of_dvd ℤ s hpq (by rw [hpq]; exact hN q (by omega))
-  | zero =>
-    rw [smul_zero]
-    exact Submodule.zero_mem _
-  | add x y _ _ hx hy =>
-    rw [smul_add]
-    exact Submodule.add_mem _ hx hy
-  | smul a x _ hx =>
-    rw [smul_comm]
-    exact Submodule.smul_mem _ a hx
+  refine (Submodule.span_le.2 ?_ :
+    _ ≤ (la_binLat ℤ s d).comap (((N : ℕ) : ℤ) • LinearMap.id)) hy
+  rintro _ ⟨p, q, hpq, rfl⟩
+  rw [SetLike.mem_coe, Submodule.mem_comap, LinearMap.smul_apply, LinearMap.id_apply,
+    zsmul_eq_mul, Int.cast_natCast]
+  exact la_mem_of_dvd ℤ s hpq (by rw [hpq]; exact hN q (by omega))
 
 theorem la_core {n : ℕ} (s : Fin n) (d : ℕ) (g : MvPolynomial (Fin 2 × Fin n) ℤ) (hg : g ≠ 0)
     (l e : ℕ) (hl : l.Prime) :
@@ -795,14 +742,13 @@ theorem la_uniform (r n : ℕ) (hn : n ≤ r) (ν : Fin n → ℕ) (hν : Antito
   · intro x hx
     have key : (∏ g ∈ S, c g) • x ∈ weyl ℤ r n hn ν := by
       rw [← hS] at hx
-      induction hx using Submodule.span_induction with
-      | mem g hg =>
-        obtain ⟨t, ht⟩ := Finset.dvd_prod_of_mem c hg
-        rw [ht, mul_comm, mul_smul]
-        exact Submodule.smul_mem _ _ (hc1 g (hSm g hg))
-      | zero => simp
-      | add x y _ _ hx hy => rw [smul_add]; exact Submodule.add_mem _ hx hy
-      | smul a x _ hx => rw [smul_comm]; exact Submodule.smul_mem _ _ hx
+      refine (Submodule.span_le.2 ?_ :
+        _ ≤ (weyl ℤ r n hn ν).comap ((∏ g ∈ S, c g) • LinearMap.id)) hx
+      intro g hg
+      obtain ⟨t, ht⟩ := Finset.dvd_prod_of_mem c hg
+      rw [SetLike.mem_coe, Submodule.mem_comap, LinearMap.smul_apply, LinearMap.id_apply, ht,
+        mul_comm, mul_smul]
+      exact Submodule.smul_mem _ _ (hc1 g (hSm g hg))
     rcases Int.natAbs_eq (∏ g ∈ S, c g) with h | h
     · rw [← h]
       exact key
@@ -884,23 +830,21 @@ theorem la_incl_R_of_Z (R : Type) [CommRing R] [IsDomain R] (r n : ℕ) (hn : n 
     (l : R) ^ e • x ∈ weyl R r n hn ν := by
   obtain ⟨m, hm, h⟩ := hZ
   rw [standardMonomialSpanDomain R r n ν] at hx
-  induction hx using Submodule.span_induction with
-  | mem g hg =>
-    obtain ⟨K, sz, hsz, I, hshape, rfl⟩ := hg
-    have h1 : bideterminant ℤ sz hsz I ∈ dualWeyl ℤ r n ν := hshape ▸ bidetMem ℤ r n K sz hsz I
-    have h2 := la_map_weyl R hn ν _ (h _ h1)
-    rw [MvPolynomial.smul_eq_C_mul, map_mul, map_C, ldlat_map_bidet, ← MvPolynomial.smul_eq_C_mul]
-      at h2
-    obtain ⟨u, hu'⟩ := hu m hm
-    have h3 := Submodule.smul_mem _ (↑u⁻¹ : R) h2
-    rw [smul_smul] at h3
-    convert h3 using 2
-    simp only [eq_intCast]
-    push_cast
-    rw [← hu', ← mul_assoc, Units.inv_mul, one_mul]
-  | zero => simp
-  | add x y _ _ hx hy => rw [smul_add]; exact Submodule.add_mem _ hx hy
-  | smul a x _ hx => rw [smul_comm]; exact Submodule.smul_mem _ _ hx
+  refine (Submodule.span_le.2 ?_ :
+    _ ≤ (weyl R r n hn ν).comap (((l : R) ^ e) • LinearMap.id)) hx
+  rintro _ ⟨K, sz, hsz, I, hshape, rfl⟩
+  have h1 : bideterminant ℤ sz hsz I ∈ dualWeyl ℤ r n ν := hshape ▸ bidetMem ℤ r n K sz hsz I
+  have h2 := la_map_weyl R hn ν _ (h _ h1)
+  rw [MvPolynomial.smul_eq_C_mul, map_mul, map_C, ldlat_map_bidet,
+    ← MvPolynomial.smul_eq_C_mul] at h2
+  obtain ⟨u, hu'⟩ := hu m hm
+  have h3 := Submodule.smul_mem _ (↑u⁻¹ : R) h2
+  rw [SetLike.mem_coe, Submodule.mem_comap, LinearMap.smul_apply, LinearMap.id_apply]
+  rw [smul_smul] at h3
+  convert h3 using 2
+  simp only [eq_intCast]
+  push_cast
+  rw [← hu', ← mul_assoc, Units.inv_mul, one_mul]
 
 theorem la_map_smul (R : Type) [CommRing R] {σ : Type} (z : ℤ) (f : MvPolynomial σ ℤ) :
     map (Int.castRingHom R) (z • f) = (z : R) • map (Int.castRingHom R) f := by

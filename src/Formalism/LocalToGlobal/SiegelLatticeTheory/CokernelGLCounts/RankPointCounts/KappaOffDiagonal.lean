@@ -13,8 +13,6 @@ open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Fo
 
 namespace Formalism.L2.SG.KappaOffDiagonal
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Defs
 
 variable {D : D7} (X : HidaSetting D) {u u' : D.what₂.Word} {Λ Λ' : Submodule (𝓞 D.host.E) (VS D).V}

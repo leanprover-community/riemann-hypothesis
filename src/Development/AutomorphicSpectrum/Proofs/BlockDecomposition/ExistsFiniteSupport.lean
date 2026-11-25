@@ -237,10 +237,7 @@ theorem twKer_reflect : ∀ {G V W : Type} [Group G] [TopologicalSpace G] [IsTop
     exact Continuous.subtype_mk continuous_subtype_val _
   let χ : L →* ℂˣ := θ.comp ι
   have hχ : IsOpen (χ.ker : Set L) := by
-    have : (χ.ker : Set L) = ι ⁻¹' (θ.ker : Set N) := by
-      ext l
-      simp [χ, MonoidHom.mem_ker]
-    rw [this]
+    rw [show χ.ker = θ.ker.comap ι from (MonoidHom.comap_ker θ ι).symm, Subgroup.coe_comap]
     exact hθ.preimage hι
   obtain ⟨M, hMo, hMχ, hMv, hMt⟩ := exists_open_fixing ρ σ hρ hσ L χ.ker hχ v t
   haveI : Finite (L ⧸ M) := Subgroup.quotient_finite_of_isOpen M hMo

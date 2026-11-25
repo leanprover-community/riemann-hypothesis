@@ -1109,8 +1109,6 @@ theorem ja_arith (Cj Cl Cgr Sg R n N A AB : ℝ) (hCj : 0 ≤ Cj) (hSg : 0 ≤ S
   have f3 : (R + 1) * n ≤ W := hY _ _ hX0 hn0 hX4 hn3
   have f4 : R * n ≤ W := hY _ _ hR hn0 (by linarith) hn3
   have f5 : R + 1 ≤ W := by have := hY _ _ hX0 (by norm_num : (0:ℝ) ≤ 1) hX4 h1n3; linarith
-  have f6 : 1 ≤ W := le_trans hX f5
-  have f8 : R ≤ W := by linarith
   have f7 : (N + 1) * ((R + 1) * n) ≤ W := by
     have h1' : N * n ≤ N * n ^ 2 := mul_le_mul_of_nonneg_left hn2 hN
     have h2' : (R + 1) * (N * n + n) ≤ (R + 1) ^ 4 * (N * n ^ 2 + n ^ 3) :=
@@ -1132,7 +1130,6 @@ theorem ja_arith (Cj Cl Cgr Sg R n N A AB : ℝ) (hCj : 0 ≤ Cj) (hSg : 0 ≤ S
   have g4 : Cj * ((R + 1) * n) ≤ Cj * W := mul_le_mul_of_nonneg_left f3 hCj
   have g5 : Sg * Cj * ((R + 1) * n) ≤ Sg * Cj * W := mul_le_mul_of_nonneg_left f3 (by positivity)
   have g6 : Sg * (R + 1) ≤ Sg * W := mul_le_mul_of_nonneg_left f5 hSg
-  have g7 : n * (R + 1) ≤ W := by linarith
   have hAbs : 0 ≤ |Cl| + |Cgr| := by positivity
   have hK : (40 + |Cl| + |Cgr| + 10 * Cj + 10 * Sg + 10 * Cj * Sg) * W ≤
       200 * (1 + |Cl| + |Cgr|) * (1 + Cj) * (1 + Sg) * W := by
@@ -1148,8 +1145,6 @@ theorem ja_arith (Cj Cl Cgr Sg R n N A AB : ℝ) (hCj : 0 ≤ Cj) (hSg : 0 ≤ S
     have : 0 ≤ |Cl| + |Cgr| := hAbs
     linarith
   have hA' : (40 + |Cl| + |Cgr| + 10 * Cj + 10 * Sg + 10 * Cj * Sg) * W ≤ A := le_trans hK (by rw [hW] at hA ⊢; linarith)
-  have hAbs1 : 0 ≤ |Cl| := abs_nonneg _
-  have hAbs2 : 0 ≤ |Cgr| := abs_nonneg _
   have hCjW : 0 ≤ Cj * W := by positivity
   have hSgW : 0 ≤ Sg * W := by positivity
   have hCSW : 0 ≤ Cj * Sg * W := by positivity
@@ -1164,8 +1159,6 @@ theorem ja_arith (Cj Cl Cgr Sg R n N A AB : ℝ) (hCj : 0 ≤ Cj) (hSg : 0 ≤ S
         AB + Cgr * ((R + 1) * n ^ 2) + 6 * (Cj * (R * n)) + 30 * R + Cj * ((R + 1) * n) +
           2 * (Sg * Cj * ((R + 1) * n)) + 10 * (Sg * (R + 1)) := by ring
     rw [e]
-    have hABW : AB ≤ 3 * W := by linarith
-    have h30 : 30 * R ≤ 30 * W := by linarith
     linarith
   · have e : Cl * (R + 1) ^ 2 * n + 5 * (Sg * (R + 1)) = Cl * ((R + 1) ^ 2 * n) + 5 * (Sg * (R + 1)) := by ring
     rw [e]; linarith

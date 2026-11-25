@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermitianFramesPairingStabilizerBlockDiagonal
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.GFrames
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.BasisOfIsCompl
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.FramesCommonStabiliserEqPairingMatrixStabiliser
@@ -233,20 +234,7 @@ theorem mul_mono {E : Type} [CommRing E] {n : ℕ} (σ : Fin n → Fin n) (hσ :
     (Z : Matrix (Fin n) (Fin n) E) (hZ : ∀ a b, Z a b = if b = σ a then c a else 0)
     (X Y : Matrix (Fin n) (Fin n) E) :
     X * Z = Z * Y ↔ ∀ i a, X i a * c a = c i * Y (σ i) (σ a) := by
-  have h1 : ∀ i a, (X * Z) i (σ a) = X i a * c a := by
-    intro i a
-    rw [Matrix.mul_apply, Finset.sum_eq_single a]
-    · simp [hZ]
-    · intro k _ hk
-      have : ¬ σ a = σ k := fun h => hk (by rw [← hσ k, ← h, hσ])
-      simp [hZ, this]
-    · simp
-  have h2 : ∀ i j, (Z * Y) i j = c i * Y (σ i) j := by
-    intro i j
-    simp [Matrix.mul_apply, hZ]
-  constructor
-  · intro h i a; rw [← h1, h, h2]
-  · intro h; ext i j; rw [← hσ j, h1, h2, h]
+  first | exact _root_.GlobalTheory.HL.BlockStab.mul_mono | exact @_root_.GlobalTheory.HL.BlockStab.mul_mono | apply _root_.GlobalTheory.HL.BlockStab.mul_mono <;> assumption
 
 end GlobalTheory.PointStab
 

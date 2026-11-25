@@ -57,8 +57,6 @@ open scoped TensorProduct
 
 namespace GlobalTheory.SphPar
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Local
 
 variable {L : Type} [Field L] [Valued L (WithZero (Multiplicative ℤ))]

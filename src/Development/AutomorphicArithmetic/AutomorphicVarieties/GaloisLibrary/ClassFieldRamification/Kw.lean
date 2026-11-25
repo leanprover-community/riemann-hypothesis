@@ -376,15 +376,6 @@ private theorem exists_prime_mem_of_mem {R : Type} [CommRing R] (I : Ideal R) (h
           exact lt_mul_of_one_lt_left (Nat.pos_of_ne_zero hm0) hp.one_lt
         exact ih m hlt hm0 h
 
-private theorem cyc_adjoin (K : Type) {L : Type} [Field K] [Field L] [Algebra K L] {n : ℕ} [NeZero n] {ζ : L}
-    (hζ : IsPrimitiveRoot ζ n) : IsCyclotomicExtension {n} K K⟮ζ⟯ := by
-  change IsCyclotomicExtension {n} K (IntermediateField.adjoin K {ζ}).toSubalgebra
-  have hi : IsIntegral K ζ := by
-    refine ⟨Polynomial.X ^ n - Polynomial.C 1, Polynomial.monic_X_pow_sub_C 1 (NeZero.ne n), ?_⟩
-    simp [hζ.pow_eq_one]
-  rw [IntermediateField.adjoin_simple_toSubalgebra_of_isAlgebraic hi.isAlgebraic]
-  exact hζ.adjoin_isCyclotomicExtension K
-
 theorem UpperTheory.V.CF.kwRay :
     ∀ (Ω : Type) [Field Ω] [CharZero Ω] [IsAlgClosed Ω] (𝔪 : GroundTheory.Global.Modulus ℚ) (ζ : Ω), IsPrimitiveRoot ζ (Ideal.absNorm 𝔪.ideal) → 𝔪.rayClassField Ω ≤ ℚ⟮ζ⟯ := by
   intro Ω _ _ _ 𝔪 ζ hζ
@@ -393,7 +384,7 @@ theorem UpperTheory.V.CF.kwRay :
     rw [hN, Ne, Ideal.absNorm_eq_zero_iff]
     exact 𝔪.ideal_ne_bot
   haveI : NeZero N := ⟨hN0⟩
-  have hcyc := cyc_adjoin ℚ hζ
+  have hcyc := IsPrimitiveRoot.intermediateField_adjoin_isCyclotomicExtension ℚ hζ
   haveI : NumberField ℚ⟮ζ⟯ := @IsCyclotomicExtension.numberField {N} ℚ ℚ⟮ζ⟯ _ _ _ _ _ hcyc
   have hgal := @IsCyclotomicExtension.isGalois {N} ℚ ℚ⟮ζ⟯ _ _ _ hcyc
   haveI := (GroundTheory.Global.Modulus.isAbelianGalois_rayClassField 𝔪 Ω).toIsGalois

@@ -1,5 +1,6 @@
 module
 
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.LaplaceEstimates.SmoothMatrixMaps.TmAContDiffMulLeft
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.ActSingleNeZero
 public import Formalism.RealPlaceAnalysis.StatementU
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.SymmetricKMapEqZeroOfVminusSlices
@@ -477,24 +478,7 @@ theorem eword_local {f f' : Matrix (Fin n) (Fin n) ℂ → ℂ} {U : Set (Matrix
 theorem eword_comb {f f' : Matrix (Fin n) (Fin n) ℂ → ℂ} (hf : SmoothOnG ε f) (hf' : SmoothOnG ε f') (c : ℂ)
     (w : List (Fin n × Fin n)) :
     ∀ g, inUJ ε g → Eword ε w (fun x => f x + c * f' x) g = Eword ε w f g + c * Eword ε w f' g := by
-  induction w with
-  | nil => intro g _; rfl
-  | cons p w ih =>
-    intro g hg
-    have hE := eab_local (ε := ε) isOpen_univ (fun x _ hx => ih x hx) p.1 p.2 g trivial hg
-    show Eab ε p.1 p.2 (Eword ε w _) g = Eab ε p.1 p.2 (Eword ε w f) g + c * Eab ε p.1 p.2 (Eword ε w f') g
-    rw [hE]
-    have hs1 := eword_smooth hf w
-    have hs2 := eword_smooth hf' w
-    have A := cpartMem n ε (Matrix.single p.1 p.2 1)
-    have r1 := (rdLin n ε _ _ _ _ 0 c g hs1 hs2 A.1 A.1 hg).2.2
-    have r2 := (rdLin n ε _ _ _ _ 0 c g hs1 hs2 A.2.1 A.2.1 hg).2.2
-    show Rd _ (fun x => Eword ε w f x + c * Eword ε w f' x) g +
-        Complex.I * Rd _ (fun x => Eword ε w f x + c * Eword ε w f' x) g =
-      (Rd _ (Eword ε w f) g + Complex.I * Rd _ (Eword ε w f) g) +
-        c * (Rd _ (Eword ε w f') g + Complex.I * Rd _ (Eword ε w f') g)
-    rw [r1, r2]
-    ring
+  first | exact _root_.ReciprocityTheory.ChartRestriction.DS.Lap.tmA_eword_lin | exact @_root_.ReciprocityTheory.ChartRestriction.DS.Lap.tmA_eword_lin | apply _root_.ReciprocityTheory.ChartRestriction.DS.Lap.tmA_eword_lin <;> assumption
 
 theorem inUJ_one : inUJ ε (1 : Matrix (Fin n) (Fin n) ℂ) := by
   show (1 : Matrix (Fin n) (Fin n) ℂ)ᴴ * Jm ε * 1 = Jm ε
@@ -520,15 +504,8 @@ theorem eword_append (w w' : List (Fin n × Fin n)) (f : Matrix (Fin n) (Fin n) 
 
 theorem eword_left (w : List (Fin n × Fin n)) (f : Matrix (Fin n) (Fin n) ℂ → ℂ) (h : Matrix (Fin n) (Fin n) ℂ) :
     Eword ε w (fun x => f (h * x)) = fun g => Eword ε w f (h * g) := by
-  induction w with
-  | nil => rfl
-  | cons p w ih =>
-    funext g
-    show Eab ε p.1 p.2 (Eword ε w fun x => f (h * x)) g = Eab ε p.1 p.2 (Eword ε w f) (h * g)
-    rw [ih]
-    show Rd _ (fun x => Eword ε w f (h * x)) g + Complex.I * Rd _ (fun x => Eword ε w f (h * x)) g =
-      Rd _ (Eword ε w f) (h * g) + Complex.I * Rd _ (Eword ε w f) (h * g)
-    rw [rdLeft n (Eword ε w f) _ h g, rdLeft n (Eword ε w f) _ h g]
+  intros
+  apply _root_.ReciprocityTheory.ChartRestriction.DS.Lap.tmA_eword_left <;> assumption
 
 theorem eword_gl {f : Matrix (Fin n) (Fin n) ℂ → ℂ} (hf : SmoothOnG ε f) (w w' : List (Fin n × Fin n))
     (a b c d : Fin n) :

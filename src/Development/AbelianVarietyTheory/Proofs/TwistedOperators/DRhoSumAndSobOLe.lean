@@ -50,8 +50,6 @@ open scoped ENNReal
 
 namespace GlobalTheory.Size
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 open GlobalTheory.OrientedHeis GlobalTheory.FockCompare GlobalTheory.Ker.HeisDeriv
 
 variable {D : D7} {ψ : AddChar (AF D.host.F) ℂ} {θ : InfFam D} {V W : HSp D}

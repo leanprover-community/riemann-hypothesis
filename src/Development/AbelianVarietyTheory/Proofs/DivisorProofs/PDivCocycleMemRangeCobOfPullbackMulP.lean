@@ -46,8 +46,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 
 open TensorProduct Coalgebra Bialgebra CategoryTheory WithConv GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory

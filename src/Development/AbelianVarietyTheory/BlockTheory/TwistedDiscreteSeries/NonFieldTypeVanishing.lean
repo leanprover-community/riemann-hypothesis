@@ -104,8 +104,6 @@ end TypeOf
 
 section Record
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} {V : HSp D}
 
 def LocalClause (T : TypeDataG V) (μf : ∀ v, Measure (GLoc D.sp.cm.sig V.gram v))

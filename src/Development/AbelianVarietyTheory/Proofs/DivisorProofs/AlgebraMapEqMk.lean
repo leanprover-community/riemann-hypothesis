@@ -50,7 +50,6 @@ import Mathlib.Topology.Sheaves.Init
 
 open scoped TensorProduct
 
-set_option autoImplicit false
 noncomputable section
 namespace GlobalTheory.KummerAlg
 

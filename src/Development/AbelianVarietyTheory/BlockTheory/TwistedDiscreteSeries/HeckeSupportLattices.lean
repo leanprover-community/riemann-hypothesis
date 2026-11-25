@@ -42,8 +42,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open NumberField IsDedekindDomain
@@ -53,8 +51,6 @@ namespace GlobalTheory.IndefiniteRowSideFullHecke.LatticesOverBalls
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Arith Formalism.IndefR.Mult
   Formalism.IndefR.FWT Formalism.L2.Pj
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 section Forms
 

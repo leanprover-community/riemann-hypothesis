@@ -48,8 +48,6 @@ open GlobalTheory.ChiGrid GlobalTheory.SqTop
 
 namespace GlobalTheory.DiffSOne
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem not_dvd_diff_of_split (K L : Type) [Field K] [NumberField K] [Field L] [NumberField L] [Algebra K L]
     {p : ℕ} (hp : p.Prime)
     (h : (Ideal.primesOver (Ideal.span {(p : ℤ)}) (𝓞 L)).ncard = Module.finrank ℚ L)

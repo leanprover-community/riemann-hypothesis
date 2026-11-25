@@ -44,8 +44,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
-set_option autoImplicit false
-
 open CategoryTheory AlgebraicGeometry Opposite TopologicalSpace ReciprocityTheory.ChartRestriction.G.Geo.Tor
 
 noncomputable section

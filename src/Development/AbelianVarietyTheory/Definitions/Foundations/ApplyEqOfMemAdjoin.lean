@@ -87,9 +87,6 @@ structure IsIo (X : GlobalTheory.KZ.Tower Ω ε) (A : ValuationSubring Ω) (T : 
   gal : ∀ (g : Gal p Ωl) (s : Ω ≃ₐ[ℚ] Ω), g (T.qq n) = T.qq n → (∀ x, g (j x) = j (s x)) →
     ∀ y y' : KT X (p ^ n), (y' : X.K) = X.gal s y → g (io y) = io y'
 
-def IsNTr (ε : Ω →+* ℂ) (l n m : ℕ) [NeZero l] (F F' : Ω) : Prop :=
-  1 ≤ m ∧ m ≤ n ∧ F ∈ IntermediateField.adjoin ℚ {zt ε l n} ∧ IsNT ε l n m F F'
-
 theorem InZl.mem_adjoin {l n : ℕ} {F : Ω} (h : InZl ε l n F) : F ∈ IntermediateField.adjoin ℚ {zt ε l n} := by
   haveI : CharZero Ω := algebraRat.charZero Ω
   obtain ⟨D, hD, hF⟩ := h
@@ -110,15 +107,6 @@ theorem IsNTr.apply_eq_of_mem_adjoin {z F : Ω} (hF : F ∈ IntermediateField.ad
   | add x y _ _ hx hy => rw [map_add (f := _), map_add (f := _), hx, hy]
   | inv x _ hx => rw [map_inv₀, map_inv₀, hx]
   | mul x y _ _ hx hy => rw [map_mul, map_mul, hx, hy]
-
-theorem IsNTr.add {l n m : ℕ} [NeZero l] {F F' G G' : Ω} (h : IsNTr ε l n m F F') (h' : IsNTr ε l n m G G') :
-    IsNTr ε l n m (F + G) (F' + G') := by
-  obtain ⟨h1, h2, hF, τ, hτ, e⟩ := h
-  obtain ⟨-, -, hG, τ', hτ', e'⟩ := h'
-  refine ⟨h1, h2, add_mem hF hG, τ, hτ, ?_⟩
-  rw [mul_add, e, e', ← Finset.sum_add_distrib]
-  exact Finset.sum_congr rfl fun a _ => by
-    rw [map_add (f := _), IsNTr.apply_eq_of_mem_adjoin hG ((hτ a).trans (hτ' a).symm)]
 
 theorem KT.mem_def (X : GlobalTheory.KZ.Tower Ω ε) (L : ℕ) (f : X.K) : f ∈ KT X L ↔ X.sl (ofSL (ModularGroup.T ^ L)) f = f := Iff.rfl
 

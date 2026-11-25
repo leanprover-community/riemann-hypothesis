@@ -101,18 +101,6 @@ end SysLem
 section Forms
 variable {F K : Type} [Field F] [Field K] [Algebra ℂ F] [Algebra ℂ K] [Algebra F K] [IsScalarTower ℂ F K]
 
-private theorem omB_le_fixed (B : Subalgebra ℂ K) (q : ℕ) {y : DR ℂ K} (hy : y ∈ omB ℂ K B q) :
-    y ∈ ⋀[K]^q Ω[K⁄ℂ] := by
-  induction hy using Submodule.span_induction with
-  | mem z hz =>
-    obtain ⟨b, -, v, -, rfl⟩ := hz
-    exact Submodule.smul_mem _ _ (ExteriorAlgebra.ιMulti_range K q ⟨_, rfl⟩)
-  | zero => exact Submodule.zero_mem _
-  | add a c _ _ ha hc => exact Submodule.add_mem _ ha hc
-  | smul r a _ ha =>
-    rw [← algebraMap_smul K r a]
-    exact Submodule.smul_mem _ _ ha
-
 private theorem actZ_tmul (u v : K) (y y' : DR ℂ K) :
     actZ K (u ⊗ₜ v) (y ⊗ₜ y') = (u • y) ⊗ₜ[ℂ] (v • y') := by
   simp only [actZ, AlgHom.comp_apply, Algebra.TensorProduct.map_tmul]
@@ -188,7 +176,8 @@ private theorem diag_case (hReg : RegLat) (hLat : LatOm) (hDual : DualForm) (hK1
   · rw [← sm_range_congr _ _ _ _ _ hact]
     refine hS m hm fun ψ => ?_
     obtain ⟨⟨w, hw, hψ⟩, -⟩ := hDual F K d x hc τ hτ a ha ψ
-    rw [ctrF_eq τ ψ _ _ w (fun y hy => hψ y (omB_le_fixed _ _ hy)) hm, h0 w hw, zero_smul]
+    rw [ctrF_eq τ ψ _ _ w (fun y hy => hψ y (mem_deg_of_mem_omB _ _ y hy)) hm,
+      h0 w hw, zero_smul]
 
 private theorem loc_om (hc : IsFinCover ℂ K (xv x)) {I : Finset (Fin (d + 1))} {i : Fin (d + 1)} (hi : i ∈ I)
     (j : Fin (d + 1)) (q : ℕ) {y : DR ℂ K} (hy : y ∈ omB ℂ K (rB ℂ K (xv x) (insert j I)) q) :

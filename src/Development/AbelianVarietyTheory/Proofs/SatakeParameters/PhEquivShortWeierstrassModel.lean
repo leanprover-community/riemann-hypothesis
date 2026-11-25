@@ -49,6 +49,8 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
+import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.ExistsWittSeriesInverseFormalGroupIso
+import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.PadicNormTwoHundredSixteenEqOneOfFiveLe
 
 @[expose] public section
 
@@ -61,7 +63,7 @@ open Formalism.MainNotions.GL3Theta (G1)
 open Formalism.L2.G.Pend (k0ToC wToC LTIso)
 open Formalism.InvariantFactorPaths.G7 (lgF)
 open Formalism.DworkPowerSeriesWeights (Integral)
-open GlobalTheory.CurveDictionary (lgF_eq_logF cc_lgF')
+open Formalism.L2.KerInert.BeCob (lgF_eq_logF cc_lgF')
 
 theorem X_mul_lU {K : Type} [Field K] [CharZero K] (f : PowerSeries K) (hf : PowerSeries.constantCoeff f = 0) :
     PowerSeries.X * Formalism.L2.Th1.B.lU f = f := by
@@ -163,7 +165,7 @@ theorem phTie : Formalism.L2.KerInert.BeCob.PhTie := by
     rw [← hgl]; exact Formalism.L2.G.Pend.lg_pt g hex hinv hv0
   set P := Formalism.L2.Th1.A.wpReg g.W with hPdef
   have hP : Formalism.L2.Th1.A.wpReg (Formalism.L2.Th1.A.shortW (Formalism.L2.Th1.A.g₂ g.W) (Formalism.L2.Th1.A.g₃ g.W)) = P := by
-    rw [GlobalTheory.CurveDictionary.wpReg_eq, hPdef, GlobalTheory.CurveDictionary.wpReg_eq g.W, (Formalism.L2.Th1.A.shortInv ℂ_[l] _ _).2.1,
+    rw [Formalism.L2.KerInert.Sigma.wpReg_eq, hPdef, Formalism.L2.KerInert.Sigma.wpReg_eq g.W, (Formalism.L2.Th1.A.shortInv ℂ_[l] _ _).2.1,
       (Formalism.L2.Th1.A.shortInv ℂ_[l] _ _).2.2.1]
   have hneg : ∀ f : PowerSeries ℂ_[l], PowerSeries.subst v (-f) = -PowerSeries.subst v f := fun f => by
     rw [← PowerSeries.coe_substAlgHom hvS, map_neg]

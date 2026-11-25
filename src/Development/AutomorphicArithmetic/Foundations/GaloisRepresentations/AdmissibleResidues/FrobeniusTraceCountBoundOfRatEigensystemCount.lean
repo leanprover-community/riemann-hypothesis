@@ -483,7 +483,6 @@ end
 
 section
 
-open UpperTheory.V.Af
 
 section
 

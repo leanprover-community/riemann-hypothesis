@@ -554,11 +554,6 @@ theorem cT_cT_of_isCMExt {σ : E →ₐ[F] E} (hσ : IsCMExt F E σ) {a b : Type
     Formalism.UG.cT (σ : E →+* E) (Formalism.UG.cT (σ : E →+* E) M) = M := by
   ext i j; simp [Formalism.UG.cT, GlobalTheory.SiegelSet.sigma_sigma hσ]
 
-omit [NumberField F] [NumberField E] in
-theorem cT_eq_of_isHermND {σ : E →ₐ[F] E} {n : ℕ} {J : Matrix (Fin n) (Fin n) E} (hJ : IsHermND σ J) :
-    Formalism.UG.cT (σ : E →+* E) J = J := by
-  ext i j; simpa [Formalism.UG.cT] using hJ.1 i j
-
 end Swap
 
 end GlobalTheory.ResLine.Swap
@@ -593,7 +588,7 @@ theorem two_mul_le_and_exists_ratPts_swap : ∀ (F E : Type) [Field F] [NumberFi
   have hxx : Formalism.UG.cT (σ : E →+* E) X * J * X = 0 := hW.xx
   have hyy : Formalism.UG.cT (σ : E →+* E) Y * J * Y = 0 := hW.yy
   have hxy : Formalism.UG.cT (σ : E →+* E) X * J * Y = 1 := hW.xy
-  have hJ' := cT_eq_of_isHermND hJ
+  have hJ' := GlobalTheory.UAut.cT_form hJ
   have hyx : Formalism.UG.cT (σ : E →+* E) Y * J * X = 1 := by
     have h := congrArg (Formalism.UG.cT (σ : E →+* E)) hxy
     rw [Formalism.UG.cT_mul, Formalism.UG.cT_mul, cT_cT_of_isCMExt hσ, hJ', Formalism.UG.cT_one] at h

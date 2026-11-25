@@ -189,9 +189,8 @@ theorem lin_basisMat (W : Submodule E (Fin n → E)) : LinearIndependent E (basi
 theorem linearIndependent_image_span (g : GL (Fin n) E) (f : Fin k → Fin n → E) (hf : LinearIndependent E f) :
     LinearIndependent E (Matrix.toLin' g.val ∘ f) ∧
       Submodule.span E (Set.range (Matrix.toLin' g.val ∘ f)) = img g (Submodule.span E (Set.range f)) := by
-  have inj : Function.Injective (Matrix.toLin' g.val) := fun a b hab => by
-    have h1 := congrArg (fun y => (g⁻¹ : GL (Fin n) E).val *ᵥ y) hab
-    simpa [Matrix.toLin'_apply, Matrix.mulVec_mulVec, ← Units.val_mul] using h1
+  have inj : Function.Injective (Matrix.toLin' g.val) :=
+    Matrix.mulVec_injective_iff_isUnit.mpr g.isUnit
   refine ⟨hf.map' _ (LinearMap.ker_eq_bot.2 inj), ?_⟩
   rw [Set.range_comp, ← Submodule.map_span]
   rfl

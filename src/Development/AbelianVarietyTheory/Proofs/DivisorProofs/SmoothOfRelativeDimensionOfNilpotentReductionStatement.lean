@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsProperGeometricallyConnectedSmoothNilpotentLif
 public import Mathlib.AlgebraicGeometry.Morphisms.Smooth
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FirstCohomology.DimSplitPf
@@ -65,16 +66,7 @@ namespace GlobalTheory.LiftDim
 
 theorem surjective_spMap_of_nilpotent {R R₀ : Type} [CommRing R] [CommRing R₀] (π : R →+* R₀)
     (hπ : Function.Surjective π) (hnil : IsNilpotent (RingHom.ker π)) : Surjective (spMap π) := by
-  refine ⟨fun P => ?_⟩
-  have : P ∈ Set.range (PrimeSpectrum.comap π) := by
-    rw [range_comap_of_surjective _ _ hπ]
-    intro x hx
-    obtain ⟨n, hn⟩ := hnil
-    refine (P : PrimeSpectrum R).2.mem_of_pow_mem n ?_
-    have h : x ^ n ∈ RingHom.ker π ^ n := Ideal.pow_mem_pow hx n
-    rw [hn, Ideal.zero_eq_bot, Ideal.mem_bot] at h
-    rw [h]; exact zero_mem _
-  exact this
+  apply _root_.GlobalTheory.NilLift.surjective_spMap_of_isNilpotent_ker <;> assumption
 
 theorem smoothOfRelativeDimension_of_reduction : ∀ (R R₀ : Type) [CommRing R] [CommRing R₀] (π : R →+* R₀), Function.Surjective π → IsNilpotent (RingHom.ker π) →
     ∀ (g : ℕ) (X : Over (Sp R)) (X₀ : Over (Sp R₀)) (i : X₀.left ⟶ X.left), IsPullback i X₀.hom X.hom (spMap π) → Smooth X.hom →

@@ -974,10 +974,7 @@ theorem hermitianGramDetTwoVectorsTensor_incl (σ : E →ₐ[F] E) {M : ℕ} (J 
   simp only [gram2R, gram2E, hR_incl, map_sub, map_mul]
 
 theorem sigR_sigR {σ : E →ₐ[F] E} (hσ : ∀ e, σ (σ e) = e) (u : K ⊗[F] E) : sigR K σ (sigR K σ u) = u := by
-  induction u using TensorProduct.induction_on with
-  | zero => simp
-  | tmul k e => simp [sigR, hσ]
-  | add a b ha hb => simp only [map_add (f := _), ha, hb]
+  apply _root_.GlobalTheory.PlaneNorm.FieldCase.sigR_sigR <;> assumption
 
 theorem sigR_hR {σ : E →ₐ[F] E} (hσ : ∀ e, σ (σ e) = e) {M : ℕ} {J : Matrix (Fin M) (Fin M) E}
     (hJ : ∀ i j, σ (J j i) = J i j) (a b : Fin M → K ⊗[F] E) :

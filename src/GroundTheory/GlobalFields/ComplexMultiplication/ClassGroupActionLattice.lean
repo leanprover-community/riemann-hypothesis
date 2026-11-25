@@ -272,15 +272,17 @@ theorem exists_idealLattice_of_latticeEnd_eq (L : PeriodPair) (hL : periodLattic
     refine ⟨a, b, σ.injective ?_⟩
     apply mul_right_cancel₀ hω
     rw [← hab, map_add (f := _), map_mul, map_intCast, map_intCast, add_mul, mul_assoc, hy]
+  have hlin (a b : ℤ) : (a + b * y : K) ∈ Submodule.span (𝓞 K) {1, y} := by
+    refine add_mem ?_ ?_
+    · rw [← mul_one (a : K), ← zsmul_eq_mul]
+      exact Submodule.smul_of_tower_mem _ a (Submodule.subset_span (by simp))
+    · rw [← zsmul_eq_mul]
+      exact Submodule.smul_of_tower_mem _ b (Submodule.subset_span (by simp))
   have hspan : M = Submodule.span (𝓞 K) {1, y} := by
     apply le_antisymm
     · intro x hx
       obtain ⟨a, b, rfl⟩ := hM x hx
-      refine add_mem ?_ ?_
-      · rw [← mul_one (a : K), ← zsmul_eq_mul]
-        exact Submodule.smul_of_tower_mem _ a (Submodule.subset_span (by simp))
-      · rw [← zsmul_eq_mul]
-        exact Submodule.smul_of_tower_mem _ b (Submodule.subset_span (by simp))
+      exact hlin a b
     · rw [Submodule.span_le]
       rintro z (rfl | rfl)
       · exact h1
@@ -302,12 +304,7 @@ theorem exists_idealLattice_of_latticeEnd_eq (L : PeriodPair) (hL : periodLattic
     obtain ⟨a, b, rfl⟩ := PeriodPair.mem_lattice.1 hz
     refine ⟨σ (a + b * y), map_mem_idealLattice σ (x := a + b * y) ?_, ?_⟩
     · show (a + b * y : K) ∈ M
-      rw [hspan]
-      refine add_mem ?_ ?_
-      · rw [← mul_one (a : K), ← zsmul_eq_mul]
-        exact Submodule.smul_of_tower_mem _ a (Submodule.subset_span (by simp))
-      · rw [← zsmul_eq_mul]
-        exact Submodule.smul_of_tower_mem _ b (Submodule.subset_span (by simp))
+      exact hspan ▸ hlin a b
     · rw [map_add (f := _), map_mul, map_intCast, map_intCast]
       linear_combination (b : ℂ) * hy
   · rintro ⟨w, hw, rfl⟩

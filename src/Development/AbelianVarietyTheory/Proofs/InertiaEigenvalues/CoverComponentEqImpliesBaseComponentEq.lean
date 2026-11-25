@@ -51,8 +51,6 @@ open scoped TensorProduct Matrix
 
 namespace GlobalTheory.CoverRead.CompIndep
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem mul_mem_map_of_prod {R : Type} [CommRing R] [IsDedekindDomain R] (f : R →+* R) (A I : Ideal R) (m p : R) (hm : m ≠ 0)
     (h : A * A.map f = Ideal.span {m}) (h1 : A * I * (A * I).map f = Ideal.span {m * p}) :
     ∀ b ∈ A.map f, p * b ∈ (A * I).map f := by

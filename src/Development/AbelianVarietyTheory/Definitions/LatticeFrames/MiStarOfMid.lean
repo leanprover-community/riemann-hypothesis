@@ -54,8 +54,6 @@ open Formalism.BasicNotions Formalism.DivisionValues Formalism.L2.Indef Formalis
 namespace GlobalTheory.MiS
 open Formalism Formalism.IndefR
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section FreeSingleHomotopyEquivDiscreteChains
 
 variable {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 I0 T : Type}

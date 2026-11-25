@@ -367,10 +367,6 @@ section Term
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}
   {J : Matrix (Fin 1) (Fin 1) E} {d : ℕ} {b : Module.Basis (Fin d) F E}
 
-theorem smul_apply' {α : Type} [MeasurableSpace α] (c : ℝ≥0) (ν : Measure α) (B : Set α) :
-    (c • ν) B = (c : ℝ≥0∞) * ν B := by
-  rw [Measure.smul_apply, ENNReal.smul_def, smul_eq_mul]
-
 theorem idele_ne (a : (AF F)ˣ) (v : HeightOneSpectrum (𝓞 F)) : (a : AF F).2 v ≠ 0 :=
   (IsUnit.map ((evalV F v).comp (sndA F)) a.isUnit).ne_zero
 
@@ -458,14 +454,14 @@ theorem term_eq (hS : Scal) (hcm : IsCMExt F E σ) (hJ : IsHermND σ J) {li : Me
       (fun v => cfac E v • m v (hermScal (Fv F v) σ (algebraMap F _ (t : F)))) := hEP
   obtain ⟨-, e⟩ := _root_.GlobalTheory.CompanionTheory.SW.EulerBox.euler_box F E σ hcm d b 1 1 _ κ _ _ hEu _ A' hφinf (fun v => (hloc v).1)
     (fun v => by
-      rw [smul_apply', (hloc v).2.1]
+      rw [MeasureTheory.Measure.coe_nnreal_smul_apply, (hloc v).2.1]
       exact ENNReal.mul_lt_top ENNReal.coe_lt_top (hloc v).2.2) hcof
   have hfv : ∀ v, v ∉ S → gv m A v ((a : AF F).2 v) = rv v (eR E v) ((a : AF F).2 v) := fun v hv => by
     rw [gv, hAo v hv]
     exact hL v hv _ (idele_ne a v)
   have hg : ∀ v, ((cfac E v • m v (hermScal (Fv F v) σ (algebraMap F _ (t : F)))) (A' v)).toReal =
       gv m A v ((a : AF F).2 v) := fun v => by
-    rw [smul_apply', (hloc v).2.1, ENNReal.toReal_mul, ENNReal.coe_toReal]
+    rw [MeasureTheory.Measure.coe_nnreal_smul_apply, (hloc v).2.1, ENNReal.toReal_mul, ENNReal.coe_toReal]
     rfl
   have hfin : (Function.mulSupport fun v => gv m A v ((a : AF F).2 v)).Finite := by
     have h1 : ∀ᶠ v in cofinite, gv m A v ((a : AF F).2 v) = 1 := by

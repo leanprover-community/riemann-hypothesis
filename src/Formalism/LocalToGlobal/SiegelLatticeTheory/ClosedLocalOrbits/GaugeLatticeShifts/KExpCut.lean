@@ -81,8 +81,6 @@ end Blocks
 
 section Steps
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 open Formalism.L2.SG.PoincareInHH.PoincareSetting
 
 variable {D : D7} {X : Formalism.L2.SG.HidaSetting.HidaSetting D} {u u' : D.what₂.Word}
@@ -134,8 +132,6 @@ theorem idCellOff_of (h : IdOffBlocks F0 F0' cs cs' FdN FdN') : IdCellOff F0 F0'
 end Steps
 
 section StepsDiag
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 open Formalism.L2.SG.PoincareInHH.PoincareSetting
 
@@ -233,8 +229,6 @@ theorem psi_unit_of {F E : Type} [Field F] [NumberField F] [Field E] [NumberFiel
 end PsiTorsion
 
 section Abs
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 open Formalism.L2.SG.PoincareInHH.PoincareSetting
 
@@ -386,8 +380,6 @@ end FromAbs
 
 section FromAbsT
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 open Formalism.L2.SG.PoincareInHH.PoincareSetting
 
 variable {D : D7} {X : Formalism.L2.SG.HidaSetting.HidaSetting D} {u u' : D.what₂.Word}
@@ -414,8 +406,6 @@ theorem kExpansion_of_abs (hK : X.LevelSubgroupCharacter) (Dt Dt' : Set X.B.I.GA
 end FromAbsT
 
 section Closed
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 open Formalism.L2.SG.Full Formalism.L2.SG.PoincareInHH.PoincareSetting
 
@@ -460,8 +450,6 @@ theorem ooIntAllC_of
 end Closed
 
 section Unfold
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 open Formalism.L2.SG.PoincareInHH.PoincareSetting Formalism.L2.SG.PoincareInHH.Cut Formalism.L2.SG.PoincareSeriesSquareIntegrable
 
@@ -576,8 +564,6 @@ def DCSingle : Prop :=
 
 section Slab
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 open Formalism.L2.SG.PoincareInHH.PoincareSetting Formalism.L2.SG.PoincareInHH.Cut
 
 variable {D : D7} {X : Formalism.L2.SG.HidaSetting.HidaSetting D} {u u' : D.what₂.Word}
@@ -618,8 +604,6 @@ def Regroup (hK : X.LevelSubgroupCharacter) (Dt' : Set X.B.I.GA) : Prop :=
 end Slab
 
 section SlabAsm
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 open Formalism.L2.SG.PoincareInHH.PoincareSetting Formalism.L2.SG.PoincareInHH.Cut Formalism.L2.SG.PoincareSeriesSquareIntegrable
 
@@ -728,8 +712,6 @@ theorem dcTerms_of [SigmaFinite (Formalism.L2.SG.ProjRows.muInf X.B.I)] (hK : X.
 end SlabAsm
 
 section Chain
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 open Formalism.L2.SG.PoincareInHH.PoincareSetting Formalism.L2.SG.PoincareInHH.Cut Formalism.L2.SG.PoincareSeriesSquareIntegrable
 

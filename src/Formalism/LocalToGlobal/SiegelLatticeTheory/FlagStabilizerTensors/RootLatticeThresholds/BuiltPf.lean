@@ -13,7 +13,7 @@ namespace Formalism.L2.SG.Pf.Built
 
 open Formalism.L2.SG.Pf.Carrier
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar instCM
+attribute [local instance] instCM
 
 def chiStd (x : ℝ) : ℝ := Real.smoothTransition (2 * x - 1)
 

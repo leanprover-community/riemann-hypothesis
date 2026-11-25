@@ -34,8 +34,6 @@ theorem ptPar_anti {K : Type*} [Zero K] : ∀ (bs : List (K × ℕ)) (x y : ℕ)
         have := ptPar_anti bs (x - s) (y - s) (by omega) (by omega) (by omega)
         omega
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} (X : Formalism.L2.SG.HidaSetting.HidaSetting D)
 
 theorem hee_v (v : InfinitePlace X.B.I.F) (a b : Fin D.R.rS) :

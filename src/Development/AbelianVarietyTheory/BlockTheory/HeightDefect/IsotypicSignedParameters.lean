@@ -78,8 +78,6 @@ end Chains
 
 section Adelic
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 def gramAt (V : HSp D) (τ : D.what₂.Tau) : Matrix (Fin V.rank) (Fin V.rank) ℂ := V.gram.map (tauE D τ)

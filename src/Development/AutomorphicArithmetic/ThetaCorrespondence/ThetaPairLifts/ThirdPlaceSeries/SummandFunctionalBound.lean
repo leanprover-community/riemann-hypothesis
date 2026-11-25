@@ -50,7 +50,6 @@ open Formalism.BasicNotions Formalism.MainNotions NumberField IsDedekindDomain
 open Formalism.L2 Formalism.L2.DIV Formalism.L2.Indef Formalism.L2.Rows Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Cx Formalism.IndefR.FWT
 open GlobalTheory.EX GlobalTheory.EX.OB
 namespace GlobalTheory.Fc.Ind
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 set_option genInjectivity false in
 set_option genSizeOfSpec false in
 structure PointSummands (D : D7) (O : Obj D) (c : ℝ) : Type 1 where

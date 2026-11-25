@@ -219,21 +219,9 @@ open scoped Pointwise ENNReal Classical
 
 namespace GlobalTheory.HL
 
-theorem volSt_conj_self {G : Type} [Group G] (H : Subgroup G) {h : G} (hh : h ∈ H) :
-    MulAut.conj h • H = H := by
-  ext x
-  rw [Subgroup.mem_pointwise_smul_iff_inv_smul_mem]
-  simp only [MulAut.smul_def, MulAut.conj_inv_apply]
-  constructor
-  · intro hx
-    have := H.mul_mem (H.mul_mem hh hx) (H.inv_mem hh)
-    simpa [mul_assoc] using this
-  · intro hx
-    exact H.mul_mem (H.mul_mem (H.inv_mem hh) hx) hh
-
 theorem volSt_inf_stab_smul {G X : Type} [Group G] [MulAction G X] (H : Subgroup G) {h : G} (hh : h ∈ H)
     (x : X) : H ⊓ MulAction.stabilizer G (h • x) = MulAut.conj h • (H ⊓ MulAction.stabilizer G x) := by
-  rw [Subgroup.smul_inf, volSt_conj_self H hh]
+  rw [Subgroup.smul_inf, Subgroup.conj_smul_eq_self_of_mem hh]
   congr 1
   ext g
   rw [Subgroup.mem_pointwise_smul_iff_inv_smul_mem]
@@ -267,7 +255,7 @@ theorem volSt {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNona
   have hone : ∀ h ∈ S.St, invVol S.K0 (MulAut.conj h • S.K0) = 1 := by
     intro h hh
     obtain ⟨Λ, hΛ, hs⟩ := _root_.GlobalTheory.HL.exists_isLat_stabL_of_unipotent L h _ (_root_.GlobalTheory.FlagUnipotent.main L r k S h hh.1)
-    exact (hmod _ (hc Λ hΛ).1 (hc Λ hΛ).2 h hh).2 (volSt_conj_self _ ⟨hh, hs⟩)
+    exact (hmod _ (hc Λ hΛ).1 (hc Λ hΛ).2 h hh).2 (Subgroup.conj_smul_eq_self_of_mem ⟨hh, hs⟩)
   have hinv : ∀ K' : Subgroup S.GLV, S.K0.relIndex K' ≠ 0 → K'.relIndex S.K0 ≠ 0 → ∀ h ∈ S.St,
       invVol S.K0 (MulAut.conj h • K') = invVol S.K0 K' := by
     intro K' h1 h2 h hh

@@ -1094,7 +1094,6 @@ end PositivityTheory.Rg.Sw.Glob.GlobalGaussBlockRelations
 
 namespace PositivityTheory.Rg.Sw.Glob
 
-open GlobalTheory.StdUnn GlobalTheory.StdUnn.Model GlobalTheory.MixModel
 
 
 theorem unitD : UnitD := by

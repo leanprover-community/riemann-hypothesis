@@ -56,12 +56,6 @@ private theorem cbc_krull {B E : Type} [CommRing B] [IsLocalRing B] [IsNoetheria
   rw [← Submodule.mem_bot B, ← h, Submodule.mem_iInf]
   exact hx
 
-private theorem cbc_lin {B E : Type} [CommRing B] [AddCommGroup E] [Module B E] (I : Ideal B)
-    (f : E →ₗ[B] E) {x : E} (hx : x ∈ I • (⊤ : Submodule B E)) : f x ∈ I • (⊤ : Submodule B E) := by
-  have h1 : f x ∈ (I • (⊤ : Submodule B E)).map f := Submodule.mem_map_of_mem hx
-  rw [Submodule.map_smul''] at h1
-  exact Submodule.smul_mono le_rfl le_top h1
-
 private theorem cbc_span {B R E : Type} [CommRing B] [Ring R] [Algebra B R] [Ring E] [Algebra B E]
     (π : R →ₐ[B] E) (I : Ideal B) (S : Set R)
     (hS : ∀ s ∈ S, π s ∈ I • (⊤ : Submodule B E)) {y : R}
@@ -73,10 +67,10 @@ private theorem cbc_span {B R E : Type} [CommRing B] [Ring R] [Algebra B R] [Rin
   | neg x _ hx => rw [map_neg]; exact neg_mem hx
   | left_absorb a x _ hx =>
     rw [map_mul]
-    exact cbc_lin I (LinearMap.mulLeft B (π a)) hx
+    exact Submodule.smul_top_le_comap_smul_top I (LinearMap.mulLeft B (π a)) hx
   | right_absorb a x _ hx =>
     rw [map_mul]
-    exact cbc_lin I (LinearMap.mulRight B (π a)) hx
+    exact Submodule.smul_top_le_comap_smul_top I (LinearMap.mulRight B (π a)) hx
 
 private theorem cbc_sub {A G : Type} [CommRing A] [Group G] [TopologicalSpace G] (I : Ideal A)
     (S : Set (MonoidAlgebra A G)) {x : MonoidAlgebra A G} (hx : x ∈ S) : x ∈ closureIdeal I S := by

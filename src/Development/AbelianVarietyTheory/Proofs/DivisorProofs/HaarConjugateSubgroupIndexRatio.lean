@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FiniteMarkedPairClassesDegreeOneTermNeZero
 public import Mathlib.Algebra.Algebra.Defs
 public import Mathlib.Algebra.Ring.Opposite
 public import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsRootSelectionUnitaryRankOne
@@ -1366,32 +1367,7 @@ theorem exists_emb_isRoot_irr {F C E : Type} [Field F] [NumberField F] [Ring C] 
     [Algebra ℚ C] [IsScalarTower ℚ F C] [FiniteDimensional F C] [Field E] [Algebra ℚ E] [IsAlgClosed E]
     (y : C) (hirr : Irreducible (minpoly F y)) (μ : E) (h : ((minpoly ℚ y).map (algebraMap ℚ E)).IsRoot μ) :
     ∃ τ : F →+* E, ((minpoly F y).map τ).IsRoot μ := by
-  have hyi : IsIntegral F y := IsIntegral.of_finite F y
-  haveI : Fact (Irreducible (minpoly F y)) := ⟨hirr⟩
-  haveI : FiniteDimensional F (AdjoinRoot (minpoly F y)) :=
-    (AdjoinRoot.powerBasis (minpoly.ne_zero hyi)).finite
-  haveI : FiniteDimensional ℚ (AdjoinRoot (minpoly F y)) := Module.Finite.trans F _
-  haveI : Algebra.IsAlgebraic ℚ (AdjoinRoot (minpoly F y)) := Algebra.IsAlgebraic.of_finite ℚ _
-  set r := AdjoinRoot.root (minpoly F y)
-  have hdvd : minpoly ℚ y ∣ minpoly ℚ r := by
-    apply minpoly.dvd
-    have h1 : minpoly F y ∣ (minpoly ℚ r).map (algebraMap ℚ F) := by
-      rw [← AdjoinRoot.mk_eq_zero, ← AdjoinRoot.aeval_eq, aeval_map_algebraMap, minpoly.aeval]
-    obtain ⟨k, hk⟩ := h1
-    rw [← aeval_map_algebraMap F, hk, map_mul, minpoly.aeval, zero_mul]
-  have hne : minpoly ℚ r ≠ 0 := minpoly.ne_zero (Algebra.IsIntegral.isIntegral r)
-  have hμ' : μ ∈ (minpoly ℚ r).rootSet E := by
-    rw [mem_rootSet]
-    refine ⟨hne, ?_⟩
-    obtain ⟨k, hk⟩ := hdvd
-    rw [hk, map_mul, aeval_def, eval₂_eq_eval_map, h.eq_zero, zero_mul]
-  rw [← Algebra.IsAlgebraic.range_eval_eq_rootSet_minpoly] at hμ'
-  obtain ⟨ψ, hψ⟩ := hμ'
-  refine ⟨(ψ : AdjoinRoot (minpoly F y) →+* E).comp (algebraMap F _), ?_⟩
-  rw [← hψ, IsRoot.def, eval_map]
-  change eval₂ ((ψ : AdjoinRoot (minpoly F y) →+* E).comp (algebraMap F _))
-    ((ψ : AdjoinRoot (minpoly F y) →+* E) r) (minpoly F y) = 0
-  rw [← hom_eval₂, ← aeval_def, AdjoinRoot.aeval_eq, AdjoinRoot.mk_self, map_zero]
+  apply _root_.GlobalTheory.LKCx.FiniteClassIntegralRoots.exists_emb_isRoot' <;> assumption
 
 theorem root_norm_le_irr {p : ℕ} [Fact p.Prime] (G : HTGroup p) (β y : G.Cˣ) (c : ℚˣ)
     (hirr : Irreducible (minpoly G.F (y : G.C)))
@@ -1403,31 +1379,7 @@ theorem root_norm_le_irr {p : ℕ} [Fact p.Prime] (G : HTGroup p) (β y : G.Cˣ)
       ((G.rho w ((y⁻¹ : G.Cˣ) : G.C)).charpoly.map (algebraMap (G.Fw w) (PadicAlgCl p))).IsRoot μ → ‖μ‖ ≤ B)
     (μ : PadicAlgCl p) (hμ : ((LinearMap.mulLeft ℚ (y : G.C)).charpoly.map (algebraMap ℚ (PadicAlgCl p))).IsRoot μ) :
     ‖μ‖ ≤ B * B := by
-  have h0 := isRoot_minpoly_of_isRoot_charpoly (y : G.C) μ hμ
-  obtain ⟨τ, hτ⟩ := exists_emb_isRoot_irr (F := G.F) (y : G.C) hirr μ h0
-  have hcpos : 0 < ‖((c : ℚ) : ℚ_[p])‖ := norm_pos_iff.2 (by simp)
-  have hprod : ‖((c : ℚ) : ℚ_[p])‖ * ‖(((c⁻¹ : ℚˣ) : ℚ) : ℚ_[p])‖ = 1 := by
-    rw [← norm_mul, ← Rat.cast_mul, ← Units.val_mul, mul_inv_cancel, Units.val_one, Rat.cast_one, norm_one]
-  have hB0 : 0 ≤ B := hcpos.le.trans hc
-  have hB1 : 1 ≤ B := by
-    have h1 : 1 ≤ B * B := by
-      rw [← hprod]
-      exact mul_le_mul hc hc' (norm_nonneg _) hB0
-    nlinarith
-  rcases liesOver_or_conj G τ with hu | hu
-  · obtain ⟨i, ν, hνμ, hν⟩ := exists_root_rho G τ hu y μ hτ
-    have h1 := hy i ν hν
-    rw [hνμ] at h1
-    nlinarith
-  · have h2 := isRoot_minpoly_sh G y τ μ hτ
-    obtain ⟨i, ν, hνμ, hν⟩ := exists_root_rho G _ hu (sh G y) μ h2
-    have h3 := isRoot_inv G i β y c hyc ν hν
-    have h4 := hyi i _ h3
-    have hs : ‖((c : ℚ) : PadicAlgCl p)‖ = ‖((c : ℚ) : ℚ_[p])‖ := by
-      rw [← PadicAlgCl.norm_extends, map_ratCast]
-    rw [norm_mul, norm_inv, hs, hνμ, ← div_eq_mul_inv, div_le_iff₀ hcpos] at h4
-    calc ‖μ‖ ≤ B * ‖((c : ℚ) : ℚ_[p])‖ := h4
-      _ ≤ B * B := mul_le_mul_of_nonneg_left hc hB0
+  apply _root_.GlobalTheory.LKCx.FiniteClassIntegralRoots.root_norm_le' <;> assumption
 
 end GlobalTheory.LKIrr
 
