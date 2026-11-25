@@ -261,15 +261,20 @@ def status(repo, pulls, read):
         texts[pr["number"]], note = read(pr["number"])
         batches.append({"number": pr["number"], "title": pr["title"], "ref": pr["ref"], "sha": pr["sha"],
                         "latest": LATEST in pr["labels"], "record": note.get("head"),
-                        "members": sorted(int(key) for key in _sync.members(note))})
+                        "members": sorted(int(key) for key in _sync.members(note)),
+                        "below": {int(key) for key in note.get("below") or {}}})
     building = {batch["number"]: batch for batch in batches}
     for batch in batches:
-        inner = [number for number in batch["members"] if number in building and number != batch["number"]]
+        # The sync records the batches a batch is stacked on under `below`, and lists only its own
+        # members. A record from before stacking lists the batches below among its members instead.
+        inner = sorted((batch.pop("below") | set(batch["members"])) & set(building) - {batch["number"]})
+        listed = set(batch["members"]) - set(inner)
         covered = set(inner)
         for number in inner:
             covered |= set(building[number]["members"])
         batch["contains"] = inner
-        batch["own"] = [number for number in batch["members"] if number not in covered]
+        batch["own"] = sorted(listed - covered)
+        batch["members"] = sorted(listed | covered)
     held = {number for batch in batches for number in batch["members"]}
     queued = sorted((pr for pr in pulls.values() if QUEUED in pr["labels"] and pr["number"] not in held),
                     key=lambda pr: (PRIORITY not in pr["labels"], pr["number"]))

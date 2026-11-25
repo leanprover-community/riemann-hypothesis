@@ -154,6 +154,15 @@ class Grouping(unittest.TestCase):
         self.assertEqual(outer["contains"], [100])
         self.assertEqual(outer["own"], [11])
 
+    def test_a_stacked_batch_read_from_the_sync_that_records_what_it_is_on(self):
+        # Since stacked batches, the sync lists only a batch's own members and records the batches
+        # it is stacked on under `below`.
+        nodes, batches = scene()
+        note = {"head": sha(1), "members": {"11": sha(11)}, "below": {"100": sha(100)}}
+        batches[200] = (batches[200][0], [{"author": BOT, "body": f"<!-- batch-queue-by-hand {json.dumps(note)} -->"}])
+        outer = full(Fake(nodes, batches))["batches"][1]
+        self.assertEqual((outer["contains"], outer["own"], outer["members"]), ([100], [11], [10, 11, 12, 100]))
+
     def test_ready_is_queued_without_change_or_conflict(self):
         ready = [entry["number"] for entry in self.found["queue"] if entry["group"] == "ready"]
         self.assertEqual(ready, [21, 26, 20, 32, 12_000])
