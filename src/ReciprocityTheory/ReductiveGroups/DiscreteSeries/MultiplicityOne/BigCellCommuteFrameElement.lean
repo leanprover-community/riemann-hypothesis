@@ -34,10 +34,6 @@ lemma wI_midx {i : Fin (2 * r + k + 1)} (hi : mid k r i) : wI k r (midx hi) = i 
   simp only [wI, midx]
   omega
 
-lemma mid_wI (m : Fin (k + 1)) : mid k r (wI k r m) := by
-  have := m.isLt
-  constructor <;> simp only [wI] <;> omega
-
 lemma wI_inj {a b : Fin (k + 1)} (h : wI k r a = wI k r b) : a = b := by
   have := congrArg Fin.val h
   simp only [wI] at this
@@ -67,41 +63,12 @@ lemma emb_mid (μ : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ) (q j : Fin (2 * r + 
 
 def Em (k r : ℕ) : Matrix (Fin (2 * r + k + 1)) (Fin (k + 1)) ℂ := fun i m => if i = wI k r m then 1 else 0
 
-lemma Em_mul_mid {X : Type*} (A : Matrix (Fin (k + 1)) X ℂ) (i : Fin (2 * r + k + 1)) (x : X) (hi : mid k r i) :
-    (Em k r * A) i x = A (midx hi) x := by
-  apply Formalism.FourierDecayAlt.P.B2x3.Em_mul_mid <;> assumption
-
-lemma Em_mul_out {X : Type*} (A : Matrix (Fin (k + 1)) X ℂ) (i : Fin (2 * r + k + 1)) (x : X) (hi : ¬ mid k r i) :
-    (Em k r * A) i x = 0 := by
-  rw [Matrix.mul_apply]
-  apply Finset.sum_eq_zero
-  intro b _
-  rw [Em, if_neg, zero_mul]
-  intro h
-  exact hi (h ▸ mid_wI b)
-
-lemma mul_EmT_mid {X : Type*} [Fintype X] (A : Matrix X (Fin (k + 1)) ℂ) (j : Fin (2 * r + k + 1)) (x : X) (hj : mid k r j) :
-    (A * (Em k r)ᵀ) x j = A x (midx hj) := by
-  apply Formalism.FourierDecayAlt.P.B2x3.mul_EmT_mid <;> assumption
-
-lemma mul_EmT_out {X : Type*} [Fintype X] (A : Matrix X (Fin (k + 1)) ℂ) (j : Fin (2 * r + k + 1)) (x : X) (hj : ¬ mid k r j) :
-    (A * (Em k r)ᵀ) x j = 0 := by
-  rw [Matrix.mul_apply]
-  apply Finset.sum_eq_zero
-  intro b _
-  rw [Matrix.transpose_apply, Em, if_neg, mul_zero]
-  intro h
-  exact hj (h ▸ mid_wI b)
-
 lemma EmT_Em : (Em k r)ᵀ * Em k r = 1 := by
   apply Formalism.FourierDecayAlt.P.B2x3.EmT_Em
 
 lemma emb_eq (μ : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ) :
     embWb k r μ = Em k r * μ * (Em k r)ᵀ + (1 - Em k r * (Em k r)ᵀ) := by
   apply Formalism.FourierDecayAlt.P.B2x3.emb_eq
-
-lemma EmT_Q : (Em k r)ᵀ * (1 - Em k r * (Em k r)ᵀ) = 0 := by
-  rw [Matrix.mul_sub, Matrix.mul_one, ← Matrix.mul_assoc, EmT_Em, Matrix.one_mul, sub_self]
 
 lemma Q_Em : (1 - Em k r * (Em k r)ᵀ) * Em k r = 0 := by
   rw [Matrix.sub_mul, Matrix.one_mul, Matrix.mul_assoc, EmT_Em, Matrix.mul_one, sub_self]

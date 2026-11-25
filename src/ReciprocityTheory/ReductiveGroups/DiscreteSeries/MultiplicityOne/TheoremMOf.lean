@@ -212,14 +212,6 @@ namespace GroupMatrixMembership
 
 open Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.B2
 
-section hpk
-variable (k r : ℕ)
-
-theorem Hpk_sq : Hpk k r * Hpk k r = 1 :=
-  ReciprocityTheory.ChartRestriction.DS.Xi.StepA.Hpk_sq k r
-
-end hpk
-
 variable {k r : ℕ}
 
 theorem GV_mul_inv {g : Mat k r} (hg : g ∈ GV k r) : g * g⁻¹ = 1 :=
@@ -936,7 +928,6 @@ end ReciprocityTheory.ChartRestriction.DS.Mult1.TopH
 
 noncomputable section
 
-
 namespace ReciprocityTheory.ChartRestriction.DS.Mult1.TopH
 
 open Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.B2 ReciprocityTheory.ChartRestriction.DS.Mult1
@@ -1026,7 +1017,6 @@ theorem minors_DD (hIn : UnitaryGroupStructuralFacts) (hXi : XiExists) (hSm : St
 end ReciprocityTheory.ChartRestriction.DS.Mult1.TopH
 
 noncomputable section
-
 
 namespace ReciprocityTheory.ChartRestriction.DS.Mult1.TopH
 

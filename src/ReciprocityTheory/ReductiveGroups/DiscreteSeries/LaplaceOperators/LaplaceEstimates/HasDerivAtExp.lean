@@ -64,12 +64,6 @@ theorem sg_val (k r : ℕ) (i : Fin (2 * r + k + 1)) :
     (sg k r i).val = if r ≤ i.val ∧ i.val ≤ r + k then i.val else 2 * r + k - i.val := by
   unfold sg; split_ifs <;> rfl
 
-theorem sg_sg (k r : ℕ) (i : Fin (2 * r + k + 1)) : sg k r (sg k r i) = i := by
-  apply Fin.ext; rw [sg_val, sg_val]; split_ifs <;> omega
-
-theorem sg_mid (k r : ℕ) (i : Fin (2 * r + k + 1)) : (sg k r i).val = r + k ↔ i.val = r + k := by
-  rw [sg_val]; split_ifs <;> omega
-
 theorem hpk_apply (k r : ℕ) (i j : Fin (2 * r + k + 1)) :
     Hpk k r i j = if j = sg k r i then (if i.val = r + k then -1 else 1) else 0 := by
   have key : j = sg k r i ↔ j.val = (if r ≤ i.val ∧ i.val ≤ r + k then i.val else 2 * r + k - i.val) := by
