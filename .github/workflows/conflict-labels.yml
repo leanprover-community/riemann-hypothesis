@@ -7,7 +7,8 @@ name: conflict labels
 # the workflow by hand with `dry_run` ticked (the default) and no pull request number, read what
 # the run says it would do in its summary, and then set the variable to `on` (Settings → Secrets
 # and variables → Actions → Variables). Until then the batch queue neither starts this workflow
-# nor leaves to it the pull requests a batch's description lists under a heading about conflicts.
+# nor leaves to it the pull requests a batch's description lists under a heading about conflicts
+# with the batch.
 #
 # Keeps two labels on the open pull requests into main that are not drafts and not batches:
 # `main-conflict` on those that GitHub says conflict with main, and `batch-conflict` on those that

@@ -70,10 +70,11 @@ description doesn't mention, and pull requests reverted in the branch.
    which pull requests a batch contains. The workflow reads it only for what it leaves out:
    - A heading is a line of its own, not part of a list, that ends with a colon. Pull requests
      listed under a heading that contains "left out" or "not included" (in any letter case) are
-     left out. For example: `Left out for other reasons:`. Those under a heading about conflicts,
-     such as `Left out because they conflict with a PR earlier in the batch:`, are not told
-     anything from the description: the conflict-labels workflow finds conflicts from the
-     branches and tells them itself (see below).
+     left out. For example: `Left out for other reasons:`. Those under a heading about conflicts
+     with the batch, one that says "conflict with" and later "batch", such as `Left out because
+     they conflict with a PR earlier in the batch:`, are not told anything from the description:
+     the conflict-labels workflow finds conflicts from the branches and tells them itself (see
+     below). A heading about conflicts with `main` is told like any other.
    - Each one is a list entry starting with `- ` and then a link to the pull request, either
      `#123` or its full URL. The rest of the entry is the reason. Lines indented under an entry,
      and entries that don't start with a link, are not read.
@@ -158,8 +159,8 @@ name some of them as well.
 `scripts/batch-labels.py` is `False` until #1707, which lets the workflow below skip the pull
 requests a batch says it includes. The workflow also runs only when the repository variable
 `CONFLICT_LABELS` is `on`. Until both are on, it writes nothing, and the batch queue tells pull
-requests listed under a heading about conflicts what the description says, as it does for any other
-heading. To switch it on once #1707 has landed, start the workflow by hand (Actions → conflict
+requests listed under a heading about conflicts with the batch what the description says, as it
+does for any other heading. To switch it on once #1707 has landed, start the workflow by hand (Actions → conflict
 labels → Run workflow) with `dry_run` ticked, as it is by default, and no pull request number. Its
 summary lists every label and comment a real run would add. If that looks right, set the variable
 to `on` (Settings → Secrets and variables → Actions → Variables). A dry run can be started whether
@@ -190,7 +191,7 @@ until the author comments `ready`. `batch-conflict` keeps a pull request out of 
 The workflow finds these conflicts from the branches alone, whatever the batch's description says.
 A pull request that the description leaves out because it conflicts is told only by this
 workflow, and only if it still conflicts: the batch queue does not repeat entries under a
-heading about conflicts.
+heading about conflicts with the batch.
 
 ### If your pull request is labelled `batch-conflict`
 

@@ -495,6 +495,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
           # `on` once the conflict-labels workflow is switched on (see conflict-labels.yml): the
-          # sync then leaves entries under a heading about conflicts to it, and starts it.
+          # sync then leaves entries under a heading about conflicts with the batch to it, and
+          # starts it.
           CONFLICT_LABELS: ${{ vars.CONFLICT_LABELS }}
         run: python3 scripts/batch-queue-sync.py --repo "$REPO" --summary "$GITHUB_STEP_SUMMARY"

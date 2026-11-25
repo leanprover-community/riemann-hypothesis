@@ -250,9 +250,12 @@ LEFT_OUT = re.compile(r"<!-- batch-queue-left-out (\{.*?\}) -->")
 NO_LONGER_LEFT_OUT = "<!-- batch-queue-no-longer-left-out {number} -->"
 # A heading in a batch's description under which the pull requests listed are left out.
 LEFT_OUT_HEADING = re.compile(r"\b(?:left out|not included)\b", re.IGNORECASE)
-# A left-out heading for conflicts. `conflict-labels.py` finds those itself, from git, and tells
-# the pull request with `batch-conflict`, so they are not told again from the description.
-CONFLICT_HEADING = re.compile(r"\bconflicts?\s+with\b", re.IGNORECASE)
+# A left-out heading for conflicts with the batch, such as "Left out because they conflict with a
+# PR earlier in this batch:". `conflict-labels.py` finds those itself, from git, and tells the pull
+# request with `batch-conflict`, so they are not told again from the description. A heading about
+# conflicts with main, such as "Left out because they conflict with main in a way that is not
+# mechanical:", is not one: `main-conflict` says nothing, so those are told from the description.
+CONFLICT_HEADING = re.compile(r"\bconflicts?\s+with\s+(?!main\b)[^:]*\bbatch\b", re.IGNORECASE)
 # The workflow that labels conflicts, started when a batch is first labelled `building` or
 # `latest batch`: those labels are put on with the workflow's token, which starts no run of it by
 # itself.
@@ -1431,7 +1434,8 @@ def tell_left_out(gh, batch, pulls, held, main, log):
     and taken off the note. What a batch being built contains, this one or another, as `held`
     says, is never told it is left out: the lower batch of a stack usually lists as left out what
     the batch on top of it takes. Neither is a pull request into `main` that is not a draft and is
-    listed under a heading about conflicts, while the conflict labels are switched on (see
+    listed under a heading about conflicts with the batch (`CONFLICT_HEADING`), while the conflict
+    labels are switched on (see
     `conflict_labels_on` in `batch-labels.py`): the conflict-labels workflow tells those itself, if
     git finds the conflict. The note's `left` remembers, for each pull request, a digest of the entry
     it was last told about for this batch, and is brought up to date as each is told.
