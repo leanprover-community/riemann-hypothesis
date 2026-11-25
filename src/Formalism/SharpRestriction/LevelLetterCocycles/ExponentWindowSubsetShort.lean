@@ -201,53 +201,39 @@ theorem kapOK_arc (l g G S η h ell L : ℕ) (hG : G ≤ g) (hS : S ≤ g) (hη 
     (t₀ t₁ : ℕ) (ht : ∀ s < ell, s ≠ t₀ → s ≠ t₁ → kind s = Kind.thin) :
     Formalism.ExponentWindows.E.kapExp l (ell - 1) (Formalism.ExponentWindows.E.jumpWindows ell g kind b) ≤ kapPar l g h L ∧
     Formalism.ExponentWindows.E.kapExp l (ell - 1) (Formalism.ExponentWindows.E.wideWindows ell g G S η kind b) ≤ kapPar l g h L := by
+  have bound (W : ℕ → Finset ℤ) (C : Finset ℤ) (hc : C ∈ wins g h)
+      (cover : ∀ s, ∃ w ∈ wins g h, W s ⊆ C ∪ w)
+      (thin : ∀ s < ell, kind s = Kind.thin → W s ⊆ C) :
+      Formalism.ExponentWindows.E.kapExp l (ell - 1) ((Finset.range ell).biUnion W) ≤
+        kapPar l g h L := by
+    obtain ⟨w₀, hw₀, hs₀⟩ := cover t₀
+    obtain ⟨w₁, hw₁, hs₁⟩ := cover t₁
+    refine (kappa_exponent_le_valuation l _ L ?_ (by lia)).trans
+      (vPP1_le_kapPar l g h L hc hw₀ hw₁)
+    intro x hx
+    obtain ⟨s, hs, hx⟩ := Finset.mem_biUnion.mp hx
+    simp only [Finset.mem_union]
+    by_cases h₀ : s = t₀
+    · exact Or.inl (Finset.mem_union.mp (hs₀ (h₀ ▸ hx)))
+    by_cases h₁ : s = t₁
+    · exact (Finset.mem_union.mp (hs₁ (h₁ ▸ hx))).imp Or.inl id
+    have hslt := Finset.mem_range.mp hs
+    exact Or.inl (Or.inl (thin s hslt (ht s hslt h₀ h₁) hx))
   constructor
-  · obtain ⟨w₀, hw₀, hs₀⟩ := exponent_window_subset_short g h S hgh (kind t₀) (b t₀) (hb t₀)
-    obtain ⟨w₁, hw₁, hs₁⟩ := exponent_window_subset_short g h S hgh (kind t₁) (b t₁) (hb t₁)
-    refine le_trans (kappa_exponent_le_valuation l (ell - 1) L ?_ (by omega))
-      (vPP1_le_kapPar l g h L (central_window_mem_short g h hgh) hw₀ hw₁)
-    intro x hx
-    obtain ⟨s, hs, hxs⟩ := Finset.mem_biUnion.1 hx
-    have hs' : s < ell := Finset.mem_range.1 hs
-    by_cases h0 : s = t₀
-    · subst h0
-      rcases Finset.mem_union.1 (hs₀ hxs) with h | h
-      · exact Finset.mem_union_left _ (Finset.mem_union_left _ h)
-      · exact Finset.mem_union_left _ (Finset.mem_union_right _ h)
-    by_cases h1 : s = t₁
-    · subst h1
-      rcases Finset.mem_union.1 (hs₁ hxs) with h | h
-      · exact Finset.mem_union_left _ (Finset.mem_union_left _ h)
-      · exact Finset.mem_union_right _ h
-    · rw [ht s hs' h0 h1] at hxs
-      refine Finset.mem_union_left _ (Finset.mem_union_left _ ?_)
-      simp only [Formalism.ExponentWindows.E.win2, Finset.mem_Icc] at hxs
-      simp only [Finset.mem_Ico]
-      omega
-  · obtain ⟨w₀, hw₀, hs₀⟩ := exponent_window_subset_long g G S η h hG hS hη hgh (kind t₀) (b t₀) (hb t₀)
-    obtain ⟨w₁, hw₁, hs₁⟩ := exponent_window_subset_long g G S η h hG hS hη hgh (kind t₁) (b t₁) (hb t₁)
-    refine le_trans (kappa_exponent_le_valuation l (ell - 1) L ?_ (by omega))
-      (vPP1_le_kapPar l g h L (central_window_mem_long g G η h hG hη hgh) hw₀ hw₁)
-    intro x hx
-    obtain ⟨s, hs, hxs⟩ := Finset.mem_biUnion.1 hx
-    have hs' : s < ell := Finset.mem_range.1 hs
-    by_cases h0 : s = t₀
-    · subst h0
-      rcases Finset.mem_union.1 (hs₀ hxs) with h | h
-      · exact Finset.mem_union_left _ (Finset.mem_union_left _ h)
-      · exact Finset.mem_union_left _ (Finset.mem_union_right _ h)
-    by_cases h1 : s = t₁
-    · subst h1
-      rcases Finset.mem_union.1 (hs₁ hxs) with h | h
-      · exact Finset.mem_union_left _ (Finset.mem_union_left _ h)
-      · exact Finset.mem_union_right _ h
-    · rw [ht s hs' h0 h1] at hxs
-      refine Finset.mem_union_left _ (Finset.mem_union_left _ ?_)
-      have hm1 : G ≤ max G η := le_max_left _ _
-      simp only [Formalism.ExponentWindows.E.win4, Finset.mem_Icc] at hxs
-      simp only [Finset.mem_Ico]
-      push_cast
-      omega
+  · apply bound _ _ (central_window_mem_short g h hgh)
+      (fun s => exponent_window_subset_short g h S hgh _ _ (hb s))
+    intro s hs hk x hx
+    simp only [hk, Formalism.ExponentWindows.E.win2, Finset.mem_Icc] at hx
+    simp only [Finset.mem_Ico]
+    lia
+  · apply bound _ _ (central_window_mem_long g G η h hG hη hgh)
+      (fun s => exponent_window_subset_long g G S η h hG hS hη hgh _ _ (hb s))
+    intro s hs hk x hx
+    have := le_max_left G η
+    simp only [hk, Formalism.ExponentWindows.E.win4, Finset.mem_Icc] at hx
+    simp only [Finset.mem_Ico]
+    push_cast
+    lia
 
 theorem exists_two_of_card_le {s : Finset ℕ} (h : s.card ≤ 2) : ∃ a b : ℕ, s ⊆ {a, b} := by
   have h3 : s.card = 0 ∨ s.card = 1 ∨ s.card = 2 := by omega

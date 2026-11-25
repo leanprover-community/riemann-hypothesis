@@ -24,26 +24,10 @@ theorem exists_gl_of_left_inv (g : O) (hg : ¬ IsUnit g) (C R N : Matrix ι ι K
   set R' : Matrix ι ι O := Matrix.of fun i j => (⟨R i j, hR i j⟩ : O) with hR'
   set N' : Matrix ι ι O := Matrix.of fun i j => (⟨N i j, hN i j⟩ : O) with hN'
   have key : R' * C' = 1 + g • N' := by
-    apply Matrix.map_injective (f := fun x : O => (x : K)) Subtype.val_injective
-    ext i j
-    have h := congrFun (congrFun hRC i) j
-    simp only [Matrix.map_apply, Matrix.mul_apply, Matrix.add_apply, Matrix.smul_apply,
-      smul_eq_mul] at h ⊢
-    have hs : ((∑ k, R' i k * C' k j : O) : K) = ∑ k, R i k * C k j := by
-
-      rw [show ((∑ k, R' i k * C' k j : O) : K) = algebraMap O K (∑ k, R' i k * C' k j) from rfl,
-      map_sum]
-      simp only [map_mul]
-      rfl
-    rw [hs, h]
-    change _ = algebraMap O K ((1 : Matrix ι ι O) i j + g * N' i j)
-    rw [map_add (f := _), map_mul]
-    have hN'' : algebraMap O K (N' i j) = N i j := rfl
-    have hg' : algebraMap O K g = (g : K) := rfl
-    rw [hN'', hg']
-    by_cases hij : i = j
-    · subst hij; simp
-    · simp [hij]
+    apply Matrix.map_injective (f := algebraMap O K) Subtype.val_injective
+    change (algebraMap O K).mapMatrix (R' * C') = (algebraMap O K).mapMatrix (1 + g • N')
+    rw [map_mul, map_add, map_one]
+    exact hRC
   have hres : IsLocalRing.residue O g = 0 := by
     rw [IsLocalRing.residue_eq_zero_iff, IsLocalRing.mem_maximalIdeal, mem_nonunits_iff]
     exact hg

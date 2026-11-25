@@ -19,50 +19,26 @@ open Formalism.L2.DIV
 variable {D : D7}
 
 theorem two_r_sq_le_b (L : SizeData₂ D) (hSC : SizeCond L) : 2 * (D.R.r : ℝ) ^ 2 ≤ L.sc.b := by
-  have hq : (1 : ℝ) ≤ D.host.q := by exact_mod_cast D.host.hyp.1.one_lt.le
-  have hd : (1 : ℝ) ≤ D.host.d := by exact_mod_cast D.host.hyp.2.1.one_lt.le
-  have hn : (1 : ℝ) ≤ D.R.n := by
-    have : 1 ≤ D.R.n := D.R.ord_pos
-    exact_mod_cast this
-  have hc1 : (1 : ℝ) ≤ szCond L := by
+  have hcond : 1 ≤ szCond L := by
     unfold szCond
-    have h4 : (1 : ℝ) ≤ (D.host.QS : ℝ) := by exact_mod_cast D.host.QS_pos
-    have h5 : (1 : ℝ) ≤ (D.host.QS : ℝ) * D.host.q := by nlinarith
-    nlinarith
+    exact one_le_mul_of_one_le_of_one_le
+      (one_le_mul_of_one_le_of_one_le (by exact_mod_cast D.host.QS_pos)
+        (by exact_mod_cast D.host.hyp.1.one_lt.le)) (by exact_mod_cast D.host.hyp.2.1.one_lt.le)
   have hrt : D.R.r + 5 ≤ D.R.t := by
     have := D.R.rank_add_five_le
     unfold Ranks.r
-    omega
-  have ht5 : (5 : ℝ) ≤ D.R.t := by exact_mod_cast (by omega : 5 ≤ D.R.t)
-  have hrt' : (D.R.r : ℝ) ≤ D.R.t := by exact_mod_cast (by omega : D.R.r ≤ D.R.t)
-  have ht0 : (0 : ℝ) ≤ D.R.t := by linarith
-  have hr0 : (0 : ℝ) ≤ D.R.r := Nat.cast_nonneg _
-
-  have hpow : (D.R.t : ℝ) ^ 150 ≤ Real.sqrt L.sc.b := by
-    have h1 : (1 : ℝ) ≤ szCond L ^ 36 := one_le_pow₀ hc1
-    have h2 : (0 : ℝ) ≤ (D.R.t : ℝ) ^ 150 := pow_nonneg ht0 _
-    have := hSC
-    unfold SizeCond at this
-    nlinarith
-
-  have h2t : 2 * (D.R.t : ℝ) ^ 2 ≤ (D.R.t : ℝ) ^ 150 := by
-    have h148 : (2 : ℝ) ≤ (D.R.t : ℝ) ^ 148 := by
-      calc (2 : ℝ) ≤ 5 := by norm_num
-        _ ≤ (D.R.t : ℝ) := ht5
-        _ = (D.R.t : ℝ) ^ 1 := (pow_one _).symm
-        _ ≤ (D.R.t : ℝ) ^ 148 := pow_le_pow_right₀ (by linarith) (by norm_num)
-    have : (D.R.t : ℝ) ^ 150 = (D.R.t : ℝ) ^ 2 * (D.R.t : ℝ) ^ 148 := by ring
-    rw [this]
-    nlinarith [pow_nonneg ht0 2]
-
-  have hb1 : (1 : ℝ) ≤ L.sc.b := by
-    unfold Scale.b
-    exact Real.one_le_exp (by unfold Scale.L; exact Real.rpow_nonneg (by linarith [L.sc.one_lt_alt]) _)
-  have hsq : Real.sqrt L.sc.b ≤ L.sc.b := by
-    rw [Real.sqrt_le_left (by linarith)]
-    nlinarith
-  have hr2 : (D.R.r : ℝ) ^ 2 ≤ (D.R.t : ℝ) ^ 2 := pow_le_pow_left₀ hr0 hrt' 2
-  linarith
+    lia
+  have ht : (2 : ℝ) ≤ D.R.t := by exact_mod_cast (by lia : 2 ≤ D.R.t)
+  have hr : (D.R.r : ℝ) ≤ D.R.t := by exact_mod_cast (by lia : D.R.r ≤ D.R.t)
+  calc 2 * (D.R.r : ℝ) ^ 2 ≤ (D.R.t : ℝ) * (D.R.t : ℝ) ^ 2 := by gcongr
+    _ = (D.R.t : ℝ) ^ 3 := by ring
+    _ ≤ (D.R.t : ℝ) ^ 150 := pow_le_pow_right₀ (by linarith) (by decide)
+    _ ≤ szCond L ^ 36 * (D.R.t : ℝ) ^ 150 :=
+      le_mul_of_one_le_left (by positivity) (one_le_pow₀ hcond)
+    _ ≤ Real.sqrt L.sc.b := hSC
+    _ ≤ L.sc.b := Real.sqrt_le_self_iff.mpr (Or.inr (by
+      unfold Scale.b
+      exact Real.one_le_exp (by unfold Scale.L; positivity [L.sc.one_lt_alt.le])))
 
 theorem log_card_le_unitE {G : Type} [Fintype G] (L : SizeData₂ D) (hSG : SizeG L) (hSC : SizeCond L) (Del h0 : ℕ) (Nc : ℝ)
     (hNc : 0 ≤ Nc) (hc : Fintype.card G = D.what₂.restRowsFiniteGroupCard) :

@@ -44,53 +44,29 @@ theorem le_and_half_le_prod_one_sub_exp_neg_of_bounds {a b' k Q Y La N1 A0 m M :
     have : 120 * b' ≤ k * Y * La * b' := mul_le_mul_of_nonneg_right e2 hb.le
     linarith
   have h6 : a ≤ A0 * (2 * Q) := (div_le_iff₀ (by linarith)).mp hA0
-  have hA0pos : 0 < A0 := by
-    have : 0 < A0 * (2 * Q) := by linarith
-    by_contra hneg
-    have hle : A0 ≤ 0 := not_lt.mp hneg
-    have : A0 * (2 * Q) ≤ 0 := mul_nonpos_of_nonpos_of_nonneg hle (by linarith)
+  have hA0pos : 0 < A0 := pos_of_mul_pos_left (by linarith : 0 < A0 * (2 * Q)) (by positivity)
+  have hsmall : M * k ≤ A0 / 30 := by
+    apply le_of_mul_le_mul_right _ hQ0
     linarith
   constructor
   · rw [le_div_iff₀ hk0]
-    have e1 : 24 ≤ N1 * La := hLa.trans (le_mul_of_one_le_left (by linarith) hN1)
-    have e2 : A0 * 24 ≤ A0 * (N1 * La) := mul_le_mul_of_nonneg_left e1 hA0pos.le
-    have e3 : (M * k) * Q ≤ (A0 * N1 * La) * Q := by
-      have hAQ : A0 * 24 * Q ≤ (A0 * N1 * La) * Q := by
-        simpa [mul_assoc] using mul_le_mul_of_nonneg_right e2 hQ0.le
-      have h6' : a ≤ 2 * (A0 * Q) := by linarith [show A0 * (2 * Q) = 2 * (A0 * Q) by ring]
-      linarith
-    exact le_of_mul_le_mul_right e3 hQ0
+    calc M * k ≤ A0 := by linarith
+      _ ≤ A0 * N1 := le_mul_of_one_le_right hA0pos.le hN1
+      _ ≤ A0 * N1 * La := le_mul_of_one_le_right (by positivity) (by linarith)
   · have hx : (k - 1) * M / A0 ≤ 1 / 30 := by
       rw [div_le_iff₀ hA0pos]
-      have e1 : (k - 1) * M ≤ k * M := mul_le_mul_of_nonneg_right (by linarith) hM0
-      have e3 : (k * M) * Q ≤ (1 / 30 * A0) * Q := by
-        have h6' : a ≤ 2 * (A0 * Q) := by linarith [show A0 * (2 * Q) = 2 * (A0 * Q) by ring]
-        linarith
-      have := le_of_mul_le_mul_right e3 hQ0
       linarith
-    have he1 : Real.exp (-La / 8) ≤ 1 / 4 := by
-      have a1 : Real.exp (-La / 8) ≤ Real.exp (-3) := Real.exp_le_exp.mpr (by linarith)
-      have a2 : (4 : ℝ) ≤ Real.exp 3 := by have := Real.add_one_le_exp (3 : ℝ); linarith
-      have a3 : Real.exp (-3) = (Real.exp 3)⁻¹ := Real.exp_neg 3
-      have a4 : (Real.exp 3)⁻¹ ≤ (4 : ℝ)⁻¹ := inv_anti₀ (by norm_num) a2
-      rw [a3] at a1
-      linarith [a1, a4, (by norm_num : (4 : ℝ)⁻¹ = 1 / 4)]
-    have he2 : Real.exp (-La / 3) ≤ 1 / 9 := by
-      have a1 : Real.exp (-La / 3) ≤ Real.exp (-8) := Real.exp_le_exp.mpr (by linarith)
-      have a2 : (9 : ℝ) ≤ Real.exp 8 := by have := Real.add_one_le_exp (8 : ℝ); linarith
-      have a3 : Real.exp (-8) = (Real.exp 8)⁻¹ := Real.exp_neg 8
-      have a4 : (Real.exp 8)⁻¹ ≤ (9 : ℝ)⁻¹ := inv_anti₀ (by norm_num) a2
-      rw [a3] at a1
-      linarith [a1, a4, (by norm_num : (9 : ℝ)⁻¹ = 1 / 9)]
-    have u1 : 3 / 4 ≤ 1 - Real.exp (-La / 8) := by linarith
-    have u2 : 8 / 9 ≤ 1 - Real.exp (-La / 3) := by linarith
-    have u3 : 29 / 30 ≤ 1 - (k - 1) * M / A0 := by linarith
-    have v1 : (3 / 4 : ℝ) * (8 / 9) ≤ (1 - Real.exp (-La / 8)) * (1 - Real.exp (-La / 3)) :=
-      mul_le_mul u1 u2 (by norm_num) (by linarith)
-    have v2 : (3 / 4 : ℝ) * (8 / 9) * (29 / 30) ≤
-        (1 - Real.exp (-La / 8)) * (1 - Real.exp (-La / 3)) * (1 - (k - 1) * M / A0) :=
-      mul_le_mul v1 u3 (by norm_num) (by linarith)
-    linarith [v2, (by norm_num : (1 / 2 : ℝ) ≤ (3 / 4 : ℝ) * (8 / 9) * (29 / 30))]
+    have exp_bound (x c : ℝ) (hc : 0 < c) (h : c ≤ x + 1) :
+        Real.exp (-x) ≤ 1 / c := by
+      rw [Real.exp_neg, one_div]
+      exact inv_anti₀ hc (h.trans (Real.add_one_le_exp x))
+    have h₁ := exp_bound (La / 8) 4 (by norm_num) (by linarith)
+    have h₂ := exp_bound (La / 3) 9 (by norm_num) (by linarith)
+    rw [← neg_div] at h₁ h₂
+    calc (1 / 2 : ℝ) ≤ 3 / 4 * (8 / 9) * (29 / 30) := by norm_num
+      _ ≤ _ := by
+        gcongr
+        all_goals first | linarith | exact mul_nonneg (by linarith) (by linarith)
 
 section Plug
 

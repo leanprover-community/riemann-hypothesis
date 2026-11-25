@@ -56,25 +56,11 @@ private theorem exp_add_one_le_of_exp_lt (y : WithZero (Multiplicative ℤ)) (k 
 theorem imA_span_g_max (p : TypX X) :
     Ideal.span {((gOf p : ℕ) : p.1.adicCompletionIntegers X.B.I.F)} =
       IsLocalRing.maximalIdeal (p.1.adicCompletionIntegers X.B.I.F) := by
-  have hmem : ((gOf p : ℕ) : 𝓞 X.B.I.F) ∈ p.1.asIdeal := by
-    have hty := (mem_typSet X.B.I.F (D.host.g 0) (D.host.g 1) (D.host.g_prime 0).ne_zero
-      (D.host.g_prime 1).ne_zero p.1).1 p.2
-    unfold gOf
-    split_ifs with h
-    · exact h
-    · exact hty.resolve_left h
-  have hgp : Fact (gOf p).Prime := ⟨gOf_prime X p⟩
-  have hsplit : {w : IsDedekindDomain.HeightOneSpectrum (𝓞 X.B.I.E) |
-      ((gOf p : ℕ) : 𝓞 X.B.I.E) ∈ w.asIdeal}.ncard = Module.finrank ℚ X.B.I.E := by
-    unfold gOf
-    split_ifs
-    · exact MassDataIdxRes.split_transport X.ιE _ (D.nd.g_split 0)
-    · exact MassDataIdxRes.split_transport X.ιE _ (D.nd.g_split 1)
-  obtain ⟨he, hf⟩ := MassDataIdxRes.locDeg_one_below (F := X.B.I.F) (E := X.B.I.E) (gOf p) hsplit p.1 hmem
-  obtain ⟨_, hnot⟩ := MassDataIdxRes.arith_of_loc (gOf p) p.1 hmem he hf
-  have hvg : Valued.v (((gOf p : ℕ) : p.1.adicCompletionIntegers X.B.I.F) : p.1.adicCompletion X.B.I.F) =
+  obtain ⟨_, hmem, hnot⟩ := resArith_holds X p
+  let π : p.1.adicCompletionIntegers X.B.I.F := gOf p
+  have hvg : Valued.v (π : p.1.adicCompletion X.B.I.F) =
       p.1.intValuation ((gOf p : ℕ) : 𝓞 X.B.I.F) := by
-    have e : (((gOf p : ℕ) : p.1.adicCompletionIntegers X.B.I.F) : p.1.adicCompletion X.B.I.F) =
+    have e : (π : p.1.adicCompletion X.B.I.F) =
         (((gOf p : ℕ) : X.B.I.F) : p.1.adicCompletion X.B.I.F) := by
       first
         | exact (map_natCast (algebraMap X.B.I.F (p.1.adicCompletion X.B.I.F)) (gOf p)).symm
@@ -93,11 +79,10 @@ theorem imA_span_g_max (p : TypX X) :
     have := exp_add_one_le_of_exp_lt _ (-2) hgt2
     norm_num at this
     exact this
-  have hg0 : (((gOf p : ℕ) : p.1.adicCompletionIntegers X.B.I.F) : p.1.adicCompletion X.B.I.F) ≠ 0 := by
+  have hg0 : (π : p.1.adicCompletion X.B.I.F) ≠ 0 := by
     intro h
-    have h' := hvg
-    rw [h, map_zero] at h'
-    exact (lt_of_le_of_lt zero_le' hgt2).ne' h'.symm
+    rw [h, map_zero] at hvg
+    exact (zero_le'.trans_lt hgt2).ne' hvg.symm
   apply le_antisymm
   · rw [Ideal.span_le, Set.singleton_subset_iff, SetLike.mem_coe, ReciprocityTheory.Aut.mem_maxIdeal_iff, hvg]
     refine lt_of_le_of_lt hle1 ?_
@@ -111,17 +96,14 @@ theorem imA_span_g_max (p : TypX X) :
       norm_num at this
       exact this
     have hq : Valued.v ((x : p.1.adicCompletion X.B.I.F) /
-        (((gOf p : ℕ) : p.1.adicCompletionIntegers X.B.I.F) : p.1.adicCompletion X.B.I.F)) ≤ 1 := by
+        (π : p.1.adicCompletion X.B.I.F)) ≤ 1 := by
       rw [map_div₀, hvg, div_le_one₀ (lt_of_le_of_lt zero_le' hgt2)]
       exact hx1.trans hge1
     refine ⟨⟨(x : p.1.adicCompletion X.B.I.F) /
-        (((gOf p : ℕ) : p.1.adicCompletionIntegers X.B.I.F) : p.1.adicCompletion X.B.I.F),
+        (π : p.1.adicCompletion X.B.I.F),
       (IsDedekindDomain.HeightOneSpectrum.mem_adicCompletionIntegers _ _ _).2 hq⟩, ?_⟩
     apply Subtype.ext
-    show (x : p.1.adicCompletion X.B.I.F) =
-      (((gOf p : ℕ) : p.1.adicCompletionIntegers X.B.I.F) : p.1.adicCompletion X.B.I.F) *
-        ((x : p.1.adicCompletion X.B.I.F) /
-          (((gOf p : ℕ) : p.1.adicCompletionIntegers X.B.I.F) : p.1.adicCompletion X.B.I.F))
+    change (x : p.1.adicCompletion X.B.I.F) = π * (x / (π : p.1.adicCompletion X.B.I.F))
     field_simp
 
 theorem imA_gOth_unit (p : TypX X) : IsUnit ((gOth X p : ℕ) : p.1.adicCompletionIntegers X.B.I.F) := by

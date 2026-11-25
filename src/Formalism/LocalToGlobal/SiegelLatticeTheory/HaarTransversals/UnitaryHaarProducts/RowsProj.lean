@@ -79,20 +79,15 @@ theorem prod_op_eq (R : G1 × G2 → (Hp →L[ℂ] Hp)) (hmul : ∀ g h, R (g * 
     (hP2 : ∀ x y : Hp, ⟪x, P2 y⟫_ℂ = ∫ k, φ2 k * ⟪x, R (1, k) y⟫_ℂ ∂μ2) (x y : Hp) :
     ∫ p, (φ1 p.1 * φ2 p.2) * ⟪x, R p y⟫_ℂ ∂(μ1.prod μ2) = ⟪x, P1 (P2 y)⟫_ℂ ∧
       ∫ p, (φ1 p.1 * φ2 p.2) * ⟪x, R p y⟫_ℂ ∂(μ1.prod μ2) = ⟪x, P2 (P1 y)⟫_ℂ := by
-  have hR1 : ∀ z, R 1 z = z := by
-    intro z
-    have h1 : R 1 (R 1 z) = R 1 z := by
-      rw [← ContinuousLinearMap.comp_apply, ← hmul, one_mul]
-    have h2 : ‖R 1 (R 1 z - z)‖ = ‖R 1 z - z‖ := hU 1 _
-    rw [map_sub, h1, sub_self, norm_zero] at h2
-    exact sub_eq_zero.1 (norm_eq_zero.1 h2.symm)
-  have hinn : ∀ g a b, ⟪R g a, R g b⟫_ℂ = ⟪a, b⟫_ℂ := by
-    intro g a b
-    let L : Hp →ₗᵢ[ℂ] Hp := ⟨(R g).toLinearMap, hU g⟩
-    exact L.inner_map_map a b
-  have hadj : ∀ g a b, ⟪a, R g b⟫_ℂ = ⟪R g⁻¹ a, b⟫_ℂ := by
-    intro g a b
-    rw [← hinn g⁻¹ a (R g b), ← ContinuousLinearMap.comp_apply, ← hmul, inv_mul_cancel, hR1]
+  let U (g : G1 × G2) : Hp →ₗᵢ[ℂ] Hp := ⟨(R g).toLinearMap, hU g⟩
+  have hR1 (z : Hp) : R 1 z = z := by
+    apply (U 1).injective
+    change R 1 (R 1 z) = R 1 z
+    rw [← ContinuousLinearMap.comp_apply, ← hmul, one_mul]
+  have hadj (g : G1 × G2) (a b : Hp) : ⟪a, R g b⟫_ℂ = ⟪R g⁻¹ a, b⟫_ℂ := by
+    rw [← (U g⁻¹).inner_map_map a (R g b)]
+    change ⟪R g⁻¹ a, R g⁻¹ (R g b)⟫_ℂ = _
+    rw [← ContinuousLinearMap.comp_apply, ← hmul, inv_mul_cancel, hR1]
   have hbd : ∀ p, ‖⟪x, R p y⟫_ℂ‖ ≤ ‖x‖ * ‖y‖ := fun p =>
     (norm_inner_le_norm _ _).trans (le_of_eq (by rw [hU]))
   have hint : Integrable (fun p : G1 × G2 => (φ1 p.1 * φ2 p.2) * ⟪x, R p y⟫_ℂ) (μ1.prod μ2) := by
@@ -103,23 +98,12 @@ theorem prod_op_eq (R : G1 × G2 → (Hp →L[ℂ] Hp)) (hmul : ∀ g h, R (g * 
       mul_nonneg (norm_nonneg (φ1 p.1)) (norm_nonneg (φ2 p.2))]
   constructor
   · rw [integral_prod _ hint, hP1]
-    refine integral_congr_ae (Filter.Eventually.of_forall fun g => ?_)
-    show ∫ k, φ1 g * φ2 k * ⟪x, R (g, k) y⟫_ℂ ∂μ2 = φ1 g * ⟪x, R (g, 1) (P2 y)⟫_ℂ
-    rw [hadj, hP2, ← integral_const_mul]
-    refine integral_congr_ae (Filter.Eventually.of_forall fun k => ?_)
-    show φ1 g * φ2 k * ⟪x, R (g, k) y⟫_ℂ = φ1 g * (φ2 k * ⟪R (g, 1)⁻¹ x, R (1, k) y⟫_ℂ)
-    rw [← hadj, ← ContinuousLinearMap.comp_apply, ← hmul]
-    simp only [Prod.mk_mul_mk, mul_one, one_mul]
-    ring
+    simp_rw [hadj _ x (P2 y), hP2, ← integral_const_mul, ← hadj,
+      ← ContinuousLinearMap.comp_apply, ← hmul, Prod.mk_mul_mk, one_mul, mul_one, mul_assoc]
   · rw [integral_prod_symm _ hint, hP2]
-    refine integral_congr_ae (Filter.Eventually.of_forall fun k => ?_)
-    show ∫ g, φ1 g * φ2 k * ⟪x, R (g, k) y⟫_ℂ ∂μ1 = φ2 k * ⟪x, R (1, k) (P1 y)⟫_ℂ
-    rw [hadj, hP1, ← integral_const_mul]
-    refine integral_congr_ae (Filter.Eventually.of_forall fun g => ?_)
-    show φ1 g * φ2 k * ⟪x, R (g, k) y⟫_ℂ = φ2 k * (φ1 g * ⟪R (1, k)⁻¹ x, R (g, 1) y⟫_ℂ)
-    rw [← hadj, ← ContinuousLinearMap.comp_apply, ← hmul]
-    simp only [Prod.mk_mul_mk, mul_one, one_mul]
-    ring
+    simp_rw [hadj _ x (P1 y), hP1, ← integral_const_mul, ← hadj,
+      ← ContinuousLinearMap.comp_apply, ← hmul, Prod.mk_mul_mk, one_mul, mul_one]
+    simp only [mul_assoc, mul_left_comm]
 
 end Two
 

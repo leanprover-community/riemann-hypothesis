@@ -91,74 +91,9 @@ theorem gen_triv (σ : E →ₐ[F] E) (J : Matrix (Fin k) (Fin k) E)
     have levelafC_int : ∀ m : ℤ, levelafC E (m : 𝓞 F) = inclE (F := F) 𝔸 (m : E) := by
       intro m
       rw [← adelstab_incl_C, map_intCast]
-    have trace_mul : ∀ (c : 𝔸) (z : 𝒜), adelstabT (F := F) (E := E) (((1 : E) ⊗ₜ[F] c) * z) =
-        c * adelstabT (F := F) (E := E) z := by
-      intro c z
-      induction z using TensorProduct.inductionOn with
-      | tmul e a =>
-        simp [adelstabT, Algebra.TensorProduct.tmul_mul_tmul]
-      | add x y hx hy => rw [mul_add, map_add (f := _), map_add (f := _), hx, hy, mul_add]
-
-    have trace_integral : ∀ z : 𝒜, (∀ v, prV (E := E) v z ∈ SV E v) →
-        adelstabT (F := F) (E := E) z ∈ intAd F := by
-      intro z hz v
-      have h1 := adelstabT_mem (afsplit_IE_int v _ (hz v))
-      rw [afsplit_decomp, afsplitEps, Algebra.TensorProduct.one_def, afsplitIE_tmul, trace_mul] at h1
-      have h2 := h1 v
-      rw [afsplit_mul_apply, afsplitI_self, one_mul] at h2
-      exact h2
-
-    have trace_expand : ∀ (β : Module.Basis (Fin (Module.finrank F E)) F E) (z : 𝒜),
-        z = ∑ i, ((Algebra.traceForm F E).dualBasis (traceForm_nondegenerate F E) β i) ⊗ₜ[F]
-          adelstabT (F := F) (E := E) ((β i ⊗ₜ[F] (1 : 𝔸)) * z) := by
-      intro β z
-      induction z using TensorProduct.inductionOn with
-      | tmul e a =>
-        have he := ((Algebra.traceForm F E).dualBasis (traceForm_nondegenerate F E) β).sum_repr e
-        simp only [LinearMap.BilinForm.dualBasis_repr_apply, Algebra.traceForm_apply] at he
-        conv_lhs => rw [← he]
-        rw [TensorProduct.sum_tmul]
-        refine Finset.sum_congr rfl fun i _ => ?_
-        rw [Algebra.TensorProduct.tmul_mul_tmul, one_mul, TensorProduct.smul_tmul, mul_comm e (β i)]
-        simp [adelstabT]
-      | add x y hx hy =>
-        conv_lhs => rw [hx, hy]
-        rw [← Finset.sum_add_distrib]
-        refine Finset.sum_congr rfl fun i _ => ?_
-        rw [mul_add, map_add (f := _), TensorProduct.tmul_add]
-
-    have uniform_denominator : ∃ d : ℤ, d ≠ 0 ∧ ∀ z : 𝒜, (∀ v, prV (E := E) v z ∈ SV E v) →
-        inclE (F := F) 𝔸 (d : E) * z ∈ 𝒮 := by
-      classical
-      let β₀ := Module.finBasis F E
-      obtain ⟨m₁, hm₁, hi₁⟩ := adelstabL_den (fun i => β₀ i)
-      have hu : ∀ _ : Fin (Module.finrank F E), IsUnit ((m₁ : ℤ) : F) := fun _ => (Int.cast_ne_zero.2 hm₁).isUnit
-      let β := β₀.isUnitSMul hu
-      have hβ : ∀ i, IsIntegral ℤ (β i) := by
-        intro i
-        have : β i = (m₁ : E) * β₀ i := by
-          rw [Module.Basis.isUnitSMul_apply, Algebra.smul_def, map_intCast]
-        rw [this]; exact hi₁ i
-      obtain ⟨m₂, hm₂, hi₂⟩ := adelstabL_den (fun i => (Algebra.traceForm F E).dualBasis (traceForm_nondegenerate F E) β i)
-      refine ⟨m₂, hm₂, fun z hz => ?_⟩
-      rw [trace_expand β z, Finset.mul_sum]
-      refine sum_mem fun i _ => ?_
-      have ht : adelstabT (F := F) (E := E) ((β i ⊗ₜ[F] (1 : 𝔸)) * z) ∈ intAd F := by
-        refine trace_integral _ fun v => ?_
-        rw [map_mul]
-        refine mul_mem ?_ (hz v)
-        exact Subring.subset_closure (Or.inl ⟨⟨β i, ⟨⟨β i, hβ i⟩, rfl⟩⟩, rfl⟩)
-      have h1 : inclE (F := F) 𝔸 (m₂ : E) * ((Algebra.traceForm F E).dualBasis (traceForm_nondegenerate F E) β i ⊗ₜ[F]
-          adelstabT (F := F) (E := E) ((β i ⊗ₜ[F] (1 : 𝔸)) * z)) =
-          algebraMap (𝓞 E) E ⟨_, hi₂ i⟩ ⊗ₜ[F] adelstabT (F := F) (E := E) ((β i ⊗ₜ[F] (1 : 𝔸)) * z) := by
-        show ((m₂ : E) ⊗ₜ[F] (1 : 𝔸)) * _ = _
-        rw [Algebra.TensorProduct.tmul_mul_tmul, one_mul]
-        rfl
-      rw [h1]
-      exact levelaf_tmul_mem _ ht
     obtain ⟨m₁, hm₁, h₁⟩ := den_lower Λ hspan
     obtain ⟨m₂, hm₂, h₂⟩ := den_upper Λ hfin
-    obtain ⟨d, hd, h₃⟩ := uniform_denominator
+    obtain ⟨d, hd, h₃⟩ := exists_den (F := F) (E := E)
     refine adelstab_core σ J hτ hH hdet hdef (latLoc F Λ) U ?_ (m₁ : 𝓞 F) ((d * m₂ : ℤ) : 𝓞 F) (Int.cast_ne_zero.2 hm₁)
       (Int.cast_ne_zero.2 (mul_ne_zero hd hm₂)) ?_ ?_ x
     · intro A hx y

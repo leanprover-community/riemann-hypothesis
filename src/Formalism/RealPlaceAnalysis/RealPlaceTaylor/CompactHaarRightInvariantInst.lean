@@ -143,14 +143,6 @@ theorem compact_haar_holds : KHaar := by
 
 theorem compact_integration_by_parts : KByParts := by
   intro n ε E _ _ _ F D Z hZ hF hD hder
-  haveI : SecondCountableTopology (Matrix (Fin n) (Fin n) ℂ) :=
-    inferInstanceAs (SecondCountableTopology (Fin n → Fin n → ℂ))
-  haveI : SecondCountableTopology (Matrix (Fin n) (Fin n) ℂ)ᵐᵒᵖ :=
-    TopologicalSpace.secondCountableTopology_induced _ _ MulOpposite.unop
-  haveI : SecondCountableTopology (Matrix (Fin n) (Fin n) ℂ)ˣ :=
-    TopologicalSpace.secondCountableTopology_induced _ _ (Units.embedProduct _)
-  haveI : SecondCountableTopology (UJ ε) :=
-    TopologicalSpace.Subtype.secondCountableTopology (UJ ε : Set (Matrix (Fin n) (Fin n) ℂ)ˣ)
   haveI : SecondCountableTopology (KG ε) :=
     TopologicalSpace.Subtype.secondCountableTopology (KG ε : Set (UJ ε))
   obtain ⟨h0, hadd, -, hKf⟩ := group_exponential_facts n ε Z hZ.1
@@ -175,17 +167,13 @@ theorem compact_integration_by_parts : KByParts := by
   obtain ⟨C, hC⟩ : ∃ C, ∀ y : KG ε, ‖D y‖ ≤ C := by
     obtain ⟨C, hC⟩ := (isCompact_univ.image hD.norm).bddAbove
     exact ⟨C, fun y => hC ⟨y, Set.mem_univ _, rfl⟩⟩
-  obtain ⟨CF, hCF⟩ : ∃ C, ∀ y : KG ε, ‖F y‖ ≤ C := by
-    obtain ⟨C, hC⟩ := (isCompact_univ.image hF.norm).bddAbove
-    exact ⟨C, fun y => hC ⟨y, Set.mem_univ _, rfl⟩⟩
   have hcomp : ∀ t : ℝ, Continuous (fun k : KG ε => k * expK ε Z t) := fun t =>
     continuous_id.mul continuous_const
   have key := hasDerivAt_integral_of_dominated_loc_of_deriv_le (μ := muK ε) (x₀ := (0 : ℝ))
     (F := fun t k => F (k * expK ε Z t)) (F' := fun t k => D (k * expK ε Z t))
     (bound := fun _ => C) (s := Set.univ) Filter.univ_mem
     (Filter.Eventually.of_forall fun t => (hF.comp (hcomp t)).aestronglyMeasurable)
-    (Integrable.mono' (integrable_const CF) (hF.comp (hcomp 0)).aestronglyMeasurable
-      (Filter.Eventually.of_forall fun k => hCF _))
+    ((hF.comp (hcomp 0)).integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace _))
     (hD.comp (hcomp 0)).aestronglyMeasurable
     (Filter.Eventually.of_forall fun k t _ => hC _)
     (integrable_const C)

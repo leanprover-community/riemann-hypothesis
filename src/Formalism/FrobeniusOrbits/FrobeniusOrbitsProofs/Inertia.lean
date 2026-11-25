@@ -268,37 +268,14 @@ theorem sup (hqd : HypOdd q d) (h : IsLayer (e + 2) q d ζ a b) (p : ℕ)
       [Q.LiesOver (span {(p : ℤ)})], ∀ y : 𝓞 L, τ • y - y ∈ Q) :
     ∀ x : 𝓞 (hostE ζ a b), σ • x - x ∈ P := by
   haveI := (layer_galois hqd h).1
-  have hinj : Function.Injective (algebraMap (𝓞 (hostE ζ a b)) (𝓞 L)) := by
-    intro x y hxy
-    have h1 := congrArg (fun z : 𝓞 L => (z : L)) hxy
-    apply NumberField.RingOfIntegers.ext
-    apply Subtype.ext
-    exact h1
-  obtain ⟨Q, -, hQp, hQc⟩ := Ideal.exists_ideal_over_prime_of_isIntegral P (⊥ : Ideal (𝓞 L))
-    (by rw [(show Ideal.under _ ⊥ = ⊥ from Ideal.comap_bot_of_injective _ hinj)]; exact bot_le)
-  haveI := hQp
-  haveI : Q.LiesOver P := ⟨hQc.symm⟩
-  haveI : Q.LiesOver (span {(p : ℤ)}) := Ideal.LiesOver.trans Q P _
-  set τ1 : Gal(L/ℚ) := σ.liftNormal L with hτ1
-  have hστ1 : ∀ x : hostE ζ a b, ((σ x : hostE ζ a b) : L) = τ1 x :=
-    fun x => (σ.liftNormal_commutes L x).symm
+  obtain ⟨⟨Q, hQp, hQP⟩⟩ := (inferInstance : Nonempty (P.primesOver (𝓞 L)))
+  have : Q.LiesOver (span {(p : ℤ)}) := Ideal.LiesOver.trans Q P _
+  obtain ⟨τ1, hστ1⟩ := exists_lift hqd h σ
   have h1 := galE_lift h hστ1
   rw [hg] at h1
   have hs1 : g.2.1 = (galMap h.1 a b τ1).2.1 := congrArg (fun z : GG e => z.1.1) h1
   have hs2 : g.2.2 = (galMap h.1 a b τ1).2.2 := congrArg (fun z : GG e => z.1.2) h1
-  have hh : hcl e g.1 = hcl e (galMap h.1 a b τ1).1 := congrArg Prod.snd h1
-  have hpm : g.1 = (galMap h.1 a b τ1).1 ∨ g.1 = -(galMap h.1 a b τ1).1 := by
-    unfold hcl at hh
-    rw [QuotientGroup.eq, Subgroup.mem_zpowers_iff] at hh
-    obtain ⟨k, hk⟩ := hh
-    rcases Int.even_or_odd k with hk2 | hk2
-    · left
-      rw [hk2.neg_one_zpow] at hk
-      exact inv_mul_eq_one.1 hk.symm
-    · right
-      rw [hk2.neg_one_zpow] at hk
-      have h3 : (galMap h.1 a b τ1).1 = g.1 * -1 := by rw [hk, mul_inv_cancel_left]
-      rw [h3, mul_neg_one, neg_neg]
+  have hpm := (hcl_eq_iff e _ _).mp (congrArg Prod.snd h1)
   obtain ⟨τ, hτg, hστ⟩ : ∃ τ : Gal(L/ℚ), galMap h.1 a b τ = g ∧
       ∀ x : hostE ζ a b, ((σ x : hostE ζ a b) : L) = τ x := by
     rcases hpm with hpm | hpm

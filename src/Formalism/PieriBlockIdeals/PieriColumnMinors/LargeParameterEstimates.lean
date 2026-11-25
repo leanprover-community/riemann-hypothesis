@@ -145,56 +145,35 @@ theorem maximal_index_size_bound : KmaxSize := by
   have hm : (0 : ℝ) < P.m := by linarith [F.m2]
   have hn : (0 : ℝ) < P.n := by linarith [F.n1]
   have ht : (0 : ℝ) < P.t := by linarith [F.t1]
-  have hk0 : (0 : ℝ) ≤ P.k := Nat.cast_nonneg _
   have hLp : 0 < P.L := by linarith [F.L_ge]
-  have hS0 : 0 ≤ P.S := by linarith [F.S1]
-  have hA0 : 0 ≤ A := by linarith [F.A_ge]
-  have hx0 : 0 ≤ P.x := by linarith [F.x_ge]
-  have hN0 : 0 ≤ P.N := by unfold Par.N; positivity
-  have hNt0 : 0 < P.N + (P.t : ℝ) := by linarith
-  have hD1pos : 0 < (P.n : ℝ) * (P.t : ℝ) ^ 2 * (P.N + (P.t : ℝ)) * P.L ^ 2 :=
-    mul_pos (mul_pos (mul_pos hn (pow_pos ht 2)) hNt0) (pow_pos hLp 2)
-  have hD2 : 0 ≤ (P.k : ℝ) * (P.n : ℝ) ^ 2 * (P.S + (P.t : ℝ) + P.L) :=
-    mul_nonneg (mul_nonneg hk0 (sq_nonneg _)) (by linarith)
-  have hDpos : 0 < (P.n : ℝ) * (P.t : ℝ) ^ 2 * (P.N + (P.t : ℝ)) * P.L ^ 2
-      + (P.k : ℝ) * (P.n : ℝ) ^ 2 * (P.S + (P.t : ℝ) + P.L) := by linarith
-  have hbD : 2 * P.b / P.lstar = 2 * ((P.n : ℝ) * (P.t : ℝ) ^ 2 * (P.N + (P.t : ℝ)) * P.L ^ 2
-      + (P.k : ℝ) * (P.n : ℝ) ^ 2 * (P.S + (P.t : ℝ) + P.L)) / (P.m : ℝ) := by
+  have hS : 0 ≤ P.S := by linarith [F.S1]
+  have hA : 0 ≤ A := by linarith [F.A_ge]
+  have hx : 1 ≤ P.x := by linarith [F.x_ge]
+  have hN : 0 ≤ P.N := by unfold Par.N; positivity
+  let D := (P.n : ℝ) * (P.t : ℝ) ^ 2 * (P.N + P.t) * P.L ^ 2 +
+    (P.k : ℝ) * (P.n : ℝ) ^ 2 * (P.S + P.t + P.L)
+  have hD : 0 < D := by dsimp [D]; positivity
+  have hbD : 2 * P.b / P.lstar = 2 * D / P.m := by
     unfold Par.lstar
+    dsimp [D] at hD ⊢
     field_simp
-  have hnA := F.nA
-  have hkA := F.kA
-  have htA := F.tA
-  have htt : (P.t : ℝ) ^ 2 ≤ A ^ 2 := by linarith [mul_le_mul htA htA ht.le hA0]
-  have hnn : (P.n : ℝ) ^ 2 ≤ A ^ 2 := by linarith [mul_le_mul hnA hnA hn.le hA0]
-  have hnt2 : (P.n : ℝ) * (P.t : ℝ) ^ 2 ≤ A ^ 3 := by
-    linarith [mul_le_mul hnA htt (sq_nonneg _) hA0]
-  have hkn2 : (P.k : ℝ) * (P.n : ℝ) ^ 2 ≤ A ^ 3 := by
-    linarith [mul_le_mul hkA hnn (sq_nonneg _) hA0]
-  have hNt : P.N + (P.t : ℝ) ≤ 2 * A * P.x := by
-    linarith [hR.N_le, mul_le_mul_of_nonneg_left (show (1 : ℝ) ≤ P.x by linarith [F.x_ge]) hA0]
-  have hD1 : (P.n : ℝ) * (P.t : ℝ) ^ 2 * (P.N + (P.t : ℝ)) * P.L ^ 2
-      ≤ A ^ 3 * (2 * A * P.x) * P.L ^ 2 :=
-    mul_le_mul_of_nonneg_right (mul_le_mul hnt2 hNt hNt0.le (pow_nonneg hA0 3)) (sq_nonneg _)
-  have hD2' : (P.k : ℝ) * (P.n : ℝ) ^ 2 * (P.S + (P.t : ℝ) + P.L)
-      ≤ A ^ 3 * (P.S + (P.t : ℝ) + P.L) :=
-    mul_le_mul_of_nonneg_right hkn2 (by linarith)
-  have hDm : 2 * ((P.n : ℝ) * (P.t : ℝ) ^ 2 * (P.N + (P.t : ℝ)) * P.L ^ 2
-      + (P.k : ℝ) * (P.n : ℝ) ^ 2 * (P.S + (P.t : ℝ) + P.L)) / (P.m : ℝ)
-      ≤ (P.n : ℝ) * (P.t : ℝ) ^ 2 * (P.N + (P.t : ℝ)) * P.L ^ 2
-      + (P.k : ℝ) * (P.n : ℝ) ^ 2 * (P.S + (P.t : ℝ) + P.L) := by
-    rw [div_le_iff₀ hm]
-    linarith [mul_le_mul_of_nonneg_left F.m2 hDpos.le]
-  have q1 : 0 ≤ A ^ 4 * P.x * P.L ^ 2 := mul_nonneg (mul_nonneg (pow_nonneg hA0 4) hx0) (sq_nonneg _)
-  have q2 : 0 ≤ A ^ 3 * (P.S + (P.t : ℝ) + P.L) := mul_nonneg (pow_nonneg hA0 3) (by linarith)
-  have hc : 2 * P.b / P.lstar
-      ≤ 4 * A ^ 4 * P.x * P.L ^ 2 + 2 * A ^ 3 * (P.S + (P.t : ℝ) + P.L) := by
-    rw [hbD]; linarith [hD1, hD2', hDm, q1, q2]
-  have hfin := polynomial_inequality_large_x A P.x P.L P.S P.t F.A_ge F.x_ge F.L_ge hS0 htA
-  have h0 : 0 ≤ 2 * P.b / P.lstar := by
-    rw [hbD]; exact div_nonneg (by linarith) hm.le
+  have hNt : P.N + P.t ≤ 2 * A * P.x := by
+    linarith [hR.N_le, F.tA, le_mul_of_one_le_right hA hx]
+  have hbound : D ≤ A ^ 3 * (2 * A * P.x) * P.L ^ 2 + A ^ 3 * (P.S + P.t + P.L) := by
+    dsimp [D]
+    rw [show A ^ 3 = A * A ^ 2 by ring]
+    gcongr
+    all_goals first | exact F.nA | exact F.tA | exact F.kA
+  have hc : 2 * P.b / P.lstar ≤ 4 * A ^ 4 * P.x * P.L ^ 2 + 2 * A ^ 3 * (P.S + P.t + P.L) := by
+    rw [hbD]
+    have hdiv : 2 * D / P.m ≤ D := (div_le_iff₀ hm).mpr (by
+      simpa [mul_comm] using mul_le_mul_of_nonneg_right F.m2 hD.le)
+    linarith
+  have hfin := polynomial_inequality_large_x A P.x P.L P.S P.t F.A_ge F.x_ge F.L_ge hS F.tA
   have ha : (P.kmax : ℝ) ≤ 2 * P.b / P.lstar := by
-    unfold Par.kmax; exact Nat.floor_le h0
+    apply Nat.floor_le
+    rw [hbD]
+    positivity
   exact ⟨ha, hbD, hc, by linarith, by linarith⟩
 
 theorem n_mul_width_eq_b_div {P : Par} {X' A : ℝ} (hH : P.Hyp) (hR : Rows P X' A) (hB : Big P.L P.x X' A) :
