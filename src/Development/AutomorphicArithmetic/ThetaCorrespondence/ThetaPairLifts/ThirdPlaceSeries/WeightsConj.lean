@@ -45,8 +45,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
-
-
 section
 noncomputable section
 open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N Polynomial
@@ -119,8 +117,6 @@ theorem IsGalUAlt.aw {π : CuspSub E a} {χ : HChar (maximalRealSubfield E)} {ι
     (hσ : π.IsLocComp w σ) :
     Aw (wdOf h hl ι r) ((rc (IrrGL.of σ.ρ σ.smooth σ.irred)).lpTw ((1 - (a : ℝ)) / 2)) :=
   _root_.GlobalTheory.GalOfCusp.rec_algNorm_alt hrc σ ▸ H.away w hl A h rc hrc σ hσ
-theorem mergeP'_alt (_ : GlobalTheory.Published.AutomorphicFormsFiniteGL) (_ : _root_.UpperTheory.Zero.LLC.RecTExists) (_ : _root_.UpperTheory.GalS.CuspUAlt) (h : _root_.UpperTheory.GalS.CarUAlt)
-    (_ : GlobalTheory.Published.RegularAlgebraicPurity) : _root_.UpperTheory.GalS.CarUAlt := h
 end UpperTheory.GalS
 end
 end

@@ -726,19 +726,6 @@ theorem bplus_sum_right (W : G.Weil) (M : Vol G) (φ : Fn G (.top 0)) {ι : Type
     obtain ⟨h3, h4⟩ := bplus_add_right W M (h i (Finset.mem_insert_self _ _)) h1
     exact ⟨h3, by rw [h4, h2]⟩
 
-theorem liftT_oppTens (W : G.Weil) (M : Vol G) (t : T) (τi : PolRow G × PolDown G →₀ ℂ) (τf : SchRow G × SchDown G t →₀ ℂ)
-    (F : Fn G (.grid 0 D.R.m)) : liftT W M (oppPath t D.R.m) (oppTens W t τi τf) F =
-      ∑ x ∈ τi.support ×ˢ τf.support, (τi x.1 * τf x.2) • liftP W M (oppPath t D.R.m) (oppPure W t x.1 x.2) F := by
-  let l : TotT G (oppPath t D.R.m) →+ Fn G (.grid D.R.m 0) :=
-    AddMonoidHom.mk' (fun τ => liftT W M (oppPath t D.R.m) τ F) fun τ τ' => liftT_add W M _ τ τ' F
-  show l (oppTens W t τi τf) = _
-
-  rw [oppTens, Finsupp.sum, map_sum, Finset.sum_product]
-  refine Finset.sum_congr rfl fun P _ => ?_
-
-  rw [Finsupp.sum, map_sum]
-  exact Finset.sum_congr rfl fun d _ => liftT_single W M _ _ _ F
-
 theorem all_append {S : Arrow T → Type} {P : ∀ a, S a → Prop} {X Y : Node} {p : Path T X Y} {d : p.Fam S} (hd : Path.Fam.All P d) :
     ∀ {Z : Node} (q : Path T Y Z) (e : q.Fam S), Path.Fam.All P e → Path.Fam.All P (Path.Fam.append (q := q) d e)
   | _, .nil, _, _ => hd
@@ -757,7 +744,6 @@ def rowLift (P : PolRow G) (d : SchRow G) (F : Fn G (.grid 0 D.R.m)) : Fn G (.gr
 
 def downPure (P : PolDown G) (d : SchDown G t) : PureT G (downPath t D.R.m D.R.m) :=
   downFam t D.R.m D.R.m fun j => W.fock (.mu t D.R.m j) (d j) (P j)
-
 
 variable {M t} in
 def oppPer (hM : M.Is t) (P : PolRow G × PolDown G) (d : SchRow G × SchDown G t) (φ : Fn G (.top 0)) (F : Fn G (.grid 0 D.R.m)) :

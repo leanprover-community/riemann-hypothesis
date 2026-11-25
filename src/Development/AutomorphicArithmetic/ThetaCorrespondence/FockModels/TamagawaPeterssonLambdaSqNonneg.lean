@@ -266,14 +266,11 @@ theorem ne_bot_of_form {K K' R W : Type} [Field K] [NumberField K] [Field K'] [A
   have h4 : Submodule.span K' (Set.range b) ≤ ⊥ := Submodule.span_le.2 (by rintro _ ⟨k, rfl⟩; exact h3 k)
   exact hy (h4 (by rw [hsp]; exact Submodule.mem_top))
 
-
-
 theorem latW_ne_bot (h : GramAt p i) : latW (p.T.U ((i : ℕ) + 1)) (Gk p i) ≠ ⊥ := by
   obtain ⟨-, -, hg, -, -, hs⟩ := h
   obtain ⟨y, -, hy⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hg
   obtain ⟨n, b, hb, -, -, -, hsp⟩ := p.fw.ks i
   exact ne_bot_of_form (cuspW_wtZ _ _) hs (p.fw.e i) hb hsp hy
-
 
 set_option maxHeartbeats 1000000 in
 /-- Parametric `slopeMax_sq` power bound for any supremum constant family `K : ℕ → ℝ → ℝ`
@@ -549,16 +546,6 @@ theorem UpperTheory.Lit.Tam.tamagawaPeterssonLambdaSq_nonneg :
       (UpperTheory.Lit.Tam.holSub_supE_sq_le_supConst2_mul_petE_sq hT D j H Dw l Xo c U dict hL σ hσ
         (AllWt.modelWt (U σ) G) w hw hsp (GlobalTheory.AllWt.Model.chi_modelWt (U σ) (hL.chiTriv σ hσ) G hG))
       Z y hy
-
-/-- Sharper quadratic-in-`(f, r)`, linear-in-`Lb` bound for `MainStatements.Tam.Plug.supConst2`. -/
-theorem UpperTheory.Lit.Tam.supConst2_log_le_quadratic (D : D7) (M : ℕ) (Lb w : ℝ)
-    (hM : 1 ≤ M) (hLb : 1 ≤ Lb) (hMl : Real.log M ≤ 30 * Lb) (hsz : fieldSz D.host.E ≤ 3 * Lb)
-    (hfrl : Real.log (D.R.f * D.R.r) ≤ Lb) (hw : 1 ≤ w) (hwl : Real.log w ≤ 25 * Lb) :
-    1 ≤ MainStatements.Tam.Plug.supConst2 D.host.E D.R.r D.host.d M w ∧
-      Real.log (MainStatements.Tam.Plug.supConst2 D.host.E D.R.r D.host.d M w) ≤
-        3125 * ((D.R.f : ℝ) * D.R.r) ^ 2 * Lb :=
-  GlobalTheory.ConstSzRows.supConst_quadratic_rows D M Lb w _ hM hLb hMl hsz hfrl hw hwl
-    fun L => MainStatements.Tam.Plug.supremum_constant_log_bound_alt D.host.E D.R.r D.host.d M w L
 
 theorem UpperTheory.Lit.Tam.supConst2Bounds :
     ∀ (D : D7) (M : ℕ) (Lb w : ℝ), 1 ≤ M → 1 ≤ Lb → Real.log M ≤ 30 * Lb →

@@ -112,7 +112,6 @@ variable {D : D7} {T : Type}
 variable {Γ : Type} [Group Γ] [Fintype Γ] {Pl0 : Type} {A : FamIn D.what₂.LL Γ Pl0 T D.R.m}
   {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] {R : RealDat D A Ks}
 
-
 theorem exists_isTermVol {L : LevCh D T} {sc : Consts} {G : GridData L sc} {W : G.Weil} {U : Set T} (S : GridChoice W U) {μ₀ : T}
     (hL : L.Is μ₀) (t : T) (Φ : G.Datum) (β : CosFam G t) : ∃ M, IsTermVol t S Φ β M := by
   obtain ⟨M₀, -⟩ := exists_vol G hL t
@@ -481,9 +480,6 @@ theorem resRep_id_apply {N n : ℕ} (hN : N = n + 1) (lam : DomWeight N) (g : GL
     GlobalTheory.Branching.resRep (MonoidHom.id (GL (Fin n) ℂ)) hN.symm lam g x =
       GlobalTheory.Branching.sqRep ℂ N lam (Formalism.MainNotions.PrimeDegreeVariant.embGL ℂ n N hN.symm g) x := rfl
 
-theorem smallRep_id_apply {n : ℕ} (sg : DomWeight n) (g : GL (Fin n) ℂ) (x : nablaSq ℂ n sg) :
-    GlobalTheory.Branching.smallRep (MonoidHom.id (GL (Fin n) ℂ)) sg g x = GlobalTheory.Branching.sqRep ℂ n sg g x := rfl
-
 theorem embGL_update {ι : Type} [DecidableEq ι] {N n : ℕ} (hN : N = n + 1) (τ₀ : ι) (g : GL (Fin n) ℂ) :
     (fun τ => Formalism.MainNotions.PrimeDegreeVariant.embGL ℂ n N hN.symm (Function.update (1 : ι → GL (Fin n) ℂ) τ₀ g τ)) =
       Function.update (1 : ι → GL (Fin N) ℂ) τ₀ (Formalism.MainNotions.PrimeDegreeVariant.embGL ℂ n N hN.symm g) := by
@@ -562,7 +558,6 @@ open MvPolynomial Formalism.BasicNotions Formalism.L2.DIV
 namespace GlobalTheory.Branching.Family
 
 variable {ι : Type} [Fintype ι]
-
 
 omit [Fintype ι] in
 theorem exists_poly_blockAct_coef {k : ℕ} (f : MvPolynomial (ι × Fin k × Fin k) ℂ)
@@ -920,7 +915,6 @@ theorem exists_orthogonal_summand_embedding_hom {A B : HSp D} {c : ℕ} {ε : D.
   refine ⟨s, hs, fun h => ?_, hrat⟩
   exact ((hrel h _).1 ((embRel_iff d h _).2 rfl))
 
-
 variable (G) in
 theorem isV_last : (G.node (.grid D.R.m D.R.m)).IsV (rankV D D.R.m D.R.m) 0 := by
   have h := G.isV (X := .grid D.R.m D.R.m) ⟨le_rfl, le_rfl⟩ (by
@@ -930,10 +924,8 @@ theorem isV_last : (G.node (.grid D.R.m D.R.m)).IsV (rankV D D.R.m D.R.m) 0 := b
     omega)
   simpa [Node.neg, Node.rank] using h
 
-
 variable (G) in
 theorem isDefinite_last : IsDefiniteSpace (G.V (.grid D.R.m D.R.m)) := GlobalTheory.RowClaim.TermVolDef.isDefiniteSpace_of_isV (isV_last G)
-
 
 variable (G) in
 theorem one_le_rank_last : 1 ≤ (G.V (.grid D.R.m D.R.m)).rank := by

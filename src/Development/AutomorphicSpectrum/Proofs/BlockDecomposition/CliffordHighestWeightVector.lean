@@ -107,10 +107,6 @@ def rgt (V : Type) [AddCommGroup V] [Module ℂ V] : Matrix ι ι ℂ →ₐ[ℂ
     funext i
     simp [Module.algebraMap_end_apply, Matrix.algebraMap_matrix_apply, ite_smul]
 
-theorem lft_apply (T : Module.End ℂ V) (x : ι → V) (i : ι) : lft ι T x i = T (x i) := rfl
-
-theorem rgt_apply (M : Matrix ι ι ℂ) (x : ι → V) (i : ι) : rgt V M x i = ∑ j, M i j • x j := rfl
-
 theorem lft_mul_rgt (T : Module.End ℂ V) (M : Matrix ι ι ℂ) : lft ι T * rgt V M = rgt V M * lft ι T := by
   apply LinearMap.ext
   intro x
@@ -147,7 +143,6 @@ open PositivityTheory.RgBcC PositivityTheory.RgBcC.Real PositivityTheory.RgBcC.R
 section Cl
 
 variable {n : ℕ} {A : Type} [Ring A] [Algebra ℂ A] (g : Fin n → Fin n → A)
-
 
 omit [Ring A] [Algebra ℂ A] in
 theorem half_eq {M : Type} [AddCommGroup M] [Module ℂ M] {x y : M} (h : x + x = y + y) : x = y := by
@@ -201,7 +196,6 @@ theorem u_bracket (a b d e : Fin n) :
     split_ifs <;> simp [uF, Finset.smul_sum]
   rw [t1, t2, t3, t4]
   abel
-
 
 variable (g) in
 def sF (a b : Fin n) : A := (1 / 2 : ℂ) • uF g a b - if a = b then ((n : ℂ) / 2) • (1 : A) else 0

@@ -142,9 +142,4 @@ theorem supConst_size_rows_of_log_bound (D : D7) (M : ℕ) (Lb w C : ℝ)
     _ ≤ 4000 * (((D.R.f : ℝ) * D.R.r) ^ 3 * Lb ^ 3) := by linarith
     _ = 4000 * ((D.R.f : ℝ) * D.R.r * Lb) ^ 3 := by ring
 
-theorem supConst_size_rows : ∀ (D : D7) (M : ℕ) (Lb w : ℝ), 1 ≤ M → 1 ≤ Lb → Real.log M ≤ 30 * Lb → fieldSz D.host.E ≤ 3 * Lb → Real.log (D.R.f * D.R.r) ≤ Lb → 1 ≤ w → Real.log w ≤ 25 * Lb → 1 ≤ GlobalTheory.LevGeo.supConst D.host.E D.R.r D.host.d M w ∧ Real.log (GlobalTheory.LevGeo.supConst D.host.E D.R.r D.host.d M w) ≤ 4000 * ((D.R.f : ℝ) * D.R.r * Lb) ^ 3 :=
-  fun D M Lb w hM hLb hMl hsz hfrl hw hwl =>
-    supConst_size_rows_of_log_bound D M Lb w _ hM hLb hMl hsz hfrl hw hwl
-      fun L => _root_.GlobalTheory.SupConstSize.supConst_size D.host.E D.R.r D.host.d M w L
-
 end GlobalTheory.ConstSzRows

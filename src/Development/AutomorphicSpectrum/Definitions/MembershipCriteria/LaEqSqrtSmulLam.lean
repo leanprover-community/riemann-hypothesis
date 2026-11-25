@@ -51,8 +51,6 @@ def abelian₂ (al : X → ℂ) (Γ' Γ : AddSubgroup X) (φ : M) : M :=
 
 def ip : M →ₗ[ℂ] M →ₗ⋆[ℂ] ℂ := S.B.flip
 
-@[simp] theorem ip_apply (u v : M) : ip S u v = S.B v u := rfl
-
 namespace Sys
 
 theorem c_mul_c_swap (x y : X) : S.c x y * S.c y x = 1 := by

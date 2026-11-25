@@ -77,8 +77,6 @@ def leftMulLetter (x : Fin n → Fin n → U) (p q : Fin n) : Module.End ℂ U :
 def negRightMulLetterShift (x : Fin n → Fin n → U) (τ : Fin n → ℂ) (p q : Fin n) : Module.End ℂ U :=
   -LinearMap.mulRight ℂ (x p q) + if p = q then τ p • (1 : Module.End ℂ U) else 0
 
-theorem leftMulLetter_apply (x : Fin n → Fin n → U) (p q : Fin n) (u : U) : leftMulLetter x p q u = x p q * u := rfl
-
 theorem negRightMulLetterShift_apply (x : Fin n → Fin n → U) (τ : Fin n → ℂ) (p q : Fin n) (u : U) :
     negRightMulLetterShift x τ p q u = -(u * x p q) + if p = q then τ p • u else 0 := by
   unfold negRightMulLetterShift

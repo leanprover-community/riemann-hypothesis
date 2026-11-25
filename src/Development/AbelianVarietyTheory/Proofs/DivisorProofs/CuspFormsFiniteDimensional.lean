@@ -58,15 +58,6 @@ noncomputable section
 
 namespace GlobalTheory.LevGeo.RankBd
 
-theorem supConst_nonneg (E : Type) [Field E] [NumberField E] (r d M : ℕ) (w : ℝ) : 0 ≤ supConst E r d M w := by
-  unfold supConst locConst massLev GlobalTheory.UCls.massBd multBd
-  have h1 : 0 ≤ rdE E := Real.rpow_nonneg (abs_nonneg _) _
-  have h2 : Even (2 * fdeg E * r ^ 2) := by rw [mul_assoc]; exact even_two_mul _
-  refine mul_nonneg (mul_nonneg (div_nonneg (by positivity) (pow_nonneg (mul_nonneg Real.pi_pos.le (sq_nonneg _)) _))
-    (h2.pow_nonneg _)) ?_
-  have := Real.rpow_nonneg h1 ((fdeg E : ℝ) * ((r : ℝ) ^ 2 - 1) / 2)
-  positivity
-
 variable {D : D7} {r : ℕ} {Comp : Type} [Fintype Comp] {X : Comp → Data D.host.E r}
 
 theorem pnorm_fac_pos (Y : Data D.host.E r) (la : Wt Y.Ψ r) {x : Frame Y.Ψ r} (hx : x ∈ Y.dom) :
@@ -176,7 +167,6 @@ theorem finrank_le_of_sup (V : HSp D) (dict : GA D V → Σ k, Frame (X k).Ψ r)
 
 open Module
 
-
 set_option maxHeartbeats 1000000 in
 set_option synthInstance.maxHeartbeats 400000 in
 /-- Parametric finiteness and dimension bound for `cuspW` given any sup-to-Petersson constant `K`. -/
@@ -263,11 +253,5 @@ theorem finrank_cuspW_le_of_sup (D : D7) (j : ℕ) (H : ReciprocityTheory.ChartR
     Module.rank_lt_aleph0_iff.1 (hrank.trans_lt Cardinal.natCast_lt_aleph0)
   have h2 : finrank c.F Cw ≤ finrank ℂ S := finrank_le_of_rank_le hrank
   exact ⟨hfin, le_trans (Nat.cast_le.2 h2) hSle⟩
-
-theorem finrank_cuspW_le : GlobalTheory.UCls.MassBound → GlobalTheory.UCls.TorusBound → ∀ (D : D7) (j : ℕ) (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host D.host.E) (Dw : Datum H) (l : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Level H) (Xo : Moduli Dw l) (c : Coeff l) (U : ∀ σ : c.F →+* ℂ, Unf Xo c σ D.R.r) (dict : ∀ σ : c.F →+* ℂ, GA D (D.sp.W j) → Σ k, Frame ((U σ).X k).Ψ D.R.r), Laws D j Xo c U dict → ∀ (a : (D.host.E →+* ℂ) × ℕ → ℕ) (n : ℕ), Dom a n → FiniteDimensional c.F (cuspW Xo c U (wtZ a n)) ∧ (Module.finrank c.F (cuspW Xo c U (wtZ a n)) : ℝ) ≤ supConst D.host.E D.R.r D.host.d l.M (((absA Dw a : ℕ) : ℝ) + ((fdeg D.host.E * D.R.r * n : ℕ) : ℝ) + 1) :=
-  fun hM hT D j H Dw l Xo c U dict hL a n hDom =>
-    finrank_cuspW_le_of_sup D j H Dw l Xo c U dict hL a n hDom _ (supConst_nonneg _ _ _ _ _)
-      fun σ hσ la w hw hsp hχ hw_eq => hw_eq ▸
-        _root_.GlobalTheory.supPet_principal hM hT D j H Dw l Xo c U dict hL σ hσ la w hw hsp hχ
 
 end GlobalTheory.LevGeo.RankBd

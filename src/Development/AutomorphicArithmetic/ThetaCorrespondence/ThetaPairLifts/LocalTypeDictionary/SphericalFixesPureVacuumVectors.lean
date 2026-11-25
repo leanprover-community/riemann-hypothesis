@@ -116,16 +116,12 @@ noncomputable section
 
 namespace GlobalTheory.LatExtract
 
-
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
 def mulL {d : ℕ} (c : E) : (Fin d → GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.AE (F := F) (E := E)) →+ (Fin d → GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.AE (F := F) (E := E)) where
   toFun z := fun j => inclR (F := F) (AF F) c * z j
   map_zero' := by ext j; simp
   map_add' z z' := by ext j; simp [mul_add]
-
-lemma mulL_apply {d : ℕ} (c : E) (z : Fin d → GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.AE (F := F) (E := E)) (j : Fin d) :
-    mulL (F := F) c z j = inclR (F := F) (AF F) c * z j := rfl
 
 lemma mulL_int_mem {d : ℕ} (W : Spc F E d) (v : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Pl (F := F)) (o : 𝓞 E)
     {z : Fin d → GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.AE (F := F) (E := E)}
@@ -144,7 +140,6 @@ lemma mulL_int_mem {d : ℕ} (W : Spc F E d) (v : GlobalTheory.IndefiniteRowSide
 end GlobalTheory.LatExtract
 
 namespace GlobalTheory.LatExtract
-
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
@@ -181,7 +176,6 @@ lemma rowL_vecMulVec {n d : ℕ} (i₀ : Fin n) (c : E) (x : Fin n → E) (q : F
 end GlobalTheory.LatExtract
 
 namespace GlobalTheory.LatExtract
-
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
@@ -322,7 +316,6 @@ end GlobalTheory.SphGlob
 
 namespace GlobalTheory.SphGlob
 
-
 open scoped Classical in
 theorem ev_mem_adm {F : Type} [Field F] [NumberField F] {κ : Type} [Fintype κ] (x : κ → AF F) :
     (LinearMap.proj x : ((κ → AF F) → ℂ) →ₗ[ℂ] ℂ) ∈ (GlobalTheory.WeilM.adeleClass F).adm κ := by
@@ -335,7 +328,6 @@ theorem ev_mem_adm {F : Type} [Field F] [NumberField F] {κ : Type} [Fintype κ]
   rw [mul_comm]
 
 end GlobalTheory.SphGlob
-
 
 open GlobalTheory.SphGlob in
 theorem GlobalTheory.SphGlob.fixes_pure : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (n d : ℕ)
@@ -535,7 +527,6 @@ section Alg
 
 variable {R : Type} [CommRing R] {E : Type} [CommRing E] [Algebra R E] (c : E →ₐ[R] E)
   {α β : Type} [Fintype α] [DecidableEq α] [Fintype β] [DecidableEq β]
-
 
 omit [DecidableEq α] [DecidableEq β] in
 theorem symp_dbl (ξ : E) (JA : Matrix α α E) (JB : Matrix β β E) (x y : Matrix α (β ⊕ β) E) :

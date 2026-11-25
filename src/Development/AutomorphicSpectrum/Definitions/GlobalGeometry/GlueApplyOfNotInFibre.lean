@@ -77,7 +77,6 @@ structure NormAt (ξ' : Spec (CommRingCat.of Ω') ⟶ X') {ξ : Spec (CommRingCa
 
 def genFib (ξ : Spec (CommRingCat.of Ω) ⟶ X) : Set (Cpt ξ) := {p | ∀ n : ℕ, 0 < n → unitAt ξ p (n : Ω)}
 
-
 def Lat.predualIn {ξ : Spec (CommRingCat.of Ω) ⟶ X} (L : Lat ξ (Module.Dual Ω E)) (V : Submodule Ω E) : Lat ξ E :=
   fun p =>
   { carrier := {v | v ∈ V ∧ ∀ w ∈ L p, w v ∈ regAt ξ p}
@@ -94,12 +93,6 @@ section API
 
 variable {ξ : Spec (CommRingCat.of Ω) ⟶ X} {ξ' : Spec (CommRingCat.of Ω') ⟶ X'}
   {ξ'' : Spec (CommRingCat.of Ω'') ⟶ X''}
-
-theorem IsCtrOf.refl (p : Cpt ξ) : IsCtrOf (RingHom.id Ω) p p := ⟨fun _ h => h, fun _ _ h => h⟩
-
-theorem IsCtrOf.unitAt_iff {i : Ω →+* Ω'} {p : Cpt ξ} {p' : Cpt ξ'} (h : IsCtrOf i p p') {a : Ω}
-    (ha : a ∈ regAt ξ p) : unitAt ξ' p' (i a) ↔ unitAt ξ p a :=
-  ⟨h.2 a ha, fun hu => ⟨(map_ne_zero i).2 hu.1, h.1 _ hu.2.1, by rw [← map_inv₀]; exact h.1 _ hu.2.2⟩⟩
 
 theorem Lat.pullLoc_eq_span_of_ctr {L : Lat ξ E} {i : Ω →+* Ω'} (j : E →+ F) {p₀ : Cpt ξ} {p' : Cpt ξ'}
     (h : IsCtrOf i p₀ p') (hu : ∀ p : Cpt ξ, IsCtrOf i p p' → ∀ e ∈ L p, e ∈ L p₀) :

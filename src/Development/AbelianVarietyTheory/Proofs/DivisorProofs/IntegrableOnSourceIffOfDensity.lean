@@ -271,13 +271,6 @@ theorem IsCInf.chernInt_eq_mInt_of_isAlgAtlas (h : φ.IsCInf) (hA : IsAlgAtlas A
   rw [← integral_sub (back hm 1 j) (back hm (-1) j)]
   simp only [← mul_sub, hsub, hd, P]
 
-theorem chernInt_eq_mInt (R : AnRead p σ D) (h : φ.IsCInf) {g : CxPts p σ → ℝ}
-    (hg : Measurable g) :
-    (φ.ChernIntegrableOn D univ g ↔ MIntegrable R.finAtlas (fun _ => φ.locPot) g) ∧
-      (φ.ChernIntegrableOn D univ g →
-        φ.chernInt D univ g = mInt R.finAtlas (fun _ => φ.locPot) g) :=
-  h.chernInt_eq_mInt_of_isAlgAtlas R.isAlgAtlas_finAtlas hg
-
 end Weight
 
 end GlobalTheory

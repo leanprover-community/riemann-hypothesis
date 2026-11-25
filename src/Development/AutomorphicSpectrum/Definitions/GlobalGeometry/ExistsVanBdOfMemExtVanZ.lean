@@ -61,11 +61,9 @@ theorem ruleTop_eq_iff {s : H0 (flagStr X) (X.LL e) ⊤} {f : Rul Xo c} :
   ⟨fun h => h ▸ ⟨ruleTop_mem_secZ s, (secOf_ruleTop s).symm⟩,
     fun ⟨_, h⟩ => congrArg Subtype.val ((secOf X e).symm_apply_eq.2 h)⟩
 
-
 variable (X e) in
 theorem ruleTop_injective : Function.Injective (ruleTop X e) :=
   Subtype.val_injective.comp ((secOf X e).symm.injective.comp (restr_injective_of_dense le_top (dense_flagOpen X)))
-
 
 open Classical in
 theorem evR_ruleTop {S : Type} [CommRing S] [Algebra c.F S] [_root_.IsReduced S] (s : H0 (flagStr X) (X.LL e) ⊤)
@@ -83,19 +81,14 @@ theorem mem_extZ {f : Rul Xo c} : f ∈ extZ X e ↔
 theorem ruleTop_mem_extVanZ {s : H0 (flagStr X) (X.LL e) ⊤} : ruleTop X e s ∈ extVanZ X e ↔ s ∈ vanOut X e :=
   ⟨fun ⟨_, hs, h⟩ => ruleTop_injective X e h ▸ hs, fun h => ⟨s, h, rfl⟩⟩
 
-
 variable (X e) in
 theorem extVanZ_le_extZ : extVanZ X e ≤ extZ X e := LinearMap.map_le_range
-
 
 variable (X e) in
 theorem extZ_le_secZ : extZ X e ≤ secZ Xo c e := fun _ h => (mem_extZ.1 h).1
 
-
 variable (X e) in
 theorem extVanZ_le_secZ : extVanZ X e ≤ secZ Xo c e := (extVanZ_le_extZ X e).trans (extZ_le_secZ X e)
-
-
 
 theorem germ_pull_inc₀_mem {s : H0 (flagStr X) (X.LL e) ⊤} (hs : s ∈ vanOut X e) (Z : Comp Xo c) :
     ∀ y ∈ bd₀ X Z, ∀ i hi, germ (B := LL₀ X Z e) i y (memTop y) hi (H0.pull (inc₀ X Z) le_top s) ∈
@@ -121,45 +114,8 @@ theorem exists_vanBd_of_mem_extVanZ {la : AllWt.Weight Dw} {f : secZ Xo c (exOf 
   obtain ⟨s, hs, rfl⟩ := hf
   exact ⟨_, pull_inc₀_mem_vanBd hs Z, (sec₀_ruleTop s Z).symm⟩
 
-
-variable (X) in
-theorem exists_one : ∃ s : H0 (flagStr X) (X.LL 0) ⊤, ∀ k y hk, germ k y (memTop y) hk s = 1 := by
-  obtain ⟨s, hs⟩ := exists_of_germs (p := flagStr X) (O := ⊤) (X.F.isLB_LL 0) X.F.U id (fun _ => le_top)
-    (fun _ => le_rfl) (fun y _ => (commonLL X).cover y) (fun _ => 1) fun y k k' h h' => by
-      have := (commonLL X).nsmul 0 0 h h'
-      rw [zero_smul, pow_zero] at this
-      rw [map_one, map_one, mul_one]
-      exact (congrArg Units.val this).symm
-  exact ⟨s, fun k y hk => (hs k y hk).trans (map_one _)⟩
-
-
 variable (X) in
 def oneTop : H0 (flagStr X) (X.LL 0) ⊤ := (exists_one X).choose
-
-theorem germ_oneTop (k : X.F.J) (y : X.YY) (hk : y ∈ X.F.U k) :
-    germ (B := X.LL 0) k y (memTop y) hk (oneTop X) = 1 := (exists_one X).choose_spec k y hk
-
-
-variable (X) in
-theorem ruleTop_oneTop : ruleTop X 0 (oneTop X) = 1 := by
-  refine ruleTop_eq_iff.2 ⟨AllWt.one_mem_secZ, ext_germ fun y hy => ?_⟩
-  obtain ⟨k, hk⟩ := (commonLL X).cover y
-  have h := secOf_mul (X := X) (add_zero 0) ⟨1, AllWt.one_mem_secZ⟩ ⟨_, ruleTop_mem_secZ (oneTop X)⟩
-    ⟨_, ruleTop_mem_secZ (oneTop X)⟩ (one_mul _).symm
-  rw [secOf_ruleTop] at h
-  have h' := (congrArg (germ (B := X.LL 0) k y hy hk) h).trans
-    (((commonLL X).addChart (add_zero 0)).germ_mul _ _ k y hy hk hk hk)
-  have h₁ : germ (B := X.LL 0) k y hy hk (restr le_top (oneTop X)) = 1 :=
-    (germ_restr _ _ _ _ _ _).trans (germ_oneTop k y hk)
-  exact ⟨k, hk, h'.trans ((congrArg (_ * ·) h₁).trans (mul_one _))⟩
-
-
-variable (X) in
-theorem one_mem_extVanZ_iff : (1 : Rul Xo c) ∈ extVanZ X 0 ↔ flagOpen X = ⊤ := by
-  rw [← ruleTop_oneTop X, ruleTop_mem_extVanZ]
-  refine ⟨fun h => top_le_iff.1 fun y _ => by_contra fun hy => ?_, fun h y hy => (hy (h.ge (memTop y))).elim⟩
-  obtain ⟨k, hk⟩ := (commonLL X).cover y
-  exact h y hy k hk ((germ_oneTop k y hk).symm ▸ isUnit_one)
 
 end Flag
 
@@ -167,15 +123,5 @@ def extVan (T : TorFlag Xo c) (a : (E →+* ℂ) × ℕ → ℕ) (n : ℕ) : Sub
   extVanZ T.X fun i => (ex Dw a n i : ℤ)
 
 variable (T : TorFlag Xo c) (a : (E →+* ℂ) × ℕ → ℕ) (n : ℕ)
-
-theorem extVan_le_sec : extVan T a n ≤ sec Xo c a n :=
-  (extVanZ_le_secZ T.X _).trans (AllWt.secZ_nat Xo c a n).le
-
-theorem ex_zero : (fun i => (ex Dw 0 0 i : ℤ)) = 0 := by
-  funext i; cases i <;> rfl
-
-theorem one_mem_extVan_iff : (1 : Rul Xo c) ∈ extVan T 0 0 ↔ flagOpen T.X = ⊤ := by
-  rw [extVan, ex_zero, one_mem_extVanZ_iff]
-
 
 end GlobalTheory.CompanionTheory.Ar.OntoDef

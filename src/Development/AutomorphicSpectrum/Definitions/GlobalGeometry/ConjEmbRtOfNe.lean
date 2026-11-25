@@ -215,13 +215,6 @@ variable {Or : RootOrigin Y S RM Fx} (Fr : GenFrame Or)
 
 def rd (f : Rul Xo c) : RM.Ω := letI := cstAlg Or; evR Xo c f Fr.y₀
 
-@[simp] theorem rd_one : Fr.rd 1 = 1 := letI := cstAlg Or; Formalism.L2.Pj.evalAt_one _ _ _ Fr.test
-
-
-set_option synthInstance.maxHeartbeats 200000 in
-theorem rd_smul (a : c.F) (f : Rul Xo c) : Fr.rd (a • f) = Or.𝔐.cst a * Fr.rd f :=
-  letI := cstAlg Or; Formalism.L2.Pj.evalAt_smul _ _ a f _
-
 theorem exists_spread : letI := cstAlg Or
     ∃ (p : TRing c.F) (φ : p.R →ₐ[c.F] RM.Ω) (y : FrPt Xo c p.R), FrMap φ y Fr.y₀ ∧ ∀ f, Fr.rd f = φ (f p y) := by
   letI := cstAlg Or
@@ -237,7 +230,6 @@ theorem rd_eq_of_frMap (hWD : EvalWD (K := c.F) (fun S _ _ => FrPt Xo c S) (fun 
   obtain ⟨q, ψ, z, hz, hr⟩ := Fr.exists_spread
   rw [hr]
   exact hWD f hf _ q p ψ φ z y _ hz h
-
 
 end GenFrame
 

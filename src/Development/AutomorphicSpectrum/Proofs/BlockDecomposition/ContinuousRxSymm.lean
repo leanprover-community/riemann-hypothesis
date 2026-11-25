@@ -145,9 +145,6 @@ theorem sigR_sigR (z : AE D) : sigR (AF D.host.F) D.sp.cm.sig (sigR (AF D.host.F
     rw [_root_.Formalism.IndefR.Fin.U1.sig_sig]
   | add x y hx hy => rw [map_add (f := _), map_add (f := _), hx, hy]
 
-theorem sigR_inclR (x : D.host.E) :
-    sigR (AF D.host.F) D.sp.cm.sig (inclR (AF D.host.F) x) = inclR (AF D.host.F) (D.sp.cm.sig x) := rfl
-
 theorem Jst_map : (GlobalTheory.StdUnn.Jst D n).map D.sp.cm.sig = GlobalTheory.StdUnn.Jst D n := by
   ext i j
   simp only [Matrix.map_apply, GlobalTheory.StdUnn.Jst, GlobalTheory.StdUnn.blk4, Matrix.submatrix_apply]

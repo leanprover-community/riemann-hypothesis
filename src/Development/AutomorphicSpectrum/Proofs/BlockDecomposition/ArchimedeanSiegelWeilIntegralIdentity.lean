@@ -224,9 +224,6 @@ def tupCoord : TupV W n M ≃L[ℝ] (W → Fin n → Fin M → ℂ) :=
       left_inv := fun _ => rfl
       right_inv := fun _ => rfl }
 
-@[simp] theorem tupCoord_apply (x : TupV W n M) (w : W) (a : Fin n) (p : Fin M) :
-    tupCoord x w a p = x (w, p) a := rfl
-
 def diagOp (b : W → Matrix (Fin n) (Fin n) ℂ) : TupV W n M →ₗ[ℂ] TupV W n M where
   toFun y := WithLp.toLp 2 fun k => Matrix.toEuclideanLin (b k.1).transpose (y k)
   map_add' x y := by
@@ -248,9 +245,6 @@ def mixOp (J : W → Matrix (Fin M) (Fin M) ℂ) : TupV W n M →ₗ[ℂ] TupV W
     ext k : 2
     simp [Finset.smul_sum, smul_smul, mul_comm]
     exact Finset.sum_congr rfl fun _ _ => by ring
-
-@[simp] theorem mixOp_apply (J : W → Matrix (Fin M) (Fin M) ℂ) (z : TupV W n M) (k : W × Fin M) :
-    mixOp J z k = (2 : ℂ) • ∑ j, J k.1 k.2 j • z (k.1, j) := rfl
 
 def polarOp (J : W → Matrix (Fin M) (Fin M) ℂ) (b : W → Matrix (Fin n) (Fin n) ℂ) :
     TupV W n M →ₗ[ℝ] TupV W n M :=
@@ -363,9 +357,6 @@ def diffS (f : SchwartzMap V ℂ) (y : V) : SchwartzMap V ℂ where
     intro k n
     obtain ⟨C, -, hC⟩ := diffFun_bound f k n 0
     exact ⟨C, fun x => by simpa using hC x y⟩
-
-theorem diffS_apply (f : SchwartzMap V ℂ) (y x : V) :
-    diffS f y x = f (x + y) * conj (f x) := rfl
 
 theorem seminorm_diffS_le (f : SchwartzMap V ℂ) (k n K : ℕ) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ y : V,
@@ -1152,7 +1143,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
 open GlobalTheory.CompanionTheory.SiegelND.Integ
 open GlobalTheory.CompanionTheory.SiegelND.Integ.Arch NumberField
 
-
 theorem _root_.GlobalTheory.T.hermitian_archimedean_complex_coordinates : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E),
   IsCMExt F E σ → ∀ (e : Ainf F ≃+* (InfinitePlace F → ℝ)) (τ : InfinitePlace F → (E →+* ℂ))
   (Θ : Ainf F ⊗[F] E ≃+* (InfinitePlace F → ℂ)), IsCoord σ e τ Θ →
@@ -1832,7 +1822,6 @@ open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doublin
 open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
 open GlobalTheory.CompanionTheory.SiegelND.Integ
 open GlobalTheory.CompanionTheory.SiegelND.Integ.Arch NumberField
-
 
 theorem _root_.GlobalTheory.T.tuple_archimedean_complex_coordinates : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E),
   IsCMExt F E σ → ∀ (e : Ainf F ≃+* (InfinitePlace F → ℝ)) (τ : InfinitePlace F → (E →+* ℂ))
