@@ -65,18 +65,6 @@ theorem cayley_skew {S : Type} [Ring S] (J P Q Mt Mc : S) (hK : P * J * Q = J) (
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
-theorem valued_two (v : Pl (F := F)) (h2 : (2 : 𝓞 F) ∉ v.asIdeal) : Valued.v (2 : Fv F v) = 1 := by
-  have h := HeightOneSpectrum.valuedAdicCompletion_eq_valuation (K := F) v (2 : 𝓞 F)
-  rw [HeightOneSpectrum.valuation_of_algebraMap, HeightOneSpectrum.intValuation_eq_one_iff.2 h2] at h
-  convert h using 2
-  simp only [map_ofNat]
-
-theorem half_mem (v : Pl (F := F)) (h2 : (2 : 𝓞 F) ∉ v.asIdeal) : evFin F v (⅟(2 : AF F)) ∈ v.adicCompletionIntegers F := by
-  have e : evFin F v (⅟(2 : AF F)) = (2 : Fv F v)⁻¹ := by
-    apply eq_inv_of_mul_eq_one_left
-    rw [← map_ofNat (evFin F v) 2, ← map_mul, invOf_mul_self, map_one]
-  rw [e, HeightOneSpectrum.mem_adicCompletionIntegers, map_inv₀, valued_two v h2, inv_one]
-
 theorem half_smul_mem {d : ℕ} (W : Spc F E d) (v : Pl (F := F)) (h2 : (2 : 𝓞 F) ∉ v.asIdeal) :
     ∀ z ∈ GlobalTheory.InertSph.latAt W v, (⅟(2 : AF F)) • z ∈ GlobalTheory.InertSph.latAt W v := by
   apply _root_.GlobalTheory.InertSph.invTwo_smul_mem_latAt <;> assumption

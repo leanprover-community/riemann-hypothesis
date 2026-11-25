@@ -241,11 +241,6 @@ theorem part3 {I J K K' : Cx R} (τ : Pair I J K) (u : K ⟶ K') : ∃ ν : Pair
   intros
   apply _root_.LateralTheory.EtaleFoundations.TensUnivPf.part3 <;> assumption
 
-theorem sec_zero_of_isZero {F : Shv R} (hF : IsZero F) {U : Scheme.{0}} (a : Sec F U) : a = 0 := by
-  have h := hF.eq_of_src (𝟙 F) (mkHom (fun _ => 0) (fun V U g y => by simp))
-  have : Sec.map (𝟙 F) a = Sec.map (mkHom (fun _ => 0) (fun V U g y => by simp)) a := by rw [h]
-  exact this
-
 theorem part2 {I J K : Cx R} (τ : Pair I J K) (hτ : τ.IsTensor) (hI : I.IsStrictlyGE 0) (hJ : J.IsStrictlyGE 0) :
     K.IsStrictlyGE 0 := by
   apply LateralTheory.EtaleFoundations.TensUnivPf.part2 <;> assumption

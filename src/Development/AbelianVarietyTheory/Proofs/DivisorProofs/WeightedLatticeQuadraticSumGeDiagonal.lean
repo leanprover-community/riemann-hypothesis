@@ -66,46 +66,6 @@ theorem exists_pos_posSemidef_sub_smul_one {n : Type} [Fintype n] [DecidableEq n
   exact PosSemidef.diagonal fun i => by simpa using hle i
 
 open Matrix in
-theorem gram_nonneg_int {s : ℕ} {X : Type} [AddCommGroup X] (β : LinearMap.BilinForm ℤ X) (hβ : ∀ y, 0 ≤ β y y)
-    (y : Fin s → X) (z : Fin s → ℤ) : 0 ≤ ∑ u, ∑ v, z u * β (y u) (y v) * z v := by
-  have h := hβ (∑ u, z u • y u)
-
-  simp only [map_sum, LinearMap.sum_apply, map_zsmul, LinearMap.smul_apply, smul_eq_mul] at h
-  have e : ∑ u, ∑ v, z u * β (y u) (y v) * z v = ∑ x, z x * ∑ x1, z x1 * β (y x1) (y x) := by
-    simp only [Finset.mul_sum]
-    rw [Finset.sum_comm]
-    refine Finset.sum_congr rfl fun u _ => Finset.sum_congr rfl fun v _ => ?_
-    ring
-  rw [e]; exact h
-
-open Matrix in
-theorem gram_nonneg_rat {s : ℕ} {X : Type} [AddCommGroup X] (β : LinearMap.BilinForm ℤ X) (hβ : ∀ y, 0 ≤ β y y)
-    (y : Fin s → X) (q : Fin s → ℚ) :
-    0 ≤ ∑ u, ∑ v, (q u : ℝ) * (β (y u) (y v) : ℝ) * (q v : ℝ) := by
-  set D : ℕ := ∏ u, (q u).den with hD
-  have hDpos : (0 : ℝ) < D := by
-    have : 0 < D := Finset.prod_pos fun u _ => (q u).den_pos
-    exact_mod_cast this
-  have hz : ∀ u, ∃ z : ℤ, (q u : ℝ) * D = z := by
-    intro u
-    obtain ⟨k, hk⟩ : (q u).den ∣ D := Finset.dvd_prod_of_mem _ (Finset.mem_univ u)
-    refine ⟨(q u).num * k, ?_⟩
-    rw [hk]
-    have hq : (q u : ℝ) = (q u).num / (q u).den := by exact_mod_cast (Rat.num_div_den (q u)).symm
-    have hd : ((q u).den : ℝ) ≠ 0 := by exact_mod_cast (q u).den_nz
-    rw [hq]; push_cast; field_simp
-  choose z hz using hz
-  have h0 : (0 : ℝ) ≤ ∑ u, ∑ v, (z u : ℝ) * (β (y u) (y v) : ℝ) * (z v : ℝ) := by
-    exact_mod_cast gram_nonneg_int β hβ y z
-  have : ∑ u, ∑ v, (z u : ℝ) * (β (y u) (y v) : ℝ) * (z v : ℝ) =
-      (D : ℝ) ^ 2 * ∑ u, ∑ v, (q u : ℝ) * (β (y u) (y v) : ℝ) * (q v : ℝ) := by
-    simp only [← hz, Finset.mul_sum]
-    refine Finset.sum_congr rfl fun u _ => Finset.sum_congr rfl fun v _ => ?_
-    ring
-  rw [this] at h0
-  exact (mul_nonneg_iff_of_pos_left (by positivity)).mp h0
-
-open Matrix in
 theorem gram_posSemidef {s : ℕ} {X : Type} [AddCommGroup X] (β : LinearMap.BilinForm ℤ X)
     (hsym : ∀ a b, β a b = β b a) (hβ : ∀ y, 0 ≤ β y y) (y : Fin s → X) :
     (Matrix.of fun u v => (β (y u) (y v) : ℝ)).PosSemidef := by

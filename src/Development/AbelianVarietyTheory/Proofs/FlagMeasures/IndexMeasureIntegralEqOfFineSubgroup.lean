@@ -58,20 +58,6 @@ namespace GlobalTheory.IdxInt
 
 open scoped Pointwise Classical in
 open Function in
-private lemma quotientEquivProdOfLE_apply_fst {W : Type} [AddCommGroup W] {C B : AddSubgroup W} (h : C ≤ B)
-    (c : W ⧸ C) : ((AddSubgroup.quotientEquivProdOfLE h) c).1 = ((Quotient.out c : W) : W ⧸ B) := by
-  conv_lhs => rw [← QuotientAddGroup.out_eq' c]
-  rfl
-
-open scoped Pointwise Classical in
-open Function in
-private lemma support_quotient_out_finite_of_image_finite {W : Type} [AddCommGroup W] {B : AddSubgroup W} (φ : W → ℂ)
-    (hφ : ((fun w : W => (w : W ⧸ B)) '' support φ).Finite) :
-    (support fun c : W ⧸ B => φ (Quotient.out c)).Finite := by
-  refine hφ.subset fun c hc => ⟨Quotient.out c, hc, QuotientAddGroup.out_eq' c⟩
-
-open scoped Pointwise Classical in
-open Function in
 private lemma finsum_quotient_out_eq_relIndex_mul_of_le {W : Type} [AddCommGroup W] {C B : AddSubgroup W} (hCB : C ≤ B)
     (hidx : C.relIndex B ≠ 0) (φ : W → ℂ) (hinv : ∀ w b : W, b ∈ B → φ (w + b) = φ w)
     (hφ : ((fun w : W => (w : W ⧸ B)) '' support φ).Finite) :
@@ -90,7 +76,6 @@ private lemma finsum_out_div_relIndex_eq_of_le {W : Type} [AddCommGroup W] {A B 
     exact left_ne_zero_of_mul hC
   rw [finsum_quotient_out_eq_relIndex_mul_of_le hCB hidx φ hinv hsupp, ← AddSubgroup.relIndex_mul_relIndex C B A hCB hBA,
     Nat.cast_mul, mul_div_mul_left _ _ (Nat.cast_ne_zero.mpr hidx)]
-
 
 open scoped Pointwise Classical in
 open Function in

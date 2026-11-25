@@ -58,16 +58,6 @@ open Filter Topology
 
 variable {D : D7}
 
-theorem mem_GLint_of_entries {L : Type} [Field L] {n : ℕ} (O : Subring L) (g : GL (Fin n) L)
-    (h1 : ∀ i j, g.1 i j ∈ O) (h2 : ∀ i j, g⁻¹.1 i j ∈ O) : g ∈ Formalism.UG.GLint (Fin n) O := by
-  have hi : Function.Injective fun A : Matrix (Fin n) (Fin n) O => A.map O.subtype :=
-    Matrix.map_injective Subtype.val_injective
-  refine ⟨⟨Matrix.of fun i j => ⟨_, h1 i j⟩, Matrix.of fun i j => ⟨_, h2 i j⟩, hi ?_, hi ?_⟩, Units.ext rfl⟩
-  · simp only [Matrix.map_mul, Matrix.map_one _ (map_zero _) (map_one _)]
-    exact g.mul_inv
-  · simp only [Matrix.map_mul, Matrix.map_one _ (map_zero _) (map_one _)]
-    exact g.inv_mul
-
 theorem inBasis_apply {n n' : ℕ} (h : n' = n) (β x : GL (Fin n) (Lev.EAf D)) (w : Pl D.host.E) (i j : Fin n') :
     (inBasis h β w x).1 i j = cpt w ((β⁻¹ * x * β).1 (finCongr h i) (finCongr h j)) := rfl
 

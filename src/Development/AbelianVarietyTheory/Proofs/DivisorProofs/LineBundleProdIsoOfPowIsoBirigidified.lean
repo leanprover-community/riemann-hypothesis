@@ -70,25 +70,6 @@ theorem pow_comp_hom {Z H : Over S} [GrpObj H] (f : A ⟶ H) [IsMonHom f] (x : Z
   | zero => rw [pow_zero, pow_zero, MonObj.one_comp]
   | succ n ih => rw [pow_succ, pow_succ, MonObj.mul_comp, ih]
 
-theorem pull_eq_evc {P : LB (A ⊗ A).left} (hP : P.IsLB) {Y : Over S} (w : Y ⟶ A ⊗ A) :
-    CechPic.pull w.left (cls P hP) = evc hP (w ≫ fst A A) (w ≫ snd A A) := by
-  rw [evc, lift_comp_fst_snd]
-
-theorem cube_rel (hA : IsAbelianScheme A) {P : LB (A ⊗ A).left} (hP : P.IsLB) {Y : Over S}
-    (x y z : Y ⟶ A ⊗ A) :
-    CechPic.pull (x * y * z).left (cls P hP) - CechPic.pull (x * y).left (cls P hP)
-      - CechPic.pull (x * z).left (cls P hP) - CechPic.pull (y * z).left (cls P hP)
-      + CechPic.pull x.left (cls P hP) + CechPic.pull y.left (cls P hP) + CechPic.pull z.left (cls P hP)
-      - CechPic.pull (1 : Y ⟶ A ⊗ A).left (cls P hP) = 0 := by
-  have hX := AbelianSchemeGerms.isAbelianScheme_tensor A A hA hA
-  have t := _root_.GlobalTheory.SpreadingModels.cubeTheorem_holds S (A ⊗ A) hX P hP Y x y z
-  have z0 := (cls_linComb hP _ _ (LB.isLB_linComb hP _ _)).symm.trans
-    ((cls_eq_zero_iff (LB.isLB_linComb hP _ _)).2 t)
-  simp only [Fin.sum_univ_succ, Fin.sum_univ_zero, Matrix.cons_val_zero, Matrix.cons_val_succ,
-    one_zsmul, neg_one_zsmul, add_zero] at z0
-  rw [← z0]
-  abel
-
 theorem additive_of_birigid (hA : IsAbelianScheme A) {P : LB (A ⊗ A).left} (hP : P.IsLB)
     (h₁ : Triv (ev P (1 : A ⟶ A) (𝟙 A))) (h₂ : Triv (ev P (𝟙 A) (1 : A ⟶ A))) :
     IsAdditive P ∧ IsAdditive (swap P) := by

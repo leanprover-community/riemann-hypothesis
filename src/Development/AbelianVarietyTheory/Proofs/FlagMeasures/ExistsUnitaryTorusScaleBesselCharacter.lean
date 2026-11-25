@@ -172,18 +172,6 @@ theorem UW_col {z : Fin (2 * r + k + 1) → ℂ} {h : Matrix (Fin (2 * r + k + 1
   have := congrFun key i
   simpa [bvec, Pi.single_apply] using this
 
-theorem Hpk_outer (i j p : Fin (2 * r + k + 1)) (hj : j.val < r ∨ r + k < j.val) (hij : i.val + j.val = 2 * r + k) :
-    Hpk k r j p = if p = i then 1 else 0 := by
-  unfold Hpk
-  by_cases e : p = i
-  · subst e
-    rw [if_pos rfl]
-    by_cases h1 : j.val < r
-    · rw [if_pos ⟨h1, by omega⟩]
-    · rw [if_neg (by omega), if_pos (by omega)]
-  · have e' : p.val ≠ i.val := fun x => e (Fin.ext x)
-    rw [if_neg e, if_neg (by omega), if_neg (by omega), if_neg (by omega)]
-
 theorem UW_row {z : Fin (2 * r + k + 1) → ℂ} {h : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ}
     (hh : h ∈ UWset k r z) (i j : Fin (2 * r + k + 1)) (hi : i.val < r ∨ r + k < i.val) :
     h i j = if j = i then 1 else 0 := by

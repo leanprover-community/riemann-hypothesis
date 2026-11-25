@@ -73,21 +73,6 @@ namespace GlobalTheory.PsCo.PcEF
 
 variable {n : ℕ} {ε : Fin n → Bool} {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
 
-theorem sumTypes_conjT_mem {g : Matrix (Fin n) (Fin n) ℂ} (hg : g ∈ Formalism.REAL.Kset ε) : gᴴ ∈ Formalism.REAL.Kset ε := by
-  obtain ⟨hu, hc⟩ := hg
-  refine ⟨Matrix.mem_unitaryGroup_iff.2 (by rw [Matrix.star_eq_conjTranspose, Matrix.conjTranspose_conjTranspose]; exact Matrix.mem_unitaryGroup_iff'.1 hu), ?_⟩
-  have h := congrArg Matrix.conjTranspose hc
-  simp only [Matrix.conjTranspose_mul, Formalism.REAL.Jm_conjTranspose] at h
-  exact h.symm
-
-theorem sumTypes_mul_conjT {g : Matrix (Fin n) (Fin n) ℂ} (hg : g ∈ Formalism.REAL.Kset ε) : g * gᴴ = 1 :=
-  Matrix.mem_unitaryGroup_iff.1 hg.1
-
-theorem sumTypes_inner {σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)} (hσ : IsURepOn (UJset ε) σ)
-    {g : Matrix (Fin n) (Fin n) ℂ} (hg : g ∈ Formalism.REAL.Kset ε) (r v : H) :
-    ⟪r, σ g v⟫_ℂ = ⟪σ gᴴ r, v⟫_ℂ := by
-  apply _root_.GlobalTheory.PsCo.PcEF.UF.sumTypes_inner <;> assumption
-
 theorem finDimStable_isSumOfKTypes : SumTypes := by
   exact _root_.GlobalTheory.PsCo.PcEF.UF.finDimStable_isSumOfKTypes
 

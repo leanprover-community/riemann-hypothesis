@@ -91,7 +91,6 @@ theorem H0.val_smul {q : S ⟶ Sp k} {N : LB S} {O : S.Opens} (x : Sp R ⟶ S) {
     (f : H0 q N O) : val x i hO hi (c • f) = φ c * val x i hO hi f := by
   rw [base_smul, val_fun_smul, evalPt_algX_of_eq q x hx]
 
-
 variable (R) in
 abbrev PtsOver [Algebra k R] (q : S ⟶ Sp k) : Type :=
   {x : Sp R ⟶ S // x ≫ q = spMap (algebraMap k R)}
@@ -134,15 +133,6 @@ theorem exists_generator [IsFinite q] [Etale q] (hN : N.IsLB) : ∃ e : H0 q N �
   exact (isFrame_iff_bijective (isAffineOpen_top S) _).1 (isFrame_genSec hN ht ⊤)
 
 variable (Ω : Type) [Field Ω] [IsAlgClosed Ω] [Algebra E Ω] [IsFinite q] [Etale q]
-
-
-omit [IsAlgClosed Ω] in
-theorem finite_ptsOver : Finite (PtsOver Ω q) := by
-  have : IsAffine S := isAffine_of_isAffineHom q
-  let := (algX q ⊤).toAlgebra
-  have : Algebra.Etale E Γ(S, ⊤) := etale_algX q
-  have := Algebra.FormallyUnramified.finite_of_free E Γ(S, ⊤)
-  exact Finite.of_equiv _ (ptsOverEquiv q).symm
 
 theorem finite_finrank_lineBundleSections_finiteEtale (hN : N.IsLB) :
     Module.Finite E (H0 q N ⊤) ∧ Module.finrank E (H0 q N ⊤) = Nat.card (PtsOver Ω q) := by
@@ -203,7 +193,6 @@ theorem finite_H0On : Module.Finite E (sectionsOnClosedSubscheme p B I) :=
 theorem finrank_H0On :
     Module.finrank E (sectionsOnClosedSubscheme p B I) = Nat.card (PtsOver Ω (I.subschemeι ≫ p)) :=
   (finite_finrank_lineBundleSections_finiteEtale _ Ω (LB.isLB_pull hB _)).2
-
 
 variable {Ω} in
 theorem eq_zero_of_forall_valOn_eq_zero (i : PtsOver Ω (I.subschemeι ≫ p) → B.ι)

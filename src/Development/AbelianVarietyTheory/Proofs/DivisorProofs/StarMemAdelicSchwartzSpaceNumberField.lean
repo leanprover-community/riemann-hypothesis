@@ -72,9 +72,6 @@ def conjSchwartz {V : Type} [NormedAddCommGroup V] [NormedSpace ℝ V] (f : Schw
     rw [e, h]
     exact hC x
 
-theorem conjSchwartz_apply {V : Type} [NormedAddCommGroup V] [NormedSpace ℝ V] (f : SchwartzMap V ℂ) (x : V) :
-    conjSchwartz f x = star (f x) := rfl
-
 theorem star_mem_schA : ∀ (F : Type) [Field F] [NumberField F] (κ : Type) [Fintype κ]
     (Φ : (κ → AF F) → ℂ), Φ ∈ schA F κ → (fun x => star (Φ x)) ∈ schA F κ := by
   apply _root_.GlobalTheory.star_mem_schA_main <;> assumption

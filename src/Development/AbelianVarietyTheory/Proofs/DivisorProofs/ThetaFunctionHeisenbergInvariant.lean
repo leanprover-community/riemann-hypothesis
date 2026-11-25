@@ -186,7 +186,6 @@ theorem continuous_symplOHF_right (x : WOF F E nS nT) : Continuous fun y => symp
   exact ((continuous_const.mul (hc.comp ((continuous_apply b).comp (continuous_apply c)))).mul
     continuous_const).mul continuous_const
 
-
 variable (F) in
 theorem continuous_ringEquiv_mixedSpace : Continuous (InfiniteAdeleRing.ringEquiv_mixedSpace F) := by
   apply _root_.GlobalTheory.ArchIsom.continuous_toMixed
@@ -194,25 +193,6 @@ theorem continuous_ringEquiv_mixedSpace : Continuous (InfiniteAdeleRing.ringEqui
 end Top
 
 section Fin
-
-theorem nonarch_of_isInducing {G S : Type} [AddGroup G] [TopologicalSpace G] [NonarchimedeanAddGroup G]
-    [AddGroup S] [TopologicalSpace S] [IsTopologicalAddGroup S] (f : S →+ G) (hf : Topology.IsInducing f) :
-    NonarchimedeanAddGroup S where
-  is_nonarchimedean U hU := by
-    rw [hf.nhds_eq_comap, map_zero, Filter.mem_comap] at hU
-    obtain ⟨t, ht, hsub⟩ := hU
-    obtain ⟨V, hV⟩ := NonarchimedeanAddGroup.is_nonarchimedean t ht
-    exact ⟨V.comap f hf.continuous, fun x hx => hsub (hV hx)⟩
-
-theorem nonarch_pi {ι : Type} {G : ι → Type} [∀ i, AddGroup (G i)] [∀ i, TopologicalSpace (G i)]
-    [∀ i, NonarchimedeanAddGroup (G i)] : NonarchimedeanAddGroup (∀ i, G i) where
-  is_nonarchimedean U hU := by
-    rw [nhds_pi, Filter.mem_pi] at hU
-    obtain ⟨I, hI, t, ht, hs⟩ := hU
-    choose K hK using fun i => NonarchimedeanAddGroup.is_nonarchimedean (G := G i) (t i) (ht i)
-    exact ⟨⟨AddSubgroup.pi I fun i => (K i : AddSubgroup (G i)), isOpen_set_pi hI fun i _ => (K i).isOpen⟩,
-      fun x hx => hs fun i hi => hK i (hx i hi)⟩
-
 
 variable (F) in
 theorem nonarch_Af : NonarchimedeanAddGroup (Af F) := by

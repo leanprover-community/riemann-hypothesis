@@ -56,16 +56,6 @@ namespace GlobalTheory
 
 open NumberField Module Matrix in
 open scoped ENNReal in
-private lemma exists_integer_eq_star {K : Type} [Field K] [NumberField K] [StarRing K]
-    (a : 𝓞 K) : ∃ b : 𝓞 K, (b : K) = star (a : K) := by
-  have hint : IsIntegral ℤ (starRingEnd K (a : K)) :=
-    map_isIntegral_int (starRingEnd K) (RingOfIntegers.isIntegral_coe a)
-  rw [starRingEnd_apply] at hint
-  exact ⟨⟨star (a : K), (mem_integralClosure_iff ℤ K).2 hint⟩, rfl⟩
-
-
-open NumberField Module Matrix in
-open scoped ENNReal in
 theorem _root_.GlobalTheory.exists_integer_add_star_eq_one_of_isCMUnram :
     ∀ (K : Type) [Field K] [NumberField K] [StarRing K], _root_.Formalism.HermitianLatticesTheory.IsCMUnram K →
       ∃ t : 𝓞 K, (t : K) + star (t : K) = 1 := by

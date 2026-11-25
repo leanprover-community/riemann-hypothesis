@@ -107,34 +107,6 @@ open Matrix
 
 variable {E : Type} [Field E] {r : ℕ}
 
-theorem det_mul_last (Z : Matrix (Fin (r + 1)) (Fin (r + 1)) E) (b : Fin (r + 1) → E) (t : E)
-    (h : Z *ᵥ b = Pi.single (Fin.last r) t) :
-    Z.det * b (Fin.last r) = (Z.submatrix Fin.castSucc Fin.castSucc).det * t := by
-  have h1 : (adjugate Z * Z) *ᵥ b = adjugate Z *ᵥ Pi.single (Fin.last r) t := by
-    rw [← mulVec_mulVec, h]
-  rw [adjugate_mul] at h1
-  have h2 := congrFun h1 (Fin.last r)
-  rw [smul_mulVec, one_mulVec, mulVec_single] at h2
-  simp only [Pi.smul_apply, smul_eq_mul, MulOpposite.smul_eq_mul_unop, MulOpposite.unop_op, col_apply] at h2
-  rw [h2, adjugate_fin_succ_eq_det_submatrix, Fin.succAbove_last, ← two_mul, pow_mul]
-  simp
-
-theorem eq_zero_of_minor (Z : Matrix (Fin (r + 1)) (Fin (r + 1)) E) (b : Fin (r + 1) → E)
-    (h : Z *ᵥ b = 0) (hb : b (Fin.last r) = 0)
-    (hZ : Z.det ≠ 0 ∨ (Z.submatrix Fin.castSucc Fin.castSucc).det ≠ 0) : b = 0 := by
-  rcases hZ with hZ | hZ
-  · exact eq_zero_of_mulVec_eq_zero hZ h
-  · have h1 : (Z.submatrix Fin.castSucc Fin.castSucc) *ᵥ (fun i => b i.castSucc) = 0 := by
-      funext i
-      have := congrFun h i.castSucc
-      simp only [mulVec, dotProduct, Fin.sum_univ_castSucc, hb, mul_zero, add_zero] at this ⊢
-      exact this
-    have h2 := eq_zero_of_mulVec_eq_zero hZ h1
-    funext i
-    induction i using Fin.lastCases with
-    | last => exact hb
-    | cast i => exact congrFun h2 i
-
 theorem pair_eq_zero [StarRing E] (Z : Matrix (Fin (r + 1)) (Fin (r + 1)) E) (a b : Fin (r + 1) → E) (T T' : E)
     (hG : Z.det * star Z.det - T * T' * ((Z.submatrix Fin.castSucc Fin.castSucc).det *
       star (Z.submatrix Fin.castSucc Fin.castSucc).det) ≠ 0)
@@ -358,7 +330,6 @@ theorem idx_le_of_rel {R V W : Type} [CommRing R] [AddCommGroup V] [Module R V] 
     (fun c => (QuotientAddGroup.mk (⟨φ c.out.1 c.out.2, hφ _ _⟩ : A₂.toAddSubgroup))) fun c c' h => ?_
   rw [← c.out_eq', ← c'.out_eq', QuotientAddGroup.eq]
   exact h2 _ _ _ _ (hR _ c.out.2) (hR _ c'.out.2) (QuotientAddGroup.eq.1 h)
-
 
 open GlobalTheory.Mass GlobalTheory.LoopC.DetCard Formalism.HermitianLatticesTheory in
 theorem det_sq {K V : Type} [Field K] [NumberField K] [StarRing K] [AddCommGroup V] [Module K V]
