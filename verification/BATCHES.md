@@ -166,9 +166,7 @@ If the batch's branch has the new head already, and the new head has the commit 
 in it, as when the merge of `main` the batch was built from is pushed to the pull request
 afterwards, nothing new is said, and the batch's record takes the new head. A push back to an
 earlier commit is told even though the branch has that commit, since the batch still lands the
-one it took. If a new head that has the commit the batch took in it is merged into the branch
-later, or the branch is rebuilt with the new head in place of that commit, the batch holds the
-new head instead.
+one it took. If its new head is merged into the branch later, the batch holds that one instead.
 Either way, the comment that said the pull request is frozen is edited to name the new head, and
 so is the one that said it was pushed to, if there was one: it then says that the batch builds and
 lands the new head and nothing more is needed. `awaiting-author` comes off again, as it does when
