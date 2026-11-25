@@ -12,13 +12,14 @@ Only an open pull request into main that is not a draft and not a batch can carr
 A batch is a pull request from a branch of this repository named `batch/...`: one of a fork
 is not a batch (see `holds_batch` in `batch-labels.py`).
 
-`main-conflict`: GitHub reports that the pull request conflicts with main. While GitHub has not
-yet worked that out, the label stays as it is. A pull request whose description says that it
-depends on an open batch does not get the label, and loses it: it is expected to carry the
-batch's changes, and so to conflict with main until the batch lands. That is a line such as
-`- [ ] depends on: #123`, where #123 is the batch's pull request (`pr-dependencies.py` has the
-forms such a line can take). There is no comment: GitHub already shows the conflict on the pull
-request.
+`main-conflict`: GitHub reports that the pull request conflicts with main. While GitHub has not yet
+worked that out, the label stays as it is. A pull request the description of a batch being built
+lists as included gets neither label: the batch carries its changes (see `included_in`). A pull
+request whose description says that it depends on an open batch does not get the label, and loses
+it: it is expected to carry the batch's changes, and so to conflict with main until the batch
+lands. That is a line such as `- [ ] depends on: #123`, where #123 is the batch's pull request
+(`pr-dependencies.py` has the forms such a line can take). There is no comment: GitHub already
+shows the conflict on the pull request.
 
 `batch-conflict`: the pull request conflicts with the head of an open batch labelled `building`.
 When batches are stacked, the branch of the upper one merges the lower one's and lands right after
@@ -63,6 +64,8 @@ _conflicts = _rest.load("batch-queue-conflicts.py")
 # The parser for the `depends on` lines of a description, shared with the batch queue and
 # `dependency-ticks.py`.
 _dependencies = _rest.load("pr-dependencies.py")
+# The parser of a batch's description, shared with the batch queue.
+_description = _rest.load("batch-description.py")
 dependencies = _dependencies.dependencies
 MAIN_CONFLICT, BATCH_CONFLICT = _labels.MAIN_CONFLICT, _labels.BATCH_CONFLICT
 BUILDING, LATEST, MEMBER, WAITING = _labels.BUILDING, _labels.LATEST, _labels.MEMBER, _labels.WAITING
@@ -232,6 +235,27 @@ def compared(batches):
     return sorted(latest or building)
 
 
+def included_in(batches, repo):
+    """The pull requests whose changes a batch being built carries by its own account, as {number:
+    {batch numbers}}: those its description lists as included, under a heading that does not leave
+    them out (see `batch-description.py`).
+
+    Such a pull request is not compared. Its changes land with the batch even when its own head is
+    not in the branch, for instance when `main` was merged into it for the batch and the push to
+    its branch was refused, so a conflict with the batch, or with `main`, is not its author's to
+    fix. The batch queue's description check says when its head is not in the branch, since
+    GitHub will not mark it merged then.
+    """
+    found = {}
+    for number, batch in batches.items():
+        if BUILDING not in batch["labels"]:
+            continue
+        for listed, heading, _ in _description.list_entries(batch["body"], repo):
+            if heading and not _description.leaves_out(heading) and listed != number:
+                found.setdefault(listed, set()).add(number)
+    return found
+
+
 def found_conflict(result):
     return result is not None and (result.kind == "conflict" or bool(result.stale))
 
@@ -250,6 +274,9 @@ def decide(pr, main, batches, results):
     gone = unavailable(pr, main)
     if gone:
         return {"main": False, "batch": False, "conflicts": {}, "why": {MAIN_CONFLICT: gone, BATCH_CONFLICT: gone}}
+    if pr.get("included"):
+        said = "the description of " + ", ".join(f"#{number}" for number in sorted(pr["included"])) + " lists it as included"
+        return {"main": False, "batch": False, "conflicts": {}, "why": {MAIN_CONFLICT: said, BATCH_CONFLICT: said}}
     on = sorted(pr["depends"] & set(batches))
     if on:
         wanted_main, why[MAIN_CONFLICT] = False, f"it depends on the batch #{on[0]}"
@@ -478,8 +505,11 @@ def sync(gh, number=None, compare=compare_all):
     for pr in pulls.values():
         pr["depends"] = dependencies(pr["body"], gh.repo)
     batches = {key: pr for key, pr in pulls.items() if pr["open"] and is_batch(pr)}
+    included = included_in(batches, gh.repo)
+    for key, pr in pulls.items():
+        pr["included"] = included.get(key, set())
     building = {key: batches[key] for key in compared(batches)}
-    candidates = {key: pulls[key] for key in targets if comparable(pulls[key], main)}
+    candidates = {key: pulls[key] for key in targets if comparable(pulls[key], main) and not pulls[key]["included"]}
     if building:
         under = [key for key, pr in sorted(batches.items()) if BUILDING in pr["labels"] and key not in building]
         log.append("compared with the batches being built: "
