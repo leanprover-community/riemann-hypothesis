@@ -36,8 +36,9 @@ name: conflict labels
 # batch `building`, so the batch queue starts a sweep itself when it puts either label on a batch,
 # and the half-hourly sweep catches the rest. The sweep is offset from the inbox's.
 #
-# A sweep also looks for pull requests that merged a batch's branch and still carry the commits of a
-# pull request the batch was then rebuilt without, and tells each once for each head of the batch.
+# A sweep also looks for pull requests that merged a batch's branch and still carry the batch's
+# merge of a pull request the batch was then rebuilt without, and tells each once for each set of
+# such pull requests.
 #
 # pull_request_target gives the token write access for pull requests from forks, so it runs only
 # for pull requests into main: the batches' own pull requests are, and the script leaves every other

@@ -222,20 +222,29 @@ class Stale(unittest.TestCase):
         case = pr(5, labels_=labels_, depends=[900])
         return case, labels.decide(case, "main", BATCHES, {900: Comparison("clean")}, {"on": [900], "prs": [11]})
 
-    def test_it_is_told_once_for_each_head_of_the_batch_and_handed_back(self):
+    def test_it_is_told_once_for_each_set_of_pull_requests_and_handed_back(self):
         case, decision = self.decided()
         self.assertEqual(decision["stale"], {900: {"head": B["sha"], "prs": [11]}})
         self.assertTrue(labels.needs_told(case, decision))
         add, remove, notes = labels.plan(case, decision, set(), BATCHES, set())
         self.assertEqual((add, remove, [number for number, _ in notes]), ({WAITING}, set(), [900]))
-        self.assertTrue(notes[0][1].startswith(f"<!-- conflict-labels-stale 900 {B['sha']} -->\n"))
-        # Told about this head already: nothing to read, nothing to say.
-        known = {"told": set(), "stale": {(900, B["sha"])}}
+        self.assertTrue(notes[0][1].startswith("<!-- conflict-labels-stale 900 11 -->\n"))
+        # Told about #11 already, by this batch at any head or by another: nothing to read, nothing
+        # to say, and `awaiting-author` is not put back.
+        known = {"told": set(), "stale": {"11"}}
         self.assertFalse(labels.needs_told(case, decision, known))
         self.assertEqual(labels.plan(case, decision, None, BATCHES, None), (set(), set(), []))
         self.assertEqual(labels.plan(case, decision, set(), BATCHES, known["stale"]), (set(), set(), []))
-        # A new head of the batch is told again.
-        self.assertTrue(labels.needs_told(case, decision, {"told": set(), "stale": {(900, "0" * 40)}}))
+        # Another set of pull requests is told again.
+        self.assertTrue(labels.needs_told(case, decision, {"told": set(), "stale": {"11,12"}}))
+
+    def test_a_batch_rebuilt_under_a_new_number_tells_nothing_new(self):
+        batches = {**BATCHES, 901: batch(901)}
+        case = pr(5, depends=[900, 901])
+        decision = labels.decide(case, "main", batches, {}, {"on": [900, 901], "prs": [11]})
+        # Said once, for the lowest of them.
+        self.assertEqual(list(decision["stale"]), [900])
+        self.assertEqual(labels.plan(case, decision, set(), batches, {"11"}), (set(), set(), []))
 
     def test_what_the_author_is_told(self):
         text = labels.stale_message(batch(900, ref="batch/b9-on-1313"), [11, 12])
@@ -692,7 +701,7 @@ class Runs(unittest.TestCase):
         gh.add(11)  # taken out of the batch, and still carried by #5
         return gh
 
-    def test_a_dependent_carrying_what_the_batch_dropped_is_told_once_for_each_head(self):
+    def test_a_dependent_carrying_what_the_batch_dropped_is_told_once(self):
         gh, known = self.dependent(), {}
         stale = {5: {"on": [900], "prs": [11]}}
         compare = comparing({}, stale)
@@ -703,18 +712,25 @@ class Runs(unittest.TestCase):
         self.assertIn("#5: add `awaiting-author`, because it is told about a batch; tell it that its branch carries "
                       "commits #900 no longer has", log)
         [said] = [body for body, _ in gh.comments[5]]
-        self.assertTrue(said.startswith(f"<!-- conflict-labels-stale 900 {900:040x} -->\n"))
+        self.assertTrue(said.startswith("<!-- conflict-labels-stale 900 11 -->\n"))
         self.assertEqual(gh.pulls[5]["labels"], {WAITING})  # and no `main-conflict`: it depends on the batch
-        # Told once for this head, whether or not the next run knows it already.
+        # Told once, whether or not the next run knows it already.
         gh.pulls[5]["labels"].discard(WAITING)
         run(gh, stale=stale, known=known)
         run(gh, stale=stale)
         self.assertEqual((len(gh.comments[5]), gh.pulls[5]["labels"]), (1, set()))
-        # The batch is rebuilt again, and #5 still carries #11.
+        # The batch is rebuilt again, and #5 still carries #11: nothing new, and the label it had
+        # taken off stays off.
         gh.pulls[900]["headRefOid"] = "e" * 40
         run(gh, stale=stale, known=known)
+        run(gh, stale=stale)
+        self.assertEqual((len(gh.comments[5]), gh.pulls[5]["labels"]), (1, set()))
+        # It also carries #12 now: that is told.
+        gh.add(12)
+        stale[5]["prs"] = [11, 12]
+        run(gh, stale=stale, known=known)
         self.assertEqual(len(gh.comments[5]), 2)
-        self.assertTrue(gh.comments[5][1][0].startswith(f"<!-- conflict-labels-stale 900 {'e' * 40} -->\n"))
+        self.assertTrue(gh.comments[5][1][0].startswith("<!-- conflict-labels-stale 900 11,12 -->\n"))
         self.assertEqual(gh.pulls[5]["labels"], {WAITING})
 
     def test_one_pull_request_alone_is_not_looked_at_for_this(self):
@@ -844,25 +860,27 @@ class Rebuilt(unittest.TestCase):
             eleven = o.pull(11, o.main, lambda: o.edit("b.txt", 3, "eleven"))
 
             def assemble(*heads):
+                # Each pull request's head merged in as batches are, with the message that names it.
                 o.git("checkout", "--quiet", "--detach", o.main)
-                for head in heads:
-                    o.git("merge", "--quiet", "--no-ff", "--no-edit", head)
+                for number, head in heads:
+                    o.git("merge", "--quiet", "--no-ff", "-m", f"Merge PR #{number} into batch", head)
                 head = o.git("rev-parse", "HEAD")
                 o.git("checkout", "--quiet", "main")
                 return head
-            old = assemble(ten, eleven)
+            old = assemble((10, ten), (11, eleven))
             # Started from the batch's branch, and merged it in: both carry #11.
             o.pull(12, old, lambda: o.edit("c.txt", 3, "twelve"))
             o.pull(14, o.main, lambda: o.edit("c.txt", 7, "fourteen"), merge=old)
             # The batch is rebuilt without #11, by force-push.
-            new = assemble(ten)
+            new = assemble((10, ten))
             o.git("update-ref", "refs/pull/900/head", new)
-            # Merged the batch as it is now, and merged its own other work in.
+            # Merged the batch as it is now, and is stacked on #16, another open pull request, without
+            # saying so: it carries #16's commits, but no batch ever held #16.
             side = o.pull(16, o.main, lambda: o.edit("c.txt", 12, "sixteen, first"))
             o.pull(13, new, lambda: o.edit("c.txt", 5, "thirteen"), merge=side)
             # Merged #11 itself, and says it depends on it.
             o.pull(15, o.main, lambda: o.edit("c.txt", 9, "fifteen"), merge=eleven)
-            candidates = {number: pr(number) for number in (11, 12, 13, 14, 15)}
+            candidates = {number: pr(number) for number in (11, 12, 13, 14, 15, 16)}
             watch = {number: {"on": [900] if number in (12, 13) else [], "exclude": [900]} for number in candidates}
             watch[15]["exclude"] = [11, 900]
             carried, log = {}, []
@@ -873,8 +891,8 @@ class Rebuilt(unittest.TestCase):
             again = {}
             labels.compare_all(REPO, "main", {900: batch(900)}, candidates, [], origin=f"file://{root}",
                                watch=watch, carried=again)
-        # #14 says nothing, but shares commits with the batch's branch. #13 carries only its own
-        # work, and #15 a pull request it depends on.
+        # #14 says nothing, but shares commits with the batch's branch. #13 carries its own work
+        # and #16's, which no batch held, and #15 a pull request it depends on.
         self.assertEqual(carried, {12: {"on": [900], "prs": [11]}, 14: {"on": [900], "prs": [11]}})
         self.assertIn("#12 carries commits of #11 that #900 no longer has", log)
         self.assertEqual(again, carried)

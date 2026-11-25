@@ -224,8 +224,11 @@ A pull request that merged a batch's branch carries the batch's commits. If the 
 rebuilt without one of its pull requests, your branch still carries that one's commits: when
 your pull request lands, they land too, and GitHub marks the pull request that was taken out
 merged. Every sweep of the workflow looks for this in the pull requests that depend on an open
-batch, or share commits with a batch's branch. Your pull request is then labelled
-`awaiting-author` and told, once for each head of the batch, which pull requests it carries. Make a
+batch, or share commits with a batch's branch: their branches are searched for the batch's merge
+commits, `Merge PR #123 into batch` or `Merge #123 head (...) into batch/...`, for pull requests
+that the batch's current branch no longer has. Your pull request is then labelled
+`awaiting-author` and told which pull requests it carries, once for each such set: a batch rebuilt
+again, or under a new number, tells it nothing new while it carries the same ones. Make a
 new branch from the batch's current branch, copy only your own commits onto it with
 `git cherry-pick`, push that to your pull request and comment `ready`. From then on, merge the
 batch's branch into yours; never rebase onto it.
