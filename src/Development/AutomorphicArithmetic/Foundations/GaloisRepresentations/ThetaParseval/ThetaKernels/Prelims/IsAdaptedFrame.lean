@@ -211,8 +211,6 @@ theorem negT_lie (Y Z : Mat r s) : negT r s (Y * Z - Z * Y) = negT r s Y * negT 
 theorem sameBlock_symm {a b : Ix r s} (h : sameBlock a b) : sameBlock b a := by
   rcases a with a | a <;> rcases b with b | b <;> simp_all [sameBlock]
 
-theorem isKC_negT {Y : Mat r s} (hY : IsKC Y) : IsKC (negT r s Y) := fun a b hab => by
-  rw [negT_apply, Matrix.neg_apply, Matrix.transpose_apply, hY b a fun h => hab (sameBlock_symm h), neg_zero]
 
 theorem negT_Eab (a b : Ix r s) : negT r s (Eab a b) = -Eab b a := by
   rw [negT_apply, Eab, Eab, Matrix.transpose_single]
