@@ -9,17 +9,24 @@ commits are fetched as git objects and compared with `git merge-tree`, and the o
 written to GitHub are labels and one kind of comment. The label names are in `batch-labels.py`.
 
 Only an open pull request into main that is not a draft and not a batch can carry either label.
-A batch is a pull request from a branch of this repository named `batch/...`.
+A batch is a pull request from a branch of this repository named `batch/...`: one of a fork
+is not a batch (see `holds_batch` in `batch-labels.py`).
 
 `main-conflict`: GitHub reports that the pull request conflicts with main. While GitHub has not
 yet worked that out, the label stays as it is. A pull request whose description says that it
 depends on an open batch does not get the label, and loses it: it is expected to carry the
 batch's changes, and so to conflict with main until the batch lands. That is a line such as
-`- [ ] depends on: #123`, where #123 is the batch's pull request (see `dependencies`). There is
-no comment: GitHub already shows the conflict on the pull request.
+`- [ ] depends on: #123`, where #123 is the batch's pull request (`pr-dependencies.py` has the
+forms such a line can take). There is no comment: GitHub already shows the conflict on the pull
+request.
 
 `batch-conflict`: the pull request conflicts with the head of an open batch labelled `building`.
-A pull request labelled `batch-building` is in a batch, and does not get it. The comparison is
+When batches are stacked, the branch of the upper one merges the lower one's and lands right after
+it, so a pull request is compared with the outermost batch of each stack only, the one the batch
+queue labels `latest batch`: what it conflicts with there is what stands between it and main
+once the stack has landed. Until the batch queue has labelled any batch being built `latest
+batch`, every batch being built is compared with. A pull request labelled `batch-building` is in
+a batch, and does not get it. The comparison is
 the one `batch-queue-conflicts.py` makes: git cannot merge a file that both change since they
 left main, or one of the two deletes a Lean file that the other starts to import. Most pull
 requests change no file that the batch changes, and need no trial merge. When the comparison
@@ -41,39 +48,28 @@ from __future__ import annotations
 
 import argparse
 import importlib.util
-import json
 from pathlib import Path
 import re
-import subprocess
 import sys
 import tempfile
 import time
-from urllib.parse import quote
 
-
-def _load(name, filename):
-    spec = importlib.util.spec_from_file_location(name, Path(__file__).with_name(filename))
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
-
-
-_labels = _load("rh_batch_labels", "batch-labels.py")
+_REST_SPEC = importlib.util.spec_from_file_location("rh_github_rest", Path(__file__).with_name("github-rest.py"))
+_rest = importlib.util.module_from_spec(_REST_SPEC)
+_REST_SPEC.loader.exec_module(_rest)
+_labels = _rest.load("batch-labels.py")
 # The trial merge and its helpers, as the batch queue uses them to compare queued pull requests.
-_conflicts = _load("rh_batch_queue_conflicts", "batch-queue-conflicts.py")
+_conflicts = _rest.load("batch-queue-conflicts.py")
+# The parser for the `depends on` lines of a description, shared with the batch queue.
+_dependencies = _rest.load("pr-dependencies.py")
+dependencies = _dependencies.dependencies
 MAIN_CONFLICT, BATCH_CONFLICT = _labels.MAIN_CONFLICT, _labels.BATCH_CONFLICT
-BUILDING, MEMBER, WAITING = _labels.BUILDING, _labels.MEMBER, _labels.WAITING
+BUILDING, LATEST, MEMBER, WAITING = _labels.BUILDING, _labels.LATEST, _labels.MEMBER, _labels.WAITING
 OURS = (MAIN_CONFLICT, BATCH_CONFLICT)
-PREFIX = "batch/"
 # How GraphQL names the workflow's own account, which REST calls github-actions[bot].
-BOT = "github-actions"
-# Stop writing when fewer REST requests than this are left for the hour, so other workflows keep
-# working. The batch queue keeps the same reserve.
-RESERVE = 150
-# Seconds between two requests that change something. GitHub allows no more than 80 requests
-# that create content a minute, and asks for a pause of a second between those that change
-# anything.
-PACE = 1.0
+BOT = _rest.GRAPHQL_BOT
+# Stop writing when fewer REST requests than this are left for the hour (see `github-rest.py`).
+RESERVE = _rest.RESERVE
 # GitHub works out whether a pull request conflicts with main in the background, after it is
 # asked. Pull requests it has not worked out yet are read again this many times, this many
 # seconds apart, after the git comparisons.
@@ -81,14 +77,6 @@ RETRIES, WAIT = 3, 15.0
 # Hidden at the start of the comment sent to a pull request that conflicts with a batch.
 MARKER = "<!-- conflict-labels-batch {number} -->"
 TOLD = re.compile(r"<!-- conflict-labels-batch (\d+) -->")
-
-# A line that says the pull request depends on another, such as `- [ ] depends on: #123`.
-DEPENDS = re.compile(r"[ \t]*(?:[-*+][ \t]+)?(?:\[[ xX]\][ \t]*)?depends?[ \t]+(?:on|upon)\b(.*)", re.IGNORECASE)
-# A pull request named on such a line: `#123`, `owner/name#123` or the pull request's address.
-REFERENCE = re.compile(r"(?<![\w/&.-])(?:([\w.-]+/[\w.-]+))?#(\d+)\b"
-                       r"|https://github\.com/([\w.-]+/[\w.-]+)/pull/(\d+)\b", re.IGNORECASE)
-COMMENT = re.compile(r"<!--.*?-->", re.DOTALL)
-FENCE = re.compile(r"[ \t]*(```|~~~)")
 
 FIELDS = """
   number state isDraft headRefName headRefOid baseRefName mergeable body
@@ -119,17 +107,7 @@ SOME = """query($owner: String!, $name: String!) {
   rateLimit { cost remaining }
   repository(owner: $owner, name: $name) { %s }
 }"""
-COMMENTS = """query($owner: String!, $name: String!, $number: Int!, $after: String) {
-  rateLimit { cost remaining }
-  repository(owner: $owner, name: $name) {
-    pullRequest(number: $number) {
-      comments(first: 100, after: $after) {
-        pageInfo { hasNextPage endCursor }
-        nodes { body author { __typename login } }
-      }
-    }
-  }
-}"""
+COMMENTS = _rest.COMMENTS
 CLOSED = """query($main: String!, $batch: String!) {
   rateLimit { cost remaining }
   main: search(query: $main, type: ISSUE, first: 100) { nodes { ... on PullRequest { number } } }
@@ -137,87 +115,12 @@ CLOSED = """query($main: String!, $batch: String!) {
 }"""
 
 
-class Refused(Exception):
-    """Something is wrong with the repository that this script should not paper over."""
+Refused = _rest.Refused
 
 
-class GitHub:
-    """GitHub's API through `gh`. With `dry_run`, writes are printed, not sent."""
-
-    def __init__(self, repo, dry_run=False):
-        self.repo, self.dry_run = repo, dry_run
-        self.owner, _, self.name = repo.partition("/")
-        self.calls, self.queries, self.points, self.writes = 0, 0, 0, 0
-        self.remaining, self.changed, self.failed = None, None, False
-
-    def run(self, args, payload=None):
-        data = json.dumps(payload).encode() if payload is not None else None
-        return subprocess.run(["gh", "api", *args], input=data, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-
-    def call(self, method, path, payload=None):
-        """One REST request. Returns (HTTP status, decoded body or None). Requests that change
-        something are spaced PACE seconds apart."""
-        if method != "GET":
-            if self.changed is not None:
-                time.sleep(max(0.0, self.changed + PACE - time.monotonic()))
-            self.changed = time.monotonic()
-        args = ["--include", "--method", method, f"repos/{self.repo}/{path}"]
-        if payload is not None:
-            args += ["--input", "-"]
-        done = self.run(args, payload)
-        self.calls += 1
-        head, _, body = done.stdout.decode("utf-8", "replace").replace("\r\n", "\n").partition("\n\n")
-        try:
-            status = int(head.split()[1])
-        except (IndexError, ValueError):
-            sys.stderr.write(done.stderr.decode("utf-8", "replace"))
-            raise RuntimeError(f"no answer from GitHub for {method} {path}") from None
-        for line in head.splitlines()[1:]:
-            name, _, value = line.partition(":")
-            if name.strip().lower() == "x-ratelimit-remaining" and value.strip().isdigit():
-                self.remaining = int(value)
-        try:
-            return status, (json.loads(body) if body.strip() else None)
-        except json.JSONDecodeError:
-            return status, None
-
-    def write(self, method, path, payload=None):
-        """A request that changes something, or with `dry_run` the line saying what it would be."""
-        self.writes += 1
-        if self.dry_run:
-            print(f"would {method} {path} {json.dumps(payload) if payload else ''}".rstrip())
-            return 200, None
-        status, data = self.call(method, path, payload)
-        # A refusal for going too fast stops the run: every write after it would be refused too,
-        # on the allowance the other workflows share. The next run carries on.
-        if status == 429 or (status == 403 and "rate limit" in str((data or {}).get("message", "")).lower()):
-            raise Refused(f"GitHub's rate limit refused {method} {path}: the next run carries on.")
-        return status, data
-
-    def graphql(self, query, **variables):
-        done = self.run(["graphql", "--input", "-"], {"query": query, "variables": variables})
-        self.queries += 1
-        try:
-            answer = json.loads(done.stdout)
-        except json.JSONDecodeError:
-            answer = None
-        if not isinstance(answer, dict) or answer.get("errors") or done.returncode != 0:
-            sys.stderr.write(done.stderr.decode("utf-8", "replace"))
-            found = (answer or {}).get("errors") if isinstance(answer, dict) else None
-            raise RuntimeError(f"GraphQL query failed: {json.dumps(found) if found else 'no answer'}")
-        self.points += ((answer["data"] or {}).get("rateLimit") or {}).get("cost", 0)
-        return answer["data"]
-
-    def rate_limit(self):
-        """How many REST requests are left this hour. Asking does not use one up."""
-        done = self.run(["rate_limit", "--jq", ".resources.core.remaining"])
-        text = done.stdout.decode().strip()
-        if done.returncode == 0 and text.isdigit():
-            self.remaining = int(text)
-
-    def short(self):
-        """Whether the hour's allowance is nearly used up."""
-        return self.remaining is not None and self.remaining < RESERVE
+class GitHub(_rest.GitHub):
+    """GitHub's API through `gh` (see `github-rest.py`), with the queries this script reads pull
+    requests with."""
 
     # Reading.
 
@@ -268,18 +171,7 @@ class GitHub:
 
     def told(self, number):
         """The batches that pull request `number` has been sent this script's comment about."""
-        found, after = set(), None
-        while True:
-            data = self.graphql(COMMENTS, owner=self.owner, name=self.name, number=number, after=after)
-            page = data["repository"]["pullRequest"]["comments"]
-            for comment in page["nodes"]:
-                author = comment.get("author") or {}
-                match = TOLD.match(comment.get("body") or "")
-                if match and author.get("__typename") == "Bot" and author.get("login") == BOT:
-                    found.add(int(match.group(1)))
-            if not page["pageInfo"]["hasNextPage"]:
-                return found
-            after = page["pageInfo"]["endCursor"]
+        return self.marked(number, TOLD)
 
     def closed_with_labels(self):
         """Closed pull requests that still carry one of the labels, as {label: [numbers]}."""
@@ -288,38 +180,14 @@ class GitHub:
         return {MAIN_CONFLICT: sorted(node["number"] for node in data["main"]["nodes"] if node),
                 BATCH_CONFLICT: sorted(node["number"] for node in data["batch"]["nodes"] if node)}
 
-    # Writing.
-
-    def label_exists(self, name):
-        status, _ = self.call("GET", f"labels/{quote(name, safe='')}")
-        if status not in (200, 404):
-            raise RuntimeError(f"GET labels/{name} answered {status}")
-        return status == 200
-
-    def add_labels(self, number, names):
-        status, _ = self.write("POST", f"issues/{number}/labels", {"labels": sorted(names)})
-        if status not in (200, 201):
-            raise RuntimeError(f"could not label #{number}: {status}")
-
-    def remove_label(self, number, name):
-        status, _ = self.write("DELETE", f"issues/{number}/labels/{quote(name, safe='')}")
-        # Taking off a label that someone else has just taken off answers 404.
-        if status not in (200, 204, 404):
-            raise RuntimeError(f"could not take `{name}` off #{number}: {status}")
-
-    def comment(self, number, body):
-        status, _ = self.write("POST", f"issues/{number}/comments", {"body": body})
-        if status not in (200, 201):
-            raise RuntimeError(f"could not comment on #{number}: {status}")
-
 
 def pull(node, repo):
     """What this script needs to know about a pull request, from GraphQL's answer."""
-    home = (node.get("headRepository") or {}).get("nameWithOwner") or ""
+    home = (node.get("headRepository") or {}).get("nameWithOwner")
     return {
         "number": node["number"], "open": node.get("state", "OPEN") == "OPEN",
         "draft": node.get("isDraft", False), "ref": node.get("headRefName", ""),
-        "own": home.lower() == repo.lower(), "sha": node.get("headRefOid", ""),
+        "batch": _labels.holds_batch(repo, home, node.get("headRefName", "")), "sha": node.get("headRefOid", ""),
         "base": node.get("baseRefName", ""), "mergeable": node.get("mergeable", "UNKNOWN"),
         "body": node.get("body") or "", "labels": {label["name"] for label in (node.get("labels") or {}).get("nodes", [])},
     }
@@ -329,34 +197,9 @@ def pull(node, repo):
 # Deciding, from what is known about a pull request. Nothing here asks GitHub or git.
 
 
-def dependencies(body, repo):
-    """The pull requests that a description says this one depends on, as a set of numbers.
-
-    A dependency is a line that starts with `depends on`, `depend on` or `depends upon`, in any
-    letter case, optionally after a list marker and a task box such as `- [ ]` or `- [x]`. Every
-    pull request of `repo` that the rest of the line names counts: `#123`, `owner/name#123` or
-    the pull request's address. Lines in HTML comments and in fenced code blocks are not read.
-    """
-    found, fenced = set(), None
-    for line in COMMENT.sub("", body.replace("\r\n", "\n")).split("\n"):
-        fence = FENCE.match(line)
-        if fence:
-            fenced = None if fenced == fence.group(1) else (fenced or fence.group(1))
-            continue
-        if fenced:
-            continue
-        match = DEPENDS.fullmatch(line)
-        if not match:
-            continue
-        for named, number, url_repo, url_number in REFERENCE.findall(match.group(1)):
-            where = named or url_repo
-            if not where or where.lower() == repo.lower():
-                found.add(int(number or url_number))
-    return found
-
-
 def is_batch(pr):
-    return pr["own"] and pr["ref"].startswith(PREFIX)
+    """Whether the pull request holds a batch (see `batch-labels.py`)."""
+    return pr["batch"]
 
 
 def unavailable(pr, main):
@@ -377,6 +220,17 @@ def comparable(pr, main):
     return unavailable(pr, main) is None and MEMBER not in pr["labels"]
 
 
+def compared(batches):
+    """The batches that pull requests are compared with, as sorted numbers, from every open batch
+    as {number: pull request}: those being built (`building`) that are the outermost of their
+    stack (`latest batch`). A batch under another is part of the one on top of it, which merges
+    its branch. When no batch being built carries `latest batch`, as before the batch queue has
+    labelled any, every batch being built."""
+    building = [number for number, batch in batches.items() if BUILDING in batch["labels"]]
+    latest = [number for number in building if LATEST in batches[number]["labels"]]
+    return sorted(latest or building)
+
+
 def found_conflict(result):
     return result is not None and (result.kind == "conflict" or bool(result.stale))
 
@@ -385,10 +239,11 @@ def decide(pr, main, batches, results):
     """What the labels of a pull request should be.
 
     `pr["depends"]` holds the pull requests its description says it depends on (see
-    `dependencies`). `batches` is every open batch as {number: pull request}, and `results` the pull request's
-    comparison with each one being built, as {batch number: Comparison, or None when it could not
-    be made}. Returns {"main": wanted, "batch": wanted, "conflicts": {batch number: Comparison},
-    "why": {label: reason}}, where wanted is True or False, or None to leave the label as it is.
+    `pr-dependencies.py`). `batches` is every open batch as {number: pull request}, and `results`
+    the pull request's comparison with each one it is compared with (see `compared`), as {batch
+    number: Comparison, or None when it could not be made}. Returns {"main": wanted, "batch": wanted, "conflicts": {batch
+    number: Comparison}, "why": {label: reason}}, where wanted is True or False, or None to leave
+    the label as it is.
     """
     why = {}
     gone = unavailable(pr, main)
@@ -404,7 +259,7 @@ def decide(pr, main, batches, results):
     else:
         wanted_main, why[MAIN_CONFLICT] = None, "GitHub has not worked out whether it merges"
 
-    building = sorted(number for number, batch in batches.items() if BUILDING in batch["labels"])
+    building = compared(batches)
     conflicts = {number: results[number] for number in building if found_conflict(results.get(number))}
     if MEMBER in pr["labels"]:
         wanted_batch, why[BATCH_CONFLICT] = False, f"it is labelled `{MEMBER}`"
@@ -427,10 +282,9 @@ def needs_told(pr, decision, batches):
     """Whether to read a pull request's comments to see which batches it was told about.
 
     That is only needed when it is about to be told something: it conflicts with a batch, and
-    either does not carry the label yet or more than one batch is being built.
+    either does not carry the label yet or it is compared with more than one batch.
     """
-    building = [number for number, batch in batches.items() if BUILDING in batch["labels"]]
-    return bool(decision["conflicts"]) and (BATCH_CONFLICT not in pr["labels"] or len(building) > 1)
+    return bool(decision["conflicts"]) and (BATCH_CONFLICT not in pr["labels"] or len(compared(batches)) > 1)
 
 
 def plan(pr, decision, told, batches):
@@ -613,7 +467,7 @@ def compare_all(repo, main, building, candidates, log, *, origin=None):
 
 def sync(gh, number=None, compare=compare_all):
     """Bring both labels up to date on one pull request, or on every open one. Returns a log."""
-    log, checked = [], {}
+    log = []
     if number is None:
         main, pulls = gh.everything()
         targets = sorted(pulls)
@@ -623,10 +477,14 @@ def sync(gh, number=None, compare=compare_all):
     for pr in pulls.values():
         pr["depends"] = dependencies(pr["body"], gh.repo)
     batches = {key: pr for key, pr in pulls.items() if pr["open"] and is_batch(pr)}
-    building = {key: pr for key, pr in batches.items() if BUILDING in pr["labels"]}
+    building = {key: batches[key] for key in compared(batches)}
     candidates = {key: pulls[key] for key in targets if comparable(pulls[key], main)}
     if building:
-        log.append("being built: " + ", ".join(f"#{key} (`{pr['ref']}`)" for key, pr in sorted(building.items())))
+        under = [key for key, pr in sorted(batches.items()) if BUILDING in pr["labels"] and key not in building]
+        log.append("compared with the batches being built: "
+                   + ", ".join(f"#{key} (`{pr['ref']}`)" for key, pr in sorted(building.items()))
+                   + ("; not with " + ", ".join(f"#{key}" for key in under) + " on its own: a batch stacked on it "
+                      "holds its changes" if under else ""))
     results = {}
     if building and candidates:
         try:
@@ -674,9 +532,8 @@ def sync(gh, number=None, compare=compare_all):
                     log.append(f"#{key}: changed during this sweep, so left to the run for it")
                     continue
             for label in sorted(add):
-                if label not in checked:
-                    checked[label] = gh.label_exists(label)
-                if not checked[label]:
+                # Asked once a run (see `github-rest.py`).
+                if not gh.label_exists(label):
                     if not gh.dry_run:
                         raise Refused(f"There is no `{label}` label in {gh.repo}. Was it renamed?")
                     log.append(f"there is no `{label}` label yet, so a real run would stop here")
@@ -738,7 +595,7 @@ def main():
         log, failure = [str(error)], 1
     left = f"; {gh.remaining} left this hour" if gh.remaining is not None else ""
     log.append(f"{time.monotonic() - started:.0f} s; {gh.calls} REST requests{left}; {gh.queries} GraphQL "
-               f"queries costing {gh.points} points; {gh.writes} {'writes that a real run would make' if gh.dry_run else 'writes'}")
+               f"queries costing {gh.points} points; {gh.wrote} {'writes that a real run would make' if gh.dry_run else 'writes'}")
     text = "".join(f"- {line}\n" for line in log)
     sys.stdout.write(text)
     if args.summary:

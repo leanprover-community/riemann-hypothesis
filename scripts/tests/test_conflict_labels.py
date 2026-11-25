@@ -29,51 +29,17 @@ Comparison = labels._conflicts.Comparison
 
 REPO = "o/r"
 MAIN_CONFLICT, BATCH_CONFLICT = labels.MAIN_CONFLICT, labels.BATCH_CONFLICT
-BUILDING, MEMBER, WAITING = labels.BUILDING, labels.MEMBER, labels.WAITING
+BUILDING, LATEST, MEMBER, WAITING = labels.BUILDING, labels.LATEST, labels.MEMBER, labels.WAITING
 
 
 # ---------------------------------------------------------------------------------------------
-# The dependency lines.
+# The dependency lines. `test_pr_dependencies.py` checks the parser itself.
 
 
 class Dependencies(unittest.TestCase):
-    def read(self, body):
-        return labels.dependencies(body, REPO)
-
-    def test_the_line_agents_md_asks_for(self):
-        self.assertEqual(self.read("Some text.\n\n---\n\n- [ ] depends on: #123\n"), {123})
-
-    def test_every_wording_and_task_box(self):
-        for line in ("- [ ] depends on: #7", "- [x] depends on: #7", "- [X] Depends on #7", "depends on #7",
-                     "Depend on: #7", "* [ ] depends upon #7", "  - depends on: #7", "DEPENDS ON #7"):
-            with self.subTest(line=line):
-                self.assertEqual(self.read(line), {7})
-
-    def test_several_on_one_line_and_several_lines(self):
-        self.assertEqual(self.read("- [ ] depends on: #1, #2\n- [x] depends on: #3\n"), {1, 2, 3})
-
-    def test_addresses_and_references_to_this_repository_only(self):
-        body = ("depends on https://github.com/o/r/pull/11\n"
-                "depends on https://github.com/other/r/pull/12\n"
-                "depends on o/r#13 and other/r#14\n")
-        self.assertEqual(self.read(body), {11, 13})
-
-    def test_only_at_the_start_of_a_line(self):
-        self.assertEqual(self.read("This depends on #5.\n- see #6, which depends on #7\n"), set())
-
-    def test_other_words_are_not_dependencies(self):
-        self.assertEqual(self.read("dependson #1\ndepends #2\ndepends-on #3\n- [ ] closes #4\n"), set())
-
-    def test_comments_and_code_blocks_are_not_read(self):
-        body = ("<!-- - [ ] depends on: #1 -->\n<!--\ndepends on #2\n-->\n"
-                "```\n- [ ] depends on: #3\n```\n~~~md\ndepends on #4\n~~~\ndepends on #5\n")
-        self.assertEqual(self.read(body), {5})
-
-    def test_windows_line_ends(self):
-        self.assertEqual(self.read("text\r\n- [ ] depends on: #9\r\n"), {9})
-
-    def test_a_number_must_stand_alone(self):
-        self.assertEqual(self.read("depends on #12abc and &#13; and #14\n"), {14})
+    def test_the_shared_parser_is_used(self):
+        self.assertEqual(labels.dependencies.__module__, "rh_pr_dependencies")
+        self.assertEqual(labels.dependencies("Some text.\n\n---\n\n- [ ] depends on: #123\n", REPO), {123})
 
 
 # ---------------------------------------------------------------------------------------------
@@ -82,7 +48,9 @@ class Dependencies(unittest.TestCase):
 
 def pr(number, *, labels_=(), mergeable="MERGEABLE", draft=False, open_=True, ref=None, own=False,
        base="main", depends=()):
-    return {"number": number, "open": open_, "draft": draft, "ref": ref or f"topic-{number}", "own": own,
+    ref = ref or f"topic-{number}"
+    return {"number": number, "open": open_, "draft": draft, "ref": ref,
+            "batch": labels._labels.holds_batch(REPO, REPO if own else "fork/r", ref),
             "sha": f"{number:040x}", "base": base, "mergeable": mergeable, "body": "",
             "labels": set(labels_), "depends": set(depends)}
 
@@ -151,6 +119,24 @@ class Decide(unittest.TestCase):
     def test_nothing_being_built_means_no_batch_conflict(self):
         self.assertIs(labels.decide(pr(1), "main", {901: batch(901, building=False)}, {})["batch"], False)
         self.assertIs(labels.decide(pr(1), "main", {}, {})["batch"], False)
+
+    def test_only_the_outermost_batch_of_a_stack_counts(self):
+        # #901 is stacked on #900 and holds its changes, so a conflict with #900 alone is not one.
+        stack = {900: batch(900), 901: pr(901, labels_=[BUILDING, LATEST], ref="batch/b10-on-900", own=True)}
+        self.assertEqual(labels.compared(stack), [901])
+        found = labels.decide(pr(1), "main", stack, {900: CONFLICT, 901: Comparison("apart")})
+        self.assertEqual((found["batch"], found["why"][BATCH_CONFLICT]), (False, "it merges with #901"))
+        found = labels.decide(pr(1), "main", stack, {901: CONFLICT})
+        self.assertEqual((found["batch"], sorted(found["conflicts"])), (True, [901]))
+
+    def test_without_latest_batch_every_batch_being_built_counts(self):
+        self.assertEqual(labels.compared({900: batch(900), 901: batch(901), 902: batch(902, building=False)}),
+                         [900, 901])
+
+    def test_each_stack_counts_once(self):
+        stacks = {900: batch(900), 901: pr(901, labels_=[BUILDING, LATEST], ref="batch/b10-on-900", own=True),
+                  910: pr(910, labels_=[BUILDING, LATEST], ref="batch/c1", own=True)}
+        self.assertEqual(labels.compared(stacks), [901, 910])
 
     def test_one_conflict_is_enough_when_another_batch_is_unknown(self):
         batches = {900: B, 901: batch(901)}
@@ -337,6 +323,18 @@ class Runs(unittest.TestCase):
         gh.add(2, mergeable="CONFLICTING")
         gh.add(3, labels_=[MEMBER])
         return gh
+
+    def test_stacked_batches_are_compared_through_the_outermost_one(self):
+        gh = self.scene()
+        gh.add(901, ref="batch/b10-on-900", own=True, labels_=[BUILDING, LATEST])
+        compare = comparing({(1, 900): CONFLICT, (1, 901): CONFLICT})
+        with contextlib.redirect_stdout(io.StringIO()):
+            log = labels.sync(gh, None, compare=compare)
+        self.assertEqual(compare.seen, [([901], [1, 2])])
+        self.assertIn("compared with the batches being built: #901 (`batch/b10-on-900`); not with #900 on its own: "
+                      "a batch stacked on it holds its changes", log)
+        # Told about the batch on top only, which it has to merge and depend on.
+        self.assertEqual((gh.pulls[1]["labels"], gh.told_about(1)), ({BATCH_CONFLICT, WAITING}, ["901"]))
 
     def test_a_pull_request_pushed_to_during_a_sweep_is_left_to_its_own_run(self):
         gh = self.scene()
@@ -652,7 +650,7 @@ class Inbox(unittest.TestCase):
     def test_batch_conflict_keeps_a_pull_request_out_of_the_inbox_and_main_conflict_does_not(self):
         self.assertIn(BATCH_CONFLICT, inbox.DECIDED)
         self.assertNotIn(MAIN_CONFLICT, inbox.DECIDED)
-        base = {"draft": False, "ref": "topic"}
+        base = {"draft": False, "ref": "topic", "batch": False}
         self.assertEqual(inbox.unavailable({**base, "labels": {BATCH_CONFLICT}}), f"it is labelled `{BATCH_CONFLICT}`")
         self.assertIsNone(inbox.unavailable({**base, "labels": {MAIN_CONFLICT}}))
 
