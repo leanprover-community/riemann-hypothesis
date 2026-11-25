@@ -5,8 +5,6 @@ public import Development.WeilBound.RepresentationTheoryGL.ResidualSpectrum.Slic
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain MeasureTheory Formalism.L2.Host
 open GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.SmGL GlobalTheory.DiscSpec GlobalTheory.CompanionTheory.CTFin
 
@@ -59,5 +57,3 @@ theorem proj_of (hP : Pr) (hT : SliceTens) (hI : IndMap) : Proj := by
     exact hb₂ e.symm
 
 end PositivityTheory.Rg.Rs
-
-end

@@ -6,8 +6,6 @@ import Mathlib.Tactic.Linter.Style
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain Matrix
 open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC GlobalTheory.BCT
 open scoped Classical
@@ -60,5 +58,3 @@ theorem satUniq : SatUniq := by
   exact h3.unique hU' (hα'.2 _ h2x.2.1 hFx)
 
 end PositivityTheory.Rg.BcB.F.Inert
-
-end

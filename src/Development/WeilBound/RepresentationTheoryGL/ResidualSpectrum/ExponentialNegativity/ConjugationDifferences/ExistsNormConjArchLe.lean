@@ -10,8 +10,6 @@ open scoped NumberField.AdeleRing Pointwise
 open GroundTheory.Automorphic GroundTheory.Automorphic.Reduction GroundTheory.Automorphic.AutomorphicForm
   GroundTheory.Automorphic.CuspidalSpectrum
 
-noncomputable section
-
 namespace PositivityTheory.Rg.Rs.diffstep
 
 variable {K : Type*} [Field K] [NumberField K] {n : ℕ}
@@ -74,5 +72,3 @@ theorem exists_norm_conjArch_le {ω Q : Set (AdelicGLn.AdelicGL K n)} (hω : IsC
     _ = c * C₁' * c * s := by ring
 
 end PositivityTheory.Rg.Rs.diffstep
-
-end

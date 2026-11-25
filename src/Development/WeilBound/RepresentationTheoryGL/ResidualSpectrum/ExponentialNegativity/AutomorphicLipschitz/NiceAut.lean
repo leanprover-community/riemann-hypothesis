@@ -9,8 +9,6 @@ import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.GKStable
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField MeasureTheory Filter Topology Set
 open GlobalTheory.CuspRep GroundTheory.Automorphic GroundTheory.Automorphic.AutomorphicForm GroundTheory.Automorphic.CuspidalSpectrum
 
@@ -96,5 +94,3 @@ theorem niceAut_holds : NiceAut := by
           lip := fun R => JNiceAut.lip_of_autForm φ hφ R }
 
 end PositivityTheory.Rg.Rs
-
-end

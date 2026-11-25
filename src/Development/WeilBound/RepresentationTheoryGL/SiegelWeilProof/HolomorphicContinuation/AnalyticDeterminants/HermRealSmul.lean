@@ -11,8 +11,6 @@ public import Mathlib.Analysis.Calculus.Deriv.Mul
 
 @[expose] public section
 
-noncomputable section
-
 open Filter Topology Set Metric Matrix
 open scoped ContDiff
 

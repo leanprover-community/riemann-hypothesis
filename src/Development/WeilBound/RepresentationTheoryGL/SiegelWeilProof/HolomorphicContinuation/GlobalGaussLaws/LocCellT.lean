@@ -10,8 +10,6 @@ public import Mathlib.MeasureTheory.Measure.Haar.Unique
 
 @[expose] public section
 
-noncomputable section
-
 open MeasureTheory
 open scoped ENNReal NNReal
 

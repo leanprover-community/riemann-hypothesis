@@ -7,8 +7,6 @@ import Mathlib.Tactic.Linter.Style
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain Formalism.L2.Host GlobalTheory.CuspRep
 open scoped ComplexConjugate
 

@@ -7,8 +7,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
-noncomputable section
-
 open MvPolynomial Finsupp
 
 namespace PositivityTheory.Rg.Sw.LC

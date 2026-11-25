@@ -9,8 +9,6 @@ import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicC
 
 @[expose] public section
 
-noncomputable section
-
 open Matrix Filter Topology Set
 
 namespace PositivityTheory.Rg.Sw.HSt

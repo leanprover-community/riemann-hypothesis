@@ -14,8 +14,6 @@ open scoped NumberField.AdeleRing Pointwise
 open GroundTheory.Automorphic GroundTheory.Automorphic.Reduction GroundTheory.Automorphic.AutomorphicForm
   GroundTheory.Automorphic.CuspidalSpectrum
 
-noncomputable section
-
 namespace PositivityTheory.Rg.Rs.diffstep
 
 variable {K : Type*} [Field K] [NumberField K] {n : ℕ}
@@ -81,5 +79,3 @@ theorem exists_natCast_conj_mem (U : Subgroup (AdelicGLn.integralFiniteGL K n))
     rfl
 
 end PositivityTheory.Rg.Rs.diffstep
-
-end

@@ -7,8 +7,6 @@ public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange
 
 @[expose] public section
 
-noncomputable section
-
 open Matrix Finset Filter
 open scoped ContDiff Topology
 

@@ -4,8 +4,6 @@ public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain Matrix Polynomial
 open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host
 open GlobalTheory.BCT
@@ -20,5 +18,3 @@ theorem poleq_norm (E : Type) [Field E] [NumberField E] [IsCMField E] (n : ℕ) 
   group
 
 end PositivityTheory.Rg.BcB.G8
-
-end

@@ -12,8 +12,6 @@ public import Mathlib.Analysis.SpecialFunctions.ExpDeriv
 
 @[expose] public section
 
-noncomputable section
-
 open Filter Topology Set
 open scoped ContDiff
 

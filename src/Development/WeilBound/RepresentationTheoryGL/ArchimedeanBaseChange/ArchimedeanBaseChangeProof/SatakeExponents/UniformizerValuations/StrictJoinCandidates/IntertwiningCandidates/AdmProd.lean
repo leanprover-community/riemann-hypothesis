@@ -7,8 +7,6 @@ import GroundTheory.LocalFields.PadicLogSeries
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain Matrix
 open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT PositivityTheory.Rg.BcB.F.F5 PositivityTheory.Rg.BcB.F.Tail PositivityTheory.Rg.BcB.SpectralAccumulation
 open scoped Classical
@@ -25,5 +23,3 @@ theorem AdmProd_holds : AdmProd := by
   exact hadm.2 K hKo hKc
 
 end PositivityTheory.Rg.BcB.F.FX.Bo
-
-end

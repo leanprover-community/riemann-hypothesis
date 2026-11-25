@@ -7,8 +7,6 @@ import Formalism.SharpRestriction.CuspSpanNormBounds.BridgeCSchur
 
 @[expose] public section
 
-noncomputable section
-
 open MeasureTheory Matrix Finset
 open scoped InnerProductSpace ComplexConjugate
 

@@ -6,8 +6,6 @@ public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain Matrix MeasureTheory Filter
 open GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.BCT PositivityTheory.Rg.BcB.E PositivityTheory.RgBcC PositivityTheory.Rg.BcB.CG PositivityTheory.Rg.BcB.G8
 open PositivityTheory.RgTw (Mat G)
@@ -157,5 +155,3 @@ theorem blkGrowth (h1 : BlockOperatorsProductAdjoint) (h2 : BlockWordOperators) 
   exact hb
 
 end PositivityTheory.Rg.BcB.F
-
-end

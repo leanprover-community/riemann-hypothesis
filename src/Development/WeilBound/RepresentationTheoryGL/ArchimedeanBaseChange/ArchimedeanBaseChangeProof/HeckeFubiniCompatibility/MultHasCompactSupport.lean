@@ -6,8 +6,6 @@ import Mathlib.Tactic.Linter.Style
 
 @[expose] public section
 
-noncomputable section
-
 open MeasureTheory Matrix
 open PositivityTheory.RgTw (Mat G)
 open PositivityTheory.RgBcC
@@ -92,5 +90,3 @@ theorem mult_ent (h : IsMult μ M k val T) (i j : Ix M) :
 end Ent
 
 end PositivityTheory.Rg.BcB.CG
-
-end

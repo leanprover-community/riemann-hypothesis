@@ -5,8 +5,6 @@ public import Mathlib.Analysis.Analytic.IteratedFDeriv
 
 @[expose] public section
 
-noncomputable section
-
 open Matrix Filter Topology
 open scoped ContDiff
 

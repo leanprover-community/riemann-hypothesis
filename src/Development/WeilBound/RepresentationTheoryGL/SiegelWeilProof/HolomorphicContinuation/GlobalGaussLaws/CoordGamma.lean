@@ -4,8 +4,6 @@ public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
 
 @[expose] public section
 
-noncomputable section
-
 open Complex
 
 namespace PositivityTheory.Rg.Sw.Glob.VacE

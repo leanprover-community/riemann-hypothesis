@@ -6,8 +6,6 @@ import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NonemptyEqu
 
 @[expose] public section
 
-noncomputable section
-
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.LocGL ValuativeRel
 open scoped TensorProduct
 
@@ -100,5 +98,3 @@ theorem kinj_equiv {π : Representation ℂ (GL (Fin n) k) V} {σ : Representati
   simpa using h
 
 end PositivityTheory.Rg.BcB.N3.PseStage
-
-end

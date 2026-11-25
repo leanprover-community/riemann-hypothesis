@@ -4,8 +4,6 @@ public import Development.WeilBound.RepresentationTheoryGL.CasimirAlgebra.Tensor
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField Matrix GlobalTheory.CuspRep GlobalTheory.GKCoh GlobalTheory.WigAlg Formalism.REAL
 open scoped Classical
 
@@ -117,5 +115,3 @@ theorem kData_holds : KData := by
   · exact isCompact_iff_compactSpace.1 (isCompact_unitaryGroup E a)
 
 end PositivityTheory.Rg.Cz.J
-
-end

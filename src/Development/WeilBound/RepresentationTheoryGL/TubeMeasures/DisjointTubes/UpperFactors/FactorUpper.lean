@@ -9,8 +9,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formali
 open GlobalTheory.CovTop.VolUp
 open scoped ENNReal
 
-noncomputable section
-
 namespace MainStatements.Tam.N
 
 theorem fac_le (r i : ℕ) (hi : i < r) : ((i.factorial : ℕ) : ℝ) ≤ (r : ℝ) ^ r := by

@@ -9,8 +9,6 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CapelliC
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain MeasureTheory Formalism.L2.Host
 open GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.SmGL GlobalTheory.DiscSpec GlobalTheory.CompanionTheory.CTFin GlobalTheory.BCWords
 
@@ -99,5 +97,3 @@ theorem casimir_on_parabolic_induction {n : Fin 2 → ℕ} (W₁ : Submodule ℂ
   rw [hF.1]
 
 end PositivityTheory.Rg.Rs.PInfInd2A
-
-end

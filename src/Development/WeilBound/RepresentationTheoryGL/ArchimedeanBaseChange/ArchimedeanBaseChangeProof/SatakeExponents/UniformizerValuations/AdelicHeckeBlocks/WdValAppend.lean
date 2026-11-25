@@ -7,8 +7,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain Matrix MeasureTheory
 open GlobalTheory.CuspRep GlobalTheory.UnitaryBC PositivityTheory.Rg.BcB.E PositivityTheory.RgBcC PositivityTheory.Rg.BcB.CG
 open PositivityTheory.RgTw (Mat G)
@@ -149,5 +147,3 @@ theorem blkWord (h : BlockOperatorsProductAdjoint) : BlockWordOperators := by
         simp [mul_assoc]
 
 end PositivityTheory.Rg.BcB.F
-
-end

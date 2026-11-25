@@ -7,8 +7,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain MeasureTheory Formalism.L2.Host
 open GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.SmGL GlobalTheory.DiscSpec GlobalTheory.CompanionTheory.CTFin PositivityTheory.Rg.Rs PositivityTheory.Rg.Rs.ParabolicProjection
 
@@ -136,5 +134,3 @@ theorem twShift : TwShift := by
   exact mulChi_mem_shift z t _ (hf φ hφ)
 
 end PositivityTheory.Rg.BcB.SpectralAccumulation.Trees
-
-end

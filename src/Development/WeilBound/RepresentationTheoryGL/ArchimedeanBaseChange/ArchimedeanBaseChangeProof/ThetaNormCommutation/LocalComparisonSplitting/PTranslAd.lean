@@ -4,8 +4,6 @@ public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain Matrix
 open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host
 open GlobalTheory.BCT
@@ -62,5 +60,3 @@ theorem translAd_holds : TranslAd := by
     _ = U * T * U⁻¹ := by group
 
 end PositivityTheory.Rg.BcB.G8
-
-end

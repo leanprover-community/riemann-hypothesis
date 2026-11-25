@@ -5,8 +5,6 @@ public import Development.WeilBound.RepresentationTheoryGL.CasimirAlgebra.Tensor
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.REAL Matrix
 
 namespace PositivityTheory.Rg.Cz
@@ -129,5 +127,3 @@ theorem tensorGl_holds : TensorGl := by
     rw [← mul_assoc, ← (lift_comm_pm _ σ).eq, mul_assoc, pm_eAt, mul_assoc]
 
 end PositivityTheory.Rg.Cz
-
-end

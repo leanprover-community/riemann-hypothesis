@@ -7,8 +7,6 @@ public import Development.WeilBound.RepresentationTheoryGL.ResidualSpectrum.Slic
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain MeasureTheory Formalism.L2.Host
 open GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.SmGL GlobalTheory.DiscSpec GlobalTheory.CompanionTheory.CTFin PositivityTheory.Rg.Rs
 open scoped Classical
@@ -110,5 +108,3 @@ theorem tw_tw_neg (V : Submodule ℂ (Sm E a)) (w : ℂ) : tw (tw V (-w)) w = V 
     exact h2
 
 end PositivityTheory.Rg.BcB.SpectralAccumulation.Cz.BlockTwistCharacters
-
-end

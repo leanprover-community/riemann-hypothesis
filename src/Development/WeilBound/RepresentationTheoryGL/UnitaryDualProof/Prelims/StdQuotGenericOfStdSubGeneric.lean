@@ -8,8 +8,6 @@ import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.Zelevin
 
 @[expose] public section
 
-noncomputable section
-
 open GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.JHMult Zc Zc.Cos
 
 namespace GlobalTheory.CompanionTheory.StdQuot
@@ -66,5 +64,3 @@ theorem whitChar_inv (ψ : AddChar k Circle) (u : unipB k (Fin N)) :
 end Theta
 
 end GlobalTheory.CompanionTheory.StdQuot
-
-end

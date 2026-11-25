@@ -6,8 +6,6 @@ public import Mathlib.Analysis.SpecialFunctions.JapaneseBracket
 
 @[expose] public section
 
-noncomputable section
-
 open MeasureTheory Matrix
 
 namespace PositivityTheory.Rg.Sw.WR.I

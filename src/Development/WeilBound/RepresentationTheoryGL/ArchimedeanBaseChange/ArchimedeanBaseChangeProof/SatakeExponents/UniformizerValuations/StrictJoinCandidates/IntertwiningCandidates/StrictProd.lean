@@ -6,8 +6,6 @@ public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain Matrix
 open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT PositivityTheory.Rg.BcB.F.F5 PositivityTheory.Rg.BcB.F.Tail PositivityTheory.Rg.BcB.SpectralAccumulation
 open scoped Classical
@@ -39,5 +37,3 @@ theorem StrictProd_holds : StrictProd := by
   exact ⟨GlobalTheory.LocGL.multiProdEquiv _ fun i => (hσ i).some⟩
 
 end PositivityTheory.Rg.BcB.F.FX.Bo
-
-end

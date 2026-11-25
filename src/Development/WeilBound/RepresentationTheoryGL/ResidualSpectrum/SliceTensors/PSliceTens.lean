@@ -12,8 +12,6 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CommuteR
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField MeasureTheory Formalism.L2.Host
 open GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.SmGL GlobalTheory.DiscSpec GlobalTheory.CompanionTheory.CTFin PositivityTheory.Affgl
 
@@ -106,5 +104,3 @@ theorem sliceTens_holds : SliceTens := by
   exact Submodule.sum_mem _ fun κ _ => Submodule.subset_span ⟨b κ, hbm κ, q κ, hqm κ, rfl⟩
 
 end PositivityTheory.Rg.Rs
-
-end

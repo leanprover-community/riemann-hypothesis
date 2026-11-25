@@ -5,8 +5,6 @@ public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.ExceptionalGroupG
 
 @[expose] public section
 
-noncomputable section
-
 open Finset Matrix
 
 namespace PositivityTheory.RgHe3

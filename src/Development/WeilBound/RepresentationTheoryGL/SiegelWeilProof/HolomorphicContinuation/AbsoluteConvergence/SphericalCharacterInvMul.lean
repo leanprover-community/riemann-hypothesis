@@ -5,8 +5,6 @@ import Mathlib.Tactic.Linter.Style
 
 @[expose] public section
 
-noncomputable section
-
 open MeasureTheory Matrix
 
 namespace PositivityTheory.Rg.Sw.AbsSt

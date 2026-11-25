@@ -6,8 +6,6 @@ import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.Archim
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain
 open GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.SmGL GlobalTheory.CompanionTheory.CTFin PositivityTheory.Rg.Rs
 open PositivityTheory.Rg.BcB.SpectralAccumulation.Cz.BlockDerivatives
@@ -72,5 +70,3 @@ theorem finGen_map {a : ℕ} {L : Submodule ℂ (Sm E a)} {z : Module.End ℂ (S
     exact hle hφ
 
 end PositivityTheory.Rg.BcB.SpectralAccumulation.Cz.BlockAssembly
-
-end

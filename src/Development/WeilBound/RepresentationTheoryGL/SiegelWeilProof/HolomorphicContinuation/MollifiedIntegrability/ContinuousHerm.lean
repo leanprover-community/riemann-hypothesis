@@ -10,8 +10,6 @@ public import Mathlib.Analysis.SpecialFunctions.Pow.Deriv
 
 @[expose] public section
 
-noncomputable section
-
 open MeasureTheory Matrix Filter Topology
 
 namespace PositivityTheory.Rg.Sw.WR.T

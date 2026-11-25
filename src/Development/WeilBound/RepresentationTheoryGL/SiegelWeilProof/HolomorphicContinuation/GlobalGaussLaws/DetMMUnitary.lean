@@ -6,8 +6,6 @@ public import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.Holom
 
 @[expose] public section
 
-noncomputable section
-
 open Matrix Complex
 
 namespace PositivityTheory.Rg.Sw.Glob.VacI

@@ -5,8 +5,6 @@ import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LcscAdelicUnitar
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain Matrix
 open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host
 open GlobalTheory.BCT
@@ -61,5 +59,3 @@ theorem topo_holds : Topo := by
     topo_thetaR_cont _ Complex.continuous_conj n⟩
 
 end PositivityTheory.Rg.BcB.G8
-
-end

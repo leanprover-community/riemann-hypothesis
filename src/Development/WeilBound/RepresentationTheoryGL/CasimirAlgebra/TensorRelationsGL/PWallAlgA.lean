@@ -5,8 +5,6 @@ public import Development.WeilBound.RepresentationTheoryGL.CasimirAlgebra.Tensor
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.REAL Matrix
 
 namespace PositivityTheory.Rg.Cz
@@ -332,5 +330,3 @@ theorem eigen_val {V : Type} [AddCommGroup V] [Module ℂ V] (T : Module.End ℂ
 end WallAlgP
 
 end PositivityTheory.Rg.Cz
-
-end

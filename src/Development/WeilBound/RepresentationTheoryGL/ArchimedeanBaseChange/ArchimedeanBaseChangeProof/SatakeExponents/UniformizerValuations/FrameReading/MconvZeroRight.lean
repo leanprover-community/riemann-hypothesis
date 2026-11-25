@@ -4,8 +4,6 @@ public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange
 
 @[expose] public section
 
-noncomputable section
-
 
 
 open NumberField IsDedekindDomain Matrix MeasureTheory Filter
@@ -28,5 +26,3 @@ theorem levCof {n : ℕ} (d : LocData E n) (a : ℕ) :
   simp [hc.1.1, hc.1.2, hc.2]
 
 end PositivityTheory.Rg.BcB.F.Rd
-
-end

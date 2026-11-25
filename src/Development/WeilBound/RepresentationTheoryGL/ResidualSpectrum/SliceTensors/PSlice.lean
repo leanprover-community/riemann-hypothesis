@@ -9,8 +9,6 @@ public import Development.WeilBound.RepresentationTheoryGL.ResidualSpectrum.Slic
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField MeasureTheory GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.CompanionTheory.CTFin
 
 namespace PositivityTheory.Rg.Rs
@@ -106,5 +104,3 @@ theorem slice_of : Dict → FinTr → Slice := by
     ring
 
 end PositivityTheory.Rg.Rs
-
-end

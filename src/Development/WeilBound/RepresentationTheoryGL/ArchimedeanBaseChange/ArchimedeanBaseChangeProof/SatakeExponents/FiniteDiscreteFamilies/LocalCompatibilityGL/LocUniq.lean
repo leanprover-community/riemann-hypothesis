@@ -6,8 +6,6 @@ public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.Discret
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain Matrix
 open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC PositivityTheory.Rg.Rs GlobalTheory.DiscLocEx
 
@@ -70,5 +68,3 @@ theorem LocUniq_holds : LocUniq := by
   exact GlobalTheory.LocGL.IrrGL.of_eq_of.2 ⟨e⟩
 
 end PositivityTheory.Rg.BcB.F.F5.Bo
-
-end

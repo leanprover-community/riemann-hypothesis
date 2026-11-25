@@ -14,8 +14,6 @@ public import Development.WeilBound.RepresentationTheoryGL.ResidualSpectrum.Slic
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField MeasureTheory GlobalTheory.AutomorphicL2Unitary GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.CuspRep.CuspidalL2GL GlobalTheory.CapOrth
   GlobalTheory.LevelTypeProj GlobalTheory.PRep GlobalTheory.CuspRep.LocEx PositivityTheory.Rg.Rs.PrAdm
 
@@ -83,5 +81,3 @@ theorem pr_holds : Pr := by
     exact hvψ this
 
 end PositivityTheory.Rg.Rs
-
-end

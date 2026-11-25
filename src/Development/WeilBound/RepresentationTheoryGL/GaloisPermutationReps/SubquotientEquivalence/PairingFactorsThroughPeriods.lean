@@ -4,8 +4,6 @@ public import Development.WeilBound.RepresentationTheoryGL.GaloisPermutationReps
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain ValuativeRel Matrix Polynomial
 open Formalism.ConjugateSelfDual ReciprocityTheory.Gal
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.LocGL GlobalTheory.WeilDeligne GlobalTheory.LocLanglands
@@ -206,5 +204,3 @@ theorem st1b : St1b := by
     exact LinearMap.congr_fun h v
 
 end PositivityTheory.Rg.DzCount
-
-end

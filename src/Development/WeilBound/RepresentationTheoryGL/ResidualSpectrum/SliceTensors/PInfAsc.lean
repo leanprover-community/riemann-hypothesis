@@ -7,8 +7,6 @@ import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HasInfCharIn
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain MeasureTheory Formalism.L2.Host
 open GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.SmGL GlobalTheory.DiscSpec GlobalTheory.SpehInfChar
 
@@ -84,5 +82,3 @@ theorem infAsc_holds : InfAsc := by
   exact sub_eq_zero.1 (hfi _ hmem h0)
 
 end PositivityTheory.Rg.Rs
-
-end

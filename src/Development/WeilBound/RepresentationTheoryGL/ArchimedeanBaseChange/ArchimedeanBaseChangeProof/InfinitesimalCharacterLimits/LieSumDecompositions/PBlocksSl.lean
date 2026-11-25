@@ -13,8 +13,6 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CommuteR
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain MeasureTheory
 open GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.SmGL GlobalTheory.DiscSpec GlobalTheory.CompanionTheory.CTFin PositivityTheory.Affgl PositivityTheory.Rg.Rs
 open PositivityTheory.Rg.BcB.SpectralAccumulation.Cz.BlockDerivatives
@@ -124,5 +122,3 @@ theorem expand {U : Submodule ℂ (Sm E (r + s))} (hU : IsAutSt U) {c : ℂ} {T 
   exact (Equiv.sum_comp eP (fun κ => (b κ).1 m.1 * (q κ).1 m.2)).symm
 
 end PositivityTheory.Rg.BcB.SpectralAccumulation.Cz.BlockSlices
-
-end

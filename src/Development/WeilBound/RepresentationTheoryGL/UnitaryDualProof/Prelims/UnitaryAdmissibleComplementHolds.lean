@@ -8,8 +8,6 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CompactO
 
 @[expose] public section
 
-noncomputable section
-
 open GlobalTheory.PRep GlobalTheory.SmGL
 
 namespace PositivityTheory.PfBern.Props2

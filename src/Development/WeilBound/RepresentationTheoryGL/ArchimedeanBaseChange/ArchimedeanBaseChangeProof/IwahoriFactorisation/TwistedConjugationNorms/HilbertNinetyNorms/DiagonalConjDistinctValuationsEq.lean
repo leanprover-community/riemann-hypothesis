@@ -5,8 +5,6 @@ import GroundTheory.GlobalFields.CompletionAtPlace.Integers
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain Polynomial Matrix
 open GlobalTheory.BCT GlobalTheory.UnitaryBC Formalism.UG
 open scoped Classical

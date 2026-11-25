@@ -6,8 +6,6 @@ import Mathlib.Tactic.Linter.Style
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain Matrix MeasureTheory
 open GlobalTheory.CuspRep GlobalTheory.UnitaryBC PositivityTheory.Rg.BcB.E PositivityTheory.RgBcC PositivityTheory.Rg.BcB.CG
 open PositivityTheory.RgTw (Mat G)
@@ -164,5 +162,3 @@ theorem blkComm (h1 : OpEx) (h2 : MultAlg) (h3 : TensTest) (h4 : TensMul) : Bloc
   exact congrArg B.opOf (Op.commPhi B h2 t t' ht ht' hψ)
 
 end PositivityTheory.Rg.BcB.F
-
-end

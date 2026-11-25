@@ -11,8 +11,6 @@ import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LcscAdelicUnitar
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain Formalism.L2.Host MeasureTheory
 open GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.SmGL GlobalTheory.DiscSpec
 
@@ -79,5 +77,3 @@ theorem satHerm_holds : SatHerm := by
     exact herm_of_isSatVec hD x.2 h1
 
 end PositivityTheory.Rg.Rs
-
-end

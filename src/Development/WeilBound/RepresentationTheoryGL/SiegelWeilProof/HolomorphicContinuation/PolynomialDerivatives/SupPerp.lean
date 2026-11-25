@@ -5,8 +5,6 @@ public import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.Holom
 
 @[expose] public section
 
-noncomputable section
-
 namespace PositivityTheory.Rg.Sw.LC
 
 namespace CoreA

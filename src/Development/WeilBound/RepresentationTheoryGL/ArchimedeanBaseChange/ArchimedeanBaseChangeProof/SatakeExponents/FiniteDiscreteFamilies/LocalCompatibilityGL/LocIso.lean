@@ -4,8 +4,6 @@ public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain Matrix
 open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC PositivityTheory.Rg.Rs
 
@@ -43,5 +41,3 @@ theorem LocIso_holds : LocIso := by
     rw [key, LocalIsomorphism.finRep_eq_act]
 
 end PositivityTheory.Rg.BcB.F.F5.Bo
-
-end

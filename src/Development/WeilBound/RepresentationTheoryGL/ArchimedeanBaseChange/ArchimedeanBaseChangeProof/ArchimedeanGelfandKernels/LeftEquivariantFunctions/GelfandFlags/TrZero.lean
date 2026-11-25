@@ -4,8 +4,6 @@ public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange
 
 @[expose] public section
 
-noncomputable section
-
 namespace PositivityTheory.RgBcC.VC
 
 theorem trZero : TrZero := by

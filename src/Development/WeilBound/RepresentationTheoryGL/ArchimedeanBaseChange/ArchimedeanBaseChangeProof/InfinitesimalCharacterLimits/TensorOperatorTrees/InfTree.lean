@@ -6,8 +6,6 @@ public import Development.WeilBound.RepresentationTheoryGL.ResidualSpectrum.Slic
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain MeasureTheory
 open GlobalTheory.CuspRep GlobalTheory.UnitaryBC PositivityTheory.Rg.Rs PositivityTheory.Rg.BcB.SpectralAccumulation
 
@@ -58,5 +56,3 @@ theorem hasInfCharGL_space {N : ℕ} (t : Tr E N) (τ : E →+* ℂ) (m : Multis
 theorem infTree : InfTree := fun _ _ _ _ _ t τ m h => hasInfCharGL_space t τ m h
 
 end PositivityTheory.Rg.BcB.SpectralAccumulation.Trees
-
-end

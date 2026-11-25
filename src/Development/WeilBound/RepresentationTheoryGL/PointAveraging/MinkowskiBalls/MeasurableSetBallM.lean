@@ -16,8 +16,6 @@ import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.IsParahoricVe
 open MeasureTheory GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.ThetaGL ValuativeRel PositivityTheory.Tls2.Ming3
 open scoped Topology Pointwise
 
-noncomputable section
-
 namespace PositivityTheory.Rg.Ming.GermX
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]

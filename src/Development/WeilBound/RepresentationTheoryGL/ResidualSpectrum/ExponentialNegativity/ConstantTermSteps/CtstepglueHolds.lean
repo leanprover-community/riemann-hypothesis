@@ -5,8 +5,6 @@ public import Development.WeilBound.RepresentationTheoryGL.ResidualSpectrum.Expo
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField MeasureTheory Filter Topology Polynomial
 open GroundTheory.Global GroundTheory.Automorphic GroundTheory.Automorphic.Reduction GroundTheory.Automorphic.AutomorphicForm
 open scoped NumberField.AdeleRing
@@ -113,5 +111,3 @@ theorem ctstepglue_holds : An.CtStepGlue := by
     _ = C₂ * (max C₁ 0 * E) * Real.exp (|κ| * (|t₀| + 1)) * (Real.exp (κ * sr x r) * Real.exp S) := by ring
 
 end PositivityTheory.Rg.Rs
-
-end

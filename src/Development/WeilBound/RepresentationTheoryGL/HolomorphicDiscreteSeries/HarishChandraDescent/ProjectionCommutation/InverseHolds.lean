@@ -5,8 +5,6 @@ public import Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Extend
 
 @[expose] public section
 
-noncomputable section
-
 open scoped InnerProductSpace
 
 namespace PositivityTheory.RgHe3

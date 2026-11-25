@@ -5,8 +5,6 @@ import Mathlib.Tactic.Linter.Style
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain Matrix
 open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host
 open GlobalTheory.BCT
@@ -68,5 +66,3 @@ theorem adeleqof_cpt (hT : TranslAd) {u : GL (Fin n) E} (hu : IsTransl u) (d : G
   simp only [map_mul, map_inv, adeleqof_pFin_thetaGL, adeleqof_pFin_ratGL]
 
 end PositivityTheory.Rg.BcB.G8
-
-end

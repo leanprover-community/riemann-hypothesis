@@ -4,8 +4,6 @@ public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange
 
 @[expose] public section
 
-noncomputable section
-
 open scoped Classical
 
 
@@ -52,5 +50,3 @@ theorem chi_pin (gen : Γ → Prod' H d) (a₀ : Γ) (v : EuclideanSpace ℂ (Fi
   · exact key a c h0 hc
 
 end PositivityTheory.Rg.BcB.F.ChiPin
-
-end

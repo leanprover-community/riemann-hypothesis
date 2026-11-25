@@ -4,8 +4,6 @@ public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange
 
 @[expose] public section
 
-noncomputable section
-
 open Polynomial
 open GlobalTheory.CuspRep GlobalTheory.UnitaryBC PositivityTheory.Rg.Rs
 
@@ -51,5 +49,3 @@ theorem InfUniq_holds : InfUniq := by
   exact smul_left_injective ℂ hφ0 e
 
 end PositivityTheory.Rg.BcB.F.LemDd
-
-end

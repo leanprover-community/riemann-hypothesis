@@ -4,8 +4,6 @@ public import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.Holom
 
 @[expose] public section
 
-noncomputable section
-
 set_option linter.unusedSimpArgs false
 
 open Matrix

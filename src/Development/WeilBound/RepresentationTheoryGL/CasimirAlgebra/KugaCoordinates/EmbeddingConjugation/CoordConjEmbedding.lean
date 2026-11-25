@@ -5,8 +5,6 @@ public import Development.WeilBound.RepresentationTheoryGL.CasimirAlgebra.KugaCo
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField Matrix GlobalTheory.CuspRep GlobalTheory.GKCoh GlobalTheory.WigAlg Formalism.REAL
 open scoped Classical
 
@@ -105,5 +103,3 @@ theorem cxExpand_holds : CxExpand := by
   Finset.univ_sum_single]
 
 end PositivityTheory.Rg.Cz.J
-
-end

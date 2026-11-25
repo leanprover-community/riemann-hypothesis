@@ -17,8 +17,6 @@ public import Mathlib.LinearAlgebra.Matrix.Charpoly.Coeff
 
 @[expose] public section
 
-noncomputable section
-
 open Matrix Finset Filter
 open scoped ContDiff Topology
 

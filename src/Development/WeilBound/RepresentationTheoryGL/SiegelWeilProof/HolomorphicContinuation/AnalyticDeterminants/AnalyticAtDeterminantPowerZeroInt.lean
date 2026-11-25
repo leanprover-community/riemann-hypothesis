@@ -10,8 +10,6 @@ public import Mathlib.Analysis.Calculus.ContDiff.Operations
 
 @[expose] public section
 
-noncomputable section
-
 open Matrix Filter Topology
 open scoped ContDiff
 

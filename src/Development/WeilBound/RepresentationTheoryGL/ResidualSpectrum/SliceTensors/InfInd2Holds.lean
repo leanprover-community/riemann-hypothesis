@@ -8,8 +8,6 @@ public import Development.WeilBound.RepresentationTheoryGL.ResidualSpectrum.Slic
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain MeasureTheory Formalism.L2.Host
 open GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.SmGL GlobalTheory.DiscSpec GlobalTheory.CompanionTheory.CTFin GlobalTheory.BCWords
 
@@ -56,5 +54,3 @@ theorem infInd2_holds : InfInd2 := by
   exact sub_eq_zero.1 (hfi _ hmem h0)
 
 end PositivityTheory.Rg.Rs
-
-end

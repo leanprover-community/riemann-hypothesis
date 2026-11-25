@@ -9,8 +9,6 @@ public import Mathlib.Analysis.Complex.CauchyIntegral
 
 @[expose] public section
 
-noncomputable section
-
 open MeasureTheory Set Filter Topology
 
 namespace PositivityTheory.Rg.Sw.AbsSt.TSC

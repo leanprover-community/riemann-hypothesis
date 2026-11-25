@@ -5,8 +5,6 @@ import Std.Tactic.BVDecide.Normalize.BitVec
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField
 open scoped Classical
 
@@ -122,5 +120,3 @@ theorem reg_of (h : GelfInj) : Reg := by
   exact regDom E n l
 
 end PositivityTheory.Rg.BcB.F.gamma_zeta_nabla_cancel
-
-end

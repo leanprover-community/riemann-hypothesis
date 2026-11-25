@@ -6,8 +6,6 @@ public import Mathlib.MeasureTheory.Integral.DominatedConvergence
 
 @[expose] public section
 
-noncomputable section
-
 open MeasureTheory Matrix Filter Topology
 
 namespace PositivityTheory.Rg.Sw.LVs

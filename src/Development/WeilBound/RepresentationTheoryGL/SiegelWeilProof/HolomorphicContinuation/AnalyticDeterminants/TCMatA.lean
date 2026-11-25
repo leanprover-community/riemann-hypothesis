@@ -5,8 +5,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
-noncomputable section
-
 open Matrix
 
 namespace PositivityTheory.Rg.Sw.LVs.TC

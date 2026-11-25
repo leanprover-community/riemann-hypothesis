@@ -7,8 +7,6 @@ import Mathlib.Tactic.Linter.Style
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain Filter Topology
 
 namespace PositivityTheory.RgJS.PrimeSumConvergence

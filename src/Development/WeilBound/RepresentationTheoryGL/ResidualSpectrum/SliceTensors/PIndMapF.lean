@@ -6,8 +6,6 @@ public import Development.WeilBound.RepresentationTheoryGL.ResidualSpectrum.Slic
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain MeasureTheory Formalism.L2.Host
 open GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.SmGL GlobalTheory.DiscSpec GlobalTheory.CompanionTheory.CTFin
 open scoped ContDiff
@@ -118,5 +116,3 @@ theorem ind_lie {U₁ : Submodule ℂ (Sm E r)} {U₂ : Submodule ℂ (Sm E s)} 
   rw [ind_levi H hX k g, h1, ec Gs, ec F, h2, res_lie H hF' hK' X']
 
 end PositivityTheory.Rg.Rs.InducedTensorMap
-
-end

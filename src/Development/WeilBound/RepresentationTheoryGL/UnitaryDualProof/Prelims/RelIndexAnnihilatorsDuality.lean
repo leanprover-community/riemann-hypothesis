@@ -11,7 +11,6 @@ public import Mathlib.Analysis.Fourier.FiniteAbelian.PontryaginDuality
 open Matrix
 open scoped Topology
 
-noncomputable section
 namespace GlobalTheory.CompanionTheory.IndexDuality
 
 theorem relIndex_le_of_pairing {X Y : Type} [AddCommGroup X] [AddCommGroup Y]

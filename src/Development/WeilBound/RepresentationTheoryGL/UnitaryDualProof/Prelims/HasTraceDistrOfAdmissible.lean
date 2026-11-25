@@ -6,8 +6,6 @@ import GroundTheory.AutomorphicForms.ContragredientTranspose.Character
 
 @[expose] public section
 
-noncomputable section
-
 open GroundTheory.Automorphic GroundTheory.Automorphic.ContragredientTranspose GroundTheory.Automorphic.Whittaker MeasureTheory
 
 namespace PositivityTheory.PfBern.Unit

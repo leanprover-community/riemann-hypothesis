@@ -11,8 +11,6 @@ public import Mathlib.Analysis.Calculus.Deriv.ZPow
 
 @[expose] public section
 
-noncomputable section
-
 open Matrix Filter Topology
 open scoped ContDiff
 

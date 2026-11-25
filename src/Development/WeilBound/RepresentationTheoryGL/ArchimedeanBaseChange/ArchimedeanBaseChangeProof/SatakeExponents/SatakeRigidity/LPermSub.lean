@@ -10,8 +10,6 @@ public import Development.WeilBound.RepresentationTheoryGL.GenericUnitaryGL.Comp
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain Matrix
 open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC GlobalTheory.DiscSpec PositivityTheory.Rg.Rs
 open GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.JHMult GlobalTheory.LocGL GlobalTheory.LocGL.SupportRing
@@ -79,5 +77,3 @@ theorem permSat : PermSat := by
   · exact (Fintype.sum_equiv e.symm _ _ fun _ => rfl).trans hs
 
 end PositivityTheory.Rg.BcB.F.Rig
-
-end

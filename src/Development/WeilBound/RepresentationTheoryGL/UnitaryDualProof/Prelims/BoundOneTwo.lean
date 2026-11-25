@@ -7,8 +7,6 @@ import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.Mirabol
 
 @[expose] public section
 
-noncomputable section
-
 open Matrix Topology Filter ValuativeRel GlobalTheory.SplitWeil GlobalTheory.BZMir GlobalTheory.GelfandKazhdan
 
 namespace PositivityTheory.PfBern.cocyclesToWachVectorsExponent
@@ -61,5 +59,3 @@ theorem exists_clopen_local (C : Set k) (hC : IsCompact C) (h0 : (0 : k) ∉ C) 
 end Dist
 
 end PositivityTheory.PfBern.cocyclesToWachVectorsExponent
-
-end
