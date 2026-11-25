@@ -912,10 +912,10 @@ namespace UpperTheory.Gal.Int.Geo
 /-- `LocalSmoothExtension.HolomorphicLefschetzFormula` holds. Let `Z` be smooth of relative
 dimension `d` and projective over `ℂ`, and let `c1 c2 : Y ⟶ Z` be finite étale maps over `ℂ`
 whose coincidence points `y` (complex points with `y.1 ≫ c1 = y.1 ≫ c2`) have matrices `A y`
-in the sense of `GlobalTheory.W1.IsTan` with `det (1 - A y) ≠ 0`. Then for each `a`, the
-alternating sum over `b` of the traces of `hodgeTrace h1 a b ∘ₗ hodgePull h2 a b` on
-`hodgeH s a b` equals the sum over the coincidence points of the coefficient of `X ^ a` in
-`det (1 + X • A y)`, divided by `det (1 - A y)`.
+in the sense of `GlobalTheory.W1.IsTan` with `det (1 - A y) ≠ 0`. Then for each `a`, every
+`hodgeH s a b` is finite-dimensional, and the alternating sum over `b` of the traces of
+`hodgeTrace h1 a b ∘ₗ hodgePull h2 a b` on `hodgeH s a b` equals the sum over the coincidence
+points of the coefficient of `X ^ a` in `det (1 + X • A y)`, divided by `det (1 - A y)`.
 
 This is `UpperTheory.Cb.lefschetz_fixedPoint_finite_etale_correspondence`, with the
 definition unfolded. -/
