@@ -447,8 +447,7 @@ theorem TDat.laws_of_ok : ∀ {E K : Type} [Field E] [NumberField E] [StarRing E
   have h1 := _root_.GlobalTheory.Mem.Col2.LRank.ranks A T hS hA
   have h2 := _root_.GlobalTheory.Mem.Col2.fv_te_laws A T hS hA
   have h3 := _root_.GlobalTheory.Mem.Col2.diamond_action_on_classes A T hS hA
-  have h4 := _root_.GlobalTheory.Mem.Col2.DilFv.dil_fv A T hS hA
-  exact ⟨h1.1, h1.2, h2.2.1, h2.2.2, h3.1, h3.2.1, h4, h3.2.2⟩
+  exact ⟨h1.1, h1.2, h2.2.1, h2.2.2, h3.1, h3.2.1, h3.2.2⟩
 
 end GlobalTheory.Mem.Col2
 end -- clump:auto
@@ -792,7 +791,6 @@ theorem laws_all : ∀ {E K ι : Type} [Field E] [NumberField E] [StarRing E] [F
       good := fun i => GlobalTheory.T.weight_law_good_of_field_embedding (I.S i) emb σ (lamT hc i) hF (hI.step i) _
       basis := fun i => _root_.GlobalTheory.Mem.Col2.lawBasis_all (I.S i) emb σ (lamT hc i) hF (hI.step i) _
       norm := fun i => letI := I.clFin hI i; GlobalTheory.T.lawNorm_classSum_fock (I.S i) emb σ (lamT hc i) hF (hI.step i) _
-      goodP := GlobalTheory.T.weight_law_good_of_field_embedding Q.S' emb σ Q.sgT hF hQ.step _
       basisP := _root_.GlobalTheory.Mem.Col2.lawBasis_all Q.S' emb σ Q.sgT hF hQ.step _
       normP := letI := Q.clFin hQ; GlobalTheory.T.lawNorm_classSum_fock Q.S' emb σ Q.sgT hF hQ.step _
       dia_lat := GlobalTheory.T.levelPrimeDiamond_preserves_integralForms I J emb σ hc hF hI hJ _

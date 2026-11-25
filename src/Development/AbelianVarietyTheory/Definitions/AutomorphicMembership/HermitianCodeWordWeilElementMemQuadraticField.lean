@@ -300,9 +300,6 @@ def brNorm (hN : N = n + 1) (lam : DomWeight N) (sg : DomWeight n) : ℝ :=
 
 variable (lam : DomWeight N) (sg : DomWeight n) (b : MvPolynomial (Fin N × Fin N) ℂ →ₗ[ℂ] MvPolynomial (Fin n × Fin n) ℂ)
 
-theorem fockOpNorm_nonneg : 0 ≤ fockOpNorm lam sg b :=
-  Real.sSup_nonneg (by rintro _ ⟨f, -, rfl⟩; exact Real.sqrt_nonneg _)
-
 theorem fockOpNorm_congr {lam lam' : DomWeight N} {sg sg' : DomWeight n} (h : lam.natW = lam'.natW) (h' : sg.natW = sg'.natW) :
     fockOpNorm lam sg b = fockOpNorm lam' sg' b := by
   simp only [fockOpNorm, fockRatios, normFock, extremal, delSq, h, h']
@@ -359,9 +356,6 @@ def conjNormSq (s : X.K →+* ℂ) (N : Submodule (𝓞 X.E) (Sp X.E a)) (N' : S
 
 def eNorm (s : X.K →+* ℂ) (N : Submodule (𝓞 X.E) (Sp X.E a)) (N' : Submodule (𝓞 X.E) (Sp X.E b)) : ℝ :=
   Real.sqrt (conjNormSq A s N N' (A.e a b N N'))
-
-theorem eNorm_nonneg (s : X.K →+* ℂ) (N : Submodule (𝓞 X.E) (Sp X.E a)) (N' : Submodule (𝓞 X.E) (Sp X.E b)) :
-    0 ≤ eNorm A s N N' := Real.sqrt_nonneg _
 
 end Free
 

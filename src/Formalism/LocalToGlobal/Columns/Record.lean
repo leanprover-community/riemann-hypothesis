@@ -1250,7 +1250,6 @@ def recForms (hX : X.Ok) (hPr : Pr.Ok) (hf : X.f = R.f) (σ₀ : X.K →+* ℂ) 
   dilT := fun i v a c => (stepEv W Λ σ₀ hσ u i).trPt ((repD (colVal W u i (Pr.vT u) Pr.vGs) (Λ i) c).dia1 v a)
   dil_one := fun i v c => dilD_one _ _ v c
   dil_mul := fun i v a b c => dilD_mul _ _ v a b c
-  dil_fv := fun i v a c => dilD_fv _ _ v a c
   dil_stab := fun i v a c => dilD_stab _ _ v a c
   rhoT_dil := fun _ _ _ _ => rfl
   tauOf := fun w => tauOfR hX hPr u (pw w)
@@ -1281,18 +1280,14 @@ def recForms (hX : X.Ok) (hPr : Pr.Ok) (hf : X.f = R.f) (σ₀ : X.K →+* ℂ) 
   til := Xp.til
   stabMap := Xp.stabMap
   stabMap_inj := Xp.stabMap_inj
-  evz_til := Xp.evz_til
   ptC := Xp.ptC
   ipP := Xp.ipP
   ptLat := Xp.ptLat
-  ptLat_good := Xp.ptLat_good
   ptEmb := Xp.ptEmb
   ptEmb_basis := Xp.ptEmb_basis
   ptEmb_norm := Xp.ptEmb_norm
   beOn := Xp.beOn
-  beOn_nonneg := Xp.beOn_nonneg
   thFree := Xp.thFree
-  thFree_nonneg := Xp.thFree_nonneg
 
 end Mem2
 

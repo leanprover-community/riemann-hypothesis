@@ -47,9 +47,6 @@ def formsY : MemberForms LL embLL Pl Tau hc C A P where
   dilT := fun _ _ _ _ => LinearEquiv.refl ℂ _
   dil_one := fun _ _ _ => rfl
   dil_mul := fun _ _ _ _ _ => rfl
-  dil_fv := fun i v a _ => ⟨LinearEquiv.smulOfUnit a⁻¹, LinearMap.ext fun x => by
-    show x ⟨0, R.N_pos i⟩ = (a : A.Fv v) * (((a⁻¹ : (A.Fv v)ˣ) : A.Fv v) * x ⟨0, R.N_pos i⟩)
-    rw [Units.mul_inv_cancel_left]⟩
   dil_stab := fun _ _ _ _ => rfl
   rhoT_dil := fun _ _ _ _ => Subsingleton.elim _ _
   tauOf := fun _ => Fintype.equivOfCardEq (by rw [A.card_vT, hTau])
@@ -76,20 +73,16 @@ def formsY : MemberForms LL embLL Pl Tau hc C A P where
   til := fun c => c.elim
   stabMap := fun c => c.elim
   stabMap_inj := fun c => c.elim
-  evz_til := fun φ ψ _ => by rw [Subsingleton.elim φ ψ]
   ptC := ⊥
   ipP := 0
   ptLat := fmZeroHLat LL
-  ptLat_good := fmZeroHLat_good LL
   ptEmb := 0
   ptEmb_basis := ⟨linearIndependent_empty_type, by rw [Set.range_eq_empty, Submodule.span_empty]⟩
   ptEmb_norm := fun x => by
     rw [fmZeroHLat_maj]
     simp
   beOn := fun _ => 0
-  beOn_nonneg := fun _ => le_rfl
   thFree := fun _ _ _ _ => 0
-  thFree_nonneg := fun _ _ _ _ => le_rfl
 
 end FormsY
 

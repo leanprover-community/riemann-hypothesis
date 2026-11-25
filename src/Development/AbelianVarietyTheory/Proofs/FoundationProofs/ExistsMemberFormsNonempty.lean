@@ -279,11 +279,6 @@ def forms (hι : Fintype.card ι = R.f) (LL : Type) [Field LL] [NumberField LL] 
   dilT _ _ _ _ := LinearEquiv.refl ℂ _
   dil_one _ v c := by rw [Pi.mulSingle_one, mul_one]
   dil_mul _ v a b c := by rw [Pi.mulSingle_mul, mul_comm (Pi.mulSingle _ _), ← mul_assoc]
-  dil_fv i v a c := ⟨LinearEquiv.refl _ _, by
-    refine LinearMap.ext fun x => ?_
-    simp only [Pi.mul_apply, Pi.mulSingle_eq_same, Units.val_mul, LinearMap.smul_apply,
-      LinearMap.comp_apply, LinearEquiv.coe_coe, LinearEquiv.refl_apply, smul_eq_mul]
-    ring⟩
   dil_stab _ _ _ _ := rfl
   rhoT_dil _ _ _ _ := rfl
   tauOf _ := Equiv.refl ι
@@ -318,21 +313,17 @@ def forms (hι : Fintype.card ι = R.f) (LL : Type) [Field LL] [NumberField LL] 
   til _ := (1 : ι → (ZMod T)ˣ)
   stabMap _ := MonoidHom.id PUnit
   stabMap_inj _ := Function.injective_id
-  evz_til _ _ h := h ()
   ptC := ⊤
   ipP := (ipUnit.comp (LinearMap.proj (R := ℂ) (φ := fun _ : Unit => Unit → ℂ) ())).compl₂
     (LinearMap.proj (R := ℂ) (φ := fun _ : Unit => Unit → ℂ) ())
   ptLat := stdLat LL Unit
-  ptLat_good := stdLat_good LL _
   ptEmb := stdEmb _ embLL
   ptEmb_basis := stdEmb_basis _ embLL
   ptEmb_norm x := by
     rw [stdEmb_norm, Fintype.sum_unique]
     rfl
   beOn _ := 1
-  beOn_nonneg _ := zero_le_one
   thFree _ _ _ _ := 1
-  thFree_nonneg _ _ _ _ := zero_le_one
 
 theorem mram_ne_bot (hι : Fintype.card ι = R.f) (h2 : 2 < T) : (atT R ι hc T hι).Mram ≠ ⊥ := by
   have : Fact (2 < T) := ⟨h2⟩

@@ -89,9 +89,7 @@ def fmIn (hPr : (B.primes X).Ok) (u : B.Word) (a : I.ι) : FmIn (I.atIn u a) B.p
   tauOf w := tauAt hPr u w
   seenP w := decide (seenC (B.primes X) u w)
   beOn τ := brNorm (N_m_succ B.R) (B.wts.lamTrue u B.R.m τ) (B.wts.sgTrue τ)
-  beOn_nonneg _ := fockOpNorm_nonneg _ _ _
   thFree i s c c' := eNorm I.A s (GStep.rep (I.stp u a i) c).1.1.deco.1.N (GStep.rep (I.stp u a (i + 1)) c').1.1.deco.1.N
-  thFree_nonneg _ _ _ _ := eNorm_nonneg _ _ _ _
 
 def perIn (u : B.Word) (a : I.ι) : PerIn (I.chIn u a) where
   S' := stepX I.Ch I.sel (I.tup a) I.Ps

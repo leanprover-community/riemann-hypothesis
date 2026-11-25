@@ -700,8 +700,6 @@ structure Laws (T : ℕ) : Prop where
   te_ne : ∀ P c, A.te T P c ≠ 0
   dil_one : ∀ P c, S.cl c.1 (A.diaPt P 1 c) = c
   dil_mul : ∀ P a b c, S.cl c.1 (A.diaPt P (a * b) c) = S.cl c.1 (A.diaPt P a (S.cl c.1 (A.diaPt P b c)))
-  dil_fv : ∀ P a c, ∃ e : A.lv P (S.cl c.1 (A.diaPt P a c)) ≃ₗ[Res P.1] A.lv P c,
-    ∀ x, A.fv P (S.cl c.1 (A.diaPt P a c)) x = (a : Res P.1) * A.fv P c (e x)
   dil_stab : ∀ P a c, Nat.card (S.Stab (S.cl c.1 (A.diaPt P a c))) = Nat.card (S.Stab c)
 
 end TDat
@@ -719,9 +717,7 @@ structure FmIn {E K ι : Type} [Field E] [NumberField E] [Field K] [Fintype ι] 
   tauOf : Pl.Pl → (J.ST ≃ ι)
   seenP : Pl.Pl → Bool
   beOn : ι → ℝ
-  beOn_nonneg : ∀ τ, 0 ≤ beOn τ
   thFree : ∀ i, (K →+* ℂ) → (I.S i).Cl → (I.S (i + 1)).Cl → ℝ
-  thFree_nonneg : ∀ i s c c', 0 ≤ thFree i s c c'
 
 section Forms
 
@@ -738,7 +734,6 @@ structure FmLaws (Pl : Rows.Places K) (hI : I.Ok) (hQ : Q.Ok) : Prop where
   good : ∀ i, (I.S i).LawGood emb (lamT hc i) (fam i)
   basis : ∀ i, (I.S i).LawBasis emb σ (lamT hc i) (fam i)
   norm : ∀ i, letI := I.clFin hI i; (I.S i).LawNorm emb σ (lamT hc i) (fam i)
-  goodP : Q.S'.LawGood emb Q.sgT famP
   basisP : Q.S'.LawBasis emb σ Q.sgT famP
   normP : letI := Q.clFin hQ; Q.S'.LawNorm emb σ Q.sgT famP
   dia_lat : ∀ P a x, x ∈ ((I.S 0).hlat emb (lamT hc 0) (fam 0)).L → ∃ y ∈ ((I.S 0).hlat emb (lamT hc 0) (fam 0)).L,
@@ -771,9 +766,6 @@ def forms {Pl : Rows.Places K} (Z : FmIn J Pl) (hI : I.Ok) (hJ : J.Ok) (hQ : Q.O
   dilT := J.dilT emb σ
   dil_one i := (lf.lev i).dil_one
   dil_mul i := (lf.lev i).dil_mul
-  dil_fv i P a c := by
-    obtain ⟨e, he⟩ := (lf.lev i).dil_fv P a c
-    exact ⟨e, LinearMap.ext he⟩
   dil_stab i := (lf.lev i).dil_stab
   rhoT_dil _ _ _ _ := rfl
   tauOf := Z.tauOf
@@ -800,14 +792,9 @@ def forms {Pl : Rows.Places K} (Z : FmIn J Pl) (hI : I.Ok) (hJ : J.Ok) (hQ : Q.O
   til := Q.tilC
   stabMap := Q.stabMap hQ
   stabMap_inj := Q.stabMap_inj hQ
-  evz_til φ ψ h := by
-    funext c
-    show (I.S R.m).trTo emb σ Q.b0 (Q.tilPt c) (φ (Q.tilC c)) = (I.S R.m).trTo emb σ Q.b0 (Q.tilPt c) (ψ (Q.tilC c))
-    rw [h c]
   ptC := Q.S'.Fi emb σ Q.sgT
   ipP := Q.ipP emb σ hQ
   ptLat := Q.S'.hlat emb Q.sgT lf.famP
-  ptLat_good := lf.goodP
   ptEmb := Q.S'.embF emb σ Q.sgT lf.famP
   ptEmb_basis := lf.basisP
   ptEmb_norm x := by
@@ -816,9 +803,7 @@ def forms {Pl : Rows.Places K} (Z : FmIn J Pl) (hI : I.Ok) (hJ : J.Ok) (hQ : Q.O
     simp only [PerIn.ipP, LinearMap.sum_apply, LinearMap.smul_apply, smul_eq_mul]
     rfl
   beOn := Z.beOn
-  beOn_nonneg := Z.beOn_nonneg
   thFree := Z.thFree
-  thFree_nonneg := Z.thFree_nonneg
 
 end Forms
 

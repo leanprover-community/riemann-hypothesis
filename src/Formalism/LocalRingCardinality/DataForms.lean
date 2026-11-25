@@ -145,8 +145,6 @@ structure MemberForms {R : Ranks} (LL : Type) [Field LL] [NumberField LL] [StarR
   dil_one : ∀ i v c, dil i v 1 c = c
   dil_mul : ∀ i v a b c, dil i v (a * b) c = dil i v a (dil i v b c)
 
-  dil_fv : ∀ i v a c, ∃ e : lv i v (dil i v a c) ≃ₗ[A.Fv v] lv i v c,
-    fv i v (dil i v a c) = (a : A.Fv v) • (fv i v c).comp e.toLinearMap
 
   dil_stab : ∀ i v a c, Nat.card (C.stab i (dil i v a c)) = Nat.card (C.stab i c)
 
@@ -198,14 +196,12 @@ structure MemberForms {R : Ranks} (LL : Type) [Field LL] [NumberField LL] [StarR
   stabMap : ∀ c, stabilizer₂ c →* C.stab R.m (til c)
   stabMap_inj : ∀ c, Function.Injective (stabMap c)
 
-  evz_til : ∀ φ ψ : C.cls R.m → C.Y R.m → ℂ, (∀ c, φ (til c) = ψ (til c)) → P.evz φ = P.evz ψ
 
   ptC : Submodule ℂ P.Wrow
 
   ipP : P.Wrow →ₗ⋆[ℂ] P.Wrow →ₗ[ℂ] ℂ
 
   ptLat : HLat LL
-  ptLat_good : ptLat.Good
   ptEmb : ptLat.V →ₛₗ[embLL] P.Wrow
   ptEmb_basis : LinearIndependent ℂ (fun a => ptEmb (ptLat.b a)) ∧
     Submodule.span ℂ (Set.range (fun a => ptEmb (ptLat.b a))) = ptC
@@ -213,10 +209,8 @@ structure MemberForms {R : Ranks} (LL : Type) [Field LL] [NumberField LL] [StarR
     (ipP (ptEmb x) (ptEmb x)).re
 
   beOn : Tau → ℝ
-  beOn_nonneg : ∀ τ, 0 ≤ beOn τ
 
   thFree : ∀ i, (LL →+* ℂ) → C.cls i → C.cls (i + 1) → ℝ
-  thFree_nonneg : ∀ i s L L', 0 ≤ thFree i s L L'
 
 namespace MemberForms
 
