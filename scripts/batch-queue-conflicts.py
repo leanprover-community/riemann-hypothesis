@@ -24,10 +24,9 @@ _LABELS_SPEC = importlib.util.spec_from_file_location("rh_batch_labels", Path(__
 _labels = importlib.util.module_from_spec(_LABELS_SPEC)
 _LABELS_SPEC.loader.exec_module(_labels)
 # Compared against, in this order: the pull requests in a batch being built (`batch-building`),
-# then those waiting in the queue (`batch queue`).
+# then those waiting in the queue (`batch queue`). A pull request that holds a batch (see
+# `holds_batch` in `batch-labels.py`) is not compared.
 LABELS = (_labels.MEMBER, _labels.QUEUED)
-# Branches of this repository that hold a batch. Their pull requests are not compared.
-BATCHES = "batch/"
 # Hidden in the comment so that a later run edits it instead of adding another.
 MARKER = "<!-- batch-queue-conflicts -->"
 BOT = "github-actions[bot]"
@@ -324,15 +323,16 @@ def head_of(repo, number):
 def open_pulls(repo):
     """Every open pull request as {number: (head commit, labels, whether it is a batch)}.
 
-    One listing answers for all of them. The workflow's token is allowed 1,000 requests an hour,
-    shared with every other workflow, so nothing here asks GitHub about pull requests one by one.
+    One listing answers for all of them. The workflow's token has an hourly allowance of
+    requests, shared with every other workflow, so nothing here asks GitHub about pull requests
+    one by one.
     """
     rows = gh("--paginate", f"repos/{repo}/pulls?state=open&per_page=100", "--jq",
               '.[] | [.number, .head.sha, .head.ref, (.head.repo.full_name // ""), ([.labels[].name] | join("|"))] | @tsv')
     found = {}
     for row in rows.splitlines():
         number, sha, ref, home, labels = (row.split("\t") + [""] * 5)[:5]
-        found[int(number)] = (sha, set(labels.split("|")), home == repo and ref.startswith(BATCHES))
+        found[int(number)] = (sha, set(labels.split("|")), _labels.holds_batch(repo, home, ref))
     return found
 
 

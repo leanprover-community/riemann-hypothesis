@@ -3,8 +3,9 @@ name: conflict labels
 # Keeps two labels on the open pull requests into main that are not drafts and not batches:
 # `main-conflict` on those that GitHub says conflict with main, and `batch-conflict` on those that
 # conflict with a batch being built, that is a `batch/...` branch of this repository whose pull
-# request is labelled `building`. A pull request labelled `batch-building` is in a batch, and does
-# not get `batch-conflict`. One whose description says that it depends on an open batch, with a
+# request is labelled `building`. Of a stack of batches, only the outermost, labelled `latest
+# batch`, is compared with: its branch holds the others'. A pull request labelled
+# `batch-building` is in a batch, and does not get `batch-conflict`. One whose description says that it depends on an open batch, with a
 # line such as `- [ ] depends on: #123`, does not get `main-conflict`: it is expected to carry
 # the batch's changes and so to conflict with main until the batch lands.
 #
@@ -18,10 +19,11 @@ name: conflict labels
 #
 # A run looks at one pull request when it is opened, reopened, pushed to, marked ready, or has
 # its description or base changed. It looks at every open pull request when a batch's pull
-# request is opened, pushed to, closed or reopened or gains or loses `building`, when main moves
-# on, every half hour, and when started by hand without a pull request number. GitHub starts no
-# run for changes made with a workflow token, such as the batch queue labelling a batch
-# `building`, so the half-hourly sweep catches those. The sweep is offset from the inbox's.
+# request is opened, pushed to, closed or reopened or gains or loses `building` or `latest batch`,
+# when main moves on, every half hour, and when started by hand without a pull request number.
+# GitHub starts no run for changes made with a workflow token, such as the batch queue labelling a
+# batch `building`, so the batch queue starts a sweep itself when it puts either label on a batch,
+# and the half-hourly sweep catches the rest. The sweep is offset from the inbox's.
 #
 # pull_request_target gives the token write access for pull requests from forks. Nothing from a
 # pull request is checked out or run: the script comes from the same trusted commit as this
@@ -48,8 +50,8 @@ permissions: {}
 jobs:
   labels:
     # Forks with Actions turned on would otherwise run against themselves. Events on a batch's
-    # pull request start a sweep; label changes count only for `building`. Events on any other
-    # pull request start a run for it alone; an edit counts only if it changed the description,
+    # pull request start a sweep; label changes count only for `building` and `latest batch`.
+    # Events on any other pull request start a run for it alone; an edit counts only if it changed the description,
     # where the `depends on` lines are, or the base.
     if: >-
       ${{ github.repository == 'leanprover-community/riemann-hypothesis' && (
@@ -59,7 +61,7 @@ jobs:
            github.event.pull_request.head.repo.full_name == github.repository &&
            (contains(fromJSON('["opened", "synchronize", "closed", "reopened"]'), github.event.action) ||
             (contains(fromJSON('["labeled", "unlabeled"]'), github.event.action) &&
-             github.event.label.name == 'building'))) ||
+             (github.event.label.name == 'building' || github.event.label.name == 'latest batch')))) ||
           (github.event_name == 'pull_request_target' &&
            !(startsWith(github.event.pull_request.head.ref, 'batch/') &&
              github.event.pull_request.head.repo.full_name == github.repository) &&
