@@ -38,17 +38,6 @@ theorem sameOrbit_of_cross {z z' : (Σ k, ι k) → ℂ} (hz : ∀ k, ∃ i, z �
   intros
   apply _root_.PositivityTheory.UnitarySelfGeneration.HolomorphicMinorCharts.so_of_minors <;> assumption
 
-theorem continuousAt_of_holo {e : ℕ} {X : Type} [TopologicalSpace X] (A : FinHolAtlas e X)
-    {U : Set X} {g : X → ℂ} (hg : A.HoloOn U g) {y : X} (hy : y ∈ U) : ContinuousAt g y := by
-  obtain ⟨j, hj⟩ := A.cover y
-  have h1 : ContinuousAt ((g ∘ (A.chart j).symm) ∘ A.chart j) y :=
-    ContinuousAt.comp (g := g ∘ (A.chart j).symm)
-      (hg j _ ⟨(A.chart j).map_source hj, by simpa [(A.chart j).left_inv hj] using hy⟩).continuousAt
-      ((A.chart j).continuousAt hj)
-  refine h1.congr ?_
-  filter_upwards [(A.chart j).open_source.mem_nhds hj] with z hz
-  simp [Function.comp, (A.chart j).left_inv hz]
-
 theorem exists_conj_of_isLiftSys {e : ℕ} {X : Type} [TopologicalSpace X] [CompactSpace X]
     [T2Space X] {A : FinHolAtlas e X} {P : Ideal (MRing ι)} {U : X → Set X}
     {lift : X → X → (Σ k, ι k) → ℂ} (hS : IsLiftSys A P U lift) :
@@ -67,10 +56,12 @@ theorem exists_conj_of_isLiftSys {e : ℕ} {X : Type} [TopologicalSpace X] [Comp
       exact sameOrbit_trans (hcompat x' (c y) (c y) ⟨hy.2, hmem _⟩)
         (sameOrbit_trans (hc y) (sameOrbit_cj (hcompat y x y ⟨hmem y, hy.1⟩)))
     have hl1 : ∀ p, Tendsto (fun y => lift x' (c y) p) F (𝓝 (lift x' x' p)) := fun p =>
-      (continuousAt_of_holo A (hholo x' p) (hmem x')).tendsto.comp hcF
+      ((@PositivityTheory.UnitarySelfGeneration.HolomorphicMinorCharts.holo_continuousAt _ _ _ A _ _
+          (hholo x' p) _ (hmem x'))).tendsto.comp hcF
     have hl2 : ∀ p, Tendsto (fun y => cj (lift x y) p) F (𝓝 (cj (lift x x) p)) := fun p =>
       (Complex.continuous_conj.tendsto _).comp
-        ((continuousAt_of_holo A (hholo x p) (hmem x)).tendsto.mono_left hF)
+        (((@PositivityTheory.UnitarySelfGeneration.HolomorphicMinorCharts.holo_continuousAt _ _ _ A
+            _ _ (hholo x p) _ (hmem x))).tendsto.mono_left hF)
     have hcross : ∀ (k : K) (a b : ι k),
         lift x' x' ⟨k, a⟩ * cj (lift x x) ⟨k, b⟩ = lift x' x' ⟨k, b⟩ * cj (lift x x) ⟨k, a⟩ :=
       fun k a b => tendsto_nhds_unique_of_eventuallyEq

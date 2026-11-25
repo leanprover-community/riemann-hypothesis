@@ -28,17 +28,13 @@ attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 namespace GlobalTheory.CompanionTheory.WaveMult.AvgJoint
 
-theorem isOpen_invertible_matrices (n : ℕ) : IsOpen (GLs n) := by
-  have hc : Continuous (fun y : Mat n => y.det) := Continuous.matrix_det continuous_id
-  exact isOpen_ne.preimage hc
-
 theorem avg_joint_smooth : ∀ (n : ℕ) {V : Type} [NormedAddCommGroup V] [NormedSpace ℂ V] [CompleteSpace V]
     (U : ℝ → Mat n → V) (g : ℝ → ℝ) (T : ℝ), ContDiffOn ℝ ∞ (Function.uncurry U) (Set.univ ×ˢ GLs n) →
     IsBump g T → ContDiffOn ℝ ∞ (Function.uncurry fun t x => ∫ s, (g s : ℂ) • U (t + s) x) (Set.univ ×ˢ GLs n) := by
   intro n V _ _ _ U g T hU hg
   obtain ⟨hgs, hev, hsupp⟩ := hg
   set S : Set (ℝ × Mat n) := Set.univ ×ˢ GLs n with hS
-  have hSo : IsOpen S := isOpen_univ.prod (isOpen_invertible_matrices n)
+  have hSo : IsOpen S := isOpen_univ.prod ((@GlobalTheory.CompanionTheory.RCalc.isOpen_GLs n))
   let h : ℝ × Mat n → ℝ → V := fun p y => ((g (-y) : ℝ) : ℂ) • U (p.1 - y) p.2
   have hh : ContDiffOn ℝ ∞ (Function.uncurry h) (S ×ˢ Set.univ) := by
     have h1 : ContDiff ℝ ∞ (fun q : (ℝ × Mat n) × ℝ => ((g (-q.2) : ℝ) : ℂ)) :=

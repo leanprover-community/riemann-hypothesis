@@ -21,17 +21,6 @@ section Inverse
 
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
 
-theorem notMem_mcPts_top_inv (z : (Σ k, ι k) → ℂ) : z ∉ mcPts (⊤ : Ideal (MRing ι)) := by
-  intro h
-  have h1 := h.2 1 trivial
-  simp at h1
-
-theorem minors_of_sameOrbit_inv {a z : (Σ k, ι k) → ℂ} (h : SameOrbit a z) (k : K) (i i' : ι k) :
-    a ⟨k, i⟩ * z ⟨k, i'⟩ = a ⟨k, i'⟩ * z ⟨k, i⟩ := by
-  obtain ⟨c, -, rfl⟩ := h
-  show c k * z ⟨k, i⟩ * z ⟨k, i'⟩ = c k * z ⟨k, i'⟩ * z ⟨k, i⟩
-  ring
-
 theorem sameOrbit_of_minors_inv {a z : (Σ k, ι k) → ℂ} (ha : ∀ k, ∃ i, a ⟨k, i⟩ ≠ 0)
     (hz : ∀ k, ∃ i, z ⟨k, i⟩ ≠ 0)
     (h : ∀ (k : K) (i i' : ι k), a ⟨k, i⟩ * z ⟨k, i'⟩ = a ⟨k, i'⟩ * z ⟨k, i⟩) : SameOrbit a z := by
@@ -45,7 +34,7 @@ theorem exists_continuousOn_inv_pts : ∀ (K : Type) [Fintype K] (ι : K → Typ
       ContinuousOn r (mcPts P) := by
   intro K _ ι _ P e R hX
   have hs : ∀ z ∈ mcPts P, ∃ x, SameOrbit (R.lift x x) z :=
-    fun z hz => R.surj z hz (notMem_mcPts_top_inv z)
+    fun z hz => R.surj z hz (GlobalTheory.CompanionTheory.Ar.PB.Proj.not_mem_mcPts_top z)
   choose! r hr using hs
   refine ⟨r, hr, fun z₀ hz₀ => ?_⟩
   refine isCompact_univ.le_nhds_of_unique_clusterPt (by simp) fun x' _ hx' => ?_
@@ -64,7 +53,8 @@ theorem exists_continuousOn_inv_pts : ∀ (K : Type) [Fintype K] (ι : K → Typ
   have hsame : SameOrbit (R.lift x' x') z₀ :=
     sameOrbit_of_minors_inv (R.mem x' x' (R.mem_U x')).1 hz₀.1 fun k i i' =>
       tendsto_nhds_unique_of_eventuallyEq ((ha _).mul (hzc _)) ((ha _).mul (hzc _))
-        (hmin.mono fun z hz => minors_of_sameOrbit_inv hz k i i')
-  exact R.inj x' (r z₀) (notMem_mcPts_top_inv _) (orbit_trans hsame (orbit_symm (hr z₀ hz₀)))
+        (hmin.mono fun z hz => GlobalTheory.CompanionTheory.Ar.PB.Proj.orbit_cross hz k i i')
+  exact R.inj x' (r z₀) (GlobalTheory.CompanionTheory.Ar.PB.Proj.not_mem_mcPts_top _) (orbit_trans
+      hsame (orbit_symm (hr z₀ hz₀)))
 
 end GlobalTheory.CompanionTheory.Ar.PB.WMan

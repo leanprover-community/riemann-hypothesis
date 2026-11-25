@@ -24,17 +24,6 @@ section Holo
 
 variable {e e' : ℕ} {X Y : Type} [TopologicalSpace X] [TopologicalSpace Y]
 
-theorem continuousAt_holo (A : FinHolAtlas e X) {W : Set X} {g : X → ℂ} (hg : A.HoloOn W g) {x : X}
-    (hx : x ∈ W) : ContinuousAt g x := by
-  obtain ⟨j, hj⟩ := A.cover x
-  have h1 : ContinuousAt (g ∘ (A.chart j).symm) (A.chart j x) :=
-    (hg j _ ⟨(A.chart j).map_source hj, by simpa [(A.chart j).left_inv hj] using hx⟩).continuousAt
-  have h3 : ContinuousAt ((g ∘ (A.chart j).symm) ∘ A.chart j) x :=
-    ContinuousAt.comp (g := g ∘ (A.chart j).symm) h1 ((A.chart j).continuousAt hj)
-  refine h3.congr ?_
-  filter_upwards [(A.chart j).open_source.mem_nhds hj] with y hy
-  simp [Function.comp, (A.chart j).left_inv hy]
-
 theorem holoOn_comp {A : FinHolAtlas e X} {B : FinHolAtlas e' Y} {h : Y → X} (hh : HoloMap B A h) {U : Set X}
     {g : X → ℂ} (hg : A.HoloOn U g) : B.HoloOn (h ⁻¹' U) (fun y => g (h y)) := by
   apply _root_.PositivityTheory.UnitarySelfGeneration.HolomorphicMinorCharts.holo_comp_map <;> assumption
@@ -44,7 +33,8 @@ theorem exists_log (A : FinHolAtlas e X) {W : Set X} (hW : IsOpen W) {c : X → 
     ∃ V : Set X, IsOpen V ∧ x ∈ V ∧ V ⊆ W ∧ ∃ L : X → ℂ, A.HoloOn V L ∧
       ∀ y ∈ V, c y ≠ 0 ∧ (L y).re = Real.log ‖c y‖ := by
   have hcont : ContinuousOn (fun y => c y / c x) W := fun y hy =>
-    ((continuousAt_holo A hc hy).div_const _).continuousWithinAt
+    (((@PositivityTheory.UnitarySelfGeneration.HolomorphicMinorCharts.holo_continuousAt _ _ _ A _ _
+        hc _ hy)).div_const _).continuousWithinAt
   have hV : IsOpen (W ∩ (fun y => c y / c x) ⁻¹' Complex.slitPlane) :=
     hcont.isOpen_inter_preimage hW Complex.isOpen_slitPlane
   refine ⟨_, hV, ⟨hx, ?_⟩, Set.inter_subset_left, fun y => Complex.log (c y / c x) + (Real.log ‖c x‖ : ℂ), ?_, ?_⟩

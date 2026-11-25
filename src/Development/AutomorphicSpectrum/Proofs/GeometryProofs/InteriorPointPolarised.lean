@@ -22,15 +22,10 @@ theorem injective_ringOfIntegers_toComplex {F : Type} [Field F] [NumberField F] 
     Function.Injective g := by
   apply _root_.GlobalTheory.CompanionTheory.Ar.QuotUnif.Dich.ringOfIntegers_hom_injective <;> assumption
 
-theorem exists_comp_eq_of_ringOfIntegers {F : Type} [Field F] [NumberField F] (g : 𝓞 F →+* ℂ) :
-    ∃ g' : F →+* ℂ, g'.comp (algebraMap (𝓞 F) F) = g :=
-  ⟨IsFractionRing.lift (injective_ringOfIntegers_toComplex g), by
-    ext a
-    simp⟩
-
 theorem exists_spMap_of_ringOfIntegers {F : Type} [Field F] [NumberField F] {X : Scheme.{0}} (s : X ⟶ Sp (𝓞 F))
     (u : Sp ℂ ⟶ X) : ∃ g' : F →+* ℂ, u ≫ s = spMap g' ≫ spMap (algebraMap (𝓞 F) F) := by
-  obtain ⟨g', hg'⟩ := exists_comp_eq_of_ringOfIntegers (Spec.preimage (u ≫ s)).hom
+  obtain ⟨g', hg'⟩ := GlobalTheory.CompanionTheory.Ar.QuotUnif.Dich.exists_extension_to_field
+      (Spec.preimage (u ≫ s)).hom
   refine ⟨g', ?_⟩
   rw [← spMap_comp, hg']
   exact (Spec.map_preimage (u ≫ s)).symm
