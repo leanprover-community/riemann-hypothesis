@@ -124,105 +124,10 @@ def fam {E : Spc} (L : E ⟶ ofCat (glCat 1)) :
       (Sec.map (resι ℤ Gm) (unitSec (lineUnit L x)))
   | _, _, _, _, _ => 0
 
-theorem fam_zero {E : Spc} (L : E ⟶ ofCat (glCat 1)) (s : ℤ) (h : -((0 : ℕ) : ℤ) + 1 = s) (U : Scheme.{0})
-    (x : Sx E 0 U) : fam L 0 s h U x = 0 := rfl
-
-theorem fam_add_two {E : Spc} (L : E ⟶ ofCat (glCat 1)) (p : ℕ) (s : ℤ) (h : -((p + 2 : ℕ) : ℤ) + 1 = s)
-    (U : Scheme.{0}) (x : Sx E (p + 2) U) : fam L (p + 2) s h U x = 0 := rfl
-
-theorem fam_one {E : Spc} (L : E ⟶ ofCat (glCat 1)) (h : -((1 : ℕ) : ℤ) + 1 = 0) (U : Scheme.{0})
-    (x : Sx E 1 U) : fam L 1 0 h U x = Sec.map (resι ℤ Gm) (unitSec (lineUnit L x)) := by
-  simp [fam, Sec.map]
-
-theorem fam_nat {E : Spc} (L : E ⟶ ofCat (glCat 1)) (p : ℕ) (s : ℤ) (h : -(p : ℤ) + 1 = s) (V U : Scheme.{0})
-    (g : V ⟶ U) (x : Sx E p U) : Sec.res g (fam L p s h U x) = fam L p s h V (x.res g) := by
-  match p with
-  | 0 => simp [fam_zero]
-  | 1 =>
-    simp only [fam]
-    rw [_root_.GlobalTheory.EtC.CupSpec.map_res, _root_.GlobalTheory.EtC.CupSpec.map_res, unitSec_res, lineUnit_res]
-  | p + 2 => simp [fam_add_two]
-
 theorem sec_map_zero {R : Type} [CommRing R] {F G : Shv R} (φ : F ⟶ G) {U : Scheme.{0}} :
     Sec.map φ (0 : Sec F U) = 0 := map_zero _
 
 theorem sec_map_add {R : Type} [CommRing R] {F G : Shv R} (φ : F ⟶ G) {U : Scheme.{0}} (a b : Sec F U) :
     Sec.map φ (a + b) = Sec.map φ a + Sec.map φ b := map_add _ _ _
-
-theorem ev_zero_cochain {E : Spc} {I : Cx ℤ} {n : ℤ} (p : ℕ) (s : ℤ) (h : -(p : ℤ) + n = s) (U : Scheme.{0})
-    (x : Sx E p U) : ev (0 : Cochain ((chains ℤ).obj E) I n) p s h U x = 0 := by
-  have hZero := CupSpec.ev_zero (I := I) p s h U x
-  exact hZero
-
-theorem fam_cocycle {E : Spc} (L : E ⟶ ofCat (glCat 1)) (α : Cochain ((chains ℤ).obj E) (res ℤ Gm) 1)
-    (hα : ∀ p s h U x, ev α p s h U x = fam L p s h U x) : δ 1 2 α = 0 := by
-  have hExt := CupSpec.ev_ext (δ 1 2 α) 0
-  apply hExt
-  intro p t ht U x
-  rw [ev_zero_cochain]
-  have hDeltaSucc := CupSpec.ev_δ_succ (m := 2) (by norm_num) α U
-  match p with
-  | 0 =>
-    obtain rfl : t = 2 := by omega
-    have hDeltaZero := CupSpec.ev_δ_zero (m := 2) (by norm_num) α U 1 2 (by simp) ht x
-    rw [hDeltaZero, hα, fam_zero, sec_map_zero]
-  | 1 =>
-    obtain rfl : t = 1 := by omega
-    have key : ev (δ 1 2 α) 1 1 ht U x = Sec.map ((res ℤ Gm).d 0 1) (ev α 1 0 (by simp) U x) +
-        (2 : ℤ).negOnePow • ∑ i : Fin 2, (-1 : ℤ) ^ (i : ℕ) • ev α 0 1 (by simp) U (x.face i) :=
-      hDeltaSucc 0 0 1 (by simp) ht x
-    rw [key]
-    simp only [hα, fam_zero, fam_one, smul_zero, Finset.sum_const_zero, add_zero, sec_map_comp, resι_d]
-    rfl
-  | 2 =>
-    obtain rfl : t = 0 := by omega
-    have key : ev (δ 1 2 α) 2 0 ht U x = Sec.map ((res ℤ Gm).d (-1) 0) (ev α 2 (-1) (by simp) U x) +
-        (2 : ℤ).negOnePow • ∑ i : Fin 3, (-1 : ℤ) ^ (i : ℕ) • ev α 1 0 (by simp) U (x.face i) :=
-      hDeltaSucc 1 (-1) 0 (by simp) ht x
-    rw [key]
-    simp only [hα, fam_one]
-    rw [show fam L 2 (-1) (by simp) U x = 0 from rfl, sec_map_zero, zero_add, Fin.sum_univ_three, lineUnit_face,
-      unitSec_mul, sec_map_add]
-    simp only [Fin.val_zero, Fin.val_one, Fin.val_two]
-    simp
-  | p + 3 =>
-    have key := hDeltaSucc (p + 2) (t - 1) t (by omega) ht x
-    rw [key]
-    simp only [hα, fam_add_two, sec_map_zero, zero_add, smul_zero, Finset.sum_const_zero]
-
-theorem exists_cocycle {E : Spc} (L : E ⟶ ofCat (glCat 1)) :
-    ∃ γ : Cocycle ((chains ℤ).obj E) (res ℤ Gm) 1, (∀ (U : Scheme.{0}) (x : Sx E 0 U), ev γ.1 0 1 (by simp) U x = 0) ∧
-      ∀ (U : Scheme.{0}) (x : Sx E 1 U), ev γ.1 1 0 (by simp) U x = Sec.map (resι ℤ Gm) (unitSec (lineUnit L x)) := by
-  have hExists := GlobalTheory.EtC.exists_cochain_ev_eq_of_natural ℤ (fam L) (fam_nat L)
-  obtain ⟨α, hα⟩ := hExists
-  refine ⟨Cocycle.mk α 2 (by norm_num) (fam_cocycle L α hα), fun U x => ?_, fun U x => ?_⟩
-  · exact (hα 0 1 _ U x).trans (fam_zero L 1 _ U x)
-  · exact (hα 1 0 _ U x).trans (fam_one L _ U x)
-
-theorem spec {E : Spc} (L : E ⟶ ofCat (glCat 1)) :
-    ∃ γ : Cocycle ((chains ℤ).obj E) (res ℤ Gm) 1, CohomologyClass.mk γ = picClass L ∧
-      (∀ (U : Scheme.{0}) (x : Sx E 0 U), ev γ.1 0 1 (by simp) U x = 0) ∧
-      ∀ (U : Scheme.{0}) (x : Sx E 1 U), ev γ.1 1 0 (by simp) U x = Sec.map (resι ℤ Gm) (unitSec (lineUnit L x)) := by
-  obtain ⟨γ, h0, h1⟩ := exists_cocycle L
-  exact pick_spec (P := fun c => ∃ γ : Cocycle ((chains ℤ).obj E) (res ℤ Gm) 1, CohomologyClass.mk γ = c ∧
-    (∀ (U : Scheme.{0}) (x : Sx E 0 U), ev γ.1 0 1 (by simp) U x = 0) ∧
-    ∀ (U : Scheme.{0}) (x : Sx E 1 U), ev γ.1 1 0 (by simp) U x = Sec.map (resι ℤ Gm) (unitSec (lineUnit L x)))
-    ⟨_, γ, rfl, h0, h1⟩
-
-theorem cocycle_ext {E : Spc} (γ γ' : Cocycle ((chains ℤ).obj E) (res ℤ Gm) 1)
-    (h0 : ∀ (U : Scheme.{0}) (x : Sx E 0 U), ev γ.1 0 1 (by simp) U x = ev γ'.1 0 1 (by simp) U x)
-    (h1 : ∀ (U : Scheme.{0}) (x : Sx E 1 U), ev γ.1 1 0 (by simp) U x = ev γ'.1 1 0 (by simp) U x) : γ = γ' := by
-  have hExt := CupSpec.ev_ext γ.1 γ'.1
-  refine Cocycle.ext (hExt fun p s h U x => ?_)
-  match p with
-  | 0 =>
-    obtain rfl : s = 1 := by omega
-    exact h0 U x
-  | 1 =>
-    obtain rfl : s = 0 := by omega
-    exact h1 U x
-  | p + 2 =>
-    have hZ := res_isZero Gm s (by omega)
-    exact (sec_eq_zero hZ _).trans (sec_eq_zero hZ _).symm
 
 end GlobalTheory.EtC.PicSpec

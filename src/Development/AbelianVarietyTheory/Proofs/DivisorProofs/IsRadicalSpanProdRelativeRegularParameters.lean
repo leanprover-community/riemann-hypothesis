@@ -58,22 +58,9 @@ open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.ZM
 
 namespace GlobalTheory.SiegelTor
 
-section Param
-
-variable {o R : Type} [CommRing o] [CommRing R] [IsLocalRing R] {m : ℕ} {b : o →+* R} {t : Fin m → R}
-
-theorem IsRelParam.notMem_sq (h : IsRelParam b t) (i : Fin m) : t i ∉ maximalIdeal R ^ 2 := fun hi => by
-  have := h.mem_of_mem_sq (Pi.single i 1) (by simpa [Pi.single_apply] using hi) i
-  simp at this
-
-theorem IsRelParam.ne_zero (h : IsRelParam b t) (i : Fin m) : t i ≠ 0 := fun h0 => h.notMem_sq i (h0 ▸ zero_mem _)
-
-end Param
-
 section Local
 
 variable {R : Type} [CommRing R] [IsDomain R] [IsLocalRing R] {m : ℕ}
-
 
 end Local
 

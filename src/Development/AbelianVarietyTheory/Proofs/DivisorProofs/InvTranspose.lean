@@ -108,8 +108,6 @@ instance : StarRing (TensO s) where
 theorem star_def (a : TensO s) : star a = ofMat s (((s.1⁻¹ : (Matrix (Fin r) (Fin r) ℤ)ˣ) : Matrix (Fin r) (Fin r) ℤ) *
     (mat s a).transpose * (s.1 : Matrix (Fin r) (Fin r) ℤ)) := rfl
 
-@[simp] theorem mat_one : mat s (1 : TensO s) = 1 := rfl
-
 end TensO
 
 def symUnitOf {r : ℕ} (W : Matrix (Fin r) (Fin r) ℤ) (h : IsUnit (W + W.transpose).det) : SymUnit r :=

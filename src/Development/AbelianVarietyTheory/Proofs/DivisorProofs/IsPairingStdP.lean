@@ -76,13 +76,6 @@ structure Setup (P : V → V → ℝ) (P₁ : V₁ → V₁ → ℝ) (j : V₁ �
   orth : ∀ l ∈ L, ∀ w, omega P l (j w) = 0
   max : ∀ v, (∀ l ∈ L, omega P v l = 0) → (∀ w, omega P v (j w) = 0) → v ∈ L
 
-
-theorem IsPairing.zero_left {P : V → V → ℝ} (h : IsPairing P) (y : V) : P 0 y = 0 := by
-  simpa using h.smulL 0 0 y
-
-theorem IsPairing.zero_right {P : V → V → ℝ} (h : IsPairing P) (x : V) : P x 0 = 0 := by
-  simpa using h.smulR 0 x 0
-
 end Real
 
 section Adelic
@@ -91,7 +84,6 @@ open scoped Matrix
 open NumberField GlobalTheory.WeilM GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
 
 variable {F : Type} [Field F] [NumberField F]
-
 
 variable (F) in
 def trP (κ : Type) [Fintype κ] (y b : κ → mixedEmbedding.mixedSpace F) : ℝ :=

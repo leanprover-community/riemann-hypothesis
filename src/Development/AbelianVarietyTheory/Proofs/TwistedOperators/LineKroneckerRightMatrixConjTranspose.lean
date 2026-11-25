@@ -61,9 +61,6 @@ section Adjoint
 variable {σ : Type} [DecidableEq σ] {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
   {ι : MvPolynomial σ ℂ →ₗ[ℂ] H}
 
-theorem monomial_eq_smul (m : σ →₀ ℕ) (c : ℂ) :
-    monomial m c = c • (monomial m 1 : MvPolynomial σ ℂ) := by simp [smul_monomial]
-
 theorem inner_X_mul (h : IsFockIP ι) (i : σ) (P Q : MvPolynomial σ ℂ) :
     inner ℂ (ι (X i * P)) (ι Q) = inner ℂ (ι P) (ι (pderiv i Q)) := by
   apply GlobalTheory.FockDeg.inner_X_mul <;> assumption

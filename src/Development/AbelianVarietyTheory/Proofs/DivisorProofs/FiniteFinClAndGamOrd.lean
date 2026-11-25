@@ -75,14 +75,6 @@ theorem finG_injective (V : HSp D) : Function.Injective (finG V) := by
 def finLev (V : HSp D) (K : Subgroup (GL (Fin V.rank) (Lev.EAf D))) : Subgroup (Bridge.Gf V) :=
   (K.comap (Formalism.UG.bc (Lev.swapAE D))).comap (Bridge.Gf V).subtype
 
-theorem mem_finLev_iff (V : HSp D) (K : Subgroup (GL (Fin V.rank) (Lev.EAf D))) (g : GfC V) :
-    gfcToGf V g ∈ finLev V K ↔ g ∈ K.comap (finG V) := by
-  apply GlobalTheory.FunObj.mem_finLev_iff
-
-theorem isOpenLev_finLev (V : HSp D) (K : Subgroup (GL (Fin V.rank) (Lev.EAf D))) (hK : IsCO V K) :
-    GlobalTheory.IndefiniteRowSideFullHecke.SublevelSplitting.IsOpenLev V (finLev V K) := by
-  apply GlobalTheory.FunObj.isOpenLev_finLev <;> assumption
-
 theorem finite_finCl (V : HSp D) (K : Subgroup (GL (Fin V.rank) (Lev.EAf D)))
     (hV : ∀ τ, (gramAt D V τ).PosDef) (hK : IsCO V K) : Finite (FinCl V K) := by
   apply GlobalTheory.FunObj.finite_finCl <;> assumption

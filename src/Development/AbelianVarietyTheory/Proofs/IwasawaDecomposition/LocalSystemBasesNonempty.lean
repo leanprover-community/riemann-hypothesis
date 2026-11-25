@@ -123,60 +123,12 @@ theorem comb_push {n : ℕ} {v : Fin n → (Sp (DualNumber S) ⟶ t'.G.left)}
     · exact (prod_push m u' u fun i => (hu i).trans (Category.assoc _ _ _).symm).trans hp
     · exact (Over.w (List.ofFn u').prod).trans hw.symm
 
-
 end Push
 
 section Generic
 
-theorem away_of_valuation (F : Type) [Field F] [CharZero F] [Algebra.IsAlgebraic ℚ F] (V : ValuationSubring F) (p : ℕ)
-    (hp : p.Prime) (hV : (p : F) ∈ V.nonunits) : IsLocalization.Away ((p : ℕ) : V) F := by
-  have hp0 : (p : F) ≠ 0 := Nat.cast_ne_zero.2 hp.ne_zero
-  have hm : ((p : ℕ) : V) ∈ IsLocalRing.maximalIdeal V := ValuationSubring.coe_mem_nonunits_iff.1 (by simpa using hV)
-  have key : ∀ x : F, ∃ (k : ℕ) (a : V), x * (p : F) ^ k = a := by
-    intro x
-    have hx : IsAlgebraic ℤ x := (IsFractionRing.isAlgebraic_iff ℤ ℚ F).2 (Algebra.IsAlgebraic.isAlgebraic x)
-    obtain ⟨n, hn, hi⟩ := hx.exists_integral_multiple
-    have hi' : IsIntegral ℤ ((n.natAbs : ℤ) • x) := by
-      rcases Int.natAbs_eq n with h | h
-      · rw [← h]; exact hi
-      · rw [show (n.natAbs : ℤ) = -n by omega, neg_smul]; exact hi.neg
-    obtain ⟨y, hy⟩ := (IsIntegrallyClosed.isIntegral_iff (R := V) (K := F)).1 hi'.tower_top
-    obtain ⟨e, n', hn', he⟩ := Nat.exists_eq_pow_mul_and_not_dvd (Int.natAbs_ne_zero.2 hn) p hp.ne_one
-    have hu : IsUnit ((n' : ℕ) : V) := by
-      by_contra h
-      have h' : ((n' : ℕ) : V) ∈ IsLocalRing.maximalIdeal V := h
-      have hc : IsCoprime ((p : ℕ) : V) ((n' : ℕ) : V) := ((Nat.Prime.coprime_iff_not_dvd hp).2 hn').cast
-      obtain ⟨a, b, hab⟩ := hc
-      exact (IsLocalRing.maximalIdeal.isMaximal V).ne_top ((Ideal.eq_top_iff_one _).2
-        (hab ▸ add_mem (Ideal.mul_mem_left _ _ hm) (Ideal.mul_mem_left _ _ h')))
-    obtain ⟨w, hw⟩ := hu.exists_left_inv
-    have hw' : (w : F) * (n' : F) = 1 := by simpa using congrArg (fun z : V => (z : F)) hw
-    refine ⟨e, w * y, ?_⟩
-    have hy' : (y : F) = (p : F) ^ e * n' * x := by
-      rw [show (y : F) = algebraMap V F y from rfl, hy, he]; simp
-    push_cast
-    rw [hy']
-    linear_combination (-(x * (p : F) ^ e)) * hw'
-  refine IsLocalization.Away.mk _ ?_ (fun s => ?_) fun a b h => ⟨0, by rw [Subtype.val_injective h]⟩
-  · rw [map_natCast]; exact IsUnit.mk0 _ hp0
-  · rw [map_natCast]; exact key s
-
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H}
   {Xo : Moduli Dw l} {c : Coeff l}
-
-theorem isOpenImmersion_j {p : ℕ} {W : ValuationSubring ℂ} (hp : p.Prime) (hW : (p : ℂ) ∈ W.nonunits)
-    (Y : Model Xo c (c.V W).subtype) : IsOpenImmersion Y.j := by
-  have := c.fin
-  have hV : (p : c.F) ∈ (c.V W).nonunits := by
-    rw [ValuationSubring.mem_nonunits_iff_or] at hW ⊢
-    refine Or.inr fun h => hW.elim (Nat.cast_ne_zero.2 hp.ne_zero) fun h' => h' ?_
-    have h2 : c.F.val.toRingHom (p : c.F)⁻¹ ∈ W := h
-    simpa using h2
-  have := away_of_valuation c.F (c.V W) p hp hV
-  have : IsOpenImmersion (spMap (c.V W).subtype) := IsOpenImmersion.of_isLocalization (S := c.F) ((p : ℕ) : c.V W)
-  have := Y.jQ_open
-  unfold Model.j
-  infer_instance
 
 theorem dense_j {O : Type} [CommRing O] {β : O →+* c.F} (hβ : Function.Injective β) (Y : Model Xo c β) :
     Dense (Set.range Y.j) := by

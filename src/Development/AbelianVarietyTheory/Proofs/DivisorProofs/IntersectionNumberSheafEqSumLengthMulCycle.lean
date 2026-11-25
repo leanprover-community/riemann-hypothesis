@@ -84,22 +84,6 @@ theorem length_stalk_pushforward_generic {X : Scheme.{0}} (Z : Closeds X)
       (GlobalTheory.VB.genRank G : ℕ∞) :=
   _root_.GlobalTheory.StalkLength.length_stalk_pushforward_genericPoint X Z G
 
-theorem lt_of_add_one_le_natCast {a : WithBot ℕ∞} {n : ℕ} (h : a + 1 ≤ n) : a < n := by
-  induction a using WithBot.recBotCoe with
-  | bot => exact WithBot.bot_lt_coe _
-  | coe a =>
-    induction a using ENat.recTopCoe with
-    | top =>
-      exfalso
-      have e : ((⊤ : ℕ∞) : WithBot ℕ∞) + 1 = ((⊤ + 1 : ℕ∞) : WithBot ℕ∞) := rfl
-      rw [e, top_add] at h
-      have : ((⊤ : ℕ∞)) ≤ (n : ℕ∞) := by exact_mod_cast h
-      exact ENat.natCast_ne_top n (top_le_iff.1 this)
-    | coe m =>
-      have : ((m + 1 : ℕ) : WithBot ℕ∞) ≤ n := by exact_mod_cast h
-      have : m + 1 ≤ n := by exact_mod_cast this
-      exact_mod_cast (by omega : m < n)
-
 open QCoh
 
 variable {κ : Type} [Field κ] {X : Scheme.{0}} [Algebra κ Γ(X, ⊤)]
@@ -128,7 +112,6 @@ theorem eq_of_mem_closure {F : X.Modules} [IsFiniteQC F] {n : ℕ} (hd : suppDim
     rw [hw] at h1
     have h3 : ((n + 1 : ℕ) : WithBot ℕ∞) ≤ n := by push_cast; exact h1.trans h2
     exact absurd (by exact_mod_cast h3 : n + 1 ≤ n) (by omega)
-
 
 variable (κ) in
 theorem interNumRed_eq_zero (hp : IsProjOver (strHom κ (X := X))) {ι : Type} [Fintype ι]

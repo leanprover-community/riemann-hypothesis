@@ -80,10 +80,6 @@ theorem heisOp_zero {P Q R S : ℕ} : heisOp (P := P) (Q := Q) (R := R) (S := S)
 theorem Jm_transpose' (p q : ℕ) : (Jm p q)ᵀ = Jm p q := by
   simp [Jm, Formalism.UG.Jpq, Matrix.fromBlocks_transpose]
 
-theorem exists_at_piInf {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
-    {σ : E →ₐ[F] E} (hcm : IsCMExt F E σ) (τ : ∀ w : InfinitePlace F, EmbOver E w)
-    (z : InfinitePlace F → ℂ) : ∃ a : AE F E, At (evI F) a ∧ ∀ w, piInf (τ w) a = z w := _root_.GlobalTheory.PolRangeInf.exists_at_inf_values hcm τ z
-
 theorem exists_mat_at {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
     {σ : E →ₐ[F] E} (hcm : IsCMExt F E σ) (τ : ∀ w : InfinitePlace F, EmbOver E w)
     {m k : Type} (z : InfinitePlace F → Matrix m k ℂ) :
@@ -97,10 +93,6 @@ theorem exists_mat_at {F E : Type} [Field F] [NumberField F] [Field E] [NumberFi
     simp [(ha i j).2 w]
 
 alias mulX_mem_span := _root_.GlobalTheory.MulVarSpan.mulX_mem_span
-
-theorem tens_top {ι σ : Type} [Fintype ι] [DecidableEq ι] (N : Submodule ℂ (⨂[ℂ] _ : ι, MvPolynomial σ ℂ))
-    (h1 : PiTensorProduct.tprod ℂ (fun _ => (1 : MvPolynomial σ ℂ)) ∈ N)
-    (hN : ∀ w l, ∀ T ∈ N, atPl w (LinearMap.mulLeft ℂ (MvPolynomial.X l : MvPolynomial σ ℂ)) T ∈ N) : N = ⊤ := _root_.GlobalTheory.RealLift.tensor_submodule_eq_top N h1 hN
 
 theorem tens_top_heis {ι : Type} [Fintype ι] [DecidableEq ι] {P Q R S : ℕ}
     (N : Submodule ℂ (⨂[ℂ] _ : ι, Formalism.BasicNotions.TH.Pol P Q R S))

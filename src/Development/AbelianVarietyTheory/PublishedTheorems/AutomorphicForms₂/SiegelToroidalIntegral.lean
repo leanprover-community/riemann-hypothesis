@@ -82,10 +82,6 @@ def IsRelParam (b : o →+* R) (t : Fin m → R) : Prop :=
   (∀ i, t i ∈ maximalIdeal R) ∧ ∀ c : Fin m → R,
     ∑ i, c i * t i ∈ maximalIdeal R ^ 2 ⊔ ((maximalIdeal R).comap b).map b → ∀ i, c i ∈ maximalIdeal R
 
-theorem IsRelParam.mem_of_mem_sq {b : o →+* R} {t : Fin m → R} (h : IsRelParam b t) (c : Fin m → R)
-    (hc : ∑ i, c i * t i ∈ maximalIdeal R ^ 2) (i : Fin m) : c i ∈ maximalIdeal R :=
-  h.2 c (Ideal.mem_sup_left hc) i
-
 end Param
 
 section Charts

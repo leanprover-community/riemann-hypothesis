@@ -113,8 +113,6 @@ theorem atPl_tprod (w : T) (L : Module.End ℂ (V w)) (f : ∀ i, V i) :
 noncomputable def atPlLin (w : T) : Module.End ℂ (V w) →ₗ[ℂ] Module.End ℂ (⨂[ℂ] i, V i) :=
   (PiTensorProduct.mapMultilinear ℂ V V).toLinearMap (fun i => (LinearMap.id : V i →ₗ[ℂ] V i)) w
 
-theorem atPlLin_apply (w : T) (L : Module.End ℂ (V w)) : atPlLin w L = atPl w L := rfl
-
 theorem atPl_mul (w : T) (L₁ L₂ : Module.End ℂ (V w)) : atPl w (L₁ * L₂) = atPl w L₁ * atPl w L₂ := by
   apply PiTensorProduct.ext
   apply MultilinearMap.ext
@@ -593,7 +591,6 @@ end GlobalTheory.HoweR.TensAlg
 
 namespace GlobalTheory.HoweR
 
-
 open GlobalTheory.HoweR.TensAlg in
 theorem howeAlg_tensAny : ∀ (T : Type) [Fintype T] [DecidableEq T] (V : T → Type) [∀ w, AddCommGroup (V w)]
     [∀ w, Module ℂ (V w)], ∀ (R S : T → ℕ) (a : ∀ w, Mat (R w) (S w) →ₗ[ℂ] Module.End ℂ (V w))
@@ -1060,25 +1057,6 @@ def fockEmb (σ : Type) [DecidableEq σ] :
   (basisMonomials σ ℂ).constr ℂ fun α =>
     lp.single 2 α ((Real.sqrt (α.prod fun _ k => (k.factorial : ℝ)) : ℝ) : ℂ)
 
-theorem isFockIsometry_fockEmb (σ : Type) [DecidableEq σ] : IsFockIP (fockEmb σ) := by
-  intro α β
-  have h : ∀ γ : σ →₀ ℕ, fockEmb σ (monomial γ 1) =
-      lp.single 2 γ ((Real.sqrt (γ.prod fun _ k => (k.factorial : ℝ)) : ℝ) : ℂ) := by
-    intro γ
-    have := (basisMonomials σ ℂ).constr_basis ℂ (fun α : σ →₀ ℕ =>
-      (lp.single 2 α ((Real.sqrt (α.prod fun _ k => (k.factorial : ℝ)) : ℝ) : ℂ) :
-        lp (fun _ : σ →₀ ℕ => ℂ) 2)) γ
-    simpa [fockEmb] using this
-  rw [h, h, lp.inner_single_left]
-  split_ifs with e
-  · subst e
-    have h0 : 0 ≤ α.prod fun _ k => (k.factorial : ℝ) :=
-      Finset.prod_nonneg fun _ _ => Nat.cast_nonneg _
-    rw [lp.single_apply_self, RCLike.inner_apply, Complex.conj_ofReal, ← Complex.ofReal_mul,
-      Real.mul_self_sqrt h0]
-    simp [Finsupp.prod]
-  · rw [lp.single_apply_ne _ _ _ e, inner_zero_right]
-
 end GlobalTheory.FockAlg.Model
 end -- clump:auto
 end -- clump:auto
@@ -1095,26 +1073,6 @@ noncomputable section
 open MvPolynomial Formalism.BasicNotions.TH GlobalTheory.FockAlg GlobalTheory.JointHarm
 
 namespace GlobalTheory.FockScalarType
-
-theorem injective_of_isFockIP {σ : Type} [DecidableEq σ] {H : Type} [NormedAddCommGroup H]
-    [InnerProductSpace ℂ H] {ι : MvPolynomial σ ℂ →ₗ[ℂ] H} (hι : IsFockIP ι) :
-    Function.Injective ι := by
-  have key : ∀ (α : σ →₀ ℕ) (P : MvPolynomial σ ℂ), inner ℂ (ι (monomial α 1)) (ι P) =
-      AddMonoidAlgebra.coeff P α * α.prod (fun _ k => (k.factorial : ℂ)) := by
-    intro α P
-    induction P using MvPolynomial.induction_on' with
-    | add P P' h h' => simp only [map_add (f := _), inner_add_right, h, h', MvPolynomial.coeff_add, add_mul]
-    | monomial β c =>
-      rw [monomial_eq_smul β c, map_smul, inner_smul_right, hι, MvPolynomial.coeff_smul, coeff_monomial]
-      by_cases e : α = β
-      · subst e; simp
-      · simp [e, Ne.symm e]
-  refine (injective_iff_map_eq_zero ι).2 fun P hP => ?_
-  ext α
-  have h := key α P
-  rw [hP, inner_zero_right, eq_comm, mul_eq_zero] at h
-  refine h.resolve_right ?_
-  exact Finset.prod_ne_zero_iff.2 fun i _ => Nat.cast_ne_zero.2 (Nat.factorial_ne_zero _)
 
 variable {p q r s : ℕ}
 
@@ -1231,7 +1189,6 @@ theorem fockHarmonicsSecondMember_of_jointShape_highestWeight {x : ℚ} {μ' : I
 end GlobalTheory.HoweR.MultOne
 
 namespace GlobalTheory.HoweR
-
 
 open GlobalTheory.HoweR.MultOne in
 theorem hw_le_span_sup_coinv : ∀ (P Q R S : ℕ) (x : ℚ) (μ' : Ix R S → ℚ), JointShape P Q R S (fun _ => x) μ' →

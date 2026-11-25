@@ -846,22 +846,6 @@ theorem evalQuot_root {F C : Type} [Field F] [Ring C] [Algebra F C] (q : Polynom
   change Polynomial.aeval x Polynomial.X = x
   simp
 
-section Generic2
-
-variable {S : Type*} [Ring S]
-
-theorem triv_change (σ : S →+* Sᵐᵒᵖ) (x u : Sˣ) (b : S) :
-    ((x * u⁻¹ : Sˣ) : S) * ((u : S) * b * (σ u).unop) * (σ ((x * u⁻¹ : Sˣ) : S)).unop =
-      x * b * (σ x).unop := by
-  have h1 : (σ u).unop * (σ ((u⁻¹ : Sˣ) : S)).unop = 1 := by
-    rw [← MulOpposite.unop_mul, ← map_mul, Units.inv_mul, map_one, MulOpposite.unop_one]
-  calc ((x * u⁻¹ : Sˣ) : S) * ((u : S) * b * (σ u).unop) * (σ ((x * u⁻¹ : Sˣ) : S)).unop
-      = x * ((((u⁻¹ : Sˣ) : S) * u) * b * ((σ u).unop * (σ ((u⁻¹ : Sˣ) : S)).unop)) * (σ x).unop := by
-        simp only [Units.val_mul, map_mul, MulOpposite.unop_mul, mul_assoc]
-    _ = _ := by rw [Units.inv_mul, h1, one_mul, mul_one]
-
-end Generic2
-
 namespace Pair
 
 variable {G : HTGroup p}
@@ -1209,7 +1193,6 @@ theorem finite_classes_fixed_gamma (L : G.Level) (f : G.GAf → ℂ)
   exact ⟨P, rfl, hγ, hc, x', t', hx', he ▸ hf _ hne⟩
 
 end GlobalTheory.LKDefFin
-
 
 open GlobalTheory.LKDef GlobalTheory.LKDefFin in
 theorem GlobalTheory.LKDefFin.finite_classes_of_pol : ∀ (p : ℕ) [Fact p.Prime] (G : HTGroup p), G.a = 1 →

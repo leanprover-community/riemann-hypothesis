@@ -88,9 +88,6 @@ theorem rank_trM {A D A₂ D₂ : Type} [Fintype A] [Fintype D] [DecidableEq D] 
   have : trM j rA cD Z = (Z.map j).submatrix rA cD := by ext; rfl
   rw [this, Matrix.rank_submatrix, rank_map_equiv]
 
-theorem row_trM {A D A₂ D₂ : Type} (j : k ≃+* k') (rA : A₂ ≃ A) (cD : D₂ ≃ D) (Z : Matrix A D k) (r : A₂) :
-    (trM j rA cD Z).row r = fun c => j (Z.row (rA r) (cD c)) := rfl
-
 theorem read_sum {A D A₂ D₂ : Type} [Fintype A] [Fintype A₂] (j : k ≃+* k') (rA : A₂ ≃ A) (cD : D₂ ≃ D)
     (Z : Matrix A D k) (c : A → k) :
     (fun d => j ((∑ a, c a • Z.row a) (cD d))) = ∑ r, j (c (rA r)) • (trM j rA cD Z).row r := by
@@ -154,7 +151,6 @@ theorem memO_iff (hj : IsLocIso j) {A D A₂ D₂ : Type} [Fintype A] [Fintype A
   rwa [read_symm, trM_symm] at this
 
 end PrimFrameTr
-
 
 open PrimFrameTr in
 theorem isPrimFrame_trM_iff {k k' : Type} [Field k] [ValuativeRel k] [TopologicalSpace k]

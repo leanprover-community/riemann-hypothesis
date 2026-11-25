@@ -799,13 +799,6 @@ namespace GlobalTheory.HeckeTwoPoisson
 
 open GlobalTheory.IndefiniteRowSideFullHecke.OmegaFactorization GlobalTheory.HeckeTwo GlobalTheory.LipschitzTR
 
-theorem hTrans_decay : ∀ (σ : ℂ), 0 < σ.re → ∀ (y : ℝ), y ≠ 0 → ∀ (N : ℕ), ∃ C : ℝ, ∀ ν : ℝ,
-    ‖GlobalTheory.HeckeTwo.hTrans σ ν y‖ ≤ C * (1 + |ν|) ^ (-(N : ℝ)) := _root_.GlobalTheory.HeckeTwo.hTrans_rapid_decay
-
-theorem phi_line : ∀ (σ : ℂ), 0 < σ.re → ∀ (y : ℝ), y ≠ 0 →
-    Continuous (fun t : ℝ => GlobalTheory.HeckeTwo.phi σ ((t : ℂ) + (y : ℂ) * Complex.I)) ∧
-    Integrable (fun t : ℝ => GlobalTheory.HeckeTwo.phi σ ((t : ℂ) + (y : ℂ) * Complex.I)) := _root_.GlobalTheory.HeckeTwo.phi_line_continuous_integrable
-
 theorem prod_isBigO : ∀ (ι : Type) [Fintype ι] (g : ι → ℝ → ℂ) (b : ℝ), 0 ≤ b →
     (∀ i, ∃ C : ℝ, ∀ t : ℝ, ‖g i t‖ ≤ C * (1 + |t|) ^ (-b)) →
     (fun v : EuclideanSpace ℝ ι => ∏ i, g i (v i)) =O[Filter.cocompact (EuclideanSpace ℝ ι)]
@@ -1060,7 +1053,6 @@ section -- clump:auto
 open NumberField Complex Polynomial
 open scoped nonZeroDivisors ContDiff
 open GlobalTheory.IndefiniteRowSideFullHecke.OmegaFactorization GlobalTheory.HeckeTwo
-
 
 end -- clump:auto
 end -- clump:auto
@@ -1319,8 +1311,6 @@ theorem eq_zero_of_add_mul_ii {x y : F}
 
 theorem isIntegral_ii : IsIntegral ℤ (ii F) :=
   ⟨X ^ 2 + 1, by monicity!, by simp [ii_sq]⟩
-
-
 
 theorem summable_norm_rpow (𝔞 𝔟 : Frac F) {t : ℝ} (ht : 1 < t)
     (hQ : Finite ((𝓞 (Ext F))ˣ ⧸ (Units.map (algebraMap (𝓞 F) (𝓞 (Ext F))).toMonoidHom).range)) :

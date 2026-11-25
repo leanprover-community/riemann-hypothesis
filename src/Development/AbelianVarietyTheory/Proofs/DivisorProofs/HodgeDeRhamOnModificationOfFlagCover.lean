@@ -448,7 +448,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-
 noncomputable section
 
 open AlgebraicGeometry CategoryTheory Limits NumberField TensorProduct
@@ -480,46 +479,6 @@ def IsKSR (Φ : Finset (E →+* ℂ)) {S : Type} [CommRing S] [Algebra c.F S] (y
 theorem isKSR_iff_isKS {Φ : Finset (E →+* ℂ)} {K : Type} [Field K] [Algebra c.F K] {y : FrPt Xo c K}
     {x' : Sp (DualNumber K) ⟶ Xo.X} {M : HIx Dw Φ → K} : IsKSR Φ y x' M ↔ IsKS Φ y x' M := Iff.rfl
 
-theorem IsKSR.baseChange (P : AbelianDeRham) {Φ : Finset (E →+* ℂ)} {S S' : Type} [CommRing S] [Algebra c.F S]
-    [CommRing S'] [Algebra c.F S'] {ψ : S →ₐ[c.F] S'} {y : FrPt Xo c S} {y' : FrPt Xo c S'} (h : FrMap ψ y y')
-    {x : Sp (DualNumber S) ⟶ Xo.X} {M : HIx Dw Φ → S}
-    (hM : IsKSR Φ y x M) : IsKSR Φ y' (spMap (dualMap ψ.toRingHom) ≫ x) (ψ ∘ M) := by
-  obtain ⟨A, _, A', _, π, π', i, hi, b, ub, hb, hπ, hπ', e, hpol, hu, hl, hM⟩ := hM
-  let : Algebra S S' := ψ.toRingHom.toAlgebra
-  obtain ⟨B, _, φ, hφ⟩ := exists_isGrpPullback A (spMap (algebraMap S S'))
-  obtain ⟨B', _, φ', hφ'⟩ := exists_isGrpPullback A' (spMap (dualMap (algebraMap S S')))
-  have e₀ : spMap (algebraMap S S') ≫ DeRham.epsRed S = DeRham.epsRed S' ≫ spMap (dualMap (algebraMap S S')) := by
-    rw [← Cris.spMap_comp, ← Cris.spMap_comp]
-    congr 1
-    ext a <;> simp [dualMap, TrivSqZeroExt.algebraMap_eq_inl]
-  have w : (φ ≫ i) ≫ A'.hom = (B.hom ≫ DeRham.epsRed S') ≫ spMap (dualMap (algebraMap S S')) := by
-    rw [(hφ.comp hi).1.w, e₀, Category.assoc]
-  have sq : hφ'.1.lift _ _ w ≫ φ' = φ ≫ i := hφ'.1.lift_fst _ _ _
-  have hj : IsGrpPullback B B' (DeRham.epsRed S') (hφ'.1.lift _ _ w) :=
-    hφ'.cancel ((hφ.comp hi).congr e₀ sq.symm) (hφ'.1.lift_snd _ _ _)
-  have hU := ObjDim.isAbelianScheme Xo.univ
-  have hg := ObjDim.smoothOfRelativeDimension Xo.univ
-  have hA := PolPull.isAbelianScheme_of_isGrpPullback hU hπ
-  have gA := (smoothOfRelativeDimension_isStableUnderBaseChange _).of_isPullback hπ.1 hg
-  have hA' := PolPull.isAbelianScheme_of_isGrpPullback hU hπ'
-  have gA' := (smoothOfRelativeDimension_isStableUnderBaseChange _).of_isPullback hπ'.1 hg
-  obtain ⟨bc, hF⟩ := P.2.2.1 S A _ hA gA S' B φ hφ
-  have hL := (P.2.1 S' B _ (PolPull.isAbelianScheme_of_isGrpPullback hA hφ)
-    ((smoothOfRelativeDimension_isStableUnderBaseChange _).of_isPullback hφ.1 gA)).1
-  obtain ⟨b', hpol', eb⟩ := hpol.pull_comp (AbelianDeRham.bcMor hφ) (UnivPol.pol Xo).isLB
-  choose tv htv using ArcQ.NormalForm.exists_baseChange hφ
-  choose th hth using bc.exists
-  refine ⟨B, _, B', _, φ ≫ π, φ' ≫ π', _, hj, b', fun σ k => tv (ub σ k), fun k => th (hb k),
-    (hφ.comp hπ).congr h.1.symm rfl, hφ'.comp hπ', by rw [← Category.assoc, sq, Category.assoc, e], hpol',
-    fun σ k => ?_, fun σ k => (hl σ k).baseChange (hφ := hφ) hF hL (hth _) (htv _), fun τ a => ?_⟩
-  · rw [← Category.assoc, htv, Category.assoc, hu, h.2.1]
-  · obtain ⟨w, hw, f, hf, hd, hv⟩ := hM τ a
-    refine ⟨tv w, ArcQ.NormalForm.isLieComb_baseChange hφ (fun _ => htv _) (htv w) hw, th f,
-      mem_Fil_of_corr (hφ := hφ) hF (hth f) hf, fun k => ?_,
-      hv.baseChange (hφ := hφ) P hA' gA' hj hφ' sq (hth f) (htv w)⟩
-    rw [eb _ _ _ _ (hth f) (hth _), hd]
-    split_ifs <;> simp
-
 end GlobalTheory.FlagTan
 end -- clump:auto
 end -- clump:auto
@@ -530,7 +489,6 @@ end -- clump:auto
 -- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsTangentFrameOfFramedPointCommRing", "h": "module\n\npublic import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.FormallyUnramifiedOfTangentMapInjective\npublic import Formalism.LocalToGlobal.ProjectiveLattices.IsCombAt\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsFrameTangentVectorsOfIsGrpPullback\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Development.AbelianVarietyTheory.Definitions.Divisors.IsKSValueOneOfRetraction\n\n"}
 section -- clump:auto
 @[expose] public section
-
 
 noncomputable section
 
@@ -678,8 +636,6 @@ namespace GlobalTheory.DeRham
 
 open GlobalTheory.Published GlobalTheory.Published.AbelianDeRham
 
-
-
 theorem IsKSValue.exists_of_isAbelianScheme_ring (P : AbelianDeRham) {K : Type} [CommRing K] {A : Over (Sp K)} [GrpObj A]
     {A' : Over (Sp (DualNumber K))} [GrpObj A'] {i : A.left ⟶ A'.left}
     (h : IsGrpPullback A A' (DeRham.epsRed K) i) {g : ℕ} (hA : Semi.IsAbelianScheme A')
@@ -817,7 +773,6 @@ open scoped Classical
 open GlobalTheory.DeRham GlobalTheory.Cris
 attribute [local instance] Over.cartesianMonoidalCategory
 
-
 noncomputable section
 
 namespace GlobalTheory.FlagTan
@@ -866,7 +821,6 @@ theorem IsKSR.baseChangeForKSFamily (P : AbelianDeRham) {Φ : Finset (E →+* �
       hv.baseChange (hφ := hφ) P hA' gA' hj hφ' sq (hth f) (htv w)⟩
     rw [eb _ _ _ _ (hth f) (hth _), hd]
     split_ifs <;> simp
-
 
 end GlobalTheory.FlagTan
 
@@ -1004,7 +958,6 @@ theorem snd_dualMap {S T : Type} [CommRing S] [CommRing T] (φ : S →+* T) (x :
     (dualMap φ x).snd = φ x.snd := by simp [dualMap]
 
 end GlobalTheory.HorFrame
-
 
 open GlobalTheory.HorFrame in
 theorem GlobalTheory.HorFrame.exists_horizontal_lift : ∀ {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H} {Xo : Moduli Dw l} {c : Coeff l} {Y : Model Xo c (RingHom.id c.F)} {X : GlobalTheory.FlagMod.FlagCover Y} {Z : Comp Xo c} (M : Modif (str₀ X Z) (U₀ X Z) (GlobalTheory.FlagTan.dimFlag Dw)) (hP : GlobalTheory.Published.AbelianDeRham)
