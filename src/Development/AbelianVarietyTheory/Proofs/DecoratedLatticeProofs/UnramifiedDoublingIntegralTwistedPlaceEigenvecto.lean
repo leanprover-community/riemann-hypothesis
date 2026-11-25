@@ -209,7 +209,6 @@ theorem unram_det_dcoset {μ₀ : kˣ →* ℂˣ} (hμ : IsUnram μ₀) {n : Typ
   rw [map_mul, map_mul, map_mul, map_mul, unram_det_KO hμ hκ, unram_det_KO hμ hκ', det_torusElt_eq, sum_indic,
     map_zpow, one_mul, mul_one, zpow_natCast]
 
-
 open Classical in
 theorem isRepsK_image {m n : Type} [Fintype m] [DecidableEq m] [Fintype n] [DecidableEq n] (e : m ≃ n)
     {g₀ : GL m k} {R : Finset (GL m k)} (hR : IsRepsK g₀ R) :
@@ -1444,10 +1443,6 @@ theorem zonalInt_one {N : ℕ} [MeasurableSpace (GL (Fin N) k)] [BorelSpace (GL 
   unfold zonalInt
   rw [setIntegral_congr_fun (SplitFlip.isOpen_KO.measurableSet) hK]
   simp [Measure.real, hμK]
-
-theorem genVal_map_mul : ∀ (q r N n : ℕ) (B : Multiset ℂˣ) (c : ℂˣ),
-    genVal q r N (B.map (· * c)) n = (c : ℂ) ^ n * genVal q r N B n :=
-  _root_.GlobalTheory.ParHecke.genVal_map_mul
 
 theorem lower_eigen : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
   (ϖ : kˣ), valuation k (ϖ : k) = uniformizer k →

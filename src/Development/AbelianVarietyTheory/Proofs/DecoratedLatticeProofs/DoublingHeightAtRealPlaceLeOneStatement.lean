@@ -219,9 +219,6 @@ theorem submatrix_mul_self_equiv {ι κ : Type} [Fintype ι] [Fintype κ] {A : T
     (X Y : Matrix ι ι A) : (X * Y).submatrix e e = X.submatrix e e * Y.submatrix e e :=
   (submatrix_mul_equiv X Y e e e).symm
 
-theorem cT_submatrix {ι κ : Type} {A : Type} [CommRing A] (ρ : A →+* A) (e : κ ≃ ι) (X : Matrix ι ι A) :
-    (Formalism.UG.cT ρ X).submatrix e e = Formalism.UG.cT ρ (X.submatrix e e) := rfl
-
 theorem absEw_aH_le_one (hc : IsCMExt F E σ) (hJ : J.det ≠ 0) (h : Q = dblGram finSumFinEquiv J)
     {w : InfinitePlace F} (b : GL (Fin n) (w.Completion ⊗[F] E)) (y : GArch σ J w)
     (p : siegelH w.Completion σ Q) (k : GArch σ Q w) (hk : k ∈ KArch σ Q w b)
@@ -307,7 +304,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero (ip delta swSec sZero
 open GlobalTheory.Mem.Th (CptF)
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Core.Rk.IP
-
 
 theorem _root_.GlobalTheory.T.doublingHeightAtRealPlace_le_one : ∀ (D : D7) (A : HSp D) (a : GL (Fin A.rank) (AE D)), IsMaj A a → ∀ (w : InfinitePlace D.host.F) (y : Gw A w), GlobalTheory.IndefiniteRowSideFullHecke.SphericalVolumeLift.hgtW A a w y ≤ 1 := by
   first | exact @GlobalTheory.Core.Rk.HgtArch.hgtW_le_one

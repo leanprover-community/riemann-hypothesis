@@ -155,25 +155,6 @@ section Concrete
 
 variable {D : D7}
 
-theorem rat_coords {S S₀ : HSp D} {ρ : ℕ} (d : HypDec S S₀ ρ) {b : Mx D ρ S₀.rank} {c : skewA D ρ}
-    (h : d.nB b * d.nC c ∈ GQ S) : b ∈ ratMx D ρ S₀.rank ∧ c.1 ∈ ratMx D ρ ρ := by
-  have hm := (mem_GQ_iff S _).1 h
-  have hb : b ∈ ratMx D ρ S₀.rank := by
-    have e1 : d.pX ⬝ (mt S (d.nB b * d.nC c) ⬝ d.j0) = b := by
-      rw [mt_mul, Matrix.mul_assoc, d.nC_j0, d.nB_j0, Matrix.mul_add, d.pX_j0, ← Matrix.mul_assoc, d.pX_jX,
-        Matrix.one_mul, zero_add]
-    rw [← e1]
-    exact ratMx_mul (rat_mem _) (ratMx_mul hm (rat_mem _))
-  refine ⟨hb, ?_⟩
-  have hc : d.nC c ∈ GQ S := by
-    have := mul_mem (inv_mem (d.nB_mem_GQ hb)) h
-    rwa [inv_mul_cancel_left] at this
-  have hm2 := (mem_GQ_iff S _).1 hc
-  have e2 : d.pX ⬝ (mt S (d.nC c) ⬝ d.jY) = c.1 := by
-    rw [d.nC_jY, Matrix.mul_add, d.pX_jY, ← Matrix.mul_assoc, d.pX_jX, Matrix.one_mul, zero_add]
-  rw [← e2]
-  exact ratMx_mul (rat_mem _) (ratMx_mul hm2 (rat_mem _))
-
 theorem act_coords {S S₀ : HSp D} {ρ : ℕ} (d : HypDec S S₀ ρ) (c' c : skewA D ρ) (b' b : Mx D ρ S₀.rank)
     (u : GL (Fin ρ) (AE D)) :
     d.nC c' * d.nB b' * (d.nC c * (d.nB b * d.levi u)) =

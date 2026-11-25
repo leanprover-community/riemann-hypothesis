@@ -155,11 +155,6 @@ def avg0 (μ : @Measure Y (borel Y)) (L₁ : V →ₗ[ℂ] ℂ) (T : Y → V →
 def avgForm (μ : @Measure Y (borel Y)) (L₁ : V →ₗ[ℂ] ℂ) (T : Y → V →ₗ[ℂ] V) : V →ₗ[ℂ] ℂ :=
   (LinearMap.exists_extend (avg0 μ L₁ T)).choose
 
-theorem avgForm_apply (μ : @Measure Y (borel Y)) (L₁ : V →ₗ[ℂ] ℂ) (T : Y → V →ₗ[ℂ] V) {v : V}
-    (hv : Conv μ L₁ T v) :
-    avgForm μ L₁ T v = (letI : MeasurableSpace Y := borel Y; ∫ y, L₁ (T y v) ∂μ) :=
-  LinearMap.congr_fun (LinearMap.exists_extend (avg0 μ L₁ T)).choose_spec ⟨v, hv⟩
-
 def schrL {R : Type} [CommRing R] [Invertible (2 : R)] (ψ : AddChar R ℂ) {κ : Type} [Fintype κ]
     (w : (κ → R) × (κ → R)) : Module.End ℂ ((κ → R) → ℂ) where
   toFun := schr ψ w
@@ -171,11 +166,6 @@ def starFam {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Al
     (dd : Darboux Bf κ) (ψ : AddChar (AF F) ℂ) (u : Fin a → _root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.AE (F := F) (E := E)) (y : Fin b → _root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.AE (F := F) (E := E)) :
     Module.End ℂ ((κ → AF F) → ℂ) :=
   schrL ψ (dd.e (Matrix.vecMulVec u (Sum.elim y y)))
-
-theorem starFam_apply {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {a b : ℕ}
-    {Bf : Matrix (Fin a) (Fin b ⊕ Fin b) (_root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.AE (F := F) (E := E)) → Matrix (Fin a) (Fin b ⊕ Fin b) (_root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.AE (F := F) (E := E)) → AF F} {κ : Type} [Fintype κ]
-    (dd : Darboux Bf κ) (ψ : AddChar (AF F) ℂ) (u : Fin a → _root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.AE (F := F) (E := E)) (y : Fin b → _root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.AE (F := F) (E := E)) (φ : (κ → AF F) → ℂ) :
-    starFam dd ψ u y φ = dd.rho ψ (Matrix.vecMulVec u (Sum.elim y y)) φ := rfl
 
 end GlobalTheory.SiegelAvg
 
@@ -216,7 +206,6 @@ theorem addEquivAddHaarChar_mulVecCE_adele (F : Type) [Field F] [NumberField F] 
 end Gen
 
 end GlobalTheory.SiegelCov
-
 
 end -- clump:auto
 end -- clump:auto

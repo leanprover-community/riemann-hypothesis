@@ -81,6 +81,4 @@ def blkHom : Matrix n n k →* Matrix (n ⊕ Fin 1) (n ⊕ Fin 1) k where
 
 def blk : GL n k →* GL (n ⊕ Fin 1) k := Units.map blkHom
 
-@[simp] theorem blk_val (g : GL n k) : (blk g).val = fromBlocks g.val (0 : Matrix n (Fin 1) k) 0 1 := rfl
-
 end GlobalTheory.FinPl.SrcGl

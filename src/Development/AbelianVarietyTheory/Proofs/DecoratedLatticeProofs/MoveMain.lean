@@ -62,33 +62,6 @@ open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Unf GlobalTheory.See
 open scoped TensorProduct Classical
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-namespace GlobalTheory.Fam.PlaceInj
-
-theorem under_injective : ∀ {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : Formalism.MainNotions.G.Inst D L} {Gl : Formalism.MainNotions.G.LatInst D} {Kc : Formalism.MainNotions.G.Consts} {Yd : DivX D} {cX : ExtraC} {ex : Extra D L hT Gi Gl Kc Yd cX} (W : RealPack ex), PkHyp W → Function.Injective (fun i : {PP // PP ∈ (pk W).Pg ∨ QAll W PP} => HeightOneSpectrum.under (𝓞 D.host.F) i.1) := by
-  intro D L hT Gi Gl Kc Yd cX ex W hW
-  have lev : (pk W).toLevCh.Is W.P.A3.A.μ0 := hW.bot.hyp.2.2.2.1.lev
-  rintro ⟨P, hP⟩ ⟨P', hP'⟩ h
-  simp only at h
-  apply Subtype.ext
-  show P = P'
-
-  have key : ∀ A B : Formalism.L2.DIV.Pl D.host.E, A ∈ (pk W).Pg → (B ∈ (pk W).Pg ∨ QAll W B) →
-      A.under (𝓞 D.host.F) = B.under (𝓞 D.host.F) → A = B := by
-    intro A B hA hB hAB
-    rcases GlobalTheory.GoodPrimes.eq_or_conj_of_under_eq hAB.symm with e | e
-    · exact e.symm
-    · exfalso
-      have hc : Formalism.IndefR.Lev.IsConjPl A B := GlobalTheory.GoodPrimes.isConjPl_iff.2 e
-      rcases hB with hB | ⟨t, hB⟩
-      · exact (GlobalTheory.ChainEquiv.places_sep _ _ lev W.P.A3.A.μ0).1 A hA B (Or.inl hB) hc
-      · exact (GlobalTheory.ChainEquiv.places_sep _ _ lev t).1 A hA B (Or.inr hB) hc
-  rcases hP with hP | hP
-  · exact key P P' hP hP' h
-  · rcases hP' with hP' | hP'
-    · exact (key P' P hP' (Or.inr hP) h.symm).symm
-    · exact hW.sel P P' hP hP' h
-
-end GlobalTheory.Fam.PlaceInj
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.LevelPlacesUnderInjective =====
@@ -103,8 +76,6 @@ open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Unf GlobalTheory.See
 open scoped TensorProduct Classical
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.level_places_under_injective : ∀ {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : Formalism.MainNotions.G.Inst D L} {Gl : Formalism.MainNotions.G.LatInst D} {Kc : Formalism.MainNotions.G.Consts} {Yd : DivX D} {cX : ExtraC} {ex : Extra D L hT Gi Gl Kc Yd cX} (W : RealPack ex), PkHyp W → Function.Injective (fun i : {PP // PP ∈ (pk W).Pg ∨ QAll W PP} => HeightOneSpectrum.under (𝓞 D.host.F) i.1) := by
-  first | exact @GlobalTheory.Fam.PlaceInj.under_injective
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.LevelPlacesUnderInjectiveStatement =====
@@ -139,22 +110,6 @@ def frameGL {k : Type} [Field k] {n : ℕ} {Y : Type} [Fintype Y] [DecidableEq Y
       rw [Matrix.mul_assoc, ← Matrix.mul_assoc F.γ, F.γβ, Matrix.one_mul, ← Units.val_mul, inv_mul_cancel,
         Units.val_one]
     rw [this, Matrix.submatrix_one_equiv]
-
-theorem frameGL_val {k : Type} [Field k] {n : ℕ} {Y : Type} [Fintype Y] [DecidableEq Y]
-    (F : Frame k n Y) (B : GL Y k) (σ : Fin n ≃ Y) :
-    (frameGL F B σ).val = (F.β * B.val).submatrix id σ := rfl
-
-end GlobalTheory.RLatMove
-
-namespace GlobalTheory.RLatMove
-
-theorem finJ {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : Formalism.MainNotions.G.Inst D L} {Gl : Formalism.MainNotions.G.LatInst D} {Kc : Formalism.MainNotions.G.Consts} {Yd : DivX D} {cX : ExtraC} {ex : Extra D L hT Gi Gl Kc Yd cX} (W : RealPack ex) (hW : PkHyp W) : Finite {PP // PP ∈ (pk W).Pg ∨ QAll W PP} := by
-  haveI := hW.fin
-  have : {PP | PP ∈ (pk W).Pg ∨ QAll W PP} = ((pk W).Pg : Set _) ∪ ⋃ t, ((pk W).Q t : Set _) := by
-    ext PP; simp [QAll]
-  have hf : Set.Finite {PP | PP ∈ (pk W).Pg ∨ QAll W PP} := by
-    rw [this]; exact (Finset.finite_toSet _).union (Set.finite_iUnion fun t => Finset.finite_toSet _)
-  exact hf.to_subtype
 
 end GlobalTheory.RLatMove
 

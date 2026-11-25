@@ -89,7 +89,6 @@ namespace GlobalTheory.ConjEquidistrib
 open NumberField Formalism.BasicNotions Formalism.MainNotions.TaylorLogMetric
 open scoped nonZeroDivisors Pointwise
 
-
 open GlobalTheory.IndefiniteRowSideFullHecke.EquidistributedConjugates in
 theorem fixesK_conjEmb_iff (D : D7) (M : IntermediateField ℚ ℂ) (ρ : M →ₐ[ℚ] ℂ)
     (hm : ∀ a : D.host.K, D.host.φ₀ (a : D.host.E) ∈ M) :
@@ -572,27 +571,6 @@ theorem log_area {Λ : AddSubgroup ℂ} {ω₁ τ : ℂ} (hP : PeriodLatticeAgre
     Real.log_mul (by norm_num) (by positivity), Real.log_pow, Real.log_pow]
   push_cast; ring
 
-theorem period_pos (hP : PeriodLatticeAgreement.LatticePeriodEta) (D : D7) (c : (Ideal (𝓞 D.host.K))⁰) :
-    0 < ClassMeanPeriods.period D c := by
-  have hc : (c : Ideal (𝓞 D.host.K)) ≠ ⊥ := nonZeroDivisors.coe_ne_zero c
-  obtain ⟨-, ω₁, τ, hω, hτ, hL, -, -⟩ := lemA D c hc 1 one_ne_zero
-  rw [isPeriodLattice_iff] at hL
-  have hA := hP.2.1 ω₁ ⟨τ, hτ⟩ hω
-  have hD := hP.1 ω₁ ⟨τ, hτ⟩ hω
-  change area (PeriodLatticeAgreement.latt ω₁ τ) = ‖ω₁‖ ^ 2 * τ.im at hA
-  change discr (PeriodLatticeAgreement.latt ω₁ τ) = (2 * (Real.pi : ℂ) / ω₁) ^ 12 * ModularForm.eta τ ^ 24 at hD
-  have he : ModularForm.eta τ ≠ 0 := ModularForm.eta_ne_zero hτ
-  have hdn : discr (lamOf D c 1) ≠ 0 := by
-    rw [hL, hD]
-    have : (2 * (Real.pi : ℂ) / ω₁) ≠ 0 := div_ne_zero (mul_ne_zero two_ne_zero (by exact_mod_cast Real.pi_ne_zero)) hω
-    exact mul_ne_zero (pow_ne_zero _ this) (pow_ne_zero _ he)
-  have har : 0 < area (lamOf D c 1) := by
-    rw [hL, hA]; have := norm_pos_iff.2 hω; positivity
-  unfold ClassMeanPeriods.period
-  have := norm_pos_iff.2 hdn
-  have := Real.pi_pos
-  positivity
-
 theorem mean_log_area (hC : ClassMeanPeriods.ClassMean) (hG : EquidistributedConjugates.ConjugatesEquidistributed)
     (hP : PeriodLatticeAgreement.LatticePeriodEta) (D : D7) (cc : Ideal (𝓞 D.host.K)) (δ : ℂ) (M : IntermediateField ℚ ℂ)
     [FiniteDimensional ℚ M] (t : (M →ₐ[ℚ] ℂ) → ℂ) (hS : SignedLogMeans.HidaSetting D cc δ M t) :
@@ -814,13 +792,6 @@ theorem theta0Mean_of_mean_bounds (C₀ : ℝ)
     have a3 : 1 / 2 ≤ L := by have := half_le_log_v D; have := abs_nonneg (logDerivativeAtOne D); linarith
     have a4 : C ≤ 2 * C * L := by nlinarith
     linarith
-
-theorem theta0Mean (hN : JacobiThetaHalfCharacteristic.NormTheta0) (hC : ClassMeanPeriods.ClassMean) (hG : EquidistributedConjugates.ConjugatesEquidistributed)
-    (hP : PeriodLatticeAgreement.LatticePeriodEta) (hJ : ∀ D : D7, Formalism.MainNotions.GL3Theta.admJ D) (hW : ThetaConstantWeber.ThetaWeberStatement) :
-    SignedLogMeans.Theta0Mean := by
-  obtain ⟨C₀, hC₀, hth⟩ := lemD
-  exact theta0Mean_of_mean_bounds C₀ fun D cc δ M _ t hS =>
-    core hN hC hG hP hW hC₀ hth D (hJ D) cc δ M t hS
 
 end GlobalTheory.Theta0MeanProof
 end -- clump:auto

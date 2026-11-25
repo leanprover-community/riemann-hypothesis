@@ -247,7 +247,6 @@ theorem exists_flag_dual (hcc : ∀ a, c (c a) = a) (hεε : ε * ε = ε) (hεc
     simpa only [map_smul, LinearMap.smul_apply, smul_eq_mul, hXf] using this
   · rw [hy' j i i.2, Pi.single_apply]
 
-
 open Matrix in
 def sesq (c : R →+* R) {n : ℕ} (G : Matrix (Fin n) (Fin n) R) : (Fin n → R) →ₗ[R] (Fin n → R) →ₛₗ[c] R :=
   LinearMap.mk₂'ₛₗ (RingHom.id R) c (fun x y => ∑ i, ∑ j, c (y i) * G i j * x j)
@@ -264,7 +263,6 @@ open Matrix in
 theorem sesq_col {n p q : ℕ} (G : Matrix (Fin n) (Fin n) R) (A : Matrix (Fin n) (Fin p) R) (B : Matrix (Fin n) (Fin q) R)
     (i : Fin p) (j : Fin q) : sesq c G (fun k => A k i) (fun k => B k j) = ((B.map c)ᵀ * (G * A)) j i := by
   simp only [sesq, LinearMap.mk₂'ₛₗ_apply, Matrix.mul_apply, transpose_apply, map_apply, Finset.mul_sum, mul_assoc]
-
 
 open scoped Matrix in
 open Matrix in
@@ -363,28 +361,6 @@ theorem princ_intGrpAt {ε : AE D} (hεε : ε * ε = ε) (hεc : cA D ε = ε) 
     rw [ev] at this
     exact this
 
-theorem exists_flag_basis : ∀ (D : D7) (S S₀ : HSp D) (ρ : ℕ) (d : HypDec S S₀ ρ) (v : Pl D) (ε : AE D) (hεε : ε * ε = ε) (hεc : cA D ε = ε) (hεI : ε ∈ intAt D (· = v)) (hε : ∀ a, a ∈ idAt D (· = v) ↔ ε * a = a), Tame D v → ∀ M : AddSubgroup (Fin S.rank → AE D), IsSDAt S v M → ∃ b : Mx D ρ ρ, (∀ i j, j < i → b i j = 0) ∧ (∀ i j, b i j ∈ idAt D (· = v)) ∧ (∀ i, (fun k => (d.jX ⬝ b) k i) ∈ M) ∧ ∃ c' : Mx D S.rank ρ, (∀ i, (fun k => c' k i) ∈ M) ∧ adj c' ⬝ (gA S ⬝ (d.jX ⬝ b)) = ε • (1 : Mx D ρ ρ) := by
-  intro D S S₀ ρ d v ε hεε hεc hεI hε ht M ⟨hsupp, ⟨m, hm, hmul⟩, hdual⟩
-  obtain ⟨K, hK, hint⟩ := exists_nat_isIntegral_fin
-    (Sum.elim (fun p : Fin S.rank × Fin ρ => d.e p.1 p.2) (fun p : Fin S.rank × Fin ρ => d.e' p.1 p.2))
-  have hcol : ∀ z : Fin S.rank → D.host.E, (∀ l, IsIntegral ℤ ((K : D.host.E) * z l)) →
-      (fun l => ((m * K : ℕ) : AE D) * ε * incA D (z l)) ∈ M := fun z hz => by
-    have e : (fun l => ((m * K : ℕ) : AE D) * ε * incA D (z l)) =
-        (m : AE D) • fun l => ε * incA D ((K : D.host.E) * z l) := by
-      funext l
-      rw [Pi.smul_apply, smul_eq_mul, RingHom.map_mul, map_natCast, Nat.cast_mul]
-      ring
-    rw [e]
-    exact hmul _ fun l => mul_incA_mem hεI (hz l)
-  obtain ⟨b, h1, h2, h3, c', h4, h5⟩ := exists_flag_dual_matrix (c := cA D) (O := intGrpAt D v) (M := M) (gA S)
-    cA_cA hεε hεc hεI (fun a ha => (hε a).1 ha.1) (fun a ha b hb => mul_mem_intAt ha hb)
-    (fun a ha => ⟨(hε _).2 (by rw [← hεc, ← RingHom.map_mul, (hε a).1 ha.1]), (FrameLat.cA_int_iff a).2 ha.2⟩)
-    (princ_intGrpAt hεε hεc hεI hε ht) (fun y hy i => (hε _).1 (hsupp y hy i))
-    (fun y hy => hdual y fun i => (hε _).2 (hy i)) d.jX d.jY d.gram_YX (m * K) (Nat.mul_pos hm hK)
-    (fun k => hcol (fun l => d.e l k) fun l => hint (Sum.inl (l, k)))
-    (fun k => hcol (fun l => d.e' l k) fun l => hint (Sum.inr (l, k)))
-  exact ⟨b, h1, fun i j => (hε _).2 (h2 i j), h3, c', h4, h5⟩
-
 end GlobalTheory.IwaFlag
 
 end
@@ -473,79 +449,6 @@ theorem smul_mem_of_isSDAt {S : HSp D} {v : Pl D} {M : AddSubgroup (Fin S.rank �
   · simp only [Pi.smul_apply, smul_eq_mul]; exact Ideal.mul_mem_left _ _ (hM.1 y hy i)
   · rw [hermAt_smul_left]; exact intAt_mul_mem ho ((hM.2.2 y (hM.1 y hy)).1 hy x hx)
 
-theorem col_mul_mem {S : HSp D} {v : Pl D} {M : AddSubgroup (Fin S.rank → AE D)} (hM : IsSDAt S v M) {ρ : ℕ}
-    (A : Mx D S.rank ρ) (B : Mx D ρ ρ) (hA : ∀ i, (fun k => A k i) ∈ M) (hB : ∀ m i, B m i ∈ intAt D (· = v))
-    (i : Fin ρ) : (fun k => (A ⬝ B) k i) ∈ M := by
-  have e : (fun k => (A ⬝ B) k i) = ∑ m, B m i • (fun k => A k m) := by
-    funext k; simp [Matrix.mul_apply, Finset.sum_apply, mul_comm]
-  rw [e]; exact AddSubgroup.sum_mem _ fun m _ => smul_mem_of_isSDAt hM (hB m i) (hA m)
-
-theorem gram_entry (S : HSp D) {ρ : ℕ} (c' : Mx D S.rank ρ) (i j : Fin ρ) :
-    (adj c' ⬝ (gA S ⬝ c')) i j = hermAt S (fun k => c' k j) (fun k => c' k i) := by
-  simp only [hermAt, adj, Matrix.mul_apply, Matrix.transpose_apply, Matrix.map_apply, Finset.mul_sum, mul_assoc]
-
-theorem smul_mul_smul_one {ρ : ℕ} (ε w : AE D) (H : Mx D ρ ρ) : (ε • (1 : Mx D ρ ρ)) ⬝ (w • H) = (ε * w) • H := by
-  rw [smul_mul_assoc, one_mul, smul_smul]
-
-theorem smul_mul_smul_one' {ρ : ℕ} (ε w : AE D) (H : Mx D ρ ρ) : (w • H) ⬝ (ε • (1 : Mx D ρ ρ)) = (ε * w) • H := by
-  rw [mul_smul_comm, mul_one, smul_smul]
-
-theorem adj_gram_self (S : HSp D) {ρ : ℕ} (c' : Mx D S.rank ρ) : adj (adj c' ⬝ (gA S ⬝ c')) = adj c' ⬝ (gA S ⬝ c') := by
-  rw [adj_mul, adj_mul, adj_adj, adj_gA, Matrix.mul_assoc]
-
-theorem gram_swap_smul (S : HSp D) {ρ : ℕ} {ε : AE D} (hεc : cA D ε = ε) (c c' : Mx D S.rank ρ)
-    (hcc : adj c' ⬝ (gA S ⬝ c) = ε • (1 : Mx D ρ ρ)) : adj c ⬝ (gA S ⬝ c') = ε • (1 : Mx D ρ ρ) := by
-  have := congrArg adj hcc
-  rwa [adj_mul, adj_mul, adj_adj, adj_gA, Matrix.mul_assoc, adj_smul, hεc, adj_one] at this
-
-theorem pair_sub (S : HSp D) {ρ : ℕ} {ε : AE D} (c c' : Mx D S.rank ρ) (K : Mx D ρ ρ)
-    (hcc0 : adj c ⬝ (gA S ⬝ c) = 0) (hcc : adj c' ⬝ (gA S ⬝ c) = ε • (1 : Mx D ρ ρ)) :
-    adj (c' - c ⬝ K) ⬝ (gA S ⬝ c) = ε • (1 : Mx D ρ ρ) := by
-  rw [adj_sub, adj_mul, Matrix.sub_mul, Matrix.mul_assoc, hcc0, Matrix.mul_zero, sub_zero, hcc]
-
-theorem pair_sub' (S : HSp D) {ρ : ℕ} {ε : AE D} (c c' : Mx D S.rank ρ) (K : Mx D ρ ρ)
-    (hcc' : adj c ⬝ (gA S ⬝ c') = ε • (1 : Mx D ρ ρ)) :
-    adj (c' - c ⬝ K) ⬝ (gA S ⬝ c') = adj c' ⬝ (gA S ⬝ c') - adj K ⬝ (ε • (1 : Mx D ρ ρ)) := by
-  rw [adj_sub, adj_mul, Matrix.sub_mul, Matrix.mul_assoc, hcc']
-
-theorem self_sub (S : HSp D) {ρ : ℕ} (c'' c c' : Mx D S.rank ρ) (K : Mx D ρ ρ) (h : c'' = c' - c ⬝ K) :
-    adj c'' ⬝ (gA S ⬝ c'') = adj c'' ⬝ (gA S ⬝ c') - adj c'' ⬝ (gA S ⬝ c) ⬝ K := by
-  rw [h, Matrix.mul_sub, Matrix.mul_sub, ← Matrix.mul_assoc (gA S) c K,
-    ← Matrix.mul_assoc (adj (c' - c ⬝ K)) (gA S ⬝ c) K]
-
-theorem isotropic_core {S : HSp D} {v : Pl D} {ε : AE D} (hεε : ε * ε = ε) (hεc : cA D ε = ε)
-    (hε : ∀ a, a ∈ idAt D (· = v) ↔ ε * a = a) {M : AddSubgroup (Fin S.rank → AE D)} (hM : IsSDAt S v M)
-    {w : AE D} (hw : w ∈ intAt D (· = v)) (hwc : w + cA D w = ε) {ρ : ℕ} (c c' : Mx D S.rank ρ)
-    (hc : ∀ i, (fun k => c k i) ∈ M) (hc' : ∀ i, (fun k => c' k i) ∈ M) (hcc0 : adj c ⬝ (gA S ⬝ c) = 0)
-    (hcc : adj c' ⬝ (gA S ⬝ c) = ε • (1 : Mx D ρ ρ)) :
-    ∃ c'' : Mx D S.rank ρ, (∀ i, (fun k => c'' k i) ∈ M) ∧ adj c'' ⬝ (gA S ⬝ c) = ε • (1 : Mx D ρ ρ) ∧
-      adj c'' ⬝ (gA S ⬝ c'') = 0 := by
-  obtain ⟨H, hH⟩ : ∃ H : Mx D ρ ρ, H = adj c' ⬝ (gA S ⬝ c') := ⟨_, rfl⟩
-  have hHint : ∀ i j, H i j ∈ intAt D (· = v) := fun i j => by
-    rw [hH, gram_entry]; exact (hM.2.2 _ (hM.1 _ (hc' j))).1 (hc' j) _ (hc' i)
-  have hεH : ε • H = H := by
-    funext i j; rw [Matrix.smul_apply, smul_eq_mul]; exact (hε _).1 (hHint i j).1
-  have hadjH : adj H = H := by rw [hH]; exact adj_gram_self S c'
-  have hcc' := gram_swap_smul S hεc c c' hcc
-  have hKint : ∀ m i, (w • H) m i ∈ intAt D (· = v) := fun m i => by
-    rw [Matrix.smul_apply, smul_eq_mul]; exact intAt_mul_mem hw (hHint m i)
-  have e3 : ε * cA D w + ε * w = ε := by rw [← mul_add, add_comm, hwc, hεε]
-  have f3 : H - (ε * cA D w) • H - (ε * w) • H = 0 := by
-    rw [sub_sub, ← add_smul, e3, hεH, sub_self]
-  have e1 := pair_sub S (ε := ε) c c' (w • H) hcc0 hcc
-  have e2 := pair_sub' S c c' (w • H) hcc'
-  rw [← hH, adj_smul, hadjH, smul_mul_smul_one'] at e2
-  refine ⟨c' - c ⬝ (w • H), fun i => ?_, e1, ?_⟩
-  · have e : (fun k => (c' - c ⬝ (w • H)) k i) = (fun k => c' k i) - fun k => (c ⬝ (w • H)) k i := rfl
-    rw [e]; exact sub_mem (hc' i) (col_mul_mem hM c _ hc hKint i)
-  · rw [self_sub S _ c c' (w • H) rfl, e1, e2, smul_mul_smul_one, f3]
-theorem dual_isotropic : ∀ (D : D7) (S S₀ : HSp D) (ρ : ℕ) (d : HypDec S S₀ ρ) (v : Pl D) (ε : AE D) (hεε : ε * ε = ε) (hεc : cA D ε = ε) (hεI : ε ∈ intAt D (· = v)) (hε : ∀ a, a ∈ idAt D (· = v) ↔ ε * a = a) (M : AddSubgroup (Fin S.rank → AE D)), IsSDAt S v M → ∀ w ∈ intAt D (· = v), w + cA D w = ε → ∀ (b : Mx D ρ ρ) (c' : Mx D S.rank ρ), (∀ i j, b i j ∈ idAt D (· = v)) → (∀ i, (fun k => (d.jX ⬝ b) k i) ∈ M) → (∀ i, (fun k => c' k i) ∈ M) → adj c' ⬝ (gA S ⬝ (d.jX ⬝ b)) = ε • (1 : Mx D ρ ρ) → ∃ c'' : Mx D S.rank ρ, (∀ i, (fun k => c'' k i) ∈ M) ∧ adj c'' ⬝ (gA S ⬝ (d.jX ⬝ b)) = ε • (1 : Mx D ρ ρ) ∧ adj c'' ⬝ (gA S ⬝ c'') = 0 := by
-  intro D S S₀ ρ d v ε hεε hεc hεI hε M hM w hw hwc b c' hb hc hc' hcc
-  have hcc0 : adj (d.jX ⬝ b) ⬝ (gA S ⬝ (d.jX ⬝ b)) = 0 := by
-    rw [adj_mul, Matrix.mul_assoc, ← Matrix.mul_assoc (gA S) d.jX b, ← Matrix.mul_assoc (adj d.jX),
-      d.gram_XX, Matrix.zero_mul, Matrix.mul_zero]
-  exact isotropic_core hεε hεc hε hM hw hwc (d.jX ⬝ b) c' hc hc' hcc0 hcc
-
 end GlobalTheory.IwaPlace.DualIso
 
 end
@@ -580,24 +483,6 @@ theorem mul_tail₃ {a m n p k : ℕ} {A : Mx D a m} {B : Mx D m n} {B' : Mx D n
     A * (B * (B' * X)) = C * X := by
   rw [← h]; simp only [Matrix.mul_assoc]
 
-theorem mul_tail₄ {a m n p q k : ℕ} {A : Mx D a m} {B : Mx D m n} {B' : Mx D n p} {B'' : Mx D p q} {C : Mx D a q}
-    (h : A * (B * (B' * B'')) = C) (X : Mx D q k) :
-    A * (B * (B' * (B'' * X))) = C * X := by
-  rw [← h]; simp only [Matrix.mul_assoc]
-
-end GlobalTheory.IwaPlace.BuildQ
-
-namespace GlobalTheory.IwaPlace.BuildQ
-
-variable {D : D7} {S S₀ : HSp D} {ρ : ℕ} (d : HypDec S S₀ ρ)
-
-theorem gXX {k : ℕ} (X : Mx D ρ k) : adj d.jX * (gA S * (d.jX * X)) = 0 := by
-  rw [_root_.GlobalTheory.MixModel.cancel₃ d.gram_XX, Matrix.zero_mul]
-theorem gYX {k : ℕ} (X : Mx D ρ k) : adj d.jY * (gA S * (d.jX * X)) = X := by
-  rw [_root_.GlobalTheory.MixModel.cancel₃ d.gram_YX, Matrix.one_mul]
-theorem g0X {k : ℕ} (X : Mx D ρ k) : adj d.j0 * (gA S * (d.jX * X)) = 0 := by
-  rw [_root_.GlobalTheory.MixModel.cancel₃ d.gram_0X, Matrix.zero_mul]
-
 end GlobalTheory.IwaPlace.BuildQ
 
 namespace GlobalTheory.IwaPlace.BuildQ
@@ -613,10 +498,6 @@ theorem one_sub_mul_self {ε : AE D} (hεε : ε * ε = ε) : (1 - ε) * ε = 0 
 
 theorem one_sub_sq {ε : AE D} (hεε : ε * ε = ε) : (1 - ε) * (1 - ε) = 1 - ε := by
   rw [mul_sub, mul_one, one_sub_mul_self hεε, sub_zero]
-
-theorem kill_left {ε : AE D} (hεε : ε * ε = ε) {m n k : ℕ} {x : Mx D m n} (hx : ε • x = x) (X : Mx D n k) :
-    (1 - ε) • (x * X) = 0 := by
-  rw [← Matrix.smul_mul, ← hx, smul_smul, one_sub_mul_self hεε, zero_smul, Matrix.zero_mul]
 
 theorem diag_absorb {ε : AE D} {n : ℕ} {α : Fin n → AE D} (hαε : ∀ i, ε * α i = α i) :
     ε • Matrix.diagonal α = Matrix.diagonal α := by
@@ -635,93 +516,11 @@ theorem diag_const {ε : AE D} {n : ℕ} {α β : Fin n → AE D} (hαβ : ∀ i
   · subst h; simp
   · simp [h]
 
-
-theorem imYX {ε : AE D} (hεε : ε * ε = ε) (hεc : cA D ε = ε) {α β : Fin ρ → AE D} (hαε : ∀ i, ε * α i = α i)
-    (hαβ : ∀ i, α i * β i = ε) {b : Mx D ρ ρ} (hb : ε • b = b) {c' : Mx D S.rank ρ} (hc : ε • c' = c')
-    (H1 : adj c' * (gA S * (d.jX * b)) = ε • (1 : Mx D ρ ρ)) :
-    adj (c' * Matrix.diagonal (fun i => cA D (α i)) + (1 - ε) • d.jY) *
-      (gA S * (d.jX * (b * Matrix.diagonal β + (1 - ε) • (1 : Mx D ρ ρ)))) = 1 := by
-  have hcA1 : cA D (1 - ε) = 1 - ε := by rw [map_sub, map_one, hεc]
-  have hadjc : ε • adj c' = adj c' := by
-    conv_rhs => rw [← hc]
-    rw [adj_smul, hεc]
-  simp only [adj_add, adj_mul, adj_smul, adj_diagonal, cA_cA, hcA1, Matrix.mul_add, Matrix.add_mul, Matrix.mul_assoc]
-  simp only [mul_tail₄ H1, Matrix.smul_mul, Matrix.mul_smul, Matrix.mul_one, Matrix.one_mul, gYX d, d.gram_YX, kill_left hεε (diag_absorb hαε), kill_left hεε hb, add_zero, smul_smul]
-  rw [zero_add, Matrix.diagonal_mul_diagonal, one_sub_sq hεε]
-  rw [diag_const hαβ, smul_smul, hεε, ← add_smul, add_sub_cancel, one_smul]
-
 end GlobalTheory.IwaPlace.BuildQ
 
 namespace GlobalTheory.IwaPlace.BuildQ
 
 variable {D : D7} {S S₀ : HSp D} {ρ : ℕ} (d : HypDec S S₀ ρ)
-
-theorem kill_mid₂ {ε : AE D} (hεε : ε * ε = ε) {m n p q k : ℕ} {x : Mx D p q} (hx : ε • x = x)
-    (A : Mx D m n) (B : Mx D n p) (X : Mx D q k) : (1 - ε) • (A * (B * (x * X))) = 0 := by
-  rw [← Matrix.mul_smul, ← Matrix.mul_smul, kill_left hεε hx, Matrix.mul_zero, Matrix.mul_zero]
-
-theorem absorb_mul {ε : AE D} {m n k : ℕ} {x : Mx D m n} (hx : ε • x = x) (X : Mx D n k) :
-    x * (ε • X) = x * X := by
-  rw [Matrix.mul_smul, ← Matrix.smul_mul, hx]
-
-theorem imXX {ε : AE D} {β : Fin ρ → AE D} {b : Mx D ρ ρ} :
-    adj (d.jX * (b * Matrix.diagonal β + (1 - ε) • (1 : Mx D ρ ρ))) *
-      (gA S * (d.jX * (b * Matrix.diagonal β + (1 - ε) • (1 : Mx D ρ ρ)))) = 0 := by
-  rw [adj_mul, Matrix.mul_assoc, gXX, Matrix.mul_zero]
-
-
-theorem imYY {ε : AE D} (hεε : ε * ε = ε) (hεc : cA D ε = ε) {α : Fin ρ → AE D} (hαε : ∀ i, ε * α i = α i)
-    {c' : Mx D S.rank ρ} (hc : ε • c' = c') (H2 : adj c' * (gA S * c') = 0) :
-    adj (c' * Matrix.diagonal (fun i => cA D (α i)) + (1 - ε) • d.jY) *
-      (gA S * (c' * Matrix.diagonal (fun i => cA D (α i)) + (1 - ε) • d.jY)) = 0 := by
-  have hcA1 : cA D (1 - ε) = 1 - ε := by rw [map_sub, map_one, hεc]
-  have hadjc : ε • adj c' = adj c' := by
-    conv_rhs => rw [← hc]
-    rw [adj_smul, hεc]
-  simp only [adj_add, adj_mul, adj_smul, adj_diagonal, cA_cA, hcA1, Matrix.mul_add, Matrix.add_mul, Matrix.mul_assoc]
-  simp only [_root_.GlobalTheory.MixModel.cancel₃ H2, Matrix.mul_zero, Matrix.smul_mul, Matrix.mul_smul, d.gram_YY, smul_zero,
-    kill_mid₂ hεε hc, kill_left hεε (diag_absorb hαε), add_zero, Matrix.zero_mul]
-
-
-theorem imOO {b : Mx D ρ ρ} {c' : Mx D S.rank ρ} :
-    adj (d.j0 - (d.jX * b) * (adj c' * (gA S * d.j0))) * (gA S * (d.j0 - (d.jX * b) * (adj c' * (gA S * d.j0)))) = gA S₀ := by
-  simp only [adj_sub, adj_mul, adj_gA, adj_adj, Matrix.mul_sub, Matrix.sub_mul, Matrix.mul_assoc, d.gram_00, d.wittDecomp_gram_X_anisotropic,
-    gXX, g0X, Matrix.mul_zero, sub_zero]
-
-
-theorem imOX {ε : AE D} {β : Fin ρ → AE D} {b : Mx D ρ ρ} {c' : Mx D S.rank ρ} :
-    adj (d.j0 - (d.jX * b) * (adj c' * (gA S * d.j0))) * (gA S * (d.jX * (b * Matrix.diagonal β + (1 - ε) • (1 : Mx D ρ ρ)))) = 0 := by
-  simp only [adj_sub, adj_mul, Matrix.sub_mul, Matrix.mul_assoc, gXX, g0X, Matrix.mul_zero, sub_zero]
-
-
-theorem imOY {ε : AE D} (hεε : ε * ε = ε) (hεc : cA D ε = ε) {α : Fin ρ → AE D} {b : Mx D ρ ρ} (hb : ε • b = b)
-    {c' : Mx D S.rank ρ} (hc : ε • c' = c')
-    (H1 : adj c' * (gA S * (d.jX * b)) = ε • (1 : Mx D ρ ρ)) :
-    adj (d.j0 - (d.jX * b) * (adj c' * (gA S * d.j0))) * (gA S * (c' * Matrix.diagonal (fun i => cA D (α i)) + (1 - ε) • d.jY)) = 0 := by
-  have adjH1 : adj b * (adj d.jX * (gA S * c')) = ε • (1 : Mx D ρ ρ) := by
-    have := congrArg adj H1
-    simpa only [adj_mul, adj_gA, adj_adj, adj_smul, adj_one, hεc, Matrix.mul_assoc] using this
-  simp only [adj_sub, adj_mul, adj_gA, adj_adj, Matrix.sub_mul, Matrix.mul_add, Matrix.mul_assoc]
-  rw [mul_tail₄ adjH1, Matrix.smul_mul, Matrix.one_mul, absorb_mul hc, sub_self, zero_add]
-  simp only [Matrix.mul_smul, d.gram_0Y, d.gram_XY, Matrix.mul_one, smul_zero, kill_mid₂ hεε hc, sub_zero]
-
-end GlobalTheory.IwaPlace.BuildQ
-
-namespace GlobalTheory.IwaPlace.BuildQ
-
-variable {D : D7} {S S₀ : HSp D} {ρ : ℕ} (d : HypDec S S₀ ρ)
-
-
-
-theorem smul_sub_one {ε : AE D} (M : Mx D S.rank S.rank)
-    (hX : ε • (M * d.jX - d.jX) = M * d.jX - d.jX) (h0 : ε • (M * d.j0 - d.j0) = M * d.j0 - d.j0)
-    (hY : ε • (M * d.jY - d.jY) = M * d.jY - d.jY) : ε • (M - 1) = M - 1 := by
-  have e : M - 1 = (M * d.jX - d.jX) * d.pX + (M * d.j0 - d.j0) * d.p0 + (M * d.jY - d.jY) * d.pY := by
-    have e1 : M - 1 = (M - 1) * (d.jX * d.pX + d.j0 * d.p0 + d.jY * d.pY) := by
-      rw [d.sum_eq_one, Matrix.mul_one]
-    rw [e1]
-    simp only [Matrix.mul_add, ← Matrix.mul_assoc, Matrix.sub_mul, Matrix.one_mul]
-  rw [e, smul_add, smul_add, ← Matrix.smul_mul, ← Matrix.smul_mul, ← Matrix.smul_mul, hX, h0, hY]
 
 theorem smul_shift {ε : AE D} (hεε : ε * ε = ε) {m n : ℕ} {x : Mx D m n} (hx : ε • x = x) (y : Mx D m n) :
     ε • (x + (1 - ε) • y - y) = x + (1 - ε) • y - y := by
@@ -735,40 +534,8 @@ theorem scalar_X {R : Type*} [CommRing R] {ε a b x y : R} (ha : ε * a = a) (ha
 
 end GlobalTheory.IwaPlace.BuildQ
 
-
 open GlobalTheory.IwaPlace.BuildQ in
 
-theorem GlobalTheory.IwaPlace.exists_grpAt_of_dual_frames : ∀ (D : D7) (S S₀ : HSp D) (ρ : ℕ) (d : HypDec S S₀ ρ) (v : Pl D) (ε : AE D) (hεε : ε * ε = ε) (hεc : cA D ε = ε) (hεI : ε ∈ intAt D (· = v)) (hε : ∀ a, a ∈ idAt D (· = v) ↔ ε * a = a) (α β : Fin ρ → AE D) (b : Mx D ρ ρ) (c' : Mx D S.rank ρ), (∀ i, α i ∈ idAt D (· = v)) → (∀ i, β i ∈ idAt D (· = v)) → (∀ i, α i * β i = ε) → (∀ i j, b i j ∈ idAt D (· = v)) → (∀ i j, c' i j ∈ idAt D (· = v)) → adj c' * (gA S * (d.jX * b)) = ε • (1 : Mx D ρ ρ) → adj c' * (gA S * c') = 0 → ∃ q ∈ grpAt S (· = v), mt S q * d.jX = d.jX * (b * Matrix.diagonal β + (1 - ε) • (1 : Mx D ρ ρ)) ∧ (∀ i, mt S q *ᵥ colMul d.jX i (α i) = fun k => (d.jX * b) k i) ∧ (∀ i, mt S q *ᵥ colMul d.jY i (cA D (β i)) = fun k => c' k i) := by
-  intro D S S₀ ρ d v ε hεε hεc _ hε α β b c' hα hβ hαβ hb hc' H1 H2
-  have hb' : ε • b = b := smul_eq_of_mem hε hb
-  have hc : ε • c' = c' := smul_eq_of_mem hε hc'
-  have hαε : ∀ i, ε * α i = α i := fun i => (hε _).1 (hα i)
-  have hβε : ∀ i, ε * β i = β i := fun i => (hε _).1 (hβ i)
-  have h : HypDec.Images S S₀ (d.jX * (b * Matrix.diagonal β + (1 - ε) • (1 : Mx D ρ ρ)))
-      (d.j0 - (d.jX * b) * (adj c' * (gA S * d.j0)))
-      (c' * Matrix.diagonal (fun i => cA D (α i)) + (1 - ε) • d.jY) :=
-    ⟨imXX d, imYY d hεε hεc hαε hc H2, imYX d hεε hεc hαε hαβ hb' hc H1, imOO d, imOX d, imOY d hεε hεc hb' hc H1⟩
-  have hjb : ε • (d.jX * b) = d.jX * b := by rw [← Matrix.mul_smul, hb']
-  have hE : d.jX * (b * Matrix.diagonal β + (1 - ε) • (1 : Mx D ρ ρ))
-      = (d.jX * b) * Matrix.diagonal β + (1 - ε) • d.jX := by
-    rw [Matrix.mul_add, Matrix.mul_smul, Matrix.mul_one, Matrix.mul_assoc]
-  refine ⟨d.ofImages _ _ _ h, ?_, d.ofImages_jX h, fun i => ?_, fun i => ?_⟩
-  · have key := smul_sub_one d (ε := ε) (Formalism.L2.Theta.mt S (d.ofImages _ _ _ h))
-      (by rw [d.ofImages_jX h, hE]; exact smul_shift hεε (by rw [← Matrix.smul_mul, hjb]) _)
-      (by rw [d.wittDecomp_ofImages_inclAnisotropic h, sub_sub_cancel_left, smul_neg, ← Matrix.smul_mul, hjb])
-      (by rw [d.ofImages_jY h]; exact smul_shift hεε (by rw [← Matrix.smul_mul, hc]) _)
-    refine (mem_congGrp_iff S _ _).2 fun i j => (hε _).2 ?_
-    exact congrFun (congrFun key i) j
-  · rw [mulVec_colMul, d.ofImages_jX h, hE]
-    funext k
-    rw [Matrix.add_apply, Matrix.mul_diagonal, Matrix.smul_apply, smul_eq_mul]
-    exact scalar_X (hαε i) (hαβ i) (congrFun (congrFun hjb k) i)
-  · rw [mulVec_colMul, d.ofImages_jY h]
-    funext k
-    rw [Matrix.add_apply, Matrix.mul_diagonal, Matrix.smul_apply, smul_eq_mul]
-    refine scalar_X ?_ ?_ (congrFun (congrFun hc k) i)
-    · rw [← hεc, ← map_mul, hβε]
-    · rw [← map_mul, mul_comm, hαβ, hεc]
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ExistsUnitarySupportedAtPlaceOfDualIsotropicFram =====
@@ -848,124 +615,6 @@ theorem mul_right_mem {R : Type} [CommRing R] {I : Ideal R} {l m k : ℕ} {M : M
     (B : Matrix (Fin m) (Fin k) R) (h : ∀ i j, M i j ∈ I) (i : Fin l) (j : Fin k) : (M * B) i j ∈ I := by
   rw [Matrix.mul_apply]
   exact Ideal.sum_mem _ fun x _ => Ideal.mul_mem_right _ _ (h i x)
-
-end GlobalTheory.IwaFlag
-
-namespace GlobalTheory.IwaFlag
-
-variable {D : D7}
-
-
-
-theorem flag_stab : ∀ (D : D7) (S S₀ : HSp D) (ρ : ℕ) (d : HypDec S S₀ ρ) (v : Pl D) (g : GA D S), g ∈ grpAt S (· = v) → (∃ a : Mx D ρ ρ, (∀ i j, j < i → a i j = 0) ∧ mt S g ⬝ d.jX = d.jX ⬝ a) → ∃ n ∈ flagN d, n ∈ grpAt S (· = v) ∧ ∃ t : GL (Fin ρ) (AE D), (∀ i j, i ≠ j → t.1 i j = 0) ∧ d.levi t ∈ grpAt S (· = v) ∧ ∃ γ ∈ grpAt S₀ (· = v), g = n * d.levi t * d.emb0 γ := by
-  intro D S S₀ ρ d v g hg ⟨a, hup, hgX⟩
-  have hG' : ∀ i j, (mt S g - 1) i j ∈ idAt D (· = v) := fun i j => by
-    rw [Matrix.sub_apply]; exact (mem_congGrp_iff S (idAt D (· = v)) g).1 hg i j
-
-  have hba : (adj (mt S g ⬝ d.jY) ⬝ (gA S ⬝ d.jX)) * a = 1 := by
-    have h1 : adj (mt S g ⬝ d.jY) ⬝ (gA S ⬝ (mt S g ⬝ d.jX)) = 1 := by
-      rw [adj_mul, Matrix.mul_assoc, ← Matrix.mul_assoc (gA S), ← Matrix.mul_assoc (adj (mt S g)), mt_unitary]
-      exact d.gram_YX
-    rw [hgX] at h1
-    simpa only [Matrix.mul_assoc] using h1
-  have hab : a * (adj (mt S g ⬝ d.jY) ⬝ (gA S ⬝ d.jX)) = 1 := mul_eq_one_comm.1 hba
-  obtain ⟨A, hA⟩ : ∃ A : GL (Fin ρ) (AE D), A.1 = a := ⟨⟨a, _, hab, hba⟩, rfl⟩
-
-  have hdet : IsUnit a.det := Matrix.isUnit_det_of_left_inverse hba
-  rw [Matrix.det_of_upperTriangular (M := a) (fun ⦃i j⦄ h => hup i j h)] at hdet
-  have hu : ∀ i, IsUnit (a i i) := fun i =>
-    isUnit_of_dvd_unit (Finset.dvd_prod_of_mem (fun k => a k k) (Finset.mem_univ i)) hdet
-  obtain ⟨t, ht1, htinv⟩ : ∃ t : GL (Fin ρ) (AE D), t.1 = diagonal (fun i => a i i) ∧
-      (t⁻¹).1 = diagonal (fun i => (((hu i).unit⁻¹ : (AE D)ˣ) : AE D)) :=
-    ⟨⟨diagonal (fun i => a i i), diagonal (fun i => (((hu i).unit⁻¹ : (AE D)ˣ) : AE D)),
-      by rw [diagonal_mul_diagonal]; simp only [IsUnit.mul_val_inv, diagonal_one],
-      by rw [diagonal_mul_diagonal]; simp only [IsUnit.val_inv_mul, diagonal_one]⟩, rfl, rfl⟩
-  have ht_diag : ∀ i j, i ≠ j → t.1 i j = 0 := fun i j h => by rw [ht1]; exact diagonal_apply_ne _ h
-
-  have hAt : (A * t⁻¹).1 =
-      a * diagonal (fun i => (((hu i).unit⁻¹ : (AE D)ˣ) : AE D)) := by
-    rw [Units.val_mul A t⁻¹, htinv, hA]
-  have hUX : A * t⁻¹ ∈ UX D ρ := fun i j =>
-    ⟨fun h => by rw [hAt, mul_diagonal, hup i j h, zero_mul],
-      by rw [hAt, mul_diagonal]; exact IsUnit.mul_val_inv (hu i)⟩
-  have hR' : mt S (g * (d.levi t)⁻¹) ⬝ d.jX = d.jX ⬝ (A * t⁻¹).1 := by
-    rw [Units.val_mul A t⁻¹, hA, ← map_inv d.levi t, mt_mul, Matrix.mul_assoc, d.levi_jX]
-    simpa only [Matrix.mul_assoc] using congrArg (fun M : Mx D S.rank ρ => M ⬝ (t⁻¹).1) hgX
-  have hR : g * (d.levi t)⁻¹ ∈ GlobalTheory.Unf.Rgrp S (rat d.e) := ⟨A * t⁻¹, hUX, hR'⟩
-  rw [GlobalTheory.Unf.Rgrp_eq d] at hR
-  obtain ⟨n, hn, γ, hnγ⟩ := ((flag_jacobi_structure D S S₀ ρ d).2.2.2.1 _).1 hR
-
-  have hcomm : d.levi t * d.emb0 γ = d.emb0 γ * d.levi t := by
-    refine d.ga_ext ?_ ?_ ?_
-    · rw [GlobalTheory.MixModel.mt_mul S (d.levi t) (d.emb0 γ), GlobalTheory.MixModel.mt_mul S (d.emb0 γ) (d.levi t), Matrix.mul_assoc, Matrix.mul_assoc,
-        d.wittDecomp_anisotropicEmbedding_inclX, d.levi_jX, ← Matrix.mul_assoc, d.wittDecomp_anisotropicEmbedding_inclX]
-    · rw [GlobalTheory.MixModel.mt_mul S (d.levi t) (d.emb0 γ), GlobalTheory.MixModel.mt_mul S (d.emb0 γ) (d.levi t), Matrix.mul_assoc, Matrix.mul_assoc,
-        d.wittDecomp_anisotropicEmbedding_inclAnisotropic, d.wittDecomp_levi_inclAnisotropic, ← Matrix.mul_assoc, d.wittDecomp_levi_inclAnisotropic, d.wittDecomp_anisotropicEmbedding_inclAnisotropic]
-    · rw [GlobalTheory.MixModel.mt_mul S (d.levi t) (d.emb0 γ), GlobalTheory.MixModel.mt_mul S (d.emb0 γ) (d.levi t), Matrix.mul_assoc, Matrix.mul_assoc,
-        d.wittDecomp_anisotropicEmbedding_inclY, d.levi_jY, ← Matrix.mul_assoc, d.wittDecomp_anisotropicEmbedding_inclY]
-  have hgfac : g = n * d.levi t * d.emb0 γ := by
-    rw [mul_assoc, hcomm, ← mul_assoc, ← hnγ, inv_mul_cancel_right]
-
-  have hmtγ : mt S₀ γ = d.p0 ⬝ (mt S g ⬝ d.j0) := by
-    have e1 : mt S (g * (d.levi t)⁻¹) ⬝ d.j0 = mt S g ⬝ d.j0 := by
-      rw [← map_inv d.levi t, mt_mul, Matrix.mul_assoc, d.wittDecomp_levi_inclAnisotropic]
-    have e2 : d.p0 ⬝ (mt S (n * d.emb0 γ) ⬝ d.j0) = mt S₀ γ := by
-      rw [mt_mul, Matrix.mul_assoc, d.wittDecomp_anisotropicEmbedding_inclAnisotropic, ← Matrix.mul_assoc (mt S n), ← Matrix.mul_assoc,
-        GlobalTheory.Unf.flagUnipotent_anisotropic_projection_eq_one d hn, Matrix.one_mul]
-    rw [← e2, ← hnγ, e1]
-  have hγ : γ ∈ grpAt S₀ (· = v) := (mem_congGrp_iff S₀ _ γ).2 fun i j => by
-    have e : mt S₀ γ - 1 = d.p0 ⬝ ((mt S g - 1) ⬝ d.j0) := by
-      rw [hmtγ, Matrix.sub_mul, Matrix.mul_sub, Matrix.one_mul, d.p0_j0]
-    rw [← Matrix.sub_apply, e]
-    exact mul_left_mem _ (mul_right_mem _ hG') i j
-
-  have haI : ∀ i j, (a - 1) i j ∈ idAt D (· = v) := by
-    have e : a - 1 = d.pX ⬝ ((mt S g - 1) ⬝ d.jX) := by
-      rw [Matrix.sub_mul, Matrix.mul_sub, Matrix.one_mul, d.pX_jX, hgX, ← Matrix.mul_assoc, d.pX_jX, Matrix.one_mul]
-    intro i j
-    rw [e]
-    exact mul_left_mem _ (mul_right_mem _ hG') i j
-  have ht1I : ∀ i j, (t.1 - 1) i j ∈ idAt D (· = v) := by
-    intro i j
-    rw [ht1, Matrix.sub_apply]
-    by_cases h : i = j
-    · subst h
-      have := haI i i
-      rw [Matrix.sub_apply] at this
-      rwa [diagonal_apply_eq]
-    · rw [diagonal_apply_ne _ h, Matrix.one_apply_ne h, sub_zero]
-      exact Ideal.zero_mem _
-  have htiI : ∀ i j, ((t⁻¹).1 - 1) i j ∈ idAt D (· = v) := by
-    intro i j
-    rw [htinv, Matrix.sub_apply]
-    by_cases h : i = j
-    · subst h
-      have := haI i i
-      rw [Matrix.sub_apply, Matrix.one_apply_eq] at this
-      rw [diagonal_apply_eq, Matrix.one_apply_eq]
-      have e : (((hu i).unit⁻¹ : (AE D)ˣ) : AE D) - 1 = -((((hu i).unit⁻¹ : (AE D)ˣ) : AE D) * (a i i - 1)) := by
-        rw [mul_sub, IsUnit.val_inv_mul (hu i)]; ring
-      rw [e]
-      exact (idAt D (· = v)).neg_mem (Ideal.mul_mem_left _ _ this)
-    · rw [diagonal_apply_ne _ h, Matrix.one_apply_ne h, sub_zero]
-      exact Ideal.zero_mem _
-  have hadjI : ∀ i j, (adj (t⁻¹).1 - 1) i j ∈ idAt D (· = v) := by
-    intro i j
-    rw [← adj_one, ← adj_sub]
-    exact GlobalTheory.FinPl.RootKeep.conj_mem_idAt (htiI j i)
-  have hlevI : d.levi t ∈ grpAt S (· = v) := by
-    have e : mt S (d.levi t) - 1 = d.jX ⬝ (t.1 - 1) ⬝ d.pX + d.jY ⬝ (adj (t⁻¹).1 - 1) ⬝ d.pY := by
-      rw [d.mt_levi, ← d.sum_eq_one]
-      simp only [Matrix.mul_sub, Matrix.sub_mul, Matrix.mul_one]
-      abel
-    refine (mem_congGrp_iff S _ _).2 fun i j => ?_
-    rw [← Matrix.sub_apply, e, Matrix.add_apply]
-    exact add_mem (mul_right_mem _ (mul_left_mem _ ht1I) i j) (mul_right_mem _ (mul_left_mem _ hadjI) i j)
-  have hnI : n ∈ grpAt S (· = v) := by
-    have e : n = g * (d.levi t * d.emb0 γ)⁻¹ := eq_mul_inv_of_mul_eq ((mul_assoc _ _ _).symm.trans hgfac.symm)
-    rw [e]
-    exact mul_mem hg (inv_mem (mul_mem hlevI (wittCoreEmbedding_preserves_supportedUnitarySubgroup d hγ)))
-  exact ⟨n, hn, hnI, t, ht_diag, hlevI, γ, hγ, hgfac⟩
 
 end GlobalTheory.IwaFlag
 

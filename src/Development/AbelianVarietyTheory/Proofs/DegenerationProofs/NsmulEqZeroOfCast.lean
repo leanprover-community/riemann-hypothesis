@@ -153,29 +153,6 @@ open Classical
 
 namespace GlobalTheory.ZH.WeightBundle
 
-theorem sum_pow_neg_val {o G : Type} [CommRing o] [IsDomain o] [AddCommGroup G] [Fintype G] {N : ℕ} [NeZero N]
-    {w : o} (hw : IsPrimitiveRoot w N) (f : G →+ ZMod N) :
-    ∑ a, w ^ (-(f a)).val = if f = 0 then (Fintype.card G : o) else 0 := by
-  split_ifs with hf
-  · simp [hf]
-  · have h := AddChar.sum_eq_zero_of_ne_one
-      (ψ := (AddChar.zmodChar N hw.pow_eq_one).compAddMonoidHom (-f)) (by
-        intro h
-        refine hf (AddMonoidHom.ext fun a => ?_)
-        have h1 := DFunLike.congr_fun h a
-        rw [AddChar.compAddMonoidHom_apply, AddChar.zmodChar_apply, AddChar.one_apply,
-          hw.pow_eq_one_iff_dvd] at h1
-        have h2 := Nat.eq_zero_of_dvd_of_lt h1 (ZMod.val_lt _)
-        simpa using h2)
-    simpa [AddChar.zmodChar_apply] using h
-
-theorem nsmul_eq_zero_of_cast {r N : ℕ} [NeZero (r * N)] (x : ZMod (r * N))
-    (h : ZMod.castHom (dvd_mul_left N r) (ZMod N) x = 0) : r • x = 0 := by
-  obtain ⟨n, rfl⟩ := ZMod.natCast_zmod_surjective x
-  rw [map_natCast, ZMod.natCast_eq_zero_iff] at h
-  rw [nsmul_eq_mul, ← Nat.cast_mul, ZMod.natCast_eq_zero_iff]
-  exact Nat.mul_dvd_mul_left r h
-
 variable {o Ω : Type} [CommRing o] [Field Ω] [Algebra o Ω] (S : ThetaSys o Ω)
 
 instance neZero_N : NeZero S.N := ⟨by have := S.N_ge; omega⟩
@@ -185,9 +162,6 @@ instance neZero_rN : NeZero (S.r * S.N) :=
 
 instance finite_hom (T : AddSubgroup S.Gam) : Finite (T →+ ZMod S.N) :=
   Finite.of_injective _ DFunLike.coe_injective
-
-theorem isPrimitiveRoot_root : IsPrimitiveRoot S.ζN S.N :=
-  S.prim.pow (Nat.pos_of_ne_zero (pow_ne_zero _ (NeZero.ne _))) (by ring)
 
 theorem sum_proj [IsDomain o] (T : AddSubgroup S.Gam) (hT : S.IsoFree T) [Fintype (T →+ ZMod S.N)] :
     ∑ c, S.proj T c = 1 := by

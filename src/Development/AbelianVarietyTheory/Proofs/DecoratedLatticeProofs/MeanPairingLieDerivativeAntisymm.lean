@@ -65,14 +65,6 @@ namespace GlobalTheory.RegSch.Ibp
 
 variable {D : D7} {V : HSp D}
 
-theorem isFiniteMeasure_autMeasure (m : Measure (GA D V)) [hm : m.IsHaarMeasure] :
-    IsFiniteMeasure (autMeasure V m) := by
-  have : BorelSpace (GA D V) := ⟨rfl⟩
-  have hfd : IsFundamentalDomain (GQ V) (stdDom (GQ V)) m := isFundamentalDomain_stdDom _ m
-  exact ⟨by
-    rw [autMeasure, quotMeasure_univ hfd]
-    exact GlobalTheory.CuspDecay.measure_lt_top GlobalTheory.Mem.VolFin.finVol V m _ hm hfd⟩
-
 theorem isMulRightInvariant (m : Measure (GA D V)) [hm : m.IsHaarMeasure] : m.IsMulRightInvariant := by
   have : BorelSpace (GA D V) := ⟨rfl⟩
   have hfd : IsFundamentalDomain (GQ V) (stdDom (GQ V)) m := isFundamentalDomain_stdDom _ m

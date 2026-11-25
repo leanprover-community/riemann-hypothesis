@@ -91,9 +91,6 @@ def conjN (N : Subgroup G) (s : K →* G) (hc : ∀ n ∈ N, ∀ h, s h * n * (s
   right_inv n := by ext; simp [mul_assoc]
   map_mul' a b := by ext; simp [mul_assoc]
 
-theorem conjN_apply (N : Subgroup G) (s : K →* G) (hc : ∀ n ∈ N, ∀ h, s h * n * (s h)⁻¹ ∈ N) (g : K) (n : N) :
-    ((conjN N s hc g n : N) : G) = s g * n * (s g)⁻¹ := rfl
-
 theorem conjN_null (N : Subgroup G) (s : K →* G) (hN : IsClosed (N : Set G)) (hs : Continuous s)
     (hc : ∀ n ∈ N, ∀ h, s h * n * (s h)⁻¹ ∈ N) (ν : Measure N) [ν.IsHaarMeasure] (g : K) {A : Set N}
     (hA : ν A = 0) : ν ((conjN N s hc g) ⁻¹' A) = 0 := by

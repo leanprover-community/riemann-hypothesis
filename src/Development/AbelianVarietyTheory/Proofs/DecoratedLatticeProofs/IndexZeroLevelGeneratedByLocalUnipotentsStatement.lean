@@ -298,54 +298,6 @@ theorem upperLeftBlock_apply_of_eq {κ : Type} [CommRing κ] {r n : ℕ} (hr : r
   rw [upper_block_val_submatrix hr hg]
   rfl
 
-
-
-theorem red_of_isLoc : ∀ (D : D7) (u : D.what₂.Word) (d : GlobalTheory.SeeSaw.Dat D u) (τ : ∀ j h, Matrix (Fin (d.bes j 0 h).L.rank) (Fin d.Lz.rank) D.host.E) (PP : Pl D.host.E) (G : GlobalTheory.LocMod.GAt d τ PP), d.Base → ∀ (hr : D.R.r ≤ (d.st 0).V.rank) (g : GA D (d.st 0).V) (x : G.S.P.J), (GlobalTheory.LocMod.ofSplit G.q).IsLoc (G.FY 0 (G.s + 1) (Nat.zero_add _)) g (GlobalTheory.LevZeroGen.upZero G.S (Fin D.R.t) x.1) → finE (d.st 0).V ((d.t 0)⁻¹ * g * d.t 0) ∈ St (d.st 0).β → G.Red x (upperLeftBlock hr (redFn (d.st 0).β PP (finE (d.st 0).V ((d.t 0)⁻¹ * g * d.t 0)))) := by
-  intro D u d τ PP G hB hr g x hg hS
-  obtain ⟨π', h1, h2, -⟩ := GlobalTheory.FinPl.SplitPt.exists_lift_isRed D G.k G.q PP G.idem
-  obtain ⟨e, he, hM⟩ := G.frame 0 (G.s + 1) (Nat.zero_add _)
-  obtain ⟨m, hm⟩ := hS
-  choose f hf using toEAf_onto D
-  have hπ : ∀ {a b : ℕ} (Z : Matrix (Fin a) (Fin b) (Formalism.L2.Theta.AE D)), (Z.map (toEAf D)).map π' = Z.map (GlobalTheory.LocMod.ofSplit G.q).π := fun Z => by
-    ext i j; exact h1 _
-  have hb : (((d.st 0).β.val.map f).map (toEAf D)) = (d.st 0).β.val := by ext i j; exact hf _
-  have hM' := hM _ hb
-  rw [← hπ, Matrix.map_mul (f := toEAf D), hb, ← GlobalTheory.LatStab.finE_val] at hM'
-  have hg2 := hg.2
-  rw [← hπ, ← GlobalTheory.LatStab.finE_val] at hg2
-  have hmul : Lev.finE (d.st 0).V (d.t 0) * (d.st 0).β * intGL _ _ _ m =
-      Lev.finE (d.st 0).V g * (Lev.finE (d.st 0).V (d.t 0) * (d.st 0).β) := by
-    have : (d.st 0).β * intGL _ _ _ m * (d.st 0).β⁻¹ = _ := hm
-    rw [map_mul, map_mul, map_inv] at this
-    rw [mul_assoc, eq_mul_of_mul_inv_eq this]
-    group
-  have hmul' := congrArg (fun Z : GL (Fin (d.st 0).V.rank) (Lev.EAf D) => Z.val.map π') hmul
-  simp only [Units.val_mul] at hmul'
-  rw [Matrix.map_mul (L := _ * _), Matrix.map_mul (M := _ * _), hM', hg2] at hmul'
-  have key := matrix_in_frame _ _ (G.FY 0 (G.s + 1) (Nat.zero_add _)).γβ _ _ e
-    (x.1.val.submatrix (GlobalTheory.StepData.ixZero _ (Fin D.R.t)).symm (GlobalTheory.StepData.ixZero _ (Fin D.R.t)).symm) _ hmul'
-  have hn : (d.st 0).V.rank ≤ D.R.r := by
-    have := (hB.st 0 (by have := G.hs; omega)).rank
-    rw [this]; simp [Formalism.BasicNotions.Ranks.rankY]
-  intro a b a' b' ha hb' z hz
-  rw [upperLeftBlock_apply_of_eq hr hn, ← hm, redFn_frGL] at hz
-  have ea : e.symm (Fin.castLE hr a') = Sum.inl a := by
-    rw [Equiv.symm_apply_eq]; apply Fin.ext; rw [he]; rcases a with a | a <;> exact ha
-  have eb : e.symm (Fin.castLE hr b') = Sum.inl b := by
-    rw [Equiv.symm_apply_eq]; apply Fin.ext; rw [he]; rcases b with b | b <;> exact hb'
-  have k2 := congrFun (congrFun key (Fin.castLE hr a')) (Fin.castLE hr b')
-  rw [Matrix.submatrix_apply, ea, eb] at k2
-  have k3 : resS D.host.F PP (m.val (Fin.castLE hr a') (Fin.castLE hr b') - oToS D.host.F D.host.E z) = 0 := by
-    rw [map_sub, resS_oToS, hz]; exact sub_self _
-  have k4 := (h2.ker _).1 k3
-  rw [map_sub] at k4
-  have k5 : π' (oToS D.host.F D.host.E z).1 = (GlobalTheory.LocMod.ofSplit G.q).pr (z : D.host.E) := by
-    refine Eq.trans (congrArg π' ?_) (h1 (incA D (z : D.host.E)))
-    rfl
-  convert k4 using 3
-  · exact k2.symm
-  · exact k5.symm
-
 end GlobalTheory.LevZeroRead
 end -- clump:auto
 end -- clump:auto
@@ -366,8 +318,6 @@ noncomputable section
 
 namespace GlobalTheory.LevZeroFamRead
 open GlobalTheory.LevZeroRead
-
-
 
 theorem red_of_isLoc : ∀ {D : D7} {c : Comm D} {v : VCom c} (G : GLoc v) (PP : Formalism.L2.DIV.Pl D.host.E) (b : GA D (c.V 0)) (β : GL (Fin (c.V 0).rank) (Lev.EAf D)), GlobalTheory.LevZero.LocAt G PP b β → b ∈ GfC (c.V 0) → ∀ (hr : D.R.r ≤ (c.V 0).rank) (g : GA D (c.V 0)) (x : G.S.P.J), (ofSplit G.q).IsLoc (G.FY 0 (G.s + 1) (Nat.zero_add _)) g (GlobalTheory.LevZeroGen.upZero G.S (Fin D.R.t) x.1) → finE (c.V 0) (b⁻¹ * g * b) ∈ Formalism.L2.DIV.St β → GlobalTheory.LevZero.Red G PP x (upperLeftBlock hr (redFn β PP (finE (c.V 0) (b⁻¹ * g * b)))) := by
   intro D c v G PP b β hL hbf hr g x hg hS
@@ -514,7 +464,6 @@ open scoped TensorProduct Classical
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.SingleDatum
 
-
 noncomputable section
 
 namespace GlobalTheory.SingleDatum.BasePair
@@ -584,9 +533,6 @@ theorem red_at {PP : Formalism.L2.DIV.Pl D.host.E} (G : GLoc v) {j n : ℕ} (hr 
   have := c2 a b a' b' ha hb (oToS D.host.F D.host.E z) ((Formalism.L2.DIV.resS_oToS PP z).trans hz)
   rwa [show (π.comp (Formalism.L2.Herm.intAf D.host.F D.host.E).subtype) (oToS D.host.F D.host.E z) =
     (ofSplit G.q).pr (z : D.host.E) from h1 (incA D (z : D.host.E))] at this
-
-
-
 
 theorem lev_back {cm : GlobalTheory.ChainOnto.Com D} {st : StAt (c.V 0)} {b : GA D (c.V 0)} {G : cm.Pg → GLoc v}
     (hB : GlobalTheory.LevZero.Bot cm st b G) (PP : cm.Pg) (c' : ℕ) (hc : 0 + c' = (G PP).s + 1) (x : GA D (c.V 0))
@@ -695,8 +641,6 @@ theorem red_of_congr (G : GLoc v) (PP : Formalism.L2.DIV.Pl D.host.E) (x x' : G.
 end Helpers
 
 end GlobalTheory.LevZeroPlace
-
-
 
 theorem GlobalTheory.LevZeroPlace.one_place : ∀ {D : D7} {c : Comm D} {v : VCom c} (cm : GlobalTheory.ChainOnto.Com D) (st : StAt (c.V 0)) (b : GA D (c.V 0)) (G : cm.Pg → GLoc v) (h0 : 0 + 2 * D.R.rS + 2 = D.R.m), GlobalTheory.LevZero.Bot cm st b G → ∀ Q : GA D (c.V 0) → Prop, (∀ k ∈ levS (c.V 0) st.β st.L, ∀ k' ∈ levS (c.V 0) st.β st.L, Q k → Q k' → Q (k * k')) → (∀ (PP : cm.Pg) (n : GA D (c.V 0)) (q : GL (XIx (Fin D.R.k) (Fin D.R.t) 0 ⊕ Fin ((G PP).s + 1)) (G PP).k), n ∈ flagN (c.bes 0 D.R.rS h0).d → q ∈ GlobalTheory.RootEx.N (G PP).k _ ((G PP).s + 1) (D.R.rS + 1) → (ofSplit (G PP).q).IsLoc ((G PP).FY 0 ((G PP).s + 1) (Nat.zero_add _)) n q → b⁻¹ * n * b ∈ levS (c.V 0) st.β st.L → Q (b⁻¹ * n * b)) → (∀ x ∈ GfC (c.X 0), b⁻¹ * embA (c.bes 0 D.R.rS h0).d (c.bes 0 D.R.rS h0).o x * b ∈ levS (c.V 0) st.β st.L → Q (b⁻¹ * embA (c.bes 0 D.R.rS h0).d (c.bes 0 D.R.rS h0).o x * b)) → ∀ (PP : cm.Pg) (x : (G PP).S.P.J), ∃ m ∈ levS (c.V 0) st.β st.L, Q m ∧ (∀ hr : D.R.r ≤ (c.V 0).rank, GlobalTheory.LevZero.Red (G PP) PP.1 x (upperLeftBlock hr (redFn st.β PP.1 (finE (c.V 0) m)))) ∧ ∀ PP' ∈ cm.Pg, PP' ≠ PP.1 → redFn st.β PP' (finE (c.V 0) m) = 1 := by
   intro D c v cm st b G h0 hB Q hmul hN hU PP x
@@ -807,8 +751,6 @@ open GlobalTheory.SplitWeil GlobalTheory.StepData
 variable {D : D7} {c : Comm D} {v : VCom c} {PP : Formalism.L2.DIV.Pl D.host.E}
 
 def rho (G : GLoc v) : 𝓞 D.host.E →+* G.k := (G.q.pr.comp (incA D)).comp (algebraMap (𝓞 D.host.E) D.host.E)
-
-theorem rho_apply (G : GLoc v) (z : 𝓞 D.host.E) : rho G z = (ofSplit G.q).pr (z : D.host.E) := rfl
 
 theorem rho_lt (G : GLoc v) (hid : Formalism.L2.NTheta.IsIdemAt G.q.e PP) {z : 𝓞 D.host.E} (hz : z ∈ PP.asIdeal) :
     valuation G.k (rho G z) < 1 := by
@@ -935,7 +877,6 @@ open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Unf GlobalTheory.See
 open Formalism.L2.SG.RowsJoinPinned Formalism.L2.SG.RowDict Formalism.L2.SG.PoincareInHH.PoincareSetting
 open scoped TensorProduct Classical
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 
 open GlobalTheory.LevZeroInd in
 

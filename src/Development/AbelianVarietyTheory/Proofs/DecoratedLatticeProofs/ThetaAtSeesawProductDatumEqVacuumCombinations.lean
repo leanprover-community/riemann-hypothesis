@@ -185,7 +185,6 @@ theorem tensorAt_modul (ψ : AddChar (AF D.host.F) ℂ) (FS : Frame k S.rank Y')
   simp only [Place.tensorAt]
   rw [GlobalTheory.LocMod.TOneModel.symplO_sub_half p he t (GlobalTheory.LocMod.Witness.up_half p FS FT _) hy, mul_assoc]
 
-
 open Classical in
 theorem tensorAt_halfInd (FS : Frame k S.rank Y') (FT : Frame k T.rank Y) {e : AE D} (he : e * p.e = 0)
     (Λ Λv : AddSubgroup (WO S T)) (hle : Λv ≤ Λ) (hstab : ∀ t ∈ Λ, t.map (fun a => p.e * a) ∈ Λv) :
@@ -264,8 +263,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
-
-
 namespace GlobalTheory.PlaceThetaVal
 open GlobalTheory.PlaceVec GlobalTheory.PlaceModel GlobalTheory.AdelicLatMove
 
@@ -298,8 +295,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.LocMod GlobalTheory.SplitWeil ValuativeRel
 
 namespace GlobalTheory.PlaceSumTheta
-
-
 
 theorem isThetaFunO_sum_placeModel : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ), IsStdChar D ψ (-1) → ∀ (S T : HSp D) (M : Lat S) (M' : Lat T), IsSelfDualC S M → IsSelfDualC T M' → ∀ (n : ℕ) (L : Fin n → LocPl ψ S T M M'), (Function.Injective fun i => (L i).q.v) → ∀ (f₀ : WO S T → ℂ) (T' : (WO S T → ℂ) →ₗ[ℂ] (WO S T → ℂ)), Vac ψ S T M M' (fun _ => True) f₀ → IsPlaceModel ψ (symplO S T) (heisO ψ S T) (∑ i, (L i).q.e) (latO S T (M : Set _) (M' : Set _) fun _ => True) 1 f₀ T' → ∀ Φ, IsSBHalf (∑ i, (L i).q.e) (latO S T (M : Set _) (M' : Set _) fun _ => True) Φ → IsThetaFunO ψ S T (T' Φ) := by
   intro D ψ hψ S T M M' hM hM' n L inj f₀ T' hvac hT' Φ hΦ
@@ -678,9 +673,6 @@ noncomputable def oneLoc (P : LocPl ψ S T M M') : LocPl ψ S T M M' where
   o := P.o
   o_at := P.o_at
   o_is := P.o_is
-
-theorem oneLoc_e (P : LocPl ψ S T M M') : (oneLoc P).e = Finsupp.single 0 1 := rfl
-theorem oneLoc_o (P : LocPl ψ S T M M') : (oneLoc P).o = P.o := rfl
 
 theorem prodDat_perm {n : ℕ} (L : Fin n → LocPl ψ S T M M') (σ : Equiv.Perm (Fin n)) :
     prodDat (fun i => L (σ i)) = prodDat L := by

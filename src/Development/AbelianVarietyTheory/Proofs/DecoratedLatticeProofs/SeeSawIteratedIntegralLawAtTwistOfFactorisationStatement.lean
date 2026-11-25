@@ -291,7 +291,6 @@ theorem sum_eq_eFin {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [
   obtain ⟨ε, hε, h⟩ := q.above
   rw [h, eFin_of_placeIdem hε]
 
-
 open GlobalTheory.SplitCut GlobalTheory.LocWeil.PlaceIdem in
 theorem exists_vac (hψ : IsStdChar D ψ (-1)) {r : ℕ} (Q : Fin r → QStep S) (hinj : Function.Injective fun i => (Q i).q.v)
     (f₁ : WO S.B.V S.J.W → ℂ) (f₂ : WO S.J.W S.B'.V → ℂ) (hv : ∀ i, (Q i).Vac f₁ f₂) (i : Fin r) :
@@ -417,7 +416,6 @@ theorem cells_second (hψ : IsStdChar D ψ (-1)) {r : ℕ} (Q : Fin r → QStep 
   exact ⟨t, Finset.mem_biUnion.2 ⟨a, ha, ht⟩, h⟩
 
 end Places
-
 
 open GlobalTheory.QVal GlobalTheory.FinPl in
 
@@ -1043,16 +1041,12 @@ theorem quotient_integral_of_subsingleton {G : Type} [Group G] [MeasurableSpace 
 section
 variable {D : D7} {ψ : AddChar (AF D.host.F) ℂ} {σ : ℕ} {S : Dbl2 ψ σ}
 
-theorem conv_nil' {G : Type} [Monoid G] : conv ([] : List (G →₀ ℂ)) = Finsupp.single 1 1 := rfl
-
 theorem aconv_singleton' {G : Type} [AddMonoid G] (c : G →₀ ℂ) : aconv [c] = c := by
   simp only [aconv, List.foldr_cons, List.foldr_nil]
   conv_rhs => rw [← Finsupp.sum_single c]
   refine Finsupp.sum_congr fun g _ => ?_
   rw [Finsupp.sum_single_index (by simp)]
   simp
-
-theorem aconv_nil' {G : Type} [AddMonoid G] : aconv ([] : List (G →₀ ℂ)) = Finsupp.single 0 1 := rfl
 
 theorem comb_single_zero' (S' T : HSp D) (u : WO S' T → ℂ) :
     comb ψ S' T (Finsupp.single 0 1) u = u := by
@@ -1461,8 +1455,6 @@ theorem ix₀ (Q : QAt v χ) (h : j + 2 * (σ + 1) + 2 = D.R.m) : j + (2 * σ + 
 theorem ix₁ (Q : QAt v χ) (h : j + 2 * (σ + 1) + 2 = D.R.m) : j + 1 + (2 * σ + 1) = Q.s := by have := Q.hs; omega
 theorem ix₂ (Q : QAt v χ) (h : j + 2 * (σ + 1) + 2 = D.R.m) : j + 1 + 1 + 2 * σ = Q.s := by have := Q.hs; omega
 
-
-
 @[reducible] def stepOf (H : Chars t χ j σ h χz) (Q : QAt v χ) (α : Q.Ch j) : QStep (dblOf H) :=
   { k := Q.k
     ν := Q.ν
@@ -1579,8 +1571,6 @@ theorem fin_dQ {w : VTup t} (F : QFam v t) (hF : F.Pins w) (n : ℕ) (hn : n + 3
   have := (F.Q i).hs
   exact isFinComb_of_half (F.Q i).q ((F.Q i).dL_mid n ((F.Q i).s - (n + 1)) (by omega) _ _).1
 
-
-
 theorem oneChart (hc : c.Is) (hv : v.Is) (hW : WeilOK (t := t) v) {w : VTup t} (F : QFam v t) (hF : F.Pins w)
     (H : Chars t F.χ j σ h χz) {ρ₁ μ₁ ρ₂ μ₂}
     (hN₁ : IsNormAt (c.V (j + 1)) (jacGrp (c.jac j (σ + 1) h).d) (v.N (j + 1)) (· ∈ w.Q) ρ₁ μ₁)
@@ -1659,8 +1649,6 @@ theorem oneChart (hc : c.Is) (hv : v.Is) (hW : WeilOK (t := t) v) {w : VTup t} (
     rw [hw]
     simp only [mul_assoc]
     rfl
-
-
 
 theorem qLaw_of_pin : ∀ (D : D7) (c : Comm D) (v : VCom c) (t : Tup c) (w : VTup t), c.Is → t.Is → v.Is → WeilOK (t := t) v → QPin v w → QLaw v w := by
   intro D c v t w hc _ hv hW ⟨F, hF⟩ j σ h ρ₁ μ₁ ρ₂ μ₂ hN₁ hN₂ Ψ₁ Ψ₂ hΨ₁ hΨ₂ φ hφ f hf hfY

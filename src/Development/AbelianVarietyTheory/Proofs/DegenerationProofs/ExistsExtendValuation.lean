@@ -137,15 +137,6 @@ variable {C : Type} [NontriviallyNormedField C] [CompleteSpace C]
 def AbsSumAt (u : C) (f : PowerSeries C) (c : C) : Prop :=
   (Summable fun n => ‖PowerSeries.coeff n f * u ^ n‖) ∧ ∑' n, PowerSeries.coeff n f * u ^ n = c
 
-theorem AbsSumAt.add {u : C} {f g : PowerSeries C} {a b : C} (hf : AbsSumAt u f a) (hg : AbsSumAt u g b) :
-    AbsSumAt u (f + g) (a + b) := by
-  constructor
-  · refine (hf.1.add hg.1).of_nonneg_of_le (fun _ => norm_nonneg _) fun n => ?_
-    rw [map_add (f := _), add_mul]
-    exact norm_add_le _ _
-  · rw [← hf.2, ← hg.2, ← hf.1.of_norm.tsum_add hg.1.of_norm]
-    simp only [map_add (f := _), add_mul]
-
 open scoped BigOperators in
 variable {C : Type} [NontriviallyNormedField C] [CompleteSpace C] in
 private theorem absSumAt_algebraMap (u a : C) :
@@ -445,7 +436,6 @@ private theorem absSumAt_arcTx_twist_tx {C : Type} [NontriviallyNormedField C]
     exact mul_le_of_le_one_left (by positivity) (hcn n)
   · rw [htw]
     exact hfib.tsum_eq
-
 
 open scoped BigOperators in
 theorem _root_.GlobalTheory.eval_twist_tx_eq_zero_of_aeval_arcTx : ∀ (C : Type) [NontriviallyNormedField C]

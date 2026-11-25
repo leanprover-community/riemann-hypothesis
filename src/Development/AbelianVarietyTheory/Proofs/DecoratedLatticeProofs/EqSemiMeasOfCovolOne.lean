@@ -91,7 +91,6 @@ theorem rightInv_of_fd (Γ : Subgroup N) [Countable Γ] (ν : Measure N) [ν.IsH
 theorem invInv_of_rightInv (ν : Measure N) [ν.IsHaarMeasure] [ν.IsMulRightInvariant] : ν.IsInvInvariant := by
   apply _root_.GlobalTheory.CartanInt.isInvInvariant_of_right <;> assumption
 
-
 omit [LocallyCompactSpace N] [SecondCountableTopology N] [T2Space N] in
 theorem fd_ne_top (Γ : Subgroup N) [Countable Γ] {K : Set N} (hK : IsCompact K) (hcov : ∀ g, ∃ γ ∈ Γ, γ * g ∈ K)
     (ν : Measure N) [ν.IsHaarMeasure] {𝓝 : Set N} (h𝓝 : IsFundamentalDomain Γ 𝓝 ν) : ν 𝓝 ≠ ⊤ := by
@@ -136,8 +135,6 @@ def cj (h : H) : N ≃ₜ* N where
   map_mul' a b := Subtype.ext (by simp [mul_assoc])
   continuous_toFun := Continuous.subtype_mk (by fun_prop) _
   continuous_invFun := Continuous.subtype_mk (by fun_prop) _
-
-theorem cj_coe (h : H) (n : N) : (cj N s hnorm h n : G) = s h * n.1 * (s h)⁻¹ := rfl
 
 def mk (q : H × N) : (N ⊔ s.range : Subgroup G) :=
   ⟨q.2.1 * s q.1, mul_mem (Subgroup.mem_sup_left q.2.2) (Subgroup.mem_sup_right ⟨q.1, rfl⟩)⟩
@@ -191,7 +188,6 @@ variable {G H : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [Loc
   (N : Subgroup G) (s : H →* G) (hN : IsClosed (N : Set G)) (hs : Continuous s)
   (hnorm : ∀ n ∈ N, ∀ h, s h * n * (s h)⁻¹ ∈ N)
 
-
 omit [TopologicalSpace H] [IsTopologicalGroup H] [LocallyCompactSpace H] [T2Space H] [SecondCountableTopology H]
   [MeasurableSpace H] [BorelSpace H] in
 include hN in
@@ -213,7 +209,6 @@ theorem map_cj_of_mem (Γ : Subgroup G) [Countable Γ] (ν : Measure N) [ν.IsHa
     exact Subtype.ext (by
       change s δ * (s δ⁻¹ * g.1.1 * (s δ⁻¹)⁻¹ * x.1) * (s δ)⁻¹ = g.1.1 * (s δ * x.1 * (s δ)⁻¹)
       simp [mul_assoc])
-
 
 omit [IsTopologicalGroup H] [LocallyCompactSpace H] [T2Space H] [SecondCountableTopology H]
   [MeasurableSpace H] [BorelSpace H] in
@@ -260,7 +255,6 @@ theorem map_cj_of_cocompact (Γ : Subgroup G) [Countable Γ] (ν : Measure N) [�
   have h1 := mulEquivHaarChar_smul_map ν (cj N s hnorm h)
   rwa [show mulEquivHaarChar (cj N s hnorm h) = 1 from eq_one_of_bdd χ _ hB h, one_smul] at h1
 
-
 include hN hs hnorm in
 theorem semiMeas_rightInv (μ : Measure H) (ν : Measure N) [μ.IsHaarMeasure] [ν.IsHaarMeasure] [μ.IsMulRightInvariant]
     [ν.IsMulRightInvariant] : (semiMeas N s μ ν).IsMulRightInvariant := by
@@ -282,7 +276,6 @@ theorem semiMeas_rightInv (μ : Measure H) (ν : Measure N) [μ.IsHaarMeasure] [
   congr 1
   funext q
   exact mk_mul N s hnorm q (h₀, n₀)
-
 
 include hN hs hnorm in
 theorem semiMeas_haar_inv (hp : ∃ p : (N ⊔ s.range : Subgroup G) → H, Continuous p ∧ ∀ (h : H) (n : N), p (mk N s (h, n)) = h)
@@ -307,9 +300,6 @@ theorem semiMeas_haar_inv (hp : ∃ p : (N ⊔ s.range : Subgroup G) → H, Cont
   haveI := rightInv_of_fd _ ν h𝓝 hfin
   haveI := semiMeas_rightInv N s hN hs hnorm μ ν
   exact ⟨inferInstance, invInv_of_rightInv _⟩
-
-
-
 
 end Three
 

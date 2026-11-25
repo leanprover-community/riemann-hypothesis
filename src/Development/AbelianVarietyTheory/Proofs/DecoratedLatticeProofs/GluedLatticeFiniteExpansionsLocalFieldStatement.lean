@@ -72,7 +72,6 @@ theorem card_dual (L : Submodule 𝒪[k] (n → k)) [Fintype n] [L.IsFullLattice
   rw [Module.natCard_eq_pow_finrank (K := 𝓀[k]), Subspace.dual_finrank_eq, ← Module.natCard_eq_pow_finrank,
     Red.card_eq]
 
-
 open Classical in
 theorem finsum_char (χ : AddChar 𝓀[k] ℂ) (hχ : χ ≠ 1) (L : Submodule 𝒪[k] (n → k)) [Fintype n] [L.IsFullLattice k]
     (z : Red L) : ∑ᶠ f : Module.Dual 𝓀[k] (Red L), χ (-f z) =
@@ -118,7 +117,6 @@ theorem card_ne_zero (L : Submodule 𝒪[k] (n → k)) [L.IsFullLattice k] : ((r
   rw [card_dual] at h
   simpa only [← Nat.cast_pow, Nat.cast_ne_zero] using h
 
-
 omit [Fintype n] in
 theorem withCol_split (x : Matrix n (n' ⊕ Fin 1) k) :
     withCol (x.submatrix id Sum.inl) (fun i => x i (Sum.inr 0)) = x := by
@@ -141,7 +139,6 @@ theorem term_neg (q : Unif k) (χ : AddChar 𝓀[k] ℂ) (P : Pair k n') {L : Su
     {x₀ : Matrix n n' k} (h0 : ¬ ∀ z ∈ P.ker, x₀ *ᵥ z ∈ L) (f : Module.Dual 𝓀[k] (Red L)) :
     term q χ 1 P L f x₀ = 0 := by
   rw [term, dif_neg h0]
-
 
 open Classical in
 theorem datum_expand (q : Unif k) (χ : AddChar 𝓀[k] ℂ) (hχ : χ ≠ 1) (L : Submodule 𝒪[k] (n → k)) [L.IsFullLattice k]
@@ -179,7 +176,6 @@ namespace GlobalTheory.GluedExp
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] {n n' : Type}
   [Fintype n] [Fintype n']
-
 
 open Classical in
 theorem glued_col (q : Unif k) (χ : AddChar 𝓀[k] ℂ) (hχ : χ ≠ 1) (L : Submodule 𝒪[k] (n → k)) [L.IsFullLattice k]
@@ -231,7 +227,6 @@ theorem glued_sum (q : Unif k) (χ : AddChar 𝓀[k] ℂ) (hχ : χ ≠ 1) (L : 
   · rw [finsum_eq_zero_of_forall_eq_zero (term_neg q χ P h0), latInd,
       if_neg (fun h => h0 fun z hz => h z (P.ker_le hz)), mul_zero]
 
-
 open Classical in
 theorem dualInd_eq (q : Unif k) (L : Submodule 𝒪[k] (n → k)) (η : n → k) :
     dualInd L η = if Lifts L (q.1 • η) 0 then 1 else 0 := by
@@ -246,7 +241,6 @@ theorem dualInd_eq (q : Unif k) (L : Submodule 𝒪[k] (n → k)) (η : n → k)
     have : ((t : 𝒪[k]) : k) = η ⬝ᵥ y := mul_left_cancel₀ q.ne_zero hs
     exact this ▸ t.2
 
-
 open Classical in
 theorem cosetInd_pair (q : Unif k) (L : Submodule 𝒪[k] (n → k)) [L.IsFullLattice k]
     (f : {f : Module.Dual 𝓀[k] (Red L) // f ≠ 0}) (η : n → k) :
@@ -254,7 +248,6 @@ theorem cosetInd_pair (q : Unif k) (L : Submodule 𝒪[k] (n → k)) [L.IsFullLa
   have h : (ofDual L f).red = f.1 := dual_ext fun z => rfl
   show cosetInd q L (ofDual L f).red η = _
   rw [h, cosetInd_eq]
-
 
 open Classical in
 theorem finsum_lifts (q : Unif k) (L : Submodule 𝒪[k] (n → k)) (η : n → k) (A : Module.Dual 𝓀[k] (Red L) → ℂ) :
@@ -266,7 +259,6 @@ theorem finsum_lifts (q : Unif k) (L : Submodule 𝒪[k] (n → k)) (η : n → 
       if_pos (exists_lifts h).choose_spec, mul_one]
   · exact finsum_eq_zero_of_forall_eq_zero fun f => by
       rw [if_neg fun h' => h (inDual_of_lifts h'), mul_zero]
-
 
 open Classical in
 theorem coset_total (q : Unif k) (L : Submodule 𝒪[k] (n → k)) [L.IsFullLattice k] (η : n → k) :
@@ -360,40 +352,8 @@ theorem last_ker (L : Submodule 𝒪[k] (n → k)) (L' : Submodule 𝒪[k] (n' �
   exact if_congr ⟨fun h => ⟨fun y hy => (mem_lastKer.1 (h y hy)).1, fun y hy => (mem_lastKer.1 (h y hy)).2⟩,
     fun h y hy => mem_lastKer.2 ⟨h.1 y hy, h.2 y hy⟩⟩ rfl rfl
 
-theorem last_lat (q : Unif k) (L : Submodule 𝒪[k] (n → k)) [L.IsFullLattice k] (L' : Submodule 𝒪[k] (n' → k))
-    [L'.IsFullLattice k] :
-    latInd L (lastPair q L').lat = tensRow (latInd L L') (dualInd L + ∑ Q ∈ withLat L, cosetInd q Q.lat Q.red) := by
-  classical
-  funext x
-  rw [tensRow, coset_total, latInd, latInd, ite_zero_mul_ite_zero, mul_one]
-  have hm : ∀ v : n' ⊕ Fin 1 → k, v ∈ (lastPair q L').lat ↔ v ∘ Sum.inl ∈ L' ∧ q.1 • v (Sum.inr 0) ∈ 𝒪[k] :=
-    fun v => by
-      rw [Pair.mem_lat_iff]
-      simp only [lastPair_hasVal]
-      constructor
-      · rintro ⟨a, h, s, hs, -⟩
-        exact ⟨h, hs ▸ s.2⟩
-      · rintro ⟨h, hs⟩
-        exact ⟨_, h, ⟨_, hs⟩, rfl, rfl⟩
-  refine if_congr ⟨fun h => ⟨fun y hy => ((hm _).1 (h y hy)).1, fun y hy => ?_⟩,
-    fun h y hy => (hm _).2 ⟨h.1 y hy, ?_⟩⟩ rfl rfl
-  · have h1 := ((hm _).1 (h y hy)).2
-    rw [smul_dotProduct]
-    exact h1
-  · have h1 := h.2 y hy
-    rw [smul_dotProduct] at h1
-    exact h1
-
 end GlobalTheory.GluedExp
 
-namespace GlobalTheory.GluedExp
-
-theorem finite_expansions : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (n n' : Type) [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] (q : Unif k) (χ : AddChar 𝓀[k] ℂ), χ ≠ 1 → ∀ (Λ : Submodule 𝒪[k] (n → k)) [Λ.IsFullLattice k], (∀ P : Pair k n', latInd (gluedS q 1 P.ker P.vec) Λ = ((resCard k : ℂ) ^ Fintype.card n)⁻¹ • (tensCol (latInd P.ker Λ) (vecInd Λ) + ∑ Q ∈ withLat Λ, tensCol (latInd P.ker Q.ker + mainDatum q χ 1 P Q) (charInd χ Q)) ∧ latInd P.ker Λ + ∑ Q ∈ withLat Λ, (latInd P.ker Q.ker + mainDatum q χ 1 P Q) = ((resCard k : ℂ) ^ Fintype.card n) • latInd P.lat Λ) ∧ (∀ R : Pair k n', latInd Λ (gluedS q 1 R.ker R.vec) = tensRow (latInd Λ R.ker) (dualInd Λ) + ∑ Q ∈ withLat Λ, tensRow (phiOne Q R) (cosetInd q Q.lat Q.red)) ∧ ∀ (L : Submodule 𝒪[k] (n' → k)) [L.IsFullLattice k], latInd Λ (lastKer L) = tensRow (latInd Λ L) (dualInd Λ) ∧ latInd Λ (lastPair q L).lat = tensRow (latInd Λ L) (dualInd Λ + ∑ Q ∈ withLat Λ, cosetInd q Q.lat Q.red) := by
-  intro k _ _ _ _ n n' _ _ _ _ q χ hχ Λ _
-  exact ⟨fun P => ⟨glued_col q χ hχ Λ P, glued_sum q χ hχ Λ P⟩, fun R => glued_row q Λ R,
-    fun L _ => ⟨last_ker Λ L, last_lat q Λ L⟩⟩
-
-end GlobalTheory.GluedExp
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto

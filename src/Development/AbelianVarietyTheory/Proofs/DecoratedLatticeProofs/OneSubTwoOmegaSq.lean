@@ -108,7 +108,6 @@ open PowerSeries GlobalTheory.Honda Formalism.L2.Th1.CM
 
 namespace GlobalTheory.Honda
 
-
 open Formalism.L2.Th1 in
 theorem mulBy_coefLe_of_kernel_prime_to :
     ∀ (L : PeriodPair) (l : ℕ) [Fact l.Prime], 5 ≤ l → ∀ (ι : ℂ ≃+* ℂ_[l]), ‖ι L.g₂‖ ≤ 1 → ‖ι L.g₃‖ ≤ 1 → ‖ι L.g₂ ^ 3 - 27 * ι L.g₃ ^ 2‖ = 1 → ∀ (β : ℂ) (N : ℕ), Formalism.L2.Th1.F.MulStable L β → ‖ι β‖ = 1 → 0 < N → ¬ l ∣ N → (∀ z, β * z ∈ L.lattice → (N : ℂ) * z ∈ L.lattice) → CoefLe 1 (Formalism.L2.Th1.C.mulBy (Formalism.L2.Th1.A.logSer (Formalism.L2.Th1.A.shortW (ι L.g₂) (ι L.g₃))) (Formalism.L2.Th1.A.expSer (Formalism.L2.Th1.A.shortW (ι L.g₂) (ι L.g₃))) (ι β)) := by
@@ -631,7 +630,6 @@ private lemma padicComplex_norm_two_eq_one_of_ne_two (h : p ≠ 2) : ‖(2 : ℂ
   rw [PadicInt.norm_int_lt_one_iff_dvd] at hlt
   have : p ∣ 2 := by exact_mod_cast hlt
   exact (Nat.prime_dvd_prime_iff_eq Fact.out Nat.prime_two).1 this
-
 
 open scoped ComplexConjugate BigOperators in
 variable {p : ℕ} [Fact p.Prime] in
@@ -1516,16 +1514,6 @@ theorem norm_aeval_lt (x : PadicAlgCl l) (hx : ‖x‖ ≤ 1) (g : ℤ_[l][X])
         mul_le_mul_of_nonneg_left (norm_aeval_le x hx h) (norm_nonneg _)
     _ < 1 := by rw [mul_one]; exact hl
 
-theorem exists_monic (x : PadicAlgCl l) (hx : ‖x‖ ≤ 1) : ∃ q : ℤ_[l][X], q.Monic ∧ aeval x q = 0 := by
-  have hi : IsIntegral ℚ_[l] x := Algebra.IsIntegral.isIntegral x
-  rw [← PadicAlgCl.spectralNorm_eq, spectralNorm, spectralValue_le_one_iff (minpoly.monic hi)] at hx
-  have hl : minpoly ℚ_[l] x ∈ Polynomial.lifts (algebraMap ℤ_[l] ℚ_[l]) := by
-    rw [Polynomial.lifts_iff_coeff_lifts]
-    exact fun n => ⟨⟨_, hx n⟩, rfl⟩
-  obtain ⟨q, hq, -, hqm⟩ := Polynomial.lifts_and_degree_eq_and_monic hl (minpoly.monic hi)
-  refine ⟨q, hqm, ?_⟩
-  rw [← Polynomial.aeval_map_algebraMap ℚ_[l], hq, minpoly.aeval]
-
 theorem exists_pow_near_one (x : PadicAlgCl l) (hx : ‖x‖ = 1) :
     ∃ m : ℕ, 0 < m ∧ ‖x ^ m - 1‖ < 1 := by
   apply GlobalTheory.ResidueRoot.exists_pow_alg <;> assumption
@@ -1553,15 +1541,6 @@ theorem frob_pow (a : ℕ) : ∀ z : PadicAlgCl l, ‖z‖ ≤ 1 → ‖z ^ (l ^
     apply ih (z ^ l) (by rw [norm_pow]; exact pow_le_one₀ (norm_nonneg _) hz)
     rw [← pow_mul, ← pow_succ']
     exact h
-
-theorem one_le_norm_prod (s : Multiset ℂ_[l]) (h : ∀ a ∈ s, 1 ≤ ‖a‖) : 1 ≤ ‖s.prod‖ := by
-  induction s using Multiset.induction_on with
-  | empty => simp
-  | cons a s ih =>
-    rw [Multiset.prod_cons, norm_mul]
-    have h1 := h a (Multiset.mem_cons_self a s)
-    have h2 := ih fun b hb => h b (Multiset.mem_cons_of_mem hb)
-    nlinarith
 
 theorem exists_root_near (x : ℂ_[l]) (m : ℕ) (hm : 0 < m) (h : ‖x ^ m - 1‖ < 1) :
     ∃ ζ : ℂ_[l], ζ ^ m = 1 ∧ ‖x - ζ‖ < 1 := by
@@ -1672,7 +1651,6 @@ theorem unr_of_unrOK (l : ℕ) (σ : K →+* K) (h : Formalism.InvariantFactorPa
     exact (hfr x hx).trans_lt hlinv
 
 end GlobalTheory.Honda.KurUnr
-
 
 open GlobalTheory.Honda.KurUnr in
 theorem GlobalTheory.Honda.kur_resAlg_unr : ∀ (l : ℕ) [Fact l.Prime], 2 < l →

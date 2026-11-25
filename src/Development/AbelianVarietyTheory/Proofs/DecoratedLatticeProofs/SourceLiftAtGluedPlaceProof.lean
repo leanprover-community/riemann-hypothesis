@@ -131,8 +131,6 @@ def tensL (a : (n → k) → ℂ) : (Matrix n n' k → ℂ) →ₗ[ℂ] (Matrix 
   map_add' Ψ Ψ' := by ext x; simp [tensCol, add_mul]
   map_smul' c Ψ := by ext x; simp [tensCol, mul_assoc]
 
-@[simp] theorem tensL_apply (a : (n → k) → ℂ) (Ψ : Matrix n n' k → ℂ) : tensL a Ψ = tensCol Ψ a := rfl
-
 theorem tensCol_add (Ψ Ψ' : Matrix n n' k → ℂ) (a : (n → k) → ℂ) : tensCol (Ψ + Ψ') a = tensCol Ψ a + tensCol Ψ' a :=
   (tensL a).map_add Ψ Ψ'
 

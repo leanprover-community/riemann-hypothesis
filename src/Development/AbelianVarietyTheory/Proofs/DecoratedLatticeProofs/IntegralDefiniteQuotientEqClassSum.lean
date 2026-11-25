@@ -134,8 +134,6 @@ theorem finM_eq_one_of_mem_GinfC {D : D7} (V : HSp D) {n : ℕ} (hn : V.rank = n
   rw [h3, h2]
   rfl
 
-
-
 theorem ncard_stab {D : D7} (V : HSp D) {n : ℕ} (hn : V.rank = n) {J : Matrix (Fin n) (Fin n) D.host.E} {T f : ℕ}
     {bad : Set (HeightOneSpectrum (𝓞 D.host.F))} (S : StepLevel D.host.F D.host.E (sigD D) J T f bad) (a : GA D V)
     (y : UPts (sigD D) J (FiniteAdeleRing (𝓞 D.host.F) D.host.F)) (ha : finM V hn a = y.1.1) :
@@ -181,9 +179,6 @@ theorem mem_levG_iff {D : D7} (V : HSp D) {n : ℕ} (hn : V.rank = n) {J : Matri
     exact κ.2
   · intro h
     exact ⟨⟨_, h⟩, rfl⟩
-
-theorem finM_apply {D : D7} (V : HSp D) (g : GA D V) (i j : Fin V.rank) :
-    finM V rfl g i j = (swapL D.host.F D.host.E).symm ((finHom V g).1 i j) := rfl
 
 theorem continuous_finM {D : D7} (V : HSp D) {n : ℕ} (hn : V.rank = n) :
     letI := tensTopL (F := D.host.F) (E := D.host.E) (FiniteAdeleRing (𝓞 D.host.F) D.host.F)
