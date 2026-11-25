@@ -909,10 +909,22 @@ section -- clump:auto
 
 namespace UpperTheory.Gal.Int.Geo
 
+/-- `LocalSmoothExtension.HolomorphicLefschetzFormula` holds. Let `Z` be smooth of relative
+dimension `d` and projective over `ℂ`, and let `c1 c2 : Y ⟶ Z` be finite étale maps over `ℂ`
+whose coincidence points `y` (complex points with `y.1 ≫ c1 = y.1 ≫ c2`) have matrices `A y`
+in the sense of `GlobalTheory.W1.IsTan` with `det (1 - A y) ≠ 0`. Then for each `a`, the
+alternating sum over `b` of the traces of `hodgeTrace h1 a b ∘ₗ hodgePull h2 a b` on
+`hodgeH s a b` equals the sum over the coincidence points of the coefficient of `X ^ a` in
+`det (1 + X • A y)`, divided by `det (1 - A y)`.
+
+This is `UpperTheory.Cb.lefschetz_fixedPoint_finite_etale_correspondence`, with the
+definition unfolded. -/
 theorem weight_one_geometric_realization : LocalSmoothExtension.HolomorphicLefschetzFormula := by
   unfold LocalSmoothExtension.HolomorphicLefschetzFormula
   exact _root_.UpperTheory.Cb.lefschetz_fixedPoint_finite_etale_correspondence
 
+/-- `GeoOne` holds: `geometric_realization_of_weight_one` applied to the holomorphic Lefschetz
+formula `weight_one_geometric_realization`. -/
 theorem geoOne_holds : GeoOne := geometric_realization_of_weight_one weight_one_geometric_realization
 
 end UpperTheory.Gal.Int.Geo
@@ -927,6 +939,8 @@ section -- clump:auto
 
 namespace UpperTheory.Gal.Int
 
+/-- `UpperTheory.GalStar.Row0b recT` from the theta-lift statement `UpperTheory.TP.TLiftK`:
+`galoisLocalGlobalStrong_of_geometry_lift` with `Geo.geoOne_holds` as its geometric input. -/
 theorem galoisRepresentations_of_thetaLift (up : UpperTheory.TP.TLiftK) : UpperTheory.GalStar.Row0b recT := galoisLocalGlobalStrong_of_geometry_lift UpperTheory.Gal.Int.Geo.geoOne_holds up
 
 end UpperTheory.Gal.Int
@@ -941,6 +955,11 @@ section -- clump:auto
 
 namespace UpperTheory.Gal.Int
 
+/-- `UpperTheory.GalStar.Row0b recT` holds: for regular algebraic, polarized `π : CuspSub E a`
+over a CM field `E`, there is a Galois representation `r : G E Ω →* GL (Fin a) (Qbar l)`
+satisfying `PropsB`, with local compatibility measured against the local maps `rc` satisfying
+`recT`, that is `UpperTheory.Zero.LLC.IsRecT`. This is `galoisRepresentations_of_thetaLift`
+applied to `UpperTheory.TP.tLift_holds_k`. -/
 theorem galoisLocalGlobalStrong_recParameter : UpperTheory.GalStar.Row0b recT := galoisRepresentations_of_thetaLift _root_.UpperTheory.TP.tLift_holds_k
 
 end UpperTheory.Gal.Int
@@ -953,6 +972,11 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
+/-- `UpperTheory.EveryCharacter` from `UpperTheory.GalStar.Row0b` for the local maps satisfying
+`UpperTheory.Zero.LLC.IsRecT`. This applies
+`UpperTheory.LiteratureTheorems.every_character_of_literature_of_vWin` to `h`, to the local maps
+of `UpperTheory.Zero.LLC.recTExists`, and to the window statement `UpperTheory.Top.VWin`, which
+`UpperTheory.One.vwin_of_row` derives from `h`. -/
 theorem UpperTheory.FinalTheorems.everyCharacter_of_row
     (h : UpperTheory.GalStar.Row0b fun h rc => UpperTheory.Zero.LLC.IsRecT h rc) :
     UpperTheory.EveryCharacter :=
@@ -960,6 +984,11 @@ theorem UpperTheory.FinalTheorems.everyCharacter_of_row
     h UpperTheory.Zero.LLC.recTExists
     (UpperTheory.One.vwin_of_row h)
 
+/-- `UpperTheory.EveryCharacter`, which is `DirichletLNonvanishingRightOfHalf`: for every
+Dirichlet character `χ`, `DirichletCharacter.LFunction χ s ≠ 0` when `1 / 2 < s.re`, except at
+`s = 1` for the trivial character. This is `everyCharacter_of_row` applied to
+`UpperTheory.Gal.Int.galoisLocalGlobalStrong_recParameter`. The theorems of `Main` are derived
+from it. -/
 theorem UpperTheory.FinalTheorems.everyCharacter : UpperTheory.EveryCharacter :=
   UpperTheory.FinalTheorems.everyCharacter_of_row UpperTheory.Gal.Int.galoisLocalGlobalStrong_recParameter
 end -- clump:auto
