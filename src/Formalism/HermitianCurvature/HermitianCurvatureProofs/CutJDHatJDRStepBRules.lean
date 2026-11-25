@@ -58,23 +58,11 @@ variable {E : Type} [NormedAddCommGroup E] [NormedSpace ℂ E]
 theorem rightRuleB (z' : Fin (2 * r + k + 1) → ℂ) (D : Set (Mx k r)) (f : Mx k r → E) (hz' : inWb k r z')
     (hD : IsOpen D) (hS : SmoothLev k r 0 D f) (hR : RightEq k r z' 0 D f) (g : Mx k r) (hg : g ∈ Glev k r 0 ∩ D)
     (a : Fin r) (ha : a.val + 1 < r) (w : Fin (k + 1)) : EH k r (eI k r a) (wI k r w) f g = 0 := by
-  have hc : Continuous fun x : Mx k r => g * x := cont_lmul g
-  have hD' : IsOpen {x : Mx k r | g * x ∈ D} := hD.preimage hc
-  have hS' : SmoothLev k r a.castSucc {x | g * x ∈ D} (fun x => f (g * x)) :=
-    smooth_left g (fun x hx => glev0 hg.1 hx) hS
-  have hR' : RightEq k r z' a.castSucc {x | g * x ∈ D} (fun x => f (g * x)) := by
-    intro x hx n hn
-    have := hR (g * x) ⟨glev0 hg.1 hx.1, hx.2⟩ n (nlev_mono (zero_le' _) hn)
-    simpa [Matrix.mul_assoc] using this
-  have h1 : (1 : Mx k r) ∈ Glev k r a.castSucc ∩ {x | g * x ∈ D} :=
-    ⟨glev_one _, by simpa using hg.2⟩
-  have hrule := (Formalism.FourierDecayAlt.P.right_action_rule E k r z' a {x | g * x ∈ D} (fun x => f (g * x)) hz' hD' hS' hR'
-    1 h1).1
   have hjlt : r + w.val - a.val - 1 < mdim k r a.succ := by simp [mdim]; omega
   have hpos : posL k r a.succ ⟨r + w.val - a.val - 1, hjlt⟩ = wI k r w := by
     simp [posL, wI, Fin.ext_iff]; omega
-  have h := hrule ⟨r + w.val - a.val - 1, hjlt⟩
-  rw [hpos, eH_left, Matrix.mul_one] at h
+  have h := (right_action_at hz' hD hS hR hg a).1 ⟨r + w.val - a.val - 1, hjlt⟩
+  rw [hpos] at h
   rw [h]
   have hx : xv k r z' a.succ ⟨r + w.val - a.val - 1, hjlt⟩ = 0 := by
     simp only [xv, fvec, hpos]
@@ -92,54 +80,12 @@ theorem leftRuleB (z : Fin (2 * r + k + 1) → ℂ) (D : Set (Mx k r)) (f : Mx k
     (hL : LeftEq k r z 0 D f) (c : Fin r → ℂ) (hc : c ∈ OmX r) (g : Mx k r) (hg : g ∈ Glev k r (Fin.last r))
     (hWD : wCell k r (Fin.last r) c * g ∈ D) (b : Fin r) (hb : b.val + 1 < r) (v : Fin (k + 1)) :
     EH k r (wI k r v) (eI k r b) f (wCell k r (Fin.last r) c * g) = 0 := by
-  have hcne : ∀ l, c l ≠ 0 := hc
-  have head_comm : ∀ (i : Fin (r + 1)),
-      wCell k r i c ∈ Glev k r 0 ∧
-        ∀ j : Fin (r + 1), i ≤ j → ∀ x ∈ Glev k r j, wCell k r i c * x = x * wCell k r i c := by
-    intro i
-    induction i using Fin.induction with
-    | zero =>
-      rw [Formalism.FourierDecayAlt.P.Qx6.wCell_zero]
-      exact ⟨glev_one _, fun _ _ x _ => by simp⟩
-    | succ l ih =>
-      obtain ⟨ih0, ihc⟩ := ih
-      have hw := Formalism.FourierDecayAlt.P.weyl_level_element_properties k r l (c l) (hcne l)
-      rw [Formalism.FourierDecayAlt.P.Qx6.wCell_succ]
-      refine ⟨glev_mul ih0 (glev_mono (zero_le' _) hw.1), fun j hj x hx => ?_⟩
-      have hx1 : x ∈ Glev k r l.succ := glev_mono hj hx
-      have hcj : l.castSucc ≤ j := le_trans (by rw [Fin.le_def]; simp) hj
-      rw [Matrix.mul_assoc, (hw.2 x hx1).2.1, ← Matrix.mul_assoc, ihc j hcj x hx, Matrix.mul_assoc]
-  obtain ⟨hW0, hWcomm⟩ := head_comm b.castSucc
-  obtain ⟨T, hT, hTG, hTv⟩ := tailW (k := k) c hcne b (r - b.val - 1) (Fin.last r) (by simp; omega)
-  have hg₁ : T * g ∈ Glev k r b.succ := glev_mul hTG (glev_mono (Fin.le_last _) hg)
-  have hsplit : wCell k r (Fin.last r) c * g = wCell k r b.castSucc c * (w1 k r b (c b) * (T * g)) := by
-    simp only [hT, Formalism.FourierDecayAlt.P.Qx6.wCell_succ, Matrix.mul_assoc]
-  have hWx : ∀ x ∈ Glev k r b.castSucc, wCell k r b.castSucc c * x ∈ Glev k r 0 := fun x hx => glev0 hW0 hx
-  have hS' := smooth_left (E := E) (f := f) (D := D) (wCell k r b.castSucc c) hWx hS
-  have hcont : Continuous fun x : Mx k r => wCell k r b.castSucc c * x := cont_lmul _
-  have hD' : IsOpen {x : Mx k r | wCell k r b.castSucc c * x ∈ D} := hD.preimage hcont
-  have hN' : ∀ x ∈ Glev k r b.castSucc ∩ {x | wCell k r b.castSucc c * x ∈ D}, ∀ n ∈ Nlev k r b.castSucc,
-      n * x ∈ {x | wCell k r b.castSucc c * x ∈ D} := by
-    intro x hx n hn
-    show wCell k r b.castSucc c * (n * x) ∈ D
-    rw [← Matrix.mul_assoc, hWcomm b.castSucc le_rfl n hn.2, Matrix.mul_assoc]
-    exact hDN _ ⟨hWx x hx.1, hx.2⟩ n (nlev_mono (zero_le' _) hn)
-  have hL' : LeftEq k r z b.castSucc {x | wCell k r b.castSucc c * x ∈ D}
-      (fun x => f (wCell k r b.castSucc c * x)) := by
-    intro x hx n hn
-    show f (wCell k r b.castSucc c * (n * x)) = _ • f (wCell k r b.castSucc c * x)
-    rw [← Matrix.mul_assoc, hWcomm b.castSucc le_rfl n hn.2, Matrix.mul_assoc]
-    exact hL _ ⟨hWx x hx.1, hx.2⟩ n (nlev_mono (zero_le' _) hn)
-  have hpt : w1 k r b (c b) * (T * g) ∈ {x | wCell k r b.castSucc c * x ∈ D} := by
-    show _ ∈ D
-    rw [← hsplit]; exact hWD
-  have hrule := (Formalism.FourierDecayAlt.P.left_action_rule E k r z b {x | wCell k r b.castSucc c * x ∈ D}
-    (fun x => f (wCell k r b.castSucc c * x)) hz hD' hS' hN' hL' (c b) (hcne b) (T * g) hg₁ hpt).1
+  obtain ⟨T, hT, hTG, hTv⟩ := tailW (k := k) c hc b (r - b.val - 1) (Fin.last r) (by simp; omega)
   have hjlt : r + v.val - b.val - 1 < mdim k r b.succ := by simp [mdim]; omega
   have hpos : posL k r b.succ ⟨r + v.val - b.val - 1, hjlt⟩ = wI k r v := by
     simp [posL, wI, Fin.ext_iff]; omega
-  have h := hrule ⟨r + v.val - b.val - 1, hjlt⟩
-  rw [hpos, eH_left, ← hsplit] at h
+  have h := (left_action_cell hz hD hDN hS hL hc hg hWD b hT hTG).1 ⟨r + v.val - b.val - 1, hjlt⟩
+  rw [hpos] at h
   rw [h]
   have hb1 : (b.succ : Fin (r + 1)).val < r := by simp; omega
   have hy : ybv k r z b.succ (T * g) ⟨r + v.val - b.val - 1, hjlt⟩ = 0 := by
