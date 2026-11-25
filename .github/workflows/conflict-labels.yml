@@ -30,8 +30,8 @@ name: conflict labels
 # request is opened, pushed to, closed or reopened or gains or loses `building` or `latest batch`,
 # when main moves on, every half hour, and when started by hand without a pull request number.
 # GitHub starts no run for changes made with a workflow token, such as the batch queue labelling a
-# batch `building`, so the batch queue starts a sweep itself when it puts either label on a batch,
-# and the half-hourly sweep catches the rest. The sweep is offset from the inbox's.
+# batch `building`, so the batch queue starts a sweep itself, once at the end of a run in which it
+# put either label on a batch, and the half-hourly sweep catches the rest. The sweep is offset from the inbox's.
 #
 # A sweep also looks for pull requests that merged a batch's branch and still carry the batch's
 # merge of a pull request the batch was then rebuilt without, and tells each once for each set of
