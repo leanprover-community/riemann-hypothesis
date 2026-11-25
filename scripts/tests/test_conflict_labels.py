@@ -636,18 +636,7 @@ class Runs(unittest.TestCase):
         gh.add(910, ref="batch/c1", own=True, labels_=[BUILDING, LATEST])
         return gh
 
-    def test_with_two_stacks_a_steady_state_reads_no_comments(self):
-        gh, known = self.stacks(), {}
-        table = {(1, 900): CONFLICT, (1, 910): CONFLICT}
-        run(gh, table=table, known=known)
-        self.assertEqual((gh.told_about(1), gh.comment_reads), (["900", "910"], [1]))
-        self.assertEqual(known[1], {"told": {900, 910}, "stale": set()})
-        gh.comment_reads.clear()
-        for _ in range(2):
-            run(gh, table=table, known=known)
-        self.assertEqual((gh.comment_reads, gh.told_about(1)), ([], ["900", "910"]))
-
-    def test_with_two_stacks_and_nothing_kept_each_sweep_reads_once(self):
+    def test_with_two_stacks_each_sweep_reads_once_and_tells_no_one_twice(self):
         gh = self.stacks()
         table = {(1, 900): CONFLICT, (1, 910): CONFLICT}
         run(gh, table=table)
@@ -655,31 +644,13 @@ class Runs(unittest.TestCase):
         self.assertEqual((gh.comment_reads, gh.told_about(1)), ([1, 1], ["900", "910"]))
 
     def test_with_two_stacks_a_new_conflict_is_still_told(self):
-        gh, known = self.stacks(), {}
-        run(gh, table={(1, 900): CONFLICT}, known=known)
+        gh = self.stacks()
+        run(gh, table={(1, 900): CONFLICT})
         gh.pulls[1]["labels"].discard(WAITING)  # `ready`
-        gh.comment_reads.clear()
-        run(gh, table={(1, 900): CONFLICT}, known=known)
-        self.assertEqual(gh.comment_reads, [])
         # The other stack's batch moves on, and now conflicts too.
-        run(gh, table={(1, 900): CONFLICT, (1, 910): CONFLICT}, known=known)
-        self.assertEqual((gh.comment_reads, gh.told_about(1)), ([1], ["900", "910"]))
+        run(gh, table={(1, 900): CONFLICT, (1, 910): CONFLICT})
+        self.assertEqual(gh.told_about(1), ["900", "910"])
         self.assertEqual(gh.pulls[1]["labels"], {BATCH_CONFLICT, WAITING})
-
-    def test_what_is_kept_is_only_for_open_pull_requests(self):
-        gh, known = self.scene(), {77: {"told": {900}, "stale": set()}}
-        run(gh, table={(1, 900): CONFLICT}, known=known)
-        self.assertEqual(sorted(known), [1])
-
-    def test_the_state_file_round_trips(self):
-        known = {1: {"told": {900, 910}, "stale": {(900, "a" * 40)}}, 2: {"told": set(), "stale": set()}}
-        with tempfile.TemporaryDirectory() as directory:
-            path = Path(directory) / "state.json"
-            self.assertEqual(labels.load_state(path), {})
-            labels.save_state(path, known)
-            self.assertEqual(labels.load_state(path), known)
-            path.write_text("not json")
-            self.assertEqual(labels.load_state(path), {})
 
     # A pull request that builds on a batch rebuilt without one of its pull requests.
 
