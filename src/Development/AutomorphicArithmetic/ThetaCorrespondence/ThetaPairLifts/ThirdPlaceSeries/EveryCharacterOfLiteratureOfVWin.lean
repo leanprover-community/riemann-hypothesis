@@ -527,7 +527,7 @@ theorem exists_prime_modEq_le_rpow_of_primesRel : GlobalTheory.Lin.PrimesRel →
     rwa [div_le_iff₀ hc₃, mul_comm] at this
   refine ⟨A, hA1, ?_⟩
   intro a M hM hcop
-  haveI : NeZero M := ⟨by omega⟩
+  have : NeZero M := ⟨by omega⟩
   obtain ⟨-, -, H3⟩ := H M (by omega)
   have hM3 : (3:ℝ) ≤ M := by exact_mod_cast (show 3 ≤ M by omega)
   have hMpos : (0:ℝ) < M := by linarith
