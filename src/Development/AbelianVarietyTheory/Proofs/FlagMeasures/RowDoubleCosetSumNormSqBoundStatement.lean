@@ -356,20 +356,8 @@ theorem zhat_movesTo {T T' : D.host.E} (F0 : LFlag (D.sp.Y 0) D.R.rS T) (F0' : L
   ring
 
 theorem gval_movesTo : ∀ {D : D7} {T T' : D.host.E} (F0 : LFlag (D.sp.Y 0) D.R.rS T) (F0' : LFlag (D.sp.Y 0) D.R.rS T') (F : LFlag (D.sp.Y 0) D.R.rS T) (F' : LFlag (D.sp.Y 0) D.R.rS T') (ρ : (VS D).V ≃ₗ[D.host.E] (VS D).V) (U U' : Matrix (Fin (D.R.rS + 1)) (Fin (D.R.rS + 1)) D.host.E), MovesTo F0 F0' F F' ρ U U' → Gval F F' = Gval F0 F0' := by
-  intro D T T' F0 F0' F F' ρ U U' h
-  have hZ := zhat_movesTo F0 F0' F F' ρ U U' h
-  obtain ⟨-, hu, hu', -, -⟩ := h
-  have hl : ∀ l, Dl F.fl F'.fl l = Dl F0.fl F0'.fl l := by
-    intro l
-    show leadMinorE (Zhat F.fl F'.fl) l = leadMinorE (Zhat F0.fl F0'.fl) l
-    rw [hZ]
-    refine leadMinor_triMul _ _ _ (fun i j hij => ?_) (fun i => ?_) (fun i j hij => (hu' i j).1 hij)
-      (fun i => (hu' i i).2 rfl) l
-    · simp [Matrix.conjTranspose_apply, (hu j i).1 hij]
-    · simp [Matrix.conjTranspose_apply, (hu i i).2 rfl]
-  show Gflag F.fl F'.fl = Gflag F0.fl F0'.fl
-  unfold Gflag
-  rw [hl, hl]
+  intros
+  apply _root_.GlobalTheory.AmpTerm.gval_of_movesTo <;> assumption
 
 end GlobalTheory.HL
 end -- clump:auto
@@ -522,21 +510,8 @@ namespace GlobalTheory.LocOver
 open Formalism.MainNotions.S.Loc Formalism.MainNotions.S.LocNG GlobalTheory.LocOver.MoveBB
 
 theorem bbne_move : ∀ {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E] {M : Formalism.MainNotions.S.Loc.Model F E} {V : Type} [AddCommGroup V] [Module E V] (H : Formalism.MainNotions.S.Loc.HermSp M V) {r : ℕ} (g : V ≃ₗ[E] V) (t : Formalism.MainNotions.S.Loc.Term V M r), LocNG.BBne (H := H) (move g t) ↔ LocNG.BBne (H := H) t := by
-  intro F _ _ _ E _ _ _ _ M V _ _ H r g t
-  have hfam : H.MMfam (move g t) = fun x => g (H.MMfam t x) := funext (MMfam_move H g t)
-  let gO : V ≃ₗ[M.L.O] V := g.restrictScalars M.L.O
-  have hE : ∀ w, g w ∈ Submodule.span E (Set.range (H.MMfam (move g t))) ↔
-      w ∈ Submodule.span E (Set.range (H.MMfam t)) := fun w => by
-    rw [hfam]; exact mem_span_range_comp g _ w
-  have hO : ∀ w, g w ∈ Submodule.span M.L.O (Set.range (H.MMfam (move g t))) ↔
-      w ∈ Submodule.span M.L.O (Set.range (H.MMfam t)) := fun w => by
-    rw [hfam]; exact mem_span_range_comp gO _ w
-  constructor
-  · rintro ⟨v, hv, h1, h2⟩
-    obtain ⟨w, hw, rfl⟩ := Submodule.mem_map.1 hv
-    exact ⟨w, hw, (hE w).1 h1, fun h => h2 ((hO w).2 h)⟩
-  · rintro ⟨w, hw, h1, h2⟩
-    exact ⟨g w, Submodule.mem_map_of_mem hw, (hE w).2 h1, fun h => h2 ((hO w).1 h)⟩
+  intros
+  apply _root_.GlobalTheory.Unfold.GenLoc.bbne_move <;> assumption
 
 end GlobalTheory.LocOver
 end -- clump:auto
@@ -733,22 +708,7 @@ variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algeb
 
 theorem isLattice_of_lrel {A : Places F E sig} {r k : ℕ} (G : GFrames A r k) {Γ Γ' : G.Lt}
     (hΓ : Submodule.IsLattice E Γ) (h : G.LRel Γ Γ') : Submodule.IsLattice E Γ' := by
-  obtain ⟨g, -, rfl⟩ := h
-  refine ⟨hΓ.fg.map _, ?_⟩
-  rw [Submodule.map_coe]
-  have hf : (((g : G.V →ₗ[E] G.V).restrictScalars (𝓞 E)) : G.V → G.V) = ((g : G.V →ₗ[E] G.V) : G.V → G.V) := rfl
-  rw [hf]
-  intro s hs hi
-  have hsub : (g : G.V →ₗ[E] G.V) ⁻¹' s ⊆ (Γ : Set G.V) := by
-    intro x hx
-    obtain ⟨y, hy, he⟩ := hs hx
-    exact g.injective he ▸ hy
-  have heq : (g : G.V →ₗ[E] G.V) '' ((g : G.V →ₗ[E] G.V) ⁻¹' s) = s := Set.image_preimage_eq s g.surjective
-  rw [← heq] at hi ⊢
-  have hi' : LinearIndepOn (𝓞 E) id ((g : G.V →ₗ[E] G.V) ⁻¹' s) := by
-    apply (linearIndepOn_id_imageₛ_iff (f := (g : G.V →ₗ[E] G.V).restrictScalars (𝓞 E)) g.injective.injOn).1
-    exact hi
-  exact (linearIndepOn_id_imageₛ_iff (f := (g : G.V →ₗ[E] G.V)) g.injective.injOn).2 (hΓ.linearIndepOn _ hsub hi')
+  first | exact _root_.GlobalTheory.HL.ProdStruct.isLattice_of_LRel | exact @_root_.GlobalTheory.HL.ProdStruct.isLattice_of_LRel | apply _root_.GlobalTheory.HL.ProdStruct.isLattice_of_LRel <;> assumption
 
 theorem term_of_lrel {A : Places F E sig} {r k : ℕ} (G : GFrames A r k) (hk : 4 * r + 7 ≤ k) {d : G.Dat}
     (hex : ∃ Λ₀, G.IsTerm d Λ₀) {Γ Γ' : G.Lt} (hΓ : G.IsTerm d Γ) (h : G.LRel Γ Γ') : G.IsTerm d Γ' := by

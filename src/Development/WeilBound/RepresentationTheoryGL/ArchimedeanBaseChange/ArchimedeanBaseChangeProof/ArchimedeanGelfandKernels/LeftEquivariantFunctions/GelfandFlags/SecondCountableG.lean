@@ -57,7 +57,7 @@ namespace PositivityTheory.RgBcC.VC.NAvgH
 open PositivityTheory.RgBcC PositivityTheory.RgBcC.VC
 open PositivityTheory.RgTw (Mat G)
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 variable {n : ℕ}
 
@@ -153,7 +153,7 @@ namespace PositivityTheory.RgBcC.VC
 open PositivityTheory.RgBcC PositivityTheory.RgBcC.VC.NAvgH
 open PositivityTheory.RgTw (Mat G)
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 theorem nAvg_of (hIS : IntSmooth) (hLg : LgCpt) (hNU : NilUni) : NAvg := by
   intro n _ _ E W₁ W₂ hW N hN ν _ φ hφ hφR

@@ -155,7 +155,7 @@ section GapStatementAlt
 
 open Formalism.MainNotions.S Formalism.MainNotions.CayleySignature
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 def GapStatementAt (C : ℝ) : Prop :=
   ∀ (k r : ℕ) (z : Fin (2 * r + k + 1) → ℂ) (c : Fin r → ℂ) (u : Fin k → ℝ) (v : Fin (k - 1) → ℝ)
@@ -184,7 +184,7 @@ section BesselNVPart
 open Formalism.MainNotions.S Formalism.MainNotions.CayleySignature MeasureTheory
 open scoped InnerProductSpace
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 end BesselNVPart
 

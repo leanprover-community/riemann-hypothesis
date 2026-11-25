@@ -17,8 +17,6 @@ open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Fo
 
 namespace Formalism.L2.SG.Pf.MainEqClass
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 def PairOfRowC : Prop :=
   ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u : D.what₂.Word), ConcTie X Y →
     ∀ t₁ t₂ : TauC Y u u, t₁ ∈ (Y.tO u u).genSet → t₂ ∈ (Y.tO u u).genSet →

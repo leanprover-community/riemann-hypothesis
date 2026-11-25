@@ -66,6 +66,10 @@ def ShapeH (H : Type) [Fintype H] (p : ℕ) [Fact p.Prime] {N0 N1 : ℕ}
 
 def cPr (α β : YoungDiagram) : ℕ := (α.cells.card - α.rowLen 0) + min (α.rowLen 0) (β.rowLen 0)
 
+/-- The maximum number of contractions after accounting for every row of α. -/
+def rowContractionBound (α β : YoungDiagram) : ℕ :=
+  ∑ r ∈ insert 0 (α.cells.image Prod.fst), min (α.rowLen r) (β.rowLen 0)
+
 def CoreBound : Prop :=
   ∀ (H : Type) [Fintype H] [DecidableEq H] (N0 N1 p : ℕ) [Fact p.Prime] (nu : Bool × H → YoungDiagram)
     (Th : MvPowerSeries (ZV H N0 N1) ℂ_[p]),

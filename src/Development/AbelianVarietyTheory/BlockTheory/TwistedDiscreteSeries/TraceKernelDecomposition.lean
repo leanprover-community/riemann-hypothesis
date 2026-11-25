@@ -58,8 +58,6 @@ def TraceIsDiagonal (T : Lp ℂ 2 ν →L[ℂ] Lp ℂ 2 ν) (K : X → X → ℂ
 
 end Core
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 def IsCcInf (θ : InfF D) (V : HSp D) (f : GA D V → ℂ) : Prop :=

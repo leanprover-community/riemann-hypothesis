@@ -153,12 +153,6 @@ theorem idem_left {w : Pl E} (U : Subgroup (GLw a w × GLw b w)) (u) (hu : u ∈
   · rw [Set.indicator_of_mem (h1.2 hx), Set.indicator_of_mem hx]
   · rw [Set.indicator_of_notMem (fun h => hx (h1.1 h)), Set.indicator_of_notMem hx]
 
-section Sel
-
-variable {κ : Pl E → Type} [∀ w, Fintype (κ w)]
-
-end Sel
-
 section Alg
 
 variable {κ : Pl E → Type} [∀ w, Fintype (κ w)]
@@ -168,34 +162,6 @@ theorem mconv_idem_idem {w : Pl E} {U : Subgroup (GLw a w × GLw b w)} (hU : IsO
   mconv_idem_left hU hUK _ (idem_left U)
 
 end Alg
-
-section Lev
-
-end Lev
-
-section Act
-
-end Act
-
-section Main
-
-variable {κ : Pl E → Type} [∀ w, Fintype (κ w)] {S : Set (Pl E)} {P : Finset (Pl E)} {B : Block E}
-  {e : B.κ ≃ ∀ w : P, κ w} {U₁ U₂ : ∀ w : Pl E, Subgroup (GLw B.a w × GLw B.b w)} {L : LM κ B.a B.b}
-
-variable (hAlg : FmAlg) (hAt : FmAtP) (hCM : Tail.ConvMul) (hAct : ActAlg) (hId : ActIdem) (hS : IsSection S)
-  (hP : (↑P : Set (Pl E)) ⊆ S) (hU₁ : IsLev U₁) (hU₂ : IsLev U₂) (hok : L.Ok P) (hs : ∀ w, L.s w = idem (U₁ w))
-  (ht : ∀ w, L.t w = idem (U₂ w))
-  (hinv : ∀ w ∈ P, ∀ x y, ∀ u ∈ U₁ w, ∀ g, L.m w x y (u * g) = L.m w x y g ∧ L.m w x y (g * u) = L.m w x y g)
-
-
-
-
-
-
-
-
-
-end Main
 
 end GlobalTheory.CompanionTheory.FmPowP
 

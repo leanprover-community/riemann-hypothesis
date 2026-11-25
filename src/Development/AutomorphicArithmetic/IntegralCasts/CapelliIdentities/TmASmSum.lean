@@ -51,7 +51,7 @@ namespace UpperTheory.Reformulated.B.Qf26
 
 open scoped ContDiff Matrix
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 noncomputable def Jm : {n : ℕ} → (Fin n → Bool) → Matrix (Fin n) (Fin n) ℂ :=
   fun {_} ε ↦ Matrix.diagonal fun a ↦ if ε a then 1 else -1

@@ -1149,7 +1149,6 @@ theorem fibreLat_of_vec {X : Scheme.{0}} {t : SAB H X} {z : Sp ℂ ⟶ X} {g : �
 
 end Pt
 
-open GroundTheory.Heights₂.Heights.Regular (logCover expCover logLift)
 
 namespace Val
 

@@ -49,7 +49,6 @@ public import Mathlib.AlgebraicGeometry.Morphisms.Proper
 
 @[expose] public section
 
-set_option autoImplicit false
 noncomputable section
 open CategoryTheory AlgebraicGeometry TopologicalSpace
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor

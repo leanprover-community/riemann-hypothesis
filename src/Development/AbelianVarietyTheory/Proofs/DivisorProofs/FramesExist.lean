@@ -44,8 +44,6 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.IsoOverOfIsOpenImme
 
 open CategoryTheory AlgebraicGeometry TopologicalSpace Limits NumberField ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj GlobalTheory.CechPic GlobalTheory.Vanishing GlobalTheory.CompHS
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.VarFlag

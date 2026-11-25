@@ -47,8 +47,6 @@ open ReciprocityTheory.L2DbarEstimates (V)
 open GlobalTheory.GoodMetric (coordVec)
 open scoped ComplexOrder ContDiff ComplexConjugate
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.CxForm.DelForm

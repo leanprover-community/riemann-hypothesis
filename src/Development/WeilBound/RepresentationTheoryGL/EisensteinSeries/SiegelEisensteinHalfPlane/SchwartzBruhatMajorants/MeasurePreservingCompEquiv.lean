@@ -80,41 +80,8 @@ theorem map_mulVec {k : Type} [Field k] [NumberField k] {ι : Type} [Fintype ι]
     (A : GL ι 𝔸[k]) :
     (adeleMeasurePi k).map (fun x : ι → 𝔸[k] => (A : Matrix ι ι 𝔸[k]) *ᵥ x) =
       ENNReal.ofReal ((ideleModule k (Matrix.GeneralLinearGroup.det A) : ℝ))⁻¹ •
-        adeleMeasurePi k (ι := ι) := by
-  set e : ι ≃ Fin (Fintype.card ι) := Fintype.equivFin ι
-  let P : GL (Fin (Fintype.card ι)) 𝔸[k] :=
-    ⟨(A : Matrix ι ι 𝔸[k]).submatrix e.symm e.symm,
-      ((A⁻¹ : GL ι 𝔸[k]) : Matrix ι ι 𝔸[k]).submatrix e.symm e.symm,
-      by rw [Matrix.submatrix_mul_equiv, Units.mul_inv, Matrix.submatrix_one_equiv],
-      by rw [Matrix.submatrix_mul_equiv, Units.inv_mul, Matrix.submatrix_one_equiv]⟩
-  have hdet : Matrix.GeneralLinearGroup.det P = Matrix.GeneralLinearGroup.det A := by
-    ext
-    rw [Matrix.GeneralLinearGroup.val_det_apply, Matrix.GeneralLinearGroup.val_det_apply]
-    exact Matrix.det_submatrix_equiv_self _ _
-  have h1 : MeasurePreserving (fun x : ι → 𝔸[k] => x ∘ e.symm) (adeleMeasurePi k)
-      (adeleMeasurePi k) := measurePreserving_comp_equiv (adeleMeasure k) e.symm
-  have h3 : MeasurePreserving (fun x : Fin (Fintype.card ι) → 𝔸[k] => x ∘ e) (adeleMeasurePi k)
-      (adeleMeasurePi k) := measurePreserving_comp_equiv (adeleMeasure k) e
-  have hP : Measurable fun x : Fin (Fintype.card ι) → 𝔸[k] =>
-      (P : Matrix (Fin (Fintype.card ι)) (Fin (Fintype.card ι)) 𝔸[k]) *ᵥ x :=
-    (continuous_const.matrix_mulVec continuous_id).measurable
-  have hfun : (fun x : ι → 𝔸[k] => (A : Matrix ι ι 𝔸[k]) *ᵥ x) =
-      (fun x => x ∘ e) ∘
-        (fun x => (P : Matrix (Fin (Fintype.card ι)) (Fin (Fintype.card ι)) 𝔸[k]) *ᵥ x) ∘
-          (fun x => x ∘ e.symm) := by
-    funext x
-    simp only [Function.comp_apply]
-    change _ = ((A : Matrix ι ι 𝔸[k]).submatrix e.symm e.symm *ᵥ (x ∘ e.symm)) ∘ e
-    have hx : (x ∘ e.symm) ∘ e = x := by
-      funext j
-      simp
-    rw [Matrix.submatrix_mulVec_equiv, Equiv.symm_symm, hx]
-    funext i
-    simp
-  rw [hfun, ← Measure.map_map h3.measurable (hP.comp h1.measurable),
-    ← Measure.map_map hP h1.measurable, h1.map_eq, map_mulVec_fin P, hdet, Measure.map_smul,
-    h3.map_eq]
-  exact h3.measurable.aemeasurable
+        adeleMeasurePi k (ι := ι) :=
+  _root_.GlobalTheory.CompanionTheory.LtrFourier.map_mulVec A
 
 def mulVecHomeo {k : Type} [Field k] [NumberField k] {ι : Type} [Fintype ι] [DecidableEq ι]
     (A : GL ι 𝔸[k]) : (ι → 𝔸[k]) ≃ₜ (ι → 𝔸[k]) where

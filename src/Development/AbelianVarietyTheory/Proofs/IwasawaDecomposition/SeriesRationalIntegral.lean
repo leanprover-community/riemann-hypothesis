@@ -217,8 +217,6 @@ open scoped TensorProduct
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Datum Formalism.IndefR.FWT Formalism.L2.Pj GlobalTheory.CoverRead
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.ScaleInt
@@ -330,8 +328,6 @@ open NumberField IsDedekindDomain
 open scoped TensorProduct
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Datum Formalism.IndefR.FWT Formalism.L2.Pj GlobalTheory.CoverRead
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
-set_option autoImplicit false
 
 noncomputable section
 
@@ -456,8 +452,6 @@ open scoped TensorProduct
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Datum Formalism.IndefR.FWT Formalism.L2.Pj GlobalTheory.CoverRead
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.CoverLocInt
@@ -573,75 +567,8 @@ open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestrictio
 open GlobalTheory.SupDescent in
 set_option maxHeartbeats 1000000 in
 set_option synthInstance.maxHeartbeats 100000 in
-theorem _root_.GlobalTheory.T.cuspForm_integral_lattice_unramified_descent : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (r : ℕ) (U : ∀ σ : c.F →+* ℂ, Unf Xo c σ r), (∀ σ, GoodEmb c σ → IsUnf (U σ)) → ∀ (la : HeightOneSpectrum (𝓞 c.F)) (p : ℕ), p.Prime → (p : 𝓞 c.F) ∈ la.asIdeal → l.GoodAt p → ∀ (c' : Coeff l) (hle : c.F ≤ c'.F) (la' : HeightOneSpectrum (𝓞 c'.F)), (∀ x : c.F, vLa la' (incF c c' hle x) = vLa la x) → CuspBC hle U → ∀ (a : (E →+* ℂ) × ℕ → ℕ) (n : ℕ), Dom a n → FiniteDimensional c.F (cusp Xo c U a n) → ∀ f' ∈ cusp Xo c' (unfBC hle U) a n, BddAll Xo c' la' 1 f' → ∃ (m : ℕ) (as : Fin m → c'.F) (fs : Fin m → Rul Xo c), (∀ i, la'.valuation c'.F (as i) ≤ 1) ∧ (∀ i, fs i ∈ supSet Xo c la (cusp Xo c U a n)) ∧ IsBC hle f' as fs := by
-  intro E _ _ _ H Dw l Xo c r U hU la p hp hpl hgood c' hle la' hv hBC a n hD _ f' hf' hb
-  obtain ⟨m, as, fs, hfs, hIs⟩ := hBC a n f' hf'
-  choose κ hκ0 hκ using fun i => _root_.GlobalTheory.CuspBound.exists_bddAll_cusp E H Dw l Xo c r U hU la p hp hpl hgood a n (fs i) hD (hfs i)
-  let : Algebra c.F c'.F := (incF c c' hle).toAlgebra
-  have := liesOver (K := c.F) (K' := c'.F) hv
-  obtain ⟨d, b, hb1, hb2⟩ := exists_residue_basis (la := la) (la' := la')
-  choose x ρ hρ hx using fun i => exists_approx (K := c.F) (K' := c'.F) hv hb2 (as i) (hκ0 i)
-  let F : Fin d → Rul Xo c := fun j => ∑ i, x i j • fs i
-  have hF : ∀ j, F j ∈ cusp Xo c U a n := fun j => Submodule.sum_mem _ fun i _ => Submodule.smul_mem _ _ (hfs i)
-  have hG : ∀ i, κ i • fs i ∈ supSet Xo c la (cusp Xo c U a n) := fun i =>
-    ⟨Submodule.smul_mem _ _ (hfs i), (GlobalTheory.GoodPtsModel.bddAll_iff_smul _ _).1 (hκ i)⟩
-  have key : ∀ (S : Type) [CommRing S] [Algebra c.F S] [Algebra c'.F S] (h : AlgOver c c' hle S) (y : FrPt Xo c' S),
-      evR Xo c' f' y = ∑ j, algebraMap c'.F S (b j) * evR Xo c (F j) (y.res hle h) +
-        ∑ i, algebraMap c'.F S (ρ i) * evR Xo c (κ i • fs i) (y.res hle h) := by
-    intro S _ _ _ h y
-    have h' : ∀ t : c.F, algebraMap c'.F S (algebraMap c.F c'.F t) = algebraMap c.F S t := h
-    have hs : ∀ i, evR Xo c (κ i • fs i) (y.res hle h) = algebraMap c.F S (κ i) * evR Xo c (fs i) (y.res hle h) :=
-      fun i => evalAt_smul _ _ _ _ _
-    rw [hIs S h y]
-    simp only [F, evR_sum, hs, Finset.mul_sum]
-    rw [Finset.sum_comm, ← Finset.sum_add_distrib]
-    refine Finset.sum_congr rfl fun i _ => ?_
-    rw [hx i]
-    simp only [map_add (f := _), map_sum, map_mul, h', add_mul, Finset.sum_mul, mul_assoc]
-    congr 1
-    exact Finset.sum_congr rfl fun j _ => by ring
-  refine ⟨d + m, Fin.append (fun j => (b j : c'.F)) ρ, Fin.append F fun i => κ i • fs i, fun i => ?_, fun i => ?_, ?_⟩
-  · refine Fin.addCases (fun j => ?_) (fun j => ?_) i
-    · rw [Fin.append_left]; exact la'.valuation_le_one (b j)
-    · rw [Fin.append_right]; exact hρ j
-  · refine Fin.addCases (fun j => ?_) (fun j => ?_) i
-    swap
-    · rw [Fin.append_right]; exact hG j
-    rw [Fin.append_left]
-    refine ⟨hF j, fun T io e ho y hy => ?_⟩
-    rw [map_one, one_mul]
-    refine inV_of_forall_emb (K := c.F) (K' := c'.F) hb1 hy ho (fun j => evI y (F j)) ?_ j
-    intro T' i e' σ e'' he' hi hT' hσ ho'
-    obtain ⟨y₁, φ, hφ, hmap⟩ := GlobalTheory.IntFrBaseChange.exists_intFr_baseChange E H Dw l Xo c T T' io y i e' he' hi
-    obtain ⟨y₂, hy₂⟩ := exists_intFr_ext hle (io := i.comp io) σ hσ y₁
-    have hi' : ∀ t : T.Fr, vV T'.V (i t) = (e' : ℤ) * vV T.V t := fun t => by
-      by_cases h : t = 0
-      · subst h; simp [vV]
-      · exact hi t h
-    have h1 := hb T' σ e'' ho' y₂ hT'
-    rw [map_one, one_mul] at h1
-    have h2 : InV T' (∑ k, σ (ρ k) * evI y₁ (κ k • fs k)) := Subring.sum_mem _ fun k _ => by
-      have h3 := (hG k).2 T' _ _ (ho.bc i he' hi') y₁ hT'
-      rw [map_one, one_mul] at h3
-      exact Subring.mul_mem _ ((GlobalTheory.GoodPtsModel.inV_iff_val T' _).2
-        ((val_le_one_iff ho' _).2 (hρ k))) h3
-    have h4 : ∀ j, i (evI y (F j)) = evI y₁ (F j) := fun j => by
-      let := io.toAlgebra
-      let := (i.comp io).toAlgebra
-      exact (DFunLike.congr_fun hφ _).symm.trans
-        (GlobalTheory.FlagTan.evR_frMap (cusp_le_sec Xo c U a n (hF j)).1 hmap).symm
-    have h5 : evI y₂ f' = ∑ j, σ (b j) * evI y₁ (F j) + ∑ k, σ (ρ k) * evI y₁ (κ k • fs k) := by
-      let := (i.comp io).toAlgebra
-      let := σ.toAlgebra
-      have := key T'.Fr hσ y₂.1
-      rw [hy₂] at this
-      exact this
-    simp only [h4]
-    rw [eq_sub_of_add_eq h5.symm]
-    exact Subring.sub_mem _ h1 h2
-  · intro S _ _ _ h y
-    rw [key S h y, Fin.sum_univ_add]
-    simp only [Fin.append_left, Fin.append_right]
+theorem _root_.GlobalTheory.T.cuspForm_integral_lattice_unramified_descent : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (r : ℕ) (U : ∀ σ : c.F →+* ℂ, Unf Xo c σ r), (∀ σ, GoodEmb c σ → IsUnf (U σ)) → ∀ (la : HeightOneSpectrum (𝓞 c.F)) (p : ℕ), p.Prime → (p : 𝓞 c.F) ∈ la.asIdeal → l.GoodAt p → ∀ (c' : Coeff l) (hle : c.F ≤ c'.F) (la' : HeightOneSpectrum (𝓞 c'.F)), (∀ x : c.F, vLa la' (incF c c' hle x) = vLa la x) → CuspBC hle U → ∀ (a : (E →+* ℂ) × ℕ → ℕ) (n : ℕ), Dom a n → FiniteDimensional c.F (cusp Xo c U a n) → ∀ f' ∈ cusp Xo c' (unfBC hle U) a n, BddAll Xo c' la' 1 f' → ∃ (m : ℕ) (as : Fin m → c'.F) (fs : Fin m → Rul Xo c), (∀ i, la'.valuation c'.F (as i) ≤ 1) ∧ (∀ i, fs i ∈ supSet Xo c la (cusp Xo c U a n)) ∧ IsBC hle f' as fs :=
+  _root_.GlobalTheory.SupDescent.supSet_descent
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CuspFormIntegralLatticeUnramifiedDescentStatement =====
@@ -753,8 +680,6 @@ open scoped TensorProduct
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Datum Formalism.IndefR.FWT Formalism.L2.Pj GlobalTheory.CoverRead
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.CoverBCRead
@@ -824,8 +749,6 @@ open NumberField IsDedekindDomain
 open scoped TensorProduct
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Datum Formalism.IndefR.FWT Formalism.L2.Pj GlobalTheory.CoverRead
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
-set_option autoImplicit false
 
 namespace GlobalTheory.DescLoc
 
@@ -906,8 +829,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.DescIntRoad
@@ -921,7 +842,7 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem descIntAt_of_laws : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T0 : Type) (A : FamIn D.what₂.LL G Pl0 T0 D.R.m) (T : CoreJ D) [Algebra T.Q.c.F D.what₂.LL] (R : RealDat D A T.Q.c.F) (F : Face D A) (κ : ∀ i : Fin D.R.m, WeightFamilies.Wt D ((i : ℕ) + 1)) (v₀ : ∀ (i : Fin D.R.m) (σ : D.what₂.LL →+* ℂ), (R.MW i σ).Vec), LawsJ T → R.toLevCh.Is A.μ0 → R.IsGrp F → R.IsFam → R.IsModels → R.IsThP → TieIn T R κ v₀ → ∀ (i : Fin D.R.m), VStd D i → ∀ hV : T.V ((i : ℕ) + 1) T.σ₀ = Wc D i, GlobalTheory.IndefiniteRowSideFullHecke.OrthonormalLatticeThetaValues.FramePin T R i T.σ₀ hV → GlobalTheory.IndefiniteRowSideFullHecke.TwistSeries.DescIntAt T i (κ i) := by
   intro D G _ _ Pl0 T0 A T _ R F κ v₀ hL hμ hG hF hM hP hT i hS hV hFP l hl C hC hpin S hO hU φ hφ hk
-  obtain ⟨m, x, ψ, hψ, e⟩ := GlobalTheory.T.coverForm_rational_descent_to_base D G Pl0 T0 A T R F κ v₀ hL hμ hG hF hM hP hT i hS hV hFP l hl C hC hpin φ
+  obtain ⟨m, x, ψ, hψ, e⟩ := _root_.GlobalTheory.CoverDescRat.cover_desc_rat D G Pl0 T0 A T R F κ v₀ hL hμ hG hF hM hP hT i hS hV hFP l hl C hC hpin φ
     (C.intForms_subset _ _ S hφ) hk
   refine GlobalTheory.T.glue_integral_decompositions_over_rationalPrime D G Pl0 T0 A T R F κ v₀ hL hμ hG hF hM hP hT i hS hV hFP l hl C hC hpin S hO hU φ hφ hk m x ψ hψ e
     fun la hla => ?_
@@ -1111,8 +1032,6 @@ section -- clump:auto
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Datum Formalism.IndefR.FWT Formalism.L2.Pj GlobalTheory.CoverRead GlobalTheory.IndefiniteRowSideFullHecke.RationalRayLevels
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-set_option autoImplicit false
-
 namespace GlobalTheory.HalfLevelConj
 
 theorem exists_conj_idemSum : ∀ (D : D7) (N : ℕ) (e : AE D) (P : Finset (Formalism.L2.DIV.Pl D.host.E)), IsIdemSum e P →
@@ -1236,7 +1155,7 @@ theorem untwRatS : UntwRatS := by
     exact f5 τ
   have hlt := GlobalTheory.FockLetters.isLetters_letterEquiv (n := (Vc D i).rank) (T.Q.Dw ((i : ℕ) + 1)) hΨ hpq
   generalize GlobalTheory.FockLetters.letterEquiv (n := (Vc D i).rank) (T.Q.Dw ((i : ℕ) + 1)) hΨ hpq = lt at hlt
-  have hχ := GlobalTheory.T.referenceTuple_secondSplittingCharacter D G Pl0 T0 A T R F κ v₀ hL hLev hG hFam hMod hTh hTie i hstd
+  have hχ := _root_.GlobalTheory.LevelSeries.chiData_chrTh_base D G Pl0 T0 A T R F κ v₀ hL hLev hG hFam hMod hTh hTie i hstd
   have hMg : T.Q.l.M = D.host.g 0 * D.host.g 1 := hL.pins.2.1.1
   rw [← hMg] at hχ
   have hM₀ : T.Q.l.M ≠ 0 := by have := T.Q.l.three_le; omega
@@ -1248,8 +1167,8 @@ theorem untwRatS : UntwRatS := by
         (D.host.ccK_coprime _ (by simp [D.host.g_level k])).symm
     rw [hMg]
     exact (this 0).mul_left (this 1)
-  obtain ⟨ph, hph, hbase⟩ := GlobalTheory.T.coreConstants_eq_vacuumIdentity_up_to_phase D G Pl0 T0 A T R F κ v₀ hL hLev hG hFam hMod hTh hTie i hstd hV hFP
-  obtain ⟨ka, hka, J, hJH, hJk, hJ⟩ := GlobalTheory.T.harmonicMap_extremalVector_eq_phase_smul_letters D G Pl0 T0 A T R F κ v₀ hL hLev hG hFam hMod hTh hTie i hstd u hu c0 hcm lt hlt
+  obtain ⟨ph, hph, hbase⟩ := _root_.GlobalTheory.LevelSeries.PinBase.baseCc_of_framePin D G Pl0 T0 A T R F κ v₀ hL hLev hG hFam hMod hTh hTie i hstd hV hFP
+  obtain ⟨ka, hka, J, hJH, hJk, hJ⟩ := _root_.GlobalTheory.SerIntLetters.io_eq_phase_smul_harmLetters D G Pl0 T0 A T R F κ v₀ hL hLev hG hFam hMod hTh hTie i hstd u hu c0 hcm lt hlt
   have hph0 : ph ≠ 0 := fun h => by simp [h] at hph
   have hka0 : ka ≠ 0 := fun h => by simp [h] at hka
   refine ⟨(ka * ph)⁻¹, by rw [norm_inv, norm_mul, hka, hph]; norm_num, fun C hC s hs f hf w hw => ?_⟩
@@ -1261,8 +1180,8 @@ theorem untwRatS : UntwRatS := by
   have hcl : Nat.Coprime C.d.pd l :=
     ((Nat.Prime.coprime_iff_not_dvd hl).2 fun h => by have := Nat.le_of_dvd hpd0 h; omega).symm
   obtain ⟨c₂, hc₂⟩ := series_bound hP (rank_Wc i) hodd hχ hM₀ hpq hΨ hB hlt hDom hLast hl hs
-  obtain ⟨hD, hF, hrel, hσ⟩ := GlobalTheory.T.uniformisedCover_isDictionary_frameCompatible D G Pl0 T0 A T R F κ v₀ hL hLev hG hFam hMod hTh hTie i hstd hV C hU
-  have hcc := GlobalTheory.T.vacuumIdentityConstants_cover_of_dominantPins D G Pl0 T0 A T R F κ v₀ hL hLev hG hFam hMod hTh hTie i hstd hV ph hph hbase C hU hpin
+  obtain ⟨hD, hF, hrel, hσ⟩ := _root_.GlobalTheory.LevelSeries.cover_dict_frameTie D G Pl0 T0 A T R F κ v₀ hL hLev hG hFam hMod hTh hTie i hstd hV C hU
+  have hcc := _root_.GlobalTheory.LevelSeries.covCc_of_pinned D G Pl0 T0 A T R F κ v₀ hL hLev hG hFam hMod hTh hTie i hstd hV ph hph hbase C hU hpin
   have hgood : C.d.l₂.GoodAt l := goodAt_of_dvd hl hM₂ hcl
     (Formalism.L2.Pj.goodAt_of_two_primes hMg (D.host.g_prime 0) (D.host.g_prime 1) D.host.g_ne l hl)
   have hval := GlobalTheory.T.character_quotient_values_in_embedding_field D G Pl0 T0 A T.Q.c.F R i C.d.c₂.F C.σ₂ hSmall

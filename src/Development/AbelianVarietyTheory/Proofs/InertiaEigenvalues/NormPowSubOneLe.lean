@@ -48,18 +48,6 @@ public import Mathlib.Analysis.Normed.Group.Ultra
 
 namespace GlobalTheory.CloseToUnitNorm
 
-theorem norm_eq_one_of_close {C : Type} [NormedField C] [IsUltrametricDist C] (u : C)
-    (h : ‖u - 1‖ < 1) : ‖u‖ = 1 := by
-  apply le_antisymm
-  · have h1 := IsUltrametricDist.norm_add_le_max (u - 1) (1 : C)
-    rw [sub_add_cancel, norm_one] at h1
-    exact h1.trans (max_le h.le le_rfl)
-  · have h1 := IsUltrametricDist.norm_add_le_max u (1 - u)
-    rw [add_sub_cancel, norm_one, norm_sub_rev] at h1
-    rcases le_max_iff.mp h1 with h2 | h2
-    · exact h2
-    · exact absurd h (not_lt.mpr h2)
-
 theorem norm_pow_sub_one_le {C : Type} [NormedField C] [IsUltrametricDist C] (u : C)
     (hu : ‖u‖ = 1) (n : ℕ) : ‖u ^ n - 1‖ ≤ ‖u - 1‖ := by
   induction n with

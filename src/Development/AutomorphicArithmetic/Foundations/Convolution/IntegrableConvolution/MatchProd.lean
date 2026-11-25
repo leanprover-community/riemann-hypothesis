@@ -123,16 +123,6 @@ open MeasureTheory NumberField IsDedekindDomain
 open GroundTheory.Automorphic GroundTheory.Automorphic.Reduction GroundTheory.Global GroundTheory.Global.SemiLocal
 open PositivityTheory.Rg.Tf.Geo
 
-private lemma haar_unique {G : Type*} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [LocallyCompactSpace G]
-    [SecondCountableTopology G] [MeasurableSpace G] [BorelSpace G] (μ μ' : Measure G) [μ.IsHaarMeasure] [μ'.IsHaarMeasure]
-    (K : Set G) (h : μ K = 1) (h' : μ' K = 1) : μ' = μ := by
-  have e := Measure.isMulLeftInvariant_eq_smul μ' μ
-  have hK : (Measure.haarScalarFactor μ' μ : ENNReal) = 1 := by
-    have := congrArg (fun ν : Measure G => ν K) e
-    simpa [h, h'] using this.symm
-  have h1 : Measure.haarScalarFactor μ' μ = 1 := by exact_mod_cast hK
-  rw [e, h1, one_smul]
-
 private lemma cmp_eq {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E ≃ₐ[F] E} {m n : ℕ}
     {v : HeightOneSpectrum (𝓞 F)} (D : UpperTheory.ConvolutionTheory.L1.Split (incFin E v) (galFin σ v) m)
     (w : Fin (m + 1) ≃ PlacesOver E v)
@@ -152,7 +142,11 @@ theorem UpperTheory.ConvolutionTheory.L1.matchProd :
   haveI := hHaar
   haveI := hF'
   haveI := hE
-  have hmm : mF' = mF := haar_unique mF mF' _ hvol hmF'
+  let KF : TopologicalSpace.PositiveCompacts (GL (Fin n) (v.adicCompletion F)) :=
+    ⟨⟨_, GLnLocal.isCompact_integralGL _ n⟩,
+      by rw [(GLnLocal.isOpen_integralGL _ n).interior_eq]; exact ⟨1, one_mem _⟩⟩
+  have hmm : mF' = mF := ((Measure.haarMeasure_eq_iff KF mF').2 hmF').symm.trans
+    ((Measure.haarMeasure_eq_iff KF mF).2 hvol)
   rw [hmm]
   have hsl := fun i => UpperTheory.ConvolutionTheory.L1.splitLoc F E v (w i) (hs (w i)) n
   set φ : Fin (m + 1) → GL (Fin n) (v.adicCompletion F) → ℂ :=

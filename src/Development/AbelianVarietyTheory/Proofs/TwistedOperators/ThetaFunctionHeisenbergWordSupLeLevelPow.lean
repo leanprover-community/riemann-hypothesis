@@ -200,8 +200,6 @@ open scoped TensorProduct ENNReal
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.SquareComm
 open scoped Pointwise
-open Formalism.IndefR.Datum
-open GlobalTheory.Grid
 
 namespace GlobalTheory.LevelSupBound
 

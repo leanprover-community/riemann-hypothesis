@@ -51,7 +51,7 @@ import Mathlib.Tactic.TypeStar
 import Mathlib.Tactic.Lemma
 
 -- This file was produced by scripts/clump.py from the modules listed below.
--- Members: Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.Bridge, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.CardCellsEqSumRowLen, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.CoreTermLe, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.Expand, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.HeartPderivMinor, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.Vanish, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.EntAtDOf, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.ExpCoeff, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.LapComm, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.LapForms, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.MinorAff, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.SDegMul, Formalism.PeriodIntegrals.OrbitalBoundsConclusion.EntAtD
+-- Members: Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.Bridge, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.CardCellsEqSumRowLen, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.Expand, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.ExpCoeff, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.LapComm, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.LapForms, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.MinorAff, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.SDegMul, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.HeartPderivMinor, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.Vanish, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.CoreTermLe, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.EntAtDOf, Formalism.PeriodIntegrals.OrbitalBoundsConclusion.EntAtD
 
 -- ===== clump member: Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.Bridge =====
 -- clump-header: {"m": "Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.Bridge", "h": "module\n\npublic import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.PMinorAff\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.PiTensorProduct\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\nimport Std.Tactic.BVDecide.Normalize.Prop\n\n"}
@@ -517,6 +517,25 @@ theorem card_cells_eq_sum_rowLen (α : YoungDiagram) (n : ℕ) (h : ∀ r, n ≤
     rw [YoungDiagram.mem_iff_lt_rowLen] at hx'
     omega
 
+theorem rowContractionBound_le_cPr (α β : YoungDiagram) :
+    rowContractionBound α β ≤ cPr α β := by
+  let rows := insert 0 (α.cells.image Prod.fst)
+  have h0 : 0 ∈ rows := Finset.mem_insert_self _ _
+  have hcard : α.cells.card = ∑ r ∈ rows, α.rowLen r := by
+    rw [Finset.card_eq_sum_card_fiberwise (f := Prod.fst) (t := rows)]
+    · refine Finset.sum_congr rfl fun r _ => ?_
+      rw [YoungDiagram.rowLen_eq_card]
+      rfl
+    · intro x hx
+      exact Finset.mem_insert_of_mem (Finset.mem_image_of_mem Prod.fst hx)
+  have hrest : (∑ r ∈ rows.erase 0, min (α.rowLen r) (β.rowLen 0)) ≤
+      ∑ r ∈ rows.erase 0, α.rowLen r :=
+    Finset.sum_le_sum fun _ _ => min_le_left _ _
+  change (∑ r ∈ rows, min (α.rowLen r) (β.rowLen 0)) ≤ cPr α β
+  rw [cPr, hcard, ← Finset.add_sum_erase rows α.rowLen h0,
+    ← Finset.add_sum_erase rows (fun r => min (α.rowLen r) (β.rowLen 0)) h0]
+  omega
+
 theorem cPr_le_ctD (D : D7) (u : D.what₂.Word) (i : ℕ) (nu : Pl D → YoungDiagram)
     (hrow : ∀ z r, (((nu z).rowLen r : ℕ) : ℝ) =
       if r < D.R.N i then DV.nuRow D u (i + 1) (tauPl D z) r else 0)
@@ -582,77 +601,6 @@ end -- clump:auto
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.CardCellsEqSumRowLen =====
-
--- ===== clump member: Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.CoreTermLe =====
--- clump-header: {"m": "Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.CoreTermLe", "h": "module\n\npublic import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.PMinorAff\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\n\n"}
-section -- clump:auto
-@[expose] public section
-
-noncomputable section
-
-open scoped BigOperators
-open Classical
-
-namespace PI.EntAtD.W
-
-open PI.EntAtD
-
-theorem coreTerm_le {H : Type} [Fintype H] (p : ℕ) [Fact p.Prime] (S : ℂ_[p]) (ut : H → ℂ_[p])
-    (hS : ‖S‖ ≤ (p : ℝ) ^ ((1 : ℝ) / 2)) (hut : ∀ t, ‖ut t‖ ≤ 1) (X : ℂ_[p]) (hX : ‖X‖ ≤ 1) (A : ℤ)
-    (n c : H → ℕ) (hn : ∀ t, n t ≤ c t) :
-    ‖X * (∏ t : H, (-(S * ut t)) ^ n t) * ((A : ℤ) : ℂ_[p])‖ ≤
-      (p : ℝ) ^ ((∑ t : H, (c t : ℝ)) / 2) := by
-  have hp1 : (1 : ℝ) ≤ p := by exact_mod_cast (Fact.out : p.Prime).one_lt.le
-  have hp0 : (0 : ℝ) < p := by linarith
-  have hq0 : (0 : ℝ) ≤ (p : ℝ) ^ ((1 : ℝ) / 2) := Real.rpow_nonneg hp0.le _
-  have hq1 : (1 : ℝ) ≤ (p : ℝ) ^ ((1 : ℝ) / 2) := Real.one_le_rpow hp1 (by norm_num)
-  have hA : ‖((A : ℤ) : ℂ_[p])‖ ≤ 1 := IsUltrametricDist.norm_intCast_le_one ℂ_[p] A
-  have h2 : ∏ t : H, ‖(-(S * ut t)) ^ n t‖ ≤ (p : ℝ) ^ ((∑ t : H, (c t : ℝ)) / 2) := by
-    calc ∏ t : H, ‖(-(S * ut t)) ^ n t‖ ≤ ∏ t : H, ((p : ℝ) ^ ((1 : ℝ) / 2)) ^ c t := by
-          apply Finset.prod_le_prod₀ (fun t _ => norm_nonneg _)
-          intro t _
-          rw [norm_pow, norm_neg, norm_mul]
-          calc (‖S‖ * ‖ut t‖) ^ n t ≤ ((p : ℝ) ^ ((1 : ℝ) / 2)) ^ n t := by
-                apply pow_le_pow_left₀ (mul_nonneg (norm_nonneg _) (norm_nonneg _))
-                calc ‖S‖ * ‖ut t‖ ≤ (p : ℝ) ^ ((1 : ℝ) / 2) * 1 :=
-                      mul_le_mul hS (hut t) (norm_nonneg _) hq0
-                  _ = _ := mul_one _
-            _ ≤ _ := pow_le_pow_right₀ hq1 (hn t)
-      _ = _ := by
-          rw [Finset.sum_div, Real.rpow_sum_of_pos hp0]
-          refine Finset.prod_congr rfl (fun t _ => ?_)
-          rw [← Real.rpow_natCast, ← Real.rpow_mul hp0.le]
-          congr 1
-          ring
-  rw [norm_mul, norm_mul, norm_prod]
-  calc ‖X‖ * (∏ t : H, ‖(-(S * ut t)) ^ n t‖) * ‖((A : ℤ) : ℂ_[p])‖
-      ≤ 1 * (p : ℝ) ^ ((∑ t : H, (c t : ℝ)) / 2) * 1 := by
-        apply mul_le_mul (mul_le_mul hX h2 (Finset.prod_nonneg fun _ _ => norm_nonneg _) zero_le_one)
-          hA (norm_nonneg _)
-        exact mul_nonneg zero_le_one (Real.rpow_nonneg hp0.le _)
-    _ = _ := by ring
-
-theorem core_of (hE : PExpand) (hV : PVanish) : CoreBound := by
-  intro H _ _ N0 N1 p _ nu Th hTh I m
-  obtain ⟨S, hS, ut, hut, sg, hsg, rfl⟩ := hTh
-  rw [hE H N0 N1 p S ut sg (Gxz N0 N1 nu I) m, neg_neg]
-  have hp0 : (0 : ℝ) < p := by exact_mod_cast (Fact.out : p.Prime).pos
-  have hB0 : (0 : ℝ) ≤ (p : ℝ) ^ ((∑ t : H, (cPr (nu (false, t)) (nu (true, t)) : ℝ)) / 2) :=
-    Real.rpow_nonneg hp0.le _
-  refine IsUltrametricDist.norm_sum_le_of_forall_le_of_nonneg hB0 (fun κ2 _ => ?_)
-  refine IsUltrametricDist.norm_sum_le_of_forall_le_of_nonneg hB0 (fun n _ => ?_)
-  by_cases hn : ∃ t, cPr (nu (false, t)) (nu (true, t)) < n t
-  · obtain ⟨t, ht⟩ := hn
-    rw [hV H N0 N1 nu I m κ2 n t ht]
-    simpa using hB0
-  · simp only [not_exists, not_lt] at hn
-    exact coreTerm_le p S ut hS hut _ (hsg κ2) _ n (fun t => cPr (nu (false, t)) (nu (true, t))) hn
-
-end PI.EntAtD.W
-end -- clump:auto
-end -- clump:auto
-end -- clump:auto
--- ===== end clump member: Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.CoreTermLe =====
 
 -- ===== clump member: Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.Expand =====
 -- clump-header: {"m": "Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.Expand", "h": "module\n\npublic import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.PMinorAff\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Topology.Sheaves.Init\nimport Std.Tactic.BVDecide.Normalize.Prop\n\n"}
@@ -837,219 +785,6 @@ end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.Expand =====
 
--- ===== clump member: Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.HeartPderivMinor =====
--- clump-header: {"m": "Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.HeartPderivMinor", "h": "module\n\npublic import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.PMinorAff\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\nimport Std.Tactic.BVDecide.Normalize.Prop\n\n"}
-section -- clump:auto
-@[expose] public section
-
-noncomputable section
-
-open scoped BigOperators
-open Classical
-
-namespace PI.EntAtD.W
-
-open PI.EntAtD
-
-section Ker
-
-variable {A : Type} [CommRing A] (D : Derivation ℤ A A)
-
-end Ker
-
-private theorem derivation_prod_eq_zero_of_forall' {R A ι : Type} [CommRing R] [CommRing A] [Algebra R A]
-    (D : Derivation R A A) (s : Finset ι) (f : ι → A) (h : ∀ i ∈ s, D (f i) = 0) :
-    D (∏ i ∈ s, f i) = 0 := by
-  classical
-  revert h
-  refine Finset.induction_on s ?_ ?_
-  · intro _
-    simp
-  · intro i s hi ih h
-    rw [Finset.prod_insert hi, Derivation.leibniz, h i (Finset.mem_insert_self i s),
-      ih (fun j hj => h j (Finset.mem_insert_of_mem hj)), smul_zero, smul_zero, add_zero]
-
-private theorem derivation_det_eq_zero_of_entries {R A : Type} [CommRing R] [CommRing A] [Algebra R A]
-    (D : Derivation R A A) {k : ℕ} (M : Matrix (Fin k) (Fin k) A) (h : ∀ i j, D (M i j) = 0) :
-    D M.det = 0 := by
-
-  rw [Matrix.det_apply, map_sum]
-  refine Finset.sum_eq_zero fun σ _ => ?_
-  rw [Units.smul_def, map_zsmul, derivation_prod_eq_zero_of_forall' D _ _ (fun i _ => h _ _), smul_zero]
-
-theorem heart_pderiv_minor {Lt : Type} [Fintype Lt] [DecidableEq Lt] (N0 N1 : ℕ) (s s' : Lt) (hs : s ≠ s')
-    (k : ℕ) (I : Fin k ↪o Fin N1) (a : Fin N0) (b : Fin N1) :
-    MvPolynomial.pderiv (R := ℤ) (Sum.inr (s', a, b)) (minorXZ N0 N1 s k I) = 0 := by
-  simp only [minorXZ]
-  apply derivation_det_eq_zero_of_entries
-  intro i j
-
-  rw [Matrix.of_apply, map_sum]
-  refine Finset.sum_eq_zero fun a0 _ => ?_
-  rw [Derivation.leibniz, MvPolynomial.pderiv_X, MvPolynomial.pderiv_X]
-  simp [hs]
-
-private theorem derivation_finset_sum_apply' {R A ι : Type} [CommRing R] [CommRing A] [Algebra R A]
-    (s : Finset ι) (D : ι → Derivation R A A) (x : A) : (∑ i ∈ s, D i) x = ∑ i ∈ s, D i x := by
-  classical
-  refine Finset.induction_on s ?_ ?_
-  · simp
-  · intro i s hi ih
-    rw [Finset.sum_insert hi, Finset.sum_insert hi, Derivation.add_apply, ih]
-
-theorem heart_dRow_zero {H : Type} {N0 N1 : ℕ} (t : H) (r : ℕ) (b : Fin N1) (f : PolyXZ H N0 N1)
-    (h : ∀ a : Fin N0, MvPolynomial.pderiv (R := ℤ) (Sum.inr ((true, t), a, b)) f = 0) :
-    dRow (N0 := N0) t r b f = 0 := by
-  simp only [dRow]
-  rw [derivation_finset_sum_apply']
-  refine Finset.sum_eq_zero fun a _ => ?_
-  rw [Derivation.smul_apply, h a, smul_zero]
-
-theorem heart_sdeg_prod (hS : PSDegMul) {A : Type} [CommRing A] {ι : Type} (d : ι → Derivation ℤ A A)
-    {κ : Type} [DecidableEq κ] (s : Finset κ) (f : κ → A) (k : κ → ℕ) :
-    (∀ i ∈ s, SDegD d (k i) (f i)) → SDegD d (∑ i ∈ s, k i) (∏ i ∈ s, f i) := by
-  refine Finset.induction_on s ?_ ?_
-  · intro _
-    rw [Finset.sum_empty, Finset.prod_empty]
-    intro j
-    exact (d j).map_one_eq_zero
-  · intro i s hi ih h
-    rw [Finset.sum_insert hi, Finset.prod_insert hi]
-    exact hS A ι d _ _ _ _ (h i (Finset.mem_insert_self i s))
-      (ih fun j hj => h j (Finset.mem_insert_of_mem hj))
-
-theorem lapZero_of (hM : PMinorAff) (hS : PSDegMul) (hF : PLapForms) : PLapZero := by
-  intro H _ inst N0 N1 nu I t n hn
-  clear inst
-  let P : Bool × H → PolyXZ H N0 N1 := fun s => ∏ c : Fin ((nu s).rowLen 0),
-    minorXZ (Lt := Bool × H) N0 N1 s ((nu s).colLen c) (I s c)
-  let R : PolyXZ H N0 N1 := ∏ s ∈ (Finset.univ.erase (false, t)).erase (true, t), P s
-  have hne : (true, t) ≠ (false, t) := by simp
-  have hmem : (true, t) ∈ Finset.univ.erase (false, t) := by simp
-  have hG : Gxz N0 N1 nu I = P (false, t) * (P (true, t) * R) := by
-    show (∏ s, P s) = _
-    rw [← Finset.mul_prod_erase Finset.univ P (Finset.mem_univ (false, t)),
-      ← Finset.mul_prod_erase (Finset.univ.erase (false, t)) P hmem]
-  have hnoP : ∀ (s s' : Bool × H), s ≠ s' → ∀ (a : Fin N0) (b : Fin N1),
-      MvPolynomial.pderiv (R := ℤ) (Sum.inr (s', a, b)) (P s) = 0 := by
-    intro s s' hs a b
-    apply derivation_prod_eq_zero_of_forall'
-    intro c _
-    convert heart_pderiv_minor N0 N1 s s' hs _ (I s c) a b
-  have hnoR : ∀ (s' : Bool × H), s' = (false, t) ∨ s' = (true, t) → ∀ (a : Fin N0) (b : Fin N1),
-      MvPolynomial.pderiv (R := ℤ) (Sum.inr (s', a, b)) R = 0 := by
-    intro s' hs' a b
-    apply derivation_prod_eq_zero_of_forall'
-    intro s hs
-    apply hnoP s s' _ a b
-    rintro rfl
-    rcases hs' with rfl | rfl
-    · exact Finset.ne_of_mem_erase (Finset.mem_of_mem_erase hs) rfl
-    · exact Finset.ne_of_mem_erase hs rfl
-  have h1 : ∀ (a : Fin N0) (b : Fin N1), pd (Sum.inr ((false, t), a, b)) (P (true, t) * R) = 0 := by
-    intro a b
-    show MvPolynomial.pderiv (R := ℤ) (Sum.inr ((false, t), a, b)) (P (true, t) * R) = 0
-    rw [Derivation.leibniz, hnoP (true, t) (false, t) hne a b, hnoR (false, t) (Or.inl rfl) a b,
-      smul_zero, smul_zero, add_zero]
-  have hR0 : SDegD (fun b : Fin N1 => dRow (N0 := N0) t 0 b) 0 R := by
-    intro b
-    exact heart_dRow_zero t 0 b R (fun a => hnoR (true, t) (Or.inr rfl) a b)
-  have hmin : ∀ c : Fin ((nu (true, t)).rowLen 0), SDegD (fun b : Fin N1 => dRow (N0 := N0) t 0 b) 1
-      (minorXZ (Lt := Bool × H) N0 N1 (true, t) ((nu (true, t)).colLen c) (I (true, t) c)) := by
-    intro c j j'
-    exact hM H N0 N1 t _ _ j' j
-  have hPT0 := heart_sdeg_prod hS (fun b : Fin N1 => dRow (N0 := N0) t 0 b) Finset.univ _ (fun _ => 1)
-    (fun c _ => hmin c)
-  rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, smul_eq_mul, mul_one] at hPT0
-  have hPT : SDegD (fun b : Fin N1 => dRow (N0 := N0) t 0 b) ((nu (true, t)).rowLen 0) (P (true, t)) :=
-    hPT0
-  have h2 := hS _ _ _ _ _ _ 0 hPT hR0
-  rw [hG]
-  exact hF H N0 N1 (nu (false, t)) (I (false, t)) t (P (true, t) * R) ((nu (true, t)).rowLen 0) n h1 h2 hn
-
-end PI.EntAtD.W
-end -- clump:auto
-end -- clump:auto
-end -- clump:auto
--- ===== end clump member: Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.HeartPderivMinor =====
-
--- ===== clump member: Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.Vanish =====
--- clump-header: {"m": "Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.Vanish", "h": "module\n\npublic import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.PMinorAff\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Topology.Sheaves.Init\n\n"}
-section -- clump:auto
-@[expose] public section
-
-noncomputable section
-
-open scoped BigOperators
-open Classical
-
-namespace PI.EntAtD.W
-
-open PI.EntAtD
-
-theorem list_prod_eq_mul_of_mem {M : Type} [Monoid M] (x : M) :
-    ∀ l : List M, (∀ y ∈ l, Commute y x) → x ∈ l → ∃ r : M, l.prod = r * x := by
-  intro l
-  induction l with
-  | nil =>
-    intro _ hx
-    exact absurd hx List.not_mem_nil
-  | cons a l ih =>
-    intro hc hx
-    have hc' : ∀ y ∈ l, Commute y x := fun y hy => hc y (List.mem_cons_of_mem _ hy)
-    rcases List.mem_cons.1 hx with h | h
-    · subst a
-      exact ⟨l.prod, by rw [List.prod_cons, (Commute.list_prod_left l x hc').eq]⟩
-    · obtain ⟨r, hr⟩ := ih hc' h
-      exact ⟨a * r, by rw [List.prod_cons, hr, mul_assoc]⟩
-
-theorem vanish_of (hB : PBridge) (hC : PLapComm) (hZ : PLapZero) : PVanish := by
-  intro H _ _ N0 N1 nu I m κ2 n t ht
-  have hzero : lapAll N0 N1 n (Gxz N0 N1 nu I) = 0 := by
-    obtain ⟨r, hr⟩ := list_prod_eq_mul_of_mem (lapT (H := H) N0 N1 t ^ n t)
-      ((Finset.univ : Finset H).toList.map fun t => lapT N0 N1 t ^ n t)
-      (fun y hy => by
-        obtain ⟨t', _, rfl⟩ := List.mem_map.1 hy
-        exact (hC H N0 N1 t' t).pow_pow _ _)
-      (List.mem_map.2 ⟨t, Finset.mem_toList.2 (Finset.mem_univ t), rfl⟩)
-    unfold lapAll
-    rw [hr, mul_apply_eq_comp, hZ H N0 N1 nu I t (n t) ht, map_zero]
-  have h := hB H N0 N1 (Gxz N0 N1 nu I) m κ2 n
-  rw [hzero, AddMonoidAlgebra.coeff_zero] at h
-  rcases mul_eq_zero.1 h with h | h
-  · exact absurd h (Finset.prod_ne_zero_iff.2 fun t' _ => by exact_mod_cast (Nat.factorial_ne_zero (n t')))
-  · exact h
-
-end PI.EntAtD.W
-end -- clump:auto
-end -- clump:auto
-end -- clump:auto
--- ===== end clump member: Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.Vanish =====
-
--- ===== clump member: Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.EntAtDOf =====
--- clump-header: {"m": "Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.EntAtDOf", "h": "module\n\npublic import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.PMinorAff\npublic import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.CardCellsEqSumRowLen\npublic import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.CoreTermLe\npublic import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.Expand\npublic import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.HeartPderivMinor\npublic import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.Vanish\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Topology.Sheaves.Init\n\n"}
-section -- clump:auto
-@[expose] public section
-
-noncomputable section
-
-open scoped BigOperators
-open Classical
-
-namespace PI.EntAtD.W
-
-open PI.EntAtD
-
-theorem entAtD_of (hX : PExpCoeff) (hB : PBridge) (hC : PLapComm) (hM : PMinorAff) (hS : PSDegMul)
-    (hF : PLapForms) : PI.EntAtD.EntAtD :=
-  entAtD_of_core (core_of (expand_of hX) (vanish_of hB hC (lapZero_of hM hS hF)))
-
-end PI.EntAtD.W
-end -- clump:auto
-end -- clump:auto
-end -- clump:auto
--- ===== end clump member: Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.EntAtDOf =====
-
 -- ===== clump member: Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.ExpCoeff =====
 -- clump-header: {"m": "Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.ExpCoeff", "h": "module\n\npublic import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.PMinorAff\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Tactic.TypeStar\nimport Mathlib.Topology.Sheaves.Init\nimport Std.Tactic.BVDecide.Normalize.Prop\n\n"}
 section -- clump:auto
@@ -1147,12 +882,6 @@ theorem cc_zero (S : ℂ_[p]) (ut : H → ℂ_[p]) :
   have h2 := DFunLike.congr_fun h (vX false j)
   simp [eJ, vX] at h2
 
-private theorem monomial_pow_lemma {σ R : Type*} [CommSemiring R] (n : σ →₀ ℕ) (a : R) (k : ℕ) :
-    MvPowerSeries.monomial n a ^ k = MvPowerSeries.monomial (k • n) (a ^ k) := by
-  induction k with
-  | zero => simp [MvPowerSeries.monomial_zero_one]
-  | succ k ih => rw [pow_succ, ih, MvPowerSeries.monomial_mul_monomial, succ_nsmul, pow_succ]
-
 theorem coeff_pow (S : ℂ_[p]) (ut : H → ℂ_[p]) (κ : ZV H N0 N1 →₀ ℕ) (d : ℕ) :
     MvPowerSeries.coeff κ ((∑ j : JI H N0 N1, MvPowerSeries.monomial (eJ j) (-(S * ut j.1))) ^ d) =
       if (∀ t a b, κ ((false, t), a, b) = κ ((true, t), a, b)) ∧ ∑ j, κ (vX true j) = d then
@@ -1171,7 +900,7 @@ theorem coeff_pow (S : ℂ_[p]) (ut : H → ℂ_[p]) (κ : ZV H N0 N1 →₀ ℕ
         MvPowerSeries.monomial (eK k)
           ((Nat.multinomial Finset.univ k : ℂ_[p]) * ∏ j, (-(S * ut j.1)) ^ k j) := by
     intro k
-    simp only [monomial_pow_lemma]
+    simp only [MvPowerSeries.monomial_pow]
     rw [prod_monomial', sum_eJ, hn]
 
   rw [Finset.sum_pow_eq_sum_piAntidiag, map_sum]
@@ -1356,21 +1085,6 @@ def nzc (L : List (ℕ × Fin N1)) : ℕ := (L.map fun c => if c.1 = 0 then 0 el
 
 def z0c (L : List (ℕ × Fin N1)) : ℕ := (L.map fun c => if c.1 = 0 then 1 else 0).sum
 
-lemma nzc_cons (c : ℕ × Fin N1) (L : List (ℕ × Fin N1)) :
-    nzc (c :: L) = (if c.1 = 0 then 0 else 1) + nzc L := by
-  simp [nzc]
-
-lemma zeroCount_cons (c : ℕ × Fin N1) (L : List (ℕ × Fin N1)) :
-    z0c (c :: L) = (if c.1 = 0 then 1 else 0) + z0c L := by
-  simp [z0c]
-
-lemma nonzeroCount_add_zeroCount (L : List (ℕ × Fin N1)) : nzc L + z0c L = L.length := by
-  induction L with
-  | nil => simp [nzc, z0c]
-  | cons c L ih =>
-    rw [nzc_cons, zeroCount_cons, List.length_cons]
-    split_ifs <;> omega
-
 lemma dRow_apply (t : H) (r : ℕ) (b : Fin N1) (P : PolyXZ H N0 N1) :
     dRow (N0 := N0) t r b P =
       ∑ a : Fin N0, X (Sum.inl ((false, t), r, a)) * pderiv (Sum.inr ((true, t), a, b)) P := by
@@ -1502,117 +1216,194 @@ def RelL (L' : List (ℕ × Fin N1)) (k' : ℕ) (L : List (ℕ × Fin N1)) (k : 
   (nzc L' + 1 ≤ nzc L ∧ z0c L' ≤ z0c L ∧ k' ≤ k) ∨
     (nzc L' ≤ nzc L ∧ z0c L' + 1 ≤ z0c L ∧ k' + 1 ≤ k)
 
-lemma relL_lt {L' : List (ℕ × Fin N1)} {k' : ℕ} {L : List (ℕ × Fin N1)} {k : ℕ} (h : RelL L' k' L k) :
-    nzc L' + min (z0c L') k' < nzc L + min (z0c L) k := by
-  unfold RelL at h
-  omega
-
 def GS (t : H) (L : List (ℕ × Fin N1)) (k : ℕ) : Set (PolyXZ H N0 N1) :=
   {Q | ∃ (L' : List (ℕ × Fin N1)) (h' : PolyXZ H N0 N1) (k' : ℕ), Q = tmL t L' h' ∧
     (∀ a b, pderiv (Sum.inr ((false, t), a, b)) h' = 0) ∧
     SDegD (fun b : Fin N1 => dRow (N0 := N0) t 0 b) k' h' ∧ RelL L' k' L k}
 
-lemma gf_mem (t : H) (L : List (ℕ × Fin N1)) :
-    ∀ (h : PolyXZ H N0 N1) (k : ℕ), (∀ a b, pderiv (Sum.inr ((false, t), a, b)) h = 0) →
-      SDegD (fun b : Fin N1 => dRow (N0 := N0) t 0 b) k h →
-      Gf t (L.map (lfo (N0 := N0) t)).prod h ∈ Submodule.span ℤ (GS t L k) := by
+private def rowCount (L : List (ℕ × Fin N1)) (r : ℕ) : ℕ :=
+  (L.map Prod.fst).count r
+
+private theorem rowCount_cons (c : ℕ × Fin N1) (L : List (ℕ × Fin N1)) (r : ℕ) :
+    rowCount (c :: L) r = rowCount L r + if c.1 = r then 1 else 0 := by
+  simp [rowCount, List.count_cons]
+
+private def RowStep (L' : List (ℕ × Fin N1)) (degree' : ℕ → ℕ)
+    (L : List (ℕ × Fin N1)) (degree : ℕ → ℕ) (rows : Finset ℕ) : Prop :=
+  ∃ r ∈ rows, ∀ j,
+    rowCount L' j + (if j = r then 1 else 0) ≤ rowCount L j ∧
+      degree' j + (if j = r then 1 else 0) ≤ degree j
+
+private theorem rowStep_budget_lt {L' L : List (ℕ × Fin N1)} {degree' degree : ℕ → ℕ}
+    {rows : Finset ℕ} (h : RowStep L' degree' L degree rows) :
+    (∑ j ∈ rows, min (rowCount L' j) (degree' j)) <
+      ∑ j ∈ rows, min (rowCount L j) (degree j) := by
+  obtain ⟨r, hr, h⟩ := h
+  refine Finset.sum_lt_sum (fun j _ => ?_) ⟨r, hr, ?_⟩
+  · obtain ⟨hcount, hdegree⟩ := h j
+    omega
+  · obtain ⟨hcount, hdegree⟩ := h r
+    simp at hcount hdegree
+    omega
+
+private def RowGenerators (t : H) (L : List (ℕ × Fin N1)) (degree : ℕ → ℕ)
+    (rows : Finset ℕ) : Set (PolyXZ H N0 N1) :=
+  {Q | ∃ (L' : List (ℕ × Fin N1)) (h' : PolyXZ H N0 N1) (degree' : ℕ → ℕ),
+    Q = tmL t L' h' ∧ (∀ c ∈ L', c.1 ∈ rows) ∧
+    (∀ a b, pderiv (Sum.inr ((false, t), a, b)) h' = 0) ∧
+    (∀ r, SDegD (fun b : Fin N1 => dRow (N0 := N0) t r b) (degree' r) h') ∧
+    RowStep L' degree' L degree rows}
+
+private theorem gf_mem_rows (t : H) (rows : Finset ℕ) (L : List (ℕ × Fin N1)) :
+    ∀ (h : PolyXZ H N0 N1) (degree : ℕ → ℕ), (∀ c ∈ L, c.1 ∈ rows) →
+      (∀ a b, pderiv (Sum.inr ((false, t), a, b)) h = 0) →
+      (∀ r, SDegD (fun b : Fin N1 => dRow (N0 := N0) t r b) (degree r) h) →
+      Gf t (L.map (lfo (N0 := N0) t)).prod h ∈ Submodule.span ℤ (RowGenerators t L degree rows) := by
   induction L with
   | nil =>
-    intro h k _ _
+    intro h degree _ _ _
     simp [Gf]
   | cons c L ih =>
-    intro h k hh hk
+    intro h degree hrows hh hdegree
+    have hc : c.1 ∈ rows := hrows c (by simp)
+    have hL : ∀ e ∈ L, e.1 ∈ rows := fun e he => hrows e (List.mem_cons_of_mem _ he)
     rw [List.map_cons, List.prod_cons, Gf_cons]
     apply add_mem
-    · by_cases hc : c.1 = 0
-      · cases k with
-        | zero =>
-          have e : dRow (N0 := N0) t c.1 c.2 h = 0 := by
-            rw [hc]
-            simp only [SDegD] at hk
-            exact hk c.2
-          rw [e, mul_zero]
-          exact zero_mem _
-        | succ k =>
-          apply Submodule.subset_span
-          refine ⟨L, dRow (N0 := N0) t c.1 c.2 h, k, rfl, zf_dRow t _ _ h hh, ?_, ?_⟩
-          · rw [hc]
-            simp only [SDegD] at hk
-            exact hk c.2
-          · unfold RelL
-            rw [nzc_cons, zeroCount_cons, if_pos hc, if_pos hc]
-            omega
-      · apply Submodule.subset_span
-        refine ⟨L, dRow (N0 := N0) t c.1 c.2 h, k, rfl, zf_dRow t _ _ h hh,
-          sdeg_comm _ (dRow (N0 := N0) t c.1 c.2) (fun j x => dRow_comm t 0 j c.1 c.2 x) (map_zero _) k h hk, ?_⟩
-        unfold RelL
-        rw [nzc_cons, zeroCount_cons, if_neg hc, if_neg hc]
-        omega
-    · have key : ∀ x ∈ Submodule.span ℤ (GS (N0 := N0) t L k),
-          lfo t c * x ∈ Submodule.span ℤ (GS (N0 := N0) t (c :: L) k) := by
+    · cases hcap : degree c.1 with
+      | zero =>
+        have hz := hdegree c.1
+        rw [hcap] at hz
+        rw [show dRow (N0 := N0) t c.1 c.2 h = 0 from hz c.2, mul_zero]
+        exact zero_mem _
+      | succ k =>
+        let degree' : ℕ → ℕ := fun r => if r = c.1 then k else degree r
+        apply Submodule.subset_span
+        refine ⟨L, dRow (N0 := N0) t c.1 c.2 h, degree', rfl, hL, zf_dRow t _ _ h hh, ?_, ?_⟩
+        · intro r
+          by_cases hr : r = c.1
+          · subst r
+            have hlocal := hdegree c.1
+            rw [hcap] at hlocal
+            have hself : degree' c.1 = k := by simp [degree']
+            rw [hself]
+            exact hlocal c.2
+          · simpa [degree', hr] using
+              sdeg_comm _ (dRow (N0 := N0) t c.1 c.2) (fun j x => dRow_comm t r j c.1 c.2 x)
+                (map_zero _) (degree r) h (hdegree r)
+        · refine ⟨c.1, hc, fun r => ?_⟩
+          rw [rowCount_cons]
+          by_cases hr : r = c.1
+          · subst r
+            simp [degree', hcap]
+          · have hrc : c.1 ≠ r := Ne.symm hr
+            simp [degree', hr, hrc]
+    · have key : ∀ x ∈ Submodule.span ℤ (RowGenerators (N0 := N0) t L degree rows),
+          lfo t c * x ∈ Submodule.span ℤ (RowGenerators (N0 := N0) t (c :: L) degree rows) := by
         intro x hx
         induction hx using Submodule.span_induction with
         | mem x hx =>
-          obtain ⟨L', h', k', rfl, h1, h2, h3⟩ := hx
+          obtain ⟨L', h', degree', rfl, hrows', hz, hd, r, hr, hstep⟩ := hx
           apply Submodule.subset_span
-          refine ⟨c :: L', h', k', ?_, h1, h2, ?_⟩
+          refine ⟨c :: L', h', degree', ?_, ?_, hz, hd, r, hr, ?_⟩
           · simp only [tmL, List.map_cons, List.prod_cons, mul_assoc]
-          · unfold RelL at h3 ⊢
-            rw [nzc_cons, nzc_cons, zeroCount_cons, zeroCount_cons]
-            split_ifs <;> omega
+          · intro e he
+            rcases List.mem_cons.1 he with rfl | he
+            · exact hc
+            · exact hrows' e he
+          · intro j
+            obtain ⟨hcount, hdegree⟩ := hstep j
+            rw [rowCount_cons, rowCount_cons]
+            exact ⟨by omega, hdegree⟩
         | zero => rw [mul_zero]; exact zero_mem _
         | add x y _ _ hx hy => rw [mul_add]; exact add_mem hx hy
         | smul a x _ hx => rw [mul_smul_comm]; exact Submodule.smul_mem _ a hx
-      exact key _ (ih h k hh hk)
+      exact key _ (ih h degree hL hh hdegree)
 
-lemma lap_tm_zero (t : H) (n : ℕ) :
-    ∀ (L : List (ℕ × Fin N1)) (h : PolyXZ H N0 N1) (k : ℕ),
+private theorem lap_tm_rows_zero (t : H) (rows : Finset ℕ) (n : ℕ) :
+    ∀ (L : List (ℕ × Fin N1)) (h : PolyXZ H N0 N1) (degree : ℕ → ℕ),
+      (∀ c ∈ L, c.1 ∈ rows) →
       (∀ a b, pderiv (Sum.inr ((false, t), a, b)) h = 0) →
-      SDegD (fun b : Fin N1 => dRow (N0 := N0) t 0 b) k h →
-      nzc L + min (z0c L) k < n → (lapT N0 N1 t ^ n) (tmL t L h) = 0 := by
+      (∀ r, SDegD (fun b : Fin N1 => dRow (N0 := N0) t r b) (degree r) h) →
+      (∑ r ∈ rows, min (rowCount L r) (degree r)) < n →
+      (lapT N0 N1 t ^ n) (tmL t L h) = 0 := by
   induction n with
-  | zero => intro L h k _ _ hb; omega
+  | zero => intro L h degree _ _ _ hb; omega
   | succ n ih =>
-    intro L h k hh hk hb
+    intro L h degree hrows hh hdegree hb
     rw [pow_succ, Module.End.mul_apply]
     have e : lapT N0 N1 t (tmL t L h) = Gf t (L.map (lfo (N0 := N0) t)).prod h :=
       lap_mul t _ h (pw_prod t L) hh
     rw [e]
-    have key : ∀ x ∈ Submodule.span ℤ (GS (N0 := N0) t L k), (lapT N0 N1 t ^ n) x = 0 := by
+    have key : ∀ x ∈ Submodule.span ℤ (RowGenerators (N0 := N0) t L degree rows),
+        (lapT N0 N1 t ^ n) x = 0 := by
       intro x hx
       induction hx using Submodule.span_induction with
       | mem x hx =>
-        obtain ⟨L', h', k', rfl, h1, h2, h3⟩ := hx
-        exact ih L' h' k' h1 h2 (by have := relL_lt h3; omega)
+        obtain ⟨L', h', degree', rfl, hrows', hz, hd, hstep⟩ := hx
+        exact ih L' h' degree' hrows' hz hd (by have := rowStep_budget_lt hstep; omega)
       | zero => exact map_zero _
       | add x y _ _ hx hy => rw [map_add (f := _), hx, hy, add_zero]
       | smul a x _ hx => rw [map_smul, hx, smul_zero]
-    exact key _ (gf_mem t L h k hh hk)
+    exact key _ (gf_mem_rows t rows L h degree hrows hh hdegree)
 
 def MS (t : H) (a b : ℕ) : Submodule ℤ (PolyXZ H N0 N1) :=
   Submodule.span ℤ {Q | ∃ L : List (ℕ × Fin N1), Q = tmL t L 1 ∧ nzc L = a ∧ z0c L = b}
 
-lemma ms_mul (t : H) {a b a' b' : ℕ} {P Q : PolyXZ H N0 N1} (hP : P ∈ MS t a b) (hQ : Q ∈ MS t a' b') :
-    P * Q ∈ MS t (a + a') (b + b') := by
-  first | (apply UpperTheory.Reformulated.B.Qj21.ms_mul <;> assumption)
+private def RowSpan (t : H) (rows : Finset ℕ) (counts : ℕ → ℕ) :
+    Submodule ℤ (PolyXZ H N0 N1) :=
+  Submodule.span ℤ {Q | ∃ L : List (ℕ × Fin N1), Q = tmL t L 1 ∧
+    (∀ c ∈ L, c.1 ∈ rows) ∧ ∀ r, rowCount L r = counts r}
 
-lemma ms_prod (t : H) {ι : Type} (s : Finset ι) (f : ι → PolyXZ H N0 N1) (a b : ι → ℕ)
-    (h : ∀ i ∈ s, f i ∈ MS t (a i) (b i)) :
-    ∏ i ∈ s, f i ∈ MS t (∑ i ∈ s, a i) (∑ i ∈ s, b i) := by
+private theorem rowSpan_mul (t : H) (rows : Finset ℕ) {a b : ℕ → ℕ} {P Q : PolyXZ H N0 N1}
+    (hP : P ∈ RowSpan t rows a) (hQ : Q ∈ RowSpan t rows b) :
+    P * Q ∈ RowSpan t rows (fun r => a r + b r) := by
+  induction hP using Submodule.span_induction with
+  | mem P hP =>
+    obtain ⟨L, rfl, hL, eL⟩ := hP
+    induction hQ using Submodule.span_induction with
+    | mem Q hQ =>
+      obtain ⟨M, rfl, hM, eM⟩ := hQ
+      apply Submodule.subset_span
+      refine ⟨L ++ M, by simp [tmL], ?_, ?_⟩
+      · intro c hc
+        exact (List.mem_append.1 hc).elim (hL c) (hM c)
+      · intro r
+        simp only [rowCount, List.map_append, List.count_append]
+        exact congrArg₂ (· + ·) (eL r) (eM r)
+    | zero => rw [mul_zero]; exact zero_mem _
+    | add x y _ _ hx hy => rw [mul_add]; exact add_mem hx hy
+    | smul a x _ hx => rw [mul_smul_comm]; exact Submodule.smul_mem _ a hx
+  | zero => rw [zero_mul]; exact zero_mem _
+  | add x y _ _ hx hy => rw [add_mul]; exact add_mem hx hy
+  | smul a x _ hx => rw [smul_mul_assoc]; exact Submodule.smul_mem _ a hx
+
+private theorem rowSpan_prod (t : H) (rows : Finset ℕ) {ι : Type} (s : Finset ι)
+    (f : ι → PolyXZ H N0 N1) (counts : ι → ℕ → ℕ)
+    (h : ∀ i ∈ s, f i ∈ RowSpan t rows (counts i)) :
+    (∏ i ∈ s, f i) ∈ RowSpan t rows (fun r => ∑ i ∈ s, counts i r) := by
   classical
   induction s using Finset.induction_on with
   | empty =>
-    exact Submodule.subset_span ⟨[], by simp [tmL, nzc, z0c]⟩
+    simp only [Finset.prod_empty, Finset.sum_empty]
+    apply Submodule.subset_span
+    exact ⟨[], by simp [tmL], by simp, by simp [rowCount]⟩
   | insert i s hi ih =>
-    rw [Finset.prod_insert hi, Finset.sum_insert hi, Finset.sum_insert hi]
-    exact ms_mul t (h i (Finset.mem_insert_self i s)) (ih (fun j hj => h j (Finset.mem_insert_of_mem hj)))
+    simp only [Finset.prod_insert hi, Finset.sum_insert hi]
+    exact rowSpan_mul t rows (h i (Finset.mem_insert_self i s))
+      (ih (fun j hj => h j (Finset.mem_insert_of_mem hj)))
 
-lemma zeroCount_ofFn {p : ℕ} (g : Fin p → ℕ × Fin N1) :
-    z0c (List.ofFn g) = ∑ i : Fin p, (if (g i).1 = 0 then 1 else 0) := by
-  simp [z0c, List.map_ofFn, List.sum_ofFn]
+private theorem rowCount_ofFn {p : ℕ} (g : Fin p → ℕ × Fin N1) (r : ℕ) :
+    rowCount (List.ofFn g) r = ∑ i : Fin p, (if (g i).1 = r then 1 else 0) := by
+  induction p with
+  | zero => simp [rowCount]
+  | succ p ih =>
+    rw [List.ofFn_succ, rowCount_cons, ih, Fin.sum_univ_succ, add_comm]
 
-lemma minor_mem (t : H) (p : ℕ) (hp : 0 < p) (I : Fin p ↪o Fin N1) :
-    minorXZ (Lt := Bool × H) N0 N1 (false, t) p I ∈ MS t (p - 1) 1 := by
+private theorem minor_mem_rows (t : H) (rows : Finset ℕ) (p : ℕ)
+    (hp : ∀ r < p, r ∈ rows) (I : Fin p ↪o Fin N1) :
+    minorXZ (Lt := Bool × H) N0 N1 (false, t) p I ∈
+      RowSpan t rows (fun r => if r < p then 1 else 0) := by
+  classical
   unfold minorXZ
   rw [Matrix.det_apply]
   apply Submodule.sum_mem
@@ -1620,74 +1411,62 @@ lemma minor_mem (t : H) (p : ℕ) (hp : 0 < p) (I : Fin p ↪o Fin N1) :
   rw [Units.smul_def]
   apply Submodule.smul_mem
   apply Submodule.subset_span
-  have hz : z0c (List.ofFn fun i : Fin p => (((σ i : Fin p) : ℕ), I i)) = 1 := by
-    rw [zeroCount_ofFn]
-    rw [Equiv.sum_comp σ (fun j : Fin p => if (j : ℕ) = 0 then 1 else 0)]
-    rw [Finset.sum_eq_single ⟨0, hp⟩]
-    · simp
-    · intro j _ hj
-      have : (j : ℕ) ≠ 0 := fun h => hj (Fin.ext h)
-      simp [this]
-    · simp
-  refine ⟨List.ofFn fun i : Fin p => (((σ i : Fin p) : ℕ), I i), ?_, ?_, hz⟩
+  refine ⟨List.ofFn fun i : Fin p => (((σ i : Fin p) : ℕ), I i), ?_, ?_, ?_⟩
   · simp only [tmL, List.map_ofFn, List.prod_ofFn, mul_one, Matrix.of_apply]
     rfl
-  · have := nonzeroCount_add_zeroCount (List.ofFn fun i : Fin p => (((σ i : Fin p) : ℕ), I i))
-    rw [List.length_ofFn, hz] at this
-    omega
+  · intro c hc
+    obtain ⟨i, rfl⟩ := List.mem_ofFn.1 hc
+    exact hp _ (σ i).2
+  · intro r
+    rw [rowCount_ofFn, Equiv.sum_comp σ (fun j : Fin p => if (j : ℕ) = r then 1 else 0)]
+    change (∑ j : Fin p, if (j : ℕ) = r then 1 else 0) = (if r < p then 1 else 0)
+    by_cases hr : r < p
+    · rw [ite_eq_left hr, Finset.sum_eq_single ⟨r, hr⟩]
+      · simp
+      · intro j _ hj
+        exact ite_eq_right (fun e => hj (Fin.ext e))
+      · simp
+    · rw [ite_eq_right hr]
+      apply Finset.sum_eq_zero
+      intro j _
+      exact ite_eq_right (fun e => hr (by simpa only [e] using j.2))
 
-lemma colLen_pos (α : YoungDiagram) (c : Fin (α.rowLen 0)) : 0 < α.colLen c := by
-  exact YoungDiagram.mem_iff_lt_colLen.mp (YoungDiagram.mem_iff_lt_rowLen.mpr c.2)
-
-lemma sum_colLen_le (α : YoungDiagram) : ∑ c : Fin (α.rowLen 0), α.colLen c ≤ α.cells.card := by
-  have e : ∑ c : Fin (α.rowLen 0), α.colLen c =
-      (Finset.univ.sigma fun c : Fin (α.rowLen 0) => Finset.range (α.colLen c)).card := by
-    rw [Finset.card_sigma]
-    simp
-  rw [e]
-  apply Finset.card_le_card_of_injOn (fun x => (x.2, (x.1 : ℕ)))
-  · intro x hx
-    simp only [Finset.coe_sigma, Set.mem_sigma_iff, Finset.coe_univ, Set.mem_univ, Finset.coe_range,
-      Set.mem_Iio, true_and, Finset.mem_coe] at hx ⊢
-    rw [YoungDiagram.mem_cells, YoungDiagram.mem_iff_lt_colLen]
-    exact hx
-  · rintro ⟨c, i⟩ _ ⟨c', i'⟩ _ hxy
-    simp only [Prod.mk.injEq] at hxy
-    obtain ⟨rfl, h2⟩ := hxy
-    have : c = c' := Fin.ext h2
-    subst this
-    rfl
-
-theorem pLapForms : PLapForms := by
-  intro H _ _ N0 N1 α I t g d n hg hd hn
-  have hF := ms_prod (N0 := N0) t (Finset.univ : Finset (Fin (α.rowLen 0)))
-    (fun c => minorXZ (Lt := Bool × H) N0 N1 (false, t) (α.colLen c) (I c))
-    (fun c => α.colLen c - 1) (fun _ => 1)
-    (fun c _ => minor_mem t _ (colLen_pos α c) (I c))
-  have hsum : ∑ c : Fin (α.rowLen 0), (α.colLen c - 1) + α.rowLen 0 ≤ α.cells.card := by
-    calc ∑ c : Fin (α.rowLen 0), (α.colLen c - 1) + α.rowLen 0
-        = ∑ c : Fin (α.rowLen 0), (α.colLen c - 1) + ∑ _c : Fin (α.rowLen 0), 1 := by simp
-      _ = ∑ c : Fin (α.rowLen 0), (α.colLen c - 1 + 1) := (Finset.sum_add_distrib).symm
-      _ = ∑ c : Fin (α.rowLen 0), α.colLen c := by
-          apply Finset.sum_congr rfl
-          intro c _
-          have := colLen_pos α c
-          omega
-      _ ≤ α.cells.card := sum_colLen_le α
-  have h1 : ∑ _c : Fin (α.rowLen 0), 1 = α.rowLen 0 := by simp
-  rw [h1] at hF
-  have key : ∀ x ∈ MS (N0 := N0) t (∑ c : Fin (α.rowLen 0), (α.colLen c - 1)) (α.rowLen 0),
-      (lapT N0 N1 t ^ n) (x * g) = 0 := by
+theorem lap_product_minors_rows_zero (t : H) (α : YoungDiagram)
+    (I : ∀ c : Fin (α.rowLen 0), Fin (α.colLen c) ↪o Fin N1)
+    (g : PolyXZ H N0 N1) (degree : ℕ → ℕ) (rows : Finset ℕ) (n : ℕ)
+    (hrows : ∀ r c, (r, c) ∈ α → r ∈ rows)
+    (hg : ∀ a b, pderiv (Sum.inr ((false, t), a, b)) g = 0)
+    (hdegree : ∀ r, SDegD (fun b : Fin N1 => dRow (N0 := N0) t r b) (degree r) g)
+    (hn : (∑ r ∈ rows, min (α.rowLen r) (degree r)) < n) :
+    (lapT N0 N1 t ^ n) ((∏ c : Fin (α.rowLen 0),
+      minorXZ (Lt := Bool × H) N0 N1 (false, t) (α.colLen c) (I c)) * g) = 0 := by
+  classical
+  let counts : ℕ → ℕ := fun r => ∑ c : Fin (α.rowLen 0), if r < α.colLen c then 1 else 0
+  have hF : (∏ c : Fin (α.rowLen 0), minorXZ (Lt := Bool × H) N0 N1 (false, t) (α.colLen c) (I c)) ∈
+      RowSpan t rows counts :=
+    rowSpan_prod t rows Finset.univ _ _ fun c _ =>
+      minor_mem_rows t rows _ (fun r hr => hrows r c (YoungDiagram.mem_iff_lt_colLen.mpr hr)) (I c)
+  have hcounts (r : ℕ) : counts r ≤ α.rowLen r := by
+    unfold counts
+    rw [Finset.sum_boole, ← Finset.card_range (α.rowLen r)]
+    apply Finset.card_le_card_of_injOn (fun c : Fin (α.rowLen 0) => (c : ℕ))
+    · intro c hc
+      have hr := (Finset.mem_filter.1 hc).2
+      exact Finset.mem_range.2 (YoungDiagram.mem_iff_lt_rowLen.1 (YoungDiagram.mem_iff_lt_colLen.2 hr))
+    · intro a _ b _ e
+      exact Fin.ext e
+  have key : ∀ x ∈ RowSpan (N0 := N0) (N1 := N1) t rows counts, (lapT N0 N1 t ^ n) (x * g) = 0 := by
     intro x hx
     induction hx using Submodule.span_induction with
     | mem x hx =>
-      obtain ⟨L, rfl, e1, e2⟩ := hx
+      obtain ⟨L, rfl, hL, eL⟩ := hx
       have e : tmL t L 1 * g = tmL t L g := by simp [tmL]
       rw [e]
-      exact lap_tm_zero t n L g d (fun a b => hg a b) hd (by rw [e1, e2]; omega)
+      refine lap_tm_rows_zero t rows n L g degree hL hg hdegree (lt_of_le_of_lt ?_ hn)
+      exact Finset.sum_le_sum fun r _ => by rw [eL]; exact min_le_min_right _ (hcounts r)
     | zero => rw [zero_mul, map_zero]
     | add x y _ _ hx hy => rw [add_mul, map_add (f := _), hx, hy, add_zero]
-    | smul r x _ hx => rw [smul_mul_assoc, map_smul, hx, smul_zero]
+    | smul a x _ hx => rw [smul_mul_assoc, map_smul, hx, smul_zero]
   exact key _ hF
 
 end LapFormsSec
@@ -1753,20 +1532,22 @@ theorem minorAff_sumApply {ι : Type} [DecidableEq ι] (s : Finset ι) (D : ι �
 
 end DerDet
 
-theorem pMinorAff : PMinorAff := by
-  intro H N0 N1 t k I b b'
+theorem dRow_dRow_minorXZ_eq_zero (H : Type) (N0 N1 : ℕ) (t : H) (row k : ℕ)
+    (I : Fin k ↪o Fin N1) (b b' : Fin N1) :
+    dRow (N0 := N0) t row b (dRow (N0 := N0) t row b'
+      (minorXZ (Lt := Bool × H) N0 N1 (true, t) k I)) = 0 := by
   classical
   let y : Fin k → PolyXZ H N0 N1 := fun i => ∑ a : Fin N0,
-    (MvPolynomial.X (Sum.inl ((false, t), 0, a)) : PolyXZ H N0 N1) *
+    (MvPolynomial.X (Sum.inl ((false, t), row, a)) : PolyXZ H N0 N1) *
       MvPolynomial.X (Sum.inl ((true, t), (i : ℕ), a))
-  have hD : ∀ (bb : Fin N1) (f : PolyXZ H N0 N1), dRow (N0 := N0) t 0 bb f =
-      ∑ a : Fin N0, (MvPolynomial.X (Sum.inl ((false, t), 0, a)) : PolyXZ H N0 N1) *
+  have hD : ∀ (bb : Fin N1) (f : PolyXZ H N0 N1), dRow (N0 := N0) t row bb f =
+      ∑ a : Fin N0, (MvPolynomial.X (Sum.inl ((false, t), row, a)) : PolyXZ H N0 N1) *
         MvPolynomial.pderiv (R := ℤ) (Sum.inr ((true, t), a, bb)) f := by
     intro bb f
     simp only [dRow]
     rw [minorAff_sumApply]
     simp only [Derivation.smul_apply, smul_eq_mul]
-  have hE : ∀ (bb c : Fin N1) (i : Fin k), dRow (N0 := N0) t 0 bb
+  have hE : ∀ (bb c : Fin N1) (i : Fin k), dRow (N0 := N0) t row bb
       (∑ a : Fin N0, (MvPolynomial.X (Sum.inl ((true, t), (i : ℕ), a)) : PolyXZ H N0 N1) *
         MvPolynomial.X (Sum.inr ((true, t), a, c))) = if c = bb then y i else 0 := by
     intro bb c i
@@ -1777,7 +1558,7 @@ theorem pMinorAff : PMinorAff := by
       simp [y, map_sum, Derivation.leibniz, MvPolynomial.pderiv_X, Pi.single_apply]
 
     · simp [map_sum, Derivation.leibniz, MvPolynomial.pderiv_X, hc]
-  have hy : ∀ (bb : Fin N1) (i : Fin k), dRow (N0 := N0) t 0 bb (y i) = 0 := by
+  have hy : ∀ (bb : Fin N1) (i : Fin k), dRow (N0 := N0) t row bb (y i) = 0 := by
     intro bb i
     rw [hD]
 
@@ -1787,7 +1568,7 @@ theorem pMinorAff : PMinorAff := by
   rw [minorAff_derDet, map_sum]
   refine Finset.sum_eq_zero fun c _ => ?_
   by_cases hc : I c = b'
-  · have hcol : (fun r => dRow (N0 := N0) t 0 b' (Matrix.of (fun i k' : Fin k => ∑ a : Fin N0,
+  · have hcol : (fun r => dRow (N0 := N0) t row b' (Matrix.of (fun i k' : Fin k => ∑ a : Fin N0,
         (MvPolynomial.X (Sum.inl ((true, t), (i : ℕ), a)) : PolyXZ H N0 N1) *
           MvPolynomial.X (Sum.inr ((true, t), a, I k'))) r c)) = y := by
       funext r
@@ -1807,13 +1588,13 @@ theorem pMinorAff : PMinorAff := by
       · apply Matrix.det_eq_zero_of_column_eq_zero l
         intro r
         simp only [Matrix.updateCol_self, Matrix.updateCol_ne hl, Matrix.of_apply, hE, if_neg hIl]
-  · have hcol : (fun r => dRow (N0 := N0) t 0 b' (Matrix.of (fun i k' : Fin k => ∑ a : Fin N0,
+  · have hcol : (fun r => dRow (N0 := N0) t row b' (Matrix.of (fun i k' : Fin k => ∑ a : Fin N0,
         (MvPolynomial.X (Sum.inl ((true, t), (i : ℕ), a)) : PolyXZ H N0 N1) *
           MvPolynomial.X (Sum.inr ((true, t), a, I k'))) r c)) = fun _ => 0 := by
       funext r
       rw [Matrix.of_apply, hE, if_neg hc]
     rw [hcol]
-    convert map_zero (dRow (N0 := N0) t 0 b)
+    convert map_zero (dRow (N0 := N0) t row b)
     exact Matrix.det_eq_zero_of_column_eq_zero c fun r => Matrix.updateCol_self
 
 end PI.EntAtD.W
@@ -1878,14 +1659,356 @@ end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.SDegMul =====
 
+-- ===== clump member: Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.HeartPderivMinor =====
+-- clump-header: {"m": "Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.HeartPderivMinor", "h": "module\n\npublic import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.PMinorAff\nimport Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.LapForms\nimport Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.MinorAff\nimport Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.SDegMul\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\nimport Std.Tactic.BVDecide.Normalize.Prop\n\n"}
+section -- clump:auto
+@[expose] public section
+
+noncomputable section
+
+open scoped BigOperators
+open Classical
+
+namespace PI.EntAtD.W
+
+open PI.EntAtD
+
+section Ker
+
+variable {A : Type} [CommRing A] (D : Derivation ℤ A A)
+
+end Ker
+
+private theorem derivation_prod_eq_zero_of_forall' {R A ι : Type} [CommRing R] [CommRing A] [Algebra R A]
+    (D : Derivation R A A) (s : Finset ι) (f : ι → A) (h : ∀ i ∈ s, D (f i) = 0) :
+    D (∏ i ∈ s, f i) = 0 := by
+  classical
+  revert h
+  refine Finset.induction_on s ?_ ?_
+  · intro _
+    simp
+  · intro i s hi ih h
+    rw [Finset.prod_insert hi, Derivation.leibniz, h i (Finset.mem_insert_self i s),
+      ih (fun j hj => h j (Finset.mem_insert_of_mem hj)), smul_zero, smul_zero, add_zero]
+
+private theorem derivation_det_eq_zero_of_entries {R A : Type} [CommRing R] [CommRing A] [Algebra R A]
+    (D : Derivation R A A) {k : ℕ} (M : Matrix (Fin k) (Fin k) A) (h : ∀ i j, D (M i j) = 0) :
+    D M.det = 0 := by
+
+  rw [Matrix.det_apply, map_sum]
+  refine Finset.sum_eq_zero fun σ _ => ?_
+  rw [Units.smul_def, map_zsmul, derivation_prod_eq_zero_of_forall' D _ _ (fun i _ => h _ _), smul_zero]
+
+theorem heart_pderiv_minor {Lt : Type} [Fintype Lt] [DecidableEq Lt] (N0 N1 : ℕ) (s s' : Lt) (hs : s ≠ s')
+    (k : ℕ) (I : Fin k ↪o Fin N1) (a : Fin N0) (b : Fin N1) :
+    MvPolynomial.pderiv (R := ℤ) (Sum.inr (s', a, b)) (minorXZ N0 N1 s k I) = 0 := by
+  simp only [minorXZ]
+  apply derivation_det_eq_zero_of_entries
+  intro i j
+
+  rw [Matrix.of_apply, map_sum]
+  refine Finset.sum_eq_zero fun a0 _ => ?_
+  rw [Derivation.leibniz, MvPolynomial.pderiv_X, MvPolynomial.pderiv_X]
+  simp [hs]
+
+private theorem derivation_finset_sum_apply' {R A ι : Type} [CommRing R] [CommRing A] [Algebra R A]
+    (s : Finset ι) (D : ι → Derivation R A A) (x : A) : (∑ i ∈ s, D i) x = ∑ i ∈ s, D i x := by
+  classical
+  refine Finset.induction_on s ?_ ?_
+  · simp
+  · intro i s hi ih
+    rw [Finset.sum_insert hi, Finset.sum_insert hi, Derivation.add_apply, ih]
+
+theorem heart_dRow_zero {H : Type} {N0 N1 : ℕ} (t : H) (r : ℕ) (b : Fin N1) (f : PolyXZ H N0 N1)
+    (h : ∀ a : Fin N0, MvPolynomial.pderiv (R := ℤ) (Sum.inr ((true, t), a, b)) f = 0) :
+    dRow (N0 := N0) t r b f = 0 := by
+  simp only [dRow]
+  rw [derivation_finset_sum_apply']
+  refine Finset.sum_eq_zero fun a _ => ?_
+  rw [Derivation.smul_apply, h a, smul_zero]
+
+theorem heart_sdeg_prod (hS : PSDegMul) {A : Type} [CommRing A] {ι : Type} (d : ι → Derivation ℤ A A)
+    {κ : Type} [DecidableEq κ] (s : Finset κ) (f : κ → A) (k : κ → ℕ) :
+    (∀ i ∈ s, SDegD d (k i) (f i)) → SDegD d (∑ i ∈ s, k i) (∏ i ∈ s, f i) := by
+  refine Finset.induction_on s ?_ ?_
+  · intro _
+    rw [Finset.sum_empty, Finset.prod_empty]
+    intro j
+    exact (d j).map_one_eq_zero
+  · intro i s hi ih h
+    rw [Finset.sum_insert hi, Finset.prod_insert hi]
+    exact hS A ι d _ _ _ _ (h i (Finset.mem_insert_self i s))
+      (ih fun j hj => h j (Finset.mem_insert_of_mem hj))
+
+private theorem factor_for_lapT (H : Type) [Fintype H] [DecidableEq H] (N0 N1 : ℕ)
+    (nu : Bool × H → YoungDiagram) (I : ColChoice N1 nu) (t : H) :
+    ∃ R : PolyXZ H N0 N1,
+      Gxz N0 N1 nu I =
+        (∏ c : Fin ((nu (false, t)).rowLen 0),
+          minorXZ N0 N1 (false, t) ((nu (false, t)).colLen c) (I (false, t) c)) *
+        ((∏ c : Fin ((nu (true, t)).rowLen 0),
+          minorXZ N0 N1 (true, t) ((nu (true, t)).colLen c) (I (true, t) c)) * R) ∧
+      (∀ a b, pd (Sum.inr ((false, t), a, b))
+        ((∏ c : Fin ((nu (true, t)).rowLen 0),
+          minorXZ N0 N1 (true, t) ((nu (true, t)).colLen c) (I (true, t) c)) * R) = 0) ∧
+      (∀ a b, MvPolynomial.pderiv (R := ℤ) (Sum.inr ((true, t), a, b)) R = 0) := by
+  let P : Bool × H → PolyXZ H N0 N1 := fun s => ∏ c : Fin ((nu s).rowLen 0),
+    minorXZ (Lt := Bool × H) N0 N1 s ((nu s).colLen c) (I s c)
+  let R : PolyXZ H N0 N1 := ∏ s ∈ (Finset.univ.erase (false, t)).erase (true, t), P s
+  have hne : (true, t) ≠ (false, t) := by simp
+  have hmem : (true, t) ∈ Finset.univ.erase (false, t) := by simp
+  have hG : Gxz N0 N1 nu I = P (false, t) * (P (true, t) * R) := by
+    show (∏ s, P s) = _
+    rw [← Finset.mul_prod_erase Finset.univ P (Finset.mem_univ (false, t)),
+      ← Finset.mul_prod_erase (Finset.univ.erase (false, t)) P hmem]
+  have hnoP : ∀ (s s' : Bool × H), s ≠ s' → ∀ (a : Fin N0) (b : Fin N1),
+      MvPolynomial.pderiv (R := ℤ) (Sum.inr (s', a, b)) (P s) = 0 := by
+    intro s s' hs a b
+    apply derivation_prod_eq_zero_of_forall'
+    intro c _
+    convert heart_pderiv_minor N0 N1 s s' hs _ (I s c) a b
+  have hnoR : ∀ (s' : Bool × H), s' = (false, t) ∨ s' = (true, t) → ∀ (a : Fin N0) (b : Fin N1),
+      MvPolynomial.pderiv (R := ℤ) (Sum.inr (s', a, b)) R = 0 := by
+    intro s' hs' a b
+    apply derivation_prod_eq_zero_of_forall'
+    intro s hs
+    apply hnoP s s' _ a b
+    rintro rfl
+    rcases hs' with rfl | rfl
+    · exact Finset.ne_of_mem_erase (Finset.mem_of_mem_erase hs) rfl
+    · exact Finset.ne_of_mem_erase hs rfl
+  have h1 : ∀ (a : Fin N0) (b : Fin N1), pd (Sum.inr ((false, t), a, b)) (P (true, t) * R) = 0 := by
+    intro a b
+    show MvPolynomial.pderiv (R := ℤ) (Sum.inr ((false, t), a, b)) (P (true, t) * R) = 0
+    rw [Derivation.leibniz, hnoP (true, t) (false, t) hne a b, hnoR (false, t) (Or.inl rfl) a b,
+      smul_zero, smul_zero, add_zero]
+  exact ⟨R, hG, h1, fun a b => hnoR (true, t) (Or.inr rfl) a b⟩
+
+/-- Above the row-by-row contraction bound, the local Laplacian kills the product of minors. -/
+theorem lapT_pow_Gxz_eq_zero_of_rowContractionBound
+    (H : Type) [Fintype H] [DecidableEq H] (N0 N1 : ℕ) (nu : Bool × H → YoungDiagram)
+    (I : ColChoice N1 nu) (t : H) (n : ℕ)
+    (hn : rowContractionBound (nu (false, t)) (nu (true, t)) < n) :
+    (lapT N0 N1 t ^ n) (Gxz N0 N1 nu I) = 0 := by
+  obtain ⟨R, hG, h1, hR⟩ := factor_for_lapT H N0 N1 nu I t
+  let P : PolyXZ H N0 N1 := ∏ c : Fin ((nu (true, t)).rowLen 0),
+    minorXZ N0 N1 (true, t) ((nu (true, t)).colLen c) (I (true, t) c)
+  have hdegree (row : ℕ) :
+      SDegD (fun b : Fin N1 => dRow (N0 := N0) t row b) ((nu (true, t)).rowLen 0) (P * R) := by
+    have hR0 : SDegD (fun b : Fin N1 => dRow (N0 := N0) t row b) 0 R := by
+      intro b
+      exact heart_dRow_zero t row b R (fun a => hR a b)
+    have hP := heart_sdeg_prod pSDegMul (fun b : Fin N1 => dRow (N0 := N0) t row b)
+      Finset.univ _ (fun _ => 1)
+      (fun c _ j j' => dRow_dRow_minorXZ_eq_zero H N0 N1 t row _ (I (true, t) c) j' j)
+    rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, smul_eq_mul, mul_one] at hP
+    exact pSDegMul _ _ _ P R _ 0 hP hR0
+  rw [hG]
+  exact lap_product_minors_rows_zero t (nu (false, t)) (I (false, t)) (P * R)
+    (fun _ => (nu (true, t)).rowLen 0) (insert 0 ((nu (false, t)).cells.image Prod.fst)) n
+    (fun r c h => Finset.mem_insert_of_mem (Finset.mem_image.2 ⟨(r, c), (YoungDiagram.mem_cells _).2 h, rfl⟩))
+    h1 hdegree hn
+
+end PI.EntAtD.W
+end -- clump:auto
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.HeartPderivMinor =====
+
+-- ===== clump member: Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.Vanish =====
+-- clump-header: {"m": "Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.Vanish", "h": "module\n\npublic import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.PMinorAff\nimport Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.HeartPderivMinor\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Topology.Sheaves.Init\n\n"}
+section -- clump:auto
+@[expose] public section
+
+noncomputable section
+
+open scoped BigOperators
+open Classical
+
+namespace PI.EntAtD.W
+
+open PI.EntAtD
+
+theorem list_prod_eq_mul_of_mem {M : Type} [Monoid M] (x : M) :
+    ∀ l : List M, (∀ y ∈ l, Commute y x) → x ∈ l → ∃ r : M, l.prod = r * x := by
+  intro l
+  induction l with
+  | nil =>
+    intro _ hx
+    exact absurd hx List.not_mem_nil
+  | cons a l ih =>
+    intro hc hx
+    have hc' : ∀ y ∈ l, Commute y x := fun y hy => hc y (List.mem_cons_of_mem _ hy)
+    rcases List.mem_cons.1 hx with h | h
+    · subst a
+      exact ⟨l.prod, by rw [List.prod_cons, (Commute.list_prod_left l x hc').eq]⟩
+    · obtain ⟨r, hr⟩ := ih hc' h
+      exact ⟨a * r, by rw [List.prod_cons, hr, mul_assoc]⟩
+
+private theorem acon_eq_zero_of_lapT_pow (hB : PBridge) (hC : PLapComm)
+    (H : Type) [Fintype H] [DecidableEq H] (N0 N1 : ℕ) (nu : Bool × H → YoungDiagram)
+    (I : ColChoice N1 nu) (m : XV H N0 →₀ ℕ) (κ2 : ZV H N0 N1 →₀ ℕ) (n : H → ℕ) (t : H)
+    (hZ : (lapT N0 N1 t ^ n t) (Gxz N0 N1 nu I) = 0) :
+    Acon (Gxz N0 N1 nu I) m κ2 n = 0 := by
+  have hzero : lapAll N0 N1 n (Gxz N0 N1 nu I) = 0 := by
+    obtain ⟨r, hr⟩ := list_prod_eq_mul_of_mem (lapT (H := H) N0 N1 t ^ n t)
+      ((Finset.univ : Finset H).toList.map fun t => lapT N0 N1 t ^ n t)
+      (fun y hy => by
+        obtain ⟨t', _, rfl⟩ := List.mem_map.1 hy
+        exact (hC H N0 N1 t' t).pow_pow _ _)
+      (List.mem_map.2 ⟨t, Finset.mem_toList.2 (Finset.mem_univ t), rfl⟩)
+    unfold lapAll
+    rw [hr, mul_apply_eq_comp, hZ, map_zero]
+  have h := hB H N0 N1 (Gxz N0 N1 nu I) m κ2 n
+  rw [hzero, AddMonoidAlgebra.coeff_zero] at h
+  rcases mul_eq_zero.1 h with h | h
+  · exact absurd h (Finset.prod_ne_zero_iff.2 fun t' _ => by exact_mod_cast (Nat.factorial_ne_zero (n t')))
+  · exact h
+
+/-- Terms beyond the row-by-row contraction bound vanish in the kernel expansion. -/
+theorem acon_eq_zero_of_rowContractionBound (hB : PBridge) (hC : PLapComm)
+    (H : Type) [Fintype H] [DecidableEq H] (N0 N1 : ℕ) (nu : Bool × H → YoungDiagram)
+    (I : ColChoice N1 nu) (m : XV H N0 →₀ ℕ) (κ2 : ZV H N0 N1 →₀ ℕ) (n : H → ℕ) (t : H)
+    (ht : rowContractionBound (nu (false, t)) (nu (true, t)) < n t) :
+    Acon (Gxz N0 N1 nu I) m κ2 n = 0 :=
+  acon_eq_zero_of_lapT_pow hB hC H N0 N1 nu I m κ2 n t
+    (lapT_pow_Gxz_eq_zero_of_rowContractionBound H N0 N1 nu I t (n t) ht)
+
+end PI.EntAtD.W
+end -- clump:auto
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.Vanish =====
+
+-- ===== clump member: Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.CoreTermLe =====
+-- clump-header: {"m": "Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.CoreTermLe", "h": "module\n\npublic import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.PMinorAff\nimport Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.Vanish\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\n\n"}
+section -- clump:auto
+@[expose] public section
+
+noncomputable section
+
+open scoped BigOperators
+open Classical
+
+namespace PI.EntAtD.W
+
+open PI.EntAtD
+
+theorem coreTerm_le {H : Type} [Fintype H] (p : ℕ) [Fact p.Prime] (S : ℂ_[p]) (ut : H → ℂ_[p])
+    (hS : ‖S‖ ≤ (p : ℝ) ^ ((1 : ℝ) / 2)) (hut : ∀ t, ‖ut t‖ ≤ 1) (X : ℂ_[p]) (hX : ‖X‖ ≤ 1) (A : ℤ)
+    (n c : H → ℕ) (hn : ∀ t, n t ≤ c t) :
+    ‖X * (∏ t : H, (-(S * ut t)) ^ n t) * ((A : ℤ) : ℂ_[p])‖ ≤
+      (p : ℝ) ^ ((∑ t : H, (c t : ℝ)) / 2) := by
+  have hp1 : (1 : ℝ) ≤ p := by exact_mod_cast (Fact.out : p.Prime).one_lt.le
+  have hp0 : (0 : ℝ) < p := by linarith
+  have hq0 : (0 : ℝ) ≤ (p : ℝ) ^ ((1 : ℝ) / 2) := Real.rpow_nonneg hp0.le _
+  have hq1 : (1 : ℝ) ≤ (p : ℝ) ^ ((1 : ℝ) / 2) := Real.one_le_rpow hp1 (by norm_num)
+  have hA : ‖((A : ℤ) : ℂ_[p])‖ ≤ 1 := IsUltrametricDist.norm_intCast_le_one ℂ_[p] A
+  have h2 : ∏ t : H, ‖(-(S * ut t)) ^ n t‖ ≤ (p : ℝ) ^ ((∑ t : H, (c t : ℝ)) / 2) := by
+    calc ∏ t : H, ‖(-(S * ut t)) ^ n t‖ ≤ ∏ t : H, ((p : ℝ) ^ ((1 : ℝ) / 2)) ^ c t := by
+          apply Finset.prod_le_prod₀ (fun t _ => norm_nonneg _)
+          intro t _
+          rw [norm_pow, norm_neg, norm_mul]
+          calc (‖S‖ * ‖ut t‖) ^ n t ≤ ((p : ℝ) ^ ((1 : ℝ) / 2)) ^ n t := by
+                apply pow_le_pow_left₀ (mul_nonneg (norm_nonneg _) (norm_nonneg _))
+                calc ‖S‖ * ‖ut t‖ ≤ (p : ℝ) ^ ((1 : ℝ) / 2) * 1 :=
+                      mul_le_mul hS (hut t) (norm_nonneg _) hq0
+                  _ = _ := mul_one _
+            _ ≤ _ := pow_le_pow_right₀ hq1 (hn t)
+      _ = _ := by
+          rw [Finset.sum_div, Real.rpow_sum_of_pos hp0]
+          refine Finset.prod_congr rfl (fun t _ => ?_)
+          rw [← Real.rpow_natCast, ← Real.rpow_mul hp0.le]
+          congr 1
+          ring
+  rw [norm_mul, norm_mul, norm_prod]
+  calc ‖X‖ * (∏ t : H, ‖(-(S * ut t)) ^ n t‖) * ‖((A : ℤ) : ℂ_[p])‖
+      ≤ 1 * (p : ℝ) ^ ((∑ t : H, (c t : ℝ)) / 2) * 1 := by
+        apply mul_le_mul (mul_le_mul hX h2 (Finset.prod_nonneg fun _ _ => norm_nonneg _) zero_le_one)
+          hA (norm_nonneg _)
+        exact mul_nonneg zero_le_one (Real.rpow_nonneg hp0.le _)
+    _ = _ := by ring
+
+private theorem core_of_cutoff (hE : PExpand)
+    (cutoff : YoungDiagram → YoungDiagram → ℕ)
+    (hV : ∀ (H : Type) [Fintype H] [DecidableEq H] (N0 N1 : ℕ)
+      (nu : Bool × H → YoungDiagram) (I : ColChoice N1 nu)
+      (m : XV H N0 →₀ ℕ) (κ2 : ZV H N0 N1 →₀ ℕ) (n : H → ℕ) (t : H),
+      cutoff (nu (false, t)) (nu (true, t)) < n t → Acon (Gxz N0 N1 nu I) m κ2 n = 0)
+    (H : Type) [Fintype H] [DecidableEq H] (N0 N1 p : ℕ) [Fact p.Prime]
+    (nu : Bool × H → YoungDiagram) (Th : MvPowerSeries (ZV H N0 N1) ℂ_[p])
+    (hTh : ShapeH H p Th) :
+    KvalGe N0 N1 p nu Th (-((∑ t : H, (cutoff (nu (false, t)) (nu (true, t)) : ℝ)) / 2)) := by
+  intro I m
+  obtain ⟨S, hS, ut, hut, sg, hsg, rfl⟩ := hTh
+  rw [hE H N0 N1 p S ut sg (Gxz N0 N1 nu I) m, neg_neg]
+  have hp0 : (0 : ℝ) < p := by exact_mod_cast (Fact.out : p.Prime).pos
+  have hB0 : (0 : ℝ) ≤ (p : ℝ) ^ ((∑ t : H, (cutoff (nu (false, t)) (nu (true, t)) : ℝ)) / 2) :=
+    Real.rpow_nonneg hp0.le _
+  refine IsUltrametricDist.norm_sum_le_of_forall_le_of_nonneg hB0 (fun κ2 _ => ?_)
+  refine IsUltrametricDist.norm_sum_le_of_forall_le_of_nonneg hB0 (fun n _ => ?_)
+  by_cases hn : ∃ t, cutoff (nu (false, t)) (nu (true, t)) < n t
+  · obtain ⟨t, ht⟩ := hn
+    rw [hV H N0 N1 nu I m κ2 n t ht]
+    simpa using hB0
+  · simp only [not_exists, not_lt] at hn
+    exact coreTerm_le p S ut hS hut _ (hsg κ2) _ n (fun t => cutoff (nu (false, t)) (nu (true, t))) hn
+
+/-- The discriminant-place kernel bound using all rows of the diagrams. -/
+theorem core_of_rowContractionBound (hE : PExpand) (hB : PBridge) (hC : PLapComm)
+    (H : Type) [Fintype H] [DecidableEq H] (N0 N1 p : ℕ) [Fact p.Prime]
+    (nu : Bool × H → YoungDiagram) (Th : MvPowerSeries (ZV H N0 N1) ℂ_[p])
+    (hTh : ShapeH H p Th) :
+    KvalGe N0 N1 p nu Th
+      (-((∑ t : H, (rowContractionBound (nu (false, t)) (nu (true, t)) : ℝ)) / 2)) :=
+  core_of_cutoff hE rowContractionBound (acon_eq_zero_of_rowContractionBound hB hC) H N0 N1 p nu Th hTh
+
+end PI.EntAtD.W
+end -- clump:auto
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.CoreTermLe =====
+
+-- ===== clump member: Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.EntAtDOf =====
+-- clump-header: {"m": "Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.EntAtDOf", "h": "module\n\npublic import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.PMinorAff\npublic import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.CardCellsEqSumRowLen\npublic import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.CoreTermLe\npublic import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.Expand\npublic import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.HeartPderivMinor\npublic import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.Vanish\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Topology.Sheaves.Init\n\n"}
+section -- clump:auto
+@[expose] public section
+
+noncomputable section
+
+open scoped BigOperators
+open Classical
+
+namespace PI.EntAtD.W
+
+open PI.EntAtD
+
+theorem entAtD_of_all_rows (hX : PExpCoeff) (hB : PBridge) (hC : PLapComm) : PI.EntAtD.EntAtD := by
+  apply entAtD_of_core
+  intro H _ _ N0 N1 p _ nu Th hTh
+  have h := core_of_rowContractionBound (expand_of hX) hB hC H N0 N1 p nu Th hTh
+  have hsum : (∑ t : H, (rowContractionBound (nu (false, t)) (nu (true, t)) : ℝ)) ≤
+      ∑ t : H, (cPr (nu (false, t)) (nu (true, t)) : ℝ) :=
+    Finset.sum_le_sum fun t _ => by exact_mod_cast rowContractionBound_le_cPr (nu (false, t)) (nu (true, t))
+  have hp : (1 : ℝ) ≤ p := by exact_mod_cast (Fact.out : p.Prime).one_lt.le
+  intro I m
+  refine (h I m).trans ?_
+  apply Real.rpow_le_rpow_of_exponent_le hp
+  linarith
+
+end PI.EntAtD.W
+end -- clump:auto
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.EntAtDOf =====
+
 -- ===== clump member: Formalism.PeriodIntegrals.OrbitalBoundsConclusion.EntAtD =====
 -- clump-header: {"m": "Formalism.PeriodIntegrals.OrbitalBoundsConclusion.EntAtD", "h": "module\n\npublic import Formalism.PeriodIntegrals.EntAtD\npublic import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.Bridge\npublic import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.EntAtDOf\npublic import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.ExpCoeff\npublic import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.LapComm\npublic import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.LapForms\npublic import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.MinorAff\npublic import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PartialDerivativeMinors.SDegMul\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Topology.Sheaves.Init\n\n"}
 section -- clump:auto
 @[expose] public section
 
 theorem jet_bound_ramified_prime : PI.EntAtD.EntAtD :=
-  PI.EntAtD.W.entAtD_of PI.EntAtD.W.pExpCoeff PI.EntAtD.W.pBridge PI.EntAtD.W.pLapComm
-    PI.EntAtD.W.pMinorAff PI.EntAtD.W.pSDegMul PI.EntAtD.W.pLapForms
+  PI.EntAtD.W.entAtD_of_all_rows PI.EntAtD.W.pExpCoeff PI.EntAtD.W.pBridge PI.EntAtD.W.pLapComm
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Formalism.PeriodIntegrals.OrbitalBoundsConclusion.EntAtD =====

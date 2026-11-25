@@ -72,8 +72,6 @@ import Mathlib.Algebra.Module.StablyFree.Basic
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open NumberField GlobalTheory.AllWt GlobalTheory.CompHt GlobalTheory.DegCmp GlobalTheory.DegVal GlobalTheory.CovTop ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD Formalism.L2.Pj Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Filter
@@ -223,8 +221,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.DegVal
@@ -321,8 +317,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
-
 open NumberField GlobalTheory.AllWt GlobalTheory.CompHt GlobalTheory.DegCmp GlobalTheory.DegVal GlobalTheory.CovTop ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD Formalism.L2.Pj Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta
 open scoped ENNReal NNReal
 
@@ -409,8 +403,6 @@ section -- clump:auto
 
 open NumberField GlobalTheory.AllWt GlobalTheory.CompHt GlobalTheory.DegCmp GlobalTheory.DegVal GlobalTheory.CovTop ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD Formalism.L2.Pj Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta
 open scoped ENNReal NNReal
-
-set_option autoImplicit false
 
 noncomputable section
 
@@ -523,8 +515,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open NumberField GlobalTheory.AllWt GlobalTheory.CompHt GlobalTheory.DegCmp GlobalTheory.DegVal GlobalTheory.CovTop ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD Formalism.L2.Pj Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta
@@ -545,7 +535,7 @@ theorem growthOn_le_compDeg : ∀ (E : Type) [Field E] [NumberField E] [IsCMFiel
     set ev := genPoint Z (cuspOn U Z G) with hev
     let S : ℕ → Submodule c.F (Om Z) := fun k =>
       if k = 0 then ⊥ else (cuspOn U Z ((a * k) • G')).map ((genVal Z).toLinearMap ∘ₗ LinearMap.mulLeft c.F (θ ^ k))
-    have h1 := _root_.GlobalTheory.ConeDeg.degree_growth_integral.2.2.1 c.F _ _ ev (dimFlag Dw) a ha S (by
+    have h1 := _root_.GlobalTheory.ConeDeg.degree_growth.2.2 c.F _ _ ev (dimFlag Dw) a ha S (by
       intro k t ht
       by_cases hk : k = 0
       · simp only [S, hk, if_true, Submodule.mem_bot] at ht
@@ -586,8 +576,8 @@ theorem growthOn_le_compDeg : ∀ (E : Type) [Field E] [NumberField E] [IsCMFiel
       ne_bot_of_le_ne_bot (mul_ne_zero haD0 h0) hlow
     have hneT : growth (dimFlag Dw) (fun k => hilb ev (a * k)) ≠ ⊤ :=
       ne_top_of_le_ne_top (ENNReal.mul_ne_top haDT hfin) h4
-    obtain ⟨δ, hδ⟩ := _root_.GlobalTheory.ConeDeg.degree_growth_integral.2.1 c.F _ _ ev (dimFlag Dw) a ha hne0 hneT
-    rw [_root_.GlobalTheory.ConeDeg.degree_growth_integral.1 c.F _ _ ev (dimFlag Dw) a ha δ hδ] at hlow
+    obtain ⟨δ, hδ⟩ := _root_.GlobalTheory.ConeDeg.degree_growth.2.1 c.F _ _ ev (dimFlag Dw) a ha hne0 hneT
+    rw [_root_.GlobalTheory.ConeDeg.degree_growth.1 c.F _ _ ev (dimFlag Dw) a ha δ hδ] at hlow
     rw [compDeg, ← hev, hδ.imageDeg_eq]
     first | exact (ENNReal.mul_le_mul_iff_right haD0 haDT).1 hlow
 
@@ -601,8 +591,6 @@ end -- clump:auto
 -- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.DivisorProofs.ComponentImageDegreeBetweenOfProportionality", "h": "module\n\npublic import Development.AbelianVarietyTheory.Definitions.Divisors.GenRatios\npublic import Development.AbelianVarietyTheory.Definitions.Divisors.Multiplier\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CuspFormGrowthLeImageDegreeLowerWeight\nimport Development.AbelianVarietyTheory.Proofs.DivisorProofs.FiniteDimensionalOfGrowthOn\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Development.AbelianVarietyTheory.Definitions.Divisors.NormNegCmConstantEqAtAllEmbeddings\n\n"}
 section -- clump:auto
 @[expose] public section
-
-set_option autoImplicit false
 
 noncomputable section
 

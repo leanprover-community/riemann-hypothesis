@@ -215,7 +215,7 @@ open scoped ENNReal
 
 namespace GlobalTheory.Twist.ClassSumReindex
 
-theorem tsum_ratClass_eq_tsum_weighted (H : Type) [Group H] (Γ : Subgroup H) (γ : H) (_hγ : γ ∈ Γ)
+theorem tsum_ratClass_eq_tsum_weighted (H : Type) [Group H] (Γ : Subgroup H) (γ : H)
     (α : H → ℝ≥0∞) (hα : ∀ y, ∑' h : Γ.subgroupOf (cent γ), α (((h : cent γ) : H) * y) = 1)
     (G : H → ℝ≥0∞) (x : H) :
     ∑' δ : GlobalTheory.IndefiniteRowSideFullHecke.NonFieldTypeVanishingAlt.ratClass Γ γ, G (x⁻¹ * δ * x) =
@@ -311,7 +311,7 @@ theorem hasClassInt_of_hasOrbInt : ∀ (H : Type) [Group H] [TopologicalSpace H]
       ((hαm.mul hψ).comp (measurable_const_mul (g : H))).aemeasurable
     calc ∫⁻ x in 𝓕, ∑' δ : GlobalTheory.IndefiniteRowSideFullHecke.NonFieldTypeVanishingAlt.ratClass Γ γ, G (x⁻¹ * δ * x) ∂μ
         = ∫⁻ x in 𝓕, ∑' g : Γ, α ((g : H) * x) * G (((g : H) * x)⁻¹ * γ * ((g : H) * x)) ∂μ :=
-          lintegral_congr fun x => _root_.GlobalTheory.Twist.ClassSumReindex.tsum_ratClass_eq_tsum_weighted H Γ γ hγ α hα1 G x
+          lintegral_congr fun x => _root_.GlobalTheory.Twist.ClassSumReindex.tsum_ratClass_eq_tsum_weighted H Γ γ α hα1 G x
       _ = ∑' g : Γ, ∫⁻ x in 𝓕, α ((g : H) * x) * G (((g : H) * x)⁻¹ * γ * ((g : H) * x)) ∂μ :=
           lintegral_tsum hF
       _ = ∫⁻ y, α y * G (y⁻¹ * γ * y) ∂μ :=

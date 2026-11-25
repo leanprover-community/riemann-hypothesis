@@ -45,8 +45,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 open NumberField
 open scoped Classical
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.FrameCS

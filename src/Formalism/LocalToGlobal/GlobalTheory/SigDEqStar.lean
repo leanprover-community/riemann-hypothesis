@@ -15,8 +15,6 @@ namespace Formalism.L2.GlobalTheoryTheory.ColValS
 
 open Formalism.BasicNotions Formalism.UG Formalism.L2.Forms Formalism.MainNotions.GlobalTheoryTheory.Inhab
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 theorem sigD_eq_star (a : D.host.E) : sigD D a = star a := rfl

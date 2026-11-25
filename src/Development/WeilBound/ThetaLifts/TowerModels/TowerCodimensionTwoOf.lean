@@ -117,59 +117,6 @@ theorem towerB_of (hP : PlaneEx) (hM : ModelEx) (hW : WeilEx) : TowerB := by
       exact hW₁
   · exact ⟨c.heckeα, c.heckeβ, rα, c.resβ, c.expα, c.expβ, c.disj, c.sub, c.ram, c.unrα, c.unrβ, c.good⟩
 
-theorem towerA_of (hP : PlaneEx) (hM : ModelEx) (hW : WeilEx) : TowerA := by
-  intro F E _ _ _ _ _ σ B b a' G X om om' hT hq0 hp
-  have g := hT.geo
-  have c := hT.chars
-  have hb := g.aBig
-  have hl := g.lt
-  have he := g.eBig
-  rw [hq0] at hb he
-  obtain ⟨Y', V₁, H, hY', hV₁, hH⟩ := hP.1 F E σ B hT.base (b + 2) b rfl (by omega) G.V (b + 2 - G.p) G.p
-    (by omega) hp g.hV 0 (b + 1) (by omega) (by omega)
-  have hW0 := g.hW
-  rw [hq0] at hW0
-  obtain ⟨W', W₁, H', hW', hW₁, hH'⟩ := hP.2 F E σ B hT.base (b + 2 + a') (b + a') (by omega) (by omega) G.W
-    (b + 2 + a' - (G.p + 0)) (G.p + 0) (by omega) (by omega) hW0 0 (b + 1) (by omega) (by omega)
-  have hV0' : (reS G.V' G.V').IsHerm σ B 0 (a' - 0) := by
-    have := g.hV'
-    rw [hq0] at this
-    exact this
-  obtain ⟨M₁, hM₁⟩ := hM F E σ B hT.base b (b + a') V₁ W₁ _ _ _ _ hV₁ hW₁
-  obtain ⟨M₁', hM₁'⟩ := hM F E σ B hT.base a' (b + a') (reS G.V' G.V') W₁ _ _ _ _ hV0' hW₁
-  have rβ : ResEtaPow (Units.map (algebraMap F (AF F)).toMonoidHom).range X.β b := resEtaPow_of_add_two c.resβ
-  obtain ⟨om₁, hom₁⟩ := hW F E σ B hT.base b (b + a') V₁ W₁ _ _ _ _ hV₁ hW₁ M₁ hM₁ X.β (X.β / X.α)
-    c.heckeβ (isHecke_div c.heckeβ c.heckeα) rβ (resEtaPow_div rβ c.resα)
-  obtain ⟨om₁', hom₁'⟩ := hW F E σ B hT.base a' (b + a') (reS G.V' G.V') W₁ _ _ _ _ hV0' hW₁ M₁' hM₁' X.α (X.α / X.β)
-    c.heckeα (isHecke_div c.heckeα c.heckeβ) c.resα (by rw [Nat.add_comm]; exact resEtaPow_div c.resα rβ)
-  refine ⟨Y', G.V', W', ⟨hT.base, ⟨g.lt, g.even, g.kappa, g.eBig, g.aBig, hY', g.hV',
-      (by show (reS G.W W').IsSkew σ B (b + 2 + a' - (G.p + G.q)) (G.p + G.q); rw [hq0]; exact hW'),
-      ⟨g.hM.rat, g.hM.vac, g.hM.std, g.hM.haar, g.hM.dom⟩, ⟨g.hM'.rat, g.hM'.vac, g.hM'.std, g.hM'.haar, g.hM'.dom⟩⟩,
-      c, hT.weil, hT.weil'⟩,
-    ⟨G.p - 1, 0, V₁, reS G.V' G.V', W₁, M₁, M₁'⟩, H, H', ⟨rfl, hq0, rfl, ?_, hH, hH'⟩, om₁, om₁', ⟨hT.base, ?_, ?_, hom₁, hom₁'⟩⟩
-  · show G.p - 1 + 1 = G.p
-    omega
-  · refine ⟨?_, ?_, fun w => ?_, ?_, ?_, ?_, hV0', ?_, hM₁, hM₁'⟩
-    · show a' < b
-      omega
-    · obtain ⟨k, hk⟩ := g.even
-      exact ⟨k - 1, by omega⟩
-    · have := g.kappa w
-      push_cast at this ⊢
-      omega
-    · show 2 * (G.p - 1 + 0) + 1 < (b - a') / 2
-      omega
-    · show 2 * (G.p - 1 + 0) + 1 < a'
-      omega
-    · show V₁.IsHerm σ B (b - (G.p - 1)) (G.p - 1)
-      rw [show b - (G.p - 1) = b + 2 - G.p - 1 by omega]
-      exact hV₁
-    · show W₁.IsSkew σ B (b + a' - (G.p - 1 + 0)) (G.p - 1 + 0)
-      rw [show b + a' - (G.p - 1 + 0) = b + 2 + a' - (G.p + 0) - 1 by omega,
-        show G.p - 1 + 0 = G.p + 0 - 1 by omega]
-      exact hW₁
-  · exact ⟨c.heckeα, c.heckeβ, c.resα, rβ, c.expα, c.expβ, c.disj, c.sub, c.ram, c.unrα, c.unrβ, c.good⟩
-
 theorem towerCodimensionTwo_of (hP : PlaneEx) (hM : ModelEx) (hW : WeilEx) : PositivityTheory.ThKEnd.TowerCodimensionTwo := by
   intro F E _ _ _ _ _ σ B b a' G X om om' hT hp
   have g := hT.geo
@@ -215,6 +162,13 @@ theorem towerCodimensionTwo_of (hP : PlaneEx) (hM : ModelEx) (hW : WeilEx) : Pos
         show G.p - 1 + G.q = G.p + G.q - 1 by omega]
       exact hW₁
   · exact ⟨c.heckeα, c.heckeβ, c.resα, rβ, c.expα, c.expβ, c.disj, c.sub, c.ram, c.unrα, c.unrβ, c.good⟩
+
+theorem towerA_of (hP : PlaneEx) (hM : ModelEx) (hW : WeilEx) : TowerA := by
+  intro F E _ _ _ _ _ σ B b a' G X om om' hT hq0 hp
+  obtain ⟨Y', V', W', hT', G₁, H, H', cfg, om₁, om₁', hT₁⟩ :=
+    @towerCodimensionTwo_of hP hM hW F E _ _ _ _ _ σ B b a' G X om om' hT hp
+  exact ⟨Y', V', W', hT', G₁, H, H',
+    ⟨cfg.eV, hq0, cfg.eq.trans hq0, cfg.ep, cfg.hH, cfg.hH'⟩, om₁, om₁', hT₁⟩
 
 end PositivityTheory.ThKG.Tow
 

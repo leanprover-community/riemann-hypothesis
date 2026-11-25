@@ -53,6 +53,8 @@ abbrev Prod' {ι : Type} (H : ι → Type) [∀ s, NormedAddCommGroup (H s)] [�
     [∀ s, CompleteSpace (H s)] (d : ℕ) : Type :=
   (∀ s, H s →L[ℂ] H s) × (EuclideanSpace ℂ (Fin d) →L[ℂ] EuclideanSpace ℂ (Fin d))
 
+set_option genInjectivity false in
+set_option genSizeOfSpec false in
 structure RunData (π : Submodule ℂ (UA E n → ℂ)) (S T : Finset (HeightOneSpectrum (𝓞 E)))
     (K : ∀ w : HeightOneSpectrum (𝓞 E), Subgroup (GL (Fin n) (w.adicCompletion E)))
     (W : ∀ N : ℕ, Submodule ℂ (Kinf E N → ℂ)) where

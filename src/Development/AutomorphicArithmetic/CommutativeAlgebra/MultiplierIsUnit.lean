@@ -42,8 +42,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open NumberField IsDedekindDomain
@@ -102,10 +100,6 @@ private theorem exists_ne (D : Datum p) : ∃ x y : D.La, D.EF x y ≠ 0 := by
   obtain ⟨y, hy⟩ := DFunLike.ne_iff.mp hne
   exact ⟨x, y, by simpa using hy⟩
 
-private theorem isUnit_intCast {d : ℤ} (hd : d ≠ 0) : IsUnit (d : AfP p) := by
-  have h : IsUnit (d : ℚ) := (Int.cast_ne_zero.mpr hd).isUnit
-  simpa using h.map (algebraMap ℚ (AfP p))
-
 private theorem isIntAf_sim {D : Datum p} {G : HTGroup p} (L : Link D G) (g : G.GAf)
     (hg : ∀ v ∈ LaHat D, L.actG g v ∈ LaHat D) : IsIntAf ((uSimR (AfP p) g : (AfP p)ˣ) : AfP p) := by
   let S : Set ℤ := {z | ∃ x y : D.La, D.EF x y = z}
@@ -145,8 +139,10 @@ private theorem isIntAf_sim {D : Datum p} {G : HTGroup p} (L : Link D G) (g : G.
       rw [smul_eq_mul, Int.cast_mul, mul_left_comm, he]
       ring
   obtain ⟨c, hc, hce⟩ := key d (by rw [hdI]; exact Submodule.mem_span_singleton_self d)
+  have hu : IsUnit (d : AfP p) := by
+    simpa using (Int.cast_ne_zero.mpr hd0).isUnit.map (algebraMap ℚ (AfP p))
   have hsc : ((uSimR (AfP p) g : (AfP p)ˣ) : AfP p) = c :=
-    (isUnit_intCast (p := p) hd0).mul_left_cancel (by rw [mul_comm]; exact hce)
+    hu.mul_left_cancel (by rw [mul_comm]; exact hce)
   rw [hsc]
   exact hc
 

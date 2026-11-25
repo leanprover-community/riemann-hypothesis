@@ -273,8 +273,6 @@ open scoped Matrix
 
 section D7
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : Formalism.BasicNotions.D7}
 
 theorem scalarZeta (u u' : D.what₂.Word) (F0 : FlagG (VS D) D.R.rS ((Tu D u : ℕ) : D.host.E))
@@ -356,8 +354,6 @@ end Formalism.L2.SG.Pf.ScalKindPf
 namespace Formalism.L2.SG.Pf
 
 open NumberField Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.TermDef Formalism.L2.SG.DataCut Formalism.L2.SG.LsDatumB
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem scalKind_of {D : Formalism.BasicNotions.D7} {u u' : D.what₂.Word} {F0 : FlagG (VS D) D.R.rS (Formalism.L2.SG.CntLocal.Tn u)}
     {what₂ : Finset (Submodule (𝓞 D.host.E) (VS D).V)} (hrows : IsRowReps D F0 what₂) :

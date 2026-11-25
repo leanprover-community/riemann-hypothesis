@@ -54,8 +54,6 @@ noncomputable section
 
 namespace PI.UnitaryGroupMassFormula.CntFormula.RowsMassW
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 def UnimodOneGenus : Prop :=
   ∀ (K : Type) [Field K] [NumberField K] [StarRing K] (V : Type) [AddCommGroup V] [Module K V]
     [FiniteDimensional K V] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] (h : V →ₗ⋆[K] V →ₗ[K] K),

@@ -57,8 +57,6 @@ open NumberField IsDedekindDomain ValuativeRel Matrix Polynomial Formalism.Conju
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil
 open PositivityTheory.Rg.DzCount
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace UpperTheory.Zero.LLC
 
 section Fields

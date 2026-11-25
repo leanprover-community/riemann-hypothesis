@@ -216,8 +216,6 @@ variable (K : Type) [Field K] [NumberField K] {n : ℕ}
 def sdQK (σ : Type) : MvPolynomial σ ℚ →ₗ[ℤ] MvPolynomial σ K :=
   (MvPolynomial.map (algebraMap ℚ K)).toAddMonoidHom.toIntLinearMap
 
-theorem sdQK_apply {σ : Type} (f : MvPolynomial σ ℚ) : sdQK K σ f = MvPolynomial.map (algebraMap ℚ K) f := rfl
-
 theorem sd_word_image (ν : Fin n → ℕ) : nbWord K ν = sdQK K _ '' nbWord ℚ ν := by
   unfold nbWord
   rw [← Set.range_comp]

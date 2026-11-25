@@ -61,8 +61,6 @@ open scoped TensorProduct
 
 namespace GlobalTheory.TwInputs
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 structure RealSide (D : D7) : Type 1 where
   Γ : Type
   [grp : Group Γ]

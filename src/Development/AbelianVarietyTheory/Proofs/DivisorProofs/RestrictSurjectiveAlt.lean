@@ -56,7 +56,6 @@ open scoped TensorProduct
 attribute [local instance] Over.cartesianMonoidalCategory
 open Classical
 
-set_option autoImplicit false
 noncomputable section
 namespace GlobalTheory.TorusOntoSpread
 

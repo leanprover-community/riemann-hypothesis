@@ -48,8 +48,6 @@ open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNo
 
 namespace GlobalTheory.Unfold
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 abbrev GV (D : D7) : Type := (VS D).V ≃ₗ[D.host.E] (VS D).V

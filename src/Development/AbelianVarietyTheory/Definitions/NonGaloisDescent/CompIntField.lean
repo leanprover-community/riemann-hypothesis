@@ -44,8 +44,6 @@ public import Formalism.LocalToGlobal.ProjectiveLattices.FamilyUniformisationBas
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta IsDedekindDomain NumberField Formalism.IndefR.Datum Formalism.IndefR.Lev Formalism.IndefR.NX
@@ -53,8 +51,6 @@ open scoped TensorProduct
 open Classical
 
 namespace GlobalTheory.TowerCov
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7}
 

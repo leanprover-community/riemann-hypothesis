@@ -68,8 +68,6 @@ open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.CharKer
 
-set_option autoImplicit false
-
 namespace GlobalTheory.CharExists
 
 

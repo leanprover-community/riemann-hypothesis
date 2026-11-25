@@ -38,8 +38,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.IndefiniteRowSideFullHecke.LevelGroupLifts
@@ -47,8 +45,6 @@ namespace GlobalTheory.IndefiniteRowSideFullHecke.LevelGroupLifts
 open NumberField Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.L2.Pj Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor (Datum Level)
 open scoped TensorProduct
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7}
 

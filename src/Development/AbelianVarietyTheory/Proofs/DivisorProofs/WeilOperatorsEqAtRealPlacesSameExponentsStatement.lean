@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DetNeOfSig
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AdelicWeilRepSchrodingerModelUnique
 public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.UnitCharTriangle
@@ -362,19 +363,7 @@ section Pair
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
 theorem det_ne_zero_of_hasSig {n r s : ℕ} {M : Matrix (Fin n) (Fin n) ℂ} (h : HasSig M r s) : M.det ≠ 0 := by
-  obtain ⟨hrs, A, hA⟩ := h
-  let e : Fin r ⊕ Fin s ≃ Fin n := finSumFinEquiv.trans (finCongr hrs)
-  let Bm : Matrix (Fin n) (Fin n) ℂ := A.submatrix id e.symm
-  have hB : Bmᵀ * M * Bm.map star =
-      (Matrix.fromBlocks 1 0 0 (-1) : Matrix (Fin r ⊕ Fin s) (Fin r ⊕ Fin s) ℂ).submatrix e.symm e.symm := by
-    rw [← hA]; rfl
-  have hD : (Matrix.fromBlocks 1 0 0 (-1) : Matrix (Fin r ⊕ Fin s) (Fin r ⊕ Fin s) ℂ).det ≠ 0 := by
-    rw [Matrix.det_fromBlocks_zero₂₁, Matrix.det_one, Matrix.det_neg, Matrix.det_one]; simp
-  have h2 := congrArg Matrix.det hB
-  rw [Matrix.det_submatrix_equiv_self, Matrix.det_mul, Matrix.det_mul] at h2
-  intro h0
-  rw [h0, mul_zero, zero_mul] at h2
-  exact hD h2.symm
+  apply _root_.GlobalTheory.ThetaRatPair.det_ne_of_hasSig <;> assumption
 
 theorem det_ne_zero_of_map {n : ℕ} (J : Matrix (Fin n) (Fin n) E) (f : E →+* ℂ) (h : (J.map f).det ≠ 0) : J.det ≠ 0 :=
   fun h0 => h (by rw [show J.map f = f.mapMatrix J from rfl, ← RingHom.map_det, h0, map_zero])

@@ -46,8 +46,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formal
 
 namespace GlobalTheory.HeightCounting.Up
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem valLL0_colW {B : Base} {f : Fr B.toPre} {T : TwDat B} (w : ColW B f T) (Z : w.Lt) :
     ValLL0 (w.D Z) (TC.cf w.I w.l Z) := by
   rcases w with ⟨px, I, ok, C_eq, S_eq, xi_range, pins, l, l0, δ, exact, fld, val⟩

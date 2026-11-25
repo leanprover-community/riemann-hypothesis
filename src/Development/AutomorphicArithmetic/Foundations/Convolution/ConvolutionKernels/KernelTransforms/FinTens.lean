@@ -735,10 +735,6 @@ private theorem ft_int (K : Type) [Field K] [NumberField K] (n : ℕ) (g : Adeli
   rw [← ft_comp]
   exact (AdelicGLn.mem_integralFiniteGL_iff_forall K n).1 hg v
 
-private theorem ft_mul (K : Type) [Field K] [NumberField K] (n : ℕ) (v : Pl K) (a b : AdelicGLn.FiniteAdelicGL K n) :
-    finAt v (finEmb K n (a * b)) = finAt v (finEmb K n a) * finAt v (finEmb K n b) := by
-  rw [map_mul, finAt_mul]
-
 private theorem ft_list {M : Type*} [Monoid M] (x : M) : ∀ l : List M, (∀ a ∈ l, Commute a x ∨ a * x = a) → (∃ a ∈ l, a * x = a) →
     l.prod * x = l.prod := by
   intro l
@@ -839,13 +835,13 @@ theorem UpperTheory.ConvolutionTheory.Tf.finTens :
   have hRl : ∀ u h, u ∈ AdelicGLn.integralFiniteGL K n → R (u * h) = R h := fun u h hu => by
     have hiff : (u * h ∈ {y : AdelicGLn.FiniteAdelicGL K n | ∀ v, v ∉ Set.range w → finAt v (finEmb K n y) ∈ GLnLocal.integralGL (v.adicCompletion K) n}) ↔
         h ∈ {y : AdelicGLn.FiniteAdelicGL K n | ∀ v, v ∉ Set.range w → finAt v (finEmb K n y) ∈ GLnLocal.integralGL (v.adicCompletion K) n} := by
-      simp only [Set.mem_setOf_eq, ft_mul]
+      simp only [Set.mem_setOf_eq, map_mul, finAt_mul]
       exact forall_congr' fun v => imp_congr_right fun _ => Subgroup.mul_mem_cancel_left _ (ft_int K n u hu v)
     exact ft_ind _ hiff
   have hRr : ∀ u h, u ∈ AdelicGLn.integralFiniteGL K n → R (h * u) = R h := fun u h hu => by
     have hiff : (h * u ∈ {y : AdelicGLn.FiniteAdelicGL K n | ∀ v, v ∉ Set.range w → finAt v (finEmb K n y) ∈ GLnLocal.integralGL (v.adicCompletion K) n}) ↔
         h ∈ {y : AdelicGLn.FiniteAdelicGL K n | ∀ v, v ∉ Set.range w → finAt v (finEmb K n y) ∈ GLnLocal.integralGL (v.adicCompletion K) n} := by
-      simp only [Set.mem_setOf_eq, ft_mul]
+      simp only [Set.mem_setOf_eq, map_mul, finAt_mul]
       exact forall_congr' fun v => imp_congr_right fun _ => Subgroup.mul_mem_cancel_right _ (ft_int K n u hu v)
     exact ft_ind _ hiff
   refine ⟨e, fun h => ?_, ⟨U, hUo, fun u hu h => ⟨?_, ?_⟩⟩, ?_⟩
@@ -856,14 +852,14 @@ theorem UpperTheory.ConvolutionTheory.Tf.finTens :
     congr 1
     · refine hRl u h hk.1
     · refine Finset.prod_congr rfl fun i _ => ?_
-      rw [ft_mul]
+      rw [map_mul, finAt_mul]
       exact (hJinv i _ (hk.2 i) _).1
   · rw [he, he]
     have hk := (hUm u).1 hu
     congr 1
     · refine hRr u h hk.1
     · refine Finset.prod_congr rfl fun i _ => ?_
-      rw [ft_mul]
+      rw [map_mul, finAt_mul]
       exact (hJinv i _ (hk.2 i) _).2
   · intro _ _ mw hmw hmK T hT US hUS
     haveI := hmw

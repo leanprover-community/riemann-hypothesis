@@ -65,7 +65,6 @@ open IsDedekindDomain NumberField MeasureTheory GlobalTheory.ChiGrid GlobalTheor
 open GlobalTheory.IndefiniteRowSideFullHecke.ClassFunctionSumIntegral (IsOpenCompactLevel)
 open GlobalTheory.FockReal MvPolynomial
 open scoped ComplexOrder
-attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField borelKw borelSpaceKw
 
 noncomputable section
 
@@ -96,24 +95,10 @@ theorem integrable_term {K : Type} [Group K] [TopologicalSpace K] [IsTopological
   simp only
   ring
 
-private theorem lft_frDet' (g : ι → Matrix (Fin a) (Fin a) ℂ) (τ : ι) :
-    lft g (frDet ℂ a τ : PY ι a) = C (g τ).det * (frDet ℂ a τ : PY ι a) := by
-  rw [← sub_eq_zero]
-  apply eq_zero_of_invertible
-  intro y _
-  have e1 : evalAt y (lft g (frDet ℂ a τ : PY ι a)) = (g τ).det * (y τ).det := by
-    rw [evalAt_lft_eq, evalAt_frDet, Matrix.det_mul]
-  have e2 : evalAt y (C (g τ).det * (frDet ℂ a τ : PY ι a)) = (g τ).det * (y τ).det := by
-    unfold evalAt
-    rw [map_mul, eval_C]
-    congr 1
-    exact evalAt_frDet y τ
-  unfold evalAt at e1 e2 ⊢
-  rw [map_sub, e1, e2, sub_self]
-
 private theorem lft_prod_frDet_pow (g : ι → Matrix (Fin a) (Fin a) ℂ) (n : ι → ℕ) :
     lft g (∏ τ, (frDet ℂ a τ : PY ι a) ^ n τ) = C (∏ τ, (g τ).det ^ n τ) * (∏ τ, (frDet ℂ a τ : PY ι a) ^ n τ) := by
-  simp only [map_prod, map_pow, lft_frDet', mul_pow, Finset.prod_mul_distrib]
+  simp only [map_prod, map_pow, _root_.GlobalTheory.KJInf.VnStable.lft_frDet, smul_eq_C_mul,
+    mul_pow, Finset.prod_mul_distrib]
 
 private theorem lft_mem_VV {K : Type} [Group K] [TopologicalSpace K] {r : K → ι → Matrix (Fin a) (Fin a) ℂ}
     (hr : OntoUni r) (lam : ι → DomWeight a) (k : K) (v : VV ℂ lam) : lft (r k) v.1 ∈ VV ℂ lam := by

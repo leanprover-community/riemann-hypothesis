@@ -79,8 +79,6 @@ namespace GlobalTheory.KerConjMean
 
 open GlobalTheory.SumSize GlobalTheory.RowTest GlobalTheory.FunObj GlobalTheory.ChiGrid Formalism.IndefR.Links Formalism.L2.DIV
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Claims
 
 variable {D : D7} {Γ : Type} [Group Γ] [Fintype Γ] {Pl0 T : Type} {A : FamIn D.what₂.LL Γ Pl0 T D.R.m}

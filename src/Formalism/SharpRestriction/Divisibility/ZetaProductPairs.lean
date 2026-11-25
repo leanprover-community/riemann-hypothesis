@@ -49,8 +49,6 @@ namespace Formalism.MainNotions.ZetaProductPairs
 
 open Formalism.BasicNotions
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 structure Loc (D : D7) (T : ThetaX D) where
 
   gl1 : D.what₂.Word → T.Gf (D.sp.Y 0)

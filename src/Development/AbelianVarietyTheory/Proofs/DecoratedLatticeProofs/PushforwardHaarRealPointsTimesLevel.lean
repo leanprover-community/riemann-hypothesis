@@ -51,8 +51,6 @@ open GlobalTheory.ChainOnto
 
 namespace GlobalTheory.ChainOnto.HaarInf
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 theorem finE_of_mem_ginfC (V : HSp D) {x : GA D V} (hx : x ∈ GinfC V) : Lev.finE V x = 1 := by

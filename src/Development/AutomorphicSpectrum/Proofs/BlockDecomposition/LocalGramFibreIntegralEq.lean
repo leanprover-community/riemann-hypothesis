@@ -337,7 +337,7 @@ end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ChartCompactSupportContinuous =====
 
 -- ===== clump member: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ChartGramFirstEntry =====
--- clump-header: {"m": "Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ChartGramFirstEntry", "h": "module\n\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FreeCell\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.RingTheory.WittVector.IsPoly\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\nimport CompanionTheory.SpectralGeometry.CountingDefinitions.AdelicEulerProducts.IsEulerProd\nimport Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsCovolOne\nimport Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TrMMemFramesEIff\n\n"}
+-- clump-header: {"m": "Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ChartGramFirstEntry", "h": "module\n\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FreeCell\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.RingTheory.WittVector.IsPoly\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\nimport CompanionTheory.SpectralGeometry.CountingDefinitions.AdelicEulerProducts.IsEulerProd\nimport Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsCovolOne\nimport Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TrMMemFramesEIff\nimport Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FreeCellOpenIndependent\nimport CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.HermitianMatricesLocallyCompactBorel\n\n"}
 section -- clump:auto
 @[expose] public section
 
@@ -353,12 +353,9 @@ section Alg
 
 variable {F E : Type} [Field F] [Field E] [Algebra F E] (R : Type) [CommRing R] [Algebra F R]
 
-theorem sigR_inclR (σ : E →ₐ[F] E) (e : E) : sigR R σ (inclR R e) = inclR R (σ e) := by
-  simp [sigR, inclR]
-
 theorem sigR_halfR (σ : E →ₐ[F] E) : sigR R σ (halfR (F := F) (E := E) R) = halfR (F := F) (E := E) R := by
   unfold halfR
-  rw [sigR_inclR, AlgHom.commutes]
+  rw [GlobalTheory.CompanionTheory.SW.HermTop.sigR_inclR, AlgHom.commutes]
 
 theorem halfR_add_halfR (h2 : (2 : F) ≠ 0) :
     halfR (F := F) (E := E) R + halfR (F := F) (E := E) R = 1 := by
@@ -370,21 +367,12 @@ theorem vH_zero {K : Type} {M : ℕ} (a s : K) (Y : Fin M → K) : vH a s Y 0 = 
 theorem vH_one {K : Type} {M : ℕ} (a s : K) (Y : Fin M → K) : vH a s Y 1 = s := rfl
 theorem tailH_vH {K : Type} {M : ℕ} (a s : K) (Y : Fin M → K) : tailH (vH a s Y) = Y := rfl
 
-theorem hR_hypOne (σ : E →ₐ[F] E) {M : ℕ} (J : Matrix (Fin M) (Fin M) E) (x y : Fin (M + 2) → R ⊗[F] E) :
-    hR R σ (hypOne J) x y =
-      sigR R σ (x 0) * y 1 + sigR R σ (x 1) * y 0 + hR R σ J (tailH x) (tailH y) := by
-  unfold hR hform JR tailH
-  simp only [Fin.sum_univ_succ, Matrix.map_apply, Fin.succ_zero_eq_one, hypOne_zero_zero, hypOne_zero_one,
-    hypOne_one_zero, hypOne_one_one, hypOne_zero_rest, hypOne_one_rest, hypOne_rest_zero, hypOne_rest_one,
-    hypOne_rest_rest, map_zero, map_one, mul_zero, zero_mul, mul_one, Finset.sum_const_zero, add_zero, zero_add]
-  ring
-
 theorem sigR_hR (σ : E →ₐ[F] E) (hσ : ∀ e, σ (σ e) = e) {M : ℕ} (J : Matrix (Fin M) (Fin M) E)
     (hJ : ∀ i j, σ (J j i) = J i j) (x y : Fin M → R ⊗[F] E) :
     sigR R σ (hR R σ J x y) = hR R σ J y x := by
   unfold hR hform JR
 
-  simp only [map_sum, map_mul, sigR_sigR R σ hσ, Matrix.map_apply, sigR_inclR]
+  simp only [map_sum, map_mul, sigR_sigR R σ hσ, Matrix.map_apply, GlobalTheory.CompanionTheory.SW.HermTop.sigR_inclR]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
   rw [hJ i j]
@@ -410,7 +398,7 @@ theorem sigR_tHalf (σ : E →ₐ[F] E) (hσ : ∀ e, σ (σ e) = e) {M : ℕ} (
     (hJ : ∀ i j, σ (J j i) = J i j) (x : Fin (M + 2) → R ⊗[F] E) :
     sigR R σ (tHalf R σ J x) = tHalf R σ J x := by
   unfold tHalf
-  rw [map_mul, sigR_halfR, hR_hypOne, map_add (f := _), map_add (f := _), map_mul, map_mul, sigR_sigR R σ hσ, sigR_sigR R σ hσ,
+  rw [map_mul, sigR_halfR, GlobalTheory.CompanionTheory.WeilSiegel.HypStage.Cell.hR_hypOne, map_add (f := _), map_add (f := _), map_mul, map_mul, sigR_sigR R σ hσ, sigR_sigR R σ hσ,
     sigR_hR R σ hσ J hJ]
   ring
 
@@ -422,9 +410,9 @@ theorem hR_cvec_right (h2 : (2 : F) ≠ 0) (σ : E →ₐ[F] E) {M : ℕ} (J : M
   have e3 : tHalf R σ J x + tHalf R σ J x = hR R σ (hypOne J) x x := by
     unfold tHalf
     rw [← add_mul, halfR_add_halfR R h2, one_mul]
-  have e4 := hR_hypOne R σ J x x
+  have e4 := GlobalTheory.CompanionTheory.WeilSiegel.HypStage.Cell.hR_hypOne R σ J x x
   have ht : tailH (cvec R σ J x v) = fun i => v 0 * tailH x i + tailH v i := rfl
-  rw [hR_hypOne, ht, hR_comb_right]
+  rw [GlobalTheory.CompanionTheory.WeilSiegel.HypStage.Cell.hR_hypOne, ht, hR_comb_right]
   simp only [cvec, vH_zero, vH_one]
   linear_combination (v 1 - tHalf R σ J x * v 0 - hR R σ J (tailH x) (tailH v)) * e1 - v 0 * e3 - v 0 * e4
 
@@ -440,10 +428,10 @@ theorem hR_cvec_cvec (h2 : (2 : F) ≠ 0) (σ : E →ₐ[F] E) (hσ : ∀ e, σ 
   have e3 : tHalf R σ J x + tHalf R σ J x = hR R σ (hypOne J) x x := by
     unfold tHalf
     rw [← add_mul, halfR_add_halfR R h2, one_mul]
-  have e4 := hR_hypOne R σ J x x
+  have e4 := GlobalTheory.CompanionTheory.WeilSiegel.HypStage.Cell.hR_hypOne R σ J x x
   have htv : tailH (cvec R σ J x v) = fun i => v 0 * tailH x i + tailH v i := rfl
   have htw : tailH (cvec R σ J x w) = fun i => w 0 * tailH x i + tailH w i := rfl
-  rw [hR_hypOne, hR_hypOne R σ J v w, htv, htw, hR_comb_left, hR_comb_right, hR_comb_right]
+  rw [GlobalTheory.CompanionTheory.WeilSiegel.HypStage.Cell.hR_hypOne, GlobalTheory.CompanionTheory.WeilSiegel.HypStage.Cell.hR_hypOne R σ J v w, htv, htw, hR_comb_left, hR_comb_right, hR_comb_right]
   simp only [cvec, vH_zero, vH_one, map_add (f := _), map_sub, map_mul, sigR_tHalf R σ hσ J hJ,
     sigR_hR R σ hσ J hJ]
   linear_combination
@@ -466,7 +454,7 @@ theorem gramR_chartS : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [Num
     ring
   · change hR R σ (hypOne J) (cvec R σ J (x 0) (vH (a 0 i) (s 0 i - tHalf R σ J (x 0) * a 0 i) (Y i)))
       (cvec R σ J (x 0) (vH (a 0 j) (s 0 j - tHalf R σ J (x 0) * a 0 j) (Y j))) = hR R σ J (Y i) (Y j) + _
-    rw [hR_cvec_cvec R h2 σ hσ J hJ.1 _ _ _ hu, hR_hypOne]
+    rw [hR_cvec_cvec R h2 σ hσ J hJ.1 _ _ _ hu, GlobalTheory.CompanionTheory.WeilSiegel.HypStage.Cell.hR_hypOne]
     simp only [vH_zero, vH_one, tailH_vH, map_sub, map_mul, sigR_tHalf R σ hσ J hJ.1]
     linear_combination (-(sigR R σ (a 0 i) * a 0 j)) * e3
 

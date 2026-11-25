@@ -1246,15 +1246,11 @@ theorem isPsh_add {d : ℕ} {U : Set (Fin d → ℂ)} {φ ψ : (Fin d → ℂ) �
   rw [e]
   linarith
 
-theorem isPsh_zero {d : ℕ} (U : Set (Fin d → ℂ)) (c : ℝ) : IsPsh U (fun _ => c) := by
-  refine ⟨upperSemicontinuousOn_const, fun z w _ => ⟨circleIntegrable_const c 0 1, ?_⟩⟩
-  rw [Real.circleAverage_const]
-
 theorem isPsh_sum {d : ℕ} {U : Set (Fin d → ℂ)} {ι : Type} (S : Finset ι) {f : ι → (Fin d → ℂ) → ℝ}
     (h : ∀ i ∈ S, IsPsh U (f i)) : IsPsh U (fun z => ∑ i ∈ S, f i z) := by
   classical
   induction S using Finset.induction_on with
-  | empty => simpa using isPsh_zero U 0
+  | empty => simpa using GroundTheory.Heights₂.Heights.Regular.isPsh_const U 0
   | insert a S ha ih =>
     have := isPsh_add (h a (Finset.mem_insert_self a S)) (ih fun i hi => h i (Finset.mem_insert_of_mem hi))
     refine _root_.GroundTheory.Heights₂.Heights.Regular.isPsh_congr (fun z _ => ?_) this
@@ -1447,7 +1443,7 @@ theorem phi_isPsh_continuous : ∀ (E : Type) [Field E] [NumberField E] [IsCMFie
     have hV₀ : ∀ τ, V₀ ⊆ V τ := fun τ x hx => Set.mem_iInter.1 hx.2 τ
     refine ⟨V₀, hV₀o, ⟨ht₀W, Set.mem_iInter.2 ht₀V⟩, ?_⟩
     have hs := isPsh_add (isPsh_sum Finset.univ fun τ _ => GlobalTheory.CompanionTheory.AnForm.PshLocal.isPsh_mono (hV₀ τ) (hVp τ))
-      (isPsh_zero V₀ (Real.log idx))
+      (GroundTheory.Heights₂.Heights.Regular.isPsh_const V₀ (Real.log idx))
     exact _root_.GroundTheory.Heights₂.Heights.Regular.isPsh_congr (fun t ht => (hlog t (hWU ht.1)).symm) hs
   · have hHm : ∀ i j, ContinuousOn (fun t => (R t).Hm i j) U := by
       intro i j

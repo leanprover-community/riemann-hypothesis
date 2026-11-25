@@ -43,7 +43,6 @@ import Mathlib.CategoryTheory.Monoidal.Opposite.Mon
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj IsLocalRing NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open scoped CategoryTheory.Obj
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.Mum
 
 namespace GlobalTheory.Mum
@@ -68,11 +67,6 @@ theorem intElem_pow_mul_of_away {R S Rt St : Type} [CommRing R] [CommRing S] [Co
   have hr : IsIntegral R (f t) := f.isIntegralElem_map
   obtain ⟨n, hn⟩ := IsLocalization.Away.exists_isIntegral_mul_of_isIntegral_algebraMap (R := R) (Sₘ := St) hr ha
   exact ⟨n + a, by rw [pow_add, _root_.mul_assoc]; exact hn⟩
-
-theorem isIntegralElem_of_comp {A B C : Type} [CommRing A] [CommRing B] [CommRing C] (f : A →+* B)
-    (g : B →+* C) {y : C} (h : (g.comp f).IsIntegralElem y) : g.IsIntegralElem y := by
-  obtain ⟨p, hp, h⟩ := h
-  exact ⟨p.map f, hp.map f, by rw [Polynomial.eval₂_map]; exact h⟩
 
 theorem chartVal_isIntegral_of_intAt : ∀ {X Y : Scheme.{0}} (L : LB X) (α : Y ⟶ X) (k : ℕ) (s : SecK L α k)
     (j : L.ι) (W : X.Opens) (hW : W ≤ L.U j), IsAffineOpen W → IsAffineOpen (α ⁻¹ᵁ W) →
@@ -136,7 +130,7 @@ theorem chartVal_isIntegral_of_intAt : ∀ {X Y : Scheme.{0}} (L : LB X) (α : Y
             (α.appLE _ _ hED).hom.comp (X.presheaf.map (homOfLE hDW').op).hom := by
           rw [← CommRingCat.hom_comp, ← CommRingCat.hom_comp, Scheme.Hom.map_appLE]; rfl
         rw [e1] at h1
-        have h2 := isIntegralElem_of_comp _ _ h1
+        have h2 := RingHom.isIntegralElem.of_comp _ _ h1
         convert h2 using 1
         exact (_root_.ReciprocityTheory.ChartRestriction.G.Semi.LBVal.rres _ _ _).trans (_root_.ReciprocityTheory.ChartRestriction.G.Semi.LBVal.rres _ _ _).symm
   change F ∈ (integralClosure Γ(X, W) Γ(Y, α ⁻¹ᵁ W)).toSubmodule

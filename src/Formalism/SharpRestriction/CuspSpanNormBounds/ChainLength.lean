@@ -50,8 +50,6 @@ open NumberField IsDedekindDomain Formalism.MainNotions.S Formalism.MainNotions.
 open scoped BigOperators ComplexOrder
 open Classical
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : Formalism.BasicNotions.D7}
 
 section LocalTheory

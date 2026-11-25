@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemLocalSubringGenericPoint
 public import Development.AbelianVarietyTheory.Definitions.Divisors.NefFibOfIsNef
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -55,17 +56,7 @@ variable {k : Type} [CommRing k] {X Z : Scheme.{0}} {p : X ⟶ Sp k} {D : ℕ}
 
 theorem isClosed_of_ne_genericPoint [IsIntegral Z] (hd : topologicalKrullDim Z = 1) {z : Z}
     (hz : z ≠ genericPoint Z) : IsClosed ({z} : Set Z) := by
-  rcases Order.krullDim_le_one_iff.1 (show Order.krullDim (IrreducibleCloseds Z) ≤ 1 from hd.le)
-    ⟨closure {z}, isIrreducible_singleton.closure, isClosed_closure⟩ with h | h
-  · refine isClosed_of_closure_subset fun w hw => ?_
-    have h₁ : (⟨closure {w}, isIrreducible_singleton.closure, isClosed_closure⟩ : IrreducibleCloseds Z) ≤
-        ⟨closure {z}, isIrreducible_singleton.closure, isClosed_closure⟩ :=
-      closure_minimal (Set.singleton_subset_iff.2 hw) isClosed_closure
-    have h₂ : z ∈ closure {w} := h h₁ (subset_closure rfl)
-    exact ((specializes_iff_mem_closure.2 h₂).antisymm (specializes_iff_mem_closure.2 hw)).eq
-  · exact absurd (IsGenericPoint.eq (Set.eq_univ_of_univ_subset (@h
-      ⟨Set.univ, IrreducibleSpace.isIrreducible_univ Z, isClosed_univ⟩ (Set.subset_univ _)))
-      (genericPoint_spec Z)) hz
+  apply _root_.GlobalTheory.ProperCurve.isClosed_singleton <;> assumption
 
 theorem charZero_residueField_genericPoint [IsIntegral Z] (hc : CharZero Γ(Z, ⊤)) :
     CharZero (Z.residueField (genericPoint Z)) := by

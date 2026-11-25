@@ -71,27 +71,6 @@ def locSub {S L : Type} [CommRing S] [Field L] (φ : S →+* L) (W : Ideal S) [h
     rintro x ⟨a, s, hs, h⟩
     exact ⟨-a, s, hs, by rw [map_neg, ← h]; ring⟩
 
-private theorem isIntegral_of_mem_all_valuationSubrings {L : Type} [Field L] (A : Subring L) (x : L)
-    (h : ∀ V : ValuationSubring L, A ≤ V.toSubring → x ∈ V) : IsIntegral A x := by
-  obtain rfl | hx0 := eq_or_ne x 0
-  · exact isIntegral_zero
-  have hxi : x⁻¹ ≠ 0 := inv_ne_zero hx0
-  letI : Invertible x⁻¹ := invertibleOfNonzero hxi
-  let B := Algebra.adjoin A {x⁻¹}
-  let xinv : B.toSubring := ⟨x⁻¹, Algebra.subset_adjoin rfl⟩
-  by_contra hni
-  have hne : Ideal.span {xinv} ≠ ⊤ := by
-    intro eq
-    apply hni
-    obtain ⟨p, hp, hpx⟩ := Algebra.exists_aeval_invOf_eq_zero_of_idealMap_adjoin_sup_span_eq_top
-      (x⁻¹) (⊥ : Ideal A) bot_ne_top (top_unique <| eq.ge.trans le_add_self)
-    refine ⟨p, by simpa [Polynomial.Monic, sub_eq_zero] using hp, ?_⟩
-    simpa [Polynomial.aeval_def] using hpx
-  obtain ⟨V, hAV, hV⟩ := Ideal.image_subset_nonunits_valuationSubring _ hne
-  have h1 : x⁻¹ ∈ V.nonunits := hV ⟨xinv, Ideal.subset_span rfl, rfl⟩
-  have hBV : A ≤ V.toSubring := fun a ha => hAV (B.algebraMap_mem ⟨a, ha⟩)
-  exact ((V.inv_mem_nonunits_iff.mp h1).resolve_left hx0) (h V hBV)
-
 theorem exists_rel {S L : Type} [CommRing S] [Field L] (φ : S →+* L) (W : Ideal S) [hW : W.IsPrime]
     (hk : ∀ s, s ∉ W → φ s ≠ 0) (f g : S) (hg : φ g ≠ 0)
     (h : ∀ V : ValuationSubring L, (∀ a, φ a ∈ V) → (∀ s, s ∉ W → (φ s)⁻¹ ∈ V) → φ f / φ g ∈ V) :
@@ -101,8 +80,12 @@ theorem exists_rel {S L : Type} [CommRing S] [Field L] (φ : S →+* L) (W : Ide
   have h1W : (1 : S) ∉ W := (Ideal.ne_top_iff_one W).1 hW.ne_top
   have himg : ∀ a, φ a ∈ A := fun a => ⟨a, 1, h1W, by simp⟩
   set x := φ f / φ g with hx
-  have hint : IsIntegral A x := isIntegral_of_mem_all_valuationSubrings A x fun V hV =>
-    h V (fun a => hV (himg a)) fun s hs => hV ⟨1, s, hs, by rw [map_one]; exact inv_mul_cancel₀ (hk s hs)⟩
+  have hint : IsIntegral A x := by
+    have hmem :
+        x ∈ ⨅ V : {V : ValuationSubring L // (A : Set L) ⊆ V.toSubring}, V.val.toSubring :=
+      Subring.mem_iInf.mpr fun ⟨V, hV⟩ => h V (fun a => hV (himg a))
+        fun s hs => hV ⟨1, s, hs, by rw [map_one]; exact inv_mul_cancel₀ (hk s hs)⟩
+    rwa [_root_.iInf_valuationSubring_superset, Subring.closure_eq] at hmem
   obtain ⟨p, hpm, hpx⟩ := hint
   have hpx' : Polynomial.aeval x p = 0 := by rwa [Polynomial.aeval_def]
   set n := p.natDegree with hn

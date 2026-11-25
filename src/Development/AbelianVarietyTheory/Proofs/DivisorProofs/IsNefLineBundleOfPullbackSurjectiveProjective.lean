@@ -293,7 +293,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelA
 open GlobalTheory.OrbitSep
 open GlobalTheory.QCoh
 
-set_option autoImplicit false
 noncomputable section
 namespace GlobalTheory.ClosureDim
 
@@ -405,7 +404,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelA
 open GlobalTheory.OrbitSep
 open GlobalTheory.QCoh
 
-set_option autoImplicit false
 noncomputable section
 namespace GlobalTheory.NefDescent
 

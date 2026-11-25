@@ -46,8 +46,6 @@ namespace GlobalTheory.LiftRef
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.L2 Formalism.L2.Host Formalism.L2.NT Formalism.IndefR.NX NumberField IsDedekindDomain GlobalTheory.Mem GlobalTheory.Mem.Col2
   GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.R3 GlobalTheory.Mem.R3.Rw GlobalTheory.HeightCounting GlobalTheory.HeightCounting.Up Formalism.AUTREP
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 def autOf {D : D7} {μt : D.what₂.Tup} {j : ℕ} (Mr : MtReal D μt j) (S : Submodule ℂ (GAf D.host.E D.R.nV → Mr.wt.W))
     (hS : NG.IsIrrRep Mr.wt.ρ S) : NG.AutRep D.host.E D.R.nV :=
   { Mr.wt with S := S, irrS := hS }

@@ -3,6 +3,7 @@ module
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsRestTail
 import Mathlib.RingTheory.RegularLocalRing.Defs
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MultihomogeneousIdeals.ExistsMonomialNotMem
+import GroundTheory.HeightsAndTheta.Heights.BlockScaling
 
 @[expose] public section
 
@@ -71,23 +72,8 @@ variable {Ω : Type} [Field Ω] [Algebra F Ω]
 
 theorem mConeMapOver_of_isMultiHomog (y : (Σ k, ι k) → Ω) {g : MRingOver F ι} {d : K → ℕ}
     (hg : IsMultiHomog g d) :
-    mConeMapOver F y g = MvPolynomial.C (aeval y g) * ∏ k, (MvPolynomial.X k : MvPolynomial K Ω) ^ d k := by
-  classical
-  conv_lhs => rw [g.as_sum]
-  conv_rhs => rw [g.as_sum]
-
-  rw [map_sum, map_sum, map_sum, Finset.sum_mul]
-  refine Finset.sum_congr rfl fun m hm => ?_
-  have hX : ∏ p : (Σ k, ι k), (MvPolynomial.X p.1 : MvPolynomial K Ω) ^ m p = ∏ k, MvPolynomial.X k ^ d k := by
-    rw [Fintype.prod_sigma]
-    refine Finset.prod_congr rfl fun k _ => ?_
-    show ∏ i, (MvPolynomial.X k : MvPolynomial K Ω) ^ m ⟨k, i⟩ = _
-    rw [Finset.prod_pow_eq_pow_sum, hg m hm k]
-  simp only [mConeMapOver, aeval_monomial]
-  rw [Finsupp.prod_fintype _ _ (fun i => by simp), Finsupp.prod_fintype _ _ (fun i => by simp)]
-  simp only [mul_pow, Finset.prod_mul_distrib, hX, map_mul, map_prod, map_pow,
-    MvPolynomial.algebraMap_apply]
-  ring
+    mConeMapOver F y g = MvPolynomial.C (aeval y g) * ∏ k, (MvPolynomial.X k : MvPolynomial K Ω) ^ d k :=
+  BlockScaling.aeval_cone_block y hg
 
 theorem mem_mIdealOver_iff (y : (Σ k, ι k) → Ω) {g : MRingOver F ι} {d : K → ℕ} (hg : IsMultiHomog g d) :
     g ∈ mIdealOver F y ↔ aeval y g = 0 := by

@@ -1730,7 +1730,7 @@ theorem rowLay_of (l : Lv4 𝒮 K w Z) (Y : DivX (w.D Z)) (hMj : MjAre l.what₂
     idx := l.what₂.idx Y hMj
     kapR_def := hk _ }
 
-theorem stepW_core (_h2b : StandardLattice.SiegelMassRatioCM) : ∀ 𝒮 : Slots, AmbEx 𝒮 → DivEx 𝒮 → ThEx 𝒮 →
+theorem stepW_core : ∀ 𝒮 : Slots, AmbEx 𝒮 → DivEx 𝒮 → ThEx 𝒮 →
     StepW (pinAnd (Has4 𝒮)) (HasC (BuiltE 𝒮)) := by
   intro 𝒮 hA hD hT
   have hp : StepW (pinAnd (Has4 𝒮)) Pinned := StepW.of_all fun _ _ _ _ _ _ _ h => h.1

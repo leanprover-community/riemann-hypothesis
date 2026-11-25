@@ -57,8 +57,6 @@ open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU
 open Formalism.MainNotions.SchurIrreducible (IsSplit)
 open scoped TensorProduct
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 def SplitsCompletely (D : D7) (p : ℕ) : Prop :=

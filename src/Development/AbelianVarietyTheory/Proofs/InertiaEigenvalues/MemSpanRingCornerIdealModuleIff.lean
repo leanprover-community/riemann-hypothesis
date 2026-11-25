@@ -88,19 +88,7 @@ variable {Γ X A : Type} [Group Γ] [CommRing A] {n : ℕ}
   (T : Subalgebra A (X → A)) (rep : X → (Γ →* GL (Fin n) A)) in
 theorem _root_.GlobalTheory.SpanRing.mem_ringR (a : X → Matrix (Fin n) (Fin n) A) :
     a ∈ _root_.GlobalTheory.SpanRing.ringR T rep ↔ _root_.GlobalTheory.IndefiniteRowSideFullHecke.CongruenceModuleMatrices.InRing T rep a := by
-  show a ∈ Submodule.span A (_root_.GlobalTheory.SpanRing.gens T rep) ↔ _
-  unfold _root_.GlobalTheory.IndefiniteRowSideFullHecke.CongruenceModuleMatrices.InRing
-  rw [Submodule.mem_span_set']
-  constructor
-  · rintro ⟨m, c, g, rfl⟩
-    choose F hF h hg using fun k => (g k).2
-    refine ⟨m, fun k => c k • F k, h, fun k => T.smul_mem (hF k) (c k), ?_⟩
-    refine Finset.sum_congr rfl fun k _ => ?_
-    rw [hg k]
-    funext x
-    simp [mul_smul]
-  · rintro ⟨m, F, h, hF, rfl⟩
-    exact ⟨m, fun _ => 1, fun k => ⟨_, F k, hF k, h k, rfl⟩, by simp⟩
+  exact (_root_.GlobalTheory.SpanRing.inRing_iff_mem_span T rep a).symm
 
 variable {T rep}
 

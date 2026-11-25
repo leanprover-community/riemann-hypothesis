@@ -85,11 +85,6 @@ namespace GlobalTheory.AnnihBox
 
 variable {D : D7}
 
-def cALin (D : D7) : AE D →ₗ[AF D.host.F] AE D where
-  toFun := cA D
-  map_add' := map_add _
-  map_smul' := _root_.GlobalTheory.FinTranslate.cA_smul
-
 alias continuous_cA' := _root_.GlobalTheory.FockCompare.ThetaCont.continuous_conj
 
 theorem infPart_cA_eq (a : AE D) : infPart D (cA D a) = sigR (Ainf D.host.F) D.sp.cm.sig (infPart D a) := by

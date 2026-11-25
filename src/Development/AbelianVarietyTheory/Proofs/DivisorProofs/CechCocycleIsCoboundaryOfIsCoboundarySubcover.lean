@@ -49,8 +49,6 @@ open AlgebraicGeometry CategoryTheory Limits NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.LogKS Formalism.L2.Pj
 open GlobalTheory.CatCoh GlobalTheory.CechDR GlobalTheory.CechFin
 
-set_option autoImplicit false
-
 namespace GlobalTheory.CechFin
 
 theorem isCob_of_isCob_subcover (Z : Scheme.{0}) (J : Type) (W : J → Z.Opens) (S : Set J)

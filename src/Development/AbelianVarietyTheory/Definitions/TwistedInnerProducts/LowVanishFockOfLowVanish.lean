@@ -54,8 +54,6 @@ open scoped ENNReal ComplexOrder
 
 namespace GlobalTheory.ChainFr.Model
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 theorem exists_sign_frame {n : ℕ} {G : Matrix (Fin n) (Fin n) ℂ} (hG : G.IsHermitian) (hu : IsUnit G.det) :

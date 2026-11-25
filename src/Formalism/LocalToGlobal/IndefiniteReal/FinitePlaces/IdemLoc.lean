@@ -16,8 +16,6 @@ open scoped TensorProduct
 
 namespace Formalism.IndefR.Fin
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Loc
 
 variable {F : Type} [Field F] [NumberField F] (v : HeightOneSpectrum (𝓞 F))

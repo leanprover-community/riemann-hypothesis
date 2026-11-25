@@ -143,9 +143,6 @@ def uGL {P : Fin n → Fin n → Prop} [∀ i j, Decidable (P i j)] (hP : ∀ i 
     (f : {p : Fin n × Fin n // P p.1 p.2} → κ) : GL (Fin n) κ :=
   Matrix.GeneralLinearGroup.mk'' (uMat P f) (by rw [uMat_det hP]; exact isUnit_one)
 
-theorem uGL_val {P : Fin n → Fin n → Prop} [∀ i j, Decidable (P i j)] (hP : ∀ i j, P i j → i < j)
-    (f : {p : Fin n × Fin n // P p.1 p.2} → κ) : (uGL hP f : Matrix (Fin n) (Fin n) κ) = uMat P f := rfl
-
 def uSet (κ : Type) [CommRing κ] (P : Fin n → Fin n → Prop) : Set (GL (Fin n) κ) :=
   {M | (∀ i, (M : Matrix (Fin n) (Fin n) κ) i i = 1) ∧ ∀ i j, i ≠ j → ¬ P i j → (M : Matrix (Fin n) (Fin n) κ) i j = 0}
 
@@ -196,104 +193,6 @@ theorem card_HU (κ : Type) [CommRing κ] (k : ℕ) : Nat.card ↥(HU κ k) = Na
   rw [h1, card_uSet (fun _ _ h => h)]
   congr 1
   exact _root_.Formalism.LogVandermondeBounds.StandardLattice.card_lt_pairs k
-
-theorem uGL_mem_uniUT {a : ℕ} (bl : List ℕ) {P : Fin n → Fin n → Prop} [∀ i j, Decidable (P i j)]
-    (hP : ∀ i j, P i j → i < j) (hPa : ∀ i j, P i j → j.val < a) (f : {p : Fin n × Fin n // P p.1 p.2} → κ) :
-    uGL hP f ∈ uniUT n κ a bl := by
-  show uGL hP f ∈ btG n κ (fine a bl) ∧ ∀ i : Fin n, i.val < a → (uGL hP f : Matrix (Fin n) (Fin n) κ) i i = 1
-  refine ⟨?_, fun i _ => by rw [uGL_val]; exact uMat_diag P f i⟩
-  show (uGL hP f : Matrix (Fin n) (Fin n) κ).BlockTriangular (fun i => fine a bl i.val)
-  intro i j hij
-  rw [uGL_val]
-  have hne : i ≠ j := fun e => by subst e; exact lt_irrefl _ hij
-  refine uMat_neg f hne (fun hp => ?_)
-  have h1 := hP i j hp
-  have h2 := hPa i j hp
-  have h3 : i.val < a := lt_trans (show i.val < j.val from h1) h2
-  have hij' := (fine_lt_right (bl := bl) h3).mp hij
-  exact absurd hij' (not_lt.mpr (le_of_lt h1))
-
-theorem detChar_uGL (χ : ℕ → κˣ →* Kˣ) {a : ℕ} (bl : List ℕ) {P : Fin n → Fin n → Prop} [∀ i j, Decidable (P i j)]
-    (hP : ∀ i j, P i j → i < j) (hPa : ∀ i j, P i j → j.val < a) (f : {p : Fin n × Fin n // P p.1 p.2} → κ) :
-    detChar χ n a bl ⟨uGL hP f, uniUT_le_blockUT n κ a bl (uGL_mem_uniUT bl hP hPa f)⟩ = 1 := by
-  unfold detChar
-  rw [MonoidHom.finsetProd_apply]
-  apply Finset.prod_eq_one
-  intro s _
-  rw [MonoidHom.comp_apply]
-  have hb : blkDet n κ (coarse a bl) (s + 1) ⟨uGL hP f, uniUT_le_blockUT n κ a bl (uGL_mem_uniUT bl hP hPa f)⟩ = 1 := by
-    apply Units.ext
-    change Matrix.det ((uGL hP f : Matrix (Fin n) (Fin n) κ).toSquareBlock (fun i => coarse a bl i.val) (s + 1)) = (1 : κ)
-    have hI : (uGL hP f : Matrix (Fin n) (Fin n) κ).toSquareBlock (fun i => coarse a bl i.val) (s + 1) = 1 := by
-      ext i j
-      simp only [Matrix.toSquareBlock_def, Matrix.of_apply, uGL_val, Matrix.one_apply]
-      split_ifs with h
-      · rw [h]; exact uMat_diag P f _
-      · refine uMat_neg f (fun e => h (Subtype.ext e)) (fun hp => ?_)
-        have h1 := hPa _ _ hp
-        have h3 : coarse a bl (j : Fin n).val = 0 := by simp only [coarse, blkIdx, if_pos h1]
-        have h4 : coarse a bl (j : Fin n).val = s + 1 := j.2
-        omega
-    rw [hI, Matrix.det_one]
-  rw [hb, map_one]
-
-theorem lamGen_val_of_det (ψ : AddChar κ K) (χ : ℕ → κˣ →* Kˣ) {a : ℕ} (bl : List ℕ) (S : Finset ℕ) (M : ↥(uniUT n κ a bl))
-    (hd : detChar χ n a bl ⟨M.1, uniUT_le_blockUT n κ a bl M.2⟩ = 1) :
-    ((lamGen ψ χ n a bl S M : Kˣ) : K) = ψ (supSum a S (M.1 : Matrix (Fin n) (Fin n) κ)) := by
-  unfold lamGen
-  rw [MonoidHom.mul_apply, MonoidHom.comp_apply]
-  have hi : Subgroup.inclusion (uniUT_le_blockUT n κ a bl) M = ⟨M.1, uniUT_le_blockUT n κ a bl M.2⟩ := rfl
-  rw [hi, hd, mul_one]
-  rfl
-
-theorem supSum_elem {a : ℕ} (S : Finset ℕ) (i₀ j₀ : Fin n) (h₀ : i₀.val + 1 = j₀.val) (ha : j₀.val < a) (hS : i₀.val ∈ S) (c : κ) :
-    supSum a S (uMat (fun i j : Fin n => i = i₀ ∧ j = j₀) (fun _ => c)) = c := by
-  unfold supSum
-  rw [Finset.sum_eq_single i₀, Finset.sum_eq_single j₀]
-  · rw [if_pos ⟨h₀, ha, hS⟩, uMat_pos _ (fun e => by rw [e] at h₀; omega) ⟨rfl, rfl⟩]
-  · intro j _ hj
-    split_ifs with h
-    · exact uMat_neg _ (fun e => by rw [e] at h; exact absurd h.1 (by omega)) (fun hp => hj hp.2)
-    · rfl
-  · intro h; exact absurd (Finset.mem_univ _) h
-  · intro i _ hi
-    apply Finset.sum_eq_zero
-    intro j _
-    split_ifs with h
-    · exact uMat_neg _ (fun e => by rw [e] at h; exact absurd h.1 (by omega)) (fun hp => hi hp.1)
-    · rfl
-  · intro h; exact absurd (Finset.mem_univ _) h
-
-theorem lamGen_elem (ψ : AddChar κ K) (χ : ℕ → κˣ →* Kˣ) {a : ℕ} (bl : List ℕ) (S : Finset ℕ) (i₀ j₀ : Fin n)
-    (h₀ : i₀.val + 1 = j₀.val) (ha : j₀.val < a) (hS : i₀.val ∈ S) (c : κ) :
-    ∃ M : ↥(uniUT n κ a bl), ((lamGen ψ χ n a bl S M : Kˣ) : K) = ψ c := by
-  have hP : ∀ i j : Fin n, (i = i₀ ∧ j = j₀) → i < j := by
-    rintro i j ⟨rfl, rfl⟩; show i.val < j.val; omega
-  have hPa : ∀ i j : Fin n, (i = i₀ ∧ j = j₀) → j.val < a := by
-    rintro i j ⟨rfl, rfl⟩; exact ha
-  refine ⟨⟨uGL hP (fun _ => c), uGL_mem_uniUT bl hP hPa _⟩, ?_⟩
-  rw [lamGen_val_of_det ψ χ bl S ⟨uGL hP (fun _ => c), uGL_mem_uniUT bl hP hPa _⟩ (detChar_uGL χ bl hP hPa _)]
-  congr 1
-  exact supSum_elem S i₀ j₀ h₀ ha hS c
-
-theorem lamGen_ne_one {ψ : AddChar κ K} (hψ : ψ ≠ 1) (χ : ℕ → κˣ →* Kˣ) {a : ℕ} (bl : List ℕ) {S : Finset ℕ} {i₀ : ℕ}
-    (hS : i₀ ∈ S) (ha : i₀ + 1 < a) (han : a ≤ n) : lamGen ψ χ n a bl S ≠ 1 := by
-  intro h
-  obtain ⟨c, hc⟩ : ∃ c, ψ c ≠ 1 := by
-    by_contra hcon
-    push_neg at hcon
-    exact hψ (DFunLike.ext _ _ fun x => (hcon x).trans (AddChar.one_apply x).symm)
-  obtain ⟨M, hM⟩ := lamGen_elem ψ χ bl S (⟨i₀, by omega⟩ : Fin n) (⟨i₀ + 1, by omega⟩ : Fin n) rfl ha hS c
-  rw [h, MonoidHom.one_apply, Units.val_one] at hM
-  exact hc hM.symm
-
-theorem lamX_ne_one {ψ : AddChar κ K} (hψ : ψ ≠ 1) (χ : ℕ → κˣ →* Kˣ) {k : ℕ} (m t j : ℕ) (hk : 2 ≤ k) (hn : k + j ≤ n) :
-    lamX ψ χ n k m t j ≠ 1 := by
-  unfold lamX
-  refine lamGen_ne_one hψ χ _ (i₀ := 0) ?_ (by omega) hn
-  unfold SX
-  simp only [Finset.mem_filter, Finset.mem_range]
-  exact ⟨by omega, Or.inl (by omega)⟩
 
 end Uni
 

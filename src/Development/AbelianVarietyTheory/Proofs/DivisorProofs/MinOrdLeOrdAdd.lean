@@ -46,8 +46,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory GlobalTheory.Cartier GlobalTheory.TopForm GlobalTheory.Discrepancy GlobalTheory.FieldPair
 open scoped TensorProduct
 
-set_option autoImplicit false
-
 namespace GlobalTheory.FieldPair.Place
 
 variable {k K : Type} [Field k] [Field K] {c : k →+* K}

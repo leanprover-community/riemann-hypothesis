@@ -91,8 +91,6 @@ def LocTwo : Prop :=
       l (fun Y => oneO k n d (Y * torus i₀ i₁ ((ϖ : k) ^ m))) =
         x * ((GlobalTheory.SplitWeil.resCard k : ℂ) * r) ^ (-(m : ℤ)) * ∑ i ∈ Finset.range (2 * m - c + 1).toNat, r ^ i
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 def VacBar : Prop :=
   ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (B : Base F E) (n d : ℕ) (X : Spc F E n) (W : Spc F E d)
     (M : Model σ X W) r s r' s', B.IsGood σ → X.IsHerm σ B r s → W.IsSkew σ B r' s' → M.IsGood B.ψ →

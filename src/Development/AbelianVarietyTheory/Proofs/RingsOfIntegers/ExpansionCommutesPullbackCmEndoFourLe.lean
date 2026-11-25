@@ -71,8 +71,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 attribute [local instance] Over.cartesianMonoidalCategory
 open scoped CategoryTheory.Obj
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.GenericUnitValue

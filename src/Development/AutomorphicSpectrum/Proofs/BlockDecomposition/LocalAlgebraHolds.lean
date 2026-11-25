@@ -53,8 +53,6 @@ open NumberField IsDedekindDomain Matrix Filter
 open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC GlobalTheory.BCT GlobalTheory.TwTrLin PositivityTheory.Rg.BcB.F.Eig
 open scoped Classical Pointwise
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace GlobalTheory.CompanionTheory.LocHecke
 
 section Generic

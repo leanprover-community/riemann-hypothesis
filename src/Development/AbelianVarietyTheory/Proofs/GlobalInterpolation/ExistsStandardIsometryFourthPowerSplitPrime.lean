@@ -599,7 +599,7 @@ theorem denom_prime_to : ∀ (D : D7) (cc : Ideal (𝓞 D.host.K)) (δ : ℂ) (B
   have hc : n • (w₀ * D.host.φ₀ ((G (B.γ₀.g x) w : D.host.K) : D.host.E)) ∈ B.L.lattice := by
     have := hS w (Set.mem_univ w)
     simpa using this
-  obtain ⟨c, -, hc'⟩ := Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.FL.lam_mem D cc δ _ ((Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.SO.mem_iff B _).1 hc)
+  obtain ⟨c, -, hc'⟩ := Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.FL.lam_mem D cc δ _ ((GlobalTheory.FourthRootStd.mem_iff B _).1 hc)
   have hC : D.host.φ₀ (((((n * N : ℕ) : D.host.K) * G (B.γ₀.g x) w : D.host.K) : D.host.E)) = D.host.φ₀ ((c : D.host.K) : D.host.E) := by
     apply mul_left_cancel₀ hδ
     rw [← hc', hw₀]
@@ -661,7 +661,7 @@ theorem inverseIsometry_fourfoldLattice_denominator_coprime : ∀ (D : D7) (cc :
   have hSd : Formalism.L2.Th1.H.IsSelfDual (Formalism.L2.Th1.H.stdH B.L (Fin 4 × D.what₂.Tau)) S :=
     _root_.Formalism.L2.Th1.H.StdSelfDual_proof B.L _
   have hMd : Formalism.L2.Th1.H.IsSelfDual (Formalism.L2.Th1.H.stdH B.L (Fin 4 × D.what₂.Tau)) M :=
-    Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.SO.selfDual_img _ _ u hu _ (Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.SO.selfDual B hcc hδ12)
+    Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.SO.selfDual_img _ _ u hu _ (GlobalTheory.FourthRootStd.selfDual B hcc hδ12)
   have heq : Formalism.L2.Th1.H.relIdx S M = Formalism.L2.Th1.H.relIdx M S :=
     Formalism.L2.Th1.H.indexEq _ _ (Formalism.L2.Th1.H.stdHBasic B.L _).2.1 S M hSd hMd hidx hidx'
   set n := Formalism.L2.Th1.H.relIdx M S with hn
@@ -682,7 +682,7 @@ theorem inverseIsometry_fourfoldLattice_denominator_coprime : ∀ (D : D7) (cc :
   have hz : (δ * (N : ℂ)) • V ∈ S := by
     rw [hS, Formalism.L2.Th1.H.mem_stdLat]
     intro w
-    rw [Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.SO.mem_iff B]
+    rw [GlobalTheory.FourthRootStd.mem_iff B]
     refine AddSubgroup.subset_closure ⟨(N : 𝓞 D.host.K) * o w, cc.mul_mem_right _ hNc, ?_⟩
     simp only [hV, Pi.smul_apply, smul_eq_mul, ← ho w]
     push_cast
@@ -812,7 +812,7 @@ theorem unitary_maps_rational : ∀ (D : D7) (cc : Ideal (𝓞 D.host.K)) (δ : 
     exact this
 
   set y := B.γ₀.g.symm v with hy
-  obtain ⟨t, ht, hint⟩ := Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.SO.exists_nat_mul D.host.E (Finset.univ.image y)
+  obtain ⟨t, ht, hint⟩ := GlobalTheory.FourthRootStd.exists_nat_mul D.host.E (Finset.univ.image y)
   set N := Ideal.absNorm cc with hNdef
   have hN : N ≠ 0 := by
     rw [hNdef, Ne, Ideal.absNorm_eq_zero_iff]; exact hcc.1
@@ -821,7 +821,7 @@ theorem unitary_maps_rational : ∀ (D : D7) (cc : Ideal (𝓞 D.host.K)) (δ : 
     refine AddSubgroup.subset_closure ⟨(N : 𝓞 D.host.K), hNc, ?_⟩
     simp
   have hm : (δ * (N : ℂ)) • emb4 D (t • y) ∈ Formalism.L2.Th1.H.pow4 B.lamM :=
-    Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.SO.gen_mem hw₀ fun a => Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.SO.int_mem_inverse_half_different (by
+    Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.SO.gen_mem hw₀ fun a => GlobalTheory.FourthRootStd.int_mem_inverse_half_different (by
       have := hint _ (Finset.mem_image.2 ⟨a, Finset.mem_univ _, rfl⟩)
       simpa using this)
   set V : Fin 4 × D.what₂.Tau → ℂ := fun w => D.host.φ₀ ((v w : D.host.K) : D.host.E) with hV
@@ -836,7 +836,7 @@ theorem unitary_maps_rational : ∀ (D : D7) (cc : Ideal (𝓞 D.host.K)) (δ : 
   have hS' := h1 _ hmem
   rw [hS, Formalism.L2.Th1.H.mem_stdLat] at hS'
   have hc : ∀ w, ∃ c ∈ cc, ((n • ((δ * (N : ℂ) * (t : ℂ)) • u V)) w) = δ * D.host.φ₀ (((c : 𝓞 D.host.K) : D.host.K) : D.host.E) :=
-    fun w => Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.FL.lam_mem D cc δ _ ((Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.SO.mem_iff B _).1 (hS' w))
+    fun w => Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.FL.lam_mem D cc δ _ ((GlobalTheory.FourthRootStd.mem_iff B _).1 (hS' w))
   choose c _ hc using hc
   have hnC : (n : ℂ) ≠ 0 := by exact_mod_cast hidx
   have hNC : (N : ℂ) ≠ 0 := by exact_mod_cast hN
@@ -1018,8 +1018,8 @@ theorem selfDual_fourfold_curveIdeal_lattice (hcc : TaylorLogMetric.IsCurveIdeal
   have h := ((B.latAll hcc hδ (base_linkage_nonempty D cc δ B)).1 2 2 _ _
     (Formalism.MainNotions.GlobalTheoryTheory.Inhab.Adm_std D 2 2 even_two even_two)).1
   rw [show TaylorLogMetric.area (TaylorLogMetric.lamOf D cc δ) = _ from B.areaOK, show TaylorLogMetric.La D B.tor _ _ = _ from B.lat0OK 2 2] at h
-  have h2 := SO.selfDual_img _ _ (SO.reix D.what₂.Tau) (SO.reix_isom B.L D.what₂.Tau) _ h
-  rw [SO.reix_pow] at h2
+  have h2 := SO.selfDual_img _ _ (GlobalTheory.FourthRootStd.reix D.what₂.Tau) (GlobalTheory.FourthRootStd.reix_isom B.L D.what₂.Tau) _ h
+  rw [GlobalTheory.FourthRootStd.reix_pow] at h2
   exact h2
 
 theorem selfDual_lamM (hcc : TaylorLogMetric.IsCurveIdeal D cc) (hδ : TaylorLogMetric.IsDiscriminantTwelfthRootOfIdealLattice D cc δ) :
@@ -1028,8 +1028,8 @@ theorem selfDual_lamM (hcc : TaylorLogMetric.IsCurveIdeal D cc) (hδ : TaylorLog
 
 theorem stable_lamM (b : ℤ) (hb : Odd b) : ∀ x ∈ B.lamM, cmTheta b D.host.d • x ∈ B.lamM := by
   refine stable_of_one _ _ (fun x hx => ?_) b hb
-  have := SO.lamMM_smul (AR.om D) hx
-  rw [← SO.theta_eq] at this
+  have := GlobalTheory.FourthRootStd.lamMM_smul (AR.om D) hx
+  rw [← GlobalTheory.FourthRootStd.theta_eq] at this
   exact this
 
 end Base

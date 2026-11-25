@@ -50,7 +50,7 @@ noncomputable section
 
 namespace Formalism.QuantumDeterminants
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 private lemma commutator_sum_smul_eq_sum_sum_smul_commutator {A : Type*} [Ring A] [Algebra ℂ A] {ι κ : Type*} [Fintype ι]
     [Fintype κ] (r : ι → ℂ) (x : ι → A) (s : κ → ℂ) (y : κ → A) :

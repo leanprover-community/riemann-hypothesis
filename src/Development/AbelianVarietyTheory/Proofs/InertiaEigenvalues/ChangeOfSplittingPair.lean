@@ -43,8 +43,6 @@ import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
-set_option autoImplicit false
-
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj Formalism.IndefR.Datum Formalism.IndefR.Lift
 
 noncomputable section

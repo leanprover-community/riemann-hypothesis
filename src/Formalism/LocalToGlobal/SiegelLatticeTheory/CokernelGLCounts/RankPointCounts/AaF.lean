@@ -15,8 +15,6 @@ namespace Formalism.L2.SG.Pf.FibQ
 
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat PI.PairValDefs PI.NRCW
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Glob
 
 variable (D : D7)

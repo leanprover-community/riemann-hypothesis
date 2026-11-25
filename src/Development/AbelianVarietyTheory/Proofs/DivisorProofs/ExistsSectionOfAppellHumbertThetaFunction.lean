@@ -50,8 +50,6 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsAHOfIsFactorAH
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory

@@ -50,8 +50,6 @@ open scoped TensorProduct ComplexConjugate
 
 namespace GlobalTheory.Ker
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} {S T : HSp D}
 
 structure Match (S T : HSp D) (X : Data D.host.E T.rank) where

@@ -80,10 +80,6 @@ private lemma det_rev {n : ℕ} (v : Fin n → ℂ) :
   · intro p _; simp
   · intro p _; simp
 
-private lemma sign_sq_one {n : ℕ} (σ : Equiv.Perm (Fin n)) :
-    ((Equiv.Perm.sign σ : ℤ) : ℂ) * ((Equiv.Perm.sign σ : ℤ) : ℂ) = 1 := by
-  rcases Int.units_eq_one_or (Equiv.Perm.sign σ) with h | h <;> simp [h]
-
 private lemma prod_comp {n : ℕ} (v : Fin n → ℂ) (σ : Equiv.Perm (Fin n)) :
     ∏ p ∈ prs n, (v (σ p.1) - v (σ p.2)) =
       ((Equiv.Perm.sign σ : ℤ) : ℂ) * ∏ p ∈ prs n, (v p.1 - v p.2) := by
@@ -118,7 +114,8 @@ theorem UpperTheory.Gal.Gen.rFormula_pf :
   have hR : hlR t l = altQuot (monomial l * hlFactor n t) := rfl
   rw [hR, key, Finset.mul_sum]
   refine Finset.sum_congr rfl fun σ _ => ?_
-  have hs := sign_sq_one σ
+  have hs : ((Equiv.Perm.sign σ : ℤ) : ℂ) * ((Equiv.Perm.sign σ : ℤ) : ℂ) = 1 := by
+    exact_mod_cast Int.units_coe_mul_self (Equiv.Perm.sign σ)
   have hc : ∏ p ∈ prs n, ((z (σ p.1) : ℂ) - (z (σ p.2) : ℂ)) =
       ((Equiv.Perm.sign σ : ℤ) : ℂ) * ∏ p ∈ prs n, ((z p.1 : ℂ) - (z p.2 : ℂ)) :=
     prod_comp (fun i => (z i : ℂ)) σ

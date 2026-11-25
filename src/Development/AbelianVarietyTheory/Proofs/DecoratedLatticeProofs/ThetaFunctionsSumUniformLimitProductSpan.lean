@@ -186,14 +186,7 @@ theorem ratW_sub (A T : HSp D) (γ γ₀ : Matrix (Fin T.rank) (Fin A.rank) D.ho
 
 theorem finite_ratW_mem (A T : HSp D) (K : Set (WO A T)) (hK : IsCompact K) :
     {γ : Matrix (Fin T.rank) (Fin A.rank) D.host.E | ratW T A γ ∈ K}.Finite := by
-  obtain ⟨hg, hlc, hsc, ht2, hdisc, -⟩ := GlobalTheory.AdelicMatrixLattice.lattice D T A
-  haveI : T1Space (WA T A) := @T2Space.t1Space _ _ ht2
-  have hcl : IsClosed (ratL T A : Set (WA T A)) := AddSubgroup.isClosed_of_discrete
-  have hS : IsCompact ((Subtype.val : ratL T A → WA T A) ⁻¹' K) :=
-    hcl.isClosedEmbedding_subtypeVal.isCompact_preimage hK
-  have hfin := (hS.finite_of_discrete.image Subtype.val).preimage (ratW_inj A T).injOn
-  refine hfin.subset fun γ hγ => ?_
-  exact ⟨⟨ratW T A γ, γ, rfl⟩, hγ, rfl⟩
+  apply _root_.GlobalTheory.RatPartition.finite_ratW_mem <;> assumption
 
 theorem symplOH_neg_left (A T : HSp D) (y z : WO A T) : symplOH A T (-y) z = -symplOH A T y z := by
   have hadd := (GlobalTheory.OrientedFormLaws.symplOH_laws D A T).1

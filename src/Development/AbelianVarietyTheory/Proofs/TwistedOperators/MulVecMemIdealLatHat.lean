@@ -43,8 +43,6 @@ import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsIsInfF
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.UnitConst
@@ -111,8 +109,6 @@ open NumberField ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.BasicNot
 open GlobalTheory.Member (FinCong)
 open scoped TensorProduct Matrix
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} {V : HSp D}
 
 variable {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host D.host.E}
@@ -133,8 +129,6 @@ open NumberField AlgebraicGeometry CategoryTheory ReciprocityTheory.ChartRestric
   Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Pj GlobalTheory.IndefiniteRowSideFullHecke.LevelGroupLifts GlobalTheory.GeoLevel GlobalTheory.LevelCusp
 open GlobalTheory.Dict (castFr)
 open scoped TensorProduct Matrix
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7} {T : CoreJ D} {j : ℕ} {σ : T.Q.c.F →+* ℂ}
 

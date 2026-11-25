@@ -40,8 +40,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open NumberField IsDedekindDomain Module
@@ -51,8 +49,6 @@ open GlobalTheory.OntoChain GlobalTheory.RealIndexBound GlobalTheory.OnTies Glob
 open scoped TensorProduct
 
 namespace GlobalTheory.BigOn
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T0 : Type} {A : FamIn D.what₂.LL G Pl0 T0 D.R.m}
 

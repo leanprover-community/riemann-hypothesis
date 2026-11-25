@@ -50,8 +50,6 @@ import Formalism.LocalToGlobal.CMDeterminantIdeals.DetIdeal
 
 @[expose] public section
 
-set_option autoImplicit false
-
 open MvPolynomial Formalism.L2.LamCM
 
 namespace GlobalTheory.FrameDet

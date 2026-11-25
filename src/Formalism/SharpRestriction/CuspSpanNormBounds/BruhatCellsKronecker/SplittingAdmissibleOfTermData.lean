@@ -48,8 +48,6 @@ namespace Formalism.MainNotions.BridgeLemma
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.LatticeGluingRadicals NumberField Module
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Rec
 
 variable {D : D7} (X : TermTie D)

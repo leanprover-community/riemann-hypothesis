@@ -615,7 +615,6 @@ end Formalism.MainNotions.N
 
 noncomputable section
 
-open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.WeaklyAdmissibleFiltrations Module
 
 namespace Formalism.MainNotions.N
 

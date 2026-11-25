@@ -66,8 +66,6 @@ section -- clump:auto
 
 open GlobalTheory.PD GlobalTheory.CechDR KaehlerDifferential
 
-set_option autoImplicit false
-
 namespace GlobalTheory.MonoCech
 
 variable {ι : Type} [LinearOrder ι] {E : Type} [AddCommGroup E]
@@ -125,8 +123,6 @@ section -- clump:auto
 
 open KaehlerDifferential GlobalTheory.CechDR GlobalTheory.PD GlobalTheory.WH GlobalTheory.W1 UpperTheory.Gal.productCup_of_system
 open scoped TensorProduct
-
-set_option autoImplicit false
 
 namespace UpperTheory.Gal.productCup_of_system
 

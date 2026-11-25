@@ -111,7 +111,6 @@ open GlobalTheory.SphTheta (IsStd CayleyRule intMat liftPar antiG)
 open GlobalTheory.LGrp (bcParam)
 open Formalism.UG (qV IsUnramInv GU KU IsInertAt Hecke SatU antiJ)
 open Formalism.MainNotions.SchurIrreducible (IsSplit)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 

@@ -48,8 +48,6 @@ open scoped ENNReal
 
 namespace GlobalTheory.LevGeo
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem hasPrinc_laws : ∀ (D : D7) (j : ℕ) (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host D.host.E) (Dw : Datum H) (l : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Level H) (Xo : Moduli Dw l) (c : Coeff l) (U : ∀ σ : c.F →+* ℂ, Unf Xo c σ D.R.r) (dict : ∀ σ : c.F →+* ℂ, GA D (D.sp.W j) → Σ k, Frame ((U σ).X k).Ψ D.R.r), Laws D j Xo c U dict → ∀ σ, GoodEmb c σ → GlobalTheory.FrameNorm.HasPrinc (Formalism.L2.PjFree.Unf.ofPj (U σ)) l.M := by
   intro D j H Dw l Xo c U dict h σ hσ k γ hγ hc
   have hr : 0 < D.R.r := by

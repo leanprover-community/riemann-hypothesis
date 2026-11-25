@@ -797,8 +797,6 @@ section -- clump:auto
 open KaehlerDifferential GlobalTheory.CechDR GlobalTheory.PD GlobalTheory.WH GlobalTheory.W1 UpperTheory.Gal.productCup_of_system
 open scoped TensorProduct
 
-set_option autoImplicit false
-
 namespace UpperTheory.Gal.productCup_of_system
 
 private theorem wd_apply' {ι E : Type} [LinearOrder ι] [AddCommGroup E] [Module ℂ E]

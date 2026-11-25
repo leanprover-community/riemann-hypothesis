@@ -55,7 +55,6 @@ noncomputable section
 
 open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N
 open GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.Pst GlobalTheory.LocLanglands GlobalTheory.HeckeGal GlobalTheory.LocGL GlobalTheory.GalOfCusp
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 open GlobalTheory.GalCut GlobalTheory.UnitaryBC GlobalTheory.Cong TensorProduct
 
 namespace GlobalTheory.CongPhi
@@ -93,16 +92,6 @@ variable {l : ℕ} [Fact l.Prime]
 def matRep {K : FinExt l} (L : FinExt l) {a : ℕ} (r' : ↥(GK K) →* GL (Fin a) ↥L.1) :
     Representation ↥L.1 ↥(GK K) (Fin a → ↥L.1) :=
   ((Matrix.toLinAlgEquiv' : Matrix (Fin a) (Fin a) ↥L.1 ≃ₐ[↥L.1] _) : _ →* _).comp ((Units.coeHom _).comp r')
-
-def IsMod {K : FinExt l} {a : ℕ} (ρ : ↥(GK K) →* GL (Fin a) (Om l)) (L : FinExt l) (r' : ↥(GK K) →* GL (Fin a) ↥L.1) :
-    Prop :=
-  ∀ g i j, (((r' g).val i j : ↥L.1) : Om l) = (ρ g).val i j
-
-def CrysLe (P : LocPrime l) (K : FinExt l) {a : ℕ} (ρ : ↥(GK K) →* GL (Fin a) (Om l)) (N : ℕ) : Prop :=
-  ∃ (L : FinExt l) (r' : ↥(GK K) →* GL (Fin a) ↥L.1), IsMod ρ L r' ∧ Formalism.WeaklyAdmissibleFiltrations.IsCrys (P.PD K) (matRep L r') ∧
-    Formalism.WeaklyAdmissibleFiltrations.DdR (P.PD K) (matRep L r') ≤ Formalism.WeaklyAdmissibleFiltrations.FilV (P.PD K) (LL := ↥L.1) (V := Fin a → ↥L.1) (-(N : ℤ)) ∧
-    Formalism.WeaklyAdmissibleFiltrations.DdR (P.PD K) (matRep L r') ⊓ Formalism.WeaklyAdmissibleFiltrations.FilV (P.PD K) (LL := ↥L.1) (V := Fin a → ↥L.1) ((N : ℤ) + 1) = ⊥
-
 
 end Om
 

@@ -169,19 +169,10 @@ private lemma exists_GL_mulVec_single_eq_of_ne_zero (m : ι) (v : ι → k) (hv 
     funext r
     simp [Matrix.mulVec, Matrix.vecMulVec, dotProduct, Pi.single_apply, mul_comm]
   have hunit : IsUnit (1 + Matrix.vecMulVec (v - Pi.single m 1) (Pi.single m 1) : Matrix ι ι k) := by
-    rw [Matrix.isUnit_iff_isUnit_det, isUnit_iff_ne_zero]
-    intro h0
-    obtain ⟨x, hx0, hx⟩ := Matrix.exists_mulVec_eq_zero_iff.2 h0
-    rw [hact] at hx
-    have hxm : x m = 0 := by
-      have e := congrFun hx m
-      simp only [Pi.add_apply, Pi.smul_apply, Pi.sub_apply, Pi.single_eq_same, smul_eq_mul,
-        Pi.zero_apply] at e
-      have e2 : x m * v m = 0 := by linear_combination e
-      exact (mul_eq_zero.1 e2).resolve_right hv
-    apply hx0
-    funext r
-    simpa [hxm] using congrFun hx r
+    rw [Matrix.isUnit_iff_isUnit_det, Matrix.vecMulVec_eq Unit,
+      Matrix.det_one_add_replicateCol_mul_replicateRow, single_one_dotProduct,
+      Pi.sub_apply, Pi.single_eq_same, add_sub_cancel]
+    exact hv.isUnit
   refine ⟨hunit.unit, ?_, ?_⟩
   · rw [IsUnit.unit_spec, hact]
     simp

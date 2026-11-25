@@ -155,8 +155,6 @@ end Gen
 
 section D7
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 def NLamOnto : Prop :=
   ∀ (D : D7) (w : D.what₂.Word) (G : FlagG (VS D) D.R.rS ((Tu D w : ℕ) : D.host.E))
     (Λ : Submodule (𝓞 D.host.E) (VS D).V),

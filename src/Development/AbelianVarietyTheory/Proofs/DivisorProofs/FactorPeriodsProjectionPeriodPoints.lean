@@ -277,8 +277,6 @@ open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.UT GlobalTheory.Mum GlobalTheory.Mum.Two
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.RosZeroLeft

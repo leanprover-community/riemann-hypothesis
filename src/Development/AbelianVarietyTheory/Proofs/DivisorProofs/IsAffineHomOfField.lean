@@ -58,8 +58,6 @@ open GlobalTheory.LogPole
 open scoped Classical
 open GlobalTheory.CechKS
 
-set_option autoImplicit false
-
 namespace GlobalTheory.CechKS
 
 theorem valR_comp_app {Y Z : Scheme.{0}} {S : Type} [CommRing S] (z : Sp S ⟶ Y) (m : Y ⟶ Z) (O : Z.Opens)

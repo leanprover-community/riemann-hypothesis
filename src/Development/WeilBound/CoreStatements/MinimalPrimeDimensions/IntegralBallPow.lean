@@ -65,8 +65,6 @@ public import ReciprocityTheory.L2DbarEstimates.PlurisubharmonicCharts.CmpbHessA
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open MeasureTheory GroundTheory.Heights₂.Heights Metric Set Filter Topology Matrix

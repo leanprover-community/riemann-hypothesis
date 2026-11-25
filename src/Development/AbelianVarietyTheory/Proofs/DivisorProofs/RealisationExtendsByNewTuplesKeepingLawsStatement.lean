@@ -369,8 +369,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Form
 open scoped TensorProduct InnerProductSpace
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.ConjExt
@@ -450,8 +448,6 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S MeasureTheory IsDedekindDomain NumberField Matrix Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.FWT Formalism.L2.Pj
 open scoped TensorProduct InnerProductSpace
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
-set_option autoImplicit false
 
 noncomputable section
 
@@ -679,8 +675,6 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S MeasureTheory IsDedekindDomain NumberField Matrix Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.FWT Formalism.L2.Pj
 open scoped TensorProduct InnerProductSpace
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
-set_option autoImplicit false
 
 noncomputable section
 
@@ -1678,8 +1672,6 @@ open Formalism.IndefR.FWT GlobalTheory.BigTop GlobalTheory.OntoChain GlobalTheor
 open GlobalTheory.BigOn GlobalTheory.BigOn.Exp Formalism.L2.Theta GlobalTheory.ExportSeries GlobalTheory.ConjTwist Formalism.IndefR.Lev
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.TupExt
@@ -1757,7 +1749,7 @@ theorem extend_tuples : GlobalTheory.Published.CuspRapidDecay → GlobalTheory.P
         βV := hL.βV
         βW := hL.βW }
   obtain ⟨X, Y0, h0⟩ := fam_stage (GlobalTheory.SideLevel.sideReal_moreLevel) hC hL' hV
-  obtain ⟨Y, hC', hT⟩ := core_ext h4 GlobalTheory.HcPort.print_harishChandraModules h1 h5 (GlobalTheory.Chain.ParOfNodeGap.chainPar_of_nodeGap D hH.nodeGap) hC hL' Y0 h0
+  obtain ⟨Y, hC', hT⟩ := core_ext h4 CompanionTheory.D.gk.HC.print_harishChandraModules h1 h5 (GlobalTheory.Chain.ParOfNodeGap.chainPar_of_nodeGap D hH.nodeGap) hC hL' Y0 h0
   have hg' : QGuard (extR R Y) := ⟨Sum.rec hg.1 fun n => (hV n).half, Sum.rec hg.2 fun n => (hV n).guard⟩
   exact ⟨T0 ⊕ N, extA A X, extR R Y, extF F X, v₀, fun i => omExt Y (O i),
     ⟨hC', inferInstance, ⟨fwExt Y hfw⟩, ioExt_ext R Y hio, hg', omPins_ext Y hT hp, phaseTie_ext Y hph, baseOf_ext Y hB⟩,

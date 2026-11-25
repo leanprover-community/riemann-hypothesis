@@ -58,8 +58,6 @@ open scoped TensorProduct ContDiff
 
 namespace GlobalTheory.TypeAtCompare
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem card_eq_of_congr {n p q : ℕ} {ε : Fin n → Bool} {P G : Matrix (Fin n) (Fin n) ℂ} (hP : IsUnit P)
     (h : Pᴴ * Formalism.REAL.Jm ε * P = G) (hs : Formalism.UG.HasSignature G p q) :
     (Finset.univ.filter fun a => ε a = true).card = p ∧ (Finset.univ.filter fun a => ε a = false).card = q := by

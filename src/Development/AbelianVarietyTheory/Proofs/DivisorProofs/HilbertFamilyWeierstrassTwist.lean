@@ -67,8 +67,6 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.TorsTransport
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
-
 open NumberField UpperHalfPlane GlobalTheory.HilbFam GlobalTheory.QFam
 open scoped Classical MatrixGroups nonZeroDivisors
 
@@ -115,8 +113,6 @@ open NumberField UpperHalfPlane GlobalTheory.HilbFam GlobalTheory.QFam
 open GlobalTheory.IndefiniteRowSideFullHecke.OmegaFactorization (Emb Frac latM qPow upperHalf cK omegaFactor IsPartialZeta HasExpansion)
 open GlobalTheory.IndefiniteRowSideFullHecke.DefiningCoordinates (iterD partialD)
 open scoped Classical MatrixGroups nonZeroDivisors
-
-set_option autoImplicit false
 
 noncomputable section
 

@@ -297,10 +297,10 @@ end Lin
 open Lin
 
 theorem linQ_eq_diff (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) [StarRing (𝓞 E)]
-    (_hstar : ∀ a : 𝓞 E, star a = H.bar a) (X : Scheme.{0}) (t : SAB H X) (k : Type) [Field k] [IsAlgClosed k]
+    (X : Scheme.{0}) (t : SAB H X) (k : Type) [Field k] [IsAlgClosed k]
     (p : ℕ) [Fact p.Prime] [CharP k p] (x : Sp k ⟶ X) (Q : AbQuot t x) (d d' : ℕ) (g : GermAt t x d)
     (gB : GermAt Q.tB (𝟙 (Sp k)) d') (P : Matrix (Fin d') (Fin d) k) (hP : Q.IsDiff g gB P)
-    (Qs : Fin d' → PS k 1 d) (_hQ0 : ∀ i, MvPowerSeries.constantCoeff (Qs i) = 0)
+    (Qs : Fin d' → PS k 1 d)
     (hQ : ∀ m, fibPt t x (g.x m) ≫ Q.q = homAt (𝟙 (Sp k)) (sub1 Qs m) ≫ gB.x m) : linQ Qs = P := by
   classical
   ext i l
@@ -378,7 +378,7 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ (PS Pt ev pt comp1)
 open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 
-theorem _root_.GlobalTheory.T.abelian_quotient_differential_matrix : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) [StarRing (𝓞 E)], (∀ a : 𝓞 E, star a = H.bar a) → ∀ (X : Scheme.{0}) (t : SAB H X) (k : Type) [Field k] [IsAlgClosed k] (p : ℕ) [Fact p.Prime] [CharP k p] (x : Sp k ⟶ X) (Q : AbQuot t x) (d d' : ℕ) (g : GermAt t x d) (gB : GermAt Q.tB (𝟙 (Sp k)) d'), ∀ (P : Matrix (Fin d') (Fin d) k), Q.IsDiff g gB P → ∀ Qs : Fin d' → PS k 1 d, (∀ i, MvPowerSeries.constantCoeff (Qs i) = 0) → (∀ m, fibPt t x (g.x m) ≫ Q.q = homAt (𝟙 (Sp k)) (sub1 Qs m) ≫ gB.x m) → linQ Qs = P := by
+theorem _root_.GlobalTheory.T.abelian_quotient_differential_matrix : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) [StarRing (𝓞 E)], ∀ (X : Scheme.{0}) (t : SAB H X) (k : Type) [Field k] [IsAlgClosed k] (p : ℕ) [Fact p.Prime] [CharP k p] (x : Sp k ⟶ X) (Q : AbQuot t x) (d d' : ℕ) (g : GermAt t x d) (gB : GermAt Q.tB (𝟙 (Sp k)) d'), ∀ (P : Matrix (Fin d') (Fin d) k), Q.IsDiff g gB P → ∀ Qs : Fin d' → PS k 1 d, (∀ m, fibPt t x (g.x m) ≫ Q.q = homAt (𝟙 (Sp k)) (sub1 Qs m) ≫ gB.x m) → linQ Qs = P := by
   first | exact @GlobalTheory.CompanionTheory.Ar.Flat.FrGauge.linQ_eq_diff
 end -- clump:auto
 end -- clump:auto
@@ -1604,7 +1604,7 @@ theorem frame_gauge : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H 
   intro E _ _ _ H _ hstar X t k _ _ p _ _ x Q d d' g gB P hP
   obtain ⟨w, hw⟩ := Q.bun
   obtain ⟨Qs, hc, hQ⟩ := GlobalTheory.T.abelian_quotient_germ_power_series E H hstar X t k p x Q d d' g gB
-  have hl := GlobalTheory.T.abelian_quotient_differential_matrix E H hstar X t k p x Q d d' g gB P hP Qs hc hQ
+  have hl := GlobalTheory.T.abelian_quotient_differential_matrix E H X t k p x Q d d' g gB P hP Qs hQ
   obtain ⟨lam, hax, hlam⟩ := GlobalTheory.T.abelian_quotient_gauge_transform E H hstar X t k p x Q d d' g gB w hw Qs hc hQ
   refine ⟨bil lam 1 1, fun a => ?_⟩
   obtain ⟨wL, hwL, hrL⟩ := g.frame.ad a

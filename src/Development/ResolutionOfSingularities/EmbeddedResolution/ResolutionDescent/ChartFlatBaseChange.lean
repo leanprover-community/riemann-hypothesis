@@ -457,31 +457,6 @@ theorem strictTransformIdeal_eq_comap (F : ChartFlatBaseChange S S') (j : ℕ) (
       rw [← hkey, S.strictTransformIdeal_succ (F.reindex n), hst, ← hIH, ← hcenter]
       exact S'.strictTransformIdeal_succ n
 
-private theorem exists_iso_of_mono_of_comp_eq
-    {A Z W : Scheme.{u}} (g : Z ⟶ A) (i : W ⟶ A)
-    [CategoryTheory.Mono g] [CategoryTheory.Mono i] (a : W ⟶ Z) (b : Z ⟶ W)
-    (ha : a ≫ g = i) (hb : b ≫ i = g) :
-    ∃ u : W ≅ Z, u.hom ≫ g = i := by
-  refine ⟨⟨a, b, ?_, ?_⟩, ha⟩
-  · refine (cancel_mono i).mp ?_
-    rw [Category.assoc, hb, ha, Category.id_comp]
-  · refine (cancel_mono g).mp ?_
-    rw [Category.assoc, ha, hb, Category.id_comp]
-
-private theorem exists_iso_subscheme_ker
-    {A Z : Scheme.{u}} (g : Z ⟶ A) [AlgebraicGeometry.IsClosedImmersion g] :
-    ∃ u : (Scheme.Hom.ker g).subscheme ≅ Z, u.hom ≫ g = (Scheme.Hom.ker g).subschemeι := by
-  have hker : Scheme.Hom.ker (Scheme.Hom.ker g).subschemeι = Scheme.Hom.ker g :=
-    AlgebraicGeometry.Scheme.IdealSheafData.ker_subschemeι _
-  have h1 : Scheme.Hom.ker g ≤ Scheme.Hom.ker (Scheme.Hom.ker g).subschemeι :=
-    le_of_eq hker.symm
-  have h2 : Scheme.Hom.ker (Scheme.Hom.ker g).subschemeι ≤ Scheme.Hom.ker g := le_of_eq hker
-  exact exists_iso_of_mono_of_comp_eq g (Scheme.Hom.ker g).subschemeι
-    (AlgebraicGeometry.IsClosedImmersion.lift g (Scheme.Hom.ker g).subschemeι h1)
-    (AlgebraicGeometry.IsClosedImmersion.lift (Scheme.Hom.ker g).subschemeι g h2)
-    (AlgebraicGeometry.IsClosedImmersion.lift_fac ..)
-    (AlgebraicGeometry.IsClosedImmersion.lift_fac ..)
-
 private theorem exists_isPullback_subscheme_of_ker_eq
     {A B : Scheme.{u}} (f : A ⟶ B) (I : B.IdealSheafData) (J : A.IdealSheafData)
     (hJ : J = Scheme.Hom.ker (pullback.fst f I.subschemeι)) :
@@ -489,23 +464,16 @@ private theorem exists_isPullback_subscheme_of_ker_eq
       g ≫ I.subschemeι = J.subschemeι ≫ f ∧
         IsPullback g J.subschemeι I.subschemeι f := by
   subst hJ
-  have : AlgebraicGeometry.IsClosedImmersion (pullback.fst f I.subschemeι) :=
-    MorphismProperty.IsStableUnderBaseChange.of_isPullback
-      (P := @AlgebraicGeometry.IsClosedImmersion)
-      (IsPullback.of_hasPullback f I.subschemeι).flip inferInstance
-  obtain ⟨u, hu⟩ := exists_iso_subscheme_ker (pullback.fst f I.subschemeι)
-  have hfst : (u ≪≫ pullbackSymmetry f I.subschemeι).hom ≫ pullback.fst I.subschemeι f
-      = u.hom ≫ pullback.snd f I.subschemeι := by
-    rw [Iso.trans_hom, Category.assoc, pullbackSymmetry_hom_comp_fst]
-  have hsnd : (u ≪≫ pullbackSymmetry f I.subschemeι).hom ≫ pullback.snd I.subschemeι f
-      = (Scheme.Hom.ker (pullback.fst f I.subschemeι)).subschemeι := by
-    rw [Iso.trans_hom, Category.assoc, pullbackSymmetry_hom_comp_snd, hu]
-  have hcomm : ((u ≪≫ pullbackSymmetry f I.subschemeι).hom ≫ pullback.fst I.subschemeι f)
-        ≫ I.subschemeι
-      = (Scheme.Hom.ker (pullback.fst f I.subschemeι)).subschemeι ≫ f := by
-    rw [hfst, Category.assoc, ← pullback.condition, ← Category.assoc, hu]
-  exact ⟨(u ≪≫ pullbackSymmetry f I.subschemeι).hom ≫ pullback.fst I.subschemeι f, hcomm,
-    IsPullback.of_iso_pullback ⟨hcomm⟩ (u ≪≫ pullbackSymmetry f I.subschemeι) rfl hsnd⟩
+  let e : (I.comap f).subscheme ≅ pullback I.subschemeι f :=
+    I.comapIso f ≪≫ pullbackSymmetry f I.subschemeι
+  have hsnd : e.hom ≫ pullback.snd I.subschemeι f = (I.comap f).subschemeι := by
+    rw [Iso.trans_hom, Category.assoc, pullbackSymmetry_hom_comp_snd,
+      Scheme.IdealSheafData.comapIso_hom_fst]
+  have hcomm : (e.hom ≫ pullback.fst I.subschemeι f) ≫ I.subschemeι =
+      (I.comap f).subschemeι ≫ f := by
+    rw [Category.assoc, pullback.condition, ← Category.assoc, hsnd]
+  exact ⟨e.hom ≫ pullback.fst I.subschemeι f, hcomm,
+    IsPullback.of_iso_pullback ⟨hcomm⟩ e rfl hsnd⟩
 
 theorem exists_isPullback_strictTransformι (F : ChartFlatBaseChange S S') (j : ℕ) (hj : j ≤ S'.length) :
     ∃ g : S'.strictTransform j ⟶ S.strictTransform (F.reindex j),

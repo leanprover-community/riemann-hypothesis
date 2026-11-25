@@ -7,8 +7,6 @@ public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.Saturation
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace Formalism.L2.Indef.Tree.DepthTie

@@ -89,18 +89,10 @@ theorem UpperTheory.Gal.W2.evIntegral_of :
   have hv : ∀ y, aeval H f.charpoly *ᵥ P₀ y = 0 := fun y => by
     rw [← evI_mulVec P₀ f H hf f.charpoly y, LinearMap.aeval_self_charpoly]
     simp
-  have hall : ∀ v, aeval H f.charpoly *ᵥ v = 0 := by
-    intro v
-    have hv' : v ∈ Submodule.span ℝ (Set.range P₀) := by
-      rw [hP.2.2.2.1]
-      trivial
-    induction hv' using Submodule.span_induction with
-    | mem z hz =>
-      obtain ⟨y, rfl⟩ := hz
-      exact hv y
-    | zero => simp
-    | add u w _ _ hu hw => rw [Matrix.mulVec_add, hu, hw, add_zero]
-    | smul r u _ hu => rw [Matrix.mulVec_smul, hu, smul_zero]
+  have hall : ∀ v, aeval H f.charpoly *ᵥ v = 0 := fun v =>
+    (Submodule.span_le.2 (by rintro _ ⟨y, rfl⟩; exact hv y) :
+      _ ≤ LinearMap.ker ((Matrix.mulVecLin (aeval H f.charpoly)).restrictScalars ℝ))
+      (hP.2.2.2.1 ▸ Submodule.mem_top)
   have hq0 : aeval H f.charpoly = 0 := by
     ext j k
     have hjk := congrFun (hall (Pi.single k 1)) j

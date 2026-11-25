@@ -62,8 +62,6 @@ public import Mathlib.RingTheory.Norm.Transitivity
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open MeasureTheory Set Filter Topology

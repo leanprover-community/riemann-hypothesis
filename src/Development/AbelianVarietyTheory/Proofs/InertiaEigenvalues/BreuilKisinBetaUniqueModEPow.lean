@@ -76,9 +76,6 @@ theorem theta_gal_ev (g : ↥(GK K)) (s : bk.S) :
   rw [GlobalTheory.RingBasics.θ_σA, bk.θ_ev (bk.str.symm (Ideal.Quotient.mk _ s)) s (bk.str.apply_symm_apply _).symm,
     σO_intToOC]
 
-theorem theta_eq_zero_iff (a : Ainf l) : Per.θ l a = 0 ↔ bk.ev bk.E ∣ a := by
-  rw [← RingHom.mem_ker, ← bk.span_ev, Ideal.mem_span_singleton]
-
 theorem l_ne_zero_OC : ((l : ℕ) : OC l) ≠ 0 := fun h =>
   GlobalTheory.RingBasics.p_ne_zero (p := l) (by simpa using congrArg Subtype.val h)
 
@@ -120,7 +117,7 @@ theorem step {d : ℕ} (g : ↥(GK K)) (w : Ainf l)
     have h5 : (Per.θ l w ^ i - 1) * Per.θ l (bk.ev (δ' a b)) = 0 := by
       rw [sub_mul, one_mul]; exact h1
     exact (mul_eq_zero.1 h5).resolve_left (sub_ne_zero.2 (hwi i hi))
-  rw [theta_eq_zero_iff] at h4
+  rw [GlobalTheory.AinfEPow.theta_eq_zero_iff] at h4
   have h6 := (_root_.GlobalTheory.AinfEPow.ePow_facts l K bk 1).2.1 (δ' a b) (by rwa [pow_one])
   rw [hδ' a b, pow_succ]
   exact mul_dvd_mul_left _ (by rwa [pow_one] at h6)

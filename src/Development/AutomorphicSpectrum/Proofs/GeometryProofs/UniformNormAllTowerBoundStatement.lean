@@ -869,7 +869,7 @@ end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.GeometryProofs.UniformLawsRootModelBound =====
 
 -- ===== clump member: Development.WeilBound.CoreStatements.CommonZeroEvaluation.AevalRatioForm =====
--- clump-header: {"m": "Development.WeilBound.CoreStatements.CommonZeroEvaluation.AevalRatioForm", "h": "module\n\npublic import Development.AutomorphicSpectrum.Definitions.MetricPeriods.HasMultiplier\npublic import Formalism.LocalToGlobal.ProjectiveLattices.OneLtAbsNormReal\npublic import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FormOffSpecializationRing\npublic import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RootOriginGenericFrameBound\nimport Development.AutomorphicSpectrum.Statements.GeometryStatements.ExistsAlgPtOff\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Algebra.Order.Star.Real\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Henselian\nimport Mathlib.RingTheory.PicardGroup\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.RingTheory.RegularLocalRing.Defs\nimport Mathlib.RingTheory.WittVector.IsPoly\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.HaveILetI\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Connected.Separation\nimport Mathlib.Topology.MetricSpace.Ultra.TotallySeparated\nimport Mathlib.Topology.Sheaves.Init\nimport Std.Tactic.BVDecide.Normalize.Prop\nimport Development.AutomorphicSpectrum.Definitions.GlobalGeometry.DefiniteFormStabilizerFiniteAwayFromP\n\n"}
+-- clump-header: {"m": "Development.WeilBound.CoreStatements.CommonZeroEvaluation.AevalRatioForm", "h": "module\n\npublic import Development.AutomorphicSpectrum.Definitions.MetricPeriods.HasMultiplier\npublic import Formalism.LocalToGlobal.ProjectiveLattices.OneLtAbsNormReal\npublic import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FormOffSpecializationRing\npublic import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RootOriginGenericFrameBound\nimport Development.AutomorphicSpectrum.Statements.GeometryStatements.ExistsAlgPtOff\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Algebra.Order.Star.Real\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Henselian\nimport Mathlib.RingTheory.PicardGroup\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.RingTheory.RegularLocalRing.Defs\nimport Mathlib.RingTheory.WittVector.IsPoly\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.HaveILetI\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Connected.Separation\nimport Mathlib.Topology.MetricSpace.Ultra.TotallySeparated\nimport Mathlib.Topology.Sheaves.Init\nimport Std.Tactic.BVDecide.Normalize.Prop\nimport Development.AutomorphicSpectrum.Definitions.GlobalGeometry.DefiniteFormStabilizerFiniteAwayFromP\nimport ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.VVAlgNonneg\n\n"}
 section -- clump:auto
 @[expose] public section
 
@@ -964,14 +964,6 @@ section Ext
 
 variable {p : ℕ} [hp : Fact p.Prime]
 
-theorem vV_nonneg (T : CDVR) (a : T.V) : 0 ≤ vV T.V (algebraMap T.V T.Fr a) := by
-  by_cases h : algebraMap T.V T.Fr a = 0
-  · simp [h, vV]
-  have h1 : valV T.V (algebraMap T.V T.Fr a) ≤ 1 := (IsDiscreteValuationRing.maximalIdeal T.V).valuation_le_one a
-  have := (WithZero.log_le_log (valV_ne_zero h) one_ne_zero).2 h1
-  rw [WithZero.log_one] at this
-  simp only [vV]; omega
-
 theorem range_le (T : CDVR) (hT : T.FinRes) (ι : T.Fr →+* PadicAlgCl p) (N : ℝ) (hN : 0 < N)
     (hι : ∀ x, x ≠ 0 → ‖ι x‖ = (p : ℝ) ^ (-((vV T.V x : ℝ) / N))) :
     ∃ S : Set (PadicAlgCl p), S.Finite ∧ ∀ L : IntermediateField ℚ_[p] (PadicAlgCl p), FiniteDimensional ℚ_[p] L →
@@ -988,7 +980,7 @@ theorem range_le (T : CDVR) (hT : T.FinRes) (ι : T.Fr →+* PadicAlgCl p) (N : 
     show ‖ι _‖ ≤ 1
     rw [hι _ h]
     refine Real.rpow_le_one_of_one_le_of_nonpos hp1.le (neg_nonpos.2 (div_nonneg ?_ hN.le))
-    exact_mod_cast vV_nonneg T a
+    exact_mod_cast ReciprocityTheory.ChartRestriction.G.PullbackSections.vV_alg_nonneg T a
   have hlt : ‖f ϖ‖ < 1 := by
     have h : algebraMap T.V T.Fr ϖ ≠ 0 := by simpa using hϖ.ne_zero
     show ‖ι _‖ < 1
@@ -1071,7 +1063,7 @@ theorem ext (T : CDVR) (hT : T.FinRes) (ι : T.Fr →+* PadicAlgCl p) (N : ℝ) 
   have h1 := hrel π hπ0
   rw [hπ1, Int.cast_one] at h1
   have hm0 : 0 ≤ m := by
-    have := vV_nonneg T₀ (p : ℕ)
+    have := ReciprocityTheory.ChartRestriction.G.PullbackSections.vV_alg_nonneg T₀ (p : ℕ)
     rwa [map_natCast] at this
   have hmne : (m : ℝ) ≠ 0 := fun h0 => by
     rw [h0, div_zero] at h1

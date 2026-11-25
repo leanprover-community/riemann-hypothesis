@@ -65,8 +65,6 @@ import Mathlib.Topology.Sheaves.Presheaf
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open CategoryTheory AlgebraicGeometry NumberField GlobalTheory.ChowHt GlobalTheory.Adelic MvPolynomial ReciprocityTheory.MultiplicativeHeights

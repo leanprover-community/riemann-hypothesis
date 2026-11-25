@@ -175,11 +175,4 @@ def flatSt : FlatSt s where
     IsCoord (fl.C k) p y.frame (expo S.Dw (detSym S.Dw (fun _ => false) none (DV.tauEmb D τ))) (flatSec s fl k τ) a
   ht B k τ := (adlOf (fl.C k) (hm k) (detSym S.Dw (ArIn.ind (setB κ B)) none (DV.tauEmb D τ))).ht (innerPt s fl k)
 
-def degFrame (k : s.Comp) (τ : D.what₂.Tau) : ℝ :=
-  (adlOf (fl.C k) (hm k) (detSym S.Dw (fun _ => false) none (DV.tauEmb D τ))).ht (innerPt s fl k)
-
-def degFlat (k : s.Comp) (τ : D.what₂.Tau) : ℝ :=
-  degFrame s fl hm k τ + (S.Dw.q : ℝ) * (Real.log A.H.d -
-    Real.log (NumberField.discr D.host.E).natAbs / (Module.finrank ℚ D.host.E : ℝ))
-
 end GlobalTheory.ShFam.Pad

@@ -1048,19 +1048,6 @@ noncomputable section
 
 namespace GlobalTheory.CompanionTheory.LeibPhi.UNorm
 
-theorem mirProj_eq_one_of_mem {k : Type} [Field k] {n : ℕ} (u : Mir k n) (hu : u ∈ MirUin k n) :
-    mirabolicProjection k n u = 1 := by
-  rw [GlobalTheory.BZMir.MirUin, Subgroup.mem_subgroupOf, GlobalTheory.BZMir.MirU,
-    MonoidHom.mem_range] at hu
-  obtain ⟨v, hv⟩ := hu
-  apply Units.ext
-  ext i j
-  change ((u : GL (Fin (n + 1)) k) : Matrix (Fin (n + 1)) (Fin (n + 1)) k) i.castSucc j.castSucc =
-    (1 : Matrix (Fin n) (Fin n) k) i j
-  rw [← hv]
-  change (1 + GlobalTheory.BZMir.colMat k n (Multiplicative.toAdd v)) i.castSucc j.castSucc = _
-  simp [GlobalTheory.BZMir.colMat, Matrix.one_apply, Fin.castSucc_ne_last]
-
 theorem mem_of_mirProj_eq_one {k : Type} [Field k] {n : ℕ} (u : Mir k n) (hu : mirabolicProjection k n u = 1) :
     u ∈ MirUin k n := by
   apply GlobalTheory.CompanionTheory.BZPhiPG.Grp.mem_of_mirProj_eq_one' <;> assumption
@@ -1070,7 +1057,7 @@ theorem mirUin_normal : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSp
   intro k _ _ _ _ n
   refine ⟨fun u hu g => ?_⟩
   apply GlobalTheory.CompanionTheory.LeibPhi.UNorm.mem_of_mirProj_eq_one
-  rw [map_mul, map_mul, map_inv, GlobalTheory.CompanionTheory.LeibPhi.UNorm.mirProj_eq_one_of_mem u hu,
+  rw [map_mul, map_mul, map_inv, GlobalTheory.CompanionTheory.BZPhiPG.Grp.mirProj_eq_one_of_mem u hu,
     mul_one, mul_inv_cancel]
 
 end GlobalTheory.CompanionTheory.LeibPhi.UNorm

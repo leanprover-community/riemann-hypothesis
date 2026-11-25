@@ -49,8 +49,6 @@ noncomputable section
 open NumberField IsDedekindDomain GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.SmGL GlobalTheory.DefiniteBC GlobalTheory.BcSpeh GlobalTheory.LFun GlobalTheory.PRep Formalism.UG
 open GlobalTheory.GalOfCusp
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace PositivityTheory.AutomorphicGaloisHodgeTate.SaturatedBaseChange
 
 def CompUnique : Prop :=

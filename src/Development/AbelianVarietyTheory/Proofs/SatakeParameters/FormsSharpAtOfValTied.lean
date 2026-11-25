@@ -263,7 +263,6 @@ theorem formsSharpAt_of_valTied (t : KerEntTied ex) (u : D.what₂.Word) (μ : D
   exact ⟨Q, hQ, hQE⟩
 
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar in
 theorem formsSharpAt_of_pins (t : KerEntTied ex) (u : D.what₂.Word) (μ : D.what₂.Tup) (St : GlobalTheory.TwU.ChainCharts D u μ)
     (A : GlobalTheory.TwU.AdData t u μ St) (dtU : Formalism.L2.Herm.unitaryOneFiniteAdeles D.sp.cm →* D.Dt) (hP : GlobalTheory.TwU.AdPins A dtU)
     (okW : ℕ → D.what₂.places.Pl → Prop)

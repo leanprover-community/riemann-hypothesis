@@ -14,8 +14,6 @@ namespace Formalism.IndefR.Eqv.Act
 
 open Formalism.IndefR.Links Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Links.RealDat
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Gen
 
 variable {D : D7} {V : HSp D} {β : GL (Fin V.rank) (EAf D)}

@@ -1,5 +1,6 @@
 module
 
+import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.CoeffOneSubstOfConstantCoeffEqZero
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.EndOmega
 public import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.TranslateProduct
 public import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.IsogenyFormulaInstance
@@ -190,21 +191,7 @@ open PowerSeries GlobalTheory.Honda Formalism.L2.Th1.CM
 namespace GlobalTheory
 
 theorem omegaK_quadratic : ∀ d : ℕ, d % 4 = 3 → omegaK d ^ 2 - omegaK d + (((d + 1) / 4 : ℕ) : ℂ) = 0 := by
-  intro d hd
-  have h4 : 4 ∣ d + 1 := by omega
-  obtain ⟨k, hk⟩ := h4
-  have hk' : (d + 1) / 4 = k := by omega
-  rw [hk']
-  have hdk : (d : ℂ) = 4 * k - 1 := by
-    have : ((d + 1 : ℕ) : ℂ) = ((4 * k : ℕ) : ℂ) := by rw [hk]
-    push_cast at this
-    linear_combination this
-  have hs : ((Real.sqrt d : ℝ) : ℂ) ^ 2 = (d : ℂ) := by
-    rw [← Complex.ofReal_pow, Real.sq_sqrt (Nat.cast_nonneg _)]
-    simp
-  unfold omegaK
-  have hI : Complex.I ^ 2 = -1 := Complex.I_sq
-  linear_combination (-(1:ℂ)/4) * hs + ((Real.sqrt d : ℝ) : ℂ) ^ 2 / 4 * hI - (1/4 : ℂ) * hdk
+  first | exact _root_.ReciprocityTheory.ChartRestriction.L1.omegaK_quad | exact @_root_.ReciprocityTheory.ChartRestriction.L1.omegaK_quad | apply _root_.ReciprocityTheory.ChartRestriction.L1.omegaK_quad <;> assumption
 end GlobalTheory
 end -- clump:auto
 end -- clump:auto
@@ -820,12 +807,7 @@ theorem chord_norm_le_one {K : Type*} [NormedField K] [IsUltrametricDist K] {a b
   nlinarith
 
 theorem norm_two_of_ne {p : ℕ} [Fact p.Prime] (hp : p ≠ 2) : ‖(2 : ℂ_[p])‖ = 1 := by
-  have h : ‖((2 : ℕ) : ℚ_[p])‖ = 1 := by
-    rw [Padic.norm_natCast_eq_one_iff]
-    exact (Nat.coprime_primes Fact.out Nat.prime_two).2 hp
-  have e : (2 : ℂ_[p]) = algebraMap ℚ_[p] ℂ_[p] ((2 : ℕ) : ℚ_[p]) := by
-    rw [map_natCast]; norm_num
-  rw [e, norm_algebraMap', h]
+  apply _root_.GlobalTheory.Klein.padicComplex_norm_two_eq_one_of_ne_two <;> assumption
 
 variable {p : ℕ} [Fact p.Prime]
 
@@ -1639,20 +1621,7 @@ variable {K : Type} [NormedField K] [IsUltrametricDist K]
 
 theorem norm_pow_sub_pow_le {y z : K} (hy : ‖y‖ ≤ 1) (hz : ‖z‖ ≤ 1) (i : ℕ) :
     ‖y ^ i - z ^ i‖ ≤ ‖y - z‖ := by
-  induction i with
-  | zero => simp
-  | succ i ih =>
-    have e : y ^ (i + 1) - z ^ (i + 1) = y * (y ^ i - z ^ i) + (y - z) * z ^ i := by ring
-    rw [e]
-    refine (IsUltrametricDist.norm_add_le_max _ _).trans (max_le ?_ ?_)
-    · rw [norm_mul]
-      calc ‖y‖ * ‖y ^ i - z ^ i‖ ≤ 1 * ‖y - z‖ :=
-            mul_le_mul hy ih (norm_nonneg _) zero_le_one
-        _ = ‖y - z‖ := one_mul _
-    · rw [norm_mul, norm_pow]
-      calc ‖y - z‖ * ‖z‖ ^ i ≤ ‖y - z‖ * 1 :=
-            mul_le_mul_of_nonneg_left (pow_le_one₀ (norm_nonneg _) hz) (norm_nonneg _)
-        _ = ‖y - z‖ := mul_one _
+  first | exact _root_.GlobalTheory.NormEvalSubBound.norm_pow_sub_pow_le | exact @_root_.GlobalTheory.NormEvalSubBound.norm_pow_sub_pow_le | apply _root_.GlobalTheory.NormEvalSubBound.norm_pow_sub_pow_le <;> assumption
 
 theorem norm_eval_sub_eval_le (f : Polynomial K) (hf : ∀ n, ‖f.coeff n‖ ≤ 1) {y z : K}
     (hy : ‖y‖ ≤ 1) (hz : ‖z‖ ≤ 1) : ‖f.eval y - f.eval z‖ ≤ ‖y - z‖ := by

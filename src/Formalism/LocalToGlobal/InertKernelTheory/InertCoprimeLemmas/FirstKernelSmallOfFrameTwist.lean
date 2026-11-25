@@ -1253,7 +1253,6 @@ open Formalism.DworkPowerSeriesWeights (Integral mvExp)
 open Formalism.InvariantFactorPaths.G7 (cob UnrOK IsLawOfLog)
 open Formalism.L2.Th1.CM (MaximalUnramifiedExtension)
 open Formalism.L2.G.Pend (k0ToC wittFractionAlgebraCp OcC Frm thA thFOf)
-open Formalism.MainNotions.FormalGroupSystem (Sys)
 
 theorem k1gen_of_orth {l : ℕ} [Fact l.Prime] (h5 : 5 ≤ l) {be : MvPowerSeries (Fin 2) (K0 l)} (hB : BeProp l be)
     {g2 g3 ε s2 : MaximalUnramifiedExtension l} (hC : CurveAt l be g2 g3 ε s2) {ι : Type} [Fintype ι] [DecidableEq ι]

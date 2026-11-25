@@ -88,7 +88,6 @@ open GlobalTheory.LogPole
 open scoped Classical
 open GlobalTheory.CechKS
 
-set_option autoImplicit false
 noncomputable section
 attribute [local instance] Over.cartesianMonoidalCategory
 
@@ -152,8 +151,6 @@ open ReciprocityTheory.ChartRestriction.G.DVR.FlatBC (algX)
 open GlobalTheory.LogPole
 open scoped Classical
 open GlobalTheory.CechKS
-
-set_option autoImplicit false
 
 namespace GlobalTheory.CechKS.LinTan
 
@@ -284,8 +281,6 @@ open GlobalTheory.CechKS
 noncomputable section
 open MonoidalCategory CartesianMonoidalCategory MonObj
 attribute [local instance] Over.cartesianMonoidalCategory
-
-set_option autoImplicit false
 
 namespace GlobalTheory.CechKS
 
@@ -527,8 +522,6 @@ open ReciprocityTheory.ChartRestriction.G.DVR.FlatBC (algX)
 open GlobalTheory.LogPole
 open scoped Classical
 open GlobalTheory.CechKS
-
-set_option autoImplicit false
 
 noncomputable section
 

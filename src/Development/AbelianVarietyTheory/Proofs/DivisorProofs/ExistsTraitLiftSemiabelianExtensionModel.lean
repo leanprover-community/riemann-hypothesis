@@ -110,13 +110,4 @@ theorem surjective_of_isHom_id {o Ω : Type} [CommRing o] [Field Ω] [Algebra o 
   haveI : IsDominant f := IsDominant.of_comp Y.pt f
   infer_instance
 
-theorem exists_lift : ∀ (g n : ℕ) (F : SFam g n (zetaAway n)) (W : Matrix (Fin 8) (Fin 8) ℤ) (Z : Scheme.{0}) (i : F.X ⟶ Z) (X₁ : Setup F W i) (z₁ : X₁.M.Z) (Y : RatModel X₁.o₁ X₁.Ω₁) (πY : Y.Z ⟶ X₁.M.Z), Cmp.ZHAbove X₁ Y πY → ∀ (V : Type) [CommRing V] [IsDomain V] [IsLocalRing V] [IsDiscreteValuationRing V] (ev : X₁.M.Z.presheaf.stalk z₁ →+* V), IsLocalHom ev → IsCN V → ∃ (V' : Type) (_ : CommRing V') (_ : IsDomain V') (_ : IsLocalRing V') (_ : IsDiscreteValuationRing V') (j : V →+* V') (ξ : Sp V' ⟶ Y.Z), IsCN V' ∧ Function.Injective j ∧ IsLocalHom j ∧ ξ ≫ πY = spMap (j.comp ev) ≫ X₁.M.Z.fromSpecStalk z₁ := by
-  intro g n F W Z i X₁ z₁ Y πY h V _ _ _ _ ev _ hV
-  obtain ⟨U₀, EE, -, -, -, hf, hp⟩ := h
-  haveI := surjective_of_isHom_id hf
-  obtain ⟨V', _, _, _, j, ξ, h1, h2, h3, h4⟩ := exists_lift_of_proper πY V hV (spMap ev ≫ X₁.M.Z.fromSpecStalk z₁)
-  refine ⟨V', inferInstance, inferInstance, inferInstance, inferInstance, j, ξ, h1, h2, h3, ?_⟩
-  rw [h4, ← Category.assoc, ← Spec.map_comp]
-  rfl
-
 end GlobalTheory.Poinc.Sep.TraitLift

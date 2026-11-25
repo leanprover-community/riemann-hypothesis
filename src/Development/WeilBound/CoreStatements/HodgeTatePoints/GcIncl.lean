@@ -130,17 +130,8 @@ theorem test_incl : ∀ (A K : Type) [CommRing A] [IsDomain A] [IsNoetherianRing
     rw [Finset.smul_sum]
     refine Eq.trans (Finset.sum_congr rfl fun m _ => ?_) hsum
     rw [hc m, mul_smul]
-  have hcancel : ∀ u w : Ω, d • u = d • w → u = w := by
-    intro u w huw
-    have h1 : (algebraMap A K d) • u = (algebraMap A K d) • w := by
-      rw [algebraMap_smul, algebraMap_smul]
-      exact huw
-    have h2 : (algebraMap A K d)⁻¹ • ((algebraMap A K d) • u) =
-        (algebraMap A K d)⁻¹ • ((algebraMap A K d) • w) := by rw [h1]
-    rw [smul_smul, smul_smul, inv_mul_cancel₀ hd0', one_smul, one_smul] at h2
-    exact h2
-  rw [← hcancel _ _ hzy]
-  exact hyM
+  rw [← algebraMap_smul K d, ← algebraMap_smul K d x] at hzy
+  rwa [← smul_right_injective Ω hd0' hzy]
 
 theorem dvd_of_height_one {A : Type} [CommRing A] [IsDomain A] [IsNoetherianRing A]
     [IsIntegrallyClosed A] {a t : A} (ha : a ≠ 0)

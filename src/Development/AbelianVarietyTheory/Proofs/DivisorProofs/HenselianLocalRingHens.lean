@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PointedEtaleNbhdTransitionMapDirectedSystem
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.InstPreorder
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.BijectiveResidueCompEtaleHenselian
 public import Mathlib.RingTheory.Henselian
@@ -78,20 +79,7 @@ variable {R : Type} [CommRing R] [IsLocalRing R]
 theorem trans_algebraMap_eq_of_comp {i j : EtNbhd R} (hij : i ≤ j) (φ : i.A →ₐ[R] j.A)
     (hφ : j.pt.comp φ = i.pt) (a : i.A) :
     EtNbhd.trans hij (algebraMap i.A i.B a) = algebraMap j.A j.B (φ a) := by
-  have h1 : EtNbhd.trans hij (algebraMap i.A i.B a) = algebraMap j.A j.B (hij.choose a) :=
-    Localization.localRingHom_to_map _ _ _ _ _
-  rw [h1]
-  have key : (IsScalarTower.toAlgHom R j.A j.B).comp hij.choose =
-      (IsScalarTower.toAlgHom R j.A j.B).comp φ := by
-    apply GlobalTheory.EtaleHensel.algHom_eq_of_residue_eq
-    intro x
-    simp only [AlgHom.comp_apply, IsScalarTower.coe_toAlgHom']
-    rw [← sub_eq_zero, ← (residue j.B).map_sub (algebraMap j.A j.B (hij.choose x)) (algebraMap j.A j.B (φ x)), residue_eq_zero_iff, ← (algebraMap j.A j.B).map_sub (hij.choose x) (φ x),
-      IsLocalization.AtPrime.to_map_mem_maximal_iff j.B j.q]
-    show _ ∈ RingHom.ker j.pt
-    rw [RingHom.mem_ker, map_sub, sub_eq_zero]
-    exact (congr($(hij.choose_spec) x)).trans (congr($hφ x)).symm
-  exact congr($key a)
+  apply _root_.GlobalTheory.Henselisation.EtNbhd.trans_algebraMap_eq_of_pt <;> assumption
 
 end StageHensel
 

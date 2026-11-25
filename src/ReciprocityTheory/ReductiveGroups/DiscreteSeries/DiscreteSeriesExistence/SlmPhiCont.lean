@@ -22,7 +22,7 @@ variable {n : ℕ}
 
 section Spec
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 variable {ε : Fin n → Bool}
 

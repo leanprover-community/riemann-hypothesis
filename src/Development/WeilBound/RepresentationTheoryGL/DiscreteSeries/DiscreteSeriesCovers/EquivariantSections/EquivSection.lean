@@ -52,7 +52,7 @@ open ReciprocityTheory.ChartRestriction.DS ReciprocityTheory.ChartRestriction.DS
 
 variable {n : ℕ}
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 def lword {M : Type*} [AddCommGroup M] [Module ℂ M] (L : Fin n → Fin n → Module.End ℂ M) :
     List (Fin n × Fin n) → Module.End ℂ M

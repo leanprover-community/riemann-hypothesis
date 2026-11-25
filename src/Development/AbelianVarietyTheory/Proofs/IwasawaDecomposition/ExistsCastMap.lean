@@ -49,8 +49,6 @@ import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.JEvExi
 
 @[expose] public section
 
-set_option autoImplicit false
-
 
 noncomputable section
 
@@ -58,8 +56,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Form
 open Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Datum
 open scoped TensorProduct nonZeroDivisors
 open Formalism.IndefR.FWT Formalism.L2.Pj GlobalTheory.RealGeo GlobalTheory.OneMapAll GlobalTheory.FieldBC
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.Mem.R3.Rw.OmExt
 

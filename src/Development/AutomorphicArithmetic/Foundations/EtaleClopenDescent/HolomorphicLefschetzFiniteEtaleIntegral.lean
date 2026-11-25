@@ -107,7 +107,6 @@ noncomputable section
 namespace GlobalTheory.HodgeCoh
 
 section Alg
-open GlobalTheory.CechDR
 
 theorem mem_closure_smul_ιMulti_D (k B : Type) [CommRing k] [CommRing B] [Algebra k B] (z : DR k B) :
     z ∈ AddSubgroup.closure {w : DR k B | ∃ (q : ℕ) (c : B) (v : Fin q → B),

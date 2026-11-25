@@ -735,7 +735,7 @@ theorem SegreFlagProjSpecialDim.proof (hDim : PrimeDimLeTrdeg.Statement) (hTr : 
     exact (WithTop.add_right_cancel ENat.one_ne_top h').symm
 
   have hOΩ : Function.Injective (algebraMap O Ω) := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro a ha
     have hmem : a ∈ (pointIdeal O y).comap (C : O →+* MRing ι O) := by
       simp [Ideal.mem_comap, pointIdeal, RingHom.mem_ker, pointConeMap, ha]

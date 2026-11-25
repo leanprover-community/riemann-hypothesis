@@ -50,8 +50,6 @@ open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.Loc
 open GroundTheory.Global GroundTheory.Global.SemiLocal UpperTheory.V.Published UpperTheory.CBC
 open scoped Classical
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace UpperTheory.Gal.InertialTypesAlt
 
 def hcL {F : Type} [Field F] (Y : List (Σ m : ℕ, GL (Fin m) F → ℂ)) : (n : ℕ) → GL (Fin n) F → ℂ :=

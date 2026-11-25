@@ -143,20 +143,6 @@ theorem lognInf_eq (v : InfinitePlace E) (x : GA E n) {r : ℕ} (M : Matrix (Fin
     lognInf v (frame x M) = ploc (M.map v.embedding) (GeneralLinearGroup.map (cV v) x) := by
   rw [lognInf, frame_map, ploc]
 
-theorem exists_ginv {K : Type} [Field K] {r m : ℕ} (A : Matrix (Fin r) (Fin m) K) :
-    ∃ B : Matrix (Fin m) (Fin r) K, A * B * A = A := by
-  obtain ⟨g, hg⟩ := LinearMap.exists_rightInverse_of_surjective A.mulVecLin.rangeRestrict
-    (LinearMap.range_rangeRestrict _)
-  obtain ⟨h, hh⟩ := LinearMap.exists_extend g
-  refine ⟨LinearMap.toMatrix' h, ?_⟩
-  apply Matrix.mulVec_injective
-  funext z
-  have hz : A *ᵥ z ∈ LinearMap.range A.mulVecLin := ⟨z, rfl⟩
-  have h1 : h (A *ᵥ z) = g ⟨A *ᵥ z, hz⟩ := LinearMap.congr_fun hh ⟨A *ᵥ z, hz⟩
-  have h2 : A *ᵥ g ⟨A *ᵥ z, hz⟩ = A *ᵥ z :=
-    congrArg Subtype.val (LinearMap.congr_fun hg ⟨A *ᵥ z, hz⟩)
-  rw [← Matrix.mulVec_mulVec, ← Matrix.mulVec_mulVec, LinearMap.toMatrix'_mulVec, h1, h2]
-
 theorem exists_left (v : InfinitePlace E) (W : Submodule E (Fin n → E)) :
     ∃ L : Matrix (Fin (Module.finrank E W)) (Fin n) ℂ, L * (basisMat W).map v.embedding = 1 := by
   apply _root_.GlobalTheory.CompanionTheory.LocFlagPf.exists_left
@@ -484,10 +470,6 @@ namespace PositivityTheory.Rg.BcB.CV
 
 namespace QuotientIntegral
 
-theorem enorm_ofReal_toReal_le (r : ℝ≥0∞) : ‖((r.toReal : ℝ) : ℂ)‖ₑ ≤ r := by
-  rw [← ofReal_norm, Complex.norm_real, Real.norm_of_nonneg ENNReal.toReal_nonneg]
-  exact ENNReal.ofReal_toReal_le
-
 variable {G : Type*} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [LocallyCompactSpace G]
   [T2Space G] [SecondCountableTopology G] [MeasurableSpace G] [BorelSpace G]
 
@@ -638,7 +620,7 @@ theorem main (μ : Measure G) [μ.IsHaarMeasure] (T : Subgroup G) (ν : Measure 
             (lintegral_mono fun g => ?_))
           rw [enorm_mul]
           gcongr
-          exact enorm_ofReal_toReal_le _
+          exact PositivityTheory.Rg.BcB.CV.QuotientIntegral.enorm_ofReal_toReal_le' _
       _ ≤ (ENNReal.ofReal B * ∫⁻ g, S.indicator 1 g * hex.choose g ∂μ).toReal :=
           ENNReal.toReal_mono hne hle
       _ = (∫⁻ g, S.indicator 1 g * hex.choose g ∂μ).toReal * B := by

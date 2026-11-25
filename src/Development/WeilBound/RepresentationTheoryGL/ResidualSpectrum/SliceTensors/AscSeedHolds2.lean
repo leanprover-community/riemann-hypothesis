@@ -792,17 +792,8 @@ attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalDat
 namespace PositivityTheory.RSHS.LocalComponentTwist
 
 theorem modExp_const {a d : ℕ} (i : Fin d) :
-    modExp (fun _ : Fin d => Fin a) i = (a : ℤ) * ((d : ℤ) - 1 - 2 * ((i : ℕ) : ℤ)) := by
-  have e : modExp (fun _ : Fin d => Fin a) i =
-      (∑ _b ∈ Finset.Ioi i, (a : ℤ)) - ∑ _b ∈ Finset.Iio i, (a : ℤ) := by
-    unfold modExp
-    congr 1
-    · exact Finset.sum_congr (by ext; simp) fun _ _ => by simp
-    · exact Finset.sum_congr (by ext; simp) fun _ _ => by simp
-  have hi := i.2
-  have hc : ((d - 1 - (i : ℕ) : ℕ) : ℤ) = (d : ℤ) - 1 - ((i : ℕ) : ℤ) := by omega
-  rw [e, Finset.sum_const, Finset.sum_const, Fin.card_Ioi, Fin.card_Iio, nsmul_eq_mul, nsmul_eq_mul, hc]
-  ring
+    modExp (fun _ : Fin d => Fin a) i = (a : ℤ) * ((d : ℤ) - 1 - 2 * ((i : ℕ) : ℤ)) :=
+  _root_.PositivityTheory.Rg.Rs.satakeAscent.modExp_const i
 
 section Local
 

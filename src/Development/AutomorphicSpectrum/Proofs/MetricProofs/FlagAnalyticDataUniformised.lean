@@ -358,15 +358,6 @@ theorem eq_zero_of_still (FA : FlagAn BM d) {σ : FA.S.X → FA.Re.R.X} (hσ : H
     exact hinjF (by rw [map_zero]; exact key)
   exact hinj x k m hk hm (by rw [hz, map_zero])
 
-private theorem isBlockDiag_mul' {A B : Matrix (Fin N) (Fin N) ℂ} (hA : IsBlockDiag j A) (hB : IsBlockDiag j B) :
-    IsBlockDiag j (A * B) := by
-  intro a b hab
-  rw [Matrix.mul_apply]
-  refine Finset.sum_eq_zero fun c _ => ?_
-  by_cases h : ((a : ℕ) < N - j ↔ (c : ℕ) < N - j)
-  · rw [hB c b (fun h' => hab (h.trans h')), mul_zero]
-  · rw [hA a c h, zero_mul]
-
 theorem flag_immersion (FA : FlagAn BM d) {σ : FA.S.X → FA.Re.R.X} (hσ : HoloMap FA.S.A FA.Re.R.A σ)
     (hinj : ∀ x k m, x ∈ (FA.S.A.chart k).source → σ x ∈ (FA.Re.R.A.chart m).source →
       Function.Injective (fderiv ℂ (FA.Re.R.A.chart m ∘ σ ∘ (FA.S.A.chart k).symm) (FA.S.A.chart k x)))
@@ -464,7 +455,8 @@ theorem flag_immersion (FA : FlagAn BM d) {σ : FA.S.X → FA.Re.R.X} (hσ : Hol
     rw [← h2, ← hprod τ]
     exact h1
   have hll : ∀ τ (a b : Fin N), N - j ≤ (a : ℕ) → (b : ℕ) < N - j → ((Pi τ (FA.pr x))⁻¹ * dP τ) a b = 0 :=
-    fun τ => lower_left_zero (isBlockDiag_mul' (hh₀ τ).1 (hLb τ x).1) (hHdet τ) (isBlockDiag_mul' (hh₀ τ).1 (hdLbd τ)) (hkey τ)
+    fun τ => lower_left_zero ((hh₀ τ).1.mul (hLb τ x).1) (hHdet τ)
+      ((hh₀ τ).1.mul (hdLbd τ)) (hkey τ)
   have hdP' : ∀ τ, dP τ = Matrix.of fun a b => fderiv ℂ (fun w => Pi τ ((BM.Rb.A.chart kb).symm w) a b)
       (BM.Rb.A.chart kb (FA.pr x)) (fderiv ℂ (BM.Rb.A.chart kb ∘ FA.pr ∘ (FA.S.A.chart k).symm) (FA.S.A.chart k x) v) := by
     intro τ; ext a b

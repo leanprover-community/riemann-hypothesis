@@ -59,15 +59,6 @@ private theorem topologicalKrullDim_lt_top_of_homeomorph {A : Type u} {B : Type 
   rw [topologicalKrullDim_eq_of_homeomorph e]
   exact h
 
-private theorem subset_closure_inter_of_isPreirreducible {X : Type u} [TopologicalSpace X]
-    {S V : Set X} (hS : IsPreirreducible S) (hV : IsOpen V) (hne : (S ∩ V).Nonempty) :
-    S ⊆ closure (S ∩ V) := by
-  intro s hs
-  rw [mem_closure_iff]
-  intro W hW hsW
-  obtain ⟨y, hyS, hyW, hyV⟩ := hS W V hW hV ⟨s, hs, hsW⟩ hne
-  exact ⟨y, hyW, hyS, hyV⟩
-
 private theorem eq_of_preimage_val_eq {X : Type u} [TopologicalSpace X] {W : Set X}
     (hW : IsOpen W) {C D : Set X} (hC : IsClosed C) (hD : IsIrreducible D) (hCsubD : C ⊆ D)
     (hne : (C ∩ W).Nonempty)
@@ -80,7 +71,7 @@ private theorem eq_of_preimage_val_eq {X : Type u} [TopologicalSpace X] {W : Set
     exact hy
   obtain ⟨z, hzC, hzW⟩ := hne
   have h2 : (D ∩ W).Nonempty := ⟨z, hCsubD hzC, hzW⟩
-  calc D ⊆ closure (D ∩ W) := subset_closure_inter_of_isPreirreducible hD.2 hW h2
+  calc D ⊆ closure (D ∩ W) := subset_closure_inter_of_isPreirreducible_of_isOpen hD.2 hW h2
     _ ⊆ closure C := closure_mono h1
     _ = C := hC.closure_eq
 

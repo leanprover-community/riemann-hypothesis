@@ -45,7 +45,6 @@ public import ReciprocityTheory.GeometryOfNumbers.LatticeCovolumes.ArakelovDegre
 
 @[expose] public section
 
-set_option autoImplicit false
 noncomputable section
 namespace GlobalTheory.LatIndexDeg
 open NumberField IsDedekindDomain ReciprocityTheory.GeometryOfNumbersTheory GlobalTheory.FlatCM

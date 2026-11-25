@@ -312,7 +312,7 @@ open UpperTheory.V.Af (FrobEig algSat RepIso tw)
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 open UpperTheory.Gal.TP.Sub
 
-private theorem exists_finExt_gl {l n : ℕ} [Fact l.Prime] (A : GL (Fin n) (Qbar l)) :
+protected theorem UpperTheory.Gal.TP.Sub.exists_finExt_gl {l n : ℕ} [Fact l.Prime] (A : GL (Fin n) (Qbar l)) :
     ∃ K : FinExt l, ∀ i j, (A : Matrix (Fin n) (Fin n) (Qbar l)) i j ∈ K.1 ∧
       ((A⁻¹ : GL (Fin n) (Qbar l)) : Matrix (Fin n) (Fin n) (Qbar l)) i j ∈ K.1 := by
   let s : Set (Qbar l) := Set.range (fun p : Fin n × Fin n => (A : Matrix (Fin n) (Fin n) (Qbar l)) p.1 p.2) ∪
@@ -324,7 +324,7 @@ private theorem exists_finExt_gl {l n : ℕ} [Fact l.Prime] (A : GL (Fin n) (Qba
   · exact IntermediateField.subset_adjoin _ _ (Or.inl ⟨(i, j), rfl⟩)
   · exact IntermediateField.subset_adjoin _ _ (Or.inr ⟨(i, j), rfl⟩)
 
-private theorem isdRAt_conj {l : ℕ} [Fact l.Prime] {P : LocPrime l} {E Ω : Type} [Field E] [Field Ω] [Algebra E Ω]
+protected theorem UpperTheory.Gal.TP.Sub.isdRAt_conj {l : ℕ} [Fact l.Prime] {P : LocPrime l} {E Ω : Type} [Field E] [Field Ω] [Algebra E Ω]
     {O : Type} [CommRing O] [Algebra ℤ_[l] O] [TopologicalSpace O] {Gw : Subgroup (Ω ≃ₐ[E] Ω)}
     {Bw : LocBridge l E Ω Gw O} {m : ℕ} {r : ↥Gw →* GL (Fin m) (Qbar l)} (A : GL (Fin m) (Qbar l)) (K : FinExt l)
     (hA : ∀ i j, (A : Matrix (Fin m) (Fin m) (Qbar l)) i j ∈ K.1 ∧
@@ -352,7 +352,7 @@ theorem UpperTheory.Gal.TP.Sub.clConj_holds :
       exact i2 σ hσ
   · intro P AI hT A h O _ _ _ Bw hj
     obtain ⟨c1, c2, c3, c4⟩ := h2 P AI hT A h O Bw hj
-    obtain ⟨K, hK⟩ := exists_finExt_gl (g⁻¹)
+    obtain ⟨K, hK⟩ := UpperTheory.Gal.TP.Sub.exists_finExt_gl (g⁻¹)
     have e : r'.comp (Dec (F := E) A).subtype =
         (MulAut.conj (g⁻¹)⁻¹).toMonoidHom.comp
           (r.comp (ReciprocityTheory.Gal.Dec (F := E) A).subtype) := by
@@ -363,7 +363,7 @@ theorem UpperTheory.Gal.TP.Sub.clConj_holds :
     have cρ' : Continuous (r'.comp (Dec (F := E) A).subtype) := hc'.comp continuous_subtype_val
     have d' : IsdRAt P Bw (r'.comp (Dec (F := E) A).subtype) := by
       rw [e]
-      exact isdRAt_conj _ K hK c2
+      exact UpperTheory.Gal.TP.Sub.isdRAt_conj _ K hK c2
     refine ⟨?_, d', fun τ LL' τ' hI => ?_, fun x => ?_⟩
     · rw [e]
       exact GlobalTheory.ConjCrys.isCrysAt_conj _ K hK c1
@@ -958,21 +958,21 @@ section Alg
 
 variable {Γ : Type} [Group Γ] {k k' : Type} [CommRing k] [CommRing k']
 
-private theorem sumRep_ll {a b : ℕ} (r : Γ →* GL (Fin a) k) (s : Γ →* GL (Fin b) k) (g : Γ) (i j : Fin a) :
+protected theorem sumRep_ll {a b : ℕ} (r : Γ →* GL (Fin a) k) (s : Γ →* GL (Fin b) k) (g : Γ) (i j : Fin a) :
     (sumRep r s g : Matrix (Fin (a + b)) (Fin (a + b)) k) (Fin.castAdd b i) (Fin.castAdd b j) =
       (r g : Matrix (Fin a) (Fin a) k) i j := by
   change Matrix.fromBlocks (r g : Matrix (Fin a) (Fin a) k) 0 0 (s g : Matrix (Fin b) (Fin b) k)
       (finSumFinEquiv.symm (Fin.castAdd b i)) (finSumFinEquiv.symm (Fin.castAdd b j)) = _
   simp
 
-private theorem sumRep_rr {a b : ℕ} (r : Γ →* GL (Fin a) k) (s : Γ →* GL (Fin b) k) (g : Γ) (i j : Fin b) :
+protected theorem sumRep_rr {a b : ℕ} (r : Γ →* GL (Fin a) k) (s : Γ →* GL (Fin b) k) (g : Γ) (i j : Fin b) :
     (sumRep r s g : Matrix (Fin (a + b)) (Fin (a + b)) k) (Fin.natAdd a i) (Fin.natAdd a j) =
       (s g : Matrix (Fin b) (Fin b) k) i j := by
   change Matrix.fromBlocks (r g : Matrix (Fin a) (Fin a) k) 0 0 (s g : Matrix (Fin b) (Fin b) k)
       (finSumFinEquiv.symm (Fin.natAdd a i)) (finSumFinEquiv.symm (Fin.natAdd a j)) = _
   simp
 
-private theorem map_sum' {a b : ℕ} (f : k →+* k') (r₁ : Γ →* GL (Fin a) k) (r₂ : Γ →* GL (Fin b) k) :
+protected theorem map_sum' {a b : ℕ} (f : k →+* k') (r₁ : Γ →* GL (Fin a) k) (r₂ : Γ →* GL (Fin b) k) :
     mapRep f (sumRep r₁ r₂) = sumRep (mapRep f r₁) (mapRep f r₂) := by
   ext g i j
   change f (Matrix.fromBlocks (r₁ g : Matrix (Fin a) (Fin a) k) 0 0 (r₂ g : Matrix (Fin b) (Fin b) k)
@@ -981,7 +981,7 @@ private theorem map_sum' {a b : ℕ} (f : k →+* k') (r₁ : Γ →* GL (Fin a)
       (finSumFinEquiv.symm i) (finSumFinEquiv.symm j)
   rcases finSumFinEquiv.symm i with i | i <;> rcases finSumFinEquiv.symm j with j | j <;> simp [mapRep]
 
-private theorem descend {n : ℕ} (f : k →+* k') (hf : Function.Injective f) (r : Γ →* GL (Fin n) k')
+protected theorem descend {n : ℕ} (f : k →+* k') (hf : Function.Injective f) (r : Γ →* GL (Fin n) k')
     (A : Γ → Matrix (Fin n) (Fin n) k) (hA : ∀ g i j, f (A g i j) = (r g : Matrix (Fin n) (Fin n) k') i j) :
     ∃ r₁ : Γ →* GL (Fin n) k, mapRep f r₁ = r := by
   let M : Γ →* Matrix (Fin n) (Fin n) k :=
@@ -1017,13 +1017,13 @@ private theorem model_split {L : FinExt l} {ρ : ↥Gw →* GL (Fin (a + b)) ↥
       (sumRep r s g : Matrix (Fin (a + b)) (Fin (a + b)) (Om l)) i j := fun g i j => by
     rw [← h.2]
     simp [mapRep]
-  obtain ⟨r₁, hr⟩ := descend (algebraMap ↥L.1 (Om l)) hf r
+  obtain ⟨r₁, hr⟩ := Sub.descend (algebraMap ↥L.1 (Om l)) hf r
     (fun g i j => (ρ g : Matrix _ _ ↥L.1) (Fin.castAdd b i) (Fin.castAdd b j))
-    (fun g i j => by rw [e, sumRep_ll])
-  obtain ⟨s₁, hs⟩ := descend (algebraMap ↥L.1 (Om l)) hf s
+    (fun g i j => by rw [e, Sub.sumRep_ll])
+  obtain ⟨s₁, hs⟩ := Sub.descend (algebraMap ↥L.1 (Om l)) hf s
     (fun g i j => (ρ g : Matrix _ _ ↥L.1) (Fin.natAdd a i) (Fin.natAdd a j))
-    (fun g i j => by rw [e, sumRep_rr])
-  exact ⟨r₁, s₁, ⟨h.1, hr⟩, ⟨h.1, hs⟩, ⟨h.1, by rw [map_sum', hr, hs]⟩⟩
+    (fun g i j => by rw [e, Sub.sumRep_rr])
+  exact ⟨r₁, s₁, ⟨h.1, hr⟩, ⟨h.1, hs⟩, ⟨h.1, by rw [Sub.map_sum', hr, hs]⟩⟩
 
 theorem sumDR_holds : SumDR := by
   intro l _ P AI tied E Ω _ _ _ _ _ A O _ _ _ Bw a b r s hd

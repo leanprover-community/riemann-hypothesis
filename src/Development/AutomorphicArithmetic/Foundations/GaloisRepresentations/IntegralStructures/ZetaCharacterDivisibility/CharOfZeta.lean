@@ -61,7 +61,6 @@ open GlobalTheory.TripleGal (rk1)
 open UpperTheory.V.Af (FrobEig algSat RepIso)
 open UpperTheory.Gal.TP.Sub (Cl Above unrPol)
 open UpperTheory.Gal.crystallineComparison (GenericMul rootPol)
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 namespace UpperTheory.Gal.Int.Div
 

@@ -1440,21 +1440,6 @@ namespace GlobalTheory.EZ.Shuf
 
 theorem bop_id (n m : ℕ) : bop (𝟙 (SimplexCategory.mk n)) (𝟙 (SimplexCategory.mk m)) = 𝟙 (bo n m) := rfl
 
-theorem idc_self (n : ℕ) : idc n n = 𝟙 _ := by
-  ext j
-  have hj : (j : ℕ) < n + 1 := j.isLt
-  simp only [idc, clampHom, SimplexCategory.mkHom, SimplexCategory.Hom.toOrderHom_mk]
-  change min n (j : ℕ) = ((j : Fin (n + 1)) : ℕ)
-  omega
-
-theorem fc_comp_fc (n i j : ℕ) (hji : j < i) (hi : i ≤ n + 2) :
-    fc (n + 1) n j ≫ fc (n + 2) (n + 1) i = fc (n + 1) n (i - 1) ≫ fc (n + 2) (n + 1) j := by
-  ext k
-  have hk : (k : ℕ) < n + 1 := k.isLt
-  simp only [fc, clampHom, faceFun, SimplexCategory.mkHom, SimplexCategory.comp_toOrderHom,
-    SimplexCategory.Hom.toOrderHom_mk, OrderHom.comp_coe, Function.comp_apply, OrderHom.coe_mk]
-  split_ifs <;> omega
-
 theorem alt_double_sum {M : Type*} [AddCommGroup M] (n : ℕ)
     (F : (SimplexCategory.mk n ⟶ SimplexCategory.mk (n + 2)) → M) :
     ∑ i ∈ Finset.range (n + 3), ∑ j ∈ Finset.range (n + 2),
@@ -1462,30 +1447,10 @@ theorem alt_double_sum {M : Type*} [AddCommGroup M] (n : ℕ)
   apply GlobalTheory.EZ.TotSq.alt_double_sum
 
 theorem dH_comp_dH (a b x y c d : ℕ) : dH a b x y ≫ dH x y c d = 0 := by
-  unfold dH
-  by_cases h1 : a = x + 1 ∧ b = y
-  · by_cases h2 : x = c + 1 ∧ y = d
-    · obtain ⟨rfl, rfl⟩ := h1
-      obtain ⟨rfl, rfl⟩ := h2
-      rw [if_pos ⟨rfl, rfl⟩, if_pos ⟨rfl, rfl⟩, Preadditive.sum_comp]
-      simp only [Preadditive.comp_sum, Preadditive.zsmul_comp, Preadditive.comp_zsmul, _root_.GlobalTheory.EZ.Cone.bop_comp, smul_smul]
-      have := alt_double_sum c (fun α => bop α (idc b b ≫ idc b b))
-      simpa only [mul_comm] using this
-    · rw [if_neg h2, comp_zero]
-  · rw [if_neg h1, zero_comp]
+  apply _root_.GlobalTheory.EZ.TotSq.dH_comp_dH <;> assumption
 
 theorem dV_comp_dV (a b x y c d : ℕ) : dV a b x y ≫ dV x y c d = 0 := by
-  unfold dV
-  by_cases h1 : a = x ∧ b = y + 1
-  · by_cases h2 : x = c ∧ y = d + 1
-    · obtain ⟨rfl, rfl⟩ := h1
-      obtain ⟨rfl, rfl⟩ := h2
-      rw [if_pos ⟨rfl, rfl⟩, if_pos ⟨rfl, rfl⟩, Preadditive.sum_comp]
-      simp only [Preadditive.comp_sum, Preadditive.zsmul_comp, Preadditive.comp_zsmul, _root_.GlobalTheory.EZ.Cone.bop_comp, smul_smul]
-      have := alt_double_sum d (fun β => bop (idc a a ≫ idc a a) β)
-      simpa only [mul_comm] using this
-    · rw [if_neg h2, comp_zero]
-  · rw [if_neg h1, zero_comp]
+  apply _root_.GlobalTheory.EZ.TotSq.dV_comp_dV <;> assumption
 
 theorem dH_comp_dV (c d : ℕ) :
     dH (c + 1) (d + 1) c (d + 1) ≫ dV c (d + 1) c d = dV (c + 1) (d + 1) (c + 1) d ≫ dH (c + 1) d c d := by
@@ -1493,7 +1458,7 @@ theorem dH_comp_dV (c d : ℕ) :
   rw [if_pos ⟨rfl, rfl⟩, if_pos ⟨rfl, rfl⟩, if_pos ⟨rfl, rfl⟩, if_pos ⟨rfl, rfl⟩,
     Preadditive.sum_comp, Preadditive.sum_comp]
   simp only [Preadditive.comp_sum, Preadditive.zsmul_comp, Preadditive.comp_zsmul, _root_.GlobalTheory.EZ.Cone.bop_comp, smul_smul,
-    idc_self, Category.id_comp, Category.comp_id]
+    TotSq.idc_self, Category.id_comp, Category.comp_id]
   rw [Finset.sum_comm]
   exact Finset.sum_congr rfl fun _ _ => Finset.sum_congr rfl fun _ _ => by rw [mul_comm]
 
@@ -1520,7 +1485,7 @@ theorem exists_shuffle : ∃ G : ∀ a b n : ℕ, bo a b ⟶ bo n n, G 0 0 0 = �
   obtain ⟨cone, ε, hε, h0, hs⟩ := _root_.GlobalTheory.EZ.Cone.coneContraction
   have hid : shufRec cone 0 0 0 = 𝟙 (bo 0 0) := by
     rw [shufRec_zero]
-    rw [idO, if_pos ⟨rfl, rfl⟩, idc_self]
+    rw [idO, if_pos ⟨rfl, rfl⟩, TotSq.idc_self]
     exact bop_id 0 0
   refine ⟨fun a b n => shufRec cone n a b, hid, ?_⟩
   intro a b n

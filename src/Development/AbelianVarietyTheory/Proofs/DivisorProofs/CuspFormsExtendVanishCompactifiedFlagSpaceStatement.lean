@@ -632,8 +632,6 @@ open GlobalTheory.HSApp
 open Filter Topology
 open GlobalTheory.ShFam GlobalTheory.ShFam.BdArc GlobalTheory.Toroidal
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.Vanishing
@@ -734,8 +732,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory.CechPic GlobalTheory.Vanishing GlobalTheory.CompHS
 open GlobalTheory.FlagMod (FlagCover)
 open GlobalTheory.ShFam.BdArc (IsHolPts)
-
-set_option autoImplicit false
 
 noncomputable section
 

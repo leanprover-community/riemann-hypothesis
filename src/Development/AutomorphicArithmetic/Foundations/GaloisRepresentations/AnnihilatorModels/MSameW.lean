@@ -50,13 +50,6 @@ open GlobalTheory.AbDual (evc IsAdditive swap)
 attribute [local instance] Ideal.Quotient.field
 open UpperTheory.Gal.crystallineComparison UpperTheory.Gal.crystallineComparison.Mod
 
-private theorem pow_hom_comm {S : Scheme.{0}} {A : Over S} [GrpObj A] (h : A ⟶ A) [IsMonHom h] (n : ℕ) :
-    h ≫ ((𝟙 A) ^ n) = ((𝟙 A) ^ n) ≫ h := by
-  induction n with
-  | zero => simp [Hom.one_def]
-  | succ n ih =>
-    simp only [pow_succ, Hom.mul_def, comp_lift_assoc, Category.assoc, IsMonHom.mul_hom, lift_map_assoc, Category.comp_id, Category.id_comp, ih]
-
 theorem UpperTheory.Gal.crystallineComparison.Mod.sameW_of :
     KillLocal → InfW → FrobPass → KerU → RepOfFF → TanOne → SameW := by
   intro hKL hInf hFP hKU hRep hTan
@@ -73,7 +66,7 @@ theorem UpperTheory.Gal.crystallineComparison.Mod.sameW_of :
   have hactP : ∀ a : D.O, o.act.act a ≫ ((𝟙 o.A) ^ p ^ (e + 1)) = ((𝟙 o.A) ^ p ^ (e + 1)) ≫ o.act.act a := by
     intro a
     haveI := o.act.hom a
-    exact pow_hom_comm (o.act.act a) _
+    rw [MonObj.comp_pow, Category.comp_id, MonObj.pow_comp, Category.id_comp]
   have kP := hKU p D R b N r w hw hu (Sp κ) (spMap β) o o ((𝟙 o.A) ^ p ^ (e + 1)) (𝟙 o.A) (e + 1)
     hpow inferInstance hactP (by simp) (by simp)
   obtain ⟨d', hRP⟩ := hRep κ o.A _ kP.1

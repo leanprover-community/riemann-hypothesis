@@ -53,8 +53,6 @@ open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doublin
 open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
 open GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctions.BC Formalism.MainNotions.StandardLattice
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 namespace PositivityTheory.Rg.Sw.Glob
 
 variable {D : D7} {n : ℕ}
@@ -218,7 +216,6 @@ theorem nb_mul_comm (nb : hermA D n → G D n) (hnb : PositivityTheory.PfSWUS.Is
 
 end PlaceFactsH
 
-open PlaceFactsH
 
 theorem nbTau {θ : InfFam D} (hθ : IsInfFam θ) {τ : D.what₂.Tau} {ι : GR n →* G D n} (hι : IsPlaceEmb θ τ ι)
     (nb : hermA D n → G D n) (hnb : PositivityTheory.PfSWUS.IsNMap nb) (nb' : (Fin n → Fin n → ℝ) → GR n)

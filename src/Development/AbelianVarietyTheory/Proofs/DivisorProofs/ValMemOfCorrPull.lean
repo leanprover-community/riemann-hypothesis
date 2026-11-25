@@ -73,7 +73,6 @@ theorem val_mem_of_defOver (t : LB.Gen (LB.LinComb L φ ε)) {r : Sp K ⟶ Y} (h
 end GlobalTheory.Poinc.Sep
 
 namespace GlobalTheory.Poinc.Sep
-attribute [local instance] Over.cartesianMonoidalCategory
 open MonoidalCategory CartesianMonoidalCategory
 variable {K : Type} [Field K] (k₀ : Subfield K)
 

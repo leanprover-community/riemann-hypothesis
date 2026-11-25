@@ -754,37 +754,6 @@ theorem isClosedEmbedding_coord [T1Space C] {t : Sp C ⟶ Sp R} (ht : t = spMap 
   exact isClosed_singleton.preimage this
 
 
-omit [TopologicalSpace C] [IsTopologicalRing C] [IsLocalRing C] [IsOpenUnits C] in
-theorem aeval_mk_X {σ : Type} (I : Ideal (MvPolynomial σ R)) (q : MvPolynomial σ R) :
-    MvPolynomial.aeval (fun i => Ideal.Quotient.mk I (MvPolynomial.X i)) q = Ideal.Quotient.mk I q := by
-  have : MvPolynomial.aeval (fun i => Ideal.Quotient.mk I (MvPolynomial.X i)) = Ideal.Quotient.mkₐ R I := by
-    ext i
-    simp
-  rw [this]
-  rfl
-
-def zeroSetHomeomorph {t : Sp C ⟶ Sp R} (ht : t = spMap (algebraMap R C)) {σ : Type}
-    (I : Ideal (MvPolynomial σ R)) :
-    PtsOver (spMap (algebraMap R (MvPolynomial σ R ⧸ I))) t ≃ₜ
-      {z : σ → C | ∀ q ∈ I, MvPolynomial.aeval z q = 0} :=
-  have ha : Function.Surjective
-      (MvPolynomial.aeval (R := R) fun i => Ideal.Quotient.mk I (MvPolynomial.X i)) := fun u => by
-    obtain ⟨q, rfl⟩ := Ideal.Quotient.mk_surjective u
-    exact ⟨q, aeval_mk_X I q⟩
-  (isEmbedding_coord ht _ ha).toHomeomorph.trans (Homeomorph.setCongr (by
-    rw [range_coord ht _ ha]
-    simp only [aeval_mk_X, Ideal.Quotient.eq_zero_iff_mem]))
-
-def affineSpaceHomeomorph {t : Sp C ⟶ Sp R} (ht : t = spMap (algebraMap R C)) (σ : Type) :
-    PtsOver (spMap (algebraMap R (MvPolynomial σ R))) t ≃ₜ (σ → C) :=
-  have ha : Function.Surjective (MvPolynomial.aeval (R := R) (MvPolynomial.X : σ → MvPolynomial σ R)) :=
-    fun q => ⟨q, MvPolynomial.aeval_X_left_apply q⟩
-  (isEmbedding_coord ht _ ha).toHomeomorphOfSurjective (by
-    rw [← Set.range_eq_univ, range_coord ht _ ha, Set.eq_univ_iff_forall]
-    intro z q hq
-    rw [MvPolynomial.aeval_X_left_apply] at hq
-    rw [hq, map_zero])
-
 end Algebra
 
 section OverCat

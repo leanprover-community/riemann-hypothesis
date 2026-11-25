@@ -617,6 +617,13 @@ theorem rho_eq_of_inv_mul_mem (hfix : ∀ h : H, (h : G) ∈ V → ∀ a : A, A.
   rw [e, map_mul, Module.End.mul_apply, hfix (h₁⁻¹ * h₂) (by simpa using h)]
 
 
+private theorem inv_mul_supSection_mem {G : Type u} [Group G] {H V : Subgroup G} [V.Normal] (y : ↥(H ⊔ V)) :
+    (supSection (H := H) (V := V) y : G)⁻¹ * (y : G) ∈ V := by
+  have hex : ∃ g ∈ H, g⁻¹ * (y : G) ∈ V := by
+    obtain ⟨g, hg, w, hw, heq⟩ := Subgroup.mem_sup_of_normal_right.1 y.2
+    exact ⟨g, hg, by rwa [← heq, inv_mul_cancel_left]⟩
+  exact (Classical.choose_spec hex).2
+
 variable (H V) in
 noncomputable def summandFun (a : A) (x : G) : A := by
   classical
@@ -632,13 +639,8 @@ theorem summandFun_mul_left (hfix : ∀ h : H, (h : G) ∈ V → ∀ a : A, A.ρ
     simp only [summandFun, dif_pos hx, dif_pos hx']
     rw [← Module.End.mul_apply, ← map_mul]
     apply rho_eq_of_inv_mul_mem hfix
-    have hsection (y : ↥(H ⊔ V)) : (supSection (H := H) (V := V) y : G)⁻¹ * (y : G) ∈ V := by
-      have hex : ∃ g ∈ H, g⁻¹ * (y : G) ∈ V := by
-        obtain ⟨g, hg, w, hw, heq⟩ := Subgroup.mem_sup_of_normal_right.1 y.2
-        exact ⟨g, hg, by rwa [← heq, inv_mul_cancel_left]⟩
-      exact (Classical.choose_spec hex).2
-    refine inv_mul_mem_trans (hsection ⟨_, hx'⟩) ?_
-    have := inv_mul_mem_symm (hsection ⟨x, hx⟩)
+    refine inv_mul_mem_trans (inv_mul_supSection_mem (H := H) (V := V) ⟨_, hx'⟩) ?_
+    have := inv_mul_mem_symm (inv_mul_supSection_mem (H := H) (V := V) ⟨x, hx⟩)
     simpa [mul_assoc] using this
   · have hx' : (h : G) * x ∉ H ⊔ V := fun h' => hx (hmem.1 h')
     simp only [summandFun, dif_neg hx, dif_neg hx', map_zero]
@@ -653,13 +655,8 @@ theorem summandFun_mul_right (hfix : ∀ h : H, (h : G) ∈ V → ∀ a : A, A.�
     simp only [summandFun, dif_pos hx, dif_pos hx']
     rw [← Module.End.mul_apply, ← map_mul]
     apply rho_eq_of_inv_mul_mem hfix
-    have hsection (y : ↥(H ⊔ V)) : (supSection (H := H) (V := V) y : G)⁻¹ * (y : G) ∈ V := by
-      have hex : ∃ g ∈ H, g⁻¹ * (y : G) ∈ V := by
-        obtain ⟨g, hg, w, hw, heq⟩ := Subgroup.mem_sup_of_normal_right.1 y.2
-        exact ⟨g, hg, by rwa [← heq, inv_mul_cancel_left]⟩
-      exact (Classical.choose_spec hex).2
-    refine inv_mul_mem_trans (hsection ⟨_, hx'⟩) ?_
-    have h1 := inv_mul_mem_symm (hsection ⟨x, hx⟩)
+    refine inv_mul_mem_trans (inv_mul_supSection_mem (H := H) (V := V) ⟨_, hx'⟩) ?_
+    have h1 := inv_mul_mem_symm (inv_mul_supSection_mem (H := H) (V := V) ⟨x, hx⟩)
     have h2 : (k' : G)⁻¹ * (x⁻¹ * (supSection (H := H) (V := V) ⟨x, hx⟩ : G)) * k' ∈ V := by
       have := hVn.conj_mem _ h1 (k' : G)⁻¹
       simpa using this
@@ -676,13 +673,8 @@ theorem summandFun_mul_right_of_mem (hfix : ∀ h : H, (h : G) ∈ V → ∀ a :
   · have hx' : x * v ∈ H ⊔ V := hmem.2 hx
     simp only [summandFun, dif_pos hx, dif_pos hx']
     apply rho_eq_of_inv_mul_mem hfix
-    have hsection (y : ↥(H ⊔ V)) : (supSection (H := H) (V := V) y : G)⁻¹ * (y : G) ∈ V := by
-      have hex : ∃ g ∈ H, g⁻¹ * (y : G) ∈ V := by
-        obtain ⟨g, hg, w, hw, heq⟩ := Subgroup.mem_sup_of_normal_right.1 y.2
-        exact ⟨g, hg, by rwa [← heq, inv_mul_cancel_left]⟩
-      exact (Classical.choose_spec hex).2
-    refine inv_mul_mem_trans (hsection ⟨_, hx'⟩) ?_
-    have h1 := inv_mul_mem_symm (hsection ⟨x, hx⟩)
+    refine inv_mul_mem_trans (inv_mul_supSection_mem (H := H) (V := V) ⟨_, hx'⟩) ?_
+    have h1 := inv_mul_mem_symm (inv_mul_supSection_mem (H := H) (V := V) ⟨x, hx⟩)
     have h2 : v⁻¹ * (x⁻¹ * (supSection (H := H) (V := V) ⟨x, hx⟩ : G)) ∈ V :=
       V.mul_mem (V.inv_mem hv) h1
     simpa [mul_assoc] using h2
@@ -695,12 +687,7 @@ theorem summandFun_one (hfix : ∀ h : H, (h : G) ∈ V → ∀ a : A, A.ρ h a 
   have h1 : (1 : G) ∈ H ⊔ V := one_mem _
   simp only [summandFun, dif_pos h1]
   rw [← rho_eq_of_inv_mul_mem hfix (h₁ := 1) ?_ a, map_one, Module.End.one_apply]
-  have hsection (y : ↥(H ⊔ V)) : (supSection (H := H) (V := V) y : G)⁻¹ * (y : G) ∈ V := by
-    have hex : ∃ g ∈ H, g⁻¹ * (y : G) ∈ V := by
-      obtain ⟨g, hg, w, hw, heq⟩ := Subgroup.mem_sup_of_normal_right.1 y.2
-      exact ⟨g, hg, by rwa [← heq, inv_mul_cancel_left]⟩
-    exact (Classical.choose_spec hex).2
-  have := V.inv_mem (hsection ⟨1, h1⟩)
+  have := V.inv_mem (inv_mul_supSection_mem (H := H) (V := V) ⟨1, h1⟩)
   simpa using this
 
 end Coinduction

@@ -679,11 +679,6 @@ private theorem lamS_apply (x : {w : InfinitePlace L // w ≠ w₀} → ℝ) (w 
   · simp [h, LinearMap.pi_apply, LinearMap.sum_apply]
   · simp [h, LinearMap.pi_apply]
 
-omit [NumberField L] in
-private theorem mult_ne (w : InfinitePlace L) : (mult w : ℝ) ≠ 0 := by
-  have := mult_pos (w := w)
-  exact_mod_cast this.ne'
-
 private theorem lamS_log (u : (𝓞 L)ˣ) :
     lamS L (logEmbedding L (Additive.ofMul u)) = fun w => Real.log (w ((u : 𝓞 L) : L)) := by
   classical
@@ -697,9 +692,9 @@ private theorem lamS_log (u : (𝓞 L)ˣ) :
         -(mult (w₀ : InfinitePlace L) : ℝ) * Real.log (w₀ ((u : 𝓞 L) : L)) := by
       convert hs
     rw [this]
-    field_simp [mult_ne L w₀]
+    field_simp [NumberField.InfinitePlace.mult_coe_ne_zero (w := w₀)]
   · rw [dite_eq_right h, logEmbedding_component]
-    field_simp [mult_ne L w]
+    field_simp [NumberField.InfinitePlace.mult_coe_ne_zero (w := w)]
 
 private theorem span_fund :
     Submodule.span ℝ (Set.range fun i => logEmbedding L (Additive.ofMul (fundSystem L i))) = ⊤ := by
@@ -754,10 +749,10 @@ theorem span_units : ∃ l : List (𝓞 L)ˣ, ∀ t : InfinitePlace L → ℝ,
         simp only [t']; linarith
       rw [this]
       simp only [Pi.sub_apply, Pi.smul_apply, smul_eq_mul, mul_one]
-      field_simp [mult_ne L w₀]
+      field_simp [NumberField.InfinitePlace.mult_coe_ne_zero (w := w₀)]
     · rw [dite_eq_right h]
       simp only [t', Pi.sub_apply, Pi.smul_apply, smul_eq_mul, mul_one]
-      field_simp [mult_ne L w]
+      field_simp [NumberField.InfinitePlace.mult_coe_ne_zero (w := w)]
   have : t = lamS L t' + c • (fun _ => (1 : ℝ)) := by rw [h2]; abel
   rw [this]
   refine Submodule.add_mem _ (Submodule.span_mono (Set.subset_insert _ _) h1) ?_

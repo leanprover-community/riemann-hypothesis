@@ -94,11 +94,6 @@ theorem form_neg {f : MRing ι} {a : K → ℕ} (hf : IsMultiHomog f a) : IsMult
   rw [MvPolynomial.support_neg] at hm
   exact hf m hm
 
-theorem form_sub {f g : MRing ι} {a : K → ℕ} (hf : IsMultiHomog f a) (hg : IsMultiHomog g a) :
-    IsMultiHomog (f - g) a := by
-  rw [sub_eq_add_neg]
-  exact form_add hf (form_neg hg)
-
 theorem form_sum {σ : Type*} (s : Finset σ) (f : σ → MRing ι) {a : K → ℕ}
     (hf : ∀ x ∈ s, IsMultiHomog (f x) a) : IsMultiHomog (∑ x ∈ s, f x) a := by
   exact Finset.sum_induction f (fun p => IsMultiHomog p a) (fun _ _ h1 h2 => form_add h1 h2)
@@ -205,7 +200,7 @@ theorem core {Ω' : Type} [Field Ω'] {y : (Σ k, ι k) → Ω} (hy : Birational
     intro j
     rw [Polynomial.coeff_sub, Polynomial.coeff_add, Polynomial.coeff_mul, Polynomial.coeff_mul,
       Polynomial.coeff_C]
-    refine form_sub (form_add (form_sum _ _ fun x _ => form_mul (hUh _) (hMh _))
+    refine GroundTheory.Heights₂.Heights.HilbertSamuel.SectionBounded.homog_sub (form_add (form_sum _ _ fun x _ => form_mul (hUh _) (hMh _))
       (form_sum _ _ fun x _ => form_mul (hVh _) (hDh _))) ?_
     split_ifs
     · exact form_mul hH hH

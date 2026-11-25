@@ -65,10 +65,8 @@ private theorem mu_pow {Γ M : Type} [Group Γ] [TopologicalSpace Γ] [IsTopolog
 
 private theorem one_of {M : Type} [Monoid M] {x : M} {l a m : ℕ} (h : l.Coprime m) (h1 : x ^ l ^ a = 1)
     (h2 : x ^ m = 1) : x = 1 := by
-  have hc : Nat.Coprime (l ^ a) m := Nat.Coprime.pow_left a h
-  have hd := Nat.dvd_gcd (orderOf_dvd_of_pow_eq_one h1) (orderOf_dvd_of_pow_eq_one h2)
-  rw [Nat.Coprime.gcd_eq_one hc, Nat.dvd_one, orderOf_eq_one_iff] at hd
-  exact hd
+  have hd := pow_gcd_eq_one.2 ⟨h1, h2⟩
+  rwa [(Nat.Coprime.pow_left a h).gcd_eq_one, pow_one] at hd
 
 theorem UpperTheory.V.Ws.Rq.muPs :
     ∀ {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] {l : ℕ} [Fact l.Prime] {c : Coef l} (D : Raw Ω c), D.Good → ∀ T : Tower D, T.Ok →

@@ -56,7 +56,6 @@ import Formalism.LocalToGlobal.Columns.RecLevelHost
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S MeasureTheory IsDedekindDomain NumberField Matrix Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.Cx
 open scoped TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open Formalism.IndefR.RecTie Formalism.IndefR.Lev Formalism.L2.Rows GlobalTheory.Mem GlobalTheory.Mem.R3 GlobalTheory.Mem.Col2
 open GlobalTheory.Mem.R3.LiftBrg
 
@@ -196,13 +195,6 @@ theorem mem_levJ_iff {D : D7} (V : HSp D) (β : GL (Fin V.rank) (Formalism.Indef
 end GlobalTheory.Mem.R3.LiftBrg.SplitLoc
 
 namespace GlobalTheory.Mem.R3.LiftBrg.SplitLoc
-
-theorem conj_eq_one_iff {G : Type} [Group G] (a u : G) : a * u * a⁻¹ = 1 ↔ u = 1 := by
-  constructor
-  · intro h
-    have : u = a⁻¹ * (a * u * a⁻¹) * a := by group
-    rw [this, h]; group
-  · rintro rfl; group
 
 theorem conj_mem_iff {G : Type} [Group G] (H : Subgroup G) {a : G} (ha : a ∈ H) (u : G) : a * u * a⁻¹ ∈ H ↔ u ∈ H := by
   constructor

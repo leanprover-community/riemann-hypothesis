@@ -1346,7 +1346,6 @@ open scoped ENNReal
 
 namespace GlobalTheory.HaarIdx
 
-open MeasureTheory
 
 theorem inv_toReal_eq_relIndex {Γ : Type*} [Group Γ] [MeasurableSpace Γ] [MeasurableMul Γ] (μ : Measure Γ) [μ.IsMulLeftInvariant]
     (K H : Subgroup Γ) (hHK : H ≤ K) (hH : MeasurableSet (H : Set Γ)) (hK : μ (K : Set Γ) = 1)

@@ -237,7 +237,7 @@ theorem strictNormalCrossingsRestrictToClopen : StrictNormalCrossingsRestrictToC
     smooth_subschemeι_comp_of_hasStrictNormalCrossingsWith Z E hZ
   have hsmT : AlgebraicGeometry.Smooth (T.ι ≫ (Z.subschemeι ≫ p)) := inferInstance
   obtain ⟨V, hV, hyV, n, c, γ, hγ, hinjγ, hmem⟩ :=
-    exists_etaleChart_coord_mem_primeIdealOf_on_clopen p E hE Z hZ T hTclosed hcomp y
+    exists_etaleChart_coord_mem_primeIdealOf_on_clopen p E Z hZ T hcomp y
   obtain ⟨U, hyU, hU⟩ : ∃ U : W.Opens, (T.ι ≫ Z.subschemeι).base y ∈ U ∧ IsAffineOpen U := by
     obtain ⟨U, hUmem, hxU, -⟩ :=
       TopologicalSpace.Opens.isBasis_iff_nbhd.mp (Scheme.isBasis_affineOpens W)

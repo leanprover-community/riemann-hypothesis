@@ -162,8 +162,6 @@ open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.ZH GlobalTheory.Poinc GlobalTheory.UPoinc.USum
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.UPoinc.USum

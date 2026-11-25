@@ -11,8 +11,6 @@ open scoped TensorProduct
 
 namespace Formalism.L2.NTheta
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 abbrev LamHat (V : HSp D) : AddSubgroup (Fin V.rank → Af D.host.F ⊗[D.host.F] D.host.E) :=

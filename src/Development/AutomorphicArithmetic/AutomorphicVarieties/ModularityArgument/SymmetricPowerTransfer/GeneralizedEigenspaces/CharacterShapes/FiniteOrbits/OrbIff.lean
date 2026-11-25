@@ -43,8 +43,6 @@ noncomputable section
 open NumberField IsDedekindDomain ValuativeRel GlobalTheory.PRep GlobalTheory.SmGL UpperTheory.V.Hi UpperTheory.V.AlgebraTools
 open UpperTheory.V.Z.Sym UpperTheory.V.Z.Sym.Loc UpperTheory.V.Z.Sym.Glob UpperTheory.V.Z.Sym.Sig UpperTheory.V.Z.Sym.So
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 private theorem out_mul {G : Type} [Group G] (U : Subgroup G) (g : G) :
     ∃ i ∈ U, ((g : G ⧸ U)).out = g * i := by
   obtain ⟨h, hh⟩ := QuotientGroup.mk_out_eq_mul U g

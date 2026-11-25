@@ -2,44 +2,7 @@ module
 
 import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.CardFinRange
 public import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.ReflectionMemGlevCastSucc
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Algebra.Order.Star.Int
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -77,7 +40,7 @@ theorem bk_fr_le {F : Frames n' r} {L₁ N₁ : ℕ} (hV : F.Valid L₁ N₁) (j
     F.fr j i ≤ F.fr j i' :=
   TE.fr_le hV j i i' h h'
 
-theorem r_le_length {F : Frames n' r} {L₁ N₁ : ℕ} (hV : F.Valid L₁ N₁) (j x : ℤ) (hx : x ∈ F.letters j)
+theorem r_le_length {F : Frames n' r} {L₁ N₁ : ℕ} (hV : F.Valid L₁ N₁) (j x : ℤ)
     (hW : ¬ F.IsW j x) : r ≤ (evL F j x).length := by
   have hr : 0 < r := Nat.pos_of_ne_zero (NeZero.ne r)
   have hW' : F.fr (j - 1) (r - 1) < x := lt_of_not_ge hW
@@ -131,7 +94,7 @@ theorem late_row_injective : LateIndexInjective := by
   intro p n' r K _ _ _ X hX j x hx
   unfold Dat.toLate at hx
   simp only [Finset.mem_filter] at hx
-  have hlen := r_le_length hX.valid j x hx.1 hx.2
+  have hlen := r_le_length hX.valid j x hx.2
   have hidx : ∀ i : Fin r, (evL X.F j x).length - r + i.val < (evL X.F j x).length := by
     intro i
     have := i.isLt
@@ -154,7 +117,7 @@ theorem oldest_letter_in_segment : OldestLetterInSegment := by
   simp only [Finset.mem_filter] at hx
   have hV := hX.valid
   have hr : 0 < r := Nat.pos_of_ne_zero (NeZero.ne r)
-  have hlen := r_le_length hV j x hx.1 hx.2
+  have hlen := r_le_length hV j x hx.2
   have hk : (evL X.F j x).length - r < (evL X.F j x).length := by omega
   have hold : X.F.oldest j x = (evL X.F j x)[(evL X.F j x).length - r]'hk := by
     rw [oldest_eq, List.getD_eq_getElem]

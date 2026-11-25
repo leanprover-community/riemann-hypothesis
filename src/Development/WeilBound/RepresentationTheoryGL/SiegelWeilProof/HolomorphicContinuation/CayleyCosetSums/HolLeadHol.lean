@@ -51,7 +51,7 @@ open PositivityTheory.Rg.Sw PositivityTheory.Rg.Sw.LVs PositivityTheory.SiegelWe
 
 variable {n : ℕ}
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 def HolLeadHol : Prop :=
   ∀ (m n : ℕ) (e : ℤ), 1 ≤ m → m < n →

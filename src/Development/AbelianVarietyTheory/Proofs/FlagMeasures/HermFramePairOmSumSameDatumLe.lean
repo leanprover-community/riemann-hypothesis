@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.MemOfForall
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.NormalFormDualOrthogonalLast
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermFramePairNormalFormGeometrySummary
 public import Formalism.HyperbolicPlaceProducts.SecondLevelArithmeticNorm
@@ -925,20 +926,8 @@ theorem star_mem_one {x : K} (hx : x ∈ (1 : Submodule (𝓞 K) K)) : star x �
 
 theorem star_mem_ipow_nat (𝔡 : Ideal (𝓞 K)) (h : 𝔡 ≠ ⊥) (hs : ∀ x ∈ 𝔡, ∃ y ∈ 𝔡, (y : K) = star (x : K)) (n : ℕ) :
     ∀ x ∈ ipow 𝔡 n, star x ∈ ipow 𝔡 n := by
-  induction n with
-  | zero => intro x hx; simp only [Nat.cast_zero, ipow_zero] at hx ⊢; exact star_mem_one hx
-  | succ n ih =>
-    intro x hx
-    rw [Nat.cast_succ, ipow_add _ h] at hx ⊢
-    refine Submodule.mul_induction_on hx ?_ ?_
-    · intro a ha b hb
-      rw [star_mul']
-      refine Submodule.mul_mem_mul (ih a ha) ?_
-      simp only [ipow, zpow_one] at hb ⊢
-      obtain ⟨o, ho, rfl⟩ := (FractionalIdeal.mem_coeIdeal _).1 hb
-      obtain ⟨y, hy, hy'⟩ := hs o ho
-      exact (FractionalIdeal.mem_coeIdeal _).2 ⟨y, hy, hy'⟩
-    · intro a b ha hb; rw [star_add]; exact add_mem ha hb
+  intros
+  apply _root_.GlobalTheory.DegCnt.IdealPow.star_mem_nat <;> assumption
 
 theorem star_mem_ipow_neg (𝔡 : Ideal (𝓞 K)) (h : 𝔡 ≠ ⊥) (hs : ∀ x ∈ 𝔡, ∃ y ∈ 𝔡, (y : K) = star (x : K)) (n : ℕ) :
     ∀ x ∈ ipow 𝔡 (-(n : ℤ)), star x ∈ ipow 𝔡 (-(n : ℤ)) := by

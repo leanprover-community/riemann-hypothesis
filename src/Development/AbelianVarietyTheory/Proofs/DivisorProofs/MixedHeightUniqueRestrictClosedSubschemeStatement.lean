@@ -57,8 +57,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open ReciprocityTheory.ChartRestriction.G.Out (nonzeroLocus)
 open GlobalTheory GlobalTheory.CechPic GlobalTheory.CxPts GlobalTheory.Cartier GlobalTheory.ArInt GlobalTheory.MixHt
 
-set_option autoImplicit false
-
 namespace GlobalTheory.MixHt.Uniq
 
 variable {k : Type} [CommRing k]

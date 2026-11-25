@@ -124,57 +124,7 @@ theorem exists_lvTied_of_std {B : Base} {X : PreX B.toPre} (I : TC B X) (hOk : I
 
 
 
-noncomputable def lvSameMu0 {B : Base} {X : PreX B.toPre} (I : TC B X) (l : I.Laws) (Z : TC.Later B (I.cols l)) (l0 : I.Law0 l)
-    (u : B.Word) (i : ℕ) (hi : i ≤ (I.rec7 l Z).R.m)
-    (a : TwAtT (I.tw l l0 Z) u (I.rec7 l Z).what₂.mu0) (hV : a.eVT = Equiv.refl _)
-    (hR : ∀ v r, (a.eFv v).symm (I.resT l u I.mu0 (a.eVT v) r) = I.resT l u I.mu0 v r) :
-    LvSame a i (Formalism.L2.Herm.clsCast (I.rec7 l Z) u i) (Formalism.L2.Herm.yCast (I.rec7 l Z) u i) ((I.tw l l0 Z).eMu0 u i hi) := by
-  obtain ⟨eVT, eFv, psiT, rhoT, Mu0, duStar, Dstar, GamP, tauOf, seenP⟩ := a
-  dsimp only at hV hR
-  subst hV
-  have hE : ∀ v x, eFv v x = x := by
-    intro v x
-    obtain ⟨r, rfl⟩ := Ideal.Quotient.mk_surjective x
-    exact (congrArg (eFv v) (hR v r)).symm.trans ((eFv v).apply_symm_apply _)
-  exact
-    { eLv := fun v c => AddEquiv.refl _
-      eLv_smul := fun v c r x => by rw [hE]; rfl
-      fv := fun v c x => by rw [hE]; rfl
-      up := fun v c x _ => rfl
-      upT := fun v c x _ h y => rfl
-      eLk := fun v c => AddEquiv.refl _
-      eLk_smul := fun v c r x => by rw [hE]; rfl
-      te := fun v c => rfl
-      dn := fun v c g g' hg _ => by
-        obtain rfl : g = g' := LinearMap.ext fun x => (hE v (g x)).symm.trans (hg x)
-        rfl
-      dnT := fun v c g g' hg _ h y => by
-        obtain rfl : g = g' := LinearMap.ext fun x => (hE v (g x)).symm.trans (hg x)
-        rfl
-      dil := fun v r c => by
-        have key : ∀ q : (((I.tw l l0 Z).A u (I.rec7 l Z).what₂.mu0).Fv v)ˣ, (q : ((I.tw l l0 Z).A u (I.rec7 l Z).what₂.mu0).Fv v) = (r : ((I.tw l l0 Z).A u (I.rec7 l Z).what₂.mu0).Fv v) →
-            ((I.tw l l0 Z).fm u (I.rec7 l Z).what₂.mu0).dil i v r (Formalism.L2.Herm.clsCast (I.rec7 l Z) u i c) =
-              Formalism.L2.Herm.clsCast (I.rec7 l Z) u i (((I.rec7 l Z).fm u).dil i v q c) := by
-          intro q hq
-          obtain rfl : q = r := Units.ext hq
-          rfl
-        refine key _ ?_
-        exact hE v _
-      dilT := fun v r c h y => by
-        have key : ∀ q : (((I.tw l l0 Z).A u (I.rec7 l Z).what₂.mu0).Fv v)ˣ, (q : ((I.tw l l0 Z).A u (I.rec7 l Z).what₂.mu0).Fv v) = (r : ((I.tw l l0 Z).A u (I.rec7 l Z).what₂.mu0).Fv v) →
-            ((I.tw l l0 Z).fm u (I.rec7 l Z).what₂.mu0).dilT i v r (Formalism.L2.Herm.clsCast (I.rec7 l Z) u i c)
-              (fun z => h ((Formalism.L2.Herm.yCast (I.rec7 l Z) u i).symm z)) (Formalism.L2.Herm.yCast (I.rec7 l Z) u i y) =
-              ((I.rec7 l Z).fm u).dilT i v q c h y := by
-          intro q hq
-          obtain rfl : q = r := Units.ext hq
-          rfl
-        refine key _ ?_
-        exact hE v _
-      bw := fun w _ _ v x => Iff.rfl }
-
-
-
-theorem tw_lv_tied_and_same : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok → TC.Pins B X → ∀ (l : I.Laws) (Z : TC.Later B (I.cols l)), ∀ (l0 : I.Law0 l) (inQ : I.ι → HeightOneSpectrum (𝓞 (I.rec7 l Z).host.F) → Prop) (H : Formalism.L2.Herm.HermColsCh (I.rec7 l Z)) (F : ∀ u, FormsTiedSym (I.rec7 l Z) u (H.Ch u) (H.chOf u)) (T : Formalism.L2.Herm.TwChTied (I.rec7 l Z) inQ) (J : Formalism.L2.Herm.TwChJointS T H) (W : TwFormsTiedS (I.rec7 l Z) (I.tw l l0 Z) T J F), (∀ u, I.StdF l Z u (F u) ∧ I.StdLvC l Z u (F u)) → I.StdW l Z l0 W → (∃ Lv : SymmetricTwistedLevelData W, I.StdLv l Z l0 Lv) ∧ Nonempty (TwLvSameS W) := by
+theorem tw_lv_tied_and_same : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok → TC.Pins B X → ∀ (l : I.Laws) (Z : TC.Later B (I.cols l)), ∀ (l0 : I.Law0 l) (inQ : I.ι → HeightOneSpectrum (𝓞 (I.rec7 l Z).host.F) → Prop) (H : Formalism.L2.Herm.HermColsCh (I.rec7 l Z)) (F : ∀ u, FormsTiedSym (I.rec7 l Z) u (H.Ch u) (H.chOf u)) (T : Formalism.L2.Herm.TwChTied (I.rec7 l Z) inQ) (J : Formalism.L2.Herm.TwChJointS T H) (W : TwFormsTiedS (I.rec7 l Z) (I.tw l l0 Z) T J F), (∀ u, I.StdF l Z u (F u) ∧ I.StdLvC l Z u (F u)) → I.StdW l Z l0 W → ∃ Lv : SymmetricTwistedLevelData W, I.StdLv l Z l0 Lv := by
   intro B X I hOk hP l Z l0 inQ H F T J W hF hW
   have hY : ∀ u μ i hm y, (twYS T F u μ i hm y).1 = y.1 := by
     intro u μ i hm y
@@ -198,23 +148,12 @@ theorem tw_lv_tied_and_same : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.
       (W.ch u μ hμ i h1 hm) (twYS T F u μ i hm) ((W.atT u μ).eV (F u).atT) (hW.reads u μ hμ i h1 hm) (hY u μ i hm) (hV u μ)
       (hW.killed u μ hμ i h1 hm)
   choose L hL using key
-  refine ⟨⟨⟨L, fun u μ hμ i h1 hm => (hL u μ hμ i h1 hm).2.1.choose, fun u μ hμ i h1 hm => (hL u μ hμ i h1 hm).2.1.choose_spec,
+  refine ⟨⟨L, fun u μ hμ i h1 hm => (hL u μ hμ i h1 hm).2.1.choose, fun u μ hμ i h1 hm => (hL u μ hμ i h1 hm).2.1.choose_spec,
     fun u μ hμ i h1 hm => (hL u μ hμ i h1 hm).2.2.1, fun u μ hμ i h1 hm => (hL u μ hμ i h1 hm).2.2.2, ?_⟩,
-    fun u μ hμ i h1 hm => (hL u μ hμ i h1 hm).1⟩, ⟨⟨?_, ?_⟩⟩⟩
+    fun u μ hμ i h1 hm => (hL u μ hμ i h1 hm).1⟩
   · intro u μ hμ i h1 hm
     rw [hres u μ, hW.lat u μ i]
     exact GlobalTheory.Mem.Col2.TC.bw_tie I hOk hP l Z u μ i hm (twYS T F u μ i hm) (hY u μ i hm)
-  · intro u μ
-    rw [hW.eCls0 u μ, hW.eY u μ 0 (Nat.zero_le _)]
-    refine (GlobalTheory.Mem.Col2.TC.StepZero.lvSame_zero I hOk hP l Z l0 u μ (W.atT u μ) (hW.eVT u μ) fun v r => ?_).some
-    have h := hW.eFv u μ v r
-    simp only [TwAtT.res, (hF u).1.res] at h
-    exact h
-  · intro u i hi
-    refine lvSameMu0 I l Z l0 u i hi (W.atT u _) (hW.eVT u _) fun v r => ?_
-    have h := hW.eFv u (I.rec7 l Z).what₂.mu0 v r
-    simp only [TwAtT.res, (hF u).1.res] at h
-    exact h
 
 end GlobalTheory.Mem.Col2.TC
 end -- clump:auto
@@ -229,7 +168,7 @@ section -- clump:auto
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Col Formalism.L2.DIV Formalism.L2.Ker Formalism.UG Formalism.L2.Forms GlobalTheory.Mem GlobalTheory.Mem.Chr GlobalTheory.Mem.Col2 GlobalTheory.Mem.Col2.TC Matrix
 attribute [local instance] GlobalTheory.Mem.Col2.starE Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.tupleChains_levelStructure_compatible_at_levelPrime : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok → TC.Pins B X → ∀ (l : I.Laws) (Z : TC.Later B (I.cols l)), ∀ (l0 : I.Law0 l) (inQ : I.ι → HeightOneSpectrum (𝓞 (I.rec7 l Z).host.F) → Prop) (H : Formalism.L2.Herm.HermColsCh (I.rec7 l Z)) (F : ∀ u, FormsTiedSym (I.rec7 l Z) u (H.Ch u) (H.chOf u)) (T : Formalism.L2.Herm.TwChTied (I.rec7 l Z) inQ) (J : Formalism.L2.Herm.TwChJointS T H) (W : TwFormsTiedS (I.rec7 l Z) (I.tw l l0 Z) T J F), (∀ u, I.StdF l Z u (F u) ∧ I.StdLvC l Z u (F u)) → I.StdW l Z l0 W → (∃ Lv : SymmetricTwistedLevelData W, I.StdLv l Z l0 Lv) ∧ Nonempty (TwLvSameS W) := by
+theorem _root_.GlobalTheory.T.tupleChains_levelStructure_compatible_at_levelPrime : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok → TC.Pins B X → ∀ (l : I.Laws) (Z : TC.Later B (I.cols l)), ∀ (l0 : I.Law0 l) (inQ : I.ι → HeightOneSpectrum (𝓞 (I.rec7 l Z).host.F) → Prop) (H : Formalism.L2.Herm.HermColsCh (I.rec7 l Z)) (F : ∀ u, FormsTiedSym (I.rec7 l Z) u (H.Ch u) (H.chOf u)) (T : Formalism.L2.Herm.TwChTied (I.rec7 l Z) inQ) (J : Formalism.L2.Herm.TwChJointS T H) (W : TwFormsTiedS (I.rec7 l Z) (I.tw l l0 Z) T J F), (∀ u, I.StdF l Z u (F u) ∧ I.StdLvC l Z u (F u)) → I.StdW l Z l0 W → ∃ Lv : SymmetricTwistedLevelData W, I.StdLv l Z l0 Lv := by
   first | exact @GlobalTheory.Mem.Col2.TC.tw_lv_tied_and_same
 end -- clump:auto
 end -- clump:auto
@@ -1028,9 +967,9 @@ theorem colsTwPTiedS_std : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok 
     exact Iff.rfl
   have hF : ∀ u, I.StdF l Z u (C.forms u) ∧ I.StdLvC l Z u (C.forms u) := fun u => ⟨hC u, hLv u⟩
   obtain ⟨T, J, W, hM, hW, ⟨lvJ⟩, hPt⟩ := GlobalTheory.T.trueColumnChoice_exists_chainData_with_basePoints I hI hP l Z l0 (fun a v => tp.InQ' a v) C.herm.base C.forms hQ hF (carH_of_cols C)
-  obtain ⟨⟨Lv, hL⟩, ⟨same⟩⟩ := GlobalTheory.T.tupleChains_levelStructure_compatible_at_levelPrime I hI hP l Z l0 (fun a v => tp.InQ' a v) C.herm.base C.forms T J W hF hW
+  obtain ⟨Lv, hL⟩ := GlobalTheory.T.tupleChains_levelStructure_compatible_at_levelPrime I hI hP l Z l0 (fun a v => tp.InQ' a v) C.herm.base C.forms T J W hF hW
   obtain ⟨Pt, E, hG, hS⟩ := GlobalTheory.T.tupleLayerCompatibilities_of_X_prime I hI hP l Z l0 (fun a v => tp.InQ' a v) C.herm.base C.forms T J W Lv hQ hF hW hL hPt
-  exact ⟨{ ch := T, chJ := J, chM := hM, forms := W, lv := Lv, same := same, lvJ := lvJ, pt := Pt, ptG := hG, ptE := E }, hW, hL, hS⟩
+  exact ⟨{ ch := T, chJ := J, chM := hM, forms := W, lv := Lv, lvJ := lvJ, pt := Pt, ptG := hG, ptE := E }, hW, hL, hS⟩
 
 end GlobalTheory.Mem.Col2.TC
 

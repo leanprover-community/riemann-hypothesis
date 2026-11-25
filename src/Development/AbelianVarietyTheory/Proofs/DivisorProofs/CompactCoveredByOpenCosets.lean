@@ -48,7 +48,6 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.HilbertNinetyQuotie
 import Development.AbelianVarietyTheory.Definitions.Divisors.T2SpaceGeneralLinearGroup
 import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.LeviEmbMemNormalizerLower
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FullRankSB
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.OmAOneApply
 public import Mathlib.Algebra.Group.Action.Defs
 public import Mathlib.Algebra.Group.Pointwise.Set.Scalar
 public import Mathlib.GroupTheory.Coset.Defs
@@ -56,7 +55,7 @@ public import Mathlib.Topology.Algebra.ConstMulAction
 
 @[expose] public section
 
-open Matrix MeasureTheory ValuativeRel GlobalTheory.SplitFlip GlobalTheory.SmGL GlobalTheory.WeilM GlobalTheory.RankFibre GlobalTheory.SplitWeil GlobalTheory.RankFibreKer
+open Matrix MeasureTheory ValuativeRel GlobalTheory.SplitFlip GlobalTheory.SmGL GlobalTheory.WeilM GlobalTheory.RankFibre GlobalTheory.SplitWeil
 
 namespace GlobalTheory
 

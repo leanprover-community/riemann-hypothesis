@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FockVacuumRealRestrictionGaussianEntire
 public import Development.AbelianVarietyTheory.Definitions.Divisors.KernelNormConstantSpec
 public import Formalism.LocalToGlobal.ProjectiveLattices.CuspidalL2Subspace
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.OmAtSmulRight
@@ -56,7 +57,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR.Datum Formalism.IndefR.Links
 open IsDedekindDomain NumberField Matrix MvPolynomial
 open GlobalTheory.SignedHC GlobalTheory.ChiGrid Formalism.L2.DIV Formalism.L2.Ker GlobalTheory.FunObj
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.FockJetOrigin
 
@@ -67,17 +67,7 @@ variable {D : D7}
 
 theorem realPlace_cmTrace_zero_element_eq_I_mul_abs (τ : D.what₂.Tau) :
     tauE D τ D.host.xi0 = Complex.I * ((Formalism.L2.Pj.xiR D : ℝ) : ℂ) := by
-  have him := Formalism.L2.Theta.xi_zero_im_pos D τ
-  have hre := GlobalTheory.FockInj.xi_re (D := D) τ
-  have hn := GlobalTheory.AdTh.Fock.norm_embedding_hostFormConstant_eq D (tauE D τ)
-  apply Complex.ext
-  · simp [hre]
-  · rw [← hn]
-    have : ‖tauE D τ D.host.xi0‖ = (tauE D τ D.host.xi0).im := by
-      rw [Complex.norm_def, Complex.normSq_apply, hre]
-      simp only [zero_mul, zero_add]
-      exact Real.sqrt_mul_self him.le
-    simp [this]
+  apply _root_.GlobalTheory.FockPos.xi_zero_eq_host <;> assumption
 
 theorem cartan_eq_one {n : ℕ} {G s B : Matrix (Fin n) (Fin n) ℂ} (hB : Bᴴ * G * B = 1) (hs : IsCartanInv G s) : s = 1 := by
   obtain ⟨h1, -, h3⟩ := hs

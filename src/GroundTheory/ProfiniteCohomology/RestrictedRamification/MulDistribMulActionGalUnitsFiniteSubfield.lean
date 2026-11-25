@@ -531,7 +531,7 @@ theorem exists_mulCoboundary_of_ord (he : (placeOfEmbedding ι F).1.asIdeal.rami
           (c (decompHom (v.adicCompletion K.1) (embedLevel ι F) σ,
             decompHom (v.adicCompletion K.1) (embedLevel ι F) τ)) := by
   have : CompactSpace Gal(AlgebraicClosure (v.adicCompletion K.1)/v.adicCompletion K.1) :=
-    galois_compactSpace _ _
+    InfiniteGalois.instCompactSpaceAlgEquivOfIsGalois _ _
 
   obtain ⟨g, hg⟩ := exists_int_coboundary_of_surjective (placeDecompHom ι F)
     (placeDecompHom_surjective ι F)

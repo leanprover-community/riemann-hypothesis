@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GaloisDescentFreeSheafCechLevelSepClosureStatement
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IndEtOfForallFinset
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -144,19 +145,7 @@ theorem cechPt_nat {Y X : Scheme.{0}} (f : Y ⟶ X) (k : ℕ) {Z Z' : Scheme.{0}
     (y : Fin (k + 1) → (Z ⟶ Y)) (h : ∀ i, y i ≫ f = x) :
     ((cech f).obj (op ⦋k⦌)).map g.op (cechPt f k x y h) =
       cechPt f k (g ≫ x) (fun i => g ≫ y i) (fun i => by rw [Category.assoc, h i]) := by
-  unfold cechPt
-  have e : yoneda.map g ≫ WidePullback.lift (arrows := fun _ : Fin (k + 1) => yoneda.map f) (yoneda.map x)
-      (fun i => yoneda.map (y i)) (fun i => by rw [← yoneda.map_comp, h i]) =
-      WidePullback.lift (arrows := fun _ : Fin (k + 1) => yoneda.map f) (yoneda.map (g ≫ x))
-      (fun i => yoneda.map (g ≫ y i)) (fun i => by rw [← yoneda.map_comp, Category.assoc, h i]) := by
-    apply WidePullback.hom_ext
-    · intro j
-      erw [Category.assoc, WidePullback.lift_π, WidePullback.lift_π, yoneda.map_comp]
-    · erw [Category.assoc, WidePullback.lift_base, WidePullback.lift_base, yoneda.map_comp]
-  rw [← e]
-  erw [← NatTrans.naturality_apply]
-  simp
-  rfl
+  apply _root_.GlobalTheory.EtC.GalSec.cechPt_nat <;> assumption
 
 theorem cechPt_face {Y X : Scheme.{0}} (f : Y ⟶ X) (k : ℕ) {Z : Scheme.{0}} (x : Z ⟶ X)
     (y : Fin (k + 2) → (Z ⟶ Y)) (h : ∀ i, y i ≫ f = x) (i : Fin (k + 2)) :

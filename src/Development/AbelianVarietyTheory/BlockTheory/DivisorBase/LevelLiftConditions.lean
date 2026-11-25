@@ -40,8 +40,6 @@ public import Development.AbelianVarietyTheory.Definitions.Jets.EmbShortThLeThet
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.IndefiniteRowSideFullHecke.LevelLiftConditions
@@ -50,8 +48,6 @@ open NumberField IsDedekindDomain ReciprocityTheory.ChartRestriction.G.Geo.Tor R
   Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Pj
 open GlobalTheory.FormTies (levFull)
 open scoped TensorProduct
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 section Level
 

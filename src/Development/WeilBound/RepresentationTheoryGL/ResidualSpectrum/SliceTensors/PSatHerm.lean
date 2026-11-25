@@ -57,8 +57,6 @@ namespace SatakeHermitian
 
 variable {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E]
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 theorem isUnitarisable_locRepD {N : ℕ} {V : Submodule ℂ (Sm E N)} (hV : IsDiscrete V)
     (w : HeightOneSpectrum (𝓞 E)) : GlobalTheory.LGrp.IsUnitarisable (GlobalTheory.DiscLocEx.locRepD hV.stable w) := by
   letI : MeasurableSpace (GA E N) := borel _

@@ -49,7 +49,6 @@ attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.CechDR KaehlerDifferential
 attribute [local instance] GlobalTheory.Cris.opModule GlobalTheory.Cris.isCentralScalar_kaehler GlobalTheory.Cris.isScalarTower_kaehler
 
-set_option autoImplicit false
 noncomputable section
 
 namespace GlobalTheory.TanVanish

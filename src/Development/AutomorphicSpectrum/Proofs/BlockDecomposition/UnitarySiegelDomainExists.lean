@@ -764,7 +764,7 @@ end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CompactHeightLowerBound =====
 
 -- ===== clump member: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ReductionTheoryLowerBound =====
--- clump-header: {"m": "Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ReductionTheoryLowerBound", "h": "module\n\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RatVInjective\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ZeroMemBoxF\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.AdelicBoxCompact\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.AdelicTensorRationalApproximationStatement\npublic import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes\npublic import GroundTheory.AutomorphicForms.ReductionHeight\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CompactAdelicNormBounded\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CompactHeightLowerBound\nimport Development.WeilBound.ThetaLifts.FrameEstimates.LeHeightOfIsTorusElt\nimport Development.WeilBound.ThetaLifts.Reductions.SiegelAbs\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.HaveILetI\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\n\n"}
+-- clump-header: {"m": "Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ReductionTheoryLowerBound", "h": "module\n\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RatVInjective\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ZeroMemBoxF\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.AdelicBoxCompact\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.AdelicTensorRationalApproximationStatement\npublic import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes\npublic import GroundTheory.AutomorphicForms.ReductionHeight\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CompactAdelicNormBounded\npublic import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CompactHeightLowerBound\nimport Development.WeilBound.ThetaLifts.FrameEstimates.LeHeightOfIsTorusElt\nimport Development.WeilBound.ThetaLifts.Reductions.SiegelAbs\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.HaveILetI\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\nimport Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ReductionTheoryHeightBound\n\n"}
 section -- clump:auto
 @[expose] public section
 
@@ -785,9 +785,6 @@ variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algeb
 
 theorem ratV_sub (u v : Fin n → E) : ratV F (u - v) = ratV F u - ratV F v :=
   funext fun i => map_sub (inclR (F := F) (AF F)) _ _
-
-theorem ratV_smul (c : E) (v : Fin n → E) : ratV F (c • v) = inclR (F := F) (AF F) c • ratV F v :=
-  funext fun i => map_mul (inclR (F := F) (AF F)) _ _
 
 theorem mulVec_col {m : ℕ} {M : Matrix (Fin n) (Fin n) (AF F ⊗[F] E)} {X : Matrix (Fin n) (Fin m) E}
     {B : Matrix (Fin m) (Fin m) (AF F ⊗[F] E)} (hB : M * adMat F X = adMat F X * B) (j : Fin m) :
@@ -842,15 +839,6 @@ theorem torus_inv (ha : IsTorus σ J X Y a) (s : Fin (r + 1) → ℝ) : (a s)⁻
     exact mul_left_cancel (e.symm.trans (mul_one _).symm)
   exact inv_eq_of_mul_eq_one_right (by rw [← ha.add, add_neg_cancel, h0])
 
-theorem par_col_zero {M : Matrix (Fin n) (Fin n) (AF F ⊗[F] E)} {B : Matrix (Fin (r + 1)) (Fin (r + 1)) (AF F ⊗[F] E)}
-    (hB : B.BlockTriangular id) (e : M * adMat F X = adMat F X * B) :
-    M *ᵥ ratV F (Xᵀ 0) = B 0 0 • ratV F (Xᵀ 0) := by
-  rw [mulVec_col e 0, Finset.sum_eq_single 0]
-  · intro k _ hk
-    rw [hB (show id (0 : Fin (r + 1)) < id k from Fin.pos_of_ne_zero hk), zero_smul]
-  · intro hi
-    exact absurd (Finset.mem_univ 0) hi
-
 theorem par_col_one {M : Matrix (Fin n) (Fin n) (AF F ⊗[F] E)} {B : Matrix (Fin (r + 1)) (Fin (r + 1)) (AF F ⊗[F] E)}
     (hB : B.BlockTriangular id) (e : M * adMat F X = adMat F X * B) {j : Fin (r + 1)} (hj : j.val = 1) :
     M *ᵥ ratV F (Xᵀ j) = B 0 j • ratV F (Xᵀ 0) + B j j • ratV F (Xᵀ j) := by
@@ -870,13 +858,13 @@ theorem hgt_line [IsTotallyReal F] (ha : IsTorus σ J X Y a) {ω : GAd σ J} (h�
     hgt σ J (ω * a s * κ) (e • Xᵀ 0) =
       Real.exp (Module.finrank ℚ F * (-s 0)) * hgt σ J (ω * κ) (e • Xᵀ 0) := by
   obtain ⟨B, hB, eB⟩ := hω
-  have h1 := par_col_zero hB eB
+  have h1 := GlobalTheory.CompanionTheory.RedCov.FirstLower.mulVec_ratV_col hB eB
   have h2 := torus_col ha (-s) 0
   have e1 : (ω * a s * κ)⁻¹ = κ⁻¹ * a (-s) * ω⁻¹ := by
     rw [← torus_inv ha]; group
   have e2 : (ω * κ)⁻¹ = κ⁻¹ * ω⁻¹ := by group
   unfold hgt
-  rw [← hv_rId, e1, e2, matHom_mul_val, matHom_mul_val, matHom_mul_val, ratV_smul, ← Matrix.mulVec_mulVec,
+  rw [← hv_rId, e1, e2, matHom_mul_val, matHom_mul_val, matHom_mul_val, GlobalTheory.CompanionTheory.RedCov.FirstLower.ratV_smul, ← Matrix.mulVec_mulVec,
     ← Matrix.mulVec_mulVec, ← Matrix.mulVec_mulVec, Matrix.mulVec_smul, h1, Matrix.mulVec_smul, Matrix.mulVec_smul,
     Matrix.mulVec_smul, h2, Matrix.mulVec_smul, Matrix.mulVec_smul, Matrix.mulVec_smul, Matrix.mulVec_smul]
   simp only [Pi.neg_apply]
@@ -893,7 +881,7 @@ theorem hgt_pair [IsTotallyReal F] (ha : IsTorus σ J X Y a) {ω : GAd σ J}
         ((B 0 0 * (algebraMap (AF F) (AF F ⊗[F] E) (rId F (-s 0 - t)) *
             ((q : AF F ⊗[F] E) * b - inclR (F := F) (AF F) c))) • ratV F (Xᵀ 0) +
           (B j j * algebraMap (AF F) (AF F ⊗[F] E) ((q : AF F) * rId F (-s j - t))) • ratV F (Xᵀ j))) := by
-  have h1 := par_col_zero hB eB
+  have h1 := GlobalTheory.CompanionTheory.RedCov.FirstLower.mulVec_ratV_col hB eB
   have h2 := par_col_one hB eB hj
   have h3 := torus_col ha (-s) 0
   have h4 := torus_col ha (-s) j
@@ -912,7 +900,7 @@ theorem hgt_pair [IsTotallyReal F] (ha : IsTorus σ J X Y a) {ω : GAd σ J}
   have s1 : (matHom _ σ J ω⁻¹).1 *ᵥ ratV F ((q : E) • Xᵀ j - c • Xᵀ 0) =
       (B 0 0 * ((q : AF F ⊗[F] E) * b - inclR (F := F) (AF F) c)) • ratV F (Xᵀ 0) +
         ((q : AF F ⊗[F] E) * B j j) • ratV F (Xᵀ j) := by
-    rw [ratV_sub, ratV_smul, ratV_smul, Matrix.mulVec_sub, Matrix.mulVec_smul, Matrix.mulVec_smul, h1, h2, hq, ← hb]
+    rw [ratV_sub, GlobalTheory.CompanionTheory.RedCov.FirstLower.ratV_smul, GlobalTheory.CompanionTheory.RedCov.FirstLower.ratV_smul, Matrix.mulVec_sub, Matrix.mulVec_smul, Matrix.mulVec_smul, h1, h2, hq, ← hb]
     funext i
     simp only [Pi.add_apply, Pi.smul_apply, Pi.sub_apply, smul_eq_mul]
     ring

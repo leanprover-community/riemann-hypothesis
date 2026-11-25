@@ -193,8 +193,6 @@ end Weight
 
 section Discrete
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 variable {E : Type} [Field E] [NumberField E]
 
 abbrev LocIrr (w : HeightOneSpectrum (𝓞 E)) (n : ℕ) : Type 1 := SmIrr (GL (Fin n) (w.adicCompletion E))

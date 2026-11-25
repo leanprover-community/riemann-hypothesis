@@ -42,8 +42,6 @@ open NumberField IsDedekindDomain ValuativeRel GlobalTheory.CuspRep GlobalTheory
 open UpperTheory.V UpperTheory.V.Z.Sym UpperTheory.V.Z.Sym.Dict UpperTheory.V.Z.Sym.Dict.Br UpperTheory.V.Z.Sym.Loc UpperTheory.V.Z.Sym.Glob
 open UpperTheory.V.W (Plc Lp)
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace UpperTheory.V.Z.Sym.Dict.Br
 
 private theorem ratGL_val {L : Type} [Field L] [NumberField L] (n : ℕ) (g : GL (Fin n) L) :

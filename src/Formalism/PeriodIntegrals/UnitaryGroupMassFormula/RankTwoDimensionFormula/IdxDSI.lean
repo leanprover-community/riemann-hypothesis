@@ -1,7 +1,7 @@
 module
 
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.RankTwoDimensionFormula.IsSplitFrame
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.RankTwoDimensionFormula.FlagLevelCharacterEqPsiDivN
+public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.LevelSubgroupCharacterUnitary
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -50,16 +50,16 @@ namespace PI.UnitaryDimensionFormula
 
 theorem idxDSig : IdxDSig := by
   intro I
-  refine ⟨unitaryCongruence.sigA_sigA (I := I), ?_⟩
+  refine ⟨Formalism.L2.SG.Pf.unitaryCongruence.sigA_sigA (I := I), ?_⟩
   unfold Formalism.UG.IsHerm Formalism.UG.cT
   ext i j
   simp [JA, sigA, Formalism.UG.inclE, Formalism.UG.sigR]
   congr 1
-  rw [← unitaryCongruence.J_conj (I := I) j i]
+  rw [← Formalism.L2.SG.Pf.unitaryCongruence.J_conj (I := I) j i]
   first
   | rfl
 
 theorem idxDInt : IdxDInt := fun I =>
-  ⟨fun _ hx _ hy => unitaryCongruence.hA_int I hx hy, fun _ hc => unitaryCongruence.sigA_mem I hc⟩
+  ⟨fun _ hx _ hy => Formalism.L2.SG.Pf.unitaryCongruence.hA_int I hx hy, fun _ hc => Formalism.L2.SG.Pf.unitaryCongruence.sigA_mem I hc⟩
 
 end PI.UnitaryDimensionFormula

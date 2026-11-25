@@ -14,8 +14,6 @@ open Classical
 
 namespace Formalism.L2.SG.Pf.Cnt.R1
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section D7
 
 variable (D : Formalism.BasicNotions.D7)
@@ -103,8 +101,6 @@ end Formalism.L2.SG.Pf.Cnt.R1
 namespace Formalism.L2.SG.Pf.Cnt
 
 open Formalism.L2.SG.Pf.Cnt.R1
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 variable [Fact Formalism.HermitianLattices.Ext.L3.HermRepUnram] in

@@ -338,10 +338,6 @@ theorem integrable_euc {g : EuclideanSpace ℝ ι → ℂ} (hg : Integrable (fun
     (MeasurableEquiv.toLp 2 (ι → ℝ)).measurableEmbedding (g := g)
   exact h.1 hg
 
-theorem norm_sq_euc (x : EuclideanSpace ℝ ι) : ‖x‖ ^ 2 = ∑ i, (x i) ^ 2 := by
-  rw [EuclideanSpace.norm_eq, Real.sq_sqrt (Finset.sum_nonneg fun i _ => by positivity)]
-  simp
-
 theorem inner_euc (x y : EuclideanSpace ℝ ι) : inner ℝ x y = ∑ i, x i * y i := by
   simp [PiLp.inner_apply, mul_comm]
 
@@ -375,7 +371,7 @@ theorem mono_prod (b : ℝ) (s : ι →₀ ℕ) (u : EuclideanSpace ℝ ι) (x :
       (eval (fun i => (((WithLp.toLp 2 x : EuclideanSpace ℝ ι) i : ℝ) : ℂ)) (monomial s (1 : ℂ)) *
         (Real.exp (-(b * ‖(WithLp.toLp 2 x : EuclideanSpace ℝ ι)‖ ^ 2)) : ℂ)) =
       ∏ i, phi b (s i) (2 * Real.pi * I * u i) (x i) := by
-  rw [circle_smul, eval_mono, inner_euc, norm_sq_euc]
+  rw [circle_smul, eval_mono, inner_euc, EuclideanSpace.real_norm_sq_eq]
   simp only [phi, Finset.prod_mul_distrib, ← Complex.exp_sum]
   rw [Complex.ofReal_exp, mul_left_comm, ← Complex.exp_add]
   congr 2
@@ -410,7 +406,7 @@ theorem prod_gauss {b : ℝ} (hb : 0 < b) (u : EuclideanSpace ℝ ι) (A : ι �
   have hb0 : (b : ℂ) ≠ 0 := by exact_mod_cast hb.ne'
   rw [Finset.prod_mul_distrib, Finset.prod_mul_distrib, Finset.prod_const, ← Complex.exp_sum, ← mul_assoc]
   congr 1
-  rw [Complex.ofReal_exp, norm_sq_euc]
+  rw [Complex.ofReal_exp, EuclideanSpace.real_norm_sq_eq]
   congr 1
   push_cast
   rw [Finset.mul_sum, ← Finset.sum_neg_distrib]

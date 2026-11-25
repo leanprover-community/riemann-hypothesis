@@ -98,28 +98,32 @@ theorem mem_support_mul_monomial {p : Sym m n} {s t' : Ix m n ⊕ Ix m n →₀ 
     intro h0; rw [h0, zero_mul] at h; exact h rfl
   · exact absurd rfl h
 
+private theorem symbolInFirstFamily_mul_monomial {r : Sym m n} (hr : SymbolInFirstFamily ε r)
+    (s : Ix m n ⊕ Ix m n →₀ ℕ)
+    (hs : ∀ k, (s (Sum.inl k) ≠ 0 ∨ s (Sum.inr k) ≠ 0) → inF1 ε k) :
+    SymbolInFirstFamily ε (r * monomial s 1) := by
+  intro t' ht' k hk
+  obtain ⟨t, ht, rfl⟩ := mem_support_mul_monomial ht'
+  simp only [Finsupp.add_apply, ne_eq, Nat.add_eq_zero_iff, not_and_or] at hk
+  by_cases h1 : t (Sum.inl k) ≠ 0 ∨ t (Sum.inr k) ≠ 0
+  · exact hr t ht k h1
+  · push_neg at h1
+    apply hs k
+    rcases hk with hk | hk
+    · rcases hk with hk | hk
+      · exact absurd h1.1 hk
+      · exact Or.inl hk
+    · rcases hk with hk | hk
+      · exact absurd h1.2 hk
+      · exact Or.inr hk
+
 theorem good_mul_monomial {d e : ℕ} {r : Sym m n} (h : Good ε d r) (s : Ix m n ⊕ Ix m n →₀ ℕ)
     (hs : ∀ k, (s (Sum.inl k) ≠ 0 ∨ s (Sum.inr k) ≠ 0) → inF1 ε k) (he : (∑ k, s (Sum.inr k)) ≤ e) :
     Good ε (d + e) (r * monomial s 1) := by
-  constructor
-  · intro t' ht' k hk
-    obtain ⟨t, ht, rfl⟩ := mem_support_mul_monomial ht'
-    simp only [Finsupp.add_apply, ne_eq, Nat.add_eq_zero_iff, not_and_or] at hk
-    by_cases h1 : t (Sum.inl k) ≠ 0 ∨ t (Sum.inr k) ≠ 0
-    · exact h.1 t ht k h1
-    · push_neg at h1
-      apply hs k
-      rcases hk with hk | hk
-      · rcases hk with hk | hk
-        · exact absurd h1.1 hk
-        · exact Or.inl hk
-      · rcases hk with hk | hk
-        · exact absurd h1.2 hk
-        · exact Or.inr hk
-  · intro t' ht'
-    obtain ⟨t, ht, rfl⟩ := mem_support_mul_monomial ht'
-    simp only [Finsupp.add_apply, Finset.sum_add_distrib]
-    exact add_lt_add_of_lt_of_le (h.2 t ht) he
+  refine ⟨symbolInFirstFamily_mul_monomial h.1 s hs, fun t' ht' => ?_⟩
+  obtain ⟨t, ht, rfl⟩ := mem_support_mul_monomial ht'
+  simp only [Finsupp.add_apply, Finset.sum_add_distrib]
+  exact add_lt_add_of_lt_of_le (h.2 t ht) he
 
 theorem mem_support_pderiv {u : Sym m n} {i : Ix m n ⊕ Ix m n} {t' : Ix m n ⊕ Ix m n →₀ ℕ}
     (h : t' ∈ (pderiv i u).support) : ∃ t ∈ u.support, t i ≠ 0 ∧ t = t' + Finsupp.single i 1 := by
@@ -170,25 +174,10 @@ theorem first_family_symbol_mul_variable_pow {u : Sym m n} (hu : SymbolInFirstFa
   have h0 : (∑ k, (Finsupp.single (Sum.inl a) b : Ix m n ⊕ Ix m n →₀ ℕ) (Sum.inr k)) ≤ 0 := by
     simp
   rw [X_pow_eq_monomial]
-  refine ⟨?_, fun d hd => ?_⟩
-  · intro t ht k hk
-    obtain ⟨t0, ht0, rfl⟩ := mem_support_mul_monomial ht
-    simp only [Finsupp.add_apply, ne_eq, Nat.add_eq_zero_iff, not_and_or] at hk
-    by_cases h1 : t0 (Sum.inl k) ≠ 0 ∨ t0 (Sum.inr k) ≠ 0
-    · exact hu t0 ht0 k h1
-    · push_neg at h1
-      apply hs k
-      rcases hk with hk | hk
-      · rcases hk with hk | hk
-        · exact absurd h1.1 hk
-        · exact Or.inl hk
-      · rcases hk with hk | hk
-        · exact absurd h1.2 hk
-        · exact Or.inr hk
-  · intro t ht
-    obtain ⟨t0, ht0, rfl⟩ := mem_support_mul_monomial ht
-    simp only [Finsupp.add_apply, Finset.sum_add_distrib]
-    calc _ ≤ d + 0 := add_le_add (hd t0 ht0) h0
-      _ = d := add_zero d
+  refine ⟨symbolInFirstFamily_mul_monomial hu _ hs, fun d hd t ht => ?_⟩
+  obtain ⟨t0, ht0, rfl⟩ := mem_support_mul_monomial ht
+  simp only [Finsupp.add_apply, Finset.sum_add_distrib]
+  calc _ ≤ d + 0 := add_le_add (hd t0 ht0) h0
+    _ = d := add_zero d
 
 end PositivityTheory.Rg.Sw.LC.PolynomialDifferentialOperators

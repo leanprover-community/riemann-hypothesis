@@ -17,8 +17,6 @@ open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat 
   NumberField IsDedekindDomain
 open scoped TensorProduct Classical
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 def BoxScaleL : Prop :=
   ∀ {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
     (v : HeightOneSpectrum (𝓞 F)) (ι : Type) [Fintype ι], Module.finrank F E = 2 →

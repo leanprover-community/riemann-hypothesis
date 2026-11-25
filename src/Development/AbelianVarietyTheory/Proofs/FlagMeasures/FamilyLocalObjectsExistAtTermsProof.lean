@@ -110,14 +110,6 @@ theorem tri_refl (K : Type) {W : Type} [CommRing K] [AddCommGroup W] [Module K W
   refine ⟨1, ⟨fun a b h => Matrix.one_apply_ne (ne_of_lt h).symm, fun a => Matrix.one_apply_eq a⟩, fun b => ?_⟩
   simp [Matrix.one_apply, ite_smul, Finset.sum_ite_eq']
 
-theorem finrank_Vp_eq {D : D7} (p : PlF D) :
-    Module.finrank (D.s.atP p).Ep (Vp D p) = D.R.k + 2 * D.R.rS + 1 := by
-  rw [finrank_Vp]
-  unfold Ranks.r Ranks.rS
-  obtain ⟨j, hj⟩ := D.R.m_even
-  have := D.R.two_le_m
-  omega
-
 end GlobalTheory.BaseTerm
 
 namespace GlobalTheory.BaseTerm
@@ -184,7 +176,7 @@ theorem base_data_of_global_term : ∀ (D : D7) (Z : LocDat D), ∀ (u u' : D.wh
   refine ⟨hpr, ?_⟩
   have hsplit : (Z.M p).split = none := hpr.1
   have hth : LocNG.theta (Z.M p) = 1 := by unfold LocNG.theta; rw [hsplit]
-  refine _root_.GlobalTheory.LocOver.WitChange.witness_change (Z.M p) (Z.agree p).1 (locH Z p) D.R.rS D.R.k (FP p) (finrank_Vp_eq p) (hFPr p) (d0 p)
+  refine _root_.GlobalTheory.LocOver.WitChange.witness_change (Z.M p) (Z.agree p).1 (locH Z p) D.R.rS D.R.k (FP p) (GlobalTheory.LocBaseRel.finrank_eq p) (hFPr p) (d0 p)
     (locU Z p Λ (lf D F0) F' (Tu D u) (Tu D u')) (hd0 p) (Qa p) (Qb p) _ _ (hQa p).1 (hQb p).1 ?_ (hQa p).2 ?_
   · intro a b
     refine ⟨hqa a b, hqb a b, ?_⟩

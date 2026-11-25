@@ -531,25 +531,8 @@ theorem thetaSum_reindex (F : Type) [Field F] [NumberField F] {κ κ' : Type} (�
 theorem theta_transform_injOn : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ), IsStdChar D ψ (-1) → ∀ (κ : Type) [Fintype κ],
     ∀ Φ ∈ GlobalTheory.WeilM.schA D.host.F κ, ∀ Φ' ∈ GlobalTheory.WeilM.schA D.host.F κ,
       (∀ w, GlobalTheory.WeilM.thetaSum D.host.F (GlobalTheory.WeilM.schr ψ w Φ) = GlobalTheory.WeilM.thetaSum D.host.F (GlobalTheory.WeilM.schr ψ w Φ')) →
-      Φ = Φ' := by
-  intro D ψ hψ κ _ Φ hΦ Φ' hΦ' h
-  classical
-  have hR : IsTotallyReal D.host.F := inferInstance
-  let σ := Fintype.equivFin κ
-  have key : ∀ (Ψ : (κ → AF D.host.F) → ℂ) (w : GlobalTheory.ThetaTransform.VA D.host.F (Fintype.card κ)),
-      GlobalTheory.ThetaTransform.thV ψ (fun u : Fin (Fintype.card κ) → AF D.host.F => Ψ (u ∘ σ)) w =
-        GlobalTheory.WeilM.thetaSum D.host.F (GlobalTheory.WeilM.schr ψ (w.1 ∘ σ, w.2 ∘ σ) Ψ) := by
-    intro Ψ w
-    rw [← thetaSum_reindex D.host.F σ (GlobalTheory.WeilM.schr ψ (w.1 ∘ σ, w.2 ∘ σ) Ψ)]
-    unfold GlobalTheory.ThetaTransform.thV
-    congr 1
-    funext x
-    exact schr_reindex ψ σ w Ψ x
-  have e := GlobalTheory.ThetaTransform.thV_injOn hR hψ.1 (GlobalTheory.ThetaTransform.comp_mem_schA σ hΦ)
-    (GlobalTheory.ThetaTransform.comp_mem_schA σ hΦ') (funext fun w => by rw [key, key]; exact h _)
-  funext x
-  have := congrFun e (x ∘ σ.symm)
-  simpa [Function.comp_assoc] using this
+      Φ = Φ' :=
+  _root_.GlobalTheory.SchrodingerUniq.main
 
 end GlobalTheory.CompanionTheory.ThetaInj
 

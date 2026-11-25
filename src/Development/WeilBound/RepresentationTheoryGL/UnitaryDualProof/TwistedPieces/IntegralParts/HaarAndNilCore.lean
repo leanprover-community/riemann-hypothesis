@@ -523,7 +523,7 @@ private theorem orbQ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k]
       let ⟨K, L, g, hgG, hact, hK, hKo, hKc, hLo, hLKK, hLn1, hLn2, hmod⟩ := hKLg p hp
       ⟨(hs p hp).2.2.1, K, L, g, hgG, hact, hK, hKo, hKc, hLo, hLKK, hLn1, hLn2, by rw [hmod]⟩)
     s.card s le_rfl subset_rfl (NB Z ×ˢ univ) hclNB
-    (fun h hh q hq => let h' := action_mem_orbit_closure hZ (zero_mem Z) hh (q := q) ⟨hq.1.1, by simpa using hq.1.2⟩
+    (fun h hh q hq => let h' := action_mem_orbit_closure (zero_mem Z) hh (q := q) ⟨hq.1.1, by simpa using hq.1.2⟩
       ⟨⟨h'.1, by simpa using h'.2⟩, mem_univ _⟩)
     (fun q hq => ⟨⟨fun b hb => by
         show b * ((t : k) • q.1) = (t : k) • q.1 * b

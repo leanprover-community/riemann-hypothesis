@@ -71,8 +71,6 @@ open GlobalTheory.OrbitSep
 attribute [local instance] Over.cartesianMonoidalCategory
 open MonoidalCategory CartesianMonoidalCategory MonObj
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.KSLin

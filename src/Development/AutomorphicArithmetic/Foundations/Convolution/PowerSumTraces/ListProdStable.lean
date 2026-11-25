@@ -365,10 +365,6 @@ private theorem exists_enum {α : Type} (q : α) (S : Finset α) (hq : q ∉ S) 
     rw [Equiv.prod_comp S.equivFin.symm (fun v : S => s v)]
     exact Finset.prod_coe_sort S s
 
-private theorem prj_self {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
-    (V : Submodule ℂ H) {v : H} (hv : v ∈ V) : prj V v = v :=
-  Submodule.starProjection_eq_self_iff.2 (Submodule.le_topologicalClosure V hv)
-
 private theorem list_prod_stable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
     (Z : Submodule ℂ H) (l : List (H →L[ℂ] H)) (h : ∀ T ∈ l, ∀ v ∈ Z, T v ∈ Z) : ∀ v ∈ Z, l.prod v ∈ Z := by
   induction l with
@@ -511,7 +507,8 @@ theorem UpperTheory.ConvolutionTheory.C.termF :
     have hRg : Rop μ 𝔣.g v = (κ : ℂ) • ((x : ℂ) • (List.ofFn T).prod v) := by
       have h1 : Rop μ 𝔣.g = RR μ 𝔣.g := rfl
       rw [h1, hRR]
-      simp only [ContinuousLinearMap.smul_apply, ContinuousLinearMap.comp_apply, prj_self _ hsph, hO]
+      simp only [ContinuousLinearMap.smul_apply, ContinuousLinearMap.comp_apply, prj,
+        Submodule.starProjection_eq_self_iff.2 (Submodule.le_topologicalClosure _ hsph), hO]
     have hc : (List.ofFn Tc).prod = T₀ * (List.ofFn fun i : Fin r => T i.succ).prod := by
       rw [List.ofFn_succ, List.prod_cons]
       rfl

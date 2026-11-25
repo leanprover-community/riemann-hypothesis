@@ -43,12 +43,10 @@ import Mathlib.Tactic.NormNum.RealSqrt
 section
 open GlobalTheory.BigTop GlobalTheory.BigOn GlobalTheory.BigOn.Exp
 open Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Pj Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links
-set_option autoImplicit false
 noncomputable section
 
 
 namespace GlobalTheory.BigOn.Exp
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 theorem readInj_alt : _root_.GlobalTheory.BigOn.Exp.ReadInjAlt := by
   unfold _root_.GlobalTheory.BigOn.Exp.ReadInjAlt _root_.GlobalTheory.BigOn.Exp.TwistConditions _root_.GlobalTheory.BigOn.AtPtsAlt
   refine ⟨1, one_pos, fun _ _ _ => ⟨⟨0, fun _ => 0, fun _ => 0, fun _ => 0⟩, fun Fm CH _ _ =>

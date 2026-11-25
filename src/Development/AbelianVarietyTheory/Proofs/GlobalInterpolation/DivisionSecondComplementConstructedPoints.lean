@@ -416,10 +416,7 @@ theorem true_entry_le (h : SizesAt L) (P : ParameterChoice' D L) (hx : 2 ≤ L.s
     |((((D.fm u).lam i τ).w a - ((i * (D.R.t + 1) / 2 : ℕ) : ℤ) : ℤ) : ℝ)| ≤ 5 * L.sc.b := by
   have hN := N_le_b h P
   have hNe : (D.R.N D.R.m : ℝ) = D.R.k + D.R.m * (D.R.t + 1) := by unfold Ranks.N; push_cast; ring
-  have hk0 : (0 : ℝ) ≤ D.R.k := Nat.cast_nonneg _
-  have ht0 : (0 : ℝ) ≤ D.R.t := Nat.cast_nonneg _
   have hm0 : (0 : ℝ) ≤ (D.R.m : ℝ) * (D.R.t + 1) := by positivity
-  have s0 : (0 : ℝ) ≤ ((i * (D.R.t + 1) / 2 : ℕ) : ℝ) := Nat.cast_nonneg _
   have s1 : ((i * (D.R.t + 1) / 2 : ℕ) : ℝ) ≤ (D.R.m : ℝ) * (D.R.t + 1) := by
     have : i * (D.R.t + 1) / 2 ≤ D.R.m * (D.R.t + 1) :=
       (Nat.div_le_self _ _).trans (Nat.mul_le_mul_right _ hi)
@@ -430,7 +427,6 @@ theorem true_entry_le (h : SizesAt L) (P : ParameterChoice' D L) (hx : 2 ≤ L.s
   split_ifs with hk
   · have b := abs_le.1 (u_bound_off_top h P hx u τ ⟨a.1, hk⟩ ha)
     have a1 : (a.1 : ℝ) ≤ D.R.k := by exact_mod_cast hk.le
-    have a0 : (0 : ℝ) ≤ a.1 := Nat.cast_nonneg _
     unfold hcToWeightQ rhoVec
     push_cast
     rw [abs_le]
@@ -550,7 +546,6 @@ theorem trace_sq_le (x : H.E) (a : ℤ) (T : ℕ) (ha : (a : H.E) = x + H.conj x
   have h4 : (H.φ₀ x).re * (H.φ₀ x).re + (H.φ₀ x).im * (H.φ₀ x).im = (T : ℝ) := by exact_mod_cast h2
   have h5 : (a : ℝ) ^ 2 ≤ 4 * T := by
     rw [h3, ← h4]
-    have heq : (2 * (H.φ₀ x).re) ^ 2 = 4 * ((H.φ₀ x).re * (H.φ₀ x).re) := by ring
     linarith [mul_self_nonneg (H.φ₀ x).im]
   exact_mod_cast h5
 

@@ -66,7 +66,6 @@ open GlobalTheory.PosOne (toOne Covers TriPos)
 open GlobalTheory.IndefiniteRowSideFullHecke.FourierJacobiAverage (app HasTensorVal fl opEFJ IsQuotIntFJ RFJ)
 open GlobalTheory.IndefiniteRowSideFullHecke.FramePositiveSum (IsCO)
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 attribute [local instance high] GlobalTheory.SplitWeil.matrixMeasurableSpace
 
 noncomputable section

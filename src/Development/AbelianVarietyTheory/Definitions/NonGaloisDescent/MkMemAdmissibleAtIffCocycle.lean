@@ -679,40 +679,6 @@ def finiteSelmer : Submodule O (H1 (twCoef (latRep L) χ X) ⊤) :=
 
 end Tens
 
-section Shortcut
-
-instance (priority := high) modTens {O M X : Type} [CommRing O] [AddCommGroup M] [Module O M] [AddCommGroup X]
-    [Module O X] : Module O (M ⊗[O] X) :=
-  TensorProduct.instModule
-
-instance (priority := high) modProd {O M N : Type} [CommRing O] [AddCommGroup M] [Module O M] [AddCommGroup N]
-    [Module O N] : Module O (M × N) :=
-  Prod.instModule
-
-instance (priority := high) modFun {O M ι : Type} [CommRing O] [AddCommGroup M] [Module O M] :
-    Module O (ι → M) :=
-  Pi.Function.module ι O M
-
-instance (priority := high) modQuot {O M : Type} [CommRing O] [AddCommGroup M] [Module O M] (S : Submodule O M) :
-    Module O (M ⧸ S) :=
-  Submodule.Quotient.module S
-
-variable {G : Type} [Group G] [TopologicalSpace G] {LL O : Type} [Field LL] [CommRing O] [Algebra O LL]
-    {V : Type} [AddCommGroup V] [Module LL V] [Module O V] [IsScalarTower O LL V] {ρ : Representation LL G V}
-    [TopologicalSpace V] [ContinuousAdd V] [ContinuousConstSMul LL V]
-
-instance (priority := high) twistedModuleH1 (L : Lattice (O := O) ρ) : Module O (LatticeCohomology L) :=
-  Submodule.Quotient.module _
-
-instance (priority := high) twistedSubmoduleH1 (L : Lattice (O := O) ρ) (S : Submodule O (LatticeCohomology L)) : Module O ↥S :=
-  Submodule.module S
-
-instance (priority := high) moduleH1Alt {M : Type} [AddCommGroup M] [Module O M] (π : Representation O G M) :
-    Module O (H1 π ⊤) :=
-  Submodule.Quotient.module _
-
-end Shortcut
-
 def Standing {l : ℕ} [Fact l.Prime] (P : LocPrime l) (K LL : Loc.FinExt l) {n : ℕ}
     (emb : ZMod n → (↥(Loc.K0 K) →ₐ[ℚ_[l]] ↥LL.1)) (lam : ↥(Loc.OL LL)) : Prop :=
   5 ≤ l ∧ Loc.CaseA K LL ∧ n = Module.finrank ℚ_[l] ↥K.1 ∧ Function.Bijective emb ∧

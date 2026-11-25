@@ -120,8 +120,6 @@ end Block
 
 section Herm
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 alias gram_det_ne := _root_.Formalism.L2.Theta.gram_det_ne
@@ -194,8 +192,6 @@ namespace GlobalTheory.RouteCoords
 
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitaryConjugation
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} {i j : ℕ}
 
 theorem incM_neg_one_smul {m n : ℕ} (M : Matrix (Fin m) (Fin n) D.host.E) :
@@ -260,8 +256,6 @@ namespace GlobalTheory.RouteCoords
 
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitaryConjugation
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} {i j : ℕ}
 
 theorem mul_submatrix_cols {R : Type} [CommRing R] {l m n o : Type} [Fintype m] (M : Matrix l m R) (N : Matrix m n R)
@@ -274,8 +268,6 @@ end GlobalTheory.RouteCoords
 namespace GlobalTheory.RouteCoords
 
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitaryConjugation
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} {i j : ℕ}
 

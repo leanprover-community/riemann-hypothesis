@@ -48,8 +48,6 @@ open GlobalTheory.PRep (IsAdmissible fixed)
 
 namespace GlobalTheory.IndefiniteRowSideFullHecke.CuspidalNoRadicalFixed
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 abbrev radicalTwo (k : Type) [CommRing k] {a b r : ℕ} (h : a + b = r) : Subgroup (GL (Fin r) k) :=

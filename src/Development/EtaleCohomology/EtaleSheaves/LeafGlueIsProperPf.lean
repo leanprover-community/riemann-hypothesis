@@ -76,9 +76,8 @@ theorem lft (h : GH Ω L A B u) {hAD hBD} (G : Glued Ω L A B (Dr Ω A u) hAD hB
     rw [G.hcA, HasRingHomProperty.Spec_iff (P := @LocallyOfFiniteType)]
     exact RingHom.finiteType_algebraMap.mpr h.2.2.2.1
 
-set_option backward.isDefEq.respectTransparency false in
 theorem qc {hAD hBD} (G : Glued Ω L A B (Dr Ω A u) hAD hBD) : QuasiCompact G.c0 := by
-  rw [HasAffineProperty.iff_of_isAffine (P := @AlgebraicGeometry.QuasiCompact)]
+  rw [quasiCompact_iff_compactSpace]
   refine ⟨?_⟩
   rw [← G.cover]
   exact (isCompact_range G.iA.base.hom.continuous).union (isCompact_range G.iB.base.hom.continuous)

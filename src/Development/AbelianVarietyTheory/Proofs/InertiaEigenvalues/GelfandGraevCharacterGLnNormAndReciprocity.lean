@@ -75,16 +75,9 @@ theorem tri_add (a b : ℕ) : (a + b) * (a + b - 1) / 2 = a * (a - 1) / 2 + (a *
   | succ b ih =>
     rw [← add_assoc a b 1, Nat.triangle_succ, Nat.triangle_succ, ih]; ring
 
-theorem conj_eq_one {G : Type} [Group G] (p x : G) : p * x * p⁻¹ = 1 ↔ x = 1 := by
-  constructor
-  · intro h
-    have : x = p⁻¹ * (p * x * p⁻¹) * p := by group
-    rw [this, h]; group
-  · rintro rfl; group
-
 theorem dirac_class (n : ℕ) : IsClass (dirac g n) := by
   intro x y
-  simp only [dirac, conj_eq_one]
+  simp only [dirac, conj_eq_one_iff]
 
 theorem gg_class (ψ : AddChar (ZMod g) ℂ) (n : ℕ) : IsClass (gg ψ n) := by
   intro x z

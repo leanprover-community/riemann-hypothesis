@@ -52,7 +52,6 @@ import Mathlib.Tactic.ReduceModChar
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links MeasureTheory IsDedekindDomain NumberField Matrix
 open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Grow GlobalTheory.Unf GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.SepRows GlobalTheory.Asc
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.FinPl (Lat idAt idOff intAt grpAt grpOff MxAt latV latA InK MonoAt OrthAt PrimAt ColsAt)
 open scoped nonZeroDivisors ContDiff
 open GlobalTheory.AscFin
@@ -65,7 +64,6 @@ section SlopeTestRemainingChoices
 
 open Formalism.L2.DIV GlobalTheory.StdFrames ValuativeRel
 open scoped Pointwise
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField GlobalTheory.FunObj.borelKw GlobalTheory.FunObj.borelSpaceKw
 
 variable {D : D7} {T : Type} {L : LevCh D T} {sc : Consts}
 
@@ -149,7 +147,6 @@ namespace GlobalTheory.HalfOut
 section Local
 
 open Formalism.L2.DIV GlobalTheory.StdFrames ValuativeRel GlobalTheory.RowLatChi
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField GlobalTheory.FunObj.borelKw GlobalTheory.FunObj.borelSpaceKw
 
 variable {D : D7} {T : Type} {L : LevCh D T} {sc : Consts}
 
@@ -261,7 +258,6 @@ end Local
 end GlobalTheory.HalfOut
 
 section Main
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField GlobalTheory.FunObj.borelKw GlobalTheory.FunObj.borelSpaceKw
 
 theorem GlobalTheory.HalfOut.smul_mem_hatMx_of_mem_latBig : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {μ₀ : T}, L.Is μ₀ → OffQ D → ∀ (G : GridData L sc) (i : ℕ), i < D.R.m → ∀ e : AE D, IsIdemSum e G.pl.W0 → ∀ u ∈ latBig G i, e • u ∈ hatMx (G.modul • homLat (G.Λ (.grid (i + 1) 0)) (G.Λ (.grid i 0))) := by
   intro D T L sc μ₀ hL hO G i hi e he u hu

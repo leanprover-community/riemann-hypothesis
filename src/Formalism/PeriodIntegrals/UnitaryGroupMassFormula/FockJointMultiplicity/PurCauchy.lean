@@ -69,14 +69,6 @@ namespace PI.FJMB
 
 variable {σ : Type*}
 
-private theorem fin_zero_lt_of_ne_zero {k : ℕ} (i : Fin (k + 1)) (hi : i ≠ 0) : (0 : Fin (k + 1)) < i := by
-  revert hi
-  refine Fin.cases ?_ ?_ i
-  · intro h
-    exact absurd rfl h
-  · intro j _
-    exact Fin.succ_pos j
-
 private theorem aeval_fill_sub_multiple_of_zeroth_line {m n : ℕ} (ι : Fin (m + 1) × Fin n → σ) (hι : Function.Injective ι)
     (f : MvPolynomial σ ℂ) (hf : ∀ b : Fin (m + 1), 0 < b → PI.FJM.bRow ι 0 b f = 0)
     (M : Fin (m + 1) → Fin n → ℂ) (p : σ → ℂ) (c : Fin n) :
@@ -102,7 +94,7 @@ private theorem aeval_fill_sub_multiple_of_zeroth_line {m n : ℕ} (ι : Fin (m 
         simp [rowAddM, hb, hS0] <;> ring
       · simp [rowAddM, hib]
     rw [hfun]
-    exact row_inv ι hι 0 b (Ne.symm hb0) f (hf b (fin_zero_lt_of_ne_zero b hb0)) _ p _
+    exact row_inv ι hι 0 b (Ne.symm hb0) f (hf b (Fin.pos_of_ne_zero hb0)) _ p _
 
 private theorem aeval_fill_column_elimination {m n : ℕ} (ι : Fin m × Fin (n + 1) → σ) (hι : Function.Injective ι)
     (f : MvPolynomial σ ℂ) (hf : ∀ d : Fin (n + 1), 0 < d → PI.FJM.bCol ι 0 d f = 0)
@@ -129,7 +121,7 @@ private theorem aeval_fill_column_elimination {m n : ℕ} (ι : Fin m × Fin (n 
         simp [colAddM, hb, hT0] <;> ring
       · simp [colAddM, hkb]
     rw [hfun]
-    exact col_inv ι hι 0 b (Ne.symm hb0) f (hf b (fin_zero_lt_of_ne_zero b hb0)) _ p _
+    exact col_inv ι hι 0 b (Ne.symm hb0) f (hf b (Fin.pos_of_ne_zero hb0)) _ p _
 
 theorem elim_step {m n : ℕ} (ι : Fin (m + 1) × Fin (n + 1) → σ) (hι : Function.Injective ι)
     (f : MvPolynomial σ ℂ) (hf : HWB ι f) (hg : aeval (killS (edge ι)) f = 0) : f = 0 := by

@@ -808,7 +808,7 @@ theorem laws_all : ∀ {E K ι : Type} [Field E] [NumberField E] [StarRing E] [F
   have hd := _root_.GlobalTheory.Mem.Col2.DiaRep.diamond_rep I J emb σ hc hF hI hJ
   have hfam : ∀ i, ((I.S i).fam emb (lamT hc i)).Ok := fun i => _root_.GlobalTheory.Mem.Col2.fam_ok (I.S i) emb σ (lamT hc i) hF (hI.step i)
   have hfamP : (Q.S'.fam emb Q.sgT).Ok := _root_.GlobalTheory.Mem.Col2.fam_ok Q.S' emb σ Q.sgT hF hQ.step
-  refine ⟨⟨hd.1, hd.2, _root_.GlobalTheory.Mem.Col2.GStep.fi_finiteDimensional (I.S 0) emb σ (lamT hc 0) hF (hI.step 0), _root_.GlobalTheory.Mem.Col2.DiaStab.lawDiaStable I J emb σ hc hF hI hJ⟩, ?_⟩
+  refine ⟨⟨hd.1, hd.2, _root_.GlobalTheory.Mem.Col2.GStep.fi_finiteDimensional (I.S 0) emb σ (lamT hc 0) (hI.step 0), _root_.GlobalTheory.Mem.Col2.DiaStab.lawDiaStable I J emb σ hc hJ⟩, ?_⟩
   exact
     { fam := hfam
       famP := hfamP

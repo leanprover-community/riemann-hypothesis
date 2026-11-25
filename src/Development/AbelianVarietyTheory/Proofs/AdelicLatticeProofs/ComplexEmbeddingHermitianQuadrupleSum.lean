@@ -62,8 +62,6 @@ open scoped TensorProduct ContDiff Topology
 
 namespace GlobalTheory.OrientedHeis
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} {θ : InfFam D} {σ : (D.what₂.Tau → ℂ) →+ Formalism.L2.Theta.AE D} {ψ : AddChar (AF D.host.F) ℂ} {S T : HSp D}
 
 theorem symplOH_add_left (x x' y : WO S T) : symplOH S T (x + x') y = symplOH S T x y + symplOH S T x' y := by

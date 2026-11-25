@@ -18,8 +18,6 @@ open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions Form
 
 namespace Formalism.L2.SG.ThmSOwn
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable (C0 : ℝ)
 
 def kloostermanDiagonalThreshold (hC : Formalism.L2.SG.RowsPos.KppDiagP) (l : List ℝ) : ℝ :=

@@ -43,14 +43,12 @@ import Mathlib.Topology.Sheaves.Init
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Matrix GlobalTheory.FockCompare GlobalTheory.IndefiniteRowSideFullHecke.FockOrthogonalDecomposition
 open scoped TensorProduct ContDiff ComplexOrder
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.FockCompare
 
 
 open Matrix in
 open scoped TensorProduct ContDiff ComplexOrder in
-attribute [local instance] _root_.Formalism.BasicNotions.Host.cmStar in
 theorem _root_.GlobalTheory.FockCompare.exists_heisenberg_operators : ∀ (G R : Type) [AddCommGroup G] [NormedAddCommGroup R] [NormedSpace ℝ R] [FiniteDimensional ℝ R] (ι : R →+ G) (π : G →+ R) (om : R →ₗ[ℝ] R →ₗ[ℝ] ℝ), (∀ x, π (ι x) = x) → (∀ (f : G → ℂ), _root_.GlobalTheory.FockCompare.Sm ι f → ∀ (u : R) (w : G), _root_.GlobalTheory.FockCompare.hD ι π om u f w = -(Real.pi * Complex.I) * (om (π w) u : ℝ) * f w + fderiv ℝ (fun x : R => f (w + ι x)) 0 u) → ∀ (M : Submodule ℂ (G → ℂ)), (∀ f ∈ M, _root_.GlobalTheory.FockCompare.Sm ι f) → (∀ u, ∀ f ∈ M, _root_.GlobalTheory.FockCompare.hD ι π om u f ∈ M) → ∃ Dop : R → Module.End ℂ M, (∀ u (f : M), ((Dop u f : M) : G → ℂ) = _root_.GlobalTheory.FockCompare.hD ι π om u f) ∧ (∀ u v, Dop (u + v) = Dop u + Dop v) ∧ ∀ (c : ℝ) u, Dop (c • u) = (c : ℂ) • Dop u := by
   intro G R _ _ _ _ ι π om _ hform M hSm hM
   have hdiff : ∀ f ∈ M, ∀ w : G, DifferentiableAt ℝ (fun x : R => f (w + ι x)) 0 :=

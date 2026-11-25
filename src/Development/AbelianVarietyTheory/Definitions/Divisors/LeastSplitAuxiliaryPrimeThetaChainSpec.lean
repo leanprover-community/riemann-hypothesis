@@ -54,8 +54,6 @@ open scoped TensorProduct nonZeroDivisors Pointwise
 
 namespace GlobalTheory.ChiGrid
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 open GlobalTheory.SignedHC Finset

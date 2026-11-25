@@ -180,23 +180,6 @@ theorem continuous_nzOf {Ψ : Type} [Fintype Ψ] (R : X → RiemLat E g Λ)
   refine continuous_matrix fun a b => ?_
   exact continuous_ip R hH (continuous_eigComp R hP _ _) (continuous_eigComp R hP _ _)
 
-theorem continuous_nz : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (g : ℕ) (Λ : Type) [AddCommGroup Λ]
-    [Module (𝓞 E) Λ] (Ψ : Type) [Fintype Ψ] (X : Type) [TopologicalSpace X] (R : X → RiemLat E g Λ)
-    (σ : Ψ → (𝓞 E →+* ℂ)) (I : Submodule (𝓞 E) Λ), (∀ v, Continuous fun x => (R x).P v) →
-    (Continuous fun x => (R x).Hm) → Continuous fun x => (R x).nz σ I := by
-  intro E _ _ _ g Λ _ _ Ψ _ X _ R σ I hP hH
-  by_cases h : ∃ r v, GroundTheory.Heights₂.Heights.LowerBoundFree.IsNzFamily I r v
-  · have e : (fun x => (R x).nz σ I) = fun x => (R x).nzOf σ I h.choose_spec.choose := by
-      funext x
-      simp only [RiemLat.nz, dif_pos h]
-    rw [e]
-    exact continuous_nzOf R hP hH σ I _
-  · have e : (fun x => (R x).nz σ I) = fun _ => 1 := by
-      funext x
-      simp only [RiemLat.nz, dif_neg h]
-    rw [e]
-    exact continuous_const
-
 end GlobalTheory.CompanionTheory.Ar.Cusp.NzCont
 end -- clump:auto
 end -- clump:auto
@@ -326,10 +309,6 @@ theorem continuous_sInf_sqrt_form {X ι S : Type} [TopologicalSpace X] [Fintype 
   constructor <;> nlinarith
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {g : ℕ} {Λ : Type} [AddCommGroup Λ] [Module (𝓞 E) Λ]
-
-theorem linearIndependent_periods (R : RiemLat E g Λ) {ι : Type} [Fintype ι] (b : Module.Basis ι ℤ Λ) :
-    LinearIndependent ℝ fun i => R.P (b i) := by
-  apply LevelTowerAlt.basis_indep
 
 def comb (R : RiemLat E g Λ) {ι : Type} [Fintype ι] (b : ι → Λ) (a : ι → ℝ) : Fin g → ℂ :=
   ∑ i, ((a i : ℝ) : ℂ) • R.P (b i)

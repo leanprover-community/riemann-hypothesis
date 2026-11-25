@@ -358,15 +358,6 @@ variable {K : Type} [NormedAddCommGroup K] [InnerProductSpace ℂ K]
 
 def UDual.multIn (c : UDual G) (ρ : G →* (K →L[ℂ] K)) (U : Submodule ℂ K) : Cardinal := AutMult.multIn c.rep.π ρ U
 
-theorem IrrU.cl_ofChar_inj {χ ψ : G →* Circle} (hχ : Continuous χ) (hψ : Continuous ψ) :
-    (IrrU.ofChar χ hχ).cl = (IrrU.ofChar ψ hψ).cl ↔ χ = ψ := by
-  refine ⟨fun h => ?_, by rintro rfl; rfl⟩
-  obtain ⟨e, he⟩ : UEquiv (charRep χ) (charRep ψ) := IrrU.cl_eq_iff.1 h
-  ext g
-  have h1 : e ((χ g : ℂ) • (1 : ℂ)) = (ψ g : ℂ) • e 1 := he g 1
-  rw [map_smul] at h1
-  exact smul_left_injective ℂ (e.map_ne_zero_iff.2 one_ne_zero) h1
-
 end Dual
 
 section Alg
@@ -384,10 +375,6 @@ def isoPartAlg (σ : Representation ℂ G V) (ρ : Representation ℂ G W) : Sub
 def IsIsotypicAlg (σ : Representation ℂ G V) (ρ : Representation ℂ G W) : Prop := isoPartAlg σ ρ = ⊤
 
 variable {τ : Representation ℂ G X} {σ : Representation ℂ G V} {ρ : Representation ℂ G W}
-
-theorem contains_iff : Contains τ ρ ↔ ∃ f : X →ₗ[ℂ] W, f ≠ 0 ∧ ∀ g x, f (τ g x) = ρ g (f x) :=
-  ⟨fun ⟨f, h⟩ => ⟨f.toLinearMap, fun e => h (Representation.IntertwiningMap.ext e), f.isIntertwining⟩,
-    fun ⟨f, h, e⟩ => ⟨f.intertwiningMap_of_isIntertwiningMap _ _ e, fun e' => h (congrArg (·.toLinearMap) e')⟩⟩
 
 end Alg
 

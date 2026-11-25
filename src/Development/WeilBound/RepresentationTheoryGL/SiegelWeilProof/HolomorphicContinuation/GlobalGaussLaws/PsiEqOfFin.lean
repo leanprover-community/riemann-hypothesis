@@ -51,8 +51,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open GlobalTheory.StdUnn
 open Formalism.IndefR.Eqv (psiT psiT_sigR thetaC eq_thetaC)
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 namespace PositivityTheory.Rg.Sw.Glob.FTP
 
 variable {D : D7}

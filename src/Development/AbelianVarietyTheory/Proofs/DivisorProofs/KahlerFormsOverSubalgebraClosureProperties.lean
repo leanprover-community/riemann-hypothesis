@@ -45,8 +45,6 @@ import Mathlib.Topology.Sheaves.Init
 
 open GlobalTheory.PD GlobalTheory.CechDR KaehlerDifferential
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.PD

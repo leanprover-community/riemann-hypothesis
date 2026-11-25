@@ -48,8 +48,6 @@ import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.ExistsAd
 
 open CategoryTheory AlgebraicGeometry ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory GlobalTheory.Points
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.CoverDeg

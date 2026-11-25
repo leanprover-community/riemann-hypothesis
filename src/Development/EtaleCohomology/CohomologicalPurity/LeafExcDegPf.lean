@@ -64,12 +64,6 @@ theorem cokPO_iso {A B Q : C} (f : A ⟶ B) (l r : B ⟶ Q) (h : IsPushout f f l
     · simp
     · simp
 
-theorem cokMap_comp {A B A' B' A'' B'' : C} (f : A ⟶ B) (f' : A' ⟶ B') (f'' : A'' ⟶ B'')
-    (a : A ⟶ A') (b : B ⟶ B') (w : f ≫ b = a ≫ f') (a' : A' ⟶ A'') (b' : B' ⟶ B'') (w' : f' ≫ b' = a' ≫ f'') :
-    cokernel.map f f' a b w.symm ≫ cokernel.map f' f'' a' b' w'.symm =
-      cokernel.map f f'' (a ≫ a') (b ≫ b') (by rw [Category.assoc, ← w', ← Category.assoc, ← w, Category.assoc]) := by
-  ext; simp
-
 theorem cokPO_transfer {A' B' Q' A B Q : C} (f' : A' ⟶ B') (l' r' : B' ⟶ Q') (h' : IsPushout f' f' l' r')
     (f : A ⟶ B) (l r : B ⟶ Q) (h : IsPushout f f l r) (a : A' ⟶ A) (b : B' ⟶ B) (m : Q' ⟶ Q)
     (w : f' ≫ b = a ≫ f) (wl : l' ≫ m = b ≫ l) (wr : r' ≫ m = b ≫ r)

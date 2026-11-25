@@ -94,7 +94,6 @@ import GroundTheory.PAdicHodge.NormalizedTraceTower
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
@@ -398,7 +397,6 @@ section -- clump:auto
 @[expose] public section
 
 set_option backward.isDefEq.respectTransparency false
-set_option autoImplicit false
 
 noncomputable section
 
@@ -489,7 +487,6 @@ section -- clump:auto
 @[expose] public section
 
 set_option backward.isDefEq.respectTransparency false
-set_option autoImplicit false
 
 noncomputable section
 
@@ -576,7 +573,6 @@ section -- clump:auto
 @[expose] public section
 
 set_option backward.isDefEq.respectTransparency false
-set_option autoImplicit false
 
 noncomputable section
 
@@ -743,7 +739,6 @@ section -- clump:auto
 @[expose] public section
 
 set_option backward.isDefEq.respectTransparency false
-set_option autoImplicit false
 
 noncomputable section
 
@@ -931,7 +926,6 @@ section -- clump:auto
 @[expose] public section
 
 set_option backward.isDefEq.respectTransparency false
-set_option autoImplicit false
 set_option linter.unusedVariables false
 
 noncomputable section
@@ -988,7 +982,6 @@ section -- clump:auto
 @[expose] public section
 
 set_option backward.isDefEq.respectTransparency false
-set_option autoImplicit false
 
 noncomputable section
 
@@ -1007,7 +1000,7 @@ theorem acris_zero_surjective : Function.Surjective (PAlg.base l).cris0 := by
     obtain ⟨k, rfl⟩ := hy
     have hx : xi0 l ∈ RingHom.ker (theta0 l) := by
       rw [ker_theta0]; exact Ideal.mem_span_singleton_self _
-    refine ⟨⟨dpw k (xi0 l), ACris.dpow_mem hx k⟩, Subtype.ext ?_⟩
+    refine ⟨⟨dpw k (xi0 l), by rw [← dpow_eq_dpw]; exact ACris.dpow_mem hx k⟩, Subtype.ext ?_⟩
     show awayW (RingHom.id (Ob l)) (dpw k (xi0 l)) = _
     rw [awayW_id, RingHom.id_apply, dpw]
     show _ = Ring.inverse _ * algebraMap _ _ (WittVector.map (RingHom.id (Ob l)) (xi0 l)) ^ k
@@ -1047,7 +1040,6 @@ section -- clump:auto
 @[expose] public section
 
 set_option backward.isDefEq.respectTransparency false
-set_option autoImplicit false
 
 noncomputable section
 
@@ -1108,7 +1100,6 @@ section -- clump:auto
 @[expose] public section
 
 set_option backward.isDefEq.respectTransparency false
-set_option autoImplicit false
 
 noncomputable section
 
@@ -1136,7 +1127,6 @@ section -- clump:auto
 @[expose] public section
 
 set_option backward.isDefEq.respectTransparency false
-set_option autoImplicit false
 set_option linter.unusedVariables false
 
 noncomputable section
@@ -1185,7 +1175,6 @@ section -- clump:auto
 @[expose] public section
 
 set_option backward.isDefEq.respectTransparency false
-set_option autoImplicit false
 
 noncomputable section
 
@@ -1226,7 +1215,6 @@ section -- clump:auto
 @[expose] public section
 
 set_option backward.isDefEq.respectTransparency false
-set_option autoImplicit false
 set_option linter.unusedVariables false
 
 noncomputable section
@@ -1307,7 +1295,6 @@ section -- clump:auto
 @[expose] public section
 
 set_option backward.isDefEq.respectTransparency false
-set_option autoImplicit false
 
 noncomputable section
 
@@ -1428,7 +1415,6 @@ section -- clump:auto
 @[expose] public section
 
 set_option backward.isDefEq.respectTransparency false
-set_option autoImplicit false
 set_option linter.unusedVariables false
 
 noncomputable section
@@ -1496,7 +1482,6 @@ section -- clump:auto
 @[expose] public section
 
 set_option backward.isDefEq.respectTransparency false
-set_option autoImplicit false
 set_option linter.unusedVariables false
 
 noncomputable section
@@ -1618,7 +1603,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false
 
 noncomputable section

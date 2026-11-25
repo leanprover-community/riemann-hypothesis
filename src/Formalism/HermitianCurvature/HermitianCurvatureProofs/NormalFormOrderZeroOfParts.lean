@@ -77,7 +77,7 @@ namespace Formalism.FourierDecayAlt.P.NFx4
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Q Formalism.FourierDecayAlt.NF
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 section MulZ
 
@@ -473,7 +473,7 @@ namespace Formalism.FourierDecayAlt.P.NFx4
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Q Formalism.FourierDecayAlt.NF Formalism.FourierDecayAlt.P.Qx2 Formalism.FourierDecayAlt.P.Qx5
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 section Op
 
@@ -657,7 +657,7 @@ namespace Formalism.FourierDecayAlt.P.NFx4
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Q Formalism.FourierDecayAlt.NF Formalism.FourierDecayAlt.P.Qx2 Formalism.FourierDecayAlt.P.Qx5
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 section Peel
 
@@ -848,7 +848,7 @@ namespace Formalism.FourierDecayAlt.P.NFx4
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Q Formalism.FourierDecayAlt.NF Formalism.FourierDecayAlt.P.Qx2 Formalism.FourierDecayAlt.P.Qx5
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 theorem isOpen_normSq_gt (c : ℝ) : IsOpen {w : ℂ | c < Complex.normSq w} :=
   isOpen_lt continuous_const Complex.continuous_normSq

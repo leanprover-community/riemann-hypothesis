@@ -11,8 +11,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.FrobeniusOrbits 
 
 namespace Formalism.IndefR.Fock.KV
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 theorem tauE_injective {τ ρ : D.what₂.Tau} (h : tauE D τ = tauE D ρ) : τ = ρ :=

@@ -45,8 +45,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 
 open CategoryTheory TensorProduct Coalgebra Bialgebra GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup
 
-set_option autoImplicit false
-
 namespace GlobalTheory.PDivGroup
 
 theorem app_one_eq_zero_of_mem_kerIdeal_of_comp_eq_prime_smul :

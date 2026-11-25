@@ -50,8 +50,6 @@ open Matrix
 open scoped ComplexOrder Topology
 open GlobalTheory.ShFam.Hor GlobalTheory.CxPts
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.LieBase

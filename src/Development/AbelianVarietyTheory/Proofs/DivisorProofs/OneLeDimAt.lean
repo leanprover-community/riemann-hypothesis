@@ -50,8 +50,6 @@ open MeasureTheory Formalism.IndefR.Lev Formalism.IndefR.Datum Formalism.IndefR.
 
 namespace GlobalTheory.DimAtOne
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem one_le_dimAt : ∀ (D : D7) (i : Fin D.R.m) (τ : D.what₂.Tau), 1 ≤ GlobalTheory.IndefiniteRowSideFullHecke.OneMeasureSizes.dimAt D i τ := by
   intro D i τ
   unfold GlobalTheory.IndefiniteRowSideFullHecke.OneMeasureSizes.dimAt

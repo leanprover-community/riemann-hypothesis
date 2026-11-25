@@ -140,32 +140,7 @@ theorem boxFun_smul_right {R κ κ' : Type} (c : ℂ) (φ : (κ → R) → ℂ) 
 open scoped Classical in
 theorem boxFun_mem_schA (F : Type) [Field F] [NumberField F] (κ κ' : Type) [Fintype κ] [Fintype κ'] :
     ∀ φ₁ ∈ schA F κ, ∀ φ₂ ∈ schA F κ', boxFun φ₁ φ₂ ∈ schA F (κ ⊕ κ') := by
-  intro φ₁ h₁ φ₂ h₂
-  have gen : ∀ Φ₁ ∈ {Φ | ∃ (f : SchwartzMap (κ → mixedEmbedding.mixedSpace F) ℂ)
-        (g : (κ → FiniteAdeleRing (𝓞 F) F) → ℂ), g ∈ SB (κ → FiniteAdeleRing (𝓞 F) F) ∧ Φ = pureA F f g},
-      ∀ Φ₂ ∈ {Φ | ∃ (f : SchwartzMap (κ' → mixedEmbedding.mixedSpace F) ℂ)
-        (g : (κ' → FiniteAdeleRing (𝓞 F) F) → ℂ), g ∈ SB (κ' → FiniteAdeleRing (𝓞 F) F) ∧ Φ = pureA F f g},
-      boxFun Φ₁ Φ₂ ∈ schA F (κ ⊕ κ') := by
-    rintro _ ⟨f₁, g₁, hg₁, rfl⟩ _ ⟨f₂, g₂, hg₂, rfl⟩
-    obtain ⟨f, hf⟩ := exists_schwartz_box f₁ f₂
-    refine Submodule.subset_span ⟨f, fun z => g₁ (z ∘ Sum.inl) * g₂ (z ∘ Sum.inr), sb_box hg₁ hg₂, ?_⟩
-    funext x
-    simp only [boxFun, pureA, hf]
-    simp only [Function.comp_def]
-    ring
-  have gen₂ : ∀ Φ₁ ∈ {Φ | ∃ (f : SchwartzMap (κ → mixedEmbedding.mixedSpace F) ℂ)
-        (g : (κ → FiniteAdeleRing (𝓞 F) F) → ℂ), g ∈ SB (κ → FiniteAdeleRing (𝓞 F) F) ∧ Φ = pureA F f g},
-      boxFun Φ₁ φ₂ ∈ schA F (κ ⊕ κ') := by
-    intro Φ₁ hΦ₁
-    induction h₂ using Submodule.span_induction with
-    | mem x hx => exact gen Φ₁ hΦ₁ x hx
-    | zero => rw [boxFun_zero_right]; exact Submodule.zero_mem _
-    | add x y _ _ hx hy => rw [boxFun_add_right]; exact Submodule.add_mem _ hx hy
-    | smul c x _ hx => rw [boxFun_smul_right]; exact Submodule.smul_mem _ c hx
-  induction h₁ using Submodule.span_induction with
-  | mem x hx => exact gen₂ x hx
-  | zero => rw [boxFun_zero_left]; exact Submodule.zero_mem _
-  | add x y _ _ hx hy => rw [boxFun_add_left]; exact Submodule.add_mem _ hx hy
-  | smul c x _ hx => rw [boxFun_smul_left]; exact Submodule.smul_mem _ c hx
+  intros
+  apply _root_.GlobalTheory.CompanionTheory.ThetaBox.box_mem_schA <;> assumption
 
 end GlobalTheory.SchwartzBox

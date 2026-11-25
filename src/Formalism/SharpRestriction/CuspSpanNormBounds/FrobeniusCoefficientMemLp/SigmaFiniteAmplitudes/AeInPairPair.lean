@@ -120,7 +120,7 @@ theorem ae_uh_nuR {μG : Measure (Mt k r)} {γ : Matrix (Fin (2 * r + k + 1)) (F
     (hQ : PI.BesselPeriodGGP.IsQuotMeas μG (μR.map (fun x => fun i j => (γ⁻¹ * Matrix.of x * γ) i j)) νR) :
     ∀ᵐ x ∂νR, Matrix.of x ∈ UH (Hpk k r) := by
   classical
-  have hUH : IsClosed {x : Mt k r | of x ∈ UH (Hpk k r)} := Formalism.MainNotions.LowestKTypeMultiplicity.isClosed_UH k r
+  have hUH : IsClosed {x : Mt k r | of x ∈ UH (Hpk k r)} := PI.WUN.isClosed_UH k r
   have hB : MeasurableSet {x : Mt k r | of x ∉ UH (Hpk k r)} := hUH.measurableSet.compl
   have hG : μG {x : Mt k r | of x ∉ UH (Hpk k r)} = 0 := ae_iff.mp (ae_mem_sk hμG)
   have hq := hQ _ (measurable_one.indicator hB)

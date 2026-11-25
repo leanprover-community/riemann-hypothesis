@@ -121,10 +121,6 @@ theorem left_inv {g : B.Mat k r} (hg : g ∈ B.GV k r) : Hpk k r * gᴴ * Hpk k 
         simp only [Matrix.mul_assoc]
     _ = 1 := by rw [h, GBasic.Hpk_sq]
 
-theorem inv_eq {g : B.Mat k r} (hg : g ∈ B.GV k r) : g⁻¹ = Hpk k r * gᴴ * Hpk k r := by
-  have h := left_inv hg
-  exact Matrix.inv_eq_left_inv h
-
 end GlobalTheory.ThA.FrobNorm
 end -- clump:auto
 end -- clump:auto

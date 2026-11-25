@@ -42,6 +42,7 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.HaarVolumes.GaussA
 
 @[expose] public section
 
@@ -58,15 +59,7 @@ theorem isUnit_of_isUniUp {N : ℕ} {M : Mt g N} (hM : IsUniUp M) : IsUnit M := 
   simp [(hM _ _).2 rfl]
 
 theorem card_lt_pairs (N : ℕ) : Fintype.card {p : Fin N × Fin N // p.1 < p.2} = N * (N - 1) / 2 := by
-  rw [Fintype.card_subtype, Finset.card_filter, Fintype.sum_prod_type, Finset.sum_comm]
-  have hb : ∀ b : Fin N, (∑ a : Fin N, if a < b then 1 else 0) = (b : ℕ) := by
-    intro b
-    rw [← Finset.card_filter, ← Fin.card_Iio b]
-    congr 1
-    ext a
-    simp
-  simp only [hb]
-  rw [Fin.sum_univ_eq_sum_range (fun i => i) N, Finset.sum_range_id]
+  apply _root_.ReciprocityTheory.ChartRestriction.DS.gaussB_card_lt <;> assumption
 
 def ofUpper {N : ℕ} (f : {p : Fin N × Fin N // p.1 < p.2} → ZMod g) : Mt g N :=
   fun a b => if h : a < b then f ⟨(a, b), h⟩ else if a = b then 1 else 0

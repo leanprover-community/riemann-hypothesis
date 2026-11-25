@@ -54,7 +54,7 @@ open scoped ContDiff
 
 namespace PositivityTheory.Rg.Sw.HSt
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 open PositivityTheory.Rg.Sw PositivityTheory.Rg.Sw.LVs
 

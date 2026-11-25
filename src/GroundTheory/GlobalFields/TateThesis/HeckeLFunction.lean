@@ -416,10 +416,6 @@ theorem LFunction_eq_tsum_coeffTerm {s : ℂ} (hs : 1 < s.re) :
     χ.LFunction s = ∑' I, χ.coeffTerm s I :=
   (χ.hasSum_term_LCoeff hs).tsum_eq
 
-theorem summable_norm_coeff_mul_cpow {s : ℂ} (hs : 1 < s.re) :
-    Summable fun I : Ideal (𝓞 K) ↦ ‖χ.coeff I * (absNorm I : ℂ) ^ (-s)‖ := by
-  simpa [coeffTerm_apply, Complex.cpow_neg, div_eq_mul_inv] using χ.summable_norm_coeffTerm hs
-
 theorem hasSum_LFunction {s : ℂ} (hs : 1 < s.re) :
     HasSum (fun I : Ideal (𝓞 K) ↦ χ.coeff I * (absNorm I : ℂ) ^ (-s)) (χ.LFunction s) := by
   have hfun : (fun I : Ideal (𝓞 K) ↦ χ.coeff I * (absNorm I : ℂ) ^ (-s)) = χ.coeffTerm s :=

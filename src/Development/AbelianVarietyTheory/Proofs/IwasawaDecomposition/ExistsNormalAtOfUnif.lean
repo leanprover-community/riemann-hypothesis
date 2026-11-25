@@ -216,8 +216,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory.FlagMod (GChart ev tau tau_le le_preimage_comp)
 open scoped LaurentSeries
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.FibreKeyTheta

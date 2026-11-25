@@ -1489,7 +1489,6 @@ private def UpperTheory.Kd.K4.mlT_red (l n r N p : ℕ) :
     (Units.map (ZMod.castHom ((Dvd.dvd.mul_right (pow_dvd_pow l (Nat.le_add_right r n)) (N * N)).mul_right p)
      (ZMod (l ^ r))).toMonoidHom)
 
-attribute [-instance] GlobalTheory.KZ.ClsMod.neZero_pow
 
 theorem UpperTheory.Kd.K4.mlTOf :
     SymEx → SApi → SInvApi → SBStab → SSlD → SCohApi → SCycZ → STopT → KatoTwistedClassNormCompatibleCyclotomic → KatoTwistedClassCompatibleModPowers → ∀ (l : ℕ) [Fact l.Prime] (Ω : Type) [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (ε : Ω →+* ℂ) (X : Tower Ω ε) (N : ℕ) [NeZero N] (e : ℕ),

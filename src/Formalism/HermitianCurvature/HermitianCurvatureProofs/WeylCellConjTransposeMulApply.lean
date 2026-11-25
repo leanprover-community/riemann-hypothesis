@@ -98,39 +98,19 @@ def mulVecL (v : Fin (2 * r + k + 1) → ℂ) : Mx k r →L[ℝ] (Fin (2 * r + k
       map_smul' := fun c A => Matrix.smul_mulVec c A v }
 
 theorem exp_fix {X : Mx k r} {v : Fin (2 * r + k + 1) → ℂ} (h : X *ᵥ v = 0) (t : ℝ) :
-    NormedSpace.exp ((t : ℂ) • X) *ᵥ v = v := by
-  have hd : ∀ s : ℝ, HasDerivAt (fun s : ℝ => mulVecL v ((1 : Mx k r) * NormedSpace.exp ((s : ℂ) • X))) 0 s := by
-    intro s
-    have h1 := B5.curve_hasDerivAt (1 : Mx k r) X s
-    have h2 := (mulVecL v).hasFDerivAt.comp_hasDerivAt s h1
-    refine h2.congr_deriv ?_
-    show ((1 : Mx k r) * NormedSpace.exp ((s : ℂ) • X) * X) *ᵥ v = 0
-    rw [← Matrix.mulVec_mulVec, h, Matrix.mulVec_zero]
-  have hc := is_const_of_deriv_eq_zero (fun s => (hd s).differentiableAt) (fun s => (hd s).deriv) t 0
-  simpa [mulVecL, NormedSpace.exp_zero] using hc
+    NormedSpace.exp ((t : ℂ) • X) *ᵥ v = v :=
+  _root_.Formalism.FourierDecayAlt.P.Qx8.exp_fix h t
 
 def LieLev (i : Fin (r + 1)) (X : Mx k r) : Prop := ∀ t : ℝ, NormedSpace.exp ((t : ℂ) • X) ∈ Glev k r i
 
 theorem lieLev_of {i : Fin (r + 1)} {X : Mx k r} (hX : inLieLev k r i X) : LieLev i X :=
   fun t => ⟨B5.exp_mem hX.1 t, fun a ha => ⟨exp_fix (hX.2 a ha).1 t, exp_fix (hX.2 a ha).2 t⟩⟩
 
-theorem hpk_e (a : Fin r) : Hpk k r *ᵥ bvec (eI k r a) = bvec (esI k r a) := by
-  funext p
-  simp only [bvec, Matrix.mulVec_single_one, Matrix.col_apply, Pi.single_apply]
-  unfold Hpk eI esI
-  simp only [Fin.ext_iff]
-  have := p.isLt
-  have := a.isLt
-  split_ifs <;> first | rfl | (exfalso; omega)
+theorem hpk_e (a : Fin r) : Hpk k r *ᵥ bvec (eI k r a) = bvec (esI k r a) :=
+  _root_.Formalism.FourierDecayAlt.P.Qx8.hpk_e a
 
-theorem hpk_es (a : Fin r) : Hpk k r *ᵥ bvec (esI k r a) = bvec (eI k r a) := by
-  funext p
-  simp only [bvec, Matrix.mulVec_single_one, Matrix.col_apply, Pi.single_apply]
-  unfold Hpk eI esI
-  simp only [Fin.ext_iff]
-  have := p.isLt
-  have := a.isLt
-  split_ifs <;> first | rfl | (exfalso; omega)
+theorem hpk_es (a : Fin r) : Hpk k r *ᵥ bvec (esI k r a) = bvec (eI k r a) :=
+  _root_.Formalism.FourierDecayAlt.P.Qx8.hpk_es a
 
 theorem hpk_herm : (Hpk k r)ᴴ = Hpk k r := (hermitian_pos_facts_hold k r).1
 
@@ -142,12 +122,8 @@ theorem single_bvec {p q c : Fin (2 * r + k + 1)} (h : q ≠ c) :
   simp [bvec, h]
 
 theorem posL_ne_e (i : Fin (r + 1)) (a : Fin (mdim k r i)) (b : Fin r) (hb : b.val < i.val) :
-    posL k r i a ≠ eI k r b ∧ posL k r i a ≠ esI k r b := by
-  have h1 := a.isLt
-  have h2 := i.isLt
-  unfold mdim at h1
-  simp only [posL, eI, esI, ne_eq, Fin.ext_iff]
-  omega
+    posL k r i a ≠ eI k r b ∧ posL k r i a ≠ esI k r b :=
+  _root_.Formalism.FourierDecayAlt.P.Qx8.posL_ne_e i a b hb
 
 theorem hpart_skew {n : ℕ} (H Z : Matrix (Fin n) (Fin n) ℂ) (hsq : H * H = 1) (hh : Hᴴ = H) :
     (hpart1 H Z)ᴴ * H + H * hpart1 H Z = 0 ∧ (hpart2 H Z)ᴴ * H + H * hpart2 H Z = 0 := by
@@ -198,26 +174,12 @@ theorem sf_zero : SmoothFam k r i U₀ (fun _ _ => (0 : E)) :=
   fun _ _ _ => ⟨Set.univ, fun _ => 0, isOpen_univ, trivial, contDiffOn_const, fun _ _ _ => rfl⟩
 
 theorem sf_add {Φ Ψ : Fn k r E} (h : SmoothFam k r i U₀ Φ) (h' : SmoothFam k r i U₀ Ψ) :
-    SmoothFam k r i U₀ (fun c g => Φ c g + Ψ c g) := by
-  intro x₀ hx₀ hg₀
-  obtain ⟨U, F, hU, hxU, hF, hΦ⟩ := h x₀ hx₀ hg₀
-  obtain ⟨U', F', hU', hxU', hF', hΦ'⟩ := h' x₀ hx₀ hg₀
-  exact ⟨U ∩ U', fun x => F x + F' x, hU.inter hU', ⟨hxU, hxU'⟩,
-    (hF.mono Set.inter_subset_left).add (hF'.mono Set.inter_subset_right),
-    fun x hx hxG => by
-      show Φ x.1 x.2 + Ψ x.1 x.2 = F x + F' x
-      rw [hΦ x hx.1 hxG, hΦ' x hx.2 hxG]⟩
+    SmoothFam k r i U₀ (fun c g => Φ c g + Ψ c g) :=
+  _root_.Formalism.FourierDecayAlt.P.Qx8.sf_add h h'
 
 theorem sf_smul {a : Fn k r ℂ} {Φ : Fn k r E} (h : SmoothFam k r i U₀ a) (h' : SmoothFam k r i U₀ Φ) :
-    SmoothFam k r i U₀ (fun c g => a c g • Φ c g) := by
-  intro x₀ hx₀ hg₀
-  obtain ⟨U, F, hU, hxU, hF, hΦ⟩ := h x₀ hx₀ hg₀
-  obtain ⟨U', F', hU', hxU', hF', hΦ'⟩ := h' x₀ hx₀ hg₀
-  exact ⟨U ∩ U', fun x => F x • F' x, hU.inter hU', ⟨hxU, hxU'⟩,
-    (hF.mono Set.inter_subset_left).smul (hF'.mono Set.inter_subset_right),
-    fun x hx hxG => by
-      show a x.1 x.2 • Φ x.1 x.2 = F x • F' x
-      rw [hΦ x hx.1 hxG, hΦ' x hx.2 hxG]⟩
+    SmoothFam k r i U₀ (fun c g => a c g • Φ c g) :=
+  _root_.Formalism.FourierDecayAlt.P.Qx8.sf_smul h h'
 
 theorem sf_const (s : ℂ) : SmoothFam k r i U₀ (fun _ _ => s) :=
   fun _ _ _ => ⟨Set.univ, fun _ => s, isOpen_univ, trivial, contDiffOn_const, fun _ _ _ => rfl⟩
@@ -306,32 +268,12 @@ theorem uh_inv_eq {g : Mx k r} (hg : g ∈ UH (Hpk k r)) : g⁻¹ = Hpk k r * g�
     _ = 1 := by rw [hg', WeylGroupFacts.hpk_sq]
 
 theorem sf_yv (z : Fin (2 * r + k + 1) → ℂ) (j : Fin (mdim k r i)) :
-    SmoothFam k r i U₀ (fun _ g => yv k r z i g j) := by
-  refine sf_lin
-    { toFun := fun g => ((Hpk k r * gᴴ * Hpk k r) *ᵥ fvec k r z i) (posL k r i j)
-      map_add' := ?_
-      map_smul' := ?_ } ?_
-  · intro x y
-    simp [Matrix.conjTranspose_add, Matrix.mul_add, Matrix.add_mul, Matrix.add_mulVec]
-  · intro c x
-    simp [Matrix.conjTranspose_smul, Matrix.smul_mulVec]
-  · intro g hg
-    show (g⁻¹ *ᵥ fvec k r z i) (posL k r i j) = _
-    rw [uh_inv_eq hg.1]
-    rfl
+    SmoothFam k r i U₀ (fun _ g => yv k r z i g j) :=
+  _root_.Formalism.FourierDecayAlt.P.Qx8.sf_yv z j
 
 theorem sf_ybv (z : Fin (2 * r + k + 1) → ℂ) (j : Fin (mdim k r i)) :
-    SmoothFam k r i U₀ (fun _ g => ybv k r z i g j) := by
-  refine sf_lin
-    { toFun := fun g => herm (Hpk k r) (g *ᵥ bvec (posL k r i j)) (fvec k r z i)
-      map_add' := ?_
-      map_smul' := ?_ } ?_
-  · intro x y
-    simp [herm, Matrix.add_mulVec, Matrix.mulVec_add, dotProduct_add]
-  · intro c x
-    simp [herm, Matrix.smul_mulVec, Matrix.mulVec_smul, dotProduct_smul]
-  · intro g _
-    rfl
+    SmoothFam k r i U₀ (fun _ g => ybv k r z i g j) :=
+  _root_.Formalism.FourierDecayAlt.P.Qx8.sf_ybv z j
 
 theorem pres_chatL (u : ℂ) (a β : Mx k r → Fin (mdim k r i) → ℂ)
     (ha : ∀ j, SmoothFam k r i U₀ (fun _ g => a g j)) (hβ : ∀ j, SmoothFam k r i U₀ (fun _ g => β g j)) :

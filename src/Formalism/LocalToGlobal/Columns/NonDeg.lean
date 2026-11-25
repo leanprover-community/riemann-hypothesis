@@ -127,10 +127,6 @@ variable (ι : Qb →+* ℂ) (LL : Fld) [FiniteDimensional ℚ LL] [Normal ℚ L
 
 end GaussInst
 
-def ndIota : Qb →+* ℂ :=
-  haveI : Algebra.IsAlgebraic ℚ Qb := AlgebraicClosure.isAlgebraic ℚ
-  (IsAlgClosed.lift (R := ℚ) (M := ℂ) (S := Qb)).toRingHom
-
 section OfSizes
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)

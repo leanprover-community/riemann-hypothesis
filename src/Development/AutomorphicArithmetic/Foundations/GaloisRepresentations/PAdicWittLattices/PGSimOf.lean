@@ -90,8 +90,6 @@ open GlobalTheory GlobalTheory.HeckeApprox UpperTheory.Lev
 open scoped TensorProduct
 universe u
 
-set_option autoImplicit false
-
 namespace UpperTheory.Gal.G3.GSimGlue
 
 variable {G : GDatum}

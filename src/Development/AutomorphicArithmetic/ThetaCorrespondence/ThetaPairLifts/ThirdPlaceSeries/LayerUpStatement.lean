@@ -560,7 +560,6 @@ theorem Mv.choiceSide_alt {low Pq S hk eig θ} {Bs : SideB D cf A.row low Pq S h
     (off := (x.off))
     (adm := (x.adm))
     (psi := (x.psi))
-    (eMt_level := (x.eMt_level))
 end
 section
 end

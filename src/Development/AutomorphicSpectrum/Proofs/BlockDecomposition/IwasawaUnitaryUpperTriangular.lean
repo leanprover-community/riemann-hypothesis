@@ -52,7 +52,7 @@ open Matrix
 
 namespace GlobalTheory.CompanionTheory.QR
 
-theorem exists_unitary_mul_blockTriangular {m : ℕ} (g : Matrix (Fin m) (Fin m) ℂ) (_hg : IsUnit g) :
+theorem exists_unitary_mul_blockTriangular {m : ℕ} (g : Matrix (Fin m) (Fin m) ℂ) :
     ∃ k ∈ Matrix.unitaryGroup (Fin m) ℂ, ∃ b : Matrix (Fin m) (Fin m) ℂ,
       g = k * b ∧ b.BlockTriangular id := by
   let e := EuclideanSpace.basisFun (Fin m) ℂ

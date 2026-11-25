@@ -48,8 +48,6 @@ open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNo
 
 namespace GlobalTheory.GenMass
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} {Z : LocDat D} {FP : ∀ p : PlF D, LocNG.FPair (locH Z p) D.R.rS} {T T' : D.host.E}
 
 def tm (FP : ∀ p : PlF D, LocNG.FPair (locH Z p) D.R.rS) (G : LFlag (D.sp.Y 0) D.R.rS T) (G' : LFlag (D.sp.Y 0) D.R.rS T')

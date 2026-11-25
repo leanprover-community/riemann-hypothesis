@@ -3,6 +3,10 @@ module
 public import Formalism.LocalToGlobal.ComplexLatticeArea
 public import Formalism.LocalToGlobal.KernelLattices.ColumnData.HfTrace
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.IntegralClosureCriterion
+public import Formalism.LocalToGlobal.GlobalTheory.GL3.PHfArith
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Tactic.TypeStar
 
@@ -111,21 +115,13 @@ theorem good_of_okc {u : ℂ} (hu : OKc D u) : Good D (2 * u / (Real.sqrt D.host
   push_cast
   field_simp
 
-theorem half_int {F : Type*} [Field F] [CharZero F] (x : F) (k : ℤ)
-    (hx : x ^ 2 = -(4 * (k : F) + 3)) : IsIntegral ℤ ((1 + x) / 2) := by
-  refine ⟨Polynomial.X ^ 2 - Polynomial.X + Polynomial.C (k + 1), by monicity!, ?_⟩
-  simp only [Polynomial.eval₂_add, Polynomial.eval₂_sub, Polynomial.eval₂_X_pow,
-    Polynomial.eval₂_X, Polynomial.eval₂_C]
-  push_cast
-  linear_combination hx / 4
-
 theorem bK_sq : bK D ^ 2 = -(D.host.d : D.host.K) := by
   apply Subtype.ext
   push_cast
   exact b_sq D
 
 def om : 𝓞 D.host.K :=
-  ⟨(1 + bK D) / 2, half_int _ (d_mod D).choose (by
+  ⟨(1 + bK D) / 2, Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.AR.half_int _ (d_mod D).choose (by
     have h2 : ((D.host.d : ℤ) : D.host.K) = ((4 * (d_mod D).choose + 3 : ℤ) : D.host.K) :=
       congrArg (fun t : ℤ => (t : D.host.K)) (d_mod D).choose_spec
     push_cast at h2
@@ -141,11 +137,11 @@ theorem ph_om : ph D (om D) = (1 + be D) / 2 := by
   exact congrArg (fun t => (1 + t) / 2) (phi_b D)
 
 theorem Bf_lat (δ : ℂ) (c₁ c₂ : 𝓞 D.host.K) :
-    Bf (δ * ph D c₁) (δ * ph D c₂) = Complex.normSq δ * (starRingEnd ℂ (ph D c₁) * ph D c₂).im := by
+    Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.AR.Bf (δ * ph D c₁) (δ * ph D c₂) = Complex.normSq δ * (starRingEnd ℂ (ph D c₁) * ph D c₂).im := by
   have : starRingEnd ℂ (δ * ph D c₁) * (δ * ph D c₂) =
       (Complex.normSq δ : ℂ) * (starRingEnd ℂ (ph D c₁) * ph D c₂) := by
     rw [Complex.normSq_eq_conj_mul_self, map_mul]; ring
-  rw [Bf, this]; simp [Complex.mul_im]
+  rw [Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.AR.Bf, this]; simp [Complex.mul_im]
 
 theorem okc_pair (c₁ c₂ : 𝓞 D.host.K) : OKc D (starRingEnd ℂ (ph D c₁) * ph D c₂) :=
   okc_mul D (okc_conj D (okc_of D c₁)) (okc_of D c₂)
@@ -157,14 +153,14 @@ theorem div_okc (cc : Ideal (𝓞 D.host.K)) (hcc : cc ≠ ⊥) (δ : ℂ) (hδ 
   have hs := sqrt_pos D
   have hκ : 0 < Complex.normSq δ * (Real.sqrt D.host.d / 2) := by positivity
   have hdisc : ∀ w₁ ∈ lamOf D cc δ, ∀ w₂ ∈ lamOf D cc δ, ∃ n : ℤ,
-      Bf w₁ w₂ = Complex.normSq δ * (Real.sqrt D.host.d / 2) * n := by
+      Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.AR.Bf w₁ w₂ = Complex.normSq δ * (Real.sqrt D.host.d / 2) * n := by
     intro w₁ h₁ w₂ h₂
     obtain ⟨c₁, -, rfl⟩ := FL.lam_mem D cc δ w₁ h₁
     obtain ⟨c₂, -, rfl⟩ := FL.lam_mem D cc δ w₂ h₂
     obtain ⟨x, y, -, hz⟩ := okc_pair D c₁ c₂
     refine ⟨y, ?_⟩
     rw [Bf_lat, hz, im_coord]; ring
-  have hne : ∃ w₁ ∈ lamOf D cc δ, ∃ w₂ ∈ lamOf D cc δ, Bf w₁ w₂ ≠ 0 := by
+  have hne : ∃ w₁ ∈ lamOf D cc δ, ∃ w₂ ∈ lamOf D cc δ, Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.AR.Bf w₁ w₂ ≠ 0 := by
     obtain ⟨c, hc, hc0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hcc
     refine ⟨δ * ph D c, AddSubgroup.subset_closure ⟨c, hc, rfl⟩,
       δ * ph D (c * om D), AddSubgroup.subset_closure ⟨c * om D, cc.mul_mem_right _ hc, rfl⟩, ?_⟩
@@ -188,7 +184,7 @@ theorem div_okc (cc : Ideal (𝓞 D.host.K)) (hcc : cc ≠ ⊥) (δ : ℂ) (hδ 
         Complex.normSq (ph D c) * (Real.sqrt D.host.d / 2) := by simp [Complex.mul_im]
     rw [e, e4, e5]
     exact mul_ne_zero hn.ne' (mul_ne_zero (Complex.normSq_pos.2 hc1).ne' (by positivity))
-  obtain ⟨m, hm, harea, hall⟩ := area_spec (lamOf D cc δ) _ hκ hdisc hne
+  obtain ⟨m, hm, harea, hall⟩ := Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.AR.area_spec (lamOf D cc δ) _ hκ hdisc hne
   refine ⟨m, hm, harea, fun c hc c' hc' => ?_⟩
   obtain ⟨x, y, -, hz⟩ := okc_pair D c' c
   obtain ⟨n₁, h₁⟩ := hall _ (AddSubgroup.subset_closure ⟨c', hc', rfl⟩) _

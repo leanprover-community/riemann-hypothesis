@@ -44,7 +44,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 @[expose] public section
 
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-attribute [-instance] Formalism.DoubleCosetMeasures.instMeasGL
 
 noncomputable section
 

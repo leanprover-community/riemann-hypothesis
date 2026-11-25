@@ -55,7 +55,7 @@ noncomputable section
 
 namespace GlobalTheory.GivenXi
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 section sesq
 
@@ -123,48 +123,8 @@ theorem formLev_norm_le (hΞ : B.XiExists) {Wp Wq : Type} [NormedAddCommGroup Wp
       (∀ b, CCle (A - 1) (5 + (2 * (P0.r - (j : ℕ)) + P0.k + 1) * w.length) (u b) cu) →
       (∀ a, CCle (A - 1 - 2 * (w.length : ℝ)) 5 (v a) cv) →
       ‖D.formLev T s j w u v‖ ≤ Cf * cu * cv := by
-  have hR := ma_hS P0 T s j w
-  set A'' : ℝ := A - 1 - 2 * (w.length : ℝ) with hA''
-  have hop : ∀ a b, ∃ K : ℝ, 0 ≤ K ∧ ∀ (F : Mat P0.k (P0.r - j) → (Wq →L[ℂ] Wp)) (c : ℝ),
-      CCle (A'' + ((2 * w.length : ℕ) : ℝ)) (5 + (2 * (P0.r - j) + P0.k + 1) * w.length) F c →
-      CCle A'' 5 (D.RRlev T s j w a b F) (K * c) := fun a b => (hR a b).1 A'' 5
-  choose K hK0 hK using hop
-  set KK : ℝ := ∑ a, ∑ b, K a b with hKK
-  have hKK0 : 0 ≤ KK := Finset.sum_nonneg fun a _ => Finset.sum_nonneg fun b _ => hK0 a b
-  have hKab : ∀ a, ∑ b, K a b ≤ KK := fun a =>
-    Finset.single_le_sum (f := fun a => ∑ b, K a b) (fun a _ => Finset.sum_nonneg fun b _ => hK0 a b)
-      (Finset.mem_univ a)
-  have hAB : AB P0.k (P0.r - j) ≤ A'' := pd_thr_AB P0 j w.length A hA
-  obtain ⟨_, _, _, hB1, _, _, _⟩ := (BXiAsm.any_of hΞ) P0.k (P0.r - j) Wp Wq (T.bs j) A'' hAB
-  obtain ⟨Cβ, hCβ⟩ := hB1
-  have hA2 : A'' + ((2 * w.length : ℕ) : ℝ) = A - 1 := by rw [hA'']; push_cast; ring
-  set card : ℝ := (Fintype.card (Wd.Ix (Fin w.length)) : ℝ)
-  have hcard : 0 ≤ card := Nat.cast_nonneg _
-  refine ⟨card * (|Cβ| * KK), mul_nonneg hcard (mul_nonneg (abs_nonneg _) hKK0), ?_⟩
-  intro u v cu cv hcu hcv
-  have hcu0 : 0 ≤ cu := pd_ccle_nonneg (hcu (Classical.arbitrary _))
-  have hcv0 : 0 ≤ cv := pd_ccle_nonneg (hcv (Classical.arbitrary _))
-  have hu' : ∀ b, CCle (A'' + ((2 * w.length : ℕ) : ℝ)) (5 + (2 * (P0.r - j) + P0.k + 1) * w.length) (u b) cu :=
-    fun b => pd_ccle_mono (le_of_eq hA2) le_rfl (hcu b)
-  have hRu : ∀ a, CCle A'' 5 (D.actOp (D.RRlev T s j w) u a) (KK * cu) := by
-    intro a
-    rw [ma_actOp_eq]
-    refine pd_ccle_mono_c (pd_ccle_sum Finset.univ (fun b => D.RRlev T s j w a b (u b)) (fun b => K a b * cu)
-      fun b _ => hK a b (u b) cu (hu' b)) ?_
-    rw [← Finset.sum_mul]
-    exact mul_le_mul_of_nonneg_right (hKab a) hcu0
-  unfold D.formLev
-  refine (norm_sum_le _ _).trans ?_
-  have hterm : ∀ a, ‖B.beta (T.bs j) (D.actOp (D.RRlev T s j w) u a) (v a)‖ ≤ |Cβ| * (KK * cu) * cv := by
-    intro a
-    have h := (hCβ _ _ _ _ ⟨_, hRu a⟩ ⟨_, hcv a⟩ (pd_ccle_mono le_rfl (by norm_num) (hRu a))
-      (pd_ccle_mono le_rfl (by norm_num) (hcv a))).2.2
-    refine h.trans ?_
-    exact mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right (le_abs_self _) (mul_nonneg hKK0 hcu0)) hcv0
-  refine (Finset.sum_le_sum fun a _ => hterm a).trans ?_
-  rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
-  apply le_of_eq
-  ring
+  let _ := hΞ
+  exact formLev_bound_mm P0 T s j w A hA
 
 theorem formLev_sesquilinear_finiteReg (hΞ : B.XiExists) : Formalism.FourierDecayAlt.JC.FormLevSesqMM := by
   intro Wp Wq _ _ _ _ _ _ P0 T s j w A mm ε _ hA hmm x x' y c hx hx' hy
@@ -199,51 +159,8 @@ theorem formLev_tendsto (hΞ : B.XiExists) {Wp Wq : Type} [NormedAddCommGroup Wp
     (hdy : ∀ n e, JC.CCCoefM (T.bs j) (P5.Auser P0 N + 1) (P5.mmUser P0 N) ε₀ (yn n e - y e) ∧
       B.CCle (P5.Auser P0 N + 1) (P5.mmUser P0 N) (yn n e - y e) (dn n)) :
     Tendsto (fun n => D.formLev T s j w (xn n) (yn n)) atTop (𝓝 (D.formLev T s j w x y)) := by
-  have hAu : P5.Auser P0 w.length + 1 ≤ P5.Auser P0 N + 1 := by linarith [auser_mono P0 hw]
-  have hmu : P5.mmUser P0 w.length ≤ P5.mmUser P0 N := mmUser_mono P0 hw
-  have hS := formLev_sesquilinear_finiteReg hΞ Wp Wq P0 T s j w (P5.Auser P0 N + 1) (P5.mmUser P0 N) ε₀ hε₀ hAu hmu
-  obtain ⟨Cf, hCf0, hCf⟩ := formLev_norm_le hΞ P0 T s j w (P5.Auser P0 N + 1 + 1) (by linarith)
-  have hmm5 : 5 + (2 * (P0.r - (j : ℕ)) + P0.k + 1) * w.length ≤ P5.mmUser P0 N := by
-    have := Formalism.FourierDecayAlt.P.JCx2.pd_thr_mm P0 j N (P5.mmUser P0 N) le_rfl
-    have h2 : (2 * (P0.r - (j : ℕ)) + P0.k + 1) * w.length ≤ (2 * (P0.r - (j : ℕ)) + P0.k + 1) * N :=
-      Nat.mul_le_mul_left _ hw
-    omega
-  have h5 : 5 ≤ P5.mmUser P0 N := by unfold P5.mmUser; omega
-  have hu : ∀ (u : Wd.Ix (Fin w.length) → B.Mat P0.k (P0.r - j) → (Wq →L[ℂ] Wp)) (cu : ℝ),
-      (∀ e, B.CCle (P5.Auser P0 N + 1) (P5.mmUser P0 N) (u e) cu) →
-      ∀ e, B.CCle (P5.Auser P0 N + 1 + 1 - 1) (5 + (2 * (P0.r - (j : ℕ)) + P0.k + 1) * w.length) (u e) cu := by
-    intro u cu h e
-    exact Formalism.FourierDecayAlt.P.BetaSesquilinearity.CCle_mono_A (by linarith) (Formalism.FourierDecayAlt.P.BetaSesquilinearity.CCle_mono_m hmm5 (h e))
-  have hv : ∀ (u : Wd.Ix (Fin w.length) → B.Mat P0.k (P0.r - j) → (Wq →L[ℂ] Wp)) (cu : ℝ),
-      (∀ e, B.CCle (P5.Auser P0 N + 1) (P5.mmUser P0 N) (u e) cu) →
-      ∀ e, B.CCle (P5.Auser P0 N + 1 + 1 - 1 - 2 * (w.length : ℝ)) 5 (u e) cu := by
-    intro u cu h e
-    have hw0 : (0 : ℝ) ≤ w.length := Nat.cast_nonneg _
-    exact Formalism.FourierDecayAlt.P.BetaSesquilinearity.CCle_mono_A (by linarith) (Formalism.FourierDecayAlt.P.BetaSesquilinearity.CCle_mono_m h5 (h e))
-  have key : ∀ n, D.formLev T s j w (xn n) (yn n) - D.formLev T s j w x y =
-      D.formLev T s j w (xn n - x) (yn n) + D.formLev T s j w x (yn n - y) := by
-    intro n
-    have e1 : xn n = x + (1 : ℂ) • (xn n - x) := by simp
-    have e2 : yn n = y + (1 : ℂ) • (yn n - y) := by simp
-    have s1 := (hS x (xn n - x) (yn n) 1 (fun e => (hx e).1) (fun e => (hdx n e).1) (fun e => (hyn n e).1)).1
-    have s2 := (hS y (yn n - y) x 1 (fun e => (hy e).1) (fun e => (hdy n e).1) (fun e => (hx e).1)).2
-    rw [← e1] at s1
-    rw [← e2] at s2
-    rw [s1, s2]
-    simp
-    ring
-  have hbd : ∀ n, ‖D.formLev T s j w (xn n) (yn n) - D.formLev T s j w x y‖ ≤ 2 * Cf * Bd * dn n := by
-    intro n
-    rw [key n]
-    have b1 := hCf (xn n - x) (yn n) (dn n) Bd (hu _ _ fun e => (hdx n e).2) (hv _ _ fun e => (hyn n e).2)
-    have b2 := hCf x (yn n - y) Bd (dn n) (hu _ _ fun e => (hx e).2) (hv _ _ fun e => (hdy n e).2)
-    calc _ ≤ ‖D.formLev T s j w (xn n - x) (yn n)‖ + ‖D.formLev T s j w x (yn n - y)‖ := norm_add_le _ _
-      _ ≤ Cf * dn n * Bd + Cf * Bd * dn n := add_le_add b1 b2
-      _ = 2 * Cf * Bd * dn n := by ring
-  rw [tendsto_iff_norm_sub_tendsto_zero]
-  have hlim : Tendsto (fun n => 2 * Cf * Bd * dn n) atTop (𝓝 0) := by
-    simpa using hdn.const_mul (2 * Cf * Bd)
-  exact squeeze_zero (fun n => norm_nonneg _) hbd hlim
+  let _ := hΞ
+  exact formLev_limit P0 T s j w N hw ε₀ hε₀ x y xn yn Bd dn hdn hx hy hxn hyn hdx hdy
 
 theorem levelForm_cutoff_tendsto_below (hΞ : B.XiExists) : ∃ Cl : ℝ, 0 ≤ Cl ∧ ∀ Cc : ℝ, Cl ≤ Cc →
     ∀ (Wp Wq : Type) [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]

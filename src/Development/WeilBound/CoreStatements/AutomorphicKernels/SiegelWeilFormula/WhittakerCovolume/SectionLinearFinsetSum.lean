@@ -71,25 +71,6 @@ theorem lin_holValueAt_sum {ι : Type} (s : Finset ι) (c : ι → ℂ) (h : ι 
     exact ((holValueAt_const (c j) s₀).mul (hh j (Finset.mem_insert_self j s))).add
       (ih fun i hi => hh i (Finset.mem_insert_of_mem hi))
 
-section SDl
-
-variable (d : SD σ)
-
-def linRhoL (v : Mx F E d.m d.n) : d.Fn →ₗ[ℂ] d.Fn where
-  toFun := d.dd.rho d.B.ψ (v * (incM F d.b.1.toCols₂)ᵀ)
-  map_add' Φ Ψ := by
-    funext y
-    simp only [Darboux.rho, schr, Pi.add_apply]
-    ring
-  map_smul' a Φ := by
-    funext y
-    simp only [Darboux.rho, schr, Pi.smul_apply, smul_eq_mul, RingHom.id_apply]
-    ring
-
-theorem lin_T_eq (Φ : d.Fn) (X : Mx F E d.m d.n) : d.T Φ X = d.l (linRhoL d X Φ) := rfl
-
-end SDl
-
 end PositivityTheory.SiegelWeilFormula.KWhit
 
 end

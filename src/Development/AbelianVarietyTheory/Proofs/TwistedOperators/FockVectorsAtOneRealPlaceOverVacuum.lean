@@ -61,8 +61,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.RestrictedTensorSplitting (fockIp)
 open GlobalTheory.ArchRec (IsFrameOf Mn)
 open scoped Classical ComplexConjugate
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem fockIp_eq {ι : Type} (P Q : MvPolynomial ι ℂ) :
     fockIp P Q = ∑ k ∈ Q.support, P.coeff k * conj (Q.coeff k) * (multiFact k : ℂ) := by
   classical
@@ -529,7 +527,6 @@ section Main
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.S Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Datum
 open GlobalTheory.IndefiniteRowSideFullHecke.ThetaSourceAction hiding Mat
 open MeasureTheory Matrix
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.ArchRec
 
 theorem fock_at_one_place : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) (S T : HSp D) (τ : D.what₂.Tau), IsStdChar D ψ (-1) → IsInfFam θ → ∀ (sS frS : Mn S.rank) (εS : Fin S.rank → Bool) (sT frT : Mn T.rank) (εT : Fin T.rank → Bool), IsFrameOf (gramAt D S τ) sS εS frS → IsFrameOf (gramAt D T τ) sT εT frT → ∀ f, IsThetaFunO ψ S T f → IsFockVacAt (heisO ψ S T) θ τ (cplxO sS sT) f → (∀ P, IsThetaFunO ψ S T (ptAt ψ θ S T τ sS sT frS⁻¹ frT⁻¹ f P)) ∧ (f ≠ 0 → Function.Injective (ptAt ψ θ S T τ sS sT frS⁻¹ frT⁻¹ f) ∧ ∀ (μ : Measure (WO S T)) (𝓕 : Set (WO S T)), μ.IsAddHaarMeasure → IsAddFundamentalDomain (ratL T S) 𝓕 μ → ∃ N, Fischer (ptAt ψ θ S T τ sS sT frS⁻¹ frT⁻¹ f) (ipTh μ 𝓕) (LinearEquiv.refl ℂ _) N) := by

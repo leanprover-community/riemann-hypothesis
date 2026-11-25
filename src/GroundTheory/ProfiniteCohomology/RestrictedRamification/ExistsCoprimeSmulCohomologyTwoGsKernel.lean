@@ -32,7 +32,7 @@ abbrev gsKernel : Subgroup K.1.fixingSubgroup := (gsRestrict K S).ker
 
 theorem isClosed_gsKernel : IsClosed (gsKernel K S : Set K.1.fixingSubgroup) := by
   have ht2 : T2Space (galUnramifiedOutside K.1 ℚ̄ S) :=
-    galois_t2Space K.1 (maxUnramifiedOutside K.1 ℚ̄ S)
+    krullTopology_t2 (K := K.1) (L := maxUnramifiedOutside K.1 ℚ̄ S)
   have : T1Space (galUnramifiedOutside K.1 ℚ̄ S) := @T2Space.t1Space _ _ ht2
   exact (isClosed_singleton (x := (1 : galUnramifiedOutside K.1 ℚ̄ S))).preimage (continuous_gsRestrict K S)
 

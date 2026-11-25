@@ -67,15 +67,6 @@ open MvPolynomial Filter Topology PositivityTheory.Rg.Fx
 private noncomputable def nrm {ι : Type} (p : MvPolynomial ι ℂ) : ℝ :=
   ∑ α ∈ p.support, ‖p.coeff α‖
 
-private theorem nrm_nonneg {ι : Type} (p : MvPolynomial ι ℂ) : 0 ≤ nrm p :=
-  Finset.sum_nonneg fun _ _ => norm_nonneg _
-
-private theorem nrm_add {ι : Type} (p q : MvPolynomial ι ℂ) : nrm (p + q) ≤ nrm p + nrm q :=
-  (UpperTheory.ConvolutionTheory.FX.coeffL1_submultiplicative_facts ι p q).1
-
-private theorem nrm_mul {ι : Type} (p q : MvPolynomial ι ℂ) : nrm (p * q) ≤ nrm p * nrm q :=
-  (UpperTheory.ConvolutionTheory.FX.coeffL1_submultiplicative_facts ι p q).2.1
-
 private theorem nrm_monomial {ι : Type} (a : ι →₀ ℕ) (c : ℂ) :
     nrm (monomial a c : MvPolynomial ι ℂ) = ‖c‖ :=
   (UpperTheory.ConvolutionTheory.FX.coeffL1_submultiplicative_facts ι 0 0).2.2.2.1 a c
@@ -99,9 +90,10 @@ private theorem FXRep.add {p q c d e} (h : FXRep φ m p e c) (h' : FXRep φ m q 
   refine ⟨fun β => G β + G' β, ?_, ?_, fun β => (totalDegree_add _ _).trans (max_le (h3 β) (h3' β))⟩
   · rw [h1, h1', ← Finset.sum_add_distrib]
     simp only [map_add (f := _), add_mul]
-  · refine (Finset.sum_le_sum fun β _ => nrm_add _ _).trans ?_
+  · refine (Finset.sum_le_sum fun β _ =>
+      (UpperTheory.ConvolutionTheory.FX.coeffL1_submultiplicative_facts ι _ _).1).trans ?_
     rw [Finset.sum_add_distrib]
-    linarith
+    exact add_le_add h2 h2'
 
 private theorem FXRep.sum {κ : Type} (s : Finset κ) (f : κ → MvPolynomial ι ℂ) (c : κ → ℝ) {e : ℕ}
     (h : ∀ i ∈ s, FXRep φ m (f i) e (c i)) : FXRep φ m (∑ i ∈ s, f i) e (∑ i ∈ s, c i) := by
@@ -119,9 +111,10 @@ private theorem FXRep.smul {p c e e'} (g : MvPolynomial ι ℂ) (hg : g.totalDeg
   refine ⟨fun β => g * G β, ?_, ?_, fun β => (totalDegree_mul _ _).trans (add_le_add hg (h3 β))⟩
   · rw [h1, Finset.mul_sum]
     simp only [map_mul, mul_assoc]
-  · refine (Finset.sum_le_sum fun β _ => nrm_mul _ _).trans ?_
+  · refine (Finset.sum_le_sum fun β _ =>
+      (UpperTheory.ConvolutionTheory.FX.coeffL1_submultiplicative_facts ι _ _).2.1).trans ?_
     rw [← Finset.mul_sum]
-    exact mul_le_mul_of_nonneg_left h2 (nrm_nonneg g)
+    exact mul_le_mul_of_nonneg_left h2 (Finset.sum_nonneg fun _ _ => norm_nonneg _)
 
 private theorem FXRep.basis (β : B) : FXRep φ m (m β) 0 1 := by
   classical

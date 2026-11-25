@@ -54,8 +54,6 @@ import Formalism.LocalToGlobal.ProjectiveLattices.JFDFree
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.DetIdeal

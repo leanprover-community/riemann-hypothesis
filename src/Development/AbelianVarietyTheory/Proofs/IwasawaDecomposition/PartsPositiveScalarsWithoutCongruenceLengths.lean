@@ -232,7 +232,7 @@ theorem thDef3_thTheta : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 I0 T
   intro D G _ _ Pl0 I0 T A3 Ks _ _ _ R F cG X0 Y Z hP hH
   exact ⟨⟨fun i => (li_span D G Pl0 I0 T A3 Ks R F cG X0 Y Z hP hH i).1,
     fun i => (li_span D G Pl0 I0 T A3 Ks R F cG X0 Y Z hP hH i).2, lat_of D G Pl0 I0 T A3 Ks R F cG X0 Y Z hP hH⟩,
-    theta_of GlobalTheory.Mem.ThetaRead3.L0.thetaP_read GlobalTheory.Mem.ThOrth.L0.thG_eq_zero_of_orth D G Pl0 I0 T A3 Ks R F cG X0 Y Z hP hH⟩
+    theta_of GlobalTheory.Mem.ThetaRead3.thetaP_read_noEta GlobalTheory.Mem.ThOrth.thG_eq_zero_of_orth_noEta D G Pl0 I0 T A3 Ks R F cG X0 Y Z hP hH⟩
 
 end GlobalTheory.Mem.ThRead.L0
 
@@ -274,7 +274,7 @@ theorem inner_theta_rat_eq_lam : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (
   have hOk := hH.ok.ok2
   have hT : ∀ c, Tw.out (s := twAt D.what₂.embLL A3.A.v0) (E := (R.HW i (sg0 D A3.A)).H) ((R.toCx3 F).tC (crdOf3 A3 F.P0 F.ψ0 F.P1 F.ψ1 F.Dc F.Sp F.Zsc) false i t (cpt A3.fam3.base3.v0.embedding c)) = Y.mj.eW i (D.what₂.thetaP (Y.tup t) ((i : ℕ) + 1) (D.what₂.jMt (Y.tup t) ((i : ℕ) + 1) (Y.eMt i t (lZ0 D A3.A F.P0 F.ψ0 (A3.fam3.toSub2 (zsOf R F)) i t *ᵥ c)))) := by
     intro c
-    rw [GlobalTheory.Mem.ThetaRead3.L0.thetaP_read D G Pl0 I0 T A3 Ks R F cG X0 Y Z hP hH i t, CxData.tC_cpt_eq]
+    rw [GlobalTheory.Mem.ThetaRead3.thetaP_read_noEta D G Pl0 I0 T A3 Ks R F cG X0 Y Z hP hH i t, CxData.tC_cpt_eq]
     show Tw.out (R.phs i • Tw.map _ (R.thG i t) (Tw.semi _ R.toRealDat.emb0 (R.jV i t) _)) = _
     have h3 := GlobalTheory.Mem.LiftTheta.levelFormCoordinateMap_levelZero F.lv2 hOk (A3.fam3.toSub2 (zsOf R F)) i t c
     have h3' : ((crdOf3 A3 F.P0 F.ψ0 F.P1 F.ψ1 F.Dc F.Sp F.Zsc).toL (R.toCx3 F).zs false i t) c = liftForm A3.A F.P0 F.ψ0 i t (lZ0 D A3.A F.P0 F.ψ0 (A3.fam3.toSub2 (zsOf R F)) i t *ᵥ c) := h3.symm
@@ -358,7 +358,7 @@ theorem mem_span_part : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 I0 T 
   intro D G _ _ Pl0 I0 T A3 Ks _ _ _ R F cG X0 Y Z hP hH i t p x hx hW
   have hR := complex_data_conditions_base_level_of_primitive_links hH.ok hH.sep hP.char hH.prim
   have hOk := hH.ok.ok2
-  have e1 := GlobalTheory.Mem.ThetaRead3.L0.thetaP_read D G Pl0 I0 T A3 Ks R F cG X0 Y Z hP hH i t
+  have e1 := GlobalTheory.Mem.ThetaRead3.thetaP_read_noEta D G Pl0 I0 T A3 Ks R F cG X0 Y Z hP hH i t
   have h5 := hR.lifts0.1
   let Φ : D.what₂.Mt (Y.tup t) ((i : ℕ) + 1) →ₗ[ℂ] (R.HW i (sg0 D A3.A)).H :=
     (Y.mj.eW i).comp (D.what₂.thetaP (Y.tup t) ((i : ℕ) + 1))

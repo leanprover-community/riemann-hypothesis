@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RelIndexNeZeroOfIsOpen
 public import Development.AbelianVarietyTheory.Definitions.Divisors.SimpleTwistedTraceFormulaStable
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -47,17 +48,7 @@ namespace GlobalTheory.BCT.LevOpTmul
 
 theorem finite_supp {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] {K : Subgroup G}
     (hK : IsOpen (K : Set G)) {f : G → ℂ} (hf : HasCompactSupport f) : {q : G ⧸ K | f q.out ≠ 0}.Finite := by
-  have hc : IsCompact (tsupport f) := hf
-  obtain ⟨t, ht⟩ := hc.elim_finite_subcover (fun x : G => (fun y : G => x⁻¹ * y) ⁻¹' (K : Set G))
-    (fun x => hK.preimage (continuous_const.mul continuous_id))
-    (fun x _ => Set.mem_iUnion.2 ⟨x, by simp [K.one_mem]⟩)
-  refine (t.finite_toSet.image (fun x : G => (x : G ⧸ K))).subset ?_
-  intro q hq
-  have hmem : q.out ∈ tsupport f := subset_tsupport f hq
-  obtain ⟨x, hx, hqx⟩ := Set.mem_iUnion₂.1 (ht hmem)
-  refine ⟨x, hx, ?_⟩
-  conv_rhs => rw [← QuotientGroup.out_eq' q]
-  exact QuotientGroup.eq.2 hqx
+  apply _root_.GlobalTheory.TwTrLin.finite_out_support <;> assumption
 
 theorem levOp_apply {G V : Type} [Group G] [AddCommGroup V] [Module ℂ V] (ρ : Representation ℂ G V)
     (K K₁ : Subgroup G) (f : G → ℂ) (A : V →ₗ[ℂ] V) (S : Finset (G ⧸ K₁)) (hS : ∀ q : G ⧸ K₁, f q.out ≠ 0 → q ∈ S)

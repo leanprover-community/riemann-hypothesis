@@ -46,8 +46,6 @@ import Development.AbelianVarietyTheory.Definitions.ExistenceOfLattices.UnivFram
 
 @[expose] public section
 
-set_option autoImplicit false
-
 namespace GlobalTheory.LamT
 
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField IsDedekindDomain MeasureTheory

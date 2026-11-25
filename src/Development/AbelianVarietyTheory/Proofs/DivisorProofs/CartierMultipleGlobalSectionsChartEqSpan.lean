@@ -599,15 +599,7 @@ theorem cst_injective {R : Type} [CommRing R] {X : Scheme.{0}} [IsIntegral X] (p
 
 theorem injective_of_flat {R S : Type} [CommRing R] [IsDomain R] [CommRing S] [Nontrivial S] (ρ : R →+* S)
     (h : ρ.Flat) : Function.Injective ρ := by
-  algebraize [ρ]
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
-  intro r hr
-  by_contra hne
-  have := Module.Flat.isSMulRegular_of_isRegular (M := S) (IsRegular.of_ne_zero hne)
-  have h2 : (1 : S) = 0 := this (by
-    change r • (1 : S) = r • (0 : S)
-    rw [smul_zero, Algebra.smul_def, _root_.mul_one]; exact hr)
-  exact one_ne_zero h2
+  apply _root_.GlobalTheory.Desc.GaussPt.injective_of_flat <;> assumption
 
 theorem height_of_vert {S : Type} [CommRing S] [IsDomain S] {X : Scheme.{0}} (p : X ⟶ Sp S) [Flat p] {f : S}
     (hf : f ≠ 0) {z : X} (hz : Vert p f z) : (p z).asIdeal.height = 1 := by

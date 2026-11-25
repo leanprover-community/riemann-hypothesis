@@ -68,23 +68,10 @@ private theorem one_tmul_residueField_surjective (A : Type*) [CommRing A] [IsLoc
     (M : Type*) [AddCommGroup M] [Module A M] :
     Function.Surjective (fun x : M => (1 : IsLocalRing.ResidueField A) ⊗ₜ[A] x) := by
   intro z
-  induction z using TensorProduct.induction_on with
-  | zero => exact ⟨0, by simp⟩
-  | tmul a x =>
-      obtain ⟨a₀, rfl⟩ := IsLocalRing.residue_surjective a
-      refine ⟨a₀ • x, ?_⟩
-      have h1 : (a₀ • (1 : IsLocalRing.ResidueField A)) = IsLocalRing.residue A a₀ := by
-        rw [Algebra.smul_def, mul_one]; rfl
-      show (1 : IsLocalRing.ResidueField A) ⊗ₜ[A] (a₀ • x) = _
-      rw [← TensorProduct.smul_tmul, h1]
-  | add x y hx hy =>
-      obtain ⟨u, hu⟩ := hx
-      obtain ⟨v, hv⟩ := hy
-      refine ⟨u + v, ?_⟩
-      show (1 : IsLocalRing.ResidueField A) ⊗ₜ[A] (u + v) = _
-      rw [TensorProduct.tmul_add]
-      rw [show (1 : IsLocalRing.ResidueField A) ⊗ₜ[A] u = x from hu,
-        show (1 : IsLocalRing.ResidueField A) ⊗ₜ[A] v = y from hv]
+  obtain ⟨w, rfl⟩ := (Algebra.linearMap A (IsLocalRing.ResidueField A)).rTensor_surjective
+    M IsLocalRing.residue_surjective z
+  obtain ⟨x, rfl⟩ := (TensorProduct.lid A M).symm.surjective w
+  exact ⟨x, by simp⟩
 
 private theorem tmul_eq_zero_of_toCotangent_eq_zero (A : Type*) [CommRing A] [IsLocalRing A]
     (I : Ideal A) (hI : I ≤ IsLocalRing.maximalIdeal A) (x : ↥I)

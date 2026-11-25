@@ -60,8 +60,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 open KaehlerDifferential GlobalTheory.CechDR GlobalTheory.PD GlobalTheory.WH GlobalTheory.W1 UpperTheory.Gal.productCup_of_system
 open scoped TensorProduct
 
-set_option autoImplicit false
-
 namespace UpperTheory.Gal.productCup_of_system
 
 private lemma mem_sm_iff {S : Type} [CommRing S] [Algebra ℂ S] {d : ℕ} (R : Subalgebra ℂ S) (f : Fin d → S)

@@ -911,6 +911,7 @@ theorem zero_mem {O N : Type} [CommRing O] [AddCommGroup N] [Module O N] {s : Se
   obtain ⟨A, rfl⟩ := h
   exact A.zero_mem
 
+set_option synthInstance.maxHeartbeats 400000 in
 theorem cls_eq_zero_of_flat {l : ℕ} [Fact l.Prime] {P : LocPrime l} (S : TopSit P) {M : Type} [AddCommGroup M]
     [Module S.O M] [Module.Flat S.O M] (W : Representation S.O S.G M) (hL : S.Lem0 W) (hR : S.ResBound W 0)
     (hlc : ∀ (X : Type) [AddCommGroup X] [Module S.O X] [Finite X] (m : M ⊗[S.O] X),
@@ -1543,8 +1544,8 @@ theorem twistedLatticeCohomology_theoremTOP : ∀ (D : D7) (HW : HWOf D.loc) (F 
     tableLineDegreeTwo.Stmt D HW F Cm := by
   intro D HW F Cm hA l _ K LL hK lam hlam
   have htied : Nonempty (LocTied l (D.loc l) (D.locA l)) := ⟨D.locT l⟩
-  have h18 := hA.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.1
-  have h19 := hA.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.1
+  have h18 := hA.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.1
+  have h19 := hA.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.1
   have hreal : ∀ S : TopSit (D.loc l), S.Real := fun S =>
     GlobalTheory.BasePairs.real_of_presented (D.locA l) (HW l) (F l) S
       (GlobalTheory.RedFun.realD (D.locA l) (HW l) (F l) S)

@@ -52,8 +52,6 @@ import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.T
 
 @[expose] public section
 
-set_option autoImplicit false
-
 open ReciprocityTheory.ChartRestriction.G.FD NumberField Formalism.L2.Pj.FJ Formalism.L2.Pj.QAt
 open scoped ComplexConjugate
 

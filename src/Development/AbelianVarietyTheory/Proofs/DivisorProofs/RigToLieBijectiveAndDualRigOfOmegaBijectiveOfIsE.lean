@@ -55,8 +55,6 @@ section -- clump:auto
 
 open CategoryTheory TensorProduct Coalgebra Bialgebra GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory
@@ -96,8 +94,6 @@ section -- clump:auto
 @[expose] public section
 
 open CategoryTheory TensorProduct Coalgebra Bialgebra GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup
-
-set_option autoImplicit false
 
 namespace GlobalTheory
 

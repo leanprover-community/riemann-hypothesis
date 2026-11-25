@@ -94,14 +94,6 @@ theorem height_mul_le (c : GL (Fin a) (Cinf E)) : ∃ B : ℝ, 1 ≤ B ∧ ∀ y
 theorem growth_mul {f : GL (Fin a) (Cinf E) → ℂ} (c : GL (Fin a) (Cinf E))
     (h : ∃ (C : ℝ) (N : ℕ), ∀ y, ‖f y‖ ≤ C * height y ^ N) :
     ∃ (C : ℝ) (N : ℕ), ∀ y, ‖f (y * c)‖ ≤ C * height y ^ N := by
-  obtain ⟨C, N, hC⟩ := h
-  obtain ⟨B, hB, hB'⟩ := height_mul_le c
-  have C0 : 0 ≤ C := by
-    have := (norm_nonneg _).trans (hC 1)
-    have hp : 0 < height (1 : GL (Fin a) (Cinf E)) ^ N := pow_pos (by linarith [one_le_height (1 : GL (Fin a) (Cinf E))]) N
-    exact nonneg_of_mul_nonneg_left this hp
-  refine ⟨C * B ^ N, N, fun y => (hC _).trans ?_⟩
-  rw [mul_assoc, ← mul_pow]
-  exact mul_le_mul_of_nonneg_left (pow_le_pow_left₀ (by linarith [one_le_height (y * c)]) (hB' y) N) C0
+  apply _root_.GlobalTheory.CuspStabFin.growth_mul_const <;> assumption
 
 end GlobalTheory.CuspStab

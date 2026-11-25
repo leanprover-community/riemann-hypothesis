@@ -578,14 +578,6 @@ theorem term_low (c : HeightOneSpectrum (𝓞 F) → ℕ) (v : InfinitePlace F) 
   rw [term_eps]
   linear_combination Rt c v η * low_identity' (pI η 0 v) (pI η 1 v)
 
-theorem norm_infEq (w : InfinitePlace F) (r : ℝ) :
-    ‖((InfinitePlace.Completion.ringEquivRealOfIsReal (IsTotallyReal.isReal w)).symm r : w.Completion)‖ = |r| := by
-  have h := (InfinitePlace.Completion.isometryEquivRealOfIsReal (IsTotallyReal.isReal w)).symm.dist_eq r 0
-  have h0 : ((InfinitePlace.Completion.ringEquivRealOfIsReal (IsTotallyReal.isReal w)).symm 0 : w.Completion) = 0 :=
-    map_zero _
-  rw [← dist_zero_right, ← Real.norm_eq_abs, ← dist_zero_right, ← h0]
-  exact h
-
 theorem absD_mul_infGL (g : GA F 2) (y : GL (Fin 2) (UpperTheory.V.TR.Rinf F)) :
     absD (g * UpperTheory.V.TR.infGL F 2 y) = absD g * ∏ w, |(Matrix.GeneralLinearGroup.det y).val w| := by
   unfold absD

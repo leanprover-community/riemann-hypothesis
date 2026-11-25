@@ -589,7 +589,7 @@ theorem hermE_dense_finite : ∀ (F E : Type) [Field F] [NumberField F] [Field E
   have hPm : ∀ m, Pm m ∈ HermR (Af F) σ n := by
     intro m a b
     show sigR (Af F) σ (h • (m b a + sigR (Af F) σ (m a b))) = h • (m a b + sigR (Af F) σ (m b a))
-    rw [sigR_smul, map_add (f := _), _root_.PI.VolStabS.sigR_invol _ _ hσ, add_comm]
+    rw [sigR_smul, map_add (f := _), _root_.PI.VolStabSW.sigR_invol _ _ hσ, add_comm]
   have hsmul : Continuous fun x : Af F ⊗[F] E => h • x := by
     simp_rw [Algebra.smul_def]
     exact continuous_const.mul continuous_id

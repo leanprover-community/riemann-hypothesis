@@ -367,10 +367,8 @@ theorem eigBoxL {L : Type} [Field L] [NumberField L] {n : ℕ} {V : Type} [Finty
     funext i
     rw [hpr, hpr]
     exact hf (by rw [← hΦ, ← hΦ, h])
-  have hMi : Function.Injective M := by
-    haveI : Module.Flat ℂ A := Module.Flat.of_free
-    haveI : Module.Flat ℂ B := Module.Flat.of_free
-    exact TensorProduct.map_injective_of_flat_flat _ _ A.injective_subtype B.injective_subtype
+  have hMi : Function.Injective M :=
+    TensorProduct.map_injective_of_flat_flat _ _ A.injective_subtype B.injective_subtype
   have hP : ((invT K₁ K₂ τ₀ (π.comp (MonoidHom.inr _ _)) ⊓ Submodule.pi Set.univ fun _ =>
         ePart ((π.comp (MonoidHom.inr _ _)).comp (MonoidHom.inr G H)) a N) ⊓ Submodule.pi Set.univ fun _ =>
       LinearMap.range f ⊓ eigL S (π.comp (MonoidHom.inl _ _)) b φ μ) = LinearMap.range (Φ ∘ₗ M) := by

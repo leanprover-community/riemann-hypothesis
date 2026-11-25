@@ -46,8 +46,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 
 open CategoryTheory Limits AlgebraicGeometry Opposite ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory GlobalTheory.HodgeCoh GlobalTheory.CechDR PositivityTheory.AutomorphicGaloisHodgeTate.G8.HBC UpperTheory.Gal.G3.HN
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace UpperTheory.Gal.G3.HeckeTraceSheaves

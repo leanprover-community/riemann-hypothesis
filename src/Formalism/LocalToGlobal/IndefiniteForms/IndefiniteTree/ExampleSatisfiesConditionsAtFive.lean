@@ -1743,21 +1743,10 @@ variable (K)
 def stdLat (n : ℕ) : Submodule (𝓞 K) (Fin n → K) :=
   Submodule.span (𝓞 K) (Set.range (Pi.basisFun K (Fin n)))
 
-theorem stdLat_isLatIn (n : ℕ) : IsLatIn ⊤ (stdLat K n) := by
-  refine ⟨Submodule.fg_span (Set.finite_range _), ?_⟩
-  unfold stdLat
-  rw [Submodule.span_span_of_tower]
-  exact (Pi.basisFun K (Fin n)).span_eq
-
 theorem map_id' {n : ℕ} (A : Submodule (𝓞 K) (Fin n → K)) :
     A.map ((LinearMap.id : (Fin n → K) →ₗ[K] (Fin n → K)).restrictScalars (𝓞 K)) = A := by
   first
   | exact Submodule.map_id A
-
-theorem sc_one' {n : ℕ} (A : Submodule (𝓞 K) (Fin n → K)) : sc (1 : K) A = A := by
-  unfold sc
-  rw [one_smul]
-  exact map_id' K A
 
 private theorem exists_place_lemma (p : ℕ) (hp : p.Prime) : ∃ w : HeightOneSpectrum (𝓞 K), plc w = p := by
   have hpZ : Prime (p : ℤ) := Nat.prime_iff_prime_int.mp hp
@@ -1794,103 +1783,6 @@ private theorem exists_place_lemma (p : ℕ) (hp : p.Prime) : ∃ w : HeightOneS
 theorem exists_place3 : ∃ w : HeightOneSpectrum (𝓞 K), plc w = 3 := by
   exact exists_place_lemma K 3 Nat.prime_three
 
-abbrev exampleBs (v0 : InfinitePlace K) : DefBase K where
-  K0 := ⊥
-  v0 := v0
-  Tup := Bool
-  μ0 := false
-  Ix := Unit
-  fIx := inferInstance
-  J := Unit
-  fJ := inferInstance
-
-abbrev exampleDf (v0 : InfinitePlace K) : DefSide (exampleBs K v0) where
-  nV := fun _ => 1
-  HV := fun _ => 1
-  Mt := fun _ => stdLat K 1
-  dQ := fun _ => 1
-  Pq := fun _ => 1
-  XQ := fun _ _ => 1
-  Qp := fun _ _ => ⊤
-  dZ := fun _ _ => 1
-  HT := fun _ _ => 1
-  XT := fun _ _ _ => 1
-  Tl := fun _ _ => stdLat K 1
-  Zp := fun _ _ _ => ⊤
-
-
-open Classical in
-abbrev exampleIndefiniteData (v0 : InfinitePlace K) (Tw0 : Finset (HeightOneSpectrum (𝓞 K))) (er : ℝ) : IndefData (exampleDf K v0) where
-  μ := fun w => decide (w ∈ Tw0)
-  Tw := Tw0
-  D := 1
-  XE := fun _ => 1
-  Ep := fun _ => ⊤
-  ι := fun _ => 1
-  dW := fun _ => 1
-  XW := fun _ _ => 1
-  Wp := fun _ _ => ⊤
-  M := fun _ => stdLat K 1
-  θ := fun _ _ => 1
-  κ := fun _ => 1
-  lam := fun _ _ _ _ => 1
-  err0 := fun _ _ => er
-
-abbrev exampleC : OnConst := ⟨1, 2 * Real.log 143, 1⟩
-
-abbrev exampleObject (v0 : InfinitePlace K) (Tw0 : Finset (HeightOneSpectrum (𝓞 K))) : OnObj (exampleIndefiniteData K v0 Tw0 0) Unit exampleC where
-  nZ := fun _ => 1
-  ρ := fun _ => 1
-  U := ⊤
-  ψ := fun _ => 1
-  V₀ := fun _ => ⊤
-  e := fun _ => LinearMap.id
-  Ms := fun _ => stdLat K 1
-  φ := fun _ => LinearMap.id
-  Th1 := fun _ _ => stdLat K 1
-  Th := fun _ _ => stdLat K 1
-  ThK := fun _ _ => stdLat K 1
-  Th0 := fun _ _ => stdLat K 1
-  ThJ := fun _ _ => stdLat K 1
-  X₃ := fun _ _ => stdLat K 1
-  σ := fun _ _ => 1
-  a := fun _ _ => 1
-  E := fun _ _ => 0
-  r1 := fun _ _ => 0
-  r2 := fun _ _ => 0
-  pde := 0
-  ε0 := fun _ _ => 0
-  nX := fun _ _ => 1
-  θ' := fun _ _ => LinearMap.id
-  eX := fun _ _ => LinearMap.id
-  pr := fun _ _ => LinearMap.id
-  Mt := fun _ _ => stdLat K 1
-  nnK := fun _ => 1
-  Jp := fun _ _ => 0
-  k := 1
-  m := 1
-  f := 8
-  bp := 0
-  Sc := 0
-  eta := 0
-  T := 0
-  DF := 3
-  X2 := 1
-  x := 300
-  eps := 1
-  vd := 0
-  rr := 1
-  de2 := 1
-  Nc := 0
-  wt := fun _ => 0
-  th := fun _ => 0
-  ad := fun _ => 0
-  T2 := 0
-  g1 := 5
-  g2 := 7
-  q1 := 11
-  dd := 13
-  sm := {2}
 
 variable {K} (v0 : InfinitePlace K) (Tw0 : Finset (HeightOneSpectrum (𝓞 K)))
 

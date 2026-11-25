@@ -312,10 +312,8 @@ theorem integral_image_eq (hL0 : L0) (hL1 : L1) (μ : Measure F) [μ.IsAddHaarMe
   have hGc : Continuous G :=
     (hψc.comp (continuous_apply _).neg).mul hfc
   set Φ : (Fin (k + 1) → F) → (Fin (k + 1) → F) → ℂ := fun x ξ => ψ (ξ ⬝ᵥ (gi *ᵥ x)) * G x with hΦ
-  have hgg : (g : Matrix (Fin (k + 1)) (Fin (k + 1)) F) * gi = 1 := by
-    rw [hgi, ← Units.val_mul, mul_inv_cancel, Units.val_one]
-  have hgg' : gi * (g : Matrix (Fin (k + 1)) (Fin (k + 1)) F) = 1 := by
-    rw [hgi, ← Units.val_mul, inv_mul_cancel, Units.val_one]
+  have hgg : (g : Matrix (Fin (k + 1)) (Fin (k + 1)) F) * gi = 1 := Units.mul_inv g
+  have hgg' : gi * (g : Matrix (Fin (k + 1)) (Fin (k + 1)) F) = 1 := Units.inv_mul g
   have hmemS : ∀ x, x ∈ S ↔ ∀ i, (gi *ᵥ x) i ∈ 𝒪[F] := fun x => by
     constructor
     · rintro ⟨y, hy, rfl⟩ i

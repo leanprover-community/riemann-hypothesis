@@ -51,7 +51,6 @@ set_option backward.isDefEq.respectTransparency false
 
 @[expose] public section
 
-attribute [-instance] Formalism.DoubleCosetMeasures.instMeasGL
 
 noncomputable section
 

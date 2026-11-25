@@ -50,7 +50,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory.UPel.Sm GlobalTheory.Cris GlobalTheory.DeRham
 open scoped TensorProduct
 
-set_option autoImplicit false
 noncomputable section
 namespace GlobalTheory.HTSummand.LieMod
 

@@ -50,8 +50,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 
 open CrystallineSemistableComparison.Onto
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.OntoForms

@@ -119,40 +119,4 @@ theorem exists_degenerationEndomorphism_of_admissibleBase : ∀ (R : Type) [Comm
     exact congrArg (fun p => val (u χ) p z J) (Category.assoc _ _ _)
 
 
-open GlobalTheory.EndRosati GlobalTheory.CechPic in
-theorem rosatiAdjoint_and_linear_of_admissibleBase : ∀ (R : Type) [CommRing R] [IsDomain R] (I : Ideal R), AdmBase R I → ∀ (D : DegData R I) (A : PolAV (Spec (CommRingCat.of (FractionRing R)))) (G : Over (Spec (CommRingCat.of R))) [GrpObj G] [IsCommMonObj G], IsSemiAbelian G → ∀ U : Unif I D A G, ∀ E E' : EndU U.toUnifPre, LBIso (cubeLB G ![fst G G ≫ E.aG, snd G G] U.LG.L) (cubeLB G ![fst G G, snd G G ≫ E'.aG] U.LG.L) → RosatiAdj A.A A.L E.aA E'.aA ∧ RosatiAdj D.toPre.P.A D.toPre.P.L E.aB E'.aB ∧ (∀ χ, D.toPre.c (E.h χ) = D.toPre.c χ ≫ E'.aB) ∧ ∀ χ, D.toPre.c (E'.h χ) = D.toPre.c χ ≫ E.aB := by
-  intro R _ _ I hR D A G _ _ hG U E E' H
-  have hLL := GlobalTheory.firstFiveLaws
-  have hGF := hLL.1.globalFns
-  obtain ⟨-, -, -, hC⟩ := hR
-  have := E.homG
-  have := E'.homG
-  have := E.homB
-  have := E'.homB
-  have := hG.geomConnected
-  obtain ⟨u, hu, h₀⟩ := (NormRos.normRos_of_lbIso _ G U.LG.L U.LG.isLB E.aG E'.aG H).1
-  have hP : AbLaw.IsProjBy D.toPre.P.A.hom := AbProj.isProjBy_of_isPullback D.toPre.P (IsPullback.id_horiz _)
-  have hB : RosatiAdj D.toPre.P.A D.toPre.P.L E.aB E'.aB :=
-    loc_gen_of_thickenings hGF I _ (AbelianSchemeGerms.isAbelianScheme_tensor _ _ D.toPre.P.isAb D.toPre.P.isAb)
-      (AbLaw.isProjBy_tensor R _ _ hP hP) D.toPre.P.isLB _ _ fun e => by
-      have := EndTorus.connectedSpace_thickening I e
-      have : GeometricallyConnected (thickObj R I e G).hom :=
-        inferInstanceAs (GeometricallyConnected (pullback.snd G.hom (thick R I e)))
-      have : ConnectedSpace (thickObj R I e G).left :=
-        GroupConn.connectedSpace_of_section (thickObj R I e G).hom (η : 𝟙_ _ ⟶ thickObj R I e G).left (Over.w _)
-      exact exists_gen_thick U.toUnifPre e (E.q_lin e) (E'.q_lin e)
-        (FamGerm.surjective_appTop_sq_cube U.toUnifPre).2 u hu h₀
-  obtain ⟨r, hr, -⟩ := exists_ros hGF D.toPre.P.isAb D.toPre.P.isLB E.aB E'.aB hB
-  refine ⟨rosatiAdj_generic U.toUnifPre E.ext E'.ext u hu, hB, fun χ => ?_, fun χ => ?_⟩
-  · have h₁ := cls_of_gen D.toPre E.aB χ _ (E.u χ) (E.u_norm χ).1
-    have h₂ := cls_of_rosati D.toPre.P.isLB r hr (𝟙 _) (toUnit _ ≫ D.toPre.c χ)
-    rw [Category.id_comp, Category.assoc] at h₂
-    refine eq_of_translate_cls D.toPre.P.isLB D.toPre.P.ktriv _ _ ?_
-    linear_combination (norm := abel) h₁ + h₂
-  · have h₁ := cls_of_gen D.toPre E'.aB χ _ (E'.u χ) (E'.u_norm χ).1
-    have h₂ := cls_of_rosati D.toPre.P.isLB r hr (toUnit _ ≫ D.toPre.c χ) (𝟙 _)
-    rw [Category.id_comp, Category.assoc, mul_comm _ (𝟙 D.toPre.P.A), mul_comm _ E'.aB] at h₂
-    refine eq_of_translate_cls D.toPre.P.isLB D.toPre.P.ktriv _ _ ?_
-    linear_combination (norm := abel) h₁ - h₂
-
 end GlobalTheory.UT

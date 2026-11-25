@@ -16,8 +16,6 @@ open Matrix
 
 namespace Formalism.L2.SG.Pf.SlabCoverPf
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 def GFInfInj : Prop :=
   ∀ (D : D7) (X : HidaSetting D) (s : X.B.I.GA), s ∈ Formalism.MainNotions.LeviCoordinates.rr_GF X.B.I → s.1 = 1 → s = 1
 

@@ -46,7 +46,6 @@ open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.
 open UpperTheory.V.W (Plc Lp HidaSetting Vl Resid LamObj UniversalOrdinaryDeterminantRing Pair)
 open UpperTheory.V.HV (Coef)
 open scoped TensorProduct
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 
 private theorem cLoc_inf {L : Type} [Field L] [NumberField L] [IsCMField L] {n : ℕ} {x : UA L n} (h : x ∈ infU L n)

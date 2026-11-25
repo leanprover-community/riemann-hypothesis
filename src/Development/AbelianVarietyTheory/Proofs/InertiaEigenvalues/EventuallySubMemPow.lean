@@ -68,16 +68,6 @@ open Filter Topology
 
 variable {l : ℕ} [hl : Fact l.Prime]
 
-private theorem sigO_coe_pt (g : Per.Gq l) (y : Per.OC l) :
-    ((Per.σO g y : Per.OC l) : ℂ_[l]) = Per.σC g (y : ℂ_[l]) := by
-  apply GlobalTheory.RingIface.sigO_coe
-
-private theorem tower_pt (x : Per.Ainf l) : algebraMap (Per.Acris0 l) (Per.Acris l)
-    (algebraMap (Per.Ainf l) (Per.Acris0 l) x) = ainfToAcris l x := by
-  change _ = algebraMap (Per.Ainf l) (Per.Acris l) x
-  symm
-  apply GlobalTheory.RingIface.tower
-
 theorem eventually_norm_σC_sub_lt (y : ℂ_[l]) {ε : ℝ} (hε : 0 < ε) :
     ∀ᶠ g : GQ l in 𝓝 1, ‖Per.σC g y - y‖ < ε := by
   have hd : DenseRange (fun x : Om l => (x : ℂ_[l])) := UniformSpace.Completion.denseRange_coe
@@ -107,7 +97,7 @@ theorem eventually_sub_mem_one (hξ : RingHom.ker (Per.θ l) = Ideal.span {ξ}) 
   filter_upwards [eventually_norm_σC_sub_lt ((Per.θ l y : Per.OC l) : ℂ_[l]) hl0] with g hg
   have h1 : Per.θ l (Per.σA g y - y) = Per.σO g (Per.θ l y) - Per.θ l y := by rw [map_sub, GlobalTheory.RingBasics.θ_σA]
   obtain ⟨c, hc⟩ := exists_eq_l_mul (Per.σO g (Per.θ l y) - Per.θ l y)
-    (by rw [AddSubgroupClass.coe_sub, sigO_coe_pt]; exact hg.le)
+    (by rw [AddSubgroupClass.coe_sub, GlobalTheory.RingIface.sigO_coe l]; exact hg.le)
   obtain ⟨c', rfl⟩ := GlobalTheory.MemLoc.ThetaD.θ_surj l c
   have hk : Per.σA g y - y - (l : Per.Ainf l) * c' ∈ RingHom.ker (Per.θ l) := by
     rw [RingHom.mem_ker, map_sub, h1, hc, map_mul, map_natCast, sub_self]
@@ -229,7 +219,7 @@ theorem algebraMap_mem_fixNear (s : Per.Acris0 l) :
       have h1 : (n.factorial : Per.Acris0 l) * ⟨y, hy0⟩ =
           algebraMap (Per.Ainf l) (Per.Acris0 l) (GlobalTheory.MemLoc.xi e) ^ n := Subtype.ext (by simpa using hn)
       have h2 := congrArg (algebraMap (Per.Acris0 l) (Per.Acris l)) h1
-      rw [map_mul, map_natCast, map_pow, tower_pt] at h2
+      rw [map_mul, map_natCast, map_pow, ← GlobalTheory.RingIface.tower l] at h2
       rw [eq_dpow hx h2]
       exact fun N => eventually_dvd_dpow hx n N
     | zero =>
@@ -248,7 +238,7 @@ theorem algebraMap_mem_fixNear (s : Per.Acris0 l) :
       have hy0 := (GlobalTheory.MemLoc.mem_Acris0_iff_span l e he y).2 hy
       have e0 : (⟨r • y, h0⟩ : Per.Acris0 l) = algebraMap (Per.Ainf l) (Per.Acris0 l) r * ⟨y, hy0⟩ :=
         Subtype.ext (Algebra.smul_def r y)
-      rw [e0, map_mul, tower_pt]
+      rw [e0, map_mul, ← GlobalTheory.RingIface.tower l]
       exact mul_mem (fun N => eventually_dvd_ainf N r) (ihy hy0)
   exact key s ((GlobalTheory.MemLoc.mem_Acris0_iff_span l e he s).1 hs) hs
 

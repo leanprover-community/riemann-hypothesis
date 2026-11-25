@@ -50,8 +50,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open ReciprocityTheory.ChartRestriction.G.Out (nonzeroLocus)
 open GlobalTheory GlobalTheory.CechPic GlobalTheory.Cartier GlobalTheory.TopForm GlobalTheory.QCoh GlobalTheory.Discrepancy GlobalTheory.PairStep
 
-set_option autoImplicit false
-
 namespace GlobalTheory.PairStep
 
 open CategoryTheory AlgebraicGeometry TopologicalSpace in

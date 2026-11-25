@@ -808,10 +808,6 @@ theorem opensRange_chartY_sup_opensRange_chartZ :
     (chartY W).opensRange ⊔ (chartZ W).opensRange = ⊤ := by
   rw [opensRange_chartY, opensRange_chartZ, coordOpen_one_sup_coordOpen_two]
 
-theorem chartY_preimage_coordOpen_two :
-    chartY W ⁻¹ᵁ coordOpen W 2 = PrimeSpectrum.basicOpen (originW W) :=
-  pt_preimage_coordOpen ..
-
 theorem exists_chartY_or_chartZ (x : scheme W) :
     (∃ y, chartY W y = x) ∨ ∃ y, chartZ W y = x :=
   (opensRange_chartY_sup_opensRange_chartZ W).ge (Set.mem_univ x)
@@ -1048,15 +1044,6 @@ theorem isPullback_chartY : IsPullback (Spec.map (CommRingCat.ofHom (originMap W
     (by rw [opensRange_chartY, opensRange_chartY, mapHom_preimage_coordOpen])
 
 end BaseChange
-
-theorem pt_some_ne_zero [Nontrivial R] {a b : R} (h : W.toAffine.Equation a b) :
-    pt W (A := R) ![a, b, 1] (isUnimodularSol_some h) ≠ zero W := by
-  intro e
-  have h₁ := pt_preimage_coordOpen W (A := R) ![a, b, 1] (isUnimodularSol_some h) 2
-  rw [e, zero_preimage_coordOpen_two] at h₁
-  have h₂ : PrimeSpectrum.basicOpen (1 : R) = ⊥ := h₁.symm
-  rw [PrimeSpectrum.basicOpen_eq_bot_iff] at h₂
-  exact not_isNilpotent_one h₂
 
 end WeierstrassCurve
 

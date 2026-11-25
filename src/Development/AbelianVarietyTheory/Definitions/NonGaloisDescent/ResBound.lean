@@ -120,7 +120,8 @@ def CoefAdm {M : Type} [AddCommGroup M] [Module S.O M] (W : Representation S.O S
 
 def StdAdm : Prop := S.CoefAdm S.Γ.W₀ ∧ ∀ c : ℕ, 1 ≤ c → c ≤ S.D.t → S.CoefAdm (S.Γ.Wchi c)
 
-def Lem0 {M : Type} [AddCommGroup M] [Module S.O M] (W : Representation S.O S.G M) : Prop :=
+set_option synthInstance.maxHeartbeats 400000 in
+def Lem0{M : Type} [AddCommGroup M] [Module S.O M] (W : Representation S.O S.G M) : Prop :=
   ∀ (X : Type) [AddCommGroup X] [Module S.O X] [Finite X],
     (∃ A : Submodule S.O (H1 (twCoef W S.Γ.χ₁ X) ⊤), S.cls W X = A) ∧
     (∀ (a : ℕ) (ha : ∀ x : X, S.Γ.lam ^ a • x = 0), 1 ≤ a →
@@ -129,12 +130,14 @@ def Lem0 {M : Type} [AddCommGroup M] [Module S.O M] (W : Representation S.O S.G 
       (c ∈ S.cls W X → coefH1 W S.Γ.χ₁ f c ∈ S.cls W X') ∧
       (Function.Injective f → coefH1 W S.Γ.χ₁ f c ∈ S.cls W X' → c ∈ S.cls W X)
 
-def ResBound {M : Type} [AddCommGroup M] [Module S.O M] (W : Representation S.O S.G M) (s₀ : ℕ) : Prop :=
+set_option synthInstance.maxHeartbeats 400000 in
+def ResBound{M : Type} [AddCommGroup M] [Module S.O M] (W : Representation S.O S.G M) (s₀ : ℕ) : Prop :=
   ∀ (s : ℕ) (c : Fin s → H1 (twCoef W S.Γ.χ₁ (GlobalTheory.IndefiniteRowSideFullHecke.InvariantsVanishing.resK S.Γ)) ⊤),
     (∀ a, c a ∈ S.cls W (GlobalTheory.IndefiniteRowSideFullHecke.InvariantsVanishing.resK S.Γ)) →
     IndepMod S.Γ.lam c → s ≤ s₀
 
-def Vanish : Prop :=
+set_option synthInstance.maxHeartbeats 400000 in
+def Vanish: Prop :=
   (GlobalTheory.IndefiniteRowSideFullHecke.InvariantsVanishing.resRep S.Γ).invariants = ⊥ ∧ Subsingleton (H2 (GlobalTheory.IndefiniteRowSideFullHecke.InvariantsVanishing.resRep S.Γ) ⊤)
 
 def FreeH : Prop :=

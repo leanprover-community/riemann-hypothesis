@@ -154,11 +154,6 @@ section Existence2
 
 variable [WellFoundedLT n] [LocallyFiniteOrderBot n]
 
-theorem star_mul_self_norm_div {x : 𝕜} (hx : x ≠ 0) :
-    star ((‖x‖ : 𝕜) / x) * ((‖x‖ : 𝕜) / x) = 1 := by
-  rw [star_div₀, RCLike.star_def, RCLike.conj_ofReal, div_mul_div_comm, RCLike.conj_mul, ← sq]
-  exact div_self (pow_ne_zero 2 (by simpa using hx))
-
 theorem exists_cholesky {S : Matrix n n 𝕜} (hS : S.PosDef) :
     ∃ B : Matrix n n 𝕜, ∃ a : n → ℝ, B.IsUpperTriangular ∧ (∀ i, 0 < a i) ∧
       (∀ i, B i i = a i) ∧ Bᴴ * B = S := by

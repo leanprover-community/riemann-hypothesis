@@ -54,7 +54,7 @@ open PositivityTheory.Rg.BcB.F PositivityTheory.Rg.BcB.F.Eig PositivityTheory.Rg
 
 namespace UpperTheory.BaseChangeIdentities.FrameWordIdentity
 
-attribute [local instance] borelG borelF borelA GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+attribute [local instance] borelG borelF borelA
 
 def TMul : Prop := ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (a b : ℕ) (κ : Pl E → Type) [∀ w, Fintype (κ w)] (P : Finset (Pl E)),
   (∀ w, Nonempty (κ w)) → ∀ L L' : LM κ a b, L.Ok P → L'.Ok P → (L.mul L').Ok P

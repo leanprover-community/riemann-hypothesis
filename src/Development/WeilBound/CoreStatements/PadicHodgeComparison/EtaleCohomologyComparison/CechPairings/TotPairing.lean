@@ -55,7 +55,6 @@ open CategoryTheory Opposite CrystallineSemistableComparison CrystallineSemistab
 universe w w' w'' t t' v u v' u' v'' u''
 
 namespace CrystallineSemistableComparison.Auxff
-open CategoryTheory CrystallineSemistableComparison CrystallineSemistableComparison.CH
 
 theorem term_comp {R : Type} [CommRing R] {C : Type u} [Category.{v} C] (F : C ⥤ ModuleCat.{w} R) {p m n : ℕ}
     (s : ComposableArrows C n) (f : Cn F p)
@@ -135,7 +134,6 @@ theorem CrystallineSemistableComparison.P.leibniz : ∀ {R : Type} [CommRing R] 
         funext t <;> apply Fin.ext <;> simp only [Function.comp, CrystallineSemistableComparison.Auxff.sa_val, front, back, Fin.val_last, Fin.val_zero] <;> split_ifs <;> omega
 
 namespace CrystallineSemistableComparison.Auxff
-open CategoryTheory CrystallineSemistableComparison CrystallineSemistableComparison.CH
 
 theorem cls_out {R : Type} [CommRing R] (K : Cx.{w} R) {n : ℕ} (x : K.H n) :
     K.cls (Quotient.out x).1 (Quotient.out x).2 = x := Quotient.out_eq x
@@ -180,7 +178,6 @@ theorem CrystallineSemistableComparison.P.cxcup_cls : ∀ {R : Type} [CommRing R
     (CrystallineSemistableComparison.Auxff.memB_right P h a ha _ h2)
 
 namespace CrystallineSemistableComparison.Auxff
-open CategoryTheory CrystallineSemistableComparison CrystallineSemistableComparison.CH
 
 noncomputable def toCx {R : Type} [CommRing R] {C : Type u} [Category.{v} C] {F₁ : C ⥤ ModuleCat.{w} R}
     {F₂ : C ⥤ ModuleCat.{w'} R} {F₃ : C ⥤ ModuleCat.{w''} R} (P : Pairing F₁ F₂ F₃) :
@@ -252,7 +249,6 @@ theorem CrystallineSemistableComparison.P.cup_bilin : ∀ {R : Type} [CommRing R
   exact ⟨b, fun x y => (hb x y).trans (CrystallineSemistableComparison.Auxff.cup_eq P h x y).symm⟩
 
 namespace CrystallineSemistableComparison.Auxff
-open CategoryTheory CrystallineSemistableComparison CrystallineSemistableComparison.CH
 
 theorem cls_congr {R : Type} [CommRing R] (K : Cx.{w} R) {n : ℕ} {a b : K.X n} (e : a = b) (ha : K.d n a = 0)
     (hb : K.d n b = 0) : K.cls a ha = K.cls b hb := by

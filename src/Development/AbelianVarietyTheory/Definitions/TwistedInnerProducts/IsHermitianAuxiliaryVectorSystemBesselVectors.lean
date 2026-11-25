@@ -53,8 +53,6 @@ open GlobalTheory.EmbChart (tensAt atPlace idem)
 open GlobalTheory.StepData (LatFrame reGL)
 open scoped TensorProduct
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 namespace GlobalTheory.LocFrame
 
 variable {D : D7} {v : HeightOneSpectrum (𝓞 D.host.F)}

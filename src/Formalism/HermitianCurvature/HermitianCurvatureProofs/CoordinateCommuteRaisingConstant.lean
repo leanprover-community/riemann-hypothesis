@@ -5307,7 +5307,6 @@ end Formalism.FourierDecayAlt.P.MAx1.WeylSymmetry
 
 namespace Formalism.FourierDecayAlt.P.MAx1
 
-open Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.W Formalism.YangianSpanCharacter.T
 
 theorem startIsStartAssemble : StartIsStartAssemble := by
   intro hH hR hD P D _ hP l

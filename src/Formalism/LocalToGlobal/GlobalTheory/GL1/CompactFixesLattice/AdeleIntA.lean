@@ -15,11 +15,6 @@ variable {R : Type*} [CommRing R] [IsDedekindDomain R] {K : Type*} [Field K] [Al
 
 def IsInt (b : FiniteAdeleRing R K) : Prop := ∀ v, b v ∈ v.adicCompletionIntegers K
 
-private theorem memO_lemma (v : HeightOneSpectrum R) (x : v.adicCompletion K) :
-    x ∈ v.adicCompletionIntegers K ↔ Valued.v x ≤ 1 := by
-  first
-  | exact IsDedekindDomain.HeightOneSpectrum.mem_adicCompletionIntegers ..
-
 private theorem valR_lemma_2 (v : HeightOneSpectrum R) (r : R) :
     Valued.v (algebraMap K (v.adicCompletion K) (algebraMap R K r)) = v.intValuation r := by
   first
@@ -28,7 +23,7 @@ private theorem valR_lemma_2 (v : HeightOneSpectrum R) (r : R) :
 
 theorem int_R (v : HeightOneSpectrum R) (r : R) :
     algebraMap K (v.adicCompletion K) (algebraMap R K r) ∈ v.adicCompletionIntegers K := by
-  rw [memO_lemma, valR_lemma_2]
+  rw [IsDedekindDomain.HeightOneSpectrum.mem_adicCompletionIntegers, valR_lemma_2]
   first
   | exact v.intValuation_le_one r
 
@@ -70,7 +65,7 @@ theorem mem_of_isInt (k : K) (h : IsInt (algebraMap K (FiniteAdeleRing R K) k)) 
     k ∈ (algebraMap R K).range := by
   refine IsDedekindDomain.HeightOneSpectrum.mem_integers_of_valuation_le_one K k (fun v => ?_)
   have h1 := h v
-  rw [algKApp_lemma_6, memO_lemma] at h1
+  rw [algKApp_lemma_6, IsDedekindDomain.HeightOneSpectrum.mem_adicCompletionIntegers] at h1
   first
   | exact (IsDedekindDomain.HeightOneSpectrum.valuedAdicCompletion_eq_valuation' v k).symm.le.trans h1
 

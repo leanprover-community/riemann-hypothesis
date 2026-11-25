@@ -57,12 +57,6 @@ public import Mathlib.LinearAlgebra.Dual.Lemmas
 
 open TensorProduct IsLocalRing Polynomial UpperTheory.V.W UpperTheory.V.Alg UpperTheory.V.CA
 
-private theorem u_gen_approx {O R : Type} [CommRing O] [CommRing R] [Algebra O R] (m : Ideal R)
-    (A : Subalgebra O R) (T : Set R) (h0 : ∀ x : R, ∃ a : O, x - algebraMap O R a ∈ m)
-    (hT : ∀ t ∈ T, t ∈ A ∧ t ∈ m) (hm : m ≤ Ideal.span T ⊔ m ^ 2) (N : ℕ) (x : R) :
-    ∃ a ∈ A, x - a ∈ m ^ N :=
-  _root_.UpperTheory.Reformulated.B.LayerApproximation.co_ext_approx m A T h0 hT hm N x
-
 private theorem u_gen_dual (O : Type) [CommRing O] [IsLocalRing O] (M : Type) [AddCommGroup M] [Module O M]
     (h : Module.IsTorsionBySet O M (maximalIdeal O)) (x : M) (hx : x ≠ 0) :
     ∃ D : M →ₗ[O] ResidueField O, D x ≠ 0 := by
@@ -161,8 +155,9 @@ private theorem u_gen_span (O : Type) [CommRing O] [IsLocalRing O] (R : Type) [C
 theorem UpperTheory.V.CA.u_gen :
     ∀ (O : Type) [CommRing O] [IsLocalRing O] (R : Type) [CommRing R] [Algebra O R] [IsCO O R] (T : Set R), (∀ (R' : Type) [CommRing R'] [Algebra O R'] [IsCO O R'] (f f' : R →ₐ[O] R'), (∀ t ∈ T, f t = f' t) → f = f') → ∀ (N : ℕ) (x : R), ∃ y ∈ Algebra.adjoin O T, x - y ∈ maximalIdeal R ^ N := by
   intro O _ _ R _ _ _ T H N x
-  refine u_gen_approx (maximalIdeal R) (Algebra.adjoin O T)
-    {y | y ∈ Algebra.adjoin O T ∧ y ∈ maximalIdeal R} (IsCO.res_surj (O := O)) (fun _ h => h) ?_ N x
+  refine _root_.UpperTheory.Reformulated.B.LayerApproximation.co_ext_approx (maximalIdeal R)
+    (Algebra.adjoin O T) {y | y ∈ Algebra.adjoin O T ∧ y ∈ maximalIdeal R}
+    (IsCO.res_surj (O := O)) (fun _ h => h) ?_ N x
   refine u_gen_span O R _ (fun _ h => h.2)
     (fun a ha => ⟨Subalgebra.algebraMap_mem _ a, fun h => ha (IsLocalHom.map_nonunit a h)⟩) ?_
   intro f f' h

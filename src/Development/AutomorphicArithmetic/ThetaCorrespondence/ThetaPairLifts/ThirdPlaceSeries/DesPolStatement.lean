@@ -118,7 +118,6 @@ end GlobalTheory.BigTop.Fun.PolBound
 
 namespace GlobalTheory.BigTop.Fun.PolBound
 
-open Formalism.BasicNotions Formalism.MainNotions NumberField
 
 theorem factors_le {D : D7} (L : SizeData₂ D) (hS : SizesAt L) (T : ℕ) (hT : L.Ct + 1 ≤ T) :
     (D.R.f : ℝ) ≤ L.sc.x ^ (T + 9) ∧ (D.R.m : ℝ) ≤ L.sc.x ^ (T + 9) ∧ (D.R.k : ℝ) ≤ L.sc.x ^ (T + 9) ∧
@@ -247,7 +246,6 @@ open Formalism.BasicNotions Formalism.MainNotions NumberField Formalism.L2.Indef
 namespace GlobalTheory.BigTop.Fun.PolBound
 end GlobalTheory.BigTop.Fun.PolBound
 namespace GlobalTheory.BigTop.Fun.PolBound
-open Formalism.BasicNotions Formalism.MainNotions NumberField
 end GlobalTheory.BigTop.Fun.PolBound
 namespace GlobalTheory.BigTop.Fun
 open Formalism.BasicNotions Formalism.MainNotions NumberField GlobalTheory.BigTop.Fun.PolBound

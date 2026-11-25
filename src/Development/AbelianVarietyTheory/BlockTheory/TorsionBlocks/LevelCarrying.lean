@@ -103,30 +103,6 @@ section Laws
 
 variable {G : Type} [Group G] (R : RelFam Xo c G)
 
-def Total : Prop :=
-  ∀ (g : G) (S : Type) [CommRing S] [Algebra c.F S] (y : FrPt Xo c S), ∃ y', R g S y y'
-
-def Functional : Prop :=
-  ∀ (g : G) (S : Type) [CommRing S] [Algebra c.F S] (y y₁ y₂ : FrPt Xo c S), R g S y y₁ → R g S y y₂ → y₁ = y₂
-
-def Unital : Prop :=
-  ∀ (S : Type) [CommRing S] [Algebra c.F S] (y : FrPt Xo c S), R 1 S y y
-
-def Multiplicative' : Prop :=
-  ∀ (g h : G) (S : Type) [CommRing S] [Algebra c.F S] (y y' y'' : FrPt Xo c S),
-    R g S y y' → R h S y' y'' → R (g * h) S y y''
-
-def Natural : Prop :=
-  ∀ (g : G) (S S' : Type) [CommRing S] [Algebra c.F S] [CommRing S'] [Algebra c.F S'] (φ : S →ₐ[c.F] S')
-    (y y' : FrPt Xo c S) (z z' : FrPt Xo c S'), FrMap φ y z → R g S y y' → R g S' z z' → FrMap φ y' z'
-
-def Triangular : Prop :=
-  ∀ (g : G) (S : Type) [CommRing S] [Algebra c.F S] (t : Ix Dw → Sˣ) (y y' z z' : FrPt Xo c S),
-    FrBor t y z → R g S y y' → R g S z z' → FrBor t y' z'
-
-def ActionLaws : Prop :=
-  Total R ∧ Functional R ∧ Unital R ∧ Multiplicative' R ∧ Natural R ∧ Triangular R
-
 variable {R}
 
 end Laws

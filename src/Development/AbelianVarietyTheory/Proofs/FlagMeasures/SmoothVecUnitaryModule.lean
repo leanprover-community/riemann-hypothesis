@@ -49,6 +49,7 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SmoothAddSmul
 
 @[expose] public section
 
@@ -77,14 +78,7 @@ lemma smooth_congr {f f' : Matrix (Fin n) (Fin n) ℂ → E} (hf : SmoothOnGV ε
 
 lemma smooth_comb {f f' : Matrix (Fin n) (Fin n) ℂ → E} (hf : SmoothOnGV ε f)
     (hf' : SmoothOnGV ε f') (c : ℂ) : SmoothOnGV ε (fun g => f g + c • f' g) := by
-  intro g₀ hg₀
-  obtain ⟨U, F, hU, hgU, hF, hfF⟩ := hf g₀ hg₀
-  obtain ⟨U', F', hU', hgU', hF', hfF'⟩ := hf' g₀ hg₀
-  refine ⟨U ∩ U', fun x => F x + c • F' x, hU.inter hU', ⟨hgU, hgU'⟩,
-    (hF.mono Set.inter_subset_left).add ((hF'.mono Set.inter_subset_right).const_smul c), ?_⟩
-  intro x hx hxJ
-  show f x + c • f' x = F x + c • F' x
-  rw [hfF x hx.1 hxJ, hfF' x hx.2 hxJ]
+  apply _root_.GlobalTheory.CapelliCentral.smooth_add_smul <;> assumption
 
 lemma smooth_zero : SmoothOnGV ε (fun _ : Matrix (Fin n) (Fin n) ℂ => (0 : E)) :=
   fun _ _ => ⟨Set.univ, fun _ => 0, isOpen_univ, trivial, contDiffOn_const, fun _ _ _ => rfl⟩

@@ -45,8 +45,6 @@ namespace PositivityTheory.KCo
 
 open NumberField IsDedekindDomain GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.SplitFlip Matrix
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 def ModelEx : Prop := ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [Invertible (2 : k)]
   (κ μ : Type) [Fintype κ] [Fintype μ] (ψ : AddChar k ℂ), Continuous ψ → ψ ≠ 1 →
   ∀ e : ((μ → k) × (μ → k)) ≃ₗ[k] ((κ → k) × (κ → k)),

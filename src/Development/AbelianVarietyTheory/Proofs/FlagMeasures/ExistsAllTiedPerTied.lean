@@ -51,8 +51,6 @@ open scoped TensorProduct
 
 namespace GlobalTheory.Per.Inhab
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Iterated
 
 variable {G N : Type} [MeasurableSpace G] [MeasurableSpace N] {μ : Measure G} {𝓕 : Set G} {ν : Measure N} {𝓝 : Set N}

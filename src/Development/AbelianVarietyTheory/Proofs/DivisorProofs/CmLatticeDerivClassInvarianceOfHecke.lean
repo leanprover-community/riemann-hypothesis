@@ -631,13 +631,13 @@ theorem bilin_eq_zero_of_span {V : Type} [AddCommGroup V] [Module ℂ V] (B : Li
 
 theorem dualFormValue_of_values : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (I : Type) [Fintype I] [DecidableEq I]
     (φ : I → E →+* ℂ), IsCMType φ → (∀ ξ : E, ξ ≠ 0 → ∃! B : LinearMap.BilinForm ℂ (Coh E), IsDualForm ξ B) →
-    (∀ ξ : E, ξ ≠ 0 → IsCMField.complexConj E ξ = -ξ → ∀ B : LinearMap.BilinForm ℂ (Coh E), IsDualForm ξ B →
+    (∀ ξ : E, ξ ≠ 0 → ∀ B : LinearMap.BilinForm ℂ (Coh E), IsDualForm ξ B →
       ∀ ρ ρ' : E →+* ℂ, (ρ' = ComplexEmbedding.conjugate ρ → B ρ.toRatAlgHom.toLinearMap ρ'.toRatAlgHom.toLinearMap = (ρ ξ)⁻¹) ∧
         (ρ' ≠ ComplexEmbedding.conjugate ρ → B ρ.toRatAlgHom.toLinearMap ρ'.toRatAlgHom.toLinearMap = 0)) →
     DualFormValue φ := by
-  intro E _ _ _ I _ _ φ hφ hex hval ξ hξ hc
+  intro E _ _ _ I _ _ φ hφ hex hval ξ hξ _
   refine ⟨hex ξ hξ, fun B hB ε => ?_⟩
-  have hv := hval ξ hξ hc B hB
+  have hv := hval ξ hξ B hB
   have key : ∀ i j, i ≠ j → ∀ σ : E →+* ℂ, (σ = φ i ∨ σ = ComplexEmbedding.conjugate (φ i)) →
       (σ = φ j ∨ σ = ComplexEmbedding.conjugate (φ j)) → False :=
     fun i j hij σ h1 h2 => hij ((hφ σ).unique h1 h2)
@@ -1379,7 +1379,7 @@ theorem riemannCl_eq_sum (ξ x : E) :
   simp [IsCMField.complexEmbedding_complexConj, ComplexEmbedding.conjugate_coe_eq]
 
 theorem dualForm_values (E : Type) [Field E] [NumberField E] [IsCMField E] (ξ : E) (hξ : ξ ≠ 0)
-    (_hc : IsCMField.complexConj E ξ = -ξ) (B : LinearMap.BilinForm ℂ (Coh E)) (hB : IsDualForm ξ B)
+    (B : LinearMap.BilinForm ℂ (Coh E)) (hB : IsDualForm ξ B)
     (ρ ρ' : E →+* ℂ) :
     (ρ' = ComplexEmbedding.conjugate ρ →
       B ρ.toRatAlgHom.toLinearMap ρ'.toRatAlgHom.toLinearMap = (ρ ξ)⁻¹) ∧

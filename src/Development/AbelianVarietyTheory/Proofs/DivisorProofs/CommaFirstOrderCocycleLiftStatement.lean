@@ -55,8 +55,6 @@ section -- clump:auto
 
 open CategoryTheory AlgebraicGeometry KaehlerDifferential GlobalTheory.CatCoh GlobalTheory.CechDR
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.CechDR

@@ -83,9 +83,6 @@ theorem _root_.GlobalTheory.HostModel.zeta_mem_coeff_of_dvd {l : _root_.Reciproc
   rw [hk]
   exact pow_mem c.zeta_mem k
 
-theorem zeta_M_mem_coeff {l : Level H} (c : Coeff l) : zeta l.M ∈ c.F :=
-  zeta_mem_coeff_of_dvd c (Nat.dvd_lcm_left l.M l.A)
-
 
 open NumberField in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} in

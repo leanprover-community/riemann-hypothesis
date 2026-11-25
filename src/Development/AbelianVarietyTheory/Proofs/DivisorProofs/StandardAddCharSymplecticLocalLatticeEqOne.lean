@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LocalIdempotentCharacterValue
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LatAtVAtStable
 import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsGivenStageEqOne
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.AddCharTrivialIntegralFiniteAdeleMul
@@ -54,8 +55,6 @@ open scoped TensorProduct ComplexConjugate GlobalTheory.IndefiniteRowSideFullHec
 open GlobalTheory.FunObj GlobalTheory.ChiGrid GlobalTheory.SplitFlip GlobalTheory.SplitWeil GlobalTheory.StdFrames Formalism.L2.DIV
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitaryConjugation (spV spW spW₁ spV₁ alpha beta Num skewGram blk conjU)
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Base Spc Model HasExp SplitsFully Chars)
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField borelKw borelSpaceKw
 
 noncomputable section
 
@@ -193,17 +192,7 @@ theorem trace_int_of_lat (σ : E →ₐ[F] E) (B : Base F E) {n d r s r' s' : �
 
 theorem liftV_one_mul (v : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Pl (F := F)) (w : AF F) :
     GlobalTheory.LatVac.liftV v 1 * w = GlobalTheory.LatVac.liftV v (GlobalTheory.AdelicU.evFin F v w) := by
-  refine Prod.ext ?_ ?_
-  · change (0 : Ainf F) * w.1 = 0
-    rw [zero_mul]
-  · change GlobalTheory.AdelicU.singleFin v 1 * w.2 = GlobalTheory.AdelicU.singleFin v (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.evalV F v w.2)
-    apply GlobalTheory.AdelicU.af_ext
-    intro u
-    rw [map_mul]
-    by_cases hu : u = v
-    · subst hu
-      rw [GlobalTheory.AdelicU.evalV_singleFin_self, GlobalTheory.AdelicU.evalV_singleFin_self, one_mul]
-    · rw [GlobalTheory.AdelicU.evalV_singleFin_ne hu, GlobalTheory.AdelicU.evalV_singleFin_ne hu, zero_mul]
+  apply _root_.GlobalTheory.SwapAtPlace.liftV_one_mul <;> assumption
 
 theorem eq_liftV_of_at {v : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Pl (F := F)} {a : AF F} (ha : At (GlobalTheory.AdelicU.evFin F v) a) :
     a = GlobalTheory.LatVac.liftV v 1 * a := by

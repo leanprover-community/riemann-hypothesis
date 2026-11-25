@@ -119,29 +119,13 @@ theorem mcPts_mCoordIdeal_nonempty (K : Type) [Fintype K] (ι : K → Type) [∀
   · have : ∏ k, ρ (xA ⟨k, c k⟩) = 0 := Finset.prod_eq_zero (Finset.mem_univ k) h0
     rw [this, zero_mul] at hz
     exact zero_ne_one hz
-  · have h1 : aeval xA f = 0 := by
-      apply Subtype.ext
-      have e : (A.val.toRingHom.comp (aeval xA : MRing ι →ₐ[ℤ] A).toRingHom) =
-          (aeval x : MRing ι →ₐ[ℤ] Ω).toRingHom := by
-        apply MvPolynomial.ringHom_ext
-        · intro r
-          simp
-        · intro p
-          simp [xA]
-      have := congrArg (fun g => g f) e
-      simp only [RingHom.comp_apply] at this
-      exact this.trans (aeval_eq_zero_of_mem_mCoordIdeal hf)
-    have e : ((MvPolynomial.eval fun p => ρ (xA p)).comp (MvPolynomial.map (Int.castRingHom ℂ))) =
-        ρ.toRingHom.comp (aeval xA : MRing ι →ₐ[ℤ] A).toRingHom := by
-      apply MvPolynomial.ringHom_ext
-      · intro r
-        simp
-      · intro p
-        simp
-    have := congrArg (fun g => g f) e
-    simp only [RingHom.comp_apply] at this
-    refine this.trans ?_
-    show ρ ((aeval xA : MRing ι →ₐ[ℤ] A) f) = 0
-    rw [h1, map_zero]
+  · have h1 : aeval xA f = 0 := Subtype.ext <| by
+      change (A.val.restrictScalars ℤ) (aeval xA f) = 0
+      rw [MvPolynomial.comp_aeval_apply]
+      exact aeval_eq_zero_of_mem_mCoordIdeal hf
+    have h2 := MvPolynomial.map_aeval_eq_aeval_map (Int.castRingHom ℂ)
+      ρ.toRingHom (RingHom.ext_int _ _) f xA
+    rw [h1, map_zero] at h2
+    exact h2.symm
 
 end GlobalTheory.CompanionTheory.Ar.PB.CovGraph

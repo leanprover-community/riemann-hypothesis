@@ -41,8 +41,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open CategoryTheory AlgebraicGeometry NumberField
@@ -51,11 +49,6 @@ open GlobalTheory.CechPic GlobalTheory.CxPts GlobalTheory.HermTools GlobalTheory
 open scoped TensorProduct
 
 namespace GlobalTheory.IndefiniteRowSideFullHecke.RadicalPowers
-
-def CplxEq {K V : Type} [Field K] [AddCommGroup V] [Module K V] (σ : K →+* ℂ) {m m' : ℕ}
-    (c : Fin m → ℂ) (v : Fin m → V) (c' : Fin m' → ℂ) (v' : Fin m' → V) : Prop :=
-  letI := σ.toAlgebra
-  (∑ i, c i ⊗ₜ[K] v i : ℂ ⊗[K] V) = ∑ k, c' k ⊗ₜ[K] v' k
 
 def cD (D : ℕ) : ℝ := 2 ^ (D + 1) * Real.pi ^ D / (D - 1).factorial
 

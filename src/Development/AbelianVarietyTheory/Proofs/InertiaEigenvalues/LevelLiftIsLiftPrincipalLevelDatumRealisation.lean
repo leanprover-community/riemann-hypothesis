@@ -72,8 +72,6 @@ open scoped TensorProduct
 
 namespace GlobalTheory.FlatVecSum
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 open GlobalTheory.ExportSeries GlobalTheory.ExportSeries.DualType GlobalTheory.ExportType GlobalTheory.ConjTwist
 
 variable {D : D7} {S T : HSp D}

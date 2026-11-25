@@ -70,14 +70,6 @@ private theorem mem_max_dual {K : Type} [Field K] (x : DualNumber K) :
     x ∈ maximalIdeal (DualNumber K) ↔ x.fst = 0 := by
   rw [mem_maximalIdeal, mem_nonunits_iff, TrivSqZeroExt.isUnit_iff_isUnit_fst, isUnit_iff_ne_zero, not_not]
 
-private theorem max_sq_dual {K : Type} [Field K] :
-    maximalIdeal (DualNumber K) * maximalIdeal (DualNumber K) = ⊥ := by
-  rw [eq_bot_iff, Ideal.mul_le]
-  intro x hx y hy
-  rw [mem_max_dual] at hx hy
-  rw [Ideal.mem_bot]
-  ext <;> simp [hx, hy]
-
 private theorem isCO_dual (O : Type) [CommRing O] [IsLocalRing O] [Finite (ResidueField O)] :
     IsCO O (DualNumber (ResidueField O)) := by
   have : Finite (DualNumber (ResidueField O)) := inferInstanceAs (Finite (_ × _))
@@ -463,8 +455,11 @@ private theorem exists_pt (hF : F.Ok) (hV : F.LocVan) (g₁ : Γ) (j : ℤ) (y :
   have hz : F.IsPt g₁ (F.rz (DualNumber (ResidueField O))) := isPt_rz F hF g₁
   have hent : ∀ g, EntIn (maximalIdeal (DualNumber (ResidueField O))) ((y g).val.map TrivSqZeroExt.inr) :=
     fun g a b => (mem_max_dual _).2 rfl
-  obtain ⟨r, hr⟩ := exists_isDeform (maximalIdeal (DualNumber (ResidueField O))) (F.rz (DualNumber (ResidueField O)))
-    (fun g => (y g).val.map TrivSqZeroExt.inr) max_sq_dual hent (coc_dual F j y hy)
+  obtain ⟨r, hr⟩ := exists_isDeform (maximalIdeal (DualNumber (ResidueField O)))
+    (F.rz (DualNumber (ResidueField O))) (fun g => (y g).val.map TrivSqZeroExt.inr)
+    (by rw [DualNumber.maximalIdeal_eq_span_singleton_eps,
+      Ideal.span_singleton_mul_span_singleton, DualNumber.eps_mul_eps, Ideal.span_singleton_zero])
+    hent (coc_dual F j y hy)
   have h1 := red_deform F _ hent r hr
   have h2 := loc_dual F hF hV g₁ j y hy r hr
   have h3 := (isDeform_normalised_iff _ _ _ _ _ hz.norm hr).2 (norm_dual F g₁ j y hn)

@@ -56,7 +56,7 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
-import Development.WeilBound.CoreStatements.HodgeTatePoints.HtatHopfFlat
+public import Development.WeilBound.CoreStatements.HodgeTatePoints.HtatHopfFlat
 
 @[expose] public section
 
@@ -98,104 +98,6 @@ lemma inj_one (κ : FractionRing R →+* FractionRing R')
     have := (mul_eq_zero.1 h4).resolve_right h2
     simpa using this
   simp [h3]
-
-theorem alg_core {T : Type} [CommGroup T] [Finite T] [Module.Flat R R']
-    (κ : FractionRing R →+* FractionRing R')
-    (hκ : κ.comp (algebraMap R _) = (algebraMap R' _).comp (algebraMap R R'))
-    (N : Submodule R (T → FractionRing R)) (M : Submodule R (T → R))
-    (hM : ∀ f, f ∈ M ↔ ∀ t, (fun h => algebraMap R (FractionRing R) (f (t * h))) ∈ N)
-    (g : T → R')
-    (hg : ∀ t, (fun h => algebraMap R' (FractionRing R') (g (t * h))) ∈
-      Submodule.span R' {w : T → FractionRing R' | ∃ n ∈ N, w = fun h => κ (n h)}) :
-    g ∈ Submodule.span R' {g : T → R' | ∃ f ∈ M, g = fun t => algebraMap R R' (f t)} := by
-  classical
-  cases nonempty_fintype T
-  let a : T → ((T → R) →ₗ[R] (T → FractionRing R)) := fun t =>
-    ((Algebra.linearMap R (FractionRing R)).compLeft T) ∘ₗ (LinearMap.funLeft R R (fun h => t * h))
-  have ha : ∀ t f h, a t f h = algebraMap R (FractionRing R) (f (t * h)) := fun _ _ _ => rfl
-  let b : (T → R) →ₗ[R] (T → (T → FractionRing R) ⧸ N) := LinearMap.pi fun t => N.mkQ ∘ₗ a t
-  have hex : Function.Exact M.subtype b := by
-    intro f
-    constructor
-    · intro hf
-      have hfM : f ∈ M := (hM f).2 fun t => by
-        have h1 : N.mkQ (a t f) = 0 := congrFun hf t
-        exact (Submodule.Quotient.mk_eq_zero N).1 h1
-      exact ⟨⟨f, hfM⟩, rfl⟩
-    · rintro ⟨m, rfl⟩
-      funext t
-      exact (Submodule.Quotient.mk_eq_zero N).2 ((hM _).1 m.2 t)
-  have hexS := Module.Flat.lTensor_exact R' hex
-  have hexN := Module.Flat.lTensor_exact R' (LinearMap.exact_subtype_mkQ N)
-  let z : R' ⊗[R] (T → R) := ∑ h, g h ⊗ₜ[R] (Pi.single h 1 : T → R)
-  let cW := ((kapL κ hκ).compLeft T).liftBaseChange R'
-  have hc : ∀ t, cW ((a t).lTensor R' z) =
-      fun h => algebraMap R' (FractionRing R') (g (t * h)) := by
-    intro t
-    funext h
-
-    simp only [z, map_sum, LinearMap.lTensor_tmul, cW, LinearMap.liftBaseChange_tmul, Finset.sum_apply,
-    Pi.smul_apply]
-    rw [Finset.sum_eq_single (t * h)]
-    · have := congr($hκ 1)
-      simp [LinearMap.compLeft_apply, ha, kapL, Algebra.smul_def]
-    · intro b' _ hb'
-      simp [LinearMap.compLeft_apply, ha, kapL, Ne.symm hb']
-    · simp
-  have hN : ∀ t, ∃ y : R' ⊗[R] N, cW (N.subtype.lTensor R' y) =
-      fun h => algebraMap R' (FractionRing R') (g (t * h)) := by
-    intro t
-    let cN := (((kapL κ hκ).compLeft T) ∘ₗ N.subtype).liftBaseChange R'
-    have e1 : ∀ y, cN y = cW (N.subtype.lTensor R' y) := by
-      intro y
-      induction y using TensorProduct.induction_on with
-      | zero => simp
-      | tmul r n => simp [cN, cW, LinearMap.liftBaseChange_tmul]
-      | add p q hp hq => simp only [map_add (f := _), hp, hq]
-    have hle : Submodule.span R' {w : T → FractionRing R' | ∃ n ∈ N, w = fun h => κ (n h)} ≤
-        LinearMap.range cN := by
-      rw [Submodule.span_le]
-      rintro _ ⟨n, hn, rfl⟩
-      refine ⟨(1 : R') ⊗ₜ[R] (⟨n, hn⟩ : N), ?_⟩
-      simp only [cN, LinearMap.liftBaseChange_tmul, one_smul]
-      rfl
-    obtain ⟨y, hy⟩ := hle (hg t)
-    exact ⟨y, by rw [← e1, hy]⟩
-  have hz : b.lTensor R' z = 0 := by
-    apply PositivityTheory.HtPt.Htat.ValuationInjectivePi.tensor_pi_ext
-    intro t
-    rw [← LinearMap.comp_apply, ← LinearMap.lTensor_comp]
-    have e2 : (LinearMap.proj t : (T → (T → FractionRing R) ⧸ N) →ₗ[R] _) ∘ₗ b = N.mkQ ∘ₗ a t := rfl
-    rw [e2, LinearMap.lTensor_comp, LinearMap.comp_apply]
-    obtain ⟨y, hy⟩ := hN t
-    have e3 : (a t).lTensor R' z = N.subtype.lTensor R' y :=
-      PositivityTheory.HtPt.Htat.ValuationInjectivePi.inj_pi κ hκ ((hc t).trans hy.symm)
-    rw [e3]
-    exact (hexN _).2 ⟨y, rfl⟩
-  obtain ⟨y, hy⟩ := (hexS z).1 hz
-  let e := ((Algebra.linearMap R R').compLeft T).liftBaseChange R'
-  have hez : e z = g := by
-    funext h
-
-    simp only [z, e, map_sum, LinearMap.liftBaseChange_tmul, Finset.sum_apply, Pi.smul_apply]
-    rw [Finset.sum_eq_single h]
-    · simp [LinearMap.compLeft_apply]
-    · intro b' _ hb'
-      simp [LinearMap.compLeft_apply, Ne.symm hb']
-    · simp
-  have hall : ∀ y : R' ⊗[R] M, e (M.subtype.lTensor R' y) ∈
-      Submodule.span R' {g : T → R' | ∃ f ∈ M, g = fun t => algebraMap R R' (f t)} := by
-    intro y
-    induction y using TensorProduct.induction_on with
-    | zero => simp
-    | tmul r m =>
-      simp only [LinearMap.lTensor_tmul, e, LinearMap.liftBaseChange_tmul]
-      exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨m, m.2, rfl⟩)
-    | add p q hp hq =>
-      rw [map_add (f := _), map_add (f := _)]
-      exact Submodule.add_mem _ hp hq
-  rw [← hez, ← hy]
-  exact hall y
 
 end Alg
 
@@ -297,7 +199,7 @@ lemma btOrder_le_ext [Finite T] [Module.Flat R R'] (Γ : QFGroup R T) (Γ' : QFG
     Γ'.btOrder ⊤ ≤ extOrder (algebraMap R R') (Γ.btOrder ⊤) := by
   intro g hg
   rw [_root_.GlobalTheory.CompanionTheory.Ar.BT.ExtSpan.extOrder_eq_span]
-  refine alg_core κ hκ (secFn Γ) (Subalgebra.toSubmodule (Γ.btOrder ⊤)) (fun f => mem_btOrder_iff Γ f) g ?_
+  refine PositivityTheory.HtPt.Htat.ValuationInjectivePi.alg_core κ hκ (secFn Γ) (Subalgebra.toSubmodule (Γ.btOrder ⊤)) (fun f => mem_btOrder_iff Γ f) g ?_
   intro t
   obtain ⟨x, hx⟩ := (mem_btOrder_iff Γ' g).1 hg t
   have e : (fun h => algebraMap R' (FractionRing R') (g (t * h))) =

@@ -64,13 +64,6 @@ private alias wMat_mul_apply_eq_rev := _root_.Formalism.FourierDecayAlt.P.G2.wMa
 
 private alias wMat_mulVec_apply_eq_rev := _root_.Formalism.FourierDecayAlt.P.G2.wMat_mulVec_apply
 
-private lemma finSumFinEquiv_symm_castSucc_eq_inl {n : ℕ} (i : Fin n) :
-    finSumFinEquiv.symm (Fin.castSucc i : Fin (n + 1)) = (Sum.inl i : Fin n ⊕ Fin 1) := by
-  rw [Equiv.symm_apply_eq]; rfl
-
-private lemma finSumFinEquiv_symm_last_eq_inr (n : ℕ) : finSumFinEquiv.symm (Fin.last n) = (Sum.inr 0 : Fin n ⊕ Fin 1) := by
-  rw [Equiv.symm_apply_eq]; rfl
-
 theorem wM_succ_last {n : ℕ} (t : ℂ) (X : Matrix (Fin n) (Fin n) ℂ) (B ρ : Fin n → ℂ) (σ : ℂ) (i : Fin n) :
     (wMat (n + 1) * Mcoord t X B ρ σ) i.succ (Fin.last n) = B i := by
   rw [wMat_mul_apply_eq_rev]

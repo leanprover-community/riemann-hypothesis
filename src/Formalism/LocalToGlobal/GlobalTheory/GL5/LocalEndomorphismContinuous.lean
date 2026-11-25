@@ -307,7 +307,6 @@ theorem iwProG : Formalism.L2.G.Triv.IwProG := by
 
 end Iw
 
-open Formalism.UG.P
 
 theorem isProGrp_transfer {G₁ G₂ : Type} [Group G₁] [TopologicalSpace G₁] [Group G₂] [TopologicalSpace G₂]
     (g : ℕ) (θ : G₁ →* G₂) (hθ : Continuous θ) (ψ : G₂ → G₁) (hψ : Continuous ψ)

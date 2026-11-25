@@ -48,8 +48,6 @@ import Mathlib.Tactic.ReduceModChar
 
 open NumberField IsDedekindDomain ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj GlobalTheory.GeoTie
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.ReadingOver

@@ -63,7 +63,6 @@ def LeafPushoutFP : Prop := ∀ {DW DU DV S : Scheme.{0}} (φU : DW ⟶ DU) (φV
     [IsOpenImmersion φV] (qU : DU ⟶ S) (qV : DV ⟶ S) (h : φU ≫ qU = φV ≫ qV), IsAffine S →
     FP qU → FP qV → FP (φU ≫ qU) → FP (pushout.desc qU qV h)
 
-set_option backward.isDefEq.respectTransparency false in
 theorem LeafGlueTwo_of (hF : LeafPushoutFP) : LeafGlueTwo := by
   intro k _ Ω _ _ X f U V R hUV ⟨DU, DV, DW, qU, qV, qW, vU, vV, vW, φU, φV, hqU, hqV, hqW, hφU, hφV, eU, eV,
     pU, pV, pW, cU, cV⟩
@@ -213,7 +212,6 @@ theorem compact_inter_range {W A D : Scheme.{0}} (φ : W ⟶ A) (e : A ⟶ D) [I
   rw [hp]
   exact QuasiCompact.isCompact_preimage (f := φ) _ (e.continuous.isOpen_preimage _ ho) (compact_pre e hs h)
 
-set_option backward.isDefEq.respectTransparency false in
 theorem leafPushoutQS : LeafPushoutQS := by
   intro DW DU DV φU φV _ _ hW hWs hUs hVs
   have := isOpenImmersion_inl φU φV

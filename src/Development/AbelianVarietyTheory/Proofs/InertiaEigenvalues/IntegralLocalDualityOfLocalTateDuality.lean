@@ -374,15 +374,6 @@ theorem isPrecomplete_of_compact {O : Type} [CommRing O] [IsLocalRing O] [Topolo
   rw [SModEq.sub_mem, smul_eq_mul, Ideal.mul_top]
   exact hL'
 
-theorem isHausdorff_dvr {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] :
-    IsHausdorff (maximalIdeal O) O := by
-  refine ⟨fun x hx => ?_⟩
-  rw [← Ideal.mem_bot, ← Ideal.iInf_pow_eq_bot_of_isLocalRing (maximalIdeal O)
-    (maximalIdeal.isMaximal O).ne_top, Ideal.mem_iInf]
-  intro n
-  have := hx n
-  rwa [SModEq.zero, smul_eq_mul, Ideal.mul_top] at this
-
 theorem ringHom_zmod_apply {N : ℕ} [NeZero N] {R : Type*} [Ring R] (ψ : ZMod N →+* R) (z : ZMod N) :
     ψ z = ((z.val : ℕ) : R) := by
   conv_lhs => rw [← ZMod.natCast_zmod_val z]
@@ -427,7 +418,7 @@ theorem exists_ringHom_padicInt {p : ℕ} [Fact p.Prime] {O : Type} [CommRing O]
       ι x - ((PadicInt.toZModPow k x).val : O) ∈ Ideal.span {(p : O) ^ k} := by
   haveI := hT
   haveI : IsAdicComplete (maximalIdeal O) O :=
-    { toIsHausdorff := isHausdorff_dvr, toIsPrecomplete := isPrecomplete_of_compact hA }
+    { toIsHausdorff := IsDiscreteValuationRing.instIsHausdorffMaximalIdeal _, toIsPrecomplete := isPrecomplete_of_compact hA }
   have hp0 : p ≠ 0 := (Fact.out : p.Prime).ne_zero
   haveI hNZ : ∀ n, NeZero (p ^ n) := fun n => ⟨pow_ne_zero _ hp0⟩
   let f : (n : ℕ) → ℤ_[p] →+* O ⧸ maximalIdeal O ^ n := fun n =>

@@ -70,18 +70,16 @@ theorem tm_tmul {B : Type} [AddCommGroup B] [Module ℚ_[l] B] (f : V →ₗ[A] 
 variable (φ : G →* GQ l) {ρ : Representation A G V} {ρ' : Representation A G V'} (f : V →ₗ[A] V')
 
 theorem tm_actC (g : G) (hf : ∀ x, f (ρ g x) = ρ' g (f x)) (y : V ⊗[ℚ_[l]] Bcr l) :
-    tm l _ f (actC φ ρ g y) = actC φ ρ' g (tm l _ f y) := by
-  induction y using TensorProduct.induction_on with
-  | zero => simp only [map_zero]
-  | tmul v b => exact congrArg (· ⊗ₜ _) (hf v)
-  | add x y hx hy => simp only [map_add (f := _), hx, hy]
+    tm l _ f (actC φ ρ g y) = actC φ ρ' g (tm l _ f y) :=
+  LinearMap.congr_fun (AlgebraTensorModule.ext (R := ℚ_[l]) (A := A)
+    (g := (tm l (Bcr l) f).comp (actC φ ρ g)) (h := (actC φ ρ' g).comp (tm l (Bcr l) f))
+    fun v _ => congrArg (· ⊗ₜ _) (hf v)) y
 
 theorem tm_actD (g : G) (hf : ∀ x, f (ρ g x) = ρ' g (f x)) (y : V ⊗[ℚ_[l]] Bdr l) :
-    tm l _ f (actD φ ρ g y) = actD φ ρ' g (tm l _ f y) := by
-  induction y using TensorProduct.induction_on with
-  | zero => simp only [map_zero]
-  | tmul v b => exact congrArg (· ⊗ₜ _) (hf v)
-  | add x y hx hy => simp only [map_add (f := _), hx, hy]
+    tm l _ f (actD φ ρ g y) = actD φ ρ' g (tm l _ f y) :=
+  LinearMap.congr_fun (AlgebraTensorModule.ext (R := ℚ_[l]) (A := A)
+    (g := (tm l (Bdr l) f).comp (actD φ ρ g)) (h := (actD φ ρ' g).comp (tm l (Bdr l) f))
+    fun v _ => congrArg (· ⊗ₜ _) (hf v)) y
 
 theorem tm_Dcr (hf : ∀ g x, f (ρ g x) = ρ' g (f x)) {y : V ⊗[ℚ_[l]] Bcr l} (hy : y ∈ Dcr φ ρ) :
     tm l _ f y ∈ Dcr φ ρ' := by
@@ -111,25 +109,21 @@ theorem tm_FilD (hf : ∀ g x, f (ρ g x) = ρ' g (f x)) {i : ℤ} {y : V ⊗[�
 
 theorem tm_smulC (K : FinExt l) (c : A ⊗[ℚ_[l]] ↥(K0 K)) (y : V ⊗[ℚ_[l]] Bcr l) :
     tm l _ f (smulC V K c y) = smulC V' K c (tm l _ f y) := by
-  induction c using TensorProduct.induction_on with
-  | zero => simp only [map_zero, LinearMap.zero_apply]
-  | add x y hx hy => simp only [map_add (f := _), LinearMap.add_apply, hx, hy]
-  | tmul a k =>
-    induction y using TensorProduct.induction_on with
-    | zero => simp only [map_zero]
-    | tmul v b => exact congrArg (· ⊗ₜ _) (f.map_smul a v)
-    | add x y hx hy => simp only [map_add (f := _), hx, hy]
+  refine TensorProduct.inductionOn c (fun a k => ?_) fun x z hx hz => by
+    simp only [map_add (f := _), LinearMap.add_apply, hx, hz]
+  exact LinearMap.congr_fun (TensorProduct.ext'
+    (g := ((tm l (Bcr l) f).restrictScalars ℚ_[l]).comp (smulC V K (a ⊗ₜ k)))
+    (h := (smulC V' K (a ⊗ₜ k)).comp ((tm l (Bcr l) f).restrictScalars ℚ_[l]))
+    fun v _ => congrArg (· ⊗ₜ _) (f.map_smul a v)) y
 
 theorem tm_smulD (K : FinExt l) (c : A ⊗[ℚ_[l]] ↥K.1) (y : V ⊗[ℚ_[l]] Bdr l) :
     tm l _ f (smulD V K c y) = smulD V' K c (tm l _ f y) := by
-  induction c using TensorProduct.induction_on with
-  | zero => simp only [map_zero, LinearMap.zero_apply]
-  | add x y hx hy => simp only [map_add (f := _), LinearMap.add_apply, hx, hy]
-  | tmul a k =>
-    induction y using TensorProduct.induction_on with
-    | zero => simp only [map_zero]
-    | tmul v b => exact congrArg (· ⊗ₜ _) (f.map_smul a v)
-    | add x y hx hy => simp only [map_add (f := _), hx, hy]
+  refine TensorProduct.inductionOn c (fun a k => ?_) fun x z hx hz => by
+    simp only [map_add (f := _), LinearMap.add_apply, hx, hz]
+  exact LinearMap.congr_fun (TensorProduct.ext'
+    (g := ((tm l (Bdr l) f).restrictScalars ℚ_[l]).comp (smulD V K (a ⊗ₜ k)))
+    (h := (smulD V' K (a ⊗ₜ k)).comp ((tm l (Bdr l) f).restrictScalars ℚ_[l]))
+    fun v _ => congrArg (· ⊗ₜ _) (f.map_smul a v)) y
 
 theorem smulC_one (K : FinExt l) (a : A) (y : V ⊗[ℚ_[l]] Bcr l) :
     smulC V K (a ⊗ₜ[ℚ_[l]] (1 : ↥(K0 K))) y = a • y := by
@@ -163,10 +157,10 @@ theorem pr_inc (a b : Fin n) (x : A ⊗[ℚ_[l]] B) : pr l B a (inc l B b x) = i
   | add x y hx hy => rw [map_add (f := _), map_add (f := _), hx, hy]; split_ifs <;> simp
 
 theorem sum_inc_pr (y : (Fin n → A) ⊗[ℚ_[l]] B) : ∑ a, inc l B a (pr l B a y) = y := by
-  induction y using TensorProduct.induction_on with
-  | zero => simp
-  | tmul v c => simp [tm_tmul, ← sum_tmul, Finset.univ_sum_single]
-  | add x y hx hy => simp only [map_add (f := _), Finset.sum_add_distrib, hx, hy]
+  have h := LinearMap.congr_fun (AlgebraTensorModule.ext (R := ℚ_[l]) (A := A)
+    (g := ∑ a, inc l B a ∘ₗ pr l B a) (h := LinearMap.id) fun _ _ => by
+      simp [LinearMap.sum_apply, tm_tmul, ← sum_tmul, Finset.univ_sum_single]) y
+  simpa only [LinearMap.sum_apply, LinearMap.comp_apply, LinearMap.id_apply] using h
 
 variable {ρ : G →* GL (Fin n) A} {κ : Fin n → G →* Aˣ}
   (hρ : ∀ g, (ρ g : Matrix (Fin n) (Fin n) A) = Matrix.diagonal fun a => (κ a g : A))

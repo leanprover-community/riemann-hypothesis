@@ -45,8 +45,6 @@ noncomputable section
 open scoped Matrix
 open Formalism.BasicNotions Formalism.BasicNotions.TH
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 namespace PositivityTheory.Rg.Sw.Glob
 
 def SigAtLeast (D : D7) (V : HSp D) (k : ℕ) : Prop :=

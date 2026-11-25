@@ -56,8 +56,6 @@ open GlobalTheory GlobalTheory.AbLaw GlobalTheory.UU GlobalTheory.LN GlobalTheor
 open scoped CategoryTheory.Obj
 open GlobalTheory.UPel.HT
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.LieCoordR

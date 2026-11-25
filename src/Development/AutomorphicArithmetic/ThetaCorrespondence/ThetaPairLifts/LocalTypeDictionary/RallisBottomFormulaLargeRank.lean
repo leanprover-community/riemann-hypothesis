@@ -936,32 +936,6 @@ open GlobalTheory.NormExact (Reads Setup IsFinIdl HasFinPart finPt)
 
 variable {D : D7}
 
-theorem xiN_of_reads {ψ : AddChar (AF D.host.F) ℂ} {θ : InfFam D} (hθ : IsInfFam θ) {S T : HSp D} {a d : ℕ}
-    (hS : S.rank = a) (hT : T.rank = d) {δ : ℂ} (hs : δ ≠ 0) {G : VC D a d → ℂ} {f : WO S T → ℂ}
-    (h : Reads ψ θ hS hT ⊤ δ 1 G f) :
-    GlobalTheory.AdForm.xiN θ S T hS hT (-δ) (area (lamOf D ⊤ δ))⁻¹ f = G := by
-  funext z
-  obtain ⟨σ, hσ⟩ := GlobalTheory.RealLineAt.exists_inverse_chart hθ
-  have hsp : ∀ Z : D.what₂.Tau → Matrix (Fin T.rank) (Fin S.rank) ℂ,
-      (GlobalTheory.AdForm.realPt θ Z).map (finPart D) = 0 ∧ ∀ τ, compAt θ τ (GlobalTheory.AdForm.realPt θ Z) = Z τ := fun Z => by
-    refine Classical.epsilon_spec (p := fun w : Mx D T.rank S.rank => w.map (finPart D) = 0 ∧ ∀ τ, compAt θ τ w = Z τ)
-      ⟨Matrix.of fun i j => σ fun τ => Z τ i j, ?_, fun τ => ?_⟩
-    · ext i j; exact hσ.fin _
-    · ext i j; exact hσ.comp _ _
-  unfold GlobalTheory.AdForm.xiN
-  obtain ⟨h1, h2⟩ := hsp fun τ => Matrix.of fun i j => -((-δ)⁻¹ * z τ (Fin.cast hT i) (Fin.cast hS j))
-  have hY : GlobalTheory.NormExact.coordY θ hS hT δ 1 (GlobalTheory.AdForm.realPt θ
-      fun τ => Matrix.of fun i j => -((-δ)⁻¹ * z τ (Fin.cast hT i) (Fin.cast hS j))) = z := by
-    funext τ i j
-    unfold GlobalTheory.NormExact.coordY
-    rw [h2, map_one, mul_one, Matrix.of_apply, inv_neg, neg_mul, neg_neg, ← mul_assoc, mul_inv_cancel₀ hs, one_mul]
-    rfl
-  rw [h.2 _ h1, hY, ← mul_assoc, ← Complex.exp_add]
-  have hH : Formalism.L2.Ker.HV (area (lamOf D ⊤ δ))⁻¹ z z = Formalism.MainNotions.TaylorLogMetric.Hf D (tor0 D ⊤ δ) z z := by
-    change (((area (lamOf D ⊤ δ))⁻¹ : ℝ) : ℂ) * _ = _ / ((area (lamOf D ⊤ δ) : ℝ) : ℂ)
-    rw [div_eq_inv_mul, Complex.ofReal_inv]
-  rw [hH, neg_mul, add_neg_cancel, Complex.exp_zero, one_mul]
-
 theorem isFinPt_one (V : HSp D) {n : ℕ} (e : V.rank = n) :
     GlobalTheory.BotFormula.IsFinPt V 1 (1 : Formalism.MainNotions.StandardLatticesGL3.GA D n) := by
   subst e
@@ -1105,7 +1079,7 @@ theorem bottom_stratum_intertwining : _root_.GlobalTheory.FunPr.ThetaLocalInputs
   have hTT0 : P.e0 ∈ TT D (tor0 D ⊤ δ) P.a P.d := GlobalTheory.NormSum.VacMove.vac_TT (hInp D).g1 P.crv P.vac.1
   obtain ⟨f₀, hf₀⟩ := GlobalTheory.T.exists_adelicTheta_reads_curveThetaFunction W.ψ W.θ A WW ea.symm ed.symm ⊤ δ 1 hSet _ hTT0
   refine ⟨?_, fun h g x y hg hy => ?_⟩
-  · rw [xiN_of_reads W.θ_is _ _ hδ hR₀]; exact hG₀
+  · rw [GlobalTheory.StdRead.xiN_eq W.θ_is _ _ hδ hR₀]; exact hG₀
   · have hv := GlobalTheory.T.weil_datum_finite_part_moves_vacuum_as_theta_model W.ψ W.θ A WW ea.symm ed.symm ⊤ δ 1 hSet P.e0 P.W _ _ _ hw (hInp D) t0 P.pt0
       P.even_mul P.vac hcS hcT x h y g hy hg f₀ hf₀
     have hm := GlobalTheory.T.movedThetaFunctions_read_of_movedVacuum_reads W.ψ W.θ A WW ea.symm ed.symm ⊤ δ 1 hSet P.e0 P.W _ _ _ hw P.vac.1 x h y g hy hg 1
@@ -1116,7 +1090,7 @@ theorem bottom_stratum_intertwining : _root_.GlobalTheory.FunPr.ThetaLocalInputs
       change _ = GlobalTheory.AdjTr.conjRep (X.ω s) (y, g) (GlobalTheory.IndefiniteRowSideFullHecke.ConjugateAdjointDagger.cj id (X.f s))
       rw [GlobalTheory.AdjTr.conjRep_apply, GlobalTheory.ConjWeil.cj_id_cj_id]
       rfl
-    rw [e1, xiN_of_reads W.θ_is _ _ hδ hm, xiN_of_reads W.θ_is _ _ hδ hR₀]
+    rw [e1, GlobalTheory.StdRead.xiN_eq W.θ_is _ _ hδ hm, GlobalTheory.StdRead.xiN_eq W.θ_is _ _ hδ hR₀]
 end GlobalTheory.BotIntertw
 end
 end

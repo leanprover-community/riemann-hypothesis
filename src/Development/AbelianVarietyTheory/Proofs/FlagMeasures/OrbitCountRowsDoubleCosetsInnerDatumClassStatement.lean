@@ -970,23 +970,8 @@ theorem mem_localization_aut (P : HeightOneSpectrum (𝓞 E)) {Λ : Submodule (�
 theorem frame_locP (Λ : Submodule (𝓞 E) S.V) (g : ℕ) {T : E} (F : LFlag S r T) (hconv : IsFixedConv Λ g F)
     (hl : IsLift Λ F) : ∀ P : HeightOneSpectrum (𝓞 E), (g : 𝓞 E) ∈ P.asIdeal → ∀ b,
       frame F b ∈ (haveI := P.isPrime; Formalism.HermitianLatticesTheory.localization₂ P.asIdeal Λ) := by
-  intro P hP b
-  haveI := P.isPrime
-  have hsub : ∀ (M : Submodule (𝓞 E) S.V), ∀ y ∈ M, y ∈ Formalism.HermitianLatticesTheory.localization₂ P.asIdeal M :=
-    fun M y hy => ⟨1, P.asIdeal.primeCompl.one_mem, by simpa using hy⟩
-  refine Fin.lastCases ?_ (fun i => ?_) b
-  · have e : frame F (Fin.last r) = F.fl.z := by simp [frame, FlagG.fvec]
-    rw [e]; exact hsub _ _ hl.1
-  · have e : frame F i.castSucc = F.fl.e i := by simp [frame, FlagG.fvec]
-    rw [e]
-    obtain ⟨c, -, hc1, hloc⟩ := hconv.1 P
-    have he : F.fl.e i ∈ Formalism.HermitianLatticesTheory.localization₂ P.asIdeal
-        (Submodule.span (𝓞 E) (Set.range fun a => c a • F.fl.e a)) := by
-      refine hsub _ _ (Submodule.subset_span ⟨i, ?_⟩)
-      simp [hc1 hP i]
-    rw [← hloc] at he
-    obtain ⟨t, ht, hte⟩ := he
-    exact ⟨t, ht, (Submodule.mem_inf.1 hte).1⟩
+  intros
+  apply _root_.Formalism.MainNotions.LatticeGluingRadicals.e_frame_loc <;> assumption
 
 def triM (w : Fin (r + 1) → Fin r → E) : Matrix (Fin (r + 1)) (Fin (r + 1)) E :=
   fun c b => (if c = b then 1 else 0) + (if h : c.val < r then w b ⟨c.val, h⟩ else 0)

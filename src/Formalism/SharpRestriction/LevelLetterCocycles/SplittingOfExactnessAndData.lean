@@ -334,7 +334,6 @@ end Formalism.MainNotions.UnusedSlot80
 
 noncomputable section
 
-open Classical
 
 namespace Formalism.MainNotions.UnusedSlot80.Split
 

@@ -126,8 +126,6 @@ attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.UU
 open GlobalTheory.LN
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.UnifDescent

@@ -1,5 +1,6 @@
 module
 
+public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeInnerProductPullbackUnique
 public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.GtActIffEqGtSmul
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.HodgeIPIffHodgeFormConj
 public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.PolBaseChangeOfRelAmpleLocal
@@ -77,29 +78,9 @@ section Unif
 
 variable {A : Over (Sp ℂ)} [GrpObj A] {L : LB A.left} {g : ℕ}
 
-theorem isTangent_one' : IsTangent (1 : epsR ℂ ⟶ A) := by
-  unfold IsTangent
-  have e : (1 : epsR ℂ ⟶ A).left = spMap (algebraMap ℂ (DualNumber ℂ)) ≫ η[A].left := by
-    rw [Hom.one_def, Over.comp_left]
-    congr 1
-  rw [e, ← Category.assoc, ← Spec.map_comp, ← CommRingCat.ofHom_comp]
-  have : (TrivSqZeroExt.fstHom ℂ ℂ ℂ).toRingHom.comp (algebraMap ℂ (DualNumber ℂ)) = RingHom.id ℂ := by
-    ext x
-    simp
-  rw [this]
-  simp
+alias isTangent_one' := HodgeUnique.isTangent_one'
 
-theorem isDiff_one_of_fderiv (u : HolUnif A L g) {U : A.left.Opens} (hU : IsAffineOpen U)
-    (h0 : ⊤ ≤ (u.ex 0).left ⁻¹ᵁ U) {w : Fin g → ℂ}
-    (hw : ∀ s : Γ(A.left, U), fderiv ℂ (fun z => valAt' (u.ex z).left U s) 0 w = 0) :
-    u.IsDiff w (1 : epsR ℂ ⟶ A) := by
-  have hv : IsTangent (1 : epsR ℂ ⟶ A) := isTangent_one'
-  have hvU := (tangent_mem_iff (u := u) hv U).2 h0
-  refine (isDiff_iff hv hU hvU h0 w).2 ?_
-  rw [(isDiff_iff hv hU hvU h0 0).1 (GlobalTheory.UnifDifferential.isDiff_one u)]
-  refine RingHom.ext fun s => TrivSqZeroExt.ext rfl ?_
-  rw [jet_snd, jet_snd, map_zero]
-  exact (hw s).symm
+alias isDiff_one_of_fderiv := HodgeUnique.isDiff_one_of_fderiv
 
 def transl (u : HolUnif A L g) (z : Fin g → ℂ) : A ⟶ A := (toUnit A ≫ u.ex z) * 𝟙 A
 
@@ -107,133 +88,15 @@ theorem ex_comp_transl (u : HolUnif A L g) (z y : Fin g → ℂ) : u.ex y ≫ tr
   rw [transl, MonObj.comp_mul, u.ex_add, Category.comp_id, ← Category.assoc, toUnit_unique (u.ex y ≫ toUnit A) (𝟙 _),
     Category.id_comp]
 
-theorem fderiv_eq_zero_of_isDiff_one (u : HolUnif A L g) {w : Fin g → ℂ} (h : u.IsDiff w (1 : epsR ℂ ⟶ A))
-    (z : Fin g → ℂ) {W : A.left.Opens} (hz : ⊤ ≤ (u.ex z).left ⁻¹ᵁ W) (s : Γ(A.left, W)) :
-    fderiv ℂ (fun y => valAt' (u.ex y).left W s) z w = 0 := by
-  have hv : IsTangent (1 : epsR ℂ ⟶ A) := isTangent_one'
-  set T := transl u z with hT
-  have h0 : ⊤ ≤ (u.ex 0).left ⁻¹ᵁ (T.left ⁻¹ᵁ W) := by
-    have e : (u.ex 0 ≫ T).left = (u.ex z).left := by rw [hT, ex_comp_transl, add_zero]
-    intro p hp
-    have := hz hp
-    rw [← e] at this
-    exact this
-  have hvU := (tangent_mem_iff (u := u) hv _).2 h0
-  have e1 := h _ hvU ((T.left.app W).hom s)
-  have e2 := GlobalTheory.UnifDifferential.isDiff_one u _ hvU ((T.left.app W).hom s)
-  have e3 : fderiv ℂ (fun y => valAt' (u.ex y).left (T.left ⁻¹ᵁ W) ((T.left.app W).hom s)) 0 w = 0 := by
-    rw [← e1, e2, map_zero]
-  have e4 : (fun y => valAt' (u.ex y).left (T.left ⁻¹ᵁ W) ((T.left.app W).hom s)) =
-      fun y => valAt' (u.ex (z + y)).left W s := by
-    funext y
-    rw [← GlobalTheory.HomLinear.valAt'_comp_left, hT, ex_comp_transl]
-  rw [e4, fderiv_comp_add_left (f := fun y => valAt' (u.ex y).left W s), add_zero] at e3
-  exact e3
+alias fderiv_eq_zero_of_isDiff_one := HodgeUnique.fderiv_eq_zero_of_isDiff_one
 
-theorem eq_zero_of_isDiff_one (u : HolUnif A L g) {w : Fin g → ℂ} (h : u.IsDiff w (1 : epsR ℂ ⟶ A)) : w = 0 := by
-  let pt : (𝟙_ (Over (Sp ℂ))).left := (default : PrimeSpectrum ℂ)
-  have hsub : ∀ q : (𝟙_ (Over (Sp ℂ))).left, q = pt := fun q =>
-    Subsingleton.elim (α := PrimeSpectrum ℂ) q pt
-  obtain ⟨U, hU, hpU, -⟩ := exists_isAffineOpen_mem_and_subset (x := (u.ex 0).left pt) (U := ⊤)
-    (Set.mem_univ _)
-  have h0 : ⊤ ≤ (u.ex 0).left ⁻¹ᵁ U := by
-    intro q _
-    rw [hsub q]
-    exact hpU
-  have hcont : Continuous fun t : ℂ => t • w := continuous_id.smul continuous_const
-  have hopen : IsOpen ((fun t : ℂ => t • w) ⁻¹' {z | ⊤ ≤ (u.ex z).left ⁻¹ᵁ U}) := (u.hol U 0).1.preimage hcont
-  obtain ⟨ρ, hρ, hball⟩ := Metric.isOpen_iff.1 hopen 0 (by simpa using h0)
-  have hconst : ∀ (s : Γ(A.left, U)) (t : ℂ), t ∈ Metric.ball (0 : ℂ) ρ →
-      valAt' (u.ex (t • w)).left U s = valAt' (u.ex ((0 : ℂ) • w)).left U s := by
-    intro s t ht
-    have hder : ∀ t ∈ Metric.ball (0 : ℂ) ρ, HasDerivAt (fun t : ℂ => valAt' (u.ex (t • w)).left U s) 0 t := by
-      intro t ht
-      have hm : ⊤ ≤ (u.ex (t • w)).left ⁻¹ᵁ U := hball ht
-      have hd : DifferentiableAt ℂ (fun y => valAt' (u.ex y).left U s) (t • w) :=
-        (u.hol U s).2.differentiableAt ((u.hol U s).1.mem_nhds hm)
-      have hl : HasDerivAt (fun t : ℂ => t • w) w t := by
-        simpa using (hasDerivAt_id t).smul_const w
-      have := hd.hasFDerivAt.comp_hasDerivAt t hl
-      rw [fderiv_eq_zero_of_isDiff_one u h _ hm s] at this
-      exact this
-    exact Metric.isOpen_ball.is_const_of_deriv_eq_zero (convex_ball _ _).isPreconnected
-      (fun t ht => (hder t ht).differentiableAt.differentiableWithinAt)
-      (fun t ht => (hder t ht).deriv) ht (Metric.mem_ball_self hρ)
-  have hmem : ∀ t ∈ Metric.ball (0 : ℂ) ρ, t • w ∈ u.Λ := by
-    intro t ht
-    have hm : ⊤ ≤ (u.ex (t • w)).left ⁻¹ᵁ U := hball ht
-    have hm0 : ⊤ ≤ (u.ex ((0 : ℂ) • w)).left ⁻¹ᵁ U := by simpa using h0
-    have e : (u.ex (t • w)).left = (u.ex ((0 : ℂ) • w)).left := ext_evalPt hU hm hm0 (RingHom.ext fun s => by
-      rw [← valAt'_eq_evalPt _ _ hm, ← valAt'_eq_evalPt _ _ hm0]
-      exact hconst s t ht)
-    have e' : u.ex (t • w) = u.ex ((0 : ℂ) • w) := Over.OverMorphism.ext e
-    rw [← u.ker, e', zero_smul, ex_zero]
-  by_contra hw
-  have := u.discrete
-  obtain ⟨O, hO, hO0⟩ := isDiscrete_iff_forall_mem_exists_isOpen.1
-    (isDiscrete_iff_discreteTopology.2 this) 0 u.Λ.zero_mem
-  have hev : ∀ᶠ t in 𝓝[≠] (0 : ℂ), t • w ∈ O ∧ t ∈ Metric.ball (0 : ℂ) ρ := by
-    refine Filter.Eventually.filter_mono nhdsWithin_le_nhds ?_
-    refine ((hcont.tendsto 0).eventually (hO.mem_nhds ?_)).and (Metric.ball_mem_nhds _ hρ)
-    simpa using (hO0.ge rfl).1
-  obtain ⟨t, ⟨h1, h2⟩, ht⟩ := (hev.and self_mem_nhdsWithin).exists
-  have h3 : t • w = 0 := hO0.le ⟨h1, hmem t h2⟩
-  exact hw ((smul_eq_zero.1 h3).resolve_left ht)
+alias eq_zero_of_isDiff_one := HodgeUnique.eq_zero_of_isDiff_one
 
-theorem exists_affine (u : HolUnif A L g) : ∃ U : A.left.Opens, IsAffineOpen U ∧ ⊤ ≤ (u.ex 0).left ⁻¹ᵁ U := by
-  let pt : (𝟙_ (Over (Sp ℂ))).left := (default : PrimeSpectrum ℂ)
-  have hsub : ∀ q : (𝟙_ (Over (Sp ℂ))).left, q = pt := fun q =>
-    Subsingleton.elim (α := PrimeSpectrum ℂ) q pt
-  obtain ⟨U, hU, hpU, -⟩ := exists_isAffineOpen_mem_and_subset (x := (u.ex 0).left pt) (U := ⊤)
-    (Set.mem_univ _)
-  refine ⟨U, hU, ?_⟩
-  intro q _
-  rw [hsub q]
-  exact hpU
+alias exists_affine := HodgeUnique.exists_affine
 
-theorem eq_of_isDiff (u : HolUnif A L g) {v : epsR ℂ ⟶ A} (hv : IsTangent v) {d d' : Fin g → ℂ}
-    (h : u.IsDiff d v) (h' : u.IsDiff d' v) : d = d' := by
-  obtain ⟨U, hU, h0⟩ := exists_affine u
-  have hvU := (tangent_mem_iff (u := u) hv U).2 h0
-  exact sub_eq_zero.1 (eq_zero_of_isDiff_one u (isDiff_one_of_fderiv u hU h0 fun s => by
-    rw [map_sub, ← h U hvU s, ← h' U hvU s, sub_self]))
+alias eq_of_isDiff := HodgeUnique.eq_of_isDiff
 
-theorem exists_linear_compare {A' : Over (Sp ℂ)} [GrpObj A'] {L' : LB A'.left} {g' : ℕ} (u : HolUnif A L g)
-    (u' : HolUnif A' L' g') (f : A' ⟶ A) [IsMonHom f] :
-    ∃ F : (Fin g' → ℂ) →ₗ[ℂ] (Fin g → ℂ), ∀ z, u.ex (F z) = u'.ex z ≫ f := by
-  letI : CommGroup (𝟙_ (Over (Sp ℂ)) ⟶ A) :=
-    { (inferInstance : Group (𝟙_ (Over (Sp ℂ)) ⟶ A)) with
-      mul_comm := fun a b => by
-        obtain ⟨z, rfl⟩ := u.ex_onto a
-        obtain ⟨w, rfl⟩ := u.ex_onto b
-        exact (u.ex_add z w).symm.trans ((congrArg u.ex (add_comm z w)).trans (u.ex_add w z)) }
-  let ex : (Fin g → ℂ) →+ Additive (𝟙_ (Over (Sp ℂ)) ⟶ A) :=
-    AddMonoidHom.mk' (fun z => Additive.ofMul (u.ex z)) u.ex_add
-  let G' : (Fin g' → ℂ) →+ Additive (𝟙_ (Over (Sp ℂ)) ⟶ A) :=
-    AddMonoidHom.mk' (fun z => Additive.ofMul (u'.ex z ≫ f)) (fun z w => by
-      change u'.ex (z + w) ≫ f = (u'.ex z ≫ f) * (u'.ex w ≫ f)
-      rw [u'.ex_add]
-      exact MonObj.mul_comp _ _ f)
-  have hhol := GlobalTheory.HomLinear.isHolTo_ex_comp u' f
-  obtain ⟨U, hU, h0⟩ := exists_affine u
-  have hker : (ex.ker : Set (Fin g → ℂ)) = u.Λ := Set.ext fun z => u.ker z
-  obtain ⟨F, hF, -⟩ := GlobalTheory.existsUnique_linear_lift_of_separating (ex := ex) (G := G') u.ex_onto
-    (hker ▸ isDiscrete_iff_discreteTopology.2 u.discrete)
-    (S := {a | ⊤ ≤ (Additive.toMul a).left ⁻¹ᵁ U})
-    (f := fun (s : Γ(A.left, U)) a => valAt' (Additive.toMul a).left U s)
-    (by rw [← map_zero ex]; exact h0) (by
-      intro a ha b hb h
-      refine Over.OverMorphism.ext (f := Additive.toMul a) (g := Additive.toMul b)
-        (ext_evalPt (R := ℂ) hU ha hb (RingHom.ext fun s => ?_))
-      exact (valAt'_eq_evalPt _ U ha s).symm.trans ((h s).trans (valAt'_eq_evalPt _ U hb s)))
-    (u.hol U 0).1 (by
-      have := (hhol U 0).1
-      simp only [Set.mem_univ, true_and] at this
-      exact this) (fun s => (u.hol U s).2) (fun s => by
-      have := (hhol U s).2
-      simp only [Set.mem_univ, true_and] at this
-      exact this) (fun w hw => eq_zero_of_isDiff_one u (isDiff_one_of_fderiv u hU h0 hw))
-  exact ⟨F, hF⟩
+alias exists_linear_compare := HodgeUnique.exists_linear_compare
 
 end Unif
 
@@ -254,10 +117,6 @@ theorem one_left_comp (h : IsGrpPullback A G z φ) (T : Over (Sp ℂ)) :
   have e' : push h 1 * push h 1 = push h (1 : T ⟶ A) := Over.OverMorphism.ext e
   exact congrArg (·.left) (mul_eq_left.1 e')
 
-theorem one_left {Y : Scheme.{0}} (y : Y ⟶ X) : (1 : Over.mk y ⟶ G).left = y ≫ η[G].left := by
-  rw [Hom.one_def, Over.comp_left]
-  congr 1
-
 def lft (h : IsGrpPullback A G z φ) (v : epsAt z ⟶ G) : epsR ℂ ⟶ A :=
   Over.homMk (h.1.lift v.left (spMap (algebraMap ℂ (DualNumber ℂ))) (Over.w v)) (h.1.lift_snd _ _ _)
 
@@ -275,7 +134,7 @@ theorem isTangent_lft (h : IsGrpPullback A G z φ) {v : epsAt z ⟶ G} (hv : IsT
     refine Eq.trans hv ?_
     have e := one_left_comp h (𝟙_ (Over (Sp ℂ)))
     rw [Hom.one_def, toUnit_unit, Category.id_comp] at e
-    rw [e, one_left, one_left]
+    rw [e, HodgeUnique.one_left, HodgeUnique.one_left]
     simp
   · rw [Category.assoc]
     have e1 : (lft h v).left ≫ A.hom = spMap (algebraMap ℂ (DualNumber ℂ)) := Over.w _

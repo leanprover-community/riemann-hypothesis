@@ -772,17 +772,6 @@ open scoped commutatorElement
 
 namespace UpperTheory.Gal.UnramifiedFromSplittingCriterion
 
-private theorem normal_of_comm {Γ : Type} [Group Γ] (H : Subgroup Γ) (h : commutator Γ ≤ H) : H.Normal := by
-  constructor
-  intro n hn g
-  have hc : ⁅g, n⁆ ∈ H := h (by
-    rw [commutator_def]
-    exact Subgroup.commutator_mem_commutator (Subgroup.mem_top g) (Subgroup.mem_top n))
-  have he : g * n * g⁻¹ = ⁅g, n⁆ * n := by
-    rw [commutatorElement_def]; group
-  rw [he]
-  exact H.mul_mem hc hn
-
 open Polynomial in
 private theorem exists_map_eq_conj_of_isAlgClosed_algebraic {Ω : Type} [Field Ω] [IsAlgClosed Ω] [CharZero Ω] [Algebra.IsAlgebraic ℚ Ω]
     (φ : Ω →+* ℂ) (y : Ω) : ∃ z : Ω, φ z = starRingEnd ℂ (φ y) := by
@@ -858,7 +847,7 @@ theorem exFld : ExFld := by
   haveI hfin : FiniteDimensional E M :=
     (InfiniteGalois.isOpen_iff_finite M).mp (by rw [hfixM]; exact hopen)
   haveI hgal : IsGalois E M :=
-    (InfiniteGalois.normal_iff_isGalois M).mp (by rw [hfixM]; exact normal_of_comm H' hcomm)
+    (InfiniteGalois.normal_iff_isGalois M).mp (by rw [hfixM]; exact Subgroup.Normal.of_commutator_le _ hcomm)
   have hab : ∀ σ τ : Gal(M/E), σ * τ = τ * σ := by
     intro σ τ
     obtain ⟨g, rfl⟩ := AlgEquiv.restrictNormalHom_surjective (K₁ := M) Ω σ

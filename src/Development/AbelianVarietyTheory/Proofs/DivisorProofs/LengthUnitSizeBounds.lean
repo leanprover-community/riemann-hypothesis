@@ -42,8 +42,6 @@ import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.CfgTop
 
 @[expose] public section
 
-set_option autoImplicit false
-
 
 noncomputable section
 

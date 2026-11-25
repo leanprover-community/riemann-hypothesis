@@ -16,8 +16,6 @@ namespace Formalism.L2.Col
 
 open Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.DIV Formalism.UG
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 structure StepCrd {X : Fields} (Pr : Primes X) (σ₀ : X.K →+* ℂ) (n : ℕ) {cls : Type}
     (L : cls → Submodule (𝓞 X.E) (Fin n → X.E)) where
   J : Matrix (Fin n) (Fin n) X.E

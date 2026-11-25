@@ -89,12 +89,7 @@ theorem step_top (b : Fin r → E) : flagStep Ω b r = Submodule.span Ω (Set.ra
 
 theorem range_castLE (b : Fin r → E) {s : ℕ} (hs : s ≤ r) :
     Set.range (b ∘ Fin.castLE hs) = b '' {k | (k : ℕ) < s} := by
-  ext x
-  constructor
-  · rintro ⟨k, rfl⟩
-    exact ⟨Fin.castLE hs k, k.2, rfl⟩
-  · rintro ⟨k, hk, rfl⟩
-    exact ⟨⟨k, hk⟩, rfl⟩
+  rw [Set.range_comp, Fin.range_castLE]
 
 theorem exists_diag (b : Fin r → E) (i : Fin r) {e : E} (he : e ∈ flagStep Ω b (i + 1)) :
     ∃ t : Ω, e - t • b i ∈ flagStep Ω b i := by

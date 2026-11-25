@@ -40,8 +40,6 @@ import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.HeckeV
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.IdemInt

@@ -120,8 +120,7 @@ theorem isLat_intVec (m : ℕ) : IsLat (intVec K m) := by
   · rw [eq_top_iff]
     intro v _
     have hv : v = ∑ i, v i • (Pi.single i (1 : K) : Fin m → K) := by
-      ext j
-      simp [Finset.sum_apply, Pi.single_apply]
+      simp [← Pi.single_smul', Finset.univ_sum_single]
     rw [hv]
     refine Submodule.sum_mem _ fun i _ => Submodule.smul_mem _ _ (Submodule.subset_span ?_)
     intro j

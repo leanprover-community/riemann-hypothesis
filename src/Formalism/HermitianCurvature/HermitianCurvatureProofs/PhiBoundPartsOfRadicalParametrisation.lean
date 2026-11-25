@@ -295,13 +295,12 @@ end struct
 
 end Formalism.FourierDecayAlt.P.Ux10
 
-open Matrix Filter Topology
 
 namespace Formalism.FourierDecayAlt.P.Ux10
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.P.B4
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 variable {k r : ℕ}
 
@@ -637,13 +636,12 @@ lemma rho_cd (g0 : Mat k r) : ContDiffOn ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (
 
 end Formalism.FourierDecayAlt.P.Ux10
 
-open Matrix MeasureTheory Filter Topology
 
 namespace Formalism.FourierDecayAlt.P.Ux10
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.P.B4
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 variable {k r : ℕ} {α : Type*} [MeasurableSpace α] {μ : Measure α}
   {E : Type} [NormedAddCommGroup E] [NormedSpace ℂ E]
@@ -899,11 +897,9 @@ end ck
 
 end Formalism.FourierDecayAlt.P.Ux10
 
-open Matrix MeasureTheory Filter Topology
 
 namespace Formalism.FourierDecayAlt.P.Ux10
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.U Formalism.REAL Formalism.QuantumDeterminants
 
 section cont
 
@@ -1069,7 +1065,7 @@ end psi
 
 section cd
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 lemma block3_middle_contDiffOn {k j ρ : ℕ} (A11 : Matrix (Fin j) (Fin j) ℂ) (A12 : Matrix (Fin j) (Fin (2 * ρ + k + 1)) ℂ)
     (A13 : Matrix (Fin j) (Fin j) ℂ) (A21 : Matrix (Fin (2 * ρ + k + 1)) (Fin j) ℂ)
@@ -1112,13 +1108,12 @@ end cd
 
 end Formalism.FourierDecayAlt.P.Ux10
 
-open Matrix MeasureTheory Filter Topology
 
 namespace Formalism.FourierDecayAlt.P.Ux10
 
 open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.U Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.P.B4
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 lemma slice_vanish (hM : SliceMem) (hR : RadicalParam) (hZh : ZhSlice) {k p s ρ : ℕ} (σ : Equiv.Perm (Fin p))
     (d : Fin p → ℂ) (hd : ∀ i, d i ≠ 0) {E : Type} [NormedAddCommGroup E] [NormedSpace ℂ E]
@@ -1214,13 +1209,12 @@ theorem slice_bound (hM : SliceMem) (hR : RadicalParam) (hZh : ZhSlice) (hC : De
 
 end Formalism.FourierDecayAlt.P.Ux10
 
-open Matrix MeasureTheory Filter Topology
 
 namespace Formalism.FourierDecayAlt.P.Ux10
 
 open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.U Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.P.B4
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 lemma fin_step {x g a T c I : ℝ} (hg : 0 < g) (hx : x ≤ c * (T * g ^ (-a)) * I) :
     g ^ a * x ≤ c * I * T := by
@@ -1362,7 +1356,6 @@ end Formalism.FourierDecayAlt.P.Ux10
 
 namespace Formalism.FourierDecayAlt.P
 
-open Formalism.FourierDecayAlt.U
 
 theorem Ux10.phi_bound_parts_of_radical_parametrisation (hR : RadicalParam) : PointwiseIntegralBoundFromComponents :=
   Ux10.phi_bound_parts_of_radical_and_slice hR _root_.Formalism.FourierDecayAlt.P.Ux3.zhSlice

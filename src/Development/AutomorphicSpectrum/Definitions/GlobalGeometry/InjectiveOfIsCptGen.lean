@@ -182,33 +182,12 @@ end Affine
 
 section Int
 
-theorem isCptGen_int : IsCptGen (pt (algebraMap ℤ ℚ)) := isCptGen_fractionRing
-
 def two : Cpt (pt (algebraMap ℤ ℚ)) :=
   ⟨(⟨Ideal.span {2}, (Ideal.span_singleton_prime two_ne_zero).2 Int.prime_two⟩ : PrimeSpectrum ℤ),
     (PrimeSpectrum.le_iff_specializes _ _).1 (by
       change (genPt (pt (algebraMap ℤ ℚ))).asIdeal ≤ _
       rw [genPt_asIdeal, (RingHom.injective_iff_ker_eq_bot _).1 (IsFractionRing.injective ℤ ℚ)]
       exact bot_le)⟩
-
-theorem half_notMem : (2 : ℚ)⁻¹ ∉ regAt _ two := by
-  rw [mem_regAt_iff]
-  rintro ⟨a, s, hs, -, h⟩
-  apply hs
-  change s ∈ Ideal.span {(2 : ℤ)}
-  rw [Ideal.mem_span_singleton]
-  refine ⟨a, ?_⟩
-  simp only [algebraMap_int_eq, eq_intCast] at h
-  have : (s : ℚ) = 2 * a := by rw [← h]; ring
-  exact_mod_cast this
-
-theorem not_unitAt_two : ¬ unitAt _ two (2 : ℚ) := fun h => half_notMem h.2.2
-
-theorem unitAt_three : unitAt _ two (3 : ℚ) := by
-  have h : ∀ n : ℤ, ¬ (2 : ℤ) ∣ n → n ∉ two.1.asIdeal := fun n hn hm =>
-    hn (Ideal.mem_span_singleton.1 hm)
-  refine ⟨by norm_num, (mem_regAt_iff _ _ _).2 ⟨3, 1, h 1 (by decide), by simp, by simp⟩,
-    (mem_regAt_iff _ _ _).2 ⟨1, 3, h 3 (by decide), by simp, by simp⟩⟩
 
 end Int
 

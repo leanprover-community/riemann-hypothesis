@@ -106,18 +106,6 @@ noncomputable def rightMeasure [MeasurableSpace (G ⧸ H)] [MeasurableSpace (Rig
   μ.map (invCoset H)
 
 
-open MeasureTheory MeasureTheory.Measure Topology in
-open scoped ENNReal NNReal in
-variable {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
-  [MeasurableSpace G] [BorelSpace G] (H : Subgroup G) in
-omit [MeasurableSpace G] [BorelSpace G] in
-theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.InvariantRadonFibre.IsInvariantRadon.regular [LocallyCompactSpace G]
-    [SecondCountableTopology G] [IsClosed (H : Set G)] [MeasurableSpace (G ⧸ H)]
-    [BorelSpace (G ⧸ H)] {μ : Measure (G ⧸ H)} (h : _root_.GlobalTheory.IndefiniteRowSideFullHecke.InvariantRadonFibre.IsInvariantRadon H μ) :
-    μ.Regular := by
-  haveI := h.finiteOnCompacts
-  infer_instance
-
 def ExistsUniqueInvariantRadon [MeasurableSpace (G ⧸ H)] : Prop :=
   (∃ μ : Measure (G ⧸ H), IsInvariantRadon H μ) ∧
     ∀ μ μ' : Measure (G ⧸ H), IsInvariantRadon H μ → IsInvariantRadon H μ' →

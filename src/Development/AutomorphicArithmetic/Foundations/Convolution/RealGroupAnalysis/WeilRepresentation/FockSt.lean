@@ -791,9 +791,6 @@ open Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual GlobalTheory.CuspR
 open UpperTheory.ConvolutionTheory.R2 UpperTheory.ConvolutionTheory.R2.Fo
 open scoped Classical
 
-private theorem psi_add {F : Type} [Field F] [NumberField F] (x y : A F) : ψ (x + y) = ψ x * ψ y := by
-  simp only [ψ, AddChar.map_add_eq_mul, Circle.coe_mul]
-
 private theorem quaternaryForm_add_left {F : Type} [Field F] [NumberField F] (δ : F) (y a v : V4 F) :
     B4 δ (y + a) v = B4 δ y v + B4 δ a v := by
   simp only [B4, Pi.add_apply]
@@ -827,7 +824,7 @@ theorem UpperTheory.ConvolutionTheory.R2.Fo.fixGen :
       change φ.1 y * ψ (B4 D.δ y (v + a)) = φ.1 y * ψ (B4 D.δ y v)
       have e : B4 D.δ y (v + a) = B4 D.δ y v + B4 D.δ a y := by
         rw [bilinearFour_comm D.δ y (v + a), quaternaryForm_add_left, bilinearFour_comm D.δ v y]
-      rw [e, psi_add]
+      rw [e, ψ_add]
       calc φ.1 y * (ψ (B4 D.δ y v) * ψ (B4 D.δ a y))
           = ψ (B4 D.δ y v) * (ψ (B4 D.δ a y) * φ.1 y) := by ring
         _ = φ.1 y * ψ (B4 D.δ y v) := by rw [h]; ring
@@ -836,7 +833,7 @@ theorem UpperTheory.ConvolutionTheory.R2.Fo.fixGen :
       rw [← integral_const_mul]
       have key : ∀ y, ψ (B4 D.δ a v) * (φ.1 y * ψ (B4 D.δ y v)) =
           φ.1 (y + a) * ψ (B4 D.δ (y + a) v) := fun y => by
-        rw [quaternaryForm_add_left, psi_add, (hφ a ha y).1]
+        rw [quaternaryForm_add_left, ψ_add, (hφ a ha y).1]
         ring
       simp_rw [key]
       exact integral_add_right_eq_self (μ := adeleMeasurePi F) (fun y => φ.1 y * ψ (B4 D.δ y v)) a

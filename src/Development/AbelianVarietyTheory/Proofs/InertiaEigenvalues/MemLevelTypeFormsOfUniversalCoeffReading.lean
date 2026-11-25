@@ -72,8 +72,6 @@ open scoped TensorProduct
 
 namespace GlobalTheory.ExportType
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 open GlobalTheory.ExportSeries GlobalTheory.ExportSeries.DualType
 
 variable {D : D7} {S T : HSp D}

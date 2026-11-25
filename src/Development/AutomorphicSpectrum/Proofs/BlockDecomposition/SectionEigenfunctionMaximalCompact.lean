@@ -51,8 +51,6 @@ open GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory
 open IsDedekindDomain NumberField
 open PositivityTheory.Rg.Rsw PositivityTheory.Rg.Rsw.L
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 namespace GlobalTheory.CompanionTheory.Jp
 
 def GoodPsi (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (v : Pl D) : Prop :=

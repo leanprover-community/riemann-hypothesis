@@ -42,8 +42,6 @@ public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.ZeroSecti
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open CategoryTheory AlgebraicGeometry Limits MonoidalCategory CartesianMonoidalCategory MonObj

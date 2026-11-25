@@ -55,8 +55,6 @@ import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsOrbitProd
 
 open NumberField IsDedekindDomain ValuativeRel GlobalTheory.FunExt GlobalTheory.LocGL
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace GlobalTheory.LBCNu
 
 open MeasureTheory

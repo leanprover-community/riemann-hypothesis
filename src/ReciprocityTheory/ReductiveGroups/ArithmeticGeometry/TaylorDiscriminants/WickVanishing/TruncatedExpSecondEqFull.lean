@@ -7,8 +7,6 @@ import Mathlib.Tactic.Lemma
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open MvPolynomial Finset ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ

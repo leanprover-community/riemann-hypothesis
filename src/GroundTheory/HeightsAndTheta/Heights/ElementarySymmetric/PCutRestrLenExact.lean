@@ -255,14 +255,7 @@ theorem proof (hSC : SurjectiveClosed.Statement.{u, w}) (hFS : FiniteSections.St
         hU I _ (SectionCount.Drop.Filt.Step.mem_secs_iff'.mp y.2 I)
           (SectionCount.Drop.Filt.Step.mem_secs_iff'.mp h I)
   let μb : (H' ⧸ P) →ₗ[k] H ⧸ A := P.liftQ μ (fun y hy => (hμ y).mp hy)
-  have hinj : Function.Injective μb := by
-    rw [← LinearMap.ker_eq_bot]
-    exact Submodule.ker_liftQ_eq_bot _ _ _ (fun y hy => (hμ y).mpr hy)
   let π : (H ⧸ A) →ₗ[k] H ⧸ B := Submodule.factor hAB
-  have hsurj : Function.Surjective π := by
-    intro z
-    obtain ⟨m, rfl⟩ := Submodule.mkQ_surjective B z
-    exact ⟨A.mkQ m, rfl⟩
   have hex : Function.Exact μb π := by
     intro z
     obtain ⟨m, rfl⟩ := Submodule.mkQ_surjective A z
@@ -288,7 +281,9 @@ theorem proof (hSC : SurjectiveClosed.Statement.{u, w}) (hFS : FiniteSections.St
       have h1 := sub_mem (hgsec _ y.2) (hWV _ hv)
       convert h1 using 1
       ring
-  have hlen := Module.length_eq_add_of_exact μb π hinj hsurj hex
+  have hlen := Module.length_eq_add_of_exact μb π
+    (LinearMap.ker_eq_bot.mp (Submodule.ker_liftQ_eq_bot _ _ _ fun y hy => (hμ y).mpr hy))
+    (Submodule.factor_surjective hAB) hex
 
   have hx : x ≠ 0 := by
     obtain ⟨i, hi⟩ := I₀.2.1

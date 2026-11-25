@@ -47,8 +47,6 @@ open GlobalTheory.Ker (ipO)
 
 namespace GlobalTheory.IndefiniteRowSideFullHecke.VacuumFockVectors
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} {V W : HSp D} {S S' : D.what₂.Tau → SPar}
 
 def creOp (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) (M : DSModel V S) (M' : DSModel W S')

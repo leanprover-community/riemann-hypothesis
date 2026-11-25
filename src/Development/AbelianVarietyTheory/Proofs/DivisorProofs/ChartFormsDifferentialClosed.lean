@@ -44,8 +44,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 
 open GlobalTheory GlobalTheory.LogDR
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.LogDR.StabD

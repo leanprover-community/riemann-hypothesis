@@ -1156,7 +1156,6 @@ private theorem UpperTheory.Kd.K4.unitsReduction_surjective (l r : ℕ) [Fact l.
 private def UpperTheory.Kd.K4.unitsLevelToPrimePowReduction (l n r N : ℕ) : (ZMod (topM l n r N))ˣ →* (ZMod (l ^ r))ˣ :=
   Units.map (ZMod.castHom (Dvd.dvd.mul_right (pow_dvd_pow l (Nat.le_add_right r n)) N) (ZMod (l ^ r))).toMonoidHom
 
-attribute [-instance] GlobalTheory.KZ.ClsMod.neZero_pow
 
 theorem UpperTheory.Kd.K4.mlOf2 :
     SymEx → SApi → SInvApi → SBStab → SSlD → SCohApi → SCycZ → STop0 → KatoClassNormCompatibleCyclotomic → KatoClassCompatibleModPowers → ∀ (l : ℕ) [Fact l.Prime] (Ω : Type) [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (ε : Ω →+* ℂ) (X : Tower Ω ε) (N : ℕ) [NeZero N] (e : ℕ),

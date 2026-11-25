@@ -895,22 +895,7 @@ theorem map_mem_radical {k k' : Type} [CommRing k] [CommRing k'] (e : k →+* k'
 
 theorem sum_character_eq_zero_iff {H V : Type} [Group H] [Fintype H] [AddCommGroup V] [Module ℂ V] [FiniteDimensional ℂ V]
     (τ : Representation ℂ H V) : ∑ h, τ.character h = 0 ↔ ∀ x : V, (∀ h, τ h x = x) → x = 0 := by
-  have hcard : (Nat.card H : ℂ) ≠ 0 := Nat.cast_ne_zero.2 (Nat.card_pos (α := H)).ne'
-  haveI : Invertible (Nat.card H : ℂ) := invertibleOfNonzero hcard
-  have h := τ.card_inv_mul_sum_char_eq_finrank
-  constructor
-  · intro hs x hx
-    rw [hs, mul_zero] at h
-    have h0 : Module.finrank ℂ τ.invariants = 0 := by exact_mod_cast h.symm
-    have hb : τ.invariants = ⊥ := Submodule.finrank_eq_zero.1 h0
-    have hxm : x ∈ τ.invariants := (τ.mem_invariants x).2 hx
-    rw [hb] at hxm
-    exact (Submodule.mem_bot ℂ).1 hxm
-  · intro hx
-    have hb : τ.invariants = ⊥ :=
-      (Submodule.eq_bot_iff _).2 fun x hxm => hx x ((τ.mem_invariants x).1 hxm)
-    rw [hb, finrank_bot, Nat.cast_zero] at h
-    exact (mul_eq_zero.1 h).resolve_left (inv_ne_zero hcard)
+  apply _root_.GlobalTheory.GoodTypeGeneric.sum_character_eq_zero_iff <;> assumption
 
 theorem noFixed_iff_sum {k : Type} [Field k] {r a : ℕ} [Fintype (unipRadical k (blk2 (n := r) a))] {G V : Type} [Group G]
     [AddCommGroup V] [Module ℂ V] [FiniteDimensional ℂ V] (τ : Representation ℂ G V) (ι : GL (Fin r) k →* G) :

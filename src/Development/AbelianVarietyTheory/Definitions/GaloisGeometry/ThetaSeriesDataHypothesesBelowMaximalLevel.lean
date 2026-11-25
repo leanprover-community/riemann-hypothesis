@@ -80,8 +80,6 @@ open Formalism.MainNotions.G.KAat Formalism.MainNotions.G.CmpJ
 open Formalism.L2.KerInert.AdmLoc (pendG CurveIn XiIn)
 open scoped TensorProduct
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section B
 
 variable {p : ℕ} [Fact p.Prime] {D : D7}

@@ -39,8 +39,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 open NumberField IsDedekindDomain GlobalTheory.CuspRep GlobalTheory.CuspRep.ParLaws GlobalTheory.LocGL
 open UpperTheory.V.Af UpperTheory.V.Af.Gu
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 theorem UpperTheory.twist_local_components_compatible :
     TwistLoc := by
   intro E _ _ _ a P t w ρ hρ

@@ -88,6 +88,7 @@ import Formalism.SharpRestriction.CuspSpanNormBounds.LocalGroupInFamilyNontrivia
 import Formalism.SharpRestriction.CuspSpanNormBounds.Point
 import Development.AbelianVarietyTheory.Definitions.Foundations.IsHermND
 import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.TraceEqSumLocalTracesAbovePrime
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.FlagMeasures.LocalScalarMulEqDifferentGenMulTheta, Development.AbelianVarietyTheory.Proofs.FlagMeasures.LocalScalarMulEqDifferentGenMulThetaStatement, Development.AbelianVarietyTheory.Proofs.FlagMeasures.LocalTermWeightEqCharacterMulInv, Development.AbelianVarietyTheory.Proofs.FlagMeasures.LocalTermWeightEqCharacterMulInvStatement, Development.AbelianVarietyTheory.Proofs.FlagMeasures.MovedRowLatticeTermIsLattice, Development.AbelianVarietyTheory.Proofs.FlagMeasures.MovedRowLatticeTermIsLatticeStatement, Development.AbelianVarietyTheory.Proofs.FlagMeasures.T2SpaceIsNonarchimedeanLocalFieldSingleBlock, Development.AbelianVarietyTheory.Proofs.FlagMeasures.FinprodPsiEEqExpTrace, Development.AbelianVarietyTheory.Proofs.FlagMeasures.PsiOfEq, Development.AbelianVarietyTheory.Proofs.FlagMeasures.SimpleRootCoefEqSuperdiagonalSumFrames, Development.AbelianVarietyTheory.Proofs.FlagMeasures.SimpleRootCoefEqSuperdiagonalSumFramesStatement, Development.AbelianVarietyTheory.Proofs.FlagMeasures.UnitriangularFrameChangeFromLinearAut, Development.AbelianVarietyTheory.Proofs.FlagMeasures.UnitriangularFrameChangeFromLinearAutStatement, Development.AbelianVarietyTheory.Proofs.FlagMeasures.UnitriangularMulInvSuperdiagonalSumSub, Development.AbelianVarietyTheory.Proofs.FlagMeasures.UnitriangularMulInvSuperdiagonalSumSubStatement, Development.AbelianVarietyTheory.Proofs.FlagMeasures.MovedTermLatticeIsGlobalTermPhase, Development.AbelianVarietyTheory.Proofs.FlagMeasures.MovedTermLatticeIsGlobalTermPhaseStatement
@@ -471,14 +472,7 @@ theorem isOpen_ball (K : Type) [Field K] [ValuativeRel K] [TopologicalSpace K]
 theorem tendsto_pow_zero (K : Type) [Field K] [ValuativeRel K] [TopologicalSpace K]
     [IsNonarchimedeanLocalField K] (z : K) (hz : valuation K z < 1) :
     Tendsto (fun n : ℕ => z ^ n) atTop (𝓝 0) := by
-  have : MulArchimedean (ValueGroupWithZero K) :=
-    ValuativeRel.isRankLeOne_iff_mulArchimedean.mp inferInstance
-  rw [(IsValuativeTopology.hasBasis_nhds_zero K).tendsto_right_iff]
-  intro γ _
-  obtain ⟨n, hn⟩ := exists_pow_lt₀ hz γ
-  filter_upwards [eventually_ge_atTop n] with m hm
-  simp only [map_pow]
-  exact lt_of_le_of_lt (pow_le_pow_right_of_le_one' hz.le hm) hn
+  apply _root_.GlobalTheory.LocalTraceSum.tendsto_pow <;> assumption
 
 theorem norm_le_one_of_isIntegral {Ω : Type} [NormedField Ω] [IsUltrametricDist Ω] {x : Ω}
     (hx : IsIntegral ℤ x) : ‖x‖ ≤ 1 := by

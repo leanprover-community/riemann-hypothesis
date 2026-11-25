@@ -45,8 +45,6 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.CupPair
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open KaehlerDifferential GlobalTheory.CechDR GlobalTheory.PD

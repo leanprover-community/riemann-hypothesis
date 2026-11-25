@@ -14,8 +14,6 @@ open scoped TensorProduct ContDiff InnerProductSpace
 
 namespace Formalism.IndefR.Mult
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 def dualPar (S : SPar) : SPar := S.image fun x => (-x.1, x.2)
 
 variable (D : D7)

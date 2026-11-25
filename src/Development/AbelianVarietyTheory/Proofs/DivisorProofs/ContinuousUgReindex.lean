@@ -232,8 +232,6 @@ end Transfer
 
 section Hsp
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 theorem reindex_dbl_incM (T : HSp D) {JA : Matrix (Fin T.rank) (Fin T.rank) D.host.E} (hA : JA = T.gramᵀ) :
@@ -251,8 +249,6 @@ theorem reindex_dbl_incM (T : HSp D) {JA : Matrix (Fin T.rank) (Fin T.rank) D.ho
 end Hsp
 
 section HspCo
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7}
 
@@ -290,8 +286,6 @@ theorem isHeckeChar_one : IsHeckeChar D 1 := ⟨continuous_const, fun _ => rfl�
 end HspCo
 
 section UgDbl
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7}
 

@@ -3,6 +3,7 @@ module
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.BcDefs
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsIsSplitChartOfBasis
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UnderEqIffConjPl
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HasSatGLOfInvT
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -41,30 +42,6 @@ import Mathlib.Tactic.ReduceModChar
 @[expose] public section
 
 open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.MainNotions.N Polynomial GlobalTheory.CuspRep GlobalTheory.HeckeGal GlobalTheory.GalOfCusp UpperTheory.V UpperTheory.V.Af UpperTheory.V.Af.Bc UpperTheory.V.Published
-
-private theorem hasSatGL_of_invT {E : Type} [Field E] [NumberField E] {a : ℕ} {w w' : HeightOneSpectrum (𝓞 E)}
-    (c : w.adicCompletion E ≃+* w'.adicCompletion E) (hc : ∀ x, Valued.v (c x) = Valued.v x)
-    (hq : Formalism.UG.qV E w' = Formalism.UG.qV E w)
-    {V W : Type} [AddCommGroup V] [Module ℂ V] [AddCommGroup W] [Module ℂ W]
-    {ρ : Representation ℂ (GL (Fin a) (w.adicCompletion E)) V} {ρ' : Representation ℂ (GL (Fin a) (w'.adicCompletion E)) W}
-    (T : V ≃ₗ[ℂ] W) (hT : ∀ g x, ρ' (GlobalTheory.LFun.ConjPlace.invT c a g) (T x) = T (ρ g x)) {B : Multiset ℂˣ}
-    (h : GlobalTheory.LFun.HasSatGL w ρ B) : GlobalTheory.LFun.HasSatGL w' ρ' (B.map (·⁻¹)) := by
-  have hK := GlobalTheory.LFun.ConjPlace.mem_iff_invT (n := a) c (GlobalTheory.LFun.ConjPlace.map_mem_Ov_iff c hc)
-  have hf : ∀ g y, T.toLinearMap ((ρ.comp (GlobalTheory.LFun.ConjPlace.invT c a).symm.toMonoidHom) g y) =
-      ρ' g (T.toLinearMap y) := fun g y => by
-    change T (ρ ((GlobalTheory.LFun.ConjPlace.invT c a).symm g) y) = ρ' g (T y)
-    rw [← hT, MulEquiv.apply_symm_apply]
-  have key : ∀ x, GlobalTheory.LFun.IsSatVecGL w ρ x B → GlobalTheory.LFun.IsSatVecGL w' ρ' (T x) (B.map (·⁻¹)) := fun x hx =>
-    (GlobalTheory.LFun.ConjPlace.isSatVecGL_invT c hc hq hx).map T.toLinearMap hf
-      ((map_ne_zero_iff T T.injective).2 hx.1)
-  constructor
-  · obtain ⟨x, hx⟩ := h.exists_vec
-    exact (Submodule.ne_bot_iff _).2 ⟨_, (key x hx).2.1, (key x hx).1⟩
-  · intro y hy h0
-    obtain ⟨x, rfl⟩ := T.surjective y
-    refine key x (h.2 x (GlobalTheory.LGrp.mem_fixed.2 fun k hk => T.injective ?_) ((map_ne_zero_iff T T.injective).1 h0))
-    have := GlobalTheory.LGrp.mem_fixed.1 hy _ ((hK k).1 hk)
-    rwa [hT] at this
 
 private theorem theta_locGL {E : Type} [Field E] [NumberField E] [IsCMField E] {a : ℕ} (w : HeightOneSpectrum (𝓞 E))
     (g : GL (Fin a) ((cPl w).adicCompletion E)) :
@@ -116,7 +93,8 @@ theorem UpperTheory.theta_satake_parameters_inverse :
   let S : (GlobalTheory.ThetaPull.thetaSub P).V ≃ₗ[ℂ] (GlobalTheory.ThetaPull.thetaSub P).V :=
     LinearEquiv.ofLinear (ρ' k⁻¹) (ρ' k) (by rw [← Module.End.mul_eq_comp, ← map_mul, inv_mul_cancel, map_one]; rfl)
       (by rw [← Module.End.mul_eq_comp, ← map_mul, mul_inv_cancel, map_one]; rfl)
-  refine hasSatGL_of_invT c (conjLoc_spec _ w).2.2 hq (T₀.trans S) (fun g x => ?_) h
+  refine GlobalTheory.ThetaSatake.hasSatGL_of_invT
+    c (conjLoc_spec _ w).2.2 hq (T₀.trans S) (fun g x => ?_) h
   have e : thetaGL n (RingHom.id _) (Matrix.GeneralLinearGroup.map (conjLoc _ w) g) =
       k * GlobalTheory.LFun.ConjPlace.invT c n g * k⁻¹ := by
     have e1 : GlobalTheory.LFun.ConjPlace.invT c n g = GlobalTheory.CuspRep.invT n _ (Matrix.GeneralLinearGroup.map (conjLoc _ w) g) :=

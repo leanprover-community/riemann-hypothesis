@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.IndicatorHomSelfDualComponentsSchwartzBruhat
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.ValueDoubleUnif
 public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.IndicatorFunctionIdentity
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.DoubleThetaUnfoldingEquivariantUnitaryGroups
@@ -514,20 +515,7 @@ variable {D : D7} {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [Is
 theorem full_of_isLat {p : SplitPt D k} {S : HSp D} {n : Type} [Fintype n] [DecidableEq n]
     (β : Frame p S n) (L : Lat S) (hL : IsSelfDualC S L)
     (Λ : Submodule 𝒪[k] (n → k)) (hΛ : Λ.IsLattice k) (h : β.IsLat L Λ) : Λ.IsFullLattice k := by
-  refine { toIsLattice := hΛ, span_eq_top := ?_ }
-  obtain ⟨m, s, c, hs, hc, _⟩ := GlobalTheory.FinPl.FrameLat.exists_gen (p := p) hL
-  apply top_unique
-  intro x _
-  have hx := congrArg (β.b' *ᵥ ·) (hc (β.b *ᵥ x))
-  simp only [Matrix.mulVec_sum, Matrix.mulVec_smul, Matrix.mulVec_mulVec, β.b'b, Matrix.one_mulVec] at hx
-  rw [hx]
-  apply Submodule.sum_mem
-  intro i _
-  apply Submodule.smul_mem
-  apply Submodule.subset_span
-  apply (h _).2
-  rw [Matrix.mulVec_mulVec, β.bb', Matrix.one_mulVec]
-  exact GlobalTheory.FinPl.FrameLat.sec_inc_mem (p := p) (hs i)
+  apply _root_.GlobalTheory.FinPl.isLattice_of_isLat_selfDual <;> assumption
 
 section One
 

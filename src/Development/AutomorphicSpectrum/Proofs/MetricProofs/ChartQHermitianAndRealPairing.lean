@@ -241,15 +241,10 @@ theorem limitForm_period_symm {L : Flat.LogPeriods n a g Λ} {bas : Module.Basis
       simp
       linarith
     · simp [ws, not_lt.2 hk]
-  have hexp : Tendsto (fun m : ℕ => Complex.exp (-((m : ℂ) + 1))) atTop (𝓝 0) := by
-    rw [tendsto_zero_iff_norm_tendsto_zero]
-    have e : ∀ m : ℕ, ‖Complex.exp (-((m : ℂ) + 1))‖ = Real.exp (-((m : ℝ) + 1)) := by
-      intro m
-      rw [Complex.norm_exp]
-      simp
-    simp only [e]
-    exact Real.tendsto_exp_atBot.comp (tendsto_neg_atTop_atBot.comp
-      (tendsto_atTop_add_const_right _ _ tendsto_natCast_atTop_atTop))
+  have hexp : Tendsto (fun m : ℕ => Complex.exp (-((m : ℂ) + 1))) atTop (𝓝 0) :=
+    Complex.tendsto_exp_comap_re_atBot.comp (tendsto_comap_iff.2 (by
+      simpa [Function.comp_def] using tendsto_neg_atTop_atBot.comp
+        (tendsto_atTop_add_const_right _ (1 : ℝ) tendsto_natCast_atTop_atTop)))
   have hz : Tendsto (fun m => expCover a (ws m)) atTop (𝓝 (0 : Fin n → ℂ)) := by
     rw [tendsto_pi_nhds]
     intro k

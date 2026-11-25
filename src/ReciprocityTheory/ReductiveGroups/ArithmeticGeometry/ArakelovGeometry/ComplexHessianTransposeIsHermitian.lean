@@ -18,7 +18,6 @@ namespace ReciprocityTheory.ChartRestriction.G.ArakelovGeometry
 
 open ReciprocityTheory.ChartRestriction.G.Geo MvPolynomial Complex Filter Topology Finset Matrix
 
-open MvPolynomial Complex Filter Topology
 
 section
 

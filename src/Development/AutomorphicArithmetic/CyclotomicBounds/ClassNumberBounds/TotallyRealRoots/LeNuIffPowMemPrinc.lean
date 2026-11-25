@@ -89,14 +89,6 @@ theorem exists_exact_of_nuStar_eq {p : R} {U : Set R} {tr ν : ℕ} (h : nuStar 
   norm_cast at this
   omega
 
-theorem eq_nuStar_of_forall {p : R} {U : Set R} {tr : ℕ} (m : ℕ∞)
-    (hm : ∀ n : ℕ, (n : ℕ∞) ≤ m ↔ ∀ u ∈ U, p ^ n ∣ u ^ tr - 1) : m = nuStar p U tr := by
-  refine le_antisymm ?_ ?_
-  · refine ENat.forall_natCast_le_iff_le.mp fun n hn => ?_
-    exact (le_nuStar_iff p U tr n).mpr ((hm n).mp hn)
-  · refine ENat.forall_natCast_le_iff_le.mp fun n hn => ?_
-    exact (hm n).mpr ((le_nuStar_iff p U tr n).mp hn)
-
 end Def
 
 section Domain

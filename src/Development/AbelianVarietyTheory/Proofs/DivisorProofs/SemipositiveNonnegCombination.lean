@@ -42,8 +42,6 @@ public import ReciprocityTheory.L2DbarEstimates.PlurisubharmonicCharts.DerivDeri
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open CategoryTheory AlgebraicGeometry TopologicalSpace Set Filter Topology

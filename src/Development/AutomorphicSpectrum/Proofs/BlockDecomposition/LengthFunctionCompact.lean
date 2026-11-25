@@ -54,7 +54,7 @@ namespace GlobalTheory.CompanionTheory.LgBound
 open PositivityTheory.RgBcC
 open PositivityTheory.RgTw (Mat G)
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 theorem lgCpt : PositivityTheory.RgBcC.VC.LgCpt := by
   intro n R

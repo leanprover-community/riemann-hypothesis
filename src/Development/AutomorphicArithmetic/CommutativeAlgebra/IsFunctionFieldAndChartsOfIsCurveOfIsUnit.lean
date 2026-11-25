@@ -712,9 +712,6 @@ open CategoryTheory Limits AlgebraicGeometry Opposite GlobalTheory.EtC CochainCo
 
 namespace LateralTheory.EWeil.EmptyVan₂
 
-instance isEmpty_bot : IsEmpty (⊥_ Scheme.{0}) := by
-  infer_instance
-
 theorem sec_subsingleton {R : Type} [CommRing R] (G : Shv R) {U : Scheme.{0}} (f : U ⟶ ⊥_ Scheme.{0}) :
     Subsingleton (G.obj.obj (op U)) := by
   have : IsEmpty U := ⟨fun x => isEmptyElim (f.base x)⟩

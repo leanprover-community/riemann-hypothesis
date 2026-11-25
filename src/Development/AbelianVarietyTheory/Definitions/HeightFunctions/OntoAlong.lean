@@ -39,8 +39,6 @@ public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForm
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Pj Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links
@@ -48,8 +46,6 @@ open Formalism.L2.Host (CharFrame HChar TupTied)
 open GlobalTheory.AtMember GlobalTheory.EX GlobalTheory.EX.OB GlobalTheory.Mem GlobalTheory.Mem.Top GlobalTheory.Mem.Top.Bl GlobalTheory.Fc GlobalTheory.BigTop GlobalTheory.BigOn GlobalTheory.Plug
 
 namespace GlobalTheory.PlugPt
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 set_option genInjectivity false in

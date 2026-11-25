@@ -693,7 +693,7 @@ theorem core (hr : 1 ≤ r) (o n z t : ℕ) (ht : t ≤ o) (hon : o < n)
           ((L.factorial * (L.factorial * (o + n + r + z - 1).choose L) : ℕ) : ℝ) := by
         exact_mod_cast Nat.mul_le_mul_left _ hD
       push_cast at this ⊢
-      nlinarith [(Nat.cast_nonneg ((z + L).choose L) : (0:ℝ) ≤ _)]
+      simpa only [mul_assoc] using mul_le_mul_of_nonneg_left this (Nat.cast_nonneg _)
     have hterm : (((z + L).choose L * L.factorial * L.factorial : ℕ) : ℝ) ≤ Kc o z := by
       unfold Kc
       exact Finset.single_le_sum (f := fun L => (((z + L).choose L * L.factorial * L.factorial : ℕ) : ℝ))

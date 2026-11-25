@@ -46,14 +46,12 @@ open Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.Ind
 open GlobalTheory.Grid GlobalTheory.Doubling GlobalTheory.ChainFr GlobalTheory.IndefiniteRowSideFullHecke.MatchingAdjoints
 open scoped TensorProduct GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.SquareComm GlobalTheory.SquareAgree
 
 noncomputable section
 
 namespace GlobalTheory.InfKill
 
-open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
 
 def infIncl (F : Type) [Field F] [NumberField F] : Ainf F →ₗ[F] AF F where
   toFun a := ((a, 0) : Ainf F × Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Af F)
@@ -97,7 +95,6 @@ end GlobalTheory.InfKill
 
 namespace GlobalTheory.InfKill
 
-open GlobalTheory.SquareAgree
 
 theorem smul_mat_kapX_sub_one : (∀ (D : D7) (X : HSp D) {d : ℕ} (e : Fin X.rank ≃ Fin d) {J : Matrix (Fin d) (Fin d) D.host.E}
     (hJ : J = D.host.xi0 • reindex e e X.gramᵀ), ∀ g ∈ GfC X, ∀ u : AF D.host.F,

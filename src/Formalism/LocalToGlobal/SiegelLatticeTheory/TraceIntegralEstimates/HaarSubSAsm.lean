@@ -16,8 +16,6 @@ namespace Formalism.L2.S.Pv.HaarSubS
 
 open Formalism.L2.SG.HidaSetting Formalism.L2.SG.Pf.EnergyAbs
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Abs
 
 variable {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [SecondCountableTopology G]

@@ -54,8 +54,6 @@ public import Mathlib.Data.Fintype.Perm
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open MvPolynomial GlobalTheory.ArInt

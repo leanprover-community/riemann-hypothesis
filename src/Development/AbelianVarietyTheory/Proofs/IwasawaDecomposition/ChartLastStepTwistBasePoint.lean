@@ -460,7 +460,7 @@ section Chi
 
 variable {F E K : Type} [Field F] [NumberField F] [Field E] [NumberField E] [StarRing E] [Algebra F E] [Field K]
 
-theorem topChi_facts (_hc : CMData F E) (n : ℕ) (Q : Finset (HeightOneSpectrum (𝓞 E))) (σ : K →+* ℂ) (U : Subgroup (GL (Fin n) (AfE F E)))
+theorem topChi_facts (n : ℕ) (Q : Finset (HeightOneSpectrum (𝓞 E))) (σ : K →+* ℂ) (U : Subgroup (GL (Fin n) (AfE F E)))
     (t : GL (Fin n) (AfE F E)) (Θ : LevQFam E K n Q) (d : Q → E) (hd : ∀ P, d P ≠ 0) (N : Q → ℕ)
     (hdN : ∀ P : Q, P.1.valuation E (d P) ≤ WithZero.exp (-(N P : ℤ)))
     (hΘ : ∀ (P : Q) (g : ↥(GLint E n P.1)), lqPrinc P.1 (N P) (g : Sp E n ≃ₗ[E] Sp E n) → ∃ h : g ∈ (Θ P).H, (Θ P).lam ⟨g, h⟩ = 1) :
@@ -588,7 +588,7 @@ theorem root_top (hle : U0 ≤ UAd B.sp.cm (B.R.N B.R.m)) (Uc : Subgroup (GA B (
       chi x = chi0 x' * topChi B.embLL U0 t ((I.Tp a).levQ B.R.m) (I.dTop a) (I.dTop_ne a) N hdN hΘ x'') :
     ∃ n : ℕ, 0 < n ∧ ∀ κ, chi κ ^ n = 1 := by
   obtain ⟨m1, hm1, e1⟩ := GlobalTheory.T.exists_levelFamily_character_exponent ((I.Tp a).levG B.R.m)
-  obtain ⟨m2, hm2, e2⟩ := (topChi_facts B.sp.cm (B.R.N B.R.m) (I.Q a) B.embLL U0 t ((I.Tp a).levQ B.R.m) _ (I.dTop_ne a) N hdN hΘ).1
+  obtain ⟨m2, hm2, e2⟩ := (topChi_facts (B.R.N B.R.m) (I.Q a) B.embLL U0 t ((I.Tp a).levQ B.R.m) _ (I.dTop_ne a) N hdN hΘ).1
     (fun P => topLevAt_root I.Ch I.sel (I.tup a) I.Ps _ B.R.m P)
   refine ⟨m1 * m2, Nat.mul_pos hm1 hm2, fun κ => ?_⟩
   have hx : κ.1 ∈ topU U0 t ((I.Tp a).levQ B.R.m) (I.dTop a) := hUc ▸ κ.2
@@ -690,7 +690,7 @@ theorem chart_twm : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok → TC.
   let U1 := topU U0 t ((I.Tp a).levQ B.R.m) (I.dTop a)
   let ψ := topChi B.embLL U0 t ((I.Tp a).levQ B.R.m) (I.dTop a) (I.dTop_ne a) N hdN hΘ
   have hchiQ : ∀ x : U1, (∀ P : I.Q a, rhoP B.host.F P.1 x.1 = 1) → ψ x = 1 :=
-    (topChi_facts B.sp.cm (B.R.N B.R.m) (I.Q a) B.embLL U0 t ((I.Tp a).levQ B.R.m)
+    (topChi_facts (B.R.N B.R.m) (I.Q a) B.embLL U0 t ((I.Tp a).levQ B.R.m)
       (I.dTop a) (I.dTop_ne a) N hdN hΘ).2
   have hunder : ∀ P : HeightOneSpectrum (𝓞 B.host.E), (conjPrime₂ P).under (𝓞 B.host.F) = P.under (𝓞 B.host.F) := fun P =>
     (under_eq_iff B.host P _).2 (Or.inr rfl)

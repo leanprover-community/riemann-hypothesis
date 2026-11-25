@@ -137,11 +137,9 @@ theorem column_average_quasi_invariant : L0 → ColumnsMirabolic → FormCoeffic
     ⟨_, rfl⟩
   rw [← hTdef] at hdet hcomm hlast'
   have hTTi : ∀ x, T *ᵥ (Ti *ᵥ x) = x := fun x => by
-    rw [Matrix.mulVec_mulVec, hTdef, hTidef, ← Units.val_mul, mul_inv_cancel, Units.val_one,
-      Matrix.one_mulVec]
+    rw [Matrix.mulVec_mulVec, hTdef, hTidef, Units.mul_inv, Matrix.one_mulVec]
   have hTiT : ∀ x, Ti *ᵥ (T *ᵥ x) = x := fun x => by
-    rw [Matrix.mulVec_mulVec, hTdef, hTidef, ← Units.val_mul, inv_mul_cancel, Units.val_one,
-      Matrix.one_mulVec]
+    rw [Matrix.mulVec_mulVec, hTdef, hTidef, Units.inv_mul, Matrix.one_mulVec]
   let h : (Fin (k + 1) → F) → ℂ := fun x => ψ (-x (Fin.last k)) * B u' (ρ (col n k x) u)
   have hpt : ∀ x, ψ (-x (Fin.last k)) * B (ρ g u') (ρ (col n k x) (ρ g u)) =
       (((Measures.modulus (g : Matrix (Fin n) (Fin n) F).det : ℝ) : ℂ)) ^ (n - 1 - (k + 1)) *

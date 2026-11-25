@@ -66,20 +66,6 @@ theorem mirProj_levi (n : ℕ) (g : GL (Fin n) k) : mirabolicProjection k n (lev
     (g : Matrix (Fin n) (Fin n) k) i j
   simp [GlobalTheory.BZMir.blockMat, GlobalTheory.BZMir.glEmbMat]
 
-theorem mirProj_eq_one_of_mem (n : ℕ) (u : Mir k n) (hu : u ∈ MirUin k n) : mirabolicProjection k n u = 1 := by
-  rw [GlobalTheory.BZMir.MirUin, Subgroup.mem_subgroupOf, GlobalTheory.BZMir.MirU,
-    MonoidHom.mem_range] at hu
-  obtain ⟨v, hv⟩ := hu
-  apply Units.ext
-  ext i j
-  change GlobalTheory.BZMir.blockMat k n ((u : GL (Fin (n + 1)) k) : Matrix (Fin (n + 1)) (Fin (n + 1)) k) i j =
-    (1 : Matrix (Fin n) (Fin n) k) i j
-  rw [GlobalTheory.BZMir.blockMat, ← hv]
-  change ((1 : Matrix (Fin (n + 1)) (Fin (n + 1)) k) +
-    GlobalTheory.BZMir.colMat k n (Multiplicative.toAdd v)) (Fin.castSucc i) (Fin.castSucc j) =
-    (1 : Matrix (Fin n) (Fin n) k) i j
-  simp [GlobalTheory.BZMir.colMat, Matrix.one_apply, Fin.castSucc_ne_last]
-
 theorem mem_of_mirProj_eq_one (n : ℕ) (y : Mir k n) (hy : mirabolicProjection k n y = 1) : y ∈ MirUin k n := by
   apply GlobalTheory.CompanionTheory.BZPhiPG.Grp.mem_of_mirProj_eq_one' <;> assumption
 

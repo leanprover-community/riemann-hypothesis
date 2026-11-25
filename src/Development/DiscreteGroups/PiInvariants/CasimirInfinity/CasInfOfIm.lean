@@ -63,7 +63,7 @@ open scoped Classical
 
 
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 namespace PositivityTheory.Rg.BcB.F.F0
 

@@ -101,20 +101,8 @@ theorem bh_ae_prod_and {α β : Type*} [MeasurableSpace α] [MeasurableSpace β]
     (hQ : ∀ᵐ y ∂ν, Q y) : ∀ᵐ p ∂(μ.prod ν), P p.1 ∧ Q p.2 :=
   (Measure.quasiMeasurePreserving_fst.ae hP).and (Measure.quasiMeasurePreserving_snd.ae hQ)
 
-theorem bh_meas_inv : Measurable (invM (k := k) (r := r)) := by
-  have hc : Continuous (fun g : Mt k r => (Matrix.of g : Mat k r)) := continuous_id
-  have h1 : Measurable (fun g : Mt k r => ((Matrix.of g : Mat k r).det)⁻¹) :=
-    (hc.matrix_det).measurable.inv
-  have h2 : Continuous (fun g : Mt k r => Matrix.of.symm (Matrix.of g : Mat k r).adjugate) :=
-    hc.matrix_adjugate
-  have h3 : Measurable (fun g : Mt k r =>
-      ((Matrix.of g : Mat k r).det)⁻¹ • Matrix.of.symm (Matrix.of g : Mat k r).adjugate) :=
-    h1.smul h2.measurable
-  convert h3 using 1
-  funext g
-  change Matrix.of.symm ((Matrix.of g : Mat k r)⁻¹) = _
-  rw [Matrix.inv_def, Ring.inverse_eq_inv']
-  rfl
+theorem bh_meas_inv : Measurable (invM (k := k) (r := r)) :=
+  _root_.Formalism.FourierDecayAlt.P.B7.measurable_invM
 
 theorem bh_cont_mul : Continuous (mulM (k := k) (r := r)) := by
   unfold mulM
@@ -442,12 +430,8 @@ theorem sigmaFinite_haarOn {U : Set (Mat k r)} {μ : Measure (Mt k r)} (h : IsHa
   haveI : IsFiniteMeasureOnCompacts μ := ⟨fun K hK => h.finite_compact K hK⟩
   infer_instance
 
-theorem sigmaFinite_SS (D : RealPlaceData k r Wp Wq) : SigmaFinite D.μSS := by
-  haveI := sigmaFinite_haarOn D.haarW
-  haveI := sigmaFinite_haarOn D.haarN
-  haveI := sigmaFinite_haarOn D.haarW'
-  unfold RealPlaceData.μSS
-  infer_instance
+theorem sigmaFinite_SS (D : RealPlaceData k r Wp Wq) : SigmaFinite D.μSS :=
+  _root_.Formalism.FourierDecayAlt.P.B7.sfSS D
 
 theorem fubini_cf (D : RealPlaceData k r Wp Wq) {P : SS k r → ℂ} (hP : Integrable P D.μSS)
     {w₁ w₂ : ℝ → ℝ} (h₁ : IsTest w₁) (h₂ : IsTest w₂) :
@@ -1116,12 +1100,8 @@ theorem gN_le_gbar {γ : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ} (hE : IsUnit (e
     _ = (gN E * gN E⁻¹) ^ 2 * gN y' := by ring
 
 theorem rpow_bound {A B K a : ℝ} (hA : 0 < A) (hK : 0 < K) (ha : 0 ≤ a) (h : A ≤ K * B) :
-    B ^ (-a) ≤ K ^ a * A ^ (-a) := by
-  have hB : A / K ≤ B := by rw [div_le_iff₀ hK, mul_comm]; exact h
-  have hAK : 0 < A / K := div_pos hA hK
-  calc B ^ (-a) ≤ (A / K) ^ (-a) := Real.rpow_le_rpow_of_nonpos hAK hB (by linarith)
-    _ = K ^ a * A ^ (-a) := by
-      rw [Real.div_rpow hA.le hK.le, Real.rpow_neg hK.le, div_eq_mul_inv, inv_inv, mul_comm]
+    B ^ (-a) ≤ K ^ a * A ^ (-a) :=
+  _root_.ReciprocityTheory.ChartRestriction.DS.Mult1.ReproducingFormula.rpow_inv_le hA hK ha h
 
 theorem inner_sig_sig (X : SigData k r) {h : Mat k r} (hh : h ∈ GV k r) (a b : X.Hs) :
     ⟪X.σ h a, X.σ h b⟫_ℂ = ⟪a, b⟫_ℂ := (⟨(X.σ h).toLinearMap, X.rep.2.1 h hh⟩ : X.Hs →ₗᵢ[ℂ] X.Hs).inner_map_map a b
@@ -1514,26 +1494,8 @@ attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 variable {k r : ℕ}
 
 theorem deriv_smul_const_any {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] (h : ℝ → ℂ) (T : E) :
-    deriv (fun t => h t • T) 0 = deriv h 0 • T := by
-  by_cases hT : T = 0
-  · subst hT
-    simp
-  by_cases hd : DifferentiableAt ℝ h 0
-  · exact deriv_smul_const hd T
-  · have hnd : ¬ DifferentiableAt ℝ (fun t => h t • T) 0 := by
-      intro hd'
-      apply hd
-      obtain ⟨φ, -, hφ⟩ := exists_dual_vector ℂ T (norm_ne_zero_iff.mpr hT)
-      have hφT : φ T ≠ 0 := by
-        rw [hφ]
-        exact Complex.ofReal_ne_zero.mpr (norm_ne_zero_iff.mpr hT)
-      have he : h = fun t => (φ T)⁻¹ * φ (h t • T) := by
-        funext t
-        rw [map_smul, smul_eq_mul]
-        field_simp
-      rw [he]
-      exact DifferentiableAt.const_mul ((φ.restrictScalars ℝ).differentiableAt.comp (0 : ℝ) hd') _
-    rw [deriv_zero_of_not_differentiableAt hnd, deriv_zero_of_not_differentiableAt hd, zero_smul]
+    deriv (fun t => h t • T) 0 = deriv h 0 • T :=
+  _root_.ReciprocityTheory.ChartRestriction.DS.Mult1.SmulConstantLinearity.deriv_smul_const_all h T
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
 
@@ -1598,13 +1560,8 @@ theorem inCC_five_four' {A : ℝ} {f : Mat k r → E} (h : InCC A 5 f) : InCC A 
   exact ⟨U, f', hU, hgU, hcd.of_le (WithTop.coe_le_coe.mpr (Nat.cast_le.mpr (by norm_num))), heq⟩
 
 theorem continuousOn_of_ckOn {m : ℕ∞} {f : Mat k r → E} (h : CkOn m (GV k r) f) :
-    ContinuousOn f (GV k r) := by
-  intro g₀ hg₀
-  obtain ⟨U, f', hU, hgU, hcd, heq⟩ := h g₀ hg₀
-  have hc : ContinuousAt f' g₀ := hcd.continuousOn.continuousAt (hU.mem_nhds hgU)
-  refine (hc.continuousWithinAt (s := GV k r)).congr_of_eventuallyEq ?_ (heq g₀ hgU hg₀)
-  filter_upwards [inter_mem_nhdsWithin (GV k r) (hU.mem_nhds hgU)] with g hg
-  exact heq g hg.2 hg.1
+    ContinuousOn f (GV k r) :=
+  _root_.Formalism.FourierDecayAlt.P.B5.ckOn_continuousOn h
 
 theorem integrable_of_inCC (hInt : GNIntSharp) (hLow : GNLower) (hCl : ClosedG) {Wp Wq : Type}
     [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq]

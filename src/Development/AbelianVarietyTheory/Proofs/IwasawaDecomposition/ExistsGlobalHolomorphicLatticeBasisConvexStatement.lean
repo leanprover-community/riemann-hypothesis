@@ -63,8 +63,6 @@ import Mathlib.CategoryTheory.Monoidal.Opposite.Mon
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open Topology

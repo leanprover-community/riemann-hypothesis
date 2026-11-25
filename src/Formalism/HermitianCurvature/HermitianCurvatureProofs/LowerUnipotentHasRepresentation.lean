@@ -61,7 +61,7 @@ noncomputable section
 
 namespace TW
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 abbrev Ix (k r : ℕ) := Fin (mdim k r (Fin.last r))
 

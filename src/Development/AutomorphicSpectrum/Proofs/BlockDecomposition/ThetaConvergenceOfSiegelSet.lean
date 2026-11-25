@@ -1315,7 +1315,7 @@ noncomputable section
 namespace GlobalTheory.CompanionTheory.WeilConv
 
 theorem absThetaInt_le_of_meets_orbits (D : D7) (V : HSp D) (ν : Measure (GA D V)) (hν : ν.IsHaarMeasure) {n : ℕ}
-    (φ : Mx D V.rank n → ℂ) (hφ : Continuous φ) (S : Set (GA D V)) (hS : MeasurableSet S)
+    (φ : Mx D V.rank n → ℂ) (S : Set (GA D V))
     (hcov : ∀ g, ∃ γ ∈ GQ V, γ * g ∈ S) : absThetaInt V ν φ ≤ ∫⁻ g in S, absTheta V φ g ∂ν := by
   have hinv := leftInv_absTheta V φ
   have hfd : IsFundamentalDomain (GQ V) (stdDom (GQ V)) ν := isFundamentalDomain_stdDom _ ν
@@ -1325,7 +1325,7 @@ theorem absThetaInt_le_of_meets_orbits (D : D7) (V : HSp D) (ν : Measure (GA D 
     rw [GlobalTheory.AutomorphicL2Unitary.lintegral_quotMeasure hfd]
     exact lintegral_congr fun g => congrFun hinv.lift_descend g
   rw [e]
-  exact GlobalTheory.lintegral_fundamentalDomain_le_of_meets_orbits (GQ V) ν hfd hS hcov (GlobalTheory.AbsThetaSemi.measurable_absTheta V hφ) hinv
+  exact GlobalTheory.lintegral_fundamentalDomain_le_of_meets_orbits (GQ V) ν hfd hcov hinv
 
 end GlobalTheory.CompanionTheory.WeilConv
 
@@ -1430,14 +1430,12 @@ namespace GlobalTheory.CompanionTheory.WeilTheta
 
 theorem weilThetaConvergence_of_siegelSet (hRT : GlobalTheory.Published.SiegelSetUnitary) : GlobalTheory.Published.WeilThetaConvergence := by
   intro D n V _hn hV θ hθ ν hν Φ
-  obtain ⟨hcontΦ, -⟩ := GlobalTheory.T.schwartz_bound_finite_infinite D θ hθ V.rank n Φ.1 Φ.2
   obtain ⟨r, Xf, Yf, hW⟩ := GlobalTheory.SiegelSet.exists_isWittFrame (GlobalTheory.AdelicU.isCMExt_host D) (isHermND_gram V)
-  obtain ⟨K, Ω, c, hK, hΩ, -, hc, -, hcl, hcov, ⟨C₀, hC₀, hconj⟩, hmeas, -, -⟩ :=
+  obtain ⟨K, Ω, c, hK, hΩ, -, hc, -, -, hcov, ⟨C₀, hC₀, hconj⟩, hmeas, -, -⟩ :=
     hRT D.host.F D.host.E D.sp.cm.sig (GlobalTheory.AdelicU.isCMExt_host D) V.rank V.gram (isHermND_gram V) r Xf Yf hW
   obtain ⟨-, C₁, hC₁⟩ := hmeas ν hν
   obtain ⟨C, hC⟩ := GlobalTheory.T.siegel_set_compact_reduction D θ hθ V n Φ.1 Φ.2 Xf Yf hW Ω C₀ K c hΩ hC₀ hK hc hconj
   set S := GlobalTheory.SiegelSet.siegelSet D.sp.cm.sig V.gram Xf Yf Ω c K with hSdef
-  have hSm : MeasurableSet S := hcl.measurableSet
   have hScov : ∀ g, ∃ γ ∈ GQ V, γ * g ∈ S := fun g => by
     obtain ⟨γ, hγ, s, hs, e⟩ := hcov g
     refine ⟨γ⁻¹, inv_mem hγ, ?_⟩
@@ -1453,7 +1451,7 @@ theorem weilThetaConvergence_of_siegelSet (hRT : GlobalTheory.Published.SiegelSe
       have h2 : n + Formalism.MainNotions.SchurIrreducible.wittIdx V < V.rank := hV.resolve_left (by omega)
       exact _root_.GlobalTheory.SiegelSet.lintegral_cone_modulus_lt_top D.host.F V.rank r (2 * n) hc (by omega)
   calc absThetaInt V ν Φ.1 ≤ ∫⁻ g in S, absTheta V Φ.1 g ∂ν :=
-        _root_.GlobalTheory.CompanionTheory.WeilConv.absThetaInt_le_of_meets_orbits D V ν hν Φ.1 hcontΦ S hSm hScov
+        _root_.GlobalTheory.CompanionTheory.WeilConv.absThetaInt_le_of_meets_orbits D V ν hν Φ.1 S hScov
     _ ≤ C₁ * ∫⁻ t in GlobalTheory.SiegelSet.cone r c,
           ENNReal.ofReal (max C 0 * ∏ i, t i ^ (Module.finrank ℚ D.host.F * (2 * n))) *
             ENNReal.ofReal ((GlobalTheory.SiegelSet.modulus D.host.F V.rank t * ∏ i, t i)⁻¹) := by

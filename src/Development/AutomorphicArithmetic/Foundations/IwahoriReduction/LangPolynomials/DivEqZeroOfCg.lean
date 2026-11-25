@@ -790,12 +790,6 @@ private theorem isOpen_setOf_cycMod_eq_one (l : ℕ) [Fact (Nat.Prime l)] (Ω : 
   exact (IsUltrametricDist.isOpen_closedBall _ (zpow_pos hl _).ne').preimage
     (Units.continuous_val.comp (continuous_cycZ ℚ Ω l))
 
-private theorem norm_natCast_prime_lt_one_qbar (l : ℕ) [Fact (Nat.Prime l)] : ‖(l : Qbar l)‖ < 1 := by
-  show ‖(l : PadicAlgCl l)‖ < 1
-  have h : ((l : ℚ_[l]) : PadicAlgCl l) = (l : PadicAlgCl l) := map_natCast _ l
-  rw [← h, PadicAlgCl.norm_extends]
-  first | exact Padic.norm_p_lt_one
-
 private theorem red_un_succ (l : ℕ) [Fact (Nat.Prime l)] (r : ℕ) (g : ℕ) (hg : ¬ l ∣ g) :
     red l r (un g hg (r + 1)) = un g hg r := by
   ext
@@ -887,7 +881,8 @@ theorem UpperTheory.Kd.C7.pDiv :
     obtain ⟨c₃, hc₃⟩ := hdiv.1 r
     by_contra hne
     have hpos : 0 < ‖q x‖ := norm_pos_iff.mpr hne
-    obtain ⟨n, hn⟩ := exists_pow_lt_of_lt_one hpos (norm_natCast_prime_lt_one_qbar l)
+    obtain ⟨n, hn⟩ := exists_pow_lt_of_lt_one hpos
+      (_root_.GlobalTheory.LambdaValuationPowers.norm_natCast_lt_one (l := l))
     have h := hc₃ q n (fun y => by
       rw [cg_iff_norm_sub_le_norm_pow, hq y, sub_zero, norm_zero]
       exact norm_nonneg _) x
@@ -961,8 +956,9 @@ theorem UpperTheory.Kd.C7.pDiv :
       have hz := hUZ s hsU hsI y
       rw [cg_iff_norm_sub_le_norm_pow, sub_zero] at hz ⊢
       rw [norm_mul]
+      have hlt := _root_.GlobalTheory.LambdaValuationPowers.norm_natCast_lt_one (l := l)
       calc ‖(l : Qbar l) ^ c₂‖ * ‖Z r s y‖ ≤ 1 * ‖(l : Qbar l) ^ (n + c₃)‖ :=
-            mul_le_mul (by rw [norm_pow]; exact pow_le_one₀ (norm_nonneg _) (norm_natCast_prime_lt_one_qbar l).le) hz
+            mul_le_mul (by rw [norm_pow]; exact pow_le_one₀ (norm_nonneg _) hlt.le) hz
               (norm_nonneg _) zero_le_one
         _ = ‖(l : Qbar l) ^ (n + c₃)‖ := one_mul _
   refine ⟨g, hg, c₂, Z', hIwI, hCont, ?_⟩

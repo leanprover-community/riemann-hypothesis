@@ -48,22 +48,21 @@ open CategoryTheory Limits AlgebraicGeometry Opposite LateralTheory.E.E4 Lateral
 
 namespace LateralTheory.E.GluedCurveChartOverlaps
 
-set_option backward.isDefEq.respectTransparency false in
 theorem sep_of_cover {X S : Scheme.{0}} (f : X ⟶ S) (U : X.OpenCover)
     (H : ∀ i j, IsClosedImmersion (pullback.map (U.f i) (U.f j) (U.f i ≫ f) (U.f j ≫ f) (𝟙 _) (𝟙 _) f
       (by simp) (by simp))) : IsSeparated f := by
   constructor
   apply IsZariskiLocalAtTarget.of_openCover (Scheme.Pullback.openCoverOfLeftRight U U f f)
   rintro ⟨i, j⟩
-  rw [← MorphismProperty.cancel_left_of_respectsIso @IsClosedImmersion
-    (pullbackDiagonalMapIdIso (U.f i) (U.f j) f).inv]
   have e : (pullbackDiagonalMapIdIso (U.f i) (U.f j) f).inv ≫
       (Scheme.Pullback.openCoverOfLeftRight U U f f).pullbackHom (pullback.diagonal f) (i, j) =
       pullback.map (U.f i) (U.f j) (U.f i ≫ f) (U.f j ≫ f) (𝟙 _) (𝟙 _) f (by simp) (by simp) := by
-    apply pullback.hom_ext <;> simp only [Scheme.Cover.pullbackHom, Category.assoc, limit.lift_π,
+    apply pullback.hom_ext <;> simp only [Scheme.Cover.pullbackHom, limit.lift_π,
       PullbackCone.mk_π_app, Category.comp_id]
-    · exact pullbackDiagonalMapIdIso_inv_snd_fst (U.f i) (U.f j) f
-    · exact pullbackDiagonalMapIdIso_inv_snd_snd (U.f i) (U.f j) f
+    · exact (Category.assoc ..).trans (pullbackDiagonalMapIdIso_inv_snd_fst (U.f i) (U.f j) f)
+    · exact (Category.assoc ..).trans (pullbackDiagonalMapIdIso_inv_snd_snd (U.f i) (U.f j) f)
+  refine (MorphismProperty.cancel_left_of_respectsIso @IsClosedImmersion
+    (pullbackDiagonalMapIdIso (U.f i) (U.f j) f).inv _).1 ?_
   rw [e]; exact H i j
 
 theorem closed_of_pb {X S W P Q : Scheme.{0}} (f : X ⟶ S) (ia : P ⟶ X) (ib : Q ⟶ X) (pa : W ⟶ P)

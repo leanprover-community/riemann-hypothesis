@@ -50,7 +50,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 @[expose] public section
 
 open Classical Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum MeasureTheory NumberField Matrix
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
@@ -144,23 +143,10 @@ end WordCurve
 
 theorem eq_zero_of_iteratedDeriv_eq_zero : ∀ f : ℝ → ℂ, AnalyticOnNhd ℝ f Set.univ → (∀ m : ℕ, iteratedDeriv m f 0 = 0) → ∀ t, f t = 0 := by
   intro f hf h0 t
-  obtain ⟨p, r, hp⟩ := hf 0 trivial
-  have hc : ∀ m (y : ℝ), p m (fun _ => y) = 0 := by
-    intro m y
-    have e1 := hp.factorial_smul 1 m
-    rw [← iteratedDeriv_eq_iteratedFDeriv, h0 m] at e1
-    have e2 : p m (fun _ => (1 : ℝ)) = 0 := by
-      exact (smul_eq_zero.1 e1).resolve_left (Nat.factorial_ne_zero m)
-    have e3 := (p m).map_smul_univ (fun _ => y) (fun _ => (1 : ℝ))
-    simp only [smul_eq_mul, mul_one] at e3
-    rw [e3, e2, smul_zero]
-  have hev : f =ᶠ[nhds 0] 0 := by
-    have hb : Metric.eball (0 : ℝ) r ∈ nhds 0 := Metric.eball_mem_nhds 0 hp.r_pos
-    filter_upwards [hb] with y hy
-    have := hp.hasSum (y := y) (by simpa using hy)
-    simp only [hc, zero_add] at this
-    exact (this.unique hasSum_zero).symm ▸ rfl
-  exact hf.eqOn_zero_of_preconnected_of_eventuallyEq_zero isPreconnected_univ trivial hev trivial
+  have htop : analyticOrderAt f 0 = ⊤ := ENat.eq_top_iff_forall_ge.mpr fun n =>
+    (natCast_le_analyticOrderAt_iff_iteratedDeriv_eq_zero (hf 0 trivial)).mpr fun i _ => h0 i
+  exact congrFun
+    ((AnalyticOnNhd.analyticOrderAt_eq_top_iff_eq_zero 0 fun z => hf z trivial).mp htop) t
 
 section Coef
 

@@ -59,13 +59,8 @@ noncomputable section
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR.Datum MeasureTheory IsDedekindDomain NumberField Matrix GlobalTheory.IndefiniteRowSideFullHecke.RestrictedTensorSplitting GlobalTheory.PlaceTensor
 open GlobalTheory.IndefiniteRowSideFullHecke.UnramifiedCharacter
 open scoped TensorProduct ComplexOrder
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.PlaceTensor
-
-private theorem selfDual_full {D : D7} (V : HSp D) (Λ : Submodule (𝓞 D.host.E) (Fin V.rank → D.host.E))
-    (hΛ : IsSelfDualC V Λ) : Submodule.IsFullLattice D.host.E Λ :=
-  Formalism.IndefR.Datum.IsSelfDualC.isFullLattice V Λ hΛ
 
 private theorem det_int {D : D7} {V : HSp D} {L : Submodule (𝓞 D.host.E) (Fin V.rank → D.host.E)}
     (hL : Submodule.IsFullLattice D.host.E L) (g : GA D V)
@@ -113,7 +108,7 @@ theorem splitVacuumFixed : ∀ D : D7, SplitVacuumFixed D := by
     (GlobalTheory.VecInv.isDetAt_detAt e he.1 S _) (GlobalTheory.VecInv.isDetAt_detAt e he.1 T _) hf
     (fun u hu hh => hvac.2 e he u (GlobalTheory.VacStabFixed.half_mem_place hε s1 hu hh) hh)
     (fun u hu hh => hvac.2 _ he' u (GlobalTheory.VacStabFixed.half_mem_place hε s2 hu hh) hh)
-  rwa [splitFacO, unram_detAt (selfDual_full S ΛS hS) kS he.1 s1 uT, unram_detAt (selfDual_full T ΛT hT) kT he.1 s1 uS,
+  rwa [splitFacO, unram_detAt (Formalism.IndefR.Datum.IsSelfDualC.isFullLattice S ΛS hS) kS he.1 s1 uT, unram_detAt (Formalism.IndefR.Datum.IsSelfDualC.isFullLattice T ΛT hT) kT he.1 s1 uS,
     inv_one, mul_one, Circle.coe_one, one_smul] at key
 
 end GlobalTheory.PlaceTensor
