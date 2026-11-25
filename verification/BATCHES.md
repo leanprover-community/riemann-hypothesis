@@ -358,7 +358,9 @@ added above it does no harm.
   contains, in three groups. Each goes in the first that applies: *Pushed to since approval*
   (`changed after frozen`), *Conflicts* (`batch-conflict` or `main-conflict`), and *Ready*
   otherwise. `priority` pull requests come first in each group. `priority` and `awaiting-author`
-  show as badges and do not change the group.
+  show as badges and do not change the group. While the conflict labels are switched off (the
+  repository variable `CONFLICT_LABELS` is not `on`), there is no *Conflicts* group, and *Ready*
+  says that it may hold pull requests that conflict.
 - **Left out** lists, for each batch, the open pull requests its description lists as left out
   (see rule 7), by heading. The reasons are not repeated: they are in the batch's description and
   in the comment on each pull request.
@@ -375,7 +377,7 @@ The description's second line is a hidden comment holding compact JSON. Read it 
 tables, which may change shape or be shortened:
 
 ```
-<!-- batch-status {"batches":[...],"queue":[...],"left_out":{...}} -->
+<!-- batch-status {"batches":[...],"queue":[...],"left_out":{...},"labels":{...},"conflict_labels":true} -->
 ```
 
 - `batches`: outermost first, as far as is known. Each is `{"number", "branch", "head",
@@ -386,6 +388,10 @@ tables, which may change shape or be shortened:
   `"changed"` (pushed to since approval) or `"conflict"`.
 - `left_out`: for each batch, by its number as a string, the numbers of the open pull requests its
   description leaves out.
+- `labels`: for each open pull request named above, the batches too, by its number as a string,
+  its labels. A queued pull request labelled `awaiting-author` has been handed back to its author.
+- `conflict_labels`: whether the conflict labels are switched on. While they are not, no pull
+  request is in the `"conflict"` group, and `"ready"` may hold some that conflict.
 
 `--` inside the JSON is written `-\u002d`, so that nothing in it ends the comment. A JSON parser
 reads it back as `--`. In the unlikely case that the block alone would take up half of what

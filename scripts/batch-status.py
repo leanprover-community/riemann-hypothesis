@@ -31,7 +31,9 @@ What it says:
   it is labelled `changed after frozen`, "Conflicts" when it is labelled `batch-conflict` or
   `main-conflict`, and "Ready" otherwise. `priority` and `awaiting-author` show as badges and do
   not change the group. Within a group, `priority` pull requests come first, then the rest by
-  number.
+  number. While the conflict labels are switched off (see `conflict_labels_on` in
+  `batch-labels.py`: the workflow passes the repository variable `CONFLICT_LABELS`), there is no
+  "Conflicts" group, and the issue says that "Ready" may hold pull requests that conflict.
 - What each batch leaves out: the pull requests its description lists under a heading that says
   "left out" or "not included" (`left_out` in the sync), by heading, without the reasons. What the
   batch contains is never listed as left out, as in the sync.
@@ -189,6 +191,10 @@ class GitHub(_rest.GitHub):
                 return node.get("body") or "", {}
             after = comments["pageInfo"]["endCursor"]
 
+    def conflict_labels(self):
+        """Whether the conflict labels are switched on, so that the queue can be grouped by them."""
+        return _labels.conflict_labels_on()
+
     def colours(self):
         """Each label's colour, by name, as six hex digits."""
         return {label["name"]: label["color"].lower() for label in self.pages("labels")}
@@ -227,18 +233,20 @@ def pull(node, repo):
 # What the issue says, worked out before it is written down.
 
 
-def group(labels):
-    """The group of the queue a pull request with these labels goes in: the first that applies."""
+def group(labels, conflicts=True):
+    """The group of the queue a pull request with these labels goes in: the first that applies.
+    Without `conflicts`, while the conflict labels are switched off, there is no "conflict"."""
     if CHANGED in labels:
         return "changed"
-    if BATCH_CONFLICT in labels or MAIN_CONFLICT in labels:
+    if conflicts and (BATCH_CONFLICT in labels or MAIN_CONFLICT in labels):
         return "conflict"
     return "ready"
 
 
-def status(repo, pulls, read):
+def status(repo, pulls, read, conflicts=True):
     """What the issue says, from the open pull requests by number and `read`, which gives a batch's
-    (description, note) by its number. Returns {batches, queue, left}:
+    (description, note) by its number. `conflicts` says whether the conflict labels are switched
+    on. Returns {batches, queue, left, gone, conflicts, labels}:
 
     batches  the batches being built, outermost first as far as is known, each as {number, title,
              ref, sha, latest, record, members, contains, own}: `record` is the head the note was
@@ -249,6 +257,8 @@ def status(repo, pulls, read):
     left     {batch number: [(heading, [numbers])]}: the open pull requests each batch's description
              leaves out, apart from what the batch contains, in the description's order.
     gone     {batch number: how many more it leaves out that are no longer open}.
+    conflicts  `conflicts`: without it, the queue has no "conflict" group.
+    labels   {number: sorted labels} for every open pull request named in the others.
     """
     found = [pr for pr in pulls.values() if pr["batch"] and BUILDING in pr["labels"]]
     found.sort(key=lambda pr: (LATEST not in pr["labels"], -pr["number"]))
@@ -274,7 +284,7 @@ def status(repo, pulls, read):
     held = {number for batch in batches for number in batch["members"]}
     queued = sorted((pr for pr in pulls.values() if QUEUED in pr["labels"] and pr["number"] not in held),
                     key=lambda pr: (PRIORITY not in pr["labels"], pr["number"]))
-    queue = [{"number": pr["number"], "group": group(pr["labels"]), "priority": PRIORITY in pr["labels"]}
+    queue = [{"number": pr["number"], "group": group(pr["labels"], conflicts), "priority": PRIORITY in pr["labels"]}
              for pr in queued]
     queue.sort(key=lambda entry: ("ready", "changed", "conflict").index(entry["group"]))
     left, gone = {}, {}
@@ -289,7 +299,11 @@ def status(repo, pulls, read):
                 gone[batch["number"]] = gone.get(batch["number"], 0) + 1
         if headings:
             left[batch["number"]] = list(headings.items())
-    return {"batches": batches, "queue": queue, "left": left, "gone": gone}
+    named = ({batch["number"] for batch in batches} | held | {entry["number"] for entry in queue}
+             | {number for headings in left.values() for _, listed in headings for number in listed})
+    labels = {number: sorted(pulls[number]["labels"]) for number in sorted(named) if number in pulls}
+    return {"batches": batches, "queue": queue, "left": left, "gone": gone, "conflicts": conflicts,
+            "labels": labels}
 
 
 def data(found, whole=True):
@@ -301,6 +315,10 @@ def data(found, whole=True):
               contains, by the sync's record), contains (the batches being built among them)}
     queue     in the order shown: {number, group ("ready", "changed" or "conflict"), priority}
     left_out  {batch number as a string: [the open pull requests its description leaves out]}
+    labels    {number as a string: [its labels]}, for every open pull request named above, the
+              batches too
+    conflict_labels  whether the conflict labels are switched on: while they are not, no pull
+              request is in the "conflict" group, and "ready" may hold some that conflict
 
     `--` in the JSON is written `-\\u002d`, so that nothing in it ends the comment early.
     """
@@ -313,6 +331,8 @@ def data(found, whole=True):
         "queue": found["queue"],
         "left_out": {str(number): [pr for _, listed in headings for pr in listed]
                      for number, headings in found["left"].items()},
+        "labels": {str(number): names for number, names in found["labels"].items()},
+        "conflict_labels": found["conflicts"],
     }
     text = json.dumps(block, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
     return f"<!-- batch-status {text.replace('--', '-' + chr(92) + 'u002d')} -->"
@@ -431,6 +451,7 @@ class Writer:
         return lines
 
     def queue(self, found):
+        conflicts = found["conflicts"]
         groups = {"ready": [], "changed": [], "conflict": []}
         for entry in found["queue"]:
             groups[entry["group"]].append(entry["number"])
@@ -440,13 +461,19 @@ class Writer:
                  f"{total} pull request{'s' * (total != 1)} labelled `{QUEUED}` that no batch being built "
                  f"contains. Each is in the first group that applies. `{PRIORITY}` pull requests come first in "
                  f"each group, and neither `{PRIORITY}` nor `{WAITING}` changes the group.", ""]
+        if conflicts:
+            ready = ("ready", "Ready", f"Labelled none of `{CHANGED}`, `{BATCH_CONFLICT}` and `{MAIN_CONFLICT}`",
+                     (label(QUEUED), label(CHANGED, "-"), label(BATCH_CONFLICT, "-"), label(MAIN_CONFLICT, "-")))
+        else:
+            ready = ("ready", "Ready", f"Not labelled `{CHANGED}`. The conflict labels are switched off (the "
+                     "repository variable `CONFLICT_LABELS` is not `on`), so this may hold pull requests that "
+                     "conflict with `main` or with a batch", (label(QUEUED), label(CHANGED, "-")))
         sections = (
-            ("ready", "Ready", f"Labelled none of `{CHANGED}`, `{BATCH_CONFLICT}` and `{MAIN_CONFLICT}`",
-             (label(QUEUED), label(CHANGED, "-"), label(BATCH_CONFLICT, "-"), label(MAIN_CONFLICT, "-"))),
+            ready,
             ("changed", "Pushed to since approval", f"Labelled `{CHANGED}`", (label(QUEUED), label(CHANGED))),
             ("conflict", "Conflicts", f"Labelled `{BATCH_CONFLICT}` or `{MAIN_CONFLICT}`, and not `{CHANGED}`",
              (label(QUEUED), label((BATCH_CONFLICT, MAIN_CONFLICT)), label(CHANGED, "-"))),
-        )
+        )[:3 if conflicts else 2]
         for key, heading, rule, terms in sections:
             lines += [f"### {heading} ({len(groups[key])})", "",
                       f"{rule}. Live: [search]({search(self.repo, *terms)})", ""]
@@ -534,7 +561,7 @@ def run(gh, preview=None):
     should have is written to that file as well."""
     pulls = gh.pulls()
     colours = gh.colours()
-    found = status(gh.repo, pulls, gh.batch)
+    found = status(gh.repo, pulls, gh.batch, gh.conflict_labels())
     issue = gh.issue()
     now = gh.now()
     text, level = describe(gh.repo, pulls, colours, found, (now.strftime(TIME), now.strftime(TIME)))

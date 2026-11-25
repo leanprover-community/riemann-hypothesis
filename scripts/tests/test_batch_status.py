@@ -62,9 +62,14 @@ class Fake(status.GitHub):
         self.issues, self.pinned, self.found, self.ours = list(issues), list(pinned), list(found), list(ours)
         self.colours_ = COLOURS if colours is None else colours
         self.writes = []
+        # Whether the conflict labels are switched on.
+        self.conflicts = True
 
     def now(self):
         return NOW
+
+    def conflict_labels(self):
+        return self.conflicts
 
     def graphql(self, query, **variables):
         self.queries += 1
@@ -182,6 +187,12 @@ class Grouping(unittest.TestCase):
     def test_awaiting_author_does_not_change_the_group(self):
         groups = {entry["number"]: entry["group"] for entry in self.found["queue"]}
         self.assertEqual(groups[26], "ready")
+
+    def test_with_the_conflict_labels_off_there_is_no_conflict_group(self):
+        found = status.status(REPO, self.fake.pulls(), self.fake.batch, conflicts=False)
+        groups = {entry["number"]: entry["group"] for entry in found["queue"]}
+        self.assertEqual((groups[22], groups[24], groups[23]), ("ready", "ready", "changed"))
+        self.assertNotIn("conflict", groups.values())
 
     def test_what_a_batch_holds_is_not_queued(self):
         nodes, batches = scene()
@@ -344,6 +355,13 @@ class Body(unittest.TestCase):
         self.assertEqual(block["batches"][1]["contains"], [100])
         self.assertEqual(block["queue"][0], {"number": 21, "group": "ready", "priority": True})
         self.assertEqual(block["left_out"], {"200": [30, 31, 32]})
+        # Each pull request it names, with its labels: one handed back shows it.
+        self.assertEqual(block["labels"]["26"], [WAITING, QUEUED, PRIORITY])
+        self.assertEqual(block["labels"]["100"], [BUILDING, LATEST])
+        self.assertEqual(block["labels"]["31"], [])
+        self.assertEqual(set(block["labels"]), {str(number) for number in
+                                                (10, 11, 12, 100, 200, 20, 21, 22, 23, 24, 25, 26, 27, 30, 31, 32, 12_000)})
+        self.assertTrue(block["conflict_labels"])
 
     def test_nothing_in_the_json_ends_the_comment(self):
         nodes, batches = scene()
@@ -368,6 +386,20 @@ class Body(unittest.TestCase):
         self.assertIn("Last changed 2026-11-24 10:03 UTC; last checked 2026-11-24 10:03 UTC.", body)
         self.assertIn("verification/BATCHES.md#the-status-issue", body)
         self.assertNotIn("Shortened", body)
+        self.assertNotIn("switched off", body)
+
+    def test_with_the_conflict_labels_off_it_says_so(self):
+        default = scene()
+        fake = Fake(*default)
+        fake.conflicts = False
+        status.run(fake)
+        body = fake.writes[0][2]["body"]
+        self.assertNotIn("### Conflicts", body)
+        self.assertIn("### Ready (8)\n\nNot labelled `changed after frozen`. The conflict labels are switched off "
+                      "(the repository variable `CONFLICT_LABELS` is not `on`), so this may hold pull requests that "
+                      "conflict with `main` or with a batch.", body)
+        block = json.loads(re.fullmatch(r"<!-- batch-status (\{.*\}) -->", body.splitlines()[1]).group(1))
+        self.assertFalse(block["conflict_labels"])
 
 
 class Size(unittest.TestCase):
@@ -378,7 +410,7 @@ class Size(unittest.TestCase):
 
     def test_shortened_step_by_step_and_said_so(self):
         seen = set()
-        for count, level in ((100, 0), (200, 1), (400, 2), (600, 3), (12_000, 4)):
+        for count, level in ((100, 0), (200, 1), (300, 2), (600, 3), (12_000, 4)):
             fake = self.crowd(count)
             status.run(fake)
             body = fake.writes[0][2]["body"]

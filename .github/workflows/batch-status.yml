@@ -2,7 +2,8 @@ name: batch status
 
 # Keeps the batch status issue up to date: the batches being built, outermost first as far as is
 # known, the pull requests each contains and leaves out, and the batch queue, split into those
-# ready, those pushed to since they were approved and those with conflicts. Its description starts
+# ready, those pushed to since they were approved and those with conflicts, while the conflict
+# labels are switched on. Its description starts
 # with `<!-- batch-status -->`, and with a hidden JSON block for agents and scripts to read instead
 # of the tables. `scripts/batch-status.py` has the details and `verification/BATCHES.md` ("The
 # status issue") the format.
@@ -57,4 +58,8 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
+          # `on` once the conflict labels are switched on (see conflict-labels.yml). Until then the
+          # queue has no "Conflicts" group, and the issue says that "Ready" may hold pull requests
+          # that conflict.
+          CONFLICT_LABELS: ${{ vars.CONFLICT_LABELS }}
         run: python3 scripts/batch-status.py --repo "$REPO" --summary "$GITHUB_STEP_SUMMARY"
