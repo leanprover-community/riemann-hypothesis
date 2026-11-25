@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.TsumOneDivRpowLe
 public import Formalism.ZeroFreeRegion.SmallHeightLogDeriv
 public import Mathlib.Analysis.SumIntegralComparisons
 
@@ -17,44 +18,14 @@ lemma summable_shift {p : ℝ} (hp : p < -1) : Summable (fun n : ℕ => ((n : �
   have h := (summable_nat_add_iff 1).mpr (Real.summable_nat_rpow.mpr hp)
   simpa only [Nat.cast_add, Nat.cast_one] using h
 
-lemma rpow_le_integral {x σ : ℝ} (hx : 0 < x) (hσ : 0 < σ) :
-    (x + 1) ^ (-σ - 1) ≤ (x ^ (-σ) - (x + 1) ^ (-σ)) / σ := by
-  have hanti : AntitoneOn (fun t : ℝ => t ^ (-σ - 1)) (Set.Icc x (x + (1 : ℕ))) := by
-    intro u hu v hv huv
-    exact Real.rpow_le_rpow_of_nonpos (hx.trans_le hu.1) huv (by linarith)
-  calc (x + 1) ^ (-σ - 1) ≤ ∫ t in x..x + 1, t ^ (-σ - 1) := by
-        simpa using AntitoneOn.sum_le_integral hanti
-    _ = (x ^ (-σ) - (x + 1) ^ (-σ)) / σ := by
-      rw [integral_rpow (Or.inr ⟨by linarith, ?_⟩), sub_add_cancel]
-      · ring
-      · rw [Set.uIcc_of_le (by linarith)]
-        exact fun h => (not_le_of_gt hx) h.1
-
 lemma tsum_rpow_le {σ : ℝ} (hσ : 0 < σ) :
     ∑' n : ℕ, ((n : ℝ) + 1) ^ (-σ - 1) ≤ 1 + 1 / σ := by
-  have key : ∀ n : ℕ, ∑ i ∈ Finset.range (n + 1), ((i : ℝ) + 1) ^ (-σ - 1) ≤ 1 + (1 - ((n : ℝ) + 1) ^ (-σ)) / σ := by
-    intro n
-    induction n with
-    | zero => simp
-    | succ k ih =>
-      rw [Finset.sum_range_succ]
-      have h := rpow_le_integral (x := (k : ℝ) + 1) (by positivity) hσ
-      have e : (1 - ((k : ℝ) + 1) ^ (-σ)) / σ + (((k : ℝ) + 1) ^ (-σ) - ((k : ℝ) + 1 + 1) ^ (-σ)) / σ =
-          (1 - ((k : ℝ) + 1 + 1) ^ (-σ)) / σ := by ring
-      push_cast
-      linarith
-  apply Real.tsum_le_of_sum_range_le (fun n => by positivity)
-  intro n
-  cases n with
-  | zero =>
-    simp only [Finset.range_zero, Finset.sum_empty]
-    have : 0 < 1 / σ := by positivity
-    linarith
-  | succ k =>
-    have h1 := key k
-    have h2 : 0 ≤ ((k : ℝ) + 1) ^ (-σ) := by positivity
-    have h3 : (1 - ((k : ℝ) + 1) ^ (-σ)) / σ ≤ 1 / σ := div_le_div_of_nonneg_right (by linarith) hσ.le
-    linarith
+  calc
+    _ = ∑' n : ℕ, 1 / ((n : ℝ) + 1) ^ (σ + 1) := by
+      refine tsum_congr fun n => ?_
+      rw [show -σ - 1 = -(σ + 1) by ring, Real.rpow_neg (by positivity), one_div]
+    _ ≤ (σ + 1) / (σ + 1 - 1) := GlobalTheory.LLower.tsum_one_div_rpow_le (by linarith)
+    _ = 1 + 1 / σ := by simp [add_div, hσ.ne']
 
 lemma norm_term_one_succ (s : ℂ) (n : ℕ) :
     ‖term (1 : ℕ → ℂ) s (n + 1)‖ = ((n : ℝ) + 1) ^ (-(s.re - 1) - 1) := by
