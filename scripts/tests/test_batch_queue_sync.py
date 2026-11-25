@@ -2024,7 +2024,7 @@ class Pushed(unittest.TestCase):
                 record = note(gh.said(1018)[0])
                 self.assertEqual((record["members"]["12"], record["members"]["14"]), (sha("head12"), sha("head14")))
                 self.assertEqual(len(self.pushes(gh, 12)), 1)
-                self.assertEqual(gh.pulls[12]["labels"], IN | {WAITING})
+                self.assertEqual(gh.pulls[12]["labels"], IN | {WAITING, CHANGED})
 
     def test_a_batch_or_a_closed_pull_request_is_not_looked_at(self):
         gh = self.built()
@@ -2349,6 +2349,7 @@ class ChangedAfterFrozen(unittest.TestCase):
         sync(gh)
         merged = sha("head14-merged")
         gh.inside[gh.pulls[1018]["sha"]].add(merged)
+        gh.inside[merged] = {sha("head14"), MAIN}
         gh.push(14, "head14-merged")
         batch.pushed(gh, 14)
         self.assertEqual(gh.pulls[14]["labels"], IN)
@@ -2405,7 +2406,7 @@ class ChangedAfterFrozen(unittest.TestCase):
 
     def test_a_member_loses_the_label_once_pushed_to_a_commit_its_batch_has_already(self):
         # Pushed to with a commit the batch does not have, and then with one it has: the batch
-        # takes the new head through `has_head`, whether `pushed` runs for the second push or not.
+        # takes the new head through `takes`, whether `pushed` runs for the second push or not.
         for job in (True, False):
             with self.subTest(job=job):
                 gh = Fake()
@@ -2417,6 +2418,7 @@ class ChangedAfterFrozen(unittest.TestCase):
                 self.assertEqual(gh.pulls[14]["labels"], IN | {WAITING, CHANGED})
                 merged = sha("head14-merged")
                 gh.inside[gh.pulls[1018]["sha"]].add(merged)
+                gh.inside[merged] = {sha("head14"), MAIN}
                 gh.push(14, "head14-merged")
                 if job:
                     batch.pushed(gh, 14)
