@@ -142,10 +142,10 @@ private theorem normV_inert {K : Type} [Field K] [NumberField K] (hK : IsQi K) {
     have hint : IsIntegral ℤ i := ⟨Polynomial.X ^ 2 + 1, by monicity!, by simp [sq, hi]⟩
     let i' : 𝓞 K := ⟨i, hint⟩
     have hi' : i' * i' = -1 := RingOfIntegers.ext (by rw [RingOfIntegers.coe_eq_algebraMap, RingOfIntegers.coe_eq_algebraMap, map_mul, map_neg, map_one]; exact hi)
-    haveI := w.isMaximal
-    letI := Ideal.Quotient.field w.asIdeal
-    haveI : Finite (𝓞 K ⧸ w.asIdeal) := Ideal.finiteQuotientOfFreeOfNeBot _ w.ne_bot
-    letI := Fintype.ofFinite (𝓞 K ⧸ w.asIdeal)
+    have := w.isMaximal
+    let := Ideal.Quotient.field w.asIdeal
+    have : Finite (𝓞 K ⧸ w.asIdeal) := Ideal.finiteQuotientOfFreeOfNeBot _ w.ne_bot
+    let := Fintype.ofFinite (𝓞 K ⧸ w.asIdeal)
     have hs : IsSquare (-1 : 𝓞 K ⧸ w.asIdeal) := ⟨Ideal.Quotient.mk _ i', by rw [← map_mul, hi']; simp⟩
     rw [FiniteField.isSquare_neg_one_iff] at hs
     rw [Ideal.absNorm_apply, Submodule.cardQuot_apply, Nat.card_eq_fintype_card, pow_one] at e
@@ -176,10 +176,10 @@ private theorem algClosure (K Ω : Type) [Field K] [NumberField K] [Field Ω] [C
   ⟨IsAlgClosure.isAlgClosed ℚ, Algebra.IsAlgebraic.tower_top (K := ℚ) K⟩
 private theorem cont_pt (hd : HostData l e ψ o₁) (hF : IsHostFrame Ω c e ψ S A F) {g₁ : Gam Ω S} (hg : F.Marked g₁)
     {r : Gam Ω S →* GG (m := 3) (R := PadicAlgCl l)} (hr : F.IsCharZeroPt g₁ r) : Continuous (mats r) := by
-  haveI : IsGalois ℚ Ω := IsAlgClosure.isGalois ℚ Ω
-  haveI hcl := isClosed_NS Ω (S : Set Pl)
-  haveI : CompactSpace (Gam Ω S) := inferInstance
-  haveI : TotallyDisconnectedSpace (Gam Ω S) := Formalism.SharedLemmas.totDisc_quot _ hcl
+  have : IsGalois ℚ Ω := IsAlgClosure.isGalois ℚ Ω
+  have hcl := isClosed_NS Ω (S : Set Pl)
+  have : CompactSpace (Gam Ω S) := inferInstance
+  have : TotallyDisconnectedSpace (Gam Ω S) := Formalism.SharedLemmas.totDisc_quot _ hcl
   exact (isCharZeroPt_basic F (hostFrame_ok Ω c e ψ o₁ hd S A F hF) g₁ hg r hr).2.2.1
 private theorem trace_rz (hF : IsHostFrame Ω c e ψ S A F) (ι : Qbar l ≃+* ℂ) {σ : Formalism.ConjugateSelfDual.G ℚ Ω} {q : ℕ}
     (hσ : ((cycZ ℚ Ω l σ : ℤ_[l]ˣ) : ℤ_[l]) = q) :
@@ -219,8 +219,8 @@ private theorem adm3 (hK : IsQi K) (hd : HostData l e ψ o₁) (hF : IsHostFrame
     {ρ : Formalism.ConjugateSelfDual.G K Ω →* GL (Fin 3) (Qbar l)}
     (hρ : ∀ s : Formalism.ConjugateSelfDual.G K Ω, (ρ s : Matrix (Fin 3) (Fin 3) (Qbar l)) = (r (toGS Ω _ (s.restrictScalars ℚ))).mat)
     (ha : _root_.UpperTheory.V.Z.Win.IsAutCsdA ι (UpperTheory.V.Af.tw ρ (cycBar K Ω l ^ (-1 : ℤ)))) : _root_.UpperTheory.V.Af.Adm3Alt ι e N ρ := by
-  haveI := algClosure K Ω
-  haveI : IsGalois K Ω := IsAlgClosure.isGalois K Ω
+  have := algClosure K Ω
+  have : IsGalois K Ω := IsAlgClosure.isGalois K Ω
   refine ⟨⟨top_ne_bot, fun _ _ _ => trivial, fun W _ hW => hI W fun g hg v hv => ?_⟩, by rwa [_root_.zpow_neg_one] at ha,
     ?_, levelAway_of_pt Ω c e ψ o₁ hd S A F hF K hK g₁ hg r hr ρ hρ,
     levelAt_of_pt Ω c e ψ o₁ hd S A F hF K hK g₁ hg r hr ρ hρ⟩
@@ -340,8 +340,8 @@ private theorem admissible_unitary_three_point (hP : _root_.UpperTheory.V.Af.Hyp
 omit [IsCMField K] in
 private theorem exists_w {p : ℕ} (hp : p.Prime) {B : ValuationSubring Ω} (hB : B.valuation (p : Ω) < 1) :
     ∃ w : HeightOneSpectrum (𝓞 K), IsPlaceOver B w ∧ (p : 𝓞 K) ∈ w.asIdeal := by
-  haveI := algClosure K Ω
-  haveI : Fact p.Prime := ⟨hp⟩
+  have := algClosure K Ω
+  have : Fact p.Prime := ⟨hp⟩
   obtain ⟨h1, h2, h3, -⟩ := UpperTheory.V.Base.places K Ω p B
   obtain ⟨w, hw⟩ := h1 fun h => (h2 h).2 hB
   exact ⟨w, hw, (h3 w hw).1 hB⟩
@@ -358,7 +358,7 @@ private theorem key (hP : _root_.UpperTheory.V.Af.HypothesesH') (hU : UpperTheor
     ∑ i ∈ s, -Real.log ‖(r i (toGS Ω _ σ⁻¹)).mat.trace - (F.rz (PadicAlgCl l) (toGS Ω _ σ⁻¹)).mat.trace‖ ≤
       a * N.totient * ((N : ℝ) * (e + 1)) ^ b * Real.log p := by
   classical
-  haveI := algClosure K Ω
+  have := algClosure K Ω
   obtain ⟨w, hw, hpw⟩ := exists_w (K := K) hp hB
   have hq := normV_inert hK hp h4 w hpw
   obtain ⟨hker, hdisc⟩ := gaussian_field_range_eq_ker_quartic_char.2 Ω K hK
@@ -376,13 +376,13 @@ private theorem key (hP : _root_.UpperTheory.V.Af.HypothesesH') (hU : UpperTheor
     exact w.isPrime.ne_top ((Ideal.eq_top_iff_one _).2
       (hxy ▸ w.asIdeal.add_mem (w.asIdeal.mul_mem_left _ h) (w.asIdeal.mul_mem_left _ hpw)))
   have htr := trace_rz hF ι (σ := UpperTheory.V.Base.galEmb ℚ K Ω τ) (cycZ_of_isFrob hlw hw hτ)
-  haveI : NeZero N.totient := ⟨(Nat.totient_pos.2 (NeZero.pos N)).ne'⟩
+  have : NeZero N.totient := ⟨(Nat.totient_pos.2 (NeZero.pos N)).ne'⟩
   set z₀ := ι (((UpperTheory.V.Chr.dirG ℚ Ω ψ (UpperTheory.V.Base.galEmb ℚ K Ω τ)⁻¹ : c.Oˣ) : c.O) : PadicAlgCl l) with hz₀
   have hz : z₀ ^ N.totient = 1 := by
     rw [hz₀, ← map_pow, ← SubmonoidClass.coe_pow, ← Units.val_pow_eq_pow_val, UpperTheory.V.Chr.dirG, MonoidHom.comp_apply,
       ← map_pow, ZMod.pow_totient]
     simp
-  letI : Fintype (rootsOfUnity N.totient ℂ) := Fintype.ofFinite _
+  let : Fintype (rootsOfUnity N.totient ℂ) := Fintype.ofFinite _
   obtain ⟨NN, hN0, hle, H⟩ := hN e hd.e_pos N (NeZero.pos N) p w hp hpw h7 (fun h => hpl (h.mul_left _))
     (by
       rw [hdisc, dvd_neg]
@@ -456,13 +456,13 @@ theorem UpperTheory.V.Z.J.hostNumberUE_alt :
   obtain ⟨a, b, hN⟩ := hNum K hK.1
   refine ⟨2 * a + 1 + b + 3, fun Ω _ _ _ l hl c N _ e ψ o₁ hd S A F hF ι g₁ hg => ?_⟩
   classical
-  haveI : IsAlgClosed Ω := IsAlgClosure.isAlgClosed ℚ
+  have : IsAlgClosed Ω := IsAlgClosure.isAlgClosed ℚ
   obtain ⟨p, hp, h4, h7, hpl, hple⟩ := exists_p (l * N) (Nat.mul_pos hl.out.pos (NeZero.pos N))
   obtain ⟨B, hB⟩ := (UpperTheory.V.Chr.placesQ Ω).1 p hp
   obtain ⟨σ, hσ, hfr⟩ : ∃ σ : Formalism.ConjugateSelfDual.G ℚ Ω, σ ∈ (eta4 Ω).ker ∧ IsFrob B (p ^ 2) σ := by
-    letI : Algebra K Ω := (IsAlgClosed.lift : K →ₐ[ℚ] Ω).toRingHom.toAlgebra
-    haveI : IsScalarTower ℚ K Ω := IsScalarTower.of_algebraMap_eq' (Subsingleton.elim _ _)
-    haveI := algClosure K Ω
+    let : Algebra K Ω := (IsAlgClosed.lift : K →ₐ[ℚ] Ω).toRingHom.toAlgebra
+    have : IsScalarTower ℚ K Ω := IsScalarTower.of_algebraMap_eq' (Subsingleton.elim _ _)
+    have := algClosure K Ω
     obtain ⟨w, hw, hpw⟩ := exists_w (K := K) hp hB
     obtain ⟨τ, hτ⟩ := exists_isFrob hw
     rw [normV_inert hK hp h4 w hpw] at hτ
@@ -480,8 +480,8 @@ theorem UpperTheory.V.Z.J.hostNumberUE_alt :
     simp only [vl1, div_mul_cancel₀ _ hlog]
     rw [← Finset.sum_fiberwise Finset.univ j]
     refine le_trans (Finset.sum_le_card_nsmul _ _ (a * N.totient * ((N : ℝ) * (e + 1)) ^ b * Real.log p) fun f _ => ?_) ?_
-    · letI : Algebra K Ω := f.toAlgebra
-      haveI : IsScalarTower ℚ K Ω := IsScalarTower.of_algebraMap_eq' (Subsingleton.elim _ _)
+    · let : Algebra K Ω := f.toAlgebra
+      have : IsScalarTower ℚ K Ω := IsScalarTower.of_algebraMap_eq' (Subsingleton.elim _ _)
       refine (key hP hU hK hN hd hF ι hg hp h4 h7 hpl hB hσ hfr _ r (fun i _ => ⟨(hr i).1, (hr i).2.1⟩) (fun i hi => ?_)
         (fun i _ i' _ => hi i i')).2
       have e1 : inst i = f.toAlgebra := Algebra.algebra_ext _ _ fun x => DFunLike.congr_fun (Finset.mem_filter.1 hi).2 x

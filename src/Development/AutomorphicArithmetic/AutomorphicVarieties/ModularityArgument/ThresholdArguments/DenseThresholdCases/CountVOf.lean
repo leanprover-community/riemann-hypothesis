@@ -250,7 +250,7 @@ private theorem psi_unit {A : Type} [CommRing A] (t : Aˣ) (hu : IsUnit ((t : A)
 private theorem cut_TD {D : Type} [Group D] (η : D →* ℤˣ) (Ψ : D →* Oˣ) (I : Subgroup D) (r : D →* GG (m := 3) (R := R))
     (hr : Red η Ψ r) (x : D) (hx : η x = 1) (hu : IsUnit ((Ψ x : O) ^ 2 - 1)) :
     (Cut O R fun _ _ _ _ f => CondT η Ψ I (UnitaryThreeInertia.push f r)) ∧ Cut O R fun _ _ _ _ f => CondD η Ψ I (UnitaryThreeInertia.push f r) := by
-  haveI : IsAdicComplete (maximalIdeal R) R := IsCO.complete (O := O)
+  have : IsAdicComplete (maximalIdeal R) R := IsCO.complete (O := O)
   have hr0 : (r0 η Ψ x).mat = diagonal fun i => ((Ψ x ^ wt1 i : Oˣ) : O) := tor_val (Ψ x)
   have hred : ∀ a b, (r x).mat a b - algebraMap O R ((r0 η Ψ x).mat a b) ∈ maximalIdeal R :=
     fun a b => hr.red x a b
@@ -287,7 +287,7 @@ private theorem cut_TD {D : Type} [Group D] (η : D →* ℤˣ) (Ψ : D →* Oˣ
   have hcan : ∀ (R' : Type) [CommRing R'] [Algebra O R'] [IsCO O R'] (f : R →ₐ[O] R'),
       Canon (UnitaryThreeInertia.push f r x).mat (GeneralLinearGroup.map (f : R →+* R') h) := by
     intro R' _ _ _ f
-    haveI := locHom f
+    have := locHom f
     rw [show (UnitaryThreeInertia.push f r x).mat = (r x).mat.map f from GG.map_mat _ _]
     exact canon_map.1 (f : R →+* R') _ h hh
   refine ⟨Cut.congr CT ?_, Cut.congr (Cut.and CT CL) ?_⟩
@@ -441,13 +441,13 @@ private theorem univ_of_box [IsNoetherianRing O] [IsAdicComplete (maximalIdeal O
     rw [hf0]
     exact h0
   have hk0 : ∀ x ∈ I, f0 x = 0 := (hI O f0).mp hpt0
-  haveI : Nontrivial (R ⧸ I) := by
+  have : Nontrivial (R ⧸ I) := by
     refine nontrivial_of_ne 1 0 fun h1 => ?_
     rw [← map_one (Ideal.Quotient.mk I), Ideal.Quotient.eq_zero_iff_mem] at h1
     have h2 := hk0 1 h1
     rw [map_one] at h2
     exact one_ne_zero h2
-  haveI : IsCO O (R ⧸ I) :=
+  have : IsCO O (R ⧸ I) :=
     co_quot O R (R ⧸ I) (Ideal.Quotient.mkₐ O I) (Ideal.Quotient.mkₐ_surjective O I)
   have hcomp : ∀ (R' : Type) [CommRing R'] [Algebra O R'] (g : R ⧸ I →ₐ[O] R'),
       UnitaryThreeInertia.push g (UnitaryThreeInertia.push (Ideal.Quotient.mkₐ O I) u) = UnitaryThreeInertia.push (g.comp (Ideal.Quotient.mkₐ O I)) u := by
@@ -566,7 +566,7 @@ private theorem phi_quot {Γ : Type} [Group Γ] [TopologicalSpace Γ] (M : Subgr
     exact ⟨⟨x, hy⟩, rfl⟩
   have hopen : IsOpen ((H'.comap (QuotientGroup.mk' M) : Subgroup Γ) : Set Γ) :=
     hH'.preimage QuotientGroup.continuous_mk
-  haveI := h _ hopen
+  have := h _ hopen
   let F : {φ : H' →* Multiplicative (ZMod l) // IsOpen (φ.ker : Set H')} →
       {φ : (H'.comap (QuotientGroup.mk' M)) →* Multiplicative (ZMod l) //
         IsOpen (φ.ker : Set (H'.comap (QuotientGroup.mk' M)))} :=
@@ -595,13 +595,13 @@ theorem UpperTheory.V.UnitaryThreeInertia.exists_isUniv :
       [Group Γ] [TopologicalSpace Γ] [IsTopologicalGroup Γ] [CompactSpace Γ] [T2Space Γ] [TotallyDisconnectedSpace Γ] [Finite ι] (F : Frame O G Γ ι), F.Ok →
     ∀ (l : ℕ), l.Prime → (l : O) ∈ maximalIdeal O → PhiCond Γ l → ∀ g₁, F.Marked g₁ → ∃ (R : Type) (_ : CommRing R) (_ : Algebra O R) (_ : IsCO O R) (u : Γ →* GG (m := 3) (R := R)), F.IsUniv g₁ u := by
   intro O _ _ _ _ _ _ G Γ ι _ _ _ _ _ _ _ _ _ _ _ _ _ F hF l hl hm hΦ g₁ _
-  haveI : Fact l.Prime := ⟨hl⟩
-  haveI : CharP (ResidueField O) l := (CharP.charP_iff_prime_eq_zero hl).2 (by
+  have : Fact l.Prime := ⟨hl⟩
+  have : CharP (ResidueField O) l := (CharP.charP_iff_prime_eq_zero hl).2 (by
     rw [← map_natCast (residue O), residue_eq_zero_iff]; exact hm)
   have hΨ : IsLocallyConstant (barChar O F.Ψ) :=
     IsLocallyConstant.desc _ Units.val
       ((hF.Ψ_cont 1).comp (Ideal.Quotient.factor (pow_one (maximalIdeal O)).le)) Units.val_injective
-  haveI : (Subgroup.normalClosure (∅ : Set Γ)).topologicalClosure.Normal := Subgroup.is_normal_topologicalClosure _
+  have : (Subgroup.normalClosure (∅ : Set Γ)).topologicalClosure.Normal := Subgroup.is_normal_topologicalClosure _
   obtain ⟨U⟩ := exists_univ l F.η F.Ψ hF.η_cont hΨ ∅ (fun _ h => h.elim) _ rfl (phi_quot _ hΦ)
   exact univ_of_box F hF.x g₁ U.r.hom (box_of_univ U) (isPt_rz F hF g₁)
 end -- clump:auto
@@ -691,9 +691,9 @@ theorem UpperTheory.V.UnitaryThreeInertia.hostFrame_phi :
     ∀ (S : Finset Pl) (A : S → ValuationSubring Ω) (F : Frame c.O (Formalism.ConjugateSelfDual.G ℚ Ω) (Gam Ω S) S), IsHostFrame Ω c e ψ S A F →
     PhiCond (Gam Ω S) l ∧ CompactSpace (Gam Ω S) ∧ T2Space (Gam Ω S) ∧ TotallyDisconnectedSpace (Gam Ω S) ∧ CompactSpace (Formalism.ConjugateSelfDual.G ℚ Ω) ∧ T2Space (Formalism.ConjugateSelfDual.G ℚ Ω) ∧ TotallyDisconnectedSpace (Formalism.ConjugateSelfDual.G ℚ Ω) := by
   intro hGF Ω _ _ _ l _ c N _ e ψ o₁ _hD S A F hF
-  haveI : NeZero l := ⟨(Fact.out : l.Prime).ne_zero⟩
+  have : NeZero l := ⟨(Fact.out : l.Prime).ne_zero⟩
   have hT2 : T2Space (Gam Ω S) := by
-    haveI : IsClosed (NS Ω (↑S : Set Pl) : Set (Formalism.ConjugateSelfDual.G ℚ Ω)) := isClosed_NS (F := ℚ) Ω _
+    have : IsClosed (NS Ω (↑S : Set Pl) : Set (Formalism.ConjugateSelfDual.G ℚ Ω)) := isClosed_NS (F := ℚ) Ω _
     unfold Gam
     infer_instance
   have hTD : TotallyDisconnectedSpace (Gam Ω S) := by
@@ -1194,7 +1194,7 @@ private theorem arith {a V E : ℕ} {s L X : ℝ} {C : ℕ} (ha : a ≤ V) (hV :
     rw [pow_succ]
     linarith
 private theorem l_mem {l : ℕ} [hl : Fact l.Prime] (c : Coef l) : ((l : ℕ) : c.O) ∈ maximalIdeal c.O := by
-  haveI : IsLocalHom (algebraMap ℤ_[l] c.O) := (UpperTheory.V.Base.dvrFacts l c.O).2.2.1
+  have : IsLocalHom (algebraMap ℤ_[l] c.O) := (UpperTheory.V.Base.dvrFacts l c.O).2.2.1
   have h : ((l : ℕ) : ℤ_[l]) ∈ maximalIdeal ℤ_[l] := by
     rw [PadicInt.maximalIdeal_eq_span_p]
     exact Ideal.mem_span_singleton_self _

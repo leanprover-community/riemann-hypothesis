@@ -359,8 +359,8 @@ theorem UpperTheory.V.Z.Win.Dn.rigid_end_two_w_of_printed_adjoint_lifting :
     _root_.UpperTheory.V.Af.HypothesesH' → _root_.UpperTheory.V.Th.AdjointLiftingTheorem → _root_.UpperTheory.GalN.V.RigidityEndomorphismWeightTwo := by
   intro hH hAd Ω _ _ _ l _ ι c _ N _ e ψ η σ g₁ B M H hΨσ hF A _ _ r hr hII h11 K _ _ _ _ hK2 hK W hWc hW hdet haut hWit hfree θ hθ R hR
   obtain ⟨L, _, _, _, _, g₂, Φ, C₀, ⟨k⟩, hok, hbig, hseed⟩ := hF
-  haveI := Db.algClo L Ω
-  haveI := Db.algClo K Ω
+  have := Db.algClo L Ω
+  have := Db.algClo K Ω
   obtain ⟨-, ka, hka, hrig⟩ := _root_.UpperTheory.V.Th.linked_rigid_of_printed_adjoint_lifting hH hAd Ω l ι c N e ψ η σ g₂ B M H L Φ C₀ k hok hbig hseed
   have hof := UpperTheory.V.Z.Keep.ordFlag2 Ω l c N e ψ η σ g₂ B M H L Φ C₀ k hok A r
   generalize Chr.Psi l e (Chr.dirG ℚ Ω ψ) = Ψ at *
@@ -370,9 +370,9 @@ theorem UpperTheory.V.Z.Win.Dn.rigid_end_two_w_of_printed_adjoint_lifting :
   have hLη := Db.galL_le k
   obtain ⟨_, _⟩ := Db.algKL K L Ω (hK ▸ hLη)
   obtain ⟨_, hsol⟩ := Db.galKL K L k.ab
-  haveI := Db.locHom c A
-  haveI := (isNoetherianRing_iff_ideal_fg A).2 fun I => (IsPrincipalIdealRing.principal I).fg
-  haveI : Normal ℚ L := k.ab.toIsGalois.to_normal
+  have := Db.locHom c A
+  have := (isNoetherianRing_iff_ideal_fg A).2 fun I => (IsPrincipalIdealRing.principal I).fg
+  have : Normal ℚ L := k.ab.toIsGalois.to_normal
   have hb : U3.Block η r := fun g hg a b hab => Subtype.ext (hII.1 g hg a b hab)
   have hg₂ : g₂ ∈ η.ker := hmk.ηg
   have hgs : U3.gstar σ g₂ ∈ η.ker := by
@@ -544,10 +544,10 @@ theorem UpperTheory.V.Z.Win.RR.rigII_a_alt :
   intro hC hH hL Ω _ _ _ K _ _ _ _ l hl c N _ e ψ D U g₁ hM S f hf ι hII W hW hext hdet hmod
   have hpt := U3.isPt_push D hM S f hf
   have he := D.gd.e_pos
-  haveI : IsAlgClosure K Ω := ⟨IsAlgClosure.isAlgClosed ℚ, Algebra.IsAlgebraic.tower_top (K := ℚ) K⟩
+  have : IsAlgClosure K Ω := ⟨IsAlgClosure.isAlgClosed ℚ, Algebra.IsAlgebraic.tower_top (K := ℚ) K⟩
   obtain ⟨B, hB, -, -, -, hBj, -⟩ := U3.dat_loc D
-  haveI : IsLocalHom (algebraMap ℤ_[l] c.O) := (dvrFacts l c.O).2.2.1
-  haveI : CharP (ResidueField c.O) l := by
+  have : IsLocalHom (algebraMap ℤ_[l] c.O) := (dvrFacts l c.O).2.2.1
+  have : CharP (ResidueField c.O) l := by
     rw [CharP.charP_iff_prime_eq_zero hl.out, ← map_natCast (residue c.O), residue_eq_zero_iff,
       mem_maximalIdeal, mem_nonunits_iff, ← map_natCast (algebraMap ℤ_[l] c.O)]
     intro hu
