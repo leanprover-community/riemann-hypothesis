@@ -105,11 +105,11 @@ theorem sum_range_blocks (p : ℕ) (M : ℕ → ℝ) (a a' : ℝ) (n : ℕ) :
   | succ n ih =>
     rw [Finset.sum_range_succ, ih]
     by_cases h : n < p
-    · rw [if_pos h, min_eq_left h.le, max_eq_right h.le, min_eq_left (Nat.succ_le_of_lt h),
+    · rw [ite_eq_left h, min_eq_left h.le, max_eq_right h.le, min_eq_left (Nat.succ_le_of_lt h),
         max_eq_right (Nat.succ_le_of_lt h)]
       ring
     · have h' := not_lt.1 h
-      rw [if_neg h, min_eq_right h', max_eq_left h', min_eq_right (h'.trans (Nat.le_succ n)),
+      rw [ite_eq_right h, min_eq_right h', max_eq_left h', min_eq_right (h'.trans (Nat.le_succ n)),
         max_eq_left (h'.trans (Nat.le_succ n))]
       ring
 
@@ -117,7 +117,7 @@ theorem sum_fin_blocks {r p : ℕ} (hp : p ≤ r) (L : Fin (r + 1) → ℝ) (a a
     ∑ i : Fin r, (if (i : ℕ) < p then a else a') * (L i.succ - L i.castSucc) =
       a * (L ⟨p, Nat.lt_succ_of_le hp⟩ - L 0) + a' * (L (Fin.last r) - L ⟨p, Nat.lt_succ_of_le hp⟩) := by
   set M : ℕ → ℝ := fun n => if h : n < r + 1 then L ⟨n, h⟩ else 0 with hM
-  have e : ∀ k : Fin (r + 1), L k = M k := fun k => by simp only [hM, dif_pos k.isLt]
+  have e : ∀ k : Fin (r + 1), L k = M k := fun k => by simp only [hM, dite_eq_left k.isLt]
   simp only [e, Fin.val_succ, Fin.val_castSucc, Fin.val_zero, Fin.val_last]
   rw [Fin.sum_univ_eq_sum_range (fun i => (if i < p then a else a') * (M (i + 1) - M i)),
     sum_range_blocks, min_eq_right hp, max_eq_left hp]

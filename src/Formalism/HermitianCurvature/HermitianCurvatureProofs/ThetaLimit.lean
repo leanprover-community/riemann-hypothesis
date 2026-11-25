@@ -137,16 +137,16 @@ theorem leibniz : Leibniz := by
     have hs := Finset.sum_subset (s₁ := range (m+1)) (s₂ := range (max m d + 1))
       (f := fun q => (ld q φ (B.G ω) : ℂ) * (mkP m (fun q => c q ω a)).coeff q)
       (by intro q hq; simp only [Finset.mem_range] at *; omega)
-      (by intro q _ hq; rw [mkP_coeff, if_neg (by simpa using hq)]; simp)
+      (by intro q _ hq; rw [mkP_coeff, ite_eq_right (by simpa using hq)]; simp)
     rw [← hs]
     refine Finset.sum_congr rfl fun q hq => ?_
-    rw [mkP_coeff, if_pos (Finset.mem_range.mp hq)]
+    rw [mkP_coeff, ite_eq_left (Finset.mem_range.mp hq)]
   have e2 : ∑ p ∈ range (d + 1), (ld p φ (B.G ω) : ℂ) * dS B T u p ω a / p.factorial =
       ∑ q ∈ range (max m d + 1), (ld q φ (B.G ω) : ℂ) * (mkP m (fun q => c q ω a)).coeff q := by
     have hs := Finset.sum_subset (s₁ := range (d+1)) (s₂ := range (max m d + 1))
       (f := fun q => (ld q φ (B.G ω) : ℂ) * (mkP m (fun q => c q ω a)).coeff q)
       (by intro q hq; simp only [Finset.mem_range] at *; omega)
-      (by intro q _ hq; rw [hPP, mkP_coeff, if_neg (by simpa using hq)]; simp)
+      (by intro q _ hq; rw [hPP, mkP_coeff, ite_eq_right (by simpa using hq)]; simp)
     rw [← hs]
     refine Finset.sum_congr rfl fun q hq => ?_
     rw [hdS]
@@ -491,7 +491,7 @@ theorem fatouStep : FatouStep := by
   have hlim : ∀ ω, Tendsto (fun n => th (e n) σ (B.G ω) * LE.sq B wt v ω) atTop (𝓝 (LE.sq B wt v ω)) := by
     intro ω
     have h := (hLim σ 0 (B.G ω) (B.G_pos ω)).comp hte
-    simp only [Function.comp_def, ld_zero' _ _ (B.G_pos ω), if_true] at h
+    simp only [Function.comp_def, ld_zero' _ _ (B.G_pos ω), ite_true] at h
     simpa using h.mul_const (LE.sq B wt v ω)
   have hK0 : 0 ≤ K := by
     refine le_trans (integral_nonneg fun ω => ?_) (hBd 1 one_pos)

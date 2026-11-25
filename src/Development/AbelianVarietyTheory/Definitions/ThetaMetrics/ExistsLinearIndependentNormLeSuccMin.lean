@@ -345,8 +345,4 @@ variable {Q Q' : QuadraticForm ℝ V} {L L' : Submodule ℤ V} {i j : ℕ}
 
 end Quadratic
 
-section Examples
-
-end Examples
-
 end GlobalTheory

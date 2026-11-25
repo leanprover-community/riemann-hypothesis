@@ -109,7 +109,7 @@ theorem ann_core {K : Type} [CommRing K] [TopologicalSpace K] [T2Space K] [Measu
     by_cases h : ∀ s ∈ U, p (s * y) = 1
     · rw [integral_indicator_mul_char_of_trivial μ p U hUm y h,
         Set.indicator_of_mem (show y ∈ (A : Set K) from (hA y).mpr h)]
-    · push_neg at h
+    · push Not at h
       rw [integral_indicator_mul_char_eq_zero μ p hadd U y h,
         Set.indicator_of_notMem (show y ∉ (A : Set K) from fun h' => by
           obtain ⟨s, hs, hps⟩ := h
@@ -688,7 +688,7 @@ theorem annF_boxA : ∀ (F : Type) [Field F] [NumberField F] (ψ : AddChar (AF F
         · rw [sub_self]; exact zero_mem _
         · rw [sub_zero]
           exact hcint w (fun hw => h (Finset.mem_union_right _ hw))
-      · rw [happ, if_pos (Finset.mem_union_left _ hw), sub_self]
+      · rw [happ, ite_eq_left (Finset.mem_union_left _ hw), sub_self]
     have hsum : psiF ψ e = 1 := by
       rw [he]
       refine Finset.sum_induction _ (fun x => psiF ψ x = 1) (fun a b ha hb => by rw [psiF_add, ha, hb, one_mul])

@@ -384,9 +384,9 @@ theorem ends : UpperTheory.V.Z.Tf.GlobalTraceComparison.Asm.Ends := by
     refine geomSt2_swap S l₁ l₂ Φ Φ' fun w hw' y => ?_
     rw [hΦ w hw', hΦ' w hw']
     by_cases hs : IsSplitAt w
-    · simp only [if_pos hs]
+    · simp only [ite_eq_left hs]
       exact ctMu_swap b w _ _ _ _ _
-    · simp only [if_neg hs]
+    · simp only [ite_eq_right hs]
       have hm : y ∈ K2 0 b w ↔ (y.2, y.1) ∈ K2 b 0 w := by
         simp [K2, Subgroup.mem_prod, and_comm]
       simp only [Set.indicator, SetLike.mem_coe, hm, Pi.one_apply]

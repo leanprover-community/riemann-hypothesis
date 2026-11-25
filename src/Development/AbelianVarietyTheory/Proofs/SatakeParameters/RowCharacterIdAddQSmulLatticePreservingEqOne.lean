@@ -78,7 +78,7 @@ theorem sum_red_zero (M : ℕ → ℕ → E) {B : ℕ}
   rw [reduction_sum₂ _ hI]
   refine Finset.sum_eq_zero fun i hi => ?_
   have h := hab i (Finset.mem_range.1 hi)
-  rw [(hM _ _ h.1 h.2.1).2, if_neg h.2.2]
+  rw [(hM _ _ h.1 h.2.1).2, ite_eq_right h.2.2]
 
 theorem prod_blocks_eq_one (χ : ℕ → (𝓞 E ⧸ P.asIdeal)ˣ →* Kˣ) (M : ℕ → ℕ → E) {B r t j : ℕ}
     (hM : ∀ p p', p < B → p' < B → IntAt P (M p p') ∧ redP P (M p p') = if p = p' then 1 else 0)
@@ -96,8 +96,8 @@ theorem prod_blocks_eq_one (χ : ℕ → (𝓞 E ⧸ P.asIdeal)ˣ →* Kˣ) (M :
   ext s s'
   rw [Matrix.map_apply, Matrix.of_apply, (hM _ _ (hb s) (hb s')).2, Matrix.one_apply]
   by_cases h : s = s'
-  · rw [if_pos h, if_pos (by rw [h])]
-  · rw [if_neg h, if_neg (fun h' => h (Fin.ext (by omega)))]
+  · rw [ite_eq_left h, ite_eq_left (by rw [h])]
+  · rw [ite_eq_right h, ite_eq_right (fun h' => h (Fin.ext (by omega)))]
 
 theorem lamGv_eq_one (ψ₀ : AddChar (𝓞 E ⧸ P.asIdeal) K) (χ : ℕ → (𝓞 E ⧸ P.asIdeal)ˣ →* Kˣ) (M : ℕ → ℕ → E)
     {B r t j : ℕ} (hM : ∀ p p', p < B → p' < B → IntAt P (M p p') ∧ redP P (M p p') = if p = p' then 1 else 0)
@@ -154,12 +154,12 @@ theorem entB_one_add_q {k₀ n c : ℕ} (hk : k₀ ≤ n) (ex : ℕ → ℕ) (y 
     by_cases hpp : p = p'
     · subst hpp
       have : Loc.eN E (n + c) (LocE.fIdx k₀ c n p) ⟨_, hfl⟩ = 1 := by simp [Loc.eN]
-      rw [this, if_pos rfl, sub_self, zpow_zero, mul_one]
+      rw [this, ite_eq_left rfl, sub_self, zpow_zero, mul_one]
       have h0 := zpow_ne_zero (LocE.scE n ex (LocE.fIdx k₀ c n p)) hQ0
       field_simp
     · have hff : LocE.fIdx k₀ c n p ≠ LocE.fIdx k₀ c n p' := fun h => hpp (fIdx_inj hk hp hp' h)
       have : Loc.eN E (n + c) (LocE.fIdx k₀ c n p') ⟨_, hfl⟩ = 0 := by simp [Loc.eN, hff]
-      rw [this, if_neg hpp, zero_add, zero_add, zpow_sub₀ hQ0]
+      rw [this, ite_eq_right hpp, zero_add, zero_add, zpow_sub₀ hQ0]
       have h0 := zpow_ne_zero (LocE.scE n ex (LocE.fIdx k₀ c n p)) hQ0
       field_simp
   have hd : IntAt P (if p = p' then (1 : E) else 0) := by
@@ -195,19 +195,19 @@ theorem lamRow_one_add_q : ∀ {X : Fields} {Pr : Primes X} {R : Ranks} (Ch : Ch
   have hy' : ∀ x ∈ LocE.lamY P (qOf P) (R.N j) (cOf R j) (fun i => i + 1),
       y x ∈ LocE.lamY P (qOf P) (R.N j) (cOf R j) (fun i => i + 1) := by
     intro x hx
-    have h := hy x (by unfold lamYat; rw [if_pos hP]; exact hx)
+    have h := hy x (by unfold lamYat; rw [ite_eq_left hP]; exact hx)
     unfold lamYat at h
-    rw [if_pos hP] at h
+    rw [ite_eq_left hP] at h
     exact h
   have hM := fun p p' (hp : p < R.N j + cOf R j) (hp' : p' < R.N j + cOf R j) =>
     entB_one_add_q (k₀ := R.k) hk (fun i => i + 1) y hy' hp hp'
   unfold lamRow
-  rw [if_pos hP]
+  rw [ite_eq_left hP]
   cases sharp
-  · simp only [Bool.false_eq_true, if_false]
+  · simp only [Bool.false_eq_true, ite_false]
     unfold LocE.lamGB
     exact lamGv_eq_one _ _ _ hM hr hrj
-  · simp only [if_true]
+  · simp only [ite_true]
     unfold LocE.lamGBS
     exact lamGvS_eq_one _ _ _ hM hkr hr hrj
 

@@ -89,7 +89,7 @@ theorem exists_sum (X : LSp D) {ν q : ℕ} (hX : X.IsV ν q) (hq : q ≤ ν) (c
     rw [hX.rank] at this
     exact this.symm.trans h1
   · rw [hs τ]
-    cases neg <;> simp only [Bool.false_eq_true, if_true, if_false, Prod.mk.injEq] at h2 ⊢ <;> omega
+    cases neg <;> simp only [Bool.false_eq_true, ite_true, ite_false, Prod.mk.injEq] at h2 ⊢ <;> omega
   · exact GlobalTheory.ChiGrid.SumDual.isSelfDualC_lat D X.sp B c _ d X.lat 𝔟 (by cases neg <;> simp) hX.sd h0 hd
 
 theorem exists_line (X : LSp D) {ν q : ℕ} (hX : X.IsV ν q) (hq : q ≤ ν) :

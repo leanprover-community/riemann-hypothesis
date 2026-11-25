@@ -122,7 +122,7 @@ theorem phi_smul (δ : ∀ p : PlF D, (D.s.atP p).Fp) (T T' : ℕ) (w : Point D.
     refine Formalism.L2.SG.Pf.FibQ.corner_fix p (fun a b h => (hx.1 a b).1 h) (fun a => (hx.1 a a).2 rfl)
       (fun a b h => (hu a b).1 h) (fun a => (hu a a).2 rfl) (fun a b h => ?_)
     simp only [Formalism.L2.SG.Pf.LocOrbSumPf.shM, Matrix.of_apply]
-    rw [if_neg h]
+    rw [ite_eq_right h]
   simp only [phi, smul_def, tau_second_value]
   show ((x.1 : GLp p) : MP p) * Z * ((x.2.unop : GLp p) : MP p) * Formalism.L2.SG.LsDatumB.sgnP p +
       Formalism.L2.SG.Pf.LocOrbSumPf.shM δ T T' p w =

@@ -214,7 +214,7 @@ theorem tof_exists_nearest [IsCMField E] {X : PT E} {DF : ℕ} (P : Par X DF) {I
   refine ⟨y0, hy0, fun x hx => ?_⟩
   by_cases hxs : ‖u - uMap I x‖ ≤ ‖u‖
   · exact hmin _ (hfin.mem_toFinset.2 ⟨⟨x, hx, rfl⟩, hxs⟩)
-  · push_neg at hxs
+  · push Not at hxs
     linarith
 
 theorem tof_gauss_min_sum [IsCMField E] {X : PT E} {DF : ℕ} (P : Par X DF) {I : Submodule ℤ (Vsp X.dim)}
@@ -333,7 +333,7 @@ theorem tof_inv_sqrt_le [IsCMField E] {X : PT E} {DF : ℕ} (P : Par X DF) (hph 
     nlinarith [hC1, hZ, h2, mul_nonneg (sub_nonneg.mpr hZ) (lt_of_le_of_lt (mul_self_nonneg X.la1) h2).le]
   have hK1 : 1 ≤ P.ka0 * P.ph := by
     unfold Par.ka0 Par.ph PT.ph RR
-    rw [if_pos hlt]
+    rw [ite_eq_left hlt]
     have hden : PT.rd E ^ 2 * X.la1 ^ 2 ≠ 0 := (mul_pos (pow_pos hR0 2) hla).ne'
     have hY := div_mul_cancel₀ (2 * (PT.f E : ℝ)) hden
     set Y : ℝ := 2 * (PT.f E : ℝ) / (PT.rd E ^ 2 * X.la1 ^ 2) with hYd

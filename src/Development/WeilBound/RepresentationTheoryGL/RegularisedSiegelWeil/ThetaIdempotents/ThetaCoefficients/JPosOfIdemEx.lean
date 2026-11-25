@@ -776,7 +776,7 @@ theorem sum_subgroup {G : Type} [AddCommGroup G] [Fintype G] (φ : G → ℂ) (h
         (fun Y hY => h Y (Finset.mem_filter.mp hY).2)]
       simp
     · exact_mod_cast Finset.card_pos.mpr ⟨0, by simp [Z.zero_mem]⟩
-  · push_neg at h
+  · push Not at h
     obtain ⟨y, hy, hy1⟩ := h
     refine ⟨0, le_rfl, ?_, fun h' => absurd (h' y hy) hy1⟩
     set S := ∑ Y, if Y ∈ Z then φ Y else 0 with hS
@@ -834,7 +834,7 @@ theorem fourier_nonneg (ψ₀ : AddChar k ℂ) (β : Matrix (Fin n) (Fin n) k) (
         simp only [this]
       · simp [hφdef, hz Y hY]
     · refine ⟨0, le_rfl, ?_, fun h => absurd h hV⟩
-      push_neg at hV
+      push Not at hV
       obtain ⟨i, hi⟩ := hV
       have : ∀ Y : Matrix (Fin n) (Fin n) k, ¬ ∀ i, c i ∈ V ∧ c i ᵥ* Y ∈ W := fun Y h => hi (h i).1
       simp [this]

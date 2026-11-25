@@ -39,8 +39,8 @@ theorem kpHerm : KpHerm := by
   have hc := iso_card R (orbZ w (rep R q1)) (orbZ w' (rep R q2))
   unfold pairTerm
   by_cases h1 : IsInt R (orbZ w (rep R q1)) ∧ IsInt R (orbZ w' (rep R q2))
-  · rw [if_pos h1, if_pos h1.symm, hc]; simp; ring
-  · rw [if_neg h1, if_neg (fun h => h1 h.symm)]; simp
+  · rw [ite_eq_left h1, ite_eq_left h1.symm, hc]; simp; ring
+  · rw [ite_eq_right h1, ite_eq_right (fun h => h1 h.symm)]; simp
 
 end Formalism.FourierDecayAlt.P.A6x8
 

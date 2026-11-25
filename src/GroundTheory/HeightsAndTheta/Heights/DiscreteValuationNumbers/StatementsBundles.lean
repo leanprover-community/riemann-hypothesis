@@ -198,17 +198,6 @@ theorem isHomogeneous_psum (N k : ℕ) : (psum (Fin N) ℤ k).IsHomogeneous k :=
 
 end ExamplesZ2
 
-section ExamplesEuler
-
-variable {Ω : Type*} [Field Ω] {R : Type*} [CommRing R] [Algebra R Ω]
-
-section Pair
-variable {O : Type*} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Algebra O Ω]
-
-end Pair
-
-end ExamplesEuler
-
 end
 
 end GroundTheory.Heights₂.Heights.NumbersDVR

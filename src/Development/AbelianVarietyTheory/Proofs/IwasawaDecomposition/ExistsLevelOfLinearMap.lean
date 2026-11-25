@@ -90,7 +90,7 @@ theorem lt_injective {D : D7} {H : Geo.Tor.Host D.host.E} {Dw : Datum H} (hH : �
     have hs := s.2
     have : Dw.mult σ = Dw.p := by
       rw [show σ = tauE D ρ from h]
-      exact if_pos (hH ρ)
+      exact ite_eq_left (hH ρ)
     exact this ▸ hs
   intro x y hxy
   obtain ⟨a1, a2⟩ := hlt x

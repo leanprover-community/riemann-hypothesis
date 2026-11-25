@@ -286,7 +286,7 @@ theorem exists_pack_given : ∀ (E : Type) [Field E] [NumberField E] [IsCMField 
   choose h hh _ using fun b => _root_.GlobalTheory.CM.exists_kForm E H (FU.Di i) (ε b)
   have htw : 2 * (1 - (((Z true).ω : (Z true).M) : ℂ)) - 1 = sgnRt H false := by
     have := (Z true).hω
-    simp only [sgnRt, Bool.false_eq_true, if_false, if_true] at this ⊢
+    simp only [sgnRt, Bool.false_eq_true, ite_false, ite_true] at this ⊢
     linear_combination -this
   obtain ⟨ε₁, hε₁⟩ := exists_sign (H := H) htw (sgnRt_sq false)
   obtain ⟨h₁, hh₁, -⟩ := _root_.GlobalTheory.CM.exists_kForm E H (FU.Di i) ε₁

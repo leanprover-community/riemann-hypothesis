@@ -345,8 +345,8 @@ theorem GlobalTheory.PrimeAlmostAll.primeTo_finite : ∀ (D : D7) (Z : LocDat D)
       refine Finset.prod_congr rfl fun a _ => ?_
       have ha : a.val < D.R.rS + 1 := a.2
       by_cases h : a.val < D.R.rS
-      · rw [if_pos ha, if_pos h]
-      · rw [if_pos ha, if_neg h, hlast a h]
+      · rw [ite_eq_left ha, ite_eq_left h]
+      · rw [ite_eq_left ha, ite_eq_right h, hlast a h]
     set K := ∏ a : Fin (D.R.rS + 1), if a.val < D.R.rS then (Z.M p).L.cj (frFac Z.δ p a) * frFac Z.δ p a else 1 with hKdef
     have eG : (FP p).Gv = (FP p).Dm (D.R.rS + 1) * (Z.M p).L.cj ((FP p).Dm (D.R.rS + 1)) -
         algebraMap _ _ ((FP p).A.T * (FP p).B.T) * ((FP p).Dm D.R.rS * (Z.M p).L.cj ((FP p).Dm D.R.rS)) := rfl

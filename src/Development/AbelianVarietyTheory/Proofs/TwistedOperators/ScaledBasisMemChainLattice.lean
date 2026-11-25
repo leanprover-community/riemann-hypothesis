@@ -219,16 +219,6 @@ theorem _root_.GlobalTheory.RootEx.UnfoldShape.colMat_smul (a : k) (y : Fin c â†
 
 end
 
-section
-omit [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n']
-
-end
-
-section
-omit [ValuativeRel k] [Fintype n] [DecidableEq n] [DecidableEq n']
-
-end
-
 
 variable [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 

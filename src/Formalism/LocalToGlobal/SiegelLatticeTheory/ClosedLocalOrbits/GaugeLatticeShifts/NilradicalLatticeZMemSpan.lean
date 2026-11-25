@@ -66,7 +66,7 @@ theorem tr_orth (j : E →+* R) (ι : (Fin n → E) →+ (Fin n → R)) (hs : �
     intro i b
 
     simp only [hw'def, map_sub, map_sum, map_smul, hef, smul_eq_mul, mul_ite, mul_one, mul_zero,
-    Finset.sum_ite_eq', Finset.mem_univ, if_true, sub_self]
+    Finset.sum_ite_eq', Finset.mem_univ, ite_true, sub_self]
   have hdec : ∀ i, ι (w i) = ι (w' i) + ∑ a, j (hE (e a) (w i)) • ι (f a) := by
     intro i
 
@@ -364,7 +364,7 @@ theorem hJ_spL (ε : Fin n → Bool) (e f : Fin r → Fin n → ℂ)
     refine Submodule.span_le.2 ?_
     rintro _ ⟨b, hb, rfl⟩
     show hJL ε (f a) (e b) = 0
-    rw [hJL_apply, hfe, if_neg]
+    rw [hJL_apply, hfe, ite_eq_right]
     intro h
     rw [h] at hb
     exact lt_irrefl a.1 hb
@@ -387,7 +387,7 @@ theorem rootCoord_mul (ε : Fin n → Bool) (e f : Fin r → Fin n → ℂ) (z :
   have hx0 : hJ ε (f a) (nxt e z a) = 0 := by
     unfold nxt
     split_ifs with hlt
-    · rw [hfe, if_neg]
+    · rw [hfe, ite_eq_right]
       intro h'
       have := congrArg Fin.val h'
       simp at this

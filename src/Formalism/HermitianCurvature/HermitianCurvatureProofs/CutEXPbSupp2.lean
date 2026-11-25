@@ -394,10 +394,10 @@ theorem tz_sum (k : ℕ) (z : Fin (2 * 0 + k + 1) → ℂ) :
   simp only [Matrix.mulVec_diagonal, dotProduct, Fin.sum_univ_castSucc, Pi.star_apply, Complex.star_def]
   have h1 : ∀ i : Fin (2 * 0 + k), dS (2 * 0 + k) i.castSucc = 1 := fun i => by
     unfold dS
-    rw [if_neg (Fin.castSucc_lt_last i).ne]
+    rw [ite_eq_right (Fin.castSucc_lt_last i).ne]
   have h2 : dS (2 * 0 + k) (Fin.last (2 * 0 + k)) = -1 := by
     unfold dS
-    rw [if_pos rfl]
+    rw [ite_eq_left rfl]
   simp only [h1, h2, one_mul, neg_one_mul, mul_neg, Complex.add_re, Complex.neg_re, Complex.re_sum, e]
   ring
 

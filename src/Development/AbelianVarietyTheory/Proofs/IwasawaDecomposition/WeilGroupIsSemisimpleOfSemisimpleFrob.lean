@@ -109,12 +109,6 @@ private theorem isSemisimple_of_mul_eq_one' {V : Type*} [AddCommGroup V] [Module
   · conv_rhs => rw [h1]
     rw [smul_smul, inv_mul_cancel₀ hα, one_smul]
 
-open NumberField IsDedekindDomain Polynomial Module in
-private theorem isSemisimple_of_isUnit_of_pow_isSemisimple {V : Type*} [AddCommGroup V]
-    [Module ℂ V] [FiniteDimensional ℂ V] {f : End ℂ V} (hf : IsUnit f) {m : ℕ} (hm : 0 < m)
-    (hfm : (f ^ m).IsSemisimple) : f.IsSemisimple := by
-  apply _root_.GlobalTheory.WeilDeligne.FrobSemisimple.isSemisimple_of_pow <;> assumption
-
 
 open NumberField IsDedekindDomain Polynomial Module in
 theorem _root_.GlobalTheory.WeilDeligne.isSemisimple_of_isSemisimple_frob :
@@ -143,7 +137,7 @@ theorem _root_.GlobalTheory.WeilDeligne.isSemisimple_of_isSemisimple_frob :
         exact hinv.of_mem_adjoin_singleton (pow_mem (Algebra.self_mem_adjoin_singleton ℂ _) k)
   obtain ⟨m, hm, hpow⟩ :=
     _root_.GlobalTheory.WeilDeligne.exists_pow_eq_pow_of_deg_eq E Ω A w h V ρ hρ σ τ hτdeg.symm
-  apply isSemisimple_of_isUnit_of_pow_isSemisimple hunit hm
+  apply FrobSemisimple.isSemisimple_of_pow hunit hm
   rw [hpow]
   exact hτ.of_mem_adjoin_singleton (pow_mem (Algebra.self_mem_adjoin_singleton ℂ _) m)
 

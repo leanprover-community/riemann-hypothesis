@@ -109,7 +109,7 @@ theorem exists_box_of_mem_nhds {N : Set (Af F)} (hN : N ∈ 𝓝 0) :
       intro v hv
       apply hWt
       have := hα v
-      simp only [if_pos (Finset.mem_coe.1 hv)] at this
+      simp only [ite_eq_left (Finset.mem_coe.1 hv)] at this
       exact this.2
     exact hI hm
 
@@ -243,7 +243,7 @@ theorem finprod_locInd {B : ∀ v : Pl (F := F), AddSubgroup (Fv F v)} (hB : IsB
   split_ifs with h
   · exact finprod_eq_one_of_forall_eq_one fun v => Set.indicator_of_mem
       (show (fun i => evalV F v (y i)) ∈ {x : κ → Fv F v | ∀ i, x i - evalV F v (r i) ∈ B v} from fun i => h i v) _
-  · push_neg at h
+  · push Not at h
     obtain ⟨i, v, hv⟩ := h
     exact finprod_eq_zero _ v (Set.indicator_of_notMem
       (show (fun i => evalV F v (y i)) ∉ {x : κ → Fv F v | ∀ i, x i - evalV F v (r i) ∈ B v} from

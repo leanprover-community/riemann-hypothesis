@@ -161,7 +161,7 @@ theorem padic_denom_coeff_of_roots_bounded :
   by_cases hi : q.natDegree < i
   · refine ⟨1, Nat.coprime_one_left _, 0, ?_⟩
     rw [coeff_eq_zero_of_natDegree_lt hi]; simp
-  push_neg at hi
+  push Not at hi
   have hQm : (q.map (algebraMap ℚ (PadicAlgCl p))).Monic := hq.map _
   have hQd : (q.map (algebraMap ℚ (PadicAlgCl p))).natDegree = q.natDegree := natDegree_map _
   have hB := GlobalTheory.norm_coeff_natDegree_sub_le_pow_of_roots_le (PadicAlgCl p) _ hQm ((p : ℝ) ^ k)

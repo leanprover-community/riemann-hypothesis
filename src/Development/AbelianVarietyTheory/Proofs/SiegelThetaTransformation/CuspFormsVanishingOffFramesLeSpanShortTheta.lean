@@ -174,7 +174,7 @@ theorem holSub0_le_span_shortGen : Formalism.MainNotions.ModuliIntegralCharts.H1
       field_simp
     · rw [hP0 k x hx]
       refine (Finset.sum_eq_zero fun j _ => Finset.sum_eq_zero fun i _ => ?_).symm
-      have : Formalism.L2.PjFree.rdU U (f j i) k x = 0 := dif_neg hx
+      have : Formalism.L2.PjFree.rdU U (f j i) k x = 0 := dite_eq_right hx
       rw [this, mul_zero]
   rw [hPe]
   refine Submodule.sum_mem _ fun j _ => Submodule.sum_mem _ fun i _ => Submodule.smul_mem _ _ ?_

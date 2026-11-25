@@ -80,7 +80,7 @@ theorem UpperTheory.RealTr.spnRel :
   simp_rw [leib, spn_comm c hc]
   simp only [sub_mul, mul_sub, ite_mul, mul_ite, zero_mul, mul_zero, Finset.sum_add_distrib,
     Finset.sum_sub_distrib]
-  simp only [Finset.sum_ite_eq, Finset.sum_ite_eq', Finset.mem_univ, if_true, Finset.sum_ite_irrel,
+  simp only [Finset.sum_ite_eq, Finset.sum_ite_eq', Finset.mem_univ, ite_true, Finset.sum_ite_irrel,
     Finset.sum_const_zero]
   unfold spn
   by_cases hbg : b = g <;> by_cases hha : h = a

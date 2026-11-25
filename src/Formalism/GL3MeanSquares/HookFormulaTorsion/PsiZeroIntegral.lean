@@ -276,7 +276,7 @@ private theorem logDerivSeries_main : Formalism.HermitianLattices.GL2a2.LogDeriv
   intro q _ χ hχ
   have h : RemBound (fun n : ℕ => ((Λ n : ℝ) : ℂ) * χ (n : ZMod q)) 0 := by
     have h0 := sw_bound q χ
-    rw [if_neg hχ] at h0
+    rw [ite_eq_right hχ] at h0
     exact h0
   have hc0 : ((Λ 0 : ℝ) : ℂ) * χ ((0 : ℕ) : ZMod q) = 0 := by simp
   have hs : Tendsto (fun σ : ℝ => (σ : ℂ)) (𝓝[>] 1) (𝓝 1) :=
@@ -389,7 +389,7 @@ private theorem psiZeroConst_main : Formalism.HermitianLattices.GL2a2.PsiZeroCon
       | exact MulChar.one_apply (isUnit_of_subsingleton _)
   have h : RemBound (fun n : ℕ => ((Λ n : ℝ) : ℂ)) 1 := by
     have h0 := sw_bound 1 (1 : DirichletCharacter ℂ 1)
-    rw [if_pos rfl] at h0
+    rw [ite_eq_left rfl] at h0
     simp only [hone, mul_one] at h0
     exact h0
   have hid : ∀ σ : ℝ, 1 < σ →

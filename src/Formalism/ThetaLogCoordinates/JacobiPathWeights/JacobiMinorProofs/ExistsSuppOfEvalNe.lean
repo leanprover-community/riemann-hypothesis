@@ -300,22 +300,4 @@ theorem gen_mem_supp (isVec : ι → Bool) (S : Set ι) [DecidablePred (· ∈ S
 
 end Gen
 
-section Consts
-
-variable {ι ζ : Type*} {n : ℕ} {k : Type*} [Field k] (isVec : ι → Bool) (S : Set ι) [DecidablePred (· ∈ S)]
-
-end Consts
-
-section Coord
-
-variable {ι ζ : Type*} {n : ℕ} {k : Type*} [Field k] (isVec : ι → Bool) (S : Set ι) [DecidablePred (· ∈ S)]
-
-end Coord
-
-section DetPart
-
-variable {ι ζ : Type*} {n : ℕ} {k : Type*} [Field k] (isVec : ι → Bool) (S : Set ι) [DecidablePred (· ∈ S)]
-
-end DetPart
-
 end Formalism.InvariantFactorPaths.GelfandTsetlinBases

@@ -21,7 +21,7 @@ variable {σ τ R : Type*} [CommRing R]
 theorem supp_one {m : σ →₀ ℕ} (hm : m ∈ (1 : MvPolynomial σ R).support) : m = 0 := by
   classical
   by_contra h
-  exact (MvPolynomial.mem_support_iff.mp hm) (by rw [MvPolynomial.coeff_one, if_neg (fun h' => h h'.symm)])
+  exact (MvPolynomial.mem_support_iff.mp hm) (by rw [MvPolynomial.coeff_one, ite_eq_right (fun h' => h h'.symm)])
 
 theorem supp_prod_bound {ι : Type*} (w : (σ →₀ ℕ) →+ ℕ) (s : Finset ι) (f : ι → MvPolynomial σ R) (b : ι → ℝ)
     (h : ∀ j ∈ s, ∀ m ∈ (f j).support, (w m : ℝ) ≤ b j) :
@@ -65,7 +65,7 @@ theorem supp_aeval_pow (g : σ → τ) (e : σ → ℕ) (x : MvPolynomial σ R) 
 
   rw [x.as_sum, map_sum, MvPolynomial.coeff_sum]
   refine Finset.sum_eq_zero fun m hm => ?_
-  rw [aeval_pow_monomial, MvPolynomial.coeff_monomial, if_neg (fun h => hne m hm h.symm)]
+  rw [aeval_pow_monomial, MvPolynomial.coeff_monomial, ite_eq_right (fun h => hne m hm h.symm)]
 
 end Supp
 
@@ -511,10 +511,10 @@ theorem gen_bound (O : Type) [CommRing O] (hX : X.Hyp p K) (hC : 0 ≤ X.CLa) {P
   swap
   · exfalso
     apply MvPolynomial.mem_support_iff.mp hmm
-    rw [MvPolynomial.coeff_mul_monomial', if_neg hle]
+    rw [MvPolynomial.coeff_mul_monomial', ite_eq_right hle]
   have hm'' : mm - l ∈ (∏ j ∈ Finset.range X.F.J, (phSeg O K p X.F (j : ℤ)) (x j)).support := by
     have hcoef := MvPolynomial.mem_support_iff.mp hmm
-    rw [MvPolynomial.coeff_mul_monomial', if_pos hle, mul_one] at hcoef
+    rw [MvPolynomial.coeff_mul_monomial', ite_eq_left hle, mul_one] at hcoef
     exact MvPolynomial.mem_support_iff.mpr hcoef
   have hadd : vsDeg mm = vsDeg (mm - l) + vsDeg l := by
     conv_lhs => rw [← tsub_add_cancel_of_le hle]

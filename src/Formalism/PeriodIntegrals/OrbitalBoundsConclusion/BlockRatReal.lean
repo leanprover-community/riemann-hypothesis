@@ -53,19 +53,19 @@ theorem stmt_of (hE : EvenStep) (hO : OddStep) : Stmt := by
   have hf' : f ∈ weyl ℤ (m + 1) (m + 1) le_rfl (nuOf (lam τ)) := by
     rw [← natW_eq]; exact hf
   by_cases hs : Even s.val
-  · have hla : lamAt (lam0 v) s = lam τ := by rw [lamAt, if_pos hs, hl]
+  · have hla : lamAt (lam0 v) s = lam τ := by rw [lamAt, ite_eq_left hs, hl]
     obtain ⟨F, hF, hFe⟩ := hE m LL embLL (lam τ) (hanti τ) M0 f hf'
     refine ⟨F, ?_, fun y => ?_⟩
-    · rw [blkMod, hla, if_pos (hanti τ)]; exact hF
+    · rw [blkMod, hla, ite_eq_left (hanti τ)]; exact hF
     · have h1 := hFe (y.1 τ) (y.2 τ)
-      rw [zAt, if_pos hs, reM_rfl, eAt, hla, detShift_eq, hM0]
+      rw [zAt, ite_eq_left hs, reM_rfl, eAt, hla, detShift_eq, hM0]
       exact h1
-  · have hla : lamAt (lam0 v) s = fun i => -lam τ i.rev := by rw [lamAt, if_neg hs, hl]
+  · have hla : lamAt (lam0 v) s = fun i => -lam τ i.rev := by rw [lamAt, ite_eq_right hs, hl]
     obtain ⟨F, hF, hFe⟩ := hO m LL embLL (lam τ) (hanti τ) M0 f hf'
     refine ⟨F, ?_, fun y => ?_⟩
-    · rw [blkMod, hla, if_pos (antitone_star (hanti τ))]; exact hF
+    · rw [blkMod, hla, ite_eq_left (antitone_star (hanti τ))]; exact hF
     · have h1 := hFe (y.1 τ) (y.2 τ)
-      rw [zAt, if_neg hs, reM_rfl, eAt, hla, detShift_eq, hM0]
+      rw [zAt, ite_eq_right hs, reM_rfl, eAt, hla, detShift_eq, hM0]
       exact h1
 
 end PI.BlockRatReal

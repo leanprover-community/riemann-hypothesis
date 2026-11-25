@@ -499,9 +499,9 @@ theorem graded_class_decomposition (F : ℤ → Submodule LL D)
     rfl
   rw [e2, Finset.sum_pi_single]
   by_cases hi : i ∈ Finset.Ico a b
-  · rw [if_pos hi, sub_self]
+  · rw [ite_eq_left hi, sub_self]
     exact zero_mem _
-  · rw [if_neg hi, sub_zero]
+  · rw [ite_eq_right hi, sub_zero]
     rw [Finset.mem_Ico, not_and_or, not_le, not_lt] at hi
     rcases hi with hi | hi
     · exact ha i hi
@@ -944,8 +944,8 @@ theorem detect [IsFractionRing O LL] (hP4 : LevelMapHodgeFiltration W) (hSat : S
 
   have hd : (baseIdOf hR).d ((baseIdOf hR).Bs.p s ^ e) =
       ∏ s' ∈ Finset.range (s + 1), pS W s' ^ (if s' = s then e else 0) := by
-    rw [map_pow, BaseId.d_p, Finset.prod_eq_single s (fun s' _ hs' => by rw [if_neg hs', pow_zero])
-      (fun hns => absurd (Finset.mem_range.2 (Nat.lt_succ_self s)) hns), if_pos rfl]
+    rw [map_pow, BaseId.d_p, Finset.prod_eq_single s (fun s' _ hs' => by rw [ite_eq_right hs', pow_zero])
+      (fun hns => absurd (Finset.mem_range.2 (Nat.lt_succ_self s)) hns), ite_eq_left rfl]
   have hdl : (baseIdOf hR).d (PowerSeries.C (((PD.p : ℕ) : O) ^ K)) = ((PD.p : ℕ) : LetA O n) ^ K := by
     rw [BaseId.d_C, map_pow, map_natCast]
   have hNΔ : ∀ x : W.DD T, x ∈ W.N T → (∀ δ ∈ W.DelF, W.γD T δ x = x) → x ∈ W.NΔ T :=

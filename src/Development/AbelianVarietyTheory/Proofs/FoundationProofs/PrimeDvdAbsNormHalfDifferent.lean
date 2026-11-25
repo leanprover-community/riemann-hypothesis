@@ -124,17 +124,4 @@ theorem primeToAA_of_not_mem {P : Place D} (h : ((badInt D : ℕ) : 𝓞 D.host.
   (primeToAA_iff P).2 ⟨fun hc => h (mem_of_dvd (absNorm_ccK_mem hc) (Dvd.intro_left _ rfl)),
     fun hb => h (mem_of_dvd (two_q_mem hb) (Dvd.intro _ rfl))⟩
 
-section Lev
-
-variable {H : ModHost D}
-
-end Lev
-
-section Rec
-
-variable {G : Type} [Group G] [Fintype G] {Pl0 T : Type} {A : Formalism.L2.DIV.FamIn D.what₂.LL G Pl0 T D.R.m}
-  {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL]
-
-end Rec
-
 end GlobalTheory.HalfCompare

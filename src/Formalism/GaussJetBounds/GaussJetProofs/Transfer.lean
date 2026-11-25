@@ -72,7 +72,7 @@ theorem cc_letterLog (l : ℕ) (x : V2 d) : constantCoeff (letterLog (K := F) l 
   refine Finset.sum_eq_zero fun e he => ?_
   have he0 : e = 0 := by simpa using he
   subst he0
-  rw [if_neg]
+  rw [ite_eq_right]
   intro h
   have h1 := Finsupp.single_eq_zero.mp h.symm
   simp at h1

@@ -238,7 +238,7 @@ theorem sum_balCoeff_smul [DecidableEq T] [DecidableEq κ] {M : Type*} [AddCommM
       ∑ t, ∑ a, ∑ b, ∑ k, γ t a b • f (xVar t a k) (yVar t b k) := by
   simp only [Fintype.sum_prod_type, Fintype.sum_sum_type, balCoeff, zero_smul,
     Finset.sum_const_zero, add_zero, zero_add, ite_and, ite_smul, Finset.sum_ite_irrel,
-    Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   exact Finset.sum_congr rfl fun t _ => Finset.sum_congr rfl fun a _ => Finset.sum_comm
 
 theorem quad_balCoeff [DecidableEq T] [DecidableEq κ] (γ : T → Fin p → Fin q → ℂ)

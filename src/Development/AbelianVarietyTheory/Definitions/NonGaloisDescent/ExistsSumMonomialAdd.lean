@@ -57,7 +57,7 @@ theorem exists_sum_monomial_add {x : K⟦X⟧} (hx : x ∈ S O K e) (m : ℕ) : 
     rw [mul_zero] at this
     refine this.congr' ?_
     filter_upwards [eventually_ge_atTop N] with n hn
-    rw [coeff_mk, if_neg (by omega), norm_mul, mul_assoc]
+    rw [coeff_mk, ite_eq_right (by omega), norm_mul, mul_assoc]
   · ext n
     rw [← map_natCast (C : K →+* K⟦X⟧), ← map_pow]
 

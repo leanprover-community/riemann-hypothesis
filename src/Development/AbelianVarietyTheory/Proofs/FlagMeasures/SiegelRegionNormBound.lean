@@ -125,13 +125,13 @@ theorem det_minor {n : ℕ} (L R : Matrix (Fin n) (Fin n) ℂ) (hL : IsLoUni L)
       · simp
       · intro b _ hb
         have : b.1 ≠ j := fun h => hb (Subtype.ext h)
-        simp only [Matrix.submatrix_apply, if_neg this]
+        simp only [Matrix.submatrix_apply, ite_eq_right this]
         exact (hL _ _).2 rfl
       · simp
     · intro a b hab
       have hab' : a.1 < b.1 := hab
       have : a.1 ≠ j := ne_of_lt (lt_of_lt_of_le hab' b.2)
-      simp only [Matrix.submatrix_apply, if_neg this]
+      simp only [Matrix.submatrix_apply, ite_eq_right this]
       exact (hL _ _).1 hab'
   · rw [Matrix.det_of_upperTriangular]
     · simp only [Matrix.submatrix_apply]

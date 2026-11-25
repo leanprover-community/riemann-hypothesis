@@ -201,7 +201,7 @@ theorem GlobalTheory.RowsOrb.ub_equiv_model : ∀ (D : D7) (X : HidaSetting D) (
     · set_option synthInstance.maxHeartbeats 100000 in
         rw [map_sub, corr_apply, map_sum]
         simp only [map_smul, hT_f_e, smul_eq_mul, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ,
-          if_true, sub_self]
+          ite_true, sub_self]
   have hmUb : ∀ w : W, (⟨(w : (VS D).V) - corr X W w, hmWb w⟩ : GlobalTheory.RowsOrb.Wb X) ∈ GlobalTheory.RowsOrb.Ub X u := by
     intro w
     rw [GlobalTheory.RowsOrb.mem_Ub]
@@ -289,7 +289,7 @@ theorem eq_zero_of_mem_span_eX (X : HidaSetting D) (w : (VS D).V)
       intro a
       rw [a_herm, X.ef a b]
       split_ifs <;> simp
-    simp only [hfe, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true] at h
+    simp only [hfe, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true] at h
     exact h
   simp [hc]
 

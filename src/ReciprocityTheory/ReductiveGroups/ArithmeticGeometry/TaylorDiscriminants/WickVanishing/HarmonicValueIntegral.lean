@@ -103,7 +103,7 @@ theorem E_nabla (B : FB R d O) (h : PS k 2 d) (hax : ev (n := 1) ![0, pt k d 0] 
   simp only [Fintype.sum_sum_type, Finset.sum_add_distrib]
   simp only [bE, Sum.elim_inl, Sum.elim_inr, pderiv_X, Pi.single_apply, mul_ite, mul_zero, mul_one]
   simp only [Prod.mk.injEq, true_and]
-  simp only [Finset.sum_ite_eq', Finset.mem_univ, if_true]
+  simp only [Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   congr 1
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun t _ => ?_

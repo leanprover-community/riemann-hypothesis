@@ -167,7 +167,7 @@ theorem l10 : L6 → L7 → L8 → liftZP_newton → ParameterUpperBound := by
       (B' (ρ (a j) v) (ρ (a j) v)).re ≤ C := hC
   have hval : ∀ j, B' v (ρ (a j) v) = w * ((s ^ ((m + 1) * j))⁻¹ * h j) := by
     intro j
-    rw [h7 F ψ hψ (m + 2) V ρ v z hH (B' v) hW', sphericalWhittaker_torusPow hψ.1, if_pos (antitone_single hn0 j),
+    rw [h7 F ψ hψ (m + 2) V ρ v z hH (B' v) hW', sphericalWhittaker_torusPow hψ.1, ite_eq_left (antitone_single hn0 j),
       halfModulus_eq, rhoPair_single_zero]
     congr 2
     rw [_root_.zpow_neg]

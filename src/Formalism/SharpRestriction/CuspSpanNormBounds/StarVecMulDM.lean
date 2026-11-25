@@ -57,10 +57,10 @@ theorem bigCell_cj (hκ : 0 < κ) (hτ : 0 < τ) (c : Fin r → ℂ) (μ : Matri
   by_cases hj : j.val < r
   · rw [dite_eq_left hj, dite_eq_left hj]
     by_cases hi : i = esI k r ⟨j.val, hj⟩
-    · rw [if_pos hi, if_pos hi, hi, tV_esI]
-      have : tV k r κ τ j = tF r κ τ j.val := by unfold tV; rw [if_pos hj]
+    · rw [ite_eq_left hi, ite_eq_left hi, hi, tV_esI]
+      have : tV k r κ τ j = tF r κ τ j.val := by unfold tV; rw [ite_eq_left hj]
       rw [this, inv_inv]; push_cast; ring
-    · rw [if_neg hi, if_neg hi, mul_zero]
+    · rw [ite_eq_right hi, ite_eq_right hi, mul_zero]
   · rw [dite_eq_right hj, dite_eq_right hj]
     by_cases hj2 : j.val ≤ r + k
     · rw [dite_eq_left hj2, dite_eq_left hj2]
@@ -69,11 +69,11 @@ theorem bigCell_cj (hκ : 0 < κ) (hτ : 0 < τ) (c : Fin r → ℂ) (μ : Matri
       · rw [dite_eq_right hi, mul_zero]
     · rw [dite_eq_right hj2, dite_eq_right hj2]
       by_cases hi : i.val = 2 * r + k - j.val
-      · rw [if_pos hi, if_pos hi]
+      · rw [ite_eq_left hi, ite_eq_left hi]
         have hti : tV k r κ τ i = tF r κ τ (2 * r + k - j.val) := by
-          unfold tV; rw [if_pos (by omega), hi]
+          unfold tV; rw [ite_eq_left (by omega), hi]
         have htj : tV k r κ τ j = (tF r κ τ (2 * r + k - j.val))⁻¹ := by
-          unfold tV; rw [if_neg hj, if_neg hj2]
+          unfold tV; rw [ite_eq_right hj, ite_eq_right hj2]
         have hp := tF_pos (r := r) hκ hτ (2 * r + k - j.val)
         rw [hti, htj]
         simp only [star_mul', Complex.star_def, Complex.conj_ofReal]
@@ -81,7 +81,7 @@ theorem bigCell_cj (hκ : 0 < κ) (hτ : 0 < τ) (c : Fin r → ℂ) (μ : Matri
         push_cast
         rw [mul_inv]
         field_simp
-      · rw [if_neg hi, if_neg hi, mul_zero]
+      · rw [ite_eq_right hi, ite_eq_right hi, mul_zero]
 
 theorem flagMat_cj (hκ : 0 < κ) (hτ : 0 < τ) {z : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z) (x : Mx k r)
     (i j : Fin (r + 1)) (hi : i.val < r) :
@@ -130,8 +130,8 @@ theorem cj_blockW (hκ : 0 < κ) (hτ : 0 < τ) (h : Matrix (Fin k) (Fin k) ℂ)
     · rw [dite_eq_right hj, mul_zero]
   · rw [dite_eq_right hi]
     by_cases e : i = j
-    · rw [if_pos e, cj_fac_diag hκ hτ i j e, one_mul]
-    · rw [if_neg e, mul_zero]
+    · rw [ite_eq_left e, cj_fac_diag hκ hτ i j e, one_mul]
+    · rw [ite_eq_right e, mul_zero]
 
 theorem isHCTypeW_cjI (hκ : 0 < κ) (hτ : 0 < τ) {z : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z)
     {u : Fin k → ℝ} {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]

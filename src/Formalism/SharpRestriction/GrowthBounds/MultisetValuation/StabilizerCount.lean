@@ -516,7 +516,7 @@ theorem stmt6G (D : Formalism.BasicNotions.D7) (L : SizeData₂ D) (X : Inst D L
   by_cases hE : Formalism.MainNotions.G.VV X K (aL L) (bL L) (D.what₂.places.resChar w) = ∅
   · have htau : tauP X K (aL L) (bL L) (D.what₂.places.resChar w) = 0 := by
       unfold tauP
-      rw [if_pos hE]
+      rw [ite_eq_left hE]
     have hio : ioP X K (aL L) (bL L) (D.what₂.places.resChar w) = 0 := by
       unfold ioP
       rw [dite_eq_right]
@@ -565,7 +565,7 @@ theorem stmt6G (D : Formalism.BasicNotions.D7) (L : SizeData₂ D) (X : Inst D L
         ((X.ep (D.what₂.places.resChar w) + ∑ t0 ∈ Formalism.MainNotions.G.VV X K (aL L) (bL L) (D.what₂.places.resChar w),
           D.R.m * (⌈tv X K (aL L) (bL L) (D.what₂.places.resChar w) t0⌉₊ + Dp K L (D.what₂.places.resChar w) + 1) : ℕ) : ℝ) := by
       unfold tauP
-      rw [if_neg hE]
+      rw [ite_eq_right hE]
       push_cast
       rfl
     have hτ : ⌈tauP X K (aL L) (bL L) (D.what₂.places.resChar w)⌉.toNat =

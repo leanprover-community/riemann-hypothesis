@@ -19,7 +19,7 @@ private theorem func_repr {ι : Type} [Fintype ι] [DecidableEq ι] (f : (ι →
       intro τ
       by_cases h : k = τ
       · subst h
-        simp only [Pi.add_apply, Pi.smul_apply, Pi.single_eq_same, if_true]
+        simp only [Pi.add_apply, Pi.smul_apply, Pi.single_eq_same, ite_true]
         apply Complex.ext <;> simp
       · simp [h]
     rw [Finset.sum_apply]

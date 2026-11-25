@@ -49,11 +49,11 @@ theorem main : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι 
     · rw [one_mul]
       have hm := (hX p.1 p.2).2.2 k hk m
       by_cases e : p.1 = τ
-      · rw [if_pos e] at hm
+      · rw [ite_eq_left e] at hm
         rw [e, Function.update_self]
         rw [e] at hm
         exact hm
-      · rw [if_neg e] at hm
+      · rw [ite_eq_right e] at hm
         rw [Function.update_of_ne e]
         exact hm
 

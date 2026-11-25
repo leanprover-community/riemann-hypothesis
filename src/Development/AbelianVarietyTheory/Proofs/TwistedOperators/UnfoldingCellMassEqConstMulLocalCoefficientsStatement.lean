@@ -821,7 +821,7 @@ theorem cell_volume_mul_coef : Big fun {D} _ _ _ _ _ _ _ _ _ _ _ ch => ∀ (s : 
   have key := idxRatio_row hS.core.lev ch.S.toGridChoice (Set.mem_univ t) hi hj hj' (hlat t j hm.1 hj) s β hδ hb₀ hr
   rw [← eb] at key
   rw [← hset, ← real_mul_idxRatio la (hop _ hb₀.1) (hcp _) (hop _ hbj) (hcp _), key, GlobalTheory.RowWt.colCoef]
-  simp only [dif_pos hj']
+  simp only [dite_eq_left hj']
 
 end GlobalTheory.SymmetricJacobianSignature
 end -- clump:auto

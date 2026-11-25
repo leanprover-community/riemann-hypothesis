@@ -49,11 +49,4 @@ def GalRed : Prop :=
 
 end
 
-section
-variable {m : ℕ} {L : Lev (per l K) m}
-  (d : ∀ n, RedIn (B.DD false (PAlg.base l) n) (B.κb (okToOC l K) false n) L.γ l n)
-  (hc : ∀ n (c : Acris l), (d n).ρ ((PAlg.base l).cris n c) = Ideal.Quotient.mk _ (L.lam c))
-
-end
-
 end CrystallineSemistableComparison.Pb.Kap

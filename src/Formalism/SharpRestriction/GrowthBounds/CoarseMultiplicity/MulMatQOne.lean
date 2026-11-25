@@ -32,7 +32,7 @@ theorem Avec_eq {m : ℕ} (TT : Finset (Fin n')) (aT bT : Fin n' → ℕ) :
   unfold Avec AHH
   push_cast
   rw [Fintype.sum_prod_type]
-  simp only [Fintype.sum_bool, vecH, hhDegs, if_true, Bool.false_eq_true, if_false, add_zero]
+  simp only [Fintype.sum_bool, vecH, hhDegs, ite_true, Bool.false_eq_true, ite_false, add_zero]
   exact Finset.sum_coe_sort TT (fun s => (hhDeg aT bT s true : ℤ))
 
 theorem flatTheta (hS : HidaSetting p n' W Qq O Kf ι σ jO w) (φ : WF p n' ≃+* W) (hφ : IsWittIdent σ φ) (m : ℕ)

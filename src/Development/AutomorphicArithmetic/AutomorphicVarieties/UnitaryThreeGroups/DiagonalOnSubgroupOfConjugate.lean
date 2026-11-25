@@ -57,7 +57,7 @@ theorem UpperTheory.diagonal_on_subgroup_of_conjugate :
     rw [one_mul, inv_one, mul_one]
     ext i j
     fin_cases i <;> fin_cases j <;> simp [htriv t ht, b00, b02, b20, b22]
-  · push_neg at htriv
+  · push Not at htriv
     obtain ⟨g0, hg0, hne⟩ := htriv
     have e0 := hM g0 hg0
     have x01 : (M : Matrix (Fin 3) (Fin 3) k) 0 1 = (Ψ g0 : k) * (M : Matrix (Fin 3) (Fin 3) k) 0 1 := by

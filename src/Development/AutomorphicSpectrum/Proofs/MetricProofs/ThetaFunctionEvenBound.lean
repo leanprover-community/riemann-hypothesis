@@ -639,13 +639,13 @@ theorem exists_half_canMult : ∀ (g : ℕ) (Λ : Submodule ℤ (Fin g → ℂ))
       rcases hpm (bs (Sum.inl i)) with h | h
       · simp [ha, h]
       · have h' : χ (bs (Sum.inl i)) ≠ 1 := by rw [h]; norm_num
-        simp only [ha, h', if_false]
+        simp only [ha, h', ite_false]
         rw [h, hhalf]
     · rw [hC_inr]
       rcases hpm (bs (Sum.inr i)) with h | h
       · simp [hc, h]
       · have h' : χ (bs (Sum.inr i)) ≠ 1 := by rw [h]; norm_num
-        simp only [hc, h', if_false]
+        simp only [hc, h', ite_false]
         rw [h, hhalf']
   exact GlobalTheory.HolTheta.eq_of_cocycle bs
     (fun l l' => Complex.exp (Real.pi * Complex.I *
@@ -1463,7 +1463,7 @@ theorem exists_reduced (g : ℕ) [NeZero g] (Λ : Submodule ℤ (Fin g → ℂ))
     simp only [hc, hJ, Fintype.sum_sum_type, Matrix.J, Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂,
       Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂, Matrix.zero_apply, Matrix.neg_apply, Matrix.one_apply]
     simp only [mul_zero, Finset.sum_const_zero, zero_add, add_zero, mul_neg, mul_ite, _root_.mul_one,
-      Finset.sum_ite_eq, Finset.mem_univ, if_true, Finset.sum_neg_distrib]
+      Finset.sum_ite_eq, Finset.mem_univ, ite_true, Finset.sum_neg_distrib]
     push_cast
     rw [Finset.sum_sub_distrib]
     ring

@@ -220,7 +220,7 @@ theorem norm_le_of_esymm (s : Multiset ℂ) (M : ℝ) (hM : 1 ≤ M)
       _ ≤ M := hM
       _ ≤ (Multiset.card s : ℝ) * M :=
           le_mul_of_one_le_left (by linarith) (by exact_mod_cast hn1)
-  push_neg at hx1
+  push Not at hx1
   have h0 := sum_esymm_eq_zero s x hx
   have he0 : s.esymm 0 = 1 := by simp [Multiset.esymm]
   rw [Finset.sum_range_succ'] at h0

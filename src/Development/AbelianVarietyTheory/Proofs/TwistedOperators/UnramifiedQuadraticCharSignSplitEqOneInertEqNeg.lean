@@ -88,13 +88,13 @@ theorem quadSign_split_inert : ∀ (D : D7) (v : HeightOneSpectrum (𝓞 D.host.
     have h2 : (Ideal.primesOver v.asIdeal (𝓞 D.host.E)).ncard = 2 := by
       rw [ncard_primesOver, hs, Set.ncard_pair hne]
     unfold quadSign
-    rw [if_pos h2]
+    rw [ite_eq_left h2]
   · intro w h
     have hs : {u : HeightOneSpectrum (𝓞 D.host.E) | u.under (𝓞 D.host.F) = v} = {w} := by
       ext u; simp only [Set.mem_setOf_eq, Set.mem_singleton_iff]; exact h u
     have h1 : (Ideal.primesOver v.asIdeal (𝓞 D.host.E)).ncard = 1 := by
       rw [ncard_primesOver, hs, Set.ncard_singleton]
     unfold quadSign
-    rw [if_neg (by rw [h1]; decide)]
+    rw [ite_eq_right (by rw [h1]; decide)]
 
 end GlobalTheory.QuadSignLocal

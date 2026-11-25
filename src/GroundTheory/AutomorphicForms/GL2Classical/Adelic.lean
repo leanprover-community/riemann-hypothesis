@@ -42,7 +42,7 @@ theorem det_diagonalGL {R : Type*} [CommRing R] (d : Fin n → Rˣ) :
 
 theorem det_diagonalGL_mulSingle {R : Type*} [CommRing R] (hn : 0 < n) (a : Rˣ) :
     Matrix.GeneralLinearGroup.det (diagonalGL (Pi.mulSingle (⟨0, hn⟩ : Fin n) a)) = a := by
-  rw [det_diagonalGL, Finset.prod_pi_mulSingle', if_pos (Finset.mem_univ _)]
+  rw [det_diagonalGL, Finset.prod_pi_mulSingle', ite_eq_left (Finset.mem_univ _)]
 
 theorem exists_eq_finiteDiagonal_mul_mul (hn : 0 < n) {U : Subgroup (FiniteAdelicGL K n)}
     (hU : IsOpen (U : Set (FiniteAdelicGL K n))) {g g' : FiniteAdelicGL K n}

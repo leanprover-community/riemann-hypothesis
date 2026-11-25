@@ -242,8 +242,8 @@ theorem bC_graded {r n : ℕ} (M : Submodule ℂ (MvPolynomial (Fin r × Fin n) 
         rw [hw]
         exact e a (Finset.mem_univ a)
     by_cases e1 : Finsupp.weight (rowW r n) m = μ
-    · rw [if_pos e1, if_pos (hiff.mp e1)]
-    · rw [if_neg e1, if_neg (fun h' => e1 (hiff.mpr h'))]
+    · rw [ite_eq_left e1, ite_eq_left (hiff.mp e1)]
+    · rw [ite_eq_right e1, ite_eq_right (fun h' => e1 (hiff.mpr h'))]
   rw [e]
   exact hhM
 

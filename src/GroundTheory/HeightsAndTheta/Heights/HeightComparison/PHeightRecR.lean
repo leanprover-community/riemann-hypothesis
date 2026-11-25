@@ -53,7 +53,7 @@ theorem HeightRecR.proof (hV : OrbitDivVertical.Statement) (hF : OrbitFiniteSum.
     unfold Geo.recR
     congr 1
     refine finsum_mem_congr rfl fun V hV' ↦ ?_
-    rw [if_neg (hV ι n A x s hx hs V hV')]
+    rw [ite_eq_right (hV ι n A x s hx hs V hV')]
     congr 4
     funext j
     exact j.elim0

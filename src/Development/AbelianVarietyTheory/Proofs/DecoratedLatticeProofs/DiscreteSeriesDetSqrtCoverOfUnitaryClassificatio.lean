@@ -456,7 +456,7 @@ theorem ht_drop_cons (r : PosRoot p q) (l : List (PosRoot p q)) :
     ∑ x, ht x * drop l x < ∑ x, ht x * drop (r :: l) x := by
   have hr := ht_lt r.2
   simp only [drop_cons, mul_add, Finset.sum_add_distrib, mul_sub, mul_ite, mul_one, mul_zero,
-    Finset.sum_sub_distrib, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    Finset.sum_sub_distrib, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   linarith
 
 theorem ht_drop_nonneg (l : List (PosRoot p q)) : 0 ≤ ∑ x, ht x * drop l x := by
@@ -825,7 +825,7 @@ theorem casimir_twAct (act : Mat p q →ₗ[ℂ] Module.End ℂ V) (v : V) :
     intro a b
     by_cases hab : a = b
     · subst hab
-      simp only [Cover.twAct_apply, if_true, Eab, Matrix.trace_single_eq_same, map_sub, map_smul]
+      simp only [Cover.twAct_apply, ite_true, Eab, Matrix.trace_single_eq_same, map_sub, map_smul]
       module
     · simp [Cover.twAct_apply, hab, Eab, Matrix.trace_single_eq_of_ne _ _ _ hab,
         Matrix.trace_single_eq_of_ne _ _ _ (Ne.symm hab)]
@@ -834,7 +834,7 @@ theorem casimir_twAct (act : Mat p q →ₗ[ℂ] Module.End ℂ V) (v : V) :
     rw [← Matrix.sum_single_one, map_sum, LinearMap.sum_apply]
     rfl
   simp only [casimir, LinearMap.sum_apply, Module.End.mul_apply, hterm, Finset.sum_sub_distrib,
-    Finset.sum_ite_eq, Finset.mem_univ, if_true, h1, Finset.sum_const, Finset.card_univ]
+    Finset.sum_ite_eq, Finset.mem_univ, ite_true, h1, Finset.sum_const, Finset.card_univ]
   module
 
 theorem hwSub_twAct (act : Mat p q →ₗ[ℂ] Module.End ℂ V) (μ : Ix p q → ℚ) :

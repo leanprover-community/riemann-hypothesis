@@ -152,9 +152,9 @@ theorem kept_block_at_of_pair_level_chain_threshold : jumpWindows.MirabolicColum
   refine ⟨x', C, hCU, hY', hS', hL', hbl, hB.1, hB.2.1, hB.2.2.1, fun g hg hW0 => hB.2.2.2 g ?_ hW0⟩
   refine ⟨BlockMirrorMap.mir_map _ hg.2, fun v => ?_⟩
   by_cases hv : v ∈ S
-  · simp only [hv, if_true]
+  · simp only [hv, ite_true]
     exact BlockMirrorMap.mir_map _ hg.2
-  · simp only [hv, if_false]
+  · simp only [hv, ite_false]
     rw [hg.1 v hv]
     exact (hS10 _ k 0).2.2.1
 

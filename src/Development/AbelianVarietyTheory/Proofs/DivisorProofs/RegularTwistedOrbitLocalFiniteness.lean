@@ -76,10 +76,10 @@ theorem twCent_commute (hE : Unr E) (n : ℕ) (w : Pl E) (y : GLw n w) {g : GLw 
   have hg' : g * y = y * thL n w g := hg
   unfold nrmL
   split_ifs with hs
-  · have ht : thL n w = MonoidHom.id _ := by unfold thL; rw [if_pos hs]
+  · have ht : thL n w = MonoidHom.id _ := by unfold thL; rw [ite_eq_left hs]
     rw [ht] at hg'
     exact hg'
-  · have ht : thL n w = thetaGL n (cj w) := by unfold thL; rw [if_neg hs]
+  · have ht : thL n w = thetaGL n (cj w) := by unfold thL; rw [ite_eq_right hs]
     rw [ht] at hg' hinv
     show g * (y * thetaGL n (cj w) y) = (y * thetaGL n (cj w) y) * g
     calc g * (y * thetaGL n (cj w) y) = (g * y) * thetaGL n (cj w) y := by rw [mul_assoc]
@@ -235,7 +235,7 @@ theorem continuous_nrmL (hU : Unr E) (n : ℕ) (w : Pl E) : Continuous (nrmL n w
   by_cases hs : IsSplitAt w
   · have e : nrmL n w = fun u => u := funext fun u => by simp [nrmL, hs]
     rw [e]; exact continuous_id
-  · have h1 : thL n w = thetaGL n (cj w) := by rw [thL, if_neg hs]
+  · have h1 : thL n w = thetaGL n (cj w) := by rw [thL, ite_eq_right hs]
     have hc := (_root_.GlobalTheory.BCT.thL_continuous_involutive E hU n w).1
     rw [h1] at hc
     have e : nrmL n w = fun u => u * thetaGL n (cj w) u := funext fun u => by simp [nrmL, hs]

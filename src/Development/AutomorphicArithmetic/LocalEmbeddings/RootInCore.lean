@@ -134,9 +134,9 @@ theorem sum_entN {k : Type} [Field k] {r : ℕ} (M : Matrix (Fin r) (Fin r) k) :
     intro i
     unfold entN
     split_ifs with h
-    · rw [Finset.sum_eq_single ⟨i.val + 1, h.2⟩ (fun b _ hb => if_neg fun e => hb (Fin.ext e)) (by simp)]
+    · rw [Finset.sum_eq_single ⟨i.val + 1, h.2⟩ (fun b _ hb => ite_eq_right fun e => hb (Fin.ext e)) (by simp)]
       simp
-    · refine Finset.sum_eq_zero fun j _ => if_neg fun e => h ⟨i.2, by have := j.2; omega⟩
+    · refine Finset.sum_eq_zero fun j _ => ite_eq_right fun e => h ⟨i.2, by have := j.2; omega⟩
   rw [superDiag, Finset.sum_congr rfl fun i _ => h1 i, Fin.sum_univ_eq_sum_range (fun i => entN M i (i + 1)) r]
   refine Finset.sum_subset (Finset.range_subset_range.2 (Nat.sub_le r 1)) fun x hx hx' => ?_
   simp only [Finset.mem_range] at hx hx'

@@ -1265,8 +1265,8 @@ theorem ng_prF_e (v : V) (b : Fin r) : H.h (Fr.prF v) (Fr.e b) = 0 := by
       rw [show H.h (Fr.e i) (Fr.e b) = 0 from Fr.h_iso _ _ (Or.inl (Fin.castSucc_lt_last i).ne), mul_zero])
   have z2 : ∑ i, H.h v (Fr.e i) * H.h (Fr.es i) (Fr.e b) = H.h v (Fr.e b) := by
     rw [Finset.sum_eq_single b]
-    · rw [ng_h_es_e, if_pos rfl, mul_one]
-    · intro i _ hi; rw [ng_h_es_e, if_neg (Ne.symm hi), mul_zero]
+    · rw [ng_h_es_e, ite_eq_left rfl, mul_one]
+    · intro i _ hi; rw [ng_h_es_e, ite_eq_right (Ne.symm hi), mul_zero]
     · intro h; exact absurd (Finset.mem_univ b) h
   rw [z1, z2]; ring
 
@@ -1276,9 +1276,9 @@ theorem ng_prF_es (v : V) (b : Fin r) : H.h (Fr.prF v) (Fr.es b) = 0 := by
   rw [h_sub_left, h_sub_left, h_sum_left, h_sum_left]
   have z1 : ∑ i, H.h v (Fr.es i) * H.h (Fr.e i) (Fr.es b) = H.h v (Fr.es b) := by
     rw [Finset.sum_eq_single b]
-    · rw [show H.h (Fr.e b) (Fr.es b) = 1 from by have := Fr.h_es b b; rwa [if_pos rfl] at this, mul_one]
+    · rw [show H.h (Fr.e b) (Fr.es b) = 1 from by have := Fr.h_es b b; rwa [ite_eq_left rfl] at this, mul_one]
     · intro i _ hi
-      rw [show H.h (Fr.e i) (Fr.es b) = 0 from by have := Fr.h_es i b; rwa [if_neg hi] at this, mul_zero]
+      rw [show H.h (Fr.e i) (Fr.es b) = 0 from by have := Fr.h_es i b; rwa [ite_eq_right hi] at this, mul_zero]
     · intro h; exact absurd (Finset.mem_univ b) h
   have z2 : ∑ i, H.h v (Fr.e i) * H.h (Fr.es i) (Fr.es b) = 0 :=
     Finset.sum_eq_zero (fun i _ => by rw [Fr.h_ss, mul_zero])
@@ -1353,7 +1353,7 @@ theorem ng_gram_base (P : FPair H r) : (H.gram (Sum.elim P.A.f P.B.f)).det = (-1
         by_cases ha : a = Fin.last r
         · subst ha; simp [P.A.h_zz]
         · simp [ha, P.A.h_iso a a (Or.inl ha)]
-      · rw [if_neg hab]
+      · rw [ite_eq_right hab]
         by_cases ha : a = Fin.last r
         · exact P.A.h_iso b a (Or.inl (fun h => hab (by rw [ha, h])))
         · exact P.A.h_iso b a (Or.inr ha)
@@ -1367,7 +1367,7 @@ theorem ng_gram_base (P : FPair H r) : (H.gram (Sum.elim P.A.f P.B.f)).det = (-1
         by_cases ha : a = Fin.last r
         · subst ha; simp [P.B.h_zz]
         · simp [ha, P.B.h_iso a a (Or.inl ha)]
-      · rw [if_neg hab]
+      · rw [ite_eq_right hab]
         by_cases ha : a = Fin.last r
         · exact P.B.h_iso b a (Or.inl (fun h => hab (by rw [ha, h])))
         · exact P.B.h_iso b a (Or.inr ha)

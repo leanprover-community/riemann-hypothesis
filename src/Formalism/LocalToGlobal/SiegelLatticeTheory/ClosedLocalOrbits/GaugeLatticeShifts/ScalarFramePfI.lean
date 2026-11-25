@@ -67,7 +67,7 @@ theorem om_pair (u v : Fin (D.R.rS + 1) → (VS D).V) (b : Fin (D.R.rS + 1)) :
   rcases eq_or_ne b (Fin.last _) with hb | hb
   · subst hb
     simp
-  · rw [if_neg (Ne.symm hb), if_neg hb, smul_zero]
+  · rw [ite_eq_right (Ne.symm hb), ite_eq_right hb, smul_zero]
 
 theorem om_decomp (u v : Fin (D.R.rS + 1) → (VS D).V) :
     Gom u v - star (GDl u v D.R.rS) • u (Fin.last _) ∈ Xs (S := VS D) u := by

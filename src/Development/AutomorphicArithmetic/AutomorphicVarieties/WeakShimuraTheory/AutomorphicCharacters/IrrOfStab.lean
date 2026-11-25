@@ -41,7 +41,7 @@ private theorem irr_of_stab {k Γ H : Type} [Field k] [Group Γ] [Group H] (r : 
   have h2 := key (Matrix.of fun a b => if b = i then w a * (v i)⁻¹ else 0) v hv
   have h3 : (Matrix.of fun a b => if b = i then w a * (v i)⁻¹ else 0 : Matrix (Fin 4) (Fin 4) k).mulVec v = w := by
     funext a
-    simp only [Matrix.mulVec, dotProduct, Matrix.of_apply, ite_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    simp only [Matrix.mulVec, dotProduct, Matrix.of_apply, ite_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     rw [mul_assoc, inv_mul_cancel₀ hi', mul_one]
   rwa [h3] at h2
 

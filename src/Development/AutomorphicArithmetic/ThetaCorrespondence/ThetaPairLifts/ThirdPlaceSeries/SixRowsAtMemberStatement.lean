@@ -619,7 +619,7 @@ theorem cols_mulVec {E : Type} [Field E] {N n : ℕ} (hN : n + 1 = N) (A : Matri
   subst hN
   funext a
   simp only [mulVec, dotProduct, Fin.sum_univ_castSucc, Pi.add_apply, Pi.smul_apply, smul_eq_mul, of_apply,
-    Fin.val_castSucc, Fin.is_lt, dif_pos, Fin.val_last, lt_irrefl, dif_neg, not_false_eq_true, Fin.eta]
+    Fin.val_castSucc, Fin.is_lt, dite_eq_left, Fin.val_last, lt_irrefl, dite_eq_right, not_false_eq_true, Fin.eta]
   rw [mul_comm (z a)]
   rfl
 
@@ -987,9 +987,9 @@ theorem GlobalTheory.PerDecAtRef.perDec0At_std : ∀ {B : Base} {X : PreX B.toPr
       funext c' s
       erw [hw _ c' s ⟨s.1, s.2⟩ rfl]
       by_cases h : c' = c
-      · rw [if_pos h, if_pos (show @Eq (I.perIn u I.mu0).S'.Cl c' c from h)]
+      · rw [ite_eq_left h, ite_eq_left (show @Eq (I.perIn u I.mu0).S'.Cl c' c from h)]
         erw [hw v c' s ⟨s.1, s.2⟩ rfl]
-      · rw [if_neg h, if_neg (show ¬ @Eq (I.perIn u I.mu0).S'.Cl c' c from h)]
+      · rw [ite_eq_right h, ite_eq_right (show ¬ @Eq (I.perIn u I.mu0).S'.Cl c' c from h)]
         rfl
     unfold Formalism.MainNotions.RT.PeriodPointConditions.pcL Formalism.MainNotions.RT.PeriodPointConditions.resC
     rw [hsingle, hsingle]
@@ -1292,14 +1292,14 @@ theorem perDecTw_of_at (t : SymmetricTwistedColumnsAtPrimes tp C Tw) (u : D.what
     · have hG : t.ptE.jM u μ G ∈ (Tw.fm u μ).ptC := ((t.ptE.per u μ hμ).2.1) G
       rw [((t.ptE.per u μ hμ).2.2) z G, petersson_eq_sum_restrict_twist t u μ hμ _ _ hG hz]
       refine Finset.sum_congr rfl fun c _ => ?_
-      simp only [pcTw, if_pos hz, pcLTw]
+      simp only [pcTw, ite_eq_left hz, pcLTw]
       rw [← mul_assoc, inv_mul_cancel₀ (hcard c), one_mul]
     · by_cases hne : Nonempty (Tw.fm u μ).clsP
       · rw [Finset.sum_eq_single (Classical.choice hne)]
-        · simp only [pcTw, if_neg hz, dif_pos hne, ↓reduceIte]
+        · simp only [pcTw, ite_eq_right hz, dite_eq_left hne, ↓reduceIte]
           rw [← mul_assoc, inv_mul_cancel₀ (hcard _), one_mul]
         · intro c _ hc
-          simp only [pcTw, if_neg hz, dif_pos hne, if_neg hc, mul_zero]
+          simp only [pcTw, ite_eq_right hz, dite_eq_left hne, ite_eq_right hc, mul_zero]
         · intro h0; exact absurd (Finset.mem_univ _) h0
       · have hE : IsEmpty (Tw.fm u μ).clsP := not_nonempty_iff.mp hne
         have hz0 : z = 0 := (t.pt.val u μ hμ).eW.injective (funext fun c => hE.elim c)
@@ -1308,7 +1308,7 @@ theorem perDecTw_of_at (t : SymmetricTwistedColumnsAtPrimes tp C Tw) (u : D.what
   · obtain ⟨y, hy, hv⟩ := h x hx F hF c
     have hz : (Tw.fm u μ).ptEmb x ∈ (Tw.fm u μ).ptC := (((t.pt.val u μ hμ).rat _).1 ⟨x, rfl⟩).1
     refine ⟨y, ?_, hv⟩
-    simp only [pcTw, if_pos hz]
+    simp only [pcTw, ite_eq_left hz]
     exact hy
 
 theorem reduction_perDecTw : ∀ (D : D7) (cf : Formalism.L2.Host.CharFrame D) (nch : NChoice D) (tp : Formalism.L2.Host.TupTied D cf nch) (C : ColsTiedSym D) (Tw : TwForms D) (t : SymmetricTwistedColumnsAtPrimes tp C Tw) (Y : DivX D) (u : D.what₂.Word) (μ : D.what₂.Tup) (hμ : μ ≠ D.what₂.mu0), GlobalTheory.PerQ.PerDecTwT Y t u μ hμ → Formalism.MainNotions.RT.PeriodPointConditions.PerDecTw D Y Tw u μ :=

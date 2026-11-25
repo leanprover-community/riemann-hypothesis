@@ -195,9 +195,9 @@ def row0 : ℕ → Node D
 theorem nodeY_eq_chainVertexAtRowZero_of_lt {j : ℕ} (h : j < D.R.m) : nodeY R j = row0 R j := by
   cases j with
   | zero => rfl
-  | succ j => simp only [row0, if_pos h]
+  | succ j => simp only [row0, ite_eq_left h]
 
-theorem nodeX_eq_chainVertexAtRowZero_of_ge {j : ℕ} (h : ¬ j + 1 < D.R.m) : nodeX R = row0 R (j + 1) := by simp only [row0, if_neg h]
+theorem nodeX_eq_chainVertexAtRowZero_of_ge {j : ℕ} (h : ¬ j + 1 < D.R.m) : nodeX R = row0 R (j + 1) := by simp only [row0, ite_eq_right h]
 
 theorem nodeX_eq_chainVertexAtRowZero_top : nodeX R = row0 R D.R.m := by
   have h := D.R.two_le_m

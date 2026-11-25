@@ -84,7 +84,7 @@ theorem Vo_polyB_qs : ∀ (l : ℕ) (a : ℕ → ℂ), 0 < l → PolyB a →
     congr 1
     ext m
     have hl' : l ≠ 0 := hl.ne'
-    simp only [Vo, dvd_mul_right, if_true, Nat.mul_div_cancel_left m hl, hσ]
+    simp only [Vo, dvd_mul_right, ite_true, Nat.mul_div_cancel_left m hl, hσ]
     congr 2
     push_cast
     ring

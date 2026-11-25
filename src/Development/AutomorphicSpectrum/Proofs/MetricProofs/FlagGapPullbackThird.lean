@@ -163,7 +163,7 @@ theorem dy_range (hyp : IsStepHyp M BM p κ v R pr) (k : K) (h : M.dy p k ≠ 0)
   · exact hyp.2.1 k (Or.inl hk)
   · by_cases hp : M.blk p = some k
     · exact hyp.2.1 k (Or.inr hp)
-    · exact (h ((dif_neg hk).trans (if_neg hp))).elim
+    · exact (h ((dite_eq_right hk).trans (ite_eq_right hp))).elim
 
 theorem log_side (hyp : IsStepHyp M BM p κ v R pr) {x t : R.X} (ht : t ∈ R.U x) (hbd : pr t ∉ bdry BM.s)
     {z : (Σ k, ι k) → ℂ} (hz : z ∈ mcPts (mCoordIdeal y)) (hv : z ∘ v = R.lift x t) :

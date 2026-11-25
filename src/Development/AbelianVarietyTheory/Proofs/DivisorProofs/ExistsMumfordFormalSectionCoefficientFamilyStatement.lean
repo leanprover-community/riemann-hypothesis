@@ -582,8 +582,8 @@ theorem exists_terms : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R],
   classical
   let s : ∀ ν, SecT D.toPre a N (-1) (shift h h' N (-1) ν) := fun ν =>
     if hν : ν = 0 then hν.symm ▸ z₀ else t ν
-  have hs0 : s 0 = z₀ := dif_pos rfl
-  have hsν : ∀ ν, ν ≠ 0 → s ν = t ν := fun ν hν => dif_neg hν
+  have hs0 : s 0 = z₀ := dite_eq_left rfl
+  have hsν : ∀ ν, ν ≠ 0 → s ν = t ν := fun ν hν => dite_eq_right hν
   refine ⟨s₀, s, fun ν => ?_, fun e => ?_, fun ν hν => ?_, fun Z x z J hJ => ?_⟩
   · by_cases hν : ν = 0
     · subst hν
@@ -944,12 +944,12 @@ theorem coef : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R], AdmBase
   · intro β hβ Z x z J hJ
     rw [hsum 0 {0} hv0 β Z x z J hJ]
     have : ({0} : Finset D.toPre.X).filter (fun i => shift h h' (N : ℤ) (-1) i = β) = ∅ := by
-      rw [Finset.filter_singleton, hw0, if_neg (Ne.symm hβ)]
+      rw [Finset.filter_singleton, hw0, ite_eq_right (Ne.symm hβ)]
     rw [this, Finset.sum_empty]
   · intro Z x z J hJ
     rw [hsum 0 {0} hv0 0 Z x z J hJ]
     have : ({0} : Finset D.toPre.X).filter (fun i => shift h h' (N : ℤ) (-1) i = 0) = {0} := by
-      rw [Finset.filter_singleton, hw0, if_pos rfl]
+      rw [Finset.filter_singleton, hw0, ite_eq_left rfl]
     rw [this, Finset.sum_singleton]
     exact hσ Z _ z J hJ
 

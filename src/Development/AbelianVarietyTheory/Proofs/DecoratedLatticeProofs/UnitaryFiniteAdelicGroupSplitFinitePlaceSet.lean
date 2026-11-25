@@ -346,7 +346,7 @@ theorem cutG_mem_Qc (V : HSp D) (Q : Finset (Pl D)) {g : GA D V} (hg : g ∈ GfC
   rw [mt_cutG, cut_sub_one, Matrix.smul_apply, smul_eq_mul, algebraMap_one_sub]
   refine ⟨?_, fun w hw => ?_⟩
   · rw [RingHom.map_mul, (_root_.GlobalTheory.FinPl.KOpen.mem_GfC_iff V g).1 hg i j, mul_zero]
-  · rw [RingHom.map_mul, RingHom.map_sub, RingHom.map_one, (parts_idemQ Q).2 w, if_pos (not_not.1 hw), sub_self, zero_mul]
+  · rw [RingHom.map_mul, RingHom.map_sub, RingHom.map_one, (parts_idemQ Q).2 w, ite_eq_left (not_not.1 hw), sub_self, zero_mul]
 
 theorem isClosed_of_idem (V : HSp D) (P : Pl D → Prop) (c : AF D.host.F)
     (hc : ∀ a, a ∈ idAt D P ↔ algebraMap (AF D.host.F) (AE D) c * a = a) : IsClosed (grpAt V P : Set (GA D V)) := by

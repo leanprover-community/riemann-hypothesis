@@ -100,7 +100,7 @@ theorem testJ (k : ℕ) (T T' : ℝ) (hTT : 0 < T * T') :
         rw [Set.indicator_of_mem hV, Set.indicator_of_mem hU, Pi.one_apply, mul_one, mul_one]
         apply ENNReal.ofReal_le_ofReal
         unfold zWeight
-        rw [if_pos (by linarith [hζ.1])]
+        rw [ite_eq_left (by linarith [hζ.1])]
         exact pow_le_pow_left₀ hTT.le (by linarith [hζ.1]) _
       · have hV : ζ ∉ {ζ : ℂ | 2 * (T * T') < Complex.normSq ζ ∧ Complex.normSq ζ < 3 * (T * T')} := hζ
         simp [hV]
@@ -119,7 +119,7 @@ theorem testJ (k : ℕ) (T T' : ℝ) (hTT : 0 < T * T') :
       · rw [Set.indicator_of_mem hζ, Pi.one_apply, mul_one, mul_one]
         apply ENNReal.ofReal_le_ofReal
         unfold zWeight
-        rw [if_pos hζ.1.le]
+        rw [ite_eq_left hζ.1.le]
         exact pow_le_pow_left₀ (by linarith [hζ.1]) (by linarith [hζ.2]) _
       · simp [hζ]
     have hsub : annU T T' ⊆ Metric.ball 0 (2 * Real.sqrt (T * T') + 1) := by

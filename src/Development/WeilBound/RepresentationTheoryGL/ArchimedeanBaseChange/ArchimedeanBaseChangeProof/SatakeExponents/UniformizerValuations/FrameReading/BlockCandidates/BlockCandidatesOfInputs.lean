@@ -735,7 +735,7 @@ private theorem hcs_of_finDoset {G : Type} [Group G] [TopologicalSpace G] [IsTop
 theorem uSatOf_holds : USatOf := by
   intro hSD E _ _ _ n π w σ hw hcomp hfix
   obtain ⟨P, T, hT, hP, hlev⟩ := hSD E n w hw σ
-  have hUL : UL n w = ⊤ := if_pos hw
+  have hUL : UL n w = ⊤ := ite_eq_left hw
   have hmemUL : ∀ g : GLw n w, g ∈ UL n w := fun g => hUL ▸ Subgroup.mem_top g
   have hKmap : (KL n w).map (UL n w).subtype = KGL w (n := n) := by
     ext g
@@ -855,7 +855,7 @@ theorem mOf_infOf_embedding {E : Type} [Field E] [NumberField E] {n : ℕ} (l : 
     (v : InfinitePlace E) :
     mOf (fun v => PositivityTheory.RgBcC.infOf (l v).w) v.embedding = infOfWeight (l v) := by
   unfold mOf infOfWeight PositivityTheory.RgBcC.infOf
-  simp only [InfinitePlace.mk_embedding, decide_true, if_true, one_mul]
+  simp only [InfinitePlace.mk_embedding, decide_true, ite_true, one_mul]
   congr 1
   funext k
   rw [add_sub_assoc]

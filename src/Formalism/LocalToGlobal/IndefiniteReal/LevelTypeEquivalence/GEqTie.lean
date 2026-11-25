@@ -42,12 +42,6 @@ theorem exists_finLift (q : Bridge.Gf V) : ∃ κ ∈ GfC V, finHom V κ = q := 
 
 end Lift
 
-section Ad
-
-variable {G Γ W : Type} [Group G] [Group Γ] [NormedAddCommGroup W] [InnerProductSpace ℂ W] (ι : Γ →* G)
-
-end Ad
-
 section Coef
 
 variable {D : D7} {V : HSp D} (c : CoefA V)

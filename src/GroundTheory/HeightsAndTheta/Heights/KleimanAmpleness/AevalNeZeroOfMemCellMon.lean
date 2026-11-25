@@ -154,7 +154,7 @@ theorem cellSec_shift [DecidableEq K] (y : (Σ k, ι k) → Ω) (γ : K → ℤ)
     refine ⟨s, fun r' hr' => ?_⟩
     obtain ⟨d, rfl⟩ : ∃ d, r' = s + d := ⟨r' - s, by omega⟩
     unfold cellSec
-    rw [if_pos hB]
+    rw [ite_eq_left hB]
     refine Submodule.subset_span ⟨X ⟨k, i⟩ ^ d * g, t', a', ht', ha', fun k' => ?_, ?_, ?_⟩
     · have h1 := hγ k'
       have h2 := congrFun haa k'
@@ -224,7 +224,7 @@ theorem cellSec_mono (y : (Σ k, ι k) → Ω) (γ : K → ℤ) {I I' : ∀ k, F
     (hI' : CellMeets y I') : cellSec S y γ I ≤ cellSec S y γ I' := by
   classical
   unfold cellSec
-  rw [if_pos hI']
+  rw [ite_eq_left hI']
   split_ifs with hI
   · refine Submodule.span_mono ?_
     rintro z ⟨g, t, a, ht, hta, hγ, hg, rfl⟩
@@ -393,7 +393,7 @@ theorem exists_sum_eq_one [DecidableEq K] (hGen : ChartSecGen.Statement) (hMul :
       split_ifs
       · exact Subalgebra.one_mem _
       · exact Subalgebra.zero_mem _
-    · simp only [ite_mul, one_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, if_true,
+    · simp only [ite_mul, one_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, ite_true,
         Equiv.symm_apply_apply]
       rw [prod_zpow_single k (fun k' => y ⟨k', c k'⟩)]
       exact mul_inv_cancel₀ (hc k)
@@ -468,7 +468,7 @@ theorem proof (hGen : ChartSecGen.Statement) (hMul : ChartSecMul.Statement) (hSu
     right_ne_zero_of_mul (Finset.prod_ne_zero_iff.mp hc k (Finset.mem_univ k))
   have hbot : ∀ I : ∀ k, Finset (ι k), ¬ CellMeets y I → cellSec F y γ (baseCell k₀ e J.1 I) = ⊥ := fun I hI => by
     unfold cellSec
-    rw [if_neg fun h => hI fun k i hi => h k i (subset_baseCell k₀ e J.1 I k hi)]
+    rw [ite_eq_right fun h => hI fun k i hi => h k i (subset_baseCell k₀ e J.1 I k hi)]
   refine ⟨c, hyc, fun I _ hI => cellLocSys_eq_bot _ hc (hbot I hI), fun I I' _ hII' hI' =>
     cellLocSys_mono _ _ (cellSec_mono y γ (baseCell_mono k₀ e J.1 hII') (cellMeets_baseCell y k₀ e J hI')),
     fun I hne k => ?_⟩

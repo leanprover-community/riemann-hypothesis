@@ -100,7 +100,7 @@ theorem coeff_zero_of_torus {n : ℕ} (S : Finset (Fin n → ℤ)) (h : (Fin n �
   rw [MvPolynomial.coeff_sum, Finset.sum_eq_single m] at h1
   · simpa [MvPolynomial.coeff_monomial] using h1
   · intro b hb hne
-    rw [MvPolynomial.coeff_monomial, if_neg fun e => hne (hinj b hb m hm e)]
+    rw [MvPolynomial.coeff_monomial, ite_eq_right fun e => hne (hinj b hb m hm e)]
   · exact fun h' => absurd hm h'
 
 theorem laurent_indep_torus {n : ℕ} {ι κ : Type} (I : Finset ι) (J : Finset κ) (f : ι → ℂ)

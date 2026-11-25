@@ -53,24 +53,6 @@ open scoped InnerProductSpace ComplexConjugate
 
 namespace UpperTheory.V.Z.GSp4Splitting
 
-open Matrix in
-private theorem map_thetaR {n : ℕ} {R S : Type} [CommRing R] [CommRing S] (p : R →+* S)
-    (c : R →+* R) (c' : S →+* S) (h : ∀ x, p (c x) = c' (p x)) (g : GL (Fin n) R) :
-    GeneralLinearGroup.map p (thetaR c n g) = thetaR c' n (GeneralLinearGroup.map p g) := by
-  ext i j
-  change p (c ((g⁻¹ : GL (Fin n) R).val j i)) =
-    c' (((GeneralLinearGroup.map p g)⁻¹ : GL (Fin n) S).val j i)
-  rw [h, ← map_inv]
-  rfl
-
-private theorem thetaA_infGL {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ}
-    (y : GL (Fin n) (Cinf E)) :
-    thetaA E n (infGL E n y) = infGL E n (thetaR (starRingEnd (Cinf E)) n y) :=
-  ga_ext
-    (by rw [thetaA, map_thetaR _ _ _ GlobalTheory.ThetaPull.pInf_conjAd, pInf_infGL, pInf_infGL])
-    (by rw [thetaA, map_thetaR _ _ _ GlobalTheory.ThetaPull.pFin_conjAd,
-      pFin_infGL, pFin_infGL, map_one])
-
 section
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ}
@@ -127,12 +109,12 @@ private theorem eop_theta (w : InfinitePlace E) (a b : Fin n) {φ φ' : Sm E n}
     have hne : w.embedding ≠ ComplexEmbedding.conjugate w.embedding := fun h =>
       (InfinitePlace.isComplex_iff.1 (IsTotallyComplex.isComplex w)) (ComplexEmbedding.isReal_iff.2 h.symm)
     unfold atEmb
-    rw [InfinitePlace.mk_conjugate_eq, InfinitePlace.mk_embedding, if_neg hne, if_pos rfl]
+    rw [InfinitePlace.mk_conjugate_eq, InfinitePlace.mk_embedding, ite_eq_right hne, ite_eq_left rfl]
 
 
   have star_atEmb (w : InfinitePlace E) (z : ℂ) : star (atEmb w.embedding z) = atEmb w.embedding (conj z) := by
     funext v
-    simp only [atEmb, InfinitePlace.mk_embedding, if_true, Pi.star_apply]
+    simp only [atEmb, InfinitePlace.mk_embedding, ite_true, Pi.star_apply]
     by_cases hv : v = w
     · subst hv; simp
     · classical
@@ -146,8 +128,8 @@ private theorem eop_theta (w : InfinitePlace E) (a b : Fin n) {φ φ' : Sm E n}
     change star (Matrix.single a b (atEmb w.embedding z) j i) = Matrix.single b a (atEmb w.embedding (conj z)) i j
     rw [Matrix.single_apply, Matrix.single_apply]
     by_cases h : a = j ∧ b = i
-    · rw [if_pos h, if_pos h.symm, star_atEmb]
-    · rw [if_neg h, if_neg fun h' => h h'.symm, star_zero]
+    · rw [ite_eq_left h, ite_eq_left h.symm, star_atEmb]
+    · rw [ite_eq_right h, ite_eq_right fun h' => h h'.symm, star_zero]
 
   have Eop_apply (τ : E →+* ℂ) (a b : Fin n) (φ : Sm E n) (g : GA E n) :
       (Eop τ a b φ).1 g = (1 / 2 : ℂ) * (lieD (toL (Matrix.single a b (atEmb τ 1))) φ.1 g -
@@ -155,11 +137,11 @@ private theorem eop_theta (w : InfinitePlace E) (a b : Fin n) {φ φ' : Sm E n}
   have e : φ'.1 = fun x => φ.1 (thetaA E n x) := funext h
   have e1 : ∀ (f : Sm E n) (y : GA E n), (Bridge.eopW w true a b f).1 y =
       (1 / 2 : ℂ) * (lieD (sg w a b 1) f.1 y - Complex.I * lieD (sg w a b Complex.I) f.1 y) := fun f y => by
-    simp only [Bridge.eopW, if_true]
+    simp only [Bridge.eopW, ite_true]
     exact Eop_apply _ a b f y
   have e2 : ∀ (f : Sm E n) (y : GA E n), (Bridge.eopW w false b a f).1 y =
       (1 / 2 : ℂ) * (lieD (sg w b a 1) f.1 y - Complex.I * lieD (sg w b a (-Complex.I)) f.1 y) := fun f y => by
-    simp only [Bridge.eopW, Bool.false_eq_true, if_false]
+    simp only [Bridge.eopW, Bool.false_eq_true, ite_false]
     rw [Eop_apply, atEmb_conjugate, atEmb_conjugate]
     simp [sg]
   rw [e1, e2, e]
@@ -181,10 +163,10 @@ theorem rlTheta : RlTheta := by
     change star ((locInf w (Unitary.toUnits c)⁻¹ : GL (Fin n) (Cinf E)).val j i v) = _
     rw [locInf_apply, locInf_apply]
     by_cases hv : v = w
-    · simp only [hv, if_true]
+    · simp only [hv, ite_true]
       change star ((star c.1 : Matrix (Fin n) (Fin n) ℂ) j i) = c.1 i j
       simp [Matrix.star_apply]
-    · simp only [hv, if_false]
+    · simp only [hv, ite_false]
       by_cases hij : i = j
       · subst hij; simp
       · simp [Matrix.one_apply_ne hij, Matrix.one_apply_ne (Ne.symm hij)]

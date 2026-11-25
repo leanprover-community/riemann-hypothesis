@@ -219,12 +219,12 @@ theorem rep_H_zT (T : Finset m) {z y : m → ℂ} (hz : ∀ j ∈ T, z j = 0) :
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
   unfold zT
   by_cases hj : j ∈ T
-  · rw [if_pos hj, map_zero, mul_zero]
+  · rw [ite_eq_left hj, map_zero, mul_zero]
     by_cases hij : i = j
     · subst hij
       rw [hz i hj, zero_mul, zero_mul]
     · rw [Matrix.smul_apply, Matrix.one_apply_ne hij, smul_zero, mul_zero, zero_mul]
-  · rw [if_neg hj]
+  · rw [ite_eq_right hj]
 
 end Zero
 

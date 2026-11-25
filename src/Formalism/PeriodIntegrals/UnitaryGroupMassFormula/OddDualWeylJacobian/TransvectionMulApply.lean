@@ -29,7 +29,7 @@ theorem mul_transvection_apply (b a : Fin n) (c : A) (N : Matrix (Fin n) (Fin n)
     (N * transvection b a c) p i = N p i + if i = a then N p b * c else 0 := by
   by_cases h : i = a
   · subst h
-    rw [mul_transvection_apply_same, if_pos rfl]
+    rw [mul_transvection_apply_same, ite_eq_left rfl]
     ring
   · simp [mul_transvection_apply_of_ne, h]
 

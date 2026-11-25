@@ -63,7 +63,7 @@ theorem aLoc_eq_roL {𝔭 : {𝔭 : Ideal (𝓞 F) // 𝔭.IsMaximal}} (h𝔭 : 
     by_contra hne
     exact h𝔭 (hS 𝔭 hne)
   obtain ⟨hn', hvn'⟩ := (exists_vF_eq 𝔭.2 (valF n 𝔭)).choose_spec
-  rw [roL, if_neg h𝔭]
+  rw [roL, ite_eq_right h𝔭]
   unfold aLoc
   rw [alphaN_eq_of_vF_eq hK hF hs hd (by first | exact hL) hLi 𝔭.2 hv hn hn' (by rw [hvn', valF_apply hn])]
 
@@ -71,7 +71,7 @@ include hm
 
 theorem roL_zero (𝔭 : {𝔭 : Ideal (𝓞 F) // 𝔭.IsMaximal}) : roL h L S 𝔭 0 = 1 := by
   by_cases h𝔭 : 𝔭 ∈ S
-  · rw [roL, if_pos h𝔭]
+  · rw [roL, ite_eq_left h𝔭]
   · have hv : vd h L 𝔭.1 = 0 := by
       by_contra hne
       exact h𝔭 (hS 𝔭 hne)
@@ -80,7 +80,7 @@ theorem roL_zero (𝔭 : {𝔭 : Ideal (𝓞 F) // 𝔭.IsMaximal}) : roL h L S 
       intro hmem
       have := (mem_pow_iff_le_vF 𝔭.2 hn' 1).mp (by rw [pow_one]; exact hmem)
       omega
-    rw [roL, if_neg h𝔭]
+    rw [roL, ite_eq_right h𝔭]
     unfold aLoc
     rw [unitaryAbsoluteValueBounds.alphaN_unit hK hF hs hd (by first | exact hL) hLi 𝔭.2 hv (by omega) hn𝔭]
     have he := eFac_pos (K := K) 𝔭.2 (m := finrank K V) (by omega)
@@ -91,14 +91,14 @@ theorem roL_diff (𝔭 : {𝔭 : Ideal (𝓞 F) // 𝔭.IsMaximal}) (j : ℕ) :
     |roL h L S 𝔭 (j + 1) - roL h L S 𝔭 j| ≤
       8 * ((j : ℝ) + 2) ^ 2 / (Ideal.absNorm 𝔭.1 : ℝ) := by
   by_cases h𝔭 : 𝔭 ∈ S
-  · have h1 : ∀ i, roL h L S 𝔭 i = 1 := fun i => by rw [roL, if_pos h𝔭]
+  · have h1 : ∀ i, roL h L S 𝔭 i = 1 := fun i => by rw [roL, ite_eq_left h𝔭]
     rw [h1, h1, sub_self, abs_zero]
     positivity
   · have hv : vd h L 𝔭.1 = 0 := by
       by_contra hne
       exact h𝔭 (hS 𝔭 hne)
     have hro : ∀ i, roL h L S 𝔭 i = aLoc h L 𝔭 (exists_vF_eq 𝔭.2 i).choose := fun i => by
-      rw [roL, if_neg h𝔭]
+      rw [roL, ite_eq_right h𝔭]
     obtain ⟨hn1, hv1⟩ := (exists_vF_eq 𝔭.2 (j + 1)).choose_spec
     obtain ⟨hn0, hv0⟩ := (exists_vF_eq 𝔭.2 j).choose_spec
     rw [hro, hro]
@@ -128,7 +128,7 @@ theorem prod_aLoc {U : Finset {𝔭 : Ideal (𝓞 F) // 𝔭.IsMaximal}} (hU : S
   rw [← Finset.prod_sdiff hU (f := fun 𝔭 => aLoc h L 𝔭 n),
     ← Finset.prod_sdiff hU (f := fun 𝔭 => roL h L S 𝔭 (valF n 𝔭))]
   have h1 : ∏ 𝔭 ∈ S, roL h L S 𝔭 (valF n 𝔭) = 1 :=
-    Finset.prod_eq_one fun 𝔭 h𝔭 => by rw [roL, if_pos h𝔭]
+    Finset.prod_eq_one fun 𝔭 h𝔭 => by rw [roL, ite_eq_left h𝔭]
   have h2 : ∏ 𝔭 ∈ U \ S, aLoc h L 𝔭 n = ∏ 𝔭 ∈ U \ S, roL h L S 𝔭 (valF n 𝔭) :=
     Finset.prod_congr rfl fun 𝔭 h𝔭 =>
       aLoc_eq_roL (hK := hK) (hF := hF) (hs := hs) (hd := hd) (hL := hL) (hLi := hLi) (hS := hS) (Finset.mem_sdiff.mp h𝔭).2 hn
@@ -803,7 +803,7 @@ theorem euler_identity (hq : ∀ i, 2 ≤ q i) (hsum : Summable fun i => (q i ^ 
       intro i j
       by_cases hi : i ∈ S'
       · simpa [cut, hi] using hρb i j
-      · simp only [cut, if_neg hi, sub_self, abs_zero]
+      · simp only [cut, ite_eq_right hi, sub_self, abs_zero]
         exact div_nonneg (by positivity) (by linarith [hq i])
     have hT := tendsto_weighted hq hsum S h0 hS hb val B a sc c C H1 H2
     have e1 : ∀ n, (val n).prod (cut ρ S') = ∏ i ∈ S', ρ i (val n i) :=
@@ -825,7 +825,7 @@ theorem euler_identity (hq : ∀ i, 2 ≤ q i) (hsum : Summable fun i => (q i ^ 
       refine tendsto_const_nhds.congr' ?_
       filter_upwards [eventually_ge_atTop v.support] with S' hS'
       try dsimp only
-      rw [if_pos (show v.support ⊆ S' from hS')]
+      rw [ite_eq_left (show v.support ⊆ S' from hS')]
     · filter_upwards with S' v
       try dsimp only
       have hw := nrm_pos hq v

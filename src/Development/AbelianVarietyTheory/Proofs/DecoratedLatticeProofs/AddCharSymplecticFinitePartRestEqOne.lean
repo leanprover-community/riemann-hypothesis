@@ -83,7 +83,7 @@ theorem halfB_mem_locP {E : Type} [Field E] [NumberField E] [StarRing E] {a b : 
     y ∈ Formalism.HermitianLatticesTheory.localization₂ P.asIdeal M := by
   have h : ((c : E) ^ expS SS P)⁻¹ • y ∈ Formalism.HermitianLatticesTheory.localization₂ P.asIdeal M := (Submodule.mem_iInf _).1 hy P
   have he : expS SS P = 1 := by
-    unfold expS; rw [if_pos hP]
+    unfold expS; rw [ite_eq_left hP]
   have hc' : (c : E) ≠ 0 := Nat.cast_ne_zero.2 hc.ne'
   rw [he, zpow_one] at h
   have := nsmul_mem h c
@@ -115,7 +115,7 @@ theorem ybmem : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) (S
         Formalism.HermitianLatticesTheory.localization₂ Q.asIdeal (perO (D.host.AA0 : Submodule (𝓞 D.host.E) D.host.E) N N') :=
       (Submodule.mem_iInf _).1 hx Q
     have he : expS SS Q = 0 := by
-      unfold expS; rw [if_neg fun h => hQ (Or.inl h), if_neg fun h => hQ (Or.inr h)]
+      unfold expS; rw [ite_eq_right fun h => hQ (Or.inl h), ite_eq_right fun h => hQ (Or.inr h)]
     rwa [he, zpow_zero, _root_.inv_one, one_smul] at h
   obtain ⟨d, hd0, hdx, hdQ⟩ := GlobalTheory.T.exists_denominator_avoiding_given_primes D.host.E S.rank T.rank _
     (fun Q => Q ∈ SS ∨ Formalism.L2.Col.conjPrime₂ Q ∈ SS) c hc x' hcx hloc

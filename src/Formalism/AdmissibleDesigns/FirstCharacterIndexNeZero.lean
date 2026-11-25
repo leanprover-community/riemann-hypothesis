@@ -184,7 +184,7 @@ theorem coc_ine (c : coZ1s (qzE i e)) (hx : Submodule.Quotient.mk c ∈ selZ i d
     have hwP : idx i dc v ∈ Pall i dc := Finset.mem_union_left _ (Finset.mem_union_right _ hwq)
     have h1 := hP _ hwP
     unfold Fsha at h1
-    rw [if_pos hwq] at h1
+    rw [ite_eq_left hwq] at h1
     intro g hg
     have hgD : g ∈ decs D.host.E (Aw i dc) (idx i dc v) := by
       show g ∈ (Aw i dc (idx i dc v)).decompositionSubgroup D.host.E
@@ -228,7 +228,7 @@ theorem coc_loc (c : coZ1s (qzE i e)) (hx : Submodule.Quotient.mk c ∈ selZ i d
   obtain ⟨-, -, -, hP⟩ := selZ_mem i dc e hx
   have h1 := hP _ hwP
   unfold Fsha at h1
-  rw [if_neg hnq, Submodule.mem_bot] at h1
+  rw [ite_eq_right hnq, Submodule.mem_bot] at h1
   obtain ⟨m0, hm0⟩ := (Submodule.Quotient.mk_eq_zero _).1 h1
   have hAw : Aw i dc (idx i dc v.1) = D.nd.plOm.1 v.1 := by unfold Aw; rw [plOf_idx i dc hvP]
   have hcob : ∀ k ∈ Dec (F := D.host.E) (D.nd.plOm.1 v.1),

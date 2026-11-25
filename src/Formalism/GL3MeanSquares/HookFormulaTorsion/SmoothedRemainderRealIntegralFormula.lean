@@ -50,7 +50,7 @@ private theorem sum_Icc_zero_ite_eq_sum_Icc_one (c : ℕ → 𝕜) (N : ℕ) :
     ∑ k ∈ Icc 0 N, (if k = 0 then (0 : 𝕜) else c k) = ∑ k ∈ Icc 1 N, c k := by
   rw [Finset.Icc_eq_cons_Ioc (Nat.zero_le N), Finset.sum_cons, Icc_one_eq_Ioc_zero]
   simp only [↓reduceIte, zero_add]
-  exact Finset.sum_congr rfl fun k hk => if_neg (Finset.mem_Ioc.mp hk).1.ne'
+  exact Finset.sum_congr rfl fun k hk => ite_eq_right (Finset.mem_Ioc.mp hk).1.ne'
 
 private lemma integral_partial_sum_div_sq (c : ℕ → 𝕜) {y U : ℝ} (hy : 1 ≤ y) (hU : y ≤ U) :
     ∫ u in y..U, (∑ n ∈ Icc 1 ⌊u⌋₊, c n) / (u : 𝕜) ^ 2 =
@@ -76,7 +76,7 @@ private lemma integral_partial_sum_div_sq (c : ℕ → 𝕜) {y U : ℝ} (hy : 1
         = ∑ k ∈ Ioc ⌊y⌋₊ ⌊U⌋₊, c k / (k : 𝕜) := by
           refine Finset.sum_congr rfl fun k hk => ?_
           have hk0 : k ≠ 0 := (lt_of_le_of_lt (Nat.zero_le _) (Finset.mem_Ioc.mp hk).1).ne'
-          rw [if_neg hk0, RCLike.ofReal_natCast]
+          rw [ite_eq_right hk0, RCLike.ofReal_natCast]
           ring
       _ = _ := by
           rw [Icc_one_eq_Ioc_zero, Icc_one_eq_Ioc_zero]

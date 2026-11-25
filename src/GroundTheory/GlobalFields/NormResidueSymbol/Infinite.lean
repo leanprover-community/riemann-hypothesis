@@ -199,10 +199,10 @@ theorem ker_infiniteLocalSymbol (w : v.placesOver L) :
     constructor
     · intro h
       by_contra hneg
-      rw [if_pos (lt_of_le_of_ne (not_lt.1 hneg) hx0)] at h
+      rw [ite_eq_left (lt_of_le_of_ne (not_lt.1 hneg) hx0)] at h
       exact conjAt_ne_one hram h
     · intro h
-      rw [if_neg (not_lt.2 h.le)]
+      rw [ite_eq_right (not_lt.2 h.le)]
   · rw [InfinitePlace.normSubgroup_eq_top (w : InfinitePlace L) h2, eq_top_iff]
     intro x _
     rw [MonoidHom.mem_ker]

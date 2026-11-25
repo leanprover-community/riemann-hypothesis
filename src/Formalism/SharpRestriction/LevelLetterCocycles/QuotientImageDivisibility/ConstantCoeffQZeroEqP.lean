@@ -86,7 +86,7 @@ theorem lev_q_eq (c : ZMod n) {ζ : LL} (hζ : IsPrimitiveRoot ζ PD.p) (hp : (P
   have hw0 : PowerSeries.constantCoeff w = (PD.p : LL) := by
     have h1 := congrArg (PowerSeries.coeff 1) hw
     rw [PowerSeries.coeff_succ_X_mul, PowerSeries.coeff_zero_eq_constantCoeff_apply, map_sub,
-      hpow, PowerSeries.coeff_one, if_neg one_ne_zero, sub_zero] at h1
+      hpow, PowerSeries.coeff_one, ite_eq_right one_ne_zero, sub_zero] at h1
     exact h1.symm
   have hne : PowerSeries.constantCoeff (W.lev c ζ letπ) ≠ 0 := by rw [hπ]; exact hζ1
   refine ⟨(W.lev c ζ letπ)⁻¹ * w, ?_, ?_⟩

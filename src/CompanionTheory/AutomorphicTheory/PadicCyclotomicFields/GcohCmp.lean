@@ -17,8 +17,6 @@ open CategoryTheory GroundTheory.ProfCoh ReciprocityTheory.Gal ValuativeRel
 
 namespace CompanionTheory.LocalTateOrthogonality.Gcoh
 
-attribute [local instance 2000] Rep.hV2
-
 section Core
 
 variable {k G : Type} [CommRing k] [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
@@ -189,8 +187,6 @@ theorem gcRep : SgcRep := by
   have hc : Continuous fun g : G => rho g (a : M) :=
     hrho.comp (continuous_id.prodMk continuous_const)
   exact (isOpen_discrete {(a : M)}).preimage hc
-
-attribute [local instance 2000] Rep.hV2
 
 section
 

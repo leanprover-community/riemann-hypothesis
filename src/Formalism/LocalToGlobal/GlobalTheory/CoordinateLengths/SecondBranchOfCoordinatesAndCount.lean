@@ -44,7 +44,7 @@ theorem crd_Bw (T : Forms0 D u) (w : D.what₂.places.Pl) (hw : OverT D u w) (hs
   have ho : ∀ τ, τ ≠ (D.fm u).tauOf w v → bwA_N D ((D.fm u).tauOf w v) (B c) (B' c) τ = 1 := by
     intro τ h
     unfold bwA_N
-    rw [if_neg h]
+    rw [ite_eq_right h]
   have hprod : ∏ τ, (bwA_N D ((D.fm u).tauOf w v) (B c) (B' c) τ).det ^ shiftOf (lamT u 0) τ =
       (bwA_N D ((D.fm u).tauOf w v) (B c) (B' c) ((D.fm u).tauOf w v)).det ^
         ((D.fm u).lam 0 ((D.fm u).tauOf w v)).detShift := by

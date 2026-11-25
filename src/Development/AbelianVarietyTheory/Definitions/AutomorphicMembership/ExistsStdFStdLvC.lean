@@ -27,23 +27,8 @@ theorem stdKer_iff (t : KerEntTied ex) : I.StdKer l Z t ↔ I.StdKerTie l Z t :=
 
 end Ker
 
-section Tw
-
-variable (l0 : I.Law0 l) {inQ : (I.rec7 l Z).what₂.Tup → HeightOneSpectrum (𝓞 (I.rec7 l Z).host.F) → Prop}
-  {T : Formalism.L2.Herm.TwChTied (I.rec7 l Z) inQ} {H : Formalism.L2.Herm.HermColsCh (I.rec7 l Z)} {J : Formalism.L2.Herm.TwChJointS T H}
-  {F : ∀ u, FormsTiedSym (I.rec7 l Z) u (H.Ch u) (H.chOf u)}
-
-end Tw
 
 
-
-
-section Frames
-
-open GlobalTheory.Mem.FormSym
-
-
-end Frames
 
 end GlobalTheory.Mem.Col2.StdModel
 

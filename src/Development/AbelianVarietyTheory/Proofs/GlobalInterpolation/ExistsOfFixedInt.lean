@@ -596,7 +596,7 @@ theorem exists_family (hc : ∀ a, c (c a) = a) (hJ : ∀ i j, c (J j i) = J i j
       (∀ i j, hform c J (e i) (e j) = if i = j then 1 else 0) ∧ e 0 = x := by
   induction k with
   | zero => exact ⟨fun _ => x, fun _ => hx, fun i j => by
-      rw [hx1, if_pos (Subsingleton.elim (α := Fin 1) i j)], rfl⟩
+      rw [hx1, ite_eq_left (Subsingleton.elim (α := Fin 1) i j)], rfl⟩
   | succ k ih =>
     obtain ⟨e, heL, he, he0⟩ := ih (by omega)
     obtain ⟨y, hy, hy0, hy1⟩ := step (k + 1) (by omega) e heL he
@@ -627,7 +627,7 @@ theorem exists_basis (hL : ∀ y, y ∈ L ↔ ∀ z ∈ L, hform c J z y ∈ O) 
 
     rw [map_sum, map_zero] at h2
     simp only [map_smul, hLin_apply, he, smul_eq_mul, mul_ite, mul_one, mul_zero,
-      Finset.sum_ite_eq, Finset.mem_univ, if_true] at h2
+      Finset.sum_ite_eq, Finset.mem_univ, ite_true] at h2
     exact Subtype.ext h2
   have hsp : ⊤ ≤ Submodule.span O (Set.range f) := by
     intro y _

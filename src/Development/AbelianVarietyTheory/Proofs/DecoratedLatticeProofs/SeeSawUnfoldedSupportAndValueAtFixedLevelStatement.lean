@@ -102,26 +102,6 @@ theorem ι_one' {D : D7} {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace
   have h := p.ι_π 1
   rwa [map_one, mul_one] at h
 
-theorem shift_mul {D : D7} {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
-    (p : Place D k) (x y : k) :
-    (p.ι x + (1 - p.e)) * (p.ι y + (1 - p.e)) = p.ι (x * y) + (1 - p.e) := by
-  have he : p.e * p.e = p.e := p.split.1
-  have h1 : p.ι x * (1 - p.e) = 0 := by
-    rw [mul_sub, mul_one, mul_comm, _root_.GlobalTheory.LocMod.Witness.e_ι, sub_self]
-  have h2 : (1 - p.e) * p.ι y = 0 := by
-    rw [sub_mul, one_mul, _root_.GlobalTheory.LocMod.Witness.e_ι, sub_self]
-  have h3 : (1 - p.e) * (1 - p.e) = 1 - p.e := by
-    rw [sub_mul, one_mul, mul_sub, mul_one, he, sub_self, sub_zero]
-  rw [ι_mul', add_mul, mul_add, mul_add, h1, h2, h3, add_zero, zero_add]
-
-def shiftU {D : D7} {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
-    (p : Place D k) : kˣ →* (AE D)ˣ where
-  toFun x := ⟨p.ι x + (1 - p.e), p.ι (x⁻¹ : kˣ) + (1 - p.e), by
-      rw [shift_mul, Units.mul_inv, ι_one']; ring, by
-      rw [shift_mul, Units.inv_mul, ι_one']; ring⟩
-  map_one' := by ext; simp [ι_one']
-  map_mul' x y := by ext; simp [shift_mul]
-
 theorem card_frame {k : Type} [Field k] {N : ℕ} {Y : Type} [Fintype Y] [DecidableEq Y] (Fr : Frame k N Y) :
     Fintype.card Y = N := by
   apply le_antisymm

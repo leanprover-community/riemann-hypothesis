@@ -57,11 +57,11 @@ theorem w_zero_stable_right_block (p q w : ℕ) (lam2 : Fin q → ℕ) (b b' : F
   rw [mem_orthogonal_frame_iff] at hu ⊢
   refine ⟨fun α a => ?_, fun α β => ?_⟩
   · have h := congrArg (fun T => T u) (EV_comm p q w lam2 (Sum.inl α) (Sum.inr a) (Sum.inr b) (Sum.inr b'))
-    simp only [LinearMap.sub_apply, Module.End.mul_apply, hu.1, map_zero, sub_zero, reduceCtorEq, if_false] at h
+    simp only [LinearMap.sub_apply, Module.End.mul_apply, hu.1, map_zero, sub_zero, reduceCtorEq, ite_false] at h
     rw [h]
     split_ifs <;> simp [hu.1]
   · have h := congrArg (fun T => T u) (EV_comm p q w lam2 (Sum.inl α) (Sum.inl β) (Sum.inr b) (Sum.inr b'))
-    simp only [LinearMap.sub_apply, Module.End.mul_apply, reduceCtorEq, if_false, sub_zero, LinearMap.zero_apply,
+    simp only [LinearMap.sub_apply, Module.End.mul_apply, reduceCtorEq, ite_false, sub_zero, LinearMap.zero_apply,
       sub_eq_zero] at h
     rw [h, hu.2]
     split_ifs <;> simp

@@ -732,7 +732,7 @@ theorem dLin_id : dLin (pt R (n := 1) d 0) = 1 := by
   simp only [dLin, pt, coeff_X, Matrix.one_apply]
   by_cases h : i = j
   · simp [h]
-  · rw [if_neg h, if_neg]
+  · rw [ite_eq_right h, ite_eq_right]
     intro e
     exact h (congrArg Prod.snd (Finsupp.single_left_injective one_ne_zero e)).symm
 
@@ -1116,9 +1116,9 @@ theorem exists_minor_harm (E : Type) [Field E] [NumberField E] [IsCMField E] (H 
   have hdom : Crude.Dom Dw.mult a' := fun σ i j hij => ha σ hij
   let m : (E →+* ℂ) → ℕ → ℕ := fun τ s =>
     if h : 1 ≤ s ∧ s ≤ Dw.mult τ then Crude.crExp Dw.mult a' τ ⟨s - 1, by omega⟩ else 0
-  have hm0 : ∀ τ s, ¬ (1 ≤ s ∧ s ≤ Dw.mult τ) → m τ s = 0 := fun τ s h => dif_neg h
+  have hm0 : ∀ τ s, ¬ (1 ≤ s ∧ s ≤ Dw.mult τ) → m τ s = 0 := fun τ s h => dite_eq_right h
   have hm1 : ∀ τ (s : Fin (Dw.mult τ)), m τ (s.val + 1) = Crude.crExp Dw.mult a' τ s := fun τ s =>
-    dif_pos ⟨Nat.le_add_left _ _, s.isLt⟩
+    dite_eq_left ⟨Nat.le_add_left _ _, s.isLt⟩
   let β : (Σ σ : E →+* ℂ, Fin (Dw.mult σ)) → Fin (n₁ + n₂) := fun p =>
     if typ p.1 then Fin.castAdd n₂ (Fin.castLE (h1 p.1) p.2) else Fin.natAdd n₁ (Fin.castLE (h2 p.1) p.2)
   refine ⟨m, fun τ s h => by_contra fun h' => h (hm0 τ s h'), ?_,
@@ -1143,10 +1143,10 @@ theorem exists_minor_harm (E : Type) [Field E] [NumberField E] [IsCMField E] (H 
     have hi := lt_of_lt_of_le i.isLt (h1 τ)
     have hi' := lt_of_lt_of_le i'.isLt (h1 _)
     by_cases ht : typ τ
-    · simp only [β, if_pos ht, if_neg ((htyp τ).1 ht), Fin.val_castAdd, Fin.val_castLE, Fin.val_natAdd] at h'
+    · simp only [β, ite_eq_left ht, ite_eq_right ((htyp τ).1 ht), Fin.val_castAdd, Fin.val_castLE, Fin.val_natAdd] at h'
       omega
     · have ht' : typ (ComplexEmbedding.conjugate τ) := by_contra fun h => ht ((htyp τ).2 h)
-      simp only [β, if_neg ht, if_pos ht', Fin.val_castAdd, Fin.val_castLE, Fin.val_natAdd] at h'
+      simp only [β, ite_eq_right ht, ite_eq_left ht', Fin.val_castAdd, Fin.val_castLE, Fin.val_natAdd] at h'
       omega
   · rw [MvPolynomial.coeff_map]
     exact intCast_mem _ _
@@ -1156,27 +1156,27 @@ theorem exists_minor_harm (E : Type) [Field E] [NumberField E] [IsCMField E] (H 
     rw [← Finset.prod_mul_distrib]
     refine Finset.prod_congr rfl fun τ _ => ?_
     by_cases h : typ τ
-    · rw [if_pos h, if_neg (not_not.mpr h), _root_.mul_one,
+    · rw [ite_eq_left h, ite_eq_right (not_not.mpr h), _root_.mul_one,
         minorSt_prod_range le_rfl _ (fun s hs => by rw [hm0 τ s hs, pow_zero])]
       refine Finset.prod_congr rfl fun s _ => ?_
       have hs : s.val + 1 ≤ Dw.mult τ ∧ s.val + 1 ≤ n₁ :=
         ⟨Nat.succ_le_of_lt s.isLt, (Nat.succ_le_of_lt s.isLt).trans (h1 τ)⟩
-      rw [dif_pos hs, hm1]
+      rw [dite_eq_left hs, hm1]
       unfold GSt.leadMinor
       congr 2
       ext i j : 2
-      simp only [Crude.crMinor, β, if_pos h, Matrix.of_apply]
+      simp only [Crude.crMinor, β, ite_eq_left h, Matrix.of_apply]
       rfl
-    · rw [if_neg h, if_pos h, _root_.one_mul,
+    · rw [ite_eq_right h, ite_eq_left h, _root_.one_mul,
         minorSt_prod_range le_rfl _ (fun s hs => by rw [hm0 τ s hs, pow_zero])]
       refine Finset.prod_congr rfl fun s _ => ?_
       have hs : s.val + 1 ≤ Dw.mult τ ∧ s.val + 1 ≤ n₂ :=
         ⟨Nat.succ_le_of_lt s.isLt, (Nat.succ_le_of_lt s.isLt).trans (h2 τ)⟩
-      rw [dif_pos hs, hm1]
+      rw [dite_eq_left hs, hm1]
       unfold GSt.leadMinor
       congr 2
       ext i j : 2
-      simp only [Crude.crMinor, β, if_neg h, Matrix.of_apply]
+      simp only [Crude.crMinor, β, ite_eq_right h, Matrix.of_apply]
       rfl
 
 theorem val_eq_vV (T : CDVR) (ϖ : T.V) (hϖ : Irreducible ϖ) (F : Type) [Field F] [Algebra T.Fr F]

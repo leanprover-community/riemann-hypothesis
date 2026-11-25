@@ -59,7 +59,7 @@ theorem of_zero {E : Type} [Field E] {n c : ℕ} (hc : c = 0) (r : Sp E (n + c) 
   have e : ∀ x : Sp E n, Loc.inX E n 0 x = x := fun x => by
     funext l
     rw [CongLevel.inX_apply]
-    exact dif_pos l.2
+    exact dite_eq_left l.2
   have hr : r = κ := LinearEquiv.ext fun x => by
     have := h x
     rwa [e, e] at this

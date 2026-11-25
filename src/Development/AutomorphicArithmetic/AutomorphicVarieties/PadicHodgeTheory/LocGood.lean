@@ -416,7 +416,7 @@ private theorem cg_ext {O R E : Type} [CommRing O] [IsDomain O] [CommRing R] [Al
       have hcp : AddMonoidAlgebra.coeff p d = k d := by
         rw [hp, MvPolynomial.coeff_sum]
         simp only [MvPolynomial.coeff_monomial]
-        rw [Finset.sum_ite_eq' s d (fun e => k e), if_pos hds]
+        rw [Finset.sum_ite_eq' s d (fun e => k e), ite_eq_left hds]
       rw [hy, map_sub, map_smul, hP, map_sub, MvPolynomial.coeff_coe, MvPolynomial.coeff_map, hcp,
         hk d hds]
       exact sub_eq_zero.mpr rfl
@@ -809,7 +809,7 @@ private theorem count_weights_eq_local_dims (w : Fin 12 → ℤ) (h : ∀ j, Nat
       haveI : Nonempty {k // w k = w i} := ⟨⟨i, rfl⟩⟩
       exact Nat.card_pos
     simp only [Finset.mem_insert, Finset.mem_singleton, not_or] at hn
-    simp only [locDims, hn, if_false] at h1
+    simp only [locDims, hn, ite_false] at h1
     omega
   have hs := Finset.card_eq_sum_card_fiberwise (s := Finset.univ) (t := ({-2, -1, 0, 1, 2} : Finset ℤ)) (f := w)
     (fun i _ => hm i)
@@ -857,7 +857,7 @@ theorem UpperTheory.V.Loc.rtChart :
   refine ⟨w, φ, hφ, count_weights_eq_local_dims w (chartCount hP D U E x hx 12 w φ u hφ hg fun i j => ?_), hg⟩
   have h1 := hz i
   simp only [e, map_sub, AlgHom.commutes, sub_eq_iff_eq_add] at h1
-  rw [h1, map_add (f := _), MvPowerSeries.algebraMap_apply, MvPowerSeries.coeff_C, if_neg (by simp), add_zero,
+  rw [h1, map_add (f := _), MvPowerSeries.algebraMap_apply, MvPowerSeries.coeff_C, ite_eq_right (by simp), add_zero,
     MvPowerSeries.coeff_X]
   simp [Finsupp.single_left_inj, eq_comm]
 end -- clump:auto
@@ -980,8 +980,8 @@ theorem UpperTheory.V.Loc.locGood :
         rw [map_sub, sub_eq_zero, ← algebraMap_smul (FractionRing O) c, map_smul, coeff_lin_X] at this
         rw [← this]
         split_ifs <;> simp
-      refine ⟨a, ?_, fun j hj => by rw [key, if_neg hj]⟩
-      rw [key, if_pos rfl]
+      refine ⟨a, ?_, fun j hj => by rw [key, ite_eq_right hj]⟩
+      rw [key, ite_eq_left rfl]
       exact (map_ne_zero_iff _ (IsFractionRing.injective O _)).2 hc0
     · exact hc.inj 2 f (mem_sq_of_coeff (by rw [hc.const, hf, map_zero]) h1)
 end -- clump:auto

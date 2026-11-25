@@ -127,7 +127,7 @@ theorem exists_isRdgU : ∀ (D : D7) (T : Top D) (h : LawsP T) (j : ℕ) (hj : I
       rw [← h1]
       exact Finset.sum_congr rfl fun i _ => congrArg (fun z => g i * z) (hev u (F i) ⟨k, ⟨x, hx⟩⟩).symm
     · refine Finset.sum_eq_zero fun i _ => ?_
-      have : rdU (T.U j T.σ₀) (F i).1 k x = 0 := dif_neg hx
+      have : rdU (T.U j T.σ₀) (F i).1 k x = 0 := dite_eq_right hx
       rw [this, mul_zero]
   exact ⟨⟨DomPt T j, T.σ₀, ev, hsm, hind⟩, Equiv.refl _, fun _ => rfl, hev⟩
 

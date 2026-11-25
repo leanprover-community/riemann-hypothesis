@@ -137,73 +137,6 @@ theorem toPi_E (a i j : ι) (x : N) : U.toPi a (U.E i j x) = Pi.single i (U.toPi
 end MatrixUnits
 
 end GlobalTheory.Morita
-
-namespace GlobalTheory.Morita
-variable {R : Type*} [CommRing R] {N : Type*} [AddCommGroup N] [Module R N]
-  {ι : Type*} [Fintype ι] [DecidableEq ι]
-
-end GlobalTheory.Morita
-
-namespace GlobalTheory.Morita.MatrixUnits
-variable {R : Type*} [CommRing R] {N : Type*} [AddCommGroup N] [Module R N]
-  {ι : Type*} [Fintype ι] [DecidableEq ι] (U : MatrixUnits R N ι)
-
-end GlobalTheory.Morita.MatrixUnits
-
-namespace GlobalTheory.Morita.MatrixUnits
-variable {R : Type*} [CommRing R] {N : Type*} [AddCommGroup N] [Module R N]
-  {ι : Type*} [Fintype ι] [DecidableEq ι] (U : MatrixUnits R N ι)
-
-section semilinear
-
-variable {σ : R →+* R} (F : N →ₛₗ[σ] N)
-
-end semilinear
-
-end GlobalTheory.Morita.MatrixUnits
-
-namespace GlobalTheory.Morita.MatrixUnits
-variable {R : Type*} [CommRing R] {N : Type*} [AddCommGroup N] [Module R N]
-  {ι : Type*} [Fintype ι] [DecidableEq ι] (U : MatrixUnits R N ι)
-
-end GlobalTheory.Morita.MatrixUnits
-
-namespace GlobalTheory.Morita.MatrixUnits
-variable {R : Type*} [CommRing R] {N : Type*} [AddCommGroup N] [Module R N]
-  {ι : Type*} [Fintype ι] [DecidableEq ι] (U : MatrixUnits R N ι)
-
-section extend
-
-variable {σ : R →+* R}
-
-def extend (a : ι) (F₀ : U.corner a →ₛₗ[σ] U.corner a) : N →ₛₗ[σ] N where
-  toFun x := ∑ i, U.E i a (F₀ (U.toPi a x i))
-  map_add' x y := by simp [Finset.sum_add_distrib]
-  map_smul' r x := by simp [Finset.smul_sum]
-
-end extend
-
-end GlobalTheory.Morita.MatrixUnits
-
-namespace GlobalTheory.Morita
-variable {R : Type*} [CommRing R] {ι : Type*} [Fintype ι] [DecidableEq ι]
-
-end GlobalTheory.Morita
-
-namespace GlobalTheory.Morita
-variable {R : Type*} [CommRing R] {N : Type*} [AddCommGroup N] [Module R N]
-
-end GlobalTheory.Morita
-
-universe w
-
-namespace GlobalTheory.Morita
-
-variable {R : Type*} [CommRing R] {N : Type*} [AddCommGroup N] [Module R N]
-  {ι : Type*} [Fintype ι] [DecidableEq ι]
-
-
-end GlobalTheory.Morita
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.SpanEqTopIffDense =====
@@ -272,11 +205,11 @@ def units (hker : ∀ b, φ b = 0 → b ∈ I • (⊤ : Submodule R O)) (hP : �
   mul_eq i j k l := by
     by_cases h : j = k
     · subst h
-      rw [if_pos rfl, ← map_mul]
+      rw [ite_eq_left rfl, ← map_mul]
       refine LinearMap.ext fun x => ?_
       show (E i j * E j l) • x = E i l • x
       exact act_congr hker hP (by rw [map_mul, hE, hE, hE, Matrix.single_mul_single_same, mul_one]) x
-    · rw [if_neg h, ← map_mul]
+    · rw [ite_eq_right h, ← map_mul]
       refine LinearMap.ext fun x => ?_
       show (E i j * E k l) • x = 0
       have := act_congr hker hP (b := E i j * E k l) (b' := 0)

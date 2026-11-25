@@ -42,7 +42,7 @@ theorem coordSc_last {r : ℕ} (sc : ℝ) (q : (Fin r → ℂ) × ℂ) : coordSc
 
 theorem dl_diag {r : ℕ} (c : Fin (r + 1) → ℂ) (l : ℕ) (hl : l ≤ r + 1) :
     Dl (Matrix.diagonal c) l = ∏ i : Fin l, c (Fin.castLE hl i) := by
-  rw [Dl, dif_pos hl, Matrix.submatrix_diagonal _ _ (Fin.castLE_injective hl), Matrix.det_diagonal]
+  rw [Dl, dite_eq_left hl, Matrix.submatrix_diagonal _ _ (Fin.castLE_injective hl), Matrix.det_diagonal]
   rfl
 
 theorem gv_cs {r : ℕ} (T T' sc : ℝ) (q : (Fin r → ℂ) × ℂ) :
@@ -71,12 +71,12 @@ theorem jac_cs {r : ℕ} (sc : ℝ) (q : (Fin r → ℂ) × ℂ) :
     have hi : i.1 < r := lt_of_lt_of_le i.2 hlr
     have hc : Fin.castLE hl1 i = (⟨i.1, hi⟩ : Fin r).castSucc := Fin.ext rfl
     rw [hc, coordSc_cs]
-    simp only [y, dif_pos hi]
+    simp only [y, dite_eq_left hi]
     ring
   rw [JacV, Finset.prod_congr rfl hl, prod_Icc_range y r,
     ← Fin.prod_univ_eq_prod_range (fun i => y i ^ (r - i)) r]
   refine Finset.prod_congr rfl fun a _ => ?_
-  simp only [y, dif_pos a.2]
+  simp only [y, dite_eq_left a.2]
 
 def lamW (r k : ℕ) (sc : ℝ) : ℝ := ∏ a : Fin r, ‖lam r sc a‖ ^ (2 * (Formalism.QuantumDeterminants.Mdim k r a - 2))
 
@@ -214,7 +214,7 @@ theorem coordW_holds : CoordW := by
         have := mul_nonpos_of_nonneg_of_nonpos hp (by linarith : Complex.normSq q.2 - T * T' ≤ 0)
         linarith
       unfold Formalism.QuantumDeterminants.bcWeight
-      rw [if_pos hN.le]
+      rw [ite_eq_left hN.le]
     · rw [Set.indicator_of_notMem hg]
       have hb : Formalism.QuantumDeterminants.bcWeight k r T T' q = 0 := by
         unfold Formalism.QuantumDeterminants.bcWeight

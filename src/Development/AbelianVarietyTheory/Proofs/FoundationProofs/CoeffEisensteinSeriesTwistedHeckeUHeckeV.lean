@@ -56,7 +56,7 @@ theorem eis_U_pair (j l : ℕ) (c t : ℂ) (a b : ℤ → ℂ) (hl : l.Prime)
     eis j c a b (l * n) = t * eis j c a b n := by
   have hl0 : l ≠ 0 := hl.ne_zero
   have hln : l * n ≠ 0 := mul_ne_zero hl0 hn
-  simp only [eis, hln, hn, if_false]
+  simp only [eis, hln, hn, ite_false]
   rw [Finset.mul_sum]
   symm
   refine Finset.sum_bij_ne_zero (fun p _ _ => (p.1, l * p.2)) ?_ ?_ ?_ ?_
@@ -103,8 +103,8 @@ theorem eis_V_pair (j l : ℕ) (c t : ℂ) (a b : ℤ → ℂ) (hl : l.Prime)
   by_cases hd : l ∣ n
   · obtain ⟨m, rfl⟩ := hd
     have hm : m ≠ 0 := by rintro rfl; simp at hn
-    simp only [Vo, dvd_mul_right, if_true, Nat.mul_div_cancel_left m hl.pos]
-    simp only [eis, hn, hm, if_false]
+    simp only [Vo, dvd_mul_right, ite_true, Nat.mul_div_cancel_left m hl.pos]
+    simp only [eis, hn, hm, ite_false]
     rw [Finset.mul_sum]
     symm
     refine Finset.sum_bij_ne_zero (fun p _ _ => (l * p.1, p.2)) ?_ ?_ ?_ ?_
@@ -133,7 +133,7 @@ theorem eis_V_pair (j l : ℕ) (c t : ℂ) (a b : ℤ → ℂ) (hl : l.Prime)
       · intro h0
         apply hne
         have hdv : (l : ℤ) ∣ (q.1 : ℤ) := by rw [hx]; push_cast; exact dvd_mul_right _ _
-        simp only [hdv, if_true]
+        simp only [hdv, ite_true]
         have : a (q.1 : ℤ) = t * a (x : ℤ) := by rw [hx]; push_cast; exact ha _
         rw [this, hx]
         simp only at h0
@@ -143,12 +143,12 @@ theorem eis_V_pair (j l : ℕ) (c t : ℂ) (a b : ℤ → ℂ) (hl : l.Prime)
       · ext <;> simp [hx]
     · intro p _ _
       have hdv : (l : ℤ) ∣ ((l * p.1 : ℕ) : ℤ) := by push_cast; exact dvd_mul_right _ _
-      simp only [hdv, if_true]
+      simp only [hdv, ite_true]
       push_cast
       rw [ha, mul_pow]; ring
   · have h0 : Vo l (eis j c a b) n = 0 := by simp [Vo, hd]
     rw [h0, mul_zero]
-    simp only [eis, hn, if_false]
+    simp only [eis, hn, ite_false]
     refine Finset.sum_eq_zero fun q hq => ?_
     rw [Nat.mem_divisorsAntidiagonal] at hq
     have : ¬ (l : ℤ) ∣ (q.1 : ℤ) := by

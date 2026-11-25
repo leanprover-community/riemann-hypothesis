@@ -111,10 +111,6 @@ theorem normV_eq_of_localDegreeOne (h : IsPlaceOver A v) (h' : IsPlaceOver A w)
 
 end Transport
 
-section GlobalModel
-
-end GlobalModel
-
 end PositivityTheory.Pf1.LocalLanglands.HeckeKernelConditions
 
 end

@@ -301,8 +301,8 @@ theorem integral_image_eq (hL0 : L0) (hL1 : L1) (μ : Measure F) [μ.IsAddHaarMe
     simp only [hΦ]
     rw [integral_mul_const, hL1' (gi *ᵥ x)]
     by_cases hx : x ∈ S
-    · rw [if_pos ((hmemS x).1 hx), Set.indicator_of_mem hx]
-    · rw [if_neg (fun h => hx ((hmemS x).2 h)), Set.indicator_of_notMem hx, zero_mul]
+    · rw [ite_eq_left ((hmemS x).1 hx), Set.indicator_of_mem hx]
+    · rw [ite_eq_right (fun h => hx ((hmemS x).2 h)), Set.indicator_of_notMem hx, zero_mul]
   have h2 : ∫ x in lat F (k + 1) M, ∫ ξ in lat F (k + 1) 0, Φ x ξ ∂ν ∂ν =
       (vol : ℂ) * ∫ x in S, G x ∂ν := by
     simp_rw [h1]

@@ -143,28 +143,6 @@ theorem exists_reps_of_relIndex_ne_zero {M : Type*} [AddCommGroup M] {A B : AddS
     obtain ⟨q, -, rfl⟩ := Finset.mem_image.1 hr
     rw [(key q).1 h]
 
-section Period
-
-variable {E : Type} [Field E] [NumberField E]
-
-end Period
-
-section Index
-
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ}
-
-end Index
-
-section Modulus
-
-variable {E : Type} [Field E] [NumberField E] [IsCMField E]
-
-variable [IsGalois ℚ E]
-
-variable {K : Type*} [Field K] [Algebra E K]
-
-end Modulus
-
 section IndexIdeal
 
 open ReciprocityTheory.MultiplicativeHeights.SemiDegIdx ReciprocityTheory.PGsh
@@ -284,13 +262,5 @@ theorem exists_coe_eq_span_det {Λ Λ' : Submodule (𝓞 K) (Fin n → K)} (hle 
 attribute [local instance] extModR
 
 end IndexIdeal
-
-section Main
-
-open ReciprocityTheory.PGsh
-
-attribute [local instance] extModR
-
-end Main
 
 end GlobalTheory.TensorLat

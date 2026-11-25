@@ -146,10 +146,10 @@ theorem mk_decomp (g : ℕ → ℂ) (m : ℕ) :
   simp only [map_add (f := _), map_sum, coeff_mk, coeff_X_pow_mul', LinearMap.map_smul, coeff_X_pow,
   smul_eq_mul, mul_ite, mul_one, mul_zero]
   by_cases hk : m + 1 ≤ k
-  · rw [if_pos hk, Nat.sub_add_cancel hk, sum_ite_eq]
+  · rw [ite_eq_left hk, Nat.sub_add_cancel hk, sum_ite_eq]
     simp [mem_range]
     omega
-  · rw [if_neg hk, sum_ite_eq, if_pos (mem_range.2 (by omega))]
+  · rw [ite_eq_right hk, sum_ite_eq, ite_eq_left (mem_range.2 (by omega))]
     simp
 
 theorem sum_of_subst (N : ℂ) (τ g : ℕ → ℂ) {w : PowerSeries ℂ} (hw : (1 - C N * X) * w = 1)

@@ -259,10 +259,10 @@ theorem _root_.GlobalTheory.BlockEmbedding.exists_blockEmb : ∀ (P Q P' Q' : �
         · rw [hcol, Pi.single_eq_same, star_one, one_mul, Matrix.diagonal_apply] at hl
           by_cases hnl : e none = l
           · subst hnl
-            rw [if_pos rfl] at hl
+            rw [ite_eq_left rfl] at hl
             rw [Pi.single_eq_same]
             exact mul_left_cancel₀ hsn (hl.trans (mul_one _).symm)
-          · rw [if_neg hnl] at hl
+          · rw [ite_eq_right hnl] at hl
             have hz : (Pi.single (e none) (1 : ℂ) : Fin P ⊕ Fin Q → ℂ) l = 0 := by simp [Ne.symm hnl]
             rw [hz]
             exact (mul_eq_zero.mp hl).resolve_left hsn

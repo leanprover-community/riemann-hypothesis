@@ -231,7 +231,7 @@ theorem ann_supp {P : Lr n → Prop} {x : Finset (Lr n) → V} (hx : SuppL P x) 
   have h1 : (if l ∈ A then 0 else PositivityTheory.RgBcC.RealD.sgL l A • x (insert l A)) ≠ 0 := hA
   by_cases h : l ∈ A
   · simp [h] at h1
-  · rw [if_neg h] at h1
+  · rw [ite_eq_right h] at h1
     have h2 : x (insert l A) ≠ 0 := fun h0 => h1 (by rw [h0, smul_zero])
     exact hx _ h2 m (Finset.mem_insert_of_mem hm)
 
@@ -240,7 +240,7 @@ theorem cre_supp {P : Lr n → Prop} {x : Finset (Lr n) → V} (hx : SuppL P x) 
   intro A hA m hm
   have h1 : (if l ∈ A then PositivityTheory.RgBcC.RealD.sgL l A • x (A.erase l) else 0) ≠ 0 := hA
   by_cases h : l ∈ A
-  · rw [if_pos h] at h1
+  · rw [ite_eq_left h] at h1
     have h2 : x (A.erase l) ≠ 0 := fun h0 => h1 (by rw [h0, smul_zero])
     by_cases hml : m = l
     · exact hml ▸ hl
@@ -326,8 +326,8 @@ theorem Phi_bd (S : Lr n → Prop) (E1 E2 : Fin n → Fin n → Module.End ℂ V
   · rw [← Equiv.sum_comp fl (fun l => liftq n (Tl E1 E2 l) (annq l (Phi x)))]
     refine Finset.sum_congr rfl fun l _ => ?_
     by_cases h : S l
-    · rw [if_pos h, Phi_lift, Phi_ann, xL_eq]
-    · rw [if_neg h, map_zero, ← Phi_ann, ann_zero hx h, map_zero, map_zero]
+    · rw [ite_eq_left h, Phi_lift, Phi_ann, xL_eq]
+    · rw [ite_eq_right h, map_zero, ← Phi_ann, ann_zero hx h, map_zero, map_zero]
   · rw [← sum_letters (fun l m k => creq k (annq m (annq l (Phi x))))]
     refine Finset.sum_congr rfl fun l _ => ?_
 
@@ -339,15 +339,15 @@ theorem Phi_bd (S : Lr n → Prop) (E1 E2 : Fin n → Fin n → Module.End ℂ V
     have hk : Phi (creL k (annL m (annL l x))) = creq (fl k) (annq (fl m) (annq (fl l) (Phi x))) := by
       rw [Phi_cre, Phi_ann, Phi_ann]
     by_cases hR : l.2.1.2 = m.2.1.1 ∧ k.1 = xor l.1 m.1 ∧ k.2.1.1 = l.2.1.1 ∧ k.2.1.2 = m.2.1.2
-    · rw [if_pos hR]
+    · rw [ite_eq_left hR]
       by_cases hl : S l
       · by_cases hm : S m
-        · rw [if_pos ⟨hl, hm, hR⟩, hk]
-        · rw [if_neg (fun h => hm h.2.1), map_zero, ← hk, ann_zero (ann_supp hx l) hm]
+        · rw [ite_eq_left ⟨hl, hm, hR⟩, hk]
+        · rw [ite_eq_right (fun h => hm h.2.1), map_zero, ← hk, ann_zero (ann_supp hx l) hm]
           simp
-      · rw [if_neg (fun h => hl h.1), map_zero, ← hk, ann_zero hx hl]
+      · rw [ite_eq_right (fun h => hl h.1), map_zero, ← hk, ann_zero hx hl]
         simp
-    · rw [if_neg hR, if_neg (fun h => hR h.2.2), map_zero]
+    · rw [ite_eq_right hR, ite_eq_right (fun h => hR h.2.2), map_zero]
 
 theorem adLL_apply (lev : Fin n → ℕ) (s : Bool) (p q : Fin n) (x : Finset (Lr n) → V) :
     adLL lev s p q x = ∑ l : Lr n, ∑ k : Lr n,
@@ -385,8 +385,8 @@ theorem Phi_ad (lev : Fin n → ℕ) (s : Bool) (p q : Fin n) {x : Finset (Lr n)
       adCL s p q l k • creq (fl k) (annq (fl l) (Phi x)) := by
     intro l k
     by_cases h : inUU lev l
-    · rw [if_pos h, map_smul, Phi_cre, Phi_ann]
-    · rw [if_neg h, map_zero, ← Phi_ann, ann_zero hx h]
+    · rw [ite_eq_left h, map_smul, Phi_cre, Phi_ann]
+    · rw [ite_eq_right h, map_zero, ← Phi_ann, ann_zero hx h]
       simp
   have h2 : ∀ l : Lr n, Phi (∑ k : Lr n, if inUU lev l then adCL s p q l k • creL k (annL l x) else 0) =
       ∑ k : Lr n, adCL s p q l k • creq (fl k) (annq (fl l) (Phi x)) := by
@@ -457,7 +457,7 @@ theorem ad_supp (lev : Fin n → ℕ) (s : Bool) {p q : Fin n} (hpq : lev p = le
   rw [adLL_apply, ← mem_supS]
   refine Submodule.sum_mem _ fun l _ => Submodule.sum_mem _ fun k _ => ?_
   by_cases hl : inUU lev l
-  · rw [if_pos hl]
+  · rw [ite_eq_left hl]
     by_cases hc : adCL s p q l k = 0
     · rw [hc, zero_smul]
       exact Submodule.zero_mem _
@@ -480,7 +480,7 @@ theorem ad_supp (lev : Fin n → ℕ) (s : Bool) {p q : Fin n} (hpq : lev p = le
           simpa [← hpq] using h0
         simp [adCL, h1, h2]
       exact cre_supp (ann_supp hx l) hk
-  · rw [if_neg hl]
+  · rw [ite_eq_right hl]
     exact Submodule.zero_mem _
 
 theorem Phi_evLc (lev : Fin n → ℕ) (E1 E2 : Fin n → Fin n → Module.End ℂ V)
@@ -623,8 +623,8 @@ theorem actUU_of (hG : GlobalTheory.CompanionTheory.PairMult.GenCOU2) (hT : Glob
       rw [evalPair_tau_eq_evalKPair, evB_tau, hw, ← Equiv.sum_comp fl]
       refine Finset.sum_congr rfl fun l _ => ?_
       by_cases h : inUU lev l
-      · rw [if_pos h, if_pos (show inUL lev (fl l) from h), xL_eq, fl_fl]
-      · rw [if_neg h, if_neg (show ¬ inUL lev (fl l) from h)]) V E1 E2 hP (omQ lev).card (topq lev v)
+      · rw [ite_eq_left h, ite_eq_left (show inUL lev (fl l) from h), xL_eq, fl_fl]
+      · rw [ite_eq_right h, ite_eq_right (show ¬ inUL lev (fl l) from h)]) V E1 E2 hP (omQ lev).card (topq lev v)
     (top_supp lev v) (top_deg lev v) hcyc
   have hsw : SuppL (inUU lev) (Phi w) := by
     intro A hA l hl
@@ -770,7 +770,7 @@ theorem partB_eq {S : Lt n → Prop} (hS : IsClosedL S) (an cr : Lt n → R) (ha
       simp [ttL, hc, hk, i.2, j.2]
     · have hc' : ¬(S i.1 ∧ S j.1 ∧ i.1.2.1.2 = j.1.2.1.1 ∧ k.1 = xor i.1.1 j.1.1 ∧ k.2.1.1 = i.1.2.1.1 ∧
           k.2.1.2 = j.1.2.1.2) := fun h => hc h.2.2
-      rw [if_neg hc']
+      rw [ite_eq_right hc']
       simp [ttL, hc]
   simp only [e1]
   have e2 : ∀ G : Lt n → Lt n → R, (∀ i j, ¬(S i ∧ S j) → G i j = 0) →
@@ -779,19 +779,19 @@ theorem partB_eq {S : Lt n → Prop} (hS : IsClosedL S) (an cr : Lt n → R) (ha
     rw [sum_sub S (fun i => ∑ j : {l // S l}, G i j.1)]
     refine Finset.sum_congr rfl fun i _ => ?_
     by_cases hi : S i
-    · rw [if_pos hi, sum_sub S (G i)]
+    · rw [ite_eq_left hi, sum_sub S (G i)]
       refine Finset.sum_congr rfl fun j _ => ?_
       split_ifs with hj
       · rfl
       · exact (hG i j fun h => hj h.2).symm
-    · rw [if_neg hi]
+    · rw [ite_eq_right hi]
       exact (Finset.sum_eq_zero fun j _ => hG i j fun h => hi h.1).symm
   rw [e2 (fun i j => ∑ k : Lt n, if S i ∧ S j ∧ i.2.1.2 = j.2.1.1 ∧ k.1 = xor i.1 j.1 ∧ k.2.1.1 = i.2.1.1 ∧
         k.2.1.2 = j.2.1.2 then cr k * an j * an i else 0)]
   · rfl
   · intro i j hij
     refine Finset.sum_eq_zero fun k _ => ?_
-    rw [if_neg fun h => hij ⟨h.1, h.2.1⟩]
+    rw [ite_eq_right fun h => hij ⟨h.1, h.2.1⟩]
 
 
 open Classical in
@@ -993,15 +993,15 @@ theorem bdL_sub_ne {S S' : Lt n → Prop} (h0 : ∀ l, S' l → S l) (E1 E2 : Fi
   congr 1
   · refine Finset.sum_congr rfl fun l _ => ?_
     by_cases h1 : S' l
-    · rw [if_pos h1, if_pos (h0 _ h1)]
-    · rw [if_neg h1]
+    · rw [ite_eq_left h1, ite_eq_left (h0 _ h1)]
+    · rw [ite_eq_right h1]
       split_ifs with h2
       · rw [hc.1 l h2 h1, map_zero]
       · rfl
   · refine Finset.sum_congr rfl fun l _ => Finset.sum_congr rfl fun m _ => Finset.sum_congr rfl fun k _ => ?_
     by_cases h1 : TriL S' l m k
-    · rw [if_pos h1, if_pos ⟨h0 _ h1.1, h0 _ h1.2.1, h1.2.2⟩]
-    · rw [if_neg h1]
+    · rw [ite_eq_left h1, ite_eq_left ⟨h0 _ h1.1, h0 _ h1.2.1, h1.2.2⟩]
+    · rw [ite_eq_right h1]
       split_ifs with h2
       · exact hc.2 l m k h2 fun a b => h1 ⟨a, b, h2.2.2⟩
       · rfl
@@ -1054,14 +1054,14 @@ theorem partL_bdK (E1 E2 : Fin n → Fin n → Module.End ℂ V) {B : Finset (Lt
   rcases bdL_ne isK E1 E2 x A hA with ⟨l, hl, h1⟩ | ⟨l, m, k, ht, h1⟩
   · obtain ⟨-, h3⟩ := annL_ne h1
     have e : pPart (insert l A) = B := hx _ h3
-    rw [pPart_insert, if_neg (by simp [show l.1 = false from hl])] at e
+    rw [pPart_insert, ite_eq_right (by simp [show l.1 = false from hl])] at e
     exact e
   · obtain ⟨-, -, -, h5⟩ := triL_ne h1
     have e : pPart (insert l (insert m (A.erase k))) = B := hx _ h5
     have hl : l.1 = false := ht.1
     have hm : m.1 = false := ht.2.1
     have hk : k.1 = false := by rw [ht.2.2.2.1, hl, hm]; rfl
-    rw [pPart_insert, if_neg (by simp [hl]), pPart_insert, if_neg (by simp [hm]),
+    rw [pPart_insert, ite_eq_right (by simp [hl]), pPart_insert, ite_eq_right (by simp [hm]),
       pPart_erase_of_not (by simp [hk])] at e
     exact e
 
@@ -1089,7 +1089,7 @@ theorem pot_lt (lev : Fin n → ℕ) (E1 E2 : Fin n → Fin n → Module.End ℂ
   · obtain ⟨h4, h5⟩ := annL_ne h3
     have e1 : pPart (insert l A) = B := hx _ h5
     have hl : l.1 = true := by simpa [isK] using h2
-    rw [pPart_insert, if_pos hl] at e1
+    rw [pPart_insert, ite_eq_left hl] at e1
     rw [← e1, potL_insert (B := pPart A) (fun h => h4 (mem_filter.1 h).1)]
     have := hpos l
     simp only [wP]
@@ -1118,17 +1118,17 @@ theorem pot_lt (lev : Fin n → ℕ) (E1 E2 : Fin n → Fin n → Module.End ℂ
     cases hl : l.1 <;> cases hm : m.1
     · exact absurd ⟨hl, hm⟩ h2
     · have hk : k.1 = true := by rw [t0, hl, hm]; rfl
-      simp only [hk, if_true, Bool.false_eq_true, if_false]
+      simp only [hk, ite_true, Bool.false_eq_true, ite_false]
       rw [potL_insert hkR, potL_insert hmR]
       simp only [wP]
       omega
     · have hk : k.1 = true := by rw [t0, hl, hm]; rfl
-      simp only [hk, if_true, Bool.false_eq_true, if_false]
+      simp only [hk, ite_true, Bool.false_eq_true, ite_false]
       rw [potL_insert hkR, potL_insert hlR]
       simp only [wP]
       omega
     · have hk : k.1 = false := by rw [t0, hl, hm]; rfl
-      simp only [hk, if_true, Bool.false_eq_true, if_false]
+      simp only [hk, ite_true, Bool.false_eq_true, ite_false]
       rw [potL_insert hlm, potL_insert hmR]
       simp only [wP]
       omega
@@ -1147,7 +1147,7 @@ theorem FtL_ann (E1 E2 : Fin n → Fin n → Module.End ℂ V) (c : Fin n) (l : 
   simp only [FtL_apply, annL_apply, Pi.sub_apply, Pi.smul_apply]
   by_cases h : l ∈ A
   · simp [h]
-  · rw [if_neg h, if_neg h, wtL_insert h, map_smul]
+  · rw [ite_eq_right h, ite_eq_right h, wtL_insert h, map_smul]
     push_cast
     module
 
@@ -1159,7 +1159,7 @@ theorem FtL_cre (E1 E2 : Fin n → Fin n → Module.End ℂ V) (c : Fin n) (l : 
   · have e : wtL A c = wtL (A.erase l) c + alL l c := by
       conv_lhs => rw [← insert_erase h]
       exact wtL_insert (notMem_erase l A) c
-    rw [if_pos h, if_pos h, e, map_smul]
+    rw [ite_eq_left h, ite_eq_left h, e, map_smul]
     push_cast
     module
   · simp [h]
@@ -1191,10 +1191,10 @@ theorem kA_xL {E1 E2 : Fin n → Fin n → Module.End ℂ V} (hP : IsPairA E1 E2
     (LinearMap.congr_fun (hP.2.2 l.2.1.1 l.2.1.2 c c) x).symm
   simp only [xL, alL]
   cases hl : l.1
-  · simp only [kA, pA, Bool.false_eq_true, if_false, LinearMap.add_apply, map_add (f := _)]
+  · simp only [kA, pA, Bool.false_eq_true, ite_false, LinearMap.add_apply, map_add (f := _)]
     rw [g1, g2, c1, c2]
     module
-  · simp only [kA, pA, if_true, LinearMap.add_apply, LinearMap.sub_apply, map_add (f := _), map_sub]
+  · simp only [kA, pA, ite_true, LinearMap.add_apply, LinearMap.sub_apply, map_add (f := _), map_sub]
     rw [g1, g2, c1, c2]
     module
 
@@ -1265,7 +1265,7 @@ theorem kA_comm {E1 E2 : Fin n → Fin n → Module.End ℂ V} (hP : IsPairA E1 
     simp only [LinearMap.sub_apply, Module.End.mul_apply] at this
     by_cases hcd : c = d
     · subst hcd; rfl
-    · rw [if_neg hcd, if_neg (Ne.symm hcd)] at this
+    · rw [ite_eq_right hcd, ite_eq_right (Ne.symm hcd)] at this
       simpa [sub_eq_zero] using this
   have c1 : ∀ v, E1 c c (E2 d d v) = E2 d d (E1 c c v) := fun v => LinearMap.congr_fun (hP.2.2 c c d d) v
   have c2 : ∀ v, E1 d d (E2 c c v) = E2 c c (E1 d d v) := fun v => LinearMap.congr_fun (hP.2.2 d d c c) v
@@ -1490,7 +1490,7 @@ theorem injRL_of (hB : BdSqL) (hV : VanKL) : InjRL := by
         rw [e] at hA
         obtain ⟨B, -, hB⟩ := exists_ne_zero_of_sum_ne_zero hA
         by_cases h1 : potL B = N
-        · rw [if_pos h1, zero_sub, neg_ne_zero] at hB
+        · rw [ite_eq_left h1, zero_sub, neg_ne_zero] at hB
           rcases t4 B with h2 | h2
           · simp [h2] at hB
           · have h3 := pot_lt lev E1 E2 h2 A hB
@@ -1499,7 +1499,7 @@ theorem injRL_of (hB : BdSqL) (hV : VanKL) : InjRL := by
             by_cases h4 : bdL (inRR lev) E1 E2 (t B) A = 0
             · refine degL_bdL isK E1 E2 (t5d B) A fun h5 => hB (by rw [h4, h5, sub_zero])
             · exact degL_bdL _ E1 E2 (t5d B) A h4
-        · rw [if_neg h1, t3 B h1] at hB
+        · rw [ite_eq_right h1, t3 B h1] at hB
           have hB' : r B A ≠ 0 := by simpa using hB
           have h2 := (hrne B A hB').1
           have h3 := (hry B A hB')

@@ -26,10 +26,10 @@ private theorem coeff_chi_smul {n : ℕ} {A G : Type} [CommRing A] [Group G] (D 
     rw [map_mul, map_pow]
     ring
   rw [hsum, Polynomial.finsetSum_coeff, Finset.sum_eq_single i]
-  · rw [Polynomial.coeff_C_mul_X_pow, if_pos rfl]
+  · rw [Polynomial.coeff_C_mul_X_pow, ite_eq_left rfl]
     ring
   · intro j hj hji
-    rw [Polynomial.coeff_C_mul_X_pow, if_neg]
+    rw [Polynomial.coeff_C_mul_X_pow, ite_eq_right]
     intro h
     apply hji
     have := Finset.mem_range.mp hj

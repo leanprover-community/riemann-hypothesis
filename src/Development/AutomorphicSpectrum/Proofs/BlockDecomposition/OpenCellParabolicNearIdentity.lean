@@ -56,7 +56,7 @@ theorem continuous_colMat_append (i t : ℕ) :
             (Fin.castSucc (Fin.natAdd (i + 1) a)) (Fin.last _) = d a := by
           intro d
           unfold colMat
-          rw [if_pos rfl, Fin.lastCases_castSucc, Fin.append_right]
+          rw [ite_eq_left rfl, Fin.lastCases_castSucc, Fin.append_right]
         exact (continuous_apply a).congr fun d => (e d).symm
   · simpa [colMat, hb] using continuous_const
 

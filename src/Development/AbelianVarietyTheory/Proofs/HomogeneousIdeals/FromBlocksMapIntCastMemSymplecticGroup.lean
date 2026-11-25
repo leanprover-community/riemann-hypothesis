@@ -198,7 +198,7 @@ theorem sq_sum_bicharacter (hodd : Odd (Fintype.card A)) (B : A → AddChar A �
     ext x z
     rw [Matrix.mul_apply, Matrix.one_apply]
     simp only [P, of_apply, add_eq_zero_iff_neg_eq, ite_mul, one_mul, zero_mul,
-      sum_ite_eq, mem_univ, if_true, neg_neg]
+      sum_ite_eq, mem_univ, ite_true, neg_neg]
   have hP : P.trace = 1 := by
     have : ∀ x : A, x + x = 0 ↔ x = 0 := fun x =>
       ⟨eq_zero_of_add_self_eq_zero_of_odd_card hodd, fun h => by simp [h]⟩

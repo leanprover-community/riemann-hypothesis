@@ -449,7 +449,7 @@ theorem f'_perp (b : Fin (r + 1)) : S.f' b ∈ perp L S.Hm S.X' := by
   induction hy using Submodule.span_induction with
   | mem y hy =>
     obtain ⟨j, rfl⟩ := hy
-    rw [S.gram', if_neg]
+    rw [S.gram', ite_eq_right]
     exact fun h => (Fin.castSucc_lt_last j).ne h.2
   | zero => exact h_zero_r S _
   | add y z _ _ h1 h2 => exact (h_add_r S _ _ _).trans (by unfold Frames.h; rw [h1, h2, add_zero])

@@ -73,12 +73,12 @@ theorem killBlocks_monomial (T : Finset K) (d : (Σ k, ι k) →₀ ℕ) (c : F)
   split_ifs with h
   · rw [monomial_eq, algebraMap_eq]
     congr 1
-    exact Finsupp.prod_congr fun v hv => by rw [if_neg (h v hv)]
+    exact Finsupp.prod_congr fun v hv => by rw [ite_eq_right (h v hv)]
   · simp only [not_forall, not_not] at h
     obtain ⟨v, hv, hT⟩ := h
     refine mul_eq_zero_of_right _ (Finset.prod_eq_zero hv ?_)
     dsimp only
-    rw [if_pos hT, zero_pow (Finsupp.mem_support_iff.mp hv)]
+    rw [ite_eq_left hT, zero_pow (Finsupp.mem_support_iff.mp hv)]
 
 theorem coeff_killBlocks (T : Finset K) (q : MRing ι F) (d : (Σ k, ι k) →₀ ℕ) :
     AddMonoidAlgebra.coeff (killBlocks T q) d = if ∀ v ∈ d.support, v.1 ∉ T then AddMonoidAlgebra.coeff q d else 0 := by
@@ -104,10 +104,10 @@ theorem weight_apply_eq_zero_iff (d : (Σ k, ι k) →₀ ℕ) (k : K) :
   have := Finsupp.mem_support_iff.mp hv
   constructor
   · intro h hk
-    rw [if_pos hk.symm] at h
+    rw [ite_eq_left hk.symm] at h
     exact this h
   · intro h
-    rw [if_neg (fun hk => h hk.symm)]
+    rw [ite_eq_right (fun hk => h hk.symm)]
 
 theorem killBlocks_of_isMultiHomog (T : Finset K) {p : MRing ι F} {b : K → ℕ}
     (hp : IsMultiHomog p b) : killBlocks T p = if ∀ k ∈ T, b k = 0 then p else 0 := by
@@ -127,8 +127,8 @@ theorem killBlocks_of_isMultiHomog (T : Finset K) {p : MRing ι F} {b : K → �
         rw [← hw, weight_apply_eq_zero_iff] at this
         exact this v hv rfl
     by_cases hb : ∀ k ∈ T, b k = 0
-    · rw [if_pos (key.mpr hb), if_pos hb]
-    · rw [if_neg (fun h => hb (key.mp h)), if_neg hb, AddMonoidAlgebra.coeff_zero]
+    · rw [ite_eq_left (key.mpr hb), ite_eq_left hb]
+    · rw [ite_eq_right (fun h => hb (key.mp h)), ite_eq_right hb, AddMonoidAlgebra.coeff_zero]
       rfl
 
 theorem killBlocks_mem_of_isMultiHomogIdeal {Q : Ideal (MRing ι F)} (hQ : IsMultiHomogIdeal Q)
@@ -171,11 +171,11 @@ theorem card_le_ringKrullDim [Fintype K] {Q : Ideal (MRing ι F)} [hQp : Q.IsPri
         (hmono (Finset.subset_insert k T)) (f := X ⟨k, i k⟩)
         (by
           change killBlocks T (X ⟨k, i k⟩) ∉ Q
-          rw [killBlocks_X, if_neg hk]
+          rw [killBlocks_X, ite_eq_right hk]
           exact hi k)
         (by
           change killBlocks (insert k T) (X ⟨k, i k⟩) ∈ Q
-          rw [killBlocks_X, if_pos (Finset.mem_insert_self k T)]
+          rw [killBlocks_X, ite_eq_left (Finset.mem_insert_self k T)]
           exact Q.zero_mem)
       calc ringKrullDim (MRing ι F ⧸ killIdeal Q (insert k T)) + ((insert k T).card : WithBot ℕ∞)
           = (ringKrullDim (MRing ι F ⧸ killIdeal Q (insert k T)) + 1) + (T.card : WithBot ℕ∞) := by

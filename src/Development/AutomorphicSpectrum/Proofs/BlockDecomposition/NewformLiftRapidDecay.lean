@@ -109,7 +109,7 @@ theorem exists_level_idele (N : ℕ) [NeZero N] (u : FiniteAdelicGL ℚ 2) (hu :
   let e : ∀ v : Pl, (v.adicCompletionIntegers ℚ)ˣ := fun v =>
     if h : pOf v ∣ N then (unit_entry hu v h).choose else 1
   refine ⟨IdeleGroup.toFinite ℚ (IdeleGroup.ofIntegerUnits 1 e), fun v => ord_int_unit v (e v), fun v hv => ?_⟩
-  have h : e v = (unit_entry hu v hv).choose := dif_pos hv
+  have h : e v = (unit_entry hu v hv).choose := dite_eq_left hv
   have h2 := (unit_entry hu v hv).choose_spec
   rw [← h] at h2
   exact h2

@@ -84,10 +84,6 @@ theorem v_map_le_one_iff (p : HeightOneSpectrum (𝓞 F)) (q : HeightOneSpectrum
   rw [← not_lt, ← not_lt, Valuation.one_lt_val_iff _ hy, Valuation.one_lt_val_iff _ hcy, ← map_inv₀,
     v_map_lt_one_iff p q c hc]
 
-section loc
-variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
-end loc
-
 theorem complRel_lt_one (p : HeightOneSpectrum (𝓞 F)) (x : p.adicCompletion F) :
     ValuativeRel.valuation (p.adicCompletion F) x < 1 ↔ Valued.v x < 1 := by
   haveI : (Valued.v : Valuation (p.adicCompletion F) (WithZero (Multiplicative ℤ))).Compatible :=

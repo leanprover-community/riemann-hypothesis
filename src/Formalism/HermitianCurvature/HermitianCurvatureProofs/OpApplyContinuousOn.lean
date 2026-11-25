@@ -140,7 +140,7 @@ theorem orbJ_tendsto : ∃ c₃ : ℝ, ∀ (k r : ℕ) (Wp Wq : Type) [NormedAdd
     have hex : ∃ θ', D.IsNormCut Bs γ (D.muR Bs γ w) θ' ∧
         Integrable (fun p => θ' p • D.orbIntegrand Bs γ G p) Bs.μSS := ⟨θ, hθ, hInt G hGm hGb⟩
     unfold D.orbJ
-    rw [dif_pos hex]
+    rw [dite_eq_left hex]
     exact P.orbital_integral_indep_choice k r Wp Wq Bs γ (D.muR Bs γ w) hrel hR G _ θ hex.choose_spec.1 hθ
       hex.choose_spec.2 (hInt G hGm hGb)
   have e1 : (fun n => D.orbJ Bs γ (D.muR Bs γ w) (H n)) =
@@ -168,9 +168,9 @@ theorem vecV_tendsto : ∃ c₃ : ℝ, ∀ (k r : ℕ) (Wp Wq : Type) [NormedAdd
   intro k r Wp Wq _ _ _ _ Bs ν' m₀ q A hA H H₀ cF hcF hc hc₀ hb hb₀ hlim
   unfold D.vecV
   by_cases h : D.IsLocPt q (r + 1) ∧ 0 < D.ptG (Tz k r Bs.z * Tz k r Bs.z') r q
-  · simp only [dif_pos h]
+  · simp only [dite_eq_left h]
     by_cases h' : ∃ γ ∈ B.GV k r, Zhat k r Bs.z Bs.z' γ = D.ptMatN q (r + 1) ∧ D.IsDFrame Bs ν' m₀ γ
-    · simp only [dif_pos h']
+    · simp only [dite_eq_left h']
       have hγ := h'.choose_spec.1
       have hZ := h'.choose_spec.2.1
       have hGq := P.ptG_spec k r Bs.z Bs.z' q h'.choose h.1 hZ
@@ -182,9 +182,9 @@ theorem vecV_tendsto : ∃ c₃ : ℝ, ∀ (k r : ℕ) (Wp Wq : Type) [NormedAdd
       exact hc₃ k r Wp Wq Bs h'.choose _ _ A hγ hd (hZ.trans hmono) hpos hrel hA H H₀ cF hcF
         (fun n => integrand_aesm' Bs horb (hc n)) (integrand_aesm' Bs horb hc₀)
         (fun n p hp => hb n _ (horb p hp)) (fun p hp => hb₀ _ (horb p hp)) (fun p hp => hlim _ (horb p hp))
-    · simp only [dif_neg h']
+    · simp only [dite_eq_right h']
       exact tendsto_const_nhds
-  · simp only [dif_neg h]
+  · simp only [dite_eq_right h]
     exact tendsto_const_nhds
 
 end Formalism.FourierDecayAlt.P.PBE
@@ -403,9 +403,9 @@ theorem vecV_congrGPos (Bs : B.RealPlaceData k r Wp Wq) (ν' : Fin (2 * r + k + 
     D.vecV Bs ν' m₀ H₁ q = D.vecV Bs ν' m₀ H₂ q := by
   unfold D.vecV
   by_cases hq : D.IsLocPt q (r + 1) ∧ 0 < D.ptG (Tz k r Bs.z * Tz k r Bs.z') r q
-  · simp only [dif_pos hq]
+  · simp only [dite_eq_left hq]
     by_cases h' : ∃ γ ∈ B.GV k r, Zhat k r Bs.z Bs.z' γ = D.ptMatN q (r + 1) ∧ D.IsDFrame Bs ν' m₀ γ
-    · simp only [dif_pos h']
+    · simp only [dite_eq_left h']
       have hγ := h'.choose_spec.1
       have hGq := P.ptG_spec k r Bs.z Bs.z' q h'.choose hq.1 h'.choose_spec.2.1
       have hpos : 0 < Gf k r Bs.z Bs.z' h'.choose := hGq ▸ hq.2
@@ -415,8 +415,8 @@ theorem vecV_congrGPos (Bs : B.RealPlaceData k r Wp Wq) (ν' : Fin (2 * r + k + 
         simp only [D.orbIntegrand, B.rho, one_smul]
         rw [h _ ⟨P.B7.sgs_mem Bs hp hγ, by rw [P.JCx1.needs.gf_sgs Bs hp]; exact hpos⟩])
       rw [e, one_smul]
-    · simp only [dif_neg h']
-  · simp only [dif_neg hq]
+    · simp only [dite_eq_right h']
+  · simp only [dite_eq_right hq]
 
 end cut
 
@@ -722,12 +722,12 @@ theorem formLimit_top (Cb : ℝ) : ∃ Cc : ℝ, ∀ (Wp Wq : Type) [NormedAddCo
   unfold D.RRplace
   by_cases hab : D.IsLocPt a (P0.r + 1) ∧ D.IsLocPt b (P0.r + 1)
   swap
-  · simp only [dif_neg hab]; exact tendsto_const_nhds
+  · simp only [dite_eq_right hab]; exact tendsto_const_nhds
   have hnle : ¬ (P0.r + 1 ≤ P0.r) := by omega
-  simp only [dif_pos hab, dif_neg hnle, if_true]
+  simp only [dite_eq_left hab, dite_eq_right hnle, ite_true]
   by_cases hw0 : w = []
   · subst hw0
-    simp only [if_true]
+    simp only [ite_true]
     have hthr := thr_arith (P0.r) (2 * (P0.r : ℝ) + P0.k + 1) N (max Cb 0) (max c₁ c₂) 0 0 A hr0 hrX hN0 hCb0
       le_rfl (by positivity) le_rfl (by simp) hA
     obtain ⟨b₀, hb₀⟩ := cutF_inCC p.T.base hχ hfA hε A 0 (by simp)
@@ -736,7 +736,7 @@ theorem formLimit_top (Cb : ℝ) : ∃ Cc : ℝ, ∀ (Wp Wq : Type) [NormedAddCo
       hc₁ P0.k P0.r Wp Wq p.T.base p.ν' p.m₀ q _ A b₀ cut
         (hmono c₁ (le_max_left _ _) A (by linarith [hthr])) hb₀ hFck hcut'
     exact hsInner_tendsto (hva a) (hva b)
-  · simp only [if_neg hw0]
+  · simp only [ite_eq_right hw0]
     unfold Top.topOf
     have hve : ∀ (e : Wd.Ix (Fin w.length)) (q : C.LPt), Tendsto
         (fun n => D.vecV p.T.base p.ν' p.m₀ (p.Θ.Θ w e (fun g => cut n g • D.cutF p.T.base χ f ε g)) q) atTop

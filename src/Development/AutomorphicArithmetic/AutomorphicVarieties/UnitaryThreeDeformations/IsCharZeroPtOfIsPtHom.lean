@@ -249,7 +249,7 @@ private theorem exists_scale {K σ : Type} [NontriviallyNormedField K] [IsAlgClo
 private theorem mono_mem {O σ : Type} [CommRing O] (w : σ → ℤ) (b : σ →₀ ℕ) :
     (MvPowerSeries.monomial b 1 : MvPowerSeries σ O) ∈ wtPart O w (Finsupp.weight w b) := fun n hn => by
   classical
-  rw [MvPowerSeries.coeff_monomial, if_neg]
+  rw [MvPowerSeries.coeff_monomial, ite_eq_right]
   rintro rfl
   exact hn rfl
 
@@ -312,7 +312,7 @@ private theorem ev_eq {O R K : Type} [CommRing O] [CommRing R] [Algebra O R] [No
           rw [map_sub, MvPowerSeries.coeff_C]
           by_cases h0 : n = 0
           · subst h0; simp
-          · rw [if_neg h0, sub_zero]
+          · rw [ite_eq_right h0, sub_zero]
             exact hf n fun h => hn ⟨h0, h⟩)
         have he' : f = algebraMap O _ (MvPowerSeries.constantCoeff f) + ∑ m ∈ μ, b m * MvPowerSeries.monomial m 1 :=
           sub_eq_iff_eq_add'.1 he

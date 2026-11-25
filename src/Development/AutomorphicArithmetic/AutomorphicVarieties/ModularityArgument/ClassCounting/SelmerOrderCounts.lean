@@ -1808,7 +1808,7 @@ theorem UpperTheory.V.ZK.Ct.selInvLe :
     intro x hx
     obtain ⟨t, htT, hxt⟩ := hty x hx
     have hex : ∃ x ∈ D.SelInv l, Ty x t := ⟨x, hx, hxt⟩
-    have hrep : rep t = hex.choose := dif_pos hex
+    have hrep : rep t = hex.choose := dite_eq_left hex
     obtain ⟨_, hx't⟩ := hex.choose_spec
     obtain ⟨α, v, hxα, hord, hact, hN⟩ := hxt
     obtain ⟨α', v', hxα', hord', hact', hN'⟩ := hx't

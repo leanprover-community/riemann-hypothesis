@@ -158,12 +158,6 @@ theorem coordinate_real (P : Par) (l : ℕ) (π : Ty P) (Y : ℂ) (hY : star Y =
   show (starRingEnd ℂ) (x0 P l π Y) = x0 P l π Y
   simp [x0, map_prod, hY']
 
-section Ent
-
-variable {A : Type} [Ring A] [Algebra ℂ A] {C : Subalgebra ℂ A}
-
-end Ent
-
 end Formalism.FourierDecayAlt.P.Mx8
 
 namespace Formalism.FourierDecayAlt.P

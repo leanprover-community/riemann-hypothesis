@@ -86,14 +86,14 @@ theorem rowGen_derivative {r n : ℕ} (a b : Fin r) (f : MvPolynomial (Fin r × 
     · by_cases h2 : a = b
       · subst h2
         have e : ((a, v.2) : Fin r × Fin n) = v := by rw [← h1]
-        simp only [h1, if_true, rowGen_X', e]
+        simp only [h1, ite_true, rowGen_X', e]
         simp
         ring
       · have h3 : ¬ ((a, v.2) : Fin r × Fin n).1 = b := h2
-        simp only [h1, h2, if_true, if_false, rowGen_X']
+        simp only [h1, h2, ite_true, ite_false, rowGen_X']
         simp
         ring
-    · simp only [h1, if_false, map_zero]
+    · simp only [h1, ite_false, map_zero]
       simp
       ring
 
@@ -114,7 +114,7 @@ theorem rowDiv_succ {r n : ℕ} (a b : Fin r) (k : ℕ) (f : MvPolynomial (Fin r
   unfold rowDiv
   rw [← h, add_mul, one_mul, Polynomial.coeff_add, Polynomial.coeff_derivative]
   by_cases hab : a = b
-  · simp only [hab, if_true]
+  · simp only [hab, ite_true]
     cases k with
     | zero => simp [mul_comm]
     | succ k =>
@@ -123,7 +123,7 @@ theorem rowDiv_succ {r n : ℕ} (a b : Fin r) (k : ℕ) (f : MvPolynomial (Fin r
       push_cast
       simp only [map_add (f := _), map_natCast, map_one]
       ring
-  · simp only [hab, if_false, zero_mul, Polynomial.coeff_zero, add_zero, sub_zero, MvPolynomial.smul_eq_C_mul]
+  · simp only [hab, ite_false, zero_mul, Polynomial.coeff_zero, add_zero, sub_zero, MvPolynomial.smul_eq_C_mul]
     push_cast
     simp only [map_add (f := _), map_natCast, map_one]
     ring
@@ -155,7 +155,7 @@ theorem der_pow {r n : ℕ} (a b : Fin r) (hab : a ≠ b) (k : ℕ) (f : MvPolyn
   | zero => simp [rowDiv_zero']
   | succ k ih =>
     have h := rowDiv_succ a b k f
-    simp only [hab, if_false, sub_zero] at h
+    simp only [hab, ite_false, sub_zero] at h
     rw [ih] at h
     have h3 := congrArg (fun x => (((k + 1 : ℕ) : ℚ)⁻¹) • x) h
     beta_reduce at h3

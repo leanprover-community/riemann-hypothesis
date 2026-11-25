@@ -75,9 +75,9 @@ theorem Fdig_mul_inl (j0 : ZMod J) (l : Fin (Dt.nL j0)) (a0 : Fin r) (rho : (ZMo
       simp [Ne.symm hw]
     rw [X_mul_monomialPlaneCoefficients, Fdig_mono, Fdig_mono]
     by_cases hd : Dt.digOK rho mo
-    · rw [if_pos ((digOK_iff_of_eq_off_inl Dt j0 l a0 rho mo _ e1).2 hd), if_pos hd, X_mul_monomialPlaneCoefficients,
+    · rw [ite_eq_left ((digOK_iff_of_eq_off_inl Dt j0 l a0 rho mo _ e1).2 hd), ite_eq_left hd, X_mul_monomialPlaneCoefficients,
         liftMon_eq_add_single_of_eq_off Dt mo _ _ 1 e1 (by simp [Pof_inl, add_comm]), add_comm]
-    · rw [if_neg (fun h => hd ((digOK_iff_of_eq_off_inl Dt j0 l a0 rho mo _ e1).1 h)), if_neg hd, mul_zero]
+    · rw [ite_eq_right (fun h => hd ((digOK_iff_of_eq_off_inl Dt j0 l a0 rho mo _ e1).1 h)), ite_eq_right hd, mul_zero]
   · rw [mul_add, Fdig_add, Fdig_add, hp, hq, mul_add]
 
 private theorem inr_pair_ne_of_ne {j j0 : ZMod J} {m m0 a a0 : Fin r} (hk : ((j, m), a) ≠ ((j0, m0), a0)) :
@@ -152,7 +152,7 @@ theorem Fdig_der_inl (j0 : ZMod J) (l : Fin (Dt.nL j0)) (a0 : Fin r) (rho : (ZMo
       simp [Ne.symm hw]
     rw [pderiv_monomial, Fdig_mono, Fdig_mono]
     by_cases hd : Dt.digOK rho mo
-    · rw [if_pos ((digOK_iff_of_eq_off_inl Dt j0 l a0 rho mo _ e1).2 hd), if_pos hd, pderiv_monomial,
+    · rw [ite_eq_left ((digOK_iff_of_eq_off_inl Dt j0 l a0 rho mo _ e1).2 hd), ite_eq_left hd, pderiv_monomial,
         _root_.Formalism.MainNotions.PairMembershipBlocks.liftMon_w, Pof_inl, Nat.div_one]
       rcases Nat.eq_zero_or_pos (mo (⟨j0, Sum.inl l⟩, a0)) with h0 | h0
       · simp [h0]
@@ -161,7 +161,7 @@ theorem Fdig_der_inl (j0 : ZMod J) (l : Fin (Dt.nL j0)) (a0 : Fin r) (rho : (ZMo
           (⟨j0, Sum.inl l⟩, a0) 1 (fun w hw => (e1 w hw).symm)
           (by simp only [Pof_inl, Nat.div_one, Finsupp.tsub_apply, Finsupp.single_eq_same]; omega)
         rw [e2, add_tsub_cancel_right]
-    · rw [if_neg (fun h => hd ((digOK_iff_of_eq_off_inl Dt j0 l a0 rho mo _ e1).1 h)), if_neg hd, map_zero]
+    · rw [ite_eq_right (fun h => hd ((digOK_iff_of_eq_off_inl Dt j0 l a0 rho mo _ e1).1 h)), ite_eq_right hd, map_zero]
   · rw [map_add (f := _), Fdig_add, Fdig_add, hp, hq, map_add (f := _)]
 
 section Tau
@@ -198,14 +198,14 @@ theorem Fdig_mul_zero (h : rho ((j0, m0), a0) = 0) (H : MvPolynomial (TL J Dt.nL
       have hd := digOK_iff_update_of_eq_off_inr Dt j0 m0 a0 rho (Dt.P j0 m0 - 1) mo _ e1 (by
         rw [hv1, h2, h]
         constructor <;> intro <;> omega)
-      rw [if_neg hn, if_neg (fun h' => hn (hd.2 h')), mul_zero]
+      rw [ite_eq_right hn, ite_eq_right (fun h' => hn (hd.2 h')), mul_zero]
     · have hd := digOK_iff_update_of_eq_off_inr Dt j0 m0 a0 rho (Dt.P j0 m0 - 1) mo _ e1 (by
         rw [hv1, h2, h]
         constructor <;> intro <;> omega)
       by_cases hd' : Dt.digOK (Function.update rho ((j0, m0), a0) (Dt.P j0 m0 - 1)) mo
-      · rw [if_pos (hd.2 hd'), if_pos hd', X_mul_monomialPlaneCoefficients,
+      · rw [ite_eq_left (hd.2 hd'), ite_eq_left hd', X_mul_monomialPlaneCoefficients,
           liftMon_eq_add_single_of_eq_off Dt mo _ _ 1 e1 (by rw [hv1, Pof_inr, h3]), add_comm]
-      · rw [if_neg (fun h' => hd' (hd.1 h')), if_neg hd', mul_zero]
+      · rw [ite_eq_right (fun h' => hd' (hd.1 h')), ite_eq_right hd', mul_zero]
   · rw [mul_add, Fdig_add, Fdig_add, hp, hq, mul_add]
 
 theorem Fdig_mul_pos (h1 : 0 < rho ((j0, m0), a0)) (h2 : rho ((j0, m0), a0) < Dt.P j0 m0)
@@ -224,9 +224,9 @@ theorem Fdig_mul_pos (h1 : 0 < rho ((j0, m0), a0)) (h2 : rho ((j0, m0), a0) < Dt
         rw [hv1, k2]
         constructor <;> intro <;> omega)
       by_cases hd' : Dt.digOK (Function.update rho ((j0, m0), a0) (rho ((j0, m0), a0) - 1)) mo
-      · rw [if_pos (hd.2 hd'), if_pos hd',
+      · rw [ite_eq_left (hd.2 hd'), ite_eq_left hd',
           liftMon_eq_add_single_of_eq_off Dt mo _ _ 0 e1 (by rw [hv1, Pof_inr, k3, add_zero]), Finsupp.single_zero, add_zero]
-      · rw [if_neg (fun h' => hd' (hd.1 h')), if_neg hd']
+      · rw [ite_eq_right (fun h' => hd' (hd.1 h')), ite_eq_right hd']
     · have hd := digOK_iff_update_of_eq_off_inr Dt j0 m0 a0 rho (rho ((j0, m0), a0) - 1) mo _ e1 (by
         rw [hv1, k2]
         constructor <;> intro <;> omega)
@@ -235,7 +235,7 @@ theorem Fdig_mul_pos (h1 : 0 < rho ((j0, m0), a0)) (h2 : rho ((j0, m0), a0) < Dt
         have := hd' j0 m0 a0
         rw [Function.update_self] at this
         omega
-      rw [if_neg (fun h' => hn (hd.1 h')), if_neg hn]
+      rw [ite_eq_right (fun h' => hn (hd.1 h')), ite_eq_right hn]
   · rw [mul_add, Fdig_add, Fdig_add, hp, hq]
 
 theorem Fdig_der_lt (h : rho ((j0, m0), a0) + 1 < Dt.P j0 m0) (H : MvPolynomial (TL J Dt.nL r × Fin r) (KK O)) :
@@ -256,7 +256,7 @@ theorem Fdig_der_lt (h : rho ((j0, m0), a0) + 1 < Dt.P j0 m0) (H : MvPolynomial 
         have := hd j0 m0 a0
         rw [Function.update_self, ha, Nat.zero_mod] at this
         omega
-      rw [if_neg hn', ha]
+      rw [ite_eq_right hn', ha]
       simp
     · rcases mod_div_cases_of_sub_one (mo ((⟨j0, Sum.inr m0⟩, a0) : TL J Dt.nL r × Fin r)) (Dt.P j0 m0) hP ha with ⟨k1, k2, k3⟩ | ⟨k1, k2, k3⟩
       · have hd := digOK_iff_update_of_eq_off_inr Dt j0 m0 a0 rho (rho ((j0, m0), a0) + 1) mo _ e1 (by
@@ -269,7 +269,7 @@ theorem Fdig_der_lt (h : rho ((j0, m0), a0) + 1 < Dt.P j0 m0) (H : MvPolynomial 
           have hL := liftMon_eq_add_single_of_eq_off Dt (mo - Finsupp.single ((⟨j0, Sum.inr m0⟩, a0) : TL J Dt.nL r × Fin r) 1) mo ((⟨j0, Sum.inr m0⟩, a0) : TL J Dt.nL r × Fin r) 0 (fun w hw => (e1 w hw).symm)
             (by rw [hv1, Pof_inr, k3, add_zero])
           rw [Finsupp.single_zero, add_zero] at hL
-          rw [if_pos (hd.2 hd'), if_pos hd', pderiv_monomial, _root_.Formalism.MainNotions.PairMembershipBlocks.liftMon_w, Pof_inr, ← hL, X_mul_monomialPlaneCoefficients]
+          rw [ite_eq_left (hd.2 hd'), ite_eq_left hd', pderiv_monomial, _root_.Formalism.MainNotions.PairMembershipBlocks.liftMon_w, Pof_inr, ← hL, X_mul_monomialPlaneCoefficients]
           have hc : ((rho ((j0, m0), a0) + 1 : ℕ) : KK O) + ((Dt.P j0 m0 : ℕ) : KK O) *
               ((mo ((⟨j0, Sum.inr m0⟩, a0) : TL J Dt.nL r × Fin r) / Dt.P j0 m0 : ℕ) : KK O) = ((mo ((⟨j0, Sum.inr m0⟩, a0) : TL J Dt.nL r × Fin r) : ℕ) : KK O) := by
             rw [← Nat.cast_mul, ← Nat.cast_add, ← hk, Nat.mod_add_div]
@@ -288,7 +288,7 @@ theorem Fdig_der_lt (h : rho ((j0, m0), a0) + 1 < Dt.P j0 m0) (H : MvPolynomial 
             rw [hs, smul_monomial, smul_monomial, ← map_add (f := _), smul_eq_mul, smul_eq_mul, ← hc]
             congr 1
             ring
-        · rw [if_neg (fun h' => hd' (hd.1 h')), if_neg hd']
+        · rw [ite_eq_right (fun h' => hd' (hd.1 h')), ite_eq_right hd']
           simp
       · have hn' : ¬ Dt.digOK (Function.update rho ((j0, m0), a0) (rho ((j0, m0), a0) + 1)) mo := by
           intro hd
@@ -300,7 +300,7 @@ theorem Fdig_der_lt (h : rho ((j0, m0), a0) + 1 < Dt.P j0 m0) (H : MvPolynomial 
           have := hd j0 m0 a0
           rw [hv1] at this
           omega
-        rw [if_neg hn, if_neg hn']
+        rw [ite_eq_right hn, ite_eq_right hn']
         simp
   · simp only [map_add (f := _), Fdig_add, hp, hq, smul_add, mul_add]
     abel
@@ -318,9 +318,9 @@ theorem Fdig_der_eq (h : rho ((j0, m0), a0) + 1 = Dt.P j0 m0) (H : MvPolynomial 
     rw [pderiv_monomial, Fdig_mono, Fdig_mono]
     rcases Nat.eq_zero_or_pos (mo ((⟨j0, Sum.inr m0⟩, a0) : TL J Dt.nL r × Fin r)) with ha | ha
     · by_cases hd' : Dt.digOK (Function.update rho ((j0, m0), a0) 0) mo
-      · rw [if_pos hd', pderiv_monomial, _root_.Formalism.MainNotions.PairMembershipBlocks.liftMon_w, Pof_inr, ha]
+      · rw [ite_eq_left hd', pderiv_monomial, _root_.Formalism.MainNotions.PairMembershipBlocks.liftMon_w, Pof_inr, ha]
         simp
-      · rw [if_neg hd', ha]
+      · rw [ite_eq_right hd', ha]
         simp
     · rcases mod_div_cases_of_sub_one (mo ((⟨j0, Sum.inr m0⟩, a0) : TL J Dt.nL r × Fin r)) (Dt.P j0 m0) hP ha with ⟨k1, k2, k3⟩ | ⟨k1, k2, k3⟩
       · have hn' : ¬ Dt.digOK (Function.update rho ((j0, m0), a0) 0) mo := by
@@ -333,7 +333,7 @@ theorem Fdig_der_eq (h : rho ((j0, m0), a0) + 1 = Dt.P j0 m0) (H : MvPolynomial 
           have := hd j0 m0 a0
           rw [hv1] at this
           omega
-        rw [if_neg hn, if_neg hn']
+        rw [ite_eq_right hn, ite_eq_right hn']
         simp
       · have hd := digOK_iff_update_of_eq_off_inr Dt j0 m0 a0 rho 0 mo _ e1 (by
           rw [hv1, k2]
@@ -347,11 +347,11 @@ theorem Fdig_der_eq (h : rho ((j0, m0), a0) + 1 = Dt.P j0 m0) (H : MvPolynomial 
             have := Nat.mod_add_div (mo ((⟨j0, Sum.inr m0⟩, a0) : TL J Dt.nL r × Fin r)) (Dt.P j0 m0)
             rw [k2, zero_add] at this
             exact this
-          rw [if_pos (hd.2 hd'), if_pos hd', pderiv_monomial, _root_.Formalism.MainNotions.PairMembershipBlocks.liftMon_w, Pof_inr, hL, add_tsub_cancel_right,
+          rw [ite_eq_left (hd.2 hd'), ite_eq_left hd', pderiv_monomial, _root_.Formalism.MainNotions.PairMembershipBlocks.liftMon_w, Pof_inr, hL, add_tsub_cancel_right,
             smul_monomial, smul_eq_mul, ← hc]
           congr 1
           ring
-        · rw [if_neg (fun h' => hd' (hd.1 h')), if_neg hd']
+        · rw [ite_eq_right (fun h' => hd' (hd.1 h')), ite_eq_right hd']
           simp
   · simp only [map_add (f := _), Fdig_add, hp, hq, smul_add]
 
@@ -530,12 +530,6 @@ theorem valuation_ge_of_le_add_one {x y : WithTop ℤ} {t t' : ℝ} (h : x ≤ y
     have h2 := hx k'' rfl
     have h3 : (k'' : ℝ) ≤ (k : ℝ) + 1 := by exact_mod_cast WithTop.coe_le_coe.mp h'
     linarith
-
-section ValOp
-
-variable {Kf : Type} [Field Kf] {ι : Type} {n : ℕ} [NeZero n] (LL : Letters ι) (S : Set ι)
-
-end ValOp
 
 end Formalism.MainNotions.PairMembershipBlocks
 end -- clump:auto

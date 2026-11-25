@@ -51,16 +51,6 @@ theorem projFin_ratEmb_val (σ : E →ₐ[F] E) {n : ℕ} (J : Matrix (Fin n) (F
 
 end Reduction
 
-section Lattices
-
-open GroundTheory.Automorphic GroundTheory.Heights₂.Heights.FiniteCovolume Module
-open scoped Pointwise
-
-variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
-  [Algebra.IsQuadraticExtension F E]
-
-end Lattices
-
 end GlobalTheory.CompanionTheory.ClassFin
 end -- clump:auto
 end -- clump:auto
@@ -251,7 +241,7 @@ theorem stabilises_flag_span : ∀ (E : Type) [Field E] (S : E →+* E) (n r : �
     have h1 : (∑ α, frameIdem S J X Y α) *ᵥ v = ∑ α, frameIdem S J X Y α *ᵥ v :=
       map_sum (Matrix.mulVec.addMonoidHomLeft v) (fun α => frameIdem S J X Y α) Finset.univ
     rwa [sum_frameIdem, Matrix.one_mulVec] at h1
-  refine ⟨fun m => if m ≤ j then ((cT S Y * J) *ᵥ v) m else 0, ?_, fun m hm => if_neg (not_le.2 hm)⟩
+  refine ⟨fun m => if m ≤ j then ((cT S Y * J) *ᵥ v) m else 0, ?_, fun m hm => ite_eq_right (not_le.2 hm)⟩
   refine hsum.trans ?_
   rw [Fintype.sum_option, Fintype.sum_sum_type, hz none (by simp [frameLev]), zero_add]
   have hinr : ∑ i, frameIdem S J X Y (some (Sum.inr i)) *ᵥ v = 0 := by
@@ -377,7 +367,7 @@ theorem minPar_frame_block_eq_zero : ∀ (F E : Type) [Field F] [NumberField F] 
       · have hj : ¬ j ≤ s := by
           intro h
           change (if j ≤ s then 2 else 1) < 2 at hα
-          rw [if_pos h] at hα
+          rw [ite_eq_left h] at hα
           exact absurd hα (by decide)
         have hij : i < j := lt_of_le_of_lt hi (not_le.mp hj)
         have hBji : (B.map φ) j i = 0 := by
@@ -393,13 +383,13 @@ theorem minPar_frame_block_eq_zero : ∀ (F E : Type) [Field F] [NumberField F] 
         rw [h2]
         simp
     · change (if i ≤ s then 2 else 1) = 2 at hβ
-      rw [if_neg hi] at hβ
+      rw [ite_eq_right hi] at hβ
       exact absurd hβ (by decide)
   · change (if i ≤ s then 0 else 1) = 2 at hβ
     by_cases hi : i ≤ s
-    · rw [if_pos hi] at hβ
+    · rw [ite_eq_left hi] at hβ
       exact absurd hβ (by decide)
-    · rw [if_neg hi] at hβ
+    · rw [ite_eq_right hi] at hβ
       exact absurd hβ (by decide)
 
 end GlobalTheory.CompanionTheory.RapidDecay

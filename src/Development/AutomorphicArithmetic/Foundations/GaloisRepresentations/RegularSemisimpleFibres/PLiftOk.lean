@@ -124,7 +124,7 @@ private theorem UpperTheory.Gal.InertialTypesAlt.liftAll_spec (q l : ℕ) (L : L
     have hdegp : GlobalTheory.Shin.deg (p :: L) = p.1 + GlobalTheory.Shin.deg L := by simp [GlobalTheory.Shin.deg]
     rw [hsplit, UpperTheory.Gal.InertialTypesAlt.deg_append, ih1, hdegp]
     by_cases hd : l ∣ p.1
-    · rw [if_pos hd]
+    · rw [ite_eq_left hd]
       refine ⟨by rw [UpperTheory.Gal.InertialTypesAlt.block_dvd q l p hd], ?_⟩
       intro x hx
       rcases List.mem_append.1 hx with hx | hx
@@ -132,7 +132,7 @@ private theorem UpperTheory.Gal.InertialTypesAlt.liftAll_spec (q l : ℕ) (L : L
         obtain ⟨i, -, rfl⟩ := List.mem_map.1 hx
         exact ⟨Nat.div_pos (Nat.le_of_dvd hp0 hd) hl.pos, UpperTheory.Gal.InertialTypesAlt.reg_dvd i hq hl.pos hp0 hd hpR⟩
       · exact ih2 x hx
-    · rw [if_neg hd]
+    · rw [ite_eq_right hd]
       refine ⟨by simp [GlobalTheory.Shin.deg], ?_⟩
       intro x hx
       rcases List.mem_append.1 hx with hx | hx

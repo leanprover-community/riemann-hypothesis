@@ -251,8 +251,8 @@ theorem wordLoss_le {k : ℕ} (l : List (Fin n' × (Fin k × Fin k))) (c0 : ℕ)
       have hm : z.1 ∈ T := by
         rw [hT]
         exact Finset.mem_image.2 ⟨x, hx, hxs⟩
-      rw [if_pos ⟨x, hx, hxs, by assumption⟩, if_pos hm]
-    · rw [if_neg ht]
+      rw [ite_eq_left ⟨x, hx, hxs, by assumption⟩, ite_eq_left hm]
+    · rw [ite_eq_right ht]
       split_ifs <;> norm_num
   have h2 := sum_ite_mem (fun z : Fin n' × (Fin k × Fin k) => z.1) T l
   have h3 : ∑ s ∈ T, ((l.filter fun z => z.1 = s).length : ℝ) ≤ ∑ _s ∈ T, (c0 : ℝ) := by
@@ -490,7 +490,7 @@ theorem levN_monomial (mo : TV n' (m + 1) →₀ ℕ) (c : KK O) :
   unfold levN
   by_cases h : c = 0
   · subst h; simp
-  · rw [support_monomial, if_neg h, Finset.sum_singleton, coeff_monomial, if_pos rfl]
+  · rw [support_monomial, ite_eq_right h, Finset.sum_singleton, coeff_monomial, ite_eq_left rfl]
 
 def psiExp (a : TL J nL r × Fin K →₀ ℕ) : TV n' (m + 1) →₀ ℕ :=
   a.sum fun v e => Finsupp.single (noVar Fr hk nL v.1 v.2) (lowP Fr p v.1 * e)
@@ -526,7 +526,7 @@ theorem noMon_psiExp {L₁ N₁ : ℕ} (hp : 0 < p) (hV : Fr.Valid L₁ N₁) (h
     rw [Finsupp.sum_apply, Finsupp.sum_eq_single (x, b)]
     · rw [Finsupp.single_eq_same]
     · intro v _ hv
-      rw [Finsupp.single_apply, if_neg]
+      rw [Finsupp.single_apply, ite_eq_right]
       intro h
       obtain ⟨e1, e2⟩ := noVar_inj hk hV hr hJ hnL h
       exact hv (Prod.ext e1 e2)
@@ -663,20 +663,20 @@ private theorem list_prod_isoProj_apply_eq_ite (hee : ∀ i mu, IsIsoProj (E i) 
   | cons a l ih =>
     rw [List.map_cons, List.prod_cons, Module.End.mul_apply, ih]
     by_cases h : ∀ i ∈ l, lam i = ka i
-    · rw [if_pos h]
+    · rw [ite_eq_left h]
       by_cases ha : lam a = ka a
       · have hall : ∀ i ∈ a :: l, lam i = ka i := by
           intro i hi
           rcases List.mem_cons.mp hi with rfl | hi
           · exact ha
           · exact h i hi
-        rw [if_pos hall]
+        rw [ite_eq_left hall]
         exact (hee a (ka a)).1 x (by rw [← ha]; exact hx a)
       · have hno : ¬ ∀ i ∈ a :: l, lam i = ka i := fun hh => ha (hh a (List.mem_cons.mpr (Or.inl rfl)))
-        rw [if_neg hno]
+        rw [ite_eq_right hno]
         exact (hee a (ka a)).2 (lam a) ha x (hx a)
     · have hno : ¬ ∀ i ∈ a :: l, lam i = ka i := fun hh => h fun i hi => hh i (List.mem_cons.mpr (Or.inr hi))
-      rw [if_neg h, if_neg hno, map_zero]
+      rw [ite_eq_right h, ite_eq_right hno, map_zero]
 
 theorem jproj_eq (hee : ∀ i mu, IsIsoProj (E i) mu (ee i mu))
     (hdec : ∀ i (G : V), ∃ T : Finset (Fin n → ℤ), G = ∑ mu ∈ T, ee i mu G ∧ ∀ mu, ee i mu G ∈ isoSub (E i) mu)
@@ -693,11 +693,11 @@ theorem jproj_eq (hee : ∀ i mu, IsIsoProj (E i) mu (ee i mu))
     unfold jointE
     rw [list_prod_isoProj_apply_eq_ite E ee hee ka lam x hx']
     by_cases h : lam = ka
-    · rw [if_pos (fun i _ => congrFun h i)]
+    · rw [ite_eq_left (fun i _ => congrFun h i)]
       exact he.1 lam h x hxj
     · have hno : ¬ ∀ i ∈ (Finset.univ : Finset ι).toList, lam i = ka i :=
         fun hh => h (funext fun i => hh i (Finset.mem_toList.mpr (Finset.mem_univ i)))
-      rw [if_neg hno]
+      rw [ite_eq_right hno]
       exact he.2 lam h x hxj
   | zero => simp
   | add a b _ _ ha hb => rw [map_add (f := _), map_add (f := _), ha, hb]
@@ -807,9 +807,9 @@ theorem valS_congr_supp {R : Type*} [CommRing R] {ι : Type*} {n : ℕ} [NeZero 
       ((MvPolynomial.mem_vars_iff_mem_support v).mpr ⟨c, MvPolynomial.mem_support_iff.mpr hc, hv⟩)
     by_cases hS : v.1 ∈ S
     · have hS' : v.1 ∈ S' := (h v.1 hvL).mp hS
-      simp only [hS, hS', if_true]
+      simp only [hS, hS', ite_true]
     · have hS' : v.1 ∉ S' := fun h' => hS ((h v.1 hvL).mpr h')
-      simp only [hS, hS', if_false]
+      simp only [hS, hS', ite_false]
   rw [ht]
 
 theorem sl_le_g2mg (p n' : ℕ) [NeZero n'] (r K : ℕ) (F : Frames n' r) (deg : Fin n' → ℕ) (mS : ℕ) (Y : ℝ) (j x : ℤ) :
@@ -875,10 +875,10 @@ theorem le_pred_iff (hV : Fr.Valid L₁ N₁) (hr : 1 ≤ r) (j : ℤ) (u : ℕ)
     by_cases hu1 : u < N
     · have hpu : posU Fr N j u = L[u]'(by omega) := by
         unfold posU
-        rw [if_pos hu1, hLpos u hu1]
+        rw [ite_eq_left hu1, hLpos u hu1]
       have hpu1 : posU Fr N j (u - 1) = L[u - 1]'(by omega) := by
         unfold posU
-        rw [if_pos (by omega), hLpos (u - 1) (by omega)]
+        rw [ite_eq_left (by omega), hLpos (u - 1) (by omega)]
       rw [hpu, hpu1]
       refine ⟨List.pairwise_iff_getElem.1 hsorted _ _ _ _ (by omega), fun z hz hz1 hz2 => ?_⟩
       have hzLL := hinLL z hz (lt_trans (hLLb _ (hLmem (u - 1) (by omega))).1 hz1)
@@ -887,20 +887,20 @@ theorem le_pred_iff (hV : Fr.Valid L₁ N₁) (hr : 1 ≤ r) (j : ℤ) (u : ℕ)
     · by_cases hu2 : u = N
       · have hpu : posU Fr N j u = Fr.fr j 0 := by
           unfold posU
-          rw [if_neg hu1, show u - N = 0 by omega]
+          rw [ite_eq_right hu1, show u - N = 0 by omega]
         have hpu1 : posU Fr N j (u - 1) = L[u - 1]'(by omega) := by
           unfold posU
-          rw [if_pos (by omega), hLpos (u - 1) (by omega)]
+          rw [ite_eq_left (by omega), hLpos (u - 1) (by omega)]
         rw [hpu, hpu1]
         refine ⟨(hLLb _ (hLmem (u - 1) (by omega))).2, fun z hz hz1 hz2 => ?_⟩
         have hzLL := hinLL z hz (lt_trans (hLLb _ (hLmem (u - 1) (by omega))).1 hz1) hz2
         exact false_of_mem_gt_last_of_pairwise_lt L hsorted (u - 1) (by omega) z ((Finset.mem_sort _).2 hzLL) hz1
       · have hpu : posU Fr N j u = Fr.fr j (u - N) := by
           unfold posU
-          rw [if_neg hu1]
+          rw [ite_eq_right hu1]
         have hpu1 : posU Fr N j (u - 1) = Fr.fr j (u - 1 - N) := by
           unfold posU
-          rw [if_neg (by omega)]
+          rw [ite_eq_right (by omega)]
         rw [hpu, hpu1]
         have hi : u - 1 - N + 1 = u - N := by omega
         have hir : u - 1 - N + 1 < r := by omega
@@ -1277,7 +1277,7 @@ theorem lkW {n' r : ℕ} (Fr : Frames n' r) (jz : ℤ) (μ : ℤ × Fin r →₀
         refine Finset.sum_le_sum fun v _ => ?_
         split_ifs with h
         · obtain ⟨m, hm⟩ := h
-          calc μ v = (if v.1 = Fr.fr (jz - 1) (r - 1 - m.val) then μ v else 0) := by rw [if_pos hm]
+          calc μ v = (if v.1 = Fr.fr (jz - 1) (r - 1 - m.val) then μ v else 0) := by rw [ite_eq_left hm]
             _ ≤ _ := Finset.single_le_sum
               (f := fun m' : Fin r => if v.1 = Fr.fr (jz - 1) (r - 1 - m'.val) then μ v else 0)
               (fun _ _ => Nat.zero_le _) (Finset.mem_univ m)
@@ -1331,9 +1331,9 @@ theorem PhiJ_nonW (hV : Fr.Valid L₁ N₁) (hnL : ∀ j, Dt.nL j = (Fr.LLset (s
     ∃ s, posTL Fr (⟨j, s⟩ : TL J Dt.nL r) = y ∧ ∀ a : Fin r, PhiJ Fr Dt j (X (y, a)) = X (⟨j, s⟩, a) := by
   rcases restSpec n' r Fr L₁ N₁ hV J Dt.nL hnL j y hy with ⟨l, hyl, hml⟩ | ⟨m, hym, hml⟩ | ⟨m, hym, _⟩
   · exact ⟨Sum.inl l, hyl.symm, fun a => by
-      simp only [PhiJ, AlgHom.comp_apply, chi, aeval_X, if_pos hy, hml, SignedChainData.ph]⟩
+      simp only [PhiJ, AlgHom.comp_apply, chi, aeval_X, ite_eq_left hy, hml, SignedChainData.ph]⟩
   · exact ⟨Sum.inr m, hym.symm, fun a => by
-      simp only [PhiJ, AlgHom.comp_apply, chi, aeval_X, if_pos hy, hml, SignedChainData.ph]⟩
+      simp only [PhiJ, AlgHom.comp_apply, chi, aeval_X, ite_eq_left hy, hml, SignedChainData.ph]⟩
   · exact absurd ⟨m, hym⟩ hw
 
 theorem PhiJ_w (hV : Fr.Valid L₁ N₁) (hnL : ∀ j, Dt.nL j = (Fr.LLset (segZ j)).card) (j : ZMod J) (y : ℤ)
@@ -1342,12 +1342,12 @@ theorem PhiJ_w (hV : Fr.Valid L₁ N₁) (hnL : ∀ j, Dt.nL j = (Fr.LLset (segZ
   obtain ⟨m, rfl⟩ := hw
   by_cases hy : Fr.fr (segZ j - 1) (r - 1 - m.val) ∈ Fr.letters (segZ j)
   · have : PhiJ Fr Dt j (X (Fr.fr (segZ j - 1) (r - 1 - m.val), a)) = X (⟨j - 1, Sum.inr m⟩, a) ^ Dt.P (j - 1) m := by
-      simp only [PhiJ, AlgHom.comp_apply, chi, aeval_X, if_pos hy, mlOf_wc hV hnL j m, SignedChainData.ph]
+      simp only [PhiJ, AlgHom.comp_apply, chi, aeval_X, ite_eq_left hy, mlOf_wc hV hnL j m, SignedChainData.ph]
     rw [this]
     refine Subalgebra.pow_mem _ ?_ _
     rw [X_mem_supported, Set.mem_ofPred_eq]
   · have : PhiJ Fr Dt j (X (Fr.fr (segZ j - 1) (r - 1 - m.val), a)) = 0 := by
-      simp only [PhiJ, AlgHom.comp_apply, chi, aeval_X, if_neg hy, map_zero]
+      simp only [PhiJ, AlgHom.comp_apply, chi, aeval_X, ite_eq_right hy, map_zero]
     rw [this]
     exact Subalgebra.zero_mem _
 
@@ -1420,7 +1420,7 @@ theorem linkL : LinkL := by
       rw [Finsupp.filter_apply] at hv'
       have hvw : v.1 ∈ w := by
         by_contra hc
-        rw [if_neg hc] at hv'
+        rw [ite_eq_right hc] at hv'
         exact hv' rfl
       exact PhiJ_w Dt hV hnL j v.1 hvw v.2
     refine valS_off _ _ _ fun v hv hvT => ?_
@@ -1441,7 +1441,7 @@ theorem linkL : LinkL := by
     · have hvw : v.1 ∉ w := by
         intro hvw
         have h5 : (ν.filter (fun v => v.1 ∈ w)) v = 0 := by rw [hcond.1]; rfl
-        rw [Finsupp.filter_apply, if_pos hvw] at h5
+        rw [Finsupp.filter_apply, ite_eq_left hvw] at h5
         exact hv' h5
       have hvF : v ∈ F.vars := (mem_vars_iff_mem_support v).2 ⟨_, mem_support_iff.2 hc, by
         rw [Finsupp.mem_support_iff, Finsupp.add_apply]; omega⟩
@@ -1514,22 +1514,22 @@ theorem multideg_single (v : ι × Fin n) (k : ℕ) (x : ι) :
     multideg (Finsupp.single v k) x = if v.1 = x then k else 0 := by
   unfold multideg
   by_cases h : v.1 = x
-  · rw [if_pos h, Finset.sum_eq_single v.2]
+  · rw [ite_eq_left h, Finset.sum_eq_single v.2]
     · have hv : v = (x, v.2) := by
         obtain ⟨v1, v2⟩ := v
         simp only at h
         rw [h]
-      rw [Finsupp.single_apply, if_pos hv]
+      rw [Finsupp.single_apply, ite_eq_left hv]
     · intro c _ hc
-      rw [Finsupp.single_apply, if_neg]
+      rw [Finsupp.single_apply, ite_eq_right]
       intro e
       exact hc (congrArg Prod.snd e).symm
     · intro h'
       exact absurd (Finset.mem_univ _) h'
-  · rw [if_neg h]
+  · rw [ite_eq_right h]
     apply Finset.sum_eq_zero
     intro c _
-    rw [Finsupp.single_apply, if_neg]
+    rw [Finsupp.single_apply, ite_eq_right]
     intro e
     exact h (congrArg Prod.fst e)
 
@@ -1563,7 +1563,7 @@ theorem ph_wc (j : ZMod J) (m : Fin r) (a : Fin r) :
 
 theorem PhiJ_X (j : ZMod J) (v : ℤ × Fin r) (hv : v.1 ∈ Fr.letters (segZ j)) :
     PhiJ Fr Dt j (X v) = Dt.ph (X (mlOf Fr Dt.nL j v.1, v.2)) := by
-  rw [PhiJ, AlgHom.comp_apply, chi, aeval_X, if_pos hv]
+  rw [PhiJ, AlgHom.comp_apply, chi, aeval_X, ite_eq_left hv]
 
 theorem PhiJ_X_mon (hV : Fr.Valid L₁ N₁) (hnL : ∀ j, Dt.nL j = (Fr.LLset (segZ j)).card) (hJ : 2 ≤ J) (j : ZMod J)
     (v : ℤ × Fin r) (hv : v.1 ∈ Fr.letters (segZ j)) :
@@ -1577,14 +1577,14 @@ theorem PhiJ_X_mon (hV : Fr.Valid L₁ N₁) (hnL : ∀ j, Dt.nL j = (Fr.LLset (
   rcases Formalism.MainNotions.NormalSetCounting.restSpec n' r Fr L₁ N₁ hV J Dt.nL hnL j v.1 hv with ⟨l, hy, hml⟩ | ⟨m, hy, hml⟩ | ⟨m, hy, hml⟩
   · rw [hml]
     refine ⟨_, ph_ll Dt j l v.2, fun m' => ?_⟩
-    rw [multideg_single, if_neg (fun h => hne (congrArg Sigma.fst h)), if_neg, mul_zero]
+    rw [multideg_single, ite_eq_right (fun h => hne (congrArg Sigma.fst h)), ite_eq_right, mul_zero]
     intro h
     have h1 := (Formalism.MainNotions.NormalSetCounting.ll_between hnL j l).1
     have h2 := frame_entry_le_last Fr L₁ N₁ hV (segZ j - 1) (r - 1 - m'.val) (by omega)
     omega
   · rw [hml]
     refine ⟨_, ph_lab Dt j m v.2, fun m' => ?_⟩
-    rw [multideg_single, if_neg (fun h => hne (congrArg Sigma.fst h)), if_neg, mul_zero]
+    rw [multideg_single, ite_eq_right (fun h => hne (congrArg Sigma.fst h)), ite_eq_right, mul_zero]
     intro h
     have h1 := frame_row_monotone Fr L₁ N₁ hV (segZ j) (r - 1 - m.val) (by omega)
     have h2 := frame_entry_le_last Fr L₁ N₁ hV (segZ j - 1) (r - 1 - m'.val) (by omega)
@@ -1594,8 +1594,8 @@ theorem PhiJ_X_mon (hV : Fr.Valid L₁ N₁) (hnL : ∀ j, Dt.nL j = (Fr.LLset (
     rw [multideg_single]
     by_cases hmm : m = m'
     · subst hmm
-      rw [if_pos rfl, if_pos hy, mul_one]
-    · rw [if_neg, if_neg, mul_zero]
+      rw [ite_eq_left rfl, ite_eq_left hy, mul_one]
+    · rw [ite_eq_right, ite_eq_right, mul_zero]
       · intro h
         rw [hy] at h
         exact hmm (Formalism.MainNotions.NormalSetCounting.fr_rev_inj hV _ h)

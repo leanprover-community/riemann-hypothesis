@@ -407,7 +407,7 @@ theorem isUnit_det_of_eigen {O : Type} [CommRing O] [IsLocalRing O] [IsAlgClosed
   have hev : ∀ k p, good k p → ((t k p).map ρ).mulVec v = ρ (ev k p) • v := by
     intro k p hg
     have := hlam ⟨(k, p), hg⟩
-    simp only [ev, dif_pos hg, ρ, hlift]
+    simp only [ev, dite_eq_left hg, ρ, hlift]
     exact this
   have hu := h (φ x) (hφr ▸ LinearMap.mem_range_self φ x)
     (by
@@ -755,7 +755,7 @@ theorem exists_exponent {M R : ℕ} (hM : 1 ≤ M) {P : Fin R ⊕ Fin R → PlE 
     rw [Fintype.prod_sum_type, Finset.prod_eq_single a, hS.2 a a σ₀ h]
     · simp [hu, ZMod.val_one]
     · intro c _ hc
-      rw [hS.2 a c σ₀ h, if_neg hc.symm]; simp
+      rw [hS.2 a c σ₀ h, ite_eq_right hc.symm]; simp
     · simp
   have h1 : (∀ (B : Type) [CommGroup B] (u : Fin R ⊕ Fin R → B), (∀ q, u q ^ (X.l i ^ M) = 1) →
       (∀ a, u (.inr a) = 1) → (sgnProd sg u fun q => Multiplicative.toAdd (d q σ)) = u (.inl a)) ∨

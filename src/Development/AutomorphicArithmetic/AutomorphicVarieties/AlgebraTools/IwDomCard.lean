@@ -111,7 +111,7 @@ private theorem invLen_eq (a : Fin n → ℤ) (w : Equiv.Perm (Fin n))
   rw [invLen, ← Finset.filter_filter, Finset.card_filter]
   refine Finset.sum_congr rfl fun p hp => ?_
   have h := hw p.1 p.2
-  rw [if_neg (lt_asymm (Finset.mem_filter.1 hp).2), add_zero] at h
+  rw [ite_eq_right (lt_asymm (Finset.mem_filter.1 hp).2), add_zero] at h
   rw [← h]
   split_ifs <;> rfl
 

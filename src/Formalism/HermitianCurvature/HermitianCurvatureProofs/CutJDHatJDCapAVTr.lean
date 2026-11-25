@@ -96,7 +96,7 @@ theorem capa_vab_ind (hpl : Q.IsPlace P Bs.z Bs.z' Bs.π Bs.π') (hk : 2 ≤ P.k
     have hv : Q.vAB (E := Wq →L[ℂ] Wp) P.r Y (i + 1) =
         (fun f => Y • (Q.vAB P.r Y i).1 f + pOp ⟨i, h⟩ ((Q.vAB P.r Y i).1 f) -
           cOp ⟨i, h⟩ ((Q.vAB P.r Y i).2 f), fun f => ciOp ⟨i, h⟩ ((Q.vAB P.r Y i).1 f)) := by
-      simp only [Q.vAB, dif_pos h]
+      simp only [Q.vAB, dite_eq_left h]
     have e0 : Q.crd (Q.cmp (Q.vAB P.r Y (i + 1)) 0) Φ =
         Y • ΦA + Q.crd (pOp ⟨i, h⟩) ΦA - Q.crd (cOp ⟨i, h⟩) ΦB := by
       rw [hv]; rfl
@@ -154,7 +154,7 @@ theorem capa_vabm_ind (hpl : Q.IsPlace P Bs.z Bs.z' Bs.π Bs.π') (hk : 2 ≤ P.
     have hv : vABm (X := Wq →L[ℂ] Wp) P.r Y (i + 1) =
         (fun f => Y • (vABm P.r Y i).1 f - pbOp ⟨i, h⟩ ((vABm P.r Y i).1 f) -
           cbOp ⟨i, h⟩ ((vABm P.r Y i).2 f), fun f => cbiOp ⟨i, h⟩ ((vABm P.r Y i).1 f)) := by
-      simp only [vABm, dif_pos h]
+      simp only [vABm, dite_eq_left h]
     have e0 : Q.crd (Q.cmp (vABm P.r Y (i + 1)) 0) Φ =
         Y • ΦA - Q.crd (pbOp ⟨i, h⟩) ΦA - Q.crd (cbOp ⟨i, h⟩) ΦB := by
       rw [hv]; rfl

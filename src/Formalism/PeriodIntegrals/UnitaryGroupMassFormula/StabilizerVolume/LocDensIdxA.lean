@@ -108,7 +108,7 @@ theorem fix2 {F : Type} [Field F] (C : Matrix (Fin 2) (Fin 2) F) (hC : C ≠ 1) 
     rw [map_div₀]
     field_simp
     linear_combination -h1
-  · push_neg at hu0
+  · push Not at hu0
     have hu1 : u 1 ≠ 0 := by
       intro h1
       apply hu

@@ -69,7 +69,7 @@ theorem JJ_finite_ncard {D : D7} (L : SizeData₂ D) (hb : AdmissibleParameterJ.
       · rintro ⟨u, hu, rfl⟩
         have : AdmissibleParameterJ.refl D (AdmissibleParameterJ.refl D u) = u := by simp [AdmissibleParameterJ.refl]
         rwa [this]
-    simp only [JJ, Bool.false_eq_true, if_false]
+    simp only [JJ, Bool.false_eq_true, ite_false]
     rw [hEq]
     exact ⟨hf.image _, by rw [Set.ncard_image_of_injective _ hinj, hc]⟩
 

@@ -71,7 +71,7 @@ theorem fock_lattice_monomial_iff {p : ℕ} (hV : ValuationProperties p O) {σ :
   constructor
   · intro h
     have hm := h m
-    rwa [coeff_monomial, if_pos rfl] at hm
+    rwa [coeff_monomial, ite_eq_left rfl] at hm
   · intro h m'
     rw [coeff_monomial]
     split_ifs with hm

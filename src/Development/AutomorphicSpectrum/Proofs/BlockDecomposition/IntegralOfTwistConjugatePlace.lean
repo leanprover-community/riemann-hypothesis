@@ -111,7 +111,7 @@ theorem map_thF_of_not_split {n : ℕ} {w : Pl E} (hw : ¬ IsSplitAt w) (g : GL 
   rw [GlobalTheory.EulerTw.IntRead.map_thF]
   refine Units.ext (Matrix.ext fun i j => ?_)
   have h2 := GlobalTheory.ThetaPull.thetaGL_apply (a := n) (cj w) (GeneralLinearGroup.map (pLoc E w) g) i j
-  have e : thL n w = thetaGL n (cj w) := if_neg hw
+  have e : thL n w = thetaGL n (cj w) := ite_eq_right hw
   rw [e, h2, GlobalTheory.EulerTw.IntRead.thAt_apply, GlobalTheory.EulerTwRestr.loc_inv_val, GlobalTheory.EulerTwRestr.loc_inv_val]
   congr 1
   exact GlobLev.conjLoc_eq_cj hw _
@@ -126,16 +126,16 @@ theorem thW_of_split {w : Pl E} (hw : IsSplitAt w) (y : GLw a w × GLw b w) : th
 theorem atH_dG_of_not_split {w : Pl E} (hw : ¬ IsSplitAt w) (δ₁ : GL (Fin a) E) (δ₂ : GL (Fin b) E) :
     atH a b w (dG δ₁ δ₂) = dW w δ₁ δ₂ := by
   refine Prod.ext ?_ ?_
-  · simp only [locEl, if_neg hw]; rfl
-  · simp only [locEl, if_neg hw]; rfl
+  · simp only [locEl, ite_eq_right hw]; rfl
+  · simp only [locEl, ite_eq_right hw]; rfl
 
 theorem atH_norm_of_split {w : Pl E} (hw : IsSplitAt w) (δ₁ : GL (Fin a) E) (δ₂ : GL (Fin b) E) :
     atH a b w (dG δ₁ δ₂ * thP E a b (dG δ₁ δ₂)) = dW w δ₁ δ₂ := by
   refine Prod.ext ?_ ?_
-  · simp only [locEl, if_pos hw]
+  · simp only [locEl, ite_eq_left hw]
     change GeneralLinearGroup.map (pLoc E w) (ratF E a δ₁ * thF E a (ratF E a δ₁)) = _
     rw [← GlobalTheory.EulerTw.Comm.thF_ratF, ← map_mul]; rfl
-  · simp only [locEl, if_pos hw]
+  · simp only [locEl, ite_eq_left hw]
     change GeneralLinearGroup.map (pLoc E w) (ratF E b δ₂ * thF E b (ratF E b δ₂)) = _
     rw [← GlobalTheory.EulerTw.Comm.thF_ratF, ← map_mul]; rfl
 

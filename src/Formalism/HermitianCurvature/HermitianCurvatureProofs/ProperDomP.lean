@@ -373,7 +373,7 @@ theorem properA (Bj : B.RealPlaceData k ρ Wp Wq) (B0 : B.RealPlaceData k (p + �
   have hνG : ν ∈ B.GV k ρ := hx.2.1
   have hhu : IsUnit h.det := Formalism.QuantumDeterminants.WeylGroupFacts.isUnit_of_uh hhG
   have hνu : IsUnit ν.det := Formalism.QuantumDeterminants.WeylGroupFacts.isUnit_of_uh hνG
-  have hsP : sP Bj x = U.Rn k p ρ (-x.2) * U.embG k p ρ (h⁻¹ * ν⁻¹) := by unfold sP; rw [if_pos hx]
+  have hsP : sP Bj x = U.Rn k p ρ (-x.2) * U.embG k p ρ (h⁻¹ * ν⁻¹) := by unfold sP; rw [ite_eq_left hx]
   have hembG : ∀ y : B.Mat k ρ, y ∈ B.GV k ρ → U.embG k p ρ y ∈ B.GV k (p + ρ) := fun y hy => by
     rw [← Formalism.FourierDecayAlt.P.Dx2.Tower.lev_eq_embG]; exact Formalism.FourierDecayAlt.P.Dx2.Tower.lev_GV p ρ y hy
 

@@ -7,12 +7,6 @@ import Mathlib.Tactic.Linter.Style
 
 open MeasureTheory GroundTheory.Automorphic GroundTheory.Automorphic.Spherical UpperTheory.Gal.Gen
 
-section
-variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] {n : ℕ}
-  [MeasurableSpace (GL (Fin n) F)] [BorelSpace (GL (Fin n) F)] {μ : Measure (GL (Fin n) F)} [μ.IsHaarMeasure]
-
-end
-
 private theorem sum_norm_sq_le_integral_of_plancherel {G : Type} [Group G] {n : ℕ} (K : Subgroup G)
     (φ : (Fin n → UnitAddCircle) → G → ℂ) (D S : (Fin n → UnitAddCircle) → ℂ) (f : G → ℂ)
     (T : Finset G) (mr B : ℝ) (N : ℕ) (c : ℂ) (hm : 0 < mr) (hN : 0 < N)
@@ -48,11 +42,11 @@ private theorem sum_norm_sq_le_integral_of_plancherel {G : Type} [Group G] {n : 
         (mr : ℂ) * f g' * (c * ∫ θ, φ θ (g⁻¹ * g') * D θ) by ring]
       by_cases hgg : g = g'
       · subst hgg
-        rw [inv_mul_cancel, hintK 1 K.one_mem, if_pos rfl]
+        rw [inv_mul_cancel, hintK 1 K.one_mem, ite_eq_left rfl]
         ring
-      · rw [hint0 _ fun hk => hgg (hT1 g hg g' hg' hk), if_neg hgg]
+      · rw [hint0 _ fun hk => hgg (hT1 g hg g' hg' hk), ite_eq_right hgg]
         simp
-    rw [Finset.sum_congr rfl hs, Finset.sum_ite_eq, if_pos hg]
+    rw [Finset.sum_congr rfl hs, Finset.sum_ite_eq, ite_eq_left hg]
   have h2 : (mr : ℂ) ^ 2 * N * ∑ g ∈ T, ((‖f g‖ ^ 2 : ℝ) : ℂ) =
       c * ∫ θ, ((‖S θ‖ ^ 2 : ℝ) : ℂ) * D θ := by
     calc (mr : ℂ) ^ 2 * N * ∑ g ∈ T, ((‖f g‖ ^ 2 : ℝ) : ℂ)
@@ -138,8 +132,8 @@ theorem UpperTheory.Gal.Gen.planch_pf :
     (fun θ => dens ((qF F : ℂ))⁻¹ (pt θ)) (fun θ => evalAt (pt θ) (satakeTransform μ h)) _ T
     (μ.real (GLnLocal.integralGL F n)) B n.factorial (vPoly n ((qF F : ℂ))⁻¹) hm n.factorial_pos
     (fun y => (hI y).1) hDc (hev _) (fun θ => hB θ (Set.mem_univ _))
-    (fun y hy => by rw [(hI y).2, if_pos hy])
-    (fun y hy => by rw [(hI y).2, if_neg hy])
+    (fun y hy => by rw [(hI y).2, ite_eq_left hy])
+    (fun y hy => by rw [(hI y).2, ite_eq_right hy])
     (fun θ y => ?_) hT.1 ?_ (fun θ => zonalSpherical_one _)
   · rw [← hT.2 (fun x => zonalSpherical μ (pt θ) (y * x)) fun g k hk => by
       rw [← mul_assoc]

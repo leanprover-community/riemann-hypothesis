@@ -207,13 +207,13 @@ theorem det_eq_pow_mul {ϖ : O} (hϖ : Irreducible ϖ) {n : Type} [Fintype n] [D
     refine Matrix.ext fun i j => ?_
     rw [Matrix.mul_diagonal]
     by_cases h : j ∈ J
-    · have hN' : N' i j = c i j := if_pos h
-      have hd : d j = ϖ := if_pos h
-      have hc : c i j = Classical.choose (hdiv j h i) := dif_pos h
+    · have hN' : N' i j = c i j := ite_eq_left h
+      have hd : d j = ϖ := ite_eq_left h
+      have hc : c i j = Classical.choose (hdiv j h i) := dite_eq_left h
       rw [hN', hd, hc, mul_comm]
       exact Classical.choose_spec (hdiv j h i)
-    · have hN' : N' i j = (N * Q) i j := if_neg h
-      have hd : d j = 1 := if_neg h
+    · have hN' : N' i j = (N * Q) i j := ite_eq_right h
+      have hd : d j = 1 := ite_eq_right h
       rw [hN', hd, mul_one]
   have hprod : ∏ j, d j = ϖ ^ J.card := by
     simp only [d]
@@ -664,24 +664,6 @@ theorem card_reps {ϖ : O} (hϖ : Irreducible ϖ) [Fintype (IsLocalRing.ResidueF
   exact card_subspaces_eq hk
 
 end Count
-
-section Main
-
-variable [IsDiscreteValuationRing O]
-
-end Main
-
-section Index
-
-variable [IsDiscreteValuationRing O]
-
-end Index
-
-section Mirror
-
-variable [IsDiscreteValuationRing O]
-
-end Mirror
 
 section Completion
 

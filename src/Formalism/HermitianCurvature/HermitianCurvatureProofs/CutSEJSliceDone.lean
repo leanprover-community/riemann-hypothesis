@@ -49,12 +49,12 @@ theorem glueMapS_continuous (l : Fin r) (c : Fin r → ℂ) : Continuous (glueMa
   refine Continuous.prodMk ?_ ?_
   · refine continuous_pi fun m => ?_
     by_cases h : (l.succ : Fin (r + 1)).val ≤ m.val
-    · simp only [glue, h, dif_pos]
+    · simp only [glue, h, dite_eq_left]
       exact (continuous_apply _).comp (continuous_snd.comp continuous_fst)
-    · simp only [glue, h, dif_neg, not_false_eq_true, Function.update_apply]
+    · simp only [glue, h, dite_eq_right, not_false_eq_true, Function.update_apply]
       by_cases hm : m = l
-      · simp only [hm, if_true] <;> fun_prop
-      · simp only [hm, if_false] <;> fun_prop
+      · simp only [hm, ite_true] <;> fun_prop
+      · simp only [hm, ite_false] <;> fun_prop
   · exact continuous_matrix fun i j => by simp only [Matrix.of_apply]; fun_prop
 
 theorem measurableSet_glueMapS_DomR (l : Fin r) (c : Fin r → ℂ) :
@@ -310,25 +310,25 @@ theorem nfp_der (b : Bool) (js : List (Fin 6)) (h : NFP X l s Wv js) :
     intro i
     rw [wOp_cons, op_pt]
     cases b
-    · simp only [Bool.false_eq_true, if_false]
+    · simp only [Bool.false_eq_true, ite_false]
       show Formalism.QuantumDeterminants.pbOp l _ p = _
-      unfold Formalism.QuantumDeterminants.pbOp; rw [if_pos hp]
-    · simp only [if_true]
+      unfold Formalism.QuantumDeterminants.pbOp; rw [ite_eq_left hp]
+    · simp only [ite_true]
       show Formalism.QuantumDeterminants.pOp l _ p = _
-      unfold Formalism.QuantumDeterminants.pOp; rw [if_pos hp]
+      unfold Formalism.QuantumDeterminants.pOp; rw [ite_eq_left hp]
   simp only [hR]
   cases b
-  · simp only [Bool.false_eq_true, if_false, mL]
+  · simp only [Bool.false_eq_true, ite_false, mL]
     show Formalism.QuantumDeterminants.pbOp l _ p = _
     unfold Formalism.QuantumDeterminants.pbOp
-    rw [if_pos hp, hW2, Finset.smul_sum, ← Finset.sum_add_distrib]
+    rw [ite_eq_left hp, hW2, Finset.smul_sum, ← Finset.sum_add_distrib]
     refine Finset.sum_congr rfl fun i _ => ?_
     simp only [v]
     module
-  · simp only [if_true, mL]
+  · simp only [ite_true, mL]
     show Formalism.QuantumDeterminants.pOp l _ p = _
     unfold Formalism.QuantumDeterminants.pOp
-    rw [if_pos hp, hW1, Finset.smul_sum, ← Finset.sum_add_distrib]
+    rw [ite_eq_left hp, hW1, Finset.smul_sum, ← Finset.sum_add_distrib]
     refine Finset.sum_congr rfl fun i _ => ?_
     simp only [v]
     module

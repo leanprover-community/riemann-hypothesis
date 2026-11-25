@@ -222,7 +222,7 @@ theorem lattices_at_up : ∀ {E : Type} [Field E] [NumberField E] [StarRing E] {
   intro E _ _ _ n ST SG d hd P hP q hq hq2 x hx hfx
   exact ⟨hd.N_le_Lsh, localization_dual_L_eq_localization_N hd P hP, localization_up_L_eq_localization_N hd P hP hq hq2 hx hfx,
     localization_dual_up_L hd P hP hq hq2 hx hfx, fun y hy => by
-      rw [Deco.up_f, if_pos (show y ∈ Formalism.HermitianLatticesTheory.localization₂ P.1.asIdeal (upN P.1.asIdeal d.N x) from hy)]⟩
+      rw [Deco.up_f, ite_eq_left (show y ∈ Formalism.HermitianLatticesTheory.localization₂ P.1.asIdeal (upN P.1.asIdeal d.N x) from hy)]⟩
 
 end GlobalTheory.MoveUpLat
 end -- clump:auto
@@ -303,10 +303,10 @@ theorem SameG.up' {y : Ys X n} (p : PtY ST SG Q y) (P : ST) (hP : MoveHyp ST SG 
     · rfl
     · rfl
   by_cases h : (∀ (w : Q) (z : Sp X.E n), p.1.1.1.2 w z ∈ (p.1.1.deco.up P q x).1.at w.1 ↔ z ∈ stdAt X.E n w.1) ∧ p.1.2 ∈ y.ys (p.1.1.deco.up P q x).1.N
-  · have e : p.mv (p.1.1.deco.up P q x) = ⟨(⟨(p.1.1.deco.up P q x, p.1.1.1.2), h.1⟩, p.1.2), h.2⟩ := dif_pos h
+  · have e : p.mv (p.1.1.deco.up P q x) = ⟨(⟨(p.1.1.deco.up P q x, p.1.1.1.2), h.1⟩, p.1.2), h.2⟩ := dite_eq_left h
     rw [e]
     exact ⟨rfl, rfl, fun w => hs w.1 w.2, hb⟩
-  · have e : p.mv (p.1.1.deco.up P q x) = p := dif_neg h
+  · have e : p.mv (p.1.1.deco.up P q x) = p := dite_eq_right h
     rw [e]
     exact SameG.refl p
 

@@ -56,7 +56,7 @@ theorem inWb_Em (u : Fin (k + 1) → ℂ) : inWb k r (MB.Em k r *ᵥ u) := by
   intro i hi
   simp only [Matrix.mulVec, dotProduct, MB.Em]
   refine Finset.sum_eq_zero fun m _ => ?_
-  rw [if_neg, zero_mul]
+  rw [ite_eq_right, zero_mul]
   intro h
   rw [h] at hi
   have := m.isLt

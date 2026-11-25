@@ -29,7 +29,7 @@ theorem isAlgebraic_of_forall_div {M : Type} [Field M] (B : Subalgebra ℤ M)
   obtain ⟨a, b, ha, hb, hb0, rfl⟩ := h m
   refine ⟨Polynomial.C (⟨b, hb⟩ : B) * Polynomial.X - Polynomial.C (⟨a, ha⟩ : B), fun h0 => hb0 ?_, ?_⟩
   · have h1 := congrArg (fun p : Polynomial B => p.coeff 1) h0
-    simp only [Polynomial.coeff_sub, Polynomial.coeff_C_mul_X, Polynomial.coeff_C, if_neg one_ne_zero,
+    simp only [Polynomial.coeff_sub, Polynomial.coeff_C_mul_X, Polynomial.coeff_C, ite_eq_right one_ne_zero,
       sub_zero, Polynomial.coeff_zero] at h1
     exact congrArg Subtype.val h1
   · simp only [map_sub, map_mul, Polynomial.aeval_C, Polynomial.aeval_X]

@@ -113,10 +113,6 @@ theorem ip_Ly_self (y : X.Ψ → Matrix (Fin r) (Fin r) ℂ) (v : Fin r → E) :
   rw [ip_self]
   rfl
 
-theorem Qy_nonneg (y : X.Ψ → Matrix (Fin r) (Fin r) ℂ) (v : Fin r → E) : 0 ≤ Qy X y v := by
-  unfold Qy
-  exact Finset.sum_nonneg fun τ _ => mul_nonneg (c_pos X τ).le (Finset.sum_nonneg fun a _ => sq_nonneg _)
-
 theorem embV_sum {ι : Type} (s : Finset ι) (w : ι → Fin r → E) :
     X.embV (∑ i ∈ s, w i) = ∑ i ∈ s, X.embV (w i) := by
   funext τ a

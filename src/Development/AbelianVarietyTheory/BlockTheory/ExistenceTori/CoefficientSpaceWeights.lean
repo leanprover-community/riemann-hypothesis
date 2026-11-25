@@ -65,9 +65,9 @@ theorem part_anti {Dw : Datum H} {a : (E →+* ℂ) × ℕ → ℕ} (ha : IsPart
   intro i j hij
   unfold part
   by_cases hj : j < Dw.mult σ
-  · rw [if_pos hj, if_pos (lt_of_le_of_lt hij hj)]
+  · rw [ite_eq_left hj, ite_eq_left (lt_of_le_of_lt hij hj)]
     exact ha σ i j hij hj
-  · rw [if_neg hj]
+  · rw [ite_eq_right hj]
     exact Nat.zero_le _
 
 def lamP (Dw : Datum H) (n : ℕ) {a : (E →+* ℂ) × ℕ → ℕ} (ha : IsPartFam Dw a) (d : Psi H → ℤ) (τ : Psi H) :

@@ -354,7 +354,7 @@ theorem zero_off (θ : InfFam D) (hθ : IsInfFam θ) (ε : Bool) (S X : HSp D) {
     (z : Matrix (Fin X.rank) (Fin S.rank) ℂ) :
     (cS.symm (lineAt θ τ z 1)).map φ = 0 := by
   have h := read_line θ hθ ε S X e cS hcS τ τ' φ hφ z
-  rw [if_neg hne] at h
+  rw [ite_eq_right hne] at h
   have h0 : ((cS.symm (lineAt θ τ z 1)).map φ)ᵀ.submatrix e id = 0 := by
     calc _ = ((cS.symm (lineAt θ τ z 1)).map φ)ᵀ.submatrix e id *
           (((if ε then -1 else 1 : D.host.E) • S.gram).map ((starRingEnd ℂ).comp (tauE D τ'))) *
@@ -391,12 +391,12 @@ theorem at_place (θ : InfFam D) (hθ : IsInfFam θ) (ε : Bool) (S X : HSp D) (
   have hdet : IsUnit G.det := det_ne ε S τ
   have h1 : ((cS.symm (lineAt θ τ z 1)).map φ)ᵀ.submatrix e id * G = z.map (starRingEnd ℂ) := by
     have h := read_line θ hθ ε S X e cS hcS τ τ φ hφ z
-    rw [if_pos rfl] at h
+    rw [ite_eq_left rfl] at h
     exact h
   have h2 : ((cS.symm (lineAt θ τ (cplxO ((frSgn ε A).cart τ) (B.cart τ) z) 1)).map φ)ᵀ.submatrix e id * G =
       (cplxO ((frSgn ε A).cart τ) (B.cart τ) z).map (starRingEnd ℂ) := by
     have h := read_line θ hθ ε S X e cS hcS τ τ φ hφ (cplxO ((frSgn ε A).cart τ) (B.cart τ) z)
-    rw [if_pos rfl] at h
+    rw [ite_eq_left rfl] at h
     exact h
   have hP : ∀ M N : Matrix (Fin S.rank) (Fin d) ℂ, Mᵀ.submatrix e id = Nᵀ.submatrix e id → M = N := by
     intro M N h; ext i j; have h5 := congrFun (congrFun h (e.symm j)) i; simpa using h5
@@ -412,8 +412,8 @@ theorem at_place (θ : InfFam D) (hθ : IsInfFam θ) (ε : Bool) (S X : HSp D) (
     have hn : ((-1 : ℂ) • A.cart τ).map (starRingEnd ℂ) = -(A.cart τ).map (starRingEnd ℂ) := by
       ext i j; simp
     cases ε
-    · simp only [Bool.false_eq_true, if_false, one_smul, neg_smul, Matrix.transpose_neg, Matrix.neg_mul, hh]
-    · simp only [if_true, one_smul, neg_smul, Matrix.neg_mul, Matrix.mul_neg, neg_neg, hh]
+    · simp only [Bool.false_eq_true, ite_false, one_smul, neg_smul, Matrix.transpose_neg, Matrix.neg_mul, hh]
+    · simp only [ite_true, one_smul, neg_smul, Matrix.neg_mul, Matrix.mul_neg, neg_neg, hh]
       have hn2 : (-A.cart τ).map (starRingEnd ℂ) = -(A.cart τ).map (starRingEnd ℂ) := by ext i j; simp
       rw [hn2, Matrix.mul_neg]
   have hm : ∀ M : Matrix (Fin X.rank) (Fin S.rank) ℂ,
@@ -553,7 +553,7 @@ theorem actsD_zero_of_neg {F E : Type} [Field F] [NumberField F] [Field E] [Numb
     rcases hκ with hκ | hκ
     · subst hκ; exact ⟨fun p => p.1.elim0⟩
     · subst hκ; exact ⟨fun p => p.2.elim0⟩
-  push_neg at hκ
+  push Not at hκ
   obtain ⟨u, u', hu, hu', hrel, hneg⟩ :=
     _root_.GlobalTheory.WrongSignPair.exists_neg_pair B X W r s r' s' hB hX hW (Nat.pos_of_ne_zero hκ.1) (Nat.pos_of_ne_zero hκ.2) ε' w hw
   obtain ⟨f, hf⟩ := GlobalTheory.T.exists_heisenberg_derivative_archimedean_direction M B.ψ hB.std g u hu

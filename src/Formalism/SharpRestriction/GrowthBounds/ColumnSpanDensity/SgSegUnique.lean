@@ -85,10 +85,10 @@ theorem sg_seg_unique (TT : Finset (Fin n')) (h2 : 2 ≤ numSeg TT) (j j' : Fin 
   have m2 := bs_min TT h2 j' (segStart TT j) (bs_start_mem TT j).1 (bs_start_mem TT j).2 hs
   have hG1 : segG TT j = cdist (segStart TT j) (segNext TT j) := by
     unfold segG
-    rw [if_neg (by omega)]
+    rw [ite_eq_right (by omega)]
   have hG2 : segG TT j' = cdist (segStart TT j') (segNext TT j') := by
     unfold segG
-    rw [if_neg (by omega)]
+    rw [ite_eq_right (by omega)]
   have A := (sg_pos_spec TT j i).2.2.2.2
   have B := (sg_pos_spec TT j' i').2.2.2.2
   rw [h, hG1] at A

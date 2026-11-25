@@ -144,11 +144,11 @@ theorem UpperTheory.ConvolutionTheory.C.fixLev :
       refine hfin S _ (fun v => ?_) (fun v hv => ?_)
       · by_cases hv : v ∈ S
         · show ((y S v : _) : Gw n v) ∈ lev v
-          simp only [y, hv, if_true]; exact ha v
+          simp only [y, hv, ite_true]; exact ha v
         · show ((y S v : _) : Gw n v) ∈ lev v
-          simp only [y, hv, if_false]; exact one_mem _
+          simp only [y, hv, ite_false]; exact one_mem _
       · show ((y S v : _) : Gw n v) ∈ (⊥ : Subgroup (Gw n v))
-        simp only [y, hv, if_false]; exact one_mem _) P
+        simp only [y, hv, ite_false]; exact one_mem _) P
     refine (mem_fixF μ _ x).2 fun u hu => ?_
     have := hint (e u) ((hmem u).1 hu) (fun v hv => by
       have := (hmem u).1 hu v

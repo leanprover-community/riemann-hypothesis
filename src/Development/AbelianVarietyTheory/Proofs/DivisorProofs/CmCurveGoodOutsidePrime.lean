@@ -1208,13 +1208,13 @@ theorem GlobalTheory.CMModel.twist_modelAt_all : ∀ (p : ℕ) (F : Intermediate
       rw [show (⟨0, 0, 0, -L.g₂ / 4, -L.g₃ / 4⟩ : WeierstrassCurve ℂ) = latticeCurve L from rfl]
       linear_combination d ^ 6 * hjΔ
     by_cases h8 : p % 8 = 3
-    · have hd1 : d = 1 := by rw [hd, if_pos h8]
-      rw [if_pos h8] at hu
+    · have hd1 : d = 1 := by rw [hd, ite_eq_left h8]
+      rw [ite_eq_left h8] at hu
       refine _root_.GlobalTheory.CMModel.modelAt_short_of_six_unit V F _ _ _ u _ hj hjt h6 huF hu0 hDV ?_
       rw [short_Δ, hvD, hd1, one_pow, one_mul]
       exact hu
-    · have hdp : d = -(p : ℂ) := by rw [hd, if_neg h8]
-      rw [if_neg h8] at hu
+    · have hdp : d = -(p : ℂ) := by rw [hd, ite_eq_right h8]
+      rw [ite_eq_right h8] at hu
       refine _root_.GlobalTheory.CMModel.modelAt_short_of_six_unit V F _ _ _ (u * p) _ hj hjt h6 (mul_mem huF hpF) (mul_ne_zero hu0 hp0) hDV ?_
       rw [short_Δ, hvD, hdp]
       change V.valuation (u * p) ^ 12 * V.valuation (p : ℂ) ^ 3 = V.valuation ((-(p : ℂ)) ^ 6 * (latticeCurve L).Δ)

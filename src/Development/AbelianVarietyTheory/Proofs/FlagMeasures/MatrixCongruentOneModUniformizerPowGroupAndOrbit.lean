@@ -71,7 +71,7 @@ theorem finite_image_of_factor {α β γ : Type} (S : Set α) (f : α → β) (g
 theorem cont_pos {W : Type} [AddCommGroup W] (W0 : AddSubgroup W) (S : Set W) (h : IsCO W0 S)
     (hS : S.Nonempty) : 0 < cont W0 S := by
   unfold cont
-  rw [dif_pos h]
+  rw [dite_eq_left h]
   obtain ⟨h1, h2, -, h4⟩ := h.choose_spec
   refine mul_pos ?_ (div_pos ?_ ?_)
   · exact_mod_cast (Set.ncard_pos h4).2 (hS.image _)
@@ -264,7 +264,7 @@ theorem horb_isCO (L : LocE F E) (ϖ : 𝒪[F]) (hϖ : Irreducible ϖ) {m i : �
       have h := congrFun (congrFun hXY a) b
       have h1 : algebraMap F E ((ϖ : F) ^ c) * X a b ∈ L.O := (hS X hX).2 a b
       have h2 : algebraMap F E ((ϖ : F) ^ c) * Y a b ∈ L.O := (hS Y hY).2 a b
-      simp only [dif_pos h1, dif_pos h2] at h
+      simp only [dite_eq_left h1, dite_eq_left h2] at h
       have h3 := Ideal.Quotient.eq.1 h.symm
       have hI : I = Ideal.span {(⟨_, pow_mem' L ϖ (c + j)⟩ : L.O)} := by
         simp only [I]

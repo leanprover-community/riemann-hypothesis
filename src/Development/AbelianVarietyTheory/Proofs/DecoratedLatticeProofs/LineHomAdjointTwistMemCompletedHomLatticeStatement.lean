@@ -190,9 +190,9 @@ theorem mem_latV_of_pairH {S : HSp D} {MS : Lat S} (hS : IsSelfDualC S MS) {P : 
       ring
     simp only [h3]
     rw [Finset.sum_eq_single a]
-    · rw [if_pos rfl, map_one, one_mul]
+    · rw [ite_eq_left rfl, map_one, one_mul]
     · intro b _ hb
-      rw [if_neg (Ne.symm hb), map_zero, zero_mul]
+      rw [ite_eq_right (Ne.symm hb), map_zero, zero_mul]
     · intro h
       exact absurd (Finset.mem_univ a) h
   have key : x = ∑ i, fun a => pairH S (fun l => incA D (s' i l)) x *

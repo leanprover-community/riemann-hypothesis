@@ -55,13 +55,13 @@ theorem continuous_colMat (n : ℕ) : Continuous (colMat k n) := by
   refine continuous_matrix fun i j => ?_
   unfold GlobalTheory.BZMir.colMat
   by_cases hj : j = Fin.last n
-  · simp only [if_pos hj]
+  · simp only [ite_eq_left hj]
     rcases Fin.eq_castSucc_or_eq_last i with ⟨i, rfl⟩ | rfl
     · simp only [Fin.lastCases_castSucc]
       exact continuous_apply i
     · simp only [Fin.lastCases_last]
       exact continuous_const
-  · simp only [if_neg hj]
+  · simp only [ite_eq_right hj]
     exact continuous_const
 
 theorem continuous_unipMir (n : ℕ) :

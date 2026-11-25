@@ -491,13 +491,6 @@ theorem embF_mem (h : (S.fam emb lam).Ok) (x : S.FormsK emb lam h) : S.embF emb 
 
 end General
 
-section Dia
-
-variable {E K ι : Type} [Field E] [NumberField E] [StarRing E] [Field K] [NumberField K] [StarRing K] [Fintype ι] {R : Ranks}
-  {I : ChainIn E K ι R} (J : AtIn I) (emb : ι → E →+* K) (σ : K →+* ℂ)
-
-end Dia
-
 section Laws
 
 variable {E K ι : Type} [Field E] [NumberField E] [StarRing E] [Field K] [NumberField K] [StarRing K] [Fintype ι]
@@ -531,10 +524,6 @@ variable (Jt : ∀ i, (Formalism.L2.Ker.DVar X.Tau (R.N i) (R.N (i + 1)) →₀ 
 variable {X Pr R}
 
 end Princ
-
-section Checks
-
-end Checks
 
 end GlobalTheory.Mem.Col2
 

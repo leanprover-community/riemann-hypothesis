@@ -230,14 +230,14 @@ private lemma sLow_lemma {n : ℕ} (x : Matrix (Fin n) (Fin n) K) :
   · rw [Finset.sum_eq_single ⟨j + 1, h⟩]
     · simp
     · intro i _ hi
-      rw [if_neg]
+      rw [ite_eq_right]
       intro e
       exact hi (Fin.ext e)
     · simp
   · symm
     apply Finset.sum_eq_zero
     intro i _
-    rw [if_neg]
+    rw [ite_eq_right]
     intro e
     have := i.2
     omega
@@ -251,7 +251,7 @@ theorem sLow_blkM (hN : N = a + s) (A : Matrix (Fin a) (Fin a) K) (B : Matrix (F
   have hB : ∀ (j : Fin s) (i : Fin a), (if (i : ℕ) = a + j + 1 then B i j else 0) = 0 := by
     intro j i
     have := i.2
-    rw [if_neg (by omega)]
+    rw [ite_eq_right (by omega)]
   have hC : ∀ (j : Fin a) (i : Fin s),
       (if a + (i : ℕ) = j + 1 then C i j else 0) = (if (i : ℕ) = 0 ∧ (j : ℕ) + 1 = a then C i j else 0) := by
     intro j i
@@ -273,14 +273,14 @@ private lemma sUp_lemma {n : ℕ} (x : Matrix (Fin n) (Fin n) K) :
   · rw [Finset.sum_eq_single ⟨j + 1, h⟩]
     · simp
     · intro i _ hi
-      rw [if_neg]
+      rw [ite_eq_right]
       intro e
       exact hi (Fin.ext e)
     · simp
   · symm
     apply Finset.sum_eq_zero
     intro i _
-    rw [if_neg]
+    rw [ite_eq_right]
     intro e
     have := i.2
     omega
@@ -294,7 +294,7 @@ theorem sUp_blkM (hN : N = a + s) (A : Matrix (Fin a) (Fin a) K) (B : Matrix (Fi
   have hC : ∀ (j : Fin s) (i : Fin a), (if (i : ℕ) = a + j + 1 then C j i else 0) = 0 := by
     intro j i
     have := i.2
-    rw [if_neg (by omega)]
+    rw [ite_eq_right (by omega)]
   have hB : ∀ (j : Fin a) (i : Fin s),
       (if a + (i : ℕ) = j + 1 then B j i else 0) = (if (i : ℕ) = 0 ∧ (j : ℕ) + 1 = a then B j i else 0) := by
     intro j i
@@ -313,7 +313,7 @@ theorem cornL_mul_low {v : Matrix (Fin a) (Fin a) K} (hv : IsLowUni v)
   unfold cornL
   refine Finset.sum_congr rfl fun j _ => Finset.sum_congr rfl fun i _ => ?_
   by_cases hc : (i : ℕ) = 0 ∧ (j : ℕ) + 1 = a
-  · rw [if_pos hc, if_pos hc, Matrix.mul_apply, Finset.sum_eq_single j]
+  · rw [ite_eq_left hc, ite_eq_left hc, Matrix.mul_apply, Finset.sum_eq_single j]
     · rw [hv.2 j, mul_one]
     · intro k _ hk
       have hk' : (k : ℕ) ≠ j := fun e => hk (Fin.ext e)
@@ -323,14 +323,14 @@ theorem cornL_mul_low {v : Matrix (Fin a) (Fin a) K} (hv : IsLowUni v)
         omega
       rw [hv.1 hkj, mul_zero]
     · simp
-  · rw [if_neg hc, if_neg hc]
+  · rw [ite_eq_right hc, ite_eq_right hc]
 
 theorem cornU_mul_up {u : Matrix (Fin a) (Fin a) K} (hu : IsUpUni u)
     (Y : Matrix (Fin a) (Fin s) K) : cornU (u * Y) = cornU Y := by
   unfold cornU
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
   by_cases hc : (j : ℕ) = 0 ∧ (i : ℕ) + 1 = a
-  · rw [if_pos hc, if_pos hc, Matrix.mul_apply, Finset.sum_eq_single i]
+  · rw [ite_eq_left hc, ite_eq_left hc, Matrix.mul_apply, Finset.sum_eq_single i]
     · rw [hu.2 i, one_mul]
     · intro k _ hk
       have hk' : (k : ℕ) ≠ i := fun e => hk (Fin.ext e)
@@ -340,7 +340,7 @@ theorem cornU_mul_up {u : Matrix (Fin a) (Fin a) K} (hu : IsUpUni u)
         omega
       rw [hu.1 hki, zero_mul]
     · simp
-  · rw [if_neg hc, if_neg hc]
+  · rw [ite_eq_right hc, ite_eq_right hc]
 
 end Simple
 
@@ -352,15 +352,15 @@ theorem revIn_append_lt (l' : List ℕ) : ∀ (l : List ℕ) (j : ℕ), j < l.su
   | b :: l, j, h => by
     simp only [List.cons_append, revIn]
     by_cases hj : j < b
-    · rw [if_pos hj, if_pos hj]
-    · rw [if_neg hj, if_neg hj, revIn_append_lt l' l (j - b) (by simp at h; omega)]
+    · rw [ite_eq_left hj, ite_eq_left hj]
+    · rw [ite_eq_right hj, ite_eq_right hj, revIn_append_lt l' l (j - b) (by simp at h; omega)]
 
 theorem revIn_append_ge (l' : List ℕ) : ∀ (l : List ℕ) (j : ℕ),
     revIn (l ++ l') (l.sum + j) = l.sum + revIn l' j
   | [], j => by simp
   | b :: l, j => by
     simp only [List.cons_append, revIn, List.sum_cons]
-    rw [if_neg (by omega), show b + l.sum + j - b = l.sum + j by omega, revIn_append_ge l' l j]
+    rw [ite_eq_right (by omega), show b + l.sum + j - b = l.sum + j by omega, revIn_append_ge l' l j]
     omega
 
 theorem blk_append_lt (l' : List ℕ) : ∀ (l : List ℕ) (j : ℕ), j < l.sum →
@@ -369,15 +369,15 @@ theorem blk_append_lt (l' : List ℕ) : ∀ (l : List ℕ) (j : ℕ), j < l.sum 
   | b :: l, j, h => by
     simp only [List.cons_append, blk]
     by_cases hj : j < b
-    · rw [if_pos hj, if_pos hj]
-    · rw [if_neg hj, if_neg hj, blk_append_lt l' l (j - b) (by simp at h; omega)]
+    · rw [ite_eq_left hj, ite_eq_left hj]
+    · rw [ite_eq_right hj, ite_eq_right hj, blk_append_lt l' l (j - b) (by simp at h; omega)]
 
 theorem blk_append_ge (l' : List ℕ) : ∀ (l : List ℕ) (j : ℕ),
     blk (l ++ l') (l.sum + j) = l.length + blk l' j
   | [], j => by simp
   | b :: l, j => by
     simp only [List.cons_append, blk, List.sum_cons, List.length_cons]
-    rw [if_neg (by omega), show b + l.sum + j - b = l.sum + j by omega, blk_append_ge l' l j]
+    rw [ite_eq_right (by omega), show b + l.sum + j - b = l.sum + j by omega, blk_append_ge l' l j]
     omega
 
 variable {K : Type} [CommRing K]
@@ -856,8 +856,8 @@ theorem Fz_uni {n n' : ℕ} (Z' : Matrix (Fin n') (Fin n') K) (a0 b0 Z : Matrix 
   unfold Fz
   rw [← Formalism.FourierDecayAlt.P.A5x4.card_isoZZ_congr R hφ (Formalism.FourierDecayAlt.P.A5x4.isoZZ_refl R Z')]
   by_cases hc : IsInt R Z
-  · rw [if_pos hc, if_pos (hint.2 hc)]
-  · rw [if_neg hc, if_neg (fun h => hc (hint.1 h))]
+  · rw [ite_eq_left hc, ite_eq_left (hint.2 hc)]
+  · rw [ite_eq_right hc, ite_eq_right (fun h => hc (hint.1 h))]
 
 theorem clsM_eq {ι κ : Type} (x x' : Matrix ι κ K) :
     clsM R x = clsM R x' ↔ ∀ i j, (x - x') i j ∈ R := by
@@ -921,7 +921,7 @@ theorem cornL_low_mul {v : Matrix (Fin s) (Fin s) K} (hv : IsLowUni v) (X : Matr
   unfold cornL
   refine Finset.sum_congr rfl fun j _ => Finset.sum_congr rfl fun i _ => ?_
   by_cases hc : (i : ℕ) = 0 ∧ (j : ℕ) + 1 = a
-  · rw [if_pos hc, if_pos hc, Matrix.mul_apply, Finset.sum_eq_single i]
+  · rw [ite_eq_left hc, ite_eq_left hc, Matrix.mul_apply, Finset.sum_eq_single i]
     · rw [hv.2 i, one_mul]
     · intro k _ hk
       have hk' : (k : ℕ) ≠ i := fun e => hk (Fin.ext e)
@@ -930,14 +930,14 @@ theorem cornL_low_mul {v : Matrix (Fin s) (Fin s) K} (hv : IsLowUni v) (X : Matr
         omega
       rw [hv.1 hik, zero_mul]
     · simp
-  · rw [if_neg hc, if_neg hc]
+  · rw [ite_eq_right hc, ite_eq_right hc]
 
 theorem cornU_mul_up' {u : Matrix (Fin s) (Fin s) K} (hu : IsUpUni u) (Y : Matrix (Fin a) (Fin s) K) :
     cornU (Y * u) = cornU Y := by
   unfold cornU
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
   by_cases hc : (j : ℕ) = 0 ∧ (i : ℕ) + 1 = a
-  · rw [if_pos hc, if_pos hc, Matrix.mul_apply, Finset.sum_eq_single j]
+  · rw [ite_eq_left hc, ite_eq_left hc, Matrix.mul_apply, Finset.sum_eq_single j]
     · rw [hu.2 j, mul_one]
     · intro k _ hk
       have hk' : (k : ℕ) ≠ j := fun e => hk (Fin.ext e)
@@ -946,7 +946,7 @@ theorem cornU_mul_up' {u : Matrix (Fin s) (Fin s) K} (hu : IsUpUni u) (Y : Matri
         omega
       rw [hu.1 hjk, mul_zero]
     · simp
-  · rw [if_neg hc, if_neg hc]
+  · rw [ite_eq_right hc, ite_eq_right hc]
 
 variable {N : ℕ}
 
@@ -1081,7 +1081,7 @@ theorem PhiH_supp (ψ : AddChar K ℂ) (h : Point K) {n' : ℕ}
   suffices hF : Fz R Z' (bigZ rfl (orbZ h (rep R τ.1)) (outM R τ.2.1) (outM R τ.2.2) Z) = 0 by
     rw [hF, zero_mul]
   unfold Fz
-  rw [if_neg]
+  rw [ite_eq_right]
   intro hI
   obtain ⟨hT, hTY, hXT, hD⟩ := (blkM_isInt rfl _ _ _ _ R).1 hI
   set T := orbZ h (rep R τ.1) with hTdef
@@ -1222,14 +1222,14 @@ theorem Fz_perturb (ϖ : K) (hϖ : ϖ ∈ R) (hu : ∀ r ∈ R, ∃ y ∈ R, (1 
   unfold Fz
   by_cases hZ : IsInt R Z
   swap
-  · rw [if_neg hZ, if_neg]
+  · rw [ite_eq_right hZ, ite_eq_right]
     intro h
     apply hZ
     intro i j
     have := R.sub_mem (h i j) (hPi i j)
     simpa using this
   have hZP : IsInt R (Z + P) := fun i j => R.add_mem (hZ i j) (hPi i j)
-  rw [if_pos hZ, if_pos hZP]
+  rw [ite_eq_left hZ, ite_eq_left hZP]
   congr 1
 
   choose p hpR hp using hP
@@ -1472,7 +1472,7 @@ theorem sum_identity [TopologicalSpace K] [IsTopologicalRing K] (ψ : AddChar K 
     by_contra hc
     apply hq
     have hc' : ¬ IsInt R (orbZ w (rep R q)) := hc
-    simp only [hT, Fz, if_neg hc', zero_mul]
+    simp only [hT, Fz, ite_eq_right hc', zero_mul]
   let β : Par R h g → Cos R w := fun t => toCos R (sigma R hN hW t)
   have hβ : Function.Bijective β := sigma_bij R hN hW
   let e : Cos R g × (Cos R h × Matrix (Fin g.1.sum) (Fin h.1.sum) (KR R) ×

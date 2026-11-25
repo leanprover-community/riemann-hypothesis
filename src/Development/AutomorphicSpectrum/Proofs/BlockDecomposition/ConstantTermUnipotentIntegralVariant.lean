@@ -235,7 +235,7 @@ theorem chart_ctFun (φ : Sm E a) (g : GA E a) :
     chart (fun g => ∫ x : BlockIx a r → Ad E, φ.1 (unip x * g) ∂ν) g = ct ν φ g := by
   funext y
   by_cases h : IsUnit (Matrix.of y)
-  · simp only [chart, dif_pos h, ct, mul_assoc]
+  · simp only [chart, dite_eq_left h, ct, mul_assoc]
   · simp [chart, h, ct]
 
 end Integral

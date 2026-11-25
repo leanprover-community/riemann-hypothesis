@@ -277,18 +277,18 @@ theorem exists_pt_frames (p : ChPt (R := R) sel mu u j) (g : ∀ P : rowSG Pr se
   refine ⟨q, κ, Submodule.map_id _, rfl, fun P => ?_, fun P => ?_⟩
   · unfold frsF
     by_cases hP : P.1 ∈ Pr.vGs
-    · simp only [dif_pos hP, κ]
+    · simp only [dite_eq_left hP, κ]
       show _ = p.deco.1.liftFr ⟨P.1, hP⟩ * ((q.deco.1.liftFr ⟨P.1, hP⟩)⁻¹ * 1 * p.deco.1.liftFr ⟨P.1, hP⟩)⁻¹
       group
-    · simp only [dif_neg hP, κ]
+    · simp only [dite_eq_right hP, κ]
       show 1 * p.fr _ * ((k _)⁻¹).1 = _
       simp [k]
   · by_cases hP : P.1 ∈ Pr.vGs
-    · simp only [κ, dif_pos hP, not_not.2 hP, IsEmpty.forall_iff, and_true]
+    · simp only [κ, dite_eq_left hP, not_not.2 hP, IsEmpty.forall_iff, and_true]
       have e : redGL _ P.1 (t1 ⟨P.1, hP⟩) = h ⟨P.1, hP⟩ := redGL_passFr (d := p.deco.1) (w := ⟨P.1, hP⟩) 1 h (liftFr_spec p.deco.2 _) (hl _)
       rw [map_mul, map_inv, map_inv, e]
       simp only [h, map_inv, inv_inv, inv_mul_cancel]
-    · simp only [κ, dif_neg hP, inv_inv, inv_mul_cancel, map_one]
+    · simp only [κ, dite_eq_right hP, inv_inv, inv_mul_cancel, map_one]
       exact ⟨trivial, fun _ => trivial⟩
 
 end Pt

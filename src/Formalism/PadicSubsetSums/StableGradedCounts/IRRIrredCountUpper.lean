@@ -27,13 +27,13 @@ theorem monicOf_natDegree (c : Fin N → K) : (monicOf c).natDegree = N := by
   exact monicOf_degree_lt c
 
 theorem monicOf_coeff (c : Fin N → K) (i : Fin N) : (monicOf c).coeff i = c i := by
-  rw [monicOf, coeff_add, coeff_X_pow, if_neg (Nat.ne_of_lt i.isLt), zero_add,
+  rw [monicOf, coeff_add, coeff_X_pow, ite_eq_right (Nat.ne_of_lt i.isLt), zero_add,
     Polynomial.finsetSum_coeff]
   simp only [coeff_C_mul_X_pow]
   rw [Finset.sum_eq_single i]
   · simp
   · intro j _ hj
-    rw [if_neg]
+    rw [ite_eq_right]
     exact fun h => hj (Fin.ext h).symm
   · simp
 

@@ -61,12 +61,7 @@ noncomputable section
 
 namespace GlobalTheory.GoodCuspPoint
 
-theorem cuspidal_of_good_labels (D : D7) (hT : Formalism.MainNotions.SumRepresentations.tieLab D) (i : D.nd.Loc) (x : D.nd.X i)
-    (Sig : List (Formalism.BasicNotions.Part D.naut.CG)) (hx : HasParamX D.nd D.naut i x Sig)
-    (hg : goodSig D.nd D.naut Sig) : IsCuspIso D.nd D.naut Sig :=
-  Formalism.MainNotions.AdmissibleThreePrime.cusp_of D hT i x Sig hx hg
-
 theorem main : ∀ D : D7, Formalism.MainNotions.SumRepresentations.tieLab D → GlobalTheory.LocalInv.GoodCuspidal D.nd D.naut :=
-  fun D hT i x Sig hx hg => cuspidal_of_good_labels D hT i x Sig hx hg
+  fun D hT i x Sig hx hg => Formalism.MainNotions.AdmissibleThreePrime.cusp_of D hT i x Sig hx hg
 
 end GlobalTheory.GoodCuspPoint

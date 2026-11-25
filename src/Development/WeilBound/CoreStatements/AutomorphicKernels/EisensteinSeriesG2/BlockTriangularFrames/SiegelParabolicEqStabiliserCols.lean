@@ -16,12 +16,6 @@ open NumberField IsDedekindDomain MeasureTheory Formalism.MainNotions.GlobalTheo
 open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK.Dbl
 open GlobalTheory.Doubling (absE)
 
-section Matrix
-
-variable {m R : Type*} [Fintype m] [DecidableEq m] [CommRing R] {b : m → ℕ}
-
-end Matrix
-
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E} {n : ℕ}
   {Y : Spc F E n}
 
@@ -105,7 +99,7 @@ def siegelS (hn : 0 < n) : Finset (Fin n) := {⟨n - 1, by omega⟩}
 
 theorem below_siegelS (hn : 0 < n) (i : Fin n) : below (siegelS hn) i = 0 := by
   unfold below siegelS
-  rw [Finset.filter_singleton, if_neg]
+  rw [Finset.filter_singleton, ite_eq_right]
   · rfl
   · simp only [Fin.lt_def]
     omega

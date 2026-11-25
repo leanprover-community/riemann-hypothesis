@@ -81,7 +81,7 @@ theorem coeff_sum_mon (R : Type) [CommRing R] (w : ℕ) (c : Fin (w + 1) → R) 
   rw [Finset.sum_eq_single j]
   · simp
   · intro i _ hij
-    rw [if_neg]
+    rw [ite_eq_right]
     intro h; exact hij (ex_inj w h)
   · simp
 
@@ -112,7 +112,7 @@ theorem hom_expand (R : Type) [CommRing R] (w : ℕ) (p : MvPolynomial (Fin 2) R
     symm
     apply Finset.sum_eq_zero
     intro i _
-    rw [C_mul_mon, MvPolynomial.coeff_monomial, if_neg]
+    rw [C_mul_mon, MvPolynomial.coeff_monomial, ite_eq_right]
     intro h; exact hd ⟨i, h⟩
 
 theorem polySlash_monomial_isHomogeneous (w : ℕ) (m : Matrix (Fin 2) (Fin 2) ℤ) (k : Fin (w + 1)) :

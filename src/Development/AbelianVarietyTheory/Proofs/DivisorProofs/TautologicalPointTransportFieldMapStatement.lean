@@ -198,12 +198,6 @@ noncomputable section
 
 namespace GlobalTheory.RayRosEx.ThetaPull
 
-section Jets
-
-variable {S : Type} [CommRing S] {ρ : Type}
-
-end Jets
-
 section Vals
 
 theorem val_comp_stalkMap {X Y Z W : Scheme.{0}} {L : LB X} {K : Type} [Fintype K] {φ : K → (Y ⟶ X)} {ε : K → ℤ}

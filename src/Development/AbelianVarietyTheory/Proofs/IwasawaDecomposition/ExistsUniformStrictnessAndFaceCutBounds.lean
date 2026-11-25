@@ -237,7 +237,7 @@ theorem perModule_bound (hP : IsPolyFanOn bar φ X) : ∃ N₀ : ℕ, ∀ (m : �
   have hw : StrictWith bar φ N ℓ w := strictWith_of_ratCone hP hℓ hδ.mem hδ.nonneg hwb hwp hwδ hδw
   have hex : ∃ (N : ℕ) (ℓ : LinearMap.BilinForm ℤ X →ₗ[ℤ] ℤ), 0 < N ∧ StrictWith bar φ N ℓ (uT T) :=
     ⟨N, _, hN, StrictWith.of_pull e.symm.surjective hw⟩
-  have hD : D T = hex.choose := dif_pos hex
+  have hD : D T = hex.choose := dite_eq_left hex
   obtain ⟨ℓT, hNT, hT⟩ := hex.choose_spec
   have hT' : StrictWith bar φ hex.choose ℓT (fun t => pull e.toLinearMap (w t)) := by
     have : (fun t => pull e.toLinearMap (w t)) = uT T := funext fun t => pull_pull_symm e _

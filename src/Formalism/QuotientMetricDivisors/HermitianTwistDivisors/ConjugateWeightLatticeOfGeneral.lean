@@ -157,7 +157,7 @@ theorem jwGramW_of (hIC : IdxChange) : JwGramW := by
 
     rw [map_sum, map_zero] at this
     simp only [map_smul, hpair, smul_eq_mul, mul_ite, mul_one, mul_zero,
-      Finset.sum_ite_eq, Finset.mem_univ, if_true] at this
+      Finset.sum_ite_eq, Finset.mem_univ, ite_true] at this
     exact this
   have hspK : Submodule.span K (Set.range f) = ⊤ :=
     hf.1.span_eq_top_of_card_eq_finrank' (by simp)
@@ -780,11 +780,11 @@ theorem descent_cm_field : DescentCM := by
     intro k
     have := congrFun hc (f k)
     simp only [Finset.sum_apply, Pi.smul_apply, smul_eq_mul, hz, apply_ite τ, apply_ite σ, map_one,
-      map_zero, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true] at this
+      map_zero, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true] at this
     exact this
   have := congrFun hc i
   simp only [Finset.sum_apply, Pi.smul_apply, smul_eq_mul, hcoef, ite_mul, one_mul, zero_mul,
-    Finset.sum_ite_eq, Finset.mem_univ, if_true] at this
+    Finset.sum_ite_eq, Finset.mem_univ, ite_true] at this
   exact this
 
 namespace ConjugateWeightGram

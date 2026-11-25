@@ -21,9 +21,9 @@ variable {K : Type} [Field K]
 lemma coeff_monicOf_lt {N : ℕ} (a : Fin N → K) (i : Fin N) :
     (monicOf a).coeff (i : ℕ) = a i := by
   unfold monicOf
-  rw [coeff_add, coeff_X_pow, if_neg (Nat.ne_of_lt i.2), zero_add, Polynomial.finsetSum_coeff]
+  rw [coeff_add, coeff_X_pow, ite_eq_right (Nat.ne_of_lt i.2), zero_add, Polynomial.finsetSum_coeff]
   simp only [coeff_C_mul_X_pow]
-  rw [Finset.sum_eq_single i (fun j _ hj => if_neg (fun h => hj (Fin.ext h).symm)) (by simp)]
+  rw [Finset.sum_eq_single i (fun j _ hj => ite_eq_right (fun h => hj (Fin.ext h).symm)) (by simp)]
   simp
 
 lemma coeff_monicOf_ge {N : ℕ} (a : Fin N → K) (k : ℕ) (hk : N ≤ k) :
@@ -31,7 +31,7 @@ lemma coeff_monicOf_ge {N : ℕ} (a : Fin N → K) (k : ℕ) (hk : N ≤ k) :
   unfold monicOf
   rw [coeff_add, coeff_X_pow, Polynomial.finsetSum_coeff]
   simp only [coeff_C_mul_X_pow]
-  rw [Finset.sum_eq_zero (fun j _ => if_neg (by have := j.2; omega)), add_zero]
+  rw [Finset.sum_eq_zero (fun j _ => ite_eq_right (by have := j.2; omega)), add_zero]
 
 lemma natDegree_monicOf {N : ℕ} (a : Fin N → K) : (monicOf a).natDegree = N := by
   unfold monicOf

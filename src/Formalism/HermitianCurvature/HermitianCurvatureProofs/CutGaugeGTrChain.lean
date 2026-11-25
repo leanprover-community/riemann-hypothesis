@@ -51,7 +51,7 @@ theorem tc_sqrt_wq (k r : ℕ) (TT : ℝ) (x : MA.E r) :
     rw [← Finset.prod_pow]
     refine Finset.prod_congr rfl fun a _ => ?_
     have hM : MA.Mdim k r a = Formalism.QuantumDeterminants.Mdim k r a := rfl
-    rw [if_pos (by simp), Complex.normSq_eq_norm_sq, hM, ← pow_mul, ← pow_mul, mul_comm]
+    rw [ite_eq_left (by simp), Complex.normSq_eq_norm_sq, hM, ← pow_mul, ← pow_mul, mul_comm]
   rw [h, Real.sqrt_sq (Finset.prod_nonneg fun a _ => by split_ifs <;> positivity)]
 
 theorem tc_rawJ (P : M.Par) (Bs : B.RealPlaceData P.k P.r Wp Wq) (e : M.Ty P → ℂ → (Wq →L[ℂ] Wp))

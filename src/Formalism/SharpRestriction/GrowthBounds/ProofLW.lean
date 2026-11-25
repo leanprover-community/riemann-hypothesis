@@ -128,12 +128,12 @@ theorem nc_pos (p : ℕ) (hp : 2 ≤ p) (y yu : ℝ) (z zu : ℕ → ℝ) (ex ex
   have h3 : y / ((p : ℝ)) ^ (2 * e + 1) ≤ yu / ((p : ℝ)) ^ (2 * e + 1) := div_le_div_of_nonneg_right hy (hq e).le
   have h4 := hz e
   by_cases he : ex e
-  · rw [if_pos he]
+  · rw [ite_eq_left he]
     split_ifs
     · exact le_rfl
     · exact le_max_right _ _
   · have heu : ¬ exu e := fun h => he (hex e h)
-    rw [if_neg he, if_neg heu]
+    rw [ite_eq_right he, ite_eq_right heu]
     exact max_le (le_max_right _ _) (le_trans (by linarith) (le_max_left _ _))
 
 variable {n' k1 : ℕ}
@@ -286,7 +286,7 @@ theorem lw_de (X : Formalism.MainNotions.G.Inst D L) (Y : Formalism.MainNotions.
     rw [nc_topsOn X Y hT hL u w hg t0 ht0, Finset.card_image_of_injective _ hinj]
   have hnP : (Formalism.MainNotions.G.nP D (D.what₂.places.resChar w) : ℝ) = ((D.gat u w hg).P.n' (Y.vOf u w hg t0) : ℕ) := by
     unfold Formalism.MainNotions.G.nP
-    rw [if_neg (nc_notSg hg), nc_n_eq X Y hT hL u w hg t0 ht0]
+    rw [ite_eq_right (nc_notSg hg), nc_n_eq X Y hT hL u w hg t0 ht0]
   unfold nc_De Formalism.MainNotions.G.dl Formalism.MainNotions.G.Nm
   rw [hNv, hnP]
   have hl0 : 0 ≤ Real.logb (D.what₂.places.resChar w) (2 * L.sc.a) := by linarith
@@ -350,7 +350,7 @@ theorem lw_size (X : Formalism.MainNotions.G.Inst D L) (Y : Formalism.MainNotion
         exact lw_aT_le _
       linarith
     · unfold al
-      rw [if_neg hsT]
+      rw [ite_eq_right hsT]
       push_cast
       positivity
   · have h1 := nd_lsz_le (Y.Fl u w hg) (Y.vOf u w hg t0) s hm j hj1

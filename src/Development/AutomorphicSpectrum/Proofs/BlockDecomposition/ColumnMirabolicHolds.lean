@@ -87,7 +87,7 @@ theorem superdiagSum_col {k : ℕ} (hk : k + 1 < n) (x : Fin (k + 1) → F) :
   unfold Whittaker.superdiagSum
   rw [Finset.sum_eq_single (⟨k, by omega⟩ : Fin n)]
   · rw [Finset.sum_eq_single (⟨k + 1, hk⟩ : Fin n)]
-    · rw [if_pos rfl, Matrix.add_apply, Matrix.one_apply_ne (Fin.ne_of_val_ne (by simp)),
+    · rw [ite_eq_left rfl, Matrix.add_apply, Matrix.one_apply_ne (Fin.ne_of_val_ne (by simp)),
         cM_apply_pos k x rfl (by simp), zero_add]
       rfl
     · intro j _ hj

@@ -63,7 +63,7 @@ theorem prodTopsT (G : TT → MvPolynomial (Fin k × Fin n) K) :
     rw [dite_eq_left s.2]
     rfl
   · intro s _ hs
-    rw [dif_neg hs, map_one]
+    rw [dite_eq_right hs, map_one]
 
 theorem ioMem (hK2 : RegroupP) (i : TT → MvPolynomial (Fin k × Fin n) K →ₗ[K] MvPolynomial (Bool × (Fin k × Fin n)) K)
     (IO : MvPolynomial (Fin n' × (Fin k × Fin n)) K →ₗ[K] MvPolynomial ((TT × Bool) × (Fin k × Fin n)) K)
@@ -86,15 +86,15 @@ theorem ioMem (hK2 : RegroupP) (i : TT → MvPolynomial (Fin k × Fin n) K →�
     let a' : Fin n' → A := fun s =>
       if h : s ∈ TT then 1 else Classical.choose (h0 s h (F s) (hF s))
     let P : Fin n' → MvPolynomial (Fin k × Fin n) K := fun s => if s ∈ TT then F s else 1
-    have hP : ∀ s, s ∉ TT → P s = 1 := fun s hs => if_neg hs
-    have hPF : ∀ s : TT, P s.val = F s.val := fun s => if_pos s.2
+    have hP : ∀ s, s ∉ TT → P s = 1 := fun s hs => ite_eq_right hs
+    have hPF : ∀ s : TT, P s.val = F s.val := fun s => ite_eq_left s.2
     have hterm : ∀ s, blockEmb K s (F s) =
         MvPolynomial.C (algebraMap A K (a' s)) * rename (fun v : Fin k × Fin n => (s, v)) (P s) := by
       intro s
       by_cases h : s ∈ TT
       · simp [a', P, h, blockEmb]
       · have e := Classical.choose_spec (h0 s h (F s) (hF s))
-        simp only [a', P, dif_neg h, if_neg h, map_one, mul_one]
+        simp only [a', P, dite_eq_right h, ite_eq_right h, map_one, mul_one]
         conv_lhs => rw [e]
         exact MvPolynomial.rename_C _ _
     have hy : ∏ s, blockEmb K s (F s) =
@@ -153,7 +153,7 @@ theorem prMem (pr : TT → MvPolynomial (Bool × (Fin k × Fin n)) K →ₗ[K] M
     by_cases h : s ∈ TT
     · rw [dite_eq_left h]
       exact h1 ⟨s, h⟩ _ (Submodule.subset_span ⟨fun b => F (⟨s, h⟩, b), fun b => hF _, rfl⟩)
-    · rw [dif_neg h]
+    · rw [dite_eq_right h]
       exact h0 s h
   | zero =>
     rw [map_zero, smul_zero]

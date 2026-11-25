@@ -140,8 +140,4 @@ abbrev red (G : PDivGroup p k) :
 
 end Theory
 
-section Examples
-
-end Examples
-
 end GlobalTheory.Dieu

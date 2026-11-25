@@ -186,14 +186,14 @@ theorem lin_coord (x₁ x₂ : Frame X.Ψ r) (τ : X.Ψ) (v₁ v₂ : Fin r → 
       conj_Gm, Finset.sum_mul]
       rw [Finset.sum_comm]
       exact Finset.sum_congr rfl fun c _ => Finset.sum_congr rfl fun b _ => by ring
-    rw [if_pos ha, hc]
-    simp only [sgn, if_pos ha]
+    rw [ite_eq_left ha, hc]
+    simp only [sgn, ite_eq_left ha]
     push_cast
     ring
   · have hL : ∀ w : Fin r → ℂ, (aLin X x₁ x₂ τ *ᵥ w) a = ((mat x₁ τ)⁻¹ *ᵥ w) a := by
       intro w; simp [Matrix.mulVec, dotProduct, aLin, ha]
-    rw [if_neg ha, per_of_le X x₁ v₁ τ (not_lt.mp ha), hL, hL]
-    simp only [sgn, if_neg ha]
+    rw [ite_eq_right ha, per_of_le X x₁ v₁ τ (not_lt.mp ha), hL, hL]
+    simp only [sgn, ite_eq_right ha]
     push_cast
     ring
 
@@ -207,20 +207,20 @@ theorem anti_coord (x₁ x₂ : Frame X.Ψ r) (τ : X.Ψ) (v₁ v₂ : Fin r →
   by_cases ha : (a : ℕ) < X.p0
   · have hc : per X x₁ v₁ (τ, a) = (aAnti X x₁ x₂ τ *ᵥ star (Data.emb τ.1 v₁)) a := by
       rw [per_of_lt X x₁ v₁ τ ha]
-      simp only [Matrix.mulVec, dotProduct, aAnti, Matrix.of_apply, if_pos ha, hermC, FD.col, mat,
+      simp only [Matrix.mulVec, dotProduct, aAnti, Matrix.of_apply, ite_eq_left ha, hermC, FD.col, mat,
         Finset.sum_mul, Pi.star_apply, Complex.star_def]
       exact Finset.sum_comm
-    rw [if_pos ha, hc]
-    simp only [sgn, if_pos ha]
+    rw [ite_eq_left ha, hc]
+    simp only [sgn, ite_eq_left ha]
     push_cast
     ring
   · have hc : conj (per X x₂ v₂ (τ, a)) = (aAnti X x₁ x₂ τ *ᵥ star (Data.emb τ.1 v₂)) a := by
       rw [per_of_le X x₂ v₂ τ (not_lt.mp ha)]
 
-      simp only [Matrix.mulVec, dotProduct, aAnti, Matrix.of_apply, if_neg ha, map_sum, map_mul,
+      simp only [Matrix.mulVec, dotProduct, aAnti, Matrix.of_apply, ite_eq_right ha, map_sum, map_mul,
       Pi.star_apply, Complex.star_def]
-    rw [if_neg ha, hc]
-    simp only [sgn, if_neg ha]
+    rw [ite_eq_right ha, hc]
+    simp only [sgn, ite_eq_right ha]
     push_cast
     ring
 

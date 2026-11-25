@@ -342,7 +342,7 @@ theorem posTest_of (hN : TestNear) : PosTest := by
   have hs : ∀ y, (∃ g : HA (AF F) σ J, g • ratTup (AF F) X0 = y) →
       s y • ratTup (AF F) X0 = y := by
     intro y h
-    simp only [s, dif_pos h]
+    simp only [s, dite_eq_left h]
     exact h.choose_spec
   have hf : Measurable (U.indicator (1 : HA (AF F) σ J → ENNReal)) :=
     measurable_one.indicator hUo.measurableSet
@@ -1053,7 +1053,7 @@ theorem unfold_abs {Γ H : Subgroup G} [Countable Γ]
 
   let s : Y → G := fun y => if h : ∃ g : G, g • y0 = y then h.choose else 1
   have hs : ∀ y, (∃ g : G, g • y0 = y) → s y • y0 = y := fun y h => by
-    simp only [s, dif_pos h]
+    simp only [s, dite_eq_left h]
     exact h.choose_spec
   have hsk : ∀ y, (∃ g : G, g • y0 = y) → ∀ k : H, Φ ((s y * (k : G)) • y0) = Φ y := by
     intro y hy k
@@ -1496,7 +1496,7 @@ theorem unimodStab_holds : UnimodStab := by
   have hs : ∀ y, (∃ g : HA (AF F) σ J, g • ratTup (F := F) (AF F) X0 = y) →
       s y • ratTup (F := F) (AF F) X0 = y := by
     intro y h
-    simp only [s, dif_pos h]
+    simp only [s, dite_eq_left h]
     exact h.choose_spec
   exact us_rightInv_of_compat μ (stabT (AF F) σ J X0).subtype μ' νX s
     (fun f hf => hC.2 f hf s hs)

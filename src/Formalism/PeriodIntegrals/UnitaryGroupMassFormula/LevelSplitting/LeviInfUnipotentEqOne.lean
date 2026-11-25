@@ -282,7 +282,7 @@ theorem det_uT (g : HA R σ J) : (uT R σ J P g).det = 1 := by
   · intro i j hji
     have h : j < i := hji
     simp only [uT, Matrix.of_apply]
-    rw [if_neg (lt_asymm h), if_neg (ne_of_gt h)]
+    rw [ite_eq_right (lt_asymm h), ite_eq_right (ne_of_gt h)]
 
 def uI (g : HA R σ J) : Matrix (Fin r) (Fin r) (R ⊗[F] E) := (uT R σ J P g).adjugate
 
@@ -433,7 +433,7 @@ theorem spanE_f_zero (H : (datR R σ J P T).Hyp) {s : Set (Fin r)} {x : Fin M �
   | mem y hy =>
     obtain ⟨c, hc, rfl⟩ := hy
     show (datR R σ J P T).h ((datR R σ J P T).f a) ((datR R σ J P T).e c) = 0
-    rw [PG.Dat.fe H, if_neg]
+    rw [PG.Dat.fe H, ite_eq_right]
     rintro rfl
     exact ha hc
   | zero => exact PG.Dat.h_zero_right _ _
@@ -546,8 +546,8 @@ theorem levG_e (n : HA R σ J) (hn : n ∈ Nsub R σ J P) (b : Fin r) :
   congr 1
   rw [uT_apply]
   by_cases h1 : a < b
-  · rw [if_pos h1]; rfl
-  · rw [if_neg h1]
+  · rw [ite_eq_left h1]; rfl
+  · rw [ite_eq_right h1]
     have h0 := spanE_f_zero (T := T) H (hn1 b) (a := a) (fun h => h1 h)
     have hfe : (datR R σ J P T).h ((datR R σ J P T).f a) (ratV (F := F) R (P.e b)) =
         if a = b then 1 else 0 := PG.Dat.fe H a b
@@ -577,7 +577,7 @@ theorem levi_inf_unipotent_eq_one (u : HA R σ J) (hu : u ∈ Asub R σ J P) (hu
       show hR R σ J (ratV (F := F) R (P.e d)) (lin R σ J u (ratV (F := F) R (P.f b))) = _
       rw [← hS d, hR_lin]
       exact H.ef d b
-    simp only [hc, ite_smul, one_smul, zero_smul, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    simp only [hc, ite_smul, one_smul, zero_smul, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     rfl
   apply PI.LevelKSplit.W.SemiA.ext_lin
   intro x

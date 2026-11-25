@@ -280,7 +280,7 @@ theorem top_excess_at (hx1 : Fm.x1 < x) (i : Fm.Ix x) (hg : Big eps x) : ∀ (u 
   have hk : 5 ≤ D.R.k := by have := D.R.m_add_three_le_k; have := D.R.two_le_m; omega
   have hN : D.R.N j = D.R.k + j * (D.R.t + 1) := by unfold Ranks.N; omega
   have hok := nuRowOK D
-  rw [GlobalTheory.nuD_card_eq_sum_nuRow D hok u j hj z, hok u j hj z 0, if_pos (by omega), hN,
+  rw [GlobalTheory.nuD_card_eq_sum_nuRow D hok u j hj z, hok u j hj z 0, ite_eq_left (by omega), hN,
     GlobalTheory.TopExcess.sum_range_split _ _ _ (by omega)]
   obtain ⟨m1, m2⟩ := GlobalTheory.TopExcess.sum_Ico_bounds (DV.nuRow D u (j + 1) (tauPl D z)) 1 (D.R.k - 1) _ _
     (fun r hr1 hr2 => let h := (c r (by omega)).2 hz hr1 (by omega); ⟨h.1.le, h.2.le⟩)
@@ -328,7 +328,7 @@ theorem two_w_at (hx1 : Fm.x1 < x) (i : Fm.Ix x) (hg : Big eps x) : ∀ (u : (Fm
     have := D.R.m_add_three_le_k
     unfold Ranks.N
     omega
-  rw [nuRowOK D u j hj z 0, if_pos hN, e1]
+  rw [nuRowOK D u j hj z 0, ite_eq_left hN, e1]
   rw [e2, hbb] at e3
   rw [ha]
   linarith
@@ -438,14 +438,14 @@ theorem cap_width_at (hx1 : Fm.x1 < x) (i : Fm.Ix x) (hg : Big eps x) : ∀ (u :
   have hS := (Fm.L x i).Sc_pos
   split_ifs with hz
   · have e := nuRowOK (Fm.D x i) u j hj z 1
-    rw [if_pos (by omega)] at e
+    rw [ite_eq_left (by omega)] at e
     have := ((hr 1 (by omega)).2 hz le_rfl (by omega)).2
     rw [e]
     linarith
   · have e := nuRowOK (Fm.D x i) u j hj z 0
-    rw [if_pos (by omega)] at e
+    rw [ite_eq_left (by omega)] at e
     have := ((hr 0 (by omega)).1 hz).2
-    rw [if_pos rfl] at this
+    rw [ite_eq_left rfl] at this
     rw [e]
     linarith
 
@@ -468,7 +468,7 @@ theorem cap_fill_at (hx : Fm.x1 < x) (i : Fm.Ix x) : ∀ (u : (Fm.D x i).what₂
   · have h1 := GlobalTheory.CapBound.row_le (Fm.D x i) u j hj z 0 (by omega) (by omega)
     obtain ⟨-, h4⟩ := GlobalTheory.LongRows.u_bounds_off (Fm.params x hx i) u _
       (GlobalTheory.LongRows.not_mem_topPlaces _ z hz) 0 (by omega)
-    rw [if_pos rfl] at h4
+    rw [ite_eq_left rfl] at h4
     linarith
 
 theorem gap_at (hx1 : Fm.x1 < x) (i : Fm.Ix x) (hg : Big eps x) : ∀ (u : (Fm.D x i).what₂.Word), ∀ j < (Fm.D x i).R.m, ∀ t ∈ (Fm.D x i).host.TT, (((nuD (Fm.D x i) u j (false, t)).rowLen 0 : ℕ) : ℝ) - (((nuD (Fm.D x i) u j (false, t)).rowLen 1 : ℕ) : ℝ) ≤ 2 * (Fm.L x i).sc.a := by
@@ -503,7 +503,7 @@ theorem gap_at (hx1 : Fm.x1 < x) (i : Fm.Ix x) (hg : Big eps x) : ∀ (u : (Fm.D
   have hNm : (D.R.N D.R.m : ℝ) ≤ (D.R.k : ℝ) * D.R.N D.R.m :=
     le_mul_of_one_le_left (Nat.cast_nonneg _) (by linarith)
   have he := L.etaSz_pos
-  rw [nuRowOK D u j hj, nuRowOK D u j hj, if_pos (by omega), if_pos (by omega), e1]
+  rw [nuRowOK D u j hj, nuRowOK D u j hj, ite_eq_left (by omega), ite_eq_left (by omega), e1]
   simp only [ha]
   linarith
 

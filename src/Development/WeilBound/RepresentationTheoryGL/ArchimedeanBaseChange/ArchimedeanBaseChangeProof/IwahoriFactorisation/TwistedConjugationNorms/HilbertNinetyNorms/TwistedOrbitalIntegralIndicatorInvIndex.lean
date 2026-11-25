@@ -177,7 +177,7 @@ theorem clSum_eq_single (θ : G →* G) [TopologicalSpace G] (K : Subgroup G) (S
       exact (Quot.sound ⟨g, rfl⟩).symm
     · exact hne rfl
   · obtain ⟨g, hg⟩ := rep_mk_eq θ δ0
-    rw [hg, if_pos (hS0 g), hinv g]
+    rw [hg, ite_eq_left (hS0 g), hinv g]
 
 end Gen
 

@@ -11,12 +11,6 @@ noncomputable section
 
 namespace PI.SplitIntLoc
 
-section Defs
-
-variable {A : Type} [CommRing A] {n : Type} [Fintype n] [DecidableEq n]
-
-end Defs
-
 section Points
 
 variable {F E : Type} [Field F] [CommRing E] [Algebra F E] {n : Type} [Fintype n] [DecidableEq n]

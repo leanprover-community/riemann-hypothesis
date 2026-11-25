@@ -192,7 +192,7 @@ theorem va_of_lowW (g : Formalism.DoubleCosetMeasures.lowW E (Formalism.MainNoti
   · simp [Matrix.submatrix_apply, mk]
   · have hne : eA a i ≠ eA a j := (eA a).injective.ne (ne_of_lt hij)
     have hlt : eA a i < eA a j := (eA_lt a).2 hij
-    simp only [Matrix.submatrix_apply, mk, hne, if_false]
+    simp only [Matrix.submatrix_apply, mk, hne, ite_false]
     rw [dite_eq_right]
     intro hp
     exact absurd hp.1 (not_lt.2 hlt.le)
@@ -200,7 +200,7 @@ theorem va_of_lowW (g : Formalism.DoubleCosetMeasures.lowW E (Formalism.MainNoti
     have hs : sbA a (eA a i) (eA a j) = true := by
       simp only [sbA, eA_val]
       exact hsb
-    simp only [Matrix.submatrix_apply, mk, hne, if_false]
+    simp only [Matrix.submatrix_apply, mk, hne, ite_false]
     rw [dite_eq_right]
     intro hp
     have h2 : sbA a (eA a i) (eA a j) = false := hp.2

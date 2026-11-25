@@ -243,8 +243,4 @@ theorem red_surj (t : 𝓞 F ⧸ v.asIdeal) : ∃ x ∈ v.adicCompletionIntegers
 
 end Res
 
-section Count
-
-end Count
-
 end PI.VolStabSW

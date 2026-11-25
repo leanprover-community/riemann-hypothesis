@@ -183,7 +183,7 @@ theorem main_twist_bound (m₀ s a₀ : ℕ) [NeZero (m₀ * s)] (hm : 0 < m₀)
             field_simp
         _ ≤ 2 * r * ∑ b ∈ clsB m₀ s a₀, |mainAP (some (χ, β)) b X| :=
             mul_le_mul_of_nonneg_left (Finset.sum_le_sum hlow) (by linarith)
-    · push_neg at hc
+    · push Not at hc
       obtain ⟨u, hu1, hus, hne⟩ := hc
       have hpt : ∀ b : ℕ, (((jacobiSym (((b * u) % (m₀ * s) : ℕ) : ℤ) s : ℝ)) : ℂ) *
           χ ((((b * u) % (m₀ * s) : ℕ)) : ZMod (m₀ * s)) =

@@ -55,13 +55,6 @@ namespace GlobalTheory.CWGeneral
 
 variable {n : ℕ} {ε : Fin n → Bool}
 
-section Sub
-
-variable {E : Type} [AddCommGroup E] [Module ℂ E] [TopologicalSpace E] [IsTopologicalAddGroup E]
-
-
-end Sub
-
 section KFin
 
 variable {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H] {σ : Mx n → (H →L[ℂ] H)}

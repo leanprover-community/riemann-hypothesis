@@ -127,7 +127,7 @@ theorem onCut_setting (S : Formalism.FourierDecayAlt.C.HidaSetting E Wp Wq) (hw 
   have hu : ∀ de : ℕ → ℝ, (S.G.place (S.pl v)).u de (S.l + 1) =
       (S.G.place (S.pl v)).v S.l - 1 / 2 - de S.l * (S.G.place (S.pl v)).Del := by
     intro de
-    simp only [Formalism.FourierDecayAlt.Sz.Cfg.u, if_neg hl1, if_neg hlk, Nat.add_sub_cancel]
+    simp only [Formalism.FourierDecayAlt.Sz.Cfg.u, ite_eq_right hl1, ite_eq_right hlk, Nat.add_sub_cancel]
   simp only [Formalism.FourierDecayAlt.I.OnCut, hu]
   have hN : (0 : ℝ) ≤ (S.Ntop : ℝ) := Nat.cast_nonneg _
   have hD : 5 ≤ (S.G.place (S.pl v)).Del := by

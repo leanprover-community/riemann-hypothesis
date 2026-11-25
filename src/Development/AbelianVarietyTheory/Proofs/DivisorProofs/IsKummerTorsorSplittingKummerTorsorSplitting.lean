@@ -222,7 +222,7 @@ theorem relation_kernel (q : ℕ) [NeZero q] (V : Scheme.{0}) (c : (tripP q).obj
   choose a ha using hka
   let a' : (tripP q).obj (op V) → ℕ := fun x =>
     if h : x ∈ c.support then ((a ⟨x, h⟩ : (ZMod q)ˣ) : ZMod q).val else 0
-  have hax : ∀ x (hx : x ∈ c.support), a' x = ((a ⟨x, hx⟩ : (ZMod q)ˣ) : ZMod q).val := fun x hx => dif_pos hx
+  have hax : ∀ x (hx : x ∈ c.support), a' x = ((a ⟨x, hx⟩ : (ZMod q)ˣ) : ZMod q).val := fun x hx => dite_eq_left hx
   have hsum : (c.sum fun x r => r • Sec.res k (resGen 1 (tripP.get x).root)) =
       (c.sum fun x r => r * ((a' x : ℕ) : ULift.{1} (ZMod q))) •
         resGen 1 ((tripP.get x₀).root.map k.appTop.hom) := by

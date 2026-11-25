@@ -32,8 +32,8 @@ open Classical in
 def ind (S : Finset (Pl F)) : Af F :=
   ⟨fun u => if u ∈ S then 1 else 0, Eventually.of_forall fun u => by
     by_cases h : u ∈ S
-    · simp only [h, if_true]; exact one_mem _
-    · simp only [h, if_false]; exact zero_mem _⟩
+    · simp only [h, ite_true]; exact one_mem _
+    · simp only [h, ite_false]; exact zero_mem _⟩
 
 open Classical in
 theorem ev_ind (S : Finset (Pl F)) (u : Pl F) : Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.evalV F u (ind S) = if u ∈ S then 1 else 0 := rfl
@@ -46,8 +46,8 @@ theorem tendsto_ind_mul (α : Af F) : Tendsto (fun S : Finset (Pl F) => ind S * 
       (fun u => (u.adicCompletionIntegers F : Set (u.adicCompletion F))) (𝓟 T) :=
     fun S => ⟨fun u => if u ∈ S then α u else 0, fun u hu => by
       by_cases h : u ∈ S
-      · simp only [Set.mem_setOf_eq, h, if_true]; exact hu
-      · simp only [Set.mem_setOf_eq, h, if_false]; exact zero_mem _⟩
+      · simp only [Set.mem_setOf_eq, h, ite_true]; exact hu
+      · simp only [Set.mem_setOf_eq, h, ite_false]; exact zero_mem _⟩
   let a : RestrictedProduct (fun u : Pl F => u.adicCompletion F)
       (fun u => (u.adicCompletionIntegers F : Set (u.adicCompletion F))) (𝓟 T) := ⟨fun u => α u, fun u hu => hu⟩
   have hf : Tendsto f atTop (𝓝 a) := by
@@ -55,7 +55,7 @@ theorem tendsto_ind_mul (α : Af F) : Tendsto (fun S : Finset (Pl F) => ind S * 
     intro u
     refine tendsto_const_nhds.congr' ?_
     filter_upwards [eventually_ge_atTop ({u} : Finset _)] with S hS
-    exact (if_pos (hS (Finset.mem_singleton_self u))).symm
+    exact (ite_eq_left (hS (Finset.mem_singleton_self u))).symm
   have h2 := ((RestrictedProduct.continuous_inclusion hT).tendsto a).comp hf
   refine Tendsto.congr (fun S => _root_.GlobalTheory.AdelicU.af_ext fun u => ?_) h2
   rw [map_mul, ev_ind]
@@ -82,8 +82,8 @@ theorem eps_cons (S : Finset (Pl F)) (v : Pl F) (hv : v ∉ S) : eps (S.cons v h
     · simp [h, hv]
     · have hm : u ∈ S.cons v hv ↔ u ∈ S := Finset.mem_cons.trans (or_iff_right h)
       by_cases h' : u ∈ S
-      · rw [if_pos (hm.2 h'), if_pos h', if_neg (by simpa using h), add_zero]
-      · rw [if_neg (fun x => h' (hm.1 x)), if_neg h', if_neg (by simpa using h), add_zero]
+      · rw [ite_eq_left (hm.2 h'), ite_eq_left h', ite_eq_right (by simpa using h), add_zero]
+      · rw [ite_eq_right (fun x => h' (hm.1 x)), ite_eq_right h', ite_eq_right (by simpa using h), add_zero]
   · change Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.evalV F u (ind S * ind {v}) = Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.evalV F u 0
     rw [map_mul, ev_ind, ev_ind, map_zero]
     by_cases h : u = v
@@ -177,7 +177,7 @@ theorem piece_prod {W : Spc F E d} (g : UA σ W.J) (S : Finset (Pl F)) : ∃ l :
 theorem piece_inf {W : Spc F E d} (g : UA σ W.J) : piece (eps ∅) (eps_sq ∅) g ∈ UAt σ W (evI F) := fun u hu => by
   have : u * eps ∅ = 0 := Prod.ext ((mul_one u.1).trans ((map_eq_zero_iff _ (RingEquiv.injective _)).1 hu)) (_root_.GlobalTheory.AdelicU.af_ext fun x => by
     change Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.evalV F x (u.2 * ind ∅) = Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.evalV F x 0
-    rw [map_mul, ev_ind, map_zero, if_neg (Finset.notMem_empty x), mul_zero])
+    rw [map_mul, ev_ind, map_zero, ite_eq_right (Finset.notMem_empty x), mul_zero])
   rw [mat_piece, add_sub_cancel_left, smul_smul, this, zero_smul]
 
 theorem level_sch (hL : PositivityTheory.ThKEst.Level) {n : ℕ} {X : Spc F E n} {W : Spc F E d} {B : Base F E} {M : Model σ X W} {χX χW om r s r' s'}
@@ -222,9 +222,9 @@ theorem exists_ins {ι : Type} [DecidableEq ι] {Y : ι → Type} [∀ i, AddCom
     · rw [Function.update_of_ne hv]
       by_cases h : (u : ι) ∈ T
       · have hne : (⟨u, h⟩ : T) ≠ i := fun e => hv (Subtype.ext (show (u : ι) = i.1 by rw [← e]))
-        simp only [ext, dif_pos h]
+        simp only [ext, dite_eq_left h]
         rw [Function.update_of_ne hne]
-      · simp only [ext, dif_neg h]
+      · simp only [ext, dite_eq_right h]
   let m : MultilinearMap (RingHom.id ℂ) (fun u : T => Y u) (PiTensorProduct ℂ fun u : (insert v T : Finset ι) => Y u) :=
     { toFun := fun w => PiTensorProduct.tprod ℂ (ext w)
       map_update_add' := fun {inst} w i x y => by

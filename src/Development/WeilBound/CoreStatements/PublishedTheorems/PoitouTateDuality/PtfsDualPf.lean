@@ -18,8 +18,6 @@ open NumberField IsDedekindDomain CategoryTheory GroundTheory.ProfCoh GroundTheo
 
 namespace PositivityTheory.Lit1.PTN
 
-attribute [local instance 2000] Rep.hV2
-
 section Roots
 
 variable {L : Type} [Field L] {N : ℕ} [NeZero N] (w : rootsOfUnity N L)

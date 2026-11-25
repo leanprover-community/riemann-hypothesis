@@ -153,7 +153,7 @@ def idxTop : Idx sel mu L R.m := ⟨none, by simp⟩
 
 
 variable (R) in
-theorem ysAt_m : ysAt R sel mu cst R.m = Ys.triv X _ := if_neg (Nat.succ_ne_self _)
+theorem ysAt_m : ysAt R sel mu cst R.m = Ys.triv X _ := ite_eq_right (Nat.succ_ne_self _)
 
 def topPt (u : Pr.Word) (p : ChPt (R := R) sel mu u R.m) :
     PtY (Pr.vT u) Pr.vGs (QE sel (mu : Chr X.F X.E X.K)) (ysAt R sel mu cst R.m) :=
@@ -170,15 +170,6 @@ variable (u : Pr.Word)
   (rho' : ∀ i (b : Idx sel mu L (i + 1)), (stepAt sel mu cst L (topLev Ch sel mu cst P) u (i + 1)).D b → ℂ) (cD : X.Tau → ℂ)
   (Th : ∀ i (b : Idx sel mu L i) (b' : Idx sel mu L (i + 1)), (stepAt sel mu cst L (topLev Ch sel mu cst P) u i).D b →
     (stepAt sel mu cst L (topLev Ch sel mu cst P) u (i + 1)).D b' → Formalism.L2.Ker.VCx X.Tau (R.N i) (R.N (i + 1)) → ℂ)
-
-section Gen
-
-variable (H : Subgroup (FrmG (rowTyG Ch P) (levQX R sel mu))) (σ : X.K →+* ℂ)
-
-variable {H} {Λ' : LevFam X.E X.K (R.N R.m - 1) Pr.vGs} (hH : IsSubLev (rowTyG Ch P) Λ' (levQX R sel mu) H)
-  (hd : Disjoint Pr.vGs (QE sel (mu : Chr X.F X.E X.K)))
-
-end Gen
 
 variable (σ : X.K →+* ℂ)
 

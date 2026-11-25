@@ -39,9 +39,9 @@ theorem weierP {A : Type} [CommRing A] (p : A) [IsAdicComplete (Ideal.span {p}) 
     have hoN : (g.map (Ideal.Quotient.mk I) * X ^ N).order = (N : ℕ∞) := by
       rw [order_eq_nat]
       refine ⟨?_, fun i hi => ?_⟩
-      · rw [coeff_mul_X_pow', if_pos le_rfl, Nat.sub_self, coeff_map, coeff_zero_eq_constantCoeff]
+      · rw [coeff_mul_X_pow', ite_eq_left le_rfl, Nat.sub_self, coeff_map, coeff_zero_eq_constantCoeff]
         exact hg0
-      · rw [coeff_mul_X_pow', if_neg (by omega)]
+      · rw [coeff_mul_X_pow', ite_eq_right (by omega)]
     rw [hoN]
     rfl
   have hdiv : F.IsWeierstrassDivisorAt I := by
@@ -49,7 +49,7 @@ theorem weierP {A : Type} [CommRing A] (p : A) [IsAdicComplete (Ideal.span {p}) 
     rw [hord]
     have hc : coeff N F = constantCoeff g * (p * (coeff N h * ↑hg.unit⁻¹) + 1) := by
       have e : constantCoeff g * ↑hg.unit⁻¹ = 1 := hg.mul_val_inv
-      rw [hF, map_add (f := _), coeff_mul_X_pow', if_pos le_rfl, Nat.sub_self, coeff_C_mul,
+      rw [hF, map_add (f := _), coeff_mul_X_pow', ite_eq_left le_rfl, Nat.sub_self, coeff_C_mul,
         coeff_zero_eq_constantCoeff]
       linear_combination (-(p * coeff N h)) * e
     rw [hc]
@@ -68,7 +68,7 @@ theorem weierP {A : Type} [CommRing A] (p : A) [IsAdicComplete (Ideal.span {p}) 
     simp only [map_add (f := _), map_mul, map_pow, map_X, coeff_X_pow_self] at h1
     rw [hmap, ← Polynomial.polynomial_map_coe, Polynomial.coeff_coe,
       Polynomial.coeff_map, Polynomial.coeff_eq_zero_of_degree_lt hdeg, map_zero, add_zero,
-      mul_assoc, mul_comm (X ^ N), ← mul_assoc, coeff_mul_X_pow', if_pos le_rfl, Nat.sub_self,
+      mul_assoc, mul_comm (X ^ N), ← mul_assoc, coeff_mul_X_pow', ite_eq_left le_rfl, Nat.sub_self,
       ← map_mul, coeff_map, coeff_zero_eq_constantCoeff] at h1
     have h1' : Ideal.Quotient.mk I (constantCoeff g * constantCoeff q) = 1 := by
       rw [← map_mul constantCoeff]
@@ -87,8 +87,8 @@ theorem weierP {A : Type} [CommRing A] (p : A) [IsAdicComplete (Ideal.span {p}) 
     exact Polynomial.natDegree_eq_of_degree_eq_some hdN
   · intro k hk
     have := HD.coeff_f_sub_r_mem (i := k) (by rw [hord]; exact hk)
-    rw [map_sub, coeff_X_pow, if_neg (by omega), zero_sub, Polynomial.coeff_coe] at this
-    rw [Polynomial.coeff_sub, Polynomial.coeff_X_pow, if_neg (by omega), zero_sub]
+    rw [map_sub, coeff_X_pow, ite_eq_right (by omega), zero_sub, Polynomial.coeff_coe] at this
+    rw [Polynomial.coeff_sub, Polynomial.coeff_X_pow, ite_eq_right (by omega), zero_sub]
     exact Ideal.mem_span_singleton.mp this
   · rw [Polynomial.coe_sub, Polynomial.coe_pow, Polynomial.coe_X, heq, add_sub_cancel_right,
       mul_assoc, IsUnit.mul_val_inv, mul_one]

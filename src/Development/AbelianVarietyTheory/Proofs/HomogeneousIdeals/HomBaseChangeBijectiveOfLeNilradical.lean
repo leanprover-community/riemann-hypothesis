@@ -347,7 +347,7 @@ theorem isGroupLikeElem_iff [Nontrivial A] (hA : ∀ e : A, IsIdempotentElem e �
     have h1 := (hA _ (isIdempotentElem_coeff hu x)).resolve_left hx
     refine ⟨x, eq_single_of_coeff_eq_zero hu x fun y hy => ?_⟩
     have := coeff_mul_coeff hu y x
-    rwa [h1, _root_.mul_one, if_neg hy] at this
+    rwa [h1, _root_.mul_one, ite_eq_right hy] at this
   · rintro ⟨x, rfl⟩
     exact AddMonoidAlgebra.isGroupLikeElem_single_one x
 

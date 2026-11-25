@@ -152,16 +152,16 @@ theorem valR_appLE (x : Sp R ⟶ Y) (g : Y ⟶ X) (U : X.Opens) (W : Y.Opens) (e
   have h' : ⊤ ≤ (x ≫ g) ⁻¹ᵁ U := fun p _ => e (h trivial)
   have key : g.appLE U W e ≫ x.appLE W ⊤ h = (x ≫ g).appLE U ⊤ h' := by
     rw [Scheme.Hom.appLE_comp_appLE]
-  rw [valR, valR, dif_pos h, dif_pos h', ← key]
+  rw [valR, valR, dite_eq_left h, dite_eq_left h', ← key]
   rfl
 
 private lemma valR_mul_lemma_2 {R : Type} [CommRing R] (x : Sp R ⟶ Y) (U : Y.Opens) (h : ⊤ ≤ x ⁻¹ᵁ U)
     (f g : Γ(Y, U)) : valR x U (f * g) = valR x U f * valR x U g := by
-  rw [valR, valR, valR, dif_pos h, dif_pos h, dif_pos h, map_mul, map_mul]
+  rw [valR, valR, valR, dite_eq_left h, dite_eq_left h, dite_eq_left h, map_mul, map_mul]
 
 private lemma isUnit_valR_of_unit {R : Type} [CommRing R] (x : Sp R ⟶ Y) (U : Y.Opens) (h : ⊤ ≤ x ⁻¹ᵁ U)
     (u : Γ(Y, U)ˣ) : IsUnit (valR x U (u : Γ(Y, U))) := by
-  rw [valR, dif_pos h]
+  rw [valR, dite_eq_left h]
   exact (u.isUnit.map _).map _
 
 theorem crd_secOfIso [IsLocalRing R] {A B : LB Y} {u : LB.Iso A B} (hu : u.IsGen) (hA : A.IsLB) (hB : B.IsLB)
@@ -273,7 +273,7 @@ theorem crd_comb {V K : Type} [CommRing V] [CommRing K] {L : LB X} {T : Type} [F
     intro k
     rw [← valR_constHom π' x ψ hx _ hl' k]
     unfold valHom
-    rw [valR, dif_pos hl']
+    rw [valR, dite_eq_left hl']
     rfl
   have hsum : (LB.Sec.f (s i) l : Γ(Y, (LB.LinComb L φ' ε).U l)) =
       ∑ j, constHom π' _ (a i j) * LB.Sec.f (pullOver L ε hp hφ (σ j)) l := by
@@ -287,7 +287,7 @@ theorem crd_comb {V K : Type} [CommRing V] [CommRing K] {L : LB X} {T : Type} [F
       valR x ((LB.LinComb L φ' ε).U l) (∑ j, f j) = ∑ j, valR x ((LB.LinComb L φ' ε).U l) (f j) := by
     intro f
 
-    simp only [valR, dif_pos hl', map_sum]
+    simp only [valR, dite_eq_left hl', map_sum]
   show ∑ j, ψ (a i j) * w j = (c : R) * valR x _ (LB.Sec.f (s i) l)
   rw [hsum, hadd, Finset.mul_sum]
   refine Finset.sum_congr rfl fun j _ => ?_

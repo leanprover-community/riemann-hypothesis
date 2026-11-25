@@ -75,7 +75,7 @@ theorem weight_eq_lamCol (D : D7) (u : D.what₂.Word) (τ : D.what₂.Tau) (i :
   have h := b_lam_eq D u 0 (Nat.zero_le _) τ i
   have hi : i.1 < D.R.k := lt_of_lt_of_eq i.2 (Ranks.N_zero _)
   unfold lamLiftN at h
-  rw [if_pos hi] at h
+  rw [ite_eq_left hi] at h
   have h' := congrArg (fun q : ℚ => (q : ℝ)) h
   simp only [Rat.cast_intCast] at h'
   exact h'

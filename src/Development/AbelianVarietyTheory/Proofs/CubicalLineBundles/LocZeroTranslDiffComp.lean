@@ -175,10 +175,4 @@ theorem pull_cubeCls {T T' : Over S} (ρ : T' ⟶ T) (x : Fin n → (T ⟶ G)) (
 
 end Cube
 
-section Triple
-
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {S : Scheme.{0}} (t : SAB H S) {T : Over S}
-
-end Triple
-
 end GlobalTheory.TripleProd

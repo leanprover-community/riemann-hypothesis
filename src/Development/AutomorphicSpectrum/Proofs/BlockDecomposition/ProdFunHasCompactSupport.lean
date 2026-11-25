@@ -160,8 +160,8 @@ theorem parity_one {f : ℝ → ℝ} {m : ℕ} (h1 : f 1 = 1)
     f x = if 0 < x then (1 : ℝ) else (-1) ^ m := by
   have hx' : |x| = 1 := by rwa [Real.norm_eq_abs] at hx
   rcases (abs_eq zero_le_one).mp hx' with rfl | rfl
-  · rw [if_pos one_pos, h1]
-  · rw [if_neg (by norm_num), hpar 1, h1, mul_one]
+  · rw [ite_eq_left one_pos, h1]
+  · rw [ite_eq_right (by norm_num), hpar 1, h1, mul_one]
 
 private theorem exists_diag_lemma_2 {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E]
     [FiniteDimensional ℝ E] {κ : Type} [Fintype κ] (i₀ : κ) {f : E → ℝ}

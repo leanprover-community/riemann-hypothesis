@@ -472,7 +472,7 @@ private theorem up_ord {A : Type} [CommRing A] (θ : H.X.I.T →* Aˣ) (x : A �
     fun v _ => ⟨Up.singleP I v _ (I v).z_mem, (Up.uOpPi I _ v _ (I v).z_mem F hN).trans (hz v)⟩).2
   have hzz : (Finset.univ.toList.map fun v => (Pi.mulSingle v (I v).z : GV n H.Sl)).prod = H.X.I.z := by
     funext w
-    rw [up_list (fun v => (I v).z) w _ (Finset.nodup_toList _), if_pos (by simp)]
+    rw [up_list (fun v => (I v).z) w _ (Finset.nodup_toList _), ite_eq_left (by simp)]
     rfl
   rw [hzz, Finset.prod_map_toList] at hZ
   have hl : ∀ v, ((List.range n).map (psEig (ω v))).prod = ∏ j ∈ Finset.range n, psEig (ω v) j := fun v => rfl

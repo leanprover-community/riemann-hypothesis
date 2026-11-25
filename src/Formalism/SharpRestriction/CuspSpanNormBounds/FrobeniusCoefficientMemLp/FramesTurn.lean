@@ -456,13 +456,13 @@ theorem frame_conj_fix {z : Fin (2 * r + k + 1) → ℂ} {g : Mx k r} (hg : IsFr
     rw [Matrix.mul_apply] at hE
     simp only [hgHq] at hE
     rw [Finset.sum_eq_single i] at hE
-    · rw [hHrow q i hqo, if_pos (by omega), one_mul] at hE
+    · rw [hHrow q i hqo, ite_eq_left (by omega), one_mul] at hE
       rw [hE, hHrow q j hqo]
       by_cases hji : j = i
-      · rw [hji, hb1, if_pos (by omega)]
-      · rw [hb0 i j hji, if_neg (by intro h; apply hji; ext; omega)]
+      · rw [hji, hb1, ite_eq_left (by omega)]
+      · rw [hb0 i j hji, ite_eq_right (by intro h; apply hji; ext; omega)]
     · intro b _ hb
-      rw [hHrow q b hqo, if_neg (by intro h; apply hb; ext; omega), zero_mul]
+      rw [hHrow q b hqo, ite_eq_right (by intro h; apply hb; ext; omega), zero_mul]
     · intro h; exact absurd (Finset.mem_univ i) h
   have hg_comm : tT k r * g = g * tT k r := by
     ext i j
@@ -476,7 +476,7 @@ theorem frame_conj_fix {z : Fin (2 * r + k + 1) → ℂ} {g : Mx k r} (hg : IsFr
       · rw [hcol j hj i]
         have hij : i ≠ j := fun h => hi (by rw [h]; exact hj)
         rw [hb0 j i hij, mul_zero, zero_mul]
-      · push_neg at hi hj
+      · push Not at hi hj
         rw [dT_mid i hi.1 hi.2, dT_mid j hj.1 hj.2, mul_comm]
   have hB_comm : tT k r * blockW k r h = blockW k r h * tT k r := by
     have h1 : tT k r * blockW k r h * tTi k r = blockW k r h := conj_eq_self (fun i j hne => blockW_dT h i j hne)
@@ -701,7 +701,7 @@ theorem flagMat_conjI {z : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z) (x : M
       (if i.val < r then star (Complex.I ^ i.val) * Complex.I ^ j.val else 1) * flagMat k r z x i j := by
   unfold flagMat fvec
   by_cases hi : i.val < r
-  · rw [dite_eq_left hi, dite_eq_left hi, if_pos hi]
+  · rw [dite_eq_left hi, dite_eq_left hi, ite_eq_left hi]
     have hv : tT k r *ᵥ (if h : j.val < r then bvec (eI k r ⟨j.val, h⟩) else z) =
         Complex.I ^ j.val • (if h : j.val < r then bvec (eI k r ⟨j.val, h⟩) else z) := by
       by_cases hj : j.val < r
@@ -716,7 +716,7 @@ theorem flagMat_conjI {z : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z) (x : M
     rw [← Matrix.mulVec_mulVec, ← Matrix.mulVec_mulVec, hv, Matrix.mulVec_smul]
     simp only [tTi, Matrix.mulVec_diagonal, dT_eI, Pi.smul_apply, smul_eq_mul]
     ring
-  · rw [dite_eq_right hi, dite_eq_right hi, if_neg hi, one_mul]
+  · rw [dite_eq_right hi, dite_eq_right hi, ite_eq_right hi, one_mul]
 
 theorem continuous_rootCoordsS {z : Fin (2 * r + k + 1) → ℂ} (S : Finset (Fin (r + 1) × Fin (r + 1))) :
     Continuous (fun (x : Mt k r) (q : S) => flagMat k r z (Matrix.of x) q.1.1 q.1.2) := by

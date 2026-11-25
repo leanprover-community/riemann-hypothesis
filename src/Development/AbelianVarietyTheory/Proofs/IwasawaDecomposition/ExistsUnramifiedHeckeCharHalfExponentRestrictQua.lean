@@ -380,7 +380,7 @@ theorem isEta_res (D : D7) (c : (AE D)ˣ →* Circle) (χ : HChar D.host.E) (hc 
     have e := hinf (idF D u) rfl
     have e1 : c (idF D u) = 1 := DFunLike.congr_fun h1 u
     have e2 : infPart D (idF D u : AE D) = w ⊗ₜ[D.host.F] (1 : D.host.E) := rfl
-    rw [e1, e2, Finset.prod_eq_single τ₀ (fun τ _ hτ => by rw [hw, if_neg hτ]; simp) (by simp), hw, if_pos rfl] at e
+    rw [e1, e2, Finset.prod_eq_single τ₀ (fun τ _ hτ => by rw [hw, ite_eq_right hτ]; simp) (by simp), hw, ite_eq_left rfl] at e
     norm_num at e
 
 theorem exists_etaTilde : ∀ D : D7, ∃ χ : GlobalTheory.Mem.Th.IdC D, IsHeckeChar D χ ∧ (∀ τ, HasInfExp D χ τ (1 / 2)) ∧

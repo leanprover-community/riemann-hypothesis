@@ -62,7 +62,7 @@ theorem sum_single_block [DecidableEq K] (q : Σ k, J k) (n : ℕ) (k : K) :
     simp [Finsupp.single_apply]
   · have : ∀ i : J k, (Finsupp.single (⟨k₀, i₀⟩ : Σ k, J k) n) ⟨k, i⟩ = 0 := by
       intro i
-      rw [Finsupp.single_apply, if_neg]
+      rw [Finsupp.single_apply, ite_eq_right]
       intro e
       exact h (congrArg Sigma.fst e)
     simp [this, h]
@@ -83,7 +83,7 @@ theorem sum_mapDomain_block [DecidableEq K] {κ : K' → K} {u : (Σ k, ι k) �
     rw [Finsupp.mapDomain_single, sum_single_block, hu]
     simp only [sum_single_block]
     by_cases h : κ p.1 = k
-    · rw [if_pos h, Finset.sum_eq_single p.1]
+    · rw [ite_eq_left h, Finset.sum_eq_single p.1]
       · simp [h]
       · intro b _ hb
         split_ifs with h1 h2
@@ -91,7 +91,7 @@ theorem sum_mapDomain_block [DecidableEq K] {κ : K' → K} {u : (Σ k, ι k) �
         · rfl
         · rfl
       · simp
-    · rw [if_neg h]
+    · rw [ite_eq_right h]
       symm
       refine Finset.sum_eq_zero fun k' _ => ?_
       split_ifs with h1 h2
@@ -335,11 +335,11 @@ theorem sum_ite_pull {K₁ K : Type} [Fintype K₁] [DecidableEq K] {κ : K₁ �
     rw [pullDeg, hκ.extend_apply, Finset.sum_eq_single k₀]
     · simp
     · intro b _ hb
-      rw [if_neg fun e => hb (hκ e)]
+      rw [ite_eq_right fun e => hb (hκ e)]
     · simp
   · rw [pullDeg, Function.extend_apply' _ _ _ (by simpa using h)]
     refine Finset.sum_eq_zero fun k' _ => ?_
-    rw [if_neg fun e => h ⟨k', e⟩]
+    rw [ite_eq_right fun e => h ⟨k', e⟩]
 
 section Origin
 

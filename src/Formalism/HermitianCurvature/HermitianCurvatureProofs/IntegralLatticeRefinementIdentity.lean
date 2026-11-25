@@ -369,14 +369,14 @@ theorem integral_lattice_refinement_identity : Formalism.FourierDecayAlt.A6.IntL
   have hF : ∀ z, ∀ l ∈ Λ, F (z + l) = F z := by
     intro z l hl
     by_cases hz : z ∈ Om
-    · simp only [hFdef, hz, hOm z hz l hl, if_true]
+    · simp only [hFdef, hz, hOm z hz l hl, ite_true]
       exact hf z hz l hl
     · have : z + l ∉ Om := by
         intro h
         apply hz
         have := hOm _ h (-l) (Λ.neg_mem hl)
         simpa using this
-      simp only [hFdef, hz, this, if_false]
+      simp only [hFdef, hz, this, ite_false]
   have hne : Λ'.relIndex Λ ≠ 0 := relIndex_ne_zero hΛ'.1 hΛ.2
   have : Finite (Λ ⧸ Λ'.addSubgroupOf Λ) := Nat.finite_of_card_ne_zero hne
   have key : ∑ᶠ y : K ⧸ Λ', F (Quotient.out y) =

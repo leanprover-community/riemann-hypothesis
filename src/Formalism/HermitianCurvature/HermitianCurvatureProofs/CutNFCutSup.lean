@@ -58,7 +58,7 @@ private theorem xD_iterate_eq_ite_of_const_on_open {φ : ℝ → ℝ} {U : Set �
   | succ q ih =>
     intro y hy
     rw [Function.iterate_succ_apply']
-    simp only [Nat.succ_ne_zero, if_false]
+    simp only [Nat.succ_ne_zero, ite_false]
     exact xD_zero_of_const hU _ ih y hy
 
 theorem truncated_supremum_bound_holds : NFCutSup := by

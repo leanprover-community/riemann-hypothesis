@@ -91,10 +91,10 @@ theorem BlockGenFinite.proof (hR : BlockRatioAlg.Statement) : BlockGenFinite.Sta
       simp only [hpol, Polynomial.finsetSum_coeff, Polynomial.coeff_C_mul_X_pow,
         Polynomial.coeff_zero] at h1
       rw [Finset.sum_eq_single (Fin.last (m q))] at h1
-      · simp only [Fin.val_last, if_true] at h1
+      · simp only [Fin.val_last, ite_true] at h1
         exact hlead q h1
       · intro j _ hj
-        rw [if_neg]
+        rw [ite_eq_right]
         intro e
         exact hj (Fin.ext (by simp [e]))
       · simp

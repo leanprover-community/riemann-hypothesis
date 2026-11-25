@@ -192,23 +192,23 @@ private theorem e_compact (S : Finset (Pl F)) (φ : ∀ v : Pl F, GL (Fin n) (Co
     else (GLnLocal.integralGL (w.adicCompletion E) n : Set _)
   have hD : ∀ w, IsCompact (D w) := fun w => by
     by_cases h : w.under (𝓞 F) ∈ S
-    · simp only [D, if_pos h]
+    · simp only [D, ite_eq_left h]
       exact (hS _ h).isCompact.image (continuous_cmp _)
-    · simp only [D, if_neg h]
+    · simp only [D, ite_eq_right h]
       exact GLnLocal.isCompact_integralGL _ n
   have hK := rp_compact (A := fun w : Pl E => (GLnLocal.integralGL (w.adicCompletion E) n : Set _)) D hD
     {w : Pl E | w.under (𝓞 F) ∈ S} (finite_under _ S.finite_toSet) (fun w hw => by
       have h : w.under (𝓞 F) ∉ S := hw
-      simp only [D, if_neg h]
+      simp only [D, ite_eq_right h]
       exact subset_rfl)
   refine ⟨_, (AdelicGLn.finiteRestrictedEquiv E n).toHomeomorph.isCompact_preimage.2 hK, ?_⟩
   intro x hx hne w
   by_cases h : w.under (𝓞 F) ∈ S
   · change _ ∈ D w
-    simp only [D, if_pos h]
+    simp only [D, ite_eq_left h]
     exact ⟨pv _ x, subset_tsupport _ (hne _ h), cmp_pv _ x⟩
   · change _ ∈ D w
-    simp only [D, if_neg h]
+    simp only [D, ite_eq_right h]
     exact hx w h
 
 private theorem pv_finPart (v : Pl F) (g : AdelicGLn.AdelicGL E n) :

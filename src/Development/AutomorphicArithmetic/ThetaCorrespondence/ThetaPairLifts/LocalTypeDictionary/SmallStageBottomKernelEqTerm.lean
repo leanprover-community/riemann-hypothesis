@@ -327,7 +327,7 @@ theorem reads_transl : ∀ {D : D7} (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFa
     intro t ht
     have h : IsHalf (cA D e) t ∧ ∀ i j, GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle.InId (D.host.conj • modul P c) (toEAf D (t i j - (0 : WO S T) i j)) := by
       by_contra h
-      exact ht (if_neg h)
+      exact ht (ite_eq_right h)
     refine mem_latO_of_int hcc hset.gS hLS hLT (fun i j => ?_) fun i j => GlobalTheory.PlaceVec.finPart_mem_intAE ?_
     · rw [← h.1 i j, RingHom.map_mul, hinf, zero_mul]
     · obtain ⟨h1, -⟩ := h.2 i j
@@ -465,7 +465,7 @@ theorem cosetFn_isSBHalf : ∀ {D : D7} (S T : HSp D) (LS : Submodule (𝓞 D.ho
       IsHalf a t ∧ ∀ i j, GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle.InId I (toEAf D (t i j - x i j)) := fun t ht => by
     unfold cosetFn at ht
     by_contra h
-    exact ht (if_neg h)
+    exact ht (ite_eq_right h)
   refine ⟨fun t ht => (hsupp t ht).1, n₀ * k₁ * (k₄ * d), by positivity, fun u hu hh t => ?_, fun t ht => ?_⟩
   ·
     have hw : ∀ i j, ((k₄ * d) • (k₁ • u.map (toEAf D))) i j ∈ Formalism.L2.Herm.intAf D.host.F D.host.E :=
@@ -486,8 +486,8 @@ theorem cosetFn_isSBHalf : ∀ {D : D7} (S T : HSp D) (LS : Submodule (𝓞 D.ho
         fun H i j => StandardFirstTheta.GlobalTheory.CompanionTheory.StdFstTheta.inId_shift hnI (hw i j) (hsh i j) (H i j)⟩
     unfold cosetFn
     by_cases hc : IsHalf a t ∧ ∀ i j, GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle.InId I (toEAf D (t i j - x i j))
-    · rw [if_pos hc, if_pos ⟨hH.2 hc.1, hC.2 hc.2⟩]
-    · rw [if_neg hc, if_neg fun h' => hc ⟨hH.1 h'.1, hC.1 h'.2⟩]
+    · rw [ite_eq_left hc, ite_eq_left ⟨hH.2 hc.1, hC.2 hc.2⟩]
+    · rw [ite_eq_right hc, ite_eq_right fun h' => hc ⟨hH.1 h'.1, hC.1 h'.2⟩]
   ·
     obtain ⟨hth, htc⟩ := hsupp t ht
     have hint : IsIntM ((d • t).map (toEAf D)) := fun i j => by
@@ -802,14 +802,14 @@ theorem GlobalTheory.SqTop.CondExpo.expo_modul : ∀ {D : D7} {T : Type} {L : Le
     have hu := G.pl.under_w hv
     by_cases h0 : v = G.pl.v0
     · subst h0
-      rw [SqNum.condExp, if_pos rfl]
+      rw [SqNum.condExp, ite_eq_left rfl]
       refine expAt_succ (n := 0) ?_ ?_
       · rw [enu]
         exact ((hμ.tame _).mul (hL.xi_tame t _)).mul (G.ch.lev0 _ k1 k2 _ hu).1.inv
       · intro h
         exact GlobalTheory.RowTest.squareNuHeckeCharacter_not_unramified_at_chosenPlace hL G t i j ((Formalism.L2.Host.HChar.unrAt_iff _ _).2 h)
     · have h1 : v ∈ S1 D := (G.pl.mem_S0_of_sum_eq.1 hv).resolve_left h0
-      rw [SqNum.condExp, if_neg h0]
+      rw [SqNum.condExp, ite_eq_right h0]
       have hl := G.ch.lev1 _ k1 k2 (G.pl.w v) (by rw [hu]; exact h1)
       refine expAt_succ (n := 1) ?_ ?_
       · rw [enu]
@@ -928,7 +928,7 @@ theorem exists_one_add {e : Formalism.L2.Theta.AE D} {P : Finset (Pl D.host.E)} 
   have hv : ∀ w ∈ P, Valued.v (cpt (D := D) w s.1) ≤ WithZero.exp (-(c w : ℤ)) := fun w hw =>
     GlobalTheory.FunObj.Comparison₂.v_le_of_mem_idS (Ideal.le_of_dvd (Finset.dvd_prod_of_mem (fun w => w.asIdeal ^ c w) hw)) hs
   have h0 : ∀ w, w ∉ P → cpt (D := D) w s.1 = 0 := fun w hw => by
-    rw [← het, RingHom.map_mul, cpt_idem he, if_neg hw, zero_mul]
+    rw [← het, RingHom.map_mul, cpt_idem he, ite_eq_right hw, zero_mul]
   have h1 : ∀ w, Valued.v (1 + cpt (D := D) w s.1) = 1 := fun w => by
     by_cases hw : w ∈ P
     · refine Valuation.map_one_add_of_lt _ ((hv w hw).trans_lt ?_)
@@ -1132,7 +1132,7 @@ theorem stdSnd_coset_value : ∀ {D : D7} (S T : HSp D), S.gram = 1 → T.gram =
   · obtain ⟨hh, hy⟩ : IsHalf (cA D e) y ∧ ∀ i j, InId (D.host.conj • modul P c)
         (toEAf D (y i j - unitPt S T (cA D e) o i j)) := by
       by_contra h
-      exact hy (if_neg h)
+      exact hy (ite_eq_right h)
     have hu : ∀ j l, toEAf D e * toEAf D (cA D (y j l)) = toEAf D (cA D (y j l)) := fun j l => by
       rw [← RingHom.map_mul]
       conv_rhs => rw [← hh j l, RingHom.map_mul, cA_cA]
@@ -1141,13 +1141,13 @@ theorem stdSnd_coset_value : ∀ {D : D7} (S T : HSp D), S.gram = 1 → T.gram =
       rw [dualCoord_eq hS hT, ring_sub _ _ _ (hu j)]
       exact GlobalTheory.FrameIdeal.inId_sum _ fun l => GlobalTheory.FrameIdeal.inId_mul (mul_mem (hB i l).2 ha) (adj_sub_mem (hy j l))
     unfold stdSnd
-    refine (if_pos ⟨hh, fun i j => ?_, fun i j hj => ?_⟩).trans ?_
+    refine (ite_eq_left ⟨hh, fun i j => ?_, fun i j hj => ?_⟩).trans ?_
     · refine unitChar_congr he hc hν hl hN (fun i j => ?_) hx
       have hj : o + j.1 < T.rank := by have := j.2; omega
       have h1 := key i ⟨o + j.1, hj⟩
       rw [Finset.sum_eq_single j (fun l _ hne => by
-        rw [if_neg fun h => hne (Fin.ext (Nat.add_left_cancel h).symm), mul_zero, mul_zero])
-        (fun h => absurd (Finset.mem_univ _) h), if_pos rfl, mul_right_comm, hee, mul_comm] at h1
+        rw [ite_eq_right fun h => hne (Fin.ext (Nat.add_left_cancel h).symm), mul_zero, mul_zero])
+        (fun h => absurd (Finset.mem_univ _) h), ite_eq_left rfl, mul_right_comm, hee, mul_comm] at h1
       unfold rightBlock
       rw [dite_eq_left hj]
       exact h1
@@ -1158,7 +1158,7 @@ theorem stdSnd_coset_value : ∀ {D : D7} (S T : HSp D), S.gram = 1 → T.gram =
       · exact hE
       · exact zero_mem _
     · have h1 := key i j
-      rw [Finset.sum_eq_zero fun l _ => by rw [if_neg (by omega), mul_zero, mul_zero], sub_zero] at h1
+      rw [Finset.sum_eq_zero fun l _ => by rw [ite_eq_right (by omega), mul_zero, mul_zero], sub_zero] at h1
       exact inId_of h1
 
 end GlobalTheory.BotCosetValue

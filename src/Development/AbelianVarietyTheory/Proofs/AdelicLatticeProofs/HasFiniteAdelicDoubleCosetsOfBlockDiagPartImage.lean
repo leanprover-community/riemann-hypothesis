@@ -1438,7 +1438,7 @@ private lemma exists_finset_integral_classes {R : Type} [CommRing R] [Algebra �
     choose z a ha hza using fun i j => hi L hL0 _ (hwN i j)
     have hc : ∃ w', Cls (fun i j => (z i j : ZMod L)) w' :=
       ⟨w, hw, fun i j => ⟨z i j, a i j, ha i j, rfl, hza i j⟩⟩
-    refine ⟨hc.choose, Finset.mem_image.2 ⟨_, Finset.mem_univ _, dif_pos hc⟩, ?_⟩
+    refine ⟨hc.choose, Finset.mem_image.2 ⟨_, Finset.mem_univ _, dite_eq_left hc⟩, ?_⟩
     obtain ⟨htS, ht⟩ := hc.choose_spec
     obtain ⟨t, htdef⟩ : ∃ t, t = hc.choose := ⟨_, rfl⟩
     rw [← htdef] at htS ht ⊢

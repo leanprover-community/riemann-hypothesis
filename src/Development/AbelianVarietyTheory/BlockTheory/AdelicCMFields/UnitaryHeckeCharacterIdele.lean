@@ -315,7 +315,7 @@ theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdel
     {ϖ : (P.adicCompletion E)ˣ} (hϖ : _root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.IsUniformiser P ϖ) :
     χ.valueAt P = (χ.localComponent P ϖ : ℂ) := by
   have hc := (_root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.exists_isUniformiser P).choose_spec
-  rw [_root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.UnitaryHeckeChar.valueAt, if_pos h]
+  rw [_root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.UnitaryHeckeChar.valueAt, ite_eq_left h]
   generalize (_root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.exists_isUniformiser P).choose = ϖ₀ at hc ⊢
   have hu : Valued.v ((ϖ₀ * ϖ⁻¹ : (P.adicCompletion E)ˣ) : P.adicCompletion E) = 1 := by
     rw [Units.val_mul, Units.val_inv_eq_inv_val, map_mul, map_inv₀, hc, hϖ,

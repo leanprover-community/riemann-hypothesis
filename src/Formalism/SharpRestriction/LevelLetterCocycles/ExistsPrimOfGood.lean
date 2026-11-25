@@ -42,7 +42,7 @@ theorem smulS_delta (g : PowerSeries LL) (w : V) (j : ℕ) :
   rw [Finset.sum_eq_single j]
   · simp
   · intro b _ hb
-    rw [if_neg (by omega)]
+    rw [ite_eq_right (by omega)]
     simp
   · intro hj
     simp at hj

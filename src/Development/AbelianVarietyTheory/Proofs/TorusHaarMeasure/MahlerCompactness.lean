@@ -142,14 +142,14 @@ theorem entry_bound {τ : E →+* ℂ} {Y : Matrix (Fin r) (Fin r) ℂ} (hY : Y.
       ring
     simp only [hermC, col]
     simp_rw [e, hGG, Matrix.one_apply, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq',
-      Finset.mem_univ, if_true]
+      Finset.mem_univ, ite_true]
   have h2 := IntegralBasisReduction.hermC_normal X hY _ hg (col Y b) q
   have h3 : Y⁻¹ *ᵥ col Y b = Pi.single b 1 := by
     have : col Y b = Y *ᵥ Pi.single b 1 := by funext i; simp [col]
     rw [this, mulVec_mulVec, nonsing_inv_mul _ (isUnit_iff_ne_zero.mpr hY), one_mulVec]
   rw [h3] at h2
   simp only [Pi.single_apply, mul_ite, mul_one, mul_zero, ite_mul, zero_mul, Finset.sum_ite_eq',
-    Finset.mem_univ, if_true] at h2
+    Finset.mem_univ, ite_true] at h2
   rw [← h1, h2, norm_mul, Complex.norm_conj]
   have hs : ‖(((sgn X.p0 (b : ℕ) : ℝ) : ℂ))‖ = 1 := by
     unfold sgn; split_ifs <;> simp
@@ -501,7 +501,7 @@ theorem _root_.GlobalTheory.FlagMahler.mahler_compactness : _root_.ReciprocityTh
   let g : _ → Basis (Fin n) ℤ X.Λ := fun t => if h : t ∈ T then Classical.choose h else _root_.ReciprocityTheory.ChartRestriction.G.FD.RealPlaceEmbeddings.zb X
   have hg : ∀ t ∈ T, _root_.ReciprocityTheory.ChartRestriction.G.FD.HermitianLatticeMaps.ty X (g t) = t := by
     intro t ht
-    simp only [g, dif_pos ht]
+    simp only [g, dite_eq_left ht]
     exact (Classical.choose_spec ht).1
   set R : ℝ := ∑ t ∈ hT.toFinset, ∑ s ∈ S, |_root_.GlobalTheory.FlagMahler.bound X C (g t) s| with hR
   refine ⟨_root_.GlobalTheory.FlagMahler.Kset X R, _root_.GlobalTheory.FlagMahler.Kset_compact X R,

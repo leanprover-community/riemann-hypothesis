@@ -754,7 +754,7 @@ theorem dpolyOf_monomial_one {k : Type} [CommRing k] {d : ℕ} (F : Fin d → PS
     unfold DpolyOf
     refine Finset.sum_subset MvPolynomial.support_monomial_subset fun x _ hx => ?_
     rw [MvPolynomial.notMem_support_iff.1 hx, map_zero, zero_mul]
-  rw [e, Finset.sum_singleton, MvPolynomial.coeff_monomial, if_pos rfl, map_one, one_mul]
+  rw [e, Finset.sum_singleton, MvPolynomial.coeff_monomial, ite_eq_left rfl, map_one, one_mul]
 
 theorem pow_mul_nabVal_mem {R : Type} [CommRing R] {d : ℕ} {O : Type} [CommRing O] [StarRing O] (k : Type)
     [CommRing k] [Algebra ℚ k] [Algebra R k] (B : FB R d O) (g : PS k 2 d) (hg : B.IsCanonGauge k g) (δ : k)

@@ -171,12 +171,6 @@ def kapRatio {n : ℕ} (ty : Fin n → D.what₂.FT) : ℝ := (LinearMap.det S.i
 def kapOf {n : ℕ} (ty : Fin n → D.what₂.FT) : ℝ :=
   if 0 < S.kapRatio ty then S.kapRatio ty ^ ((n : ℝ)⁻¹) else 1
 
-theorem kapOf_pos {n : ℕ} (ty : Fin n → D.what₂.FT) : 0 < S.kapOf ty := by
-  unfold kapOf
-  split_ifs with h
-  · exact Real.rpow_pos_of_pos h _
-  · exact one_pos
-
 end RowSide
 
 def kapSharp (D : D7) : ℝ := (RowSide.sharp D).kapOf D.what₂.ft

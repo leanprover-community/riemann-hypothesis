@@ -530,9 +530,9 @@ theorem prod_opt {σ : Fin n → Option (Fin e)} (hσ : ∀ k k' i, σ k = some 
   by_cases hi : f i = 1
   · simp [hi]
   · obtain ⟨k, hk⟩ := hf i hi
-    rw [Finset.prod_eq_single k, if_pos hk]
+    rw [Finset.prod_eq_single k, ite_eq_left hk]
     · intro k' _ hne
-      exact if_neg fun h => hne (hσ k' k i h hk)
+      exact ite_eq_right fun h => hne (hσ k' k i h hk)
     · simp
 
 theorem snc_of_loc [CompactSpace X] (hL : IsPotential A L) (hs : IsSection A L s)

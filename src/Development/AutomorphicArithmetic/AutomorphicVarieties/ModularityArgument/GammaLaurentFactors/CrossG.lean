@@ -893,11 +893,11 @@ theorem UpperTheory.V.Z.Gam.sideGCenOf :
     choose Φb hΦb b hb0 hb using hb
     let Φ : ∀ v : HeightOneSpectrum (𝓞 K), Matrix (Fin n) (Fin n) (v.adicCompletion K) → ℂ :=
       fun v => if v ∈ S then Φb v else integralIndicator (v.adicCompletion K) n
-    have hΦS : ∀ v ∈ S, Φ v = Φb v := fun v hv => if_pos hv
+    have hΦS : ∀ v ∈ S, Φ v = Φb v := fun v hv => ite_eq_left hv
     obtain ⟨c, c', hc, hc', hSB1, hG⟩ := genFE hn μ φ₀.2 φ₀.2 (h hmem) S hRS
       D.finite.π x ℓ hsm hℓs (fun v hv => ⟨hfix v hv, hℓ1 v⟩) (fun v hv => hℓK v (hfix v hv)) D.finite.isIrreducible
       D.finite.isAdmissible z (fun v hv => (hz v hv).1) fi hf' ⟨1, hF1'⟩ Φ (fun v hv => hΦS v hv ▸ hΦb v)
-      (fun v hv => if_neg hv)
+      (fun v hv => ite_eq_right hv)
     obtain ⟨σ₁, Λ, hΛ, h1⟩ := hG φ
     obtain ⟨σ₂, Λ', hΛ', h2⟩ := hG φ'
     have hloc : ∀ s, ∏ v ∈ S, zetaIntegral (localHaar n v) (Φ v)
@@ -1440,10 +1440,10 @@ private theorem sum_card_filter {Y : Type*} (s : Multiset Y) (d F : ℕ) (A : Y 
     simp only [Multiset.filter_cons, Multiset.card_add, Finset.sum_add_distrib, ih, mul_add]
     congr 1
     by_cases hB : B y
-    · rw [← h1 y hB, Finset.card_filter, if_pos hB, Multiset.card_singleton, mul_one]
+    · rw [← h1 y hB, Finset.card_filter, ite_eq_left hB, Multiset.card_singleton, mul_one]
       exact Finset.sum_congr rfl fun j _ => by split_ifs <;> simp
-    · rw [if_neg hB]
-      exact Finset.sum_eq_zero fun j _ => by rw [if_neg fun hA => hB (h2 y j hA)]; simp
+    · rw [ite_eq_right hB]
+      exact Finset.sum_eq_zero fun j _ => by rw [ite_eq_right fun hA => hB (h2 y j hA)]; simp
 
 private theorem loc_pow {K : Type} [Field K] [NumberField K] (η : HChar K) (j : ℕ) (v : HeightOneSpectrum (𝓞 K)) :
     (η ^ j).loc v = η.loc v ^ j := by

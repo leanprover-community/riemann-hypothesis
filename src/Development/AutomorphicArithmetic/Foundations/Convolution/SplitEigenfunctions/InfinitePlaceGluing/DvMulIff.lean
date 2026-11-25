@@ -1486,7 +1486,7 @@ theorem UpperTheory.ConvolutionTheory.RankTwoDescent.exGd_of :
       have hs : S y ≠ 0 := fun h0 => hy (by rw [h0]; simp)
       rw [hSv y X hz] at hs
       by_contra hv
-      exact hs (if_neg fun hall => hv (hall v))
+      exact hs (ite_eq_right fun hall => hv (hall v))
     ·
       intro t ht h1 y X
       have htL := UpperTheory.hasLevel_of_unitIdele_congruent_one L hL t ht h1
@@ -1522,7 +1522,7 @@ theorem UpperTheory.ConvolutionTheory.RankTwoDescent.exGd_of :
       simpa only [hφ₀, mul_one] using hne
     have h2 := hW 1 1
     rw [e1] at h2
-    rw [h2, hSv 1 1 hz, if_pos fun v => ?_]
+    rw [h2, hSv 1 1 hz, ite_eq_left fun v => ?_]
     · exact mul_ne_zero (div_self hnC ▸ one_ne_zero) hz
     · unfold Dv
       simp

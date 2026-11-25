@@ -471,10 +471,10 @@ theorem negX_fibClass (j : ℕ) : negX (fibClass j : RP Ψ N) = vR j := by
 def sAll : RP Ψ N := ∑ τ, pk τ 1
 
 theorem muSmall_of_le {j : ℕ} (h : N - j ≤ j) : (muSmall j : RP Ψ N) = muR j := by
-  rw [muSmall, if_pos h, muR_eq]
+  rw [muSmall, ite_eq_left h, muR_eq]
 
 theorem muR_sub_muSmall {j : ℕ} (h : ¬ N - j ≤ j) : (muR j : RP Ψ N) - muSmall j = sAll := by
-  rw [muSmall, if_neg h, muR_eq, sAll, sub_neg_eq_add, ← Finset.sum_add_distrib]
+  rw [muSmall, ite_eq_right h, muR_eq, sAll, sub_neg_eq_add, ← Finset.sum_add_distrib]
   refine Finset.sum_congr rfl fun τ _ => ?_
   rw [pk, pkLow, Finset.sum_filter, Finset.sum_filter, ← Finset.sum_add_distrib]
   refine Finset.sum_congr rfl fun i _ => ?_
@@ -695,7 +695,7 @@ theorem gap_nonneg_of_dominant {Ψ : Type} [Fintype Ψ] {N : ℕ} {j : ℕ} (hj1
     {mu : Wt Ψ N} (hd : Dominant mu) (τ : Ψ) : 0 ≤ gap j mu τ := by
   have h1 : j - 1 < N := by omega
   have hle : mu τ ⟨j, hjN⟩ ≤ mu τ ⟨j - 1, h1⟩ := hd τ ⟨j - 1, h1⟩ ⟨j, hjN⟩ (by rw [Fin.mk_le_mk]; omega)
-  simp only [gap, ent, dif_pos h1, dif_pos hjN]
+  simp only [gap, ent, dite_eq_left h1, dite_eq_left hjN]
   exact sub_nonneg.mpr hle
 
 theorem NefThreshold.mono {Ψ : Type} [Fintype Ψ] {N : ℕ} {j : ℕ} (hj1 : 1 ≤ j) (hjN : j < N)
@@ -1220,7 +1220,7 @@ theorem inv_linear_eval (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N j : ℕ) (l
     rw [← hc, coeff_sum, Finset.sum_eq_single p]
     · simp
     · intro q _ hq
-      rw [MvPolynomial.coeff_smul, coeff_X, if_neg, smul_zero]
+      rw [MvPolynomial.coeff_smul, coeff_X, ite_eq_right, smul_zero]
       intro h
       exact hq (Finsupp.single_left_injective one_ne_zero h)
     · simp

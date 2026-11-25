@@ -59,7 +59,7 @@ theorem exists_isReps_aL : ∀ (F : Type) [Field F] [NumberField F] (κ : Type) 
     intro q
     by_cases h : q = 0
     · simp [s, h]
-    · simp only [s, if_neg h]
+    · simp only [s, ite_eq_right h]
       exact Classical.choose_spec (Ideal.Quotient.mk_surjective q)
   have hs0 : s 0 = 0 := by simp [s]
   let e : (κ → 𝓞 F ⧸ I) → (κ → F) := fun q i => b * (s (q i) : F)

@@ -398,13 +398,6 @@ section
 open Formalism.BasicNotions Formalism.ConjugateSelfDual Formalism.MainNotions Formalism.MainNotions.N Polynomial NumberField IsDedekindDomain ReciprocityTheory.Gal GlobalTheory.StringRepresentationDecomposition
 noncomputable section
 namespace GlobalTheory.ResidualRankCount
-section Alg
-variable {Γ : Type} [Group Γ]
-end Alg
-section Lists
-end Lists
-section Psi
-end Psi
 theorem residual_count_alt_alt : ValRingModel → SSList → SSRankUnique → _root_.GlobalTheory.StringRepresentationDecomposition.ResidueCount := by
   intro hV hS hU D hA hRb i hg r hr x Pa R hR hcp
   classical

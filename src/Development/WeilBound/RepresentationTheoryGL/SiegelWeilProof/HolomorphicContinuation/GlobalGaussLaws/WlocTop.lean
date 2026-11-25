@@ -652,16 +652,16 @@ theorem prodF {m n : ℕ} (t : ℝ) (ε : Fin m → Bool) (φ : Fin n → ℝ) :
       else (∏ j, Complex.exp (Complex.I * (φ j : ℂ)))⁻¹ := by
     intro a
     by_cases h : epsT t ε a = true
-    · rw [if_pos h]
+    · rw [ite_eq_left h]
       refine Finset.prod_congr rfl fun j _ => ?_
-      simp only [rhoT, if_pos h]
+      simp only [rhoT, ite_eq_left h]
       rw [show Complex.I * (φ j : ℂ) = (φ j : ℂ) * Complex.I by ring, Complex.exp_mul_I, ← Complex.ofReal_cos,
         ← Complex.ofReal_sin]
       push_cast
       ring
-    · rw [if_neg h, ← Finset.prod_inv_distrib]
+    · rw [ite_eq_right h, ← Finset.prod_inv_distrib]
       refine Finset.prod_congr rfl fun j _ => ?_
-      simp only [rhoT, if_neg h]
+      simp only [rhoT, ite_eq_right h]
       rw [← Complex.exp_neg, show -(Complex.I * (φ j : ℂ)) = (-(φ j : ℂ)) * Complex.I by ring, Complex.exp_mul_I,
         Complex.cos_neg, Complex.sin_neg, ← Complex.ofReal_cos, ← Complex.ofReal_sin]
       push_cast

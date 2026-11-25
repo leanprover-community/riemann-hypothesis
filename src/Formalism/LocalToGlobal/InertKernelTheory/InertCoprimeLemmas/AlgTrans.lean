@@ -276,10 +276,10 @@ theorem kerTransAlg_of (B : Ker.Base D cc δ) (hcc : Formalism.MainNotions.Taylo
   have hMhf : ∀ x w, FiniteDimensional ℚ (Mh x w) := by
     intro x w
     by_cases h : ∃ N : ℕ, 0 < N ∧ (N : ℂ) * (v w + x w) ∈ B.L.lattice
-    · have e : Mh x w = (h1 _ h).choose := dif_pos h
+    · have e : Mh x w = (h1 _ h).choose := dite_eq_left h
       rw [e]
       exact (h1 _ h).choose_spec.1
-    · have e : Mh x w = ⊥ := dif_neg h
+    · have e : Mh x w = ⊥ := dite_eq_right h
       rw [e]
       infer_instance
   let M : IntermediateField ℚ ℂ := M0 ⊔ ⨆ x : {x // x ∈ S}, ⨆ w : Fin 4 × D.what₂.Tau, Mh x.1 w
@@ -294,7 +294,7 @@ theorem kerTransAlg_of (B : Ker.Base D cc δ) (hcc : Formalism.MainNotions.Taylo
   have hcoef : ∀ x ∈ S, ∀ w, CoefIn1 (f x w) M := by
     intro x hx w k
     have h := htor x hx w
-    have e : Mh x w = (h1 _ h).choose := dif_pos h
+    have e : Mh x w = (h1 _ h).choose := dite_eq_left h
     have hk := (h1 _ h).choose_spec.2 k
     rw [← e] at hk
     exact hMhle x hx w hk

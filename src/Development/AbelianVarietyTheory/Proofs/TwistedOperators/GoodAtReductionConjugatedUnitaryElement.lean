@@ -220,7 +220,7 @@ theorem upperLeftBlock_eq_submatrix_of_rank_eq {κ : Type} [CommRing κ] {n r : 
   refine upper_block_val_submatrix hr fun i j hij => ?_
   exfalso
   have hi : blk2 (n := n) r i = 0 := by
-    unfold blk2; rw [if_pos (lt_of_lt_of_le i.2 hn)]
+    unfold blk2; rw [ite_eq_left (lt_of_lt_of_le i.2 hn)]
   rw [hi] at hij
   exact Nat.not_lt_zero _ hij
 

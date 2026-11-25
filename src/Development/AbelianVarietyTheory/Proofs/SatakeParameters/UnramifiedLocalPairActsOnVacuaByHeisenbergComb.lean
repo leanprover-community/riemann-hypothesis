@@ -334,7 +334,7 @@ theorem locPair_act_vac_comb : ∀ (L : Type) [Field L] [CharZero L] [Valued L (
 
   obtain ⟨f, hf⟩ : ∃ f : Module.Dual ℂ M, f s0 = 1 := by
     have := (Module.forall_dual_apply_eq_zero_iff ℂ s0).not.mpr hs0ne
-    push_neg at this
+    push Not at this
     obtain ⟨f, hf⟩ := this
     exact ⟨(f s0)⁻¹ • f, by simp [hf]⟩
   have hline : ∀ t, LocVac ρ t → ∀ m, LocVac ρ (f.smulRight t m) := by

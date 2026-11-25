@@ -371,9 +371,9 @@ private theorem derivation_iterate_char_eq_self_of_coords {K : Type} [Field K] (
     obtain ⟨m, hm⟩ : ∃ m, p = m + 1 := ⟨p - 1, (Nat.succ_pred_eq_of_pos hp.out.pos).symm⟩
     rw [hm, Function.iterate_succ_apply]
     by_cases hik : i = k
-    · have hfix : D i (x k : K) = x k := by rw [hD, if_pos hik]
+    · have hfix : D i (x k : K) = x k := by rw [hD, ite_eq_left hik]
       rw [hfix, Function.iterate_fixed hfix, sub_self]
-    · have hz : D i (x k : K) = 0 := by rw [hD, if_neg hik]
+    · have hz : D i (x k : K) = 0 := by rw [hD, ite_eq_right hik]
       rw [hz, Function.iterate_fixed (map_zero (D i)), sub_self]
   have := derivation_eq_zero_of_kills_coords x D hd E hE c
   have h2 : L c = 0 := this
@@ -503,7 +503,7 @@ theorem euler_cartan_logWedge : ∀ (K : Type) [Field K] (n : ℕ) (x : Fin n �
     have h : KaehlerDifferential.D ℤ K c = ∑ j, e j • dlog (x j) := hc
 
     rw [h, map_sum, map_sum]
-    simp only [map_smul, hθ.2.2, smul_ite, smul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    simp only [map_smul, hθ.2.2, smul_ite, smul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   simp only [extD_apply]
   rw [map_smul θ, CechDR.dDR_smul, CechDR.dDR_smul, hd, hdθ]
   simp only [smul_zero, add_zero]
@@ -590,8 +590,8 @@ private theorem exists_dual_basis_dlog_of_isCoord (K : Type) [Field K] {n : ℕ}
     rw [← dlogBasis_apply x hx j, Module.Basis.coord_apply, Module.Basis.repr_self,
       Finsupp.single_apply]
     by_cases h : i = j
-    · rw [if_pos h.symm, if_pos h]
-    · rw [if_neg (Ne.symm h), if_neg h]
+    · rw [ite_eq_left h.symm, ite_eq_left h]
+    · rw [ite_eq_right (Ne.symm h), ite_eq_right h]
   · intro v
     conv_rhs => rw [← (dlogBasis x hx).sum_repr v]
     refine Finset.sum_congr rfl fun i _ => ?_
@@ -682,7 +682,7 @@ theorem cartier_projector_homotopic : ∀ (K : Type) [Field K] (p : ℕ) [Fact p
       by_cases hij : i = j
       · subst hij
         simp
-      · rw [if_neg hij, if_neg (Ne.symm hij), map_zero]
+      · rw [ite_eq_right hij, ite_eq_right (Ne.symm hij), map_zero]
   let dE : AddMonoid.End (abelian₂ K) := extD K
   let θE : Fin n → AddMonoid.End (abelian₂ K) := fun i => (θ i).toAddMonoidHom
   let LE : Fin n → AddMonoid.End (abelian₂ K) := fun i => dE * θE i + θE i * dE

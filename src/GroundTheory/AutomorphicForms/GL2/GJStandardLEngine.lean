@@ -115,10 +115,10 @@ theorem exists_sphericalIntegrable (ν : Measure (AdelicGLn.AdelicGL K n)) [ν.I
   choose Φb hΦbSB a ha hΦb using hbump
   set Φ : ∀ v : HeightOneSpectrum (𝓞 K), Matrix (Fin n) (Fin n) (v.adicCompletion K) → ℂ :=
     fun v ↦ if h : v ∈ S then Φb v h else integralIndicator (v.adicCompletion K) n with hΦdef
-  have hΦS : ∀ v (hv : v ∈ S), Φ v = Φb v hv := fun v hv ↦ by simp only [hΦdef, dif_pos hv]
+  have hΦS : ∀ v (hv : v ∈ S), Φ v = Φb v hv := fun v hv ↦ by simp only [hΦdef, dite_eq_left hv]
   have hSB : ∀ v ∈ S, IsSchwartzBruhat (Φ v) := fun v hv ↦ by rw [hΦS v hv]; exact hΦbSB v hv
   have hS0 : ∀ v ∉ S, Φ v = integralIndicator (v.adicCompletion K) n :=
-    fun v hv ↦ by simp only [hΦdef, dif_neg hv]
+    fun v hv ↦ by simp only [hΦdef, dite_eq_right hv]
   obtain ⟨σ₀, hσ₀⟩ := hP _ (matrixTensor_mem φ S Φ hSB hS0)
   refine ⟨σ₀, fun s hs ↦ ?_⟩
   obtain ⟨-, hE2⟩ := globalZeta_eq_euler ν μi φ hSB hS0 hξ hsph hfic hf (hσ₀ s hs)

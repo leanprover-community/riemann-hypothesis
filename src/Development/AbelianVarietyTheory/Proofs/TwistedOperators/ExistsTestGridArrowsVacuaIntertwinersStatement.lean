@@ -396,8 +396,8 @@ theorem cosetInd_eq_cosInd {S T : GlobalTheory.Grid.Node D} {e : AE D} (hS : For
   classical
   rw [Set.indicator_apply]
   by_cases h : IsHalf e x ∧ InCosetOf S T I c x
-  · rw [if_pos h, if_pos (key.1 h)]; rfl
-  · rw [if_neg h, if_neg fun h' => h (key.2 h')]
+  · rw [ite_eq_left h, ite_eq_left (key.1 h)]; rfl
+  · rw [ite_eq_right h, ite_eq_right fun h' => h (key.2 h')]
 
 theorem coset_eq_cos : ∀ {D : D7} (S T : GlobalTheory.Grid.Node D) (e : AE D) (P : Finset (Formalism.L2.DIV.Pl D.host.E)) (d : Formalism.L2.DIV.Pl D.host.E → ℕ), Formalism.L2.DIV.IsFrame S.β S.Λ → Formalism.L2.DIV.IsFrame T.β T.Λ → IsIdemSum e P → ∀ c : GlobalTheory.Grid.Coset S T (∏ w ∈ P, w.asIdeal ^ d w), ∃ κ : GlobalTheory.ChiGrid.Cos S.Λ T.Λ (∏ w ∈ P, w.asIdeal ^ d w), GlobalTheory.Grid.cosetInd S T e (∏ w ∈ P, w.asIdeal ^ d w) c = GlobalTheory.ChiGrid.cosInd e κ := by
   intro D S T e P d hS hT he c
@@ -954,18 +954,18 @@ theorem dataAR_row (D : D7) (hS : GlobalTheory.IndefiniteRowSideFullHecke.CuspAl
     simp only [att, he, hδ]
     by_cases h : Odd (i + j)
     · have h' : Odd (rkV D i (j + 1)) := by rw [odd_rkV, show i + (j + 1) = i + j + 1 by ring, Nat.odd_add_one]; tauto
-      simp only [h, h', if_true]; ring
+      simp only [h, h', ite_true]; ring
     · have h' : ¬ Odd (rkV D i (j + 1)) := by rw [odd_rkV, show i + (j + 1) = i + j + 1 by ring, Nat.odd_add_one]; tauto
-      simp only [h, h', if_false]; ring
+      simp only [h, h', ite_false]; ring
   have hS' : att (-(D.hc τ).e ⟨j, hj⟩) (rkV D i j) = -(G.e (j + 1) : ℚ) + δ' := by
     simp only [att, he, hδ']
     by_cases h : Odd (i + j)
     · have h' : Odd (rkV D i j) ↔ False := by rw [odd_rkV]; tauto
       have h'' : Odd (i + (j + 1)) ↔ False := by rw [show i + (j + 1) = i + j + 1 by ring, Nat.odd_add_one]; tauto
-      simp only [h', h'', if_false]; ring
+      simp only [h', h'', ite_false]; ring
     · have h' : Odd (rkV D i j) := by rw [odd_rkV]; tauto
       have h'' : Odd (i + (j + 1)) := by rw [show i + (j + 1) = i + j + 1 by ring, Nat.odd_add_one]; tauto
-      simp only [h', h'', if_true]; ring
+      simp only [h', h'', ite_true]; ring
   rw [hT, hS']
   set P := shift δ (G.parD i j) with hP
   have hpart := partner_parD D τ i j hi hj δ δ'

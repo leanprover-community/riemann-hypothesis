@@ -180,12 +180,12 @@ theorem dualWt_anti {m : ℕ} (mu : Fin (m + 1) → ℤ) (h : Antitone mu) : Ant
 theorem flatW_top {n' : ℕ} (m : ℕ) {TT : Finset (Fin n')} (al be : TT → ℕ) (s : TT) :
     flatW m al be s.val = wtPQ m (al s) (be s) := by
   funext i
-  simp only [flatW, wtPQ, dif_pos s.2]
+  simp only [flatW, wtPQ, dite_eq_left s.2]
 
 theorem flatW_off {n' : ℕ} (m : ℕ) {TT : Finset (Fin n')} (al be : TT → ℕ) (s : Fin n') (hs : s ∉ TT) :
     flatW m al be s = 0 := by
   funext i
-  simp only [flatW, dif_neg hs, Pi.zero_apply]
+  simp only [flatW, dite_eq_right hs, Pi.zero_apply]
 
 theorem flatW_add {n' : ℕ} (m : ℕ) {TT : Finset (Fin n')} (al be al' be' : TT → ℕ) :
     flatW m (fun s => al s + al' s) (fun s => be s + be' s) = flatW m al be + flatW m al' be' := by
@@ -272,10 +272,10 @@ theorem posOK_top (h1 : CloudOne) {p n' : ℕ} (R : RS p n') (mm : ℕ) (hmm : 1
   have hl0 := last_ne_zero'' (mm + 1) (by omega)
   have z1 : (wtPQ (mm + 1) (2 * ccl) (2 * ccl)) 0 = ((2 * ccl : ℕ) : ℤ) := by simp [wtPQ]
   have z2 : (lam - wtPQ (mm + 1) P Q) 0 = ((ccl : ℕ) : ℤ) := by
-    rw [lo_apply (mm + 1) ccl P Q lam h0 hl, if_pos rfl]
+    rw [lo_apply (mm + 1) ccl P Q lam h0 hl, ite_eq_left rfl]
   have z3 : (dualWt (lam - wtPQ (mm + 1) P Q)) 0 = ((ccl : ℕ) : ℤ) := by
     simp only [dualWt, Fin.rev_zero]
-    rw [lo_apply (mm + 1) ccl P Q lam h0 hl, if_neg hl0, if_pos rfl, neg_neg]
+    rw [lo_apply (mm + 1) ccl P Q lam h0 hl, ite_eq_right hl0, ite_eq_left rfl, neg_neg]
   rw [z1, z2, z3, zpow_natCast, zpow_natCast]
   exact e4 c hc
 
@@ -321,16 +321,16 @@ theorem posOK_at_top (h1 : CloudOne) {p n' : ℕ} (R : RS p n') (mm : ℕ) (hmm 
   rw [lamAt_sub', lamAt_dualW, lamAt_sub', hflat, hflat, hflat]
   rw [show cloudAt lam0 s.val = fun j => lamAt lam0 s.val j.castSucc.succ from rfl]
   by_cases he : Even s.val.val
-  · simp only [if_pos he]
+  · simp only [ite_eq_left he]
     have hlam' : lamAt lam0 s.val = lam0 s.val := by
       unfold lamAt
-      rw [if_pos he]
+      rw [ite_eq_left he]
     rw [hlam']
     exact posOK_top h1 R mm hmm a ccl (A s) (B s) (lam0 s.val) (hDom s.val) t0 tl tm h8
-  · simp only [if_neg he]
+  · simp only [ite_eq_right he]
     have hlam' : lamAt lam0 s.val = fun i => -lam0 s.val i.rev := by
       unfold lamAt
-      rw [if_neg he]
+      rw [ite_eq_right he]
     rw [hlam']
     refine posOK_top h1 R mm hmm a ccl (B s) (A s) _ (dualWt_anti _ (hDom s.val)) ?_ ?_ ?_ h8
     · simp only [Fin.rev_zero]
@@ -374,9 +374,9 @@ theorem mulV_mem (X Y Z : Fin n' → Fin (m + 1) → ℤ) (hX : IsDominant X) (h
   intro F hF r hr
   unfold Vsp at hF hr ⊢
   refine tensorLat_mul _ _ _ (fun s f hf g hg => ?_) F hF r hr
-  simp only [if_pos (lamAt_anti X hX s)] at hf
-  simp only [if_pos (lamAt_anti Y hY s)] at hg
-  simp only [if_pos (lamAt_anti Z hZ s)]
+  simp only [ite_eq_left (lamAt_anti X hX s)] at hf
+  simp only [ite_eq_left (lamAt_anti Y hY s)] at hg
+  simp only [ite_eq_left (lamAt_anti Z hZ s)]
   rw [h s, cbNuOf_add _ _ (lamAt_anti X hX s) (lamAt_anti Y hY s)]
   exact Formalism.GradedWeylDivisibility.dualWeyl_mul hf hg
 
@@ -455,9 +455,9 @@ theorem cloudTen {p n' : ℕ} (R : RS p n') (m : ℕ) (lam0 H Hp ze lo lo' : Fin
   have hLV : ∀ V ∈ Vsp R.Kf lam0, ∀ W ∈ Vsp R.Kf lo', lamPoly T V W ∈ Vsp R.Kf Hp := by
     unfold Vsp
     refine lamPoly_mem T Ls hT' _ _ _ (fun s v hv t ht => ?_)
-    simp only [if_pos (lamAt_anti lam0 dlam s)] at hv
-    simp only [if_pos (lamAt_anti lo' dlo' s)] at ht
-    simp only [if_pos (lamAt_anti Hp dHp s)]
+    simp only [ite_eq_left (lamAt_anti lam0 dlam s)] at hv
+    simp only [ite_eq_left (lamAt_anti lo' dlo' s)] at ht
+    simp only [ite_eq_left (lamAt_anti Hp dHp s)]
     exact hA s v hv t ht
   refine ⟨mulV H ze Hp dH dze dHp hadd1, mulV H lo lam0 dH dlo dlam hadd2,
     LinearMap.mk₂ R.Kf (fun V W => (⟨lamPoly T V.1 W.1, hLV _ V.2 _ W.2⟩ : Vsp R.Kf Hp))
@@ -496,7 +496,7 @@ theorem cloudTen {p n' : ℕ} (R : RS p n') (m : ℕ) (lam0 H Hp ze lo lo' : Fin
         obtain ⟨G, hG, rfl⟩ := hx
         have hGs : ∀ s, G s ∈ dualWeyl R.Kf (m + 1) (m + 1) (nuOf (lamAt H s)) := fun s => by
           have h := hG s
-          simp only [if_pos (lamAt_anti H dH s)] at h
+          simp only [ite_eq_left (lamAt_anti H dH s)] at h
           exact h
         rw [show (∏ s, blockEmb R.Kf s (G s)) * ∏ s, blockEmb R.Kf s (sv s (e b s)) =
             ∏ s, blockEmb R.Kf s (G s * sv s (e b s)) by
@@ -506,20 +506,20 @@ theorem cloudTen {p n' : ℕ} (R : RS p n') (m : ℕ) (lam0 H Hp ze lo lo' : Fin
         · subst hab
           have hfac : ∀ s, Ls s (blockEmb R.Kf true (G s * sv s (e a' s)) * blockEmb R.Kf false (sv' s (e a' s))) =
               ((p : R.Kf) ^ ka s (e a' s)) • (z0 s * G s) := fun s => by
-            rw [hmul s _ _ _ (hGs s), if_pos rfl]
-          rw [if_pos rfl]
+            rw [hmul s _ _ _ (hGs s), ite_eq_left rfl]
+          rw [ite_eq_left rfl]
           simp only [hfac]
           rw [prod_bE_smul, Finset.prod_pow_eq_pow_sum]
           congr 1
           rw [← Finset.prod_mul_distrib]
           exact Finset.prod_congr rfl fun s _ => by rw [map_mul, mul_comm]
-        · rw [if_neg hab]
+        · rw [ite_eq_right hab]
           have hex : ∃ s, e a' s ≠ e b s := by
             by_contra! hcon
             exact hab (e.injective (funext hcon))
           obtain ⟨s0, hs0⟩ := hex
           apply Finset.prod_eq_zero (Finset.mem_univ s0)
-          rw [hmul s0 _ _ _ (hGs s0), if_neg hs0, map_zero]
+          rw [hmul s0 _ _ _ (hGs s0), ite_eq_right hs0, map_zero]
       | zero => simp only [zero_mul, lamPoly_zero_left, smul_zero, ite_self]
       | add x y _ _ hx hy =>
         rw [add_mul, lamPoly_add_left, hx, hy]
@@ -565,7 +565,7 @@ theorem cloudTen {p n' : ℕ} (R : RS p n') (m : ℕ) (lam0 H Hp ze lo lo' : Fin
             (fun s => if Antitone (lamAt H s) then dualWeyl R.Kf (m + 1) (m + 1) (nuOf (lamAt H s)) else ⊥) := F.2
         have hfun : (fun s => if Antitone (lamAt H s) then dualWeyl R.Kf (m + 1) (m + 1) (nuOf (lamAt H s)) else ⊥) =
             fun s => dualWeyl R.Kf (m + 1) (m + 1) (nuOf (lamAt H s)) :=
-          funext fun s => if_pos (lamAt_anti H dH s)
+          funext fun s => ite_eq_left (lamAt_anti H dH s)
         rw [hfun] at h2
         exact hIso R.O R.Kf R.w hw n' m (fun s => lamAt H s) (fun s => lamAt ze s) (lamAt_anti H dH)
           (lamAt_anti ze dze) (famD R.O gs c) (fun s => famD_lat R.O gs hgs c hc s)

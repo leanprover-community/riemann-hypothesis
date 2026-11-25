@@ -580,11 +580,11 @@ theorem transv_mem_UX {ρ : ℕ} {i j : Fin ρ} (hij : i ≠ j) (hlt : i < j) (c
   show (b < a → (Matrix.transvection i j c) a b = 0) ∧ (Matrix.transvection i j c) a a = 1
   refine ⟨fun hba => ?_, ?_⟩
   · simp only [Matrix.transvection, Matrix.add_apply, Matrix.single_apply]
-    rw [one_apply_ne (ne_of_gt hba), zero_add, if_neg]
+    rw [one_apply_ne (ne_of_gt hba), zero_add, ite_eq_right]
     rintro ⟨rfl, rfl⟩
     exact absurd (hba.trans hlt) (lt_irrefl _)
   · simp only [Matrix.transvection, Matrix.add_apply, Matrix.single_apply, one_apply_eq]
-    rw [if_neg, add_zero]
+    rw [ite_eq_right, add_zero]
     rintro ⟨rfl, e⟩
     exact hij e.symm
 
@@ -594,10 +594,10 @@ theorem upSum_transv {ρ : ℕ} {i j : Fin ρ} (hij : i ≠ j) (hj : j.1 = i.1 +
   rw [e]
   unfold upSum
   rw [Finset.sum_eq_single i, Finset.sum_eq_single j]
-  · rw [if_pos hj]
-    simp only [Matrix.transvection, Matrix.add_apply, Matrix.single_apply, one_apply_ne hij, and_self, if_true, zero_add]
+  · rw [ite_eq_left hj]
+    simp only [Matrix.transvection, Matrix.add_apply, Matrix.single_apply, one_apply_ne hij, and_self, ite_true, zero_add]
   · intro b _ hb
-    rw [if_neg]
+    rw [ite_eq_right]
     intro h
     exact hb (Fin.ext (by omega))
   · intro h; exact absurd (Finset.mem_univ _) h
@@ -606,7 +606,7 @@ theorem upSum_transv {ρ : ℕ} {i j : Fin ρ} (hij : i ≠ j) (hj : j.1 = i.1 +
     split_ifs with h
     · have hbk : b ≠ k := fun e => by rw [e] at h; omega
       simp only [Matrix.transvection, Matrix.add_apply, Matrix.single_apply, one_apply_ne hbk, zero_add]
-      rw [if_neg]
+      rw [ite_eq_right]
       rintro ⟨rfl, -⟩
       exact hb rfl
     · rfl

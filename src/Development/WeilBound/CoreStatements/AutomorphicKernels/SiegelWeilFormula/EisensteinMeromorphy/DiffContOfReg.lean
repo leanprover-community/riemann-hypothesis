@@ -106,13 +106,13 @@ theorem strip (h1 : ∀ x, 1 ≤ h x) {g : ℂ → X → ℂ}
         exact tendsto_nhds_unique (c1.tendsto.mono_left nhdsWithin_le_nhds)
           ((c2.tendsto.mono_left nhdsWithin_le_nhds).congr' hev)
     · have hsz : s ≠ z := fun h' => hsF (h' ▸ hz)
-      simp only [G, hsF, if_false]
+      simp only [G, hsF, ite_false]
       rw [hEq z s hs (Or.inl hsz) x, hpq z hz s]
       ring
   have hright : ∀ s : ℂ, t < s.re → ∀ x, G s x = p.eval s * g s x := by
     intro s hs x
     by_cases hsF : s ∈ F
-    · simp only [G, hsF, if_true]
+    · simp only [G, hsF, ite_true]
       rw [hEq s s (Metric.mem_ball_self (hρ s)) (Or.inr hs) x, hpq s hsF s]
       ring
     · simp [G, hsF]

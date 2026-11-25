@@ -122,7 +122,7 @@ theorem geoFun_monomial {Ψ : Type} [Fintype Ψ] {N : ℕ} (M : RootModel Ψ N) 
 
 theorem geoFun_monomial_of_ne {Ψ : Type} [Fintype Ψ] {N : ℕ} (M : RootModel Ψ N) (m : Option (Ψ × Fin N) →₀ ℕ)
     (h : m.degree ≠ dimFl Ψ N) : M.geoFun (monomial m 1) = 0 := by
-  rw [geoFun_monomial, RootModel.geoMono, if_neg h]
+  rw [geoFun_monomial, RootModel.geoMono, ite_eq_right h]
 
 theorem neg_sum_eq_linA {Ψ : Type} [Fintype Ψ] {N : ℕ} (a : Option (Ψ × Fin N) → ℝ) :
     (-∑ x, C (a x) * X x : RPA Ψ N) = linA (fun τ i => a (some (τ, i))) (-a none) := by

@@ -538,7 +538,7 @@ theorem eq_zero_of_fixed {L ι : Type} [Field L] [Fintype ι] [DecidableEq ι] (
       have h3 := congrArg constantCoeff h2
 
       simp only [map_sum, map_mul, map_pow, hG, _root_.GlobalTheory.Cyc.constantCoeff_algHom γ h0, ite_mul, one_mul, zero_mul,
-      Finset.sum_ite_eq, Finset.mem_univ, if_true] at h3
+      Finset.sum_ite_eq, Finset.mem_univ, ite_true] at h3
       have h4 : constantCoeff (e i) = 0 := by
         have : constantCoeff (e i) * (constantCoeff z ^ (k + 1) - 1) = 0 := by linear_combination h3
         exact (mul_eq_zero.mp this).resolve_right (sub_ne_zero.mpr (h1 ▸ hu (k + 1) k.succ_pos))

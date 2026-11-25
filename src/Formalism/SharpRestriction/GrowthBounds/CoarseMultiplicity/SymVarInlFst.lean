@@ -76,7 +76,7 @@ private theorem sum_deg_sub_mul_add_eq_sum_deg_mul {s t : ℕ} (u : Fin t → Fi
         rw [Finset.sum_eq_single i]
         · simp [hi]
         · intro i' _ hne
-          rw [if_neg]
+          rw [ite_eq_right]
           intro h'
           apply hne
           apply hu
@@ -85,8 +85,8 @@ private theorem sum_deg_sub_mul_add_eq_sum_deg_mul {s t : ℕ} (u : Fin t → Fi
         · simp
       have hlt := (u i).isLt
       refine ⟨by rw [hsum]; exact hj i a hi, fun h2 => by omega⟩
-    · push_neg at hex
-      have h0 : corr a = 0 := Finset.sum_eq_zero fun i _ => if_neg (by have := hex i; omega)
+    · push Not at hex
+      have h0 : corr a = 0 := Finset.sum_eq_zero fun i _ => ite_eq_right (by have := hex i; omega)
       exact ⟨by rw [h0]; exact Nat.zero_le _, fun _ => h0⟩
   have hsplit : ∀ a, deg a = ((deg a - corr a) - if a = ⟨2 * s, by omega⟩ then jp else 0) + corr a +
       (if a = ⟨2 * s, by omega⟩ then jp else 0) := by
@@ -107,7 +107,7 @@ private theorem sum_deg_sub_mul_add_eq_sum_deg_mul {s t : ℕ} (u : Fin t → Fi
     have hz : ∀ a : Fin (2 * s + 1), a ≠ ⟨2 * u i, by omega⟩ ∧ a ≠ ⟨2 * u i + 1, by omega⟩ →
         (if (a : ℕ) = 2 * u i ∨ (a : ℕ) = 2 * u i + 1 then jj i else 0) * f a.castSucc = 0 := by
       rintro a ⟨ha1, ha2⟩
-      rw [if_neg, zero_mul]
+      rw [ite_eq_right, zero_mul]
       rw [Ne, Fin.ext_iff] at ha1 ha2
       simp only at ha1 ha2
       omega
@@ -254,7 +254,7 @@ theorem letterOf_eq_odd_letter_true_of_val_eq_two_mul (X : Loc) (j : Fin (numSeg
     (h : a.val = 2 * i.val) : letterOf X j a = (topOdd X j i, true) := by
   have hi := i.isLt
   have ha : a.val < 2 * segS X.TT j := by omega
-  simp only [letterOf, dif_pos ha]
+  simp only [letterOf, dite_eq_left ha]
   refine Prod.ext ?_ ?_
   · show topOdd X j _ = topOdd X j i
     congr 1
@@ -266,7 +266,7 @@ theorem letterOf_E (X : Loc) (j : Fin (numSeg X.TT)) (a : Fin (2 * segS X.TT j +
     (h : a.val = 2 * i.val + 1) : letterOf X j a = (topOdd X j i, false) := by
   have hi := i.isLt
   have ha : a.val < 2 * segS X.TT j := by omega
-  simp only [letterOf, dif_pos ha]
+  simp only [letterOf, dite_eq_left ha]
   refine Prod.ext ?_ ?_
   · show topOdd X j _ = topOdd X j i
     congr 1

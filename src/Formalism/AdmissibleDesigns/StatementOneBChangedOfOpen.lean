@@ -614,7 +614,7 @@ theorem eq_diag_of {K : Type} [Field K] {r t : ℕ} (M : Matrix (Fin (r + t)) (F
     by_cases hcd : c = d
     · subst hcd
       simp
-    · rw [if_neg hcd, if_neg]
+    · rw [ite_eq_right hcd, ite_eq_right]
       intro h
       apply hcd
       have h3 := congrArg Fin.val h
@@ -622,7 +622,7 @@ theorem eq_diag_of {K : Type} [Field K] {r t : ℕ} (M : Matrix (Fin (r + t)) (F
       exact Fin.ext h3
   have hcb : ∀ (c : Fin t) (b : Fin r), M (Fin.natAdd r c) (Fin.castAdd t b) = 0 := by
     intro c b
-    rw [h2, if_neg (fun h => castAdd_ne_natAdd b c h.symm)]
+    rw [h2, ite_eq_right (fun h => castAdd_ne_natAdd b c h.symm)]
   have hB0 : ∀ a b, M (Fin.castAdd t a) (Fin.castAdd t b) = 0 := by
     intro a b
     by_contra hab

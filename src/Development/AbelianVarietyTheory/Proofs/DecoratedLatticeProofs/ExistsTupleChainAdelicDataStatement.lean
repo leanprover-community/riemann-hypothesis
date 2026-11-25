@@ -179,19 +179,6 @@ noncomputable section
 
 namespace GlobalTheory.MuLift
 
-section Ring
-
-end Ring
-
-section General
-
-open NumberField Formalism.L2.DIV
-open scoped TensorProduct
-
-variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
-
-end General
-
 section Adelic
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR.Links

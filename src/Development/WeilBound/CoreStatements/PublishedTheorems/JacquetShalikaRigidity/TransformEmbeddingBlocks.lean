@@ -81,7 +81,7 @@ theorem blkU_apply_of {R : Type} [CommRing R] {a r n : ℕ} (x : UnipotentBlockC
     (blkU x).val i c = (1 : Matrix (Fin a) (Fin a) R) i c := by
   rw [blkU_apply, Finset.sum_eq_zero, add_zero]
   intro t _
-  rw [if_neg (h t)]
+  rw [ite_eq_right (h t)]
 
 theorem uu_blkU {a j i : ℕ} (hj : j ≤ i) (y : UnipotentBlockColumnIndex a i i → Ad E) : UU j (blkU y : GA E a) := by
   refine ⟨fun r c h => ?_, fun r => ?_, fun r c h => ?_⟩

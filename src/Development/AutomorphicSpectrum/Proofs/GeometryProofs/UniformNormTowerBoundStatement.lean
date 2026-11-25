@@ -497,7 +497,7 @@ theorem homN_eq_of_frBor {σ : c.F →+* ℂ} (U : Unf Xo c σ r) (hσ : GoodEmb
       simp only [a]
       by_cases hj : j < Dw.mult τ
       · have hi : i < Dw.mult τ := lt_of_le_of_lt hij hj
-        rw [dif_pos hj, dif_pos hi]
+        rw [dite_eq_left hj, dite_eq_left hi]
         exact Int.toNat_le_toNat (by linarith [hanti τ ⟨i, hi⟩ ⟨j, hj⟩ hij])
       · rw [dite_eq_right hj]; exact Nat.zero_le _
     have hgp := GlobalTheory.ReadCont.pow_succ_mem_secZ (Xo := Xo) (c := c) (by rw [GlobalTheory.AllWt.secZ_nat]; exact hg) M
@@ -508,7 +508,7 @@ theorem homN_eq_of_frBor {σ : c.F →+* ℂ} (U : Unf Xo c σ r) (hσ : GoodEmb
       · simp [ex, hnone]
       · have hi := i.2
         rw [Pi.add_apply, Pi.smul_apply]
-        simp only [ex, a, dif_pos hi, nsmul_eq_mul]
+        simp only [ex, a, dite_eq_left hi, nsmul_eq_mul]
         rw [Int.toNat_of_nonneg (by linarith [hM (some ⟨τ, i⟩)])]
         push_cast
         ring
@@ -531,13 +531,13 @@ theorem homN_eq_of_frBor {σ : c.F →+* ℂ} (U : Unf Xo c σ r) (hσ : GoodEmb
       homN_pow_mul' U x hEg hEG g f (z := ⟨k, x₁.1⟩) x₁.2, h2] at h1
     have hA : 0 < GlobalTheory.AllWt.homN U x Gg g ⟨k, x₁.1⟩ := by
       have hr : rdU U g k x₁.1 ≠ 0 := by
-        have : rdU U g k x₁.1 = toC (evR Xo c g (U.un k x₁)) := dif_pos x₁.2
+        have : rdU U g k x₁.1 = toC (evR Xo c g (U.un k x₁)) := dite_eq_left x₁.2
         rwa [this]
       show 0 < _ * (‖rdU U g k x₁.1‖ * _)
       exact mul_pos (GlobalTheory.AllWt.lieFacZ_pos _ _) (mul_pos (norm_pos_iff.2 hr) (ReciprocityTheory.ChartRestriction.G.FD.BoundedSectionAlgebra.nfac_pos _ x₁.2 _))
     rw [e']
     exact mul_left_cancel₀ (pow_pos hA _).ne' h1
-  · push_neg at hanti
+  · push Not at hanti
     obtain ⟨τ, i, j, hij, hlt⟩ := hanti
     have hij' : i < j := lt_of_le_of_ne hij (by rintro rfl; exact lt_irrefl _ hlt)
     have h0 := _root_.GlobalTheory.IncrZero.secZ_eq_zero_of_lt E H Dw l Xo c _ τ i j hij' hlt f hf
@@ -555,7 +555,7 @@ theorem continuousOn_homN {σ : c.F →+* ℂ} (U : Unf Xo c σ r) (hU : IsUnf U
     by_cases hanti : ∀ τ (i j : Fin (Dw.mult τ)), i ≤ j →
         GlobalTheory.AllWt.exOf Dw u 0 (some ⟨τ, j⟩) ≤ GlobalTheory.AllWt.exOf Dw u 0 (some ⟨τ, i⟩)
     · exact (GlobalTheory.ReadCont.differentiableOn_rdU_of_antitone hU hpq hnone hanti hf k).continuousOn
-    · push_neg at hanti
+    · push Not at hanti
       obtain ⟨τ, i, j, hij, hlt⟩ := hanti
       have hij' : i < j := lt_of_le_of_ne hij (by rintro rfl; exact lt_irrefl _ hlt)
       rw [_root_.GlobalTheory.IncrZero.secZ_eq_zero_of_lt E H Dw l Xo c _ τ i j hij' hlt f hf, map_zero]
@@ -613,7 +613,7 @@ theorem exists_frame_of_hom [DecidableEq (CMType H)] (hG : Top.Given) (hL : Comp
     rw [← hψ]
     exact hasVal_hom RM.y RM.birational RM.arith.2.1.2.2 0 _ ψ
   have h0 := hread σ _ hz hv (aeval_ne_zero RM.y huu ψ)
-  rw [show goodOf c σ = σ from if_pos hσ] at h0
+  rw [show goodOf c σ = σ from ite_eq_left hσ] at h0
   obtain ⟨k', hk', y', hy', hall⟩ := h0
   obtain rfl : k' = k := GlobalTheory.CompanionTheory.Ar.Plug.ArchimedeanSections.over_unique hL hσ hk' hk
   have hpos : ∀ n' : Option (RootIx Dw) → ℤ, 0 < ∏ ρ, (Or.sing ρ).h (fun p => ψ (RM.y p)) ^ n' (some ρ) := fun n' =>

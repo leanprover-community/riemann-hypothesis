@@ -183,10 +183,10 @@ namespace GlobalTheory.CompanionTheory.Hypotheses₂.CentreOver
 theorem cartAt_of_notMem_support {X : Scheme.{0}} (J : X.IdealSheafData) (x : X) (hx : x ∉ J.support) :
     CartAt J x := by
   rw [Scheme.IdealSheafData.mem_support_iff] at hx
-  push_neg at hx
+  push Not at hx
   obtain ⟨U, hU⟩ := hx
   rw [Scheme.mem_zeroLocus_iff] at hU
-  push_neg at hU
+  push Not at hU
   obtain ⟨f, hf, hxf⟩ := hU
   refine ⟨X.affineBasicOpen f, 1, hxf, Submonoid.one_mem _, ?_⟩
   rw [Ideal.span_singleton_one, ← J.map_ideal_basicOpen U f]

@@ -141,10 +141,10 @@ theorem coords_mem {O : Type*} [CommRing O] [Algebra O Ω] (R : Subalgebra O Ω)
           · have hne : (⟨k, hk⟩ : Fin N) ≠ j := fun e => by
               rw [← e] at h
               exact lt_irrefl _ h
-            rw [hv j h, if_neg hne, mul_zero, sub_zero]
+            rw [hv j h, ite_eq_right hne, mul_zero, sub_zero]
           · have he : (⟨k, hk⟩ : Fin N) = j := Fin.ext h
             subst he
-            rw [if_pos rfl, mul_one, sub_self]
+            rw [ite_eq_left rfl, mul_one, sub_self]
         intro i
         have hi := ih _ hv'L hv' i
         rw [hrep i] at hi

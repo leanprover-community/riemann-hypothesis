@@ -777,16 +777,16 @@ theorem conj_mem_of_levi (A B n : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k +
     have hea : ¬ mid k r (eI k r a) := by
       have := a.isLt; simp only [mid, eI]; omega
     rw [Matrix.mul_apply, Finset.sum_eq_single (eI k r a)]
-    · rw [hB1 _ _ hea, if_pos rfl, mul_one, Matrix.mul_apply, Finset.sum_eq_single (eI k r a)]
-      · rw [hn.2.1 a (eI k r a) (by simp [eI]), if_pos rfl, mul_one, hA1 _ _ hea]
+    · rw [hB1 _ _ hea, ite_eq_left rfl, mul_one, Matrix.mul_apply, Finset.sum_eq_single (eI k r a)]
+      · rw [hn.2.1 a (eI k r a) (by simp [eI]), ite_eq_left rfl, mul_one, hA1 _ _ hea]
       · intro l _ hl
         by_cases hla : a.val ≤ l.val
-        · rw [hn.2.1 a l hla, if_neg hl, mul_zero]
+        · rw [hn.2.1 a l hla, ite_eq_right hl, mul_zero]
         · have hlm : ¬ mid k r l := by have := a.isLt; simp only [mid]; omega
-          rw [hA1 i l hlm, if_neg (by rw [Fin.ext_iff]; omega), zero_mul]
+          rw [hA1 i l hlm, ite_eq_right (by rw [Fin.ext_iff]; omega), zero_mul]
       · simp
     · intro l _ hl
-      rw [hB1 _ _ hea, if_neg hl, mul_zero]
+      rw [hB1 _ _ hea, ite_eq_right hl, mul_zero]
     · simp
   · intro i j hj1 hj2 hi
     have hjm : mid k r j := ⟨hj1, hj2⟩
@@ -796,12 +796,12 @@ theorem conj_mem_of_levi (A B n : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k +
       by_cases hm : mid k r m
       · congr 1
         rw [Matrix.mul_apply, Finset.sum_eq_single m]
-        · rw [hn.2.2 m m hm.1 hm.2 hm.1, if_pos rfl, mul_one]
+        · rw [hn.2.2 m m hm.1 hm.2 hm.1, ite_eq_left rfl, mul_one]
         · intro l _ hl
           by_cases hlr : r ≤ l.val
-          · rw [hn.2.2 l m hm.1 hm.2 hlr, if_neg hl, mul_zero]
+          · rw [hn.2.2 l m hm.1 hm.2 hlr, ite_eq_right hl, mul_zero]
           · have hlm : ¬ mid k r l := by simp only [mid]; omega
-            rw [hA1 i l hlm, if_neg (by rw [Fin.ext_iff]; omega), zero_mul]
+            rw [hA1 i l hlm, ite_eq_right (by rw [Fin.ext_iff]; omega), zero_mul]
         · simp
       · rw [hB3 m j hjm hm, mul_zero, mul_zero]
     rw [Finset.sum_congr rfl (fun m _ => key m), ← Matrix.mul_apply, hAB, Matrix.one_apply]
@@ -827,7 +827,7 @@ theorem cellQuot_props (c : Fin r → ℂ) (μ₁ μ : Matrix (Fin (k + 1)) (Fin
       · obtain ⟨s, rfl⟩ := mid_exists hi
         rw [jV_wI]
         simp only [Pi.single_apply, wI_inj.eq_iff]
-      · rw [jV_out _ hi, Pi.single_apply, if_neg (fun he : i = wI k r t => hi (he ▸ mid_wI t))]
+      · rw [jV_out _ hi, Pi.single_apply, ite_eq_right (fun he : i = wI k r t => hi (he ▸ mid_wI t))]
     have col : ((bigCell k r c μ₁)⁻¹ * bigCell k r c μ) m (wI k r t) =
         (((bigCell k r c μ₁)⁻¹ * bigCell k r c μ) *ᵥ Pi.single (wI k r t) 1) m := by
       rw [Matrix.mulVec_single_one]; rfl
@@ -1145,8 +1145,8 @@ theorem conv_good (k r : ℕ) (L : Formalism.MainNotions.S.LocBessel k r) (h : �
       rw [Matrix.diagonal_apply]
       show _ = if i = j then _ else _
       by_cases h : i = j
-      · rw [if_pos h, if_pos h, h]
-      · rw [if_neg h, if_neg h]
+      · rw [ite_eq_left h, ite_eq_left h, h]
+      · rw [ite_eq_right h, ite_eq_right h]
   have hR := GlobalTheory.AmpNorm.rStab_bigCell c μ₁ hc hg
   have hcd := GlobalTheory.CellAmp.Model.cellData_open L 0 _ hg hinv hG hmono hR
   exact GlobalTheory.CellMaj.cellConv k r L h 0 _ _ _ _ hκ hok hgap hcd hmono

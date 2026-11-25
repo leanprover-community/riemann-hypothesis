@@ -24,7 +24,7 @@ theorem lastRow_mir {p : GA E k} (g : GA E k) (hp : Mir (k - 1) p) : lastRow (p 
   split_ifs with h
   · have hr : ∀ j, p.val i j = (1 : Matrix (Fin k) (Fin k) (Ad E)) i j := fun j => hp i j (Or.inl (by omega))
     rw [Units.val_mul, Matrix.mul_apply]
-    simp only [hr, Matrix.one_apply, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+    simp only [hr, Matrix.one_apply, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
   · rfl
 
 theorem pw_eq (hK5a : TransformsEmbedding) (hk : 1 ≤ k) (hkm : k < m) {ψ : AddChar (Ad E) ℂ} (hψ : StdPsi ψ)

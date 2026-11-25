@@ -178,7 +178,7 @@ theorem aP_typed (u : D.what₂.Word) (p : TypX X) :
   obtain ⟨hN, hη⟩ := Formalism.L2.SG.Pf.gSplitX_holds X p
   have hT := Formalism.L2.SG.Pf.AlTieFD.T_not_mem X u p
   unfold aP
-  rw [if_neg (by unfold Tw; exact hT), X.n_eq, ← Formalism.MainNotions.S.dimS_eq D.R, hη, hN, gAt_eq X p]
+  rw [ite_eq_right (by unfold Tw; exact hT), X.n_eq, ← Formalism.MainNotions.S.dimS_eq D.R, hη, hN, gAt_eq X p]
   refine Finset.prod_congr rfl fun i _ => ?_
   simp
 
@@ -257,8 +257,8 @@ theorem algWitt : Formalism.L2.SG.Pf.NcS.IntWittPf.AlgWitt := by
         rw [hyy_def]; exact mulVec_mem O M hMO (y i0) (hyO i0) l
       have htO : hform s J (x i0) yy ∈ O := hform_mem O s hsO J hJO (x i0) yy (hxO i0) hyyO
       obtain ⟨lam, hlamO, hlam, c', hc'O, hc'⟩ := hH i0 (hform s J (x i0) yy) htO
-      have hxx0 : hform s J (x i0) (x i0) = β i0 := by rw [hxx, if_pos rfl]
-      have hyy0 : hform s J yy yy = β i0 := by rw [hyy_def, hMp, hyy, if_pos rfl]
+      have hxx0 : hform s J (x i0) (x i0) = β i0 := by rw [hxx, ite_eq_left rfl]
+      have hyy0 : hform s J yy yy = β i0 := by rw [hyy_def, hMp, hyy, ite_eq_left rfl]
       have hβr : s (β i0) = β i0 := by
         have h := hform_conj s J hs hJ (x i0) (x i0)
         rwa [hxx0] at h
@@ -313,10 +313,10 @@ theorem algWitt : Formalism.L2.SG.Pf.NcS.IntWittPf.AlgWitt := by
         intro i hi
         have hne : i0 ≠ i := fun h => by subst h; omega
         have h0 : hform s J u (x i) = 0 := by
-          rw [hu_def, hform_sub_left, hform_smul_left, hxx i0 i, if_neg hne, ← hMy i hi, hyy_def,
-            hMp, hyy i0 i, if_neg hne]
+          rw [hu_def, hform_sub_left, hform_smul_left, hxx i0 i, ite_eq_right hne, ← hMy i hi, hyy_def,
+            hMp, hyy i0 i, ite_eq_right hne]
           ring
-        rw [hT_mul, h0, mul_zero, zero_smul, sub_zero, hD_mul, hxx i0 i, if_neg hne, mul_zero,
+        rw [hT_mul, h0, mul_zero, zero_smul, sub_zero, hD_mul, hxx i0 i, ite_eq_right hne, mul_zero,
           mul_zero, zero_smul, add_zero]
       refine ⟨D * T * M, fun z w => ?_, fun i j => ?_, fun i hi => ?_⟩
       · rw [← Matrix.mulVec_mulVec, ← Matrix.mulVec_mulVec, ← Matrix.mulVec_mulVec,

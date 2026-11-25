@@ -82,9 +82,9 @@ lemma key (hgl : IsGlRep E) (huni : IsInfUnitary ε E)
       - (if ε a ≠ ε b then (if d = a then inner ℂ (E c b x) (A (E a b y)) else 0) else 0) := by
     intro a b
     by_cases hab : ε a ≠ ε b
-    · simp only [if_pos hab]
+    · simp only [ite_eq_left hab]
       exact pt hgl huni hA hcd a b x y
-    · simp only [if_neg hab]
+    · simp only [ite_eq_right hab]
       simp
   have h1 := s1 (ε := ε) (fun a b => inner ℂ (E a b x) (A (E d b y))) c
   have h4 := s1 (ε := ε) (fun a b => inner ℂ (E c b x) (A (E a b y))) d

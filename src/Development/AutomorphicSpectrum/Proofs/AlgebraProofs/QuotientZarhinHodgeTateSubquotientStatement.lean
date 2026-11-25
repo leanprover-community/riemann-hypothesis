@@ -290,10 +290,10 @@ theorem sub_closed : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClo
       ⟨fun k => ⟨_, hJ (hb k), rfl⟩, e⟩
       ⟨fun k => by
         by_cases hk : k = 0
-        · rw [if_pos hk]; exact ⟨g, hg, rfl⟩
-        · rw [if_neg hk]; exact Submodule.zero_mem _, by simp⟩
+        · rw [ite_eq_left hk]; exact ⟨g, hg, rfl⟩
+        · rw [ite_eq_right hk]; exact Submodule.zero_mem _, by simp⟩
     have h0 := congrFun hu 0
-    rw [if_pos rfl] at h0
+    rw [ite_eq_left rfl] at h0
     have : b 0 = g := by
       funext q
       obtain ⟨x, rfl⟩ := QuotientAddGroup.mk_surjective q

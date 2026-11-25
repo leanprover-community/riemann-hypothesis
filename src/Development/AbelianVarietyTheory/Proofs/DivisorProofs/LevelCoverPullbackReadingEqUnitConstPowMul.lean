@@ -4,49 +4,10 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GenScal
 public import Development.AbelianVarietyTheory.Definitions.Divisors.CongModRefl
 public import Development.AbelianVarietyTheory.Definitions.Divisors.UnifOfSpaceEq
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsSecOfMoveInv
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Analysis.Complex.AbsMax
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Mathlib.Analysis.InnerProductSpace.OfNorm
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.FourierCoefficientDomain
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.HolomorphicFamilies.EqZeroOfMulEqZero
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.HolomorphicFamilies.ExistsBorelOrthonormalMove
@@ -70,7 +31,7 @@ theorem eq_const_mul_of_norm_one {V : Type} [NormedAddCommGroup V] [NormedSpace 
     (hg : ∀ i, ∀ x ∈ U, P₂ i x = g x * P i x) : ∃ u : ℂ, ‖u‖ = 1 ∧ ∀ i, ∀ x ∈ U, P₂ i x = u * P i x := by
   by_cases h : ∃ i, ∃ x ∈ U, P i x ≠ 0
   swap
-  · push_neg at h
+  · push Not at h
     refine ⟨1, by simp, fun i x hx => ?_⟩
     rw [hg i x hx, h i x hx]
     simp
@@ -160,7 +121,7 @@ theorem eq_pow_mul_of_norm_one {V : Type} [NormedAddCommGroup V] [NormedSpace �
       have hnz := hW i hi h x₀ hx₀
       have e : u = g x₀ ^ m i := mul_right_cancel₀ hnz ((hu x₀ (hWU hx₀)).symm.trans (hg i x₀ (hWU hx₀)))
       rw [hu x hx, e]
-    · push_neg at h
+    · push Not at h
       rw [hg i x hx, h x hx]
       simp
   obtain ⟨u, hu1, hu⟩ := (isCompact_sphere (0 : ℂ) 1).inter_iInter_nonempty C hC hfin
@@ -223,9 +184,9 @@ theorem exists_pow_of_pointwise (X₂ X : Data E r) (δ : GL (Fin r) E) (hΨ : �
   classical
   let g : Frame X₂.Ψ r → ℂ := fun x => if h : x ∈ X₂.dom then (hg x h).choose else 1
   have hg1 : ∀ x ∈ X₂.dom, ‖g x‖ = 1 := fun x h => by
-    simp only [g, dif_pos h]; exact (hg x h).choose_spec.1
+    simp only [g, dite_eq_left h]; exact (hg x h).choose_spec.1
   have hgr : ∀ i : ι, ∀ x ∈ X₂.dom, Q₂ i x = g x ^ m i * Q i (G x) := fun i x h => by
-    simp only [g, dif_pos h]; exact (hg x h).choose_spec.2 i
+    simp only [g, dite_eq_left h]; exact (hg x h).choose_spec.2 i
   obtain ⟨u, hu1, hu⟩ := eq_pow_mul_of_norm_one X₂.dom (ReciprocityTheory.ChartRestriction.G.FD.FourierCoefficientDomain.isOpen_dom _)
     (ReciprocityTheory.ChartRestriction.G.TB.WickVanishing.flag_domain_frames_connected r X₂).isPreconnected m Q₂ (fun i x => Q i (G x)) g
     (fun i => (hQ₂ i).1) hPd hg1 hgr
@@ -281,8 +242,8 @@ theorem read_pointwise (d : DeltaDat Xo c 0) (σ₂ : d.c₂.F →+* ℂ) (U : U
   letI a₁ : Algebra c.F (CAt σ₂) := (σ₂.comp (d.eF : c.F →+* d.c₂.F)).toAlgebra
   obtain ⟨y, hb, hov⟩ := hy
   refine ⟨t, hmod, fun a n f hf g hP => ?_⟩
-  have r2 : rdU U₂ g k₂ x = toC (evR d.Xo₂ d.c₂ g (U₂.un k₂ ⟨x, hx⟩)) := dif_pos hx
-  have r1 : rdU U f k x' = toC (evR Xo c f (U.un k ⟨x', hx'⟩)) := dif_pos hx'
+  have r2 : rdU U₂ g k₂ x = toC (evR d.Xo₂ d.c₂ g (U₂.un k₂ ⟨x, hx⟩)) := dite_eq_left hx
+  have r1 : rdU U f k x' = toC (evR Xo c f (U.un k ⟨x', hx'⟩)) := dite_eq_left hx'
   rw [r2, r1]
   exact @evR_pull_genScal E _ _ _ H Dw l Xo c ℂ _ _ a₁ d (inferInstanceAs (Algebra d.c₂.F (CAt σ₂))) (fun _ => rfl)
     a n f hf g hP t _ _ _ hb hov

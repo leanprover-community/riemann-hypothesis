@@ -141,7 +141,7 @@ theorem sumPadicValDifferencesLe : LagrangeBoundT := by
     intro c' hc'
     by_cases hcc : c' = c
     · subst hcc
-      rw [if_pos rfl]
+      rw [ite_eq_left rfl]
       apply le_of_eq
       apply Finset.sum_eq_zero
       intro n' hn'
@@ -155,12 +155,12 @@ theorem sumPadicValDifferencesLe : LagrangeBoundT := by
         rw [hz] at h1
         have h2 := hsep 0 ((n : ℤ) - n') 0 (by rw [sub_zero, abs_lt]; constructor <;> omega) h1 (by simp)
         exact h ⟨rfl, by omega⟩
-    · rw [if_neg hcc]
+    · rw [ite_eq_right hcc]
       obtain ⟨ρ, hρ1, hρr, hρd⟩ := hdiv c hc c' hc' (Ne.symm hcc)
       apply sum_le_of_unique
       · intro n' hn'
         rw [Finset.mem_range] at hn'
-        rw [if_neg (fun h => hcc h.1)]
+        rw [ite_eq_right (fun h => hcc h.1)]
         refine le_trans ?_ hρr
         rcases lt_or_gt_of_ne hcc with hlt' | hgt
         · have hdN : (l ^ a - 1) ∣ (c - c') * (l ^ ρ - 1) := by
@@ -191,7 +191,7 @@ theorem sumPadicValDifferencesLe : LagrangeBoundT := by
           exact hD
       · intro i hi j hj hgi hgj
         rw [Finset.mem_range] at hi hj
-        rw [if_neg (fun h => hcc h.1)] at hgi hgj
+        rw [ite_eq_right (fun h => hcc h.1)] at hgi hgj
         have h1 := hdv _ hgi
         have h2 := hdv _ hgj
         have ez : ∀ k : ℕ, ((c : ℤ) + n * ((l : ℤ) ^ a - 1)) - ((c' : ℤ) + k * ((l : ℤ) ^ a - 1)) =
@@ -204,8 +204,8 @@ theorem sumPadicValDifferencesLe : LagrangeBoundT := by
         else padicValInt l (((c : ℤ) + n * ((l : ℤ) ^ a - 1)) - ((c' : ℤ) + n' * ((l : ℤ) ^ a - 1))))
       ≤ ∑ c' ∈ Cc, (if c' = c then 0 else r') := Finset.sum_le_sum hper
     _ = (Cc.card - 1) * r' := by
-      rw [← Finset.add_sum_erase Cc _ hc, if_pos rfl, zero_add,
-        Finset.sum_congr rfl (fun x hx => if_neg (Finset.ne_of_mem_erase hx)), Finset.sum_const,
+      rw [← Finset.add_sum_erase Cc _ hc, ite_eq_left rfl, zero_add,
+        Finset.sum_congr rfl (fun x hx => ite_eq_right (Finset.ne_of_mem_erase hx)), Finset.sum_const,
         smul_eq_mul, Finset.card_erase_of_mem hc]
 
 end Formalism.IrreducibleCountingLemmas.WindowSums

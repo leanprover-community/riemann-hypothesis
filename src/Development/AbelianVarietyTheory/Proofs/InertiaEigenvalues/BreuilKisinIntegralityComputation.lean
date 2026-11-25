@@ -155,7 +155,7 @@ theorem tail_mem {e : ℕ} {f : K⟦X⟧} (hf : f ∈ S O K e) (n M : ℕ)
   refine ⟨fun m => ?_, squeeze_zero (fun m => mul_nonneg (norm_nonneg _) (wS_nonneg e m)) key
     (by simpa using hf.2.const_mul (‖(l : K)‖ ^ n)⁻¹)⟩
   by_cases h : m < M
-  · rw [hc, if_pos h]; simp
+  · rw [hc, ite_eq_left h]; simp
   · refine (key m).trans ?_
     rw [inv_mul_le_iff₀ hl, mul_one]
     exact hM m (not_lt.1 h)
@@ -284,10 +284,10 @@ theorem norm_coeff_E_le (k : ℕ) : ‖coeff k (E K l e)‖ * rad l (1 / e) ^ k 
   have he := NeZero.ne e
   rw [E, map_add (f := _), coeff_X_pow, ← map_natCast (C : K →+* K⟦X⟧), coeff_C]
   by_cases hk : k = e
-  · rw [if_pos hk, if_neg (by omega), add_zero, norm_one, one_mul, hk, rad_pow (K := K) l e]
+  · rw [ite_eq_left hk, ite_eq_right (by omega), add_zero, norm_one, one_mul, hk, rad_pow (K := K) l e]
   · by_cases h0 : k = 0
-    · rw [if_neg hk, if_pos h0, zero_add, h0, pow_zero, mul_one]
-    · rw [if_neg hk, if_neg h0, add_zero, norm_zero, zero_mul]
+    · rw [ite_eq_right hk, ite_eq_left h0, zero_add, h0, pow_zero, mul_one]
+    · rw [ite_eq_right hk, ite_eq_right h0, add_zero, norm_zero, zero_mul]
       exact norm_nonneg _
 
 variable [CompleteSpace K]

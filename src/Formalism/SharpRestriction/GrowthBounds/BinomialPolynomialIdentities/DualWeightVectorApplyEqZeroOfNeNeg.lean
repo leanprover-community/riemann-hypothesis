@@ -167,7 +167,7 @@ theorem stableLattice_weight_decomposition [CharZero (KK O)] (E : GLOps n (KK O)
     · intro h
       exact absurd hnu h
   let g : (Fin n → ℤ) →₀ V := Finsupp.onFinset F (fun mu => if mu ∈ F then f mu else 0)
-    (by intro a ha; by_contra h; exact ha (if_neg h))
+    (by intro a ha; by_contra h; exact ha (ite_eq_right h))
   refine ⟨g, fun nu => ?_, fun nu => ?_, ?_⟩
   · simp only [g, Finsupp.onFinset_apply]
     split_ifs with h
@@ -180,7 +180,7 @@ theorem stableLattice_weight_decomposition [CharZero (KK O)] (E : GLOps n (KK O)
     · exact Submodule.zero_mem _
   · show _ = g.sum fun _ v => v
     rw [Finsupp.onFinset_sum _ (fun _ => rfl)]
-    exact Finset.sum_congr rfl fun mu hmu => (if_pos hmu).symm
+    exact Finset.sum_congr rfl fun mu hmu => (ite_eq_left hmu).symm
 
 theorem integral_dual_preserved_by_integralMonoid [CharZero (KK O)] (E : GLOps n (KK O) V) (hE : (⨆ mu : Fin n → ℤ, weightSp E mu) = ⊤)
     (M : Submodule O V) (hM : UZStable (O := O) E M) {u' : Module.End (KK O) (Module.Dual (KK O) V)}

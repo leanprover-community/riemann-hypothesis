@@ -434,9 +434,9 @@ theorem UpperTheory.V.AlgebraTools.st_coi_lift :
     by_cases h : a = b
     · subst h
       simp
-    · simp only [h, if_false]
+    · simp only [h, ite_false]
       refine Finset.sum_eq_zero (fun x _ => ?_)
-      rw [if_neg]
+      rw [ite_eq_right]
       rintro ⟨rfl, rfl⟩
       exact h rfl
   have hr0 : r (1 - ∑ i, ep i) = 0 := by
@@ -521,24 +521,24 @@ theorem UpperTheory.V.AlgebraTools.units_exist :
     ?_, ?_, ?_, ?_⟩, rfl, ?_⟩
   · intro i
     by_cases h : o i = i
-    · rw [if_pos h, h, idem, idem]
-    · rw [if_neg h, mul_smul_comm, smul_mul_assoc, hz_mem]
+    · rw [ite_eq_left h, h, idem, idem]
+    · rw [ite_eq_right h, mul_smul_comm, smul_mul_assoc, hz_mem]
   · intro i
-    rw [if_pos (ho i)]
+    rw [ite_eq_left (ho i)]
   · intro i
     by_cases h : o i = i
-    · rw [if_pos h, hst, idem, h]
-    · rw [if_neg h, map_smul, smul_mul_assoc, mul_smul_comm, smul_smul, hzst, hbb, smul_smul, hinv,
+    · rw [ite_eq_left h, hst, idem, h]
+    · rw [ite_eq_right h, map_smul, smul_mul_assoc, mul_smul_comm, smul_smul, hzst, hbb, smul_smul, hinv,
         one_smul]
   · intro i
     by_cases h : o i = i
-    · rw [if_pos h, hst, idem]
-    · rw [if_neg h, map_smul, smul_mul_assoc, mul_smul_comm, smul_smul, hb', smul_smul, hinv, one_smul]
+    · rw [ite_eq_left h, hst, idem]
+    · rw [ite_eq_right h, map_smul, smul_mul_assoc, mul_smul_comm, smul_smul, hb', smul_smul, hinv, one_smul]
   · intro i
     dsimp only
     by_cases h : o i = i
-    · rw [if_pos h, hre, h]
-    · rw [if_neg h, map_smul, hrz, ← algebraMap_smul (A := F), hαinvF, one_smul]
+    · rw [ite_eq_left h, hre, h]
+    · rw [ite_eq_right h, map_smul, hrz, ← algebraMap_smul (A := F), hαinvF, one_smul]
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.UnitsExist =====
@@ -618,12 +618,12 @@ private theorem oB_oB {n a : ℕ} (h1 : 1 ≤ a) (h2 : a ≤ n) (i : Fin n) : oB
   unfold oB at key ⊢
   by_cases hi : (i : ℕ) < a
   · have : ((if (i : ℕ) < a then (⟨0, by omega⟩ : Fin n) else ⟨n - 1, by omega⟩ : Fin n) : ℕ) < a := key.2 hi
-    simp only [hi, if_true] at this ⊢
-    simp only [this, if_true]
+    simp only [hi, ite_true] at this ⊢
+    simp only [this, ite_true]
   · have : ¬ ((if (i : ℕ) < a then (⟨0, by omega⟩ : Fin n) else ⟨n - 1, by omega⟩ : Fin n) : ℕ) < a :=
       fun h => hi (key.1 h)
-    simp only [hi, if_false] at this ⊢
-    simp only [this, if_false]
+    simp only [hi, ite_false] at this ⊢
+    simp only [this, ite_false]
 
 private theorem single_mem {F : Type} [Field F] {n a : ℕ} (p q : Fin n) (h : (p : ℕ) < a ↔ (q : ℕ) < a) :
     (single p q 1 : Matrix (Fin n) (Fin n) F) ∈ Ev F F n a := by

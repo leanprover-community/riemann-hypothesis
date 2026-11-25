@@ -456,7 +456,7 @@ theorem colK_update (S : GridChoice W U) {t : T} (fs : Vecs G t) (x : ∀ j, Fin
   funext j
   by_cases hj : j = j₀.1
   · subst hj
-    rw [Function.update_self, dif_pos j₀.2]
+    rw [Function.update_self, dite_eq_left j₀.2]
     show kkVec S (.top t j₀.1) (Function.update fs (.inl j₀) F (.inl j₀)) _ _ = _
     rw [Function.update_self]
   · rw [Function.update_of_ne hj]
@@ -480,7 +480,7 @@ theorem rowK_update (S : GridChoice W U) {t : T} (fs : Vecs G t) (y : ∀ i, Fin
   funext i
   by_cases hi : i = i₀.1
   · subst hi
-    rw [Function.update_self, dif_pos i₀.2]
+    rw [Function.update_self, dite_eq_left i₀.2]
     show kkVec S (.chi i₀.1 D.R.m) (Function.update fs (.inr i₀) F (.inr i₀)) _ _ = _
     rw [Function.update_self]
   · rw [Function.update_of_ne hi]
@@ -591,9 +591,9 @@ theorem pairVec_sum_eq_of_prod_eq : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc 
   let f' : κ → ∀ l : Arr D, thetaSub W (arrP t l) := fun c l => if h : c ∈ a.support then ⟨f c l, hf c h l⟩ else 0
   let g' : κ → ∀ l : Arr D, thetaSub W (arrP t l) := fun c l => if h : c ∈ a.support then ⟨g c l, hg c h l⟩ else 0
   have ef : ∀ c ∈ a.support, ∀ l, ((f' c l : thetaSub W (arrP t l)) : WO (G.pS (arrP t l)) (G.pT (arrP t l)) → ℂ) = f c l :=
-    fun c h l => by simp only [f', dif_pos h]
+    fun c h l => by simp only [f', dite_eq_left h]
   have eg : ∀ c ∈ a.support, ∀ l, ((g' c l : thetaSub W (arrP t l)) : WO (G.pS (arrP t l)) (G.pT (arrP t l)) → ℂ) = g c l :=
-    fun c h l => by simp only [g', dif_pos h]
+    fun c h l => by simp only [g', dite_eq_left h]
   have key := _root_.GlobalTheory.multilinear_sum_eq_of_prod_fun_eq (fun l : Arr D => thetaSub W (arrP t l)) (pairML S x y v w) a f' g' (fun z => by
     have := hprod z
     unfold Finsupp.sum at this ⊢
@@ -675,7 +675,7 @@ theorem colAt_firstPt (S : GridChoice W U) {t : T} (ht : t ∈ U) (k : FinPt G (
       have := zero_lt_m D
       omega
     rw [Function.update_of_ne h0]
-    simp only [GridChoice.colAt, dif_neg hj]
+    simp only [GridChoice.colAt, dite_eq_right hj]
 
 end GlobalTheory.TopZeroFirst
 
@@ -762,7 +762,7 @@ theorem flatTensor_moveEnd {Γ : Grid k} (hs : 1 ≤ Γ.s) (ψ : AddChar k Circl
   refine flatTensor_comp_of_equiv hs ψ ν F _ x x' y Φ hMP (fun e => ?_) (fun e => ?_)
   · refine fill_moveEnd hs (by omega) g x x' y e (Φ e) (fun l h1 => ?_) ?_
     · exact downMap_congr hs (hcol l h1) fun h => hΦo e ⟨l, h⟩ h1
-    · rw [downMap, dif_pos (show 0 < Γ.m - 1 by omega), downMap, dif_pos (show 0 < Γ.m - 1 by omega), hc0, hΦ0,
+    · rw [downMap, dite_eq_left (show 0 < Γ.m - 1 by omega), downMap, dite_eq_left (show 0 < Γ.m - 1 by omega), hc0, hΦ0,
         ← H, reindex_mul_frameGL, hf]
   · have hent : ∀ (j : Fin (Γ.m - 1)) r s, stepPt (x j) (e j) r (.inr s) = stepPt (x' j) (Φ e j) r (.inr s) := by
       rintro ⟨j, hj⟩ r s
@@ -803,8 +803,8 @@ theorem inBasis_mem_glLatCong (G : GridData L sc) {V : HSp D} {Λ : Submodule (�
       Matrix.one_mulVec, Matrix.mulVec_single_one, map_sub, LevRowSucc.inBasis_val, Pi.single_apply, Matrix.one_apply]
     congr 1
     by_cases hab : a = b
-    · rw [if_pos hab, if_pos (by rw [hab]), map_one]
-    · rw [if_neg hab, if_neg (fun h' => hab (Fin.cast_injective h h')), map_zero]
+    · rw [ite_eq_left hab, ite_eq_left (by rw [hab]), map_one]
+    · rw [ite_eq_right hab, ite_eq_right (fun h' => hab (Fin.cast_injective h h')), map_zero]
   rw [Matrix.sub_apply, e1]
   by_cases hw : w ∈ G.pl.W0
   · exact (Comparison₂.mem_idS_modul G s).1 hs w hw
@@ -877,7 +877,7 @@ theorem om_first_vac (S : GridChoice W U) {μ₀ : T} (hL : L.Is μ₀) (t : T) 
   rw [← Finset.prod_coe_sort (locPl G t)]
   refine congrArg (· • S.Z.vac (.top t 0)) (Finset.prod_congr rfl fun w _ => ?_)
   have hE : ChrEq (L.mu t (0 + 1)) (muBase L (0 + 1) * L.xiH t) := by
-    have h1 : muBase L (0 + 1) = L.C.mu0 ⟨0, hj⟩ := dif_pos hj
+    have h1 : muBase L (0 + 1) = L.C.mu0 ⟨0, hj⟩ := dite_eq_left hj
     rw [h1]
     exact GlobalTheory.TowerCharRead.chrEq_mul (hL.mu0 ⟨0, hj⟩) (hL.xi t)
   have hd : detIdl (idemAt w.1) (G.pS (.top t 0 : Pair T)) g = GlobalTheory.LFun.locIdele D.host.F w.1 (gdet (kapTop0 S t k w)) := hdet w

@@ -307,7 +307,7 @@ variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp]
 
 theorem expS_neg (ζ : LL) {m : ℕ} (a : Fin m → LetA O n) (y : Fin m → W.DD T) {i : ℤ} (hi : i < 0) :
     expS W T c ζ a y i = 0 := by
-  simp [expS, serC, if_neg (show ¬ (0 ≤ i) by omega)]
+  simp [expS, serC, ite_eq_right (show ¬ (0 ≤ i) by omega)]
 
 theorem ind_fil (τ : K →ₐ[Qp] LL) (U : PowerSeries LL) (hU : PowerSeries.constantCoeff U ≠ 0)
     {g : ℤ → T.V ⊗[Qp] BdR} {m₀ : ℤ} (hg : MLG.Bdd g m₀)

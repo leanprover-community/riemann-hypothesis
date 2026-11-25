@@ -287,7 +287,7 @@ theorem bcSumD (l : ℕ) (W W' : Type) (q : W → ℕ) (q' : W' → ℕ) (u : W'
         obtain ⟨k', rfl⟩ : ∃ m, k' = m + 1 := ⟨k' - 1, by rcases k' with _ | k' <;> simp at hk' ⊢⟩
         have hm : g (w₀, k') = (v, k) := Prod.ext hw₀ (by simp only [g, h.2.1 w₀ hw₀]; omega)
         have h3 : ω (v, k) = (f w₀ : ℝ) := by
-          simp only [ω, hk', pow_mul, h.2.2.pow_eq_one, one_pow, if_true, h.2.1 w₀ hw₀]
+          simp only [ω, hk', pow_mul, h.2.2.pow_eq_one, one_pow, ite_true, h.2.1 w₀ hw₀]
         rw [h3]
         refine hasSum_single (f := fun i : {i // g i = (v, k)} => (f i.1.1 : ℝ)) ⟨(w₀, k'), hm⟩ fun i hi => (hi ?_).elim
         have h4 : i.1.1 = w₀ := congrArg Subtype.val (hu ⟨i.1.1, congrArg Prod.fst i.2⟩)
@@ -303,7 +303,7 @@ theorem bcSumD (l : ℕ) (W W' : Type) (q : W → ℕ) (q' : W' → ℕ) (u : W'
           have h6 := hg i.1
           rw [h5, h.2.1 _ (congrArg Prod.fst i.2)] at h6
           exact ⟨_, h6⟩)⟩
-        have h3 : ω (v, k) = 0 := if_neg fun e => hd ((h.2.2.pow_eq_one_iff_dvd _).1 e)
+        have h3 : ω (v, k) = 0 := ite_eq_right fun e => hd ((h.2.2.pow_eq_one_iff_dvd _).1 e)
         rw [h3]
         exact hasSum_empty
   obtain ⟨r1, r2⟩ := fib_sum g (fun p => (f p.1 : ℝ)) ω (lterm q α β s) l (fun _ => Nat.cast_nonneg _) hω
@@ -400,8 +400,8 @@ theorem UpperTheory.ConvolutionTheory.R.coverEx :
   have hnorm : ∀ w, normV w.1 = normV (u w).1 ^ f w := by
     intro w
     by_cases h : normV w.1 = normV (w.1.under (𝓞 K))
-    · simp only [f, if_pos h, pow_one]; exact h
-    · simp only [f, if_neg h]
+    · simp only [f, ite_eq_left h, pow_one]; exact h
+    · simp only [f, ite_eq_right h]
       rcases hdec _ (u w).2 with h' | h'
       · exact absurd (h'.2 _ rfl) h
       · exact h'.2 _ rfl
@@ -427,13 +427,13 @@ theorem UpperTheory.ConvolutionTheory.R.coverEx :
     rcases hdec v.1 v.2 with h | h
     · refine Or.inl ⟨(hcard v).trans h.1, fun w hw => ?_, ?_⟩
       · have hw' : w.1.under (𝓞 K) = v.1 := congrArg Subtype.val hw
-        exact if_pos (hw' ▸ h.2 _ hw')
+        exact ite_eq_left (hw' ▸ h.2 _ hw')
       · have := hg.1 1 (by rw [pow_one]; exact h.2 _ hw₀)
         rw [pow_one] at this
         simp [this]
     · refine Or.inr ⟨(hcard v).trans h.1, fun w hw => ?_, ?_⟩
       · have hw' : w.1.under (𝓞 K) = v.1 := congrArg Subtype.val hw
-        refine if_neg ?_
+        refine ite_eq_right ?_
         rw [h.2 _ hw', hw']
         exact hne _
       · rcases hg.2.2 with h' | h'
@@ -612,7 +612,7 @@ theorem ne_zero_one (hS : Sys q X d A) (x y : X) (F : ℂ → ℂ) (σ₀ : ℝ)
     refine unb W q X d A hS Unit (fun _ => x) ⟨Real.log M, fun σ h1 h2 => ?_⟩
     rw [norm_eq_re hS _ σ h1]
     have h := hb σ h1 h2
-    rw [exp_re hS x x F σ₀ hF he σ h1, if_pos rfl, mul_comm] at h
+    rw [exp_re hS x x F σ₀ hF he σ h1, ite_eq_left rfl, mul_comm] at h
     simpa using (Real.le_log_iff_exp_le hM).2 (le_of_mul_le_mul_right h (by linarith))
   · obtain ⟨G, σ₁, hG, hGe⟩ := hS.rs x x
     obtain ⟨H, σ₂, hH, hHe⟩ := hS.rs y y
@@ -623,9 +623,9 @@ theorem ne_zero_one (hS : Sys q X d A) (x y : X) (F : ℂ → ℂ) (σ₀ : ℝ)
     have h := hb σ h1 h2
     have g₁ := b₁ σ h1.le h2
     have g₂ := b₂ σ h1.le h2
-    rw [exp_re hS x y F σ₀ hF he σ h1, if_neg hxy, one_mul] at h
-    rw [exp_re hS x x G σ₁ hG hGe σ h1, if_pos rfl] at g₁
-    rw [exp_re hS y y H σ₂ hH hHe σ h1, if_pos rfl] at g₂
+    rw [exp_re hS x y F σ₀ hF he σ h1, ite_eq_right hxy, one_mul] at h
+    rw [exp_re hS x x G σ₁ hG hGe σ h1, ite_eq_left rfl] at g₁
+    rw [exp_re hS y y H σ₂ hH hHe σ h1, ite_eq_left rfl] at g₂
     refine (Real.le_log_iff_exp_le (by positivity)).2 ?_
     simp only [Fintype.sum_bool, cond_true, cond_false, Complex.add_re, re_swap (A := A) x y σ, Real.exp_add]
     set a := Real.exp (∑' p, lterm q (A x) (A x) σ p).re
@@ -785,9 +785,9 @@ theorem UpperTheory.ConvolutionTheory.R.sysEx :
     rw [hFe σ hσ]
     by_cases hxy : x = y
     · subst hxy
-      rw [if_pos rfl, if_pos rfl]
+      rw [ite_eq_left rfl, ite_eq_left rfl]
       rfl
-    · rw [if_neg (fun h => hxy (Subtype.ext (by simpa using h))), if_neg hxy]
+    · rw [ite_eq_right (fun h => hxy (Subtype.ext (by simpa using h))), ite_eq_right hxy]
       rfl
 end -- clump:auto
 end -- clump:auto

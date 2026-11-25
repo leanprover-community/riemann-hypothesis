@@ -143,7 +143,7 @@ theorem simple_raising_kill_all_raising {E : GLOps n K V} (hE : IsGLRep E) (y : 
     have hcomm : E a c (E c b y) - E c b (E a c y) =
         ((if c = c then E a b else 0) - (if b = a then E c c else 0)) y :=
       LinearMap.congr_fun (hE.1 a c c b) y
-    rw [h1, h2, map_zero, map_zero, sub_zero, if_pos rfl, if_neg hba, sub_zero] at hcomm
+    rw [h1, h2, map_zero, map_zero, sub_zero, ite_eq_left rfl, ite_eq_right hba, sub_zero] at hcomm
     exact hcomm.symm
 
 end

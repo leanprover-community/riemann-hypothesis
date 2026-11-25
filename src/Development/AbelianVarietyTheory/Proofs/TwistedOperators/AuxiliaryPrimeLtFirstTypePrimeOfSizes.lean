@@ -471,10 +471,10 @@ theorem placeDat_of_grid : ∀ {D : D7} {Γ : Type} [Group Γ] [Fintype Γ] {Pl0
     have hv0' : P.v0 ∈ P.S0 := P.mem_S0_of_sum_eq.2 (Or.inl rfl)
     simp only [GlobalTheory.Grid.PlaceDat.depth, Z]
     by_cases h : v = P.v0
-    · rw [h, if_pos rfl]
-    · rw [if_neg (fun h' => h (hinj v hv _ hv0' h'))]
+    · rw [h, ite_eq_left rfl]
+    · rw [ite_eq_right (fun h' => h (hinj v hv _ hv0' h'))]
       unfold Places.depth
-      rw [if_neg h]
+      rw [ite_eq_right h]
   have hS0eq : Z.S0 R.Pg = P.S0 := by
     ext v
     simp only [GlobalTheory.Grid.PlaceDat.S0, hW, Places.W0, Finset.mem_image]
@@ -652,7 +652,7 @@ theorem exists_gridPre_spaces : ∀ {D : D7} {Γ : Type} [Group Γ] [Fintype Γ]
   choose β hβ using hFr
   let mk : ∀ X, good X → GlobalTheory.Grid.Node D := fun X h => ⟨G'.V X, Sx X, M X h, G'.Λ X, β X h⟩
   let node : GlobalTheory.ChiGrid.Node → GlobalTheory.Grid.Node D := fun X => if h : good X then mk X h else GlobalTheory.Grid.row0 R 0
-  have node_pos : ∀ X (h : good X), node X = mk X h := fun X h => dif_pos h
+  have node_pos : ∀ X (h : good X), node X = mk X h := fun X h => dite_eq_left h
   have mk_is : ∀ X (h : good X), (mk X h).Is (X.rank D) (X.neg D.R.m) (Sx X) := fun X h => by
     have hv := G'.isV (hgood X h).1 (hgood X h).2
     exact ⟨hv.rank, hv.sigOK, hv.sig, rfl, hβ X h⟩
@@ -737,14 +737,14 @@ theorem exists_gridPre_spaces : ∀ {D : D7} {Γ : Type} [Group Γ] [Fintype Γ]
       exact hdP
     · intro i hi1 hi2
       dsimp only [G]
-      rw [dif_pos ⟨hi1, hi2⟩, gridDecompositionCast_is_iff]
+      rw [dite_eq_left ⟨hi1, hi2⟩, gridDecompositionCast_is_iff]
       have hl' : Z.ideal R.Pg = G'.pl.modul sc := hlvl
       have := hdV i ⟨hi1, hi2⟩
       rw [joinGram_neg, joinStair, ← hl'] at this
       exact this
     · intro j hj
       dsimp only [G]
-      rw [dif_pos hj, gridDecompositionCast_is_iff]
+      rw [dite_eq_left hj, gridDecompositionCast_is_iff]
       have := hdX j hj
       rw [joinGram_neg, joinStair_top] at this
       exact this
@@ -857,7 +857,7 @@ theorem exists_measDat (N : GlobalTheory.Grid.Node D) (hs : N.V.SigOK) (df : Pro
   have hc := princ_isCompact N hI
   by_cases h : df
   · obtain ⟨μ, 𝓕, e⟩ := GlobalTheory.FunObj.exists_meas N.V hs (hdf h) (N.princ I) ⟨ho, hc⟩
-    rw [if_pos rfl] at e
+    rw [ite_eq_left rfl] at e
     exact ⟨⟨μ, 𝓕⟩, by unfold GlobalTheory.Grid.Node.MeasDat.Is; exact ⟨fun _ => e, fun hn => absurd h hn⟩⟩
   · obtain ⟨μ, 𝓕, e⟩ := exists_isMeasFD N.V hs _ ho hc
     exact ⟨⟨μ, 𝓕⟩, by unfold GlobalTheory.Grid.Node.MeasDat.Is; exact ⟨fun h' => absurd h' h, fun _ => e⟩⟩
@@ -880,8 +880,8 @@ theorem exists_isMeas (G : GlobalTheory.Grid.GridPre R) (hS : G.IsSpaces) :
           rw [hN.sig τ]
           show (D.R.m - j) / 2 = 0
           by_cases hj : j = 0
-          · rw [if_pos hj] at hd; exact hd.elim
-          · rw [if_neg hj] at hd; omega)
+          · rw [ite_eq_left hj] at hd; exact hd.elim
+          · rw [ite_eq_right hj] at hd; omega)
         (I := if j = 0 then G.lvl R else ⊤) (by split_ifs; exacts [hlvl, htop])
       exact ⟨m, fun _ _ => hm⟩
     · exact ⟨⟨0, ∅⟩, fun h1 h2 => absurd ⟨h1, h2⟩ h⟩
@@ -913,10 +913,10 @@ theorem exists_isMeas (G : GlobalTheory.Grid.GridPre R) (hS : G.IsSpaces) :
     | zero => exact h00
     | succ i =>
       have := hmV i 0 hi (Nat.zero_le _)
-      rw [if_pos rfl, if_pos rfl] at this
+      rw [ite_eq_left rfl, ite_eq_left rfl] at this
       exact this
   · have := hmV i (j + 1) hi hj
-    rw [if_neg (Nat.succ_ne_zero j), if_neg (Nat.succ_ne_zero j)] at this
+    rw [ite_eq_right (Nat.succ_ne_zero j), ite_eq_right (Nat.succ_ne_zero j)] at this
     exact this
 
 end GlobalTheory.GridJoin

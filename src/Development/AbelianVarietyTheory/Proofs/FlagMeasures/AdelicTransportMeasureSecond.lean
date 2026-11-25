@@ -180,7 +180,7 @@ theorem exists_transport (I : AutInst) (μf : Measure I.Gf) [μf.IsHaarMeasure] 
     intro y
     have h := hfund.2.1 y
     have e : I.rep fund y = h.choose * y := by
-      unfold AutInst.rep; exact dif_pos h
+      unfold AutInst.rep; exact dite_eq_left h
     have hm : h.choose ∈ (Γ : Set I.GA) := by
       have k := h.choose_spec.1
       generalize h.choose = z at k ⊢

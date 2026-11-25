@@ -12,12 +12,6 @@ namespace GlobalTheory.IndefiniteRowSideFullHecke.RigidAdjointFrameLaws
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj GlobalTheory.IndefiniteRowSideFullHecke.JetChartLaws
 
-section Gen
-
-variable {X Y : Scheme.{0}} (L : LB X)
-
-end Gen
-
 variable {X₀ : Scheme.{0}} {S : Type} [CommRing S]
 
 section Group

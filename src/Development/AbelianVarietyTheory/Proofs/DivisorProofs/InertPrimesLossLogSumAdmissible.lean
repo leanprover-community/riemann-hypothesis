@@ -697,7 +697,7 @@ theorem bound_one {D : D7} {L : SizeData₂ D} {c : ErrC}
       (∑ τ : D.what₂.Tau, wj D j τ) / ((p : ℝ) ^ 2 - 1) else 0)|) := by
     intro p hp
     have e0 : padicValNat p 1 = 0 := by simp [_root_.Nat.padicValNat_def (n := 1)]
-    rw [if_pos (hQ p hp).2, e0, Nat.cast_zero, zero_add]
+    rw [ite_eq_left (hQ p hp).2, e0, Nat.cast_zero, zero_add]
     unfold EatC Formalism.MainNotions.G.Nm
     rw [hc, mul_assoc]
   rw [Finset.sum_congr rfl hEg]
@@ -828,7 +828,7 @@ theorem inertPrimes_loss_log_sum_admissible : ∀ {eps : ℝ} (Fm : FamP eps), 0
     refine Finset.sum_congr rfl fun p hp => ?_
     rw [Finset.mem_filter] at hp
     unfold Formalism.MainNotions.WeightDegreeSizes.EatCI
-    rw [if_pos hp.2]
+    rw [ite_eq_left hp.2]
   have eB : ∑ p ∈ P.filter (fun p => ¬ (G.IsResidueClassZero (Fm.D x i) p ∧ G.hP (Fm.D x i) p = 0)),
       2 * Real.log (p : ℝ) * |Formalism.MainNotions.WeightDegreeSizes.EatCI (Fm.L x i) Fm.GK Fm.cX.err j p| =
       ∑ p ∈ P.filter (fun p => ¬ (G.IsResidueClassZero (Fm.D x i) p ∧ G.hP (Fm.D x i) p = 0)),
@@ -836,7 +836,7 @@ theorem inertPrimes_loss_log_sum_admissible : ∀ {eps : ℝ} (Fm : FamP eps), 0
     refine Finset.sum_congr rfl fun p hp => ?_
     rw [Finset.mem_filter] at hp
     unfold Formalism.MainNotions.WeightDegreeSizes.EatCI
-    rw [if_neg hp.2]
+    rw [ite_eq_right hp.2]
   rw [eA, eB, add_mul]
   exact add_le_add A B
 

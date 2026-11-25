@@ -523,7 +523,7 @@ theorem exists_twistGen : ∀ (X : Scheme.{0}) (Ω : Type) [Field Ω] (ξ : Spec
           show (((s' : Ω) * x c ^ (d + 1)) ^ M • β j l) e / x c ^ ((d + 1) * M) = _
           rw [twist_eval, mul_div_cancel_right₀ _ (pow_ne_zero _ hp.1)]
         rw [e2]
-        simp only [if_true]
+        simp only [ite_true]
         have := hs'u.1
         rw [inv_pow]
         field_simp

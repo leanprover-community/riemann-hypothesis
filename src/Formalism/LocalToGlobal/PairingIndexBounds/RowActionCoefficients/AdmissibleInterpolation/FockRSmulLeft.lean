@@ -131,9 +131,9 @@ theorem tgt3 (hFP : FockProd)
   rw [Finset.prod_congr rfl fun b _ => h4 b]
   by_cases hik : i = k
   · subst hik; simp
-  · rw [if_neg hik]
+  · rw [ite_eq_right hik]
     obtain ⟨b, hb⟩ := Function.ne_iff.1 hik
-    exact Finset.prod_eq_zero (Finset.mem_univ b) (if_neg hb)
+    exact Finset.prod_eq_zero (Finset.mem_univ b) (ite_eq_right hb)
 
 include hem hh in
 theorem tgt5 (hFP : FockProd)
@@ -142,11 +142,11 @@ theorem tgt5 (hFP : FockProd)
     fockR (∑ i, a i • map (algebraMap K Kc) (Ei em hi ι e i)) (map (algebraMap K Kc) (Ei' em h ι e' k)) =
       a k * ∏ b, cN Kc (ν b) := by
   rw [fockR_sum_left, Finset.sum_eq_single k]
-  · rw [fockR_smul_left, Top.fockRMap, tgt3 em hem ν h hi hh ι e e' hFP hee, if_pos rfl, map_prod]
+  · rw [fockR_smul_left, Top.fockRMap, tgt3 em hem ν h hi hh ι e e' hFP hee, ite_eq_left rfl, map_prod]
     congr 1
     exact Finset.prod_congr rfl fun b _ => map_cN K Kc _ _
   · intro i _ hik
-    rw [fockR_smul_left, Top.fockRMap, tgt3 em hem ν h hi hh ι e e' hFP hee, if_neg hik, map_zero, mul_zero]
+    rw [fockR_smul_left, Top.fockRMap, tgt3 em hem ν h hi hh ι e e' hFP hee, ite_eq_right hik, map_zero, mul_zero]
   · intro hk; exact absurd (Finset.mem_univ k) hk
 
 

@@ -350,7 +350,7 @@ theorem relIndex_matL (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF :
         rw [Matrix.single_apply_same, mul_left_comm, hfd, pow_add]
         ring
       · refine ⟨0, (pK K 𝔭 (k + c)).zero_mem, ?_⟩
-        rw [Matrix.single_apply, if_neg h, mul_zero, mul_zero]
+        rw [Matrix.single_apply, ite_eq_right h, mul_zero, mul_zero]
     obtain ⟨w, hw, e⟩ := hle h1 i j
     rw [one_mul, one_mul, Matrix.single_apply_same] at e
     obtain ⟨b, hb, rfl⟩ := (mem_pK_iff_unif h𝔭 hπ hπ').1 hw

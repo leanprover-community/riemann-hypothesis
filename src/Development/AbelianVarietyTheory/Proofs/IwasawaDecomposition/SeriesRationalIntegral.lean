@@ -667,9 +667,9 @@ theorem phiJ_sum_eq_of_isBC : ∀ (D : D7) (T : CoreJ D) (j : ℕ) (σ : T.Q.c.F
     funext k z
     simp only [Finset.sum_apply, Pi.smul_apply, smul_eq_mul]
     by_cases h : z ∈ ((T.U j σ).X k).dom
-    · simp only [rdU, LinearMap.coe_mk, AddHom.coe_mk, dif_pos h]
+    · simp only [rdU, LinearMap.coe_mk, AddHom.coe_mk, dite_eq_left h]
       exact evR_sum_eq T j σ C hσ a n x f as fs hf hBC ((T.U j σ).un k ⟨z, h⟩)
-    · simp [rdU, dif_neg h]
+    · simp [rdU, dite_eq_right h]
   let L : FDSec (T.U j σ).X →ₗ[ℂ] (GA D (T.V j σ) → ℂ) := (lieFac (T.Q.Dw j) (xiR D) a : ℂ) •
     adel (T.V j σ) (T.dict j σ) (muPin (T.V j σ) (T.dict j σ) (T.mu j σ) (T.cE j σ))
   have e : ∀ g : T.R j, T.phiJ j σ a g = L (rdU (T.U j σ) g) := fun _ => rfl

@@ -287,7 +287,7 @@ theorem io_mem (hO : Function.Injective (algebraMap O LL)) (hd : Descends E') (h
     rw [← e, ← ioE_γE E hO, hg, map_one]
     rfl
   · intro i
-    rw [Finset.sum_eq_single (i - 1) (fun j _ hj => by simp [hj]) (by simp), if_pos rfl, map_one, one_mul,
+    rw [Finset.sum_eq_single (i - 1) (fun j _ hj => by simp [hj]) (by simp), ite_eq_left rfl, map_one, one_mul,
       ← ioE_φE E hO, W.φE_ext]
     exact congrArg _ (congrArg _ (φA_letE W i).symm)
 

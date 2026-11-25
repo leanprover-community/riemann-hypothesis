@@ -76,7 +76,7 @@ theorem ev_eq (h : y ∈ ptsIn p σ U) (f : Γ(Y, U)) : ev p σ U f y = evHom h 
 
 theorem evHom_eq_evalPt (h : y ∈ ptsIn p σ U) : evHom h = TangentOrigin.evalPt y.1 U h := rfl
 
-theorem ev_of_notMem (h : y ∉ ptsIn p σ U) (f : Γ(Y, U)) : ev p σ U f y = 0 := dif_neg h
+theorem ev_of_notMem (h : y ∉ ptsIn p σ U) (f : Γ(Y, U)) : ev p σ U f y = 0 := dite_eq_right h
 
 theorem ev_res (e : W ≤ U) (h : y ∈ ptsIn p σ W) (f : Γ(Y, U)) :
     ev p σ W (resG Y e f) y = ev p σ U f y := valR_res _ e h f
@@ -323,9 +323,9 @@ theorem exists_of_etale {U : Y.Opens} (hU : IsAffineOpen U) (x : Fin D → Γ(Y,
     (differentiable_const _).prodMk (EuclideanSpace.equiv (Fin D) ℂ).differentiable
   let s (v : V D) : CxPts p σ := if h : j v ∈ N then ofHom hU (τ (j v)) (hτ _ h).2.1 else y
   have hsU (v) (h : j v ∈ N) : s v ∈ ptsIn p σ U := by
-    simp only [s, dif_pos h]; exact ofHom_mem _ _ _
+    simp only [s, dite_eq_left h]; exact ofHom_mem _ _ _
   have hsv (v) (h : j v ∈ N) (a) : ev p σ U a (s v) = τ (j v) a := by
-    simp only [s, dif_pos h]; exact ev_ofHom _ _ _ a
+    simp only [s, dite_eq_left h]; exact ev_ofHom _ _ _ a
   obtain ⟨hc, hh⟩ := holo_of_affine hU (hN.preimage hj.continuous) hsU fun a =>
     ((hd a).comp hj.differentiableOn fun _ h => h).congr fun v hv => hsv v hv a
   let S : Set (CxPts p σ) :=

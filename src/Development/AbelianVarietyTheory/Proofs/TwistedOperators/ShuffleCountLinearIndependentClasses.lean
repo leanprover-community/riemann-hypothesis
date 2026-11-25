@@ -206,7 +206,7 @@ theorem separates_of_shuffle_count : ∀ (I S : Type 1) (A : Type) [DecidableEq 
       rw [hy, Finsupp.finsetSum_apply, Finset.sum_eq_single i]
       · simp
       · intro j _ hji
-        rw [Finsupp.single_apply, if_neg]
+        rw [Finsupp.single_apply, ite_eq_right]
         exact fun h => hji (hp h)
       · intro h
         exact absurd (Finset.mem_univ i) h

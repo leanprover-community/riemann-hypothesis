@@ -93,19 +93,14 @@ theorem adjZ_Eab {p q : ℕ} (a b : Ix p q) : adjZ (Eab a b) = (sgnIx a * sgnIx 
   simp only [Eab, Matrix.smul_apply, Matrix.single_apply, smul_eq_mul]
   by_cases h : a = j ∧ b = i
   · obtain ⟨rfl, rfl⟩ := h
-    rw [if_pos ⟨rfl, rfl⟩, if_pos ⟨rfl, rfl⟩, star_one]
+    rw [ite_eq_left ⟨rfl, rfl⟩, ite_eq_left ⟨rfl, rfl⟩, star_one]
     ring
   · have h' : ¬ (b = i ∧ a = j) := fun h'' => h ⟨h''.2, h''.1⟩
-    rw [if_neg h, if_neg h', star_zero]
+    rw [ite_eq_right h, ite_eq_right h', star_zero]
     ring
 
-private theorem Jm_mul_JmRealPlaceTaylor (p q : ℕ) : Jm p q * Jm p q = 1 := by
-  rw [Jm_eq_diagonal, Matrix.diagonal_mul_diagonal]
-  have h : (fun a : Ix p q => sgnIx a * sgnIx a) = fun _ => 1 := funext sgnIx_mul_self
-  rw [h, Matrix.diagonal_one]
-
 theorem mem_upq_iff {p q : ℕ} (Z : Mat p q) : Z ∈ upq p q ↔ adjZ Z = -Z := by
-  have hJ := Jm_mul_JmRealPlaceTaylor p q
+  have hJ := GlobalTheory.RealPar.KStabLie.Jm_sq p q
   show Zᴴ * Jm p q + Jm p q * Z = 0 ↔ _
   unfold adjZ
   constructor
@@ -131,7 +126,7 @@ theorem isKC_adjZ {p q : ℕ} {Z : Mat p q} (h : IsKC Z) : IsKC (adjZ Z) := by
 theorem isKC_Eab {p q : ℕ} {a b : Ix p q} (h : sameBlock a b) : IsKC (Eab a b) := by
   intro i j hij
   simp only [Eab, Matrix.single_apply]
-  rw [if_neg]
+  rw [ite_eq_right]
   rintro ⟨rfl, rfl⟩
   exact hij h
 

@@ -298,7 +298,7 @@ theorem dual_basis : ∀ (q : ℕ) [Fact q.Prime] (g : ℕ) (S : Setup g) (r : �
       apply L0
       intro i
       rw [← hy, hf_sub_left, hf_sum_left, hβ' i]
-      simp only [hbs2, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+      simp only [hbs2, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
       ring
     conv_lhs => rw [key]
     rw [Finset.smul_sum]

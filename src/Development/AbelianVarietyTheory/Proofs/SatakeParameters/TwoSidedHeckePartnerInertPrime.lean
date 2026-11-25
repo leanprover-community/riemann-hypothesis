@@ -72,7 +72,7 @@ theorem exists_down {C : Type} (Q : ℕ → C → C → Prop) (h : ∀ k c', ∃
 
     refine ⟨fun k => if k ≤ n then cs k else c, by simp, fun k hk => ?_⟩
     rcases Nat.lt_succ_iff_lt_or_eq.mp hk with hk | rfl
-    · simp only [if_pos hk.le, if_pos (Nat.succ_le_of_lt hk)]
+    · simp only [ite_eq_left hk.le, ite_eq_left (Nat.succ_le_of_lt hk)]
       exact hQ k hk
     · simpa [hcs] using hc₁
 

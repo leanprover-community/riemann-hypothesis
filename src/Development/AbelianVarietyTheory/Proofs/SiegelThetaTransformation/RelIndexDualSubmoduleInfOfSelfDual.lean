@@ -206,14 +206,6 @@ theorem encard_setOf_submodule_le_relIndex_eq_le {R : Type*} [Ring R] [Module R 
 
 end Subgroups
 
-section DeterminedMaps
-
-open MeasureTheory Metric
-
-variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-
-end DeterminedMaps
-
 end GlobalTheory
 end -- clump:auto
 end -- clump:auto

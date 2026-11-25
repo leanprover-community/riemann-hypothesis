@@ -120,9 +120,9 @@ theorem seenCl_of (A : AtTTied u) : SeenCl A := by
   have hseen := A.seenP w hw ((D.fm u).tauOf w v)
   subst hyx
   by_cases hs : (D.fm u).seenP w = true
-  · rw [if_pos hs] at hseen ⊢
+  · rw [ite_eq_left hs] at hseen ⊢
     exact pos_iff_mem_Pv A v ν hTau hseen x
-  · rw [if_neg hs] at hseen ⊢
+  · rw [ite_eq_right hs] at hseen ⊢
     let cO : 𝓞 D.host.E ≃+* 𝓞 D.host.E := RingOfIntegers.mapRingEquiv D.host.conj.toRingEquiv
     let ν' : AddValuation D.host.E (WithTop ℤ) := ν.comap (D.host.conj : D.host.E →+* D.host.E)
     have hinv := Formalism.L2.Host.conj_conj (D := D) D.host

@@ -129,7 +129,7 @@ theorem gram_eq_one (X : Stages) {px : PreX X.B.toPre} (I : ColIn X.B px) (hI : 
 theorem decoOf_lat {X : Formalism.L2.Col.Fields} (hc : CMData X.F X.E) (n : ℕ) [NeZero n] (S : Finset (Pl X.E)) (y : UAd hc n) :
     (decoOf (F := X.F) (E := X.E) ∅ S y.1).1.N = Formalism.UG.CS.globLat y.1 (Formalism.L2.Col.stdLat X.E n) := by
   have hok := decorated_lattice_exists hc n ∅ S y.1 y.2
-  have e : (decoOf (F := X.F) (E := X.E) ∅ S y.1).1 = decoRaw ∅ S y.1 := congrArg Subtype.val (dif_pos hok)
+  have e : (decoOf (F := X.F) (E := X.E) ∅ S y.1).1 = decoRaw ∅ S y.1 := congrArg Subtype.val (dite_eq_left hok)
   rw [e]
   rfl
 
@@ -175,7 +175,7 @@ theorem exists_root_reading (X : Stages) {px : PreX X.B.toPre} (I : ColIn X.B px
   have hneg : X.toD7.sp.Vneg ((i : ℕ) + 1) = false := X.B.V_pos _ (by omega) i.2
   have ht := hT.coefL i t
   have hgr : (if X.toD7.sp.Vneg ((i : ℕ) + 1) then -(X.toD7.sp.V ((i : ℕ) + 1)).gram else (X.toD7.sp.V ((i : ℕ) + 1)).gram) = 1 := by
-    rw [hneg, if_neg (by simp)]
+    rw [hneg, ite_eq_right (by simp)]
     exact hG
   rw [hgr] at ht
   have hΛ := hL.is.βV i

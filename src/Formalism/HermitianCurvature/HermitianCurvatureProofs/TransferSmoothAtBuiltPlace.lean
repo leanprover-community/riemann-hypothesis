@@ -215,8 +215,8 @@ lemma inL_Su {a b : Fin (k + 1)} (ha : a ≠ Fin.last k) (hb : b ≠ Fin.last k)
   intro i
   unfold Su
   constructor
-  · rw [Matrix.single_apply, if_neg (fun h => hb h.2)]
-  · rw [Matrix.single_apply, if_neg (fun h => ha h.1)]
+  · rw [Matrix.single_apply, ite_eq_right (fun h => hb h.2)]
+  · rw [Matrix.single_apply, ite_eq_right (fun h => ha h.1)]
 
 lemma inL_zero : InL k (0 : Mb k) := fun _ => ⟨rfl, rfl⟩
 
@@ -402,7 +402,7 @@ private lemma Hpk_wI_apply_left_eq_ite (j : Fin (2 * r + k + 1)) (m : Fin (k + 1
   have hH : (Hpk k r)ᴴ = Hpk k r := (Formalism.QuantumDeterminants.hpkFacts k r).1
   rw [← hH, Matrix.conjTranspose_apply, Hpk_apply_wI_right_eq_ite]
   by_cases h : j = wI k r m
-  · simp only [h, if_true, Formalism.QuantumDeterminants.Hb, Matrix.diagonal_apply_eq]
+  · simp only [h, ite_true, Formalism.QuantumDeterminants.Hb, Matrix.diagonal_apply_eq]
     split_ifs <;> simp
   · simp [h]
 
@@ -926,21 +926,21 @@ theorem kl_decomp {Z : Q.Mx k r} (h : Kl Z) :
         ⟨fun e => Fin.ext (by have := congrArg Fin.val e; simp [wI] at this; omega), fun e => e ▸ rfl⟩
       simp only [inj]
       rw [Finset.sum_eq_single i (fun x _ hx => by
-        rw [Finset.sum_eq_zero]; intro y _; rw [if_neg]; rintro ⟨h1, _⟩; exact hx h1) (by simp)]
-      rw [Finset.sum_eq_single j (fun y _ hy => by rw [if_neg]; rintro ⟨_, h2⟩; exact hy h2) (by simp)]
+        rw [Finset.sum_eq_zero]; intro y _; rw [ite_eq_right]; rintro ⟨h1, _⟩; exact hx h1) (by simp)]
+      rw [Finset.sum_eq_single j (fun y _ hy => by rw [ite_eq_right]; rintro ⟨_, h2⟩; exact hy h2) (by simp)]
       simp
     · rw [(kl_entry_col h _ c).1]
       refine (Finset.sum_eq_zero fun x _ => Finset.sum_eq_zero fun y _ => ?_).symm
-      rw [if_neg]; rintro ⟨_, h2⟩; exact wI_ne_eI y c h2
+      rw [ite_eq_right]; rintro ⟨_, h2⟩; exact wI_ne_eI y c h2
     · rw [(kl_entry_col h _ c).2]
       refine (Finset.sum_eq_zero fun x _ => Finset.sum_eq_zero fun y _ => ?_).symm
-      rw [if_neg]; rintro ⟨_, h2⟩; exact wI_ne_esI y c h2
+      rw [ite_eq_right]; rintro ⟨_, h2⟩; exact wI_ne_esI y c h2
   · rw [(kl_entry_row h q a).1]
     refine (Finset.sum_eq_zero fun x _ => Finset.sum_eq_zero fun y _ => ?_).symm
-    rw [if_neg]; rintro ⟨h1, _⟩; exact wI_ne_eI x a h1
+    rw [ite_eq_right]; rintro ⟨h1, _⟩; exact wI_ne_eI x a h1
   · rw [(kl_entry_row h q a).2]
     refine (Finset.sum_eq_zero fun x _ => Finset.sum_eq_zero fun y _ => ?_).symm
-    rw [if_neg]; rintro ⟨h1, _⟩; exact wI_ne_esI x a h1
+    rw [ite_eq_right]; rintro ⟨h1, _⟩; exact wI_ne_esI x a h1
 
 end WA
 
@@ -1495,7 +1495,7 @@ theorem core_eval (hD : FExpDeg) (hlen : ∀ σ, (G σ).length = t)
   rw [e]
   by_cases hl : tm.2.length ≤ j
   · simp [hl]
-  · simp only [hl, decide_false, Bool.false_eq_true, if_false]
+  · simp only [hl, decide_false, Bool.false_eq_true, ite_false]
     rw [hc, Polynomial.coeff_eq_zero_of_natDegree_lt (by rw [Polynomial.natDegree_taylor]; omega)]
     simp
 

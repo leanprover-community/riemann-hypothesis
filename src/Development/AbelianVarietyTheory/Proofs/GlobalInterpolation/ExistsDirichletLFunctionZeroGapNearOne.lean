@@ -243,14 +243,14 @@ theorem exists_gap : ∃ c : ℝ, 0 < c ∧ ∀ (q : ℕ) [NeZero q] (χ : Diric
     exact of_region hq hc ((min_le_right _ _).trans (min_le_right _ _)) him (He q ρ hρ hz)
   by_cases h2 : χ ^ 2 ≠ 1 ∨ ρ.im ≠ 0
   · exact of_region hq hc ((min_le_right _ _).trans (min_le_left _ _)) him (Hd q χ ρ h1 hz h2)
-  push_neg at h2
+  push Not at h2
   obtain ⟨hsq, hreal⟩ := h2
   have hlt : ρ.re < 1 := by
     by_contra h
     exact LFunction_ne_zero_of_one_le_re χ hne (not_lt.1 h) hz
   by_cases h3 : 1 / Real.log (3 * q) ≤ 1 - ρ.re
   · exact (weaken hq hc ((min_le_left _ _).trans (min_le_left _ _))).trans h3
-  push_neg at h3
+  push Not at h3
   refine real_case hq hC (by linarith) hc ((min_le_left _ _).trans (min_le_right _ _)) ?_
   refine (Ha q χ h1 hsq).trans ?_
   have hconv : Convex ℝ {z : ℂ | z.im = 0 ∧ ρ.re ≤ z.re ∧ z.re ≤ 1} := by

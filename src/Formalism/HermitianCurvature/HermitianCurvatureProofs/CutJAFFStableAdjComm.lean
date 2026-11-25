@@ -332,7 +332,7 @@ theorem integrable_nn {μ : Measure (Mt k r)} (hμ : B.IsHaarOn (B.GV k r) μ) {
     rw [Set.indicator_of_mem hg']
     exact hM _ ⟨hgK, hg⟩
   · have hg' : g ∉ (Matrix.of ⁻¹' K : Set (Mt k r)) := hgK
-    simp only [Set.indicator, hg', if_false, hAz _ hgK, norm_zero, zero_mul, le_refl]
+    simp only [Set.indicator, hg', ite_false, hAz _ hgK, norm_zero, zero_mul, le_refl]
 
 end Formalism.FourierDecayAlt.P.CutMP.JA.FFS.AC
 

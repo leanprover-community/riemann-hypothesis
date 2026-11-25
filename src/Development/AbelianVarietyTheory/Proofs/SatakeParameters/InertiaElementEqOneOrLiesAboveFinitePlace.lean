@@ -81,7 +81,7 @@ theorem inertiaEl_eq_one_or_liesAbove : ∀ (E Ω : Type) [Field E] [NumberField
         rw [show algebraMap (𝓞 E) E b = (b : E) from rfl, hI, hbot, Ideal.mem_bot]; exact hb0
       have hbinv : (algebraMap E Ω (algebraMap (𝓞 E) E b))⁻¹ ∈ A := by
         rw [ValuationSubring.mem_nonunits_iff_or] at hbn
-        push_neg at hbn; exact hbn.2
+        push Not at hbn; exact hbn.2
       rw [map_div₀, div_eq_mul_inv]
       exact mul_mem (hint a) hbinv
     have hall : ∀ x : Ω, x ∈ A := by

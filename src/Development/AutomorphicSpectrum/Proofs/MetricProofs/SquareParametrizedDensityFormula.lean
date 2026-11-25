@@ -322,7 +322,7 @@ theorem sum_split (v f : σ → ℝ) :
   have : ∀ a, (if a = a₀ then 0 else v a) * f a = v a * f a - (if a = a₀ then v a₀ * f a₀ else 0) := by
     intro a
     by_cases h : a = a₀ <;> simp [h]
-  simp only [this, Finset.sum_sub_distrib, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+  simp only [this, Finset.sum_sub_distrib, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   ring
 
 theorem K1 (n : ℕ) {z : Fin (d + 2) → ℂ} (hz : Fin.tail (Fin.tail z) ∈ Q.U n) :
@@ -333,9 +333,9 @@ theorem K1 (n : ℕ) {z : Fin (d + 2) → ℂ} (hz : Fin.tail (Fin.tail z) ∈ Q
     (g := fun a z' => (if a = a₀ then 0 else (ε a : ℝ)) * (SY.potH a).φ (Q.ΦY n (lin Fin.succ z)) (Q.ΦY n (lin Fin.succ z')))
     Finset.univ fun a _ => by
       by_cases ha : a = a₀
-      · simp only [ha, if_true, zero_mul]
+      · simp only [ha, ite_true, zero_mul]
         exact PH.refl' _
-      · simp only [ha, if_false]
+      · simp only [ha, ite_false]
         exact ((M0 Q n a hz).trans ((Ya0 Q n a ha hz).trans (Ya1 Q n a ha hz).symm)).smul _
   refine (((M1 Q n hz).smul (ε a₀ : ℝ)).add hs |>.trans (Y1 Q n hz |>.congr' (fun w => ?_) (fun w => rfl))).congr'
     (fun w => ?_) (fun w => rfl)

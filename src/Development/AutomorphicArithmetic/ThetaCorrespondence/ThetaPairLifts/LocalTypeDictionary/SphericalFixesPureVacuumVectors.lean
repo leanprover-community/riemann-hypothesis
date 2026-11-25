@@ -799,7 +799,7 @@ theorem dbl_eigen (σ : E →ₐ[F] E) {n d : ℕ} (X : Spc F E n) (Y : Spc F E 
     intro f hf l hl ξ
     have h : ∃ γ ∈ Λ, GlobalTheory.LatVac.locCo dd v γ = l := AddSubgroup.mem_map.mp hl
     have key := local_identity v dd ψ h.choose f _ (hAt _ h.choose_spec.1) RD hRest.1 (hf _ h.choose_spec.1) x₀ hx₀ ξ
-    simp only [χ, dif_pos h]
+    simp only [χ, dite_eq_left h]
     rw [h.choose_spec.2] at key
     exact key
   obtain ⟨c, hc0, hcb⟩ := GlobalTheory.LatBound.locCo_latAtV_bounded X Y v M.co hX hY
@@ -1031,7 +1031,7 @@ theorem vacuum_fixed_at_cofinitely_many_places : _root_.GlobalTheory.FunPr.Theta
   by_cases hin : ∃ w, Formalism.UG.IsInertAt F E v w
   · obtain ⟨w, hw⟩ := hin
     exact _root_.GlobalTheory.InertSph.vac_fixed F E σ B a a' G X om om' hT v w hw hvT k hk
-  · push_neg at hin
+  · push Not at hin
     exact vac_fixed_split F E σ B a a' G X om om' hT v hin hvT hψ h2 h3 k hk
 end GlobalTheory.LocVacFix
 end

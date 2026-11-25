@@ -152,7 +152,7 @@ theorem class_eq_zero_of_orth {G : Type} [Group G] [Fintype G] (f : G → ℂ) (
     intro w
     have := congrArg (fun a : MonoidAlgebra ℂ G => a.coeff w) hsum
     simp only [MonoidAlgebra.coeff_sum, zOf, Finsupp.finsetSum_apply, MonoidAlgebra.coeff_single,
-      Finsupp.single_apply, Finset.sum_ite_eq', Finset.mem_univ, if_true] at this
+      Finsupp.single_apply, Finset.sum_ite_eq', Finset.mem_univ, ite_true] at this
     rw [this, MonoidAlgebra.one_def, MonoidAlgebra.coeff_single, Finsupp.single_apply]
     simp [eq_comm]
   funext z
@@ -195,7 +195,7 @@ theorem class_expand {G : Type} [Group G] [Fintype G] (χ : G → ℂ) (hχ : Is
       split_ifs with h
       · subst h; ring
       · ring
-    rw [Finset.sum_congr rfl this, Finset.sum_ite_eq' F ρ', if_pos ((hmem ρ').2 hρ'), sub_self]
+    rw [Finset.sum_congr rfl this, Finset.sum_ite_eq' F ρ', ite_eq_left ((hmem ρ').2 hρ'), sub_self]
 
 theorem list_sum_flatMap {α M : Type} [AddCommMonoid M] (l : List α) (f : α → List M) :
     (l.flatMap f).sum = (l.map fun a => (f a).sum).sum := by

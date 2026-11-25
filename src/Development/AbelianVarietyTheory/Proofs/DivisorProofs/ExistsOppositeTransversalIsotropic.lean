@@ -698,7 +698,7 @@ theorem exists_ker_vec_of_not_onto_mod {O P X : Type} [CommRing O] [IsDomain O] 
     exact sub_mem (Submodule.mem_sup_left ⟨v, rfl⟩) (Submodule.mem_sup_right ht)
   rw [← LinearMap.injective_iff_surjective_of_finrank_eq_finrank
     (by rw [finrank_quot_tensor, finrank_quot_tensor, hr]), injective_iff_map_eq_zero] at hns
-  push_neg at hns
+  push Not at hns
   obtain ⟨t, ht, ht0⟩ := hns
   obtain ⟨v, rfl⟩ := one_tmul_surjective I t
   rw [LinearMap.baseChange_tmul, one_tmul_eq_zero_iff] at ht

@@ -123,6 +123,44 @@ theorem val_spec {y : (Σ k, ι k) → Ω} {A : HermLine ι} {n : ℕ} {s : Ω} 
   rw [eq_comm, div_mul_eq_mul_div, div_mul_eq_mul_div, div_eq_iff (mul_ne_zero h1 h2)]
   linear_combination (-(A.h z : ℂ) ^ n) * hc
 
+theorem val_eq {y : (Σ k, ι k) → Ω} {A : HermLine ι} {n : ℕ} {s : Ω} (hs : s ∈ chartLat y A.a n)
+    {z : (Σ k, ι k) → ℂ} (hz : z ∈ mcPts (mCoordIdeal y)) {g h : MRing ι} (hr : IsRep y A.a n s g h)
+    (hh : eval z (map (Int.castRingHom ℂ) h) ≠ 0) :
+    val y A n s z = eval z (map (Int.castRingHom ℂ) g) /
+      (eval z (map (Int.castRingHom ℂ) h) * (A.h z : ℂ) ^ n) := by
+  rw [eq_div_iff (mul_ne_zero hh (metric_ne hz n)), val_spec hs hz hr]
+  ring
+
+theorem rep_add {y : (Σ k, ι k) → Ω} {a : K → ℤ} {n : ℕ} {s t : Ω} {g₁ h₁ g₂ h₂ : MRing ι}
+    (r₁ : IsRep y a n s g₁ h₁) (r₂ : IsRep y a n t g₂ h₂) :
+    IsRep y a n (s + t) (g₁ * h₂ + g₂ * h₁) (h₁ * h₂) := by
+  obtain ⟨dg₁, dh₁, hg₁, hh₁, hd₁, hy₁⟩ := r₁
+  obtain ⟨dg₂, dh₂, hg₂, hh₂, hd₂, hy₂⟩ := r₂
+  refine ⟨dg₁ + dh₂, dh₁ + dh₂, homog_add (homog_mul hg₁ hh₂) (GroundTheory.Heights₂.Heights.HilbertSamuel.SectionBounded.homog_congr (homog_mul hg₂ hh₁) fun k => ?_),
+    homog_mul hh₁ hh₂, fun k => ?_, ?_⟩
+  · simp only [Pi.add_apply]
+    zify
+    linear_combination hd₂ k - hd₁ k
+  · simp only [Pi.add_apply]
+    push_cast
+    linear_combination hd₁ k
+  · rw [map_add (f := _), map_mul, map_mul, map_mul, hy₁, hy₂]
+    ring
+
+def w (y : (Σ k, ι k) → Ω) (A : HermLine ι) (n : ℕ) : chartLat y A.a n →+ (((Σ k, ι k) → ℂ) → ℂ) :=
+  AddMonoidHom.mk' (fun s => val y A n s) fun s t => by
+    funext z
+    show val y A n ((s + t : chartLat y A.a n) : Ω) z = val y A n s z + val y A n t z
+    by_cases hz : z ∈ mcPts (mCoordIdeal y)
+    · obtain ⟨⟨g₁, h₁⟩, r₁, n₁⟩ := exists_rep_at s.2 hz
+      obtain ⟨⟨g₂, h₂⟩, r₂, n₂⟩ := exists_rep_at t.2 hz
+      have hT := metric_ne (A := A) hz n
+      rw [AddSubgroup.coe_add, val_eq (add_mem s.2 t.2) hz (rep_add r₁ r₂) (by simpa using mul_ne_zero n₁ n₂),
+        val_eq s.2 hz r₁ n₁, val_eq t.2 hz r₂ n₂]
+      simp only [map_add (f := _), map_mul]
+      field_simp
+    · simp [val, hz]
+
 theorem secNormAt_eq {y : (Σ k, ι k) → Ω} {A : HermLine ι} {n : ℕ} {s : Ω} (hs : s ∈ chartLat y A.a n)
     {z : (Σ k, ι k) → ℂ} (hz : z ∈ mcPts (mCoordIdeal y)) : secNormAt y A n s z = ‖val y A n s z‖ := by
   have hT : 0 < A.h z := A.pos z hz.1

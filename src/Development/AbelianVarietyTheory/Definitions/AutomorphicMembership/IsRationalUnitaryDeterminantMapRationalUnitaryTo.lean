@@ -185,10 +185,6 @@ theorem ordSub_span_singleton (w : HeightOneSpectrum (𝓞 L)) (u : Lˣ) :
 
 end API
 
-section Inhabitant
-
-end Inhabitant
-
 theorem mem_KD_of_congG {a : Ideles H.E} (h : a ∈ congG H) : a ∈ KD H :=
   Subgroup.subset_closure (Or.inl h)
 

@@ -84,9 +84,9 @@ theorem bigM_conjTranspose (g : ι → Matrix (Fin n) (Fin n) ℂ) : (bigM g)ᴴ
   simp only [bigM]
   by_cases h : x.1 = y.1 ∧ x.2.2 = y.2.2
   · have h' : y.1 = x.1 ∧ y.2.2 = x.2.2 := ⟨h.1.symm, h.2.symm⟩
-    rw [if_pos h', if_pos h, Matrix.conjTranspose_apply, h.1]
+    rw [ite_eq_left h', ite_eq_left h, Matrix.conjTranspose_apply, h.1]
   · have h' : ¬ (y.1 = x.1 ∧ y.2.2 = x.2.2) := fun h' => h ⟨h'.1.symm, h'.2.symm⟩
-    rw [if_neg h', if_neg h, star_zero]
+    rw [ite_eq_right h', ite_eq_right h, star_zero]
 
 theorem fockF_blockAct (g : ι → Matrix (Fin n) (Fin n) ℂ) (f h : MvPolynomial (ι × Fin n × Fin n) ℂ) :
     fockF (blockAct ℂ g f) h = fockF f (blockAct ℂ (fun τ => (g τ)ᴴ) h) := by
@@ -667,9 +667,5 @@ theorem ipFr_evV (emb : ι → E →+* K) (J : Matrix (Fin n) (Fin n) E) (lam : 
     ← nfL_apply, map_smul, map_smulₛₗ, LinearMap.smul_apply, nfL_apply, smul_smul, starRingEnd_apply, hc, smul_eq_mul]
 
 end Metric2
-
-section Examples
-
-end Examples
 
 end Formalism.L2.Col

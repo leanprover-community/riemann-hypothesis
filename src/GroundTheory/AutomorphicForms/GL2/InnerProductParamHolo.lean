@@ -66,7 +66,7 @@ theorem differentiableOn_integral_of_bound {α : Type*} [MeasurableSpace α] {μ
           exact_mod_cast Nat.succ_ne_zero n
       refine (hsl.comp hseq).congr' ?_
       filter_upwards [hev] with n hn
-      simp only [hq, Function.comp_apply, if_pos hn, slope, vsub_eq_sub, add_sub_cancel_left,
+      simp only [hq, Function.comp_apply, ite_eq_left hn, slope, vsub_eq_sub, add_sub_cancel_left,
         inv_inv, smul_eq_mul]
   have key := hasDerivAt_integral_of_dominated_loc_of_deriv_le (μ := μ) (x₀ := s₀)
     (F := F) (F' := fun s x => deriv (fun z => F z x) s) (bound := fun x => B x / r)

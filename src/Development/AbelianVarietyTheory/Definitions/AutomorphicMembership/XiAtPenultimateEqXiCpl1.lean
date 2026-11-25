@@ -110,11 +110,11 @@ abbrev PtAt (u : Pr.Word) (j : ℕ) : Type :=
 
 theorem ysAt_ys_of_eq {j : ℕ} (h : j + 1 = R.m) (N : Submodule (𝓞 X.E) (Sp X.E (R.N j))) :
     (ysAt R sel mu cst j).ys N = ybSet sel mu cst N := by
-  rw [ysAt, if_pos h]
+  rw [ysAt, ite_eq_left h]
 
 theorem ysAt_ys_of_ne {j : ℕ} (h : j + 1 ≠ R.m) (N : Submodule (𝓞 X.E) (Sp X.E (R.N j))) :
     (ysAt R sel mu cst j).ys N = {∅} := by
-  rw [ysAt, if_neg h]
+  rw [ysAt, ite_eq_right h]
   rfl
 
 
@@ -189,7 +189,7 @@ theorem XiTop_tilF {u : Pr.Word} (hX : X.Ok) (hPr : Pr.Ok) (hsel : IsSel X sel) 
     unfold TopStep.locTop
     refine congrArg₂ (· * ·) ?_ ?_
     · unfold PhiTop
-      rw [if_neg hP, ← PhiQ_comp_of_red (ColPeriod.levelPrimes X Pr sel S mu hX hPr hsel P).1.2 _ _ _ _ _ _
+      rw [ite_eq_right hP, ← PhiQ_comp_of_red (ColPeriod.levelPrimes X Pr sel S mu hX hPr hsel P).1.2 _ _ _ _ _ _
         (show cOf R (n + 1) = 0 by unfold cOf; omega) κ hκ (prXp X.E R ∘ₗ inFr _ (TopStep.sumE _ ((toRow sel mu d).1.liftFr P) _) x ∘ₗ _)]
       congr 1
       refine LinearMap.ext fun v => (TopStep.prH_sumE_symm (N_m_succ R) _ _ _).trans ?_
@@ -199,12 +199,6 @@ theorem XiTop_tilF {u : Pr.Word} (hX : X.Ok) (hPr : Pr.Ok) (hsel : IsSel X sel) 
     · congr 1
       refine LinearMap.ext fun v => (TopStep.atNL_last _).trans ((TopStep.sumE_symm_last (N_m_succ R) _ _ _).trans ?_)
       exact ((TopStep.atNL_last _).trans (TopStep.sumE_symm_last (N_m_succ R) _ _ _)).symm
-
-section Over
-
-variable {u : Pr.Word} (n : ℕ) {j : ℕ} (h : j = R.m) (p : ChPt (R := R) sel mu u (n + 1))
-
-end Over
 
 section Unfold
 
@@ -254,7 +248,7 @@ theorem phiT_of_xiAt_ne_zero {u : Pr.Word} {i : ℕ}
       · rw [xiAt_of_le Ch sel mu cst L (by omega)] at hx
         exact absurd rfl hx
   by_contra hn
-  exact key (if_neg fun h => hn (h P))
+  exact key (ite_eq_right fun h => hn (h P))
 
 variable (A : Amb X)
 
@@ -281,13 +275,6 @@ theorem thAt_of_le (h : R.m ≤ i) (p : PtAt R sel mu cst u i) (p' : PtAt R sel 
 
 end ThUnfold
 
-section ThLast
-
-variable {u : Pr.Word} {n : ℕ} {b : Idx sel mu L (n + 1)} {b' : Idx sel mu L (n + 1 + 1)} (h : n + 1 + 1 = R.m)
-  (p : PtAt R sel mu cst u (n + 1)) (p' : PtAt R sel mu cst u (n + 1 + 1))
-
-end ThLast
-
 section Ker
 
 variable {u : Pr.Word} {n : ℕ} (T : ChTh W sel mu u n)
@@ -303,12 +290,12 @@ theorem firstCoupledKernel_eq_columnChainDatum (h : n + 2 = R.m) (al : L.β n) (
     (p' : PtAt R sel mu cst u (n + 1)) : cp1K W Ch sel mu cst L T al p.1.1 p'.1.1 p'.1.2 =
       kerOf (T.th n) (Sall sel mu u) (cAof sel mu cst) (cBof sel mu cst u) p.1.1.deco.1.N (frsF sel mu p.1.1) p'.1.1.deco.1.N
         (frsF sel mu p'.1.1) (xiAt Ch sel mu cst L u n (Idx.of al (by omega)) b' p p') := by
-  rw [xiAt_penultimate_eq_xiCpl1 Ch sel mu cst L h rfl, cp1K, if_pos (p'.mem_ybSet h)]
+  rw [xiAt_penultimate_eq_xiCpl1 Ch sel mu cst L h rfl, cp1K, ite_eq_left (p'.mem_ybSet h)]
 
 theorem k2top_eq_xiOver (h : n + 1 + 1 = R.m) (p : PtAt R sel mu cst u (n + 1)) (q : ChPt (R := R) sel mu u R.m) :
     TopStep.topDegreeKTwo W Ch sel mu cst T p.1.1 p.1.2 q =
       kerOf T.top (Sall sel mu u) (cAof sel mu cst) (cBof sel mu cst u) p.1.1.deco.1.N (frsF sel mu p.1.1) q.deco.1.N
-        (frsF sel mu q) (xiOver Ch sel mu cst n rfl p.1.1 p.1.2 q) := if_pos (p.mem_ybSet h)
+        (frsF sel mu q) (xiOver Ch sel mu cst n rfl p.1.1 p.1.2 q) := ite_eq_left (p.mem_ybSet h)
 
 end Ker
 

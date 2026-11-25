@@ -247,21 +247,6 @@ def satCar (h : SameCar F F') (p : RowPk D) (s : p.SAt F) : p.SAt F' :=
 
 end Mv
 
-section Slot
-open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.IndefR.Mult Formalism.IndefR.Links Formalism.IndefR.Lev Formalism.L2.DIV Formalism.MainNotions Formalism.L2.Forms NumberField
-  IsDedekindDomain GlobalTheory.Mem GlobalTheory.Mem.R3.Tr GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
-
-
-
-variable {K : Ctx} {B : Base} {f : Fr B.toPre} {T : TwDat B} {w : ColW B f T}
-
-
-
-
-end Slot
-
 end GlobalTheory.Mem.SRe.CarModel
 
 end

@@ -301,10 +301,10 @@ theorem exists_powHom {K : Type*} [Field K] (hK : ∀ x : K, x ≠ 0 → 0 < ord
   classical
   obtain ⟨a, ha0, hac, ha⟩ := exists_exponents M n hM hn
   let t : K → K := fun x => if x = 0 then 0 else x ^ a (orderOf x)
-  have t0 : t 0 = 0 := if_pos rfl
+  have t0 : t 0 = 0 := ite_eq_left rfl
   have ht : ∀ x : K, x ≠ 0 → ∀ j, orderOf x ≤ j → t x = x ^ a j := by
     intro x hx j hj
-    have : t x = x ^ a (orderOf x) := if_neg hx
+    have : t x = x ^ a (orderOf x) := ite_eq_right hx
     rw [this]
     have h := (ha _ _ hj).of_dvd
       (Dvd.dvd.mul_left (Nat.dvd_factorial (hK x hx) le_rfl) M)

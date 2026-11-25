@@ -163,9 +163,9 @@ theorem local_step [Finite B] (T : RingAut B) (ℓ : ℕ) (hℓ : 0 < ℓ) (hT :
     intro j hj0 hje h1
     have hlt : d * j < ℓ := by rw [he]; exact Nat.mul_lt_mul_of_pos_left hje hdpos
     have h0 := hxy (d * j) hlt
-    rw [if_neg (Nat.mul_ne_zero hdpos.ne' hj0.ne')] at h0
+    rw [ite_eq_right (Nat.mul_ne_zero hdpos.ne' hj0.ne')] at h0
     have h1' := hxy 0 hℓ
-    rw [if_pos rfl] at h1'
+    rw [ite_eq_left rfl] at h1'
     have hy : ∀ b, Ideal.Quotient.mk m ((T ^ (d * j)) b) = Ideal.Quotient.mk m b := by
       intro b
       rw [← hρ, h1]

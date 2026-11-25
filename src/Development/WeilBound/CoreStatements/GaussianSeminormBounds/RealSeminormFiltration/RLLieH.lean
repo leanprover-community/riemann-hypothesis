@@ -138,7 +138,7 @@ theorem expand (Y : Mat R S) (c : Matrix (Ix P Q) (Ix R S) ℂ) :
   rw [Matrix.sum_mul]
   refine Finset.sum_congr rfl fun b _ => ?_
   rw [show Matrix.single a b (c a b) = c a b • Matrix.single a b 1 by simp, Matrix.smul_mul]
-  simp only [Fintype.sum_bool, cu, if_true, Bool.false_eq_true, if_false, one_smul]
+  simp only [Fintype.sum_bool, cu, ite_true, Bool.false_eq_true, ite_false, one_smul]
   generalize Matrix.single a b (1 : ℂ) * Yᵀ = N
   ext i k
   simp only [Matrix.smul_apply, Matrix.add_apply, smul_eq_mul, real_smul]
@@ -203,7 +203,7 @@ theorem fock_eq {Y : Mat R S} (hY : Y ∈ upq R S) :
     have hs : ((eps a * eps b : ℝ) : ℂ) * ((eps a * eps b : ℝ) : ℂ) = 1 := by
       rw [← ofReal_mul, mul_mul_mul_comm, eps_sq, eps_sq, mul_one, ofReal_one]
     rw [show (1 / 2 : ℂ) = (1 / 4) * 2 by norm_num, mul_smul, smul_add (2 : ℂ), a1, a2, inv_smul_eq_iff₀ (by simp [hπ])]
-    simp only [Fintype.sum_bool, cu, cv, heis_smul, r1, r2, r3, r4, if_true, Bool.false_eq_true, if_false, ← hk]
+    simp only [Fintype.sum_bool, cu, cv, heis_smul, r1, r2, r3, r4, ite_true, Bool.false_eq_true, ite_false, ← hk]
     simp only [ofReal_div, ofReal_ofNat, star_mul', star_div₀, star_ofNat, star_one, star_neg, star_def, conj_I, conj_ofReal]
     generalize ((eps a * eps b : ℝ) : ℂ) = s at hs
     generalize (∑ b', Y b' b • raiB (a, b') : Module.End ℂ (Pol P Q R S)) = Rp

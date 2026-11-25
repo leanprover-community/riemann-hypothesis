@@ -305,12 +305,12 @@ theorem weylK_eq_zero_of_up (ε : Fin n → Bool) (Λ μ : Fin n → ℝ) (s : F
 
   have hbs : b = s := by
     by_contra hne
-    rw [if_neg hne] at hmb
+    rw [ite_eq_right hne] at hmb
     split_ifs at hma <;> linarith
   subst hbs
   have has' : a ≠ b := ne_of_lt hab
-  rw [if_neg has'] at hma
-  rw [if_pos rfl] at hmb
+  rw [ite_eq_right has'] at hma
+  rw [ite_eq_left rfl] at hmb
   have hEq : Λ a = Λ b := int_eq_of_le_lt (hint b) (hint a) hΛ (by linarith)
   obtain ⟨a', haa', ha's, hε', hc⟩ := exists_consec_pred ε hab hε
   have hΛ' : Λ a' = Λ b := by
@@ -322,7 +322,7 @@ theorem weylK_eq_zero_of_up (ε : Fin n → Bool) (Λ μ : Fin n → ℝ) (s : F
     linarith
   have hρ := rhoC_consec ε ha's hε' hc
   have hma' := hμ a' hε'
-  rw [if_neg (ne_of_lt ha's)] at hma'
+  rw [ite_eq_right (ne_of_lt ha's)] at hma'
   refine weylK_eq_zero_of_eq ε μ ha's hε' ?_
   simp only [Pi.add_apply]
   linarith
@@ -337,11 +337,11 @@ theorem weylK_eq_zero_of_down (ε : Fin n → Bool) (Λ μ : Fin n → ℝ) (s :
 
   have has : a = s := by
     by_contra hne
-    rw [if_neg hne] at hma
+    rw [ite_eq_right hne] at hma
     split_ifs at hmb <;> linarith
   subst has
-  rw [if_neg (ne_of_lt hab).symm] at hmb
-  rw [if_pos rfl] at hma
+  rw [ite_eq_right (ne_of_lt hab).symm] at hmb
+  rw [ite_eq_left rfl] at hma
   have hEq : Λ a = Λ b := int_eq_of_le_lt (hint b) (hint a) hΛ (by linarith)
   obtain ⟨b', hab', hb'b, hε', hc⟩ := exists_consec_succ ε hab hε
   have hΛ' : Λ b' = Λ a := by
@@ -353,7 +353,7 @@ theorem weylK_eq_zero_of_down (ε : Fin n → Bool) (Λ μ : Fin n → ℝ) (s :
     linarith
   have hρ := rhoC_consec ε hab' hε' hc
   have hmb' := hμ b' hε'.symm
-  rw [if_neg (ne_of_lt hab').symm] at hmb'
+  rw [ite_eq_right (ne_of_lt hab').symm] at hmb'
   refine weylK_eq_zero_of_eq ε μ hab' hε' ?_
   simp only [Pi.add_apply]
   linarith
@@ -376,7 +376,7 @@ theorem weylK_std_vanish (ε : Fin n → Bool) (Λ : Fin n → ℝ) (hint : ∀ 
   · exfalso
     have ha : a ≠ s := fun h => has (h ▸ rfl)
     have hb : b ≠ s := fun h => has (h ▸ hε)
-    rw [hμ, hμ, if_neg ha, if_neg hb] at hlt
+    rw [hμ, hμ, ite_eq_right ha, ite_eq_right hb] at hlt
     linarith [hdom a b hab hε]
 
 theorem weylK_dual_vanish (ε : Fin n → Bool) (Λ : Fin n → ℝ) (hint : ∀ a, ∃ m : ℤ, Λ a = m)
@@ -391,7 +391,7 @@ theorem weylK_dual_vanish (ε : Fin n → Bool) (Λ : Fin n → ℝ) (hint : ∀
   · exfalso
     have ha : a ≠ s := fun h => has (h ▸ rfl)
     have hb : b ≠ s := fun h => has (h ▸ hε)
-    rw [hμ, hμ, if_neg ha, if_neg hb] at hlt
+    rw [hμ, hμ, ite_eq_right ha, ite_eq_right hb] at hlt
     linarith [hdom a b hab hε]
 
 end ReciprocityTheory.ChartRestriction.DS.HW

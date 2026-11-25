@@ -995,7 +995,7 @@ theorem fj_le_slice (la : Wt X.Ψ r) (P : Frame X.Ψ r → ℂ) (hP : X.IsSec la
   swap
   · have h0 : X.fj la ξ ν P x = 0 := by
       unfold Data.fj
-      rw [if_neg]
+      rw [ite_eq_right]
       intro hall
       exact hf fun j => hall _ (hωp j)
     rw [h0, norm_zero, zero_mul]
@@ -1124,7 +1124,7 @@ theorem freqNonneg_of_thickBdd : OrbitThickSt → ∀ (E : Type) [Field E] [Numb
     · exact le_max_of_le_left h
     · exact le_max_of_le_right ((one_le_inv₀ (hq0 τ)).mpr h)
   have hqp : ∏ τ, q τ = 1 := by
-    simp only [q, Finset.prod_mul_distrib, Finset.prod_ite_eq', Finset.mem_univ, if_true]
+    simp only [q, Finset.prod_mul_distrib, Finset.prod_ite_eq', Finset.mem_univ, ite_true]
     exact mul_inv_cancel₀ hL0.ne'
   let y : X.Ψ → ℝ := fun τ => (q τ - 1) * X.tt ξ x τ
   have hty : ∀ τ, X.tt ξ x τ + y τ = q τ * X.tt ξ x τ := fun τ => by simp only [y]; ring

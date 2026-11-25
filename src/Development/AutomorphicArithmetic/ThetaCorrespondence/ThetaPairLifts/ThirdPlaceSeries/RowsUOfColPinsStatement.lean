@@ -431,16 +431,16 @@ theorem range_blkMap : (blkMap Ch sel mu P).range = P.grp := by
       · have e2 := rowTy_inL Ch sel mu P ⟨w.1, hw⟩
         change rowTy Ch sel mu P w = _ at e2
         rw [e2]
-        have hh : h w = diagEmb _ (r_le_X' R) (p ⟨w.1, hw⟩) := dif_pos hw
+        have hh : h w = diagEmb _ (r_le_X' R) (p ⟨w.1, hw⟩) := dite_eq_left hw
         rw [hh]
         exact mem_HPar.mpr ⟨diagEmb_mem_blockUT _ _ _, by
           rw [GlobalTheory.RowLevIndex.firstDiagonalBlock_of_diagonal_embedding _ _ (p ⟨w.1, hw⟩) _ _ rfl]; exact hp ⟨w.1, hw⟩ (Set.mem_univ _)⟩
-      · have hh : h w = 1 := dif_neg hw
+      · have hh : h w = 1 := dite_eq_right hw
         rw [hh]
         exact Subgroup.one_mem _
     refine ⟨((1 : UF X.E (R.N R.m - 1)), ⟨h, hmem⟩), ?_⟩
     funext v
-    exact GlobalTheory.RowLevIndex.firstDiagonalBlock_of_diagonal_embedding _ _ (p v) _ _ (dif_pos v.2)
+    exact GlobalTheory.RowLevIndex.firstDiagonalBlock_of_diagonal_embedding _ _ (p v) _ _ (dite_eq_left v.2)
 
 end Rows2
 

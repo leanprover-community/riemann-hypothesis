@@ -208,7 +208,7 @@ theorem finite_support (d s : ℕ) {I : Type} [Fintype I] (κ : I → ℕ) (𝔣
   have hcv : c_vp 𝔣 l = 0 := by
     have hd : ¬ l ∣ (discr E).natAbs := fun h => hlB (Finset.mem_union_right _
       (Nat.mem_primeFactors.2 ⟨hl, h, by simpa using discr_ne_zero E⟩))
-    rw [c_vp, if_neg (fun ⟨v, h1, h2⟩ => hv v h1 h2), delta_vp]
+    rw [c_vp, ite_eq_right (fun ⟨v, h1, h2⟩ => hv v h1 h2), delta_vp]
     simp [padicValInt, padicValNat.eq_zero_of_not_dvd hd]
   have hcE : cE_vp l z = 0 := by
     rw [cE_vp, ← bot_eq_zero, Finset.sup_eq_bot_iff]
@@ -768,7 +768,7 @@ theorem core (hTD : GlobalTheory.IndefiniteRowSideFullHecke.ClassZetaValuationBo
     if h : ∃ P ∈ GlobalTheory.SqTop.twPl G t, P.under (𝓞 D.host.F) = q then h.choose else G.pl.w G.pl.v0
   have hPq : ∀ q ∈ Q, Pq q ∈ GlobalTheory.SqTop.twPl G t ∧ (Pq q).under (𝓞 D.host.F) = q := fun q hq => by
     have h := hex q hq
-    simp only [Pq, dif_pos h]
+    simp only [Pq, dite_eq_left h]
     exact h.choose_spec
   have hov : ∀ q ∈ Q, Over (Pq q) q := fun q hq =>
     (_root_.GlobalTheory.CMVal.Euler.over_under (Pq q)).trans (congrArg HeightOneSpectrum.asIdeal (hPq q hq).2)
@@ -814,7 +814,7 @@ theorem core (hTD : GlobalTheory.IndefiniteRowSideFullHecke.ClassZetaValuationBo
     exact G.pl.levelPlace_ne_basePlace t P hP' e
   have hram0 : ¬ (nuH G t i j).UnrAt (G.pl.w G.pl.v0) := by
     have h1 := (hQval.2.2.2 G.pl.v0 (G.pl.w G.pl.v0) ((_root_.GlobalTheory.CMVal.Euler.over_under _).trans (congrArg HeightOneSpectrum.asIdeal (G.pl.w_over _ (Finset.mem_insert_self _ _))))).2 hv0
-    rw [GlobalTheory.FunObj.SqNum.Model.expIn_condF, if_pos (G.pl.mem_S0_of_sum_eq.2 (Or.inl rfl)), condExp, if_pos rfl] at h1
+    rw [GlobalTheory.FunObj.SqNum.Model.expIn_condF, ite_eq_left (G.pl.mem_S0_of_sum_eq.2 (Or.inl rfl)), condExp, ite_eq_left rfl] at h1
     exact h1.not_unrAt one_ne_zero
   have hΛs : Λ s ≠ 0 := GlobalTheory.HeckePartial.IsHeckeL.ne_zero_of_one_le hQval.1
     (GlobalTheory.HeckeOne.not_isNormPow_of_not_unrAt hram0) hΛ (by simpa using (by exact_mod_cast hs1 : (1 : ℝ) ≤ s))
@@ -931,7 +931,7 @@ theorem meanInf_log_norm_embedding (K : Type) [Field K] [NumberField K] [_root_.
   unfold Formalism.PairingDivisionLocalBalance.meanInf
   have hprod := InfinitePlace.prod_eq_abs_norm (K := K) a
   have hmult : ∀ v : InfinitePlace K, v.mult = 2 := fun v => by
-    rw [InfinitePlace.mult, if_neg (InfinitePlace.not_isReal_iff_isComplex.mpr (IsTotallyComplex.isComplex v))]
+    rw [InfinitePlace.mult, ite_eq_right (InfinitePlace.not_isReal_iff_isComplex.mpr (IsTotallyComplex.isComplex v))]
   have hpos : ∀ v : InfinitePlace K, 0 < v a := fun v => by
     rw [InfinitePlace.pos_iff]; exact ha
   have hsum : Real.log |((Algebra.norm ℚ a : ℚ) : ℝ)| = ∑ v : InfinitePlace K, 2 * Real.log (v a) := by

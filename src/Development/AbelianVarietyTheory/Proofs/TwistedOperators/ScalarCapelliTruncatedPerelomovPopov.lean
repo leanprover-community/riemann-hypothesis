@@ -125,7 +125,7 @@ theorem det_pmat : (pmat m χ).det = ∏ s, (X + C (χ s - (m : ℂ) / 2)) := by
   · exact Finset.prod_congr rfl fun s _ => by rw [pmat_apply]; simp
   · intro i j h
     have h' : j < i := h
-    rw [pmat_apply, if_neg (ne_of_gt h'), if_neg (not_lt_of_gt h')]
+    rw [pmat_apply, ite_eq_right (ne_of_gt h'), ite_eq_right (not_lt_of_gt h')]
 
 theorem det_pmat_add : (pmat m χ + Matrix.of fun _ _ => (1 : ℂ[X])).det =
     ∏ s, (X + C (χ s - (m : ℂ) / 2 + 1)) := by
@@ -133,7 +133,7 @@ theorem det_pmat_add : (pmat m χ + Matrix.of fun _ _ => (1 : ℂ[X])).det =
   · exact Finset.prod_congr rfl fun s _ => by rw [Matrix.add_apply, pmat_apply]; simp; ring
   · intro i j h
     have h' : i < j := h
-    rw [Matrix.add_apply, pmat_apply, if_neg (ne_of_lt h'), if_pos h']
+    rw [Matrix.add_apply, pmat_apply, ite_eq_right (ne_of_lt h'), ite_eq_left h']
     simp
 
 theorem det_pmat_ne_zero : (pmat m χ).det ≠ 0 := by

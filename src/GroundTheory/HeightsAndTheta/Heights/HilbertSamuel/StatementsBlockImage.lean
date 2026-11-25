@@ -62,12 +62,6 @@ def BlockImageDatum.Statement : Prop :=
       (∀ z ∈ mcPts (mCoordIdeal d.y), d₀.A.h z = d'.m.ρ (blockMapC d.k₀ M z)) ∧
       ∀ n, blockChi d₀ n = resChi d' n
 
-section Inhabitants
-
-open ProjLine
-
-end Inhabitants
-
 end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

@@ -128,9 +128,9 @@ theorem ksb_exists_pair (s t : FlatIx Dw) (h : t.1 = ksbConj s.1) (hs : s.1 (H.r
 theorem ksb_card_pairIx : Nat.card (PairIx H Dw) = Dw.dim := by
   classical
   rw [Nat.card_eq_fintype_card]
-  have hm1 : ∀ τ : {τ : E →+* ℂ // τ (H.rt : E) = H.rt0}, Dw.mult τ.1 = Dw.p := fun τ => if_pos τ.2
+  have hm1 : ∀ τ : {τ : E →+* ℂ // τ (H.rt : E) = H.rt0}, Dw.mult τ.1 = Dw.p := fun τ => ite_eq_left τ.2
   have hm2 : ∀ τ : {τ : E →+* ℂ // τ (H.rt : E) = H.rt0}, Dw.mult (ksbConj τ.1) = Dw.q :=
-    fun τ => if_neg (by rw [ksbConj_mem_iff, not_not]; exact τ.2)
+    fun τ => ite_eq_right (by rw [ksbConj_mem_iff, not_not]; exact τ.2)
   rw [Fintype.card_sigma]
   simp only [Fintype.card_prod, Fintype.card_fin, hm1, hm2]
   rw [Finset.sum_const, Finset.card_univ, smul_eq_mul, Datum.dim, ksb_card_cmType]
@@ -178,7 +178,7 @@ theorem ksbA_row (a : 𝓞 E) (s : FlatIx Dw) :
   simp only [ksbA, Matrix.diagonal_apply, Pi.single_apply, Equiv.symm_apply_apply]
   by_cases hy : y = e s
   · subst hy; simp
-  · rw [if_neg (Ne.symm hy), if_neg hy]
+  · rw [ite_eq_right (Ne.symm hy), ite_eq_right hy]
 
 def ksbEps : Fin Dw.dim ≃ PairIx H Dw :=
   (Fintype.equivFinOfCardEq (by rw [← Nat.card_eq_fintype_card]; exact ksb_card_pairIx Dw)).symm
@@ -208,7 +208,7 @@ theorem ksb_symPair_apply (P : PairIx H Dw) (x y : Fin n) :
 
 theorem ksb_symPair_eq_zero (P : PairIx H Dw) (s t : FlatIx Dw) (h : t.1 ≠ ksbConj s.1) :
     (symPair (R := R) e P) (e s) (e t) = 0 := by
-  rw [ksb_symPair_apply, if_neg, if_neg, add_zero]
+  rw [ksb_symPair_apply, ite_eq_right, ite_eq_right, add_zero]
   · rintro ⟨h1, h2⟩
     rw [e.injective.eq_iff] at h1 h2
     subst h1 h2
@@ -230,11 +230,11 @@ theorem ksb_symPair_mem (P : PairIx H Dw) : symPair e P ∈ LogKS.balanced H.bar
 theorem ksb_sum_apply_fst (f : PairIx H Dw → R) (Q : PairIx H Dw) :
     (∑ P, f P • symPair (R := R) e P) (e (ksbFst Dw Q)) (e (ksbSnd Dw Q)) = f Q := by
   rw [Matrix.sum_apply, Finset.sum_eq_single Q]
-  · rw [Matrix.smul_apply, ksb_symPair_apply, if_pos ⟨rfl, rfl⟩, if_neg, add_zero, smul_eq_mul, mul_one]
+  · rw [Matrix.smul_apply, ksb_symPair_apply, ite_eq_left ⟨rfl, rfl⟩, ite_eq_right, add_zero, smul_eq_mul, mul_one]
     rintro ⟨h1, -⟩
     exact ksbFst_ne_ksbSnd Dw Q Q (e.injective h1)
   · intro P _ hP
-    rw [Matrix.smul_apply, ksb_symPair_apply, if_neg, if_neg, add_zero, smul_zero]
+    rw [Matrix.smul_apply, ksb_symPair_apply, ite_eq_right, ite_eq_right, add_zero, smul_zero]
     · rintro ⟨h1, -⟩
       exact ksbFst_ne_ksbSnd Dw Q P (e.injective h1)
     · rintro ⟨h1, h2⟩
@@ -245,11 +245,11 @@ theorem ksb_sum_apply_fst (f : PairIx H Dw → R) (Q : PairIx H Dw) :
 theorem ksb_sum_apply_snd (f : PairIx H Dw → R) (Q : PairIx H Dw) :
     (∑ P, f P • symPair (R := R) e P) (e (ksbSnd Dw Q)) (e (ksbFst Dw Q)) = f Q := by
   rw [Matrix.sum_apply, Finset.sum_eq_single Q]
-  · rw [Matrix.smul_apply, ksb_symPair_apply, if_neg, if_pos ⟨rfl, rfl⟩, zero_add, smul_eq_mul, mul_one]
+  · rw [Matrix.smul_apply, ksb_symPair_apply, ite_eq_right, ite_eq_left ⟨rfl, rfl⟩, zero_add, smul_eq_mul, mul_one]
     rintro ⟨h1, -⟩
     exact ksbFst_ne_ksbSnd Dw Q Q (e.injective h1).symm
   · intro P _ hP
-    rw [Matrix.smul_apply, ksb_symPair_apply, if_neg, if_neg, add_zero, smul_zero]
+    rw [Matrix.smul_apply, ksb_symPair_apply, ite_eq_right, ite_eq_right, add_zero, smul_zero]
     · rintro ⟨h1, h2⟩
       exact hP (ksb_pair_inj Dw (e.injective h2) (e.injective h1)).symm
     · rintro ⟨h1, -⟩

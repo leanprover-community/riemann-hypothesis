@@ -92,8 +92,6 @@ theorem finrank_eq_of_nondegenerate {LL : Type} [Field LL] {V V' : Type} [AddCom
   have eb : Module.finrank LL (V →ₗ[LL] LL) = Module.finrank LL V := Subspace.dual_finrank_eq
   omega
 
-alias main := _root_.GlobalTheory.NondegenerateFinrank.finrank_eq_of_nondegenerate
-
 end GlobalTheory.NondegenerateFinrank
 end -- clump:auto
 end -- clump:auto

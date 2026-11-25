@@ -202,7 +202,7 @@ theorem duality_basic (L : Submodule ℤ E) [DiscreteTopology L] :
     by_cases h : k = i
     · subst h
       simp
-    · rw [if_neg (Ne.symm h), if_neg h]
+    · rw [ite_eq_right (Ne.symm h), ite_eq_right h]
   have hv' : ∀ i, v i ∈ span ℝ (Set.range w) := by
     intro i
     rw [duality_expand v w hw hvw (Submodule.subset_span (Set.mem_range_self i))]
@@ -391,7 +391,7 @@ theorem inner_realize_alt [_root_.NumberField.IsTotallyComplex K] (b : Basis ι 
   refine Finset.sum_congr rfl fun v _ => ?_
   rw [← ident_sum_fcoord b X hX v f x, Complex.re_sum, Finset.mul_sum]
   refine Finset.sum_congr rfl fun i _ => ?_
-  simp only [Complex.mul_re, if_true, show ¬ ((1 : Fin 2) = 0) from by decide, if_false]
+  simp only [Complex.mul_re, ite_true, show ¬ ((1 : Fin 2) = 0) from by decide, ite_false]
   ring
 
 theorem ident_mem_zl {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] (ρ : V →+ E)
@@ -488,7 +488,7 @@ theorem dualZ_zl_eq [_root_.NumberField.IsTotallyComplex K] (b : Basis ι K V) (
       intro j l
 
       simp only [c, Finset.mul_sum, mul_smul_comm, map_sum, map_smul, hω, smul_eq_mul, mul_ite,
-      mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+      mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
     have hsp' : ⊤ ≤ Submodule.span K (Set.range e) := by
       rw [show Set.range e = s from Subtype.range_coe, hspan, hsp]
     let eB : Basis s K V := Basis.mk hli hsp'

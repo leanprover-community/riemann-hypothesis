@@ -106,8 +106,8 @@ theorem posDef_blocks (e : Fin j × Fin g ≃ Fin G) {M : Matrix (Fin g) (Fin g)
     have h := hM.1.apply (e.symm p).2 (e.symm q).2
     simp only [conjTranspose_apply, of_apply, star_trivial] at h ⊢
     by_cases hpq : (e.symm p).1 = (e.symm q).1
-    · rw [if_pos hpq, if_pos hpq.symm, h]
-    · rw [if_neg hpq, if_neg (Ne.symm hpq)]
+    · rw [ite_eq_left hpq, ite_eq_left hpq.symm, h]
+    · rw [ite_eq_right hpq, ite_eq_right (Ne.symm hpq)]
   · rw [dotProduct_blocks e]
     simp only [mulVec_blocks]
     obtain ⟨p, hp⟩ := Function.ne_iff.1 hx
@@ -154,8 +154,8 @@ theorem thetaChar_blockDiagonal (j g : ℕ) (τ : Matrix (Fin g) (Fin g) ℂ) (a
   · ext p q
     simp only [τ', transpose_apply, of_apply]
     by_cases hpq : (e.symm p).1 = (e.symm q).1
-    · rw [if_pos hpq, if_pos hpq.symm, hs.apply]
-    · rw [if_neg hpq, if_neg (Ne.symm hpq)]
+    · rw [ite_eq_left hpq, ite_eq_left hpq.symm, hs.apply]
+    · rw [ite_eq_right hpq, ite_eq_right (Ne.symm hpq)]
   · convert posDef_blocks e hp using 1
     ext p q
     simp only [τ', map_apply, of_apply]

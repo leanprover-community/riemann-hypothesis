@@ -305,7 +305,7 @@ theorem isPure_of_facts (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D
       have hprod : ∏ i ∈ s, Φ' i (a i • t) = ∏ i ∈ s, wave ψ S T (latO S T ΛS ΛT fun _ => True) (a i)
           (xy i).1 (xy i).2 (a i • t) := Finset.prod_congr rfl fun i hi => by rw [(hxy i hi).2.2]
       by_cases ht : IsHalf (∑ j ∈ s, a j) t
-      · rw [prodHalf, if_pos ht, hprod]
+      · rw [prodHalf, ite_eq_left ht, hprod]
         simp only [wave]
         rw [Finset.prod_mul_distrib]
         congr 1
@@ -324,16 +324,16 @@ theorem isPure_of_facts (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D
             (GlobalTheory.SplitScalar.isHalf_iff _ _).2 (by rw [smul_add, ht', hAX])
           simp only [halfInd]
           by_cases hall : ∀ i ∈ s, a i • t + (xy i).1 ∈ latO S T ΛS ΛT fun _ => True
-          · rw [Finset.prod_eq_one fun i hi => if_pos ⟨hall i hi, hhalf i hi⟩,
-              if_pos ⟨hsum ▸ AddSubgroup.sum_mem _ hall, hhalfA⟩]
-          · push_neg at hall
+          · rw [Finset.prod_eq_one fun i hi => ite_eq_left ⟨hall i hi, hhalf i hi⟩,
+              ite_eq_left ⟨hsum ▸ AddSubgroup.sum_mem _ hall, hhalfA⟩]
+          · push Not at hall
             obtain ⟨i, hi, hni⟩ := hall
-            rw [Finset.prod_eq_zero hi (if_neg fun h => hni h.1), if_neg fun h => hni ?_]
+            rw [Finset.prod_eq_zero hi (ite_eq_right fun h => hni h.1), ite_eq_right fun h => hni ?_]
             have := GlobalTheory.PlaceModelSum.idem_smul_latO (ha i hi).1.1 h.1
             rwa [smul_add, haX i hi] at this
-      · rw [prodHalf, if_neg ht]
+      · rw [prodHalf, ite_eq_right ht]
         simp only [wave, halfInd]
-        rw [if_neg, mul_zero]
+        rw [ite_eq_right, mul_zero]
         rintro ⟨-, h2⟩
         apply ht
         refine (GlobalTheory.SplitScalar.isHalf_iff _ _).2 ?_
@@ -349,7 +349,7 @@ theorem isPure_of_facts (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D
       · obtain ⟨i, hi, rfl⟩ := hp
         rw [hfam.1 i hi, (hxy i hi).2.2, hplX i hi, hplY i hi]
         exact (wsp i hi).1 _ _ (hxy i hi).1 (hxy i hi).2.1 (Tmi i) (hTmi i hi)
-      · push_neg at hp
+      · push Not at hp
         rw [hfam.2 p hp, hoffX p hp, hoffY p hp, GlobalTheory.SplitScalar.heisO_zero, GlobalTheory.SplitScalar.heisO_zero]
     rw [hΨw, hT0, hx']
     exact hP

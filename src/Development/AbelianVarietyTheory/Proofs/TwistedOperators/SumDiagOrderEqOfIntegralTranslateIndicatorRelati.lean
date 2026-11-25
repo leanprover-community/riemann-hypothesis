@@ -344,7 +344,7 @@ private lemma antiJ_mul_mul_antiJ_apply (M : Matrix (Fin m) (Fin m) L) (r s : Fi
         have := r.isLt
         omega
       simp only [antiJ]
-      rw [if_pos h1, one_mul]
+      rw [ite_eq_left h1, one_mul]
     · intro b _ hb
       have h2 : ¬ (r.val + b.val + 1 = m) := by
         intro h
@@ -353,7 +353,7 @@ private lemma antiJ_mul_mul_antiJ_apply (M : Matrix (Fin m) (Fin m) L) (r s : Fi
         rw [Fin.val_rev]
         omega
       simp only [antiJ]
-      rw [if_neg h2, zero_mul]
+      rw [ite_eq_right h2, zero_mul]
     · intro h
       exact absurd (Finset.mem_univ _) h
   have hr : ∀ (N : Matrix (Fin m) (Fin m) L) (r s : Fin m), (N * antiJ L m) r s = N r s.rev := by
@@ -364,7 +364,7 @@ private lemma antiJ_mul_mul_antiJ_apply (M : Matrix (Fin m) (Fin m) L) (r s : Fi
         have := s.isLt
         omega
       simp only [antiJ]
-      rw [if_pos h1, mul_one]
+      rw [ite_eq_left h1, mul_one]
     · intro b _ hb
       have h2 : ¬ (b.val + s.val + 1 = m) := by
         intro h
@@ -373,7 +373,7 @@ private lemma antiJ_mul_mul_antiJ_apply (M : Matrix (Fin m) (Fin m) L) (r s : Fi
         rw [Fin.val_rev]
         omega
       simp only [antiJ]
-      rw [if_neg h2, mul_zero]
+      rw [ite_eq_right h2, mul_zero]
     · intro h
       exact absurd (Finset.mem_univ _) h
   rw [hr, hl]

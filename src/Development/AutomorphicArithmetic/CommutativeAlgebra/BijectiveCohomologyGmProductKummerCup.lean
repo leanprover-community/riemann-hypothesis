@@ -215,7 +215,7 @@ private theorem aw_conc {Q P I : Cx R} (μ : Pair Q P I) {X : Spc} {m n : ℤ} (
     · obtain rfl : r = N := by omega
       obtain rfl : u = 1 := by simpa using hu.symm
       obtain rfl : t = w + -1 := by omega
-      simp only [if_true]
+      simp only [ite_true]
       rw [GlobalTheory.EtC.CupGen.sub_zero_full]
     · rw [hB]
       simp
@@ -223,7 +223,7 @@ private theorem aw_conc {Q P I : Cx R} (μ : Pair Q P I) {X : Spc} {m n : ℤ} (
   · rw [term _ _ (by simp) _ _ rfl rfl]
     simp
   · intro i _
-    rw [term _ _ (by simp) _ _ rfl rfl, if_neg (by simp <;> omega)]
+    rw [term _ _ (by simp) _ _ rfl rfl, ite_eq_right (by simp <;> omega)]
     simp
 
 end UpperTheory.Kun

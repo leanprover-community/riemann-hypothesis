@@ -86,7 +86,7 @@ def idealGraded (P : Ideal (Poly k N)) : FinGradedSub (S := k) (x := x) Ω where
     refine Submodule.span_le.mpr ?_
     rintro _ ⟨f, e, hfP, hf, rfl, rfl⟩
     obtain ⟨a, ha⟩ := Submodule.mem_span_finset'.mp (hspan f hfP e hf)
-    have h0 : homogeneousComponent e f = f := by rw [homogeneousComponent_of_mem hf, if_pos rfl]
+    have h0 : homogeneousComponent e f = f := by rw [homogeneousComponent_of_mem hf, ite_eq_left rfl]
     have hfe : f = ∑ h : T, homogeneousComponent e (h.1 * a h) := by
       calc f = homogeneousComponent e f := h0.symm
         _ = homogeneousComponent e (∑ h : T, a h • h.1) := by rw [ha]

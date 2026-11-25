@@ -106,10 +106,6 @@ def Packing.Statement : Prop :=
     (∀ s ∈ S, ∀ t ∈ S, s ≠ t → Real.exp (-b) ≤ ‖s - t‖) →
       Real.log S.card ≤ Module.finrank ℤ La * (b + Real.log 3)
 
-section LatticeExamples
-
-end LatticeExamples
-
 end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

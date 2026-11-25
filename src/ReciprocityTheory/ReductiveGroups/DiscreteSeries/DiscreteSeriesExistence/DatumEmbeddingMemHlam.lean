@@ -11,6 +11,7 @@ import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.PropsLowK
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.RregRep
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.RigidityTheorems.ClosGenStable
+import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.AdmissibleSmoothVectors.AdmissibleOfFiniteRank
 
 @[expose] public section
 
@@ -197,18 +198,10 @@ theorem Hlam_nontrivial (hgap : StdGap ε lam) (hP : IsPsiFor ε lam T Ψ) (hv�
   refine ⟨⟨⟨w, hm⟩, 0, fun h => hw0 ?_⟩⟩
   exact Subtype.ext (congrArg (fun z : Hlam ε Ψ v₀ => (z : L2 ε)) h)
 
-private theorem Kset_subset_UJset_mem {g : Matrix (Fin n) (Fin n) ℂ}
-    (hg : g ∈ Formalism.REAL.Kset ε) : g ∈ UJset ε := by
-  obtain ⟨hu, hc⟩ := hg
-  have h1 : star g * g = 1 := Matrix.mem_unitaryGroup_iff'.mp hu
-  have hJ : ReciprocityTheory.ChartRestriction.DS.Jm ε = Formalism.REAL.Jm ε := rfl
-  show gᴴ * ReciprocityTheory.ChartRestriction.DS.Jm ε * g = ReciprocityTheory.ChartRestriction.DS.Jm ε
-  rw [hJ, mul_assoc, ← hc, ← mul_assoc, ← Matrix.star_eq_conjTranspose, h1, one_mul]
-
 theorem subtype_sigLam (hgap : StdGap ε lam) (hP : IsPsiFor ε lam T Ψ) (hv₀ : v₀ ≠ 0) :
     ∀ g ∈ Formalism.REAL.Kset ε, ∀ x, (Hlam ε Ψ v₀).subtype (sigLam ε Ψ v₀ g x) =
       rreg ε g ((Hlam ε Ψ v₀).subtype x) := by
-  exact fun g hg x => sigLam_coe hgap hP hv₀ (Kset_subset_UJset_mem hg) x
+  exact fun g hg x => sigLam_coe hgap hP hv₀ (CompanionTheory.D.gk.admitted.Kset_sub hg) x
 
 theorem map_lowKSubLam : (lowKSubLam ε Ψ v₀).map (Hlam ε Ψ v₀).subtype =
     (datumV ε Ψ v₀).map (smD ε (rreg ε)).subtype := by

@@ -84,25 +84,25 @@ theorem iwSysC_cobDirac [IsAlgClosure ℚ Ω] (hO : ∀ s ∈ Dec (F := ℚ) A, 
     fun r x => ((isLocallyConstant_cycMod r).comp fun u => if x = u then (1 : Qbar l) else 0).continuous
   refine ⟨⟨fun r => ⟨fun s x => ?_, fun s hs t ht x => ?_⟩, fun r s x => ?_⟩, fun r x => ?_⟩
   · by_cases hs : s ∈ Dec (F := ℚ) A
-    · simp only [cobDirac, if_pos hs]
+    · simp only [cobDirac, ite_eq_left hs]
       refine sub_mem (mul_mem (hO s hs) ?_) ?_ <;> split_ifs <;> first | exact one_mem _ | exact zero_mem _
-    · simp only [cobDirac, if_neg hs]
+    · simp only [cobDirac, ite_eq_right hs]
       exact zero_mem _
   · have hst := (Dec (F := ℚ) A).mul_mem hs ht
     have e1 : (x * (cycMod ℚ Ω l r s)⁻¹ = cycMod ℚ Ω l r t) ↔ (x = cycMod ℚ Ω l r s * cycMod ℚ Ω l r t) := by
       rw [mul_inv_eq_iff_eq_mul, mul_comm (cycMod ℚ Ω l r t)]
     have e2 : (x * (cycMod ℚ Ω l r s)⁻¹ = 1) ↔ (x = cycMod ℚ Ω l r s) := mul_inv_eq_one
-    simp only [cobDirac, if_pos hs, if_pos ht, if_pos hst, map_mul, Units.val_mul, e1, e2]
+    simp only [cobDirac, ite_eq_left hs, ite_eq_left ht, ite_eq_left hst, map_mul, Units.val_mul, e1, e2]
     ring
   · by_cases hs : s ∈ Dec (F := ℚ) A
-    · simp only [cobDirac, if_pos hs, Finset.sum_sub_distrib, ← Finset.mul_sum, Finset.sum_ite_eq',
+    · simp only [cobDirac, ite_eq_left hs, Finset.sum_sub_distrib, ← Finset.mul_sum, Finset.sum_ite_eq',
         Finset.mem_filter, Finset.mem_univ, true_and, map_cycMod_succ, map_one, @eq_comm _ _ x]
-    · simp only [cobDirac, if_neg hs, Finset.sum_const_zero]
+    · simp only [cobDirac, ite_eq_right hs, Finset.sum_const_zero]
   · refine ContinuousOn.congr (f := fun s => (ν s : Qbar l) * (if x = cycMod ℚ Ω l r s then 1 else 0) -
       (if x = 1 then 1 else 0)) ((hc.mul (hind r x).continuousOn).sub continuousOn_const) ?_
     intro s hs
     have hs' : s ∈ Dec (F := ℚ) A := hs
-    simp only [cobDirac, if_pos hs']
+    simp only [cobDirac, ite_eq_left hs']
 
 end IwC
 

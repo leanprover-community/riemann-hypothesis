@@ -104,9 +104,9 @@ theorem stab_exp {z e : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z) (hT : 0 <
     rcases i with i | _ <;> rcases j with j | _
     · simp only [cvec2, cvec2', Sum.elim_inl, Sum.inl.injEq]
       exact gram_CC hz hzz i j
-    · simp only [cvec2, cvec2', Sum.elim_inl, Sum.elim_inr, reduceCtorEq, if_false]
+    · simp only [cvec2, cvec2', Sum.elim_inl, Sum.elim_inr, reduceCtorEq, ite_false]
       exact gram_CV hE 0 i
-    · simp only [cvec2, cvec2', Sum.elim_inl, Sum.elim_inr, reduceCtorEq, if_false]
+    · simp only [cvec2, cvec2', Sum.elim_inl, Sum.elim_inr, reduceCtorEq, ite_false]
       exact gram_VC hE 0 j
     · simp [cvec2, cvec2', hee]
   have hJ : Fintype.card (JJ r ⊕ Unit) ≤ Fintype.card (Fin (2 * r + k + 1)) := by

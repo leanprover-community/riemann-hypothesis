@@ -190,7 +190,7 @@ namespace GlobalTheory.AdSpan.RealChar
 theorem smul_cancel {α : Type} {F : α → ℂ} (hF : F ≠ 0) {c c' : ℂ} (h : c • F = c' • F) : c = c' := by
   obtain ⟨w, hw⟩ : ∃ w, F w ≠ 0 := by
     by_contra h'
-    push_neg at h'
+    push Not at h'
     exact hF (funext h')
   have := congrFun h w
   simp only [Pi.smul_apply, smul_eq_mul] at this
@@ -238,7 +238,7 @@ theorem realScal_character : ∀ (D : D7) (S T : HSp D) (C : Ctx S T) (om : GA D
   obtain ⟨φ₀, hφ₀, h0⟩ := hne
   let z : GA D T → ℂ := fun a => if h : a ∈ GinfC T then (hex B₀ hB₀ a h).choose else 1
   have hz : ∀ a (ha : a ∈ GinfC T), ‖z a‖ = 1 ∧ RealScal C om B₀ a (z a) := fun a ha => by
-    simp only [z, dif_pos ha]
+    simp only [z, dite_eq_left ha]
     exact (hex B₀ hB₀ a ha).choose_spec
   obtain ⟨⟨μ, 𝓕, hμ⟩, hip⟩ := GlobalTheory.Ker.ScalarProduct.ip_basic D S T C
   have hth : ∀ B, C.IsB B → ∀ φ : TF S.rank C.g, SW.IsSB φ → C.IsTh (C.Th (C.xB B) φ) :=

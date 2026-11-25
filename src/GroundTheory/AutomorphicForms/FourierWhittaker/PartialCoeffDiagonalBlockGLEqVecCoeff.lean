@@ -68,8 +68,8 @@ theorem continuous_colGL (k : ℕ) :
     intro a b
     simp only [uMat_apply, colX_apply]
     by_cases h1 : a = b
-    · simp only [h1, if_true]; exact continuous_const
-    · simp only [h1, if_false]
+    · simp only [h1, ite_true]; exact continuous_const
+    · simp only [h1, ite_false]
       by_cases h2 : a < b
       · simp only [h2, dite_true]
         by_cases h3 : b.val = k
@@ -124,7 +124,7 @@ theorem vecMul_lastVec {j : ℕ} (M : Matrix (Fin j) (Fin j) K) (c : Fin j) (hj 
   rw [Finset.sum_eq_single ⟨j - 1, by omega⟩]
   · simp; omega
   · intro r _ hr
-    rw [if_neg, zero_mul]
+    rw [ite_eq_right, zero_mul]
     intro h; apply hr; ext; simp; omega
   · simp
 

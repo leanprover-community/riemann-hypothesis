@@ -73,13 +73,13 @@ private theorem bp_pt {W : Set (GA E a)} {g₀ : GA E a} (hW : W ∈ 𝓝 g₀) 
       refine mul_nonneg (b0 _) ?_
       split_ifs <;> norm_num
     · rintro g ⟨h1, h2⟩
-      exact mul_pos h1 ((if_pos h2).symm ▸ one_pos)
+      exact mul_pos h1 ((ite_eq_left h2).symm ▸ one_pos)
     · intro g hg
       by_contra h
       obtain ⟨h1, h2⟩ := mul_ne_zero_iff.1 h
       have h3 : GeneralLinearGroup.map (pFin E) (g₀⁻¹ * g) ∈ U := by
         by_contra h3
-        exact h2 (if_neg h3)
+        exact h2 (ite_eq_right h3)
       obtain ⟨y, hy, e⟩ := b3 _ h1
       obtain rfl : y = GeneralLinearGroup.map (pInf E) (g₀⁻¹ * g) := Units.ext e
       have h4 := hNV (Set.mk_mem_prod hy (hUV h3))

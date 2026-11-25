@@ -75,7 +75,7 @@ theorem hs_hpk_mul {k r : ℕ} (M : B.Mat k r) : hs (Hpk k r * M) = hs M := by
   have e : ∀ i j, (Hpk k r * M) i j = GBasic.sgn k r i * M (GBasic.sig k r i) j := by
     intro i j
     rw [Matrix.mul_apply]
-    simp only [GBasic.Hpk_eq k r i, ite_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    simp only [GBasic.Hpk_eq k r i, ite_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   have hs1 : ∀ i, Complex.normSq (GBasic.sgn k r i) = 1 := by
     intro i; unfold GBasic.sgn; split_ifs <;> simp
   simp only [e, Complex.normSq_mul, hs1, one_mul]
@@ -193,7 +193,7 @@ theorem fvec_sum_le (k r : ℕ) (z : Fin (2 * r + k + 1) → ℂ) (a : Fin (r + 
   split_ifs with h
   · have e : ∀ i, ‖bvec (eI k r ⟨a.val, h⟩) i‖ = if i = eI k r ⟨a.val, h⟩ then 1 else 0 := by
       intro i; unfold bvec; rw [Pi.single_apply]; split_ifs <;> simp
-    simp only [e, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    simp only [e, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     linarith
   · linarith
 

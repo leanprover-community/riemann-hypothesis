@@ -237,7 +237,7 @@ theorem exists_pivot (hR : IsUnrQuad R σ ϖ q ε) {h : Matrix ι ι R} (hh : Hm
   by_cases h1 : ∃ k, h k k ∉ lev ϖ 1
   · obtain ⟨k, hk⟩ := h1
     exact ⟨k, 1, 1, by simp, by simp, by simpa [ct_one] using hk⟩
-  · push_neg at h1
+  · push Not at h1
     have hij : i ≠ j := by
       rintro rfl
       exact hy (h1 i)
@@ -262,7 +262,7 @@ theorem exists_prim (hR : IsUnrQuad R σ ϖ q ε) {h : Matrix ι ι R} (hh : Hm 
   rw [ha] at hij
   have hall : ∀ i j, h i j ∈ lev ϖ a := by
     have := Nat.find_min hex (m := a) (by omega)
-    push_neg at this
+    push Not at this
     exact this
   choose c hc using fun i j => mem_lev_iff.1 (hall i j)
   refine ⟨a, Matrix.of c, ?_, ?_, i, j, ?_⟩

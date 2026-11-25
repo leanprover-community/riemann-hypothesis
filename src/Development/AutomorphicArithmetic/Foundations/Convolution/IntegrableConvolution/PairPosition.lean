@@ -237,8 +237,8 @@ private theorem compR_along (D : InfD σ m) {τ : E →+* ℂ} {k : Fin (m + 1)}
   rw [e]
   by_cases hik : i = k
   · subst hik
-    rw [Pi.single_eq_same, RingEquiv.apply_symm_apply, if_pos rfl]
-  · rw [Pi.single_eq_of_ne hik, map_zero, if_neg hik]
+    rw [Pi.single_eq_same, RingEquiv.apply_symm_apply, ite_eq_left rfl]
+  · rw [Pi.single_eq_of_ne hik, map_zero, ite_eq_right hik]
 
 private def xL {K : Type} [Field K] [NumberField K] (n : ℕ) (τ : K →+* ℂ) (p q : Fin n) (z : ℂ) : archLie K n :=
   ⟨(Matrix.single p q (along τ z) : Matrix (Fin n) (Fin n) (mixedEmbedding.mixedSpace K)), Submodule.mem_top⟩
@@ -249,19 +249,19 @@ private theorem compM_xL (D : InfD σ m) (n : ℕ) {τ : E →+* ℂ} {k : Fin (
       if i = k then (xL n (τ.comp (algebraMap F E)) p q z : ArchMatrix F n) else 0 := by
   change (Matrix.single p q (along τ z) : Matrix (Fin n) (Fin n) (mixedEmbedding.mixedSpace E)).map (compR D i) = _
   by_cases hik : i = k
-  · rw [if_pos hik]
+  · rw [ite_eq_left hik]
     ext1 a b
     change _ = (Matrix.single p q (along (τ.comp (algebraMap F E)) z) : Matrix (Fin n) (Fin n) (mixedEmbedding.mixedSpace F)) a b
     simp only [Matrix.map_apply, Matrix.single_apply]
     split_ifs
-    · rw [compR_along D h, if_pos hik]
+    · rw [compR_along D h, ite_eq_left hik]
     · simp
-  · rw [if_neg hik]
+  · rw [ite_eq_right hik]
     ext1 a b
     change _ = (0 : Matrix (Fin n) (Fin n) (mixedEmbedding.mixedSpace F)) a b
     simp only [Matrix.map_apply, Matrix.single_apply, Matrix.zero_apply]
     split_ifs
-    · rw [compR_along D h, if_neg hik]
+    · rw [compR_along D h, ite_eq_right hik]
     · simp
 
 private theorem compA_exp_self (D : InfD σ m) (n : ℕ) {τ : E →+* ℂ} {k : Fin (m + 1)} (h : InSlot D τ k)
@@ -270,14 +270,14 @@ private theorem compA_exp_self (D : InfD σ m) (n : ℕ) {τ : E →+* ℂ} {k :
       (isExpLieAlgebra F n).expG (t • xL n (τ.comp (algebraMap F E)) p q z) := by
   apply compA_expG
   change compM D n k (t • (xL n τ p q z : ArchMatrix E n)) = t • (xL n (τ.comp (algebraMap F E)) p q z : ArchMatrix F n)
-  rw [map_real_smul (compM D n k) (continuous_compM D n k), compM_xL D n h, if_pos rfl]
+  rw [map_real_smul (compM D n k) (continuous_compM D n k), compM_xL D n h, ite_eq_left rfl]
 
 private theorem compA_exp_ne (D : InfD σ m) (n : ℕ) {τ : E →+* ℂ} {k i : Fin (m + 1)} (h : InSlot D τ k)
     (hi : i ≠ k) (p q : Fin n) (z : ℂ) (t : ℝ) :
     compA D n i ((isExpLieAlgebra E n).expG (t • xL n τ p q z)) = 1 := by
   rw [compA_expG D n i _ 0, IsExpLieAlgebra.expG_zero]
   change compM D n i (t • (xL n τ p q z : ArchMatrix E n)) = 0
-  rw [map_real_smul (compM D n i) (continuous_compM D n i), compM_xL D n h, if_neg hi, smul_zero]
+  rw [map_real_smul (compM D n i) (continuous_compM D n i), compM_xL D n h, ite_eq_right hi, smul_zero]
 
 private theorem lact_elem {K : Type} [Field K] [NumberField K] {n : ℕ} (β : TI K n) (hβ : SmoothT β)
     (τ : K →+* ℂ) (p q : Fin n) (z : ℂ) (x : archGroup K n) :

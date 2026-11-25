@@ -38,7 +38,7 @@ theorem coeff_mul_apply (hγ : constantCoeff (γ X) = 0) (g c : K⟦X⟧) (n : �
   rw [map_add (f := _), mul_add, map_add (f := _), map_mul γ, map_pow γ, map_sum γ, Finset.mul_sum, map_sum]
   have h0 : ∀ b : K⟦X⟧, coeff n (g * (γ X ^ (n + 1) * b)) = 0 := fun b => by
     rw [ha, mul_pow, show g * (X ^ (n + 1) * a ^ (n + 1) * b) = X ^ (n + 1) * (g * a ^ (n + 1) * b) by ring,
-      coeff_X_pow_mul', if_neg (by omega)]
+      coeff_X_pow_mul', ite_eq_right (by omega)]
   rw [h0, zero_add]
   refine Finset.sum_congr rfl fun d _ => ?_
   rw [map_smul, map_pow, mul_smul_comm, coeff_smul, smul_eq_mul, mul_comm]
@@ -47,7 +47,7 @@ theorem coeff_mul_pow_self (hγ : constantCoeff (γ X) = 0) (g : K⟦X⟧) (n : 
     coeff n (g * γ X ^ n) = constantCoeff g * coeff 1 (γ X) ^ n := by
   obtain ⟨a, ha⟩ := X_dvd_iff.2 hγ
   rw [ha, mul_pow, show g * (X ^ n * a ^ n) = X ^ n * (g * a ^ n) by ring, coeff_X_pow_mul',
-    if_pos le_rfl, Nat.sub_self, coeff_succ_X_mul]
+    ite_eq_left le_rfl, Nat.sub_self, coeff_succ_X_mul]
   simp
 
 theorem coeff_op (hγ : constantCoeff (γ X) = 0) (hG : G.map constantCoeff = 1) (c : ι → K⟦X⟧) (i : ι)
@@ -72,14 +72,14 @@ theorem exists_sol (hγ : constantCoeff (γ X) = 0) (hG : G.map constantCoeff = 
   obtain ⟨f, hf⟩ := exists_rec (α := ι → K) fun n p => if n = 0 then c₀ else fun i =>
     (1 - coeff 1 (γ X) ^ n)⁻¹ * ∑ j, ∑ d : Fin n, coeff n (G i j * γ X ^ (d : ℕ)) * p d j
   refine ⟨fun i => PowerSeries.mk fun n => f n i, fun i => ?_, ?_⟩
-  · rw [constantCoeff_mk, hf, if_pos rfl]
+  · rw [constantCoeff_mk, hf, ite_eq_left rfl]
   · ext i n
     rw [coeff_op γ G hγ hG]
     simp only [coeff_mk]
     rcases eq_or_ne n 0 with rfl | hn
     · simp
     · have h := congrFun (hf n) i
-      rw [if_neg hn] at h
+      rw [ite_eq_right hn] at h
       have h1 : 1 - coeff 1 (γ X) ^ n ≠ 0 := sub_ne_zero.2 (hu n hn).symm
       simp only [Finset.sum_range]
       rw [eq_inv_mul_iff_mul_eq₀ h1] at h

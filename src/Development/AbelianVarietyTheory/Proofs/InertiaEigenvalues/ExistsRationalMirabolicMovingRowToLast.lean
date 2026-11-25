@@ -22,7 +22,7 @@ theorem mir_exists_row : ∀ (E : Type) [Field E] [NumberField E] (a m : ℕ), m
     intro t
     have h1 := t.2
     have hle : (t.1.1 : ℕ) ≤ m := by omega
-    simp only [v, dif_pos hle]
+    simp only [v, dite_eq_left hle]
     congr 1
     apply Subtype.ext
     apply Prod.ext
@@ -51,7 +51,7 @@ theorem mir_exists_row : ∀ (E : Type) [Field E] [NumberField E] (a m : ℕ), m
     by_cases hj : j = i₀
     · subst hj
       have := hrow mm
-      simp only [M, Matrix.mulVec, dotProduct, Matrix.of_apply, if_true] at this
+      simp only [M, Matrix.mulVec, dotProduct, Matrix.of_apply, ite_true] at this
       rw [Finset.sum_eq_single i₀ (fun k _ hk => by rw [hoff k hk, mul_zero]) (by simp)] at this
       exact (mul_eq_zero.1 this).resolve_left hvi₀
     · exact hoff j hj
@@ -68,7 +68,7 @@ theorem mir_exists_row : ∀ (E : Type) [Field E] [NumberField E] (a m : ℕ), m
       have h2 : k ≠ i₀ := fun e => by rw [e] at hk; omega
       split_ifs with e1 e2
       · subst e1
-        simp only [v, Matrix.one_apply, h1.symm, if_false]
+        simp only [v, Matrix.one_apply, h1.symm, ite_false]
         rw [dite_eq_right (by omega)]
       · simp [e2, Ne.symm h2]
       · rfl
@@ -77,7 +77,7 @@ theorem mir_exists_row : ∀ (E : Type) [Field E] [NumberField E] (a m : ℕ), m
     have hs : ∃ s : UnipotentBlockColumnIndex a (m + 1) (m + 1), s.1.1 = mm := ⟨⟨(mm, c), by simp [hmm, hc]⟩, rfl⟩
     obtain ⟨s₀, hs₀⟩ := hs
     rw [Finset.sum_eq_single s₀]
-    · simp only [eLast, hs₀, hmm, M, Matrix.of_apply, if_true, one_mul]
+    · simp only [eLast, hs₀, hmm, M, Matrix.of_apply, ite_true, one_mul]
       exact hv t
     · intro s _ hs
       have : ¬ ((s.1.1 : ℕ) + 1 = m + 1) := by
@@ -88,7 +88,7 @@ theorem mir_exists_row : ∀ (E : Type) [Field E] [NumberField E] (a m : ℕ), m
         apply Prod.ext
         · apply Fin.ext; rw [hs₀]; simp [hmm]; omega
         · apply Fin.ext; omega
-      simp only [eLast, if_neg this, zero_mul]
+      simp only [eLast, ite_eq_right this, zero_mul]
     · simp
 
 end GlobalTheory.CuspGeneric

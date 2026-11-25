@@ -41,19 +41,19 @@ theorem exists_jPlus_mul_KOne (e : (Σ a, m a) ≃ n) {g : GL n k} (hg : g ∈ p
     simp only [U, Matrix.sub_apply, Matrix.of_apply, blk_apply]
     rcases lt_trichotomy a b with h | rfl | h
     · simp [h]
-    · rw [if_neg (lt_irrefl a), one_same, Valuation.map_sub_swap]
+    · rw [ite_eq_right (lt_irrefl a), one_same, Valuation.map_sub_swap]
       exact h3 a i j
-    · rw [if_neg h.not_gt, one_ne e h.ne', zero_sub, Valuation.map_neg]
+    · rw [ite_eq_right h.not_gt, one_ne e h.ne', zero_sub, Valuation.map_neg]
       exact h2 a b i j h
   obtain ⟨x, hx, hgx⟩ := StepData.exists_mul_KOne h1 hU
   refine ⟨g * x, ⟨mem_unipRad.2 ⟨mem_parab_iff.2 fun a b i j h => ?_, fun a i j => ?_⟩,
     mul_mem h1 (StepData.KOne_le_KO hx)⟩, x⁻¹, inv_mem hx, by simp⟩
   · rw [hgx]
     simp only [U, Matrix.of_apply, blk_apply]
-    rw [if_neg h.not_gt, one_ne e h.ne']
+    rw [ite_eq_right h.not_gt, one_ne e h.ne']
   · rw [hgx]
     simp only [U, Matrix.of_apply, blk_apply]
-    rw [if_neg (lt_irrefl a), one_same]
+    rw [ite_eq_right (lt_irrefl a), one_same]
 
 theorem exists_KOne_mul_jPlus (e : (Σ a, m a) ≃ n) {g : GL n k} (hg : g ∈ proRad k e) :
     ∃ x ∈ KOne k n, ∃ u ∈ jPlus k e, g = x * u := by
@@ -86,14 +86,14 @@ theorem exists_mul_mem_parab (e : (Σ a, m a) ≃ n) {x : GL n k} (hx : x ∈ KO
     exact this
   have h1 : ∀ i j, blk e i ≤ blk e j → c.val i j = (1 : Matrix n n k) i j := fun i j h => by
     have := key i j
-    simp only [if_neg h.not_gt] at this
+    simp only [ite_eq_right h.not_gt] at this
     rwa [← Matrix.mul_apply, Matrix.one_mul] at this
   refine ⟨c, ⟨(mem_unipRadLower k).2 ⟨(mem_parabLower_iff k).2 fun a b i j h => ?_, fun a i j => ?_⟩, hc⟩,
     mem_parab_iff.2 fun a b i j h => ?_⟩
   · rw [h1 _ _ (by simpa using h.le), one_ne e h.ne]
   · rw [h1 _ _ (by simp), one_same]
   · have := key (e ⟨a, i⟩) (e ⟨b, j⟩)
-    simp only [blk_apply, if_pos h] at this
+    simp only [blk_apply, ite_eq_left h] at this
     rw [Units.val_mul, Matrix.mul_apply, this, one_ne e h.ne']
 
 theorem exists_jLevi_mul_jPlus (e : (Σ a, m a) ≃ n) {p : GL n k} (hp : p ∈ parab k e) (h : p ∈ KOne k n) :

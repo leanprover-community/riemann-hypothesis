@@ -243,7 +243,7 @@ theorem GlobalTheory.DepthBig.smul_mem_hatMx_of_mem_latBig : All fun {D} _ _ _ {
   have hV : ∀ X : Node, X.InRange D.R.m → IsSelfDualC (G.V X) (G.Λ X) := fun X hX => by
     by_cases h0 : ∀ j, X ≠ .grid 0 j
     · exact (G.isV hX h0).sd
-    · push_neg at h0
+    · push Not at h0
       obtain ⟨j, rfl⟩ := h0
       exact (GlobalTheory.ChiGrid.colY_isV D T L μ0 hL j hX.2).sd
   have hS := hV (.grid (i + 1) 0) ⟨hi, Nat.zero_le _⟩

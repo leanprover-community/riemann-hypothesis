@@ -31,14 +31,14 @@ theorem oneT_monomial (e : Module.End Kf (MvPolynomial τ Kf)) (mo : σ →₀ �
   unfold oneT
   by_cases hq : q = 0
   · simp [hq]
-  · rw [support_monomial, if_neg hq, Finset.sum_singleton, coeff_monomial, if_pos rfl]
+  · rw [support_monomial, ite_eq_right hq, Finset.sum_singleton, coeff_monomial, ite_eq_left rfl]
 
 theorem planeCoeff_monomial (nu : τ →₀ ℕ) (mo : σ →₀ ℕ) (q : MvPolynomial τ Kf) :
     planeCoeff nu (monomial mo q) = monomial mo (q.coeff nu) := by
   unfold planeCoeff
   by_cases hq : q = 0
   · simp [hq]
-  · rw [support_monomial, if_neg hq, Finset.sum_singleton, coeff_monomial, if_pos rfl]
+  · rw [support_monomial, ite_eq_right hq, Finset.sum_singleton, coeff_monomial, ite_eq_left rfl]
 
 theorem X_mul_monomial' {R : Type} [CommSemiring R] (v : σ) (u : σ →₀ ℕ) (a : R) :
     (X v : MvPolynomial σ R) * monomial u a = monomial (Finsupp.single v 1 + u) a := by
@@ -136,7 +136,7 @@ theorem touch_cost_nonneg {n' r : ℕ} [NeZero n'] (Fr : Frames n' r) (s : Fin n
 theorem touch_cost_eq_one {n' r : ℕ} [NeZero n'] (Fr : Frames n' r) (s : Fin n') (jz : ℤ) (u : ℕ) (h : touchT Fr jz u s) :
     cost1 Fr s jz u = 1 := by
   unfold cost1
-  rw [if_pos h]
+  rw [ite_eq_left h]
 
 def thUp {n' r : ℕ} [NeZero n'] (Fr : Frames n' r) {p : ℕ} {O : Type} [CommRing O] [IsDomain O]
     [IsDiscreteValuationRing O] {J : ℕ} (Dt : SignedChainData p O r J) (s : Fin n') (th : ∀ j, Fin (Dt.nch j) → ℝ) :

@@ -246,11 +246,11 @@ theorem eigen_basis (c : Coeff l) [Algebra c.F T] (U : Lt1 Dw → (tEps x ⟶ Xo
     exact ha
   · intro a'' ha''
     have hAτ : ∀ i, (fun k : Lt1 Dw => if h : k.1 = τ then a'' (h ▸ k.2) else 0) ⟨τ, i⟩ = a'' i :=
-      fun i => dif_pos rfl
+      fun i => dite_eq_left rfl
     have hAW : ∏ k, epsEnd x ((fun k : Lt1 Dw => if h : k.1 = τ then a'' (h ▸ k.2) else 0) k) ≫ U k = W := by
-      rw [red _ (fun k hk => dif_neg hk)]
+      rw [red _ (fun k hk => dite_eq_right hk)]
       refine (Finset.prod_congr rfl fun i _ => ?_).trans ha''
-      rw [dif_pos rfl]
+      rw [dite_eq_left rfl]
     have hA := huniq _ hAW
     funext i
     rw [← hAτ i, hA]

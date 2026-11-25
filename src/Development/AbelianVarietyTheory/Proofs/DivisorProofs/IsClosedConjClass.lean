@@ -785,7 +785,7 @@ theorem eq_zero_of_isNilpotent (n : ℕ) (x₀ : B) (hsep : (minpoly F x₀).Sep
     rw [Finset.sum_eq_single j] at this
     · simpa using this
     · intro b _ hb
-      rw [if_neg]
+      rw [ite_eq_right]
       exact fun h' => hb (Fin.ext h'.symm)
     · simp
   funext j

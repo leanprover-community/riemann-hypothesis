@@ -95,8 +95,8 @@ theorem UpperTheory.V.Stick.jacobi :
     (Nat.mul_pos hd0 (Nat.pos_of_ne_zero (hunit b hb))) (hlt b)]
   rw [hd, ← mul_add, mul_comm M d, Nat.mul_lt_mul_left hd0]
   by_cases h : M ≤ (a * t).val + (b * t).val
-  · simp only [carry, h, if_true, one_ne_zero, iff_false, not_lt]
-  · simp only [carry, h, if_false, iff_true]
+  · simp only [carry, h, ite_true, one_ne_zero, iff_false, not_lt]
+  · simp only [carry, h, ite_false, iff_true]
     omega
 end -- clump:auto
 end -- clump:auto
@@ -156,7 +156,7 @@ theorem UpperTheory.V.Stick.carryPrime :
         apply ha
         simpa using congrArg (· * ((t⁻¹ : (ZMod M)ˣ) : ZMod M)) h
       have hlt := ZMod.val_lt (a * (t : ZMod M))
-      rw [hb', neg_mul, ZMod.neg_val, if_neg hat]
+      rw [hb', neg_mul, ZMod.neg_val, ite_eq_right hat]
       omega
     rw [Finset.filter_true_of_mem h1]
     exact hall

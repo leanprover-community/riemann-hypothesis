@@ -49,12 +49,12 @@ theorem frame_snoc {k r m : ℕ} {z e : Fin (2 * r + k + 1) → ℂ} {Bs : Fin m
       | last => simpa using hee
       | cast j =>
         simp only [Fin.snoc_last, Fin.snoc_castSucc]
-        rw [if_neg (Fin.castSucc_lt_last j).ne', herm_hpk_eq_star_herm_swap, h3 j e (by simp), star_zero]
+        rw [ite_eq_right (Fin.castSucc_lt_last j).ne', herm_hpk_eq_star_herm_swap, h3 j e (by simp), star_zero]
     | cast i =>
       induction b using Fin.lastCases with
       | last =>
         simp only [Fin.snoc_last, Fin.snoc_castSucc]
-        rw [if_neg (Fin.castSucc_lt_last i).ne, h3 i e (by simp)]
+        rw [ite_eq_right (Fin.castSucc_lt_last i).ne, h3 i e (by simp)]
       | cast j =>
         simp only [Fin.snoc_castSucc]
         rw [h2 i j]

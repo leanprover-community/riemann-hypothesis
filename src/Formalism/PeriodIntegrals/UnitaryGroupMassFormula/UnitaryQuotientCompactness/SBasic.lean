@@ -62,7 +62,7 @@ lemma mul_Hpk_apply (X : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ)
   have hc : ∀ l, (j = piI k r l) ↔ (l = piI k r j) :=
     fun l => ⟨fun h => by rw [h, piI_piI], fun h => by rw [h, piI_piI]⟩
   simp only [Matrix.mul_apply, Hpk_apply, hc, mul_ite, mul_zero, Finset.sum_ite_eq',
-    Finset.mem_univ, if_true, epsI_piI]
+    Finset.mem_univ, ite_true, epsI_piI]
 
 lemma Hpk_mulVec_apply (v : Fin (2 * r + k + 1) → ℂ) (i) :
     (Hpk k r *ᵥ v) i = epsI k r i * v (piI k r i) := by
@@ -78,9 +78,9 @@ lemma Hpk_conjTranspose : (Hpk k r)ᴴ = Hpk k r := by
   rw [Matrix.conjTranspose_apply, Hpk_apply, Hpk_apply]
   by_cases h : j = piI k r i
   · have h' : i = piI k r j := by rw [h, piI_piI]
-    rw [if_pos h', if_pos h, star_epsI, h, epsI_piI]
+    rw [ite_eq_left h', ite_eq_left h, star_epsI, h, epsI_piI]
   · have h' : ¬ i = piI k r j := fun h' => h (by rw [h', piI_piI])
-    rw [if_neg h', if_neg h, star_zero]
+    rw [ite_eq_right h', ite_eq_right h, star_zero]
 
 lemma inv_mul_UH {g : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ} (hg : g ∈ UH (Hpk k r)) :
     (Hpk k r * gᴴ * Hpk k r) * g = 1 := by

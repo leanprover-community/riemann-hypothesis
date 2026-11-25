@@ -916,7 +916,7 @@ theorem exists_adj_glue {V W : HSp D} {S S' : D.what₂.Tau → SPar} (M : DSMod
   · refine ⟨0, fun v => ?_⟩
     rw [map_zero, map_zero, map_zero]
     exact h0 fun τ => (Ps τ, v τ, (w τ : M.H τ))
-  push_neg at h0
+  push Not at h0
   obtain ⟨a₀, ha₀⟩ := h0
   have loc : ∀ τ, ∃ (K : ℂ) (B : LPol W.rank V.rank →ₗ[ℂ] M'.sm τ →ₗ[ℂ] M.H τ), K ≠ 0 ∧
       LocW M M' τ (aS τ) (aT τ) B ∧

@@ -58,7 +58,7 @@ def resRd {σ : c.F →+* ℂ} (U : Unf Xo c σ r) (hT : AllTest Xo c) (k : U.Co
   map_one' := by
     funext y
     haveI : IsReduced (CAt σ) := inferInstanceAs (IsReduced ℂ)
-    simp only [rdU, LinearMap.coe_mk, AddHom.coe_mk, y.2, dif_pos, Pi.one_apply]
+    simp only [rdU, LinearMap.coe_mk, AddHom.coe_mk, y.2, dite_eq_left, Pi.one_apply]
     exact congrArg toC (evalAt_one _ _ (U.un k ⟨y.1, y.2⟩) (hT _ _))
   map_mul' f g := by
     funext y

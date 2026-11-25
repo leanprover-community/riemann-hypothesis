@@ -209,7 +209,7 @@ theorem modF_Fv (a : Fv F v) (ha : a ≠ 0) :
     first
     | exact (map_ne_zero _).mpr ha
   unfold PI.NglqJacSplitW.modF PI.LocJacTyp.absV
-  simp only [dif_neg ha, dif_neg hva]
+  simp only [dite_eq_right ha, dite_eq_right hva]
   obtain ⟨m, hm, hmdef⟩ : ∃ m : ℤ, Valued.v a = WithZero.exp m ∧
       Multiplicative.toAdd (WithZero.unzero hva) = m :=
     ⟨_, (WithZero.coe_unzero hva).symm, rfl⟩

@@ -116,7 +116,7 @@ theorem facts {n k r t m rS : ℕ} (hr : r = k + 2 * rS + 1) (ht : 0 < t) (hn : 
   · refine Or.inr ⟨h1, ?_, by rw [coarse_of_le h1]; omega⟩
     have hx' : ¬ x < rSym k rS := by unfold rSym; omega
     have hs : rSym k rS = r := by unfold rSym; omega
-    unfold lvSym; rw [if_neg hx', hs]
+    unfold lvSym; rw [ite_eq_right hx', hs]
     rcases Nat.lt_or_ge x (r + m * t) with h2 | h2
     · rw [GlobalTheory.TopLawSym.coarse_eq ht h1 h2, Nat.add_assoc]
     · have hx2 : x = r + m * t := by omega
@@ -163,7 +163,7 @@ theorem inJ_of_mem {n k r t m rS : ℕ} (h : r ≤ n) (hr : r = k + 2 * rS + 1) 
     · rw [hF' x y hy', Matrix.one_apply]
     · by_cases hxy : x = y
       · subst hxy; rw [hF' x x hy', Matrix.one_apply]
-      · rw [if_neg hxy]
+      · rw [ite_eq_right hxy]
         apply (mem_btG.mp hB) y x
         have hx1 : x.val < r + m * t := by
           have := x.2; have : x.val ≠ y.val := fun e => hxy (Fin.ext e); omega
@@ -225,13 +225,13 @@ theorem sum_skip {F : Type} [Field F] {n r k : ℕ} (hr : r ≤ n) (hk : k ≤ r
   have h1 : ∀ x ∈ Finset.range r, (if x + 1 ≠ k ∧ x + 1 < r then Formalism.L2.G.entN N x (x + 1) else 0) =
       if x + 1 < r ∧ x + 1 ≠ k then f x (x + 1) else 0 := fun x hx => by
     by_cases hx' : x + 1 < r ∧ x + 1 ≠ k
-    · rw [if_pos hx', if_pos ⟨hx'.2, hx'.1⟩]
+    · rw [ite_eq_left hx', ite_eq_left ⟨hx'.2, hx'.1⟩]
       have a1 : x < n := by omega
       have a2 : x + 1 < n := by omega
       unfold Formalism.L2.G.entN
-      rw [dif_pos ⟨a1, a2⟩]
+      rw [dite_eq_left ⟨a1, a2⟩]
       exact (hf ⟨x, a1⟩ ⟨x + 1, a2⟩).symm
-    · rw [if_neg hx', if_neg (fun h => hx' ⟨h.2, h.1⟩)]
+    · rw [ite_eq_right hx', ite_eq_right (fun h => hx' ⟨h.2, h.1⟩)]
   rw [Finset.sum_congr rfl h1]
   obtain ⟨d, rfl⟩ : ∃ d, r = k + d := ⟨r - k, by omega⟩
   rw [Finset.sum_range_add, Nat.add_sub_cancel_left]
@@ -263,7 +263,7 @@ theorem lamJsym_read (κ κ' K : Type) [CommRing κ] [Field κ'] [Field K] (e : 
     emb ((lamJsym ψ χ n k r t m rS h M : Kˣ) : K) =
       Formalism.L2.Forms.lamSym ψ' χ' k rS t m ((M.1 : Matrix (Fin n) (Fin n) κ).map e) := by
   let A : ℕ → ℕ → κ := fun i j => if h' : i < n ∧ j < n then (M.1 : Matrix (Fin n) (Fin n) κ) ⟨i, h'.1⟩ ⟨j, h'.2⟩ else 0
-  have hA : ∀ i j : Fin n, A i.1 j.1 = (M.1 : Matrix (Fin n) (Fin n) κ) i j := fun i j => dif_pos ⟨i.2, j.2⟩
+  have hA : ∀ i j : Fin n, A i.1 j.1 = (M.1 : Matrix (Fin n) (Fin n) κ) i j := fun i j => dite_eq_left ⟨i.2, j.2⟩
   have h0 : ((lamJsym ψ χ n k r t m rS h M : Kˣ) : K) =
       ((chiSymF ψ r k rS (HPar0 h _ _ M) : Kˣ) : K) *
         ((detChar χ n r (List.replicate m t) ⟨M.1, HPar_le h _ _ M.2⟩ : Kˣ) : K) := rfl
@@ -289,7 +289,7 @@ theorem lamJsym_read (κ κ' K : Type) [CommRing κ] [Field κ'] [Field K] (e : 
     have a2 : r + s * t + v.1 < n := by have := v.2; omega
     show e (A (r + s * t + u.1) (r + s * t + v.1)) = Formalism.L2.Forms.entN _ (r + s * t + u.1) (r + s * t + v.1)
     unfold Formalism.L2.Forms.entN
-    rw [dif_pos ⟨a1, a2⟩]
+    rw [dite_eq_left ⟨a1, a2⟩]
     exact congrArg e (hA ⟨_, a1⟩ ⟨_, a2⟩)
 
 end GlobalTheory.LamRead
@@ -440,7 +440,7 @@ theorem main_base (hPr : (B.primes X).Ok) (u : B.Word) (G : GLoc B.host.F B.host
   have e2 : ∀ j v h s, s < B.R.m → ∀ c : (𝓞 B.fields.E ⧸ (C.W j v h).1.asIdeal)ˣ, G.chiB j v h s ((C.e j v h).toRingHom c) =
       B.embLL ((chiAt I.Ch (C.W j v h) s c : B.LLˣ) : B.LL) := fun j v h s hs c => by
     obtain ⟨n, hn⟩ := exists_nat hPr _ c.1
-    rw [hn, map_natCast, show chiAt I.Ch (C.W j v h) s = I.Ch.chi ⟨s, hs⟩ (C.W j v h) from dif_pos hs]
+    rw [hn, map_natCast, show chiAt I.Ch (C.W j v h) s = I.Ch.chi ⟨s, hs⟩ (C.W j v h) from dite_eq_left hs]
     exact hχ j v h _ (C.ov j v h) ⟨s, hs⟩ n c hn
   have hM := fun j v h => by
     letI := (C.W j v h).1.isMaximal
@@ -493,17 +493,17 @@ theorem frExt_of {D : D7} (hiX : ∀ x j, iXc D x j = if h : j.1 < D.R.N D.R.m -
     rw [h3, h4, Units.val_one, Matrix.mul_one, Matrix.map_apply, iXm, LinearMap.toMatrix'_apply, hiX, diagonal_apply]
     by_cases hx : x = b'
     · subst hx
-      rw [if_pos rfl, if_neg (by omega), dif_pos (hb ▸ hb2), Pi.single_apply, if_pos (Fin.ext hb.symm), map_one]
-    · rw [if_neg hx]
+      rw [ite_eq_left rfl, ite_eq_right (by omega), dite_eq_left (hb ▸ hb2), Pi.single_apply, ite_eq_left (Fin.ext hb.symm), map_one]
+    · rw [ite_eq_right hx]
       split_ifs with h5
-      · rw [Pi.single_apply, if_neg (fun e : (⟨x.1, h5⟩ : Fin _) = b => hx (Fin.ext ((congrArg Fin.val e).trans hb))), map_zero]
+      · rw [Pi.single_apply, ite_eq_right (fun e : (⟨x.1, h5⟩ : Fin _) = b => hx (Fin.ext ((congrArg Fin.val e).trans hb))), map_zero]
       · rw [map_zero]
   · rw [h4, diagonal_apply]
     beta_reduce
     by_cases hx : x = t
     · subst hx
-      rw [if_pos rfl, if_pos ht, if_pos ht]
-    · rw [if_neg hx, if_neg fun e => hx (Fin.ext (by omega)), map_zero, map_zero]
+      rw [ite_eq_left rfl, ite_eq_left ht, ite_eq_left ht]
+    · rw [ite_eq_right hx, ite_eq_right fun e => hx (Fin.ext (by omega)), map_zero, map_zero]
 
 end GlobalTheory.Mem.Col2.TypeLev
 
@@ -540,7 +540,7 @@ theorem hform_last {E : Type} [CommRing E] (σ : E →+* E) {N : ℕ} (hN : 0 < 
   obtain rfl : z = fun j => if j.1 + 1 = N then p else 0 := funext hz
   subst hJ
   unfold hform
-  simp only [Matrix.one_apply, mul_ite, mul_one, mul_zero, ite_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+  simp only [Matrix.one_apply, mul_ite, mul_one, mul_zero, ite_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
   rw [Finset.sum_eq_single ⟨N - 1, by omega⟩]
   · simp [show N - 1 + 1 = N by omega]
   · intro b _ hb
@@ -828,7 +828,7 @@ theorem not_both_mem {p q : ℕ} (h : Nat.Coprime p q) (v : HeightOneSpectrum (�
 
 theorem inJ_iff {k : Type} [Field k] {n a t fc : ℕ} (ha : n ≤ a) (hfc : n ≤ fc) (M : Matrix (Fin n) (Fin n) k) :
     InJ a t fc false M ↔ ∀ i j : Fin n, (j < i → M i j = 0) ∧ M i i = 1 := by
-  have hb : ∀ x : Fin n, Formalism.L2.Forms.blkOf a t x = x := fun x => if_pos (lt_of_lt_of_le x.2 ha)
+  have hb : ∀ x : Fin n, Formalism.L2.Forms.blkOf a t x = x := fun x => ite_eq_left (lt_of_lt_of_le x.2 ha)
   constructor
   · rintro ⟨h1, h2, -, -⟩ i j
     exact ⟨fun h => h1 i j (by rw [hb, hb]; exact h), h2 i (lt_of_lt_of_le i.2 ha)⟩

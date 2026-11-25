@@ -209,7 +209,7 @@ theorem _root_.GlobalTheory.T.towerStage_finitePlaces_unramified_or_split : GBig
             rw [Ideal.map_pow, map_natCast] at h'
             exact hℓ2 (Ideal.pow_right_mono hle 2 h')
   · left
-    push_neg at hS
+    push Not at hS
     obtain ⟨hS0, hQ⟩ := hS
     have hS1 : v ∉ S1 D := fun h => hS0 (G.pl.mem_S0_of_sum_eq.2 (Or.inr h))
     refine ⟨GlobalTheory.T.isUnramifiedAtPlaceIdempotent_of_heckeChar_unramified_above D _ _ hα v e he fun P hP => ?_, GlobalTheory.T.isUnramifiedAtPlaceIdempotent_of_heckeChar_unramified_above D _ _ hβ v e he fun P hP => ?_⟩

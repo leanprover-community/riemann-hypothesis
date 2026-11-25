@@ -53,22 +53,22 @@ theorem UpperTheory.Gal.productCup_of_system.wdBasic_of :
     intro s
     rw [wd_apply']
     by_cases hs : (s.card : ℤ) = n + 1
-    · rw [if_pos hs]
+    · rw [ite_eq_left hs]
       refine Submodule.sum_mem _ fun i hi => Submodule.smul_of_tower_mem _ _ ?_
       have hcard : ((s.erase i).card : ℤ) = n := by
         have := Finset.card_erase_add_one hi
         omega
       have hmem := ha (s.erase i)
-      rw [if_pos hcard] at hmem
+      rw [ite_eq_left hcard] at hmem
       have := hA (s.erase i) i (by simp) _ hmem
       rwa [Finset.insert_erase hi] at this
-    · rw [if_neg hs, Submodule.mem_bot]
+    · rw [ite_eq_right hs, Submodule.mem_bot]
       refine Finset.sum_eq_zero fun i hi => ?_
       have hcard : ¬ ((s.erase i).card : ℤ) = n := by
         have := Finset.card_erase_add_one hi
         omega
       have hmem := ha (s.erase i)
-      rw [if_neg hcard, Submodule.mem_bot] at hmem
+      rw [ite_eq_right hcard, Submodule.mem_bot] at hmem
       rw [hmem, map_zero, smul_zero]
   · intro w'
     refine LinearMap.ext fun c => funext fun t => ?_

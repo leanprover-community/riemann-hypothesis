@@ -88,7 +88,7 @@ theorem nu_top_eq {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridDat
   have h2 := hM'.top
   unfold Vol.IsAt at h1 h2
   have hz : Node.neg D.R.m (Node.top 0) = 0 := rfl
-  rw [if_pos hz] at h1 h2
+  rw [ite_eq_left hz] at h1 h2
   haveI := h1.1.1
   haveI := h2.1.1
   have e := Measure.isMulLeftInvariant_eq_smul (M.ν (.top 0)) (M'.ν (.top 0))

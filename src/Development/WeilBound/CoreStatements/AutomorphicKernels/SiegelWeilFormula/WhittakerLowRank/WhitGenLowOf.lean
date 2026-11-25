@@ -1109,14 +1109,14 @@ theorem det_mul_eq_zero_of_lt {R : Type*} [CommRing R] {M n : ℕ} (h : M < n)
   have he : e * eᵀ = 1 := by
     ext i j
     simp only [e, Matrix.mul_apply, Matrix.transpose_apply, Matrix.of_apply, Matrix.one_apply, ite_mul, one_mul,
-      zero_mul, Finset.sum_ite_eq, Finset.mem_univ, if_true, Fin.castLE_inj, eq_comm (a := j)]
+      zero_mul, Finset.sum_ite_eq, Finset.mem_univ, ite_true, Fin.castLE_inj, eq_comm (a := j)]
   have : X * Y = (X * e) * (eᵀ * Y) := by
     rw [Matrix.mul_assoc, ← Matrix.mul_assoc e, he, Matrix.one_mul]
   rw [this, Matrix.det_mul, Matrix.det_eq_zero_of_column_eq_zero (A := X * e) ⟨M, h⟩, zero_mul]
   intro a
   simp only [Matrix.mul_apply, e, Matrix.of_apply]
   refine Finset.sum_eq_zero fun i _ => ?_
-  rw [if_neg, mul_zero]
+  rw [ite_eq_right, mul_zero]
   intro hh
   have := congrArg Fin.val hh
   simp at this
@@ -1164,14 +1164,14 @@ theorem count (c d M n : ℕ) (hd : 1 ≤ d) (h : M < n) :
   | zero =>
     rw [Nat.add_zero, Finset.sum_range_succ, Finset.sum_eq_zero fun i hi => by
       have := Finset.mem_range.1 hi
-      rw [if_pos (by omega)]]
-    rw [if_neg (by omega), if_pos (by omega)]
+      rw [ite_eq_left (by omega)]]
+    rw [ite_eq_right (by omega), ite_eq_left (by omega)]
     have : M + 1 - M = 1 := by omega
     rw [this, mul_one]
     omega
   | succ r ih =>
     rw [show M + 1 + (r + 1) = M + 1 + r + 1 by ring, Finset.sum_range_succ, add_right_comm, ih]
-    rw [if_neg (by omega), if_neg (by omega)]
+    rw [ite_eq_right (by omega), ite_eq_right (by omega)]
     have : M + 1 + r + 1 - M = (M + 1 + r - M) + 1 := by omega
     rw [this, Nat.mul_succ]
     ring
@@ -1185,8 +1185,8 @@ theorem analyticAt_update_zero {G A : ℂ → ℂ} {s₀ c : ℂ} {K N : ℕ} (h
   filter_upwards [eventually_nhdsWithin_iff.1 h] with z hz
   by_cases hzs : z = s₀
   · subst hzs
-    rw [if_pos rfl, sub_self, zero_pow (by omega), zero_mul, mul_zero]
-  · rw [if_neg hzs]
+    rw [ite_eq_left rfl, sub_self, zero_pow (by omega), zero_mul, mul_zero]
+  · rw [ite_eq_right hzs]
     have hx : z - s₀ ≠ 0 := sub_ne_zero.2 hzs
     have h1 := hz hzs
     have hN : (z - s₀) ^ N = (z - s₀) ^ K * (z - s₀) ^ (N - K) := by
@@ -1380,11 +1380,11 @@ theorem whitGenLowOf : WhitGenLowOf := by
     by_cases hx : x = s₀
     · subst hx
       filter_upwards [self_mem_nhdsWithin] with z hz
-      exact (if_neg hz).symm
+      exact (ite_eq_right hz).symm
     · filter_upwards [nhdsWithin_le_nhds (eventually_ne_nhds hx)] with z hz
-      exact (if_neg hz).symm
+      exact (ite_eq_right hz).symm
   · show (if z = s₀ then 0 else G z) = _
-    rw [if_neg (hne z hz)]
+    rw [ite_eq_right (hne z hz)]
     exact hright z hz
 
 end PositivityTheory.SiegelWeilFormula.Gen.WL

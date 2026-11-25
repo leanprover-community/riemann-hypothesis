@@ -22,7 +22,7 @@ theorem zc_nat (c : F⟦X⟧) (n : ℕ) : zc c n = coeff n c := by
 
 theorem zc_neg (c : F⟦X⟧) {n : ℤ} (h : n < 0) : zc c n = 0 := by
   unfold zc
-  rw [if_neg (not_le.mpr h)]
+  rw [ite_eq_right (not_le.mpr h)]
 
 theorem zc_add (c c' : F⟦X⟧) (n : ℤ) : zc (c + c') n = zc c n + zc c' n := by
   unfold zc

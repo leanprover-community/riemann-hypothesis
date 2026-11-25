@@ -130,10 +130,10 @@ private lemma star_eU_eq_eU_swap (a : S) (i j : Fin 2) : star (eU a i j : SlopeT
     by_cases h1 : l a = i ∧ k a = j ∧ ∀ b, b ≠ a → l b = k b
     · have h2 : k a = j ∧ l a = i ∧ ∀ b, b ≠ a → k b = l b :=
         ⟨h1.2.1, h1.1, fun b hb => (h1.2.2 b hb).symm⟩
-      rw [if_pos h1, if_pos h2, star_one]
+      rw [ite_eq_left h1, ite_eq_left h2, star_one]
     · have h2 : ¬ (k a = j ∧ l a = i ∧ ∀ b, b ≠ a → k b = l b) :=
         fun h => h1 ⟨h.2.1, h.1, fun b hb => (h.2.2 b hb).symm⟩
-      rw [if_neg h1, if_neg h2, star_zero]
+      rw [ite_eq_right h1, ite_eq_right h2, star_zero]
   exact Matrix.ext key
 
 

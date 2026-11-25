@@ -103,7 +103,7 @@ theorem ext_of_cont (p : ℕ) [IsHausdorff (Ideal.span {(p : A)}) A] (φ ψ : Mv
       have := Finsupp.le_degree i α
       show α i ≤ N₁ + N₂
       omega
-    rw [map_sub, hPdef, MvPolynomial.coeff_coe, coeff_trunc', if_pos hle, sub_self]
+    rw [map_sub, hPdef, MvPolynomial.coeff_coe, coeff_trunc', ite_eq_left hle, sub_self]
   have e : φ f - ψ f = φ (f - P) - ψ (f - P) := by
     rw [map_sub, map_sub, hP]; ring
   rw [e]
@@ -152,7 +152,7 @@ theorem exists_isEval (p : ℕ) [IsAdicComplete (Ideal.span {(p : A)}) A] (x : �
     refine key m _ fun α hα => ?_
     have h1 : α ≤ bx (m * S) := (hbx _ _).2 hα
     have h2 : α ≤ bx (n * S) := (hbx _ _).2 fun i => (hα i).trans (Nat.mul_le_mul_right _ hmn)
-    rw [MvPolynomial.coeff_sub, coeff_trunc', coeff_trunc', if_pos h1, if_pos h2, sub_self]
+    rw [MvPolynomial.coeff_sub, coeff_trunc', coeff_trunc', ite_eq_left h1, ite_eq_left h2, sub_self]
   have hL : ∀ f, ∃ L : A, ∀ m, (p : A) ^ m ∣ s m f - L := by
     intro f
     obtain ⟨L, hL⟩ := IsPrecomplete.prec (inferInstance : IsPrecomplete (Ideal.span {(p : A)}) A)
@@ -168,7 +168,7 @@ theorem exists_isEval (p : ℕ) [IsAdicComplete (Ideal.span {(p : A)}) A] (x : �
     refine huniq _ _ fun m => ?_
     simp only [s, ← map_sub]
     refine key m _ fun α hα => ?_
-    rw [MvPolynomial.coeff_sub, coeff_trunc', if_pos ((hbx _ _).2 hα), MvPolynomial.coeff_coe,
+    rw [MvPolynomial.coeff_sub, coeff_trunc', ite_eq_left ((hbx _ _).2 hα), MvPolynomial.coeff_coe,
       sub_self]
   have hadd : ∀ f g, L (f + g) = L f + L g := by
     intro f g
@@ -186,7 +186,7 @@ theorem exists_isEval (p : ℕ) [IsAdicComplete (Ideal.span {(p : A)}) A] (x : �
       simp only [s, ← map_mul, ← map_sub]
       refine key m _ fun α hα => ?_
       have h1 : α ≤ bx (m * S) := (hbx _ _).2 hα
-      rw [MvPolynomial.coeff_sub, coeff_trunc', if_pos h1,
+      rw [MvPolynomial.coeff_sub, coeff_trunc', ite_eq_left h1,
         coeff_trunc'_mul_trunc'_eq_coeff_mul _ _ _ h1, sub_self]
     rw [e]
     exact dvd_add (dvd_add h1 (Dvd.dvd.mul_right (hL f m) _)) (Dvd.dvd.mul_left (hL g m) _)

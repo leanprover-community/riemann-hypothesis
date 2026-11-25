@@ -153,9 +153,9 @@ theorem UpperTheory.V.B5.exists_linearEquiv_quotientByOrderTwo_coords :
     rw [Finset.sum_eq_single i0, Finset.sum_eq_zero]
     · simp
     · intro i _
-      rw [if_neg (hcrep i0 i)]
+      rw [ite_eq_right (hcrep i0 i)]
     · intro i _ hi
-      rw [if_neg (fun h => hi (hrepinj i i0 h))]
+      rw [ite_eq_right (fun h => hi (hrepinj i i0 h))]
     · intro h
       exact absurd (Finset.mem_univ i0) h
   let e : Rq A c ε ≃ₗ[A] (Qc c → A) :=

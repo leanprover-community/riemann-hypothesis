@@ -499,9 +499,4 @@ theorem wdOf_eq_of_conj {r' : G E Ω →* GL n (Qbar l)} (P : GL n (Qbar l))
 
 end Param
 
-section Examples
-
-
-end Examples
-
 end GlobalTheory.WeilDeligne

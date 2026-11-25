@@ -90,7 +90,7 @@ theorem chain_first_tail {N r : ℕ} {LL : ChainLetters (N + 1)} {mu : Fin (N + 
     (h : IsChain LL mu) (hv : LL.vec 0 = true) (t : Fin r) : mu 1 t.succ = 0 := by
   obtain ⟨h0, hs⟩ := h
   have h1 := hs 0
-  rw [if_pos hv] at h1
+  rw [ite_eq_left hv] at h1
   obtain ⟨a, b, _⟩ := h1
   have ha := a t.succ
   have hb := b t.castSucc t.succ (by simp only [Fin.coe_castSucc, Fin.val_succ])
@@ -104,12 +104,12 @@ theorem finPos_eq (N n : ℕ) (h : n < N + 1) : finPos N n = ⟨n, h⟩ := by
 theorem pairChain_lt {s r : ℕ} (mu : Fin (2 * s + 1 + 1) → Fin (r + 1) → ℤ) (lam : Fin r → ℤ) (n : ℕ) (h : n < 2 * s + 1) :
     pairChain mu lam ⟨n, by omega⟩ = fun t : Fin r => mu ⟨n + 1, by omega⟩ t.succ := by
   unfold pairChain
-  exact dif_pos h
+  exact dite_eq_left h
 
 theorem pairChain_last {s r : ℕ} (mu : Fin (2 * s + 1 + 1) → Fin (r + 1) → ℤ) (lam : Fin r → ℤ) :
     pairChain mu lam ⟨2 * s + 1, by omega⟩ = lam := by
   unfold pairChain
-  exact dif_neg (Nat.lt_irrefl _)
+  exact dite_eq_right (Nat.lt_irrefl _)
 
 theorem pair_top {s r : ℕ} {A : ℕ} {Ai Ci : Fin s → ℕ} {mu : Fin (2 * s + 1 + 1) → Fin (r + 1) → ℤ}
     (h : IsChain (kLetters A Ai Ci) mu) (i : Fin s) :
@@ -123,12 +123,12 @@ theorem pair_top {s r : ℕ} {A : ℕ} {Ai Ci : Fin s → ℕ} {mu : Fin (2 * s 
   have hi := i.2
   have hV : Strip (mu ⟨2 * i.val + 2, by omega⟩) (mu ⟨2 * i.val + 1, by omega⟩) (Ai i) := by
     have := h.2 ⟨2 * i.val + 1, by omega⟩
-    rw [if_pos (show (kLetters A Ai Ci).vec ⟨2 * i.val + 1, by omega⟩ = true from
+    rw [ite_eq_left (show (kLetters A Ai Ci).vec ⟨2 * i.val + 1, by omega⟩ = true from
       decide_eq_true (Or.inr (by show (2 * i.val + 1) % 2 = 1; omega))), kLetters_deg_odd] at this
     exact this
   have hC : Strip (mu ⟨2 * i.val + 2, by omega⟩) (mu ⟨2 * i.val + 3, by omega⟩) (Ci i) := by
     have := h.2 ⟨2 * i.val + 2, by omega⟩
-    rw [if_neg (show ¬ (kLetters A Ai Ci).vec ⟨2 * i.val + 2, by omega⟩ = true from by
+    rw [ite_eq_right (show ¬ (kLetters A Ai Ci).vec ⟨2 * i.val + 2, by omega⟩ = true from by
       intro hh
       rcases of_decide_eq_true hh with h1 | h1
       · have : 2 * i.val + 2 = 0 := h1
@@ -169,7 +169,7 @@ theorem pair_top {s r : ℕ} {A : ℕ} {Ai Ci : Fin s → ℕ} {mu : Fin (2 * s 
 theorem jE_pair {s r : ℕ} (S : SegData s) (Ai : Fin s → ℕ) (mu : Fin (2 * s + 1 + 1) → Fin (r + 1) → ℤ) (i : Fin s)
     (h : S.sigma ≤ i.val) : jE S (pairLevel S Ai mu) i.val = (pairSg mu Ai i).toNat := by
   unfold jE
-  rw [dif_pos ⟨h, i.2⟩]
+  rw [dite_eq_left ⟨h, i.2⟩]
   simp only [pairLevel]
   congr 2
   exact Fin.ext (by simp only [uTop]; omega)
@@ -209,12 +209,12 @@ theorem pair_chain (p : ℕ) {s r : ℕ} (S : SegData s) (aTop : Fin s → ℕ) 
     have e : (if i.val < S.sigma then (pairBlock S rz ry Ai mu lam jp).w i else (pairBlock S rz ry Ai mu lam jp).o i) -
         jE S (pairLevel S Ai mu) i.val = (pairW mu i.val).toNat := by
       by_cases hσ : i.val < S.sigma
-      · rw [if_pos hσ, jE_S S _ hσ, Nat.sub_zero]
+      · rw [ite_eq_left hσ, jE_S S _ hσ, Nat.sub_zero]
         show (if i.val < S.sigma then (pairW mu i.val).toNat else 0) = _
-        rw [if_pos hσ]
-      · rw [if_neg hσ, jE_pair S Ai mu i (by omega)]
+        rw [ite_eq_left hσ]
+      · rw [ite_eq_right hσ, jE_pair S Ai mu i (by omega)]
         show (if i.val < S.sigma then 0 else (pairO mu Ai i).toNat) - _ = _
-        rw [if_neg hσ]
+        rw [ite_eq_right hσ]
         have := Int.toNat_of_nonneg (show 0 ≤ pairO mu Ai i by rw [eO]; omega)
         omega
     rw [e]
@@ -231,10 +231,10 @@ theorem pair_chain (p : ℕ) {s r : ℕ} (S : SegData s) (aTop : Fin s → ℕ) 
         jE S (pairLevel S Ai mu) i.val = Ci i - (pairSg mu Ai i).toNat := by
       have hcc : coarseC p S aTop (pairBlock S rz ry Ai mu lam jp) i = Ci i := rfl
       by_cases hσ : i.val < S.sigma
-      · rw [if_pos hσ, jE_S S _ hσ, Nat.sub_zero, hcc]
+      · rw [ite_eq_left hσ, jE_S S _ hσ, Nat.sub_zero, hcc]
         show Ci i - (if i.val < S.sigma then (pairSg mu Ai i).toNat else 0) = _
-        rw [if_pos hσ]
-      · rw [if_neg hσ, jE_pair S Ai mu i (by omega), hcc]
+        rw [ite_eq_left hσ]
+      · rw [ite_eq_right hσ, jE_pair S Ai mu i (by omega), hcc]
     rw [e]
     exact t2
   constructor
@@ -244,12 +244,12 @@ theorem pair_chain (p : ℕ) {s r : ℕ} (S : SegData s) (aTop : Fin s → ℕ) 
     exact chain_first_tail (N := 2 * s) hP.1 (by simp [kLetters]) t
   · rintro ⟨xv, hxv⟩
     obtain ⟨i, rfl | rfl⟩ : ∃ i, xv = 2 * i ∨ xv = 2 * i + 1 := ⟨xv / 2, by omega⟩
-    · rw [if_pos (by show decide ((2 * i) % 2 = 0) = true; exact decide_eq_true (by omega))]
+    · rw [ite_eq_left (by show decide ((2 * i) % 2 = 0) = true; exact decide_eq_true (by omega))]
       by_cases hi : i = s
       · subst hi
         exact hU
       · exact hW ⟨i, by omega⟩
-    · rw [if_neg (by
+    · rw [ite_eq_right (by
         show ¬ decide ((2 * i + 1) % 2 = 0) = true
         intro hh
         have := of_decide_eq_true hh
@@ -295,12 +295,12 @@ theorem pair_level (p : ℕ) {s r : ℕ} (S : SegData s) (aTop : Fin s → ℕ) 
     have e2 := chain_deg_E p S aTop b
       ((blockData p S aTop aPlus m b).letterAt ((blockData p S aTop aPlus m b).T.pos l + 1)) (uTop S l)
       (by show min (2 * (S.sigma + l.val) + 1) (2 * s + 1 - 1) = 2 * (S.sigma + l.val) + 1; omega)
-    rw [if_neg hσ] at e1 e2
+    rw [ite_eq_right hσ] at e1 e2
     have eO : pairO mu Ai (uTop S l) = pairW mu (uTop S l).val + pairSg mu Ai (uTop S l) := by unfold pairSg; ring
     have n5 := Int.toNat_of_nonneg t5
     have g1 : pairLevel S Ai mu l ≤ b.o (uTop S l) := by
       show (pairSg mu Ai (uTop S l)).toNat ≤ (if (uTop S l).val < S.sigma then 0 else (pairO mu Ai (uTop S l)).toNat)
-      rw [if_neg hσ]
+      rw [ite_eq_right hσ]
       have := Int.toNat_of_nonneg (show 0 ≤ pairO mu Ai (uTop S l) by rw [eO]; omega)
       omega
     have g2 : pairLevel S Ai mu l ≤ coarseC p S aTop b (uTop S l) := by
@@ -336,7 +336,7 @@ theorem pairC_zero {s r : ℕ} {A : ℕ} {Ai Ci : Fin s → ℕ} {mu : Fin (2 * 
     (h : IsChain (kLetters A Ai Ci) mu) : pairC mu 0 = A := by
   obtain ⟨h0, hs⟩ := h
   have h1 := hs 0
-  rw [if_pos (by simp [kLetters])] at h1
+  rw [ite_eq_left (by simp [kLetters])] at h1
   obtain ⟨ha, hb, h3⟩ := h1
   simp only [Fin.castSucc_zero, h0, Pi.zero_apply, Finset.sum_const_zero, sub_zero] at ha hb h3
   have ht : ∀ t : Fin r, mu (0 : Fin (2 * s + 1)).succ t.succ = 0 := fun t =>
@@ -402,13 +402,13 @@ theorem pair_thr (p : ℕ) {s r : ℕ} [NeZero r] (S : SegData s) (aTop : Fin s 
   · have hks : k.val < s - S.sigma := hk
     have eJ : (blockData p S aTop aPlus m b).T.J k = 2 * (S.sigma + k.val) + 1 := by
       show (if h : (k : ℕ) < S.t then 2 * (uTop S ⟨k, h⟩ : ℕ) + 1 else 2 * s + 1) = _
-      rw [dif_pos hk]
+      rw [dite_eq_left hk]
       rfl
     have eT : (blockData p S aTop aPlus m b).T.thr k =
         ((⌊((cap p S b (S.sigma + k.val) : ℤ) : ℝ) - m⌋ : ℤ) : WithTop ℤ) := by
       show (segmentCapacities p S b k).map (fun x : ℤ => ⌊(x : ℝ) - m⌋) = _
       unfold segmentCapacities
-      rw [dif_pos hk]
+      rw [dite_eq_left hk]
       rfl
     rw [eJ, eT, WithTop.coe_le_coe, finPos_eq (2 * s + 1) (2 * (S.sigma + k.val) + 1) (by omega),
       pairChain_lt mu lam (2 * (S.sigma + k.val) + 1) (by omega)]
@@ -416,11 +416,11 @@ theorem pair_thr (p : ℕ) {s r : ℕ} [NeZero r] (S : SegData s) (aTop : Fin s 
     exact le_trans (t7 0 h0) (hfl _ (by omega))
   · have eJ : (blockData p S aTop aPlus m b).T.J k = 2 * s + 1 := by
       show (if h : (k : ℕ) < S.t then 2 * (uTop S ⟨k, h⟩ : ℕ) + 1 else 2 * s + 1) = _
-      rw [dif_neg hk]
+      rw [dite_eq_right hk]
     have eT : (blockData p S aTop aPlus m b).T.thr k = ((⌊((cap p S b s : ℤ) : ℝ) - m⌋ : ℤ) : WithTop ℤ) := by
       show (segmentCapacities p S b k).map (fun x : ℤ => ⌊(x : ℝ) - m⌋) = _
       unfold segmentCapacities
-      rw [dif_neg hk]
+      rw [dite_eq_right hk]
       rfl
     rw [eJ, eT, WithTop.coe_le_coe, finPos_eq (2 * s + 1) (2 * s + 1) (by omega), pairChain_last]
     have h3 := (inter_strip hP.2).2.2 0 h0
@@ -564,9 +564,9 @@ theorem kept_pair_of_three_lines {C0 CYb Cde Ck CD Cb CE1 CE2 Cc H : ℝ}
       unfold pairSg; ring
     have n0 := Int.toNat_of_nonneg (show 0 ≤ pairO t.1 (clA C0 CE1 CE2 X j rz ry) i by rw [eO]; omega)
     have hσ : ¬ i.val < (X.seg C0 CE1 CE2 j).sigma := by omega
-    have eo : (pairMap C0 CE1 CE2 X j rz ry t).1.o i = (pairO t.1 (clA C0 CE1 CE2 X j rz ry) i).toNat := if_neg hσ
-    have ew : (pairMap C0 CE1 CE2 X j rz ry t).1.w i = 0 := if_neg hσ
-    have esg : (pairMap C0 CE1 CE2 X j rz ry t).1.sg i = 0 := if_neg hσ
+    have eo : (pairMap C0 CE1 CE2 X j rz ry t).1.o i = (pairO t.1 (clA C0 CE1 CE2 X j rz ry) i).toNat := ite_eq_right hσ
+    have ew : (pairMap C0 CE1 CE2 X j rz ry t).1.w i = 0 := ite_eq_right hσ
+    have esg : (pairMap C0 CE1 CE2 X j rz ry t).1.sg i = 0 := ite_eq_right hσ
     obtain ⟨u1, u2⟩ := hUi i hi
     refine ⟨?_, ?_, ew, esg⟩
     · rw [eo]
@@ -585,9 +585,9 @@ theorem kept_pair_of_three_lines {C0 CYb Cde Ck CD Cb CE1 CE2 Cc H : ℝ}
     have n5 := Int.toNat_of_nonneg t5
     have eO : pairO t.1 (clA C0 CE1 CE2 X j rz ry) i = pairW t.1 i.val + pairSg t.1 (clA C0 CE1 CE2 X j rz ry) i := by
       unfold pairSg; ring
-    have eo : (pairMap C0 CE1 CE2 X j rz ry t).1.o i = 0 := if_pos hi
-    have ew : (pairMap C0 CE1 CE2 X j rz ry t).1.w i = (pairW t.1 i.val).toNat := if_pos hi
-    have esg : (pairMap C0 CE1 CE2 X j rz ry t).1.sg i = (pairSg t.1 (clA C0 CE1 CE2 X j rz ry) i).toNat := if_pos hi
+    have eo : (pairMap C0 CE1 CE2 X j rz ry t).1.o i = 0 := ite_eq_left hi
+    have ew : (pairMap C0 CE1 CE2 X j rz ry t).1.w i = (pairW t.1 i.val).toNat := ite_eq_left hi
+    have esg : (pairMap C0 CE1 CE2 X j rz ry t).1.sg i = (pairSg t.1 (clA C0 CE1 CE2 X j rz ry) i).toNat := ite_eq_left hi
     obtain ⟨s1, s2⟩ := hSi i hi
     have c5 : (((pairSg t.1 (clA C0 CE1 CE2 X j rz ry) i).toNat : ℕ) : ℝ) =
         ((pairSg t.1 (clA C0 CE1 CE2 X j rz ry) i : ℤ) : ℝ) := by exact_mod_cast n5
@@ -745,7 +745,7 @@ theorem coarse_degree_prefix_sum {C0 Cde CE1 CE2 H : ℝ} {X : Loc} (hs : Std C0
   intro ⟨i, hi⟩
   induction i with
   | zero =>
-    simp only [Nat.not_lt_zero, if_false, Finset.sum_const_zero]
+    simp only [Nat.not_lt_zero, ite_false, Finset.sum_const_zero]
     positivity
   | succ i ih =>
     have ih' := ih (by omega)
@@ -758,10 +758,10 @@ theorem coarse_degree_prefix_sum {C0 Cde CE1 CE2 H : ℝ} {X : Loc} (hs : Std C0
       rw [← h2, ← Finset.sum_add_distrib]
       refine Finset.sum_congr rfl fun l _ => ?_
       by_cases h1 : l.val < i
-      · rw [if_pos (by omega), if_pos h1, if_neg (fun h => by rw [h] at h1; simp at h1)]; ring
+      · rw [ite_eq_left (by omega), ite_eq_left h1, ite_eq_right (fun h => by rw [h] at h1; simp at h1)]; ring
       · by_cases h3 : l.val = i
-        · rw [if_pos (by omega), if_neg h1, if_pos (Fin.ext h3)]; ring
-        · rw [if_neg (by omega), if_neg h1, if_neg (fun h => h3 (by rw [h]))]; ring
+        · rw [ite_eq_left (by omega), ite_eq_right h1, ite_eq_left (Fin.ext h3)]; ring
+        · rw [ite_eq_right (by omega), ite_eq_right h1, ite_eq_right (fun h => h3 (by rw [h]))]; ring
     rw [e]
     have hp0 : (0 : ℝ) < (X.p : ℝ) ^ 2 := by linarith
     rw [div_eq_mul_inv] at ih' ⊢

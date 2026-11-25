@@ -81,13 +81,13 @@ private theorem iy_rv (a : (InfiniteAdeleRing ℚ)ˣ) : iy (rv a) = PE.symm (a, 
   have h0 : rv a ≠ 0 := (Ad3.GP.aR a).ne_zero
   apply Units.ext
   refine Prod.ext ?_ ?_
-  · simp only [iy, dif_neg h0]
+  · simp only [iy, dite_eq_right h0]
     change (1 : InfiniteAdeleRing ℚ) - TR.infEq ℚ 1 + TR.infEq ℚ (fun _ => rv a) = (a : InfiniteAdeleRing ℚ)
     rw [map_one, sub_self, zero_add]
     funext w
     rw [Subsingleton.elim w Ad3.GP.wR]
     exact (Ad3.GP.eR.symm_apply_apply _)
-  · simp only [iy, dif_neg h0]
+  · simp only [iy, dite_eq_right h0]
     change (1 : FiniteAdeleRing (𝓞 ℚ) ℚ) - 0 + 0 = 1
     rw [sub_zero, add_zero]
 

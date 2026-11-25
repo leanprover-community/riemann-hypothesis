@@ -45,13 +45,13 @@ theorem br_onLetter {L : Type} {r : ℕ} (i : L) (β : Fin r →₀ ℕ) :
     rw [Finset.sum_eq_single b]
     · simp
     · intro a _ hab
-      rw [Finsupp.single_apply, if_neg]
+      rw [Finsupp.single_apply, ite_eq_right]
       intro h
       exact hab (congrArg Prod.snd h)
     · simp
   · rw [Finsupp.mapDomain_notin_range]
     · refine (Finset.sum_eq_zero fun a _ => ?_).symm
-      rw [Finsupp.single_apply, if_neg]
+      rw [Finsupp.single_apply, ite_eq_right]
       intro h
       exact hj (congrArg Prod.fst h).symm
     · rintro ⟨a, ha⟩
@@ -81,7 +81,7 @@ theorem second_valuation_of_admitted [CharZero (KK O)] (h : Formalism.MainNotion
     cases hs : sg i with
     | true =>
       have := (ha2 i (fun a => β a) F).1 hs
-      simp only [if_true]
+      simp only [ite_true]
       rw [br_absE]
       exact br_wt_sub _ _ _ this
     | false =>

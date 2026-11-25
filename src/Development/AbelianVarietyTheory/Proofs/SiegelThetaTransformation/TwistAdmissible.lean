@@ -192,10 +192,10 @@ theorem _root_.GlobalTheory.SW.TwistAdm.twist_eq {R : ℕ} {𝔛 : _root_.Global
     (x : Matrix (Fin n) (Fin N) E) : _root_.GlobalTheory.SW.twist R 𝔛 φ Λ x =
       if ∀ ξ ∈ 𝔛, (R : E) • (x *ᵥ ξ) ∈ Λ then φ Λ ((hex.choose : E) • x) else 0 := by
   by_cases h : ∀ ξ ∈ 𝔛, (R : E) • (x *ᵥ ξ) ∈ Λ
-  · rw [if_pos h]
+  · rw [ite_eq_left h]
     simp only [_root_.GlobalTheory.SW.twist]
     rw [dite_eq_left ⟨h, hex⟩]
-  · rw [if_neg h]
+  · rw [ite_eq_right h]
     simp only [_root_.GlobalTheory.SW.twist]
     rw [dite_eq_right (fun h' => h h'.1)]
 
@@ -258,7 +258,7 @@ theorem _root_.GlobalTheory.SW.TwistAdm.twist_val {M R : ℕ} {φ : _root_.Globa
     _root_.GlobalTheory.SW.twist R 𝔛 φ Λ x = φ Λ ((s : E) • x) := by
   obtain ⟨-, hR⟩ := hφ.pos
   have hex := _root_.GlobalTheory.SW.TwistAdm.exists_mult hR hA
-  rw [_root_.GlobalTheory.SW.TwistAdm.twist_eq φ hex, if_pos h]
+  rw [_root_.GlobalTheory.SW.TwistAdm.twist_eq φ hex, ite_eq_left h]
   have hc0 := _root_.GlobalTheory.SW.TwistAdm.cols_of_cond hex.choose_spec.2 h
   rw [← adm_apply_mul_congr_one_mod_sq hφ hΛ x hs hc0, Nat.mul_comm hex.choose s,
     adm_apply_mul_congr_one_mod_sq hφ hΛ x hex.choose_spec.1 hx]
@@ -285,7 +285,7 @@ theorem _root_.GlobalTheory.SW.TwistAdm.twist_level {M R : ℕ}
     rw [_root_.GlobalTheory.SW.TwistAdm.twist_eq φ hex] at hx'
     have hcond : ∀ ξ ∈ 𝔛, (R : E) • ((x * a) *ᵥ ξ) ∈ Λ := by
       by_contra hc
-      exact hx' (if_neg hc)
+      exact hx' (ite_eq_right hc)
     intro b
     obtain ⟨ξ, hξ, hξa⟩ := h1 _ (_root_.GlobalTheory.SW.TwistAdm.single_mem_std b)
     have hmem := hcond ξ hξ
@@ -308,7 +308,7 @@ theorem _root_.GlobalTheory.SW.TwistAdm.twist_level {M R : ℕ}
           (_root_.GlobalTheory.SW.TwistAdm.colsIn_mulVec hy (h2 ξ hξ))))
     rw [_root_.GlobalTheory.SW.TwistAdm.twist_eq φ hex, _root_.GlobalTheory.SW.TwistAdm.twist_eq φ hex]
     by_cases hc : ∀ ξ ∈ 𝔛, (R : E) • ((x * a) *ᵥ ξ) ∈ Λ
-    · rw [if_pos (hiff.mpr hc), if_pos hc]
+    · rw [ite_eq_left (hiff.mpr hc), ite_eq_left hc]
       have hs := hex.choose_spec.2
       have hcols : _root_.GlobalTheory.SW.ColsIn Λ ((hex.choose : E) • (y * ((c : E) • a))) := by
         intro b
@@ -328,7 +328,7 @@ theorem _root_.GlobalTheory.SW.TwistAdm.twist_level {M R : ℕ}
         module
       rw [key]
       exact hφ.per Λ hΛ _ _ hcols
-    · rw [if_neg (mt hiff.mp hc), if_neg hc]
+    · rw [ite_eq_right (mt hiff.mp hc), ite_eq_right hc]
 
 open Matrix Complex NumberField Filter Topology in
 open scoped ComplexConjugate ComplexOrder Real Classical in
@@ -358,9 +358,9 @@ theorem _root_.GlobalTheory.SW.TwistAdm.twist_adm {M R : ℕ}
       rw [← Matrix.mulVec_mulVec, ← Matrix.mulVec_smul, ← hcar']
     rw [_root_.GlobalTheory.SW.TwistAdm.twist_eq φ hex, _root_.GlobalTheory.SW.TwistAdm.twist_eq φ hex]
     by_cases hc : ∀ ξ ∈ 𝔛, (R : E) • (x *ᵥ ξ) ∈ Λ
-    · rw [if_pos (hiff.mpr hc), if_pos hc, ← Matrix.mul_smul]
+    · rw [ite_eq_left (hiff.mpr hc), ite_eq_left hc, ← Matrix.mul_smul]
       exact hφ.equiv h hh Λ hΛ Λ' hΛ' hcar _
-    · rw [if_neg (mt hiff.mp hc), if_neg hc]
+    · rw [ite_eq_right (mt hiff.mp hc), ite_eq_right hc]
   · intro Λ hΛ Λ' hΛ' hagr x hx hx'
     obtain ⟨u, hu0, hucop, hΛΛ', hΛ'Λ⟩ := id hagr
     have hut1 : u.Coprime t := Nat.Coprime.coprime_dvd_right ((dvd_mul_left t R).mul_right M) hucop
@@ -383,14 +383,14 @@ theorem _root_.GlobalTheory.SW.TwistAdm.twist_adm {M R : ℕ}
         fun hc ξ hξ => transfer hx hΛ'Λ ξ hξ (hc ξ hξ)⟩
     rw [_root_.GlobalTheory.SW.TwistAdm.twist_eq φ hex, _root_.GlobalTheory.SW.TwistAdm.twist_eq φ hex]
     by_cases hc : ∀ ξ ∈ 𝔛, (R : E) • (x *ᵥ ξ) ∈ Λ
-    · rw [if_pos hc, if_pos (hiff.mp hc)]
+    · rw [ite_eq_left hc, ite_eq_left (hiff.mp hc)]
       have hagrRM : _root_.GlobalTheory.SW.Agree (R * M) Λ Λ' :=
         ⟨u, hu0, Nat.Coprime.coprime_dvd_right
           (Nat.mul_dvd_mul (dvd_mul_right R t) dvd_rfl) hucop, hΛΛ', hΛ'Λ⟩
       exact hφ.loc Λ hΛ Λ' hΛ' hagrRM _
         (_root_.GlobalTheory.SW.TwistAdm.cols_of_cond hex.choose_spec.2 hc)
         (_root_.GlobalTheory.SW.TwistAdm.cols_of_cond hex.choose_spec.2 (hiff.mp hc))
-    · rw [if_neg hc, if_neg (mt hiff.mpr hc)]
+    · rw [ite_eq_right hc, ite_eq_right (mt hiff.mpr hc)]
 
 
 end GlobalTheory.SW.TwistAdm
@@ -433,7 +433,7 @@ theorem _root_.GlobalTheory.SW.twist_admissible : ∀ (E : Type) [Field E]
         Nat.cast_one, one_smul]
     · have hex : ∃ s : ℕ, s ≡ 1 [MOD R ^ 2] ∧ ∀ v ∈ _root_.GlobalTheory.SW.stdL E N,
           (s : E) • v ∈ _root_.GlobalTheory.SW.stdL E N := ⟨1, Nat.ModEq.refl 1, hstd1⟩
-      rw [_root_.GlobalTheory.SW.TwistAdm.twist_eq φ hex, if_neg hc]
+      rw [_root_.GlobalTheory.SW.TwistAdm.twist_eq φ hex, ite_eq_right hc]
       by_contra hne
       exact hc fun ξ hξ => by
         rw [← Matrix.smul_mulVec]

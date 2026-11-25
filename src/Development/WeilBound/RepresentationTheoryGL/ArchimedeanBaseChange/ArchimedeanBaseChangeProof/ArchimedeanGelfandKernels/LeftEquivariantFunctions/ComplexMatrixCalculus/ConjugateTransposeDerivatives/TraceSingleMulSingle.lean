@@ -52,13 +52,13 @@ theorem eq_zero_of_trace (D : Mat n) (h : ∀ p, (D * hb p).trace = 0) : D = 0 :
   have hdiag : ∀ i, D i i = 0 := by
     intro i
     have e := h (i, i)
-    simp only [PositivityTheory.RgTw.hb, if_true, trace_mul_single, mul_one] at e
+    simp only [PositivityTheory.RgTw.hb, ite_true, trace_mul_single, mul_one] at e
     exact e
   have key : ∀ i j : Fin n, i < j → D i j = 0 ∧ D j i = 0 := by
     intro i j hij
     have e1 := h (i, j)
     have e2 := h (j, i)
-    simp only [PositivityTheory.RgTw.hb, ne_of_lt hij, (ne_of_lt hij).symm, not_lt_of_gt hij, hij, if_false, if_true,
+    simp only [PositivityTheory.RgTw.hb, ne_of_lt hij, (ne_of_lt hij).symm, not_lt_of_gt hij, hij, ite_false, ite_true,
       Matrix.mul_smul, trace_smul, Matrix.mul_add, Matrix.mul_sub, trace_add, trace_sub, trace_mul_single,
       smul_eq_mul, mul_one] at e1 e2
     have f1 : D j i + D i j = 0 := (mul_eq_zero.mp e1).resolve_left hs

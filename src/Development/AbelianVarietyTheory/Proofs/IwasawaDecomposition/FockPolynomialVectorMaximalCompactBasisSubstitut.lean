@@ -130,9 +130,9 @@ theorem aPlus_dir_smul (e : Bool) (w : ℂ) {u : Matrix (Fin T.rank) (Fin S.rank
     dRho_csmul hψ hθ τ hf (_ * I)]
   obtain ⟨x, y, rfl⟩ : ∃ x y : ℝ, w = x + y * I := ⟨w.re, w.im, (Complex.re_add_im w).symm⟩
   cases e
-  · simp only [Bool.false_eq_true, if_false, map_add (f := _), map_mul, Complex.conj_ofReal, Complex.conj_I]
+  · simp only [Bool.false_eq_true, ite_false, map_add (f := _), map_mul, Complex.conj_ofReal, Complex.conj_I]
     match_scalars <;> simp <;> ring_nf <;> simp
-  · simp only [if_true]
+  · simp only [ite_true]
     match_scalars <;> simp <;> ring_nf <;> simp
 
 omit hψ hθ hf

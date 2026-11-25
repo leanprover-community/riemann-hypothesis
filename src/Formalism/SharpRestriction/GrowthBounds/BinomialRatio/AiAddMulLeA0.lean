@@ -110,15 +110,15 @@ theorem partial_width_le_cap [NeZero X.m] (hH : 1 ≤ H) (h : Std C0 Cde CE1 CE2
         (if l = i then (coarseA X.p S b i : ℝ) else 0) + (c1 + c2) := by
     intro l
     by_cases hl : l.val < i.val + 1
-    · rw [if_pos hl]
+    · rw [ite_eq_left hl]
       have hlσ : l.val < S.sigma := by omega
       have hsg : (b.sg l : ℝ) ≤ c2 := (hSt l hlσ).2.2.2.2
       push_cast
       by_cases hli : l = i
-      · rw [if_pos hli, hli]
+      · rw [ite_eq_left hli, hli]
         rw [hli] at hsg
         linarith
-      · rw [if_neg hli]
+      · rw [ite_eq_right hli]
         have hlt : l < i := by
           rcases lt_or_eq_of_le (Nat.lt_succ_iff.1 hl) with h' | h'
           · exact h'
@@ -134,7 +134,7 @@ theorem partial_width_le_cap [NeZero X.m] (hH : 1 ≤ H) (h : Std C0 Cde CE1 CE2
         have := coarse_ratio_small (k := X.k) (Nat.cast_nonneg _) h.bpos hbe12 (h.levels j i).1 hp0 hPP' (hcb l).1
           (h.winB _ (pos_mem X.TT j l).1).2 (hcb i).2 (h.winB _ (pos_mem X.TT j i).1).1
         linarith
-    · rw [if_neg hl]
+    · rw [ite_eq_right hl]
       push_cast
       split_ifs
       · have : (0 : ℝ) ≤ (coarseA X.p S b i : ℝ) := Nat.cast_nonneg _
@@ -144,7 +144,7 @@ theorem partial_width_le_cap [NeZero X.m] (hH : 1 ≤ H) (h : Std C0 Cde CE1 CE2
       (if l.val < i.val + 1 then ((coarseA X.p S b l : ℤ) + (b.sg l : ℤ)) else 0) : ℤ) : ℝ) ≤ (S.A0 X.p : ℝ) := by
     rw [Int.cast_sum]
     refine le_trans (Finset.sum_le_sum fun l _ => hterm l) ?_
-    rw [Finset.sum_add_distrib, Finset.sum_ite_eq' Finset.univ i, if_pos (Finset.mem_univ i), Finset.sum_const,
+    rw [Finset.sum_add_distrib, Finset.sum_ite_eq' Finset.univ i, ite_eq_left (Finset.mem_univ i), Finset.sum_const,
       Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
     have hsN : ((segS X.TT j : ℕ) : ℝ) ≤ X.N1 := by exact_mod_cast (h.segB j).2
     have hpk : X.k ^ 2 ≤ (X.p : ℝ) := by
@@ -169,15 +169,15 @@ theorem partial_width_le_cap [NeZero X.m] (hH : 1 ≤ H) (h : Std C0 Cde CE1 CE2
       have hw : (b.w l : ℤ) ≤ (coarseA X.p S b l : ℤ) := by exact_mod_cast (hSt l hlσ).2.1
       have ho : (oEff S b l : ℤ) = (b.w l : ℤ) + (b.sg l : ℤ) := by
         unfold oEff
-        rw [if_pos hlσ]
+        rw [ite_eq_left hlσ]
         push_cast
         ring
-      rw [if_pos hl, if_pos hl]
+      rw [ite_eq_left hl, ite_eq_left hl]
       split_ifs
       · rw [ho]; linarith
       · linarith
     · have hln : ¬ (l : ℕ) < n := by omega
-      rw [if_neg hl, if_neg hl, if_neg hln]
+      rw [ite_eq_right hl, ite_eq_right hl, ite_eq_right hln]
       simp
   have hs := Finset.sum_le_sum (s := Finset.univ) fun l _ => hcmp l
   simp only [mul_zero, zero_add] at hs

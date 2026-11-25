@@ -189,7 +189,7 @@ theorem forget_of (hSc : Sc D G) (hNum : NumEx) (hCls : ClsEx) (hInv : PiInv) (h
     exact hQ p D G L hSc E gb w q r 𝔴 _ X₁.site k T K₁ hK₁ M _ _ n₁ C₁
   have fl : Flat (X₀.ps k) := by
     obtain ⟨n, hn⟩ := X₀.dim k
-    haveI : Smooth (X₀.ps k) := hn.smooth
+    have : Smooth (X₀.ps k) := hn.smooth
     infer_instance
   exact ⟨d.pw k, ok, q0, q1, hE (Ow w) E _ _ _ _ _ fl fs ets (hD E _ T.X (Ow w) K₀ K₁ _ _ _ _ _ _ (lev_le hK₀ hK₁ hle) q0 q1)⟩
 
@@ -222,7 +222,7 @@ end
 theorem ksGood_of (hSite : SiteEx) (hNum : NumEx) (hCls : ClsEx) (hCov : KSCover) (hInv : PiInv) (hP : PowCart) (hExt : ExtEx)
     (hQ : QuotOf) (hA : StepA) (hB : StepB) (hF : StepF) (hD : DegGen) (hE : FEtExt) (hL : LiesAbs) : KSGood := by
   intro p _ D G L hSc E _ _ e gb hstd k T N J A _ g θ w 𝔴 hpl ⟨q, r, N₀, 𝔞, K₀, hat, hlev, hK₀, hNK, hNm, hdeck, hall⟩
-  haveI : Fact q.Prime := ⟨hat.prime⟩
+  have : Fact q.Prime := ⟨hat.prime⟩
   obtain ⟨S⟩ := hSite p D G hSc E e gb hstd w q r 𝔴 _ hpl hat ⟨N₀, 𝔞, hlev.1, hlev.2.1, hlev.2.2.1, hlev.2.2.2.1, hlev.2.2.2.2, rfl⟩
   have pos : ∀ M : Lv p, 0 < M.1 := fun M => lt_of_lt_of_le (by norm_num) M.2.1
   obtain ⟨X₀⟩ := hExt p D G hSc E gb w q r 𝔴 _ S N₀ 𝔞 hlev
@@ -735,7 +735,7 @@ theorem UpperTheory.Gal.FiniteEtaleModels.descExt_of :
   have stalk_normal (T : Scheme.{0}) (t : T ⟶ Sp O) [Smooth t] (x : T) :
       IsDomain (T.presheaf.stalk x) ∧ IsIntegrallyClosed (T.presheaf.stalk x) := by
     refine GlobalTheory.forall_isDomain_and_isIntegrallyClosed_stalk_of_smooth t (fun q => ?_) x
-    haveI : q.asIdeal.IsPrime := PrimeSpectrum.isPrime q
+    have : q.asIdeal.IsPrime := PrimeSpectrum.isPrime q
     let _ : Algebra O ((Sp O).presheaf.stalk q) := StructureSheaf.stalkAlgebra O q
     have h : IsLocalization.AtPrime ((Sp O).presheaf.stalk q) q.asIdeal :=
       StructureSheaf.IsLocalization.to_stalk O q
@@ -745,7 +745,7 @@ theorem UpperTheory.Gal.FiniteEtaleModels.descExt_of :
   have hsm : Smooth (pullback.fst j' j' ≫ j' ≫ u ≫ s) := inferInstance
   have hred : IsReduced (pullback j' j') := by
     have : ∀ x : (pullback j' j' : Scheme.{0}), _root_.IsReduced ((pullback j' j' : Scheme.{0}).presheaf.stalk x) := fun x => by
-      letI : IsDomain ((pullback j' j' : Scheme.{0}).presheaf.stalk x) :=
+      let : IsDomain ((pullback j' j' : Scheme.{0}).presheaf.stalk x) :=
         (stalk_normal _ (pullback.fst j' j' ≫ j' ≫ u ≫ s) x).1
       infer_instance
     exact isReduced_of_isReduced_stalk _
@@ -1291,7 +1291,7 @@ private theorem card_of_pb {K : Type} [Field K] [IsAlgClosed K] {Y Y' : Scheme.{
       rw [hgg, hg0, ht1]
   rw [← Nat.card_congr (Equiv.ofBijective F hF)]
   obtain ⟨hfin, hsp⟩ := UpperTheory.Gal.crystallineComparison.splitsField_of K B K inferInstance
-  haveI := Fintype.ofFinite (B →ₐ[K] K)
+  have := Fintype.ofFinite (B →ₐ[K] K)
   let e : (TensorProduct K K B) ≃ₗ[K] ((B →ₐ[K] K) → K) :=
     LinearEquiv.ofBijective (UpperTheory.Gal.crystallineComparison.splitMap (fun z : B →ₐ[K] K => z)).toLinearMap hsp
   have e1 := e.finrank_eq
@@ -1301,16 +1301,16 @@ private theorem card_of_pb {K : Type} [Field K] [IsAlgClosed K] {Y Y' : Scheme.{
 private theorem card_lifts {K : Type} [Field K] [IsAlgClosed K] {Y Y' : Scheme.{0}} (s : Y' ⟶ Y) [IsFinite s] [Etale s]
     (x : Spec (CommRingCat.of K) ⟶ Y) (z : Spec (CommRingCat.of K)) :
     Nat.card {y : Spec (CommRingCat.of K) ⟶ Y' // y ≫ s = x} = Scheme.Hom.finrank s (x z) := by
-  haveI : Etale (pullback.snd s x) := inferInstance
-  haveI : IsAffine (pullback s x) := isAffine_of_isAffineHom (pullback.snd s x)
+  have : Etale (pullback.snd s x) := inferInstance
+  have : IsAffine (pullback s x) := isAffine_of_isAffineHom (pullback.snd s x)
   let e := (pullback s x).isoSpec
   let φ : CommRingCat.of K ⟶ Γ(pullback s x, ⊤) := Spec.preimage (e.inv ≫ pullback.snd s x)
   have hφ : Spec.map φ = e.inv ≫ pullback.snd s x := Spec.map_preimage _
   have hfinφ : IsFinite (Spec.map φ) := by rw [hφ]; infer_instance
   have hetφ : Etale (Spec.map φ) := by rw [hφ]; infer_instance
-  letI : Algebra K Γ(pullback s x, ⊤) := φ.hom.toAlgebra
-  haveI : Module.Finite K Γ(pullback s x, ⊤) := ((IsFinite.SpecMap_iff φ).mp hfinφ : φ.hom.Finite)
-  haveI : Algebra.Etale K Γ(pullback s x, ⊤) :=
+  let : Algebra K Γ(pullback s x, ⊤) := φ.hom.toAlgebra
+  have : Module.Finite K Γ(pullback s x, ⊤) := ((IsFinite.SpecMap_iff φ).mp hfinφ : φ.hom.Finite)
+  have : Algebra.Etale K Γ(pullback s x, ⊤) :=
     RingHom.etale_algebraMap.mp (HasRingHomProperty.Spec_iff.mp hetφ : φ.hom.Etale)
   have hpb : IsPullback (e.inv ≫ pullback.fst s x) (Spec.map φ) s x := by
     rw [hφ]
@@ -1382,13 +1382,13 @@ private theorem exists_affine_irreducible_open_nhd (S : Scheme) [IsLocallyNoethe
     ∃ V : S.Opens, IsAffineOpen V ∧ x ∈ V ∧ IsIrreducible (V : Set S) := by
   have hG : IsIrreducible {y : S | y ⤳ x} := by
     rw [← Scheme.range_fromSpecStalk]
-    haveI := hd x
+    have := hd x
     simpa [Set.image_univ] using
       (IrreducibleSpace.isIrreducible_univ _).image _ (S.fromSpecStalk x).continuous.continuousOn
   obtain ⟨N, hN, hxN, -⟩ := (TopologicalSpace.Opens.isBasis_iff_nbhd.mp S.isBasis_affineOpens)
     (show x ∈ (⊤ : S.Opens) from trivial)
-  haveI : IsNoetherianRing Γ(S, N) := IsLocallyNoetherian.component_noetherian ⟨N, hN⟩
-  haveI : TopologicalSpace.NoetherianSpace N := noetherianSpace_of_isAffineOpen N hN
+  have : IsNoetherianRing Γ(S, N) := IsLocallyNoetherian.component_noetherian ⟨N, hN⟩
+  have : TopologicalSpace.NoetherianSpace N := noetherianSpace_of_isAffineOpen N hN
   let x' : N := ⟨x, hxN⟩
   let C : Set (Set N) := {Z | Z ∈ irreducibleComponents N ∧ x' ∉ Z}
   have hCfin : C.Finite :=
@@ -1439,12 +1439,12 @@ private theorem normalization_affine_open_irreducible_of_normal {U S : Scheme} (
     (V : S.Opens) (hV : IsAffineOpen V) (hirr : IsIrreducible (V : Set S)) :
     letI := (i.app V).hom.toAlgebra
     Function.Bijective (algebraMap Γ(S, V) (integralClosure Γ(S, V) Γ(U, i ⁻¹ᵁ V))) := by
-  letI := (i.app V).hom.toAlgebra
-  haveI : ∀ x : S, _root_.IsReduced (S.presheaf.stalk x) := fun x => by
-    haveI := hd x
+  let := (i.app V).hom.toAlgebra
+  have : ∀ x : S, _root_.IsReduced (S.presheaf.stalk x) := fun x => by
+    have := hd x
     infer_instance
-  haveI : IsReduced S := isReduced_of_isReduced_stalk S
-  haveI : IsReduced U := isReduced_of_isOpenImmersion i
+  have : IsReduced S := isReduced_of_isReduced_stalk S
+  have : IsReduced U := isReduced_of_isOpenImmersion i
   have hgen := hirr.isGenericPoint_genericPoint_closure
   have hηV : hirr.genericPoint ∈ V := (hgen.mem_open_set_iff V.isOpen).mpr
     ⟨hirr.1.some, subset_closure hirr.1.some_mem, hirr.1.some_mem⟩
@@ -1472,9 +1472,9 @@ private theorem normalization_affine_open_irreducible_of_normal {U S : Scheme} (
       ((ConcreteCategory.isIso_iff_bijective _).mp inferInstance).1
     rw [CommRingCat.hom_comp, RingHom.coe_comp]
     exact h2.comp h1
-  haveI : IsDomain (S.presheaf.stalk (i u)) := hd _
-  haveI : IsDomain Γ(S, V) := Function.Injective.isDomain _ hg0inj
-  letI : Algebra Γ(S, V) (S.presheaf.stalk (i u)) :=
+  have : IsDomain (S.presheaf.stalk (i u)) := hd _
+  have : IsDomain Γ(S, V) := Function.Injective.isDomain _ hg0inj
+  let : Algebra Γ(S, V) (S.presheaf.stalk (i u)) :=
     TopCat.Presheaf.algebra_section_stalk S.presheaf (⟨i u, hiuV⟩ : V)
   have hloc := hV.isLocalization_stalk ⟨i u, hiuV⟩
   have hP : (hV.primeIdealOf ⟨i u, hiuV⟩).asIdeal = ⊥ := by
@@ -1488,14 +1488,14 @@ private theorem normalization_affine_open_irreducible_of_normal {U S : Scheme} (
     rw [Submodule.mem_bot, ← basicOpen_eq_bot_iff]
     exact eq_bot_iff.mpr (fun y hy =>
       hnot ((hspS y (S.basicOpen_le a hy)).mem_open (S.basicOpen a).isOpen hy))
-  haveI hfr : IsFractionRing Γ(S, V) (S.presheaf.stalk (i u)) := by
+  have hfr : IsFractionRing Γ(S, V) (S.presheaf.stalk (i u)) := by
     have e : (hV.primeIdealOf ⟨i u, hiuV⟩).asIdeal.primeCompl = nonZeroDivisors Γ(S, V) := by
       ext a
       simp [Ideal.primeCompl, hP, mem_nonZeroDivisors_iff_ne_zero]
     unfold IsLocalization.AtPrime at hloc
     rw [e] at hloc
     exact hloc
-  haveI : IsIntegrallyClosed Γ(S, V) := by
+  have : IsIntegrallyClosed Γ(S, V) := by
     refine IsIntegrallyClosed.of_localization_maximal ?_
     intro p _ hpm
     let q : PrimeSpectrum Γ(S, V) := ⟨p, hpm.isPrime⟩
@@ -1503,11 +1503,11 @@ private theorem normalization_affine_open_irreducible_of_normal {U S : Scheme} (
       show hV.fromSpec q ∈ (V : Set S)
       rw [← hV.range_fromSpec]
       exact ⟨q, rfl⟩
-    letI : Algebra Γ(S, V) (S.presheaf.stalk (hV.fromSpec q)) :=
+    let : Algebra Γ(S, V) (S.presheaf.stalk (hV.fromSpec q)) :=
       TopCat.Presheaf.algebra_section_stalk S.presheaf (⟨hV.fromSpec q, hq⟩ : V)
-    haveI : IsLocalization p.primeCompl (S.presheaf.stalk (hV.fromSpec q)) :=
+    have : IsLocalization p.primeCompl (S.presheaf.stalk (hV.fromSpec q)) :=
       hV.isLocalization_stalk' q hq
-    haveI := hc (hV.fromSpec q)
+    have := hc (hV.fromSpec q)
     exact IsIntegrallyClosed.of_equiv (IsLocalization.algEquiv p.primeCompl
       (S.presheaf.stalk (hV.fromSpec q)) (Localization.AtPrime p)).toRingEquiv
   constructor
@@ -1539,7 +1539,7 @@ private theorem isIso_fromNormalization_of_normal_noetherian {U S : Scheme} (i :
     IsZariskiLocalAtTarget.iff_of_iSup_eq_top (P := MorphismProperty.isomorphisms Scheme) _ hcov]
   rintro ⟨V, hV, hirr⟩
   let W : S.AffineZariskiSite := ⟨V, hV⟩
-  haveI : IsOpenImmersion (i.normalizationOpenCover.f W) := i.normalizationOpenCover.map_prop W
+  have : IsOpenImmersion (i.normalizationOpenCover.f W) := i.normalizationOpenCover.map_prop W
   let e := IsOpenImmersion.isoOfRangeEq (i.fromNormalization ⁻¹ᵁ V).ι
     (i.normalizationOpenCover.f W)
     (by
@@ -1549,7 +1549,7 @@ private theorem isIso_fromNormalization_of_normal_noetherian {U S : Scheme} (i :
     ← MorphismProperty.cancel_right_of_respectsIso (MorphismProperty.isomorphisms Scheme) _
       hV.isoSpec.hom]
   have hb := normalization_affine_open_irreducible_of_normal i hd hc V hV hirr
-  haveI : IsIso (i.normalizationDiagramMap.app (.op V)) := by
+  have : IsIso (i.normalizationDiagramMap.app (.op V)) := by
     rw [ConcreteCategory.isIso_iff_bijective]
     exact hb
   rw [MorphismProperty.isomorphisms.iff]
@@ -1567,11 +1567,11 @@ theorem UpperTheory.Gal.FiniteEtaleModels.normExt_holds :
     NormExt := by
   unfold UpperTheory.Gal.FiniteEtaleModels.NormExt
   intro U S Y B i f g y hi hdom hnoeth hdst hic hfin hcomm
-  haveI := hi
-  haveI := hdom
-  haveI := hnoeth
-  haveI := hfin
-  haveI : IsIso i.fromNormalization := isIso_fromNormalization_of_normal_noetherian i hdst hic
+  have := hi
+  have := hdom
+  have := hnoeth
+  have := hfin
+  have : IsIso i.fromNormalization := isIso_fromNormalization_of_normal_noetherian i hdst hic
   have H : i = pullback.lift y i hcomm ≫ pullback.snd g f := (pullback.lift_snd _ _ _).symm
   refine ⟨inv i.fromNormalization ≫
     i.normalizationDesc (pullback.lift y i hcomm) (pullback.snd g f) H ≫ pullback.fst g f, ?_, ?_⟩
@@ -1718,9 +1718,9 @@ theorem UpperTheory.Gal.FiniteEtaleModels.stepB_of :
   obtain ⟨hfin, het⟩ := hFet p D G L sc E gb w q r 𝔴 _ X₁.site k T M₁ c₁ a₁ n₁ C₁
   have honto := hOnto p D G L sc E gb w q r 𝔴 _ X₁.site k T M₁ c₁ a₁ n₁ C₁
   have hsm : Smooth X₁.Y.s := by
-    haveI := X₁.M.smooth
-    haveI : Smooth X₁.M.s := SmoothOfRelativeDimension.smooth (D.a * (D.n - 1)) X₁.M.s
-    haveI := X₁.et
+    have := X₁.M.smooth
+    have : Smooth X₁.M.s := SmoothOfRelativeDimension.smooth (D.a * (D.n - 1)) X₁.M.s
+    have := X₁.et
     rw [← X₁.ov]
     infer_instance
   obtain ⟨y', hy, hys⟩ := hDesc (Ow w) E _ _ _ _ X₁.Y.s _ C₁.j C₁.ov hsm hfin het honto f Tj.s B.y Tj.fin B.ys k1

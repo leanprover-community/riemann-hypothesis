@@ -612,14 +612,14 @@ theorem cd_top (u : ℂ) (a b : Fin (mdim k r i)) :
     have e : (fun f : Mx k r → E => QuantumDeterminants.Top (EH k r) u (posL k r i a) (posL k r i b) f) =
         fun f x => u • f x + EH k r (posL k r i a) (posL k r i b) f x := by
       funext f x
-      simp only [QuantumDeterminants.Top, if_pos h]
+      simp only [QuantumDeterminants.Top, ite_eq_left h]
     rw [e]
     exact this
   · have := (cd_zero (E := E) (k := k) (r := r) (i := i)).add (cd_eh a b)
     have e : (fun f : Mx k r → E => QuantumDeterminants.Top (EH k r) u (posL k r i a) (posL k r i b) f) =
         fun f x => 0 + EH k r (posL k r i a) (posL k r i b) f x := by
       funext f x
-      simp only [QuantumDeterminants.Top, if_neg h]
+      simp only [QuantumDeterminants.Top, ite_eq_right h]
     rw [e]
     exact this
 
@@ -695,8 +695,8 @@ theorem CW.neg {T : (Mx k r → E) → Mx k r → E} (h : CW k r i T) : CW k r i
 theorem CW.ite {T : (Mx k r → E) → Mx k r → E} (h : CW k r i T) (p : Prop) [Decidable p] :
     CW k r i (fun f x => if p then T f x else 0) := by
   by_cases hp : p
-  · simpa only [if_pos hp] using h
-  · simpa only [if_neg hp] using (cw_zero (E := E) (k := k) (r := r) (i := i))
+  · simpa only [ite_eq_left hp] using h
+  · simpa only [ite_eq_right hp] using (cw_zero (E := E) (k := k) (r := r) (i := i))
 
 theorem cw_sum {ι : Type*} (s : Finset ι) (T : ι → (Mx k r → E) → Mx k r → E)
     (hT : ∀ j ∈ s, CW k r i (T j)) : CW k r i (fun f x => ∑ j ∈ s, T j f x) := by
@@ -801,14 +801,14 @@ theorem t_op_comm (Y : ℂ) (a b : Fin 2) (l : Fin r) (i : Fin 6) :
           (-(c l * (1 / 2) * Complex.I)) •
             fderiv ℝ (fun c' => (Φ : Fn k r (Wq →L[ℂ] Wp)) c' g') c (Pi.single l Complex.I) := by
         funext g'
-        simp only [pOp, if_pos hc, wirt]
+        simp only [pOp, ite_eq_left hc, wirt]
         module
       have hr : pOp l (fun c' => ((X.t Y a b Φ : RadSp k r z z' π π') : Fn k r (Wq →L[ℂ] Wp)) c' g) c =
           (c l * (1 / 2)) • fderiv ℝ (fun c' => tL k r z z' (Fin.last r) Y a b ((Φ : Fn k r (Wq →L[ℂ] Wp)) c') g)
             c (Pi.single l 1) +
           (-(c l * (1 / 2) * Complex.I)) • fderiv ℝ
             (fun c' => tL k r z z' (Fin.last r) Y a b ((Φ : Fn k r (Wq →L[ℂ] Wp)) c') g) c (Pi.single l Complex.I) := by
-        simp only [pOp, if_pos hc, wirt, hev.fderiv_eq]
+        simp only [pOp, ite_eq_left hc, wirt, hev.fderiv_eq]
         module
       rw [hf, hr, transfer_operator_linear (dir_smooth Φ.2 hc _) (dir_smooth Φ.2 hc _) Y a b _ _ hgD, transfer_operator_fderiv Φ.2 hx, transfer_operator_fderiv Φ.2 hx]
     · show tL k r z z' (Fin.last r) Y a b (fun g' => c l • (Φ : Fn k r (Wq →L[ℂ] Wp)) c g') g =
@@ -824,14 +824,14 @@ theorem t_op_comm (Y : ℂ) (a b : Fin 2) (l : Fin r) (i : Fin 6) :
           (star (c l) * (1 / 2) * Complex.I) •
             fderiv ℝ (fun c' => (Φ : Fn k r (Wq →L[ℂ] Wp)) c' g') c (Pi.single l Complex.I) := by
         funext g'
-        simp only [pbOp, if_pos hc, wirtBar]
+        simp only [pbOp, ite_eq_left hc, wirtBar]
         module
       have hr : pbOp l (fun c' => ((X.t Y a b Φ : RadSp k r z z' π π') : Fn k r (Wq →L[ℂ] Wp)) c' g) c =
           (star (c l) * (1 / 2)) • fderiv ℝ
             (fun c' => tL k r z z' (Fin.last r) Y a b ((Φ : Fn k r (Wq →L[ℂ] Wp)) c') g) c (Pi.single l 1) +
           (star (c l) * (1 / 2) * Complex.I) • fderiv ℝ
             (fun c' => tL k r z z' (Fin.last r) Y a b ((Φ : Fn k r (Wq →L[ℂ] Wp)) c') g) c (Pi.single l Complex.I) := by
-        simp only [pbOp, if_pos hc, wirtBar, hev.fderiv_eq]
+        simp only [pbOp, ite_eq_left hc, wirtBar, hev.fderiv_eq]
         module
       rw [hf, hr, transfer_operator_linear (dir_smooth Φ.2 hc _) (dir_smooth Φ.2 hc _) Y a b _ _ hgD, transfer_operator_fderiv Φ.2 hx, transfer_operator_fderiv Φ.2 hx]
     · show tL k r z z' (Fin.last r) Y a b (fun g' => star (c l) • (Φ : Fn k r (Wq →L[ℂ] Wp)) c g') g =

@@ -335,7 +335,7 @@ theorem exists_pos : ∀ (K : UQ) (B : InvAlg K) (ι : Type) [Fintype ι] (e π 
       ⟨sSup P, Int.csSup_mem hne hbdd, fun h => by have := le_csSup hbdd h; omega⟩
     refine ⟨pi, fun r hr => ?_, hmem⟩
     have hnot' : ¬ ∀ m ∈ M, IsIntegral K.O ((t ^ (-(pi + 1))) • (e i * m)) := hnot
-    push_neg at hnot'
+    push Not at hnot'
     obtain ⟨m, hm, hni⟩ := hnot'
     have hexp : pi + ↑(N0 + 1) = (pi + 1) + N0 := by push_cast; ring
     rw [hexp]

@@ -300,11 +300,6 @@ theorem range_cotangentBidualToTangentFunction : LinearMap.range (cotangentBidua
 
 
 variable (G) in
-def bidualEquivOmega : Module.Dual O (Lie G) ≃ₗ[O] omega G :=
-  (LinearEquiv.ofInjective _ cotangentBidualToTangentFunction_injective).trans (LinearEquiv.ofEq _ _ range_cotangentBidualToTangentFunction)
-
-
-variable (G) in
 def ev : Cotangent G →ₗ[O] (LieG G → O) := cotangentBidualToTangentFunction G ∘ₗ Module.Dual.eval O (Cotangent G)
 
 theorem ev_apply (f : Cotangent G) (v : Lie G) : ev G f (lieEquiv G v) = v f :=

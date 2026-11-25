@@ -199,7 +199,7 @@ theorem maj_rat_le (θ : InfFam D) (m n k : ℕ) (x : Matrix (Fin m) (Fin n) D.h
       have e : u - rat y * k0 = rat y * (rat x * u - k0) := by
         rw [Matrix.mul_sub, ← Matrix.mul_assoc, hyx, Matrix.one_mul]
       rw [e, Matrix.map_mul, hkx, Matrix.mul_zero]
-    simp only [maj, if_pos (show InBox K ((rat x : Mx D m n) * u) from ⟨k0, hk0, hkx⟩), if_pos hb']
+    simp only [maj, ite_eq_left (show InBox K ((rat x : Mx D m n) * u) from ⟨k0, hk0, hkx⟩), ite_eq_left hb']
     have hs := hc ((rat x : Mx D m n) * u)
     rw [← Matrix.mul_assoc, hyx, Matrix.one_mul] at hs
     have h0 := realSize_nonneg θ ((rat x : Mx D m n) * u)
@@ -209,7 +209,7 @@ theorem maj_rat_le (θ : InfFam D) (m n k : ℕ) (x : Matrix (Fin m) (Fin n) D.h
     have hB : 0 < (1 + realSize θ u) ^ N := by positivity
     rw [inv_eq_one_div, ← div_eq_mul_inv, div_le_div_iff₀ hA hB, one_mul, ← mul_pow]
     exact pow_le_pow_left₀ (by positivity) hle N
-  · have e : maj θ K N ((rat x : Mx D m n) * u) = 0 := by simp only [maj, if_neg hb]
+  · have e : maj θ K N ((rat x : Mx D m n) * u) = 0 := by simp only [maj, ite_eq_right hb]
     rw [e]
     exact mul_nonneg (by positivity) (maj_nonneg θ _ N u)
 

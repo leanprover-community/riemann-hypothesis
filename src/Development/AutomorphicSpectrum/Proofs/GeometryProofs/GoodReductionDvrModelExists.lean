@@ -48,7 +48,7 @@ theorem PositivityTheory.Ar2.exists_local_model_dvr : ∀ (E : Type) [Field E] [
   haveI : IsDiscreteValuationRing (c.V W) := hVeq ▸ hDVR
   let Xf : (l' : Level H) → Moduli D l' := fun l' =>
     if h : l = l' then h ▸ Xo else Classical.choice (GlobalTheory.Moduli.moduli_scheme_exists E H D l' hpq)
-  have hX : Xf l = Xo := dif_pos rfl
+  have hX : Xf l = Xo := dite_eq_left rfl
   obtain ⟨Y, hY, -⟩ := GlobalTheory.CompanionTheory.Ar.Top.partI_holds.2 E H D hpq Xf
   have key : ∀ X' : Moduli D l, X' = Xo →
       (∃ Y' : Model X' c (c.V W).subtype, Y'.SplitFibres ∧ Y'.N3) →

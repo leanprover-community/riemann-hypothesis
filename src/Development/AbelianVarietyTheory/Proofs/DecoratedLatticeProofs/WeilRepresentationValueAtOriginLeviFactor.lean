@@ -1433,7 +1433,7 @@ theorem levi_scalars_autChar : ∀ (D : D7) (V V' W : HSp D) (r : ℕ) (C : Matr
 
   by_cases hz : ∃ f₀, IsThetaFunO ψ V W f₀ ∧ R f₀ ≠ 0
   swap
-  · push_neg at hz
+  · push Not at hz
     refine ⟨1, 1, ⟨continuous_const, fun _ => rfl⟩, ⟨continuous_const, fun _ _ => rfl⟩, ?_⟩
     intro μ 𝓨 hμ a g' m _ _ f hf
     rw [hind _ (hω.om_pres _ f hf) μ 𝓨 hμ, hind f hf μ 𝓨 hμ, hz _ (hω.om_pres _ f hf), hz f hf, map_zero,

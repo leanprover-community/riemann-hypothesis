@@ -116,7 +116,7 @@ theorem avg_mv_inr (f : W →+ X × Y) (φ : W →+ Y) (h : ∀ w, f w = (0, φ 
   induction u using AddMonoidAlgebra.induction_linear with
   | zero => simp
   | add a b ha hb => simp only [map_add (f := _), ha, hb]
-  | single p r => rw [mv_single, avg_single, h, mv_single, if_pos rfl]
+  | single p r => rw [mv_single, avg_single, h, mv_single, ite_eq_left rfl]
 
 theorem avg_mv_one (f : X →+ X × Y) (h : ∀ a, (f a).1 = a) (u : A[X]) :
     avg (mv f u) = single 0 (u.coeff 0) := by

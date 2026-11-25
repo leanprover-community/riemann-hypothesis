@@ -271,12 +271,12 @@ theorem exists_isLatticeFrame_of_arch (L : Submodule (𝓞 E) (Fin n → E)) [Su
   obtain ⟨S, hS⟩ := exists_finset_latLoc_eq (F := F) L
   choose P h1 h2 using exists_rational_frame (F := F) L
   obtain ⟨a, ha, hc⟩ := exists_GL_of_components S (fun v => if v ∈ S then bc (inclR (Fv F v)) (P v) else 1)
-    (fun v hv => if_neg hv) c
+    (fun v hv => ite_eq_right hv) c
   refine ⟨a, fun v y => ?_, hc⟩
   rw [ha v]
   by_cases hv : v ∈ S
-  · rw [if_pos hv]; exact frame_of_rational _ (h1 v) (h2 v) y
-  · rw [if_neg hv, Units.val_one, Matrix.one_mulVec]; exact hS v hv y
+  · rw [ite_eq_left hv]; exact frame_of_rational _ (h1 v) (h2 v) y
+  · rw [ite_eq_right hv, Units.val_one, Matrix.one_mulVec]; exact hS v hv y
 
 theorem exists_isLatticeFrame (L : Submodule (𝓞 E) (Fin n → E)) [Submodule.IsFullLattice E L] :
     ∃ a : GL (Fin n) (AF F ⊗[F] E), IsLatticeFrame L a :=

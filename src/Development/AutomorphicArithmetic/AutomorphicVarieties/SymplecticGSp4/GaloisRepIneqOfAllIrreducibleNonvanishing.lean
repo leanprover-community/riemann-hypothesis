@@ -120,8 +120,8 @@ private theorem wcomp_self_eq_of_mem_wtPart {O σ X : Type} [CommRing O] [AddCom
   ext n
   rw [coeff_wcomp]
   by_cases h1 : Finsupp.weight wt n = j
-  · rw [if_pos h1]
-  · rw [if_neg h1]
+  · rw [ite_eq_left h1]
+  · rw [ite_eq_right h1]
     exact (hf' n h1).symm
 
 private theorem wcomp_eq_zero_of_mem_wtPart_of_ne {O σ X : Type} [CommRing O] [AddCommGroup X] {wt : σ → X} {j : X}
@@ -130,9 +130,9 @@ private theorem wcomp_eq_zero_of_mem_wtPart_of_ne {O σ X : Type} [CommRing O] [
   ext n
   rw [coeff_wcomp, map_zero]
   by_cases h1 : Finsupp.weight wt n = j'
-  · rw [if_pos h1]
+  · rw [ite_eq_left h1]
     exact hf' n (by rw [h1]; exact hj)
-  · rw [if_neg h1]
+  · rw [ite_eq_right h1]
 
 private theorem aGraded_internal {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] {l : ℕ} [Fact l.Prime]
     {c : Coef l} {D : Raw Ω c} (M : Model D) : DirectSum.IsInternal M.gr := by

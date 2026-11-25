@@ -472,7 +472,7 @@ theorem speiser_descent_span :
     rw [e1, Fintype.sum_eq_single ⟨a 1, h1S⟩]
     · have hg1 : ∀ c, a (gs ⟨a 1, h1S⟩) c = algebraMap L Ω c := by
         intro c; rw [hgs]; exact ha1 c
-      simp only [δ, if_pos rfl, one_smul]
+      simp only [δ, ite_eq_left rfl, one_smul]
       exact hker _ hg1 m hm
     · intro h hne
       have : (h : L →+* Ω) ≠ a 1 := fun e => hne (Subtype.ext e)

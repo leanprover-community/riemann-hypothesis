@@ -194,7 +194,7 @@ theorem countable_range_rt {f : GAf L n → ℂ} {N : ℕ} (hN : 0 < N)
   have key : ∀ g, rt L n g f = Ψ (p g) := by
     intro g
     have hq : ∃ g', p g' = p g := ⟨g, rfl⟩
-    simp only [Ψ, dif_pos hq]
+    simp only [Ψ, dite_eq_left hq]
     have e := hq.choose_spec
     have h3 := hp3 hq.choose
     rw [e] at h3

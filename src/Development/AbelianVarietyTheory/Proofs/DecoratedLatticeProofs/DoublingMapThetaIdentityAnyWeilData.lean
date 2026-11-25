@@ -122,7 +122,7 @@ theorem mul_inL {l : ℕ} (x : Matrix (Fin l) (Fin (m + n)) R) :
   rw [Matrix.mul_apply, ← finSumFinEquiv.sum_comp]
   simp only [inL, Matrix.submatrix_apply, Equiv.symm_apply_apply, id, Fintype.sum_sum_type, Matrix.fromRows_apply_inl,
     Matrix.fromRows_apply_inr, Matrix.one_apply, Matrix.zero_apply, mul_zero, Finset.sum_const_zero, add_zero, mul_ite,
-    mul_one, Finset.sum_ite_eq', Finset.mem_univ, if_true, Matrix.of_apply]
+    mul_one, Finset.sum_ite_eq', Finset.mem_univ, ite_true, Matrix.of_apply]
 
 theorem mul_inR {l : ℕ} (x : Matrix (Fin l) (Fin (m + n)) R) :
     x * inR R m n = Matrix.of fun i j => x i (finSumFinEquiv (Sum.inr j)) := by
@@ -130,7 +130,7 @@ theorem mul_inR {l : ℕ} (x : Matrix (Fin l) (Fin (m + n)) R) :
   rw [Matrix.mul_apply, ← finSumFinEquiv.sum_comp]
   simp only [inR, Matrix.submatrix_apply, Equiv.symm_apply_apply, id, Fintype.sum_sum_type, Matrix.fromRows_apply_inl,
     Matrix.fromRows_apply_inr, Matrix.one_apply, Matrix.zero_apply, mul_zero, Finset.sum_const_zero, zero_add, mul_ite,
-    mul_one, Finset.sum_ite_eq', Finset.mem_univ, if_true, Matrix.of_apply]
+    mul_one, Finset.sum_ite_eq', Finset.mem_univ, ite_true, Matrix.of_apply]
 
 theorem blkMat_inL (a : Matrix (Fin m) (Fin m) R) (b : Matrix (Fin n) (Fin n) R) :
     blkMat finSumFinEquiv a b * inL R m n = inL R m n * a := by

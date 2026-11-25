@@ -426,7 +426,7 @@ theorem basis_mem_integral_span (j : n) : b j ∈ T0 A b := by
   rw [Basis.equivFun_self]
   by_cases h : j = k
   · exact ⟨1, by simp [h]⟩
-  · exact ⟨0, by rw [map_zero, if_neg h]⟩
+  · exact ⟨0, by rw [map_zero, ite_eq_right h]⟩
 
 theorem integral_span_coordinates (x : A.V) (hx : x ∈ T0 A b) : ∃ o : n → OL, x = ∑ j, o j • b j := by
   choose o ho using hx

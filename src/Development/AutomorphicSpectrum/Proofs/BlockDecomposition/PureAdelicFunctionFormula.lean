@@ -26,11 +26,11 @@ theorem rv_zero_apply (v : HeightOneSpectrum (𝓞 F)) (s : Fv F v) :
 
 theorem rv_zero_of_mem (v : HeightOneSpectrum (𝓞 F)) {s : Fv F v} (h0 : s ≠ 0)
     (hs : s ∈ v.adicCompletionIntegers F) : rv v 0 s = 1 := by
-  rw [rv_zero_apply, if_pos ⟨h0, hs⟩]
+  rw [rv_zero_apply, ite_eq_left ⟨h0, hs⟩]
 
 theorem rv_zero_of_not_mem (v : HeightOneSpectrum (𝓞 F)) {s : Fv F v}
     (hs : s ∉ v.adicCompletionIntegers F) : rv v 0 s = 0 := by
-  rw [rv_zero_apply, if_neg fun h => hs h.2]
+  rw [rv_zero_apply, ite_eq_right fun h => hs h.2]
 
 theorem pure_rv_zero_apply (S : Finset (HeightOneSpectrum (𝓞 F))) (G : Ainf F → ℝ)
     (g : ∀ v : HeightOneSpectrum (𝓞 F), Fv F v → ℝ) (a : (AF F)ˣ) :

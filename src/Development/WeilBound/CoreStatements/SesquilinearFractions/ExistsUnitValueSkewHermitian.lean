@@ -281,13 +281,13 @@ theorem unitCoord [Finite (MaximalSpectrum R)] {n : ℕ} (x : Fin (n + 1) → R)
       by_cases hi : i = 0
       · subst hi
         by_cases h0 : (0 : Fin (n + 1)) = k P
-        · rw [if_pos h0]
+        · rw [ite_eq_left h0]
           simp [c']
-        · rw [if_neg h0]
+        · rw [ite_eq_right h0]
           simpa [c'] using hk0 P (Ne.symm h0)
       · have h : x i * (c i - if i = k P then 1 else 0) ∈ M := Ideal.mul_mem_left _ (x i) (hc i P)
         have he : x i * c' i - (if i = k P then x i else 0) = x i * (c i - if i = k P then 1 else 0) := by
-          simp only [c', if_neg hi]
+          simp only [c', ite_eq_right hi]
           split_ifs <;> ring
         rw [he]
         exact h

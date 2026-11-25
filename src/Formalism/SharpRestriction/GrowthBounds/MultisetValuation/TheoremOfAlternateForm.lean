@@ -440,7 +440,7 @@ theorem clExp_ge_al (h : Std p n' k1 t m c r TT a b lam0 w) (j : ℕ) :
       exact ⟨mem_univ _, hs.2⟩
     · rw [mem_filter] at hs hs'
       unfold al
-      rw [if_neg fun hT => hs' ⟨hT, hs.2⟩]
+      rw [ite_eq_right fun hT => hs' ⟨hT, hs.2⟩]
   rw [e1]
   have e2 := tail_nonneg h j r
   have e3 : ∑ s ∈ univ.filter (fun s : Fin n' => ¬ IsOddPos s), al TT lam0 s ≤
@@ -571,7 +571,7 @@ theorem CiiiGen (v : X.Pl) (u mh : ℕ → X.G.Kf) (j : ℕ) (hu : ∀ l ∈ Icc
   rcases eq_or_lt_of_le hl' with rfl | hlt
   · have h0 : X.Tt v (X.G.P.r - X.G.P.r) (j + 1) (X.Kz j G) = X.Kz j G := by
       unfold Sys.Tt
-      rw [if_pos (Nat.sub_self _)]
+      rw [ite_eq_left (Nat.sub_self _)]
     rw [h0]
     have h := vGe_smul X hfr (vGeK_mul X hfr (vGeK_negOnePow X X.G.P.r) hcr)
       (vGe_smul X hfr (hU (X.G.P.r - X.G.P.r)) (hA G hG))

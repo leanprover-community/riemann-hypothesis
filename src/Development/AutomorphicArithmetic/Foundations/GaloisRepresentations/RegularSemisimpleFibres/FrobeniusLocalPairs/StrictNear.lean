@@ -196,10 +196,10 @@ private theorem gridInteriorVertexDecompTransport {n : ℕ} {σ : E ≃+* E} (h�
           · rw [← mul_sub, map_mul]; exact (mul_le_mul' ha1 (hρ j)).trans (one_mul _).le)
   refine ⟨u, w u, hu, hw u hu, fun _ => rfl, fun j h => ?_, fun j h => ?_⟩
   · have := congrFun hfix j
-    simp only [if_pos h] at this
+    simp only [ite_eq_left h] at this
     exact (σ.symm_apply_eq.1 this).symm
   · have := congrFun hfix j
-    simp only [if_neg h] at this
+    simp only [ite_eq_right h] at this
     exact this.symm
 
 private theorem rowB {n : ℕ} {σ : E ≃+* E} (hσ : Isom σ) {t : Fin n → Eˣ} (ht : Strict t)
@@ -213,12 +213,12 @@ private theorem rowB {n : ℕ} {σ : E ≃+* E} (hσ : Isom σ) {t : Fin n → E
     rw [le_uniformizer_iff, map_div₀, div_lt_one₀ (zero_lt_iff.2 (by simp))]
     exact ht p q h
   have hα : ∀ j, ¬ j < i → valuation E (α j) ≤ uniformizer E := fun j h => by
-    simp only [α, if_neg h]
+    simp only [α, ite_eq_right h]
     split_ifs with h'
     · simp
     · exact hq _ _ (by omega)
   have hβ : ∀ j, j < i → valuation E (β j) ≤ uniformizer E := fun j h => by
-    simp only [β, if_pos h]
+    simp only [β, ite_eq_left h]
     exact hq _ _ h
   have hα1 : ∀ j, valuation E (α j) ≤ 1 := fun j => by
     by_cases h : j < i
@@ -227,7 +227,7 @@ private theorem rowB {n : ℕ} {σ : E ≃+* E} (hσ : Isom σ) {t : Fin n → E
   have hβ1 : ∀ j, valuation E (β j) ≤ 1 := fun j => by
     by_cases h : j < i
     · exact (hβ j h).trans uniformizer_lt_one.le
-    · simp only [β, if_neg h]
+    · simp only [β, ite_eq_right h]
       split_ifs <;> simp
   have hαβ : ∀ j, α j * t j = t i * β j := fun j => by
     simp only [α, β]
@@ -251,7 +251,7 @@ private theorem rowB {n : ℕ} {σ : E ≃+* E} (hσ : Isom σ) {t : Fin n → E
         (1 : Matrix (Fin n) (Fin n) E) i j + β j * u j + w j := by
       rw [hw' j]
       simp only [Matrix.sub_apply, mul_sub, Finset.sum_sub_distrib, Matrix.one_apply (i := _) (j := j), mul_ite, mul_one,
-        mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+        mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
       ring
     simp only [e1, mul_assoc]
     rw [← Finset.mul_sum, e2]

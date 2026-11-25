@@ -199,18 +199,18 @@ theorem conj_one_sub_eA (v : HeightOneSpectrum (𝓞 (maximalRealSubfield L))) :
 theorem triv_cut_eA (v : HeightOneSpectrum (𝓞 (maximalRealSubfield L))) (g : GA L n) :
     TrivOutside {v} (cutGA (eA_mul v) (conj_eA v) g) := by
   intro w hw
-  rw [cut_map_compAt, compAt_eA, if_neg (fun h => hw (Set.mem_singleton_iff.2 h)), cutMat_zero_left]
+  rw [cut_map_compAt, compAt_eA, ite_eq_right (fun h => hw (Set.mem_singleton_iff.2 h)), cutMat_zero_left]
 
 theorem triv_cut_one_sub_eA (v : HeightOneSpectrum (𝓞 (maximalRealSubfield L))) (g : GA L n) :
     TrivOutside {v}ᶜ (cutGA (one_sub_eA_mul v) (conj_one_sub_eA v) g) := by
   intro w hw
   have hwv : w = v := by simpa using hw
-  rw [cut_map_compAt, map_sub, map_one, compAt_eA, if_pos hwv, sub_self, cutMat_zero_left]
+  rw [cut_map_compAt, map_sub, map_one, compAt_eA, ite_eq_left hwv, sub_self, cutMat_zero_left]
 
 theorem cut_eA_at (v : HeightOneSpectrum (𝓞 (maximalRealSubfield L))) (g : GA L n) :
     ((cutGA (eA_mul v) (conj_eA v) g).1 : Matrix (Fin n) (Fin n) (AL L)).map (compAt L v) =
       (g.1 : Matrix (Fin n) (Fin n) (AL L)).map (compAt L v) := by
-  rw [cut_map_compAt, compAt_eA, if_pos rfl, cutMat_one_left]
+  rw [cut_map_compAt, compAt_eA, ite_eq_left rfl, cutMat_one_left]
 
 theorem cut_mul_cut (v : HeightOneSpectrum (𝓞 (maximalRealSubfield L))) (g : GA L n) :
     cutGA (eA_mul v) (conj_eA v) g * cutGA (one_sub_eA_mul v) (conj_one_sub_eA v) g = g :=

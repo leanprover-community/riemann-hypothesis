@@ -80,22 +80,6 @@ end PtGeo
 
 variable {D : Formalism.BasicNotions.D7}
 
-section Places
-
-section
-
-variable {E L V : Type} [Field E] [NumberField E] [AddCommGroup L] [Module (𝓞 E) L]
-
-end
-
-end Places
-
-section Gal
-
-variable (X : Geo D)
-
-end Gal
-
 section U4
 
 theorem norm_unif {K O : Type} [NormedField K] [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
@@ -161,36 +145,11 @@ theorem complete_of_adic {K O : Type} [NormedField K] [CommRing O] [IsDomain O]
 
 end U4
 
-section U4rec
-
-variable {D : Formalism.BasicNotions.D7}
-
-end U4rec
-
-section ConjPlaces
-
-end ConjPlaces
-
 namespace SplitL
 
 variable {R : Ranks} (H : Host R)
 
 end SplitL
-
-section PartC
-
-variable {i : D.ntw.Tw} {j : ℕ} {M : ℕ} {Q : Finset (HeightOneSpectrum (𝓞 D.host.E))}
-
-variable {δ : G D.host.E D.nd.Om →* Multiplicative (DelQM D.host (D.ntw.l i) Q M)}
-  {Φ : ↥Q → ZMod (D.ntw.l i ^ M) → D.nth.Lt i j → KK i} {φ : D.nth.Lt i j → KK i}
-
-variable (X : Geo D)
-
-end PartC
-
-section U5
-
-end U5
 
 end Formalism.MainNotions.ExistsIdealDenominator
 

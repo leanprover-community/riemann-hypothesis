@@ -119,7 +119,7 @@ theorem clear_denominators : ∀ (Ω : Type) [Field Ω] [Algebra ℚ Ω] [IsAlgC
   · rw [map_prod]; exact Finset.prod_ne_zero_iff.mpr fun j _ => hbne _
   · have hmem : P.natDegree ∈ S := by simp [hS]
     intro h
-    simp only [hmem, if_true] at h
+    simp only [hmem, ite_true] at h
     have h2 := congrArg T.io h
     rw [map_zero, map_mul, ← hab, map_prod, mul_assoc, Finset.mul_prod_erase S (fun j => T.io (b (P.coeff j))) hmem] at h2
     rcases mul_eq_zero.mp h2 with h3 | h3
@@ -127,9 +127,9 @@ theorem clear_denominators : ∀ (Ω : Type) [Field Ω] [Algebra ℚ Ω] [IsAlgC
     · exact (Finset.prod_ne_zero_iff.mpr fun j _ => hbne _) h3
   · intro i
     by_cases hi : i ∈ S
-    · simp only [hi, if_true]
+    · simp only [hi, ite_true]
       rw [map_mul, ← hab, map_prod, map_prod, mul_assoc, Finset.mul_prod_erase S (fun j => T.io (b (P.coeff j))) hi, mul_comm]
-    · simp only [hi, if_false, map_zero]
+    · simp only [hi, ite_false, map_zero]
       have : P.natDegree < i := by simp [hS] at hi; omega
       rw [Polynomial.coeff_eq_zero_of_natDegree_lt this, mul_zero]
 
@@ -323,7 +323,7 @@ theorem qAll_range_of_monic_root : ∀ (Ω : Type) [Field Ω] [IsAlgClosed Ω] (
   have hQ0 : Q ≠ 0 := by
     intro h0
     have := hcoeff n
-    rw [h0, if_pos (Nat.lt_succ_self n), hcn] at this
+    rw [h0, ite_eq_left (Nat.lt_succ_self n), hcn] at this
     simp at this
   have hcr : ∀ i k, PowerSeries.coeff k (Q.coeff i) ∈ ε.range := by
     intro i k
@@ -507,7 +507,7 @@ theorem sat : ∀ (Ω : Type) [Field Ω] [IsAlgClosed Ω] (ε : Ω →+* ℂ) (M
   have upc : ∀ (f : ℍ → ℂ) (τ : ℍ), up f (τ : ℂ) = f τ := fun f τ => by
     simp only [up, UpperHalfPlane.ofComplex_apply]
   obtain ⟨τ0, hτ0⟩ : ∃ τ, b τ ≠ 0 := by
-    by_contra hc; push_neg at hc; exact hb0 (funext hc)
+    by_contra hc; push Not at hc; exact hb0 (funext hc)
   obtain ⟨h', hh'd, hAD, hmon⟩ := _root_.GlobalTheory.quotient_integral_holomorphic Hs (m + 1) (fun z => up (p (m + 1)) z * up a z) (up b)
     (fun j z => up (p j) z * up (p (m + 1)) z ^ (m - j)) hHs hHc
     ((dOn _ (hol _)).mul (dOn _ ha)) (dOn _ hb) (fun j => (dOn _ (hol _)).mul ((dOn _ (hol _)).pow _))

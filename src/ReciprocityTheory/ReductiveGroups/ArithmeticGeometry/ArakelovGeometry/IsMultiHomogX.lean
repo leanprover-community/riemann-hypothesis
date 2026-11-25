@@ -435,7 +435,7 @@ theorem walk_bound [DecidableEq K] (Δ : (K → ℕ) → ℝ) (a₁ m : ℕ) {B 
       have tri := abs_sub_abs_le_abs_sub (Δ a) (Δ a')
       rw [hT]
       nlinarith
-    · push_neg at hex
+    · push Not at hex
       exact hconst a hex ha
 
 end ReciprocityTheory.ChartRestriction.G.ArakelovGeometry

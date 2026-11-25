@@ -22,7 +22,7 @@ theorem central_idempotents_orthogonal : CentralIdemOrthogonal := by
     rintro ⟨φ⟩
     exact hne ⟨φ.toLinearEquiv, fun g x => LinearMap.congr_fun (φ.isIntertwining' g) x⟩
   have horth := Representation.char_orthonormal σ ρ
-  rw [if_neg hno, Nat.card_eq_fintype_card] at horth
+  rw [ite_eq_right hno, Nat.card_eq_fintype_card] at horth
   have h3 : ∑ g, ρ.character g⁻¹ * σ.character g = 0 := by
     have e : ∑ g, ρ.character g⁻¹ * σ.character g = ∑ g, σ.character g * ρ.character g⁻¹ :=
       Finset.sum_congr rfl fun g _ => mul_comm _ _

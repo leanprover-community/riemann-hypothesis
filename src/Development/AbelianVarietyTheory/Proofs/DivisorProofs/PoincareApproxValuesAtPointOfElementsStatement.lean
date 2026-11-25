@@ -228,7 +228,7 @@ theorem exists_gap : ∀ (O : Type) [CommRing O] [IsDedekindDomain O] [CharZero 
         rw [hj, mul_assoc, hS.eq j]
         have := hlam j
         exact_mod_cast (le_add_of_nonneg_right this)
-      · push_neg at h
+      · push Not at h
         have hc : IsCone bar φ ![δ i] := by
           have := hF.face _ _ δ ⟨fun _ : Fin 1 => i, fun _ _ _ => Subsingleton.elim _ _⟩ hδ
           convert this using 1

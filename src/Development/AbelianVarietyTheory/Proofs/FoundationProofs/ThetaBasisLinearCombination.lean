@@ -112,7 +112,7 @@ theorem unit_iff (A : ValuationSubring Ω) (x : Ω) (hx : x ∈ A) : (x ≠ 0 �
     rw [map_inv₀] at h2
     have hv : A.valuation x ≠ 0 := by simpa using h0
     have : 1 ≤ A.valuation x := by
-      by_contra hc; push_neg at hc
+      by_contra hc; push Not at hc
       have := one_lt_inv₀ (zero_lt_iff.2 hv) |>.2 hc
       exact absurd h2 (not_le.2 this)
     exact le_antisymm h1 this
@@ -168,7 +168,7 @@ theorem prim_mul {A : ValuationSubring Ω} {x y : HahnSeries ℚ Ω} (hx : Prim 
     · exact h
     · simp only; rw [h] at hsum; exact add_left_cancel hsum
   · have : ij.2 < s0 := by
-      by_contra hc; push_neg at hc
+      by_contra hc; push Not at hc
       have := add_lt_add_of_lt_of_le h hc
       rw [hsum] at this; exact lt_irrefl _ this
     exact lt_of_le_of_lt (mul_le_of_le_one_left' (hx1 _)) (lty _ this)

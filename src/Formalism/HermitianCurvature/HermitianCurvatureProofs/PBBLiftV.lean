@@ -174,9 +174,9 @@ theorem liftV_core (S : C.HidaSetting E Wp Wq) (Λ : ℕ → ℕ → Fin S.f →
     intro sg A v
     by_cases hv : v ∈ A
     · cases sg
-      · simp only [U, th, hv, if_true, Bool.false_eq_true, if_false]; exact hUm' v
-      · simp only [U, th, hv, if_true]; exact hUp' v
-    · simp only [U, th, hv, if_false]; exact locProb_single S w v _ (by omega)
+      · simp only [U, th, hv, ite_true, Bool.false_eq_true, ite_false]; exact hUm' v
+      · simp only [U, th, hv, ite_true]; exact hUp' v
+    · simp only [U, th, hv, ite_false]; exact locProb_single S w v _ (by omega)
   have hP : ∀ sg A, TB.IsProb (S.base.Wb (S.base.cnt w + C.Kst)) (fun w' : S.W => ∏ v, th sg A v (w'.1 v)) :=
     fun sg A => isProb_prod S _ hcnt (U sg A) (th sg A) (hU sg A)
   refine ⟨fun A x => (∏ v, th true A v (x.1.1 v)) * ∏ v, th false A v (x.2.1 v), fun A => ?_, ?_⟩
@@ -218,11 +218,11 @@ theorem liftV_core (S : C.HidaSetting E Wp Wq) (Λ : ℕ → ℕ → Fin S.f →
       have hB' := blockPSD_pull Y (C.loc (S.σ v)) _ _ _ hB
       refine ⟨u * ((t v)⁻¹ - (t' v)⁻¹) ^ C.Kst, by simp [hv, hu, norm_pow], ?_⟩
       rw [haK true v, haK false v]
-      simp only [hv, if_true, Bool.false_eq_true, if_false]
+      simp only [hv, ite_true, Bool.false_eq_true, ite_false]
       exact hB'
     · refine ⟨1, by simp [hv], ?_⟩
       rw [haK true v, haK false v]
-      simp only [hv, if_false, one_mul]
+      simp only [hv, ite_false, one_mul]
       exact lift_block0 S hpos v ε hε i (by omega) w Y (Pt v) (Pt' v)
   choose c hcn hcB using hc
   have hS := block_schur2 Y κa κw κb hκ (fun v p q => aK true v (Pt v p) (Pt v q))

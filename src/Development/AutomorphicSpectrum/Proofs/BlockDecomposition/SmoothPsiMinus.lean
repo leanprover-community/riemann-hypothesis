@@ -128,7 +128,7 @@ private theorem colMat_add (k : Type) [Field k] (n : ℕ) (v w : Fin n → k) :
   ext i j
   simp only [UpperTheory.Reformulated.B.DYhc8.colMat, Matrix.add_apply]
   by_cases hj : j = Fin.last n
-  · simp only [hj, if_true]
+  · simp only [hj, ite_true]
     induction i using Fin.lastCases with
     | last => simp
     | cast i => simp
@@ -139,7 +139,7 @@ private theorem colMat_zero (k : Type) [Field k] (n : ℕ) :
   ext i j
   simp only [UpperTheory.Reformulated.B.DYhc8.colMat, Matrix.zero_apply]
   by_cases hj : j = Fin.last n
-  · simp only [hj, if_true]
+  · simp only [hj, ite_true]
     induction i using Fin.lastCases with
     | last => simp
     | cast i => simp

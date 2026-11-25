@@ -42,7 +42,7 @@ theorem coeff_one_subst (a f : PowerSeries ℂ_[p]) (ha : PowerSeries.constantCo
   have hz : ∀ k, 2 ≤ k → PowerSeries.coeff 1 (a ^ k) = 0 := by
     intro k hk
     obtain ⟨g, rfl⟩ := PowerSeries.X_dvd_iff.mpr ha
-    rw [mul_pow, PowerSeries.coeff_X_pow_mul', if_neg (by omega)]
+    rw [mul_pow, PowerSeries.coeff_X_pow_mul', ite_eq_right (by omega)]
   rw [h1, finsum_eq_sum_of_support_subset _ (s := Finset.range 2)]
   · rw [Finset.sum_range_succ, Finset.sum_range_one, pow_zero, pow_one,
       PowerSeries.coeff_zero_eq_constantCoeff_apply, hf, zero_mul, zero_add]
@@ -68,7 +68,7 @@ private theorem coeff_zero_subst_of_constantCoeff_eq_zero (a f : PowerSeries ℂ
     by_contra h
     apply hk
     obtain ⟨g, rfl⟩ := PowerSeries.X_dvd_iff.mpr ha
-    rw [mul_pow, PowerSeries.coeff_X_pow_mul', if_neg (by omega), mul_zero]
+    rw [mul_pow, PowerSeries.coeff_X_pow_mul', ite_eq_right (by omega), mul_zero]
 
 theorem linear_coeff_padic : LinCoeff := by
   intro q _ l ex hex hle c
@@ -192,14 +192,14 @@ theorem coeff_pow_int {f : PowerSeries ℂ_[p]} (hf : ∀ n, ‖coeff n f‖ ≤
 theorem coeff_pow_of_lt {f : PowerSeries ℂ_[p]} (hf0 : constantCoeff f = 0) {k n : ℕ} (h : n < k) :
     coeff n (f ^ k) = 0 := by
   obtain ⟨g, rfl⟩ := PowerSeries.X_dvd_iff.mpr hf0
-  rw [mul_pow, coeff_X_pow_mul', if_neg (by omega)]
+  rw [mul_pow, coeff_X_pow_mul', ite_eq_right (by omega)]
 
 theorem coeff_pow_self {f : PowerSeries ℂ_[p]} (hf0 : constantCoeff f = 0) (n : ℕ) :
     coeff n (f ^ n) = coeff 1 f ^ n := by
   obtain ⟨g, rfl⟩ := PowerSeries.X_dvd_iff.mpr hf0
   have h1 : coeff 1 (X * g) = constantCoeff g := by
     rw [show (1 : ℕ) = 0 + 1 from rfl, coeff_succ_X_mul, coeff_zero_eq_constantCoeff_apply]
-  rw [h1, mul_pow, coeff_X_pow_mul', if_pos le_rfl, Nat.sub_self, coeff_zero_eq_constantCoeff_apply, map_pow]
+  rw [h1, mul_pow, coeff_X_pow_mul', ite_eq_left le_rfl, Nat.sub_self, coeff_zero_eq_constantCoeff_apply, map_pow]
 
 theorem coeff_subst_fin {f g : PowerSeries ℂ_[p]} (hf0 : constantCoeff f = 0) (n : ℕ) :
     coeff n (subst f g) = ∑ k ∈ Finset.range (n + 1), coeff k g * coeff n (f ^ k) := by

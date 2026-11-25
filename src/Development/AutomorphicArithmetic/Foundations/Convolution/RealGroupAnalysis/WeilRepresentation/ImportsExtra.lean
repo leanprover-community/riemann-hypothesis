@@ -533,14 +533,14 @@ theorem UpperTheory.ConvolutionTheory.R2.G.factor :
   have hh : ∀ x, h (r x) = H x := by
     intro x
     have hy : ∃ x', r x' = r x := ⟨x, rfl⟩
-    simp only [h, dif_pos hy]
+    simp only [h, dite_eq_left hy]
     exact hf _ _ hy.choose_spec
   refine ⟨h, measurable_of_isClosed fun C hC => ?_, hh⟩
   have himg : MeasurableSet (r '' (H ⁻¹' C)) := key _ (hC.preimage hH)
   have hout : ∀ y, y ∉ Set.range r → h y = 0 := by
     intro y hy
     have hy' : ¬ ∃ x, r x = y := hy
-    simp only [h, dif_neg hy']
+    simp only [h, dite_eq_right hy']
   by_cases h0 : (0 : ℂ) ∈ C
   · have e : h ⁻¹' C = r '' (H ⁻¹' C) ∪ (Set.range r)ᶜ := by
       ext y
@@ -1074,7 +1074,7 @@ theorem UpperTheory.ConvolutionTheory.R2.Pp.infDec :
     have h := congrArg (fun h : GL (Fin 2) (Af F) => h.val i j) (TR.pFin_infGL (E := F) g)
     have h1 : ((1 : Matrix (Fin 2) (Fin 2) (A F)) i j).2 = (1 : GL (Fin 2) (Af F)).val i j := by
       by_cases e : i = j
-      · simp only [Matrix.one_apply, e, if_true, Units.val_one]
+      · simp only [Matrix.one_apply, e, ite_true, Units.val_one]
         rfl
       · simp [e]
     rw [h1]

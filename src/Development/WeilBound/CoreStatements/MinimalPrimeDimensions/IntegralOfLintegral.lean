@@ -566,7 +566,7 @@ theorem coneBall_subset (h : HermNorm n) {J : Ideal (MvPolynomial (Fin n) ℂ)} 
     have hmem : W ∈ (fundCycle J).support := by
       rw [Finsupp.mem_support_iff]
       unfold fundCycle
-      rw [Finsupp.onFinset_apply, if_pos ⟨hWmin, hrel⟩, localMult_eq_one_of_isRadical hJ hWmin]
+      rw [Finsupp.onFinset_apply, ite_eq_left ⟨hWmin, hrel⟩, localMult_eq_one_of_isRadical hJ hWmin]
       exact one_ne_zero
     exact Set.mem_biUnion hmem ⟨hy1, fun q hq => (RingHom.mem_ker).1 (hWle hq)⟩
   · left

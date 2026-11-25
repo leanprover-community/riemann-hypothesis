@@ -61,9 +61,9 @@ theorem UpperTheory.exists_signed_orthonormal_basis_of_isCompl :
       change B _ _ = _ at this
       simp only [f, ε0, Sum.elim_inl, Sum.inl.injEq]
       exact this
-    · simp only [f, ε0, Sum.elim_inl, Sum.elim_inr, reduceCtorEq, if_false]
+    · simp only [f, ε0, Sum.elim_inl, Sum.elim_inr, reduceCtorEq, ite_false]
       exact hzero _ (bk i).2 _ (bp j).2
-    · simp only [f, ε0, Sum.elim_inl, Sum.elim_inr, reduceCtorEq, if_false]
+    · simp only [f, ε0, Sum.elim_inl, Sum.elim_inr, reduceCtorEq, ite_false]
       rw [hsymm]
       exact hzero _ (bk j).2 _ (bp i).2
     · have := hbp i j

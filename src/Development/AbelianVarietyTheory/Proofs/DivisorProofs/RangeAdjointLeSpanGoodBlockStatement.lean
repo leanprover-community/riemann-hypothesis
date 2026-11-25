@@ -208,9 +208,9 @@ theorem range_le_span_blockSum {K V H E Pl ι : Type} [Field K] [AddCommGroup V]
   have hU : ∀ i v, U i (j v) = j (op i v) := by
     rintro ⟨P, k⟩ v
     by_cases hk : k ≤ m
-    · simp only [U, if_pos hk]
+    · simp only [U, ite_eq_left hk]
       exact (hT P k hk v).symm
-    · simp only [U, if_neg hk]
+    · simp only [U, ite_eq_right hk]
       rw [hz P k (not_le.1 hk)]
       simp
   refine le_trans ?_ (eigSum_le_span (U := U) hsp hU hc hs fun x hx => (Col.hasBlocks_map σ m q t bl x).1 hx)
@@ -220,14 +220,14 @@ theorem range_le_span_blockSum {K V H E Pl ι : Type} [Field K] [AddCommGroup V]
   let x : Pl × ℕ → ℂ := fun i => if i.2 ≤ m then ev c i.1 i.2 else 0
   refine Col.eigAt_le_eigSum (x := x) (fun P => ?_) (Col.mem_eigAt_of_forall_apply ?_)
   · have h1 : Col.heckePolyOf m (q P) (fun k => x (P, k)) = _ :=
-      (heckePolyOf_congr _ _ fun k hk => if_pos hk).trans (hg c P)
+      (heckePolyOf_congr _ _ fun k hk => ite_eq_left hk).trans (hg c P)
     refine Dvd.intro_left (g c P) (Eq.trans ?_ h1.symm)
     simp only [Polynomial.map_list_prod, List.map_map, Function.comp_def, Col.map_blockPoly]
   · rintro ⟨P, k⟩
     by_cases hk : k ≤ m
-    · simp only [U, x, if_pos hk]
+    · simp only [U, x, ite_eq_left hk]
       exact hev c w hw P k hk
-    · simp only [U, x, if_neg hk]
+    · simp only [U, x, ite_eq_right hk]
       simp
 
 theorem range_adjoint_le_span : ∀ {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T : Type} {A : FamIn D.what₂.LL G Pl0 T D.R.m} {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (F : Face D A) {s : ℕ}, GlobalTheory.Chain.LiftInteg D → A.fam.Ok s → Core R F → SchurAll R → ∀ t, LinearMap.range (LinearMap.adjoint (R.Th t)) ≤ Submodule.span ℂ (R.jX t '' ((A.fam.R t).ZH : Set (A.fam.R t).S.Forms)) := by
@@ -502,7 +502,7 @@ theorem span_eq_top_of_model {Y : Type} [AddCommGroup Y] [Module ℂ Y] (e : W �
 def cutOp {M Pl : Type} [Zero M] (n : ℕ) (f : Pl → ℕ → M) (a : Pl × ℕ) : M := if a.2 ≤ n then f a.1 a.2 else 0
 
 theorem cutOp_le {M Pl : Type} [Zero M] {n : ℕ} (f : Pl → ℕ → M) (P : Pl) {k : ℕ} (hk : k ≤ n) : cutOp n f (P, k) = f P k :=
-  if_pos hk
+  ite_eq_left hk
 
 theorem pairComm_cutOp {Pl : Type} (n : ℕ) (f : Pl → ℕ → Module.End ℂ W) (h : ∀ P k P' k', Commute (f P k) (f P' k')) :
     PairComm (cutOp n f) := by

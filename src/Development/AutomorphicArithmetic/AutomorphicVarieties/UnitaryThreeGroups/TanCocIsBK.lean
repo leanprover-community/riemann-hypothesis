@@ -93,9 +93,9 @@ private theorem tc_mul (x y : GG (m := m) (R := DualNumber κ)) : tc (x * y) = t
   unfold GG.adFun
   rw [e, GG.map_mat, GG.map_right]
   rcases Int.units_eq_one_or s with rfl | rfl
-  · simp only [tc, GG.mat, SemidirectProduct.mul_left, sgnAct_one, if_true, _root_.mul_inv_rev, Units.val_mul,
+  · simp only [tc, GG.mat, SemidirectProduct.mul_left, sgnAct_one, ite_true, _root_.mul_inv_rev, Units.val_mul,
       sn_mul, Matrix.map_mul, Matrix.add_mul, Matrix.mul_assoc, h1]
-  · simp only [tc, GG.mat, SemidirectProduct.mul_left, sgnAct_neg_one, h, if_false, _root_.mul_inv_rev,
+  · simp only [tc, GG.mat, SemidirectProduct.mul_left, sgnAct_neg_one, h, ite_false, _root_.mul_inv_rev,
       Units.val_mul, theta_val, theta_inv_val, thetaLie, sn_mul, sn_J, Matrix.map_mul, Jmat_map,
       Matrix.transpose_map, sn_inv, Matrix.add_mul, Matrix.mul_assoc, Matrix.zero_mul,
       Matrix.mul_zero, zero_add, add_zero, Matrix.transpose_neg, Matrix.transpose_mul, Matrix.neg_mul,
@@ -298,10 +298,10 @@ private theorem tan_coc (F : R →ₐ[O] DualNumber κ) (r : Γ →* GG (m := 3)
   generalize (r g).left = a
   generalize (r h).left = b
   rcases Int.units_eq_one_or (r g).right with hs | hs <;> rw [hs]
-  · simp only [sgnAct_one, if_true, _root_.mul_inv_rev, Units.val_mul, sndM_mul, map_mul, Matrix.add_mul,
+  · simp only [sgnAct_one, ite_true, _root_.mul_inv_rev, Units.val_mul, sndM_mul, map_mul, Matrix.add_mul,
       Matrix.mul_assoc, hc]
     rw [add_comm]
-  · simp only [sgnAct_neg_one, hn, if_false, _root_.mul_inv_rev, Units.val_mul, theta_val, theta_inv_val, sndM_mul,
+  · simp only [sgnAct_neg_one, hn, ite_false, _root_.mul_inv_rev, Units.val_mul, theta_val, theta_inv_val, sndM_mul,
       map_mul, sndM_J, fstM_J, sndM_tr, fstM_tr, sndM_inv, thetaLie, Matrix.add_mul, Matrix.mul_zero, Matrix.zero_mul,
       add_zero, zero_add, Matrix.transpose_neg, Matrix.transpose_mul, Matrix.neg_mul, Matrix.mul_neg,
       Matrix.mul_assoc, hJ, hc']

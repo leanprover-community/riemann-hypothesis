@@ -98,7 +98,7 @@ theorem eq_single_of_degree_eq_one {ι : Type*} [Fintype ι] (e : ι →₀ ℕ)
   ext k
   by_cases hk : k = i
   · subst hk; simp [hei]
-  · rw [Finsupp.single_apply, if_neg (Ne.symm hk)]
+  · rw [Finsupp.single_apply, ite_eq_right (Ne.symm hk)]
     have : e k ≤ ∑ x ∈ Finset.univ.erase i, e x :=
       Finset.single_le_sum (f := fun x => e x) (fun _ _ => Nat.zero_le _)
         (Finset.mem_erase.2 ⟨hk, Finset.mem_univ k⟩)
@@ -133,7 +133,7 @@ theorem main {ι : Type*} [Fintype ι] [DecidableEq ι] [Finite τ]
       (coeff_subst_finite hbS (f j) d)] at hdiff
     rw [finsum_eq_single _ (Finsupp.single j 1)] at hdiff
     · rw [Finsupp.prod_single_index (by simp), Finsupp.prod_single_index (by simp),
-        hf.2 j j, if_pos rfl, one_smul, one_smul, pow_one, pow_one] at hdiff
+        hf.2 j j, ite_eq_left rfl, one_smul, one_smul, pow_one, pow_one] at hdiff
       rw [map_sub, hdiff]
     · intro e he
       rw [← smul_sub, ← map_sub]
@@ -144,7 +144,7 @@ theorem main {ι : Type*} [Fintype ι] [DecidableEq ι] [Finite τ]
           simp
         · obtain ⟨i, rfl⟩ := eq_single_of_degree_eq_one e (by omega)
           have hij : i ≠ j := fun hij => he (by rw [hij])
-          rw [hf.2 j i, if_neg hij, zero_smul]
+          rw [hf.2 j i, ite_eq_right hij, zero_smul]
       · rw [Finsupp.prod_fintype _ _ (fun _ => pow_zero _),
           Finsupp.prod_fintype _ _ (fun _ => pow_zero _)]
         have hg := good_prod Finset.univ (fun i => 1 * e i) (fun i => a i ^ e i)

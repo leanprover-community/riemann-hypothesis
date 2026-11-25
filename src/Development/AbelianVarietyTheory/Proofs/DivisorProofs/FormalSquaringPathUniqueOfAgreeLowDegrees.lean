@@ -119,7 +119,7 @@ theorem ringHom_powerSeries_eq_of_rescale :
         rw [hD, map_sub]
       rw [h3, e, map_add (f := _), h1, h2, hc0, hc0', map_sub, map_sub, hD, hD]
     have Dπ : ∀ b, D (π b) = 0 := by
-      intro b; rw [hD, hγπ', hγ'π', PowerSeries.coeff_C, if_neg hj0, sub_self]
+      intro b; rw [hD, hγπ', hγ'π', PowerSeries.coeff_C, ite_eq_right hj0, sub_self]
     have Dsq : ∀ x ∈ RingHom.ker ε ^ 2, D x = 0 := by
       intro x hx
       rw [pow_two] at hx

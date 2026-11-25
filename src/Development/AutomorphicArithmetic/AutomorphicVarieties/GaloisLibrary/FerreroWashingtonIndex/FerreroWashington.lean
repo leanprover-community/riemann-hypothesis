@@ -1325,7 +1325,7 @@ theorem UpperTheory.V.FW.stickH :
     have hdiv := Nat.div_add_mod (c * ((c : ZMod M)⁻¹ * t).val) M
     rw [hmod] at hdiv
     simp only [sub_mul, Finset.sum_sub_distrib, mul_assoc, ← Finset.mul_sum, ite_mul, one_mul,
-      zero_mul, Finset.sum_ite_eq', Finset.mem_univ, if_true, Units.val_one, Units.val_neg,
+      zero_mul, Finset.sum_ite_eq', Finset.mem_univ, ite_true, Units.val_one, Units.val_neg,
       neg_one_mul, hu, hneg, gc]
     generalize c * ((c : ZMod M)⁻¹ * t).val / M = q at hdiv ⊢
     have hz : (M : ℤ) * q + ((t : ZMod M).val : ℤ) = c * (((c : ZMod M)⁻¹ * t).val : ℤ) := by

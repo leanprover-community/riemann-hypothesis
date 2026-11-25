@@ -276,10 +276,10 @@ private theorem stdSnd_frames : ∀ {D : D7} (ν : (AE D)ˣ →* Circle) (e : AE
         fun H i j hj => inId_mul hκ (fun l => H l j hj) i⟩
     by_cases hc : IsIntM (dualCoord A' WW βA' βW' y) ∧
         ∀ i j, j.1 < a → InId I (dualCoord A' WW βA' βW' y i j)
-    · rw [if_pos ⟨hy, hc⟩, if_pos ⟨hh.2 hy, (hint _).2 hc.1, (hid _).2 hc.2⟩, rightBlock_mul]
+    · rw [ite_eq_left ⟨hy, hc⟩, ite_eq_left ⟨hh.2 hy, (hint _).2 hc.1, (hid _).2 hc.2⟩, rightBlock_mul]
       exact unitChar_mul ν hE (βA⁻¹ * βA') x h1 h2 h3 hxI hxI' _
-    · rw [if_neg (fun h => hc h.2), if_neg (fun h => hc ⟨(hint _).1 h.2.1, (hid _).1 h.2.2⟩), mul_zero]
-  · rw [if_neg (fun h => hy h.1), if_neg (fun h => hy (hh.1 h.1)), mul_zero]
+    · rw [ite_eq_right (fun h => hc h.2), ite_eq_right (fun h => hc ⟨(hint _).1 h.2.1, (hid _).1 h.2.2⟩), mul_zero]
+  · rw [ite_eq_right (fun h => hy h.1), ite_eq_right (fun h => hy (hh.1 h.1)), mul_zero]
 
 end GlobalTheory.SndFrames
 

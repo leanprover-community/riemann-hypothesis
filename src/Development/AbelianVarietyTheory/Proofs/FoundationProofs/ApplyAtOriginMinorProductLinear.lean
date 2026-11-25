@@ -119,7 +119,7 @@ theorem sum_norm_sq_eq {ι : Type*} [Fintype ι] (K : ι → ι → ℂ)
     intro j
     rw [← hK, Finset.sum_mul]
     exact Finset.sum_congr rfl fun t _ => by ring
-  simp only [this, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+  simp only [this, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
 
 theorem prod_prod_sum {R T S : Type*} [CommSemiring R] [Fintype T] [DecidableEq T] [Fintype S] (n : T → ℕ)
     (f : ∀ τ, Fin (n τ) → S → R) :
@@ -265,6 +265,6 @@ theorem GlobalTheory.NormSum.applyAt0_minorPol_linear : ∀ (D : D7) (a d : ℕ)
       · simp [h]
       · obtain ⟨τ, hτ⟩ := Function.ne_iff.1 h
         obtain ⟨j, hj⟩ := Function.ne_iff.1 hτ
-        exact Finset.prod_eq_zero (Finset.mem_univ τ) (Finset.prod_eq_zero (Finset.mem_univ j) (if_neg hj))
+        exact Finset.prod_eq_zero (Finset.mem_univ τ) (Finset.prod_eq_zero (Finset.mem_univ j) (ite_eq_right hj))
   · rw [applyAt0_eq, applyAt0_eq, GlobalTheory.Jet.polyDeriv_smul_fun P _ hG]
   · rw [applyAt0_eq, applyAt0_eq, applyAt0_eq, GlobalTheory.Jet.polyDeriv_add_fun P _ hG hG']

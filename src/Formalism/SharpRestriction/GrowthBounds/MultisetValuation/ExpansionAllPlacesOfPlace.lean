@@ -120,7 +120,7 @@ theorem th_low_alt {p : ℕ} (hp : 2 ≤ p) {ι : Type} [DecidableEq ι] (x : �
 
   rw [map_sum]
   simp only [MvPowerSeries.coeff_C_mul, MvPowerSeries.coeff_X_pow, mul_ite, mul_one, mul_zero]
-  refine Finset.sum_subset (Finset.range_subset_range.2 (by omega)) fun l _ hl => if_neg fun h => ?_
+  refine Finset.sum_subset (Finset.range_subset_range.2 (by omega)) fun l _ hl => ite_eq_right fun h => ?_
   have h1 : d.degree = p ^ (2 * l) := by rw [h, Finsupp.degree_single]
   have h2 : l < (p ^ 2) ^ l := Nat.lt_pow_self (by nlinarith)
   rw [← pow_mul] at h2

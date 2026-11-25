@@ -164,7 +164,7 @@ private theorem absSpec2 {A O Ω : Type} [CommRing A] [IsCNL A] [CommRing O] [Is
     intro f K F hF hcF
     have h : ∃ F, ∃ K, F ∈ X.ClOrd W ((Matrix.GeneralLinearGroup.map (algebraMap A Ω)).comp τ) (U K) c
         ((Units.map (algebraMap O Ω : O →* Ω)).comp φ) ∧ X.ctrl m W F = X.mapFn (B := Ω) f := ⟨F, K, hF, hcF⟩
-    simp only [dif_pos h]
+    simp only [dite_eq_left h]
     obtain ⟨K2, hK2, hc2⟩ := h.choose_spec
     exact huniq K2 K _ F hK2 hF (hc2.trans hcF.symm)
   have hgood : ∀ K, ∀ f ∈ X.Ord τ θ (U K),

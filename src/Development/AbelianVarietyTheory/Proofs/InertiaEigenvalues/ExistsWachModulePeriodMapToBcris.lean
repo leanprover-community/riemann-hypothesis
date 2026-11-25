@@ -195,7 +195,7 @@ theorem exists_isPer (Mo : WN E zl) (β : O ⊗[Zl] Ai →+* LL ⊗[Qp] B) (ιA 
     else 0
   have hv : ∀ T : LocLat G Qp LL O, IsCrys PD T.ρ → ∀ x : ↥(Mo.N T), Val β hβ inclR T (E.jD T x) (bT T x) := by
     intro T hT x
-    simp only [bT, dif_pos hT]
+    simp only [bT, dite_eq_left hT]
     exact hb T x hT
   have hj : ∀ (T : LocLat G Qp LL O) (a : LetA O n) (x : E.DD T), E.jD T (a • x) = inclR (I.io a) • E.jD T x := by
     intro T a x

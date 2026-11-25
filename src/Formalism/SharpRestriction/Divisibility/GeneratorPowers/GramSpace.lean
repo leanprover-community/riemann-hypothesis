@@ -127,7 +127,7 @@ theorem repro_sigma (b : Basis ι ℤ Y) (β : SymB cj Y) (σ : E →+* ℂ) (y 
   simp_rw [hj]
   simp_rw [← mul_assoc, ← Finset.sum_mul]
   have ho := ortho σ σ
-  simp only [if_true, integralBasis_apply] at ho
+  simp only [ite_true, integralBasis_apply] at ho
   have : ∑ j, conj (σ (ed E j)) * star (σ (RingOfIntegers.basis E j : E)) = 1 := by
     have := congrArg conj ho
 
@@ -321,7 +321,7 @@ theorem halfTrace_holds : HalfTraceStatement := by
       rw [hJskew, Matrix.neg_mulVec, neg_dotProduct, ← hu, dotProduct_comm] at h1
       have h2 : u ⬝ᵥ ev i = 0 := by linarith
       rw [dotProduct_comm]; exact h2
-    have hv1 : ev i ⬝ᵥ ev i = 1 := by rw [hort, if_pos rfl]
+    have hv1 : ev i ⬝ᵥ ev i = 1 := by rw [hort, ite_eq_left rfl]
     have hu0 : u ≠ 0 := by
       intro h0
       have : ev i = 0 := hJinj _ (by rw [← hu, h0])
@@ -340,7 +340,7 @@ theorem halfTrace_holds : HalfTraceStatement := by
     have hbes : ∑ j, lam j * ((ev j ⬝ᵥ ev i) ^ 2 * (u ⬝ᵥ u) + (ev j ⬝ᵥ u) ^ 2) ≤
         ∑ j, lam j * (u ⬝ᵥ u) := by
       refine Finset.sum_le_sum fun j _ => mul_le_mul_of_nonneg_left ?_ (hlam0 j)
-      exact bessel2 (ev j) (ev i) u (by rw [hort, if_pos rfl]) hv1 hvu huu
+      exact bessel2 (ev j) (ev i) u (by rw [hort, ite_eq_left rfl]) hv1 hvu huu
     simp only [mul_add, Finset.sum_add_distrib] at hbes
     rw [hsum1, ← hq2, hq1, ← Finset.sum_mul, ← htr] at hbes
     nlinarith

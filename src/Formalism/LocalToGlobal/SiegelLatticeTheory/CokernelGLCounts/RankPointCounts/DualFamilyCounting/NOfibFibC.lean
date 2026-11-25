@@ -159,10 +159,10 @@ theorem dictEx_holds : DictEx := by
           have : (i : ℕ) < j + 1 := hi
           exact Fin.le_def.2 (by omega)
         rcases hbi.lt_or_eq with hlt | heq
-        · rw [h0 b i hlt, if_neg (ne_of_gt hlt), sub_zero, zero_smul]
+        · rw [h0 b i hlt, ite_eq_right (ne_of_gt hlt), sub_zero, zero_smul]
           exact Submodule.zero_mem _
         · subst heq
-          rw [h1, if_pos rfl, sub_self, zero_smul]
+          rw [h1, ite_eq_left rfl, sub_self, zero_smul]
           exact Submodule.zero_mem _
     · simp
     · intro a b _ _ ha hb

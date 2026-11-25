@@ -40,10 +40,10 @@ theorem stepCols_ne_empty {N j : ℕ} (i : Fin N) (hj : j ≤ N) : stepCols N j 
   have hi := i.2
   by_cases c : (i : ℕ) + 1 ≤ j
   · refine Finset.Nonempty.ne_empty ⟨⟨N - j, by omega⟩, ?_⟩
-    simp only [stepCols, Finset.mem_filter, Finset.mem_univ, true_and, if_pos c]
+    simp only [stepCols, Finset.mem_filter, Finset.mem_univ, true_and, ite_eq_left c]
     omega
   · refine Finset.Nonempty.ne_empty ⟨⟨0, by omega⟩, ?_⟩
-    simp only [stepCols, Finset.mem_filter, Finset.mem_univ, true_and, if_neg c]
+    simp only [stepCols, Finset.mem_filter, Finset.mem_univ, true_and, ite_eq_right c]
     omega
 
 theorem unit_comb : ∀ (L : Type) [Field L] (V : ValuationSubring L) (N j : ℕ) (i : Fin N) (H : Matrix (Fin N) (Fin N) L) (κ : Type) [Fintype κ] (u : κ → Finset (Fin N) → L) (u' : Finset (Fin N) → κ → L), j ≤ N → IsBlockDiag j H → (∀ a b, H a b ∈ V) → H.det ≠ 0 → (H.det)⁻¹ ∈ V → (∀ I m, u' I m ∈ V) → (∀ m I, u m I ∈ V) → (∀ I I', IsStepRows N j i I → IsStepRows N j i I' → ∑ m, u' I m * u m I' = if I = I' then 1 else 0) → ∃ m, (∑ I, u m I * minorIJ H I (stepCols N j i)) ≠ 0 ∧ (∑ I, u m I * minorIJ H I (stepCols N j i))⁻¹ ∈ V := by
@@ -90,10 +90,10 @@ theorem unit_comb : ∀ (L : Type) [Field L] (V : ValuationSubring L) (N j : ℕ
       rw [Finset.sum_comm]
       simp only [mul_assoc]
     rw [e1, Finset.sum_eq_single I₀]
-    · rw [horthV I₀ hI₀s, if_pos rfl, one_mul]
+    · rw [horthV I₀ hI₀s, ite_eq_left rfl, one_mul]
     · intro b _ hb
       by_cases hs : IsStepRows N j i b
-      · rw [horthV b hs, if_neg (Ne.symm hb), zero_mul]
+      · rw [horthV b hs, ite_eq_right (Ne.symm hb), zero_mul]
       · rw [hstep b hs, mul_zero]
     · intro h
       exact absurd (Finset.mem_univ _) h

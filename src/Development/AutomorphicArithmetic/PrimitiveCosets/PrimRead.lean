@@ -91,10 +91,10 @@ theorem UpperTheory.Comparison₂.prim_read :
   by_cases hψ : ψ = 0
   · have hχ : (R.prim (chr φ ψ)).χ = 1 := hone.mpr hψ
     unfold GPsi An.gChi
-    rw [if_pos hψ, if_pos hχ, prim_read_Gz]
+    rw [ite_eq_left hψ, ite_eq_left hχ, prim_read_Gz]
   · have hχ : (R.prim (chr φ ψ)).χ ≠ 1 := fun h => hψ (hone.mp h)
     unfold GPsi An.gChi
-    rw [if_neg hψ, if_neg hχ, ← h1 hψ, An.sumLamChi]
+    rw [ite_eq_right hψ, ite_eq_right hχ, ← h1 hψ, An.sumLamChi]
     congr 1
     refine Finset.sum_congr rfl fun n hn => ?_
     have hn0 : n ≠ 0 := by

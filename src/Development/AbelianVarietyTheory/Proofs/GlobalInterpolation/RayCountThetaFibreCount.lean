@@ -532,7 +532,7 @@ theorem normSq_eq [_root_.NumberField.IsTotallyComplex K] (h2 : Module.finrank �
   haveI : Subsingleton (InfinitePlace K) := ⟨place_unique h2⟩
   have hprod := InfinitePlace.prod_eq_abs_norm (x : K)
   rw [Fintype.prod_subsingleton _ (InfinitePlace.mk φ), InfinitePlace.apply,
-    InfinitePlace.mult, if_neg (InfinitePlace.not_isReal_iff_isComplex.2
+    InfinitePlace.mult, ite_eq_right (InfinitePlace.not_isReal_iff_isComplex.2
       (IsTotallyComplex.isComplex _))] at hprod
   rw [hprod, Ideal.absNorm_span_singleton, Nat.cast_natAbs, Int.cast_abs,
     ← Algebra.coe_norm_int]

@@ -162,7 +162,7 @@ theorem step4 (f : Fin 4 → (n → ℂ) → ℂ) (hf : ∀ a, Differentiable �
     (hf b _).hasFDerivAt.comp y (sl b).hasFDerivAt
   rw [(HasFDerivAt.finsetProd hd).fderiv, _root_.sum_apply, Finset.sum_eq_single a]
   · rw [← Finset.mul_prod_erase _ _ (Finset.mem_univ a), Function.update_self, _root_.smul_apply,
-      ContinuousLinearMap.comp_apply, hw, if_pos rfl, smul_eq_mul, mul_comm]
+      ContinuousLinearMap.comp_apply, hw, ite_eq_left rfl, smul_eq_mul, mul_comm]
     congr 1
     exact Finset.prod_congr rfl fun b hb => by rw [Function.update_of_ne (Finset.ne_of_mem_erase hb)]
   · intro b _ hb

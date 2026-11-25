@@ -120,11 +120,6 @@ def GrowthSizeBound : Prop :=
     (nT : ℝ) * m * b * (((nT2 : ℝ) / n) / 2) * (Gx - 4 * x ^ ((1 : ℝ) / 2 + ε)) ≤ Err + 2 * (nT : ℝ) * m * b / x →
     Gx ≤ x ^ ((1 : ℝ) / 2 + (C + 3) * ε)
 
-section
-variable {H : Type} [AddCommGroup H] [Fintype H] [DecidableEq H]
-
-end
-
 def LipWAll : Prop :=
   ∀ (H : Type) [AddCommGroup H] [Fintype H] [DecidableEq H] (D : ArithData H) (ell : AddChar (E0 × H) ℂ → ℂ),
     LipW D ell

@@ -54,7 +54,7 @@ theorem rll_over_cases {v : HeightOneSpectrum (𝓞 F)} {P Q : Pl E} (hP : IsOve
   have hnot : ∀ R : Pl E, R ≠ Q → R ∈ ({Q, P, conjPrime₂ P} : Finset (Pl E)) → a ∉ R.asIdeal := by
     intro R hR hm haR
     have := ha R hm
-    rw [if_neg hR] at this
+    rw [ite_eq_right hR] at this
     exact (Ideal.ne_top_iff_one _).1 R.isPrime.ne_top (by
       have h2 := Ideal.sub_mem _ haR this
       simpa using h2)

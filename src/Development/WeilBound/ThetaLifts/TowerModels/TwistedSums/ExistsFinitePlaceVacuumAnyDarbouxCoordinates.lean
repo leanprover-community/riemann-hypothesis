@@ -27,50 +27,6 @@ noncomputable section
 namespace Tw.VacAny
 open _root_.GlobalTheory _root_.GlobalTheory.VacAny
 
-private theorem at_sum {F : Type} [Field F] [NumberField F]
-    {v : HeightOneSpectrum (𝓞 F)} {ι : Type} (s : Finset ι) {f : ι → AF F}
-    (h : ∀ i ∈ s, GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.At (AdelicU.evFin F v) (f i)) :
-    GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.At (AdelicU.evFin F v) (∑ i ∈ s, f i) := fun u hu => by
-  rw [Finset.smul_sum]
-  exact Finset.sum_eq_zero fun i hi => h i hi u hu
-
-private theorem at_mul_right {F : Type} [Field F] [NumberField F]
-    {v : HeightOneSpectrum (𝓞 F)} {a : AF F}
-    (ha : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.At (AdelicU.evFin F v) a) (b : AF F) :
-    GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.At (AdelicU.evFin F v) (a * b) := fun u hu => by
-  rw [smul_eq_mul, ← mul_assoc, show u * a = 0 from ha u hu, zero_mul]
-
-private theorem at_mul_left {F : Type} [Field F] [NumberField F]
-    {v : HeightOneSpectrum (𝓞 F)} (a : AF F) {b : AF F}
-    (hb : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.At (AdelicU.evFin F v) b) :
-    GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.At (AdelicU.evFin F v) (a * b) := by
-  rw [mul_comm]; exact at_mul_right hb a
-
-private theorem at_neg {F : Type} [Field F] [NumberField F]
-    {v : HeightOneSpectrum (𝓞 F)} {a : AF F} (ha : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.At (AdelicU.evFin F v) a) :
-    GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.At (AdelicU.evFin F v) (-a) := fun u hu => by
-  rw [smul_neg, ha u hu, neg_zero]
-
-private theorem at_atPlace {F : Type} [Field F] [NumberField F]
-    {v : HeightOneSpectrum (𝓞 F)} (t : Fv F v) :
-    GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.At (AdelicU.evFin F v)
-      (GlobalTheory.EmbChart.atPlace v t) := fun u hu => by
-  rw [smul_eq_mul, mul_comm, GlobalTheory.EmbChart.atPlace_mul_right, hu, mul_zero, map_zero]
-
-private theorem at_sub {F : Type} [Field F] [NumberField F]
-    {v : HeightOneSpectrum (𝓞 F)} {a b : AF F}
-    (ha : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.At (AdelicU.evFin F v) a)
-    (hb : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.At (AdelicU.evFin F v) b) :
-    GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.At (AdelicU.evFin F v) (a - b) :=
-  fun u hu => by rw [smul_sub, ha u hu, hb u hu, sub_self]
-
-private theorem evFin_invOf_two {F : Type} [Field F] [NumberField F]
-    {v : HeightOneSpectrum (𝓞 F)} :
-    AdelicU.evFin F v (⅟(2 : AF F)) = ⅟(2 : Fv F v) := by
-  refine (invOf_eq_right_inv ?_).symm
-  have h : AdelicU.evFin F v (2 * ⅟(2 : AF F)) = 1 := by rw [mul_invOf_self, map_one]
-  rwa [map_mul, map_ofNat] at h
-
 theorem exists_isVac_any_darboux : ∀ {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}
     (B : Base F E), B.IsGood σ → ∀ {n d : ℕ} (X : Spc F E n) (Y : Spc F E d) (r s r' s' : ℕ),
     X.IsHerm σ B r s → Y.IsSkew σ B r' s' → ∀ (co : GlobalTheory.WeilM.Darboux (GlobalTheory.WeilM.symp (R := AF F) (GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.cA σ) (-1) (GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.incM F X.J) (GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.incM F Y.J)) (Fin n × Fin d)) (v : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Pl (F := F)),

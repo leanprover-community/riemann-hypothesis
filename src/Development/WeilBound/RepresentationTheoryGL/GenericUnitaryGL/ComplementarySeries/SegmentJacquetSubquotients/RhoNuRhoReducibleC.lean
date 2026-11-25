@@ -465,7 +465,7 @@ theorem bound_main : Bound k := by
     exact hu (hf1.symm.trans h1)
   have hni : ¬ Function.Injective S := fun hi => hns (LinearMap.injective_iff_surjective.1 hi)
   rw [injective_iff_map_eq_zero] at hni
-  push_neg at hni
+  push Not at hni
   obtain ⟨y, hSy, hy0⟩ := hni
   have hAy : A y = μ • (y : IndSp (blk2 d) τ) := by
     have := congrArg Subtype.val hSy

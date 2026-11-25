@@ -521,8 +521,8 @@ theorem dvd_of_eq_zero (x y : Ainf p O) (h : a ε x + τ ε * a ε y = 0) :
   simp only [coeff_add, coeff_sub, coeff_C_zero, coeff_mul_X_zero, coeff_mul_C,
     coeff_mul_X_pow', coeff_C_succ] at e0 e1
   rw [show (1 : ℕ) = 0 + 1 from rfl, coeff_mul_X, coeff_mul_X, coeff_mul_C, coeff_C_zero] at e1
-  simp only [zero_add, if_neg (by norm_num : ¬ (2 ≤ 1)),
-    if_neg (by norm_num : ¬ (2 ≤ 0)), add_zero, zero_sub] at e0 e1
+  simp only [zero_add, ite_eq_right (by norm_num : ¬ (2 ≤ 1)),
+    ite_eq_right (by norm_num : ¬ (2 ≤ 0)), add_zero, zero_sub] at e0 e1
   refine ⟨-(h1.coeff 1), ?_⟩
   rw [e0, e1]; ring
 
@@ -1705,14 +1705,6 @@ theorem isPrimitiveSystem_of_one {ε : PreTilt O p} (h : IsPrimitiveRoot (zeta �
     · rw [pow_succ, pow_mul, h1, h.pow_eq_one]
 
 end Eps
-
-section Mu
-
-variable {O A : Type} [CommRing O] [CommRing A] [Bialgebra O A]
-
-variable {p : ℕ} [Fact p.Prime]
-
-end Mu
 
 end GlobalTheory.PrismModel
 end -- clump:auto

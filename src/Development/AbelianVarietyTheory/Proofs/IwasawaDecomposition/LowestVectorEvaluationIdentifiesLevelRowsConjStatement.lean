@@ -1141,7 +1141,7 @@ theorem eq_zero_of_units {D : D7} {V : HSp D} {S : D.what₂.Tau → SPar} (M : 
   by_cases hz : ∃ τ, v τ = 0
   · obtain ⟨τ, hτ⟩ := hz
     exact T.map_coord_zero τ hτ
-  · push_neg at hz
+  · push Not at hz
     have hn : ∀ τ, ‖(v τ : M.H τ)‖ ≠ 0 := fun τ e => hz τ (Subtype.ext (norm_eq_zero.1 e))
     let u : M.Vec := fun τ => ((‖(v τ : M.H τ)‖⁻¹ : ℝ) : ℂ) • v τ
     have hu : ∀ τ, ‖(u τ : M.H τ)‖ = 1 := fun τ => by

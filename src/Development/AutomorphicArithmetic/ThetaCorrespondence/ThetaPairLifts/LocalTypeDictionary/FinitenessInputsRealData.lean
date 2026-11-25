@@ -684,7 +684,7 @@ theorem eulerOff_zetaParams {S : Finset (HeightOneSpectrum (𝓞 D.host.F))} {B 
   show _ = GlobalTheory.LFun.locL _ w.1 _
   rw [GlobalTheory.LFun.locL_twist, ← prod_fin_getD (B w.1) (hcard w.1 w.2)]
   refine Finset.prod_congr rfl fun a _ => ?_
-  simp only [hxdef, zetaParams, if_pos w.2]
+  simp only [hxdef, zetaParams, ite_eq_left w.2]
 
 end GlobalTheory.LowRow.ZetaProd
 
@@ -1087,7 +1087,7 @@ theorem width_le (D : D7) (i : Fin D.R.m) (σ : D.what₂.LL →+* ℂ) (ρ : D.
       Formalism.L2.NTheta.lamAt h 0 + h.e i - ((D.R.k + i : ℕ) - (0 + 1) : ℚ) - ((D.R.t : ℚ) + 1) / 2 := by
     have := le_toNat_floor (Formalism.L2.NTheta.lamAt h 0 + h.e i - ((D.R.k + i : ℕ) - ((0 : ℕ) + 1) : ℚ) - ((D.R.t : ℚ) + 1) / 2)
     unfold aPlAt aPl
-    rw [hp, if_pos (by omega)]
+    rw [hp, ite_eq_left (by omega)]
     simpa using this
   have hdeg : (aPlAt D i σ ρ 0 : ℚ) + (if 0 < qW D i ρ then (aMiAt D i σ ρ 0 : ℚ) else 0) ≤ degAt D i σ ρ := by
     have e1 : aPlAt D i σ ρ 0 ≤ ∑ n ∈ Finset.range (pW D i ρ), aPlAt D i σ ρ n :=
@@ -1105,12 +1105,12 @@ theorem width_le (D : D7) (i : Fin D.R.m) (σ : D.what₂.LL →+* ℂ) (ρ : D.
     split_ifs at this ⊢ <;> simpa using this
   by_cases hq0 : (i : ℕ) + 1 < D.R.m
   · have hqpos : 0 < qW D i ρ := by rw [hq]; omega
-    rw [if_pos hqpos] at hdeg
+    rw [ite_eq_left hqpos] at hdeg
     have hM0 : (aMiAt D i σ ρ 0 : ℚ) + 1 ≥
         -(h.e i + Formalism.L2.NTheta.lamAt h (D.R.r - 1) + ((D.R.m - (i + 1) : ℕ) : ℚ) + ((D.R.t : ℚ) - 1) / 2) := by
       have := le_toNat_floor (-(h.e i + Formalism.L2.NTheta.lamAt h (D.R.r - 1) + ((D.R.m - (i + 1) : ℕ) : ℚ) + ((D.R.t : ℚ) - 1) / 2))
       unfold aMiAt aMi
-      rw [hp, hq, if_pos (by omega), show D.R.k + ↑i + (D.R.m - (↑i + 1) - 0) - 1 = D.R.r - 1 by omega]
+      rw [hp, hq, ite_eq_left (by omega), show D.R.k + ↑i + (D.R.m - (↑i + 1) - 0) - 1 = D.R.r - 1 by omega]
       simpa using this
     have c1 : (((D.R.k + i : ℕ) : ℚ)) = D.R.k + (i : ℚ) := by push_cast; ring
     have c2 : (((D.R.m - (i + 1) : ℕ) : ℚ)) = D.R.m - (i : ℚ) - 1 := by
@@ -1120,7 +1120,7 @@ theorem width_le (D : D7) (i : Fin D.R.m) (σ : D.what₂.LL →+* ℂ) (ρ : D.
     rw [hnV]
     linarith
   · have him : (i : ℕ) = D.R.m - 1 := by omega
-    rw [if_neg (by rw [hq]; omega), add_zero] at hdeg
+    rw [ite_eq_right (by rw [hq]; omega), add_zero] at hdeg
     have hb : Formalism.L2.NTheta.lamAt h (D.R.r - 1) = -h.b i := by
       rw [show D.R.r - 1 = D.R.k - 1 + (i : ℕ) by omega, lamAt_b h i i.2]
     have hg := h.gap_be i
@@ -1141,7 +1141,7 @@ theorem GlobalTheory.LowRow.lam_par_width : ∀ {D : D7} {G : Type} [Group G] [F
   have hK : GlobalTheory.IndefiniteRowSideFullHecke.WeilGramSignature.OverK σ := hσ.2
   have hat : labE σ (lab σ ρ) = tauE D ρ := ((GlobalTheory.GalLift.labels_overK σ).1 hK).2 ρ
   obtain ⟨hanti, qv, hqv, hS⟩ := (R.MW i σ).enum ρ
-  have hpar : parAt (Wc D i) σ ρ = Formalism.L2.NTheta.holPar _ _ (kapAt (Wc D i) σ ρ) := if_pos hat
+  have hpar : parAt (Wc D i) σ ρ = Formalism.L2.NTheta.holPar _ _ (kapAt (Wc D i) σ ρ) := ite_eq_left hat
   have hsig : (Wc D i).sig (tauE D ρ) = D.R.sigW ((i : ℕ) + 1) := D.sp.W_sigval _ (Nat.le_add_left _ _) i.2 _
   have hk := D.R.m_add_three_le_k
   have hi := i.2
@@ -1281,12 +1281,6 @@ open scoped TensorProduct InnerProductSpace
 open GlobalTheory.IndefiniteRowSideFullHecke.TwistedLevelValues GlobalTheory.AdelicScalar GlobalTheory.LiftRows GlobalTheory.LowRow
 
 namespace GlobalTheory.LowRow.SignedPerm
-
-section General
-
-variable {K : Type} [Field K] [NumberField K]
-
-end General
 
 section Host
 

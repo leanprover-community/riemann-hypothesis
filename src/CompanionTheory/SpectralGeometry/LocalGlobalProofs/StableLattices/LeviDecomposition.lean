@@ -20,12 +20,12 @@ theorem pr_val (k r : ℕ) (i : Fin (2 * r + k + 1)) :
   unfold pr
   have := i.isLt
   by_cases h : outer k r i
-  · rw [if_pos h]
+  · rw [ite_eq_left h]
     left
     refine ⟨h, ?_⟩
     simp only
     omega
-  · rw [if_neg h]
+  · rw [ite_eq_right h]
     unfold outer at h
     right
     omega
@@ -41,12 +41,12 @@ theorem Hq_apply (k r : ℕ) (i j : Fin (2 * r + k + 1)) :
   have h1 := pr_val k r i
   unfold Hq
   by_cases h : outer k r i
-  · rw [if_pos h]
+  · rw [ite_eq_left h]
     unfold outer at h
     refine if_congr ?_ rfl rfl
     rw [Fin.ext_iff]
     omega
-  · rw [if_neg h]
+  · rw [ite_eq_right h]
     unfold outer at h
     refine if_congr ?_ rfl rfl
     rw [Fin.ext_iff, Fin.ext_iff]
@@ -105,7 +105,7 @@ theorem leviQ : LeviQ := by
     by_cases h : mid i
     · simp [d, h, hmidp]
     · have h2 := hs' i (pr k r i)
-      rw [if_pos rfl, Finset.sum_eq_single i] at h2
+      rw [ite_eq_left rfl, Finset.sum_eq_single i] at h2
       · simpa [d, h, hmidp] using h2
       · intro x _ hx
         have e1 := pr_val k r i
@@ -143,7 +143,7 @@ theorem leviQ : LeviQ := by
           rw [this]
           simp [μ, hx, hxi]
       · have hij : pr k r i ≠ j := fun e => hj (e ▸ (hmidp i).2 hi)
-        rw [if_neg hij]
+        rw [ite_eq_right hij]
         refine Finset.sum_eq_zero fun x _ => ?_
         by_cases hx : mid x
         · have : pr k r x ≠ j := fun e => hj (e ▸ (hmidp x).2 hx)
@@ -179,20 +179,20 @@ theorem leviQ : LeviQ := by
     rw [hl, e2, e1]
     by_cases h : mid i ∧ mid j
     · simp [d, μ, h.1, h.2]
-    · have hμe : μ i j = if i = j then 1 else 0 := if_neg h
-      rw [hμe, if_neg h]
+    · have hμe : μ i j = if i = j then 1 else 0 := ite_eq_right h
+      rw [hμe, ite_eq_right h]
       by_cases e : i = j
       · subst e
         have hi : ¬ mid i := fun hi => h ⟨hi, hi⟩
         have := hd0' i
-        rw [if_pos rfl, if_pos rfl, mul_one, mul_div_cancel₀ _ this]
+        rw [ite_eq_left rfl, ite_eq_left rfl, mul_one, mul_div_cancel₀ _ this]
         simp [d, hi]
       · simp [e]
   have hltri : l.BlockTriangular id := by
     intro i j hij
     have hij' : j.val < i.val := hij
     have : i ≠ j := fun e => by subst e; omega
-    rw [hle, hz i j hij', if_neg this, ite_self]
+    rw [hle, hz i j hij', ite_eq_right this, ite_self]
   have hinv : (Hq k r * lᴴ * Hq k r) * l = 1 := by
     have : lᴴ * Hq k r * l = Hq k r := hlU
     calc _ = Hq k r * (lᴴ * Hq k r * l) := by simp only [Matrix.mul_assoc]
@@ -220,7 +220,7 @@ theorem leviQ : LeviQ := by
       · congr 1
         rw [hle]
         by_cases h3 : mid i ∧ mid x
-        · rw [if_pos h3]
+        · rw [ite_eq_left h3]
         · have : i = x := by
             apply Fin.ext
             simp only [mid] at h3 hij
@@ -234,7 +234,7 @@ theorem leviQ : LeviQ := by
       simp [Matrix.mulVec, dotProduct, bvec, Pi.single_apply]
     have e2 : μ i x = if i = x then 1 else 0 := by
       have : ¬ (mid i ∧ mid x) := fun h => hx h.2
-      exact if_neg this
+      exact ite_eq_right this
     rw [e1, e2]
     simp [bvec, Pi.single_apply]
   refine ⟨s * l⁻¹, ⟨mul_mem hs hiU, fun a i hai => hm _ _ (Or.inl hai), fun i j h1 h2 h3 => hm _ _ ?_⟩,

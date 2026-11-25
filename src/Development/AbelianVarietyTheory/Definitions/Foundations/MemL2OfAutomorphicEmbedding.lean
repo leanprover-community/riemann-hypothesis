@@ -108,12 +108,6 @@ variable {ι ι' : finVec V θ A π →ₗ[ℂ] (GA D V → ℂ)}
 
 end Forms
 
-section Examples
-
-variable (μ : Measure (GA D V)) [μ.IsHaarMeasure] [μ.IsMulRightInvariant]
-
-end Examples
-
 end GlobalTheory.AutMult
 
 end

@@ -114,8 +114,8 @@ theorem sum_exponent_log_le (hC : Formalism.CohomologicalDescent.E.ExCut) (D : D
       tauto
     unfold Wts.Jrec7
     by_cases hc : (l : ℝ) ≤ P.lJ ∨ P.Excl l ∨ l ∈ W.Sp
-    · rw [if_pos hc, if_pos (e.2 hc)]; rfl
-    · rw [if_neg hc, if_neg (fun h => hc (e.1 h))]; rfl
+    · rw [ite_eq_left hc, ite_eq_left (e.2 hc)]; rfl
+    · rw [ite_eq_right hc, ite_eq_right (fun h => hc (e.1 h))]; rfl
   have h := GlobalTheory.sum_exponent_log_le_of_cut hC P X' A hH hL hR hB ι W' hW' hcard hS T hT Q hQ
   simpa only [hJ] using h
 

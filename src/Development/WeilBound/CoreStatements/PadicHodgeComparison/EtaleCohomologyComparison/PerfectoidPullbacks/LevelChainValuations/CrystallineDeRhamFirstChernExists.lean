@@ -158,7 +158,7 @@ theorem kap_abs (hR : R.Facts) (hi : ∀ c, R.i c ∈ R.P) (hS : S.Good) (P : Rh
   have hκ : ∀ {M : Model l K} (a : D.Ch M) (hM : G M) (j : ℕ) x φ,
       κ a j x φ = ((kP a hM j x φ : R.P) : R.B) := by
     intro M a hM j x φ
-    rw [show κ a j = (AddMonoidHom.compHom R.P.subtype.toAddMonoidHom).comp (kP a hM j) from dif_pos hM]
+    rw [show κ a j = (AddMonoidHom.compHom R.P.subtype.toAddMonoidHom).comp (kP a hM j) from dite_eq_left hM]
     rfl
   have hB : ∀ u v : R.P, (∀ m, (S.L m).toB u = (S.L m).toB v) → (u : R.B) = v :=
     fun u v h => congrArg Subtype.val (ext_P hS h)

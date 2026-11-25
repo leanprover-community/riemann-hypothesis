@@ -643,7 +643,7 @@ theorem real_points_fock : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T 
       refine Units.ext ?_
       change infMat D.sp.cm.sig (Vc D i).gram (R.θ ρ) (GlobalTheory.AdelicScalar.realElt R.θ (Vc D i) fun τ => (g τ).val) = (g ρ).val
       rw [GlobalTheory.AdelicScalar.realElt, GlobalTheory.RealTransSm.infMat_list_prod hθ _ hU ρ _ (Finset.nodup_toList _),
-        if_pos (Finset.mem_toList.2 (Finset.mem_univ ρ))]
+        ite_eq_left (Finset.mem_toList.2 (Finset.mem_univ ρ))]
 
 end GlobalTheory.RealPtsFock
 

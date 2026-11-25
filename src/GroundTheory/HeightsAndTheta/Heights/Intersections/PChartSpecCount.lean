@@ -85,7 +85,7 @@ theorem ChartSpecCount.proof (hPE : ChartPrimElt.Statement) (hLA : LocAwaySpec.S
   let hq : Q → Φ[X] := fun q => if hq : r q ≠ 0 then (hh q hq).choose else 0
   have hhq : ∀ q, r q ≠ 0 → m ∣ hq q * g q - 1 := by
     intro q hq0
-    simp only [hq, dif_pos hq0]
+    simp only [hq, dite_eq_left hq0]
     exact (hh q hq0).choose_spec
   let S : Finset Φ := m.coeffs ∪ u.coeffs ∪ τ.coeffs ∪ Finset.univ.biUnion (fun q => (g q).coeffs ∪ (hq q).coeffs)
   obtain ⟨E, hE, hS, hker⟩ := hLA R Φ φ S hfrac

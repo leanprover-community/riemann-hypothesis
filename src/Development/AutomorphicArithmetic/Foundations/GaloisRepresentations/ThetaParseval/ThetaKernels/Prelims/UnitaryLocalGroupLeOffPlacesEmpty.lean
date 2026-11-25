@@ -2,7 +2,6 @@ module
 
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.SchurStep
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.BcCompFinAwayPtOfNotMem
-public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.ThetaKernels.Prelims.BlockScaledIntegralOfLocal
 public import Development.AutomorphicSpectrum.Proofs.TwistedProofs.ExtensionEmbeddingEvInfRealAd
 public import Mathlib.Algebra.Order.Floor.Extended
 public import Mathlib.Algebra.Order.Floor.Semifield
@@ -42,6 +41,30 @@ public import Mathlib.Tactic.NormNum.RealSqrt
 public import Mathlib.Topology.Sheaves.Init
 public import Std.Tactic.BVDecide.Normalize.Prop
 public import Development.WeilBound.ThetaLifts.LatticeBasics.EulerA
+public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels
+public import Mathlib.Tactic.Linter.Style
+public import Development.AbelianVarietyTheory.Definitions.Divisors.MatchingOfParts
+
+section
+/-! # BlockScaledIntegralOfLocal: Preliminary helper declarations for global theta kernels. -/
+
+@[expose] public section
+
+open scoped TensorProduct NNReal Matrix
+open NumberField IsDedekindDomain MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK
+
+namespace GlobalTheory.ThKTorus.IntegralOfAdic
+
+theorem evFin_realAd (F : Type) [Field F] [NumberField F] (v : Pl F) (x : ℝ) :
+    evFin F v (realAd F x) = 0 := by
+  show evalV F v 0 = 0
+  exact map_zero _
+
+end GlobalTheory.ThKTorus.IntegralOfAdic
+end
+end
+
 /-! # UnitaryLocalGroupLeOffPlacesEmpty: Preliminary helper declarations for global theta kernels. -/
 
 @[expose] public section

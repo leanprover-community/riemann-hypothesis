@@ -170,7 +170,7 @@ theorem entry_single (u : Matrix (Fin n) (Fin n) ℂ) (a i : Fin n) (c : ℂ) :
   simp only [mul_diagonal, conjTranspose_apply]
   rw [Finset.sum_eq_single a]
   · simp only
-    rw [if_pos trivial]
+    rw [ite_eq_left trivial]
     have := Complex.mul_conj (u i a)
     rw [Complex.normSq_eq_norm_sq] at this
     rw [Complex.star_def]
@@ -227,9 +227,9 @@ theorem bounded_of_conj (z : Fin n → ℂ) (hz : ∀ a, ‖z a‖ = 1) (hinj : 
       funext b
       by_cases hb : b = a
       · subst hb
-        rw [if_pos rfl]
+        rw [ite_eq_left rfl]
         exact Lagrange.eval_basis_self hinjw (Finset.mem_univ _)
-      · rw [if_neg hb]
+      · rw [ite_eq_right hb]
         exact Lagrange.eval_basis_of_ne (Ne.symm hb) (Finset.mem_univ _)
     rw [hev] at e
     rw [← e]

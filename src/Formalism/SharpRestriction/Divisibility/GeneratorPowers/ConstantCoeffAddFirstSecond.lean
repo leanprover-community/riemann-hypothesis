@@ -387,8 +387,8 @@ private lemma mkX_lemma_10 {ι : Type} [Fintype ι] [DecidableEq ι] (m : ℕ) (
     have htr : Formalism.L2.Pj.psTrunc m (MvPowerSeries.X s : MvPowerSeries ι S) = MvPolynomial.X s := by
       unfold Formalism.L2.Pj.psTrunc
       rw [Finset.sum_eq_single_of_mem _ hmem
-        (fun b _ hb => by rw [MvPowerSeries.coeff_X, if_neg hb, map_zero])]
-      rw [MvPowerSeries.coeff_X, if_pos rfl]
+        (fun b _ hb => by rw [MvPowerSeries.coeff_X, ite_eq_right hb, map_zero])]
+      rw [MvPowerSeries.coeff_X, ite_eq_left rfl]
       rfl
     rw [htr, sub_self]
     exact Ideal.zero_mem _

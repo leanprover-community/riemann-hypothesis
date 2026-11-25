@@ -154,10 +154,10 @@ theorem eu_along (w : InfinitePlace E) (g : GA E a) (s : Bool) (φ : Sm E a) (i 
   cases s
   · have hE := GlobalTheory.CompanionTheory.CasFamily.Eop_conjugate (a := a) w i j
     simp only [PositivityTheory.RgBcC.Eu, Pi.add_apply, Pi.smul_apply, smul_eq_mul, h1, h2, eopW, hE, Bool.false_eq_true,
-      if_false, LinearMap.smul_apply, LinearMap.add_apply, Submodule.coe_smul, Submodule.coe_add, along_smul,
+      ite_false, LinearMap.smul_apply, LinearMap.add_apply, Submodule.coe_smul, Submodule.coe_add, along_smul,
       along_add]
   · have hE := GlobalTheory.CompanionTheory.CasFamily.Eop_embedding (a := a) w i j
-    simp only [PositivityTheory.RgBcC.Eu, Pi.add_apply, Pi.smul_apply, smul_eq_mul, h1, h2, eopW, hE, if_true,
+    simp only [PositivityTheory.RgBcC.Eu, Pi.add_apply, Pi.smul_apply, smul_eq_mul, h1, h2, eopW, hE, ite_true,
       LinearMap.smul_apply, LinearMap.sub_apply, Submodule.coe_smul, Submodule.coe_sub, along_smul]
     have hsub : ∀ f f' : GA E a → ℂ, along w g (f - f') = along w g f - along w g f' := fun f f' => by
       rw [sub_eq_add_neg, along_add, ← neg_one_smul ℂ f', along_smul]; simp [sub_eq_add_neg]

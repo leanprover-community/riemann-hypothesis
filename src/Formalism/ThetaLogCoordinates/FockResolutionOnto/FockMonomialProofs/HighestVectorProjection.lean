@@ -106,14 +106,14 @@ theorem resL_fix' {σ : Type} (v : σ) (x : MvPolynomial σ ℚ_[p]) (hx : x ∈
   unfold initPart
   conv_rhs => rw [x.as_sum]
   refine Finset.sum_congr rfl (fun m hm => ?_)
-  rw [if_pos (show m v = 0 from hx' (Finset.mem_coe.mpr hm))]
+  rw [ite_eq_left (show m v = 0 from hx' (Finset.mem_coe.mpr hm))]
 
 theorem fock_monomial_zero' {σ : Type} (g : MvPolynomial σ ℚ_[p]) (m : σ →₀ ℕ) (hm : m ∉ g.support) :
     fock p g (monomial m 1) = 0 := by
   classical
   unfold fock
   refine Finset.sum_eq_zero (fun n hn => ?_)
-  rw [MvPolynomial.coeff_monomial, if_neg (show m ≠ n from fun h => hm (by rw [h]; exact hn)), mul_zero, zero_mul]
+  rw [MvPolynomial.coeff_monomial, ite_eq_right (show m ≠ n from fun h => hm (by rw [h]; exact hn)), mul_zero, zero_mul]
 
 theorem fock_right_zero' {σ : Type} (g : MvPolynomial σ ℚ_[p]) : fock p g 0 = 0 := by
   simp [fock]
@@ -129,8 +129,8 @@ theorem cartan_comm_erase' (LL : Letters N) (j : ℕ) (ρ : Fin r) (a : Fin r) (
     (hb : b ∈ univ.erase ρ) (x : MvPolynomial (Fin N × Fin r) ℚ_[p]) :
     glAct p LL j ρ ρ (glAct p LL j a b x) = glAct p LL j a b (glAct p LL j ρ ρ x) := by
   have h := glAct_comm (p := p) LL j ρ ρ a b x
-  rw [if_neg (show ¬ (ρ = a) from fun h' => (Finset.mem_erase.mp ha).1 h'.symm),
-    if_neg (show ¬ (b = ρ) from (Finset.mem_erase.mp hb).1), sub_zero, sub_eq_zero] at h
+  rw [ite_eq_right (show ¬ (ρ = a) from fun h' => (Finset.mem_erase.mp ha).1 h'.symm),
+    ite_eq_right (show ¬ (b = ρ) from (Finset.mem_erase.mp hb).1), sub_zero, sub_eq_zero] at h
   exact h
 
 end EC
@@ -291,10 +291,10 @@ theorem highest_vector_projection : ProjX := by
     obtain ⟨⟨⟨⟨h1, h2⟩, h3⟩, h4⟩, h5⟩ := hg'
     refine ⟨h1, h2, fun k hk => ?_, fun k hk => ?_, h4, h5⟩
     · have := h3 k
-      rw [if_pos hk] at this
+      rw [ite_eq_left hk] at this
       exact Submodule.mem_inf.mp this
     · have := h3 k
-      rw [if_neg hk] at this
+      rw [ite_eq_right hk] at this
       exact this
   have hYmin : ∀ g ∈ XH p LL J M ρ w, ∀ k, g ∈ YCond p LL (min (J k) K) (M k) := by
     intro g hg k
@@ -358,7 +358,7 @@ theorem highest_vector_projection : ProjX := by
   rw [hPr]
   by_cases hw : ∀ c ∈ (univ : Finset (Fin r)), wt LL (K + 1) c m = w c
   swap
-  · have h0 : f m = 0 := by rw [hf]; exact if_neg hw
+  · have h0 : f m = 0 := by rw [hf]; exact ite_eq_right hw
     rw [h0, smul_zero]
     refine ⟨zero_mem _, zero_mem _, fun g hg => ?_⟩
     rw [fock_right_zero', fock_monomial_zero']
@@ -366,7 +366,7 @@ theorem highest_vector_projection : ProjX := by
     obtain ⟨-, -, -, -, -, hgw⟩ := hXH g hg
     exact hw (mem_of_mem_support_restrictSupport hgw hmg)
   have hfm : f m = resL p (Fin.last K, ρ) 0 (PE (lcomp P (List.range (K + 2)) (monomial m 1))) := by
-    rw [hf, hG]; exact if_pos hw
+    rw [hf, hG]; exact ite_eq_left hw
   rw [hfm]
 
   have hu_pol : (monomial m 1 : MvPolynomial (Fin (K + 1) × Fin r) ℚ_[p]) ∈ Pol p r LL :=
@@ -465,7 +465,7 @@ theorem highest_vector_projection : ProjX := by
       refine Finset.sum_congr rfl (fun n hn => ?_)
       have h1 : (resL p (Fin.last K, ρ) 0 z).coeff n = z.coeff n := by
         show (initPart (Fin.last K, ρ) 0 z).coeff n = _
-        rw [coeff_initPart, if_pos (show n (Fin.last K, ρ) = 0 from mem_of_mem_support_restrictSupport hgF hn)]
+        rw [coeff_initPart, ite_eq_left (show n (Fin.last K, ρ) = 0 from mem_of_mem_support_restrictSupport hgF hn)]
       rw [h1]
     have f2 : fock p g z = fock p g y := by
       rw [hz, ← hE4 g y hgW hy_ws, hPEfix g ⟨hgH, hgW⟩]

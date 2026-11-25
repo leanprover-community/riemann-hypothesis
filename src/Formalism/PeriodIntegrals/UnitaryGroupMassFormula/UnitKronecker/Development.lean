@@ -65,7 +65,7 @@ theorem unitKron_of (hA : StepA) (hB : StepB) (hC : StepC) : PI.UnitKron := by
       exact Polynomial.isRoot_of_mem_roots hμ
     obtain ⟨t, ht⟩ : m μ ∣ ∏ ν ∈ S, m ν := Finset.dvd_prod_of_mem m (Multiset.mem_toFinset.mpr hμ)
     have hmμ : μ ^ m μ = 1 := by
-      simp only [m, dif_pos hr]
+      simp only [m, dite_eq_left hr]
       exact (hroot μ hr).choose_spec.2
     rw [ht, pow_mul, hmμ, one_pow]
   refine ⟨∏ μ ∈ S, m μ, Finset.prod_pos fun μ _ => hm μ, ?_⟩

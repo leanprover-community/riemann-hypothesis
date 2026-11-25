@@ -325,7 +325,7 @@ theorem exists_section {D : D7} {H : ReciprocityTheory.ChartRestriction.G.Geo.To
     have h1 := fun z hz => S.homN_mul_sig (G := (11 + 1) • wtZ 0 (2 * (Dw.p + Dw.q)) +
       wtOf Dw 0 (-(4 * ((3 * (Dw.p + Dw.q) : ℕ) : ℤ)))) (hev'.add K.even) ((f ^ 2) ^ (11 + 1) * K.sig) (σ := σ) (z := z) hz
     have h2 := fun z hz => K.homN_mul_sig hev' ((f ^ 2) ^ (11 + 1)) (σ := σ) (z := z) hz
-    rw [show goodOf c σ = σ from if_pos hσ] at h1 h2
+    rw [show goodOf c σ = σ from ite_eq_left hσ] at h1 h2
     intro z hz
     rw [← hG, ← homN_pow (U σ) x hev _ z hz.1, ← h2 z hz]
     exact h1 z hz
@@ -577,7 +577,7 @@ theorem normSq_thetaConst_le_exp : ∀ (E : Type) [Field E] [NumberField E] [IsC
     rw [hp _ _ hS, sq f, GlobalTheory.AllWt.rdU_mul, Pi.mul_apply, Pi.mul_apply, norm_mul, sq]
   rw [hN, ← hphi _]
   have hv : rdU U f k (rmul y b) =
-      Formalism.L2.PjFree.toC (evR Xo c f ((Formalism.L2.PjFree.Unf.ofPj U).un k ⟨rmul y b, hb⟩)) := dif_pos hb
+      Formalism.L2.PjFree.toC (evR Xo c f ((Formalism.L2.PjFree.Unf.ofPj U).un k ⟨rmul y b, hb⟩)) := dite_eq_left hb
   have key := ArchBound.norm_pow_le_at_unit_frame E H Dw l Xo c σ _ (Formalism.L2.PjFree.Unf.ofPj U) hσ
     ((Formalism.L2.PjFree.isUnf_ofPj U).2 hU) hA R hR h1R xs f hsp hf DF q m R0 hrun hm k ⟨rmul y b, hb⟩ hun
   rw [hv]
@@ -752,7 +752,7 @@ theorem theta_sup_le (hLw : Laws D j Xo c U dict) {σ : c.F →+* ℂ} (hσ : Go
     (Formalism.L2.PjFree.Unf.ofPj (U σ)) hσ (hLw.unf σ hσ) hr1 (2 * xiR D) (by linarith)
     (fun k τ => congrArg (2 * ·) (hLw.xiAbs σ hσ k τ.1)) a n hDom _ nab hnab xx P hP f hf k xf hort _ (by positivity) hlam
   rw [hfd] at hv
-  have hrdv : rdU (U σ) f k xf.1 = Formalism.L2.PjFree.toC (evR Xo c f ((U σ).un k xf)) := dif_pos xf.2
+  have hrdv : rdU (U σ) f k xf.1 = Formalism.L2.PjFree.toC (evR Xo c f ((U σ).un k xf)) := dite_eq_left xf.2
   rw [hrdv] at hhalf
   have key := numbers D.R.f D.R.r n _ 1 L _ _ _ 1 _ ρ _ _ hL hf1 hr1 hrn hdκ hnκ hsz hfr hrd1 hrdL (by linarith)
     zero_le_one (Finset.sum_nonneg fun _ _ => norm_nonneg _) hρ0 (Nat.one_le_pow _ _ (Nat.succ_pos _))
@@ -827,7 +827,7 @@ theorem theta_lower (hLw : Laws D j Xo c U dict) {σ : c.F →+* ℂ} (hσ : Goo
     push_cast
     ring
   have hval : ∀ q, ptN (laU (U σ) a n) (rdU (U σ) (g q)) ⟨k, x⟩ = ‖toC (evR Xo c (g q) ((U σ).un k ⟨_, hbd⟩))‖ :=
-    fun q => (hpn _ _ (hUn.2.2.2.2.1 a n hDom (g q) (hs q) k)).trans (congrArg norm (dif_pos hbd))
+    fun q => (hpn _ _ (hUn.2.2.2.2.1 a n hDom (g q) (hs q) k)).trans (congrArg norm (dite_eq_left hbd))
   have hkey : (Real.pi⁻¹) ^ P.totalDegree * Pr.Jbound n ≤
       (l.M : ℝ) ^ Formalism.L2.Pj.DF Dw a * ∑ q, (lie * ptN (laU (U σ) a n) (rdU (U σ) (g q)) ⟨k, x⟩) ^ 2 := by
     simp only [hval, mul_pow, hl]
@@ -1227,11 +1227,11 @@ theorem cover_transport (D : D7) (T : CoreJ D) (j : ℕ) (Y : Deep T.toCore j) (
       rdU (T.U j (Y.resEmb σ)) f := by
     funext k x
     by_cases hx : x ∈ ((T.U j (Y.resEmb σ)).X k).dom
-    · refine (dif_pos hx).trans (Eq.trans ?_ (dif_pos hx).symm)
+    · refine (dite_eq_left hx).trans (Eq.trans ?_ (dite_eq_left hx).symm)
       letI : Algebra T.Q.c.F (CAt (σ.comp (Y.d.eF : Y.c'.F →+* Y.d.c₂.F))) := (Y.resEmb σ).toAlgebra
       exact hV.2 (CAt (σ.comp (Y.d.eF : Y.c'.F →+* Y.d.c₂.F))) (fun _ => rfl) _
-    · have e₂ : rdU (T.U j (Y.resEmb σ)) f k x = 0 := dif_neg hx
-      exact (dif_neg hx).trans e₂.symm
+    · have e₂ : rdU (T.U j (Y.resEmb σ)) f k x = 0 := dite_eq_right hx
+      exact (dite_eq_right hx).trans e₂.symm
   refine ⟨g, hg, fun y hy => ?_⟩
   have h3 := h2 _ hV.1 g hgs ((hP a n f hs g).1 hgP) y hy
   rw [hrd] at h3
@@ -1278,13 +1278,13 @@ private theorem card_mul_succ_le_two_mul_ncol_copy {E : Type} [Field E] [NumberF
   simp only [h1]
   rw [GlobalTheory.RawThetaSup.sum_emb_eq H, Finset.mul_sum, mul_assoc, ← Finset.card_univ, ← smul_eq_mul, ← Finset.sum_const]
   refine Finset.sum_le_sum fun τ _ => ?_
-  rw [Datum.mult, if_pos τ.2, Datum.mult, if_neg (conj_not_mem τ)]
+  rw [Datum.mult, ite_eq_left τ.2, Datum.mult, ite_eq_right (conj_not_mem τ)]
   nlinarith [sq_nonneg ((Dw.p : ℤ) - Dw.q)]
 private theorem one_le_dimension_function_copy {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} (Dw : Datum H)
     (hp : 1 ≤ Dw.p) (hne : 0 < Fintype.card (Psi H)) {a : (E →+* ℂ) × ℕ → ℕ} (h : LastPos Dw a) :
     1 ≤ Formalism.L2.Pj.DF Dw a := by
   obtain ⟨τ⟩ := Fintype.card_pos_iff.1 hne
-  have hm : 0 < Dw.mult τ.1 := by rw [Datum.mult, if_pos τ.2]; exact hp
+  have hm : 0 < Dw.mult τ.1 := by rw [Datum.mult, ite_eq_left τ.2]; exact hp
   refine (h τ.1 τ.2 hm).trans_le ?_
   unfold Formalism.L2.Pj.DF
   refine le_trans ?_ (Finset.single_le_sum (f := fun τ : E →+* ℂ => ∑ i : Fin (Dw.mult τ), a (τ, i))
@@ -1464,7 +1464,7 @@ theorem exists_constant_twist_of_thin_divisor (hP : _root_.GlobalTheory.CovTop.P
   have key : ∀ z ∈ framesOn (Y.U (goodOf Y.d.c₂ σ)) Z,
       homN (Y.U (goodOf Y.d.c₂ σ)) (xiR D) (G + (wtOf (T.Q.Dw j) u 0 - G)) (f * tw.sig) z =
         homN (Y.U (goodOf Y.d.c₂ σ)) (xiR D) G f z * tw.cInf σ := fun z hz => tw.homN_mul_sig hB f hz
-  have e : goodOf Y.d.c₂ σ = σ := if_pos hσ
+  have e : goodOf Y.d.c₂ σ = σ := ite_eq_left hσ
   rw [e, hGG] at key
   have hl := lieFacZ_pos (Dw := T.Q.Dw j) (xiR D) (wtOf (T.Q.Dw j) u 0)
   refine ⟨f * tw.sig, hmem, lieFacZ (T.Q.Dw j) (xiR D) G * tw.cInf σ / lieFacZ (T.Q.Dw j) (xiR D) (wtOf (T.Q.Dw j) u 0),
@@ -1648,7 +1648,7 @@ theorem theta_function_le_bergman_kernel_alt : _root_.GlobalTheory.CovTop.Publis
   have d0 : a ≤ Real.exp (P / 625) := d.trans (Real.exp_le_exp.2 (by split_ifs <;> push_cast <;> linarith))
   refine ⟨d0.trans (Real.exp_le_exp.2 (by linarith)), ?_⟩
   rcases lt_or_ge ((Y.d.l₂.M : ℝ) * ((Y.U σ).X y.1).firstMinimumSq y.2.1) (Fm.L x ι).sc.b with h | h
-  · rw [if_pos (e4 h)] at d
+  · rw [ite_eq_left (e4 h)] at d
     exact key _ _ d (by push_cast; linarith) (e2 h)
   · exact key _ _ d0 (by linarith) (e3 h)
 

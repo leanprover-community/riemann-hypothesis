@@ -307,7 +307,7 @@ theorem GlobalTheory.PoinAut.partialSum_bdd : ∀ (D : D7) (θ : InfFam D), IsIn
         C * P * ∏ τ, ((1 + hsn (cmp θ τ (c * (γ : GA D V) * x))) ^ N)⁻¹ := by
     intro γ hγ
     unfold coef
-    rw [if_pos (Finset.mem_filter.1 hγ).2]
+    rw [ite_eq_left (Finset.mem_filter.1 hγ).2]
     have := hCb (c * (γ : GA D V) * x) 1
     rwa [mul_one] at this
   have hx0 : 0 ≤ height V x := (height_pos V x).le
@@ -319,7 +319,7 @@ theorem GlobalTheory.PoinAut.partialSum_bdd : ∀ (D : D7) (θ : InfFam D), IsIn
           ‖coef θ M K v (fun τ => (a τ : M.H τ)) (c * (γ : GA D V) * x)‖ := by
         refine (Finset.sum_filter_of_ne fun γ _ h => ?_).symm
         by_contra hn
-        exact h (by unfold coef; rw [if_neg hn, norm_zero])
+        exact h (by unfold coef; rw [ite_eq_right hn, norm_zero])
     _ ≤ ∑ γ ∈ s.filter (fun γ : GQ V => Lev.finE V (c * (γ : GA D V) * x) ∈ K),
           C * P * ∏ τ, ((1 + hsn (cmp θ τ (c * (γ : GA D V) * x))) ^ N)⁻¹ := Finset.sum_le_sum hterm
     _ = C * P * ∑ γ ∈ s.filter (fun γ : GQ V => Lev.finE V (c * (γ : GA D V) * x) ∈ K),
@@ -525,10 +525,10 @@ theorem hasDerivAt_coef_oneP : ∀ (D : D7), GlobalTheory.Published.HarishChandr
   swap
   · have e : (fun s : ℝ => coef θ M K v b (x * oneP θ V τ X s)) = fun _ => 0 := by
       funext s
-      simp only [coef, hfin s, hK, if_false]
+      simp only [coef, hfin s, hK, ite_false]
     rw [e]
     have e2 : coef θ M K v (Function.update b τ (dRep (M.rep τ) X (b τ))) x = 0 := by
-      simp only [coef, hK, if_false]
+      simp only [coef, hK, ite_false]
     rw [e2]
     exact hasDerivAt_const _ _
   haveI : CompleteSpace (M.H τ) := (M.ds τ).1
@@ -541,7 +541,7 @@ theorem hasDerivAt_coef_oneP : ∀ (D : D7), GlobalTheory.Published.HarishChandr
   have hfun : ∀ s : ℝ, coef θ M K v b (x * oneP θ V τ X s) =
       c * ⟪v τ, M.rep τ (cmp θ τ x) (M.rep τ (NormedSpace.exp (s • X)) (b τ))⟫_ℂ := by
     intro s
-    simp only [coef, hfin s, hK, if_true, coefR]
+    simp only [coef, hfin s, hK, ite_true, coefR]
     rw [← Finset.prod_erase_mul _ _ (Finset.mem_univ τ)]
     congr 1
     · refine Finset.prod_congr rfl fun τ' hτ' => ?_
@@ -555,7 +555,7 @@ theorem hasDerivAt_coef_oneP : ∀ (D : D7), GlobalTheory.Published.HarishChandr
       rfl
   have hval : coef θ M K v (Function.update b τ (dRep (M.rep τ) X (b τ))) x =
       c * ⟪v τ, M.rep τ (cmp θ τ x) (dRep (M.rep τ) X (b τ))⟫_ℂ := by
-    simp only [coef, hK, if_true, coefR]
+    simp only [coef, hK, ite_true, coefR]
     rw [← Finset.prod_erase_mul _ _ (Finset.mem_univ τ), Function.update_self]
     congr 1
     refine Finset.prod_congr rfl fun τ' hτ' => ?_
@@ -685,7 +685,7 @@ theorem poin_smooth_growth_deriv : GlobalTheory.Published.HarishChandraModules �
     obtain ⟨C, hC0, hC⟩ := termBound θ hθ M K v hv b hb
     refine ⟨C * C₀, fun g => ?_⟩
     refine hB (fun x => ‖coef θ M K v b x‖) C (fun _ => norm_nonneg _) (fun x hx => ?_) hC g
-    simp only [coef, if_neg hx, norm_zero]
+    simp only [coef, ite_eq_right hx, norm_zero]
   have grow : ∀ b : ∀ τ, M.H τ, (∀ τ, b τ ∈ GlobalTheory.IndefiniteRowSideFullHecke.KTypeExtension.kFin M τ) → ModGrowthExp V A (poin θ M K v c b) := by
     intro b hb
     obtain ⟨C, hC⟩ := hsum b hb
@@ -714,7 +714,7 @@ theorem poin_smooth_growth_deriv : GlobalTheory.Published.HarishChandraModules �
       simp only [hu]; split_ifs
       · exact mul_nonneg (mul_nonneg hC'0 hL0) (hprod x)
       · exact le_rfl
-    have huK : ∀ x, Lev.finE V x ∉ K → u x = 0 := fun x hx => by simp only [hu, if_neg hx]
+    have huK : ∀ x, Lev.finE V x ∉ K → u x = 0 := fun x hx => by simp only [hu, ite_eq_right hx]
     have huC : ∀ x, u x ≤ (C' * L) * ∏ τ', ((1 + hsn (cmp θ τ' x)) ^ (2 * V.rank ^ 2 + 1))⁻¹ := fun x => by
       simp only [hu]; split_ifs
       · exact le_rfl
@@ -724,12 +724,12 @@ theorem poin_smooth_growth_deriv : GlobalTheory.Published.HarishChandraModules �
       by_cases hx : Lev.finE V x ∈ K
       · have h1 := hC' (x * oneP θ V τ X y)
         have h2 := hL x y (abs_lt.2 ⟨hy.1, hy.2⟩)
-        simp only [hu, if_pos hx]
+        simp only [hu, ite_eq_left hx]
         calc _ ≤ _ := h1
           _ ≤ C' * (L * ∏ τ', ((1 + hsn (cmp θ τ' x)) ^ (2 * V.rank ^ 2 + 1))⁻¹) := mul_le_mul_of_nonneg_left h2 hC'0
           _ = _ := by ring
       · have : coef θ M K v b' (x * oneP θ V τ X y) = 0 := by
-          simp only [coef, finE_mul_oneP, if_neg hx]
+          simp only [coef, finE_mul_oneP, ite_eq_right hx]
         rw [this, norm_zero]
         exact hu0 x
     have hS := (hB u (C' * L) hu0 huK huC g).1

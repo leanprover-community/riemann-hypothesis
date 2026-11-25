@@ -132,7 +132,7 @@ theorem eq_zero_of_sum_mono {y : Fin (D + 1) → Ω} (hy : coordIdeal ℤ y = �
   rw [hp, coeff_sum, AddMonoidAlgebra.coeff_zero, Finsupp.zero_apply] at hc
   rw [Finset.sum_eq_single i (fun j _ hji => ?_) (by simp)] at hc
   · simpa using hc
-  · rw [coeff_monomial, if_neg]
+  · rw [coeff_monomial, ite_eq_right]
     intro hE
     exact hji (adtEnum_injective D N (by simpa using hE))
 
@@ -152,7 +152,7 @@ theorem form_enum_sq_le (D N : ℕ) (c : Fin (Finset.Nat.antidiagonalTuple (D + 
   set c' : (Fin (D + 1) → ℕ) → ℂ := fun a => if h : a ∈ Finset.Nat.antidiagonalTuple (D + 1) N then
     c ((Finset.Nat.antidiagonalTuple (D + 1) N).equivFin ⟨a, h⟩) else 0 with hc'
   have hci : ∀ i, c' (adtEnum D N i) = c i := fun i => by
-    simp only [hc', dif_pos (adtEnum_mem D N i)]
+    simp only [hc', dite_eq_left (adtEnum_mem D N i)]
     simp [adtEnum]
   have e1 : ∑ i, c i * monoC (adtEnum D N i) w =
       ∑ a ∈ Finset.Nat.antidiagonalTuple (D + 1) N, c' a * monoC a w := by

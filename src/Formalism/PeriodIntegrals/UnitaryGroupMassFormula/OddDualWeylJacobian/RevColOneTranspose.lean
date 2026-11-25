@@ -168,9 +168,9 @@ theorem revCol_one_transpose {m : ℕ} : (revCol (1 : Matrix (Fin (m + 1)) (Fin 
   have h : (j = i.rev) ↔ (i = j.rev) :=
     ⟨fun h => by rw [h, Fin.rev_rev], fun h => by rw [h, Fin.rev_rev]⟩
   by_cases hij : j = i.rev
-  · rw [if_pos hij, if_pos (h.mp hij)]
+  · rw [ite_eq_left hij, ite_eq_left (h.mp hij)]
   · have h' : i ≠ j.rev := fun hh => hij (h.mpr hh)
-    rw [if_neg hij, if_neg h']
+    rw [ite_eq_right hij, ite_eq_right h']
 
 theorem isUnit_revInv {m : ℕ} {z : Matrix (Fin (m + 1)) (Fin (m + 1)) K} (hz : IsUnit z.det) :
     IsUnit (revCol (z⁻¹)ᵀ).det := by
@@ -228,12 +228,12 @@ theorem dir1 (hC : ∀ (R : Type) [CommRing R] (m : ℕ) (lam : Fin (m + 1) → 
   by_cases hl : Antitone lam
   swap
   · unfold Dl0 at hF
-    rw [if_neg hl, Submodule.mem_bot] at hF
+    rw [ite_eq_right hl, Submodule.mem_bot] at hF
     subst hF
     exact ⟨0, Submodule.zero_mem _, fun z _ => by simp⟩
   have hl' := antitone_lamStar hl
   unfold Dl0 at hF
-  rw [if_pos hl] at hF
+  rw [ite_eq_left hl] at hF
   simp only [Submodule.mem_iInf] at hF
   have hbal := hB m lam hl
   have hhom : ∀ f' ∈ weyl O (m + 1) (m + 1) le_rfl (nuOf (lamStar lam)),
@@ -242,7 +242,7 @@ theorem dir1 (hC : ∀ (R : Type) [CommRing R] (m : ℕ) (lam : Fin (m + 1) → 
   obtain ⟨F', -, hrel, hF'hom⟩ := hG O K m lam g hg hbal hhom (hC O m lam hl) F (hF g ⟨hg, rfl⟩)
   have hF'lat : F' ∈ Dl0 O m (lamStar lam) (colSpan O (g⁻¹)ᵀ) := by
     unfold Dl0
-    rw [if_pos hl']
+    rw [ite_eq_left hl']
     simp only [Submodule.mem_iInf]
     rintro g' ⟨hg', hspan⟩
     have hh : IsUnit ((g'⁻¹)ᵀ).det := isUnit_invT hg'

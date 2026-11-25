@@ -83,7 +83,7 @@ variable {x : Sp F ⟶ X} {U V : X.Opens}
 def valHom (h : ⊤ ≤ x ⁻¹ᵁ U) : Γ(X, U) →+* F :=
   (Scheme.ΓSpecIso (CommRingCat.of F)).hom.hom.comp (x.appLE U ⊤ h).hom
 
-theorem valF_eq (h : ⊤ ≤ x ⁻¹ᵁ U) (a : Γ(X, U)) : valF x U a = valHom h a := dif_pos h
+theorem valF_eq (h : ⊤ ≤ x ⁻¹ᵁ U) (a : Γ(X, U)) : valF x U a = valHom h a := dite_eq_left h
 
 theorem valF_mul (h : ⊤ ≤ x ⁻¹ᵁ U) (a b : Γ(X, U)) : valF x U (a * b) = valF x U a * valF x U b := by
   simp only [valF_eq h, map_mul]

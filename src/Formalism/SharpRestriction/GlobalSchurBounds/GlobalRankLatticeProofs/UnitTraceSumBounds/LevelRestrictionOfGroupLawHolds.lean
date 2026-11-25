@@ -485,7 +485,7 @@ theorem inv_of_left {K : Type*} [Field K] (l ex : PowerSeries K) (h0 : constantC
     · rw [← coeff_zero_eq_constantCoeff_apply]
       simpa using h1
     · intro d hd
-      rw [hu, mul_pow, coeff_X_pow_mul', if_neg (by omega), smul_zero]
+      rw [hu, mul_pow, coeff_X_pow_mul', ite_eq_right (by omega), smul_zero]
   have h1 : coeff 1 l * coeff 1 ex = 1 := by
     have h1 := congrArg (coeff 1) hle
     rw [coeff_subst' hex, finsum_eq_single _ 1] at h1
@@ -494,7 +494,7 @@ theorem inv_of_left {K : Type*} [Field K] (l ex : PowerSeries K) (h0 : constantC
       rcases d with _ | _ | d
       · simp
       · exact absurd rfl hd
-      · rw [hu, mul_pow, coeff_X_pow_mul', if_neg (by omega), smul_zero]
+      · rw [hu, mul_pow, coeff_X_pow_mul', ite_eq_right (by omega), smul_zero]
   have hunit : IsUnit (coeff 1 ex) := isUnit_iff_ne_zero.mpr (right_ne_zero_of_mul_eq_one h1)
   obtain ⟨q, hq, hr⟩ : ∃ q : PowerSeries K, HasSubst q ∧ subst q ex = X :=
     ⟨_, HasSubst.substInvOfIsUnit ex hunit, subst_substInvOfIsUnit_right ex h0 hunit⟩
@@ -531,9 +531,9 @@ theorem gramUnit : GramUnit := by
         unfold PI.FglGram.GramRhs
         congr 1
         · exact Finset.sum_congr rfl fun j _ => by
-            rw [hde j j, if_pos rfl, Prod.fst_one, map_one, one_mul]
+            rw [hde j j, ite_eq_left rfl, Prod.fst_one, map_one, one_mul]
         · exact Finset.sum_eq_zero fun j _ => Finset.sum_eq_zero fun j' hj' => by
-            rw [hde j j', if_neg (ne_of_lt (Finset.mem_filter.mp hj').2), Prod.fst_zero]
+            rw [hde j j', ite_eq_right (ne_of_lt (Finset.mem_filter.mp hj').2), Prod.fst_zero]
             exact be_mulBy_zero l ex ph hD _ _ (MvPowerSeries.constantCoeff_X _)
     _ = _ := add_zero _
 

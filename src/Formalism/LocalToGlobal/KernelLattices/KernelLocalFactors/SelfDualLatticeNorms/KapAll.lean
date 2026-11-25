@@ -410,12 +410,6 @@ open scoped BigOperators ComplexConjugate
 
 namespace Formalism.L2.Th1.H
 
-section Index
-
-variable {V : Type*} [AddCommGroup V]
-
-end Index
-
 section Lattice
 
 instance periodLattice_finite (L : PeriodPair) : Module.Finite ℤ L.lattice := ZLattice.module_finite ℝ L.lattice

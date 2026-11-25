@@ -216,7 +216,7 @@ theorem isUnit_of_map_isUnit {p : MvPolynomial (Fin n) E} (h : IsUnit (p.map (al
   obtain ⟨r, hr, hpr⟩ := isUnit_iff_eq_C_of_isReduced.mp h
   have hc : ∀ m, m ≠ 0 → p.coeff m = 0 := fun m hm => by
     have := congrArg (AddMonoidAlgebra.coeff · m) hpr
-    rw [coeff_map, coeff_C, if_neg (Ne.symm hm)] at this
+    rw [coeff_map, coeff_C, ite_eq_right (Ne.symm hm)] at this
     exact (algebraMap E K).injective (by rw [this, map_zero])
   have hp : p = C (p.coeff 0) := by
     ext m
@@ -227,7 +227,7 @@ theorem isUnit_of_map_isUnit {p : MvPolynomial (Fin n) E} (h : IsUnit (p.map (al
   have h0 : p.coeff 0 ≠ 0 := by
     intro h0
     have := congrArg (AddMonoidAlgebra.coeff · 0) hpr
-    rw [coeff_map, h0, map_zero, coeff_C, if_pos rfl] at this
+    rw [coeff_map, h0, map_zero, coeff_C, ite_eq_left rfl] at this
     exact hr.ne_zero this.symm
   rw [hp]
   exact (Ne.isUnit h0).map C

@@ -54,4 +54,4 @@ theorem UpperTheory.Gal.TranscendenceTraces.wtClopen_of :
     rw [← pt_comp, hzf]
     exact hx0
   simp_rw [mul_ite, mul_zero]
-  rw [Finset.sum_ite_eq, if_pos hmem, mul_comm]
+  rw [Finset.sum_ite_eq, ite_eq_left hmem, mul_comm]

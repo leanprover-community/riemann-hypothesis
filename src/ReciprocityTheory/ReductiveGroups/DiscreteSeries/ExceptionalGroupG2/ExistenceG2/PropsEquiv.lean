@@ -15,6 +15,7 @@ import ReciprocityTheory.ReductiveGroups.DiscreteSeries.RigidityTheorems.RorthFu
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.PropsEquivA
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.RigidityTheorems.IrredA
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.RigidityTheorems.MultOneA
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.RigidityTheorems.RigidUniversal
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: ReciprocityTheory.ReductiveGroups.DiscreteSeries.ExceptionalGroupG2.RigidityG2.RigidOrth, ReciprocityTheory.ReductiveGroups.DiscreteSeries.ExceptionalGroupG2.RigidityG2.RigidUniversal, ReciprocityTheory.ReductiveGroups.DiscreteSeries.ExceptionalGroupG2.ExistenceG2.PropsEquiv
@@ -82,49 +83,9 @@ theorem rigid_universal {H₁ : Type*} [NormedAddCommGroup H₁] [InnerProductSp
       inner ℂ ((v' : D₁) : H₁) ((v : D₁) : H₁)) :
     ∀ g ∈ UJset ε, ∀ v v' : V₁,
       inner ℂ (((φ v' : V₂) : D₂) : H₂) (σ₂ g (((φ v : V₂) : D₂) : H₂)) =
-        inner ℂ ((v' : D₁) : H₁) (σ₁ g ((v : D₁) : H₁)) := by
-  have : FiniteDimensional ℂ V₁ := hV₁.1
-  have hσ := USum.isURepOn_sσ hσ₁ hσ₂
-  have hD := USum.isDerivedOn_sσ hD₁ hD₂
-  have hcomm := fun a b (hab : ε a = ε b) (v : V₁) =>
-    USum.phi_E_comm hD₁ hD₂ hV₁.2.1 hVK₁ φ hφK hab v
-  have hV := USum.diagSub_isKIrrHW φ hV₁ hcomm
-  have hc := USum.casimir_diagSub (E₁ := E₁) (E₂ := E₂) φ hc₁ hc₂
-  have hVK : ∀ k ∈ Kset ε, ∀ x ∈ USum.diagSub φ, ∃ w ∈ USum.diagSub φ,
-      (w : WithLp 2 (H₁ × H₂)) = USum.sσ σ₁ σ₂ k x := by
-    rintro k hk _ ⟨v, rfl⟩
-    obtain ⟨w₁, hw₁, e⟩ := hVK₁ k hk _ v.2
-    refine ⟨USum.diagι φ ⟨w₁, hw₁⟩, ⟨_, rfl⟩, ?_⟩
-    rw [USum.coe_diagι, USum.coe_diagι]
-    show _ = WithLp.toLp 2 (σ₁ k ((v : D₁) : H₁), σ₂ k (((φ v : V₂) : D₂) : H₂))
-    rw [← e, ← hφK k hk v ⟨w₁, hw₁⟩ e]
-  let R : WithLp 2 (H₁ × H₂) →L[ℂ] WithLp 2 (H₁ × H₂) := USum.sop 1 (-1)
-  let j' : USum.diagSub φ →ₗ[ℂ] WithLp 2 (H₁ × H₂) :=
-    R.toLinearMap ∘ₗ (USum.sD D₁ D₂).subtype ∘ₗ (USum.diagSub φ).subtype
-  have hj : ∀ k ∈ Kset ε, ∀ v w : USum.diagSub φ,
-      (((w : USum.sD D₁ D₂)) : WithLp 2 (H₁ × H₂)) = USum.sσ σ₁ σ₂ k ((v : USum.sD D₁ D₂) : _) →
-      j' w = USum.sσ σ₁ σ₂ k (j' v) := by
-    intro k _ v w h
-    show USum.sop 1 (-1) ((w : USum.sD D₁ D₂) : WithLp 2 (H₁ × H₂)) =
-      USum.sop (σ₁ k) (σ₂ k) (USum.sop 1 (-1) ((v : USum.sD D₁ D₂) : WithLp 2 (H₁ × H₂)))
-    rw [h]
-    exact USum.sop_neg_comm _ _ _
-  have horth : ∀ v v' : USum.diagSub φ, inner ℂ (j' v') ((v : USum.sD D₁ D₂) : WithLp 2 (H₁ × H₂)) = 0 := by
-    rintro ⟨_, ⟨v, rfl⟩⟩ ⟨_, ⟨v', rfl⟩⟩
-    show inner ℂ (WithLp.toLp 2 (((v' : D₁) : H₁), -(((φ v' : V₂) : D₂) : H₂)))
-      (WithLp.toLp 2 (((v : D₁) : H₁), (((φ v : V₂) : D₂) : H₂))) = 0
-    rw [USum.inner_sum]
-    simp only [inner_neg_left, hφI]
-    exact add_neg_cancel _
-  intro g hg v v'
-  have key := rigid_orth hgap hσ hD hV hc hVK j' hj horth g hg
-    ⟨USum.diagι φ v, ⟨v, rfl⟩⟩ ⟨USum.diagι φ v', ⟨v', rfl⟩⟩
-  change inner ℂ (WithLp.toLp 2 (((v' : D₁) : H₁), -(((φ v' : V₂) : D₂) : H₂)))
-    (USum.sop (σ₁ g) (σ₂ g) (WithLp.toLp 2 (((v : D₁) : H₁), (((φ v : V₂) : D₂) : H₂)))) = 0 at key
-  rw [USum.inner_sum, USum.sop_apply] at key
-  simp only [inner_neg_left] at key
-  rw [← sub_eq_add_neg, sub_eq_zero] at key
-  exact key.symm
+        inner ℂ ((v' : D₁) : H₁) (σ₁ g ((v : D₁) : H₁)) :=
+  DS.rigid_universal_of hD₁ hV₁ hc₁ hVK₁ hD₂ hc₂ φ hφK hφI fun hV hc hVK j' hj horth =>
+    rigid_orth hgap (USum.isURepOn_sσ hσ₁ hσ₂) (USum.isDerivedOn_sσ hD₁ hD₂) hV hc hVK j' hj horth
 
 end ReciprocityTheory.ChartRestriction.DS.G2
 end -- clump:auto

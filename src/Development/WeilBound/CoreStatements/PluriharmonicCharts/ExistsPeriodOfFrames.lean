@@ -350,14 +350,14 @@ theorem exists_coord {X : Type} [NormedAddCommGroup X] [NormedSpace ℂ X] {ty :
     · rw [Finset.sum_eq_single (e.symm ⟨i, hit⟩)]
       · simp [hit, eq_comm]
       · intro b _ hb
-        rw [if_neg, zero_mul]
+        rw [ite_eq_right, zero_mul]
         intro h
         exact hb (by rw [Equiv.eq_symm_apply]; exact Subtype.ext h.symm)
       · simp
     · rw [Finset.sum_eq_zero]
       · simp [hit]
       · intro b _
-        rw [if_neg, zero_mul]
+        rw [ite_eq_right, zero_mul]
         intro h
         exact hit (h ▸ (e b).2)
   have hP : ∀ u ∈ B, Sᵀ * (S * W u) = W u := fun u hu => by

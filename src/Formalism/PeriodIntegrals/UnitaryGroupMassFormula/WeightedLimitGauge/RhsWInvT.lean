@@ -100,7 +100,7 @@ theorem herm_hb (x w : Fin (k + 1) → ℂ) :
     herm (Hb k) x w = (∑ j : Fin k, star (w (Fin.castSucc j)) * x (Fin.castSucc j)) - star (w (Fin.last k)) * x (Fin.last k) := by
   unfold herm Hb
   simp only [dotProduct, Matrix.mulVec_diagonal, Fin.sum_univ_castSucc, Pi.star_apply]
-  simp only [Fin.castSucc_ne_last, if_false, one_mul, if_true, neg_one_mul, mul_neg]
+  simp only [Fin.castSucc_ne_last, ite_false, one_mul, ite_true, neg_one_mul, mul_neg]
   ring
 
 theorem herm_self_hb (x : Fin (k + 1) → ℂ) :
@@ -274,9 +274,9 @@ theorem orbInv_of (hQ : HypQ) (hU : UnimodK) (hT : FibTrans) : OrbInv := by
       · have hlt : Complex.normSq ζ < Tz k r z * Tz k r z' := lt_of_le_of_ne h hζ
         have h0 : zWeight k (Tz k r z) (Tz k r z') ζ = 0 := by
           unfold zWeight
-          rw [if_neg (not_le.2 hlt)]
+          rw [ite_eq_right (not_le.2 hlt)]
         rw [h0, ENNReal.ofReal_zero, zero_mul]
-      · simp only [Set.indicator, Set.mem_ofPred_eq, h, if_false, mul_zero]
+      · simp only [Set.indicator, Set.mem_ofPred_eq, h, ite_false, mul_zero]
     rw [lintegral_congr_ae h2, Pi.zero_def, lintegral_zero, mul_zero]
   have key : ∀ F' : (Fin (2 * r + k + 1) → ℂ) → ℝ≥0∞, Measurable F' →
       c * rhsW k r z z' μW μW' μsec (fun x => F' (orbV k r z' x)) =
@@ -291,7 +291,7 @@ theorem orbInv_of (hQ : HypQ) (hU : UnimodK) (hT : FibTrans) : OrbInv := by
         rw [secP_eq h]
       · have h0 : zWeight k (Tz k r z) (Tz k r z') ζ = 0 := by
           unfold zWeight
-          rw [if_neg (not_le.2 (lt_of_le_of_ne (not_lt.1 h) hζ))]
+          rw [ite_eq_right (not_le.2 (lt_of_le_of_ne (not_lt.1 h) hζ))]
         rw [h0, ENNReal.ofReal_zero, zero_mul, zero_mul]
     have sB : ∫⁻ v, GhatF k r z z' μW μsec F' (herm (Hpk k r) v z) ∂Q = ∫⁻ v, Gf μW F' v ∂Q := by
       refine lintegral_congr_ae ?_

@@ -76,7 +76,7 @@ theorem UpperTheory.V.Pa.Det.spanDesc :
       by_cases e : ((i : ℕ) < a) ↔ ((j : ℕ) < a)
       · have h1 : (single i j 1 : Matrix (Fin n) (Fin n) F) ∈ Ev F F n a :=
           fun p q => ⟨fun _ => trivial, fun e' => by
-            rw [Submodule.mem_bot, Matrix.single_apply, if_neg]
+            rw [Submodule.mem_bot, Matrix.single_apply, ite_eq_right]
             rintro ⟨rfl, rfl⟩
             exact e' e⟩
         rw [← h] at h1

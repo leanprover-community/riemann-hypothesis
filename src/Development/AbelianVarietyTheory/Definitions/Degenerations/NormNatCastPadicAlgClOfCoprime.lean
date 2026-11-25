@@ -212,14 +212,6 @@ theorem exists_at_of_cen (M : RatModel o Ω) {U₀ : M.Z.Opens} (hle : S.R ≤ M
 
 end ThetaSys
 
-section Dedekind
-
-variable (o Ω : Type) [CommRing o] [IsDedekindDomain o] [Field Ω] [Algebra o Ω] [IsFractionRing o Ω]
-
-variable {o Ω}
-
-end Dedekind
-
 section Heisenberg
 
 variable {o : Type} [CommRing o] {N : ℕ} [NeZero N] (ψ : AddChar (ZMod N) o)
@@ -231,7 +223,7 @@ theorem heisMat_mul {h : ZMod N} (hh : 2 * h = 1) (u v u' v' : ZMod N) :
     heisMat ψ h u v * heisMat ψ h u' v' = ψ (h * (u * v' - v * u')) • heisMat ψ h (u + u') (v + v') := by
   ext i k
   rw [Matrix.mul_apply, Finset.sum_eq_single (i + u) (fun j _ hj => by simp [heisMat, hj]) (by simp)]
-  simp only [heisMat, Matrix.of_apply, if_true, Matrix.smul_apply, smul_eq_mul, add_assoc]
+  simp only [heisMat, Matrix.of_apply, ite_true, Matrix.smul_apply, smul_eq_mul, add_assoc]
   split_ifs
   · rw [← AddChar.map_add_eq_mul, ← AddChar.map_add_eq_mul]
     congr 1
@@ -332,12 +324,6 @@ def heisSys : ThetaSys o Ω :=
       have h : algebraMap o Ω ϖ ≠ 0 := (map_ne_zero_iff _ (IsFractionRing.injective o Ω)).2 hϖ
       simp [h]
     th_ne := ⟨0, by simp⟩ }
-
-section HeisTests
-
-variable {p : ℕ} [Fact p.Prime] (y : (heisSys Ω hN hr hζ hu hodd ϖ hϖ).R →+* PadicAlgCl p)
-
-end HeisTests
 
 end Inhabitants
 

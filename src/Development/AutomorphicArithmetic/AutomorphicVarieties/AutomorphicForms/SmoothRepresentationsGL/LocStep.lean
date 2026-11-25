@@ -27,9 +27,9 @@ private theorem colM_mul_neg (m : Fin n) (u v : Fin n → R) (huv : u + v = 0) :
     · have : ¬ (i ≤ m ∧ k.val = m.val + 1) := fun h => by
         have := Fin.le_def.1 h1
         omega
-      rw [if_neg this, zero_mul]
+      rw [ite_eq_right this, zero_mul]
     · have : ¬ (k ≤ m ∧ j.val = m.val + 1) := fun h => h1 h.1
-      rw [if_neg this, mul_zero]
+      rw [ite_eq_right this, mul_zero]
   unfold colM
   rw [add_mul, mul_add, mul_add, h0, one_mul, one_mul, mul_one, add_zero, add_assoc, add_eq_left]
   ext i j
@@ -140,7 +140,7 @@ private theorem row_nhds (m : Fin n) (U : OpenSubgroup (GL (Fin n) K)) :
   simp only [rowM, Matrix.of_apply, Pi.add_apply]
   by_cases h : i = m ∧ j ≤ m
   · simp [h]
-  · rw [if_neg h, if_neg h]
+  · rw [ite_eq_right h, ite_eq_right h]
 
 private theorem step_gen (hA : AvgChar) (ψ : AddChar K ℂ) (hψ : ∀ᶠ x in 𝓝 (0 : K), ψ x = 1)
     (hD : ∀ V ∈ 𝓝 (0 : K), ∃ L : AddSubgroup K, IsOpen (L : Set K) ∧ IsCompact (L : Set K) ∧
@@ -176,7 +176,7 @@ private theorem step_gen (hA : AvgChar) (ψ : AddChar K ℂ) (hψ : ∀ᶠ x in 
   · simp [dlt_one]
   · have h1 : ∀ u ∈ L, ψ (dlt m ξ u) = 1 := by
       by_contra h
-      exact hξ (if_neg h)
+      exact hξ (ite_eq_right h)
     refine hrow ξ fun j hj => hL₁ _ fun y hy => ?_
     rw [← dlt_single m ξ j hj]
     refine h1 _ fun k _ => ?_

@@ -47,13 +47,13 @@ private theorem commutator_eq_of_glRel {M : Type*} [AddCommGroup M] [Module ℂ 
     congr 1
     · by_cases h' : b = c
       · subst h'
-        rw [if_pos rfl, Matrix.single_mul_single_same, mul_one]
-      · rw [if_neg h']
+        rw [ite_eq_left rfl, Matrix.single_mul_single_same, mul_one]
+      · rw [ite_eq_right h']
         simp [Matrix.single_mul_single_of_ne, h']
     · by_cases h' : d = a
       · subst h'
-        rw [if_pos rfl, Matrix.single_mul_single_same, mul_one]
-      · rw [if_neg h']
+        rw [ite_eq_left rfl, Matrix.single_mul_single_same, mul_one]
+      · rw [ite_eq_right h']
         simp [Matrix.single_mul_single_of_ne, h']
   have key1 : ∀ (Z : Matrix (Fin n) (Fin n) ℂ) (c d : Fin n),
       L Z * L (Matrix.single c d 1) - L (Matrix.single c d 1) * L Z =

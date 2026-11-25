@@ -183,12 +183,6 @@ def Eword (L : Lev) (w : List (Fin (2 * L.r + (L.k0 + 1) + 1) × Fin (2 * L.r + 
 
 end Lev
 
-section Waves
-
-variable {m : ℕ} {E : Type*} [AddCommGroup E] [Module ℂ E]
-
-end Waves
-
 namespace Lev
 
 def UUset (L : Lev) (g : Mat L.k0 L.r) : Set (Mat L.k0 L.r) :=
@@ -300,11 +294,5 @@ end Lev
 namespace Lev
 
 end Lev
-
-section Deg
-
-open scoped Matrix.Norms.Elementwise
-
-end Deg
 
 end Formalism.MainNotions.S.TopsChoicePartA

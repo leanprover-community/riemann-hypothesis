@@ -372,7 +372,7 @@ private lemma case_two_finite_lemma
   · right
     refine ⟨hdisc, hF, ?_, hvg⟩
     rw [v.map_inv]
-    push_neg at hvt
+    push Not at hvt
     exact withTop_int_neg_nonneg_of_neg hvt
 
 open NumberField in

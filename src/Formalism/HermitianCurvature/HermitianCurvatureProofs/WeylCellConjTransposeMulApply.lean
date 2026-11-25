@@ -247,10 +247,10 @@ theorem pres_chat2L (u : ℂ) (a a' β β' : Mx k r → Fin (mdim k r i) → ℂ
   unfold chat2L
   refine sf_sum _ fun i₁ _ => sf_sum _ fun i₂ _ => sf_sum _ fun j₁ _ => sf_sum _ fun j₂ _ => ?_
   by_cases hc : i₁ < i₂ ∧ j₁ < j₂
-  · simp only [if_pos hc]
+  · simp only [ite_eq_left hc]
     exact sf_smul (sf_mul (sf_mul (sf_const _) (sf_sub (sf_mul (hβ i₁) (hβ' i₂)) (sf_mul (hβ i₂) (hβ' i₁))))
       (sf_sub (sf_mul (ha j₁) (ha' j₂)) (sf_mul (ha j₂) (ha' j₁)))) (pres_qminor _ _ _ Φ h)
-  · simp only [if_neg hc]
+  · simp only [ite_eq_right hc]
     exact sf_zero
 
 theorem pres_tL (z z' : Fin (2 * r + k + 1) → ℂ) (Y : ℂ) (p q : Fin 2) :
@@ -347,13 +347,13 @@ theorem sf_opL (hU₀ : U₀ ⊆ {x | x.1 ∈ OmX r}) (a : Fin r) (j : Fin 6) {�
   · refine sf_congr_on isOpen_OmXX hU₀ (fun x hx _ => ?_) (sf_smul hc hw)
     show pOp a (fun c' => Φ c' x.2) x.1 = _
     unfold pOp
-    exact if_pos hx
+    exact ite_eq_left hx
   · exact sf_smul hc h
   · exact sf_smul hci h
   · refine sf_congr_on isOpen_OmXX hU₀ (fun x hx _ => ?_) (sf_smul hcb hwb)
     show pbOp a (fun c' => Φ c' x.2) x.1 = _
     unfold pbOp
-    exact if_pos hx
+    exact ite_eq_left hx
   · exact sf_smul hcb h
   · exact sf_smul hcbi h
 
@@ -462,28 +462,28 @@ theorem w1_apply (l : Fin r) (c : ℂ) (p q : Fin (2 * r + k + 1)) :
 theorem mul_weyl_cell_apply (l : Fin r) (c : ℂ) (M : Mx k r) (p q : Fin (2 * r + k + 1)) :
     (M * w1 k r l c) p q = M p (sw k l q) * dd k l c q := by
   rw [Matrix.mul_apply, Finset.sum_eq_single (sw k l q)]
-  · rw [w1_apply, if_pos rfl]
+  · rw [w1_apply, ite_eq_left rfl]
   · intro x _ hx
-    rw [w1_apply, if_neg hx, mul_zero]
+    rw [w1_apply, ite_eq_right hx, mul_zero]
   · intro h
     exact absurd (Finset.mem_univ _) h
 
 theorem weyl_cell_mul_apply (l : Fin r) (c : ℂ) (M : Mx k r) (p q : Fin (2 * r + k + 1)) :
     (w1 k r l c * M) p q = dd k l c (sw k l p) * M (sw k l p) q := by
   rw [Matrix.mul_apply, Finset.sum_eq_single (sw k l p)]
-  · rw [w1_apply, sw_sw, if_pos rfl]
+  · rw [w1_apply, sw_sw, ite_eq_left rfl]
   · intro x _ hx
     have : p ≠ sw k l x := fun h => hx (by rw [h, sw_sw])
-    rw [w1_apply, if_neg this, zero_mul]
+    rw [w1_apply, ite_eq_right this, zero_mul]
   · intro h
     exact absurd (Finset.mem_univ _) h
 
 theorem weyl_cell_conjTranspose_mul_apply (l : Fin r) (c : ℂ) (M : Mx k r) (p q : Fin (2 * r + k + 1)) :
     ((w1 k r l c)ᴴ * M) p q = star (dd k l c p) * M (sw k l p) q := by
   rw [Matrix.mul_apply, Finset.sum_eq_single (sw k l p)]
-  · rw [Matrix.conjTranspose_apply, w1_apply, if_pos rfl]
+  · rw [Matrix.conjTranspose_apply, w1_apply, ite_eq_left rfl]
   · intro x _ hx
-    rw [Matrix.conjTranspose_apply, w1_apply, if_neg hx, star_zero, zero_mul]
+    rw [Matrix.conjTranspose_apply, w1_apply, ite_eq_right hx, star_zero, zero_mul]
   · intro h
     exact absurd (Finset.mem_univ _) h
 

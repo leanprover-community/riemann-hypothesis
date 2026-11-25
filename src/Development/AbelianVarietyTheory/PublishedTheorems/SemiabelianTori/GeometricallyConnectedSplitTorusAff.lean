@@ -153,12 +153,6 @@ variable {T K}
 
 end Dvr
 
-section Model
-
-open scoped TensorProduct
-
-end Model
-
 end SemiAbelianHomExtension
 
 end GlobalTheory.Published

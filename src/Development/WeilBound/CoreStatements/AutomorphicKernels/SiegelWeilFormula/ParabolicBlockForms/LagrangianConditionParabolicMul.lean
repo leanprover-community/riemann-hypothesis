@@ -48,7 +48,7 @@ theorem yrow_zero {n : ℕ} {ε : ℤˣ} {i₀ : Fin n} {M : Matrix (Fin n ⊕ F
     intro s
     rw [Matrix.mul_apply]
     simp only [Matrix.transpose_apply, hx, Matrix.one_apply, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq',
-      Finset.mem_univ, if_true]
+      Finset.mem_univ, ite_true]
   rw [Matrix.mul_apply] at h
   simp only [h2] at h
   have h3 : QE (E := E) n ε (Sum.inl i₀) c = 0 := by

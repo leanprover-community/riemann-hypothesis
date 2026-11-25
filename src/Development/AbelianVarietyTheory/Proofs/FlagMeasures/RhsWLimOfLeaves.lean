@@ -660,7 +660,7 @@ private lemma exp_opGen_conjTranspose_mul_diagonal_mul (k r : ℕ) (q : TrE k) (
     by_cases hj : sgn k r j = 0
     · obtain ⟨h1, h2⟩ := hz j i hj
       simp [h1, h2]
-    simp only [if_neg hi, if_neg hj]
+    simp only [ite_eq_right hi, ite_eq_right hj]
     exact hent i j
 
 theorem exp_form (k r : ℕ) (q : TrE k) :
@@ -696,14 +696,14 @@ theorem form_eq (k r : ℕ) (v : Fin (2 * r + k + 1) → ℂ) :
     intro i hi
     have : sgn k r i = 0 := by
       unfold sgn
-      rw [if_neg, if_neg]
+      rw [ite_eq_right, ite_eq_right]
       · intro h; exact hi ⟨⟨i.val - r, by omega⟩, by ext; simp [wI]; omega⟩
       · rintro ⟨h1, h2⟩; exact hi ⟨⟨i.val - r, by omega⟩, by ext; simp [wI]; omega⟩
     simp [this]
   have h1 : ∀ j : Fin k, sgn k r (wI k r j.castSucc) = 1 := by
-    intro j; unfold sgn; rw [if_pos]; simp [wI]
+    intro j; unfold sgn; rw [ite_eq_left]; simp [wI]
   have h2 : sgn k r (wI k r (Fin.last k)) = -1 := by
-    unfold sgn; rw [if_neg, if_pos] <;> simp [wI]
+    unfold sgn; rw [ite_eq_right, ite_eq_left] <;> simp [wI]
   rw [hs, Fin.sum_univ_castSucc, h2]
   simp only [h1, opCo]
   push_cast
@@ -810,12 +810,12 @@ theorem opVec_wI (p : (Fin k → ℂ) × ℂ) (m : Fin (k + 1)) : opVec k r p (w
   by_cases h : m.val < k
   · rw [dite_eq_left (by simp only; omega), dite_eq_left h]
     exact congrArg p.1 (Fin.ext (by simp))
-  · rw [dite_eq_right (by simp only; omega), dite_eq_right h, if_pos (by simp only; omega)]
+  · rw [dite_eq_right (by simp only; omega), dite_eq_right h, ite_eq_left (by simp only; omega)]
 
 theorem opVec_inWb (p : (Fin k → ℂ) × ℂ) : inWb k r (opVec k r p) := by
   intro i hi
   unfold opVec
-  rw [dite_eq_right (by omega), if_neg (by omega)]
+  rw [dite_eq_right (by omega), ite_eq_right (by omega)]
 
 theorem opCo_opVec (p : (Fin k → ℂ) × ℂ) : opCo k r (opVec k r p) = p := by
   refine Eq.trans ?_ (ofW_toW p)
@@ -901,7 +901,7 @@ theorem entry_bound {μ : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ} (hμ : μᴴ *
     intro j
     refine Fin.lastCases le_rfl (fun j => ?_) j
     have h := col hμ' (Fin.last k)
-    simp only [conjTranspose_apply, if_true, Complex.star_def, Complex.normSq_conj] at h
+    simp only [conjTranspose_apply, ite_true, Complex.star_def, Complex.normSq_conj] at h
     have := Finset.single_le_sum (f := fun l : Fin k => Complex.normSq (μ (Fin.last k) l.castSucc))
       (fun l _ => Complex.normSq_nonneg _) (Finset.mem_univ j)
     linarith
@@ -1073,16 +1073,16 @@ variable {k r : ℕ}
 theorem opVec_inWb (p : (Fin k → ℂ) × ℂ) : inWb k r (opVec k r p) := by
   intro i hi
   unfold opVec
-  rw [dif_neg (by omega), if_neg (by omega)]
+  rw [dite_eq_right (by omega), ite_eq_right (by omega)]
 
 theorem wbPart_opVec (p : (Fin k → ℂ) × ℂ) : wbPart k r (opVec k r p) = toW k p := by
   funext m
   have := m.isLt
   unfold wbPart opVec toW wI
   by_cases h : m.val < k
-  · rw [dif_pos (by simp only; omega), dif_pos h]
+  · rw [dite_eq_left (by simp only; omega), dite_eq_left h]
     exact congrArg p.1 (Fin.ext (by simp))
-  · rw [dif_neg (by simp only; omega), dif_neg h, if_pos (by simp only; omega)]
+  · rw [dite_eq_right (by simp only; omega), dite_eq_right h, ite_eq_left (by simp only; omega)]
 
 theorem opCo_eq (v : Fin (2 * r + k + 1) → ℂ) : opCo k r v = ofW k (wbPart k r v) := rfl
 

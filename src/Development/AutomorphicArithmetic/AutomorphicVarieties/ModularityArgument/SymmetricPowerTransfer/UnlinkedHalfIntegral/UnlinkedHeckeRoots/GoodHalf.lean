@@ -97,10 +97,10 @@ theorem conjEig : ConjEig := by
     rw [h2 _ (Nat.mul_pos hp.pos hn), h2 _ hp.pos, h2 _ hn, hc]
     by_cases hd : p ∣ n
     · have hm : 1 ≤ n / p := Nat.div_pos (Nat.le_of_dvd hn hd) hp.pos
-      simp only [hd, if_true] at e ⊢
+      simp only [hd, ite_true] at e ⊢
       rw [h2 _ hm]
       simpa [map_add (f := _), map_mul, map_pow, map_natCast] using e
-    · simp only [hd, if_false] at e ⊢
+    · simp only [hd, ite_false] at e ⊢
       simpa [map_add (f := _), map_mul, map_pow, map_natCast] using e
 
 end UpperTheory.V.Z.Sym.Unl

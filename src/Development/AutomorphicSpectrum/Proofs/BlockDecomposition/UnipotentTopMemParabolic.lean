@@ -100,7 +100,7 @@ theorem snd (i t : ℕ) (x : Fin i → k) :
       (GlobalTheory.BZMir.Leib.ePG i t ⟨true, a⟩) (GlobalTheory.BZMir.Leib.ePG i t ⟨true, b⟩) =
       (1 : Matrix (Fin t) (Fin t) k) a b
   rw [GlobalTheory.CompanionTheory.BZPsiPG.TopCol.entry]
-  simp only [GlobalTheory.BZMir.colMat, if_neg (GlobalTheory.CompanionTheory.BZPsiPG.TopCol.ePG_true_ne_last i t b), add_zero]
+  simp only [GlobalTheory.BZMir.colMat, ite_eq_right (GlobalTheory.CompanionTheory.BZPsiPG.TopCol.ePG_true_ne_last i t b), add_zero]
   simp [Matrix.one_apply]
 
 theorem main : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (i t : ℕ)

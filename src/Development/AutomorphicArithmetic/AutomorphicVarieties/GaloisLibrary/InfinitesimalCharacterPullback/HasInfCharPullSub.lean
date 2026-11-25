@@ -26,13 +26,13 @@ theorem coord_conj (τ : E →+* ℂ) (x : Cinf E) :
   unfold coord
   simp only [InfinitePlace.mk_conjugate_eq]
   rcases InfinitePlace.embedding_mk_eq τ with h | h
-  · rw [if_pos h, if_neg (by rw [InfinitePlace.mk_conjugate_eq, h]; exact hne.symm)]; rfl
-  · rw [if_pos (by rw [InfinitePlace.mk_conjugate_eq, h]), if_neg (by rw [h]; exact hne)]; simp
+  · rw [ite_eq_left h, ite_eq_right (by rw [InfinitePlace.mk_conjugate_eq, h]; exact hne.symm)]; rfl
+  · rw [ite_eq_left (by rw [InfinitePlace.mk_conjugate_eq, h]), ite_eq_right (by rw [h]; exact hne)]; simp
 
 omit [NumberField E] [_root_.NumberField.IsTotallyComplex E] in
 theorem coord_embedding (w : InfinitePlace E) (x : Cinf E) : coord w.embedding x = x w := by
   unfold coord
-  rw [if_pos (by rw [InfinitePlace.mk_embedding])]
+  rw [ite_eq_left (by rw [InfinitePlace.mk_embedding])]
   simp [InfinitePlace.mk_embedding]
 
 omit [NumberField E] [_root_.NumberField.IsTotallyComplex E] in

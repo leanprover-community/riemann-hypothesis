@@ -115,12 +115,4 @@ theorem continuous_into_HA (hJ : IsHermND σ J) {X : Type} [TopologicalSpace X] 
 
 end HAcont
 
-section Raw
-
-variable {F E : Type} [Field F] [Field E] [Algebra F E] (R : Type) [CommRing R] [Algebra F R]
-  [TopologicalSpace R] [IsTopologicalRing R] [IsTopologicalRing (R ⊗[F] E)] (σ : E →ₐ[F] E)
-  {M : ℕ} (J : Matrix (Fin M) (Fin M) E) {r : ℕ} (P : Frame E M r) (T : F)
-
-end Raw
-
 end PI.VolSemiDirect.W.Md

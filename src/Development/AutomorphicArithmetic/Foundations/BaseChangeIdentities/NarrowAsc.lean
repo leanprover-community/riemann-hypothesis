@@ -49,16 +49,6 @@ theorem hasSpehComp (h3 : Clause3Asc) (hF : GlobalTheory.Published.AutomorphicFo
     rw [← e']
     exact hm'
 
-section Pair
-
-end Pair
-
-section Local
-
-open GlobalTheory.DefiniteBC GlobalTheory.BcSpeh GlobalTheory.BcSpehProof
-
-end Local
-
 end Re.Asc
 
 end PositivityTheory.Rg.Rs

@@ -94,16 +94,16 @@ noncomputable def adeleOn (F : Type) [Field F] [NumberField F]
     (⟨fun v => if v ∈ S then algebraMap F (v.adicCompletion F) z else 1, by
       filter_upwards [S.finite_toSet.compl_mem_cofinite] with v hv
       have hv' : v ∉ S := hv
-      simp only [if_neg hv', SetLike.mem_coe]
+      simp only [ite_eq_right hv', SetLike.mem_coe]
       exact one_mem _⟩ : FiniteAdeleRing (𝓞 F) F))
 
 theorem adeleOn_snd_of_mem (F : Type) [Field F] [NumberField F]
     (S : Finset (HeightOneSpectrum (𝓞 F))) (z : F) {v : HeightOneSpectrum (𝓞 F)} (hv : v ∈ S) :
-    (adeleOn F S z).2 v = algebraMap F (v.adicCompletion F) z := if_pos hv
+    (adeleOn F S z).2 v = algebraMap F (v.adicCompletion F) z := ite_eq_left hv
 
 theorem adeleOn_snd_of_notMem (F : Type) [Field F] [NumberField F]
     (S : Finset (HeightOneSpectrum (𝓞 F))) (z : F) {v : HeightOneSpectrum (𝓞 F)} (hv : v ∉ S) :
-    (adeleOn F S z).2 v = 1 := if_neg hv
+    (adeleOn F S z).2 v = 1 := ite_eq_right hv
 
 theorem adeleOn_mul_inv (F : Type) [Field F] [NumberField F]
     (S : Finset (HeightOneSpectrum (𝓞 F))) {z : F} (hz : z ≠ 0) :

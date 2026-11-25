@@ -92,7 +92,7 @@ theorem unipGL_mem_adelicBorel (r : ℕ) (X : UPos n r → 𝔸[K]) :
   have hij' : (j : ℕ) < i := hij
   simp only [unipMatrix, Matrix.add_apply, blockEntry_apply, Matrix.one_apply]
   have hne : i ≠ j := fun h => by subst h; omega
-  rw [if_neg hne, dite_eq_right (by omega), add_zero]
+  rw [ite_eq_right hne, dite_eq_right (by omega), add_zero]
 
 theorem ctn_unipGL_mul {r : ℕ} {φ : AdelicGLn.AdelicGL K n → ℂ} (hφ : IsLeftInvariant φ)
     (X : UPos n r → 𝔸[K]) (g : AdelicGLn.AdelicGL K n) :

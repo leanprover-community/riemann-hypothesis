@@ -121,7 +121,7 @@ theorem one_vector_holds : OneVector := by
   intro K V _ _ _ _ _ B hB x y hxy hx0
   by_cases ha : B (x - y) x ≠ 0
   · exact oneVector_generic B hB x y hxy ha
-  · push_neg at ha
+  · push Not at ha
     have hyx : B y x = B x x := by
       have h : B (x - y) x = B x x - B y x := by simp only [map_sub, LinearMap.sub_apply]
       rw [h] at ha

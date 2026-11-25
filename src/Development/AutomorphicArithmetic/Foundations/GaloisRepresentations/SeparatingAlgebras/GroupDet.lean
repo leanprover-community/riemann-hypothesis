@@ -20,7 +20,7 @@ private noncomputable def rho0 (H : Type) [Group H] [Fintype H] : H →* Matrix 
         = if x = v * g then (if h = u * x then 1 else 0) else 0 := by
       intro x
       split_ifs <;> simp
-    simp only [Matrix.mul_apply, Matrix.of_apply, e, Finset.sum_ite_eq', Finset.mem_univ, if_true,
+    simp only [Matrix.mul_apply, Matrix.of_apply, e, Finset.sum_ite_eq', Finset.mem_univ, ite_true,
       mul_assoc]
 
 theorem UpperTheory.Gal.Gen.groupDet_pf :
@@ -77,7 +77,7 @@ theorem UpperTheory.Gal.Gen.groupDet_pf :
     · simp [hTe]
     · intro i j hij
       have hji : j < i := hij
-      rw [hTe i j hji.le, if_neg hji.ne', mul_zero]
+      rw [hTe i j hji.le, ite_eq_right hji.ne', mul_zero]
   have hnA : ∀ i j, ‖A' i j‖ ≤ 1 := by
     intro i j
     rw [hA']

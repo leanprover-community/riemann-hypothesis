@@ -320,11 +320,11 @@ theorem isSmallH_iff (d : HSMBlockDatum D K ι Ω) (n : ℕ) {F : MRing ι} (hF 
       rw [d.deg] at this
       by_cases hk : k = d.k₀
       · subst hk
-        simp only [unitDeg, if_true, mul_one] at this
-        simp only [Pi.add_apply, blockDeg, if_true]
+        simp only [unitDeg, ite_true, mul_one] at this
+        simp only [Pi.add_apply, blockDeg, ite_true]
         omega
-      · simp only [unitDeg, hk, if_false, mul_zero, add_zero] at this
-        simp only [Pi.add_apply, blockDeg, hk, if_false, zero_add]
+      · simp only [unitDeg, hk, ite_false, mul_zero, add_zero] at this
+        simp only [Pi.add_apply, blockDeg, hk, ite_false, zero_add]
         omega
     have hmh : IsMultiHomog (g - F * g') dg := isMultiHomog_sub' hg (hdg ▸ isMultiHomog_mul' hF hg')
     have hy : aeval d.y (g - F * g') = 0 := by rw [map_sub, map_mul, hval, sub_self]

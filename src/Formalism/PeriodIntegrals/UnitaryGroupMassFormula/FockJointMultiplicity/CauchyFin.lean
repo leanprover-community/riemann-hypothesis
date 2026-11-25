@@ -481,14 +481,14 @@ theorem cd_mono_factor {m : ℕ} (ι : Fin m × Fin m → σ) (hι : Function.In
   · obtain ⟨v, hv, hvo⟩ := hoff
     have h1 : (e.prod fun v k => killS (offD ι) v ^ k) = 0 := by
       refine Finset.prod_eq_zero hv ?_
-      simp only [killS, if_pos hvo]
+      simp only [killS, ite_eq_left hvo]
       exact zero_pow (Finsupp.mem_support_iff.mp hv)
     have h2 : (e.prod fun v k => diagOne' ι v ^ k) = 0 := by
       refine Finset.prod_eq_zero hv ?_
-      simp only [diagOne', if_pos hvo]
+      simp only [diagOne', ite_eq_left hvo]
       exact zero_pow (Finsupp.mem_support_iff.mp hv)
     rw [h1, h2, mul_zero]
-  · push_neg at hoff
+  · push Not at hoff
     have hsum : ∀ i, ∑ k : Fin m, e (ι (i, k)) = e (ι (i, i)) := by
       intro i
       rw [Finset.sum_eq_single i]
@@ -501,12 +501,12 @@ theorem cd_mono_factor {m : ℕ} (ι : Fin m × Fin m → σ) (hι : Function.In
     have hL : (e.prod fun v k => killS (offD ι) v ^ k) = ∏ v ∈ e.support, (X v : MvPolynomial σ ℂ) ^ e v := by
       unfold Finsupp.prod
       refine Finset.prod_congr rfl fun v hv => ?_
-      simp only [killS, if_neg (hoff v hv)]
+      simp only [killS, ite_eq_right (hoff v hv)]
     have hR : (e.prod fun v k => diagOne' ι v ^ k) =
         ∏ v ∈ e.support, (if (∃ i k, ι (i, k) = v ∧ (i : ℕ) = k) then 1 else (X v : MvPolynomial σ ℂ) ^ e v) := by
       unfold Finsupp.prod
       refine Finset.prod_congr rfl fun v hv => ?_
-      simp only [diagOne', if_neg (hoff v hv)]
+      simp only [diagOne', ite_eq_right (hoff v hv)]
       split_ifs <;> simp
     have hsplit : ∏ v ∈ e.support, (X v : MvPolynomial σ ℂ) ^ e v =
         (∏ v ∈ e.support, if (∃ i k, ι (i, k) = v ∧ (i : ℕ) = k) then (X v : MvPolynomial σ ℂ) ^ e v else 1) *
@@ -586,7 +586,7 @@ theorem diagonal_image_block_free : HypFree := by
         · exact h2 ⟨i, k, rfl, hik⟩
         · exact h1 ⟨i, k, rfl, hik⟩
       rw [MvPolynomial.support_X, Finset.mem_singleton] at he
-      rw [he, Finsupp.single_apply, if_neg hne]
+      rw [he, Finsupp.single_apply, ite_eq_right hne]
   induction P using MvPolynomial.induction_on
   next a =>
     rw [MvPolynomial.aeval_C, MvPolynomial.algebraMap_eq]

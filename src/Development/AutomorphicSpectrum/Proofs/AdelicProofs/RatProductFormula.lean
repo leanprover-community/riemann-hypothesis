@@ -72,9 +72,9 @@ theorem good_prime (q : ℕ) (hq : q.Prime) : Good q := by
     have h2 : (if (p : ℕ) = q then -Real.log q else 0) ≠ 0 := hp'
     by_cases h : (p : ℕ) = q
     · exact Set.mem_singleton_iff.2 (Subtype.ext h)
-    · exact absurd (if_neg h) h2
+    · exact absurd (ite_eq_right h) h2
   · rw [finsum_congr e, finsum_eq_single (fun x : Nat.Primes => if (x : ℕ) = q then -Real.log q else 0) ⟨q, hq⟩
-      (fun p hp => if_neg fun h => hp (Subtype.ext h))]
+      (fun p hp => ite_eq_right fun h => hp (Subtype.ext h))]
     simp
 
 theorem good_nat (n : ℕ) (hn : n ≠ 0) : Good n := by

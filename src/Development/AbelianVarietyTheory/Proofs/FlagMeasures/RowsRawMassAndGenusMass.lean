@@ -316,7 +316,7 @@ theorem exists_adapted {h : V →ₗ⋆[K] V →ₗ[K] K} (hs : h.IsSymm) (hn : 
       (h3 (Submodule.subset_span (Or.inl (Or.inr ⟨a, b, hb, rfl⟩))))
 
     simp only [map_sum, sm, star_star, hfe, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ,
-    if_true] at this
+    ite_true] at this
     rw [mul_comm]
     exact (FractionalIdeal.mem_one_iff _).2 (Submodule.mem_one.1 this)
   · rintro _ ⟨a, x, hx, rfl⟩

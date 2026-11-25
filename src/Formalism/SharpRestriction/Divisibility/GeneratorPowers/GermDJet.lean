@@ -54,8 +54,8 @@ private theorem coeff_psTrunc_lemma_2 [Fintype ι] [DecidableEq ι] (k : ℕ) (g
   simp only [MvPolynomial.coeff_monomial]
   rw [Finset.sum_ite_eq']
   by_cases h : e.degree ≤ k
-  · rw [if_pos ((mem_degLE_lemma k e).2 h), if_pos h]
-  · rw [if_neg (mt (mem_degLE_lemma k e).1 h), if_neg h]
+  · rw [ite_eq_left ((mem_degLE_lemma k e).2 h), ite_eq_left h]
+  · rw [ite_eq_right (mt (mem_degLE_lemma k e).1 h), ite_eq_right h]
 
 theorem psTrunc_succ_sub [Fintype ι] [DecidableEq ι] (g : MvPowerSeries ι R) :
     psTrunc (m + 1) g - psTrunc m g ∈ orig R ι ^ (m + 1) := by
@@ -64,7 +64,7 @@ theorem psTrunc_succ_sub [Fintype ι] [DecidableEq ι] (g : MvPowerSeries ι R) 
   rw [MvPolynomial.mem_support_iff, MvPolynomial.coeff_sub, coeff_psTrunc_lemma_2, coeff_psTrunc_lemma_2] at he
   by_contra hlt
   have h1 : e.degree ≤ m := by omega
-  rw [if_pos h1, if_pos (by omega : e.degree ≤ m + 1), sub_self] at he
+  rw [ite_eq_left h1, ite_eq_left (by omega : e.degree ≤ m + 1), sub_self] at he
   exact he rfl
 
 theorem exists_ps_of_jets [Fintype ι] [DecidableEq ι] (a : ∀ m, Jet R ι m)
@@ -108,7 +108,7 @@ theorem sL_copy1 (m : ℕ) (g : Fin d → MvPowerSeries (Fin 1 × Fin d) R) :
 private theorem const_psTrunc_lemma_3 {κ : Type} [Fintype κ] [DecidableEq κ] (k : ℕ) (g : MvPowerSeries κ R) :
     MvPolynomial.constantCoeff (psTrunc k g) = MvPowerSeries.coeff 0 g := by
   rw [show MvPolynomial.constantCoeff (psTrunc k g) = AddMonoidAlgebra.coeff (psTrunc k g) 0 from rfl,
-    coeff_psTrunc_lemma_2, if_pos (by simp)]
+    coeff_psTrunc_lemma_2, ite_eq_left (by simp)]
 
 theorem sL_trunc (m : ℕ) (g : Fin d → MvPowerSeries (Fin 1 × Fin d) R) :
     (jetTrunc : Jet R (Fin 1 × Fin d) (m + 1) →ₐ[R] _).comp (sL (m + 1) g) =

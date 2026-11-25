@@ -135,12 +135,6 @@ theorem IsSaturatedSubmodule.comap {N : Submodule R M'} (h : IsSaturatedSubmodul
 
 end Basic
 
-section Rank
-
-variable {R : Type*} [CommRing R] [IsDomain R] {M : Type*} [AddCommGroup M] [Module R M]
-
-end Rank
-
 section Relative
 
 variable {R : Type*} [CommRing R] {V V' : Type*} [AddCommGroup V] [Module R V]
@@ -233,9 +227,5 @@ theorem rank_eq_rank_span (N : Submodule R V) :
 
 
 end Lattice
-
-section Examples
-
-end Examples
 
 end GlobalTheory

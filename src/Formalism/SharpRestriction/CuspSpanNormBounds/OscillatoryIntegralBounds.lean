@@ -256,16 +256,16 @@ theorem Hpk_wI (k r : ℕ) (j : Fin (k + 1)) (q : Fin (2 * r + k + 1)) :
   have hj := j.isLt
   have hv : (wI k r j).val = r + j.val := rfl
   unfold Hpk
-  rw [if_neg (by rw [hv]; omega), if_neg (by rw [hv]; omega)]
+  rw [ite_eq_right (by rw [hv]; omega), ite_eq_right (by rw [hv]; omega)]
   by_cases hq : q = wI k r j
-  · rw [if_pos hq, if_pos ⟨by rw [hv]; omega, by rw [hv]; omega, hq.symm⟩]
+  · rw [ite_eq_left hq, ite_eq_left ⟨by rw [hv]; omega, by rw [hv]; omega, hq.symm⟩]
     by_cases hl : j = Fin.last k
-    · rw [if_pos hl, if_pos (by rw [hv, hl]; rfl)]
-    · rw [if_neg hl, if_neg (by
+    · rw [ite_eq_left hl, ite_eq_left (by rw [hv, hl]; rfl)]
+    · rw [ite_eq_right hl, ite_eq_right (by
         rw [hv]
         intro h
         exact hl (Fin.ext (by rw [Fin.val_last]; omega)))]
-  · rw [if_neg hq, if_neg (by rintro ⟨_, _, h⟩; exact hq h.symm)]
+  · rw [ite_eq_right hq, ite_eq_right (by rintro ⟨_, _, h⟩; exact hq h.symm)]
 
 theorem herm_Hpk_wb (k r : ℕ) (v w : Fin (2 * r + k + 1) → ℂ) (hw : inWb k r w) :
     herm (Hpk k r) v w = herm (Hb k) (wbPart k r v) (wbPart k r w) := by
@@ -305,7 +305,7 @@ theorem wbPart_bigCell (k r : ℕ) (c : Fin r → ℂ) (μ : Matrix (Fin (k + 1)
       · show r + j.val ≤ r + k; omega
     have : bigCell k r c μ (wI k r j) (wI k r j') = μ j j' := by
       unfold bigCell
-      rw [dif_neg h1, dif_pos h2, dif_pos h3]
+      rw [dite_eq_right h1, dite_eq_left h2, dite_eq_left h3]
       congr 1 <;> exact Fin.ext (by show r + _ - r = _; omega)
     rw [this]
 

@@ -138,7 +138,7 @@ theorem UpperTheory.ConvolutionTheory.G2.deltaLoc :
         hm _ _ (hA R hR) (hA _ hcR), absHalf_sign, one_mul]
     unfold delta
     simp only [hdeg₁, hdeg₂, hDw, hres']
-    rw [if_pos hsp, dite_eq_left hwd, hfirst, hsecond]
+    rw [ite_eq_left hsp, dite_eq_left hwd, hfirst, hsecond]
     ring
   · have hfib : {x : Pl E | x.under (𝓞 (maximalRealSubfield E)) = w.under (𝓞 (maximalRealSubfield E))} = {w} := by
       ext x
@@ -150,5 +150,5 @@ theorem UpperTheory.ConvolutionTheory.G2.deltaLoc :
     rw [hfib, finprod_mem_singleton, hmu w, GlobalTheory.T.unitaryHeckeCharCM_locK_nonsplit_eq_neg_one_pow E μ e hμ w hsp k]
     unfold delta
     simp only [hres]
-    rw [if_neg hsp]
+    rw [ite_eq_right hsp]
     rfl

@@ -96,7 +96,7 @@ theorem maj_le {n d : ℕ} (C C' : Set (Ten F E n d)) (N : ℕ) (A : Ten F E n n
       rw [← Matrix.sub_mul, ← Matrix.mul_sub, ← Matrix.smul_mul, ← Matrix.mul_smul, hz u hu, Matrix.mul_zero,
         Matrix.zero_mul]
     unfold maj
-    rw [if_pos h, if_pos h']
+    rw [ite_eq_left h, ite_eq_left h']
     have h0 := sz_nonneg τ z
     have h1 := sz_nonneg τ (A * z * Bᵀ : Ten F E n d)
     have h2 : 1 + sz τ (A * z * Bᵀ : Ten F E n d) ≤ K * (1 + sz τ z) := by
@@ -105,7 +105,7 @@ theorem maj_le {n d : ℕ} (C C' : Set (Ten F E n d)) (N : ℕ) (A : Ten F E n n
     rw [← div_eq_mul_inv, le_div_iff₀ (by positivity), ← div_eq_inv_mul, div_le_iff₀ (by positivity), ← mul_pow]
     exact pow_le_pow_left₀ (by positivity) h2 N
   · have := maj_nonneg τ C' N (A * z * Bᵀ : Ten F E n d)
-    rw [maj, if_neg h]
+    rw [maj, ite_eq_right h]
     positivity
 
 theorem continuous_mat {n : ℕ} {J : Matrix (Fin n) (Fin n) E} : Continuous fun g : UA σ J => mat g :=

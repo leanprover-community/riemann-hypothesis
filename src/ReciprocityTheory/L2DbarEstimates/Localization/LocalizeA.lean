@@ -32,7 +32,7 @@ theorem loc_d_congr {M : Type*} [TopologicalSpace M] (n : ℕ) (z : M → V n)
     (hz : IsLocalHomeomorph z) (j : Fin n) (f g : M → ℂ) (x : M) (h : f =ᶠ[𝓝 x] g) :
     d n z j f x = d n z j g x := by
   by_cases hc : ∃ e : OpenPartialHomeomorph M (V n), IsChart n z e ∧ x ∈ e.source
-  · simp only [d, dif_pos hc]
+  · simp only [d, dite_eq_left hc]
     set e := Classical.choose hc with he_def
     have he : IsChart n z e ∧ x ∈ e.source := Classical.choose_spec hc
     have hzx : z x = e x := he.1 he.2
@@ -44,13 +44,13 @@ theorem loc_d_congr {M : Type*} [TopologicalSpace M] (n : ℕ) (z : M → V n)
       exact ht.eventually h
     unfold wd
     rw [hfg.fderiv_eq]
-  · simp only [d, dif_neg hc]
+  · simp only [d, dite_eq_right hc]
 
 theorem loc_db_congr {M : Type*} [TopologicalSpace M] (n : ℕ) (z : M → V n)
     (hz : IsLocalHomeomorph z) (j : Fin n) (f g : M → ℂ) (x : M) (h : f =ᶠ[𝓝 x] g) :
     db n z j f x = db n z j g x := by
   by_cases hc : ∃ e : OpenPartialHomeomorph M (V n), IsChart n z e ∧ x ∈ e.source
-  · simp only [db, dif_pos hc]
+  · simp only [db, dite_eq_left hc]
     set e := Classical.choose hc with he_def
     have he : IsChart n z e ∧ x ∈ e.source := Classical.choose_spec hc
     have hzx : z x = e x := he.1 he.2
@@ -62,7 +62,7 @@ theorem loc_db_congr {M : Type*} [TopologicalSpace M] (n : ℕ) (z : M → V n)
       exact ht.eventually h
     unfold wdb
     rw [hfg.fderiv_eq]
-  · simp only [db, dif_neg hc]
+  · simp only [db, dite_eq_right hc]
 
 theorem loc_ck_sum {M : Type*} [TopologicalSpace M] (n : ℕ) (z : M → V n) (k : ℕ) {ι : Type*}
     (s : Finset ι) (f : ι → M → ℂ) (hf : ∀ i, Ck n z k (f i)) :

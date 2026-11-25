@@ -297,9 +297,9 @@ theorem UpperTheory.V.Pa.locLemma :
     rw [map_list_prod, List.map_ofFn]
     refine tri_prod_zero _ (fun k i j h => ?_) (fun k => ?_)
     · simp only [Function.comp, map_sub, AlgHom.commutes, Matrix.sub_apply]
-      rw [htri1 _ h, Matrix.algebraMap_matrix_apply, if_neg h.ne', sub_zero]
+      rw [htri1 _ h, Matrix.algebraMap_matrix_apply, ite_eq_right h.ne', sub_zero]
     · simp only [Function.comp, map_sub, AlgHom.commutes, Matrix.sub_apply]
-      rw [htri2, Matrix.algebraMap_matrix_apply, if_pos rfl]
+      rw [htri2, Matrix.algebraMap_matrix_apply, ite_eq_left rfl]
       simp
   set L₀ := MonoidAlgebra.lift R (Matrix (Fin n) (Fin n) R) H ρ₀ with hL₀
   set L₁ := MonoidAlgebra.lift R (Matrix (Fin n) (Fin n) R) H ρ₁ with hL₁

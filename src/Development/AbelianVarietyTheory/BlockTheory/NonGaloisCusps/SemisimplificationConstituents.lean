@@ -23,12 +23,6 @@ def IsSemisimplificationOf {W V : Type} [AddCommGroup W] [Module k W] [AddCommGr
 
 end Rep
 
-section Loc
-
-variable (D : D7) (i : D.nd.Loc)
-
-end Loc
-
 end GlobalTheory.IndefiniteRowSideFullHecke.SemisimplificationConstituents
 
 end

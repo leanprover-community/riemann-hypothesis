@@ -33,7 +33,7 @@ private theorem fibre_closed {B A : Type} [CommRing B] [CommRing A] [Algebra B A
     exact (PrimeSpectrum.mem_basicOpen _ _).1 hpf
   have hf1 : ¬ ∀ J ∈ {J : Ideal (A ⧸ p.asIdeal) | ⊥ ≤ J ∧ J.IsMaximal}, Ideal.Quotient.mk p.asIdeal f ∈ J :=
     fun h => hf0 (Ideal.mem_sInf.2 h)
-  push_neg at hf1
+  push Not at hf1
   obtain ⟨J, ⟨-, hJ⟩, hfJ⟩ := hf1
   haveI := hJ
   haveI := hJ.isPrime

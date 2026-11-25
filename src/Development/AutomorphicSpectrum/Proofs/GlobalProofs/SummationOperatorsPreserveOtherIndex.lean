@@ -97,7 +97,7 @@ lemma Bop_zero {l : ℕ} {i k : Fin r} (h : k ≠ i) {v : (Fin r → ℕ) → �
   unfold Bop
   simp_rw [add_single_apply_ne h]
   by_cases h0 : m i = 0
-  · simp only [h0, if_true]
+  · simp only [h0, ite_true]
     exact meanP_zero h hz m
   · simp [h0]
 

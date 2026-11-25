@@ -985,7 +985,7 @@ private theorem step_key {r s : ℕ} (b : Blo S r) (d : Dat S s) :
       simpa [par] using hΛ τ
     · rw [ptS_cons]
       have := ht w hw
-      simp only [par, if_neg hw] at this
+      simp only [par, ite_eq_right hw] at this
       rw [this, ht' w hw]
       simp
   · rintro ⟨(z : Fin (d.len + 1) → ℂ), rfl, ht⟩
@@ -994,7 +994,7 @@ private theorem step_key {r s : ℕ} (b : Blo S r) (d : Dat S s) :
     · rw [msOf_cons]
       rfl
     · rw [ht w hw, ptS_cons]
-      simp [par, if_neg hw]
+      simp [par, ite_eq_right hw]
 
 private def Fin' (E : Type) [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] (S : Set (BW.Pl E)) (n : ℕ) : Prop :=
   ∀ (ρ : Typ E n) (B : ℝ),

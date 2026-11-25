@@ -55,7 +55,7 @@ lemma low_mul {f g : MvPolynomial σ R} {a b : ℕ} (hf : ∀ m ∈ f.support, a
         · have h1 := hf x hx
           have h2 := hg y hy
           have h3 : Finsupp.weight w x + Finsupp.weight w y = a + b := by rw [← map_add (f := _), hxy, hm]
-          rw [if_pos (by omega), if_pos (by omega)]
+          rw [ite_eq_left (by omega), ite_eq_left (by omega)]
         · rw [notMem_support_iff.1 hy]; simp
       · rw [notMem_support_iff.1 hx]; simp
     · symm
@@ -67,8 +67,8 @@ lemma low_mul {f g : MvPolynomial σ R} {a b : ℕ} (hf : ∀ m ∈ f.support, a
       by_cases h1 : Finsupp.weight w x = a
       · by_cases h2 : Finsupp.weight w y = b
         · exfalso; apply hm; rw [← hxy, map_add (f := _), h1, h2]
-        · rw [if_neg h2, mul_zero]
-      · rw [if_neg h1, zero_mul]
+        · rw [ite_eq_right h2, mul_zero]
+      · rw [ite_eq_right h1, zero_mul]
 
 lemma low_prod {ι : Type*} (s : Finset ι) (f : ι → MvPolynomial σ R) (o : ι → ℕ)
     (hf : ∀ c ∈ s, ∀ m ∈ (f c).support, o c ≤ Finsupp.weight w m) :

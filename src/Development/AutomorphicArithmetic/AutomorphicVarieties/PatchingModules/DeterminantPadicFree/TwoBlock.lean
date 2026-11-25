@@ -521,7 +521,7 @@ theorem UpperTheory.V.AlgebraTools.smith_zero_one :
           · exact h
         have : i ∈ S := by simp [S, hai]
         refine ⟨hcu.unit⁻¹, ?_⟩
-        rw [if_pos this, smul_smul, hc]
+        rw [ite_eq_left this, smul_smul, hc]
         congr 1
         rw [mul_comm (a i) c, ← mul_assoc]
         simp
@@ -799,13 +799,13 @@ theorem UpperTheory.V.AlgebraTools.selfdual_ramified :
     by_cases hj : j ∈ S
     · by_cases hi : i ∈ S
       · refine ⟨φ (M i j), ?_⟩
-        simp only [hi, hj, if_true] at h1 ⊢
+        simp only [hi, hj, ite_true] at h1 ⊢
         rw [← h1, ← hsϖ]; ring
       · refine ⟨φ (M j i) * s, ?_⟩
-        simp only [hi, hj, if_true, if_false, map_one, mul_one, one_mul] at h2 ⊢
+        simp only [hi, hj, ite_true, ite_false, map_one, mul_one, one_mul] at h2 ⊢
         rw [h2, map_mul]
     · refine ⟨(if i ∈ S then s else 1) * φ (M i j), ?_⟩
-      simp only [hj, if_false, map_one, mul_one] at h1 ⊢
+      simp only [hj, ite_false, map_one, mul_one] at h1 ⊢
       rw [h1, map_mul]
   choose H' hH' using hH'
   have hH'm : (Matrix.of H').map (algebraMap A' F') = E * H0.map φF * E := by
@@ -835,13 +835,13 @@ theorem UpperTheory.V.AlgebraTools.selfdual_ramified :
       by_cases hi : i ∈ S
       · by_cases hj : j ∈ S
         · refine ⟨φ (R i j), ?_⟩
-          simp only [hi, hj, if_true]
+          simp only [hi, hj, ite_true]
           ring
         · refine ⟨s * φ (T i j), ?_⟩
-          simp only [hi, hj, if_true, if_false, map_one, mul_one] at h1 ⊢
+          simp only [hi, hj, ite_true, ite_false, map_one, mul_one] at h1 ⊢
           rw [h1, ← hsϖ, map_mul]; ring
       · refine ⟨φ (R i j) * (if j ∈ S then s else 1), ?_⟩
-        simp only [hi, if_false, map_one, one_mul, map_mul]
+        simp only [hi, ite_false, map_one, one_mul, map_mul]
     choose X hX using hX
     refine ⟨Matrix.of X, ?_⟩
     have h1 : E * (Matrix.of X).map (algebraMap A' F') = (R.map (algebraMap A F)).map φF * E := by

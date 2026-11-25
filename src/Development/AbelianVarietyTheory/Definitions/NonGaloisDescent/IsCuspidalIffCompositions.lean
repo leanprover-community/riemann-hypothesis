@@ -78,13 +78,13 @@ theorem diagPart_mul {b : Fin N → ℕ} {X Y : Matrix (Fin N) (Fin N) k} (hX : 
   split_ifs with hij
   · refine Finset.sum_congr rfl fun l _ => ?_
     rcases lt_trichotomy (b l) (b i) with h | h | h
-    · rw [hX h, if_neg h.ne', zero_mul, zero_mul]
-    · rw [if_pos h.symm, if_pos (h.trans hij)]
-    · rw [hY (hij ▸ h), if_neg h.ne, mul_zero, zero_mul]
+    · rw [hX h, ite_eq_right h.ne', zero_mul, zero_mul]
+    · rw [ite_eq_left h.symm, ite_eq_left (h.trans hij)]
+    · rw [hY (hij ▸ h), ite_eq_right h.ne, mul_zero, zero_mul]
   · refine (Finset.sum_eq_zero fun l _ => ?_).symm
     by_cases h : b i = b l
-    · rw [if_neg (fun h' : b l = b j => hij (h.trans h')), mul_zero]
-    · rw [if_neg h, zero_mul]
+    · rw [ite_eq_right (fun h' : b l = b j => hij (h.trans h')), mul_zero]
+    · rw [ite_eq_right h, zero_mul]
 
 def diagPartHom (b : Fin N → ℕ) : blockTri (κ := k) b →* Matrix (Fin N) (Fin N) k where
   toFun p := diagPart b ((p : GL (Fin N) k) : Matrix (Fin N) (Fin N) k)
@@ -97,7 +97,7 @@ def diagPartHom (b : Fin N → ℕ) : blockTri (κ := k) b →* Matrix (Fin N) (
 
 def leviProj (b : Fin N → ℕ) : blockTri (κ := k) b →* levi k b :=
   MonoidHom.codRestrict (diagPartHom (k := k) b).toHomUnits (levi k b) fun p i j hij =>
-    (if_neg hij : diagPart b ((p : GL (Fin N) k) : Matrix (Fin N) (Fin N) k) i j = 0)
+    (ite_eq_right hij : diagPart b ((p : GL (Fin N) k) : Matrix (Fin N) (Fin N) k) i j = 0)
 
 theorem leviProj_apply (b : Fin N → ℕ) (p : blockTri (κ := k) b) (i j : Fin N) :
     (((leviProj b p : levi k b) : GL (Fin N) k) : Matrix (Fin N) (Fin N) k) i j =
@@ -121,7 +121,7 @@ theorem leviProj_eq_one_iff (b : Fin N → ℕ) (p : blockTri (κ := k) b) :
     have e := leviProj_apply b p i j
     rw [h] at e
     rcases hij.eq_or_lt with h' | h'
-    · rw [if_pos h'.symm] at e
+    · rw [ite_eq_left h'.symm] at e
       rw [Matrix.sub_apply, ← e]
       simp
     · rw [Matrix.sub_apply, p.2 h', Matrix.one_apply_ne (fun e => by rw [e] at h'; exact lt_irrefl _ h'), sub_zero]
@@ -597,7 +597,7 @@ theorem hasCuspSupport_self [FiniteDimensional ℂ V] (hN : 0 < N) {κ : Represe
   have he : ∀ i : Fin N, stdEquiv (fun _ : Fin 1 => N) hd ⟨a, i⟩ = i := fun i => Fin.ext (by
     rw [stdEquiv_val, Subsingleton.elim a 0]
     simp)
-  rw [leviEquiv_apply, leviProj_apply, blockOf_apply, blockOf_apply, if_pos rfl, he, he]
+  rw [leviEquiv_apply, leviProj_apply, blockOf_apply, blockOf_apply, ite_eq_left rfl, he, he]
 
 end Cuspidal
 

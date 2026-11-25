@@ -215,7 +215,7 @@ theorem cpt_meas {U S : Set X} (hU : IsOpen U) (hS : MeasurableSet S) (hSU : S �
     funext x
     by_cases hx : x ∈ S
     · rw [Set.indicator_of_mem hx, Set.indicator_of_mem hx, Set.piecewise_eq_of_mem _ _ _ (hSU hx)]
-    · simp only [Set.indicator_apply, hx, if_false]
+    · simp only [Set.indicator_apply, hx, ite_false]
   rw [h2]
   exact h1.indicator hS
 

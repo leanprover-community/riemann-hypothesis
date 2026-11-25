@@ -30,7 +30,7 @@ private theorem gA_mulVec {v : Fin (2 * r + k + 1) → ℂ} (hv : inWb k r v) :
       have hij : i ≠ j := fun h => hji h.symm
       have h0 : Hpk k r i j = 0 := by
         simp only [Hpk]
-        rw [if_neg (by omega), if_neg (by omega), if_neg (fun h => hij h.2.2)]
+        rw [ite_eq_right (by omega), ite_eq_right (by omega), ite_eq_right (fun h => hij h.2.2)]
       rw [h0, zero_mul]
   · intro h
     exact absurd (Finset.mem_univ i) h
@@ -49,15 +49,15 @@ private theorem gA_term {x : Fin (2 * r + k + 1) → ℂ} (hx : inWb k r x) (i :
       rw [Complex.normSq_eq_conj_mul_self, starRingEnd_apply]
     have hH : Hpk k r i i = if i.val = r + k then -1 else 1 := by
       simp only [Hpk]
-      rw [if_neg (by omega), if_neg (by omega), if_pos ⟨hi.1, hi.2, trivial⟩]
+      rw [ite_eq_right (by omega), ite_eq_right (by omega), ite_eq_left ⟨hi.1, hi.2, trivial⟩]
     rw [hH]
     by_cases hl : i = gAlast k r
     · have hv : i.val = r + k := by rw [hl]; rfl
-      rw [if_pos hv, if_pos hl, show star (x i) * (-1 * x i) = -(star (x i) * x i) by ring, e]
+      rw [ite_eq_left hv, ite_eq_left hl, show star (x i) * (-1 * x i) = -(star (x i) * x i) by ring, e]
       push_cast
       ring
     · have hv : i.val ≠ r + k := fun h => hl (Fin.ext h)
-      rw [if_neg hv, if_neg hl, one_mul, e]
+      rw [ite_eq_right hv, ite_eq_right hl, one_mul, e]
       simp
 
 private theorem gA_self {x : Fin (2 * r + k + 1) → ℂ} (hx : inWb k r x) :

@@ -189,7 +189,7 @@ theorem UpperTheory.Kd.K4.ml3 :
     rw [Finset.sum_eq_single (τ x)]
     · simp [hτ]
     · intro y hy hne
-      rw [(Finset.mem_filter.1 hy).2, if_neg (Ne.symm hne)]
+      rw [(Finset.mem_filter.1 hy).2, ite_eq_right (Ne.symm hne)]
     · intro h
       exact absurd (by simp [hτ]) h
   have hd : ∀ r b, P r (d (r + 1) b) = d r (p r b) := by

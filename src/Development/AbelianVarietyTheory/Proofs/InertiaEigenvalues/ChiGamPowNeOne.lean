@@ -279,7 +279,7 @@ theorem lev_transport (F : Frame Dc Mo T) (F' : Frame Dc Mo T') (σ : LetA LL n 
 
     simp only [map_smul, map_sum, Module.Basis.repr_self, Finsupp.smul_apply, Finsupp.finsetSum_apply,
     Finsupp.single_apply, smul_eq_mul, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ,
-    if_true, map_mul, hσA] at h1
+    ite_true, map_mul, hσA] at h1
     simp only [Pi.smul_apply, smul_eq_mul, Matrix.mulVec, dotProduct, Matrix.map_apply, Function.comp_apply, h1]
     simp only [mul_comm]
   have h2 := coord_transport σ F.U F.V F'.U F'.V _ _ _ _ hq F.UV F'.UV hU _ _ hc
@@ -505,7 +505,7 @@ theorem lev_map (hinv : ∀ a : LetA LL n, γL R Γ.gam a = a → ∃ c, a = cst
 
     simp only [map_smul, map_sum, Module.Basis.repr_self, Finsupp.smul_apply, Finsupp.finsetSum_apply,
     Finsupp.single_apply, smul_eq_mul, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ,
-    if_true] at h3
+    ite_true] at h3
     simp only [Matrix.mul_apply, Matrix.map_apply]
     simpa only [mul_comm] using h3
   have hVU : F'.V * F'.U = 1 := mul_eq_one_comm.mp F'.UV
@@ -636,7 +636,7 @@ theorem dR_lev (F : Frame Dc Mo T) (i : ZMod n) (ζ : LL) (ι : LL →ₐ[Qp] Bd
         PD.Fil ((m + 1 : ℕ) : ℤ) := by
       intro m
       have := Dc.taylor i ζ ι h1 h2 (Dc.jA (letE i)) (m + 1)
-      rw [Dc.J_jA, Dc.ex_jA, Dc.lev_letE, if_pos rfl, Finset.sum_eq_single 0] at this
+      rw [Dc.J_jA, Dc.ex_jA, Dc.lev_letE, ite_eq_left rfl, Finset.sum_eq_single 0] at this
       · simpa using this
       · intro j _ hj
         simp [PowerSeries.coeff_one, hj]
@@ -674,19 +674,6 @@ noncomputable section
 namespace GlobalTheory.HWL.Cmp
 
 open Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations TensorProduct GlobalTheory.HWL
-
-section Filt
-
-variable {G : Type} [Group G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
-    [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
-    {B BdR : Type} [CommRing B] [CommRing BdR] [Algebra Qp B] [Algebra K₀ B] [IsScalarTower Qp K₀ B]
-    [Algebra Qp BdR] [Algebra K₀ BdR] [Algebra K BdR] [IsScalarTower Qp K BdR]
-    [IsScalarTower K₀ K BdR] [IsScalarTower Qp K₀ BdR]
-    (PD : PeriodData G Qp K₀ K B BdR)
-    {LL : Type} [Field LL] [Algebra Qp LL]
-    {V : Type} [AddCommGroup V] [Module LL V] [Module Qp V] [IsScalarTower Qp LL V]
-
-end Filt
 
 open TensorProduct in
 variable {G : Type} [Group G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
@@ -1136,14 +1123,14 @@ theorem powerSeries_eq_C_of_subst_eq_self (L : Type) [Field L] (y : PowerSeries 
     intro n
     rw [coeff_subst' hs, finsum_eq_sum_of_support_subset (s := Finset.range (n + 1))]
     · refine Finset.sum_congr rfl fun d hd => ?_
-      rw [mul_pow, coeff_X_pow_mul', if_pos (Nat.lt_succ_iff.mp (Finset.mem_range.mp hd)),
+      rw [mul_pow, coeff_X_pow_mul', ite_eq_left (Nat.lt_succ_iff.mp (Finset.mem_range.mp hd)),
         smul_eq_mul]
     · intro d hd
       rw [Function.mem_support] at hd
       rw [Finset.coe_range, Set.mem_Iio]
       by_contra h
       apply hd
-      rw [mul_pow, coeff_X_pow_mul', if_neg (by omega), smul_zero]
+      rw [mul_pow, coeff_X_pow_mul', ite_eq_right (by omega), smul_zero]
 
   have main : ∀ k, 0 < k → coeff k a = 0 := by
     intro k
@@ -1165,7 +1152,7 @@ theorem powerSeries_eq_C_of_subst_eq_self (L : Type) [Field L] (y : PowerSeries 
   ext n
   rcases n with _ | n
   · simp
-  · rw [coeff_C, if_neg (Nat.succ_ne_zero n)]
+  · rw [coeff_C, ite_eq_right (Nat.succ_ne_zero n)]
     exact main (n + 1) (Nat.succ_pos n)
 
 end GlobalTheory
@@ -1215,8 +1202,8 @@ theorem nonempty_wCmp [NeZero n] (Dc : Disc R b₀ tS zS) (Mo : WN E zl) {ιdR :
     (Fr : ∀ T : LocLat G Qp LL O, IsCrys PD T.ρ → Frame Dc Mo T)
     (hinv : ∀ a : LetA LL n, γL R Γ.gam a = a → ∃ c, a = cst c) : Nonempty (WCmp Mo ιdR p1 tS zS) := by
   have pos : ∀ (T : LocLat G Qp LL O) (h : IsCrys PD T.ρ) (i : ZMod n) (ζ : LL), levOf bT Fr T i ζ = Frame.lev bT (Fr T h) i ζ :=
-    fun T h i ζ => dif_pos h
-  have neg : ∀ (T : LocLat G Qp LL O) (_ : ¬ IsCrys PD T.ρ) (i : ZMod n) (ζ : LL), levOf bT Fr T i ζ = 0 := fun T h i ζ => dif_neg h
+    fun T h i ζ => dite_eq_left h
+  have neg : ∀ (T : LocLat G Qp LL O) (_ : ¬ IsCrys PD T.ρ) (i : ZMod n) (ζ : LL), levOf bT Fr T i ζ = 0 := fun T h i ζ => dite_eq_right h
   have hmem : ∀ (T : LocLat G Qp LL O) (i : ZMod n) (ζ : LL) (x : ↥(Mo.N T)) (k : ℤ), levOf bT Fr T i ζ x k ∈ DcrisL PD T.ρ (Γ.emb i) := by
     intro T i ζ x k
     by_cases h : IsCrys PD T.ρ

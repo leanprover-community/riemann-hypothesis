@@ -38,8 +38,4 @@ theorem fdegOf_eq {ε : Fin n → Bool} (μ : Measure (UJ ε)) {H : Type} [Norme
   rw [key]
   field_simp
 
-section Scale
-
-end Scale
-
 end PI.UnitaryGroupMassFormula.FdegHpk

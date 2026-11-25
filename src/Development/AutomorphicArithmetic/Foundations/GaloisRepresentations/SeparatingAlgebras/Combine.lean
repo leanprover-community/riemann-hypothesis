@@ -66,10 +66,10 @@ private theorem polyApprox_trans {θ : J → k} {S T : Set (J → k)} (h : PolyA
       symm
       apply Finset.sum_subset_zero_on_sdiff (Finset.subset_biUnion_of_mem t hη)
       · intro ζ hζ
-        rw [if_neg (Finset.mem_sdiff.1 hζ).2]
+        rw [ite_eq_right (Finset.mem_sdiff.1 hζ).2]
         ring
       · intro ζ hζ
-        rw [if_pos hζ]
+        rw [ite_eq_left hζ]
         ring
     rw [hsum]
     have split : aeval θ P - ∑ η ∈ s, c η * ∑ ζ ∈ t η, d η ζ * aeval ζ P

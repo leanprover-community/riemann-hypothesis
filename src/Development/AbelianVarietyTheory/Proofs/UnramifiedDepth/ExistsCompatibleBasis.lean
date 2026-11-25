@@ -1219,7 +1219,7 @@ theorem finite_algebra_split_local :
     rw [Finset.sum_eq_single ⟨(maximalIdeal O).comap φ, φ, rfl⟩]
     · simp
     · intro b _ hb
-      rw [if_neg]
+      rw [ite_eq_right]
       intro h
       exact hb (Subtype.ext h.symm)
     · intro h

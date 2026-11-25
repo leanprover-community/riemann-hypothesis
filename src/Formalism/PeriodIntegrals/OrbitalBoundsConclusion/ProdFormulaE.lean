@@ -178,8 +178,8 @@ theorem clause2 (hT : Tr.TrSum) (hI : St.TrInt) (hR : St.ResCharIff) (h2 : Modul
   have hfib : ∀ p q, p ∈ fib q ↔ resChar p = q := by
     intro p q
     by_cases hq : q.Prime
-    · simp only [fib, dif_pos hq, Set.Finite.mem_toFinset, Set.mem_ofPred_eq]
-    · simp only [fib, dif_neg hq, Finset.notMem_empty, false_iff]
+    · simp only [fib, dite_eq_left hq, Set.Finite.mem_toFinset, Set.mem_ofPred_eq]
+    · simp only [fib, dite_eq_right hq, Finset.notMem_empty, false_iff]
       rintro rfl
       exact hq (hprime p)
 

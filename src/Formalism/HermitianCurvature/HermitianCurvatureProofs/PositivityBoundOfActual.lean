@@ -51,8 +51,8 @@ theorem rr_top_rep (p : KB.Pl P Wp Wq) (F : B.Mat P.k P.r → (Wq →L[ℂ] Wp))
     unfold KB.Pl.RR D.RRplace
     by_cases hx : D.IsLocPt x (P.r + 1)
     · by_cases hy : D.IsLocPt y (P.r + 1)
-      · rw [dite_eq_left ⟨hx, hy⟩, dite_eq_right (by omega), if_pos rfl, if_pos hw]
-        simp only [hx, hy, if_true, B.hsInner]
+      · rw [dite_eq_left ⟨hx, hy⟩, dite_eq_right (by omega), ite_eq_left rfl, ite_eq_left hw]
+        simp only [hx, hy, ite_true, B.hsInner]
       · rw [dite_eq_right (fun h => hy h.2)]
         simp [hy]
     · rw [dite_eq_right (fun h => hx h.1)]
@@ -64,10 +64,10 @@ theorem rr_top_rep (p : KB.Pl P Wp Wq) (F : B.Mat P.k P.r → (Wq →L[ℂ] Wp))
     unfold KB.Pl.RR D.RRplace
     by_cases hx : D.IsLocPt x (P.r + 1)
     · by_cases hy : D.IsLocPt y (P.r + 1)
-      · rw [dite_eq_left ⟨hx, hy⟩, dite_eq_right (by omega), if_pos rfl, if_neg hw]
+      · rw [dite_eq_left ⟨hx, hy⟩, dite_eq_right (by omega), ite_eq_left rfl, ite_eq_right hw]
         unfold Top.topOf
         refine Finset.sum_congr rfl fun e _ => Finset.sum_congr rfl fun ρ _ => ?_
-        simp only [hx, hy, if_true, B.hsInner, inner_smul_left, inner_smul_right, Complex.conj_ofReal]
+        simp only [hx, hy, ite_true, B.hsInner, inner_smul_left, inner_smul_right, Complex.conj_ofReal]
         push_cast
         ring
       · rw [dite_eq_right (fun h => hy h.2)]

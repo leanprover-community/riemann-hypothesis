@@ -105,9 +105,9 @@ theorem nfac_cont (la : Wt X.Ψ r) : ContinuousOn (fun z => X.nfac la (cpt X x0 
     refine continuous_pi fun τ => continuous_pi fun a => continuous_pi fun b => ?_
     unfold nmat
     by_cases h : b < a
-    · simp only [h, dif_pos]
+    · simp only [h, dite_eq_left]
       fun_prop
-    · simp only [h, dif_neg, not_false_eq_true]
+    · simp only [h, dite_eq_right, not_false_eq_true]
       exact continuous_const
   have hc : Continuous fun z : V (nd X) => cpt X x0 z := by
     refine continuous_pi fun τ => ?_

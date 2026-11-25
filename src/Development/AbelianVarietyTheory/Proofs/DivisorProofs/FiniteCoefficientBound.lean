@@ -692,9 +692,9 @@ theorem coef_QL {μ₀ : T} (hL : L.Is μ₀) (S : GridChoice W U) (t : T) (Φ :
       (if v.1 ∈ G.pl.W0 then expAt G v.1 * vw w ((resCard (Kw v.1) : ℕ) : D.what₂.LL) else 0) := by
     rintro ⟨P, hl⟩
     by_cases hP : P ∈ G.pl.W0
-    · rw [if_pos hP]
+    · rw [ite_eq_left hP]
       exact coefficient_local_term_at_split_place hL S t Φ hde hc hP hl hβ w
-    · rw [if_neg hP]
+    · rw [ite_eq_right hP]
       have hQ : P ∈ L.Q t := by
         rcases Finset.mem_union.1 hl with h | h
         · exact absurd h hP
@@ -842,10 +842,6 @@ end
 end
 
 end ResidueCardinalityNilpotence
-section
-open GlobalTheory.SumSize GlobalTheory.RowClaim
-
-end
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.FiniteCoefficientBound =====

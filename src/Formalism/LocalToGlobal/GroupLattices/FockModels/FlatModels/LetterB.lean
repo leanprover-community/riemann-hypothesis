@@ -211,7 +211,7 @@ theorem minor_pre (R : Type) [CommRing R] (m : ℕ) (hm : 1 ≤ m) (vec : Bool) 
       subst hs0
       obtain ⟨c, rfl⟩ := exists_succAbove I hI
       refine ⟨MvPolynomial.C ((-1 : R) ^ ((c : ℕ) + s)) * X c, ?_, ?_⟩
-      · rw [if_neg (by omega)]
+      · rw [ite_eq_right (by omega)]
         exact Hd_X R (s + 1) _ c
       · unfold theta
         rw [map_mul, MvPolynomial.aeval_C, MvPolynomial.aeval_X, Nv_false_eq, MvPolynomial.algebraMap_eq,
@@ -219,7 +219,7 @@ theorem minor_pre (R : Type) [CommRing R] (m : ℕ) (hm : 1 ≤ m) (vec : Bool) 
     · simp only [s0, ↓reduceIte] at hs0
       subst hs0
       refine ⟨X (I 0), ?_, ?_⟩
-      · rw [if_neg one_ne_zero]
+      · rw [ite_eq_right one_ne_zero]
         simpa using Hd_X R (m + 1) 1 (I 0)
       · unfold theta
         rw [MvPolynomial.aeval_X, Nv_true_eq]

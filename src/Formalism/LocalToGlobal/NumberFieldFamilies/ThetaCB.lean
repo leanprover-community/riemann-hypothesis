@@ -118,14 +118,6 @@ theorem snd_pairE (a : Ainf F ⊗[F] E) (b : Af F ⊗[F] E) :
 
 end Emb
 
-section Raw
-
-variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [StarRing E] [Algebra F E]
-  (cm : CMData F E) {T : Type} [Fintype T] (emb : T → E →+* ℂ) (cd : CDHaar)
-
-
-end Raw
-
 variable (D : D7)
 
 abbrev InfF : Type := D.what₂.Tau → (Ainf D.host.F ⊗[D.host.F] D.host.E →+* ℂ)

@@ -274,11 +274,11 @@ theorem exists_model {D : D7} (B : Base D.host.F D.host.E) (hB : B.IsGood D.sp.c
   refine ⟨⟨co, vac, _, _⟩, { rat := hrat, vac := fun v => ?_, std := ?_, haar := hH', dom := hfd' }⟩
   · show Model.IsVac (Model.mk (σ := D.sp.cm.sig) (X := Y) (W := Z) co (fun _ => 0) 0 ∅) B.ψ v (vac v)
     by_cases h : Model.IsVac (Model.mk (σ := D.sp.cm.sig) (X := Y) (W := Z) co (fun _ => 0) 0 ∅) B.ψ v (ind v)
-    · simp only [vac, if_pos h]; exact h
-    · simp only [vac, if_neg h]; exact (hany v).choose_spec
+    · simp only [vac, ite_eq_left h]; exact h
+    · simp only [vac, ite_eq_right h]; exact (hany v).choose_spec
   · filter_upwards [hind] with v hv
     show vac v = ind v
-    exact if_pos hv
+    exact ite_eq_left hv
 
 theorem hasSignature_map_conj {n p q : ℕ} {M : Matrix (Fin n) (Fin n) ℂ} (h : Formalism.UG.HasSignature M p q) :
     Formalism.UG.HasSignature (M.map (starRingEnd ℂ)) p q := by

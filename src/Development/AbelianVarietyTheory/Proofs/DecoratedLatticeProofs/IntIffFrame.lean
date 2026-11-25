@@ -64,14 +64,6 @@ namespace GlobalTheory.SeeSaw.LevelData
 open GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.StepData GlobalTheory.SymChain GlobalTheory.SymBridge GlobalTheory.LocMod
 open Formalism.L2.Col (IntAt redP qOf)
 
-section Gen
-
-variable {D : D7} {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
-
-variable {u : D.what₂.Word}
-
-end Gen
-
 section Chain
 
 variable {D : D7} {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
@@ -123,10 +115,6 @@ theorem mul_sec (q : GlobalTheory.FinPl.SplitPt D k) (x : AE D) (y : k) : x * q.
   rw [h, mul_left_comm, ← h']
 
 end Chain
-
-section Place
-
-end Place
 
 section World
 

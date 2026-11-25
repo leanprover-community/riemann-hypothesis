@@ -410,7 +410,7 @@ theorem T_zero_of_orth (x : WO V W) (h : ∀ y : Mx D a b, symplO V W x (GlobalT
     ext i j
     simp only [adj, Matrix.transpose_apply, Matrix.map_apply, Matrix.single_apply]
     by_cases h1 : r = j <;> by_cases h2 : s = i <;>
-      simp only [h1, h2, and_true, and_false, if_true, if_false, map_zero,
+      simp only [h1, h2, and_true, and_false, ite_true, ite_false, map_zero,
         GlobalTheory.DualPairCheck.cA_incA, star_star]
   rw [symplO_eq, hO_emb, h2, trace_single_mul, ← mul_assoc, ← map_mul,
     mul_inv_cancel_left₀ (GlobalTheory.DualPairCompare.embedding_xi_zero_ne_zero D)] at h1
@@ -880,7 +880,7 @@ theorem decay_real_coords : ∀ (D : D7) (V W : HSp D) (a b : ℕ) (P : Matrix (
       show 2 * (c τ * GlobalTheory.IndefiniteRowSideFullHecke.HermitianSymplecticScalars.hermAt V W τ _ _).re = _
       rw [herm_key V W τ _ _ (hPlτ τ) _ _ (hQrτ τ), trace_single]
     rw [Fintype.sum_bool]
-    simp only [ℓ, zι, if_true, if_false, Bool.false_eq_true]
+    simp only [ℓ, zι, ite_true, ite_false, Bool.false_eq_true]
     rw [hs, hs]
     have := norm_le_re (c τ) (compAt θ τ y k l) (hc τ)
     rw [add_comm]

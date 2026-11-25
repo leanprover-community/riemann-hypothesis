@@ -717,7 +717,7 @@ theorem fourier_coefficients_of_vector_group (hL1 : UnipotentVectorGroup (E := E
       (psi_cont hω hdomH hGd hx) (fun n t => psi_per hω hadd hdomH hper hx n t)
     have hcoef : ∀ m, X.fz u g (c m) G x = UnitAddTorus.mFourierCoeff D m := by
       intro m
-      rw [hfz, if_pos (hcfreq m)]
+      rw [hfz, ite_eq_left (hcfreq m)]
       refine Ich_coeff (fun j => ?_) D hD
       show 2 * pr (c m) (ω j) = (m j : ℝ)
       rw [hcm]
@@ -748,7 +748,7 @@ theorem fourier_coefficients_of_vector_group (hL1 : UnipotentVectorGroup (E := E
     rw [hcomp]
     exact hF'
   by_cases hχ : IsHermFam χ ∧ X.IsFreqZ g χ
-  · have hfe : X.fz u g χ G = Ich X u ω G χ := funext fun x => by rw [hfz, if_pos hχ]
+  · have hfe : X.fz u g χ G = Ich X u ω G χ := funext fun x => by rw [hfz, ite_eq_left hχ]
     have hfreq : ∀ j, ∃ k : ℤ, 2 * X.pairR χ (ω j) = k := fun j => hχ.2 (ω j) (hω.1 j)
     refine ⟨⟨?_, ?_, ?_⟩, ?_, hsum⟩
     · rw [hfe]
@@ -762,7 +762,7 @@ theorem fourier_coefficients_of_vector_group (hL1 : UnipotentVectorGroup (E := E
     · intro x hx M hM
       rw [pnorm_eq, hfe]
       exact Ich_bound hω hunit la χ x hM
-  · have hfe : X.fz u g χ G = fun _ => 0 := funext fun x => by rw [hfz, if_neg hχ]
+  · have hfe : X.fz u g χ G = fun _ => 0 := funext fun x => by rw [hfz, ite_eq_right hχ]
     have hh0 : IsHermFam (0 : X.Ψ → Fin 2 → Fin 2 → ℂ) := by
       have h := th_herm (0 : X.Ψ → Fin 2 → Fin 2 → ℝ)
       rwa [th_zero] at h

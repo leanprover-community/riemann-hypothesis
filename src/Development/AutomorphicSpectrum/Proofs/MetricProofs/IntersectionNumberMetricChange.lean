@@ -50,12 +50,12 @@ theorem logDiff_smul {A B : HermLine J} (hab : B.a = A.a) (c : K → ℂ) (z : (
     (hc : ∀ k, c k ≠ 0) : logDiff A B (fun p => c p.1 * z p) = logDiff A B z := by
   unfold logDiff
   by_cases hz : ∀ k, ∃ i, z ⟨k, i⟩ ≠ 0
-  · rw [if_pos hz, if_pos ((cone_smul_iff c hc z).2 hz), A.smul c z hc, B.smul c z hc, hab]
+  · rw [ite_eq_left hz, ite_eq_left ((cone_smul_iff c hc z).2 hz), A.smul c z hc, B.smul c z hc, hab]
     have hp : (∏ k, ‖c k‖ ^ A.a k) ≠ 0 :=
       Finset.prod_ne_zero_iff.2 fun k _ => zpow_ne_zero _ (norm_ne_zero_iff.2 (hc k))
     rw [Real.log_mul hp (A.pos z hz).ne', Real.log_mul hp (B.pos z hz).ne']
     ring
-  · rw [if_neg hz, if_neg fun h => hz ((cone_smul_iff c hc z).1 h)]
+  · rw [ite_eq_right hz, ite_eq_right fun h => hz ((cone_smul_iff c hc z).1 h)]
 
 theorem logDiff_smooth {A B : HermLine J} (hA : IsSmoothHerm A) (hB : IsSmoothHerm B) :
     ReciprocityTheory.ChartRestriction.G.AI.I2.SmoothFn (logDiff A B) := by
@@ -65,7 +65,7 @@ theorem logDiff_smooth {A B : HermLine J} (hA : IsSmoothHerm A) (hB : IsSmoothHe
       (ContDiffOn.log hB fun z hz => (B.pos z hz).ne')
   refine h1.congr fun z hz => ?_
   unfold logDiff
-  exact if_pos hz
+  exact ite_eq_left hz
 
 theorem step (hLoc : ReciprocityTheory.ChartRestriction.G.AI.I2.MetricLocalStatement)
     (I : Ideal (MRing J) → (n : ℕ) → (Fin n → HermLine J) → ℝ) (hI : IsIntersectionFamily I)
@@ -83,7 +83,7 @@ theorem step (hLoc : ReciprocityTheory.ChartRestriction.G.AI.I2.MetricLocalState
     have e : T.h z = A.h z * Real.exp (-logDiff A B z) := rfl
     rw [e]
     unfold logDiff
-    rw [if_pos hz, neg_sub, Real.exp_sub, Real.exp_log (B.pos z hz), Real.exp_log (A.pos z hz)]
+    rw [ite_eq_left hz, neg_sub, Real.exp_sub, Real.exp_log (B.pos z hz), Real.exp_log (A.pos z hz)]
     have := (A.pos z hz).ne'
     field_simp
   have hTs : IsSmoothHerm T := by
@@ -110,7 +110,7 @@ theorem step (hLoc : ReciprocityTheory.ChartRestriction.G.AI.I2.MetricLocalState
   congr 1
   refine ptsIntegral_congr_on P _ fun z hz => ?_
   unfold logDiff
-  rw [if_pos hz.1]
+  rw [ite_eq_left hz.1]
 
 def toLast {n : ℕ} (p : Fin (n + 1)) : Equiv.Perm (Fin (n + 1)) :=
   (finSuccEquiv' p).trans finSuccEquivLast.symm
@@ -131,7 +131,7 @@ theorem word_snoc (A B X : HermLine J) (n : ℕ) (p : Fin (n + 1)) (q : Fin (n +
   · simp [toLast_self]
   · rw [toLast_succAbove, Fin.snoc_castSucc]
     have hne := Fin.succAbove_ne p j
-    rw [if_neg hne]
+    rw [ite_eq_right hne]
     unfold word
     by_cases h : (j : ℕ) < p
     · have : p.succAbove j = j.castSucc := Fin.succAbove_of_castSucc_lt _ _ (by simpa [Fin.lt_def] using h)
@@ -172,7 +172,7 @@ theorem word_step (hLoc : ReciprocityTheory.ChartRestriction.G.AI.I2.MetricLocal
     have hq : q = p ↔ (q : ℕ) = i := by simp [p, Fin.ext_iff]
     by_cases h1 : (q : ℕ) < i
     · have h2 : (q : ℕ) < i + 1 := by omega
-      simp only [p, h1, h2, if_true]
+      simp only [p, h1, h2, ite_true]
     · by_cases h3 : (q : ℕ) = i
       · have h2 : (q : ℕ) < i + 1 := by omega
         simp [p, hq.2 h3]

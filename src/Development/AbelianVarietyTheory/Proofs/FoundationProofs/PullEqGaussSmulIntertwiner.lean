@@ -456,10 +456,10 @@ theorem const_eq (μ : Measure V) [μ.IsAddHaarMeasure] (H : Sesq V) (hH : IsPos
     congr 1
     rw [Finset.sum_eq_single 0]
     · have h0 := (GlobalTheory.ThetaInter.out_mem_iff (A₁ := A) (A₂ := A₁) 0).2 rfl
-      rw [integral_const_mul, (hR 0).2, if_pos h0, hαn, ← mul_assoc]
+      rw [integral_const_mul, (hR 0).2, ite_eq_left h0, hαn, ← mul_assoc]
       rcases hα.1 _ h0 with h | h <;> simp [h]
     · intro q _ hq
-      rw [integral_const_mul, (hR q).2, if_neg (fun h => hq ((GlobalTheory.ThetaInter.out_mem_iff q).1 h)), mul_zero]
+      rw [integral_const_mul, (hR q).2, ite_eq_right (fun h => hq ((GlobalTheory.ThetaInter.out_mem_iff q).1 h)), mul_zero]
     · simp
   refine ⟨κ / (n * μ.real (ZSpan.fundamentalDomain b)), by positivity, ?_⟩
   rw [finsum_eq_sum_of_fintype]

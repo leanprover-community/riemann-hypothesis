@@ -914,7 +914,7 @@ theorem triM_lower (w : Fin (r + 1) → Fin r → E) (hw : ∀ b (c : Fin r), b.
     ∀ c b, b < c → triM w c b = 0 := by
   intro c b hbc
   unfold triM
-  rw [if_neg hbc.ne']
+  rw [ite_eq_right hbc.ne']
   split_ifs with h
   · rw [hw b _ (le_of_lt (Fin.lt_def.1 hbc))]; simp
   · simp
@@ -923,7 +923,7 @@ theorem triM_diag (w : Fin (r + 1) → Fin r → E) (hw : ∀ b (c : Fin r), b.v
     ∀ b, triM w b b = 1 := by
   intro b
   unfold triM
-  rw [if_pos rfl]
+  rw [ite_eq_left rfl]
   split_ifs with h
   · rw [hw b _ le_rfl]; simp
   · simp
@@ -943,7 +943,7 @@ theorem triM_IA (P : HeightOneSpectrum (𝓞 E)) (w : Fin (r + 1) → Fin r → 
 theorem triM_sum {T : E} (F : LFlag S r T) (w : Fin (r + 1) → Fin r → E) (b : Fin (r + 1)) :
     ∑ c, triM w c b • frame F c = frame F b + ∑ i, w b i • F.fl.e i := by
   simp only [triM, add_smul, Finset.sum_add_distrib, ite_smul, one_smul, zero_smul, Finset.sum_ite_eq',
-    Finset.mem_univ, if_true]
+    Finset.mem_univ, ite_true]
   congr 1
   rw [Fin.sum_univ_castSucc]
   simp [frame, FlagG.fvec]

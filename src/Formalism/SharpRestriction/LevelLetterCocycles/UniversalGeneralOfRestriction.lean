@@ -1363,7 +1363,7 @@ theorem frame_inv_poly2 {O LL : Type} [CommRing O] [Field LL] [Algebra O LL] (p 
       rw [Polynomial.coeff_mul, map_sum, Finset.mul_sum]
       refine Finset.sum_congr rfl fun x hx => ?_
       have hx' := Finset.HasAntidiagonal.mem_antidiagonal.1 hx
-      rw [hGPc, hHPc, if_pos (by omega), if_pos (by omega), map_mul, hzz x.1 (by omega),
+      rw [hGPc, hHPc, ite_eq_left (by omega), ite_eq_left (by omega), map_mul, hzz x.1 (by omega),
         hyy k' x.2 (by omega), pow_add]
       ring
     rw [Finset.sum_congr rfl fun m _ => hk m, ← Finset.mul_sum, hcoef t, hcst]
@@ -1441,7 +1441,7 @@ theorem frame_indep (T : LocLat G Qp LL O) (hT : IsCrys PD T.ρ) (hs : W.s = 1)
       · exact ⟨Formalism.MainNotions.UnusedSlot80.SatPW.letE_mem_AΔ W c', letE_mul_self _⟩
       · exact ⟨W.AΔ.zero_mem, mul_zero _⟩
     have hbm2 : b m = ∑ m', (if m' = m then (letE c' : LetA O n) else 0) • b m' := by
-      rw [Finset.sum_eq_single m (fun m' _ hm' => by simp [hm']) (by simp), if_pos rfl]
+      rw [Finset.sum_eq_single m (fun m' _ hm' => by simp [hm']) (by simp), ite_eq_left rfl]
       exact (Relay2.InNΔi_letter W T c' (hb.1 m)).symm
     have := (hb.2 (b m) (hb.1 m)).unique ⟨hc1, hbm⟩ ⟨hc2, hbm2⟩
     exact fun m'' => congrFun this m''
@@ -1476,7 +1476,7 @@ theorem frame_indep (T : LocLat G Qp LL O) (hT : IsCrys PD T.ρ) (hs : W.s = 1)
     rw [← hcomp m m'', map_mul]
     ring
   simp only [h7] at h6
-  rw [Finset.sum_eq_single m'' (fun m _ hm => by simp [Ne.symm hm]) (by simp), if_pos rfl,
+  rw [Finset.sum_eq_single m'' (fun m _ hm => by simp [Ne.symm hm]) (by simp), ite_eq_left rfl,
     Formalism.MainNotions.UnusedSlot80.SatPW.φA_pow_letE] at h6
   exact h6
 
@@ -1666,7 +1666,7 @@ theorem jump_ge (A : ArcP n) (hA : A.OK) (c : ZMod n) (hc : c ∈ A.cuts) (T : L
     rw [Nat.cast_sub hs.le]; ring
   unfold ArcP.Hs
   by_cases h1 : A.ty (c - (s : ZMod n)) = Formalism.MainNotions.LocalTheoryWindows.LT.thin ∨ A.len c - s ≤ A.j
-  · rw [if_pos h1]
+  · rw [ite_eq_left h1]
     have hG2 : A.ty (c - (s : ZMod n)) ≠ Formalism.MainNotions.LocalTheoryWindows.LT.thin →
         (A.ty (c - (s : ZMod n))).size + A.S ≤ A.G₀ := by
       intro hnt
@@ -1696,7 +1696,7 @@ theorem jump_ge (A : ArcP n) (hA : A.OK) (c : ZMod n) (hc : c ∈ A.cuts) (T : L
       have := hG2 (by simp)
       simp only [Formalism.MainNotions.LocalTheoryWindows.LT.size] at this
       omega
-  · rw [if_neg h1]
+  · rw [ite_eq_right h1]
     rcases hty : A.ty (c - (s : ZMod n)) with _ | b | b
     · exact absurd (Or.inl hty) h1
     · rw [hty] at hJ hok hthick
@@ -1927,7 +1927,7 @@ theorem coord_zero (T : LocLat G Qp LL O) (e : ℕ) {d : ℕ} (b : Fin d → W.D
     rw [← dvO_eq, Finset.sum_ite_mem, Finset.univ_inter, hcc, sub_self]
   intro k hk
   have := Fintype.linearIndependent_iff.1 hli _ h0 k
-  rw [if_neg hk, sub_zero] at this
+  rw [ite_eq_right hk, sub_zero] at this
   exact hinj (by rw [this, map_zero])
 
 theorem coord_zero' (T : LocLat G Qp LL O) (e : ℕ) {d : ℕ} (b : Fin d → W.DD T)
@@ -2027,7 +2027,7 @@ theorem eMM_le (A : ArcP n) (hA : A.OK) (c : ZMod n) (hc : c ∈ A.cuts) (s : �
     rw [Nat.cast_sub hs.le]; ring
   unfold ArcP.Hs
   by_cases h1 : A.ty (c - (s : ZMod n)) = Formalism.MainNotions.LocalTheoryWindows.LT.thin ∨ A.len c - s ≤ A.j
-  · rw [if_pos h1]
+  · rw [ite_eq_left h1]
     rcases hty : A.ty (c - (s : ZMod n)) with _ | b | b
     · simp [eMM]
     · have h1' : A.len c - s ≤ A.j := h1.resolve_left (by rw [hty]; simp)
@@ -2041,7 +2041,7 @@ theorem eMM_le (A : ArcP n) (hA : A.OK) (c : ZMod n) (hc : c ∈ A.cuts) (s : �
         rw [← hlet, hty] at this
         simpa [eMM, Formalism.MainNotions.LocalTheoryWindows.LT.size] using this
     · simp [eMM]
-  · rw [if_neg h1]
+  · rw [ite_eq_right h1]
     rcases hty : A.ty (c - (s : ZMod n)) with _ | b | b
     · simp [eMM]; exact hA.2.2.2.2.2.1
     · rw [hty] at hthick

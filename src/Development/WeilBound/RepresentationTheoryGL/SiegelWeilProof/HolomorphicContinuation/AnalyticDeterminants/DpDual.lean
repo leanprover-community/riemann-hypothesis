@@ -77,12 +77,12 @@ theorem incl_mul_apply {m : Type} [Fintype m] (s : Finset (Fin n)) (X : Matrix s
   · rw [Finset.sum_eq_single ⟨a, h⟩]
     · simp
     · intro c _ hc
-      rw [if_neg]
+      rw [ite_eq_right]
       intro hac
       exact hc (Subtype.ext hac.symm)
     · simp
   · refine Finset.sum_eq_zero fun c _ => ?_
-    rw [if_neg]
+    rw [ite_eq_right]
     rintro rfl
     exact h c.2
 
@@ -93,12 +93,12 @@ theorem mul_proj_apply {m : Type} [Fintype m] (s : Finset (Fin n)) (X : Matrix m
   · rw [Finset.sum_eq_single ⟨b, h⟩]
     · simp
     · intro c _ hc
-      rw [if_neg]
+      rw [ite_eq_right]
       intro hcb
       exact hc (Subtype.ext hcb)
     · simp
   · refine Finset.sum_eq_zero fun c _ => ?_
-    rw [if_neg]
+    rw [ite_eq_right]
     rintro rfl
     exact h c.2
 
@@ -116,7 +116,7 @@ theorem proj_mul_mul_incl (s : Finset (Fin n)) (M : Matrix (Fin n) (Fin n) ℂ) 
     proj s * M * dp_incl s = M.submatrix (fun i : s => (i : Fin n)) (fun i : s => (i : Fin n)) := by
   ext c d
   simp only [proj, dp_incl, Matrix.mul_apply, ite_mul, one_mul, zero_mul, mul_ite, mul_one, mul_zero,
-    Finset.sum_ite_eq, Finset.sum_ite_eq', Finset.mem_univ, if_true, Matrix.submatrix_apply]
+    Finset.sum_ite_eq, Finset.sum_ite_eq', Finset.mem_univ, ite_true, Matrix.submatrix_apply]
 
 theorem dp_det_one_add_mul_embOn (M : Matrix (Fin n) (Fin n) ℂ) (s : Finset (Fin n)) (T : Matrix s s ℂ) :
     (1 + M * embOn s T).det =

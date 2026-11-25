@@ -105,15 +105,15 @@ theorem coeff_truncD (d : ℕ) (f : MvPowerSeries ι K) (n : ι →₀ ℕ) :
 
 theorem low_sub_truncD (d : ℕ) (f : MvPowerSeries ι K) : Low d (f - truncD d f) := by
   intro n hn
-  rw [map_sub, coeff_truncD, if_pos hn, sub_self]
+  rw [map_sub, coeff_truncD, ite_eq_left hn, sub_self]
 
 theorem coeff_truncD_self {d : ℕ} (f : MvPowerSeries ι K) {n : ι →₀ ℕ} (hn : n.degree = d) :
     MvPowerSeries.coeff n (truncD d f) = 0 := by
-  rw [coeff_truncD, if_neg (by omega)]
+  rw [coeff_truncD, ite_eq_right (by omega)]
 
 theorem constantCoeff_truncD {d : ℕ} (hd : 0 < d) (f : MvPowerSeries ι K) :
     MvPowerSeries.constantCoeff (truncD d f) = MvPowerSeries.constantCoeff f := by
-  rw [← MvPowerSeries.coeff_zero_eq_constantCoeff_apply, coeff_truncD, if_pos (by simpa using hd),
+  rw [← MvPowerSeries.coeff_zero_eq_constantCoeff_apply, coeff_truncD, ite_eq_left (by simpa using hd),
     MvPowerSeries.coeff_zero_eq_constantCoeff_apply]
 
 omit [Finite ι] in

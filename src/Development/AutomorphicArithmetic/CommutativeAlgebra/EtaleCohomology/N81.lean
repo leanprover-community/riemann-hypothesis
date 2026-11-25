@@ -579,7 +579,7 @@ theorem key (A B : Type) [CommRing A] [CommRing B] [Algebra A B] [Algebra.Etale 
     rw [hb.2, ← Polynomial.smul_eq_C_mul, algebraMap_smul]
   obtain ⟨r, hr⟩ := Polynomial.map_surjective (Ideal.Quotient.mk P) Ideal.Quotient.mk_surjective q
   obtain ⟨n, hn⟩ : ∃ n, q.coeff n ≠ 0 := by
-    by_contra h; push_neg at h; exact hq0 (Polynomial.ext h)
+    by_contra h; push Not at h; exact hq0 (Polynomial.ext h)
   refine ⟨r, ⟨n, ?_⟩, ?_⟩
   · intro hm; apply hn
     rw [← hr, Polynomial.coeff_map, Ideal.Quotient.eq_zero_iff_mem]; exact hm

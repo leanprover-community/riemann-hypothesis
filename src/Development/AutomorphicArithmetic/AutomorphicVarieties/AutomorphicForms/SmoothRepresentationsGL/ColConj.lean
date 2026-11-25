@@ -81,7 +81,7 @@ theorem UpperTheory.V.Af.Smo.colConj :
     · have : m ≠ k := fun h => by have := congrArg Fin.val h; omega
       simp [hk, vecMulVec_apply, hb1, Matrix.one_apply_ne this]
     · intro j _ hj
-      rw [if_neg fun h => hj (Fin.ext (by omega))]
+      rw [ite_eq_right fun h => hj (Fin.ext (by omega))]
     · simp
     · intro i _ hi
       refine Finset.sum_eq_zero fun j _ => ?_

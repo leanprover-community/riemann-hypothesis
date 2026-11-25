@@ -85,7 +85,7 @@ theorem lccomp_image_var_homog {B : Type*} [CommRing B] {r n : ℕ} (l j : Fin n
     convert hm using 1
     show pairW l j v = 0 + pairW l j (v.1, l)
     rw [lccomp_pairW_col, zero_add]
-    simp only [pairW, if_pos h]
+    simp only [pairW, ite_eq_left h]
   · exact isWeightedHomogeneous_X B (lccompW l j) (some v)
 
 theorem lccomp_colAddGen_monomial_homog {B : Type*} [CommRing B] {r n : ℕ} (l j : Fin n)
@@ -296,17 +296,17 @@ theorem evalDegree : EvalDeg := by
     intro v
     by_cases hvx : v = x
     · subst hvx
-      simp only [if_true]
+      simp only [ite_true]
       have h1 : degreeOf c (1 : MvPolynomial τ B) = 0 := by rw [← C_1, degreeOf_C]
       rw [h1]
       exact Nat.zero_le _
     · by_cases hvy : v = y
       · subst hvy
-        simp only [hvx, if_false, if_true, degreeOf_neg]
+        simp only [hvx, ite_false, ite_true, degreeOf_neg]
         have h2 := lcdeg_degreeOf_X_le (R := B) c c
-        simp only [if_true] at h2
+        simp only [ite_true] at h2
         omega
-      · simp only [hvx, hvy, if_false, zero_add]
+      · simp only [hvx, hvy, ite_false, zero_add]
         exact lcdeg_degreeOf_X_le (R := B) c v
   refine le_trans (Finset.sum_le_sum (g := fun v => m v * (if v = y then 1 else 0) +
     m v * (if v = c then 1 else 0)) fun v _ => ?_) ?_
@@ -344,7 +344,7 @@ theorem leadingComponent : LeadComp := by
   · subst hf; simp
   have hd : (colLex r n).degree f ∈
       (weightedHomogeneousComponent w (Finsupp.weight w ((colLex r n).degree f)) f).support := by
-    rw [mem_support_iff, coeff_weightedHomogeneousComponent, if_pos rfl]
+    rw [mem_support_iff, coeff_weightedHomogeneousComponent, ite_eq_left rfl]
     exact (colLex r n).coeff_degree_ne_zero_iff.mpr hf
   have hg0 : weightedHomogeneousComponent w (Finsupp.weight w ((colLex r n).degree f)) f ≠ 0 := by
     intro h; rw [h] at hd; simp at hd
@@ -493,12 +493,12 @@ private theorem sum_single_castLE_apply' {r n s : ℕ} (τ : Fin s → Fin r) (h
       · have hp : (τ ⟨t.val, h⟩, Fin.castLE hs ⟨t.val, h⟩) = (b, t) := by
           first
           | exact Prod.ext hb (Fin.ext rfl)
-        rw [if_pos hp, if_pos hb]
-      · rw [if_neg, if_neg hb]
+        rw [ite_eq_left hp, ite_eq_left hb]
+      · rw [ite_eq_right, ite_eq_right hb]
         intro he
         exact hb (congrArg Prod.fst he)
     · intro q _ hq
-      rw [Finsupp.single_apply, if_neg]
+      rw [Finsupp.single_apply, ite_eq_right]
       intro he
       apply hq
       apply Fin.ext
@@ -509,7 +509,7 @@ private theorem sum_single_castLE_apply' {r n s : ℕ} (τ : Fin s → Fin r) (h
   · rw [dite_eq_right h]
     apply Finset.sum_eq_zero
     intro q _
-    rw [Finsupp.single_apply, if_neg]
+    rw [Finsupp.single_apply, ite_eq_right]
     intro he
     apply h
     have h2 : (Fin.castLE hs q).val = t.val := congrArg (fun x => (x.2 : ℕ)) he
@@ -574,9 +574,9 @@ theorem minorExponentLt : MinorExpLt := by
         show t.val < q0.val
         omega
       rw [dite_eq_left ht, dite_eq_left ht, hfix _ hlt']
-    · rw [dite_eq_left ht0, dite_eq_left ht0, e1, if_neg (lt_trans hb hIlt).ne', if_neg hb.ne']
+    · rw [dite_eq_left ht0, dite_eq_left ht0, e1, ite_eq_right (lt_trans hb hIlt).ne', ite_eq_right hb.ne']
   · rw [domCongr_cmIdx_apply_cmIdx, domCongr_cmIdx_apply_cmIdx, hA, hB]
-    rw [dite_eq_left ht0, dite_eq_left ht0, e1, if_neg hIlt.ne', if_pos (rfl : I q0 = I q0)]
+    rw [dite_eq_left ht0, dite_eq_left ht0, e1, ite_eq_right hIlt.ne', ite_eq_left (rfl : I q0 = I q0)]
     exact Nat.zero_lt_one
 
 end Formalism.GradedWeylDivisibility
@@ -619,10 +619,10 @@ theorem peelDecomposition : PeelDecomp := by
     simp only [Finsupp.add_apply, Finsupp.single_apply, Finsupp.erase_apply, Prod.mk.injEq]
     rcases eq_or_ne b a0 with rfl | hb
     · rcases eq_or_ne t l with rfl | ht
-      · simp only [hlj, hlj.symm, and_true, and_false, if_true, if_false]
+      · simp only [hlj, hlj.symm, and_true, and_false, ite_true, ite_false]
         omega
       · rcases eq_or_ne t j with rfl | ht'
-        · simp only [ht, Ne.symm ht, and_true, and_false, if_true, if_false]
+        · simp only [ht, Ne.symm ht, and_true, and_false, ite_true, ite_false]
           omega
         · simp [ht, ht', Ne.symm ht, Ne.symm ht']
     · simp [hb, Ne.symm hb]
@@ -897,14 +897,14 @@ private theorem weight_pairW_apply_eq_zero_of_vanish {r n : ℕ} (l j : Fin n) (
       exact hi0 hj
     have hp : pairW (r := r) l j (b, t) = Finsupp.single (b, l) 1 := by
       simp [pairW, ht]
-    rw [hp, Finsupp.smul_apply, Finsupp.single_apply, if_neg hne, smul_zero]
+    rw [hp, Finsupp.smul_apply, Finsupp.single_apply, ite_eq_right hne, smul_zero]
   · have hne : ¬ ((b, t) = (a0, l)) := by
       intro h
       rw [h] at hi0
       exact hi0 hl
     have hp : pairW (r := r) l j (b, t) = Finsupp.single (b, t) 1 := by
       simp [pairW, ht]
-    rw [hp, Finsupp.smul_apply, Finsupp.single_apply, if_neg hne, smul_zero]
+    rw [hp, Finsupp.smul_apply, Finsupp.single_apply, ite_eq_right hne, smul_zero]
 
 private theorem weight_pairW_eq_erase_of_split {r n : ℕ} (l j : Fin n) (hlj : l ≠ j) (a0 : Fin r)
     (m d ω : Fin r × Fin n →₀ ℕ) (hdl : d (a0, l) = 0) (hdj : d (a0, j) = 0)
@@ -926,7 +926,7 @@ private theorem weight_pairW_eq_erase_of_split {r n : ℕ} (l j : Fin n) (hlj : 
   by_cases hx : x = (a0, l)
   · rw [hx, Finsupp.erase_same]
     exact weight_pairW_apply_eq_zero_of_vanish l j a0 d hdl hdj
-  · rw [Finsupp.erase_ne hx, key, Finsupp.add_apply, Finsupp.single_apply, if_neg (Ne.symm hx),
+  · rw [Finsupp.erase_ne hx, key, Finsupp.add_apply, Finsupp.single_apply, ite_eq_right (Ne.symm hx),
       add_zero]
 
 theorem sliceHomogeneous : PeelHomog := by
@@ -972,12 +972,12 @@ variable {B : Type*} [CommRing B] {r n : ℕ} {l j : Fin n}
 theorem lcplead_hom_row (hlj : l ≠ j) {ω : Fin r × Fin n →₀ ℕ} {g : MvPolynomial (Fin r × Fin n) B}
     (hg : IsWeightedHomogeneous (pairW l j) g ω) {m : Fin r × Fin n →₀ ℕ} (hm : m ∈ g.support)
     (b : Fin r) : m (b, l) + m (b, j) = ω (b, l) := by
-  rw [← hg (mem_support_iff.mp hm), lcplead_weight_apply l j hlj m b l, if_pos rfl]
+  rw [← hg (mem_support_iff.mp hm), lcplead_weight_apply l j hlj m b l, ite_eq_left rfl]
 
 theorem lcplead_hom_off (hlj : l ≠ j) {ω : Fin r × Fin n →₀ ℕ} {g : MvPolynomial (Fin r × Fin n) B}
     (hg : IsWeightedHomogeneous (pairW l j) g ω) {m : Fin r × Fin n →₀ ℕ} (hm : m ∈ g.support)
     (b : Fin r) (t : Fin n) (htl : t ≠ l) (htj : t ≠ j) : m (b, t) = ω (b, t) := by
-  rw [← hg (mem_support_iff.mp hm), lcplead_weight_apply l j hlj m b t, if_neg htl, if_neg htj]
+  rw [← hg (mem_support_iff.mp hm), lcplead_weight_apply l j hlj m b t, ite_eq_right htl, ite_eq_right htj]
 
 private lemma support_eq_of_pairW_homogeneous_of_erase_eq (hlj : l ≠ j) (a0 : Fin r) {ω : Fin r × Fin n →₀ ℕ}
     {g : MvPolynomial (Fin r × Fin n) B}
@@ -1006,7 +1006,7 @@ theorem lcplead_coeff_peel (hlj : l ≠ j) (a0 : Fin r) {ω : Fin r × Fin n →
   · simp
   · intro m' hm' hne
     rw [Finset.mem_filter] at hm'
-    rw [if_neg]
+    rw [ite_eq_right]
     intro heq
     exact hne (support_eq_of_pairW_homogeneous_of_erase_eq hlj a0 hg hm hm'.1 hm'.2 heq)
   · intro hnot
@@ -1299,7 +1299,7 @@ private theorem exists_tableau_of_sum_eq_lemma (hP : SSYTPeel) (r n : ℕ) :
       · intro t _
         exact Nat.sub_le _ _
       · refine ⟨t0, Finset.mem_univ _, ?_⟩
-        rw [if_pos ((hν t0).2 hpos)]
+        rw [ite_eq_left ((hν t0).2 hpos)]
         omega
     obtain ⟨K, sz, hsz, I, hshape, hI, hexp⟩ :=
       ih _ hlt (fun t => ν t - if t.val < h then 1 else 0) (m - colExp c hh) rfl hcol' hint'
@@ -1309,9 +1309,9 @@ private theorem exists_tableau_of_sum_eq_lemma (hP : SSYTPeel) (r n : ℕ) :
       rw [lcssyt_shapeDeg_cons, congrFun hshape t]
       by_cases ht : t.val < h
       · have h1 := (hν t).1 ht
-        simp only [if_pos ht]
+        simp only [ite_eq_left ht]
         omega
-      · simp only [if_neg ht]
+      · simp only [ite_eq_right ht]
         omega
     · rw [lcssyt_bidetExp_cons hh c sz hsz I, hexp]
       exact add_tsub_cancel_of_le hle
@@ -1525,7 +1525,7 @@ theorem lctwo_main (h1 : PeelDecomp) (h2 : PeelHomog) (h3 : PeelLead) (h4 : Peel
         simp only [hlx]
         exact lctwo_sum_ite A0 K _ (fun b => b < a)
       have hAa : A0 ≤ a := Fin.le_iff_val_le_val.mpr (by omega)
-      rw [hsj, hsl, if_pos hAa]
+      rw [hsj, hsl, ite_eq_left hAa]
       by_cases hEq : a.val = a0
       · have hAa' : ¬ A0 < a := by
           rw [Fin.lt_def]
@@ -1536,12 +1536,12 @@ theorem lctwo_main (h1 : PeelDecomp) (h2 : PeelHomog) (h3 : PeelLead) (h4 : Peel
           intro b hb
           have hba := Fin.le_iff_val_le_val.mp (Finset.mem_filter.mp hb).2
           exact hm'_low b (by omega)
-        rw [if_neg hAa', hz]
+        rw [ite_eq_right hAa', hz]
         omega
       · have hAa' : A0 < a := by
           rw [Fin.lt_def]
           omega
-        rw [if_pos hAa']
+        rw [ite_eq_left hAa']
         omega
 
 theorem twoColumn_of (h1 : PeelDecomp) (h2 : PeelHomog) (h3 : PeelLead) (h4 : PeelDegBound) : TwoColumn := by
@@ -1606,7 +1606,7 @@ private theorem sum_rowNu_lemma_2 {r n K : ℕ} (sz : Fin K → ℕ) (hsz : ∀ 
     · unfold shapeDeg
       rw [Finset.card_filter]
     · symm
-      exact Finset.sum_eq_zero (fun j _ => if_neg (by have := hsz j; omega))
+      exact Finset.sum_eq_zero (fun j _ => ite_eq_right (by have := hsz j; omega))
   have h2 : ∀ j : Fin K, min k (sz j) =
       ∑ a : Fin r with a.val < k, if a.val < sz j then 1 else 0 := by
     intro j

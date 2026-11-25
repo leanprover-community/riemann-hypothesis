@@ -76,8 +76,8 @@ private theorem mult_comap_equiv {K : Type} [Field K] [NumberField K] (σ : K �
   have h : (u.comap σ.toRingHom).IsReal ↔ u.IsReal := InfinitePlace.isReal_comap_iff σ
   simp only [InfinitePlace.mult]
   by_cases hu : u.IsReal
-  · rw [if_pos hu, if_pos (h.2 hu)]
-  · rw [if_neg hu, if_neg fun h' => hu (h.1 h')]
+  · rw [ite_eq_left hu, ite_eq_left (h.2 hu)]
+  · rw [ite_eq_right hu, ite_eq_right fun h' => hu (h.1 h')]
 
 private theorem bijective_comap {K : Type} [Field K] [NumberField K] (σ : K ≃+* K) :
     Function.Bijective fun u : InfinitePlace K => u.comap σ.toRingHom := by

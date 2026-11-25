@@ -233,7 +233,7 @@ lemma exists_family {Q : ∀ i, (B →+* A i) → Prop}
   classical
   refine ⟨fun i => if hx : ∃ p : B →+* A i, Q i p then ⇑hx.choose else 0, ?_⟩
   filter_upwards [H] with i hi
-  exact ⟨hi.choose, by simp [dif_pos hi], hi.choose_spec⟩
+  exact ⟨hi.choose, by simp [dite_eq_left hi], hi.choose_spec⟩
 
 lemma ae_eq_of_fg [Algebra.FiniteType ℤ B] {h h' : ∀ i, B → A i} (hh : IsAEHom U h)
     (hh' : IsAEHom U h') (H : ∀ b, mk U (fun i => h i b) = mk U (fun i => h' i b)) :
@@ -836,7 +836,7 @@ lemma exists_limit_hom {R₀ R : Type} [CommRing R₀] [CommRing R] (φ : R₀ �
     exact Algebra.subset_adjoin (Or.inr (by simpa using hF))
   let h : ∀ F, R → V F := fun F r => if hr : r ∈ lvl φ S₀ F then β F ⟨r, hr⟩ else 0
   have hv : ∀ (F : Finset R) (r : R) (hr : r ∈ lvl φ S₀ F), h F r = β F ⟨r, hr⟩ :=
-    fun F r hr => dif_pos hr
+    fun F r hr => dite_eq_left hr
   refine ⟨ofFamily U h ?_ ?_ ?_, fun r => ?_⟩
   · filter_upwards [hmem 1] with F h1
     rw [hv F 1 h1]

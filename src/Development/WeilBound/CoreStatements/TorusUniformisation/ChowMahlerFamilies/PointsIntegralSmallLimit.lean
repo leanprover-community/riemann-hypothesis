@@ -140,15 +140,15 @@ theorem tendsto_base (hC : ConvergenceSignedStatement) (a : σ) (w : Fin e → �
     (fun _ => 0) (fun t y => if 0 < t ∧ t ≤ S.t₀ then S.ph a y - S.phT a t y else 0) (|S.C| + |S.C₅|)
     (fun t => by
       by_cases h : 0 < t ∧ t ≤ S.t₀
-      · simp only [if_pos h]
+      · simp only [ite_eq_left h]
         exact defect_cont S a h.1 h.2
-      · simp only [if_neg h]
+      · simp only [ite_eq_right h]
         exact continuousOn_const)
     (fun t y hy => by
       by_cases h : 0 < t ∧ t ≤ S.t₀
-      · simp only [if_pos h]
+      · simp only [ite_eq_left h]
         exact defect_bound S a h.1 h.2 hy
-      · simp only [if_neg h, abs_zero]
+      · simp only [ite_eq_right h, abs_zero]
         exact mul_nonneg (by positivity) (zero_le_one.trans (one_le_log S y)))
     (by
       refine Metric.tendstoLocallyUniformlyOn_iff.2 fun ε hε x hx => ?_
@@ -168,7 +168,7 @@ theorem tendsto_base (hC : ConvergenceSignedStatement) (a : σ) (w : Fin e → �
       filter_upwards [hu, Ioc_mem_nhdsGT ht0] with t ht ht' y hy
       have h1 := ht _ hy.2
       simp only [Function.comp_apply, (S.A.chart j).left_inv hy.1] at h1
-      rw [if_pos ⟨ht'.1, ht'.2⟩, Real.dist_eq, zero_sub, abs_neg]
+      rw [ite_eq_left ⟨ht'.1, ht'.2⟩, Real.dist_eq, zero_sub, abs_neg]
       rwa [Real.dist_eq] at h1)
   have h0 : mInt S.A (fun i => S.th (w i) + LocPot.ofFun (S.ph (w i))) (fun _ => (0 : ℝ)) = 0 := by
     unfold mInt
@@ -179,7 +179,7 @@ theorem tendsto_base (hC : ConvergenceSignedStatement) (a : σ) (w : Fin e → �
   rw [h0] at h2
   refine h2.congr' ?_
   filter_upwards [Ioc_mem_nhdsGT ht0] with t ht
-  simp only [if_pos (show 0 < t ∧ t ≤ S.t₀ from ⟨ht.1, ht.2⟩)]
+  simp only [ite_eq_left (show 0 < t ∧ t ≤ S.t₀ from ⟨ht.1, ht.2⟩)]
   rfl
 
 end Sys

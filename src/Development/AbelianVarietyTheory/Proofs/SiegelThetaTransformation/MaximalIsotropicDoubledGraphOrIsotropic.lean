@@ -546,7 +546,7 @@ theorem transvMat_mulVec_eq (G : Matrix (Fin N) (Fin N) E) (ξ : Fin N → E) (�
   funext a
   simp only [transvMat, herm, Matrix.mulVec, dotProduct, of_apply, add_mul,
     Finset.sum_add_distrib, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ,
-    if_true, Pi.add_apply, Pi.smul_apply, smul_eq_mul, Finset.mul_sum, Finset.sum_mul]
+    ite_true, Pi.add_apply, Pi.smul_apply, smul_eq_mul, Finset.mul_sum, Finset.sum_mul]
   congr 1
   refine Finset.sum_congr rfl fun b _ => Finset.sum_congr rfl fun k _ => by ring
 

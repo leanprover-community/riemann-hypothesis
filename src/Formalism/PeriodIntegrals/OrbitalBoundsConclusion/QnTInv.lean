@@ -306,11 +306,11 @@ theorem transfer_invariance_right : StepRight := by
       · obtain ⟨c0, rfl⟩ := hx
         obtain ⟨d0, rfl⟩ := hy
         simp [hinj, ite_and]
-      · push_neg at hy
+      · push Not at hy
         have h0 : s' (posL k r i b) y = 0 := by
           rw [glev_col hs' _ y (fun d e => hy d e.symm), (bvec_posL_outer b y (fun d e => hy d e.symm)).1]
         simp [h0, hy]
-    · push_neg at hx
+    · push Not at hx
       have h0 : s'⁻¹ x (posL k r i a) = 0 := by
         rw [glev_row' hiG x _ (fun c e => hx c e.symm), (bvec_posL_outer a x (fun c e => hx c e.symm)).2]
       simp [h0, hx]

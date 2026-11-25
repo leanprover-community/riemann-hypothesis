@@ -44,20 +44,6 @@ namespace Formalism.L2.Indef.Examples₂
 
 open Formalism.DivisionValues Formalism.EigenvalueLevelCeiling
 
-section Std
-
-variable (K : Type) [Field K] [NumberField K] [StarRing K]
-
-variable {K}
-
-end Std
-
-section Amb
-
-variable {K : Type} [Field K] [NumberField K] [StarRing K]
-
-end Amb
-
 namespace one
 
 variable (K : Type) [Field K] [NumberField K] [StarRing K] (v0 : InfinitePlace K)
@@ -554,8 +540,8 @@ theorem height_bound_at_set : HeightS := by
     have hNl : 0 ≤ (N - 1) * Real.log (2 * a) := mul_nonneg (by linarith) hℓ0
     have hNl' : (N - 1) * Real.log (2 * a) ≤ N * (2 * La) := mul_le_mul (by linarith) hℓ hℓ0 hN0
     by_cases hτT : τ ∈ TT
-    · rw [if_pos hτT] at r6
-      rw [if_pos hτT]
+    · rw [ite_eq_left hτT] at r6
+      rw [ite_eq_left hτT]
       have r8 := hlam τ hτT
       have r9 := hbT τ hτT
       have s1 : D1 τ ≤ 4 * S + 4 * m * η + 6 * b' := by linarith
@@ -568,8 +554,8 @@ theorem height_bound_at_set : HeightS := by
         mul_le_mul u1 hTN hT0 (by linarith)
       rw [r7, r8]
       linarith
-    · rw [if_neg hτT] at r6
-      rw [if_neg hτT]
+    · rw [ite_eq_right hτT] at r6
+      rw [ite_eq_right hτT]
       have r8 := hlam' τ hτT
       have s1 : D1 τ ≤ 4 * S + 4 * m * η := by linarith
       have s2 : (N - 1) * Real.log (2 * a) * D1 τ ≤
@@ -847,12 +833,12 @@ theorem error_absorption : AbsorbE := by
           C0 * (w j ρ + k * (N + S) + m * (t + 1) * η + (if ρ ∈ TT then k * b' else 0)) * La :=
         mul_le_mul h1 hOm (abs_nonneg _) ((abs_nonneg _).trans h1)
       by_cases hρ : ρ ∈ TT
-      · rw [if_pos hρ] at h2 ⊢
+      · rw [ite_eq_left hρ] at h2 ⊢
         have h3 : w j ρ + k * (N + S) + m * (t + 1) * η + k * b' ≤ 5 * b + k * b' := by
           linarith [hwj.2]
         have h4 := mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left h3 hC0) hLa0
         linarith
-      · rw [if_neg hρ] at h2 ⊢
+      · rw [ite_eq_right hρ] at h2 ⊢
         have h3 : w j ρ + k * (N + S) + m * (t + 1) * η + 0 ≤ 5 * b := by linarith [hwj.2]
         have h4 := mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left h3 hC0) hLa0
         linarith

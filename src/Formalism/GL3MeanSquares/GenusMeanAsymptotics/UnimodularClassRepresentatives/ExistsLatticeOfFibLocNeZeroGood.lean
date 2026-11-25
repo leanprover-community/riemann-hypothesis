@@ -170,7 +170,7 @@ theorem exists_unimod_through (hs : h.IsSymm) (hd : IsTotPosDef h) {L : Submodul
           congr 1
           rw [← hs.eq (b i) (bs j), hbs]
           split_ifs <;> simp
-        simp only [hk, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+        simp only [hk, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
       intro v
       rw [key]
     have hμd : μ ∈ Formalism.HermitianLatticesTheory.dualAt h P L := by

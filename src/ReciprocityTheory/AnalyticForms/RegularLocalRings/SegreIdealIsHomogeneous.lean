@@ -161,7 +161,7 @@ theorem segreIdeal_isHomogeneous {P : Ideal (MvPolynomial (Σ k, ι k) ℂ)} (hP
     by_cases h : n = m
     · subst h
       simp
-    · rw [if_neg, if_neg h]
+    · rw [ite_eq_right, ite_eq_right h]
       intro he
       obtain ⟨k⟩ := ‹Nonempty K›
       exact h (congrFun he k)

@@ -139,7 +139,7 @@ theorem exists_highest (M : GKMod p q) [Nontrivial M.V] : ∃ μ v, IsHW M.act �
   have hKE : ∀ a b : Ix p q, sameBlock a b → IsKC (Eab a b) := by
     intro a b hab c d hcd
     unfold Eab
-    rw [Matrix.single_apply, if_neg]
+    rw [Matrix.single_apply, ite_eq_right]
     rintro ⟨rfl, rfl⟩
     exact hcd hab
   have hH : ∀ x ∈ U, M.act H x ∈ U := by
@@ -175,7 +175,7 @@ theorem exists_highest (M : GKMod p q) [Nontrivial M.V] : ∃ μ v, IsHW M.act �
       exact hab
   have := hmax _ ⟨_, ⟨_, hK _ (hKE a b hs) v hvU, root_shift M.lie hv a b, hne⟩, rfl⟩
   simp only [id, h, mul_add, mul_sub, Finset.sum_add_distrib, Finset.sum_sub_distrib, mul_ite,
-    mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true] at this
+    mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true] at this
   linarith
 
 theorem schur (M : GKMod p q) (hI : IrrGK M) (hA : AdmGK M) (T : M.V →ₗ[ℂ] M.V)

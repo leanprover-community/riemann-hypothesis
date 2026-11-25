@@ -87,14 +87,14 @@ theorem sum_levelExponents_shifted : ∑ l : Fin (r' + 1), s0 k (1 + r') (sc r' 
   rw [Fin.sum_univ_castSucc]
   have h1 : ∀ i : Fin r', s0 k (1 + r') (sc r' (Fin.castSucc i)) = 2 := fun i => by
     have := i.isLt
-    exact if_pos (by simp only [sc, Fin.val_castSucc]; omega)
+    exact ite_eq_left (by simp only [sc, Fin.val_castSucc]; omega)
   have h2 : s0 k (1 + r') (sc r' (Fin.last r')) = k := by
-    exact if_neg (by simp only [sc, Fin.val_last]; omega)
+    exact ite_eq_right (by simp only [sc, Fin.val_last]; omega)
   simp only [h1, h2, Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
   ring
 
 theorem levelExponent_first_eq_two : s0 k (1 + r') 0 = 2 := by
-  exact if_pos (by simp)
+  exact ite_eq_left (by simp)
 
 theorem exponentShift_eq_levelExponent (hk : 1 ≤ k) (l : Fin (1 + r' + 1)) : s0N (1 + r') (k - 1) l = s0 k (1 + r') l := by
   unfold s0N s0
@@ -113,9 +113,9 @@ theorem th_ident (s : Fin (1 + r' + 1) → ℝ) (aw : ℝ) (x : HPar k r') (hG0 
   have hPsi : 0 ≤ Psi k r' s x := Finset.prod_nonneg fun l _ => Real.rpow_nonneg (div_nonneg (hGl _) hG0.le) _
   rw [← ENNReal.ofReal_mul hPsi, ← ENNReal.ofReal_prod_of_nonneg (fun l _ => Real.rpow_nonneg (hGl l) _)]
   congr 1
-  rw [Fin.prod_univ_succ, if_pos rfl]
+  rw [Fin.prod_univ_succ, ite_eq_left rfl]
   have e : ∀ i : Fin (1 + r'), Fin.succ i = sc r' (Fin.cast (by omega) i) := fun i => Fin.ext (by simp [sc])
-  simp only [e, sc_ne_zero, if_false]
+  simp only [e, sc_ne_zero, ite_false]
   rw [Fin.prod_congr' (fun j => Ga k (1 + r') (sc r' j) (Yx k r' x) ^ (-s (sc r' j) / 2)) (by omega : 1 + r' = r' + 1)]
   unfold Psi Dx
   have hP : ∏ l : Fin (r' + 1), (Ga k (1 + r') (sc r' l) (Yx k r' x) / Ga k (1 + r') 0 (Yx k r' x)) ^ (-s (sc r' l) / 2)
@@ -589,11 +589,11 @@ theorem aStep_fin (hB2 : InductiveHeisenbergInputs) (hIW : IW) (hT : TLeft) (hF 
   have hCHc : CHCond (1 + r') fun l =>
       (if l = 0 then aw + 2 - ∑ l' : Fin (r' + 1), s (sc r' l') else s l) - s0N (1 + r') (k - 1) l := by
     refine chcond_of _ (fun l => s0 k (1 + r') l - s l) (fun l => by linarith [(hs l).1]) ?_ ?_
-    · simp only [if_pos rfl]
+    · simp only [ite_eq_left rfl]
       rw [sum_erase0, exponentShift_eq_levelExponent k r' hk, levelExponent_first_eq_two, Finset.sum_sub_distrib, sum_levelExponents_shifted, haw, sum_sc r' s]
       push_cast; ring
     · intro l hl0
-      simp only [if_neg hl0]
+      simp only [ite_eq_right hl0]
       rw [exponentShift_eq_levelExponent k r' hk]; ring
   have hTh : ∫⁻ x, ENNReal.ofReal (Psi k r' s x) * ENNReal.ofReal (Dx k r' x ^ (-(aw + 2))) < ⊤ := by
     refine lt_of_le_of_lt (le_of_eq (lintegral_congr fun x => ?_)) (th_fin hB2 hF hCH k r' hk _ hCHc)

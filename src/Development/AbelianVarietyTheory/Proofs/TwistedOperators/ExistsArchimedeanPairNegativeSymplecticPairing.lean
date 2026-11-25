@@ -252,10 +252,10 @@ theorem exists_neg_pair : ∀ {F E : Type} [Field F] [NumberField F] [Field E] [
   have hmain : piInf (B.emb w) (GlobalTheory.WeilM.hTens (cA σ) (incM F X.J) (incM F W.J) u u') =
       (x ⬝ᵥ (X.J.map (B.emb w).1) *ᵥ star (X.θ w *ᵥ x)) *
         (y ⬝ᵥ (Complex.I • W.J.map (B.emb w).1) *ᵥ star (W.θ w *ᵥ y)) := by
-    rw [piInf_hTens h, hu w, hu' w, if_pos rfl, hs, mul_vecMulVec_mul_transpose', sum_rank_one]
+    rw [piInf_hTens h, hu w, hu' w, ite_eq_left rfl, hs, mul_vecMulVec_mul_transpose', sum_rank_one]
   have hzero : ∀ w', w' ≠ w → piInf (B.emb w') (GlobalTheory.WeilM.hTens (cA σ) (incM F X.J) (incM F W.J) u u') = 0 := by
     intro w' hne
-    rw [piInf_hTens h, hu w', if_neg hne]
+    rw [piInf_hTens h, hu w', ite_eq_right hne]
     simp
   simp only [GlobalTheory.WeilM.symp]
   rw [trace_evI_trace h B.emb, Finset.sum_eq_single w]

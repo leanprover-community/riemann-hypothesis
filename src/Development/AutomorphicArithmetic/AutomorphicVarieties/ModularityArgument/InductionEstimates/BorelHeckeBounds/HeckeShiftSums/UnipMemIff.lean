@@ -74,7 +74,7 @@ private theorem unip_mem_iff {n r : ℕ} (Y : UPos n r → 𝔸[K]) :
     have := p.2
     rw [e] at this
     omega
-  simp only [AdelicGLn.diagonal_apply, coe_unipGL, unipMatrix, Matrix.add_apply, blockEntry_apply, dif_pos p.2,
+  simp only [AdelicGLn.diagonal_apply, coe_unipGL, unipMatrix, Matrix.add_apply, blockEntry_apply, dite_eq_left p.2,
     Matrix.one_apply_ne hne, zero_add] at h1
   exact h1
 

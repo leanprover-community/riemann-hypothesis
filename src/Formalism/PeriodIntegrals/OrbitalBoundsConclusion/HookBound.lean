@@ -364,7 +364,7 @@ theorem Ioi_eq_filter {m : ℕ} (x : Fin m) : Finset.Ioi x = Finset.univ.filter 
 theorem prod_Ioi_castSucc {M : Type*} [CommMonoid M] (n : ℕ) (i : Fin n) (g : Fin (n + 1) → M) :
     ∏ j ∈ Finset.Ioi (Fin.castSucc i), g j = (∏ j ∈ Finset.Ioi i, g (Fin.castSucc j)) * g (Fin.last n) := by
   rw [Ioi_eq_filter, Ioi_eq_filter, Finset.prod_filter, Finset.prod_filter, Fin.prod_univ_castSucc]
-  simp only [Fin.castSucc_lt_castSucc_iff, Fin.castSucc_lt_last, if_true]
+  simp only [Fin.castSucc_lt_castSucc_iff, Fin.castSucc_lt_last, ite_true]
 
 theorem Pn_last_zero (n : ℕ) (ν : Fin (n + 1) → ℕ) (h : ν (Fin.last n) = 0) :
     Pn ν = Pn (fun i : Fin n => ν (Fin.castSucc i)) * ∏ i : Fin n, (ν (Fin.castSucc i) + (n - i)) := by
@@ -469,13 +469,13 @@ theorem diagHom_monomial {N : ℕ} (m : Fin N × Fin N →₀ ℕ) (c : ℚ) :
     have : v.1 = v.2 := by
       by_contra hne
       exact (Finsupp.mem_support_iff.1 hv) (h v hne)
-    rw [if_pos this]
+    rw [ite_eq_left this]
   · have : ∃ v, v.1 ≠ v.2 ∧ m v ≠ 0 := by
       by_contra! hc
       exact h fun v hv => by_contra fun h0 => h0 (hc v hv)
     obtain ⟨v, hv, hmv⟩ := this
     rw [Finsupp.prod, Finset.prod_eq_zero (i := v) (Finsupp.mem_support_iff.2 hmv), mul_zero]
-    rw [if_neg hv, zero_pow hmv]
+    rw [ite_eq_right hv, zero_pow hmv]
 
 theorem coeff_diagHom {N : ℕ} (f : MvPolynomial (Fin N × Fin N) ℚ) (m : Fin N × Fin N →₀ ℕ)
     (hm : IsDiag m) : AddMonoidAlgebra.coeff (diagHom N f) m = AddMonoidAlgebra.coeff f m := by
@@ -484,7 +484,7 @@ theorem coeff_diagHom {N : ℕ} (f : MvPolynomial (Fin N × Fin N) ℚ) (m : Fin
   · rw [diagHom_monomial]
     split_ifs with h
     · rfl
-    · rw [AddMonoidAlgebra.coeff_zero, Finsupp.zero_apply, coeff_monomial, if_neg]
+    · rw [AddMonoidAlgebra.coeff_zero, Finsupp.zero_apply, coeff_monomial, ite_eq_right]
       rintro rfl
       exact h hm
   · rw [map_add (f := _), MvPolynomial.coeff_add, MvPolynomial.coeff_add, hp, hq]
@@ -528,13 +528,13 @@ theorem isDiag_diagonal_monomial {N : ℕ} (ν : Fin N → ℕ) : IsDiag (M0 ν)
   refine Finset.sum_eq_zero fun s _ => ?_
   rw [Finset.sum_eq_zero, mul_zero]
   intro p _
-  rw [Finsupp.single_apply, if_neg]
+  rw [Finsupp.single_apply, ite_eq_right]
   intro h
   subst h
   exact hv rfl
 
 theorem coeff_diagonal_monomial_hw {N : ℕ} (ν : Fin N → ℕ) : AddMonoidAlgebra.coeff (hw ℚ le_rfl ν) (M0 ν) = 1 := by
-  rw [← coeff_diagHom _ _ (isDiag_diagonal_monomial ν), diagHom_hw, coeff_monomial, if_pos rfl]
+  rw [← coeff_diagHom _ _ (isDiag_diagonal_monomial ν), diagHom_hw, coeff_monomial, ite_eq_left rfl]
 
 theorem weight_rowW_apply {N : ℕ} (m : Fin N × Fin N →₀ ℕ) (a : Fin N) :
     (Finsupp.weight (rowW N N) m) a = ∑ b : Fin N, m (a, b) := by
@@ -718,7 +718,7 @@ theorem capelli_relation : CapRel := by
     split_ifs with h
     · obtain ⟨rfl, rfl⟩ := h
       simp
-    · rw [Pi.single_apply, if_neg (fun e => h (Prod.mk.inj e))]
+    · rw [Pi.single_apply, ite_eq_right (fun e => h (Prod.mk.inj e))]
       simp
 
 theorem capelli_left_holds : CapLeft := by

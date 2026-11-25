@@ -154,7 +154,7 @@ theorem aeval_cone_eq_zero_iff {C : Type} [CommRing C] [Algebra K C] (r : σ →
       rw [Finset.sum_eq_single n] at h2
       · simpa using h2
       · intro b _ hb
-        rw [if_neg (Ne.symm hb)]
+        rw [ite_eq_right (Ne.symm hb)]
       · exact fun h' => absurd hn h'
     · rw [homogeneousComponent_eq_zero _ _ (by simpa using hn), map_zero]
   · intro h

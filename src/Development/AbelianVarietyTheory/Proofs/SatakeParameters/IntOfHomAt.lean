@@ -152,7 +152,7 @@ theorem entryAtQ (hV : VolumeAtQ) : EntryAtQ := by
   have hom : ∀ i, i < R.m → ∀ hal h x, w.valuation X.K (omPhi Ch sel mu cst i P hal h x) ≤ 1 := by
     intro i hi hal h x
     refine val_om w (fun t => val_locChar w _ (hmu i hi) _ t) _ hsq _ _ (fun y => ?_) x
-    rw [PhiAt, if_neg hP]
+    rw [PhiAt, ite_eq_right hP]
     exact val_PhiQ w _ _ _ _ _ _ _ _ y
   refine ⟨fun i hi al be => ⟨fun x => ?_, fun x z hz => hL.xiInv i hi al be P x _ (int_of_homAt hz _)⟩,
     fun al y => ⟨fun x => hom m2 (by omega) _ _ _, fun x z hz => hL.psiInvX al P x _ y (int_of_homAt hz _)⟩⟩
@@ -165,11 +165,11 @@ theorem entryAtQ (hV : VolumeAtQ) : EntryAtQ := by
   rw [map_mul]
   refine mul_le_one' (hom i (by omega) _ _ _) (le_of_eq ?_)
   have h1 := right_ne_zero_of_mul h0
-  rw [PhiAt, if_neg hP] at h1
+  rw [PhiAt, ite_eq_right hP] at h1
   have hb := hL.boundQ i al P hP
   have hb' := hL.boundQ (i + 1) be P hP
   have hD := hL.depthQ' P hP
-  simp only [lamYat, hP, if_false, mem_lamY_zero] at hb hb'
+  simp only [lamYat, hP, ite_false, mem_lamY_zero] at hb hb'
   have hint : IntAt P.1 ((qOf P.1 : X.E) ^ (i + 1) * Loc.chArg y) := by
     refine intAt_chArg _ y fun v hv => ?_
     have h2 := (hb' _ (int_of_PhiQ (k_le_N R _) (k_le_N R _) h1 (hb v hv).1)).2

@@ -121,10 +121,10 @@ theorem W_mem_wall (w0 : S.W) : w0.1 ∈ C.wall S.pts S.Ntop := by
   rw [Finset.mem_union]
   by_cases hb : ((w0.1 v)[j]'hj).1 = true
   · left
-    rw [if_pos hb] at h1
+    rw [ite_eq_left hb] at h1
     exact hnode _ h1
   · right
-    rw [if_neg hb] at h1
+    rw [ite_eq_right hb] at h1
     exact Finset.mem_image.mpr ⟨_, hnode _ h1, by ring⟩
 
 open Classical in
@@ -200,7 +200,7 @@ theorem expand (hP : ∀ v ∈ A, TB.IsProb (U v) (θ v))
     intro v
     unfold supp pw
     by_cases hv : v ∈ A
-    · simp only [if_pos hv]
+    · simp only [ite_eq_left hv]
     · simp [hv]
   simp only [e1]
   rw [Finset.prod_univ_sum]

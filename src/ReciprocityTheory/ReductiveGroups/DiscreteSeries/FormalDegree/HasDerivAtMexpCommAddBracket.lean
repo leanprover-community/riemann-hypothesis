@@ -118,9 +118,9 @@ private theorem hasDerivAt_exp_conj_diag (U U' : Matrix (Fin n) (Fin n) ℂ) (h1
     ext i j
     simp only [hA, hV, Matrix.diagonal_mul, Matrix.mul_diagonal, Matrix.of_apply]
     by_cases h : x i = x j
-    · simp only [h, if_true]
+    · simp only [h, ite_true]
       ring
-    · simp only [h, if_false, mul_zero, zero_mul]
+    · simp only [h, ite_false, mul_zero, zero_mul]
   have hsplit : V + (Xm * A - A * Xm) = W' := by
     ext i j
     simp only [hA, hV, hXm, Matrix.add_apply, Matrix.sub_apply, Matrix.diagonal_mul,
@@ -156,11 +156,11 @@ private theorem hasDerivAt_exp_conj_diag (U U' : Matrix (Fin n) (Fin n) ℂ) (h1
     simp only [hV, hXm, Matrix.add_apply, Matrix.sub_apply, Matrix.diagonal_mul,
       Matrix.mul_diagonal, Matrix.of_apply]
     by_cases h : x i = x j
-    · simp only [h, if_true, sub_self, shc, if_true, Complex.ofReal_one, mul_zero, zero_mul,
+    · simp only [h, ite_true, sub_self, shc, ite_true, Complex.ofReal_one, mul_zero, zero_mul,
         add_zero, one_mul]
       rw [show (2 * (x j : ℂ)) = x j + x j by ring, Complex.exp_add]
       ring
-    · simp only [h, if_false, mul_zero, zero_add]
+    · simp only [h, ite_false, mul_zero, zero_add]
       have hne : x i - x j ≠ 0 := sub_ne_zero.mpr h
       have hreal : (Real.exp (2 * x j) - Real.exp (2 * x i)) / (2 * x j - 2 * x i) =
           Real.exp (x i) * Real.exp (x j) * (Real.sinh (x i - x j) / (x i - x j)) := by
@@ -170,7 +170,7 @@ private theorem hasDerivAt_exp_conj_diag (U U' : Matrix (Fin n) (Fin n) ℂ) (h1
         field_simp
         ring
       unfold shc
-      rw [if_neg hne]
+      rw [ite_eq_right hne]
       have hC := congrArg (fun r : ℝ => (r : ℂ)) hreal
       push_cast at hC
       push_cast

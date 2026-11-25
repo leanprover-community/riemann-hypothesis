@@ -152,7 +152,7 @@ theorem isBaseCond_condF (P : Places L) (hg : ∀ i, D.host.g i % LevelStarExpon
     intro v hv
     by_contra h
     have e := expIn_condF' P v
-    rw [if_neg h] at e
+    rw [ite_eq_right h] at e
     have hne : condF P ≠ 0 := Finset.prod_ne_zero_iff.2 fun u _ => pow_ne_zero _ u.ne_bot
     have := (multiplicity_eq_zero (FiniteMultiplicity.of_prime_left v.prime hne)).1 e
     exact this hv
@@ -161,13 +161,13 @@ theorem isBaseCond_condF (P : Places L) (hg : ∀ i, D.host.g i % LevelStarExpon
   · intro e
     have h0 : P.v0 ∈ P.S0 := P.mem_S0_of_sum_eq.2 (Or.inl rfl)
     have e1 := expIn_condF' P P.v0
-    rw [if_pos h0, condExp, if_pos rfl] at e1
+    rw [ite_eq_left h0, condExp, ite_eq_left rfl] at e1
     have e2 : expIn (condF P) P.v0 = 0 := by
       rw [e]; exact multiplicity_eq_zero_of_not_dvd fun h => P.v0.isPrime.ne_top (top_le_iff.1 (Ideal.le_of_dvd h))
     omega
   · have hS := hexp v hv
     have hle : expIn (condF P) v ≤ 2 := by
-      rw [expIn_condF', if_pos hS, condExp]; split_ifs <;> omega
+      rw [expIn_condF', ite_eq_left hS, condExp]; split_ifs <;> omega
     obtain ⟨p, hp, hpv⟩ : ∃ p : ℕ, (p = D.host.g 0 ∨ p = D.host.g 1 ∨ p = D.host.pde ∨ p = D.host.pde' ∨ p = q0 D) ∧
         (p : OF D.host.E) ∈ v.asIdeal := by
       rcases P.mem_S0_of_sum_eq.1 hS with h | h

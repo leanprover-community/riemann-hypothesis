@@ -60,7 +60,7 @@ def face (p : ℕ) (i : Fin (p + 1)) (l : SplitSet R n (p + 1)) : SplitSet R n p
       have h := (mem_splitSeq_iff R n _).1 l.2.1
       simp only [List.getElem_eraseIdx]
       split_ifs <;> rw [h] <;> simp <;> omega,
-    by have := l.2.2; have := i.2; rw [List.length_eraseIdx, if_pos (by omega)]; omega⟩
+    by have := l.2.2; have := i.2; rw [List.length_eraseIdx, ite_eq_left (by omega)]; omega⟩
 
 theorem face_smul (p : ℕ) (i : Fin (p + 1)) (g : GL (Fin n) R) (l : SplitSet R n (p + 1)) :
     face R n p i (g • l) = g • face R n p i l := by
@@ -87,7 +87,7 @@ def stdSeq (p : ℕ) (h : p ≤ n) : SplitSet R n p :=
       rw [Finset.sum_eq_single (⟨n - p + i, by omega⟩ : Fin n)]
       · simp
       · intro b _ hb
-        rw [if_neg (fun e => hb (Fin.ext e)), zero_mul]
+        rw [ite_eq_right (fun e => hb (Fin.ext e)), zero_mul]
       · simp,
     by simp [stdList]⟩
 

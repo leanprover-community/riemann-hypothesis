@@ -125,8 +125,4 @@ theorem teichSum (p : ℕ) [Fact p.Prime] : TeichSumStatement p := by
 
 end TeichSum
 
-section Cyclic
-
-end Cyclic
-
 end ReciprocityTheory.PGsh

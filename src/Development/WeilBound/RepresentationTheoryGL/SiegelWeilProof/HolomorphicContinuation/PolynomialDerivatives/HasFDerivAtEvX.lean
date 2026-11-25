@@ -59,7 +59,7 @@ theorem hasFDerivAt_evX (P : PX m n) (x : Fin m → Fin n → ℂ) : HasFDerivAt
         · simp [evX_eq, h]; ring
       simp only [dP, ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply, ContinuousLinearMap.coe_sum',
         Finset.sum_apply, smul_eq_mul]
-      rw [Finset.sum_congr rfl fun b _ => hb b, Finset.sum_add_distrib, Finset.sum_ite_eq, if_pos (Finset.mem_univ _),
+      rw [Finset.sum_congr rfl fun b _ => hb b, Finset.sum_add_distrib, Finset.sum_ite_eq, ite_eq_left (Finset.mem_univ _),
         ← Finset.mul_sum]
       ring
     rw [e1, e2]; exact h1

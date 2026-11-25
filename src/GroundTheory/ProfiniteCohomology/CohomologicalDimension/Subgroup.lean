@@ -533,8 +533,6 @@ theorem cdp_le_cdp_closedSubgroup {p : ℕ} (hp : p.Prime) {H : Subgroup G}
 
 section Summand
 
-attribute [local instance 2000] Rep.hV2
-
 
 omit [TotallyDisconnectedSpace G] in
 theorem finite_of_isSimpleOrder {p : ℕ} (hp : p.Prime) (A : Rep.{u} (ULift.{u} ℤ) G)
@@ -636,14 +634,14 @@ theorem summandFun_mul_left (hfix : ∀ h : H, (h : G) ∈ V → ∀ a : A, A.ρ
     Subgroup.mul_mem_cancel_left _ (le_sup_left (a := H) (b := V) h.2)
   by_cases hx : x ∈ H ⊔ V
   · have hx' : (h : G) * x ∈ H ⊔ V := hmem.2 hx
-    simp only [summandFun, dif_pos hx, dif_pos hx']
+    simp only [summandFun, dite_eq_left hx, dite_eq_left hx']
     rw [← Module.End.mul_apply, ← map_mul]
     apply rho_eq_of_inv_mul_mem hfix
     refine inv_mul_mem_trans (inv_mul_supSection_mem (H := H) (V := V) ⟨_, hx'⟩) ?_
     have := inv_mul_mem_symm (inv_mul_supSection_mem (H := H) (V := V) ⟨x, hx⟩)
     simpa [mul_assoc] using this
   · have hx' : (h : G) * x ∉ H ⊔ V := fun h' => hx (hmem.1 h')
-    simp only [summandFun, dif_neg hx, dif_neg hx', map_zero]
+    simp only [summandFun, dite_eq_right hx, dite_eq_right hx', map_zero]
 
 omit [TopologicalSpace G] [IsTopologicalGroup G] [CompactSpace G] [TotallyDisconnectedSpace G] in
 theorem summandFun_mul_right (hfix : ∀ h : H, (h : G) ∈ V → ∀ a : A, A.ρ h a = a) (a : A)
@@ -652,7 +650,7 @@ theorem summandFun_mul_right (hfix : ∀ h : H, (h : G) ∈ V → ∀ a : A, A.�
     Subgroup.mul_mem_cancel_right _ (le_sup_left (a := H) (b := V) k'.2)
   by_cases hx : x ∈ H ⊔ V
   · have hx' : x * k' ∈ H ⊔ V := hmem.2 hx
-    simp only [summandFun, dif_pos hx, dif_pos hx']
+    simp only [summandFun, dite_eq_left hx, dite_eq_left hx']
     rw [← Module.End.mul_apply, ← map_mul]
     apply rho_eq_of_inv_mul_mem hfix
     refine inv_mul_mem_trans (inv_mul_supSection_mem (H := H) (V := V) ⟨_, hx'⟩) ?_
@@ -662,7 +660,7 @@ theorem summandFun_mul_right (hfix : ∀ h : H, (h : G) ∈ V → ∀ a : A, A.�
       simpa using this
     simpa [mul_assoc] using h2
   · have hx' : x * k' ∉ H ⊔ V := fun h' => hx (hmem.1 h')
-    simp only [summandFun, dif_neg hx, dif_neg hx']
+    simp only [summandFun, dite_eq_right hx, dite_eq_right hx']
 
 omit [TopologicalSpace G] [IsTopologicalGroup G] [CompactSpace G] [TotallyDisconnectedSpace G] in
 theorem summandFun_mul_right_of_mem (hfix : ∀ h : H, (h : G) ∈ V → ∀ a : A, A.ρ h a = a)
@@ -671,7 +669,7 @@ theorem summandFun_mul_right_of_mem (hfix : ∀ h : H, (h : G) ∈ V → ∀ a :
     Subgroup.mul_mem_cancel_right _ (le_sup_right (a := H) (b := V) hv)
   by_cases hx : x ∈ H ⊔ V
   · have hx' : x * v ∈ H ⊔ V := hmem.2 hx
-    simp only [summandFun, dif_pos hx, dif_pos hx']
+    simp only [summandFun, dite_eq_left hx, dite_eq_left hx']
     apply rho_eq_of_inv_mul_mem hfix
     refine inv_mul_mem_trans (inv_mul_supSection_mem (H := H) (V := V) ⟨_, hx'⟩) ?_
     have h1 := inv_mul_mem_symm (inv_mul_supSection_mem (H := H) (V := V) ⟨x, hx⟩)
@@ -679,13 +677,13 @@ theorem summandFun_mul_right_of_mem (hfix : ∀ h : H, (h : G) ∈ V → ∀ a :
       V.mul_mem (V.inv_mem hv) h1
     simpa [mul_assoc] using h2
   · have hx' : x * v ∉ H ⊔ V := fun h' => hx (hmem.1 h')
-    simp only [summandFun, dif_neg hx, dif_neg hx']
+    simp only [summandFun, dite_eq_right hx, dite_eq_right hx']
 
 omit [TopologicalSpace G] [IsTopologicalGroup G] [CompactSpace G] [TotallyDisconnectedSpace G] in
 theorem summandFun_one (hfix : ∀ h : H, (h : G) ∈ V → ∀ a : A, A.ρ h a = a) (a : A) :
     summandFun H V a 1 = a := by
   have h1 : (1 : G) ∈ H ⊔ V := one_mem _
-  simp only [summandFun, dif_pos h1]
+  simp only [summandFun, dite_eq_left h1]
   rw [← rho_eq_of_inv_mul_mem hfix (h₁ := 1) ?_ a, map_one, Module.End.one_apply]
   have := V.inv_mem (inv_mul_supSection_mem (H := H) (V := V) ⟨1, h1⟩)
   simpa using this
@@ -730,8 +728,6 @@ theorem summandMap_comp_coindFixedEval (hfix : ∀ h : H, (h : G) ∈ V → ∀ 
 end Splitting
 
 section Main
-
-attribute [local instance 2000] Rep.hV2
 
 theorem cdp_closedSubgroup_le {p : ℕ} (hp : p.Prime) {H : Subgroup G} (hH : IsClosed (H : Set G)) :
     cdp p H ≤ cdp p G := by

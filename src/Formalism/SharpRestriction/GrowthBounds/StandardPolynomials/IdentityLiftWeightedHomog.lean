@@ -27,9 +27,9 @@ section Grad
 
 variable {X : Loc}
 
-theorem wN_pos {v : VarH X} (h : (v.1.2 = true ∧ 1 ≤ v.2.val) ∨ (v.1.2 = false ∧ v.2.val < 1)) : wN X v = 1 := if_pos h
+theorem wN_pos {v : VarH X} (h : (v.1.2 = true ∧ 1 ≤ v.2.val) ∨ (v.1.2 = false ∧ v.2.val < 1)) : wN X v = 1 := ite_eq_left h
 
-theorem wN_neg {v : VarH X} (h : ¬ ((v.1.2 = true ∧ 1 ≤ v.2.val) ∨ (v.1.2 = false ∧ v.2.val < 1))) : wN X v = 0 := if_neg h
+theorem wN_neg {v : VarH X} (h : ¬ ((v.1.2 = true ∧ 1 ≤ v.2.val) ∨ (v.1.2 = false ∧ v.2.val < 1))) : wN X v = 0 := ite_eq_right h
 
 theorem ndM_eq (m : MonH X) : ndM X m = Finsupp.weight (wN X) m := by
   classical
@@ -38,9 +38,9 @@ theorem ndM_eq (m : MonH X) : ndM X m = Finsupp.weight (wN X) m := by
   refine Finset.sum_congr rfl fun v _ => ?_
   by_cases h : (v.1.2 = true ∧ 1 ≤ v.2.val) ∨ (v.1.2 = false ∧ v.2.val < 1)
   · have h' : ((hhLetters X.TT).vec v.1 = true ∧ 1 ≤ v.2.val) ∨ ((hhLetters X.TT).vec v.1 = false ∧ v.2.val < 1) := h
-    rw [if_pos h', wN_pos h, smul_eq_mul, mul_one]
+    rw [ite_eq_left h', wN_pos h, smul_eq_mul, mul_one]
   · have h' : ¬ (((hhLetters X.TT).vec v.1 = true ∧ 1 ≤ v.2.val) ∨ ((hhLetters X.TT).vec v.1 = false ∧ v.2.val < 1)) := h
-    rw [if_neg h', wN_neg h, smul_eq_mul, mul_zero]
+    rw [ite_eq_right h', wN_neg h, smul_eq_mul, mul_zero]
 
 theorem multideg_eq (m : MonH X) (l : X.TT × Bool) : multideg m l = Finsupp.weight (wL X l) m := by
   classical
@@ -96,8 +96,8 @@ theorem identity_lift_X (w : O) (v : VarH X) :
   show liftSubst X.p X.n' O w 1 (hhLetters X.TT) 1 (MvPolynomial.X (x, b)) = _
   rw [liftSubst_one_hh]
   by_cases h : (x.2 = true ∧ 1 ≤ (b : ℕ)) ∨ (x.2 = false ∧ (b : ℕ) < 1)
-  · rw [if_pos h, C_mul_eq_smul, wN_pos (v := (x, b)) h, pow_one]
-  · rw [if_neg h, wN_neg (v := (x, b)) h, pow_zero, one_smul]
+  · rw [ite_eq_left h, C_mul_eq_smul, wN_pos (v := (x, b)) h, pow_one]
+  · rw [ite_eq_right h, wN_neg (v := (x, b)) h, pow_zero, one_smul]
 
 theorem identity_lift_monomial (w : O) (M : MonH X) :
     lift1 X O w (monomial M 1) = (w ^ ndM X M) • (monomial M 1 : RHH O X) := by

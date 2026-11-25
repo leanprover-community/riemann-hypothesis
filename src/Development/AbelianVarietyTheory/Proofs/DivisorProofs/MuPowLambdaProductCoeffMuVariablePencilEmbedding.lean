@@ -128,9 +128,9 @@ theorem dM_comm_X (ε : Fin n → Bool) (w x : Mode ε) (v : (Fin n × Fin n) �
   have h3 := h1.symm
   have h4 := h2.symm
   rcases v with ⟨i, j⟩ | ⟨i, j⟩
-  · simp only [dM_inl, map_sub, apply_ite (dM ε w), apply_ite (dM ε x), map_zero, h1, h2, h3, h4, if_false]
+  · simp only [dM_inl, map_sub, apply_ite (dM ε w), apply_ite (dM ε x), map_zero, h1, h2, h3, h4, ite_false]
     split_ifs <;> simp_all
-  · simp only [dM_inr, map_sub, apply_ite (dM ε w), apply_ite (dM ε x), map_zero, h1, h2, h3, h4, if_false]
+  · simp only [dM_inr, map_sub, apply_ite (dM ε w), apply_ite (dM ε x), map_zero, h1, h2, h3, h4, ite_false]
     split_ifs <;> simp_all
 
 theorem dM_comm : GlobalTheory.PsCo.Cw2a.T_dM_comm := by
@@ -225,11 +225,11 @@ theorem pencil_det_adjugate_coeff :
     · intro r c
       by_cases hr : r = i
       · subst hr
-        simp only [Matrix.updateRow_self, if_true]
+        simp only [Matrix.updateRow_self, ite_true]
         by_cases hc : c = j
         · subst hc; simp
         · simp [hc]
-      · simp only [Matrix.updateRow_ne hr, if_neg hr, Matrix.add_apply, Matrix.smul_apply,
+      · simp only [Matrix.updateRow_ne hr, ite_eq_right hr, Matrix.add_apply, Matrix.smul_apply,
           Matrix.map_apply, smul_eq_mul]
         compute_degree
     · have : (∑ r, if r = i then 0 else 1 : ℕ) = Fintype.card ι - 1 := by
@@ -302,7 +302,7 @@ theorem dM_block_entries : BlockDeterminantCondition := by
       have := x.2.2
       rw [← h, ha] at this
       exact Bool.noConfusion this
-    rw [dM_X_inl_entry, if_neg hne, sub_zero, Finset.sum_eq_single (⟨(a, x.1.2), ha, x.2.2⟩ : Mode ε)]
+    rw [dM_X_inl_entry, ite_eq_right hne, sub_zero, Finset.sum_eq_single (⟨(a, x.1.2), ha, x.2.2⟩ : Mode ε)]
     · by_cases h : x.1.1 = b <;> simp [h]
     · intro y _ hy
       simp [hy]
@@ -315,7 +315,7 @@ theorem dM_block_entries : BlockDeterminantCondition := by
       have := x.2.1
       rw [h, hb] at this
       exact Bool.noConfusion this
-    rw [dM_X_inl_entry, if_neg hne, zero_sub, Finset.sum_eq_single (⟨(x.1.1, b), x.2.1, hb⟩ : Mode ε)]
+    rw [dM_X_inl_entry, ite_eq_right hne, zero_sub, Finset.sum_eq_single (⟨(x.1.1, b), x.2.1, hb⟩ : Mode ε)]
     · by_cases h : a = x.1.2 <;> simp [h]
     · intro y _ hy
       simp [hy]
@@ -559,7 +559,7 @@ theorem coeff_allOnes_prod_one_add_mul {σ : Type} {L : ℕ} (m : Fin L → MvPo
         ext j; simp [he, Finsupp.finsetSum_apply, Finsupp.single_apply]
       simp [this]
     · obtain ⟨j, hj⟩ : ∃ j, j ∉ t := by
-        by_contra h; push_neg at h; exact ht (Finset.eq_univ_iff_forall.mpr h)
+        by_contra h; push Not at h; exact ht (Finset.eq_univ_iff_forall.mpr h)
       have : (∑ i ∈ t, Finsupp.single i 1) ≠ e := by
         intro h
         have := congrArg (fun f => f j) h
@@ -569,7 +569,7 @@ theorem coeff_allOnes_prod_one_add_mul {σ : Type} {L : ℕ} (m : Fin L → MvPo
   simp_rw [map_add (f := _), map_one, map_mul, hr, hx]
   rw [Finset.prod_one_add, coeff_sum, Finset.sum_eq_single Finset.univ]
   · rw [hmono]; simp
-  · intro t _ ht; rw [hmono, if_neg ht]
+  · intro t _ ht; rw [hmono, ite_eq_right ht]
   · intro h; exact absurd (Finset.mem_powerset.mpr (Finset.Subset.refl _)) h
 
 end GlobalTheory
@@ -737,7 +737,7 @@ theorem derivation_det {ι : Type} [Fintype ι] [DecidableEq ι] (D : Derivation
     refine sum_congr rfl fun k _ => prod_congr rfl fun i _ => ?_
     by_cases hik : i = k
     · subst hik; simp [updateRow_apply]
-    · rw [Function.update_of_ne hik, updateRow_apply, if_neg (σ.injective.ne hik)]
+    · rw [Function.update_of_ne hik, updateRow_apply, ite_eq_right (σ.injective.ne hik)]
 
 theorem piola {ι : Type} [Fintype ι] [DecidableEq ι] (δ : ι → Derivation K R R)
     (M : Matrix ι ι R) (hM : ∀ h i j, δ h (M i j) = δ i (M h j)) (j : ι) :
@@ -837,7 +837,7 @@ theorem weighted_det_divergence_mem_ideal : ∀ {K R : Type} [CommRing K] [CommR
           rw [Finset.sum_comm]
           refine Finset.sum_congr rfl fun j _ => Finset.sum_congr rfl fun i _ => by ring
       _ = M.det * a k := by
-          simp only [h3, mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+          simp only [h3, mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
           ring
   have hrho : ∑ i, c i * (w * ∑ j, M i j * b j) = ρ * (w * M.det) := by
     calc ∑ i, c i * (w * ∑ j, M i j * b j) = ∑ j, w * b j * ∑ i, c i * M i j := by
@@ -1135,7 +1135,7 @@ private lemma lambdaCoeff_mul_variable_sq_lemma_22 (G : _root_.GlobalTheory.PsCo
   simp only [_root_.GlobalTheory.PsCo.Pc1.A.exL, _root_.GlobalTheory.PsCo.Pc1.A.laL, LinearMap.coe_comp, Function.comp_apply,
     AlgEquiv.toLinearMap_apply, map_mul, map_pow, sumAlgEquiv_X_inl]
   simp only [LinearMap.coe_restrictScalars, MvPolynomial.lcoeff_apply]
-  rw [X_pow_eq_monomial, coeff_mul_monomial', if_neg]
+  rw [X_pow_eq_monomial, coeff_mul_monomial', ite_eq_right]
   intro h
   have := h i
   simp [_root_.GlobalTheory.PsCo.Pc1.A.allOnes] at this

@@ -85,7 +85,7 @@ lemma brSys_tr {ι : Type} (P : ι → SOp d) (i : ι) (φ : (Fin d → ℝ) →
       (fun y' => (P i).a k w y' * φ y') ∘ brT d := by
     funext y
     simp only [brSys, Function.comp_apply]
-    rw [dif_pos (show (k : ℕ) < (P i).ord + 1 from k.isLt)]
+    rw [dite_eq_left (show (k : ℕ) < (P i).ord + 1 from k.isLt)]
     rfl
   rw [e, dw_comp_brT]
   rfl
@@ -94,7 +94,7 @@ lemma brSys_symb {ι : Type} (P : ι → SOp d) (i : ι) (x ξ : ZetaZeros.D.Ell
     (brSys P).symb i x ξ = (P i).symb (brT d x) (brT d ξ) := by
   unfold ZetaZeros.D.EllReg.Sys.symb SOp.symb
   refine Finset.sum_congr rfl fun w _ => ?_
-  simp only [brSys, dif_pos (Nat.lt_succ_self _)]
+  simp only [brSys, dite_eq_left (Nat.lt_succ_self _)]
   rw [mul_comm]
   rfl
 
@@ -373,7 +373,7 @@ theorem frozenDecompositionOfParts : DecomposeOf := by
     simp only [trOp]
     rw [Finset.sum_range_succ, Finset.sum_eq_zero, zero_add, Finset.sum_mul]
     · refine Finset.sum_congr rfl fun w _ => ?_
-      simp only [b2, if_true]
+      simp only [b2, ite_true]
       rw [Dec.dw_const_mul hφ, hDw d ξ (List.ofFn w), Dec.prod_neg_eq]
       beta_reduce
       have hsq : ((-1 : ℂ) ^ m) * (-1) ^ m = 1 := by
@@ -383,7 +383,7 @@ theorem frozenDecompositionOfParts : DecomposeOf := by
     · intro n hn
       have hne : n ≠ m := (Finset.mem_range.mp hn).ne
       refine Finset.sum_eq_zero fun w _ => ?_
-      simp only [b2, if_neg hne, zero_mul]
+      simp only [b2, ite_eq_right hne, zero_mul]
       rw [Dec.dw_zero]
       simp
   have hint1 : Integrable (fun y => cut χ u y * trOp m lo (eF ξ) y) :=
@@ -416,7 +416,7 @@ theorem frozenDecompositionOfParts : DecomposeOf := by
       lo m w = fun x => ((ψ0 (r⁻¹ • (x - x0)) : ℝ) : ℂ) * (P.a i m w x - P.a i m w x0) := by
     intro w
     funext x
-    simp only [lo, if_true]
+    simp only [lo, ite_true]
   rw [← hR, key, Finset.sum_range_succ]
   simp only [hlom]
   ring

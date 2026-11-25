@@ -248,17 +248,17 @@ theorem hY_ent [_root_.NumberField.IsTotallyComplex E] (τ τ' : E →+* ℂ) (h
   have hc : ∀ z, coord τ' (atEmb τ z) = if τ' = τ then z else 0 := fun z => by
     by_cases h1 : τ' = τ
     · subst τ'
-      rw [if_pos rfl, coord_atEmb]
+      rw [ite_eq_left rfl, coord_atEmb]
     · have h2 : τ' ≠ ComplexEmbedding.conjugate τ := h
       have hp : InfinitePlace.mk τ' ≠ InfinitePlace.mk τ := fun hp => by
         rcases InfinitePlace.mk_eq_iff.1 hp with hp | hp
         · exact h1 hp
         · exact h2 (by rw [← hp]; ext; simp)
-      rw [if_neg h1]
+      rw [ite_eq_right h1]
       unfold coord atEmb
       by_cases h3 : (InfinitePlace.mk τ').embedding = τ'
-      · rw [if_pos h3]; simp [hp]
-      · rw [if_neg h3]; simp [hp]
+      · rw [ite_eq_left h3]; simp [hp]
+      · rw [ite_eq_right h3]; simp [hp]
   have he : ∀ z, coord τ' ((hY τ j i z).1 j' i') =
       (if j = j' ∧ i = i' then coord τ' (atEmb τ z) else 0) +
         (if j = i' ∧ i = j' then star (coord τ' (atEmb τ z)) else 0) := by
@@ -277,10 +277,10 @@ theorem hY_ent [_root_.NumberField.IsTotallyComplex E] (τ τ' : E →+* ℂ) (h
       ⟨fun h => ⟨h.2.1.symm, h.2.2.symm⟩, fun h => ⟨rfl, h.1.symm, h.2.symm⟩⟩
     rw [if_congr hP rfl rfl]
     by_cases hp : j = j' ∧ i = i' <;> by_cases hq : j = i' ∧ i = j'
-    · simp only [if_pos hp, if_pos hq]; simp [Complex.ext_iff]; norm_num
-    · simp only [if_pos hp, if_neg hq]; simp [Complex.ext_iff]; norm_num
-    · simp only [if_neg hp, if_pos hq]; simp [Complex.ext_iff]; norm_num
-    · simp only [if_neg hp, if_neg hq]; simp
+    · simp only [ite_eq_left hp, ite_eq_left hq]; simp [Complex.ext_iff]; norm_num
+    · simp only [ite_eq_left hp, ite_eq_right hq]; simp [Complex.ext_iff]; norm_num
+    · simp only [ite_eq_right hp, ite_eq_left hq]; simp [Complex.ext_iff]; norm_num
+    · simp only [ite_eq_right hp, ite_eq_right hq]; simp
   · simp [h1]
 
 theorem om_ne [_root_.NumberField.IsTotallyComplex E] (tl : Fin N → (E →+* ℂ)) (η : TV a M (Fin q ⊕ (Fin N ⊕ Fin N)))
@@ -321,11 +321,11 @@ theorem om_ne [_root_.NumberField.IsTotallyComplex E] (tl : Fin N → (E →+* �
         fun ⟨h1, h2, h3⟩ k => ⟨h1 k, h3 k, h2 k⟩⟩
     simp only [hp, ite_and, ite_smul, one_smul, zero_smul]
     by_cases hσ : ∀ k, tl k = tl (σ k)
-    · simp only [eq_true hσ, if_true]
-      rw [Fintype.sum_eq_single (fun k => P (σ k)) (fun x hx => by simp only [if_neg hx, Finset.sum_const_zero])]
-      rw [Fintype.sum_eq_single (fun k => Q (σ k)) (fun y hy => by simp only [if_neg hy, ite_self])]
-      simp only [if_true]
-    · simp only [eq_false hσ, if_false, Finset.sum_const_zero]
+    · simp only [eq_true hσ, ite_true]
+      rw [Fintype.sum_eq_single (fun k => P (σ k)) (fun x hx => by simp only [ite_eq_right hx, Finset.sum_const_zero])]
+      rw [Fintype.sum_eq_single (fun k => Q (σ k)) (fun y hy => by simp only [ite_eq_right hy, ite_self])]
+      simp only [ite_true]
+    · simp only [eq_false hσ, ite_false, Finset.sum_const_zero]
   have hJ : ∀ σ : Equiv.Perm (Fin N), J ∘ dbl σ = Sum.elim I (Sum.elim (fun k => P (σ k)) (fun k => Q (σ k))) := by
     intro σ
     funext x
@@ -337,9 +337,9 @@ theorem om_ne [_root_.NumberField.IsTotallyComplex E] (tl : Fin N → (E →+* �
   refine Finset.sum_congr rfl fun σ _ => ?_
   rw [e3 σ]
   by_cases hσ : ∀ k, tl k = tl (σ k)
-  · rw [if_pos hσ, if_pos fun p => (hσ p).symm, LinearMap.smul_apply, Pi.smul_apply, pm_apply, hJ,
+  · rw [ite_eq_left hσ, ite_eq_left fun p => (hσ p).symm, LinearMap.smul_apply, Pi.smul_apply, pm_apply, hJ,
       Int.cast_smul_eq_zsmul]
-  · rw [if_neg hσ, if_neg fun h => hσ fun p => (h p).symm, smul_zero]
+  · rw [ite_eq_right hσ, ite_eq_right fun h => hσ fun p => (h p).symm, smul_zero]
 
 theorem cochain_holds : Cochain := by
   intro E _ _ _ a M _ _ _ _ ρ q N lab tl η h1 h2 h3

@@ -275,7 +275,7 @@ theorem relIndex_coprime : ∀ (L : Type) [Field L] [NumberField L] [IsCMField L
       · by_cases hij : i = j
         · subst hij
           rw [hdiag, map_one, map_one, h1]
-        · simp only [B, if_neg hji, if_neg hij]
+        · simp only [B, ite_eq_right hji, ite_eq_right hij]
           exact Function.surjInv_eq _ _
   refine Nat.Coprime.coprime_dvd_left (Subgroup.index_dvd_of_le hU) ?_
   rw [unip_index]
@@ -542,7 +542,7 @@ theorem fractionFieldToGenericStalk_algebraMap_eq : ∀ (L : Type) [Field L] [Nu
         rintro ⟨rfl, -⟩
         simp [i0] at ha
         omega
-      rw [hent, if_neg h1, if_neg h2, add_zero, map_zero]
+      rw [hent, ite_eq_right h1, ite_eq_right h2, add_zero, map_zero]
       exact zero_lt_one
     · have h1 : a ≠ b := by
         rintro rfl
@@ -550,13 +550,13 @@ theorem fractionFieldToGenericStalk_algebraMap_eq : ∀ (L : Type) [Field L] [Nu
       have h2 : ¬(a = i0 ∧ b = i1) := by
         rintro ⟨rfl, -⟩
         simp [i0] at hba
-      rw [hent, if_neg h1, if_neg h2, add_zero, map_zero]
+      rw [hent, ite_eq_right h1, ite_eq_right h2, add_zero, map_zero]
       exact zero_lt_one
     · subst hab
       have h2 : ¬(a = i0 ∧ a = i1) := by
         rintro ⟨h3, h4⟩
         exact hne (h3.symm.trans h4)
-      rw [hent, if_pos rfl, if_neg h2, add_zero, sub_self, map_zero]
+      rw [hent, ite_eq_left rfl, ite_eq_right h2, add_zero, sub_self, map_zero]
       exact zero_lt_one
   have hdet : NG.detDD s r (s.loc n x) = 1 := by
     unfold NG.detDD
@@ -570,16 +570,16 @@ theorem fractionFieldToGenericStalk_algebraMap_eq : ∀ (L : Type) [Field L] [Nu
         rw [h3] at this
         simp [i0] at this
         omega
-      rw [Matrix.of_apply, hent, if_neg h2, add_zero, Matrix.one_apply]
+      rw [Matrix.of_apply, hent, ite_eq_right h2, add_zero, Matrix.one_apply]
       simp only [Subtype.ext_iff]
     rw [this, Matrix.det_one]
   have hsup : NG.supDiag s r (s.loc n x) = y := by
     unfold NG.supDiag
     rw [Finset.sum_eq_single i0, Finset.sum_eq_single i1]
-    · rw [if_pos ⟨rfl, by simp [i1]; omega⟩, hent, if_neg hne, if_pos ⟨rfl, rfl⟩, zero_add]
+    · rw [ite_eq_left ⟨rfl, by simp [i1]; omega⟩, hent, ite_eq_right hne, ite_eq_left ⟨rfl, rfl⟩, zero_add]
     · intro b _ hb
       split_ifs with h
-      · rw [hent, if_neg (fun h' => by simp [i0, Fin.ext_iff] at h'; omega), if_neg (fun h' => hb h'.2), add_zero]
+      · rw [hent, ite_eq_right (fun h' => by simp [i0, Fin.ext_iff] at h'; omega), ite_eq_right (fun h' => hb h'.2), add_zero]
       · rfl
     · intro h
       exact absurd (Finset.mem_univ _) h
@@ -587,7 +587,7 @@ theorem fractionFieldToGenericStalk_algebraMap_eq : ∀ (L : Type) [Field L] [Nu
       apply Finset.sum_eq_zero
       intro b _
       split_ifs with h
-      · rw [hent, if_neg (fun h' => by simp [Fin.ext_iff] at h'; omega), if_neg (fun h' => ha h'.1), add_zero]
+      · rw [hent, ite_eq_right (fun h' => by simp [Fin.ext_iff] at h'; omega), ite_eq_right (fun h' => ha h'.1), add_zero]
       · rfl
     · intro h
       exact absurd (Finset.mem_univ _) h

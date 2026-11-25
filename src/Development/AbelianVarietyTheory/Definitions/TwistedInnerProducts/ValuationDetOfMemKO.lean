@@ -271,8 +271,8 @@ theorem volN_ne_zero_ne_top [MeasurableSpace k] [BorelSpace k] (ν : Measure k) 
       change Continuous fun e : {rs : (n ⊕ Fin c) × (n ⊕ Fin c) // RootEx.lev p rs.1 < RootEx.lev p rs.2} → k =>
         RootEx.Model.mkN (k := k) p e r s
       by_cases h : RootEx.lev p r < RootEx.lev p s
-      · simp only [RootEx.Model.mkN, Matrix.of_apply, dif_pos h]; exact continuous_apply _
-      · simp only [RootEx.Model.mkN, Matrix.of_apply, dif_neg h]; exact continuous_const
+      · simp only [RootEx.Model.mkN, Matrix.of_apply, dite_eq_left h]; exact continuous_apply _
+      · simp only [RootEx.Model.mkN, Matrix.of_apply, dite_eq_right h]; exact continuous_const
     refine (lt_of_lt_of_le ((ho.preimage hcont).measure_pos _ ⟨0, ?_⟩) (measure_mono fun e he => ?_)).ne'
     · have : (RootEx.Model.mkNel (k := k) (n := n) (c := c) p 0 : GL (n ⊕ Fin c) k) = 1 := by
         ext r s

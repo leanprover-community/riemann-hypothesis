@@ -80,9 +80,9 @@ theorem getElem_moveToFront (E : List α) (j : ℕ) (hj : j < E.length) (i : ℕ
     | succ m =>
       rw [List.getElem?_cons_succ, indexBeforeMoveToFront_succ]
       by_cases hm : m < j
-      · rw [if_pos hm]
+      · rw [ite_eq_left hm]
         simp [List.getElem?_eraseIdx_of_lt, hm]
-      · rw [if_neg hm]
+      · rw [ite_eq_right hm]
         have hm' : j ≤ m := by omega
         simp [List.getElem?_eraseIdx_of_ge, hm']
   rw [List.getElem?_eq_getElem hi, List.getElem?_eq_getElem hlt] at key

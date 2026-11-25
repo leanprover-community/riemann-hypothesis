@@ -117,7 +117,7 @@ theorem UpperTheory.V.Fr.pr_tor :
         rw [(B.bar O).nu, hF.del_c]; decide
       show ((B.bar O).r F.c).adFun T = T
       unfold GG.adFun GG.mat
-      rw [hl, if_neg hd, hT]
+      rw [hl, ite_eq_right hd, hT]
       simp
     rw [hmat, h1, hbar.atc, sub_self, Matrix.map_one _ (map_zero ι) (map_one ι), Matrix.map_zero _ (map_zero μ)]
     simp

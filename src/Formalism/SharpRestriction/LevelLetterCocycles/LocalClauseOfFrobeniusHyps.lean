@@ -76,7 +76,7 @@ theorem exists_ub (W : LocWach PD LL O v n) (hbij : Function.Bijective (algebraM
   intro i τ hτ a ha
   have hex : ∃ τ, Formalism.MainNotions.LiftingTheory.Over W τ i := ⟨τ, hτ⟩
   have he : hex.choose = τ := over_unique W hbij hex.choose_spec hτ
-  simp only [dif_pos hex]
+  simp only [dite_eq_left hex]
   have := hH τ a ha
   rw [← he] at this
   exact this
@@ -648,7 +648,7 @@ theorem mem_π₀_of_const [IsDomain O] (hR : RingA W) {T : LocLat G Qp LL O} (h
       have h0 : PowerSeries.coeff m ((algebraMap O (LetA O n) c * a j) i) = 0 := by
         rw [hii, hw']
         simp only [Pi.mul_apply, Pi.pow_apply, letπ]
-        rw [mul_comm ((w' : LetA O n) i), mul_assoc, PowerSeries.coeff_X_pow_mul', if_neg (by omega)]
+        rw [mul_comm ((w' : LetA O n) i), mul_assoc, PowerSeries.coeff_X_pow_mul', ite_eq_right (by omega)]
       have h1 : PowerSeries.coeff m ((algebraMap O (LetA O n) c * a j) i) =
           c * PowerSeries.coeff m (a j i) := by
         simp [Pi.mul_apply, PowerSeries.coeff_C_mul]
@@ -834,7 +834,7 @@ theorem FTool_of (W : LocWach PD LL O v n)
     intro c hc x hx hlet
     have hmem : x ∈ W.Nl T (c + 1 - 1) := by rw [add_sub_cancel_right]; exact ⟨x, hx, hlet⟩
     have := qP_pow_mem hA.2.1 hR (W.N T) (h5T'.1 (c + 1) _ hmem)
-    simp only [Mi', add_sub_cancel_right, hc, if_true] at this
+    simp only [Mi', add_sub_cancel_right, hc, ite_true] at this
     exact this
   refine ⟨?_, ?_, ?_, ?_, ?_⟩
   · intro i x hx hDL
@@ -872,7 +872,7 @@ theorem FTool_of (W : LocWach PD LL O v n)
         have hmem : (letE c : LetA O n) • y0 ∈ W.Nl T (c + 1 - 1) := by
           rw [add_sub_cancel_right]; exact ⟨y0, hy0, rfl⟩
         have := qP_pow_mem hA.2.1 hR (W.N T) (h5T'.1 (c + 1) _ hmem)
-        simp only [Mi', add_sub_cancel_right, hc, if_true] at this
+        simp only [Mi', add_sub_cancel_right, hc, ite_true] at this
         rw [e]
         exact this
       | zero => rw [smul_zero, smul_zero]; exact Submodule.zero_mem _

@@ -65,7 +65,7 @@ theorem det_mul_cc_det_of_isMatch {E : Type} [Field E] [NumberField E] [IsCMFiel
     have := h.iso (Pi.single i 1) (Pi.single j 1)
     simp only [herm, cc, Matrix.mulVec_single_one, Matrix.col_apply] at this
     simp only [Pi.single_apply, apply_ite, map_one, map_zero, ite_mul, mul_one, one_mul, mul_zero,
-      zero_mul, Finset.sum_ite_eq', Finset.mem_univ, if_true] at this
+      zero_mul, Finset.sum_ite_eq', Finset.mem_univ, ite_true] at this
     rw [← this]
     simp only [Matrix.mul_apply, Matrix.transpose_apply, RingHom.mapMatrix_apply, Matrix.map_apply,
       Finset.sum_mul]

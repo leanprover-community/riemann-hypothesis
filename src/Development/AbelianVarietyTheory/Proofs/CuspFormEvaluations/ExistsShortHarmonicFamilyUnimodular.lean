@@ -443,11 +443,11 @@ theorem adjugate_isHomogeneous {σ : Type*} (M : Matrix (Fin p) (Fin p) (MvPolyn
     (fun i => if i = b then 0 else d) (fun i j => by
       by_cases hi : i = b
       · subst hi
-        rw [updateRow_self, if_pos rfl, Pi.single_apply]
+        rw [updateRow_self, ite_eq_left rfl, Pi.single_apply]
         split_ifs
         · exact isWeightedHomogeneous_one _ _
         · exact isWeightedHomogeneous_zero _ _ _
-      · rw [updateRow_ne hi, if_neg hi]; exact hM i j)
+      · rw [updateRow_ne hi, ite_eq_right hi]; exact hM i j)
   change IsWeightedHomogeneous 1 _ _
   convert this using 1
   rw [Finset.sum_ite, Finset.sum_const_zero, zero_add, Finset.sum_const, Finset.filter_ne',
@@ -778,7 +778,7 @@ private theorem perpVec_apply_eq_zero {R V : Type} [CommRing R] [AddCommGroup V]
 
   simp only [perpVec, ← hMdef, map_sub, map_smul, map_sum, Pi.sub_apply, Pi.smul_apply,
   Finset.sum_apply, smul_eq_mul, hrow, mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ,
-  if_true]
+  ite_true]
   ring
 
 theorem exists_short_harmonic_family_few_columns (hfg : Λ.FG)
@@ -1116,7 +1116,7 @@ theorem mem_iff_herm_of_unimod {n : ℕ} {Λ : GenLat E n} (h : Λ.Unimod) (x : 
     intro y
 
     simp only [FD.herm, FD.cc, Matrix.one_apply, mul_ite, mul_one, mul_zero, ite_mul, zero_mul,
-    Finset.sum_ite_eq, Finset.mem_univ, if_true, map_sum, map_mul,
+    Finset.sum_ite_eq, Finset.mem_univ, ite_true, map_sum, map_mul,
     IsCMField.complexConj_apply_apply]
   rw [h x]
   refine forall₂_congr fun y _ => ?_
@@ -1152,14 +1152,14 @@ theorem injective_embF_inPsi {H : Host E} {l : Level H} (c : Coeff l) :
   have hf : (if b then ComplexEmbedding.conjugate τ else τ) =
       (if b' then ComplexEmbedding.conjugate τ' else τ') := RingHom.ext hx
   cases b <;> cases b'
-  · simp only [Bool.false_eq_true, if_false] at hf
+  · simp only [Bool.false_eq_true, ite_false] at hf
     subst hf
     rfl
-  · simp only [Bool.false_eq_true, if_false, if_true] at hf
+  · simp only [Bool.false_eq_true, ite_false, ite_true] at hf
     exact absurd ⟨hτ', by rw [← hf]; exact hτ⟩ (not_inPsi_and_conjugate H τ')
-  · simp only [Bool.false_eq_true, if_false, if_true] at hf
+  · simp only [Bool.false_eq_true, ite_false, ite_true] at hf
     exact absurd ⟨hτ, by rw [hf]; exact hτ'⟩ (not_inPsi_and_conjugate H τ)
-  · simp only [if_true] at hf
+  · simp only [ite_true] at hf
     have h2 := (ComplexEmbedding.involutive_conjugate E).injective hf
     subst h2
     rfl

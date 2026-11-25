@@ -317,7 +317,7 @@ theorem UpperTheory.le_span_integralValued_of_galoisStable :
       by_cases hall : ∀ γ : ℂ ≃ₐ[O] ℂ, (fun g => γ (x g)) = x
       · rw [hyx]
         exact Submodule.smul_mem _ _ (hfix x hxI hall)
-      · push_neg at hall
+      · push Not at hall
         obtain ⟨γ, hγ⟩ := hall
         obtain ⟨d, hd⟩ : ∃ d : X → ℂ, d = (fun g => γ (x g)) - x := ⟨_, rfl⟩
         have hdI : d ∈ I := by

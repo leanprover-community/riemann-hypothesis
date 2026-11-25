@@ -164,7 +164,7 @@ theorem real_eq_sqrt_sign_sqrt (l : ℝ) (hl : l ≠ 0) : (l : ℂ) = star ((Rea
     ((Real.sqrt |l| : ℝ) : ℂ) := by
   rw [Complex.star_def, Complex.conj_ofReal]
   conv_lhs => rw [← sqrt_abs_mul_sign_sqrt_abs l hl]
-  by_cases hp : 0 < l <;> simp only [hp, decide_true, decide_false, if_true, if_false, Bool.false_eq_true] <;> push_cast <;> ring
+  by_cases hp : 0 < l <;> simp only [hp, decide_true, decide_false, ite_true, ite_false, Bool.false_eq_true] <;> push_cast <;> ring
 
 end Gen
 

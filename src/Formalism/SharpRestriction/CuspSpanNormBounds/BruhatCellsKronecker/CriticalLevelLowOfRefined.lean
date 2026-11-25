@@ -104,14 +104,14 @@ theorem TfFacts.aEff_bd (F : TfFacts D large₂ C' Cl Cu C0) (hCl : 4 ≤ Cl) (u
       _ = Cl * ((D.R.m : ℝ) * D.R.k * D.s.Del) := by ring
   have hb0 : 0 < bOne D τ 1 := by linarith
   by_cases hT : IsTop D τ
-  · rw [aEff, if_pos hT]
+  · rw [aEff, ite_eq_left hT]
     obtain ⟨t1, t2⟩ := F.dt τ hT
     have hbp : 0 < bTop D τ := by linarith
     refine ⟨by positivity, ?_⟩
     refine le_trans (div_le_self (by positivity) hKD) ?_
     rw [mul_comm]
     exact mul_le_mul (by linarith) (F.hu1 u τ) (by linarith) hb0.le
-  · rw [aEff, if_neg hT]
+  · rw [aEff, ite_eq_right hT]
     refine ⟨by linarith, ?_⟩
     have hdn := F.dn u τ hT
     rw [mul_assoc] at hdn
@@ -436,12 +436,6 @@ theorem level_frame_of_sizes (Cg cb Cu cT CT C0 C3 : ℝ) (hCl : 4 ≤ sCl Fm)
     ⟨x0', fun x hx i hyp => H x hx i ⟨hyp.2.1, hyp.1, hyp.2.2⟩⟩
 
 end Fam
-
-section Check
-
-variable {eps : ℝ} (Fm : FamP eps)
-
-end Check
 
 end Formalism.MainNotions.BridgeLemma
 

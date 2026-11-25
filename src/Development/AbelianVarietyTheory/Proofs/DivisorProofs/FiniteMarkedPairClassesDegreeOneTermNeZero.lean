@@ -501,7 +501,7 @@ theorem finite_fixed (G : HTGroup p) (L : G.Level) (f : G.GAf → ℂ)
   have hex : ∃ P', D (a₀, decide (0 < (r : ℚ))) P' := ⟨P, hγ, r, e, he, rfl, hβeq⟩
   refine Finset.mem_coe.2 (Finset.mem_image.2 ⟨(a₀, decide (0 < (r : ℚ))),
     Finset.mem_product.2 ⟨ha₀, Finset.mem_univ _⟩, ?_⟩)
-  have hρ : ρ (a₀, decide (0 < (r : ℚ))) = Quot.mk _ hex.choose := dif_pos hex
+  have hρ : ρ (a₀, decide (0 < (r : ℚ))) = Quot.mk _ hex.choose := dite_eq_left hex
   rw [hρ]
   obtain ⟨hγ', r', e', he', hb', hβ'⟩ := hex.choose_spec
   refine Quot.sound (rel_of_same G P₁.β P₁.γ a₀ _ P hγ' hγ r' r e' e he' he ?_ hβ' hβeq)
@@ -585,7 +585,7 @@ theorem exists_emb_isRoot' {F C E : Type} [Field F] [NumberField F] [Ring C] [Al
     haveI : FiniteDimensional F (AdjoinRoot q) := (AdjoinRoot.powerBasis hq0).finite
     haveI : FiniteDimensional ℚ (AdjoinRoot q) := Module.Finite.trans F _
     haveI : Algebra.IsAlgebraic ℚ (AdjoinRoot q) := Algebra.IsAlgebraic.of_finite ℚ _
-    have e : hq q = minpoly ℚ (AdjoinRoot.root q) := dif_pos hirr
+    have e : hq q = minpoly ℚ (AdjoinRoot.root q) := dite_eq_left hirr
     rw [e]
     refine ⟨?_, fun hμ => ?_⟩
     · rw [← AdjoinRoot.mk_eq_zero, ← AdjoinRoot.aeval_eq, aeval_map_algebraMap, minpoly.aeval]

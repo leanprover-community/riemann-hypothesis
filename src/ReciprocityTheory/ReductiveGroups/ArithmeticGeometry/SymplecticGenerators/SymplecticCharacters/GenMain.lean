@@ -45,7 +45,7 @@ theorem phase2 (k : Fin g) (n : ℕ) : ∀ M ∈ symplecticGroup (Fin g) ℤ, Co
   intro M hM hF hbot hsum
   by_cases hone : ∀ i j, M (Sum.inl i) (Sum.inl k) ≠ 0 → M (Sum.inl j) (Sum.inl k) ≠ 0 → i = j
   · exact ⟨1, (spH g).one_mem, colsFixed_one _, by simpa using hbot, by simpa using hone⟩
-  push_neg at hone
+  push Not at hone
   obtain ⟨a, b, ha, hb, hab⟩ := hone
   wlog hle : (M (Sum.inl b) (Sum.inl k)).natAbs ≤ (M (Sum.inl a) (Sum.inl k)).natAbs generalizing a b
   · exact this b a hb ha (Ne.symm hab) (by omega)
@@ -108,7 +108,7 @@ theorem phase2 (k : Fin g) (n : ℕ) : ∀ M ∈ symplecticGroup (Fin g) ℤ, Co
       rw [hnew]
       by_cases hja : j = a
       · subst hja
-        simp only [if_true]
+        simp only [ite_true]
         exact hkey.le
       · simp [hja]
     · exact ⟨a, Finset.mem_univ _, by rw [hnew]; simpa using hkey⟩
@@ -261,7 +261,7 @@ theorem col_inr_step (k : Fin g) (M : Matrix (Fin g ⊕ Fin g) (Fin g ⊕ Fin g)
     · have hik : i ≠ k := by intro h; subst h; omega
       simp [hik]
     · simp only [hc']
-      rw [if_neg (by omega)]
+      rw [ite_eq_right (by omega)]
   have hDk : ∀ r, spDiag (rkU _ _ hdot) r (Sum.inl k) =
       (1 : Matrix (Fin g ⊕ Fin g) (Fin g ⊕ Fin g) ℤ) r (Sum.inl k) := by
     intro r
@@ -278,14 +278,14 @@ theorem col_inr_step (k : Fin g) (M : Matrix (Fin g ⊕ Fin g) (Fin g ⊕ Fin g)
     intro l
     rw [hM1, spDiag_rk_mul_inr]
     simp only [Pi.single_apply, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ,
-      if_true, hck, mul_one, hc']
+      ite_true, hck, mul_one, hc']
     rcases lt_trichotomy (l : ℕ) k with h | h | h
     · have hlk : l ≠ k := by intro e; subst e; omega
-      rw [if_neg (by omega), hlow l h]; simp [hlk]
+      rw [ite_eq_right (by omega), hlow l h]; simp [hlk]
     · have e : l = k := Fin.ext h
-      subst e; rw [if_neg (lt_irrefl _), hck]; simp
+      subst e; rw [ite_eq_right (lt_irrefl _), hck]; simp
     · have hlk : l ≠ k := by intro e; subst e; omega
-      rw [if_pos h]; simp [hlk]
+      rw [ite_eq_left h]; simp [hlk]
   have ha1 : ∀ i : Fin g, (i : ℕ) < k → M1 (Sum.inl i) (Sum.inr k) = 0 := by
     intro i hi
     rw [row_inl_of_col_inr hM1sp (hM1F i hi).2]; simp
@@ -313,9 +313,9 @@ theorem col_inr_step (k : Fin g) (M : Matrix (Fin g ⊕ Fin g) (Fin g ⊕ Fin g)
   · rw [spTransl_mul_inl]
     have hsum : ∑ m, S l m * M1 (Sum.inr m) (Sum.inr k) = S l k := by
       simp only [hc1, Matrix.one_apply, Sum.inr.injEq, mul_ite, mul_one, mul_zero,
-        Finset.sum_ite_eq', Finset.mem_univ, if_true]
+        Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     rw [hsum]
-    simp only [hS, of_apply, if_true]
+    simp only [hS, of_apply, ite_true]
     by_cases hl : l = k
     · subst hl; simp
     · simp [hl]

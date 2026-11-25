@@ -163,10 +163,10 @@ def wdPst : WD h :=
 variable {P ρ}
 
 theorem wdPst_of_isPst (hV : IsPst P ρ) :
-    wdPst P ι Bw h hj ρ = haveI := hV.finite; WD.mk (wdRep P ι Bw h hj ρ) := dif_pos hV
+    wdPst P ι Bw h hj ρ = haveI := hV.finite; WD.mk (wdRep P ι Bw h hj ρ) := dite_eq_left hV
 
 theorem wdPst_of_not_isPst (hV : ¬ IsPst P ρ) : wdPst P ι Bw h hj ρ = trivWD h (finrank ↥LL.1 V) :=
-  dif_neg hV
+  dite_eq_right hV
 
 theorem lpDim_wdPst (hV : IsPst P ρ) : (wdPst P ι Bw h hj ρ).lpDim = finrank ℂ (WDSpace P ι ρ) := by
   have := hV.finite
@@ -242,9 +242,9 @@ variable {P r}
 
 theorem wdAt_of_isPstAt (hr : IsPstAt P Bw r) : ∃ LL' r', IsModel Bw r LL' r' ∧ IsPst P (Bw.repE LL' r') ∧
     wdAt P ι Bw h hj r = wdPst P ι Bw h hj (Bw.repE LL' r') :=
-  ⟨_, _, hr.choose_spec.choose_spec.1, hr.choose_spec.choose_spec.2, dif_pos hr⟩
+  ⟨_, _, hr.choose_spec.choose_spec.1, hr.choose_spec.choose_spec.2, dite_eq_left hr⟩
 
-theorem wdAt_of_not_isPstAt (hr : ¬ IsPstAt P Bw r) : wdAt P ι Bw h hj r = trivWD h a := dif_neg hr
+theorem wdAt_of_not_isPstAt (hr : ¬ IsPstAt P Bw r) : wdAt P ι Bw h hj r = trivWD h a := dite_eq_right hr
 
 end At
 
@@ -273,7 +273,7 @@ def jumpsW (τ : E →+* Om l) : Multiset ℤ :=
 
 theorem isJumpsW_jumpsW {τ : E →+* Om l} (hJ : ∃ J, IsJumpsW P pl br r τ J) :
     IsJumpsW P pl br r τ (jumpsW P pl br r τ) := by
-  rw [jumpsW, dif_pos hJ]; exact hJ.choose_spec
+  rw [jumpsW, dite_eq_left hJ]; exact hJ.choose_spec
 
 theorem isCrysW_iff {w : HeightOneSpectrum (𝓞 E)} (hw : w ∈ placesOver E l) :
     IsCrysW P pl br r w ↔ IsCrysAt P (br w hw) (resDec pl r w) := ⟨fun ⟨_, h⟩ => h, fun h => ⟨hw, h⟩⟩

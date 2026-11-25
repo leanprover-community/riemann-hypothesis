@@ -135,7 +135,7 @@ theorem kill_Kcol_tau (ν : Fin (N + 1) → Fin r → ℤ) (c : ℤ) (hc : 1 ≤
             kill (offN n0) (Kcol R ν c (n0 + t) (J.erase mt)) := by
         have hr' : colH (stg ν (n0 + t)) c < colH (stg ν (n0 + t + 1)) c := hr
         unfold colStep
-        rw [if_pos hr', if_pos hc]
+        rw [ite_eq_left hr', ite_eq_left hc]
         unfold wedgeR
         rw [Finset.sum_eq_single mt]
         · congr 2
@@ -182,7 +182,7 @@ theorem kill_Kcol_tau (ν : Fin (N + 1) → Fin r → ℤ) (c : ℤ) (hc : 1 ≤
       obtain ⟨e, he⟩ := ih (by omega) J hJ
       refine ⟨e, ?_⟩
       unfold colStep
-      rw [heq, if_neg (lt_irrefl _), if_neg (lt_irrefl _)]
+      rw [heq, ite_eq_right (lt_irrefl _), ite_eq_right (lt_irrefl _)]
       exact he
 
 end Abs
@@ -213,7 +213,7 @@ variable {R : Type} [CommRing R] {N r : ℕ}
 theorem colStep_same (c : ℤ) (h : ℕ) (x : Fin r → MvPolynomial (Fin N × Fin r) R)
     (Kf : Finset (Fin r) → MvPolynomial (Fin N × Fin r) R) : colStep c h h x Kf = Kf := by
   unfold colStep
-  rw [if_neg (lt_irrefl _), if_neg (lt_irrefl _)]
+  rw [ite_eq_right (lt_irrefl _), ite_eq_right (lt_irrefl _)]
 
 theorem Kcol_const (ν : Fin (N + 1) → Fin r → ℤ) (c : ℤ) :
     ∀ j ≤ N, (∀ i < j, colH (stg ν i) c = colH (stg ν (i + 1)) c) → Kcol R ν c j = extOne := by
@@ -341,13 +341,13 @@ theorem Ican_eq [NeZero r] {n0 : ℕ} {be : ℤ} {ν : Fin (N + 1) → Fin r →
   unfold Ican
   rw [pEnd_eq]
   by_cases h1 : 1 ≤ c
-  · rw [if_pos h1]
+  · rw [ite_eq_left h1]
     by_cases h2 : c ≤ be
-    · rw [if_pos ⟨h1, h2⟩, colH_all fun m => by rw [H.fin]; exact h2]
+    · rw [ite_eq_left ⟨h1, h2⟩, colH_all fun m => by rw [H.fin]; exact h2]
       exact Finset.filter_true_of_mem fun m _ => m.isLt
-    · rw [if_neg (fun h => h2 h.2), colH_none fun m => by rw [H.fin]; omega]
+    · rw [ite_eq_right (fun h => h2 h.2), colH_none fun m => by rw [H.fin]; omega]
       exact Finset.filter_false_of_mem fun m _ => by omega
-  · rw [if_neg h1, if_neg (fun h => h1 h.1), colH_all fun m => by rw [H.fin]; omega]
+  · rw [ite_eq_right h1, ite_eq_right (fun h => h1 h.1), colH_all fun m => by rw [H.fin]; omega]
     exact Finset.filter_false_of_mem fun m _ => by have := m.isLt; omega
 
 def Icut (n0 : ℕ) (ν : Fin (N + 1) → Fin r → ℤ) : ℤ → Finset (Fin r) := fun c => Ican ν c \ riseA n0 ν c r
@@ -394,10 +394,10 @@ theorem Psi_full [NeZero r] {n0 : ℕ} {be : ℤ} {ν : Fin (N + 1) → Fin r �
   rw [← Finset.prod_subset hsub]
   · refine Finset.prod_congr rfl fun c hc => ?_
     rw [Finset.mem_Icc] at hc
-    rw [Ican_eq H, if_pos hc]
+    rw [Ican_eq H, ite_eq_left hc]
   · intro c _ hc
     rw [Finset.mem_Icc] at hc
-    rw [Ican_eq H, if_neg hc, Kcol_inactive H c hc N le_rfl, extOne_empty]
+    rw [Ican_eq H, ite_eq_right hc, Kcol_inactive H c hc N le_rfl, extOne_empty]
 
 theorem Psi_cut [NeZero r] {n0 : ℕ} (hN : n0 + r = N) {be : ℤ} {ν : Fin (N + 1) → Fin r → ℤ} (H : PlHyp n0 be ν) :
     Psi R (cutPath n0 ν) (Icut n0 ν) = ∏ c ∈ Finset.Icc 1 be, Kcol R ν c n0 (Finset.univ \ riseA n0 ν c r) := by

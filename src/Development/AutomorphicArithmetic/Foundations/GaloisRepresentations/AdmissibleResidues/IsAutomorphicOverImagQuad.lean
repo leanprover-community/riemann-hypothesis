@@ -49,10 +49,4 @@ def IsAutCsdN [IsCMField F] (ι : Qbar l ≃+* ℂ) (r : G F Ω →* GL (Fin n) 
   AutCsd0 ι r ∧ (Continuous r → Wit ι r)
 
 
-section Conv
-variable {ι : Qbar l ≃+* ℂ} {r : G F Ω →* GL (Fin n) (Qbar l)}
-
-
-end Conv
-
 end UpperTheory.GalN.V

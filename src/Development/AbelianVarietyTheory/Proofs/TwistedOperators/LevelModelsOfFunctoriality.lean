@@ -95,13 +95,13 @@ theorem isHCParam_dual_parV (D : D7) (i j : ℕ) (τ : D.what₂.Tau) {n : ℕ} 
   rw [hq a', ← hy1]
   by_cases ho : Odd (i + j)
   · obtain ⟨N, hN⟩ := hpar.2 ho
-    rw [if_pos ho]
+    rw [ite_eq_left ho]
     refine ⟨-z + 1 - N, ?_⟩
     have : (n : ℝ) = N + N := by rw [hn, hN]; push_cast; ring
     simp only [hz, this]; push_cast; ring
   · have hne : ¬ Even (rankV D i j) := fun h => ho (hpar.1 h)
     obtain ⟨N, hN⟩ := Nat.not_even_iff_odd.1 hne
-    rw [if_neg ho]
+    rw [ite_eq_right ho]
     refine ⟨-z - N, ?_⟩
     have : (n : ℝ) = 2 * N + 1 := by rw [hn, hN]; push_cast; ring
     simp only [hz, this]; push_cast; ring

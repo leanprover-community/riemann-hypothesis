@@ -173,9 +173,9 @@ lemma balanced (l d : ℕ) [NeZero d] (X : ZMod d → ℝ) (hl : 2 ≤ l) (hd : 
       exact ⟨odd_one, by omega⟩
     · exact absurd rfl h
   · intro a
-    simp only [mul_ite, mul_zero, Finset.sum_ite_eq', h1, if_true, pow_one, Nat.cast_one]
+    simp only [mul_ite, mul_zero, Finset.sum_ite_eq', h1, ite_true, pow_one, Nat.cast_one]
     exact (hy a).le
-  · simp only [Finset.sum_ite_eq', h1, if_true]
+  · simp only [Finset.sum_ite_eq', h1, ite_true]
     have : ∑ a, y (a - 1) = ∑ a, y a := Equiv.sum_comp (Equiv.subRight (1 : ZMod d)) y
     rw [← Finset.sum_congr rfl fun a _ => hy a, Finset.sum_add_distrib, this, ← Finset.mul_sum]
     ring

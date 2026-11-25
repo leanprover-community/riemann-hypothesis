@@ -81,7 +81,7 @@ theorem span_of_factor {A B S T : Type} [TopologicalSpace A] [T2Space A] [Topolo
     rw [Finset.sum_apply, Finset.sum_eq_single (ξ q.1, η q.2)]
     · simp
     · intro p _ hp
-      rw [if_neg]
+      rw [ite_eq_right]
       rintro ⟨h1, h2⟩
       exact hp (Prod.ext h1.symm h2.symm)
     · intro h
@@ -116,10 +116,10 @@ theorem span_of_factor {A B S T : Type} [TopologicalSpace A] [T2Space A] [Topolo
   · have hz : (fun q : A × B => if ξ q.1 = p.1 ∧ η q.2 = p.2 then (f : A × B → ℂ) q else 0) = 0 := by
       funext q
       by_cases e : ξ q.1 = p.1 ∧ η q.2 = p.2
-      · rw [if_pos e]
+      · rw [ite_eq_left e]
         by_contra h
         exact hex ⟨q, e.1, e.2, h⟩
-      · rw [if_neg e]
+      · rw [ite_eq_right e]
         rfl
     rw [hz]
     exact Submodule.zero_mem _

@@ -30,7 +30,7 @@ private theorem hk_read (k N : ℕ) (hN1 : 1 ≤ N) (f : UpperHalfPlane → ℂ)
   have hchi : chiI ω (lev N) w.asIdeal = ((ω.val w : ℂˣ) : ℂ) := by
     unfold chiI
     rw [finprod_eq_single _ w]
-    · rw [if_pos hl]
+    · rw [ite_eq_left hl]
       have : ordI w w.asIdeal = 1 := by
         unfold ordI
         exact Associates.count_self w.associates_irreducible

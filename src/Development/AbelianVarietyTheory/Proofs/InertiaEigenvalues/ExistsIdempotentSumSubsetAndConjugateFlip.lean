@@ -67,12 +67,12 @@ theorem idemSum_sub_and_flip : ∀ (D : D7) (e : AE D) (P T : Finset (Formalism.
     ⟨⟨fun a => if a ∈ P \ T then es a else es2 a, ?_, ?_⟩, ?_⟩⟩
   · intro a ha
     rcases Finset.mem_union.1 ha with h | h
-    · simp only [if_pos h]; exact hes a (Finset.mem_sdiff.1 h).1
-    · simp only [if_neg (Finset.disjoint_right.1 hdisj h)]; exact hes2 a h
+    · simp only [ite_eq_left h]; exact hes a (Finset.mem_sdiff.1 h).1
+    · simp only [ite_eq_right (Finset.disjoint_right.1 hdisj h)]; exact hes2 a h
   · rw [Finset.sum_union hdisj, ← hf, hsum2]
     congr 1
-    · exact Finset.sum_congr rfl fun a ha => (if_pos ha).symm
-    · exact Finset.sum_congr rfl fun a ha => (if_neg (Finset.disjoint_right.1 hdisj ha)).symm
+    · exact Finset.sum_congr rfl fun a ha => (ite_eq_left ha).symm
+    · exact Finset.sum_congr rfl fun a ha => (ite_eq_right (Finset.disjoint_right.1 hdisj ha)).symm
   · generalize (∑ a ∈ T, es a) = t at h1 h2 hTT ⊢
     have h4 : cA D t * cA D e = cA D t := by rw [← map_mul, h1]
     have h5 : cA D t * cA D t = cA D t := by rw [← map_mul, h2]

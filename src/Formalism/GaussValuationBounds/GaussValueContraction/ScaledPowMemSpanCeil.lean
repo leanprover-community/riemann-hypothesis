@@ -58,7 +58,7 @@ theorem scaledPowMemSpanCeil : Trunc := by
     have hcs : c ≤ σ := Nat.ceil_le.mpr h1
     rw [← Nat.add_sub_cancel' hcs, pow_add, mul_assoc]
     exact Ideal.mul_mem_right _ _ (Ideal.subset_span (by simp))
-  · push_neg at hry
+  · push Not at hry
     obtain ⟨m, hm⟩ : ∃ m, (ℓ - 1) * r = y + m := ⟨(ℓ - 1) * r - y, by omega⟩
     have hmR : ((ℓ : ℝ) - 1) * r - y = m := by
       have h6 := congrArg (Nat.cast : ℕ → ℝ) hm

@@ -82,7 +82,7 @@ def toAddVal (w : Valuation C ℝ≥0) (ℓ : C) (h0 : 0 < w ℓ) (h1 : w ℓ < 
       · subst hx; simp
       by_cases hy : y = 0
       · subst hy; simp
-      simp only [hx, hy, hxy, if_false]
+      simp only [hx, hy, hxy, ite_false]
       rcases le_max_iff.1 (w.map_add x y) with h | h
       · exact min_le_of_left_le (WithTop.coe_le_coe.2 (key x _ hxy h))
       · exact min_le_of_right_le (WithTop.coe_le_coe.2 (key y _ hxy h)))
@@ -96,7 +96,7 @@ def toAddVal (w : Valuation C ℝ≥0) (ℓ : C) (h0 : 0 < w ℓ) (h1 : w ℓ < 
         have := (Valuation.ne_zero_iff w).2 hx; exact_mod_cast pos_iff_ne_zero.2 this
       have hy' : (0 : ℝ) < w y := by
         have := (Valuation.ne_zero_iff w).2 hy; exact_mod_cast pos_iff_ne_zero.2 this
-      simp only [mul_eq_zero, hx, hy, or_self, if_false, map_mul, NNReal.coe_mul]
+      simp only [mul_eq_zero, hx, hy, or_self, ite_false, map_mul, NNReal.coe_mul]
       rw [Real.log_mul hx'.ne' hy'.ne', add_div]
       rfl)
 
@@ -113,7 +113,7 @@ theorem mem_addValuationIntegerRing_normalized_iff (w : Valuation C ℝ≥0) (�
     Real.log_neg (by exact_mod_cast h0) (by exact_mod_cast h1)
   have hx' : (0 : ℝ) < w x := by
     have := (Valuation.ne_zero_iff w).2 hx; exact_mod_cast pos_iff_ne_zero.2 this
-  simp only [hx, if_false]
+  simp only [hx, ite_false]
   rw [← WithTop.coe_zero, WithTop.coe_le_coe, div_nonneg_iff]
   constructor
   · rintro (⟨-, h⟩ | ⟨h, -⟩)
@@ -126,7 +126,7 @@ theorem mem_addValuationIntegerRing_normalized_iff (w : Valuation C ℝ≥0) (�
 
 theorem toAddVal_of_ne (w : Valuation C ℝ≥0) (ℓ : C) (h0 : 0 < w ℓ) (h1 : w ℓ < 1) {x : C}
     (hx : x ≠ 0) : toAddVal w ℓ h0 h1 x = ((GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference.addVal w ℓ x : ℝ) : WithTop ℝ) := by
-  rw [toAddVal_apply, if_neg hx]; rfl
+  rw [toAddVal_apply, ite_eq_right hx]; rfl
 
 variable {S : Type} [Fintype S] [DecidableEq S]
 

@@ -189,7 +189,7 @@ private theorem resL_glAct_lemma_3 (LL : Letters N) (j : ℕ) (ρ c d : Fin r) (
     rw [Finset.mem_coe, MvPolynomial.mem_support_iff, hres] at hn
     simp only [Set.mem_setOf_eq, Set.mem_singleton_iff]
     by_contra h
-    exact hn (if_neg h)
+    exact hn (ite_eq_right h)
   have hrest : x - resL p (i, ρ) e x ∈
       MvPolynomial.restrictSupport ℚ_[p] {n : Fin N × Fin r →₀ ℕ | n (i, ρ) ∈ ({e}ᶜ : Set ℕ)} := by
     rw [MvPolynomial.mem_restrictSupport_iff]
@@ -197,7 +197,7 @@ private theorem resL_glAct_lemma_3 (LL : Letters N) (j : ℕ) (ρ c d : Fin r) (
     rw [Finset.mem_coe, MvPolynomial.mem_support_iff, MvPolynomial.coeff_sub, hres] at hn
     simp only [Set.mem_setOf_eq, Set.mem_compl_iff, Set.mem_singleton_iff]
     intro h
-    exact hn (by rw [if_pos h, sub_self])
+    exact hn (by rw [ite_eq_left h, sub_self])
   have hid : ∀ y ∈ MvPolynomial.restrictSupport ℚ_[p] {n : Fin N × Fin r →₀ ℕ | n (i, ρ) ∈ ({e} : Set ℕ)},
       resL p (i, ρ) e y = y := by
     intro y hy
@@ -320,7 +320,7 @@ theorem eproj_pol (LL : Letters N) (j : ℕ) (ρ : Fin r) (w : Fin r → ℤ)
     rw [Finset.mem_coe, MvPolynomial.mem_support_iff, hπ] at hn
     simp only [Set.mem_setOf_eq, iff_true]
     by_contra h
-    exact hn (if_neg h)
+    exact hn (ite_eq_right h)
   have hrest : ∀ y, y - Pm y ∈ MvPolynomial.restrictSupport ℚ_[p] {n | (MultiDeg LL n ↔ False)} := by
     intro y
     rw [MvPolynomial.mem_restrictSupport_iff]
@@ -328,7 +328,7 @@ theorem eproj_pol (LL : Letters N) (j : ℕ) (ρ : Fin r) (w : Fin r → ℤ)
     rw [Finset.mem_coe, MvPolynomial.mem_support_iff, MvPolynomial.coeff_sub, hπ] at hn
     simp only [Set.mem_setOf_eq, iff_false]
     intro h
-    exact hn (by rw [if_pos h, sub_self])
+    exact hn (by rw [ite_eq_left h, sub_self])
   have hid : ∀ y ∈ MvPolynomial.restrictSupport ℚ_[p] {n | (MultiDeg LL n ↔ True)}, Pm y = y := by
     intro y hy
     rw [MvPolynomial.mem_restrictSupport_iff] at hy
@@ -514,11 +514,6 @@ theorem wtComp_Y [NeZero r] (LL : Letters N) {q : ℕ} (J : Fin q → ℕ) (M : 
   exact wcomp_mem LL N _ (fun c x hx => cartan_ycond LL _ N (min_le_right _ _) (M k) c x hx) w h hk
 
 end WtComp
-
-section MulX
-variable {p : ℕ} [Fact p.Prime] {N r : ℕ}
-
-end MulX
 
 theorem res_hw {p : ℕ} [Fact p.Prime] {N r : ℕ} (LL : Letters N) (j : ℕ) (ρ : Fin r) (w : Fin r → ℤ) (i : Fin N)
     (e : ℕ) : ∀ x ∈ HWC p LL j (univ.erase ρ) w, resL p (i, ρ) e x ∈ HWC p LL j (univ.erase ρ) w := by

@@ -366,7 +366,7 @@ theorem SelfDualRec_of_curve (hC : CurveSelfDualRec) : SelfDualRec := by
       simp only [ℓ, Finset.mul_sum]
       refine Finset.sum_congr rfl fun τ _ => ?_
       rw [Finset.sum_eq_single i, Finset.sum_eq_single j]
-      · simp only [A, Matrix.smul_apply, Matrix.of_apply, and_self, if_true, smul_eq_mul,
+      · simp only [A, Matrix.smul_apply, Matrix.of_apply, and_self, ite_true, smul_eq_mul,
           map_mul, map_intCast, FL.emb_conj, Complex.conj_conj, map_intCast]
         push_cast; ring
       · intro j' _ hj'

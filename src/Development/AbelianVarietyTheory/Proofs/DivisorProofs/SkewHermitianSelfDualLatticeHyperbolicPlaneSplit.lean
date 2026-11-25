@@ -564,7 +564,7 @@ theorem fg_no_line : ∀ (E : Type) [Field E] [NumberField E] (n : ℕ) (L : Sub
   by_contra! h
   obtain ⟨i, hi⟩ : ∃ i, x i ≠ 0 := by
     by_contra h'
-    push_neg at h'
+    push Not at h'
     exact hx (funext h')
   have hP : L.map (LinearMap.proj (R := 𝓞 E) (φ := fun _ : Fin n => E) i) = ⊤ := by
     rw [eq_top_iff]
@@ -990,7 +990,7 @@ theorem plane_skew : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [Numbe
         cartan := fun w => (hθW w).1
         bas := fun v => by
           show IsSplitBasis (B.τ v) Y.L (if h : v.1 ∈ B.P then βY ⟨v.1, h⟩ else 1)
-          rw [dif_pos v.2]
+          rw [dite_eq_left v.2]
           exact (hβY v).1 }
   · exact
       { skew := gram_skew hCM hY.skew ι
@@ -1000,7 +1000,7 @@ theorem plane_skew : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [Numbe
         cartan := hθ₁
         bas := fun v => by
           show IsSplitBasis (B.τ v) (lowLat ι Y.L) (if h : v.1 ∈ B.P then β₁ ⟨v.1, h⟩ else 1)
-          rw [dif_pos v.2]
+          rw [dite_eq_left v.2]
           exact hβ₁ v }
   · exact
       { rank := rfl
@@ -1014,8 +1014,8 @@ theorem plane_skew : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [Numbe
         ideal := h𝔟
         cartan := fun w => ⟨(hθW w).2.1, (hθW w).2.2⟩
         bas := fun v i => by
-          have e1 : (GlobalTheory.ThK.reS Y Y').bas v = βY v := dif_pos v.2
-          have e2 : Y₁.bas v = β₁ v := dif_pos v.2
+          have e1 : (GlobalTheory.ThK.reS Y Y').bas v = βY v := dite_eq_left v.2
+          have e2 : Y₁.bas v = β₁ v := dite_eq_left v.2
           rw [e1, e2]
           exact (hβY v).2 i }
 

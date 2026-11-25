@@ -85,7 +85,7 @@ theorem pointOf_base : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok → 
         unfold ptFr
         rw [dite_eq_right hPG, dite_eq_right hPQ, hqN]
         unfold GlobalTheory.Mem.Col2.latFr
-        exact if_pos rfl
+        exact ite_eq_left rfl
       have hkP := congrFun (congrFun (hk P.1 P.2 hPQ) i') j
       rw [hfr]
       simp only [Matrix.map_apply] at hkP

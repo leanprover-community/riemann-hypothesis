@@ -463,7 +463,7 @@ theorem sum_compA (hX : X.Hyp p K) (hLa : (1088 : ℝ) ≤ X.CLa) (hk : (1088 : 
   have hdeg := (hX.degs t ht).1
   have hnat : X.deg t ≤ X.a' p K t + X.E' t + X.Et p K t := by
     unfold Dat.a' Dat.d
-    rw [if_pos ht]
+    rw [ite_eq_left ht]
     omega
   have hnat' : (X.deg t : ℝ) ≤ (X.a' p K t : ℝ) + X.E' t + X.Et p K t := by exact_mod_cast hnat
   have hE' : (X.E' t : ℝ) ≤ X.E₀ := by exact_mod_cast hX.E'le t ht

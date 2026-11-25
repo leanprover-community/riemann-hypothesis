@@ -431,7 +431,7 @@ private theorem exists_add_conj_sub_one_mem_extP (hK : Formalism.HermitianLattic
     have e2 : b * a - 1 = -c := by linear_combination hbc
     rw [e1, e2, map_neg]
     exact (extP K 𝔭).neg_mem (Ideal.mem_map_of_mem _ hc)
-  · push_neg at h
+  · push Not at h
     have h1 : (1 : 𝓞 K) ∈ extP K 𝔭 := by
       apply BallB.mem_of_unram hK
       intro θ
@@ -939,7 +939,7 @@ theorem gQ_mul_diagQ {𝔭 : Ideal (𝓞 F)} (h𝔭 : 𝔭.IsMaximal) (k : ℕ) 
   funext j
   by_cases h : a j ∈ 𝔭
   · simp [h]
-  · rw [dite_eq_right h, if_neg h, sub_zero]
+  · rw [dite_eq_right h, ite_eq_right h, sub_zero]
     exact (exists_inv_unit (K := K) h𝔭 h k).choose_spec
 
 theorem diag_comm {R : Type*} [CommRing R] {n : Type*} [Fintype n] [DecidableEq n] (d d' : n → R) :

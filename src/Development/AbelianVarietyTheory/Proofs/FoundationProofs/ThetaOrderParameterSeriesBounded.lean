@@ -206,7 +206,7 @@ theorem order_bdd : ∀ (p : ℕ) [Fact p.Prime] (g : GL3Theta.G1 p), g.Ok → I
   obtain ⟨C0, hC0⟩ := hS
   refine ⟨Bk, ⟨C0, fun n => ?_⟩, hGe⟩
   have h1 := congrArg (PowerSeries.coeff (n + K)) key2
-  rw [PowerSeries.coeff_C_mul, PowerSeries.coeff_X_pow_mul', if_pos (by omega), Nat.add_sub_cancel] at h1
+  rw [PowerSeries.coeff_C_mul, PowerSeries.coeff_X_pow_mul', ite_eq_left (by omega), Nat.add_sub_cancel] at h1
   have h2 := hC0 (n + K)
   rw [← h1, norm_mul, norm_pow, hu1, one_pow, one_mul] at h2
   exact h2

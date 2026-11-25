@@ -8,8 +8,6 @@ import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Lemma
 
-set_option backward.isDefEq.respectTransparency false
-
 @[expose] public section
 
 open Matrix PI.UpqRep

@@ -115,7 +115,7 @@ theorem cellRes_mul {J I : ∀ k, Finset (ι k)} (x y : LocalizedModule (KH.cell
         rw [LocalizedModule.mk_mul_mk, cellRes_mk h, cellRes_mk h, cellRes_mk h, LocalizedModule.mk_mul_mk]
         rfl
   · unfold KH.cellRes
-    rw [dif_neg h]
+    rw [dite_eq_right h]
     exact (zero_mul (0 : LocalizedModule (KH.cellMon S I) (MRingOver S ι ⧸ V))).symm
 
 theorem cellMon_mono {J I : ∀ k, Finset (ι k)} (h : ∀ k, J k ⊆ I k) : KH.cellMon S J ≤ KH.cellMon S I := by
@@ -194,7 +194,7 @@ theorem cechD_zero_apply_uniform.{u} (I : KH.Cell K ι 1) :
     have : i = x ∨ i = y := by rw [hI] at hi; simpa using hi
     tauto
   · intro l _ hl
-    refine Finset.sum_eq_zero fun i hi => dif_neg fun h => ?_
+    refine Finset.sum_eq_zero fun i hi => dite_eq_right fun h => ?_
     have := (h.1 l)
     rw [Function.update_self, ← Finset.card_pos, Finset.card_erase_of_mem hi, hother l hl] at this
     omega

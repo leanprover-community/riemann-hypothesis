@@ -64,7 +64,7 @@ theorem mvPowerSeries_lift_quotient :
       intro x
       by_cases hx : x = 0
       · simp [s, hx]
-      · simp only [s, if_neg hx]
+      · simp only [s, ite_eq_right hx]
         exact Ideal.Quotient.mk_out x
     let f : MvPowerSeries σ O := fun α => s (coeff α g)
     refine ⟨f, ?_, ?_⟩

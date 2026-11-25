@@ -86,7 +86,7 @@ theorem cone_gen_mem_of_common {O : Type} [CommRing O] {bar : O → O} {φ : Inv
     have h1 := congrArg (f l) h0
 
     rw [map_nsmul, map_sum] at h1
-    simp only [map_nsmul, hfG, smul_ite, smul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true, nsmul_eq_mul,
+    simp only [map_nsmul, hfG, smul_ite, smul_zero, Finset.sum_ite_eq, Finset.mem_univ, ite_true, nsmul_eq_mul,
       _root_.mul_one] at h1
     have hk'' : (0 : ℤ) < k' := by exact_mod_cast hk'
     by_contra! hneg
@@ -108,7 +108,7 @@ theorem cone_gen_mem_of_common {O : Type} [CommRing O] {bar : O → O} {φ : Inv
     intro l hl
     have h1 := congrArg (f l) hdG
 
-    rw [map_nsmul, map_sum, hfG, if_neg hl, smul_zero] at h1
+    rw [map_nsmul, map_sum, hfG, ite_eq_right hl, smul_zero] at h1
     simp only [map_nsmul, nsmul_eq_mul] at h1
     have hnn : ∀ i' ∈ Finset.univ, 0 ≤ (d i' : ℤ) * f l (G' i') := fun i' _ => by
       rcases Nat.eq_zero_or_pos (d i') with h | h
@@ -123,7 +123,7 @@ theorem cone_gen_mem_of_common {O : Type} [CommRing O] {bar : O → O} {φ : Inv
     have h1 := congrArg (f m) hE
 
     rw [map_nsmul, map_sum] at h1
-    simp only [map_nsmul, hfG, smul_ite, smul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true, nsmul_eq_mul,
+    simp only [map_nsmul, hfG, smul_ite, smul_zero, Finset.sum_ite_eq, Finset.mem_univ, ite_true, nsmul_eq_mul,
       _root_.mul_one] at h1
     exact h1.symm
   have hEj : k' • G' i = e j • G j := by
@@ -133,7 +133,7 @@ theorem cone_gen_mem_of_common {O : Type} [CommRing O] {bar : O → O} {φ : Inv
     rw [hzero m hm, mul_zero] at h1
     rw [show e m = 0 by exact_mod_cast h1, zero_smul]
   have h1 := congrArg (g i) hEj
-  simp only [map_nsmul, hgG, if_true, nsmul_eq_mul, _root_.mul_one] at h1
+  simp only [map_nsmul, hgG, ite_true, nsmul_eq_mul, _root_.mul_one] at h1
   have h2 := hem j
   have hk'' : (0 : ℤ) < k' := by exact_mod_cast hk'
   have hu : f j (G' i) * g i (G j) = 1 := by

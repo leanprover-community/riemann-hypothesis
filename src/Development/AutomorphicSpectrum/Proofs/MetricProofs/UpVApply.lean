@@ -105,7 +105,7 @@ def pRho (M : FlagModel y Ψ N j) (Rb : AnLogRes (mCoordIdeal M.x) ⊤ n) (keep 
 theorem upV_apply {v : (Σ k, ιk k) → (Σ k, ι k)} (hv : Function.Injective v) (z : (Σ k, ιk k) → ℂ) (q : Σ k, ιk k) :
     upV v z (v q) = z q := by
   have h : ∃ q', v q' = v q := ⟨q, rfl⟩
-  simp only [upV, dif_pos h]
+  simp only [upV, dite_eq_left h]
   rw [hv h.choose_spec]
 
 end Flag

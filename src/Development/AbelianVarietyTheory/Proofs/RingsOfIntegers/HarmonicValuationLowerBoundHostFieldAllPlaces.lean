@@ -341,7 +341,7 @@ theorem GlobalTheory.PlaceInt.exists_ramified_eigenLifts : ∀ (E : Type) [Field
       simp only [hmem]
       exact ⟨fun h' => Ideal.ext fun x => (h' x).symm, fun h' x => by rw [h']⟩
     · refine ⟨0, Fin.elim0, Fin.elim0, fun t => ?_⟩
-      rw [if_neg fun h => hw ⟨t, h⟩]
+      rw [ite_eq_right fun h => hw ⟨t, h⟩]
       simp [ERam.evD]
   choose nP bP aP hP using hplace
   choose δ hδ hδv using fun τ => exists_delta (σ τ) p a m hp hpV hm hd
@@ -587,11 +587,11 @@ theorem value_mem_idem (hRQ : TB.IsRQ (R := R) k)
     by_cases h1 : isX τ
     · have h2 : ¬ isX (cc τ) := fun h2 => hX' τ ⟨h1, h2⟩
       constructor
-      · simp only [c, h1, h2, if_true, if_false, hc]
+      · simp only [c, h1, h2, ite_true, ite_false, hc]
       · simp [s, h1, h2]
     · have h2 : isX (cc τ) := (hX τ).resolve_left h1
       constructor
-      · simp only [c, h1, h2, if_true, if_false]
+      · simp only [c, h1, h2, ite_true, ite_false]
       · simp [s, h1, h2]
   have hnot : ∀ ℓ ℓ' : (Σ τ : T, Fin (rr τ)), ¬ (c ℓ.1 = c ℓ'.1 ∧ s ℓ.1 ≠ s ℓ'.1) → ℓ'.1 ≠ cc ℓ.1 := by
     intro ℓ ℓ' hn he'

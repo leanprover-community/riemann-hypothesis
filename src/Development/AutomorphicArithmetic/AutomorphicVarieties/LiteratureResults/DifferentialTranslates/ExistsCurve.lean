@@ -60,7 +60,7 @@ theorem altSym : AltSym := by
     · have hY : Y k i = Y i k := by
         funext m
         simp only [Y, hMs k i, or_comm]
-      simp only [c, hik, Ne.symm hik, if_false, hY]
+      simp only [c, hik, Ne.symm hik, ite_false, hY]
       exact (w p).neg_one_pow_smul_map_removeNth_add_eq_zero_of_eq (v := Y i k) (by simp [Y]) hik
   have hsum : ∑ i, ∑ k, c i k = 0 := by
     have h1 : ∑ i, ∑ k, c i k = -∑ i, ∑ k, c i k := by
@@ -80,7 +80,7 @@ theorem altSym : AltSym := by
       (fun j' => L (i.succAbove j') p) j (L (i.succAbove j) (L i p))) = ∑ k, c i k := by
     intro i
     rw [Fin.sum_univ_succAbove _ i, Finset.smul_sum]
-    simp only [c, if_pos rfl, zero_add, hne, if_false]
+    simp only [c, ite_eq_left rfl, zero_add, hne, ite_false]
     refine Finset.sum_congr rfl fun j _ => ?_
     congr 2
     funext j'
@@ -196,7 +196,7 @@ private theorem exists_curve (X : Herm E a) : ∃ c : ℝ → GL (Fin a) (Cinf E
     exact h.mono fun t ht => (Matrix.isUnit_iff_isUnit_det _).2 ht
   let c : ℝ → GL (Fin a) (Cinf E) := fun t => if h : IsUnit (1 + t • X.1) then h.unit else 1
   have hc : ∀ᶠ t : ℝ in nhds 0, (c t).val = 1 + t • X.1 :=
-    hu.mono fun t ht => by simp only [c, dif_pos ht, IsUnit.unit_spec]
+    hu.mono fun t ht => by simp only [c, dite_eq_left ht, IsUnit.unit_spec]
   refine ⟨c, Units.ext (by simpa using hc.self_of_nhds), ?_, fun v => ?_⟩
   · have h := (((hasDerivAt_id (0 : ℝ)).smul_const (toL X.1)).const_add (toL (1 : Matrix (Fin a) (Fin a) (Cinf E))))
     rw [one_smul] at h

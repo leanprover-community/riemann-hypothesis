@@ -208,7 +208,7 @@ theorem wfLog_of (hI : PI.InvSerSub) (hL : PI.WfLogL) : PI.WfLog := by
   have hc1 : PowerSeries.coeff 1 (AddIntG.flog W wq) = 1 := by
     clear hI hL h1 h2 h3 h4 h6 hex hsub hfl hc0 hq
     rw [AddIntG.flog, PowerSeries.coeff_mk]
-    simp only [one_ne_zero, if_false, Nat.sub_self, Nat.cast_one, div_one,
+    simp only [one_ne_zero, ite_false, Nat.sub_self, Nat.cast_one, div_one,
       PowerSeries.coeff_zero_eq_constantCoeff_apply, AddIntG.omegaW]
     rw [map_mul, PowerSeries.constantCoeff_inv]
     simp [hw0]
@@ -280,7 +280,7 @@ private lemma inv_series_sub : PI.InvSerSub := by
       simp only [Finset.coe_range, Set.mem_Iio]
       by_contra h
       apply hd
-      rw [hpow, if_neg (by omega), smul_zero]
+      rw [hpow, ite_eq_right (by omega), smul_zero]
     rw [← hsub, PowerSeries.coeff_subst' hHS, hfin]
     simp only [smul_eq_mul]
 

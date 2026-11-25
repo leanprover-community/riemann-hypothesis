@@ -50,10 +50,4 @@ theorem mem_translate (t : Fv F v) :
 
 end Local
 
-section Box1
-
-variable {F : Type} [Field F] [NumberField F]
-
-end Box1
-
 end PI.VolStabS.DeterminantAdmissible

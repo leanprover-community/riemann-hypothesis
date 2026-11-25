@@ -306,15 +306,15 @@ theorem pairY (hW : GlobalTheory.SiegelSet.IsWittFrame σ J X Y) (hyx : Formalis
       funext fun k => colX b ⟨b.val, h1⟩ rfl k
     rw [hcol, mulVec_col, hyx, Matrix.one_apply]
     by_cases h : b.val = l.val
-    · rw [if_pos h, if_pos (Fin.ext h.symm)]
-    · rw [if_neg h, if_neg (fun h' => h (congrArg Fin.val h').symm)]
+    · rw [ite_eq_left h, ite_eq_left (Fin.ext h.symm)]
+    · rw [ite_eq_right h, ite_eq_right (fun h' => h (congrArg Fin.val h').symm)]
   · by_cases h2 : b.val + m < n
-    · rw [perpY b (by omega) h2, if_neg (by omega)]
+    · rw [perpY b (by omega) h2, ite_eq_right (by omega)]
       rfl
     · have hj : n - 1 - b.val < m := by omega
       have hcol : (fun k => C.1 k b) = fun k => Y k ⟨n - 1 - b.val, hj⟩ :=
         funext fun k => columnBlock b ⟨n - 1 - b.val, hj⟩ (by show b.val + (n - 1 - b.val) + 1 = n; omega) k
-      rw [hcol, mulVec_col, yy, if_neg (by omega)]
+      rw [hcol, mulVec_col, yy, ite_eq_right (by omega)]
       rfl
 
 theorem pairX (hW : GlobalTheory.SiegelSet.IsWittFrame σ J X Y)
@@ -327,18 +327,18 @@ theorem pairX (hW : GlobalTheory.SiegelSet.IsWittFrame σ J X Y)
   by_cases h1 : b.val < m
   · have hcol : (fun k => C.1 k b) = fun k => X k ⟨b.val, h1⟩ :=
       funext fun k => colX b ⟨b.val, h1⟩ rfl k
-    rw [hcol, mulVec_col, xx, if_neg (by omega)]
+    rw [hcol, mulVec_col, xx, ite_eq_right (by omega)]
     rfl
   · by_cases h2 : b.val + m < n
-    · rw [perpX b (by omega) h2, if_neg (by omega)]
+    · rw [perpX b (by omega) h2, ite_eq_right (by omega)]
       rfl
     · have hj : n - 1 - b.val < m := by omega
       have hcol : (fun k => C.1 k b) = fun k => Y k ⟨n - 1 - b.val, hj⟩ :=
         funext fun k => columnBlock b ⟨n - 1 - b.val, hj⟩ (by show b.val + (n - 1 - b.val) + 1 = n; omega) k
       rw [hcol, mulVec_col, xy, Matrix.one_apply]
       by_cases h : b.val + l.val + 1 = n
-      · rw [if_pos h, if_pos (Fin.ext (by show l.val = n - 1 - b.val; omega))]
-      · rw [if_neg h, if_neg (fun h' => h (by have := congrArg Fin.val h'; simp at this; omega))]
+      · rw [ite_eq_left h, ite_eq_left (Fin.ext (by show l.val = n - 1 - b.val; omega))]
+      · rw [ite_eq_right h, ite_eq_right (fun h' => h (by have := congrArg Fin.val h'; simp at this; omega))]
 
 end Pair
 
@@ -412,8 +412,8 @@ theorem frame_cols : ∀ (D : D7) (V V' : HSp D) (ι : V'.V →ₗ[D.host.E] V.V
     refine (hTr _).2 fun i hi => ?_
     have hi' := (hup i).1 hi
     constructor
-    · rw [← pair_vec V X (fun k => C.1 k b) i, pairX hW hC i b, if_neg (by omega)]
-    · rw [← pair_vec V Y (fun k => C.1 k b) i, pairY hW hyx hC i b, if_neg (by omega)]
+    · rw [← pair_vec V X (fun k => C.1 k b) i, pairX hW hC i b, ite_eq_right (by omega)]
+    · rw [← pair_vec V Y (fun k => C.1 k b) i, pairY hW hyx hC i b, ite_eq_right (by omega)]
   have hw : ∀ t : Fin (V.rank - a - a), ∃ w : V'.V,
       ι w = V.frame.equivFun.symm (fun k => C.1 k ⟨a + t.val, by omega⟩) := fun t =>
     LinearMap.mem_range.mp (hmid _ (Nat.le_add_right _ _) (by show a + t.val + a < V.rank; omega))
@@ -451,9 +451,9 @@ theorem frame_cols : ∀ (D : D7) (V V' : HSp D) (ι : V'.V →ₗ[D.host.E] V.V
       rw [← Matrix.mul_assoc, C.mul_inv, Matrix.one_mul]
     conv_lhs => rw [hM']
     rw [← Matrix.mul_assoc, Matrix.mul_apply, Finset.sum_eq_single c0]
-    · rw [← mulVec_col, hA, if_pos rfl, one_mul]
+    · rw [← mulVec_col, hA, ite_eq_left rfl, one_mul]
     · intro c _ hc
-      rw [← mulVec_col, hA, if_neg hc, zero_mul]
+      rw [← mulVec_col, hA, ite_eq_right hc, zero_mul]
     · intro h
       exact absurd (Finset.mem_univ c0) h
   have hout : ∀ (b : Fin V.rank) (j : Fin V'.rank), (b.val < a ∨ V.rank ≤ b.val + a) →
@@ -640,8 +640,8 @@ theorem etr_mem_adjoin_qdet' (A : Type) [Ring A] [Algebra ℂ A] (n : ℕ) (X : 
         intro u
         simp only [f, a, hc u, hR u, sum_mul, smul_mul_assoc, smul_sub, sum_sub_distrib]
         congr 1
-        rw [sum_range_succ _ (m + 1), if_neg (lt_irrefl _), smul_zero, add_zero]
-        exact sum_congr rfl fun i hi => by rw [if_pos (mem_range.mp hi)]
+        rw [sum_range_succ _ (m + 1), ite_eq_right (lt_irrefl _), smul_zero, add_zero]
+        exact sum_congr rfl fun i hi => by rw [ite_eq_left (mem_range.mp hi)]
       have hmem : ∀ u, f u ∈ S := by
         intro u
         have h1 := _root_.GlobalTheory.TracedComatrix.traced_comatrix A m X hX u N

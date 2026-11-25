@@ -156,7 +156,7 @@ private theorem absSumAt_algebraMap (u a : C) :
     rcases n with _ | n <;> simp [PowerSeries.coeff_C]
   refine ⟨?_, ?_⟩
   · refine summable_of_ne_finset_zero (s := {0}) fun n hn => ?_
-    rw [congrFun h n, if_neg (by simpa using hn), norm_zero]
+    rw [congrFun h n, ite_eq_right (by simpa using hn), norm_zero]
   · rw [h]
     simp
 
@@ -610,8 +610,8 @@ theorem exists_arcF_over : Laws → BrGtSt → BrWpSt → AllD fun D => ∀ (R :
     have := A.D₀.P.isAb.smooth
     refine ⟨n, ?_, h₂.trans (by
       by_cases h : τ H.rt = A.ρ
-      · rw [if_pos h, if_pos (show f.comp τ H.rt = f A.ρ from congrArg f h)]
-      · rw [if_neg h, if_neg (show ¬ f.comp τ H.rt = f A.ρ from fun e => h (f.injective e))])⟩
+      · rw [ite_eq_left h, ite_eq_left (show f.comp τ H.rt = f A.ρ from congrArg f h)]
+      · rw [ite_eq_right h, ite_eq_right (show ¬ f.comp τ H.rt = f A.ρ from fun e => h (f.injective e))])⟩
     have e : spMap ((algebraMap (FractionRing R) F').comp (algebraMap R _)) =
         spMap f ≫ spMap ((algebraMap (FractionRing R) F).comp (algebraMap R _)) := by
       rw [spMap, spMap, spMap, ← Spec.map_comp, ← CommRingCat.ofHom_comp, ← RingHom.comp_assoc, hf]

@@ -109,19 +109,19 @@ theorem coordBlowupSubst_X (R : Type u) [CommRing R] {σ : Type v} [DecidableEq 
     (S : Finset σ) (s : σ) {i : σ} (hi : i ∈ S) (hne : i ≠ s) :
     coordBlowupSubst R S s (MvPolynomial.X i) =
       (MvPolynomial.X i : MvPolynomial σ R) * MvPolynomial.X s := by
-  rw [coordBlowupSubst_X, if_pos ⟨hi, hne⟩]
+  rw [coordBlowupSubst_X, ite_eq_left ⟨hi, hne⟩]
 
 @[simp] theorem coordBlowupSubst_X_self (R : Type u) [CommRing R] {σ : Type v} [DecidableEq σ]
     (S : Finset σ) (s : σ) :
     coordBlowupSubst R S s (MvPolynomial.X s) = (MvPolynomial.X s : MvPolynomial σ R) := by
-  rw [coordBlowupSubst_X, if_neg]
+  rw [coordBlowupSubst_X, ite_eq_right]
   rintro ⟨-, h⟩
   exact h rfl
 
 @[simp] theorem coordBlowupSubst_X_of_not_mem_erase (R : Type u) [CommRing R] {σ : Type v} [DecidableEq σ]
     (S : Finset σ) (s : σ) {i : σ} (h : ¬ (i ∈ S ∧ i ≠ s)) :
     coordBlowupSubst R S s (MvPolynomial.X i) = (MvPolynomial.X i : MvPolynomial σ R) := by
-  rw [coordBlowupSubst_X, if_neg h]
+  rw [coordBlowupSubst_X, ite_eq_right h]
 
 theorem coordBlowupSubst_C (R : Type u) [CommRing R] {σ : Type v} [DecidableEq σ]
     (S : Finset σ) (s : σ) (r : R) :

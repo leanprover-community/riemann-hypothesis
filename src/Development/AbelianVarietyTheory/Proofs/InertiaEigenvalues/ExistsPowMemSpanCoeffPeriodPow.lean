@@ -63,7 +63,7 @@ theorem coeff_eq_zero_of_roots : ∀ (l : ℕ) [Fact l.Prime] (a : ℕ) [NeZero 
     have h2 : IsCoprime P (Polynomial.X ^ (l - 1)) := by
       refine IsCoprime.pow_right ?_
       refine IsCoprime.symm ((Polynomial.irreducible_X.coprime_iff_not_dvd).2 ?_)
-      rw [Polynomial.X_dvd_iff, hPdef, Polynomial.coeff_expand hl0, if_pos (dvd_zero l), Nat.zero_div]
+      rw [Polynomial.X_dvd_iff, hPdef, Polynomial.coeff_expand hl0, ite_eq_left (dvd_zero l), Nat.zero_div]
       exact hc0
     have h3 : IsCoprime P ((l : K[X])) := by
       have hu : IsUnit ((l : K[X])) := by
@@ -92,7 +92,7 @@ theorem coeff_eq_zero_of_roots : ∀ (l : ℕ) [Fact l.Prime] (a : ℕ) [NeZero 
     exact (Multiset.card_le_card hle).trans (Polynomial.card_roots' Q)
   have hEq : P = EK := Polynomial.eq_of_monic_of_dvd_of_natDegree_le hEK hPmon hdvd hdeg
   have hci : GlobalTheory.TameFrob.iota l a (E.coeff i) = 0 := by
-    rw [← Polynomial.coeff_map, ← hEKdef, ← hEq, hPdef, Polynomial.coeff_expand hl0, if_neg hi]
+    rw [← Polynomial.coeff_map, ← hEKdef, ← hEq, hPdef, Polynomial.coeff_expand hl0, ite_eq_right hi]
   exact GlobalTheory.TameFrob.iota_injective l a (hci.trans (map_zero _).symm)
 
 end GlobalTheory.ExpandCoeff

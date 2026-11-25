@@ -161,11 +161,11 @@ theorem cube_mem (ι : X.B.I.E →+* FpX X p) (Msub : Submodule (OpX X p) (Fin X
     rw [Finset.sum_apply]
     simp only [Pi.smul_apply, map_zsmul, Pi.single_apply]
     rw [Finset.sum_eq_single i]
-    · simp only [if_true, map_one]
+    · simp only [ite_true, map_one]
       show (M : FpX X p) * u i = u i * (M • (1 : FpX X p))
       rw [zsmul_eq_mul, mul_one, mul_comm]
     · intro j _ hji
-      simp only [if_neg (Ne.symm hji), map_zero, smul_zero]
+      simp only [ite_eq_right (Ne.symm hji), map_zero, smul_zero]
     · intro h; exact absurd (Finset.mem_univ i) h
   rw [heq]
   exact Submodule.sum_mem _ fun j _ => Submodule.smul_mem _ _ (hgen j)

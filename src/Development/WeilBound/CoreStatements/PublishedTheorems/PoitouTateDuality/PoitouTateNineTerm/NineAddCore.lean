@@ -35,8 +35,6 @@ open NumberField IsDedekindDomain CategoryTheory GroundTheory.ProfCoh GroundTheo
 
 namespace PositivityTheory.Lit1.PTN
 
-attribute [local instance 2000] Rep.hV2
-
 
 theorem degree_two_cohomology_comparison_left (Kf : FiniteSubfield) [NumberField Kf.1]
     [IsAlgClosure Kf.1 (AlgebraicClosure ℚ)] (S : Finset (HeightOneSpectrum (𝓞 Kf.1))) {l r : ℕ}
@@ -75,8 +73,6 @@ open NumberField IsDedekindDomain CategoryTheory MonoidalCategory TensorProduct 
   GroundTheory.Global ReciprocityTheory.Gal Formalism.ConjugateSelfDual GlobalTheory.Published GlobalTheory.Published.PoitouTate
 
 namespace PositivityTheory.Lit1.PTN
-
-attribute [local instance 2000] Rep.hV2
 
 
 
@@ -179,8 +175,6 @@ theorem cupPairing_swap_degree_one {Γ : Type} [Group Γ] [TopologicalSpace Γ] 
     cohomologyMap_braiding_cup (rfl : 1 + 1 = 2) (rfl : 1 + 1 = 2) y x]
   have h1 : ((-1 : ULift.{0} ℤ) ^ (1 * 1)) = -1 := by simp
   rw [h1, neg_one_smul, map_neg, neg_neg]
-
-attribute [local instance 2000] Rep.hV2
 
 theorem transfer_cup_degree_one_one {Lv Hv : Type} [Group Lv] [TopologicalSpace Lv] [IsTopologicalGroup Lv]
     [Group Hv] [TopologicalSpace Hv] [IsTopologicalGroup Hv] (ev : Hv ≃* Lv)
@@ -291,8 +285,6 @@ open NumberField IsDedekindDomain CategoryTheory MonoidalCategory TensorProduct 
 
 namespace PositivityTheory.Lit1.PTN
 
-attribute [local instance 2000] Rep.hV2
-
 
 
 theorem locTr1_C (Kf : FiniteSubfield) [NumberField Kf.1]
@@ -388,8 +380,6 @@ open CategoryTheory MonoidalCategory TensorProduct GroundTheory.ProfCoh Reciproc
 
 namespace PositivityTheory.Lit1.PTN
 
-attribute [local instance 2000] Rep.hV2
-
 theorem transfer_cup_degree_two_zero {Lv Hv : Type} [Group Lv] [TopologicalSpace Lv] [IsTopologicalGroup Lv]
     [Group Hv] [TopologicalSpace Hv] [IsTopologicalGroup Hv] (ev : Hv ≃* Lv)
     (hevc : Continuous ev.toMonoidHom) {R : Type} [CommRing R] {M M' P : Type}
@@ -460,8 +450,6 @@ open NumberField IsDedekindDomain CategoryTheory MonoidalCategory TensorProduct 
   GroundTheory.Global ReciprocityTheory.Gal Formalism.ConjugateSelfDual GlobalTheory.Published GlobalTheory.Published.PoitouTate
 
 namespace PositivityTheory.Lit1.PTN
-
-attribute [local instance 2000] Rep.hV2
 
 
 
@@ -617,8 +605,6 @@ open CategoryTheory GroundTheory.ProfCoh
 
 namespace PositivityTheory.Lit1.PTN
 
-attribute [local instance 2000] Rep.hV2
-
 
 
 theorem nineAdd_of_found2 {N : ℕ} [NeZero N]
@@ -759,8 +745,6 @@ open CategoryTheory GroundTheory.ProfCoh
 
 namespace PositivityTheory.Lit1.PTN
 
-attribute [local instance 2000] Rep.hV2
-
 
 theorem nineAdd_of_found3 {N : ℕ} [NeZero N]
     {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
@@ -862,8 +846,6 @@ open NumberField IsDedekindDomain CategoryTheory GroundTheory.ProfCoh GroundTheo
 
 namespace PositivityTheory.Lit1.PTN
 
-attribute [local instance 2000] Rep.hV2
-
 
 theorem tate_duality_degree_one_left (Kf : FiniteSubfield) [NumberField Kf.1]
     [IsAlgClosure Kf.1 (AlgebraicClosure ℚ)] (S : Finset (HeightOneSpectrum (𝓞 Kf.1))) {l r : ℕ}
@@ -903,8 +885,6 @@ open NumberField IsDedekindDomain CategoryTheory GroundTheory.ProfCoh GroundTheo
 
 namespace PositivityTheory.Lit1.PTN
 
-attribute [local instance 2000] Rep.hV2
-
 
 theorem tate_duality_degree_one_middle (Kf : FiniteSubfield) [NumberField Kf.1]
     [IsAlgClosure Kf.1 (AlgebraicClosure ℚ)] (S : Finset (HeightOneSpectrum (𝓞 Kf.1))) {l r : ℕ}
@@ -942,8 +922,6 @@ open NumberField IsDedekindDomain CategoryTheory GroundTheory.ProfCoh GroundTheo
 
 namespace PositivityTheory.Lit1.PTN
 
-attribute [local instance 2000] Rep.hV2
-
 
 theorem tate_duality_degree_two_middle (Kf : FiniteSubfield) [NumberField Kf.1]
     [IsAlgClosure Kf.1 (AlgebraicClosure ℚ)] (S : Finset (HeightOneSpectrum (𝓞 Kf.1))) {l r : ℕ}
@@ -980,8 +958,6 @@ open NumberField IsDedekindDomain CategoryTheory GroundTheory.ProfCoh GroundTheo
   GlobalTheory.Published GlobalTheory.Published.PoitouTate
 
 namespace PositivityTheory.Lit1.PTN
-
-attribute [local instance 2000] Rep.hV2
 
 
 theorem tate_duality_degree_zero_left (Kf : FiniteSubfield) [NumberField Kf.1]
@@ -1022,8 +998,6 @@ open NumberField IsDedekindDomain CategoryTheory GroundTheory.ProfCoh GroundTheo
 
 namespace PositivityTheory.Lit1.PTN
 
-attribute [local instance 2000] Rep.hV2
-
 
 theorem tate_duality_degree_zero_middle (Kf : FiniteSubfield) [NumberField Kf.1]
     [IsAlgClosure Kf.1 (AlgebraicClosure ℚ)] (S : Finset (HeightOneSpectrum (𝓞 Kf.1))) {l r : ℕ}
@@ -1060,8 +1034,6 @@ open NumberField IsDedekindDomain CategoryTheory GroundTheory.ProfCoh GroundTheo
   GlobalTheory.Published GlobalTheory.Published.PoitouTate PositivityTheory.PoitouTateConclusion
 
 namespace PositivityTheory.Lit1.PTN
-
-attribute [local instance 2000] Rep.hV2
 
 
 theorem nineAdd_core (Kf : FiniteSubfield)

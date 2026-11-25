@@ -424,7 +424,7 @@ theorem sum_units_char_pow (m : ℕ) (hm : 1 ≤ m) (z : Qbar l) (ψ : Dirichlet
     ∑ b : (ZMod (l ^ m))ˣ, ψ b * (z ^ (b : ZMod (l ^ m)).val) ^ j = ψ⁻¹ (j : ZMod (l ^ m)) * gSum m z ψ := by
   haveI : NeZero (l ^ m) := ⟨pow_ne_zero _ (Fact.out : l.Prime).ne_zero⟩
   have key := GlobalTheory.EisM.sum_primChar_mul_rootPow_mod_pow (Qbar l) l m m z ψ (Fact.out) hm le_rfl hz hψ (j : ℤ)
-  simp only [Nat.sub_self, pow_zero, one_dvd, if_true, one_mul, Int.ediv_one, Int.cast_natCast] at key
+  simp only [Nat.sub_self, pow_zero, one_dvd, ite_true, one_mul, Int.ediv_one, Int.cast_natCast] at key
   rw [sum_units_eq_sum ψ (fun a => (z ^ a.val) ^ j)]
   unfold gSum
   rw [sum_units_eq_sum ψ (fun a => z ^ a.val)]
@@ -963,7 +963,7 @@ theorem norm_gSum_le : ∀ (l : ℕ) [Fact l.Prime] (m : ℕ) (z : Qbar l) (ψ :
     calc ‖(l : Qbar l) ^ k‖ * ‖g x0‖ ≤ ‖(l : Qbar l) ^ k‖ * 1 :=
           mul_le_mul_of_nonneg_left (hg1 x0) (norm_nonneg _)
       _ = _ := mul_one _
-  · push_neg at hχ
+  · push Not at hχ
     obtain ⟨y, hy⟩ := hχ
     have hI := hinv x0 y
     have h0 : ∑ x ∈ Finset.univ.filter (fun x => π x = π x0), g x = 0 := by
@@ -1190,7 +1190,7 @@ theorem exists_decomp (hl : l ≠ 2) (R : ℕ) {j : ℕ} (hj : ¬ l ∣ j) :
     exact c.ne_zero h0
   · refine ((ZMod.natCast_eq_natCast_iff _ _ _).1 ?_).symm
     by_contra h1
-    exact ht (if_neg h1)
+    exact ht (ite_eq_right h1)
 
 theorem dvd_of_modEq {n a b : ℕ} (h : a ≡ b [MOD n]) : (n : ℤ_[l]) ∣ (b : ℤ_[l]) - a := by
   have h1 := map_dvd (Int.castRingHom ℤ_[l]) (Nat.modEq_iff_dvd.1 h)

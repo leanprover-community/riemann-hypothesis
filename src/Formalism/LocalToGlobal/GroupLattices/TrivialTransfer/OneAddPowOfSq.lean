@@ -42,7 +42,7 @@ theorem unip_pow (I : Ideal R) (g : ℕ) (hg : g.Prime) (hgI : (g : R) ∈ I) (A
     induction m with
     | zero =>
       intro i j h
-      rw [pow_zero, Matrix.one_apply, if_neg]
+      rw [pow_zero, Matrix.one_apply, ite_eq_right]
       rintro rfl
       omega
     | succ m ih =>

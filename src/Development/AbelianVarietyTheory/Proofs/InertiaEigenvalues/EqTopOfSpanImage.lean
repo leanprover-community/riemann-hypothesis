@@ -145,7 +145,7 @@ theorem mem_radical_of_mem {O E : Type} [CommRing O] [IsNoetherianRing O] [CommR
   by_cases h : ∀ k, PowerSeries.coeff k f ∈ J
   · exact key f h
   exfalso
-  push_neg at h
+  push Not at h
   let k := Nat.find h
   have hk : IsUnit (PowerSeries.coeff k f) := (hO _).resolve_right fun ⟨r, hr⟩ =>
     Nat.find_spec h ⟨r, Ideal.mem_span_singleton.2 hr⟩

@@ -135,7 +135,7 @@ theorem LvTw_div_dv_split : ∀ (F E : Type) [Field F] [NumberField F] [Field E]
   have hd : dv E r b v s = (∏ i ∈ Finset.range r, (1 - (qV E w : ℂ) ^ (-(2 * s + r - i))))⁻¹ := by
     rw [← Finset.prod_inv_distrib, dv]
     refine Finset.prod_congr rfl fun i _ => ?_
-    have hu : etaU E v = 1 := by unfold etaU; rw [if_pos hsplit]
+    have hu : etaU E v = 1 := by unfold etaU; rw [ite_eq_left hsplit]
     rw [locL, etaFam_of_unram hunr, hu, one_pow, eulerFac_singleton, Units.val_one, one_mul, GlobalTheory.LFun.npow, qV, hqw]
   rw [hd, div_inv_eq_mul, hL, hr1, hr2]
 

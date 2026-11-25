@@ -83,7 +83,7 @@ theorem coeff_eq_zero {y : (Σ k, ι k) → Ω} {r : ℕ} {f : Fin r → MRing �
   simp only [hsec, ← mul_assoc, ← Finset.sum_mul]
   by_cases hz' : ∀ k, ∃ i, z ⟨k, i⟩ ≠ 0
   · rw [h z ⟨hz', fun g hg => hz g (mCoordIdeal_le_coordIdeal y hg)⟩, zero_mul]
-  · push_neg at hz'
+  · push Not at hz'
     obtain ⟨k, hk⟩ := hz'
     refine mul_eq_zero_of_right _ ?_
     simp only [u, map_prod, map_X, eval_X]

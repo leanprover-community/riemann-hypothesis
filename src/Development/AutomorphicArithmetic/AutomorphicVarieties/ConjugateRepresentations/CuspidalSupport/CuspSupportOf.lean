@@ -723,7 +723,7 @@ theorem cuspSupport_of (hS : Step) (hT : SuppTwist) (hA : SuppAdd) (hC : SuppCus
     let B : Pl E → Multiset ℂˣ := fun w =>
       if h : ∃ B, HasSatGL w (locOf τ.ρ w) B ∧ IsSatVecGL w (locOf τ.ρ w) v B then h.choose else 0
     have h2 : ∀ᶠ w in Filter.cofinite, HasSatGL w (locOf τ.ρ w) (B w) ∧ IsSatVecGL w (locOf τ.ρ w) v (B w) :=
-      h1.mono fun w h => by simp only [B, dif_pos h]; exact h.choose_spec
+      h1.mono fun w h => by simp only [B, dite_eq_left h]; exact h.choose_spec
     have he : Eig (j v) m B :=
       ⟨h0, haut v, hcap v, h2.mono fun w h => h.2.map j (fun g y => hfin _ y) h0⟩
     obtain ⟨ι, _, n, π, μ, c1, c2, c3, c4, c5, c6⟩ :=

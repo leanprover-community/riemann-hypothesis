@@ -675,7 +675,7 @@ theorem twist_gam : ∀ (O L : Type) [CommRing O] [IsDomain O] [IsDiscreteValuat
   have hC : ∀ i j, ∃ c, (γ : Matrix (Ix n) (Ix n) O) (Sum.inr i) (Sum.inl j) = ϖ * (ϖ * c) := by
     intro i j
     have h0 := hγ' (Sum.inr i) (Sum.inl j)
-    simp only [Matrix.one_apply, reduceCtorEq, if_false, sub_zero] at h0
+    simp only [Matrix.one_apply, reduceCtorEq, ite_false, sub_zero] at h0
     obtain ⟨c, hc⟩ := Ideal.mem_span_singleton'.1 h0
     exact ⟨c, by rw [← hc]; ring⟩
   choose C hCe using hC
@@ -1471,7 +1471,7 @@ theorem jpCmp : JpCmp := by
   have hf : ∀ g, Φ g = f (iD g) := by
     intro g
     have h : ∃ g', iD g' = iD g := ⟨g, rfl⟩
-    simp only [f, dif_pos h]
+    simp only [f, dite_eq_left h]
     exact hΦ _ _ h.choose_spec
   have hnum : sumG (fun g => (Fintype.card (IsLocalRing.ResidueField O) : ℂ) ^ (2 * n * iD g) * Ψ g) =
       sumG (fun g => (Fintype.card (IsLocalRing.ResidueField O) : ℂ) ^ (2 * n * iD g) * Φ g) := by

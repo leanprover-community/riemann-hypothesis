@@ -171,7 +171,7 @@ theorem rep_prim_pair (a : ℕ) (b c : ℤ) (d : ℕ) (ha : 0 < a) (hd : 0 < d) 
     have : ((l : ℂ)⁻¹ • xt) ∈ dualLat (stdH L m) Λ := hall
     rw [hΛ] at this
     exact this
-  push_neg at hnd
+  push Not at hnd
   obtain ⟨yv, hyv, hyk⟩ := hnd
   have hxtd : xt ∈ dualLat (stdH L m) Λ := by rw [hΛ]; exact hxtΛ
   obtain ⟨c₂, hc₂⟩ := hxtd yv hyv

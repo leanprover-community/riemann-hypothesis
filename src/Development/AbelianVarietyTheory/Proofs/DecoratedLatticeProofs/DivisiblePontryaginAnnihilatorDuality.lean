@@ -158,7 +158,7 @@ theorem finite_quot {G : Type} [AddCommGroup G] (A L₀ : AddSubgroup G) (N : �
     obtain ⟨r, hr, u, hu, htu⟩ := hcov _ (hA t t.2)
     have h : ∃ t : A, ∃ u ∈ L₀, N • (t : G) = r + (N * N) • u := ⟨t, u, hu, htu⟩
     refine ⟨r, hr, ?_⟩
-    simp only [c, dif_pos h]
+    simp only [c, dite_eq_left h]
     obtain ⟨u', hu', ht'⟩ := Classical.choose_spec h
     rw [QuotientAddGroup.eq, AddSubgroup.mem_addSubgroupOf, AddSubgroup.mem_map]
     refine ⟨u - u', L₀.sub_mem hu hu', ?_⟩

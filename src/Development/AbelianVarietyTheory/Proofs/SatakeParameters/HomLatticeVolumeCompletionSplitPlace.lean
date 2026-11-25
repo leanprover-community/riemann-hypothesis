@@ -547,20 +547,6 @@ theorem exists_pow_smul_matrix {ϖ : W} (hp : Irreducible ϖ) {m n : Type} [Fint
   simp only [Matrix.smul_apply, smul_eq_mul, Matrix.map_apply, Matrix.of_apply, map_mul, ← h i j]
   rw [← mul_assoc, ← map_mul, ← pow_add, Nat.sub_add_cancel (hE i j)]
 
-theorem mem_colSpan_iff_mulVec {k : ℕ} (g : Matrix (Fin k) (Fin k) Qq) (z : Fin k → Qq) :
-    z ∈ colSpan W g ↔ ∃ v : Fin k → W, z = g *ᵥ (fun i => algebraMap W Qq (v i)) := by
-  unfold colSpan
-  rw [Submodule.mem_span_range_iff_exists_fun]
-  constructor
-  · rintro ⟨c, rfl⟩
-    refine ⟨c, ?_⟩
-    ext i
-    simp [Matrix.mulVec, dotProduct, Finset.sum_apply, Algebra.smul_def, mul_comm]
-  · rintro ⟨c, rfl⟩
-    refine ⟨c, ?_⟩
-    ext i
-    simp [Matrix.mulVec, dotProduct, Finset.sum_apply, Algebra.smul_def, mul_comm]
-
 theorem exists_pow_smul_mem_homLat {ϖ : W} (hp : Irreducible ϖ) {k k' : ℕ}
     (a : Matrix (Fin k) (Fin k) Qq) (b : Matrix (Fin k') (Fin k') Qq) (hb : IsUnit b.det) :
     ∃ N : ℕ, ∀ M : Matrix (Fin k') (Fin k) W,
@@ -568,8 +554,8 @@ theorem exists_pow_smul_mem_homLat {ϖ : W} (hp : Irreducible ϖ) {k k' : ℕ}
   obtain ⟨e₁, B, hB⟩ := exists_pow_smul_matrix (W := W) hp b⁻¹
   obtain ⟨e₂, A, hA⟩ := exists_pow_smul_matrix (W := W) hp a
   refine ⟨e₁ + e₂, fun M z hz => ?_⟩
-  obtain ⟨v, rfl⟩ := (mem_colSpan_iff_mulVec (W := W) a z).1 hz
-  refine (mem_colSpan_iff_mulVec (W := W) b _).2 ⟨(B * M * A) *ᵥ v, ?_⟩
+  obtain ⟨v, rfl⟩ := (GlobalTheory.VolOnto.mem_colSpan_iff (W := W) a z).1 hz
+  refine (GlobalTheory.VolOnto.mem_colSpan_iff (W := W) b _).2 ⟨(B * M * A) *ᵥ v, ?_⟩
   have h1 : (fun i => algebraMap W Qq (((B * M * A) *ᵥ v) i)) =
       (B.map (algebraMap W Qq) * M.map (algebraMap W Qq) * A.map (algebraMap W Qq)) *ᵥ
         (fun i => algebraMap W Qq (v i)) := by
@@ -590,7 +576,7 @@ theorem exists_pow_smul_of_mem_homLat {ϖ : W} (hp : Irreducible ϖ) {k k' : ℕ
   obtain ⟨e₂, A, hA⟩ := exists_pow_smul_matrix (W := W) hp a⁻¹
   refine ⟨e₁ + e₂, fun t ht => ?_⟩
   have hcol : ∀ c, ∃ v : Fin k' → W, t *ᵥ (fun i => a i c) = b *ᵥ (fun i => algebraMap W Qq (v i)) :=
-    fun c => (mem_colSpan_iff_mulVec (W := W) b _).1 (ht _ (Submodule.subset_span ⟨c, rfl⟩))
+    fun c => (GlobalTheory.VolOnto.mem_colSpan_iff (W := W) b _).1 (ht _ (Submodule.subset_span ⟨c, rfl⟩))
   choose v hv using hcol
   have hta : t * a = b * (Matrix.of fun i c => v c i : Matrix (Fin k') (Fin k) W).map (algebraMap W Qq) := by
     ext i c
@@ -676,7 +662,6 @@ theorem exists_doubleIndex_box_subset_nhds_const_of_antitone {ι κ : Type} [Fin
 end Neighbourhoods
 
 end ClosureLat
-
 
 open ClosureLat in
 theorem mem_closure_iff_map_mem_homLat {E : Type} [Field E] [NumberField E] (P : HeightOneSpectrum (𝓞 E)) {W Qq : Type}
@@ -1052,14 +1037,12 @@ theorem exists_pow_smul_integral (p : ℕ) (hp : Irreducible (p : W)) {ι κ : T
   exact ⟨Finset.univ.sup f, fun m' hm' i j =>
     hf (i, j) m' (le_trans (Finset.le_sup (Finset.mem_univ (i, j))) hm')⟩
 
-
 omit [IsDomain W] [IsDiscreteValuationRing W] [IsFractionRing W Qq] in
 theorem mul_integral {ι κ μ : Type} [Fintype κ] {A : Matrix ι κ Qq} {B : Matrix κ μ Qq}
     (hA : ∀ i j, A i j ∈ (algebraMap W Qq).range) (hB : ∀ i j, B i j ∈ (algebraMap W Qq).range) :
     ∀ i j, (A * B) i j ∈ (algebraMap W Qq).range := fun i j => by
   rw [Matrix.mul_apply]
   exact Subring.sum_mem _ fun l _ => Subring.mul_mem _ (hA i l) (hB l j)
-
 
 omit [IsDomain W] [IsDiscreteValuationRing W] [IsFractionRing W Qq] in
 theorem mem_movLat_iff {N N' : ℕ} (k : GL (Fin N) Qq) (k' : GL (Fin N') Qq) (y : Matrix (Fin N') (Fin N) Qq) :

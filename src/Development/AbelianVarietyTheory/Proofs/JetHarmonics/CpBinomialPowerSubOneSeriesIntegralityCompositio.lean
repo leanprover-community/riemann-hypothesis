@@ -127,7 +127,7 @@ theorem DT_logS : DT (logS : ℂ_[q]⟦X⟧) = 1 := by
   | succ n =>
     have h3 : ((n : ℂ_[q]) + 1) ≠ 0 := by exact_mod_cast n.succ_ne_zero
     have h4 : ((n : ℂ_[q]) + 1 + 1) ≠ 0 := by exact_mod_cast (n + 1).succ_ne_zero
-    simp only [logS, coeff_mk, coeff_one, Nat.succ_ne_zero, if_false]
+    simp only [logS, coeff_mk, coeff_one, Nat.succ_ne_zero, ite_false]
     push_cast
     field_simp
     ring

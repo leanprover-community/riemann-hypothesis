@@ -43,12 +43,12 @@ theorem bdyL (Y : PSh) (n : ℕ) (T : Scheme.{0}ᵒᵖ) (x : ((((chainsP R).obj 
     (hx : Cyc ((chainsP R).obj (disc.obj Y)) (n + 1) T x) : Bdy ((chainsP R).obj (disc.obj Y)) (n + 1) T x := by
   by_cases h : Even (n + 1)
   · have h0 := hx n
-    rw [dL, altSum, if_neg (by simpa [Nat.even_add_one] using h)] at h0
+    rw [dL, altSum, ite_eq_right (by simpa [Nat.even_add_one] using h)] at h0
     simp only [one_smul] at h0
     exact ⟨0, by rw [map_zero]; exact h0.symm⟩
   · refine ⟨x, ?_⟩
     have e := dL (R := R) Y (n + 1) T x
-    rw [altSum, if_neg h] at e
+    rw [altSum, ite_eq_right h] at e
     exact e.trans (one_smul ℤ _)
 
 def imSv {K L : PCx R} (φ : K ⟶ L) (n : ℕ) {T : Scheme.{0}} (y : (L.X n).obj (op T)) : Sieve T where

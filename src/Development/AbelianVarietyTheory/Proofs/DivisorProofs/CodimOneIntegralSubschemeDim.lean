@@ -265,7 +265,7 @@ theorem dim_eq_of_coheight_eq_one : ∀ (k : Type) [CommRing k] (X : Scheme.{0})
   have hlowq : (d : WithBot ℕ∞) ≤ ringKrullDim (A ⧸ q) := by
     by_cases hv : ∀ n : ℤ, (n : A) ∈ q → n = 0
     · exact le_ringKrullDim_quotient A q (height_le_one_of_forall_le q hq0 hmin) hv hd
-    · push_neg at hv
+    · push Not at hv
       obtain ⟨n, hnq, hn0⟩ := hv
       have hP : (q.comap (algebraMap ℤ A)).IsPrime := Ideal.comap_isPrime _ _
       have hPne : q.comap (algebraMap ℤ A) ≠ ⊥ := fun h => hn0 (by

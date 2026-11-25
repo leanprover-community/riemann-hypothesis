@@ -111,7 +111,7 @@ theorem ell_embG (z : Fin (2 * ρ + k + 1) → ℂ) (y : B.Mat k ρ) :
     rw [eI_X a]
     split_ifs with h
     · obtain ⟨x, hx⟩ := (U.eB k p ρ).surjective (eI k (p + ρ) ⟨(Fin.castAdd ρ a).val + 1, h⟩)
-      rw [← hx, embG_eB_inl_inl_apply_eq_ite, if_neg]
+      rw [← hx, embG_eB_inl_inl_apply_eq_ite, ite_eq_right]
       rintro rfl
       have := congrArg Fin.val hx
       simp [U.eB, eI] at this

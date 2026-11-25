@@ -673,14 +673,14 @@ theorem om_list_prod_pure : ∀ (F E : Type) [Field F] [NumberField F] [Field E]
         φ' v = Set.indicator {x | ∀ i, x i ∈ v.adicCompletionIntegers F} 1 := by
       filter_upwards [hstd, (List.finite_toSet t).compl_mem_cofinite] with v hv1 hv2
       have hvt : v ∉ t := hv2
-      simp only [hφ', if_neg hvt]
+      simp only [hφ', ite_eq_right hvt]
       exact hv1
     have hSB' : ∀ v, φ' v ∈ GlobalTheory.WeilM.SB (Fin n × Fin d → Fv F v) := by
       intro v
       by_cases h : v ∈ t
-      · simp only [hφ', if_pos h]; exact hφ₁ v
-      · simp only [hφ', if_neg h]; exact hφ v
-    have hat : φ' a = φ a := by simp only [hφ', if_neg hl.1]
+      · simp only [hφ', ite_eq_left h]; exact hφ₁ v
+      · simp only [hφ', ite_eq_right h]; exact hφ v
+    have hat : φ' a = φ a := by simp only [hφ', ite_eq_right hl.1]
 
     obtain ⟨r, hr, htens⟩ := GlobalTheory.PureFactor.exists_rest_factor a f φ' hstd'
     have hfac : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.pure f φ' = GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.tens (GlobalTheory.AdelicU.evFin F a) (φ a) r := by
@@ -784,7 +784,7 @@ theorem side {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [A
   have hidem_at : ∀ w v (u : AF F), At (evFin F w) u → w ≠ v → u * idem F v = 0 := by
     intro w v u hu hwv
     apply mul_idem_of_evFin
-    rw [← idem_mul_of_at hu, map_mul, evFin_idem, if_neg (Ne.symm hwv), zero_mul]
+    rw [← idem_mul_of_at hu, map_mul, evFin_idem, ite_eq_right (Ne.symm hwv), zero_mul]
   have key : ∀ v ∉ S, φ₁ v = φ v := by
     intro v hv
     have hA := hφ₁Act v
@@ -827,8 +827,8 @@ theorem side {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [A
     congr 1
     funext v
     by_cases hv : v ∈ S
-    · rw [if_pos (Finset.mem_toList.2 hv)]
-    · rw [if_neg (mt Finset.mem_toList.1 hv), key v hv]
+    · rw [ite_eq_left (Finset.mem_toList.2 hv)]
+    · rw [ite_eq_right (mt Finset.mem_toList.1 hv), key v hv]
 
 end GlobalTheory.PlacePureFin
 end

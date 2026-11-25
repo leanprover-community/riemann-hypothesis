@@ -87,7 +87,7 @@ theorem RR_top (p : KB.Pl P Wp Wq) (G : B.Mat P.k P.r → (Wq →L[ℂ] Wp)) (γ
     p.RR G (P.r + 1) [] γ γ = B.hsInner (p.V G γ) (p.V G γ) := by
   have h1 : ¬ (P.r + 1 ≤ P.r) := by omega
   unfold KB.Pl.RR KB.Pl.V D.RRplace
-  rw [dite_eq_left (And.intro hγ hγ), dite_eq_right h1, if_pos rfl, if_pos rfl]
+  rw [dite_eq_left (And.intro hγ hγ), dite_eq_right h1, ite_eq_left rfl, ite_eq_left rfl]
 
 theorem Ew_nil (p : KB.Pl P Wp Wq) (nn : ℝ → ℝ) (G : B.Mat P.k P.r → (Wq →L[ℂ] Wp)) (i : ℕ) (γ : C.LPt) :
     TBB.Ew p nn G i [] γ = TBB.Ew p (fun _ => 1) G i [] γ := by

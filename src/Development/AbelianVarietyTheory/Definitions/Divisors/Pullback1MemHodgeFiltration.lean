@@ -54,7 +54,7 @@ theorem isDPNilpotent_bot (B : Type) [CommRing B] : IsNilDP (dividedPowersBot B)
   isDPNilpotent_of_sq _ (fun a ha b _ ↦ by rw [Ideal.mem_bot.1 ha, zero_mul])
     (fun n hn a _ ↦ by
       classical
-      rw [dividedPowersBot_dpow_eq, if_neg fun h' ↦ absurd h'.2 (by omega)])
+      rw [dividedPowersBot_dpow_eq, ite_eq_right fun h' ↦ absurd h'.2 (by omega)])
 
 theorem isDPMorphism_of_eq_bot (δ : DividedPowers J) (hJ : J = ⊥) (δ' : DividedPowers J')
     (f : B →+* B') : IsDPMorphism δ δ' f := by
@@ -376,7 +376,7 @@ theorem hodgeFiltration_eq_range (s : X ⟶ Sp R) : F1 s = LinearMap.range (Form
     obtain ⟨g, hg⟩ := hc
     classical
     obtain ⟨g', hg'⟩ : ∃ g' : C0 (O (dp0 R) s), ∀ (T : Thick (dp0 R) s) (hT : T.J = ⊥), g' T = g ⟨T, hT⟩ :=
-      ⟨fun T ↦ if hT : T.J = ⊥ then g ⟨T, hT⟩ else 0, fun T hT ↦ dif_pos hT⟩
+      ⟨fun T ↦ if hT : T.J = ⊥ then g ⟨T, hT⟩ else 0, fun T hT ↦ dite_eq_left hT⟩
     have key : ∀ ⦃T T' : Thick (dp0 R) s⦄ (φ : T ⟶ T') (hT : T.J = ⊥) (hT' : T'.J = ⊥),
         f.1 T T' φ = g' T' - mp (O (dp0 R) s) φ (g' T) := by
       intro T T' φ hT hT'

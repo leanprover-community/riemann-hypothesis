@@ -94,8 +94,8 @@ theorem alpha_core (hfr : IsFrame W Pt π' Eπ h' M σ c α β) (hcry : IsCrys P
     refine serMul_inv (fun i => Formalism.MainNotions.DeltaInvariantLattices.FilC (PD := PD) T τ ((k : ℤ) - i)) (FilC_mono_shift T τ _)
       (W.lev c ζ (w' ^ h' * W.Q ^ h')) h' ?_ ?_ (W.levN T c ζ ⟨_, hk⟩) m₀ hm₀ ?_ i
     · intro j hj
-      rw [eg, PowerSeries.coeff_X_pow_mul', if_neg (by omega)]
-    · rw [eg, PowerSeries.coeff_X_pow_mul', if_pos le_rfl, Nat.sub_self,
+      rw [eg, PowerSeries.coeff_X_pow_mul', ite_eq_right (by omega)]
+    · rw [eg, PowerSeries.coeff_X_pow_mul', ite_eq_left le_rfl, Nat.sub_self,
         PowerSeries.coeff_zero_eq_constantCoeff_apply, map_mul, map_pow, map_pow]
       exact mul_ne_zero (pow_ne_zero _ hw0) (pow_ne_zero _ hB0)
     · intro i''

@@ -1192,7 +1192,7 @@ theorem kernelAlong_of_trivAlong {S' : Scheme.{0}} (g : S' ⟶ S) (u₀ : Fin n)
     exact (congrArg _ h).trans (map_zero _)⟩
   have := hmon u₀
   have h := hy u₀
-  rw [if_pos rfl, h1, MonObj.one_comp] at h
+  rw [ite_eq_left rfl, h1, MonObj.one_comp] at h
   exact h.symm
 
 end Calc

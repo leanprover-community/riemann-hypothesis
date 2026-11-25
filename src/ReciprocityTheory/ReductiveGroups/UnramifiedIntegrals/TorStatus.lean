@@ -276,11 +276,11 @@ theorem chord_eval_est [CompleteSpace C] {F : MvPowerSeries (Fin 2) C} (hF : For
       rcases hcases with rfl | rfl | rfl
       · rw [MvPowerSeries.coeff_zero_eq_constantCoeff_apply, hG]
         simp [h00]
-      · rw [hG, map_sub, map_sub, h10, MvPowerSeries.coeff_X, MvPowerSeries.coeff_X, if_pos rfl,
-          if_neg hne]
+      · rw [hG, map_sub, map_sub, h10, MvPowerSeries.coeff_X, MvPowerSeries.coeff_X, ite_eq_left rfl,
+          ite_eq_right hne]
         ring
-      · rw [hG, map_sub, map_sub, h01, MvPowerSeries.coeff_X, MvPowerSeries.coeff_X, if_pos rfl,
-          if_neg hne.symm]
+      · rw [hG, map_sub, map_sub, h01, MvPowerSeries.coeff_X, MvPowerSeries.coeff_X, ite_eq_left rfl,
+          ite_eq_right hne.symm]
         ring
     rw [FormalGroupPointsHom.term, hz, zero_mul, norm_zero]
     exact pow_nonneg hr0 2

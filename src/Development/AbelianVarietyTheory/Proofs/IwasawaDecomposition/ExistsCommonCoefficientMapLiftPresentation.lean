@@ -168,7 +168,7 @@ theorem exists_oneCoef_presStd_heq : ∀ (X : Stages) (px : PreX X.B.toPre) (I :
   have hneg : X.toD7.sp.Vneg ((i : ℕ) + 1) = false := X.B.V_pos _ (by omega) i.2
   have hgr : (if X.toD7.sp.Vneg ((i : ℕ) + 1) then -(Vc X.toD7 i).gram else (Vc X.toD7 i).gram) =
       (1 : Matrix (Fin X.B.R.nV) (Fin X.B.R.nV) X.toD7.host.E).reindex (finCongr (LiftBrg.rkEq X i)) (finCongr (LiftBrg.rkEq X i)) := by
-    rw [hneg, if_neg (by simp), hgram]
+    rw [hneg, ite_eq_right (by simp), hgram]
     ext a b
     simp [Matrix.one_apply]
   have hSG : Formalism.L2.Col.DecoPtSurj X.toD7.sp.cm X.B.R.nV ∅ (LiftBrg.sgL X I U t) :=

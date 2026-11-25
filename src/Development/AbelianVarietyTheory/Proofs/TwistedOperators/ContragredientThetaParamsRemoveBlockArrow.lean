@@ -306,18 +306,18 @@ theorem partner_true_eq (t : ℕ) (c c' : ℚ) (P : SPar) : partner t true c c' 
       have ha : a - (c' - c) = z := by linarith
       rw [ha]
       by_cases hzc : z < c
-      · rw [if_pos hzc] at h2; subst h2
+      · rw [ite_eq_left hzc] at h2; subst h2
         exact Or.inr (Or.inl ⟨hzc, by simpa using hz⟩)
-      · rw [if_neg hzc] at h2; subst h2
+      · rw [ite_eq_right hzc] at h2; subst h2
         exact Or.inl ⟨not_lt.1 hzc, hz⟩
     · refine Or.inr (Or.inr ⟨?_, rfl⟩)
       try simp only
       rw [sub_mem_block, show c + (c' - c) = c' by ring]; exact hy
   · rintro (⟨h1, h2⟩ | ⟨h1, h2⟩ | ⟨h1, h2⟩)
     · try simp only at h1 h2
-      exact Or.inl ⟨(a - (c' - c), s), h2, by (try simp only); ring, by (try simp only); rw [if_neg (not_lt.2 h1)]⟩
+      exact Or.inl ⟨(a - (c' - c), s), h2, by (try simp only); ring, by (try simp only); rw [ite_eq_right (not_lt.2 h1)]⟩
     · try simp only at h1 h2
-      exact Or.inl ⟨(a - (c' - c), !s), h2, by (try simp only); ring, by (try simp only); rw [if_pos h1, Bool.not_not]⟩
+      exact Or.inl ⟨(a - (c' - c), !s), h2, by (try simp only); ring, by (try simp only); rw [ite_eq_left h1, Bool.not_not]⟩
     · try simp only at h1 h2
       rw [sub_mem_block, show c + (c' - c) = c' by ring] at h1
       exact Or.inr ⟨a, h1, rfl, h2.symm⟩
@@ -460,18 +460,18 @@ theorem removeBlock_pairPar : ∀ D : D7, GlobalTheory.IndefiniteRowSideFullHeck
     simp only [att, he, hδ]
     by_cases h : Odd (i + j)
     · have h' : Odd (rkV D i (j + 1)) := by rw [odd_rkV, show i + (j + 1) = i + j + 1 by ring, Nat.odd_add_one]; tauto
-      simp only [h, h', if_true]; ring
+      simp only [h, h', ite_true]; ring
     · have h' : ¬ Odd (rkV D i (j + 1)) := by rw [odd_rkV, show i + (j + 1) = i + j + 1 by ring, Nat.odd_add_one]; tauto
-      simp only [h, h', if_false]; ring
+      simp only [h, h', ite_false]; ring
   have hS' : att (-(D.hc τ).e ⟨j, hj⟩) (rkV D i j) = -(G.e (j + 1) : ℚ) + δ' := by
     simp only [att, he, hδ']
     by_cases h : Odd (i + j)
     · have h' : Odd (rkV D i j) ↔ False := by rw [odd_rkV]; tauto
       have h'' : Odd (i + (j + 1)) ↔ False := by rw [show i + (j + 1) = i + j + 1 by ring, Nat.odd_add_one]; tauto
-      simp only [h', h'', if_false]; ring
+      simp only [h', h'', ite_false]; ring
     · have h' : Odd (rkV D i j) := by rw [odd_rkV]; tauto
       have h'' : Odd (i + (j + 1)) := by rw [show i + (j + 1) = i + j + 1 by ring, Nat.odd_add_one]; tauto
-      simp only [h', h'', if_true]; ring
+      simp only [h', h'', ite_true]; ring
   rw [hT, hS']
   set P := shift δ (G.parD i j) with hP
   have hpart := partner_parD D τ i j hi hj δ δ'

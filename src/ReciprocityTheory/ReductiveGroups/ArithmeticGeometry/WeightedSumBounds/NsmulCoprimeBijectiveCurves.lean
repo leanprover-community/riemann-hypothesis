@@ -58,8 +58,8 @@ theorem ptNs_lin (G : LogFGL v d) : ∀ (n : ℕ) (a s : Fin d),
       (subst (Sum.elim (fun b => (X b : MvPowerSeries (Fin d) C)) (ptNs G n)) (G.F a)) = _
     rw [pt_coeff_single_subst (ptNs_hasSubst G n) h0 (G.F_const a) s, Fintype.sum_sum_type]
     simp only [pt_F_lin, Sum.elim_inl, Sum.elim_inr, pt_coeff_single_X, ptNs_lin G n,
-      Sum.inl.injEq, Sum.inr.injEq, reduceCtorEq, if_false, add_zero, zero_add,
-      ite_mul, one_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+      Sum.inl.injEq, Sum.inr.injEq, reduceCtorEq, ite_false, add_zero, zero_add,
+      ite_mul, one_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     split_ifs <;> push_cast <;> ring
 
 theorem nsmulF_eq_subst (G : LogFGL v d) {ga : Fin d → PowerSeries C}
@@ -123,7 +123,7 @@ private theorem exists_eq_single_of_degree_eq_one {σ : Type} (α : σ →₀ �
   by_cases hi : i = s
   · subst hi
     simp [hs1]
-  · rw [Finsupp.single_apply, if_neg (Ne.symm hi)]
+  · rw [Finsupp.single_apply, ite_eq_right (Ne.symm hi)]
     by_contra hne'
     have hmem : i ∈ α.support.erase s :=
       Finset.mem_erase.mpr ⟨hi, Finsupp.mem_support_iff.mpr hne'⟩

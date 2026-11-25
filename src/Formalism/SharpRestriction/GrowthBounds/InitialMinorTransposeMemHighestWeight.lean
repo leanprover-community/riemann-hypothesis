@@ -738,7 +738,7 @@ theorem binomial_basis_approximation (p : ℕ) [Fact p.Prime] :
   · intro J hJ
     by_cases h : ∑ k, J k ≤ 4 * c
     · refine ⟨h, ?_⟩
-      simp only [h, if_true] at hJ ⊢
+      simp only [h, ite_true] at hJ ⊢
       rcases asm_q_ge f hd J with h0 | h1
       · exact absurd h0 hJ
       · have h2 : (0 : ℝ) ≤ (padicValRat p (∏ k, mah (f k) (J k)) : ℝ) :=
@@ -1083,7 +1083,7 @@ theorem isWeightedHomogeneous_of_column_scaling {R : Type} [CommRing R] {m n : �
     rw [Finset.sum_eq_single d0]
     · simp
     · intro d _ hne
-      rw [if_neg]
+      rw [ite_eq_right]
       intro hE
       apply hne
       ext v

@@ -294,7 +294,7 @@ theorem exists_dual_frame (hE : Formalism.HermitianLatticesTheory.IsCMUnram E) {
 
   · simp only [map_sub, map_sum, LinearMap.sub_apply, LinearMap.sum_apply, hsmul, map_smul, h.1, hge, heg,
     smul_eq_mul, mul_zero, Finset.sum_const_zero, sub_zero, mul_ite, mul_one, Finset.sum_ite_eq,
-    Finset.sum_ite_eq', Finset.mem_univ, if_true, star_mul, hsym]
+    Finset.sum_ite_eq', Finset.mem_univ, ite_true, star_mul, hsym]
     linear_combination (-(S.hT (g a) (g b))) * ht
 
   · simp only [map_sub, map_sum, map_smul, h.1, heg, smul_eq_mul, mul_zero, Finset.sum_const_zero, sub_zero]

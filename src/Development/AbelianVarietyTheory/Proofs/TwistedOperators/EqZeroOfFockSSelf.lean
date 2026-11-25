@@ -207,7 +207,7 @@ theorem hwVec_eq_ten (n : ℕ) (lam : ι → ℕ → ℤ) (lam' : ι → DomWeig
   have hs0 := s.isLt
   split_ifs with hs
   · congr 1
-    simp only [Formalism.GradedWeylDivisibility.nuNext, DomWeight.natW, DomWeight.detShift, dif_pos hs, dif_pos (show 0 < n by omega), hl]
+    simp only [Formalism.GradedWeylDivisibility.nuNext, DomWeight.natW, DomWeight.detShift, dite_eq_left hs, dite_eq_left (show 0 < n by omega), hl]
     have a1 := (lam' τ).anti (show s ≤ (⟨s.val + 1, hs⟩ : Fin n) by simp [Fin.le_def])
     have a2 := (lam' τ).anti (show (⟨s.val + 1, hs⟩ : Fin n) ≤ ⟨n - 1, by omega⟩ by simp [Fin.le_def]; omega)
     rw [hl, hl] at a1 a2
@@ -216,7 +216,7 @@ theorem hwVec_eq_ten (n : ℕ) (lam : ι → ℕ → ℤ) (lam' : ι → DomWeig
   · have hs' : s.val = n - 1 := by omega
     have h0 : (lam' τ).natW s = 0 := by
       have e : s = ⟨n - 1, by omega⟩ := Fin.ext hs'
-      simp only [DomWeight.natW, DomWeight.detShift, dif_pos (show 0 < n by omega), e]
+      simp only [DomWeight.natW, DomWeight.detShift, dite_eq_left (show 0 < n by omega), e]
       simp
     rw [h0, Nat.zero_sub, pow_zero]
 
@@ -437,7 +437,7 @@ theorem detTwK_inv_invTrK (n : ℕ) (lam : ι → ℕ → ℤ) (lam' : ι → Do
   · subst hn
     simp
   · congr 1
-    simp only [DomWeight.detShift, dif_pos hn]
+    simp only [DomWeight.detShift, dite_eq_left hn]
     exact hl τ _
 
 end General3

@@ -176,12 +176,12 @@ theorem mk_detPt_eq_relDetQ : ∀ (R : Ranks) (H : Formalism.BasicNotions.Host R
     CharValCompare.conjP_conjP, ordSub_std, ordSub_std, ordSub_conj hN p.deco.2.uni]
   have hs := hL.split w
   by_cases h1 : w ∈ uSG SG SQ
-  · rw [if_pos h1, if_neg (hs h1), if_pos h1]
+  · rw [ite_eq_left h1, ite_eq_right (hs h1), ite_eq_left h1]
     omega
   · by_cases h2 : conjPrime₂ w ∈ uSG SG SQ
-    · rw [if_neg h1, if_pos h2, if_pos h2]
+    · rw [ite_eq_right h1, ite_eq_left h2, ite_eq_left h2]
       omega
-    · rw [if_neg h1, if_neg h2, if_neg h2, if_neg h1]
+    · rw [ite_eq_right h1, ite_eq_right h2, ite_eq_right h2, ite_eq_right h1]
       omega
 
 end GlobalTheory.Mem.Col2

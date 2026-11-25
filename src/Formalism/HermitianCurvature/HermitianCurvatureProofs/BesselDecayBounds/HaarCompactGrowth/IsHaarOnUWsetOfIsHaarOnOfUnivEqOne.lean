@@ -59,16 +59,16 @@ theorem lieNUpper : LieNUpper := by
   simp only [Matrix.add_apply, Matrix.mul_apply, Matrix.zero_apply, Matrix.conjTranspose_apply] at e
   have s1 : ∑ l, star (X l p) * Hpk k r l j = star (X b p) := by
     rw [Finset.sum_eq_single b]
-    · rw [hpk_col_f _ _ hj2, if_pos (by omega), mul_one]
+    · rw [hpk_col_f _ _ hj2, ite_eq_left (by omega), mul_one]
     · intro l _ hl
-      rw [hpk_col_f _ _ hj2, if_neg, mul_zero]
+      rw [hpk_col_f _ _ hj2, ite_eq_right, mul_zero]
       intro h; apply hl; ext; omega
     · simp
   have s2 : ∑ l, Hpk k r p l * X l j = X i j := by
     rw [Finset.sum_eq_single i]
-    · rw [hpk_row_e _ _ (by omega), if_pos (by omega), one_mul]
+    · rw [hpk_row_e _ _ (by omega), ite_eq_left (by omega), one_mul]
     · intro l _ hl
-      rw [hpk_row_e _ _ (by omega), if_neg, zero_mul]
+      rw [hpk_row_e _ _ (by omega), ite_eq_right, zero_mul]
       intro h; apply hl; ext; omega
     · simp
   have hz : X b p = 0 := hA1 ⟨p.val, by omega⟩ b (by simp only; omega)

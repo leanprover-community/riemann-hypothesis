@@ -415,9 +415,9 @@ theorem Xp_lift0_d0_comm (σ : Site A) (w : List (Letter K S)) (Y : K) (hσ : Is
         diagScalar_commute_of_entries (entry_commute_R_matrix (fun i j => (bT_free σ w hw.1 i j).symm) _)
       have s : Rh0 l.intersection_update_fsHerm_neg_one (Y - l.pt) * lift0 (Ts σ Y) * d0 (vlet σ l) =
           d0 (vlet σ l) * lift0 (Ts σ Y) * Rh0 l.intersection_update_fsHerm_neg_one (Y - l.pt) := by
-        unfold vlet; rw [if_pos hl]
+        unfold vlet; rw [ite_eq_left hl]
         exact rtt_relation _ _ _ _ (rel_plus hσ Y l.pt)
-      simp only [Xp, bT, if_pos hl, diagScalar_mul]
+      simp only [Xp, bT, ite_eq_left hl, diagScalar_mul]
       calc Xp w Y * Rh0 l.intersection_update_fsHerm_neg_one (Y - l.pt) * lift0 (Ts σ Y) * (d0 (vlet σ l) * d0 (bT σ w))
           = Xp w Y * (Rh0 l.intersection_update_fsHerm_neg_one (Y - l.pt) * lift0 (Ts σ Y) * d0 (vlet σ l)) * d0 (bT σ w) := by
             simp only [mul_assoc]
@@ -428,9 +428,9 @@ theorem Xp_lift0_d0_comm (σ : Site A) (w : List (Letter K S)) (Y : K) (hσ : Is
         _ = _ := by rw [ih]; simp only [mul_assoc]
     · have c3 : d0 (vlet σ l) * lift0 (Ts σ Y) = lift0 (Ts σ Y) * d0 (vlet σ l) := by
         refine diagScalar_commute_of_entries (EC_lift0 fun i j => ?_)
-        unfold vlet; rw [if_neg hl]
+        unfold vlet; rw [ite_eq_right hl]
         exact (ins_comm _ _ _ (io_free _ _) fun r s => io_comm (hol_star hσ Y l.pt i j r s)).symm
-      simp only [Xp, bT, if_neg hl, diagScalar_mul]
+      simp only [Xp, bT, ite_eq_right hl, diagScalar_mul]
       calc Xp w Y * lift0 (Ts σ Y) * (d0 (vlet σ l) * d0 (bT σ w))
           = Xp w Y * (lift0 (Ts σ Y) * d0 (vlet σ l)) * d0 (bT σ w) := by simp only [mul_assoc]
         _ = (Xp w Y * d0 (vlet σ l)) * lift0 (Ts σ Y) * d0 (bT σ w) := by
@@ -459,10 +459,10 @@ theorem exch2 (σ : Site A) (w : List (Letter K S)) (Y : K) (hσ : IsSite σ)
     by_cases hl : l.plus
     · have c3 : d0 (vlet σ l) * lift0 (Ts σ Y)ᴴ = lift0 (Ts σ Y)ᴴ * d0 (vlet σ l) := by
         refine diagScalar_commute_of_entries (EC_lift0 fun i j => ?_)
-        unfold vlet; rw [if_pos hl]
+        unfold vlet; rw [ite_eq_left hl]
         exact (ins_comm _ _ _ (io_free _ _) fun r s =>
           io_comm (hol_star hσ l.pt Y r s j i).symm).symm
-      simp only [Xm, bT, if_pos hl, diagScalar_mul]
+      simp only [Xm, bT, ite_eq_left hl, diagScalar_mul]
       calc lift0 (Ts σ Y)ᴴ * Xm w Y * (d0 (vlet σ l) * d0 (bT σ w))
           = lift0 (Ts σ Y)ᴴ * (Xm w Y * d0 (vlet σ l)) * d0 (bT σ w) := by simp only [mul_assoc]
         _ = (lift0 (Ts σ Y)ᴴ * d0 (vlet σ l)) * Xm w Y * d0 (bT σ w) := by
@@ -474,9 +474,9 @@ theorem exch2 (σ : Site A) (w : List (Letter K S)) (Y : K) (hσ : IsSite σ)
         diagScalar_commute_of_entries (entry_commute_transposed_R_matrix (fun i j => (bT_free σ w hw.1 i j).symm) _)
       have s : lift0 (Ts σ Y)ᴴ * Rht0 l.intersection_update_fsHerm_neg_one (l.pt - Y) * d0 (vlet σ l) =
           d0 (vlet σ l) * Rht0 l.intersection_update_fsHerm_neg_one (l.pt - Y) * lift0 (Ts σ Y)ᴴ := by
-        unfold vlet; rw [if_neg hl]
+        unfold vlet; rw [ite_eq_right hl]
         exact rtt_relation_transpose _ _ _ _ (rel_minus hσ hY (hr l List.mem_cons_self))
-      simp only [Xm, bT, if_neg hl, diagScalar_mul]
+      simp only [Xm, bT, ite_eq_right hl, diagScalar_mul]
       calc lift0 (Ts σ Y)ᴴ * (Rht0 l.intersection_update_fsHerm_neg_one (l.pt - Y) * Xm w Y) * (d0 (vlet σ l) * d0 (bT σ w))
           = lift0 (Ts σ Y)ᴴ * Rht0 l.intersection_update_fsHerm_neg_one (l.pt - Y) * (Xm w Y * d0 (vlet σ l)) * d0 (bT σ w) := by
             simp only [mul_assoc]

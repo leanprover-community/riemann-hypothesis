@@ -94,7 +94,7 @@ theorem iso_spanTo (g : Fin (r + 1) → S.V) (c : E)
   rintro _ ⟨a, ha, rfl⟩ _ ⟨b, hb, rfl⟩
   have ha' : (a : ℕ) < r := ha
   have hne : a ≠ Fin.last r := fun e => by subst e; simp at ha'
-  rw [hg, if_neg (fun hc => hne hc.1)]
+  rw [hg, ite_eq_right (fun hc => hne hc.1)]
 
 theorem mem_span_frame (g : Fin (r + 1) → S.V) (n : S.GLV) (hn : n ∈ S.Nof g) (j : Fin r)
     (x : S.V) (hx : x ∈ S.spanTo g (j + 1)) :

@@ -135,7 +135,7 @@ theorem gmLaw_chars_mul : ∀ (R : Type) [CommRing R] (r : ℕ), (∃ Gl : FGLaw
     ring
   · classical
     funext j
-    simp only [dl, map_add (f := _), coeff_one, coeff_X, Finsupp.single_eq_zero, one_ne_zero, if_false, zero_add,
+    simp only [dl, map_add (f := _), coeff_one, coeff_X, Finsupp.single_eq_zero, one_ne_zero, ite_false, zero_add,
       Finsupp.single_left_inj (one_ne_zero : (1 : ℕ) ≠ 0), Prod.mk.injEq, true_and, Pi.single_apply]
 
 end GlobalTheory.ChF

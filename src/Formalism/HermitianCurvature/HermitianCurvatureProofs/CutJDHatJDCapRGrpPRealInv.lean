@@ -64,10 +64,10 @@ theorem ri_ginv (v : Fin (2 * r + k + 1) → ℂ) (p : Fin (2 * r + k + 1)) :
 theorem ri_colR (z : Fin (2 * r + k + 1) → ℂ) (J : Fin (r + k) → Fin (2 * r + k + 1)) (q p : Fin (2 * r + k + 1)) :
     U.IsPolyDeg 1 (fun g => colR k r z g J q p) := by
   by_cases h1 : (q : ℕ) < r
-  · simp only [colR, dif_pos h1]
+  · simp only [colR, dite_eq_left h1]
     exact ri_ginv _ p
   · by_cases h2 : (q : ℕ) = r
-    · simp only [colR, dif_neg h1, dif_pos h2]
+    · simp only [colR, dite_eq_right h1, dite_eq_left h2]
       exact ri_ginv z p
     · refine ⟨MvPolynomial.C (colR k r z 0 J q p), by simp, fun g => ?_⟩
       simp [colR, h1, h2]

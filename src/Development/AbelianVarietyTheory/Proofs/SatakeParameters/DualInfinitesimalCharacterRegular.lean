@@ -173,7 +173,7 @@ theorem exists_highest [Nontrivial V] (n : ℕ) (F : Fin n → Fin n → Module.
   · rw [hF]; simp
   · have h1 := hc i j i
     have h2 := hc j j i
-    simp only [hij.ne, if_false, if_true] at h1 h2
+    simp only [hij.ne, ite_false, ite_true] at h1 h2
     rw [sub_mul, mul_sub]
     linear_combination (norm := module) h1 - h2
   · simp [hν, sub_smul]
@@ -592,7 +592,7 @@ theorem commute_dmat (Ξ : AlgRep E a) (Z : Matrix (Fin Ξ.d) (Fin Ξ.d) ℂ)
       conv_lhs => rw [← Finset.univ_sum_single x]
       refine Finset.sum_congr rfl fun w _ => ?_
       unfold atEmb
-      rw [if_pos (by rw [InfinitePlace.mk_embedding])]
+      rw [ite_eq_left (by rw [InfinitePlace.mk_embedding])]
       congr 1 <;> simp
 
     rw [e, map_sum]

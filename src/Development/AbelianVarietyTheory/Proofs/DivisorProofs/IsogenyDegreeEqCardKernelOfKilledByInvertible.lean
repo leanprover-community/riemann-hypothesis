@@ -134,7 +134,7 @@ theorem deg_eq_card_ker (K : Type) [Field K] (A B : AbVar K) (f : A ⟶ B) (n : 
     congr 1
     exact Subsingleton.elim _ _
   rw [horig] at hcard
-  rw [deg, if_pos hiso, ← hcard]
+  rw [deg, ite_eq_left hiso, ← hcard]
   symm
   refine Nat.card_congr ?_
   exact

@@ -102,7 +102,7 @@ theorem casK_re (hU : IsInfUnitary ε E) (x : M) :
         have h := inner_sum_re (fun a b => E a b * E b a) (fun a => univ.filter (fun b => ε b = ε a)) x
         rw [h]
         refine sum_congr rfl fun a _ => sum_congr rfl fun b hb => ?_
-        rw [term hU, if_pos (mem_filter.mp hb).2.symm, one_mul]
+        rw [term hU, ite_eq_left (mem_filter.mp hb).2.symm, one_mul]
     _ = _ := swap_eq (fun a b => ‖E a b x‖ ^ 2)
 
 theorem cas_re (hU : IsInfUnitary ε E) (x : M) :
@@ -122,9 +122,9 @@ theorem diff_re (hU : IsInfUnitary ε E) (x : M) :
     intro a
     rw [← sum_filter_add_sum_filter_not univ (fun b => ε b = ε a), sub_eq_add_neg, ← sum_neg_distrib]
     congr 1
-    · exact sum_congr rfl fun b hb => by rw [if_pos (mem_filter.mp hb).2.symm, one_mul]
+    · exact sum_congr rfl fun b hb => by rw [ite_eq_left (mem_filter.mp hb).2.symm, one_mul]
     · exact sum_congr rfl fun b hb => by
-        rw [if_neg (fun h => (mem_filter.mp hb).2 h.symm)]
+        rw [ite_eq_right (fun h => (mem_filter.mp hb).2 h.symm)]
         ring
   rw [sum_congr rfl fun a _ => hsplit a, sum_sub_distrib]
   have e1 := swap_eq (ε := ε) (fun a b => ‖E a b x‖ ^ 2)
@@ -278,7 +278,7 @@ theorem casimir_adjoint_holds : CasAd := by
   simp only [actM, casimir, ent, Finset.sum_mul, Finset.mul_sum, smul_mul_smul_comm]
   refine (reorder (fun a b c d e f => (g c a * g⁻¹ b d * (g e b * g⁻¹ a f)) • (E c d * E e f))).trans ?_
   simp only [← Finset.sum_smul, key, Matrix.one_apply, ite_mul, one_mul, zero_mul, ite_smul,
-    one_smul, zero_smul, Finset.sum_ite_eq, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    one_smul, zero_smul, Finset.sum_ite_eq, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
 end PositivityTheory.RgHe3 -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -652,7 +652,7 @@ theorem main (hSq : SqId) (hK : KIrrEx) (hD : Drop) (hE : IsGlRep E) (hU : IsInf
       push_cast at this
       linarith
     · unfold NoDown at hND
-      push_neg at hND
+      push Not at hND
       obtain ⟨a, b, hab, _, v, hv, hvHW, hv0⟩ := hND
       apply ih (by omega) (L' - root a b) v
         (layer_le_of_stable hVN (fun c d u hu => hN c d u hu) 1 hv) hv0
@@ -1070,7 +1070,7 @@ theorem matrix_bound_holds : MatBd := by
   have hsplit : actM E Y v - (∑ c : Fin n, Y c c * (Λ c : ℂ)) • v
       = ∑ a : Fin n, ∑ b : Fin n, Y a b • (E a b v - if a = b then (Λ a : ℂ) • v else 0) := by
     simp only [actM, LinearMap.sum_apply, LinearMap.smul_apply, smul_sub,
-      Finset.sum_sub_distrib, smul_ite, smul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true,
+      Finset.sum_sub_distrib, smul_ite, smul_zero, Finset.sum_ite_eq, Finset.mem_univ, ite_true,
       Finset.sum_smul, mul_smul]
   rw [hsplit]
   have hb : ∀ a b : Fin n, ‖Y a b • (E a b v - if a = b then (Λ a : ℂ) • v else 0)‖
@@ -1082,7 +1082,7 @@ theorem matrix_bound_holds : MatBd := by
     · subst hab
       simp [hv a]
       positivity
-    · simp only [hab, if_false, sub_zero]
+    · simp only [hab, ite_false, sub_zero]
       exact hoff a b hab
   calc _ ≤ ∑ a : Fin n, ‖∑ b : Fin n, Y a b • (E a b v - if a = b then (Λ a : ℂ) • v else 0)‖ :=
         norm_sum_le _ _
@@ -1158,14 +1158,14 @@ theorem pt {ν μ : Fin n → ℝ} {y : M} (hwt : IsWt E ν y) (a b : Fin n) :
       ‖E a b y‖ ^ 2 + if a = b then ((ν a - μ a) ^ 2 - ν a ^ 2) * ‖y‖ ^ 2 else 0 := by
   by_cases h : a = b
   · subst h
-    rw [if_pos rfl, if_pos rfl, hwt a, ← sub_smul, ← Complex.ofReal_sub, norm_smul_sq, norm_smul_sq]
+    rw [ite_eq_left rfl, ite_eq_left rfl, hwt a, ← sub_smul, ← Complex.ofReal_sub, norm_smul_sq, norm_smul_sq]
     ring
-  · rw [if_neg h, if_neg h, zero_smul, sub_zero, add_zero]
+  · rw [ite_eq_right h, ite_eq_right h, zero_smul, sub_zero, add_zero]
 
 theorem qf_eq {ν μ : Fin n → ℝ} {y : M} (hwt : IsWt E ν y) :
     qf E μ y = ∑ a, ∑ b, ‖E a b y‖ ^ 2 + (nsq (ν - μ) - nsq ν) * ‖y‖ ^ 2 := by
   unfold qf
-  simp only [pt hwt, sum_add_distrib, sum_ite_eq, mem_univ, if_true]
+  simp only [pt hwt, sum_add_distrib, sum_ite_eq, mem_univ, ite_true]
   congr 1
   simp only [nsq, dot, Pi.sub_apply, ← sum_sub_distrib, sum_mul]
   exact sum_congr rfl fun a _ => by ring
@@ -1303,7 +1303,7 @@ theorem pot_root {a b : Fin n} (hab : a ≠ b) (ω : Fin n → ℝ) :
     pot (fun c => ω c + (if c = a then 1 else 0) - (if c = b then 1 else 0)) = pot ω + (a : ℕ) - (b : ℕ) := by
   unfold pot
   simp only [mul_sub, mul_add, Finset.sum_sub_distrib, Finset.sum_add_distrib, mul_ite, mul_one, mul_zero,
-    Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    Finset.sum_ite_eq', Finset.mem_univ, ite_true]
 
 theorem pot_lower {ω : Fin n → ℝ} {κ : ℝ} (h : nsq ω ≤ κ) : -((n : ℝ) ^ 2 * (1 + |κ|)) ≤ pot ω := by
   unfold pot
@@ -1331,7 +1331,7 @@ theorem pot_lower {ω : Fin n → ℝ} {κ : ℝ} (h : nsq ω ≤ κ) : -((n : �
 theorem dot_root_nonneg {μ : Fin n → ℝ} (hμ : Antitone μ) {a b : Fin n} (hab : a < b) :
     0 ≤ dot (fun c => (if c = a then (1 : ℝ) else 0) - (if c = b then 1 else 0)) μ := by
   unfold dot
-  simp only [sub_mul, ite_mul, one_mul, zero_mul, Finset.sum_sub_distrib, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+  simp only [sub_mul, ite_mul, one_mul, zero_mul, Finset.sum_sub_distrib, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   linarith [hμ hab.le]
 
 theorem main (hS : SqId) {ε : Fin n → Bool} {E : Fin n → Fin n → Module.End ℂ M} (hE : IsGlRep E)
@@ -1347,7 +1347,7 @@ theorem main (hS : SqId) {ε : Fin n → Bool} {E : Fin n → Fin n → Module.E
     intro w ω hwN hwF hw0 hwt hc hd hm
     by_cases hhw : ∀ a b, a < b → ε a = ε b → E a b w = 0
     · exact ⟨w, hwN, ω, hwF, hw0, ⟨hwt, hhw⟩, hc, hd⟩
-    · push_neg at hhw
+    · push Not at hhw
       obtain ⟨a, b, hab, hε, hne⟩ := hhw
       exfalso
       set ω' : Fin n → ℝ := fun c => ω c + (if c = a then 1 else 0) - (if c = b then 1 else 0)
@@ -1365,7 +1365,7 @@ theorem main (hS : SqId) {ε : Fin n → Bool} {E : Fin n → Fin n → Module.E
     intro w ω hwN hwF hw0 hwt hc hd hm
     by_cases hhw : ∀ a b, a < b → ε a = ε b → E a b w = 0
     · exact ⟨w, hwN, ω, hwF, hw0, ⟨hwt, hhw⟩, hc, hd⟩
-    · push_neg at hhw
+    · push Not at hhw
       obtain ⟨a, b, hab, hε, hne⟩ := hhw
       set ω' : Fin n → ℝ := fun c => ω c + (if c = a then 1 else 0) - (if c = b then 1 else 0) with hω'
       have hwt' : IsWt E ω' (E a b w) := fun c => kUnit_weight_shift hE hwt hab.ne c

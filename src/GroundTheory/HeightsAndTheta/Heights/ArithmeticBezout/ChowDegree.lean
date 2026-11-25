@@ -45,7 +45,7 @@ theorem component_ne_zero_of_mem {p : MvPolynomial σ R} {a : ℕ} (ha : a ∈ w
   obtain ⟨d, hd, rfl⟩ := mem_weightSet.mp ha
   intro h
   have := congrArg (AddMonoidAlgebra.coeff · d) h
-  rw [coeff_weightedHomogeneousComponent, if_pos rfl] at this
+  rw [coeff_weightedHomogeneousComponent, ite_eq_left rfl] at this
   change p.coeff d = 0 at this
   exact mem_support_iff.mp hd this
 
@@ -68,9 +68,9 @@ theorem component_mul_of_unique (p q : MvPolynomial σ R) (a b : ℕ)
       (weightedHomogeneousComponent_isWeightedHomogeneous (w := w) b' q)
     by_cases hs : a' + b' = a + b
     · obtain ⟨rfl, rfl⟩ := h a' ha' b' hb' hs
-      rw [if_pos ⟨rfl, rfl⟩, hh.weightedHomogeneousComponent_same]
+      rw [ite_eq_left ⟨rfl, rfl⟩, hh.weightedHomogeneousComponent_same]
     · rw [hh.weightedHomogeneousComponent_ne _ (Ne.symm hs)]
-      rw [if_neg]
+      rw [ite_eq_right]
       rintro ⟨rfl, rfl⟩
       exact hs rfl
 
@@ -80,13 +80,13 @@ theorem component_mul_of_unique (p q : MvPolynomial σ R) (a b : ℕ)
   · by_cases hb : b ∈ weightSet w q
     · rw [Finset.sum_eq_single a]
       · rw [Finset.sum_eq_single b]
-        · rw [if_pos ⟨rfl, rfl⟩]
+        · rw [ite_eq_left ⟨rfl, rfl⟩]
         · intro b' _ hb'
-          rw [if_neg fun h => hb' h.2]
+          rw [ite_eq_right fun h => hb' h.2]
         · intro hb'
           exact absurd hb hb'
       · intro a' _ ha'
-        exact Finset.sum_eq_zero fun b' _ => if_neg fun h => ha' h.1
+        exact Finset.sum_eq_zero fun b' _ => ite_eq_right fun h => ha' h.1
       · intro ha'
         exact absurd ha ha'
     · have : weightedHomogeneousComponent w b q = 0 := by
@@ -167,8 +167,8 @@ theorem weight_groupWeight_apply (d : Fin k × Fin n →₀ ℕ) (i : Fin k) :
   refine Finset.sum_congr rfl fun ij _ => ?_
   simp only [groupWeight, inGroup, Pi.smul_apply, smul_eq_mul, Pi.single_apply]
   by_cases h : ij.1 = i
-  · rw [if_pos h.symm, if_pos h]
-  · rw [if_neg (Ne.symm h), if_neg h]
+  · rw [ite_eq_left h.symm, ite_eq_left h]
+  · rw [ite_eq_right (Ne.symm h), ite_eq_right h]
 
 variable {R : Type*} [CommRing R]
 
@@ -207,8 +207,8 @@ theorem IsChowForm.degrees_eq {I : Ideal (MvPolynomial (Fin n) F)} {g : MvPolyno
       (fun x => ?_) (ha i)
     simp only [inGroup, Prod.map_fst]
     by_cases h : x.1 = i
-    · rw [if_pos h, if_pos (by rw [h, Equiv.swap_apply_left])]
-    · rw [if_neg h, if_neg]
+    · rw [ite_eq_left h, ite_eq_left (by rw [h, Equiv.swap_apply_left])]
+    · rw [ite_eq_right h, ite_eq_right]
       intro h'
       apply h
       have := congrArg (Equiv.swap i j) h'

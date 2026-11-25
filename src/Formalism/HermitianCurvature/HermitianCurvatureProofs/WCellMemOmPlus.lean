@@ -46,9 +46,9 @@ lemma μE_one (i j : ℕ) : PI.QnWCellW.μE (1 : Matrix (Fin (k + 1)) (Fin (k + 
     if i < k + 1 ∧ j < k + 1 ∧ i = j then 1 else 0 := by
   unfold PI.QnWCellW.μE
   by_cases h : i < k + 1 ∧ j < k + 1
-  · rw [dif_pos h, Matrix.one_apply]
+  · rw [dite_eq_left h, Matrix.one_apply]
     by_cases hij : i = j <;> simp [h, hij, Fin.ext_iff]
-  · rw [dif_neg h, if_neg (by tauto)]
+  · rw [dite_eq_right h, ite_eq_right (by tauto)]
 
 theorem wCell_last_eq (c : Fin r → ℂ) : wCell k r (Fin.last r) c = bigCell k r c 1 := by
   rw [PI.QnWCellW.wCell_last]
@@ -106,20 +106,20 @@ theorem wCell_mem_omPlus {z z' : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z) 
     ext a b
     simp only [Zhat]
     by_cases hb : b.val < r
-    · simp only [fvec, dif_pos hb, ← mulVec_mulVec, (hg.2 ⟨b.val, hb⟩ (by simpa using hb)).1]
-    · simp only [fvec, dif_neg hb, mulVec_mulVec]
+    · simp only [fvec, dite_eq_left hb, ← mulVec_mulVec, (hg.2 ⟨b.val, hb⟩ (by simpa using hb)).1]
+    · simp only [fvec, dite_eq_right hb, mulVec_mulVec]
   have hD := fun l => Formalism.QuantumDeterminants.BruhatBigCell.dmin_diag z z' _ _ hZ l
   have h0 : Dmin k r z z' (wCell k r (Fin.last r) c * g) ⟨r, by omega⟩ = ∏ a : Fin r, c a := by
     rw [hD]
     refine Finset.prod_congr rfl fun a _ => ?_
-    simp only [Fin.val_castLE, a.isLt, dif_pos]
+    simp only [Fin.val_castLE, a.isLt, dite_eq_left]
   have h1 : Dmin k r z z' (wCell k r (Fin.last r) c * g) (Fin.last (r + 1)) =
       (∏ a : Fin r, c a) * zetaL k r z z' (Fin.last r) g := by
     rw [hD]
     refine (Fin.prod_univ_castSucc _).trans ?_
     congr 1
     · refine Finset.prod_congr rfl fun a _ => ?_
-      simp only [Fin.val_castLE, Fin.val_castSucc, a.isLt, dif_pos]
+      simp only [Fin.val_castLE, Fin.val_castSucc, a.isLt, dite_eq_left]
     · simp
   have hP : (∏ a : Fin r, c a) ≠ 0 := Finset.prod_ne_zero_iff.mpr fun a _ => hc a
   refine ⟨fun l hl => ?_, ?_⟩
@@ -129,7 +129,7 @@ theorem wCell_mem_omPlus {z z' : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z) 
       have := i.isLt
       simp only [Fin.val_castLE]
       omega
-    simp only [dif_pos hi]
+    simp only [dite_eq_left hi]
     exact hc _
   · unfold Gf
     rw [h1, h0, Complex.normSq_mul]

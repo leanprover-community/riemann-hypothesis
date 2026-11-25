@@ -189,17 +189,4 @@ theorem unrAE {L : Type} [Field L] [NumberField L] : UnrAE L := by
 
 theorem unrAe {L : Type} [Field L] [NumberField L] (χ : HChar L) : ∀ᶠ v in cofinite, χ.UnrAt v := (unrAE (L := L) χ.1 χ.2.1).mono fun v hv x hx => hv x hx
 
-section UnitsTriv
-
-variable {L : Type} [Field L] [NumberField L]
-
-
-end UnitsTriv
-
-section UnitsTrivPf
-
-variable {L : Type} [Field L] [NumberField L]
-
-end UnitsTrivPf
-
 end Formalism.L2.Fam.IdTrans

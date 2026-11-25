@@ -72,7 +72,7 @@ theorem UpperTheory.Gal.productCup_of_system.zEx_of :
       have h1 := (Submodule.mem_pi.1 hC) (uni (img (dj j)) ∅) (Set.mem_univ _)
       have hcard : (uni (img (dj j)) (∅ : Finset κ)).card = d := by
         rw [← img_trans_inlE, img_card]
-      rw [hcard, if_pos rfl] at h1
+      rw [hcard, ite_eq_left rfl] at h1
       exact h1
     · have h2 := fun s => (hActsLin F K d x hcov τ htop a).2.1 _ 0 s hA
       simp only [mul_zero] at h2

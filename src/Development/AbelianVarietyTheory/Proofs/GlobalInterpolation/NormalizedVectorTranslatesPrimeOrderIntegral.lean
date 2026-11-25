@@ -922,11 +922,11 @@ theorem mahler_mul_of_disjoint_support :
         funext p
         by_cases hS : p ∈ S
         · have hT : p ∉ T := Finset.disjoint_left.mp hST hS
-          simp only [hS, hT, if_true, if_false, Nat.sub_self]
+          simp only [hS, hT, ite_true, ite_false, Nat.sub_self]
         · by_cases hT : p ∈ T
-          · simp only [hS, hT, if_true, if_false, Nat.sub_zero]
+          · simp only [hS, hT, ite_true, ite_false, Nat.sub_zero]
           · have h0 : N p = 0 := hN p (by simp [hS, hT])
-            simp only [hS, hT, if_false, h0, Nat.sub_zero]
+            simp only [hS, hT, ite_false, h0, Nat.sub_zero]
       exact congrArg (fun g => GlobalTheory.MomN.mahler u F (fun p => if p ∈ S then N p else 0) *
         GlobalTheory.MomN.mahler u H g) hfun
     · intro k hk hne
@@ -942,9 +942,9 @@ theorem mahler_mul_of_disjoint_support :
         have : N p - k p = 0 := by
           by_contra h
           exact h2 (hHT _ ⟨p, hT, h⟩)
-        simp only [hS, if_true]
+        simp only [hS, ite_true]
         omega
-      · simp only [hS, if_false]
+      · simp only [hS, ite_false]
         by_contra h
         exact h1 (hFS _ ⟨p, hS, h⟩)
     · intro h
@@ -1020,7 +1020,7 @@ theorem mahler_embed : ∀ (V : Type) [NormedAddCommGroup V] [NormedSpace ℂ V]
     rw [MvPolynomial.mem_support_iff, MvPolynomial.coeff_X_mul'] at hm
     have hpm : p ∈ m.support := by
       by_contra h
-      exact hm (if_neg h)
+      exact hm (ite_eq_right h)
     have hmem : p ∈ m.toMultiset.toList := by
       rw [Multiset.mem_toList]
       simpa using hpm

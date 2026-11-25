@@ -82,18 +82,18 @@ theorem minorIJ_shear {C : Finset (Fin N)} {ca cb : Fin N} (t : ℂ) (h : cb ∉
     simp [Matrix.add_apply, hx]
   have h1 := CPts.minorIJ_one (R := ℂ) C
   unfold minorIJ at h1 ⊢
-  rw [dif_pos rfl] at h1 ⊢
+  rw [dite_eq_left rfl] at h1 ⊢
   rw [e, h1]
 
 theorem cb_notMem {a ca cb : Fin N} (hca : (ca : ℕ) = lastCol N j a) (hcb : (cb : ℕ) = ca + 1) :
     cb ∉ stepCols N j a := by
   simp only [stepCols, Finset.mem_filter, Finset.mem_univ, true_and]
   by_cases h : (a : ℕ) + 1 ≤ j
-  · simp only [lastCol, if_pos h] at hca
-    rw [if_pos h]
+  · simp only [lastCol, ite_eq_left h] at hca
+    rw [ite_eq_left h]
     omega
-  · simp only [lastCol, if_neg h] at hca
-    rw [if_neg h]
+  · simp only [lastCol, ite_eq_right h] at hca
+    rw [ite_eq_right h]
     omega
 
 end Minors
@@ -156,9 +156,9 @@ theorem main : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι 
     rcases o with _ | k
     · exact one_ne_zero
     · by_cases h : ∀ p, M.blk p ≠ some k
-      · simp only [c, Option.elim_some, dif_pos h]
+      · simp only [c, Option.elim_some, dite_eq_left h]
         exact hc₀ _
-      · simp only [c, Option.elim_some, dif_neg h]
+      · simp only [c, Option.elim_some, dite_eq_right h]
         exact one_ne_zero
   let z' : (Σ o : Option K, ι (o.getD k₀)) → ℂ := fun p => c p.1 * z p
   have hz' : z' ∈ mcPts (wP M τ a k₀ ca cb) := mcPts_smul hW.2.1.2.1 c hc hz
@@ -167,7 +167,7 @@ theorem main : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι 
     funext q
     obtain ⟨⟨k, hk⟩, m⟩ := q
     show c (some k) * z ⟨some k, m⟩ = c₀ ⟨k, hk⟩ * z ⟨some k, m⟩
-    simp only [c, Option.elim_some, dif_pos hk]
+    simp only [c, Option.elim_some, dite_eq_left hk]
   have hbp2 : basePart M.blk (sndPt k₀ z') = zc := by
     rw [← hbp]
     funext q
@@ -186,7 +186,7 @@ theorem main : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι 
     obtain ⟨A, hA0, hA'⟩ := H1.2.2 p k hp
     have hk : c (some k) = 1 := by
       simp only [c, Option.elim_some]
-      exact dif_neg fun e => e p hp
+      exact dite_eq_right fun e => e p hp
     have hw : ∀ m : ι k, fstPt k₀ z ⟨k, m⟩ =
         A * ∑ I, valAt M.x (F.u ⟨k, m⟩ I) (baseOf M k₀ z) * minorIJ (h p.1) I (stepCols N j p.2) := fun m => by
       have e : fstPt k₀ z' ⟨k, m⟩ = fstPt k₀ z ⟨k, m⟩ := by

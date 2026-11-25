@@ -35,9 +35,9 @@ theorem skip_succAbove {m : ℕ} (σ : ℕ → Γ) (i : Fin (m + 2)) (l : Fin (m
     skip (i : ℕ) σ (l : ℕ) = σ ((i.succAbove l : Fin (m + 2)) : ℕ) := by
   rw [skip]
   rcases lt_or_ge (l : ℕ) (i : ℕ) with hl | hl
-  · rw [if_pos hl, Fin.succAbove_of_castSucc_lt _ _ (by simpa [Fin.lt_def] using hl)]
+  · rw [ite_eq_left hl, Fin.succAbove_of_castSucc_lt _ _ (by simpa [Fin.lt_def] using hl)]
     simp
-  · rw [if_neg (not_lt.mpr hl), Fin.succAbove_of_le_castSucc _ _ (by simpa [Fin.le_def] using hl)]
+  · rw [ite_eq_right (not_lt.mpr hl), Fin.succAbove_of_le_castSucc _ _ (by simpa [Fin.le_def] using hl)]
     simp
 
 variable (U : Set V) (A : Γ →* (V →L[ℝ] V)) (φ : V → ℝ)

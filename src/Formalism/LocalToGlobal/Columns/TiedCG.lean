@@ -103,14 +103,6 @@ structure TilAd {u : D.what₂.Word} {A : AtTTied u} {K : ClsPTied u} {P : LvTie
 
 end XP
 
-section All
-
-variable {D : ColRec}
-
-
-
-end All
-
 end Formalism.L2.Col.CF
 
 end

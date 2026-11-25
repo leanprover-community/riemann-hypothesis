@@ -107,7 +107,7 @@ theorem eq_of_le {m : ℕ} (col : Fin m → ℕ) (top : Fin n) (htop : (top : �
       · obtain ⟨q, hqc, hqb⟩ := hb.2 q0 (I p) hlt
         exact ⟨q, hqc.trans hq0c, hqb⟩
       · exact ⟨q0, hq0c, heq'⟩
-    · push_neg at hb0
+    · push Not at hb0
       exfalso
       have hB : (Finset.univ.filter fun q => col q = col p).card ≤ (Finset.Ioi (I p)).card := by
         apply Finset.card_le_card_of_injOn b

@@ -21,11 +21,6 @@ variable {V F : Type} [CommRing V] [IsDomain V] [IsDiscreteValuationRing V] [Fie
   [IsFractionRing V F]
 
 
-theorem exists_clear_col {n : ℕ} (A : Matrix (Fin (n + 1)) (Fin (n + 1)) F) (hA : A.det ≠ 0) :
-    ∃ Q : Matrix (Fin (n + 1)) (Fin (n + 1)) V, IsUnit Q.det ∧
-      ∀ i : Fin n, (Q.map (algebraMap V F) * A) i.succ 0 = 0 := by
-  exact GlobalTheory.ValIwasawa.exists_clear_col (V := V) A hA
-
 theorem iwasawa : ∀ {n : ℕ} (A : Matrix (Fin n) (Fin n) F), A.det ≠ 0 →
     ∃ (k : Matrix (Fin n) (Fin n) V) (U : Matrix (Fin n) (Fin n) F), IsUnit k.det ∧ U.BlockTriangular id ∧
       (∀ i, U i i ≠ 0) ∧ A = k.map (algebraMap V F) * U :=

@@ -34,8 +34,8 @@ lemma LFocks_rowMat_conjTranspose {r n : ℕ} (g : Matrix (Fin r) (Fin r) ℂ) :
   ext v w
   simp only [Matrix.conjTranspose_apply, LFocks_rowMat]
   by_cases h : v.2 = w.2
-  · rw [if_pos h.symm, if_pos h]
-  · rw [if_neg (Ne.symm h), if_neg h, star_zero]
+  · rw [ite_eq_left h.symm, ite_eq_left h]
+  · rw [ite_eq_right (Ne.symm h), ite_eq_right h, star_zero]
 
 theorem fischerInnerRowActionAdjoint : FockRowAdj := by
   intro r n g f h

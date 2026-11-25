@@ -667,7 +667,7 @@ theorem UpperTheory.ConvolutionTheory.RankTwoDescent.momKill :
             C * ((1 + ‖infPartPi (p y)‖) ^ n)⁻¹ := by
           rw [le_mul_inv_iff₀ hpos]
           exact h1
-        simp only [norm_mul, Complex.norm_real, wt, hy, if_true, Set.indicator_of_mem, Pi.one_apply,
+        simp only [norm_mul, Complex.norm_real, wt, hy, ite_true, Set.indicator_of_mem, Pi.one_apply,
           one_mul, Real.norm_eq_abs, abs_of_pos (Real.exp_pos _)]
         rw [abs_of_pos (inv_pos.2 hpos), ← mul_assoc, ← mul_assoc]
         exact mul_le_mul_of_nonneg_right h2 (norm_nonneg _)

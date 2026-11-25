@@ -829,7 +829,7 @@ theorem sigma_component : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E]
   rw [hexp, Finset.sum_eq_single σ.toRatAlgHom]
   · have h1 : S σ.toRatAlgHom = 1 := by
       rw [hS]
-      exact if_pos (RingHom.ext fun _ => rfl)
+      exact ite_eq_left (RingHom.ext fun _ => rfl)
     have h2 : σ (H.rt : E) = 2 * σ (H.w0 : E) - 1 := by
       have h3 := congrArg (fun a : 𝓞 E => σ (algebraMap (𝓞 E) E a)) H.two_weight_eq_one_add_root
       simp only [map_mul, map_add (f := _), map_one, map_ofNat] at h3
@@ -842,7 +842,7 @@ theorem sigma_component : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E]
   · intro τ _ hτ
     have h0 : S τ = 0 := by
       rw [hS]
-      refine if_neg fun hc => hτ (AlgHom.ext fun z => ?_)
+      refine ite_eq_right fun hc => hτ (AlgHom.ext fun z => ?_)
       exact congrArg (fun f : E →+* ℂ => f z) hc
     rw [h0]
     simp
@@ -1033,11 +1033,11 @@ theorem isComb_pad {G : Over S} [GrpObj G] [IsCommMonObj G] {x : Sp R ⟶ S} {m 
   let U : Fin M → (epsAt x ⟶ G) := fun q => if hq : ∃ j, jj j = q then u hq.choose else 1
   have hU : ∀ j, U (jj j) = u j := fun j => by
     have hq : ∃ j', jj j' = jj j := ⟨j, rfl⟩
-    simp only [U, dif_pos hq]
+    simp only [U, dite_eq_left hq]
     rw [hj hq.choose_spec]
   have hU1 : ∀ q, q ∉ Set.range jj → U q = 1 := fun q hq => by
     simp only [U]
-    exact dif_neg hq
+    exact dite_eq_right hq
   refine ⟨U, fun q => ?_, ?_⟩
   · by_cases hq : q ∈ Set.range jj
     · obtain ⟨j, rfl⟩ := hq

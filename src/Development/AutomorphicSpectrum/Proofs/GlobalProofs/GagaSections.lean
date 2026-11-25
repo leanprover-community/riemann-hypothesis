@@ -582,11 +582,11 @@ theorem exists_mem_holSec : ∀ (X : Scheme.{0}) (s : X ⟶ Sp ℂ) (D : ℕ), S
   · refine ⟨⟨?_, ?_⟩, ?_⟩
     · intro i j y hi hj
       have hij : y ∈ ptsIn s (RingHom.id ℂ) (L.U i ⊓ L.U j) := mem_ptsIn_inf.2 ⟨hi, hj⟩
-      simp only [if_pos hi, if_pos hj]
+      simp only [ite_eq_left hi, ite_eq_left hj]
       rw [hcoc i j y.1 (comp_eq_id y) hij, valAt'_eq_ev]
       rfl
     · intro i y hy
-      simp only [if_neg hy]
+      simp only [ite_eq_right hy]
     · intro i k
       have hB : IsOpen (ψ ⁻¹' ((R.chart k).e.target ∩
           (R.chart k).e.symm ⁻¹' ptsIn s (RingHom.id ℂ) (L.U i))) :=
@@ -603,7 +603,7 @@ theorem exists_mem_holSec : ∀ (X : Scheme.{0}) (s : X ⟶ Sp ℂ) (D : ℕ), S
       have hv2 : (R.chart k).e.symm v ∈ ptsIn s (RingHom.id ℂ) (L.U i) := hv.2
       simp [Function.comp, hv2]
   · intro i y hy
-    simp only [if_pos hy]
+    simp only [ite_eq_left hy]
 
 end GlobalTheory.CompanionTheory.Gaga
 end -- clump:auto

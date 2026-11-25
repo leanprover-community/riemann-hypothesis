@@ -153,13 +153,13 @@ theorem expCover_mem_punct (h : a ≤ n) {w : Fin n → ℂ} (hw : w ∈ logCove
     · have hre := hw.1 ⟨k.val, hk⟩
       have hcast : Fin.castLE h ⟨k.val, hk⟩ = k := Fin.ext rfl
       rw [hcast] at hre
-      simp only [expCover, if_pos hk]
+      simp only [expCover, ite_eq_left hk]
       rw [Complex.norm_exp]
       rw [← Real.exp_zero]
       exact Real.exp_lt_exp.2 hre
-    · simp only [expCover, if_neg hk]
+    · simp only [expCover, ite_eq_right hk]
       exact hw.2 k (not_lt.mp hk)
-  · simp only [expCover, if_pos hi]
+  · simp only [expCover, ite_eq_left hi]
     exact Complex.exp_ne_zero _
 
 theorem exists_seq_punct : ∃ u : ℕ → (Fin n → ℂ), Tendsto u atTop (𝓝 0) ∧ ∀ k, u k ∈ punct n a 1 := by

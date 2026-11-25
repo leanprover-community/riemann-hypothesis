@@ -342,7 +342,7 @@ theorem hZ_of_lift (hl : Lift k N f ω φ) (y : 𝔸ᶠ[ℚ]) (hy : y ∈ integr
 end
 
 theorem wr_pos (k : ℕ) (t : ℝˣ) (ht : 0 < (t : ℝ)) : WR k t = 0 := by
-  rw [WR, if_neg (not_lt.2 ht.le)]
+  rw [WR, ite_eq_right (not_lt.2 ht.le)]
 
 theorem whittaker_value {k N : ℕ} [NeZero N] {f : UpperHalfPlane → ℂ} {a : ℕ → ℂ} {ω : HeckeCharacter ℚ} {φ : G2 → ℂ}
     (hexp : ∀ τ : UpperHalfPlane, HasSum (fun n : ℕ => a n * Complex.exp (2 * Real.pi * Complex.I * n * τ)) (f τ))
@@ -371,9 +371,9 @@ theorem whittaker_value {k N : ℕ} [NeZero N] {f : UpperHalfPlane → ℂ} {a :
     rw [e, form_fourier hexp hy (-1) z hz]
     have hs : (∑' n : ℕ, if (-1 : ℤ) * n + 1 = 0 then a n * Complex.exp (-2 * Real.pi * n * ((-(t : ℝ) : ℝ) : ℂ)) else 0) =
         Complex.exp (-2 * Real.pi * ((-(t : ℝ) : ℝ) : ℂ)) := by
-      rw [tsum_eq_single 1 (fun n hn => if_neg (by omega))]
+      rw [tsum_eq_single 1 (fun n hn => ite_eq_right (by omega))]
       simp [h1]
-    rw [hs, WR, if_pos ht, abs_of_neg ht]
+    rw [hs, WR, ite_eq_left ht, abs_of_neg ht]
     push_cast
     rw [zpow_natCast]
   · have hy : 0 < (t : ℝ) := ht
@@ -391,7 +391,7 @@ theorem whittaker_value {k N : ℕ} [NeZero N] {f : UpperHalfPlane → ℂ} {a :
       apply Complex.ext <;> simp [z]
     rw [e, form_fourier hexp hy 1 z hz, wr_pos k t hy]
     have hn : ∀ n : ℕ, ¬ ((1 : ℤ) * n + 1 = 0) := fun n => by omega
-    rw [tsum_congr (fun n => if_neg (hn n)), tsum_zero, mul_zero]
+    rw [tsum_congr (fun n => ite_eq_right (hn n)), tsum_zero, mul_zero]
 
 theorem whittaker_of_lift : Ad3.R.F2 := by
   intro k N _ _ χ _ f a hf ha ω φ _ hl

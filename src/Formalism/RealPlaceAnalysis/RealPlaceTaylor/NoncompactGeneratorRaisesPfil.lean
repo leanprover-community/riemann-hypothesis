@@ -338,7 +338,7 @@ theorem factorAction_commute_of_ne {j : ℕ} (i i' : Fin j) (hii : i ≠ i') (a 
   have hcomm : ∀ v w : Fin n × Fin n, Function.update (Function.update α i v) i' w =
       Function.update (Function.update α i' w) i v := fun v w => Function.update_comm hii v w α
   show factorAction i a b (factorAction i' c d F) α = factorAction i' c d (factorAction i a b F) α
-  simp only [factorAction_apply', Function.update_apply, if_neg hii, if_neg (Ne.symm hii), hcomm]
+  simp only [factorAction_apply', Function.update_apply, ite_eq_right hii, ite_eq_right (Ne.symm hii), hcomm]
   split_ifs <;> first | abel1
 
 theorem factorAction_commute_pointwiseAction {j : ℕ} (E : Fin n → Fin n → Module.End ℂ V) (i : Fin j) (a b c d : Fin n) :
@@ -424,7 +424,7 @@ theorem arr_operators_compact_unitary {j : ℕ} (ε : Fin n → Bool) (E : Fin n
   intro a b hab F G
   have hs : (sgn ε a b : ℂ) = 1 := by
     unfold sgn
-    rw [if_pos hab]
+    rw [ite_eq_left hab]
     simp
   have hpt : ⟪ptE E a b F, G⟫_ℂ = ⟪F, ptE E b a G⟫_ℂ := by
     rw [PiLp.inner_apply, PiLp.inner_apply]
@@ -573,9 +573,9 @@ theorem theta_noncompact_mem_pfil (j : ℕ) (F : Arr V n j) (hF : F ∈ arrV0 ε
   refine sum_mem (fun α _ => ?_)
   have hα := (mem_noncompact_arr_iff ε E u F).mp hF α
   by_cases h : ∀ i, ε (α i).1 ≠ ε (α i).2
-  · rw [if_pos h] at hα
+  · rw [ite_eq_left h] at hα
     exact word_action_mem_pfil ε E u j _ (by simp) (reverse_of_fn_noncompact ε α h) _ hα
-  · rw [if_neg h, Submodule.mem_bot] at hα
+  · rw [ite_eq_right h, Submodule.mem_bot] at hα
     rw [hα, map_zero]
     exact Submodule.zero_mem _
 
@@ -610,14 +610,14 @@ theorem pfil_succ_le_theta_image_sup (j : ℕ) : pfil ε E u (j + 1) ≤
       intro β
       rw [hF]
       by_cases hb : β = α0
-      · rw [if_pos hb, hb, if_pos hnc0]
+      · rw [ite_eq_left hb, hb, ite_eq_left hnc0]
         exact hy
-      · rw [if_neg hb]
+      · rw [ite_eq_right hb]
         exact Submodule.zero_mem _
     · rw [symmetrization_apply (E := E) (F := F), Finset.sum_eq_single α0]
-      · rw [hF, if_pos rfl, hα0]
+      · rw [hF, ite_eq_left rfl, hα0]
       · intro β _ hb
-        rw [hF, if_neg hb, map_zero]
+        rw [hF, ite_eq_right hb, map_zero]
       · intro h
         exact absurd (Finset.mem_univ _) h
 
@@ -696,7 +696,7 @@ theorem symmetrization_perm_sub_mem (hE : GlRel E) (j : ℕ) (F : Arr V n (j + 1
   rw [he2, he1]
   have hβ := (mem_noncompact_arr_iff ε E u F).mp hF β
   by_cases h : ∀ i, ε (β i).1 ≠ ε (β i).2
-  · rw [if_pos h] at hβ
+  · rw [ite_eq_left h] at hβ
     have hperm : (List.ofFn (β ∘ σ.symm)).reverse.Perm (List.ofFn β).reverse := by
       have h0 : (List.ofFn (β ∘ σ.symm)).Perm (List.ofFn β) := by
         first
@@ -704,7 +704,7 @@ theorem symmetrization_perm_sub_mem (hE : GlRel E) (j : ℕ) (F : Arr V n (j + 1
       exact (List.reverse_perm _).trans (h0.trans (List.reverse_perm _).symm)
     exact permuted_words_diff_mem_pfil ε E u hE (F β) hβ _ _ hperm
       (reverse_of_fn_noncompact ε (β ∘ σ.symm) (fun i => h (σ.symm i))) j (by simp)
-  · rw [if_neg h, Submodule.mem_bot] at hβ
+  · rw [ite_eq_right h, Submodule.mem_bot] at hβ
     rw [hβ, map_zero, map_zero, sub_zero]
     exact Submodule.zero_mem _
 

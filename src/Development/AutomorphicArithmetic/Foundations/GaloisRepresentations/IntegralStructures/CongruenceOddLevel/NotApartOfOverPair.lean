@@ -166,7 +166,7 @@ theorem exists_op {w : HeightOneSpectrum (𝓞 E)} (hw : IsSplitAt w) (Kw : Subg
     if h : IsAutRepU U then z (_root_.GlobalTheory.SplitComp.exists_comp_and_unique E a U h w hw).1.choose else 0
   have he : ∀ U, IsAutRepU U → ∀ φ ∈ U, (∀ x ∈ locU a w, cLoc w x ∈ Kw → RU E a x φ = φ) →
       opOf (RU E a) t φ = e U • φ := fun U hU φ hφ hx => by
-    simp only [e, dif_pos hU]
+    simp only [e, dite_eq_left hU]
     exact hact U hU _ (_root_.GlobalTheory.SplitComp.exists_comp_and_unique E a U hU w hw).1.choose_spec φ hφ hx
   refine ⟨t, e, ht, he, ?_⟩
   rintro U hU ⟨φ, hφ, h0, hx⟩ σ hσ
@@ -204,7 +204,7 @@ theorem exists_powOp {w : HeightOneSpectrum (𝓞 E)} (hw : IsSplitAt w) (n : �
     if h : ∃ B, GlobalTheory.LFun.HasSatGL w σ.ρ B then ((UpperTheory.V.Af.algSat a (normV w) h.choose).map (· ^ n)).sum else 0
   have hz : ∀ σ B, GlobalTheory.LFun.HasSatGL w σ.ρ B → z σ = ((UpperTheory.V.Af.algSat a (normV w) B).map (· ^ n)).sum := fun σ B hB => by
     have h : ∃ B, GlobalTheory.LFun.HasSatGL w σ.ρ B := ⟨B, hB⟩
-    simp only [z, dif_pos h]
+    simp only [z, dite_eq_left h]
     rw [GlobalTheory.LFun.HasSatGL.unique h.choose_spec hB]
   obtain ⟨t, ht, hact⟩ := GlobalTheory.T.localOperator_acts_by_localComponentScalar E a w hw _ hc ho f z fun σ v hv => by
     by_cases h0 : v = 0
@@ -217,7 +217,7 @@ theorem exists_powOp {w : HeightOneSpectrum (𝓞 E)} (hw : IsSplitAt w) (n : �
   · rw [h0, opOf_zero, smul_zero]
   · have h := exists_satU hU hw ⟨φ, hφ, h0, hx⟩
     obtain ⟨σ, hσ, hB⟩ := h.choose_spec
-    rw [PowSatU, dif_pos h, ← hz σ _ hB]
+    rw [PowSatU, dite_eq_left h, ← hz σ _ hB]
     exact hact U hU σ hσ φ hφ hx
 
 
@@ -234,7 +234,7 @@ theorem exists_testOp (K : Subgroup (UA E a)) {w : HeightOneSpectrum (𝓞 E)} (
   classical
   obtain ⟨η, hη⟩ : ∃ η : Submodule ℂ (UA E a → ℂ) → ℂ,
       ∀ U (h : ∃ z, SatAt U w z), η U = evalAt h.choose p :=
-    ⟨fun U => if h : ∃ z, SatAt U w z then evalAt h.choose p else 0, fun U h => dif_pos h⟩
+    ⟨fun U => if h : ∃ z, SatAt U w z then evalAt h.choose p else 0, fun U h => dite_eq_left h⟩
   refine ⟨f, η, hloc, fun U hU => ⟨?_, ?_⟩⟩
   · intro φ hφ hfix
     by_cases h0 : φ = 0
@@ -614,7 +614,7 @@ theorem mend (U : Submodule ℂ (UA E a → ℂ)) (hU : IsAutRepU U) (w : Height
     have hcard : (Fintype.card (K ⧸ K') : ℂ) ≠ 0 :=
       Nat.cast_ne_zero.2 (Fintype.card_pos_iff.2 ⟨(QuotientGroup.mk 1 : K ⧸ K')⟩).ne'
     exact hφw0 ((smul_eq_zero.1 hz).resolve_left hcard)
-  · push_neg at h0
+  · push Not at h0
     obtain ⟨g, hg, hne⟩ := h0
     refine ⟨avg K K' (RU E a (r g) φ), ?_, hne, ?_, ?_⟩
     · rw [avg_apply]
@@ -996,7 +996,7 @@ theorem exists_compact_of_finset (H : HeightOneSpectrum (𝓞 E) → Subgroup (U
       · intro r' h
         obtain ⟨y', hy', e'⟩ := hH r' (Finset.mem_insert_of_mem h)
         exact ⟨y', hy', by rw [map_mul, map_inv, hy1 r' (hap r' h), inv_one, mul_one]; exact e'⟩
-    · push_neg at hap
+    · push Not at hap
       obtain ⟨r', hr', hnr⟩ := hap
       have hxC : x ∈ C := by
         refine hsub x hx (fun u hu => hi u fun r'' hr'' => ?_) (fun r'' h => hH r'' (Finset.mem_insert_of_mem h))
@@ -1106,7 +1106,7 @@ theorem exists_locLev {U : Submodule ℂ (UA E a → ℂ)} (hU : IsAutRepU U) (w
           _ = φ₀ := by rw [← Module.End.mul_apply, ← map_mul, inv_mul_cancel, map_one, Module.End.one_apply] }
   let H : HeightOneSpectrum (𝓞 E) → Subgroup (UA E a) := fun r =>
     if ∃ φ ∈ U, φ ≠ 0 ∧ ∀ x ∈ intU a r, RU E a x φ = φ then intU a r else intU a r ⊓ stab
-  have hint : ∀ w, (∃ φ ∈ U, φ ≠ 0 ∧ ∀ x ∈ intU a w, RU E a x φ = φ) → H w = intU a w := fun w h => if_pos h
+  have hint : ∀ w, (∃ φ ∈ U, φ ≠ 0 ∧ ∀ x ∈ intU a w, RU E a x φ = φ) → H w = intU a w := fun w h => ite_eq_left h
   refine ⟨H, fun r => ?_, fun r => ?_, fun w u h => ?_, fun r => ?_, hint, ?_⟩
   · simp only [H]
     split_ifs
@@ -1164,8 +1164,8 @@ theorem exists_level {T : Finset (HeightOneSpectrum (𝓞 E))} {U : Submodule �
     (hae.mono fun w hw x hx => by rw [hw] at hx; exact (mem_intU.1 hx).2 w (not_apart_self w)) hopen (fun w _ => hfix w)
   have hφ := _root_.GlobalTheory.Cong.AdaptLev.fixed_of_levelOf E a w₀ H hle hfib hcpt hopen hae φ (hU.1.aut φ hφU) hφH
   let H' : HeightOneSpectrum (𝓞 E) → Subgroup (UA E a) := fun w => if Apart w v' then H w else intU a w
-  have h1 : ∀ w, Apart w v' → H' w = H w := fun w h => if_pos h
-  have h2 : ∀ w, ¬ Apart w v' → H' w = intU a w := fun w h => if_neg h
+  have h1 : ∀ w, Apart w v' → H' w = H w := fun w h => ite_eq_left h
+  have h2 : ∀ w, ¬ Apart w v' → H' w = intU a w := fun w h => ite_eq_right h
   have hleI' : ∀ w, H' w ≤ intU a w := fun w => by
     by_cases h : Apart w v'
     · rw [h1 w h]; exact hleI w
@@ -1494,7 +1494,7 @@ theorem congUWG_of (H : StepSt) (hFin : FinU) (D : ∀ a : ℕ, MvPolynomial (Fi
     funext j
     rcases j with j | p
     · rfl
-    · simp only [Function.comp, η, Sum.elim_inl, Sum.elim_inr, dif_pos p.1.2]
+    · simp only [Function.comp, η, Sum.elim_inl, Sum.elim_inr, dite_eq_left p.1.2]
   rw [hval] at h3
   refine h3.mono ?_
   rintro _ ⟨_, ⟨⟨U', mu, g1, g2, g3, g4, rfl⟩, hq⟩, rfl⟩

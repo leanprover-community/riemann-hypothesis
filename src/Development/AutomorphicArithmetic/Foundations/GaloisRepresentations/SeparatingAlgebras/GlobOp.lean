@@ -39,7 +39,7 @@ theorem UpperTheory.Gal.Gen.globOp_pf :
         ((Submodule.ne_bot_iff _).2 ⟨v, hv, hv0⟩)
       obtain ⟨z, rfl⟩ := exists_map_eq B (GlobalTheory.LFun.HasSatGL.card hB)
       have hz : ∃ z : Fin a → ℂˣ, GlobalTheory.LFun.HasSatGL w σ.ρ (Finset.univ.val.map z) := ⟨z, hB⟩
-      have hzf : zf σ = evalAt hz.choose p := dif_pos hz
+      have hzf : zf σ = evalAt hz.choose p := dite_eq_left hz
       rw [hzf]
       exact hact σ _ hz.choose_spec v hv
   obtain ⟨hKo, hKc⟩ := GlobalTheory.LFun.SatCompare.isOpen_isCompact_KGL (E := E) w a

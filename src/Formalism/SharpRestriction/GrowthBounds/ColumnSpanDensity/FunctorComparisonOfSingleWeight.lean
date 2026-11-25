@@ -17,7 +17,7 @@ open Formalism.MainNotions.G Formalism.MainNotions.flipOneThree Formalism.Graded
 
 theorem ex_val {n' : ℕ} {TT : Finset (Fin n')} (f : TT → ℕ) (s : TT) : ex f s.val = f s := by
   unfold ex
-  rw [dif_pos s.2]
+  rw [dite_eq_left s.2]
 
 theorem lamAt_flat_top {n' : ℕ} (m : ℕ) (hm : 1 ≤ m) {TT : Finset (Fin n')} (al be : TT → ℕ) (s : TT) :
     lamAt (flatW m al be) s.val =
@@ -32,8 +32,8 @@ theorem lamAt_flat_top {n' : ℕ} (m : ℕ) (hm : 1 ≤ m) {TT : Finset (Fin n')
   have rl : i.rev = Fin.last m ↔ i = 0 := by rw [← Fin.rev_zero, Fin.rev_inj]
   unfold lamAt flatW wtPQ
   by_cases he : Even s.val.val
-  · simp only [he, if_true, s.2, dite_true]
-  · simp only [he, if_false, s.2, dite_true, r0, rl]
+  · simp only [he, ite_true, s.2, dite_true]
+  · simp only [he, ite_false, s.2, dite_true, r0, rl]
     by_cases h0 : i = 0
     · subst h0
       simp [hl.symm]
@@ -144,7 +144,7 @@ theorem functor_comparison_of_single_weight (hIOe : ExistsIO) (hPRe : ExistsPR) 
           ∏ s : Fin n', rename (fun v => (s, v)) (if h : s ∈ TT then pr1 ⟨s, h⟩ (j ⟨s, h⟩) (Y ⟨s, h⟩) else 1) from rfl,
           this]
         refine Finset.prod_congr rfl fun s _ => ?_
-        rw [dif_pos s.2]
+        rw [dite_eq_left s.2]
       show ∑ j ∈ Jf, IO j (PR j (∏ s : TT, rename (fun v : Bool × (Fin (m + 1) × Fin (m + 1)) => ((s, v.1), v.2)) (Y s))) =
         ∏ s : TT, rename (fun v : Bool × (Fin (m + 1) × Fin (m + 1)) => ((s, v.1), v.2)) (Y s)
       simp only [e1]
@@ -168,10 +168,10 @@ theorem functor_comparison_of_single_weight (hIOe : ExistsIO) (hPRe : ExistsPR) 
     rw [← hsumA x.1 x.2]
     rw [Submodule.coe_sum]
     refine Finset.sum_congr rfl fun j hj => ?_
-    simp only [dif_pos hj]
+    simp only [dite_eq_left hj]
     rfl
   · intro M hM j hj
-    simp only [dif_pos hj]
+    simp only [dite_eq_left hj]
     have hpow : (p : R.Kf) ^ (TT.card * ⌈((m : ℝ) + 2) * lgA p a m⌉₊) =
         ((p : R.Kf) ^ ⌈((m : ℝ) + 2) * lgA p a m⌉₊) ^ TT.card := by rw [← pow_mul, mul_comm]
     have htwoLat : ∀ s : TT, tensorLat R.O R.Kf

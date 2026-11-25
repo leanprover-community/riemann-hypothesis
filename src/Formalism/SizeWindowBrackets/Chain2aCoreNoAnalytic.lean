@@ -152,38 +152,4 @@ structure Glob where
 
   eBar : ℝ
 
-section Data
-variable {H : Type} [AddCommGroup H] [Fintype H] [DecidableEq H] {W : H → Type} [∀ u0, Fintype (W u0)] {m : ℕ}
-
-variable [∀ u0, Nonempty (W u0)]
-
-end Data
-
-section Loss
-variable {H : Type} [AddCommGroup H] [Fintype H] [DecidableEq H] {Ω : Type} {W : Ω → H → Type} {m : ℕ}
-
-variable [Fintype Ω] [∀ o u0, Fintype (W o u0)]
-
-end Loss
-
-section DataD
-variable {H : Type} [AddCommGroup H] [Fintype H] [DecidableEq H] {W : H → Type} [∀ u0, Fintype (W u0)] {m : ℕ}
-
-end DataD
-
-section DataL
-variable {H : Type} [AddCommGroup H] [Fintype H] [DecidableEq H] {W : H → Type} [∀ u0, Fintype (W u0)] {m : ℕ}
-
-end DataL
-
-section DataT
-variable {H : Type} [AddCommGroup H] [Fintype H] [DecidableEq H] {W : H → Type} [∀ u0, Fintype (W u0)] {m : ℕ}
-
-end DataT
-
-section LossC
-variable {H : Type} [AddCommGroup H] [Fintype H] [DecidableEq H] {m : ℕ}
-
-end LossC
-
 end Formalism.LFunctionChainParameters.LChain2

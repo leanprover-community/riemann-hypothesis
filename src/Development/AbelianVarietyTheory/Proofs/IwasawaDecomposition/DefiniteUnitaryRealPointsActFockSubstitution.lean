@@ -131,7 +131,7 @@ theorem pureTensorO_mul_mul (hψ : IsStdChar D ψ (-1)) (hθ : IsInfFam θ)
     refine Finset.sum_congr rfl fun a _ => ?_
     rw [crea_sum hψ hθ _ (hm _ _ _), Finset.smul_sum]
     refine Finset.sum_congr rfl fun l _ => ?_
-    rw [crea_smul hψ hθ τ _ (hm _ _ _) _ True (by simp), if_pos trivial, smul_comm]
+    rw [crea_smul hψ hθ τ _ (hm _ _ _) _ True (by simp), ite_eq_left trivial, smul_comm]
 
 theorem om_vac {χS χT : (AE D)ˣ →* Circle} {ω : GA D V × GA D W →* Module.End ℂ (WO V W → ℂ)}
     (hω : IsWeilDatumO ψ V W χS χT ω) (hθ : IsInfFam θ) (kV : V.SigOK) (kW : W.SigOK)

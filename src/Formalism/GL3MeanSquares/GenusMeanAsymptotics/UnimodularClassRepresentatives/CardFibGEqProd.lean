@@ -206,19 +206,19 @@ theorem card_fibG_eq_card_pi (hK : Formalism.HermitianLatticesTheory.IsCMUnram K
     have hBlat : ∀ 𝔭, Submodule.IsFullLattice K (B 𝔭) := by
       intro 𝔭
       by_cases h𝔭 : 𝔭 ∈ s
-      · simp only [B, dif_pos h𝔭]
+      · simp only [B, dite_eq_left h𝔭]
         refine { toIsLattice := isLattice_gmap_of_isLattice _ hL.toIsLattice, span_eq_top := ?_ }
         change Submodule.span K ((g ⟨𝔭, h𝔭⟩ : V →ₗ[K] V) '' (L : Set V)) = ⊤
         rw [Submodule.span_image, hL.span_eq_top, Submodule.map_top, LinearMap.range_eq_top]
         exact (g ⟨𝔭, h𝔭⟩).surjective
-      · simp only [B, dif_neg h𝔭]
+      · simp only [B, dite_eq_right h𝔭]
         exact hN
-    have hBs : ∀ 𝔭 ∉ s, B 𝔭 = S.adjoin Λ' := fun 𝔭 h𝔭 => by simp only [B, dif_neg h𝔭]
+    have hBs : ∀ 𝔭 ∉ s, B 𝔭 = S.adjoin Λ' := fun 𝔭 h𝔭 => by simp only [B, dite_eq_right h𝔭]
     obtain ⟨hMlat, hMloc⟩ := LocF.patch hN s B hBlat hBs
     have hMfull := patch_isFullLattice hN s B hBlat hBs hMlat
     have hBf : ∀ 𝔭 (h𝔭 : 𝔭 ∈ s), locF 𝔭.1 (B 𝔭) = (f ⟨𝔭, h𝔭⟩).1 := by
       intro 𝔭 h𝔭
-      simp only [B, dif_pos h𝔭]
+      simp only [B, dite_eq_left h𝔭]
       rw [← gmap_locF]
       exact hgf ⟨𝔭, h𝔭⟩
     have hBmem : ∀ 𝔭, locF 𝔭.1 (B 𝔭) ∈ fibSet S L 𝔭.1 Λ' := by

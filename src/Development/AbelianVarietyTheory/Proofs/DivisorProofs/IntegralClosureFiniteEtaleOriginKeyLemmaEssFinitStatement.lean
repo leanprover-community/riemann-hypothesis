@@ -832,7 +832,7 @@ theorem galElt_dvd_of_unramified : ∀ (R C O : Type) [CommRing R] [CommRing C] 
 
   simp_rw [hterm, ← Finset.sum_mul, ← map_sum, ← map_mul, ← map_sum]
   have h1 := hxy 1
-  simp only [map_one, AlgEquiv.one_apply, if_true] at h1
+  simp only [map_one, AlgEquiv.one_apply, ite_true] at h1
   rw [h1, AlgHom.commutes, Algebra.smul_def]
 
 end GlobalTheory.GoodEtale
@@ -1443,10 +1443,10 @@ theorem closureData : ∀ (A R : Type) [CommRing A] [IsDomain A] [IsNoetherianRi
     apply Subtype.ext
     split_ifs with hg
     · simp only [AddSubmonoidClass.coe_finsetSum, Subring.coe_mul, hact']
-      rw [h1, if_pos hg, hbb]
+      rw [h1, ite_eq_left hg, hbb]
       rfl
     · simp only [AddSubmonoidClass.coe_finsetSum, Subring.coe_mul, hact']
-      rw [h1, if_neg hg]
+      rw [h1, ite_eq_right hg]
       rfl
   · intro a' ha' c hc
     apply Subtype.ext

@@ -215,7 +215,7 @@ theorem tau_pow_bdd : ∀ (D : D7) (p : ℕ) [Fact p.Prime] (cc : Ideal (𝓞 D.
   obtain ⟨C0, hC0⟩ := hS
   refine ⟨C0, fun n => ?_⟩
   have h1 := congrArg (PowerSeries.coeff (n + K)) key2
-  rw [PowerSeries.coeff_C_mul, PowerSeries.coeff_X_pow_mul', if_pos (by omega), Nat.add_sub_cancel] at h1
+  rw [PowerSeries.coeff_C_mul, PowerSeries.coeff_X_pow_mul', ite_eq_left (by omega), Nat.add_sub_cancel] at h1
   have h2 := hC0 (n + K)
   rw [← h1, norm_mul, norm_pow, hu1, one_pow, one_mul] at h2
   exact h2

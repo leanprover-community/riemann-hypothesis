@@ -77,15 +77,15 @@ theorem PFStep.proof (hSec : PFSecRed.Statement) (hVert : PFVert.Statement) (hIn
   by_cases hh : IsHorizontal W
   · have hWa : IsArithVar W (d + r) := (divSuppArith K' ι' P' (d + r) (N (Fin.last r)) s W hP1 hsec hW).1 hh
     by_cases hd : imageZ v W = imageZ v P'
-    · rw [if_pos hh, if_pos ⟨hh, hd⟩,
+    · rw [ite_eq_left hh, ite_eq_left ⟨hh, hd⟩,
         hHor I r hr K ι K' ι' κ v P' W d G J L L' (Fin.init N) hv hWa hd hP hJ hL hL' (fun j => hN _)]
       exact (mul_assoc _ _ _).symm
-    · rw [if_pos hh, if_neg (fun h => hd h.2), mul_zero, zero_mul]
+    · rw [ite_eq_left hh, ite_eq_right (fun h => hd h.2), mul_zero, zero_mul]
       obtain ⟨d₀, -, hd₀⟩ := hIm K ι K' ι' κ v W (d + r) hP.1 hv hWa
       have hle : imageZ v P' ≤ imageZ v W := Ideal.comap_mono (le_sup_left.trans hW.1.1.2)
       rw [hCM I hI K ι K' ι' κ v W d₀ d r L L' (Fin.init N) hv hWa hd₀
         (arithDim_lt_of_lt hP hd₀ hle (Ne.symm hd)) hL hL' (fun j => hN _), mul_zero]
-  · rw [if_neg hh, if_neg (fun h => hh h.1),
+  · rw [ite_eq_right hh, ite_eq_right (fun h => hh h.1),
       hVert K ι K' ι' κ v P' d r L L' (Fin.init N) s a W hv hP1 hP hL' hs hsP hW hh]
     simp
 

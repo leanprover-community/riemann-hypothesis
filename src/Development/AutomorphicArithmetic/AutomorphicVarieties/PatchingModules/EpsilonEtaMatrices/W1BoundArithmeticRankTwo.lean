@@ -59,7 +59,7 @@ private theorem commuting_matrix_offdiag_zero {l : ℕ} [Fact l.Prime] {F : GFra
     show ∀ i' j' : Fin n, _
     intro i' j'
     refine ⟨fun _ => Submodule.mem_top, fun h => ?_⟩
-    rw [Submodule.mem_bot, Matrix.single_apply, if_neg]
+    rw [Submodule.mem_bot, Matrix.single_apply, ite_eq_right]
     rintro ⟨rfl, rfl⟩
     exact h Iff.rfl
   obtain ⟨s, hs⟩ := x.span _ hmem

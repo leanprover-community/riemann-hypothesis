@@ -736,7 +736,7 @@ theorem row_coset_sum_norm_sq : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u
       (n ∈ NRat (lf D (X.Fu u)) ∧ m ∈ NRat (lf D (X.Fu u')) ∧ (τ o).lin = n⁻¹ * t₀.lin * m) ∧
       o.out = c.lat (ρ * n) (τ o).lam := by
     intro o h
-    have e : τ o = (hsurj o.out h).choose := dif_pos h
+    have e : τ o = (hsurj o.out h).choose := dite_eq_left h
     rw [e]
     exact (hsurj o.out h).choose_spec
   let Cf : Finset (Quot G.LRel) := hfin.toFinset.filter (fun o => Q (¬ G.Gen d₀ o.out))
@@ -814,7 +814,7 @@ theorem row_coset_sum_norm_sq : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u
     rw [PiLp.norm_sq_eq_of_L2]
     have : ∀ q, ‖(if q = q₀ then x else 0 : Formalism.L2.SG.PackageTie.HS (X.Vpi u') (X.Vpi u))‖ ^ 2 =
         if q = q₀ then ‖x‖ ^ 2 else 0 := fun q => by by_cases h : q = q₀ <;> simp [h]
-    simp only [this, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    simp only [this, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   have hvec : ∀ o ∈ Cf, (Y.tO u u').vec (τ o) = V (((Formalism.L2.SG.TermOp.wt t₀ : ℝ) : ℂ) •
       Formalism.L2.SG.PackageTie.hsEmb ((((K * G.mu o.out : ℝ) : ℂ) * G.om d₀ o.out) • T)) := by
     intro o ho
@@ -841,9 +841,9 @@ theorem row_coset_sum_norm_sq : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u
   have hampeq : G.amp d₀ (fun Γ => Q (¬ G.Gen d₀ Γ)) = ∑ o ∈ Cf, (G.mu o.out : ℂ) * G.om d₀ o.out := by
     unfold GFrames.amp
     rw [tsum_eq_sum (s := Cf)]
-    · exact Finset.sum_congr rfl fun o ho => if_pos ((hmemC o).1 ho)
+    · exact Finset.sum_congr rfl fun o ho => ite_eq_left ((hmemC o).1 ho)
     · intro o ho
-      exact if_neg fun h => ho ((hmemC o).2 h)
+      exact ite_eq_right fun h => ho ((hmemC o).2 h)
   rw [tsum_eq_sum hzero, Finset.sum_image hτinj]
   rw [Finset.sum_congr rfl fun o ho => by rw [Set.indicator_of_mem (hτS o ho), hvec o ho], hVsum, hVn]
   have hsum : ∑ o ∈ Cf, ((Formalism.L2.SG.TermOp.wt t₀ : ℝ) : ℂ) •

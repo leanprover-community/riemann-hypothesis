@@ -86,9 +86,9 @@ theorem der_lin (p : C → Bool) (v w : I → ℂ) (u : I × C → ℂ) : der p 
     simp only [pderiv_lin, mul_smul_comm, mul_one]
     cases p c
     · rw [Finset.sum_comm]
-      simp only [Bool.false_eq_true, if_false, Finset.mul_sum, ← Finset.sum_neg_distrib, Finset.sum_smul, smul_neg, neg_smul, smul_smul]
+      simp only [Bool.false_eq_true, ite_false, Finset.mul_sum, ← Finset.sum_neg_distrib, Finset.sum_smul, smul_neg, neg_smul, smul_smul]
       exact Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => by congr 2; ring
-    · simp only [if_true, Finset.mul_sum, Finset.sum_smul, smul_smul, mul_assoc]
+    · simp only [ite_true, Finset.mul_sum, Finset.sum_smul, smul_smul, mul_assoc]
   rw [der_apply]
   refine Eq.trans ?_ (((Finset.sum_congr rfl fun c _ => e c).trans (Fintype.sum_prod_type_right' _).symm).trans (lin_apply _).symm)
   rw [Finset.sum_comm (γ := C)]
@@ -104,12 +104,12 @@ theorem core_pos (p : C → Bool) (S : I → Prop) (k : ℝ) (hk : 0 < k) (hc : 
   let w : I → ℂ := fun a => if h : S a then w₀ ⟨a, h⟩ else 0
   let v : I → ℂ := Pi.single a₀.1 (w₀ a₀)⁻¹
   have hvw : ∑ a, v a * w a = 1 := by
-    simp only [v, Pi.single_apply, ite_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, if_true, w, dif_pos a₀.2]
+    simp only [v, Pi.single_apply, ite_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, ite_true, w, dite_eq_left a₀.2]
     exact inv_mul_cancel₀ ha₀
   have hwu : ∀ c, p c → ∑ b, w b * u (b, c) = 0 := fun c hc => by
     have := congrFun hw₀ ⟨c, hc⟩
     rw [← Fintype.sum_subtype_add_sum_subtype S, Finset.sum_eq_zero (s := Finset.univ) fun (b : {b // ¬ S b}) _ => by simp [w, b.2], add_zero]
-    refine Eq.trans (Finset.sum_congr rfl (g := fun a => w₀ a * u (a.1, c)) fun a _ => by simp only [w, dif_pos a.2]) ?_
+    refine Eq.trans (Finset.sum_congr rfl (g := fun a => w₀ a * u (a.1, c)) fun a _ => by simp only [w, dite_eq_left a.2]) ?_
     simpa [A, Matrix.vecMul, dotProduct] using this
   let u' : I × C → ℂ := fun x => if p x.2 then 0 else w x.1 * ∑ a, v a * u (a, x.2)
   have d1 : der p v w (lin u) = -lin u' := by
@@ -123,9 +123,9 @@ theorem core_pos (p : C → Bool) (S : I → Prop) (k : ℝ) (hk : 0 < k) (hc : 
     funext x
     by_cases hx : p x.2
     · simp [u', hx]
-    · simp only [u', hx, Bool.false_eq_true, if_false, ← mul_assoc, ← Finset.sum_mul, hvw, one_mul, Pi.neg_apply]
+    · simp only [u', hx, Bool.false_eq_true, ite_false, ← mul_assoc, ← Finset.sum_mul, hvw, one_mul, Pi.neg_apply]
   have d3 : der p v w (lin u - lin u') = 0 := by rw [map_sub, d1, d2, sub_self]
-  have hl := h v w (fun a ha => ⟨Pi.single_eq_of_ne (fun e => ha (by rw [e]; exact a₀.2)) _, dif_neg ha⟩) hvw
+  have hl := h v w (fun a ha => ⟨Pi.single_eq_of_ne (fun e => ha (by rw [e]; exact a₀.2)) _, dite_eq_right ha⟩) hvw
   have key : ∀ i j : ℕ, l ((lin u - lin u') ^ i * lin u' ^ j) = 0 := fun i j => by
     have e : der p v w ((lin u - lin u') ^ i * lin u' ^ j) = -(j : ℂ) • ((lin u - lin u') ^ i * lin u' ^ j) := by
       rw [Derivation.leibniz, Derivation.leibniz_pow, Derivation.leibniz_pow, d3, d2]
@@ -183,7 +183,7 @@ theorem fockAction_first_eq (t : Bool) (v w : Ix P Q → ℂ) (h : ∀ a, ¬ a.i
   rw [e, der_apply]
   simp only [e2, Finset.sum_add_distrib, ← Finset.sum_smul]
   congr 2
-  simp only [Finset.sum_comm (γ := Ix P Q) (α := Ix R S), Finset.sum_ite_eq, Finset.mem_univ, if_true, ← Finset.mul_sum, ← Finset.sum_mul, h1]
+  simp only [Finset.sum_comm (γ := Ix P Q) (α := Ix R S), Finset.sum_ite_eq, Finset.mem_univ, ite_true, ← Finset.mul_sum, ← Finset.sum_mul, h1]
   cases t <;> simp <;> ring
 
 theorem noForm (m : ℤ) (hm : ((R + S : ℕ) : ℤ) < |m|) (hr : min R S < min P Q) (l : Pol P Q R S →ₗ[ℂ] ℂ)

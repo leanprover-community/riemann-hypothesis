@@ -579,7 +579,7 @@ theorem eta_X (he : m.Fr E E' e) (X : Pt E') :
       E.τ 0 ((e ≫ m.G.map X.s) ≫ m.G.map (Q'.j X.T)) (e ≫ m.G.map (Cut.sec Q' X)) :=
     Q.lift_X _ _ (E.mem 0 ((e ≫ m.G.map X.s) ≫ m.G.map (Q'.j X.T)) (e ≫ m.G.map (Cut.sec Q' X)))
   have h2 := he 0 (X.s ≫ Q'.j X.T) (Cut.sec Q' X)
-  rw [Cut.sec_spec, if_pos rfl, m.G.map_comp, ← Category.assoc] at h2
+  rw [Cut.sec_spec, ite_eq_left rfl, m.G.map_comp, ← Category.assoc] at h2
   rw [h1, h2]
 
 def etaH (he : m.Fr E E' e) (X : Pt E') : Q.P (m.G.obj X.T) ⟶ m.G.obj (Q'.P X.T) := ((eta m Q Q' he).app X).1
@@ -883,13 +883,13 @@ theorem comm_g (B B' : IdF Φ'.A) (hB : ∀ T, c.S T ≤ B.S T) (hB' : ∀ T, c.
   obtain ⟨cc, rfl⟩ := Q.span (m.G.obj X.T) x
   let g : Φ.A.obj (m.G.obj X.T) → Φ'.A.obj X.T :=
     fun u => if u = 0 then 0 else Classical.choose (Ideal.Quotient.mk_surjective (m.ρ X.T u))
-  have g0 : g 0 = 0 := if_pos rfl
+  have g0 : g 0 = 0 := ite_eq_left rfl
   have hg : ∀ u, m.ρ X.T u = Ideal.Quotient.mk _ (g u) := by
     intro u
     by_cases hu : u = 0
     · subst hu
       rw [g0, map_zero, map_zero]
-    · simp only [g, if_neg hu]
+    · simp only [g, ite_eq_right hu]
       exact (Classical.choose_spec (Ideal.Quotient.mk_surjective (m.ρ X.T u))).symm
   let sc : ℕ →₀ Φ.A.obj (m.G.obj X.T) := GlobalTheory.CompanionTheory.PolySes.sh cc
   have e1 := hβ₀ ((Gpt m E E' e).obj X) cc sc (fun k => rfl)

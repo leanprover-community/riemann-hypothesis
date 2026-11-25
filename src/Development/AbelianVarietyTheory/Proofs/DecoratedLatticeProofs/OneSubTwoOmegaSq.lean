@@ -389,7 +389,7 @@ theorem htSmallTo_inv {B : K⟦X⟧} (hB : CoefLe 1 B) (h0 : constantCoeff B = 1
 theorem htform_coeff_vpow_eq_zero {v : K⟦X⟧} (h0 : constantCoeff v = 0) {n d : ℕ} (h : n < d) :
     coeff n (v ^ d) = 0 := by
   obtain ⟨w, rfl⟩ := X_dvd_iff.mpr h0
-  rw [mul_pow, coeff_X_pow_mul', if_neg (by omega)]
+  rw [mul_pow, coeff_X_pow_mul', ite_eq_right (by omega)]
 
 theorem htform_coeff_subst (A v : K⟦X⟧) (h0 : constantCoeff v = 0) (n : ℕ) :
     coeff n (A.subst v) = ∑ d ∈ Finset.range (n + 1), coeff d A * coeff n (v ^ d) := by
@@ -461,7 +461,7 @@ theorem htform_unit_coeff_le : ∀ (K : Type) [NormedField K] [IsUltrametricDist
     rw [← Finset.add_sum_erase _ _ hmem] at hc
     have hself : Dp.coeff (M - k) * (if 2 * (M - (M - k)) ≤ 2 * k then coeff (2 * k - 2 * (M - (M - k))) (A ^ (M - k)) else 0)
         = Dp.coeff (M - k) := by
-      rw [if_pos (by omega), show 2 * k - 2 * (M - (M - k)) = 0 by omega, coeff_zero_eq_constantCoeff_apply,
+      rw [ite_eq_left (by omega), show 2 * k - 2 * (M - (M - k)) = 0 by omega, coeff_zero_eq_constantCoeff_apply,
         map_pow, hA0, one_pow, mul_one]
     rw [hself] at hc
     have hrest : ‖∑ i ∈ (Finset.range (M + 1)).erase (M - k),

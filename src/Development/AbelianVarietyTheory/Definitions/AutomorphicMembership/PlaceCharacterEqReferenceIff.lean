@@ -172,24 +172,12 @@ structure RowsTie (R : RealDat D A Ks) (F : Face D A) (X0 : BaseLevelRowSide D) 
   etaJ_tie : ∀ (i : Fin D.R.m) w, D.what₂.muAt w ≠ D.what₂.mu0 → D.what₂.etaJ ((i : ℕ) + 1) w =
     A.fam.etaJ F.P0 F.ψ0 (R.toCx F).zs i (R.mu (D.plEq w)) (D.plEq w)
 
-section Basic
-
-variable {K : Type} [Field K] [NumberField K] [StarRing K] (S : CSD K) (r : Representation K G S.Forms)
-
-end Basic
-
 namespace SideTie
 
 variable {R : RealDat D A Ks} {F : Face D A} {tup : T → D.what₂.Tup} {b : Bool} {EE : Type} [NormedAddCommGroup EE]
   [InnerProductSpace ℂ EE] [FiniteDimensional ℂ EE] {S : RowSide D EE} (Y : SideTie R F tup b S)
 
 end SideTie
-
-section Fibre
-
-variable {V H I J : Type} [AddCommGroup V] [Module ℂ V] [AddCommGroup H] [Module ℂ H]
-
-end Fibre
 
 namespace RowsTieSum
 

@@ -344,7 +344,7 @@ theorem UpperTheory.Gal.TranscendenceTraces.countEx_of :
       ∑ᶠ (j : ι) (_ : j ∈ {j | h.choose ≫ σ j = z}), m j else 0, ?_⟩
   intro Ω _ _ x z hz
   have hex : ∃ x : gp Ω ⟶ T, z ≫ p = x ≫ π := ⟨x, hz⟩
-  simp only [dif_pos hex]
+  simp only [dite_eq_left hex]
   set x₀ := hex.choose with hx₀
   have h₀ : z ≫ p = x₀ ≫ π := hex.choose_spec
   obtain ⟨e, he⟩ := hsym Ω x x₀ (hz.symm.trans h₀)

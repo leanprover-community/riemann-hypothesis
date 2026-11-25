@@ -112,17 +112,6 @@ theorem finrank_maximalUnramified :
 
 end Maximal
 
-section BaseChange
-
-variable (K K' L : Type*) [Field K] [ValuativeRel K] [TopologicalSpace K]
-  [IsNonarchimedeanLocalField K] [Field K'] [ValuativeRel K'] [TopologicalSpace K']
-  [IsNonarchimedeanLocalField K'] [Field L] [ValuativeRel L] [TopologicalSpace L]
-  [IsNonarchimedeanLocalField L] [Algebra K K'] [Algebra K' L] [Algebra K L] [IsScalarTower K K' L]
-  [ValuativeExtension K K'] [ValuativeExtension K' L] [ValuativeExtension K L]
-  [FiniteDimensional K L]
-
-end BaseChange
-
 section Galois
 
 variable (K L : Type*) [Field K] [ValuativeRel K] [TopologicalSpace K] [IsNonarchimedeanLocalField K]

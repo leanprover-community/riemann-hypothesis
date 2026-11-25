@@ -326,7 +326,7 @@ theorem ptMatN_drop_last (H : C.LPt) (n : ℕ) (t c : ℂ) (r : ℕ) (hr : D.ptS
   ext a b
   have e : H ++ [(n, t), (1, c)] = (H ++ [(n, t)]) ++ [(1, c)] := by simp
   simp only [D.ptMatN]
-  rw [e, PBJ.Asm.ptEntry_append, if_pos]
+  rw [e, PBJ.Asm.ptEntry_append, ite_eq_left]
   rw [PBJ.Asm.ptSize_append, PBJ.Asm.ptSize_single]
   exact ⟨by omega, by omega⟩
 

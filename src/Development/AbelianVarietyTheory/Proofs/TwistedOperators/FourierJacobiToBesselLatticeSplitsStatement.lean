@@ -113,7 +113,7 @@ theorem projX_embedding_lattice : ∀ {D : D7} {A B B₀ : HSp D} {c ρ : ℕ} (
     intro p q
     rw [Matrix.mul_apply]
     simp only [Matrix.conjTranspose_apply]
-    simp only [P, apply_ite star, star_zero, ite_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    simp only [P, apply_ite star, star_zero, ite_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     have := p.2; have := q.2
     simp only [hN, antiDiagonalSignGramMatrix, Fin.ext_iff, Fin.val_rev, Fin.val_castLE]
     split_ifs <;> first | (exfalso; omega) | ring
@@ -126,7 +126,7 @@ theorem projX_embedding_lattice : ∀ {D : D7} {A B B₀ : HSp D} {c ρ : ℕ} (
     rw [h2] at h1
     have h3 := congrFun (congrFun h1 p) p
     rw [Matrix.mul_apply] at h3
-    simp only [hPN, ite_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, if_true, Q, Matrix.one_apply_eq] at h3
+    simp only [hPN, ite_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, ite_true, Q, Matrix.one_apply_eq] at h3
     simpa using h3
   have hqX : d.qX = Pᴴ * a.aᴴ * B.gram := by
     rw [HypDec.qX, heP, Matrix.conjTranspose_mul]
@@ -143,14 +143,14 @@ theorem projX_embedding_lattice : ∀ {D : D7} {A B B₀ : HSp D} {c ρ : ℕ} (
     split_ifs with hq
     · rw [Finset.sum_eq_single ⟨q.1, hq⟩]
       · have e1 : q = Fin.castLE hρc ⟨q.1, hq⟩ := Fin.ext rfl
-        simp only [Finset.sum_ite_eq', Finset.mem_univ, if_true]
-        rw [← mul_assoc, mul_comm ((-D.host.xi0) ^ _), hdiag, one_mul, if_pos e1, ← e1]
+        simp only [Finset.sum_ite_eq', Finset.mem_univ, ite_true]
+        rw [← mul_assoc, mul_comm ((-D.host.xi0) ^ _), hdiag, one_mul, ite_eq_left e1, ← e1]
       · intro b _ hb
-        rw [if_neg]
+        rw [ite_eq_right]
         intro e; apply hb; ext; simp only [Fin.ext_iff, Fin.val_castLE] at e ⊢; omega
       · simp
     · refine Finset.sum_eq_zero fun b _ => ?_
-      rw [if_neg]
+      rw [ite_eq_right]
       intro e; apply hq; rw [e]; simp
   refine ⟨0, Λ.zero_mem, Q *ᵥ ((Pᴴ * N) *ᵥ u), fun q => ?_, ?_⟩
   · rw [hu']; split_ifs
@@ -185,7 +185,7 @@ variable {D : D7}
 theorem colsOf_eq_mul {n c k : ℕ} (a : Matrix (Fin n) (Fin c) D.host.E) (f : Fin k → Fin c) (s : Fin k → D.host.E) :
     colsOf a f s = a * Matrix.of (fun q p => if q = f p then s p else 0) := by
   ext i p
-  simp only [colsOf, Matrix.mul_apply, Matrix.of_apply, mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+  simp only [colsOf, Matrix.mul_apply, Matrix.of_apply, mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   exact mul_comm _ _
 
 theorem antiDiagonalGram_neg_one_castLE_row {c ρ : ℕ} (h : 2 * ρ ≤ c) (p : Fin ρ) (r : Fin c) :
@@ -216,7 +216,7 @@ theorem projY_mem_lat : ∀ {D : D7} {A B B₀ : HSp D} {c ρ : ℕ} (a : Hermit
     rw [HypDec.qY, hE, conjTranspose_mul, Matrix.mul_assoc, Matrix.mul_assoc, ← Matrix.mul_assoc a.aᴴ, hgram]
     ext p r
     simp only [Matrix.mul_apply, Matrix.conjTranspose_apply, hPe, Matrix.of_apply, apply_ite star, star_zero, ite_mul, zero_mul,
-      Finset.sum_ite_eq', Finset.mem_univ, if_true, hf, antiDiagonalGram_neg_one_castLE_row h, mul_ite, mul_one, mul_zero]
+      Finset.sum_ite_eq', Finset.mem_univ, ite_true, hf, antiDiagonalGram_neg_one_castLE_row h, mul_ite, mul_one, mul_zero]
   have hS : ∀ p, s p * star (t p) = 1 := by
     intro p
     have h1 : d.eᴴ * B.gram * d.e' = 1 := by
@@ -225,7 +225,7 @@ theorem projY_mem_lat : ∀ {D : D7} {A B B₀ : HSp D} {c ρ : ℕ} (a : Hermit
     have h2 : (d.qY * a.a * Pe') p p = 1 := by
       rw [Matrix.mul_assoc, ← hE', HypDec.qY, h1, Matrix.one_apply_eq]
     rw [hQA] at h2
-    simp only [Matrix.mul_apply, hPe', Matrix.of_apply, ite_mul, zero_mul, mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true] at h2
+    simp only [Matrix.mul_apply, hPe', Matrix.of_apply, ite_mul, zero_mul, mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true] at h2
     rw [mul_comm]; exact h2
   refine ⟨0, Λ.zero_mem, fun q => ∑ p, if q = (f p).rev then u q else 0, fun q => ?_, ?_⟩
   · refine Submodule.sum_mem _ fun p _ => ?_
@@ -241,8 +241,8 @@ theorem projY_mem_lat : ∀ {D : D7} {A B B₀ : HSp D} {c ρ : ℕ} (a : Hermit
     refine Finset.sum_congr rfl fun p _ => ?_
     by_cases hq : q = (f p).rev
     · subst hq
-      simp only [if_true, mul_ite, mul_zero, ite_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, hS p, one_mul]
-    · simp only [hq, if_false, zero_mul, Finset.sum_const_zero]
+      simp only [ite_true, mul_ite, mul_zero, ite_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, hS p, one_mul]
+    · simp only [hq, ite_false, zero_mul, Finset.sum_const_zero]
 
 end GlobalTheory.AscFin
 end -- clump:auto
@@ -457,8 +457,8 @@ theorem mul_ePl {v : GlobalTheory.FinPl.Pl D} {α : Af D.host.F} (h : ∀ w, w �
   show evalV D.host.F w (α * _) = evalV D.host.F w α
   rw [map_mul, GlobalTheory.FinPlLoc.evalV_ePl]
   by_cases hw : w = v
-  · rw [if_pos hw, mul_one]
-  · rw [if_neg hw, mul_zero, h w hw]
+  · rw [ite_eq_left hw, mul_one]
+  · rw [ite_eq_right hw, mul_zero, h w hw]
 
 theorem smul_mem_homLat {m n : ℕ} {Λ : Submodule (𝓞 D.host.E) (Fin n → D.host.E)}
     {Λ' : Submodule (𝓞 D.host.E) (Fin m → D.host.E)} {𝔪 : Ideal (𝓞 D.host.E)} (h𝔪 : 𝔪 ≠ ⊥)
@@ -639,7 +639,7 @@ theorem GlobalTheory.DepthMap.smul_mulVec_mem_latV : All fun {D} _ _ {sc} {G} _ 
       have hz : pairA D.host.F 0 (GlobalTheory.FinPlLoc.ePl D (· = v)) ⊗ₜ[D.host.F] c ∈
           GlobalTheory.SeeSaw.idV ((G.pl.modul sc : Ideal (𝓞 D.host.E)) : GlobalTheory.SeeSaw.FI D)⁻¹ v :=
         AddSubgroup.subset_closure ⟨_, GlobalTheory.FinPlLoc.ePl_int _, fun w hw => by
-          rw [GlobalTheory.FinPlLoc.evalV_ePl, if_neg hw], c, hc, rfl⟩
+          rw [GlobalTheory.FinPlLoc.evalV_ePl, ite_eq_right hw], c, hc, rfl⟩
       have hs' : pairA D.host.F 0 α ⊗ₜ[D.host.F] b ∈ GlobalTheory.SeeSaw.idV D.host.AA⁻¹ v :=
         AddSubgroup.subset_closure ⟨α, hα, hsupp, b, hb, rfl⟩
       show (pairA D.host.F 0 α ⊗ₜ[D.host.F] (b * c)) • (u *ᵥ y) ∈ _

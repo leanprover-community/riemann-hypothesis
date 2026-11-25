@@ -692,21 +692,21 @@ private theorem embQ_fl (l : ℕ) [hl : Fact l.Prime] (T : Type) [AddCommGroup T
       map_zero' := by
         funext i
         by_cases h : (i : ℕ) < d
-        · simp only [h, dif_pos, hzero, Pi.zero_apply]
-        · simp only [h, dif_neg, not_false_eq_true, Pi.zero_apply]
+        · simp only [h, dite_eq_left, hzero, Pi.zero_apply]
+        · simp only [h, dite_eq_right, not_false_eq_true, Pi.zero_apply]
       map_add' := by
         intro s t
         funext i
         by_cases h : (i : ℕ) < d
-        · simp only [h, dif_pos, hadd, Pi.add_apply]
-        · simp only [h, dif_neg, not_false_eq_true, Pi.add_apply, add_zero] }
+        · simp only [h, dite_eq_left, hadd, Pi.add_apply]
+        · simp only [h, dite_eq_right, not_false_eq_true, Pi.add_apply, add_zero] }
   refine ⟨g, ?_⟩
   intro s t hst
   have key : E.toFun s = E.toFun t := by
     funext j
     have := congr_fun hst (Fin.castLE hd j)
     simp only [g, AddMonoidHom.coe_mk, ZeroHom.coe_mk, Fin.coe_castLE, Fin.eta] at this
-    rwa [dif_pos j.isLt, dif_pos j.isLt] at this
+    rwa [dite_eq_left j.isLt, dite_eq_left j.isLt] at this
   calc s = E.invFun (E.toFun s) := (E.left_inv s).symm
     _ = E.invFun (E.toFun t) := by rw [key]
     _ = t := E.left_inv t
@@ -1573,7 +1573,7 @@ theorem UpperTheory.V.Two.orbTwo :
     calc _ ≤ (abU Ω M).index * ((cycZ ℚ Ω 2).ker ⊔ Dec A₀).index := hle
       _ ≤ M.deg * c := by rw [hi]; exact Nat.mul_le_mul_left _ hKDle
       _ = c * M.deg := Nat.mul_comm _ _
-  · push_neg at hex
+  · push Not at hex
     exact ⟨∅, by simp, by simp, fun A hA => absurd hA (not_lt.mpr (hex A))⟩
 end -- clump:auto
 end -- clump:auto
@@ -1890,7 +1890,7 @@ theorem towerFixed (hFW : Published.FerreroWashington) (l : ℕ) [hl : Fact l.Pr
       Tower.GenLE ℤ_[l] (Tower.XX l L) R ∧ Tower.IsTower l L R := by
   have hμ : ∀ (L : Type) [Field L] [NumberField L], IsAbField A L → HasMuQ l L := fun L _ _ hL => by
     unfold HasMuQ
-    rw [if_neg h2]
+    rw [ite_eq_right h2]
     exact hasMuQ.1 l A L hA hL
   obtain ⟨r, hr⟩ := abRk hFW l A hμ
   refine ⟨max 1 r, fun L _ _ hL => ?_⟩

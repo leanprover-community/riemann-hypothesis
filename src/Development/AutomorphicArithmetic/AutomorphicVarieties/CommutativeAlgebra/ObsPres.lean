@@ -169,13 +169,13 @@ theorem op_detect {O B A R κ : Type} [CommRing O] [IsLocalRing O] [CommRing B] 
     rw [sub_mul, sub_eq_zero] at this
     rw [this, Algebra.smul_def]
   have h7 := hind (fun u => b u - if u = u0 then 1 + ∑ v, b v * (c v * d) else 0) (by
-    simp only [sub_smul, Finset.sum_sub_distrib, ite_smul, zero_smul, Finset.sum_ite_eq', Finset.mem_univ, if_true,
+    simp only [sub_smul, Finset.sum_sub_distrib, ite_smul, zero_smul, Finset.sum_ite_eq', Finset.mem_univ, ite_true,
       add_smul, one_smul, Finset.sum_smul]
     simp only [δ, smul_sub, Finset.sum_sub_distrib, smul_smul] at h6
     linear_combination h6)
   have h8 : ∑ u, (b u - if u = u0 then 1 + ∑ v, b v * (c v * d) else 0) * (c u * d) ∈ maximalIdeal O :=
     Ideal.sum_mem _ fun u _ => Ideal.mul_mem_right _ _ (h7 u)
-  simp only [sub_mul, Finset.sum_sub_distrib, ite_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, if_true,
+  simp only [sub_mul, Finset.sum_sub_distrib, ite_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, ite_true,
     hd, mul_one] at h8
   rw [sub_add_cancel_right, neg_mem_iff] at h8
   exact (maximalIdeal.isMaximal O).ne_top ((Ideal.eq_top_iff_one _).2 h8)
@@ -402,10 +402,10 @@ theorem UpperTheory.V.Alg.obs_pres :
   rw [hf]
   refine le_antisymm (Ideal.span_mono ?_) (Ideal.span_le.2 ?_)
   · rintro _ ⟨u, rfl⟩
-    exact ⟨⟨u, u.2.trans_le bound⟩, dif_pos u.2⟩
+    exact ⟨⟨u, u.2.trans_le bound⟩, dite_eq_left u.2⟩
   · rintro _ ⟨u, rfl⟩
     by_cases h : u.1 < n
-    · simp only [dif_pos h]
+    · simp only [dite_eq_left h]
       exact Ideal.subset_span ⟨_, rfl⟩
-    · simp only [dif_neg h]
+    · simp only [dite_eq_right h]
       exact zero_mem _

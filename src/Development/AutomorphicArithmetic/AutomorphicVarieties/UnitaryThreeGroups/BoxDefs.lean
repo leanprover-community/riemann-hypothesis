@@ -86,7 +86,7 @@ theorem unitaryGroupEmbedding_baseLift_eq_zero_of_wt_ne {G R : Type} [Group G] [
 
 def sgnPerm : ℤˣ →* Equiv.Perm Bool where
   toFun s := if s = 1 then 1 else Function.Involutive.toPerm not Bool.not_not
-  map_one' := if_pos rfl
+  map_one' := ite_eq_left rfl
   map_mul' s t := by
     rcases Int.units_eq_one_or s with rfl | rfl <;> rcases Int.units_eq_one_or t with rfl | rfl <;> decide
 

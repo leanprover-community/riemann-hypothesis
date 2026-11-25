@@ -1464,13 +1464,13 @@ theorem pairSlices : PairSlices := by
   refine ⟨fun m₂ => ?_, fun m₁ => ?_⟩
   · obtain ⟨φ, hφ, e⟩ := h₁ m₂
     have hex : ∃ φ : Sm E a, φ.1 = fun x => F (x, m₂) := ⟨φ, e⟩
-    have hs : sl₁ F m₂ = hex.choose := by simp only [sl₁, dif_pos hex]
+    have hs : sl₁ F m₂ = hex.choose := by simp only [sl₁, dite_eq_left hex]
     have hc : hex.choose = φ := Subtype.ext (hex.choose_spec.trans e.symm)
     rw [hs, hc]
     exact ⟨hφ, e⟩
   · obtain ⟨φ, hφ, e⟩ := h₂ m₁
     have hex : ∃ φ : Sm E b, φ.1 = fun x => F (m₁, x) := ⟨φ, e⟩
-    have hs : sl₂ F m₁ = hex.choose := by simp only [sl₂, dif_pos hex]
+    have hs : sl₂ F m₁ = hex.choose := by simp only [sl₂, dite_eq_left hex]
     have hc : hex.choose = φ := Subtype.ext (hex.choose_spec.trans e.symm)
     rw [hs, hc]
     exact ⟨hφ, e⟩

@@ -646,7 +646,7 @@ theorem theta_injective (hcard : Fintype.card (E →+* L) = Module.finrank ℚ E
       by_cases htu : u = t
       · subst htu
         simpa using this
-      · rw [if_neg (Ne.symm htu)] at this
+      · rw [ite_eq_right (Ne.symm htu)] at this
         rw [Pi.single_eq_of_ne htu]
         simpa using this
     · have h0 : (Pi.single a 1 : Fin r → E) b = 0 := Pi.single_eq_of_ne hb 1
@@ -748,12 +748,12 @@ theorem map_eigenLat [NumberField L] (hcard : Fintype.card (E →+* L) = Module.
       rw [phi_apply, thetaO_apply, theta_apply, map_sum, Finset.sum_eq_single t]
       · simp only [map_sum, map_smul]
         refine Finset.sum_congr rfl fun a _ => ?_
-        rw [eigProj_eigProj, if_pos rfl]
+        rw [eigProj_eigProj, ite_eq_left rfl]
       · intro u _ hu
 
         simp only [map_sum, map_smul]
         refine Finset.sum_eq_zero fun a _ => ?_
-        rw [eigProj_eigProj, if_neg hu, smul_zero]
+        rw [eigProj_eigProj, ite_eq_right hu, smul_zero]
       · simp
     have h6 : z = Pi.single t (z t) := by
       apply hinj

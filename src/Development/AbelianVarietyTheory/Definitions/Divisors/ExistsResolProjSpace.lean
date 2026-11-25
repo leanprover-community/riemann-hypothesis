@@ -370,7 +370,7 @@ theorem invIf_injective : Function.Injective (invIf ψ hψ q) := fun x y e =>
 
 def equivIf (hq : q) : rangeIf ψ q ≃ₗ[F] S :=
   LinearEquiv.ofBijective (invIf ψ hψ q) ⟨invIf_injective ψ hψ q, fun s =>
-    ⟨⟨ψ s, by rw [rangeIf, if_pos hq]; exact ⟨s, rfl⟩⟩, hψ (apply_invIf _ _ _ _)⟩⟩
+    ⟨⟨ψ s, by rw [rangeIf, ite_eq_left hq]; exact ⟨s, rfl⟩⟩, hψ (apply_invIf _ _ _ _)⟩⟩
 
 variable {Nm : (F →+* ℂ) → S → ℝ} (M : Submodule (𝓞 F) S)
 
@@ -389,7 +389,7 @@ theorem isFull_latIf : IsFull (latIf ψ hψ q M) := by
     refine ⟨f.isFull.fg.map _, ?_⟩
     refine (Submodule.span_image e.symm.toLinearMap).trans ?_
     rw [f.isFull.span, Submodule.map_top, LinearEquiv.range]
-  · have : Subsingleton (rangeIf ψ q) := by rw [rangeIf, if_neg hq]; infer_instance
+  · have : Subsingleton (rangeIf ψ q) := by rw [rangeIf, ite_eq_right hq]; infer_instance
     exact ⟨by rw [Subsingleton.elim (latIf ψ hψ q M) ⊥]; exact Submodule.fg_bot, Subsingleton.elim _ _⟩
 
 theorem exists_famIf : ∃ g : HermFam F (rangeIf ψ q), g.IsConjInv ∧ (q → ∀ σ x, g.nrm σ x = Nm σ (invIf ψ hψ q x)) := by
@@ -415,8 +415,8 @@ def dataOf : Data F where
   T := T
   le_T := hT
   V j := rangeIf (ψ j) (j ≤ T)
-  global_le j hj := by rw [rangeIf, if_pos hj]; exact hle j hj
-  V_zero := by rw [rangeIf, if_pos T.zero_le]; exact le_antisymm h0 (hle 0 T.zero_le)
+  global_le j hj := by rw [rangeIf, ite_eq_left hj]; exact hle j hj
+  V_zero := by rw [rangeIf, ite_eq_left T.zero_le]; exact le_antisymm h0 (hle 0 T.zero_le)
   M j := latIf (ψ j) (hψ j) _ (M j)
   full j := isFull_latIf _ _ (hM j)
   nm j := (exists_famIf _ (hψ j) (hM j)).choose

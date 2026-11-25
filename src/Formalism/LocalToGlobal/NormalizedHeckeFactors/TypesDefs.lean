@@ -144,20 +144,6 @@ def IsGenSys (ζ : ℕ → Formalism.CyclotomicNorms.Fbar g) : Prop :=
 
 end Series
 
-section SeriesLemmas
-
-variable {g : ℕ} [Fact g.Prime]
-
-end SeriesLemmas
-
-section SeriesTriv
-
-variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
-
-variable {g : ℕ} [Fact g.Prime]
-
-end SeriesTriv
-
 section TameChar
 
 def TameCoupled {E Ω : Type} [Field E] [Field Ω] [Algebra E Ω] (A : ValuationSubring Ω) {p : ℕ} [Fact p.Prime]
@@ -174,11 +160,5 @@ theorem tameQuot_mem {E Ω : Type} [Field E] [Field Ω] [Algebra E Ω] (A : Valu
   mem_of_pow_eq_one A hm (tameQuot_pow σ hp hy)
 
 end TameChar
-
-section SeriesAut
-
-variable {g : ℕ} [Fact g.Prime]
-
-end SeriesAut
 
 end Formalism.L2.NT

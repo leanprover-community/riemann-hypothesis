@@ -1160,7 +1160,7 @@ theorem pair_dichotomy : Dichotomy := by
     · simp only [star_mul', star_add, hst, hDis]
       linear_combination hDi
   · right
-    push_neg at hs
+    push Not at hs
     have hcoe : ∀ z : R₀, IsUnit z → IsUnit (z : R) := fun z hz => hz.map R₀.subtype
     have key : ∀ a b : R₀, IsUnit a ∨ IsUnit b → IsUnit ((a : R) + b * θ) := by
       intro a b hab
@@ -1318,7 +1318,7 @@ theorem sel_le (σ : R ≃+* R) (ϖ : R) (hϖ0 : ϖ ≠ 0) (hϖ : ¬ IsUnit ϖ) 
     congr 2
     omega
   · exfalso
-    push_neg at hmk
+    push Not at hmk
     have h2 : ϖ ^ (2 * k) • (ϖ ^ (2 * (m - k)) • ((h₁.map σ)ᵀ * A * h₁)) = ϖ ^ (2 * k) • A' := by
       rw [smul_smul, ← pow_add, ← hB]
       congr 2

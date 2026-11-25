@@ -57,9 +57,9 @@ theorem hw_weight_eq {n : ℕ} (ν : Fin n → ℕ) (hν : Antitone ν) :
     rw [h1, h2]
     by_cases hts : t.val ≤ s.val
     · have h3 : t.val < s.val + 1 := by omega
-      simp only [hts, h3, if_true, mul_one]
+      simp only [hts, h3, ite_true, mul_one]
     · have h3 : ¬ t.val < s.val + 1 := by omega
-      simp only [hts, h3, if_false, mul_zero]
+      simp only [hts, h3, ite_false, mul_zero]
   have hsum : ∑ s : Fin n, (ν s - nuNext ν s) * initW n (s.val + 1) t
       = ∑ i ∈ Finset.range n,
           (if t.val ≤ i then extNu ν i - extNu ν (i + 1) else 0) := by
@@ -83,8 +83,8 @@ theorem hw_weight_eq {n : ℕ} (ν : Fin n → ℕ) (hν : Antitone ν) :
         · refine Finset.sum_eq_zero (fun i hi => ?_)
           rw [Finset.mem_range] at hi
           have h0 : ¬ t.val ≤ i := by omega
-          exact if_neg h0
-        · exact Finset.sum_congr rfl (fun i hi => if_pos (Finset.mem_Ico.mp hi).1)
+          exact ite_eq_right h0
+        · exact Finset.sum_congr rfl (fun i hi => ite_eq_left (Finset.mem_Ico.mp hi).1)
     _ = extNu ν t.val := by
         rw [zero_add]
         exact sum_Ico_tsub_telescope _ n hg hz (n - t.val) t.val rfl

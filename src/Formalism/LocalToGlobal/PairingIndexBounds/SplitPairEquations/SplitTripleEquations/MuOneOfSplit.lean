@@ -168,16 +168,16 @@ theorem mu_one_of_split {H : Sesq V} {α : V → ℂ} {Λ₁ Λ₂ Λ₃ A A' : 
       intro q₂ _
       by_cases hex : ∃ s₂ ∈ R₂', q₂ + s₂ ∈ Λ₁
       · obtain ⟨s, hs, hqs⟩ := hex
-        rw [if_pos ⟨s, hs, hqs⟩, Finset.sum_eq_single_of_mem s hs, if_pos hqs]
+        rw [ite_eq_left ⟨s, hs, hqs⟩, Finset.sum_eq_single_of_mem s hs, ite_eq_left hqs]
         intro b hb hne
-        rw [if_neg]
+        rw [ite_eq_right]
         intro hqb
         apply hne
         apply hR₂'.2.1 b hb s hs
         have e : b - s = (q₂ + b) - (q₂ + s) := by abel
         rw [e]; exact Λ₁.sub_mem hqb hqs
-      · rw [if_neg hex]
-        exact Finset.sum_eq_zero fun b hb => if_neg fun h => hex ⟨b, hb, h⟩
+      · rw [ite_eq_right hex]
+        exact Finset.sum_eq_zero fun b hb => ite_eq_right fun h => hex ⟨b, hb, h⟩
     rw [Finset.sum_congr rfl inner, ← Finset.sum_filter]
     refine char_sum (G := gGrp Λ₁ Λ₂ Λ₃ A') (K := Λ₂) ?_ ?_ ?_ χ ?_ ?_
     · intro x hx
@@ -228,14 +228,14 @@ theorem mu_one_of_split {H : Sesq V} {α : V → ℂ} {Λ₁ Λ₂ Λ₃ A A' : 
       have e : q.1 + q.2 + (s.1 + s.2) = (q.1 + s.1) + (q.2 + s.2) := by abel
       by_cases h1 : q.1 + s.1 ∈ Λ₁
       · by_cases h2 : q.2 + s.2 ∈ Λ₁
-        · rw [if_pos (by rw [e]; exact Λ₁.add_mem h1 h2), if_pos h1, if_pos h2, one_mul]
+        · rw [ite_eq_left (by rw [e]; exact Λ₁.add_mem h1 h2), ite_eq_left h1, ite_eq_left h2, one_mul]
           rw [(psiQuadratic V H α Λ₁ Λ₂ Λ₃ hT).1 q.1 hq1.1 s.1 hs1.1 h1 q.2 hq2.1 s.2 hs2.1 h2]
           rw [hS.isoA _ _ hq1.2 hs1.2 hq1.1 hs1.1 h1, hS.isoA' _ _ hq2.2 hs2.2 hq2.1 hs2.1 h2, one_mul, one_mul]
-        · rw [if_neg h2, mul_zero, if_neg]
+        · rw [ite_eq_right h2, mul_zero, ite_eq_right]
           intro h
           rw [e] at h
           exact h2 (sep hm₁ hS.dec₁ (A.add_mem hq1.2 hs1.2) (A'.add_mem hq2.2 hs2.2) h).2
-      · rw [if_neg h1, zero_mul, if_neg]
+      · rw [ite_eq_right h1, zero_mul, ite_eq_right]
         intro h
         rw [e] at h
         exact h1 (sep hm₁ hS.dec₁ (A.add_mem hq1.2 hs1.2) (A'.add_mem hq2.2 hs2.2) h).1

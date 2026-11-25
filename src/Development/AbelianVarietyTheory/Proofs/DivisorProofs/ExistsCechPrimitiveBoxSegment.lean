@@ -118,7 +118,7 @@ theorem exists_analytic_param_of_primitives_on_box : ∀ {P : Type} [NormedAddCo
   have hFeq : ∀ k, ∀ p ∈ W k, p ∈ Z ×ˢ C → F p = G k p - G' k p := by
     intro k p hk hp
     have h : ∃ k, p ∈ W k := ⟨k, hk⟩
-    simp only [F, dif_pos h]
+    simp only [F, dite_eq_left h]
     exact hov _ _ p h.choose_spec hk hp
   have hFloc : ∀ k, ∀ p ∈ W k, p ∈ Z ×ˢ C → (fun q => G k q - G' k q) =ᶠ[nhds p] F := by
     intro k p hk hp
@@ -182,7 +182,7 @@ theorem _root_.GlobalTheory.exists_merge_fibre_primitives : ∀ {P : Type} [Norm
       fun k l p hk hl hp => hG'c k l p hk hl (hsubC' hp)⟩
   classical
   have hCeq : ∀ k, ∀ q ∈ W k ∩ Z ×ˢ C,
-      (if q.2 ∈ C then G k q else G' k q + h q.1) = G k q := fun k q hq => if_pos hq.2.2
+      (if q.2 ∈ C then G k q else G' k q + h q.1) = G k q := fun k q hq => ite_eq_left hq.2.2
   have hC'eq : ∀ k, ∀ q ∈ W k ∩ Z ×ˢ C',
       (if q.2 ∈ C then G k q else G' k q + h q.1) = G' k q + h q.1 := by
     intro k q hq
@@ -221,7 +221,7 @@ theorem _root_.GlobalTheory.exists_merge_fibre_primitives : ∀ {P : Type} [Norm
       simp
   · dsimp only
     rcases memcase p hp with h1 | h2
-    · rw [if_pos h1.2, if_pos h1.2]
+    · rw [ite_eq_left h1.2, ite_eq_left h1.2]
       exact hGc k l p hk hl h1
     · rw [hC'eq k p ⟨hk, h2⟩, hC'eq l p ⟨hl, h2⟩, add_sub_add_right_eq_sub]
       exact hG'c k l p hk hl h2

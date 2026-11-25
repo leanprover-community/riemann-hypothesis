@@ -139,8 +139,8 @@ theorem integral {J : Type} [DecidableEq J] (ν : Valuation ℂ ℝ≥0) (L : Fi
   have hc : ∀ x, ν (c x) ≤ 1 ∧ ν (c x * x) ≤ 1 ∧ c x ≠ 0 := by
     intro x
     by_cases hx : ν x ≤ 1
-    · simp only [c, if_pos hx, one_mul]; exact ⟨by simp, hx, one_ne_zero⟩
-    · simp only [c, if_neg hx]
+    · simp only [c, ite_eq_left hx, one_mul]; exact ⟨by simp, hx, one_ne_zero⟩
+    · simp only [c, ite_eq_right hx]
       push Not at hx
       have hx0 : x ≠ 0 := by rintro rfl; simp at hx
       refine ⟨?_, ?_, inv_ne_zero hx0⟩

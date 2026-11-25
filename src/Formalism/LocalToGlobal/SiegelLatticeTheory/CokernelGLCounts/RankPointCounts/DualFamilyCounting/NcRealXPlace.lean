@@ -85,7 +85,7 @@ theorem coordW_exact (r k : ℕ) (T T' sc : ℝ) (hk : 1 ≤ k) (hT : 0 < T) (hT
           · rw [hg]
             exact mul_pos (Finset.prod_pos fun a _ => pow_pos (norm_pos_iff.2 (mul_ne_zero (hlam0 a) (hq0 a))) 2)
               (by linarith)
-        rw [Gi, Set.indicator_of_mem hmem, hw, Formalism.QuantumDeterminants.bcWeight, if_pos hz.le, ENNReal.ofReal_mul hΛ0.le, mul_assoc]
+        rw [Gi, Set.indicator_of_mem hmem, hw, Formalism.QuantumDeterminants.bcWeight, ite_eq_left hz.le, ENNReal.ofReal_mul hΛ0.le, mul_assoc]
       · have hlt : Complex.normSq q.2 < T * T' := lt_of_le_of_ne (not_lt.1 hz) hq
         have hnot : coordSc r sc q ∉ GoodLoc (r := r) T T' := by
           rintro ⟨-, hp⟩
@@ -93,8 +93,8 @@ theorem coordW_exact (r k : ℕ) (T T' sc : ℝ) (hk : 1 ≤ k) (hT : 0 < T) (hT
           exact absurd hp (not_lt.2 (mul_nonpos_of_nonneg_of_nonpos
             (Finset.prod_nonneg fun a _ => by positivity) (sub_neg.2 hlt).le))
         rw [Gi, Set.indicator_apply_eq_zero.2 (fun h => absurd h hnot), Formalism.QuantumDeterminants.bcWeight,
-          if_neg (not_le.2 hlt), ENNReal.ofReal_zero, zero_mul, mul_zero]
-    · push_neg at hq0
+          ite_eq_right (not_le.2 hlt), ENNReal.ofReal_zero, zero_mul, mul_zero]
+    · push Not at hq0
       obtain ⟨a, ha⟩ := hq0
       have hnot : coordSc r sc q ∉ GoodLoc (r := r) T T' := by
         rintro ⟨hne, -⟩
@@ -228,7 +228,7 @@ theorem norm_sq_realifyE (Y : Matrix (Fin m) (Fin m) ℂ) : ‖realifyE Y‖ ^ 2
   simp only [Fintype.sum_prod_type, Fintype.sum_bool, trace, diag, Matrix.mul_apply, conjTranspose_apply, Complex.re_sum]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
-  simp only [realifyE_apply, realifyFun, if_true, Bool.false_eq_true, if_false, Real.norm_eq_abs, sq_abs,
+  simp only [realifyE_apply, realifyFun, ite_true, Bool.false_eq_true, ite_false, Real.norm_eq_abs, sq_abs,
     Complex.mul_re, Complex.star_def, Complex.conj_re, Complex.conj_im]
   ring
 
@@ -467,14 +467,14 @@ theorem jacLocX_of (hJ : JacGauge) : JacLocX := by
   have hμs : IsSection k r zB zB' μs := by
     refine ⟨fun i j => (hμ.1 i j).congr fun ζ hζ => ?_, fun ζ hζ => ?_⟩
     · have hζ' : Tz k r zB * Tz k r zB' < Complex.normSq ζ := hζ
-      simp only [μs, if_pos hζ']
-    · simp only [μs, if_pos hζ]
+      simp only [μs, ite_eq_left hζ']
+    · simp only [μs, ite_eq_left hζ]
       exact hμ.2 ζ hζ
   have hU : ∀ ζ, (μs ζ)ᴴ * Hb k * μs ζ = Hb k := by
     intro ζ
     by_cases hζ : Tz k r zB * Tz k r zB' < Complex.normSq ζ
-    · simp only [μs, if_pos hζ]; exact (hμ.2 ζ hζ).1
-    · simp only [μs, if_neg hζ, Matrix.conjTranspose_one, Matrix.one_mul, Matrix.mul_one]
+    · simp only [μs, ite_eq_left hζ]; exact (hμ.2 ζ hζ).1
+    · simp only [μs, ite_eq_right hζ, Matrix.conjTranspose_one, Matrix.one_mul, Matrix.mul_one]
   have hMuj : ∀ q : (Fin r → ℂ) × ℂ, (∀ a, q.1 a ≠ 0) →
       Formalism.REAL.inUJ ε (Qm e f wf z0 * bigCell k r q.1 (μs q.2) * (Qm e f wf z0)⁻¹) := fun q hq =>
     JL.inUJ_conj (gramQ hF) hdet (JL.bigMem_holds k r q.1 (μs q.2) hq (hU q.2))
@@ -485,7 +485,7 @@ theorem jacLocX_of (hJ : JacGauge) : JacLocX := by
       uMat (h0 (JL.coordSc r 1 q)) = Qm e f wf z0 * bigCell k r q.1 (μs q.2) * (Qm e f wf z0)⁻¹ := by
     intro q hq
     have hq' : ∀ a, (JL.qOf r 1 (JL.coordSc r 1 q)).1 a ≠ 0 := by rw [JL.qOf_coordSc r one_pos]; exact hq
-    simp only [h0, dif_pos hq', JL.uMat_ujOf, JL.qOf_coordSc r one_pos]
+    simp only [h0, dite_eq_left hq', JL.uMat_ujOf, JL.qOf_coordSc r one_pos]
   have hh0 : IsSecLoc ε 1 e (Qm e f wf z0 *ᵥ zB) (Qm e f wf z0 *ᵥ zB') (Tz k r zB) (Tz k r zB') h0 := by
     intro c hc
     have hq1 : ∀ a, (JL.qOf r 1 c).1 a ≠ 0 := fun a =>
@@ -604,7 +604,7 @@ theorem jacLocX_of (hJ : JacGauge) : JacLocX := by
       have hw := JL.psiP_mul_B hdet u u' (bigCell k r q.1 (μs q.2)) (h0 (JL.coordSc r 1 q)) (hh0q q hq)
       rw [hpsi] at hw
       rw [hw, hext]
-    · push_neg at hq
+    · push Not at hq
       obtain ⟨a, ha0⟩ := hq
       rw [JL.bcWeight_zero _ _ q a ha0, ENNReal.ofReal_zero, zero_mul, zero_mul]
   rw [lintegral_congr hpt, JL.coordinate_weight_lintegral r k (Tz k r zB) (Tz k r zB') hk hT hT' F]

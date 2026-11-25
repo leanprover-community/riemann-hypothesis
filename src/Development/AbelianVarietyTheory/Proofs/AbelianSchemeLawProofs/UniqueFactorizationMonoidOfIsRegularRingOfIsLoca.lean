@@ -229,7 +229,7 @@ private lemma uniqueFactorizationMonoid_localization_of_height_le
           (Algebra.linearMap (Localization.Away x) (Localization.AtPrime q))
           (p.map (algebraMap (Localization.AtPrime Q) (Localization.Away x))))).extendScalarsOfIsLocalization
         q.primeCompl (Localization.AtPrime q)).trans (LinearEquiv.ofEq _ _ heq)).symm
-  · push_neg at hm
+  · push Not at hm
     have hbot := _root_.ReciprocityTheory.CA.AB.RegA.IsRegularLocalRing.maximalIdeal_eq_bot_of_le_sq (Localization.AtPrime Q) hm
     have hp : p = ⊥ := le_bot_iff.1 (hbot ▸ IsLocalRing.le_maximalIdeal (Ideal.IsPrime.ne_top ‹_›))
     exact absurd hph (by rw [hp, Ideal.height_bot]; exact zero_ne_one)

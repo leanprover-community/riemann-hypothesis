@@ -99,7 +99,7 @@ theorem Formalism.L2.SG.NormCut.psi_natural_equiv_holds : Formalism.L2.SG.NormCu
   refine ⟨?_, ?_, ?_⟩
   · by_cases hx : IsUni k x
     · unfold psiNat
-      rw [if_pos (isUni_mul hx hw), if_pos hx, if_pos hw]
+      rw [ite_eq_left (isUni_mul hx hw), ite_eq_left hx, ite_eq_left hw]
       exact psiU_mul ψ₀ hx hw
     · have hxw : ¬ IsUni k (x * w) := by
         intro h
@@ -107,10 +107,10 @@ theorem Formalism.L2.SG.NormCut.psi_natural_equiv_holds : Formalism.L2.SG.NormCu
         rw [mul_inv_cancel_right] at h'
         exact hx h'
       unfold psiNat
-      rw [if_neg hxw, if_neg hx, zero_mul]
+      rw [ite_eq_right hxw, ite_eq_right hx, zero_mul]
   · by_cases hx : IsUni k x
     · unfold psiNat
-      rw [if_pos (isUni_mul hw hx), if_pos hx, if_pos hw]
+      rw [ite_eq_left (isUni_mul hw hx), ite_eq_left hx, ite_eq_left hw]
       exact psiU_mul ψ₀ hw hx
     · have hwx : ¬ IsUni k (w * x) := by
         intro h
@@ -118,8 +118,8 @@ theorem Formalism.L2.SG.NormCut.psi_natural_equiv_holds : Formalism.L2.SG.NormCu
         rw [inv_mul_cancel_left] at h'
         exact hx h'
       unfold psiNat
-      rw [if_neg hwx, if_neg hx, mul_zero]
+      rw [ite_eq_right hwx, ite_eq_right hx, mul_zero]
   · unfold psiNat psiU
-    rw [if_pos hw]
+    rw [ite_eq_left hw]
     first
       | (rw [Complex.conj_mul', norm_addChar]; simp)

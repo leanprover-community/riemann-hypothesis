@@ -165,7 +165,7 @@ theorem ParamPieceInt.proof : ParamPieceInt.Statement := by
     have hsum : chartDens W A ((σ '' P).indicator f) φ (g w) =
         f (σ w) * ReciprocityTheory.AnForm.maDens (fun k => φ k ∘ s) (g w) := by
       unfold chartDens sheetSum
-      rw [finsum_eq_single _ (σ w), finsum_eq_if, if_pos hfib, dite_eq_left hex]
+      rw [finsum_eq_single _ (σ w), finsum_eq_if, ite_eq_left hfib, dite_eq_left hex]
       · beta_reduce
         rw [Set.indicator_of_mem (Set.mem_image_of_mem σ hw), IndefiniteRowSideFullHecke.ComplexSets.maDens_congr_of_eventuallyEq fun k =>
           (SheetSumMeasurable.sheet_eventuallyEq hs hex.choose_spec).fun_comp (φ k)]

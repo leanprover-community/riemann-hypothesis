@@ -690,7 +690,7 @@ theorem UpperTheory.V.Fr.alg_vertex :
       by_cases hd : ∃ s ∈ L, s.2.1 ≠ s.2.2
       · obtain ⟨c, -, hc⟩ := hC.cyc L hL hd
         exact ⟨c, hc⟩
-      · push_neg at hd
+      · push Not at hd
         have hm : (L.map (fun s => ρ.r s.1 s.2.1 s.2.2)).prod ∈ (algebraMap C K).rangeS := by
           apply list_prod_mem
           intro y hy

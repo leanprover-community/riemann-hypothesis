@@ -54,7 +54,7 @@ theorem fmat_sup (D : D7) {T : D.host.E} (G : LFlag (D.sp.Y 0) D.R.rS T) (n : (V
     (a : Fin D.R.rS) :
     fmat D G n a.castSucc a.succ = G.fl.coefX (n (frame G a.succ) - frame G a.succ) a := by
   unfold fmat
-  rw [if_neg (fun h => by have := congrArg Fin.val h; simp at this), zero_add, dite_eq_left (by simp)]
+  rw [ite_eq_right (fun h => by have := congrArg Fin.val h; simp at this), zero_add, dite_eq_left (by simp)]
   rfl
 
 theorem loc_entry (D : D7) (Λ : Submodule (𝓞 D.host.E) (VS D).V) {T T' : D.host.E} (G : LFlag (D.sp.Y 0) D.R.rS T)
@@ -133,7 +133,7 @@ theorem loc_entry (D : D7) (Λ : Submodule (𝓞 D.host.E) (VS D).V) {T T' : D.h
       · rw [show M' c = 0 from hM'zero c hac, zero_mul]
       · rw [coefX_eq_zero _ ((nlam_frame_mem G hn).1 c) a (by omega), mul_zero]
     rw [h3, add_zero]
-    simp only [coefX_smul_e, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    simp only [coefX_smul_e, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     rfl
   rw [← hYa]
   exact hcoef

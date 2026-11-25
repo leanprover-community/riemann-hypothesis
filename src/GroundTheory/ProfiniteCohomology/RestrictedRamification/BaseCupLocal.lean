@@ -17,8 +17,6 @@ open CategoryTheory MonoidalCategory NumberField IsDedekindDomain GroundTheory.G
 
 open scoped DirectSum
 
-attribute [local instance 2000] Rep.hV2
-
 noncomputable section
 
 section ULiftCompareAlong

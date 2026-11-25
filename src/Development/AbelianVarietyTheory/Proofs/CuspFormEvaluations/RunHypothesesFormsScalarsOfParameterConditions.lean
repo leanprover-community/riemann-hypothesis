@@ -114,7 +114,6 @@ variable {D : D7} {B : WeightFamilies.Prov D} {P : ModuliIntegralCharts.Prov D} 
 
 abbrev NormDatum (B : WeightFamilies.Prov D) := GlobalTheory.RunIn.SecNorm B
 
-def NormDatum.sup (B : WeightFamilies.Prov D) : NormDatum B := GlobalTheory.RunIn.SecNorm.sup B
 namespace NormDatum
 variable (n : NormDatum B)
 
@@ -330,7 +329,7 @@ theorem sum_primeBound (N Q q d : ℕ) (g : Fin 2 → ℕ) (a b : ℝ) (S : Fins
   unfold primeBound
   simp only [add_mul, Finset.sum_add_distrib, ite_mul, zero_mul, Finset.sum_mul]
   rw [hQ, Finset.sum_ite_mem, Finset.inter_eq_right.2 hA, Finset.sum_comm]
-  simp only [Finset.sum_ite_eq', hq, hd, hg, if_true, Finset.mul_sum]
+  simp only [Finset.sum_ite_eq', hq, hd, hg, ite_true, Finset.mul_sum]
   congr 2
   refine Finset.sum_congr rfl fun p _ => ?_
   ring
@@ -426,33 +425,33 @@ theorem depth_sum {D : D7} (B : WeightFamilies.Prov D) {j : ℕ} (large₂ : Siz
       have hc := (H1algLink.prime_mem_iff la (hg _)).1 (Classical.choose_spec ha)
       have := Finset.single_le_sum (fun i (_ : i ∈ Finset.univ) => e3 (resCharOf la) i)
         (Finset.mem_univ (Classical.choose ha))
-      rw [if_pos hc] at this
+      rw [ite_eq_left hc] at this
       linarith
     · rw [dite_eq_right ha]
       refine mul_le_mul_of_nonneg_left ?_ (by positivity)
       by_cases hb : ((D.host.QS : ℕ) : 𝓞 B.KO) ∈ la.asIdeal
-      · rw [if_pos hb, show ringChar (𝓞 B.KO ⧸ la.asIdeal) = resCharOf la from rfl]
+      · rw [ite_eq_left hb, show ringChar (𝓞 B.KO ⧸ la.asIdeal) = resCharOf la from rfl]
         linarith
-      · rw [if_neg hb]
+      · rw [ite_eq_right hb]
         by_cases hc : ((D.host.q : ℕ) : 𝓞 B.KO) ∈ la.asIdeal ∨ ((D.host.d : ℕ) : 𝓞 B.KO) ∈ la.asIdeal
-        · rw [if_pos hc]
+        · rw [ite_eq_left hc]
           rw [H1algLink.prime_mem_iff la hq, H1algLink.prime_mem_iff la hd] at hc
           rcases hc with hc | hc
-          · rw [if_pos hc]
+          · rw [ite_eq_left hc]
             linarith
-          · rw [if_pos hc]
+          · rw [ite_eq_left hc]
             linarith
-        · rw [if_neg hc]
+        · rw [ite_eq_right hc]
           linarith
   · intro la hla
     have hne : ∀ p ∈ S, p.Prime → ((p : ℕ) : 𝓞 B.KO) ∉ la.asIdeal := fun p hp hpp hm =>
       hla ((H1algLink.prime_mem_iff la hpp).1 hm ▸ hp)
     have hnA : resCharOf la ∉ A := fun h => hla (Finset.mem_union_left _ h)
     have a5 := e4 la
-    rw [if_neg hnA] at a5
+    rw [ite_eq_right hnA] at a5
     unfold nusOf
-    rw [dite_eq_right (fun ⟨i, hi⟩ => hne _ (hgS i) (hg i) hi), if_neg (fun h => hla (hsm ((hQ la).1 h))),
-      if_neg (not_or.2 ⟨hne _ (by simp [hS]) hq, hne _ (by simp [hS]) hd⟩), le_antisymm a5 (h0 la)]
+    rw [dite_eq_right (fun ⟨i, hi⟩ => hne _ (hgS i) (hg i) hi), ite_eq_right (fun h => hla (hsm ((hQ la).1 h))),
+      ite_eq_right (not_or.2 ⟨hne _ (by simp [hS]) hq, hne _ (by simp [hS]) hd⟩), le_antisymm a5 (h0 la)]
     simp
 
 theorem depth_sum_record : ∀ (D : D7) (T : Top D) (h : LawsP T) (j : ℕ) (hj : InR D j) (large₂ : SizeData₂ D) (w : WeightFamilies.Wt D j), 2 * D.R.f * D.R.r ≤ w.n → Real.log (WeightAlgebra.DF w) ≤ 2 * large₂.sc.L → WeightedPrimeSumBoundAlt large₂ (recPJ h j hj) w (nusOf (recB h.toLawsCore) w (nuWt T w)) ∧ ∀ (Nd : NormDatum (recB h.toLawsCore)), WeightedPrimeSumBoundAlt large₂ (Nd.X' (recPJ h j hj) (extAll h j hj) (intAtExt_extAll h j hj)) w (nusOf (recB h.toLawsCore) w (nuWt T w)) := by

@@ -93,7 +93,7 @@ theorem extZero_mem {H : Subgroup T} {A : Subalgebra R (H → R)} {B : Subalgebr
   · have : (fun x : H => extZero H a (t * x)) = fun x => a (⟨t, h⟩ * x) := by
       funext x
       have h' : t * x ∈ H := H.mul_mem h x.2
-      simp only [extZero, dif_pos h']
+      simp only [extZero, dite_eq_left h']
       rfl
     rw [this]
     exact hA a ha _

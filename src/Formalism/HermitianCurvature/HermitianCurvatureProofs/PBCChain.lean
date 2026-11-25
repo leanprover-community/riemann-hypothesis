@@ -53,7 +53,7 @@ theorem mL_pat {f : ℕ} (K : ℕ) (L : Fin f → ℝ) (hL : ∀ v, 0 ≤ L v) (
     have hle : (L v / ‖σ v‖) ^ K ≤ 1 :=
       pow_le_one₀ (div_nonneg (hL v) ha.le) ((div_le_one ha).mpr hv.le)
     unfold crystallineComparison.mfac
-    rw [if_neg ha.ne', min_eq_right hle, div_pow, div_mul_cancel₀]
+    rw [ite_eq_right ha.ne', min_eq_right hle, div_pow, div_mul_cancel₀]
     exact pow_ne_zero _ ha.ne'
   have h2 : ∀ v ∈ (Finset.univ : Finset (Fin f)), v ∉ crystallineComparison.pat L σ → crystallineComparison.mfac K (L v) ‖σ v‖ = 1 := by
     intro v _ hv

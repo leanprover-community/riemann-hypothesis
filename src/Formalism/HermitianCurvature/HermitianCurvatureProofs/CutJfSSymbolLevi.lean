@@ -211,7 +211,7 @@ theorem pw_mulVec (x : Fin (2 * r + k + 1) → ℂ) (i : Fin (2 * r + k + 1)) :
 
 theorem pw_inWb (x : Fin (2 * r + k + 1) → ℂ) : inWb k r (diagonal (pw (k := k) (r := r)) *ᵥ x) := by
   intro i hi
-  rw [pw_mulVec, pw, if_neg (by omega), zero_mul]
+  rw [pw_mulVec, pw, ite_eq_right (by omega), zero_mul]
 
 theorem pw_fix {u : Fin (2 * r + k + 1) → ℂ} (hu : inWb k r u) : diagonal (pw (k := k) (r := r)) *ᵥ u = u := by
   funext i
@@ -238,9 +238,9 @@ theorem flt_sub_pw (x : Fin (2 * r + k + 1) → ℂ) (hx : ∀ b : Fin r, x (esI
   intro i hi
   rw [Pi.sub_apply, pw_mulVec, pw]
   by_cases h : i.val ≤ r + k
-  · rw [if_pos ⟨hi, h⟩, one_mul, sub_self]
+  · rw [ite_eq_left ⟨hi, h⟩, one_mul, sub_self]
   · have e : i = esI k r ⟨2 * r + k - i.val, by omega⟩ := by apply Fin.ext; simp [esI]; omega
-    rw [if_neg (by omega), zero_mul, sub_zero, e, hx]
+    rw [ite_eq_right (by omega), zero_mul, sub_zero, e, hx]
 
 theorem flt_of_orth (x : Fin (2 * r + k + 1) → ℂ)
     (h : ∀ v : Fin (2 * r + k + 1) → ℂ, (∀ b : Fin r, v (esI k r b) = 0) → herm (Hpk k r) x v = 0) : Flt r x := by
@@ -369,7 +369,7 @@ theorem symbolNil_direct : SymbolNil := by
       intro i hi
       by_cases h2 : i.val ≤ r + k
       · have := congrFun hc i
-        rw [pw_mulVec, pw, if_pos ⟨hi, h2⟩, one_mul] at this
+        rw [pw_mulVec, pw, ite_eq_left ⟨hi, h2⟩, one_mul] at this
         exact this
       · have e : i = esI k r ⟨2 * r + k - i.val, by omega⟩ := by apply Fin.ext; simp [esI]; omega
         rw [e]; exact hrange u _

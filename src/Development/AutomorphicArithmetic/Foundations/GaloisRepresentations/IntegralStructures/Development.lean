@@ -1209,7 +1209,7 @@ theorem frobOpsIdx : SphOps → ∀ (E Ω : Type) [Field E] [NumberField E] [IsC
       GlobalTheory.LFun.HasSatGL j.1.1 σ.ρ B → zz j σ = ((UpperTheory.V.Af.algSat a (normV j.1.1) B).map (· ^ j.1.2.2.2)).sum := by
     intro j σ B hB
     have h : ∃ B, GlobalTheory.LFun.HasSatGL j.1.1 σ.ρ B := ⟨B, hB⟩
-    simp only [zz, dif_pos h]
+    simp only [zz, dite_eq_left h]
     rw [show h.choose = B from h.choose_spec.unique hB]
   let T : LocOps l ι Kw J :=
     { pl := fun j => j.1.1

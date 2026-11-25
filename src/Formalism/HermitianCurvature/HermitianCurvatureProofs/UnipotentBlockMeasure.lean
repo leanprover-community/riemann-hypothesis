@@ -451,9 +451,9 @@ theorem t_ClassSquaresSum : Formalism.FourierDecayAlt.PN.ClassSquaresSum := by
     intro p
     simp only [hF]
     by_cases h : cl p.1 = cl p.2
-    · simp only [Set.indicator, Set.mem_ofPred_eq, h, if_true]
+    · simp only [Set.indicator, Set.mem_ofPred_eq, h, ite_true]
       exact (Complex.abs_re_le_norm _).trans (norm_inner_le_norm _ _)
-    · simp only [Set.indicator, Set.mem_ofPred_eq, h, if_false, norm_zero]
+    · simp only [Set.indicator, Set.mem_ofPred_eq, h, ite_false, norm_zero]
       positivity
   have hGs : Summable G := by
     rw [← hinj.summable_iff hsupp]

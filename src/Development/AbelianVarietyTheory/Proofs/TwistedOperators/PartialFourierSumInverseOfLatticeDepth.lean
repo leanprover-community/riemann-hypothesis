@@ -101,7 +101,7 @@ theorem fourierSum_invFourierSum : ∀ (k : Type) [Field k] [ValuativeRel k] [To
         ψ (pairCols P Y (liftRes T)) = ψ (pairCols P (setCols P Y M) (liftRes T)) := fun T => by
       have e2 : pairCols P Y (liftRes T) = pairCols P (setCols P Y M) (liftRes T) +
           ∑ i, ∑ j : P, liftRes T i j * (Y i j - M i j) := by
-        simp only [pairCols, setCols, Matrix.of_apply, Finset.coe_mem, dif_pos, Subtype.coe_eta,
+        simp only [pairCols, setCols, Matrix.of_apply, Finset.coe_mem, dite_eq_left, Subtype.coe_eta,
           ← Finset.sum_add_distrib]
         refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
         ring
@@ -112,7 +112,7 @@ theorem fourierSum_invFourierSum : ∀ (k : Type) [Field k] [ValuativeRel k] [To
         ext i j; by_cases h : j ∈ P <;> simp [setCols, h]
       rw [e3]
       refine hΞ.2 Y _ (GlobalTheory.SplitFlip.FourierDepth.mem_matLat_smul_blockLat.2 ⟨fun i j hj => ?_, fun i j hj => ?_⟩)
-      · simp only [Matrix.of_apply, dif_pos hj]
+      · simp only [Matrix.of_apply, dite_eq_left hj]
         have := neg_mem (hdiff i ⟨j, hj⟩)
         simpa using this
       · simp [hj]

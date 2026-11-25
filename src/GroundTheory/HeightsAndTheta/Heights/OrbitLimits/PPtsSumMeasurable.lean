@@ -88,7 +88,7 @@ theorem PtsSumMeasurable.aestronglyMeasurable_finsum {K : Type} [Fintype K] {ι 
     intro m
     rw [Finset.sum_ite_eq]
     by_cases hm : y ∈ S m
-    · rw [if_pos (hmemF m hm)]
+    · rw [ite_eq_left (hmemF m hm)]
     · split_ifs
       · rfl
       · rw [hfdef]
@@ -107,7 +107,7 @@ theorem PtsSumMeasurable.aestronglyMeasurable_finsum {K : Type} [Fintype K] {ι 
       have hm1S : y ∈ S (Nat.find hP') :=
         ⟨hm1B, fun m' hm' h => Nat.find_min hP' hm' ⟨h.1, h.2.trans hm1w⟩⟩
       filter_upwards [eventually_gt_atTop (Nat.find hP')] with N hN
-      rw [Finset.sum_eq_single_of_mem (Nat.find hP') (Finset.mem_range.2 hN), if_pos hm1w,
+      rw [Finset.sum_eq_single_of_mem (Nat.find hP') (Finset.mem_range.2 hN), ite_eq_left hm1w,
         hterm _ hm1S, hm1w]
       intro m _ hne
       split_ifs with hmw

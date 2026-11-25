@@ -33,7 +33,7 @@ private theorem infl_incl (rd : 𝒪[k] →+* F₀) (fb : GL (Fin n) F₀ → �
 
 private theorem infl_not_mem (rd : 𝒪[k] →+* F₀) (fb : GL (Fin n) F₀ → ℂ) {x : GL (Fin n) k}
     (hx : x ∉ KO k n) : infl rd fb x = 0 :=
-  dif_neg hx
+  dite_eq_right hx
 
 private theorem principal_congruence_le_maximal_compact (rd : 𝒪[k] →+* F₀) : K1 rd n ≤ KO k n := by
   rintro _ ⟨y, -, rfl⟩

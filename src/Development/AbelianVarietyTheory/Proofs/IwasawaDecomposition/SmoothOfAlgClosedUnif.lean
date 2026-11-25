@@ -262,7 +262,7 @@ theorem exists_completion (hk : k τ < m τ) (c : Rest m k τ → K) (i : Rest m
       ∀ O : Subring K, (∀ j, c j ∈ O) → Par k O N := by
   classical
   let v : Fin (m τ) → K := fun j => if h : k τ ≤ (j : ℕ) then c ⟨j, h⟩ else 0
-  have hv : ∀ j : Rest m k τ, v j.1 = c j := fun j => dif_pos j.2
+  have hv : ∀ j : Rest m k τ, v j.1 = c j := fun j => dite_eq_left j.2
   let T : Matrix (Fin (m τ)) (Fin (m τ)) K :=
     ((1 : Matrix _ _ K).updateRow i.1 v).submatrix (Equiv.swap ⟨k τ, hk⟩ i.1) id
   have hd : T.det * T.det = 1 := by
@@ -724,7 +724,7 @@ theorem par_succ_iff {h G : Mat m K} (hh : Par k ⊤ h) (hG : Par k ⊤ G) (hk :
       have e := hrow j
       rw [ht j] at e
       simp only [Matrix.vecMul, dotProduct, Matrix.submatrix_apply, Pi.zero_apply, sub_mul,
-        Finset.sum_sub_distrib, ite_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+        Finset.sum_sub_distrib, ite_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
       rw [← e, sub_self]
     have hv0 := Matrix.eq_zero_of_vecMul_eq_zero (det_submatrix_rest_ne_zero hG τ) hv
     intro σ
@@ -743,7 +743,7 @@ theorem par_succ_iff {h G : Mat m K} (hh : Par k ⊤ h) (hG : Par k ⊤ G) (hk :
           rw [Fin.lt_def] at hij
           omega
         have e := congrFun hv0 ⟨j, hj⟩
-        simp only [hne, if_false, sub_zero, Pi.zero_apply] at e
+        simp only [hne, ite_false, sub_zero, Pi.zero_apply] at e
         have hieq : i = ⟨k σ, hk⟩ := Fin.ext hi'
         subst hieq
         exact e

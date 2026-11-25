@@ -75,7 +75,7 @@ theorem UpperTheory.V.FW.teich :
           simp
         · rw [h]
           exact Units.ext (by simp [redU] <;> rfl)
-    · have he : ee l = 1 := if_neg h2
+    · have he : ee l = 1 := ite_eq_right h2
       have key : ∀ u : (ZMod (l ^ 1))ˣ, ∃ a : WW l, (redU l 1) a = u := by
         intro u
         obtain ⟨ζ, hζ, hred⟩ := exists_root_lift u

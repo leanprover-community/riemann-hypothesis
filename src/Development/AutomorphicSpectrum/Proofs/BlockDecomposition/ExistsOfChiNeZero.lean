@@ -279,7 +279,7 @@ theorem finFun (hC : CondM) (hU : LiftUnit) (hT : InMTop) : FinFun := by
   · refine mem_schwartzBruhat hO (fun x h hh => chi_add hL _ (hh ())) fun x hx j => ?_
     exact mem_of_chi_ne_zero hx
   · unfold gFun
-    rw [if_pos]
+    rw [ite_eq_left]
     · simpa using hone
     · refine ⟨fun j => ?_, fun j hj => ?_⟩
       · by_cases h : j = i₀
@@ -312,7 +312,7 @@ theorem finFun (hC : CondM) (hU : LiftUnit) (hT : InMTop) : FinFun := by
     obtain ⟨h1, h2, h3⟩ := gFun_supp h0
     obtain ⟨u, hu, hu'⟩ := exists_of_chi_ne_zero h3
     have hval : gFun ω M i₀ v = chi ω M (v i₀) := by
-      unfold gFun; rw [if_pos ⟨h1, h2⟩]
+      unfold gFun; rw [ite_eq_left ⟨h1, h2⟩]
     rw [hval, chi_eq hL hu hu']
     have e : (u : FiniteAdeleRing (𝓞 k) k) - 1 = (v i₀ - 1) - (v i₀ - u) := by ring
     have h4 : InM M₀ ((u : FiniteAdeleRing (𝓞 k) k) - 1) := by

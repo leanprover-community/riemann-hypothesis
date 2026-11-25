@@ -792,7 +792,7 @@ theorem farId_of (hC : CurveGR) (hF : FzDer) : FarId := by
       deriv (fun (s : ℝ) => F (x * NormedSpace.exp ((s : ℂ) • if true = true then dir1 (lowQ Q) else dir2 (lowQ Q)))) 0 +
         Complex.I * deriv (fun (s : ℝ) => F (x * NormedSpace.exp ((s : ℂ) • if false = true then dir1 (lowQ Q) else dir2 (lowQ Q)))) 0 := by
     intro F x
-    simp only [rC, dir1, dir2, if_true]
+    simp only [rC, dir1, dir2, ite_true]
     rfl
   choose y₀ C hyC using fun q : GlobalTheory.Eis.Cosets Pp Γ => FarP.termSplit hS hD z (↑(Quotient.out q) * g)
   have d1 := FarP.dirSeries hC hF hD hz (lowQ Q) true g y y₀ C hyC

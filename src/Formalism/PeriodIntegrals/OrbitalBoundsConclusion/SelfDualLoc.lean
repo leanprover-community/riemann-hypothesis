@@ -190,7 +190,7 @@ theorem bwdDir_of (hN : Nondeg) (hSp : SpanTop) (hL : LocBasis) (hD : DualBasis)
     refine hdual _ fun z hz => ?_
     obtain ⟨a, ha⟩ := hpair z hz (yd j)
     rw [hform_smul_right_self_dual_local_basis, ha]
-    simp only [hyd, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    simp only [hyd, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     exact hσint (a j)
 
   set w : Fin n → Fin n → E ⊗[F] v.adicCompletion F :=
@@ -250,7 +250,7 @@ theorem bwdDir_of (hN : Nondeg) (hSp : SpanTop) (hL : LocBasis) (hD : DualBasis)
       dsimp only
       rw [hform_incl, hyd]
       split_ifs <;> simp
-    simp only [h', mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true] at h
+    simp only [h', mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, ite_true] at h
     exact h
   rw [hyc]
   exact Submodule.sum_mem _ fun j _ => by

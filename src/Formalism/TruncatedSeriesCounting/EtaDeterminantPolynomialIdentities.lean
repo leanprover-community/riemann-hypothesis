@@ -233,7 +233,7 @@ theorem truncation_remainder_bound : TruncRem1 := by
       rw [this]
       exact Ideal.mul_mem_right _ _ hmem
     · have hK : K ≤ m + (ℓ - 1) * (y' + 1) := by
-        push_neg at hj
+        push Not at hj
         have h2 : (c : ℤ) ≤ (ℓ : ℤ) * ((y' + 1 : ℕ) : ℤ) - K := hc
         push_cast at h2
         have h3 : (c : ℤ) ≥ (y' : ℤ) - m + 1 := by omega

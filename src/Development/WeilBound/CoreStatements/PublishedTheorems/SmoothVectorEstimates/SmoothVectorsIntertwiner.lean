@@ -69,7 +69,7 @@ theorem orb_rmul (ρ : GL (Fin a) (ι → ℂ) →* (X →L[ℂ] X)) (g : GL (Fi
     rw [Equiv.apply_symm_apply]
     exact Units.isUnit_mul_units _ g
   by_cases hM : IsUnit (Matrix.of M)
-  · rw [dif_pos hM, dif_pos (hiff.mpr hM), ← ContinuousLinearMap.mul_apply, ← map_mul]
+  · rw [dite_eq_left hM, dite_eq_left (hiff.mpr hM), ← ContinuousLinearMap.mul_apply, ← map_mul]
     congr 2
     ext1
     simp only [IsUnit.unit_spec, Units.val_mul, Equiv.apply_symm_apply]
@@ -85,7 +85,7 @@ theorem orb_lmul (ρ : GL (Fin a) (ι → ℂ) →* (X →L[ℂ] X)) (v : X) (M 
     rw [Equiv.apply_symm_apply, ← hM.unit_spec]
     exact Units.isUnit_units_mul _ _
   by_cases hN : IsUnit (Matrix.of N)
-  · rw [dif_pos hN, dif_pos (hiff.mpr hN), ← ContinuousLinearMap.mul_apply, ← map_mul ρ]
+  · rw [dite_eq_left hN, dite_eq_left (hiff.mpr hN), ← ContinuousLinearMap.mul_apply, ← map_mul ρ]
     congr 2
     ext1
     simp only [IsUnit.unit_spec, Units.val_mul, Equiv.apply_symm_apply]
@@ -173,7 +173,7 @@ theorem smooth_vectors_stable_intertwiner : S2 := by
     have hw : ∀ w : X, orb ρ w N = ρ (show IsUnit (Matrix.of N) from hN).unit w := by
       intro w
       unfold orb
-      exact dif_pos hN
+      exact dite_eq_left hN
     rw [hw]
     exact key N hN
 

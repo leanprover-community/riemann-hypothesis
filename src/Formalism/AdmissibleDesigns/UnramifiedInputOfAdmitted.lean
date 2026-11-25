@@ -489,7 +489,7 @@ theorem unrFin_of (hA : UnrIn i dc) : KHf.UnrFin i dc δO (KFin.uz i dc δO) := 
 
   by_cases hU : KFin.UnrHom i dc l
   · unfold KFin.uCol; rw [dite_eq_left hU]; exact hU.choose_spec.1
-  · have h0 : KFin.uCol i dc l = 0 := by unfold KFin.uCol; exact dif_neg hU
+  · have h0 : KFin.uCol i dc l = 0 := by unfold KFin.uCol; exact dite_eq_right hU
     rw [h0]; unfold KFin.UnrAdm
     refine ⟨fun g h => by simp, fun g _ => rfl, fun hn => ?_⟩
     first

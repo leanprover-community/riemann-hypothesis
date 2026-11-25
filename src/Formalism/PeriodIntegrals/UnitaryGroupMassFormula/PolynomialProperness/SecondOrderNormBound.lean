@@ -59,7 +59,7 @@ theorem ut_entry_eq_det {m : ℕ} {L U : Matrix (Fin m) (Fin m) ℂ} (hL : L ∈
     have hb : b.val < i.val := by
       have := a.isLt; rw [Fin.lt_def] at hab'; omega
     show U (rws i a) (cls i j b) = 0
-    simp only [cls, if_pos hb]
+    simp only [cls, ite_eq_left hb]
     exact hU.1 _ _ hab'
   rw [hfac, det_mul, det_of_isLowerTriangular _ hlo]
   have hl1 : ∀ t : Fin (i.val + 1), L.submatrix (rws i) (rws i) t t = 1 := fun t => hL.2 _
@@ -67,12 +67,12 @@ theorem ut_entry_eq_det {m : ℕ} {L U : Matrix (Fin m) (Fin m) ℂ} (hL : L ∈
     intro t
     have h2 : cls i j t.castSucc = rws i t.castSucc := by
       have ht : (t.castSucc : Fin (i.val + 1)).val < i.val := t.isLt
-      simp only [cls, if_pos ht]; rfl
+      simp only [cls, ite_eq_left ht]; rfl
     show U (rws i t.castSucc) (cls i j t.castSucc) = 1
     rw [h2]; exact hU.2 _
   have hlast1 : rws i (Fin.last i.val) = i := Fin.ext rfl
   have hlast2 : cls i j (Fin.last i.val) = j := by
-    simp only [cls, Fin.val_last, lt_irrefl, if_false]
+    simp only [cls, Fin.val_last, lt_irrefl, ite_false]
   rw [Finset.prod_eq_one (fun t _ => hl1 t), one_mul, det_of_isUpperTriangular hup,
     Fin.prod_univ_castSucc, Finset.prod_eq_one (fun t _ => hcs t), one_mul]
   show U i j = U (rws i (Fin.last i.val)) (cls i j (Fin.last i.val))

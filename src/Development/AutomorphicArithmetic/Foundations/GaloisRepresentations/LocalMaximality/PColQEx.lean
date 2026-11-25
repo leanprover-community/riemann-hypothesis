@@ -61,14 +61,14 @@ theorem UpperTheory.Gal.productCup_of_system.colQEx_of :
         intro L _
         show c (uni b L) ∈ (if ((L.card : ℕ) : ℤ) = m then A (uni b L) else ⊥)
         by_cases hL : ((L.card : ℕ) : ℤ) = m
-        · rw [if_pos hL]
+        · rw [ite_eq_left hL]
           have h1 := hmem (uni b L)
           split_ifs at h1 with h2
           · exact h1
           · rw [Submodule.mem_bot] at h1
             rw [h1]
             exact Submodule.zero_mem _
-        · rw [if_neg hL, Submodule.mem_bot]
+        · rw [ite_eq_right hL, Submodule.mem_bot]
           apply hlev
           show ¬ (((uni b L ∩ Q).card : ℕ) : ℤ) = m
           rwa [show (uni b L ∩ Q).card = L.card by convert hQc b L]
@@ -108,30 +108,30 @@ theorem UpperTheory.Gal.productCup_of_system.colQEx_of :
     have hcard := (hU β κ E w c (lft s) (rgt s)).2.2.2.1
     rw [hU2 s] at hcard
     by_cases h1 : (((lft s).card : ℕ) : ℤ) = n - m
-    · rw [if_pos h1]
+    · rw [ite_eq_left h1]
       by_cases h2 : ((s.card : ℕ) : ℤ) = n - 1
-      · rw [if_pos h2]
+      · rw [ite_eq_left h2]
         by_cases h3 : (((rgt s).card : ℕ) : ℤ) = m - 1
-        · rw [if_pos h3] at hs
+        · rw [ite_eq_left h3] at hs
           exact zsmul_mem hs _
-        · rw [if_neg h3, Submodule.mem_bot] at hs
+        · rw [ite_eq_right h3, Submodule.mem_bot] at hs
           rw [hs, smul_zero]
           exact Submodule.zero_mem _
-      · rw [if_neg h2, Submodule.mem_bot]
-        rw [if_neg, Submodule.mem_bot] at hs
+      · rw [ite_eq_right h2, Submodule.mem_bot]
+        rw [ite_eq_right, Submodule.mem_bot] at hs
         · rw [hs, smul_zero]
         · intro h3
           apply h2
           rw [hcard]
           push_cast
           omega
-    · rw [if_neg h1]
+    · rw [ite_eq_right h1]
       exact Submodule.zero_mem _
   · intro s hs
     rw [hy]
     split_ifs with h1
     · have hY0 := hYmem (lft s) (rgt s)
-      rw [if_neg] at hY0
+      rw [ite_eq_right] at hY0
       · rw [Submodule.mem_bot] at hY0
         rw [hY0, smul_zero]
       · intro h3
@@ -152,13 +152,13 @@ theorem UpperTheory.Gal.productCup_of_system.colQEx_of :
       split_ifs <;> rfl
     rw [hfun]
     by_cases hb : (((b.card : ℕ) : ℤ) = n - m)
-    · rw [if_pos hb, map_zsmul, Pi.smul_apply, hYD, smul_smul, ← mul_pow]
+    · rw [ite_eq_left hb, map_zsmul, Pi.smul_apply, hYD, smul_smul, ← mul_pow]
       simp
-    · rw [if_neg hb, map_zero, Pi.zero_apply, smul_zero]
+    · rw [ite_eq_right hb, map_zero, Pi.zero_apply, smul_zero]
       symm
       by_cases hL : ((L.card : ℕ) : ℤ) = m
       · have h5 := hmem (uni b L)
-        rw [if_neg] at h5
+        rw [ite_eq_right] at h5
         · exact (Submodule.mem_bot _).1 h5
         · intro hn
           apply hb

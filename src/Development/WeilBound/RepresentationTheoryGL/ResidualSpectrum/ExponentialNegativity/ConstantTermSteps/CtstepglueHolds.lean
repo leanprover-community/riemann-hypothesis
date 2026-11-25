@@ -74,7 +74,7 @@ theorem ctstepglue_holds : An.CtStepGlue := by
     have hb1 := hC₁ b hb _ hx2 q hq
     rw [e1]
     refine hb1.trans ?_
-    rw [hsum m _ (fun _ _ => rfl) (fun r' h => by rw [hsr, if_neg h, add_zero]), hsr, if_pos rfl,
+    rw [hsum m _ (fun _ _ => rfl) (fun r' h => by rw [hsr, ite_eq_right h, add_zero]), hsr, ite_eq_left rfl,
       Real.exp_add, hM, ← mul_assoc]
     have hjd : (j : ℝ) ≤ d := by exact_mod_cast hj.le
     have hv : |sr x r + ((j : ℝ) - i)| ≤ |t₀| + 1 + d := by

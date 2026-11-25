@@ -120,11 +120,11 @@ theorem GlobalTheory.roundedTwist_isEqn :
       by_cases h : ∃ c, e c = some j
       · obtain ⟨c₀, hc₀⟩ := h
         rw [Finset.sum_eq_single c₀]
-        · rw [if_pos hc₀]; exact hr c₀
-        · intro c _ hc; rw [if_neg]; exact fun h' => hc (huniq c c₀ j h' hc₀)
+        · rw [ite_eq_left hc₀]; exact hr c₀
+        · intro c _ hc; rw [ite_eq_right]; exact fun h' => hc (huniq c c₀ j h' hc₀)
         · intro hn; exact (hn (Finset.mem_univ _)).elim
-      · push_neg at h
-        rw [Finset.sum_eq_zero fun c _ => if_neg (h c)]
+      · push Not at h
+        rw [Finset.sum_eq_zero fun c _ => ite_eq_right (h c)]
         exact hp.out.pos
     · rw [← prod_elim_pow (𝒜.x i) (𝒜.J i) e hJ r]
       refine (ht.nsmul p).add (isEqn_sum _ _ _ y fun c _ => ?_)

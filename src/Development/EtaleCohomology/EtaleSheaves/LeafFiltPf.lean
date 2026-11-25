@@ -90,7 +90,7 @@ theorem step (s d : ℤ) (hd : s + n = d) [Finite (HK R (Sg (K.X s)) F d)] (hS :
     if h : x ∈ S K F n s then CohomologyClass.mk (clsC K F n s d hd (memS K F n h).choose (memS K F n h).choose_spec.2) else 0
   have key : ∀ x ∈ S K F n s, ∀ x' ∈ S K F n s, φ x = φ x' → x - x' ∈ S K F n (s - 1) := by
     intro x hx x' hx' he
-    simp only [φ, dif_pos hx, dif_pos hx'] at he
+    simp only [φ, dite_eq_left hx, dite_eq_left hx'] at he
     have hz := (memS K F n hx).choose_spec
     have hz' := (memS K F n hx').choose_spec
     have h0 : CohomologyClass.mk (clsC K F n s d hd (memS K F n hx).choose hz.2 -
@@ -110,7 +110,7 @@ theorem step (s d : ℤ) (hd : s + n = d) [Finite (HK R (Sg (K.X s)) F d)] (hS :
   intro x hx
   have h : ∃ y ∈ S K F n s, φ y = φ x := ⟨x, hx, rfl⟩
   refine ⟨(φ x, x - g (φ x)), ⟨trivial, ?_⟩, ?_⟩
-  · have hg : g (φ x) = h.choose := by simp only [g, dif_pos h]
+  · have hg : g (φ x) = h.choose := by simp only [g, dite_eq_left h]
     rw [hg]
     exact key x hx _ h.choose_spec.1 h.choose_spec.2.symm
   · simp

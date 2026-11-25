@@ -175,19 +175,19 @@ theorem infAt_ofFinSupp (S : Finset Pl) (f : ∀ v : Pl, GL (Fin 2) (Qv v)) (hf 
 
 theorem exists_isLoc2 (v : Pl) (x : GL (Fin 2) (Qv v)) : ∃ h, IsLoc2 v x h := by
   let f : ∀ u : Pl, GL (Fin 2) (Qv u) := fun u => if e : u = v then e ▸ x else 1
-  have hf : ∀ u ∉ ({v} : Finset Pl), f u = 1 := fun u hu => dif_neg (by simpa using hu)
+  have hf : ∀ u ∉ ({v} : Finset Pl), f u = 1 := fun u hu => dite_eq_right (by simpa using hu)
   refine ⟨ofFinSupp {v} f hf, ?_, fun u hu => ?_, fun w => infAt_ofFinSupp _ _ _ w⟩
   · rw [finAt_ofFinSupp]
-    exact dif_pos rfl
+    exact dite_eq_left rfl
   · rw [finAt_ofFinSupp]
-    exact dif_neg hu
+    exact dite_eq_right hu
 
 theorem exists_isUn (S : Finset Pl) (x : ∀ v : S, Qv v.1) : ∃ h, IsUn S x h := by
   let f : ∀ u : Pl, GL (Fin 2) (Qv u) := fun u => if e : u ∈ S then uni2 (x ⟨u, e⟩) else 1
-  have hf : ∀ u ∉ S, f u = 1 := fun u hu => dif_neg hu
+  have hf : ∀ u ∉ S, f u = 1 := fun u hu => dite_eq_right hu
   refine ⟨ofFinSupp S f hf, fun v => ?_, fun u hu => ?_, fun w => infAt_ofFinSupp _ _ _ w⟩
   · rw [finAt_ofFinSupp]
-    exact dif_pos v.2
+    exact dite_eq_left v.2
   · rw [finAt_ofFinSupp]
     exact hf u hu
 

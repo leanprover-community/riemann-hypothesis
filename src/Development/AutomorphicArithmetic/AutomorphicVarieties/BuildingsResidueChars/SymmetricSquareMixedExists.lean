@@ -94,9 +94,9 @@ theorem UpperTheory.V.AlgebraTools.indTwo :
       (∀ h : H, r0 h = (r h : Matrix n n R)) ∧ ∀ g, g ∉ H → r0 g = 0 := by
     refine ⟨fun g => if h : g ∈ H then (r ⟨g, h⟩ : Matrix n n R) else 0, ?_, ?_⟩
     · intro h
-      simp only [dif_pos h.2]
+      simp only [dite_eq_left h.2]
     · intro g hg
-      simp only [dif_neg hg]
+      simp only [dite_eq_right hg]
   have hs' : s⁻¹ ∉ H := fun h => hs (by simpa using h)
   have hm : ∀ a b : G, a * b ∈ H ↔ (a ∈ H ↔ b ∈ H) := fun a b =>
     Subgroup.mul_mem_iff_of_index_two hH

@@ -135,7 +135,7 @@ theorem smallF_mem : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace
       rw [hCs_eq x y hy]
       rw [GlobalTheory.T.integral_ramifiedChar_det_singularMatrixCoset_eq_zero (haarVol J) ν z hram cN y hy0]
       exact F.zero_mem
-    · push_neg at hs
+    · push Not at hs
       exact GlobalTheory.T.integral_detChar_invertibleMatrixBall_mem_subfield F hJo hJK ν z hϖ hcond hνF hzF cN x hs
 
   let L : AddSubgroup (Matrix A' A' k) :=

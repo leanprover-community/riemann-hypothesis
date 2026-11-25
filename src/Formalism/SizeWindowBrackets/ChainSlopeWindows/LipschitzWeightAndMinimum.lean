@@ -613,16 +613,6 @@ lemma partner_inPhi {g : E0 × H} (t : H) (hg : ¬ InPhi (g + topPl t)) : InPhi 
 
 end
 
-section
-variable {H : Type} [AddCommGroup H] [Fintype H] [DecidableEq H]
-
-end
-
-section
-variable {H : Type} [AddCommGroup H] [Fintype H] [DecidableEq H]
-
-end
-
 end CR
 
 theorem proposition_size_bound : GrowthSizeBound := by
@@ -834,7 +824,7 @@ lemma deriv_char (D : ArithData H) (ell : AddChar (E0 × H) ℂ → ℂ) (ψ : A
   have ty := truncC (fun n => (Λ n : ℂ) * primVal D ψ n) y _ hyM
   have tz := truncC (fun n => (Λ n : ℂ) * primVal D ψ n) z _ hzM
   unfold GPsi
-  rw [if_neg hψ, if_neg hψ, ty, tz]
+  rw [ite_eq_right hψ, ite_eq_right hψ, ty, tz]
   have e : (∑ n ∈ Icc 1 ⌊max y z⌋₊, (Λ n : ℂ) * primVal D ψ n * ((max (y / n - 1) 0 : ℝ) : ℂ) + (y : ℂ) * ell ψ)
       - (∑ n ∈ Icc 1 ⌊max y z⌋₊, (Λ n : ℂ) * primVal D ψ n * ((max (z / n - 1) 0 : ℝ) : ℂ) + (z : ℂ) * ell ψ)
       = ∑ n ∈ Icc 1 ⌊max y z⌋₊, (Λ n : ℂ) * primVal D ψ n * ((max (y / n - 1) 0 - max (z / n - 1) 0 : ℝ) : ℂ)
@@ -880,7 +870,7 @@ lemma wG_char (D : ArithData H) (ell : AddChar (E0 × H) ℂ → ℂ) (ψ : AddC
       = ∑ n ∈ Icc 1 M, (Λ n : ℂ) * primVal D ψ n * ((max (A / n - w) 0 : ℝ) : ℂ) + (A : ℂ) * ell ψ := by
   have t := truncC (fun n => (Λ n : ℂ) * primVal D ψ n) (A / w) M hM
   unfold GPsi
-  rw [if_neg hψ, t, mul_add, Finset.mul_sum]
+  rw [ite_eq_right hψ, t, mul_add, Finset.mul_sum]
   congr 1
   · apply Finset.sum_congr rfl
     intro n hn

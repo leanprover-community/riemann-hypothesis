@@ -71,10 +71,10 @@ theorem lowPart_eq_iff {m : ℕ} (M : Mx D m m) :
   · intro h i j
     refine ⟨fun hji => ?_, ?_⟩
     · have := congrFun (congrFun h i) j
-      simp only [lowPart, Matrix.of_apply, if_pos hji.le] at this
+      simp only [lowPart, Matrix.of_apply, ite_eq_left hji.le] at this
       rwa [Matrix.one_apply_ne hji.ne'] at this
     · have := congrFun (congrFun h i) i
-      simp only [lowPart, Matrix.of_apply, if_pos (le_refl i), Matrix.one_apply_eq] at this
+      simp only [lowPart, Matrix.of_apply, ite_eq_left (le_refl i), Matrix.one_apply_eq] at this
       exact this
   · intro h
     ext i j

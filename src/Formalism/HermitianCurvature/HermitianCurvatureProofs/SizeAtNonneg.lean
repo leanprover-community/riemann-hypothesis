@@ -97,7 +97,7 @@ theorem Nst_eq {ε : ℝ} {i : ℕ} (hi : i ≤ S.G.r + 1) (s : ℕ) (w : S.W) (
     rfl
   show (∑ h ∈ Y, ∑ h' ∈ Y, κ h h' * S.gram ε i w.1 (TB.join h s t) (TB.join h' s t')) /
       ((C.Word.size S.P w.1 : ℝ) : ℂ) = _
-  simp only [C.HidaSetting.gram, if_pos hi, loc_join, KB.gN, Finset.prod_div_distrib, hsz,
+  simp only [C.HidaSetting.gram, ite_eq_left hi, loc_join, KB.gN, Finset.prod_div_distrib, hsz,
     Finset.sum_div, mul_div_assoc]
 
 end

@@ -159,15 +159,15 @@ theorem key_sum {n q N : ℕ} {T : MvPolynomial (Fin n) ℤ} (hT : T.IsHomogeneo
       rw [geom_root hζ (by have := hα i; omega) (by have := hα i; have := hdq i; omega)]
       have := hα i; have := hdq i
       by_cases h : d i = α i
-      · rw [if_pos (by omega), if_pos h]
-      · rw [if_neg (by omega), if_neg h]
+      · rw [ite_eq_left (by omega), ite_eq_left h]
+      · rw [ite_eq_right (by omega), ite_eq_right h]
     simp_rw [e2]
     by_cases h : d = α
     · subst h; simp [Finset.prod_const, Finset.card_univ]
-    · rw [if_neg h]
+    · rw [ite_eq_right h]
       obtain ⟨i, hi⟩ : ∃ i, d i ≠ α i := by
-        by_contra hc; push_neg at hc; exact h (Finsupp.ext hc)
-      rw [Finset.prod_eq_zero (Finset.mem_univ i) (by rw [if_neg hi]), mul_zero]
+        by_contra hc; push Not at hc; exact h (Finsupp.ext hc)
+      rw [Finset.prod_eq_zero (Finset.mem_univ i) (by rw [ite_eq_right hi]), mul_zero]
   simp_rw [aeval_def, eval₂_eq', Finset.sum_mul]
   rw [Finset.sum_comm, Finset.sum_congr rfl inner, Finset.sum_ite_eq']
   split_ifs with h

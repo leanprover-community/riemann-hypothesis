@@ -23,12 +23,12 @@ theorem blk_eq_par {a b : ℕ} (x : Gn g a) (y : Gn g b) : blk a b (a + b) x y =
   rw [ParInd.blk_val, entN, dite_eq_left ⟨hi, hj⟩, ParInd.dg]
   dsimp only
   by_cases h1 : i < a <;> by_cases h2 : j < a
-  · rw [(Supp.entN_par _ _ _ i j).1 h1 h2, if_pos ⟨h1, h2⟩]
-  · rw [(Supp.entN_par _ _ _ i j).2.2.2 rfl h1 (by omega), if_neg (by omega), if_neg (by omega)]
-  · rw [(Supp.entN_par _ _ _ i j).2.1 (by omega) h2, if_neg (by omega), if_neg (by omega)]
+  · rw [(Supp.entN_par _ _ _ i j).1 h1 h2, ite_eq_left ⟨h1, h2⟩]
+  · rw [(Supp.entN_par _ _ _ i j).2.2.2 rfl h1 (by omega), ite_eq_right (by omega), ite_eq_right (by omega)]
+  · rw [(Supp.entN_par _ _ _ i j).2.1 (by omega) h2, ite_eq_right (by omega), ite_eq_right (by omega)]
   · obtain ⟨i, rfl⟩ := Nat.exists_eq_add_of_le (not_lt.1 h1)
     obtain ⟨j, rfl⟩ := Nat.exists_eq_add_of_le (not_lt.1 h2)
-    rw [(Supp.entN_par _ _ _ i j).2.2.1, if_neg (by omega), if_pos (by omega)]
+    rw [(Supp.entN_par _ _ _ i j).2.2.1, ite_eq_right (by omega), ite_eq_left (by omega)]
     simp
 
 def ofLabel (L : LabelDatum g) (h5 : 5 ≤ g) (hG : Green) : Sys g where

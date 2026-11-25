@@ -97,14 +97,14 @@ theorem orbit_cpt_U : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E], Un
   have hgC : ∀ g : UL n w, g⁻¹ * y * g ∈ C → g.1⁻¹ * y.1 * g.1 ∈ (Subtype.val '' C : Set (GLw n w)) :=
     fun g hg => ⟨_, hg, rfl⟩
   by_cases hs : IsSplitAt w
-  · have hUL : ∀ g : GLw n w, g ∈ UL n w := fun g => by unfold UL; rw [if_pos hs]; trivial
+  · have hUL : ∀ g : GLw n w, g ∈ UL n w := fun g => by unfold UL; rw [ite_eq_left hs]; trivial
     refine ⟨Subtype.val ⁻¹' D, hcl.isCompact_preimage hD, fun g hg => ?_⟩
     obtain ⟨z, hz, d, hd, hgd⟩ := hDg g.1 (hgC g hg)
     exact ⟨⟨z, hUL z⟩, Subtype.ext hz, ⟨d, hUL d⟩, hd, Subtype.ext hgd⟩
   obtain ⟨hσc, hσi, -⟩ := GlobalTheory.ConjAtPlace.main E hE w
   set σ := cj w with hσ
   have hmemU : ∀ g : GLw n w, g ∈ UL n w ↔ cT σ g.val * g.val = 1 := by
-    intro g; unfold UL; rw [if_neg hs]; show cT σ _ * 1 * _ = 1 ↔ _; rw [Matrix.mul_one]
+    intro g; unfold UL; rw [ite_eq_right hs]; show cT σ _ * 1 * _ = 1 ↔ _; rw [Matrix.mul_one]
   have hcTc : Continuous fun M : Matrix (Fin n) (Fin n) (w.adicCompletion E) => cT σ M :=
     (continuous_id.matrix_map hσc).matrix_transpose
   have hcc : ∀ M : Matrix (Fin n) (Fin n) (w.adicCompletion E), cT σ (cT σ M) = M := by

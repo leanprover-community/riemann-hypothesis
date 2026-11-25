@@ -146,8 +146,8 @@ theorem coe_truncIdele (x : Ideles L) (T : Finset (HeightOneSpectrum (𝓞 L))) 
       (finPart_truncIdele x T v)
     refine h.trans ?_
     by_cases hv : v ∈ T
-    · simp only [hv, if_true]; exact (if_pos hv).symm
-    · simp only [hv, if_false]; exact (if_neg hv).symm
+    · simp only [hv, ite_true]; exact (ite_eq_left hv).symm
+    · simp only [hv, ite_false]; exact (ite_eq_right hv).symm
 
 theorem tendsto_truncIdele (x : Ideles L) :
     Tendsto (truncIdele x) atTop (𝓝 x) := by

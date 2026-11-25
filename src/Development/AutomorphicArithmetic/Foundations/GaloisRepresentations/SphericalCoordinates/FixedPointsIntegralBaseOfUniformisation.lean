@@ -93,7 +93,7 @@ theorem UpperTheory.Gal.W2.fixedPoints_integral_base_of_uniformisation :
   have hAt : ∀ x : CxPts (sZ X' k) (RingHom.id ℂ), ∀ hx : x.1 ≫ c₁.pw k = x.1 ≫ c₂.tw α,
       W1.IsTan (D.n - 1 + k * D.g) (c₁.pw k) (c₂.tw α) h₁ h₂ x (At x) := by
     intro x hx
-    simp only [At, dif_pos hx]
+    simp only [At, dite_eq_left hx]
     exact (hTan x hx).choose_spec
   let PD : (B : LKCx.Form G) → PDic L B.β := fun B => (hPDE p D G L ha hm B).some
   let RD : (B : LKCx.Form G) → RDic L v B.β ρ t₀ := fun B => (hRDE p D G L ha hm v hs t₀ ht ρ hsig B).some

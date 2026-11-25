@@ -423,7 +423,7 @@ theorem exists_pullCart_agree : ∀ (k : Type) [Field k] [CharZero k] (Y₀ Y₁
   have hc : ∀ w, t w ∈ U → c (t w) = H.mult w := by
     intro w hw
     have h : ∃ w', t w' = t w ∧ t w ∈ U := ⟨w, rfl, hw⟩
-    simp only [c, dif_pos h]
+    simp only [c, dite_eq_left h]
     have e := h.choose_spec
     rw [hinj _ _ (by rw [e.1]; exact hw) hw e.1]
   have hsupp : Function.support c ⊆ t '' Function.support H.mult := by
@@ -431,7 +431,7 @@ theorem exists_pullCart_agree : ∀ (k : Type) [Field k] [CharZero k] (Y₀ Y₁
     by_cases h : ∃ w, t w = z ∧ z ∈ U
     · obtain ⟨w, rfl, hw⟩ := h
       exact ⟨w, by simpa [hc w hw] using hz, rfl⟩
-    · exact (hz (by simp only [c]; exact dif_neg h)).elim
+    · exact (hz (by simp only [c]; exact dite_eq_right h)).elim
   have hfin : (Function.support c).Finite := (H.finite_support_mult.image _).subset hsupp
   have hcod : ∀ z, c z ≠ 0 → Order.coheight z = 1 := by
     intro z hz
@@ -440,7 +440,7 @@ theorem exists_pullCart_agree : ∀ (k : Type) [Field k] [CharZero k] (Y₀ Y₁
       rw [hc w hw] at hz
       rw [← (_root_.GlobalTheory.Discrepancy.MultIso.coheight_eq_and_mult_pullCart Y₀ Y₁ t U hU w hw).1]
       exact CartierDiv.coheight_eq_one_of_mult_ne_zero hz
-    · exact (hz (by simp only [c]; exact dif_neg h)).elim
+    · exact (hz (by simp only [c]; exact dite_eq_right h)).elim
   obtain ⟨H₀, hH₀⟩ := _root_.GlobalTheory.Cartier.CartierDiv.exists_mult_eq_of_locallyFactorial Y₀ (fun x => AbelianProjective.ufd_stalk q x) c hfin hcod
   refine ⟨H₀, fun y hy hmem => ?_⟩
   have : GlobalTheory.IsNormalScheme Y₁ := (isNormalScheme_iff Y₁).mpr fun x =>

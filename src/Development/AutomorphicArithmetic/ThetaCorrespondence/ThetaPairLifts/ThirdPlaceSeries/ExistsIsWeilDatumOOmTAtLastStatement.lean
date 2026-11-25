@@ -260,7 +260,7 @@ theorem vac_eigen (ψ : AddChar (AF D.host.F) ℂ) (hψ : IsStdChar D ψ (-1)) (
     rwa [h2] at h1
   refine ⟨fun m => if h : m ∈ H then (hHmem' m h).choose else 0, fun m hm f hf => ?_⟩
   have h := hH m hm
-  simp only [dif_pos h]
+  simp only [dite_eq_left h]
   exact (hHmem' m h).choose_spec f hf
 
 end GlobalTheory.VacScalar
@@ -790,7 +790,7 @@ theorem comb_o_ne_zero (hψ : IsStdChar D ψ (-1)) (hM : IsSelfDualC S M) (hM' :
       funext t
       rw [one_smul, GlobalTheory.LocMod.Witness.ext_apply, halfInd]
       by_cases ht : IsHalf p.e t
-      · rw [if_pos ht]
+      · rw [ite_eq_left ht]
         show Set.indicator {x | p.up L.FS L.FT x ∈ latO S T (M : Set _) (M' : Set _) (· = L.q.v)} (fun _ => (1 : ℂ)) (p.down L.FS L.FT t) = _
         rw [Set.indicator_apply]
         refine if_congr ?_ rfl rfl
@@ -801,7 +801,7 @@ theorem comb_o_ne_zero (hψ : IsStdChar D ψ (-1)) (hM : IsSelfDualC S M) (hM' :
         have h3 : L.q.e • t = t := (GlobalTheory.PlaceModel.mem_half S T).1 ((GlobalTheory.PlaceModel.isHalf_iff S T).1 ht)
         rw [h3] at h2
         exact h2
-      · rw [if_neg ht, if_neg fun hh => ht hh.2]
+      · rw [ite_eq_right ht, ite_eq_right fun hh => ht hh.2]
     change T' (GlobalTheory.LocMod.Witness.ext p L.FS L.FT Φ₀) = h
     rw [e1]
     exact hT'.vac
@@ -1100,17 +1100,17 @@ theorem datum_eq_alt (hPk : _root_.GlobalTheory.Fam.PackageHypotheses W) {n : �
   have hpl := fun i => _root_.GlobalTheory.TopDatumTheta.place_alt hPk hGR i h x rfl
   by_cases hx : IsHalf (∑ i, (G' (pl i)).q.e) x
   swap
-  · rw [if_neg hx, if_neg fun H => hx ((_root_.GlobalTheory.SchrMove.isHalf_actO_iff _ _ _).1 H.1)]
+  · rw [ite_eq_right hx, ite_eq_right fun H => hx ((_root_.GlobalTheory.SchrMove.isHalf_actO_iff _ _ _).1 H.1)]
   have hy := (_root_.GlobalTheory.SchrMove.isHalf_actO_iff (f.g.b (j + 1))⁻¹ f.g.bT⁻¹ x).2 hx
-  rw [if_pos hx]
+  rw [ite_eq_left hx]
   by_cases hI : IsIntM (frMapO (Yc D (j + 1)) D.sp.X' ((_root_.GlobalTheory.Fam.pk_z W).βY (j + 1)) (_root_.GlobalTheory.Fam.pk_z W).βX (actO _ _ (f.g.b (j + 1))⁻¹ f.g.bT⁻¹ x))
-  · rw [if_pos ⟨hy, hI⟩, GlobalTheory.FunObj.Comparison₂.omegaQ_eq_prod, Finset.prod_empty, mul_one,
+  · rw [ite_eq_left ⟨hy, hI⟩, GlobalTheory.FunObj.Comparison₂.omegaQ_eq_prod, Finset.prod_empty, mul_one,
       omegaG_eq_prod (r_le_Y (j + 1)) _ _ _ _ _ (fun w => _root_.GlobalTheory.TopDatumTheta.ReducesModIdeal (G' w) w.1) (fun w y => (G' w).S.P.lam y)
         (fun g => (hGR.lev g).1.trans (pl.forall_congr_right (q := fun w => ∃ y, _root_.GlobalTheory.TopDatumTheta.ReducesModIdeal (G' w) w.1 y (g w))))
         (fun g y hy => ((hGR.lev g.1).2 g.2 (fun i => y (pl i)) fun i => hy (pl i)).trans
           (Equiv.prod_comp pl fun w => (G' w).S.P.lam (y w))), ← Equiv.prod_comp pl]
     exact Finset.prod_congr rfl fun i _ => (hpl i).2 hI
-  · rw [if_neg fun H => hI H.2]
+  · rw [ite_eq_right fun H => hI H.2]
     refine (Finset.prod_eq_zero_iff.2 (by_contra fun hne => hI fun a b => ?_)).symm
     have h1 : (∑ i, (G' (pl i)).q.e) • actO _ _ (f.g.b (j + 1))⁻¹ f.g.bT⁻¹ x = actO _ _ (f.g.b (j + 1))⁻¹ f.g.bT⁻¹ x :=
       Matrix.ext fun r s => hy r s
@@ -1471,12 +1471,12 @@ theorem main_alt_alt : ∀ (D : D7) (L : SizeData₂ D) (hT : GatTies D) (Gi : F
       · split_ifs with hk
         · exact (hct _ hk).1
         · exact one_ne_zero
-  · have hs : s j = cm j hj := dif_pos hj
+  · have hs : s j = cm j hj := dite_eq_left hj
     rw [hs]
     exact (hcm j hj).2 d hd P a ha a' ha'
   · have hs : s (j + 1) = ct j h := by
       show (if hi : j + 1 + 1 < D.R.m then cm (j + 1) hi else if hk : j + 2 * 0 + 2 = D.R.m then ct j hk else 1) = ct j h
-      rw [dite_eq_right (by omega), dif_pos h]
+      rw [dite_eq_right (by omega), dite_eq_left h]
     rw [hs]
     exact (hct j h).2 d hd P
 end GlobalTheory.GVecAt

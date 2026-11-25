@@ -309,8 +309,8 @@ def ofMap (tr : S'.G →* S.G) (p : S'.D → S.D) (T : S.V →ₗ[K] S'.V)
       rw [← hT, ← Module.End.mul_apply, ← map_mul, mul_inv_cancel, map_one, Module.End.one_apply]
     rw [hp, Finsupp.single_apply, Finsupp.single_apply]
     by_cases e : p d' = d
-    · rw [if_pos e, if_pos (by rw [e]), hc]
-    · rw [if_neg e, if_neg (fun e' => e (MulAction.injective (tr g) e'))]
+    · rw [ite_eq_left e, ite_eq_left (by rw [e]), hc]
+    · rw [ite_eq_right e, ite_eq_right (fun e' => e (MulAction.injective (tr g) e'))]
       simp
 
 theorem ofMap_op_apply (tr : S'.G →* S.G) (p : S'.D → S.D) (T : S.V →ₗ[K] S'.V)

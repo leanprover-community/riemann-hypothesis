@@ -1040,7 +1040,7 @@ theorem gap (g : S7.UJ ε) (hn : (n : ℝ) < hs (S7.toM g)) :
           have := inv_anti₀ hsp h2
           rwa [inv_inv] at this
         simp [f, h1, h2, h3]
-      · push_neg at h1 h2
+      · push Not at h1 h2
         have h3 : ¬ α ≤ s⁻¹ := by
           intro h
           have := inv_anti₀ hαp h
@@ -1060,7 +1060,7 @@ theorem gap (g : S7.UJ ε) (hn : (n : ℝ) < hs (S7.toM g)) :
     have h2 : ¬ lam i ≤ α⁻¹ := by
       intro h
       simp [f, h1, h] at hi
-    push_neg at h1 h2
+    push Not at h1 h2
     have e1 : Real.log (lam i) < ((r : ℝ) + 1) * w := by
       have := (Real.log_lt_log_iff (hpos i) (by linarith)).2 h1
       rwa [hα, Real.log_exp] at this
@@ -1072,9 +1072,9 @@ theorem gap (g : S7.UJ ε) (hn : (n : ℝ) < hs (S7.toM g)) :
     intro s hi
     by_contra hc
     by_cases h2 : s ≤ α⁻¹
-    · simp only [f, if_neg hc, if_pos h2] at hi
+    · simp only [f, ite_eq_right hc, ite_eq_left h2] at hi
       norm_num at hi
-    · simp only [f, if_neg hc, if_neg h2] at hi
+    · simp only [f, ite_eq_right hc, ite_eq_right h2] at hi
       norm_num at hi
   obtain ⟨A', hA', hy⟩ := _root_.GlobalTheory.CompanionTheory.UGeo.SpecGrad.grading_of_spectral n ε g hT f α β hf
     (fun i hi => hneg _ hi)

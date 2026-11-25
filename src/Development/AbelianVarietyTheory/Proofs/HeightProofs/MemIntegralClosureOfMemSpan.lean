@@ -161,7 +161,7 @@ theorem exists_ext (hπ0 : π ≠ 0) (hπS : ι π ∈ S) (hw : 1 ≤ w π)
   have hf : ∀ x m l, C x m l → min (f x) (m : ℤ) = min (w l) (m : ℤ) := by
     intro x m l hC
     by_cases h : ∃ ml : ℕ × L, C x ml.1 ml.2 ∧ w ml.2 < (ml.1 : ℤ)
-    · have e : f x = w h.choose.2 := dif_pos h
+    · have e : f x = w h.choose.2 := dite_eq_left h
       obtain ⟨h1, h2⟩ := h.choose_spec
       rw [e]
       generalize h.choose = ml at h1 h2
@@ -172,7 +172,7 @@ theorem exists_ext (hπ0 : π ≠ 0) (hπS : ι π ∈ S) (hw : 1 ≤ w π)
         dsimp only at h2 ⊢
         have : w l' = w l := by grind
         rw [this]
-    · have e : f x = ⊤ := dif_neg h
+    · have e : f x = ⊤ := dite_eq_right h
       have : ¬ w l < (m : ℤ) := fun h' => h ⟨(m, l), hC, h'⟩
       rw [e, min_eq_right le_top, min_eq_right (not_lt.1 this)]
   have hι : ∀ l, f (ι l) = w l := fun l =>

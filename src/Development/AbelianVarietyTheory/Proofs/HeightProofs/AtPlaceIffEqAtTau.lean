@@ -97,20 +97,20 @@ theorem existsUnique_isAtTau (V : HSp D) (τ : D.what₂.Tau)
     (fun σ => by rw [hmem, hmem]; exact tauE_cm σ) (fun σ => by rw [← hr σ]; exact hθ _)
   obtain ⟨h, hh, hu⟩ := h2 (fun σ => if r σ = τ then g else 1) (fun σ => by
     by_cases c : r σ = τ
-    · rw [if_pos c, ← hr σ, c]
+    · rw [ite_eq_left c, ← hr σ, c]
       exact hg
-    · rw [if_neg c, Matrix.map_one _ (map_zero _) (map_one _), Matrix.transpose_one, Matrix.one_mul,
+    · rw [ite_eq_right c, Matrix.map_one _ (map_zero _) (map_one _), Matrix.transpose_one, Matrix.one_mul,
         Matrix.mul_one])
   have hu' : ∀ ρ, Formalism.L2.Pj.archM V (θ ρ) h = if ρ = τ then g else 1 := fun ρ => by
     have := hu ⟨tauE D ρ, (hmem _).2 ⟨ρ, rfl⟩⟩
     simp only [hsurj] at this
     exact this
-  refine ⟨h, ⟨hh, (hu' τ).trans (if_pos rfl), fun ρ c => (hu' ρ).trans (if_neg c)⟩, fun h' hh' => ?_⟩
+  refine ⟨h, ⟨hh, (hu' τ).trans (ite_eq_left rfl), fun ρ c => (hu' ρ).trans (ite_eq_right c)⟩, fun h' hh' => ?_⟩
   have e : ∀ ρ, Formalism.L2.Pj.archM V (θ ρ) h' = Formalism.L2.Pj.archM V (θ ρ) h := fun ρ => by
     rw [hu']
     by_cases c : ρ = τ
-    · rw [if_pos c, c]; exact hh'.2.1
-    · rw [if_neg c]; exact hh'.2.2 ρ c
+    · rw [ite_eq_left c, c]; exact hh'.2.1
+    · rw [ite_eq_right c]; exact hh'.2.2 ρ c
   refine mul_inv_eq_one.1 (eq_one_of_mem V _ (h1 _ fun σ => ?_) (mul_mem hh'.1 (inv_mem hh)))
   rw [archM_mul, e, ← archM_mul, mul_inv_cancel, archM_one]
 

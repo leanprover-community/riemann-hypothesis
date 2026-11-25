@@ -63,7 +63,7 @@ private theorem symbolInFirstFamily_mul_monomial {r : Sym m n} (hr : SymbolInFir
   simp only [Finsupp.add_apply, ne_eq, Nat.add_eq_zero_iff, not_and_or] at hk
   by_cases h1 : t (Sum.inl k) ≠ 0 ∨ t (Sum.inr k) ≠ 0
   · exact hr t ht k h1
-  · push_neg at h1
+  · push Not at h1
     apply hs k
     rcases hk with hk | hk
     · rcases hk with hk | hk
@@ -123,7 +123,7 @@ theorem first_family_symbol_mul_variable_pow {u : Sym m n} (hu : SymbolInFirstFa
   have hs : ∀ k, ((Finsupp.single (Sum.inl a) b : Ix m n ⊕ Ix m n →₀ ℕ) (Sum.inl k) ≠ 0 ∨
       (Finsupp.single (Sum.inl a) b : Ix m n ⊕ Ix m n →₀ ℕ) (Sum.inr k) ≠ 0) → inF1 ε k := by
     intro k hk
-    simp only [Finsupp.single_apply, Sum.inl.injEq, reduceCtorEq, if_false, ne_eq, not_true, or_false] at hk
+    simp only [Finsupp.single_apply, Sum.inl.injEq, reduceCtorEq, ite_false, ne_eq, not_true, or_false] at hk
     split_ifs at hk with h
     · subst h; exact ha
     · exact absurd rfl hk

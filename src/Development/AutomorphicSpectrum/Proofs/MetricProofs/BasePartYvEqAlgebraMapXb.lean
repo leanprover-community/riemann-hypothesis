@@ -49,7 +49,7 @@ theorem full_of_noBlock (K₀ : Type) (t : StepIx Ψ p q)
     have hp : IsProperStep (p + q) p (⟨i, by omega⟩ : Fin (p + q)) := ⟨hne', by
       show (i : ℕ) + 1 ≠ p + q
       omega⟩
-    simp only [blkF, if_pos hp, stepOf]
+    simp only [blkF, ite_eq_left hp, stepOf]
     simp [hi]
     rfl
   · have hi : (i : ℕ) < q := i.2
@@ -61,7 +61,7 @@ theorem full_of_noBlock (K₀ : Type) (t : StepIx Ψ p q)
       omega, by
       show p + (i : ℕ) + 1 ≠ p + q
       omega⟩
-    simp only [blkF, if_pos hp, stepOf]
+    simp only [blkF, ite_eq_left hp, stepOf]
     simp
     rfl
 

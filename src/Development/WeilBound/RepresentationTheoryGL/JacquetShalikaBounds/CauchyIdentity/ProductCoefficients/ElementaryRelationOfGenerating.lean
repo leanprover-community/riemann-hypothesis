@@ -84,13 +84,13 @@ theorem eEx_eq_zero (α : Fin m → ℂ) (i : Fin m) {r : ℕ} (hr : m ≤ r) : 
   omega
 
 theorem hZ_of_le (α : Fin m → ℂ) {p r : ℕ} (h : r ≤ p) : hZ ((p : ℤ) - r) α = hN (p - r) α := by
-  rw [hZ, if_neg (by omega)]
+  rw [hZ, ite_eq_right (by omega)]
   congr 1
   omega
 
 theorem hZ_of_lt (α : Fin m → ℂ) {p r : ℕ} (h : p < r) : hZ ((p : ℤ) - r) α = 0 := by
   simp only [hZ]
-  rw [if_pos (by omega)]
+  rw [ite_eq_left (by omega)]
 
 theorem coeff_eq (α : Fin m → ℂ) (i : Fin m) (p : ℕ) :
     α i ^ p = ∑ k ∈ range (p + 1), hN k α * ((-1) ^ (p - k) * eEx α i (p - k)) := by

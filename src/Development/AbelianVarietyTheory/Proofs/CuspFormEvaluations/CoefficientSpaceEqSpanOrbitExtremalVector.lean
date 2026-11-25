@@ -85,7 +85,7 @@ theorem coeff_mem_of_eval_mem {K A : Type} [Field K] [CharZero K] [CommRing A] [
   · have := congrArg (fun r => r.coeff k) hq0
     simp only [hq, Polynomial.finsetSum_coeff, Polynomial.coeff_monomial, Finsupp.single_apply, Finset.sum_ite_eq', Finset.mem_range,
       Polynomial.coeff_zero] at this
-    rwa [if_pos (by omega)] at this
+    rwa [ite_eq_left (by omega)] at this
   · rw [Polynomial.coeff_eq_zero_of_natDegree_lt (by omega), map_zero]
 
 theorem eval_rowGen {K : Type} [Field K] {r n : ℕ} (a b : Fin r) (c : K) (f : MvPolynomial (Fin r × Fin n) K) :
@@ -106,7 +106,7 @@ theorem eval_rowGen {K : Type} [Field K] {r n : ℕ} (a b : Fin r) (c : K) (f : 
       · simp
     · rw [Finset.sum_eq_single a]
       · by_cases hv : v.1 = b
-        · simp only [hv, if_true, Polynomial.eval_mul, Polynomial.eval_X, Polynomial.eval_C,
+        · simp only [hv, ite_true, Polynomial.eval_mul, Polynomial.eval_X, Polynomial.eval_C,
             Matrix.single_apply_same]
         · simp [hv, Matrix.single, Ne.symm hv]
       · intro x _ hx

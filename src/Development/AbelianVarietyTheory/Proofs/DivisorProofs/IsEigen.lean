@@ -74,10 +74,4 @@ def trans (π : X ⟶ Y) (E : ∀ V : Y.Opens, Γ(X, π ⁻¹ᵁ V)ˣ → Prop) 
     Γ(Y, i.1.1 ⊓ j.1.1)ˣ :=
   if h : ∃ u, pullU π _ u = rat π i.1.2 j.1.2 then h.choose else 1
 
-section Eigen
-
-variable {K : Type} [Field K] {A A' T : Over (Sp K)} [GrpObj A] [GrpObj A']
-
-end Eigen
-
 end GlobalTheory.EigenDescent

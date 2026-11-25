@@ -98,15 +98,15 @@ theorem goal_of (hR : LeafRing) (hC : LeafChern) (hN : LeafNat) (hW : LeafWhitne
   refine ⟨fun {E N} V => if h : Inv q E then P.π h k (newton (fun j => P.ι h j (c h V j)) k) else 0, ?_, ?_, ?_⟩
   · intro E E' N f V h'
     have h := inv_of f h'
-    simp only [dif_pos h, dif_pos h']
+    simp only [dite_eq_left h, dite_eq_left h']
     rw [← hu h (f ≫ V) _ (hN q P f h h' V _ (hc h' V)), ← P.π_map f h h', hS.1 _ _ _ _ (hc h' V).1]
     simp only [P.map_ι]
   · intro E a b V W h
-    simp only [dif_pos h]
+    simp only [dite_eq_left h]
     obtain ⟨e, he, hk⟩ := hW q P h V W _ _ (hc h V) (hc h W)
     rw [← hu h _ e he, hS.2.1 _ (fun j => P.ι h j (c h V j)) (fun j => P.ι h j (c h W j)) _ (hc h V).1 (hc h W).1 hk, map_add (f := _)]
   · intro E L h
-    simp only [dif_pos h]
+    simp only [dite_eq_left h]
     rw [hS.2.2 _ _ _ (hc h L).1 (hL q P h L _ (hc h L)) (fun j hj => by rw [(hc h L).2.1 j hj, map_zero]) k hk,
       ← P.ι_cpow, P.π_ι]
 

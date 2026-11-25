@@ -92,7 +92,7 @@ theorem grSS_of :
       · simp
   have hblk : ∀ i, IsInv ρ (blk k c i) := by
     intro i g u hu j hj
-    rw [key g i u hu j, if_neg hj]
+    rw [key g i u hu j, ite_eq_right hj]
   have hsup : ⨆ i, blk k c i = ⊤ := by
     rw [eq_top_iff]
     intro v _
@@ -588,7 +588,7 @@ private theorem exists_linearIndep_levels_span_eq_of_monotone {k : Type} [Field 
     refine ⟨b, fun x => if x ∈ s then lev x else n, hb, ?_, ?_⟩
     · intro x hx
       by_cases h : x ∈ s
-      · simp only [h, if_true]
+      · simp only [h, ite_true]
         exact Nat.lt_succ_of_lt (hlev x h)
       · simp [h]
     · intro i hi
@@ -597,7 +597,7 @@ private theorem exists_linearIndep_levels_span_eq_of_monotone {k : Type} [Field 
           ext x
           by_cases h : x ∈ s
           · simp [h, hsb h]
-          · simp only [Set.mem_setOf_eq, h, if_false, false_and, iff_false]
+          · simp only [Set.mem_setOf_eq, h, ite_false, false_and, iff_false]
             rintro ⟨-, h'⟩
             omega
         rw [hset]
@@ -611,7 +611,7 @@ private theorem exists_linearIndep_levels_span_eq_of_monotone {k : Type} [Field 
           · intro hx
             refine ⟨hx, ?_⟩
             by_cases h : x ∈ s
-            · simp only [h, if_true]
+            · simp only [h, ite_true]
               exact Nat.lt_succ_of_lt (hlev x h)
             · simp [h]
         rw [hset]
@@ -877,8 +877,8 @@ theorem UpperTheory.Gal.Int.Geo.grHom_of :
     · apply Finset.sum_congr rfl
       intro l _
       by_cases h1 : c i = c l
-      · rw [if_pos h1, if_pos (h1 ▸ hij)]
-      · rw [if_neg h1, zero_mul]
+      · rw [ite_eq_left h1, ite_eq_left (h1 ▸ hij)]
+      · rw [ite_eq_right h1, zero_mul]
         rcases lt_or_gt_of_ne h1 with h | h
         · rw [hN (show c j < c l by omega), mul_zero]
         · rw [hM h, zero_mul]

@@ -34,7 +34,7 @@ theorem gm_inj {X Z : Scheme.{0}} (κ : Z ⟶ X) [IsOpenImmersion κ] (z : Z) {U
         ((gm κ z V c : (Z.presheaf.stalk z)ˣ) : Z.presheaf.stalk z) := by
     intro V hV c
     have h1 : (𝟙 X : X ⟶ X) (κ z) ∈ V := hV
-    simp only [gm, dif_pos hV, dif_pos h1, MonoidHom.comp_apply, Units.coe_map, pullU, MonoidHom.coe_coe]
+    simp only [gm, dite_eq_left hV, dite_eq_left h1, MonoidHom.comp_apply, Units.coe_map, pullU, MonoidHom.coe_coe]
     clear e h h' a b U U'
     first
       | (show (κ.stalkMap z).hom (X.presheaf.germ V (κ z) hV (c : Γ(X, V))) = _

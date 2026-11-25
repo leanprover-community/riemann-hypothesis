@@ -292,7 +292,7 @@ theorem GlobalTheory.UnitLemma.Desc.term_window : ∀ (K : UQ) (B : InvAlg K) (�
       exact isIntegral_zpow_smul_of_le B ha (by push_cast; omega) h3
     · intro hiI
       by_contra hc'
-      push_neg at hc'
+      push Not at hc'
       apply hne1
       rw [indM_eq]
       refine dlt_ind_eq_zero B _ hiI (hπ i (hIS hiI)) _ fun J hJ => ?_

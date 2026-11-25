@@ -51,8 +51,8 @@ theorem rank_le_of_lowest : ∀ {k V : Type} [Field k] [AddCommGroup V] [Module 
       refine add_le_add (Submodule.rank_mono ?_) (ih hn)
       rintro _ ⟨x, ⟨h1, h2⟩, rfl⟩
       refine ⟨π (n - 1) x, ⟨H _ x h1 ((hK _ _).1 h2), (hK _ _).2 fun q hq => ?_⟩, ?_⟩
-      · rw [h, if_neg hq.ne]
-      · rw [h, if_pos rfl]
+      · rw [h, ite_eq_right hq.ne]
+      · rw [h, ite_eq_left rfl]
   have top : K lo = ⊤ := by
     rw [eq_top_iff]
     intro x _
@@ -113,8 +113,8 @@ theorem tan_flow {O Γ : Type} [CommRing O] [Group Γ] [TopologicalSpace Γ] (Φ
     intro p q Z
     ext i j
     by_cases h : p = q
-    · subst h; simp only [cmp_apply, if_true]; split_ifs <;> rfl
-    · simp only [cmp_apply, if_neg h, Matrix.zero_apply]
+    · subst h; simp only [cmp_apply, ite_true]; split_ifs <;> rfl
+    · simp only [cmp_apply, ite_eq_right h, Matrix.zero_apply]
       split_ifs with h1 h2
       · omega
       all_goals rfl
@@ -125,7 +125,7 @@ theorem tan_flow {O Γ : Type} [CommRing O] [Group Γ] [TopologicalSpace Γ] (Φ
   · have : ∀ Z : M4 k, cmp m q Z = 0 := fun Z => by
       ext i j
       have := abs_lt.1 (hN i j)
-      rw [cmp_apply, if_neg (by omega)]; rfl
+      rw [cmp_apply, ite_eq_right (by omega)]; rfl
     exact LinearMap.ext fun x => Prod.ext (funext fun g => this _) (funext fun v => this _)
   · refine Prod.ext (funext fun g => ?_) (funext fun v => ?_) <;> ext i j
     · exact ge (fun q hq => congrArg (·.1 g) (hx q hq)) i j (abs_lt.1 (hN i j)).2

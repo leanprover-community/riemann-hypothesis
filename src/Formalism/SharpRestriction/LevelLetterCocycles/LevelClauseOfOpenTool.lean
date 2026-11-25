@@ -340,13 +340,13 @@ theorem jumpsLet_box [NeZero n] (W : LocWach PD LL O v n) {d : ℕ} {T₁ T₂ :
   unfold Formalism.MainNotions.RamifiedCoefficientChains.JumpWinS at h
   unfold boxM boxh
   by_cases hi : (i.val + d) % 2 = 0
-  · simp only [hi, if_true] at h ⊢
+  · simp only [hi, ite_true] at h ⊢
     rcases h with h | h
     · obtain ⟨h1, h2⟩ := h
       exact ⟨h1, by omega⟩
     · obtain ⟨h1, h2⟩ := h
       exact ⟨by push_cast at h1 ⊢; omega, h2⟩
-  · simp only [hi, if_false] at h ⊢
+  · simp only [hi, ite_false] at h ⊢
     rcases h with h | h
     · obtain ⟨h1, h2⟩ := h
       exact ⟨by omega, h2⟩

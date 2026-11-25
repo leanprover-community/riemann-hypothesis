@@ -321,7 +321,7 @@ theorem row_identity {k : Type} [Field k] [Fintype k] {n : ℕ} (a : Fin (n + 1)
       rw [one_smul, hNa]; simp; ring
     · rw [hNs s h]; simp [h]
   have h1mem : (1 : k) ∈ (univ : Finset k).filter (fun s => s ≠ 0) := by simp
-  rw [Finset.sum_congr rfl hterm, Finset.sum_sub_distrib, Finset.sum_ite_eq', if_pos h1mem,
+  rw [Finset.sum_congr rfl hterm, Finset.sum_sub_distrib, Finset.sum_ite_eq', ite_eq_left h1mem,
     Finset.sum_const, nsmul_eq_mul, card_filter_ne_zero] at hD
   have hsplit : q * ∑ b ∈ (univ : Finset (Fin (n + 1) → k)).filter (fun b => b ≠ 0), N b * R b
       = q ^ n * ∑ b ∈ (univ : Finset (Fin (n + 1) → k)).filter (fun b => b ≠ 0), R b
@@ -814,8 +814,8 @@ theorem uop_zx (hD : LatData k n B red ρ t v) {gam : (Fin (n + 1) → k) → Γ
         have h3 := ha.2 _ he
         rw [ha.1] at h3
         exact one_ne_zero h3
-      rw [h0, if_pos he, zero_smul, zero_smul]
-    · rw [if_neg he, ← Nat.cast_smul_eq_nsmul ℂ, _root_.GlobalTheory.CompanionTheory.GapOpCount.card_forms_vanishing_missing_line k n j M he hM, Nat.cast_pow]
+      rw [h0, ite_eq_left he, zero_smul, zero_smul]
+    · rw [ite_eq_right he, ← Nat.cast_smul_eq_nsmul ℂ, _root_.GlobalTheory.CompanionTheory.GapOpCount.card_forms_vanishing_missing_line k n j M he hM, Nat.cast_pow]
   rw [uop_apply]
   unfold ux
   rw [t_zx hD j]
@@ -927,7 +927,7 @@ theorem gapOp : PositivityTheory.Rg.Rs.GapOp := by
   let gam : (Fin (n + 1) → k) → Γ := fun a => if ha : a = 0 then 1 else Classical.choose (hgam a ha)
   have hc : IsCov red gam := by
     intro a ha x
-    have h1 : gam a = Classical.choose (hgam a ha) := dif_neg ha
+    have h1 : gam a = Classical.choose (hgam a ha) := dite_eq_right ha
     rw [h1]
     exact Classical.choose_spec (hgam a ha) x
   exact ⟨stabV red ρ, uop ρ t gam, zx v (e0 k n), fun y hy => uop_mem hD hc hy, fun j => zx_mem hD j,
@@ -1064,16 +1064,16 @@ theorem Mj_eq_span (N j m : ℕ) (h : m + j = N) :
         symm
         apply Finset.sum_eq_zero
         intro i _
-        rw [if_neg]
+        rw [ite_eq_right]
         intro hai
         rw [hai] at ha
         simp at ha
       · rw [Finset.sum_eq_single (⟨(a : ℕ) - j, by omega⟩ : Fin m)]
-        · rw [if_pos (Fin.ext (by simp; omega))]
+        · rw [ite_eq_left (Fin.ext (by simp; omega))]
           congr 1
           exact Fin.ext (by simp; omega)
         · intro i _ hi
-          rw [if_neg]
+          rw [ite_eq_right]
           intro hai
           apply hi
           have h3 := congrArg Fin.val hai
@@ -1485,7 +1485,7 @@ theorem fix_conj (hϖ : IsUnifV E w ϖ) (n : ℕ) (γ : GLint (Fin (n + 1)) (Ov 
     Matrix (Fin (n + 1)) (Fin (n + 1)) (w.adicCompletion E)) a 0 ∈ Ov E w
   rw [hd, dd, tjcosets_conj_apply]
   have ha' : ¬ (a : ℕ) < 1 := fun h => ha (Fin.ext (by rw [Fin.val_zero]; omega))
-  rw [if_neg ha', if_pos (by simp), one_mul, mul_comm _ ϖ, ← mul_assoc, inv_mul_cancel₀ hϖ0, one_mul]
+  rw [ite_eq_right ha', ite_eq_left (by simp), one_mul, mul_comm _ ϖ, ← mul_assoc, inv_mul_cancel₀ hϖ0, one_mul]
   exact entry_mem γ a 0
 
 theorem step_coset (hϖ : IsUnifV E w ϖ) (n : ℕ) (jj : Fin (n + 1)) (γ : GLint (Fin (n + 1)) (Ov E w))
@@ -1536,13 +1536,13 @@ theorem step_coset (hϖ : IsUnifV E w ϖ) (n : ℕ) (jj : Fin (n + 1)) (γ : GLi
       simp only [f1, fj]
       by_cases hb : b = jj
       · subst hb
-        rw [if_pos rfl]
+        rw [ite_eq_left rfl]
         by_cases ha : (a : ℕ) < 1
-        · rw [if_pos ha, hconj]
+        · rw [ite_eq_left ha, hconj]
           exact entry_mem γ a b
-        · rw [if_neg ha, one_mul, mul_comm]
+        · rw [ite_eq_right ha, one_mul, mul_comm]
           exact (red_eq_zero_iff hϖ γ a b).1 (h1 a (fun e => ha (by rw [e, Fin.val_zero]; omega)))
-      · rw [if_neg hb, mul_one]
+      · rw [ite_eq_right hb, mul_one]
         split_ifs
         · exact (Ov E w).mul_mem hϖO (entry_mem γ a b)
         · rw [one_mul]
@@ -1550,15 +1550,15 @@ theorem step_coset (hϖ : IsUnifV E w ϖ) (n : ℕ) (jj : Fin (n + 1)) (γ : GLi
     · rw [hUie, hGi]
       simp only [f1, fj]
       by_cases hb : (b : ℕ) < 1
-      · rw [if_pos hb]
+      · rw [ite_eq_left hb]
         have hb0 : b = 0 := Fin.ext (by rw [Fin.val_zero]; omega)
         subst hb0
         by_cases ha : a = jj
-        · rw [if_pos ha, inv_inv, hconj]
+        · rw [ite_eq_left ha, inv_inv, hconj]
           exact entry_mem γ⁻¹ a 0
-        · rw [if_neg ha, inv_one, one_mul, mul_comm]
+        · rw [ite_eq_right ha, inv_one, one_mul, mul_comm]
           exact (red_eq_zero_iff hϖ γ⁻¹ a 0).1 (h2 a ha)
-      · rw [if_neg hb, inv_one, mul_one]
+      · rw [ite_eq_right hb, inv_one, mul_one]
         split_ifs
         · rw [inv_inv]
           exact (Ov E w).mul_mem hϖO (entry_mem γ⁻¹ a b)
@@ -1592,13 +1592,13 @@ theorem step_coset (hϖ : IsUnifV E w ϖ) (n : ℕ) (jj : Fin (n + 1)) (γ : GLi
       show ϖ⁻¹ * (U : Matrix (Fin (n + 1)) (Fin (n + 1)) (w.adicCompletion E)) 0 b ∈ Ov E w
       rw [hUe]
       simp only [f1, fj]
-      rw [if_pos (by simp), if_neg hbj, mul_one, ← mul_assoc, inv_mul_cancel₀ hϖ0, one_mul]
+      rw [ite_eq_left (by simp), ite_eq_right hbj, mul_one, ← mul_assoc, inv_mul_cancel₀ hϖ0, one_mul]
       exact entry_mem γ 0 b
     · apply red_apply_congr
       show (U : Matrix (Fin (n + 1)) (Fin (n + 1)) (w.adicCompletion E)) a b = _
       rw [hUe]
       simp only [f1, fj]
-      rw [if_neg (fun h => ha (Fin.ext (by rw [Fin.val_zero]; omega))), if_neg hbj, one_mul, mul_one]
+      rw [ite_eq_right (fun h => ha (Fin.ext (by rw [Fin.val_zero]; omega))), ite_eq_right hbj, one_mul, mul_one]
 
 open Classical in
 theorem Tj_apply (hϖ : IsUnifV E w ϖ) {N : ℕ} (j : ℕ) (g : GL (Fin N) (w.adicCompletion E)) :

@@ -205,7 +205,7 @@ theorem linFactor_of : LinFactor := by
   by_cases hk : k = k₀
   · subst hk
     simp
-  · simp only [hk, if_false]
+  · simp only [hk, ite_false]
     exact (hall k).choose_spec
 
 end UpperTheory.Gal.crystallineComparison
@@ -326,7 +326,7 @@ private lemma coeff_lin_form {A ι : Type} [CommRing A] [Fintype ι] (a : ι →
   rw [Finset.sum_eq_single k₀]
   · simp
   · intro k _ hk
-    rw [MvPolynomial.coeff_X', if_neg, mul_zero]
+    rw [MvPolynomial.coeff_X', ite_eq_right, mul_zero]
     intro h
     exact hk (Finsupp.single_left_injective one_ne_zero h)
   · simp

@@ -310,7 +310,7 @@ theorem chain (H : Hyp U A φ) (hH : PHom U A φ) (hSm : PSmooth U A φ) (hD : P
   have hK : ∀ i, a + 1 ≤ i → Kf A φ (eta A φ c j) (skip i g) = ω := by
     intro i hi
     rw [hω]
-    exact kf_dep hD c j _ _ (fun n hn => by simp only [skip]; rw [if_pos (by omega)])
+    exact kf_dep hD c j _ _ (fun n hn => by simp only [skip]; rw [ite_eq_left (by omega)])
   have hF2 : ∀ x ∈ U, (∑ i ∈ Finset.range (a + 2),
       ((-1 : ℝ) ^ i) • Kf A φ (eta A φ c j) (skip i g)) x = eta A φ c j g x := by
     intro x hx
@@ -339,7 +339,7 @@ theorem chain (H : Hyp U A φ) (hH : PHom U A φ) (hSm : PSmooth U A φ) (hD : P
     congr 1
     funext l
     simp only [skip]
-    rw [if_neg (by omega), show a + j - j + ↑l + 1 = a + 1 + ↑l by omega]
+    rw [ite_eq_right (by omega), show a + j - j + ↑l + 1 = a + 1 + ↑l by omega]
   have hBB : ∀ m : Fin (j + 1), Bf A φ c o j (skip (a + 1 + ↑m) g) =
       intS' ω (fun l => Y (m.succ.succAbove l)) := by
     intro m
@@ -494,9 +494,9 @@ private theorem apply_add_succAbove_eq_skip (g : ℕ → Γ) (a : ℕ) {n : ℕ}
     g (a + ↑(i.succAbove l)) = skip (a + ↑i) g (a + ↑l) := by
   simp only [skip]
   rcases lt_or_ge l.val i.val with hl | hl
-  · rw [Fin.succAbove_of_castSucc_lt _ _ (by rw [Fin.lt_def]; simpa using hl), if_pos (by omega)]
+  · rw [Fin.succAbove_of_castSucc_lt _ _ (by rw [Fin.lt_def]; simpa using hl), ite_eq_left (by omega)]
     rfl
-  · rw [Fin.succAbove_of_le_castSucc _ _ (by rw [Fin.le_def]; simpa using hl), if_neg (by omega)]
+  · rw [Fin.succAbove_of_le_castSucc _ _ (by rw [Fin.le_def]; simpa using hl), ite_eq_right (by omega)]
     simp only [Fin.val_succ, Nat.add_assoc]
 
 theorem tele (H : Hyp U A φ) (hH : PHom U A φ) (hSm : PSmooth U A φ) (hD : PDep A φ)

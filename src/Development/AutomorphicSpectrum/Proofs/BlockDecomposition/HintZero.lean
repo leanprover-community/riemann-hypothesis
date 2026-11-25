@@ -258,7 +258,7 @@ theorem corner_mem {ϖ : w.adicCompletion E} {a b i j : ℕ} (hi : i ≤ a)
   have h := W.2 (posR hi p.1) (posS p.2)
   have hc : ((posR hi p.1 : Fin a) : ℕ) < i ∧ j ≤ ((posS p.2 : Fin b) : ℕ) :=
     ⟨p.1.2, Nat.le_add_right _ _⟩
-  rw [if_pos hc] at h
+  rw [ite_eq_left hc] at h
   exact h
 
 def cornerMap (ϖ : w.adicCompletion E) (a b i j : ℕ) (hi : i ≤ a) :
@@ -301,7 +301,7 @@ theorem ker_cornerMap {ϖ : w.adicCompletion E} (h : IsUnifV E w ϖ) (a b i j : 
       simp only [hr, hs] at this
       exact le_one_of_unif_mul h this
     · have := W.2 r s
-      rw [if_neg hc] at this
+      rw [ite_eq_right hc] at this
       exact this
   · intro hW
     funext p
@@ -321,12 +321,12 @@ theorem cornerMap_surjective {ϖ : w.adicCompletion E} (h : IsUnifV E w ϖ) (a b
   have hM : M ∈ latD ϖ a b i j := by
     intro r s
     by_cases hc : (r : ℕ) < i ∧ j ≤ (s : ℕ)
-    · rw [if_pos hc]
-      simp only [M, dif_pos hc]
+    · rw [ite_eq_left hc]
+      simp only [M, dite_eq_left hc]
       rw [mul_inv_cancel_left₀ h0]
       exact (x _).2
-    · rw [if_neg hc]
-      simp only [M, dif_neg hc]
+    · rw [ite_eq_right hc]
+      simp only [M, dite_eq_right hc]
       exact (Ov E w).zero_mem
   refine ⟨⟨M, hM⟩, ?_⟩
   funext p
@@ -336,7 +336,7 @@ theorem cornerMap_surjective {ϖ : w.adicCompletion E} (h : IsUnifV E w ϖ) (a b
   have hc : ((posR hi p.1 : Fin a) : ℕ) < i ∧ j ≤ ((posS p.2 : Fin b) : ℕ) :=
     ⟨p.1.2, Nat.le_add_right _ _⟩
   show ϖ * M (posR hi p.1) (posS p.2) = _
-  simp only [M, dif_pos hc]
+  simp only [M, dite_eq_left hc]
   rw [mul_inv_cancel_left₀ h0]
   congr 2
   refine Prod.ext (Fin.ext rfl) (Fin.ext ?_)
@@ -535,39 +535,39 @@ theorem diag_iff_latD {ϖ : w.adicCompletion E} (hϖ : IsUnifV E w ϖ) {a b : �
     have a2 := h2 r s
     simp only [diagJ, Matrix.diagonal_mul, Matrix.mul_diagonal, Matrix.smul_apply, smul_eq_mul] at a1 a2
     by_cases hr : (r : ℕ) < i <;> by_cases hs : (s : ℕ) < j
-    · rw [if_neg (by omega)]
-      rw [if_pos hs, hc] at a2
+    · rw [ite_eq_right (by omega)]
+      rw [ite_eq_left hs, hc] at a2
       exact a2
-    · rw [if_pos ⟨hr, by omega⟩]
-      rw [if_pos hr] at a1
+    · rw [ite_eq_left ⟨hr, by omega⟩]
+      rw [ite_eq_left hr] at a1
       exact a1
-    · rw [if_neg (by omega)]
-      rw [if_neg hr, one_mul] at a1
+    · rw [ite_eq_right (by omega)]
+      rw [ite_eq_right hr, one_mul] at a1
       exact a1
-    · rw [if_neg (by omega)]
-      rw [if_neg hr, one_mul] at a1
+    · rw [ite_eq_right (by omega)]
+      rw [ite_eq_right hr, one_mul] at a1
       exact a1
   · intro h
     refine ⟨fun r s => ?_, fun r s => ?_⟩
     · have a := h r s
       simp only [diagJ, Matrix.diagonal_mul]
       by_cases hr : (r : ℕ) < i
-      · rw [if_pos hr]
+      · rw [ite_eq_left hr]
         by_cases hs : j ≤ (s : ℕ)
-        · rwa [if_pos ⟨hr, hs⟩] at a
-        · rw [if_neg (by omega)] at a
+        · rwa [ite_eq_left ⟨hr, hs⟩] at a
+        · rw [ite_eq_right (by omega)] at a
           exact (Ov E w).mul_mem hm a
-      · rw [if_neg hr, one_mul]
-        rwa [if_neg (by omega)] at a
+      · rw [ite_eq_right hr, one_mul]
+        rwa [ite_eq_right (by omega)] at a
     · have a := h r s
       simp only [diagJ, Matrix.mul_diagonal, Matrix.smul_apply, smul_eq_mul]
       by_cases hs : (s : ℕ) < j
-      · rw [if_pos hs, hc]
-        rwa [if_neg (by omega)] at a
-      · rw [if_neg hs, mul_one]
+      · rw [ite_eq_left hs, hc]
+        rwa [ite_eq_right (by omega)] at a
+      · rw [ite_eq_right hs, mul_one]
         by_cases hr : (r : ℕ) < i
-        · rwa [if_pos ⟨hr, by omega⟩] at a
-        · rw [if_neg (by omega)] at a
+        · rwa [ite_eq_left ⟨hr, by omega⟩] at a
+        · rw [ite_eq_right (by omega)] at a
           exact (Ov E w).mul_mem hm a
 
 theorem diagJ_mul_inv {L : Type} [Field L] {ϖ : L} (h0 : ϖ ≠ 0) (n j : ℕ) :
@@ -706,8 +706,8 @@ theorem finsum_out_indicator {A : Type} [AddCommGroup A] (S Λ : AddSubgroup A) 
       T.indicator 1 := by
     funext q
     by_cases h : q ∈ T
-    · rw [Set.indicator_of_mem h]; exact if_pos h
-    · rw [Set.indicator_of_notMem h]; exact if_neg h
+    · rw [Set.indicator_of_mem h]; exact ite_eq_left h
+    · rw [Set.indicator_of_notMem h]; exact ite_eq_right h
   rw [hfun, ← hcard]
   by_cases hT : T.Finite
   · rw [← finsum_mem_def, finsum_mem_eq_finite_toFinset_sum _ hT, Nat.card_coe_set_eq,
@@ -978,9 +978,9 @@ theorem ct_eq (E : Type) [Field E] [NumberField E] [IsCMField E] (n a b : ℕ) (
     rw [c1] at h1
     rw [c2] at h2
     obtain ⟨i1, i2, i3⟩ : IsInt w m.1.val ∧ IsInt w (ϖ • (m.1⁻¹).val) ∧ ordL m.1.val.det = (i : ℤ) := by
-      by_contra hc; exact h1 (if_neg hc)
+      by_contra hc; exact h1 (ite_eq_right hc)
     obtain ⟨j1, j2, j3⟩ : IsInt w m.2.val ∧ IsInt w (ϖ • (m.2⁻¹).val) ∧ ordL m.2.val.det = (j : ℤ) := by
-      by_contra hc; exact h2 (if_neg hc)
+      by_contra hc; exact h2 (ite_eq_right hc)
     have hfun : (fun X : Multiplicative (Matrix (Fin a) (Fin b) (w.adicCompletion E)) =>
         Tj ℂ n (Ov E w) ϖ k (blk h w m (Multiplicative.toAdd X))) =
         fun X => if IsInt w (m.1.val * Multiplicative.toAdd X) ∧
@@ -989,10 +989,10 @@ theorem ct_eq (E : Type) [Field E] [NumberField E] [IsCMField E] (n a b : ℕ) (
       rw [tj_blk E n a b h w ϖ hϖ k hk m]
       have e : ordL m.1.val.det + ordL m.2.val.det = (k : ℤ) := by rw [i3, j3, ← hij]; push_cast; rfl
       by_cases hX : IsInt w (m.1.val * Multiplicative.toAdd X) ∧ IsInt w (ϖ • (Multiplicative.toAdd X * (m.2⁻¹).val))
-      · rw [if_pos ⟨i1, j1, hX.1, i2, j2, hX.2, e⟩, if_pos hX]
-      · rw [if_neg fun hc => hX ⟨hc.2.2.1, hc.2.2.2.2.2.1⟩, if_neg hX]
-    have u1 : Tj ℂ a (Ov E w) ϖ i m.1 = 1 := by rw [c1, if_pos ⟨i1, i2, i3⟩]
-    have u2 : Tj ℂ b (Ov E w) ϖ j m.2 = 1 := by rw [c2, if_pos ⟨j1, j2, j3⟩]
+      · rw [ite_eq_left ⟨i1, j1, hX.1, i2, j2, hX.2, e⟩, ite_eq_left hX]
+      · rw [ite_eq_right fun hc => hX ⟨hc.2.2.1, hc.2.2.2.2.2.1⟩, ite_eq_right hX]
+    have u1 : Tj ℂ a (Ov E w) ϖ i m.1 = 1 := by rw [c1, ite_eq_left ⟨i1, i2, i3⟩]
+    have u2 : Tj ℂ b (Ov E w) ϖ j m.2 = 1 := by rw [c2, ite_eq_left ⟨j1, j2, j3⟩]
     have t1 : Tj ℂ a (Ov E w) ϖ i m.1 ≠ 0 := by rw [u1]; exact one_ne_zero
     have t2 : Tj ℂ b (Ov E w) ϖ j m.2 ≠ 0 := by rw [u2]; exact one_ne_zero
     rw [hfun, hint_lat E a b w ϖ hϖ i j hi hj m i1 j2 t1 t2, _root_.GlobalTheory.CompanionTheory.CtS.NuVal.unrChar_twist E a b w c i j m i3 j3, _root_.GlobalTheory.CompanionTheory.CtS.absHalf_blockDet_value E a b w i j m i3 j3,
@@ -1003,15 +1003,15 @@ theorem ct_eq (E : Type) [Field E] [NumberField E] [IsCMField E] (n a b : ℕ) (
         exact mem_pairs.1 hp'
       have : i' ≠ i := fun e => hne (by subst e; congr; omega)
       have u : Tj ℂ a (Ov E w) ϖ i' m.1 = 0 := by
-        rw [_root_.GlobalTheory.CompanionTheory.CtS.Tj_eq_ite E w a i' ϖ hϖ hi' m.1, if_neg]
+        rw [_root_.GlobalTheory.CompanionTheory.CtS.Tj_eq_ite E w a i' ϖ hϖ hi' m.1, ite_eq_right]
         rintro ⟨-, -, e⟩
         exact this (by rw [i3] at e; exact_mod_cast e.symm)
       simp [u]
-  · push_neg at hP
+  · push Not at hP
     have hz : (fun X : Multiplicative (Matrix (Fin a) (Fin b) (w.adicCompletion E)) =>
         Tj ℂ n (Ov E w) ϖ k (blk h w m (Multiplicative.toAdd X))) = fun _ => 0 := by
       funext X
-      rw [tj_blk E n a b h w ϖ hϖ k hk m, if_neg]
+      rw [tj_blk E n a b h w ϖ hϖ k hk m, ite_eq_right]
       rintro ⟨i1, j1, -, i2, j2, -, e⟩
       obtain ⟨i, hi, i3⟩ := _root_.GlobalTheory.CompanionTheory.CtS.ordL_det_range E w a ϖ hϖ m.1 i1 i2
       obtain ⟨j, hj, j3⟩ := _root_.GlobalTheory.CompanionTheory.CtS.ordL_det_range E w b ϖ hϖ m.2 j1 j2
@@ -1019,9 +1019,9 @@ theorem ct_eq (E : Type) [Field E] [NumberField E] [IsCMField E] (n a b : ℕ) (
         have : i + j = k := by rw [i3, j3] at e; exact_mod_cast e
         exact mem_pairs.2 ⟨this, hi, hj⟩
       have t1 : Tj ℂ a (Ov E w) ϖ i m.1 ≠ 0 := by
-        rw [_root_.GlobalTheory.CompanionTheory.CtS.Tj_eq_ite E w a i ϖ hϖ hi m.1, if_pos ⟨i1, i2, i3⟩]; exact one_ne_zero
+        rw [_root_.GlobalTheory.CompanionTheory.CtS.Tj_eq_ite E w a i ϖ hϖ hi m.1, ite_eq_left ⟨i1, i2, i3⟩]; exact one_ne_zero
       have t2 : Tj ℂ b (Ov E w) ϖ j m.2 ≠ 0 := by
-        rw [_root_.GlobalTheory.CompanionTheory.CtS.Tj_eq_ite E w b j ϖ hϖ hj m.2, if_pos ⟨j1, j2, j3⟩]; exact one_ne_zero
+        rw [_root_.GlobalTheory.CompanionTheory.CtS.Tj_eq_ite E w b j ϖ hϖ hj m.2, ite_eq_left ⟨j1, j2, j3⟩]; exact one_ne_zero
       exact t2 (hP (i, j) hp t1)
     have hs : ∑ p ∈ pairs a b k, coef (qV E w) c a b p.1 p.2 * (Tj ℂ a (Ov E w) ϖ p.1 m.1 * Tj ℂ b (Ov E w) ϖ p.2 m.2) = 0 := by
       refine Finset.sum_eq_zero fun p hp => ?_

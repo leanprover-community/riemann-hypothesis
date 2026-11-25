@@ -229,9 +229,9 @@ theorem measurable_nPt_bigPt (k r : ℕ) (TT : ℝ) :
   simp only [nPt_bigPt_eq]
   refine Finset.measurable_prod _ fun i _ => ?_
   by_cases h : 1 + (i : ℕ) = r + 1
-  · simp only [h, if_true]
+  · simp only [h, ite_true]
     exact ((Complex.continuous_normSq.measurable.comp (measurable_pi_apply _)).sub_const _).pow_const _
-  · simp only [h, if_false]
+  · simp only [h, ite_false]
     have hm : Measurable (fun c : Fin (r + 1) → ℂ => ‖c i‖) := continuous_norm.measurable.comp (measurable_pi_apply i)
     exact hm.pow_const _
 
@@ -499,7 +499,7 @@ theorem perp_eq_zero {z v : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z) (hzn 
     have hd := Formalism.FourierDecayAlt.P.Dx2.DF.decomp (k := k) (r := r) y
     set α : ℂ := herm (Hpk k r) (Formalism.FourierDecayAlt.P.Dx2.DF.Wb y) z / herm (Hpk k r) z z with hα
     have hWb : inWb k r (Formalism.FourierDecayAlt.P.Dx2.DF.Wb y) := by
-      intro i hi; simp only [Formalism.FourierDecayAlt.P.Dx2.DF.Wb]; rw [if_neg (by omega)]
+      intro i hi; simp only [Formalism.FourierDecayAlt.P.Dx2.DF.Wb]; rw [ite_eq_right (by omega)]
     have hx : inWb k r (Formalism.FourierDecayAlt.P.Dx2.DF.Wb y - α • z) := inWb_sub hWb (inWb_smul _ hz)
     have hxz : herm (Hpk k r) (Formalism.FourierDecayAlt.P.Dx2.DF.Wb y - α • z) z = 0 := by
       rw [hb_sub_left, hb_smul_left, hα, div_mul_cancel₀ _ hzz, sub_self]
@@ -542,7 +542,7 @@ theorem pW_inWb (hz : inWb k r z) (u : Fin (2 * r + k + 1) → ℂ) : inWb k r (
   unfold pW
   rw [Formalism.FourierDecayAlt.P.Dx2.DF.prW_eq]
   refine inWb_sub ?_ (inWb_smul _ hz)
-  intro i hi; simp only [Formalism.FourierDecayAlt.P.Dx2.DF.Wb]; rw [if_neg (by omega)]
+  intro i hi; simp only [Formalism.FourierDecayAlt.P.Dx2.DF.Wb]; rw [ite_eq_right (by omega)]
 
 theorem pW_perp (hzz : herm (Hpk k r) z z ≠ 0) (u : Fin (2 * r + k + 1) → ℂ) :
     herm (Hpk k r) (pW k r z u) z = 0 := by

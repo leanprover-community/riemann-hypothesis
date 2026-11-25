@@ -45,7 +45,7 @@ theorem sN_of : SN := by
       intro k
       have e1 : ψ (Matrix.single k k 1) = ψ (Matrix.single k i0 1) * ψ (Matrix.single i0 i0 1) *
           ψ (Matrix.single i0 k 1) := by
-        rw [hEE k i0 i0 i0, if_pos rfl, hEE k i0 i0 k, if_pos rfl]
+        rw [hEE k i0 i0 i0, ite_eq_left rfl, hEE k i0 i0 k, ite_eq_left rfl]
       rw [e1, h0, mul_zero, zero_mul]
     have h1 : ψ 1 = 0 := by
 
@@ -68,7 +68,7 @@ theorem sN_of : SN := by
       · subst h
         rfl
       · rw [zero_mul]
-    simp only [l1, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+    simp only [l1, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
   have hR : ∀ i k, (∑ j, ψ (Matrix.single j i0 1) * Matrix.single b j 1) * Matrix.single i k 1 =
       ψ (Matrix.single i i0 1) * Matrix.single b k 1 := by
     intro i k
@@ -81,7 +81,7 @@ theorem sN_of : SN := by
       · subst h
         rw [Matrix.single_mul_single_same, one_mul]
       · rw [Matrix.single_mul_single_of_ne _ _ _ _ h _, mul_zero]
-    simp only [l2, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    simp only [l2, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   refine ⟨∑ j, ψ (Matrix.single j i0 1) * Matrix.single b j 1, ?_, ?_⟩
   · have hTS : (∑ k, Matrix.single k a (ψ (Matrix.single i0 i0 1) a b)⁻¹ * ψ (Matrix.single i0 k 1)) *
         (∑ j, ψ (Matrix.single j i0 1) * Matrix.single b j 1) = 1 := by

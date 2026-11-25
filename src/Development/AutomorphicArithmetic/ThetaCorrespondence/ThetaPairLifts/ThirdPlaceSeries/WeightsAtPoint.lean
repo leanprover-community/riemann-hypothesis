@@ -10,48 +10,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.StrictAntiOf
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.LiftLambdaBound
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.HostN
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.WtNZStatement
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
-import Mathlib.Algebra.Order.Star.Int
-import Mathlib.Tactic.Basify
 import Development.AbelianVarietyTheory.Definitions.Divisors.CuspIso
 import Development.AbelianVarietyTheory.Definitions.Divisors.GenRatios
 import Development.AbelianVarietyTheory.Definitions.Divisors.IsRightActFunPull
@@ -59,7 +17,6 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.Multiplier
 import Development.AbelianVarietyTheory.Definitions.Divisors.NormNegCmConstantEqAtAllEmbeddings
 import Development.AbelianVarietyTheory.Definitions.Divisors.TupleReadBaseTupleEqFamily
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.Polynomial.Basic
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.DivisorProofs.BarGapParameterInequality, Development.AbelianVarietyTheory.Proofs.DivisorProofs.ShiftedWeightsDominantOfGaps, Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeightParameterStrictAntitone, Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.WeightsAtPoint
@@ -181,7 +138,7 @@ theorem shifted_dominant : ∀ {E : Type} [Field E] [NumberField E] [IsCMField E
     · have h := h2 hb
       have hb' : ¬ (b : ℕ) < Dw.p := by omega
       have ha' : (a : ℕ) < Dw.p := by omega
-      simp only [hb', ha', if_true, if_false]
+      simp only [hb', ha', ite_true, ite_false]
       have : 0 ≤ ((P.T : ℤ) + P.c₀) * ((P.T : ℤ) + CompHt.dimFlag Dw + 1) := by positivity
       have : (2 : ℤ) ≤ ((Dw.p + Dw.q : ℕ) : ℤ) := by have := b.2; push_cast; omega
       linarith
@@ -191,9 +148,9 @@ theorem shifted_dominant : ∀ {E : Type} [Field E] [NumberField E] [IsCMField E
         nlinarith
       by_cases ha : (a : ℕ) < Dw.p
       · have hb' : (b : ℕ) < Dw.p := by omega
-        simp only [hb', ha, if_true]; linarith
+        simp only [hb', ha, ite_true]; linarith
       · have hb' : ¬ (b : ℕ) < Dw.p := by omega
-        simp only [hb', ha, if_false]; linarith
+        simp only [hb', ha, ite_false]; linarith
   · refine antitone_of_step _ fun a b hab => ?_
     obtain ⟨h1, h2⟩ := hgap τ a b hab
     have hk : (a : ℕ) + 1 < Dw.p + Dw.q := hab ▸ b.2
@@ -219,28 +176,28 @@ theorem shifted_dominant : ∀ {E : Type} [Field E] [NumberField E] [IsCMField E
       have hb' : ¬ (b : ℕ) < Dw.p := by omega
       have ha' : (a : ℕ) < Dw.p := by omega
       have hG' : G = P.u τ a - P.u τ b - P.c₀ - (2 * ((Dw.p + Dw.q : ℕ) : ℤ) - 2) := by
-        rw [hG, if_pos (by omega)]; ring
+        rw [hG, ite_eq_left (by omega)]; ring
       have hgl : (P.T : ℤ) + P.c₀ ≤ g := by
         rw [hgdef, Int.le_ediv_iff_mul_le hT₁0, hT₁]; linarith
-      simp only [hb', ha', if_true, if_false]
+      simp only [hb', ha', ite_true, ite_false]
       by_cases hs0 : s = 0
       · subst hs0
-        simp only [if_true, hK, Nat.cast_zero, zero_mul]
+        simp only [ite_true, hK, Nat.cast_zero, zero_mul]
         push_cast
         linarith
-      · simp only [hs0, if_false, hK]
+      · simp only [hs0, ite_false, hK]
         push_cast
         linarith
     · have h := h1 hb
       have hG' : G = P.u τ a - P.u τ b + 2 := by
-        rw [hG, if_neg (by omega)]
+        rw [hG, ite_eq_right (by omega)]
       have hgl : (P.T : ℤ) + CompHt.dimFlag Dw + 2 + 2 * ((Dw.p + Dw.q : ℕ) : ℤ) ≤ g := by
         rw [hgdef, Int.le_ediv_iff_mul_le hT₁0, hT₁]; linarith
       have hsame : hodgeWt Dw τ a = hodgeWt Dw τ b := by
         rw [hw, hw]
         by_cases ha : (a : ℕ) < Dw.p
-        · rw [if_pos ha, if_pos (by omega)]
-        · rw [if_neg ha, if_neg (by omega)]
+        · rw [ite_eq_left ha, ite_eq_left (by omega)]
+        · rw [ite_eq_right ha, ite_eq_right (by omega)]
       simp only [← hw, hsame]
       split_ifs <;> simp only [hK] <;> push_cast <;> linarith
 
@@ -322,7 +279,7 @@ theorem atPoint (PP A M : ℝ) (hi : (i : ℕ) + 1 < D.R.m) (hw : WtNum p i PP) 
     by_cases h : (j : ℕ) < (dat p i).p <;> simp [h]
   · refine ⟨fun τ => -(FlagTan.kap (dat p i) τ ⟨D.R.k - 2, ha⟩), fun τ => ?_, ?_⟩
     · simp only [FlagTan.kap]
-      rw [if_pos (by show D.R.k - 2 < (dat p i).p; omega), ep, eq, hr, abs_le]
+      rw [ite_eq_left (by show D.R.k - 2 < (dat p i).p; omega), ep, eq, hr, abs_le]
       constructor <;> push_cast <;> omega
     · funext τ j
       have e := P.uMinus_eq τ (a := ⟨D.R.k - 2, ha⟩) rfl j
@@ -330,7 +287,7 @@ theorem atPoint (PP A M : ℝ) (hi : (i : ℕ) + 1 < D.R.m) (hw : WtNum p i PP) 
         uWt_anchor (dat p i) (wtA (p.κ i)) (p.κ i).n (D.R.k - 1) τ ⟨D.R.k - 2, ha⟩ (by show D.R.k - 2 + 1 = D.R.k - 1; omega)
       have e0 : P.uMinus τ ⟨D.R.k - 2, ha⟩ = 0 := by
         simp only [WtPar.uMinus, Pi.sub_apply, Pi.smul_apply, hodgeWt, CompHt.barWt, smul_eq_mul, e1]
-        rw [if_pos (by show D.R.k - 2 < (dat p i).p; omega)]
+        rw [ite_eq_left (by show D.R.k - 2 < (dat p i).p; omega)]
         ring
       show P.uMinus τ j = P.wt P.T τ j + GlobalTheory.FlatLine.parWt (dat p i) _ τ j
       rw [e, e0]

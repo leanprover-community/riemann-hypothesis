@@ -56,13 +56,6 @@ namespace GlobalTheory.SymmPoincare
 
 universe u
 
-section Linear
-
-variable {K : Type} [Field K] {V : Type u} [AddCommGroup V] [Module K V]
-  {ψ : Module.Dual K V →ₗ[K] Module.Dual K V →ₗ[K] K} {β : V →ₗ[K] Module.Dual K V}
-
-end Linear
-
 section Swap
 
 variable {R : Type} [CommRing R] {I : Ideal R} {S : Scheme.{0}} {κ : DividedPowers I} {t : S ⟶ Sp R}

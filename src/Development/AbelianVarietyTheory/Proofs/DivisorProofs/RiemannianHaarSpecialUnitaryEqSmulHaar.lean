@@ -611,12 +611,12 @@ theorem exists_measurable_extend {α β : Type} [TopologicalSpace α] [PolishSpa
   have hφs : ∀ a ∈ s, φ (M a) = ψ a := by
     intro a ha
     have h : ∃ a' ∈ s, M a' = M a := ⟨a, ha, rfl⟩
-    simp only [φ, dif_pos h]
+    simp only [φ, dite_eq_left h]
     rw [hinj h.choose_spec.1 ha h.choose_spec.2]
   have hφ0 : ∀ y, y ∉ M '' s → φ y = 0 := by
     intro y hy
     have h : ¬ ∃ a ∈ s, M a = y := fun ⟨a, ha, e⟩ => hy ⟨a, ha, e⟩
-    simp only [φ, dif_neg h]
+    simp only [φ, dite_eq_right h]
   refine ⟨φ, fun t ht => ?_, hφs, hφ0⟩
   have e : φ ⁻¹' t = M '' (s ∩ ψ ⁻¹' t) ∪ {y | y ∉ M '' s ∧ (0 : ℝ≥0∞) ∈ t} := by
     ext y
@@ -831,7 +831,7 @@ theorem haar_chart_formula : ∀ (E : Type) [Field E] [NumberField E] [IsCMField
     funext τ k
     have hk : (k : ℕ) < r := lt_of_lt_of_le k.isLt (Nat.sub_le r 1)
     have e1 := congrFun (congrFun (congrFun e τ) ⟨k, hk⟩) ⟨k, hk⟩
-    simp only [phaseFrame, Matrix.diagonal_apply_eq, angles, k.isLt, dif_pos] at e1
+    simp only [phaseFrame, Matrix.diagonal_apply_eq, angles, k.isLt, dite_eq_left] at e1
     obtain ⟨n, hn⟩ := Complex.exp_eq_exp_iff_exists_int.mp e1
     have hn' : θ τ k = θ' τ k + n * (2 * Real.pi) := by
       have := congrArg Complex.im hn
@@ -1487,7 +1487,7 @@ theorem phaseFrame_small_angles : ∀ (E : Type) [Field E] (Ψ : Finset (E →+*
     have hk := hθ τ (Fin.castLE (Nat.sub_le r 1) k)
     have hentry : phaseFrame θ τ (Fin.castLE (Nat.sub_le r 1) k) (Fin.castLE (Nat.sub_le r 1) k)
         = Complex.exp (Complex.I * (θ τ k : ℂ)) := by
-      simp only [phaseFrame, Matrix.diagonal_apply_eq, angles, Fin.coe_castLE, k.isLt, dif_pos]
+      simp only [phaseFrame, Matrix.diagonal_apply_eq, angles, Fin.coe_castLE, k.isLt, dite_eq_left]
     rw [hentry] at hk
     have := hcont (x := Complex.exp (Complex.I * (θ τ k : ℂ))) (by rwa [dist_eq_norm])
     rw [Complex.arg_one, Real.dist_eq, sub_zero] at this
@@ -1703,8 +1703,8 @@ theorem riemHaar_eq_smul (E : Type) [Field E] [NumberField E] [IsCMField E] (r :
     obtain ⟨h4, h5⟩ := hDt w.2
     refine ⟨?_, fun τ a b hab => ?_, fun τ a => ?_⟩
     · rw [hDw]; exact (realLie X.Ψ X.Gm).add_mem h1 h4
-    · rw [e, Matrix.add_apply, h2 τ a b hab, h5, if_neg (ne_of_gt hab), add_zero]
-    · rw [e, Matrix.add_apply, h3, h5, if_pos rfl, zero_add]
+    · rw [e, Matrix.add_apply, h2 τ a b hab, h5, ite_eq_right (ne_of_gt hab), add_zero]
+    · rw [e, Matrix.add_apply, h3, h5, ite_eq_left rfl, zero_add]
   obtain ⟨hDinj, hriem⟩ := _root_.GlobalTheory.RiemConst.Jac.riemLie_eq_smul_map E r X x hr hx D hspec
   have hform := _root_.GlobalTheory.FibreVol.haar_chart_formula E r X x ν σ t ρ hr hx hν hfib hρ hσc hσB htx htmul htc hstab
   have hsurj := _root_.GlobalTheory.eq_chart_mul_of_near_one E r X x σ t ρ hx hρ hσ0 hσc hσB htx htmul htc hstab

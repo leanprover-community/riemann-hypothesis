@@ -281,9 +281,9 @@ private theorem prod_type (E : Type) [Field E] [NumberField E] (a : ℤ) (k : E)
   rw [← Finset.prod_fiberwise Finset.univ InfinitePlace.mk]
   refine Finset.prod_congr rfl fun w _ => ?_
   rw [Finset.prod_eq_single_of_mem w.embedding (by simp)]
-  · rw [InfinitePlace.mk_embedding, if_pos rfl]
+  · rw [InfinitePlace.mk_embedding, ite_eq_left rfl]
   · intro φ hφ hne
-    rw [(Finset.mem_filter.1 hφ).2, if_neg hne.symm, zpow_zero]
+    rw [(Finset.mem_filter.1 hφ).2, ite_eq_right hne.symm, zpow_zero]
 
 private theorem kap_loc {E : Type} [Field E] [NumberField E] (a : ℤ) (v : HeightOneSpectrum (𝓞 E))
     (x : (v.adicCompletion E)ˣ) : kap E a (localIdele E v x) = 1 := by
@@ -374,7 +374,7 @@ theorem UpperTheory.V.Sd.Tw.hecke :
       rw [sub_self, map_zero]
       exact zero_le
   · simp
-  · refine if_neg ?_
+  · refine ite_eq_right ?_
     rw [hw₀ (InfinitePlace.mk _)]
     intro h
     exact IsTotallyComplex.complexEmbedding_not_isReal _ (ComplexEmbedding.isReal_iff.2 h.symm)

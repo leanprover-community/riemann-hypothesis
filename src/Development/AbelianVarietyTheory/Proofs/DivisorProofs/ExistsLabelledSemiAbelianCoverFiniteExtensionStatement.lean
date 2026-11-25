@@ -290,7 +290,7 @@ theorem isThetaPt_of_map : ∀ (B : Scheme.{0}) [IsLocallyNoetherian B] (P : Pol
   · have e : w = w₀ := funext fun i => j.injective (by rw [hc, hz, map_zero, MulZeroClass.mul_zero])
     subst e
     exact hw₀
-  · push_neg at hz
+  · push Not at hz
     obtain ⟨i₀, hi₀⟩ := hz
     have hd : j (w i₀ / w₀ i₀) = c := by
       rw [map_div₀, hc, mul_div_assoc, div_self ((map_ne_zero j).2 hi₀), _root_.mul_one]

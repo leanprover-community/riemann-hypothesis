@@ -255,10 +255,10 @@ theorem flagMap_rename {H : Host E} (Dw : Datum H) (w : ∀ τ, Equiv.Perm (Fin 
   simp only [AlgHom.comp_apply, rename_X, flagMap, aeval_X]
   obtain ⟨σ, i⟩ := x
   by_cases h : σ (H.rt : E) = H.rt0
-  · simp only [flagRoot, dif_pos h, rename_X]
+  · simp only [flagRoot, dite_eq_left h, rename_X]
     congr 2
     exact Fin.ext (flagPerm_big Dw w ⟨σ, h⟩ i _).symm
-  · simp only [flagRoot, dif_neg h, map_neg, rename_X]
+  · simp only [flagRoot, dite_eq_right h, map_neg, rename_X]
     congr 3
     exact Fin.ext (flagPerm_small Dw w h i _).symm
 

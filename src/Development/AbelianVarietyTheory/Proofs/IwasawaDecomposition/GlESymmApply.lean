@@ -107,7 +107,7 @@ def locExt (res : R →+* k) (M : Submodule R V) (pr : M →+ W) (x : V) : W :=
   if h : ∃ s, res s ≠ 0 ∧ s • x ∈ M then (res h.choose)⁻¹ • pr ⟨_, h.choose_spec.2⟩ else 0
 
 theorem locExt_off (res : R →+* k) (M : Submodule R V) (pr : M →+ W) (x : V) (hx : x ∉ loc res M) :
-    locExt res M pr x = 0 := dif_neg (fun h => hx ((mem_loc res M x).2 h))
+    locExt res M pr x = 0 := dite_eq_right (fun h => hx ((mem_loc res M x).2 h))
 
 theorem locExt_spec (res : R →+* k) (M : Submodule R V) (pr : M →+ W) (hs : ∀ (a : R) z, pr (a • z) = res a • pr z)
     (x : V) (hx : x ∈ loc res M) (a : R) (h : a • x ∈ M) : pr ⟨a • x, h⟩ = res a • locExt res M pr x := by

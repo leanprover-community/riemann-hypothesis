@@ -647,7 +647,7 @@ private theorem step [IsTotallyReal F] (S : Subring ℂ) (ω : HChar F) (hS : �
       fun m => S.add_mem (g5 m) (S.mul_mem (S.neg_mem hyS) (div_mem S g5 _ _)), fun w hw => ?_, fun w hw => ?_⟩
     · rintro ⟨w, hw, hP⟩
       rcases Finset.mem_insert.1 hw with rfl | hw
-      · rw [hy, if_pos hP]
+      · rw [hy, ite_eq_left hP]
         ring
       · rw [g3 ⟨w, hw, hP⟩]
         ring
@@ -656,7 +656,7 @@ private theorem step [IsTotallyReal F] (S : Subring ℂ) (ω : HChar F) (hS : �
     · rcases Finset.mem_insert.1 hw with rfl | hw
       · apply rel_same
         have := g7 w hv
-        rw [chi_prime, if_pos hc] at this
+        rw [chi_prime, ite_eq_left hc] at this
         rw [hy]
         split_ifs
         · rwa [mul_one, add_comm]
@@ -691,11 +691,11 @@ theorem UpperTheory.V.Sd.emix :
   rw [chi_prime, Nat.sub_self, pow_zero, mul_one]
   by_cases hw : ((l : ℕ) : 𝓞 F) ∈ w.asIdeal
   · have := g6 w ((hT w).2 hw) m hm
-    simp only [levL, hw, if_true, one_ne_zero, if_false]
+    simp only [levL, hw, ite_true, one_ne_zero, ite_false]
     convert this
   · have := g7 w (fun h => hw ((hT w).1 h)) m hm
     rw [chi_prime] at this
-    simp only [levL, hw, if_false]
+    simp only [levL, hw, ite_false]
     rw [this]
     split_ifs <;> simp
 end -- clump:auto
@@ -1352,11 +1352,11 @@ private def fT {K : Type} [Field K] (w : Pl F) (e : K) : Module.End K (Idx F →
       v ⟨h.choose, fun h0 => 𝔪.2 (by rw [h.choose_spec, h0, Ideal.mul_bot])⟩ else 0
   map_add' c d := by
     funext n
-    by_cases h : ∃ 𝔫, n.1 = w.asIdeal * 𝔫 <;> simp only [h, dif_pos, dif_neg, not_false_eq_true, Pi.add_apply] <;> ring
+    by_cases h : ∃ 𝔫, n.1 = w.asIdeal * 𝔫 <;> simp only [h, dite_eq_left, dite_eq_right, not_false_eq_true, Pi.add_apply] <;> ring
   map_smul' a c := by
     funext n
     by_cases h : ∃ 𝔫, n.1 = w.asIdeal * 𝔫 <;>
-      simp only [h, dif_pos, dif_neg, not_false_eq_true, Pi.smul_apply, smul_eq_mul, RingHom.id_apply] <;> ring
+      simp only [h, dite_eq_left, dite_eq_right, not_false_eq_true, Pi.smul_apply, smul_eq_mul, RingHom.id_apply] <;> ring
 open Classical in
 omit [NumberField F] in
 private theorem fT_apply {K : Type} [Field K] (w : Pl F) (e : K) (v : Idx F → K) (𝔪 : Idx F) :
@@ -1644,12 +1644,12 @@ theorem UpperTheory.V.Z.Bc.propMHolZ_alt :
     by_cases h : ((l : ℕ) : 𝓞 F) ∈ w.asIdeal
     · exact Or.inl (Ideal.dvd_iff_le.2 ((Ideal.span_singleton_le_iff_mem _).2 h))
     · refine Or.inr fun hu => hw ?_
-      rw [levL, if_neg h]
+      rw [levL, ite_eq_right h]
       exact Nat.le_zero.1 ((hc w).2 fun x hx _ => hu x hx)
   have hL0 : ∀ w, levL l c w = 0 → ((l : ℕ) : 𝓞 F) ∉ w.asIdeal ∧ c w = 0 := fun w hw => by
     by_cases h : ((l : ℕ) : 𝓞 F) ∈ w.asIdeal
-    · rw [levL, if_pos h] at hw; exact absurd hw one_ne_zero
-    · rw [levL, if_neg h] at hw; exact ⟨h, hw⟩
+    · rw [levL, ite_eq_left h] at hw; exact absurd hw one_ne_zero
+    · rw [levL, ite_eq_right h] at hw; exact ⟨h, hw⟩
   have nval : ∀ {η : HChar F}, IsOfFinOrder η → ∀ w, ‖ι.symm (η.val w : ℂˣ)‖ = 1 := fun h w => norm_val ι h _
   have hpow : ∀ w : Pl F, ((l : ℕ) : 𝓞 F) ∉ w.asIdeal → ‖(normV w : Qbar l) ^ k - 1‖ < 1 := fun w hw =>
     pow_cong (mt (dvd_normV w).1 hw) hkd'
@@ -1695,7 +1695,7 @@ theorem UpperTheory.V.Z.Bc.propMHolZ_alt :
     obtain ⟨u₁, u₂, e⟩ := hu w h0
     refine ⟨u₁, u₂, ?_⟩
     have h1 := hlam w
-    rw [e, eisT, if_neg (hL0 w h0).1, if_pos (hL0 w h0).2, HChar.val_mul] at h1
+    rw [e, eisT, ite_eq_right (hL0 w h0).1, ite_eq_left (hL0 w h0).2, HChar.val_mul] at h1
     have h2 := sm_sub (sm_mul (nval f₂ w).le (hpow w (hL0 w h0).1)) h1
     have h3 : ‖ι.symm (η₁.val w : ℂˣ) - 1‖ * ‖ι.symm (η₂.val w : ℂˣ) - 1‖ < 1 := by
       rw [← norm_mul]
@@ -1713,8 +1713,8 @@ theorem UpperTheory.V.Z.Bc.propMHolZ_alt :
     · exact e ▸ hlam w
     · rw [e, map_mul, map_pow, map_natCast, ← Nat.cast_pow] at h2
       exact absurd h2 (sm_mul (nval f₂ w).le (norm_nat_lt (dvd_pow ((dvd_normV w).2 hw) hk0.ne'))).ne
-  have e₁ : eisT l (η₁ * η₂) c P v = ((η₁ * η₂).val v : ℂˣ) := by rw [eisT, if_pos hvl, if_pos hvP]
-  have e₂ : eisT l (η₁ * η₂) c P v' = 1 := by rw [eisT, if_pos hvl', if_neg hvQ]
+  have e₁ : eisT l (η₁ * η₂) c P v = ((η₁ * η₂).val v : ℂˣ) := by rw [eisT, ite_eq_left hvl, ite_eq_left hvP]
+  have e₂ : eisT l (η₁ * η₂) c P v' = 1 := by rw [eisT, ite_eq_left hvl', ite_eq_right hvQ]
   have a₁ := hab v hvl (by rw [e₁]; exact nval hω v)
   have a₂ := hab v' hvl' (by rw [e₂, map_one, norm_one])
   rw [e₁] at a₁

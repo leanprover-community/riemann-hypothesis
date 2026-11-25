@@ -321,7 +321,7 @@ theorem valR_sub_const_mul {R S : Type} [CommRing R] [CommRing S] {X : Scheme.{0
   have hc : valR x W (constFn p W r) = φ r := GlobalTheory.Points.valR_constFn_of_over p φ x hx W h r
   rw [← hc]
   unfold valR
-  simp only [dif_pos h, map_sub, map_mul]
+  simp only [dite_eq_left h, map_sub, map_mul]
 
 theorem isWt_sub_const_mul : ∀ (R : Type) [CommRing R] [IsDomain R] (Q : DegPre R) (Ω : Type) [CommRing Ω] [StarRing Ω] [Module Ω Q.X] (oa : Q.OAct Ω) (Y : Ray oa), ∀ (α : Q.X) (W : Y.H.left.Opens) (f g : Γ(Y.H.left, W)) (r : R), IsWt Y α W f → IsWt Y α W g → IsWt Y α W (f - constFn Y.H.hom W r * g) := by
   intro R _ _ Q Ω _ _ _ oa Y α W f g r hf hg S _ φ x x' c a a' ha ha' hW hW' hq hc
@@ -1115,7 +1115,7 @@ theorem isWt_rsT_of_isTerm : ∀ (R : Type) [CommRing R] [IsDomain R] (Q : DegPr
     rw [hq, hc α y J hJ] at e
     rw [gs_mul (𝟙 _) y ⊤ trivial, gs_unit (𝟙 _) y ⊤ trivial, gs_appLE _ _ ⊤ _ (𝟙 _) y trivial,
       gs_appLE _ _ ⊤ _ (𝟙 _) y trivial, Category.id_comp, Category.id_comp]
-    simp only [rsT, dif_pos hle]
+    simp only [rsT, dite_eq_left hle]
     erw [gs_res _ y hle hy, gs_res _ y hle hy']
     have e1 := sval_of τ x'.left y J (fun _ => j) (fun _ => (congrArg J hql).trans (eJ ()))
     have e2 := sval_of τ x.left y J (fun _ => j) (fun _ => eJ ())
@@ -1126,7 +1126,7 @@ theorem isWt_rsT_of_isTerm : ∀ (R : Type) [CommRing R] [IsDomain R] (Q : DegPr
     simp only [Units.val_mul]
     ring
   unfold valR
-  rw [dif_pos hV, dif_pos hV', key, map_mul]
+  rw [dite_eq_left hV, dite_eq_left hV', key, map_mul]
   congr 1
   simp [unitOn]
 

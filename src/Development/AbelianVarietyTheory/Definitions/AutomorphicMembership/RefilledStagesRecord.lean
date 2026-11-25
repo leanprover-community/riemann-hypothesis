@@ -50,11 +50,6 @@ def reStage (X : Stages) (Z : SNew X.toD7) : SStage X.B X.C X.W where
   s_Cu_isom := Z.s_Cu_isom
   sEE := Z.sEE
 
-section
-variable (D : D7) (Z : SNew D)
-
-end
-
 end GlobalTheory.Mem.SRe
 
 end

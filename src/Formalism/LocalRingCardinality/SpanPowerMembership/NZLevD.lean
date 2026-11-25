@@ -18,12 +18,6 @@ namespace Formalism.BasicNotions.Examples₂.NZ
 
 open Formalism.GradedWeylDivisibility Formalism.MainNotions.G Formalism.L2.G.Model
 
-section Rename₂
-
-variable {R σ τ M N : Type*} [CommSemiring R] [AddCommMonoid M] [AddCommMonoid N]
-
-end Rename₂
-
 variable {p : ℕ} {O Kf : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Field Kf] [Algebra O Kf]
   [CharZero Kf] (P : Places p O Kf)
 

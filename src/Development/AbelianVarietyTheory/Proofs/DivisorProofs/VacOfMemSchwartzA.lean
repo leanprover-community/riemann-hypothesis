@@ -90,7 +90,7 @@ theorem realPar_ne_zero (D : D7) (θ : InfFam D) (hθ : IsInfFam θ) (ψ : AddCh
     exact (map_eq_zero_iff _ (w τ₀).embedding.injective).1 this
   obtain ⟨x, hx⟩ := GlobalTheory.StdUnn.RealPar.exists_real_point hθ τ₀ (1 / (2 * e))
   have e1 := hl x
-  simp only [hx, mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true, h0, Complex.ofReal_zero,
+  simp only [hx, mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true, h0, Complex.ofReal_zero,
     zero_mul, Complex.exp_zero] at e1
   have e2 := hinf x
   have hsum : ∑ u : InfinitePlace D.host.F, (u.embedding a).re *

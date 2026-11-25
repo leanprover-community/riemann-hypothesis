@@ -186,9 +186,9 @@ theorem rowGen_detPol (n : ℕ) (a b : Fin n) :
   rw [h1]
   by_cases hab : a = b
   · subst hab
-    rw [Matrix.det_updateRow_add, Matrix.det_updateRow_smul, Matrix.updateRow_eq_self, if_pos rfl]
+    rw [Matrix.det_updateRow_add, Matrix.det_updateRow_smul, Matrix.updateRow_eq_self, ite_eq_left rfl]
     ring
-  · rw [Matrix.det_updateRow_add_smul_self A (Ne.symm hab), if_neg hab]
+  · rw [Matrix.det_updateRow_add_smul_self A (Ne.symm hab), ite_eq_right hab]
     ring
 
 theorem rowDiv_det_mul_zero (n : ℕ) (a b : Fin n) (g : MvPolynomial (Fin n × Fin n) R) :
@@ -222,7 +222,7 @@ theorem hw_add_one (n : ℕ) (ν : Fin n → ℕ) :
         = ν s.castSucc - nuNext ν s.castSucc := by
       intro s
       have hs : s.castSucc.val + 1 < m + 1 := by have := s.2; simp
-      simp only [nuNext, dif_pos hs]
+      simp only [nuNext, dite_eq_left hs]
       omega
     have h2 : ∀ μ : Fin (m + 1) → ℕ, nuNext μ (Fin.last m) = 0 := by
       intro μ
@@ -338,7 +338,7 @@ theorem res_eq {ι : Type} {n : ℕ} {lam : ι → DomWeight n} {lamW : ι → �
   have h2 := h τ ⟨n - 1, by omega⟩
   have h3 : (lam τ).w ⟨n - 1, by omega⟩ ≤ (lam τ).w a := (lam τ).anti (by
     rw [Fin.le_def]; have := a.2; simp only; omega)
-  simp only [res, DomWeight.natW, DomWeight.detShift, hn, dif_pos] at *
+  simp only [res, DomWeight.natW, DomWeight.detShift, hn, dite_eq_left] at *
   omega
 
 theorem linInd_map {σ P : Type} [Fintype P] (K : Type) [Field K] [CharZero K] (b : P → MvPolynomial σ ℤ)

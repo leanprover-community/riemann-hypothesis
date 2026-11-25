@@ -250,10 +250,4 @@ variable {R : Ranks} (W : Wts X Pr.Word R)
 
 end Seen
 
-section Exist
-
-variable {X : Fields} {Pr : Primes X}
-
-end Exist
-
 end Formalism.L2.Col

@@ -121,7 +121,7 @@ theorem colMul_besDecAt (G : GridData L sc) (j σ : ℕ) (hj : j + 2 * σ + 2 = 
 
 theorem rowId_even {j : ℕ} (hj : ¬ Odd j) (p : Fin (D.R.m - 1 - j)) :
     rowId D j p = stairId D.host.AA D.host.AAbar (D.R.m - 1 - j) p := by
-  rw [rowId, tiltSc, if_neg hj, FractionalIdeal.spanSingleton_one, one_mul]
+  rw [rowId, tiltSc, ite_eq_right hj, FractionalIdeal.spanSingleton_one, one_mul]
 
 theorem stairId_ne_zero (c : ℕ) (p : Fin c) : stairId D.host.AA D.host.AAbar c p ≠ 0 :=
   mul_ne_zero (pow_ne_zero _ (GlobalTheory.CuspCharLattice.host_AA_ne_zero _))
@@ -245,8 +245,8 @@ theorem mem_completedHomLattice_iff_selfDual_source {S T : HSp D} {LS : Lat S} (
     rw [Finset.sum_comm]
     simp only [← Finset.mul_sum, ← TensorProduct.tmul_sum, hdual]
     rw [Finset.sum_eq_single j]
-    · rw [if_pos rfl]; exact (mul_indP (hP k j)).symm
-    · intro l _ hl; rw [if_neg hl, TensorProduct.tmul_zero, mul_zero]
+    · rw [ite_eq_left rfl]; exact (mul_indP (hP k j)).symm
+    · intro l _ hl; rw [ite_eq_right hl, TensorProduct.tmul_zero, mul_zero]
     · intro h; exact absurd (Finset.mem_univ j) h
   rw [hu]
   exact sum_mem fun i _ => rowMul_mem (hs' i) (hmap _ (hyv i))
@@ -305,7 +305,7 @@ theorem AA_mul_rowId (j τ : ℕ) (hj : j + 2 * (τ + 1) + 2 = D.R.m) (p : Fin (
     obtain ⟨k, hk⟩ := D.R.m_even
     exact ⟨k - τ - 2, by omega⟩
   unfold rowId tiltSc lineId stairId
-  rw [if_pos hodd, if_neg (by omega), show D.R.m - 1 - (j + 1) - 1 - p.1 = τ by omega,
+  rw [ite_eq_left hodd, ite_eq_right (by omega), show D.R.m - 1 - (j + 1) - 1 - p.1 = τ by omega,
     show D.R.m - 1 - (j + 1) - p.1 = τ + 1 by omega, show (D.R.m - 2 - j) / 2 = τ + 1 by omega, hp,
     pow_succ D.host.AA (τ + 1)]
   ring
@@ -404,10 +404,10 @@ variable {D : D7} {T : Type} {L : LevCh D T} {sc : Consts}
 
 theorem tiltSc_odd {j : ℕ} (hj : Odd j) (p : Fin (D.R.m - 1 - j)) (hp : 2 * p.1 < D.R.m - 1 - j) :
     tiltSc D j p = (D.host.xi0 ^ p.1)⁻¹ := by
-  rw [tiltSc, if_pos hj, if_pos hp]
+  rw [tiltSc, ite_eq_left hj, ite_eq_left hp]
 
 theorem tiltSc_even {j : ℕ} (hj : ¬ Odd j) (p : Fin (D.R.m - 1 - j)) : tiltSc D j p = 1 := by
-  rw [tiltSc, if_neg hj]
+  rw [tiltSc, ite_eq_right hj]
 
 theorem besCol_eq (G : GridData L sc) (j σ : ℕ) (hj : j + 2 * σ + 2 = D.R.m) (i : Fin σ) (a : AE D) :
     GlobalTheory.FinPl.colMul (besDecAt G j σ hj).jX i a =
@@ -432,8 +432,8 @@ theorem cols (G : GridData L sc) (j σ : ℕ) (hj : j + 2 * σ + 2 = D.R.m) (v :
     rw [Nat.not_odd_iff_even]; exact ⟨k - σ - 1, by omega⟩
   have hod : Odd (j + 1) := ⟨k - σ - 1, by omega⟩
   rw [besCol_eq G j σ hj i a, jacCol_eq G j σ hj i a]
-  have l1 : rowN G j = (G.rowDec j hjm).lat (G.Λ (.top j)) (rowId D j) := dif_pos hjm
-  have l2 : rowN G (j + 1) = (G.rowDec (j + 1) hjm').lat (G.Λ (.top (j + 1))) (rowId D (j + 1)) := dif_pos hjm'
+  have l1 : rowN G j = (G.rowDec j hjm).lat (G.Λ (.top j)) (rowId D j) := dite_eq_left hjm
+  have l2 : rowN G (j + 1) = (G.rowDec (j + 1) hjm').lat (G.Λ (.top (j + 1))) (rowId D (j + 1)) := dite_eq_left hjm'
   have hpr : (Fin.castLE (by omega : σ ≤ D.R.m - 1 - j) i).rev ≠ Fin.castLE (by omega) i := fun e => by
     have := congrArg Fin.val e
     simp only [Fin.val_rev, Fin.val_castLE] at this
@@ -595,7 +595,7 @@ theorem e_single (i : Fin σ) (t : D.host.E) :
       dd.a *ᵥ Pi.single (Fin.castLE (by omega : σ ≤ c) i) t := by
   rw [diag_e]
   funext k
-  simp only [Matrix.mulVec, dotProduct, Pi.single_apply, mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true,
+  simp only [Matrix.mulVec, dotProduct, Pi.single_apply, mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true,
     Matrix.mul_diagonal, Matrix.submatrix_apply, id]
   rw [mul_assoc, mul_inv_cancel_left₀ (hl i)]
 
@@ -604,14 +604,14 @@ theorem e'_single (i : Fin σ) (t : D.host.E) :
       dd.a *ᵥ Pi.single (Fin.castLE (by omega : σ ≤ c) i).rev t := by
   rw [diag_e']
   funext k
-  simp only [Matrix.mulVec, dotProduct, Pi.single_apply, mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true,
+  simp only [Matrix.mulVec, dotProduct, Pi.single_apply, mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true,
     Matrix.mul_diagonal, Matrix.submatrix_apply, id]
   rw [mul_assoc, inv_mul_cancel_left₀ (star_ne_zero.2 (hl i))]
 
 theorem midCol_mulVec (t : Fin (GlobalTheory.SeeSaw.Model.nLine D).rank → D.host.E) :
     (midCol dd h : Matrix (Fin B.rank) (Fin (GlobalTheory.SeeSaw.Model.nLine D).rank) D.host.E) *ᵥ t = dd.a *ᵥ Pi.single ⟨σ, by omega⟩ (t (show Fin 1 from 0)) := by
   funext k
-  simp only [Matrix.mulVec, dotProduct, Pi.single_apply, mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+  simp only [Matrix.mulVec, dotProduct, Pi.single_apply, mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   show ∑ x : Fin 1, midCol dd h k x * t x = _
   rw [Fin.sum_univ_one]
   rfl
@@ -697,7 +697,7 @@ theorem rowId_mid {j σ : ℕ} (hj : j + 2 * σ + 2 = D.R.m) :
     omega
   have h1 : D.R.m - 1 - j - σ = σ + 1 := by omega
   have h2 : (D.R.m - 2 - j) / 2 = σ := by omega
-  rw [rowId, tiltSc, if_neg hev, FractionalIdeal.spanSingleton_one, one_mul, stairId, lineId, h2]
+  rw [rowId, tiltSc, ite_eq_right hev, FractionalIdeal.spanSingleton_one, one_mul, stairId, lineId, h2]
   simp only [h1]
 
 theorem monoAt_rowN (G : GridData L sc) (j σ : ℕ) (hj : j + 2 * σ + 2 = D.R.m) (v : Pl D) :
@@ -768,23 +768,23 @@ theorem cols_mul_coeff_eq_reflected_sum {n c ρ : ℕ} (a : Matrix (Fin n) (Fin 
   simp only [colsOf, cfR, cfE']
   by_cases hq : q.1 < ρ
   · rw [Finset.sum_eq_single ⟨q.1, hq⟩, Finset.sum_eq_zero]
-    · rw [if_pos rfl, add_zero, show (Fin.castLE h ⟨q.1, hq⟩ : Fin c) = q from Fin.ext rfl, mul_comm,
+    · rw [ite_eq_left rfl, add_zero, show (Fin.castLE h ⟨q.1, hq⟩ : Fin c) = q from Fin.ext rfl, mul_comm,
         ← mul_assoc, inv_mul_cancel₀ (hr _), one_mul]
     · intro p _
-      rw [if_neg (by omega), mul_zero]
+      rw [ite_eq_right (by omega), mul_zero]
     · intro p _ hp
-      rw [if_neg (fun e => hp (Fin.ext e)), mul_zero]
+      rw [ite_eq_right (fun e => hp (Fin.ext e)), mul_zero]
     · intro hn; exact absurd (Finset.mem_univ _) hn
   · have hp' : c - 1 - q.1 < ρ := by have := q.2; omega
     rw [Finset.sum_eq_zero, Finset.sum_eq_single ⟨c - 1 - q.1, hp'⟩]
-    · rw [if_pos (by have := q.2; simp only [Fin.val_mk]; omega), zero_add,
+    · rw [ite_eq_left (by have := q.2; simp only [Fin.val_mk]; omega), zero_add,
         show ((Fin.castLE h ⟨c - 1 - q.1, hp'⟩ : Fin c).rev) = q from Fin.ext (by simp [Fin.val_rev]; omega),
         mul_comm, ← mul_assoc, inv_mul_cancel₀ (hs _), one_mul]
     · intro p _ hp
-      rw [if_neg (fun e => hp (Fin.ext (show p.1 = c - 1 - q.1 by omega))), mul_zero]
+      rw [ite_eq_right (fun e => hp (Fin.ext (show p.1 = c - 1 - q.1 by omega))), mul_zero]
     · intro hn; exact absurd (Finset.mem_univ _) hn
     · intro p _
-      rw [if_neg (by have := p.2; omega), mul_zero]
+      rw [ite_eq_right (by have := p.2; omega), mul_zero]
 
 theorem mono_at_lattice_of_column_frames {A B : HSp D} {c ρ : ℕ} {ε : D.host.E} (t : HermitianOrthogonalExtensionData A B c ε) (d : HypDec B A ρ) (hc : c = 2 * ρ)
     (hρ : ρ ≤ c) (r s : Fin ρ → D.host.E) (hr : ∀ p, r p ≠ 0) (hs : ∀ p, s p ≠ 0)
@@ -812,9 +812,9 @@ theorem mono_at_lattice_of_column_frames {A B : HSp D} {c ρ : ℕ} {ε : D.host
       by_cases hq : i.1 = q.1
       · have e : (Fin.castLE hρ i : Fin c) = q := Fin.ext hq
         subst e
-        rw [if_pos hq, Pi.single_eq_same, mul_one, mul_comm (r i), mul_assoc, mul_inv_cancel₀ (hr _), mul_one]
+        rw [ite_eq_left hq, Pi.single_eq_same, mul_one, mul_comm (r i), mul_assoc, mul_inv_cancel₀ (hr _), mul_one]
       · have e : q ≠ (Fin.castLE hρ i : Fin c) := fun e => hq (by rw [e]; rfl)
-        rw [if_neg hq, mul_zero, Pi.single_apply, if_neg e, mul_zero]
+        rw [ite_eq_right hq, mul_zero, Pi.single_apply, ite_eq_right e, mul_zero]
     · intro p
       rw [Pi.single_apply]
       split_ifs
@@ -829,9 +829,9 @@ theorem mono_at_lattice_of_column_frames {A B : HSp D} {c ρ : ℕ} {ε : D.host
       by_cases hq : q.1 + i.1 + 1 = c
       · have e : (Fin.castLE hρ i : Fin c).rev = q := Fin.ext (by simp [Fin.val_rev]; omega)
         subst e
-        rw [if_pos hq, Pi.single_eq_same, mul_one, mul_comm (s i), mul_assoc, mul_inv_cancel₀ (hs _), mul_one]
+        rw [ite_eq_left hq, Pi.single_eq_same, mul_one, mul_comm (s i), mul_assoc, mul_inv_cancel₀ (hs _), mul_one]
       · have e : q ≠ (Fin.castLE hρ i : Fin c).rev := fun e => hq (by rw [e]; simp [Fin.val_rev]; omega)
-        rw [if_neg hq, mul_zero, Pi.single_apply, if_neg e, mul_zero]
+        rw [ite_eq_right hq, mul_zero, Pi.single_apply, ite_eq_right e, mul_zero]
     · intro p
       rw [Pi.single_apply]
       split_ifs
@@ -918,7 +918,7 @@ theorem stairId_ne_zero (D : D7) (c : ℕ) (p : Fin c) : stairId D.host.AA D.hos
 
 theorem tiltSc_first {D : D7} {n : ℕ} (hodd : Odd n) (p : Fin (D.R.m - 1 - n)) (hp : 2 * p.1 < D.R.m - 1 - n) :
     tiltSc D n p = (D.host.xi0 ^ p.1)⁻¹ := by
-  unfold tiltSc; rw [if_pos hodd, if_pos hp]
+  unfold tiltSc; rw [ite_eq_left hodd, ite_eq_left hp]
 
 theorem rowId_ratio {D : D7} {n : ℕ} (hodd : Odd n) (p q : Fin (D.R.m - 1 - n)) (hpq : q.1 = p.1 + 1)
     (hq : 2 * q.1 < D.R.m - 1 - n) : rowId D n p * (rowId D n q)⁻¹ = dI D := by
@@ -1063,11 +1063,11 @@ theorem GlobalTheory.RowShape.cols_jacBes_rowN : Big fun {D} {Γ} _ _ {Pl0 T} {A
   have h1 : GlobalTheory.RowShape.rowId D i ⟨a.1, by omega⟩ = FractionalIdeal.spanSingleton _ ((D.host.xi0 ^ a.1)⁻¹) *
       stairId D.host.AA D.host.AAbar (D.R.m - 1 - i) ⟨a.1, by omega⟩ := by
     unfold GlobalTheory.RowShape.rowId GlobalTheory.RowShape.tiltSc
-    rw [if_pos hodd, if_pos (by simp only; omega)]
+    rw [ite_eq_left hodd, ite_eq_left (by simp only; omega)]
   have h2 : D.host.AA * GlobalTheory.RowShape.rowId D (i + 1) ⟨a.1, by omega⟩ =
       stairId D.host.AA D.host.AAbar (D.R.m - 1 - i) ⟨a.1, by omega⟩ := by
     unfold GlobalTheory.RowShape.rowId GlobalTheory.RowShape.tiltSc
-    rw [if_neg (by rw [Nat.not_odd_iff_even]; exact hodd.add_one), FractionalIdeal.spanSingleton_one, one_mul]
+    rw [ite_eq_right (by rw [Nat.not_odd_iff_even]; exact hodd.add_one), FractionalIdeal.spanSingleton_one, one_mul]
     unfold stairId
     rw [show D.R.m - 1 - i - a.1 = (D.R.m - 1 - (i + 1) - a.1) + 1 by omega, pow_succ]
     ring

@@ -67,7 +67,7 @@ theorem transpose_mul_incl (f : Fin b ↪ Fin a) : (incl R f)ᵀ * incl R f = 1 
   rw [Finset.sum_eq_single (f p)]
   · simp [eq_comm]
   · intro i _ hi
-    rw [if_neg (Ne.symm hi), zero_mul]
+    rw [ite_eq_right (Ne.symm hi), zero_mul]
   · simp
 
 
@@ -104,9 +104,9 @@ theorem extN_single (f : Fin b ↪ Fin a) (p q : Fin b) (x : R) :
     · obtain ⟨q', rfl⟩ := hj
       simp [extN_apply_apply, Matrix.single_apply]
     · push Not at hj
-      rw [extN_apply_right f _ _ hj, Matrix.single_apply, if_neg fun h => hj q h.2]
+      rw [extN_apply_right f _ _ hj, Matrix.single_apply, ite_eq_right fun h => hj q h.2]
   · push Not at hi
-    rw [extN_apply_left f _ hi, Matrix.single_apply, if_neg fun h => hi p h.1]
+    rw [extN_apply_left f _ hi, Matrix.single_apply, ite_eq_right fun h => hi p h.1]
 
 theorem map_extN (f : Fin b ↪ Fin a) (φ : R →+* S) (X : Matrix (Fin b) (Fin b) R) :
     (extN R f X).map φ = extN S f (X.map φ) := by

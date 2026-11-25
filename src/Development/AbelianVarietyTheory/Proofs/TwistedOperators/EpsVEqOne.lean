@@ -183,7 +183,7 @@ theorem epsV_mem (t : T) (w : Pl D.host.E) (X : ℕ × ℕ) : epsV G t w X ∈ G
     · exact one_mem _
   · have h1 : epsV G t w (a, j) = 1 := by
       unfold epsV onColumn
-      exact dif_neg ha
+      exact dite_eq_right ha
     rw [h1]
     exact one_mem _
 
@@ -197,10 +197,10 @@ theorem elt_eq_one (t : T) (w : Pl D.host.E) (β : Cosets (G := locGrid G t w) o
   have hi : ¬ i < (locGrid G t w).m - 2 := by
     show ¬ i < D.R.m - 2
     omega
-  exact dif_neg hi
+  exact dite_eq_right hi
 
 theorem epsV_eq_one (t : T) (w : Pl D.host.E) {j : ℕ} (hj : D.R.m ≤ j + 1) : epsV G t w (D.R.m, j) = 1 := by
-  rw [epsV_apply, if_neg]
+  rw [epsV_apply, ite_eq_right]
   rw [mem_idx]
   omega
 

@@ -188,17 +188,17 @@ theorem exists_basis_of_dual {K R : Type} [CommRing R] [IsNoetherianRing R] (hQ 
     have h2 : g l * u l = 0 := by
       rw [← hsum (fun k => g k * u k) l, h1]; rfl
     by_cases hl : l ∈ Set.range e
-    · simp only [u, if_pos hl] at h2
+    · simp only [u, ite_eq_left hl] at h2
       exact mem_of_mul_mem hQ (d l) ⊥ (fun r hr => by rw [Ideal.mem_bot.1 hr, map_zero]; exact zero_mem _)
         (t := z l) (by simp [hd]) (by rw [mul_comm, h2]; exact zero_mem _)
-    · simpa only [u, if_neg hl, mul_one] using h2
+    · simpa only [u, ite_eq_right hl, mul_one] using h2
   have hsp : ⊤ ≤ Submodule.span R (Set.range v) := by
     rintro ⟨D, hD⟩ -
     obtain ⟨hD0, hD1⟩ := (hM D).1 hD
     have hdiv : ∀ k, u k ∣ D (z k) := by
       intro k
       by_cases hk : k ∈ Set.range e
-      · simp only [u, if_pos hk]
+      · simp only [u, ite_eq_left hk]
         obtain ⟨j, rfl⟩ := hk
         have h1 := Ideal.mem_span_singleton.1 (hD1 _ (Ideal.mem_span_singleton_self _))
         rw [← Finset.mul_prod_erase _ _ (Finset.mem_univ j), D.leibniz, smul_eq_mul, smul_eq_mul] at h1
@@ -216,7 +216,7 @@ theorem exists_basis_of_dual {K R : Type} [CommRing R] [IsNoetherianRing R] (hQ 
             exact Ideal.mem_span_singleton.1 (mem_of_mul_mem hQ (d (e i)) _
               (mem_span_of_dvd _ (by simp [hd, hij])) (by simp [hd]) (Ideal.mem_span_singleton.2 ha))
         exact h3 _ (Finset.notMem_erase _ _) _ h2
-      · simp only [u, if_neg hk, one_dvd]
+      · simp only [u, ite_eq_right hk, one_dvd]
     choose g hg using hdiv
     refine (Submodule.mem_span_range_iff_exists_fun R).2 ⟨g, Subtype.ext ?_⟩
     conv_rhs => rw [show (⟨D, hD⟩ : M).1 = D from rfl, hspan D hD0]

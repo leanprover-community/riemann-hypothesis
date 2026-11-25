@@ -15,17 +15,17 @@ open Formalism.MainNotions.G Formalism.MainNotions.flipOneThree Formalism.Counti
 theorem letterWt_anti (m d : ℕ) (b : Bool) : Antitone (letterWt m d b) := by
   intro i j hij
   cases b
-  · simp only [letterWt, Bool.false_eq_true, if_false]
+  · simp only [letterWt, Bool.false_eq_true, ite_false]
     by_cases hi : i = Fin.last m
     · have hj : j = Fin.last m := le_antisymm (Fin.le_last j) (hi ▸ hij)
       simp [hi, hj]
-    · simp only [hi, if_false]
+    · simp only [hi, ite_false]
       split_ifs <;> omega
-  · simp only [letterWt, if_true]
+  · simp only [letterWt, ite_true]
     by_cases hj : j = 0
     · have hi : i = 0 := le_antisymm (hj ▸ hij) (Fin.zero_le i)
       simp [hj, hi]
-    · simp only [hj, if_false]
+    · simp only [hj, ite_false]
       split_ifs <;> omega
 
 theorem twoLat_le_twoSp {O Kf : Type} [CommRing O] [Field Kf] [Algebra O Kf] (m P Q : ℕ)

@@ -291,14 +291,14 @@ theorem brk_core (s m : ℕ) (La p A lam0 : ℝ) (Ai Ci ρ u nn : Fin s → ℝ)
       exact nk_iv _ _ _ _ hr0 hrc hrA hu
     · by_cases hi : i = i0
       · subst hi
-        rw [if_pos rfl]
+        rw [ite_eq_left rfl]
         have hm := hmη _ (hkCi i)
         have hC0' := hCi0 i
         have h1 : nn i + m ≤ μ0 * Ci i := by rw [hμ0]; nlinarith
         calc _ ≤ μ0 * Ci i := h1
           _ ≤ μ0 * (Real.exp (2 * η) * Ci i) := mul_le_mul_of_nonneg_left (by nlinarith) hμ00
-      · rw [if_neg hi]; exact hnn1 i
-    · rw [Finset.prod_const_one, one_mul, Finset.prod_ite_eq' Finset.univ i0 (fun _ => μ0), if_pos (Finset.mem_univ _)]
+      · rw [ite_eq_right hi]; exact hnn1 i
+    · rw [Finset.prod_const_one, one_mul, Finset.prod_ite_eq' Finset.univ i0 (fun _ => μ0), ite_eq_left (Finset.mem_univ _)]
       refine le_trans (show μ0 ≤ Real.exp (-(La / k) + η) by linarith [Real.add_one_le_exp (-(La / k) + η)])
         (Real.exp_le_exp.mpr ?_)
       rw [hτ]
@@ -313,7 +313,7 @@ theorem brk_core (s m : ℕ) (La p A lam0 : ℝ) (Ai Ci ρ u nn : Fin s → ℝ)
     · obtain ⟨hr0, hrc, hrA, hu⟩ := hfacts i
       by_cases hi : i = i0
       · subst hi
-        rw [if_pos rfl]
+        rw [ite_eq_left rfl]
         refine hstep0 i (1 - τ) ?_ (by linarith)
         have hcpos : 0 < c i := by
           have := hCnn i
@@ -348,12 +348,12 @@ theorem brk_core (s m : ℕ) (La p A lam0 : ℝ) (Ai Ci ρ u nn : Fin s → ℝ)
         have := mul_le_mul_of_nonneg_left hmax (by linarith : (0:ℝ) ≤ 2 * τ)
         rw [e2] at hP
         linarith
-      · rw [if_neg hi]
+      · rw [ite_eq_right hi]
         refine hstep0 i 1 ?_ zero_le_one
         rw [one_mul]
         exact nk_iv _ _ _ _ hr0 hrc hrA hu
     · rw [Finset.prod_const_one, mul_one, Finset.prod_ite_eq' Finset.univ i0 (fun _ => 1 - τ),
-        if_pos (Finset.mem_univ _)]
+        ite_eq_left (Finset.mem_univ _)]
       linarith [Real.add_one_le_exp (-τ)]
 
 theorem bracket_of {C0 CYb Cde Ck CD Cb CE1 CE2 Cc : ℝ} (hF : PairFactsAt C0 CYb Cde Ck CD Cb CE1 CE2 Cc)

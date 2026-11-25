@@ -976,7 +976,7 @@ theorem sval_zero_of_van {R R' : Type} [CommRing R] [IsDomain R] [CommRing R'] [
         (fun κ => J' ((r ≫ D'.famφB a κ) ≫ hD.e.hom.left ≫ pullback.fst D.P.A.hom (specOf φ)))
     · exact (gs_pull h' _ z _ hm _).symm.trans ((congrArg (gs h' z _) (hv _)).trans (_root_.GlobalTheory.UU.SchurComp.gs_zero _ _ _))
     · unfold gs
-      exact dif_neg hm
+      exact dite_eq_right hm
   rw [h0] at E
   exact (Units.mul_right_eq_zero _).1 E.symm
 

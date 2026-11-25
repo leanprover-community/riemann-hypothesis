@@ -52,10 +52,10 @@ theorem img_form : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype 
     rw [e1]
     congr 1
     rw [Finset.sum_eq_single I']
-    · rw [hdelta I' I' hI hI, if_pos rfl, one_mul]
+    · rw [hdelta I' I' hI hI, ite_eq_left rfl, one_mul]
     · intro J _ hne
       by_cases hJ : IsStepRows N j p.2 J
-      · rw [hdelta I' J hI hJ, if_neg hne.symm, zero_mul]
+      · rw [hdelta I' J hI hJ, ite_eq_right hne.symm, zero_mul]
       · rw [hoff J hJ, mul_zero]
     · simp
   refine ⟨a, ha, fun m => ?_⟩
@@ -68,7 +68,7 @@ theorem img_form : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype 
   rw [Finset.mul_sum]
   refine Finset.sum_congr rfl fun I' _ => ?_
   by_cases hI : IsStepRows N j p.2 I'
-  · rw [if_pos hI, hread I' hI]; ring
-  · rw [if_neg hI, hoff I' hI, mul_zero, mul_zero]
+  · rw [ite_eq_left hI, hread I' hI]; ring
+  · rw [ite_eq_right hI, hoff I' hI, mul_zero, mul_zero]
 
 end GlobalTheory.CompanionTheory.Ar.PB.CovMap.LocImg

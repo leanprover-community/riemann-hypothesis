@@ -358,7 +358,7 @@ private theorem sgnAct_one_add (hI : I * I = ⊥) (q : GL (Fin m) C)
       rw [hq, Matrix.add_mul, Matrix.mul_sub, Matrix.mul_sub, entIn_mul_zero hI hX hX]
       simp
     rw [sgnAct_neg_one, theta_val, hinv]
-    simp only [h, if_false, thetaLie, Matrix.transpose_sub, Matrix.transpose_one, Matrix.mul_sub,
+    simp only [h, ite_false, thetaLie, Matrix.transpose_sub, Matrix.transpose_one, Matrix.mul_sub,
       Matrix.sub_mul, Matrix.mul_one, Jmat_mul_Jmat]
     rw [sub_eq_add_neg]
 
@@ -1434,7 +1434,7 @@ private theorem tri_lift {O R R' D : Type} [CommRing O] [IsLocalRing O] [CommRin
         have h1 := congrFun (congrFun (hupm g) a) a
         rw [hu'mat, Matrix.diagonal_apply_eq] at h1
         exact h1
-    simp only [s, L, dif_pos h]
+    simp only [s, L, dite_eq_left h]
     exact h.choose_spec
   have hr'lc : IsLocallyConstant r' := lc_hom η r' hη hr.mult hlc
   have hulc' : IsLocallyConstant u := lc_hom η u hη hur hulc

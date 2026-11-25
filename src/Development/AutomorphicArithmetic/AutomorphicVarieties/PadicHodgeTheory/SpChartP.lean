@@ -1023,7 +1023,7 @@ private theorem card_ten {n : ℕ} (u : Fin n → ℤ × ℤ) (hu : ∀ j, Nat.c
     by_contra h
     have h0 : u i ≠ 0 := fun e => h (e ▸ by decide)
     have h3 := hu (u i)
-    rw [dimsP, if_neg h0, if_neg h] at h3
+    rw [dimsP, ite_eq_right h0, ite_eq_right h] at h3
     haveI : Nonempty {k // u k = u i} := ⟨⟨i, rfl⟩⟩
     exact Nat.card_pos.ne' h3
   have h2 := Finset.card_eq_sum_card_fiberwise (s := Finset.univ) (t := wts) (f := u) fun i _ => h1 i

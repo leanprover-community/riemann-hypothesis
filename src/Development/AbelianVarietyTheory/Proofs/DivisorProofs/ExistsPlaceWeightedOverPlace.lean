@@ -1437,7 +1437,7 @@ theorem exists_place_weighted_over_place : ∀ {K κ κ' L : Type} [Field K] [Fi
     have hs : ∑ i, (wt i : ℤ) = M + (k + 1) := by
       rw [Fin.sum_univ_succ, Fin.sum_univ_succ]
       have : ∀ i : Fin k, wt i.succ.succ = 1 := fun i =>
-        if_neg (fun h => Fin.succ_ne_zero i (Fin.succ_injective _ h))
+        ite_eq_right (fun h => Fin.succ_ne_zero i (Fin.succ_injective _ h))
       simp [this, wt]
       ring
     have h1 := hVf y hy

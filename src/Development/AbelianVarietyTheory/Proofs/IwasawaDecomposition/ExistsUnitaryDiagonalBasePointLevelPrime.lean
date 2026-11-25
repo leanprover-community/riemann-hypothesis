@@ -124,7 +124,7 @@ theorem exists_unit (hc : Formalism.BasicNotions.CMData F E) {π : 𝓞 E} (h0 :
       exact valued_inv_algebraMap_le_one_of_not_mem P π (fun h => false_of_mem_of_conj_mem_of_isCoprime hcp P h ((mem_conjP P π).1 (hmem hw')))
     · rw [map_one]
   · intro P hP
-    rw [ha', if_pos hP]
+    rw [ha', ite_eq_left hP]
   · intro w hw
     rw [ha]
     split_ifs with h2 h3
@@ -225,11 +225,11 @@ theorem exists_base (hc : Formalism.BasicNotions.CMData F E) {π : 𝓞 E} {T : 
     unfold HasRes
     by_cases hj : j = r
     · subst hj
-      rw [Matrix.diagonal_apply_eq, if_pos rfl]
-      simp only [d', if_pos hr]
+      rw [Matrix.diagonal_apply_eq, ite_eq_left rfl]
+      simp only [d', ite_eq_left hr]
       rw [hP P.1 P.2]
       exact ⟨cO E π, rfl, by rw [sub_self, map_zero]; exact zero_lt_one⟩
-    · rw [Matrix.diagonal_apply_ne _ (Ne.symm hj), if_neg hj, map_zero]
+    · rw [Matrix.diagonal_apply_ne _ (Ne.symm hj), ite_eq_right hj, map_zero]
       exact ⟨0, map_zero _, by rw [map_zero, map_zero, sub_self, map_zero]; exact zero_lt_one⟩
 
 end General

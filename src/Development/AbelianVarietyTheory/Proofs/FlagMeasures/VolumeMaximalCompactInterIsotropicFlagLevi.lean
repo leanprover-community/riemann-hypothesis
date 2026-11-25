@@ -965,7 +965,7 @@ lemma cmp_right {X Y Y' : Type*} [MeasurableSpace X] [MeasurableSpace Y] [Measur
       refine h _ (Real.sqrt_nonneg _) ?_
       calc Real.sqrt (r ^ 2 - σ x) ≤ Real.sqrt (r ^ 2) := Real.sqrt_le_sqrt (by linarith [σ0 x])
         _ = r := Real.sqrt_sq hr
-    · push_neg at hx
+    · push Not at hx
       rw [section_empty ρ ρ0 (σ x) r hr hx]
       simp
   rw [Measure.prod_apply hS, Measure.prod_apply hS']

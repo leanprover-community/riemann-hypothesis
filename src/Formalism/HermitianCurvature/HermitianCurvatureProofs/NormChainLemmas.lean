@@ -66,7 +66,7 @@ theorem fourth_reduction_identity : Step4 := by
       rw [← Finset.mul_prod_erase univ g (Finset.mem_univ p0)]
       calc g p0 * ∏ p ∈ univ.erase p0, g p ≤ ((2 : ℝ) ^ κ)⁻¹ * 1 := by
             apply mul_le_mul
-            · simp only [hg, if_pos hp0]; exact hq2 p0
+            · simp only [hg, ite_eq_left hp0]; exact hq2 p0
             · exact Finset.prod_le_one₀ (fun p _ => hg0 p) (fun p _ => hg1 p)
             · exact Finset.prod_nonneg fun p _ => hg0 p
             · positivity
@@ -78,11 +78,11 @@ theorem fourth_reduction_identity : Step4 := by
           have hb : H p ^ c * nn p ≤ H p ^ c * (H p ^ c * ngen p) :=
             mul_le_mul_of_nonneg_left (hgen p) (hHc p).le
           by_cases hp : p ∈ A
-          · simp only [hg, if_pos hp]
+          · simp only [hg, ite_eq_left hp]
             calc _ ≤ _ := hN p (hAO hp)
               _ = (H p ^ c * nn p) * ((q p : ℝ) ^ κ)⁻¹ := by ring
               _ ≤ _ := by gcongr
-          · simp only [hg, if_neg hp, mul_one]
+          · simp only [hg, ite_eq_right hp, mul_one]
             exact (hZ p).trans hb
       _ = ((∏ p, H p) ^ (2 * c) * ∏ p, ngen p) * ∏ p, g p := by
           rw [Finset.prod_mul_distrib, Finset.prod_mul_distrib, Finset.prod_mul_distrib,

@@ -20,13 +20,6 @@ def SatakeTrivialBound : Prop :=
     IsSmooth π → π.IsIrreducible → IsUnitarisable π → IsSpherical π → HasSatake π α →
       InTrivialRange (resCard k) α
 
-section Hecke
-
-variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
-  {n : ℕ} {V : Type} [AddCommGroup V] [Module ℂ V]
-
-end Hecke
-
 section Basic₂
 
 variable (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]

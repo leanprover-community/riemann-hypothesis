@@ -155,7 +155,7 @@ theorem expIndep : ExpIndep := by
   have key := indep (T ∪ T')
     (fun t => C (if t ∈ T then a t else 0) * p - C (if t ∈ T' then b t else 0) * q)
     (fun s => ?_) t (Finset.mem_union_left _ htT)
-  · rw [if_pos htT] at key
+  · rw [ite_eq_left htT] at key
     exact ⟨a t, _, hat, sub_eq_zero.mp key⟩
   · have e1 := extend (Finset.subset_union_left : T ⊆ T ∪ T') a s
     have e2 := extend (Finset.subset_union_right : T' ⊆ T ∪ T') b s

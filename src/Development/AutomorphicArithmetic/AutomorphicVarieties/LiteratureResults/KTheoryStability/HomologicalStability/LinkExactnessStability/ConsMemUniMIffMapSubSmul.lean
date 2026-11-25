@@ -16,7 +16,7 @@ theorem mem_uniM_iff_nat (R M : Type) [CommRing R] [AddCommGroup M] [Module R M]
   · rintro ⟨f, hf⟩
     refine ⟨fun i => if h : i < l.length then f ⟨i, h⟩ else 0, fun i j hi hj => ?_⟩
     have := hf ⟨i, hi⟩ ⟨j, hj⟩
-    simp only [hi, dif_pos]
+    simp only [hi, dite_eq_left]
     simpa [Fin.ext_iff] using this
   · rintro ⟨f, hf⟩
     refine ⟨fun i => f i, fun i j => ?_⟩
@@ -59,7 +59,7 @@ theorem cons_mem_uniM_iff_map_proj : ∀ (R M : Type) [CommRing R] [AddCommGroup
       rw [hF0, Finset.sum_eq_single ⟨j, hj'⟩]
       · rw [hH j j hj' hj']; simp
       · intro k _ hk
-        rw [hH k j k.isLt hj', if_neg (fun h => hk (Fin.ext h)), mul_zero]
+        rw [hH k j k.isLt hj', ite_eq_right (fun h => hk (Fin.ext h)), mul_zero]
       · simp
     · simp [F, hPv]
     · have hi' : i < l.length := by omega

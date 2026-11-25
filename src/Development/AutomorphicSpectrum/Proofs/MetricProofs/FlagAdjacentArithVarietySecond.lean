@@ -31,9 +31,9 @@ theorem exists_flags_of_point : ∀ (K : Type) [Fintype K] (ι : K → Type) [�
     | none => exact one_ne_zero
     | some k =>
       by_cases hk : ∀ p, M.blk p ≠ some k
-      · simp only [t, dif_pos hk]
+      · simp only [t, dite_eq_left hk]
         exact inv_ne_zero (hc _)
-      · simp only [t, dif_neg hk]
+      · simp only [t, dite_eq_right hk]
         exact one_ne_zero
   let z₁ : (Σ o : Option K, ι (o.getD k₀)) → ℂ := fun p => t p.1 * z p
   have o2 : SameOrbit z₁ z := ⟨t, ht, rfl⟩
@@ -44,7 +44,7 @@ theorem exists_flags_of_point : ∀ (K : Type) [Fintype K] (ι : K → Type) [�
     obtain ⟨⟨k, hk⟩, m⟩ := q
     have e : z ⟨some k, m⟩ = c ⟨k, hk⟩ * β ⟨⟨k, hk⟩, m⟩ := congrFun ec ⟨⟨k, hk⟩, m⟩
     show t (some k) * z ⟨some k, m⟩ = β _
-    simp only [t, dif_pos hk]
+    simp only [t, dite_eq_left hk]
     rw [e, inv_mul_cancel_left₀ (hc _)]
   have P := _root_.GlobalTheory.CompanionTheory.Ar.PB.WSq.Pts.main K ι Φ y Ψ N j M d τ a b k₀ ca cb hb hj hblk hca hcb hy (BM.F l) z₁ (BM.isFrame l)
     (by rw [eb]; exact g1) (by rw [eb]; exact g2) (by rw [eb]; exact g3)

@@ -1137,7 +1137,7 @@ def Onto (ρ : Setup D.ntw) (rdV : RdV D ρ) : Prop :=
 
 theorem latI_eq (rdV : RdV D ρ) {i} (j : Fin D.R.m) {b k Q ψ} (h : TwOK i k Q ψ) :
     latI rdV i ((j : ℕ) + 1) b k Q ψ = (Via.lat (ρ.mt i j b k Q ψ)).comap (rdVLin rdV i j b k Q ψ) :=
-  dif_pos ⟨j.2, h⟩
+  dite_eq_left ⟨j.2, h⟩
 
 theorem mem_latI (rdV : RdV D ρ) {i} (j : Fin D.R.m) {b k Q ψ} (h : TwOK i k Q ψ) (f) :
     f ∈ latI rdV i ((j : ℕ) + 1) b k Q ψ ↔ rdV i j b k Q ψ f ∈ ρ.mt i j b k Q ψ := by
@@ -1204,9 +1204,9 @@ theorem exists_tie_withSeries : ∀ (D : D7) (ρ : Setup D.ntw) (hρ : ρ.Good) 
         thU_eq := fun Q M d hQ x hx => by
           have h : InRange D.ntw i Q ∧ ∀ a, ρ.xi i j b D.nexp Q M d.2.h d.2.P a ∈ Set.range (rd i j b) :=
             ⟨hQ, fun a => ⟨x a, hx a⟩⟩
-          refine (dif_pos h).trans (congrArg (grpSum D.nexp (ρ.ch i) Q M) (funext fun a => (hF i j b).injective ?_))
+          refine (dite_eq_left h).trans (congrArg (grpSum D.nexp (ρ.ch i) Q M) (funext fun a => (hF i j b).injective ?_))
           exact (h.2 a).choose_spec.trans (hx a).symm
-        thU_off := fun _ _ _ h => dif_neg h
+        thU_off := fun _ _ _ h => dite_eq_right h
         rdV_inj := fun k Q ψ h => (hV i j b k Q ψ h).1
         mtLat_iff := fun k Q ψ h F => by
           refine ⟨fun hF' => ?_, fun ⟨f, hf, e'⟩ => ?_⟩
@@ -1214,7 +1214,7 @@ theorem exists_tie_withSeries : ∀ (D : D7) (ρ : Setup D.ntw) (hρ : ρ.Good) 
             exact ⟨f, (mem_latI rdV j h f).2 hF', rfl⟩
           · exact e' ▸ (mem_latI rdV j h f).1 hf
         thP_eq := fun k Q ψ _ f hf => by
-          have e : thPI hρ rd hF rdV i ((j : ℕ) + 1) b k Q ψ = (exists_thPI hρ rd hF rdV i j b k Q ψ).choose := dif_pos j.2
+          have e : thPI hρ rd hF rdV i ((j : ℕ) + 1) b k Q ψ = (exists_thPI hρ rd hF rdV i j b k Q ψ).choose := dite_eq_left j.2
           exact (congrArg (fun φ => rdK (rd i j b) hρ k (φ f)) e).trans
             ((exists_thPI hρ rd hF rdV i j b k Q ψ).choose_spec f hf) }, fun _ _ _ => rfl⟩
 
@@ -1383,7 +1383,7 @@ theorem exists_art_gal (hA : GlobalTheory.Published.GlobalArtinReciprocity) (cf 
       have h1 : ρ.ι (ρ.κ (D.ntw.emb0 i x)) = (((cf.delAt (D.ntw.l i)).val v : ℂˣ) : ℂ) := by
         rw [← D.ntw.restX_coefficientEmbedding_conj i x⁻¹ x hstar]
         have := ρ.read x⁻¹
-        simp only [GlobalTheory.Triple.embSide, Bool.false_eq_true, if_false] at this
+        simp only [GlobalTheory.Triple.embSide, Bool.false_eq_true, ite_false] at this
         rw [this]
         show D.what₂.embLL ((x⁻¹ : D.LL0) : D.what₂.LL) = _
         rw [IntermediateField.coe_inv, map_inv₀, hx', inv_inv]
@@ -1394,7 +1394,7 @@ theorem exists_art_gal (hA : GlobalTheory.Published.GlobalArtinReciprocity) (cf 
       rw [hd, ← h1, ρ.ι.symm_apply_apply]
     · have h1 : ρ.ι (ρ.κ (D.ntw.emb0 i x)) = (((cf.delAt (D.ntw.l i)).val v : ℂˣ) : ℂ)⁻¹ := by
         have := ρ.read x
-        simp only [GlobalTheory.Triple.embSide, if_true] at this
+        simp only [GlobalTheory.Triple.embSide, ite_true] at this
         rw [this]
         exact hx'
       show ρ.κ (algebraMap _ _ ((D.ntw.delta i σ : (D.ntw.O0 i)ˣ) : D.ntw.O0 i)) = _

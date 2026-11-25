@@ -117,7 +117,7 @@ theorem exists_exponents (f N d Q : ℕ) (B L : ℝ) (S : Finset ℕ) (dl : ℕ 
         Nat.mem_primeFactors, true_and, ne_eq, hM0, hQ.ne', not_false_eq_true] at hl
       obtain ⟨⟨⟨a1, a2⟩, a3⟩, a4⟩ := hl
       unfold expo_vp
-      rw [← hM, Nat.padicValNat_def, Nat.padicValNat_def, padicValNat.eq_zero_of_not_dvd a1, padicValNat.eq_zero_of_not_dvd a4, hz l a2, if_neg a3]
+      rw [← hM, Nat.padicValNat_def, Nat.padicValNat_def, padicValNat.eq_zero_of_not_dvd a1, padicValNat.eq_zero_of_not_dvd a4, hz l a2, ite_eq_right a3]
       simp
     · rfl
   · have e1 := sum_val_log_le S' hP M
@@ -142,7 +142,7 @@ theorem exists_exponents (f N d Q : ℕ) (B L : ℝ) (S : Finset ℕ) (dl : ℕ 
       rw [← Finset.sum_add_distrib, ← Finset.sum_add_distrib, Finset.mul_sum, Finset.mul_sum, ← Finset.sum_add_distrib,
         ← Finset.sum_add_distrib]
       refine Finset.sum_congr rfl fun l hl => ?_
-      rw [if_pos (hP l hl), expo_vp, ← hM]
+      rw [ite_eq_left (hP l hl), expo_vp, ← hM]
       ring
     have hfR : (1 : ℝ) ≤ f := by exact_mod_cast hf
     have hNR : (1 : ℝ) ≤ N := by exact_mod_cast hN
@@ -176,7 +176,7 @@ theorem intSt_of_forall_inp : (∀ D, Inp D) → IntSt := by
   refine ⟨S', _, hE, ?_, ?_⟩
   · intro δ t0 p hp Q' hQ' P hP
     have := CoordBound.coordInt D (hI D) S dl hLet Q N B hQ (by linarith) δ t0 p Q' hQ' P hP
-    simp only [if_pos hp.out]
+    simp only [ite_eq_left hp.out]
     exact this
   · intro δ t0 K _ _ _ _ σ ι P P' zA zA' hs hc hn
     have ne : ∀ (R : Pair D ⊤ δ t0 Q) (z : K), (∃ h T, R.coord h T ≠ 0) → σ z = (R.norm : ℂ) → z ≠ 0 := by
@@ -190,7 +190,7 @@ theorem intSt_of_forall_inp : (∀ D, Inp D) → IntSt := by
       intro R z h1 h2 h3 w
       obtain ⟨p, hp, hw⟩ := exists_prime_mem w
       have : Fact p.Prime := ⟨hp⟩
-      rw [hE.wt_eq hp w hw, if_pos hp, ← mul_assoc]
+      rw [hE.wt_eq hp w hw, ite_eq_left hp, ← mul_assoc]
       refine GlobalTheory.PadicPlaceBound.neg_mul_vw_le_vw K σ z p w _ h2 hw fun lam => ?_
       rw [h3]
       exact (_root_.GlobalTheory.NormVal.norm_mem_and_le D (hI D) S dl hLet δ t0 Q R.crv R.pt0 hQ R N B h1 p lam).2

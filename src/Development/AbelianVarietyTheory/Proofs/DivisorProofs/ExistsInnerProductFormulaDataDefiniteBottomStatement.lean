@@ -263,7 +263,7 @@ theorem UpperTheory.exists_stdFst_ne_zero_of_rank_le :
     · exact zero_mem _
   have h3 : ∀ i j, S.rank ≤ i.1 → GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle.InId I ((toEAf D e • J) i j) := fun i j hi => by
     have hj := j.2
-    rw [hJ, if_neg (by omega)]
+    rw [hJ, ite_eq_right (by omega)]
     exact ⟨zero_mem _, zero_mem _⟩
   have h4 : ∃ y, GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle.IsUnitDet e (topL S.rank (toEAf D e • J)) y := by
     refine ⟨1, RingHom.map_one _, ?_, ?_⟩
@@ -273,7 +273,7 @@ theorem UpperTheory.exists_stdFst_ne_zero_of_rank_le :
       exact one_mem _
   refine ⟨x, ?_⟩
   unfold GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle.stdFst
-  rw [hf, if_pos ⟨h1, h2, h3⟩]
+  rw [hf, ite_eq_left ⟨h1, h2, h3⟩]
   unfold GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle.unitChar
   rw [dite_eq_left h4]
   exact Circle.coe_ne_zero _
@@ -398,7 +398,7 @@ theorem UpperTheory.finiteComponent_mem_stabilizer_of_standardSection_ne_zero :
   · obtain ⟨PP, hP, rfl⟩ := hv
     rw [← hcomp PP hP]
     exact hkloc _
-  · push_neg at hv
+  · push Not at hv
     exact hg v hv
 end -- clump:auto
 end -- clump:auto
@@ -647,9 +647,9 @@ theorem UpperTheory.stdFst_actO_of_mem_stabilizer :
   have hU := unitChar_mul ν he (topL S.rank N * (γ⁻¹).val) γ.val hκ' hy
   rw [Matrix.mul_assoc, hkk, Matrix.mul_one] at hU
   by_cases hc : IsHalf e x ∧ IsIntM N ∧ ∀ i j, S.rank ≤ i.1 → GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle.InId I (N i j)
-  · rw [if_pos hc, if_pos ⟨hH.2 hc.1, hI.2 hc.2.1, hR.2 hc.2.2⟩, topL_mul, hU, ← mul_assoc, ← Circle.coe_mul,
+  · rw [ite_eq_left hc, ite_eq_left ⟨hH.2 hc.1, hI.2 hc.2.1, hR.2 hc.2.2⟩, topL_mul, hU, ← mul_assoc, ← Circle.coe_mul,
       mul_inv_cancel, Circle.coe_one, one_mul]
-  · rw [if_neg hc, if_neg fun h => hc ⟨hH.1 h.1, hI.1 h.2.1, hR.1 h.2.2⟩, mul_zero]
+  · rw [ite_eq_right hc, ite_eq_right fun h => hc ⟨hH.1 h.1, hI.1 h.2.1, hR.1 h.2.2⟩, mul_zero]
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.DivisorFrames.StdFstActOOfMemStabilizer =====
@@ -1197,7 +1197,7 @@ theorem jpq_mul_negFrame (A : HSp D) (τ : D.what₂.Tau) :
       · simp [Formalism.UG.Jpq]
   · simp only [Formalism.UG.Jpq, Matrix.mul_apply, Fintype.sum_sum_type, Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂,
       Finset.sum_const_zero, Matrix.neg_apply, Matrix.zero_apply, zero_mul, zero_add,
-      Matrix.one_apply, neg_mul, ite_mul, one_mul, Finset.sum_neg_distrib, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+      Matrix.one_apply, neg_mul, ite_mul, one_mul, Finset.sum_neg_distrib, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
 
 open GlobalTheory.Grid (neg neg_gram) in
 theorem negFrame_conj_mul (A : HSp D) (hg : A.gram = 1) (hA : A.SigOK) (τ : D.what₂.Tau) :
@@ -1219,8 +1219,8 @@ theorem negFrame_conj_mul (A : HSp D) (hg : A.gram = 1) (hA : A.SigOK) (τ : D.w
   rw [Finset.sum_eq_single ⟨a, hk⟩]
   · by_cases h : a = b
     · simp [h]
-    · rw [if_neg h, if_neg]; rintro ⟨-, h2⟩; exact h (Fin.ext h2)
-  · intro x _ hx; rw [if_neg]; rintro ⟨h1, -⟩; exact hx (Fin.ext h1)
+    · rw [ite_eq_right h, ite_eq_right]; rintro ⟨-, h2⟩; exact h (Fin.ext h2)
+  · intro x _ hx; rw [ite_eq_right]; rintro ⟨h1, -⟩; exact hx (Fin.ext h1)
   · simp
 
 open GlobalTheory.Grid (neg neg_gram) in

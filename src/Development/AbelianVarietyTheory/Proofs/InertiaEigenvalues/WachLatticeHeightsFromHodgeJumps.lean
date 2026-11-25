@@ -421,7 +421,7 @@ theorem indep_lead {L M ι : Type} [Field L] [AddCommGroup M] [Module L M] {w : 
     have h2 := conv_lead (e := (PowerSeries.X * w) ^ m) (a := m) (pow_dvd_pow_of_dvd (dvd_mul_right _ _) m)
       (f := fun k => c ^ k • g j k) (b := 0) (fun k hk => by simp only [hg j k hk, smul_zero])
     rw [add_zero] at h2
-    rw [hu, h2, mul_pow, PowerSeries.coeff_X_pow_mul', if_pos le_rfl]
+    rw [hu, h2, mul_pow, PowerSeries.coeff_X_pow_mul', ite_eq_left le_rfl]
     simp
   rw [h1]
   exact hi.units_smul fun _ => Units.mk0 _ hc

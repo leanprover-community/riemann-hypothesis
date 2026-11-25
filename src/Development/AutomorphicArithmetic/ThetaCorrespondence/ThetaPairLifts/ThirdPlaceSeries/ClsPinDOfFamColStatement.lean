@@ -767,9 +767,9 @@ theorem stdPair_world {B : GlobalTheory.Mem.Base} {X : PreX B.toPre} (I : TC B X
     by_cases h : a = b
     · subst h
       rw [Matrix.one_apply_eq]
-      exact (if_pos rfl).trans (by simp [Formalism.BasicNotions.Examples₂.sgn]; rfl)
+      exact (ite_eq_left rfl).trans (by simp [Formalism.BasicNotions.Examples₂.sgn]; rfl)
     · rw [Matrix.one_apply_ne h]
-      exact if_neg h
+      exact ite_eq_right h
   have hr : ∀ j, ((I.rec7 l Z).sp.X j).rank = B.R.N j := fun j => by
     have e : (I.rec7 l Z).sp.X j = Formalism.BasicNotions.Examples₂.posSpace hs (B.R.N j) := hX j
     rw [e]; rfl
@@ -825,7 +825,7 @@ theorem exists_jetS : ∀ {B : GlobalTheory.Mem.Base} {X : PreX B.toPre} (I : TC
     fun j hj => GlobalTheory.AdForm.JetRead.pureTensorO_zero_eq_jetP (I.rec7 l Z) ψ θ _ _ _ _ (rankN (I.rec7 l Z) j (Nat.le_of_succ_le hj))
       (rankN (I.rec7 l Z) (j + 1) hj) I.A.δ I.A.sc (stdPair_world I hI l Z ψ θ hψ hθ j)
   refine ⟨fun j => if hj : j + 1 ≤ B.R.m then (hstep j hj).choose else 1, fun j hj => ?_⟩
-  simp only [dif_pos hj]
+  simp only [dite_eq_left hj]
   exact (hstep j hj).choose_spec
 
 end GlobalTheory.AdForm.JetScales
@@ -1220,7 +1220,7 @@ theorem jOf_exists : ∀ {B : GlobalTheory.Mem.Base} {X : PreX B.toPre} (I : TC 
       IsTr (infM R.θ _ (rankP (I.rec7 l Z)) k) z z' then j v ⟨h.choose.1, h.choose.2⟩ else 0, ?_⟩
   intro v k _ z z' hz
   have h : ∃ z : FrN (I.rec7 l Z) (B.R.N B.R.m - 1), IsTr (infM R.θ _ (rankP (I.rec7 l Z)) k) z z' := ⟨z, hz⟩
-  simp only [dif_pos h]
+  simp only [dite_eq_left h]
   have e := isTr_unique h.choose_spec hz
   exact congrArg (j v) (Subtype.ext e)
 

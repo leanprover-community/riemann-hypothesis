@@ -76,7 +76,7 @@ theorem basePt_eq_zero_of_stepVar (y : Matrix n n' k) {r : n ⊕ Fin c} {s : n' 
   rcases r with r | r <;> rcases s with s | s <;> simp only [Free, Kept, or_false] at h <;>
     simp only [basePt, fromBlocks_apply₁₂, fromBlocks_apply₂₁, fromBlocks_apply₂₂,
       Matrix.zero_apply, of_apply]
-  rw [if_neg (by omega)]
+  rw [ite_eq_right (by omega)]
 
 
 omit [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] in
@@ -87,7 +87,7 @@ theorem stepVar_fixed_of_ordL_lt (y : Matrix n n' k) {r t : n ⊕ Fin c} {s : n'
     simp only [Free, Kept, GlobalTheory.DiagVol.ordL, Sum.elim_inl, Sum.elim_inr, basePt, fromBlocks_apply₁₁,
       fromBlocks_apply₁₂, fromBlocks_apply₂₁, fromBlocks_apply₂₂, Matrix.zero_apply, of_apply, not_or,
       Nat.even_iff, Nat.odd_iff, not_and, true_and, and_true, not_false_eq_true] at hv hlt ⊢
-  all_goals first | omega | (refine ⟨by omega, ?_⟩; rw [if_neg (by omega)])
+  all_goals first | omega | (refine ⟨by omega, ?_⟩; rw [ite_eq_right (by omega)])
 
 end Shape
 
@@ -140,15 +140,15 @@ theorem inv_mul_stepPt_shape : ∀ {k : Type} [Field k] {n n' : Type} [Fintype n
     rw [_root_.mul_inv_rev, map_inv, Units.val_mul]
   have hu : v⁻¹ ∈ GlobalTheory.DiagVol.unipSub (GlobalTheory.DiagVol.ordL c) := GlobalTheory.DiagVol.symN_le_unipSub (inv_mem hv)
   have hM : ∀ r s, ¬ (Free (c / 2 + 1) (r, s) ∨ Kept (r, s)) → stepPt x₀ e r s = basePt c x₀ r s :=
-    fun r s h => by rw [stepPt, Matrix.add_apply, of_apply, dif_neg h, add_zero]
+    fun r s h => by rw [stepPt, Matrix.add_apply, of_apply, dite_eq_right h, add_zero]
   have hA := embX_mul_fixed κ⁻¹ x₀ _ (unipSub_mul_fixed hu x₀ _ hM)
   have hR : ∀ (y : Matrix n n' k) (e' : StepVar n c n' → k) r s, stepPt y e' r s =
       basePt c y r s + (if h : Free (c / 2 + 1) (r, s) ∨ Kept (r, s) then e' ⟨(r, s), h⟩ else 0) :=
     fun _ _ _ _ => rfl
   ext r s
   by_cases h : Free (c / 2 + 1) (r, s) ∨ Kept (r, s)
-  · conv_rhs => rw [hR, dif_pos h, basePt_eq_zero_of_stepVar _ h, zero_add]
-  · conv_rhs => rw [hR, dif_neg h, add_zero]
+  · conv_rhs => rw [hR, dite_eq_left h, basePt_eq_zero_of_stepVar _ h, zero_add]
+  · conv_rhs => rw [hR, dite_eq_right h, add_zero]
     rw [hg, Matrix.mul_assoc, hA r s h]
 
 end GlobalTheory.StepLeft

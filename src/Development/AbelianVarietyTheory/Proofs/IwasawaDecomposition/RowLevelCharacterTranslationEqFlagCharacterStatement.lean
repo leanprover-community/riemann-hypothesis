@@ -206,14 +206,14 @@ theorem prod_uSG {E : Type} [Field E] [NumberField E] {M : Type} [CommMonoid M] 
   have h1 : ∏ w, f w = ∏ w : Formalism.L2.Col.uSG A B, (fun P => if P ∈ A then a P else b P) w.1 := by
     refine Finset.prod_congr rfl fun w _ => ?_
     by_cases h : w.1 ∈ A
-    · simp only [h, if_true]; exact ha w h
-    · simp only [h, if_false]; exact hb w h ((Finset.mem_union.mp w.2).resolve_left h)
+    · simp only [h, ite_true]; exact ha w h
+    · simp only [h, ite_false]; exact hb w h ((Finset.mem_union.mp w.2).resolve_left h)
   rw [h1, Finset.prod_coe_sort (Formalism.L2.Col.uSG A B) (fun P => if P ∈ A then a P else b P)]
   have h2 : Disjoint A B := Finset.disjoint_right.2 fun P hP => hd P hP
   rw [Finset.prod_union h2]
   congr 1
-  · exact Finset.prod_congr rfl fun P hP => if_pos hP
-  · exact Finset.prod_congr rfl fun P hP => if_neg (hd P hP)
+  · exact Finset.prod_congr rfl fun P hP => ite_eq_left hP
+  · exact Finset.prod_congr rfl fun P hP => ite_eq_right (hd P hP)
 
 theorem lam_congr {κ K : Type} [CommRing κ] [Field K] {n : ℕ} {l l' : Formalism.L2.Col.Lev κ K n} (e : l = l') (u : GL (Fin n) κ)
     (h : u ∈ l.inv.H) : l.inv.lam ⟨u, h⟩ = l'.lam⁻¹ ⟨u, e ▸ h⟩ := by

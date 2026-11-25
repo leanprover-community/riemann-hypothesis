@@ -277,15 +277,6 @@ theorem base_lifts_package_of_primitive_links {s : ℕ} (hOk : A3.fam3.Ok3 s) (h
 
 end Three2
 
-section Geo3
-
-open Formalism.L2.Geo Formalism.MainNotions Formalism.IndefR.Cx
-
-variable {G : Type} [Group G] [Fintype G] {Pl0 I0 T : Type} {A3 : FamIn3 D.what₂.LL G Pl0 I0 (List ℕ) T D.R.m}
-  {Gm : DV.Geo D.what₂.LL} {Lv : Type} {Fam : ShimFam D Gm Lv} (Kp : FormsKPkg Fam) [Algebra Kp.fs.KO D.what₂.LL]
-
-end Geo3
-
 end Formalism.IndefR.Links
 
 end

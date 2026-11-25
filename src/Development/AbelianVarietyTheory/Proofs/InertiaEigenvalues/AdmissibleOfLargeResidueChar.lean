@@ -608,10 +608,10 @@ theorem jTil_shift_block : ∀ (l n t : ℕ) (h w η : ZMod n → ℕ) (typ : ZM
       unfold Formalism.WachCohomologyFacts.V2.InWinN
       cases hty : typ a
       · have := hB hty
-        simp only [Bool.false_eq_true, if_false]
+        simp only [Bool.false_eq_true, ite_false]
         constructor <;> omega
       · have := hG hty
-        simp only [if_true]
+        simp only [ite_true]
         constructor <;> omega
     have hy : b + (w a : ℤ) ∈ Formalism.WachCohomologyFacts.Top.GlobalTheory (w a) t := by
       unfold Formalism.WachCohomologyFacts.Top.GlobalTheory
@@ -623,13 +623,13 @@ theorem jTil_shift_block : ∀ (l n t : ℕ) (h w η : ZMod n → ℕ) (typ : ZM
   unfold tableLineDegreeTwo.jTil
   by_cases hbS : (b : ℚ) ∈ S
   · have hn := hboth hbS
-    rw [if_pos (Or.inl hbS), if_neg (by rwa [hwin]), hcS hbS]
+    rw [ite_eq_left (Or.inl hbS), ite_eq_right (by rwa [hwin]), hcS hbS]
     simp
   · rw [hcN hbS]
     by_cases hbl : 0 ≤ b ∧ b ≤ (t : ℤ) - 1
-    · rw [if_pos (Or.inr (hblk.2 hbl)), if_pos (hwin.2 hbl)]
+    · rw [ite_eq_left (Or.inr (hblk.2 hbl)), ite_eq_left (hwin.2 hbl)]
       simp
-    · rw [if_neg (by rintro (h1 | h1); exact hbS h1; exact hbl (hblk.1 h1)), if_neg (by rwa [hwin])]
+    · rw [ite_eq_right (by rintro (h1 | h1); exact hbS h1; exact hbl (hblk.1 h1)), ite_eq_right (by rwa [hwin])]
       simp
 
 end GlobalTheory
@@ -668,10 +668,10 @@ theorem jumps_iff : ∀ (D : D7) (up : Bool) (j : ℕ) (ρ : D.what₂.Tau) (q :
   intro D up j ρ q
   cases up
   · simp only [AdmissibleParameterJ.JJ, AdmissibleParameterJ.JW, AdmissibleParameterJ.Jm, AdmissibleParameterJ.Jp, AdmissibleParameterJ.cloudT, AdmissibleParameterJ.lowT, AdmissibleParameterJ.reflS,
-      Set.mem_union, Set.mem_setOf_eq, Bool.false_eq_true, if_false]
+      Set.mem_union, Set.mem_setOf_eq, Bool.false_eq_true, ite_false]
     rw [reflS_blockJ_iff]
   · simp only [AdmissibleParameterJ.JJ, AdmissibleParameterJ.JW, AdmissibleParameterJ.Jp, AdmissibleParameterJ.cloudT, AdmissibleParameterJ.lowT, AdmissibleParameterJ.blockJ,
-      Set.mem_union, Set.mem_setOf_eq, if_true]
+      Set.mem_union, Set.mem_setOf_eq, ite_true]
 
 end GlobalTheory.UseLoc.JumpBlock
 end -- clump:auto
@@ -1032,9 +1032,9 @@ theorem exists_setC : ∀ (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW)
     rw [hτu a τ hO, ((hW a) ρ π hZ hDec b).2.1]
     obtain ⟨h1, h2⟩ := hU a b
     by_cases hb : ((b : ℤ) : ℚ) ∈ AdmissibleParameterJ.JW D (decide (AdmissibleParameterJ.TypeU D ep (gA a))) (D.nd.j i) (ρA a)
-    · rw [if_pos hb, h1.2 hb]
+    · rw [ite_eq_left hb, h1.2 hb]
       simp
-    · rw [if_neg hb]
+    · rw [ite_eq_right hb]
       have : (U a).count (b + w' a) ≠ 1 := fun e => hb (h1.1 e)
       omega
   have hL6 := GlobalTheory.UseLoc.crys_Wp_rTw D i r ρ π w hw C hGood hZ hG2 hDec

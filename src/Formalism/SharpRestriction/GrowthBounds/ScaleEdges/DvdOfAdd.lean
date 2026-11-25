@@ -63,7 +63,7 @@ theorem smith_mem {O : Type*} [CommRing O] [IsDomain O] [IsPrincipalIdealRing O]
       obtain ⟨t, ht⟩ := (Dvd.intro_left _ rfl : snf.a k0 ∣ snf.bN.repr ⟨s, hs⟩ k0 * snf.a k0).trans hsd
       rw [ht, mul_comm, mul_smul, ← snf.snf k0]
       exact S.smul_mem t (snf.bN k0).2
-    · push_neg at hj
+    · push Not at hj
       have hc0 : snf.bM.coord j s = 0 := by
         rw [hc]
         exact Finset.sum_eq_zero fun k _ => by simp [hj k]

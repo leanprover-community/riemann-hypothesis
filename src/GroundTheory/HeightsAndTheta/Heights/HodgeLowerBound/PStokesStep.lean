@@ -126,8 +126,8 @@ theorem StokesStep.proof (hE : ResExistsStatement) : StokesStep.Statement := by
     have hj' : j.val ≠ i := fun h => hj (Fin.ext h)
     simp only [L]
     by_cases h : j.val < i
-    · rw [if_pos (by omega), if_pos h]
-    · rw [if_neg (by omega), if_neg h]
+    · rw [ite_eq_left (by omega), ite_eq_left h]
+    · rw [ite_eq_right (by omega), ite_eq_right h]
   have hσs : ∀ k : Fin m, σ k.succ ≠ ⟨i, hi⟩ := by
     intro k hk
     rw [hσ, Equiv.swap_apply_eq_iff, Equiv.swap_apply_right] at hk

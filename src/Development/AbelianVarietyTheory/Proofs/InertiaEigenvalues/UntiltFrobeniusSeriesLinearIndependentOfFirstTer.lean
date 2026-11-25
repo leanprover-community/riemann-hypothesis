@@ -306,7 +306,7 @@ theorem exists_unique_max_term : ∀ (l : ℕ) [Fact l.Prime] (h : ℕ) (s : ℝ
     exact hn₀ n hn
   by_cases H : ∀ n, d 0 n ≠ 0
   · exact ⟨0, by norm_num, hfin 0 H⟩
-  · push_neg at H
+  · push Not at H
     obtain ⟨n, hn⟩ := H
     exact ⟨1, by norm_num, hfin 1 fun n' hn' => htie n n' hn hn'⟩
 

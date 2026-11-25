@@ -261,7 +261,7 @@ theorem exists_sub_mul_mem (hp : p.Prime) (h0 : (p : S) ∈ maximalIdeal S)
     if h : b ∈ residue S '' L then π ⟨h.choose, mem_level_of_mem h.choose_spec.1⟩ else 0
   have hg : ∀ x (hx : x ∈ L), g (residue S x) = π ⟨x, mem_level_of_mem hx⟩ := fun x hx => by
     have h : residue S x ∈ residue S '' L := ⟨x, hx, rfl⟩
-    simp only [g, dif_pos h, hL h.choose_spec.1 hx h.choose_spec.2]
+    simp only [g, dite_eq_left h, hL h.choose_spec.1 hx h.choose_spec.2]
   obtain ⟨σ, h1, h2⟩ := exists_ringHom_pow hB n _ f g (by
     rintro _ ⟨x, hx, rfl⟩
     rw [hg x hx, ← hf]

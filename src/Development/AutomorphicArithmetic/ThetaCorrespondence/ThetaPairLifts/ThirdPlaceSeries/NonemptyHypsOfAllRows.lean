@@ -910,7 +910,7 @@ theorem bound_of_over (K : Ctx) (B : Pre) (h : K.Over B) (i : Fin 2) :
     by_cases h5 : (5 : ℝ) ≤ (K.P.R.k : ℝ)
     · have : y ≤ y ^ 8 := le_self_pow₀ hy1 (by norm_num)
       linarith
-    · push_neg at h5
+    · push Not at h5
       have hk4' : (K.P.R.k : ℝ) ≤ 4 := by
         have : K.P.R.k < 5 := by exact_mod_cast h5
         have : K.P.R.k ≤ 4 := by omega
@@ -1030,8 +1030,8 @@ theorem twCoverPair_of_tie (D : D7) (c : NChoice D) (h : NChTie D c) : TwCoverPa
     refine resChar_eq_of_pos w' hp ?_
     simpa using (hw' _).1 hw
   · cases hs : c.sd w'
-    · exact Or.inr fun x => (hw' x).trans (pos_iff_side_mem_max h w' x _ (by rw [hs, if_neg (by simp)]))
-    · exact Or.inl fun x => (hw' x).trans (pos_iff_side_mem_max h w' x _ (by rw [hs, if_pos rfl]))
+    · exact Or.inr fun x => (hw' x).trans (pos_iff_side_mem_max h w' x _ (by rw [hs, ite_eq_right (by simp)]))
+    · exact Or.inl fun x => (hw' x).trans (pos_iff_side_mem_max h w' x _ (by rw [hs, ite_eq_left rfl]))
 
 end GlobalTheory.Mem.Top
 

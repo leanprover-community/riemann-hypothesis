@@ -45,7 +45,7 @@ public import Mathlib.Topology.Sheaves.Init
 
 open GlobalTheory.UnitaryBC GlobalTheory.DefU
 
-private theorem proj_of_sum {G V : Type} [Group G] [AddCommGroup V] [Module ℂ V] (ρ : G → V →ₗ[ℂ] V)
+theorem UpperTheory.TP.proj_of_sum {G V : Type} [Group G] [AddCommGroup V] [Module ℂ V] (ρ : G → V →ₗ[ℂ] V)
     (A : Submodule ℂ V) (S : Set (Submodule ℂ V))
     (hSA : ∀ U ∈ S, U ≤ A) (hSs : ∀ U ∈ S, ∀ x, ∀ v ∈ U, ρ x v ∈ U)
     (hSi : ∀ U ∈ S, ∀ N ≤ U, (∀ x, ∀ v ∈ N, ρ x v ∈ N) → N = ⊥ ∨ N = U)
@@ -153,7 +153,7 @@ theorem UpperTheory.TP.projEx :
         rw [hB, hB, hpv f hf, hpv g hg, hpv _ (RU_mem_autU x f hf), hpv _ (RU_mem_autU x g hg)]
         exact hi x ⟨f, hf⟩ ⟨g, hg⟩) φ hφ
     exact (iSup_le fun σ => le_sSup σ.2 : _ ≤ sSup {U : Submodule ℂ (UA E d → ℂ) | IsAutRepU U}) h
-  obtain ⟨U, hU, pr, h1, h2⟩ := proj_of_sum (fun x => RU E d x) (autU E d)
+  obtain ⟨U, hU, pr, h1, h2⟩ := UpperTheory.TP.proj_of_sum (fun x => RU E d x) (autU E d)
     {U | IsAutRepU U} (fun U hU φ hφ => hU.aut φ hφ) (fun U hU => hU.stable)
     (fun U hU => hU.irred) (fun φ hφ => hsum φ hφ) ψ hψ hψ0
   exact ⟨U, pr, hU, h1, fun f hf => h2 f hf⟩

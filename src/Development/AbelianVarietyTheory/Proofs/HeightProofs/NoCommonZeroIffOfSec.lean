@@ -150,26 +150,8 @@ open Formalism.L2.PjFree (valSet algCls cusp Unf regular₂ trivSet isVal_valSet
 open GlobalTheory.IndefiniteRowSideFullHecke.UnusedSlot36 (algVal allVal ordVal Comb LeastLe Transfer TransferAt TransferInt TransferComb TransferLeast
   ordVal_smul)
 
-section Order
-
-end Order
-
-section Approx
-
-variable {K : Type} [Field K] [NumberField K]
-
-end Approx
-
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H}
   {Xo : Moduli Dw l} {c : Coeff l}
-
-section Objects
-
-variable (Xo c)
-
-variable {Xo c}
-
-end Objects
 
 section Joint
 

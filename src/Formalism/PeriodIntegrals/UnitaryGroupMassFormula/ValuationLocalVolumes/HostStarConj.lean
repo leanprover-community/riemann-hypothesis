@@ -106,12 +106,12 @@ theorem hT_zero_or (v : PlX X) (a b : Fin (D.R.rS + 1 + D.R.rS)) :
     · left; exact (hs.eq_iff).1 (X.zu_orth u' b).2
     · by_cases h : i = b
       · right; subst h; exact mul_inv_cancel₀ (alp_ne_zero v _ _)
-      · left; rw [X.ef, if_neg h]
+      · left; rw [X.ef, ite_eq_right h]
   · refine Fin.lastCases ?_ (fun j => ?_) b <;> simp only [Fin.snoc_last, Fin.snoc_castSucc]
     · left; exact (X.zu_orth u' a).2
     · by_cases h : j = a
       · right; subst h; exact inv_mul_cancel₀ (alp_ne_zero v _ _)
-      · left; refine (hs.eq_iff).1 ?_; rw [X.ef, if_neg h]
+      · left; refine (hs.eq_iff).1 ?_; rw [X.ef, ite_eq_right h]
   · left; exact X.ff a b
 
 theorem omVGram_holds : OmVGram X u' := by

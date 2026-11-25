@@ -337,14 +337,4 @@ theorem _root_.GlobalTheory.isOpenImmersion_of_quasiFinite_of_isOpenImmersion_re
 
 end Normal
 
-section Constructible
-
-end Constructible
-
-section Etale
-
-variable {X Y : Scheme.{u}} {K : Type u} [Field K] [IsAlgClosed K]
-
-end Etale
-
 end GlobalTheory

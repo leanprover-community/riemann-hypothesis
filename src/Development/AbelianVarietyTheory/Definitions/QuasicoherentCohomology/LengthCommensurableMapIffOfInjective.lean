@@ -173,14 +173,6 @@ theorem LengthCommensurable.signedLength_map_of_injective {A B : Submodule R V}
 
 end Map
 
-section Equiv
-
-variable {R S V V' : Type*} [Ring R] [Ring S] [AddCommGroup V] [Module R V]
-  [AddCommGroup V'] [Module S V'] {σ : R →+* S} {σ' : S →+* R}
-  [RingHomInvPair σ σ'] [RingHomInvPair σ' σ] [RingHomSurjective σ]
-
-end Equiv
-
 section Ambient
 
 open scoped Pointwise

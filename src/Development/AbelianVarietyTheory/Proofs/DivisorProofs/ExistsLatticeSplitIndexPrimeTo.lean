@@ -186,7 +186,7 @@ theorem not_forall_pos : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] 
     refine Finset.sum_nonpos fun a _ => ?_
     by_cases h : (a : ℕ) < p
     · have := congrFun h0 ⟨a, h⟩
-      simp only [res, LinearMap.pi_apply, a.2, dif_pos, LinearMap.proj_apply, Pi.zero_apply] at this
+      simp only [res, LinearMap.pi_apply, a.2, dite_eq_left, LinearMap.proj_apply, Pi.zero_apply] at this
       rw [this]
       simp
     · simp [FD.sgn, h, Complex.normSq_nonneg]

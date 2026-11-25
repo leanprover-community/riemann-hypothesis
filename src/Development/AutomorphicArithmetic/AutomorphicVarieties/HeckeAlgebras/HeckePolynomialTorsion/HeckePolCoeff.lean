@@ -136,7 +136,7 @@ theorem heckePol_coeff {A : Type} [CommRing A] (n q : ℕ) (a : ℕ → A) (j : 
   · rw [coeff_C_mul, coeff_X_pow_self, mul_one, mul_assoc, ← mul_assoc, ← mul_pow]
     simp
   · intro i hi hij
-    rw [coeff_C_mul, coeff_X_pow, if_neg, mul_zero]
+    rw [coeff_C_mul, coeff_X_pow, ite_eq_right, mul_zero]
     have := Finset.mem_range.1 hi
     omega
   · intro h

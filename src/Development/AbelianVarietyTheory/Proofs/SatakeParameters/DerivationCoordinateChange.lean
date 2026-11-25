@@ -188,7 +188,7 @@ theorem exists_lamHom {A : Type} [Field A] [NumberField A] (f : A →+* ℂ) :
     ∃ g : A →+* ℂ_[p], ∀ x, lamC lam (f x) = g x := by
   have hm : ∀ x, f x ∈ Qbar := fun x =>
     mem_algebraicClosure_iff.2 ((Algebra.IsAlgebraic.isAlgebraic (R := ℚ) x).algHom f.toRatAlgHom)
-  exact ⟨lam.comp (f.codRestrict Qbar hm), fun x => dif_pos (hm x)⟩
+  exact ⟨lam.comp (f.codRestrict Qbar hm), fun x => dite_eq_left (hm x)⟩
 
 def vecY (y : Matrix (Fin N') (Fin N) D.host.E) : D.what₂.Tau × Fin N' × Fin N → ℂ_[p] :=
   fun k => tauEmb D lam k.1 (y k.2.1 k.2.2)

@@ -685,7 +685,7 @@ theorem mvPowerSeries_algHom_isNilpotent_of_constantCoeff_zero :
   have hd : (X i : MvPowerSeries σ k) ∣ g i := by
     rw [X_dvd_iff]
     intro m hm
-    rw [hg, if_neg]
+    rw [hg, ite_eq_right]
     intro h
     rcases hc m with ⟨-, h1⟩ | ⟨j, h1, h2⟩
     · rw [h1] at h; cases h

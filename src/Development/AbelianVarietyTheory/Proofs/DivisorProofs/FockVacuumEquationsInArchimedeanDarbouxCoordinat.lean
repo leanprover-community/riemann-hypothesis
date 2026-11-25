@@ -401,9 +401,9 @@ theorem exists_bridge : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [Nu
       congr 2
       generalize Ψl y w = X
       rcases Int.units_eq_one_or (ε w) with h1 | h1
-      · rw [h1, if_neg (by decide)]
+      · rw [h1, ite_eq_right (by decide)]
         simp
-      · rw [h1, if_pos rfl, one_smul, two_smul, sub_add_cancel_left]
+      · rw [h1, ite_eq_left rfl, one_smul, two_smul, sub_add_cancel_left]
         simp [Matrix.mul_neg, Matrix.neg_mul]
     · rw [← hΨl, hΨJ]
       rfl

@@ -265,7 +265,7 @@ theorem charFam_eq_of_chrEq (h : ChrEq c χ) : charFam c = heckeFam χ := funext
   by_cases hu : χ.UnrAt w
   · rw [charFam_of_unrAt ((unrAt_iff_of_chrEq h w).2 hu), heckeFam_of_unrAt hu, val_eq_of_chrEq h]
   · rw [heckeFam_of_not_unrAt hu]
-    exact if_neg (mt (unrAt_iff_of_chrEq h w).1 hu)
+    exact ite_eq_right (mt (unrAt_iff_of_chrEq h w).1 hu)
 
 theorem charL_eq_of_chrEq (h : ChrEq c χ) (S : Set (HeightOneSpectrum (𝓞 D.host.F))) :
     charL c S = heckeL (above D.host.E S) χ := funext fun s => by
@@ -563,7 +563,7 @@ theorem IsEta.loc_of_not_mem (h2 : Module.finrank F E = 2) (h : IsEta F E η) {x
   have : Algebra.IsQuadraticExtension F E := { finrank_eq_two' := h2 }
   change Circle.toUnits (η (localIdele F v x)) = -1
   rw [h.eq_normSign, MonoidHom.comp_apply, normSign_localIdele, GlobalTheory.QuadSymbol.eta_eq_neg_one_iff.2 hx]
-  exact Units.ext (congrArg (fun z : Circle => (z : ℂ)) (if_neg (by decide) :
+  exact Units.ext (congrArg (fun z : Circle => (z : ℂ)) (ite_eq_right (by decide) :
     (if (-1 : ℤˣ) = 1 then (1 : Circle) else -1) = -1))
 
 theorem IsEta.unrAt_iff (h2 : Module.finrank F E = 2) (h : IsEta F E η) :
@@ -613,7 +613,7 @@ theorem ResEta.val_mul_val (h2 : Module.finrank F E = 2) (h : ResEta F E μ k) (
     exact ⟨key u, by rintro (rfl | rfl) <;> assumption⟩
   have := h.prod_val h2 (isUnram_of_isSplit h2 hv) fun u hu => by
     rcases key u hu with rfl | rfl <;> assumption
-  rwa [e, Finset.prod_pair hne, etaU, if_pos hv, one_pow] at this
+  rwa [e, Finset.prod_pair hne, etaU, ite_eq_left hv, one_pow] at this
 
 theorem ResEta.val_of_isInertAt (h2 : Module.finrank F E = 2) (h : ResEta F E μ k) (hw : IsInertAt F E v w)
     (hu : UnrAt μ w) : val μ w = (-1) ^ k := by
@@ -625,7 +625,7 @@ theorem ResEta.val_of_isInertAt (h2 : Module.finrank F E = 2) (h : ResEta F E μ
     rw [mem_aboveF, Finset.mem_singleton]
     exact ⟨key u, fun h => h ▸ under_eq_of_isInertAt hw⟩
   have := h.prod_val h2 (isUnram_of_isInertAt hw) fun u h1 => key u h1 ▸ hu
-  rwa [e, Finset.prod_singleton, etaU, if_neg hv] at this
+  rwa [e, Finset.prod_singleton, etaU, ite_eq_right hv] at this
 
 end Eta
 

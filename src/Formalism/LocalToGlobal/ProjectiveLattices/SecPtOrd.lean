@@ -164,7 +164,7 @@ private theorem toE_ordAt_lemma_3 (h : IsUnif A ϖ) (hι : AddValPres ζ ι) (x 
       rw [locMap_eq_zero (F := F) hT] at h1
       exact (mul_eq_zero.mp h1).resolve_left (pow_ne_zero _ hu)
     unfold nval
-    rw [if_pos h0]
+    rw [ite_eq_left h0]
     unfold ordAt
     rw [hT]
     first
@@ -190,7 +190,7 @@ private theorem toE_ordAt_lemma_3 (h : IsUnif A ϖ) (hι : AddValPres ζ ι) (x 
       rw [← hk, sub_eq_add_neg, WithTop.coe_add]
       congr 1
     unfold nval
-    rw [if_neg hφ, hord, hz]
+    rw [ite_eq_right hφ, hord, hz]
     first
     | (show ((((k : ℤ) - m * (ep ϖ ζ : ℤ) : ℤ) : ℝ) : EReal) = _
        rw [Nat.cast_one, div_one])

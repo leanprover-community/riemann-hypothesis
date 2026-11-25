@@ -476,8 +476,8 @@ theorem gen_off_level : ∀ (D : D7) (cf : CharFrame D) (l : ℕ) (Q : Finset (P
   apply hu
   refine HChar.UnrAt.mul ((cf.isMu0 j).unr w fun k hk => hg' w hw k hk) (HChar.UnrAt.mul ?_ ?_)
   · split_ifs with hlp
-    · exact cf.isDel'.unr w fun hp => hvS ⟨Or.inr (Or.inr (by rw [if_pos hlp]; exact hoff w hw _ hp)), hvl⟩
-    · exact cf.isDel.unr w fun hp => hvS ⟨Or.inr (Or.inr (by rw [if_neg hlp]; exact hoff w hw _ hp)), hvl⟩
+    · exact cf.isDel'.unr w fun hp => hvS ⟨Or.inr (Or.inr (by rw [ite_eq_left hlp]; exact hoff w hw _ hp)), hvl⟩
+    · exact cf.isDel.unr w fun hp => hvS ⟨Or.inr (Or.inr (by rw [ite_eq_right hlp]; exact hoff w hw _ hp)), hvl⟩
   · rcases GlobalTheory.SplitPlaceOver.eq_or_isConjPl D s w hw with e | e
     · rw [← e, eq_plMap_of_conj D hc]
       exact (GlobalTheory.CMVal.InvConj.unrAt_inv_iff ψ hT v).1 (HChar.UnrAt.inv (hψ v hvQ))
@@ -552,13 +552,13 @@ theorem GlobalTheory.MtIn.levChi_integral : ∀ (X : Stages) (px : PreX X.B.toPr
     intro PP hPP c d
     haveI := hfin PP
     have e : (if Frm.A = Frm.B then (fun _ : ℕ => L.chi ((i : ℕ) + 1)) else fun (_ : ℕ) (PP : Pl X.toD7.host.E) => (L.chi ((i : ℕ) + 1) PP)⁻¹) =
-        fun (_ : ℕ) (PP : Pl X.toD7.host.E) => (L.chi ((i : ℕ) + 1) PP)⁻¹ := if_neg (by decide)
+        fun (_ : ℕ) (PP : Pl X.toD7.host.E) => (L.chi ((i : ℕ) + 1) PP)⁻¹ := ite_eq_right (by decide)
     rw [e]
     exact exists_int_of_finite X.toD7.what₂.embLL (L.chi ((i : ℕ) + 1) PP)⁻¹ d (hchi PP hPP d)
   have gxi : ∀ PP ∈ L.Q t, ∀ d : (kP PP)ˣ, Pr ((if Frm.A = Frm.B then (fun PP => (L.xiR t PP)⁻¹) else L.xiR t) PP d) := by
     intro PP hPP d
     haveI := hfin PP
-    have e : (if Frm.A = Frm.B then (fun PP => (L.xiR t PP)⁻¹) else L.xiR t) = L.xiR t := if_neg (by decide)
+    have e : (if Frm.A = Frm.B then (fun PP => (L.xiR t PP)⁻¹) else L.xiR t) = L.xiR t := ite_eq_right (by decide)
     rw [e]
     exact exists_int_of_finite X.toD7.what₂.embLL (L.xiR t PP) d (hxi PP hPP d)
   show Pr (Formalism.L2.DIV.levFn (L.βV i) (flag1L (L.datVt i t)) _)
@@ -882,27 +882,27 @@ theorem sum_supEdge_castLE {R : Type} [AddCommMonoid R] {n r : ℕ} (hr : r ≤ 
   refine Fintype.sum_of_injective (Fin.castLE hr) (Fin.castLE_injective hr) _ _ ?_ ?_
   · intro a ha
     refine Finset.sum_eq_zero fun b _ => ?_
-    rw [if_neg]
+    rw [ite_eq_right]
     rintro ⟨h1, h2⟩
     exact ha ⟨⟨a.val, by omega⟩, Fin.ext rfl⟩
   · intro i
     refine Fintype.sum_of_injective (Fin.castLE hr) (Fin.castLE_injective hr) _ _ ?_ ?_
     · intro b hb
-      rw [if_neg]
+      rw [ite_eq_right]
       rintro ⟨h1, h2⟩
       exact hb ⟨⟨b.val, h2⟩, Fin.ext rfl⟩
     · intro j
       by_cases hh : supEdge i j
       · have h' : j.val = i.val + 1 := hh
-        rw [if_pos hh, if_pos (by simp only [Fin.val_castLE]; exact ⟨h'.symm, j.2⟩)]
+        rw [ite_eq_left hh, ite_eq_left (by simp only [Fin.val_castLE]; exact ⟨h'.symm, j.2⟩)]
       · have h' : ¬ j.val = i.val + 1 := hh
-        rw [if_neg hh, if_neg (by simp only [Fin.val_castLE]; exact fun e => h' e.1.symm)]
+        rw [ite_eq_right hh, ite_eq_right (by simp only [Fin.val_castLE]; exact fun e => h' e.1.symm)]
 
 theorem blkOf_eq_one_iff {n r t : ℕ} (a : Fin n) (ha : a.val < r + t) : blkOf r t a = 1 ↔ r ≤ a.val := by
   unfold blkOf
   by_cases h : a.val < r
-  · simp only [h, if_true]; omega
-  · simp only [h, if_false]
+  · simp only [h, ite_true]; omega
+  · simp only [h, ite_false]
     rw [Nat.div_eq_of_lt (by omega)]
     omega
 
@@ -1051,9 +1051,9 @@ namespace GlobalTheory.TypeLevelUni
 @[reducible] def unitsDiv : DivisibleBy (Additive ℂˣ) ℤ where
   div a n := if n = 0 then 0 else
     Additive.ofMul (Units.mk0 (Complex.exp (Complex.log ((Additive.toMul a : ℂˣ) : ℂ) / n)) (Complex.exp_ne_zero _))
-  div_zero a := if_pos rfl
+  div_zero a := ite_eq_left rfl
   div_cancel {n} a hn := by
-    rw [if_neg hn]
+    rw [ite_eq_right hn]
     apply Additive.toMul.injective
     rw [toMul_zsmul, toMul_ofMul]
     ext
@@ -1548,7 +1548,7 @@ theorem tup_read {μ : D.what₂.Tup} {i : Fin D.R.m} {c : CoefA (Vc D i)} {T : 
         rw [Finset.sum_eq_single_of_mem _ hy]
         · simp
         · intro v _ hv
-          simp only [if_neg hv]
+          simp only [ite_eq_right hv]
           simp
       obtain ⟨x', hx', hd⟩ := hk' s ϖ k h1 h2 h3 h4 x
       obtain ⟨d, hd, hdx⟩ := hd (D.plEq w) (fun p hp ha hm => h0 (eq_resChar w hp hm ▸ ha)) hx

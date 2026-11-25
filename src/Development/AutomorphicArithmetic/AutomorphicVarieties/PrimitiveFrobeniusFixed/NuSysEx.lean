@@ -1298,7 +1298,7 @@ theorem UpperTheory.V.ML.nuSysEx :
   let τ : ℕ → G ℚ Ω := fun q => if h : q.Prime then Classical.choose (ineTau Ω q h).2 else 1
   have hτ : ∀ q, q.Prime → IsTau q (τ q) := by
     intro q hq
-    simp only [τ, dif_pos hq]
+    simp only [τ, dite_eq_left hq]
     exact Classical.choose_spec (ineTau Ω q hq).2
   have hkol : ∀ L, AdmL l F r L → ∃ κ : G ℚ Ω → ZMod (l ^ m), IsKol (l ^ m) F L.prod ζ g0 (a0 : ZMod (l ^ m)).val (der τ L ((fun d => opP g0 (a0 : ZMod (l ^ m)).val (X d) ^ (2 * N₀ * d)) L.prod)) κ := by
     intro L hL
@@ -1309,7 +1309,7 @@ theorem UpperTheory.V.ML.nuSysEx :
   let κ : List ℕ → G ℚ Ω → ZMod (l ^ m) := fun L => if h : AdmL l F r L then Classical.choose (hkol L h) else 0
   have hκ : ∀ L (h : AdmL l F r L), IsKol (l ^ m) F L.prod ζ g0 (a0 : ZMod (l ^ m)).val (der τ L ((fun d => opP g0 (a0 : ZMod (l ^ m)).val (X d) ^ (2 * N₀ * d)) L.prod)) (κ L) := by
     intro L h
-    simp only [κ, dif_pos h]
+    simp only [κ, dite_eq_left h]
     exact Classical.choose_spec (hkol L h)
   have hchiO : ∀ (g : G ℚ Ω) (k : ℕ), Pows (l ^ m) k g → ∃ e : O, ((chiO ℚ Ω l O g : Oˣ) : O) = k + (l : O) ^ m * e := by
     intro g k hg

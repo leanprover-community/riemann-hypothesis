@@ -1435,7 +1435,7 @@ theorem sEEofTT_apply {M : DSModel (D.sp.Y 0) S} {μ : Measure (GA D (D.sp.Y 0))
     {t : GA D (D.sp.Y 0)} {c : ℝ} (hE : EvalTieT M μ 𝓕 E St Gd ι t c) (T : E) :
     sEEofTT M μ 𝓕 E St Gd ι t c T = conjHH St Gd (hE.choose_spec.2.choose T) := by
   unfold sEEofTT
-  simp only [dif_pos hE]
+  simp only [dite_eq_left hE]
   rfl
 
 theorem norm_sq_sEEofTT {M : DSModel (D.sp.Y 0) S} {μ : Measure (GA D (D.sp.Y 0))} {𝓕 : Set (GA D (D.sp.Y 0))}
@@ -1504,7 +1504,7 @@ theorem seeIso_row : ∀ {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 I0 T : T
     rw [Submodule.coe_smul]
     refine Submodule.smul_mem _ _ ?_
     unfold sEEofTT
-    rw [dif_pos hE]
+    rw [dite_eq_left hE]
     exact (mem_EEC X Gd _).1 (hE.choose_spec.2.choose _).2
   · refine (GlobalTheory.Mem.SJ.RowIso.finrank_of_evalTieT hE).trans ?_
     refine Eq.symm ((GlobalTheory.Mem.SJ.RowIso.finrank_twSub (E := R.HE.H) (twAt D.what₂.embLL A3.A.v0)

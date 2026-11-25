@@ -93,7 +93,7 @@ private lemma key {E : Type} [AddCommGroup E] [Module ℂ E] (w : κ → Module.
   rw [hz, zero_add, Finset.sum_map, Finset.smul_sum]
   refine Finset.sum_congr rfl fun j hj => ?_
   have hm : e j ∈ img e := (mem_img e _).2 ⟨j, rfl⟩
-  simp only [RelEmbedding.coe_toEmbedding, wOn, hm, if_true]
+  simp only [RelEmbedding.coe_toEmbedding, wOn, hm, ite_true]
   rw [sign_emb e hb, erase_emb e hb, map_zsmul, smul_smul, smul_smul, psi_erase e b hj]
   congr 1
   have := eps_sq e b j
@@ -184,7 +184,7 @@ theorem UpperTheory.Gal.productCup_of_system.subQEx_of :
     · have hcol : (fun L => psi e b L • c (emb e b L)) ∈ (kos act M fun j => r (e j)).Z m := by
         refine ⟨(mem_C _ _ _ _).2 fun L => ?_, ?_⟩
         · by_cases hLm : (L.card : ℤ) = m
-          · simp only [hLm, if_true]
+          · simp only [hLm, ite_true]
             exact zsmul_mem (hcM _) _
           · have : c (emb e b L) = 0 := hL _ (by rwa [card_inter e hb])
             simp [this]
@@ -236,7 +236,7 @@ theorem UpperTheory.Gal.productCup_of_system.subQEx_of :
     by_cases hn : (b.card : ℤ) = n - m
     · have h1 : (fun L' => psi e b L' • y (emb e b L')) = Y b := by
         funext L'
-        rw [hy b hb, if_pos hn, hcancel]
+        rw [hy b hb, ite_eq_left hn, hcancel]
       rw [h1, hYd b hb] at hk
       calc wd (wOn (img e) fun l => act (r l)) y (emb e b L)
           = psi e b L • psi e b L • wd (wOn (img e) fun l => act (r l)) y (emb e b L) := (hcancel _ _).symm
@@ -244,7 +244,7 @@ theorem UpperTheory.Gal.productCup_of_system.subQEx_of :
         _ = c (emb e b L) := hcancel _ _
     · have h1 : (fun L' => psi e b L' • y (emb e b L')) = 0 := by
         funext L'
-        rw [hy b hb, if_neg hn]
+        rw [hy b hb, ite_eq_right hn]
         simp
       rw [h1, map_zero] at hk
       have h2 : wd (wOn (img e) fun l => act (r l)) y (emb e b L) = 0 := by

@@ -160,7 +160,7 @@ theorem SheetAreaCompare.proof (h₁ : SheetImageArea.Statement) : SheetAreaComp
       unfold sheetJac
       rw [(SheetSumMeasurable.sheet_eventuallyEq hsh hex.choose_spec).fderiv_eq]
     refine ⟨?_, (hBmem k _).2 ⟨hAU, hsx.symm ▸ hx⟩, hsx⟩
-    simp only [ht, dif_pos hex, hG, hσ'eq k _ hAU, hsx, hJ]
+    simp only [ht, dite_eq_left hex, hG, hσ'eq k _ hAU, hsx, hJ]
     rw [ENNReal.ofReal_mul (abs_nonneg _), Real.enorm_eq_ofReal_abs]
 
   have hpt : ∀ y, ‖sheetSum J A (fun x s => |h x| * sheetJac s (A *ᵥ x)) y‖ₑ ≤
@@ -186,7 +186,7 @@ theorem SheetAreaCompare.proof (h₁ : SheetImageArea.Statement) : SheetAreaComp
               le_tsum (fun k => (E k ∩ fibre J A y).indicator (fun x => ENNReal.ofReal (t x)) x) k
             exact (Set.indicator_of_mem (show x ∈ E k ∩ fibre J A y from ⟨hk, hxf⟩)
               (fun x => ENNReal.ofReal (t x))).symm.le.trans hle
-          · have : t x = 0 := by simp only [ht, dif_neg hx]
+          · have : t x = 0 := by simp only [ht, dite_eq_right hx]
             rw [Set.indicator_of_mem hxf, this, ENNReal.ofReal_zero]
             exact zero_le
         · rw [Set.indicator_of_notMem hxf, ENNReal.ofReal_zero]

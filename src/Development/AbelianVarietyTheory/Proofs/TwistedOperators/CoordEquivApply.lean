@@ -93,7 +93,7 @@ def coordInv (w : Fin r → k ⊗[F] E) : k ⊗[F] Fld P := ∑ i, w i • ((1 :
 theorem coordF_coordInv (w : Fin r → k ⊗[F] E) (j : Fin r) : coordF P k j (coordInv P k w) = w j := by
 
   simp only [coordInv, map_sum, coordF_smul, coordF_tmul, Module.Basis.repr_self]
-  rw [Finset.sum_eq_single j (fun i _ h => by rw [Finsupp.single_apply, if_neg h, TensorProduct.tmul_zero, mul_zero])
+  rw [Finset.sum_eq_single j (fun i _ h => by rw [Finsupp.single_apply, ite_eq_right h, TensorProduct.tmul_zero, mul_zero])
     (by simp), Finsupp.single_eq_same, ← Algebra.TensorProduct.one_def, mul_one]
 
 theorem coordInv_coordF (y : k ⊗[F] Fld P) : coordInv P k (fun i => coordF P k i y) = y := by

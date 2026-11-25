@@ -747,9 +747,9 @@ theorem sum_idem {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsN
     simp only [GlobalTheory.FinPlLoc.compAt_idem]
     by_cases hw : P w
     · obtain ⟨j, rfl⟩ := (hP.mem w).1 hw
-      rw [Finset.sum_eq_single j (fun i _ hij => if_neg (fun h => hij (hP.inj h.symm)))
-        (fun hj => absurd (List.mem_toFinset.2 (hP.all j)) hj), if_pos rfl, if_pos hw, sub_self]
-    · rw [Finset.sum_eq_zero (fun i _ => if_neg (fun h => hw ((hP.mem w).2 ⟨i, h⟩))), if_neg hw, sub_self]
+      rw [Finset.sum_eq_single j (fun i _ hij => ite_eq_right (fun h => hij (hP.inj h.symm)))
+        (fun hj => absurd (List.mem_toFinset.2 (hP.all j)) hj), ite_eq_left rfl, ite_eq_left hw, sub_self]
+    · rw [Finset.sum_eq_zero (fun i _ => ite_eq_right (fun h => hw ((hP.mem w).2 ⟨i, h⟩))), ite_eq_right hw, sub_self]
 
 theorem mem_intAt_iff_halves : ∀ (D : D7) (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (ι : Type) (p : ι → SplitPt D k) (I : List ι) (P : Pl D → Prop), Places p I P → ∀ a : AE D, a ∈ intAt D P ↔ a ∈ idAt D P ∧ ∀ i, (p i).pr a ∈ 𝒪[k] ∧ (p i).pr (cA D a) ∈ 𝒪[k] := by
   intro D k _ _ _ _ ι p I P hP a
@@ -1394,9 +1394,9 @@ theorem contrOp : ∀ D : D7, ContrOp D := by
     · have hex : ∃ c : ℂ, ∀ f, Vac ψ B.V₀ S M LS P f → heisO ψ B.V₀ S ((B.o.resS S).symm (0, y)) f = c • f := by
         obtain ⟨c, hc⟩ := GlobalTheory.T.halfGenerated_point_acts_scalar_on_latticeVacua D ψ B.V₀ S _ _ (GlobalTheory.T.homLatticeCompletion_le_closure_isotropicHalves D k ι p I P hP B.V₀ S _ _ _ hin)
         exact ⟨c, fun f hf => hc f hf.2⟩
-      have hcst : cstL ψ B S M LS P y = hex.choose := by simp only [cstL, if_pos hin, dif_pos hex]
+      have hcst : cstL ψ B S M LS P y = hex.choose := by simp only [cstL, ite_eq_left hin, dite_eq_left hex]
       rw [hcst, hex.choose_spec f₁ h₁, _root_.GlobalTheory.FinPl.LineVanish.contr_smul_left']
-    · have hcst : cstL ψ B S M LS P y = 0 := by simp only [cstL, if_neg hin]
+    · have hcst : cstL ψ B S M LS P y = 0 := by simp only [cstL, ite_eq_right hin]
       rw [hcst, zero_smul, GlobalTheory.T.thetaLine_translate_off_lattice_kills_contraction D k ι p I P hP n' n'' ψ hψ ρ σ B B' l S vL α α₀ γ γ₀ M LS M' Λ Λ' hM hLS hM' hfr
         y hy hin f₁ f₂ h₁ h₂]
   let s := e₁.support ×ˢ e₂.support

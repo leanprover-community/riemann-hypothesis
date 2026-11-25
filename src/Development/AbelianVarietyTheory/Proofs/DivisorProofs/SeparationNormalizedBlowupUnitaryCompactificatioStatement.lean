@@ -1064,7 +1064,7 @@ theorem GlobalTheory.USep.sepB_of_normBl : ∀ (E : Type) [Field E] [NumberField
       have e2 := hlam ⟨pull e.toLinearMap ((l.M' : ℤ) • ε (.inl (h k)) : balForms (H.bar : 𝓞 E → 𝓞 E) _),
         pull_mem _ ((l.M' : ℤ) • ε (.inl (h k))).2⟩
       rw [hF] at e2
-      rw [e1, e2, map_zsmul, Module.Basis.coord_apply, Module.Basis.repr_self, Finsupp.single_apply, if_neg (by simp)]
+      rw [e1, e2, map_zsmul, Module.Basis.coord_apply, Module.Basis.repr_self, Finsupp.single_apply, ite_eq_right (by simp)]
       simp
     obtain ⟨l₁, l₂, MM, a, a', c₁, c₂, hMM, hu₁, hu₂, hlin, r, hr, hre⟩ := V3 lam hlam0
     obtain ⟨R₁, hR₁, hR₁e⟩ := hT a c₁
@@ -1086,7 +1086,7 @@ theorem GlobalTheory.USep.sepB_of_normBl : ∀ (E : Type) [Field E] [NumberField
         rw [← hlam1, ← hlin _ (hβ' k)]; ring
       simp only [this, zpow_add, Finset.prod_mul_distrib]
       congr 1
-      rw [Finset.prod_eq_single i (fun k _ hk => by rw [if_neg (Ne.symm hk)]; simp) (by simp)]
+      rw [Finset.prod_eq_single i (fun k _ hk => by rw [ite_eq_right (Ne.symm hk)]; simp) (by simp)]
       simp
     have hne : ev₁ (Φ.coefT y a c₁) ^ 2 ≠ 0 := pow_ne_zero _ (hu₁.map ev₁).ne_zero
     have hR₁ne : R₁ ≠ 0 := fun h0 => hne (by rw [hR₁e, h0, zero_mul])

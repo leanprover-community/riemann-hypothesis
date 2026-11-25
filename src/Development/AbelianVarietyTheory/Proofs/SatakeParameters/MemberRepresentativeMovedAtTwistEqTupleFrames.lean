@@ -190,7 +190,7 @@ theorem adAt_mul_of_one {n : ℕ} (P : HeightOneSpectrum (𝓞 E)) (g : GL (Fin 
     (h : bc (prV (E := E) (P.under (𝓞 F))) κ = 1) (i j : Fin n) :
     adAt F P ((g * κ).1 i j) = adAt F P (g.1 i j) := by
   rw [adAt_mul_entry]
-  simp only [adAt_entry_one P h, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+  simp only [adAt_entry_one P h, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
 
 theorem adAt_mul_congr {n : ℕ} (P : HeightOneSpectrum (𝓞 E)) (g : GL (Fin n) (AfE F E)) {κ κ' : GL (Fin n) (AfE F E)}
     (h : bc (prV (E := E) (P.under (𝓞 F))) κ = bc (prV (E := E) (P.under (𝓞 F))) κ') (i j : Fin n) :
@@ -205,7 +205,7 @@ theorem adAt_pullV_mul {n : ℕ} (P : HeightOneSpectrum (𝓞 E)) (g : GL (Fin n
   unfold pullV
 
   rw [_root_.mul_inv_rev, Units.val_mul, ← Matrix.mulVec_mulVec, Matrix.mulVec, dotProduct, map_sum]
-  simp only [map_mul, adAt_entry_one P h', ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+  simp only [map_mul, adAt_entry_one P h', ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
 
 theorem comm_of_bc {n : ℕ} (κ k : GL (Fin n) (AfE F E))
     (h : ∀ v, bc (prV (E := E) v) κ = 1 ∨ bc (prV (E := E) v) k = 1) : κ * k = k * κ := by
@@ -300,8 +300,8 @@ theorem ptFr_eq [StarRing E] {n : ℕ} {ST SG Q Q' : Finset (HeightOneSpectrum (
     (p' : DecoF E n ST SG Q') (hd : p.deco = p'.deco) {P : HeightOneSpectrum (𝓞 E)} (h : P ∉ Q) (h' : P ∉ Q') :
     ptFr p P = ptFr p' P := by
   by_cases hs : P ∈ SG
-  · simp only [ptFr, dif_pos hs, hd]
-  · simp only [ptFr, dif_neg hs, dif_neg h, dif_neg h', hd]
+  · simp only [ptFr, dite_eq_left hs, hd]
+  · simp only [ptFr, dite_eq_right hs, dite_eq_right h, dite_eq_right h', hd]
 
 end Gen
 

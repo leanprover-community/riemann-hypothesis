@@ -19,12 +19,7 @@ theorem hk_mem_fixed : ∀ (F : Type) [Field F] [ValuativeRel F] [TopologicalSpa
   intro h
   have hk' : (h : GL ι F) ∈ K := h.2
   set k : GL ι F := (h : GL ι F) with hkdef
-  have hinj : Function.Injective (ρ k : V →ₗ[ℂ] V) := by
-    intro x y hxy
-    have h1 : ∀ z, ρ k⁻¹ (ρ k z) = z := by
-      intro z
-      rw [← Module.End.mul_apply, ← map_mul, inv_mul_cancel, map_one, Module.End.one_apply]
-    rw [← h1 x, ← h1 y, hxy]
+  have hinj : Function.Injective (ρ k : V →ₗ[ℂ] V) := (Representation.apply_bijective ρ k).1
   have hstep : ∀ q : GL ι F ⧸ K, ρ k (e q.out • ρ q.out v) =
       e (k • q).out • ρ (k • q).out v := by
     intro q

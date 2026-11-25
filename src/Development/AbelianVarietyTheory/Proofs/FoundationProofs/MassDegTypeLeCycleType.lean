@@ -71,11 +71,11 @@ private lemma eq_filter_add_replicate (μ : Multiset ℕ) (h : ∀ d ∈ μ, 0 <
   ext d
   rw [Multiset.count_add, Multiset.count_filter, Multiset.count_replicate]
   by_cases h2 : 2 ≤ d
-  · rw [if_pos h2, if_neg (by omega)]; rfl
-  · rw [if_neg h2]
+  · rw [ite_eq_left h2, ite_eq_right (by omega)]; rfl
+  · rw [ite_eq_right h2]
     by_cases h1 : 1 = d
     · subst h1; simp
-    · rw [if_neg h1]
+    · rw [ite_eq_right h1]
       have : d ∉ μ := fun hd => by have := h d hd; omega
       simpa using this
 
@@ -91,7 +91,7 @@ theorem card_perm_partition_parts_mul :
     conv_rhs => rw [hμ]
     simp
   have key := Equiv.Perm.card_of_cycleType_mul_eq (Fin N) m
-  rw [if_pos ⟨by rw [Fintype.card_fin]; omega, fun a ha => (Multiset.mem_filter.1 ha).2⟩,
+  rw [ite_eq_left ⟨by rw [Fintype.card_fin]; omega, fun a ha => (Multiset.mem_filter.1 ha).2⟩,
     Fintype.card_fin] at key
   have hN : N - m.sum = μ.count 1 := by omega
   rw [hN] at key
@@ -125,7 +125,7 @@ theorem card_perm_partition_parts_mul :
     congr 1
     refine Finset.prod_congr rfl fun n hn => ?_
     have hn2 : 2 ≤ n := (Multiset.mem_filter.1 (Multiset.mem_toFinset.1 hn)).2
-    have : m.count n = μ.count n := by rw [hm, Multiset.count_filter, if_pos hn2]
+    have : m.count n = μ.count n := by rw [hm, Multiset.count_filter, ite_eq_left hn2]
     rw [this]
   rw [hset, hprod]
   convert key

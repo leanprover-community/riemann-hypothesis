@@ -100,9 +100,9 @@ theorem exists_le_tuningWeight_eq_mul (m L r : ℕ) (hL : 0 < L)
       have hule : ∀ i, (if i = j then q else 0) ≤ c i := by
         intro i
         by_cases hij : i = j
-        · rw [if_pos hij, hij]
+        · rw [ite_eq_left hij, hij]
           exact hqc
-        · rw [if_neg hij]
+        · rw [ite_eq_right hij]
           exact Nat.zero_le _
       have hu : tuningWeight m (fun i => if i = j then q else 0) = L := by
         rw [tuningWeight_ite m j q hjmem]
@@ -128,9 +128,9 @@ theorem exists_le_tuningWeight_eq_mul (m L r : ℕ) (hL : 0 < L)
         have h2 : (if i = j then q else 0) ≤ c i := hule i
         show e i + (if i = j then q else 0) ≤ c i
         by_cases hij : i = j
-        · rw [if_pos hij] at h1 h2 ⊢
+        · rw [ite_eq_left hij] at h1 h2 ⊢
           omega
-        · rw [if_neg hij] at h1 h2 ⊢
+        · rw [ite_eq_right hij] at h1 h2 ⊢
           omega
       · have hsplit : tuningWeight m (fun i => e i + (if i = j then q else 0))
             = tuningWeight m e + tuningWeight m (fun i => if i = j then q else 0) :=

@@ -20,10 +20,10 @@ theorem fockInner_eq_support (P Q : MvPolynomial σ ℂ) :
   unfold FockH1Action.fockInner
   refine Finset.sum_congr rfl (fun α _ => ?_)
   rw [Finset.sum_eq_single α]
-  · rw [if_pos rfl]
+  · rw [ite_eq_left rfl]
     rfl
   · intro β _ hβ
-    rw [if_neg (Ne.symm hβ), mul_zero]
+    rw [ite_eq_right (Ne.symm hβ), mul_zero]
   · intro hα
     have h : AddMonoidAlgebra.coeff Q α = 0 := by simpa [MvPolynomial.mem_support_iff] using hα
     rw [h]
@@ -168,7 +168,7 @@ theorem wt_single_add (l : σ) (α : σ →₀ ℕ) :
     by_cases h : i = l
     · rw [h]
       exact hl
-    · rw [Finsupp.single_apply, if_neg (Ne.symm h), zero_add] at hi
+    · rw [Finsupp.single_apply, ite_eq_right (Ne.symm h), zero_add] at hi
       exact Finset.mem_insert_of_mem (Finsupp.mem_support_iff.mpr hi)
   have hsub2 : α.support ⊆ insert l α.support := fun i hi => Finset.mem_insert_of_mem hi
   unfold wt
@@ -183,7 +183,7 @@ theorem wt_single_add (l : σ) (α : σ →₀ ℕ) :
       ∏ x ∈ (insert l α.support).erase l, ((α x).factorial : ℂ) := by
     refine Finset.prod_congr rfl (fun i hi => ?_)
     have hil : i ≠ l := Finset.ne_of_mem_erase hi
-    rw [Finsupp.add_apply, Finsupp.single_apply, if_neg (Ne.symm hil), zero_add]
+    rw [Finsupp.add_apply, Finsupp.single_apply, ite_eq_right (Ne.symm hil), zero_add]
   rw [hrest, Finsupp.add_apply, Finsupp.single_eq_same,
     show (1 + α l).factorial = (α l + 1) * (α l).factorial from by
       rw [add_comm]
@@ -199,12 +199,12 @@ theorem fockInner_X_mul (l : σ) (P Q : MvPolynomial σ ℂ) :
       fockInner_eq_sum_right (X l * P) (monomial β b) {β} support_monomial_subset,
       fockInner_eq_sum_right P (monomial (β - Finsupp.single l 1) (b * (β l : ℂ)))
         {β - Finsupp.single l 1} support_monomial_subset,
-      Finset.sum_singleton, Finset.sum_singleton, coeff_monomial, coeff_monomial, if_pos rfl, if_pos rfl]
+      Finset.sum_singleton, Finset.sum_singleton, coeff_monomial, coeff_monomial, ite_eq_left rfl, ite_eq_left rfl]
     by_cases h : β l = 0
     · have hl : l ∉ β.support := by
         rw [Finsupp.mem_support_iff, not_not]
         exact h
-      rw [coeff_X_mul', if_neg hl, h]
+      rw [coeff_X_mul', ite_eq_right hl, h]
       simp
     · have hβ : β = Finsupp.single l 1 + (β - Finsupp.single l 1) := by
         ext i

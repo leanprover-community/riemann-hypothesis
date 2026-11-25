@@ -34,9 +34,9 @@ private theorem fockInner_eq_sum_support_left (P Q : MvPolynomial σ ℂ) :
   unfold FockH1Action.fockInner
   refine Finset.sum_congr rfl (fun α _ => ?_)
   rw [Finset.sum_eq_single α]
-  · rw [if_pos rfl, wt]
+  · rw [ite_eq_left rfl, wt]
   · intro β _ hβ
-    rw [if_neg (Ne.symm hβ), mul_zero]
+    rw [ite_eq_right (Ne.symm hβ), mul_zero]
   · intro hα
     rw [MvPolynomial.mem_support_iff, not_not] at hα
     simp only [hα, mul_zero, zero_mul]
@@ -183,7 +183,7 @@ lemma wt_add_single [Fintype σ] [DecidableEq σ] (β : σ →₀ ℕ) (l : σ) 
   have hrest : ∏ i ∈ Finset.univ.erase l, (((β + Finsupp.single l 1 : σ →₀ ℕ) i).factorial : ℂ)
       = ∏ i ∈ Finset.univ.erase l, ((β i).factorial : ℂ) := by
     refine Finset.prod_congr rfl (fun i hi => ?_)
-    rw [Finsupp.add_apply, Finsupp.single_apply, if_neg (Ne.symm (Finset.ne_of_mem_erase hi)),
+    rw [Finsupp.add_apply, Finsupp.single_apply, ite_eq_right (Ne.symm (Finset.ne_of_mem_erase hi)),
       add_zero]
   rw [hrest, Finsupp.add_apply, Finsupp.single_eq_same, Nat.factorial_succ]
   push_cast

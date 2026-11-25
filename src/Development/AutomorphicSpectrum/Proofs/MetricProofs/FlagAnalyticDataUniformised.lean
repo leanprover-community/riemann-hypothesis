@@ -107,7 +107,7 @@ theorem period_chart (FA : FlagAn BM d) (hsurj : Function.Surjective FA.Re.π) {
     obtain ⟨H3, hH3, he3⟩ : ∃ H3 : (Fin (d + 1) → ℂ) → ℂ, AnalyticAt ℂ H3 (c x) ∧
         ∀ᶠ u in 𝓝 (c x), Fib.upsLogAt BM l p (FA.pr (c.symm u)) = (H3 u).re := by
       by_cases hp : M.blk p = none
-      · simp only [Fib.upsLogAt, if_pos hp]
+      · simp only [Fib.upsLogAt, ite_eq_left hp]
         refine _root_.GlobalTheory.CompanionTheory.Ar.PB.WSq.Fib.log_norm_eventually_eq_re_analyticAt (d + 1) (fun u => Fib.upsVal BM l p (FA.pr (c.symm u))) (c x) ?_
           (_root_.GlobalTheory.CompanionTheory.Ar.PB.WSq.Fib.UpsNe.upsVal_ne_zero K ι Φ y Ψ N j M n d BM l p _ (hl1 _ hxO.2) hp)
         exact _root_.GlobalTheory.CompanionTheory.Ar.PB.WSq.Fib.analyticAt_valAt_lift_family _ _ M.Ω M.x ((BM.F l).υ p) (d + 1) n BM.Rb (c.target ∩ c.symm ⁻¹' W) (FA.pr ∘ c.symm) (c x)
@@ -370,10 +370,10 @@ theorem flag_immersion (FA : FlagAn BM d) {σ : FA.S.X → FA.Re.R.X} (hσ : Hol
       funext u
       rcases hab with hab | hab
       · rcases hab.lt_or_eq with h | h
-        · rw [(hLb τ _).2.2 a b h, if_neg h.ne]
-        · subst h; rw [(hLb τ _).2.1 a, if_pos rfl]
+        · rw [(hLb τ _).2.2 a b h, ite_eq_right h.ne]
+        · subst h; rw [(hLb τ _).2.1 a, ite_eq_left rfl]
       · have hne : a ≠ b := by rintro rfl; exact hab Iff.rfl
-        rw [(hLb τ _).1 a b hab, if_neg hne]
+        rw [(hLb τ _).1 a b hab, ite_eq_right hne]
     rw [this]; simp
   have hprod : ∀ τ, (Matrix.of fun a b => fderiv ℂ (fun u => (Pi τ (FA.pr ((FA.S.A.chart k).symm u)) *
       (h₀ τ * L τ ((FA.S.A.chart k).symm u))) a b) (FA.S.A.chart k x) v) =

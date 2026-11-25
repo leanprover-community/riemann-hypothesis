@@ -169,7 +169,7 @@ theorem rowAt_move : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : 
   by_cases h1 : i = j + 1
   · subst h1
     rw [Function.update_self]
-    simp only [GridChoice.rowAt, dif_pos hj, Function.update_self, Frames.coord]
+    simp only [GridChoice.rowAt, dite_eq_left hj, Function.update_self, Frames.coord]
     rw [actO_chi_left, Matrix.map_mul, hM']
     erw [Matrix.transpose_transpose, Matrix.transpose_transpose, id_eq]
     rw [← map_inv (inBasis _ (S.B.β (j + 1) D.R.m) w), map_inv (finG (G.V (Node.grid (j + 1) D.R.m))) k, inBasis_val, mul_sub_cast]
@@ -178,7 +178,7 @@ theorem rowAt_move : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : 
   · subst h2
     rw [Function.update_of_ne (by omega), Function.update_self]
     have hj' : i < D.R.m := by omega
-    simp only [GridChoice.rowAt, dif_pos hj', Frames.coord]
+    simp only [GridChoice.rowAt, dite_eq_left hj', Frames.coord]
     rw [Function.update_of_ne (fun h => by simp [Fin.ext_iff] at h), Function.update_self, actO_chi_right, Matrix.map_mul, hM]
     erw [Matrix.transpose_transpose, Matrix.transpose_transpose, id_eq]
     rw [inBasis_val, sub_mul_cast]
@@ -186,7 +186,7 @@ theorem rowAt_move : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : 
   · rw [Function.update_of_ne h1, Function.update_of_ne h2]
     simp only [GridChoice.rowAt]
     by_cases hi : i < D.R.m
-    · rw [dif_pos hi, dif_pos hi, Function.update_of_ne (fun h => h1 (by simpa [Fin.ext_iff] using h)),
+    · rw [dite_eq_left hi, dite_eq_left hi, Function.update_of_ne (fun h => h1 (by simpa [Fin.ext_iff] using h)),
         Function.update_of_ne (fun h => h2 (by simpa [Fin.ext_iff] using h))]
     · rw [dite_eq_right hi, dite_eq_right hi]
 end GlobalTheory.RowMoveAt

@@ -57,7 +57,7 @@ private theorem UpperTheory.V.Kum.compact_union (F Ω : Type) [Field F] [NumberF
       obtain ⟨v, hv⟩ := h2 A (h3 A N hN hA)
       refine ⟨v, (h4 A v N hv).1 hA, ?_⟩
       have h : ∃ A : ValuationSubring Ω, IsPlaceOver A v := ⟨A, hv⟩
-      simp only [P, dif_pos h]
+      simp only [P, dite_eq_left h]
       obtain ⟨g, hg⟩ := exists_smul_eq_of_isPlaceOver (F := F) h.choose_spec hv
       refine ⟨(g, g⁻¹ * σ * g), ⟨trivial, hconj _ g σ (hg ▸ hσ)⟩, ?_⟩
       simp [mul_assoc]

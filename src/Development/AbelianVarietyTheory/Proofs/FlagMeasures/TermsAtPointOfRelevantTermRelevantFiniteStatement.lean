@@ -75,7 +75,7 @@ theorem terms_at_point_of_relevant : ∀ (D : D7) (X : HidaSetting D) (Y : Full 
     · exfalso
       have hj : Formalism.L2.SG.PairVal.ptOf t.toTerm = Formalism.L2.SG.PairVal.junkPoint D u u' := by
         unfold Formalism.L2.SG.PairVal.ptOf
-        exact dif_neg h
+        exact dite_eq_right h
       obtain ⟨F', -, hGv, hc⟩ := hw₀
       have he := Formalism.L2.SG.WConst.gPoint_eq_gval (lf D (X.Fu u)) F' _ hc
       rw [← hpt, hj] at he

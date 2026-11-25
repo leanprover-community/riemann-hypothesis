@@ -319,7 +319,7 @@ theorem shape_jac {A B : HSp D} {c σ : ℕ} {ε : D.host.E} (d : HermitianOrtho
     · exact (one_mul _).symm
     · exact (mul_diagonal u _ _ _).trans (mul_comm _ _)
     · exact (mul_diagonal u _ _ _).trans (mul_comm _ _)
-  · rw [symStep, if_pos (even_two_mul σ), show 2 * σ / 2 = σ by omega]
+  · rw [symStep, ite_eq_left (even_two_mul σ), show 2 * σ / 2 = σ by omega]
     rintro (a | i | i) (a' | j | j) <;>
       simp only [wlev, Sum.map_inl, Sum.map_inr, Sum.elim_inl, Sum.elim_inr, Fin.val_rev, Fin.val_castLE] <;> omega
   · exact (Matrix.map_mul (f := π)).symm.trans ((congrArg (·.map π) ((jacDec d rfl).wittDecomp_anisotropicEmbedding_inclAnisotropic x)).trans Matrix.map_mul)
@@ -382,7 +382,7 @@ theorem shape_bes {A B : HSp D} {c σ : ℕ} (d : HermitianOrthogonalExtensionDa
     · exact (mul_diagonal u _ _ _).trans ((mul_comm _ _).trans (congrArg (u _ * ·) (congrFun (congrFun e r) (Sum.inr a)).symm))
     · exact (mul_diagonal u _ _ _).trans ((mul_comm _ _).trans ((congrArg (u _ * ·) (vX π r i)).trans (mul_assoc _ _ _).symm))
     · exact (mul_diagonal u _ _ _).trans ((mul_comm _ _).trans ((congrArg (u _ * ·) (vY π r i)).trans (mul_assoc _ _ _).symm))
-  · rw [symStep, if_neg (Nat.not_even_iff_odd.2 (odd_two_mul_add_one σ)), show (2 * σ + 1) / 2 = σ by omega]
+  · rw [symStep, ite_eq_right (Nat.not_even_iff_odd.2 (odd_two_mul_add_one σ)), show (2 * σ + 1) / 2 = σ by omega]
     rintro ((a | a) | i | i) ((a' | a') | j | j) <;>
       simp only [wlev, RootEx.lev, Sum.map_inl, Sum.map_inr, Sum.elim_inl, Sum.elim_inr, Fin.val_rev, Fin.val_castLE] <;> omega
   · rw [embA_apply]
@@ -444,9 +444,9 @@ theorem tilt_cols {j : ℕ} (hj₁ : j < D.R.m) {δ : GA D (G.V (.grid D.R.m j))
     have hc : σ ≤ D.R.m - 1 - j := by clear hp; omega
     refine Eq.trans ?_ (congrArg (incA D) (mul_diagonal _ _ _ _).symm)
     by_cases hp' : p.1 < σ
-    · rw [if_pos hp']
+    · rw [ite_eq_left hp']
       exact (congrFun (congrFun b r) ⟨p.1, hp'⟩).trans (congrArg (incA D) (mul_diagonal _ _ _ _))
-    · rw [if_neg hp']
+    · rw [ite_eq_right hp']
       obtain ⟨q, rfl⟩ : ∃ q : Fin σ, p = (Fin.castLE hc q).rev :=
         ⟨⟨2 * σ - 1 - p.1, by omega⟩, Fin.ext (by simp only [Fin.val_rev, Fin.val_castLE]; omega)⟩
       rw [show 2 * σ - 1 - (Fin.castLE hc q).rev.1 = q.1 by
@@ -742,7 +742,7 @@ theorem sgn_diag (t : T) (s : ℤˣ) (w : Pl D.host.E) (j : ℕ)
   have hi : (frame h (.inl i)).1 = i.1 := rfl
   have := i.2
   simp only [Function.comp_apply]
-  rw [if_neg (by omega), Units.val_one]
+  rw [ite_eq_right (by omega), Units.val_one]
 
 
 
@@ -926,12 +926,12 @@ theorem pr_vol_of (hpr : Big fun {D} _ _ _ _ _ _ _ _ _ _ _ ch => ∀ (s : ℤˣ)
   have h1 : Lev.IsMeasLevDef _ (ch.G.levMax (.top (j' + 1))) (M.ν (.top (j' + 1))) := by
     have := hM.vtx (.top (j' + 1)) (show j' + 1 ≤ D.R.m by omega)
     unfold Vol.IsAt at this
-    rw [if_pos (show Node.neg D.R.m (.top (j' + 1)) = 0 from rfl)] at this
+    rw [ite_eq_left (show Node.neg D.R.m (.top (j' + 1)) = 0 from rfl)] at this
     exact this.1
   have h2 : Lev.IsMeasLevDef _ (ch.S.toGridChoice.levTop t Φ β (j' + 1) hjm) (M'.ν (.top (j' + 1))) := by
     have := hM'.1 (j' + 1) hjm
     unfold Vol.IsAt at this
-    rw [if_pos (show Node.neg D.R.m (.top (j' + 1)) = 0 from rfl)] at this
+    rw [ite_eq_left (show Node.neg D.R.m (.top (j' + 1)) = 0 from rfl)] at this
     exact this.1
   have e := vol_ratio _ hMax (GridChoice.isCO_levTop _ _ t Φ β hjm) ν h1 h2 x hx
   simp only [Measure.real, e, ENNReal.toReal_mul, ENNReal.coe_toReal, mul_assoc]

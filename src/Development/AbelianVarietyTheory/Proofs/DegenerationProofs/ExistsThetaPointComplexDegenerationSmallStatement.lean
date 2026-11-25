@@ -1252,12 +1252,12 @@ theorem typeSt : TypeSt := by
         if φ (H.rt : E) = H.rt0 then D.p else D.q := by
       have h3 := hB (φ.comp (algebraMap (𝓞 E) E))
       by_cases hφ : φ (H.rt : E) = H.rt0
-      · rw [if_pos hφ]; exact h3.trans (if_pos hφ)
-      · rw [if_neg hφ]; exact h3.trans (if_neg hφ)
+      · rw [ite_eq_left hφ]; exact h3.trans (ite_eq_left hφ)
+      · rw [ite_eq_right hφ]; exact h3.trans (ite_eq_right hφ)
     rw [← h2]
     push_cast
     ring
-  exact ⟨g, ty, h, fun φ => ⟨fun hφ => (hc φ).trans (if_pos hφ), fun hφ => (hc φ).trans (if_neg hφ)⟩, hh⟩
+  exact ⟨g, ty, h, fun φ => ⟨fun hφ => (hc φ).trans (ite_eq_left hφ), fun hφ => (hc φ).trans (ite_eq_right hφ)⟩, hh⟩
 
 end GlobalTheory.Ex.Arch
 

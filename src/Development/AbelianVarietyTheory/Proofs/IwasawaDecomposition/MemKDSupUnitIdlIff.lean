@@ -102,11 +102,11 @@ theorem mem_sup_of_balanced
   have hb : b ∈ G := prod_mem fun v _ => zpow_mem (hG _ _) _
   have hval : ∀ w, valAt w b = valAt w a := fun w => by
     have h1 : ∀ v, v ≠ w.under (𝓞 F) → valAt w (locF (L := L) F v (unif v) ^ m v) = 1 := fun v hv => by
-      rw [map_zpow, valAt_locF, if_neg hv.symm, one_zpow]
+      rw [map_zpow, valAt_locF, ite_eq_right hv.symm, one_zpow]
     simp only [b]
     rw [map_prod]
     by_cases hw : w.under (𝓞 F) ∈ T
-    · rw [Finset.prod_eq_single_of_mem _ hw (fun v _ hv => h1 v hv), map_zpow, valAt_locF, if_pos rfl, hu,
+    · rw [Finset.prod_eq_single_of_mem _ hw (fun v _ hv => h1 v hv), map_zpow, valAt_locF, ite_eq_left rfl, hu,
         ordF_unif_self, ← WithZero.exp_zsmul]
       have hex : ∃ w' : HeightOneSpectrum (𝓞 L), w'.under (𝓞 F) = w.under (𝓞 F) := ⟨w, rfl⟩
       have hm : m (w.under (𝓞 F)) = -WithZero.log (valAt w a) := by

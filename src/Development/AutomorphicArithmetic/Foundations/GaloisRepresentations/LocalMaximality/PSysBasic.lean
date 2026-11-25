@@ -133,7 +133,7 @@ theorem UpperTheory.Gal.productCup_of_system.sysBasic_of :
       c (uni (uni I J) L) = 0 := by
     intro c hc I J L h
     have := (cx_iff T hU n z N c).mp hc I J L
-    rw [if_neg h] at this
+    rw [ite_eq_right h] at this
     exact (Submodule.mem_bot ℂ).mp this
   have h2 : ∀ c : Finset (Two d ⊕ₗ κ) → E, c ∈ (T.cx n z).C N ↔
       ∀ (I J : Finset (Fin (d + 1))), col c (uni I J) ∈
@@ -142,15 +142,15 @@ theorem UpperTheory.Gal.productCup_of_system.sysBasic_of :
     rw [cx_iff T hU]
     refine forall_congr' fun I => forall_congr' fun J => ?_
     by_cases hIJ : I.Nonempty ∧ J.Nonempty
-    · rw [if_pos hIJ, col_iff]
+    · rw [ite_eq_left hIJ, col_iff]
       refine forall_congr' fun L => ?_
       simp only [col]
       by_cases hL : (L.card : ℤ) = N - I.card - J.card
-      · rw [if_pos hL, if_pos ⟨hIJ.1, hIJ.2, by push_cast; omega⟩]
-      · rw [if_neg hL, if_neg (fun h => hL (by have := h.2.2; push_cast at this; omega))]
-    · rw [if_neg hIJ, Submodule.mem_bot, funext_iff]
+      · rw [ite_eq_left hL, ite_eq_left ⟨hIJ.1, hIJ.2, by push_cast; omega⟩]
+      · rw [ite_eq_right hL, ite_eq_right (fun h => hL (by have := h.2.2; push_cast at this; omega))]
+    · rw [ite_eq_right hIJ, Submodule.mem_bot, funext_iff]
       refine forall_congr' fun L => ?_
-      rw [if_neg (fun h => hIJ ⟨h.1, h.2.1⟩), Submodule.mem_bot]
+      rw [ite_eq_right (fun h => hIJ ⟨h.1, h.2.1⟩), Submodule.mem_bot]
       rfl
   have hwr : ∀ {κ₀ : Type} [LinearOrder κ₀] (z₀ : κ₀ → S) (l : κ₀), T.wt z₀ (inrE l) = T.act (z₀ l) := by
     intro κ₀ _ z₀ l
@@ -179,7 +179,7 @@ theorem UpperTheory.Gal.productCup_of_system.sysBasic_of :
     obtain ⟨hC, hD⟩ := Submodule.mem_inf.mp hc
     refine Submodule.mem_inf.mpr ⟨?_, ?_⟩
     · have := (h2 c).mp hC I J
-      rwa [if_pos ⟨hI, hJ⟩] at this
+      rwa [ite_eq_left ⟨hI, hJ⟩] at this
     · rw [LinearMap.mem_ker] at hD ⊢
       change wd (fun l => T.act (z l)) (col c (uni I J)) = 0
       change wd (T.wt z) c = 0 at hD

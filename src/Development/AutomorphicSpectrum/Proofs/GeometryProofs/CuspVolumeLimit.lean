@@ -278,7 +278,7 @@ theorem phMu_eq_ballPot_half : GlobalTheory.CompanionTheory.Ar.Top.Given → ∀
   have hgma := GlobalTheory.SCV.analyticOnNhd_of_differentiableOn hV hgm t ht
   have hex : ∃ v, IsValueAt Dc.y d.u (gm t) v := by
     by_contra hn
-    exact hv0 (dif_neg hn)
+    exact hv0 (dite_eq_right hn)
   obtain ⟨v₀, dg, pg, ph, hpg, hph, hne, heq, hhne, hv₀⟩ := hex
   have hq : ∀ p, AnalyticAt ℂ (fun t' => gm t' p) t := fun p =>
     ((ContinuousLinearMap.proj (R := ℂ) (φ := fun _ : (Σ k, J k) => ℂ) p).analyticAt _).comp hgma

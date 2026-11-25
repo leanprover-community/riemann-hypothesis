@@ -70,21 +70,21 @@ theorem z_fix (k r j : ℕ) (V : ℕ → Fin (2 * r + k + 1) → ℂ) (z' : Fin 
     intro q
     have hq2 := q.isLt
     by_cases hW : r ≤ q.val ∧ q.val ≤ r + k
-    · rw [Hpk_mulVec, if_pos hW]
+    · rw [Hpk_mulVec, ite_eq_left hW]
       by_cases hp : p.val < r
-      · rw [P_XW k r j V p q hp hW.1 hW.2, if_pos hp]
+      · rw [P_XW k r j V p q hp hW.1 hW.2, ite_eq_left hp]
         ring
-      · rw [P_rowWS_colW k r j V p q (by omega) hW.2, if_neg hp, zero_mul]
+      · rw [P_rowWS_colW k r j V p q (by omega) hW.2, ite_eq_right hp, zero_mul]
     · have hzq : z' q = 0 := hz q (by omega)
       have hz2 : z' (sg k r q) = 0 := hz (sg k r q) (by simp only [sg_val]; omega)
-      rw [hzq, mul_zero, Hpk_mulVec, if_neg hW, hz2, mul_zero, neg_zero, ite_self]
+      rw [hzq, mul_zero, Hpk_mulVec, ite_eq_right hW, hz2, mul_zero, neg_zero, ite_self]
   rw [show (Pm k r j V *ᵥ z') p = ∑ q, Pm k r j V p q * z' q from rfl]
   simp only [hterm]
   by_cases hp : p.val < r
-  · simp only [if_pos hp, Finset.sum_neg_distrib, neg_eq_zero]
+  · simp only [ite_eq_left hp, Finset.sum_neg_distrib, neg_eq_zero]
     have := Vz p.val
     rw [herm_eq] at this
     exact this
-  · simp [if_neg hp]
+  · simp [ite_eq_right hp]
 
 end NFOne

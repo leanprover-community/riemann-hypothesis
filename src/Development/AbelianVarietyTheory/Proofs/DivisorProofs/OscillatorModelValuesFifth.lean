@@ -85,7 +85,7 @@ theorem realM_mul {D : D7} {θ : InfFam D} (hθ : IsInfFam θ) (W : HSp D) (γ k
     (hτ : ∃ ρ, τ = tauE D ρ) :
     realM θ (Formalism.L2.Theta.mt W (γ * k)) τ = δ.map τ * realM θ (Formalism.L2.Theta.mt W k) τ := by
   have h1 := hδ τ (θ hτ.choose) (by have h := hθ hτ.choose; rwa [← hτ.choose_spec] at h)
-  rw [realM, realM, dif_pos hτ, dif_pos hτ, ← h1]
+  rw [realM, realM, dite_eq_left hτ, dite_eq_left hτ, ← h1]
   change archM W _ (γ * k) = _ * archM W _ k
   rw [archM, archM, archM, map_mul, Units.val_mul, Matrix.map_mul]
 

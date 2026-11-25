@@ -173,7 +173,7 @@ theorem exists_section_of_isReg_sub : ∀ (A : Over (Sp ℂ)) [GrpObj A] (g : �
   refine ⟨fun z ↦ if hz : ∃ i, z ∈ pre u.ex (U.1 ⊓ W i) then
       h hz.choose z - val u.ex _ (a hz.choose) z else 0, fun i ↦ ⟨-(a i), fun z hz ↦ ?_⟩⟩
   have hex : ∃ i, z ∈ pre u.ex (U.1 ⊓ W i) := ⟨i, hz⟩
-  simp only [Pi.sub_apply, dif_pos hex]
+  simp only [Pi.sub_apply, dite_eq_left hex]
   rw [key _ i z hex.choose_spec hz, vneg _ _ z hz]
   ring
 

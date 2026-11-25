@@ -111,7 +111,7 @@ theorem telescope (x : ℕ → ℂ) (p : ℕ) (ap : ℕ → ℕ) (h : ∀ a b, a
         · exact h _ _ (Nat.le_succ r) h1
         · exact Nat.zero_le _
       rw [Finset.prod_range_succ, mul_assoc, ← pow_add, Nat.sub_add_cancel hle, Finset.prod_range_succ x,
-        Finset.prod_range_succ (fun a => x a ^ ap a), ← ih (by omega), if_pos (show r < p by omega), mul_pow,
+        Finset.prod_range_succ (fun a => x a ^ ap a), ← ih (by omega), ite_eq_left (show r < p by omega), mul_pow,
         mul_assoc]
   simpa using key p le_rfl
 
@@ -126,27 +126,27 @@ theorem regroup (K U : ℕ → ℂ) (hU : ∀ j, U j ≠ 0) (p q n : ℕ) (hn : 
     rw [Finset.prod_range_add]
     congr 1
     · refine Finset.prod_congr rfl fun a ha => ?_
-      rw [if_pos (Finset.mem_range.1 ha), zpow_natCast]
+      rw [ite_eq_left (Finset.mem_range.1 ha), zpow_natCast]
     · refine Finset.prod_congr rfl fun a _ => ?_
-      rw [if_neg (by omega), Nat.add_sub_cancel_left, _root_.zpow_neg, zpow_natCast, inv_pow]
+      rw [ite_eq_right (by omega), Nat.add_sub_cancel_left, _root_.zpow_neg, zpow_natCast, inv_pow]
   have e2 : ∏ j ∈ Finset.range n, U j ^ (-(if j < p then (ap j : ℤ) else 0)) =
       ∏ a ∈ Finset.range p, (U a)⁻¹ ^ ap a := by
     symm
     rw [← Finset.prod_subset (Finset.range_subset_range.2 (show p ≤ n by omega))]
     · refine Finset.prod_congr rfl fun a ha => ?_
-      rw [if_pos (Finset.mem_range.1 ha), _root_.zpow_neg, zpow_natCast, inv_pow]
+      rw [ite_eq_left (Finset.mem_range.1 ha), _root_.zpow_neg, zpow_natCast, inv_pow]
     · intro a _ ha
-      rw [if_neg (by simpa using ha)]; simp
+      rw [ite_eq_right (by simpa using ha)]; simp
   have e3 : ∏ j ∈ Finset.range n, U j ^ (if n - 1 - j < q then (am (n - 1 - j) : ℤ) else 0) =
       ∏ a ∈ Finset.range q, U (n - 1 - a) ^ am a := by
     symm
     rw [← Finset.prod_range_reflect _ n, ← Finset.prod_subset (Finset.range_subset_range.2 (show q ≤ n by omega))]
     · refine Finset.prod_congr rfl fun a ha => ?_
       have ha := Finset.mem_range.1 ha
-      rw [show n - 1 - (n - 1 - a) = a by omega, if_pos ha, zpow_natCast]
+      rw [show n - 1 - (n - 1 - a) = a by omega, ite_eq_left ha, zpow_natCast]
     · intro a ha' ha
       have ha' := Finset.mem_range.1 ha'
-      rw [show n - 1 - (n - 1 - a) = a by omega, if_neg (by simpa using ha)]; simp
+      rw [show n - 1 - (n - 1 - a) = a by omega, ite_eq_right (by simpa using ha)]; simp
   simp only [add_zero, zpow_add₀ (hU _), Finset.prod_mul_distrib, mul_pow, e1, e2, e3]
   ring
 

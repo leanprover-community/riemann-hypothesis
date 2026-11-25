@@ -119,13 +119,6 @@ def DerBounds : Prop := ∀ C₀ : ℝ, 0 < C₀ → ∃ C : ℝ, 0 < C ∧ ForP
     Integrable (fun h => ⟪dR π (embL e X) (π g₀ v₀), π (embH e (umat h)) (π g₀ v₀)⟫_ℂ) (muG ε') ∧
       ∫ h, ‖⟪dR π (embL e X) (π g₀ v₀), π (embH e (umat h)) (π g₀ v₀)⟫_ℂ‖ ∂muG ε' ≤ (muG ε' (nbh ε' (1 / 4))).toReal * big C n B
 
-section RankOne
-
-open scoped ContDiff
-open GlobalTheory.Survey.MatrixExponentialEntries (chi)
-
-end RankOne
-
 end GlobalTheory.SepReal
 
 end

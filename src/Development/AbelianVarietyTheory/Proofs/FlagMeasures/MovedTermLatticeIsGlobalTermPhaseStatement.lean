@@ -135,9 +135,9 @@ theorem GCoord.c_mul_gS_eq_delta_theta : ∀ (D : D7) (X : HidaSetting D) (Y : F
       have hn : Loc.resChar p ∉ ({D.host.g 0, D.host.g 1} : Finset ℕ) := by
         rw [← hs, hD]; simp
       simp only [Finset.mem_insert, Finset.mem_singleton, not_or] at hn
-      have hgp : gpart p = 1 := by unfold gpart; rw [if_neg hn.1, if_neg hn.2]
+      have hgp : gpart p = 1 := by unfold gpart; rw [ite_eq_right hn.1, ite_eq_right hn.2]
       rw [Frames.th, hgg, hgp]
-      exact (if_neg (by decide)).trans Nat.cast_one.symm
+      exact (ite_eq_right (by decide)).trans Nat.cast_one.symm
     · simp [hM, hD] at hA
     · simp [hM, hD] at hA
     · have hgs := wc.gg_some g hM
@@ -149,11 +149,11 @@ theorem GCoord.c_mul_gS_eq_delta_theta : ∀ (D : D7) (X : HidaSetting D) (Y : F
       have hgp : gpart p = Loc.resChar p := by
         unfold gpart
         rcases hn with h | h
-        · rw [if_pos h, h]
+        · rw [ite_eq_left h, h]
         · by_cases h0 : Loc.resChar p = D.host.g 0
-          · rw [if_pos h0, h0]
-          · rw [if_neg h0, if_pos h, h]
-      simp only [Frames.th, hgs.1, if_true, hgs.2, hA.2, hgp]
+          · rw [ite_eq_left h0, h0]
+          · rw [ite_eq_right h0, ite_eq_left h, h]
+      simp only [Frames.th, hgs.1, ite_true, hgs.2, hA.2, hgp]
       exact hq
   exact h1.trans (congrArg (Y.δ p * ·) h2.symm)
 
@@ -352,7 +352,7 @@ theorem coef_eq {H : Loc.HermSp M V} (Fr : LocNG.FrameD H r) {n : ℕ} (Hm : Mat
     | last =>
       have h0 : H.h (Fr.f (Fin.last r)) (Fr.es j) = 0 := by
         rw [H.h_herm (Fr.es j) (Fr.f (Fin.last r)), Fr.h_sz j, map_zero]
-      rw [h0, if_neg (Fin.castSucc_lt_last j).ne']
+      rw [h0, ite_eq_right (Fin.castSucc_lt_last j).ne']
     | cast i =>
       rw [Fr.h_es i j]
       simp [Fin.castSucc_inj]
@@ -1166,8 +1166,8 @@ theorem coef_sum {E : Type} [Field E] [NumberField E] (sig : E → E) {r n : ℕ
   rw [Finset.sum_congr rfl fun a _ => h1 a]
   unfold Formalism.L2.SG.PairVal.sgUp
   rw [Fin.sum_univ_castSucc]
-  simp only [Fin.coe_castSucc, Fin.val_last, lt_self_iff_false, dif_neg, not_false_eq_true, add_zero,
-    add_lt_add_iff_right, Fin.is_lt, dif_pos]
+  simp only [Fin.coe_castSucc, Fin.val_last, lt_self_iff_false, dite_eq_right, not_false_eq_true, add_zero,
+    add_lt_add_iff_right, Fin.is_lt, dite_eq_left]
   refine Finset.sum_congr rfl fun a _ => ?_
   rfl
 

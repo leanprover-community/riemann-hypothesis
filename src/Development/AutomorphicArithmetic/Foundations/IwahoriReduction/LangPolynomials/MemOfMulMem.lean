@@ -240,7 +240,7 @@ theorem UpperTheory.Kd.C7.pKumEx :
   obtain ⟨τ, hτ, hτb⟩ := exists_tau l hl Ω A hA b hb m
   obtain ⟨U, hU, hUZ⟩ := hC m m
   let w : G ℚ Ω → c.O := fun s => if h : s ∈ Ine (F := ℚ) A then ⟨Z m s 1, hZ.int m s h 1⟩ else 0
-  have hw : ∀ s ∈ Ine (F := ℚ) A, (w s : PadicAlgCl l) = Z m s 1 := fun s hs => by simp only [w, dif_pos hs]
+  have hw : ∀ s ∈ Ine (F := ℚ) A, (w s : PadicAlgCl l) = Z m s 1 := fun s hs => by simp only [w, dite_eq_left hs]
   let χ : Fin β.d → G ℚ Ω → ZMod (l ^ m) := fun i s => PadicInt.toZModPow m (β.e.repr (w s) i)
   have hex : ∀ i, ∃ u : Ω, u ≠ 0 ∧ (∀ s ∈ Hm l A m, s u = u) ∧
       ∀ s ∈ Hm l A m, KumVal (l := l) m (ζ m) u s (χ i s) := by

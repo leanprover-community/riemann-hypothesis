@@ -87,7 +87,7 @@ theorem selfDual_pair_nondeg : ∀ (F E : Type) [Field F] [NumberField F] [Field
     rw [this, hxw w hw, mul_zero]
     exact isIntegral_zero
   obtain ⟨i, hi⟩ : ∃ i, x i ≠ 0 := by
-    by_contra h; push_neg at h; exact hx (funext h)
+    by_contra h; push Not at h; exact hx (funext h)
   let f : (Fin n → E) →ₗ[𝓞 E] E := (LinearMap.proj i : (Fin n → E) →ₗ[E] E).restrictScalars (𝓞 E)
   have htop : L.map f = ⊤ := by
     rw [eq_top_iff]

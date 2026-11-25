@@ -69,9 +69,9 @@ theorem padFam_update (T S : Finset ι) (hTS : T ⊆ S) (c : ∀ i, M i) [Decida
       simp [padFam, h]
     · have h1 : (⟨u.1, h⟩ : T) ≠ i := fun e => hu (by rw [← e])
       have h2 : u ≠ ⟨i.1, hTS i.2⟩ := fun e => hu (by rw [e])
-      simp only [padFam, h, dif_pos, Function.update_of_ne h1, Function.update_of_ne h2]
+      simp only [padFam, h, dite_eq_left, Function.update_of_ne h1, Function.update_of_ne h2]
   · have h2 : u ≠ ⟨i.1, hTS i.2⟩ := fun e => h (by rw [e]; exact i.2)
-    simp only [padFam, h, dif_neg, not_false_eq_true, Function.update_of_ne h2]
+    simp only [padFam, h, dite_eq_right, not_false_eq_true, Function.update_of_ne h2]
 
 def padMultilinear (T S : Finset ι) (hTS : T ⊆ S) (c : ∀ i, M i) :
     (∀ u : T, M u) →ₘₗ[ℂ] (⨂[ℂ] u : S, M u) where

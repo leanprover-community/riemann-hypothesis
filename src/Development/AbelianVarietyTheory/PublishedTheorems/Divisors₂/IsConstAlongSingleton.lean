@@ -278,7 +278,7 @@ theorem isClosed_colSpan {L : Matrix (Fin r) (Fin n) E} (hL : L * X = 1) (I : Se
       rw [op_smul_eq_smul]
       by_cases hi : i ∈ I
       · exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨i, hi, rfl⟩)
-      · rw [← mulVec_mulVec, mulVec_diagonal, if_neg hi, zero_mul, zero_smul]
+      · rw [← mulVec_mulVec, mulVec_diagonal, ite_eq_right hi, zero_mul, zero_smul]
         exact zero_mem _
   exact this ▸ isClosed_eq (continuous_const.matrix_mulVec continuous_id) continuous_id
 

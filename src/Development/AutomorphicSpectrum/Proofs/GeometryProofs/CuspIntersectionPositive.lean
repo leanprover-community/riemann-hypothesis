@@ -1607,7 +1607,7 @@ theorem unit_factor (a : Fin Dc.nCharts) (t₀ : Fin (Fintype.card (CMType H) * 
         Real.log (‖valAt Dc.y d.u ((Dc.chart a).γ t)‖ * ∏ k, ‖(Dc.chart a).γ t ⟨k, d.c k⟩‖ ^ Hd.aMu k) = (G t).re := by
   have hex : ∃ v, IsValueAt Dc.y d.u ((Dc.chart a).γ t₀) v := by
     by_contra hn
-    exact hv0 (dif_neg hn)
+    exact hv0 (dite_eq_right hn)
   obtain ⟨v₀, dg, pg, ph, hpg, hph, hne, heq, hhne, hv₀⟩ := hex
   have hq : ∀ p, AnalyticAt ℂ (fun t => (Dc.chart a).γ t p) t₀ := fun p =>
     ((ContinuousLinearMap.proj (R := ℂ) (φ := fun _ : (Σ k, J k) => ℂ) p).analyticAt _).comp
@@ -1757,7 +1757,7 @@ theorem near_all (hG : Top.Given) (Or : CptOrigin Y S₀ Dc Hd) {U : ((Σ k, J k
     exact ⟨fun i => i.elim0, fun k _ => (pi_norm_lt_iff one_pos).1 (mem_ball_zero_iff.1 hu') k⟩
   let R : (Fin (Fintype.card (CMType H) * Dc.j * (Dc.N - Dc.j)) → ℂ) → RiemLat E g Λ := fun u =>
     if h : u ∈ logCover L.a_le then L.riem u h else L.riem 0 (hlc 0 h0)
-  have hR : ∀ u (h : u ∈ logCover L.a_le), R u = L.riem u h := fun u h => dif_pos h
+  have hR : ∀ u (h : u ∈ logCover L.a_le), R u = L.riem u h := fun u h => dite_eq_left h
   have hHol : IsHolFam (ball 0 1) R := by
     refine ⟨fun t ht t' ht' => ?_, fun x => ?_⟩
     · rw [hR t (hlc t ht), hR t' (hlc t' ht')]

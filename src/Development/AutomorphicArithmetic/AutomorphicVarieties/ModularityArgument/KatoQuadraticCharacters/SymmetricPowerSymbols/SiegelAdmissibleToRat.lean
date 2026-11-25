@@ -105,7 +105,7 @@ private theorem hol_int {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure �
     refine ⟨Matrix.SpecialLinearGroup.map (Int.castRingHom (ZMod M)) γ, ?_⟩
     have h : ∃ γ', Matrix.SpecialLinearGroup.map (Int.castRingHom (ZMod M)) γ'
         = Matrix.SpecialLinearGroup.map (Int.castRingHom (ZMod M)) γ := ⟨γ, rfl⟩
-    simp only [g', dif_pos h]
+    simp only [g', dite_eq_left h]
     exact hfac γ h.choose h.choose_spec
   set S := hfin.toFinset with hSdef
   have hmemS : ∀ s, s ∈ S ↔ ∃ γ, orb γ = s := by

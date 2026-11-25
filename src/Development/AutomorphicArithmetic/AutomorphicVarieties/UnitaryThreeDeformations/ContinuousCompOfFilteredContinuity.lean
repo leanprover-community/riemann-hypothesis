@@ -494,7 +494,7 @@ private theorem cob_lie {K Γ : Type} [CommRing K] [Group Γ] (r : Γ →* GG (m
   have e : ∀ X, cob r X g * (r g).mat = X * (r g).mat - (r g).mat * X := fun X => by
     show (X - (r g).adFun X) * _ = _
     unfold GG.adFun GG.mat
-    rw [if_pos hg, Matrix.sub_mul, Matrix.mul_assoc, Units.inv_mul, Matrix.mul_one]
+    rw [ite_eq_left hg, Matrix.sub_mul, Matrix.mul_assoc, Units.inv_mul, Matrix.mul_one]
   rw [e, Matrix.smul_mul, Matrix.mul_smul, Matrix.sub_apply, Matrix.smul_apply, Matrix.smul_apply,
     Matrix.diagonal_mul, Matrix.mul_diagonal, wt]
   simp only [smul_eq_mul, Int.cast_sub]

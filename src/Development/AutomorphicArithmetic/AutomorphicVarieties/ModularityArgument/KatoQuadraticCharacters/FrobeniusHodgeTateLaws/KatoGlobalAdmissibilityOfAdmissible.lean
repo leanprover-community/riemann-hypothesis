@@ -161,7 +161,7 @@ theorem UpperTheory.V.Z.Kato.Joint.admissibleFunctional_of_projection :
     by_cases h : g.χ (d : ZMod g.M) = 1
     · simp [χd, h]
     · have h' := (hq d (hcop d hd)).resolve_left h
-      simp only [χd, if_neg h]
+      simp only [χd, ite_eq_right h]
       rw [h']
       simp
   have hχd' : ∀ d : ℕ, d.Coprime N → ι ((χd d : ℤ_[l]) : Qbar l) = χ d := by

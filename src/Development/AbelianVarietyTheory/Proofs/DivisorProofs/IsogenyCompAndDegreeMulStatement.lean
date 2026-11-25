@@ -71,8 +71,8 @@ theorem isIsogeny_comp_and_deg_comp : ∀ (K : Type) [Field K] (A B C : AbVar K)
     · rw [comp_hom, Over.comp_left]; infer_instance
     · rw [comp_hom, Over.comp_left]; infer_instance
   refine ⟨hc, ?_⟩
-  have hdg : deg g = g.hom.left.finrank C.origin := if_pos hg
-  have hdc : deg (f ≫ g) = (f ≫ g).hom.left.finrank C.origin := if_pos hc
+  have hdg : deg g = g.hom.left.finrank C.origin := ite_eq_left hg
+  have hdc : deg (f ≫ g) = (f ≫ g).hom.left.finrank C.origin := ite_eq_left hc
   rw [hdc, hdg, comp_hom, Over.comp_left]
   exact GlobalTheory.FinrankComp.finrank_comp_of_const f.hom.left g.hom.left (deg f) hrf C.origin
 

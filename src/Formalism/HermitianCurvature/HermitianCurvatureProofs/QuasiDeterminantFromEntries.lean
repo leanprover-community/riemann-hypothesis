@@ -170,11 +170,11 @@ theorem frame_gives_one_letter_hyps : FrameModHyp := by
   have hT : ∀ Y ∈ f.reg, f.hatT Y = (f.TT Y).map (fun b => f.F * b * f.Fi) := by
     intro Y hY
     unfold Formalism.FourierDecayAlt.Fr.FrameData.hatT
-    rw [if_pos hY]
+    rw [ite_eq_left hY]
   have hT0 : ∀ Y, Y ∉ f.reg → f.hatT Y = 0 := by
     intro Y hY
     unfold Formalism.FourierDecayAlt.Fr.FrameData.hatT
-    rw [if_neg hY]
+    rw [ite_eq_right hY]
   have hτ11 : ∀ Y ∈ f.reg, f.hatT Y 1 1 = io L.GG * f.x Y := by
     intro Y hY
     rw [hT Y hY, Matrix.map_apply, hf.frame_τ Y hY, mul_assoc, hFFi, mul_one]
@@ -191,11 +191,11 @@ theorem frame_gives_one_letter_hyps : FrameModHyp := by
   have hq : ∀ Y, Y ∈ f.reg → Y + 1 ∈ f.reg → f.hatQ Y = f.q Y := by
     intro Y h1 h2
     unfold Formalism.FourierDecayAlt.Fr.FrameData.hatQ
-    rw [if_pos ⟨h1, h2⟩]
+    rw [ite_eq_left ⟨h1, h2⟩]
   have hq0 : ∀ Y, ¬ (Y ∈ f.reg ∧ Y + 1 ∈ f.reg) → f.hatQ Y = 0 := by
     intro Y h
     unfold Formalism.FourierDecayAlt.Fr.FrameData.hatQ
-    rw [if_neg h]
+    rw [ite_eq_right h]
   have hJ : ∀ i j : Fin 2, f.F * Formalism.YangianSpanCharacter.T.J (SlopeTestRemainingChoices S A) i j * f.Fi = Formalism.YangianSpanCharacter.T.J (SlopeTestRemainingChoices S A) i j := by
     intro i j
     fin_cases i <;> fin_cases j <;> simp [Formalism.YangianSpanCharacter.T.J, hFFi]

@@ -452,10 +452,10 @@ theorem exists_poly_mul_gauss_of_annC : ∀ (D : D7) (V : HSp D) (n : ℕ) (l : 
   funext k
   obtain ⟨τ, i, j, b⟩ := k
   cases b
-  · simp only [φ, r, Bool.false_eq_true, if_false, if_true, map_mul, map_add (f := _), MvPolynomial.aeval_C, MvPolynomial.aeval_X,
+  · simp only [φ, r, Bool.false_eq_true, ite_false, ite_true, map_mul, map_add (f := _), MvPolynomial.aeval_C, MvPolynomial.aeval_X,
       Matrix.of_apply, Algebra.algebraMap_self, RingHom.id_apply, Complex.re_eq_add_conj]
     ring
-  · simp only [φ, r, Bool.false_eq_true, if_false, if_true, map_mul, map_sub, MvPolynomial.aeval_C, MvPolynomial.aeval_X,
+  · simp only [φ, r, Bool.false_eq_true, ite_false, ite_true, map_mul, map_sub, MvPolynomial.aeval_C, MvPolynomial.aeval_X,
       Matrix.of_apply, Algebra.algebraMap_self, RingHom.id_apply, Complex.im_eq_sub_conj]
     ring
 
@@ -536,11 +536,11 @@ theorem slice_polyGauss : ∀ (D : D7) (θ : InfFam D), IsInfFam θ → ∀ (V :
       ext i j
       by_cases h : τ' = τ
       · subst h
-        rw [if_pos rfl]
+        rw [ite_eq_left rfl]
         show z τ' i j + ((t : ℂ) • X) i j = z τ' i j + t • w τ' i j
         rw [hw0, Complex.real_smul]
         rfl
-      · rw [if_neg h]
+      · rw [ite_eq_right h]
         show z τ' i j + (0 : Matrix (Fin V.rank) (Fin n) ℂ) i j = z τ' i j + t • w τ' i j
         rw [hw1 τ' h]
         simp

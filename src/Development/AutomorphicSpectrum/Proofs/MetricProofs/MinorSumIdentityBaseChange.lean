@@ -64,7 +64,7 @@ theorem minor_any : ∀ (Ω : Type) [Field Ω] [Infinite Ω] (N j : ℕ) (T : Ma
     rw [map_zero, gap_map]
     apply key
     intro a b hab
-    simp only [G, Matrix.map_apply, Matrix.of_apply, if_neg hab, map_zero]
+    simp only [G, Matrix.map_apply, Matrix.of_apply, ite_eq_right hab, map_zero]
   have hG : G.map (aeval (fun p : Fin N × Fin N => h p.1 p.2)).toRingHom = h := by
     ext a b
     simp only [G, Matrix.map_apply, Matrix.of_apply]

@@ -110,7 +110,7 @@ theorem frame_perp (g : Fin (r + 1) → S.V) (T : E)
   induction hy using Submodule.span_induction with
   | mem y hy =>
     obtain ⟨i, hi, rfl⟩ := hy
-    rw [hg, if_neg]
+    rw [hg, ite_eq_right]
     rintro ⟨rfl, -⟩
     simp at hi
   | zero => exact hf_zero _ _

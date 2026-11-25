@@ -95,7 +95,7 @@ theorem arNum_monomial' (μ : σ →₀ ℕ) (c : ℝ) :
     arNum I P A (monomial μ c) = c * arList I P (μ.toMultiset.map A).toList := by
   classical
   rw [arNum_eq_sum_of_subset I P A (monomial μ c) {μ} MvPolynomial.support_monomial_subset,
-    Finset.sum_singleton, MvPolynomial.coeff_monomial, if_pos rfl]
+    Finset.sum_singleton, MvPolynomial.coeff_monomial, ite_eq_left rfl]
 
 theorem arNum_rename' {σ' : Type} (e : σ' → σ) (H : MvPolynomial σ' ℝ) :
     arNum I P A (rename e H) = arNum I P (A ∘ e) H := by

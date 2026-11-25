@@ -149,10 +149,10 @@ theorem mem_span_of_eq_mul_integral {A K : Type*} [CommRing A] [IsDomain A] [Fie
     ext i
     rw [coeff_map, coeff_scaleRoots, coeff_X_pow, map_mul, map_pow, ht0]
     rcases lt_trichotomy i p.natDegree with hi | hi | hi
-    · rw [if_neg hi.ne, zero_pow (by omega), mul_zero]
+    · rw [ite_eq_right hi.ne, zero_pow (by omega), mul_zero]
     · subst hi
       simp [hp.coeff_natDegree]
-    · rw [if_neg hi.ne', coeff_eq_zero_of_natDegree_lt hi, map_zero, zero_mul]
+    · rw [ite_eq_right hi.ne', coeff_eq_zero_of_natDegree_lt hi, map_zero, zero_mul]
   have h3 : Ideal.Quotient.mk (Ideal.span {t}) a ^ p.natDegree = 0 := by
     have h4 := congrArg (Ideal.Quotient.mk (Ideal.span {t})) h1
     rw [map_zero, ← Polynomial.eval₂_at_apply, ← Polynomial.eval_map, h2] at h4
@@ -643,7 +643,7 @@ theorem isInvariant : Algebra.IsInvariant R (Ω ⊗[k] R) (Ω ≃ₐ[k] Ω) wher
       · exact (algebraMap k Ω).injective (h.choose_spec.trans (map_zero _).symm)
       · rfl
     have hφ : ∀ i, algebraMap k Ω (φ (B.repr x i)) = B.repr x i := fun i => by
-      simp only [φ, dif_pos (hc i)]
+      simp only [φ, dite_eq_left (hc i)]
       exact (hc i).choose_spec
     let f : Module.Free.ChooseBasisIndex k R →₀ k := Finsupp.mapRange φ hφ0 (B.repr x)
     refine ⟨b.repr.symm f, B.repr.injective ?_⟩

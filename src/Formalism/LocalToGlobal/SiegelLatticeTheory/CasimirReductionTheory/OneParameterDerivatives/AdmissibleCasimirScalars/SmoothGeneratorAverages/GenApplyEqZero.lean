@@ -31,13 +31,13 @@ lemma gen_apply (ε : Fin n → Bool) (p : Fin n × Fin n) (x y : Fin n) :
       else Complex.I * ((if p.2 = x ∧ p.1 = y then 1 else 0) + (sg ε p : ℂ) * (if p.1 = x ∧ p.2 = y then 1 else 0)) := by
   unfold gen
   by_cases h1 : p.1 = p.2
-  · rw [if_pos h1, if_pos h1]
+  · rw [ite_eq_left h1, ite_eq_left h1]
     simp [Matrix.single_apply, Matrix.smul_apply]
-  · rw [if_neg h1, if_neg h1]
+  · rw [ite_eq_right h1, ite_eq_right h1]
     by_cases h2 : p.1 < p.2
-    · rw [if_pos h2, if_pos h2]
+    · rw [ite_eq_left h2, ite_eq_left h2]
       simp [Matrix.single_apply, Matrix.sub_apply, mul_ite]
-    · rw [if_neg h2, if_neg h2]
+    · rw [ite_eq_right h2, ite_eq_right h2]
       simp [Matrix.single_apply, Matrix.add_apply, Matrix.smul_apply, mul_ite]
 
 lemma gen_apply_eq_zero (ε : Fin n → Bool) (p : Fin n × Fin n) (x y : Fin n)
@@ -57,17 +57,17 @@ lemma tens (ε : Fin n → Bool) (i j k l : Fin n) :
   by_cases hij : i = j
   · subst hij
     rw [Fintype.sum_eq_single (i, i) (fun p hp => by rw [gen_apply_eq_zero ε p i i ⟨hp, hp⟩]; simp)]
-    simp only [cf, wt, sg, gen_apply, if_true, and_self]
+    simp only [cf, wt, sg, gen_apply, ite_true, and_self]
     by_cases hk : i = k <;> by_cases hl : i = l <;> simp [hk, hl] <;> split_ifs <;> simp
   · rw [Fintype.sum_eq_add (j, i) (i, j) (by simp [Ne.symm hij])
       (fun p hp => by rw [gen_apply_eq_zero ε p j i ⟨hp.1, hp.2⟩]; simp)]
     rcases lt_or_gt_of_ne hij with h | h
     · have h' : ¬ j < i := not_lt_of_gt h
-      simp only [cf, wt, sg, gen_apply, hij, Ne.symm hij, h, h', if_false, if_true, true_and, and_true]
+      simp only [cf, wt, sg, gen_apply, hij, Ne.symm hij, h, h', ite_false, ite_true, true_and, and_true]
       by_cases hk : i = k <;> by_cases hl : j = l <;> by_cases hk' : j = k <;> by_cases hl' : i = l <;>
         simp_all <;> cases ε k <;> cases ε l <;> simp_all <;> ring_nf <;> simp [Complex.I_sq] <;> ring
     · have h' : ¬ i < j := not_lt_of_gt h
-      simp only [cf, wt, sg, gen_apply, hij, Ne.symm hij, h, h', if_false, if_true, true_and, and_true]
+      simp only [cf, wt, sg, gen_apply, hij, Ne.symm hij, h, h', ite_false, ite_true, true_and, and_true]
       by_cases hk : i = k <;> by_cases hl : j = l <;> by_cases hk' : j = k <;> by_cases hl' : i = l <;>
         simp_all <;> cases ε k <;> cases ε l <;> simp_all <;> ring_nf <;> simp [Complex.I_sq] <;> ring
 

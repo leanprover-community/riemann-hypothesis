@@ -750,7 +750,7 @@ theorem exists_isotropic_le
   by_cases h : ∃ v : Fin n → E, v ≠ 0 ∧ hgt σ J g v < ε
   · obtain ⟨v, hv, hlt⟩ := h
     exact ⟨v, hv, hS g v hv hlt, hlt.le.trans (le_max_left _ _)⟩
-  · push_neg at h
+  · push Not at h
     obtain ⟨γ, hγ, hγC⟩ := hC g h
     obtain ⟨v, hv, hvi, hs⟩ := exists_sends hγ hx hi
     refine ⟨v, hv, hvi, ?_⟩

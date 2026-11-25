@@ -121,7 +121,7 @@ theorem mem_schA_of_level : ∀ (F : Type) [Field F] [NumberField F] (N : ℕ) (
       simp [GlobalTheory.WeilM.pureA, h0]
     rw [this]
     exact zero_mem _
-  push_neg at h0
+  push Not at h0
   obtain ⟨s0, hs0⟩ := h0
   refine Submodule.subset_span ⟨g q, ind q, ?_, rfl⟩
   let C : Set (Fin N → Af F) := {a | -q.out + a ∈ W}
@@ -138,7 +138,7 @@ theorem mem_schA_of_level : ∀ (F : Type) [Field F] [NumberField F] (N : ℕ) (
   refine ⟨hmk.comp fun q' => if q' = q then (1 : ℂ) else 0, ?_⟩
   refine HasCompactSupport.intro' (hK.of_isClosed_subset hCcl hCK) hCcl fun x hx => ?_
   show (if (QuotientAddGroup.mk x : (Fin N → Af F) ⧸ W) = q then (1 : ℂ) else 0) = 0
-  rw [if_neg]
+  rw [ite_eq_right]
   intro hq
   apply hx
   show -q.out + x ∈ W

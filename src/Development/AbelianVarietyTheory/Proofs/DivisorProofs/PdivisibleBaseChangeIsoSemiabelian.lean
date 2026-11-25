@@ -131,10 +131,4 @@ theorem contract_twoMap (χ : CartierDual R B) (u : B ⊗[R] B) :
 
 end Algebra
 
-section Level
-
-variable {p : ℕ} {R K : Type} [CommRing R] [CommRing K] [Algebra R K] {Γ : PDivGroup p R} {𝒜 : PDivGroup p K}
-
-end Level
-
 end GlobalTheory.WeilIntegral

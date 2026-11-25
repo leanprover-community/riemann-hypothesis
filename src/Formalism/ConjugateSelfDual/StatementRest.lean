@@ -14,11 +14,6 @@ open scoped ModularForm MatrixGroups
 
 namespace Formalism.ConjugateSelfDual
 
-section places
-variable {F Ω : Type*} [Field F] [NumberField F] [Field Ω] [Algebra F Ω]
-
-end places
-
 section galois
 
 variable {F Ω : Type*} [Field F] [NumberField F] [Field Ω] [Algebra F Ω] {n l : ℕ} [Fact l.Prime]

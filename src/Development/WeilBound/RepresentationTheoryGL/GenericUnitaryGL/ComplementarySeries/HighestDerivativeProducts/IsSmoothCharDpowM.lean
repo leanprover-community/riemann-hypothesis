@@ -186,9 +186,9 @@ theorem exists_bump : ∀ {G Z : Type} [Group G] [AddCommGroup Z] [Module ℂ Z]
     intro h β hβ
     have hp : P ((h : G) * β) := ⟨h, β, hβ, rfl⟩
     obtain ⟨β', hβ', e⟩ := hp.choose_spec
-    simp only [f, dif_pos hp]
+    simp only [f, dite_eq_left hp]
     exact hwell _ _ _ _ hβ' hβ e.symm
-  have hzero : ∀ p, ¬ P p → f p = 0 := fun p hp => by simp only [f, dif_neg hp]
+  have hzero : ∀ p, ¬ P p → f p = 0 := fun p hp => by simp only [f, dite_eq_right hp]
   have hleft : ∀ (h : H) (g : G), f ((h : G) * g) = ρ h (f g) := by
     intro h g
     by_cases hg : P g

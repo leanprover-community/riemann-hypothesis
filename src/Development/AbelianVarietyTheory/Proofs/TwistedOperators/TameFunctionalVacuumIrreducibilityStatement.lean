@@ -600,7 +600,7 @@ theorem GlobalTheory.LatticeTranslateSum.sum_translates_bounded : ∀ (D : D7) (
         exact Finset.sum_nonneg fun _ _ => Finset.sum_nonneg fun _ _ => Finset.sum_nonneg fun _ _ => norm_nonneg _
       have hp : 0 < (1 + GlobalTheory.Unf.realSize θ x) ^ N := by positivity
       unfold GlobalTheory.Unf.maj
-      rw [if_pos (hbox x hx), ← div_eq_mul_inv, le_div_iff₀ hp, mul_comm]
+      rw [ite_eq_left (hbox x hx), ← div_eq_mul_inv, le_div_iff₀ hp, mul_comm]
       exact (hC x).trans (le_max_left _ _)
   have hinj : Function.Injective (incA D) := GlobalTheory.MixModel.incA_injective
   let e0 : Matrix (Fin T.rank) (Fin S.rank) D.host.E → ratL T S := fun ξ => ⟨rat ξ, ⟨ξ, rfl⟩⟩

@@ -111,8 +111,8 @@ theorem phiE_one (v : GlobalTheory.FinPl.Pl D) : phiE (D := D) v 1 = idem D (· 
     apply af_ext; intro u
     rw [GlobalTheory.FinPlLoc.evalV_ePl]
     by_cases hu : u = v
-    · subst hu; rw [sglV_same, if_pos rfl]
-    · rw [sglV_ne v _ hu, if_neg hu]
+    · subst hu; rw [sglV_same, ite_eq_left rfl]
+    · rw [sglV_ne v _ hu, ite_eq_right hu]
   unfold idem
   rw [← h]
   rfl
@@ -215,7 +215,7 @@ theorem compl_mem (P : Places L) (sc : Consts) {v : GlobalTheory.FinPl.Pl D} (hv
     rw [mul_comm, GlobalTheory.SeeSaw.IdVMul.incA_mul_tmul, mul_one]
     refine GlobalTheory.SeeSaw.IdVMul.gen_mem (GlobalTheory.FinPlLoc.ePl_int _) (fun w hw => ?_)
       ((FractionalIdeal.mem_coeIdeal _).2 ⟨x, hx, rfl⟩)
-    rw [GlobalTheory.FinPlLoc.evalV_ePl, if_neg hw]
+    rw [GlobalTheory.FinPlLoc.evalV_ePl, ite_eq_right hw]
   have h2 := GlobalTheory.SeeSaw.IdVMul.mul_mem_idV h1 hs
   rw [mul_left_comm, mul_inv_cancel₀ hm0, mul_one] at h2
   have hint : finPart D (cA D f * incA D (x : D.host.E)⁻¹) ∈ intAE D := by
@@ -287,7 +287,7 @@ theorem pX_xLast_mul_apply {W W₀ : HSp D} {σ : ℕ} (dW : HypDec W W₀ σ) (
     (N : Mx D (σ + 1) (σ + 1)) (k : Fin σ) (j : Fin (σ + 1)) :
     (dW.pX ⬝ (xLast dW z ⬝ N)) k j = N k.castSucc j := by
   rw [← Matrix.mul_assoc, Matrix.mul_apply, Fin.sum_univ_castSucc, pX_xLast_last, zero_mul, add_zero]
-  simp only [pX_xLast_castSucc, Matrix.one_apply, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+  simp only [pX_xLast_castSucc, Matrix.one_apply, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
 
 end GlobalTheory.UniStepFB
 

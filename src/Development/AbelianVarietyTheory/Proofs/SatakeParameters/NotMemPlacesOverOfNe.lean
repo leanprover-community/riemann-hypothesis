@@ -227,9 +227,3 @@ theorem isSSRep_twGL {k : Type} [Field k] {n : ℕ} (ρ : Γ →* GL (Fin n) k) 
 end Twist
 
 end GlobalTheory.ParamRep
-
-section Final
-
-open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal Polynomial NumberField IsDedekindDomain GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.RowTie GlobalTheory.SplitRead
-
-end Final

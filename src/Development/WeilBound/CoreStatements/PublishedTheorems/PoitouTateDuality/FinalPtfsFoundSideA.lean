@@ -20,8 +20,6 @@ open CompanionTheory.LocalTateOrthogonality.Gcoh (dn_app neg_one_pow_smul')
 
 namespace PositivityTheory.Lit1.PTN
 
-attribute [local instance 2000] Rep.hV2
-
 section Roots
 
 variable {Kf : FiniteSubfield} (S : Set (HeightOneSpectrum (𝓞 Kf.1))) {l r : ℕ} [Fact l.Prime]

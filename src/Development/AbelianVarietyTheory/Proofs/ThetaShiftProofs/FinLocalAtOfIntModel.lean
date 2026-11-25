@@ -905,12 +905,12 @@ theorem hasSum_laurent_of_mul_eq {q : LaurentSeries F} {g : PowerSeries V} {N : 
   rw [← hinj.hasSum_iff]
   · refine Eq.mpr (congrArg (HasSum · _) (funext fun k => ?_))
       ((hasSum_discEval (ι.comp a) hi ht g).mul_left (((ι (a ϖ) * t) ^ N)⁻¹))
-    rw [Function.comp_apply, hc, sub_add_cancel, if_neg (by omega), Int.natAbs_natCast,
+    rw [Function.comp_apply, hc, sub_add_cancel, ite_eq_right (by omega), Int.natAbs_natCast,
       zpow_sub₀ ht0, zpow_natCast, zpow_natCast, map_mul, map_inv₀, map_pow, RingHom.comp_apply,
       mul_pow, mul_inv]
     ring
   · intro n hn
-    rw [hc, if_pos, map_zero, zero_mul]
+    rw [hc, ite_eq_left, map_zero, zero_mul]
     by_contra h0
     exact hn ⟨(n + N).toNat, by simp only; omega⟩
 

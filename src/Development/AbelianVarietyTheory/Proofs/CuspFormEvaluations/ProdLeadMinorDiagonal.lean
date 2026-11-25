@@ -148,7 +148,7 @@ theorem exists_clear_col (n : Fin p) (M : Matrix (Fin p) (Fin p) K) (hn : M n n 
       if b ∈ Finset.Ioi n then (- M b n / M n n) * M n k else 0, fun f hf => ?_, ?_, ?_, ?_⟩
   · exact hf.what₂ n (fun b => - M b n / M n n) M _ (by simp)
   · intro b hb
-    simp only [of_apply, Finset.mem_Ioi, hb, if_true]
+    simp only [of_apply, Finset.mem_Ioi, hb, ite_true]
     field_simp
     ring
   · intro b k hb
@@ -426,7 +426,7 @@ theorem eq_mul_prod_minors {K σ : Type*} [Field K] [CharZero K] [DecidableEq σ
       have := (biInvariant_eval hz P hr hc x).eq_mul_prod c
         (eval_setBlock_diagonal hz P _ hrow x) _ h
       simpa only [hx] using this
-    · push_neg at h
+    · push Not at h
       obtain ⟨i, hi⟩ := h
       rw [Finset.prod_eq_zero (Finset.mem_univ i) hi, zero_mul, zero_mul]
 

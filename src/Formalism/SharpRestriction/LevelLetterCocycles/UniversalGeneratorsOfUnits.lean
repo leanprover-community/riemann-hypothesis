@@ -357,19 +357,19 @@ theorem crt_fam {ι : Type} [DecidableEq ι] (x₀ : LetA O n) (x : ι → LetA 
       fun i => if i = a then Formalism.MainNotions.ArcLiftingSetup.lA W ^ κ * t else R i * r, ?_, ?_⟩
     · intro i hi
       by_cases hia : i = a
-      · simp only [hia, if_true]; exact W.AΔ.mul_mem (lA_mem W κ) ht
-      · simp only [hia, if_false]
+      · simp only [hia, ite_true]; exact W.AΔ.mul_mem (lA_mem W κ) ht
+      · simp only [hia, ite_false]
         exact W.AΔ.mul_mem (hR i ((Finset.mem_insert.1 hi).resolve_left hia)) hr
     · rw [Finset.sum_insert ha]
       dsimp only
-      rw [if_pos rfl, Finset.erase_insert ha, Finset.prod_insert ha]
+      rw [ite_eq_left rfl, Finset.erase_insert ha, Finset.prod_insert ha]
       have hs : ∑ i ∈ s, x₀ * (∏ j ∈ (insert a s).erase i, x j) *
           (if i = a then Formalism.MainNotions.ArcLiftingSetup.lA W ^ κ * t else R i * r) =
           (∑ i ∈ s, x₀ * (∏ j ∈ s.erase i, x j) * R i) * r * x a := by
         rw [Finset.sum_mul, Finset.sum_mul]
         refine Finset.sum_congr rfl fun i hi => ?_
         have hia : i ≠ a := fun h => ha (h ▸ hi)
-        rw [if_neg hia, Finset.erase_insert_of_ne (Ne.symm hia),
+        rw [ite_eq_right hia, Finset.erase_insert_of_ne (Ne.symm hia),
           Finset.prod_insert (fun h => ha (Finset.mem_of_mem_erase h))]
         ring
       rw [hs, pow_add]

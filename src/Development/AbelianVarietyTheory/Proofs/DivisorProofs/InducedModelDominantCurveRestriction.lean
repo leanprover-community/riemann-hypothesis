@@ -108,12 +108,6 @@ theorem topSelf_pow (hp : IsProjOver p) (L : HermLB p) (m : ℕ) (Z : Scheme.{0}
 
 end Curves
 
-section Covers
-
-variable {F : Type} [Field F] [NumberField F] {Y : Var F}
-
-end Covers
-
 open Formalism.MainNotions Formalism.L2.Pj Formalism.BasicNotions.TH Formalism.L2.Theta ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.AllWt GlobalTheory.CompHt GlobalTheory.CovTop GlobalTheory.CovHt GlobalTheory.Mean4
 open scoped ENNReal Classical
 

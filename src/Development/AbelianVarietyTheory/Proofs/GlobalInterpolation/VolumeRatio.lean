@@ -1186,7 +1186,7 @@ theorem fibre_lintegral_ne_zero : ActionCoordinates.QuotientMeasure → CDHaar �
   let s : ActionCoordinates.Wsp P Q → UpqT P Q := fun y => if h : ActionCoordinates.qf y = β then s0 y h else 1
   have hs : ∀ y, ActionCoordinates.qf y = β → ActionCoordinates.act (s y)⁻¹ x₀ = y := by
     intro y hy
-    simp only [s, dif_pos hy]
+    simp only [s, dite_eq_left hy]
     exact hs0 y hy
   have hc : Continuous fun g : UpqT P Q => ActionCoordinates.act g⁻¹ x₀ :=
     (hcl.continuous.comp continuous_inv).matrix_mulVec continuous_const

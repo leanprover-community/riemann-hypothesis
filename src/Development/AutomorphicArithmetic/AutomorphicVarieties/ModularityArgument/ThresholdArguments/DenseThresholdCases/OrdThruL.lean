@@ -642,7 +642,7 @@ private theorem ord_of_flag (N : _root_.GlobalTheory.Mem.LiteralAutomorphy.Liter
     if hx : ∃ b, IsJumpsAt (Loc.PP l) Bw (rk1 (ψ i)) τ {b} then hx.choose else 0
   have hs : ∀ (i : Fin n) (j : W.Emb l w),
       IsJumpsAt (Loc.PP l) Bw (rk1 (ψ i)) (j.1.comp (algebraMap L _)) {hh i (j.1.comp (algebraMap L _))} := fun i j => by
-    simp only [hh, dif_pos (hone i j)]
+    simp only [hh, dite_eq_left (hone i j)]
     exact (hone i j).choose_spec
   have hc := cont_of_flag hr hf'
   have hla := fun i => UpperTheory.V.Loc.laConv art art.heckeLAdicCharacter hD N.aut.berger h (ψ i) (hc i) O Bw hj

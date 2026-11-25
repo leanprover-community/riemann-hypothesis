@@ -474,7 +474,7 @@ theorem exists_local_frame {M : Type} [AddCommGroup M] [Module (𝓞 L) M] [Modu
     · exact sub_eq_zero.1 h0
     · simp only [sub_smul, Finset.sum_sub_distrib, Matrix.mul_apply, Matrix.of_apply, Matrix.smul_apply,
         Matrix.one_apply, smul_eq_mul, mul_ite, mul_one, mul_zero, ite_smul, zero_smul, Finset.sum_ite_eq,
-        Finset.mem_univ, if_true, Finset.sum_smul]
+        Finset.mem_univ, ite_true, Finset.sum_smul]
       rw [sub_eq_zero, Finset.sum_comm]
       calc ∑ k, ∑ l, (T i k * v k l) • x l = ∑ k, T0 i k • (c • y k) := by
             simp only [hy, Finset.smul_sum, smul_smul, hTdef, Matrix.of_apply]

@@ -711,7 +711,7 @@ theorem LineStabHaar.proof (h : HermitianForm F E W) (v : Basis ι E W)
     if ∀ w, b w ≠ 0 then τ₀ (LineStabHaar.invUnits b) else 1
   have hτb : ∀ b (hb : ∀ w, b w ≠ 0), τ b = τ₀ fun w => (Units.mk0 (b w) (hb w))⁻¹ := by
     intro b hb
-    simp only [τ, if_pos hb, LineStabHaar.invUnits_of_ne hb]
+    simp only [τ, ite_eq_left hb, LineStabHaar.invUnits_of_ne hb]
   have hset : MeasurableSet {b : InfinitePlace E → ℂ | ∀ w, b w ≠ 0} := by
     rw [Set.ofPred_forall]
     exact MeasurableSet.iInter fun w => (measurableSet_singleton (0 : ℂ)).compl.preimage
@@ -722,7 +722,7 @@ theorem LineStabHaar.proof (h : HermitianForm F E W) (v : Basis ι E W)
   · by_cases hb : ∀ w, b w ≠ 0
     · rw [hτb b hb]
       exact hmemP _
-    · simp only [τ, if_neg hb]
+    · simp only [τ, ite_eq_right hb]
       exact one_mem _
   · funext w
     rw [invApply, hτb b hb, ← map_inv, (hτ _ w).1]

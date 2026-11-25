@@ -143,13 +143,13 @@ theorem exists_section {n a : ℕ} (h : a ≤ n) {u₀ : Fin n → ℂ} (hu : u�
   refine ⟨fun u k => if k.val < a then Complex.log (u k / u₀ k) + Complex.log (u₀ k) else u k, ?_, ?_⟩
   · refine contDiffAt_pi.2 fun k => ?_
     by_cases hk : k.val < a
-    · simp only [if_pos hk]
+    · simp only [ite_eq_left hk]
       have hs : u₀ k / u₀ k ∈ Complex.slitPlane := by
         rw [div_self (hne k hk)]; exact Complex.one_mem_slitPlane
       have hq : ContDiffAt ℝ ∞ (fun u : Fin n → ℂ => u k / u₀ k) u₀ :=
         ((contDiff_apply ℝ (fun _ => ℂ) k).div_const _).contDiffAt
       exact (((Complex.contDiffAt_log hs).restrict_scalars ℝ).comp u₀ hq).add contDiffAt_const
-    · simp only [if_neg hk]
+    · simp only [ite_eq_right hk]
       exact (contDiff_apply ℝ (fun _ => ℂ) k).contDiffAt
   · have hP : ∀ᶠ u in 𝓝 u₀, u ∈ Flat.punct n a 1 := (isOpen_punct n a 1).mem_nhds hu
     have hS : ∀ᶠ u in 𝓝 u₀, ∀ k : Fin n, k.val < a → u k / u₀ k ∈ Complex.slitPlane := by
@@ -170,18 +170,18 @@ theorem exists_section {n a : ℕ} (h : a ≤ n) {u₀ : Fin n → ℂ} (hu : u�
         div_mul_cancel₀ _ (hne k hk)]
     refine ⟨⟨fun i => ?_, fun k hk => ?_⟩, ?_⟩
     · have hi : (Fin.castLE h i).val < a := i.2
-      simp only [if_pos hi]
+      simp only [ite_eq_left hi]
       by_contra hc
       have h1 := hlt (Fin.castLE h i)
       rw [← hexp _ hi, Complex.norm_exp] at h1
       exact absurd (Real.one_le_exp (not_lt.1 hc)) (not_le.2 h1)
-    · simp only [if_neg (not_lt.2 hk)]
+    · simp only [ite_eq_right (not_lt.2 hk)]
       exact hlt k
     · funext k
       by_cases hk : k.val < a
-      · simp only [expCover, if_pos hk]
+      · simp only [expCover, ite_eq_left hk]
         exact hexp k hk
-      · simp only [expCover, if_neg hk]
+      · simp only [expCover, ite_eq_right hk]
 
 theorem exists_basis {n a : ℕ} {Λ : Type} [AddCommGroup Λ] (L : Flat.LogPeriods n a g Λ) :
     ∃ b : Module.Basis (Fin g ⊕ Fin g) ℤ Λ,

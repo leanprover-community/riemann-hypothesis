@@ -321,7 +321,7 @@ theorem jhMult_cell_colour : ∀ {k : Type} [Field k] [ValuativeRel k] [Topologi
   let τ : IrrRep (Levi k fun j => Fin (W.get j).1) :=
     ⟨_, piTensor fun j => (W.get j).rep, isSmooth_piTensor fun j => (W.get j).2.rep.smooth, hirr⟩
   refine (hT τ).trans ?_
-  have hzero : ∀ i j, c j ≠ i → b i j = 0 := fun i j hij => by rw [hb, if_neg hij]
+  have hzero : ∀ i j, c j ≠ i → b i j = 0 := fun i j hij => by rw [hb, ite_eq_right hij]
 
   have hcolumn : ∀ (s : ∀ i j, IrrCl (GL (Fin (b i j)) k)) (j : Fin W.length),
       ∃ z : IrrCl (GL (Fin (W.get j).1) k), (⟨_, z⟩ : IrrGL (k := k)) = ⟨b (c j) j, s (c j) j⟩ ∧
@@ -334,7 +334,7 @@ theorem jhMult_cell_colour : ∀ {k : Type} [Field k] [ValuativeRel k] [Topologi
       c j = i → (⟨b i j, u⟩ : IrrGL (k := k)) = W.get j := by
     intro i j
     by_cases hij : c j = i
-    · obtain ⟨u, hu⟩ := exists_class_of_degree (b i j) (W.get j) (by rw [hb, if_pos hij])
+    · obtain ⟨u, hu⟩ := exists_class_of_degree (b i j) (W.get j) (by rw [hb, ite_eq_left hij])
       exact ⟨u, fun _ => hu⟩
     · exact ⟨(IrrRep.det (Fin (b i j)) 1 isSmoothChar_one).cl, fun h' => absurd h' hij⟩
   choose s₀ hs₀ using hex
@@ -540,7 +540,7 @@ theorem GlobalTheory.CompanionTheory.FineProd.jmL_prodIrr : ∀ {k : Type} [Fiel
     · by_cases hm : ∃ (j : Fin W.length) (i i' : Fin h), i ≠ i' ∧ b.1 i j ≠ 0 ∧ b.1 i' j ≠ 0
       · obtain ⟨j, i, i', hii, h1, h2⟩ := hm
         exact _root_.GlobalTheory.CompanionTheory.FineProd.CellMulti.jhMult_cell_eq_zero hA x (fun j => W.get j) (fun j => hW _ (List.get_mem _ _)) b.1 (hr b) (hc b) j i i' hii h1 h2
-      · push_neg at hm
+      · push Not at hm
         have hex : ∀ j, ∃ i, b.1 i j ≠ 0 := fun j => by
           by_contra! hne
           have := hc b j
@@ -581,7 +581,7 @@ theorem GlobalTheory.CompanionTheory.FineProd.jmL_prodIrr : ∀ {k : Type} [Fiel
         congrFun (congrFun (congrArg Subtype.val he) (c j)) j
       by_contra hne
       have h2 : c' j ≠ c j := fun e => hne e.symm
-      simp only [colourMat, if_true, if_neg h2] at h1
+      simp only [colourMat, ite_true, ite_eq_right h2] at h1
       exact (hpos j).ne' h1
     · intro b hb
       obtain ⟨c, hc, hbc⟩ := (Finset.mem_filter.1 hb).2

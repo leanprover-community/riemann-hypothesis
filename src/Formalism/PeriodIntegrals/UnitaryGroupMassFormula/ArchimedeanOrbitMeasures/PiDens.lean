@@ -46,8 +46,8 @@ theorem withDensity_pi {ι : Type} [Fintype ι] {E : ι → Type} [∀ i, Measur
     · simp only [Set.mem_pi, mem_univ, true_implies, not_forall] at hz
       obtain ⟨i, hi⟩ := hz
       have hz' : z ∉ univ.pi s := fun h => hi (h i (mem_univ i))
-      rw [indicator_apply, if_neg hz']
-      exact (Finset.prod_eq_zero (Finset.mem_univ i) (by rw [indicator_apply, if_neg hi])).symm
+      rw [indicator_apply, ite_eq_right hz']
+      exact (Finset.prod_eq_zero (Finset.mem_univ i) (by rw [indicator_apply, ite_eq_right hi])).symm
   rw [h1, lintegral_fintype_prod (fun i => (s i).indicator (fun x => ENNReal.ofReal (D i x))) (fun i => (ENNReal.measurable_ofReal.comp (hD i)).indicator (hs i))]
   refine Finset.prod_congr rfl fun i _ => ?_
   rw [withDensity_apply _ (hs i), lintegral_indicator (hs i)]

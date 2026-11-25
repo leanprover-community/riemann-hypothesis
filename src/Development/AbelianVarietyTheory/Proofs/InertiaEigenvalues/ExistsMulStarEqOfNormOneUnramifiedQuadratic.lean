@@ -225,7 +225,7 @@ theorem exists_far_unit (F E : Type) [NontriviallyNormedField F] [NontriviallyNo
     intro b
     by_cases hb : ‖b‖ ≤ ‖y‖
     · exact hmin (mem_closedBall_zero_iff.2 hb)
-    · push_neg at hb
+    · push Not at hb
       have h0 : g b₀ ≤ g 0 := hmin (by simp)
       refine h0.trans ?_
       simp only [g, map_zero, sub_zero]

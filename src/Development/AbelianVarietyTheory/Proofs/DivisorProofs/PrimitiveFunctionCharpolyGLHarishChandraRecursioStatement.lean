@@ -98,7 +98,7 @@ def lowEquiv {a n : ℕ} (ha : a ≤ n) : low (F := F) a n ≃ₗ[F] (Fin a → 
   toFun v := fun i => v.1 (Fin.castLE ha i)
   map_add' u v := rfl
   map_smul' c v := rfl
-  invFun w := ⟨fun k => if h : (k : ℕ) < a then w ⟨k, h⟩ else 0, fun k hk => dif_neg (by omega)⟩
+  invFun w := ⟨fun k => if h : (k : ℕ) < a then w ⟨k, h⟩ else 0, fun k hk => dite_eq_right (by omega)⟩
   left_inv v := by
     ext k
     dsimp only
@@ -126,7 +126,7 @@ theorem resMat_low {a n : ℕ} (ha : a ≤ n) (p : GL (Fin n) F) (hp : p ∈ sta
   rw [hs, Matrix.toLin'_apply, Matrix.mulVec_single_one]
   have hi : (i : ℕ) < n := by omega
   have hj : (j : ℕ) < n := by omega
-  simp only [tl, ent, dif_pos (And.intro hi hj)]
+  simp only [tl, ent, dite_eq_left (And.intro hi hj)]
   rfl
 
 theorem tl_isUnit {a n : ℕ} (ha : a ≤ n) (p : GL (Fin n) F) (hp : InPar a p) :
@@ -138,7 +138,7 @@ theorem tl_isUnit {a n : ℕ} (ha : a ≤ n) (p : GL (Fin n) F) (hp : InPar a p)
 theorem coe_tlG {a n : ℕ} (ha : a ≤ n) (p : GL (Fin n) F) (hp : InPar a p) :
     ((tlG a p : GL (Fin a) F) : Matrix (Fin a) (Fin a) F) = tl a (p : Matrix (Fin n) (Fin n) F) := by
   unfold tlG toG
-  rw [dif_pos (tl_isUnit ha p hp)]
+  rw [dite_eq_left (tl_isUnit ha p hp)]
   rfl
 
 theorem psi_restrict_low (S : F[X] → ℂ) {a n : ℕ} (ha : a ≤ n) (p : GL (Fin n) F)
@@ -190,7 +190,7 @@ theorem finsum_rank_eq_hc [Finite F] (S : F[X] → ℂ) {a n : ℕ} (ha : a ≤ 
     simp only [resPsi, π]
     by_cases h : t⁻¹ * x * t ∈ stab W₀
     · have h' := (conj_mem_stab_iff W₀ x t).1 h
-      rw [dif_pos h', if_pos ((mem_stab_low_iff a n _).1 h), ← psi_restrict_low S ha _ h,
+      rw [dite_eq_left h', ite_eq_left ((mem_stab_low_iff a n _).1 h), ← psi_restrict_low S ha _ h,
         ← psi_conj F S _ _ ((lin t).submoduleMap W₀)]
       congr 1
       refine LinearMap.ext fun v => ?_
@@ -199,8 +199,8 @@ theorem finsum_rank_eq_hc [Finite F] (S : F[X] → ℂ) {a n : ℕ} (ha : a ≤ 
       ext1
       change lin x (lin t w) = lin t (lin (t⁻¹ * x * t) w)
       rw [← lin_mul, ← lin_mul, mul_assoc, mul_inv_cancel_left]
-    · rw [dif_neg (fun h' => h ((conj_mem_stab_iff W₀ x t).2 h')),
-        if_neg (fun h'' => h ((mem_stab_low_iff a n _).2 h''))]
+    · rw [dite_eq_right (fun h' => h ((conj_mem_stab_iff W₀ x t).2 h')),
+        ite_eq_right (fun h'' => h ((mem_stab_low_iff a n _).2 h''))]
   have hcard : Nat.card {p : GL (Fin n) F // InPar a p} = Nat.card (stab W₀) :=
     Nat.card_congr (Equiv.subtypeEquivRight fun p => (mem_stab_low_iff a n p).symm)
   have hc0 : (Nat.card (stab W₀) : ℂ) ≠ 0 := Nat.cast_ne_zero.2 Nat.card_pos.ne'
@@ -243,7 +243,7 @@ theorem psiG_eq_chG_sub_hc (F : Type) [Field F] [Finite F] (S : F[X] → ℂ) (n
   simp only [Finset.sum_ite_eq]
   rw [finsum_eq_sum_of_fintype]
   rw [Finset.sum_congr rfl (g := fun W => resPsi S x W.1) fun W _ => by
-    unfold resPsi; rw [dif_pos (show x ∈ stab W.1 from W.2.2)]]
+    unfold resPsi; rw [dite_eq_left (show x ∈ stab W.1 from W.2.2)]]
   rw [← Finset.sum_subtype (Finset.univ.filter fun W : Submodule F (Fin n → F) => W ≠ ⊤ ∧ ∀ v ∈ W, Matrix.toLin' (x : Matrix (Fin n) (Fin n) F) v ∈ W)
     (fun W => by simp only [Finset.mem_filter, Finset.mem_univ, true_and]) (resPsi S x), Finset.sum_filter]
   refine Finset.sum_congr rfl fun W _ => ?_

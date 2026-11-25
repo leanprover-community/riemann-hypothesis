@@ -223,7 +223,7 @@ theorem modChar_col {x : Mx D ρ ρ} (hx : x ∈ supMx D ρ) {j : Fin ρ} (hcol 
   · rw [one_apply_ne hik, zero_add, zero_add]
     by_cases hk : k = j
     · subst hk
-      rw [if_pos rfl, if_neg hik, mul_one, two_mul]
+      rw [ite_eq_left rfl, ite_eq_right hik, mul_one, two_mul]
     · rw [hcol i k hk]
       simp
 
@@ -242,12 +242,12 @@ theorem trunc_top (u : Mx D ρ ρ) : trunc u ρ = u := by
 theorem colPart_mem (u : Mx D ρ ρ) (k : ℕ) : colPart u k ∈ supMx D ρ := by
   intro i j h
   change (if j.1 = k ∧ i < j then u i j else 0) = 0
-  rw [if_neg (fun h' => h h'.2)]
+  rw [ite_eq_right (fun h' => h h'.2)]
 
 theorem colPart_col (u : Mx D ρ ρ) {k : ℕ} (hk : k < ρ) : ∀ i l, l ≠ ⟨k, hk⟩ → colPart u k i l = 0 := by
   intro i l hl
   change (if l.1 = k ∧ i < l then u i l else 0) = 0
-  rw [if_neg (fun h => hl (Fin.ext h.1))]
+  rw [ite_eq_right (fun h => hl (Fin.ext h.1))]
 
 theorem trunc_succ {u : Mx D ρ ρ} (hu : u ∈ GlobalTheory.UnitU.uniSet D ρ) (k : ℕ) :
     trunc u (k + 1) = trunc u k + colPart u k := by

@@ -83,24 +83,6 @@ variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Ch
 
 end Mu0
 
-section Mu0Cp1
-
-variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
-  (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) (S : Set ℕ)
-  (cst : LocCst X (rowSG Pr sel (mu0 X.F X.E X.K S))) (L : ChIdx X Pr R (QE sel ((mu0 X.F X.E X.K S : Tup X.F X.E X.K S) : Chr X.F X.E X.K)))
-  (A : Amb X) (u : Pr.Word) (m2 : ℕ)
-
-end Mu0Cp1
-
-section Final
-
-variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
-  (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) (S : Set ℕ)
-  (cst : LocCst X (rowSG Pr sel (mu0 X.F X.E X.K S))) (L : ChIdx X Pr R (QE sel ((mu0 X.F X.E X.K S : Tup X.F X.E X.K S) : Chr X.F X.E X.K)))
-  (A : Amb X) (u : Pr.Word) (m2 : ℕ)
-
-end Final
-
 end Formalism.L2.Ker
 end -- clump:auto
 end -- clump:auto
@@ -200,19 +182,6 @@ variable {X : Fields} {Pr : Primes X} (sel : HeightOneSpectrum (𝓞 X.F) → He
 
 end Scal
 
-section MatQ
-
-variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
-  (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ}
-  (mu : Tup X.F X.E X.K S) (cst : LocCst X (rowSG Pr sel mu)) (L : ChIdx X Pr R (QE sel (mu : Chr X.F X.E X.K)))
-  (A : Amb X) (u : Pr.Word) (m2 : ℕ)
-
-
-
-
-
-end MatQ
-
 section FrameOrd
 
 def fE (k₀ c n : ℕ) (h : k₀ ≤ n) : Fin (n + c) ≃ Fin (n + c) where
@@ -267,7 +236,7 @@ theorem phiQ_eqG {q : ℕ} (hq : ((q : ℕ) : 𝓞 E) ∈ P.asIdeal) (hu : ((q :
   have hent := entB_frame (E := E) q k₀ c' n' c n h' h x
   unfold LocE.PhiQ
   by_cases hI : ∀ s l, IntAt P (x (Pi.single s 1) l)
-  · rw [if_pos hI]
+  · rw [ite_eq_left hI]
     have hC1 : ∀ p p', p < n + c → p' < n' + c' → IntAt P (LocE.entB q k₀ c' n' c n 0 0 x p p') := fun p p' hp hp' => by
       rw [hent p p' hp hp']
       exact hI _ _
@@ -284,7 +253,7 @@ theorem phiQ_eqG {q : ℕ} (hq : ((q : ℕ) : 𝓞 E) ∈ P.asIdeal) (hu : ((q :
         exact ciIntAt_div hq hu (hI _ _) (hh ⟨p, hp2⟩ ⟨p', hp''⟩ hp1 hp')
     unfold phiZ
     by_cases hL : LLz r ((redMQ P x).submatrix (fE k₀ c n h) (fE k₀ c' n' h'))
-    · rw [if_pos ⟨hC1, hC2.2 hL⟩, if_pos hL]
+    · rw [ite_eq_left ⟨hC1, hC2.2 hL⟩, ite_eq_left hL]
       have hmat : (Matrix.of fun s t : Fin r => LocE.entB q k₀ c' n' c n 0 0 x s.1 t.1) =
           Matrix.of fun s t : Fin r => x (Pi.single (fE k₀ c' n' h' (Fin.castLE hr' t)) 1) (fE k₀ c n h (Fin.castLE hr s)) := by
         ext s t
@@ -292,8 +261,8 @@ theorem phiQ_eqG {q : ℕ} (hq : ((q : ℕ) : 𝓞 E) ∈ P.asIdeal) (hu : ((q :
       rw [hmat, unitV_eq, redP_det (Matrix.of fun s t : Fin r => x (Pi.single (fE k₀ c' n' h' (Fin.castLE hr' t)) 1) (fE k₀ c n h (Fin.castLE hr s)))
         fun s t => hI _ _]
       exact congrArg (fun N => xiZ ξ (Matrix.det N)) (Matrix.ext fun _ _ => rfl)
-    · rw [if_neg (fun hh => hL (hC2.1 hh.2)), if_neg hL]
-  · rw [if_neg hI, if_neg]
+    · rw [ite_eq_right (fun hh => hL (hC2.1 hh.2)), ite_eq_right hL]
+  · rw [ite_eq_right hI, ite_eq_right]
     intro hh
     exact hI fun s l => by
       have h1 := hh.1 ((fE k₀ c n h).symm l).1 ((fE k₀ c' n' h').symm s).1 (Fin.is_lt _) (Fin.is_lt _)
@@ -319,7 +288,7 @@ theorem jq_LLzG {q : ℕ} (hq : ((q : ℕ) : 𝓞 E) ∈ P.asIdeal) (hq0 : (q : 
     rw [ciMem_sclLat]
     intro l
     by_cases hl : l = fE k₀ c n h j
-    · rw [hl, Pi.single_eq_same, if_neg hj1, zpow_zero, inv_one, one_mul]
+    · rw [hl, Pi.single_eq_same, ite_eq_right hj1, zpow_zero, inv_one, one_mul]
       exact ciIntAt_one
     · rw [Pi.single_eq_of_ne hl, mul_zero]
       exact ciIntAt_zero
@@ -328,7 +297,7 @@ theorem jq_LLzG {q : ℕ} (hq : ((q : ℕ) : 𝓞 E) ∈ P.asIdeal) (hq0 : (q : 
   rw [ciMem_sclLat] at h2
   have h3 := h2 (fE k₀ c n h i)
   beta_reduce at h3
-  rw [if_pos hi1, zpow_one, inv_mul_eq_div] at h3
+  rw [ite_eq_left hi1, zpow_one, inv_mul_eq_div] at h3
   exact (ciRed_of_div hq hq0 h3).2
 
 theorem redMQ_inv_mul {n : ℕ} {f : Sp E n ≃ₗ[E] Sp E n} (hf : f ∈ GLint E n P) :
@@ -466,64 +435,13 @@ theorem det_first_parabolic_eq_det_block {n c : ℕ} {r : Sp E (n + c) ≃ₗ[E]
     simp only [e2]
   have e2 : ((LinearMap.toMatrix' r.toLinearMap).submatrix (Fin.natAdd n) (Fin.natAdd n)).det = 1 := by
     rw [Matrix.det_of_isUpperTriangular]
-    · exact Finset.prod_eq_one fun s _ => by rw [hb s s le_rfl, if_pos rfl]
+    · exact Finset.prod_eq_one fun s _ => by rw [hb s s le_rfl, ite_eq_left rfl]
     · intro s t hst
       have hst' : t.1 < s.1 := hst
-      rw [hb s t hst'.le, if_neg (by omega)]
+      rw [hb s t hst'.le, ite_eq_right (by omega)]
   rw [e1, e2, mul_one]
 
 end R1
-
-section PsiQ
-
-variable {X : Fields} {Pr : Primes X} {R : Ranks} (Ch : Chars X Pr R.m)
-  (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ}
-  (mu : Tup X.F X.E X.K S) (cst : LocCst X (rowSG Pr sel mu)) (L : ChIdx X Pr R (QE sel (mu : Chr X.F X.E X.K)))
-
-
-
-end PsiQ
-
-section Close
-
-variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
-  (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ}
-  (mu : Tup X.F X.E X.K S) (cst : LocCst X (rowSG Pr sel mu)) (L : ChIdx X Pr R (QE sel (mu : Chr X.F X.E X.K)))
-  (A : Amb X) (u : Pr.Word) (m2 : ℕ)
-
-end Close
-
-section Fam
-
-variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
-  (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ}
-
-end Fam
-
-section Mu0Closed
-
-variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
-  (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) (S : Set ℕ)
-  (cst : LocCst X (rowSG Pr sel (mu0 X.F X.E X.K S))) (A : Amb X) (u : Pr.Word) (m2 : ℕ)
-
-end Mu0Closed
-
-section RepOne
-
-variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
-  (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ}
-  (mu : Tup X.F X.E X.K S) (cst : LocCst X (rowSG Pr sel mu)) (L : ChIdx X Pr R (QE sel (mu : Chr X.F X.E X.K)))
-  (A : Amb X) (u : Pr.Word) (m2 : ℕ)
-
-end RepOne
-
-section Mu0Sym
-
-variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
-  (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) (S : Set ℕ)
-  (cst : LocCst X (rowSG Pr sel (mu0 X.F X.E X.K S))) (A : Amb X) (u : Pr.Word) (m2 : ℕ)
-
-end Mu0Sym
 
 namespace TestAll
 

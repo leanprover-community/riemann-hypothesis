@@ -237,10 +237,10 @@ theorem mem_innerVertices_flipPath {γ : List Edge} {i j : ℕ} (hγ : IsPath γ
   have hex : Edge.ex i j ∈ γ := hp.subset (by simp)
   have heγ : e ∈ γ := List.mem_of_mem_tail he
   by_cases h : e = .ex i j
-  · simp only [h, if_true]
+  · simp only [h, ite_true]
     refine ⟨fun H => ?_, fun H => absurd rfl H⟩
     simp at H
-  · simp only [h, if_false]
+  · simp only [h, ite_false]
     refine ⟨fun H => h (hγ.eq_of_src_eq_of_mem heγ hex (by simpa using H)), fun _ => List.mem_map.2 ⟨e, he, rfl⟩⟩
 
 end GlobalTheory.SplitFlip
@@ -319,7 +319,7 @@ theorem invFourierSum_comp_fromBlocks {k : Type} [Field k] [ValuativeRel k] [Top
     intro T; ext i (j | j)
     · simp [hM, hM', Matrix.mul_apply, Fintype.sum_sum_type, fromBlocks, setCols, inl_nmem, inr_mem]
     · have h1 : setCols P (X * M) (T * Nk) i (Sum.inr j) = (T.submatrix id eP * (invT M₂).val) i j := by
-        rw [← hTN]; simp only [setCols, Matrix.of_apply, dif_pos (inr_mem j), submatrix_apply, id]; rfl
+        rw [← hTN]; simp only [setCols, Matrix.of_apply, dite_eq_left (inr_mem j), submatrix_apply, id]; rfl
       rw [h1]
       simp [hM', Matrix.mul_apply, Fintype.sum_sum_type, fromBlocks, setCols, inl_nmem, inr_mem]
       rfl
@@ -349,7 +349,7 @@ theorem invFourierSum_comp_fromBlocks {k : Type} [Field k] [ValuativeRel k] [Top
       simp only [submatrix_apply, id] at this
       rw [this, Matrix.mul_apply]
       exact Subring.sum_mem _ fun l _ => mul_mem (hX i l) (hM₂i.1 l j)
-    rw [if_pos hX, if_pos hXM]
+    rw [ite_eq_left hX, ite_eq_left hXM]
     let F : Matrix A P k → ℂ := fun T =>
       Φ (setCols P (X * M) ((ϖ ^ e)⁻¹ • T)) * (ψ (-pairCols P (X * M) ((ϖ ^ e)⁻¹ • T)) : ℂ)
     have step : ∀ S : A → P → Res k e,
@@ -383,7 +383,7 @@ theorem invFourierSum_comp_fromBlocks {k : Type} [Field k] [ValuativeRel k] [Top
       have : X i (Sum.inr j) = ((X * M).submatrix id Sum.inr * (M₂⁻¹).val) i j := congrFun (congrFun hX₂ i) j
       rw [this, Matrix.mul_apply]
       exact Subring.sum_mem _ fun l _ => mul_mem (h' i l) (hM₂i.2 l j)
-    rw [if_neg hX, if_neg hXM]
+    rw [ite_eq_right hX, ite_eq_right hXM]
 
 end GlobalTheory.BlockSubstFourier
 end -- clump:auto
@@ -1013,11 +1013,11 @@ theorem squareFlip_one_rows : ∀ {k : Type} [Field k] [ValuativeRel k] [Topolog
     classical
     rw [phiA, phiA, ← hM, GlobalTheory.PrimFrameLeft.isPrimFrame_gl_mul_iff _ _ hMK]
     by_cases hY : IsPrimFrame (latA ϖ e (blockLat ϖ e (Assignment.one.block D₁ D₂))) Y
-    · rw [if_pos hY, if_pos hY]
+    · rw [ite_eq_left hY, ite_eq_left hY]
       obtain ⟨h, rfl⟩ := (rank_eq_card_iff_exists_frameMatrixFirstColumnBlock σ Y).1 hY.1
       rw [hM]
       exact GlobalTheory.T.frameTestFunction_transpose_integralGL_mul_eq_char μ σ ν _ u hu h
-    · rw [if_neg hY, if_neg hY, mul_zero]
+    · rw [ite_eq_right hY, ite_eq_right hY, mul_zero]
   have hb : ∀ (Q : D₁ ⊕ D₂ → Prop), (∀ j ∈ Assignment.two.block D₁ D₂, Q j) ↔ ∀ c, Q (Sum.inr c) := by
     intro Q
     refine ⟨fun h c => h _ (by simp [Assignment.block]), fun h j hj => ?_⟩
@@ -1055,7 +1055,7 @@ theorem squareFlip_one_rows : ∀ {k : Type} [Field k] [ValuativeRel k] [Topolog
   unfold squareFlip
   rw [compl_block_one, invFourierSum_inv_apply, invFourierSum_inv_apply]
   by_cases hX : ∀ i, ∀ j ∈ Assignment.two.block D₁ D₂, X i j ∈ 𝒪[k]
-  · rw [if_pos hX, if_pos (hcond.2 hX)]
+  · rw [ite_eq_left hX, ite_eq_left (hcond.2 hX)]
     set φ := phiA μ σ ν ϖ e (blockLat ϖ e (Assignment.one.block D₁ D₂)) (fourierSum ψ ϖ e (Assignment.one.block D₁ D₂) Φ)
     have hg : ∀ Z Z' : Matrix A (Assignment.two.block D₁ D₂) k, (∀ i j, Z' i j ∈ 𝒪[k]) →
         (fun Z => φ (setCols (Assignment.two.block D₁ D₂) X' Z) * (ψ (pairCols (Assignment.two.block D₁ D₂) X' Z) : ℂ)) (Z + Z') =
@@ -1082,7 +1082,7 @@ theorem squareFlip_one_rows : ∀ {k : Type} [Field k] [ValuativeRel k] [Topolog
     rw [← key, Finset.mul_sum]
     refine Finset.sum_congr rfl fun S _ => ?_
     rw [hset, hpair, ← mul_assoc, hφu]
-  · rw [if_neg hX, if_neg (mt hcond.1 hX), mul_zero]
+  · rw [ite_eq_right hX, ite_eq_right (mt hcond.1 hX), mul_zero]
 
 end GlobalTheory.SquareFlipRows
 end -- clump:auto

@@ -380,7 +380,7 @@ theorem pointwise : Equi → ∀ (F E : Type) [Field F] [NumberField F] [Field E
         simp only [hTd, hU]
         rw [e1, mul_zero, Set.indicator_of_notMem (by exact hall)]
     · rw [Set.indicator_of_notMem (by exact hx)]
-      push_neg at hx
+      push Not at hx
       obtain ⟨v, hv, i, hi⟩ := hx
       simp only [hU]
       have hn : X ∉ {X : Fin 1 → Fin 2 → E | ∀ v, actW (Fv F v) σ J (g v) (ratTup (Fv F v) X) ∈ A v} :=

@@ -133,12 +133,6 @@ end GlobalTheory.SquareRel
 
 namespace GlobalTheory.SquareRel
 
-section Route
-
-variable {D : D7} {a b c d b' : ℕ}
-
-end Route
-
 section Grid
 
 variable {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} (G : GridData L sc) (i j : ℕ) {d b' b₁ : ℕ}

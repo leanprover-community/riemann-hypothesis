@@ -199,7 +199,7 @@ private theorem ls_core {A T K ι ι' : Type} [CommRing A] [IsLocalRing A] [IsNo
         simpa using this
       · rwa [hfi.pow_succ_eq] at hk
     rw [nilradical_eq_sInf, Ideal.mem_sInf] at hnil
-    push_neg at hnil
+    push Not at hnil
     obtain ⟨P, hP, hfP⟩ := hnil
     haveI : P.IsPrime := hP
     obtain ⟨Q, hQ, hQP⟩ := Ideal.exists_minimalPrimes_le (I := ⊥) (J := P) bot_le
@@ -213,9 +213,9 @@ private theorem ls_core {A T K ι ι' : Type} [CommRing A] [IsLocalRing A] [IsNo
       rw [mem_nonZeroDivisors_iff, not_and_or] at hnz
       have hex : ∃ y : T, algebraMap A T b * y = 0 ∧ y ≠ 0 := by
         rcases hnz with h | h
-        · push_neg at h
+        · push Not at h
           exact h
-        · push_neg at h
+        · push Not at h
           obtain ⟨y, hy, hy0⟩ := h
           exact ⟨y, by rw [mul_comm]; exact hy, hy0⟩
       obtain ⟨y, hy, hy0⟩ := hex

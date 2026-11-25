@@ -225,10 +225,10 @@ theorem nbTau {θ : InfFam D} (hθ : IsInfFam θ) {τ : D.what₂.Tau} {ι : GR 
     rw [hmat, hnb ⟨β, hherm⟩]
   refine ⟨⟨β, hherm⟩, e, hfβ, ?_, ?_, ?_⟩
   · show compAt θ τ β = herm x
-    rw [compAt_eq_psiT hθ, hψβ τ, if_pos rfl]
+    rw [compAt_eq_psiT hθ, hψβ τ, ite_eq_left rfl]
   · intro τ' ht
     show compAt θ τ' β = 0
-    rw [compAt_eq_psiT hθ, hψβ τ', if_neg ht]
+    rw [compAt_eq_psiT hθ, hψβ τ', ite_eq_right ht]
   · intro b'
     rw [e, nb_mul_comm nb hnb]
 

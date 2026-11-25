@@ -96,7 +96,7 @@ theorem adq_proj_e (hθ : IsSplitEquiv X p θ) (b : Fin D.R.rS) (y : IdxD D → 
   have hef := adq_ef X p θ Q u hθ b
   have hez := adq_ez X u p θ Q hθ b
   simp only [adqProj, dotProduct_sub, dotProduct_sum, dotProduct_smul, smul_eq_mul, hef, hez, mul_ite,
-    mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true, sub_self]
+    mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, ite_true, sub_self]
 
 theorem secondCoords_projection_orth (hθ : IsSplitEquiv X p θ) (hτ : adqTau X u p θ Q ≠ 0) (y : IdxD D → FpX X p) :
     crd2 X p θ Q (adqZ X u p) ⬝ᵥ adqProj X u p θ Q y = 0 := by

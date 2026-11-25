@@ -411,15 +411,15 @@ theorem PChain.trans {lenO : ℕ∞} {m : ℕ} {c : ℝ} {A B C : Submodule O FF
   obtain ⟨k₂, F₂, g₂, h0₂, hk₂, hs₂, hg₂, hl₂, hst₂⟩ := h₂
   let Fl : ℕ → Submodule O FF := fun i => if i ≤ k₁ then F₁ i else F₂ (i - k₁)
   let gen : Finset ℕ := g₁ ∪ g₂.map (addRightEmbedding k₁)
-  have hFl₁ : ∀ i, i ≤ k₁ → Fl i = F₁ i := fun i hi => if_pos hi
+  have hFl₁ : ∀ i, i ≤ k₁ → Fl i = F₁ i := fun i hi => ite_eq_left hi
   have hFl₂ : ∀ i, k₁ ≤ i → Fl i = F₂ (i - k₁) := by
     intro i hi
     by_cases h : i ≤ k₁
     · have hik : i = k₁ := le_antisymm h hi
       rw [hik]
       show (if k₁ ≤ k₁ then F₁ k₁ else F₂ (k₁ - k₁)) = F₂ (k₁ - k₁)
-      rw [if_pos le_rfl, Nat.sub_self, hk₁, h0₂]
-    · exact if_neg h
+      rw [ite_eq_left le_rfl, Nat.sub_self, hk₁, h0₂]
+    · exact ite_eq_right h
   have hdisj : Disjoint g₁ (g₂.map (addRightEmbedding k₁)) := by
     rw [Finset.disjoint_left]
     intro a ha hb

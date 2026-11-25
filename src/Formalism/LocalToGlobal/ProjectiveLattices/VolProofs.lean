@@ -17,7 +17,7 @@ def VolPairEx (V : HSp D) : Prop := ∃ p : Measure (GA D V) × Set (GA D V), Is
 
 theorem volPair_eq_choose (V : HSp D) (h : VolPairEx V) : volPair V = h.choose := by
   unfold volPair
-  exact dif_pos h
+  exact dite_eq_left h
 
 theorem volPair_isVolPair (V : HSp D) (h : VolPairEx V) : IsVolPair D V (volPair V).1 (volPair V).2 := by
   rw [volPair_eq_choose V h]

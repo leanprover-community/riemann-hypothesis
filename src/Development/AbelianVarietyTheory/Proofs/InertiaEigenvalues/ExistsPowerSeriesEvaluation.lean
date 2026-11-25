@@ -251,7 +251,7 @@ theorem dvd_part_sub (M : ℕ) (f : PowerSeries L) (q : Polynomial L)
   have h1 : Polynomial.X ^ M ∣ PowerSeries.trunc M f - q := by
     rw [Polynomial.X_pow_dvd_iff]
     intro k hk
-    rw [Polynomial.coeff_sub, PowerSeries.coeff_trunc, if_pos hk, h k hk, sub_self]
+    rw [Polynomial.coeff_sub, PowerSeries.coeff_trunc, ite_eq_left hk, h k hk, sub_self]
   have h2 := map_dvd (Polynomial.eval₂RingHom c t) h1
   rw [map_sub, map_pow, Polynomial.coe_eval₂RingHom, Polynomial.eval₂_X] at h2
   exact h2
@@ -270,7 +270,7 @@ theorem exists_lim (f : PowerSeries L) : ∃ x : A, ∀ M, t ^ M ∣ x - part c 
     (f := fun M => part c t M f) fun {m n} h => by
       rw [SModEq.sub_mem, mem_iff]
       exact dvd_part_sub c t m f _ fun k hk => by
-        rw [PowerSeries.coeff_trunc, if_pos (hk.trans_le h)]
+        rw [PowerSeries.coeff_trunc, ite_eq_left (hk.trans_le h)]
   exact ⟨x, fun M => by rw [← mem_iff, ← SModEq.sub_mem]; exact (hx M).symm⟩
 
 theorem exists_ev : ∃ ev : PowerSeries L →+* A, ∀ f M, t ^ M ∣ ev f - part c t M f := by
@@ -289,7 +289,7 @@ theorem exists_ev : ∃ ev : PowerSeries L →+* A, ∀ f M, t ^ M ∣ ev f - pa
       rw [PowerSeries.coeff_mul, Polynomial.coeff_mul]
       refine Finset.sum_congr rfl fun p hp => ?_
       have := Finset.HasAntidiagonal.mem_antidiagonal.1 hp
-      rw [PowerSeries.coeff_trunc, PowerSeries.coeff_trunc, if_pos (by omega), if_pos (by omega)]
+      rw [PowerSeries.coeff_trunc, PowerSeries.coeff_trunc, ite_eq_left (by omega), ite_eq_left (by omega)]
     rw [map_mul] at h
     have h' := dvd_sub (dvd_add ((he f M).mul_right (e g)) ((he g M).mul_left (part c t M f))) h
     convert h' using 1

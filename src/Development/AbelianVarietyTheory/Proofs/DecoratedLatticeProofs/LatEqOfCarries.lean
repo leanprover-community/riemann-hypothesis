@@ -98,7 +98,7 @@ theorem cosetIn_eq_of {u : Pr.Word} {j : ℕ} (r : PtAt R sel mu cst u j) (P : r
   classical
   apply Set.ext
   intro z
-  simp only [cosetIn, if_pos hP, pow_zero, inv_one, one_smul, Set.mem_setOf_eq, hY]
+  simp only [cosetIn, ite_eq_left hP, pow_zero, inv_one, one_smul, Set.mem_setOf_eq, hY]
   constructor
   · rintro ⟨y', hy', hz⟩
     have h1 : y' - y ∈ Formalism.HermitianLatticesTheory.localization₂ P.1.asIdeal r.1.1.deco.1.N := by

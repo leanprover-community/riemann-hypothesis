@@ -215,8 +215,8 @@ theorem rho_sub_mem [IsDomain O] (Hy : LvHyp Lb hR uZ ιZ C c ell Λ κ lam) {j 
     funext i
     unfold Tw
     by_cases h : ((((baseIdOf hR).Bs.ℓ - 1) * M : ℕ) : ℤ) ≤ i
-    · rw [if_pos h, if_pos (by omega)]
-    · rw [if_neg h, if_neg (by omega)]
+    · rw [ite_eq_left h, ite_eq_left (by omega)]
+    · rw [ite_eq_right h, ite_eq_right (by omega)]
   have hz' : tp (KsW W s) (-((((baseIdOf hR).Bs.ℓ - 1) * M : ℕ) : ℤ)) • z ∈
       Xi (KsW W s) (Tw (LL := LL) (D := Dc W T c) 0) :=
     (xi_shift_holds LL (KsW W s) (Dc W T c) _ _ z).2 (by rw [hTw]; exact hz)
@@ -376,19 +376,19 @@ theorem lvData_localizesConst_of_crystalline [IsDomain O] {T : LocLat G Qp LL O}
   by_cases hm : ((((baseIdOf hR).Bs.ℓ - 1) * M : ℕ) : ℤ) ≤ i
   · have htop : Tw (LL := LL) (D := Dc W T c) ((((baseIdOf hR).Bs.ℓ - 1) * M : ℕ) : ℤ) i = ⊤ := by
       unfold Tw
-      rw [if_pos hm]
+      rw [ite_eq_left hm]
     rw [htop, Submodule.baseChange_top]
     exact Submodule.mem_top
   · have hbot : Tw (LL := LL) (D := Dc W T c) ((((baseIdOf hR).Bs.ℓ - 1) * M : ℕ) : ℤ) i = ⊥ := by
       unfold Tw
-      rw [if_neg hm]
+      rw [ite_eq_right hm]
     rw [hbot, Submodule.baseChange_bot, Submodule.mem_bot]
     rw [hℓ] at hm
-    push_neg at hm
+    push Not at hm
     by_cases h0 : i = 0
     · subst h0
-      rw [if_pos rfl, hcoef0, sub_self]
-    · rw [if_neg h0, hcoef i hm h0, TensorProduct.tmul_zero, sub_zero]
+      rw [ite_eq_left rfl, hcoef0, sub_self]
+    · rw [ite_eq_right h0, hcoef i hm h0, TensorProduct.tmul_zero, sub_zero]
 
 end Formalism.MainNotions.N.Ln03.Pf
 end -- clump:auto

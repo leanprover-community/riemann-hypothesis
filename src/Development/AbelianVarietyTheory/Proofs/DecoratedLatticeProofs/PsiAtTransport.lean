@@ -296,11 +296,11 @@ theorem psiAt_cosetIn (hL : L.Ok Ch sel mu cst G m2) (al : L.β m2) (P : rowSG P
   have h1 : (frsF sel mu p.1.1 P).symm (repY p.1.2) ∈ cosetIn p P := ⟨_, p.repY_mem hm, by simp⟩
   rw [← h] at h1
   obtain ⟨z, hz, h2⟩ := h1
-  rw [if_pos hP, pow_zero, inv_one, one_smul] at h2
+  rw [ite_eq_left hP, pow_zero, inv_one, one_smul] at h2
   have h3 := add_mem h2 ((GlobalTheory.TopLaw.coset_sub q.1.1 (q.mem_ybSet hm) hz (q.repY_mem hm) P).1 hP)
   rw [sub_add_sub_cancel] at h3
   have h4 := hL.psiInv al P x ((frsF sel mu q.1.1 P).symm (repY q.1.2)) _ fun i => by
-    rw [if_pos hP, pow_zero, inv_one, one_mul]
+    rw [ite_eq_left hP, pow_zero, inv_one, one_mul]
     exact mem_stdAt.1 h3 i
   rwa [add_sub_cancel] at h4
 

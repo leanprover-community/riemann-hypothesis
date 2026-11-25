@@ -120,12 +120,12 @@ theorem rem_addC_comm {c : ∀ k, ι k} {I : ∀ k, Finset (ι k)} {k l : K} {i 
 omit [Fintype K] [∀ k, LinearOrder (ι k)] in
 theorem setC_apply_mem {c : ∀ k, ι k} {T : Finset K} {I : ∀ k, Finset (ι k)} {j : K} (h : j ∈ T) :
     setC c T I j = {c j} :=
-  if_pos h
+  ite_eq_left h
 
 omit [Fintype K] [∀ k, LinearOrder (ι k)] in
 theorem setC_apply_not_mem {c : ∀ k, ι k} {T : Finset K} {I : ∀ k, Finset (ι k)} {j : K} (h : j ∉ T) :
     setC c T I j = I j :=
-  if_neg h
+  ite_eq_right h
 
 omit [Fintype K] in
 theorem rem_setC {c : ∀ k, ι k} {T : Finset K} {I : ∀ k, Finset (ι k)} {l : K} (i : ι l) (hl : l ∉ T) :
@@ -185,7 +185,7 @@ theorem telescope {M : Type} [AddCommGroup M] (g : Finset K → M) (s : Finset K
       intro k hk
       have hak : ¬ a < k := not_lt.2 (ha k hk).le
       have hak' : ¬ a ≤ k := not_le.2 (ha k hk)
-      exact ⟨by rw [Finset.filter_insert, if_neg hak], by rw [Finset.filter_insert, if_neg hak']⟩
+      exact ⟨by rw [Finset.filter_insert, ite_eq_right hak], by rw [Finset.filter_insert, ite_eq_right hak']⟩
     rw [Finset.sum_insert has, e1, e2, Finset.sum_congr rfl fun k hk => by rw [(e3 k hk).1, (e3 k hk).2], ih]
     abel
 
@@ -218,29 +218,29 @@ variable {y : (Σ k, ι k) → Ω} {c : ∀ k, ι k}
 
 theorem dif_of_good {f : (∀ k, Finset (ι k)) → Ω} {I : ∀ k, Finset (ι k)} (h : Good y I) :
     dif y f I = ∑ k, ∑ i ∈ I k, faceSign I k i • f (rem I ⟨k, i⟩) := by
-  rw [dif, if_pos h]
+  rw [dif, ite_eq_left h]
 
 theorem dif_of_not {f : (∀ k, Finset (ι k)) → Ω} {I : ∀ k, Finset (ι k)} (h : ¬ Good y I) :
     dif y f I = 0 := by
-  rw [dif, if_neg h]
+  rw [dif, ite_eq_right h]
 
 theorem coneOp_of_good {k : K} {f : (∀ k, Finset (ι k)) → Ω} {I : ∀ k, Finset (ι k)} (h : Good y I)
     (hk : c k ∉ I k) : coneOp y c k f I = faceSign (addC c I k) k (c k) • f (addC c I k) := by
-  rw [coneOp, if_pos ⟨h, hk⟩]
+  rw [coneOp, ite_eq_left ⟨h, hk⟩]
 
 theorem coneOp_of_not {k : K} {f : (∀ k, Finset (ι k)) → Ω} {I : ∀ k, Finset (ι k)}
     (h : ¬ (Good y I ∧ c k ∉ I k)) : coneOp y c k f I = 0 := by
-  rw [coneOp, if_neg h]
+  rw [coneOp, ite_eq_right h]
 
 omit [∀ k, LinearOrder (ι k)] in
 theorem projOp_of_good {T : Finset K} {f : (∀ k, Finset (ι k)) → Ω} {I : ∀ k, Finset (ι k)} (h : Good y I)
     (hT : ∀ j ∈ T, (I j).card = 1) : projOp y c T f I = f (setC c T I) := by
-  rw [projOp, if_pos ⟨h, hT⟩]
+  rw [projOp, ite_eq_left ⟨h, hT⟩]
 
 omit [∀ k, LinearOrder (ι k)] in
 theorem projOp_of_not {T : Finset K} {f : (∀ k, Finset (ι k)) → Ω} {I : ∀ k, Finset (ι k)}
     (h : ¬ (Good y I ∧ ∀ j ∈ T, (I j).card = 1)) : projOp y c T f I = 0 := by
-  rw [projOp, if_neg h]
+  rw [projOp, ite_eq_right h]
 
 omit [Fintype K] in
 theorem meets_rem {I : ∀ k, Finset (ι k)} (hI : CellMeets y I) (p : Σ k, ι k) : CellMeets y (rem I p) :=
@@ -348,7 +348,7 @@ theorem dif_coneOp (hc : ∀ k, y ⟨k, c k⟩ ≠ 0) {f : (∀ k, Finset (ι k)
         dsimp only at e1
         rw [rem_addC hck] at e1
         rw [coneOp_of_good hg hnin, ← rem_addC_comm hi hck, smul_smul, smul_smul, ← add_smul,
-          if_neg (fun h => hne.ne_empty h.1)]
+          ite_eq_right (fun h => hne.ne_empty h.1)]
         have hε := faceSign_mul_self (addC c I k) k (c k)
         have hσ := faceSign_mul_self (rem (addC c I k) ⟨l, i⟩) k (c k)
         have hsum : faceSign I l i * faceSign (rem (addC c I k) ⟨l, i⟩) k (c k) +
@@ -362,7 +362,7 @@ theorem dif_coneOp (hc : ∀ k, y ⟨k, c k⟩ ≠ 0) {f : (∀ k, Finset (ι k)
         rw [coneOp_of_not (fun h => hg h.1), smul_zero, zero_add]
         by_cases hlk : l = k
         · subst hlk
-          rw [if_pos ⟨hempty, rfl⟩]
+          rw [ite_eq_left ⟨hempty, rfl⟩]
           have hIl : I l = {i} := Finset.eq_singleton_iff_unique_mem.2 ⟨hi, fun x hx => by
             by_contra h
             have : x ∈ (I l).erase i := Finset.mem_erase.2 ⟨h, hx⟩
@@ -380,21 +380,21 @@ theorem dif_coneOp (hc : ∀ k, y ⟨k, c k⟩ ≠ 0) {f : (∀ k, Finset (ι k)
           have hpair : faceSign (addC c I l) l (c l) * faceSign (addC c I l) l i = -1 :=
             faceSign_pair (by rw [addC_apply_self, hIl]) hci
           rw [hset, smul_smul, hpair, neg_one_smul]
-        · rw [if_neg (fun h => hlk h.2)]
+        · rw [ite_eq_right (fun h => hlk h.2)]
           have hbad : ¬ Good y (rem (addC c I k) ⟨l, i⟩) := fun h => hne (by
             have := h.1 l
             rwa [rem_apply_self, addC_apply_of_ne c I hlk] at this)
           rw [hf _ hbad, smul_zero, smul_zero]
     have hsum : ∑ l, ∑ i ∈ I l, (if (I l).erase i = ∅ ∧ l = k then -f (setC c {k} I) else 0) =
         -projOp y c {k} f I := by
-      rw [Finset.sum_eq_single k (fun l _ hl => Finset.sum_eq_zero fun i _ => if_neg fun h => hl h.2)
+      rw [Finset.sum_eq_single k (fun l _ hl => Finset.sum_eq_zero fun i _ => ite_eq_right fun h => hl h.2)
         (fun h => absurd (Finset.mem_univ k) h)]
       by_cases h1 : (I k).card = 1
       · obtain ⟨a, ha⟩ := Finset.card_eq_one.1 h1
         rw [projOp_of_good hI (by simpa using h1), ha, Finset.sum_singleton, Finset.erase_singleton,
-          if_pos ⟨rfl, rfl⟩]
+          ite_eq_left ⟨rfl, rfl⟩]
       · rw [projOp_of_not (fun h => h1 (h.2 k (Finset.mem_singleton_self k))), neg_zero]
-        refine Finset.sum_eq_zero fun i hi => if_neg fun h => ?_
+        refine Finset.sum_eq_zero fun i hi => ite_eq_right fun h => ?_
         have h2 := Finset.card_erase_of_mem hi
         rw [h.1, Finset.card_empty] at h2
         have h3 := Finset.card_pos.2 ⟨i, hi⟩
@@ -417,12 +417,12 @@ theorem projOp_rem_pair {f : (∀ k, Finset (ι k)) → Ω} {I : ∀ k, Finset (
     · rw [setC_apply_mem hm, setC_apply_mem hm]
     · rw [setC_apply_not_mem hm, setC_apply_not_mem hm, rem_apply_of_ne i (fun e => hm (by rw [e]; exact hj))]
   by_cases hT : ∀ m ∈ T, m ≠ j → (I m).card = 1
-  · rw [if_pos hT, projOp_of_good (good_rem hI hne), hset]
+  · rw [ite_eq_left hT, projOp_of_good (good_rem hI hne), hset]
     intro m hm
     by_cases hmj : m = j
     · subst hmj; exact hcard
     · rw [rem_apply_of_ne i hmj]; exact hT m hm hmj
-  · rw [if_neg hT, projOp_of_not]
+  · rw [ite_eq_right hT, projOp_of_not]
     rintro ⟨-, h⟩
     apply hT
     intro m hm hmj
@@ -599,7 +599,7 @@ variable (S : Type) [CommRing S] [Algebra S Ω]
 
 theorem cellD_apply (m : ℕ) (t : ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.KH.Cell K ι m → Ω) (J : ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.KH.Cell K ι (m + 1)) (hJ : CellMeets y J.1) :
     cellD S y m t J = ∑ k, ∑ i ∈ J.1 k, faceSign J.1 k i • extC m t (rem J.1 ⟨k, i⟩) := by
-  simp only [cellD, LinearMap.pi_apply, if_pos hJ, LinearMap.sum_apply]
+  simp only [cellD, LinearMap.pi_apply, ite_eq_left hJ, LinearMap.sum_apply]
   refine Finset.sum_congr rfl fun k _ => Finset.sum_congr rfl fun i _ => ?_
   unfold extC rem
   by_cases h : (∀ l, (Function.update J.1 k ((J.1 k).erase i) l).Nonempty) ∧
@@ -609,7 +609,7 @@ theorem cellD_apply (m : ℕ) (t : ReciprocityTheory.ChartRestriction.G.Arakelov
 
 theorem cellD_apply_not (m : ℕ) (t : ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.KH.Cell K ι m → Ω) (J : ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.KH.Cell K ι (m + 1)) (hJ : ¬ CellMeets y J.1) :
     cellD S y m t J = 0 := by
-  simp only [cellD, LinearMap.pi_apply, if_neg hJ, LinearMap.zero_apply]
+  simp only [cellD, LinearMap.pi_apply, ite_eq_right hJ, LinearMap.zero_apply]
 
 theorem dif_extC_eq_zero {q : ℕ} {s : ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.KH.Cell K ι (q + 1) → Ω} (hs : cellD S y (q + 1) s = 0)
     (J : ∀ k, Finset (ι k)) : dif y (extC (q + 1) s) J = 0 := by

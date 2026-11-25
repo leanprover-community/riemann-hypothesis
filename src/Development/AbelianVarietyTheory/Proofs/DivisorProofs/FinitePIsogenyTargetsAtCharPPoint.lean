@@ -1274,7 +1274,7 @@ theorem exists_local_idempotents {B : Type} [CommRing B] (c : B) [Finite (B ⧸ 
     refine hz _ fun J => ?_
     have := Ideal.sum_mem (J.asIdeal ^ (n + 1)) (t := Finset.univ) fun I _ => he I J
 
-    rw [Finset.sum_sub_distrib, Finset.sum_ite_eq, if_pos (Finset.mem_univ _), ← map_sum] at this
+    rw [Finset.sum_sub_distrib, Finset.sum_ite_eq, ite_eq_left (Finset.mem_univ _), ← map_sum] at this
     simpa using this
   · rw [← Ideal.Quotient.eq_zero_iff_mem]
     refine hz _ fun J => ?_
@@ -1297,7 +1297,7 @@ theorem exists_local_idempotents {B : Type} [CommRing B] (c : B) [Finite (B ⧸ 
       by_cases hJ : J = I
       · rw [← hJ]; exact hcm.symm
       · have := he I J
-        rw [if_neg hJ, sub_zero] at this
+        rw [ite_eq_right hJ, sub_zero] at this
         exact (h (hcm ▸ (Ideal.pow_le_self (Nat.succ_ne_zero n) this : π (e I) ∈ P.map π))).elim
     rw [key P hP hc h, key P' hP' hc' h']
 

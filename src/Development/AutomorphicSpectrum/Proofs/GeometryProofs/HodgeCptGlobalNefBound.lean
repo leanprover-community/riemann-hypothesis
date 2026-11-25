@@ -970,14 +970,14 @@ theorem drTie_of_hodgeCpt : ∀ (E : Type) [Field E] [NumberField E] [IsCMField 
     exact h1
   · rw [Fintype.card_sum] at hcard
     omega
-  · have hidx : HodgeCpt.rootIdx D (τ, i) = ⟨.inl τ, ⟨i, h⟩⟩ := dif_pos h
-    have hsgn : HodgeCpt.rootSgn D (τ, i) = 1 := if_pos h
+  · have hidx : HodgeCpt.rootIdx D (τ, i) = ⟨.inl τ, ⟨i, h⟩⟩ := dite_eq_left h
+    have hsgn : HodgeCpt.rootSgn D (τ, i) = 1 := ite_eq_left h
     have h1 := hroot (τ, i)
     rw [hidx, hsgn] at h1
     exact deg_one (hG _) h1 fun q hq => gr_congr (hV _ q hq) _ _
   · have hn : ¬ (i : ℕ) < D.p := not_lt.2 hj
-    have hidx : HodgeCpt.rootIdx D (τ, i) = ⟨.inr τ, ⟨D.p + D.q - 1 - i, by have := i.2; show _ < D.q; omega⟩⟩ := dif_neg hn
-    have hsgn : HodgeCpt.rootSgn D (τ, i) = -1 := if_neg hn
+    have hidx : HodgeCpt.rootIdx D (τ, i) = ⟨.inr τ, ⟨D.p + D.q - 1 - i, by have := i.2; show _ < D.q; omega⟩⟩ := dite_eq_right hn
+    have hsgn : HodgeCpt.rootSgn D (τ, i) = -1 := ite_eq_right hn
     have h1 := hroot (τ, i)
     rw [hidx, hsgn] at h1
     rw [gr_cast]

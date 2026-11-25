@@ -815,7 +815,7 @@ theorem main : ∀ c₀ : ℝ, 0 < c₀ → ∃ C₀ : ℝ, ∀ C : ℝ, C₀ �
     rw [e1] at H2
     have e2 : ((Lat.Tu D u ^ (2 * D.R.f) : ℕ) : ℝ) = Cnt.NT D u ^ 2 := by
       rw [Cnt.NT, ← pow_mul, mul_comm D.R.f]; push_cast; rfl
-    rw [e2, _root_.Formalism.BasicNotions.Host.finrank_E', Cnt.XiS, Cnt.Xi, if_pos ⟨hs2, hmid⟩]
+    rw [e2, _root_.Formalism.BasicNotions.Host.finrank_E', Cnt.XiS, Cnt.Xi, ite_eq_left ⟨hs2, hmid⟩]
     push_cast
     exact H2
   · have hk : 1 ≤ D.R.k := by omega
@@ -840,7 +840,7 @@ theorem main : ∀ c₀ : ℝ, 0 < c₀ → ∃ C₀ : ℝ, ∀ C : ℝ, C₀ �
         exact one_le_mul_of_one_le_of_one_le (one_le_pow₀ (by linarith)) (one_le_pow₀ hde')
     · rw [o2, ← hm1, mul_comm, ← ENNReal.ofReal_mul hm2.le]
       refine ENNReal.ofReal_le_ofReal (mul_le_mul_of_nonneg_left ?_ hm2.le)
-      rw [Cnt.XiS, Cnt.Xi, if_neg (fun a => hmid a.2), if_pos (by omega)]
+      rw [Cnt.XiS, Cnt.Xi, ite_eq_right (fun a => hmid a.2), ite_eq_left (by omega)]
       exact H2
 
 end GlobalTheory.Mass.PrimMeanRow

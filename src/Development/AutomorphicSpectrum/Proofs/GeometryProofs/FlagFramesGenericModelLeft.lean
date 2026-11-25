@@ -324,7 +324,7 @@ theorem exists_adapted : ∀ (K : Type) [Field K] (R : Subring K) [IsLocalRing R
     show flagStep K (fun a j => (p a j : K)) i = flagStep K g i
     by_cases hi : i ≤ r
     · exact hfl i hi
-    · push_neg at hi
+    · push Not at hi
       rw [flagStep_of_le _ hi.le, flagStep_of_le g hi.le]
       exact hfl r le_rfl
 

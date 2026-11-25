@@ -261,7 +261,7 @@ theorem awayNZ : AwayNZ := by
     simp [compAt]
   have hg0 : g (fun i j => finPart D ((0 : Mx D V.rank n) i j)) = 1 := by
     simp only [g]
-    rw [if_pos]
+    rw [ite_eq_left]
     simp only [Matrix.zero_apply, map_zero]
     exact (QuotientAddGroup.eq_zero_iff (N := W) (0 : Matrix (Fin V.rank) (Fin n) _)).2 W.zero_mem
   show evalPoly _ _ * gAway V l s τ _ * g _ ≠ 0

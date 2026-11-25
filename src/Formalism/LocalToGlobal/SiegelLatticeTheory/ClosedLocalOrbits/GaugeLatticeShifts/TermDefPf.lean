@@ -284,7 +284,7 @@ theorem nlam_coef {T : E} {F : LFlag S r T} {n : S.V ≃ₗ[E] S.V} (hn : n ∈ 
     have e := hsum a
     rw [Finsupp.linearCombination_apply, Finsupp.sum_fintype _ _ (by simp)] at e
     simp only [add_smul, Finset.sum_add_distrib, ite_smul, one_smul, zero_smul, Finset.sum_ite_eq,
-      Finset.mem_univ, if_true]
+      Finset.mem_univ, ite_true]
     rw [e]
     abel
 

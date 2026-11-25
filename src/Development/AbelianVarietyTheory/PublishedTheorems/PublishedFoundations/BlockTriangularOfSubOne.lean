@@ -156,7 +156,7 @@ theorem isCuspidal_iff_twoBlocks {V : Type} [AddCommGroup V] [Module ℂ V] (ρ 
     by_cases hi : (i : ℕ) < a
     · have hj : (j : ℕ) < a := (key j).mpr fun hlt => (key i).mp hi (lt_of_lt_of_le hlt hij)
       simp [hi, hj]
-    · simp only [hi, if_false]
+    · simp only [hi, ite_false]
       split_ifs <;> omega
 
 end Radical

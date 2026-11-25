@@ -203,7 +203,7 @@ theorem smallGen_fsH (y : (Σ k, ι k) → Ω) : SmallGen y (fsH ι) := by
     refine ⟨fun j => if e.symm j = c then 1 else 0, fun j => by beta_reduce; split_ifs <;> simp, ?_⟩
     rw [Fintype.sum_equiv e.symm _ (fun i => (if i = c then (1 : Ω) else 0) *
       (aeval y (chartMono i 1) * ∏ k, y ⟨k, c k⟩ ^ (-(fsH ι).a k))) (fun _ => rfl)]
-    simp only [ite_mul, one_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    simp only [ite_mul, one_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     rw [aeval_chartMono, ← Finset.prod_mul_distrib]
     exact Finset.prod_eq_one fun k _ => by simp [fsH_a, hc k]
   · intro dg dh g h z hg hh hdeg he hz
@@ -285,7 +285,7 @@ theorem chartMono_exponent (c : ∀ k, ι k) (d : K → ℕ) :
   refine ⟨∑ k, Finsupp.single (⟨k, c k⟩ : Σ k, ι k) (d k), fun k => ?_, fun z => ?_⟩
   · simp only [Finsupp.finsetSum_apply]
     rw [Finset.sum_comm]
-    simp only [sum_single_apply, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    simp only [sum_single_apply, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   · have h : chartMono c d = monomial (∑ k, Finsupp.single (⟨k, c k⟩ : Σ k, ι k) (d k)) (1 : ℤ) := by
       rw [chartMono, monomial_sum_one]
       exact Finset.prod_congr rfl fun k _ => X_pow_eq_monomial
@@ -310,7 +310,7 @@ theorem smallGen_of_monomialsBounded (y : (Σ k, ι k) → Ω) (A : HermLine ι)
     refine ⟨fun j => if e.symm j = c then 1 else 0, fun j => by beta_reduce; split_ifs <;> simp, ?_⟩
     rw [Fintype.sum_equiv e.symm _ (fun i => (if i = c then (1 : Ω) else 0) *
       (aeval y (chartMono i a) * ∏ k, y ⟨k, c k⟩ ^ (-A.a k))) (fun _ => rfl)]
-    simp only [ite_mul, one_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    simp only [ite_mul, one_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     rw [aeval_chartMono, ← Finset.prod_mul_distrib]
     exact Finset.prod_eq_one fun k _ => by
       simp [ha, zpow_neg, zpow_natCast, mul_inv_cancel₀ (pow_ne_zero _ (hc k))]

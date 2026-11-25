@@ -103,7 +103,7 @@ def NLay0.EtaOk (L : NLay0 R H what₂ LL0) : Prop :=
 
 theorem NLay0.etaOk_reEta (L : NLay0 R H what₂ LL0) :
     @NLay0.EtaOk R H (rowsEta what₂ L.eta L.eta_nonneg) ‹NumberField what₂.LL› ‹StarRing what₂.LL› LL0
-      (L.reEta L.eta L.eta_nonneg) := fun _ _ h1 h2 => if_pos ⟨h1, h2⟩
+      (L.reEta L.eta L.eta_nonneg) := fun _ _ h1 h2 => ite_eq_left ⟨h1, h2⟩
 
 end
 

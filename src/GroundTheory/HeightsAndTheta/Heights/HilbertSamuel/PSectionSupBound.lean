@@ -110,7 +110,7 @@ theorem SectionSupBound.proof : SectionSupBound.Statement := by
         split_ifs with hc'
         · exact mul_nonneg (hB0 c' hc') (pow_nonneg (hM0 c') τ)
         · exact le_rfl) (Finset.mem_univ c)
-    simp only [dif_pos hyc] at this
+    simp only [dite_eq_left hyc] at this
     linarith
   have hAh : 0 ≤ A.h z ^ τ := pow_nonneg (A.pos z hz.1).le τ
   calc ‖eval z (map (Int.castRingHom ℂ) g)‖

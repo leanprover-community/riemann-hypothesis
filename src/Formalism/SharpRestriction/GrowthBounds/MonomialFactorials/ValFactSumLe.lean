@@ -25,7 +25,7 @@ theorem val_fact_sum_le {ι : Type} (s : Finset ι) (f : ι → ℕ) (L : ℕ) (
     rw [Finset.sum_insert ha] at hL
     have hL' : Nat.log p (∑ i ∈ s, f i) ≤ L := le_trans (Nat.log_mono_right (Nat.le_add_left _ _)) hL
     have ih' := ih hL'
-    rw [Finset.sum_insert ha, Finset.prod_insert ha, Finset.card_insert_eq_ite, if_neg ha]
+    rw [Finset.sum_insert ha, Finset.prod_insert ha, Finset.card_insert_eq_ite, ite_eq_right ha]
     generalize hT : ∑ i ∈ s, f i = T at *
     have hC : (f a + T).choose (f a) * (f a)! * T ! = (f a + T)! := by
       have h5 := Nat.choose_mul_factorial_mul_factorial (Nat.le_add_right (f a) T)

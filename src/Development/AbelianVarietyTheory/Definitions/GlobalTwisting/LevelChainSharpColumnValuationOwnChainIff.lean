@@ -225,12 +225,6 @@ def TupleChainSharpColumnValuation (Tw : TwForms D) (u : D.what₂.Word) (μ : D
     ∀ x ∈ LT.Nlam D u w, ∃ y ∈ (Tw.fm u μ).S D.R.m w,
       (Tw.fm u μ).emb D.R.m y = D.what₂.embLL c • (D.chTw u μ).col (D.e0Tw u μ ((D.fm u).emb 0 x))
 
-section Indep
-
-variable (Y : Ch D u)
-
-end Indep
-
 theorem emb_mem_Fi (i : ℕ) (x : Vl X i) : X.fm.emb i x ∈ X.fm.Fi i := by
 
   rw [← (X.fm.emb_basis i).2, ← (X.fm.lat i).b.sum_repr x, map_sum]

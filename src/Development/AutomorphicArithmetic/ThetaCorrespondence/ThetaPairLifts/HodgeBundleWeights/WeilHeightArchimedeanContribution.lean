@@ -350,7 +350,7 @@ theorem tw_of_dec {V : Unf Xo c σ r} (hσ : GoodEmb c σ) (hU : IsUnf V) (κ : 
   set a : (E →+* ℂ) × ℕ → ℕ := fun x => if x.2 < D.mult x.1 then (G.1 x + (M + 1)).toNat else 0 with ha
   have haZ : ∀ (τ : E →+* ℂ) (i : ℕ), i < D.mult τ → (a (τ, i) : ℤ) = G.1 (τ, i) + (M + 1) := fun τ i hi => by
     show ((if i < D.mult τ then (G.1 (τ, i) + (M + 1)).toNat else 0 : ℕ) : ℤ) = _
-    rw [if_pos hi, Int.toNat_of_nonneg (by linarith [hMb τ i hi])]
+    rw [ite_eq_left hi, Int.toNat_of_nonneg (by linarith [hMb τ i hi])]
   have hDa : Dom a (2 * ((M + 1) * m)) := by
     refine ⟨fun τ i j hij => ?_, even_two_mul _⟩
     simp only [ha]
@@ -733,7 +733,7 @@ theorem DifferentiableLines.holomorphic_extension_sections : ∀ (E : Type) [Fie
   rw [hR x hx i y hz Q t rfl hQ ht, hs, Finset.mul_sum]
   refine Finset.sum_congr rfl fun j _ => ?_
   have a : rdU V (ruleTop T.X e (GlobalTheory.Vanishing.H0.ofSec (flagStr T.X) ⊤ (ss j))) k x =
-      toC (evR Xo c (ruleTop T.X e (GlobalTheory.Vanishing.H0.ofSec (flagStr T.X) ⊤ (ss j))) (V.un k ⟨x, hx⟩)) := dif_pos hx
+      toC (evR Xo c (ruleTop T.X e (GlobalTheory.Vanishing.H0.ofSec (flagStr T.X) ⊤ (ss j))) (V.un k ⟨x, hx⟩)) := dite_eq_left hx
   have b : GlobalTheory.CxPts.secVal (flagStr T.X) σ (ss j) i y = _ := GlobalTheory.CxPts.ev_eq hy _
   have d := evR_ruleTop (GlobalTheory.Vanishing.H0.ofSec (flagStr T.X) ⊤ (ss j)) hO hQ ht
   have f := GlobalTheory.Vanishing.H0.val_ofSec (p := flagStr T.X) (O := ⊤) (B := T.X.LL e) (T.X.ptY (V.un k ⟨x, hx⟩)) i le_top hz (ss j)
@@ -1200,7 +1200,7 @@ theorem tendsto_arc_readsZ {V : Unf Xo c σ r} (hσ : GoodEmb c σ) (hU : IsUnf 
   have hb0 : (0 : ℂ) ∈ Metric.ball (0 : ℂ) ρ := Metric.mem_ball_self hρ
   let ψ : ℂ → (A →+* ℂ) := fun u => if hu : u ∈ Metric.ball (0 : ℂ) ρ then
     GlobalTheory.FlagMod.ev (s u).1 W (hsW u hu) else GlobalTheory.FlagMod.ev (s 0).1 W (hsW 0 hb0)
-  have hψ : ∀ u (hu : u ∈ Metric.ball (0 : ℂ) ρ), ψ u = GlobalTheory.FlagMod.ev (s u).1 W (hsW u hu) := fun u hu => dif_pos hu
+  have hψ : ∀ u (hu : u ∈ Metric.ball (0 : ℂ) ρ), ψ u = GlobalTheory.FlagMod.ev (s u).1 W (hsW u hu) := fun u hu => dite_eq_left hu
   have hψq : ∀ u ∈ Metric.ball (0 : ℂ) ρ, spMap (ψ u) ≫ q = (s u).1 := fun u hu => by
     rw [hψ u hu]
     exact GlobalTheory.FlagMod.spMap_ev (s u).1 hW _
@@ -1518,7 +1518,7 @@ theorem cusp_form_extension_vanishing : ∀ (D : D7) (T : Core D) (j : ℕ) (Y :
   obtain ⟨k, y⟩ := w
   obtain ⟨hd, hl⟩ := hw
   have h := evR_eq_of_sec₀_eq TF.X Z ⟨f, hfs⟩ ⟨g.1, GlobalTheory.CompHS.cusp_le_secZ Z Y.U u g.2⟩ (hsf.symm.trans hg.symm) _ hl
-  simp only [rdU, LinearMap.coe_mk, AddHom.coe_mk, dif_pos hd]
+  simp only [rdU, LinearMap.coe_mk, AddHom.coe_mk, dite_eq_left hd]
   exact congrArg _ h
 
 end ModelDimension

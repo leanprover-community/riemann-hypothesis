@@ -107,7 +107,7 @@ theorem finiteGroup_acts_unitarily_hilbertMultiplicityModel : ∀ {D : D7} {V : 
       have hU : ∀ v g, e (u x) v g = a * e x v (g * hk.choose) := by
         intro v g
         rw [hact x v]
-        simp only [actG0, dif_pos hk, ha_def]
+        simp only [actG0, dite_eq_left hk, ha_def]
       have hV : ∀ v g, e x v g = a⁻¹ * e (u x) v (g * hk.choose⁻¹) := by
         intro v g
         rw [hU, mul_assoc g, inv_mul_cancel, mul_one, ← mul_assoc, inv_mul_cancel₀ ha0, one_mul]
@@ -130,7 +130,7 @@ theorem finiteGroup_acts_unitarily_hilbertMultiplicityModel : ∀ {D : D7} {V : 
       have h0 : e (u x) = 0 := by
         ext v g
         rw [hact x v]
-        simp only [actG0, dif_neg hk]
+        simp only [actG0, dite_eq_right hk]
         rfl
       have hux : u x = 0 := hinj (by rw [h0, map_zero])
       have hx : x = 0 := by

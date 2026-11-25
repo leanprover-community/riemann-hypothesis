@@ -62,17 +62,6 @@ theorem liesOver_of_natCast_mem {K : Type} [Field K] [NumberField K] (p : ℕ) (
 
 end Gen
 
-section Fix
-
-variable {E : Type} [Field E] [NumberField E] (F : Subfield E) [NumberField F]
-
-variable {F} (c : E ≃ₐ[ℚ] E) (hF : ∀ x : E, x ∈ F ↔ c x = x) (hc : ∀ x : E, c (c x) = x)
-
-
-
-
-end Fix
-
 section HostInst
 
 variable {R : Ranks} (H : Host R) (T : ℕ) (pz : 𝓞 H.E)
@@ -150,20 +139,6 @@ theorem natCast_notMem_sq_of_split (p : ℕ) (hp : p.Prime)
   norm_num at h1
 
 end Deg
-
-section Two
-
-variable {E : Type} [Field E] [NumberField E] {F : Subfield E} [NumberField F]
-  (c : E ≃ₐ[ℚ] E) (hF : ∀ x : E, x ∈ F ↔ c x = x) (hc : ∀ x : E, c (c x) = x)
-
-
-end Two
-
-section HostDeg
-
-variable {R : Ranks} (H : Host R)
-
-end HostDeg
 
 end Formalism.MainNotions.Gaps.LevGap
 

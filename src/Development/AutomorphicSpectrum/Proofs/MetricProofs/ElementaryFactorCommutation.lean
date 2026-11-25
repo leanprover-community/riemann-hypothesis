@@ -46,7 +46,7 @@ theorem exists_conj : ∀ (L : Type) [Field L] (N j : ℕ) (ca cb : Fin N) (U : 
       rintro rfl
       exact h Iff.rfl
     rw [Matrix.add_apply, Matrix.one_apply_ne hab, Matrix.single_apply, zero_add]
-    rw [if_neg]
+    rw [ite_eq_right]
     rintro ⟨rfl, rfl⟩
     exact h hblk.symm
   refine ⟨(1 + Matrix.single cb ca (-X')) * U * (1 + Matrix.single cb ca s),
@@ -59,7 +59,7 @@ theorem exists_conj : ∀ (L : Type) [Field L] (N j : ℕ) (ca cb : Fin N) (U : 
       by_cases hr : r = cb
       · subst hr
         have h0 : U r c = 0 := hT hrc
-        simp only [if_true, h0]
+        simp only [ite_true, h0]
         linear_combination -hX
       · have hcr : cb < r := by
           rw [Fin.lt_def] at hrc' ⊢
@@ -83,7 +83,7 @@ theorem exists_conj : ∀ (L : Type) [Field L] (N j : ℕ) (ca cb : Fin N) (U : 
     rw [hV]
     by_cases hca : c = ca
     · subst hca
-      simp only [if_true, if_neg hc, add_zero]
+      simp only [ite_true, ite_eq_right hc, add_zero]
       intro h
       apply hne
       linear_combination h

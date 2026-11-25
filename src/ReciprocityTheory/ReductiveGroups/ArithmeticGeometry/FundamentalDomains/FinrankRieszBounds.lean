@@ -57,7 +57,7 @@ theorem riesz (δ : X.Ψ → (Fin r → ℂ) →ₗ[ℂ] ℂ) :
       (fun h => absurd (Finset.mem_univ τ0) h),
       Finset.sum_eq_single τ0 (fun τ _ hτ => by simp [s, hτ]) (fun h => absurd (Finset.mem_univ τ0) h)]
       at h
-    simp only [s, if_true, one_smul] at h
+    simp only [s, ite_true, one_smul] at h
     rw [← h, ← UnipotentCoefficientShift.Hf_conj hz.out, Complex.conj_re]
   have h1 := key u hu
   have h2 := key _ (MajorantOperators.smul_fam_mem (fun _ => Complex.I) hu)

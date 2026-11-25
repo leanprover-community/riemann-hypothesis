@@ -123,33 +123,6 @@ theorem corrForm_antisymm (C : CupSquare κ t (A ⊗ A)) {P : LB (A ⊗ A).left}
 
 end Gen
 
-section Jet
-
-variable {R : Type} [CommRing R] {I : Type} [Fintype I] {n : ℕ}
-
-end Jet
-
-section Diag
-
-variable {R : Type} [CommRing R] {A : Over (Sp R)} [GrpObj A]
-
-end Diag
-
-section Props
-
-variable {F : Type} [Field F] [NumberField F] {𝔠 : FracId F} {R : Type} [CommRing R] [IsDomain R] [CharZero R]
-  {I : Type} [Fintype I]
-
-end Props
-
-section BC
-
-variable {R R' : Type} [CommRing R] [CommRing R'] [Algebra R R'] {I : Ideal R} {I' : Ideal R'} {S S' : Scheme.{0}}
-  {κ : DividedPowers I} {t : S ⟶ Sp R} {A : Over S} [GrpObj A] {κ' : DividedPowers I'} {t' : S' ⟶ Sp R'}
-  {A' : Over S'} [GrpObj A'] {b : S' ⟶ S} {φ : A'.left ⟶ A.left}
-
-end BC
-
 end GlobalTheory.JetIsotropic
 end -- clump:auto
 end -- clump:auto

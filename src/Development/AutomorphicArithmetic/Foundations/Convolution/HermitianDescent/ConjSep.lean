@@ -180,11 +180,6 @@ private theorem mul_kry [Nontrivial R] (g : Matrix (Fin n) (Fin n) R) (v : Fin n
 
 end
 
-section
-variable {K : Type} [Field K] {n : ℕ}
-
-end
-
 private theorem exists_kry {R : Type} [CommRing R] [Finite (MaximalSpectrum R)] {n : ℕ}
     (g : Matrix (Fin n) (Fin n) R) (h : g.charpoly.Separable) : ∃ v, IsUnit (kry g v).det :=
   _root_.UpperTheory.Reformulated.B.G8.exists_kry g h

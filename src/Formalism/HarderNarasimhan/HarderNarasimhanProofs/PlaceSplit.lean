@@ -154,7 +154,7 @@ theorem mem_placePart (v : P) (w : EuclideanSpace ℝ (P × ι × Fin 2)) :
 theorem prj_mem (v : P) (w : EuclideanSpace ℝ (P × ι × Fin 2)) : prj v w ∈ placePart v := by
   rw [mem_placePart]
   intro p hp
-  rw [prj_apply, if_neg hp]
+  rw [prj_apply, ite_eq_right hp]
 
 theorem prj_of_mem (v : P) (w : EuclideanSpace ℝ (P × ι × Fin 2)) (hw : w ∈ placePart v) :
     prj v w = w := by

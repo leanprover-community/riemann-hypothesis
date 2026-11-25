@@ -1158,7 +1158,7 @@ theorem exists_shift {n : ℕ} (S : Finset (Fin n)) (v : Fin n → ℤ) (h : ∀
   by_cases hj : j ∈ S
   · have h1 : (v j).natAbs ≤ ∑ j, (v j).natAbs :=
       Finset.single_le_sum (f := fun j => (v j).natAbs) (fun _ _ => Nat.zero_le _) (Finset.mem_univ j)
-    simp only [hj, if_true]
+    simp only [hj, ite_true]
     omega
   · simpa [hj] using h j hj
 

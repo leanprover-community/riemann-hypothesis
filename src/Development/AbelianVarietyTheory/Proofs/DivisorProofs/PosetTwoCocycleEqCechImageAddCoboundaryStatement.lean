@@ -69,7 +69,7 @@ def wv (w : C2 F) (a b d : (NE κ)ᵒᵖ) : F.obj d :=
   if h : sub a ⊆ sub b ∧ sub b ⊆ sub d then w a b d (homOf h.1) (homOf h.2) else 0
 
 theorem wv_eq (w : C2 F) {a b d : (NE κ)ᵒᵖ} (f : a ⟶ b) (g : b ⟶ d) : wv w a b d = w a b d f g := by
-  rw [wv, dif_pos ⟨sub_subset f, sub_subset g⟩]
+  rw [wv, dite_eq_left ⟨sub_subset f, sub_subset g⟩]
   congr 1
 
 theorem wv_cocycle (w : Z2 F) {a b d e : (NE κ)ᵒᵖ} (f : a ⟶ b) (g : b ⟶ d) (h : d ⟶ e) :
@@ -239,9 +239,9 @@ theorem δ_yc (w : Z2 F) : δ F 2 (yc w.1) = 0 := by
   have hG : ∀ y (h : y ∈ T.1) {i j k : κ}, T.1.erase y = {i, j, k} → i < j → j < k →
       G y = GlobalTheory.cubeSign T.1 y • -V w.1 k j i (ne T.1 (card_nonempty T)) := by
     intro y h i j k e hij hjk
-    simp only [G, dif_pos h]
+    simp only [G, dite_eq_left h]
     rw [yc_term w T ⟨y, h⟩ e hij hjk]
-  rw [show (∑ i : T.1, _) = ∑ i : T.1, G i from Finset.sum_congr rfl fun i _ => (dif_pos i.2).symm]
+  rw [show (∑ i : T.1, _) = ∑ i : T.1, G i from Finset.sum_congr rfl fun i _ => (dite_eq_left i.2).symm]
   rw [Finset.sum_coe_sort T.1 G]
   have m : ∀ y ∈ ({i0, i1, i2, i3} : Finset κ), y ∈ T.1 := fun _ h => h
   have h02 := h01.trans h12; have h13 := h12.trans h23; have h03 := h01.trans h13

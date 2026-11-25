@@ -1351,10 +1351,10 @@ theorem ubnd_mono {ι : Type*} {f : ι → AdelicGLn.AdelicGL K n → ℂ} {m m'
     apply Finset.sum_le_sum
     intro r _
     by_cases hr : 0 < r ∧ r < n
-    · rw [if_pos hr]
+    · rw [ite_eq_left hr]
       have := mul_le_mul_of_nonneg_left (hx r) (sub_nonneg.2 (hm r hr.1 hr.2))
       nlinarith
-    · rw [if_neg hr, GlobalTheory.CompanionTheory.AnBoot.sr_eq_zero x hr]
+    · rw [ite_eq_right hr, GlobalTheory.CompanionTheory.AnBoot.sr_eq_zero x hr]
       simp
   calc ‖f i (b * An.tor K x * q)‖ ≤ C * Real.exp (∑ r ∈ Finset.range n, m r * An.sr x r) := h1
     _ ≤ max C 0 * Real.exp (∑ r ∈ Finset.range n, m r * An.sr x r) :=
@@ -1477,7 +1477,7 @@ theorem iterU {ι : Type} {f : ι → AdelicGLn.AdelicGL K n → ℂ} {M : ℝ} 
       have hna : a ∉ s := ha
       by_cases hr : r = a
       · subst hr
-        simp only [Function.update_self, Finset.mem_insert, true_or, if_true, hna, if_false]
+        simp only [Function.update_self, Finset.mem_insert, true_or, ite_true, hna, ite_false]
         exact max_le (by linarith) le_rfl
       · simp [Finset.mem_insert, hr]
   obtain ⟨k, hk⟩ := key (Finset.Ioo 0 n) (fun r hr => Finset.mem_Ioo.1 hr)

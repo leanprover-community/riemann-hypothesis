@@ -43,7 +43,7 @@ theorem exists_trace_not_int (v : HeightOneSpectrum (𝓞 F)) :
   have hint : ∀ z ∈ I, ∀ w : HeightOneSpectrum (𝓞 F), w ≠ v → w.valuation F z ≤ 1 := by
     intro z hz w hw
     have := (GlobalTheory.Idele.mem_iff_valuation_le hI0 z).1 hz w
-    rwa [hcount w, if_neg hw, neg_zero, exp_zero] at this
+    rwa [hcount w, ite_eq_right hw, neg_zero, exp_zero] at this
   by_contra! H
   have hle : I ≤ C := by
     intro x hx
@@ -56,7 +56,7 @@ theorem exists_trace_not_int (v : HeightOneSpectrum (𝓞 F)) :
       exact Submodule.smul_mem _ a hx
     exact H _ (hint _ hxa)
   have := FractionalIdeal.count_mono F v hI0 hle
-  rw [hcount v, if_pos rfl] at this
+  rw [hcount v, ite_eq_left rfl] at this
   omega
 
 theorem psiV_ne_one : ∀ {F : Type} [Field F] [NumberField F] (ψ : AddChar (AF F) ℂ), GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.IsStd ψ →

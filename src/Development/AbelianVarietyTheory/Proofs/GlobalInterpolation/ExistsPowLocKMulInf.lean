@@ -157,8 +157,8 @@ theorem exists_pow_locK_mul_inf : ∀ (E : Type) [Field E] [NumberField E] (χ :
     have e1 : (∏ᶠ (v : HeightOneSpectrum (𝓞 E)) (_ : v ∉ insert P S), χ.val v ^ ordF v (z0 ^ M')) = 1 := by
       refine finprod_eq_one_of_forall_eq_one fun v => ?_
       by_cases hv : v ∈ insert P S
-      · rw [finprod_eq_if, if_neg (not_not.2 hv)]
-      rw [finprod_eq_if, if_pos hv]
+      · rw [finprod_eq_if, ite_eq_right (not_not.2 hv)]
+      rw [finprod_eq_if, ite_eq_left hv]
       have : v ≠ P := fun h => hv (h ▸ Finset.mem_insert_self _ _)
       rw [ordF, hzQ v this, WithZero.log_one, neg_zero, zpow_zero]
     have e2 : ∏ v ∈ insert P S, χ.locK v (z0 ^ M') = χ.locK P (z0 ^ M') :=

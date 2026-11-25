@@ -154,7 +154,7 @@ theorem formTransp_any (hP : Formalism.L2.SG.RealObj.NuQPin X u u' νq) (hRC : R
 
   have hFE : ∃ Ω, IsSFund X.B.I (ROinf t) Ω := fundExistsC_holds D X Y u u' t
   have hFO : IsSFund X.B.I (ROinf t) (FundOf t) := by
-    unfold FundOf; rw [dif_pos hFE]; exact hFE.choose_spec
+    unfold FundOf; rw [dite_eq_left hFE]; exact hFE.choose_spec
   set Γ0 := ROsub X (X.Fu u) (X.Fu u') t.lam t.lam' t.lin with hΓ0
   have hKu : ∀ r ∈ Rset t, ∃! s, s ∈ ROinf t ∧ s * r ∈ FundOf t := by
     intro r _
@@ -185,7 +185,7 @@ theorem formula_transport_term (hP : Formalism.L2.SG.RealObj.NuQPin X u u' νq) 
   set w := Formalism.L2.SG.PairVal.ptOf t.toTerm with hw
   set γw := Formalism.L2.SG.RealObj.gamW X u u' w with hγw
   have hγwP : Formalism.L2.SG.RealObj.IsPtRep X u u' w γw := by
-    simp only [hγw, Formalism.L2.SG.RealObj.gamW, dif_pos hreal]; exact hreal.choose_spec
+    simp only [hγw, Formalism.L2.SG.RealObj.gamW, dite_eq_left hreal]; exact hreal.choose_spec
   obtain ⟨μw, hμwH, hμwQ, hμwS⟩ := hP.2 w hreal
 
   let μR := μw.map (fun y => g * y * g⁻¹)
@@ -202,7 +202,7 @@ theorem formula_transport_term (hP : Formalism.L2.SG.RealObj.NuQPin X u u' νq) 
 
   have hFE : ∃ Ω, IsSFund X.B.I (ROinf t) Ω := fundExistsC_holds D X Y u u' t
   have hFO : IsSFund X.B.I (ROinf t) (FundOf t) := by
-    unfold FundOf; rw [dif_pos hFE]; exact hFE.choose_spec
+    unfold FundOf; rw [dite_eq_left hFE]; exact hFE.choose_spec
   set Γ0 := ROsub X (X.Fu u) (X.Fu u') t.lam t.lam' t.lin with hΓ0
   have hKu : ∀ r ∈ Rset t, ∃! s, s ∈ ROinf t ∧ s * r ∈ FundOf t := by
     intro r _
@@ -244,7 +244,7 @@ theorem formula_transport_of_condition (hP : Formalism.L2.SG.RealObj.NuQPin X u 
     intro h0
     apply h1
     show Gt s.1 = 0
-    unfold Gt; rw [if_pos h0]
+    unfold Gt; rw [ite_eq_left h0]
   exact formula_transport_term X Y u u' νq hP hV hg3 hPH hRC hNR hCPU
     (fun t w' F' L U hN hG => normRep_atPt X Y u u' t w' F' L U hN hG) s.1 hrel s.2.2.1 hG hat (hLD R ρ s hrel).1
     g hg g' hg' hdec

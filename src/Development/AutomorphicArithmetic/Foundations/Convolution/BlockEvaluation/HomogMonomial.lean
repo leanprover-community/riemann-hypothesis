@@ -75,7 +75,7 @@ private theorem homog_add {ι : Type} (d : ℕ) (p q : MvPolynomial ι ℂ) : ho
 private theorem homog_monomial {ι : Type} (d : ℕ) (α : ι →₀ ℕ) (c : ℂ) :
     homog d (monomial α c) = X none ^ (d - α.degree) * rename some (monomial α c) := by
   classical
-  rw [homog_eq d _ _ support_monomial_subset, Finset.sum_singleton, coeff_monomial, if_pos rfl]
+  rw [homog_eq d _ _ support_monomial_subset, Finset.sum_singleton, coeff_monomial, ite_eq_left rfl]
 
 private theorem homog_mul {ι : Type} (d : ℕ) (p : MvPolynomial ι ℂ) (c : ℂ) : homog d (p * C c) = homog d p * C c := by
   induction p using MvPolynomial.induction_on' with

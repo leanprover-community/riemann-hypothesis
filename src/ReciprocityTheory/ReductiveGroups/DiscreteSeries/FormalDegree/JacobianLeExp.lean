@@ -47,7 +47,7 @@ theorem shc_bounds (u : ℝ) : 1 ≤ shc u ∧ shc u ≤ Real.exp (u ^ 2 / 6) �
     simp [shc]
   have hs : HasSum (fun k : ℕ => (u ^ 2) ^ k / ((2 * k + 1).factorial : ℝ)) (shc u) := by
     have h := (Real.hasSum_sinh u).div_const u
-    rw [shc, if_neg hu]
+    rw [shc, ite_eq_right hu]
     have hfun : (fun k : ℕ => (u ^ 2) ^ k / ((2 * k + 1).factorial : ℝ))
         = fun k : ℕ => u ^ (2 * k + 1) / ((2 * k + 1).factorial : ℝ) / u := by
       funext k

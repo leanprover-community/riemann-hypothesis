@@ -119,13 +119,13 @@ theorem uniq (d : ℚ → ℂ) (hwf : (Function.support d).IsWF) (S : Set ℂ)
   · intro r
     by_cases hr : r = r0
     · subst hr
-      simp only [f, g, if_pos rfl, sub_self, mul_zero, zero_mul, Complex.exp_zero, mul_one]
+      simp only [f, g, ite_eq_left rfl, sub_self, mul_zero, zero_mul, Complex.exp_zero, mul_one]
       exact tendsto_const_nhds
     by_cases hd : d r = 0
-    · simp only [f, g, hd, zero_mul, if_neg hr]
+    · simp only [f, g, hd, zero_mul, ite_eq_right hr]
       exact tendsto_const_nhds
     have hlt : (r0 : ℝ) < r := by exact_mod_cast lt_of_le_of_ne (hle r hd) (Ne.symm hr)
-    simp only [g, if_neg hr]
+    simp only [g, ite_eq_right hr]
     rw [tendsto_zero_iff_norm_tendsto_zero]
     have hpos : 0 < 2 * Real.pi * ((r : ℝ) - r0) := by have := Real.pi_pos; nlinarith
     have hT : Filter.Tendsto (fun j : ℕ => ‖d r‖ * Real.exp (-(2 * Real.pi * ((r : ℝ) - r0) * j))) Filter.atTop (nhds 0) := by
@@ -181,7 +181,7 @@ theorem siegel_exp : ∀ (Ω : Type) [Field Ω] [Algebra ℚ Ω] [IsAlgClosure �
   have hBι : ∀ n, B (ι n) = A' n := by
     intro n
     have h : ∃ m, ι m = ι n := ⟨n, rfl⟩
-    simp only [B, dif_pos h]
+    simp only [B, dite_eq_left h]
     rw [hι h.choose_spec]
   have hB0 : ∀ r, r ∉ Set.range ι → B r = 0 := by
     intro r hr

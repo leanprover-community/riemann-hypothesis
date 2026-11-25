@@ -25,8 +25,8 @@ theorem entryR (D : D7) (u : D.what₂.Word) (i : ℕ) (hi : i ≤ D.R.m) (τ : 
     rw [(D.fm u).lam_eq i hi τ a]
     unfold flipTwoThree.lamLiftN flipTwoThree.lamCol flipTwoThree.wJ
     by_cases h : a.1 < D.R.k
-    · rw [dite_eq_left h, if_pos h, dite_eq_left h]
-    · rw [dite_eq_right h, if_neg h, dite_eq_left (D.R.blk_lt hi a h)]
+    · rw [dite_eq_left h, ite_eq_left h, dite_eq_left h]
+    · rw [dite_eq_right h, ite_eq_right h, dite_eq_left (D.R.blk_lt hi a h)]
   rw [← h]
   simp
 
@@ -105,7 +105,7 @@ theorem entry_bd {D : D7} {L : SizeData₂ D} {Cn cL : ℝ} (hcL : 1 ≤ cL) (hN
   rw [entryR D u i hi τ a]
   unfold flipTwoThree.lamLiftN
   by_cases hak : a.1 < D.R.k
-  · rw [if_pos hak]
+  · rw [ite_eq_left hak]
     by_cases hT : flipTwoThree.IsTop D τ
     · obtain ⟨t1, t2, t3, t4, t5⟩ := w2 hT
       by_cases h0 : a.1 = 0
@@ -118,7 +118,7 @@ theorem entry_bd {D : D7} {L : SizeData₂ D} {Cn cL : ℝ} (hcL : 1 ≤ cL) (hN
           constructor <;> linarith
     · obtain ⟨e1, e2⟩ := w3 hT a.1 hak
       constructor <;> linarith
-  · rw [if_neg hak]
+  · rw [ite_eq_right hak]
     have hb := D.R.blk_lt hi a hak
     have e2 : ((flipTwoThree.wJ D u τ 0 : ℚ) : ℝ) ≤ ((flipTwoThree.wJ D u τ ((a.1 - D.R.k) / (D.R.t + 1)) : ℚ) : ℝ) := by
       exact_mod_cast wJ_mono w4 _ hb

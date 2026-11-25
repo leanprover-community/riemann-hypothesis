@@ -63,10 +63,10 @@ private theorem ent_le {E : Type} [NormedField E] {a n : ℕ} (e : Fin a ↪ Fin
       obtain ⟨l, rfl⟩ := hj
       simp only [matrixExtendByZero_apply, Matrix.sub_apply, Matrix.one_apply, e.injective.eq_iff, add_sub_cancel]
       exact h k l
-    · push_neg at hj
+    · push Not at hj
       rw [matrixExtendByZero_apply_of_outside_col e _ i hj, add_zero]
       exact hone i j
-  · push_neg at hi
+  · push Not at hi
     rw [extendByZero_apply_eq_zero_of_row_not_mem e _ hi, add_zero]
     exact hone i j
 

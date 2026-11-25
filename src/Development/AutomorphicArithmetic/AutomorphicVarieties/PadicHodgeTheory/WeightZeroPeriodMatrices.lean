@@ -348,7 +348,7 @@ theorem inertia_fixes_crystalline_period_matrix (K : FinExt l) {d : ℕ} (M M' :
   rw [Polynomial.map_map, hPF, Matrix.map_zero _ (map_zero _), Matrix.mul_zero] at h4
   intro g hg
   ext i j
-  refine UpperTheory.inertia_fixes_of_frobenius_annihilated_mem_fil_zero (expand ℤ_[l] f P) (hP.expand hf) (by rwa [coeff_expand hf, if_pos (dvd_zero _), Nat.zero_div])
+  refine UpperTheory.inertia_fixes_of_frobenius_annihilated_mem_fil_zero (expand ℤ_[l] f P) (hP.expand hf) (by rwa [coeff_expand hf, ite_eq_left (dvd_zero _), Nat.zero_div])
     (M i j) ?_ (fun k => hS M (F k) k hM (hMF k) i j) g hg
   have e : ((PP l).φB.toLinearMap : Module.End ℚ_[l] (Bcr l)) ^ f = ((PP l).φB ^ f).toLinearMap := by
     ext x

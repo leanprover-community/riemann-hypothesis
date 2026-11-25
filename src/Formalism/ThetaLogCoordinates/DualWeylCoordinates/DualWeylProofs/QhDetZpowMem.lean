@@ -191,7 +191,7 @@ lemma qh_N_mem (s : ℕ) (hs : s ≤ n) (J : Fin s → Fin n) :
   rw [Units.coe_prod]
   simp only [h3]
   rw [← qh_prod_castLE hs (fun a : Fin n => if a.val < s then (u a : R') else 1)
-    (fun a ha => if_neg (by omega))]
+    (fun a ha => ite_eq_right (by omega))]
   apply Finset.prod_congr rfl
   intro p _
   simp

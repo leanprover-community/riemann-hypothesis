@@ -112,9 +112,9 @@ theorem integrand_aesm {k r : ℕ} {ε : Fin (2 * r + k + 1) → Bool} {lam : Fi
     refine Complex.continuous_exp.comp (continuous_const.mul (Complex.continuous_ofReal.comp
       (Complex.continuous_re.comp (continuous_finsetSum _ fun a _ => continuous_const.mul ?_))))
     by_cases hcond : a.val + 1 < r
-    · simp only [Formalism.MainNotions.S.ellA, dif_pos hcond]
+    · simp only [Formalism.MainNotions.S.ellA, dite_eq_left hcond]
       exact (continuous_apply _).comp (continuous_apply _)
-    · simp only [Formalism.MainNotions.S.ellA, dif_neg hcond]
+    · simp only [Formalism.MainNotions.S.ellA, dite_eq_right hcond]
       exact (continuous_apply (Formalism.QuantumDeterminants.eI k r a)).comp
         (continuous_id.matrix_mulVec (continuous_const (y := z)))
   have hinvc : ContinuousOn (fun p : Mt k r × Mt k r => (Matrix.of p.1 : Mat k r)⁻¹) A := by

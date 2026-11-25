@@ -89,7 +89,7 @@ theorem q_int (B : Base D cc δ) (h : B.StdOK) {x : D.what₂.Tau → ℂ} (hx :
   have h1 := h.betaSemi.1 (B.gC (ThetaVec.ins 0 x)) ⟨ThetaVec.ins 0 x, fun a => by
     rw [ThetaVec.slice_ins]; split_ifs; exacts [hx, B.lamM.zero_mem], rfl⟩
   rw [h.betaAlpha, ← mul_self_eq_one_iff] at h1
-  simp only [ThetaVec.slice_ins, Fin.prod_univ_four, hs, h.alpha0, Fin.isValue, if_true, Fin.reduceEq, if_false,
+  simp only [ThetaVec.slice_ins, Fin.prod_univ_four, hs, h.alpha0, Fin.isValue, ite_true, Fin.reduceEq, ite_false,
     mul_one] at h1
   rw [alphaQ, ← Complex.exp_add, Complex.exp_eq_one_iff] at h1
   obtain ⟨m, hm⟩ := h1

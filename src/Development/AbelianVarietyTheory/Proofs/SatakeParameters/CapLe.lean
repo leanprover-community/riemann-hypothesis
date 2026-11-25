@@ -60,7 +60,7 @@ theorem row_le (D : D7) (u : D.what₂.Word) (j : ℕ) (hj : j < D.R.m) (z : Boo
   have hk' : (5 : ℝ) ≤ D.R.k := by exact_mod_cast hk
   have hr' : (r : ℝ) ≤ 1 := by exact_mod_cast hr1
   have h2 : r < D.R.N j := by unfold Ranks.N; omega
-  rw [nuRowOK D u j hj z r, if_pos h2, RowWeightLemmas.nuRow_head D u j hj _ r hr, hw]
+  rw [nuRowOK D u j hj z r, ite_eq_left h2, RowWeightLemmas.nuRow_head D u j hj _ r hr, hw]
   unfold kaJ Ranks.N
   push_cast
   linarith
@@ -81,7 +81,7 @@ theorem cap_le : ∀ {eps : ℝ} (Fm : FamP eps), ∃ x0 : ℝ, ∀ x ≥ x0, Fm
   · have h1 := row_le (Fm.D x i) u j hj z 0 (by omega) (by omega)
     obtain ⟨-, h4⟩ := GlobalTheory.LongRows.u_bounds_off (Fm.params x hx1 i) u _
       (GlobalTheory.LongRows.not_mem_topPlaces _ z hz) 0 (by omega)
-    rw [if_pos rfl] at h4
+    rw [ite_eq_left rfl] at h4
     linarith
 
 end GlobalTheory.CapBound

@@ -15,11 +15,6 @@ import Mathlib.RingTheory.SimpleRing.Principal
 
 namespace Formalism.ExtensionFiltration
 
-section Numbers
-open Finset Module NumberField
-
-end Numbers
-
 noncomputable section Short
 open Module NumberField
 open Formalism.HN
@@ -42,7 +37,7 @@ theorem mk_lt (K : Type) [Field K] [NumberField K] [_root_.NumberField.IsTotally
     exact fun w => not_isReal_iff_isComplex.2 (IsTotallyComplex.isComplex w)
   have hm : ∀ w : InfinitePlace K, mult w = 2 := fun w => by
     unfold mult
-    rw [if_neg (not_isReal_iff_isComplex.2 (IsTotallyComplex.isComplex w))]
+    rw [ite_eq_right (not_isReal_iff_isComplex.2 (IsTotallyComplex.isComplex w))]
   have hd : Module.finrank ℝ (mixedSpace K) = 2 * nrComplexPlaces K := by
     rw [mixedEmbedding.finrank, ← card_add_two_mul_card_eq_rank, hr, zero_add]
   have hL : minkowskiBound K I ≠ ⊤ := by
@@ -119,10 +114,5 @@ theorem muDef_line_eq (b : Basis ι K V) (X : InfinitePlace K → Matrix ι ι �
 end Line
 
 end Short
-
-noncomputable section Primes
-open Finset
-
-end Primes
 
 end Formalism.ExtensionFiltration

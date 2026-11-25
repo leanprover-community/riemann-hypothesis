@@ -61,7 +61,7 @@ theorem Joint.pt_succ_isPt : ∀ {D : D7} {L : SizeData₂ D} {hT : GatTies D} {
         (basesAt (chainAt H hT) std _ (sysS H X std).unif _ (sysS H X std).eO_spec _ (sysS H X std).dG_spec (sysS H X std).om (j + 1) La.2) x ∧
         x ∈ Formalism.UG.UPts (sigD D) (gramN D (j + 1) hj) (FiniteAdeleRing (𝓞 D.host.F) D.host.F)) := by
     show (chAt _ _ _ _ _ _ _ _ _ I _ _ _ _ (j + 1) La).y = _
-    simp only [chAt, dif_pos hj]
+    simp only [chAt, dite_eq_left hj]
   have hre : ∀ {R : Type} [CommRing R] {m n : ℕ} (h : m = n) (y : GL (Fin m) R), Formalism.L2.PairingIndexBounds.F.reGL (finCongr h.symm) (Formalism.L2.PairingIndexBounds.F.reGL (finCongr h) y) = y := by
     intro R _ m n h y
     subst h

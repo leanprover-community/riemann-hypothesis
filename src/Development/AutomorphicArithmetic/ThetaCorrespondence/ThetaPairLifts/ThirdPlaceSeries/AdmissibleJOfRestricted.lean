@@ -430,9 +430,9 @@ theorem eigPd_holds_alt : _root_.GlobalTheory.TameEig.eigPd_holds_tyz := by
       (D.nd.l i = D.host.pde ∧ w ∈ placesOver D.host.E D.host.pde'))) := by
     refine Or.inr ⟨hDel, ?_⟩
     by_cases hlp : D.nd.l i = D.host.pde
-    · rw [if_pos hlp] at hw
+    · rw [ite_eq_left hlp] at hw
       exact Or.inr ⟨hlp, hw⟩
-    · rw [if_neg hlp] at hw
+    · rw [ite_eq_right hlp] at hw
       exact Or.inl hw
   have x : D.nd.X i := Classical.choice (D.nd.neX i)
   have hQ : ∀ x, ∃ ρ, Formalism.MainNotions.SumRepresentations.At.IsHeckeGaloisQ D.nd D.naut i x ρ := fun x => by

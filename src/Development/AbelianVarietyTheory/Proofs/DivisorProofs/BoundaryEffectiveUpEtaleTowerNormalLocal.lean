@@ -1408,10 +1408,10 @@ theorem exists_basis_kaehler (σ : K →+* S) (hσR : ∀ a : R, σ (algebraMap 
       rw [polyDer_X, Pi.single_apply]
       exact if_congr (Fin.castAdd_injective _ _).eq_iff.symm rfl rfl
     · simp only [DD, Y, Fin.append_left, Fin.append_right]
-      rw [polyDer_C, Derivation.zero_apply, if_neg]
+      rw [polyDer_C, Derivation.zero_apply, ite_eq_right]
       intro h; have := congrArg Fin.val h; simp at this; omega
     · simp only [DD, Y, Fin.append_left, Fin.append_right]
-      rw [polyDer_X, Pi.zero_apply, if_neg]
+      rw [polyDer_X, Pi.zero_apply, ite_eq_right]
       intro h; have := congrArg Fin.val h; simp at this; omega
     · simp only [DD, Y, Fin.append_right]
       rw [polyDer_C, hδx]
@@ -1426,7 +1426,7 @@ theorem exists_basis_kaehler (σ : K →+* S) (hσR : ∀ a : R, σ (algebraMap 
     have := congrArg (dualForm (DD j)) hg
 
     simp only [map_sum, map_smul, hΦ, smul_eq_mul, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq',
-    Finset.mem_univ, if_true, map_zero] at this
+    Finset.mem_univ, ite_true, map_zero] at this
     exact this
 
   letI : Algebra K S := σ.toAlgebra

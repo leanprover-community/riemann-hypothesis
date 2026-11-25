@@ -106,7 +106,7 @@ theorem det_blocks (a b : ℕ) (x : Gn g a) (y : Gn g b) : det (blk a b (a + b) 
   set M : Mt g (a + b) := fun i j : Fin (a + b) =>
     if (i : ℕ) < a ∧ (j : ℕ) < a then entN (x : Mt g a) i j
     else if a ≤ (i : ℕ) ∧ a ≤ (j : ℕ) then entN (y : Mt g b) (i - a) (j - a) else 0 with hM
-  have h0 : InPar a M := fun i j hj hi => by rw [hM]; dsimp only; rw [if_neg (by omega), if_neg (by omega)]
+  have h0 : InPar a M := fun i j hj hi => by rw [hM]; dsimp only; rw [ite_eq_right (by omega), ite_eq_right (by omega)]
   have h1 : tl a M = x := by
     ext i j
     have hi : (i : ℕ) < a + b := by omega

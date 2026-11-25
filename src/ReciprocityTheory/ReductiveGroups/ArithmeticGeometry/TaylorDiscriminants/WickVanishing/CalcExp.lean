@@ -35,20 +35,20 @@ theorem coeff_X_add_X_pow (e : Fin 2 →₀ ℕ) (n : ℕ) :
     rw [mul_comm, ← nsmul_eq_mul, map_nsmul, MvPowerSeries.X_pow_eq, MvPowerSeries.X_pow_eq,
       MvPowerSeries.monomial_mul_monomial, one_mul, MvPowerSeries.coeff_monomial]
     by_cases h : e 0 = m ∧ e 1 = n - m
-    · rw [if_pos h, if_pos ((fin_two_finsupp_eq_iff e m (n - m)).2 h)]; simp
-    · rw [if_neg h, if_neg (fun h' => h ((fin_two_finsupp_eq_iff e m (n - m)).1 h'))]; simp
+    · rw [ite_eq_left h, ite_eq_left ((fin_two_finsupp_eq_iff e m (n - m)).2 h)]; simp
+    · rw [ite_eq_right h, ite_eq_right (fun h' => h ((fin_two_finsupp_eq_iff e m (n - m)).1 h'))]; simp
   rw [Finset.sum_congr rfl hterm]
   split_ifs with hn
   · rw [Finset.sum_eq_single (e 0)]
-    · rw [if_pos ⟨rfl, by omega⟩]
+    · rw [ite_eq_left ⟨rfl, by omega⟩]
     · intro m _ hm
-      rw [if_neg (fun h => hm h.1.symm)]
+      rw [ite_eq_right (fun h => hm h.1.symm)]
     · intro h
       exfalso; exact h (Finset.mem_range.mpr (by omega))
   · apply Finset.sum_eq_zero
     intro m hm
     rw [Finset.mem_range] at hm
-    rw [if_neg (fun h => hn (by omega))]
+    rw [ite_eq_right (fun h => hn (by omega))]
 
 theorem exp_two :
     PowerSeries.subst ((X 0 : MvPowerSeries (Fin 2) k) + X 1) (PowerSeries.exp k) =
@@ -62,15 +62,15 @@ theorem exp_two :
     · rw [MvPowerSeries.X_pow_eq, MvPowerSeries.coeff_monomial, PowerSeries.coeff_exp]
       split_ifs <;> simp
     · intro m hm
-      rw [MvPowerSeries.X_pow_eq, MvPowerSeries.coeff_monomial, if_neg, smul_zero]
+      rw [MvPowerSeries.X_pow_eq, MvPowerSeries.coeff_monomial, ite_eq_right, smul_zero]
       intro h; apply hm; rw [h]; simp
   ext e
   rw [MvPowerSeries.coeff_mul,
     Finset.sum_eq_single (Finsupp.single 0 (e 0), Finsupp.single 1 (e 1))]
-  · rw [hX, hX, if_pos (by simp), if_pos (by simp)]
+  · rw [hX, hX, ite_eq_left (by simp), ite_eq_left (by simp)]
     rw [PowerSeries.coeff_subst (PowerSeries.HasSubst.of_constantCoeff_zero (by simp)),
       finsum_eq_single _ (e 0 + e 1)]
-    · rw [coeff_X_add_X_pow, if_pos rfl, PowerSeries.coeff_exp]
+    · rw [coeff_X_add_X_pow, ite_eq_left rfl, PowerSeries.coeff_exp]
       simp only [Finsupp.single_eq_same, smul_eq_mul]
       rw [← map_natCast (algebraMap ℚ k), ← map_mul, ← map_mul]
       congr 1
@@ -85,7 +85,7 @@ theorem exp_two :
       rw [← hf]
       field_simp
     · intro m hm
-      rw [coeff_X_add_X_pow, if_neg (Ne.symm hm), smul_zero]
+      rw [coeff_X_add_X_pow, ite_eq_right (Ne.symm hm), smul_zero]
   · rintro ⟨p, q⟩ hpq' hne
     have hpq : p + q = e := Finset.HasAntidiagonal.mem_antidiagonal.mp hpq'
     dsimp only
@@ -96,8 +96,8 @@ theorem exp_two :
         have h0 : p 0 = e 0 := by rw [← hpq, hp, hq]; simp
         have h1 : q 1 = e 1 := by rw [← hpq, hp, hq]; simp
         rw [hp, hq, h0, h1]
-      · rw [if_neg hq, mul_zero]
-    · rw [if_neg hp, zero_mul]
+      · rw [ite_eq_right hq, mul_zero]
+    · rw [ite_eq_right hp, zero_mul]
   · intro h; exfalso; apply h
     exact Finset.HasAntidiagonal.mem_antidiagonal.mpr ((fin_two_finsupp_eq_iff e (e 0) (e 1)).2 ⟨rfl, rfl⟩).symm
 

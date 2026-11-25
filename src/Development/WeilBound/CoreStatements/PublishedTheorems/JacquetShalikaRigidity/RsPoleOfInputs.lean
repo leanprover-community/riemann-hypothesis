@@ -823,10 +823,10 @@ theorem rspole_of : GlobalTheory.Published.JacquetShalikaBound → jumpWindows.G
       have hx' : ∀ g, x g = φ₁.1 g := congrFun hx
       refine (hYm x).2 ⟨fun t g => by rw [hx', hx']; exact hπ φ₁ hφ₁ t g, fun h => ?_⟩
       by_cases he : π = π'
-      · have e0 : φ'' = 0 := if_pos he
+      · have e0 : φ'' = 0 := ite_eq_left he
         rw [e0]
         simp
-      · have e1 : φ'' = φ' := if_neg he
+      · have e1 : φ'' = φ' := ite_eq_right he
         have hO := hORT E k μ hk b hb π π' hπ hπ' he φ₁ hφ₁ φ₀' hφ₀' h h'
         rw [e1]
         simp only [hx', hφ'e]
@@ -841,7 +841,7 @@ theorem rspole_of : GlobalTheory.Published.JacquetShalikaBound → jumpWindows.G
     refine ⟨Z, ZS, max 1 σ₀, hZd, hZSd.differentiableOn, fun σ _ => hZS0 σ, fun s hs => ?_, fun hne => hZ1 ?_⟩
     · rw [hZe s (lt_of_le_of_lt (le_max_left _ _) hs), hZSe s (lt_of_le_of_lt (le_max_right _ _) hs), mul_assoc]
     · have hne' : π ≠ π' := fun e => hne (by rw [e])
-      have e1 : φ'' = φ' := if_neg hne'
+      have e1 : φ'' = φ' := ite_eq_right hne'
       have hz := hYz φ hφY ψ S U η s hcut
       rw [e1] at hz
       exact hz
@@ -1460,7 +1460,7 @@ theorem spherical_function_of : jumpWindows.G0 → jumpWindows.G5 → C0 → K7 
     have h2 := right_ne_zero_of_mul hg
     by_contra hA
     apply h2
-    rw [sphericalWhittaker, if_neg hA]
+    rw [sphericalWhittaker, ite_eq_right hA]
 
 end PositivityTheory.AdelicQuotientData
 

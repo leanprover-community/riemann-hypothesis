@@ -56,7 +56,7 @@ lemma riemannZetaOne_eq_one_sub_of_re_pos {s : ℂ} (hs : 0 < s.re) : riemannZet
       with z hz
     have hz1 : z ≠ 1 := fun h => by rw [h] at hz; norm_num at hz
     rw [← one_lt_identity hz]; unfold riemannZeta₁ riemannZeta₀
-    rw [if_neg hz1, mul_sub, mul_inv_cancel₀ (sub_ne_zero.mpr hz1)]; ring
+    rw [ite_eq_right hz1, mul_sub, mul_inv_cancel₀ (sub_ne_zero.mpr hz1)]; ring
   exact hF.eqOn_of_preconnected_of_eventuallyEq hG (convex_halfSpace_re_gt 0).isPreconnected
     (show (2 : ℂ) ∈ {z : ℂ | 0 < z.re} by norm_num) heq hs
 

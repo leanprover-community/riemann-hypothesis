@@ -66,7 +66,7 @@ lemma fischerInner_monomial_left (u : σ →₀ ℕ) (c : ℂ) (g : MvPolynomial
     fockF (monomial u c) g = c * star (g.coeff u) * ((∏ k ∈ u.support, (u k).factorial : ℕ) : ℂ) := by
   classical
   rw [fischerInner_eq_sum_of_subset _ _ {u} support_monomial_subset, Finset.sum_singleton, coeff_monomial,
-    if_pos rfl]
+    ite_eq_left rfl]
 
 lemma prod_factorial_support_sub_single [DecidableEq σ] (u : σ →₀ ℕ) (v : σ) (hv : u v ≠ 0) :
     (∏ k ∈ u.support, (u k).factorial) =
@@ -100,7 +100,7 @@ lemma fischerInner_pderiv_left [DecidableEq σ] (v : σ) (f g : MvPolynomial σ 
     · have : v ∉ u.support := Finsupp.notMem_support_iff.mpr hv
       simp [hv, this]
     · have : v ∈ u.support := Finsupp.mem_support_iff.mpr hv
-      rw [if_pos this, prod_factorial_support_sub_single u v hv]
+      rw [ite_eq_left this, prod_factorial_support_sub_single u v hv]
       push_cast; ring
   | add p q hp hq => rw [map_add (f := _), fischerInner_add_left, fischerInner_add_left, hp, hq]
 

@@ -45,9 +45,9 @@ theorem continuous_evXI (P : PX m n) : Continuous fun x : Fin m → Fin n → �
       (fun k : Fin m × Fin n × Bool => if k.2.2 then star (x k.1 k.2.1) else x k.1 k.2.1) := by
     refine continuous_pi fun k => ?_
     by_cases h : k.2.2
-    · simp only [h, if_true]
+    · simp only [h, ite_true]
       exact continuous_star.comp ((continuous_apply _).comp (continuous_apply _))
-    · simp only [h, if_false, Bool.false_eq_true]
+    · simp only [h, ite_false, Bool.false_eq_true]
       exact (continuous_apply _).comp (continuous_apply _)
   exact (MvPolynomial.continuous_eval P).comp hg
 

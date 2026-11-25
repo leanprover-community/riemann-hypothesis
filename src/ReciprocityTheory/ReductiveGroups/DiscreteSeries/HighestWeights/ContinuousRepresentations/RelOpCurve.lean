@@ -374,7 +374,7 @@ theorem KRep.kRel_units {ε : Fin n → Bool} (R : KRep ε) : Formalism.REAL.KRe
   have h := R.rel_dτ_bracket_single hab hcd
   have key : Matrix.single a b (1 : ℂ) * Matrix.single c d 1 - Matrix.single c d 1 * Matrix.single a b 1 =
       (if b = c then Matrix.single a d 1 else 0) - (if d = a then Matrix.single c b 1 else 0) := by
-    by_cases hbc : b = c <;> by_cases hda : d = a <;> simp only [hbc, hda, if_true, if_false] <;>
+    by_cases hbc : b = c <;> by_cases hda : d = a <;> simp only [hbc, hda, ite_true, ite_false] <;>
       first
       | simp [Matrix.single_mul_single_same, Matrix.single_mul_single_of_ne, hbc, hda]
   have e : ∀ P Q : R.V →L[ℂ] R.V, ((P * Q - Q * P : R.V →L[ℂ] R.V) : Module.End ℂ R.V) =

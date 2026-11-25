@@ -98,15 +98,4 @@ theorem ext_unitary {p : PlF D} {h : GV D} (hh : h ∈ Formalism.HermitianLattic
 
 end
 
-section
-variable {Z : LocDat D} {FP : ∀ p : PlF D, LocNG.FPair (locH Z p) D.R.rS} {Tn T'n : ℕ}
-  {F : LFlag (D.sp.Y 0) D.R.rS (Tn : D.host.E)} {F' : LFlag (D.sp.Y 0) D.R.rS (T'n : D.host.E)}
-
-end
-
-section
-variable {X : HidaSetting D} {Y : Full X} {u u' : D.what₂.Word}
-
-end
-
 end GlobalTheory.Unfold.Model

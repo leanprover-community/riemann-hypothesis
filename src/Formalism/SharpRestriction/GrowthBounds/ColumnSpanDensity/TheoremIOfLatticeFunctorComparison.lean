@@ -403,8 +403,8 @@ theorem existsIO' : ExistsIO := by
       else 1 := by
     intro s
     by_cases h : s ∈ TT
-    · rw [dif_pos h]
-      have hf : f s = i ⟨s, h⟩ := by simp only [f, dif_pos h]
+    · rw [dite_eq_left h]
+      have hf : f s = i ⟨s, h⟩ := by simp only [f, dite_eq_left h]
       rw [hf]
       have hc : ψ.comp (MvPolynomial.rename (fun v : Bool × α => (s, v))) =
           MvPolynomial.rename (fun v : Bool × α => (((⟨s, h⟩ : TT), v.1), v.2)) := by
@@ -413,16 +413,16 @@ theorem existsIO' : ExistsIO := by
         simp [ψ, h]
       exact congrArg (fun F : MvPolynomial (Bool × α) K →ₐ[K] MvPolynomial ((TT × Bool) × α) K =>
         F (i ⟨s, h⟩ (P s))) hc
-    · rw [dif_neg h]
+    · rw [dite_eq_right h]
       have hf : f s = (MvPolynomial.aeval (fun _ : α => (0 : MvPolynomial (Bool × α) K))).toLinearMap := by
-        simp only [f, dif_neg h]
+        simp only [f, dite_eq_right h]
       rw [hf, hP s h]
       simp
   rw [Finset.prod_congr rfl fun s _ => key s]
-  rw [← Finset.prod_subset (Finset.subset_univ TT) (fun s _ hs => dif_neg hs)]
+  rw [← Finset.prod_subset (Finset.subset_univ TT) (fun s _ hs => dite_eq_right hs)]
   rw [← Finset.prod_coe_sort TT]
   refine Finset.prod_congr rfl fun s _ => ?_
-  rw [dif_pos s.2]
+  rw [dite_eq_left s.2]
 
 theorem existsPR' : ExistsPR := by
   intro K _ S α _ _ TT pr
@@ -633,7 +633,7 @@ theorem segG_eq (TT : Finset (Fin n')) (h2 : 2 ≤ numSeg TT) (j : Fin (numSeg T
   have h := (next_min TT j e he hev hne).1
   have e1 : segG TT j = cdist (segStart TT j) (segNext TT j) := by
     unfold segG
-    rw [if_neg (by omega)]
+    rw [ite_eq_right (by omega)]
   refine ⟨e1, by omega, ?_⟩
   rw [e1]
   exact Nat.mod_lt _ (segStart TT j).pos

@@ -77,7 +77,7 @@ theorem lamS_node (R : Ranks) (P : HCParam R) (j : ℕ) (hj : j < R.m) (hi : R.k
   unfold lamS
   rw [dite_eq_right (by simp only []; omega)]
   have e : R.k - 1 + j - (R.k - 1) = j := by omega
-  simp only [e, dif_pos hj]
+  simp only [e, dite_eq_left hj]
 
 theorem node_of_sign (R : Ranks) (a b : Fin R.r) (hab : a < b) (hne : epsS R a ≠ epsS R b) : R.k ≤ b.1 := by
   by_contra! hb
@@ -86,10 +86,10 @@ theorem node_of_sign (R : Ranks) (a b : Fin R.r) (hab : a < b) (hne : epsS R a �
     have : a.1 < b.1 := hab
     omega
   unfold epsS
-  rw [if_pos ha]
+  rw [ite_eq_left ha]
   by_cases h1 : b.1 < R.k - 1
-  · rw [if_pos h1]
-  · rw [if_neg h1]
+  · rw [ite_eq_left h1]
+  · rw [ite_eq_right h1]
     have : b.1 - (R.k - 1) = 0 := by omega
     simp [this]
 

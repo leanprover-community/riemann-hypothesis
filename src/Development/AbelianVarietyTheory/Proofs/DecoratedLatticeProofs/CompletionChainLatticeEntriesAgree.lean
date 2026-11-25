@@ -78,19 +78,19 @@ end Frames
 section Index
 
 theorem fIdx_of_lt {κ c n v : ℕ} (h : v < κ) : LocE.fIdx κ c n v = v := by
-  unfold LocE.fIdx; rw [if_pos h]
+  unfold LocE.fIdx; rw [ite_eq_left h]
 
 theorem fIdx_of_mid {κ c n v : ℕ} (h₁ : κ ≤ v) (h₂ : v < κ + c) : LocE.fIdx κ c n v = n + (v - κ) := by
-  unfold LocE.fIdx; rw [if_neg (by omega), if_pos h₂]
+  unfold LocE.fIdx; rw [ite_eq_right (by omega), ite_eq_left h₂]
 
 theorem fIdx_of_ge {κ c n v : ℕ} (h : κ + c ≤ v) : LocE.fIdx κ c n v = v - c := by
-  unfold LocE.fIdx; rw [if_neg (by omega), if_neg (by omega)]
+  unfold LocE.fIdx; rw [ite_eq_right (by omega), ite_eq_right (by omega)]
 
 theorem scE_of_lt {n v : ℕ} (ex : ℕ → ℕ) (h : v < n) : LocE.scE n ex v = 0 := by
-  unfold LocE.scE; rw [if_pos h]
+  unfold LocE.scE; rw [ite_eq_left h]
 
 theorem scE_add (n i : ℕ) (ex : ℕ → ℕ) : LocE.scE n ex (n + i) = ex i := by
-  unfold LocE.scE; rw [if_neg (by omega), Nat.add_sub_cancel_left]
+  unfold LocE.scE; rw [ite_eq_right (by omega), Nat.add_sub_cancel_left]
 
 theorem stdOrd_place {κ τ j c l n N : ℕ} (h : j + c = l) (hn : n = κ + j * (τ + 1))
     (e : XIx (Fin κ) (Fin τ) j ⊕ Fin c ≃ Fin N) (he : IsOrd (yPos xPos n) e) (a : Ix (Fin κ ⊕ Fin l) (Fin τ) j) :

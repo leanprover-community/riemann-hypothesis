@@ -91,6 +91,6 @@ theorem thPVec_ne_zero {D : D7} {ψ : AddChar (AF D.host.F) ℂ} {θ : InfFam D}
           GlobalTheory.PlaceVec.omegaQ_congr Q _ ξ _ fun PP hPP => h PP (Finset.mem_union_right _ hPP)])
     fun hz => h3 ?_
   have := congrFun hz x
-  rwa [if_pos ⟨h1, h2⟩] at this
+  rwa [ite_eq_left ⟨h1, h2⟩] at this
 
 end GlobalTheory.AdTh.VecNe

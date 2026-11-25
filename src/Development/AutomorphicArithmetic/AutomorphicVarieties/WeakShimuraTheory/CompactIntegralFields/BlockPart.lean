@@ -47,12 +47,12 @@ private theorem bp_mul {s : ℤ} (hs : s ≠ 0) {X Y : M4 R} (hX : Tri s X) (hY 
   split_ifs with h
   · refine Finset.sum_congr rfl fun k _ => ?_
     by_cases h1 : lamW i = lamW k
-    · rw [if_pos h1, if_pos (h1.symm.trans h)]
-    · rw [if_neg h1, zero_mul, key k h1 h]
+    · rw [ite_eq_left h1, ite_eq_left (h1.symm.trans h)]
+    · rw [ite_eq_right h1, zero_mul, key k h1 h]
   · refine (Finset.sum_eq_zero fun k _ => ?_).symm
     by_cases h1 : lamW i = lamW k
-    · rw [if_neg (fun e : lamW k = lamW j => h (h1.trans e)), mul_zero]
-    · rw [if_neg h1, zero_mul]
+    · rw [ite_eq_right (fun e : lamW k = lamW j => h (h1.trans e)), mul_zero]
+    · rw [ite_eq_right h1, zero_mul]
 
 private theorem lam_rev (i : Fin 4) : lamW i.rev = 1 - lamW i := by revert i; decide
 
@@ -60,8 +60,8 @@ private theorem adj_bp (X : M4 R) : adj (bp X) = bp (adj X) := by
   ext i j
   simp only [bp_apply, adj_apply, lam_rev]
   by_cases h : lamW i = lamW j
-  · rw [if_pos h, if_pos (by rw [h])]
-  · rw [if_neg h, if_neg (fun e => h (by linarith)), smul_zero]
+  · rw [ite_eq_left h, ite_eq_left (by rw [h])]
+  · rw [ite_eq_right h, ite_eq_right (fun e => h (by linarith)), smul_zero]
 
 private theorem Tri.adj {s : ℤ} {X : M4 R} (hX : Tri s X) : Tri s (adj X) := fun i j h => by
   rw [adj_apply, hX _ _ (by rw [lam_rev, lam_rev]; linarith), smul_zero]
@@ -210,7 +210,7 @@ theorem UpperTheory.V.Ws.blockPart :
     · rw [hred, hred, hph]
       refine fun e => hl i j h ?_
       simpa [Raw.rbar, Raw.r0, diagRep] using (𝔞.j c).injective e
-  have hb : ∀ g, IsBlock (bpRep hs r hT g) := fun g i j h => if_neg h
+  have hb : ∀ g, IsBlock (bpRep hs r hT g) := fun g i j h => ite_eq_right h
   have hm : ∀ g, IsGSp (𝔞.a c (D.th g)) (bpRep hs r hT g) := fun g => gsp_bp hs (hT g) (hK.mult g)
   have h_one : ∀ g, r g = 1 → bpRep hs r hT g = 1 := fun g h => by
     show bp (r g) = 1
@@ -255,7 +255,7 @@ theorem UpperTheory.V.Ws.blockPart :
       ext a b
       rw [bp_apply, Matrix.map_apply, Matrix.single_apply, Matrix.single_apply]
       by_cases h : i = a ∧ i = b
-      · rw [if_pos h, if_pos h, if_pos (by rw [← h.1, ← h.2]), map_one]
+      · rw [ite_eq_left h, ite_eq_left h, ite_eq_left (by rw [← h.1, ← h.2]), map_one]
       · simp [h]
     refine (geAlg 𝔞.K (mapRep 𝔞.toK (bpRep hs r hT)) (fun g => 𝔞.toK (𝔞.a c (D.th g))) (fun g => ?_) he).2.2.2.2.2 ?_ ?_
       fun g i j h => ?_

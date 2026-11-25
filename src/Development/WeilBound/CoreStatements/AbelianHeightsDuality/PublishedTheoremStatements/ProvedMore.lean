@@ -1142,9 +1142,9 @@ theorem isPartialZeta_zetaOfClass (C : ClassGroup (𝓞 F)) :
   rw [e]
   constructor
   · intro h
-    rw [if_pos h, inv_mul_cancel₀ card_classGroup_ne_zero]
+    rw [ite_eq_left h, inv_mul_cancel₀ card_classGroup_ne_zero]
   · intro h
-    rw [if_neg h, mul_zero]
+    rw [ite_eq_right h, mul_zero]
 
 theorem isPartialZeta_zetaOfClassInv (C : ClassGroup (𝓞 F)) :
     GlobalTheory.IndefiniteRowSideFullHecke.OmegaFactorization.IsPartialZeta C (zetaOfClassInv C) := by
@@ -1160,9 +1160,9 @@ theorem isPartialZeta_zetaOfClassInv (C : ClassGroup (𝓞 F)) :
   rw [e]
   constructor
   · intro h
-    rw [if_pos h.symm, inv_mul_cancel₀ card_classGroup_ne_zero]
+    rw [ite_eq_left h.symm, inv_mul_cancel₀ card_classGroup_ne_zero]
   · intro h
-    rw [if_neg (Ne.symm h), mul_zero]
+    rw [ite_eq_right (Ne.symm h), mul_zero]
 
 theorem functionalEquation_classHecke [IsTotallyReal F] (ψ : AddChar (Additive (ClassGroup (𝓞 F))) ℂ)
     (D : (Ideal (𝓞 F))⁰) (hD : (D : Ideal (𝓞 F)) = differentIdeal ℤ (𝓞 F))

@@ -663,11 +663,11 @@ theorem coeff_eq {N n : ℕ} (hN : N ≠ 0) {c c' : ℕ → ℂ}
       C ((-1 : ℂ) ^ j * ((N : ℂ)) ^ (j * (j - 1) / 2) * d j) * X ^ (n - j) : ℂ[X]).coeff (n - k) =
         (-1 : ℂ) ^ k * ((N : ℂ)) ^ (k * (k - 1) / 2) * d k := by
     intro d
-    rw [coeff_add, coeff_X_pow, if_neg (by omega), zero_add, finsetSum_coeff, Finset.sum_eq_single k]
-    · rw [coeff_C_mul_X_pow, if_pos rfl]
+    rw [coeff_add, coeff_X_pow, ite_eq_right (by omega), zero_add, finsetSum_coeff, Finset.sum_eq_single k]
+    · rw [coeff_C_mul_X_pow, ite_eq_left rfl]
     · intro j hj hjk
       rw [Finset.mem_Icc] at hj
-      rw [coeff_C_mul_X_pow, if_neg (by omega)]
+      rw [coeff_C_mul_X_pow, ite_eq_right (by omega)]
     · intro hk
       exact absurd (Finset.mem_Icc.2 ⟨h1, h2⟩) hk
   have e := congrArg (fun p : ℂ[X] => p.coeff (n - k)) h
@@ -745,7 +745,7 @@ theorem main : ∀ (D : D7) (M : Formalism.L2.MtFam D), Formalism.L2.HeckeTied D
   have h : i ∈ D.nd.locs (D.nd.j i) (D.nd.w i) := (D.nd.locs_mem _ _ i).2 ⟨rfl, rfl⟩
   let lamF : PlE D.host → ℕ → ℂ := fun v =>
     if hv : SplitOut D.nd i v then Classical.choose (hyp P v hv) else 0
-  have hlamF : ∀ v (hv : SplitOut D.nd i v), lamF v = Classical.choose (hyp P v hv) := fun v hv => dif_pos hv
+  have hlamF : ∀ v (hv : SplitOut D.nd i v), lamF v = Classical.choose (hyp P v hv) := fun v hv => dite_eq_left hv
   have hinjO : Function.Injective (iotaO D.nd D.naut i) := by
     unfold iotaO
     simp only [RingHom.coe_comp]
@@ -766,7 +766,7 @@ theorem main : ∀ (D : D7) (M : Formalism.L2.MtFam D), Formalism.L2.HeckeTied D
       IsLocalRing.residue (D.nd.O i) (aF v k) =
         IsLocalRing.residue (D.nd.O i) ((D.nd.hT i v k : D.nd.X i → D.nd.O i) x) := by
     intro v k hv
-    simp only [aF, dif_pos hv]
+    simp only [aF, dite_eq_left hv]
     exact Classical.choose_spec (hcoef v k hv.1 hv.2.1 hv.2.2)
   have hiotaC : ∀ z, iotaO D.nd D.naut i z = NL.iotaC _ _ (NL.phO _ _ i h z) := NL.iotaC_coh _ _ i h
   have hinjC : Function.Injective (NL.iotaC (D.nd.j i) (D.nd.w i)) := by

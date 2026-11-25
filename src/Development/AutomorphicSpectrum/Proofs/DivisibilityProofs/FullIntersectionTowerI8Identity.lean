@@ -990,8 +990,8 @@ theorem stXB : StX := by
   let cl : ℝ → ℝ := fun t => if 0 < t ∧ t ≤ S.t₀ then t else S.t₀
   have hcl : ∀ t, 0 < cl t ∧ cl t ≤ S.t₀ := fun t => by
     by_cases h : 0 < t ∧ t ≤ S.t₀
-    · simp only [cl, if_pos h]; exact h
-    · simp only [cl, if_neg h]; exact ⟨h0, le_rfl⟩
+    · simp only [cl, ite_eq_left h]; exact h
+    · simp only [cl, ite_eq_right h]; exact ⟨h0, le_rfl⟩
   refine ⟨fun t r => Top.combLine (fun a => Re.line a (cl t)) (Cmp.rootOnFund r), fun t r => ?_,
     fun t r => smooth_comb _ _ fun a => Re.line_smooth a _ (hcl t).1 (hcl t).2, fun t r z => ?_, ?_⟩
   · funext k
@@ -1009,7 +1009,7 @@ theorem stXB : StX := by
   · show ∏ a, _ = ∏ a, _
     exact Finset.prod_congr rfl fun a _ => by rw [hc a (cl t) z]
   · filter_upwards [Ioo_mem_nhdsGT h0] with t ht r z _
-    have : cl t = t := if_pos ⟨ht.1, ht.2.le⟩
+    have : cl t = t := ite_eq_left ⟨ht.1, ht.2.le⟩
     rw [this]
 
 end SquareStatements

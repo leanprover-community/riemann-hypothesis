@@ -136,9 +136,9 @@ theorem isKStableOn_of_kStable : ∀ (p q n : ℕ) (e : Ix p q ≃ Fin n) (ε : 
       Equiv.symm_apply_apply] at h2
     cases h3 : ε (e a) <;> cases h4 : ε (e b) <;> rw [h3, h4] at hab h2
     · exact (hab rfl).elim
-    · simp only [if_true, Bool.false_eq_true, if_false] at h2
+    · simp only [ite_true, Bool.false_eq_true, ite_false] at h2
       linear_combination (1/2 : ℂ) * h2
-    · simp only [if_true, Bool.false_eq_true, if_false] at h2
+    · simp only [ite_true, Bool.false_eq_true, ite_false] at h2
       linear_combination (-1/2 : ℂ) * h2
     · exact (hab rfl).elim
   have hk' : σ k = R.U.π (T.expt ((1 : ℝ) • X)) := by

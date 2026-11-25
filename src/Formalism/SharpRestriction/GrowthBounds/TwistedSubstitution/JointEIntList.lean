@@ -297,7 +297,7 @@ theorem greedy_list (S : UniformizedDVR p O) (l : List (NIdx Dt)) (hl : l.Nodup)
       apply List.map_congr_left
       intro j hj
       have hne : j ≠ i := fun h => hi (h ▸ hj)
-      rw [Function.update_apply, if_neg hne]
+      rw [Function.update_apply, ite_eq_right hne]
     have hi' : Function.update ka' i mu i = mu := by simp
     rw [List.map_cons, List.prod_cons, Module.End.mul_apply, hmap, hi']
     exact hmu.trans hka'
@@ -315,7 +315,7 @@ theorem restJP {n' : ℕ} (S : UniformizedDVR p O) (hR : AdmissibleDVR p n' O) (
       ∀ F i, e F ∈ isoSub (normE p K Dt i) (ka i.1 i.2.val) := by
   obtain ⟨ka0, hka0⟩ := greedy_list D K Dt S (Finset.univ : Finset (NIdx Dt)).toList (Finset.nodup_toList _) y
   obtain ⟨ka, hka⟩ : ∃ ka : ZMod J → ℕ → Fin K → ℤ, ∀ i : NIdx Dt, ka i.1 i.2.val = ka0 i :=
-    ⟨fun j u => if h : u < Dt.nL j + r + 1 then ka0 ⟨j, ⟨u, h⟩⟩ else 0, fun i => dif_pos i.2.isLt⟩
+    ⟨fun j u => if h : u < Dt.nL j + r + 1 then ka0 ⟨j, ⟨u, h⟩⟩ else 0, fun i => dite_eq_left i.2.isLt⟩
   have hfun : (fun i : Σ j, Fin (Dt.nL j + r + 1) => ka i.1 i.2.val) = ka0 := funext hka
   obtain ⟨h1, h2, h3, h4⟩ := jointN_props D K Dt S hR ka0
   have hj := jointE_int D K Dt S hR ka0 dNo

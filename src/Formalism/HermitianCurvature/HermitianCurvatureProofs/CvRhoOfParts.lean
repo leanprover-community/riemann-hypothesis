@@ -62,10 +62,10 @@ theorem ckOn_top (Eop : Fin (2 * r + k + 1) → Fin (2 * r + k + 1) → (Mat k r
       exact (((hc₁.of_le hle).const_smul u).mono Set.inter_subset_left).add
         (hc₂.mono Set.inter_subset_right)
     · intro g hg hgG
-      rw [top_apply, if_pos hcd, he₁ g hg.1 hgG, he₂ g hg.2 hgG]
+      rw [top_apply, ite_eq_left hcd, he₁ g hg.1 hgG, he₂ g hg.2 hgG]
   · refine ⟨U₂, f₂, hU₂, hg₂, hc₂, ?_⟩
     intro g hg hgG
-    rw [top_apply, if_neg hcd, zero_add, he₂ g hg hgG]
+    rw [top_apply, ite_eq_right hcd, zero_add, he₂ g hg hgG]
 
 theorem top_congr (Eop : Fin (2 * r + k + 1) → Fin (2 * r + k + 1) → (Mat k r → E) → (Mat k r → E))
     (hC : ∀ c d (f f₂ : Mat k r → E), (∀ g ∈ GV k r, f g = f₂ g) → ∀ g ∈ GV k r, Eop c d f g = Eop c d f₂ g)

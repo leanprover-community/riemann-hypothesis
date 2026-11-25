@@ -875,7 +875,7 @@ private theorem lev_rk {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω
   haveI : Algebra.IsAlgebraic ℚ Ω := IsAlgClosure.isAlgebraic
   haveI : Module.IsTorsionFree E Ω := DivisionSemiring.to_moduleIsTorsionFree
   haveI : IsAlgClosure E Ω := ⟨IsAlgClosure.isAlgClosed ℚ, Algebra.IsAlgebraic.tower_top (K := ℚ) E⟩
-  obtain ⟨r, hr⟩ := _root_.UpperTheory.V.FW.ferreroWashington l E (by rw [if_neg h2]; exact hζ)
+  obtain ⟨r, hr⟩ := _root_.UpperTheory.V.FW.ferreroWashington l E (by rw [ite_eq_right h2]; exact hζ)
   refine ⟨r, fun n => ?_⟩
   let K' := Kum.Fn E Ω l n
   obtain ⟨hcyc, -, -⟩ := Kum.fnCyc E Ω l n

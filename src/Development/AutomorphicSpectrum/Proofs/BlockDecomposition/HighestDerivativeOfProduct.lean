@@ -16,12 +16,6 @@ open scoped TensorProduct
 
 namespace GlobalTheory.CompanionTheory.HighestDeriv
 
-section Coinv
-
-variable {G V W : Type} [Group G] [AddCommGroup V] [Module ℂ V] [AddCommGroup W] [Module ℂ W]
-
-end Coinv
-
 def piFinTwoTensor (X : Fin 2 → Type) [∀ a, AddCommGroup (X a)] [∀ a, Module ℂ (X a)] :
     (⨂[ℂ] a, X a) ≃ₗ[ℂ] X 0 ⊗[ℂ] X 1 :=
   ((LinearEquiv.lTensor _ (PiTensorProduct.subsingletonEquiv (s := fun i : Fin 1 => X i.succ) 0).symm).trans
@@ -50,10 +44,6 @@ theorem nonempty_prod2_equiv (π₁ : Representation ℂ (GL (Fin r) k) V) (π�
   ⟨LocGL.parIndEquiv (two (stdSum (rfl : r + t = r + t))) (piTensorTwoEquiv' π₁ π₂)⟩
 
 end Two
-
-section Main
-
-end Main
 
 end GlobalTheory.CompanionTheory.HighestDeriv
 

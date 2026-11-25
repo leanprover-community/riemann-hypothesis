@@ -97,15 +97,6 @@ lemma sm_isURepOn_bridge (ε : Fin n → Bool) {H : Type} [NormedAddCommGroup H]
 
 end Gen
 
-section MultSec
-
-open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S
-open Formalism.L2.Theta Formalism.IndefR.Mult
-
-variable {D : D7} {V : HSp D} {S : D.what₂.Tau → SPar}
-
-end MultSec
-
 end Formalism.IndefR.PeterssonHilbertSpace
 
 end

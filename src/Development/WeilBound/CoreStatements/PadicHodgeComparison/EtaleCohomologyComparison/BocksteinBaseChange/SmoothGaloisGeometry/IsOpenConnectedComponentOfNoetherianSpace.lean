@@ -35,12 +35,8 @@ theorem isOpen_connectedComponent_of_noetherianSpace {X : Type*} [TopologicalSpa
 
 theorem finite_connectedComponents_of_noetherianSpace (X : Type*) [TopologicalSpace X] [NoetherianSpace X] :
     Finite (_root_.ConnectedComponents X) := by
-  have : DiscreteTopology (_root_.ConnectedComponents X) := by
-    rw [discreteTopology_iff_isOpen_singleton]
-    intro c
-    obtain ⟨x, rfl⟩ := ConnectedComponents.surjective_coe c
-    rw [← ConnectedComponents.isQuotientMap_coe.isOpen_preimage, connectedComponents_preimage_singleton]
-    exact isOpen_connectedComponent_of_noetherianSpace x
+  have : DiscreteTopology (_root_.ConnectedComponents X) :=
+    ConnectedComponents.discreteTopology_iff.2 isOpen_connectedComponent_of_noetherianSpace
   have : CompactSpace (_root_.ConnectedComponents X) := inferInstance
   exact finite_of_compact_of_discrete
 

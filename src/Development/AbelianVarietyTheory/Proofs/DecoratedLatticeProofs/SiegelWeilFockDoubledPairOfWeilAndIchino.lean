@@ -93,7 +93,7 @@ theorem siegelWeilAll_of_hypotheses : GlobalTheory.Published.WeilRepresentationU
       · rw [h]; omega
       · exact h
     exact hIch D ψ A B hab hb h3 χB omh homh a hmaj hI θ sS sB hθ hS hB hKc ν 𝓕 hcov mH hmH φ hF
-  · push_neg at hb
+  · push Not at hb
     obtain ⟨-, hW2⟩ := hWeil D A B mH hmH ha hwitt'
     obtain ⟨hint, hser⟩ := hW2 ψ χB omh homh φ hφ
     refine ⟨hint, ?_⟩

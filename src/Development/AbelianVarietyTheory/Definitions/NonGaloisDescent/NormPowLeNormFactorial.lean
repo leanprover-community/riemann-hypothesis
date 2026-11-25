@@ -422,7 +422,7 @@ theorem derivative_mem_S {e : ℕ} {f : K⟦X⟧} (hf : f ∈ S O K e) :
     · rw [Nat.factorial_succ]
       refine Nat.mul_dvd_mul_right ?_ _
       have := Nat.succ_div (a := n) (b := e)
-      rw [if_pos h] at this
+      rw [ite_eq_left h] at this
       rw [← this]
       exact Nat.div_dvd_of_dvd h
     · exact Dvd.intro_left _ rfl

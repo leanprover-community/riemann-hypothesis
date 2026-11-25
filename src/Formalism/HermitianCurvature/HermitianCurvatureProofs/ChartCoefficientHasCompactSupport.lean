@@ -406,7 +406,7 @@ theorem chartCoefficient_apply (b b' : RC k j ρ → ℝ) (Φ : (Fin j → Fin j
     (hμ : Matrix.of q.2.2 ∈ B.GV k ρ) :
     chartCoefficient b b' Φ (psiC q) = ((b q.1.1 * b' q.1.2 : ℝ) : ℂ) • Φ q.2.1 q.2.2 := by
   unfold chartCoefficient
-  rw [if_pos (by rw [djU_psiC]; exact hZ), chart_psiC hZ hμ]
+  rw [ite_eq_left (by rw [djU_psiC]; exact hZ), chart_psiC hZ hμ]
 
 end mk
 
@@ -436,9 +436,9 @@ theorem ms_skewOf {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] {x : E}
     simp only [Matrix.diagonal_apply]
     by_cases h : a = b
     · subst h
-      simp only [if_true]
+      simp only [ite_true]
       exact contDiffAt_const.mul (Complex.ofRealCLM.contDiff.contDiffAt.comp x (contDiffAt_pi.1 hf.snd a))
-    · simp only [h, if_false]
+    · simp only [h, ite_false]
       exact contDiffAt_const
   unfold skewOf
   exact ms_add (ms_sub hU (ms_conjT hU)) hD
@@ -519,10 +519,10 @@ theorem chartCoefficient_hasCompactSupport (Bs : B.RealPlaceData k (j + ρ) Wp W
   have hsub : ∀ g ∈ B.GV k (j + ρ), chartCoefficient b b' Φ g ≠ 0 → g ∈ C := by
     intro g hg hne
     have hD : DjU k j ρ g ≠ 0 := by
-      intro h0; apply hne; unfold chartCoefficient; rw [if_neg (not_not.2 h0)]
+      intro h0; apply hne; unfold chartCoefficient; rw [ite_eq_right (not_not.2 h0)]
     obtain ⟨hZ, hμ, heq⟩ := chart_spec g hg hD
     unfold chartCoefficient at hne
-    rw [if_pos hD] at hne
+    rw [ite_eq_left hD] at hne
     have hμ' : Matrix.of (chart (Matrix.of.symm g)).2.2 ∈ B.GV k ρ := by
       simpa only [chart, Equiv.apply_symm_apply] using hμ
     obtain ⟨hc, hΦne⟩ := smul_ne_zero_iff.1 hne
@@ -570,7 +570,7 @@ theorem chartCoefficient_hasCompactSupport (Bs : B.RealPlaceData k (j + ρ) Wp W
         obtain ⟨-, hμ, -⟩ := chart_spec g hgG hD
         have hμ' : Matrix.of (chart (Matrix.of.symm g)).2.2 ∈ B.GV k ρ := by simpa only [chart, Equiv.apply_symm_apply] using hμ
         unfold chartCoefficient
-        rw [if_pos hD, hΦF _ hgU.2 hμ']
+        rw [ite_eq_left hD, hΦF _ hgU.2 hμ']
     · refine ⟨Cᶜ, fun _ => 0, hCc.isClosed.isOpen_compl, hC, contDiffOn_const, fun g hgU hgG => ?_⟩
       by_contra hne
       exact hgU (hsub g hgG hne)

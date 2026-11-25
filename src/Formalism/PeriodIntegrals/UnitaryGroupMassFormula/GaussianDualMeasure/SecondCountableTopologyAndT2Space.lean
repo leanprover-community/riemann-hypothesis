@@ -30,17 +30,4 @@ instance t2Space : T2Space F := (secondCountableTopology_and_t2Space F).2
 
 end Top
 
-section Meas
-
-variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F]
-  [MeasurableSpace F] [BorelSpace F]
-
-end Meas
-
-section Char
-
-variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F]
-
-end Char
-
 end PI.GI

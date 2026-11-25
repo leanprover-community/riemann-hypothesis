@@ -390,10 +390,10 @@ theorem exists_const_decomp (ϖ : O) (hϖ : Irreducible ϖ) (F C : Submodule O (
         intro v hv
         obtain ⟨t, ht⟩ := hcoord v hv (snf.f i)
         rw [hΦ, ht, Finset.sum_eq_single i]
-        · rw [if_pos rfl, mul_one, hu]
+        · rw [ite_eq_left rfl, mul_one, hu]
           exact Ideal.mem_span_singleton'.mpr ⟨t i * u, by ring⟩
         · intro l _ hl
-          rw [if_neg (fun h => hl (snf.f.injective h)), mul_zero, mul_zero]
+          rw [ite_eq_right (fun h => hl (snf.f.injective h)), mul_zero, mul_zero]
         · intro h
           exact absurd (Finset.mem_univ i) h
       have key := hkey (Φ (snf.f i)) n (hΦF _) hC
@@ -415,7 +415,7 @@ theorem exists_const_decomp (ϖ : O) (hϖ : Irreducible ϖ) (F C : Submodule O (
         intro v hv
         obtain ⟨t, ht⟩ := hcoord v hv j
         have h0 : ∀ l, (if snf.f l = j then (1 : O) else 0) = 0 := fun l =>
-          if_neg (fun h => hjr ⟨l, h⟩)
+          ite_eq_right (fun h => hjr ⟨l, h⟩)
         rw [hΦ, ht]
         simp [h0]
       have key := hkey (Φ j) c (hΦF _) hC

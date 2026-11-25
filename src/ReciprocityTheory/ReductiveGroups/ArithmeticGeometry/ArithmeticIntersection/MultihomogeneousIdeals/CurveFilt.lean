@@ -98,10 +98,4 @@ theorem weighted_le_of_irrel {P : Ideal (MRingOver F ι)} {k : K}
 
 end Lex
 
-section Len
-
-variable {R : Type*} [CommRing R]
-
-end Len
-
 end ReciprocityTheory.ChartRestriction.G.AI.I1

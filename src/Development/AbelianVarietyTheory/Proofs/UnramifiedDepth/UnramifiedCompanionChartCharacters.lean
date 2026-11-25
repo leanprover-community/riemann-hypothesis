@@ -449,7 +449,7 @@ private theorem exists_eigB {O OE : Type} [CommRing O] [IsLocalRing O] [CommRing
   set N := LinearMap.range (Matrix.mulVecLin (e i)) with hN
   have hid : ∀ w ∈ N, e i *ᵥ w = w := by
     rintro _ ⟨u, rfl⟩
-    rw [Matrix.mulVecLin_apply, Matrix.mulVec_mulVec, h1, if_pos rfl]
+    rw [Matrix.mulVecLin_apply, Matrix.mulVec_mulVec, h1, ite_eq_left rfl]
   haveI : Module.Projective O N :=
     Module.Projective.of_split N.subtype (Matrix.mulVecLin (e i)).rangeRestrict
       (by ext1 w; exact Subtype.ext (hid w w.2))
@@ -463,9 +463,9 @@ private theorem exists_eigB {O OE : Type} [CommRing O] [IsLocalRing O] [CommRing
         exact Finset.sum_congr rfl fun k _ => by rw [h3, mul_smul_comm]
       _ = t j a • e j := by
         rw [Finset.sum_eq_single j]
-        · rw [h1, if_pos rfl]
+        · rw [h1, ite_eq_left rfl]
         · intro k _ hk
-          rw [h1, if_neg (Ne.symm hk), smul_zero]
+          rw [h1, ite_eq_right (Ne.symm hk), smul_zero]
         · simp
   refine ⟨_, fun k => (b k : Fin g → O), ⟨fun k a => ?_, fun w hw => ?_⟩, ⟨b.equivFun⟩⟩
   · have := hid _ (b k).2

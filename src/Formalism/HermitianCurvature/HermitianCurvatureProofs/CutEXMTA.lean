@@ -41,7 +41,7 @@ def Wm (Z : Matrix (Fin n) (Fin n) ℂ) : Matrix (Fin n) (Fin n) ℂ := Matrix.o
 theorem Wm_ut (Z : Matrix (Fin n) (Fin n) ℂ) : Wm Z ∈ C2.UTset n := by
   refine ⟨fun i j h => ?_, fun i => ?_⟩
   · simp only [Wm, Matrix.of_apply]
-    rw [dif_neg (by have : j.val < i.val := h; omega), if_neg (by intro e; rw [e] at h; exact lt_irrefl _ h)]
+    rw [dite_eq_right (by have : j.val < i.val := h; omega), ite_eq_right (by intro e; rw [e] at h; exact lt_irrefl _ h)]
   · simp [Wm]
 
 theorem mul_col_split (A V : Matrix (Fin n) (Fin n) ℂ) (hV : V ∈ C2.UTset n) (l j : Fin n) :
@@ -51,11 +51,11 @@ theorem mul_col_split (A V : Matrix (Fin n) (Fin n) ℂ) (hV : V ∈ C2.UTset n)
       (if i = j then A l j else 0) := by
     intro i
     rcases lt_trichotomy i.val j.val with h | h | h
-    · rw [if_pos h, if_neg (by intro e; rw [e] at h; exact lt_irrefl _ h), add_zero]
+    · rw [ite_eq_left h, ite_eq_right (by intro e; rw [e] at h; exact lt_irrefl _ h), add_zero]
     · have e : i = j := Fin.ext h
       subst e
-      rw [if_neg (lt_irrefl _), if_pos rfl, hV.2, mul_one, zero_add]
-    · rw [if_neg (by omega), if_neg (by intro e; rw [e] at h; exact lt_irrefl _ h), hV.1 i j h, mul_zero, add_zero]
+      rw [ite_eq_right (lt_irrefl _), ite_eq_left rfl, hV.2, mul_one, zero_add]
+    · rw [ite_eq_right (by omega), ite_eq_right (by intro e; rw [e] at h; exact lt_irrefl _ h), hV.1 i j h, mul_zero, add_zero]
   rw [Finset.sum_congr rfl fun i _ => hsplit i, Finset.sum_add_distrib, Finset.sum_ite_eq']
   simp
 
@@ -77,19 +77,19 @@ theorem blk_det_ne {Z : Matrix (Fin n) (Fin n) ℂ} (hZ : Z.det ≠ 0) (j : Fin 
     set f : Fin n → ℂ := fun l => Z a l * ex x l with hf
     calc ∑ b : Fin j, Z a (Fin.castLE j.isLt.le b) * x b = ∑ b : Fin j, f (Fin.castLE j.isLt.le b) := by
           refine Finset.sum_congr rfl fun b _ => ?_
-          simp only [hf, hex, Fin.val_castLE, dif_pos b.isLt]
+          simp only [hf, hex, Fin.val_castLE, dite_eq_left b.isLt]
       _ = ∑ l : Fin n, (if l.val < j.val then f l else 0) := (sum_lt_castLE _ f).symm
       _ = ∑ l : Fin n, f l := by
           refine Finset.sum_congr rfl fun l _ => ?_
           by_cases h : l.val < j.val
-          · rw [if_pos h]
-          · rw [if_neg h]; simp only [hf, hex, dif_neg h, mul_zero]
+          · rw [ite_eq_left h]
+          · rw [ite_eq_right h]; simp only [hf, hex, dite_eq_right h, mul_zero]
   rw [hm, hm] at hxy
   have hinj : Function.Injective (Z *ᵥ ·) := Matrix.mulVec_injective_of_isUnit ((Matrix.isUnit_iff_isUnit_det Z).mpr (isUnit_iff_ne_zero.mpr hZ))
   have := hinj hxy
   funext a
   have h2 := congrFun this (Fin.castLE j.isLt.le a)
-  simp only [hex, Fin.val_castLE, dif_pos a.isLt] at h2
+  simp only [hex, Fin.val_castLE, dite_eq_left a.isLt] at h2
   exact h2
 
 theorem Wm_spec {Z : Matrix (Fin n) (Fin n) ℂ} (hZ : Z.det ≠ 0) (l j : Fin n) (hlj : l.val < j.val) :
@@ -104,7 +104,7 @@ theorem Wm_spec {Z : Matrix (Fin n) (Fin n) ℂ} (hZ : Z.det ≠ 0) (l j : Fin n
   have hW : ∀ b : Fin j, Wm Z (Fin.castLE j.isLt.le b) j =
       -(((blkJ (gram Z) j)⁻¹ *ᵥ colJ (gram Z) j) b) := by
     intro b
-    simp only [Wm, Matrix.of_apply, Fin.val_castLE, dif_pos b.isLt, Fin.eta]
+    simp only [Wm, Matrix.of_apply, Fin.val_castLE, dite_eq_left b.isLt, Fin.eta]
   simp only [hW, mul_neg, Finset.sum_neg_distrib]
   rw [show ∑ x : Fin j, gram Z l (Fin.castLE j.isLt.le x) * ((blkJ (gram Z) j)⁻¹ *ᵥ colJ (gram Z) j) x =
       gram Z l j from hrow]
@@ -130,7 +130,7 @@ theorem Wm_unique {Z V : Matrix (Fin n) (Fin n) ℂ} (hZ : Z.det ≠ 0) (hV : V 
     simp only [hx, Pi.neg_apply] at h1
     rw [show Fin.castLE j.isLt.le ⟨i.val, h⟩ = i from Fin.ext rfl] at h1
     rw [h1]
-    simp only [Wm, Matrix.of_apply, dif_pos h]
+    simp only [Wm, Matrix.of_apply, dite_eq_left h]
   · have e : i = j := Fin.ext h
     subst e
     rw [hV.2, (Wm_ut Z).2]

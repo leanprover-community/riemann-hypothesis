@@ -101,7 +101,7 @@ theorem schur_selfAdjoint (𝒰 : Set (H →L[ℂ] H))
         exact h3
       by_cases h1 : |s - t| / 2 ≤ |x - s|
       · rw [max_eq_left (show |s - t| / 2 - |x - s| ≤ 0 by linarith), zero_mul]
-      · push_neg at h1
+      · push Not at h1
         rw [max_eq_left (show |s - t| / 2 - |x - t| ≤ 0 by linarith), mul_zero]
     · show max 0 (|s - t| / 2 - |s - s|) ≠ 0
       rw [sub_self, abs_zero, sub_zero, max_eq_right hδ.le]

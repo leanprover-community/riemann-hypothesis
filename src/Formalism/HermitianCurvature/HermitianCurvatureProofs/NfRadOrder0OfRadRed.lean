@@ -62,8 +62,8 @@ theorem jetR_zero (hU : IsOpen U) (h0 : ζ0 ∈ U) {Λ : (ℂ → ℂ) → M} (h
       intro i
       rw [wd_eq hU hsm (w i) h0, wn_cmono, wn_mono]
       by_cases hi : cnt i = c
-      · rw [if_pos hi, if_pos (by rw [← hi]), hy]
-      · rw [if_neg hi, if_neg (by intro h'; exact hi (by rw [h'])), mul_zero, map_zero]
+      · rw [ite_eq_left hi, ite_eq_left (by rw [← hi]), hy]
+      · rw [ite_eq_right hi, ite_eq_right (by intro h'; exact hi (by rw [h'])), mul_zero, map_zero]
     rw [Finset.sum_congr rfl (fun i _ => e1 i), ← Finset.sum_filter] at hc
     exact hc.symm
   intro f hf

@@ -69,7 +69,7 @@ theorem inFr_div {a : ZMod n} {num den : LetA O n} {y : W.EE}
 theorem dv_eq_sum (T : LocLat G Qp LL O) (e : ℕ) {d : ℕ} (b : Fin d → W.DD T) (c₀ : Fin d → LL) :
     dv W T e b c₀ = ∑ k, c₀ k • dv W T e b (Pi.single k 1) := by
   unfold dv
-  simp only [Pi.single_apply, ite_smul, one_smul, zero_smul, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+  simp only [Pi.single_apply, ite_smul, one_smul, zero_smul, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
 
 theorem lam_mem_Ps (A : ArcP n) (a : ZMod n) (e : ℕ) : abelian₂ W A a e ∈ Ps W := by
   unfold abelian₂ Ps
@@ -96,7 +96,7 @@ theorem den0 (ell : ℕ) (Si : Finset ℕ) (m : ℕ → ℕ) :
 theorem numS (ell : ℕ) (Si : Finset ℕ) (m : ℕ → ℕ) {s : ℕ} (hs : s < ell) (K : ℕ) :
     ∏ t ∈ Finset.range ell, ps W t ^
       (if t = s then (K : ℤ) else -(((if t ∈ Si then m t else 0 : ℕ)) : ℤ)).toNat = ps W s ^ K := by
-  rw [Finset.prod_eq_single s (fun t _ ht => by rw [if_neg ht]; split_ifs <;> simp)
+  rw [Finset.prod_eq_single s (fun t _ ht => by rw [ite_eq_right ht]; split_ifs <;> simp)
     (fun h => absurd (Finset.mem_range.2 hs) h)]
   simp
 
@@ -108,7 +108,7 @@ theorem denS (ell : ℕ) (Si : Finset ℕ) (m : ℕ → ℕ) {s : ℕ} (hsSi : s
   by_cases ht : t = s
   · subst ht
     simp [hsSi]
-  · rw [if_neg ht, neg_neg]
+  · rw [ite_eq_right ht, neg_neg]
     split_ifs <;> simp
 
 theorem up_le_Hs (A : ArcP n) (hA : A.OK) {c : ZMod n} (hc : c ∈ A.cuts) {s bs : ℕ} (hs : s < A.len c)

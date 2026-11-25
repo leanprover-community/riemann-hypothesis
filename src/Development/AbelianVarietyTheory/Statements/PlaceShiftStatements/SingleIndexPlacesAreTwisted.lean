@@ -343,18 +343,6 @@ variable (E : Formalism.MainNotions.IntegralHeckeForms.ExpDat Y)
 
 end Basis
 
-section Main
-
-variable {D : Formalism.BasicNotions.D7} {N : NData D.R D.host D.what₂} {X : NTw D.R D.host D.what₂ D.LL0 N}
-  (bkP : BKPh X)
-
-variable (Y : NExp D.R D.host D.what₂ D.LL0 N X) (E : Formalism.MainNotions.IntegralHeckeForms.ExpDat Y)
-
-
-
-
-end Main
-
 end GlobalTheory.ExportCompare
 
 end

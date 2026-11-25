@@ -72,7 +72,7 @@ theorem quotSupp_of (V : HSp D) (hV : FinVol V) (hP : ∃ p : Measure (GA D V) �
   have h0 : muQ1 V S = 0 := ae_iff.mp hae
   have hS : muQ V S = 0 := by
     unfold muQ1 at h0
-    rw [if_pos (show muQ V Set.univ ≠ 0 ∧ muQ V Set.univ ≠ ⊤ from hV), Measure.smul_apply,
+    rw [ite_eq_left (show muQ V Set.univ ≠ 0 ∧ muQ V Set.univ ≠ ⊤ from hV), Measure.smul_apply,
       smul_eq_mul] at h0
     rcases mul_eq_zero.mp h0 with h | h
     · exact absurd (ENNReal.inv_eq_zero.mp h) hV.2

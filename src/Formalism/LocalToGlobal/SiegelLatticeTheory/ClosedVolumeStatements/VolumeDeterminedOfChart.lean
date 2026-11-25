@@ -361,7 +361,7 @@ theorem volume_index_b_bounded (D : D7) (u u' : D.what₂.Word)
     let x : Fin (D.R.rS + 1) → D.host.E := fun k => if k = j then (m2 : D.host.E) else 0
     have hx : Xi t.lam F0.fvec x := by
       unfold Xi
-      simp only [x, ite_smul, zero_smul, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+      simp only [x, ite_smul, zero_smul, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
       exact hm2L j
     have h1 := hb1 _ (hg x hx) i
     rw [hcoord] at h1

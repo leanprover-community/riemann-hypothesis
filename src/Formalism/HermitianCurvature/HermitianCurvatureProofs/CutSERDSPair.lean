@@ -108,7 +108,7 @@ theorem rdsp_resG_zero (J : B.Mat k r → (Wq →L[ℂ] Wp)) (x : (Fin r → ℂ
   · exfalso
     rw [Complex.ofReal_eq_zero, Finset.prod_eq_zero_iff] at h1
     obtain ⟨a, -, ha⟩ := h1
-    rw [if_pos (show (a : ℕ) < ((Fin.last r : Fin (r + 1)) : ℕ) by simp)] at ha
+    rw [ite_eq_left (show (a : ℕ) < ((Fin.last r : Fin (r + 1)) : ℕ) by simp)] at ha
     refine hx a (norm_eq_zero.1 ?_)
     rcases Nat.eq_zero_or_pos (Mdim k r a - 1) with hn | hn
     · rw [hn, pow_zero] at ha; exact absurd ha one_ne_zero

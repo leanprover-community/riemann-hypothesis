@@ -276,7 +276,7 @@ theorem inZl_of_twisted_difference {G : Type} [CommGroup G] [Finite G] (l : ℕ)
   obtain ⟨C0, hC0⟩ := h
   obtain ⟨C, hC⟩ := Finite.exists_max (fun C => ‖((x C : ℚ) : ℚ_[l])‖)
   have h0 : 1 < ‖((x C0 : ℚ) : ℚ_[l])‖ := by
-    unfold InZl at hC0; push_neg at hC0; exact hC0
+    unfold InZl at hC0; push Not at hC0; exact hC0
   have h1 : 1 < ‖((x C : ℚ) : ℚ_[l])‖ := lt_of_lt_of_le h0 (hC C0)
   have hqn : ‖((q : ℚ) : ℚ_[l])‖ < 1 := by
     rw [Rat.cast_natCast]
@@ -405,7 +405,7 @@ theorem sumBound_of_local : ∀ {F : Type} [Field F] [NumberField F], Formalism.
       omega
     have hm : Formalism.PairingDivisionLocalBalance.mE l X = 0 := by
       unfold Formalism.PairingDivisionLocalBalance.mE
-      rw [if_neg hl2, if_neg]
+      rw [ite_eq_right hl2, ite_eq_right]
       intro hd
       have := Nat.le_of_dvd (by omega) hd
       omega
@@ -558,9 +558,9 @@ theorem ceSum_term_le (f X l : ℕ) (hX : X ≠ 0) (hp : l.Prime) :
     have e : ((f * padicValNat 2 2 + mE 2 X : ℕ) : ℝ) * Real.log ((2 : ℕ) : ℝ)
         = (padicValNat 2 X : ℝ) * Real.log ((2 : ℕ) : ℝ) + ((f : ℝ) + 2) * Real.log 2 := by
       rw [hm, h22]; push_cast; ring
-    rw [if_pos rfl, e]
+    rw [ite_eq_left rfl, e]
     linarith
-  · have hA : (if l = 2 then ((f : ℝ) + 2) * Real.log 2 else 0) = 0 := if_neg h2
+  · have hA : (if l = 2 then ((f : ℝ) + 2) * Real.log 2 else 0) = 0 := ite_eq_right h2
     have hv2 : padicValNat l 2 = 0 := by
       rw [Nat.padicValNat_def]
       apply multiplicity_eq_zero_of_not_dvd
@@ -574,11 +574,11 @@ theorem ceSum_term_le (f X l : ℕ) (hX : X ≠ 0) (hp : l.Prime) :
       have key : Real.log (l : ℝ) ≤ (if l = X + 1 then Real.log ((X : ℝ) + 1) else 0)
           + (if l ≤ X / 2 + 1 then Real.log l else 0) := by
         by_cases hXl : l = X + 1
-        · rw [if_pos hXl]
+        · rw [ite_eq_left hXl]
           have : (l : ℝ) = (X : ℝ) + 1 := by exact_mod_cast hXl
           have e : Real.log (l : ℝ) = Real.log ((X : ℝ) + 1) := by rw [this]
           linarith
-        · rw [if_neg hXl]
+        · rw [ite_eq_right hXl]
           have hl3 : 3 ≤ l := by have := hp.two_le; omega
           obtain ⟨k, hk⟩ := hd
           have hk0 : k ≠ 0 := by rintro rfl; simp at hk; exact hX hk
@@ -587,7 +587,7 @@ theorem ceSum_term_le (f X l : ℕ) (hX : X ≠ 0) (hp : l.Prime) :
           have hle : l - 1 ≤ X / 2 := by
             rw [Nat.le_div_iff_mul_le (by norm_num)]
             rw [hk]; exact hk2
-          rw [if_pos (by omega)]
+          rw [ite_eq_left (by omega)]
           linarith
       nlinarith
     · have hm : mE l X = 0 := by simp [mE, h2, hd]
@@ -700,12 +700,12 @@ theorem cmValues_minPadicVal_bound : MinVal := by
     have h2' : multiplicity 2 (3 - 1) = 1 := by
       norm_num
     rw [h4, h2'] at h
-    simp only [if_true]
+    simp only [ite_true]
     omega
-  · simp only [h2, if_false]
+  · simp only [h2, ite_false]
     have hodd : Odd l := hl.odd_of_ne_two h2
     by_cases hd : (l - 1) ∣ n
-    · simp only [hd, if_true]
+    · simp only [hd, ite_true]
       refine ⟨l + 1, by have := hl.two_le; omega, ?_, ?_⟩
       · first
           | simp
@@ -716,7 +716,7 @@ theorem cmValues_minPadicVal_bound : MinVal := by
             exact hl.one_lt.ne' (Nat.dvd_one.mp this)) hn0
         rw [one_pow] at h
         rw [h, show l + 1 - 1 = l by omega, padicValNat_self]
-    · simp only [hd, if_false]
+    · simp only [hd, ite_false]
       obtain ⟨a, ha2, hac, hnd⟩ := exists_pow_ne_one_mod l n hl hd
       exact ⟨a, ha2, hac, padicValNat.eq_zero_of_not_dvd hnd⟩
 

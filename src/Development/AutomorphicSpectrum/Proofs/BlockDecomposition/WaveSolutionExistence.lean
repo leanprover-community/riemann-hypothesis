@@ -99,7 +99,7 @@ theorem Epow_smooth (hR : RCalc) {f : Mat n → V} (hf : ContDiffOn ℝ ∞ f (G
     intro a b
     by_cases hab : a = b
     · simpa [Epow, hab] using hf
-    · simp only [Epow, if_neg hab]
+    · simp only [Epow, ite_eq_right hab]
       exact contDiffOn_const (c := (0 : V))
   | succ m ih =>
     intro a b

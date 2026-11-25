@@ -557,17 +557,17 @@ theorem hasSum_pairTerm_fiber {γ : Fin n → ℂ} {φ : GL (Fin n) k → ℂ} (
         X ^ (-ord k (Matrix.GeneralLinearGroup.det h.out)).toNat * φ h.out *
           ∏ i : Fin n, (1 - (resCard k : ℂ) ^ (n - 1 - (i : ℕ)) * γ i * X)⁻¹ else 0) := by
   by_cases hA : ∀ i j, (h.out⁻¹ : GL (Fin n) k).1 i j ∈ 𝒪[k]
-  · rw [if_pos hA]
+  · rw [ite_eq_left hA]
     refine hasSum_of_subtype (P := fun c : GL (Fin n) k ⧸ KO k (Fin n) => ∀ i j, (c.out : GL (Fin n) k).1 i j ∈ 𝒪[k])
       (fun c => X ^ (ord k (Matrix.GeneralLinearGroup.det c.out)).toNat * φ (h.out * c.out))
       (X ^ (-ord k (Matrix.GeneralLinearGroup.det h.out)).toNat)
       (_root_.GlobalTheory.HeckeShift.hasSum_hecke_shift k n γ φ hφ hγ X hX h.out) (fun c hB => ?_) (fun c hB => ?_) (by ring)
-    · rw [pairTerm, if_pos ⟨hA, hB⟩]
+    · rw [pairTerm, ite_eq_left ⟨hA, hB⟩]
       ring
-    · rw [pairTerm, if_neg fun H => hB H.2]
-  · rw [if_neg hA]
+    · rw [pairTerm, ite_eq_right fun H => hB H.2]
+  · rw [ite_eq_right hA]
     have : (fun c => pairTerm X φ (h, c)) = fun _ => 0 := funext fun c => by
-      rw [pairTerm, if_neg fun H => hA H.1]
+      rw [pairTerm, ite_eq_right fun H => hA H.1]
     rw [this]
     exact hasSum_zero
 
@@ -582,7 +582,7 @@ theorem hasSum_pairTerm_total {γ : Fin n → ℂ} {φ : GL (Fin n) k → ℂ} (
   exact hasSum_of_subtype
     (P := fun c : GL (Fin n) k ⧸ KO k (Fin n) => ∀ i j, (c.out⁻¹ : GL (Fin n) k).1 i j ∈ 𝒪[k])
     (fun c => X ^ (-ord k (Matrix.GeneralLinearGroup.det c.out)).toNat * φ c.out) a
-    (_root_.GlobalTheory.HeckeDual.hasSum_dual k n γ φ hφ hγ X hX) (fun c hB => if_pos hB) (fun c hB => if_neg hB) (mul_comm _ _)
+    (_root_.GlobalTheory.HeckeDual.hasSum_dual k n γ φ hφ hγ X hX) (fun c hB => ite_eq_left hB) (fun c hB => ite_eq_right hB) (mul_comm _ _)
 
 theorem norm_pairTerm (X : ℂ) (φ : GL (Fin n) k → ℂ)
     (p : (GL (Fin n) k ⧸ KO k (Fin n)) × (GL (Fin n) k ⧸ KO k (Fin n))) :
@@ -658,8 +658,8 @@ theorem hasSum_pairTerm_pairEquiv {γ : Fin n → ℂ} {φ : GL (Fin n) k → �
     (fun h => X ^ ((-ord k (Matrix.GeneralLinearGroup.det h.out)).toNat +
       (ord k (Matrix.GeneralLinearGroup.det (h.out⁻¹ * g.out))).toNat)) (φ g.out)
     (_root_.GlobalTheory.LatticePair.hasSum_pair k n ϖ hϖ e.1 g.out he X hX) (fun h hB => ?_) (fun h hB => ?_) rfl
-  · rw [pairTerm_pairEquiv hφ, if_pos hB]
-  · rw [pairTerm_pairEquiv hφ, if_neg hB]
+  · rw [pairTerm_pairEquiv hφ, ite_eq_left hB]
+  · rw [pairTerm_pairEquiv hφ, ite_eq_right hB]
 
 theorem exists_small (q : ℝ) (hq0 : 0 ≤ q) (γ : Fin n → ℂ) : ∃ δ : ℝ, 0 < δ ∧ ∀ x : ℝ, 0 ≤ x → x < δ → ∀ i : Fin n,
     q ^ (n - 1 - (i : ℕ)) * ‖γ i‖ * x < 1 ∧ q ^ (i : ℕ) * ‖γ i‖⁻¹ * x < 1 ∧ q ^ (i : ℕ) * x ^ 2 < 1 := by

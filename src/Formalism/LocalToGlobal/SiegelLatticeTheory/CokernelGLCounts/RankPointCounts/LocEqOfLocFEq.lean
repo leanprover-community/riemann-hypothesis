@@ -461,7 +461,7 @@ theorem latPatch_holds : Formalism.L2.SG.Pf.FrameGlobalPatching.LatPatch := by
   let M : Ideal (𝓞 D.host.E) → Set (VS D).V := fun P =>
     if hP : P.IsMaximal then PI.LatLocGlob.loc P (Λ' (plOf P hP)) else ∅
   have hMP : ∀ P (hP : P.IsMaximal), M P = PI.LatLocGlob.loc P (Λ' (plOf P hP)) := fun P hP => by
-    simp only [M, dif_pos hP]
+    simp only [M, dite_eq_left hP]
   have hexc : {P : Ideal (𝓞 D.host.E) | P.IsMaximal ∧ M P ≠ PI.LatLocGlob.loc P Λ₀}.Finite := by
     refine (hfin.biUnion fun p _ => finite_over p).subset ?_
     rintro P ⟨hPm, hne⟩

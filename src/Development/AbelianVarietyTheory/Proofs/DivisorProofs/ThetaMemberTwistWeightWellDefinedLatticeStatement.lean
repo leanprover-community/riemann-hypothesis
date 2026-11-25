@@ -177,7 +177,7 @@ theorem wt_wd : ∀ (I : Type) (X₁ : GlobalTheory.GSep.GSet) (z₁ : X₁.M.Z)
   refine ⟨fun mu => if h : ∃ a, 𝔪1.YY a mu then (sg : ℤ) • eStd X₁.S.g _ τ h.choose else 0, ?_⟩
   intro a mu hY
   have h : ∃ a, 𝔪1.YY a mu := ⟨a, hY⟩
-  simp only [dif_pos h]
+  simp only [dite_eq_left h]
   congr 1
   have hd := yy_sub 𝔪1 h.choose_spec hY
   have hH : h.choose - a ∈ X₁.S.HH X₁.M z₁ :=

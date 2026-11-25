@@ -188,19 +188,6 @@ theorem faithfulSMul_of_isBaseChange [Module.Flat R S] [FaithfulSMul R A]
 
 end
 
-section
-variable (R S A : Type*) [CommRing R] [CommRing S] [CommRing A] [Algebra R S] [Algebra R A]
-  [MulSemiringAction G A] [SMulCommClass G R A]
-
-end
-
-section
-variable {A : Type*} [CommRing A] [MulSemiringAction G A]
-
-variable {B : Type*} [CommRing B] [Algebra B A] [SMulCommClass G B A]
-
-end
-
 end FlatRing
 
 section Generator
@@ -273,24 +260,6 @@ variable {A M}
 
 variable (B : Type*) [CommRing B] [Algebra B A] [FaithfulSMul B A] [SMulCommClass G B A]
   [Algebra.IsInvariant B A G] [Module B M] [IsScalarTower B A M] [SMulCommClass G B M]
-
-end
-
-section
-variable (G) {ι : Type*} (M : ι → Type*) [∀ i, AddCommGroup (M i)] [∀ i, Module A (M i)]
-  [∀ i, DistribMulAction G (M i)] [∀ i, SMulDistribClass G A (M i)]
-
-end
-
-section
-variable {M : Type*} [AddCommGroup M] [Module A M] [DistribMulAction G M] {ι : Type*}
-
-
-
-
-variable [SMulDistribClass G A M]
-
-variable {A}
 
 end
 

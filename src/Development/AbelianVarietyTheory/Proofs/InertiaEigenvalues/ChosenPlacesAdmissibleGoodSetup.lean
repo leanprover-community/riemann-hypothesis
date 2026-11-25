@@ -90,7 +90,7 @@ theorem splitSet_union {P H : Finset (Pl D.host.E)} (hP : SplitSet P) (hH : ∀ 
   · rcases GlobalTheory.PlaceModelSum.eq_or_mul_eq_zero (hid i hi).1 (GlobalTheory.PlaceModelSum.isSplitIdem_cA (hid j hj).1) with e | e
     · exact absurd (lev_of_eq_cA (hid i hi) (hid j hj) e) (hc j hj i hi hh.symm)
     · exact e
-  · push_neg at hh
+  · push Not at hh
     have hi' : i ∈ P := (Finset.mem_union.1 hi).resolve_right hh.1
     have hj' : j ∈ P := (Finset.mem_union.1 hj).resolve_right hh.2
     exact hP.mul_conj hi' hj'

@@ -787,7 +787,7 @@ theorem move_main_alt : ∀ {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : 
           exact GlobalTheory.T.selfDual_lattice_eq_of_splitPlace_frame_span (Yc D j) t ((_root_.GlobalTheory.Fam.pk_z W).ΛY j) Lt (N j) ((_root_.GlobalTheory.Fam.pk_z W).βY j) _ (l PP h).q _
             (FY PP h j _ (hsj PP h)) (σ PP h) ht hsd.1 hsd.2 hLt (hN j hj) (hMv _) hm
             (hInt PP h j _ (hsj PP h))
-        · push_neg at hex
+        · push Not at hex
           exact hAgree w (fun i => (hex i).symm)
       have hEq := GlobalTheory.T.latticeCompletion_eq_of_local_agreement (Yc D j) Lt (N j) P hLt.1 (hN j hj).1 hloc
       have := hMv P
@@ -800,14 +800,14 @@ theorem move_main_alt : ∀ {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : 
   refine ⟨fun j => if h : j < D.R.m then T j h else 1, ?_, ?_, ?_⟩
   · intro j
     by_cases h : j < D.R.m
-    · simp only [dif_pos h]; exact hT j h
-    · simp only [dif_neg h]; exact one_mem _
+    · simp only [dite_eq_left h]; exact hT j h
+    · simp only [dite_eq_right h]; exact one_mem _
   · intro j hj P hP
-    simp only [dif_pos hj]
+    simp only [dite_eq_left hj]
     exact hMovesT j hj P hP
   · intro PP h j c hc
     have hj : j < D.R.m := by have := (l PP h).hs; omega
-    simp only [dif_pos hj]
+    simp only [dite_eq_left hj]
     exact hFrT j hj PP h c hc
 end GlobalTheory.RLatMove
 end

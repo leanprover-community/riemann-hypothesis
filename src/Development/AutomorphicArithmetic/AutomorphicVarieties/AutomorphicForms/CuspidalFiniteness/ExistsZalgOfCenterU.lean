@@ -517,7 +517,7 @@ theorem exists_Zalg_of_centerU {z : UEnv F a} (hz : z ∈ (isExpLieAlgebra F a).
       simp only [Module.Basis.map_apply, ← Fb.lieEq_lie, hm, map_sub, and_true]
       congr 1 <;> split_ifs <;> first | rfl | exact map_zero _)
     (fun v v' hv i j k l => by
-      simp only [Module.Basis.map_apply, ← Fb.lieEq_lie, hm, hv, hv.symm, and_false, if_false, sub_self, map_zero])
+      simp only [Module.Basis.map_apply, ← Fb.lieEq_lie, hm, hv, hv.symm, and_false, ite_false, sub_self, map_zero])
     _ (uAction (K := F) (n := a)) z hz
   let S : Subalgebra ℂ (Module.End ℂ (archSmooth F a) × Module.End ℂ (TR.Sm F a)) :=
     { carrier := {p | ∀ φ, p.1 (toArch F a φ) = toArch F a (p.2 φ)}

@@ -58,8 +58,8 @@ theorem exists_eq_sum_X {O σ : Type} [CommRing O] [Fintype σ] (p : MvPowerSeri
     rw [map_add (f := _), map_sum, coeff_C]
     simp only [hq]
     by_cases h : n ≠ 0
-    · simp [dif_pos h, if_neg h]
-    · simp only [dif_neg h, Finset.sum_const_zero]
+    · simp [dite_eq_left h, ite_eq_right h]
+    · simp only [dite_eq_right h, Finset.sum_const_zero]
       push Not at h
       subst h
       simp
@@ -150,9 +150,9 @@ theorem exists_sub_sum_mem_Tr {O σ : Type} [CommRing O] [Finite σ] (a : Ideal 
   · set_option synthInstance.maxHeartbeats 100000 in
       rw [map_sub, map_sum]
     simp only [coeff_wcomp]
-    rw [Finset.sum_eq_single (Finsupp.weight wt n), if_pos rfl, sub_self]
+    rw [Finset.sum_eq_single (Finsupp.weight wt n), ite_eq_left rfl, sub_self]
     · exact zero_mem _
-    · exact fun j _ hj => if_neg hj.symm
+    · exact fun j _ hj => ite_eq_right hj.symm
     · exact fun h => absurd (Finset.mem_image_of_mem _ (by simpa using hn)) h
   · rw [show N - Finsupp.degree n = 0 by omega]
     simp

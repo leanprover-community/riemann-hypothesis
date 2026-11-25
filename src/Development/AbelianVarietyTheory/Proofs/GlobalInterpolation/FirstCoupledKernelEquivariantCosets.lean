@@ -77,22 +77,22 @@ theorem joinCol_source (hc : c' = 1) (r : Sp E (n' + c') ≃ₗ[E] Sp E (n' + c'
     funext l
     rw [Pi.add_apply, CongLevel.inX_apply, Pi.smul_apply, Loc.eN, smul_eq_mul]
     by_cases hl : l.1 < n'
-    · rw [dite_eq_left hl, if_neg hl.ne, mul_zero, add_zero]
+    · rw [dite_eq_left hl, ite_eq_right hl.ne, mul_zero, add_zero]
       rfl
     · obtain rfl : l = Fin.last n' := Fin.ext (by have := l.2; rw [Fin.val_last]; omega)
-      rw [dite_eq_right hl, if_pos (Fin.val_last _), mul_one, zero_add]
+      rw [dite_eq_right hl, ite_eq_left (Fin.val_last _), mul_one, zero_add]
   have e1 : r v = Loc.inX E n' 1 (g (LinearMap.funLeft E E (Fin.castAdd 1) v)) + v (Fin.last n') • Loc.eN E (n' + 1) n' := by
     conv_lhs => rw [e]
     rw [map_add (f := _), map_smul, h, hr.2.1]
   have e2 : LinearMap.funLeft E E (Fin.castAdd 1) (r v) = g (LinearMap.funLeft E E (Fin.castAdd 1) v) := by
     funext l
     rw [LinearMap.funLeft_apply, e1, Pi.add_apply, CongLevel.inX_apply, Pi.smul_apply, Loc.eN, smul_eq_mul,
-      dite_eq_left (show (Fin.castAdd 1 l).1 < n' from l.2), if_neg (show (Fin.castAdd 1 l).1 ≠ n' from l.2.ne), mul_zero, add_zero]
+      dite_eq_left (show (Fin.castAdd 1 l).1 < n' from l.2), ite_eq_right (show (Fin.castAdd 1 l).1 ≠ n' from l.2.ne), mul_zero, add_zero]
     rfl
   have e3 : atNL E (n' + 1) n' (r v) = atNL E (n' + 1) n' v := by
     unfold atNL
     rw [dite_eq_left (Nat.lt_succ_self _), LinearMap.proj_apply, LinearMap.proj_apply, e1, Pi.add_apply, CongLevel.inX_apply,
-      Pi.smul_apply, Loc.eN, smul_eq_mul, dite_eq_right (lt_irrefl _), if_pos rfl, mul_one, zero_add]
+      Pi.smul_apply, Loc.eN, smul_eq_mul, dite_eq_right (lt_irrefl _), ite_eq_left rfl, mul_one, zero_add]
     rfl
   unfold joinCol
   simp only [LinearMap.comp_apply, LinearMap.add_apply, LinearMap.smulRight_apply, LinearEquiv.coe_coe]
@@ -294,8 +294,8 @@ theorem firstCoupledKernel_equivariant_cosets {u : Pr.Word} {T : ChTh W sel mu u
     ⟨p.deco.2.lat, p.deco.2.uni⟩ ⟨p'.deco.2.lat, p'.deco.2.uni⟩
     (xiCpl1_invariant hPr hL al p p' Y) fun x =>
       xiCpl1_law hX hPr hL hp1 hp2 hκ hκ' ha ha' x (phiT_act _ _ _ _ _ _ _)
-  have e1 : cp1K W Ch sel mu cst L T al p p' Y = _ := if_pos hp1
-  have e2 : cp1K W Ch sel mu cst L T al (g • p) (g₁ • p') ((fun v => g₁.1.1 v) '' Y) = _ := if_pos hp2
+  have e1 : cp1K W Ch sel mu cst L T al p p' Y = _ := ite_eq_left hp1
+  have e2 : cp1K W Ch sel mu cst L T al (g • p) (g₁ • p') ((fun v => g₁.1.1 v) '' Y) = _ := ite_eq_left hp2
   refine e2.trans ?_
   rw [e1, funext hκ, funext hκ']
   refine key.trans ?_

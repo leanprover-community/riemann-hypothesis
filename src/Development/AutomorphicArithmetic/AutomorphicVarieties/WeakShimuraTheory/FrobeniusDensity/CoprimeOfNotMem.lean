@@ -90,7 +90,7 @@ theorem UpperTheory.V.Ws.Tw.extIdeal :
     else Units.mk0 (I : FractionalIdeal (nonZeroDivisors (𝓞 K)) K) (FractionalIdeal.coeIdeal_ne_zero.mpr hI)
   have hιv : ∀ I : Ideal (𝓞 K), I ≠ ⊥ → ((ι I : FractionalIdeal (nonZeroDivisors (𝓞 K)) K)) = I := by
     intro I hI
-    simp only [ι, dif_neg hI, Units.val_mk0]
+    simp only [ι, dite_eq_right hI, Units.val_mk0]
   have hι : ∀ I J : Ideal (𝓞 K), I ≠ ⊥ → J ≠ ⊥ → ι (I * J) = ι I * ι J := by
     intro I J hI hJ
     have hIJ : I * J ≠ ⊥ := fun h => (Ideal.mul_eq_bot.mp h).elim hI hJ
@@ -308,7 +308,7 @@ theorem UpperTheory.V.Ws.Tw.kap0 :
   let g : 𝓞 K → (PadicAlgCl l)ˣ := fun a => if h : IsUnit (ρ a) then χ.toUnitHom h.unit else 1
   have hg : ∀ a (h : IsUnit (ρ a)), ((g a : (PadicAlgCl l)ˣ) : PadicAlgCl l) = χ (ρ a) := by
     intro a h
-    simp only [g, dif_pos h, MulChar.coe_toUnitHom, IsUnit.unit_spec]
+    simp only [g, dite_eq_left h, MulChar.coe_toUnitHom, IsUnit.unit_spec]
   have hχm1 : χ (-1) = 1 := by
     obtain ⟨c0, hc0⟩ := exists_cc (Ω := Ω)
     have h1 := hcc c0 hc0

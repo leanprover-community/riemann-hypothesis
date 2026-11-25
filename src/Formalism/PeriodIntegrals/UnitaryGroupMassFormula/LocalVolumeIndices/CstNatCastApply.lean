@@ -71,12 +71,12 @@ theorem Cst_gc (g1 g2 : ℕ) (h1 : g1 ≠ 0) (h2 : g2 ≠ 0) :
   rw [Comp_mul_apply, Comp_sub_apply, Comp_one_apply, Cst_natCast_apply, Cst_sum_apply, Cst_apply]
   by_cases hv : IsTyped I.F g1 g2 v
   · have hmem : v ∈ typSet I.F g1 g2 := (mem_typSet I.F g1 g2 h1 h2 v).mpr hv
-    rw [if_pos hv, mul_zero, Finset.sum_eq_single (⟨v, hmem⟩ : TypP I.F g1 g2)]
+    rw [ite_eq_left hv, mul_zero, Finset.sum_eq_single (⟨v, hmem⟩ : TypP I.F g1 g2)]
     · rw [Comp_chi_same, sub_self]
     · intro b _ hb
       exact Comp_chi_ne I b.1 v (fun h => hb (Subtype.ext h.symm))
     · intro h; exact absurd (Finset.mem_univ _) h
-  · rw [if_neg hv, Finset.sum_eq_zero, sub_zero]
+  · rw [ite_eq_right hv, Finset.sum_eq_zero, sub_zero]
     · apply mul_inv_cancel₀
       intro h0
       have : ((g1 * g2 : ℕ) : I.F) = 0 := by

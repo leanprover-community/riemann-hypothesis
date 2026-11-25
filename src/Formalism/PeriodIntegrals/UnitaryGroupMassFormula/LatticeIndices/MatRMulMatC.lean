@@ -181,7 +181,7 @@ theorem adapt_of_eps (hθ : IsSplitEquiv X p θ) (hε : θ (epsP X p) = (1, 0)) 
     simp only [Pi.add_apply, Pi.smul_apply, smul_eq_mul, hgA, Matrix.one_apply, Pi.single_apply, sgnV]
     by_cases h : (Sum.inr (Sum.inr (Fin.rev a)) : IdxD D) = t
     · subst h; simp
-    · rw [if_neg h, if_neg (Ne.symm h)]; ring
+    · rw [ite_eq_right h, ite_eq_right (Ne.symm h)]; ring
   · have hs : X.z0 = rowV X zI := rfl
     refine ⟨fun t => -(zf zI t : FpX X p), fun t => neg_mem (zf zI t).2, ?_⟩
     funext t
@@ -191,7 +191,7 @@ theorem adapt_of_eps (hθ : IsSplitEquiv X p θ) (hε : θ (epsP X p) = (1, 0)) 
     rw [this]
     by_cases h : zI = t
     · subst h; simp; ring
-    · rw [if_neg h, if_neg (Ne.symm h)]; ring
+    · rw [ite_eq_right h, ite_eq_right (Ne.symm h)]; ring
   · intro i
     exact PIW.MassDataColumns.secondProj_weight_vector_zero (X := X) (p := p) (θ := θ) hε i
 

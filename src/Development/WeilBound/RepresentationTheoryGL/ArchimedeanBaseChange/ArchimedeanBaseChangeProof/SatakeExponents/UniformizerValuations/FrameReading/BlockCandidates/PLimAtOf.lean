@@ -55,10 +55,10 @@ theorem limAtOf_holds : LimAtOf := by
       exact Or.inr rfl
     · simp only [RunFrame.g] at hx
       by_cases hi : i = x.1
-      · rw [if_pos hi, Sum.inr.injEq] at hx
+      · rw [ite_eq_left hi, Sum.inr.injEq] at hx
         subst hx
         exact Or.inr rfl
-      · rw [if_neg hi] at hx
+      · rw [ite_eq_right hi] at hx
         cases hx
     · simp only [RunFrame.g, Sum.inr.injEq] at hx
       subst hx

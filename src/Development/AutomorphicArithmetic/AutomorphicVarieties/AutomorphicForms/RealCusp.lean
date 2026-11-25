@@ -120,7 +120,7 @@ theorem chart_val (φ : GA E a → ℂ) (g : GA E a) (y : GL (Fin a) (Rinf E)) :
     chart φ g (toL y.val) = φ (g * infGL E a y) := by
   have h : IsUnit (Matrix.of (toL y.val)) := y.isUnit
   have e : h.unit = y := Units.ext h.unit_spec
-  rw [chart, dif_pos h, e]
+  rw [chart, dite_eq_left h, e]
 
 
 omit [IsTotallyReal E] in
@@ -370,14 +370,14 @@ end CuspSub
 
 variable (E a) in
 def oneFn : Sm E a :=
-  ⟨fun _ => 1, fun _ => contDiffOn_const.congr (f := fun _ => 1) fun x hx => dif_pos (show IsUnit (Matrix.of x) from hx)⟩
+  ⟨fun _ => 1, fun _ => contDiffOn_const.congr (f := fun _ => 1) fun x hx => dite_eq_left (show IsUnit (Matrix.of x) from hx)⟩
 
 theorem oneFn_ne_zero : oneFn E a ≠ 0 := fun h => one_ne_zero (congrFun (congrArg Subtype.val h) 1)
 
 theorem lie_oneFn (X : Lie E a) : lie E a X (oneFn E a) = 0 := by
   refine Subtype.ext <| funext fun g => ?_
   have e : chart (oneFn E a).1 g =ᶠ[𝓝 (oneL E a)] fun _ => 1 :=
-    Filter.eventually_of_mem (isOpen_invSet.mem_nhds isUnit_one) fun x hx => dif_pos (show IsUnit (Matrix.of x) from hx)
+    Filter.eventually_of_mem (isOpen_invSet.mem_nhds isUnit_one) fun x hx => dite_eq_left (show IsUnit (Matrix.of x) from hx)
   change fderiv ℝ _ _ X = 0
   rw [e.fderiv_eq]
   simp

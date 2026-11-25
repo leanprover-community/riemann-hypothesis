@@ -239,14 +239,14 @@ theorem exists_idem (SS : Finset (HeightOneSpectrum (𝓞 E))) (hSS : ∀ P ∈ 
     (fun Q _ => Q.prime) (fun Q _ Q' _ h h' => h (HeightOneSpectrum.ext h')) (fun Q => if Q.1 ∈ SS then 1 else 0)
   refine ⟨y, fun Q hQ => ?_, fun Q hQ => ?_⟩
   · have h1 := hy Q (Finset.mem_union_left _ hQ)
-    simp only [hQ, if_true] at h1
+    simp only [hQ, ite_true] at h1
     have h2 : 1 - y ∈ Q.asIdeal ^ k Q := by
       have : 1 - y = -(y - 1) := by ring
       rw [this]; exact neg_mem h1
     exact hk Q _ h2
   · have hQ' : Q ∉ SS := fun h => hSS Q h hQ
     have h1 := hy Q (Finset.mem_union_right _ (Finset.mem_image.2 ⟨conjPrime₂ Q, hQ, conjP_conjP' Q⟩))
-    simp only [hQ', if_false, sub_zero] at h1
+    simp only [hQ', ite_false, sub_zero] at h1
     exact hk Q _ h1
 
 theorem expS_cases (SS : Finset (HeightOneSpectrum (𝓞 E))) (Q : HeightOneSpectrum (𝓞 E)) :
@@ -256,13 +256,13 @@ theorem expS_cases (SS : Finset (HeightOneSpectrum (𝓞 E))) (Q : HeightOneSpec
 theorem expS_eq_one (SS : Finset (HeightOneSpectrum (𝓞 E))) (Q : HeightOneSpectrum (𝓞 E)) (h : expS SS Q = 1) : Q ∈ SS := by
   by_contra hn
   have h0 : expS SS Q = 0 ∨ expS SS Q = -1 := by
-    unfold expS; rw [if_neg hn]; split_ifs <;> simp
+    unfold expS; rw [ite_eq_right hn]; split_ifs <;> simp
   omega
 
 theorem expS_eq_neg_one (SS : Finset (HeightOneSpectrum (𝓞 E))) (Q : HeightOneSpectrum (𝓞 E)) (h : -expS SS Q = 1) : conjPrime₂ Q ∈ SS := by
   by_contra hn
   have h0 : expS SS Q = 1 ∨ expS SS Q = 0 := by
-    unfold expS; rw [if_neg hn]; split_ifs <;> simp
+    unfold expS; rw [ite_eq_right hn]; split_ifs <;> simp
   omega
 
 variable {ι : Type} [Fintype ι] {a b : ℕ}
@@ -386,7 +386,7 @@ theorem exists_lift (SS : Finset (HeightOneSpectrum (𝓞 E))) (M : Submodule (�
   have hin : ∀ Q ∈ SS, ∃ t, t ∉ Q.asIdeal ∧ ((c : 𝓞 E) * (c : 𝓞 E)) ∣ t * (1 - ε) := by
     intro Q hQ
     have h1 := hε Q (Finset.mem_union_left _ hQ)
-    simp only [hQ, if_true] at h1
+    simp only [hQ, ite_true] at h1
     have h2 : 1 - ε ∈ Q.asIdeal ^ k1 Q := by
       have : 1 - ε = -(ε - 1) := by ring
       rw [this]; exact neg_mem h1
@@ -399,7 +399,7 @@ theorem exists_lift (SS : Finset (HeightOneSpectrum (𝓞 E))) (M : Submodule (�
         show Q.asIdeal ∣ _
         rw [Ideal.dvd_iff_le, Ideal.span_singleton_le_iff_mem]; exact hd
       have h1 := hε Q (Finset.mem_union_right _ hQT)
-      simp only [hQ, if_false, sub_zero] at h1
+      simp only [hQ, ite_false, sub_zero] at h1
       obtain ⟨t, ht, r, hr⟩ := hk2 Q _ h1
       exact loc_of_dvd M Q hcE hn ht hr
     · exact loc_of_dvd M Q hcE hn hd rfl
@@ -407,7 +407,7 @@ theorem exists_lift (SS : Finset (HeightOneSpectrum (𝓞 E))) (M : Submodule (�
   · rw [mem_twO]
     intro Q
     by_cases hQ : Q ∈ SS
-    · have h1 : expS SS Q = 1 := by unfold expS; rw [if_pos hQ]
+    · have h1 : expS SS Q = 1 := by unfold expS; rw [ite_eq_left hQ]
       rw [h1, zpow_neg_one, inv_inv, smul_comm]
       exact Submodule.smul_mem _ ε (hx Q hQ)
     · rcases expS_cases SS Q with h | h | h
@@ -456,7 +456,7 @@ theorem exists_mult (c : ℕ) (hc : 0 < c) (e : HeightOneSpectrum (𝓞 E) → �
     (fun Q' _ => Q'.prime) (fun Q' _ Q'' _ h h' => h (HeightOneSpectrum.ext h')) (fun Q' => if Q'.1 = Q then 1 else 0)
   refine ⟨t, fun htQ => ?_, fun Q' => ?_⟩
   · have h1 := ht Q (Finset.mem_insert_self _ _)
-    simp only [if_true, pow_one] at h1
+    simp only [ite_true, pow_one] at h1
     have h2 : (1 : 𝓞 E) ∈ Q.asIdeal := by
       have : (1 : 𝓞 E) = t - (t - 1) := by ring
       rw [this]; exact Ideal.sub_mem _ htQ h1
@@ -481,7 +481,7 @@ theorem exists_mult (c : ℕ) (hc : 0 < c) (e : HeightOneSpectrum (𝓞 E) → �
             show Q'.asIdeal ∣ _
             rw [Ideal.dvd_iff_le, Ideal.span_singleton_le_iff_mem]; exact hd
           have h1 := ht Q' hQT
-          simp only [hQQ, if_false, sub_zero] at h1
+          simp only [hQQ, ite_false, sub_zero] at h1
           obtain ⟨v, hv, ρ, hρ⟩ := hK Q' _ h1
           rw [hm'] at hρ
           refine ⟨v, ρ, hv, ?_⟩

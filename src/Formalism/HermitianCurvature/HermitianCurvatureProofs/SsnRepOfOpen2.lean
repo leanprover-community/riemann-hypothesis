@@ -312,12 +312,12 @@ private theorem ne_and_unique_index_of_up {l : ℕ} (hl : l ∈ Finset.Icc 1 (P.
   rw [Finset.mem_Icc] at hl
   obtain ⟨i, hi⟩ : ∃ i : Fin (P.k - 1), (i : ℕ) + 1 = l := ⟨⟨l - 1, by omega⟩, show l - 1 + 1 = l by omega⟩
   have h1 := hU i
-  rw [if_pos hi] at h1
+  rw [ite_eq_left hi] at h1
   refine ⟨fun h => ?_, fun j hj h2 => ?_⟩
   · subst h
     omega
   · have h3 := h2 i
-    rw [if_neg (by omega)] at h3
+    rw [ite_eq_right (by omega)] at h3
     omega
 
 theorem projected_block_lower_sum (hR : Rai κ S) {B : A} (hB : ∀ f, Commute (κ f) B) {l : ℕ} (hl : l ∈ Finset.Icc 1 (P.k - 1))
@@ -927,12 +927,12 @@ theorem mat_gen {Ty : Type} [Fintype Ty] [DecidableEq Ty] (Qd : Ty → (Wq →L[
     B.hsInner (∑ π', ∑ ρ', c π' ρ' • Qd ρ' (T0 (Qd π' (e π)))) (e ρ) = c π ρ * B.hsInner (T0 (e π)) (e ρ) := by
   rw [kap_hsInner_sum_left, Finset.sum_eq_single π]
   · rw [kap_hsInner_sum_left, Finset.sum_eq_single ρ]
-    · rw [_root_.Formalism.FourierDecayAlt.P5.hsInner_smul_left, hQadj, hline π π, hline ρ ρ, if_pos rfl, if_pos rfl]
+    · rw [_root_.Formalism.FourierDecayAlt.P5.hsInner_smul_left, hQadj, hline π π, hline ρ ρ, ite_eq_left rfl, ite_eq_left rfl]
     · intro ρ' _ hne
-      rw [_root_.Formalism.FourierDecayAlt.P5.hsInner_smul_left, hQadj, hline ρ' ρ, if_neg hne, hsInner_zero_r, mul_zero]
+      rw [_root_.Formalism.FourierDecayAlt.P5.hsInner_smul_left, hQadj, hline ρ' ρ, ite_eq_right hne, hsInner_zero_r, mul_zero]
     · intro h; exact absurd (Finset.mem_univ ρ) h
   · intro π' _ hne
-    rw [hline π' π, if_neg hne, map_zero]
+    rw [hline π' π, ite_eq_right hne, map_zero]
     simp only [map_zero, smul_zero, Finset.sum_const_zero]
     exact _root_.Formalism.FourierDecayAlt.P5.HerA.hsInner_zero_left _
   · intro h; exact absurd (Finset.mem_univ π) h
@@ -1075,7 +1075,7 @@ theorem theta_gauge_constancy_holds : ThtGaugeConstOfCore := by
   have hSSF := hA (Wp (S.pl v)) (Wq (S.pl v)) (D.parOf S v) (T v).base hk X d hAct e hFrB hGQ
   refine ⟨θ, fun ζ hζ π ρ hup => ?_⟩
   have hent := hE (Wp (S.pl v)) (Wq (S.pl v)) (D.parOf S v) (T v).base hk X d hAct e hFrB hSSF l hl SS hSS ζ hζ π ρ
-  rw [if_pos hup] at hent
+  rw [ite_eq_left hup] at hent
   obtain ⟨hP1, hH1, -, -⟩ := hDU Cc E Wp Wq S T f χ ν' m₀ top A₀ hB v ζ hζ
   set n0 := SSn.nu0 S.G.k S.G.r (T v).base.z (T v).base.z' (T v).base.μsec ζ with hn0
   have hN0 : PRho.nrmW S.G.k S.G.r (T v).base.z n0 = 1 := by
@@ -1288,7 +1288,7 @@ theorem theta_constancy_assembly_scalar : ThConstOfCutS := by
   intro ζ hζ π ρ hup Xf hXf hfix
   have hex : ∃ ρ, M.Up P l π ρ := ⟨ρ, hup⟩
   have hρ : hex.choose = ρ := tc_up_unique hex.choose_spec hup
-  simp only [dif_pos hex]
+  simp only [dite_eq_left hex]
   have := (main π hex.choose hex.choose_spec).choose_spec ζ hζ Xf hXf hfix
   subst hρ
   exact this

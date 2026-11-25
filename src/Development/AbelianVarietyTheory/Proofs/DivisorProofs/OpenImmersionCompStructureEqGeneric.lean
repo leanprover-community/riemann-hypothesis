@@ -335,7 +335,7 @@ theorem exists_nat_mul_mem : ∀ (A : Type) [CommRing A] [IsDomain A] [IsIntegra
       refine ⟨n ^ k, pow_pos hn0 k, ?_⟩
       rw [hu, map_mul, map_natCast, Nat.cast_pow, Units.mul_left_dvd]
       exact (pow_dvd_pow_of_dvd hd k).mul_right _
-    · push_neg at hn
+    · push Not at hn
       obtain ⟨T, iT, h1, h2⟩ := GlobalTheory.HeightOneCompletion.exists_cdvr_of_height_eq_one A p hp
       have hα : Function.Injective (iT.comp (algebraMap A L)) := h1.comp hinj
       have hα' : Function.Injective ((algebraMap T.V T.Fr).comp (iT.comp (algebraMap A L))) :=

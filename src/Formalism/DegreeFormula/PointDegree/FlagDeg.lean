@@ -86,7 +86,7 @@ lemma coeff_pow {ι : Type} [Fintype ι] [DecidableEq ι] {N : ℕ} (lam : ι �
   rw [linRoot_eq, Finset.sum_pow_eq_sum_piAntidiag, coeff_sum]
   simp only [hterm, coeff_monomial]
   rw [Finset.sum_eq_single (fun x : ι × Fin N => N - 1 - ((σ x.1 x.2 : Fin N) : ℕ))]
-  · rw [if_pos (show Finsupp.equivFunOnFinite.symm
+  · rw [ite_eq_left (show Finsupp.equivFunOnFinite.symm
         (fun x : ι × Fin N => N - 1 - ((σ x.1 x.2 : Fin N) : ℕ)) = permExp σ from rfl)]
     have hm : ((Nat.multinomial Finset.univ
         (fun x : ι × Fin N => N - 1 - ((σ x.1 x.2 : Fin N) : ℕ)) : ℕ) : ℝ) =
@@ -107,7 +107,7 @@ lemma coeff_pow {ι : Type} [Fintype ι] [DecidableEq ι] {N : ℕ} (lam : ι �
     rw [hm, hp]
     ring
   · intro k _ hk
-    rw [if_neg]
+    rw [ite_eq_right]
     intro h
     exact hk (Finsupp.equivFunOnFinite.symm.injective h)
   · intro h
@@ -168,7 +168,7 @@ lemma pairs_nat (N : ℕ) :
         ((i + 1 : ℕ) : ℝ) := by
     intro i hi
     rw [Finset.mem_range] at hi
-    rw [if_pos (by omega)]
+    rw [ite_eq_left (by omega)]
     rw [Nat.cast_sub (by omega : i ≤ (k : ℕ) - 1), Nat.cast_sub (by omega : 1 ≤ (k : ℕ))]
     push_cast
     ring

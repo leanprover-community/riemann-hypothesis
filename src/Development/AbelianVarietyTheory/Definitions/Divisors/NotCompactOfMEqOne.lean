@@ -102,6 +102,36 @@ structure Base (D : Datum p) (R : Type) [CommRing R] where
   apart : ∀ i j, i ≠ j → ∀ (k : Type) [Field k] [CharP k p] (β : R →+* k),
     RingHom.ker (β.comp (t i)) ≠ RingHom.ker (β.comp (t j))
 
+section
+
+variable {p : ℕ} [Fact p.Prime] {D : Datum p} {R : Type} [CommRing R]
+
+/-- Comaximal Harris–Taylor characters remain distinct after mapping to a nontrivial ring. -/
+theorem Base.exists_char_separation (b : Base D R) {K : Type*} [Ring K] [Nontrivial K]
+    (β : R →+* K) {i j : Fin D.a} (hij : i ≠ j) :
+    ∃ c : 𝓞 D.F, β (b.t i c) ≠ β (b.t j c) := by
+  by_contra! h
+  have hle : Ideal.span (Set.range fun c => b.t i c - b.t j c) ≤ RingHom.ker β := by
+    rw [Ideal.span_le]
+    rintro _ ⟨c, rfl⟩
+    rw [SetLike.mem_coe, RingHom.mem_ker, map_sub, h c, sub_self]
+  have hone : (1 : R) ∈ Ideal.span (Set.range fun c => b.t i c - b.t j c) := by
+    rw [b.comax i j hij]
+    exact Submodule.mem_top
+  have hzero := hle hone
+  rw [RingHom.mem_ker, map_one] at hzero
+  exact one_ne_zero hzero
+
+theorem Base.injective_char_comp (b : Base D R) {K : Type*} [Ring K] [Nontrivial K]
+    (β : R →+* K) : Function.Injective (fun i => β.comp (b.t i)) := by
+  intro i j h
+  by_contra hij
+  obtain ⟨c, hc⟩ := b.exists_char_separation β hij
+  exact hc (RingHom.congr_fun h c)
+
+end
+
+
 variable {S : Scheme.{0}}
 
 structure OActN (O : Type) [Ring O] (G : Over S) [GrpObj G] where

@@ -236,7 +236,7 @@ def pullVal {L : Type} [Field L] (U : CDVR) (ι : L →+* U.Fr) : AddValuation L
       · subst hx; rw [zero_add]; exact min_le_right _ _
       by_cases hy : y = 0
       · subst hy; rw [add_zero]; exact min_le_left _ _
-      simp only [hxy, hx, hy, if_false, map_add (f := _)]
+      simp only [hxy, hx, hy, ite_false, map_add (f := _)]
       have := min_le_vV_add (V := U.V) ((map_ne_zero ι).2 hx) ((map_ne_zero ι).2 hy)
         (by rw [← map_add (f := _)]; exact (map_ne_zero ι).2 hxy)
       exact_mod_cast this)
@@ -245,7 +245,7 @@ def pullVal {L : Type} [Field L] (U : CDVR) (ι : L →+* U.Fr) : AddValuation L
       · subst hx; simp
       by_cases hy : y = 0
       · subst hy; simp
-      simp only [mul_ne_zero hx hy, hx, hy, if_false, map_mul]
+      simp only [mul_ne_zero hx hy, hx, hy, ite_false, map_mul]
       rw [vV_mul ((map_ne_zero ι).2 hx) ((map_ne_zero ι).2 hy)]
       push_cast; rfl)
 

@@ -377,7 +377,7 @@ theorem UpperTheory.V.Loc.isType_and_isLocallyCrystalline_rz :
       have h1 := hi 1
       have h2 := hi 2
       simp [w, wt1] at h0 h1 h2
-      rw [hodge0, if_neg (by omega)]
+      rw [hodge0, ite_eq_right (by omega)]
     · obtain ⟨x, hx, hb⟩ := R0.char_dr (κ a) (R0.fil_char _ _ hH _ (hκ a) _ (hw' a)).1
       exact ⟨x, (R0.mem_Ddr _ _ _).2 fun g => hx g, hb D.Kv⟩
   · obtain ⟨L, -, -, -, -, hL, -, -⟩ := openField D.HL.subtype hH.isOpenEmbedding_subtypeVal

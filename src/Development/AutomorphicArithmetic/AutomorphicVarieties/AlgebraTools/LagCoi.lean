@@ -67,7 +67,7 @@ theorem UpperTheory.V.AlgebraTools.lag_coi :
         exact isCoprime_X_sub_C_of_isUnit_sub (ha i j hij)
       · intro k _
         rw [dvd_iff_isRoot, IsRoot, eval_sub, eval_one, eval_finsetSum]
-        simp only [hLe, Finset.sum_ite_eq', Finset.mem_univ, if_true, sub_self]
+        simp only [hLe, Finset.sum_ite_eq', Finset.mem_univ, ite_true, sub_self]
     obtain ⟨g, hg⟩ := h1
     have h2 := congrArg (aeval P) hg
 
@@ -77,8 +77,8 @@ theorem UpperTheory.V.AlgebraTools.lag_coi :
   refine ⟨⟨⟨fun i => ?_, fun i j hij => ?_⟩, hsum⟩, hP, hq, hcomm⟩
   · show lag a P i * lag a P i = lag a P i
     have := hq (L i) i
-    rw [← hL, hLe, if_pos rfl, one_smul] at this
+    rw [← hL, hLe, ite_eq_left rfl, one_smul] at this
     exact this
   · have := hq (L i) j
-    rw [← hL, hLe, if_neg hij, zero_smul] at this
+    rw [← hL, hLe, ite_eq_right hij, zero_smul] at this
     exact this

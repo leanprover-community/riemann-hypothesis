@@ -250,7 +250,7 @@ lemma _root_.GlobalTheory.GoodTop.contDiff_logCutoff (k : ℕ) : ContDiff ℝ �
   · have hev : _root_.GlobalTheory.GoodTop.logCutoff k =ᶠ[𝓝 z]
         fun w => Real.smoothTransition (2 + Real.log ‖w‖ / ((k : ℝ) + 1)) := by
       filter_upwards [isOpen_ne.mem_nhds h0] with w hw
-      simp only [_root_.GlobalTheory.GoodTop.logCutoff, if_neg (show w ≠ 0 from hw)]
+      simp only [_root_.GlobalTheory.GoodTop.logCutoff, ite_eq_right (show w ≠ 0 from hw)]
     refine ContDiffAt.congr_of_eventuallyEq ?_ hev
     refine Real.smoothTransition.contDiff.contDiffAt.comp z ?_
     refine contDiffAt_const.add (ContDiffAt.div_const ?_ _)
@@ -315,7 +315,7 @@ private lemma exists_bound_fderiv_logCutoff_mul_norm_mul_log :
   have hev : _root_.GlobalTheory.GoodTop.logCutoff k =ᶠ[𝓝 z]
       fun w => Real.smoothTransition (2 + Real.log ‖w‖ / ((k : ℝ) + 1)) := by
     filter_upwards [isOpen_ne.mem_nhds h0] with w hw
-    simp only [_root_.GlobalTheory.GoodTop.logCutoff, if_neg (show w ≠ 0 from hw)]
+    simp only [_root_.GlobalTheory.GoodTop.logCutoff, ite_eq_right (show w ≠ 0 from hw)]
   set N := fderiv ℝ (fun w : ℂ => ‖w‖) z
   have hn : HasFDerivAt (fun w : ℂ => ‖w‖) N z :=
     ((contDiffAt_norm ℝ (n := 1) h0).differentiableAt one_ne_zero).hasFDerivAt
@@ -365,7 +365,7 @@ private lemma logCutoff_eq_one_of_exp_le_norm (k : ℕ) {z : ℂ}
   have h0 : z ≠ 0 := by
     intro h; rw [h, norm_zero] at hz; exact absurd hz (not_le.mpr (Real.exp_pos _))
   unfold _root_.GlobalTheory.GoodTop.logCutoff
-  rw [if_neg h0]
+  rw [ite_eq_right h0]
   apply Real.smoothTransition.one_of_one_le
   have hk : (0 : ℝ) < (k : ℝ) + 1 := by positivity
   have hlog : -((k : ℝ) + 1) ≤ Real.log ‖z‖ := by
@@ -416,10 +416,10 @@ private lemma fderiv_prod_logCutoff_coordVec {n : ℕ} (k : ℕ) (S : Finset (Fi
           fun t : ℝ => (∏ a ∈ S.erase b, _root_.GlobalTheory.GoodTop.logCutoff k (v a)) *
             _root_.GlobalTheory.GoodTop.logCutoff k (v b + (t : ℂ) * c) := by
         funext t
-        rw [← Finset.mul_prod_erase S _ hb, mul_comm, hcoord, if_pos rfl]
+        rw [← Finset.mul_prod_erase S _ hb, mul_comm, hcoord, ite_eq_left rfl]
         congr 1
         refine Finset.prod_congr rfl fun a ha => ?_
-        rw [hcoord, if_neg (Finset.ne_of_mem_erase ha)]
+        rw [hcoord, ite_eq_right (Finset.ne_of_mem_erase ha)]
       rw [e]
       exact hψline.const_mul _
     exact h1.unique h2
@@ -430,7 +430,7 @@ private lemma fderiv_prod_logCutoff_coordVec {n : ℕ} (k : ℕ) (S : Finset (Fi
           fun _ => ∏ a ∈ S, _root_.GlobalTheory.GoodTop.logCutoff k (v a) := by
         funext t
         refine Finset.prod_congr rfl fun a ha => ?_
-        rw [hcoord, if_neg (fun h : a = b => hb (h ▸ ha))]
+        rw [hcoord, ite_eq_right (fun h : a = b => hb (h ▸ ha))]
       rw [e]
       exact hasDerivAt_const _ _
     exact h1.unique h2
@@ -1063,7 +1063,7 @@ theorem integral_mixTop_position_eq_zero : ∀ {n : ℕ} {r : Type} [Fintype r] 
       ‖θ j a v p q‖ * poinWt S v a ≤ |c| + C + 2 * C * (|c| + C) := by
     intro v hv hvK a p q
     obtain ⟨hρv, -, hc0, -⟩ := hC v hvK
-    simp only [hθ, transConn, lt_irrefl, if_false, if_true, Matrix.neg_apply, Matrix.smul_apply,
+    simp only [hθ, transConn, lt_irrefl, ite_false, ite_true, Matrix.neg_apply, Matrix.smul_apply,
       Matrix.sub_apply, smul_eq_mul, norm_neg, norm_mul, Complex.norm_real, Real.norm_eq_abs]
     have e := weighted_bound_cut_sum |ρ v| ‖conn G₁ v (coordVec a) p q‖ ‖conn G₀ v (coordVec a) p q‖ (poinWt S v a) C c
       (abs_nonneg _) hρv (norm_nonneg _) (norm_nonneg _) (hw v hv.1 a).1 (hw v hv.1 a).2

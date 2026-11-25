@@ -353,9 +353,9 @@ private theorem weyl_rel (τ : K →+* ℂ) (a b c e : Fin n) :
   rw [pd_eq, pd_eq, fderiv_fun_mul (coordC τ c e).differentiableAt (diff_of F y), ContinuousLinearMap.fderiv]
   simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply, smul_eq_mul, coordC_eDir]
   by_cases h : a = c ∧ b = e
-  · simp only [if_pos h, Module.End.one_apply]
+  · simp only [ite_eq_left h, Module.End.one_apply]
     linear_combination (-(F.1 y) / 2) * Complex.I_mul_I
-  · simp only [if_neg h, LinearMap.zero_apply, ZeroMemClass.coe_zero, Pi.zero_apply]
+  · simp only [ite_eq_right h, LinearMap.zero_apply, ZeroMemClass.coe_zero, Pi.zero_apply]
     ring
 
 private theorem prod_map_apply {ι : Type} (A : ι → Module.End ℂ (Smth K n))

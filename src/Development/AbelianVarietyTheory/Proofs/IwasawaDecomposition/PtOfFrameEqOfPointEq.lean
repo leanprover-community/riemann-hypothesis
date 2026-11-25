@@ -73,15 +73,15 @@ theorem exists_block {r : ℕ} (q : ℕ) (K : Matrix (Fin r) (Fin r) ℂ) (hK : 
     by_cases ha : (a : ℕ) < q
     · have : ∀ b, K₁ a b * K₂ b c = K a b * (1 : Matrix _ _ ℂ) b c := fun b => by
         by_cases hb : (b : ℕ) < q
-        · simp only [K₁, K₂, of_apply, if_pos ha, if_pos hb]
-        · simp only [K₁, K₂, of_apply, if_pos ha, h0 a b (by simp [ha, hb]), zero_mul]
+        · simp only [K₁, K₂, of_apply, ite_eq_left ha, ite_eq_left hb]
+        · simp only [K₁, K₂, of_apply, ite_eq_left ha, h0 a b (by simp [ha, hb]), zero_mul]
       simp only [this]
       rw [← Matrix.mul_apply, Matrix.mul_one]
     · have : ∀ b, K₁ a b * K₂ b c = (1 : Matrix _ _ ℂ) a b * K₂ b c := fun b => by
-        simp only [K₁, of_apply, if_neg ha]
+        simp only [K₁, of_apply, ite_eq_right ha]
       simp only [this]
       rw [← Matrix.mul_apply, Matrix.one_mul]
-      simp only [K₂, of_apply, if_neg ha]
+      simp only [K₂, of_apply, ite_eq_right ha]
   rw [← hm, det_mul] at hK
   have u1 : IsUnit K₁ᵀ.det := by rw [det_transpose]; exact (left_ne_zero_of_mul hK).isUnit
   have u2 : IsUnit K₂.det := (right_ne_zero_of_mul hK).isUnit
@@ -108,13 +108,13 @@ theorem exists_block {r : ℕ} (q : ℕ) (K : Matrix (Fin r) (Fin r) ℂ) (hK : 
         refine Finset.sum_eq_zero fun d _ => ?_
         by_cases hd : (d : ℕ) < q
         · rw [h0 a d (by simp [ha, hd]), mul_zero]
-        · simp only [K₁, of_apply, if_pos hb, h0 b d (by simp [hb, hd]), zero_mul]
+        · simp only [K₁, of_apply, ite_eq_left hb, h0 b d (by simp [hb, hd]), zero_mul]
       · simp [K₁, mulVec, dotProduct, hb, Matrix.one_apply]
     have e2 : K a ᵥ* K₁ᵀ⁻¹ = K a := by
       conv_lhs => rw [← e1]
       rw [vecMul_vecMul, mul_nonsing_inv _ u1, vecMul_one]
     rw [Matrix.mul_inv_rev, nonsing_inv_nonsing_inv _ u2, ← congrFun e2 c, Matrix.mul_apply, vecMul, dotProduct]
-    simp only [K₂, of_apply, if_neg ha]
+    simp only [K₂, of_apply, ite_eq_right ha]
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ}
 
@@ -206,10 +206,10 @@ theorem exists_frame_mulVec (X : Data E r) {p : ℕ} (hr : r = p + X.p0) (ρ : (
     obtain ⟨⟨τ, hτ⟩, ⟨n, hn⟩⟩ := t
     dsimp only at h ⊢
     rcases h with ⟨a, rfl, rfl⟩ | ⟨a, rfl, rfl, d⟩
-    · rw [if_neg (by omega)]
+    · rw [ite_eq_right (by omega)]
       unfold perFr
       rw [dite_eq_left a, dite_eq_left hn]
-    · rw [if_pos (by omega)]
+    · rw [ite_eq_left (by omega)]
       unfold perFr
       rw [dite_eq_right a, dite_eq_left (show conjEmb (ρ (e j).1) ∈ X.Ψ from hτ), dite_eq_left hn]
       rfl
@@ -332,8 +332,8 @@ theorem exists_frBor {H : Host E} {Dw : Datum H} {l : Level H} {Xo : Moduli Dw l
   obtain ⟨P, hPe, hP, hx, -, -⟩ := hpt k x
   obtain ⟨V, P', hV, hVt, hP'e, hP', hy, hd⟩ := exists_adapted e F y (ik k) P hP (hx.symm.trans h)
   obtain ⟨b, hb, hb0, hbe⟩ := exists_frame_mulVec (U.X k) (p := Dw.p) (by omega) (relab c σ) hbij Dw.mult
-    (fun τ h => by unfold Datum.mult; rw [if_pos ((hrt τ).1 ((hΨ _).1 h))])
-    (fun τ h => by unfold Datum.mult; rw [if_neg (fun h' => h ((hΨ _).2 ((hrt τ).2 h'))), hp0]) e V hV hVt x.1
+    (fun τ h => by unfold Datum.mult; rw [ite_eq_left ((hrt τ).1 ((hΨ _).1 h))])
+    (fun τ h => by unfold Datum.mult; rw [ite_eq_right (fun h' => h ((hΨ _).2 ((hrt τ).2 h'))), hp0]) e V hV hVt x.1
   have hm := rmul_mem_dom (U.X k) x.2 b hb hb0
   obtain ⟨P₁, hP₁e, hP₁, hx₁, hd₁, -⟩ := hpt k ⟨_, hm⟩
   obtain ⟨t, ht, -⟩ := GlobalTheory.FrameNorm.frBor_of_triangular_period E H Dw l Xo c σ g e F (ik k) P' P₁ 1 y

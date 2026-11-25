@@ -160,7 +160,7 @@ theorem exists_comb {V F κ : Type} [CommRing V] [Field F] [Finite κ] (φ : V �
 
       rw [← Finset.mul_sum, ← map_sum, hb m mo hmo]
       split_ifs <;> simp
-    rw [Finset.sum_congr rfl this, Finset.sum_ite_eq, if_pos]
+    rw [Finset.sum_congr rfl this, Finset.sum_ite_eq, ite_eq_left]
     simpa [S] using hmo
 
 section Fam

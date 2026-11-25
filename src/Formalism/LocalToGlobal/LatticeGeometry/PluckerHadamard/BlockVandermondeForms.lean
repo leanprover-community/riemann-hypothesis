@@ -35,15 +35,15 @@ theorem dS_X (τ : Ψ) (S : Finset (Fin N)) (σ : Ψ) (a : Fin N) :
   simp only [pderiv_X]
   by_cases h : σ = τ ∧ a ∈ S
   · obtain ⟨rfl, ha⟩ := h
-    rw [if_pos ⟨rfl, ha⟩, Finset.sum_eq_single a]
+    rw [ite_eq_left ⟨rfl, ha⟩, Finset.sum_eq_single a]
     · simp
     · intro b _ hb
       simp [Ne.symm hb]
     · intro h'
       exact absurd ha h'
-  · rw [if_neg h]
+  · rw [ite_eq_right h]
     refine Finset.sum_eq_zero fun i hi => ?_
-    rw [Pi.single_apply, if_neg]
+    rw [Pi.single_apply, ite_eq_right]
     intro he
     simp only [Prod.mk.injEq] at he
     exact h ⟨he.1, by rw [he.2]; exact hi⟩

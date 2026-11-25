@@ -64,16 +64,16 @@ theorem UpperTheory.exists_gTateIso_twist_of_similitude :
     exact Lev.zpow_congr_of_dvd (I.ζ_prim n hn).pow_eq_one (g.νtower n m hn hm)
   · intro n x y
     by_cases hn : n = 0
-    · simp only [hn, if_true, I.add]
-    · simp only [hn, if_false]
+    · simp only [hn, ite_true, I.add]
+    · simp only [hn, ite_false]
       exact hφadd n (Nat.pos_of_ne_zero hn) x y
   · intro n b x
     by_cases hn : n = 0
-    · simp only [hn, if_true, I.lin]
-    · simp only [hn, if_false]
+    · simp only [hn, ite_true, I.lin]
+    · simp only [hn, ite_false]
       rw [Lev.ev_MN I (Nat.pos_of_ne_zero hn) ((g.sim n (Nat.pos_of_ne_zero hn)).lin b x), I.lin]
   · intro n hn x
-    simp only [hn.ne', if_false]
+    simp only [hn.ne', ite_false]
     constructor
     · intro h1
       obtain ⟨y, hy⟩ := (I.ker n hn _).mp h1
@@ -83,7 +83,7 @@ theorem UpperTheory.exists_gTateIso_twist_of_similitude :
       rw [hφpow n hn]
       exact (I.onto n hn _).mpr ⟨_, rfl⟩
   · intro n hn q
-    simp only [hn.ne', if_false]
+    simp only [hn.ne', ite_false]
     rw [I.onto n hn]
     constructor
     · rintro ⟨z, rfl⟩
@@ -92,17 +92,17 @@ theorem UpperTheory.exists_gTateIso_twist_of_similitude :
     · rintro ⟨x, rfl⟩
       exact ⟨_, rfl⟩
   · intro n m hn hm x
-    simp only [(Nat.mul_pos hn hm).ne', hn.ne', if_false]
+    simp only [(Nat.mul_pos hn hm).ne', hn.ne', ite_false]
     rw [I.tower n m hn hm, Lev.ev_MN I hn (g.tower n m hn hm x)]
   · intro n hn x y
-    simp only [hn.ne', if_false]
+    simp only [hn.ne', ite_false]
     have h := I.isom n hn (g.f n x) (g.f n y)
     have hd := ((g.sim n hn).isom x y)
     rw [Lev.zpow_congr_of_dvd (I.ζ_prim n hn).pow_eq_one hd] at h
     rw [← zpow_mul]
     exact h
   · intro n hn x
-    simp only [hn.ne', if_false]
+    simp only [hn.ne', ite_false]
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.CommutativeAlgebra.ExistsGTateIsoTwistOfSimilitude =====

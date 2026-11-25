@@ -118,7 +118,7 @@ theorem not_linearIndependent_iff_exists (x : Matrix (Fin n) (Fin ρ) E) :
   rw [key]
   constructor
   · intro h
-    push_neg at h
+    push Not at h
     obtain ⟨g, hg, i₀, hi₀⟩ := h
     let S : Finset (Fin ρ) := Finset.univ.filter fun j =>
       ∃ a : Fin ρ → E, a j ≠ 0 ∧ (∀ i, j < i → a i = 0) ∧ x *ᵥ a = 0

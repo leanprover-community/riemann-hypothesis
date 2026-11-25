@@ -16,12 +16,6 @@ section Gen
 
 variable {R : Type} [CommRing R] {d : ℕ} {O : Type} [CommRing O] [StarRing O]
 
-section Jet
-
-variable {k : Type} [CommRing k] {n : ℕ}
-
-end Jet
-
 section Lin
 
 variable {k : Type} [CommRing k] {n : ℕ}
@@ -69,17 +63,5 @@ theorem nabValN_smulP (B : FB R d O) (k : Type) [CommRing k] [Algebra ℚ k] [Al
   rw [DpolyN_smulP, MvPowerSeries.smul_eq_C_mul, map_mul, MvPowerSeries.constantCoeff_C]
 
 end Gen
-
-section Asm
-
-variable {R : Type} [CommRing R] {d : ℕ} {O : Type} [CommRing O] [StarRing O]
-
-end Asm
-
-section Main
-
-open ReciprocityTheory.ChartRestriction.G.TB Formalism.MainNotions.ModuliIntegralCharts.H1.GermFun
-
-end Main
 
 end Formalism.MainNotions.ModuliIntegralCharts.H1.DescentPf

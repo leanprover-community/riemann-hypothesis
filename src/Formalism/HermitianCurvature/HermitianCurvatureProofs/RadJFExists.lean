@@ -42,7 +42,7 @@ theorem radJFExists : RadJFExists := by
   have hmem : Φf ∈ RadSp Pa.k Pa.r D.z D.z' D.π D.π' := by
     refine ⟨fun x hx => ?_, fun x₀ hx₀ => ?_, fun x hx h hh h' hh' => ?_⟩
     · show (if (x.1, x.2) ∈ DomR Pa.k Pa.r D.z D.z' then resG Pa.k Pa.r (Fin.last Pa.r) (B.JF D F) x.1 x.2 else 0) = 0
-      rw [if_neg (by simpa using hx)]
+      rw [ite_eq_right (by simpa using hx)]
     · obtain ⟨U, Fe, hU, hxU, hFe, hΦ⟩ := hsm x₀
         ⟨hx₀.1, wCell_mem_omPlus D.z_mem D.z'_mem hx₀.1 hx₀.2.1 hx₀.2.2⟩ hx₀.2.1
       have hV : IsOpen {x : (Fin Pa.r → ℂ) × Mx Pa.k Pa.r | x.1 ∈ OmX Pa.r ∧ 0 < GGl Pa.k Pa.r D.z D.z' x.2} :=
@@ -52,12 +52,12 @@ theorem radJFExists : RadJFExists := by
         ⟨hxU, hx₀.1, hx₀.2.2⟩, hFe.mono Set.inter_subset_left, fun x hx hxG => ?_⟩
       have hxD : (x.1, x.2) ∈ DomR Pa.k Pa.r D.z D.z' := ⟨hx.2.1, hxG, hx.2.2⟩
       show (if (x.1, x.2) ∈ DomR Pa.k Pa.r D.z D.z' then resG Pa.k Pa.r (Fin.last Pa.r) (B.JF D F) x.1 x.2 else 0) = _
-      rw [if_pos hxD]
+      rw [ite_eq_left hxD]
       exact hΦ x hx.1 hxG
     · have hx' : (x.1, x.2) ∈ DomR Pa.k Pa.r D.z D.z' := by simpa using hx
       show (if (x.1, h * x.2 * h') ∈ DomR Pa.k Pa.r D.z D.z' then resG Pa.k Pa.r (Fin.last Pa.r) (B.JF D F) x.1 (h * x.2 * h') else 0) =
         (D.π h).comp ((if (x.1, x.2) ∈ DomR Pa.k Pa.r D.z D.z' then resG Pa.k Pa.r (Fin.last Pa.r) (B.JF D F) x.1 x.2 else 0).comp (D.π' h'))
-      rw [if_pos (domR_uw hx hh hh'), if_pos hx']
+      rw [ite_eq_left (domR_uw hx hh hh'), ite_eq_left hx']
       unfold resG
       have e : wCell Pa.k Pa.r (Fin.last Pa.r) x.1 * (h * x.2 * h') =
           h * (wCell Pa.k Pa.r (Fin.last Pa.r) x.1 * x.2) * h' := by
@@ -71,6 +71,6 @@ theorem radJFExists : RadJFExists := by
       simp
   exact ⟨⟨Φf, hmem⟩, fun x hx => by
     show (if (x.1, x.2) ∈ DomR Pa.k Pa.r D.z D.z' then resG Pa.k Pa.r (Fin.last Pa.r) (B.JF D F) x.1 x.2 else 0) = _
-    rw [if_pos (by simpa using hx)]⟩
+    rw [ite_eq_left (by simpa using hx)]⟩
 
 end Formalism.FourierDecayAlt.P5

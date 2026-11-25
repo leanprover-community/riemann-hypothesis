@@ -147,7 +147,7 @@ theorem twist_exponents_are_weight_entries : TwistExponentsAreWeightEntries := b
       LaurentPolynomial.T (w j) := by
     intro w
     rw [Finset.prod_eq_single j (fun a _ ha => by simp [D, ha]) (fun h => absurd (Finset.mem_univ j) h)]
-    simp only [D, if_pos rfl]
+    simp only [D, ite_eq_left rfl]
     rcases w j with k | k
     · rw [Int.ofNat_eq_coe, zpow_natCast, Units.val_pow_eq_pow_val]
       simp only [u, LaurentPolynomial.T_pow, mul_one]

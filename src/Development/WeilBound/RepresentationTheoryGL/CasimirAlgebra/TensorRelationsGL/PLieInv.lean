@@ -93,17 +93,17 @@ theorem lieInv_holds : LieInv := by
       intro τ'
       by_cases h1 : τ' = τ
       · subst h1
-        simp only [D, if_true]
+        simp only [D, ite_true]
         exact hasDerivAt_det _ X (by rw [hc0, hK.one]) hcd
       · by_cases h2 : τ' = bar τ
         · subst h2
-          simp only [D, if_neg h1, if_true]
+          simp only [D, ite_eq_right h1, ite_true]
           have ht : (X.map star).trace = star X.trace := by simp [Matrix.trace, star_sum]
           rw [← ht]
           refine hasDerivAt_det _ _ (by rw [hc0, hK.one]) fun i j => ?_
           simp only [hK.conj, Matrix.map_apply]
           exact (hcd i j).star
-        · simp only [D, if_neg h1, if_neg h2]
+        · simp only [D, ite_eq_right h1, ite_eq_right h2]
           have hf : (fun t => (κ τ' (cv t)).det) = fun _ => 1 := by
             funext t; rw [hcoth τ' h1 h2 t, Matrix.det_one]
           rw [hf]; exact hasDerivAt_const _ _
@@ -135,7 +135,7 @@ theorem lieInv_holds : LieInv := by
   have hsI : star Complex.I = -Complex.I := Complex.conj_I
   by_cases hab : a = b
   · subst hab
-    rw [if_pos rfl]
+    rw [ite_eq_left rfl]
     have hX : (Matrix.single a a Complex.I)ᴴ = -Matrix.single a a Complex.I := by
       ext i j
       simp only [Matrix.conjTranspose_apply, Matrix.neg_apply, Matrix.single_apply]
@@ -153,7 +153,7 @@ theorem lieInv_holds : LieInv := by
     rcases smul_eq_zero.mp e' with h | h
     · exact absurd h Complex.I_ne_zero
     · exact sub_eq_zero.mp h
-  · rw [if_neg hab]
+  · rw [ite_eq_right hab]
     have hX1 : (Matrix.single a b (1 : ℂ) + Matrix.single b a (-1))ᴴ =
         -(Matrix.single a b (1 : ℂ) + Matrix.single b a (-1)) := by
       ext i j

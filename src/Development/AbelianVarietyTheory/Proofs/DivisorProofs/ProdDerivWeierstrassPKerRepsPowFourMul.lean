@@ -120,7 +120,7 @@ theorem eq_zero_of_odd_elliptic_of_tendsto : ∀ (L : PeriodPair) (f : ℂ → �
     rw [zero_pow two_ne_zero] at h1
     refine h1.congr' ?_
     filter_upwards [eventually_ne_notMem_periodLattice L 0] with w hw
-    simp only [g, hw, if_false]
+    simp only [g, hw, ite_false]
     ring
   have hgm : MeromorphicAt g 0 := by
     refine ⟨6, Complex.analyticAt_of_differentiable_on_punctured_nhds_of_continuousAt ?_ ?_⟩

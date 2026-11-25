@@ -132,7 +132,7 @@ theorem CurveVertPointMultChart.of_single
       ((IsLocalRing.maximalIdeal (Localization.AtPrime (curvePtIdeal y W))).map
         (MvPolynomial.C : _ →+* MvPolynomial K _)).primeCompl := fun k h => by
     have h1 := MvPolynomial.mem_map_C_iff.mp h (Finsupp.single k 1)
-    rw [MvPolynomial.coeff_X, if_pos rfl] at h1
+    rw [MvPolynomial.coeff_X, ite_eq_left rfl] at h1
     exact (IsLocalRing.maximalIdeal _).ne_top_iff_one.mp (IsLocalRing.maximalIdeal.isMaximal _).ne_top h1
   have hprod : (∏ k, X k ^ d k : MvPolynomial K (Localization.AtPrime (curvePtIdeal y W))) ∈
       ((IsLocalRing.maximalIdeal (Localization.AtPrime (curvePtIdeal y W))).map

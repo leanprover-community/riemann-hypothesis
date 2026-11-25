@@ -150,7 +150,7 @@ theorem isPar_stdPar (J : Finset (Fin k)) : IsPar (stdPar J) := by
   · obtain ⟨j, -, rfl⟩ := mem_image.1 hu
     obtain ⟨j', -, rfl⟩ := mem_image.1 hu'
     have key : ∀ a b : Fin k, a ≤ b → Below (stdVec a) (stdVec b) := fun a b h i hi => by
-      have : i ≤ a := by by_contra e; exact hi (if_neg e)
+      have : i ≤ a := by by_contra e; exact hi (ite_eq_right e)
       simp [stdVec, this, this.trans h]
     exact (le_total j j').imp (key _ _) (key _ _)
 

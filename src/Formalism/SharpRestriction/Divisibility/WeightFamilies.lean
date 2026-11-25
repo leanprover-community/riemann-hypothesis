@@ -214,12 +214,6 @@ def c1 (CR T c : ℝ) (j : ℕ) : ℝ :=
 
 end Cusp
 
-section Half
-
-variable {E : Type} [Field E] [NumberField E] {cj : E → E} {Y : Type} [AddCommGroup Y] [Module (𝓞 E) Y]
-
-end Half
-
 structure Prov (D : D7) where
 
   KO : Type
@@ -363,18 +357,6 @@ end Statements
 
 abbrev ProvF {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) : Type 1 :=
   ∀ x (_ : Fm.x1 < x) (i : Fm.Ix x), Prov (Fm.D x i)
-
-section Family
-
-variable {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) (XF : ProvF Fm)
-
-end Family
-
-section FamilyK
-
-variable {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) (XF : ProvF Fm)
-
-end FamilyK
 
 theorem one_le_zBase {D : D7} (L : SizeData₂ D) : 1 ≤ zBase L := by
   unfold zBase

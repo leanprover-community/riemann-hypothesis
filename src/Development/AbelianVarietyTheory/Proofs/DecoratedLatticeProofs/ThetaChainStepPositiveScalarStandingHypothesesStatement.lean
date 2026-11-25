@@ -956,7 +956,7 @@ theorem lift_one_of_mem (V : HSp D) (β : GL (Fin V.rank) (Lev.EAf D)) (r t j : 
     Lev.IsLevelLift V β (Lev.datY V.rank r t j hr Pg Q (LevelP.triv Pg r ℂ) χ ξ Lev.Frm.B) 1 κ := by
   refine ⟨(Subgroup.mem_inf.1 hκ).1, hκ.2.1, ?_⟩
   have h2 := hκ.2.2
-  simp only [Lev.datY, LevelP.triv, if_true] at h2
+  simp only [Lev.datY, LevelP.triv, ite_true] at h2
   exact Subgroup.mem_bot.1 h2
 
 theorem lift_one_one (V : HSp D) (β : GL (Fin V.rank) (Lev.EAf D)) (L : LevDat D.host.E ℂ V.rank) :

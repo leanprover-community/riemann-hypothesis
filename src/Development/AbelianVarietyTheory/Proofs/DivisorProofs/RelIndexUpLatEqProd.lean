@@ -145,12 +145,12 @@ theorem relIndex_upLat_eq_prod {n : ℕ} (c C : Fin n → Fin n → ℤ) :
       map_zero' := rfl
       map_add' := fun _ _ => rfl }
   have hf : Function.Surjective f := fun y => by
-    refine ⟨⟨fun i j => if h : i < j then ((y ⟨(i, j), h⟩).out : L) else 0, fun i j h => dif_neg (not_lt.2 h),
+    refine ⟨⟨fun i j => if h : i < j then ((y ⟨(i, j), h⟩).out : L) else 0, fun i j h => dite_eq_right (not_lt.2 h),
       fun i j h => ?_⟩, funext fun p => ?_⟩
-    · simp only [dif_pos h]
+    · simp only [dite_eq_left h]
       exact (y ⟨(i, j), h⟩).out.2
     · refine Eq.trans ?_ (y p).out_eq
-      exact congrArg QuotientAddGroup.mk (Subtype.ext (dif_pos p.2))
+      exact congrArg QuotientAddGroup.mk (Subtype.ext (dite_eq_left p.2))
   have hc : (upLat L C).addSubgroupOf (upLat L c) = f.ker := by
     ext x
     rw [AddMonoidHom.mem_ker, funext_iff, AddSubgroup.mem_addSubgroupOf, mem_upLat]

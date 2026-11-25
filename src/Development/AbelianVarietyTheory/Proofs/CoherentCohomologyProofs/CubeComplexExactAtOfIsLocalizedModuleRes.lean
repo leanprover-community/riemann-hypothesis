@@ -277,8 +277,4 @@ variable {f}
 
 end Loc
 
-section Examples
-
-end Examples
-
 end GlobalTheory

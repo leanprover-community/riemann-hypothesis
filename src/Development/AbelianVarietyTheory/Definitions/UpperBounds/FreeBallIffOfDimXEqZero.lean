@@ -344,18 +344,14 @@ theorem blockConst_iff : BlockConst X la ↔
     beta_reduce
     by_cases hi : (i : ℕ) < X.p0
     · have hex : ∃ i : Fin r, (i : ℕ) < X.p0 := ⟨i, hi⟩
-      rw [if_pos hi, dite_eq_left hex]
+      rw [ite_eq_left hi, dite_eq_left hex]
       exact h τ _ _ (iff_of_true hi hex.choose_spec)
     · have hex : ∃ i : Fin r, ¬ (i : ℕ) < X.p0 := ⟨i, hi⟩
-      rw [if_neg hi, dite_eq_left hex]
+      rw [ite_eq_right hi, dite_eq_left hex]
       exact h τ _ _ (iff_of_false hi hex.choose_spec)
   · rintro ⟨a, a', rfl⟩
     exact blockConst_ite a a'
 
 end Block
-
-section Checks
-
-end Checks
 
 end GlobalTheory.Up

@@ -42,7 +42,7 @@ theorem measurable_finprod {X ι : Type} [MeasurableSpace X] [Countable ι] (f :
         have : i ∈ hs.toFinset := by simpa using hne
         have := hN i this
         omega
-      simp only [h, hxA, if_true]
+      simp only [h, hxA, ite_true]
       refine (finprod_eq_prod_of_mulSupport_subset _ ?_).symm
       intro i hi
       have := hN i (by simpa using hi)
@@ -56,7 +56,7 @@ theorem measurable_finprod {X ι : Type} [MeasurableSpace X] [Countable ι] (f :
         simp only [A, Set.mem_iInter, Set.mem_preimage, Set.mem_singleton_iff] at hx
         by_contra hlt
         exact hi (hx i (not_lt.1 hlt))
-      simp only [h, hxA, if_false]
+      simp only [h, hxA, ite_false]
       exact (finprod_of_infinite_mulSupport hs).symm
   exact tendsto_const_nhds.congr' (hev.mono fun n hn => hn.symm)
 

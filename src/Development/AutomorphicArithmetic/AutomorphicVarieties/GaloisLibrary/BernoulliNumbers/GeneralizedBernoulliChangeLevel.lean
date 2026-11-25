@@ -101,7 +101,7 @@ private theorem valuation_power_identity {R : Type} [CommRing R] {N p : ℕ} (χ
   by_cases hc : a.Coprime (N * p)
   · have hpa : ¬ p ∣ a := fun h =>
       (Nat.Prime.coprime_iff_not_dvd hp).1 (Nat.Coprime.coprime_mul_left_right hc).symm h
-    rw [if_neg hpa, sub_zero]
+    rw [ite_eq_right hpa, sub_zero]
     have := DirichletCharacter.changeLevel_eq_cast_of_dvd χ (dvd_mul_right N p) (ZMod.unitOfCoprime a hc)
     rw [ZMod.coe_unitOfCoprime, ZMod.cast_natCast (dvd_mul_right N p)] at this
     exact this

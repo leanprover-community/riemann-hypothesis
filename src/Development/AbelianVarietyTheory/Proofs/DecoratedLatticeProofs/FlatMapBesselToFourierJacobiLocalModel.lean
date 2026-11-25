@@ -160,7 +160,7 @@ theorem simpleSum_split {k : Type} [Field k] {ρ c : ℕ} (n : Type) [Fintype n]
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [sum_lo_hi h, Finset.sum_eq_zero (s := Finset.univ)
       (f := fun j => if (lo h j).val = (hi h i).val + 1 then u.val (hi h i) (lo h j) else 0)
-      fun j _ => if_neg (by simp only [lo, hi]; omega), zero_add]
+      fun j _ => ite_eq_right (by simp only [lo, hi]; omega), zero_add]
     exact Finset.sum_congr rfl fun j _ => if_congr (by simp only [hi]; omega) rfl rfl
 
 theorem det_of_inN {F : Type} [Field F] {n : Type} [Fintype n] [DecidableEq n] {c p : ℕ}
@@ -544,22 +544,22 @@ theorem jac_row {ρ : ℕ} {J : JacLev D ρ} {s hh : k} {n : Type} [Fintype n] [
     (J.d.pY.map p.π * FW.β) i r = if r = Sum.inr l then s * (hh / p.xi) * (-1 / p.xi) ^ (ρ - 1 - i.val) else 0 := by
   obtain ⟨hc, h0, hX, hY⟩ := h
   rcases r with a | j
-  · rw [if_neg Sum.inl_ne_inr, mul_col (a := 1) (X := J.d.j0.map p.π * G₀.β) (i := a) (fun r => by rw [one_mul]; exact h0 r a),
+  · rw [ite_eq_right Sum.inl_ne_inr, mul_col (a := 1) (X := J.d.j0.map p.π * G₀.β) (i := a) (fun r => by rw [one_mul]; exact h0 r a),
       ← Matrix.mul_assoc, ← Matrix.map_mul, J.d.pY_j0]
     simp
   · by_cases hj : j.val < ρ
     · have hne : (Sum.inr j : n ⊕ Fin c) ≠ Sum.inr l := fun e => by
         have := congrArg Fin.val (Sum.inr_injective e); omega
-      rw [if_neg hne, mul_col (X := J.d.jX.map p.π) (i := ⟨j.val, hj⟩) (hX ⟨j.val, hj⟩ j rfl), ← Matrix.map_mul, J.d.pY_jX]
+      rw [ite_eq_right hne, mul_col (X := J.d.jX.map p.π) (i := ⟨j.val, hj⟩) (hX ⟨j.val, hj⟩ j rfl), ← Matrix.map_mul, J.d.pY_jX]
       simp
     · have hj' : 2 * ρ - 1 - j.val < ρ := by have := j.2; omega
       rw [mul_col (X := J.d.jY.map p.π) (i := ⟨_, hj'⟩) (hY ⟨_, hj'⟩ j (by have := j.2; simp only; omega)), ← Matrix.map_mul,
         J.d.pY_jY, Matrix.map_apply, Matrix.one_apply]
       by_cases e : j = l
       · have e' : i = ⟨_, hj'⟩ := Fin.ext (by subst e; simp only; omega)
-        rw [if_pos e', if_pos (congrArg _ e), map_one, mul_one, ← e']
+        rw [ite_eq_left e', ite_eq_left (congrArg _ e), map_one, mul_one, ← e']
       · have e' : i ≠ ⟨_, hj'⟩ := fun e' => e (Fin.ext (by have := congrArg Fin.val e'; have := j.2; simp only at *; omega))
-        rw [if_neg e', if_neg (fun x => e (Sum.inr_injective x)), map_zero, mul_zero]
+        rw [ite_eq_right e', ite_eq_right (fun x => e (Sum.inr_injective x)), map_zero, mul_zero]
 
 theorem core_val {ρ : ℕ} {B : BesLev D ρ} {s : k} {n : Type} [Fintype n] [DecidableEq n] {FA : Frame k B.A.rank n}
     {F₀ : Frame k B.V₀.rank (n ⊕ Unit)} (h : p.IsCoreFrame B s FA F₀) (i : Fin ρ) (q : n ⊕ Unit) :
@@ -640,7 +640,7 @@ theorem flatBF_mul_row : ∀ (D : D7), FlatLaw D → GlobalTheory.FinPl.FlatLaws
     rw [char_up p B.d J.d K hch, e, trace_single, ← Matrix.mul_assoc _ FV.γ,
       mul_col (a := 1) (X := FV.β) (i := q) (fun x => by rw [one_mul]; exact core_col p h₀ hB q hq x), one_mul,
       Matrix.mul_assoc _ FV.γ, FV.γβ, Matrix.mul_one, Matrix.mul_apply]
-    simp only [jac_row p hJ i l hli, ← hκ, ite_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    simp only [jac_row p hJ i l hli, ← hκ, ite_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     rw [← mul_assoc, div_mul_cancel₀ _ hκ0]
   have h2 : ψ (symplO B.V₀ J.W (J.d.incAdj B.V₀ (yZero B.V₀ ρ (vecB B.o B.ζ))) (J.d.incX B.V₀ (xiPt p B.V₀ K))) =
       ψk (b * GlobalTheory.RootEx.basePt c (0 : Matrix n n' k) (Sum.inr l) q) := by
@@ -653,7 +653,7 @@ theorem flatBF_mul_row : ∀ (D : D7), FlatLaw D → GlobalTheory.FinPl.FlatLaws
       · have e1 : l.val = j.val := by omega
         have e2 : ρ - 1 - i.val = 0 := by omega
         rw [e2, pow_zero, mul_one] at hκ
-        simp only [GlobalTheory.RootEx.basePt, e, e1, Sum.map_inr, and_self, if_true, fromBlocks_apply₂₂, of_apply, hκ]
+        simp only [GlobalTheory.RootEx.basePt, e, e1, Sum.map_inr, and_self, ite_true, fromBlocks_apply₂₂, of_apply, hκ]
         field_simp
       · have e1 : l.val ≠ j.val := by omega
         simp [GlobalTheory.RootEx.basePt, e, e1]
@@ -1120,8 +1120,8 @@ theorem col_coord_ne {N : ℕ} (F : Frame k N Y) (j : Y) (c : k) (v : Fin N → 
     (hq : q ≠ j) : ∑ t, F.γ q t * v t = 0 := by
   have h1 := col_coord F j c v h j
   have h2 := col_coord F j c v h q
-  rw [if_pos rfl] at h1
-  rw [if_neg hq] at h2
+  rw [ite_eq_left rfl] at h1
+  rw [ite_eq_right hq] at h2
   exact (mul_eq_zero.1 h2).resolve_left (left_ne_zero_of_mul_eq_one h1)
 
 theorem row_coord (p : Place D k) {N m m' : ℕ} (F : Frame k N Y) (j : Y) (c : k) (M : Mx D m N) (M' : Mx D N m')
@@ -1178,7 +1178,7 @@ theorem bes_Y_ne (hB : p.IsBesFrame B s FA FV) (q : n' ⊕ Fin (c + 1)) (i : Fin
 
 theorem bes_Y (hB : p.IsBesFrame B s FA FV) (j : Fin (c + 1)) (i : Fin ρ) (h : j.val + i.val = 2 * ρ) :
     s * (-p.hz B / p.xi) * (-1 / p.xi) ^ (ρ - 1 - i.val) * (FV.γ * B.d.jY.map p.π) (Sum.inr j) i = 1 :=
-  (col_coord FV (Sum.inr j) _ _ (hB.2.2.2.2 i j h) (Sum.inr j)).trans (if_pos rfl)
+  (col_coord FV (Sum.inr j) _ _ (hB.2.2.2.2 i j h) (Sum.inr j)).trans (ite_eq_left rfl)
 
 theorem besselNormalFrame_lineVectorColumn (hB : p.IsBesFrame B s FA FV) (j : Fin (c + 1)) (h : j.val = ρ) (q : n' ⊕ Fin (c + 1)) :
     s * ∑ t, FV.γ q t * p.pr ((B.d.i₀ *ᵥ vecB B.o B.ζ) t) = if q = Sum.inr j then 1 else 0 :=
@@ -1236,7 +1236,7 @@ theorem jac_Y_ne (hJ : p.IsJacFrame J s hh G₀ FW) (r : n ⊕ Fin c) (i : Fin �
     · rw [jac_low p hJ l hl, HypDec.pY_jX]
       simp
     · have hl' := l.2
-      rw [jac_Y p hJ l i ⟨2 * ρ - 1 - l.val, by omega⟩ (by simp only; omega), if_neg, mul_zero]
+      rw [jac_Y p hJ l i ⟨2 * ρ - 1 - l.val, by omega⟩ (by simp only; omega), ite_eq_right, mul_zero]
       intro h'
       have h1 := h l rfl
       have h2 := congrArg Fin.val h'
@@ -1331,7 +1331,7 @@ theorem trace_dual (hB : p.IsBesFrame B s FA FV) (hJ : p.IsJacFrame J s (p.hz B)
     by_cases h : ∃ l : Fin c, r = Sum.inr l ∧ j = l.succ
     · obtain ⟨l, rfl, rfl⟩ := h
       have h1 := bes_Y p hB l.succ i₀ hi₀
-      rw [ch_single_succ, jac_Y p hJ l i₀ i₀ (by rw [Fin.val_succ] at hi₀; omega), if_pos rfl]
+      rw [ch_single_succ, jac_Y p hJ l i₀ i₀ (by rw [Fin.val_succ] at hi₀; omega), ite_eq_left rfl]
       linear_combination (-a) * h1
     · rw [ch_single_ne _ _ _ fun l hl h' => h ⟨l, hl, Sum.inr.inj h'⟩,
         jac_Y_ne p hJ r i₀ fun l hl h' => h ⟨l, hl, Fin.ext (by rw [Fin.val_succ]; omega)⟩]
@@ -1409,7 +1409,7 @@ theorem trace_iso {hh : k} (hB : p.IsBesFrame B s FA FV) (hJ : p.IsJacFrame J s 
     generalize (FV.γ * (B.d.j0 ⬝ yZero B.V₀ ρ (vecB B.o B.ζ)).map p.π) q ⟨l.val, hl⟩ = w at h1 ⊢
     by_cases h : q = Sum.inr l.succ
     · have h2 := hq _ h
-      rw [if_pos (h.trans (congrArg Sum.inr (Fin.ext (h2.trans hj.symm)))), if_pos (show l.val + 1 = ρ from h2)] at h1
+      rw [ite_eq_left (h.trans (congrArg Sum.inr (Fin.ext (h2.trans hj.symm)))), ite_eq_left (show l.val + 1 = ρ from h2)] at h1
       rw [Fin.val_succ] at h2
       rw [show ρ - l.val = 1 by omega, pow_one, h, ch_single_succ]
       linear_combination (a * p.xi) * h1

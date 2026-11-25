@@ -673,7 +673,7 @@ def semiComp {T S R : Type} [CommRing T] [CommRing S] [CommRing R] {I : GlobalTh
 
 theorem pick_neg' {α : Type*} [Zero α] {P : α → Prop} (h : ¬ ∃ a, P a) : pick P = 0 := by
   unfold pick
-  exact dif_neg h
+  exact dite_eq_right h
 
 theorem op_zero {S R : Type} [CommRing S] [CommRing R] {I : GlobalTheory.EtC.Cx S} {J : GlobalTheory.EtC.Cx R} (E : Spc) (n : ℤ)
     (x : CohomologyClass ((chains S).obj E) I n) : (0 : SemiMap I J).op.app E n x = 0 := by

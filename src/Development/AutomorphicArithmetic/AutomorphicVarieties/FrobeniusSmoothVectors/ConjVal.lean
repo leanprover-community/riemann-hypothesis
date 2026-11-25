@@ -14,9 +14,9 @@ variable {l : ℕ} [Fact l.Prime] {k : Type} [Field k] {F : Frame l k}
 
 private noncomputable def ee (F : Frame l k) (u : ℤˣ) : F.Γ := if u = 1 then 1 else F.c
 
-private theorem ee_one : ee F 1 = 1 := if_pos rfl
+private theorem ee_one : ee F 1 = 1 := ite_eq_left rfl
 
-private theorem ee_neg : ee F (-1) = F.c := if_neg (by decide)
+private theorem ee_neg : ee F (-1) = F.c := ite_eq_right (by decide)
 
 private noncomputable def pr (hc : F.del F.c = -1) (s : F.Γ) : F.G0 :=
   ⟨s * ee F (F.del s), by

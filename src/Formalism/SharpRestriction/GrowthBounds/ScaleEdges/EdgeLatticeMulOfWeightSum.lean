@@ -70,14 +70,14 @@ theorem V_mul (Kf : Type*) [Field Kf] {n' m : ℕ} {lam mu nu : Fin n' → Fin (
     · have hab : Antitone (lamAt (lam + mu) s) := by
         rw [hs]
         exact ha.add hb
-      rw [if_pos ha] at hF
-      rw [if_pos hb] at hG
-      rw [if_pos hab, hs, nuOf_add ha hb]
+      rw [ite_eq_left ha] at hF
+      rw [ite_eq_left hb] at hG
+      rw [ite_eq_left hab, hs, nuOf_add ha hb]
       exact dualWeyl_mul Kf (m + 1) (m + 1) _ _ hF hG
-    · rw [if_neg hb, Submodule.mem_bot] at hG
+    · rw [ite_eq_right hb, Submodule.mem_bot] at hG
       rw [hG, mul_zero]
       exact Submodule.zero_mem _
-  · rw [if_neg ha, Submodule.mem_bot] at hF
+  · rw [ite_eq_right ha, Submodule.mem_bot] at hF
     rw [hF, zero_mul]
     exact Submodule.zero_mem _
 

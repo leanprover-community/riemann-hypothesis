@@ -222,7 +222,7 @@ theorem eq_zero_of_forall_isUnit (P : MvPolynomial (ι × Fin n × Fin n) ℂ)
     rw [map_mul, map_zero, eval_detAll]
     by_cases hy : ∀ τ, IsUnit (y τ).det
     · rw [h y hy, zero_mul]
-    · push_neg at hy
+    · push Not at hy
       obtain ⟨τ, hτ⟩ := hy
       rw [Finset.prod_eq_zero (Finset.mem_univ τ) (by simpa [isUnit_iff_ne_zero] using hτ), mul_zero]
   exact (mul_eq_zero.mp h2).resolve_right detAll_ne_zero

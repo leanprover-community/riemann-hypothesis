@@ -678,7 +678,7 @@ theorem ampleQ_of_forms (y : (Σ k, J k) → Ω) (k₀ : K) (a : K → ℤ) (ha�
     Ht.AmpleQ y a := by
   by_cases hy : ∀ k, ∃ j, y ⟨k, j⟩ ≠ 0
   swap
-  · push_neg at hy
+  · push Not at hy
     obtain ⟨k, hk⟩ := hy
     refine ⟨0, 0, Fin.elim0, fun i => i.elim0, fun L _ _ z hz => ?_⟩
     exfalso
@@ -1044,10 +1044,10 @@ theorem stepLine_a {G : RefGeo Y} (A : G.An) (t : ℝ) (r : RootIx D) :
     simp [Finset.sum_apply]
   simp only [stepLine, PB.combLine_a, Fin.sum_univ_two]
   by_cases h : (i : ℕ) = 0
-  · simp only [prevLine, dif_pos h]
+  · simp only [prevLine, dite_eq_left h]
     simp [Top.trivLine, hl, Iic_zero i h]
   · have hi : 0 < (i : ℕ) := Nat.pos_of_ne_zero h
-    simp only [prevLine, dif_neg h]
+    simp only [prevLine, dite_eq_right h]
     simp only [Matrix.cons_val_zero, Matrix.cons_val_one, hl]
     rw [Iic_pred i hi, Finset.sum_insert (not_mem_Iic_pred i hi)]
     simp
@@ -1080,10 +1080,10 @@ theorem log_line_eq {G : RefGeo Y} (A : G.An) (t : ℝ) (τ : CMType H) (i : Fin
       -∑ k ∈ Finset.Iic i, Real.log ((stepLine A t (τ, k)).h z) := by
   have := sum_Iic_step (fun i' : Fin (D.p + D.q) => Real.log ((A.Re.line (some (τ, i')) t).h z))
     (fun k => Real.log ((stepLine A t (τ, k)).h z)) (fun k hk => by
-      simp only [stepLine_h, prevLine, dif_pos hk, Top.trivLine]
+      simp only [stepLine_h, prevLine, dite_eq_left hk, Top.trivLine]
       rw [Real.log_div one_ne_zero ((A.Re.line _ t).pos z hz).ne']
       simp) (fun k hk => by
-      simp only [stepLine_h, prevLine, dif_neg hk.ne']
+      simp only [stepLine_h, prevLine, dite_eq_right hk.ne']
       rw [Real.log_div ((A.Re.line _ t).pos z hz).ne' ((A.Re.line _ t).pos z hz).ne']) i
   rw [this, neg_neg]
 

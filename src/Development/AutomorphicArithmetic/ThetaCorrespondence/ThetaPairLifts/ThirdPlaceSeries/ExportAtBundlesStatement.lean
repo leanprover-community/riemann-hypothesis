@@ -545,7 +545,7 @@ theorem thmC_of_parts : ∀ (D : Formalism.BasicNotions.D7) (N : NData D.R D.hos
     simpa [Fin.ext_iff] using this
   have hc := hco (fun a => φ (Fin.castAdd t a)) (fun a => GlobalTheory.TwistDet.cConj X (φ (Fin.castAdd t a)))
     (fun a => ⟨hcj _, g (Fin.castAdd t a), by simpa using (hg (Fin.castAdd t a)).1⟩)
-  rw [if_neg hl.ne'] at hc
+  rw [ite_eq_right hl.ne'] at hc
   obtain ⟨P', hP', hSt', -, hNF⟩ := induct hl f (fun j => (hP i _ (hT _ (hfT j))).2.1) (fun j => (hP i _ (hT _ (hfT j))).2.2)
     he hle (by omega) hd hLH hz (fun j => ⟨hLs _ (hfT j), hLζ, hLi _ (hfT j)⟩) _ h₀
     (fun j => (hP i _ (hT _ (hfT j))).1 M (R₀ + t) R₀ d A L z _ _ _ (Nat.le_add_right _ _) hlt hz (hLs _ (hfT j)) h₀
@@ -1597,7 +1597,7 @@ theorem residual_bound_of_parts : ∀ (D : Formalism.BasicNotions.D7) (N : NData
     · exact (hLs s hs).2.2.2.2 k (dec_le_of_frob_mem (N.plOm.2 _) (hφ a) hLo
         ((hIne _ _ (Or.inl rfl) _ (N.plOm.2 _)).trans hUL') (hφL a) hk)
   have hc := hco φ (fun a => GlobalTheory.TwistDet.cConj X (φ a)) (fun a => ⟨hcj a, g a, (hg a).1⟩) s hs
-  rw [if_pos hl] at hc
+  rw [ite_eq_left hl] at hc
   obtain ⟨m, hm, hu⟩ := (hRB i s (hT s hs) M R P _ φ _ Q hlt hPos hQ a Φ hΦ).1 hc F hF
   exact ⟨m, hm, (IsDiscreteValuationRing.addVal_eq_zero_iff.2 hu).le⟩
 
@@ -1689,7 +1689,7 @@ theorem exportAt_of_bundles_alt : Cheb → PoitouTateTotallyComplex → CohDimTw
   · intro j hj b
     have h : D.ntw.NonzeroIndexPlace (nch.twI w) ∧ j ∈ Finset.Icc 1 D.R.m := ⟨hW w hw, hj⟩
     show IntegralHeckeForms.BasisOf D.nexp (nch.twI w) j b (IntegralHeckeForms.SgJ D.nexp (twEOf xd) (nch.twI w) j b) (S (nch.twI w) j b)
-    simp only [S, dif_pos h]
+    simp only [S, dite_eq_left h]
     exact Classical.choose_spec (_root_.GlobalTheory.TwInputs.exists_basisOf_of_classSum D (twEOf xd) hI.t4 _ h.1 j h.2 b)
 end GlobalTheory.ExportClose
 end

@@ -111,7 +111,7 @@ theorem prod_exp (x : Fin (d + 1) → F) (hx : ∀ i, x i ≠ 0) (i0 : Fin (d + 
   rw [Finset.prod_div_distrib, Finset.prod_div_distrib]
   have hq : ∏ j, x j ^ (if j = i0 then ((d : ℤ) + 1) else 0) = x i0 ^ (d + 1) := by
     rw [Fintype.prod_eq_single i0 (fun l hl => by simp [hl])]
-    rw [if_pos rfl, show ((d : ℤ) + 1) = ((d + 1 : ℕ) : ℤ) by push_cast; ring, zpow_natCast]
+    rw [ite_eq_left rfl, show ((d : ℤ) + 1) = ((d + 1 : ℕ) : ℤ) by push_cast; ring, zpow_natCast]
   rw [hq]
   simp only [Finset.prod_const, Finset.card_univ, Fintype.card_fin]
   have h0 : ∏ j, x j ≠ 0 := Finset.prod_ne_zero_iff.2 fun j _ => hx j
@@ -136,7 +136,7 @@ theorem resvan : ∀ (k : Type) [Field k] (F : Type) [Field F] [Algebra k F] (d 
     refine ⟨(Pi.single j 1 : Fin (d + 1) → ℤ) - Pi.single i' 1, by simp, fun l hl => ?_,
       (prod_single_sub x hne i' j).symm⟩
     have hl' : l ≠ i' := fun h => hl (h ▸ hi')
-    simp only [Pi.sub_apply, Pi.single_apply, hl', if_false, sub_zero]
+    simp only [Pi.sub_apply, Pi.single_apply, hl', ite_false, sub_zero]
     split_ifs <;> omega
   have hP := prod_exp x hne i0
   have hy' : y = (∏ j, x j ^ ((1 : ℤ) - if j = i0 then ((d : ℤ) + 1) else 0)) * ((∏ j, x i0 / x j) * y) := by
@@ -152,7 +152,7 @@ theorem resvan : ∀ (k : Type) [Field k] (F : Type) [Field F] [Algebra k F] (d 
       simp
     · intro h0
       have := congrFun h0 i
-      simp only [hii0, if_false, Pi.zero_apply] at this
+      simp only [hii0, ite_false, Pi.zero_apply] at this
       have := hm' i hi
       omega
   | zero => simp

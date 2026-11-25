@@ -658,7 +658,7 @@ theorem lev (hψ : IsStdChar D ψ (-1)) (hθ : IsInfFam θ)
       have e3 := Ψl (ψ (symplOH S T w (-w))) f 0 (heisO ψ S T w e) hf C.zero_mem hwC
       rw [add_zero, z0, add_zero, ← e1, e2] at e3
       exact (mul_eq_zero.1 e3.symm).resolve_left (star_ne_zero.2 (GlobalTheory.ThetaSchurBdd.psi_ne_zero hψ _))
-    · push_neg at hA
+    · push Not at hA
       obtain ⟨u, hu, h0, hne1⟩ := hA
       have e1 : thetaIP μ 𝓕 h (heisO ψ S T w e) =
           thetaIP μ 𝓕 (heisO ψ S T u h) (heisO ψ S T u (heisO ψ S T w e)) :=
@@ -695,7 +695,7 @@ theorem GlobalTheory.VacSchurFin.vacSchur : ∀ (D : D7) (ψ : AddChar (AF D.hos
       (GlobalTheory.VacSchurFin.mem_vacSub.2 ⟨h0t, fun u hu h => l₀ u (m hu).1 h, h0v⟩) h0ne f g
       (GlobalTheory.VacSchurFin.mem_vacSub.2 ⟨hf, fun u hu h => l₁ u (m hu).2.1 h, vf⟩)
       (GlobalTheory.VacSchurFin.mem_vacSub.2 ⟨hg, fun u hu h => l₂ u (m hu).2.2 h, vg⟩)
-  · push_neg at hV
+  · push Not at hV
     refine ⟨0, fun f g hf hg vf vg => ?_⟩
     have hf0 : f = 0 := hV f hf vf
     subst hf0

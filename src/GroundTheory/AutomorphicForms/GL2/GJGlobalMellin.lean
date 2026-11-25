@@ -440,11 +440,11 @@ theorem exists_integral_eq_mellin_thetaPairing (hn : 0 < n) (ν : Measure (Adeli
     have e4 : (fun s : {r : ℝ // 0 < r} => thetaPairing μ φ₁ φ₂ Ξ s * ((s : ℝ) : ℂ) ^ w) =
         fun s : {r : ℝ // 0 < r} => J' (s : ℝ) := by
       funext s
-      simp only [hJ', dif_pos s.2, Subtype.coe_eta]
+      simp only [hJ', dite_eq_left s.2, Subtype.coe_eta]
     rw [e4, integral_posRealMeasure, Complex.real_smul, mellin]
     congr 1
     refine setIntegral_congr_fun measurableSet_Ioi fun t (ht : 0 < t) => ?_
-    simp only [hJ', dif_pos ht]
+    simp only [hJ', dite_eq_left ht]
     rw [Complex.real_smul, smul_eq_mul, Complex.cpow_sub _ _ (Complex.ofReal_ne_zero.2 ht.ne'),
       Complex.cpow_one, Complex.ofReal_inv]
     have : (t : ℂ) ≠ 0 := Complex.ofReal_ne_zero.2 ht.ne'

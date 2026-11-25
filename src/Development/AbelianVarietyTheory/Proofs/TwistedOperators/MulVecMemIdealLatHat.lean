@@ -103,26 +103,6 @@ theorem rdU_eq_of_comp_eq (hE : ∀ k, ExactAt U k) (hs : ρ ≫ Xo.s = Xo.s) {w
 
 end Free
 
-section Lifts
-
-open NumberField ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Pj GlobalTheory.IndefiniteRowSideFullHecke.LevelGroupLifts
-open GlobalTheory.Member (FinCong)
-open scoped TensorProduct Matrix
-
-variable {D : D7} {V : HSp D}
-
-variable {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host D.host.E}
-
-section
-
-variable {Dw : Datum H} {l : Level H} {ι : Dw.La →ₗ[𝓞 D.host.E] (Fin V.rank → D.host.E)}
-  {g g' : LaMod Dw l ≃ₗ[𝓞 D.host.E] LaMod Dw l} {k k' : GA D V}
-
-end
-
-
-end Lifts
-
 section Main
 
 open NumberField AlgebraicGeometry CategoryTheory ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta

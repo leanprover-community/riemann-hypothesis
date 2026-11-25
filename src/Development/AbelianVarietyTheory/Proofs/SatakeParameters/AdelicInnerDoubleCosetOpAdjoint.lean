@@ -243,7 +243,7 @@ theorem exists_pairing {Γ W : Type} [Group Γ] [NormedAddCommGroup W] [InnerPro
     inner ℂ (F (H.choose * H.choose_spec.choose)) (F' H.choose) else 0, ?_⟩
   intro h a ha hx
   have H : Rel J L x (h : G ⧸ J) ((h * a : G) : G ⧸ J) := ⟨h, a, ha, hx, rfl, rfl⟩
-  simp only [dif_pos H]
+  simp only [dite_eq_left H]
   obtain ⟨hb, -, e1, e2⟩ := H.choose_spec.choose_spec
   generalize H.choose_spec.choose = b at hb e2 ⊢
   generalize H.choose = g at e1 e2 ⊢

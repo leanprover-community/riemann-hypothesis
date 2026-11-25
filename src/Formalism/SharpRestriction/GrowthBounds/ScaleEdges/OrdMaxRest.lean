@@ -73,12 +73,12 @@ theorem ordMax_rest {n' m : ℕ} (hm : 2 ≤ m) {TT : Finset (Fin n')} {aT bT : 
       have h01 : lam0 s 1 ≤ lam0 s 0 := hdom s (Fin.zero_le _)
       have hc1 := abs_le.1 (hc 1 (by omega) (by omega))
       unfold dT flatDeg
-      rw [if_pos hs, if_pos hs, Int.toNat_of_nonneg (by omega), elast]
+      rw [ite_eq_left hs, ite_eq_left hs, Int.toNat_of_nonneg (by omega), elast]
       omega
     · have h1 := abs_le.1 ((hb s).2 hs 0)
       have h2 := abs_le.1 ((hb s).2 hs (Fin.last m))
       unfold dT
-      rw [if_neg hs, if_neg hs]
+      rw [ite_eq_right hs, ite_eq_right hs]
       push_cast
       omega
   unfold ordMax

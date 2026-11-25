@@ -81,11 +81,6 @@ theorem AutCsd0.c0 [IsCMField F] (h : AutCsd0 ι r) : IsRegAlgAutomorphicAttache
 
 variable [IsAlgClosure F Ω]
 
-section
-variable (K : Type) [Field K] [NumberField K] [IsCMField F] [IsCMField K] [Algebra F K] [Algebra K Ω] [IsScalarTower F K Ω]
-
-end
-
 
 end UpperTheory.GalN.V
 end -- clump:auto

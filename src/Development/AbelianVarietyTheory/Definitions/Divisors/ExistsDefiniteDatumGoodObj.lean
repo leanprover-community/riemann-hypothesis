@@ -164,7 +164,7 @@ theorem sum_mult_eq (D : Geo.Tor.Datum H) (a : E) :
     ← Finset.sum_filter_add_sum_filter_not Finset.univ (fun τ : E →+* ℂ => τ (H.rt : E) = H.rt0)]
   congr 1
   · refine Finset.sum_congr rfl fun τ hτ => ?_
-    rw [Geo.Tor.Datum.mult, if_pos (Finset.mem_filter.1 hτ).2]
+    rw [Geo.Tor.Datum.mult, ite_eq_left (Finset.mem_filter.1 hτ).2]
   · refine Finset.sum_nbij' (fun τ => (starRingEnd ℂ).comp τ) (fun τ => (starRingEnd ℂ).comp τ) ?_ ?_ ?_ ?_ ?_
     · intro τ hτ
       simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hτ ⊢
@@ -175,7 +175,7 @@ theorem sum_mult_eq (D : Geo.Tor.Datum H) (a : E) :
     · intro τ _; ext x; simp
     · intro τ _; ext x; simp
     · intro τ hτ
-      rw [Geo.Tor.Datum.mult, if_neg (Finset.mem_filter.1 hτ).2]
+      rw [Geo.Tor.Datum.mult, ite_eq_right (Finset.mem_filter.1 hτ).2]
       simp
 
 @[reducible] def Datum.ofHost (D : Geo.Tor.Datum H) : Datum E where
@@ -196,8 +196,8 @@ theorem sum_mult_eq (D : Geo.Tor.Datum H) (a : E) :
   sig_conj τ := by
     unfold Geo.Tor.Datum.mult
     by_cases h : τ (H.rt : E) = H.rt0
-    · rw [if_pos h, if_neg fun h' => (conj_mem_type_iff H τ).1 h' h]
-    · rw [if_neg h, if_pos ((conj_mem_type_iff H τ).2 h), add_comm]
+    · rw [ite_eq_left h, ite_eq_right fun h' => (conj_mem_type_iff H τ).1 h' h]
+    · rw [ite_eq_right h, ite_eq_left ((conj_mem_type_iff H τ).2 h), add_comm]
   dom := by
     obtain ⟨J, h₁, h₂, h₃, h₄⟩ := D.dom
     exact ⟨J, h₁, h₂, h₃, fun a A hA => h₄ a A _ hA (by convert sum_mult_eq D (a : E))⟩
@@ -211,8 +211,8 @@ theorem definite_ofHost_iff (D : Geo.Tor.Datum H) : (Datum.ofHost D).Definite �
     split_ifs at hτ
     exacts [Or.inl hτ, Or.inr hτ]
   · rintro (h | h)
-    · exact ⟨τ₀, (if_pos h₀).trans h⟩
-    · exact ⟨(starRingEnd ℂ).comp τ₀, (if_neg fun h' => (conj_mem_type_iff H τ₀).1 h' h₀).trans h⟩
+    · exact ⟨τ₀, (ite_eq_left h₀).trans h⟩
+    · exact ⟨(starRingEnd ℂ).comp τ₀, (ite_eq_right fun h' => (conj_mem_type_iff H τ₀).1 h' h₀).trans h⟩
 
 
 end Host

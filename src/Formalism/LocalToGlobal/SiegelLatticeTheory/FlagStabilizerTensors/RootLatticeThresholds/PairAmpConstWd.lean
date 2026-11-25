@@ -68,8 +68,8 @@ theorem fibreCountEq_of (hF : FinX Y) (hN : ∀ u' : D.what₂.Word, Formalism.L
     obtain ⟨s₂, hs₂t, hs₂r⟩ := partner (hN u') hIR hrow (l₁.2.trans r₁.2.symm)
     have hs₂ : s₂.toTerm = q.1.2 := hs₂t.trans l₂.2
     refine (Finset.sum_eq_single (s := (Finset.univ : Finset (fib Y q.1.2))) (show fib Y q.1.2 from ⟨s₂, hs₂⟩)
-      (fun b _ hb => ?_) (fun hb => absurd (Finset.mem_univ _) hb)).trans (if_pos hs₂r)
-    refine if_neg (fun hrb => hb (Subtype.ext ?_))
+      (fun b _ hb => ?_) (fun hb => absurd (Finset.mem_univ _) hb)).trans (ite_eq_left hs₂r)
+    refine ite_eq_right (fun hrb => hb (Subtype.ext ?_))
     exact hRF u u' b.1 s₂ (b.2.trans hs₂.symm) (hrb.symm.trans hs₂r)
   have hlam : ∀ r₁ : fib Y q.1.1, r₁.1.lam' = l₁.1.lam' := fun r₁ =>
     Formalism.L2.SG.Pf.FibreCounting.lam'_eq (r₁.2.trans l₁.2.symm)

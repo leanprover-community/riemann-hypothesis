@@ -50,8 +50,8 @@ open Classical in
 def indS (S : Finset (Pl D)) : Af D.host.F :=
   ⟨fun v => if v ∈ S then 1 else 0, Filter.Eventually.of_forall fun v => by
     by_cases h : v ∈ S
-    · simp only [if_pos h]; exact one_mem (v.adicCompletionIntegers D.host.F)
-    · simp only [if_neg h]; exact zero_mem (v.adicCompletionIntegers D.host.F)⟩
+    · simp only [ite_eq_left h]; exact one_mem (v.adicCompletionIntegers D.host.F)
+    · simp only [ite_eq_right h]; exact zero_mem (v.adicCompletionIntegers D.host.F)⟩
 
 open Classical in
 theorem indS_apply (S : Finset (Pl D)) (v : Pl D) : (indS S) v = if v ∈ S then 1 else 0 := rfl

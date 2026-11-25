@@ -280,9 +280,9 @@ private theorem gen_loc (hl : IsLoc O Δ) (hu : ∃ u : Oˣ, algebraMap O K u = 
     simp [hne] at this
   rw [key t, Units.val_mul, hsMul O K Δ hl _ _ _ hD t.ne_zero s.ne_zero, h1, mul_one]
   by_cases ht : t ∈ NE τ
-  · rw [if_pos ((hsNE O K Δ τ hl hD t).1 ht)]
+  · rw [ite_eq_left ((hsNE O K Δ τ hl hD t).1 ht)]
     simp [one, ht]
-  · rw [if_neg (fun h => ht ((hsNE O K Δ τ hl hD t).2 h))]
+  · rw [ite_eq_right (fun h => ht ((hsNE O K Δ τ hl hD t).2 h))]
     simp [one, ht]
 
 end Lat

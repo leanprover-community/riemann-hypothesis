@@ -212,7 +212,7 @@ theorem GlobalTheory.Core.Mi.inner_pser_eq_setIntegral : ∀ (D : D7) (X : Forma
     exact integral_tsum (fun δ => (hfm.mul (hPm.comp (measurable_const_mul _))).aestronglyMeasurable) hbound
   have hm := (hin T Dt hD).2.2.1
   have eL : ⟪star φ, PuFun X u hK Dt T⟫_ℂ = ∫ y in X.B.fund, f y * Pser X u hK Dt T y ∂(X.B.I.muA X.B.μf) := by
-    have e0 : PuFun X u hK Dt T = hm.toLp (Pser X u hK Dt T) := dif_pos hm
+    have e0 : PuFun X u hK Dt T = hm.toLp (Pser X u hK Dt T) := dite_eq_left hm
     rw [e0, MeasureTheory.L2.inner_def]
     refine integral_congr_ae ?_
     filter_upwards [Lp.coeFn_star φ, hm.coeFn_toLp, hφf] with a h1 h2 h3

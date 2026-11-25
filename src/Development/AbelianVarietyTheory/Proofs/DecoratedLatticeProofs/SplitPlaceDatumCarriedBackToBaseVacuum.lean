@@ -107,7 +107,7 @@ theorem ind_nsmul_mem_of_ne_zero {G : Type} [AddCommGroup G] {χ : G → G → �
         obtain ⟨r', hr', rfl⟩ := dX k hk r hrX
         have hr'L : r' ∉ L := fun hh => hr.2 ⟨r', hh, rfl⟩
         have : ¬ ∀ y ∈ L', χ r' y = 1 := fun hh => hr'L (hX r' hr' hh)
-        push_neg at this
+        push Not at this
         obtain ⟨y, hy, hne⟩ := this
         obtain ⟨y', hy', rfl⟩ := dY k hk y (hL' hy)
         rw [← h.nsmul] at hne
@@ -140,7 +140,7 @@ theorem ind_nsmul_mem_of_ne_zero {G : Type} [AddCommGroup G] {χ : G → G → �
       rw [zero_add] at e0
       rw [g1 t ht, e0]
       simp [ind, ht, hΦ₁]
-    · simp only [Pi.smul_apply, ind, if_neg ht, smul_zero]
+    · simp only [Pi.smul_apply, ind, ite_eq_right ht, smul_zero]
       by_contra hne
       have hΦt : Φ₁ t ≠ 0 := fun hh => hne (g2 t hh)
       have hkt := s3 t hΦt

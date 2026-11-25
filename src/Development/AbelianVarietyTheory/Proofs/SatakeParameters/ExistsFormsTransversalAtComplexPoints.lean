@@ -576,7 +576,7 @@ theorem finite_transv_zeros : ∀ (X : Scheme.{0}) (p : X ⟶ Sp ℂ) [LocallyOf
   refine Set.Finite.of_finite_image (f := F)
     ((Ideal.finite_minimalPrimes_of_isNoetherianRing _ (Ideal.span (Set.range φ))).subset ?_) ?_
   · rintro _ ⟨z, ⟨hz, hv, hsq⟩, rfl⟩
-    simp only [F, dif_pos hz]
+    simp only [F, dite_eq_left hz]
     haveI : (RingHom.ker (CxPts.evHom hz)).IsMaximal :=
       RingHom.ker_isMaximal_of_surjective _ fun c => ⟨algX p U c, evHom_algX hz c⟩
     refine mem_minimalPrimes_of_le_sup_sq (IsNoetherian.noetherian _) ?_ hsq
@@ -584,7 +584,7 @@ theorem finite_transv_zeros : ∀ (X : Scheme.{0}) (p : X ⟶ Sp ℂ) [LocallyOf
     rintro _ ⟨j, rfl⟩
     exact hv j
   · rintro y ⟨hy, -⟩ z ⟨hz, -⟩ e
-    simp only [F, dif_pos hy, dif_pos hz] at e
+    simp only [F, dite_eq_left hy, dite_eq_left hz] at e
     exact eq_of_ker_eq hU hy hz e
 
 end GlobalTheory.TransvZeros
@@ -672,7 +672,7 @@ theorem exists_transversal_forms_first_separate (X : Scheme.{0}) [IsIntegral X] 
         have := P.sub_mem hc₀ (P.mul_mem_left (MvPolynomial.C c₀) h2)
         rwa [← MvPolynomial.smul_eq_C_mul, add_sub_cancel_right] at this
       exact (mem_fOpen ι (g j) _).1 (hgen j) h3
-    · push_neg at hx
+    · push Not at hx
       exact ⟨0, fun c hc => absurd (hx c) hc⟩
   choose a ha using hB
   obtain ⟨c, hcE, hcB⟩ : ∃ c : Fin d → ℂ, c ∉ E ∧ ∀ j, c j ≠ a j := by
@@ -733,7 +733,7 @@ theorem exists_transversal_forms_first_separate (X : Scheme.{0}) [IsIntegral X] 
     by_cases hzj : ∃ j, z ∈ CxPts.ptsIn p (RingHom.id ℂ) (fOpen ι (F j))
     · obtain ⟨j, hj⟩ := hzj
       exact CxPts.ptsIn_mono (le_sup_of_le_right (le_iSup (fun j => fOpen ι (F j)) j)) hj
-    push_neg at hzj
+    push Not at hzj
     exfalso
     apply hz0
     refine hf₀F z ?_

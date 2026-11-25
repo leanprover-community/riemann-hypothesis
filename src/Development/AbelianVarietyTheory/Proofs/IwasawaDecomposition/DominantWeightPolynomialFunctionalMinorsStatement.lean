@@ -322,7 +322,7 @@ private theorem prod_eval_mem_span_prod_of_mem_span {L : Type} [Field L] {ι : T
       · simp
       · apply Finset.prod_congr rfl
         intro τ hτ
-        rw [Function.update_apply, if_neg (Finset.ne_of_mem_erase hτ)]
+        rw [Function.update_apply, ite_eq_right (Finset.ne_of_mem_erase hτ)]
 
     have key : ∀ x ∈ Submodule.span L (A a), (fun y : ι → X => ∏ τ, Function.update h a x τ (y τ)) ∈
         Submodule.span L {F | ∃ g : ι → X → L, (∀ τ, g τ ∈ A τ) ∧ F = fun y => ∏ τ, g τ (y τ)} := by
@@ -332,13 +332,13 @@ private theorem prod_eval_mem_span_prod_of_mem_span {L : Type} [Field L] {ι : T
         apply ih
         · intro τ hτ
           have hne : τ ≠ a := fun e => ha (e ▸ hτ)
-          rw [Function.update_apply, if_neg hne]
+          rw [Function.update_apply, ite_eq_right hne]
           exact h1 τ (Finset.mem_insert_of_mem hτ)
         · intro τ hτ
           by_cases e : τ = a
           · subst e
             simpa using hx
-          · rw [Function.update_apply, if_neg e]
+          · rw [Function.update_apply, ite_eq_right e]
             exact h2 τ (by simp [e, hτ])
       | zero =>
         rw [hsplit]

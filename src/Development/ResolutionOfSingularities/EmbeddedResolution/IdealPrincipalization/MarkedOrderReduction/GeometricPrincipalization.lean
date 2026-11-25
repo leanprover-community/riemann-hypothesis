@@ -1508,7 +1508,7 @@ private theorem mem_mvPolynomialCoordIdeal_of_X_mul_mem (k : Type u) [Field k] (
     rintro _ ⟨j, hj, rfl⟩
     have hz : ψ (MvPolynomial.X (ULift.up.{u} j)) = 0 := by
       rw [hψX j]
-      exact if_pos (Finset.mem_coe.mp hj)
+      exact ite_eq_left (Finset.mem_coe.mp hj)
     exact SetLike.mem_coe.mpr (RingHom.mem_ker.mpr hz)
   have key : (Ideal.Quotient.mk (mvPolynomialCoordIdeal k m S)).comp ψ
       = Ideal.Quotient.mk (mvPolynomialCoordIdeal k m S) := by
@@ -1519,12 +1519,12 @@ private theorem mem_mvPolynomialCoordIdeal_of_X_mul_mem (k : Type u) [Field k] (
       obtain ⟨j⟩ := i
       rw [RingHom.comp_apply, hψX j]
       by_cases hi : j ∈ S
-      · rw [if_pos hi, map_zero]
+      · rw [ite_eq_left hi, map_zero]
         exact (Ideal.Quotient.eq_zero_iff_mem.mpr (X_mem_mvPolynomialCoordIdeal k m S hi)).symm
-      · rw [if_neg hi]
+      · rw [ite_eq_right hi]
   have h0 : ψ (MvPolynomial.X (ULift.up.{u} s) * r) = 0 :=
     RingHom.mem_ker.mp (hker h)
-  rw [map_mul, hψX s, if_neg hs] at h0
+  rw [map_mul, hψX s, ite_eq_right hs] at h0
   have hXne : (MvPolynomial.X (ULift.up.{u} s) : MvPolynomial (ULift.{u} (Fin m)) k) ≠ 0 :=
     MvPolynomial.X_ne_zero _
   have hψr : ψ r = 0 := by

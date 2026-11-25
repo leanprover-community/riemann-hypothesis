@@ -348,23 +348,6 @@ theorem attN_of_isSSRep_mapRep_of_nc_locG (hF : FrobDense D) (hG : UpperTheory.G
     ring
 end
 
-section
-open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.MainNotions.BlochKatoReduction Formalism.MainNotions.BlochKatoReduction.Gen Formalism.ConjugateSelfDual ReciprocityTheory.Gal NumberField IsDedekindDomain Polynomial
-open Formalism.L2.Host Formalism.FrobeniusOrbits Neutral.B1 ReciprocityTheory.Neutral.Bridge.HCFR
-open GlobalTheory.RowTie (WDTie)
-open GlobalTheory.HeightCounting (CharSide)
-open GlobalTheory.GalOfCusp GlobalTheory.TripleGal GlobalTheory.Triple
-open GlobalTheory.TypeLeaf (FrobDense)
-open GlobalTheory.IndefiniteRowSideFullHecke.JumpDictionary (embOver)
-open GlobalTheory.JumpDictionaryFoundation (exists_embOver embOver_true_apply)
-variable {D : D7} {T : WDTie D.nd D.naut} {C₀ C : CharFrame D} (S : CharSide D C₀)
-  {art : Ideles D.host.E →* GlobalTheory.HeckeGal.Gab D.host.E D.nd.Om} {i : D.ntw.Tw} {s : D.ntw.Sig i}
-  {ρ : Reading D.ntw i (D.ntw.side i s)} {σ : D.what₂.FT} {π : D.naut.CG D.R.r}
-  {r : GlobalTheory.IndefiniteRowSideFullHecke.RayClassPrimeCounting.GalE D →* GL (Fin D.R.r) (Qbar (D.ntw.l i))} {ν : GlobalTheory.IndefiniteRowSideFullHecke.RayClassPrimeCounting.GalE D →* (D.ntw.O0 i)ˣ}
-  {w : D.what₂.places.Pl} {red : GlobalTheory.IndefiniteRowSideFullHecke.RayClassPrimeCounting.Zbar (D.ntw.l i) →+* FbAt D w}
-
-end
-
 end GlobalTheory.TripleLocal
 end -- clump:auto
 end -- clump:auto

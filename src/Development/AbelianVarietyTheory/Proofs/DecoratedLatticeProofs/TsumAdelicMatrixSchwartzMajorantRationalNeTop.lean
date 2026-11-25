@@ -73,7 +73,7 @@ theorem maj_le_shift (θ : InfFam D) {m n : ℕ} (K C : Set (Mx D m n)) (N : ℕ
       refine ⟨k + w, Set.add_mem_add hk hwC, ?_⟩
       have : γ + w - (k + w) = γ - k := by abel
       rw [this]; exact hk0
-    rw [if_pos hγ, if_pos hbox]
+    rw [ite_eq_left hγ, ite_eq_left hbox]
     have h0 := realSize_nonneg θ γ
     have h1 := realSize_nonneg θ (γ + w)
     have h2 : 1 + realSize θ (γ + w) ≤ 2 * (1 + realSize θ γ) := by
@@ -83,7 +83,7 @@ theorem maj_le_shift (θ : InfFam D) {m n : ℕ} (K C : Set (Mx D m n)) (N : ℕ
     rw [← div_eq_mul_inv, inv_eq_one_div, div_le_div_iff₀ hq hp, one_mul]
     calc (1 + realSize θ (γ + w)) ^ N ≤ (2 * (1 + realSize θ γ)) ^ N := by gcongr
       _ = 2 ^ N * (1 + realSize θ γ) ^ N := by rw [mul_pow]
-  · rw [if_neg hγ]
+  · rw [ite_eq_right hγ]
     have := maj_nonneg θ (K + C) N (γ + w)
     unfold maj at this
     positivity

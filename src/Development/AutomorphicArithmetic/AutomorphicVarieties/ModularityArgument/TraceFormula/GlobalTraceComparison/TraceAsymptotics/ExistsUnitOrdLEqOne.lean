@@ -1066,12 +1066,12 @@ private theorem levOp_eq (ρ : Representation ℂ G V) (K I : Subgroup G) (x : G
   have h2 : (∑ᶠ q : G ⧸ I, f q.out • (ρ q.out ∘ₗ LinearMap.id)) = ∑ q ∈ hx'.toFinset, ρ q.out := by
     rw [finsum_eq_sum_of_support_subset (s := hx'.toFinset)]
     · refine Finset.sum_congr rfl fun q hq => ?_
-      rw [hf, if_pos ((hmem q).1 (hx'.mem_toFinset.1 hq)), one_smul]
+      rw [hf, ite_eq_left ((hmem q).1 (hx'.mem_toFinset.1 hq)), one_smul]
       rfl
     · intro q hq
       rw [Finset.mem_coe, hx'.mem_toFinset, hmem]
       by_contra hn
-      exact hq (by show f q.out • _ = 0; rw [hf, if_neg hn, zero_smul])
+      exact hq (by show f q.out • _ = 0; rw [hf, ite_eq_right hn, zero_smul])
   unfold levOp
   rw [h2, h1, LinearMap.smul_apply, LinearMap.sum_apply]
 

@@ -284,12 +284,12 @@ theorem phi_transpose (n : ℕ) (R : Type) [CommRing R] :
   simp only [Matrix.transpose_apply, Matrix.smul_apply, GlobalTheory.Tw.Phi, Matrix.of_apply, smul_eq_mul]
   by_cases h : (i : ℕ) + j + 1 = n
   · have h' : (j : ℕ) + i + 1 = n := by omega
-    rw [if_pos h, if_pos h', ← pow_add]
+    rw [ite_eq_left h, ite_eq_left h', ← pow_add]
     have e : n + 1 + (i : ℕ) = j + 2 * ((i : ℕ) + 1) := by omega
     rw [e, pow_add, pow_mul]
     simp
   · have h' : ¬ (j : ℕ) + i + 1 = n := by omega
-    rw [if_neg h, if_neg h']
+    rw [ite_eq_right h, ite_eq_right h']
     simp
 
 theorem phi_map (n : ℕ) {R : Type} [CommRing R] (c : R →+* R) : (GlobalTheory.Tw.Phi n R).map c = GlobalTheory.Tw.Phi n R := by
@@ -1545,12 +1545,12 @@ theorem global_character_of_holds : GlobalCharacterOfInputs := by
     rw [hg₁, hg₂, hO E a b μ₁ μ₂ _ _ g₁ _ g₂ (hA E hU a b S u₁ u₂ hu₁ hu₂ ψ φ₁ φ₂ hψ hφ₁ hφ₂ _ _)]
   rw [finsum_eq_if]
   by_cases h : pol x₁ ∈ Ell E a ∧ pol x₂ ∈ Ell E b
-  · rw [if_pos (hiff.2 h), if_pos h, horb]
+  · rw [ite_eq_left (hiff.2 h), ite_eq_left h, horb]
     have ht := hc S hS u₁ u₂ hu₁ hu₂ l₁ l₂ val ψ φ₁ φ₂ hL hφ₁ hφ₂ (x₁.rep * u₁) (x₂.rep * u₂)
       (hr₁.1 (hiff.2 h).1) (hr₂.1 (hiff.2 h).2)
     simp only [mul_inv_cancel_right] at ht
     exact ht
-  · rw [if_neg (mt hiff.1 h), if_neg h, mul_zero]
+  · rw [ite_eq_right (mt hiff.1 h), ite_eq_right h, mul_zero]
 
 end PositivityTheory.Rg.BcB.G8
 

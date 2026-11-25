@@ -135,7 +135,7 @@ theorem exists_locComp_eigen : ∀ (E : Type) [Field E] [NumberField E] [IsCMFie
       change RU E n (k : UA E n) φ = c k • φ
       show RU E n (k : UA E n) φ = (if h : cLoc w (k : UA E n) ∈ J then (χ ⟨_, h⟩ : ℂ) else 0) • φ
       have hk' : cLoc w (k : UA E n) ∈ J := hk
-      rw [dif_pos hk']
+      rw [dite_eq_left hk']
       exact hχ _ k.2 hk'))
     (hsup ▸ Submodule.mem_top)
   refine ⟨v, hv0, fun g => ?_⟩
@@ -146,7 +146,7 @@ theorem exists_locComp_eigen : ∀ (E : Type) [Field E] [NumberField E] [IsCMFie
     rw [hcl]
   rw [h2] at h1
   rw [h1]
-  simp only [c, dif_pos hk]
+  simp only [c, dite_eq_left hk]
   congr 3
   exact Subtype.ext (hcl g)
 

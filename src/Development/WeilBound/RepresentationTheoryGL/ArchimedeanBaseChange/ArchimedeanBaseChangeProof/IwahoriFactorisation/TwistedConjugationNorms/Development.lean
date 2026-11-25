@@ -112,7 +112,7 @@ theorem thetaGL_val' (n : ℕ) (c : R →+* R) (g : GL (Fin n) R) :
 theorem Phi_conj_apply {n : ℕ} (A : Matrix (Fin n) (Fin n) R) (i j : Fin n) :
     (GlobalTheory.Tw.Phi n R * A * (GlobalTheory.Tw.Phi n R)ᵀ) i j = (-1) ^ (i : ℕ) * (-1) ^ (j : ℕ) * A i.rev j.rev := by
   simp only [Matrix.mul_apply, Matrix.transpose_apply, GlobalTheory.Tw.Model.Phi_apply', ite_mul, zero_mul, mul_ite, mul_zero,
-    Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   ring
 
 theorem neg_one_pow_mul_rev {n : ℕ} (i : Fin n) :
@@ -142,9 +142,9 @@ theorem thetaGL_diagT (n : ℕ) (c : R →+* R) (t : Fin n → Rˣ) :
     diagT_val_apply, diagT_val_apply]
   by_cases h : i = j
   · subst h
-    rw [if_pos rfl, if_pos rfl, ← pow_add, ← two_mul, pow_mul]
+    rw [ite_eq_left rfl, ite_eq_left rfl, ← pow_add, ← two_mul, pow_mul]
     simp
-  · rw [if_neg (fun h' => h (Fin.rev_injective h').symm), if_neg h, map_zero, mul_zero]
+  · rw [ite_eq_right (fun h' => h (Fin.rev_injective h').symm), ite_eq_right h, map_zero, mul_zero]
 
 theorem thetaGL_thetaGL' (n : ℕ) (c : R →+* R) (hc : ∀ x, c (c x) = x) (g : GL (Fin n) R) :
     thetaGL n c (thetaGL n c g) = g := by
@@ -173,7 +173,7 @@ theorem exists_diagT {L : Type} [Field L] {n : ℕ} (h : GL (Fin n) L) (hoff : �
   rw [diagT_val_apply]
   by_cases hij : i = j
   · subst hij; simp
-  · rw [if_neg hij, hoff i j hij]
+  · rw [ite_eq_right hij, hoff i j hij]
 
 end Theta
 
@@ -195,10 +195,10 @@ theorem TO_diagT {a : ℕ} {w : Pl E} {g : GLw a w} (hg : g ∈ TO a w) :
   obtain ⟨η, rfl⟩ := exists_diagT g hg.1
   refine ⟨η, rfl, fun i => ?_⟩
   have := hg.2 i
-  rwa [diagT_val_apply, if_pos rfl] at this
+  rwa [diagT_val_apply, ite_eq_left rfl] at this
 
 theorem thL_eq' (w : Pl E) (hw : ¬ IsSplitAt w) (n : ℕ) : thL n w = thetaGL n (cj w) := by
-  unfold thL; rw [if_neg hw]
+  unfold thL; rw [ite_eq_right hw]
 
 theorem thL_thL (hU : Unr E) (w : Pl E) (hw : ¬ IsSplitAt w) (n : ℕ) (g : GLw n w) : thL n w (thL n w g) = g := by
   rw [thL_eq' w hw]
@@ -254,8 +254,8 @@ theorem twisted_conj_diagonal_valuation_units (hU : Unr E) (w : Pl E) (hw : ¬ I
       (∀ i j : Fin a, i ≠ j → (GlobalTheory.SmGL.diagT _ (Fin a) (F * fun i => (Units.map (cj w).toMonoidHom (F i.rev))⁻¹)).val i j = 0) ∧
       ∀ i, ordL ((GlobalTheory.SmGL.diagT _ (Fin a) (F * fun i => (Units.map (cj w).toMonoidHom (F i.rev))⁻¹)).val i i) = nv x i := by
     intro F hF
-    refine ⟨fun i j hij => by rw [diagT_val_apply, if_neg hij], fun i => ?_⟩
-    rw [diagT_val_apply, if_pos rfl, ordL_eq_neg_log', Pi.mul_apply, logv_mul, logv_inv, logv_cj hU, hF, hF]
+    refine ⟨fun i j hij => by rw [diagT_val_apply, ite_eq_right hij], fun i => ?_⟩
+    rw [diagT_val_apply, ite_eq_left rfl, ordL_eq_neg_log', Pi.mul_apply, logv_mul, logv_inv, logv_cj hU, hF, hF]
     unfold nv
     ring
   obtain ⟨-, hoff⟩ := diagonal_conj_distinct_valuations_eq w a (nv x) (nv_strictAnti hx).injective _ _ h (hent D hD) (hent D' hD') hN
@@ -305,8 +305,8 @@ theorem le_and_half_le_prod_one_sub_exp_neg_of_bounds (hU : Unr E) (w : Pl E) (h
       linarith
     simp only [Pi.mul_apply, map_zpow, ← _root_.zpow_neg, hki, mul_comm]
     rw [show cjU w ϖ = ϖ from hϖc]
-  · refine ⟨fun i j hij => by rw [diagT_val_apply, if_neg hij], fun i => ?_⟩
-    rw [diagT_val_apply, if_pos rfl]
+  · refine ⟨fun i j hij => by rw [diagT_val_apply, ite_eq_right hij], fun i => ?_⟩
+    rw [diagT_val_apply, ite_eq_left rfl]
     have hl : WithZero.log (Valued.v (((η i * ϖ ^ (-k i)) : (w.adicCompletion E)ˣ) : w.adicCompletion E)) = 0 := by
       rw [logv_mul, logv_zpow, hϖv]
       simp only [hk]
@@ -343,7 +343,7 @@ theorem nrmL_twconj (w : Pl E) (hw : ¬ IsSplitAt w) (a : ℕ) (g δ : GLw a w) 
     nrmL a w (g⁻¹ * δ * thL a w g) = g⁻¹ * nrmL a w δ * g := by
   have ht : ∀ y : GLw a w, nrmL a w y = y * thL a w y := fun y => by
     unfold nrmL thL
-    rw [if_neg hw, if_neg hw]
+    rw [ite_eq_right hw, ite_eq_right hw]
   rw [ht, ht, map_mul, map_mul, map_inv, GlobalTheory.BCT.TwistInvol.thL_involutive]
   group
 
@@ -472,22 +472,22 @@ theorem unq_diag (hU : Unr E) (w : Pl E) (hw : ¬ IsSplitAt w) (ϖ : (w.adicComp
   have hk : ∀ i, hh i * cjU w (hh i.rev) = r i := by
     intro i
     rcases lt_trichotomy i i.rev with h | h | h
-    · have e1 : hh i = r i := by simp only [hh, dif_pos h]
+    · have e1 : hh i = r i := by simp only [hh, dite_eq_left h]
       have e2 : hh i.rev = 1 := by
         have hn : ¬ i.rev < i.rev.rev := by rw [Fin.rev_rev]; exact not_lt.2 h.le
         have hn' : ¬ i.rev.rev = i.rev := by rw [Fin.rev_rev]; exact h.ne
-        simp only [hh, dif_neg hn, dif_neg hn']
+        simp only [hh, dite_eq_right hn, dite_eq_right hn']
       rw [e1, e2, map_one, mul_one]
     · have hi : i.rev = i := h.symm
       have hn : ¬ i < i.rev := by rw [hi]; exact lt_irrefl i
-      have e1 : hh i = Classical.choose (hmid i hi) := by simp only [hh, dif_neg hn, dif_pos hi]
+      have e1 : hh i = Classical.choose (hmid i hi) := by simp only [hh, dite_eq_right hn, dite_eq_left hi]
       rw [hi, e1]
       exact (Classical.choose_spec (hmid i hi)).2
     · have hn : ¬ i < i.rev := not_lt.2 h.le
       have hn' : ¬ i.rev = i := h.ne
-      have e1 : hh i = 1 := by simp only [hh, dif_neg hn, dif_neg hn']
+      have e1 : hh i = 1 := by simp only [hh, dite_eq_right hn, dite_eq_right hn']
       have hp : i.rev < i.rev.rev := by rw [Fin.rev_rev]; exact h
-      have e2 : hh i.rev = r i.rev := by simp only [hh, dif_pos hp]
+      have e2 : hh i.rev = r i.rev := by simp only [hh, dite_eq_left hp]
       rw [e1, e2, one_mul, hrr i]
   refine ⟨GlobalTheory.SmGL.diagT (w.adicCompletion E) (Fin a) hh, ⟨fun i j hij => ?_, fun i => ?_⟩, ?_⟩
   · rw [GlobalTheory.SmGL.val_diagT, diagonal_apply_ne _ hij]
@@ -921,7 +921,7 @@ theorem s1 (hU : Unr E) (w : Pl E) (hw : ¬ IsSplitAt w) (ϖ : (w.adicCompletion
           _ = _ := by rw [hz', h0]; group
       rw [e]
       unfold dcos
-      rw [if_pos ⟨i⁻¹, inv_mem hi, τ * thL a w i, mul_mem (hTI τ hτ) (hθI i hi), rfl⟩]
+      rw [ite_eq_left ⟨i⁻¹, inv_mem hi, τ * thL a w i, mul_mem (hTI τ hτ) (hθI i hi), rfl⟩]
       exact one_ne_zero
   ·
     rintro g ⟨hg1, hg2⟩
@@ -959,7 +959,7 @@ theorem s1 (hU : Unr E) (w : Pl E) (hw : ¬ IsSplitAt w) (ϖ : (w.adicCompletion
     refine ⟨fun i => (tdiag ϖ y * τ * thL a w (tdiag ϖ y * τ)).val i i, ?_, fun i => hNe i⟩
     rw [← _root_.PositivityTheory.Rg.Bc.ArchbcB.B.M4.nrm_twconj_pf w hw a (p * m) δ, h0]
     have : nrmL a w (tdiag ϖ y * τ) = tdiag ϖ y * τ * thL a w (tdiag ϖ y * τ) := by
-      unfold nrmL thL; rw [if_neg hw, if_neg hw]
+      unfold nrmL thL; rw [ite_eq_right hw, ite_eq_right hw]
     rw [this, diag_val hNd, charpoly_diagonal]
     simp only [diagonal_apply_eq]
 
@@ -1600,7 +1600,7 @@ theorem m4 : M4 := by
   · obtain ⟨s, hA⟩ := hA
     rw [asmL_A hU w hw n a ha b hb ϖ hϖ x hx hc Q₁ Q₂ hm₁ hm₂ hd₁ hd₂ hs hc₁ hc₂ s hA,
       asmR_A hU w hw n a ha b hb ϖ hϖ x hx hc Q₁ Q₂ hm₁ hm₂ hd₁ hd₂ hs hc₁ hc₂ s hA]
-  · push_neg at hA
+  · push Not at hA
     rw [asmL_B hU w hw n a ha b hb ϖ hϖ x hx hc Q₁ Q₂ hm₁ hm₂ hd₁ hd₂ hs hc₁ hc₂ hA,
       asmR_B hU w hw n a ha b hb ϖ hϖ x hx hc Q₁ Q₂ hm₁ hm₂ hd₁ hd₂ hs hc₁ hc₂ hA, mul_zero]
 

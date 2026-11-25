@@ -1296,7 +1296,7 @@ theorem exists_finset_cosets {C : Set (AdelicGLn.FiniteAdelicGL L N)} (hC : IsCo
   refine ⟨t.image g, fun γ hγ => ?_⟩
   obtain ⟨c, hct, hc⟩ := Set.mem_iUnion₂.1 (ht hγ)
   have hex : ∃ γ : GL (Fin N) L, p γ ∈ C ∧ p γ ∈ V c := ⟨γ, hγ, hc⟩
-  have hg : g c = hex.choose := dif_pos hex
+  have hg : g c = hex.choose := dite_eq_left hex
   have hgV : p (g c) ∈ V c := by
     rw [hg]
     exact hex.choose_spec.2

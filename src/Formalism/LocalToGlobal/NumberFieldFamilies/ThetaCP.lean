@@ -20,12 +20,6 @@ namespace Formalism.MainNotions.Inhab
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.BasicNotions.Examples₂ NumberField
 
-section Ext
-
-variable {E : Type} [Field E] [NumberField E] [StarRing E]
-
-end Ext
-
 structure Tow (D : D7) (t : ℕ) where
   Xs : ℕ → HSp D
   Xs_rank : ∀ j, j ≤ D.R.m → (Xs j).rank = D.R.k + j * (t + 1)
@@ -164,13 +158,6 @@ structure PerGaps (ψ : AddChar (AF D.host.F) ℂ) : Prop where
   int1 : BesInt1 ψ
   inv : BesInv ψ
   int2 : BesInt2 ψ
-
-section Bessel2
-
-variable {ψ : AddChar (AF D.host.F) ℂ} {A B : HSp D} {ι : A.V →ₗ[D.host.E] B.V}
-
-
-end Bessel2
 
 end Formalism.L2.Fam.ThC
 

@@ -218,9 +218,9 @@ private theorem sum_pairs_sub_eq_sum_mul_count_diff (P : Fin n → Fin n → Pro
     refine Finset.sum_congr rfl (fun c _ => Finset.sum_congr rfl (fun d _ => ?_))
     by_cases hdc : d < c
     · by_cases hp : P c d
-      · rw [if_pos ⟨hdc, (hP c d).mp hp⟩, if_pos ⟨hdc, hp⟩]
-      · rw [if_neg (fun h => hp ((hP c d).mpr h.2)), if_neg (fun h => hp h.2)]
-    · rw [if_neg (fun h => hdc h.1), if_neg (fun h => hdc h.1)]
+      · rw [ite_eq_left ⟨hdc, (hP c d).mp hp⟩, ite_eq_left ⟨hdc, hp⟩]
+      · rw [ite_eq_right (fun h => hp ((hP c d).mpr h.2)), ite_eq_right (fun h => hp h.2)]
+    · rw [ite_eq_right (fun h => hdc h.1), ite_eq_right (fun h => hdc h.1)]
   rw [h2, ← Finset.sum_sub_distrib]
   refine Finset.sum_congr rfl (fun c _ => ?_)
   rw [mul_sub, Finset.mul_sum, Finset.mul_sum]
@@ -229,7 +229,7 @@ private theorem sum_pairs_sub_eq_sum_mul_count_diff (P : Fin n → Fin n → Pro
 private theorem sum_pairs_eq_casValK (μ : Fin n → ℝ) :
     ∑ a, ∑ b, ((if a = b then μ a ^ 2 else 0) + (if a < b ∧ ε b = ε a then μ a - μ b else 0)) =
       casValK ε μ := by
-  simp only [Finset.sum_add_distrib, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+  simp only [Finset.sum_add_distrib, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
   rw [sum_pairs_sub_eq_sum_mul_count_diff (fun c d => ε d = ε c) (fun c d => eq_comm) μ]
   simp only [casValK, nsq, dot, Pi.add_apply, rhoC, numRho_cardR]
   rw [← Finset.sum_add_distrib, ← Finset.sum_sub_distrib]
@@ -350,10 +350,10 @@ private theorem sum_opposite_sign_pairs_eq_neg_two_dot_rhoN (ν : Fin n → ℝ)
     refine Finset.sum_congr rfl (fun d _ => ?_)
     by_cases h1 : c < d
     · by_cases h2 : ε d = ε c
-      · rw [if_neg (fun h => h.2 h2.symm), if_neg (fun h => h.2 h2), neg_zero]
-      · rw [if_pos ⟨h1, fun h => h2 h.symm⟩, if_pos ⟨h1, h2⟩]
+      · rw [ite_eq_right (fun h => h.2 h2.symm), ite_eq_right (fun h => h.2 h2), neg_zero]
+      · rw [ite_eq_left ⟨h1, fun h => h2 h.symm⟩, ite_eq_left ⟨h1, h2⟩]
         ring
-    · rw [if_neg (fun h => h1 h.1), if_neg (fun h => h1 h.1), neg_zero]
+    · rw [ite_eq_right (fun h => h1 h.1), ite_eq_right (fun h => h1 h.1), neg_zero]
   rw [hsw, sum_pairs_sub_eq_sum_mul_count_diff (fun c d => ε d ≠ ε c)
     (fun c d => ⟨fun h e => h e.symm, fun h e => h e.symm⟩) ν]
   simp only [dot, rhoN, numRho_cardR, Finset.mul_sum]
@@ -405,11 +405,11 @@ theorem no_of_casimir (hE : IsGlRep E) (hU : IsInfUnitary ε E)
     simp [← Complex.ofReal_pow]
   have hneg : ∀ c d, ε c ≠ ε d → RCLike.re (inner ℂ (E c d (E d c w)) w) = -‖E d c w‖ ^ 2 := by
     intro c d hcd
-    rw [hU c d, adjSign, if_neg hcd, neg_one_mul, map_neg, inner_self_eq_norm_sq]
+    rw [hU c d, adjSign, ite_eq_right hcd, neg_one_mul, map_neg, inner_self_eq_norm_sq]
   have hcomm : ∀ c d, E c d (E d c w) = E d c (E c d w) + ((ν c - ν d : ℝ) : ℂ) • w := by
     intro c d
     have h := congrArg (fun T : Module.End ℂ M => T w) (hE c d d c)
-    simp only [LinearMap.sub_apply, Module.End.mul_apply, if_true] at h
+    simp only [LinearMap.sub_apply, Module.End.mul_apply, ite_true] at h
     rw [hkhw.1 c, hkhw.1 d] at h
     rw [Complex.ofReal_sub, sub_smul, ← h]
     abel
@@ -420,22 +420,22 @@ theorem no_of_casimir (hE : IsGlRep E) (hU : IsInfUnitary ε E)
     rcases lt_trichotomy c d with hcd | rfl | hcd
     · by_cases hs : ε d = ε c
       · rw [hcomm c d, hkhw.2 c d hcd hs.symm, map_zero, zero_add, hsm,
-          if_neg (ne_of_lt hcd), if_pos ⟨hcd, hs⟩, if_neg (fun h => lt_asymm hcd h.1)]
+          ite_eq_right (ne_of_lt hcd), ite_eq_left ⟨hcd, hs⟩, ite_eq_right (fun h => lt_asymm hcd h.1)]
         simp
-      · rw [hneg c d (fun h => hs h.symm), if_neg (ne_of_lt hcd), if_neg (fun h => hs h.2),
-          if_neg (fun h => lt_asymm hcd h.1)]
+      · rw [hneg c d (fun h => hs h.symm), ite_eq_right (ne_of_lt hcd), ite_eq_right (fun h => hs h.2),
+          ite_eq_right (fun h => lt_asymm hcd h.1)]
         have := sq_nonneg ‖E d c w‖
         simp only [add_zero, zero_mul]
         linarith
-    · rw [hkhw.1 c, map_smul, hkhw.1 c, smul_smul, if_pos rfl,
-        if_neg (fun h => lt_irrefl c h.1), if_neg (fun h => lt_irrefl c h.1), ← Complex.ofReal_mul, hsm]
+    · rw [hkhw.1 c, map_smul, hkhw.1 c, smul_smul, ite_eq_left rfl,
+        ite_eq_right (fun h => lt_irrefl c h.1), ite_eq_right (fun h => lt_irrefl c h.1), ← Complex.ofReal_mul, hsm]
       simp [sq]
     · by_cases hs : ε d = ε c
-      · rw [hkhw.2 d c hcd hs, map_zero, inner_zero_left, map_zero, if_neg (ne_of_gt hcd),
-          if_neg (fun h => lt_asymm hcd h.1), if_neg (fun h => h.2 hs)]
+      · rw [hkhw.2 d c hcd hs, map_zero, inner_zero_left, map_zero, ite_eq_right (ne_of_gt hcd),
+          ite_eq_right (fun h => lt_asymm hcd h.1), ite_eq_right (fun h => h.2 hs)]
         simp
-      · rw [hcomm c d, inner_add_left, map_add (f := _), hneg d c hs, hsm, if_neg (ne_of_gt hcd),
-          if_neg (fun h => lt_asymm hcd h.1), if_pos ⟨hcd, hs⟩]
+      · rw [hcomm c d, inner_add_left, map_add (f := _), hneg d c hs, hsm, ite_eq_right (ne_of_gt hcd),
+          ite_eq_right (fun h => lt_asymm hcd h.1), ite_eq_left ⟨hcd, hs⟩]
         have := sq_nonneg ‖E c d w‖
         simp only [zero_add]
         linarith

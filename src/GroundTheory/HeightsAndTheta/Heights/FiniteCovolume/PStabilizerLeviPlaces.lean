@@ -126,7 +126,7 @@ theorem frame (v : Basis ι E W) (hp : IsHyperbolicPair h x₀ w₀)
     have hz : z = ∑ i, z i • vecAt v (v i) w := by
       funext j
       simp only [Finset.sum_apply, Pi.smul_apply, vecAt_basis, Pi.single_apply, smul_eq_mul, mul_ite,
-        mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+        mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
     refine ⟨∑ i, z i * w.embedding (h.toSesq w₀ (v i)), ∑ i, z i * w.embedding (h.toSesq x₀ (v i)),
       ∑ i, z i • vecAt v' (ComplementExtension.proj hp (v i)) w, ?_⟩
     have hx' : ∀ i, vecAt v (v i) w = _ := fun i => hx (v i)

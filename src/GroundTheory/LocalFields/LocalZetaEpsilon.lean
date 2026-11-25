@@ -312,7 +312,7 @@ variable {χ : Kˣ →* ℂˣ} {ψ : AddChar K Circle}
 theorem localEpsilon_of_isUnramified (h : IsUnramifiedChar χ) (s : ℂ) :
     localEpsilon χ ψ s = ((χ (unifUnit K) : ℂˣ) : ℂ) ^ (-addCharConductor ψ) *
       (residueCard K : ℂ) ^ ((addCharConductor ψ : ℂ) * (s - 1 / 2)) := by
-  rw [localEpsilon, if_pos h, map_zpow, Units.val_zpow_eq_zpow_val, ← zpow_neg,
+  rw [localEpsilon, ite_eq_left h, map_zpow, Units.val_zpow_eq_zpow_val, ← zpow_neg,
     modulus_cpow_eq_qcpow (unifUnit K ^ addCharConductor ψ).ne_zero, ord_unifUnit_zpow]
   congr 2
   ring
@@ -322,7 +322,7 @@ theorem localEpsilon_of_not_isUnramified (h : ¬ IsUnramifiedChar χ) (s : ℂ) 
       ∫ x in (valBall K (addCharConductor ψ - quasiCharConductor χ) : Set K) \
           valBall K (addCharConductor ψ - quasiCharConductor χ + 1),
         quasiCharExt χ⁻¹ x * ((modulus x : ℝ) : ℂ) ^ (-s) * (ψ x : ℂ) ∂selfDualMeasure ψ := by
-  rw [localEpsilon, if_neg h]
+  rw [localEpsilon, ite_eq_right h]
 
 end Epsilon
 
@@ -345,7 +345,7 @@ theorem localZeta_indicator_valBall_of_isUnramified (hχ : Continuous χ) (hu : 
   rw [localZeta_eq_sum (indicator_valBall_mem_schwartzBruhat k) hχ le_rfl
     (fun x hx => by by_contra h; exact hx (Set.indicator_of_notMem h _))
     (fun x hx => by rw [Set.indicator_of_mem hx, Set.indicator_of_mem (zero_mem _)]) hs,
-    if_pos hu, Finset.Ico_self, Finset.sum_empty, zero_add,
+    ite_eq_left hu, Finset.Ico_self, Finset.sum_empty, zero_add,
     Set.indicator_of_mem (show (0 : K) ∈ (valBall K k : Set K) from zero_mem _), one_mul,
     localLFactor_of_isUnramified hu]
 
@@ -365,9 +365,9 @@ theorem localFourier_indicator_valBall (μ : Measure K) [μ.IsAddHaarMeasure] {�
   unfold localFourier
   rw [e, integral_indicator (measurableSet_valBall k), integral_valBall_char]
   by_cases hy : y ∈ valBall K (addCharConductor ψ - k)
-  · rw [if_pos ((isTrivialOn_mulShift_iff_mem hψ hψ1 y k).mpr hy),
+  · rw [ite_eq_left ((isTrivialOn_mulShift_iff_mem hψ hψ1 y k).mpr hy),
       Set.indicator_of_mem (show y ∈ (valBall K (addCharConductor ψ - k) : Set K) from hy), mul_one]
-  · rw [if_neg (mt (isTrivialOn_mulShift_iff_mem hψ hψ1 y k).mp hy),
+  · rw [ite_eq_right (mt (isTrivialOn_mulShift_iff_mem hψ hψ1 y k).mp hy),
       Set.indicator_of_notMem (show y ∉ (valBall K (addCharConductor ψ - k) : Set K) from hy),
       mul_zero]
 
@@ -418,8 +418,8 @@ theorem oneAddValBallIndicator_apply (c : ℤ) (x : K) :
     oneAddValBallIndicator c x = if x - 1 ∈ valBall K c then 1 else 0 := by
   unfold oneAddValBallIndicator
   by_cases hx : x - 1 ∈ valBall K c
-  · rw [Set.indicator_of_mem (show x ∈ {x : K | x - 1 ∈ valBall K c} from hx), if_pos hx]
-  · rw [Set.indicator_of_notMem (show x ∉ {x : K | x - 1 ∈ valBall K c} from hx), if_neg hx]
+  · rw [Set.indicator_of_mem (show x ∈ {x : K | x - 1 ∈ valBall K c} from hx), ite_eq_left hx]
+  · rw [Set.indicator_of_notMem (show x ∉ {x : K | x - 1 ∈ valBall K c} from hx), ite_eq_right hx]
 
 omit [MeasurableSpace K] [BorelSpace K] in
 theorem oneAddValBallIndicator_add_one (c : ℤ) (h : K) :
@@ -440,7 +440,7 @@ theorem oneAddValBallIndicator_mem_schwartzBruhat {c : ℤ} (hc : 0 ≤ c) :
     exact if_congr hiff rfl rfl
   · refine HasCompactSupport.intro (isCompact_valBall 0) fun x hx => ?_
     classical
-    rw [oneAddValBallIndicator_apply, if_neg]
+    rw [oneAddValBallIndicator_apply, ite_eq_right]
     intro h1
     have h0 : (1 : K) ∈ valBall K 0 := by rw [mem_valBall_iff_le_ord one_ne_zero, ord_one]
     exact hx (by simpa using add_mem (valBall_antitone hc h1) h0)
@@ -505,7 +505,7 @@ theorem localZeta_oneAddValBallIndicator {c : ℕ} (hc : 1 ≤ c)
       rw [MonoidHom.mem_ker.mp (hker hU), hmod]
       simp
     · classical
-      rw [oneAddValBallIndicator_apply, if_neg hu]
+      rw [oneAddValBallIndicator_apply, ite_eq_right hu]
       simp
   unfold localZeta
   rw [show (fun u : Kˣ => oneAddValBallIndicator (c : ℤ) (u : K) * ((χ u : ℂˣ) : ℂ) *
@@ -627,7 +627,7 @@ theorem localZeta_fourier_oneAddValBallIndicator (hr : ¬ IsUnramifiedChar χ) {
   have hZg : localZeta g χ⁻¹ (1 - s) =
       (∫ u in ordShell K m, g u * (((χ⁻¹) u : ℂˣ) : ℂ) ∂multHaar K) *
         ((residueCard K : ℂ) ^ (-(1 - s))) ^ m := by
-    rw [localZeta_eq_sum hgSB (continuous_quasiChar_inv hχ) hmn hM hN hs', if_neg hr', add_zero,
+    rw [localZeta_eq_sum hgSB (continuous_quasiChar_inv hχ) hmn hM hN hs', ite_eq_right hr', add_zero,
       Finset.sum_eq_single_of_mem m (Finset.mem_Ico.mpr ⟨le_rfl, by omega⟩) hvanish]
 
   have hshell : ∫ u in ordShell K m, g u * (((χ⁻¹) u : ℂˣ) : ℂ) ∂multHaar K =

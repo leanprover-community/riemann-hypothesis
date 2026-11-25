@@ -1376,7 +1376,7 @@ theorem sub_mem {h : M2 E (N + 1)} (hh : h ∈ UU E (N + 1))
     have e := hU p (Sum.inl 0)
     rw [ccT_mul_J_mul_apply] at e
     simp only [hl, hr, mul_zero, Finset.sum_const_zero, sub_zero, mul_ite, mul_one, Finset.sum_ite_eq',
-      Finset.mem_univ, if_true] at e
+      Finset.mem_univ, ite_true] at e
     have e2 : Matrix.J (Fin (N + 1)) E p (Sum.inl 0) = (Pi.single (Sum.inr 0) 1 : _ → E) p := by
       rcases p with p | p <;> simp [Matrix.J, Matrix.one_apply, Pi.single_apply]
     rw [e2] at e

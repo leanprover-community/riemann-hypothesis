@@ -228,9 +228,9 @@ theorem ev_eq_root_mul_th : ∀ (o Ω : Type) [CommRing o] [Field Ω] [Algebra o
     (w := ρ.pt ((ρ.n ^ ρ.k) • (S.r • a + x))) (hpt _ _) (ρ.fr_tors _) (ρ.fr_tors _) (th := ρ.th₁)
     (s := ρ.s ρ.i₀) ρ.s_zero (hev ρ.i₀ _) (ρ.th_val _) y
   simp only [hφ] at E1 H2
-  rw [Finset.sum_eq_single j (fun l _ hl => by rw [ha l, if_neg hl]; simp)
+  rw [Finset.sum_eq_single j (fun l _ hl => by rw [ha l, ite_eq_right hl]; simp)
     (fun hj => absurd (Finset.mem_univ j) hj)] at E1
-  rw [ha j, if_pos rfl] at E1
+  rw [ha j, ite_eq_left rfl] at E1
   set K := (S.r * S.N) ^ 2 with hK
   have hKpos : 0 < K := by
     have := S.r_pos; have := S.N_ge; positivity

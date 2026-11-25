@@ -129,19 +129,19 @@ theorem exOf_flatWt_some (τ : Psi H) (σ : E →+* ℂ) (i : Fin (Dw.mult σ)) 
   by_cases h1 : σ = τ.1
   · subst h1
     have hi : (i : ℕ) < Dw.p := by
-      have := i.2; simp only [Datum.mult, if_pos τ.2] at this; exact this
-    rw [if_pos rfl]
+      have := i.2; simp only [Datum.mult, ite_eq_left τ.2] at this; exact this
+    rw [ite_eq_left rfl]
     show (wtOf Dw (flatWt Dw τ) 0).1 (τ.1, i) = -1
     rw [wtOf_big _ _ τ i hi]; simp [flatWt, parWt]
-  · rw [if_neg h1]
+  · rw [ite_eq_right h1]
     by_cases h2 : σ = conjEmb τ.1
     · subst h2
       have hi : (i : ℕ) < Dw.q := by
-        have := i.2; simp only [Datum.mult, if_neg (conj_not_mem τ)] at this; exact this
-      rw [if_pos rfl]
+        have := i.2; simp only [Datum.mult, ite_eq_right (conj_not_mem τ)] at this; exact this
+      rw [ite_eq_left rfl]
       show (wtOf Dw (flatWt Dw τ) 0).1 (conjEmb τ.1, i) = 1
       rw [wtOf_small _ _ τ i hi]; simp [flatWt, parWt]
-    · rw [if_neg h2]
+    · rw [ite_eq_right h2]
       show (wtOf Dw (flatWt Dw τ) 0).1 (σ, i) = 0
       simp only [wtOf]
       split_ifs with h h' h''
@@ -191,13 +191,13 @@ theorem evR_flat_frChg {l : Level H} {Xo : Moduli Dw l} {c : Coeff l} (τ : Psi 
       if σ = τ.1 then ((g σ).det)⁻¹ else if σ = conjEmb τ.1 then (g σ).det else 1 := fun σ => by
     simp only [exOf_flatWt_some, t, Units.val_zpow_eq_zpow_val, Units.val_mk0]
     by_cases e1 : σ = τ.1
-    · simp only [if_pos e1, zpow_neg_one, Finset.prod_inv_distrib, hdiag]
+    · simp only [ite_eq_left e1, zpow_neg_one, Finset.prod_inv_distrib, hdiag]
     · by_cases e2 : σ = conjEmb τ.1
-      · simp only [if_neg e1, if_pos e2, zpow_one, hdiag]
-      · simp only [if_neg e1, if_neg e2, zpow_zero, Finset.prod_const_one]
+      · simp only [ite_eq_right e1, ite_eq_left e2, zpow_one, hdiag]
+      · simp only [ite_eq_right e1, ite_eq_right e2, zpow_zero, Finset.prod_const_one]
   simp only [hF, exOf_flatWt_none, zpow_zero, Units.val_one, one_mul]
-  rw [Fintype.prod_eq_mul τ.1 (conjEmb τ.1) (ne_conjEmb τ) fun σ hσ => by rw [if_neg hσ.1, if_neg hσ.2],
-    if_pos rfl, if_neg (ne_conjEmb τ).symm, if_pos rfl]
+  rw [Fintype.prod_eq_mul τ.1 (conjEmb τ.1) (ne_conjEmb τ) fun σ hσ => by rw [ite_eq_right hσ.1, ite_eq_right hσ.2],
+    ite_eq_left rfl, ite_eq_right (ne_conjEmb τ).symm, ite_eq_left rfl]
 
 end GlobalTheory.FlatFrameLaw
 end -- clump:auto
@@ -904,7 +904,7 @@ theorem exists_eq_smul_idem_of_bdd {σ : c.F →+* ℂ} (U : Unf Xo c σ r) (hσ
       ⟨x.2, liesOn_frBor ht (liesOn_frMap hm (liesOn_genFr h Z))⟩
     have h1 := hw _ hi
     have h2 : rdU U (idem Z) k x = 1 := by
-      simp only [rdU, LinearMap.coe_mk, AddHom.coe_mk, x.2, dif_pos]
+      simp only [rdU, LinearMap.coe_mk, AddHom.coe_mk, x.2, dite_eq_left]
       exact evR_idem (S := CAt σ) hz.2 (haveI : IsReduced (CAt σ) := inferInstanceAs (IsReduced ℂ); hL.test _ _)
     have h3 : evC h Z (idem Z) = 1 := evR_idem (liesOn_genFr h Z) (hL.test _ _)
     rw [h2, h3, map_one, mul_one] at h1
@@ -1065,7 +1065,7 @@ theorem GlobalTheory.FlatDenom.unit_pow_clears_denominator_flat_model : _root_.G
         GlobalTheory.AllWt.homN (Y.U σ) (xiR D) 0 (i * s₀.sig) z ≤ C := by
     intro σ hσ
     obtain ⟨C, hC⟩ := hb σ hσ
-    have hgo : Formalism.L2.Pj.goodOf Y.d.c₂ σ = σ := if_pos hσ
+    have hgo : Formalism.L2.Pj.goodOf Y.d.c₂ σ = σ := ite_eq_left hσ
     have hN : ∀ σ'' (_ : Formalism.L2.Pj.goodOf Y.d.c₂ σ = σ''), ∀ z ∈ framesOn (Y.U σ'') Z,
         GlobalTheory.AllWt.homN (Y.U σ'') (xiR D) (wtOf (T.Q.Dw j) la 0) s₀.sig z = s₀.cInf σ ∧
         GlobalTheory.AllWt.homN (Y.U σ'') (xiR D) (wtOf (T.Q.Dw j) (-la) 0) s₀.inv z = (s₀.cInf σ)⁻¹ := by

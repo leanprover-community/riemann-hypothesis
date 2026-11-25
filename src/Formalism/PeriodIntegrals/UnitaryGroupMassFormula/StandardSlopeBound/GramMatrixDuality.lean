@@ -129,7 +129,7 @@ theorem gram_matrix_duality : GramDual := by
 
       rw [map_sum]
       simp only [map_smul, smul_eq_mul, hfu, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq,
-        Finset.mem_univ, if_true]
+        Finset.mem_univ, ite_true]
     rw [hB, fqB_apply, div_eq_iff hne] at hB1
     rw [expand e' p hp]
     exact hB1
@@ -176,7 +176,7 @@ theorem gram_matrix_duality : GramDual := by
 
       rw [map_sub, LinearMap.sub_apply, hM, map_sum, LinearMap.sum_apply]
       simp only [map_smul, LinearMap.smul_apply, smul_eq_mul, hfu, mul_ite, mul_one, mul_zero,
-        Finset.sum_ite_eq', Finset.mem_univ, if_true, sub_self]
+        Finset.sum_ite_eq', Finset.mem_univ, ite_true, sub_self]
   have hMN : M * Nm = 1 := by
     ext i k
     have h2 : ∑ k, (((M * Nm : Matrix (Fin r) (Fin r) ℤ) i k : ℤ) : ℚ) • w k = w i := by
@@ -187,7 +187,7 @@ theorem gram_matrix_duality : GramDual := by
     have hsum : ∑ k, ((((M * Nm : Matrix (Fin r) (Fin r) ℤ) i k : ℤ) : ℚ) -
         (((1 : Matrix (Fin r) (Fin r) ℤ) i k : ℤ) : ℚ)) • w k = 0 := by
       simp only [sub_smul, Finset.sum_sub_distrib, h2, Matrix.one_apply, Int.cast_ite, Int.cast_one,
-        Int.cast_zero, ite_smul, one_smul, zero_smul, Finset.sum_ite_eq, Finset.mem_univ, if_true, sub_self]
+        Int.cast_zero, ite_smul, one_smul, zero_smul, Finset.sum_ite_eq, Finset.mem_univ, ite_true, sub_self]
     have hk := Fintype.linearIndependent_iff.mp hw_ind _ hsum k
     exact_mod_cast sub_eq_zero.mp hk
 

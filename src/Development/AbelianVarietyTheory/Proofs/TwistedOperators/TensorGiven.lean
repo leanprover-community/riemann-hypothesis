@@ -127,7 +127,7 @@ theorem repFin_of (W : G.Weil) (B : Frames G) (ρ : RealMatch W) (t : T) (f : �
     dsimp only
     rw [Finset.prod_congr rfl fun w _ => tensor_given B t Φ w y y']
     erw [GlobalTheory.OppConv.famProd_append (downPath t 0 D.R.m), GlobalTheory.OppConv.famProd_down, GlobalTheory.OppConv.famProd_row]
-    simp only [Pi.smul_apply, smul_eq_mul, Finset.prod_mul_distrib, givenFn, if_pos (hy _), if_pos (hy' _)]
+    simp only [Pi.smul_apply, smul_eq_mul, Finset.prod_mul_distrib, givenFn, ite_eq_left (hy _), ite_eq_left (hy' _)]
     rw [Finset.prod_comm (s := Finset.univ) (t := locPl G t), Finset.prod_comm (s := Finset.univ) (t := locPl G t),
       ← mul_assoc, ← mul_assoc, hz, one_mul]
 

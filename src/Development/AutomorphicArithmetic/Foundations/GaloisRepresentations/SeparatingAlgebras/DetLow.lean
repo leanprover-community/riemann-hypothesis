@@ -81,7 +81,7 @@ theorem detLow_pf : DetLow := by
         omega
       · intro i hi
         funext j
-        simp only [Matrix.of_apply, if_neg (Finset.mem_compl.mp hi)]
+        simp only [Matrix.of_apply, ite_eq_right (Finset.mem_compl.mp hi)]
     rw [h0, norm_zero, mul_zero]
     positivity
 

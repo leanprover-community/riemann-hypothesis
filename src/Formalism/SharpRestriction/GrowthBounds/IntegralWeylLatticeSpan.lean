@@ -77,12 +77,6 @@ theorem blockRationality_holds : Formalism.L2.G.BlockRationalityField := by
   intro p O Kf _ _ _ _ _ P Tau _ n LL _ h pos G M embLL lam hW hM
   exact blockRatReal P.lam0 h pos G M embLL (fun τ => (lam τ).w) (fun τ => (lam τ).anti) hW hM
 
-section Rec
-
-variable {D : D7} {X : Formalism.L2.Herm.Herm0 D} {T : ∀ u : D.what₂.Word, Forms0 D u} {Gt : GatTies D} {I : CmpIn D X}
-
-end Rec
-
 variable (D : D7) (H : FullTiedNoG D)
   (I0 : ∀ u (w : D.what₂.places.Pl), GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w) →
     LocId (H.base.lev0 u) (D.what₂.places.resChar w) (nOrb (zH D.R.toFrame (hP D (D.what₂.places.resChar w))))

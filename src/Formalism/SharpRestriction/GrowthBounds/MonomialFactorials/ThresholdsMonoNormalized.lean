@@ -525,7 +525,7 @@ theorem nv_irr' {w : O} (hw : Irreducible w) : dvrOrderNat w = 1 := by
 
 theorem vK_int_form (x : KK O) (hx : x ≠ 0) : ∃ k : ℤ, vK p x = (((k : ℚ) / (ramE p O : ℚ) : ℚ) : WithTop ℚ) := by
   unfold vK ordW
-  rw [if_neg hx]
+  rw [ite_eq_right hx]
   exact ⟨_, rfl⟩
 
 theorem vK_le_zero_of_not_int (S : UniformizedDVR p O) (a : KK O)
@@ -549,7 +549,7 @@ theorem vK_le_zero_of_not_int (S : UniformizedDVR p O) (a : KK O)
       nv_irr' S.w_irr]
     simp [dvrOrderNat]
   rw [valuation_mul_alt, hk, hwinv, ← WithTop.coe_add, ← WithTop.coe_zero, WithTop.coe_le_coe] at h
-  push_neg at h
+  push Not at h
   refine ⟨(k : ℚ) / (ramE p O : ℚ), hk, ?_⟩
   have h2 : ((k : ℚ) - 1) / (ramE p O : ℚ) < 0 := by
     rw [sub_div]
@@ -627,7 +627,7 @@ theorem goodSub_of_dual (S : UniformizedDVR p O) (be : V → V → KK O)
         intro i _
         rw [ht i, mul_smul, algebraMap_smul, algebraMap_smul]
       exact S.w_irr.not_isUnit (hprim S.w _ hx' hu')
-    · push_neg at hall
+    · push Not at hall
       obtain ⟨j, hj⟩ := hall
       obtain ⟨q, hq, hq0⟩ := vK_le_zero_of_not_int S (t j) (not_le.2 hj)
       obtain ⟨qc, hqc, hqcD⟩ := hc

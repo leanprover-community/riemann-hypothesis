@@ -346,9 +346,9 @@ theorem admissible_over_prime (hd : d.AxH 𝒜) (h : d.S1) (la : IsDedekindDomai
     w t ht hG _ (fun β => hcoefW _ hL β) (Finsupp.single (Sum.inl ()) 1) ?_
   rw [MvPolynomial.coeff_sum, Fin.sum_univ_succAbove _ j0]
   simp only [hpj0, hpk, ↓reduceIte, hr0, map_one, mul_one]
-  rw [MvPolynomial.coeff_X', if_pos rfl, Finset.sum_eq_zero, add_zero]
+  rw [MvPolynomial.coeff_X', ite_eq_left rfl, Finset.sum_eq_zero, add_zero]
   intro x _
-  rw [mul_comm, MvPolynomial.coeff_C_mul, MvPolynomial.coeff_X', if_neg, mul_zero]
+  rw [mul_comm, MvPolynomial.coeff_C_mul, MvPolynomial.coeff_X', ite_eq_right, mul_zero]
   rw [Finsupp.single_left_inj one_ne_zero]
   simp
 

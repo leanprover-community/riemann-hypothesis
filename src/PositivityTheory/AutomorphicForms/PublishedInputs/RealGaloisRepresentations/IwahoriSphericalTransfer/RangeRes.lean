@@ -37,10 +37,10 @@ noncomputable def sign [IsAlgClosure F Ω] (Q : QCM F Ω) : G F Ω →* ℤˣ wh
   map_mul' a b := by
     have h := Subgroup.mul_mem_iff_of_index_two (index_fix Q).1 (a := a) (b := b)
     by_cases ha : a ∈ Q.K.fixingSubgroup <;> by_cases hb : b ∈ Q.K.fixingSubgroup
-    · rw [if_pos (h.2 (iff_of_true ha hb)), if_pos ha, if_pos hb, mul_one]
-    · rw [if_neg (fun hab => hb ((h.1 hab).1 ha)), if_pos ha, if_neg hb, one_mul]
-    · rw [if_neg (fun hab => ha ((h.1 hab).2 hb)), if_neg ha, if_pos hb, mul_one]
-    · rw [if_pos (h.2 (iff_of_false ha hb)), if_neg ha, if_neg hb]; decide
+    · rw [ite_eq_left (h.2 (iff_of_true ha hb)), ite_eq_left ha, ite_eq_left hb, mul_one]
+    · rw [ite_eq_right (fun hab => hb ((h.1 hab).1 ha)), ite_eq_left ha, ite_eq_right hb, one_mul]
+    · rw [ite_eq_right (fun hab => ha ((h.1 hab).2 hb)), ite_eq_right ha, ite_eq_left hb, mul_one]
+    · rw [ite_eq_left (h.2 (iff_of_false ha hb)), ite_eq_right ha, ite_eq_right hb]; decide
 
 theorem ker_sign [IsAlgClosure F Ω] (Q : QCM F Ω) : (sign Q).ker = Q.K.fixingSubgroup := by
   ext σ

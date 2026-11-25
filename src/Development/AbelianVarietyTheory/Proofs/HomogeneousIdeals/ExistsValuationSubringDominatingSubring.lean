@@ -126,17 +126,6 @@ theorem apply_valCentre_base : p (valCentre p r y h) = r (closedPoint V) :=
 
 end Extension
 
-section Ring
-
-variable {O : Type u} [CommRing O] (V : Type u) {K : Type u} [CommRing V] [IsDomain V]
-  [ValuationRing V] [Field K] [Algebra V K] [IsFractionRing V K] [Algebra O V] [Algebra O K]
-  [IsScalarTower O V K] {X X' : Scheme.{u}}
-
-variable (p : X ⟶ Spec (.of O)) [UniversallyClosed p] [IsSeparated p]
-  (y : Spec (.of K) ⟶ X) (h : y ≫ p = specAlgebraMap O K)
-
-end Ring
-
 section Domination
 
 variable {V K K' : Type*} [CommRing V] [Field K] [Field K']
@@ -178,17 +167,6 @@ theorem exists_valuationSubring_comap_eq (T : ValuationSubring K) (χ : K →+* 
   exact a.2
 
 end Domination
-
-section Graph
-
-variable {V K : Type u} [CommRing V] [IsDomain V] [ValuationRing V] [Field K] [Algebra V K]
-  [IsFractionRing V K] {U Z Z₁ Z₂ S : Scheme.{u}}
-  (p₁ : Z₁ ⟶ S) [UniversallyClosed p₁] [IsSeparated p₁]
-  (p₂ : Z₂ ⟶ S) [UniversallyClosed p₂] [IsSeparated p₂]
-  (j₁ : U ⟶ Z₁) (j₂ : U ⟶ Z₂) (w : j₁ ≫ p₁ = j₂ ≫ p₂)
-  (r : Spec (.of V) ⟶ S) (y : Spec (.of K) ⟶ U) (h : y ≫ j₁ ≫ p₁ = specAlgebraMap V K ≫ r)
-
-end Graph
 
 section Centre
 

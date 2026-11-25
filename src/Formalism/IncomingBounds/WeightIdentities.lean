@@ -183,7 +183,7 @@ theorem supp_sum_monomial (h0 : ∀ a, f a 0 = 0) (s : σ →₀ ℕ) (c : K) :
     ∑ a ∈ (monomial s c).support, f a (AddMonoidAlgebra.coeff (monomial s c) a) = f s c := by
   classical
   rw [supp_sum_superset f h0 _ {s} MvPolynomial.support_monomial_subset, Finset.sum_singleton,
-    coeff_monomial, if_pos rfl]
+    coeff_monomial, ite_eq_left rfl]
 
 end SupSum
 
@@ -261,7 +261,7 @@ theorem dm_zero {σ : Type} (Q : MvPolynomial σ K) : dm 0 Q = Q := by
   unfold dm
   conv_rhs => rw [MvPolynomial.as_sum Q]
   refine Finset.sum_congr rfl fun a _ => ?_
-  rw [if_pos zero_le, tsub_zero, div_self (mfact_ne a), mul_one]
+  rw [ite_eq_left zero_le, tsub_zero, div_self (mfact_ne a), mul_one]
 
 theorem dm_succ {σ : Type} (x : σ) (m : σ →₀ ℕ) (Q : MvPolynomial σ K) :
     dm (Finsupp.single x 1 + m) Q = pderiv x (dm m Q) := by
@@ -269,7 +269,7 @@ theorem dm_succ {σ : Type} (x : σ) (m : σ →₀ ℕ) (Q : MvPolynomial σ K)
   | monomial a c =>
     rw [dm_monomial, dm_monomial]
     by_cases hma : m ≤ a
-    · rw [if_pos hma, pderiv_monomial]
+    · rw [ite_eq_left hma, pderiv_monomial]
       by_cases hbx : (a - m) x = 0
       · have hn : ¬ (Finsupp.single x 1 + m ≤ a) := by
           intro h
@@ -277,7 +277,7 @@ theorem dm_succ {σ : Type} (x : σ) (m : σ →₀ ℕ) (Q : MvPolynomial σ K)
           rw [Finsupp.tsub_apply] at hbx
           simp only [Finsupp.coe_add, Pi.add_apply, Finsupp.single_eq_same] at h'
           omega
-        rw [if_neg hn, hbx, Nat.cast_zero, mul_zero, MvPolynomial.monomial_zero]
+        rw [ite_eq_right hn, hbx, Nat.cast_zero, mul_zero, MvPolynomial.monomial_zero]
       · have hle : Finsupp.single x 1 + m ≤ a := by
           rw [Finsupp.le_def]
           intro i
@@ -291,7 +291,7 @@ theorem dm_succ {σ : Type} (x : σ) (m : σ →₀ ℕ) (Q : MvPolynomial σ K)
             omega
         have hsub : a - (Finsupp.single x 1 + m) = a - m - Finsupp.single x 1 := by
           rw [add_comm (Finsupp.single x 1) m, tsub_add_eq_tsub_tsub]
-        rw [if_pos hle, hsub]
+        rw [ite_eq_left hle, hsub]
         congr 1
         have hfp := mfact_step (a - m) x (Nat.pos_of_ne_zero hbx)
         have h1 : (Formalism.IncomingBounds.mfact (a - m - Finsupp.single x 1) : K) ≠ 0 := mfact_ne _
@@ -301,7 +301,7 @@ theorem dm_succ {σ : Type} (x : σ) (m : σ →₀ ℕ) (Q : MvPolynomial σ K)
           | (field_simp; ring)
           | field_simp
     · have hn : ¬ (Finsupp.single x 1 + m ≤ a) := fun h => hma (le_trans le_add_self h)
-      rw [if_neg hma, if_neg hn, map_zero]
+      rw [ite_eq_right hma, ite_eq_right hn, map_zero]
   | add p q hp hq => rw [dm_add, dm_add, hp, hq, map_add (f := _)]
 
 theorem diffOp_X_mul {σ : Type} (x : σ) (P Q : MvPolynomial σ K) :
@@ -353,7 +353,7 @@ theorem dMg {n : ℕ} (i j p q : Fin n) :
       intro e
       apply h
       simpa using e
-    rw [if_neg h, if_neg h']
+    rw [ite_eq_right h, ite_eq_right h']
 
 theorem ddet {n : ℕ} (i j : Fin n) :
     pderiv (Sum.inl (i, j)) (Mg K n).det = adjugate (Mg K n) j i := by

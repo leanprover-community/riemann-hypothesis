@@ -223,7 +223,7 @@ theorem exists_root {D : D7} (T : Full D) (hT : LawsFull T) {j : ℕ} (hj : InR 
   obtain ⟨_, _, _, _, _, _, _, hL, hI, -⟩ := hT.j.adPin j hj T.σ₀ T.toCore.good_σ₀
   obtain ⟨_, ψ, _, -, -, hψ⟩ := hT.sh.dPhi j hj n hn
   obtain ⟨Cls, _, _, δ, gdet, hsec, hC⟩ := hT.sh.dRoot j hj n
-  simp only [Bool.false_eq_true, if_false] at hC
+  simp only [Bool.false_eq_true, ite_false] at hC
   have hN : Nat.card Cls ≠ 0 := Nat.card_pos.ne'
   have hσ : T.σ₀.comp ((T.dδ j n).eF.symm : (T.dδ j n).c₂.F →+* T.Q.c.F) = (T.dδ j n).c₂.F.val.toRingHom :=
     RingHom.ext fun _ => rfl

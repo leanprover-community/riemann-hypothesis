@@ -112,7 +112,7 @@ theorem UpperTheory.RealTr.weylEv :
     congr 1
     simp only [rt, Pi.sub_apply, Complex.ofReal_sub, mul_sub, Finset.sum_sub_distrib, Pi.single_apply,
       apply_ite (fun r : ℝ => (r : ℂ)), Complex.ofReal_one, Complex.ofReal_zero, mul_ite, mul_one, mul_zero,
-      Finset.sum_ite_eq', Finset.mem_univ, if_true]
+      Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   · intro y
     simp only [weylChar, map_div₀, RingHom.map_det, RingHom.mapMatrix_apply]
     congr 1 <;> congr 1 <;> ext i j <;> simp [map_zpow₀]

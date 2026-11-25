@@ -61,7 +61,7 @@ theorem UpperTheory.Reformulated.B.ExistsValuationSubLeOne.exists_valuation_sub_
   refine ⟨algebraMap R K y / algebraMap R K d, fun v hv => ?_, fun v hv => ?_⟩
   · have hvT : v ∈ T := Finset.mem_union_left _ hv
     have h1 := hy v hvT
-    simp only [hv, if_true] at h1
+    simp only [hv, ite_true] at h1
     have h2 := key v _ h1
     have h3 : algebraMap R K (y - r v) / algebraMap R K d =
         algebraMap R K y / algebraMap R K d - x v := by

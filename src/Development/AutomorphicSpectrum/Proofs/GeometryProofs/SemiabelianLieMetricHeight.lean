@@ -184,7 +184,7 @@ theorem limit {S : Scheme.{0}} {W : S.Opens} (hW : IsAffineOpen W) (F : Ultrafil
     ∃ z, (F : Filter _) ≤ @nhds _ (anTop S) z := by
   classical
   let val : Γ(S, W) → (Sp ℂ ⟶ S) → ℂ := fun t z => if h : centre z ∈ W then ev W z h t else 0
-  have hval : ∀ t z (h : centre z ∈ W), val t z = ev W z h t := fun t z h => dif_pos h
+  have hval : ∀ t z (h : centre z ∈ W), val t z = ev W z h t := fun t z h => dite_eq_left h
   have hconv : ∀ t, ∃ a, Tendsto (val t) F (𝓝 a) := by
     intro t
     obtain ⟨C, hC⟩ := hb t

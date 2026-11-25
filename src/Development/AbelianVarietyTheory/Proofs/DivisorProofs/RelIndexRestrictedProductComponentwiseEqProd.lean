@@ -89,8 +89,8 @@ theorem relIndex_iInf_comap {X V : Type} {Y : V → Type} [Group X] [Topological
     have hxC : x ∈ Cg := (hmemC x).2 fun v => by
       rw [hx v]
       by_cases h : v ∈ S
-      · simp only [z, dif_pos h]; exact (y ⟨v, h⟩).2
-      · simp only [z, dif_neg h]; exact one_mem _
+      · simp only [z, dite_eq_left h]; exact (y ⟨v, h⟩).2
+      · simp only [z, dite_eq_right h]; exact one_mem _
     refine ⟨⟨x, hxC⟩, funext fun v => Subtype.ext ?_⟩
     rw [hφ]
     show pf v x = _

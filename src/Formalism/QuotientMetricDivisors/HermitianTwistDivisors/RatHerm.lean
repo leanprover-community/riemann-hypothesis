@@ -176,7 +176,7 @@ theorem jwGram_of (hIC : IdxChange) : JwGram := by
 
     rw [map_sum, map_zero] at this
     simp only [map_smul, hpair, smul_eq_mul, mul_ite, mul_one, mul_zero,
-      Finset.sum_ite_eq, Finset.mem_univ, if_true] at this
+      Finset.sum_ite_eq, Finset.mem_univ, ite_true] at this
     exact this
   have hspK : Submodule.span K (Set.range f) = ⊤ :=
     hf.1.span_eq_top_of_card_eq_finrank' (by simp)

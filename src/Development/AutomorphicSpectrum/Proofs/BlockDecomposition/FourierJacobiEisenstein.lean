@@ -954,7 +954,7 @@ theorem parseval {D : D7} {ρ p : ℕ} (m : Meas D ρ p) (ψ : AddChar (AF D.hos
         have hr : (rt (η - ξ) : Mx D ρ p) = rt η + -rt ξ := by
           rw [← sub_eq_add_neg]; exact rat_sub η ξ
         rw [hr, hadd, hneg, mul_comm]
-      simp only [e, if_neg h]
+      simp only [e, ite_eq_right h]
       exact _root_.GlobalTheory.CompanionTheory.FJE.integral_chv_rt_eq_zero m ψ hψ b₀ hb₀ (η - ξ) (sub_ne_zero.2 h)
   have hs : ∀ x : Mx D ρ p, Summable fun η => chv ψ b₀ x (rt η) * a η := fun x =>
     Summable.of_norm (by simpa only [norm_mul, hc1, one_mul] using ha)

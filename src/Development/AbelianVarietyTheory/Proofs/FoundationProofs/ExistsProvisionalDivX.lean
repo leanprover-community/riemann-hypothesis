@@ -130,13 +130,6 @@ noncomputable section
 
 namespace GlobalTheory.ProvisionalDivX
 
-section Form
-
-variable {K : Type} [Field K] (e : K →+* ℂ) {W : Type} [AddCommGroup W] [Module ℂ W] {n : ℕ}
-  (c : Module.Basis (Fin n) ℂ W)
-
-end Form
-
 structure MjForm (D : D7) (j : ℕ) where
 
   H : HLat D.what₂.LL

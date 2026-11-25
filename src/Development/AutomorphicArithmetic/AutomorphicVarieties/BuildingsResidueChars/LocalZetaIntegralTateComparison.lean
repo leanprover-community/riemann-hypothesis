@@ -80,9 +80,9 @@ theorem UpperTheory.local_zeta_integral_tate_comparison :
         have hind : integralIndicator F 1 ↑(centralUnif F 1 ^ j * g) = if 0 ≤ j then 1 else 0 := by
           unfold integralIndicator
           by_cases hj : 0 ≤ j
-          · rw [Set.indicator_of_mem (hiff.2 hj), if_pos hj]
+          · rw [Set.indicator_of_mem (hiff.2 hj), ite_eq_left hj]
             rfl
-          · rw [Set.indicator_of_notMem (fun h => hj (hiff.1 h)), if_neg hj]
+          · rw [Set.indicator_of_notMem (fun h => hj (hiff.1 h)), ite_eq_right hj]
         simp only
         rw [hind, detPow_centralUnif_zpow_mul, detPow_of_mem_integralGL hgK, hc.zpow_mul, hcK g hgK]
         split_ifs

@@ -298,7 +298,7 @@ theorem idem_smul_latA {S : HSp D} {L : Lat S} {P : GlobalTheory.FinPl.Pl D → 
     obtain ⟨α, hαi, hα, a, ha, x, hx, rfl⟩ := hy
     refine AddSubgroup.subset_closure ⟨GlobalTheory.FinPlLoc.ePl D (· = v) * α, fun w => ?_, fun w hw => ?_, a, ha, x, hx, ?_⟩
     · rw [map_mul]; exact mul_mem (GlobalTheory.FinPlLoc.ePl_int _ w) (hαi w)
-    · rw [map_mul, GlobalTheory.FinPlLoc.evalV_ePl, if_neg hw, zero_mul]
+    · rw [map_mul, GlobalTheory.FinPlLoc.evalV_ePl, ite_eq_right hw, zero_mul]
     · funext i
       rw [Pi.smul_apply, smul_eq_mul]
       unfold GlobalTheory.FinPlLoc.idem
@@ -600,7 +600,7 @@ theorem idem_smul_mem_latMul_at : ∀ (D : D7) (S : HSp D) (𝔞 : Set D.host.E)
     refine AddSubgroup.subset_closure ⟨ePl D (· = v) * α, fun w => ?_, fun w hw => ?_, a, ha, x, hx, ?_⟩
     · rw [map_mul]
       exact mul_mem (ePl_int _ w) (hαi w)
-    · rw [map_mul, evalV_ePl, if_neg hw, zero_mul]
+    · rw [map_mul, evalV_ePl, ite_eq_right hw, zero_mul]
     · funext i
       rw [Pi.smul_apply, smul_eq_mul]
       unfold idem
@@ -655,7 +655,7 @@ theorem incA_neg_xi0_pow_mul_pX_mulVec_eq_sum : ∀ {D : D7} {A B B₀ : HSp D} 
   rw [he, he'] at g2
   simp only [antiDiagonalSignGramMatrix, GlobalTheory.MixModel.cT_sig, Matrix.mul_apply, Matrix.conjTranspose_apply, colsOf, star_mul', Matrix.one_apply_eq, hj,
     Fin.coe_castLE] at g1 g2
-  rw [if_pos (by omega), if_neg (fun h => by have := congrArg Fin.val h; simp only [Fin.coe_castLE] at this; omega)] at g1
+  rw [ite_eq_left (by omega), ite_eq_right (fun h => by have := congrArg Fin.val h; simp only [Fin.coe_castLE] at this; omega)] at g1
   have g3 : ∑ l, (∑ k, star (s i) * star (a.a k ⟨2 * ρ - 1 - i.1, hi⟩) * HSpace.gram B k l) *
       ((-D.host.xi0) ^ (i.1 + 1) * a.a l (Fin.castLE hle i)) =
       star (s i) * (-D.host.xi0) ^ (i.1 + 1) *
@@ -899,7 +899,7 @@ theorem gen_mem {D : D7} (S : HSp D) (𝔞 : Set D.host.E) (L : GlobalTheory.Fin
     (P : GlobalTheory.FinPl.Pl D → Prop) (hP : ∀ w, ¬ P w → w ≠ v) {a : D.host.E} (ha : a ∈ 𝔞) {x : Fin S.rank → D.host.E}
     (hx : x ∈ L) : (fun m => idem D (· = v) * incA D (a * x m)) ∈ GlobalTheory.FinPl.latMul S 𝔞 L P := by
   apply AddSubgroup.subset_closure
-  refine ⟨ePl D (· = v), ePl_int _, fun w hw => by rw [evalV_ePl, if_neg (hP w hw)], a, ha, x, hx, ?_⟩
+  refine ⟨ePl D (· = v), ePl_int _, fun w hw => by rw [evalV_ePl, ite_eq_right (hP w hw)], a, ha, x, hx, ?_⟩
   funext m
   exact idem_incA _ _
 

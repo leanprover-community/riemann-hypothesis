@@ -118,7 +118,7 @@ theorem UpperTheory.exists_isDiagOn_of_isDiagOn_inf_ker_sign :
   obtain ⟨g, hg⟩ := hD
   by_cases hex : ∃ s ∈ H, η s = -1
   swap
-  · push_neg at hex
+  · push Not at hex
     refine ⟨![Ψ, Ψ⁻¹], ?_, g, fun t ht => hg t ⟨ht, MonoidHom.mem_ker.mpr ?_⟩⟩
     · intro i x hΨ _
       fin_cases i <;> simp [hΨ]
@@ -190,7 +190,7 @@ theorem UpperTheory.exists_isDiagOn_of_isDiagOn_inf_ker_sign :
     · rw [hS]
       ext i j
       fin_cases i <;> fin_cases j <;> simp [Matrix.diagonal, hχ2, h01, h10]
-  · push_neg at hdist
+  · push Not at hdist
     have hDt : ∀ t ∈ H ⊓ η.ker, Matrix.diagonal (fun i => ((![Ψ, Ψ⁻¹] i t : kˣ) : k)) =
         Matrix.diagonal (fun _ => ((Ψ t : kˣ) : k)) := by
       intro t ht

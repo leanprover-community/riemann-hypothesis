@@ -68,11 +68,6 @@ private lemma detShift_eq_w_last {m : ℕ} (lam : DomWeight (m + 1)) : lam.detSh
   rw [dite_eq_left (Nat.succ_pos m)]
   rfl
 
-private lemma natW_antitone_succ {m : ℕ} (lam : DomWeight (m + 1)) : Antitone lam.natW := by
-  intro i j hij
-  unfold DomWeight.natW
-  exact Int.toNat_le_toNat (sub_le_sub_right (lam.anti hij) _)
-
 private lemma natW_last_eq_zero {m : ℕ} (lam : DomWeight (m + 1)) : lam.natW (Fin.last m) = 0 := by
   unfold DomWeight.natW
   rw [detShift_eq_w_last, sub_self, Int.toNat_zero]
@@ -105,7 +100,7 @@ theorem iso_irr_comp_conjU : ∀ (n : ℕ), 0 < n → ∀ lam : DomWeight n,
   intro n hn lam
   obtain ⟨m, rfl⟩ : ∃ m, n = m + 1 := ⟨n - 1, by omega⟩
   obtain ⟨Ψ, hinj, hmap, hact, -, -⟩ := GlobalTheory.ValCmp.exists_posOk_dual ℂ ℂ m lam.natW
-    (natW_antitone_succ lam) (natW_last_eq_zero lam) lam.detShift 0
+    (Formalism.L2.Col.natW_anti lam) (natW_last_eq_zero lam) lam.detShift 0
   have hmem : ∀ f : nablaSq ℂ (m + 1) lam, Ψ f ∈ nablaSq ℂ (m + 1) lam.dual := by
     intro f
     change Ψ f ∈ Formalism.GradedWeylDivisibility.dualWeyl ℂ (m + 1) (m + 1) lam.dual.natW

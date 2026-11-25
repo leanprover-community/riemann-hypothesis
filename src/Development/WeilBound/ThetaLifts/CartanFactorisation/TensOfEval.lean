@@ -83,14 +83,14 @@ theorem tensInj : TensInj := by
     · congr 1
       · refine Finset.prod_congr rfl fun v _ => ?_
         congr 1; funext k
-        rw [hx, if_pos (Finset.mem_union_left _ v.2)]
-        simp only [pt, dif_pos v.2]
+        rw [hx, ite_eq_left (Finset.mem_union_left _ v.2)]
+        simp only [pt, dite_eq_left v.2]
       · refine Finset.prod_congr rfl fun v hv => ?_
         have hT : v ∉ T := (Finset.mem_sdiff.1 hv).2
         rw [hφ i v hT]
         congr 1; funext k
-        rw [hx, if_pos (Finset.mem_union_right _ hv)]
-        simp only [pt, dif_neg hT]
+        rw [hx, ite_eq_left (Finset.mem_union_right _ hv)]
+        simp only [pt, dite_eq_right hT]
     · intro v hv
       by_contra hn
       have hn' : v ∉ T ∪ s := fun h => hn (Finset.mem_coe.2 h)
@@ -99,7 +99,7 @@ theorem tensInj : TensInj := by
         by_contra h
         exact hn' (Finset.mem_union_right _ (Finset.mem_sdiff.2 ⟨(Set.Finite.mem_toFinset _).2 h, hT⟩))
       apply hv
-      simp only [hφ i v hT, hs, hx, if_neg hn']
+      simp only [hφ i v hT, hs, hx, ite_eq_right hn']
       rw [Set.indicator_of_mem (by intro i; exact zero_mem _)]
       rfl
   have h0 := congrFun hsum x

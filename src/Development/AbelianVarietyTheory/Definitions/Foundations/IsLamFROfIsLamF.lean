@@ -25,13 +25,6 @@ def IsLamFR (X : Tower Ω ε) (A : ValuationSubring Ω) (N w : ℕ) (χ : ℕ �
       ∀ (n : ℕ), cL ≤ n → ∀ (b : X.Fn l), InChi X N w χ b → ∀ φ : HahnSeries ℚ Ω, IsThB X A N l n b φ →
         Cg (n - cL) (lam (seqN 1 j φ)) (per n * pr b 1)
 
-section Induced
-
-variable {X : Tower Ω ε} {A : ValuationSubring Ω} {N w : ℕ} {χ : ℕ → ℤ_[l]} {j : Ω →+* Qbar l}
-  {pr : X.Fn l → Fin 2 → Qbar l} {c : Coef l} {lam : (ℕ → Qbar l) →ₗ[Qbar l] Qbar l}
-
-end Induced
-
 end GlobalTheory.KummerEisensteinGalois
 
 end

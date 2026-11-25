@@ -30,7 +30,7 @@ theorem sUp_neg {V : Matrix (Fin n) (Fin n) ℂ} (hV : SUp V) : SUp (-V) := by
 theorem sUp_pow {V : Matrix (Fin n) (Fin n) ℂ} (hV : SUp V) :
     ∀ (m : ℕ) (i j : Fin n), j.val < i.val + m → (V ^ m) i j = 0
   | 0, i, j, h => by
-    rw [pow_zero, Matrix.one_apply, if_neg]
+    rw [pow_zero, Matrix.one_apply, ite_eq_right]
     rintro rfl; omega
   | m + 1, i, j, h => by
     rw [pow_succ, Matrix.mul_apply]

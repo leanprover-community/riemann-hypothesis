@@ -134,19 +134,8 @@ variable {ι : Type} [Fintype ι] {a : ℕ} in
 private theorem exists_notMem_mul_eq_integer_of_valuation_le_one {K : Type} [Field K] [NumberField K]
     (w : HeightOneSpectrum (𝓞 K)) (x : K) (hx : w.valuation K x ≤ 1) :
     ∃ s : 𝓞 K, s ∉ w.asIdeal ∧ ∃ c : 𝓞 K, (s : K) * x = (c : K) := by
-  have h1 : x ∈ (w.valuation K).valuationSubring := hx
-  rw [← HeightOneSpectrum.valuationSubringAtPrime_eq_valuationSubring] at h1
-  have h3 : x ∈ (HeightOneSpectrum.valuationSubringAtPrime K w).toSubring := h1
-  rw [HeightOneSpectrum.valuationSubringAtPrime_toSubring] at h3
-  have h2 : x ∈ _root_.GlobalTheory.LatBasisAt.locRing w := by
-    unfold _root_.GlobalTheory.LatBasisAt.locRing
-    exact h3
-  obtain ⟨c, s, hs, rfl⟩ := (_root_.GlobalTheory.LatBasisAt.mem_locRing w x).1 h2
-  refine ⟨s, hs, c, ?_⟩
-  have hs0 : algebraMap (𝓞 K) K s ≠ 0 := _root_.GlobalTheory.LatBasisAt.algebraMap_ne_zero w hs
-  change algebraMap (𝓞 K) K s * (algebraMap (𝓞 K) K c * (algebraMap (𝓞 K) K s)⁻¹) =
-    algebraMap (𝓞 K) K c
-  field_simp
+  obtain ⟨c, ⟨s, hs⟩, hsc⟩ := HeightOneSpectrum.exists_primeCompl_mul_eq_of_integer w x hx
+  exact ⟨s, hs, c, by rw [mul_comm]; exact hsc⟩
 
 
 open NumberField IsDedekindDomain MvPolynomial in

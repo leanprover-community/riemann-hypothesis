@@ -33,7 +33,7 @@ private theorem spectralValue_le_one_iff_norm_coeff_le_one (P : ℚ_[l][X]) (hP 
     by_cases hn : n < P.natDegree
     · have ht : spectralValueTerms P n ≤ 1 :=
         (le_ciSup (spectralValueTerms_bddAbove P) n).trans h
-      rw [spectralValueTerms, if_pos hn] at ht
+      rw [spectralValueTerms, ite_eq_left hn] at ht
       have hexp : (0 : ℝ) < 1 / ((P.natDegree : ℝ) - n) := by
         have : (n : ℝ) < P.natDegree := by exact_mod_cast hn
         apply div_pos one_pos; linarith

@@ -120,7 +120,7 @@ theorem dnDvd : DnDvd := by
       exact one_dvd _
     · have h := muRange p w i q m lam2 _ hb hmu
       have hk : k ∈ Finset.Ico (m + 1) (w + q) := Finset.mem_Ico.mpr (by omega)
-      rw [if_pos hk]
+      rw [ite_eq_left hk]
       have he : ((w : ℤ) - ((k : ℤ) - (q : ℤ))) = ((w + q - k : ℕ) : ℤ) := by omega
       rw [he, Nat.cast_pow]
       exact pow_dvd_pow _ (muLe p w i q lam2 _)

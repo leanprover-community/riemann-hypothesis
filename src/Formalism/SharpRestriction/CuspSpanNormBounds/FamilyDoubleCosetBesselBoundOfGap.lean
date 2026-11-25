@@ -44,10 +44,4 @@ theorem isBesselMapSm_iff {k r : ℕ} {H : Type} [NormedAddCommGroup H] [InnerPr
     Formalism.MainNotions.S.IsCWCont, dsigW_eq]
   exact Iff.rfl
 
-section Family
-
-variable {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps)
-
-end Family
-
 end Formalism.MainNotions.BridgeCS3d

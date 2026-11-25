@@ -167,7 +167,7 @@ theorem sum_mem_sumLat {n k l : ℕ} (M : Matrix (Fin n) (Fin l) D.host.E) (Λ :
     simp only [Matrix.mulVec_zero, zero_add, Matrix.mulVec, dotProduct, Finset.mul_sum]
     rw [Finset.sum_comm]
     refine Finset.sum_congr rfl fun p _ => ?_
-    simp only [mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    simp only [mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
 
 theorem antiDiagonalEpsilonGramMatrix_rev_castLE_apply (h : ρ ≤ c) (h2 : 2 * ρ ≤ c) (p : Fin ρ) (q : Fin c) :
     antiDiagonalSignGramMatrix c ε (Fin.castLE h p).rev q = if q = Fin.castLE h p then 1 else 0 := by
@@ -238,7 +238,7 @@ theorem coef_one (he : d.e = colsOf a.a (Fin.castLE h) fun p => (-D.host.xi0) ^ 
     simp only [Matrix.mul_apply, colsOf, Finset.mul_sum]
     exact Finset.sum_congr rfl fun k _ => by ring
   rw [h3, qX_mul_a a d h h2 s he', Matrix.one_apply_eq] at h1
-  simpa only [Matrix.of_apply, if_true, mul_one] using h1
+  simpa only [Matrix.of_apply, ite_true, mul_one] using h1
 
 theorem keepX (he : d.e = colsOf a.a (Fin.castLE h) fun p => (-D.host.xi0) ^ (p.1 + 1))
     (he' : d.e' = colsOf a.a (fun p => (Fin.castLE h p).rev) s) (Λ : Submodule (𝓞 D.host.E) (Fin A.rank → D.host.E))
@@ -253,7 +253,7 @@ theorem keepX (he : d.e = colsOf a.a (Fin.castLE h) fun p => (-D.host.xi0) ^ (p.
     refine Finset.sum_congr rfl fun p _ => ?_
     have hc := coef_one a d h h2 s he he' p
     simp only [Matrix.mulVec, dotProduct, Matrix.of_apply, mul_ite, mul_one, mul_zero, ite_mul, zero_mul,
-      Finset.sum_ite_eq', Finset.mem_univ, if_true]
+      Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     rw [← mul_assoc ((-D.host.xi0) ^ (p.1 + 1)), hc, one_mul]
   rw [e1]
   exact sum_mem_sumLat _ Λ a.a 𝔟 _ u hu
@@ -272,7 +272,7 @@ theorem keepY (he : d.e = colsOf a.a (Fin.castLE h) fun p => (-D.host.xi0) ^ (p.
     have hc := congrArg star (coef_one a d h h2 s he he' p)
     rw [star_mul', star_star, star_one] at hc
     simp only [Matrix.mulVec, dotProduct, Matrix.of_apply, mul_ite, mul_one, mul_zero, ite_mul, zero_mul,
-      Finset.sum_ite_eq', Finset.mem_univ, if_true]
+      Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     rw [← mul_assoc (s p), mul_comm (s p), hc, one_mul]
   rw [e1]
   exact sum_mem_sumLat _ Λ a.a 𝔟 _ u hu

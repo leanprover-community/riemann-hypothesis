@@ -52,11 +52,4 @@ theorem exists_embAt (w : HeightOneSpectrum (𝓞 F)) (hw : ((l : ℕ) : 𝓞 F)
 end Emb
 
 
-section Mu
-
-variable (LL : FinExt l) {N : ℕ} [NeZero N] {ζ : PadicAlgCl l} (hζ : IsPrimitiveRoot ζ N) (hm : ζ ∈ LL.1)
-
-
-end Mu
-
 end Formalism.BasicNotions.Examples₂.LB

@@ -94,7 +94,7 @@ theorem UpperTheory.lintegral_idele_rat_polyDecay_mul_norm_rpow_lt_top :
   · refine ENNReal.ofReal_le_ofReal (le_of_eq ?_)
     have hb : ((IdeleGroup.toFinite ℚ y : (FiniteAdeleRing (𝓞 ℚ) ℚ)ˣ) : FiniteAdeleRing (𝓞 ℚ) ℚ) ∈ idealFiniteAdeles L :=
       hL hy
-    rw [finiteZetaBound, if_pos hb, hInf, ab, ideleModule_rpow_eq, abs_re,
+    rw [finiteZetaBound, ite_eq_left hb, hInf, ab, ideleModule_rpow_eq, abs_re,
       Fintype.prod_subsingleton _ Rat.infinitePlace, Fintype.prod_subsingleton _ Rat.infinitePlace,
       (IsTotallyReal.isReal Rat.infinitePlace).mult_eq_one]
     simp only [Nat.cast_one, one_mul]

@@ -140,7 +140,7 @@ theorem moderateCoefficientPositivity_holds : ModerateCoefficientPositivity (E :
       ¬ (∀ j, ∃ k : ℤ, 2 * ∑ τ, ν τ * ω j τ = k) → X.fj la ξ ν P x = 0 := by
     intro ν ξ x hj
     unfold Data.fj
-    rw [if_neg]
+    rw [ite_eq_right]
     intro hall
     exact hj fun j => hall _ (hωp j)
   have hsum : ∀ (ν : X.Ψ → ℝ) (k : Fin (Fintype.card X.Ψ) → ℤ), (∀ j, 2 * ∑ τ, ν τ * ω j τ = k j) →
@@ -283,9 +283,9 @@ theorem moderateCoefficientPositivity_holds : ModerateCoefficientPositivity (E :
             intro τ; rw [hbt]; exact hq t τ
           simp only [hq']
           rw [Finset.prod_eq_single τ0 (fun τ _ hτ => by simp [hτ]) (fun h => absurd (Finset.mem_univ _) h)]
-          simp only [if_true]
+          simp only [ite_true]
           obtain ⟨hQ1, hQ2⟩ := hQ τ0
-          simp only [if_true] at hQ1 hQ2
+          simp only [ite_true] at hQ1 hQ2
           rw [max_eq_left (inv_le_one_of_one_le₀ hQ1 |>.trans hQ1)]
           calc (1 + X.c τ0 * m τ0 * t) ^ (X.spread la τ0 / 2) ≤ (1 + X.c τ0 * m τ0 * t) ^ (|w| / 2) :=
                 Real.rpow_le_rpow_of_exponent_le hQ1 (by simp only [w]; linarith [le_abs_self (X.spread la τ0)])
@@ -327,7 +327,7 @@ theorem moderateCoefficientPositivity_holds : ModerateCoefficientPositivity (E :
       have := fun τ => hκ 1 τ
       simp only [one_mul] at this
       simp only [this, he0_def, Pi.single_apply, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ,
-        if_true]
+        ite_true]
     rw [h2] at hsign
     linarith
   ·

@@ -83,8 +83,3 @@ theorem mat_embA_besFrame {D : D7} {k : Type} [Field k] [ValuativeRel k] [Topolo
 end GlobalTheory.TraceAtG
 
 end
-
-noncomputable section
-open GlobalTheory.FamTrace
-
-end

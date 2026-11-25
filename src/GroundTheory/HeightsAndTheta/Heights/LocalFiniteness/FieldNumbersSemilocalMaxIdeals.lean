@@ -164,7 +164,7 @@ theorem norm_chartDens_le {n d : ℕ} {J : Ideal (MvPolynomial (Fin n) ℂ)}
   refine (norm_sum_le _ _).trans (Finset.sum_le_sum fun x hx => ?_)
   rw [Set.Finite.mem_toFinset] at hx
   by_cases hs : ∃ s, IsSheetAt J A x s
-  · simp only [dif_pos hs]
+  · simp only [dite_eq_left hs]
     by_cases hxB : x ∈ Metric.closedBall 0 R
     · rw [Set.indicator_of_mem hxB, Set.indicator_of_mem hxB, Real.norm_eq_abs, abs_mul, abs_mul,
         abs_mul, ← add_mul]
@@ -191,7 +191,7 @@ theorem norm_chartDens_le {n d : ℕ} {J : Ideal (MvPolynomial (Fin n) ℂ)}
         exact image_eq_zero_of_notMem_tsupport hw
       rw [hM]
       simp
-  · simp only [dif_neg hs]
+  · simp only [dite_eq_right hs]
     simp
 
 end LelongRegularise

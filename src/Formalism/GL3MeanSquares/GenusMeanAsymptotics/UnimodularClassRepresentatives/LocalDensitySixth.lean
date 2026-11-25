@@ -164,7 +164,7 @@ theorem qE_bO (b : Basis κ K V) (J : Ideal (𝓞 K)) (i : κ) :
   rw [crd, Basis.equivFun_self]
   by_cases hl : i = l
   · subst hl; simp
-  · rw [if_neg hl, map_zero, Pi.single_eq_of_ne (Ne.symm hl)]
+  · rw [ite_eq_right hl, map_zero, Pi.single_eq_of_ne (Ne.symm hl)]
 
 def eM (b : Basis κ K V) (J : Ideal (𝓞 K)) :
     Module.End (𝓞 K) (spanO b ⧸ (J • ⊤ : Submodule (𝓞 K) (spanO b))) ≃ Matrix κ κ (𝓞 K ⧸ J) :=

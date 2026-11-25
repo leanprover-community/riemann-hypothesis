@@ -295,7 +295,7 @@ theorem goodOn_of_goodW (h : GoodW U x V dict G) : GoodOn U x V dict Z G := by
         have a2 := GlobalTheory.AllWt.petW_smul U x V dict G w.embedding 0 0
         simp only [zero_smul, map_zero, norm_zero, zero_mul] at a1 a2
         exact a1.trans a2.symm
-      · push_neg at h0
+      · push Not at h0
         refine hasGram_of_injective hg φ hφ (fun v => (((muQ1 (V (goodOf c v.embedding))
           (classesOver (V (goodOf c v.embedding)) (dict (goodOf c v.embedding)) (framesOn (U (goodOf c v.embedding)) Z)))⁻¹ ^
             (1 / (2 : ENNReal)).toReal).toReal)) (fun v => ?_) fun v f => ?_

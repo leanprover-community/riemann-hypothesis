@@ -116,8 +116,8 @@ theorem exists_E {n : ℕ} (i₀ : Fin n) (hσ : ∀ a, σ (σ a) = a) (ε : ℤ
     simp only [hβ0, Matrix.transpose_apply, Matrix.neg_apply, Matrix.smul_apply, Matrix.map_apply, Matrix.of_apply,
       smul_eq_mul]
     by_cases hr : r = i₀ <;> by_cases hc : c = i₀
-    · subst hr; subst hc; simp only [if_true]; exact hcol0
-    · subst hr; simp only [if_true, hc, if_false, map_neg, map_mul, hσε, hσ]
+    · subst hr; subst hc; simp only [ite_true]; exact hcol0
+    · subst hr; simp only [ite_true, hc, ite_false, map_neg, map_mul, hσε, hσ]
       rw [mul_neg, neg_neg, ← mul_assoc, hεε, one_mul]
     · subst hc; simp [hr]
     · simp [hr, hc]
@@ -147,7 +147,7 @@ theorem exists_E {n : ℕ} (i₀ : Fin n) (hσ : ∀ a, σ (σ a) = a) (ε : ℤ
       add_zero, zero_add, hD, ← hX, Matrix.mulVec_single]
     have hcb : ∀ k, col k * b₀ = -X k := fun k => div_mul_cancel₀ _ hb
     rcases r with i | i
-    · simp only [Sum.elim_inl, Pi.add_apply, Pi.smul_apply, Matrix.col_apply, hβ0, Matrix.of_apply, if_true,
+    · simp only [Sum.elim_inl, Pi.add_apply, Pi.smul_apply, Matrix.col_apply, hβ0, Matrix.of_apply, ite_true,
         op_smul_eq_mul, smul_eq_mul]
       rw [hcb, add_neg_cancel, Pi.single_eq_of_ne (by simp)]
     · simp only [Sum.elim_inr, Pi.smul_apply, Matrix.col_apply, op_smul_eq_mul]

@@ -55,18 +55,6 @@ open GlobalTheory.GalCut GlobalTheory.UnitaryBC GlobalTheory.PRep GlobalTheory.S
 
 namespace UpperTheory.Gal.NearKilling
 
-section Abstract
-
-variable {Γ I : Type} [Group Γ] [Group I] {a c : ℕ}
-
-end Abstract
-
-section Global
-
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {a : ℕ}
-
-end Global
-
 def DenseFrob : Prop :=
   ∀ (E Ω : Type) [Field E] [NumberField E] [IsCMField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω]
     (S : Set (HeightOneSpectrum (𝓞 E))), S.Finite →

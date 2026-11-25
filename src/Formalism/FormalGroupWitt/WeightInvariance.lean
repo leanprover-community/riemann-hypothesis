@@ -49,7 +49,7 @@ theorem coeff_expand_eq_zero {R : Type*} [CommRing R] {τ : Type*} (q : ℕ) (hq
         omega
       · exact h
     nlinarith
-  · push_neg at hdiv
+  · push Not at hdiv
     obtain ⟨i, hi⟩ := hdiv
     exact MvPowerSeries.coeff_expand_of_not_dvd q hq φ hi
 
@@ -214,7 +214,7 @@ theorem main : Formalism.FG.CoeffBoundV.{u, v, w} := by
                   (MvPowerSeries.expand q hq (MvPowerSeries.map σ (f l)))‖ * ‖(p : K)‖ ^ K0 := by
                   field_simp
               _ ≤ 1 := h12
-    · push_neg at hdiv
+    · push Not at hdiv
       obtain ⟨i, hi⟩ := hdiv
       refine ⟨0, fun i => by simp, ?_⟩
       have hz : ∀ l, MvPowerSeries.coeff n (MvPowerSeries.expand q hq (MvPowerSeries.map σ (f l))) = 0 :=

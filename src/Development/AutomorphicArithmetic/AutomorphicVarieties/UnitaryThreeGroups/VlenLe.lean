@@ -264,8 +264,8 @@ private theorem lift_X (hΨ : ∀ j : ℤ, AdicCont (maximalIdeal O) fun g => ((
     convert hu.comp fun t => if t = X 2 1 then (!![0, 0, 0; y, 0, 0; 0, z, 0] : Matrix (Fin 3) (Fin 3) O) i j else
       -(!![0, 0, 0; y, 0, 0; 0, z, 0] : Matrix (Fin 3) (Fin 3) O) j.rev i.rev using 2 with g
     by_cases hg : η g = 1
-    · simp only [Function.comp_apply, if_pos hg, if_true]
-    · simp only [Function.comp_apply, if_neg hg, if_neg (Ne.symm h)]
+    · simp only [Function.comp_apply, ite_eq_left hg, ite_true]
+    · simp only [Function.comp_apply, ite_eq_right hg, ite_eq_right (Ne.symm h)]
 
 variable [IsAdicComplete (maximalIdeal O) O] [IsCO O (TrivSqZeroExt O O)]
 

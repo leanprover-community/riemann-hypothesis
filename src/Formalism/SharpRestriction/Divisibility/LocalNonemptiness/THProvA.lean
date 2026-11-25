@@ -168,7 +168,7 @@ def exptStd (X : Mat p q) : covSub p q :=
   if h : X ∈ upq p q then ⟨(expU X, expC (X.trace / 2)), exp_pair_mem h⟩ else 1
 
 theorem exptStd_of_mem {X : Mat p q} (h : X ∈ upq p q) :
-    exptStd X = ⟨(expU X, expC (X.trace / 2)), exp_pair_mem h⟩ := dif_pos h
+    exptStd X = ⟨(expU X, expC (X.trace / 2)), exp_pair_mem h⟩ := dite_eq_left h
 
 open scoped Matrix.Norms.Operator in
 theorem continuous_matExp : Continuous (NormedSpace.exp : Mat p q → Mat p q) :=
@@ -262,30 +262,6 @@ variable {p q r s : ℕ}
 abbrev Xm (l : Ln p q r s) : Module.End ℂ (Pol p q r s) := LinearMap.mulLeft ℂ (X l)
 
 end Checks
-
-section Skew
-
-open MvPolynomial
-
-variable {p q r s : ℕ}
-
-variable {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] (ι : Pol p q r s →ₗ[ℂ] H)
-
-variable {ι}
-
-end Skew
-
-section Compact
-
-variable {p q : ℕ}
-
-end Compact
-
-section Triv
-
-variable {p q : ℕ}
-
-end Triv
 
 end Formalism.MainNotions.DIV.Inh
 

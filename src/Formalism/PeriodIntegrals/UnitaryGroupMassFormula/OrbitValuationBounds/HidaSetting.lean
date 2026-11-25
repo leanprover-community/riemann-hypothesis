@@ -83,7 +83,7 @@ theorem dl_off {E : Ent D} {p : ℕ} [Fact p.Prime] (h : OrbOK D p) (u : D.what�
     rfl
   rw [hsz]
   unfold eOrb
-  rw [if_neg ht]
+  rw [ite_eq_right ht]
   ring
 
 theorem dl_on {E : Ent D} {p : ℕ} [Fact p.Prime] (h : OrbOK D p) (u : D.what₂.Word) (i : ℕ) (z : Pl D)
@@ -114,7 +114,7 @@ theorem dl_on {E : Ent D} {p : ℕ} [Fact p.Prime] (h : OrbOK D p) (u : D.what�
     rfl
   rw [hsz]
   unfold eOrb
-  rw [if_pos ht]
+  rw [ite_eq_left ht]
   ring
 
 end PI.OrbBoundFW

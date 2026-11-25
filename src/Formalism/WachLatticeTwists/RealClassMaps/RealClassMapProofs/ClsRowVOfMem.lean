@@ -63,7 +63,7 @@ variable {O Γ VT VT' : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing
 
 theorem clsRow_of_mem (D : LatData O Γ VT VT') {T₂ : Type} [AddCommGroup T₂] [Module O T₂] (v : T₂ ≃ₗ[O] D.T')
     (f : Γ → T₂) (h : (fun g => v (f g)) ∈ Z1 D.ρTl') : clsRow D v f = Submodule.Quotient.mk ⟨_, h⟩ :=
-  dif_pos h
+  dite_eq_left h
 
 end
 

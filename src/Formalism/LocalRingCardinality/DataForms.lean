@@ -289,9 +289,6 @@ namespace GlobalExtra
 
 variable {LL : Type} [Field LL] [NumberField LL] {Tau : Type} (G : GlobalExtra LL Tau)
 
-def logOmMean (τ : Tau) : ℝ :=
-  (∑ s : LL →+* ℂ, Real.log (G.Om τ s)) / (Fintype.card (LL →+* ℂ) : ℝ)
-
 end GlobalExtra
 
 end Formalism.BasicNotions

@@ -85,8 +85,8 @@ theorem isFockIsometry_embedding : IsFockIP (emb σ) := by
   rw [emb_monomial, emb_monomial, lp.inner_single_left, lp.single_apply, one_mul, one_mul]
   by_cases h : α = β
   · subst h
-    rw [Pi.single_eq_same, if_pos rfl, RCLike.inner_apply, mul_comm, star_wt_mul, mfact_cast]
-  · rw [Pi.single_eq_of_ne h, if_neg h, inner_zero_right]
+    rw [Pi.single_eq_same, ite_eq_left rfl, RCLike.inner_apply, mul_comm, star_wt_mul, mfact_cast]
+  · rw [Pi.single_eq_of_ne h, ite_eq_right h, inner_zero_right]
 
 
 omit [DecidableEq σ] in

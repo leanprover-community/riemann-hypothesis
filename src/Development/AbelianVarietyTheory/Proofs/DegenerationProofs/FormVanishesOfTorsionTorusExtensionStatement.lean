@@ -83,7 +83,7 @@ variable {F : Type} [Field F] {X : Scheme.{0}} {x : Sp F ⟶ X} {U : X.Opens}
 theorem valF_sum (h : ⊤ ≤ x ⁻¹ᵁ U) {J : Type} (A : Finset J) (a : J → Γ(X, U)) :
     valF x U (∑ j ∈ A, a j) = ∑ j ∈ A, valF x U (a j) := by
   set_option synthInstance.maxHeartbeats 100000 in
-    simp only [valF, dif_pos h, map_sum]
+    simp only [valF, dite_eq_left h, map_sum]
 
 theorem valF_ne_zero_iff_le (h : ⊤ ≤ x ⁻¹ᵁ U) (a : Γ(X, U)) :
     valF x U a ≠ 0 ↔ ⊤ ≤ x ⁻¹ᵁ X.basicOpen a := by
@@ -137,8 +137,8 @@ theorem part_vanishes_on_torsion : (∀ (k : Type) [Field k] [IsAlgClosed k] (Φ
   have hp' : ∀ β, Φ.IsPart β φ (p' β) := fun β => by
     by_cases h : β = α
     · subst h
-      simpa only [p', if_pos rfl] using hψ
-    · simpa only [p', if_neg h] using hp β
+      simpa only [p', ite_eq_left rfl] using hψ
+    · simpa only [p', ite_eq_right h] using hp β
   let A : Finset Φ.E.X := (hfin φ).toFinset
   have hA : ∀ β, β ∈ A ↔ β ∈ Φ.supp φ := fun β => (hfin φ).mem_toFinset
   let v : Φ.E.X → k := fun β => valF (F := k) x.left ((Φ.H d).U l) ((p' β).f l)
@@ -163,7 +163,7 @@ theorem part_vanishes_on_torsion : (∀ (k : Type) [Field k] [IsAlgClosed k] (Φ
   have h2 : c α = v α := Finsupp.indicator_of_mem ((hA α).2 hα) _
   apply hne
   have h3 : v α = 0 := by rw [← h2, hc]; rfl
-  have h4 : p' α = ψ := if_pos rfl
+  have h4 : p' α = ψ := ite_eq_left rfl
   rw [← h4]
   exact h3
 

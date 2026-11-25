@@ -1099,7 +1099,7 @@ theorem exists_ne_zero_of_rel {K V : Type} [Field K] [AddCommGroup V] [Module K 
           _ = ∑ j, r j • b j := by simp only [hb]
           _ = u l := b.sum_repr (u l)
       simp only [sub_smul, Finset.sum_sub_distrib, e, Pi.single_apply, ite_smul, one_smul,
-        zero_smul, Finset.sum_ite_eq', Finset.mem_univ, if_true, sub_self]
+        zero_smul, Finset.sum_ite_eq', Finset.mem_univ, ite_true, sub_self]
     have h2 := hrel _ hl
     have h3 : ∀ j, ∑ k, w k * σ (c k j) = 0 := fun j => by
       have := congrFun hx j

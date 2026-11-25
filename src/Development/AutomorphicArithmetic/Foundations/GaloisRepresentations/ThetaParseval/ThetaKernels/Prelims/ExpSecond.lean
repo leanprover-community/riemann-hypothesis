@@ -90,7 +90,7 @@ private theorem fock_second_action_eq_derivation {n d : ℕ} (Y : Mat d 0) :
       LinearMap.sum_apply, LinearMap.smul_apply, Module.End.mul_apply,
       LinearMap.mulLeft_apply, smul_eq_mul]
   · simp only [Prod.mk.injEq, true_and, smul_ite, smul_zero, Finset.sum_ite_eq, Finset.mem_univ,
-      if_true, Finset.sum_const, Finset.card_univ, smul_smul, ← Finset.sum_smul]
+      ite_true, Finset.sum_const, Finset.card_univ, smul_smul, ← Finset.sum_smul]
     have hcard : Fintype.card (FockH1Action.Ix n 0) = n := by simp [FockH1Action.Ix]
     rw [hcard, ← Nat.cast_smul_eq_nsmul ℂ, smul_smul, ← Finset.sum_mul, Matrix.trace]
     simp only [Matrix.diag]

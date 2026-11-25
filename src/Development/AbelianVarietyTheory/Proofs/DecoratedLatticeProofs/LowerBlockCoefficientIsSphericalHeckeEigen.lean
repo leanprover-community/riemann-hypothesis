@@ -802,7 +802,7 @@ theorem coeff_isEigen : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSp
       rw [Finset.sum_congr rfl hgU, ← h2, hlamA, hlam] at hS
       rw [hf' m, Units.val_inv_eq_inv_val]
       exact alg2 _ _ _ _ _ _ _ (pow_ne_zero _ (ξ ϖ).ne_zero) (ξ _).ne_zero hQ hσ (by rw [hS])
-    · push_neg at hcase
+    · push Not at hcase
       obtain ⟨ha, hle⟩ := hcase
       have hz : ∀ m', H m' ≤ 0 → f m' = 0 := by
         intro m' h

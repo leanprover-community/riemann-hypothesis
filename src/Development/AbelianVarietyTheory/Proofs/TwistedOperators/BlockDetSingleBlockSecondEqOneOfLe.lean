@@ -52,9 +52,9 @@ theorem mem_blockTriangular_singleBlock_of_le {κ : Type} [CommRing κ] {n r : �
   rw [Formalism.L2.DIV.mem_blockTri]
   intro i j hij
   have hi : Formalism.L2.DIV.blk2 r i = 0 := by
-    unfold Formalism.L2.DIV.blk2; exact if_pos (lt_of_lt_of_le i.isLt h)
+    unfold Formalism.L2.DIV.blk2; exact ite_eq_left (lt_of_lt_of_le i.isLt h)
   have hj : Formalism.L2.DIV.blk2 r j = 0 := by
-    unfold Formalism.L2.DIV.blk2; exact if_pos (lt_of_lt_of_le j.isLt h)
+    unfold Formalism.L2.DIV.blk2; exact ite_eq_left (lt_of_lt_of_le j.isLt h)
   rw [hi, hj] at hij
   exact absurd hij (lt_irrefl 0)
 

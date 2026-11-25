@@ -49,12 +49,12 @@ theorem deltaForm_right (x : A) (v : M) (g : A) {u : A} (hu : u ∈ U) :
 
 theorem deltaForm_self (x : A) (v : M) (h : ∀ γ, x⁻¹ * ι γ * x ∈ U → γ = 1) : deltaForm ι U ρ x v x = v := by
   unfold deltaForm
-  rw [finsum_eq_single _ 1 fun γ hγ => if_neg fun hm => hγ (inv_eq_one.1 (h γ⁻¹ (by rwa [map_inv, mul_assoc])))]
+  rw [finsum_eq_single _ 1 fun γ hγ => ite_eq_right fun hm => hγ (inv_eq_one.1 (h γ⁻¹ (by rwa [map_inv, mul_assoc])))]
   simp [U.one_mem]
 
 theorem deltaForm_eq_zero (x : A) (v : M) (g : A) (h : ∀ γ, ∀ u ∈ U, g ≠ ι γ * x * u) : deltaForm ι U ρ x v g = 0 := by
   unfold deltaForm
-  refine finsum_eq_zero_of_forall_eq_zero fun γ => if_neg fun hm => h γ _ hm ?_
+  refine finsum_eq_zero_of_forall_eq_zero fun γ => ite_eq_right fun hm => h γ _ hm ?_
   simp [mul_assoc]
 
 end Delta

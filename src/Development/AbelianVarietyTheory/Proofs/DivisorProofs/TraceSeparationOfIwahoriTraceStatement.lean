@@ -169,12 +169,12 @@ theorem coeff_eq_zero_of_sum_trace_eq_zero : ∀ (G : Type) [Group G] (n : ℕ) 
       have h1' : (σ i).asAlgebraHom x (b i k : W i) = b i k := by simpa using h1
       simp [Q, h1', hfix]
     · have h1' : (σ i).asAlgebraHom x (b i k : W i) = 0 :=
-        h1.trans (if_neg hi)
+        h1.trans (ite_eq_right hi)
       simp [Q, h1', hi]
   have h := hlin x
-  rw [Finset.sum_eq_single i₀ (fun i _ hi => by rw [hQx i, if_neg hi, map_zero, mul_zero])
+  rw [Finset.sum_eq_single i₀ (fun i _ hi => by rw [hQx i, ite_eq_right hi, map_zero, mul_zero])
     (by simp)] at h
-  rw [hQx i₀, if_pos rfl, LinearMap.trace_id] at h
+  rw [hQx i₀, ite_eq_left rfl, LinearMap.trace_id] at h
   have hpos : 0 < Module.finrank ℂ (LinearMap.range (P i₀)) := by
     rw [Module.finrank_pos_iff, Submodule.nontrivial_iff_ne_bot, Ne, LinearMap.range_eq_bot]
     exact hi₀
@@ -765,11 +765,11 @@ theorem trace_matrix_pi_operator : ∀ (W : Type) [AddCommGroup W] [Module ℂ W
     rw [LinearMap.trace_comp_comm', LinearMap.comp_assoc]
     by_cases hkj : k = j
     · subst hkj
-      rw [LinearMap.proj_comp_single_same, LinearMap.comp_id, if_pos rfl]
-    · rw [LinearMap.proj_comp_single_ne (R := ℂ) (φ := fun _ : Fin m => W) j k (Ne.symm hkj), LinearMap.comp_zero, map_zero, if_neg hkj]
+      rw [LinearMap.proj_comp_single_same, LinearMap.comp_id, ite_eq_left rfl]
+    · rw [LinearMap.proj_comp_single_ne (R := ℂ) (φ := fun _ : Fin m => W) j k (Ne.symm hkj), LinearMap.comp_zero, map_zero, ite_eq_right hkj]
 
   simp only [map_sum, map_smul, key, smul_eq_mul, mul_ite, mul_zero, Finset.sum_ite_eq,
-  Finset.mem_univ, if_true, Matrix.trace, Matrix.diag, Finset.sum_mul]
+  Finset.mem_univ, ite_true, Matrix.trace, Matrix.diag, Finset.sum_mul]
 
 end GlobalTheory
 end -- clump:auto

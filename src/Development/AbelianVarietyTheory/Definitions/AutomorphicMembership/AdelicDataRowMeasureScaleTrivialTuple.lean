@@ -145,7 +145,7 @@ theorem nonempty_orthDec (h : OrthEx D) : Nonempty (OrthDec D) := by
   classical
   choose A Q h1 h2 h3 h4 using h
   refine ⟨⟨fun V => if hV : V.SigOK then A V hV else 0, fun V hV => ?_, fun V => if hV : V.SigOK then Q V hV else 0,
-    fun V hV => ?_, fun V hV => ?_, fun V hV => ?_⟩⟩ <;> simp only [dif_pos hV]
+    fun V hV => ?_, fun V hV => ?_, fun V hV => ?_⟩⟩ <;> simp only [dite_eq_left hV]
   exacts [h1 V hV, h2 V hV, h3 V hV, h4 V hV]
 
 def KfinS (ψ : AddChar (AF D.host.F) ℂ) (θ : InfF D) (Dc : OrthDec D) (V W : HSp D) : Submodule ℂ (ThS ψ V W) :=
@@ -389,7 +389,7 @@ theorem nonempty_realMeas (D : D7) : Nonempty (RealMeas D) := by
   · split_ifs
     · exact one_pos
     · exact hr p q
-  · rw [if_neg (by omega)]; exact hd p q
+  · rw [ite_eq_right (by omega)]; exact hd p q
 
 def memberBes (D : D7) (u : D.what₂.Word) : BesDat (D.sp.X 0) (D.sp.Y 0) (D.sp.iXY 0) :=
   GlobalTheory.BesselCompare.toBes (GlobalTheory.IndefiniteRowSideFullHecke.BesselData.memberDatum D u)

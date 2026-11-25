@@ -432,12 +432,12 @@ theorem exists_pt [NeZero n] (hQ : ∀ P, P ∉ Q) {g : GL (Fin n) (AfE F E)} (h
     replace hv : v ∈ Formalism.UG.CS.globLat g (Formalism.L2.Col.stdLat E n) := hv
     show HasRes _ _ ((decoRaw ST SG g).f P v)
     simp only [decoRaw]
-    rw [if_pos (le_locP _ _ hv), e]
+    rw [ite_eq_left (le_locP _ _ hv), e]
     exact PtExist.hasRes_redA _ ((mem_globLat g v).1 hv i)
   · replace hv : v ∈ Formalism.UG.CS.globLat g (Formalism.L2.Col.stdLat E n) := hv
     show HasRes _ _ ((decoRaw ST SG g).be P v i)
     simp only [decoRaw]
-    rw [if_pos (le_locP _ _ hv)]
+    rw [ite_eq_left (le_locP _ _ hv)]
     exact PtExist.hasRes_redA _ ((mem_globLat g v).1 hv i)
 
 theorem isPtOf_mul (hQ : ∀ P, P ∉ Q) {g m : GL (Fin n) (AfE F E)} {p : DecoF E n ST SG Q} (hg : IsPtOf hc g p)

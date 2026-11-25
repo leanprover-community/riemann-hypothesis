@@ -206,7 +206,7 @@ private theorem wt_ex {n : ℕ} (h : s.Wt n) (hh : h.Incr) : ∃ lam, WtOf h lam
     obtain ⟨v', τ'⟩ := p
     obtain rfl : v' = v := Subtype.ext (w_inj s (emb_place τ' τ h1))
     rw [emb_inj τ' τ h1]
-  simp only [htW, lowW, dif_pos H]
+  simp only [htW, lowW, dite_eq_left H]
   rw [e]
   simp [μ]
 end Glob

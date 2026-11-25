@@ -318,12 +318,12 @@ theorem adMaj (θ : InfFam D) (hθ : IsInfFam θ) {m n : ℕ} (K : Set (Mx D m n
     rintro v ⟨u, hu, x, rfl⟩ z
     by_cases hz : z = rc x
     · subst hz
-      simp only [if_true]
+      simp only [ite_true]
       calc (1 + ‖rc x‖) ^ N * ‖u x‖ ≤ (1 + GlobalTheory.Unf.realSize θ x) ^ N * ‖u x‖ :=
             mul_le_mul_of_nonneg_right (pow_le_pow_left₀ (by positivity) (by linarith [hrc x]) N) (norm_nonneg _)
         _ = ‖u x‖ * (1 + GlobalTheory.Unf.realSize θ x) ^ N := mul_comm _ _
         _ ≤ max B 0 := (hB u hu x).trans (le_max_left _ _)
-    · simp only [hz, if_false, norm_zero, mul_zero]
+    · simp only [hz, ite_false, norm_zero, mul_zero]
       exact le_max_right _ _
   obtain ⟨F, hF⟩ := schDom S' hS'
 
@@ -366,7 +366,7 @@ theorem adMaj (θ : InfFam D) (hθ : IsInfFam θ) {m n : ℕ} (K : Set (Mx D m n
   · rw [hx, norm_zero]; exact norm_nonneg _
   · have hW : fp x ∈ W := hKW x (hsupp u hu x hx)
     have h1 := hF _ ⟨u, hu, x, rfl⟩ (rc x)
-    simp only [if_true] at h1
+    simp only [ite_true] at h1
     simp only [g, Set.indicator_of_mem hW, Pi.one_apply, mul_one]
     exact h1
 

@@ -52,7 +52,7 @@ theorem GlobalTheory.BSP.BK.mem_J_pow_of_X_pow_mul_mem : ∀ (l : ℕ) [Fact l.P
   have ht' : t = C ((l : Wq l bk.a) ^ N) * PowerSeries.mk (fun k => coeff (k + m) h) := by
     ext k
     have := congrArg (coeff (k + m)) htm
-    rw [coeff_X_pow_mul', if_pos (Nat.le_add_left m k), Nat.add_sub_cancel, coeff_C_mul] at this
+    rw [coeff_X_pow_mul', ite_eq_left (Nat.le_add_left m k), Nat.add_sub_cancel, coeff_C_mul] at this
     rw [this, coeff_C_mul, coeff_mk]
   have hs2 : s = ((X : bk.S) ^ bk.Ep.natDegree) ^ N * g + (l : bk.S) ^ N * PowerSeries.mk (fun k => coeff (k + m) h) := by
     have : s = t + (X : bk.S) ^ (bk.Ep.natDegree * N) * g := by rw [ht]; ring

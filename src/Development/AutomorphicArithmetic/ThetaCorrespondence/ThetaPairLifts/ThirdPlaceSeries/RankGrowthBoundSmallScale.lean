@@ -269,7 +269,7 @@ theorem le_gap_bar {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Recip
   have h := hu (show (⟨Dw.p - 1, by omega⟩ : Fin (Dw.p + Dw.q)) ≤ ⟨Dw.p - 1 + 1, by omega⟩ from Nat.le_succ _)
   rw [gap, dite_eq_left (by omega)]
   simp only [hodgeWt, CompHt.barWt, Pi.add_apply, Pi.smul_apply, smul_eq_mul]
-  rw [if_pos (by omega), if_neg (by omega)]
+  rw [ite_eq_left (by omega), ite_eq_right (by omega)]
   linarith
 
 theorem bir_gap_le (d N : ℕ) (hd : 3 ≤ d) : (d + 3) ^ 2 + 2 * N ≤ (d + 3) * ((d + 1).choose 2 + 4 * N + d + 3) := by
@@ -450,7 +450,7 @@ theorem rk_le_alt_alt : GlobalTheory.CovTop.HypothesesX → _root_.GlobalTheory.
       (uW p i + (s * cZero (Fm.D x ι) ((i : ℕ) + 1)) • hodgeWt (dat p i)) τ) := fun τ => by
     rw [ew]
     have := (hanti (s + 1) (by omega) τ).2
-    rwa [if_neg (Nat.succ_ne_zero s)] at this
+    rwa [ite_eq_right (Nat.succ_ne_zero s)] at this
   have hl3 : ∀ τ, 1 ≤ gap ((uW p i + (s * cZero (Fm.D x ι) ((i : ℕ) + 1)) • hodgeWt (dat p i)) τ) ((dat p i).p - 1) :=
     fun τ => by
       rw [ew]

@@ -160,7 +160,7 @@ theorem entry_of_run {n t : ℕ} (lam : DomWeight n) (p : ℕ) (hn : n < 2 * t) 
     exact_mod_cast this
   have hmono : ∀ i j, i ≤ j → j < n → wAt lam j ≤ wAt lam i := by
     intro i j hij hj
-    simp only [wAt, hj, dif_pos, show i < n by omega]
+    simp only [wAt, hj, dite_eq_left, show i < n by omega]
     exact lam.anti (Fin.mk_le_mk.2 hij)
   have hB := fun (c' : ℤ) (h : ∀ i < t, ∃ j < n, wAt lam j - j = c' - i) =>
     GlobalTheory.block_is_the_run n p t (wAt lam) c' hmono hpt (by omega) (by omega) hconst hleft hright h

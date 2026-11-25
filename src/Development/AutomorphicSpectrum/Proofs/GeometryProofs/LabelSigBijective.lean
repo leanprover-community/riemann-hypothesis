@@ -156,10 +156,10 @@ theorem labelSig_bijective : Function.Bijective (labelSig Dw) := by
     exact ⟨⟨s, k⟩, hk⟩
 
 theorem rootIdx_lt {τ : CMType H} {n : Fin (Dw.p + Dw.q)} (h : (n : ℕ) < Dw.p) :
-    HodgeCpt.rootIdx Dw (τ, n) = ⟨.inl τ, ⟨n, h⟩⟩ := dif_pos h
+    HodgeCpt.rootIdx Dw (τ, n) = ⟨.inl τ, ⟨n, h⟩⟩ := dite_eq_left h
 
 theorem rootIdx_ge {τ : CMType H} {n : Fin (Dw.p + Dw.q)} (h : ¬ (n : ℕ) < Dw.p) :
-    HodgeCpt.rootIdx Dw (τ, n) = ⟨.inr τ, ⟨Dw.p + Dw.q - 1 - n, by have := n.2; show _ < Dw.q; omega⟩⟩ := dif_neg h
+    HodgeCpt.rootIdx Dw (τ, n) = ⟨.inr τ, ⟨Dw.p + Dw.q - 1 - n, by have := n.2; show _ < Dw.q; omega⟩⟩ := dite_eq_right h
 
 theorem rootVal_lt {τ : CMType H} {n : Fin (Dw.p + Dw.q)} (h : (n : ℕ) < Dw.p) :
     ((HodgeCpt.rootIdx Dw (τ, n)).2 : ℕ) = n :=
@@ -265,7 +265,7 @@ theorem ram_pos {p : ℕ} [hp : Fact p.Prime] {la : HeightOneSpectrum (𝓞 c.F)
 theorem tOf_pos {p : ℕ} [hp : Fact p.Prime] (la : HeightOneSpectrum (𝓞 c.F)) (T : CDVR) (e : ℕ) (t : Ix Dw → T.Frˣ)
     (j : Ix Dw) : 0 < tOf p la T e t j := by
   unfold tOf absT
-  rw [if_neg (t j).ne_zero]
+  rw [ite_eq_right (t j).ne_zero]
   exact inv_pos.2 (Real.rpow_pos_of_pos (by exact_mod_cast hp.out.pos) _)
 
 theorem read_of_reads {Fr : Small.GenFrame Or} {p : ℕ} [hp : Fact p.Prime]

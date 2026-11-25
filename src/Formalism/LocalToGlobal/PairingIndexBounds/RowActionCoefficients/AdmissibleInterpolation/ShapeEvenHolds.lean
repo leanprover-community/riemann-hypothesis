@@ -42,7 +42,7 @@ theorem lt_colH_iff (hν : Antitone ν) (k : ℕ) (t : Fin n) : t.val < colH ν 
   constructor
   · intro h
     by_contra h'
-    push_neg at h'
+    push Not at h'
     exact absurd (colH_le_of hν t h') (not_le.mpr h)
   · intro h
     exact Nat.lt_of_succ_le (colH_ge hν t h)
@@ -72,7 +72,7 @@ theorem card_ge_eq {n K K' : ℕ} (sz : Fin K → ℕ) (sz' : Fin K' → ℕ) (h
       constructor <;> intro <;> omega
     rw [e1, e2]
     exact e
-  · push_neg at hln
+  · push Not at hln
     have e1 : (Finset.univ.filter fun k => l ≤ sz k) = ∅ :=
       Finset.filter_eq_empty_iff.mpr fun k _ => by have := hsz k; omega
     have e2 : (Finset.univ.filter fun k => l ≤ sz' k) = ∅ :=
@@ -164,7 +164,7 @@ theorem reorder_holds : Reorder := by
     obtain ⟨k', hk'⟩ := x'
     subst hk'
     have hI : I' k' = fun j => I (e (sz' k') hl ⟨k', rfl⟩).1 (Fin.cast (e (sz' k') hl ⟨k', rfl⟩).2.symm j) :=
-      dif_pos hl
+      dite_eq_left hl
     simp only
     rw [hI]
     exact initMinor_cast B (e (sz' k') hl ⟨k', rfl⟩).2 _ _ _

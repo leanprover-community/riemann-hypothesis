@@ -512,14 +512,14 @@ theorem part2 (w : HeightOneSpectrum (𝓞 K)) (g₁ g₂ a : ℕ) (h1 : g₁.Pr
   simp only [← Nat.padicValNat_def, pv_prime _ _ hp h1, pv_prime _ _ hp h2]
   by_cases e1 : plc w = g₁
   · have e2 : plc w ≠ g₂ := fun e => h12 (e1.symm.trans e)
-    rw [if_pos e1, if_neg e2, if_pos (Or.inl e1)]
+    rw [ite_eq_left e1, ite_eq_right e2, ite_eq_left (Or.inl e1)]
     push_cast
     ring
   · by_cases e2 : plc w = g₂
-    · rw [if_neg e1, if_pos e2, if_pos (Or.inr e2)]
+    · rw [ite_eq_right e1, ite_eq_left e2, ite_eq_left (Or.inr e2)]
       push_cast
       ring
-    · rw [if_neg e1, if_neg e2, if_neg (not_or.mpr ⟨e1, e2⟩)]
+    · rw [ite_eq_right e1, ite_eq_right e2, ite_eq_right (not_or.mpr ⟨e1, e2⟩)]
       push_cast
       ring
 
@@ -763,12 +763,6 @@ theorem leafUnip_of (O : OnObj S (∀ v, Pm v) c) (fN : ℕ) (hG : IsLevelGroups
 
 end Discharge
 
-section Builder
-
-variable {Bs : DefBase K} {Df : DefSide Bs} {S : IndefData Df} {c : OnConst}
-
-end Builder
-
 section Groups
 
 def mirabSub (k : Type) [Field k] [Fintype k] (n : ℕ) : Subgroup (GL (Fin (n + 1)) k) where
@@ -858,13 +852,6 @@ attribute [local instance] cycKC
 variable (v0 : InfinitePlace KC) (Tw0 : Finset (HeightOneSpectrum (𝓞 KC)))
 
 end ToyLevel
-
-section NotProjectiveExample
-
-variable (K)
-variable (v0 : InfinitePlace K) (Tw0 : Finset (HeightOneSpectrum (𝓞 K)))
-
-end NotProjectiveExample
 
 end Formalism.L2.Indef.Tree
 end -- clump:auto

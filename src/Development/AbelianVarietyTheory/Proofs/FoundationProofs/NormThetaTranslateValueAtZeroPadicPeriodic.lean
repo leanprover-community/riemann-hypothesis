@@ -70,7 +70,7 @@ theorem norm_lamC_root_mul (lam : Qbar →+* ℂ_[p]) {ζ : ℂ} {n : ℕ} (hn :
     exact (pow_eq_one_iff_of_nonneg (norm_nonneg _) hn.ne').1 this
   by_cases hx : x ∈ Qbar
   · have hzx : ζ * x ∈ Qbar := mul_mem hq hx
-    simp only [lamC, dif_pos hx, dif_pos hzx]
+    simp only [lamC, dite_eq_left hx, dite_eq_left hzx]
     have : (⟨ζ * x, hzx⟩ : Qbar) = ⟨ζ, hq⟩ * ⟨x, hx⟩ := rfl
     rw [this, map_mul, norm_mul, h1, one_mul]
   · have hzx : ζ * x ∉ Qbar := by
@@ -79,7 +79,7 @@ theorem norm_lamC_root_mul (lam : Qbar →+* ℂ_[p]) {ζ : ℂ} {n : ℕ} (hn :
       have : x = ζ⁻¹ * (ζ * x) := by field_simp
       rw [this]
       exact mul_mem (inv_mem hq) h
-    simp only [lamC, dif_neg hx, dif_neg hzx]
+    simp only [lamC, dite_eq_right hx, dite_eq_right hzx]
 
 theorem cval_norm_periodic : ∀ (D : D7) (p : ℕ) [Fact p.Prime] (cc : Ideal (𝓞 D.host.K)) (δ : ℂ) (g : GL3Theta.G1 p),
     GL3Theta.At D cc δ g → ∀ t ω : ℂ, InRationalLattice g.abelian₂ t → ω ∈ g.abelian₂ → ‖GlobalTheory.ThetaTransl.cval g (t + ω)‖ = ‖GlobalTheory.ThetaTransl.cval g t‖ := by

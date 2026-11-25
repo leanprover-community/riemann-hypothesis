@@ -83,7 +83,7 @@ theorem lastE_eq {R : Type} [CommRing R] (hm : m + 1 < a) (y : UnipotentBlockCol
   rw [Finset.sum_eq_single (t0 hm)]
   · simp [t0, ix, mm]
   · intro t _ ht
-    rw [if_neg]
+    rw [ite_eq_right]
     intro h1
     apply ht
     obtain ⟨⟨i, k⟩, h1', h2', h3'⟩ := t

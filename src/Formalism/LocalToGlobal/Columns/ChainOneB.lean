@@ -248,9 +248,9 @@ theorem ocbIsRed_one {E : Type} [Field E] [NumberField E] (P : HeightOneSpectrum
   rw [h1, h2]
   by_cases hls : l = s
   · subst hls
-    rw [if_pos rfl, if_pos rfl, sub_self, zpow_zero, mul_one]
+    rw [ite_eq_left rfl, ite_eq_left rfl, sub_self, zpow_zero, mul_one]
     exact ⟨⟨1, 1, fun h => P.isPrime.ne_top ((Ideal.eq_top_iff_one _).2 h), by simp⟩, redP_one.symm⟩
-  · rw [if_neg hls, if_neg hls, zero_mul]
+  · rw [ite_eq_right hls, ite_eq_right hls, zero_mul]
     exact ⟨⟨0, 1, fun h => P.isPrime.ne_top ((Ideal.eq_top_iff_one _).2 h), by simp⟩, redP_zero.symm⟩
 
 end Lev

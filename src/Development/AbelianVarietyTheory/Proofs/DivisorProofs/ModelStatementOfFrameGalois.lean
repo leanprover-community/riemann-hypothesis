@@ -643,7 +643,7 @@ theorem blockFor_of_congr : GlobalTheory.Published.ChebotarevDegreeOne → ∀ (
       simp only [hp, hq]
       rw [e1, e2]
       exact norm_coeff_hecke_sub_lt _ _ _ _ _ hw (norm_sysOf_sub_lt P.Nr pt hcl P0) _
-    · push_neg at hk
+    · push Not at hk
       rw [coeff_sub, coeff_eq_zero_of_natDegree_lt (by rw [dp]; exact hk),
         coeff_eq_zero_of_natDegree_lt (by rw [dq]; exact hk)]
       simp
@@ -1087,7 +1087,7 @@ theorem coeff_eq_of_int (P : Type) [CommRing P] [IsDomain P] [CharZero P] (L : �
   have := congrArg (fun q : Polynomial P => q.coeff i) hQ
   simp only [Q, finsetSum_coeff, coeff_monomial, coeff_zero] at this
   simp only [Finsupp.single_apply] at this
-  rw [Finset.sum_eq_single i (fun j _ hj => if_neg hj) (fun h' => absurd (Finset.mem_range.2 hi) h'), if_pos rfl] at this
+  rw [Finset.sum_eq_single i (fun j _ hj => ite_eq_right hj) (fun h' => absurd (Finset.mem_range.2 hi) h'), ite_eq_left rfl] at this
   exact sub_eq_zero.1 this
 
 end GlobalTheory.CapelliCoeffs
@@ -1207,8 +1207,8 @@ theorem comp_of_rowZ {O : Type} [CommRing O] {N : ℕ} (H : Fin N → ℤ) (h : 
         rw [GlobalTheory.LvT.KerLat.weight_rowZ] at this
         exact_mod_cast this.symm
     by_cases hw : (fun c => (w c : ℤ)) = H
-    · rw [if_pos (key.mpr hw), if_pos hw]
-    · rw [if_neg (mt key.mp hw), if_neg hw, AddMonoidAlgebra.coeff_zero] <;> rfl
+    · rw [ite_eq_left (key.mpr hw), ite_eq_left hw]
+    · rw [ite_eq_right (mt key.mp hw), ite_eq_right hw, AddMonoidAlgebra.coeff_zero] <;> rfl
 
 theorem eq_zero_of_rowZ_neg {O : Type} [CommRing O] {N : ℕ} (H : Fin N → ℤ) (h : MvPolynomial (Fin N × Fin N) O)
     (hh : IsWeightedHomogeneous (GlobalTheory.LvT.KerLat.rowZ N N) h H) (c : Fin N) (hc : H c < 0) : h = 0 := by
@@ -1249,7 +1249,7 @@ theorem comp_rowAct_transvection {O : Type} [CommRing O] {N : ℕ} (a b : Fin N)
     by_cases hk1 : k = 1
     · subst hk1
       by_cases hb : 1 ≤ w b
-      · rw [if_pos, if_pos rfl]
+      · rw [ite_eq_left, ite_eq_left rfl]
         funext c
         simp only [Pi.add_apply, Pi.sub_apply, Pi.smul_apply, Pi.single_apply]
         by_cases hca : c = a
@@ -1260,12 +1260,12 @@ theorem comp_rowAct_transvection {O : Type} [CommRing O] {N : ℕ} (a b : Fin N)
       · have h0 : rowDiv O a b 1 h = 0 :=
           eq_zero_of_rowZ_neg _ _ hs b (by simp [Pi.single_apply, Ne.symm hab]; omega)
         simp [h0]
-    · rw [if_neg hk1, if_neg]
+    · rw [ite_eq_right hk1, ite_eq_right]
       intro he
       have := congrFun he a
       simp [hab] at this
       omega
-  rw [Finset.sum_congr rfl hk, Finset.sum_ite_eq', if_pos (by simp)]
+  rw [Finset.sum_congr rfl hk, Finset.sum_ite_eq', ite_eq_left (by simp)]
 
 end GlobalTheory.PolarFormula
 

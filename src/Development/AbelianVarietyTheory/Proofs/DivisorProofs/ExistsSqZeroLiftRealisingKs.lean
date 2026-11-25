@@ -334,21 +334,6 @@ theorem exists_combo {k F : Type} [Field k] [CommRing F] {a : ℕ} (χ : Fin a �
   refine Finset.sum_congr rfl fun l _ => ?_
   rw [Pi.smul_apply, ← hc l, smul_eq_mul]
 
-theorem injective_chars {p : ℕ} [Fact p.Prime] {D : GlobalTheory.UPel.HT.Datum p} {R : Type} [CommRing R]
-    (b : GlobalTheory.UPel.HT.Base D R) {k : Type} [Field k] (β : R →+* k) :
-    Function.Injective (fun i => β.comp (b.t i)) := by
-  intro i j h
-  by_contra hij
-  have h1 := b.comax i j hij
-  have h2 : Ideal.map β (Ideal.span (Set.range fun x => b.t i x - b.t j x)) = ⊥ := by
-    rw [Ideal.map_span, Ideal.span_eq_bot]
-    rintro _ ⟨_, ⟨x, rfl⟩, rfl⟩
-    have := RingHom.congr_fun h x
-    simp only [RingHom.comp_apply] at this
-    rw [map_sub, this, sub_self]
-  rw [h1, Ideal.map_top] at h2
-  exact (top_ne_bot : (⊤ : Ideal k) ≠ ⊥) h2
-
 end GlobalTheory.HTGlueLie
 
 noncomputable section
@@ -573,7 +558,7 @@ theorem glueFil_lie : ∀ (p : ℕ) [Fact p.Prime] (D : GlobalTheory.UPel.HT.Dat
   have hrho : ∀ π, crd o₀.A π e' ∈ rhoPart o₀ β := fun π => by
     rw [he', crd_smul, map_sub, hT, crd_smul]
     exact smul_mem_rhoPart o₀ β _ _
-  choose r lam c hc using fun i => exists_combo (fun j => β.comp (b.t j)) (injective_chars b β)
+  choose r lam c hc using fun i => exists_combo (fun j => β.comp (b.t j)) (b.injective_char_comp β)
     (fun j => if i = j then (1 : k) else 0)
   have hc' : ∀ i j, ∑ l, lam i l * β (b.t j (c i l)) = if i = j then 1 else 0 := hc
   refine ⟨fun i => ∑ l, algebraMap k (TrivSqZeroExt k (Fin d → k)) (lam i l) •

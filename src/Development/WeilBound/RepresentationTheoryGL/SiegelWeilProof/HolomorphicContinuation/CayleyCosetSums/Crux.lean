@@ -316,15 +316,15 @@ theorem ks_single_eq (a b : Fin n) :
         rw [Equiv.swap_apply_eq_iff, Equiv.swap_apply_right]
         exact hi
       simp [this, Ne.symm hi]
-  · simp only [hj, if_false]
+  · simp only [hj, ite_false]
     by_cases h : Equiv.swap a b i = j
-    · simp only [h, if_true]
+    · simp only [h, ite_true]
       have : ¬ (a = i ∧ b = j) := fun h' => hj h'.2.symm
-      rw [if_neg this]
+      rw [ite_eq_right this]
       ring
-    · simp only [h, if_false]
+    · simp only [h, ite_false]
       have : ¬ (a = i ∧ b = j) := fun h' => hj h'.2.symm
-      rw [if_neg this]
+      rw [ite_eq_right this]
       ring
 
 theorem kSplit : KSplit := by

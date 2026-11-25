@@ -252,7 +252,7 @@ theorem exists_inert {R : Ranks} (H : Host R) :
     have := Nat.le_of_mem_primeFactors h
     omega
   unfold Host.cls primeClass
-  rw [if_neg hs, if_neg (by omega), if_neg (by omega), if_neg (by rw [hj]; norm_num)]
+  rw [ite_eq_right hs, ite_eq_right (by omega), ite_eq_right (by omega), ite_eq_right (by rw [hj]; norm_num)]
   split_ifs
   · exact Or.inl rfl
   · exact Or.inr rfl

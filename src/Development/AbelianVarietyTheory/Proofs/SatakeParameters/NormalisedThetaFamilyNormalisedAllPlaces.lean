@@ -460,14 +460,14 @@ theorem hermitianSelfDual_of_fourfoldBlock {n : Type} [Fintype n] [DecidableEq n
       exact ⟨m, by rw [key, hm]⟩
     rw [hsd] at h1
     have h2 := h1 0
-    rwa [Formalism.L2.Th1.H.CmData.slice_embA, if_pos rfl] at h2
+    rwa [Formalism.L2.Th1.H.CmData.slice_embA, ite_eq_left rfl] at h2
   · intro hx y hy
     have h1 : Formalism.L2.Th1.H.CmData.embA 0 x ∈ dualLat (matH (blk4 h)) (pow4 Λ) := by
       rw [hsd]
       exact Formalism.L2.Th1.H.CmData.embA_mem Λ 0 hx
     obtain ⟨m, hm⟩ := h1 _ (Formalism.L2.Th1.H.CmData.embA_mem Λ 0 hy)
     refine ⟨m, ?_⟩
-    rw [key, Formalism.L2.Th1.H.CmData.slice_embA, if_pos rfl] at hm
+    rw [key, Formalism.L2.Th1.H.CmData.slice_embA, ite_eq_left rfl] at hm
     exact hm
 
 end GlobalTheory.ThLoc.LocStd
@@ -558,7 +558,7 @@ theorem locNorm_reix (a₀ : ℕ) (b₀ c₀ : ℤ) (dK : ℕ) (ha : 0 < a₀) (
     show (∑ i, ∑ j, y i * _ * conj (x j)) = conj (∑ i, ∑ j, x i * _ * conj (y j))
 
     simp only [Matrix.smul_apply, Matrix.one_apply, smul_eq_mul, mul_ite, mul_one, mul_zero, ite_mul, zero_mul,
-    Finset.sum_ite_eq, Finset.mem_univ, if_true, map_sum, map_mul, Complex.conj_conj, map_inv₀, Complex.conj_ofReal]
+    Finset.sum_ite_eq, Finset.mem_univ, ite_true, map_sum, map_mul, Complex.conj_conj, map_inv₀, Complex.conj_ofReal]
     refine Finset.sum_congr rfl fun i _ => ?_
     ring
   have hα : ∀ x, alphaQ (Real.sqrt dK / 2) (Formalism.L2.Th1.H.stdH L₀ (Fin 4 × n')) x =
@@ -643,7 +643,7 @@ theorem latAt_std : ∀ (D : D7) (cc : Ideal (𝓞 D.host.K)) (δ : ℂ), Taylor
     let lm : TaylorLogMetric.Qbar →+* ℂ_[p] := (ι : ℂ →+* ℂ_[p]).comp (TaylorLogMetric.Qbar).val.toRingHom
     obtain ⟨h1, h2⟩ := Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.RestC.chiFacUnit χ hχ p lm N N' L L' hA hL hL'
     have e : TaylorLogMetric.lamC lm (Base.chiFac χ N N' L L') = ι (Base.chiFac χ N N' L L') := by
-      simp only [TaylorLogMetric.lamC, dif_pos h1]
+      simp only [TaylorLogMetric.lamC, dite_eq_left h1]
       rfl
     rw [← e, h2]
   have key := Formalism.L2.Ker.KS.locNorm_thF_of s B' _root_.GlobalTheory.locNormScale _root_.GlobalTheory.locNormPow_tensorPowers _root_.GlobalTheory.locNormInter χ a₀ b₀ c₀ ha hd lam hlam p ι

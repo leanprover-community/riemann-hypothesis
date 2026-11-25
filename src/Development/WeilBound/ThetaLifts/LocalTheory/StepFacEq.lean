@@ -52,8 +52,8 @@ theorem prod_w {T₀ T : Finset (Pl F)} (h : T₀ ⊆ T) (w u : Pl F → ℂ) :
     ∏ v ∈ T, (if v ∈ T₀ then w v else u v) = (∏ v ∈ T₀, w v) * ∏ v ∈ T \ T₀, u v := by
   rw [← Finset.prod_sdiff h, mul_comm]
   congr 1
-  · exact Finset.prod_congr rfl fun v hv => if_pos hv
-  · exact Finset.prod_congr rfl fun v hv => if_neg (Finset.mem_sdiff.1 hv).2
+  · exact Finset.prod_congr rfl fun v hv => ite_eq_left hv
+  · exact Finset.prod_congr rfl fun v hv => ite_eq_right (Finset.mem_sdiff.1 hv).2
 
 theorem nu_eq {X X' : Chars F E} {a a' : ℕ} (h : X.IsGood B a a') (h' : X'.IsGood B a a') (l : (AE F E)ˣ)
     (hl : At (evI F) ((l : AE F E) - 1)) : X.ν l = X'.ν l := by

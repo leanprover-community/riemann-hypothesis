@@ -194,7 +194,7 @@ theorem isSBHalf_cosLoc : ∀ {D : D7} (S T : HSp D) (ΛS : Submodule (𝓞 D.ho
   refine ⟨fun t ht => ?_, (a * c) * (b * Ideal.absNorm (∏ w ∈ P, w.asIdeal ^ n)), by positivity,
     fun u hu hh t => ?_, fun t ht => ?_⟩
   · by_contra h
-    exact ht (by unfold cosLoc; rw [if_neg fun H => h H.1])
+    exact ht (by unfold cosLoc; rw [ite_eq_right fun H => h H.1])
   · have hk : IsSmall P βT βS n (((a * c) * (b * Ideal.absNorm (∏ w ∈ P, w.asIdeal ^ n))) • u) := by
       refine isSmall_of_mem_hatMx hFS hFT P n ?_
       rw [mul_nsmul']
@@ -205,7 +205,7 @@ theorem isSBHalf_cosLoc : ∀ {D : D7} (S T : HSp D) (ΛS : Submodule (𝓞 D.ho
     exact ⟨fun h => by simpa using isSmall_sub h hk, fun h => isSmall_add h hk⟩
   · obtain ⟨hth, hts⟩ : IsHalf e t ∧ IsSmall P βT βS n (t - r) := by
       by_contra h
-      exact ht (by unfold cosLoc; rw [if_neg h])
+      exact ht (by unfold cosLoc; rw [ite_eq_right h])
     set X := Comparison₂.fr βT βS (t.map (toEAf D))
     set R := Comparison₂.fr βT βS (r.map (toEAf D))
     have hX : Comparison₂.fr βT βS ((c • t).map (toEAf D)) = (c : Lev.EAf D) • (toEAf D e • X) := by

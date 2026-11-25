@@ -298,7 +298,7 @@ theorem gamma_neg (r : ℕ) (T T' : ℝ) (hT : 0 < T) (hT' : 0 < T') (s : ℂ)
       · omega
     have := hqpos _ _ hxy
     linarith
-  · push_neg at hin
+  · push Not at hin
     obtain ⟨a, ha⟩ := hin
     have hpos : 0 < ∑ b, Complex.normSq (c (Sum.inl b)) :=
       Finset.sum_pos' (fun b _ => Complex.normSq_nonneg _)

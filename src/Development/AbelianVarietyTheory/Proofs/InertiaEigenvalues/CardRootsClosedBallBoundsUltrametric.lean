@@ -237,8 +237,8 @@ theorem dominantIndex_prod_X_sub_C (K : Type) [NormedField K] [IsUltrametricDist
     refine ⟨fun j => ?_, fun j hj => ?_⟩
     · rcases Nat.eq_zero_or_pos j with h | h
       · subst h; simp
-      · rw [coeff_C, if_neg (Nat.pos_iff_ne_zero.mp h)]; simp
-    · rw [coeff_C, if_neg (Nat.pos_iff_ne_zero.mp hj)]; simp [hc]
+      · rw [coeff_C, ite_eq_right (Nat.pos_iff_ne_zero.mp h)]; simp
+    · rw [coeff_C, ite_eq_right (Nat.pos_iff_ne_zero.mp hj)]; simp [hc]
   | cons a s ih =>
     intro c hc
     obtain ⟨h1, h2⟩ := ih c hc
@@ -247,9 +247,9 @@ theorem dominantIndex_prod_X_sub_C (K : Type) [NormedField K] [IsUltrametricDist
       rw [Multiset.map_cons, Multiset.prod_cons, mul_left_comm]
     rw [heq, Multiset.filter_cons]
     by_cases ha : ‖a‖ ≤ ρ
-    · rw [if_pos ha, Multiset.singleton_add, Multiset.card_cons]
+    · rw [ite_eq_left ha, Multiset.singleton_add, Multiset.card_cons]
       exact _root_.GlobalTheory.newton_step_root_in_disc K _ a ρ _ hρ ha h1 h2
-    · rw [if_neg ha, zero_add]
+    · rw [ite_eq_right ha, zero_add]
       exact _root_.GlobalTheory.newton_step_root_outside_disc K _ a ρ _ hρ (not_le.mp ha) h1 h2
 
 theorem card_roots_closedBall_eq_dominantIndex :

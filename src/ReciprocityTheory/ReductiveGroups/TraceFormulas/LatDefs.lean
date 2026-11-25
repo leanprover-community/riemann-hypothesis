@@ -396,10 +396,6 @@ theorem pr_eq_zero_of_swap_cob {O : Type} [CommRing O] [IsDomain O] [IsDiscreteV
     (h : ∀ g k, pairKO D.bT D.T (D.ρA g (x.1 k)) (t.1 g) = ((D.ε g : Oˣ) : O) • c k - c (g * k) + c g) :
     D.pr (Submodule.Quotient.mk x) (Submodule.Quotient.mk t) = 0 := hT2Core.out.elem.swapCob D x t c hc h
 
-theorem quotShape_of_equiv {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] {X : Type} [AddCommGroup X] [Module O X]
-    (Hc F Hc' F' : Submodule O X) (d : ℕ) (e : (Hc ⧸ F.comap Hc.subtype) ≃ₗ[O] (Hc' ⧸ F'.comap Hc'.subtype))
-    (h : QuotShape Hc F d) : QuotShape Hc' F' d := hT2Core.out.elem.shapeEquiv Hc F Hc' F' d e h
-
 theorem GlobAlg.isOpen_range_OL {l : ℕ} [Fact l.Prime] (LL : Formalism.BasicNotions.Loc.FinExt l) :
     IsOpen (Set.range (algebraMap ↥(Formalism.BasicNotions.Loc.OL LL) ↥LL.1)) := hT2Core.out.elem.openOL LL
 

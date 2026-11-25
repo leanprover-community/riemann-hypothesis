@@ -160,7 +160,7 @@ theorem un_mem {r : I → I → Prop} (w : ι) {a b : I} (h : r a b) : un w a b 
   by_cases e : w' = w
   · subst e
     simp only [un, Pi.single_eq_same, Matrix.single_apply]
-    rw [if_neg]
+    rw [ite_eq_right]
     rintro ⟨rfl, rfl⟩
     exact hcd h
   · simp [un, Pi.single_eq_of_ne e]
@@ -328,7 +328,7 @@ theorem side_one {La : Ix r s → ℚ} {T : Type} [AddCommGroup T] [Module ℂ T
     if h : sameBlock a b then (ρ a b).restrict (kSt_cycK ρ f a b h) else 0
   have hρV : ∀ a b, sameBlock a b → ∀ v : V, ((ρV a b v : V) : A) = ρ a b v := by
     intro a b h v
-    simp only [ρV, dif_pos h]
+    simp only [ρV, dite_eq_left h]
     rfl
   let ιV : V →ₗ[ℂ] T := ι ∘ₗ V.subtype
   have hιV : ∀ a b, sameBlock a b → ∀ v, ιV (ρV a b v) = act (Eab a b) (ιV v) := by

@@ -236,14 +236,14 @@ private theorem padicValNat_prod_pow_sub_pow_eq_padicValNat_factorial (p q : ℕ
       obtain ⟨m, rfl⟩ : ∃ m, j = m + 1 := ⟨j - 1, by omega⟩
       have hdiv' : (n + 1) / (p - 1) = m + 1 := by rw [hj, Nat.mul_div_cancel_left _ hp1]
       have hn : n / (p - 1) = m := by
-        rw [Nat.succ_div, if_pos ⟨_, hj⟩] at hdiv'
+        rw [Nat.succ_div, ite_eq_left ⟨_, hj⟩] at hdiv'
         omega
-      rw [if_pos ⟨_, hj⟩, hn, hj, hval _ hj0]
+      rw [ite_eq_left ⟨_, hj⟩, hn, hj, hval _ hj0]
       simp only [Nat.padicValNat_def]
       rw [padicValNat_factorial_mul, padicValNat_factorial_mul,
         Nat.factorial_succ, Nat.multiplicity_mul (by omega) (Nat.factorial_ne_zero _)]
       ring
-    · rw [if_neg hd, add_zero, Nat.padicValNat_def,
+    · rw [ite_eq_right hd, add_zero, Nat.padicValNat_def,
         padicValNat.eq_zero_of_not_dvd (fun h => hd (hdiv _ (by omega) h)), zero_add]
 
 open Matrix in

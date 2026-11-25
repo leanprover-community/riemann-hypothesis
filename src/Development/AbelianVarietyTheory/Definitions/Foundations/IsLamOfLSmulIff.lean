@@ -87,13 +87,6 @@ theorem FinSupp.exists_loss {lam : (ℕ → Qbar l) →ₗ[Qbar l] Qbar l} (h : 
   rw [← mul_sub, norm_mul]
   exact mul_le_mul_of_nonneg_left (hfg s) (norm_nonneg _)
 
-section Induced
-
-variable {X : Tower Ω ε} {A : ValuationSubring Ω} {N w : ℕ} {j : Ω →+* Qbar l} {pr : X.Fn l → Fin 2 → Qbar l}
-  {lam : (ℕ → Qbar l) →ₗ[Qbar l] Qbar l}
-
-end Induced
-
 end GlobalTheory.KummerEisensteinGalois
 
 end

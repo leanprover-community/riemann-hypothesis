@@ -123,18 +123,18 @@ theorem gf_X_mul (k : τ) (p q : MvPolynomial τ ℂ) : gf w (X k * p) q = κ * 
   · rw [X, monomial_mul, one_mul, pderiv_monomial, gf_monomial, gf_monomial]
     by_cases h : Finsupp.single k 1 + s = t
     · subst h
-      rw [if_pos rfl, if_pos (add_tsub_cancel_left _ _).symm, hw]
+      rw [ite_eq_left rfl, ite_eq_left (add_tsub_cancel_left _ _).symm, hw]
       simp only [Finsupp.add_apply, Finsupp.single_eq_same]
       push_cast; ring
-    · rw [if_neg h]
+    · rw [ite_eq_right h]
       by_cases h' : s = t - Finsupp.single k 1
-      · rw [if_pos h']
+      · rw [ite_eq_left h']
         have : t k = 0 := by
           by_contra h0
           apply h
           rw [h', add_tsub_cancel_of_le (Finsupp.single_le_iff.mpr (Nat.one_le_iff_ne_zero.mpr h0))]
         simp [this]
-      · rw [if_neg h']; ring
+      · rw [ite_eq_right h']; ring
   · rw [mul_add, gf_add_left, gf_add_left, h1, h2, mul_add]
   · rw [gf_add_right, map_add (f := _), gf_add_right, h1, h2, mul_add]
 
@@ -144,20 +144,20 @@ theorem gf_pderiv (k : τ) (p q : MvPolynomial τ ℂ) : κ * gf w (pderiv k p) 
   · rw [X, monomial_mul, one_mul, pderiv_monomial, gf_monomial, gf_monomial]
     by_cases h : s = Finsupp.single k 1 + t
     · subst h
-      rw [if_pos rfl, if_pos (add_tsub_cancel_left _ _), hw, add_tsub_cancel_left]
+      rw [ite_eq_left rfl, ite_eq_left (add_tsub_cancel_left _ _), hw, add_tsub_cancel_left]
       simp only [Finsupp.add_apply, Finsupp.single_eq_same, star_mul]
       push_cast
       simp only [Complex.star_def, Complex.conj_natCast, map_add (f := _), map_one]
       ring
-    · rw [if_neg h]
+    · rw [ite_eq_right h]
       by_cases h' : s - Finsupp.single k 1 = t
-      · rw [if_pos h']
+      · rw [ite_eq_left h']
         have : s k = 0 := by
           by_contra h0
           apply h
           rw [← h', add_tsub_cancel_of_le (Finsupp.single_le_iff.mpr (Nat.one_le_iff_ne_zero.mpr h0))]
         simp [this]
-      · rw [if_neg h']; ring
+      · rw [ite_eq_right h']; ring
   · rw [map_add (f := _), gf_add_left, gf_add_left, ← h1, ← h2, mul_add]
   · rw [gf_add_right, mul_add, mul_add, gf_add_right, h1, h2]
 

@@ -162,7 +162,7 @@ theorem coord_mem_latVWS (S T : HSp D) (hr : S.rank ≤ T.rank) (Z : Finset (Hei
     refine (AddSubgroup.closure_le _).2 ?_
     rintro w ⟨α, hα, h0, a, ha, s, hs, t, ht, rfl⟩
     refine AddSubgroup.subset_closure ⟨α, hα, fun v hv => h0 v (not_not.2 hv), a, ha, s, hs, t, ht, ?_⟩
-    simp only [if_pos hr]
+    simp only [ite_eq_left hr]
     exact coord_gen S T _ a s t
   exact this hu
 

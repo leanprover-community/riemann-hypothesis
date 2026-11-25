@@ -59,7 +59,7 @@ theorem perm_app (h : C.LPt) (n : ℕ) (hh : D.IsLocPt h n) (ζ : ℂ) (hζ : ζ
     have hb := ((hh.2 ▸ D.ptPerm h) a).isLt
     rw [cast_perm_val, Formalism.FourierDecayAlt.P.Dx1.ptPerm_val, Formalism.FourierDecayAlt.P.Dx2.SL.partner_append 1 ζ h _ (by
       simp only [Fin.val_cast, Fin.val_castSucc]; omega)]
-    rw [if_pos (by simp only [Fin.val_cast, Fin.val_castSucc]; omega)]
+    rw [ite_eq_left (by simp only [Fin.val_cast, Fin.val_castSucc]; omega)]
     simp only [Fin.val_cast, Fin.val_castSucc]
     rw [cast_perm_val]
     have e1 := Formalism.FourierDecayAlt.P.Dx1.ptPerm_val h (D.ptPerm h (Fin.cast hh.2.symm a))

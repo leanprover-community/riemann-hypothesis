@@ -95,7 +95,7 @@ theorem decomp_U_perpX {f f' : Fin (r + 1) → V} {T : F} (hF : Formalism.MainNo
     have h2 := congrFun h1 b
     rw [hZp] at h2
     simp only [Matrix.mulVec, dotProduct, Pi.single_apply, mul_ite, mul_zero, Finset.sum_ite_eq',
-      Finset.mem_univ, if_true, Pi.smul_apply, smul_eq_mul] at h2
+      Finset.mem_univ, ite_true, Pi.smul_apply, smul_eq_mul] at h2
     rw [← hd] at h2
     calc p b = ↑d⁻¹ * (↑d * p b) := by rw [← mul_assoc, Units.inv_mul, one_mul]
       _ = _ := by

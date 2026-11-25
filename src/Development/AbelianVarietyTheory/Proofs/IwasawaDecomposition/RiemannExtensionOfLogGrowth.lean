@@ -220,7 +220,7 @@ private theorem exists_differentiableOn_ball_of_log_bound {ψ h : ℂ → ℂ} {
     by_cases hz : ψ s₀ ≠ 0
     · exact ⟨_, (hψ.continuousOn.isOpen_inter_preimage isOpen_ball isOpen_compl_singleton).mem_nhds
         ⟨hs₀, hz⟩, h, hh, fun x _ => rfl⟩
-    push_neg at hz
+    push Not at hz
     obtain ⟨C, k, hCk⟩ := hb s₀ hs₀
     have hN : {s | s ∈ ball (0 : ℂ) ρ ∧ (s ≠ s₀ → ψ s ≠ 0)} ∈ 𝓝 s₀ := by
       have := eventually_nhdsWithin_iff.mp (hiso s₀ hs₀)
@@ -251,7 +251,7 @@ theorem _root_.GlobalTheory.LogExt.riemann_extension_log (V : Type) [NormedAddCo
   intro b₀ hb₀
   by_cases h0 : φ b₀ ≠ 0
   · exact ⟨_, hSo.mem_nhds ⟨hb₀, h0⟩, u, hu, fun x hx => rfl⟩
-  push_neg at h0
+  push Not at h0
   obtain ⟨ε, hε, hεU⟩ := Metric.isOpen_iff.mp hU b₀ hb₀
   obtain ⟨b₁, hb₁S, hb₁⟩ := Metric.mem_closure_iff.mp (hd hb₀) ε hε
   set v := b₁ - b₀ with hv

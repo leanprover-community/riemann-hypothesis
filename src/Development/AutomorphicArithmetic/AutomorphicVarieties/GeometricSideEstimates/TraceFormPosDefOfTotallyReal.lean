@@ -320,20 +320,20 @@ theorem UpperTheory.geometric_side_comparison :
   have hS1 : ∑' x, Real.exp (-Real.pi * ‖φ x‖ ^ 2) ≤
       4 * ∑' x, ‖φ x‖ ^ 2 * Real.exp (-Real.pi * ‖φ x‖ ^ 2) + F.card := by
     have hg : Summable (fun x => if x ∈ F then (1 : ℝ) else 0) :=
-      summable_of_ne_finset_zero (s := F) (fun x hx => if_neg hx)
+      summable_of_ne_finset_zero (s := F) (fun x hx => ite_eq_right hx)
     have hsum : ∑' x, (if x ∈ F then (1 : ℝ) else 0) = F.card := by
-      rw [tsum_eq_sum (s := F) (fun x hx => if_neg hx)]
+      rw [tsum_eq_sum (s := F) (fun x hx => ite_eq_right hx)]
       simp
     have hle : ∀ x, Real.exp (-Real.pi * ‖φ x‖ ^ 2) ≤
         4 * (‖φ x‖ ^ 2 * Real.exp (-Real.pi * ‖φ x‖ ^ 2)) + (if x ∈ F then (1 : ℝ) else 0) := by
       intro x
       have hp := Real.exp_pos (-Real.pi * ‖φ x‖ ^ 2)
       by_cases hx : x ∈ F
-      · rw [if_pos hx]
+      · rw [ite_eq_left hx]
         have : Real.exp (-Real.pi * ‖φ x‖ ^ 2) ≤ 1 :=
           Real.exp_le_one_iff.mpr (by linarith [mul_nonneg Real.pi_pos.le (sq_nonneg ‖φ x‖)])
         linarith [mul_nonneg (sq_nonneg ‖φ x‖) hp.le]
-      · rw [if_neg hx]
+      · rw [ite_eq_right hx]
         simp only [hF, Set.Finite.mem_toFinset, Set.mem_setOf_eq, not_lt] at hx
         have : (1 : ℝ) / 4 ≤ ‖φ x‖ ^ 2 := by linarith [pow_le_pow_left₀ (by norm_num) hx 2]
         linarith [mul_le_mul_of_nonneg_right this hp.le]

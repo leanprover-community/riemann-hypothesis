@@ -87,10 +87,4 @@ end Atlas
 
 variable {F : Type} [Field F] [NumberField F] {C : CxSt F} {Y : Var F}
 
-section Met
-
-variable {σ : F →+* ℂ} {Δ : Y.Dv}
-
-end Met
-
 end GlobalTheory.Mean4O.CombForm

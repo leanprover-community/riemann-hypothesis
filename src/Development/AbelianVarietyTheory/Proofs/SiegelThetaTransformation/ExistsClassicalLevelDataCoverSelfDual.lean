@@ -448,7 +448,7 @@ theorem exists_levTie : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (
     (MonoidHom.mk' (fun g => (ψ (adj g))⁻¹) fun g g' => by rw [hadj, map_mul, mul_inv, mul_comm])
   let ext : (Fin (Dw.p + Dw.q) → LaJ Xo c d) → Fin n → LaJ Xo c d := fun x b =>
     if h : b.val < Dw.p + Dw.q then x ⟨b, h⟩ else 0
-  have hext : ∀ x i, ext x (Fin.castLE hn i) = x i := fun x i => dif_pos i.2
+  have hext : ∀ x i, ext x (Fin.castLE hn i) = x i := fun x i => dite_eq_left i.2
   let f : (Fin (Dw.p + Dw.q) → LaJ Xo c d) → ℂ := fun x => σ (ph (ext x))
   have hf : ∀ x, σ (ph x) = f fun i => x (Fin.castLE hn i) := fun x =>
     congrArg σ (pa _ _ fun b hb => (hext (fun i => x (Fin.castLE hn i)) ⟨b, hb⟩).symm)

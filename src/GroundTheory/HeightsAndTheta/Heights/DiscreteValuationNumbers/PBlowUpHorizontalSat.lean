@@ -80,7 +80,7 @@ theorem BlowUpHorizontalSat.full : BlowUpHorizontalSat.Statement.{u} := by
 
   have hWsupp : W ∈ (blowUpOf P u ⊔ Ideal.span {liftForm x}).minimalPrimes ∧ IsRelevant W := by
     by_contra h
-    exact hW (by rw [divCycle, dif_neg h])
+    exact hW (by rw [divCycle, dite_eq_right h])
   obtain ⟨hmin, hWrel⟩ := hWsupp
   have hWp : W.IsPrime := hmin.1.1
   have hBW : blowUpOf P u ≤ W := le_sup_left.trans hmin.1.2

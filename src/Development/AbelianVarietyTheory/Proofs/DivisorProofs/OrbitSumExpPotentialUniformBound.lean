@@ -81,7 +81,7 @@ theorem norm_lminor_inv {r p : ℕ} (hp : p ≤ r) {g : Matrix (Fin r) (Fin r) �
     have ha : ((Fin.castLE hp a : Fin r) : ℕ) < p := a.isLt
     have hb : ((Fin.castLE hp b : Fin r) : ℕ) < p := b.isLt
     simp only [Matrix.submatrix_apply, Matrix.diagonal_mul, Matrix.mul_diagonal, sgnMat,
-      Matrix.conjTranspose_apply, sgn, if_pos ha, if_pos hb]
+      Matrix.conjTranspose_apply, sgn, ite_eq_left ha, ite_eq_left hb]
     simp
   unfold lminor
   rw [hinv]

@@ -276,12 +276,12 @@ theorem exists_poly {g : ℕ} (hg : g.Prime) : ∃ Q : Polynomial ℤ,
   have e : ((g : Polynomial ℤ) * Polynomial.X * 1 * F) = Polynomial.C (g : ℤ) * (Polynomial.X * F) := by
     simp [mul_assoc]
   simp only [Polynomial.coeff_X_add_one_pow, one_pow, Polynomial.coeff_add, Polynomial.coeff_X_pow, e, Polynomial.coeff_C_mul,
-    Nat.choose_one_right, if_neg hg1] at h1
+    Nat.choose_one_right, ite_eq_right hg1] at h1
   have h2 : (Polynomial.X * F).coeff 1 = F.coeff 0 := Polynomial.coeff_X_mul F 0
   rw [h2, Polynomial.coeff_one] at h1
   have h3 : F.coeff 0 = 1 := by
     have hg0 : (g : ℤ) ≠ 0 := by exact_mod_cast hg.ne_zero
-    simp only [one_ne_zero, if_false, add_zero, zero_add] at h1
+    simp only [one_ne_zero, ite_false, add_zero, zero_add] at h1
     exact (mul_eq_left₀ hg0).1 h1.symm
   refine ⟨F.divX, ?_⟩
   have h4 : F = 1 + Polynomial.X * F.divX := by

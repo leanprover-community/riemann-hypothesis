@@ -80,7 +80,7 @@ theorem exists_coeff {A B : HSp D} {c : ℕ} {ε : D.host.E} (d : HermitianOrtho
   have hκ : antiDiagonalSignGramMatrix c ε p.rev p ≠ 0 := by
     have := p.2
     have e : p.rev.1 + p.1 + 1 = c := by rw [Fin.val_rev]; omega
-    simp only [antiDiagonalSignGramMatrix, if_pos e]
+    simp only [antiDiagonalSignGramMatrix, ite_eq_left e]
     split_ifs
     · exact hε
     · exact one_ne_zero
@@ -94,7 +94,7 @@ theorem exists_coeff {A B : HSp D} {c : ℕ} {ε : D.host.E} (d : HermitianOrtho
     have := p.2
     have hne : ¬ (p.rev.1 + q.1 + 1 = c) := by
       intro h; apply hq; apply Fin.ext; rw [Fin.val_rev] at h; omega
-    simp only [antiDiagonalSignGramMatrix, if_neg hne, zero_mul]
+    simp only [antiDiagonalSignGramMatrix, ite_eq_right hne, zero_mul]
   rw [e2, smul_eq_mul, inv_mul_cancel_left₀ hκ]
 
 def formHom {R : Type} [CommRing R] {n : ℕ} (r : Fin n → R) : (Fin n → R) →+ R where

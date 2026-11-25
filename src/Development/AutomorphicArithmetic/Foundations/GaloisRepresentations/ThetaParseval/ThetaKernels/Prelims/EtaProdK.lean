@@ -242,11 +242,11 @@ private theorem ev_algebraMap_pairA_eq_ite {σ : E →ₐ[F] E} (hcm : IsCMExt F
   rw [ev_fin]
   rcases hι (HeightOneSpectrum.under (𝓞 F) Q) with ⟨h1, h2⟩ | ⟨h1, h2⟩
   · have hf : ¬ Fx σ Q := fun hf => not_sq_of_fx hcm hd hθ hθ2 hb hf h2
-    rw [if_neg hf, h1, map_one]
+    rw [ite_eq_right hf, h1, map_one]
   · have hf : Fx σ Q := by
       by_contra hf
       exact h2 (sq_of_split hcm hd hθ hθ2 hb (isSplit_of_not_fx hcm hf))
-    rw [if_pos hf, h1, map_zero]
+    rw [ite_eq_left hf, h1, map_zero]
 
 private theorem exists_idele_eta_neg_one_at_place {σ : E →ₐ[F] E} (hcm : IsCMExt F E σ) {θ : E} {d : 𝓞 F}
     (hd : (d : F) ≠ 0) (hθ : σ θ = -θ) (hθ2 : θ * θ = algebraMap F E d)
@@ -410,7 +410,7 @@ private theorem eta_prod_all {σ : E →ₐ[F] E} {B : Base F E} (hcm : IsCMExt 
             simp only [map_sub, map_add (f := _), map_mul, map_one, ev_rI, evs]
             by_cases hQP : Q = P
             · subst hQP
-              rw [if_pos hP]
+              rw [ite_eq_left hP]
               ring
             · rw [hzQ Q hQP]
               split_ifs <;> ring
@@ -480,7 +480,7 @@ private theorem eta_prod_all {σ : E →ₐ[F] E} {B : Base F E} (hcm : IsCMExt 
   have hκg : κ (GlobalTheory.InertTrivial.proj (1 - rI F E - s) hg xA) = 1 := by
     apply hκ.ker
     intro Q hQ
-    rw [wv_apply, hev_proj, evg, if_neg hQ]
+    rw [wv_apply, hev_proj, evg, ite_eq_right hQ]
     simp
   have hκr : κ (GlobalTheory.InertTrivial.proj (rI F E) hrr xA) = 1 := by
     apply hκ.ker

@@ -412,14 +412,14 @@ theorem exists_etaleCochain_constant_zeroSimplices {X : Scheme.{0}} {I : Cx R} {
       intro p s h V U g x
       by_cases hp : p = 0
       · subst hp
-        simp only [dif_pos]
+        simp only [dite_eq_left]
         rw [map_res]
         exact congrArg _ (he V U g x)
-      · simp only [hp, dif_neg, not_false_eq_true]
+      · simp only [hp, dite_eq_right, not_false_eq_true]
         exact map_zero _)
   refine ⟨α, fun U x => ?_, fun p s h U x => ?_⟩
   · refine (hα 0 n _ U x).trans ?_
-    simp only [dif_pos, eqToHom_refl]
+    simp only [dite_eq_left, eqToHom_refl]
     rfl
   · refine (hα (p + 1) s h U x).trans ?_
     simp

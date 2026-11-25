@@ -22,14 +22,14 @@ theorem md_single {ι : Type} [DecidableEq ι] {n : ℕ} (l' l : ι) (b : Fin n)
   unfold multideg
   by_cases h : l' = l
   · subst h
-    rw [if_pos rfl, Finset.sum_eq_single b]
+    rw [ite_eq_left rfl, Finset.sum_eq_single b]
     · simp
     · intro c _ hc
-      rw [Finsupp.single_apply, if_neg (fun hh => hc (congrArg Prod.snd hh).symm)]
+      rw [Finsupp.single_apply, ite_eq_right (fun hh => hc (congrArg Prod.snd hh).symm)]
     · intro hh; exact absurd (Finset.mem_univ b) hh
-  · rw [if_neg h]
+  · rw [ite_eq_right h]
     refine Finset.sum_eq_zero fun c _ => ?_
-    rw [Finsupp.single_apply, if_neg (fun hh => h (congrArg Prod.fst hh))]
+    rw [Finsupp.single_apply, ite_eq_right (fun hh => h (congrArg Prod.fst hh))]
 
 theorem phi_single {σ : Type} (φ : (σ →₀ ℕ) →+ ℕ) (v : σ) (e : ℕ) :
     φ (Finsupp.single v e) = e * φ (Finsupp.single v 1) := by
@@ -47,11 +47,11 @@ theorem sum_lam_le (h2 : 2 ≤ numSeg X.TT) (d : Fin (2 * segS X.TT j + 1 + 1) �
   by_cases hl : ∃ t0, lamS X j t0 = l
   · obtain ⟨t0, rfl⟩ := hl
     rw [Finset.sum_eq_single t0]
-    · rw [if_pos rfl]; exact hd t0
+    · rw [ite_eq_left rfl]; exact hd t0
     · intro b _ hb
-      rw [if_neg (fun hh => hb (lamS_injective X j h2 hh))]
+      rw [ite_eq_right (fun hh => hb (lamS_injective X j h2 hh))]
     · intro hh; exact absurd (Finset.mem_univ t0) hh
-  · rw [Finset.sum_eq_zero fun t _ => if_neg (fun hh => hl ⟨t, hh⟩)]
+  · rw [Finset.sum_eq_zero fun t _ => ite_eq_right (fun hh => hl ⟨t, hh⟩)]
     exact Nat.zero_le _
 
 theorem dgS_le (hp : 0 < X.p) (hG : segG X.TT j ≤ X.G') (c : ℤ) (t : Fin (2 * segS X.TT j + 1 + 1)) :
@@ -66,7 +66,7 @@ theorem colDgQ (hp : 0 < X.p) (h2 : 2 ≤ numSeg X.TT) (hG : segG X.TT j ≤ X.G
   sum_lam_le j h2 _ _ (fun t => dgS_le j ka hp hG c t) l
 
 theorem colDgY (c : ℤ) (j' : Fin (numSeg X.TT)) : dgCS C0 CE1 CE2 mu X β j ka c (topEnd X j', false) = 0 :=
-  Finset.sum_eq_zero fun t _ => if_neg (lamS_ne_endFalse X j t j')
+  Finset.sum_eq_zero fun t _ => ite_eq_right (lamS_ne_endFalse X j t j')
 
 theorem phi_plS (φ : MonH X →+ ℕ) (c : ℤ) :
     φ (plS C0 CE1 CE2 mu X β j c) = ∑ t : Fin (2 * segS X.TT j + 1 + 1),
@@ -142,10 +142,10 @@ theorem kcol_pol {R : Type} [CommRing R] (ka : Fin (N + 1) → Fin n → ℤ) (c
   have key : multideg m i = _ :=
     KG_hom (mdG N n i) c (hsOf ka c) (xOf R N n) (fun a => if a = i.val then 1 else 0) hx N J m (Finset.mem_coe.1 hm)
   rw [key, Finset.sum_eq_single i.val]
-  · rw [hsOf_eq ka c i.val (by have := i.2; omega), hsOf_eq ka c (i.val + 1) (by have := i.2; omega), if_pos rfl]
+  · rw [hsOf_eq ka c i.val (by have := i.2; omega), hsOf_eq ka c (i.val + 1) (by have := i.2; omega), ite_eq_left rfl]
     rfl
   · intro b _ hb
-    rw [if_neg hb]; simp
+    rw [ite_eq_right hb]; simp
   · intro hh; exact absurd (Finset.mem_range.2 i.2) hh
 
 end

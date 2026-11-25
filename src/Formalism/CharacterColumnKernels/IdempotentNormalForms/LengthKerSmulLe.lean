@@ -206,8 +206,8 @@ theorem blockRhoAbs : StatBlockRhoAbs := by
   classical
   let A : ∀ w, Submodule O (H1z (resRep ρM (D w))) := fun w =>
     if hw : w ∈ what₂ then Classical.choose (hrows w hw) else F w
-  have hA : ∀ w (hw : w ∈ what₂), A w = Classical.choose (hrows w hw) := fun w hw => dif_pos hw
-  have hA' : ∀ w, w ∉ what₂ → A w = F w := fun w hw => dif_neg hw
+  have hA : ∀ w (hw : w ∈ what₂), A w = Classical.choose (hrows w hw) := fun w hw => dite_eq_left hw
+  have hA' : ∀ w, w ∉ what₂ → A w = F w := fun w hw => dite_eq_right hw
   have hFA : ∀ w, F w ≤ A w := by
     intro w
     by_cases hw : w ∈ what₂
@@ -231,9 +231,9 @@ theorem blockRhoAbs : StatBlockRhoAbs := by
         if w ∈ what₂ then lenRow w else 0 := by
       intro w _
       by_cases hwr : w ∈ what₂
-      · rw [if_pos hwr, hA w hwr]
+      · rw [ite_eq_left hwr, hA w hwr]
         exact (Classical.choose_spec (hrows w hwr)).2.1
-      · rw [if_neg hwr, hA' w hwr, Submodule.comap_subtype_self, Module.length_eq_zero]
+      · rw [ite_eq_right hwr, hA' w hwr, Submodule.comap_subtype_self, Module.length_eq_zero]
     calc Module.length O S ≤ _ := h2
       _ ≤ s + ∑ w ∈ what₂ ∪ cols, (if w ∈ what₂ then lenRow w else 0) :=
           add_le_add hsel (Finset.sum_le_sum hterm)

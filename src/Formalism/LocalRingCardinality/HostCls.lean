@@ -123,20 +123,14 @@ theorem primeClass_eq_signal_iff' (hp : p.Prime) : primeClass H p = .signal ↔
   · rintro ⟨⟨h1, h2, h3⟩, h4, h5⟩
     exact ⟨h1, h2, h3, (key h3).2 h4, h5⟩
 
-private theorem psAt_eq_one_or_neg_one (hp : p.Prime) (h : ¬ p ∣ H.condN) :
-    H.psAt p = 1 ∨ H.psAt p = -1 := by
-  have hc : Nat.Coprime p H.condN := (Nat.Prime.coprime_iff_not_dvd hp).2 h
-  unfold HostRaw.psAt
-  rw [dite_eq_left hc]
-  rcases Int.units_eq_one_or ((H.art (ZMod.unitOfCoprime p hc)).1.1) with h1 | h1 <;> simp [h1]
-
 theorem primeClass_eq_inert_iff_symbols (hp : p.Prime) : primeClass H p = .inertClass ↔
     ¬ p ∣ H.condN ∧ jacobiSym (-(H.d : ℤ)) p = -1 ∧ H.psAt p = -1 := by
   rw [primeClass_eq_inert_iff, not_dvd_condN_iff' hp]
   have key : p ≠ H.d → (jacobiSym (-(H.d : ℤ)) p ≠ 1 ↔ jacobiSym (-(H.d : ℤ)) p = -1) := fun hd => by
     rcases jacobi_d_eq_one_or hp hd with h | h <;> simp [h]
   have key2 : p ∉ H.small → p ≠ H.q → p ≠ H.d → (H.psAt p ≠ 1 ↔ H.psAt p = -1) := fun h1 h2 h3 => by
-    rcases psAt_eq_one_or_neg_one (H := H) hp ((not_dvd_condN_iff' (H := H) hp).2 ⟨h1, h2, h3⟩) with h | h <;> simp [h]
+    rcases H.psAt_eq_one_or (hp.coprime_iff_not_dvd.2 ((not_dvd_condN_iff' hp).2 ⟨h1, h2, h3⟩))
+      with h | h <;> simp [h]
   constructor
   · rintro ⟨h1, h2, h3, h4, h5⟩
     exact ⟨⟨h1, h2, h3⟩, (key h3).1 h4, (key2 h1 h2 h3).1 h5⟩

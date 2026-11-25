@@ -435,11 +435,11 @@ theorem cLoc_finPt : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (n :
   have hfin : (⟨_, hUA⟩ : UA E n) ∈ finU (E := E) (n := n) := (MonoidHom.mem_ker).2 (Units.ext (by
     have := pInf_finGL (E := E) (ratF E n γ.1)
     exact congrArg Units.val this))
-  have e0 : toSub (UA E n) (finGL E n (ratF E n γ.1)) = ⟨_, hUA⟩ := dif_pos hUA
+  have e0 : toSub (UA E n) (finGL E n (ratF E n γ.1)) = ⟨_, hUA⟩ := dite_eq_left hUA
   have e1 : (finPt γ).1 = ⟨finGL E n (ratF E n γ.1), hUA⟩ := by
     unfold finPt
     rw [e0]
-    exact congrArg Subtype.val (dif_pos hfin)
+    exact congrArg Subtype.val (dite_eq_left hfin)
   rw [e1]
   have h2 := GlobalTheory.CuspRep.pFin_finGL (E := E) (a := n) (ratF E n γ.1)
   apply Units.ext
@@ -553,14 +553,14 @@ theorem GlobalTheory.BCT.SuppFin.suppFin : ∀ (E : Type) [Field E] [NumberField
       rw [hpt]
       refine ⟨_, ⟨⟨_, hUL w _⟩, subset_tsupport _ ?_, rfl⟩, rfl⟩
       have h0 := hnz γ hγ w hw
-      rwa [toSub, dif_pos (hUL w _)] at h0
+      rwa [toSub, dite_eq_left (hUL w _)] at h0
     obtain ⟨h1, h2⟩ := hN _ hmem i j
     rw [(hent w γ i j).1, hv] at h1
     rw [(hent w γ i j).2, hv] at h2
     exact ⟨h1, h2⟩
   · filter_upwards [hf.2, _root_.GlobalTheory.BCT.SuppFin.cLoc_mem_KGL_cofinite E n x.1] with w hfw hxw hw γ hγ i j
     have h0 := hnz γ hγ w hw
-    rw [hfw, toSub, dif_pos (hUL w _)] at h0
+    rw [hfw, toSub, dite_eq_left (hUL w _)] at h0
     have hy : cLoc w (x⁻¹ * finPt γ * x).1 ∈ GlobalTheory.LFun.KGL w (n := n) :=
       Subgroup.mem_subgroupOf.1 (Set.indicator_apply_ne_zero.1 h0).1
     have hg : GeneralLinearGroup.map (algebraMap E (w.adicCompletion E)) γ.1 ∈ GlobalTheory.LFun.KGL w (n := n) := by

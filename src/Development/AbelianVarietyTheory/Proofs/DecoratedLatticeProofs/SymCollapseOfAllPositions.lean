@@ -265,7 +265,7 @@ theorem _root_.GlobalTheory.LocFlat.pureCol_of_pattern : ∀ (k : Type) [Field k
     intro x₀
     simp only [Chain.entry, xi, flat, om_one_one, hV]
   by_cases hy : (fun a => x a (Sum.inr ())) ∈ box (XIx (Fin κ) t (j + 1)) (S.ϖ ^ r)⁻¹
-  · rw [if_pos hy, mul_one, hent]
+  · rw [ite_eq_left hy, mul_one, hent]
     have e : flCol S.ψ ν (r + 1) ((S.T t).Phi j (c + 1) (by omega)) x =
         opE S.ψ ν (r + 1) ((S.T t).Phi j (c + 1) (by omega)) x.toCols₁ := by
       unfold flCol
@@ -276,7 +276,7 @@ theorem _root_.GlobalTheory.LocFlat.pureCol_of_pattern : ∀ (k : Type) [Field k
     have hV0 : (V : ℂ) ≠ 0 := by exact_mod_cast hvol.ne'
     push_cast
     field_simp
-  · rw [if_neg hy, mul_zero]
+  · rw [ite_eq_right hy, mul_zero]
     unfold flCol opE
     refine integral_eq_zero_of_ae (Filter.Eventually.of_forall fun e => ?_)
     have h0 : (S.T t).Phi j (c + 1) (by omega) (affPt (r + 1) x.toCols₁ e +
@@ -618,7 +618,7 @@ theorem rowE_mem_symLev_of_box : ∀ (k : Type) [Field k] [ValuativeRel k] [Topo
     rcases hoa : o a with y | l <;> rcases hob : o b with z | z
     · simp [Matrix.one_apply]
     · simp
-    · rw [fromBlocks_apply₂₁, Matrix.one_apply, if_neg (by simp), hC']
+    · rw [fromBlocks_apply₂₁, Matrix.one_apply, ite_eq_right (by simp), hC']
       split_ifs with hl
       · exfalso
         have ha : a = Sum.inl (Sum.inr ⟨l.val, by omega⟩) :=
@@ -718,11 +718,11 @@ theorem lam_rowE_symLevel : ∀ (k : Type) [Field k] [ValuativeRel k] [Topologic
   obtain ⟨g, hg, hl⟩ := GlobalTheory.T.iteratedDepthOneLevel_char_of_one_row_first_block k _ t S.P S.μ S.tame j (Sum.inr ⟨r, by omega⟩) ⟨_, hm⟩
     (fun a b ha => by
       have := hsh a b
-      rw [if_neg ha, add_zero] at this
+      rw [ite_eq_right ha, add_zero] at this
       exact this)
     (by
       have := hsh (Sum.inl (Sum.inr ⟨r, by omega⟩)) (Sum.inl (Sum.inr ⟨r, by omega⟩))
-      rw [if_pos rfl] at this
+      rw [ite_eq_left rfl] at this
       have e := standardOrderExtendedBasis_apply_low_block (Fin κ) t j (c + 1 + 1) (l := s + 1) (by omega) ⟨r, by omega⟩
       simp only at e
       rw [e] at this
@@ -731,12 +731,12 @@ theorem lam_rowE_symLevel : ∀ (k : Type) [Field k] [ValuativeRel k] [Topologic
     refine GlobalTheory.T.symmetricPositionLevel_character_eq_one_single_row k S.ψ S.ϖ S.ρ κ (s + 1) S.P S.sym ⟨r, by omega⟩ g (fun a b ha => ?_) (fun i hi => ?_)
     · rw [hg, submatrix_apply]
       have := hsh (Sum.inl a) (Sum.inl b)
-      rw [if_neg (fun e => ha (Sum.inl_injective e)), add_zero] at this
+      rw [ite_eq_right (fun e => ha (Sum.inl_injective e)), add_zero] at this
       exact this.trans (by simp [Matrix.one_apply])
     · have ei : i = ⟨r + 1, by omega⟩ := Fin.ext hi
       rw [hg, submatrix_apply, ei]
       have := hsh (Sum.inl (Sum.inr ⟨r, by omega⟩)) (Sum.inl (Sum.inr ⟨r + 1, by omega⟩))
-      rw [if_pos rfl] at this
+      rw [ite_eq_left rfl] at this
       have e := standardOrderExtendedBasis_apply_low_block (Fin κ) t j (c + 1 + 1) (l := s + 1) (by omega) ⟨r + 1, by omega⟩
       simp only at e
       rw [e] at this
@@ -766,7 +766,7 @@ theorem pureRow_of_exchange : ∀ (k : Type) [Field k] [ValuativeRel k] [Topolog
     rw [hom1]
   refine ⟨C * V, mul_pos hC hVpos, fun x => ?_⟩
   by_cases hu : x (Sum.inr ()) ∈ box (XIx (Fin κ) t j) (S.ϖ ^ (r + 1))
-  · rw [if_pos hu, mul_one, hentry]
+  · rw [ite_eq_left hu, mul_one, hentry]
     have hm := GlobalTheory.T.rootExchangeRowUnipotent_mem_sourceLevel k s κ S t hP j c H r hc _ hu
     have hl := lam_rowE_symLevel k s κ S t j c H r hc _ hm
     have hdet : Matrix.GeneralLinearGroup.det (rowE (c + 1 + 1) (r + 1) (x (Sum.inr ()))) = 1 := by
@@ -784,7 +784,7 @@ theorem pureRow_of_exchange : ∀ (k : Type) [Field k] [ValuativeRel k] [Topolog
     have hV0 : (V : ℂ) ≠ 0 := by exact_mod_cast hVpos.ne'
     rw [Pi.smul_apply, smul_eq_mul, Complex.ofReal_mul, Complex.ofReal_inv]
     field_simp
-  · rw [if_neg hu, mul_zero, GlobalTheory.T.flatMapRow_eq_zero_unless_row_mem_dualLattice k ν s κ S t j c H r hc x hu]
+  · rw [ite_eq_right hu, mul_zero, GlobalTheory.T.flatMapRow_eq_zero_unless_row_mem_dualLattice k ν s κ S t j c H r hc x hu]
 
 end GlobalTheory.LocFlat
 end -- clump:auto
@@ -839,13 +839,13 @@ theorem hat_box {ψ : AddChar k Circle} (hψ : HasConductor ψ 1) (ν : Measure 
   have hc0 : valuation k (c : k) ≠ 0 := (Valuation.ne_zero_iff _).2 c.ne_zero
   refine ⟨_, vol_box_pos (n := n) ν c⁻¹, fun u => ?_⟩
   by_cases hu : u ∈ box n c
-  · rw [if_pos hu, mul_one, ← integral_box (n := n) ν c⁻¹]
+  · rw [ite_eq_left hu, mul_one, ← integral_box (n := n) ν c⁻¹]
     unfold hat
     congr 1
     funext y
     dsimp only
     by_cases hy : y ∈ box n c⁻¹
-    · rw [if_pos hy, one_mul]
+    · rw [ite_eq_left hy, one_mul]
       have hm : (-1 : k) * (u ⬝ᵥ y) ∈ cball (1 : kˣ) := by
         show valuation k _ ≤ valuation k ((1 : kˣ) : k)
         rw [map_mul, Valuation.map_neg, map_one, one_mul, Units.val_one, map_one]
@@ -855,10 +855,10 @@ theorem hat_box {ψ : AddChar k Circle} (hψ : HasConductor ψ 1) (ν : Measure 
               mul_le_mul' (hu i) (hy i)
           _ = 1 := by rw [Units.val_inv_eq_inv_val, map_inv₀, mul_inv_cancel₀ hc0]
       rw [hψ.eq_one hm]; simp
-    · rw [if_neg hy, zero_mul]
-  · rw [if_neg hu, mul_zero]
+    · rw [ite_eq_right hy, zero_mul]
+  · rw [ite_eq_right hu, mul_zero]
     obtain ⟨i, hi⟩ : ∃ i, valuation k (c : k) < valuation k (u i) := by
-      by_contra hcon; push_neg at hcon; exact hu (mem_box.2 hcon)
+      by_contra hcon; push Not at hcon; exact hu (mem_box.2 hcon)
     have hui : u i ≠ 0 := by rintro h0; simp [h0] at hi
     have hv0 : valuation k (u i) ≠ 0 := (Valuation.ne_zero_iff _).2 hui
     set x := u i * ((c⁻¹ : kˣ) : k) with hxdef
@@ -870,7 +870,7 @@ theorem hat_box {ψ : AddChar k Circle} (hψ : HasConductor ψ 1) (ν : Measure 
         rwa [one_mul, mul_assoc, inv_mul_cancel₀ hc0, mul_one] at h2
       exact (not_le.2 hi) this
     obtain ⟨y, hy1, hy2⟩ : ∃ y, valuation k y ≤ valuation k x ∧ ψ y ≠ 1 := by
-      by_contra hcon; push_neg at hcon; exact hx ((hψ x).1 hcon)
+      by_contra hcon; push Not at hcon; exact hx ((hψ x).1 hcon)
     set y₀ : n → k := Pi.single i (-(y / u i)) with hy₀def
     have hy₀ : y₀ ∈ box n c⁻¹ := by
       intro l
@@ -1094,7 +1094,7 @@ theorem GlobalTheory.LocFlat.doubleStep_of_pureCol_pureRow : ∀ (k : Type) [Fie
       refine mul_eq_zero_of_left ?_ _
       rw [← e3]
       congr 1
-    · rw [if_neg hu]; simp
+    · rw [ite_eq_right hu]; simp
   · obtain ⟨C₂, hC₂, hC2⟩ := hRow (j + 1) c H r hc
     have hW := GlobalTheory.LocFlat.DoubleStepProof.vol_box_pos (n := XIx (Fin κ) t (j + 1)) ν (S.ϖ ^ (r + 1))
     set W := ((Measure.pi fun _ : XIx (Fin κ) t (j + 1) => ν) (box (XIx (Fin κ) t (j + 1)) (S.ϖ ^ (r + 1)) : Set (XIx (Fin κ) t (j + 1) → k))).toReal with hWdef

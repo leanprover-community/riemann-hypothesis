@@ -78,7 +78,7 @@ theorem first_block_column_condition (l : Col i dc) :
     exact Finset.disjoint_left.mp dc.disj hw hwc
   simp only [FS, QS.Fall, Fin.cases_zero]
   unfold FirstBlockLocalConditions
-  simp only [KHf.Fρ, if_neg hnot]
+  simp only [KHf.Fρ, ite_eq_right hnot]
 
 
 

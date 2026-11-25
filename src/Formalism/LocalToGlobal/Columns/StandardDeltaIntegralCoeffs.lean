@@ -65,7 +65,7 @@ theorem product_support_weights (K : Type) [Field K] (lam : ι → DomWeight n) 
     rw [Finset.prod_empty, coeff_one] at hm
     have : m = 0 := by
       by_contra h
-      exact hm (if_neg fun h' => h h'.symm)
+      exact hm (ite_eq_right fun h' => h h'.symm)
     subst this
     simp
   | insert t T ht ih =>
@@ -84,7 +84,7 @@ theorem product_support_weights (K : Type) [Field K] (lam : ι → DomWeight n) 
     · subst hτ
       have : ∀ a, m1 (τ, a, s) = u (a, s) := fun a => by
         rw [← hu]; exact Finsupp.mapDomain_apply_of_injective hinj u (a, s)
-      simp only [this, column_sum_eq_weight _ u hw s, if_neg ht, Finset.mem_insert, true_or, if_true, add_zero]
+      simp only [this, column_sum_eq_weight _ u hw s, ite_eq_right ht, Finset.mem_insert, true_or, ite_true, add_zero]
     · have : ∀ a, m1 (τ, a, s) = 0 := fun a => by
         rw [← hu]
         refine Finsupp.mapDomain_of_notMem_range _ _ ?_

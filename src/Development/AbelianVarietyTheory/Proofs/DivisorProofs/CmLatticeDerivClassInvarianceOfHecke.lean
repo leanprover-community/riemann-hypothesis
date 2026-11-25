@@ -236,7 +236,7 @@ theorem fderiv_eq_sum_wirt' (h : (Φ → ℂ) → ℂ) (y u : Φ → ℂ) :
   rw [map_sum]
   refine Finset.sum_congr rfl fun τ _ => ?_
   rw [map_add (f := _), map_smul, map_smul]
-  simp only [wirt, Bool.false_eq_true, if_false, if_true, real_smul]
+  simp only [wirt, Bool.false_eq_true, ite_false, ite_true, real_smul]
   set A := fderiv ℝ h y (Pi.single τ 1)
   set B := fderiv ℝ h y (Pi.single τ I)
   have hc : (starRingEnd ℂ) (u τ) = (u τ).re - (u τ).im * I := by
@@ -1058,7 +1058,7 @@ theorem wirt_false_eq_lineDeriv {I : Type} [Fintype I] [DecidableEq I] (i : I) (
   rw [hd.lineDeriv_eq_fderiv]
   unfold wirt
   rw [hd.fderiv_restrictScalars ℝ]
-  simp only [ContinuousLinearMap.coe_restrictScalars', Bool.false_eq_true, if_false]
+  simp only [ContinuousLinearMap.coe_restrictScalars', Bool.false_eq_true, ite_false]
   rw [clm_single_I]
   have e : ∀ a b : ℂ, a = b → (a + -Complex.I * (Complex.I * a)) / 2 = b := by
     rintro a b rfl
@@ -1400,7 +1400,7 @@ theorem dualForm_values (E : Type) [Field E] [NumberField E] [IsCMField E] (ξ :
       refine Finset.sum_congr rfl fun σ _ => ?_
       simp [IsCMField.complexEmbedding_complexConj, ComplexEmbedding.conjugate_coe_eq]
     rw [h2] at h1
-    simp only [c, sub_mul, Finset.sum_sub_distrib, ite_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    simp only [c, sub_mul, Finset.sum_sub_distrib, ite_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     rw [sub_eq_zero]
     have h3 : ∑ τ₁, ∑ τ₂, τ₁ ξ * τ₂ ξ * b (ComplexEmbedding.conjugate τ₁) (ComplexEmbedding.conjugate τ₂) *
         (τ₁ x * τ₂ y) = ∑ σ : E →+* ℂ, σ ξ * σ x * ComplexEmbedding.conjugate σ y := by
@@ -1421,7 +1421,7 @@ theorem dualForm_values (E : Type) [Field E] [NumberField E] [IsCMField E] (ξ :
   simp only [c, b, hcc] at hc
   constructor
   · rintro rfl
-    rw [hcc, if_pos rfl] at hc
+    rw [hcc, ite_eq_left rfl] at hc
     have h0 := hz (ComplexEmbedding.conjugate ρ)
     have h4 : ComplexEmbedding.conjugate ρ ξ *
         (ρ ξ * B ρ.toRatAlgHom.toLinearMap (ComplexEmbedding.conjugate ρ).toRatAlgHom.toLinearMap - 1) = 0 := by
@@ -1430,7 +1430,7 @@ theorem dualForm_values (E : Type) [Field E] [NumberField E] [IsCMField E] (ξ :
     exact eq_inv_of_mul_eq_one_right (sub_eq_zero.1 h5)
   · intro hne
     have hne' : ComplexEmbedding.conjugate ρ' ≠ ρ := fun h => hne (by rw [← h, hcc])
-    rw [if_neg hne', sub_zero] at hc
+    rw [ite_eq_right hne', sub_zero] at hc
     exact (mul_eq_zero.1 hc).resolve_left (mul_ne_zero (hz _) (hz _))
 
 end GlobalTheory.DualFormValues
@@ -1634,7 +1634,7 @@ theorem series_weightTwo : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E
     dzbar_apply, smul_eq_mul]
   rw [Finset.sum_eq_single i (fun j _ hj => by simp [Pi.single_apply, hj]) (by simp),
     Finset.sum_eq_single i (fun j _ hj => by simp [Pi.single_apply, hj]) (by simp)]
-  simp only [Pi.single_eq_same, map_one, Complex.conj_I, Bool.false_eq_true, if_false]
+  simp only [Pi.single_eq_same, map_one, Complex.conj_I, Bool.false_eq_true, ite_false]
   linear_combination (eTerm φ (m + Pi.single i 1) σ z q.1.out / 2 -
     eTerm φ m σ z q.1.out * (-σ * φ i q.1.out / starRingEnd ℂ (defCoord φ z q.1.out i)) / 2) * Complex.I_mul_I
 

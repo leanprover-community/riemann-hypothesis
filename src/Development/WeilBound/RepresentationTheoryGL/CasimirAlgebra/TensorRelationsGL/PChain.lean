@@ -528,10 +528,10 @@ theorem step (hT : TensorGl) (hC : Curry) (hS : StepChar) (hH : Height) (hW : Wa
     rw [card3]
     by_cases hk : k = co (Fin.last m)
     · subst hk
-      simp only [Function.update_self, if_true, hl']
+      simp only [Function.update_self, ite_true, hl']
       push_cast
       ring
-    · rw [Function.update_of_ne hk, if_neg (Ne.symm hk)]
+    · rw [Function.update_of_ne hk, ite_eq_right (Ne.symm hk)]
       simp only [hl']
       push_cast
       ring

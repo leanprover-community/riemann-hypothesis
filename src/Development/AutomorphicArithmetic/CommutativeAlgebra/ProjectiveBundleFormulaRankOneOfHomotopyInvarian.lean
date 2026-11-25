@@ -56,12 +56,12 @@ private theorem pa_val {n : ℕ} (i : Fin (n + 1)) (k : Fin (n + 2)) :
   · have h' : i.castSucc < k := by
       rw [Fin.lt_def]
       simpa using h
-    rw [Fin.predAbove_of_castSucc_lt _ _ h', Fin.coe_pred, if_pos h]
+    rw [Fin.predAbove_of_castSucc_lt _ _ h', Fin.coe_pred, ite_eq_left h]
   · have h' : k ≤ i.castSucc := by
       rw [Fin.le_def]
       simp
       omega
-    rw [Fin.predAbove_of_le_castSucc _ _ h', Fin.coe_castPred, if_neg h]
+    rw [Fin.predAbove_of_le_castSucc _ _ h', Fin.coe_castPred, ite_eq_right h]
 
 private theorem hT_val {A : Type} [One A] {n : ℕ} (i : Fin (n + 1)) (v : Fin (n + 1) → A) (k : Fin (n + 2)) (a : Fin (n + 1))
     (h : (k : ℕ) ≤ i) (ha : (a : ℕ) = k) : hT i v k = v a := by

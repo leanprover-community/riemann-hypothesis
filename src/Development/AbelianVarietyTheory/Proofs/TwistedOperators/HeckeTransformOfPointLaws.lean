@@ -1059,7 +1059,7 @@ theorem evR_scale_of_isReduced (hL : GlobalTheory.Reg.EvLaws Xo c) {a : (E →+*
     · subst h1; simp [hM1, hG1]
     · by_cases h2 : i < j
       · simp [hM2 τ i j h2, hG2 τ i j h2]
-      · simp only [M, Matrix.map_apply, Matrix.of_apply, if_neg h1, if_neg h2, hk]
+      · simp only [M, Matrix.map_apply, Matrix.of_apply, ite_eq_right h1, ite_eq_right h2, hk]
         simp [k₀, v, R]
   have hdet : ∀ τ, IsUnit (M τ).det := fun τ => by
     rw [Matrix.det_of_isLowerTriangular (M τ) (fun i j hij => hM2 τ i j hij)]
@@ -1254,7 +1254,7 @@ theorem exists_term_of_family (hA : admitted l P p) (hT : TotalAt Xo c P p i)
   refine ⟨a₀ ^ n * evR Xo c f z₀, fun Ω _ _ _ χ y₁ x₁' Ψ₁ C hy hF hC => ?_⟩
   obtain ⟨-, hI⟩ := hΨ.2.2.2.2 Ω _ _ _ Ψ₁ hF
   have hex := hT Ω y₁ C
-  rw [term, hkTerm, dif_pos hex]
+  rw [term, hkTerm, dite_eq_left hex]
   have hz := hex.choose_spec
   generalize hex.choose = z at hz ⊢
   obtain ⟨rfl, h₁, h₂⟩ := hkPt_along hA C.2 (hC ▸ hI) hz
@@ -1383,7 +1383,7 @@ theorem secTransform (hL : GlobalTheory.IndefiniteRowSideFullHecke.HeckePrimeDet
   rw [evalAt_smul]
   congr 1
   have hy := _root_.GlobalTheory.Frames.allTest_of_secBaseChange GlobalTheory.lawsFieldsSeparately.2.1 E H Dw l Xo c Ω y
-  rw [evalAt, dif_pos hy]
+  rw [evalAt, dite_eq_left hy]
   exact hg _ _ Ω _ y hy.choose_spec.choose_spec.choose_spec
 
 end Sec
@@ -1432,11 +1432,11 @@ theorem exists_qmatch (hσ : Formalism.L2.PjFree.GoodEmb c σ) (hU : Formalism.L
   have he : ∀ τ, Formalism.L2.PjFree.relab c σ (e.symm τ) = τ := e.apply_symm_apply
   have m1 : ∀ τ ∈ (U.X k).Ψ, Dw.mult (e.symm τ) = r - (U.X k).p0 := fun τ hτ => by
     unfold Datum.mult
-    rw [if_pos ((hrt _).1 (by rw [he]; exact ((hty k).2 τ).1 hτ)), (hty k).1]
+    rw [ite_eq_left ((hrt _).1 (by rw [he]; exact ((hty k).2 τ).1 hτ)), (hty k).1]
     omega
   have m2 : ∀ τ ∉ (U.X k).Ψ, Dw.mult (e.symm τ) = (U.X k).p0 := fun τ hτ => by
     unfold Datum.mult
-    rw [if_neg (fun h => hτ (((hty k).2 τ).2 (by rw [← he τ]; exact (hrt _).2 h))), (hty k).1]
+    rw [ite_eq_right (fun h => hτ (((hty k).2 τ).2 (by rw [← he τ]; exact (hrt _).2 h))), (hty k).1]
   have hrel : ∀ τ, ∀ i < Dw.mult (e.symm τ), ∀ v ∈ (U.X k).Λ,
       Formalism.L2.PjFree.perFr (U.X k') x'.1 ((a : Matrix (Fin r) (Fin r) E) *ᵥ v) τ i =
         ∑ j ∈ Finset.range (Dw.mult (e.symm τ)), A (e.symm τ) i j * Formalism.L2.PjFree.perFr (U.X k) x.1 v τ j :=
@@ -1491,7 +1491,7 @@ theorem rdU_mem_SS (hσ : Formalism.L2.PjFree.GoodEmb c σ) (hU : Formalism.L2.P
     obtain ⟨a, h, b, hbB, hxb, hb1, ht⟩ := exists_qmatch hσ hU hr hxi hA C.2 hz hb hx₀ hx'
     have ht0 := _root_.GlobalTheory.HeckeEx.cabs_gen_le_of_hkPt E H Dw l Xo c σ r U hσ hU P p i k k' x₀ x' C.1 z t hA C.2 hz hb hx₀ hx'
     have hQ := (hfc k').1.1
-    have v2 : Formalism.L2.PjFree.rdU U f k' x'.1 = Formalism.L2.PjFree.toC (evR Xo c f (U.un k' x')) := dif_pos x'.2
+    have v2 : Formalism.L2.PjFree.rdU U f k' x'.1 = Formalism.L2.PjFree.toC (evR Xo c f (U.un k' x')) := dite_eq_left x'.2
     have v3 := (GlobalTheory.Frames.algebraic_laws GlobalTheory.lawsFieldsSeparately.2.1 E H Dw l Xo c).2.2.2.2.2.2 (CAt σ)
       (inferInstanceAs (IsReduced ℂ)) w n f hf t _ z hb
     have v4 : ‖Formalism.L2.PjFree.toC (wchar (ex Dw w n) t : CAt σ)‖ ≤ ((Ideal.absNorm P : ℝ) ^ i) ^ n := by
@@ -1519,7 +1519,7 @@ theorem rdU_mem_SS (hσ : Formalism.L2.PjFree.GoodEmb c σ) (hU : Formalism.L2.P
     exact_mod_cast hM (CAt σ) (U.un k x₀).x
   have v1 : Formalism.L2.PjFree.rdU U g k x₀.1 =
       σ (hkScal c cq P i n) * ∑ C, Formalism.L2.PjFree.toC (term P p i f (U.un k x₀) C) :=
-    (dif_pos x₀.2).trans ((hT (CAt σ) (U.un k x₀)).trans (congrArg _ (finsum_eq_sum_of_fintype _)))
+    (dite_eq_left x₀.2).trans ((hT (CAt σ) (U.un k x₀)).trans (congrArg _ (finsum_eq_sum_of_fintype _)))
   have v7 := congrArg norm v1
   rw [e₀, hsec.2.1 x hx b₀ hb₀, norm_mul, norm_mul] at v7
   have v8 := (norm_sum_le _ _).trans (Finset.sum_le_card_nsmul Finset.univ

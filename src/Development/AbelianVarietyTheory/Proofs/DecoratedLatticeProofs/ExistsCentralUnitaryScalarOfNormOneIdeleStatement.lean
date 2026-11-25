@@ -80,7 +80,7 @@ theorem scalGL_mem (σ : A →+* A) (J : Matrix n n A) (c : A) (h : c * σ c = 1
     simp only [Formalism.UG.cT, Matrix.transpose_apply, Matrix.map_apply, Matrix.smul_apply, Matrix.one_apply, smul_eq_mul]
     by_cases h1 : j = i
     · subst h1; simp
-    · rw [if_neg h1, if_neg (Ne.symm h1)]; simp
+    · rw [ite_eq_right h1, ite_eq_right (Ne.symm h1)]; simp
   rw [hm, Matrix.smul_mul, Matrix.one_mul, Matrix.mul_smul, Matrix.mul_one, smul_smul, h, one_smul]
 
 end Scal

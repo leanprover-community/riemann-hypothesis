@@ -324,9 +324,9 @@ theorem good_Epow (s : Bool) (m : ℕ) : ∀ a b : Fin n, Good (V := V) (Epow s 
     intro a b
     show GlobalTheory.CompanionTheory.WaveMult.WaveZ.Good (fun f : PositivityTheory.RgTw.Mat n → V => if a = b then f else 0)
     by_cases hab : a = b
-    · simp only [if_pos hab]
+    · simp only [ite_eq_left hab]
       exact GlobalTheory.CompanionTheory.WaveMult.WaveZ.good_id
-    · simp only [if_neg hab]
+    · simp only [ite_eq_right hab]
       exact GlobalTheory.CompanionTheory.WaveMult.WaveZ.good_zero
   | succ m ih =>
     intro a b

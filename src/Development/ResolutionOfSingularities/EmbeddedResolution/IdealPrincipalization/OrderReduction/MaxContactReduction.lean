@@ -212,7 +212,7 @@ theorem reduceOrder_of_orderAtLeastLocus_eq_empty (hinv : ComapIsoInvariance.{u}
     (resolveLower : ∀ S : MarkedIdealWithBoundary.{u}, S.krullDimSucc ≤ T.krullDimSucc → ℕ → S.SequenceOfBlowups) (hv : T.IsAdmissible)
     (h : orderAtLeastLocus T.ideal T.mult = ∅) : reduceOrder hinv T resolveLower = emptyMarkedSeq T := by
   unfold reduceOrder
-  rw [dite_eq_left hv, if_pos h]
+  rw [dite_eq_left hv, ite_eq_left h]
 
 end MaxContactReduction
 

@@ -32,7 +32,7 @@ private theorem co_coprod_pres (O : Type) [CommRing O] [IsLocalRing O] [IsNoethe
   · intro g hg j
     have : wcomp O (fun _ : Fin n => ()) j g = g := by
       ext a
-      rw [coeff_wcomp, if_pos (Subsingleton.elim _ _)]
+      rw [coeff_wcomp, ite_eq_left (Subsingleton.elim _ _)]
     rwa [this]
   · show F (MvPowerSeries.X s) ∈ _
     rw [hF]

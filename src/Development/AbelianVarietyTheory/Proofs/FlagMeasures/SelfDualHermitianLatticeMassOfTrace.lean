@@ -449,7 +449,7 @@ theorem exists_finite_classes (L : LocE F E) {ϖ : 𝒪[F]} (hϖ : Irreducible �
     Submodule.finite_quotient_smul _ Module.Finite.fg_top
   refine ⟨Λ ⧸ (Ideal.span {p} • ⊤ : Submodule L.O Λ), this,
     fun v => if hv : v ∈ Λ then Submodule.Quotient.mk ⟨v, hv⟩ else 0, fun v hv v' hv' hf => ?_⟩
-  simp only [dif_pos hv, dif_pos hv'] at hf
+  simp only [dite_eq_left hv, dite_eq_left hv'] at hf
   have h2 := (Submodule.Quotient.eq _).1 hf.symm
   rw [Submodule.ideal_span_singleton_smul] at h2
   obtain ⟨w, -, hw⟩ := h2
@@ -669,7 +669,7 @@ theorem cont_mono {W : Type} [AddCommGroup W] (W0 : AddSubgroup W) {S T : Set W}
   have h2 : (⋃ i ∈ (Finset.univ : Finset Bool), if i then S else T \ S) = T := by
     ext x
     simp only [Finset.mem_univ, Set.iUnion_true, Set.mem_iUnion, Bool.exists_bool]
-    simp only [Bool.false_eq_true, if_false, if_true, Set.mem_diff]
+    simp only [Bool.false_eq_true, ite_false, ite_true, Set.mem_diff]
     have := @h x
     tauto
   rw [h2] at h1
@@ -1144,10 +1144,10 @@ theorem sigMass_eq_sum (hH : IsHermND L Hm) {Λs : Submodule L.O (Fin n → E)} 
   · refine Finset.sum_congr rfl fun g hg => ?_
     obtain ⟨h, hh, e1⟩ := hout g
     have hsd := isSD_smul (h1 g hg).1 hs
-    rw [e1, if_pos ⟨isSD_smul hh.1 hsd, by rw [smul_inf_eq hh, (h1 g hg).2]⟩,
+    rw [e1, ite_eq_left ⟨isSD_smul hh.1 hsd, by rw [smul_inf_eq hh, (h1 g hg).2]⟩,
       GlobalTheory.HL.Unimod.unimodular L Hm hH m x hx Λ0 _ h0 hsd.1 h hh]
   · intro o ho
-    rw [if_neg]
+    rw [ite_eq_right]
     rintro ⟨hsd, htr⟩
     obtain ⟨g, ⟨hg, h, hh, e⟩, -⟩ := h2 _ hsd htr
     refine ho (Finset.mem_image.2 ⟨g, hg, ?_⟩)

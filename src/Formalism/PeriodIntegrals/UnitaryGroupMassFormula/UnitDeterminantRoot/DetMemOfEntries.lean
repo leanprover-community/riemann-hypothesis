@@ -77,10 +77,10 @@ private lemma stdH_apply_lemma (L : PeriodPair) (m : Type) [Fintype m] [Decidabl
     smul_eq_mul, Matrix.one_apply, Finset.mul_sum]
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [Finset.sum_eq_single i]
-  · rw [if_pos rfl]
+  · rw [ite_eq_left rfl]
     ring
   · intro j _ hji
-    rw [if_neg (Ne.symm hji)]
+    rw [ite_eq_right (Ne.symm hji)]
     ring
   · intro h
     exact absurd (Finset.mem_univ i) h

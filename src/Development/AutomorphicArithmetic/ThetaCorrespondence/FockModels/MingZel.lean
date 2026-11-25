@@ -13,64 +13,11 @@ public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.
 public import Development.AbelianVarietyTheory.Definitions.Foundations.SecondCountableAndT2LocalField
 public import Development.WeilBound.RepresentationTheoryGL.PointAveraging.MinkowskiBalls.MeasurableSetBallM
 public import Development.WeilBound.RepresentationTheoryGL.PointAveraging.MinkowskiBalls.ValLeOneOfLc
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Development.AbelianVarietyTheory.Definitions.Foundations.SimpleSum
 import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.HasFiniteLengthOfIsIrreducible
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.Etale.Weakly
-import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.RingTheory.TotallySplit
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Compactness.Paracompact
 import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.RadfordShufflePolynomialHolds
 
 -- This file was produced by scripts/clump.py from the modules listed below.
@@ -317,12 +264,12 @@ theorem _root_.GlobalTheory.GodementJacquet.parab_mul_eMat
     rfl
   ext i j
   simp only [Matrix.mul_apply, hE, hL, mul_ite, ite_mul, mul_one, one_mul, mul_zero, zero_mul,
-    Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   refine Fin.addCases (fun i => ?_) (fun i => ?_) i
   · simp
   · rw [hlow]
     refine (Finset.sum_eq_zero fun x _ => ?_).symm
-    rw [if_neg]
+    rw [ite_eq_right]
     simp only [Fin.ext_iff, Fin.coe_natAdd, Fin.coe_castAdd]
     omega
 
@@ -575,22 +522,22 @@ theorem E_mul {R : Type*} [Semiring R] {a b c j : ℕ} (hb : j ≤ b) :
   ext i l
   simp only [Matrix.mul_apply, E_apply]
   by_cases h : (i : ℕ) = l ∧ (l : ℕ) < j
-  · rw [if_pos h]
+  · rw [ite_eq_left h]
     obtain ⟨h1, h2⟩ := h
     have hi : (i : ℕ) < j := h1 ▸ h2
     rw [Finset.sum_eq_single (⟨i, by omega⟩ : Fin b)]
     · simp [h1, h2]
     · intro m _ hm
       have hne : ¬ ((i : ℕ) = m ∧ (m : ℕ) < j) := fun e => hm (Fin.ext e.1.symm)
-      rw [if_neg hne, zero_mul]
+      rw [ite_eq_right hne, zero_mul]
     · intro h'
       exact absurd (Finset.mem_univ _) h'
-  · rw [if_neg h]
+  · rw [ite_eq_right h]
     refine Finset.sum_eq_zero fun m _ => ?_
     by_cases h1 : (i : ℕ) = m ∧ (m : ℕ) < j
     · have h2 : ¬ ((m : ℕ) = l ∧ (l : ℕ) < j) := fun h2 => h ⟨h1.1.trans h2.1, h2.2⟩
-      rw [if_neg h2, mul_zero]
-    · rw [if_neg h1, zero_mul]
+      rw [ite_eq_right h2, mul_zero]
+    · rw [ite_eq_right h1, zero_mul]
 
 theorem E_diag {R : Type*} [Semiring R] {a j : ℕ} :
     E R a a j = diagonal fun i : Fin a => if (i : ℕ) < j then 1 else 0 := by
@@ -684,12 +631,12 @@ private theorem E_mul_apply_eq_dite_lt {R : Type*} [Semiring R] {a b c j : ℕ} 
     · simp [h]
     · intro t _ ht
       have hne : ¬ ((i : ℕ) = t ∧ (t : ℕ) < j) := fun e => ht (Fin.ext e.1.symm)
-      rw [if_neg hne, zero_mul]
+      rw [ite_eq_right hne, zero_mul]
     · intro h'
       exact absurd (Finset.mem_univ _) h'
   · refine Finset.sum_eq_zero fun t _ => ?_
     have hne : ¬ ((i : ℕ) = t ∧ (t : ℕ) < j) := fun e => h (by rw [e.1]; exact e.2)
-    rw [if_neg hne, zero_mul]
+    rw [ite_eq_right hne, zero_mul]
 
 
 theorem nf1 {k : Type*} [Field k] {n r j : ℕ} (x : Matrix (Fin n) (Fin r) k) (hx : x.rank = j) :
@@ -708,7 +655,7 @@ theorem nf1 {k : Type*} [Field k] {n r j : ℕ} (x : Matrix (Fin n) (Fin r) k) (
     · have hc : (H.val * E k n n j).col m = (bb ⟨m, hm⟩ : Fin n → k) := by
         ext i
         show (H.val * E k n n j) i m = _
-        simp only [E_diag, mul_diagonal, hm, if_true, mul_one]
+        simp only [E_diag, mul_diagonal, hm, ite_true, mul_one]
         exact hH i ⟨m, hm⟩
       rw [hc]
       exact (bb ⟨m, hm⟩).2
@@ -1586,7 +1533,7 @@ theorem key (hball : BallSt) (hnf : NfSt) (hcore : CoreSt) {j : ℕ} (hj : j < r
       by_cases hz : z ∈ ballM c' x
       · rw [Set.indicator_of_mem hz, Set.indicator_of_mem (hiff.mpr hz)]
       · rw [Set.indicator_of_notMem hz, Set.indicator_of_notMem (fun h' => hz (hiff.mp h'))]
-    · push_neg at hr
+    · push Not at hr
       apply hV
       intro z hz
       show (ballM c' x).indicator (fun _ => (1 : ℂ)) z = 0

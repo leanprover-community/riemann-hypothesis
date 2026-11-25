@@ -44,12 +44,6 @@ open Classical in
 def sumSmallSpread (k : ℕ) (cx : Lt1 Dw → ℕ) : ℕ :=
   ∑ f ∈ Finset.univ.filter (fun f => IsSmall f ∨ IsSpread k f), rk f * cx f
 
-section Place
-
-variable {l : Level H} (Xo : Moduli Dw l) (c : Coeff l) [StarRing (𝓞 E)] {p : ℕ} [Fact p.Prime]
-
-end Place
-
 end GlobalTheory.IndefiniteRowSideFullHecke.SplitQuadraticRamification
 end -- clump:auto
 end -- clump:auto

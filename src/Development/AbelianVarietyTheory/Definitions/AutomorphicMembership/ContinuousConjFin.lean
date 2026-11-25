@@ -75,8 +75,8 @@ theorem atEmb_conj (τ : E →+* ℂ) (z : ℂ) :
   unfold atEmb
   simp only [InfinitePlace.mk_conjugate_eq]
   rcases InfinitePlace.embedding_mk_eq τ with h | h
-  · rw [if_pos h, if_neg (by rw [InfinitePlace.mk_conjugate_eq, h]; exact hne.symm)]
-  · rw [if_pos (by rw [InfinitePlace.mk_conjugate_eq, h]), if_neg (by rw [h]; exact hne)]; simp
+  · rw [ite_eq_left h, ite_eq_right (by rw [InfinitePlace.mk_conjugate_eq, h]; exact hne.symm)]
+  · rw [ite_eq_left (by rw [InfinitePlace.mk_conjugate_eq, h]), ite_eq_right (by rw [h]; exact hne)]; simp
 
 
 omit [NumberField E] [_root_.NumberField.IsTotallyComplex E] in
@@ -383,12 +383,12 @@ theorem Phi_mul_transpose (a : ℕ) (R : Type) [CommRing R] : GlobalTheory.Tw.Ph
   simp only [Matrix.mul_apply, Matrix.transpose_apply, GlobalTheory.Tw.Phi, Matrix.of_apply]
   rw [Finset.sum_eq_single i.rev]
   · have h1 : (i : ℕ) + (i.rev : ℕ) + 1 = a := by rw [Fin.val_rev]; omega
-    rw [if_pos h1]
+    rw [ite_eq_left h1]
     by_cases h : i = j
-    · subst h; rw [if_pos h1, Matrix.one_apply_eq, ← mul_pow]; simp
-    · rw [if_neg (fun h2 => h (Fin.ext (by omega))), Matrix.one_apply_ne h, mul_zero]
+    · subst h; rw [ite_eq_left h1, Matrix.one_apply_eq, ← mul_pow]; simp
+    · rw [ite_eq_right (fun h2 => h (Fin.ext (by omega))), Matrix.one_apply_ne h, mul_zero]
   · intro k _ hk
-    rw [if_neg (fun h => hk (Fin.ext (by rw [Fin.val_rev]; omega))), zero_mul]
+    rw [ite_eq_right (fun h => hk (Fin.ext (by rw [Fin.val_rev]; omega))), zero_mul]
   · simp
 
 def PhiU (a : ℕ) (R : Type) [CommRing R] : GL (Fin a) R :=

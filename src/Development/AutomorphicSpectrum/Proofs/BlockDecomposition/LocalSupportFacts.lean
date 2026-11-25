@@ -39,19 +39,19 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 theorem nrmL_twConj' (hU : Unr E) (n : ℕ) (w : Pl E) (x y : GLw n w) :
     nrmL n w (x⁻¹ * y * thL n w x) = x⁻¹ * nrmL n w y * x := by
   by_cases hs : IsSplitAt w
-  · have h1 : thL n w = MonoidHom.id _ := by rw [thL, if_pos hs]
-    simp only [nrmL, if_pos hs, h1, MonoidHom.id_apply]
-  · have h1 : thL n w = thetaGL n (cj w) := by rw [thL, if_neg hs]
+  · have h1 : thL n w = MonoidHom.id _ := by rw [thL, ite_eq_left hs]
+    simp only [nrmL, ite_eq_left hs, h1, MonoidHom.id_apply]
+  · have h1 : thL n w = thetaGL n (cj w) := by rw [thL, ite_eq_right hs]
     have h2 := (GlobalTheory.BCT.thL_continuous_involutive E hU n w).2
     rw [h1] at h2
-    simp only [nrmL, if_neg hs, h1, map_mul, map_inv, h2]
+    simp only [nrmL, ite_eq_right hs, h1, map_mul, map_inv, h2]
     group
 
 theorem continuous_nrmL' (hU : Unr E) (n : ℕ) (w : Pl E) : Continuous (nrmL n w) := by
   by_cases hs : IsSplitAt w
   · have e : nrmL n w = fun u => u := funext fun u => by simp [nrmL, hs]
     rw [e]; exact continuous_id
-  · have h1 : thL n w = thetaGL n (cj w) := by rw [thL, if_neg hs]
+  · have h1 : thL n w = thetaGL n (cj w) := by rw [thL, ite_eq_right hs]
     have hc := (GlobalTheory.BCT.thL_continuous_involutive E hU n w).1
     rw [h1] at hc
     have e : nrmL n w = fun u => u * thetaGL n (cj w) u := funext fun u => by simp [nrmL, hs]

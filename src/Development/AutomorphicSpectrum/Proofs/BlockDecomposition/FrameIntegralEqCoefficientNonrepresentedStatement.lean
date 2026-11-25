@@ -289,7 +289,7 @@ theorem exists_dual (σ : E →ₐ[F] E) (hσ : ∀ x, σ (σ x) = x) (r : ℕ) 
     · have := hd i i
       rw [tB_apply, this]; simp
     · intro j _ hj
-      rw [tB_apply, hd, if_neg hj, mul_zero]
+      rw [tB_apply, hd, ite_eq_right hj, mul_zero]
     · simp
   refine ⟨_, fun i => (b i).1, fun i => (b' i).1, fun i => (b i).2, fun i => (b' i).2, ?_, ?_, ?_⟩
   · intro i j

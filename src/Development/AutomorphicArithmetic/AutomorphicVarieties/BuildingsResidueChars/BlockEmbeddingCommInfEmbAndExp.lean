@@ -75,7 +75,7 @@ private theorem exp_block_extension (K : Type) [Field K] [NumberField K] {a n : 
     funext k
     cases k with
     | zero => simp
-    | succ k => rw [if_neg (Nat.succ_ne_zero k), add_zero, map_smul, hpow]
+    | succ k => rw [ite_eq_right (Nat.succ_ne_zero k), add_zero, map_smul, hpow]
   rw [heq] at h2
   have h5 := h2.unique h4
   have hsub : g (NormedSpace.exp Y - 1) = g (NormedSpace.exp Y) - g 1 := map_sub g _ _

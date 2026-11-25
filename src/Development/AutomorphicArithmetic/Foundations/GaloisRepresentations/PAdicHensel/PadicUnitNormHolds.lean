@@ -445,10 +445,10 @@ theorem UpperTheory.Gal.G1.pDefSign :
       have hme : InfinitePlace.mk v.embedding = v := InfinitePlace.mk_embedding v
       by_cases hv : v = InfinitePlace.mk A.τ₀
       · have h1 := ((S.sig v.embedding).1 (by rw [hme]; exact hv)).1
-        rw [hεdef, if_pos hv, one_mul]
+        rw [hεdef, ite_eq_left hv, one_mul]
         exact hp.1 h1
       · have h0 := ((S.sig v.embedding).2 (by rw [hme]; exact hv)).1
-        rw [hεdef, if_neg hv, neg_one_mul, neg_pos]
+        rw [hεdef, ite_eq_right hv, neg_one_mul, neg_pos]
         exact hp.2 (by rw [h0]; exact zero_ne_one)
     have h1 : (((A.H n).map v.embedding)ᵀ * (mat S ↑(B.β⁻¹)).map v.embedding) *
         (mat S ↑B.β * (A.H n)⁻¹).map v.embedding = 1 := by
@@ -1232,7 +1232,7 @@ theorem UpperTheory.Gal.G1.pPadicSqFin :
   refine ⟨Fintype.card (ZMod (q ^ 3)), fun u => Fintype.equivFin (ZMod (q ^ 3))
     (if h : ‖u‖ ≤ 1 then PadicInt.toZModPow 3 ⟨u, h⟩ else 0), ?_⟩
   intro u u' hu hu' hk
-  simp only [dif_pos hu.le, dif_pos hu'.le, (Fintype.equivFin _).injective.eq_iff] at hk
+  simp only [dite_eq_left hu.le, dite_eq_left hu'.le, (Fintype.equivFin _).injective.eq_iff] at hk
   obtain ⟨a, ha⟩ : ∃ a : ℤ_[q], (a : ℚ_[q]) = u ∧ PadicInt.toZModPow 3 a =
       PadicInt.toZModPow 3 ⟨u, hu.le⟩ := ⟨⟨u, hu.le⟩, rfl, rfl⟩
   obtain ⟨b, hb⟩ : ∃ b : ℤ_[q], (b : ℚ_[q]) = u' ∧ PadicInt.toZModPow 3 b =

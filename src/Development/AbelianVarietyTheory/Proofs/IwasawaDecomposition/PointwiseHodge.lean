@@ -216,7 +216,7 @@ theorem modelGram_smooth_isUnit : ∀ (E : Type) [Field E] [NumberField E] [IsCM
     have hA : MContDiffAt 2 (fun u => 1 - (coordOf ix u ⟨τ, h⟩).map (starRingEnd ℂ) * (coordOf ix u ⟨τ, h⟩)ᵀ) w :=
       (mContDiffAt_const 1).sub ((GlobalTheory.PointChern.MContDiffAt.map_conj hZ).mul hZ.transpose)
     have hu := isUnit_det_one_sub_map_conj _ (hw ⟨τ, h⟩)
-    simp only [modelGram, dif_pos h]
+    simp only [modelGram, dite_eq_left h]
     refine ⟨?_, ?_⟩
     · simp only [reindex_apply]
       exact (hA.inv hu).submatrix _ _
@@ -227,13 +227,13 @@ theorem modelGram_smooth_isUnit : ∀ (E : Type) [Field E] [NumberField E] [IsCM
       have hA : MContDiffAt 2 (fun u => 1 - (coordOf ix u ⟨conjEmb τ, h'⟩)ᴴ * coordOf ix u ⟨conjEmb τ, h'⟩) w :=
         (mContDiffAt_const 1).sub (hZ.conjTranspose.mul hZ)
       have hu := isUnit_det_one_sub_conjTranspose _ (hw ⟨conjEmb τ, h'⟩)
-      simp only [modelGram, dif_neg h, dif_pos h']
+      simp only [modelGram, dite_eq_right h, dite_eq_left h']
       refine ⟨?_, ?_⟩
       · simp only [reindex_apply]
         exact (hA.inv hu).submatrix _ _
       · rw [det_reindex_self]
         exact isUnit_nonsing_inv_det_iff.mpr hu
-    · simp only [modelGram, dif_neg h, dif_neg h']
+    · simp only [modelGram, dite_eq_right h, dite_eq_right h']
       exact ⟨mContDiffAt_const 1, by simp⟩
 
 end GlobalTheory.PointChern
@@ -741,12 +741,6 @@ theorem posDef_iff_norm_lt_one (Z : Matrix m n ℂ) : (1 - Zᴴ * Z).PosDef ↔ 
 
 end general
 
-section hermitian
-
-variable {n : Type*} [Fintype n] [DecidableEq n]
-
-end hermitian
-
 section boost
 
 variable {p q : Type*} [Fintype p] [Fintype q] [DecidableEq p] [DecidableEq q]
@@ -757,12 +751,6 @@ def invSqrt {n : Type*} [Fintype n] [DecidableEq n] (M : Matrix n n ℂ) : Matri
 def boost (Z : Matrix p q ℂ) : Matrix (p ⊕ q) (p ⊕ q) ℂ :=
   fromBlocks (invSqrt (1 - Z * Zᴴ)) (Z * invSqrt (1 - Zᴴ * Z))
     (Zᴴ * invSqrt (1 - Z * Zᴴ)) (invSqrt (1 - Zᴴ * Z))
-
-section invSqrt
-
-variable {n : Type*} [Fintype n] [DecidableEq n] {M : Matrix n n ℂ}
-
-end invSqrt
 
 variable {Z : Matrix p q ℂ}
 
@@ -923,7 +911,7 @@ theorem chernPoly_model_eq_subst {H : Host E} (Dw : Datum H) {n : ℕ}
   · have e : (fun u => modelGram H Dw (coordOf ix u) τ) = fun u =>
         reindex (finCongr (mult_of_mem Dw h).symm) (finCongr (mult_of_mem Dw h).symm)
           ((1 - (zLin ix ⟨τ, h⟩ u).map (starRingEnd ℂ) * (zLin ix ⟨τ, h⟩ u)ᵀ)⁻¹) := by
-      funext u; simp only [modelGram, dif_pos h]; rfl
+      funext u; simp only [modelGram, dite_eq_left h]; rfl
     rw [e, _root_.GlobalTheory.ChernReindex.chernPoly_reindex, _root_.GlobalTheory.ChernReindex.chernPoly_reindex]
     exact _root_.GlobalTheory.ChernConj.chernPoly_conj_subst _ w 0 _ (A ⟨τ, h⟩) (hA _)
       (conj_tau (zLin ix ⟨τ, h⟩) w (A _) (B _) _ (hw _) (hA _) (hAA _) (hB _) (zLin_jMat ix A B _)) k
@@ -931,13 +919,13 @@ theorem chernPoly_model_eq_subst {H : Host E} (Dw : Datum H) {n : ℕ}
     · have e : (fun u => modelGram H Dw (coordOf ix u) τ) = fun u =>
           reindex (finCongr (mult_of_not_mem Dw h).symm) (finCongr (mult_of_not_mem Dw h).symm)
             ((1 - (zLin ix ⟨conjEmb τ, h'⟩ u)ᴴ * zLin ix ⟨conjEmb τ, h'⟩ u)⁻¹) := by
-        funext u; simp only [modelGram, dif_neg h, dif_pos h']; rfl
+        funext u; simp only [modelGram, dite_eq_right h, dite_eq_left h']; rfl
       rw [e, _root_.GlobalTheory.ChernReindex.chernPoly_reindex, _root_.GlobalTheory.ChernReindex.chernPoly_reindex]
       exact _root_.GlobalTheory.ChernConj.chernPoly_conj_subst _ w 0 _ (B _)ᵀ (by rw [det_transpose]; exact hB0 _)
         (conj_tauBar (zLin ix ⟨conjEmb τ, h'⟩) w (A _) (B _) _ (hw _) (hB0 _) (hAA _) (hB _)
           (zLin_jMat ix A B _)) k
     · have e : (fun u => modelGram H Dw (coordOf ix u) τ) = fun _ => 1 := by
-        funext u; simp only [modelGram, dif_neg h, dif_neg h']
+        funext u; simp only [modelGram, dite_eq_right h, dite_eq_right h']
       have hc : ∀ v, chernPoly (fun _ : ReciprocityTheory.L2DbarEstimates.V n => (1 : Matrix (Fin (Dw.mult τ)) (Fin (Dw.mult τ)) ℂ)) v k =
           (1 : Polynomial (MvPolynomial (Fin n × Fin n) ℂ)).coeff k := by
         intro v
@@ -1019,7 +1007,7 @@ theorem charpolyRev_mul_charpolyRev_eq_one_of_trace_pow_add_eq_zero
       have : ((k : R) + 1) = algebraMap K R ((k : K) + 1) := by simp
       rw [this]
       exact (IsUnit.mk0 _ (by exact_mod_cast Nat.succ_ne_zero k)).map _
-    rw [Polynomial.coeff_one, if_neg (Nat.succ_ne_zero k)]
+    rw [Polynomial.coeff_one, ite_eq_right (Nat.succ_ne_zero k)]
     exact hu.mul_left_eq_zero.mp hk
 
 end GlobalTheory
@@ -1325,7 +1313,7 @@ theorem relation_top_zero : ∀ (E : Type) [Field E] [NumberField E] [IsCMField 
         Matrix.reindex (finCongr (mult_of_mem Dw τ.2).symm) (finCongr (mult_of_mem Dw τ.2).symm)
           ((1 - (Matrix.of fun i c => u (e (i, c))).map (starRingEnd ℂ) * (Matrix.of fun i c => u (e (i, c)))ᵀ)⁻¹) := by
       funext u
-      simp only [modelGram, dif_pos τ.2]
+      simp only [modelGram, dite_eq_left τ.2]
       rfl
     rw [h1, chernPoly_reindex, chernPoly, curvPoly_model (fun i c => e (i, c)) (fun i c => e (i, c)), neg_neg]
     rfl
@@ -1339,7 +1327,7 @@ theorem relation_top_zero : ∀ (E : Type) [Field E] [NumberField E] [IsCMField 
         Matrix.reindex (finCongr (mult_of_not_mem Dw hc1).symm) (finCongr (mult_of_not_mem Dw hc1).symm)
           ((1 - (Matrix.of fun b i => u (e (i, b))).map (starRingEnd ℂ) * (Matrix.of fun b i => u (e (i, b)))ᵀ)⁻¹) := by
       funext u
-      simp only [modelGram, dif_neg hc1, dif_pos hc2, hτ]
+      simp only [modelGram, dite_eq_right hc1, dite_eq_left hc2, hτ]
       rfl
     rw [h1, chernPoly_reindex, chernPoly, curvPoly_model (fun b i => e (i, b)) (fun b i => e (i, b)), neg_neg]
     rfl
@@ -1359,7 +1347,7 @@ theorem relation_top_zero : ∀ (E : Type) [Field E] [NumberField E] [IsCMField 
         (-blockPolyBar e).charpolyRev.map (toEven n).toRingHom := (charpolyRev_map' _ _).symm
     rw [e1, e2, ← Polynomial.map_mul] at h2
     have h3 := congrArg (fun f => _root_.AddMonoidAlgebra.coeff (M := ℕ) f k) h2
-    simp only [Polynomial.coeff_map, Polynomial.coeff_one, if_neg (show k ≠ 0 by omega)] at h3
+    simp only [Polynomial.coeff_map, Polynomial.coeff_one, ite_eq_right (show k ≠ 0 by omega)] at h3
     exact h3
   rw [chernTop, map_mul, hrel, _root_.GlobalTheory.GrassModel.TopRead.topCoeff_eq_topBig, map_mul, hzero, zero_mul]
   simp

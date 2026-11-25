@@ -88,7 +88,7 @@ theorem exists_class {N : ℕ} (hN : 0 < N) : ∃ (Q : Type) (_ : Finite Q) (c :
   refine ⟨𝓞 L ⧸ Ideal.span {(N : 𝓞 L)}, hfin, fun x =>
     if h : x ∈ ReciprocityTheory.Aut.ALint L then Ideal.Quotient.mk _ (exists_approx L hN h).choose else 0, ?_⟩
   intro x hx y hy e
-  simp only [dif_pos hx, dif_pos hy] at e
+  simp only [dite_eq_left hx, dite_eq_left hy] at e
   obtain ⟨r, hr, ex⟩ := (exists_approx L hN hx).choose_spec
   obtain ⟨s, hs, ey⟩ := (exists_approx L hN hy).choose_spec
   set a := (exists_approx L hN hx).choose
@@ -117,7 +117,7 @@ theorem exists_cover {N : ℕ} (hN : 0 < N) : ∃ J : Finset (GAf L n), ∀ u �
   have hfin : Fintype (Fin n → Fin n → Q) := Fintype.ofFinite _
   refine ⟨Finset.univ.image rep, fun u hu => ?_⟩
   have hex : ∃ w ∈ ReciprocityTheory.Aut.Umax L n, φ w = φ u := ⟨u, hu, rfl⟩
-  have hrep : rep (φ u) = hex.choose := dif_pos hex
+  have hrep : rep (φ u) = hex.choose := dite_eq_left hex
   obtain ⟨hj, hφ⟩ := hex.choose_spec
   rw [← hrep] at hj hφ
   set j := rep (φ u) with hjdef

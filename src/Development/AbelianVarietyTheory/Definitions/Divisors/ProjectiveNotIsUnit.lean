@@ -52,13 +52,4 @@ def Charts.ev (C : Charts I Y β n) (e : ℕ) (i : Fin (n + 1)) :
     MvPolynomial (Fin (n + 1)) R →+* Γ((Y e).left, C.D e i) :=
   MvPolynomial.eval₂Hom (cst ((Y e).hom ≫ thick R I e) (C.D e i)) (C.ρ e i)
 
-section Projective
-
-open GlobalTheory.ProjSpace
-open ReciprocityTheory.ChartRestriction.G.Semi (LB)
-open ReciprocityTheory.ChartRestriction.G.Geo.Tor (PSpace)
-
-
-end Projective
-
 end GlobalTheory.FormalAlg

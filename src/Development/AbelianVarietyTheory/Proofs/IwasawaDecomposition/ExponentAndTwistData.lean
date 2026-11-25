@@ -63,9 +63,9 @@ instance algKT (i : T.Tw) (b : Bool) : Algebra S.Ks (KT D T i b) := ((readT D T 
 
 def WKr (j : ℕ) : Submodule S.Ks (S.WL j) := if 1 ≤ j ∧ j ≤ D.R.m then (S.A j).WK else ⊥
 
-theorem WKr_of {j : ℕ} (h1 : 1 ≤ j) (h2 : j ≤ D.R.m) : WKr D S j = (S.A j).WK := if_pos ⟨h1, h2⟩
+theorem WKr_of {j : ℕ} (h1 : 1 ≤ j) (h2 : j ≤ D.R.m) : WKr D S j = (S.A j).WK := ite_eq_left ⟨h1, h2⟩
 
-theorem WKr_off {j : ℕ} (h : ¬ (1 ≤ j ∧ j ≤ D.R.m)) : WKr D S j = ⊥ := if_neg h
+theorem WKr_off {j : ℕ} (h : ¬ (1 ≤ j ∧ j ≤ D.R.m)) : WKr D S j = ⊥ := ite_eq_right h
 
 def FmT (i : T.Tw) (j : ℕ) (b : Bool) : Type := KT D T i b ⊗[S.Ks] ↥(WKr D S j)
 

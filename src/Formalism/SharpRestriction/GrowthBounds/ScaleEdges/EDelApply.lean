@@ -111,14 +111,14 @@ theorem del_bound (hF : FramesOK TT L₁ L₂ N₁ G' F) (hr : 1 ≤ r) (hG : G'
       intro j hj hne
       rw [eDel_apply, Finset.sum_eq_zero, mul_zero]
       intro l _
-      refine if_neg ?_
+      refine ite_eq_right ?_
       intro h
       exact hne (huniq j j0 (Finset.mem_range.1 hj) hj0' l l0 l.isLt l0.isLt (h.symm.trans ht0)).1
     have h0 : eDel p n' F (j0 : ℤ) t = p ^ (zF F (j0 : ℤ) - F.fr j0 l0.val).toNat := by
       rw [eDel_apply, Finset.sum_eq_single l0]
-      · exact if_pos ht0
+      · exact ite_eq_left ht0
       · intro l _ hne
-        refine if_neg ?_
+        refine ite_eq_right ?_
         intro h
         exact hne (Fin.ext (huniq j0 j0 hj0' hj0' l l0 l.isLt l0.isLt (h.symm.trans ht0)).2)
       · intro h
@@ -143,9 +143,9 @@ theorem del_bound (hF : FramesOK TT L₁ L₂ N₁ G' F) (hr : 1 ≤ r) (hG : G'
       simp only [Nat.cast_zero, add_zero, sub_add_cancel] at m
       simp only [zF]
       omega
-  · push_neg at hex
+  · push Not at hex
     refine le_trans (le_of_eq (Finset.sum_eq_zero fun j hj => ?_)) (Nat.zero_le _)
-    rw [eDel_apply, Finset.sum_eq_zero (fun l _ => if_neg (hex j hj l)), mul_zero]
+    rw [eDel_apply, Finset.sum_eq_zero (fun l _ => ite_eq_right (hex j hj l)), mul_zero]
 
 private theorem nuRow_le_Sc_add_wSz {L₁ N₁ : ℕ} (hV : F.Valid L₁ N₁) (j : ℤ) {i i' : ℕ} (h : i ≤ i') (h' : i' < r) :
     F.fr j i ≤ F.fr j i' := by
@@ -352,7 +352,7 @@ theorem d_bound (hF : FramesOK TT L₁ L₂ N₁ G' F) (hr : 1 ≤ r) (hG : G' �
     apply hne
     rw [eD_apply, Finset.sum_eq_zero, mul_zero]
     intro l _
-    exact if_neg (hno l)
+    exact ite_eq_right (hno l)
 
 theorem eSP_off (hF : FramesOK TT L₁ L₂ N₁ G' F) (k c' Q : ℕ) (t : Fin n') (ht : t ∉ F.TT) :
     eSP p n' F k c' Q t = 0 := by
@@ -360,13 +360,13 @@ theorem eSP_off (hF : FramesOK TT L₁ L₂ N₁ G' F) (k c' Q : ℕ) (t : Fin n
   have h1 : ∀ j : ℤ, eDel p n' F j t = 0 := by
     intro j
     rw [eDel_apply]
-    refine Finset.sum_eq_zero fun l _ => if_neg ?_
+    refine Finset.sum_eq_zero fun l _ => ite_eq_right ?_
     rintro rfl
     exact ht (hV.2.2.2.2.1 j l.val l.isLt).1
   have h2 : ∀ s ∈ F.TT, eD p n' F (s.val : ℤ) t = 0 := by
     intro s hs
     rw [eD_apply]
-    refine Finset.sum_eq_zero fun l _ => if_neg ?_
+    refine Finset.sum_eq_zero fun l _ => ite_eq_right ?_
     rintro rfl
     exact ht (bs_top_Arow F s hs l.val)
   simp only [eSP, Pi.add_apply, Pi.smul_apply, Finset.sum_apply, smul_eq_mul, h1, mul_zero,

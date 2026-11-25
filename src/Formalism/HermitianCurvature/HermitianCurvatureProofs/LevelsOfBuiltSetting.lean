@@ -31,7 +31,7 @@ theorem liftVec_inj {v w : Fin (2 * r' + k + 1) → ℂ} (h : liftVec k i r' v =
   have hjl := j.isLt
   have hj := congrFun h ⟨j.val + i, by omega⟩
   have hc : i ≤ j.val + i ∧ j.val + i < 2 * r' + k + 1 + i := ⟨Nat.le_add_left _ _, by omega⟩
-  simp only [liftVec, dif_pos hc] at hj
+  simp only [liftVec, dite_eq_left hc] at hj
   first
     | simpa using hj
 
@@ -126,7 +126,7 @@ private theorem herm_bvec_liftVec_eq_zero_of_outside (y : Fin (2 * r' + k + 1) �
 private theorem liftVec_apply_of_mid (x : Fin (2 * r' + k + 1) → ℂ) (p : Fin (2 * (i + r') + k + 1))
     (hp : i ≤ p.val ∧ p.val < 2 * r' + k + 1 + i) : liftVec k i r' x p = x ⟨p.val - i, by omega⟩ := by
   simp only [liftVec]
-  rw [dif_pos hp]
+  rw [dite_eq_left hp]
 
 private theorem bvec_eq_liftVec_bvec_of_mid (q : Fin (2 * (i + r') + k + 1)) (hq : i ≤ q.val ∧ q.val < 2 * r' + k + 1 + i) :
     bvec q = liftVec k i r' (bvec (⟨q.val - i, by omega⟩ : Fin (2 * r' + k + 1))) := by
@@ -143,8 +143,8 @@ theorem unitB_lift {m : ℕ} (Bs : Fin m → Fin (2 * r' + k + 1) → ℂ) (a b 
   simp only [Matrix.of_apply]
   by_cases hp : i ≤ p.val ∧ p.val < 2 * r' + k + 1 + i
   · by_cases hq : i ≤ q.val ∧ q.val < 2 * r' + k + 1 + i
-    · rw [dif_pos hp, dif_pos hq, liftVec_apply_of_mid _ p hp, bvec_eq_liftVec_bvec_of_mid q hq, herm_hpk_liftVec_liftVec]
-    · rw [dif_pos hp, dite_eq_right hq, herm_bvec_liftVec_eq_zero_of_outside _ q hq, mul_zero]
+    · rw [dite_eq_left hp, dite_eq_left hq, liftVec_apply_of_mid _ p hp, bvec_eq_liftVec_bvec_of_mid q hq, herm_hpk_liftVec_liftVec]
+    · rw [dite_eq_left hp, dite_eq_right hq, herm_bvec_liftVec_eq_zero_of_outside _ q hq, mul_zero]
   · rw [dite_eq_right hp]
     have h0 : liftVec k i r' (Bs a) p = 0 := by
       simp only [liftVec]
@@ -219,7 +219,7 @@ theorem continuous_ιLev : Continuous (ιLev k i r') := by
 theorem uw_onto (z : Fin (2 * r' + k + 1) → ℂ) (g : Mx k (i + r')) (hg : g ∈ UWset k (i + r') (liftVec k i r' z)) :
     ∃ y ∈ UWset k r' z, ιLev k i r' y = g := by
   have hG : g ∈ Glev k (i + r') ⟨i, by omega⟩ := ⟨hg.1, fun a _ => hg.2.1 a⟩
-  rw [QnGlevImageW.glevImage_of PI.QnLevBasicsW.level_group_homomorphism PI.QnLevBasicsW.level_group_unitary_hermitian k i r'] at hG
+  rw [QnGlevImageW.glevImage_of PI.QnLevBasicsW.level_group_unitary_hermitian k i r'] at hG
   obtain ⟨y, hy, rfl⟩ := hG
   refine ⟨y, ⟨hy, fun a => ?_, ?_⟩, rfl⟩
   · have ha := a.isLt
@@ -358,7 +358,7 @@ theorem glev_measurable (k r : ℕ) (i : Fin (r + 1)) : @MeasurableSet (Mt k r) 
 theorem haar_glev (μ0 : Measure (Mt k 0)) (h0 : Formalism.FourierDecayAlt.B.IsHaarOn (Formalism.FourierDecayAlt.B.GV k 0) μ0) :
     Formalism.FourierDecayAlt.B.IsHaarOn (Glev k r' (Fin.last r')) (μ0.map (embL k r')) := by
   have hU : Glev k r' (Fin.last r') = ιLev k r' 0 '' UH (Hpk k 0) :=
-    QnGlevImageW.glevImage_of PI.QnLevBasicsW.level_group_homomorphism PI.QnLevBasicsW.level_group_unitary_hermitian k r' 0
+    QnGlevImageW.glevImage_of PI.QnLevBasicsW.level_group_unitary_hermitian k r' 0
   have hm : Measurable (embL k r') := continuous_embL.measurable
   have hhom := PI.QnLevBasicsW.level_group_homomorphism k r' 0
   refine ⟨?_, ?_, ?_, ?_, ?_⟩
@@ -474,7 +474,7 @@ theorem rho_bounds (hOK : P.OK) (ρ : M.Ty P) (i : ℕ) (hi1 : 1 ≤ i) (hi2 : i
       | exact Nat.lt_succ_iff.mp hw
   have hv : ((ρ ⟨i - 1, by omega⟩ : ℕ) : ℝ) ≤ ((⌊P.hi i - P.lo i⌋₊ : ℕ) : ℝ) := by exact_mod_cast hv'
   unfold M.rho
-  rw [dif_pos ⟨hi1, hi2⟩]
+  rw [dite_eq_left ⟨hi1, hi2⟩]
   constructor
   · linarith
   · linarith
@@ -614,9 +614,9 @@ theorem levelsActualBuilt : Formalism.FourierDecayAlt.JCT.LevelsActualBuilt := b
     have hpt : ((W.1 v).get a).2 ∈ (S.G.place (S.pl v)).cutI S.l := by
       rw [List.get_eq_getElem]
       by_cases hp : ((W.1 v)[a.val]'a.isLt).1 = true
-      · rw [if_pos hp] at hn
+      · rw [ite_eq_left hp] at hn
         exact (hin _ hn).1
-      · rw [if_neg hp] at hn
+      · rw [ite_eq_right hp] at hn
         have := (hin _ hn).2
         simpa using this
     apply hOn v

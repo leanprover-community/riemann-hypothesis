@@ -198,7 +198,7 @@ private theorem delta_ext (hU : WdUni) {X : Type} [AddCommGroup X] [Module ℂ X
     by_cases h : L.card = 1
     · obtain ⟨l, rfl⟩ := Finset.card_eq_one.1 h
       simp [GlobalTheory.DI.delta, GlobalTheory.cubeSign_singleton]
-    · rw [if_neg h]
+    · rw [ite_eq_right h]
       apply Finset.sum_eq_zero
       intro l hl
       have hne : L.erase l ≠ ∅ := by
@@ -208,7 +208,7 @@ private theorem delta_ext (hU : WdUni) {X : Type} [AddCommGroup X] [Module ℂ X
           simp at hl
         · exact h (by rw [h0, Finset.card_singleton])
       show GlobalTheory.cubeSign L l • (if L.erase l = ∅ then y else 0) = 0
-      rw [if_neg hne, smul_zero]
+      rw [ite_eq_right hne, smul_zero]
   have key := (hU β κ X (fun _ => 1) (ext0 x) I J).1
   simp only [wd_one] at key
   rw [key]
@@ -221,7 +221,7 @@ private theorem delta_ext (hU : WdUni) {X : Type} [AddCommGroup X] [Module ℂ X
   rw [e1, e2, hs]
   have e3 : GlobalTheory.DI.delta (fun b' => if J = ∅ then x b' else 0) I = 0 := by
     by_cases hJ : J = ∅
-    · simp only [if_pos hJ]
+    · simp only [ite_eq_left hJ]
       exact congrFun hx I
     · simp [hJ, GlobalTheory.DI.delta]
   rw [e3, zero_add]
@@ -243,7 +243,7 @@ private theorem cup_ext_uni (a : Finset β → E) (c : Finset (β ⊕ₗ κ) →
       have hm : l ∈ J.filter (· ≤ l) := Finset.mem_filter.2 ⟨hl, le_rfl⟩
       rw [he] at hm
       simp at hm
-    simp only [filter_le_r, ext0, rgt_uni, if_neg hne, map_zero, LinearMap.zero_apply]
+    simp only [filter_le_r, ext0, rgt_uni, ite_eq_right hne, map_zero, LinearMap.zero_apply]
 
 private theorem cup_edge (q : ℕ) (a : Finset β → E) (ha : ∀ I : Finset β, I.card ≠ q + 1 → a I = 0)
     (c : Finset (β ⊕ₗ κ) → E') (hc : c ∅ = 0) (I : Finset β) (J : Finset κ) :
@@ -268,7 +268,7 @@ private theorem cup_edge (q : ℕ) (a : Finset β → E) (ha : ∀ I : Finset β
         have e2 : J.filter (J.min' hJ ≤ ·) = J :=
           Finset.filter_true_of_mem (fun x hx => J.min'_le x hx)
         simp only [filter_le_r, filter_ge_r, e1, e2, edge1, lft_uni, rgt_uni, Finset.card_singleton,
-          map_zsmul, LinearMap.smul_apply, if_true]
+          map_zsmul, LinearMap.smul_apply, ite_true]
         by_cases hI : I.card = q + 1
         · rw [hI]
         · rw [ha I hI]
@@ -276,7 +276,7 @@ private theorem cup_edge (q : ℕ) (a : Finset β → E) (ha : ∀ I : Finset β
       · have h2 : 1 < (J.filter (· ≤ l)).card :=
           Finset.one_lt_card.2 ⟨J.min' hJ, Finset.mem_filter.2 ⟨J.min'_mem hJ, J.min'_le l hl⟩,
             l, Finset.mem_filter.2 ⟨hl, le_rfl⟩, Ne.symm hne⟩
-        simp only [filter_le_r, edge1, lft_uni, rgt_uni, if_neg h2.ne', smul_zero, map_zero,
+        simp only [filter_le_r, edge1, lft_uni, rgt_uni, ite_eq_right h2.ne', smul_zero, map_zero,
           LinearMap.zero_apply]
   · simp [filter_le_l, edge1, rgt_uni]
 
@@ -340,7 +340,7 @@ theorem UpperTheory.Gal.productCup_of_system.lCupRel_of :
   have hext_a : ext0 (κ := ι) a ∅ = 0 := by
     rw [← uni_empty (β := ι) (κ := ι)]
     show (if rgt (uni (∅ : Finset ι) (∅ : Finset ι)) = ∅ then a (lft (uni ∅ ∅)) else 0) = 0
-    rw [rgt_uni, lft_uni, if_pos rfl, ha0]
+    rw [rgt_uni, lft_uni, ite_eq_left rfl, ha0]
   have hdext_a : GlobalTheory.DI.delta (ext0 (κ := ι) a) =
       fun v => ((-1 : ℤ) ^ (lft v).card) • edge1 (κ := ι) a v := by
     funext v
@@ -376,13 +376,13 @@ theorem UpperTheory.Gal.productCup_of_system.lCupRel_of :
       have e : ext0 (κ := ι) w (uni I ∅) =
           ∑ i ∈ I, μ (a (I.filter (· ≤ i))) (γ (uni (I.filter (i ≤ ·)) ∅)) := by
         show (if rgt (uni I (∅ : Finset ι)) = ∅ then w (lft (uni I ∅)) else 0) = _
-        rw [rgt_uni, lft_uni, if_pos rfl, hw]
+        rw [rgt_uni, lft_uni, ite_eq_left rfl, hw]
         rfl
       rw [e, sub_self]
       exact Submodule.zero_mem _
     · have h0 : ext0 (κ := ι) w (uni I J) = 0 := by
         show (if rgt (uni I J) = ∅ then w (lft (uni I J)) else 0) = 0
-        rw [rgt_uni, if_neg hJ.ne_empty]
+        rw [rgt_uni, ite_eq_right hJ.ne_empty]
       rw [h0, sub_zero]
       split_ifs with hc
       · rcases I.eq_empty_or_nonempty with hI | hI

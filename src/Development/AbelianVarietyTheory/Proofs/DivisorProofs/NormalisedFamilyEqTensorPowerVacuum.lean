@@ -216,13 +216,13 @@ theorem phi_embV_bas {D : D7} {cc : Ideal (𝓞 D.host.K)} {δ : ℂ} (B : Base 
   funext p
   rw [phi_apply, bas, blk_embV_putB]
   by_cases h : p.1 = (ixE D n n' j).1
-  · rw [if_pos h, gC_xv]
+  · rw [ite_eq_left h, gC_xv]
     by_cases h2 : p.2 = (ixE D n n' j).2
     · have : p = ixE D n n' j := Prod.ext h h2
       subst this; simp
     · have : p ≠ ixE D n n' j := fun e => h2 (by rw [e])
       simp [h2, this]
-  · rw [if_neg h, B.gC.map_zero]
+  · rw [ite_eq_right h, B.gC.map_zero]
     have : p ≠ ixE D n n' j := fun e => h (by rw [e])
     simp [this]
 
@@ -629,7 +629,7 @@ theorem trace_xv (B : Base D cc δ) (w w' : Fin 4 × D.what₂.Tau) :
   by_cases hw : w = w'
   · subst hw
     simp
-  · rw [if_neg hw, map_zero]
+  · rw [ite_eq_right hw, map_zero]
     apply Finset.sum_eq_zero
     intro u _
     by_cases hu : u = w
@@ -642,7 +642,7 @@ theorem orthonormal_bas (B : Base D cc δ) (n n' : ℕ) : TaylorLogMetric.Orthon
   unfold bas
   rw [hYY_putB]
   by_cases hk : (ixE D n n' i).1 = (ixE D n n' j).1
-  · rw [if_pos hk, trace_xv]
+  · rw [ite_eq_left hk, trace_xv]
     congr 1
     apply propext
     constructor
@@ -650,7 +650,7 @@ theorem orthonormal_bas (B : Base D cc δ) (n n' : ℕ) : TaylorLogMetric.Orthon
       exact (ixE D n n').injective (Prod.ext hk h)
     · intro h
       rw [h]
-  · rw [if_neg hk, if_neg]
+  · rw [ite_eq_right hk, ite_eq_right]
     intro h
     exact hk (by rw [h])
 
@@ -676,7 +676,7 @@ theorem matrix_eq_sum_putB (B : Base D cc δ) (n n' : ℕ) (M : Matrix (Fin (n' 
   subst hi hj
   simp only [Matrix.sum_apply, Matrix.smul_apply, putB_posE, smul_ite, smul_zero]
   rw [Fintype.sum_eq_single p.1]
-  · simp only [if_true]
+  · simp only [ite_true]
     have := congrFun (sum_g_smul_xv B (fun a => M (posE n n' (p.1, a)).1 (posE n n' (p.1, a)).2)) p.2
     rw [Finset.sum_apply] at this
     simp only [Pi.smul_apply] at this
@@ -684,7 +684,7 @@ theorem matrix_eq_sum_putB (B : Base D cc δ) (n n' : ℕ) (M : Matrix (Fin (n' 
   · intro k hk
     apply Finset.sum_eq_zero
     intro w _
-    rw [if_neg (Ne.symm hk)]
+    rw [ite_eq_right (Ne.symm hk)]
 
 theorem onB_bas : ∀ (D : D7) (cc : Ideal (𝓞 D.host.K)) (δ : ℂ) (B : Base D cc δ) (n n' : ℕ),
     StandardLatticesGL3.OnB D (bas B n n') := by

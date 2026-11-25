@@ -49,10 +49,10 @@ private theorem lam_two {n : ℕ} {A E : Type} [CommRing A] [Ring E] [Algebra A 
         map_one]
       ring
     rw [Det.lam, hchi, finsetSum_coeff, Finset.sum_eq_single j]
-    · rw [coeff_C_mul_X_pow, if_pos rfl, ← mul_assoc, ← mul_pow]; simp
+    · rw [coeff_C_mul_X_pow, ite_eq_left rfl, ← mul_assoc, ← mul_pow]; simp
     · intro i hi hij
       have : i ≤ n := by simpa [Nat.lt_succ_iff] using hi
-      rw [coeff_C_mul_X_pow, if_neg (by omega)]
+      rw [coeff_C_mul_X_pow, ite_eq_right (by omega)]
     · intro h; exact absurd hj h
   rw [key]
   exact Finset.sum_congr rfl fun i hi => by rw [hl i hi]
@@ -99,5 +99,5 @@ theorem UpperTheory.V.CA.d_chi :
       ring
     have h2 := congrArg (fun p => p.coeff j) h'
     simp only [finsetSum_coeff, coeff_C_mul_X_pow, Finset.sum_ite_eq, Finset.mem_range, Nat.lt_succ_iff, hj,
-      if_true] at h2
+      ite_true] at h2
     exact h2.symm

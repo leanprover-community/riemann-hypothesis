@@ -172,7 +172,7 @@ theorem TubeCollarCompare.proof : TubeCollarCompare.Statement := by
     rwa [logAbsSq, Real.exp_log h2] at h3
   have hw : |f x| ≤ 1 := by
     rw [hfdef, Set.indicator_of_mem hxB]
-    simp only [tubeWeight, if_pos hv1]
+    simp only [tubeWeight, ite_eq_left hv1]
     rw [abs_of_nonneg (by positivity)]
     exact inv_le_one_of_one_le₀ (by nlinarith)
   have hsa : AnalyticAt ℂ s (A *ᵥ x) :=

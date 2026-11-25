@@ -60,7 +60,7 @@ theorem decoratedLatticePoint_move_diamond {X : Fields} {n : ℕ} {ST SG Q : Fin
     (p.mv (DecoSet.dia1 P a p.1.1.deco)).1.1.deco = DecoSet.dia1 P a p.1.1.deco ∧
       (p.mv (DecoSet.dia1 P a p.1.1.deco)).1.1.fr = p.1.1.fr ∧ (p.mv (DecoSet.dia1 P a p.1.1.deco)).1.2 = p.1.2 := by
   have h : p.mv (DecoSet.dia1 P a p.1.1.deco) =
-      ⟨(⟨(DecoSet.dia1 P a p.1.1.deco, p.1.1.1.2), p.1.1.2⟩, p.1.2), p.2⟩ := dif_pos ⟨p.1.1.2, p.2⟩
+      ⟨(⟨(DecoSet.dia1 P a p.1.1.deco, p.1.1.1.2), p.1.1.2⟩, p.1.2), p.2⟩ := dite_eq_left ⟨p.1.1.2, p.2⟩
   rw [h]
   exact ⟨rfl, rfl, rfl⟩
 

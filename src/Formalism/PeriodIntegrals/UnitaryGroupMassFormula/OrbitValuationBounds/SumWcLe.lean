@@ -26,11 +26,11 @@ theorem sum_Wc_le {X : Inst D L} {E : Ent D} (hS : Shape D L X E) {p : ℕ} [Fac
     unfold Formalism.MainNotions.product_zeroth_first_parts.Loc.cap
     by_cases ht : IsTopPl D (orbMap D p z s)
     · have hs : s ∈ (orbLoc E p h u i z Th).TT := Finset.mem_filter.2 ⟨Finset.mem_univ _, ht⟩
-      rw [if_pos ht] at hc
+      rw [ite_eq_left ht] at hc
       split_ifs
       exact hc
     · have hs : s ∉ (orbLoc E p h u i z Th).TT := fun hs => ht (Finset.mem_filter.1 hs).2
-      rw [if_neg ht] at hc
+      rw [ite_eq_right ht] at hc
       split_ifs
       exact hc
   have hB0 : 0 ≤ L.sc.b + L.etaSz + 1 + 3 * L.Sc := le_trans (Nat.cast_nonneg _) (hcap 0)

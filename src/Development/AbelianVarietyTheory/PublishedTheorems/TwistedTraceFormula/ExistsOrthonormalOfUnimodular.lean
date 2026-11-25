@@ -89,12 +89,12 @@ theorem exists_zero_coord {F : Type*} [Field F] (h2 : (2 : F) ≠ 0) {ι : Type*
         simp [hij, hi]
       · by_cases h2 : k = j
         · subst h2
-          simp only [h1, if_false, if_true]
+          simp only [h1, ite_false, ite_true]
           ring
-        · simp only [h1, h2, if_false]
+        · simp only [h1, h2, ite_false]
           ring
     simp only [this, Finset.sum_add_distrib, ← Finset.mul_sum, h, Finset.sum_ite_eq',
-      Finset.mem_univ, if_true]
+      Finset.mem_univ, ite_true]
     rw [ht]
     field_simp
     ring

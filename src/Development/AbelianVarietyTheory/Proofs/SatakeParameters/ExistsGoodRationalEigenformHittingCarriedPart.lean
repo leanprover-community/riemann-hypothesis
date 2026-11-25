@@ -193,7 +193,7 @@ theorem evC_splitC (V : HSp D) (P : Pl D.host.E) (hP : conjPl P ≠ P) (a : List
   unfold evC splitC
   rw [← Finsupp.sum_finsetSum_index (fun _ => by simp) (fun _ _ _ => by split_ifs <;> ring)]
   refine Finset.sum_congr rfl fun j hj => ?_
-  rw [Finsupp.sum_single_index (by simp), if_pos (isLab_splitLab V P hP j (Nat.lt_succ_iff.1 (Finset.mem_range.1 hj)))]
+  rw [Finsupp.sum_single_index (by simp), ite_eq_left (isLab_splitLab V P hP j (Nat.lt_succ_iff.1 (Finset.mem_range.1 hj)))]
 
 theorem heckePoly_cancel (nV nW q : ℕ) (κ : ℂ) (B : ℂ[X]) (z : ℕ → ℕ → ℂ) (a a' : ℕ → ℂ) (hq : q ≠ 0) (hκ : κ ≠ 0)
     (hB : B ≠ 0)
@@ -561,7 +561,7 @@ variable {D : D7}
 theorem evC_single_one (V : HSp D) (P : Pl D.host.E) (a : List ℤ → ℂ) {d : List ℤ} (h : IsLab V P d) :
     evC V P a (Finsupp.single d 1) = a d := by
   unfold evC
-  rw [Finsupp.sum_single_index (by simp), if_pos h, one_mul]
+  rw [Finsupp.sum_single_index (by simp), ite_eq_left h, one_mul]
 
 theorem opAll_mem_goodR {G : Type} [Group G] [Fintype G] {Pl0 I0 Ty : Type} {K : Type} [Field K] [NumberField K] [StarRing K]
     {B : BlockDat K G Pl0} (Dt : InertDat3 B I0 Ty) {s : ℕ} (h : B.Ok s) (hD : Dt.Ok3) (ℓ : Lvl K G) (i : Dt.OpIx)
@@ -655,7 +655,7 @@ theorem parts_orth (R : RealDat D A Ks) (SF : Finset (HeightOneSpectrum (𝓞 D.
     · intro z hz
       refine hLast c1 z (heH c2 z hz) fun P d hP hd => ?_
       rw [hEv c2 P hP _ z hz, evC_single_one _ _ _ hd, hall P d hP hd]
-  · push_neg at hall
+  · push Not at hall
     obtain ⟨P, d, hP, hd, hcd⟩ := hall
     have hν : LinearMap.adjoint (h P (Finsupp.single d 1)) x2 =
         evC (Wc D i) P (c2 P) (dualC (Finsupp.mapRange star (star_zero ℂ) (Finsupp.single d 1))) • x2 := by

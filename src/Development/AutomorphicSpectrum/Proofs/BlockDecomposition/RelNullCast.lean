@@ -68,12 +68,6 @@ namespace GlobalTheory.CompanionTheory.RelInjAbs
 
 open CrystallineSemistableComparison CrystallineSemistableComparison.Pb CrystallineSemistableComparison.Onto
 
-section Cxs
-
-variable {R : Type} [CommRing R]
-
-end Cxs
-
 section Abs
 
 variable {R : Type} [CommRing R] {C C' : Type 1} [Category.{0} C] [Category.{0} C']

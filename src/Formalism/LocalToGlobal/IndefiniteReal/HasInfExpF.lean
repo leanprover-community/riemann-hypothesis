@@ -12,59 +12,6 @@ open MeasureTheory
 
 namespace Formalism.IndefR.LiftF
 
-section Chars
-
-variable {C : Type*} [CommGroup C]
-
-end Chars
-
-section Step
-
-variable {G H S Sinf Ds Dt : Type*} [MeasurableSpace H]
-  [AddCommGroup Sinf] [Module ℂ Sinf] [AddCommGroup Ds] [Module ℂ Ds] [AddCommGroup Dt] [Module ℂ Dt]
-
-end Step
-
-section Adj
-
-variable {M N : Type*} [AddCommGroup M] [Module ℂ M] [AddCommGroup N] [Module ℂ N]
-
-end Adj
-
-section Chain
-
-variable {G : ℕ → Type*} {D : ℕ → Type*} [∀ j, AddCommGroup (D j)] [∀ j, Module ℂ (D j)]
-  (CC : ∀ j, Submodule ℂ (D j →ₗ[ℂ] (G j → ℂ)))
-
-end Chain
-
-section Rows
-
-variable {M N : Type*} [AddCommGroup M] [Module ℂ M] [AddCommGroup N] [Module ℂ N]
-
-end Rows
-
-section ThetaP
-
-variable {G' H' S' Sinf' TK Tau : Type*} [MeasurableSpace H']
-  [AddCommGroup Sinf'] [Module ℂ Sinf'] [AddCommGroup TK] [Module ℂ TK] [AddCommGroup Tau] [Module ℂ Tau]
-
-variable {A Amb : Type*} [AddCommGroup A] [Module ℂ A] [AddCommGroup Amb] [Module ℂ Amb]
-
-end ThetaP
-
-section Bu
-
-variable {M N Mu : Type*} [AddCommGroup M] [Module ℂ M] [AddCommGroup N] [Module ℂ N]
-
-end Bu
-
-section Statements
-
-variable {M N Mu : Type*} [AddCommGroup M] [Module ℂ M] [AddCommGroup N] [Module ℂ N]
-
-end Statements
-
 section Kernels
 
 open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.IndefR.DatumF IsDedekindDomain NumberField

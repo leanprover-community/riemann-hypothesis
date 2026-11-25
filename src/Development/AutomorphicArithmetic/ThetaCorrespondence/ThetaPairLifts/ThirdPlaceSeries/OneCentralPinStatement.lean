@@ -720,9 +720,9 @@ theorem edgeSum_elem {K : Type} [CommRing K] {r κ : ℕ} (a b : Fin r) (h : a �
     change (if _ then transvection a b y i j else 0) = _
     by_cases hE : GlobalTheory.chainEdge κ i j
     · have hij : i ≠ j := fun e => by have := hE.1; omega
-      rw [if_pos hE, transvection, Matrix.add_apply, one_apply_ne hij, zero_add, single_apply]
+      rw [ite_eq_left hE, transvection, Matrix.add_apply, one_apply_ne hij, zero_add, single_apply]
       simp only [eq_comm]
-    · rw [if_neg hE, if_neg]
+    · rw [ite_eq_right hE, ite_eq_right]
       rintro ⟨rfl, rfl⟩
       exact hE hab
   unfold Formalism.L2.DIV.edgeSum
@@ -734,7 +734,7 @@ theorem isPat_elem {K : Type} [CommRing K] {r ρ κ : ℕ} (a b : Fin r) (h : a 
     (y : K) : GlobalTheory.SymRes.IsPat ρ κ (elem a b h y) := by
   intro i j hij
   change transvection a b y i j = _
-  rw [transvection, Matrix.add_apply, single_apply, if_neg, add_zero]
+  rw [transvection, Matrix.add_apply, single_apply, ite_eq_right, add_zero]
   rintro ⟨rfl, rfl⟩
   exact hij hab
 
@@ -806,10 +806,6 @@ open GlobalTheory.MiTop GlobalTheory.SeeSaw GlobalTheory.Fam ValuativeRel IsLoca
 open GlobalTheory.LocMod Matrix
 noncomputable section
 namespace GlobalTheory.MiTop.MoveZ
-section Two
-variable {D : D7} {k k' : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
-  [Field k'] [ValuativeRel k'] [TopologicalSpace k'] [IsNonarchimedeanLocalField k']
-end Two
 variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : Formalism.MainNotions.G.Inst D L} {Gl : Formalism.MainNotions.G.LatInst D} {Kc : Formalism.MainNotions.G.Consts}
   {Yd : DivX D} {cX : ExtraC} {ex : Extra D L hT Gi Gl Kc Yd cX}
 theorem addChar_uniformizer_eq_chi_of_gRead (W : _root_.GlobalTheory.MiS.RealPackAlt ex) (PP : (_root_.GlobalTheory.Fam.pk_z W).Pg) : ∃ χ : 𝓞 D.host.E → ℂ, ∀ u (f : _root_.GlobalTheory.Fam.FamilyCharacter W u) (v : VCom f.c) (n : ℕ)
@@ -835,9 +831,9 @@ theorem addChar_uniformizer_eq_chi_of_gRead (W : _root_.GlobalTheory.MiS.RealPac
       (ofSplit (G j).q).pr ((if pl j = PP then z else 0 : 𝓞 D.host.E) : D.host.E)) := fun j =>
     GlobalTheory.LevZero.lam_eq_of_red (G j) (pl j).1 (hG.idem j).1 (x j) _ (hx j) _
       (edgeSum_elem a b hab ⟨rfl, by simp only [a]; omega⟩ _).symm
-  simp only [dif_pos hmem]
-  rw [hchi, Units.coe_prod, Finset.prod_eq_single i (fun j _ hj => ?_) (by simp), hlam, if_pos hi]
-  rw [hlam, if_neg (fun e => hj (pl.injective (e.trans hi.symm)))]
+  simp only [dite_eq_left hmem]
+  rw [hchi, Units.coe_prod, Finset.prod_eq_single i (fun j _ hj => ?_) (by simp), hlam, ite_eq_left hi]
+  rw [hlam, ite_eq_right (fun e => hj (pl.injective (e.trans hi.symm)))]
   simp [Place.pr]
 
 theorem base_inv_alt_alt (W : _root_.GlobalTheory.MiS.RealPackAlt ex) {u : D.what₂.Word} (f : _root_.GlobalTheory.Fam.FamilyCharacter W u) (B : SBes W.S.X W.Q.instEq u W.Q.Rl.ψ (D.sp.X 0))

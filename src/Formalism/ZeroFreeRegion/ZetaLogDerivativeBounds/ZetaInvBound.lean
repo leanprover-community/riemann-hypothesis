@@ -58,7 +58,7 @@ lemma tsum_rpow_le {σ : ℝ} (hσ : 0 < σ) :
 
 lemma norm_term_one_succ (s : ℂ) (n : ℕ) :
     ‖term (1 : ℕ → ℂ) s (n + 1)‖ = ((n : ℝ) + 1) ^ (-(s.re - 1) - 1) := by
-  rw [LSeries.norm_term_eq, if_neg (Nat.succ_ne_zero n)]
+  rw [LSeries.norm_term_eq, ite_eq_right (Nat.succ_ne_zero n)]
   simp only [Pi.one_apply, norm_one]
   push_cast
   rw [show -(s.re - 1) - 1 = -s.re by ring, Real.rpow_neg (by positivity), one_div]

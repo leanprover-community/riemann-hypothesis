@@ -98,11 +98,11 @@ def nfMat {r : ℕ} {k : Type} [CommRing k] (c : Fin (r + 1) → k) : Matrix (Fi
 
 theorem nfMat_mulVec_castSucc {r : ℕ} {k : Type} [CommRing k] (c : Fin (r + 1) → k) (v : Fin (r + 1) → k)
     (i : Fin r) : (nfMat c *ᵥ v) (Fin.castSucc i) = v i.succ := by
-  simp only [Matrix.mulVec, dotProduct, nfMat, Matrix.of_apply, Fin.castSucc_ne_last, if_false]
+  simp only [Matrix.mulVec, dotProduct, nfMat, Matrix.of_apply, Fin.castSucc_ne_last, ite_false]
   rw [Finset.sum_eq_single i.succ]
   · simp
   · intro j _ hj
-    rw [if_neg]; · simp
+    rw [ite_eq_right]; · simp
     intro h; apply hj; ext; simp [h]
   · simp
 
@@ -272,7 +272,7 @@ theorem exists_glO_pair {F : Type} [NormedField F] [IsUltrametricDist F] (r : �
       | cast c' =>
         simp only [row, col, Fin.lastCases_castSucc, ρ, sub_dotProduct, smul_dotProduct,
           single_dotProduct, hwu, smul_eq_mul, mul_zero, sub_zero, one_mul, u, Pi.sub_apply,
-          Pi.smul_apply, Pi.single_apply, hs c, if_false, mul_zero, sub_zero, Matrix.one_apply,
+          Pi.smul_apply, Pi.single_apply, hs c, ite_false, mul_zero, sub_zero, Matrix.one_apply,
           Fin.castSucc_inj]
         by_cases h : c = c'
         · subst h; simp
@@ -873,9 +873,9 @@ theorem unitG_lift : ∀ (F : Type) [NormedField F] (r : ℕ) (Z : Gl r F) (μ l
   unfold unitG
   by_cases hZ : Z ∈ {Y : Gl r F | (∀ i j, ‖Y.1 i j‖ ≤ 1) ∧ (∀ i, ‖Y.2.1 i‖ ≤ 1) ∧ (∀ i, ‖Y.2.2.1 i‖ ≤ 1) ∧ ‖Y.2.2.2‖ ≤ 1}
   · by_cases hl : ‖l‖ ≤ 1
-    · rw [Set.indicator_of_mem (hmem.2 ⟨hZ, hl⟩), Set.indicator_of_mem hZ, if_pos hl]
+    · rw [Set.indicator_of_mem (hmem.2 ⟨hZ, hl⟩), Set.indicator_of_mem hZ, ite_eq_left hl]
       simp
-    · rw [Set.indicator_of_notMem (fun h => hl (hmem.1 h).2), if_neg hl, zero_mul]
+    · rw [Set.indicator_of_notMem (fun h => hl (hmem.1 h).2), ite_eq_right hl, zero_mul]
   · rw [Set.indicator_of_notMem (fun h => hZ (hmem.1 h).1), Set.indicator_of_notMem hZ, mul_zero]
 
 end GlobalTheory.JR.UnitGLift
@@ -1086,7 +1086,7 @@ theorem hasInv_of_lift : ∀ (F E : Type) [NontriviallyNormedField F] [Nontrivia
   have ecL : ∀ a : Fin r, G (Fin.castSucc a) (Fin.last r) = 0 := by
     intro a
     have := hcol (Fin.castSucc a)
-    simp only [eL, Pi.single_apply, Fin.castSucc_ne_last, if_false, mul_zero] at this
+    simp only [eL, Pi.single_apply, Fin.castSucc_ne_last, ite_false, mul_zero] at this
     exact (mul_eq_zero.mp this).resolve_right hμ'
   set H : Matrix (Fin (r + 1)) (Fin (r + 1)) E := star ν • G with hH
   set h' : Matrix (Fin r) (Fin r) E := H.submatrix Fin.castSucc Fin.castSucc with hh'

@@ -206,7 +206,7 @@ theorem exists_art (g : FrobeniusOrbits.GG e) (x y z : ℕ) (v : (ZMod (2 ^ (e +
       rw [← hy]
       exact Units.ne_zero _
     have h1 := mt jacobiSym.eq_zero_iff_not_coprime.mpr h0
-    push_neg at h1
+    push Not at h1
     rwa [Int.gcd_natCast_natCast] at h1
   have hz' : Nat.Coprime z d := by
     haveI : NeZero d := ⟨hH.2.1.ne_zero⟩
@@ -214,7 +214,7 @@ theorem exists_art (g : FrobeniusOrbits.GG e) (x y z : ℕ) (v : (ZMod (2 ^ (e +
       rw [← hz]
       exact Units.ne_zero _
     have h1 := mt jacobiSym.eq_zero_iff_not_coprime.mpr h0
-    push_neg at h1
+    push Not at h1
     rwa [Int.gcd_natCast_natCast] at h1
   obtain ⟨u, h1, h2, h3⟩ := exists_unit e hH x y z hx' hy' hz'
   refine ⟨u, h1, h2, h3, Prod.ext (Prod.ext (Units.ext ?_) (Units.ext ?_)) ?_⟩

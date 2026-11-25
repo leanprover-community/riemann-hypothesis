@@ -621,9 +621,9 @@ theorem upper_half_growth : ∀ (n a : ℕ) (F : (Fin n → ℂ) → ℂ), Diffe
     simp only [logDom, Set.mem_setOf_eq]
     intro k
     by_cases hk : (k : ℕ) < j
-    · have e : P j k = s k := if_pos hk
+    · have e : P j k = s k := ite_eq_left hk
       rw [e]; exact hs' k
-    · have e : P j k = s₀ k := if_neg hk
+    · have e : P j k = s₀ k := ite_eq_right hk
       rw [e]; exact hs₀' k
   have hco : ∀ k : Fin n, ‖logExp a s k‖ ≤ 1 / 2 := fun k => (norm_le_pi_norm (logExp a s) k).trans hse
   have hsk : ∀ k : Fin n, ‖s k‖ ≤ ‖s‖ := fun k => norm_le_pi_norm s k
@@ -639,7 +639,7 @@ theorem upper_half_growth : ∀ (n a : ℕ) (F : (Fin n → ℂ) → ℂ), Diffe
         funext k
         by_cases hk : k = i
         · rw [hk, Function.update_self]
-          exact if_pos (show (i : ℕ) < j + 1 by simp [hi])
+          exact ite_eq_left (show (i : ℕ) < j + 1 by simp [hi])
         · rw [Function.update_of_ne hk]
           have hkj : (k : ℕ) ≠ j := fun h => hk (Fin.ext h)
           have e : ((k : ℕ) < j + 1 ↔ (k : ℕ) < j) := by omega
@@ -647,7 +647,7 @@ theorem upper_half_growth : ∀ (n a : ℕ) (F : (Fin n → ℂ) → ℂ), Diffe
       have hPj : Function.update (P j) i (s₀ i) = P j := by
         rw [Function.update_eq_self_iff]
         have hn : ¬ ((i : ℕ) < j) := by simp [hi]
-        exact (if_neg hn).symm
+        exact (ite_eq_right hn).symm
       by_cases ha : j < a
       · have hai : (i : ℕ) < a := ha
         have hre : (s i).re ≤ -1 / 2 := by

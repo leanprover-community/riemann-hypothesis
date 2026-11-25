@@ -593,10 +593,10 @@ theorem tens_maxStab_contains_left_ker : ∀ {M₀ V : Type} [AddCommGroup M₀]
     exact hN'st _ (Or.inr ⟨h, hh, rfl⟩) z hz
   have hactg : ∀ g ∈ Op₀, ∀ z, act g (N'.mkQ z) = N'.mkQ (TensorProduct.map g LinearMap.id z) := by
     intro g hg z
-    simp only [act, dif_pos (hsg g hg), Submodule.mapQ_apply, Submodule.mkQ_apply]
+    simp only [act, dite_eq_left (hsg g hg), Submodule.mapQ_apply, Submodule.mkQ_apply]
   have hbacth : ∀ h ∈ B, ∀ z, bAct h (N'.mkQ z) = N'.mkQ (TensorProduct.map LinearMap.id h z) := by
     intro h hh z
-    simp only [bAct, dif_pos (hsh h hh), Submodule.mapQ_apply, Submodule.mkQ_apply]
+    simp only [bAct, dite_eq_left (hsh h hh), Submodule.mapQ_apply, Submodule.mkQ_apply]
   let φ : M₀ →ₗ[ℂ] (M₀ ⊗[ℂ] V) ⧸ N' := N'.mkQ ∘ₗ (TensorProduct.mk ℂ M₀ V).flip y
   have hφ : ∀ x, φ x = N'.mkQ (x ⊗ₜ[ℂ] y) := fun x => rfl
   have key := _root_.GlobalTheory.TensHead.le_ker_of_simple_commuting Op₀ Rel₀ K₀ φ act (bAct '' B) hlen hmax hK hKs
@@ -697,7 +697,7 @@ theorem tensor_eq_top_or_le_ker_map : ∀ {ι : Type} [Fintype ι] [DecidableEq 
       exact MultilinearMap.map_coord_zero _ i (by simp [hpi])
     intro t _
     rw [LinearMap.mem_ker, hmap, TensorProduct.map_zero_right, LinearMap.zero_apply]
-  push_neg at hi
+  push Not at hi
   by_cases hN : N = ⊤
   · exact Or.inl hN
   have hSimple₀ : SimpleOver Op₀ (LinearMap.ker p₀) := fun U hU hKU => by

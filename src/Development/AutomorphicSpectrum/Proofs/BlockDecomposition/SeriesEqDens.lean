@@ -93,17 +93,17 @@ theorem gauss_core (h : ResAlg E τ q ε) (χ : AddChar E ℂ) (A b : E) (hb : �
     rw [hc']
     by_cases h0 : t = 0
     · subst h0
-      rw [_root_.GlobalTheory.CompanionTheory.UnrDens.NormZero.card_norm_zero E τ q ε h, if_pos rfl]
+      rw [_root_.GlobalTheory.CompanionTheory.UnrDens.NormZero.card_norm_zero E τ q ε h, ite_eq_left rfl]
       push_cast
       ring
-    · rw [_root_.GlobalTheory.CompanionTheory.UnrDens.NormUnit.card_fibre E τ q ε h t ht' h0, if_neg h0]
+    · rw [_root_.GlobalTheory.CompanionTheory.UnrDens.NormUnit.card_fibre E τ q ε h t ht' h0, ite_eq_right h0]
       push_cast
       ring
   rw [Finset.sum_congr rfl hfib]
   simp only [add_mul, Finset.sum_add_distrib, ← Finset.mul_sum]
   rw [sum_fixed_eq_zero χ A b hb hχ, mul_zero, zero_add]
   simp only [ite_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_filter, Finset.mem_univ, true_and,
-    map_zero, if_true, mul_zero, AddChar.map_zero_eq_one, mul_one]
+    map_zero, ite_true, mul_zero, AddChar.map_zero_eq_one, mul_one]
   ring
 
 end GlobalTheory.CompanionTheory.SiegLoc.GaussOne

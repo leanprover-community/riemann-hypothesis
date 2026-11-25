@@ -199,7 +199,7 @@ theorem permGL_mem_parab (F : Type) [Field F] {r t : ℕ} {v : Equiv.Perm (Fin (
     Parabolic.permGL F v ∈ parab F (part r t) := by
   rw [mem_parab_iff_lower_left_eq_zero]
   intro i j
-  rw [GlobalTheory.Parabolic.permGL_apply, if_neg (hv i j)]
+  rw [GlobalTheory.Parabolic.permGL_apply, ite_eq_right (hv i j)]
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
@@ -281,7 +281,7 @@ theorem hasBlocks_split {r t : ℕ} {y : GL (Fin (r + t)) 𝒪[k]} {a : GL (Fin 
     rw [← Matrix.mul_apply, Units.val_one, Matrix.one_mul]
   · rw [Units.val_mul, Matrix.mul_apply, Fin.sum_univ_add]
     simp only [diagO_ll, diagO_lr, zero_mul, Finset.sum_const_zero, zero_add, Units.val_one,
-      Matrix.one_apply, ite_mul, one_mul, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+      Matrix.one_apply, ite_mul, one_mul, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
     exact h3 i j
 
 theorem blockTri_mem_parab {F : Type} [Field F] {r t : ℕ} {g : GL (Fin (r + t)) F}
@@ -997,7 +997,7 @@ theorem exists_isIwVec_fst : ∀ (k : Type) [Field k] [ValuativeRel k] [Topologi
         rw [fromBlocks_apply₁₁, hSapp, val_diagT, diagonal_apply]
         by_cases hij : i = j
         · subst hij; simp
-        · rw [if_neg hij, if_neg]
+        · rw [ite_eq_right hij, ite_eq_right]
           intro h
           exact hij (s.injective (Sum.inl_injective ((stdSum (rfl : r + t = r + t)).injective
             (w.symm.injective h))))
@@ -1007,7 +1007,7 @@ theorem exists_isIwVec_fst : ∀ (k : Type) [Field k] [ValuativeRel k] [Topologi
         change (if a = b then (1 : k) else 0) = _
         by_cases hab : a = b
         · subst hab; simp
-        · rw [if_neg hab, if_neg]
+        · rw [ite_eq_right hab, ite_eq_right]
           intro h
           exact hab (Sum.inr_injective ((stdSum (rfl : r + t = r + t)).injective (w.symm.injective h)))
     have hc : torusChar θ τ' = torusChar (fun i => θ (w.symm (Fin.castAdd t (s i)))) τ := by
@@ -1213,7 +1213,7 @@ theorem tameSplit : GlobalTheory.Published.BernsteinZelevinskyFiniteness → Glo
       have h1 := hμ i u hu
       rw [ha, hij, Equiv.symm_apply_apply] at h1
       simpa [θ] using h1.symm.trans (hψ₁ a u hu)
-    refine (mem_parab_two k).2 fun j i => (GlobalTheory.Parabolic.permGL_apply w _ _).trans (if_neg fun hji => ?_)
+    refine (mem_parab_two k).2 fun j i => (GlobalTheory.Parabolic.permGL_apply w _ _).trans (ite_eq_right fun hji => ?_)
     have hF : ∀ b, ∃ c, w (Fin.natAdd r b) = Fin.natAdd r c := fun b => by
       generalize hx : w (Fin.natAdd r b) = x
       induction x using Fin.addCases with

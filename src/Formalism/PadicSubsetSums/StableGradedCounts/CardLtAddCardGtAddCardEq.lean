@@ -448,8 +448,8 @@ theorem first_charpoly_in_T : CharpolyOverSubalgebra := by
   · apply monic_of_natDegree_le_of_coeff_eq_one n
     · rw [natDegree_le_iff_coeff_eq_zero]
       intro N hN
-      rw [hFc, if_neg (by omega)]
-    · rw [hFc, if_pos le_rfl]
+      rw [hFc, ite_eq_right (by omega)]
+    · rw [hFc, ite_eq_left le_rfl]
       apply Subtype.ext
       funext x
       have := (Matrix.charpoly_monic (M x)).coeff_natDegree
@@ -458,8 +458,8 @@ theorem first_charpoly_in_T : CharpolyOverSubalgebra := by
   · ext j
     rw [coeff_map, hFc]
     by_cases hj : j ≤ n
-    · rw [if_pos hj]; rfl
-    · rw [if_neg hj, map_zero]
+    · rw [ite_eq_left hj]; rfl
+    · rw [ite_eq_right hj, map_zero]
       exact (coeff_eq_zero_of_natDegree_lt (by rw [hdeg]; omega)).symm
 
 end Formalism.IrreducibleCountingLemmas.Z

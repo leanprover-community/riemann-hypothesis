@@ -73,7 +73,7 @@ theorem UpperTheory.V.KL.dedekindSR :
     | cast j =>
       rw [hz j]
       exact P.zero_mem
-  · push_neg at hz
+  · push Not at hz
     obtain ⟨j, hj⟩ := hz
     obtain ⟨k, hkj⟩ : ∃ k : Fin n, k ≠ j := by
       by_cases h0 : j.val = 0

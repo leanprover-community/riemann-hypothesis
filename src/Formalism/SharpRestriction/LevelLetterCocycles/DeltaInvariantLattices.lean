@@ -424,12 +424,6 @@ def WachInfiniteLevelBound : Prop :=
 
 end Etale
 
-section Disc
-
-variable {Zl Ai : Type} [CommRing Zl] [CommRing Ai] [Algebra Zl O] [Algebra Zl Ai]
-
-end Disc
-
 end Local
 
 section Theory

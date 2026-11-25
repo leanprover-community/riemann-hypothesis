@@ -289,17 +289,17 @@ theorem satU_labInd (hU : IsUnramInv ϖ σ q) {d : List ℤ} (h : Good n d) (α 
     simp only [Set.Finite.mem_toFinset]
     by_cases h1 : Cell ϖ a x
     · by_cases h2 : InLab ϖ d x
-      · rw [if_pos h1, if_pos (show x ∈ {x | Cell ϖ a x ∧ InLab ϖ d x} from ⟨h1, h2⟩)]
+      · rw [ite_eq_left h1, ite_eq_left (show x ∈ {x | Cell ϖ a x ∧ InLab ϖ d x} from ⟨h1, h2⟩)]
         unfold labInd
         exact Set.indicator_of_mem (f := (1 : GU σ n → ℂ)) (a := x.out) (by exact h2)
-      · rw [if_pos h1, if_neg (show x ∉ {x | Cell ϖ a x ∧ InLab ϖ d x} from fun h => h2 h.2)]
+      · rw [ite_eq_left h1, ite_eq_right (show x ∉ {x | Cell ϖ a x ∧ InLab ϖ d x} from fun h => h2 h.2)]
         unfold labInd
         exact Set.indicator_of_notMem (a := x.out) (by exact h2) _
-    · rw [if_neg h1, if_neg (show x ∉ {x | Cell ϖ a x ∧ InLab ϖ d x} from fun h => h1 h.1)]
+    · rw [ite_eq_right h1, ite_eq_right (show x ∉ {x | Cell ϖ a x ∧ InLab ϖ d x} from fun h => h1 h.1)]
   refine (finsum_congr fun x => @key x _).trans ?_
   rw [finsum_eq_sum_of_support_subset (s := hf.toFinset) _ (fun x hx => by
     by_contra h
-    exact hx (if_neg h)), Finset.sum_congr rfl fun x hx => if_pos hx, cnt, Set.ncard_eq_toFinset_card _ hf]
+    exact hx (ite_eq_right h)), Finset.sum_congr rfl fun x hx => ite_eq_left hx, cnt, Set.ncard_eq_toFinset_card _ hf]
   simp
 
 theorem finite_cnt (hU : IsUnramInv ϖ σ q) {d : List ℤ} (h : Good n d) : {a | cnt σ n ϖ d a ≠ 0}.Finite := by
@@ -501,12 +501,6 @@ theorem good_of_unitary (hU : IsUnramInv ϖ σ q) {π : v.adicCompletion K} (hπ
       _ = _ := by rw [← e']; simp only [Units.val_mul, Matrix.mul_assoc]
 
 end Completion
-
-section Par
-
-open GlobalTheory.IndefiniteRowSideFullHecke.InertPlaceSetting
-
-end Par
 
 end GlobalTheory.InertThetaCompare
 

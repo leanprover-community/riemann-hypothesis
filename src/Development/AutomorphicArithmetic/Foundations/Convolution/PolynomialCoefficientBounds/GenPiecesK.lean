@@ -283,7 +283,7 @@ private theorem gt_gen {σ ρ : Type} [DecidableEq σ] (f : σ → MvPolynomial 
     intro β hβ
     rw [mem_support_iff, hc] at hβ
     by_contra h
-    exact hβ (if_neg h)
+    exact hβ (ite_eq_right h)
   refine ⟨∑ α ∈ S, monomial α (G.coeff α), ?_, ?_, ?_⟩
   · ext m
     by_cases hm : m.degree ≤ k
@@ -317,7 +317,7 @@ private theorem gt_gen {σ ρ : Type} [DecidableEq σ] (f : σ → MvPolynomial 
     exact Finset.sum_le_sum (fun i _ => Nat.le_mul_of_pos_left _ (hw i))
   · calc _ ≤ ∑ α ∈ (∑ α ∈ S, monomial α (G.coeff α)).support, ‖G.coeff α‖ := by
           refine Finset.sum_le_sum (fun α hα => ?_)
-          rw [hc, if_pos (hsupp hα)]
+          rw [hc, ite_eq_left (hsupp hα)]
       _ ≤ _ := Finset.sum_le_sum_of_subset_of_nonneg
           (hsupp.trans (Finset.filter_subset _ _)) (fun _ _ _ => norm_nonneg _)
 
@@ -617,7 +617,7 @@ theorem UpperTheory.ConvolutionTheory.FX.gen_piecesK :
   · intro β hβ
     rw [mem_support_iff, hc] at hβ
     by_contra hn
-    exact hβ (if_neg hn)
+    exact hβ (ite_eq_right hn)
   · rw [hc]
     split_ifs with hβ
     · refine ⟨(hG β k).2.1, (hG β k).2.2.trans ?_⟩

@@ -678,7 +678,7 @@ theorem orbit_exists : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H
   · intro t ht
     exact a6 t fun a => ht a (g t a) (hg t a)
   · unfold HT.IsCp
-    rw [if_neg hp2]
+    rw [ite_eq_right hp2]
     exact ⟨ζ, hζ, by rw [map_sub, map_one, hz]⟩
 
 end GlobalTheory.CompanionTheory.Ar.Num.FamEx.Orbit
@@ -1121,13 +1121,13 @@ theorem familyExistsPos_holds : GlobalTheory.CompanionTheory.Ar.HT.FarguesHodgeT
   let i : ∀ (c' : ∀ k, J k) (τ : Sg), (Fin (labelRk D (e τ)) → Ω) →ₗ[Ω] (Fin (D.p + D.q) → Ω) :=
     fun c' τ => if h : mseg y c' ≠ 0 then (hQs c' h τ).choose else 0
   have hi : ∀ (c' : ∀ k, J k) (h : mseg y c' ≠ 0) (τ : Sg), SeqHyp (CR O y c') (algebraMap O Ω w) (coordLat O y (𝔐.HT p (e τ)) (b (e τ)) c') (dotDual (CR O y c') (coordLat O y (𝔐.HT p (e τ).swap) (b (e τ).swap) c')) (i c' τ) (qMap (P c' h) (b (e τ).swap)) ∧ ∀ σE : E →+* Ω, (∀ a : 𝓞 E, σE (a : E) = 𝔐.emb (e τ) a) → DualSeq (P c' h) σE (𝔐.R p - 2) (coordLat O y (𝔐.HT p (e τ)) (b (e τ)) c') (b (e τ)) (i c' τ) := fun c' h τ => by
-    have heq : i c' τ = (hQs c' h τ).choose := dif_pos h
+    have heq : i c' τ = (hQs c' h τ).choose := dite_eq_left h
     rw [heq]
     exact (hQs c' h τ).choose_spec
   have hw0 : algebraMap O Ω w ≠ 0 := by
     have h3 := hcp
     unfold HT.IsCp at h3
-    rw [if_neg h2] at h3
+    rw [ite_eq_right h2] at h3
     obtain ⟨ζ, hζ, e1⟩ := h3
     rw [e1]
     exact hζ.sub_one_ne_zero (Fact.out : p.Prime).one_lt

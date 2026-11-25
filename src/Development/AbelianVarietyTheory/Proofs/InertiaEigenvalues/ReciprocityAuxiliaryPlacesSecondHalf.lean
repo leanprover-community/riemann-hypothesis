@@ -1155,14 +1155,14 @@ theorem mem_unrAt {bkP : BKPh X} {Q : Finset (PlE D.host)} {x : H1 (red i K ρ)}
     resH1 (red i K ρ) (DecV N v).subtype continuous_subtype_val x ∈ Formalism.GaloisCohomology.unrAt (red i K ρ) (N.plOm.1 v) := by
   have h := (mem_Sel _ _ _ _ _).1 hx v
   unfold Formalism.GaloisCohomology.bkCond at h
-  rwa [if_neg (show ¬ ((X.l i : ℕ) : 𝓞 D.host.E) ∈ v.asIdeal from hv), if_neg (fun e => e.elim hv' hQ)] at h
+  rwa [ite_eq_right (show ¬ ((X.l i : ℕ) : 𝓞 D.host.E) ∈ v.asIdeal from hv), ite_eq_right (fun e => e.elim hv' hQ)] at h
 
 theorem mem_bkOn {bkP : BKPh X} {Q : Finset (PlE D.host)} {x : H1 (red i K ρ)}
     (hx : x ∈ selOn bkP i ρ (1 : GE N →* Kˣ) K Q) {v : PlE D.host} (hv : v ∈ placesOver D.host.E (X.l i)) :
     resH1 (red i K ρ) (DecV N v).subtype continuous_subtype_val x ∈ bkOn bkP i ρ (1 : GE N →* Kˣ) K v := by
   have h := (mem_Sel _ _ _ _ _).1 hx v
   unfold Formalism.GaloisCohomology.bkCond at h
-  rwa [if_pos (show ((X.l i : ℕ) : 𝓞 D.host.E) ∈ v.asIdeal from hv)] at h
+  rwa [ite_eq_left (show ((X.l i : ℕ) : 𝓞 D.host.E) ∈ v.asIdeal from hv)] at h
 
 theorem vanish_NS {bkP : BKPh X} (h : GalHyp bkP i s) (hK : IsRes i K) (hρ : ρ = Tgl i s ∨ IsDual i s ρ)
     {Q : Finset (PlE D.host)} {x : Z1 (red i K ρ)} (hx : cl x ∈ selOn bkP i ρ (1 : GE N →* Kˣ) K Q)

@@ -51,8 +51,8 @@ theorem herm_wbP {y w : Fin (2 * r + k + 1) → ℂ} (hw : inWb k r w) :
     refine Finset.sum_congr rfl fun j _ => ?_
     unfold SSn.wbP Hpk
     by_cases hj : r ≤ j.val ∧ j.val ≤ r + k
-    · rw [if_pos hj]
-    · rw [if_neg hj]
+    · rw [ite_eq_left hj]
+    · rw [ite_eq_right hj]
       have h1 : ¬ (i.val < r ∧ i.val + j.val = 2 * r + k) := by omega
       have h2 : ¬ (j.val < r ∧ i.val + j.val = 2 * r + k) := by omega
       have h3 : ¬ (r ≤ i.val ∧ i.val ≤ r + k ∧ i = j) := by
@@ -66,7 +66,7 @@ theorem blockProjection_smul (c : ℂ) (x : Fin (2 * r + k + 1) → ℂ) : SSn.w
   funext i; simp only [SSn.wbP, Pi.smul_apply]; split_ifs <;> simp
 
 theorem blockProjection_mem_block (x : Fin (2 * r + k + 1) → ℂ) : inWb k r (SSn.wbP k r x) := by
-  intro i hi; unfold SSn.wbP; rw [if_neg (by omega)]
+  intro i hi; unfold SSn.wbP; rw [ite_eq_right (by omega)]
 
 theorem prWv_add (z x y : Fin (2 * r + k + 1) → ℂ) :
     SSn.prWv k r z (x + y) = SSn.prWv k r z x + SSn.prWv k r z y := by

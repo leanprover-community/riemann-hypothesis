@@ -33,7 +33,7 @@ theorem embedded_group_measure_preserving : EmbGMuP := by
 private theorem wMat_mul_self_eq_one (d : ℕ) : G.wMat d * G.wMat d = 1 := by
   ext i j
   simp only [G.wMat, Matrix.mul_apply, Matrix.of_apply, Matrix.one_apply, ite_mul, one_mul, zero_mul,
-    Finset.sum_ite_eq', Finset.mem_univ, if_true, Fin.rev_rev]
+    Finset.sum_ite_eq', Finset.mem_univ, ite_true, Fin.rev_rev]
   split_ifs <;> simp_all
 
 private theorem wMat_mul_wMat_mul' (d : ℕ) {m : Type*} (X : Matrix (Fin d) m ℂ) : G.wMat d * (G.wMat d * X) = X := by
@@ -61,7 +61,7 @@ private theorem wP_inv_mul_wP_eq_one {p : ℕ} (σ : Equiv.Perm (Fin p)) : U.wP 
   ext a c
   have h : σ (σ⁻¹ a) = a := σ.apply_symm_apply a
   simp only [U.wP, Matrix.mul_apply, Matrix.of_apply, Matrix.one_apply, ite_mul, one_mul, zero_mul,
-    Finset.sum_ite_eq, Finset.mem_univ, if_true, h]
+    Finset.sum_ite_eq, Finset.mem_univ, ite_true, h]
 
 private theorem isUnit_det_wP {p : ℕ} (σ : Equiv.Perm (Fin p)) : IsUnit (U.wP σ).det :=
   Matrix.isUnit_det_of_left_inverse (wP_inv_mul_wP_eq_one σ)
@@ -72,7 +72,7 @@ theorem lh_lower {p : ℕ} (σ : Equiv.Perm (Fin p)) (v : U.LW σ → ℂ) : G.I
     intro a b
     rw [lhOf, hinv]
     simp only [Matrix.mul_apply, U.wP, Matrix.of_apply, ite_mul, one_mul, zero_mul, mul_ite, mul_one,
-      mul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true, Equiv.Perm.inv_eq_iff_eq, Finset.sum_ite_eq']
+      mul_zero, Finset.sum_ite_eq, Finset.mem_univ, ite_true, Equiv.Perm.inv_eq_iff_eq, Finset.sum_ite_eq']
   refine ⟨fun i => ?_, fun i j hij => ?_⟩
   · simp only [Matrix.transpose_apply, hentry]
     simp [U.lowW]

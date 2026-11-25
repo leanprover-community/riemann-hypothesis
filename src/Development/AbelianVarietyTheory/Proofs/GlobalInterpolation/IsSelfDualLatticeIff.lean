@@ -1001,13 +1001,13 @@ theorem isEtaAt_iff (h2 : Module.finrank F E = 2) (η : ℤ) :
   unfold GlobalTheory.IndefiniteRowSideFullHecke.SelfDualUnramifiedPlaces.eta
   constructor
   · rintro (⟨h, rfl⟩ | ⟨h, rfl⟩)
-    · exact ⟨(_root_.GlobalTheory.quadratic_unramified_iff_inert_or_split F E h2 v).2 (Or.inl h), by rw [if_pos (_root_.GlobalTheory.InertField.isField_of_inert F E h2 v h)]; simp⟩
-    · exact ⟨(_root_.GlobalTheory.quadratic_unramified_iff_inert_or_split F E h2 v).2 (Or.inr h), by rw [if_neg (_root_.GlobalTheory.SplitPlace.not_isField_of_split F E h2 v h)]; simp⟩
+    · exact ⟨(_root_.GlobalTheory.quadratic_unramified_iff_inert_or_split F E h2 v).2 (Or.inl h), by rw [ite_eq_left (_root_.GlobalTheory.InertField.isField_of_inert F E h2 v h)]; simp⟩
+    · exact ⟨(_root_.GlobalTheory.quadratic_unramified_iff_inert_or_split F E h2 v).2 (Or.inr h), by rw [ite_eq_right (_root_.GlobalTheory.SplitPlace.not_isField_of_split F E h2 v h)]; simp⟩
   · rintro ⟨h, hη⟩
     rcases (_root_.GlobalTheory.quadratic_unramified_iff_inert_or_split F E h2 v).1 h with h | h
-    · rw [if_pos (_root_.GlobalTheory.InertField.isField_of_inert F E h2 v h)] at hη
+    · rw [ite_eq_left (_root_.GlobalTheory.InertField.isField_of_inert F E h2 v h)] at hη
       exact Or.inl ⟨h, by exact_mod_cast hη⟩
-    · rw [if_neg (_root_.GlobalTheory.SplitPlace.not_isField_of_split F E h2 v h)] at hη
+    · rw [ite_eq_right (_root_.GlobalTheory.SplitPlace.not_isField_of_split F E h2 v h)] at hη
       exact Or.inr ⟨h, by exact_mod_cast hη⟩
 
 theorem exists_eta : ∃ η : ℤ, (η : ℝ) = GlobalTheory.IndefiniteRowSideFullHecke.SelfDualUnramifiedPlaces.eta F E v := by

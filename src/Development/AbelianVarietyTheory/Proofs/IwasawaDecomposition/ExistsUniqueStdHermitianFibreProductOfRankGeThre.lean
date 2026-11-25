@@ -127,7 +127,7 @@ theorem exists_piece {ι : Type} {V : ι → Type} [∀ i, MeasurableSpace (V i)
     by_cases hi : i ∈ T
     · refine ⟨(a i).toFinite, (a i).rnDeriv (a i).toFinite, inferInstance,
         Measure.measurable_rnDeriv _ _, fun h => (h hi).elim, fun f hf => ?_⟩
-      rw [if_pos hi, one_mul]
+      rw [ite_eq_left hi, one_mul]
       conv_lhs => rw [← Measure.withDensity_rnDeriv_eq (a i) (a i).toFinite
         (absolutelyContinuous_toFinite _)]
       rw [lintegral_withDensity_eq_lintegral_mul _ (Measure.measurable_rnDeriv _ _) hf]
@@ -135,7 +135,7 @@ theorem exists_piece {ι : Type} {V : ι → Type} [∀ i, MeasurableSpace (V i)
     · haveI : IsFiniteMeasure (a i) := ⟨by rw [ha i hi]; exact ENNReal.ofReal_lt_top⟩
       refine ⟨(a i Set.univ)⁻¹ • a i, fun _ => 1, inferInstance, measurable_const,
         fun _ _ => rfl, fun f _ => ?_⟩
-      rw [if_neg hi, ← ha i hi, lintegral_smul_measure, smul_eq_mul, ← mul_assoc,
+      rw [ite_eq_right hi, ← ha i hi, lintegral_smul_measure, smul_eq_mul, ← mul_assoc,
         ENNReal.mul_inv_cancel (by simpa using h0 i) (measure_ne_top _ _)]
       simp
   choose P g hP hg hg1 hint using hP
@@ -164,8 +164,8 @@ theorem exists_piece {ι : Type} {V : ι → Type} [∀ i, MeasurableSpace (V i)
   have h2 : ∏ i ∈ S, (if i ∈ T then 1 else ENNReal.ofReal (c i)) =
       ∏ i ∈ S \ T, ENNReal.ofReal (c i) := by
     rw [← Finset.prod_subset (Finset.sdiff_subset (s := S) (t := T))
-      (fun i hi hi' => if_pos (by simpa [hi] using hi'))]
-    exact Finset.prod_congr rfl fun i hi => if_neg (Finset.mem_sdiff.1 hi).2
+      (fun i hi hi' => ite_eq_left (by simpa [hi] using hi'))]
+    exact Finset.prod_congr rfl fun i hi => ite_eq_right (Finset.mem_sdiff.1 hi).2
   rw [h2]
   ring
 

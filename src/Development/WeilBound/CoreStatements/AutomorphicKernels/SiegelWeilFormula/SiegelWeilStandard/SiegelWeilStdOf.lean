@@ -341,7 +341,7 @@ theorem lpack (hLO : LOrd) {F E : Type} [Field F] [NumberField F] [Field E] [Num
   have hHe' : ∀ i : Fin (m + 1), ∀ᶠ s in 𝓝[≠] (((m + 1 - i : ℕ) : ℂ)), H i s = Z i s := by
     intro i
     have h := hHe i
-    rw [if_pos (by exact_mod_cast hj1 i)] at h
+    rw [ite_eq_left (by exact_mod_cast hj1 i)] at h
     simpa only [pow_zero, one_mul, Int.cast_natCast] using h
   have hHa' : ∀ i : Fin (m + 1), AnalyticAt ℂ (H i) ((m + 1 - i : ℕ) : ℂ) := fun i => by
     simpa only [Int.cast_natCast] using hHa i

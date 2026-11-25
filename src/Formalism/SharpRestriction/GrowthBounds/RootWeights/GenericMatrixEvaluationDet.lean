@@ -272,7 +272,7 @@ theorem hSupp_proved : HSupp := by
     rw [Finsupp.mem_support_iff, hsq]
     intro h0
     have h1 := mul_dl_coeff LL S (eBeta LL S j g0 g0inv G) m (eWt LL S m)
-    rw [h0, if_pos rfl] at h1
+    rw [h0, ite_eq_left rfl] at h1
     exact (MvPolynomial.mem_support_iff.1 hm) (by simpa using h1.symm)
   have h2 := hth.trans (Finset.inf_le (f := fun k : ℤ => (k : WithTop ℤ)) hmem)
   exact_mod_cast h2

@@ -43,7 +43,7 @@ private theorem spec_chi {G : Type} [Group G] {I : Iwa G} {O Ω : Type} [CommRin
   have h : ∀ t : I.T, ∃ a : O, algebraMap O Ω a = R.χ ⟨t, I.T_le t.2⟩ := fun t => by
     have h1 := R.integral_torusCharacter t t.2 0 0
     have h2 := R.torusAction ⟨t, I.T_le t.2⟩ 0
-    rw [if_pos rfl] at h2
+    rw [ite_eq_left rfl] at h2
     rw [← h2]
     exact h1
   choose a ha using h

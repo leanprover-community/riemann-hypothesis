@@ -265,9 +265,9 @@ theorem lkB_same (v : X.Pl) (s : Fin (X.G.P.n' v)) (a a' : Fin (NN X.G.P.m X.t j
     LkB X Kc j A ⟨v, (s, a, b)⟩ ⟨v, (s, a', b)⟩ = cf X Kc j A v s a a' := by
   unfold LkB
   rw [Finset.sum_eq_single a']
-  · rw [if_pos rfl]
+  · rw [ite_eq_left rfl]
   · intro a'' _ hne
-    rw [if_neg]
+    rw [ite_eq_right]
     intro hh
     exact hne (congrArg (fun z : X.ZA j => z.2.2.1) hh).symm
   · intro hh
@@ -278,7 +278,7 @@ theorem lkB_shape (x y : X.ZA j) (h : LkB X Kc j A x y ≠ 0) : ∃ a'', y = (�
   obtain ⟨a'', _, ha''⟩ := Finset.exists_ne_zero_of_sum_ne_zero h
   refine ⟨a'', ?_⟩
   by_contra hc
-  exact ha'' (if_neg hc)
+  exact ha'' (ite_eq_right hc)
 
 theorem linSub_lkB (f : MvPowerSeries (X.ZA j) Kc) : linSub (LkB X Kc j A) f = SA X Kc j A f := by
   unfold linSub SA
@@ -326,7 +326,7 @@ theorem vMat_shape (fd : FData X D) (cS : Kc) (La' : X.Lt (j + 1)) (x y : X.ZA j
   by_contra hc
   apply h
   unfold vMat
-  exact if_neg hc
+  exact ite_eq_right hc
 
 theorem vMat_comm (A : ∀ v : X.Pl, GL (Fin ((X.Pj j).m + 1)) (X.G.P.Qq v)) (fd : FData X D) (cS : Kc) (La' : X.Lt (j + 1))
     (x y : X.ZA j) :
@@ -338,7 +338,7 @@ theorem vMat_comm (A : ∀ v : X.Pl, GL (Fin ((X.Pj j).m + 1)) (X.G.P.Qq v)) (fd
   · cases h
     rw [Finset.sum_eq_single (⟨v, (s, a, b')⟩ : X.ZA j), Finset.sum_eq_single (⟨v, (s, a', b)⟩ : X.ZA j)]
     · rw [lkB_same, lkB_same]
-      simp only [vMat, and_self, if_true]
+      simp only [vMat, and_self, ite_true]
       ring
     · rintro ⟨vz, sz, az, bz⟩ _ hz
       by_contra hne
@@ -397,7 +397,7 @@ theorem subBG_block {X : Sys p} (E : CEmb X.G) (pos : (Σ v : X.Pl, Fin (X.G.P.n
   have h1 : subBG E pos fd j La La' (kapOf X pos j ⟨v, (s, a, b)⟩) (kapOf X pos j ⟨v, (s, a', b')⟩) =
       G (pos.symm (pos ⟨v, s⟩)) := by
     unfold subBG
-    exact if_pos rfl
+    exact ite_eq_left rfl
   rw [h1]
   exact congrArg G (pos.symm_apply_apply _)
 
@@ -444,7 +444,7 @@ theorem subB_split (X : Sys p) (E : CEmb X.G) (pos : (Σ v : X.Pl, Fin (X.G.P.n'
       intro hh
       exact h (pos.injective hh).symm
     unfold subBG
-    rw [if_neg hne, mul_zero]
+    rw [ite_eq_right hne, mul_zero]
     symm
     refine Finset.sum_eq_zero fun z _ => ?_
     by_contra hz
@@ -463,15 +463,15 @@ theorem cz_tPull' (cc : Ideal (𝓞 D.host.K)) (δ : ℂ) {N N' : ℕ} (e : Matr
   rw [Matrix.map_one _ (map_zero _) (map_one _), Matrix.conjTranspose_one, Matrix.one_mul, Matrix.mul_apply]
   simp only [Matrix.of_apply, Matrix.map_apply, TaylorLogMetric.coordV]
   by_cases h : x.1 = y.1 ∧ x.2.1 = y.2.1
-  · rw [if_pos h, Finset.sum_eq_single y.2.2]
-    · rw [if_pos ⟨h.1, h.2, rfl⟩, one_mul]
+  · rw [ite_eq_left h, Finset.sum_eq_single y.2.2]
+    · rw [ite_eq_left ⟨h.1, h.2, rfl⟩, one_mul]
     · intro d _ hd
-      rw [if_neg (fun hh => hd hh.2.2), zero_mul]
+      rw [ite_eq_right (fun hh => hd hh.2.2), zero_mul]
     · intro hh
       exact absurd (Finset.mem_univ _) hh
-  · rw [if_neg h]
+  · rw [ite_eq_right h]
     refine Finset.sum_eq_zero fun d _ => ?_
-    rw [if_neg (fun hh => h ⟨hh.1, hh.2.1⟩), zero_mul]
+    rw [ite_eq_right (fun hh => h ⟨hh.1, hh.2.1⟩), zero_mul]
 
 def eGL' (X : Sys p) (ρ : ∀ v : X.Pl, D.host.E →+* X.G.P.Qq v) {N : ℕ} (e : Matrix (Fin N) (Fin N) D.host.E) (he : e * star e = 1)
     (v : X.Pl) : GL (Fin N) (X.G.P.Qq v) :=
@@ -505,7 +505,7 @@ theorem lkB_eGL (hLP : LamPos X E pos lam ρ) (j : ℕ)
   · cases h
     by_cases hb : b' = b
     · subst hb
-      rw [lkB_same, if_pos ⟨rfl, rfl⟩]
+      rw [lkB_same, ite_eq_left ⟨rfl, rfl⟩]
       have h1 := hLP v s (e (Fin.cast (rank_eq X j).symm a') (Fin.cast (rank_eq X j).symm a))
       have h2 : TaylorLogMetric.lamC lam (TaylorLogMetric.embT D (kapOf X pos j ⟨v, (s, a, b')⟩).1
           (e (kapOf X pos j ⟨v, (s, a', b')⟩).2.2 (kapOf X pos j ⟨v, (s, a, b')⟩).2.2)) =
@@ -515,17 +515,17 @@ theorem lkB_eGL (hLP : LamPos X E pos lam ρ) (j : ℕ)
       rw [htw]
       by_cases hs : IsOddPos s
       · have hi : (((eGL' X ρ e he v)⁻¹ : GL _ _) : Matrix _ _ (X.G.P.Qq v)) = (star e).map (ρ v) := rfl
-        simp only [cf, hs, if_true, mAt, hi, Matrix.submatrix_apply, Matrix.map_apply, finCongr_apply, Matrix.star_apply,
+        simp only [cf, hs, ite_true, mAt, hi, Matrix.submatrix_apply, Matrix.map_apply, finCongr_apply, Matrix.star_apply,
           Formalism.L2.KerInert.PullbackComparison.conj_eq_star]
       · have hi : ((eGL' X ρ e he v : GL _ _) : Matrix _ _ (X.G.P.Qq v)) = e.map (ρ v) := rfl
-        simp only [cf, hs, if_false, mAt, hi, Matrix.transpose_apply, Matrix.submatrix_apply, Matrix.map_apply, finCongr_apply]
-    · rw [if_neg, lamC_zero']
+        simp only [cf, hs, ite_false, mAt, hi, Matrix.transpose_apply, Matrix.submatrix_apply, Matrix.map_apply, finCongr_apply]
+    · rw [ite_eq_right, lamC_zero']
       · by_contra hne
         obtain ⟨a'', h3⟩ := lkB_shape X ℂ_[p] j _ _ _ hne
         exact hb (congrArg (fun z : X.ZA j => z.2.2.2) h3)
       · rintro ⟨-, h2⟩
         exact hb (Fin.cast_injective (rank_eq X (j + 1)).symm h2).symm
-  · rw [if_neg, lamC_zero']
+  · rw [ite_eq_right, lamC_zero']
     · by_contra hne
       exact h (LkB_ne X ℂ_[p] j _ _ _ hne)
     · rintro ⟨h1, -⟩

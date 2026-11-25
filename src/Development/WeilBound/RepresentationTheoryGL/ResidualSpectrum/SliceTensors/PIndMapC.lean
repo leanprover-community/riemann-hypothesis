@@ -127,7 +127,7 @@ theorem exists_local_iwasawa : ∀ (E : Type) [Field E] [NumberField E] [_root_.
       T.symm.contDiff.contDiffAt.comp _ (hφT.comp (oneL E N) T.contDiff.contDiffAt)
     refine hsm.congr_of_eventuallyEq ?_
     filter_upwards [hunitV] with y hy
-    simp only [dif_pos hy]
+    simp only [dite_eq_left hy]
     show toL (hy.unit : Matrix (Fin N) (Fin N) (Cinf E)) = _
     rw [hy.unit_spec]
     rfl
@@ -137,11 +137,11 @@ theorem exists_local_iwasawa : ∀ (E : Type) [Field E] [NumberField E] [_root_.
       rw [hφ1]
       exact isUnit_one
     refine Subtype.ext (Units.ext ?_)
-    simp only [dif_pos h1]
+    simp only [dite_eq_left h1]
     exact (IsUnit.unit_spec _).trans hφ1
   · exact Subtype.ext hψ1
   · filter_upwards [hunitV, hinvV] with y hy hy'
-    simp only [dif_pos hy]
+    simp only [dite_eq_left hy]
     show Matrix.of y = (hy.unit : Matrix (Fin N) (Fin N) (Cinf E)) * ψ (Matrix.of y)
     rw [hy.unit_spec]
     exact hy'.symm

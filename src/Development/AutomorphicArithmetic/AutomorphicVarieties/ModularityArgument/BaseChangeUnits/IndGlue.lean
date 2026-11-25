@@ -278,9 +278,9 @@ private theorem loc {F E Ω : Type} [Field F] [NumberField F] [Field E] [NumberF
     have h4 := (h3 A hA).2 σ hσ
     refine ⟨fun h5 => ?_, fun h5 => ?_⟩
     · by_contra h6
-      rw [if_neg h6, h5] at h4
+      rw [ite_eq_right h6, h5] at h4
       norm_num at h4
-    · rw [if_pos h5] at h4
+    · rw [ite_eq_left h5] at h4
       exact Units.ext (ι.injective (by rw [h4]; simp))
   obtain ⟨B, hB, hE⟩ := hb w rfl
   by_cases hs : δ σ⁻¹ = 1

@@ -152,7 +152,7 @@ theorem rank_one_mem (h : Std ε σ) (P : (H → H) → Prop) (A1 : ∀ g ∈ UJ
     funext p
     by_cases hp : p.2 = k <;> simp [hp]
   have := hV _ hN
-  simp only [ite_mul, zero_mul, ite_smul, zero_smul, Finset.sum_ite_eq', Finset.mem_univ, if_true] at this
+  simp only [ite_mul, zero_mul, ite_smul, zero_smul, Finset.sum_ite_eq', Finset.mem_univ, ite_true] at this
   simpa only [Finset.smul_sum, smul_smul, mul_comm] using this
 
 end GlobalTheory.TypeSum.Closed

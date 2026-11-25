@@ -43,7 +43,6 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.HeckeAlgebr
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.HeckeAlgebras.OrdinaryHeckeCharacters.WtOfForm
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.HeckeAlgebras.UpOperatorEigenvalues.HeckeCoeff
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.HeckeAlgebras.UpOperatorEigenvalues.WdCharpoly
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.CuspidalDescent.SphericalTwists.JTwist
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.CuspidalDescent.SphericalTwists.LgAway
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.ThresholdArguments.DenseThresholdCases.AutomorphicTensorInductionOfLocalPlaces
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.ThresholdArguments.DenseThresholdCases.CLocConj
@@ -680,7 +679,7 @@ theorem UpperTheory.V.Z.Desc.W.jTwist_of_alt : TypeGd → _root_.UpperTheory.V.Z
     obtain ⟨g1, g2⟩ := hSp P L Ω n κ w τ τ' b hb' h2
     exact _root_.UpperTheory.V.Z.Desc.W.satFrobT_alt PH.toClassicalTheorems L Ω l ι n _ hcont w hw τ' b hb' fun A hA rc hrc =>
       _root_.UpperTheory.V.Z.Win.WDT.of_isWDOf (hTw P L Ω l ι n _ hρ art κ 0 _ ha hβc hκ w hw τ τ' g1 h2 A hA rc (_root_.UpperTheory.V.Z.Desc.W.isRecT_of_isRecT PH.toClassicalTheorems hrc)
-        (_root_.UpperTheory.V.Z.Desc.W.woGd' (_root_.UpperTheory.V.Z.Desc.W.lgAway' (s1 w hs τ h1) hw A hA rc hrc) (g2 A hA rc (_root_.UpperTheory.V.Z.Desc.W.isRecT_of_isRecT PH.toClassicalTheorems hrc))))
+        ((_root_.UpperTheory.V.Z.Desc.W.lgAway' (s1 w hs τ h1) hw A hA rc hrc).isWDOf (g2 A hA rc (_root_.UpperTheory.V.Z.Desc.W.isRecT_of_isRecT PH.toClassicalTheorems hrc))))
   · obtain ⟨A, hA⟩ := (exists_isPlaceOver Ω w : ∃ A : ValuationSubring Ω, IsPlaceOver A w)
     exact t3 w A hA (fun g hg => (congrArg β (pr_ine V hw hA hg)).trans β.map_one) (s3 w hw)
   · obtain ⟨τ₀, s5⟩ := Up.comp_ex hσ (split_at_base_place (s := s))
@@ -731,7 +730,7 @@ theorem UpperTheory.V.Z.Desc.W.jTwist_of_alt : TypeGd → _root_.UpperTheory.V.Z
     obtain ⟨g1, g2⟩ := hTy L Ω n _ _ (s.hw u) τ rc (_root_.UpperTheory.V.Z.Desc.W.isRecT_of_isRecT PH.toClassicalTheorems hrc)
       (fun i => W.pushCh (ι.toRingHom.comp (algebraMap c.O (Qbar l))) ((t i).comp V.pr)) hT
     exact hTw P L Ω l ι n _ hρ art κ 0 _ ha hβc hκ _ hu τ τ' g1 h2 _ (s.hw u) rc (_root_.UpperTheory.V.Z.Desc.W.isRecT_of_isRecT PH.toClassicalTheorems hrc)
-      (_root_.UpperTheory.V.Z.Desc.W.woGd' (_root_.UpperTheory.V.Z.Desc.W.lgAway' (s1 _ (hsp u) τ h1) hu _ (s.hw u) rc hrc) g2)
+      ((_root_.UpperTheory.V.Z.Desc.W.lgAway' (s1 _ (hsp u) τ h1) hu _ (s.hw u) rc hrc).isWDOf g2)
 end
 end -- clump:auto
 end -- clump:auto

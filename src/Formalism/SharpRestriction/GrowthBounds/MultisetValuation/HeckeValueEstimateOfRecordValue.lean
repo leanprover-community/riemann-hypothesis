@@ -83,13 +83,13 @@ theorem Ar_eq (lam0 : Fin n' → Fin (k1 + 1) → ℤ) (r : ℕ) (hr : r ≤ k1 
       have := Nat.even_iff.mp he
       unfold IsOddPos at h
       omega
-    rw [if_neg (not_not_intro h), if_pos h, zero_sub, ← sum_tail lam0 s r hr, ← Finset.sum_neg_distrib]
+    rw [ite_eq_right (not_not_intro h), ite_eq_left h, zero_sub, ← sum_tail lam0 s r hr, ← Finset.sum_neg_distrib]
     refine Finset.sum_congr rfl fun i _ => ?_
-    simp only [lamAt, if_neg hod]
+    simp only [lamAt, ite_eq_right hod]
   · have hev : Even s.val := Nat.even_iff.mpr (by unfold IsOddPos at h; omega)
-    rw [if_pos h, if_neg h, sub_zero, ← sum_head lam0 s r hr]
+    rw [ite_eq_left h, ite_eq_right h, sub_zero, ← sum_head lam0 s r hr]
     refine Finset.sum_congr rfl fun i _ => ?_
-    simp only [lamAt, if_pos hev]
+    simp only [lamAt, ite_eq_left hev]
 
 end Num
 
@@ -155,7 +155,7 @@ def uExt (u : ℕ → X.G.Kf) : ℕ → X.G.Kf := fun a => if a ∈ Icc 1 X.mm t
 
 theorem uExt_eq (u : ℕ → X.G.Kf) {a : ℕ} (ha : a ∈ Icc 1 X.mm) : uExt X u a = u a := by
   unfold uExt
-  rw [if_pos ha]
+  rw [ite_eq_left ha]
 
 theorem prod_uExt (u : ℕ → X.G.Kf) {j : ℕ} (hj : j ≤ X.mm) :
     ∏ a ∈ Icc 1 j, uExt X u a = ∏ a ∈ Icc 1 j, u a :=

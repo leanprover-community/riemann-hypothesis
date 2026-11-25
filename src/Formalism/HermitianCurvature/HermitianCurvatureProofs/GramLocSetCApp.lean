@@ -101,16 +101,16 @@ theorem gramLoc_setC_app {Cb Cc : ℝ} {S : C.HidaSetting E Wp Wq} {p : ∀ v, K
       have hρ1 : rhoS S j = 1 := by rw [rhoS, ← hlam, hlam1, hfr1]; simp
       have hx : xw c = (Complex.normSq c - S.T * S.T') ^ (S.G.k - 1) := by
         simp only [hxw, C.nAux]
-        rw [if_pos (by constructor <;> first | trivial | omega), mul_one]
+        rw [ite_eq_left (by constructor <;> first | trivial | omega), mul_one]
       have hlev : KB.levW (D.parOf S v) (j + 1) ((lam : ℂ) * c) = B2.zWeight S.G.k S.T S.T' c := by
         rw [hlam1, Complex.ofReal_one, one_mul]
         unfold KB.levW
-        rw [if_pos (by simp [hjt])]
+        rw [ite_eq_left (by simp [hjt])]
       rw [hρ1, hlev, one_mul, hx]
       by_cases hc2 : S.T * S.T' ≤ Complex.normSq c
       · rw [Real.mul_self_sqrt (pow_nonneg (by linarith) _)]
         unfold B2.zWeight
-        rw [if_pos hc2]
+        rw [ite_eq_left hc2]
       · have h0 : RRs (j + 1) (H ++ [(1, (lam : ℂ) * c)]) (H' ++ [(1, (lam : ℂ) * c)]) = 0 := by
           have := rrTop_zero (D.parOf S v) (p v).l0 (p v).T (p v).ν' (p v).m₀ (p v).Θ (p v).TP
             (M.sgn (D.parOf S v) (p v).l0) (F v ε) w H (H' ++ [(1, (lam : ℂ) * c)])
@@ -123,7 +123,7 @@ theorem gramLoc_setC_app {Cb Cc : ℝ} {S : C.HidaSetting E Wp Wq} {p : ∀ v, K
         rw [h0, mul_zero, mul_zero]
     · have hx : xw c = (S.fr (j + 1) 1 * ‖c‖) ^ (2 * (Mj - 2)) := by
         simp only [hxw, C.nAux]
-        rw [if_neg (by omega), mul_one, hMj]
+        rw [ite_eq_right (by omega), mul_one, hMj]
         congr 1
         simp only [Nat.add_sub_cancel, Nat.cast_one]
         ring
@@ -132,7 +132,7 @@ theorem gramLoc_setC_app {Cb Cc : ℝ} {S : C.HidaSetting E Wp Wq} {p : ∀ v, K
       congr 2
       rw [hx, rhoS, ← hlam, ← hMj]
       unfold KB.levW
-      rw [if_neg (by show ¬ (j + 1 = S.G.r + 1); omega)]
+      rw [ite_eq_right (by show ¬ (j + 1 = S.G.r + 1); omega)]
       have hnorm : ‖(lam : ℂ) * c‖ = lam * ‖c‖ := by
         rw [norm_mul, Complex.norm_real, Real.norm_of_nonneg hlam_pos.le]
       rw [hnorm, ← mul_zpow]

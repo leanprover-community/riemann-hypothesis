@@ -193,8 +193,8 @@ theorem heckePolyOf_coeff_inj : ∀ (n q : ℕ), q ≠ 0 → ∀ a b : ℕ → �
   intro n q hq a b h k hk
   have hc := congrArg (fun f => _root_.AddMonoidAlgebra.coeff (M := ℕ) f k) h
   simp only [Formalism.L2.Col.heckePolyOf, Polynomial.finsetSum_coeff, Polynomial.coeff_C_mul_X_pow] at hc
-  rw [Finset.sum_ite_eq, Finset.sum_ite_eq, if_pos (Finset.mem_range.2 (Nat.lt_succ_of_le hk)),
-    if_pos (Finset.mem_range.2 (Nat.lt_succ_of_le hk))] at hc
+  rw [Finset.sum_ite_eq, Finset.sum_ite_eq, ite_eq_left (Finset.mem_range.2 (Nat.lt_succ_of_le hk)),
+    ite_eq_left (Finset.mem_range.2 (Nat.lt_succ_of_le hk))] at hc
   have h0 : ((-1 : ℂ) ^ k * (q : ℂ) ^ (k * (k - 1) / 2)) ≠ 0 :=
     mul_ne_zero (pow_ne_zero _ (by norm_num)) (pow_ne_zero _ (Nat.cast_ne_zero.2 hq))
   exact mul_left_cancel₀ h0 hc

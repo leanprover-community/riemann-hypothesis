@@ -205,7 +205,7 @@ theorem coord_mod (hR : Formalism.MainNotions.N.FrobeniusPowerSeries.GS.RD W) {T
   have hzero : ∀ m, ∀ j, j ≠ i → a m j = 0 := by
     intro m j hj
     have := congrFun (haA m).2 j
-    simp only [Pi.mul_apply, letE, Pi.single_apply, hj, if_false, zero_mul] at this
+    simp only [Pi.mul_apply, letE, Pi.single_apply, hj, ite_false, zero_mul] at this
     exact this.symm
   have key : ∀ m, a m = algebraMap O (LetA O n) (c₀ m) * letE i + W.π₀ * a' m := by
     intro m
@@ -225,7 +225,7 @@ theorem coord_mod (hR : Formalism.MainNotions.N.FrobeniusPowerSeries.GS.RD W) {T
       simp only [e3, letE, a', g, c₀, Pi.single_eq_same, mul_one]
       show _ = C (constantCoeff (F m j)) + W.π₀₁ * _
       ring
-    · simp only [Pi.add_apply, Pi.mul_apply, letE, Pi.single_apply, hj, if_false, mul_zero, a', zero_add, hzero m j hj]
+    · simp only [Pi.add_apply, Pi.mul_apply, letE, Pi.single_apply, hj, ite_false, mul_zero, a', zero_add, hzero m j hj]
   have h1 : ∀ m, W.π₀ * a' m = a m - algebraMap O (LetA O n) (c₀ m) * letE i := by
     intro m
     rw [key m]

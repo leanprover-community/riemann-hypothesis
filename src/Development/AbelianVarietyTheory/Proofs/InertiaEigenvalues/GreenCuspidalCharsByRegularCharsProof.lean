@@ -784,7 +784,7 @@ theorem primeLab_to_regularChar : ∀ (g : ℕ) [Fact g.Prime] (d : ℕ), 0 < d 
   have hc : ∀ P, IsPrimeLab d P → ∃ u : Kˣ, aeval (u : K) P = 0 ∧ c P = e u := by
     intro P hP
     have h := exists_unit_root hd hK hP
-    exact ⟨h.choose, h.choose_spec, dif_pos h⟩
+    exact ⟨h.choose, h.choose_spec, dite_eq_left h⟩
   refine ⟨c, fun P hP => ?_, fun P P' hP hP' ⟨i, hi, h⟩ => ?_⟩
   · obtain ⟨u, hu, hcu⟩ := hc P hP
     intro i j hi hj h

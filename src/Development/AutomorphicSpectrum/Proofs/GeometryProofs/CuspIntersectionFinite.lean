@@ -1093,7 +1093,7 @@ theorem factor_near {u : Ω} {w : (Σ k, J k) → ℂ} (hw : w ∈ mcPts (mCoord
         Real.log (‖valAt y u w'‖ * ∏ k, ‖w' ⟨k, cc k⟩‖ ^ a k) := by
   have hex : ∃ v, IsValueAt y u w v := by
     by_contra hn
-    exact hv (dif_neg hn)
+    exact hv (dite_eq_right hn)
   obtain ⟨v₀, dg, pg, ph, hpg, hph, hne, heq, hhne, hv₀⟩ := hex
   have e0 : GroundTheory.Heights₂.Heights.LowerBoundFree.valAt y u w = v₀ :=
     valAt_eq hw ⟨dg, pg, ph, hpg, hph, hne, heq, hhne, hv₀⟩
@@ -1120,14 +1120,14 @@ theorem exists_lift {n a : ℕ} (h : a ≤ n) {u : Fin n → ℂ} (hu : u ∈ Fl
   have h1 : ∀ k, ‖u k‖ < 1 := (pi_norm_lt_iff one_pos).1 (mem_ball_zero_iff.1 hu.1)
   refine ⟨logLift a u, ⟨fun i => ?_, fun k hk => ?_⟩, funext fun k => ?_⟩
   · have hi : ((Fin.castLE h i : Fin n) : ℕ) < a := i.2
-    simp only [logLift, if_pos hi, Complex.log_re]
+    simp only [logLift, ite_eq_left hi, Complex.log_re]
     exact Real.log_neg (norm_pos_iff.2 (hu.2 _ hi)) (h1 _)
-  · simp only [logLift, if_neg (not_lt.2 hk)]
+  · simp only [logLift, ite_eq_right (not_lt.2 hk)]
     exact h1 k
   · by_cases hk : (k : ℕ) < a
-    · simp only [expCover, logLift, if_pos hk]
+    · simp only [expCover, logLift, ite_eq_left hk]
       exact Complex.exp_log (hu.2 k hk)
-    · simp only [expCover, logLift, if_neg hk]
+    · simp only [expCover, logLift, ite_eq_right hk]
 
 theorem neg_log_nz_le {E : Type} [Field E] [NumberField E] [IsCMField E] {g : ℕ} {Λ : Type} [AddCommGroup Λ]
     [Module (𝓞 E) Λ] {Ψ : Type} [Fintype Ψ] (R : RiemLat E g Λ) (σ : Ψ → (𝓞 E →+* ℂ)) {m : ℕ} (hσ : IsCMFam σ)
@@ -1136,7 +1136,7 @@ theorem neg_log_nz_le {E : Type} [Field E] [NumberField E] [IsCMField E] {g : �
   obtain ⟨-, -, h3, h4, -⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Cusp.cuspW_le E g Λ Ψ R σ m hσ hr hm
   by_cases hI : I = ⊥
   · have : R.nz σ I = 1 := by
-      refine dif_neg ?_
+      refine dite_eq_right ?_
       rintro ⟨r, v, hr1, hv, hli, -⟩
       have := hv ⟨0, hr1⟩
       rw [hI, Submodule.mem_bot] at this

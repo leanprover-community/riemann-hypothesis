@@ -107,17 +107,17 @@ theorem minor_replace : ∀ (N : ℕ) (X : Matrix (Fin N) (Fin N) ℂ) (S : Fins
   have hY : IsLowerUni (1 + Matrix.single a b (1 : ℂ)) := by
     refine ⟨fun i => ?_, fun i j hij => ?_⟩
     · rw [Matrix.add_apply, Matrix.one_apply_eq, Matrix.single_apply,
-        if_neg (fun h1 => hab (h1.1.trans h1.2.symm)), add_zero]
+        ite_eq_right (fun h1 => hab (h1.1.trans h1.2.symm)), add_zero]
     · rw [Matrix.add_apply, Matrix.one_apply_ne (ne_of_lt hij), Matrix.single_apply,
-        if_neg (fun h1 => lt_asymm hba (by rw [h1.1, h1.2]; exact hij)), add_zero]
+        ite_eq_right (fun h1 => lt_asymm hba (by rw [h1.1, h1.2]; exact hij)), add_zero]
   have hYcol : ∀ d ∈ S, d ≠ b → (1 + Matrix.single a b (1 : ℂ)) d b = 0 := by
     intro d hd hdb
     have hda : d ≠ a := fun h1 => ha (h1 ▸ hd)
     rw [Matrix.add_apply, Matrix.one_apply_ne hdb, Matrix.single_apply,
-      if_neg (fun h1 => hda h1.1.symm), add_zero]
+      ite_eq_right (fun h1 => hda h1.1.symm), add_zero]
   have hp : pSgn S a b = c := by
     rw [pSgn, hc _ hY hYcol, Matrix.add_apply, Matrix.one_apply_ne hab, Matrix.single_apply,
-      if_pos ⟨rfl, rfl⟩, zero_add, mul_one]
+      ite_eq_left ⟨rfl, rfl⟩, zero_add, mul_one]
   rw [hp]
   exact ⟨hc X hX hcol, hc0⟩
 

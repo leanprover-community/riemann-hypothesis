@@ -73,7 +73,7 @@ private theorem appendObjIso_hom_of_le {X : Scheme.{u}} (s : BlowupSequenceData 
     (appendSchemeAtIso s t₁ t₂ e i hi).hom =
       eqToHom ((append_schemeAt_of_le_length s t₁ h).trans (append_schemeAt_of_le_length s t₂ h).symm) := by
   unfold appendSchemeAtIso
-  simp only [dif_pos h, eqToIso.hom]
+  simp only [dite_eq_left h, eqToIso.hom]
 
 private theorem appendObjIso_eq_right_of_pos {X : Scheme.{u}} (s : BlowupSequenceData X)
     (t₁ t₂ : BlowupSequenceData (s.obj s.length))

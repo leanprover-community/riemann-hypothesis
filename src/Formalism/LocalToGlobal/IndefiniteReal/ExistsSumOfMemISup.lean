@@ -72,7 +72,7 @@ theorem proj_specOp (a : ι → ℂ) (q : ι) (x : E) :
   rw [specOp_apply, map_sum, Finset.sum_eq_single q]
   · rw [map_smul, Submodule.starProjection_eq_self_iff.2 (proj_mem U q x)]
   · intro p _ hp
-    rw [map_smul, proj_of_mem U hU (proj_mem U p x), if_neg (Ne.symm hp), smul_zero]
+    rw [map_smul, proj_of_mem U hU (proj_mem U p x), ite_eq_right (Ne.symm hp), smul_zero]
   · intro h
     exact absurd (Finset.mem_univ q) h
 

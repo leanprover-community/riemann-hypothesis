@@ -369,7 +369,7 @@ theorem finite_image_tSet_loc : ∀ (L : Type) [Field L] [NumberField L] [IsCMFi
   have key : ∀ x ∈ tSet L n s ϖ k, ∀ x' ∈ tSet L n s ϖ k, κ x = κ x' →
       (x : GAf L n ⧸ J) = x' := by
     intro x hx x' hx' hκ
-    simp only [κ, dif_pos hx, dif_pos hx'] at hκ
+    simp only [κ, dite_eq_left hx, dite_eq_left hx'] at hκ
     obtain ⟨ha, b, hb, hg⟩ := hx.2.choose_spec
     obtain ⟨ha', b', hb', hg'⟩ := hx'.2.choose_spec
     set a := hx.2.choose
@@ -399,7 +399,7 @@ theorem finite_image_tSet_loc : ∀ (L : Type) [Field L] [NumberField L] [IsCMFi
   rintro _ ⟨x, hx, rfl⟩ _ ⟨x', hx', rfl⟩ hgg
   have h : ∃ y ∈ tSet L n s ϖ k, (y : GAf L n ⧸ J) = x := ⟨x, hx, rfl⟩
   have h' : ∃ y ∈ tSet L n s ϖ k, (y : GAf L n ⧸ J) = x' := ⟨x', hx', rfl⟩
-  simp only [g, dif_pos h, dif_pos h'] at hgg
+  simp only [g, dite_eq_left h, dite_eq_left h'] at hgg
   show (x : GAf L n ⧸ J) = x'
   rw [← h.choose_spec.2, ← h'.choose_spec.2]
   exact key _ h.choose_spec.1 _ h'.choose_spec.1 hgg

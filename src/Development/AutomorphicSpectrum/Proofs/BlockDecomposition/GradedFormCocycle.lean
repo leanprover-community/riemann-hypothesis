@@ -30,21 +30,21 @@ theorem alt_sum {B : Type*} [CommRing B] {j : ℕ} (w : Fin j → Fin (j + 2) �
     rw [Fin.ext h, Fin.ext h']
   have hT0 : T (Fin.castSucc 0) = P 0 := by
     refine Finset.prod_congr rfl fun k _ => ?_
-    simp only [Nat.not_lt_zero, if_false]
+    simp only [Nat.not_lt_zero, ite_false]
     refine cg k ?_ ?_ <;> simp only [sa_val, Fin.val_succ, Fin.val_castSucc, Fin.val_zero] <;> split_ifs <;> omega
   have hTl : T (Fin.last (j + 1)) = P j := by
     refine Finset.prod_congr rfl fun k _ => ?_
-    simp only [k.2, if_true]
+    simp only [k.2, ite_true]
     refine cg k ?_ ?_ <;> simp only [sa_val, Fin.val_succ, Fin.val_castSucc, Fin.val_last] <;> split_ifs <;> omega
   have hTi : ∀ i : Fin j, T i.succ.castSucc = P (i + 1) + P i := by
     intro i
     have hPa : P (i + 1) = u i * ∏ k ∈ Finset.univ.erase i, (if (k : ℕ) < i + 1 then u k else v k) := by
       have := Finset.mul_prod_erase Finset.univ (fun k : Fin j => if (k : ℕ) < i + 1 then u k else v k) (Finset.mem_univ i)
-      simp only [Nat.lt_add_one, if_true] at this
+      simp only [Nat.lt_add_one, ite_true] at this
       exact this.symm
     have hPb : P i = v i * ∏ k ∈ Finset.univ.erase i, (if (k : ℕ) < i then u k else v k) := by
       have := Finset.mul_prod_erase Finset.univ (fun k : Fin j => if (k : ℕ) < i then u k else v k) (Finset.mem_univ i)
-      simp only [lt_irrefl, if_false] at this
+      simp only [lt_irrefl, ite_false] at this
       exact this.symm
     have hTa : T i.succ.castSucc = (u i + v i) * ∏ k ∈ Finset.univ.erase i, (if (k : ℕ) < i then u k else v k) := by
       have := Finset.mul_prod_erase Finset.univ (fun k : Fin j => w k (i.succ.castSucc.succAbove k.succ) -

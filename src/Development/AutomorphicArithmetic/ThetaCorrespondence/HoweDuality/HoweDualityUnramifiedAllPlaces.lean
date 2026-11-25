@@ -1725,14 +1725,14 @@ theorem stageVp : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberFi
     obtain ⟨m, f, φ, rfl⟩ := GlobalTheory.HoweGlobalPair.decomp t
     refine ⟨T, hT, 0, m, Fin.elim0, Fin.elim0, fun j => ((f j : ↥(G.M'.Pol Bs.ψ Bs.emb)) : SInf F (Fin a' × Fin (a + a'))),
       fun j v => if h : v ∈ T then ((φ j ⟨v, h⟩ : ↥(SB _)) : (Fin a' × Fin (a + a') → Fv F v) → ℂ) else G.M'.vac v,
-      fun j => Fin.elim0 j, fun j => ⟨(f j).2, fun v => ?_, fun v hv => by simp only [dif_neg hv]⟩, ?_, ?_, ?_⟩
+      fun j => Fin.elim0 j, fun j => ⟨(f j).2, fun v => ?_, fun v hv => by simp only [dite_eq_right hv]⟩, ?_, ?_, ?_⟩
     · by_cases h : v ∈ T
-      · simp only [dif_pos h]; exact (φ j ⟨v, h⟩).2
-      · simp only [dif_neg h]; exact (hg.hM'.vac v).1
+      · simp only [dite_eq_left h]; exact (φ j ⟨v, h⟩).2
+      · simp only [dite_eq_right h]; exact (hg.hM'.vac v).1
     · simp
     · set_option synthInstance.maxHeartbeats 100000 in
       rw [map_sum]
-      exact Finset.sum_congr rfl fun j _ => hL _ _ _ (fun v h => by simp only [dif_pos h]) (fun v h => by simp only [dif_neg h])
+      exact Finset.sum_congr rfl fun j _ => hL _ _ _ (fun v h => by simp only [dite_eq_left h]) (fun v h => by simp only [dite_eq_right h])
     · set_option synthInstance.maxHeartbeats 100000 in
       rw [LinearMap.mem_ker, map_sum] at ht0
       rw [Fin.sum_univ_zero, ← ht0]

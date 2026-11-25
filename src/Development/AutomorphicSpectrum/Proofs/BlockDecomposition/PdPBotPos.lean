@@ -341,11 +341,11 @@ theorem main : ∀ {O A G : Type} [CommRing O] [CommRing A] [Algebra O A] [CommR
   have t_act : ∀ (i : Fin m) (h : u ≤ (i : ℕ) ∧ (i : ℕ) < v) (a : S.N i ⊗[O] G),
       t i (LinearEquiv.lTensor (S.N i) (θ i h.1 h.2) a) = a := by
     intro i h a
-    simp only [t, dif_pos h]
+    simp only [t, dite_eq_left h]
     exact (LinearEquiv.lTensor (S.N i) (θ i h.1 h.2)).symm_apply_apply a
   have t_inact : ∀ (i : Fin m), ¬ (u ≤ (i : ℕ) ∧ (i : ℕ) < v) → t i = 0 := by
     intro i h
-    simp only [t, dif_neg h]
+    simp only [t, dite_eq_right h]
   let T : (∀ i, S.N i ⊗[O] M i) →+ (∀ i, S.N i ⊗[O] G) :=
     { toFun := fun w i => t i (w i)
       map_zero' := by funext i; simp
@@ -398,7 +398,7 @@ theorem main : ∀ {O A G : Type} [CommRing O] [CommRing A] [Algebra O A] [CommR
     rw [Pi.sub_apply, T_apply, sub_eq_zero]
     by_cases h : u ≤ (i : ℕ)
     · have h' : u ≤ (i : ℕ) ∧ (i : ℕ) < v := ⟨h, hi⟩
-      simp only [w, dif_pos h']
+      simp only [w, dite_eq_left h']
       exact t_act i h' _
     · rw [t_inact i (by omega), hzu i (by omega)]
       rfl

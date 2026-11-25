@@ -374,13 +374,13 @@ theorem exists_root {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host
   rcases s with τ | τ
   · have hm : (m : ℕ) < D.p := m.2
     refine ⟨(τ, ⟨m, by omega⟩), ?_, ?_, fun K x => ?_⟩
-    · simp only [HodgeCpt.rootIdx, hm, dif_pos]
+    · simp only [HodgeCpt.rootIdx, hm, dite_eq_left]
     · simp [HodgeCpt.rootSgn, hm]
     · simp [HodgeCpt.rootSgn, hm, grDeg]
   · have hm : (m : ℕ) < D.q := m.2
     have h : ¬ D.p + D.q - 1 - m < D.p := by omega
     refine ⟨(τ, ⟨D.p + D.q - 1 - m, by omega⟩), ?_, ?_, fun K x => ?_⟩
-    · simp only [HodgeCpt.rootIdx, h, dif_neg, not_false_eq_true]
+    · simp only [HodgeCpt.rootIdx, h, dite_eq_right, not_false_eq_true]
       congr 1
       exact Fin.ext (by show D.p + D.q - 1 - (D.p + D.q - 1 - m) = m; omega)
     · simp [HodgeCpt.rootSgn, h]
@@ -467,7 +467,7 @@ theorem fibLink : ChartVal → Centre → CoordLat → FibLink := by
   have hpl : vdeg O (plPt fun s => (u s).map i) (plDeg ⟨s, m⟩) = (Finset.univ.sup fun I : Fin (m + 1) → Fin (labelRk D s) =>
       O.valuation (Matrix.of fun a b : Fin (m + 1) => (u s).map i (I a) (Fin.castLE m.2 b)).det)⁻¹ := by
     rw [vdeg, Finset.prod_eq_single (⟨s, m⟩ : Σ s, Fin (labelRk D s)) (fun z _ hz => by simp [plDeg, hz]) (by simp)]
-    simp only [plDeg, if_pos, zpow_neg, zpow_one]
+    simp only [plDeg, ite_eq_left, zpow_neg, zpow_one]
     rfl
   have h5 := hv m
   have h6 : O.valuation (i (∏ m' ∈ Finset.Iic m, β m')) ≠ 0 :=

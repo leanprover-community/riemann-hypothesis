@@ -82,7 +82,7 @@ theorem halfEX_iff_le (T : Core D) (h : LawsM T) (X : ErrX D) :
   · by_contra hb
     have hp : piOf T X i = X.piG i := by
       classical
-      unfold piOf; rw [if_neg hb]
+      unfold piOf; rw [ite_eq_right hb]
 
     have h1 : T.Q.l.Mb.map (T.Q.H.bar : 𝓞 D.host.E →+* 𝓞 D.host.E) ≤ Ideal.span {barE D (X.piG i)} := by
       rw [← hp, ← bar_core T, span_bar_piOf T h]; exact Ideal.map_mono (hle i)

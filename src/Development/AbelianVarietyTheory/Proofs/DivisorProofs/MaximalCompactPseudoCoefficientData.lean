@@ -780,19 +780,19 @@ theorem intertwiner_preserves_highestWeight : HWVec := by
     by_cases hca : c = a
     · subst hca
       have hcb : ¬ b = c := fun h => (ne_of_lt hab) h.symm
-      simp only [if_neg hcb, sub_zero, Pi.add_apply, root, Pi.sub_apply, Pi.single_eq_same, ↓reduceIte]
+      simp only [ite_eq_right hcb, sub_zero, Pi.add_apply, root, Pi.sub_apply, Pi.single_eq_same, ↓reduceIte]
       rw [Pi.single_eq_of_ne (ne_of_lt hab)]
       simp only [sub_zero, Complex.ofReal_add, Complex.ofReal_one, add_smul, one_smul]
       rfl
     · by_cases hcb : b = c
       · subst hcb
-        simp only [if_neg hca, zero_sub, Pi.add_apply, root, Pi.sub_apply, Pi.single_eq_same,
+        simp only [ite_eq_right hca, zero_sub, Pi.add_apply, root, Pi.sub_apply, Pi.single_eq_same,
           LinearMap.neg_apply, ↓reduceIte]
         rw [Pi.single_eq_of_ne hca]
         simp only [zero_sub, Complex.ofReal_add, Complex.ofReal_neg, Complex.ofReal_one, add_smul, neg_smul,
           one_smul]
         rfl
-      · simp only [if_neg hca, if_neg hcb, sub_zero, LinearMap.zero_apply, add_zero, Pi.add_apply, root,
+      · simp only [ite_eq_right hca, ite_eq_right hcb, sub_zero, LinearMap.zero_apply, add_zero, Pi.add_apply, root,
           Pi.sub_apply]
         rw [Pi.single_eq_of_ne hca, Pi.single_eq_of_ne (Ne.symm hcb)]
         simp
@@ -839,7 +839,7 @@ lemma offdiag {ε : Fin n → Bool} {k : Mat n} (hk : k ∈ Formalism.REAL.Kset 
     k a b = 0 := by
   have h := congrFun (congrFun hk.2 a) b
   simp only [Formalism.REAL.Jm, mul_diagonal, diagonal_mul] at h
-  cases ha : ε a <;> cases hb : ε b <;> simp only [ha, hb, Bool.false_eq_true, if_false, if_true] at h hab
+  cases ha : ε a <;> cases hb : ε b <;> simp only [ha, hb, Bool.false_eq_true, ite_false, ite_true] at h hab
   · exact absurd rfl hab
   · linear_combination (1 / 2 : ℂ) * h
   · linear_combination (-1 / 2 : ℂ) * h
@@ -1023,10 +1023,10 @@ lemma entry {ε : Fin n → Bool} {k : Mat n} (hk : k ∈ Formalism.REAL.Kset ε
     · simp
   rw [Finset.sum_congr rfl (fun j _ => h1 j)]
   simp only [mul_sub, Finset.sum_sub_distrib, mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ,
-    if_true]
+    ite_true]
   by_cases had : a = d
   · subst had
-    simp only [if_true, K_unit hk]
+    simp only [ite_true, K_unit hk]
     by_cases hil : i = l
     · subst hil; simp
     · simp [hil]

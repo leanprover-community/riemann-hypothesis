@@ -146,7 +146,7 @@ theorem abelSq : AbelSq := by
     linarith
   have hmono : ∀ i j, i ≤ j → j < n → a' j ≤ a' i := by
     intro i j hij hj
-    simp only [ha', dif_pos hj, dif_pos (lt_of_le_of_lt hij hj)]
+    simp only [ha', dite_eq_left hj, dite_eq_left (lt_of_le_of_lt hij hj)]
     exact ha (show (⟨i, lt_of_le_of_lt hij hj⟩ : Fin n) ≤ ⟨j, hj⟩ from hij)
   set t : ℝ := -∑ i ∈ range n, |a' i| with ht
   have htle : ∀ i < n, t ≤ a' i := by

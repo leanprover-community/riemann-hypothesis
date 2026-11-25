@@ -136,9 +136,9 @@ theorem isLat_dl (σ : E →ₐ[F] E) (J : Matrix (Fin N) (Fin N) E) (co : (Fin 
       obtain ⟨r, hr⟩ := hy _ (hnM a)
       refine ⟨r, ?_⟩
       rw [hr, key, Finset.sum_eq_single a]
-      · rw [hcv, if_pos rfl, map_intCast]
+      · rw [hcv, ite_eq_left rfl, map_intCast]
       · intro b _ hb
-        rw [hcv, if_neg hb, map_zero, zero_mul]
+        rw [hcv, ite_eq_right hb, map_zero, zero_mul]
       · intro h; exact absurd (Finset.mem_univ a) h
     choose r hr using hr
     rw [hexp y]

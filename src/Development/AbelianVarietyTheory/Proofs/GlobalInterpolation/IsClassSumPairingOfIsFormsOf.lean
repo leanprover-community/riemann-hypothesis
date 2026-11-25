@@ -144,15 +144,6 @@ variable (hF : ((stepX Ch sel mu P).fam X.emb W.sgTrue).Ok)
 
 end Step
 
-section Lattice
-
-variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
-  (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ} (mu : Tup X.F X.E X.K S)
-  (P : LevFam X.E X.K R.r Pr.vGs) (hd : Disjoint Pr.vGs (QE sel (mu : Chr X.F X.E X.K)))
-  (hF : ((stepX Ch sel mu P).fam X.emb W.sgTrue).Ok) (h' : (dualGSD W Ch sel mu P).Ok)
-
-end Lattice
-
 section Pol
 
 variable {K : Type} [Field K] (σ : K →+* ℂ)
@@ -219,15 +210,6 @@ variable (hX : X.Ok) (hc : X.Tau → HCParam R)
   (hQ : (perOn W Ch sel mu P b0 til ext tz H).Ok) (l : J.Laws X.emb σ hc)
   (lf : FmLaws J (perOn W Ch sel mu P b0 til ext tz H) X.emb σ hc Pl hI hQ)
   (hT : (perOn W Ch sel mu P b0 til ext tz H).Over J)
-
-section AnyLattice
-
-variable {Λ' : HLat X.K} {ι : Λ'.V ≃ₗ[X.K] (mtildeGSD W Ch sel mu P).EqFun}
-  (hι : IsFormsOf _ (mtildeOk W Ch sel mu hX P) (MtildeL W Ch sel mu P) Λ' ι)
-
-include hι
-
-end AnyLattice
 
 end Layer
 

@@ -66,7 +66,7 @@ theorem twT_tens (ε : Fin n → Bool) (E : Fin n → Fin n → Module.End ℂ M
   simp only [Fin.rev_inj]
   by_cases hc : c = a
   · subst hc
-    simp only [if_true]
+    simp only [ite_true]
     unfold sg; split_ifs <;> module
   · simp [hc]
 

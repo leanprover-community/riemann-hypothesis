@@ -138,21 +138,21 @@ theorem to_vo (l k q : ℕ) (c : R) (a : ℕ → R) (hq : q.Coprime l) (hq0 : 0 
     rcases Nat.eq_zero_or_pos l with hl | hl
     · subst hl; simp
     have h1 : l ∣ q * (l * m) := ⟨q * m, by ring⟩
-    rw [if_pos h1, if_pos (dvd_mul_right _ _), Nat.mul_div_cancel_left _ hl,
+    rw [ite_eq_left h1, ite_eq_left (dvd_mul_right _ _), Nat.mul_div_cancel_left _ hl,
       show q * (l * m) = l * (q * m) by ring, Nat.mul_div_cancel_left _ hl]
     congr 1
     by_cases hqm : q ∣ m
     · obtain ⟨t, rfl⟩ := hqm
-      rw [if_pos ⟨l * t, by ring⟩, if_pos (dvd_mul_right _ _),
+      rw [ite_eq_left ⟨l * t, by ring⟩, ite_eq_left (dvd_mul_right _ _),
         show l * (q * t) = q * (l * t) by ring, Nat.mul_div_cancel_left _ hq0, Nat.mul_div_cancel_left _ hq0,
-        if_pos (dvd_mul_right _ _), Nat.mul_div_cancel_left _ hl]
-    · rw [if_neg hqm, if_neg]
+        ite_eq_left (dvd_mul_right _ _), Nat.mul_div_cancel_left _ hl]
+    · rw [ite_eq_right hqm, ite_eq_right]
       intro h
       exact hqm ((Nat.Coprime.dvd_of_dvd_mul_left hq h))
   · have h1 : ¬ l ∣ q * n := fun h => hn (Nat.Coprime.dvd_of_dvd_mul_left hq.symm h)
-    rw [if_neg h1, if_neg hn]
+    rw [ite_eq_right h1, ite_eq_right hn]
     by_cases hqn : q ∣ n
-    · rw [if_pos hqn, if_neg]
+    · rw [ite_eq_left hqn, ite_eq_right]
       · simp
       · intro h
         obtain ⟨t, ht⟩ := hqn

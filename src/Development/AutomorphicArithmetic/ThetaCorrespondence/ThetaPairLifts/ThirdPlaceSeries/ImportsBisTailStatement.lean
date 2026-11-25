@@ -721,7 +721,7 @@ theorem exists_finset_of_bdd (d : ℕ) (hd : 0 < d) (S : Set (GAf L n))
         (a.1 : Matrix (Fin n) (Fin n) (AL L)) k l = (d : AL L) * y := by
       intro k l
       have e := congrFun (congrFun hab k) l
-      simp only [cls, dif_pos (hS a ha k l).1, dif_pos (hS b hb k l).1] at e
+      simp only [cls, dite_eq_left (hS a ha k l).1, dite_eq_left (hS b hb k l).1] at e
       obtain ⟨z, hz⟩ := hc _ _ e.symm
       refine ⟨z.1, z.2, ?_⟩
       have hz' := congrArg Subtype.val hz
@@ -751,7 +751,7 @@ theorem exists_finset_of_bdd (d : ℕ) (hd : 0 < d) (S : Set (GAf L n))
   let rep : (Fin n → Fin n → Q) → GAf L n := fun t => if h : t ∈ T then h.choose else 1
   refine ⟨hT.toFinset.image rep, fun κ hκ => ?_⟩
   have ht : cls κ ∈ T := ⟨κ, hκ, rfl⟩
-  have hr : rep (cls κ) = ht.choose := dif_pos ht
+  have hr : rep (cls κ) = ht.choose := dite_eq_left ht
   refine ⟨rep (cls κ), Finset.mem_image.2 ⟨cls κ, hT.mem_toFinset.2 ht, rfl⟩, ?_⟩
   rw [hr]
   exact key _ ht.choose_spec.1 _ hκ ht.choose_spec.2

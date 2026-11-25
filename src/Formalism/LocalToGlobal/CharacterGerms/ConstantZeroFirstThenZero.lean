@@ -71,12 +71,12 @@ theorem const_dF (G : FGLaw C dd) (i j : Fin dd) :
       exact MvPowerSeries.pderiv_X_self
     · exact MvPowerSeries.pderiv_X_of_ne (fun h' => hr (Prod.ext_iff.1 h').2)
   simp only [e0, e1, mul_zero, Finset.sum_const_zero, zero_add, mul_ite, mul_one, Finset.sum_ite_eq',
-    Finset.mem_univ, if_true, constantCoeff_ev constant_zero_zero_first] at h
+    Finset.mem_univ, ite_true, constantCoeff_ev constant_zero_zero_first] at h
   rw [h]
   by_cases hji : j = i
   · subst hji
     simp
-  · rw [if_neg hji, MvPowerSeries.pderiv_X_of_ne (fun h' => hji (Prod.ext_iff.1 h').2.symm), map_zero]
+  · rw [ite_eq_right hji, MvPowerSeries.pderiv_X_of_ne (fun h' => hji (Prod.ext_iff.1 h').2.symm), map_zero]
 
 theorem pderiv_eval_single {n : ℕ} (a : Pt C n dd) (ha : ∀ i, MvPowerSeries.constantCoeff (a i) = 0) (f : PS C 1 dd)
     (q : Fin n × Fin dd) :
@@ -110,7 +110,7 @@ theorem E_D_cobd (G : FGLaw C dd) (A : PS C 1 dd) (j : Fin dd) :
       exact MvPowerSeries.pderiv_X_self
     · exact MvPowerSeries.pderiv_X_of_ne (fun h' => hr (Prod.ext_iff.1 h').2)
   simp only [e0, e1, mul_zero, Finset.sum_const_zero, sub_zero, mul_ite, mul_one, Finset.sum_ite_eq',
-    Finset.mem_univ, if_true]
+    Finset.mem_univ, ite_true]
   rw [ev_sub constant_zero_first_then_zero, ev_sum constant_zero_first_then_zero]
   congr 1
   refine Finset.sum_congr rfl fun r _ => ?_
@@ -223,7 +223,7 @@ theorem mms_dA (hF : ∀ i, IntS V (G.F i)) (hc : IntS V c) (hlin : ∀ j : Fin 
         omega
       exact mm_mul_ge (ih _ hdeg p.1 rfl r) (hMint i r p.2)
     simp only [hsplit, Finset.sum_add_distrib, hMc, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq,
-      Finset.mem_univ, if_true] at h
+      Finset.mem_univ, ite_true] at h
     have h' := mm_sub h (mm_sum Finset.univ _ fun r _ => hrest r)
     rwa [add_sub_cancel_right] at h'
 

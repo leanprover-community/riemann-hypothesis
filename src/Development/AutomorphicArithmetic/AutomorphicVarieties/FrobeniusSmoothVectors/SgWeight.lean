@@ -78,7 +78,7 @@ theorem UpperTheory.V.Fr.ep_ps :
         simp [sg0]
       · classical
         rw [MvPowerSeries.algebraMap_apply, Algebra.algebraMap_self, RingHom.id_apply,
-          MvPowerSeries.coeff_C, if_neg hn, mul_zero])
+          MvPowerSeries.coeff_C, ite_eq_right hn, mul_zero])
   have hτ : ∀ y n, MvPowerSeries.coeff n (τ y)
       = sg O (Finsupp.weight wt n) * MvPowerSeries.coeff n y := hcoef
   refine ⟨τ, ?_, ?_, ?_⟩

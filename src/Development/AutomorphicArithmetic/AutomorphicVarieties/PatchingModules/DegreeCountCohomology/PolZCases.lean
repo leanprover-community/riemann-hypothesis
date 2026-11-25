@@ -39,11 +39,11 @@ private theorem polZ_proj {l : ℕ} [Fact l.Prime] (F : GFrame l) :
   · intro g
     apply Subtype.ext
     show (g : F.Γ) * (if (g : F.Γ) ∈ F.η.ker then 1 else F.c) = g
-    rw [if_pos g.2, mul_one]
+    rw [ite_eq_left g.2, mul_one]
   · intro g
     apply Subtype.ext
     show (g : F.Γ) * F.c * (if (g : F.Γ) * F.c ∈ F.η.ker then 1 else F.c) = g
-    rw [if_neg (polZ_nmem F g), mul_assoc, F.c_sq, mul_one]
+    rw [ite_eq_right (polZ_nmem F g), mul_assoc, F.c_sq, mul_one]
 
 private theorem polZ_cases {l : ℕ} [Fact l.Prime] (F : GFrame l) (γ : F.Γ) :
     (∃ g : F.G₀, γ = g) ∨ ∃ g : F.G₀, γ = g * F.c := by

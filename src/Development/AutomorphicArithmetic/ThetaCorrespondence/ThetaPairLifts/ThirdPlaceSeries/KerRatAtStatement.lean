@@ -217,7 +217,7 @@ theorem isLevDatum_kerDat (hL : R.toLevCh.Is A.μ0) {ξ χ ξR Q ω φ} (hK : Ke
   · intro t ht
     by_cases hc : IsHalf (cA D e) t ∧ IsIntM (frMapAdj (Vc D j) (Wc D j) (R.βV j) (R.βW j) t)
     · exact ⟨GlobalTheory.T.idempotent_sum_self_dual_frames_bound D _ _ _ _ _ _ hsV hsW hfV hfW _ e he hP2 t hc.1 hc.2, hc.1⟩
-    · exact absurd (if_neg hc) ht
+    · exact absurd (ite_eq_right hc) ht
   · intro u hu hue t
     have hN' := GlobalTheory.T.adjointFrameMatrix_integral_of_conjugate_half D _ _ _ _ _ _ hsV hsW hfV hfW _ e he hP2 u hu hue
     have hfr : frMapAdj (Vc D j) (Wc D j) (R.βV j) (R.βW j) (t + N • u) =
@@ -236,7 +236,7 @@ theorem isLevDatum_kerDat (hL : R.toLevCh.Is A.μ0) {ξ χ ξR Q ω φ} (hK : Ke
     show (if _ then _ else _) = (if _ then _ else _)
     rw [hfr]
     by_cases hc : IsHalf (cA D e) t ∧ IsIntM (frMapAdj (Vc D j) (Wc D j) (R.βV j) (R.βW j) t)
-    · rw [if_pos ⟨hhalf'.2 hc.1, (GlobalTheory.RefDatumLev.isIntM_add_nsmul_iff hN' _).2 hc.2⟩, if_pos hc]
+    · rw [ite_eq_left ⟨hhalf'.2 hc.1, (GlobalTheory.RefDatumLev.isIntM_add_nsmul_iff hN' _).2 hc.2⟩, ite_eq_left hc]
       refine congrArg₂ (· * ·) (_root_.GlobalTheory.PlaceVec.omegaK_congr _ fun PP hPP =>
         GlobalTheory.RefDatumLev.redM_add_nsmul PP hc.2 hN' _ (hN PP (Or.inl hPP))) ?_
       have h : ∀ PP ∈ Q, redM PP (frMapAdj (Vc D j) (Wc D j) (R.βV j) (R.βW j) t +
@@ -252,7 +252,7 @@ theorem isLevDatum_kerDat (hL : R.toLevCh.Is A.μ0) {ξ χ ξR Q ω φ} (hK : Ke
       · exact absurd (fun PP hP => by beta_reduce; rw [← h PP hP]; exact h1 PP hP) h2
       · exact absurd (fun PP hP => by beta_reduce; rw [h PP hP]; exact h2 PP hP) h1
       · rfl
-    · rw [if_neg, if_neg hc]
+    · rw [ite_eq_right, ite_eq_right hc]
       intro h'
       exact hc ⟨hhalf'.1 h'.1, (GlobalTheory.RefDatumLev.isIntM_add_nsmul_iff hN' _).1 h'.2⟩
   · intro t

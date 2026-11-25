@@ -198,7 +198,7 @@ theorem gauss_field {k : Type} [Field k] [Fintype k] (s : k →+* k) (hs : ∀ x
   set a := (Finset.univ.filter (fun x : kˣ => s x = x)).card with hadef
   have hqa : q = 1 + a := by
     have := sum_eq_zero_add_units (fun x : k => if s x = x then (1 : ℕ) else 0)
-    rw [hqdef, hadef, Finset.card_filter, Finset.card_filter, this, if_pos (map_zero s)]
+    rw [hqdef, hadef, Finset.card_filter, Finset.card_filter, this, ite_eq_left (map_zero s)]
   have ha : 0 < a := Finset.card_pos.2 ⟨1, by simp⟩
   have hcard : Fintype.card k = 1 + Fintype.card kˣ := by
     have := sum_eq_zero_add_units (fun _ : k => (1 : ℕ))
@@ -221,7 +221,7 @@ theorem gauss_field {k : Type} [Field k] [Fintype k] (s : k →+* k) (hs : ∀ x
   have hu1 : ∑ y ∈ Finset.univ.filter (fun x : kˣ => s x = x), f y = -1 := by
     have := sum_eq_zero_add_units (fun x : k => if s x = x then f x else 0)
     rw [← Finset.sum_filter, hz, ← Finset.sum_filter] at this
-    simp only [map_zero, if_true, h0] at this
+    simp only [map_zero, ite_true, h0] at this
     linear_combination -this
   rw [sum_eq_zero_add_units, hsum, hu1, hq, hmq]
   push_cast

@@ -37,7 +37,7 @@ theorem etaLink_of (hI : EtaIn σ J ψ v) (hS : EtaSp σ J ψ v) : EtaLink σ J 
       · exact h2 h0
       · exact h3 h0
   · intro hp
-    rw [if_pos (hS hstd hun hp)]
+    rw [ite_eq_left (hS hstd hun hp)]
 
 theorem resAlg_of_etaSp (hI : EtaIn σ J ψ v) (hS : EtaSp σ J ψ v) : ResAlg σ J ψ v :=
   resAlg_of_eta σ J ψ v (etaLink_of σ J ψ v hI hS)

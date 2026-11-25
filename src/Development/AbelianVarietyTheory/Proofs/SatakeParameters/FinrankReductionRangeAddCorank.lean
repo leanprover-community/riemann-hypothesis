@@ -97,7 +97,7 @@ theorem finrank_range_reduction (O K : Type) [CommRing O] [IsDomain O] [IsDiscre
         (if i.1 < n - j then (1 : IsLocalRing.ResidueField O) else 0) ≠ 0)
         = Finset.univ.filter fun i : Fin n => i.1 < n - j := by
       ext i
-      by_cases e : i.1 < n - j <;> simp only [Finset.mem_filter, Finset.mem_univ, e, if_true, if_false, true_and, ne_eq, one_ne_zero, not_false_eq_true, not_true_eq_false]
+      by_cases e : i.1 < n - j <;> simp only [Finset.mem_filter, Finset.mem_univ, e, ite_true, ite_false, true_and, ne_eq, one_ne_zero, not_false_eq_true, not_true_eq_false]
     rw [this, Fin.card_filter_val_lt]
     omega
   have h6 : (A.map r).rank = n - j := by

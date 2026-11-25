@@ -1069,7 +1069,7 @@ theorem jacOneCFor_of {Pr : ChartPred} (hK : KPos) (hR : LocRatioFor Pr) : JacOn
     by_cases hcε : c₀ - ε ≤ 0
     · have : 0 < (KVal X u')⁻¹ := inv_pos.2 hK0
       linarith
-    · push_neg at hcε
+    · push Not at hcε
       have hb : ENNReal.ofReal (c₀ - ε) < c (TI X u' hT) := by
         rw [← ENNReal.ofReal_toReal hfin, ← hc₀]
         exact (ENNReal.ofReal_lt_ofReal_iff (by linarith)).2 (by linarith)
@@ -1178,8 +1178,8 @@ def qD (p : BrI X) : ℝ := 2 * (if X.B.I.ε p.1 p.2.1 then 1 else -1)
 
 theorem betaI_q (x y : EuclideanSpace ℝ (KapI X)) : betaI X x y = ∑ p : BrI X, qD X p * bL X x p * bL X y p := by
   rw [betaI_bridge]
-  simp only [Fintype.sum_prod_type, Fintype.sum_bool, bL_apply, reimV_apply, qD, if_true, Bool.false_eq_true,
-    if_false]
+  simp only [Fintype.sum_prod_type, Fintype.sum_bool, bL_apply, reimV_apply, qD, ite_true, Bool.false_eq_true,
+    ite_false]
   refine Finset.sum_congr rfl fun v _ => ?_
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun b _ => ?_
@@ -1308,7 +1308,7 @@ theorem betaIso_holds : BetaIso := by
       ext i b
       have hre := congrArg (fun z : EuclideanSpace ℝ (MuB.BrI X) => z (v, i, b, true)) hb
       have him := congrArg (fun z : EuclideanSpace ℝ (MuB.BrI X) => z (v, i, b, false)) hb
-      simp only [MuB.bL_apply, MuB.reimV_apply, if_true, Bool.false_eq_true, if_false] at hre him
+      simp only [MuB.bL_apply, MuB.reimV_apply, ite_true, Bool.false_eq_true, ite_false] at hre him
       exact Complex.ext (by simpa using hre) (by simpa using him)
     have h1 := betaV_inj X _ _ hβ
     have h2 : tupCoord X 0 = 0 := by
@@ -1391,7 +1391,7 @@ theorem perpPosV : PerpPosV := by
     simp only [nv]
     split_ifs with hj
     · rw [hJ_sub_left, hJ_sub_right, hJ_sub_right]
-      simp only [HidaSetting.eR, HidaSetting.fR, hJ_crd, X.ee, X.ff, X.ef, hT_f_e, if_true, map_zero, map_one]
+      simp only [HidaSetting.eR, HidaSetting.fR, hJ_crd, X.ee, X.ff, X.ef, hT_f_e, ite_true, map_zero, map_one]
       norm_num
     · simp only [HidaSetting.zR, hJ_crd, X.zu_norm, map_neg, map_natCast]
       simp only [Complex.neg_re, Complex.natCast_re, Left.neg_neg_iff]

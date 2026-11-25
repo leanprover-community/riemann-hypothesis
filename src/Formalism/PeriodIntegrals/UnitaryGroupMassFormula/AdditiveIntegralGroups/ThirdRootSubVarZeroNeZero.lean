@@ -46,7 +46,7 @@ theorem rt_two_le_sub {f g : MvPowerSeries σ ℂ_[p]} (hf : 2 ≤ f.order) (hg 
 
 theorem rt_one_le_X (i : σ) : 1 ≤ (Xv i : MvPowerSeries σ ℂ_[p]).order := by
   refine MvPowerSeries.le_order fun d hd => ?_
-  rw [MvPowerSeries.coeff_X, if_neg]
+  rw [MvPowerSeries.coeff_X, ite_eq_right]
   rintro rfl
   simp at hd
 
@@ -65,7 +65,7 @@ theorem rt_order_lam (wq : PowerSeries ℂ_[p]) : 2 ≤ (lam wq).order := by
   have hd : e 0 + e 1 < 2 := by
     rw [Finsupp.degree_eq_sum, Fin.sum_univ_two] at he
     exact_mod_cast he
-  rw [lamA_coeff_lam, lamA_coeff_wser, if_neg (by omega)]
+  rw [lamA_coeff_lam, lamA_coeff_wser, ite_eq_right (by omega)]
 
 private theorem rt_constantCoeff_lam_lemma {f : MvPowerSeries (Fin 2) ℂ_[p]} (hf : 2 ≤ f.order) :
     MvPowerSeries.constantCoeff f = 0 := by

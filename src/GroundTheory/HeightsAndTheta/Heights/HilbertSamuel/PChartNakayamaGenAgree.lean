@@ -231,7 +231,7 @@ theorem res_eq_of_pair {M : Type*} [AddCommGroup M] [Module (MRingOver S ι) M] 
     have : i = c k ∨ i = j := by rw [hIk] at hi; simpa using hi
     tauto
   · intro l _ hl
-    refine Finset.sum_eq_zero fun i hi => dif_neg fun h' => ?_
+    refine Finset.sum_eq_zero fun i hi => dite_eq_right fun h' => ?_
     have := h'.1 l
     rw [Function.update_self, ← Finset.card_pos, Finset.card_erase_of_mem hi, hother l hl] at this
     omega

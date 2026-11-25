@@ -93,7 +93,7 @@ theorem exists_normal_finiteIndex_fixing (L : Type) [Field L] (G : Type) [Group 
     exact (Set.ncard_pos (hS s hs)).mpr ⟨s, MulAction.mem_orbit_self s⟩ |>.ne'
   · intro h hh
     rw [hU] at hh
-    push_neg at hh
+    push Not at hh
     obtain ⟨x, hx, hne⟩ := hh
     exact ⟨x, hFix x hx, hne⟩
 

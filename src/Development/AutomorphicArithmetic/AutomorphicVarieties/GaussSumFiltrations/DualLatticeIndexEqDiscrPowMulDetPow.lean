@@ -132,7 +132,7 @@ theorem mem_dualL_iff (G : Matrix κ κ ℤ) (y : κ → F) :
       by_cases hij : i = j
       · subst hij
         simpa using ho
-      · simp only [Pi.single_apply, hij, if_false]
+      · simp only [Pi.single_apply, hij, ite_false]
         exact isIntegral_zero)
     refine ⟨n, ?_⟩
     rw [← hn, BF_eq_vecMul, dotProduct_single]
@@ -331,7 +331,7 @@ theorem dual_level_index : ∀ (F : Type) [Field F] [NumberField F] (κ : Type) 
       by_cases hij : i = j
       · subst hij
         simpa using hx
-      · simp only [Pi.single_apply, hij, if_false]
+      · simp only [Pi.single_apply, hij, ite_false]
         exact zero_mem _
     obtain ⟨n, hn⟩ := hy _ hνmem
     refine ⟨n, ?_⟩

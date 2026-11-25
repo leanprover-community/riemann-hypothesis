@@ -211,7 +211,7 @@ lemma Fj_es (j : ℕ) (b : Fin r) (hb : j ≤ b.val) : ∀ w ∈ Fr.Fj j, H.h w 
     have hab : a ≠ b := by
       intro h; subst h; exact absurd (show a.val < j from ha) (by omega)
     show H.h (Fr.f a.castSucc) (Fr.es b) = 0
-    rw [Fr.h_es, if_neg hab]
+    rw [Fr.h_es, ite_eq_right hab]
   exact fun w hw => this hw
 
 lemma z_es (b : Fin r) : H.h (Fr.f (Fin.last r)) (Fr.es b) = 0 := by
@@ -314,13 +314,13 @@ lemma tri_of_mem {n : ℕ} (f g : Fin n → V)
     exact hab (hL b (Finsupp.mem_support_iff.2 hne))
   refine ⟨fun a b => (if a = b then 1 else 0) + L b a, ⟨fun a b hba => ?_, fun a => ?_⟩, fun b => ?_⟩
   · have hne : a ≠ b := fun h => by subst h; exact lt_irrefl _ hba
-    simp only [if_neg hne, zero_add]
+    simp only [ite_eq_right hne, zero_add]
     exact hz a b (by have : b.val < a.val := hba; omega)
   · simp [hz a a (lt_irrefl _)]
   · have e1 := hLeq b
     rw [Finsupp.linearCombination_apply, Finsupp.sum_fintype _ _ (by simp)] at e1
     simp only [add_smul, Finset.sum_add_distrib, ite_smul, one_smul, zero_smul, Finset.sum_ite_eq',
-      Finset.mem_univ, if_true, e1]
+      Finset.mem_univ, ite_true, e1]
     abel
 
 lemma mem_of_tri {n : ℕ} (f g : Fin n → V) (hg : Tri E f g) :
@@ -329,7 +329,7 @@ lemma mem_of_tri {n : ℕ} (f g : Fin n → V) (hg : Tri E f g) :
   intro b
   have : g b - f b = ∑ a, (A a b - if a = b then 1 else 0) • f a := by
     simp only [sub_smul, Finset.sum_sub_distrib, ite_smul, one_smul, zero_smul, Finset.sum_ite_eq',
-      Finset.mem_univ, if_true, hchg b]
+      Finset.mem_univ, ite_true, hchg b]
   rw [this]
   refine Submodule.sum_mem _ fun a _ => ?_
   by_cases hab : a.val < b.val
@@ -421,19 +421,19 @@ lemma levi (u : Fin r → V) (hu : ∀ c, u c ∈ Fr.Fj c.val) :
         have hadd : eichF H (u kk) (Fr.es kk) 0 (Fr.f c.castSucc + u c) =
             eichF H (u kk) (Fr.es kk) 0 (Fr.f c.castSucc) + eichF H (u kk) (Fr.es kk) 0 (u c) :=
           (eichL H (u kk) (Fr.es kk) 0).map_add _ _
-        have hes : H.h (Fr.f c.castSucc) (Fr.es kk) = 0 := by rw [Fr.h_es, if_neg hne']
-        rw [if_pos hck, if_pos (by omega), hadd, hfix]
+        have hes : H.h (Fr.f c.castSucc) (Fr.es kk) = 0 := by rw [Fr.h_es, ite_eq_right hne']
+        rw [ite_eq_left hck, ite_eq_left (by omega), hadd, hfix]
         simp [eichF, hcx, hes]
-      · rw [if_neg hck]
+      · rw [ite_eq_right hck]
         by_cases hce : c = kk
         · subst hce
-          have h1 : H.h (Fr.f kk.castSucc) (Fr.es kk) = 1 := by rw [Fr.h_es, if_pos rfl]
+          have h1 : H.h (Fr.f kk.castSucc) (Fr.es kk) = 1 := by rw [Fr.h_es, ite_eq_left rfl]
           have : kk.val < k + 1 := by simp [hkk]
-          rw [if_pos this]
+          rw [ite_eq_left this]
           simp [eichF, hcx, h1]
         · have : ¬ c.val < k + 1 := fun h => hce (Fin.ext (by simp [hkk]; omega))
-          have hes : H.h (Fr.f c.castSucc) (Fr.es kk) = 0 := by rw [Fr.h_es, if_neg hce]
-          rw [if_neg this]
+          have hes : H.h (Fr.f c.castSucc) (Fr.es kk) = 0 := by rw [Fr.h_es, ite_eq_right hce]
+          rw [ite_eq_right this]
           simp [eichF, hcx, hes]
     · rw [LinearEquiv.mul_apply, hnz, eichE_apply]
       exact eich_fix H _ _ _ _ (z_es Fr kk) (z_X Fr _ hx)
@@ -478,7 +478,7 @@ lemma onto [CharZero F] (hT : Fr.T ≠ 0) (g : Fin (r + 1) → V) (hg : Tri E Fr
     rw [hx0d]
     abel
   | cast c =>
-    rw [LinearEquiv.mul_apply, hne c, if_pos c.isLt, add_sub_cancel, eichE_apply]
+    rw [LinearEquiv.mul_apply, hne c, ite_eq_left c.isLt, add_sub_cancel, eichE_apply]
     have hgX : g c.castSucc ∈ H.X Fr.f := by
       have : g c.castSucc = Fr.f c.castSucc + (g c.castSucc - Fr.f c.castSucc) := by abel
       rw [this]

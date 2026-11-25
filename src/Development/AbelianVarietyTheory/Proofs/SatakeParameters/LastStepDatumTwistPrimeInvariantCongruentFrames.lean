@@ -137,14 +137,14 @@ theorem lam_of_topDat_ne (i : ℕ) (P : rowSG Pr sel mu) (hP : P.1 ∉ Pr.vGs)
   have hne := left_ne_zero_of_mul h
   have hne2 := right_ne_zero_of_mul h
   unfold PhiTopG at hne
-  rw [if_neg hP] at hne
+  rw [ite_eq_right hP] at hne
   have hint := twAn_phiQ_int _ _ (_root_.Formalism.L2.Col.twAn_k_le i) (k_le_N_pred i) _ hne
   unfold ftY at hne2
-  rw [if_neg hP] at hne2
+  rw [ite_eq_right hP] at hne2
   have hlast : ∀ i', IntAt P.1 ((qOf P.1 : X.E) ^ cst.M *
       (atNL X.E (R.N (i + 1)) (R.N (i + 1) - 1) ∘ₗ y) (Pi.single i' 1)) := by
     by_contra hc
-    exact hne2 (if_neg hc)
+    exact hne2 (ite_eq_right hc)
   intro j
   have hpre : ∀ l : Fin (R.N (i + 1)), l.1 + 1 < R.N (i + 1) → IntAt P.1 (y (Pi.single j 1) l) := by
     intro l hl
@@ -161,7 +161,7 @@ theorem lam_of_topDat_ne (i : ℕ) (P : rowSG Pr sel mu) (hP : P.1 ∉ Pr.vGs)
   · have hN : R.N (i + 1) - 1 < R.N (i + 1) := by omega
     have := hlast j
     have e : l = ⟨R.N (i + 1) - 1, hN⟩ := Fin.ext (by show l.1 = R.N (i + 1) - 1; omega)
-    simp only [LinearMap.comp_apply, atNL, dif_pos hN, LinearMap.proj_apply] at this
+    simp only [LinearMap.comp_apply, atNL, dite_eq_left hN, LinearMap.proj_apply] at this
     rw [e]
     exact this
 
@@ -221,7 +221,7 @@ theorem topDat_frames {m2 : ℕ} (hm : R.m = m2 + 2) (hc : cst.Ok) (P : rowSG Pr
   · unfold topDat
     congr 1
     · unfold PhiTopG
-      rw [if_neg hP]
+      rw [ite_eq_right hP]
       have hc0 : cOf R (m2 + 1) = 0 := cOf_topB hm
       have hw : ∀ w ∈ stdAt X.E (R.N (m2 + 1)) P.1, ∀ l : Fin (R.N (m2 + 1 + 1)), l.1 + 1 < R.N (m2 + 1 + 1) →
           IntAt P.1 ((κ'.symm (y (κ w)) - y w) l / (qOf P.1 : X.E)) := by

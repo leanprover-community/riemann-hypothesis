@@ -183,7 +183,7 @@ theorem UpperTheory.exists_common_eigenvector_of_charpoly_split_characters :
       have h7 : (Units.coeHom ℂ).comp (c j / c j) = 1 := by simp
       intro h8
       have h9 := (Finset.sum_eq_zero_iff.mp h8) j hj
-      rw [if_pos h7] at h9
+      rw [ite_eq_left h7] at h9
       exact Fintype.card_ne_zero h9
     have heq : LinearMap.trace ℂ W (Polynomial.aeval (ρ Φ) f * P) = f.eval (μ j Φ : ℂ) * N := by
       rw [htot]
@@ -191,8 +191,8 @@ theorem UpperTheory.exists_common_eigenvector_of_charpoly_split_characters :
       rw [Finset.sum_filter]
       refine Finset.sum_congr rfl (fun k _ => ?_)
       by_cases hk : (μ k Φ : ℂ) = μ j Φ
-      · rw [if_pos hk, hk]
-      · rw [if_neg hk, hzero k hk, zero_mul]
+      · rw [ite_eq_left hk, hk]
+      · rw [ite_eq_right hk, hzero k hk, zero_mul]
     rw [hfP, map_zero] at heq
     exact mul_ne_zero hfl (Nat.cast_ne_zero.mpr hN) heq.symm
   obtain ⟨y, hyE, hy0, hyΦ⟩ := hmain

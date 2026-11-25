@@ -42,7 +42,7 @@ def UstdSub {n : ℕ} (ε : Fin n → Bool) (S : Finset (Fin n)) : Subgroup (For
     have h2 := congrFun (congrFun h1 j) i
     rw [Matrix.mul_apply] at h2
     simp_rw [hg i hi] at h2
-    simp only [mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true, Matrix.one_apply] at h2
+    simp only [mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true, Matrix.one_apply] at h2
     show ((((g⁻¹ : Formalism.REAL.UJ ε) : (Matrix (Fin n) (Fin n) ℂ)ˣ)) : Matrix (Fin n) (Fin n) ℂ) j i = _
     rw [e, h2]
 

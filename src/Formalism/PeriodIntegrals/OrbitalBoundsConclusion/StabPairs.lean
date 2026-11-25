@@ -48,7 +48,7 @@ theorem expand_of_tail (z : Fin (2 * r + k + 1) → ℂ) (hz : inWb k r z) (b : 
       if h : a.val < b.val ∧ i.val = a.val then y i else 0 := by
     intro a ha
     have hab : a ≠ b := Finset.ne_of_mem_erase ha
-    rw [if_neg hab]
+    rw [ite_eq_right hab]
     by_cases hlt : a.val < b.val
     · rw [dite_eq_left hlt]
       have har : a.val < r := by omega
@@ -99,7 +99,7 @@ theorem expand_of_tail (z : Fin (2 * r + k + 1) → ℂ) (hz : inWb k r z) (b : 
 theorem coefOf_UT (y : Fin (r + 1) → Fin (2 * r + k + 1) → ℂ) :
     (Matrix.of fun a b => coefOf (k := k) b (y b) a) ∈ UTset (r + 1) := by
   refine ⟨fun a b hab => ?_, fun a => ?_⟩
-  · simp only [Matrix.of_apply, coefOf, if_neg hab.ne']
+  · simp only [Matrix.of_apply, coefOf, ite_eq_right hab.ne']
     rw [dite_eq_right (fun h => lt_asymm h (Fin.lt_def.1 hab))]
   · simp [coefOf]
 
@@ -129,12 +129,12 @@ theorem Sset_frame (z : Fin (2 * r + k + 1) → ℂ) (hz : StdZ k r z) (s : B.Ma
       simp only [Matrix.mulVec, dotProduct]
       rw [Finset.sum_eq_single i]
       · by_cases hik : i.val ≤ r + k
-        · rw [hm.2.2 i i (by omega) hik (by omega), if_pos rfl, one_mul]
+        · rw [hm.2.2 i i (by omega) hik (by omega), ite_eq_left rfl, one_mul]
         · rw [hz.1 i (Or.inr (by omega)), mul_zero]
       · intro j _ hji
         by_cases hj1 : r ≤ j.val
         · by_cases hj2 : j.val ≤ r + k
-          · rw [hm.2.2 i j hj1 hj2 (by omega), if_neg (Ne.symm hji), zero_mul]
+          · rw [hm.2.2 i j hj1 hj2 (by omega), ite_eq_right (Ne.symm hji), zero_mul]
           · rw [hz.1 j (Or.inr (not_le.1 hj2)), mul_zero]
         · rw [hz.1 j (Or.inl (not_le.1 hj1)), mul_zero]
       · simp
@@ -428,8 +428,8 @@ theorem Z_cR (k r : ℕ) (z z' : Fin (2 * r + k + 1) → ℂ) (γ : B.Mat k r) (
   have hHz : ∀ e c : Fin (2 * r + k + 1), e.val < r → c.val ≤ r + k → Hpk k r e c = 0 := by
     intro e c he hc
     unfold Hpk
-    rw [if_neg (fun h => absurd h.2 (by omega)), if_neg (fun h => absurd h.2 (by omega)),
-      if_neg (fun h => absurd h.1 (by omega))]
+    rw [ite_eq_right (fun h => absurd h.2 (by omega)), ite_eq_right (fun h => absurd h.2 (by omega)),
+      ite_eq_right (fun h => absurd h.1 (by omega))]
   have hrow : ∀ (y : Fin (2 * r + k + 1) → ℂ) (a : Fin (r + 1)), a.val < r →
       ∀ x : Fin (2 * r + k + 1) → ℂ, (∀ c : Fin (2 * r + k + 1), r + k < c.val → x c = 0) →
       herm (Hpk k r) x (fvec k r y a) = 0 := by
@@ -477,8 +477,8 @@ theorem Z_cL (k r : ℕ) (z z' : Fin (2 * r + k + 1) → ℂ) (γ : B.Mat k r) (
   have hHz : ∀ e c : Fin (2 * r + k + 1), e.val < r → c.val ≤ r + k → Hpk k r e c = 0 := by
     intro e c he hc
     unfold Hpk
-    rw [if_neg (fun h => absurd h.2 (by omega)), if_neg (fun h => absurd h.2 (by omega)),
-      if_neg (fun h => absurd h.1 (by omega))]
+    rw [ite_eq_right (fun h => absurd h.2 (by omega)), ite_eq_right (fun h => absurd h.2 (by omega)),
+      ite_eq_right (fun h => absurd h.1 (by omega))]
   have hrow : ∀ (y : Fin (2 * r + k + 1) → ℂ) (a : Fin (r + 1)), a.val < r →
       ∀ x : Fin (2 * r + k + 1) → ℂ, (∀ c : Fin (2 * r + k + 1), r + k < c.val → x c = 0) →
       herm (Hpk k r) x (fvec k r y a) = 0 := by
@@ -534,8 +534,8 @@ theorem herm_bvec_fvec (k r : ℕ) (z : Fin (2 * r + k + 1) → ℂ) (j : Fin (2
       Hpk k r e j = 0 := by
     intro e j he hj1 hj2
     unfold Hpk
-    rw [if_neg (fun h => absurd h.2 (by omega)), if_neg (fun h => absurd h.1 (by omega)),
-      if_neg (fun h => absurd h.1 (by omega))]
+    rw [ite_eq_right (fun h => absurd h.2 (by omega)), ite_eq_right (fun h => absurd h.1 (by omega)),
+      ite_eq_right (fun h => absurd h.1 (by omega))]
   have hf : fvec k r z a = bvec (eI k r ⟨a.val, ha⟩) := by
     unfold fvec
     rw [dite_eq_left ha]
@@ -654,7 +654,7 @@ theorem ut_conj_fix {r : ℕ} {u : Matrix (Fin (r + 1)) (Fin (r + 1)) ℂ} (hu :
   · rw [ut_last hu]
     by_cases ha : a = Fin.last r
     · subst ha; simp
-    · simp only [ha, if_false, star_zero, zero_mul]
+    · simp only [ha, ite_false, star_zero, zero_mul]
       exact (hv a (lt_of_le_of_ne (Nat.lt_succ_iff.mp a.isLt) (fun e => ha (Fin.ext e)))).symm
   · intro b _ hb
     rw [hv b (lt_of_le_of_ne (Nat.lt_succ_iff.mp b.isLt) (fun e => hb (Fin.ext e))), mul_zero]

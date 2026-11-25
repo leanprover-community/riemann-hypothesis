@@ -37,12 +37,12 @@ theorem nset_iff (a : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ) :
       by_cases hj : j.val < r
       · have hle : j.val ≤ i.val := by split_ifs at hij <;> omega
         have := h2 ⟨j.val, hj⟩ i hle
-        rw [hE j hj, if_neg hne] at this
+        rw [hE j hj, ite_eq_right hne] at this
         exact this
       · have hj2 : j.val ≤ r + k := by split_ifs at hij <;> omega
         have hi : r ≤ i.val := by split_ifs at hij <;> omega
         have := h3 i j (by omega) hj2 hi
-        rw [if_neg hne] at this
+        rw [ite_eq_right hne] at this
         exact this
     · intro i j hij hjr
       unfold nβ at hij hjr
@@ -61,18 +61,18 @@ theorem nset_iff (a : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ) :
       have hjv : (eI k r b).val = b.val := rfl
       have hb := b.isLt
       by_cases hie : i = eI k r b
-      · rw [if_pos hie, hie]
+      · rw [ite_eq_left hie, hie]
         have := hD (eI k r b) (eI k r b) rfl (by unfold nβ; split_ifs <;> omega)
         rw [this, Matrix.one_apply_eq]
-      · rw [if_neg hie]
+      · rw [ite_eq_right hie]
         have hne : i.val ≠ b.val := fun h => hie (Fin.ext (by rw [h, hjv]))
         exact hB (by unfold nβ; split_ifs <;> omega)
     · intro i j hj1 hj2 hi
       by_cases hij : i = j
-      · rw [if_pos hij, hij]
+      · rw [ite_eq_left hij, hij]
         have := hD j j rfl (by unfold nβ; split_ifs <;> omega)
         rw [this, Matrix.one_apply_eq]
-      · rw [if_neg hij]
+      · rw [ite_eq_right hij]
         by_cases hik : i.val ≤ r + k
         · have := hD i j (by unfold nβ; split_ifs <;> omega) (by unfold nβ; split_ifs <;> omega)
           rw [this, Matrix.one_apply_ne hij]

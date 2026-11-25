@@ -491,8 +491,8 @@ theorem core {n : ℕ} (ι : K →ₐ[k] B) (E : Fin n → Fin n → B)
     rw [← mul_assoc, ← (hc (M a' b') (E c a)).eq]
     simp only [mul_assoc, hE, mul_ite, mul_zero]
     split_ifs with h1 h2
-    · subst h1 h2; rw [mul_assoc, hE, if_pos rfl]
-    · rw [mul_assoc, hE, if_neg h2, mul_zero]
+    · subst h1 h2; rw [mul_assoc, hE, ite_eq_left rfl]
+    · rw [mul_assoc, hE, ite_eq_right h2, mul_zero]
     · rw [zero_mul]
   simp only [phiL_apply, Finset.mul_sum, Finset.sum_mul, h]
   simp [Finset.sum_ite_eq, Finset.sum_ite_eq']
@@ -532,7 +532,7 @@ theorem phiL_mul {n : ℕ} (ι : K →ₐ[k] B) (E : Fin n → Fin n → B)
     · rw [mul_zero]
 
   simp only [phiL_apply, Finset.sum_mul, Finset.mul_sum, h, Matrix.mul_apply, map_sum]
-  simp only [Finset.sum_ite_eq', Finset.mem_univ, if_true]
+  simp only [Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   conv_lhs => rw [Finset.sum_comm]
   conv_rhs => rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun d _ => ?_

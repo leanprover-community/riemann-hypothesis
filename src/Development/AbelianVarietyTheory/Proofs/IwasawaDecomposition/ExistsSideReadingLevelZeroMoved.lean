@@ -208,9 +208,9 @@ theorem exists_hlat {K : Type} [Field K] [NumberField K] [StarRing K] (e : K →
     exact ⟨c.linearIndependent, c.span_eq⟩
   · refine Eq.trans ?_ (hXfn x)
     show Formalism.HermitianLatticesTheory.normAt (Pi.basisFun K (Fin n)) X _ x = _
-    simp only [Formalism.HermitianLatticesTheory.normAt, Formalism.HermitianLatticesTheory.fcoord, X, if_true]
+    simp only [Formalism.HermitianLatticesTheory.normAt, Formalism.HermitianLatticesTheory.fcoord, X, ite_true]
   · show Formalism.HermitianLatticesTheory.majAt (Pi.basisFun K (Fin n)) X v x x' = Formalism.HermitianLatticesTheory.majAt (Pi.basisFun K (Fin n)) Xo v x x'
-    simp only [Formalism.HermitianLatticesTheory.majAt, Formalism.HermitianLatticesTheory.fcoord, X, if_neg hv]
+    simp only [Formalism.HermitianLatticesTheory.majAt, Formalism.HermitianLatticesTheory.fcoord, X, ite_eq_right hv]
 
 end GlobalTheory.Mem.R3.Rw.GoodSideLattices
 

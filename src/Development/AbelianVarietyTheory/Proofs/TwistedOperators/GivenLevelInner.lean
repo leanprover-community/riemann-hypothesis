@@ -124,7 +124,7 @@ theorem levRow_mem_St (S : GridChoice W U) (t : T) (k : FinPt G (.grid D.R.m D.R
     rcases GlobalTheory.GoodPrimes.eq_or_conj_of_under_eq e with rfl | rfl
     · exact hP w hw0
     · exact GlobalTheory.T.unitaryInBasis_integral_at_conjugatePlace _ _ _ hfr (GlobalTheory.AdIsom.dualL_eq hsd) _ hU w0 (hP w0 hw0)
-  · push_neg at hw
+  · push Not at hw
     exact Subgroup.mem_iInf.1 (Subgroup.mem_iInf.1 h2 w) hw
 
 theorem hat_stab_of_St {n : ℕ} (Λ : Submodule (𝓞 D.host.E) (Fin n → D.host.E)) (β M : GL (Fin n) (Lev.EAf D))

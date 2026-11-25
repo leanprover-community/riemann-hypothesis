@@ -74,7 +74,7 @@ theorem exists_retraction : ∃ π : ℂ →ₗ[Qbar] Qbar, ∀ q : Qbar, π (q 
   exact ⟨π, fun q => LinearMap.congr_fun hπ q⟩
 
 theorem lamC_of {p : ℕ} [Fact p.Prime] (lam : Qbar →+* ℂ_[p]) {y : ℂ} (h : y ∈ Qbar) :
-    lamC lam y = lam ⟨y, h⟩ := dif_pos h
+    lamC lam y = lam ⟨y, h⟩ := dite_eq_left h
 
 theorem transl_lin : ∀ (p : ℕ) [Fact p.Prime] (g : GL3Theta.G1 p) (ι : Type) [Fintype ι] (φ : ι → ℂ → ℂ) (c : ι → ℂ)
     (E : ℂ → ℂ), AlgEnt E → (∀ k, AlgEnt (φ k)) → (∀ z, E z = ∑ k, c k * φ k z) →

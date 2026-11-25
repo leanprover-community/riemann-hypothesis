@@ -153,8 +153,8 @@ theorem indep_core {k : Type} [Field k] (K : GL (Ix n) k) (P R : GL (Fin n) k) (
       simp only [Matrix.vecMul, dotProduct]
       refine Finset.sum_congr rfl fun j _ => ?_
       by_cases hj : e j = 0
-      · rw [hy j, if_pos hj, hl j c hj]
-      · rw [hy j, if_neg hj, hl' j c hj, zero_mul, mul_zero]
+      · rw [hy j, ite_eq_left hj, hl j c hj]
+      · rw [hy j, ite_eq_right hj, hl' j c hj, zero_mul, mul_zero]
     have hyD : (y ᵥ* P.1) ᵥ* GlobalTheory.CompanionTheory.Jp.dBlk K = 0 := by
       rw [Matrix.vecMul_vecMul, h]
       funext c
@@ -163,12 +163,12 @@ theorem indep_core {k : Type} [Field k] (K : GL (Ix n) k) (P R : GL (Fin n) k) (
       rw [Matrix.diagonal_mul]
       by_cases hj : e j = 0
       · rw [hj, zero_mul, mul_zero]
-      · rw [hy j, if_neg hj, zero_mul]
+      · rw [hy j, ite_eq_right hj, zero_mul]
     have hyP := eq_zero_of_vecMul_lowerLeftBlock_dBlk_eq_zero K _ hyC hyD
     have hy0 := eq_zero_of_vecMul_GL_eq_zero P hyP
     intro j hj
     have hyj := congrFun hy0 j
-    rwa [Pi.zero_apply, hy j, if_pos hj] at hyj
+    rwa [Pi.zero_apply, hy j, ite_eq_left hj] at hyj
   intro j
   by_cases hj : e j = 0
   · exact h1 j hj
@@ -347,13 +347,13 @@ theorem exists_decomp (ϖ : O) (hϖ : Irreducible ϖ) (w : Lˣ) (hw : (w : L) = 
       (GlobalTheory.CompanionTheory.Jp.resK κ) Pb Rb e hPR _ ?_ ?_ ?_
     · intro j c hj
       show IsLocalRing.residue O (M j (Sum.inl c)) = _
-      rw [hMl, if_pos hj, hPm, hmapC]
+      rw [hMl, ite_eq_left hj, hPm, hmapC]
     · intro j c hj
       show IsLocalRing.residue O (M j (Sum.inl c)) = 0
-      rw [hMl, if_neg hj, map_mul, hϖ0, zero_mul]
+      rw [hMl, ite_eq_right hj, map_mul, hϖ0, zero_mul]
     · intro j c hj
       show IsLocalRing.residue O (M j (Sum.inr c)) = _
-      rw [hMr, if_neg hj, hPm, hmapD]
+      rw [hMr, ite_eq_right hj, hPm, hmapD]
   obtain ⟨κ₂, hκ₂⟩ := GlobalTheory.CompanionTheory.Jp.Hgt.exists_lower M hli
   obtain ⟨δ, hδ⟩ : ∃ δ : Fin n → Lˣ, ∀ j, δ j = if e j = 0 then 1 else w :=
     ⟨fun j => if e j = 0 then 1 else w, fun _ => rfl⟩
@@ -409,14 +409,14 @@ theorem exists_decomp (ϖ : O) (hϖ : Irreducible ϖ) (w : Lˣ) (hw : (w : L) = 
     · simp only [hX]
       rw [hPC, hMl]
       by_cases hj : e j = 0
-      · simp only [hδ j, if_pos hj, Units.val_one, one_mul]
-      · simp only [hδ j, if_neg hj, map_mul, ← hw]
+      · simp only [hδ j, ite_eq_left hj, Units.val_one, one_mul]
+      · simp only [hδ j, ite_eq_right hj, map_mul, ← hw]
     · simp only [hX']
       rw [hPD, hMr]
       by_cases hj : e j = 0
-      · simp only [hδ j, if_pos hj, Units.val_one, one_mul]
+      · simp only [hδ j, ite_eq_left hj, Units.val_one, one_mul]
         rw [ht j c hj, map_mul, ← hw, mul_comm (w : L), mul_assoc, Units.mul_inv, mul_one]
-      · simp only [hδ j, if_neg hj]
+      · simp only [hδ j, ite_eq_right hj]
         rw [mul_comm (w : L), mul_assoc, Units.inv_mul, mul_one]
   obtain ⟨a, b, hab⟩ := GlobalTheory.CompanionTheory.Jp.Hgt.block_form X
     (GlobalTheory.CompanionTheory.Jp.inL κ₂) dd hbot

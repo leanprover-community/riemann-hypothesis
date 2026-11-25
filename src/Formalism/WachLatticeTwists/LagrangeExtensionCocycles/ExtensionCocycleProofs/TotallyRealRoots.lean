@@ -28,7 +28,7 @@ theorem cost_formula_holds : StatCostFormula := by
       rw [hI, Finset.sum_insert hnot, add_comm]
     rw [hc]
     by_cases hdv : (ℓ - 1) ∣ (s + 1)
-    · rw [if_pos hdv]
+    · rw [ite_eq_left hdv]
       have hq : (s + 1) / (ℓ - 1) = s / (ℓ - 1) + 1 := Nat.succ_div_of_dvd hdv
       have hjq : j / (ℓ - 1) ≤ s / (ℓ - 1) := Nat.div_le_div_right hjs
       have hmul : s + 1 = (ℓ - 1) * (s / (ℓ - 1) + 1) := by
@@ -44,7 +44,7 @@ theorem cost_formula_holds : StatCostFormula := by
         rw [Nat.factorial_succ, (show ∀ {p a b : ℕ} [_root_.Fact (_root_.Nat.Prime p)], a ≠ 0 → b ≠ 0 → _root_.padicValNat p (a * b) = _root_.padicValNat p a + _root_.padicValNat p b from by simpa only [← _root_.Nat.padicValNat_def] using @_root_.Nat.multiplicity_mul) (Nat.succ_ne_zero _) (Nat.factorial_ne_zero _)]
       rw [hq, hv, hf]
       omega
-    · rw [if_neg hdv, add_zero, Nat.succ_div_of_not_dvd hdv]
+    · rw [ite_eq_right hdv, add_zero, Nat.succ_div_of_not_dvd hdv]
       exact ih
 
 theorem cost_bound : StatCostBound := by

@@ -491,7 +491,7 @@ theorem good_of_stable (S : Γ →* Matrix (Fin 3) (Fin 3) K) [IsAlgClosed K]
         intro v hv
         exact hfix v (fun g => hc g v hv)
       exact _root_.GlobalTheory.AugSpan.exists_mem_span_sub_one_eq_id_on S P hP hirr hnt
-  · push_neg at hirr
+  · push Not at hirr
     obtain ⟨Q, hQP, hQs, hQ0, hQne⟩ := hirr
     have hQo : Stable S (B.orthogonal Q) := stable_orthogonal S B hinv hQs
     set R := P ⊓ B.orthogonal Q with hR
@@ -1550,7 +1550,7 @@ theorem hom_padicInt_trivial : ∀ (l : ℕ) [Fact l.Prime] (c : Coef l) (Γ : T
   have hρZ : ‖((l : ℕ) : ℤ_[l])‖ = ρ := by rw [PadicInt.norm_p, hρeq]
   by_contra hne
   obtain ⟨g, hg⟩ : ∃ g, lam g ≠ 1 := by
-    by_contra h; push_neg at h; exact hne (MonoidHom.ext fun x => by simpa using h x)
+    by_contra h; push Not at h; exact hne (MonoidHom.ext fun x => by simpa using h x)
   obtain ⟨k, hk0, hkdet, hksm⟩ := noab_congr_pow l c Γ r hr hint hdet g
   set h0 := g ^ k with hh0
   set v0 : ℤ_[l] := Multiplicative.toAdd (lam h0) with hv0def

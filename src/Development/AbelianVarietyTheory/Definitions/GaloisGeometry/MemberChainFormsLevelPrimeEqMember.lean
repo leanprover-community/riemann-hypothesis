@@ -353,13 +353,6 @@ variable {X0}
 
 end Step
 
-section Rec
-
-variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : G.Inst D L} {Gl : G.LatInst D} {K : G.Consts} {Dx : DivX D} {cX : ExtraC}
-  {ex : Extra D L hT Gi Gl K Dx cX}
-
-end Rec
-
 end GlobalTheory.Port
 
 end
@@ -403,14 +396,6 @@ def labOf {I : CmpJIn Tw u μ w h Lv} (hI : LabHyp I) (fl_t : Fl.t = D.R.t) (fl_
   dgam := dgam
 
 end One
-
-section Built
-
-variable {D : D7} {X0 : Formalism.L2.Herm.Herm0 D} {Tw : TwForms D} {u : D.what₂.Word} {μ : D.what₂.Tup} {w : D.what₂.places.Pl}
-  {h : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w)} {Fl : Fills (D.gat u w h)} {Lv : Levels Fl}
-
-
-end Built
 
 section Rec
 

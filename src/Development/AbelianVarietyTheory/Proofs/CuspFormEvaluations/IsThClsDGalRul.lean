@@ -159,7 +159,7 @@ theorem isHarmonic_iff_cmType {n : ℕ} (P : MvPolynomial (LtN Dw n) c.F) :
           (MvPolynomial.pderiv (⟨ComplexEmbedding.conjugate τ, i', b⟩ : LtN Dw n) P) = 0 := by
     simp only [harmK, Submodule.mem_iInf, LinearMap.mem_ker, lap,
       LinearMap.sum_apply, Matrix.one_apply, ite_smul, one_smul, zero_smul,
-      Finset.sum_ite_eq, Finset.mem_univ, if_true]
+      Finset.sum_ite_eq, Finset.mem_univ, ite_true]
     rfl
   rw [e]
   refine ⟨fun h τ _ => h τ, fun h τ => ?_⟩
@@ -261,13 +261,6 @@ theorem thExprUniqSt_iff_top : Formalism.MainNotions.ModuliIntegralCharts.H1.ThE
       (Xo : Moduli Dw l) (c : Coeff l), UniqueOn Xo c fun _ P => IsTopHarmonic c P := by
   rw [thExprUniqSt_iff_span]
   exact forall₅_congr fun E _ _ _ H => forall₄_congr fun Dw l Xo c => uniqueOn_span_iff Xo c _
-
-section Reframe
-
-
-
-
-end Reframe
 
 end GlobalTheory.NabUniqCompare
 end -- clump:auto

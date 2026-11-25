@@ -133,12 +133,6 @@ theorem exists_den_span (hT : CoordTie o ξ x) {c : κ} {p : Cpt ξ} (hp : InCha
 
 end Chart
 
-section Bundle
-
-variable {κ : Type} {x : κ → Ω} {E : Type} [AddCommGroup E] [Module Ω E] {r : ℕ}
-
-end Bundle
-
 end GlobalTheory.CompanionTheory.Ar.TieVB
 
 namespace GlobalTheory.CompanionTheory.Ar

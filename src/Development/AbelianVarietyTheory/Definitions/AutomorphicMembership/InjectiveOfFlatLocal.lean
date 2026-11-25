@@ -110,8 +110,6 @@ structure BDat {X : Scheme.{0}} (t₀ : SAB H X) (x : X) : Type 1 where
 
 attribute [instance] BDat.ring BDat.dom BDat.loc BDat.ch0 BDat.noeth BDat.normal BDat.complete BDat.alg
 
-def BDat.Exact {X : Scheme.{0}} {t₀ : SAB H X} {x : X} (A : BDat t₀ x) : Prop := Function.Bijective (algebraMap (Cpl X x) A.R)
-
 theorem split_pull {S : Scheme.{0}} {t₀ : SAB H S} {k : Type} [Field k] (q : Sp k ⟶ S) {S' : SplitExt (Sp k)}
     (hS : S'.IsGt ((Over.pullback q).obj t₀.G)) {R : Type} [CommRing R] [IsLocalRing R] (j : k →+* ResidueField R)
     {ι : Sp R ⟶ S} (hq : spMap j ≫ q = spMap (residue R) ≫ ι) {t : SAB H (Sp R)} (m : SABMap t t₀ ι) :
@@ -156,9 +154,5 @@ theorem generic_image {X : Scheme.{0}} (x : X) {R : Type} [CommRing R] [IsDomain
   rw [hφ (this.trans (map_zero φ).symm)]
   exact q.asIdeal.zero_mem
 
-
-open Classical in
-def pick {X : Scheme.{0}} {t₀ : SAB H X} {x : X} (h : Nonempty (BDat t₀ x)) : BDat t₀ x :=
-  if h' : ∃ A : BDat t₀ x, A.Exact then h'.choose else h.some
 
 end GlobalTheory.LocM.Bdy

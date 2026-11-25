@@ -83,7 +83,7 @@ theorem ind_sb {K : Type} [Field K] [NumberField K] {κ ι : Type} [Fintype κ] 
   refine ⟨fun x hx => ?_, fun x y hy => ?_⟩
   · rw [Nat.cast_one, one_smul]
     by_contra h
-    exact hx (if_neg h)
+    exact hx (ite_eq_right h)
   · rw [Nat.cast_one, one_smul]
     exact if_congr (intM_add_iff_of_intM_right hy) rfl rfl
 
@@ -98,7 +98,7 @@ theorem ind_ne_zero {K : Type} [Field K] [NumberField K] {κ ι : Type} [Fintype
     (fun x : Matrix κ ι K => if IntM x then (1:ℂ) else 0) ≠ 0 := by
   intro h
   have h0 := congrFun h 0
-  rw [if_pos (show IntM (0 : Matrix κ ι K) from fun k i => by simpa using isIntegral_zero)] at h0
+  rw [ite_eq_left (show IntM (0 : Matrix κ ι K) from fun k i => by simpa using isIntegral_zero)] at h0
   exact one_ne_zero h0
 
 end GlobalTheory.SW
@@ -166,7 +166,7 @@ omit [DecidableEq ι] [Fintype κ] [Fintype ι] in
 theorem hasLevel_cosetInd_zero (R : ℕ) : HasLevel R (cosetInd (κ := κ) (ι := ι) R 0) := by
   refine ⟨fun x hx => ?_, fun x y hy => ?_⟩
   · have h : (x : Matrix κ ι ℚ ⧸ perSub ℚ κ ι R) = 0 := by
-      by_contra h; exact hx (if_neg h)
+      by_contra h; exact hx (ite_eq_right h)
     obtain ⟨y, hy, rfl⟩ := IpPos.exists_of_mem_perSub ((QuotientAddGroup.eq_zero_iff _).1 h)
     exact IpPos.intM_natCast_smul _ (IpPos.intM_natCast_smul _ hy)
   · have h : (((R : ℚ) • y : Matrix κ ι ℚ) : Matrix κ ι ℚ ⧸ perSub ℚ κ ι R) = 0 :=

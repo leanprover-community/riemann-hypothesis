@@ -983,7 +983,7 @@ theorem sum_typeChar_radical {p : ℕ} [Fact p.Prime] {r : ℕ} (s : GlobalTheor
       rw [h1]
       unfold ext0
       by_cases hz : y⁻¹ * x * y ∈ blockTri (κ := ZMod p) (b₀ ∘ w)
-      · rw [dite_eq_left hz, if_pos ((hm _).2 hz), hch]
+      · rw [dite_eq_left hz, ite_eq_left ((hm _).2 hz), hch]
         refine Finset.prod_congr rfl fun c _ => ?_
         unfold cuspOn
         congr 1
@@ -992,7 +992,7 @@ theorem sum_typeChar_radical {p : ℕ} [Fact p.Prime] {r : ℕ} (s : GlobalTheor
         simp only [e, Equiv.trans_apply, cycEquiv_apply]
         rw [← conj_permGL_apply w, Equiv.apply_symm_apply, Equiv.apply_symm_apply]
         rfl
-      · rw [dite_eq_right hz, if_neg (mt (hm _).1 hz)]
+      · rw [dite_eq_right hz, ite_eq_right (mt (hm _).1 hz)]
   have hnf : GlobalTheory.IndefiniteRowSideFullHecke.RadicalNoFixedVectors.NoFixed (parInd (b₀ ∘ w) σ) (GlobalTheory.IndefiniteRowSideFullHecke.RadicalNoFixedVectors.radical (ZMod p) r a) := by
     by_contra hfix
     obtain ⟨J, hJ, hJa⟩ := GlobalTheory.GoodNoFixed.fixedVectorBlocks (ZMod p) r (b₀ ∘ w) _ σ hσ _ (parInd (b₀ ∘ w) σ)

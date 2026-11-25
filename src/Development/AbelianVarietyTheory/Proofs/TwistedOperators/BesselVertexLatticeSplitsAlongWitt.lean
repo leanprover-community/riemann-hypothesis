@@ -133,9 +133,9 @@ theorem antiDiagonalEpsilonGram_mulVec_of_rev_ne (ε : D.host.E) (u : Fin c → 
     (antiDiagonalSignGramMatrix c ε *ᵥ u) j = u j.rev := by
   simp only [mulVec, dotProduct, antiDiagonalSignGramMatrix]
   rw [Finset.sum_eq_single j.rev]
-  · rw [if_pos (by simp only [Fin.val_rev]; omega), if_neg (Ne.symm hj), one_mul]
+  · rw [ite_eq_left (by simp only [Fin.val_rev]; omega), ite_eq_right (Ne.symm hj), one_mul]
   · intro b _ hb
-    rw [if_neg, zero_mul]
+    rw [ite_eq_right, zero_mul]
     intro h
     apply hb
     ext

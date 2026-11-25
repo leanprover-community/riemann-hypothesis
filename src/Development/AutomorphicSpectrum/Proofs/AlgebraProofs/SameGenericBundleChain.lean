@@ -382,18 +382,18 @@ private theorem combo_lemma_5 {Ω : Type} [Field Ω] {E : Type} [AddCommGroup E]
     rw [h]
     apply Finset.sum_eq_zero
     intro b _
-    rw [if_neg]
+    rw [ite_eq_right]
     intro heq
     rw [← heq, Fin.lt_iff_val_lt_val] at hj
     simp only [Fin.coe_castLE] at hj
     have := b.2
     omega
   · rw [h, Finset.sum_eq_single (Fin.last _)]
-    · rw [if_pos]
+    · rw [ite_eq_left]
       ext
       simp
     · intro b _ hb
-      rw [if_neg]
+      rw [ite_eq_right]
       intro heq
       apply hb
       ext

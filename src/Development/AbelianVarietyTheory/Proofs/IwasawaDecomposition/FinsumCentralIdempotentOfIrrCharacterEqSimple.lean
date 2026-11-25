@@ -57,7 +57,7 @@ theorem zOf_coeff {G : Type} [Group G] [Fintype G] (χ : G → ℂ) (y : G) :
   classical
   unfold GlobalTheory.GLq.zOf
   rw [MonoidAlgebra.coeff_sum, Finsupp.finsetSum_apply]
-  simp only [MonoidAlgebra.coeff_single, Finsupp.single_apply, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+  simp only [MonoidAlgebra.coeff_single, Finsupp.single_apply, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
 
 theorem character_eq_zero_of_finrank {G : Type} [Group G] (τ : FDRep ℂ G)
     (h : Module.finrank ℂ τ.V = 0) (x : G) : τ.character x = 0 := by

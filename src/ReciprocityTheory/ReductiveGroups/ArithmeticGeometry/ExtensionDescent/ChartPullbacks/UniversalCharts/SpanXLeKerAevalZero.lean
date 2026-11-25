@@ -94,7 +94,7 @@ theorem sub_const_mem_span_X {κ : Type} (p : MvPolynomial κ R) :
     ext i
     exact hcon i (Set.mem_univ i)
   subst h0
-  rw [MvPolynomial.mem_support_iff, MvPolynomial.coeff_sub, MvPolynomial.coeff_C, if_pos rfl] at hm
+  rw [MvPolynomial.mem_support_iff, MvPolynomial.coeff_sub, MvPolynomial.coeff_C, ite_eq_left rfl] at hm
   apply hm
   rw [sub_eq_zero, MvPolynomial.aeval_zero', ← MvPolynomial.constantCoeff_eq]
   rfl

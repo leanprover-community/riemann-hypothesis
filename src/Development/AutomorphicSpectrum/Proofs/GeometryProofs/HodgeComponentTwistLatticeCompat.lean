@@ -161,9 +161,9 @@ theorem patch_coe_eq (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Hos
   have hIF : ∀ p, InFibre ξ' p q' = InFibre ξ p q := fun p => by simp only [InFibre, unitAt, hR]
   simp only [Lat.patch]
   by_cases hF : ∃ p ∈ S, InFibre ξ p q
-  · rw [if_pos (by simpa only [hIF] using hF), if_pos hF]
+  · rw [ite_eq_left (by simpa only [hIF] using hF), ite_eq_left hF]
     simp only [Submodule.coe_iInf, hH, hIF]
-  · rw [if_neg (by simpa only [hIF] using hF), if_neg hF]
+  · rw [ite_eq_right (by simpa only [hIF] using hF), ite_eq_right hF]
     exact hE
 
 theorem comap_span_equiv {Ω : Type} [Field Ω] {F F' : Type} [AddCommGroup F] [Module Ω F] [AddCommGroup F']

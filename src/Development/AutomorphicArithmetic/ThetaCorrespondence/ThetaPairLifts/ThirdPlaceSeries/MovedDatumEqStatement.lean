@@ -1014,7 +1014,7 @@ theorem moved_datum_eq_prod_alt : ∀ (D : D7) (L : SizeData₂ D) (hT : GatTies
   choose eb heb mT using fun i => hGR.frame i (j + 1) (a i) (by have := ha i; omega)
   have hC := fun i => _root_.GlobalTheory.MovedDat.phi_down_eq_alt D L hT Gi Gl Kc Yd cX ex W f v (G i) (π' i) (hπ i) j (a i) (ha i) (ea i) (eb i) (mS i) (mT i) x
   by_cases hx : IsHalf (∑ i, (G i).q.e) x
-  · rw [if_pos hx]
+  · rw [ite_eq_left hx]
     have hx' := (isHalf_actO_iff _ _ (f.g.b j)⁻¹ (f.g.b (j + 1))⁻¹ _ x).2 hx
     have hQ : ∀ y : ∀ PP : Formalism.L2.DIV.Pl D.host.E, Matrix (Fin (Yc D (j + 1)).rank) (Fin (Yc D j).rank) (Formalism.L2.DIV.kP PP),
         omegaQ (∅ : Finset (Formalism.L2.DIV.Pl D.host.E)) (datY _ D.R.r D.R.t j (r_le_Y j) (_root_.GlobalTheory.Fam.pk_z W).Pg ∅ (_root_.GlobalTheory.Fam.complexLevelStructure W) (_root_.GlobalTheory.Fam.pk_z W).chi
@@ -1022,14 +1022,14 @@ theorem moved_datum_eq_prod_alt : ∀ (D : D7) (L : SizeData₂ D) (hT : GatTies
       rw [omegaQ, dite_eq_left (by simp)]; simp
     by_cases hI : IsIntM (frMapO (Yc D j) (Yc D (j + 1)) ((_root_.GlobalTheory.Fam.pk_z W).βY j) ((_root_.GlobalTheory.Fam.pk_z W).βY (j + 1))
       (actO _ _ (f.g.b j)⁻¹ (f.g.b (j + 1))⁻¹ x))
-    · rw [if_pos ⟨hx, hI⟩, hQ, mul_one, _root_.GlobalTheory.MovedDat.locF_prod_level_alt D L hT Gi Gl Kc Yd cX ex W u f v n G pl hGR j]
+    · rw [ite_eq_left ⟨hx, hI⟩, hQ, mul_one, _root_.GlobalTheory.MovedDat.locF_prod_level_alt D L hT Gi Gl Kc Yd cX ex W u f v n G pl hGR j]
       refine Finset.prod_congr rfl fun i _ => ?_
       rw [hC i, GlobalTheory.LocMod.StepVec.redM_eq_map (pl i).1 hI, _root_.GlobalTheory.MovedDat.locF_eq_iterPhi D f.c v (G i) (pl i).1 (π' i) (hπ i) (hred i) (_root_.GlobalTheory.Fam.pk_z W).chi j
         (fun c hc => _root_.GlobalTheory.Fam.chi_compat_pk_alt D L hT Gi Gl Kc Yd cX ex W hP (G i).k (G i).q (pl i).1 (pl i).2 (hGR.idem i).1 (π' i) (hπ i) (hred i)
           (c + 1) (by omega) (by omega) _ ((G i).S.tame _) (hGR.mu i (c + 1) (by omega) (by omega)))
         _ _ (r_le_Y j) (ea i) (eb i) (hea i) (heb i)]
       rfl
-    · rw [if_neg (fun h => hI h.2)]
+    · rw [ite_eq_right (fun h => hI h.2)]
       symm
       by_contra hne
       apply hI
@@ -1044,7 +1044,7 @@ theorem moved_datum_eq_prod_alt : ∀ (D : D7) (L : SizeData₂ D) (hT : GatTies
         rw [hC i] at h1
         have h2 := GlobalTheory.StepData.TypeDatum.intM_of_Phi_ne_zero _ _ h1 ((ixSucc _ _ j).symm ((eb i).symm r)) ((ea i).symm s)
         simpa using h2
-  · rw [if_neg (fun h => hx h.1), if_neg hx]
+  · rw [ite_eq_right (fun h => hx h.1), ite_eq_right hx]
 end GlobalTheory.MovedDat
 end
 end

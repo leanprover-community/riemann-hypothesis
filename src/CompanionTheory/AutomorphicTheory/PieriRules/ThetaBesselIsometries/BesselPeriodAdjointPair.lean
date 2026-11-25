@@ -72,8 +72,8 @@ theorem exists_box_generators (k r : ℕ) : ∃ (J : Type) (_ : Fintype J) (Z : 
         simp
       rw [← Finset.sum_subset (Finset.subset_univ {(a, b, true), (a, b, false)})]
       · rw [Finset.sum_pair hpair, hE, hE, hc, hc]
-        simp only [Matrix.of_apply, and_self, if_true, Complex.real_smul]
-        simp only [Bool.false_eq_true, if_false]
+        simp only [Matrix.of_apply, and_self, ite_true, Complex.real_smul]
+        simp only [Bool.false_eq_true, ite_false]
         linear_combination (-1 : ℂ) * Complex.re_add_im (Y a b)
       · rintro ⟨i, j, β⟩ _ hx
         rw [hE]
@@ -82,7 +82,7 @@ theorem exists_box_generators (k r : ℕ) : ∃ (J : Type) (_ : Fintype J) (Z : 
           rintro ⟨rfl, rfl⟩
           apply hx
           cases β <;> simp
-        rw [if_neg hne, smul_zero]
+        rw [ite_eq_right hne, smul_zero]
     have hPY : ((Submodule.linearProjOfIsCompl (lieSubspace k r) q hq Y : lieSubspace k r) : Mx k r) = Y :=
       congrArg Subtype.val (Submodule.linearProjOfIsCompl_apply_left hq ⟨Y, hYmem⟩)
     calc Y = ((Submodule.linearProjOfIsCompl (lieSubspace k r) q hq Y : lieSubspace k r) : Mx k r) := hPY.symm

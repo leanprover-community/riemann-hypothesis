@@ -316,11 +316,11 @@ private theorem herm_bvec_eq_zero_of_inWb {w : Fin (2 * r + k + 1) → ℂ} (hw 
   intro i _
   by_cases hi : i.val < r ∨ r + k < i.val
   · simp [hw i hi]
-  · push_neg at hi
+  · push Not at hi
     have h0 : Hpk k r i j = 0 := by
       unfold Hpk
-      rw [if_neg (by omega), if_neg (by omega),
-        if_neg (by rintro ⟨_, _, h⟩; have := congrArg Fin.val h; omega)]
+      rw [ite_eq_right (by omega), ite_eq_right (by omega),
+        ite_eq_right (by rintro ⟨_, _, h⟩; have := congrArg Fin.val h; omega)]
     simp [h0]
 
 theorem ad_unitB_lie {g : Mx k r} {m : ℕ} {Bs : Fin m → Fin (2 * r + k + 1) → ℂ}
@@ -873,7 +873,7 @@ theorem spec_abstract {Wp Wq : Type*} [NormedAddCommGroup Wp] [NormedSpace ℂ W
     refine Submodule.iSup_induction (S g) (motive := fun v => J g v = ∑ σ, dec σ g v)
       (htop g hg v) ?_ ?_ ?_
     · intro τ w hw
-      simp only [hkey _ g hg τ w hw, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+      simp only [hkey _ g hg τ w hw, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     · simp
     · intro x y hx hy
       simp only [map_add (f := _), hx, hy, Finset.sum_add_distrib]
@@ -896,8 +896,8 @@ theorem spec_abstract {Wp Wq : Type*} [NormedAddCommGroup Wp] [NormedSpace ℂ W
     · intro τ w hw
       by_cases hστ : σ = τ
       · subst hστ
-        exact ⟨w, hw, by rw [hkey σ g hg σ w hw, if_pos rfl]⟩
-      · exact ⟨0, zero_mem _, by rw [hkey σ g hg τ w hw, if_neg hστ, map_zero]⟩
+        exact ⟨w, hw, by rw [hkey σ g hg σ w hw, ite_eq_left rfl]⟩
+      · exact ⟨0, zero_mem _, by rw [hkey σ g hg τ w hw, ite_eq_right hστ, map_zero]⟩
     · exact ⟨0, zero_mem _, by rw [map_zero, map_zero]⟩
     · rintro x y ⟨w₁, hw₁, h₁⟩ ⟨w₂, hw₂, h₂⟩
       exact ⟨w₁ + w₂, add_mem hw₁ hw₂, by rw [map_add (f := _), map_add (f := _), h₁, h₂]⟩

@@ -491,12 +491,12 @@ theorem cqOf_empty_or_coset : ∀ {X : Fields} {Pr : Primes X} {R : Ranks} {sel 
       exact P.1.ne_bot)
     refine ⟨(frsF sel mu r.1.1 ⟨P.1, Finset.mem_union_right _ P.2⟩).symm y0, (qOf P.1 : X.E) ^ cst.M, hq, ?_⟩
     ext x
-    simp only [cqOf, cosetIn, Set.mem_setOf_eq, if_neg hP]
+    simp only [cqOf, cosetIn, Set.mem_setOf_eq, ite_eq_right hP]
     constructor
     · rintro ⟨y, hy, hx⟩
       rw [hY] at hy
       have h1 := (mem_locLat _ _ _ _).1 hy ⟨P.1, Finset.mem_union_right _ P.2⟩
-      simp only [if_neg hP, zpow_natCast] at h1
+      simp only [ite_eq_right hP, zpow_natCast] at h1
       have h2 := (GlobalTheory.ColPeriod.TopTwist.frsF_mem' sel mu r.1.1 ⟨P.1, Finset.mem_union_right _ P.2⟩ hP
         (((qOf P.1 : X.E) ^ cst.M)⁻¹ • ((frsF sel mu r.1.1 ⟨P.1, Finset.mem_union_right _ P.2⟩).symm y -
           (frsF sel mu r.1.1 ⟨P.1, Finset.mem_union_right _ P.2⟩).symm y0))).1 (by
@@ -609,7 +609,7 @@ theorem exists_approx (T : Finset (HeightOneSpectrum (𝓞 E))) (N : Submodule (
         rw [map_sub, map_one, _root_.sub_mul, one_mul, sub_smul]
       · rw [sub_zero, sub_zero]
     rw [Finset.sum_congr rfl (fun P _ => h1 P), Finset.sum_sub_distrib, hax P0]
-    simp only [Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    simp only [Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   rw [hsum, Finset.smul_sum]
   refine Submodule.sum_mem _ fun P _ => ?_
   rw [smul_smul]
@@ -636,7 +636,7 @@ open Classical in
 theorem frsF_mem (p : ChPt (R := R) sel mu u j) (P : rowSG Pr sel mu) (hP : P.1 ∉ Pr.vGs) (x : Sp X.E (R.N j)) :
     frsF sel mu p P x ∈ p.deco.1.at P.1 ↔ x ∈ stdAt X.E (R.N j) P.1 := by
   unfold frsF
-  rw [dif_neg hP]
+  rw [dite_eq_right hP]
   exact p.2 ⟨P.1, (Finset.mem_union.mp P.2).resolve_left hP⟩ x
 
 theorem frsF_symm_mem (p : ChPt (R := R) sel mu u j) (P : rowSG Pr sel mu) (hP : P.1 ∉ Pr.vGs) (v : Sp X.E (R.N j)) :
@@ -651,11 +651,11 @@ theorem cosetIn_eq {cst : LocCst X (rowSG Pr sel mu)} (q : PtAt R sel mu cst u j
     cosetIn q P = {z | ((qOf P.1 : X.E) ^ cst.M)⁻¹ • (z - (frsF sel mu q.1.1 P).symm y) ∈ stdAt X.E (R.N j) P.1} := by
   apply Set.ext
   intro z
-  simp only [cosetIn, if_neg hP, hY, Set.mem_setOf_eq]
+  simp only [cosetIn, ite_eq_right hP, hY, Set.mem_setOf_eq]
   constructor
   · rintro ⟨y0, hy0, hz⟩
     have h1 := (mem_locLat _ _ _ _).1 hy0 P
-    rw [if_neg hP, zpow_natCast] at h1
+    rw [ite_eq_right hP, zpow_natCast] at h1
     have h2 := (frsF_symm_mem q.1.1 P hP _).2 h1
     rw [map_smul, map_sub] at h2
     have e : ((qOf P.1 : X.E) ^ cst.M)⁻¹ • (z - (frsF sel mu q.1.1 P).symm y) =
@@ -678,16 +678,16 @@ theorem exists_ptAt_bar_cq_eq : ∀ {X : Fields} {Pr : Primes X} {R : Ranks} {se
   · obtain ⟨y, hy, hY⟩ := r.mem_ybSet h
     have hyG : ∀ P : rowSG Pr sel mu, P.1 ∈ Pr.vGs → ((qOf P.1 : ℕ) : X.E) • y ∈ r.1.1.deco.1.at P.1 := fun P hP => by
       have h1 := (mem_locLat _ _ _ _).1 hy P
-      rwa [if_pos hP, _root_.zpow_neg_one, inv_inv] at h1
+      rwa [ite_eq_left hP, _root_.zpow_neg_one, inv_inv] at h1
     have hyQ : ∀ P : rowSG Pr sel mu, P.1 ∉ Pr.vGs → ((qOf P.1 : X.E) ^ cst.M) • y ∈ r.1.1.deco.1.at P.1 := fun P hP => by
       have h1 := (mem_locLat _ _ _ _).1 hy P
-      rwa [if_neg hP, _root_.zpow_neg, inv_inv, zpow_natCast] at h1
+      rwa [ite_eq_right hP, _root_.zpow_neg, inv_inv, zpow_natCast] at h1
     choose xw hxN hxv using fun w : Pr.vGs => p.deco.2.be_surj w (r.1.1.deco.1.be w (((qOf w.1 : ℕ) : X.E) • y))
     let a : rowSG Pr sel mu → Sp X.E (R.N j) := fun P =>
       if hP : P.1 ∈ Pr.vGs then (((qOf P.1 : ℕ) : X.E))⁻¹ • xw ⟨P.1, hP⟩ else frsF sel mu p P ((frsF sel mu r.1.1 P).symm y)
     let c : rowSG Pr sel mu → X.E := fun P => ((qOf P.1 : X.E) ^ (if P.1 ∈ Pr.vGs then 0 else cst.M))⁻¹
-    have haG : ∀ (P : rowSG Pr sel mu) (hP : P.1 ∈ Pr.vGs), a P = (((qOf P.1 : ℕ) : X.E))⁻¹ • xw ⟨P.1, hP⟩ := fun P hP => dif_pos hP
-    have haQ : ∀ P : rowSG Pr sel mu, P.1 ∉ Pr.vGs → a P = frsF sel mu p P ((frsF sel mu r.1.1 P).symm y) := fun P hP => dif_neg hP
+    have haG : ∀ (P : rowSG Pr sel mu) (hP : P.1 ∈ Pr.vGs), a P = (((qOf P.1 : ℕ) : X.E))⁻¹ • xw ⟨P.1, hP⟩ := fun P hP => dite_eq_left hP
+    have haQ : ∀ P : rowSG Pr sel mu, P.1 ∉ Pr.vGs → a P = frsF sel mu p P ((frsF sel mu r.1.1 P).symm y) := fun P hP => dite_eq_right hP
     have hQa : ∀ P : rowSG Pr sel mu, P.1 ∉ Pr.vGs → ((qOf P.1 : X.E) ^ cst.M) • a P ∈ p.deco.1.at P.1 := fun P hP => by
       rw [haQ P hP, ← map_smul, frsF_mem p P hP, ← map_smul, frsF_symm_mem r.1.1 P hP]
       exact hyQ P hP
@@ -700,11 +700,11 @@ theorem exists_ptAt_bar_cq_eq : ∀ {X : Fields} {Pr : Primes X} {R : Ranks} {se
     obtain ⟨y', hy'⟩ := exists_approx (rowSG Pr sel mu) p.deco.1.N c a ha
     have hy'G : ∀ P : rowSG Pr sel mu, P.1 ∈ Pr.vGs → y' - a P ∈ p.deco.1.at P.1 := fun P hP => by
       have h1 := hy' P
-      simp only [c, if_pos hP, pow_zero, inv_one, one_smul] at h1
+      simp only [c, ite_eq_left hP, pow_zero, inv_one, one_smul] at h1
       exact h1
     have hy'Q : ∀ P : rowSG Pr sel mu, P.1 ∉ Pr.vGs → ((qOf P.1 : X.E) ^ cst.M)⁻¹ • (y' - a P) ∈ p.deco.1.at P.1 := fun P hP => by
       have h1 := hy' P
-      simp only [c, if_neg hP] at h1
+      simp only [c, ite_eq_right hP] at h1
       exact h1
     have eG : ∀ (P : rowSG Pr sel mu) (hP : P.1 ∈ Pr.vGs), ((qOf P.1 : ℕ) : X.E) • y' =
         xw ⟨P.1, hP⟩ + ((qOf P.1 : ℕ) : X.E) • (y' - a P) := fun P hP => by
@@ -715,11 +715,11 @@ theorem exists_ptAt_bar_cq_eq : ∀ {X : Fields} {Pr : Primes X} {R : Ranks} {se
     · rw [ysAt_ys_of_eq sel mu cst h]
       refine ⟨y', (mem_locLat _ _ _ _).2 fun P => ?_, rfl⟩
       by_cases hP : P.1 ∈ Pr.vGs
-      · rw [if_pos hP, _root_.zpow_neg_one, inv_inv]
+      · rw [ite_eq_left hP, _root_.zpow_neg_one, inv_inv]
         show _ ∈ p.deco.1.at P.1
         rw [eG P hP]
         exact add_mem (Formalism.L2.Col.le_locP _ _ (hxN _)) (GlobalTheory.TopStep.smul_mem_locP (GlobalTheory.TopStep.intAt_nat _) (hy'G P hP))
-      · rw [if_neg hP, _root_.zpow_neg, inv_inv, zpow_natCast]
+      · rw [ite_eq_right hP, _root_.zpow_neg, inv_inv, zpow_natCast]
         show _ ∈ p.deco.1.at P.1
         have e : ((qOf P.1 : X.E) ^ cst.M) • y' = ((qOf P.1 : X.E) ^ cst.M) • a P +
             ((qOf P.1 : X.E) ^ cst.M * (qOf P.1 : X.E) ^ cst.M) • (((qOf P.1 : X.E) ^ cst.M)⁻¹ • (y' - a P)) := by
@@ -739,9 +739,9 @@ theorem exists_ptAt_bar_cq_eq : ∀ {X : Fields} {Pr : Primes X} {R : Ranks} {se
           GlobalTheory.TopStep.be_smul_int p.deco.2 w (GlobalTheory.TopStep.intAt_nat _) (hy'G ⟨w.1, hw⟩ w.2), GlobalTheory.TopStep.reduction_absNorm_eq_zero, zero_smul,
           add_zero]
         exact hxv w
-      refine (MemChart.CosetLift.coset_be p.deco _ w hw _ (if_pos w.2) hmem).trans ?_
+      refine (MemChart.CosetLift.coset_be p.deco _ w hw _ (ite_eq_left w.2) hmem).trans ?_
       rw [key, MemChart.bar, hY]
-      exact (MemChart.CosetLift.coset_be r.1.1.deco _ w hw _ (if_pos w.2) (hyG ⟨w.1, hw⟩ w.2)).symm
+      exact (MemChart.CosetLift.coset_be r.1.1.deco _ w hw _ (ite_eq_left w.2) (hyG ⟨w.1, hw⟩ w.2)).symm
     · funext P
       have hP : (⟨P.1, Finset.mem_union_right _ P.2⟩ : rowSG Pr sel mu).1 ∉ Pr.vGs := hQ P.1 P.2
       unfold GlobalTheory.Mem.Col2.ChEx.cqOf
@@ -905,9 +905,9 @@ theorem frExact_of_isPtOf : ∀ {F E : Type} [Field F] [NumberField F] [Field E]
     rw [inv_one, Units.val_one]
     by_cases h : j = r
     · subst h
-      rw [Matrix.one_apply_eq, map_one, if_pos rfl]
+      rw [Matrix.one_apply_eq, map_one, ite_eq_left rfl]
       simpa using hasRes_coe P.1 1
-    · rw [Matrix.one_apply_ne (Ne.symm h), map_zero, if_neg h]
+    · rw [Matrix.one_apply_ne (Ne.symm h), map_zero, ite_eq_right h]
       simpa using hasRes_coe P.1 0
   obtain ⟨hU, hd⟩ := _root_.GlobalTheory.Mem.Col2.DiaPt.decoOf_dia_eq F E hc n ST SG Q g 1 p 1 h1 ⟨DecoF.base E n ∅ ∅ ∅, isPtOf_base hc, rfl⟩
     (fun w _ => map_one _) hres
@@ -1051,7 +1051,7 @@ theorem thetaOpen_levQ : ∀ {X : Fields} {Pr : Primes X} {R : Ranks} {Ch : Char
   unfold chiInv
   rw [hc.psi_int P' _ hint, inv_one, one_mul]
   unfold lamRow
-  rw [if_neg hPg]
+  rw [ite_eq_right hPg]
   have hlam {P : HeightOneSpectrum (𝓞 X.E)} (hq : ((qOf P : ℕ) : 𝓞 X.E) ∈ P.asIdeal) (hq0 : ((qOf P : ℕ) : X.E) ≠ 0) {j : ℕ}
       (ξ : (𝓞 X.E ⧸ P.asIdeal)ˣ →* X.Kˣ) (y : AutY X R j) (hy : QClose P (qOf P) y) :
       LocE.lamQB ξ (R.k + j) (R.N j) (y : Sp X.E (R.N j + cOf R j) →ₗ[X.E] Sp X.E (R.N j + cOf R j)) = 1 := by
@@ -1082,8 +1082,8 @@ theorem thetaOpen_levQ : ∀ {X : Fields} {Pr : Primes X} {R : Ranks} {Ch : Char
       refine ⟨h1, ?_⟩
       rw [h2, Matrix.one_apply, Matrix.one_apply]
       by_cases hst : s = t
-      · rw [if_pos (Fin.ext (by simp [hst])), if_pos hst, redP_one]
-      · rw [if_neg (fun h => hst (Fin.ext (by have := congrArg Fin.val h; simp at this; omega))), if_neg hst, redP_zero]
+      · rw [ite_eq_left (Fin.ext (by simp [hst])), ite_eq_left hst, redP_one]
+      · rw [ite_eq_right (fun h => hst (Fin.ext (by have := congrArg Fin.val h; simp at this; omega))), ite_eq_right hst, redP_zero]
     have hdet : redP P D.det = 1 := by
       rw [redP_det D fun s t => (hent s t).1]
       have : D.map (redP P) = 1 := Matrix.ext fun s t => (hent s t).2
@@ -1311,19 +1311,19 @@ theorem ptDet_cqOf : ∀ {X : Fields} {Pr : Primes X} {R : Ranks} {sel : HeightO
     apply coset_eq
     refine (mem_locLat _ _ _ _).2 fun P => ?_
     by_cases hG : P.1 ∈ Pr.vGs
-    · rw [if_pos hG, zpow_zero, inv_one, one_smul]
+    · rw [ite_eq_left hG, zpow_zero, inv_one, one_smul]
       have hm : r.1.1.deco.1.be ⟨P.1, hG⟩ (((Formalism.L2.Col.qOf P.1 : ℕ) : X.E) • y) ∈ bar r ⟨P.1, hG⟩ := ⟨y, hyin, rfl⟩
       rw [hb] at hm
       obtain ⟨z, hz, ez⟩ := hm
       rw [← hd] at ez
       rw [eY'] at hz
       have hz' := (mem_locLat _ _ _ _).1 (mem_coset.1 hz) P
-      rw [if_pos hG, zpow_zero, inv_one, one_smul] at hz'
+      rw [ite_eq_left hG, zpow_zero, inv_one, one_smul] at hz'
       have h1 := (mem_locLat _ _ _ _).1 hy P
       have h2 := (mem_locLat _ _ _ _).1 hy' P
-      rw [if_pos hG, _root_.zpow_neg_one, inv_inv] at h1 h2
+      rw [ite_eq_left hG, _root_.zpow_neg_one, inv_inv] at h1 h2
       exact sub_mem_of_be_eq r.1.1.deco.2 ⟨P.1, hG⟩ (hq _ hG) h1 h2 hz' ez
-    · rw [if_neg hG, zpow_natCast]
+    · rw [ite_eq_right hG, zpow_natCast]
       have hPQ : P.1 ∈ QE sel (mu : Chr X.F X.E X.K) := (Finset.mem_union.mp P.2).resolve_left hG
       have hfrP : frsF sel mu r.1.1 P = r.1.1.fr ⟨P.1, hPQ⟩ := by
         unfold frsF
@@ -1335,13 +1335,13 @@ theorem ptDet_cqOf : ∀ {X : Fields} {Pr : Primes X} {R : Ranks} {sel : HeightO
       rw [hc] at hc1
       obtain ⟨y0, hy0, hmem⟩ := hc1
       change ((qOf P.1 : X.E) ^ (if P.1 ∈ Pr.vGs then 0 else cst.M))⁻¹ • (_ - (frsF sel mu r'.1.1 P).symm y0) ∈ _ at hmem
-      rw [if_neg hG, ← hfr, hfrP] at hmem
+      rw [ite_eq_right hG, ← hfr, hfrP] at hmem
       have hA := (r.1.1.2 ⟨P.1, hPQ⟩ _).2 hmem
       change r.1.1.fr ⟨P.1, hPQ⟩ _ ∈ _ at hA
       rw [map_smul, map_sub, LinearEquiv.apply_symm_apply, LinearEquiv.apply_symm_apply] at hA
       rw [eY'] at hy0
       have hB := (mem_locLat _ _ _ _).1 (mem_coset.1 hy0) P
-      rw [if_neg hG, zpow_natCast] at hB
+      rw [ite_eq_right hG, zpow_natCast] at hB
       have := add_mem hA hB
       rwa [← smul_add, sub_add_sub_cancel] at this
   · have h1 := r.2

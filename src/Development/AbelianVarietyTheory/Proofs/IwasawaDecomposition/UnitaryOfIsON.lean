@@ -113,7 +113,7 @@ theorem nfAll_shift (lam lam' : ι → DomWeight n) (c : ℤ) (h : ∀ τ i, (la
   have e : ∀ τ, (lam' τ).natW = (lam τ).natW := fun τ => by
     funext i
     have hn : 0 < n := i.pos
-    simp only [DomWeight.natW, DomWeight.detShift, dif_pos hn, h]
+    simp only [DomWeight.natW, DomWeight.detShift, dite_eq_left hn, h]
     congr 1
     ring
   funext p q

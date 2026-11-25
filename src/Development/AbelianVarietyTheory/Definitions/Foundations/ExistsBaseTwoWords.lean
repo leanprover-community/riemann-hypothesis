@@ -14,19 +14,6 @@ open Formalism.BasicNotions NumberField IsDedekindDomain GlobalTheory.Mem
 
 namespace GlobalTheory.Mem.BaseField
 
-section ext
-
-variable {K K' : Type} [Field K] [Field K'] (f : K →+* K')
-
-end ext
-
-section host
-
-variable {R : Ranks} (H : Host R)
-
-
-end host
-
 theorem isAlgebraic_exp (N : ℕ) : IsAlgebraic ℚ (Complex.exp (2 * Real.pi * Complex.I / N)) := by
   rcases Nat.eq_zero_or_pos N with rfl | h
   · simpa using isAlgebraic_one

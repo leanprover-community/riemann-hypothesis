@@ -271,10 +271,10 @@ theorem windows_at {D : D7} (L : SizeData₂ D) (K : Consts) (hK : K.Nonneg) (hS
     (Finset.mem_filter.mp hs).2
   have haw : ∀ s (hs : s ∈ topsPos D p t0), wPos D p t0 (aL L) s = L.aT ⟨_, hmem s hs⟩ := by
     intro s hs
-    simp only [wPos, aL, dif_pos (hmem s hs)]
+    simp only [wPos, aL, dite_eq_left (hmem s hs)]
   have hbw : ∀ s (hs : s ∈ topsPos D p t0), wPos D p t0 (bL L) s = L.bT ⟨_, hmem s hs⟩ := by
     intro s hs
-    simp only [wPos, bL, dif_pos (hmem s hs)]
+    simp only [wPos, bL, dite_eq_left (hmem s hs)]
   refine ⟨fun s hs => ⟨?_, ?_⟩, fun s hs => ⟨?_, ?_, ?_⟩⟩
   · rw [haw s hs]
     obtain ⟨h1, h2⟩ := L.aT_win ⟨_, hmem s hs⟩

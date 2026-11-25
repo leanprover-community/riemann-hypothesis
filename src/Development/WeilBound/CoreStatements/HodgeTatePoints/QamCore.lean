@@ -593,7 +593,7 @@ theorem pow_frobenius_truncated {B : Type} [CommRing B] (δ : B) (p : ℕ) [Fact
         obtain ⟨k, hk⟩ := Nat.exists_eq_add_of_le hle
         rw [hk, pow_add, hδ, zero_mul]
       simp [hi0, hi1, mul_pow, ← pow_mul, hz]
-  simp only [hterm, Finset.sum_add_distrib, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+  simp only [hterm, Finset.sum_add_distrib, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
 
 theorem delta_pow_mul_truncated {B : Type} [CommRing B] (δ : B) (p : ℕ)
     (hδ : δ ^ (p + 1) = 0) (b : Fin (p + 1) → B) (hb0 : b 0 = 1) :
@@ -626,7 +626,7 @@ theorem coeff_comparison : ∀ (A B : Type) [CommRing A] [CommRing B] (π : A �
     · simp [hi]
   have hsum : ∑ i, π (c₁ i) * δ ^ (i : ℕ) = ∑ i,
       π (Function.update c₂ (Fin.last p) (c₂ (Fin.last p) + u ⟨1, h1⟩ ^ p) i) * δ ^ (i : ℕ) := by
-    simp only [hlast, Finset.sum_add_distrib, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    simp only [hlast, Finset.sum_add_distrib, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     rw [hmain, hfrob, add_mul, _root_.one_mul, _root_.mul_assoc, hdel]
   have := huniq _ _ hsum
   rw [this]

@@ -218,10 +218,10 @@ theorem wt_partSec (φ : (Φ.H d).Sec) (α β : Φ.E.X) (l : Φ.N₀.ι) :
   cf_mono (Φ.D.coord (Φ.ch l) (Φ.N₀.U l) (Φ.aff l) (Φ.le l)) β α _
 
 theorem isPart_partSec (φ : (Φ.H d).Sec) (α : Φ.E.X) : Φ.IsPart α φ (partSec Φ φ α) := by
-  refine ⟨?_, fun l => by rw [wt_partSec, if_pos rfl]⟩
+  refine ⟨?_, fun l => by rw [wt_partSec, ite_eq_left rfl]⟩
   rintro β ⟨l, hl⟩
   by_contra h
-  exact hl (by rw [wt_partSec, if_neg (fun e => h e.symm)])
+  exact hl (by rw [wt_partSec, ite_eq_right (fun e => h e.symm)])
 
 theorem supp_finite (φ : (Φ.H d).Sec) : (Φ.supp φ).Finite := by
   have := Φ.E.isAbelian.proper

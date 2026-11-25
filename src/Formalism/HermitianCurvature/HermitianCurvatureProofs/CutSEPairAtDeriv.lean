@@ -104,14 +104,14 @@ variable {k r : ℕ} {z z' : Fin (2 * r + k + 1) → ℂ} {Wp Wq : Type} [Normed
 theorem dT_apply (X : ActualOps k r z z' π π') (l : Fin r) (Φ : RadSp k r z z' π π') {x : Fin r → ℂ}
     (hx : x ∈ OmX r) (g : Mx k r) :
     (dT X l Φ : Fn k r (Wq →L[ℂ] Wp)) x g = Formalism.QuantumDeterminants.wirt l (fun x' => (Φ : Fn k r (Wq →L[ℂ] Wp)) x' g) x := by
-  simp only [dT, Module.End.mul_apply, ActualOps.op_apply, crd, opL, ciOp, pOp, if_pos hx]
+  simp only [dT, Module.End.mul_apply, ActualOps.op_apply, crd, opL, ciOp, pOp, ite_eq_left hx]
   rw [smul_smul, inv_mul_cancel₀ (hx l), one_smul]
 
 theorem dTb_apply (X : ActualOps k r z z' π π') (l : Fin r) (Φ : RadSp k r z z' π π') {x : Fin r → ℂ}
     (hx : x ∈ OmX r) (g : Mx k r) :
     (dTb X l Φ : Fn k r (Wq →L[ℂ] Wp)) x g = Formalism.QuantumDeterminants.wirtBar l (fun x' => (Φ : Fn k r (Wq →L[ℂ] Wp)) x' g) x := by
   have hs : star (x l) ≠ 0 := by simpa using hx l
-  simp only [dTb, Module.End.mul_apply, ActualOps.op_apply, crd, opL, cbiOp, pbOp, if_pos hx]
+  simp only [dTb, Module.End.mul_apply, ActualOps.op_apply, crd, opL, cbiOp, pbOp, ite_eq_left hx]
   rw [smul_smul, inv_mul_cancel₀ hs, one_smul]
 
 theorem slice_hasFDerivAt (X : ActualOps k r z z' π π') (l : Fin r) (Φ : RadSp k r z z' π π') (y : Fin r → ℂ)

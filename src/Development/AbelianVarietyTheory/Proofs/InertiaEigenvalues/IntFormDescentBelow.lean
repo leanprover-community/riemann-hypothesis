@@ -288,12 +288,12 @@ theorem span_powers_of_uniformizer_of_nilpotent :
       refine ⟨fun j => if j = k then y else c j, z, ?_⟩
       rw [Finset.sum_range_succ]
       beta_reduce
-      rw [if_pos rfl]
+      rw [ite_eq_left rfl]
       have hsum : ∑ j ∈ Finset.range k, φ (if j = k then y else c j) * π ^ j
           = ∑ j ∈ Finset.range k, φ (c j) * π ^ j := by
         apply Finset.sum_congr rfl
         intro j hj
-        rw [if_neg (Finset.mem_range.mp hj).ne]
+        rw [ite_eq_right (Finset.mem_range.mp hj).ne]
       rw [hsum, hx]
       have hw : w = φ y + z * π := by rw [hz]; ring
       rw [hw]; ring

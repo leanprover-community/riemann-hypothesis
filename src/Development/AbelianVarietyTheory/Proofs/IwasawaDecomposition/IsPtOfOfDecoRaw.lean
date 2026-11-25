@@ -80,12 +80,12 @@ theorem isPtOf_of_decoRaw [IsEmpty Q] {x : GL (Fin n) (AfE F E)} (hx : x ∈ UAd
     rw [← hN] at hv
     rw [← hd]
     simp only [decoRaw]
-    rw [if_pos (le_locP _ _ hv), e]
+    rw [ite_eq_left (le_locP _ _ hv), e]
     exact PtExist.hasRes_redA _ ((mem_globLat x v).1 hv i)
   · rw [← hN] at hv
     rw [← hd]
     simp only [decoRaw]
-    rw [if_pos (le_locP _ _ hv)]
+    rw [ite_eq_left (le_locP _ _ hv)]
     exact PtExist.hasRes_redA _ ((mem_globLat x v).1 hv i)
 
 theorem isPtOf_mul_inv [IsEmpty Q] {g : GL (Fin n) (AfE F E)} {p : DecoF E n ST SG Q} (h : IsPtOf hc g p) (z : J0 hc n ST) :
@@ -434,10 +434,10 @@ theorem lastDiag_commute {A : Type} [CommRing A] (φ : A →+* κ) (u : Aˣ) {M 
   by_cases hij : i = j
   · rw [hij, mul_comm]
   by_cases hi : i.1 + 1 = n
-  · rw [(h j i hi).2, if_neg (Ne.symm hij), mul_zero, zero_mul]
+  · rw [(h j i hi).2, ite_eq_right (Ne.symm hij), mul_zero, zero_mul]
   by_cases hj : j.1 + 1 = n
-  · rw [(h i j hj).1, if_neg hij, mul_zero, zero_mul]
-  · rw [if_neg hi, if_neg hj, mul_comm]
+  · rw [(h i j hj).1, ite_eq_right hij, mul_zero, zero_mul]
+  · rw [ite_eq_right hi, ite_eq_right hj, mul_comm]
 
 end Mat
 

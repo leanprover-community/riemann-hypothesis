@@ -214,10 +214,10 @@ theorem exists_map (F : FamilyUnif Xo σ ty) (hD : 1 ≤ D.p + D.q) (hσ : σ (b
     (pullback.lift _ _ (w _ (hP₀ i))) (pullback.lift_fst _ _ _) (pullback.lift_snd _ _ _)
     (pullback.lift_fst _ _ _) (pullback.lift_snd _ _ _)
   have h₁ := key P hP i' P' hP' hu'
-  rw [hconst, key _ (hP₀ i) (π i) (P₁ i) (hP₁ i) (hu₁ i), if_pos rfl] at h₁
+  rw [hconst, key _ (hP₀ i) (π i) (P₁ i) (hP₁ i) (hu₁ i), ite_eq_left rfl] at h₁
   obtain rfl : i' = π i := by
     by_contra hne
-    rw [if_neg hne] at h₁
+    rw [ite_eq_right hne] at h₁
     exact one_ne_zero h₁
   exact ⟨P', hP', hu'.symm⟩
 

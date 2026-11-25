@@ -47,19 +47,6 @@ theorem Rw_append (w w' : List (Ix n)) (f : Mat n → V) : Rw w' (Rw w f) = Rw (
 
 end Words
 
-section HWords
-
-variable {V : Type} [NormedAddCommGroup V] [InnerProductSpace ℂ V] [MeasurableSpace (G n)] {μ : Measure (G n)}
-
-end HWords
-
-section Skew
-
-variable {V : Type} [NormedAddCommGroup V] [InnerProductSpace ℂ V]
-variable [MeasurableSpace (G n)] [BorelSpace (G n)] {μ : Measure (G n)} [μ.IsHaarMeasure]
-
-end Skew
-
 section Bracket
 
 def cf (M : Mat n) (p : Ix n) : ℝ := if p.1 then (M p.2.1 p.2.2).re else (M p.2.1 p.2.2).im
@@ -69,9 +56,9 @@ theorem sum_cf (M : Mat n) : ∑ p : Ix n, cf M p • bs p = M := by
   conv_rhs => rw [Matrix.matrix_eq_sum_single M]
   refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => ?_
   ext i j
-  simp only [cf, bs, if_true, Bool.false_eq_true, if_false, Matrix.add_apply, Matrix.smul_apply, Matrix.single_apply]
+  simp only [cf, bs, ite_true, Bool.false_eq_true, ite_false, Matrix.add_apply, Matrix.smul_apply, Matrix.single_apply]
   by_cases h : a = i ∧ b = j
-  · simp only [h, and_self, if_true]
+  · simp only [h, and_self, ite_true]
     obtain ⟨rfl, rfl⟩ := h
     simp [Complex.real_smul, Complex.re_add_im]
   · simp [h]
@@ -88,29 +75,5 @@ theorem Rd_sum_cf (M : Mat n) (f : Mat n → V) (g : Mat n) :
   exact (Complex.coe_smul _ _).symm
 
 end Bracket
-
-section HBracket
-
-variable {V : Type} [NormedAddCommGroup V] [InnerProductSpace ℂ V] [MeasurableSpace (G n)] {μ : Measure (G n)}
-
-end HBracket
-
-section Sections
-
-variable {V : Type} [NormedAddCommGroup V] [NormedSpace ℂ V]
-
-end Sections
-
-section Powers
-
-variable [MeasurableSpace (G n)] [BorelSpace (G n)] {μ : Measure (G n)} [μ.IsHaarMeasure]
-
-end Powers
-
-section Main
-
-variable [MeasurableSpace (G n)] [BorelSpace (G n)] {μ : Measure (G n)} [μ.IsHaarMeasure]
-
-end Main
 
 end GlobalTheory.CompanionTheory.SobSecK

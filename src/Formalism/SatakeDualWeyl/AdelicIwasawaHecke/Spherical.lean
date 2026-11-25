@@ -98,7 +98,7 @@ private lemma exists_GLint_mul_clears_below_diag_from {n : ℕ} (M : Matrix (Fin
     · exact hM i j h hj
     · subst h
       exact hz j hj
-  push_neg at hz
+  push Not at hz
   obtain ⟨j1, hj1, hj1ne⟩ := hz
   obtain ⟨p, hpS, hpmax⟩ := Finset.exists_max_image (Finset.univ.filter (fun j => j ≤ i0))
     (fun j => Valued.v (M i0 j)) ⟨i0, by simp⟩
@@ -140,7 +140,7 @@ private lemma exists_GLint_mul_clears_below_diag_from {n : ℕ} (M : Matrix (Fin
         · subst hji
           rw [hdiag, Valuation.map_add_eq_of_lt_right _ hlt]
         · rw [hk1eq, mul_column_operation_apply]
-          simp only [hji, if_false, mul_zero, ite_self, add_zero]
+          simp only [hji, ite_false, mul_zero, ite_self, add_zero]
           exact hmax j hj
       · rw [hdiag]
         intro h0
@@ -162,7 +162,7 @@ private lemma exists_GLint_mul_clears_below_diag_from {n : ℕ} (M : Matrix (Fin
     simp
   · subst h
     have hji : j ≠ i0 := ne_of_lt hj
-    simp only [hji, ne_eq, not_false_eq_true, if_true, hj]
+    simp only [hji, ne_eq, not_false_eq_true, ite_true, hj]
     field_simp
     ring
 

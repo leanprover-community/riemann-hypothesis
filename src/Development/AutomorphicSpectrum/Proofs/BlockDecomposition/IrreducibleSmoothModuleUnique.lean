@@ -975,7 +975,7 @@ theorem single_mem {S : Subgroup (GL n (ι → ℂ))}
     · intro i j
       by_cases h : i = j
       · subst h
-        simp only [Matrix.diagonal_apply_eq, if_true]
+        simp only [Matrix.diagonal_apply_eq, ite_true]
         have h1 : HasDerivAt (fun t : ℝ => (t : ℂ) * Complex.log (D i)) (Complex.log (D i)) 0 := by
           simpa using (Complex.ofRealCLM.hasDerivAt (x := (0 : ℝ))).mul_const (Complex.log (D i))
         simpa using h1.cexp

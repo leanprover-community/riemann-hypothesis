@@ -70,12 +70,6 @@ open scoped ENNReal Classical
 
 namespace GlobalTheory.Mass.Glue
 
-section
-
-variable {K V : Type} [Field K] [StarRing K] [AddCommGroup V] [Module K V]
-
-end
-
 open NumberField Matrix in
 open scoped ENNReal Classical in
 variable {K V : Type} [Field K] [NumberField K] [StarRing K] [AddCommGroup V] [Module K V]

@@ -60,6 +60,6 @@ theorem radial_space_smoothness : RadSpSmooth := by
   have hall := hw.mul hin
   show ContDiffOn ℝ MA.sm (MA.ext _) Qs
   refine hall.congr fun x hx => ?_
-  exact dif_pos hx
+  exact dite_eq_left hx
 
 end Formalism.FourierDecayAlt.P.CutMP.Gauge.GC

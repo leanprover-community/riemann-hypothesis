@@ -52,12 +52,7 @@ theorem schr_tens_of_at : ∀ {F : Type} [Field F] [NumberField F] (ψ : AddChar
           _ = 0 := by rw [hzero, mul_zero]
   simp only [GlobalTheory.WeilM.schr, GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.tens]
   rw [hr', eq_atPlace_of_at hz, ← psiV_apply]
-  have hinv : GlobalTheory.AdelicU.evFin F v (⅟(2 : AF F)) = ⅟(2 : Fv F v) := by
-    refine (invOf_eq_right_inv ?_).symm
-    have h : GlobalTheory.AdelicU.evFin F v (2 * ⅟(2 : AF F)) = 1 := by rw [mul_invOf_self, map_one]
-    rwa [map_mul, map_ofNat] at h
-
-  simp only [dotProduct, map_add (f := _), map_mul, map_sum, hinv, Pi.add_apply]
+  simp only [dotProduct, map_add (f := _), map_mul, map_sum, evFin_invOf_two, Pi.add_apply]
   simp only [mul_comm (⅟(2 : Fv F v))]
   rw [show (fun i => GlobalTheory.AdelicU.evFin F v (x i) + GlobalTheory.AdelicU.evFin F v (w.1 i)) =
     (fun i => GlobalTheory.AdelicU.evFin F v (x i)) + (fun i => GlobalTheory.AdelicU.evFin F v (w.1 i)) from rfl]

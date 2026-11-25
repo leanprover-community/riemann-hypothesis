@@ -197,7 +197,7 @@ theorem AnPt.chart_tan (j0 : Fin g) (vt : Sp (DualNumber ℂ) ⟶ Xo.univ.t.G.le
   have hone : ∀ j, j ≠ j0 → u j = 1 := by
     intro j hj
     ext1
-    simp only [u, v, if_neg hj, Over.comp_left, epsHom, Over.homMk_left, Formalism.L2.Pj.homAt, AnPt.chart_jx_left]
+    simp only [u, v, ite_eq_right hj, Over.comp_left, epsHom, Over.homMk_left, Formalism.L2.Pj.homAt, AnPt.chart_jx_left]
     rw [← Category.assoc, spMap_epsMul_zero_jetTan, Category.assoc, jetPt_aug, one_left'']
     show spMap _ ≫ (Φ.e 0).left = (spMap (algebraMap ℂ (DualNumber ℂ)) ≫ y.x) ≫ _
     rw [Φ.chart_e_zero, one_left'', Category.assoc]
@@ -431,9 +431,9 @@ theorem sameSum_of_jetMap {n : ℕ} (m : ℕ) {K K' J : Type} [Fintype K] [Finty
     else spMap (algebraMap ℂ _) ≫ (Φ.e 0).left
   refine sameSum_of_factor φ ε φ' ε' F σ σ' (fun k => ?_) (fun k => ?_) hc
   · obtain ⟨hol, e⟩ := h k
-    simp only [F, dif_pos hol]; exact e
+    simp only [F, dite_eq_left hol]; exact e
   · obtain ⟨hol, e⟩ := h' k
-    simp only [F, dif_pos hol]; exact e
+    simp only [F, dite_eq_left hol]; exact e
 
 end General
 
@@ -1313,12 +1313,12 @@ theorem filter_col_toMultiset {T : Type} [Fintype T] {r : T → ℕ} {n : ℕ}
   rw [Multiset.count_filter]
   by_cases h : c = b
   · subst h
-    rw [if_pos rfl]
+    rw [ite_eq_left rfl]
     have := Multiset.count_map_eq_count' _ (Finsupp.toMultiset (Finsupp.equivFunOnFinite.symm
         fun ℓ : (Σ τ : T, Fin (r τ)) => m ⟨ℓ.1, ℓ.2, c⟩)) hinj ⟨τ, i⟩
     rw [this]
     simp [Finsupp.count_toMultiset]
-  · rw [if_neg h]
+  · rw [ite_eq_right h]
     symm
     rw [Multiset.count_eq_zero, Multiset.mem_map]
     rintro ⟨x, -, hx⟩

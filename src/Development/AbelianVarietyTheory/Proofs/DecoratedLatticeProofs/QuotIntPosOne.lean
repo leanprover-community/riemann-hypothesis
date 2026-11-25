@@ -70,7 +70,7 @@ theorem app_smul (l : SB X →ₗ[ℂ] V) (z : ℂ) (f : X → ℂ) : app l (z �
     rw [zero_smul, zero_smul, this]
   · by_cases hf : f ∈ SB X
     · have hzf : z • f ∈ SB X := (SB X).smul_mem z hf
-      simp only [app, hf, hzf, dif_pos]
+      simp only [app, hf, hzf, dite_eq_left]
       rw [← map_smul]
       rfl
     · have hzf : z • f ∉ SB X := fun h => hf (((SB X).smul_mem_iff hz).1 h)

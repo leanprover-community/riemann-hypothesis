@@ -204,7 +204,7 @@ theorem measure_thick_eq (m1 m2 : Measure X) (Λ : AddSubgroup X) (hΛ : IsOpen 
           simp only [Set.mem_iUnion, Set.mem_setOf_eq]
           exact ⟨s, hs, by simpa [sub_add_sub_cancel] using Λ.add_mem hz hss⟩
         rw [Set.union_eq_right.2 hsub, ih]
-      · push_neg at hex
+      · push Not at hex
         have hdisj : Disjoint {z : X | z - s0 ∈ Λ} (⋃ s ∈ t, {z | z - s ∈ Λ}) := by
           rw [Set.disjoint_left]
           intro z hz hz'

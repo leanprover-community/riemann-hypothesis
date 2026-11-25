@@ -126,10 +126,10 @@ theorem weights_below : ∀ (D : D7) (B : WeightFamilies.Prov D) (P : ModuliInte
     intro τ i hi
     have e := hLP τ i
     unfold gapZ at e
-    rw [dite_eq_right (by omega), if_neg (by omega)] at e
+    rw [dite_eq_right (by omega), ite_eq_right (by omega)] at e
     unfold Tp at e
     have hb : (0 : ℤ) < ((Tn + WeightFamilies.dimY D j + 2 : ℕ) : ℤ) := by positivity
-    rw [Int.fdiv_eq_ediv, if_pos (Or.inl hb.le), sub_zero] at e
+    rw [Int.fdiv_eq_ediv, ite_eq_left (Or.inl hb.le), sub_zero] at e
     have hk := kaLast τ i hi
     have hTT := Nat.mul_le_mul hT2 (le_refl Tn)
     constructor

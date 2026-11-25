@@ -77,26 +77,26 @@ def term (p : ℕ) : Cube.Term A p →ₛₗ[σ] Cube.Term B p where
   map_add' x y := by
     funext t
     by_cases h : Set.InjOn τ (t.1 : Set κ)
-    · simp only [dif_pos h, Pi.add_apply, map_add (f := _), smul_add]
-    · simp only [dif_neg h, Pi.add_apply, add_zero]
+    · simp only [dite_eq_left h, Pi.add_apply, map_add (f := _), smul_add]
+    · simp only [dite_eq_right h, Pi.add_apply, add_zero]
   map_smul' r x := by
     funext t
     by_cases h : Set.InjOn τ (t.1 : Set κ)
-    · simp only [dif_pos h, Pi.smul_apply, map_smulₛₗ, smul_comm (PD.sortSign τ t.1) (σ r)]
-    · simp only [dif_neg h, Pi.smul_apply, smul_zero]
+    · simp only [dite_eq_left h, Pi.smul_apply, map_smulₛₗ, smul_comm (PD.sortSign τ t.1) (σ r)]
+    · simp only [dite_eq_right h, Pi.smul_apply, smul_zero]
 
 theorem term_apply_of_injOn {p : ℕ} (x : Cube.Term A p) (t : {s : Finset κ // s.card = p})
     (h : Set.InjOn τ (t.1 : Set κ)) :
     ψ.term p x t = PD.sortSign τ t.1 • ψ.app t.1 (x ⟨t.1.image τ, card_image t h⟩) := by
   unfold term
   simp only [LinearMap.coe_mk, AddHom.coe_mk]
-  rw [dif_pos h]
+  rw [dite_eq_left h]
 
 theorem term_apply_of_not_injOn {p : ℕ} (x : Cube.Term A p) (t : {s : Finset κ // s.card = p})
     (h : ¬ Set.InjOn τ (t.1 : Set κ)) : ψ.term p x t = 0 := by
   unfold term
   simp only [LinearMap.coe_mk, AddHom.coe_mk]
-  rw [dif_neg h]
+  rw [dite_eq_right h]
 
 end Cube.PullHom
 

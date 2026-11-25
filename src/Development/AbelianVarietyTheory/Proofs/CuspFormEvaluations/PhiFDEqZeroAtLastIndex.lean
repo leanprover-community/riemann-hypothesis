@@ -136,8 +136,8 @@ theorem hermC_neg (X : FD.Data E r) (h0 : X.p0 = 0) (τ : X.Ψ) {v : Fin r → �
     exact lt_of_lt_of_le (Complex.normSq_pos.mpr ha)
       (Finset.single_le_sum (fun i _ => Complex.normSq_nonneg (w i)) (Finset.mem_univ a))
   · rw [← hPw, hermC_mulVec_mulVec, hG]
-    simp only [Matrix.diagonal_apply, FD.sgn, h0, Nat.not_lt_zero, if_false]
-    simp only [mul_ite, ite_mul, mul_zero, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+    simp only [Matrix.diagonal_apply, FD.sgn, h0, Nat.not_lt_zero, ite_false]
+    simp only [mul_ite, ite_mul, mul_zero, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
     push_cast
     rw [← Finset.sum_neg_distrib]
     refine Finset.sum_congr rfl fun a _ => ?_
@@ -357,7 +357,7 @@ theorem firstMinimumSq_ge_and_phi_eq_zero_definite :
   refine ⟨hla, fun q R0 hrd hq hb => ?_⟩
   have hth := th_sq_le (E := E) hrd hq hb
   unfold I2.phiFD
-  rw [if_neg]
+  rw [ite_eq_right]
   rw [not_lt]
   unfold FD.Data.la1 I2.th
   exact Real.sqrt_le_sqrt (hth.trans hla)

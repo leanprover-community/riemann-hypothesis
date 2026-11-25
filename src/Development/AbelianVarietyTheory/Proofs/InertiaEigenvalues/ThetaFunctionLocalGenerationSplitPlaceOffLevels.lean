@@ -297,7 +297,7 @@ theorem exists_reps {G : Type} [AddCommGroup G] (A : AddSubgroup G) (p : G → P
   classical
   let s : G ⧸ A → G := fun q => if hq : ∃ u, p u ∧ (u : G ⧸ A) = q then hq.choose else 0
   have hs : ∀ q, (∃ u, p u ∧ (u : G ⧸ A) = q) → p (s q) ∧ (s q : G ⧸ A) = q := fun q hq => by
-    simp only [s, dif_pos hq]
+    simp only [s, dite_eq_left hq]
     exact hq.choose_spec
   refine ⟨((R₀.image fun r : G => (QuotientAddGroup.mk r : G ⧸ A)).filter fun q => ∃ u, p u ∧ (u : G ⧸ A) = q).image s, fun u hu => ?_,
     fun u hu => ⟨s u, ⟨?_, ?_⟩, ?_⟩⟩

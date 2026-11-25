@@ -966,7 +966,7 @@ private theorem sat_eq_of_eig {E : Type} [Field E] [NumberField E] {n : ℕ} {w 
       obtain ⟨a, ha, b, hb, e⟩ : ∃ a ∈ GLint (Fin n) (Ov E w), ∃ b ∈ GLint (Fin n) (Ov E w),
           g = a * dGL n ϖ j * b := by
         by_contra hn
-        exact hg (if_neg hn)
+        exact hg (ite_eq_right hn)
       exact ⟨a, ha, b, hb, _, invT_dGL c ϖ j, e⟩)
   rw [hE' _ hp j hj, hY.2.2.2 _ hp j hj, map_smul, smul_eq_mul] at key
   exact mul_right_cancel₀ hne key

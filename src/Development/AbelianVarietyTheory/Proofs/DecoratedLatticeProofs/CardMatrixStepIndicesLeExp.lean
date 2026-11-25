@@ -138,10 +138,10 @@ theorem mem_JGsym_of_cong (hq : q ≠ 0) (k rS r t n c : ℕ) {κ : Sp E (n + c)
   rw [mem_sclLat]
   intro i
   by_cases hi : i.1 = fIdx k c n (symIdxInv k rS s)
-  · simp only [Pi.smul_apply, eN, hi, if_true, smul_eq_mul, mul_one]
+  · simp only [Pi.smul_apply, eN, hi, ite_true, smul_eq_mul, mul_one]
     rw [inv_mul_cancel₀ (zpow_ne_zero _ hq')]
     exact intAt_one P
-  · simp only [Pi.smul_apply, eN, hi, if_false, smul_eq_mul, mul_zero]
+  · simp only [Pi.smul_apply, eN, hi, ite_false, smul_eq_mul, mul_zero]
     exact intAt_zero P
 
 end
@@ -188,10 +188,10 @@ theorem card_index_le_sharp : ∃ C : ℝ, 0 ≤ C ∧ ∀ (CY : ℝ) (D : D7) (
         have s1 := hI.stabG _ b P hP
         have s2 := hI.stabG _ b' P hP
         unfold lamYat at s1 s2
-        rw [if_pos hP] at s1 s2
+        rw [ite_eq_left hP] at s1 s2
         refine ⟨1, Subgroup.one_mem _, (I.h (i + 1) b P)⁻¹ * I.h (i + 1) b' P, ?_, by group⟩
         unfold Jat
-        rw [if_pos hP, hsh, if_pos rfl]
+        rw [ite_eq_left hP, hsh, ite_eq_left rfl]
         exact mem_JGsym_of_cong _ _ (hq _) _ _ _ _ _ _ (Subgroup.mul_mem _ (Subgroup.inv_mem _ s1) s2)
           (cong_of_resMat_eq _ _ (hq _) (GlobalTheory.TypePrimeUnif.intAt_div_qOf X Pr hX.ok hPr P.1 hP) s1 s2 (congrFun hbb P))
       have h2 := Nat.card_le_card_of_injective φ hφ

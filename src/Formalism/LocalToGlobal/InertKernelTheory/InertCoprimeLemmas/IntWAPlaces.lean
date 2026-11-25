@@ -504,9 +504,9 @@ theorem weak_approximation_places : WAPlaces := by
     if h : ∃ P : PS, vOf P = v then LinearMap.toMatrix' (G h.choose : PI.UG.Sp E n →ₗ[E] PI.UG.Sp E n) else 1
   have hGm : ∀ v, Gm v ∈ Matrix.unitaryGroup (Fin n) E := fun v => by
     by_cases h : ∃ P : PS, vOf P = v
-    · simp only [Gm, dif_pos h]
+    · simp only [Gm, dite_eq_left h]
       exact wa_unitary _ (hGi _)
-    · simp only [Gm, dif_neg h]
+    · simp only [Gm, dite_eq_right h]
       exact one_mem _
   let gv : (v : HeightOneSpectrum (𝓞 (fixF E))) → GL (Fin n) (E ⊗[fixF E] v.adicCompletion (fixF E)) := fun v =>
     Units.map (RingHom.mapMatrix (PI.UnitaryApproxDefs.inclE (F := fixF E) (v.adicCompletion (fixF E)))).toMonoidHom
@@ -529,7 +529,7 @@ theorem weak_approximation_places : WAPlaces := by
   have hex : ∃ Q : PS, vOf Q = vOf P' := ⟨P', rfl⟩
   have hQv : vOf hex.choose = vOf P' := hex.choose_spec
   have hGmv : Gm (vOf P') = LinearMap.toMatrix' (G hex.choose : PI.UG.Sp E n →ₗ[E] PI.UG.Sp E n) := by
-    simp only [Gm, dif_pos hex]
+    simp only [Gm, dite_eq_left hex]
   have hcomap : hex.choose.1.comap (phi E) = P.comap (phi E) := congrArg HeightOneSpectrum.asIdeal hQv
   have hlocStd := loc_eq hex.choose.1 P hex.choose.2.1.isPrime hPm.isPrime hcomap (PI.UG.stdLat E n)
   have hlocL := loc_eq hex.choose.1 P hex.choose.2.1.isPrime hPm.isPrime hcomap L

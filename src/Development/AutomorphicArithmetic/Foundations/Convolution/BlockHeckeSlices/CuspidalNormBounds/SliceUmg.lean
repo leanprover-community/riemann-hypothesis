@@ -79,8 +79,8 @@ private theorem chart_avg (F : GA E a → ℂ) (g : GA E a) :
     chart (avg ν p w F) g = fun x => ∫ y, chart F (p y * g) x * w y ∂ν := by
   funext x
   by_cases h : IsUnit (Matrix.of x)
-  · simp only [chart, avg, dif_pos h, mul_assoc]
-  · simp only [chart, dif_neg h, zero_mul, integral_zero]
+  · simp only [chart, avg, dite_eq_left h, mul_assoc]
+  · simp only [chart, dite_eq_right h, zero_mul, integral_zero]
 
 private theorem Cls.hasFDerivAt (h : Cls ν p w Gd) {F : Sm E a} (hF : Gd F) (g : GA E a) {x : Lie E a}
     (hx : x ∈ invSet E a) : HasFDerivAt (chart (avg ν p w F.1) g)

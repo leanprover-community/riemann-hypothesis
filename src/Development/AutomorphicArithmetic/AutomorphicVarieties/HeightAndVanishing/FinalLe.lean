@@ -1239,9 +1239,9 @@ private theorem sum_split {ι : Type} (T : ℕ → Finset ι) (O : Finset ι) (v
           apply Finset.sum_le_sum
           intro i hi
           by_cases hO : i ∈ O
-          · rw [if_pos hO]
+          · rw [ite_eq_left hO]
             linarith
-          · rw [if_neg hO]
+          · rw [ite_eq_right hO]
             rcases h1 e he i hi with h | h
             · exact absurd h hO
             · linarith [mul_comm (v i e) L]

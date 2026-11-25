@@ -128,7 +128,7 @@ theorem step (d : Fin N → ℝ) (hd : ∀ i, d i * d i = 1) (A : Matrix (Fin N)
   · intro i m hi
     rw [elem_conj_apply]
     rcases hi.lt_or_eq with hik | rfl
-    · rw [hwlt i hik, hk i k hik, if_neg hik.ne, hk i m hik]
+    · rw [hwlt i hik, hk i k hik, ite_eq_right hik.ne, hk i m hik]
       simp
     · have hstar : star (w i) = (t : ℂ) - 1 := by
         rw [hwk]; simp
@@ -136,16 +136,16 @@ theorem step (d : Fin N → ℝ) (hd : ∀ i, d i * d i = 1) (A : Matrix (Fin N)
       rcases lt_trichotomy m i with hm | rfl | hm
       · have h1 : A i m = 0 := by
           have := hA.apply m i
-          rw [hk m i hm, if_neg hm.ne] at this
+          rw [hk m i hm, ite_eq_right hm.ne] at this
           exact star_eq_zero.1 this
-        rw [h1, hwlt m hm, if_neg hm.ne']
+        rw [h1, hwlt m hm, ite_eq_right hm.ne']
         simp
-      · rw [hwk, if_pos rfl, hAkk]
+      · rw [hwk, ite_eq_left rfl, hAkk]
         have : ((t * t * r : ℝ) : ℂ) = (d m : ℂ) := by rw [ht2]
         push_cast at this
         rw [← this]
         ring
-      · rw [hwgt m hm, if_neg hm.ne]
+      · rw [hwgt m hm, ite_eq_right hm.ne]
         have hrc : (r : ℂ) ≠ 0 := by exact_mod_cast hr0
         field_simp
         ring
@@ -243,10 +243,10 @@ theorem pivot_pos (j : ℕ) (h : Matrix (Fin N) (Fin N) ℂ) (hu : IsUnit h.det)
   let y : Fin N → ℂ := fun a => if ha : (a : ℕ) < N - j ∨ a = k then x ⟨a, ha⟩ else 0
   have hyx : ∀ s : {a : Fin N // (a : ℕ) < N - j ∨ a = k}, y s = x s := by
     intro s
-    simp only [y, dif_pos s.2]
+    simp only [y, dite_eq_left s.2]
   have hyS : ∀ a : Fin N, ¬ ((a : ℕ) < N - j ∨ a = k) → y a = 0 := by
     intro a ha
-    simp only [y, dif_neg ha]
+    simp only [y, dite_eq_right ha]
   have hy0 : y ≠ 0 := by
     intro h0
     apply hx0
@@ -289,7 +289,7 @@ theorem pivot_pos (j : ℕ) (h : Matrix (Fin N) (Fin N) ℂ) (hu : IsUnit h.det)
     by_cases ha : (a : ℕ) < N - j
     · have h1 : (gramOf (sigForm N j) h *ᵥ y) a = ((-1 : ℝ) : ℂ) * y a := by
         simp only [mulVec, dotProduct, hA a _ ha, ite_mul, zero_mul, Finset.sum_ite_eq,
-          Finset.mem_univ, if_true, hdneg a ha]
+          Finset.mem_univ, ite_true, hdneg a ha]
       rw [h1, Pi.star_apply, star_mul_real_re]
       have := Complex.normSq_nonneg (y a)
       linarith
@@ -300,7 +300,7 @@ theorem pivot_pos (j : ℕ) (h : Matrix (Fin N) (Fin N) ℂ) (hu : IsUnit h.det)
           refine Finset.sum_eq_single k (fun b _ hb => ?_) (by simp)
           by_cases hbn : (b : ℕ) < N - j
           · have h2 := hAH.apply k b
-            rw [hA b k hbn, if_neg hb] at h2
+            rw [hA b k hbn, ite_eq_right hb] at h2
             rw [← h2]
             simp
           · rw [hyS b (by tauto)]

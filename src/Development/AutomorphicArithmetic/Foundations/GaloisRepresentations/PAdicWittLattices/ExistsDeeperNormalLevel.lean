@@ -446,7 +446,7 @@ theorem card_ker_eq_det {S : Scheme.{0}} (A : Over S) [GrpObj A] (hA : IsAbelian
     rfl
   have hiso : IsIsogeny (A := B) (B := B) (-f) := by
     by_contra h
-    rw [deg, if_neg h] at hdeg
+    rw [deg, ite_eq_right h] at hdeg
     exact hφ (Int.natAbs_eq_zero.1 hdeg.symm)
   have hneg : ∀ (T : Over (Sp k)) (y : T ⟶ B.X), y ≫ Hom.hom (-f) = 1 ↔ y ≫ f.hom = 1 := fun T y => by
     rw [neg_hom, GrpObj.comp_inv, inv_eq_one]

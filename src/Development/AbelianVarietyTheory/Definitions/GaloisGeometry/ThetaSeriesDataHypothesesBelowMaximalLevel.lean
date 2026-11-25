@@ -157,7 +157,7 @@ theorem dGT_spec {D : D7} {c : LatCmp D} {Tw : TwForms D} {u : D.what₂.Word} {
     simp [dGT, Nat.padicValNat_def]
   · have hm : j ≤ D.R.m := by rw [← KA.fl_m]; exact hj
     obtain ⟨_, hdvd⟩ := KA.stab_dvd j hm a L hL
-    simp only [dGT, if_neg h0]
+    simp only [dGT, ite_eq_right h0]
     exact ((by simpa only [_root_.Nat.padicValNat_def] using @_root_.multiplicity_dvd_iff_le : ∀ {p : _root_.Nat} [hp : _root_.Fact (_root_.Nat.Prime p)] {a n : _root_.Nat} (ha : a ≠ 0), p ^ n ∣ a ↔ n ≤ _root_.padicValNat p a) (D.mem u).C.DGam_pos.ne').1 (dvd_trans (_root_.Dvd.intro_left _ (_root_.Nat.divMaxPow_mul_pow_padicValNat _ _)) hdvd)
 
 def StdAtW (D : D7) (Gl : G.LatInst D) (u : D.what₂.Word) (w : D.what₂.places.Pl)

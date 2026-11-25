@@ -101,24 +101,24 @@ theorem xiAt_eq_prod (i : ℕ) (hi : i + 1 ≤ B.R.m) (α : Ch₀ i) (γ : Ch₀
       Formalism.L2.Col.phiT B.fields.K (A.p0 i α).1.1.deco.1 (A.p0 (i + 1) γ).1.1.deco.1 x *
         ∏ P : BadPr I a, locXi A i α γ P x := by
   rcases lt_trichotomy (i + 2) B.R.m with h | h | h
-  · rw [xiAt, dif_pos h]
+  · rw [xiAt, dite_eq_left h]
     unfold Formalism.L2.Col.XiEntry
     congr 1
     refine Finset.prod_congr rfl fun P _ => ?_
-    rw [locXi, dif_pos h]
-  · rw [xiAt, dite_eq_right (by omega), dif_pos h]
+    rw [locXi, dite_eq_left h]
+  · rw [xiAt, dite_eq_right (by omega), dite_eq_left h]
     unfold Formalism.L2.Col.XiCpl1
     congr 1
     refine Finset.prod_congr rfl fun P _ => ?_
-    rw [locXi, dite_eq_right (by omega), dif_pos h]
+    rw [locXi, dite_eq_right (by omega), dite_eq_left h]
   · have h1 : i + 1 = B.R.m := by omega
     obtain ⟨n, rfl⟩ : ∃ n, i = n + 1 := ⟨i - 1, by have := B.R.two_le_m; omega⟩
-    rw [xiAt, dite_eq_right (by omega), dite_eq_right (by omega), dif_pos h1]
+    rw [xiAt, dite_eq_right (by omega), dite_eq_right (by omega), dite_eq_left h1]
     show xiOver _ _ _ _ n h1 _ _ _ x = _
     unfold xiOver
     congr 1
     refine Finset.prod_congr rfl fun P _ => ?_
-    rw [locXi, dite_eq_right (by omega), dite_eq_right (by omega), dif_pos h1]
+    rw [locXi, dite_eq_right (by omega), dite_eq_right (by omega), dite_eq_left h1]
     rfl
 
 theorem xi_eq_xiOff_mul (i : ℕ) (hi : i + 1 ≤ B.R.m) (α : Ch₀ i) (γ : Ch₀ (i + 1))
@@ -140,7 +140,7 @@ theorem entry_eq_sgn_mul (hI : I.Ok) : ∀ (c : Comm (I.rec7 l Z)) (v : VCom c) 
     (hR.rep (j + 1) d H hj' γ) e' e he' he
     (Formalism.L2.Col.inFr (Formalism.L2.Col.frsF I.sel (I.tup a) (A.p0 j α).1.1 P) (Formalism.L2.Col.frsF I.sel (I.tup a) (A.p0 (j + 1) γ).1.1 P) x)
   have hlt : j + 2 < B.R.m := by have := hAt.steps; omega
-  simp only [locXi, dif_pos hlt]
+  simp only [locXi, dite_eq_left hlt]
   exact h2
 
 end

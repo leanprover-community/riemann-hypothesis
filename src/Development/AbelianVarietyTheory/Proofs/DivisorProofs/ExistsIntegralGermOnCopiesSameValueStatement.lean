@@ -515,13 +515,13 @@ theorem retrSt_of : LimActSt → LimPtSt → InvSt → RetrSt := by
       split_ifs <;> simp
     rw [Finset.sum_comm, Fintype.sum_sigma, Finset.sum_eq_single (⟨f, β⟩ : Col cx)]
     · refine Finset.sum_congr rfl fun a _ => ?_
-      rw [← Finset.sum_smul, hc, if_pos rfl]
+      rw [← Finset.sum_smul, hc, ite_eq_left rfl]
     · rintro ⟨f', b⟩ - hne
       refine Finset.sum_eq_zero fun a _ => ?_
       rw [← Finset.sum_smul]
       by_cases hf : f' = f
       · subst hf
-        rw [hc, if_neg fun h => hne (by rw [show b = β from h]), zero_smul]
+        rw [hc, ite_eq_right fun h => hne (by rw [show b = β from h]), zero_smul]
       · simp [hz f' hf]
     · exact fun h => absurd (Finset.mem_univ _) h
   choose ρf h1 h2 h3 using key
@@ -560,7 +560,7 @@ theorem mfact_add_single [Fintype σ] [DecidableEq σ] (α : σ →₀ ℕ) (l :
   have hrest : ∏ x ∈ Finset.univ.erase l, (((α + Finsupp.single l 1 : σ →₀ ℕ) x).factorial : K) =
       ∏ x ∈ Finset.univ.erase l, ((α x).factorial : K) := by
     refine Finset.prod_congr rfl fun x hx => ?_
-    rw [Finsupp.add_apply, Finsupp.single_apply, if_neg (Ne.symm (Finset.ne_of_mem_erase hx)), add_zero]
+    rw [Finsupp.add_apply, Finsupp.single_apply, ite_eq_right (Ne.symm (Finset.ne_of_mem_erase hx)), add_zero]
   rw [hrest, Finsupp.add_apply, Finsupp.single_eq_same, Nat.factorial_succ, Nat.cast_mul]
   push_cast
   ring
@@ -740,10 +740,10 @@ theorem frame_exp_zero {C : Type} [CommRing C] [Algebra ℚ C] {σ : Type} :
   ext x
   by_cases hx : x = 0
   · subst hx
-    rw [MvPowerSeries.coeff_map, MvPowerSeries.coeff_C, if_pos rfl, MvPowerSeries.coeff_zero_eq_constantCoeff,
+    rw [MvPowerSeries.coeff_map, MvPowerSeries.coeff_C, ite_eq_left rfl, MvPowerSeries.coeff_zero_eq_constantCoeff,
       map_one]
     exact PowerSeries.constantCoeff_exp (A := C)
-  · rw [MvPowerSeries.coeff_map, MvPowerSeries.coeff_C, if_neg hx, MvPowerSeries.coeff_one, if_neg hx, map_zero]
+  · rw [MvPowerSeries.coeff_map, MvPowerSeries.coeff_C, ite_eq_right hx, MvPowerSeries.coeff_one, ite_eq_right hx, map_zero]
 
 theorem frameSt_of (hAct : ActSt) (hUnit : UnitSt) : FrameSt := by
   intro C _ _ v d R _ _ O _ _ B hB h hh w0 n
@@ -1317,7 +1317,7 @@ theorem exp_point_zero {C : Type} [Field C] {v : AddValuation C (WithTop ℝ)} {
   · subst hm
     simp [coeff_zero_eq_constantCoeff_apply, (isExp_expOf G).1 i]
   · obtain ⟨s, hsm⟩ : ∃ s, m s ≠ 0 := by
-      by_contra hc; push_neg at hc; exact hm (Finsupp.ext hc)
+      by_contra hc; push Not at hc; exact hm (Finsupp.ext hc)
     have : (m.prod fun s n => ((0 : Fin d → MvPowerSeries σ C) s) ^ n) = 0 := by
       rw [Finsupp.prod]
       apply Finset.prod_eq_zero (Finsupp.mem_support_iff.2 hsm)
@@ -1411,9 +1411,9 @@ theorem sum_colCoef_smul {k : Type} [Field k] {n : ℕ} (B : ∀ f : Lt1 Dw, Fin
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun j _ => ?_
   rw [Finset.sum_eq_single (⟨lam.1.1.1.1, Fin.castLE (rk_le _) lam.2, j⟩ : LtN Dw n)]
-  · rw [if_pos rfl]
+  · rw [ite_eq_left rfl]
   · intro b _ hb
-    rw [if_neg hb, zero_smul]
+    rw [ite_eq_right hb, zero_smul]
   · intro h; exact absurd (Finset.mem_univ _) h
 
 theorem polyP_eq_aeval {k : Type} [Field k] {n : ℕ} (B : ∀ f : Lt1 Dw, Fin (rk f) → Fin n → k) (cx : Lt1 Dw → ℕ) :

@@ -38,7 +38,7 @@ theorem latK_mulVec {M : Matrix (Fin n) (Fin n) L} (h1 : ∀ i j, Valued.v (M i 
         rw [Fin.lt_def]; omega
       exact (mul_le_of_le_one_right' (hx1 j)).trans_lt (h2 i j hji)
     · have := hx j
-      rw [if_neg hjk] at this
+      rw [ite_eq_right hjk] at this
       exact (mul_le_of_le_one_left' (h1 i j)).trans_lt this
 
 theorem mem_iwU_iff (hσv : ∀ x, Valued.v (σ x) = Valued.v x) (g : GU σ n) :
@@ -62,7 +62,7 @@ theorem mem_iwU_iff (hσv : ∀ x, Valued.v (σ x) = Valued.v x) (g : GU σ n) :
     have hm := Set.smul_mem_smul_set (a := Matrix.GeneralLinearGroup.toLin (g : GL (Fin n) L)) he
     rw [hs] at hm
     have hi := hm i
-    rw [if_neg (lt_irrefl _)] at hi
+    rw [ite_eq_right (lt_irrefl _)] at hi
     have e : ((Matrix.GeneralLinearGroup.toLin (g : GL (Fin n) L)) • (Pi.single j (1 : L) : Fin n → L)) i =
         ((g : GL (Fin n) L) : Matrix (Fin n) (Fin n) L) i j := by
       show (Matrix.mulVec ((g : GL (Fin n) L) : Matrix (Fin n) (Fin n) L) (Pi.single j (1 : L) : Fin n → L)) i = _

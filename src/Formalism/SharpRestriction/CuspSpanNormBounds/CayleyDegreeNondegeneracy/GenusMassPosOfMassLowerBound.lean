@@ -18,26 +18,6 @@ namespace Formalism.MainNotions.BridgeLemma₂
 open NumberField Module Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.Cnt
 open scoped ENNReal
 
-section Count
-
-end Count
-
-section Lat
-
-variable (D : D7)
-
-end Lat
-
-section Num
-
-end Num
-
-section Main
-
-variable (D : D7) (large₂ : SizeData₂ D) (u u' : D.what₂.Word)
-
-end Main
-
 section Inv
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K] {V : Type} [AddCommGroup V] [Module K V] [Module (𝓞 K) V]
@@ -60,12 +40,6 @@ theorem c3sub_dual_gmap (h : V →ₗ⋆[K] V →ₗ[K] K) (γ : V ≃ₗ[K] V) 
     simpa [hiso] using hm'
 
 end Inv
-
-section Mean
-
-variable (D : D7) (large₂ : SizeData₂ D) (u u' : D.what₂.Word)
-
-end Mean
 
 end Formalism.MainNotions.BridgeLemma₂
 

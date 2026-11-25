@@ -371,7 +371,7 @@ theorem face_E {p : ℕ} (i : Fin (p + 1)) (b : ℕ) (y : Ch (p + 1)) :
   have hl : ∀ {m : ℕ} (a : Fin (m + 1)), a.castSucc.succAbove (Fin.last m) = Fin.last (m + 1) := fun a => by
     have := a.2
     ext; simp [Fin.succAbove, Fin.lt_def]
-    rw [if_neg (by omega)]; simp
+    rw [ite_eq_right (by omega)]; simp
   induction x using Fin.lastCases with
   | last => simp [hl]
   | cast x =>
@@ -393,7 +393,7 @@ theorem face_EE {p : ℕ} (a b : ℕ) (m : Ch p) :
     have : (Fin.last (p + 1)).castSucc.succAbove x.castSucc = x.castSucc.castSucc := by
       have := x.2
       ext; simp [Fin.succAbove, Fin.lt_def]
-      rw [if_pos (by omega)]; simp
+      rw [ite_eq_left (by omega)]; simp
     simp [this]
 
 theorem len_E {n : ℕ} (a : ℕ) (m : Ch n) : len (E a m) = a := by
@@ -456,7 +456,7 @@ theorem d_eq {n : ℕ} (f : Ch n → Vv N) (s : Ch (n + 1)) :
       have hl : i.castSucc.succAbove (Fin.last n) = Fin.last (n + 1) := by
         have := i.2
         ext; simp [Fin.succAbove, Fin.lt_def]
-        rw [if_neg (by omega)]; simp
+        rw [ite_eq_right (by omega)]; simp
       have key : ∀ (x : Fin (n + 2)) (hx : x ≤ Fin.last (n + 1)), x = Fin.last (n + 1) → val (s.map (homOfLE hx)) = 0 := by
         intro x hx e
         subst e

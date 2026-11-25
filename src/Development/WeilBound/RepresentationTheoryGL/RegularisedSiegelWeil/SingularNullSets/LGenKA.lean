@@ -199,7 +199,7 @@ theorem fieldA {K : Type} [Field K] (s : K →+* K) (hs : ∀ x, s (s x) = x) (c
     have := congrFun hp j
     simp only [Matrix.vecMul, dotProduct, Pi.zero_apply] at this
     rw [Finset.sum_congr rfl fun i _ => by rw [hcol i j hj]] at this
-    simp only [mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true] at this
+    simp only [mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true] at this
     have hsj : s (D j) ≠ 0 := fun h0 => hj (by rw [← hs (D j), h0, map_zero])
     exact (mul_eq_zero.1 this).resolve_right (inv_ne_zero hsj)
   have hpD : p ᵥ* diagonal D = 0 := by

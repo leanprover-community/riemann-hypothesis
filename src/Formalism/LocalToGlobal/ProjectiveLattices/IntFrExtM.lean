@@ -41,34 +41,10 @@ end ValCrit
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E}
 
-section Open
-
-variable {D : Datum H} {l : Level H}
-
-end Open
-
 section Proofs
 
 variable {D : Datum H} {l : Level H}
 
 end Proofs
-
-section Place
-
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E}
-
-end Place
-
-section Level
-
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E}
-
-end Level
-
-section Definite
-
-open Formalism.BasicNotions Formalism.MainNotions
-
-end Definite
 
 end Formalism.L2.Pj

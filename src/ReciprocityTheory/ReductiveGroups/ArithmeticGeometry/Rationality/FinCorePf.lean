@@ -51,7 +51,7 @@ namespace ReciprocityTheory.MultiplicativeHeights
 theorem cauchy_inequality_on_torus : CauchyTorusStatement := by
   intro K _ _ _ K₀ hK₀ n c hc hτ χ
   by_contra hχ
-  push_neg at hχ
+  push Not at hχ
   have hev : ∀ᶠ ψ in Filter.cofinite, ‖c ψ‖ < 1 / 2 := hc.eventually (gt_mem_nhds (by norm_num))
   have hFfin : {ψ | ¬ ‖c ψ‖ < 1 / 2}.Finite := Filter.eventually_cofinite.1 hev
   set F := hFfin.toFinset with hFdef

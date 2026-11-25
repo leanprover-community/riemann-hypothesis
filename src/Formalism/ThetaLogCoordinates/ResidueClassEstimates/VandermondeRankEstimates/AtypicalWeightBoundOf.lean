@@ -105,9 +105,9 @@ lemma sum_lat (g : ℕ → ℝ) (q : ℕ → Bool) (B : ℕ → ℕ) : ∀ n,
       rw [lat_succ, Finset.sum_filter, Finset.sum_Icc_succ_top (by omega), ← Finset.sum_filter,
         ← sum_lat g q B n]
       by_cases h : q (n + 1) = true
-      · simp only [if_pos h, List.length_cons, Finset.sum_range_succ', List.getD_cons_succ,
+      · simp only [ite_eq_left h, List.length_cons, Finset.sum_range_succ', List.getD_cons_succ,
           List.getD_cons_zero]
-      · simp only [if_neg h, add_zero]
+      · simp only [ite_eq_right h, add_zero]
 
 lemma lat_split (q : ℕ → Bool) (B : ℕ → ℕ) (i : ℕ) : ∀ d, ∃ pre : List ℕ,
     lat q B (i + d) = pre ++ lat q B i ∧
@@ -190,7 +190,7 @@ lemma bracket (h31 : LogBinomialProperties) (h34 : LogBinomialDeficit) (k' K : �
     · exact le_refl 0
   have halK : ∀ l, K ≤ l → al l = 0 := by
     intro l hl
-    rw [hal, if_neg (by omega)]
+    rw [hal, ite_eq_right (by omega)]
   have halL : ∀ l, lst.length ≤ l → al l = 0 := by
     intro l hl
     rw [hal]
@@ -207,7 +207,7 @@ lemma bracket (h31 : LogBinomialProperties) (h34 : LogBinomialDeficit) (k' K : �
       apply Finset.sum_congr rfl
       intro m hm
       rw [Finset.mem_filter, Finset.mem_range] at hm
-      rw [hal, if_pos hm.1]
+      rw [hal, ite_eq_left hm.1]
     have e2 : ∑ m ∈ (range K).filter (fun m => u ≤ m), al m = ∑ m ∈ Ico u (K + lst.length), al m := by
       apply Finset.sum_subset
       · intro m hm
@@ -238,7 +238,7 @@ lemma bracket (h31 : LogBinomialProperties) (h34 : LogBinomialDeficit) (k' K : �
       apply Finset.sum_congr rfl
       intro m hm
       rw [Finset.mem_range] at hm
-      rw [hal, if_pos hm]
+      rw [hal, ite_eq_left hm]
     have c2 : ∑ m ∈ range K, fT k' (al m) = ∑ m ∈ range (K + lst.length), fT k' (al m) := by
       apply Finset.sum_subset
       · intro m hm
@@ -289,7 +289,7 @@ def revW (n : ℕ) (la : ℕ → ℤ) : ℕ → ℤ := fun m => -(la (n - 1 - m)
 lemma lat_pred (q : ℕ → Bool) (B : ℕ → ℕ) {i : ℕ} (hi : 1 ≤ i) (h : q i = false) :
     lat q B (i - 1) = lat q B i := by
   obtain ⟨j, rfl⟩ : ∃ j, i = j + 1 := ⟨i - 1, by omega⟩
-  rw [lat_succ, if_neg (by simp [h]), Nat.add_sub_cancel]
+  rw [lat_succ, ite_eq_right (by simp [h]), Nat.add_sub_cancel]
 
 lemma tailPos_split (n : ℕ) (la : ℕ → ℤ) {u : ℕ} (hu : u < n) :
     tailPos n la u = max (la u) 0 + tailPos n la (u + 1) := by
@@ -516,7 +516,7 @@ theorem pathWeightBound_of :
   have hm1 := min_le_left (La * D.k' / (16 * D.k)) ((D.k' : ℝ) / 12)
   have hm2 := min_le_right (La * D.k' / (16 * D.k)) ((D.k' : ℝ) / 12)
   rcases not_and_or.mp hnt with hc1 | hc23
-  · push_neg at hc1
+  · push Not at hc1
     obtain ⟨i, hi1, hiN, hvi, hgt⟩ := hc1
     have hir : D.r < i := by
       by_contra! h
@@ -565,7 +565,7 @@ theorem pathWeightBound_of :
     rw [hgx, hX] at td2
     linarith [hBv.1, hBc.1]
   rcases not_and_or.mp hc23 with hc2 | hc3
-  · push_neg at hc2
+  · push Not at hc2
     obtain ⟨i, hir, hiN, hvi, hgt⟩ := hc2
     have hX : D.XT p La b i = La * b i / (p * D.k) := rfl
     have hbpos := (hTDb i hir hiN).1
@@ -612,7 +612,7 @@ theorem pathWeightBound_of :
     have td2 := td.2
     rw [hgx, hX] at td2
     linarith [hBv.1, hBc.1]
-  · push_neg at hc3
+  · push Not at hc3
     obtain ⟨i, hir, hiN, hgt⟩ := hc3
     have hh : D.Bo i =
         (Formalism.InvariantFactorPaths.BranchingDimensions.TTyp.lat (fun l => D.vec l) D.B (min (i - 1) D.n0)).getD (D.r - 1 - (i - 1 - D.n0)) 0 := rfl

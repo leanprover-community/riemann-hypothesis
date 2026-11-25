@@ -1237,11 +1237,11 @@ theorem algType_of_even {I : Type} [Fintype I] {φ : I → E →+* ℂ} {c : I �
   refine Finset.prod_congr rfl fun i _ => ?_
   rw [Finset.prod_mul_distrib, Finset.prod_inv_distrib]
   have e1 : ∏ ψ : E →+* ℂ, u ψ ^ (if φ i = ψ then c i else 0) = u (φ i) ^ c i := by
-    rw [Finset.prod_eq_single (φ i) (fun ψ _ hψ => by rw [if_neg (Ne.symm hψ), zpow_zero]) (by simp)]
+    rw [Finset.prod_eq_single (φ i) (fun ψ _ hψ => by rw [ite_eq_right (Ne.symm hψ), zpow_zero]) (by simp)]
     simp
   have e2 : ∏ ψ : E →+* ℂ, u ψ ^ (if (starRingEnd ℂ).comp (φ i) = ψ then c i else 0) =
       u ((starRingEnd ℂ).comp (φ i)) ^ c i := by
-    rw [Finset.prod_eq_single ((starRingEnd ℂ).comp (φ i)) (fun ψ _ hψ => by rw [if_neg (Ne.symm hψ), zpow_zero]) (by simp)]
+    rw [Finset.prod_eq_single ((starRingEnd ℂ).comp (φ i)) (fun ψ _ hψ => by rw [ite_eq_right (Ne.symm hψ), zpow_zero]) (by simp)]
     simp
   rw [e1, e2]
 

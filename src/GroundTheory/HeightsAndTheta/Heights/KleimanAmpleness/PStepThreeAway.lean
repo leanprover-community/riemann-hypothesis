@@ -133,7 +133,7 @@ theorem idealMod_zeroIdeal_mul_le (D : SubSystem S x Ω) (σ : Ω) (I : Chart x)
   | mem a ha =>
     obtain ⟨f, s, e, hf, hs, hfe, hse, rfl⟩ := ha
     have h := homogeneousComponent_mul_mem D σ I hi hf e δ hδ
-    rw [homogeneousComponent_of_mem hfe, if_pos rfl] at h
+    rw [homogeneousComponent_of_mem hfe, ite_eq_left rfl] at h
     obtain ⟨t, ht⟩ := Submodule.mem_span_singleton.mp h
     have hs0 := eval_ne_zero_of_mem_monos I hs
     rw [Submodule.mem_span_singleton]

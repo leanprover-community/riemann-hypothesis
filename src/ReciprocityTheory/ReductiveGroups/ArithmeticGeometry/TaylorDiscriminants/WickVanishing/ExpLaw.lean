@@ -177,7 +177,7 @@ theorem dLin_comp1 {d : ℕ} (φ ψ : Pt k 1 d) (hψ : ∀ i, constantCoeff (ψ 
         · have he0 : e = 0 := by
             have : e.degree = 0 := by omega
             exact (Finsupp.degree_eq_zero_iff e).1 this
-          rw [he0, Finsupp.prod_zero_index, coeff_one, if_neg]
+          rw [he0, Finsupp.prod_zero_index, coeff_one, ite_eq_right]
           exact Finsupp.single_ne_zero.2 one_ne_zero
         · obtain ⟨p, rfl⟩ := Formalism.FG.SolveVAux.degree_eq_one e (by omega)
           exact absurd (Finset.mem_coe.2 (Finset.mem_image_of_mem _ (Finset.mem_univ p))) hne

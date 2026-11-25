@@ -88,7 +88,7 @@ theorem scalar (v : HeightOneSpectrum (𝓞 F)) (a : FiniteAdeleRing (𝓞 F) F)
   have htv : t ∉ v.asIdeal := by
     intro h
     have h1 := ht v (Finset.mem_insert_self _ _)
-    simp only [e, if_true, pow_one] at h1
+    simp only [e, ite_true, pow_one] at h1
     apply v.isPrime.ne_top
     rw [Ideal.eq_top_iff_one]
     have h2 : (1 : 𝓞 F) = t - (t - 1) := by ring
@@ -98,7 +98,7 @@ theorem scalar (v : HeightOneSpectrum (𝓞 F)) (a : FiniteAdeleRing (𝓞 F) F)
     intro w hw
     by_cases hws : w ∈ hfin.toFinset
     · have h1 := ht w (Finset.mem_insert_of_mem hws)
-      simp only [hw, if_false, sub_zero, e] at h1
+      simp only [hw, ite_false, sub_zero, e] at h1
       rw [w.intValuation_if_neg hc0]
       exact (w.intValuation_le_pow_iff_mem t _).2 h1
     · have h1 : c ∉ w.asIdeal := by

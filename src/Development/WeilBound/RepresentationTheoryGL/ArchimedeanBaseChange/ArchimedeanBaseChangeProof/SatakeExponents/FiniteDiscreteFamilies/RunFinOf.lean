@@ -54,7 +54,7 @@ theorem runFin_of (hR : RunT) (hF : FinFam) (hW : WeightEx) (hQ : PermSat) : Run
   have h : ∃ T, PreEquiv (D j) (DT T) := ⟨T, hjT⟩
   obtain ⟨e1, h1, -⟩ := hjT
   obtain ⟨e2, h2, -⟩ : PreEquiv (D j) (DT (T' j)) := by
-    simp only [T', dif_pos h]
+    simp only [T', dite_eq_left h]
     exact h.choose_spec
   refine ⟨j, fun w hw hu hs => ?_⟩
   obtain ⟨B, hB, hα⟩ := (hDT T).2.2.1 w hw hu hs

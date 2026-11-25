@@ -1211,7 +1211,7 @@ theorem gIdil_of' (hWTC : GlobalTheory.Published.WeilThetaConvergence) (hDecA : 
           (hB1 (y₀ * y) (fr⁻¹ * compAt θ τ xx)) hR r) 0
         simp only [Complex.ofReal_zero] at hofR
         rw [← hofR, exch dReal dBound hDC dL2 contDeriv schScale hSF hL hcx.hθ hfr hΨ hx₀ hc htc hG ha (y₀ * y) hκ hκL r]
-      · push_neg at hz
+      · push Not at hz
         have hΨ0 : Ψ = 0 := funext hz
         have h0 : tens θ τ fr (fP (cLoc l τ) 1) (A Ψ) = 0 := by
           rw [← hAact _ (hsch1 1)]

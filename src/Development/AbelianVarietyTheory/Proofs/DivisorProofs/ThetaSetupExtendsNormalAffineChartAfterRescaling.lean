@@ -591,8 +591,8 @@ theorem exists_real_rechart (hL : Laws) {o Ω : Type} [CommRing o] [Field Ω] [A
     have e₁ : (S.ζ ^ e) ^ ((S.r * S.N) ^ 2 - 1) * S.ζ ^ e = 1 := by
       rw [← pow_succ, hq, ← pow_mul, mul_comm e, pow_mul, S.prim.pow_eq_one, one_pow]
     have h := (act x r₃).smul (κ' ((S.ζ ^ e) ^ ((S.r * S.N) ^ 2 - 1)))
-    rw [map_smul, mat, Finset.sum_eq_single i (fun l _ hl => by rw [he, if_neg hl, map_zero, map_zero, zero_smul])
-      (fun h => (h (Finset.mem_univ _)).elim), he, if_pos rfl, smul_comm, smul_smul (τ'.appTop.hom _), ← map_mul,
+    rw [map_smul, mat, Finset.sum_eq_single i (fun l _ hl => by rw [he, ite_eq_right hl, map_zero, map_zero, zero_smul])
+      (fun h => (h (Finset.mem_univ _)).elim), he, ite_eq_left rfl, smul_comm, smul_smul (τ'.appTop.hom _), ← map_mul,
       ← map_mul, e₁, map_one, map_one, one_smul] at h
     exact ⟨_, h⟩
   choose s' hs' using ex

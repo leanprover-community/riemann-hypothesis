@@ -286,7 +286,7 @@ theorem approx_class (v : HeightOneSpectrum (𝓞 L⁺)) :
   classical
   refine ⟨fun y => if h : Valued.v y ≤ 1 then Ideal.Quotient.mk _ (adic_exists_approx v y h).choose else 0, ?_⟩
   intro y y' hy hy' hc
-  simp only [dif_pos hy, dif_pos hy'] at hc
+  simp only [dite_eq_left hy, dite_eq_left hy'] at hc
   have ha := (adic_exists_approx v y hy).choose_spec
   have ha' := (adic_exists_approx v y' hy').choose_spec
   set a := (adic_exists_approx v y hy).choose
@@ -319,7 +319,7 @@ theorem finite_image_tSet : ∀ (L : Type) [Field L] [NumberField L] [IsCMField 
   have key : ∀ x ∈ Formalism.AUTREP.tSet L n s ϖ k, ∀ x' ∈ Formalism.AUTREP.tSet L n s ϖ k, κ x = κ x' →
       (x : Formalism.AUTREP.GAf L n ⧸ J) = x' := by
     intro x hx x' hx' hκ
-    simp only [κ, dif_pos hx, dif_pos hx'] at hκ
+    simp only [κ, dite_eq_left hx, dite_eq_left hx'] at hκ
     obtain ⟨ha, b, hb, hg⟩ := hx.2.choose_spec
     obtain ⟨ha', b', hb', hg'⟩ := hx'.2.choose_spec
     set a := hx.2.choose
@@ -353,7 +353,7 @@ theorem finite_image_tSet : ∀ (L : Type) [Field L] [NumberField L] [IsCMField 
   rintro _ ⟨x, hx, rfl⟩ _ ⟨x', hx', rfl⟩ hgg
   have h : ∃ y ∈ Formalism.AUTREP.tSet L n s ϖ k, (y : Formalism.AUTREP.GAf L n ⧸ J) = x := ⟨x, hx, rfl⟩
   have h' : ∃ y ∈ Formalism.AUTREP.tSet L n s ϖ k, (y : Formalism.AUTREP.GAf L n ⧸ J) = x' := ⟨x', hx', rfl⟩
-  simp only [g, dif_pos h, dif_pos h'] at hgg
+  simp only [g, dite_eq_left h, dite_eq_left h'] at hgg
   show (x : Formalism.AUTREP.GAf L n ⧸ J) = x'
   rw [← h.choose_spec.2, ← h'.choose_spec.2]
   exact key _ h.choose_spec.1 _ h'.choose_spec.1 hgg

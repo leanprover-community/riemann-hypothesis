@@ -90,23 +90,23 @@ private lemma cupE_mem' {ι E E' E'' : Type} [LinearOrder ι] [AddCommGroup E] [
     by_cases c1 : (u.filter (· ≤ j)).Nonempty ∧ ((u.filter (· ≤ j)).card : ℤ) = q + 1
     · have c2 : ¬ ((u.filter (j ≤ ·)).Nonempty ∧ ((u.filter (j ≤ ·)).card : ℤ) = p + 1) :=
         fun c2 => hc ⟨c1.1, c1.2, c2.1, c2.2⟩
-      rw [if_neg c2, Submodule.mem_bot] at h2
+      rw [ite_eq_right c2, Submodule.mem_bot] at h2
       rw [h2, map_zero]
-    · rw [if_neg c1, Submodule.mem_bot] at h1
+    · rw [ite_eq_right c1, Submodule.mem_bot] at h1
       rw [h1, map_zero, LinearMap.zero_apply]
   by_cases hu : u.Nonempty ∧ (u.card : ℤ) = n + 1
-  · rw [if_pos hu]
+  · rw [ite_eq_left hu]
     refine Submodule.sum_mem _ fun j hj => ?_
     by_cases c : (u.filter (· ≤ j)).Nonempty ∧ ((u.filter (· ≤ j)).card : ℤ) = q + 1 ∧
         (u.filter (j ≤ ·)).Nonempty ∧ ((u.filter (j ≤ ·)).card : ℤ) = p + 1
     · have h1 := cechC_iff'.1 ha (u.filter (· ≤ j))
       have h2 := cechC_iff'.1 hb (u.filter (j ≤ ·))
-      rw [if_pos ⟨c.1, c.2.1⟩] at h1
-      rw [if_pos c.2.2] at h2
+      rw [ite_eq_left ⟨c.1, c.2.1⟩] at h1
+      rw [ite_eq_left c.2.2] at h2
       exact hH _ _ _ c.1 c.2.2.1 (Finset.filter_subset _ _) (Finset.filter_subset _ _) _ h1 _ h2
     · rw [zero j hj c]
       exact Submodule.zero_mem _
-  · rw [if_neg hu, Submodule.mem_bot]
+  · rw [ite_eq_right hu, Submodule.mem_bot]
     refine Finset.sum_eq_zero fun j hj => zero j hj fun c => hu (key j hj ⟨c.1, c.2.1⟩ c.2.2)
 
 private lemma alt_trace' (hTL : TrLin) {M : Type} [AddCommGroup M] [Module ℂ M] (C : Cx ℂ M)
@@ -167,7 +167,7 @@ private lemma edge_id' {ι κ E : Type} [LinearOrder ι] [LinearOrder κ] [AddCo
   funext s
   simp only [Pi.sub_apply, Finset.sum_apply, Pi.smul_apply, edge1, Finset.sum_sub_distrib]
   by_cases hs : (rgt s).card = 1
-  · simp only [hs, if_true]
+  · simp only [hs, ite_true]
     abel
   · simp [hs]
 
@@ -206,9 +206,9 @@ private lemma mapC_Z' {ι : Type} [LinearOrder ι] (B : Finset ι → Subalgebra
   refine Submodule.mem_inf.2 ⟨cechC_iff'.2 fun s => ?_, ?_⟩
   · have h1 := cechC_iff'.1 hC s
     by_cases hs : s.Nonempty ∧ (s.card : ℤ) = n + 1
-    · rw [if_pos hs] at h1 ⊢
+    · rw [ite_eq_left hs] at h1 ⊢
       exact mapL_mem' _ _ (h s) q _ h1
-    · rw [if_neg hs, Submodule.mem_bot] at h1 ⊢
+    · rw [ite_eq_right hs, Submodule.mem_bot] at h1 ⊢
       rw [h1, map_zero]
   · have hD' : GlobalTheory.DI.delta c = 0 := hD
     show GlobalTheory.DI.delta (fun I => mapDR ℂ K L (c I)) = 0
@@ -262,14 +262,14 @@ theorem UpperTheory.Gal.productCup_of_system.fieldLe_of :
     · have c : (uni I (∅ : Finset (Fin (d + 1)))).Nonempty ∧
           ((uni I (∅ : Finset (Fin (d + 1)))).card : ℤ) = p k + 1 :=
         ⟨Finset.card_pos.1 (by rw [hcard]; exact Finset.card_pos.2 hI.1), by rw [hcard]; exact hI.2⟩
-      rw [if_pos c, lft_uni', rgt_uni', hRI] at h1
-      rw [if_pos hI]
+      rw [ite_eq_left c, lft_uni', rgt_uni', hRI] at h1
+      rw [ite_eq_left hI]
       exact h1
     · have c : ¬ ((uni I (∅ : Finset (Fin (d + 1)))).Nonempty ∧
           ((uni I (∅ : Finset (Fin (d + 1)))).card : ℤ) = p k + 1) := fun c =>
         hI ⟨Finset.card_pos.1 (by rw [← hcard]; exact Finset.card_pos.2 c.1), by rw [← hcard]; exact c.2⟩
-      rw [if_neg c] at h1
-      rw [if_neg hI]
+      rw [ite_eq_right c] at h1
+      rw [ite_eq_right hI]
       exact h1
   have hcond : ∀ (I J I' : Finset (Fin (d + 1))) (s : Finset (Two d)), J.Nonempty → I'.Nonempty → s.Nonempty → I' ⊆ I →
       s ⊆ uni I J → ∀ y ∈ omB ℂ K' (rB ℂ K' (xv x) I') (d - a), ∀ y' ∈ omB ℂ K' (RY (xv x) j2 (lft s) (rgt s)) a,

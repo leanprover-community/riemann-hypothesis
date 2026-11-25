@@ -299,7 +299,7 @@ theorem hilbert_finiteness : ∀ (ι : Type) [Fintype ι] [DecidableEq ι] (Γ :
       intro f hf hn
       rcases Nat.eq_zero_or_pos n with rfl | hpos
       · have : f = C (AddMonoidAlgebra.coeff f 0) := by
-          rw [← homogeneousComponent_zero, homogeneousComponent_of_mem hn, if_pos rfl]
+          rw [← homogeneousComponent_zero, homogeneousComponent_of_mem hn, ite_eq_left rfl]
         rw [this]
         exact Subalgebra.algebraMap_mem _ _
       · have hmem : f ∈ Submodule.span (MvPolynomial (ι × ι) ℂ) (s : Set (MvPolynomial (ι × ι) ℂ)) := by
@@ -312,7 +312,7 @@ theorem hilbert_finiteness : ∀ (ι : Type) [Fintype ι] [DecidableEq ι] (Γ :
           refine Finset.sum_congr rfl fun F hF => ?_
           rw [smul_eq_mul, mul_comm, hR.mul _ _ (hsS hF).1]
         have h2 : f = homogeneousComponent n f := by
-          rw [homogeneousComponent_of_mem hn, if_pos rfl]
+          rw [homogeneousComponent_of_mem hn, ite_eq_left rfl]
 
         rw [h2, h1, map_sum]
         refine Subalgebra.sum_mem _ fun F hF => ?_

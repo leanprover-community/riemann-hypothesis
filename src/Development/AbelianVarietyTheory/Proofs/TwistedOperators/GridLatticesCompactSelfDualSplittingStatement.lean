@@ -93,12 +93,12 @@ theorem orthogonalSumAuxiliaryVectors_middleCoefficient_eq {A B : HSp D} {c : �
     simp only [Matrix.mulVec, dotProduct]
     rw [Finset.sum_eq_single p]
     · simp only [antiDiagonalSignGramMatrix]
-      rw [if_pos hp]
+      rw [ite_eq_left hp]
       simp
     · intro q _ hq
       have : ¬ (p.1 + q.1 + 1 = c) := fun h' => hq (Fin.ext (by omega))
       simp only [antiDiagonalSignGramMatrix]
-      rw [if_neg this, zero_mul]
+      rw [ite_eq_right this, zero_mul]
     · simp
   rw [key, key, Pi.single_eq_same] at e3
   exact mul_left_cancel₀ hε e3
@@ -435,7 +435,7 @@ theorem proj_mem {A : HSp D} {c : ℕ} (a : HermitianOrthogonalExtensionData A S
     rw [← hN, ← Matrix.mulVec_mulVec, GlobalTheory.AscFin.CoreSelfDual.wittHyperbolicRankZero_proj_mul_emb]
   have h2 : d.q0 *ᵥ (a.a *ᵥ u) = u ⟨ρ, by omega⟩ • z := by
     rw [mulVec_eq_sum_smul_col a.a u, Matrix.mulVec_sum]
-    simp only [Matrix.mulVec_smul, hcol, smul_ite, smul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    simp only [Matrix.mulVec_smul, hcol, smul_ite, smul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   show ∃ y' ∈ Λ, ∃ u' : Fin c → D.host.E, (∀ p, u' p ∈ 𝔟 p) ∧
     d.i₀ *ᵥ (d.q0 *ᵥ (frameMat S A a.ι *ᵥ y + a.a *ᵥ u)) = frameMat S A a.ι *ᵥ y' + a.a *ᵥ u'
   refine ⟨y, hy, fun p => if p = (⟨ρ, by omega⟩ : Fin c) then u p else 0, fun p => ?_, ?_⟩
@@ -445,7 +445,7 @@ theorem proj_mem {A : HSp D} {c : ℕ} (a : HermitianOrthogonalExtensionData A S
     · exact (𝔟 p).zero_mem
   · rw [Matrix.mulVec_add, Matrix.mulVec_add, h1, h2, Matrix.mulVec_smul, hz, mulVec_eq_sum_smul_col a.a]
     congr 1
-    simp only [ite_smul, zero_smul, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    simp only [ite_smul, zero_smul, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
 
 end GlobalTheory.AscFin.CoreSelfDual
 

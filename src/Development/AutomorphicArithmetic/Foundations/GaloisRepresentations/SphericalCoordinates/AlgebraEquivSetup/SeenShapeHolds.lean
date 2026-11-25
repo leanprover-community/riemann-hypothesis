@@ -781,23 +781,23 @@ theorem UpperTheory.Gal.W2.Seed.pMemSum :
         conv_lhs => rw [← QuotientGroup.out_eq' x]
         rw [QuotientGroup.eq, inv_inv]
       by_cases hm : h * (q.out : X) * x.out ∈ K₀
-      · rw [if_pos hm, if_pos (hiff.mpr hm), one_smul]
+      · rw [ite_eq_left hm, ite_eq_left (hiff.mpr hm), one_smul]
         have hg : g * x.out = g * (h * (q.out : X))⁻¹ * (h * (q.out : X) * x.out) := by group
         rw [hg]
         exact hΦ _ hm _
-      · rw [if_neg hm, if_neg (fun e => hm (hiff.mp e)), zero_smul]
+      · rw [ite_eq_right hm, ite_eq_right (fun e => hm (hiff.mp e)), zero_smul]
     rw [finsum_eq_sum_of_fintype (fun k : K ⧸ KM.subgroupOf K => Φ (g * (h * (k.out : X))⁻¹)),
       finsum_congr hpt, finsum_sum_comm]
     · refine Finset.sum_congr rfl fun q _ => ?_
       rw [finsum_eq_single _ (QuotientGroup.mk (h * (q.out : X))⁻¹ : X ⧸ K₀)]
       · simp
       · intro x hx
-        rw [if_neg (Ne.symm hx)]
+        rw [ite_eq_right (Ne.symm hx)]
     · intro q _
       apply Set.Finite.subset (Set.finite_singleton (QuotientGroup.mk (h * (q.out : X))⁻¹ : X ⧸ K₀))
       intro x hx
       by_contra hne
-      exact hx (if_neg (Ne.symm hne))
+      exact hx (ite_eq_right (Ne.symm hne))
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.SphericalCoordinates.AlgebraEquivSetup.PMemSum =====
@@ -1390,10 +1390,10 @@ theorem UpperTheory.Gal.W2.Seed.pSumDoset :
         conv_lhs => rw [← QuotientGroup.out_eq' x]
         rw [QuotientGroup.eq, inv_inv]
       by_cases hm : h * (q.out : X) * x.out ∈ K
-      · rw [if_pos hm, if_pos (hiff.mpr hm)]
+      · rw [ite_eq_left hm, ite_eq_left (hiff.mpr hm)]
         have hg : g * x.out = g * (h * (q.out : X))⁻¹ * (h * (q.out : X) * x.out) := by group
         rw [hg, hΦ _ hm]
-      · rw [if_neg hm, if_neg (fun e => hm (hiff.mp e))]
+      · rw [ite_eq_right hm, ite_eq_right (fun e => hm (hiff.mp e))]
     rw [Finset.sum_congr rfl (fun q _ => hterm q), ← Finset.sum_filter, Finset.sum_const,
       ← Fintype.card_subtype, ← Nat.card_eq_fintype_card]
     by_cases hy : x.out ∈ DoubleCoset.doubleCoset h⁻¹ (K : Set X) K
@@ -1408,12 +1408,12 @@ theorem UpperTheory.Gal.W2.Seed.pSumDoset :
     rw [finsum_eq_single _ (QuotientGroup.mk (h * (q.out : X))⁻¹ : X ⧸ K)]
     · simp
     · intro x hx
-      rw [if_neg (Ne.symm hx)]
+      rw [ite_eq_right (Ne.symm hx)]
   · intro q _
     apply Set.Finite.subset (Set.finite_singleton (QuotientGroup.mk (h * (q.out : X))⁻¹ : X ⧸ K))
     intro x hx
     by_contra hne
-    exact hx (if_neg (Ne.symm hne))
+    exact hx (ite_eq_right (Ne.symm hne))
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.SphericalCoordinates.AlgebraEquivSetup.PSumDoset =====

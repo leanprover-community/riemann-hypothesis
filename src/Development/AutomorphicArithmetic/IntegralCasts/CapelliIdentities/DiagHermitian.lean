@@ -149,7 +149,7 @@ private theorem Dz.all {E : Type} [Field E] [StarRing E] [CharZero E] :
   by_cases hd : ∃ i, T i i ≠ 0
   · obtain ⟨i, hi⟩ := hd
     exact Dz.pivot ih T hT i hi
-  push_neg at hd
+  push Not at hd
   by_cases h0 : T = 0
   · subst h0
     exact ⟨1, by simp, 0, by ext i j; simp [Matrix.diagonal]⟩

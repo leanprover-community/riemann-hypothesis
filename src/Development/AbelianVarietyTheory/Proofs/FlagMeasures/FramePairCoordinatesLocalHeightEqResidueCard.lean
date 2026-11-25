@@ -203,10 +203,10 @@ theorem height_eq : ∀ {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace 
       rw [hz]
       refine Finset.prod_congr rfl fun l _ => ?_
       by_cases hl : l ≠ 0 ∧ S.D l ≠ 0
-      · rw [if_pos ((hends l).2 hl), if_pos hl, Dm_eq c]
+      · rw [ite_eq_left ((hends l).2 hl), ite_eq_left hl, Dm_eq c]
         obtain ⟨n, hn0, hn⟩ := norm_mem M.L _ (hD l hl.2)
         rw [hn, hmod n hn0]
-      · rw [if_neg (fun h => hl ((hends l).1 h)), if_neg hl]
+      · rw [ite_eq_right (fun h => hl ((hends l).1 h)), ite_eq_right hl]
         simp
     unfold LocNG.FPair.Hp Frames.Hp Frames.q
     rw [hprod, hdet, theta_eq c, hmod _ hth, hmod _ hd0, hvth, hva, ← zpow_add₀ hq0.ne',

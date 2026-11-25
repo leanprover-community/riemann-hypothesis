@@ -685,7 +685,7 @@ theorem norm_cls_sq_eq {n : ℕ} [MeasurableSpace (G n)] {μ : Measure (G n)} {V
     (h : MemLp (fun y : G n => K y.val) 2 μ) :
     ‖cls μ K‖ ^ 2 = ∫ y : G n, ‖K y.val‖ ^ 2 ∂μ := by
   have h0 : 0 ≤ ∫ y : G n, ‖K y.val‖ ^ 2 ∂μ := integral_nonneg fun y => by positivity
-  have hc : cls μ K = h.toLp _ := dif_pos h
+  have hc : cls μ K = h.toLp _ := dite_eq_left h
   rw [hc, Lp.norm_toLp, h.eLpNorm_eq_integral_rpow_norm (by norm_num) (by norm_num)]
   simp only [ENNReal.toReal_ofNat, Real.rpow_two]
   rw [ENNReal.toReal_ofReal (by positivity), ← Real.rpow_natCast, ← Real.rpow_mul h0]

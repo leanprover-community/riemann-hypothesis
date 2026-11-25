@@ -372,7 +372,7 @@ theorem placeDecomp_of (hE : InstExpFix) (hAB : InstAdaptBasis) : InstPlaceDecom
     by_cases hr : r ∈ T
     · rw [hrow r hr c]
       by_cases hrc : c = r
-      · subst hrc; simp only [hr, if_true]; split_ifs <;> norm_num
+      · subst hrc; simp only [hr, ite_true]; split_ifs <;> norm_num
       · simp [hrc]
     · by_cases hc : c ∈ T
       · rw [hcol c hc r]

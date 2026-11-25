@@ -142,9 +142,9 @@ theorem cloud_pair_le (k : ℕ) (lam v : ℕ → ℝ) (e : ℕ) (c g b Y ε : �
     rw [Finset.mem_erase, Finset.mem_Icc] at hs
     rw [Finset.mem_Icc]
     by_cases hpos : 0 < Y + lam s
-    · simp only [φ, hpos, if_true]
+    · simp only [φ, hpos, ite_true]
       omega
-    · simp only [φ, hpos, if_false]
+    · simp only [φ, hpos, ite_false]
       omega
   have hkey : ∀ s ∈ ((Icc 1 (k - 1)).erase e),
       |Y + ε + lam s| + c ≤ (1 + (1 + c) / max |Y + lam s| 1) * |Y + 1 / 2 + v (φ s)| := by
@@ -162,12 +162,12 @@ theorem cloud_pair_le (k : ℕ) (lam v : ℕ → ℝ) (e : ℕ) (c g b Y ε : �
         exact abs_add_le _ _
       linarith
     · by_cases hpos : 0 < Y + lam s
-      · simp only [φ, hpos, if_true]
+      · simp only [φ, hpos, ite_true]
         have hv := hPs.1 (by linarith)
         rw [abs_of_pos hpos]
         calc Y + lam s ≤ Y + 1 / 2 + v s := by linarith
           _ ≤ |Y + 1 / 2 + v s| := le_abs_self _
-      · simp only [φ, hpos, if_false]
+      · simp only [φ, hpos, ite_false]
         have hv := hPs.2 (by linarith)
         rw [abs_of_nonpos (not_lt.1 hpos)]
         calc -(Y + lam s) ≤ -(Y + 1 / 2 + v (s + 1)) := by linarith
@@ -178,17 +178,17 @@ theorem cloud_pair_le (k : ℕ) (lam v : ℕ → ℝ) (e : ℕ) (c g b Y ε : �
     rw [Finset.mem_erase, Finset.mem_Icc] at hs ht
     by_cases h1 : 0 < Y + lam s <;> by_cases h2 : 0 < Y + lam t
     · simpa [φ, h1, h2] using hst
-    · simp only [φ, h1, h2, if_true, if_false] at hst
+    · simp only [φ, h1, h2, ite_true, ite_false] at hst
       exfalso
       have hg := hgap t ht.2.1 (by omega)
       subst hst
       linarith [not_lt.1 h2]
-    · simp only [φ, h1, h2, if_true, if_false] at hst
+    · simp only [φ, h1, h2, ite_true, ite_false] at hst
       exfalso
       have hg := hgap s hs.2.1 (by omega)
       subst hst
       linarith [not_lt.1 h1]
-    · simp only [φ, h1, h2, if_false] at hst
+    · simp only [φ, h1, h2, ite_false] at hst
       omega
   have hFnn : ∀ s, 0 ≤ (1 + (1 + c) / max |Y + lam s| 1) := fun s => le_trans zero_le_one (hF1 s)
   have hprodA : ∏ s ∈ ((Icc 1 (k - 1)).erase e), (|Y + ε + lam s| + c) ≤
@@ -259,7 +259,7 @@ theorem cloud_weight_prod (c : ℝ) (n : ℕ) :
   induction n with
   | zero => simp
   | succ n ih =>
-    rw [prod_range_succ, ih, if_neg (Nat.succ_ne_zero n)]
+    rw [prod_range_succ, ih, ite_eq_right (Nat.succ_ne_zero n)]
     have hn : ((n : ℝ) + 1) ≠ 0 := by positivity
     push_cast
     field_simp

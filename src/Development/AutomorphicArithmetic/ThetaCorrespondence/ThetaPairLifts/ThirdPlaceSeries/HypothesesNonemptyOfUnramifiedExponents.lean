@@ -444,7 +444,7 @@ theorem scal_symm : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u u' : D.what
   obtain ⟨⟨hlam, hlam'⟩, -, hIS⟩ := (show Formalism.L2.SG.TermOp.scalT t t' from hsc)
   have h1' : Formalism.L2.SG.TermOp.s0T t t' = 1 := hs
   unfold Formalism.L2.SG.TermOp.s0T at h1'
-  rw [if_pos ⟨hlam, hlam'⟩] at h1'
+  rw [ite_eq_left ⟨hlam, hlam'⟩] at h1'
   have hth := (CorankRelation.s0_eq_one_iff_Th_eq_Hp D.R.k hdim t.lam (hlat t) _ t.frame t'.frame _ (hLF t) (hLt t)
     (hGv t hG)).1 h1'
   have hL' : IsLift t.lam t'.frame := by rw [hlam]; exact hLt t'
@@ -460,7 +460,7 @@ theorem scal_symm : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u u' : D.what
   refine ⟨?_, ?_⟩
   · show Formalism.L2.SG.TermOp.s0T t' t = 1
     unfold Formalism.L2.SG.TermOp.s0T
-    rw [if_pos ⟨hlam.symm, hlam'.symm⟩, ← hlam]
+    rw [ite_eq_left ⟨hlam.symm, hlam'.symm⟩, ← hlam]
     exact hs'
   · show Formalism.L2.SG.TermOp.scalT t' t
     refine ⟨⟨hlam.symm, hlam'.symm⟩, ?_, ?_⟩
@@ -632,7 +632,7 @@ theorem scalar_pair_trans : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u u' 
   refine ⟨?_, ?_⟩
   · show s0T t t'' = 1
     unfold s0T
-    rw [if_pos hl]
+    rw [ite_eq_left hl]
     exact hs3
   · show scalT t t''
     exact ⟨hl, hs3, hsc3⟩
@@ -1066,7 +1066,7 @@ theorem exists_unit_one_add_generator (D : D7) (hCen : GlobalTheory.Pass.Central
     rw [e1, GlobalTheory.PassOp.prod_plc _ L hnd]
     congr 1
     funext j
-    rw [if_pos (hall j)]
+    rw [ite_eq_left (hall j)]
   have hz : PairedCharacterCondition.mapCoef (iotaO D.nd D.naut i) (z : MonoidAlgebra (D.nd.O i) (G0g D.nd)) =
       (D.what₂.restRowsFiniteGroupCard : ℂ) • D.ntypes.e0 := by
     rw [e0_eq, eGood, Finset.smul_sum, AddSubmonoidClass.coe_finsetSum]
@@ -1118,7 +1118,7 @@ theorem exists_tuple (D : D7) (μ : D.what₂.Tup) (j : ℕ) (F : D.what₂.Mt �
     rw [e1, GlobalTheory.PassOp.prod_plc _ _ hnd]
     congr 1
     funext q
-    rw [if_pos (hall q)]
+    rw [ite_eq_left (hall q)]
   have he : D.ntypes.e0 = ((∑ p, if goodVec D p then ∏ kv, ef p kv else 0 :
       ↥(Subalgebra.center ℂ (MonoidAlgebra ℂ (G0g D.nd)))) : MonoidAlgebra ℂ (G0g D.nd)) := by
     rw [e0_eq, eGood, AddSubmonoidClass.coe_finsetSum]
@@ -1178,11 +1178,11 @@ theorem exists_type (D : D7) (P : PairedCharacterCondition.Pend D) (i : D.nd.Loc
   rw [P.eSer_eq k, GlobalTheory.CutAtGood.atPlace_sum, hsum, LinearMap.sum_apply] at h1
   obtain ⟨τ, -, hτ⟩ := Finset.exists_ne_zero_of_sum_ne_zero h1
   by_cases hlab : (P.lz k).lab τ = f
-  · rw [if_pos hlab] at hτ
+  · rw [ite_eq_left hlab] at hτ
     exact ⟨τ, (P.kty_spec i PI k v τ).2 ⟨F, hF, hτ⟩, hlab⟩
   · exfalso
     apply hτ
-    rw [if_neg hlab, GlobalTheory.CutAtGood.atPlace_zero]
+    rw [ite_eq_right hlab, GlobalTheory.CutAtGood.atPlace_zero]
     unfold NTypes.onMt
     rw [dite_eq_left (Subalgebra.zero_mem _)]
     have e0 : (⟨0, Subalgebra.zero_mem _⟩ : ↥(Subalgebra.center ℂ (MonoidAlgebra ℂ (G0g D.nd)))) = 0 := rfl

@@ -87,8 +87,8 @@ theorem resEta_of_att {μ η : (AE D)ˣ →* Circle} {a b : ℕ} (ha : ResEta D 
   rcases Nat.even_or_odd a with hae | hao
   · have hbo : Odd b := (Nat.odd_add'.1 hab).2 hae
     have hna : ¬ Odd a := Nat.not_odd_iff_even.2 hae
-    simp only [Lift.attChr, hna, if_false] at ha
-    simp only [Lift.attChr, hbo, if_true] at hb
+    simp only [Lift.attChr, hna, ite_false] at ha
+    simp only [Lift.attChr, hbo, ite_true] at hb
     have hμ : ResEta D μ 0 := resEta_of_mod ha (by rw [Nat.even_iff.1 hae])
     refine ⟨hμ, resEta_of_mod (χ := η) (a := a + b) ?_ (by rw [Nat.odd_iff.1 hab])⟩
     have e : η = μ / (μ * η⁻¹) := by rw [div_mul_eq_div_div, div_self', one_div, inv_inv]
@@ -98,8 +98,8 @@ theorem resEta_of_att {μ η : (AE D)ˣ →* Circle} {a b : ℕ} (ha : ResEta D 
       · exact h
       · exact absurd hab (Nat.not_odd_iff_even.2 (hao.add_odd h))
     have hnb : ¬ Odd b := Nat.not_odd_iff_even.2 hbe
-    simp only [Lift.attChr, hao, if_true] at ha
-    simp only [Lift.attChr, hnb, if_false] at hb
+    simp only [Lift.attChr, hao, ite_true] at ha
+    simp only [Lift.attChr, hnb, ite_false] at hb
     have hμ : ResEta D μ 0 := resEta_of_mod hb (by rw [Nat.even_iff.1 hbe])
     refine ⟨hμ, resEta_of_mod (χ := η) (a := b + a) ?_ (by rw [add_comm, Nat.odd_iff.1 hab])⟩
     have e : η = μ / (μ * η⁻¹) := by rw [div_mul_eq_div_div, div_self', one_div, inv_inv]

@@ -808,7 +808,7 @@ theorem gram_density : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [Num
       · exact continuous_snd
     obtain ⟨s, hs⟩ : ∃ s, IsSec R σ J x s :=
       ⟨fun y => if h : ∃ g : HA R σ J, g • ratTup (F := F) R x = y then h.choose else 1,
-        fun y h => by simp only [dif_pos h]; exact h.choose_spec⟩
+        fun y h => by simp only [dite_eq_left h]; exact h.choose_spec⟩
     rw [← lintegral_indicator (hgc.measurable hS), lintegral_tup_two lam _ _ hFi,
       Polar.polar F E σ R hR _ J lam ν α m hl hν hα hm W₁ ρ₁ hW₁.measurableSet hρ₁
         (fun y => ∫⁻ z, (gram3 R σ J ⁻¹' S).indicator (fun X => ENNReal.ofReal (φ X)) ![y 0, z]

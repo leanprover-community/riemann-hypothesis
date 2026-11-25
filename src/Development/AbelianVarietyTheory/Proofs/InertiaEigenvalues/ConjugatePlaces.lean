@@ -46,18 +46,6 @@ variable (H)
 
 end Host
 
-section Loc
-
-variable (D : D7) (i : D.nd.Loc)
-
-section Pl
-
-variable (w : HeightOneSpectrum (𝓞 D.host.E)) (hw : w ∈ placesOver D.host.E (D.nd.l i))
-
-end Pl
-
-end Loc
-
 end GlobalTheory.Proof.ConjugatePlaces
 
 end

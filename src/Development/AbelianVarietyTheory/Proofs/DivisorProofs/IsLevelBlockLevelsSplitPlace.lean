@@ -97,7 +97,7 @@ theorem isOpen_detKer (m : ℕ) (w : Pl E) (μ : (w.adicCompletion E)ˣ →* ℂ
   hμ.preimage (continuous_det_GLw m w)
 
 theorem thL_split (m : ℕ) (w : Pl E) (hw : IsSplitAt w) : thL m w = MonoidHom.id _ := by
-  rw [thL, if_pos hw]
+  rw [thL, ite_eq_left hw]
 
 end GlobalTheory.BCT.CtLevel
 

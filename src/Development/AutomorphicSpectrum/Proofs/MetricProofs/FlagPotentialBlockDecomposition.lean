@@ -243,45 +243,45 @@ theorem stepPot_mul_eq_blockPot : ∀ (N j : ℕ) (i : Fin N) (Pi G h : Matrix (
   by_cases c1 : (i : ℕ) + 1 ≤ j
   · have stepA : stepPot N j i (Pi * h) =
         (1 / 2) * Real.log (sd (hᴴ * G * h) (Seg (N - j) (N - j + ((i : ℕ) + 1)))).re := by
-      rw [stepPot, if_pos c1, hg, hg, sd_lead hHb, logMul _ _ (sd_pos hH _) (sd_pos hH _)]
+      rw [stepPot, ite_eq_left c1, hg, hg, sd_lead hHb, logMul _ _ (sd_pos hH _) (sd_pos hH _)]
       ring
     by_cases c2 : (i : ℕ) + 1 = j
     · have hS : sd (hᴴ * G * h) (Seg (N - j) (N - j + ((i : ℕ) + 1))) = sd (hᴴ * G * h) (Ge (N - j)) :=
         sd_congr _ fun a => by have := a.2; simp only [Seg, Ge]; omega
       have np : ¬ IsProperStep N j i := fun q => q.1 c2
-      rw [stepA, hS, logW, blockPot, if_neg np, add_zero]
+      rw [stepA, hS, logW, blockPot, ite_eq_right np, add_zero]
       by_cases c3 : (i : ℕ) + 1 = N
       · have om : ∀ T : Matrix (Fin N) (Fin N) ℂ, sd T (Lt (N - j)) = 1 := fun T => by
           rw [← sd_lt_zero T]
           exact sd_congr T fun a => by simp only [Lt]; omega
         have hdf : ∀ T : Matrix (Fin N) (Fin N) ℂ, detFac j i T = sd T (Ge (N - j)) := fun T => by
-          rw [detFac, if_pos c2.ge, if_pos c3, minor_wIdx, minor_omIdx, om, mul_one]
+          rw [detFac, ite_eq_left c2.ge, ite_eq_left c3, minor_wIdx, minor_omIdx, om, mul_one]
         rw [hdf, hdf]
       · have hdf : ∀ T : Matrix (Fin N) (Fin N) ℂ, detFac j i T = sd T (Ge (N - j)) := fun T => by
-          rw [detFac, if_pos c2.ge, if_neg c3, minor_wIdx, mul_one]
+          rw [detFac, ite_eq_left c2.ge, ite_eq_right c3, minor_wIdx, mul_one]
         rw [hdf, hdf]
     · have pr : IsProperStep N j i := ⟨c2, by omega⟩
       have hdf : ∀ T : Matrix (Fin N) (Fin N) ℂ, detFac j i T = 1 := fun T => by
-        rw [detFac, if_neg (by omega), if_neg (by omega), mul_one]
-      rw [stepA, blockPot, if_pos pr, hdf, hdf, minor_stepCols_le i c1]
+        rw [detFac, ite_eq_right (by omega), ite_eq_right (by omega), mul_one]
+      rw [stepA, blockPot, ite_eq_left pr, hdf, hdf, minor_stepCols_le i c1]
       simp
   · have stepB : stepPot N j i (Pi * h) = (1 / 2) * Real.log (sd (hᴴ * G * h) (Ge (N - j))).re +
         (1 / 2) * Real.log (sd (hᴴ * G * h) (Lt ((i : ℕ) + 1 - j))).re := by
-      rw [stepPot, if_neg c1, hg, hg, hg, hN, logMul _ _ (sd_pos hH _) (sd_pos hH _)]
+      rw [stepPot, ite_eq_right c1, hg, hg, hg, hN, logMul _ _ (sd_pos hH _) (sd_pos hH _)]
       ring
     by_cases c3 : (i : ℕ) + 1 = N
     · have np : ¬ IsProperStep N j i := fun q => q.2 c3
       have hL : sd (hᴴ * G * h) (Lt ((i : ℕ) + 1 - j)) = sd (hᴴ * G * h) (Lt (N - j)) :=
         sd_congr _ fun a => by simp only [Lt]; omega
       have hdf : ∀ T : Matrix (Fin N) (Fin N) ℂ, detFac j i T = sd T (Ge (N - j)) * sd T (Lt (N - j)) := fun T => by
-        rw [detFac, if_pos (by omega), if_pos c3, minor_wIdx, minor_omIdx]
-      rw [stepB, hL, logW, logO, blockPot, if_neg np, add_zero, hdf, hdf,
+        rw [detFac, ite_eq_left (by omega), ite_eq_left c3, minor_wIdx, minor_omIdx]
+      rw [stepB, hL, logW, logO, blockPot, ite_eq_right np, add_zero, hdf, hdf,
         logMul _ _ (sd_pos hGp _) (sd_pos hGp _), norm_mul, Real.log_mul ndW.ne' ndO.ne']
       ring
     · have pr : IsProperStep N j i := ⟨by omega, c3⟩
       have hdf : ∀ T : Matrix (Fin N) (Fin N) ℂ, detFac j i T = sd T (Ge (N - j)) := fun T => by
-        rw [detFac, if_pos (by omega), if_neg c3, minor_wIdx, mul_one]
-      rw [stepB, logW, blockPot, if_pos pr, hdf, hdf, minor_stepCols_gt i c1]
+        rw [detFac, ite_eq_left (by omega), ite_eq_right c3, minor_wIdx, mul_one]
+      rw [stepB, logW, blockPot, ite_eq_left pr, hdf, hdf, minor_stepCols_gt i c1]
       ring
 
 end GlobalTheory.CompanionTheory.Ar.PB

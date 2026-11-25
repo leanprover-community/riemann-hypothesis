@@ -180,13 +180,13 @@ theorem conv_X_pow_mul {f : ℤ → M} {m₀ : ℤ} (hf : ∀ k < m₀, f k = 0)
   rw [conv_eq_sum _ f k _ hN', conv_eq_sum _ f (k - m) N hN, Finset.sum_range_add]
   rw [Finset.sum_eq_zero, zero_add]
   · refine Finset.sum_congr rfl fun j _ => ?_
-    rw [PowerSeries.coeff_X_pow_mul', if_pos (by omega), show m + j - m = j by omega]
+    rw [PowerSeries.coeff_X_pow_mul', ite_eq_left (by omega), show m + j - m = j by omega]
     congr 2
     push_cast
     ring
   · intro j hj
     rw [Finset.mem_range] at hj
-    rw [PowerSeries.coeff_X_pow_mul', if_neg (by omega), zero_smul]
+    rw [PowerSeries.coeff_X_pow_mul', ite_eq_right (by omega), zero_smul]
 
 theorem combine {ι : Type} [Fintype ι] (F : ι → ℤ → M) (m₀ : ι → ℤ) (hbd : ∀ j, ∀ k < m₀ j, F j k = 0)
     (c : L) (e p : ι → PowerSeries L) (m : ℕ) (k : ℤ) :

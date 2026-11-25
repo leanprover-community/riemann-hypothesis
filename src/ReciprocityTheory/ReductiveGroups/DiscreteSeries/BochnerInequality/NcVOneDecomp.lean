@@ -46,12 +46,6 @@ open ReciprocityTheory.ChartRestriction.DS
 
 variable {n : ℕ}
 
-section AlgGen
-
-variable {X : Type*} [AddCommGroup X] [Module ℂ X] {ε : Fin n → Bool}
-
-end AlgGen
-
 section Slots
 
 variable {M : Type*} [NormedAddCommGroup M] [InnerProductSpace ℂ M] {ε : Fin n → Bool}
@@ -232,7 +226,7 @@ theorem crossOp_eig_gap (hE : IsGlRep E) (hU : IsInfUnitary ε E) (hV : IsKIrrHW
       · exact absurd (h1.symm.trans h2) hrs
       all_goals ring
     simp only [e, Finset.sum_add_distrib, Finset.sum_sub_distrib, ← Finset.mul_sum,
-      Finset.sum_ite_eq', Finset.mem_univ, if_true]
+      Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     ring
   have hcas : casValK ε μ - casValK ε (lowK ε lam) =
       2 * ((lowK ε lam + rhoC ε) r - (lowK ε lam + rhoC ε) s) + 2 := by

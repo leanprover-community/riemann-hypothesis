@@ -123,10 +123,10 @@ theorem jetsPh_of (HH : JetsHigh) (H1 : JetsOne) (H2 : JetsTwo) (D : D7) (hc : c
       rw [hm, map_one, one_mul] at hn1
       exact H1 p g hok hp hn1
     · exact HH p g hok (hc p cc δ g hA) i hi1 hi2
-  · rw [if_neg hpd] at hnorm
+  · rw [ite_eq_right hpd] at hnorm
     rw [hnorm, one_mul] at hprod
     exact hprod
-  · rw [if_pos hpd] at hnorm
+  · rw [ite_eq_left hpd] at hnorm
     rw [hnorm] at hprod
     have hpos : (0 : ℝ) < (p : ℝ) ^ ((1 : ℝ) / 2) :=
       Real.rpow_pos_of_pos (by exact_mod_cast (Fact.out : p.Prime).pos) _

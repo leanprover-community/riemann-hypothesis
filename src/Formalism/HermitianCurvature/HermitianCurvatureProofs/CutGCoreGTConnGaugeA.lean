@@ -73,7 +73,7 @@ theorem comp_snd_mem_smSub (P : M.Par) {v : ℂ → ℂ} (hv : ContDiffOn ℝ ((
 theorem fnZ_eq_mk (P : M.Par) {v : ℂ → ℂ} (hv : ContDiffOn ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) v (Ann P)) :
     fnZ P v = ⟨fun q => v q.1.2, comp_snd_mem_smSub P hv⟩ := by
   unfold fnZ MA.toSm
-  exact dif_pos (comp_snd_mem_smSub P hv)
+  exact dite_eq_left (comp_snd_mem_smSub P hv)
 
 theorem toSm_mulZ (P : M.Par) {v w : ℂ → ℂ} (hv : ContDiffOn ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) v (Ann P))
     (hw : ContDiffOn ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) w (Ann P)) (hvw : ∀ ζ ∈ Ann P, w ζ * v ζ = 1)
@@ -84,7 +84,7 @@ theorem toSm_mulZ (P : M.Par) {v w : ℂ → ℂ} (hv : ContDiffOn ℝ ((⊤ : �
       (MA.smSub P.r P.TT).mul_mem (comp_snd_mem_smSub P hv) hg
     rw [fnZ_eq_mk P hv]
     unfold MA.toSm
-    rw [dif_pos hvg, dif_pos hg]
+    rw [dite_eq_left hvg, dite_eq_left hg]
     rfl
   · have hvg : (fun q : MA.Qp P.r P.TT => v q.1.2 * g q) ∉ MA.smSub P.r P.TT := by
       intro h

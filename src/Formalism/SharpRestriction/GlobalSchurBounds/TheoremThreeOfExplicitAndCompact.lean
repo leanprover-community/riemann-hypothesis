@@ -281,11 +281,4 @@ theorem part_five_family_of_explicit {eps : ℝ} (Fm : Formalism.MainNotions.Fam
   exact part_five_all_of_explicit _ _ C0 C0 _ (hx0 x (le_trans (le_max_left _ _) hx) hxx i)
     (fun Δ w hB => hx1 x (le_trans (le_max_right _ _) hx) hxx i Δ w hB) (le_max_left _ _) (le_max_right _ _)
 
-section DS
-
-open Formalism.MainNotions.S MeasureTheory Matrix
-open scoped InnerProductSpace ComplexOrder
-
-end DS
-
 end Formalism.MainNotions.StandardLattice

@@ -60,12 +60,6 @@ theorem resChar_conj (w : D.what₂.places.Pl) :
 
 end Places
 
-section Base
-
-variable {N : ℕ} [NeZero N]
-
-end Base
-
 theorem scale_b'_nonneg (sc : Scale) : 0 ≤ sc.b' := by
   have hx : 0 < sc.x := by linarith [sc.one_lt_alt]
   have hb : 0 < sc.b := Real.exp_pos _

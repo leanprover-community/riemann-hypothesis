@@ -136,7 +136,7 @@ theorem fixed_twist (ϖ : PiSys l e) (H : Subgroup (GQ l))
   by_cases hA : ∀ σ ∈ H, ∀ (n : ℕ) (y : Om l), y ^ l ^ n = 1 → σ y = y
   · exact ⟨1, 0, by simp, fun σ hσ => by rw [mul_one]; exact hfix σ hσ (hA σ hσ) 1⟩
   have hex : ∃ N : ℕ, ∃ σ ∈ H, ∃ y : Om l, y ^ l ^ N = 1 ∧ σ y ≠ y := by
-    push_neg at hA
+    push Not at hA
     obtain ⟨σ, hσ, n, y, hy, hne⟩ := hA
     exact ⟨n, σ, hσ, y, hy, hne⟩
   set N := Nat.find hex with hN

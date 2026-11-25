@@ -180,7 +180,7 @@ private lemma norm_root_le_two_pow_mul_of_coeff_le {p : ℂ[X]} {n : ℕ} (hp : 
     ‖a‖ ≤ 2 ^ n * ρ := by
   by_cases hle : ‖a‖ ≤ ρ
   · exact hle.trans (le_mul_of_one_le_left hρ (one_le_pow₀ (by norm_num)))
-  push_neg at hle
+  push Not at hle
   have hpos : 0 < ‖a‖ := hρ.trans_lt hle
   obtain ⟨m, rfl⟩ : ∃ m, n = m + 1 := by
     rcases n with _ | m

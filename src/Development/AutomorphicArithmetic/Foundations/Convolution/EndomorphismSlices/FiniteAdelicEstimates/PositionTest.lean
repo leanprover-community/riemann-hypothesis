@@ -32,7 +32,7 @@ private theorem levelFam_of {E : Type} [Field E] [NumberField E] [IsCMField E] {
     · refine ⟨ho w, hle w, fun k hk => ?_⟩
       have h : GlobalTheory.BCT.thL n w = MonoidHom.id _ := by
         unfold GlobalTheory.BCT.thL
-        rw [if_pos (hZ w hw)]
+        rw [ite_eq_left (hZ w hw)]
       rw [h]
       exact hk
     · rw [hoff w hw]
@@ -57,25 +57,25 @@ theorem positionTest : PositionTest := by
   · have h := PositivityTheory.Rg.BcB.F.LocOk.prod_open_le (h₁.1 w) (h₂.1 w)
     exact ⟨_, h.1, h.2, hφ w hw⟩
   · by_cases hw : w ∈ Z
-    · have h : intersection_update_fsHerm_neg_one Z T φ e w = φ w := if_pos hw
+    · have h : intersection_update_fsHerm_neg_one Z T φ e w = φ w := ite_eq_left hw
       rw [h]
       exact hφ w hw
     · by_cases hT : w ∈ T
       · have h : intersection_update_fsHerm_neg_one Z T φ e w = fn2 a b w (e w) := by
           unfold intersection_update_fsHerm_neg_one
-          rw [if_neg hw, if_pos hT]
+          rw [ite_eq_right hw, ite_eq_left hT]
         rw [h]
         show GlobalTheory.BCT.IsHecke ((L.L₁ w).prod (L.L₂ w)) _
         rw [hK w hw]
         exact UpperTheory.V.Z.Tf.GlobalTraceComparison.Asm.exHecke2 E a b w (e w)
       · have h : intersection_update_fsHerm_neg_one Z T φ e w = L.ln w := by
           unfold intersection_update_fsHerm_neg_one
-          rw [if_neg hw, if_neg hT, hI w hw]
+          rw [ite_eq_right hw, ite_eq_right hT, hI w hw]
         rw [h]
         exact hH w
   · filter_upwards [(Z ∪ T).finite_toSet.compl_mem_cofinite] with w hw
     have hw' : w ∉ Z ∧ w ∉ T := by simpa using hw
     unfold intersection_update_fsHerm_neg_one
-    rw [if_neg hw'.1, if_neg hw'.2]
+    rw [ite_eq_right hw'.1, ite_eq_right hw'.2]
 
 end UpperTheory.Zero.ConvolutionTheory.EB

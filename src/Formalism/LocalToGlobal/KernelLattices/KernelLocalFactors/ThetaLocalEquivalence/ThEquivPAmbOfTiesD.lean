@@ -146,7 +146,7 @@ theorem thEquivP_ofD (e : X.Tau → ℤ) (hV : JetInVV X.K lam lam' n) (hrat : A
   have hR' : InRange Sall D c (gmap γ.1 N) (gmap γ'.1 N') (γ'.1.toLinearMap ∘ₗ x ∘ₗ γ.1.symm.toLinearMap) :=
     ⟨isSdLat_gmap hR.1 γ, isSdLat_gmap hR.2.1 γ', hR.2.2.1, hR.2.2.2.1, (divLat_gmap_iff Sall D γ.1 γ'.1 N N' x).2 hR.2.2.2.2⟩
   unfold thDistC
-  rw [if_pos ⟨hR'.2.2.2.1, hR'.2.2.2.2⟩, if_pos ⟨hR.2.2.2.1, hR.2.2.2.2⟩]
+  rw [ite_eq_left ⟨hR'.2.2.2.1, hR'.2.2.2.2⟩, ite_eq_left ⟨hR.2.2.2.1, hR.2.2.2.2⟩]
   apply LinearMap.ext
   intro P
   apply Subtype.ext

@@ -35,7 +35,7 @@ theorem Qi_spanLt (a : ℕ) (x : Fin X.B.I.n → ℂ) (hx : x ∈ spanLt (eV (X 
   induction hx using Submodule.span_induction with
   | mem x hx' =>
     obtain ⟨b, hb, rfl⟩ := hx'
-    rw [Qi_e, Pi.smul_apply, Pi.single_apply, if_neg, smul_zero]
+    rw [Qi_e, Pi.smul_apply, Pi.single_apply, ite_eq_right, smul_zero]
     intro h
     have := congrArg Fin.val h
     simp only [Formalism.QuantumDeterminants.eI] at this
@@ -112,7 +112,7 @@ theorem inN_iff (z : Fin X.B.I.n → ℂ) (hz : Formalism.QuantumDeterminants.in
       rw [hcol (C.Qi τ * g * C.Q τ) i j]
       have horth : ∀ b : Fin D.R.rS, hJ (X.B.I.ε (vOf X τ)) (eV τ b) (C.Q τ *ᵥ Pi.single j 1) = 0 := by
         intro b
-        rw [hJ_e, Matrix.mulVec_mulVec, hQiQ, Matrix.one_mulVec, Pi.single_apply, if_neg, mul_zero]
+        rw [hJ_e, Matrix.mulVec_mulVec, hQiQ, Matrix.one_mulVec, Pi.single_apply, ite_eq_right, mul_zero]
         intro h
         have := congrArg Fin.val h
         simp only [Formalism.QuantumDeterminants.esI] at this

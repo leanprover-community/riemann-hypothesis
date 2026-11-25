@@ -143,7 +143,7 @@ theorem ind_nsmul_mem (h : IsBichar χ) (hχ : ∀ x ∈ X, ∀ y ∈ Y, χ x y 
       by_cases hr : r ∈ L ∧ r ∉ K
       · obtain ⟨r', hr', rfl⟩ := dX r (hL hr.1)
         have : ¬ ∀ y ∈ L', χ r' y = 1 := fun hh => hr.2 ⟨r', hX r' hr' hh, rfl⟩
-        push_neg at this
+        push Not at this
         obtain ⟨y, hy, hne⟩ := this
         obtain ⟨y', hy', rfl⟩ := dY y (hL' hy)
         rw [← h.nsmul] at hne
@@ -171,7 +171,7 @@ theorem ind_nsmul_mem (h : IsBichar χ) (hχ : ∀ x ∈ X, ∀ y ∈ Y, χ x y 
   funext t
   by_cases ht : t ∈ K
   · simp [ind, ht, h1 t ht]
-  · rw [ind, if_neg ht]
+  · rw [ind, ite_eq_right ht]
     by_cases htL : t ∈ L
     · obtain ⟨r, hr, u, hu, rfl⟩ := hfin t htL
       have huK : k • u ∈ K := ⟨u, hu, rfl⟩

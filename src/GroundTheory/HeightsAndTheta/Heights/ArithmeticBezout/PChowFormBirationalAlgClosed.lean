@@ -129,8 +129,8 @@ theorem ChowFormBirationalAlgClosed.proof : ChowFormBirationalAlgClosed.Statemen
     have h := pderiv_aeval_eq_sum (genSubst (genPt P) c) (0, m) g
     rw [hg0, map_zero] at h
     simp only [pderiv_genSubst, mul_sub, Finset.sum_sub_distrib, mul_ite, mul_one, mul_zero,
-      Finset.sum_ite_eq', Finset.mem_univ, if_true, Fintype.sum_prod_type, Fin.sum_univ_succ,
-      Fin.succ_ne_zero, if_false, Finset.sum_const_zero, add_zero] at h
+      Finset.sum_ite_eq', Finset.mem_univ, ite_true, Fintype.sum_prod_type, Fin.sum_univ_succ,
+      Fin.succ_ne_zero, ite_false, Finset.sum_const_zero, add_zero] at h
     rw [eq_comm, sub_eq_zero] at h
     rw [h, Finset.mul_sum]
     exact Finset.sum_congr rfl fun l _ => by ring

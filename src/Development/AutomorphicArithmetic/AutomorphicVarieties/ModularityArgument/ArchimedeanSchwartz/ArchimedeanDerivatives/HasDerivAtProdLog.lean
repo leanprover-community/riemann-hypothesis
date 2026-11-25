@@ -177,7 +177,7 @@ private theorem rd_wt (u : ℂ) (e : (K →+* ℂ) → ℕ) (τ : K →+* ℂ) (
   rw [rd, fderiv_wt u e a b _ hx, fderiv_wt u e a b _ hx]
   split_ifs with h
   · have : ∑ σ, (u - e σ) * ((1 / 2 : ℂ) * (coord σ (atEmb τ 1) - Complex.I * coord σ (atEmb τ Complex.I))) = u - e τ := by
-      simp only [UpperTheory.V.WeylC.coord_hol, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+      simp only [UpperTheory.V.WeylC.coord_hol, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     rw [← this]
     simp only [Finset.sum_mul, Finset.mul_sum, ← Finset.sum_sub_distrib]
     exact Finset.sum_congr rfl fun σ _ => by ring
@@ -237,9 +237,9 @@ private theorem foldr_chart_wt (u : ℂ) (e : (K →+* ℂ) → ℕ) (τ : K →
       rw [Nat.cast_sub (by omega), Nat.cast_sub (by omega)]
       simp
     by_cases hpj : p j = j
-    · simp only [if_pos hpj, Module.algebraMap_end_apply, map_smul, smul_eq_mul, hj]
+    · simp only [ite_eq_left hpj, Module.algebraMap_end_apply, map_smul, smul_eq_mul, hj]
       ring
-    · simp only [if_neg hpj, LinearMap.zero_apply, map_zero]
+    · simp only [ite_eq_right hpj, LinearMap.zero_apply, map_zero]
       ring
 
 end UpperTheory.V.Z.Inf

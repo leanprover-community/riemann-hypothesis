@@ -59,7 +59,7 @@ private theorem UpperTheory.Reformulated.B.Qf34.taylor {k B : Type*} [CommRing k
       · rw [pderiv_X_of_ne (Ne.symm hl), map_zero]
         ring
     simp only [e, Finset.sum_add_distrib, ← Finset.mul_sum, ← hp, Finset.sum_ite_eq',
-      Finset.mem_univ, if_true, map_mul]
+      Finset.mem_univ, ite_true, map_mul]
     linear_combination - h p (X i)
 
 open MvPolynomial in

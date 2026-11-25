@@ -81,9 +81,9 @@ private theorem extend_SB {X Y : Type} [TopologicalSpace X] [T2Space X] [Topolog
         have := Set.ext_iff.mp (hOt c hc0) y
         simpa using this
       by_cases h : c = a y
-      · rw [Set.indicator_of_mem (hm.mpr h.symm), if_pos h, mul_one]
+      · rw [Set.indicator_of_mem (hm.mpr h.symm), ite_eq_left h, mul_one]
       · have : i y ∉ O c := fun h' => h (hm.mp h').symm
-        rw [Set.indicator_of_notMem this, if_neg h, mul_zero]
+        rw [Set.indicator_of_notMem this, ite_eq_right h, mul_zero]
     change ∑ c ∈ S, c * (O c).indicator (fun _ => (1 : ℂ)) (i y) = a y
     rw [Finset.sum_congr rfl hterm, Finset.sum_ite_eq' S (a y) (fun c => c)]
     split_ifs with h

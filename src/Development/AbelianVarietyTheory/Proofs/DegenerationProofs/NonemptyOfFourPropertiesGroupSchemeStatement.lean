@@ -588,7 +588,7 @@ theorem isOpen_setOf_linearIndependent_on_fibres :
       refine Set.mem_iInter.2 fun k => ?_
       have hk : ⊤ ≤ (a k).1.1 ⁻¹ᵁ L.U (j k) := by
         by_contra hn
-        exact ha (Matrix.det_eq_zero_of_row_eq_zero k fun i => dif_neg hn)
+        exact ha (Matrix.det_eq_zero_of_row_eq_zero k fun i => dite_eq_right hn)
       have := hk ht
       rw [← hπ k] at this
       exact this
@@ -654,7 +654,7 @@ theorem geometric_of_field (G Z : Scheme.{0}) (f : G ⟶ Z) [Flat f]
       refine Set.mem_iInter.2 fun k => ?_
       have hk : ⊤ ≤ (a k).1.1 ⁻¹ᵁ L.U (j k) := by
         by_contra hn
-        exact ha (Matrix.det_eq_zero_of_row_eq_zero k fun i => dif_neg hn)
+        exact ha (Matrix.det_eq_zero_of_row_eq_zero k fun i => dite_eq_right hn)
       have := hk ht
       rw [← hπ k] at this
       exact this

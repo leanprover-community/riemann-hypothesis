@@ -126,9 +126,9 @@ theorem hilbFn_map_rename (I : Ideal (MRing ι₁ F)) (m : K₂ → ℤ) :
   have hpos : (∀ k, 0 ≤ m k) ↔ ∀ k, 0 ≤ (m ∘ e) k :=
     ⟨fun h k => h (e k), fun h k => by simpa using h (e.symm k)⟩
   by_cases h : ∀ k, 0 ≤ m k
-  · rw [if_pos h, if_pos (hpos.1 h)]
+  · rw [ite_eq_left h, ite_eq_left (hpos.1 h)]
     exact congrArg _ (finrank_gradedPiece_map_rename e φ hφ I (fun k => (m k).toNat))
-  · rw [if_neg h, if_neg (mt hpos.2 h)]
+  · rw [ite_eq_right h, ite_eq_right (mt hpos.2 h)]
 
 
 include hφ in

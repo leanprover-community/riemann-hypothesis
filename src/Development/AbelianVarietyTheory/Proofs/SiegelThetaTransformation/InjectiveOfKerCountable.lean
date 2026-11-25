@@ -168,7 +168,7 @@ theorem exists_const {σ : c.F →+* ℂ} {r : ℕ} {U : Formalism.L2.PjFree.Unf
       y.x = W.F.u (W.ik k) P ∧ Formalism.L2.PjFree.toC (evR Xo c f y) = C k := by
   obtain ⟨-, -, honto, -, hsec, -⟩ := hU
   have hC : ∀ k, ∃ C : ℂ, ∀ x : (U.X k).dom, Formalism.L2.PjFree.toC (evR Xo c f (U.un k x)) = C := fun k => by
-    have hr : ∀ x : (U.X k).dom, Formalism.L2.PjFree.rdU U f k x = Formalism.L2.PjFree.toC (evR Xo c f (U.un k x)) := fun x => dif_pos x.2
+    have hr : ∀ x : (U.X k).dom, Formalism.L2.PjFree.rdU U f k x = Formalism.L2.PjFree.toC (evR Xo c f (U.un k x)) := fun x => dite_eq_left x.2
     obtain ⟨C, -, hC⟩ := const_of_norm_factor (FourierCoefficientDomain.isOpen_dom (U.X k))
       (GlobalTheory.frames_isConnected E r (U.X k)).isPreconnected (J := Unit) (fun _ => Formalism.L2.PjFree.rdU U f k) (fun _ _ => 1) 1 one_pos
       (fun _ => (hsec 0 0 ⟨fun _ => antitone_const, Even.zero⟩ f hf k).1) (fun _ => differentiableOn_const _)
@@ -182,7 +182,7 @@ theorem exists_const {σ : c.F →+* ℂ} {r : ℕ} {U : Formalism.L2.PjFree.Unf
   have hT : ∀ y : FrPt Xo c (CAt σ), FromTest (K := c.F) (fun S _ _ => FrPt Xo c S) (fun φ y z => FrMap φ y z) y :=
     fun y => by
       by_contra hn
-      have h0 : evR Xo c f y = 0 := dif_neg hn
+      have h0 : evR Xo c f y = 0 := dite_eq_right hn
       have := h1 y
       rw [h0] at this
       exact zero_ne_one ((norm_zero (E := ℂ)).symm.trans this)

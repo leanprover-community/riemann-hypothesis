@@ -1247,7 +1247,7 @@ theorem shearK_eq_rmul {F E : Type} [Field F] [Field E] [Algebra F E] (R : Type)
     shearK a s X = GlobalTheory.CompanionTheory.SW.rmul R X (shearM a s) := by
   funext c i
   simp only [shearK, GlobalTheory.CompanionTheory.SW.rmul, shearM, Matrix.add_apply, Matrix.of_apply, Matrix.one_apply, mul_add,
-    Finset.sum_add_distrib, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    Finset.sum_add_distrib, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   by_cases h : c = a
   · subst h
     simp [mul_comm]
@@ -1498,7 +1498,7 @@ theorem avgInf_tendsto : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [N
     intro k X
     have hm : (c : Matrix (Fin n) (Fin n) (Ainf F ⊗[F] E)) - gramR (Ainf F) σ J X ∈ HermR (Ainf F) σ n := (c - Q X).2
     unfold gramTest
-    exact dif_pos hm
+    exact dite_eq_left hm
   let r : ℕ → HermR (Ainf F) σ n → ℝ := fun k y => ρ k (c - y)
   have hr1 : ∀ k, Continuous (r k) := fun k => (hρ k).1.comp (continuous_const.sub continuous_id)
   have hr2 : ∀ k, HasCompactSupport (r k) := fun k => (hρ k).2.1.comp_homeomorph (Homeomorph.subLeft c)

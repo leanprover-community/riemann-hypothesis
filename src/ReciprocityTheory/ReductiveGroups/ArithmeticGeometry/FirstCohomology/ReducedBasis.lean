@@ -169,7 +169,7 @@ lemma exists_b [FiniteDimensional ℝ E] {d : ℕ} (u : Fin d → E) (hu : Linea
     · have hx0 : 0 < phi u k x := by rw [hx]; exact hb0
       have hx1 : phi u k x ≤ 1 := by rw [hx]; exact hb1
       exact hbmin x ⟨⟨hxX, hxV, hx0, hx1, hxd⟩, hx.trans hbphi⟩
-    · push_neg at hxd
+    · push Not at hxd
       have hlt : ‖b‖ ^ 2 < ‖x‖ ^ 2 := lt_of_le_of_lt hbd hxd
       by_contra! hc
       nlinarith [norm_nonneg b, norm_nonneg x]

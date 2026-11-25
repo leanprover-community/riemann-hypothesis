@@ -106,7 +106,7 @@ theorem exists_unf_one {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host D.
   · rw [← hCι, ← hCx]
     exact hdl
   · rw [hδ]
-    refine (dif_pos (hdu.2.2.2.1 h)).trans ?_
+    refine (dite_eq_left (hdu.2.2.2.1 h)).trans ?_
     have : _root_.IsReduced (CAt ((inC c).comp (d.eF.symm : d.c₂.F →+* c.F))) := inferInstanceAs (_root_.IsReduced ℂ)
     exact evalAt_one (S := CAt ((inC c).comp (d.eF.symm : d.c₂.F →+* c.F))) _ _ _
       (GlobalTheory.Frames.allTest_of_secBaseChange GlobalTheory.firstFiveLaws.1.secBaseChange _ H Dw d.l₂ d.Xo₂ d.c₂
@@ -152,7 +152,7 @@ theorem exists_BIs (hL : R.toLevCh.Is A.μ0) (hv : Formalism.L2.Host.ValLL D R.C
   classical
   refine ⟨fun cc => if h : cc ≠ ⊥ ∧ cc ⊔ Ideal.span {((bad : ℕ) : 𝓞 D.host.E)} = ⊤ then
     ⟨_, GlobalTheory.Mem.BVal.mem_of_primes _ M _ key cc h.1 h.2⟩ else 0, fun cc h0 h1 => ?_⟩
-  simp only [dif_pos (And.intro h0 h1)]
+  simp only [dite_eq_left (And.intro h0 h1)]
   rfl
 
 

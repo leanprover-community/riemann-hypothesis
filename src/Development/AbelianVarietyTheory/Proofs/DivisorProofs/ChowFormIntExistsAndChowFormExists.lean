@@ -98,10 +98,10 @@ theorem not_lt_of_isChowFormInt {P : Ideal (MvPolynomial (Fin N) K)} {D D' δ δ
   rw [map_zero, map_zero, eval_map, ← aeval_def]
   obtain ⟨y, hy, hP, hu⟩ := (h'.zero_iff _).1 (aeval_eq_zero_of_block h'
     (fun v => if hv : (v.1 : ℕ) < D + 1 then u (⟨v.1, hv⟩, v.2) else 0) (Fin.last _)
-    (fun j => dif_neg (by simp; omega)))
+    (fun j => dite_eq_right (by simp; omega)))
   refine (h.zero_iff u).2 ⟨y, hy, hP, fun i => ?_⟩
   have := hu ⟨i, by omega⟩
-  simpa only [dif_pos i.2] using this
+  simpa only [dite_eq_left i.2] using this
 
 theorem exists_X_notMem {P : Ideal (MvPolynomial (Fin N) K)} {D δ : ℕ}
     {f : MvPolynomial (Fin (D + 1) × Fin N) K} (h : IsChowFormInt P D δ f) : ∃ j, X j ∉ P := by

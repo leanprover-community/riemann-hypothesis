@@ -241,7 +241,7 @@ theorem det_vV_add_eq_zero : ∀ (K : Type) [Field K] [NumberField K] (𝔓 : He
     have hk : ∑ i, algebraMap T.V T.Fr (q i) * (∑ j, C i j • fun k => iK (u j k)) k = iK (b l k) := by
       rw [← congrFun hq k, Finset.sum_apply]
       simp only [Pi.smul_apply, Algebra.smul_def]
-    simp only [Finset.sum_mul, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+    simp only [Finset.sum_mul, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
     rw [Finset.sum_comm]
     calc ∑ i, ∑ m, algebraMap T.V T.Fr (q i) * P i m * B m k
         = ∑ i, algebraMap T.V T.Fr (q i) * (∑ j, C i j • fun k => iK (u j k)) k := by
@@ -415,8 +415,8 @@ theorem exOf_flatWt_some (τ : Psi H) (σ : E →+* ℂ) (i : Fin (Dw.mult σ)) 
       · intro e'; apply Subtype.ext; show conjEmb σ = τ.1; rw [e', conjEmb_conjEmb]
     by_cases e : σ = conjEmb τ.1
     · have h2 := hiff.2 e
-      rw [if_neg hne, if_pos e]
-      simp only [flatWt, parWt, if_pos h2]
+      rw [ite_eq_right hne, ite_eq_left e]
+      simp only [flatWt, parWt, ite_eq_left h2]
       norm_num
     · have : (⟨conjEmb σ, h'⟩ : Psi H) ≠ τ := fun e' => e (hiff.1 e')
       simp [flatWt, parWt, this, e, hne]
@@ -436,12 +436,12 @@ theorem flatWt_char (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Reci
     · congr 1
       · rw [← Finset.prod_inv_distrib]
         refine Finset.prod_congr rfl fun i _ => ?_
-        rw [exOf_flatWt_some, if_pos rfl, zpow_neg_one]
+        rw [exOf_flatWt_some, ite_eq_left rfl, zpow_neg_one]
       · refine Finset.prod_congr rfl fun i _ => ?_
-        rw [exOf_flatWt_some, if_neg hne.symm, if_pos rfl, zpow_one]
+        rw [exOf_flatWt_some, ite_eq_right hne.symm, ite_eq_left rfl, zpow_one]
     · rintro σ ⟨h1, h2⟩
       refine Finset.prod_eq_one fun i _ => ?_
-      rw [exOf_flatWt_some, if_neg h1, if_neg h2, zpow_zero]
+      rw [exOf_flatWt_some, ite_eq_right h1, ite_eq_right h2, zpow_zero]
   rw [key, ← Units.coe_prod, ← Units.coe_prod, ← Units.val_mul]
   congr 1
   rw [mul_comm, mul_inv_cancel_left]
@@ -1484,7 +1484,7 @@ lemma clear_last_column {n : ℕ} (A : Matrix (Fin (n+1)) (Fin (n+1)) F) :
   by_cases hz : ∀ i, A i (Fin.last n) = 0
   · refine ⟨1, by simp, fun i => ?_⟩
     simp [hz]
-  push_neg at hz
+  push Not at hz
   obtain ⟨i1, hi1⟩ := hz
   obtain ⟨i0, hmax⟩ := exists_max_val V F (fun i => A i (Fin.last n))
   have h0 : A i0 (Fin.last n) ≠ 0 := by
@@ -1509,8 +1509,8 @@ lemma clear_last_column {n : ℕ} (A : Matrix (Fin (n+1)) (Fin (n+1)) F) :
       simp [E, hne, hb]
   · rw [Matrix.map_mul, Matrix.mul_assoc, permMatrix_map, Matrix.mul_apply,
       Fintype.sum_eq_add i.castSucc (Fin.last n) (Fin.castSucc_lt_last i).ne]
-    · simp only [permMatrix_mul_apply, E, Matrix.map_apply, Matrix.of_apply, if_true,
-        (Fin.castSucc_lt_last i).ne, if_false, map_one, map_neg, hq]
+    · simp only [permMatrix_mul_apply, E, Matrix.map_apply, Matrix.of_apply, ite_true,
+        (Fin.castSucc_lt_last i).ne, ite_false, map_one, map_neg, hq]
       have : σ (Fin.last n) = i0 := by simp [hσ]
       rw [this]
       field_simp

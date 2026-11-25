@@ -68,11 +68,11 @@ private theorem continuous_ιLev_apply (ρ : ℕ) (p q : Fin (2 * (1 + ρ) + k +
   simp only [Formalism.QuantumDeterminants.ιLev]
   by_cases hp : 1 ≤ p.val ∧ p.val < 2 * ρ + k + 1 + 1
   · by_cases hq : 1 ≤ q.val ∧ q.val < 2 * ρ + k + 1 + 1
-    · simp only [dif_pos hp, dif_pos hq, Matrix.of_apply]
+    · simp only [dite_eq_left hp, dite_eq_left hq, Matrix.of_apply]
       exact (continuous_apply _).comp (continuous_apply _)
-    · simp only [dif_pos hp, dif_neg hq]
+    · simp only [dite_eq_left hp, dite_eq_right hq]
       exact continuous_const
-  · simp only [dif_neg hp]
+  · simp only [dite_eq_right hp]
     exact continuous_const
 
 theorem levA_cont (ρ : ℕ) : Continuous (levA (k := k) ρ) := by

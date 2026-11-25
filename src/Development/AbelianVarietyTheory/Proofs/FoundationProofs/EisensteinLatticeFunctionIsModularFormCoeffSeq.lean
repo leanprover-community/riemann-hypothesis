@@ -1095,7 +1095,7 @@ lemma latF_trans (L₁ L₂ : ℕ) (hL₁ : 0 < L₁) (b χ₁ χ₂ : ℤ → �
   by_cases h : (L₁ : ℤ) ∣ x.1
   · obtain ⟨m, hm⟩ := h
     have h2 : (L₁ : ℤ) ∣ x.1 * a + x.2 * (L₁ * L₂ * k) := ⟨m * a + x.2 * L₂ * k, by rw [hm]; ring⟩
-    rw [if_pos ⟨m, hm⟩, if_pos h2]
+    rw [ite_eq_left ⟨m, hm⟩, ite_eq_left h2]
     have e1 : x.1 / L₁ = m := by rw [hm, Int.mul_ediv_cancel_left _ hL]
     have e2 : (x.1 * a + x.2 * (L₁ * L₂ * k)) / L₁ = m * a + (x.2 * k) * L₂ := by
       rw [show x.1 * a + x.2 * (L₁ * L₂ * k) = L₁ * (m * a + (x.2 * k) * L₂) by rw [hm]; ring,
@@ -1112,7 +1112,7 @@ lemma latF_trans (L₁ L₂ : ℕ) (hL₁ : 0 < L₁) (b χ₁ χ₂ : ℤ → �
       intro h2; apply h
       have h3 : (L₁ : ℤ) ∣ x.2 * (L₁ * L₂ * k) := ⟨x.2 * L₂ * k, by ring⟩
       exact hcopa.dvd_of_dvd_mul_right ((dvd_add_left h3).mp h2)
-    rw [if_neg h, if_neg h2, mul_zero]
+    rw [ite_eq_right h, ite_eq_right h2, mul_zero]
 
 lemma latF_kills (L₁ L₂ : ℕ) (hL₁ : 0 < L₁) (b : ℤ → ℂ) (φ : ZMod L₁ → ℂ)
     (hb : ∀ x, b (x + L₂) = b x) (hhat : hat φ 0 = 0) (k d : ℤ) (hd : IsUnit (d : ZMod L₁)) :
@@ -1129,14 +1129,14 @@ lemma latF_kills (L₁ L₂ : ℕ) (hL₁ : 0 < L₁) (b : ℤ → ℂ) (φ : ZM
         = ∑ r ∈ Finset.range L₁, b m * φ ((x.2 : ZMod L₁) + (r : ZMod L₁) * (-(d : ZMod L₁))) := by
           refine Finset.sum_congr rfl fun r _ => ?_
           simp only [latF, Prod.fst_sub, Prod.snd_sub, Prod.smul_mk, smul_eq_mul]
-          rw [if_pos ⟨m - r * L₂ * k, by rw [hm]; ring⟩,
+          rw [ite_eq_left ⟨m - r * L₂ * k, by rw [hm]; ring⟩,
             show x.1 - (r : ℤ) * (L₁ * L₂ * k) = L₁ * (m + (-(r * k)) * L₂) by rw [hm]; ring,
             Int.mul_ediv_cancel_left _ hL, hpz]
           congr 2; push_cast; ring
       _ = 0 := by rw [← Finset.mul_sum, sum_shift L₁ φ _ _ hd.neg, hhat, mul_zero]
   · refine Finset.sum_eq_zero fun r _ => ?_
     simp only [latF, Prod.fst_sub, Prod.snd_sub, Prod.smul_mk, smul_eq_mul]
-    rw [if_neg]
+    rw [ite_eq_right]
     intro h2; apply h
     have h3 : (L₁ : ℤ) ∣ (r : ℤ) * (L₁ * L₂ * k) := ⟨r * L₂ * k, by ring⟩
     simpa using dvd_add h2 h3

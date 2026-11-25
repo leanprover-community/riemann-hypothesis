@@ -174,9 +174,9 @@ lemma ioh_Tm_rep {Eop : Fin n → Fin n → (Matrix (Fin n) (Fin n) ℂ → E) �
   have he := hR a b F x h g hg
   unfold Top Tm
   by_cases hab : a = b
-  · rw [if_pos hab, if_pos hab, LinearMap.add_apply, Module.algebraMap_end_apply, Submodule.coe_add,
+  · rw [ite_eq_left hab, ite_eq_left hab, LinearMap.add_apply, Module.algebraMap_end_apply, Submodule.coe_add,
       Submodule.coe_smul, Pi.add_apply, Pi.smul_apply, he, h g hg]
-  · rw [if_neg hab, if_neg hab, zero_add, zero_add, he]
+  · rw [ite_eq_right hab, ite_eq_right hab, zero_add, zero_add, he]
 
 lemma ioh_foldr_rep {Eop : Fin n → Fin n → (Matrix (Fin n) (Fin n) ℂ → E) → (Matrix (Fin n) (Fin n) ℂ → E)}
     {Ealg : Fin n → Fin n → Module.End ℂ (ioS ε E)} (hR : IOHRepr Eop Ealg)

@@ -140,10 +140,10 @@ theorem hasDepth_phiA (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k]
     obtain ⟨κ, hκ, h⟩ := key X Z hX hZ
     rw [h]
     exact GlobalTheory.SplitFlip.Model.isPrimFrame_mul hX κ hκ.1
-  refine ⟨fun X hX => if_neg fun h => hX h.2.1, fun X Z hZ => ?_⟩
+  refine ⟨fun X hX => ite_eq_right fun h => hX h.2.1, fun X Z hZ => ?_⟩
   by_cases hX : IsPrimFrame (latA ϖ e (diagLat c)) X
   · unfold phiA
-    rw [if_pos hX, if_pos (prim X Z hX hZ)]
+    rw [ite_eq_left hX, ite_eq_left (prim X Z hX hZ)]
     obtain ⟨κ, hκ, h⟩ := key X Z hX hZ
     obtain ⟨h1, h2⟩ := invT_mem_of_dual (mem_glLatCong_of_smul hκ)
     obtain ⟨g, rfl⟩ := (rank_eq_card_iff_exists_frameMatrixFirstColumnBlock σ X).1 hX.1
@@ -157,6 +157,6 @@ theorem hasDepth_phiA (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k]
   · have hX' : ¬ IsPrimFrame (latA ϖ e (diagLat c)) (X + Z) := fun h => hX (by
       simpa using prim _ (-Z) h (neg_mem hZ))
     unfold phiA
-    rw [if_neg hX, if_neg hX']
+    rw [ite_eq_right hX, ite_eq_right hX']
 
 end GlobalTheory.FrameDepth

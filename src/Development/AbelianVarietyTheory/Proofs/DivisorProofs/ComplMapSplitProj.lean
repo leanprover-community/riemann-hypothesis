@@ -74,15 +74,6 @@ theorem map_formula {T : Type} [CommRing T] (p : R →+* T) (s : R →+* R) (X Y
 
 end Lin
 
-section Frame
-
-variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
-  {σ : E →ₐ[F] E} {n : ℕ} {J : Matrix (Fin n) (Fin n) E} {r : ℕ} {X Y : Matrix (Fin n) (Fin r) E}
-  {C : GL (Fin n) E} {l d : ℕ}
-
-
-end Frame
-
 section Adele
 
 theorem gl_entry {R : Type} [CommRing R] {d : ℕ} {x y : GL (Fin d) R} (h : x = y) (a b : Fin d) : x.1 a b = y.1 a b := by

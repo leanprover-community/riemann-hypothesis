@@ -131,7 +131,7 @@ theorem finiteAdele_split (p : ℕ) [Fact p.Prime] :
     have hg : ∀ v (hv : v.asIdeal ≠ Ideal.span {(p : ℤ)}), g v = AfP.eval ⟨v, hv⟩ b := by
       intro v hv
       have hv0 : v ≠ placeP p := fun h ↦ hv (h ▸ rfl)
-      simp only [g, g0, Function.update_of_ne hv0, dif_neg hv]
+      simp only [g, g0, Function.update_of_ne hv0, dite_eq_right hv]
     have hS : {w : AwayP p | ¬ AfP.eval w b ∈ w.1.adicCompletionIntegers ℚ}.Finite :=
       Filter.eventually_cofinite.1 b.2
     have hfin : {v : HeightOneSpectrum ℤ | ¬ g v ∈ v.adicCompletionIntegers ℚ}.Finite := by

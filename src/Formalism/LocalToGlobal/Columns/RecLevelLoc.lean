@@ -33,11 +33,11 @@ theorem rll_sum_apply (S : Finset (HeightOneSpectrum (𝓞 F))) (w : HeightOneSp
     map_sum (evalV F w) _ _
   rw [h]
   by_cases hw : w ∈ S
-  · rw [if_pos hw, Finset.sum_eq_single w]
+  · rw [ite_eq_left hw, Finset.sum_eq_single w]
     · exact afsplitI_self w 1
     · intro v _ hv; exact afsplitI_ne v w (Ne.symm hv) 1
     · intro h'; exact absurd hw h'
-  · rw [if_neg hw]
+  · rw [ite_eq_right hw]
     refine Finset.sum_eq_zero fun v hv => afsplitI_ne v w ?_ 1
     rintro rfl; exact hw hv
 
@@ -323,7 +323,7 @@ theorem mirabolicLevel_maps_baseLattice {k : GL (Fin n) (E ⊗[F] Formalism.L2.H
   · rw [map_sum, Finset.sum_eq_single (lastIdx n)]
     · rw [map_mul, huP P hP, mul_zero]
     · intro j _ hj
-      rw [map_mul, ← hr P, hm P hP j, if_neg hj, zero_mul]
+      rw [map_mul, ← hr P, hm P hP j, ite_eq_right hj, zero_mul]
     · intro h; exact absurd (Finset.mem_univ _) h
 
 theorem mirabolicLevel_le_stabilizer_base : J0 hc n ST ≤ stabGL (Formalism.L2.Herm.hatL (F := F) (baseLb E n ST)) := fun k hk =>

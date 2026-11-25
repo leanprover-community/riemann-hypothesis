@@ -232,7 +232,7 @@ private theorem pj_aeval (m : ℕ) (a : σ → MvPowerSeries τ R) (q : MvPolyno
     by_cases h : e = 0
     · subst h
       simp
-    · rw [if_neg h, if_neg (Ne.symm h)]
+    · rw [ite_eq_right h, ite_eq_right (Ne.symm h)]
   | add p q hp hq => rw [map_add (f := _), map_add (f := _), pj_add, hp, hq]
   | mul_X p s hp => rw [map_mul, map_mul, pj_mul', hp, MvPolynomial.aeval_X, MvPolynomial.aeval_X]
 
@@ -820,8 +820,8 @@ theorem mk_psTrunc {S : Type} [CommRing S] {κ : Type} [Fintype κ] [DecidableEq
   have co : ∀ e : κ →₀ ℕ, e.degree < m + 1 → (psTrunc m f).coeff e = MvPowerSeries.coeff e f := fun e he => by
     have hm : e ∈ degLE m := Finset.mem_filter.2 ⟨Finset.mem_image.2
       ⟨fun i => ⟨e i, lt_of_le_of_lt (Finsupp.le_degree i e) he⟩, Finset.mem_univ _, by ext i; simp⟩, Nat.le_of_lt_succ he⟩
-    rw [psTrunc, MvPolynomial.coeff_sum, Finset.sum_eq_single e (fun b _ hb => by rw [MvPolynomial.coeff_monomial, if_neg hb])
-      (fun h => absurd hm h), MvPolynomial.coeff_monomial, if_pos rfl]
+    rw [psTrunc, MvPolynomial.coeff_sum, Finset.sum_eq_single e (fun b _ hb => by rw [MvPolynomial.coeff_monomial, ite_eq_right hb])
+      (fun h => absurd hm h), MvPolynomial.coeff_monomial, ite_eq_left rfl]
   have c0 : MvPolynomial.constantCoeff (psTrunc m f) = 0 := (co 0 (by simp)).trans hf
   rw [c0, map_zero, sub_zero]
   exact ChartJet.pj_eq_mk.2 fun e he => (co e he).symm
@@ -930,8 +930,8 @@ theorem exists_isChartG_of_basis : ∀ (E : Type) [Field E] [NumberField E] [IsC
         (MvPolynomial.X ((0 : Fin 1), i)) = _
       rw [MvPolynomial.aeval_X]
       by_cases hij : i = j
-      · subst hij; rw [if_pos rfl, Pi.single_eq_same]; rfl
-      · rw [if_neg (fun h => hij (Prod.ext_iff.1 h).2), Pi.single_eq_of_ne hij, TrivSqZeroExt.inr_zero]
+      · subst hij; rw [ite_eq_left rfl, Pi.single_eq_same]; rfl
+      · rw [ite_eq_right (fun h => hij (Prod.ext_iff.1 h).2), Pi.single_eq_of_ne hij, TrivSqZeroExt.inr_zero]
     have e₂ : Chart.spMap T ≫ ChartJet.ptJ x 1 (gen 0) = v j := by
       rw [hxv, ← e₁, ← Chart.spMap_comp, Category.assoc]; rfl
     exact (Category.assoc _ _ _).symm.trans (congrArg (fun q => q.left ≫ φ) e₂)

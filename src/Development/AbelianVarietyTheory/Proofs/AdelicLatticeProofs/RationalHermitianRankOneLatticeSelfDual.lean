@@ -207,7 +207,7 @@ theorem latRat_selfDual : ∀ (D : D7) (S T : HSp D) (ΛS : Submodule (𝓞 D.ho
   have e : ρ = ∑ i, genMap S T 1 (s' i) (ρ *ᵥ s i) := by
     refine Matrix.ext fun a j => ?_
     have h8 : ρ a j = ∑ b, ρ a b * ∑ i, s i b * ∑ k, star (s' i k) * S.gram k j := by
-      simp only [hdual, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+      simp only [hdual, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     rw [h8, Matrix.sum_apply]
     simp only [genMap, Matrix.of_apply, one_mul, Matrix.mulVec, dotProduct]
     simp only [Finset.mul_sum (s := Finset.univ (α := Fin n))]

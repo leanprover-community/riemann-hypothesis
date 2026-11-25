@@ -460,9 +460,9 @@ theorem orderAlong_transform_add_mult_of_exceptionalIndex_mem (hGeom : MonomialG
         simp [hi]
     have hεval : ε = (if i ∈ lexMaxIndices T.ideal T.mult T.boundary then 1 else 0) := by
       by_cases hi : i ∈ lexMaxIndices T.ideal T.mult T.boundary
-      · rw [if_pos hi]
+      · rw [ite_eq_left hi]
         exact hεiff.2 ⟨⊤, trivial, fun y hy => hmaxIdx i hi hy.1⟩
-      · rw [if_neg hi]
+      · rw [ite_eq_right hi]
         rcases hε01 with h0 | h1
         · exact h0
         · exfalso
@@ -915,7 +915,7 @@ private theorem prod_pow_comap_transformedBoundary_eq {X X' : Scheme.{u}} (π : 
   · refine Finset.prod_congr rfl ?_
     intro j _
     rw [hg1 j]
-    exact congrArg (fun t : ℕ => ((Blowup.strictTransform π Z (L.get j)).comap W.ι) ^ t) (dif_pos j.isLt)
+    exact congrArg (fun t : ℕ => ((Blowup.strictTransform π Z (L.get j)).comap W.ι) ^ t) (dite_eq_left j.isLt)
   · rw [hg2, dite_eq_right (by simp : ¬ ((Fin.last L.length : Fin (L.length + 1)) : ℕ) < L.length)]
 
 private theorem isMonomialNear_transformedBoundary_of_isBlowupAlongIdealSheaf (hGeom : MonomialGeometryHypotheses.{u})

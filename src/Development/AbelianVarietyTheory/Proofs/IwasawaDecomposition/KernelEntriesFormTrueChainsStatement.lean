@@ -140,7 +140,7 @@ theorem fpair_monomial (α : σ →₀ ℕ) (c : K) (F : MvPowerSeries σ K) :
     fpair (MvPolynomial.monomial α c) F = c * (α.prod fun _ n => (n.factorial : K)) * MvPowerSeries.coeff α F := by
   classical
   rw [fpair_eq_of_subset _ F {α} MvPolynomial.support_monomial_subset, Finset.sum_singleton,
-    MvPolynomial.coeff_monomial, if_pos rfl]
+    MvPolynomial.coeff_monomial, ite_eq_left rfl]
 
 theorem fpair_smul_left (r : K) (Q : MvPolynomial σ K) (F : MvPowerSeries σ K) :
     fpair (r • Q) F = r * fpair Q F := by
@@ -311,7 +311,7 @@ theorem sum_sel {T K : Type} [Fintype T] [AddCommMonoid K] {N1 N0 : ℕ} (τ : T
   rw [Fintype.sum_prod_type, Finset.sum_eq_single τ]
   · simp [Fintype.sum_prod_type]
   · intro t _ ht
-    exact Finset.sum_eq_zero fun k _ => if_neg (Ne.symm ht)
+    exact Finset.sum_eq_zero fun k _ => ite_eq_right (Ne.symm ht)
   · simp
 
 theorem sum4 {A B C E M : Type} [Fintype A] [Fintype B] [Fintype C] [Fintype E] [AddCommMonoid M]
@@ -354,7 +354,7 @@ theorem jetMap_frame_eq_applyQ : ∀ (D : D7) {p : ℕ} [Fact p.Prime] (N0 N1 : 
   have he : tauPl D ((Equiv.ofBijective (tauPl D) (tauPl_bij D)).symm τ) = τ :=
     (Equiv.ofBijective (tauPl D) (tauPl_bij D)).apply_symm_apply τ
 
-  simp only [dif_pos ht, map_sum, map_mul, MvPolynomial.aeval_X, MvPolynomial.aeval_C, MvPolynomial.algebraMap_eq,
+  simp only [dite_eq_left ht, map_sum, map_mul, MvPolynomial.aeval_X, MvPolynomial.aeval_C, MvPolynomial.algebraMap_eq,
   Sum.elim_inl, Sum.elim_inr, he, GL3Columns.colsOf]
   have hC : ∀ (c : Prop) [Decidable c] (x : ℂ_[p]) (k : D.what₂.Tau × Fin N1 × Fin N0),
       MvPolynomial.C (if c then x else 0) * MvPolynomial.X k = if c then MvPolynomial.C x * MvPolynomial.X k else 0 := by
@@ -385,7 +385,7 @@ theorem jetMap_frame_eq_applyQ : ∀ (D : D7) {p : ℕ} [Fact p.Prime] (N0 N1 : 
     first
       | (rw [Finset.sum_comm]; exact Finset.sum_congr rfl fun b _ => Finset.sum_congr rfl fun a _ => by ring)
   simp only [key]
-  simp only [mul_ite, mul_one, mul_zero, hC, Finset.sum_ite_eq, Finset.mem_univ, if_true, map_mul]
+  simp only [mul_ite, mul_one, mul_zero, hC, Finset.sum_ite_eq, Finset.mem_univ, ite_true, map_mul]
   ring
 
 end GlobalTheory.JetChain
@@ -518,12 +518,12 @@ theorem GlobalTheory.jetMapTransport : ∀ (D : D7) {p : ℕ} [Fact p.Prime] (la
   have hx1 : ∀ m : DVar D.what₂.Tau a b →₀ ℕ, (∀ τ, ∑ β, ∑ α, m (τ, β, α) = n τ) →
       J m = (algebraMap Qbar ℂ ∘ x) m := by
     intro m hm
-    simp only [x, Function.comp_apply, dif_pos hm]
+    simp only [x, Function.comp_apply, dite_eq_left hm]
     exact (hJ m hm).choose_spec.1.symm
   have hx2 : ∀ m : DVar D.what₂.Tau a b →₀ ℕ, (∀ τ, ∑ β, ∑ α, m (τ, β, α) = n τ) →
       J' m = (lam ∘ x) m := by
     intro m hm
-    simp only [x, Function.comp_apply, dif_pos hm]
+    simp only [x, Function.comp_apply, dite_eq_left hm]
     exact (hJ m hm).choose_spec.2.symm
   have hPw : ∀ {K : Type} [Field K] (f : Qbar →+* K),
       MvPolynomial.IsWeightedHomogeneous (GlobalTheory.JetTransport.wF D.what₂.Tau a) (MvPolynomial.map f P) n := by
@@ -832,7 +832,7 @@ theorem deg_eq_of_mem_wtPol : ∀ {K : Type} [Field K] [CharZero K] {ι : Type} 
     rw [Finsupp.prod_fintype _ _ (fun _ => pow_zero _), Fintype.prod_prod_type,
       Finset.prod_eq_single τ]
     · rw [Fintype.prod_prod_type]
-      simp only [hc, if_true, Finset.prod_pow_eq_pow_sum]
+      simp only [hc, ite_true, Finset.prod_pow_eq_pow_sum]
     · intro σ _ hσ
       simp [hc, hσ]
     · simp
@@ -1115,7 +1115,7 @@ theorem mtType_std (hok : ColIn.Ok I) (hp : TC.Pins B X) (l : TC.Laws I) (Z : TC
   have hm : 1 ≤ j.1 + 1 ∧ j.1 + 1 ≤ B.R.m := ⟨by omega, j.2⟩
   have e1 : (O u a).mt (j.1 + 1) = (I.rec7 l Z).muTil (j.1 + 1) * (show (I.rec7 l Z).Dt →* ℂˣ from tildeQ B.host I.SQ (I.xi a)) := by
     rw [hO.mt u a]
-    exact if_pos hm
+    exact ite_eq_left hm
   rw [e1, MonoidHom.mul_apply, T.muTil_eq j x hx, hT x]
   have e2 : (tildeQ B.host I.SQ (I.xi a)) (QuotientGroup.mk x) = (I.xi a).1 x :=
     (tildeQ_mk B.host I.SQ hk x).trans (congrArg _ (finPartI_eq_self hx))
@@ -1303,7 +1303,7 @@ theorem GlobalTheory.Mem.Col2.TC.kerEnt_kform_true : ∀ {B : Base} {X : PreX B.
       exact Finset.prod_eq_one fun τ _ => by rw [← zpow_add₀ (hdet τ), add_neg_cancel, zpow_zero]
     have hun : unC Pl O Bs u μ w i c c' = unF Pl O Bs u μ w i c c' := by
       unfold unC
-      rw [if_neg (unF_ne Pl O Bs hB u μ hR w i hi c c')]
+      rw [ite_eq_right (unF_ne Pl O Bs hB u μ hR w i hi c c')]
     have key : ∀ A : ℂ_[(I.rec7 l Z).what₂.places.resChar w],
         (∏ τ, (Bs u μ w (i + 1) c' τ).det ^ (-((I.rec7 l Z).chTw u μ).sDiv i τ)) * ((Pl.lam w) ⟨_, hρ⟩ * A) =
           unC Pl O Bs u μ w i c c' * ((∏ τ, (Bs u μ w i c τ).det ^ (-((I.rec7 l Z).chTw u μ).sSharp i τ)) * A) := by

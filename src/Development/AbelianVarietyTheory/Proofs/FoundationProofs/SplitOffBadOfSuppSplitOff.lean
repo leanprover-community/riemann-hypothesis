@@ -114,12 +114,12 @@ open Classical in
 def ind (S : Set (HeightOneSpectrum (𝓞 F))) : FiniteAdeleRing (𝓞 F) F :=
   ⟨fun w => if w ∈ S then 1 else 0, Filter.Eventually.of_forall fun w => by
     by_cases h : w ∈ S
-    · simp only [if_pos h]; exact one_mem _
-    · simp only [if_neg h]; exact zero_mem _⟩
+    · simp only [ite_eq_left h]; exact one_mem _
+    · simp only [ite_eq_right h]; exact zero_mem _⟩
 
-theorem ind_pos {S : Set (HeightOneSpectrum (𝓞 F))} {w} (h : w ∈ S) : ind S w = 1 := if_pos h
+theorem ind_pos {S : Set (HeightOneSpectrum (𝓞 F))} {w} (h : w ∈ S) : ind S w = 1 := ite_eq_left h
 
-theorem ind_neg {S : Set (HeightOneSpectrum (𝓞 F))} {w} (h : w ∉ S) : ind S w = 0 := if_neg h
+theorem ind_neg {S : Set (HeightOneSpectrum (𝓞 F))} {w} (h : w ∉ S) : ind S w = 0 := ite_eq_right h
 
 theorem loc_ind_pos {S : Set (HeightOneSpectrum (𝓞 F))} {w} (h : w ∈ S) :
     loc E w (ind S ⊗ₜ[F] (1 : E)) = 1 := by rw [loc_tmul, ind_pos h]; rfl

@@ -66,7 +66,7 @@ theorem four_fac {e1 e2 x z w : ℝ} (h1 : 0 ≤ e1) (h1' : e1 ≤ 1) (h2 : 0 �
 
 theorem symDim_toNat (m : ℕ) (A : ℤ) (hA : 0 ≤ A) : symDim (m + 1) A = sd m A.toNat := by
   unfold symDim sd
-  rw [if_neg (not_lt.2 hA)]
+  rw [ite_eq_right (not_lt.2 hA)]
   rw [show A.toNat + (m + 1) - 1 = A.toNat + m by omega, show m + 1 - 1 = m by omega]
 
 theorem prod_letters {n' : ℕ} (TT : Finset (Fin n')) (h2 : 2 ≤ numSeg TT) (f g : Fin n' → ℝ) :

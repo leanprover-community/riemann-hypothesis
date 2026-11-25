@@ -129,7 +129,7 @@ theorem curry_holds : Curry := by
       simp only [Fin.lt_def, Fin.coe_castAdd]
     simp only [xJ, LinearMap.comp_apply, LinearMap.add_apply, Pi.add_apply, Om_apply, LinearMap.sum_apply,
       Finset.sum_apply, pm_apply, iteApp, ite_apply, Pi.zero_apply, lift_apply, curF_apply, Fin.append_left, upd_castAdd, Finset.sum_filter,
-      Fin.sum_univ_add, swap_castAdd, hz, hc, if_false, Finset.sum_const_zero, add_zero]
+      Fin.sum_univ_add, swap_castAdd, hz, hc, ite_false, Finset.sum_const_zero, add_zero]
   · intro j
     refine LinearMap.ext fun f => funext fun J => funext fun I => ?_
     have hz : ∀ x : Fin m, Fin.castAdd k x < Fin.natAdd m j := fun x => by
@@ -137,10 +137,10 @@ theorem curry_holds : Curry := by
     have hc : ∀ b : Fin k, Fin.natAdd m b < Fin.natAdd m j ↔ b < j := fun b => by
       simp only [Fin.lt_def, Fin.coe_natAdd] <;> omega
     simp only [xJ, LinearMap.comp_apply, LinearMap.add_apply, Pi.add_apply, Om_apply, LinearMap.sum_apply,
-      Finset.sum_apply, pm_apply, iteApp, ite_apply, Pi.zero_apply, curF_apply, tE_apply, Fin.append_right, upd_natAdd, Finset.sum_filter, Fin.sum_univ_add, swap_natAdd, swap_mixed, hz, hc, if_true, Finset.sum_add_distrib]
+      Finset.sum_apply, pm_apply, iteApp, ite_apply, Pi.zero_apply, curF_apply, tE_apply, Fin.append_right, upd_natAdd, Finset.sum_filter, Fin.sum_univ_add, swap_natAdd, swap_mixed, hz, hc, ite_true, Finset.sum_add_distrib]
     rw [Finset.sum_comm (f := fun x p => if I p = x then
       f (Fin.append (Function.update I p (J j)) (Function.update J j x)) else 0)]
-    simp only [Finset.sum_ite_eq, Finset.mem_univ, if_true, add_assoc]
+    simp only [Finset.sum_ite_eq, Finset.mem_univ, ite_true, add_assoc]
   · intro B
     rfl
   · intro i i'
@@ -180,7 +180,7 @@ theorem pm_swap_eq {P : Type} [DecidableEq P] (p j : P) (h : p ≠ j) :
   refine LinearMap.ext fun f => funext fun I => ?_
   rw [pm_apply, comp_swap I p j h]
   simp only [LinearMap.sum_apply, Finset.sum_apply, Module.End.mul_apply, eAt_apply,
-    Function.update_apply, if_neg (Ne.symm h)]
+    Function.update_apply, ite_eq_right (Ne.symm h)]
   simp [Finset.sum_ite_eq]
 
 theorem xJ_eq {m : ℕ} (E : Fin n → Fin n → Module.End ℂ M) (j : Fin m) :
@@ -419,7 +419,7 @@ theorem anti_apply {g : TV n M (Fin n)} (hg : IsAnti g) (σ : Equiv.Perm (Fin n)
 theorem anti_zero {g : TV n M (Fin n)} (hg : IsAnti g) {I : Fin n → Fin n} (hI : ¬ Function.Injective I) :
     g I = 0 := by
   simp only [Function.Injective] at hI
-  push_neg at hI
+  push Not at hI
   obtain ⟨i, j, hij, hne⟩ := hI
   have hIs : I ∘ Equiv.swap i j = I := by
     funext k
@@ -692,10 +692,10 @@ theorem capelliC_negT {n : ℕ} (E : Fin n → Fin n → A) (x : ℂ) :
     funext j
     simp only [Function.comp_apply, capEntry]
     by_cases hj : σ j = j
-    · rw [if_pos hj, if_pos hj.symm, neg_add, ← map_neg]
+    · rw [ite_eq_left hj, ite_eq_left hj.symm, neg_add, ← map_neg]
       congr 2
       ring
-    · rw [if_neg hj, if_neg (Ne.symm hj), neg_add, neg_zero]
+    · rw [ite_eq_right hj, ite_eq_right (Ne.symm hj), neg_add, neg_zero]
   rw [h, List.prod_map_neg, List.length_ofFn, zsmul_eq_mul, zsmul_eq_mul, ← mul_assoc, ← mul_assoc,
     ((Commute.neg_one_left _).pow_left n).eq]
 
@@ -730,7 +730,7 @@ private theorem coeff_eq_zero_of_evU (r : (Module.End ℂ M)[X]) (h : ∀ u : �
     refine Finset.sum_congr rfl fun e _ => ?_
     rw [eval_monomial, mul_comm]
   have hc := congrArg (fun p : ℂ[X] => p.coeff i) hq0
-  simp only [Polynomial.finsetSum_coeff, coeff_monomial_apply, coeff_zero, Finset.sum_ite_eq', if_pos hi] at hc
+  simp only [Polynomial.finsetSum_coeff, coeff_monomial_apply, coeff_zero, Finset.sum_ite_eq', ite_eq_left hi] at hc
   exact hc
 
 end Op
@@ -846,7 +846,7 @@ theorem semiZero_of (hQ : QdetFacts) (_hW : WallAlg) (hL : LieInv) (hWQ : WallQu
     have h2 : (∑ a, E τ a a) (ξ I) - (∑ a, E (bar τ) a a) (ξ I) =
         ((n : ℂ) * ((c τ - c (bar τ) : ℤ) : ℂ)) • ξ I := by
       rw [LinearMap.sum_apply, LinearMap.sum_apply, ← Finset.sum_sub_distrib]
-      simp only [hl, if_true]
+      simp only [hl, ite_true]
       rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, ← Nat.cast_smul_eq_nsmul ℂ, smul_smul]
     have h3 : ((n : ℂ) * ((c τ - c (bar τ) : ℤ) : ℂ)) • N.mkQ (ξ I) = 0 := by
       rw [← map_smul, ← h2, map_sub, h1, sub_self]

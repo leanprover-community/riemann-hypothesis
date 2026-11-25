@@ -52,10 +52,10 @@ private theorem key {T Z S : Scheme.{0}} {p : Z ⟶ S} {π : T ⟶ S} {ι : Type
     intro j _
     by_cases h : x1 ≫ τ j = z
     · rw [Set.indicator_of_mem
-        (show j ∈ {j | (x1 ≫ f) ≫ σ j = z ≫ A.v} from (hiff z hz j).mpr h) m, if_pos h]
+        (show j ∈ {j | (x1 ≫ f) ≫ σ j = z ≫ A.v} from (hiff z hz j).mpr h) m, ite_eq_left h]
     · rw [Set.indicator_of_notMem
         (show j ∉ {j | (x1 ≫ f) ≫ σ j = z ≫ A.v} from fun h' => h ((hiff z hz j).mp h')) m,
-        if_neg h]
+        ite_eq_right h]
   rw [finsum_mem_eq_finite_toFinset_sum _ hfin]
   rw [Finset.sum_congr rfl
     (g := fun z => (∑ j, if x1 ≫ τ j = z then m j else 0) * φ (pt z))
@@ -65,7 +65,7 @@ private theorem key {T Z S : Scheme.{0}} {p : Z ⟶ S} {π : T ⟶ S} {ι : Type
   apply Finset.sum_congr rfl
   intro j _
   simp only [ite_mul, zero_mul]
-  rw [Finset.sum_ite_eq, if_pos (hfin.mem_toFinset.mpr (hmem j)), pt_comp]
+  rw [Finset.sum_ite_eq, ite_eq_left (hfin.mem_toFinset.mpr (hmem j)), pt_comp]
 
 theorem UpperTheory.Gal.TranscendenceTraces.countWt_of :
     PtEx → PtLift → FibFin → CountWt := by

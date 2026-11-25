@@ -681,7 +681,7 @@ theorem pair_step (hK : IotaKer) {s₁ s₂ t₁ t₂ : TT Y u u'} (h1 : s₁.to
   have hsF := X_le_spanE_XLam (X.Fu u) s₁.lam ((Y.rowsOK u).1 _ s₁.mem)
   constructor
   · unfold s0T
-    rw [if_pos ⟨hl, hl'⟩, if_pos ⟨hm, hm'⟩, ← hl1, hβt]
+    rw [ite_eq_left ⟨hl, hl'⟩, ite_eq_left ⟨hm, hm'⟩, ← hl1, hβt]
     have hT := Th_move hn₁ hn₂' hm₁ hm₂' hf₁ hzt₁ hf₂ hzt₂ (lift_F s₁) (lift_frame s₁) hL₂ hsF (hs_frame s₁) hβ hβX
       hτX hτ
     unfold Lat.s0

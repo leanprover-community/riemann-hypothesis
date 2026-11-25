@@ -60,11 +60,11 @@ theorem modelEx : ModelEx := by
   refine ⟨⟨co, vac, μ, 𝓕⟩, ⟨hco, fun v => ?_, ?_, hμ, h𝓕⟩⟩
   · show M₀.IsVac B.ψ v (vac v)
     by_cases h : M₀.IsVac B.ψ v (ind v)
-    · simp only [vac, if_pos h]; exact h
-    · simp only [vac, if_neg h]; exact (hA v).choose_spec
+    · simp only [vac, ite_eq_left h]; exact h
+    · simp only [vac, ite_eq_right h]; exact (hA v).choose_spec
   · filter_upwards [hS] with v hv
     show vac v = ind v
-    exact if_pos hv
+    exact ite_eq_left hv
 
 end PositivityTheory.ThKG.Tow
 

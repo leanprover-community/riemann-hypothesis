@@ -48,8 +48,8 @@ theorem exists_sign_frame {n : ℕ} {G : Matrix (Fin n) (Fin n) ℂ} (hG : G.IsH
       have hst : star d i = d i := by simp [d]
       rw [hst]
       by_cases h : 0 < hG.eigenvalues i
-      · simp only [h, decide_true, if_true, mul_one, hs, abs_of_pos h]
-      · simp only [h, decide_false, Bool.false_eq_true, if_false, mul_neg, mul_one, neg_mul, hs,
+      · simp only [h, decide_true, ite_true, mul_one, hs, abs_of_pos h]
+      · simp only [h, decide_false, Bool.false_eq_true, ite_false, mul_neg, mul_one, neg_mul, hs,
           abs_of_nonpos (not_lt.1 h)]
         simp
     rw [conjTranspose_mul, conjTranspose_conjTranspose]

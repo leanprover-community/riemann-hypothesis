@@ -131,10 +131,10 @@ private theorem fixBd_p_zero {A X : Type} [CommRing A] [CommRing X] [Algebra A X
     rw [key] at h0
     constructor
     · intro hc
-      rw [if_pos hc] at h0
+      rw [ite_eq_left hc] at h0
       exact (fixBd_q_zero _ _ _ _ _).1 h0
     · intro hc
-      rw [if_neg hc] at h0
+      rw [ite_eq_right hc] at h0
       exact (fixBd_q_zero _ _ _ _ _).1 h0
   · intro hZ
     refine Matrix.ext fun i j => ?_

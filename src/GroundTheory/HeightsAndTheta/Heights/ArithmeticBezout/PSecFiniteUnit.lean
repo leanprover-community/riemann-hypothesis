@@ -151,7 +151,7 @@ theorem coord_integral {δ : ℕ} (Q : Ideal (MvPolynomial (Fin n) k))
 
         simp only [AlgHom.toRingHom_eq_coe, RingHom.coe_coe, map_sum, map_mul, hφ, aeval_X,
         Sum.elim_inr, Sum.elim_inl, h0, sub_mul, Finset.sum_sub_distrib, ite_mul, one_mul,
-        zero_mul, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+        zero_mul, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
         rw [sub_eq_zero]
         conv_rhs => rw [← mul_one (x m), ← ht, Finset.mul_sum]
         exact Finset.sum_congr rfl fun j _ => by ring

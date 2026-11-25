@@ -79,8 +79,8 @@ lemma continuous_evX {m n : ℕ} (P : PX m n) : Continuous fun x : Fin m → Fin
   have : Continuous fun x : Fin m → Fin n → ℂ => fx x := by
     refine continuous_pi fun k => ?_
     by_cases h : k.2.2
-    · simp only [fx, h, if_true]; fun_prop
-    · simp only [fx, h, if_false, Bool.false_eq_true]; fun_prop
+    · simp only [fx, h, ite_true]; fun_prop
+    · simp only [fx, h, ite_false, Bool.false_eq_true]; fun_prop
   exact (MvPolynomial.continuous_eval P).comp this
 
 lemma continuous_gs {m n : ℕ} (c : ℝ) : Continuous fun x : Fin m → Fin n → ℂ => gs c x := by

@@ -15,18 +15,6 @@ namespace GlobalTheory.CompanionTheory.Ar.Rec.Lat
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Pj ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD
 
-section BC
-
-variable {K L Rl : Type} [Field K] [Field L] [AddCommGroup Rl] [Module K Rl]
-
-
-
-
-variable (φ : K →+* L)
-
-
-end BC
-
 section OLat
 
 variable {K Rl : Type} [Field K] [NumberField K] [CommRing Rl] [Algebra K Rl] [Algebra (𝓞 K) Rl] [IsScalarTower (𝓞 K) K Rl]
@@ -106,13 +94,5 @@ def lieZ (Dw : Datum H) (x : ℝ) (a : ExZ E) : ℝ :=
   Real.exp (-((∑ τ : E →+* ℂ, ∑ i : Fin (Dw.mult τ), (a (τ, i) : ℝ)) / 2) * Real.log (2 * Real.pi * x))
 
 end Forms
-
-section Pet
-
-variable {D : D7} {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host D.host.E} {Dw : Datum H} {l : Level H} {Xo : Moduli Dw l} {c : Coeff l}
-  (U : ∀ σ : c.F →+* ℂ, Unf Xo c σ D.R.r) (W : HSp D) (dict : ∀ σ : c.F →+* ℂ, GA D W → Σ k, Frame ((U σ).X k).Ψ D.R.r)
-
-
-end Pet
 
 end GlobalTheory.CompanionTheory.Ar.Rec.Lat

@@ -1115,8 +1115,6 @@ namespace GlobalTheory.UMin.IntTheta
 section Pull
 variable {S : Scheme.{0}} {A : Over S} [GrpObj A] {L : LB A.left} {a : ℤ}
 
-alias sec_ext' := _root_.ReciprocityTheory.ChartRestriction.G.DVR.SecOps.sec_ext
-
 theorem pullS_heq {T : Over S} {Y : Scheme.{0}} {y₁ y₂ : Y ⟶ S} (e : y₁ = y₂) (h₁ : Over.mk y₁ ⟶ T)
     (h₂ : Over.mk y₂ ⟶ T) (he : h₁.left = h₂.left) (s : LB.Sec (LPow A L a T)) :
     HEq (VVRank.pullS A a h₁ s) (VVRank.pullS A a h₂ s) := by

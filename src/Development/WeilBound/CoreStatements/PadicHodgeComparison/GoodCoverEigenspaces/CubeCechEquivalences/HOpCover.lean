@@ -118,8 +118,8 @@ theorem block_eig {k o : Type*} [Field k] [Fintype o] [DecidableEq o] {e : o →
       ∀ (M' : ∀ r, Matrix (e r) (e r) k) (t' : k), M' r₀ *ᵥ y = t' • y →
         (blockDiagonal' M' - t' • (1 : Matrix (Σ r, e r) (Σ r, e r) k)) ^ 1 *ᵥ Y = 0 := by
   let Y : (Σ r, e r) → k := fun p => if h : p.1 = r₀ then y (h ▸ p.2) else 0
-  have h1 : ∀ i, Y ⟨r₀, i⟩ = y i := fun i => dif_pos rfl
-  have h2 : ∀ p, p.1 ≠ r₀ → Y p = 0 := fun p hp => dif_neg hp
+  have h1 : ∀ i, Y ⟨r₀, i⟩ = y i := fun i => dite_eq_left rfl
+  have h2 : ∀ p, p.1 ≠ r₀ → Y p = 0 := fun p hp => dite_eq_right hp
   refine ⟨Y, h1, fun p hp => by_contra fun hn => hp (h2 p hn), fun M' t' h' => funext fun ⟨r, i⟩ => ?_⟩
   rw [pow_one, sub_mulVec, smul_mulVec, one_mulVec, Pi.sub_apply, Pi.zero_apply, sub_eq_zero, mulVec, dotProduct,
     Fintype.sum_sigma, Finset.sum_eq_single r]

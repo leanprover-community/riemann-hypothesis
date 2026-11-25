@@ -219,7 +219,7 @@ theorem rowsCols_of (hK : X.LevelSubgroupCharacter) (h0 : EqvEquiv X u) (h1 : La
       base_lam := by
         intro Λ hΛ
         have hΛ' := (hmem Λ).1 hΛ
-        simp only [dif_pos hΛ', hqcc]
+        simp only [dite_eq_left hΛ', hqcc]
         exact hΛ'.choose_spec
       lat_eq := by
         intro ρ y

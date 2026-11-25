@@ -315,17 +315,17 @@ theorem fourierMap_smul_lambdaWeight {ω : ZMod p → C} (hω : IsTeich v ω) {�
     simp only [u0]
     by_cases hb : b = 0
     · subst hb
-      simp only [mul_zero, if_true, hwt0]
+      simp only [mul_zero, ite_true, hwt0]
       nth_rewrite 1 [hS h hh]; ring
     · have : h⁻¹ * b ≠ 0 := mul_ne_zero (inv_ne_zero hh) hb
-      simp only [this, hb, if_false, sub_zero, hwtmul, hwtinv h hh]
+      simp only [this, hb, ite_false, sub_zero, hwtmul, hwtinv h hh]
   funext h
   simp only [L2.fourier, LinearMap.coe_mk, AddHom.coe_mk, he2]
   by_cases hh : h = 0
   · subst hh
     simp only [zero_mul, ZMod.val_zero, pow_zero, mul_one, hω.zero, mul_zero]
     rw [← Finset.mul_sum]
-    simp only [u0, Finset.sum_sub_distrib, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    simp only [u0, Finset.sum_sub_distrib, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     simp [sS]
   · have hb := Fintype.sum_bijective (h⁻¹ * ·) (mulLeft_bijective₀ h⁻¹ (inv_ne_zero hh))
       (fun b => c * u0 ω (h⁻¹ * b) * ζ ^ (h * (h⁻¹ * b)).val)

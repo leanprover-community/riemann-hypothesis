@@ -226,18 +226,18 @@ theorem twAct_lie {q : Tens F p₁ q₁ r s →ₗ[ℂ] P} {w : InfinitePlace F}
     (hK : ∀ Y, Keeps q (atPl w (fockAct2 p₁ q₁ r s Y))) (ε : Bool) (Y Z : Mat r s) :
     twAct ε q w (Y * Z - Z * Y) = twAct ε q w Y * twAct ε q w Z - twAct ε q w Z * twAct ε q w Y := by
   cases ε
-  · simp only [twAct, Bool.false_eq_true, if_false, LinearMap.comp_apply]
+  · simp only [twAct, Bool.false_eq_true, ite_false, LinearMap.comp_apply]
     rw [negT_lie, fockOp_lie hq hK]
-  · simp only [twAct, if_true]
+  · simp only [twAct, ite_true]
     exact fockOp_lie hq hK Y Z
 
 theorem twAct_comm {q : Tens F p₁ q₁ r s →ₗ[ℂ] P} (hq : Function.Surjective q)
     (hK : ∀ w Y, Keeps q (atPl w (fockAct2 p₁ q₁ r s Y))) (ε : Bool) {w w' : InfinitePlace F} (hw : w ≠ w')
     (Y Z : Mat r s) : twAct ε q w Y * twAct ε q w' Z = twAct ε q w' Z * twAct ε q w Y := by
   cases ε
-  · simp only [twAct, Bool.false_eq_true, if_false, LinearMap.comp_apply]
+  · simp only [twAct, Bool.false_eq_true, ite_false, LinearMap.comp_apply]
     exact fockOp_comm hq hK hw _ _
-  · simp only [twAct, if_true]
+  · simp only [twAct, ite_true]
     exact fockOp_comm hq hK hw _ _
 
 end Laws

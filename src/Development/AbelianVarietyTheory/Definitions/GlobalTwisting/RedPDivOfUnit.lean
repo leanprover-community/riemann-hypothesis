@@ -110,7 +110,7 @@ theorem entB_zero (q k₀ c' n' n : ℕ) (hc : c' = 0) (ex : ℕ → ℕ) (x : H
         funext l
         have := l.2
         simp only [Loc.eN, Pi.zero_apply]
-        rw [if_neg (by omega)]
+        rw [ite_eq_right (by omega)]
       rw [dite_eq_right fun h => h2 h.2, this]
       simp [Loc.atN]
   · rw [dite_eq_right fun h => h1 h.1]
@@ -216,7 +216,7 @@ theorem qOf_notMem_sq (hX : X.Ok) (hPr : Pr.Ok) {w : HeightOneSpectrum (𝓞 X.E
       split_ifs
       · rw [sq]
       · rw [pow_one, mul_one]
-    rw [Finset.prod_congr rfl h1, Finset.prod_mul_distrib, Finset.prod_const, hPr.vG_card, Finset.prod_ite_eq', if_pos hi, pow_succ]
+    rw [Finset.prod_congr rfl h1, Finset.prod_mul_distrib, Finset.prod_const, hPr.vG_card, Finset.prod_ite_eq', ite_eq_left hi, pow_succ]
   have h3 := map_dvd Ideal.absNorm hdvd
   rw [hN, hnorm] at h3
   have := (Nat.pow_dvd_pow_iff_le_right (hPr.g_prime i).one_lt).1 h3

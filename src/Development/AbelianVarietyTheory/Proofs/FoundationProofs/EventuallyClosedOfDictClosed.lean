@@ -155,7 +155,7 @@ theorem finrank_eq_one_of_jump {L M : Type} [Field L] [AddCommGroup M] [Module L
   have hA : Antitone F := antitone_int_of_succ_le anti
   haveI : ∀ a, FiniteDimensional L (F a) := fun a => Submodule.finiteDimensional_of_le (le a)
   have hs : ∀ a, a ≠ a₀ → F (a + 1) = F a := fun a ha =>
-    Submodule.eq_of_le_of_finrank_eq (anti a) (by have := h a; rw [if_neg ha] at this; omega)
+    Submodule.eq_of_le_of_finrank_eq (anti a) (by have := h a; rw [ite_eq_right ha] at this; omega)
   have hlo : ∀ a ≤ a₀, F a = F a₀ := by
     intro a ha
     induction a, ha using Int.leInductionDown with
@@ -176,7 +176,7 @@ theorem finrank_eq_one_of_jump {L M : Type} [Field L] [AddCommGroup M] [Module L
     · exact hA hab hx
     · rwa [hhi a hab]
   have h3 := h a₀
-  rw [h2, if_pos rfl, finrank_bot] at h3
+  rw [h2, ite_eq_left rfl, finrank_bot] at h3
   rw [h1]
   omega
 
@@ -253,18 +253,6 @@ theorem finrank_ddR_of_one_jump [FiniteDimensional Qp K] (hcard : Fintype.card (
 end Periods
 
 variable (D : D7)
-
-section Local
-
-variable (i : D.nd.Loc) (w : HeightOneSpectrum (𝓞 D.host.E)) (hw : w ∈ placesOver D.host.E (D.nd.l i))
-
-end Local
-
-section Family
-
-variable {eps : ℝ} (Fm : FamP eps)
-
-end Family
 
 end GlobalTheory.Cmp.JumpDict
 

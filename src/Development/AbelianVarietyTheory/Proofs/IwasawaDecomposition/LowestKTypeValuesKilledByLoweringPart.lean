@@ -67,9 +67,9 @@ theorem entry_eq_zero {n : ℕ} {ε : Fin n → Bool} {κ : Matrix (Fin n) (Fin 
   have e := congrFun (congrFun h a) b
   simp only [Formalism.REAL.Jm, mul_diagonal, diagonal_mul] at e
   cases ha : ε a <;> cases hb : ε b <;> simp only [ha, hb, ne_eq, not_true_eq_false] at hab e
-  · simp only [Bool.false_eq_true, if_false, if_true] at e
+  · simp only [Bool.false_eq_true, ite_false, ite_true] at e
     linear_combination (1 / 2 : ℂ) * e
-  · simp only [Bool.false_eq_true, if_false, if_true] at e
+  · simp only [Bool.false_eq_true, ite_false, ite_true] at e
     linear_combination (-1 / 2 : ℂ) * e
 
 theorem block_conj {n : ℕ} {ε : Fin n → Bool} {κ κ' Y : Matrix (Fin n) (Fin n) ℂ}

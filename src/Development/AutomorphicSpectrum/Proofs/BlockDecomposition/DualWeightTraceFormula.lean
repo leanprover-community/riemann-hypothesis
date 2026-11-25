@@ -559,19 +559,19 @@ theorem xu_glRel : ∀ (n : ℕ) (lam : Fin n → ℤ), HolRm lam → Formalism.
   have hsq : (Matrix.single a b (1:ℂ) : Mat n) * Matrix.single a b 1 =
       (if b = a then (1:ℂ) else 0) • Matrix.single a b 1 := by
     by_cases h : b = a
-    · subst h; rw [if_pos rfl, one_smul, Matrix.single_mul_single_same, one_mul]
-    · rw [if_neg h, zero_smul, Matrix.single_mul_single_of_ne _ _ _ _ h]
+    · subst h; rw [ite_eq_left rfl, one_smul, Matrix.single_mul_single_same, one_mul]
+    · rw [ite_eq_right h, zero_smul, Matrix.single_mul_single_of_ne _ _ _ _ h]
   have key := comm_XA hD (Matrix.single c d (1:ℂ)) hsq
   have hEB : XA lam ((Matrix.single a b (1:ℂ) : Mat n) * Matrix.single c d 1) =
       if b = c then XA lam (Matrix.single a d 1) else 0 := by
     by_cases h : b = c
-    · subst h; rw [if_pos rfl, Matrix.single_mul_single_same, one_mul]
-    · rw [if_neg h, Matrix.single_mul_single_of_ne _ _ _ _ h, XA_zero]
+    · subst h; rw [ite_eq_left rfl, Matrix.single_mul_single_same, one_mul]
+    · rw [ite_eq_right h, Matrix.single_mul_single_of_ne _ _ _ _ h, XA_zero]
   have hBE : XA lam ((Matrix.single c d (1:ℂ) : Mat n) * Matrix.single a b 1) =
       if d = a then XA lam (Matrix.single c b 1) else 0 := by
     by_cases h : d = a
-    · subst h; rw [if_pos rfl, Matrix.single_mul_single_same, one_mul]
-    · rw [if_neg h, Matrix.single_mul_single_of_ne _ _ _ _ h, XA_zero]
+    · subst h; rw [ite_eq_left rfl, Matrix.single_mul_single_same, one_mul]
+    · rw [ite_eq_right h, Matrix.single_mul_single_of_ne _ _ _ _ h, XA_zero]
   simp only [Xu]
   rw [key, hEB, hBE]
 
@@ -592,17 +592,6 @@ open MeasureTheory Matrix
 open scoped ComplexConjugate Kronecker InnerProductSpace
 
 namespace GlobalTheory.CompanionTheory.CxAvg
-
-section Abstract
-
-variable {K E : Type*} [Group K] [TopologicalSpace K] [IsTopologicalGroup K] [CompactSpace K]
-  [SecondCountableTopology K] [MeasurableSpace K] [BorelSpace K]
-  [NormedAddCommGroup E] [InnerProductSpace ℂ E] [FiniteDimensional ℂ E] [CompleteSpace E]
-  (μ : Measure K) [μ.IsHaarMeasure] (F : K →* (E →L[ℂ] E))
-
-variable {F}
-
-end Abstract
 
 section Concrete
 
@@ -1215,7 +1204,7 @@ theorem expU_two_pi (a : Fin n) (hX : (Matrix.single a a Complex.I)ᴴ = -(Matri
         simp
       · simp [hc, Ne.symm hc]
     · rw [Matrix.diagonal_apply_ne _ hij, Matrix.smul_apply, Matrix.single_apply,
-        if_neg (fun hh => hij (hh.1.symm.trans hh.2)), smul_zero]
+        ite_eq_right (fun hh => hij (hh.1.symm.trans hh.2)), smul_zero]
   rw [e, Matrix.exp_diagonal, ← Matrix.diagonal_one]
   congr 1
   funext c

@@ -108,7 +108,7 @@ private theorem emb_tor {R : Type} [CommRing R] (t : Rˣ) :
   show (if (1 : ℤˣ) = 1 then Matrix.fromBlocks (tor R t : Matrix (Fin 3) (Fin 3) R) 0 0
     (theta (tor R t) : Matrix (Fin 3) (Fin 3) R) else Matrix.fromBlocks 0 (tor R t : Matrix (Fin 3) (Fin 3) R)
     (theta (tor R t) : Matrix (Fin 3) (Fin 3) R) 0) = _
-  rw [if_pos rfl, theta_tor, tor_val, Matrix.fromBlocks_diagonal]
+  rw [ite_eq_left rfl, theta_tor, tor_val, Matrix.fromBlocks_diagonal]
   congr 1
   funext i
   rcases i with i | i <;> rfl

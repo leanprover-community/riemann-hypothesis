@@ -30,7 +30,7 @@ theorem polarM_inUJ {ε : Fin n → Bool} (kz : KG ε × (PCoord ε → ℂ)) : 
 theorem pmat_injective (ε : Fin n → Bool) : Function.Injective (pmat (ε := ε)) := by
   intro z z' h
   funext ab
-  simpa [pmat, dif_pos ab.2] using congrFun (congrFun h ab.1.1) ab.1.2
+  simpa [pmat, dite_eq_left ab.2] using congrFun (congrFun h ab.1.1) ab.1.2
 
 theorem polarM_injective (ε : Fin n → Bool) : Function.Injective (polarM (ε := ε)) := by
   rintro ⟨k, z⟩ ⟨k', z'⟩ h

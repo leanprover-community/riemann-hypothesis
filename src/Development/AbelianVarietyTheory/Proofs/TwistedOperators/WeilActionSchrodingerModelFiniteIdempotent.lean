@@ -85,8 +85,8 @@ theorem halfInd_comp {e : AE D} {Λ : AddSubgroup (WO S T)} {g : GA D S} {h : GA
   have hc : (actO S T g h t ∈ Λ ∧ IsHalf e (actO S T g h t)) ↔ (t ∈ Λ ∧ IsHalf e t) := by
     rw [← hΛ t, isHalf_actO_iff]
   by_cases ht : t ∈ Λ ∧ IsHalf e t
-  · rw [if_pos (hc.2 ht), if_pos ht]
-  · rw [if_neg (fun h' => ht (hc.1 h')), if_neg ht]
+  · rw [ite_eq_left (hc.2 ht), ite_eq_left ht]
+  · rw [ite_eq_right (fun h' => ht (hc.1 h')), ite_eq_right ht]
 
 alias heisO_smul' := _root_.GlobalTheory.LatVac.heisO_smul
 

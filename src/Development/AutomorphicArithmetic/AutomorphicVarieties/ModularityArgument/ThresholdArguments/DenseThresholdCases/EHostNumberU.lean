@@ -417,9 +417,9 @@ private theorem key (hP : _root_.UpperTheory.V.Af.HypothesesH') (hU : UpperTheor
   have hne : ∀ i ∈ s, (r i (toGS Ω _ (UpperTheory.V.Base.galEmb ℚ K Ω τ)⁻¹)).mat.trace ≠
       (F.rz (PadicAlgCl l) (toGS Ω _ (UpperTheory.V.Base.galEmb ℚ K Ω τ)⁻¹)).mat.trace := fun i his => by
     rw [htr, ← hρτ i his]
-    exact H1 o₀ (ρ i) (by rw [if_pos rfl]; exact Finset.mem_image_of_mem _ his)
+    exact H1 o₀ (ρ i) (by rw [ite_eq_left rfl]; exact Finset.mem_image_of_mem _ his)
   refine ⟨hne, le_trans ?_ ((log_le_of_norm (l := l) hN0).trans hle)⟩
-  rw [Finset.prod_eq_single o₀ (fun o _ ho => by rw [if_neg ho, Finset.prod_empty]) (by simp), if_pos rfl,
+  rw [Finset.prod_eq_single o₀ (fun o _ ho => by rw [ite_eq_right ho, Finset.prod_empty]) (by simp), ite_eq_left rfl,
     Finset.prod_image fun i his i' his' h => hiso i his i' his' ⟨1, fun t => by simp [h]⟩,
     Finset.prod_congr rfl fun i his => by rw [hρτ i his]] at H2
   rw [Finset.sum_neg_distrib, neg_le_neg_iff, ← Real.log_prod fun i his => norm_ne_zero_iff.2 (sub_ne_zero.2 (hne i his)),

@@ -360,8 +360,8 @@ theorem idOff_mul_eq_zero {v : Pl D} {ε : AF D.host.F} (hε : IsPlaceIdem D v �
     intro w
     rw [hc w]
     by_cases h : w = v
-    · subst h; rw [if_pos rfl, hv]; rfl
-    · rw [if_neg h, hw w h, TensorProduct.zero_tmul]
+    · subst h; rw [ite_eq_left rfl, hv]; rfl
+    · rw [ite_eq_right h, hw w h, TensorProduct.zero_tmul]
   have hx0 := (SetCut.mem_idOff_iff_mul (· = v) _ h0 hc' x).1 hx
   rw [← hy, ← mul_assoc, mul_comm x, hx0, zero_mul]
 
@@ -505,14 +505,14 @@ theorem extFunAct : ∀ (D : D7) (k : Type) [Field k] [ValuativeRel k] [Topologi
   intro D k _ _ _ _ p S T n n' _ _ _ _ α β Ψ g h t
   unfold extFun
   by_cases ht : IsHalf p.e t
-  · rw [if_pos (isHalf_actO _ _ ht), if_pos ht]
+  · rw [ite_eq_left (isHalf_actO _ _ ht), ite_eq_left ht]
     congr 1
     rw [← GlobalTheory.SplitLinear.subst_eq]
     unfold rd GlobalTheory.IndefiniteRowSideFullHecke.SplitLinearModelNorm.subst
     rw [← map_inv, Matrix.map_mul, Matrix.map_mul, β.gl_mat, α.gl_mat]
     simp only [Matrix.mul_assoc]
     rw [α.b'b, Matrix.mul_one, ← Matrix.mul_assoc β.b' β.b, β.b'b, Matrix.one_mul]
-  · rw [if_neg (fun h' => ht (isHalf_of_act _ _ h')), if_neg ht]
+  · rw [ite_eq_right (fun h' => ht (isHalf_of_act _ _ h')), ite_eq_right ht]
 
 theorem sbSubst {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
     {n n' : Type} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] {Ψ : Matrix n n' k → ℂ}

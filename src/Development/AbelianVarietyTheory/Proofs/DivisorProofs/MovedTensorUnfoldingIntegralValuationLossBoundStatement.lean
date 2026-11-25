@@ -122,8 +122,8 @@ theorem Aff.sum {ι : Type*} (s : Finset ι) {f : ι → V → k} (h : ∀ i, Af
 
 theorem Aff.ite (p : Prop) [Decidable p] {f : V → k} (h : Aff O S f) : Aff O S fun v => if p then f v else 0 := by
   by_cases hp : p
-  · simpa only [if_pos hp] using h
-  · simpa only [if_neg hp] using Aff.const 0
+  · simpa only [ite_eq_left hp] using h
+  · simpa only [ite_eq_right hp] using Aff.const 0
 
 theorem Aff.quad {f : V → k} (h : Aff O S f) : Quad O S f := by
   obtain ⟨a, ha, -⟩ := h
@@ -156,8 +156,8 @@ theorem Quad.sum {ι : Type*} (s : Finset ι) {f : ι → V → k} (h : ∀ i, Q
 
 theorem Quad.ite (p : Prop) [Decidable p] {f : V → k} (h : Quad O S f) : Quad O S fun v => if p then f v else 0 := by
   by_cases hp : p
-  · simpa only [if_pos hp] using h
-  · simpa only [if_neg hp] using (Aff.const 0).quad
+  · simpa only [ite_eq_left hp] using h
+  · simpa only [ite_eq_right hp] using (Aff.const 0).quad
 
 end General
 
@@ -170,15 +170,15 @@ theorem aff_stepPt (j : Fin (G.m - 1)) (x₀ : Matrix (Fin (topRank G (j + 1))) 
     Aff O (intVars O G) fun e : Vars G => stepPt x₀ (e j) r s := by
   by_cases h : Free ((G.m - 2 - j) / 2 + 1) (r, s) ∨ Kept (r, s)
   · refine ⟨fun l => l j ⟨(r, s), h⟩, fun v l => ?_, fun l hl => hl j _⟩
-    simp only [stepPt, Matrix.add_apply, Matrix.of_apply, dif_pos h, Pi.add_apply, add_assoc]
+    simp only [stepPt, Matrix.add_apply, Matrix.of_apply, dite_eq_left h, Pi.add_apply, add_assoc]
   · refine ⟨fun _ => 0, fun v l => ?_, fun _ _ => zero_mem _⟩
-    simp only [stepPt, Matrix.add_apply, Matrix.of_apply, dif_neg h, add_zero]
+    simp only [stepPt, Matrix.add_apply, Matrix.of_apply, dite_eq_right h, add_zero]
 
 theorem aff_rowVar (x : ColArgs G) (j : ℕ) (s) : Aff O (intVars O G) fun e : Vars G => rowVar x e j s := by
   by_cases h : j < G.m - 1
-  · simp only [rowVar, dif_pos h]
+  · simp only [rowVar, dite_eq_left h]
     exact Aff.sum _ fun l => Aff.ite _ (aff_stepPt O ⟨j, h⟩ (x j) _ _)
-  · simp only [rowVar, dif_neg h]
+  · simp only [rowVar, dite_eq_right h]
     exact Aff.const _
 
 theorem quad_phase (x : ColArgs G) : Quad O (intVars O G) fun e : Vars G => phase x e := by
@@ -467,7 +467,7 @@ theorem coset_integral [MeasurableSpace X] [OpensMeasurableSpace X] [MeasurableA
     simp only [Measure.real, hvol, Complex.real_smul]
     ring
   · left
-    push_neg at h
+    push Not at h
     obtain ⟨u, hu, hne⟩ := h
     have hc0 : g c ≠ 0 := by
       intro h0
@@ -516,8 +516,8 @@ theorem integral_eq_sum_twisted : ∀ {X : Type} [AddCommGroup X] [TopologicalSp
         g y = if c = (y : X ⧸ U) then g y else 0 := by
       intro c
       by_cases h : c = (y : X ⧸ U)
-      · rw [if_pos h, Set.indicator_of_mem (show y ∈ (fun x => -(Quotient.out c) + x) ⁻¹' (U : Set X) from (hind c y).2 h)]
-      · rw [if_neg h, Set.indicator_of_notMem (show y ∉ (fun x => -(Quotient.out c) + x) ⁻¹' (U : Set X) from fun hm => h ((hind c y).1 hm))]
+      · rw [ite_eq_left h, Set.indicator_of_mem (show y ∈ (fun x => -(Quotient.out c) + x) ⁻¹' (U : Set X) from (hind c y).2 h)]
+      · rw [ite_eq_right h, Set.indicator_of_notMem (show y ∉ (fun x => -(Quotient.out c) + x) ⁻¹' (U : Set X) from fun hm => h ((hind c y).1 hm))]
     simp only [key]
     rw [Finset.sum_ite_eq']
     split_ifs with hmem
@@ -581,9 +581,9 @@ theorem stairElt_diag (G : Grid k) (hs : 1 ≤ G.s) (ϖ : kˣ) (e : ℕ) (J : G.
       | zero => exact h2 0
       | succ j =>
         have : ¬ j < G.m - 2 := by omega
-        simp only [dif_neg this]
+        simp only [dite_eq_right this]
         exact h1 _
-  · rw [Reps.elt, onColumn, dif_neg hi]
+  · rw [Reps.elt, onColumn, dite_eq_right hi]
     exact h1 _
 
 theorem valuation_fill_sub_le (G : Grid k) (hs : 1 ≤ G.s) (ϖ : kˣ) (n : ℕ) (x : ColArgs G) (y : RowArgs G)
@@ -1043,7 +1043,7 @@ theorem GlobalTheory.MovedTwist.moved_lossLe : ∀ {D : D7} {Γ : Type} [Group �
     classical
     simp [keepAt, hP]
   have hg := unitIn_prod _ _ (hedge ((repsAt ch.G t P).elt (β P)))
-  simp only [moved, Grid.pathAct, hk, if_true, one_mul]
+  simp only [moved, Grid.pathAct, hk, ite_true, one_mul]
   exact lossLe_unit_mul hw hg.1 hg.2 (hT _)
 
 end

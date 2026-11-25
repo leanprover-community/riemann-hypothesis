@@ -31,7 +31,7 @@ theorem interpolation_holds : Interp := by
     classical
     simp only [P, coeff_sum, coeff_monomial]
     rw [Finset.sum_ite_eq' S m]
-    rw [if_pos hm]
+    rw [ite_eq_left hm]
   simp only [hP, AddMonoidAlgebra.coeff_zero] at hc
   exact hφ hc.symm
 

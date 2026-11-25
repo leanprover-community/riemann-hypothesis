@@ -157,12 +157,12 @@ lemma exists_u (v : Place k F) {r : ℕ} (y : Fin (r+1) → F) (hy : y ≠ 0) :
       have := congrArg (Equiv.swap 0 i) h
       rw [Equiv.swap_apply_self, Equiv.swap_apply_right] at this
       exact Fin.succ_ne_zero a this
-    rw [hu0y]; simp only [hc, if_neg hne]; field_simp; ring
+    rw [hu0y]; simp only [hc, ite_eq_right hne]; field_simp; ring
 
 lemma exists_h {n : ℕ} (x : Fin (n+1) → F) (hx : x ≠ 0) :
     ∃ h : Matrix (Fin (n+1)) (Fin (n+1)) F, h.det ≠ 0 ∧ ∀ a, h a 0 = x a := by
   obtain ⟨i, hi⟩ : ∃ i, x i ≠ 0 := by
-    by_contra hc; push_neg at hc; exact hx (funext hc)
+    by_contra hc; push Not at hc; exact hx (funext hc)
   refine ⟨(1 + Matrix.vecMulVec (x - Pi.single i 1) (Pi.single i 1)).submatrix id (Equiv.swap 0 i), ?_, ?_⟩
   · rw [Matrix.det_permute', det_one_add_vmv]
     simp [hi]
@@ -181,7 +181,7 @@ lemma unimod_ae [IsAlgClosed k] [CharZero k] (hF : IsFF k F) {n : ℕ} (h : Matr
   refine ((_root_.GlobalTheory.Nef.finite_support_and_sum_ord_eq_zero k F hF _ hd).1.union (Set.finite_iUnion fun p : Fin n × Fin n => fin1 (h p.1 p.2))).subset ?_
   intro v hv
   simp only [Set.mem_union, Set.mem_setOf_eq, Set.mem_iUnion]
-  by_contra hc; push_neg at hc
+  by_contra hc; push Not at hc
   exact hv ⟨fun i j => hc.2 (i, j), hc.1⟩
 
 lemma unimod_pull {E : Type} [Field E] [Algebra k E] [Algebra F E] (ρ : Place k E → Place k F) (hρ : IsRes ρ)

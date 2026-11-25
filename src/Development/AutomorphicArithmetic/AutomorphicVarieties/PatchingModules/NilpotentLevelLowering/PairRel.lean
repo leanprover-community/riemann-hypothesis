@@ -188,7 +188,7 @@ theorem UpperTheory.V.Pa.Lev.pairRel :
       intro k
       by_cases hk : k = i
       · simp [hk]
-      · simp only [if_neg hk]
+      · simp only [ite_eq_right hk]
         rw [sub_mul, hPV, smul_mul_assoc, one_mul]
         ext a b
         simp [Matrix.mul_diagonal, mul_sub, mul_comm])

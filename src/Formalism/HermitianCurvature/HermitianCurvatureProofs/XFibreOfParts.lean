@@ -406,7 +406,7 @@ private theorem exists_isFrameOf_singleton_of_Tz_pos {k r : ℕ} {z' : Fin (2 * 
       have e0 := congrFun h0 i0
       have e1 := congrFun hc i0
       have e2 := congrFun hc i1
-      simp only [bvec, Pi.single_apply, Pi.smul_apply, smul_eq_mul, if_neg hne] at e0 e1 e2
+      simp only [bvec, Pi.single_apply, Pi.smul_apply, smul_eq_mul, ite_eq_right hne] at e0 e1 e2
       have hz0 : z' i0 ≠ 0 := fun h => by rw [h, mul_zero] at e0; exact one_ne_zero e0
       have hc0 : c = 0 := (mul_eq_zero.mp e1.symm).resolve_right hz0
       rw [hc0, zero_mul] at e2
@@ -420,9 +420,9 @@ private theorem exists_isFrameOf_singleton_of_Tz_pos {k r : ℕ} {z' : Fin (2 * 
   · refine Fin.cases ?_ (fun i => ?_) i <;> refine Fin.cases ?_ (fun j => ?_) j
     · simpa using hee
     · simp only [Fin.cons_zero, Fin.cons_succ]
-      rw [herm_Hpk_swap _ e, hBs.2.2 _ e (by simp), star_zero, if_neg (Fin.succ_ne_zero j).symm]
+      rw [herm_Hpk_swap _ e, hBs.2.2 _ e (by simp), star_zero, ite_eq_right (Fin.succ_ne_zero j).symm]
     · simp only [Fin.cons_zero, Fin.cons_succ]
-      rw [hBs.2.2 _ e (by simp), if_neg (Fin.succ_ne_zero i)]
+      rw [hBs.2.2 _ e (by simp), ite_eq_right (Fin.succ_ne_zero i)]
     · simp only [Fin.cons_succ]
       rw [hBs.2.1]
       simp [Fin.ext_iff]

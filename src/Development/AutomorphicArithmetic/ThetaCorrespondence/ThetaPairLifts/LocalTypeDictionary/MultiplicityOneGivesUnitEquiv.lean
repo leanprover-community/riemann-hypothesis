@@ -366,7 +366,7 @@ theorem pThmB {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 I0 T : Type} {A3 : 
       exact (Finset.prod_pos fun i _ => hlpos i t _).ne'
     intro t' p' x hx
     exact (hK t' p' x hx).trans (by rw [hk])
-  · push_neg at hex
+  · push Not at hex
     intro t p x hx
     rw [hex t p, Submodule.mem_bot] at hx
     subst hx

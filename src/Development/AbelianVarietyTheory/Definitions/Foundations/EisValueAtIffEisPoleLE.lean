@@ -418,20 +418,6 @@ theorem dblConv_iff (hi : LeftInv ((GQ V).prod (GQ V)) (dblIntegrand V μ E f₁
 
 end Dbl
 
-section ZetaNonvanishing₂
-
-variable {m : Measure (GA D V)} {Φ : ℂ → GA D (dblSp V) → ℂ} {f₁ f₂ : GA D V → ℂ} {s₀ c c' : ℂ} {n : ℤ}
-
-end ZetaNonvanishing₂
-
-section Euler
-
-open NumberField IsDedekindDomain
-
-variable {K : Type} [Field K] [NumberField K] {T : Set (HeightOneSpectrum (𝓞 K))} {c : LFun.Fam K} {σ : ℝ} {Λ : ℂ → ℂ}
-
-end Euler
-
 end GlobalTheory.Eis
 
 end

@@ -367,12 +367,12 @@ theorem kapL_mono {p : ℕ} (hp : 2 ≤ p) (r : ℕ) {L : Type} [Fintype L] {d d
   apply Finset.sum_le_sum
   intro i _
   by_cases h0 : d i = 0
-  · rw [if_pos h0]
+  · rw [ite_eq_left h0]
     exact kapL_term_nonneg hp r (d' i)
   · have h1 : d' i ≠ 0 := by
       have := h i
       omega
-    rw [if_neg h0, if_neg h1]
+    rw [ite_eq_right h0, ite_eq_right h1]
     exact mul_le_mul_of_nonneg_left (logb_add_mono hp r (by omega) (h i)) (Nat.cast_nonneg r)
 
 theorem kapL_le_kap {p : ℕ} (hp : 2 ≤ p) {r : ℕ} (hr : 1 ≤ r) {L : Type} [Fintype L] (d : L → ℕ) :

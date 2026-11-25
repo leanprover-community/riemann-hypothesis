@@ -297,7 +297,7 @@ theorem exists_isCols : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (
   choose B hB using fun f : {f : Lt1 Dw // cx f ≠ 0} =>
     exists_isIsoCols c T io p hp f.1.1 (fun j => blk ⟨f, j⟩) fun j j' h => by simpa using blk.injective h
   refine ⟨fun f => if h : cx f ≠ 0 then B ⟨f, h⟩ else 0, blk, fun f => ?_⟩
-  simp only [dif_pos f.2]
+  simp only [dite_eq_left f.2]
   exact hB f
 
 end GlobalTheory.IsoCols

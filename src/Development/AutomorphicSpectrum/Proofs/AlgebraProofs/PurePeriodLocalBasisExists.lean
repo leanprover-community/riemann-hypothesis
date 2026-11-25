@@ -205,7 +205,7 @@ theorem exists_integral_posDef_perturbation : ∀ (E : Type) [Field E] [NumberFi
     have hk' : (k : ℂ) ≠ 0 := by exact_mod_cast hk
     have hn' : (n : ℂ) ≠ 0 := by exact_mod_cast hn
     simp only [Matrix.map_apply, Matrix.add_apply, Matrix.smul_apply, Matrix.of_apply, D, c, f,
-      if_pos hτ, smul_eq_mul]
+      ite_eq_left hτ, smul_eq_mul]
     push_cast
     simp only [map_add (f := _), nsmul_eq_mul, map_mul, map_natCast]
     field_simp
@@ -520,7 +520,7 @@ theorem exists_orthogonal_local_basis_extension (D : Datum H) (p q : ℕ) (ℓ :
     · exact hg2 j
   · refine ⟨m * n, ?_, ?_⟩
     · rw [ℓ.prop.dvd_mul]
-      push_neg
+      push Not
       exact ⟨hmℓ, hnℓ⟩
     · intro y
       have hdec : m • y = familyCombination D x' (integralCoeffs D x' m hm y) + orthogonalComponent D x' m hm y := by
@@ -821,11 +821,11 @@ theorem per_bx (hn0 : 0 < n) (hcx : ∀ m, c (x m) = Finsupp.single m (n : 𝓞 
   simp only [per, AddMonoidHom.coe_mk, ZeroHom.coe_mk, map_smul, hcx, Finsupp.smul_single, smul_eq_mul]
   rw [Finsupp.single_apply]
   by_cases h : blk hty k = m
-  · rw [if_pos h.symm, if_pos h]
+  · rw [ite_eq_left h.symm, ite_eq_left h]
     push_cast
     rw [map_mul, map_natCast]
     field_simp
-  · rw [if_neg (Ne.symm h), if_neg h]
+  · rw [ite_eq_right (Ne.symm h), ite_eq_right h]
     simp
 
 theorem per_span (hn0 : 0 < n) (hcx : ∀ m, c (x m) = Finsupp.single m (n : 𝓞 E)) :
@@ -881,7 +881,7 @@ theorem per_span (hn0 : 0 < n) (hcx : ∀ m, c (x m) = Finsupp.single m (n : �
         rw [← map_mul, Complex.add_conj]
       simp only [hL, Finset.sum_mul, add_mul, ite_mul, zero_mul]
       rw [Finset.sum_comm]
-      simp only [Finset.sum_add_distrib, Finset.sum_ite_eq, Finset.mem_univ, if_true,
+      simp only [Finset.sum_add_distrib, Finset.sum_ite_eq, Finset.mem_univ, ite_true,
         ComplexEmbedding.conjugate_coe_eq]
       rw [← Finset.sum_add_distrib, Finset.sum_congr rfl (fun k _ => hterm k)]
       rw [← Complex.ofReal_sum, ← Finset.mul_sum, ← Complex.re_sum, hre b]
@@ -892,7 +892,7 @@ theorem per_span (hn0 : 0 < n) (hcx : ∀ m, c (x m) = Finsupp.single m (n : �
     · simpa [side k0 k0 rfl] using h0
     · intro k hk hne
       have hk' : blk hty k = blk hty k0 := by simpa [hS] using hk
-      rw [if_neg (fun h => hne (blk_inj hty h hk')), if_neg (side k k0 hk'), add_zero]
+      rw [ite_eq_right (fun h => hne (blk_inj hty h hk')), ite_eq_right (side k k0 hk'), add_zero]
     · intro h
       exact absurd (by simp [hS]) h
   apply hf0
@@ -945,11 +945,11 @@ theorem per_discrete (hn0 : 0 < n) (hc : ∀ y, c y = 0 → y = 0) : DiscreteTop
     have hk : ∃ k, blk hty k = m ∧ 1 ≤ ‖ty k (c y m : E)‖ := by
       rcases m with i | j
       · obtain ⟨σ, hσ, hb⟩ := exists_big (H := H) (c y (Sum.inl i)) hm true
-        simp only [if_true] at hσ
+        simp only [ite_true] at hσ
         obtain ⟨k, hk1, hk2⟩ := exists_blk_inl_of_rt_eq_rt0 hty σ hσ i
         exact ⟨k, hk2, by rw [hk1]; exact hb⟩
       · obtain ⟨σ, hσ, hb⟩ := exists_big (H := H) (c y (Sum.inr j)) hm false
-        simp only [Bool.false_eq_true, if_false] at hσ
+        simp only [Bool.false_eq_true, ite_false] at hσ
         have hne : σ (H.rt : E) ≠ H.rt0 := by
           rw [hσ]
           intro h
@@ -1005,10 +1005,10 @@ theorem Hm_herm (hskew : ∀ m m', G m' m = -IsCMField.complexConj E (G m m')) :
   ext k k'
   simp only [Matrix.conjTranspose_apply, Hm, Matrix.of_apply]
   by_cases h : ty k = ty k'
-  · rw [if_pos h.symm, if_pos h, hskew (blk hty k) (blk hty k'), map_neg,
+  · rw [ite_eq_left h.symm, ite_eq_left h, hskew (blk hty k) (blk hty k'), map_neg,
       IsCMField.complexEmbedding_complexConj, h]
     simp [Complex.conj_I]
-  · rw [if_neg (Ne.symm h), if_neg h, star_zero]
+  · rw [ite_eq_right (Ne.symm h), ite_eq_right h, star_zero]
 
 private theorem re_star_dotProduct_mulVec_pos_of_posDef {n : ℕ} (N : Matrix (Fin n) (Fin n) ℂ) (hN : N.PosDef) (x : Fin n → ℂ) :
     0 ≤ (star x ⬝ᵥ N *ᵥ x).re ∧ (x ≠ 0 → 0 < (star x ⬝ᵥ N *ᵥ x).re) :=

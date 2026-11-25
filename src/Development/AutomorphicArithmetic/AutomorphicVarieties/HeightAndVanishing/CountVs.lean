@@ -144,7 +144,7 @@ theorem UpperTheory.V.HV.vsField :
       exact (ZMod.natCast_eq_natCast_iff a 1 l).mp (by rw [← h2, Nat.cast_one])
     obtain ⟨z, hz⟩ := (abelianField_hasMu_iff_exists_primitiveRoot A l hlp hl2 L hab).mp hmu
     unfold HasMuQ
-    rw [if_neg hl2]
+    rw [ite_eq_right hl2]
     exact ⟨z, hz⟩
   · rw [hfin]
     refine (Subgroup.index_inf_le).trans (Nat.mul_le_mul ?_ ?_)

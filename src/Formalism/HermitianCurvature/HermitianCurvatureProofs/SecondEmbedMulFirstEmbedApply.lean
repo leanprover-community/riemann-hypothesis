@@ -43,11 +43,11 @@ theorem eU_mul_ins (a : S) (k i : Fin 2) (m : SlopeTestRemainingChoices S A) (N 
   rw [mul_assoc, mul_ins a m N hm, Finset.mul_sum, Finset.sum_eq_single i]
   · rw [Finset.mul_sum]
     refine Finset.sum_congr rfl fun s _ => ?_
-    rw [← mul_assoc, eU_mul, if_pos rfl]
+    rw [← mul_assoc, eU_mul, ite_eq_left rfl]
   · intro r _ hr
     rw [Finset.mul_sum]
     refine Finset.sum_eq_zero fun s _ => ?_
-    rw [← mul_assoc, eU_mul, if_neg (Ne.symm hr), zero_mul]
+    rw [← mul_assoc, eU_mul, ite_eq_right (Ne.symm hr), zero_mul]
   · intro h
     exact absurd (Finset.mem_univ _) h
 
@@ -61,10 +61,10 @@ theorem ins_mul_eU (a : S) (j k : Fin 2) (m : SlopeTestRemainingChoices S A) (N 
   refine Finset.sum_congr rfl fun r _ => ?_
   rw [Finset.sum_mul, Finset.sum_eq_single j]
   · have hc : Commute (eU a j k) (N r j * m) := (hN' r j j k).mul_right (hm' j k)
-    rw [mul_assoc, ← hc.eq, ← mul_assoc, eU_mul, if_pos rfl]
+    rw [mul_assoc, ← hc.eq, ← mul_assoc, eU_mul, ite_eq_left rfl]
   · intro s _ hs
     have hc : Commute (eU a j k) (N r s * m) := (hN' r s j k).mul_right (hm' j k)
-    rw [mul_assoc, ← hc.eq, ← mul_assoc, eU_mul, if_neg hs, zero_mul]
+    rw [mul_assoc, ← hc.eq, ← mul_assoc, eU_mul, ite_eq_right hs, zero_mul]
   · intro h
     exact absurd (Finset.mem_univ j) h
 

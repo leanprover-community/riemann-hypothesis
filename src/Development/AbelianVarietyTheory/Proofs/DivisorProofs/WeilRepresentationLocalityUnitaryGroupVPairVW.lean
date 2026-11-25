@@ -24,14 +24,6 @@ theorem comm_off {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E
       om (g, 1) (GlobalTheory.WeilM.schr B.ψ (u • p, u • q) Φ) = GlobalTheory.WeilM.schr B.ψ (u • p, u • q) (om (g, 1) Φ) :=
   GlobalTheory.WeilLocalityW'.comm_off_left (GlobalTheory.WeilM.IsUWeilPair.isUSplitting hTr.weil) v g hg u hu p q Φ hΦ
 
-theorem liftV_one_mul {F : Type} [Field F] [NumberField F] (v : Pl (F := F)) (b : AF F) :
-    GlobalTheory.LatVac.liftV v 1 * b = GlobalTheory.LatVac.liftV v (evFin F v b) :=
-  GlobalTheory.WeilLocalityW'.liftV_one_mul v b
-
-theorem schr_trans {F : Type} [Field F] [NumberField F] (ψ : AddChar (AF F) ℂ) {κ : Type} [Fintype κ]
-    (w : κ → AF F) (Φ : (κ → AF F) → ℂ) : GlobalTheory.WeilM.schr ψ (w, 0) Φ = fun y => Φ (y + w) :=
-  GlobalTheory.WeilLocalityW'.schr_trans ψ w Φ
-
 theorem locality : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (B : Base F E)
     (a a' : ℕ) (G : Geo σ a a') (X : Chars F E) (om : Rep σ G.V G.W) (om' : Rep σ G.V' G.W), IsTriple B G X om om' →
     ∀ (v : Pl (F := F)), ∀ g ∈ UAt σ G.V (evFin F v), ∀ φ ∈ SB (Fin a × Fin (a + a') → Fv F v),

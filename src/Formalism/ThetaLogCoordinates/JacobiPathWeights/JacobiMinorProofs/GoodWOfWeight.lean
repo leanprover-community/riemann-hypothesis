@@ -25,14 +25,14 @@ theorem vars_of_polB {R : Type*} [CommRing R] {n N : ℕ} {B : ℕ → ℕ} {G :
   intro x hx
   by_contra! hlt
   have hGi := (Submodule.mem_iInf _).mp hG x.1
-  rw [if_neg (not_lt.mpr hlt), mem_weightedHomogeneousSubmodule] at hGi
+  rw [ite_eq_right (not_lt.mpr hlt), mem_weightedHomogeneousSubmodule] at hGi
   obtain ⟨e, he, hex⟩ := (MvPolynomial.mem_vars_iff_mem_support x).mp hx
   have h0 := hGi (mem_support_iff.mp he)
   have hpos : 0 < e x := Nat.pos_of_ne_zero (Finsupp.mem_support_iff.mp hex)
   rw [Finsupp.weight_apply, Finsupp.sum] at h0
   have hle := Finset.single_le_sum (f := fun y => e y • (if y.1 = x.1 then 1 else 0 : ℕ))
     (fun _ _ => Nat.zero_le _) hex
-  simp only [if_true, smul_eq_mul, mul_ite, mul_one, mul_zero] at hle h0
+  simp only [ite_true, smul_eq_mul, mul_ite, mul_one, mul_zero] at hle h0
   omega
 
 theorem actAll_X {L : Type*} [CommRing L] {n : ℕ} (isVec : ℕ → Bool) (g gi : Matrix (Fin n) (Fin n) L)

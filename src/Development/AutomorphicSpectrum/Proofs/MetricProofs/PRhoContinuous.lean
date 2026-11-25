@@ -23,9 +23,9 @@ theorem continuous_upV {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype 
     Continuous (upV v) := by
   refine continuous_pi fun q => ?_
   by_cases hq : ∃ q', v q' = q
-  · simp only [upV, dif_pos hq]
+  · simp only [upV, dite_eq_left hq]
     exact continuous_apply _
-  · simp only [upV, dif_neg hq]
+  · simp only [upV, dite_eq_right hq]
     exact continuous_const
 
 theorem pSgn_ne_zero {Ψ : Type} {N j : ℕ} (hj : j ≤ N) (keep : Ψ × Fin N → Prop) (q : PIdx j keep) :
@@ -34,9 +34,9 @@ theorem pSgn_ne_zero {Ψ : Type} {N j : ℕ} (hj : j ≤ N) (keep : Ψ × Fin N 
   have hX : IsLowerUni (pMat (j := j) keep (fun _ => (0 : ℂ)) q.1.1.1) := by
     refine ⟨fun a => ?_, fun a b hab => ?_⟩
     · unfold pMat lowMat
-      rw [dif_neg (fun h => lt_irrefl _ h.1), if_pos rfl]
+      rw [dite_eq_right (fun h => lt_irrefl _ h.1), ite_eq_left rfl]
     · unfold pMat lowMat
-      rw [dif_neg (fun h => lt_asymm hab h.1), if_neg hab.ne]
+      rw [dite_eq_right (fun h => lt_asymm hab h.1), ite_eq_right hab.ne]
   exact (_root_.GlobalTheory.CompanionTheory.Ar.PB.PFl.MatRead.minor_replace N _ _ _ _ hX ha hb q.1.2.1 (hc fun _ => 0).2).2
 
 section Flag

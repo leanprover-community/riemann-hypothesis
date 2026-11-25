@@ -77,7 +77,7 @@ theorem poly_shift {E : Type} [AddCommGroup E] [Module ℂ E] (d : ℕ) (c : Fin
     · intro l _ hl
       have := l.isLt
       have hl' : (l : ℕ) ≠ d := fun e => hl (Fin.ext (by simp [e]))
-      rw [if_neg (by simp; omega), zero_smul]
+      rw [ite_eq_right (by simp; omega), zero_smul]
     · simp
   · simp only [Finset.smul_sum, smul_smul]
     rw [Finset.sum_comm]
@@ -92,11 +92,11 @@ theorem poly_shift {E : Type} [AddCommGroup E] [Module ℂ E] (d : ℕ) (c : Fin
     have h1 : (Finset.range (d + 1)).filter (fun m => m ≤ (l : ℕ)) = Finset.range ((l : ℕ) + 1) := by
       ext m; simp; omega
     rw [h1, Finset.sum_eq_zero (s := (Finset.range (d + 1)).filter (fun m => ¬ m ≤ (l : ℕ)))
-      (fun m hm => by simp at hm; rw [if_neg (by omega), mul_zero]), add_zero, add_pow]
+      (fun m hm => by simp at hm; rw [ite_eq_right (by omega), mul_zero]), add_zero, add_pow]
     apply Finset.sum_congr rfl
     intro m hm
     simp at hm
-    rw [if_pos (by omega)]
+    rw [ite_eq_left (by omega)]
     ring
 
 end shift
@@ -164,7 +164,7 @@ theorem slicePoly_of_pt (T : D.LevTower k r Wp Wq) (F : B.Mat k r → (Wq →L[�
     fun i a => KB.slv T F j hj ((b, ((i : ℕ) : ℝ) + δ) :: w') h hh.2 (Fin.cons e a) with hVt
   set top : Wd.Ix (Fin w'.length) → B.Mat k (r - j) → (Wq →L[ℂ] Wp) :=
     if e = 0 then KB.slv T F j hj w' h hh.2 else 0 with htop
-  refine ⟨fun l => if l = Fin.last j then top else ∑ i, Vi l i • Vt i, if_pos rfl, ?_, ?_⟩
+  refine ⟨fun l => if l = Fin.last j then top else ∑ i, Vi l i • Vt i, ite_eq_left rfl, ?_, ?_⟩
   ·
     have hc : ∀ (i : ℕ) (hi : i ≤ r) (hi1 : 1 ≤ i) (w : List C.Letter) (hp : D.IsLocPt h i) (a : Wd.Ix (Fin w.length)),
         KB.CptCoef (T.bs i) (KB.slv T F i hi w h hp.2 a) := fun i hi hi1 w hp a =>
@@ -172,11 +172,11 @@ theorem slicePoly_of_pt (T : D.LevTower k r Wp Wq) (F : B.Mat k r → (Wq →L[�
     intro l
     by_cases hl : l = Fin.last j
     · by_cases he : e = 0
-      · simp only [hl, htop, he, if_true]
+      · simp only [hl, htop, he, ite_true]
         exact nice_vec_of_cpt (T.bs j) (fun a => hc j hj hj1 w' hh a)
-      · simp only [hl, htop, he, if_false]
+      · simp only [hl, htop, he, ite_false]
         exact ⟨0, fun a => Formalism.FourierDecayAlt.P.JCx2.mn_nice_zero⟩
-    · simp only [hl, if_false]
+    · simp only [hl, ite_false]
       refine nice_vec_of_cpt (T.bs j) (fun a => ?_)
       have e1 : (∑ i, Vi l i • Vt i) a = ∑ i, Vi l i • Vt i a := by simp [Finset.sum_apply]
       rw [e1]
@@ -219,7 +219,7 @@ theorem slicePoly_of_pt (T : D.LevTower k r Wp Wq) (F : B.Mat k r → (Wq →L[�
           have := vand_row τ hτ (Fin.last j) m
           simp only [hτdef] at this
           rw [← this]
-        simp only [this, ite_smul, one_smul, zero_smul, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+        simp only [this, ite_smul, one_smul, zero_smul, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
         rw [hcl]
         split_ifs <;> simp) (D.castM hcast γ) hγ'
 
@@ -232,12 +232,12 @@ theorem slicePoly_of_pt (T : D.LevTower k r Wp Wq) (F : B.Mat k r → (Wq →L[�
           (D.uwG k r T.base.z T.base.z' F j hj ((b, ((q : ℕ) : ℝ) + δ) :: w') (Fin.cons e a)) h (D.castM hcast γ) := by
       intro x
       by_cases hx : x = Fin.last j
-      · rw [if_pos hx, hx, ← hT]
+      · rw [ite_eq_left hx, hx, ← hT]
         simp only [htop]
         by_cases he : e = 0
-        · simp only [he, if_true, KB.slv, D.castF]
-        · simp only [he, if_false, sliceAt_zero, Pi.zero_apply]
-      · rw [if_neg hx]
+        · simp only [he, ite_true, KB.slv, D.castF]
+        · simp only [he, ite_false, sliceAt_zero, Pi.zero_apply]
+      · rw [ite_eq_right hx]
         simp only [Finset.sum_apply, Pi.smul_apply, hVt, KB.slv, D.castF]
     simp only [hR, Finset.smul_sum, smul_smul, Finset.sum_smul]
     rw [Finset.sum_comm]

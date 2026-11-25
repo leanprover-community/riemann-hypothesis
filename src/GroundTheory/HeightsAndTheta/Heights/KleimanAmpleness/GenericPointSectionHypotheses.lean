@@ -186,12 +186,6 @@ def InterNumTie.Statement : Prop :=
     interNum pp (fun i => twistSys k x (b i)) =
       NumbersDVR.intNum k (pp.comap (oneBlock (S := k) (N := N)).toRingHom) (fun i _ => b i)
 
-section Hypotheses
-
-variable (k : Type u) [Field k]
-
-end Hypotheses
-
 end
 
 end GroundTheory.Heights₂.Heights.Kleiman

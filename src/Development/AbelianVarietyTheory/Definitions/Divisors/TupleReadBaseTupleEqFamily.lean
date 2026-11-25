@@ -394,18 +394,6 @@ theorem tw_iff (w : D.what₂.places.Pl) : D.plEq w ∈ p.R.twPl ↔ D.what₂.m
     apply hne
     rw [← p.tupTie _ (Or.inr ⟨w, rfl⟩), ← p.tupTie _ (Or.inl rfl), p.tupAt w, p.charW.tup.mu_off (D.plEq w) hw, p.tupleRead_baseTuple_eq_family]
 
-section OfReal
-
-variable {P : IndefiniteRowSideFullHecke ex} {Del h0 : ℕ} {hDel : D.s.Del = (Del : ℚ)} {hh0 : L.etaSz = (D.R.m : ℝ) * (h0 : ℝ)}
-  {Dcf : ∀ Zs : DefSub P.A3.fam3.amb3, DefCols (P.A3.side3 P.Ps P.ψs Zs)} {Spf : ∀ Zs : DefSub P.A3.fam3.amb3, SPer (Dcf Zs)}
-  {gamDvd : (∀ (t : P.T) (c : (P.A3.A.fam.R t).S.Cl), Fintype.card ((P.A3.A.fam.R t).S.Gam c) ∣ (D.mem D.u₀).C.DGam) ∧
-    ∀ (j : Fin D.R.m) (t : P.T) (c : (P.A3.A.fam.L j t).S.Cl), Fintype.card ((P.A3.A.fam.L j t).S.Gam c) ∣ (D.mem D.u₀).C.DGam}
-  {Rc : RecT ex} {S : Formalism.L2.SG.SpectralTiesReal.STiesR Rc} {B : RealTB Rc P.toRowSideFamily Dcf Spf (P.zsc Del h0 Csz) S}
-  {Qp : RealPins B.Q} {Qr : RealRec B.Q}
-
-
-end OfReal
-
 namespace Realised
 
 variable {p} (h : p.Realised)

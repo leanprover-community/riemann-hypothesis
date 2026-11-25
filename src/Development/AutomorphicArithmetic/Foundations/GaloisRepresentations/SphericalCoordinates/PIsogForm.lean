@@ -141,7 +141,7 @@ theorem UpperTheory.Gal.W2.isogForm_of :
     have h0 : ∀ x : D'.La, x = 0 := fun x => D'.nondeg x (hall x)
     rw [h0 u]
     simp
-  push_neg at hall
+  push Not at hall
   obtain ⟨u₃, u₄, hne⟩ := hall
   have hrel : ∀ u u' : D'.La, ((D''.EF (inc u) (inc u') : ℤ) : ℚ) =
       ((D''.EF (inc u₃) (inc u₄) : ℚ) / (D'.EF u₃ u₄ : ℚ)) * (D'.EF u u' : ℚ) := by

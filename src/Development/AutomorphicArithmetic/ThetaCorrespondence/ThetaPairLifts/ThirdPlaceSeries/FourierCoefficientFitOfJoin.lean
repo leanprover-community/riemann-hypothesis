@@ -1118,7 +1118,7 @@ theorem leaves_of_sum {K : Type} [Field K] [NumberField K] [StarRing K] {Bs : De
     have e2 : (O.ee C b O.sv0 : ℝ) * Real.log (O.qq O.sv0) ≤ O.PPF C b + Real.log (O.qq O.sv0) := by
       have h := Nat.floor_le (div_nonneg hP0 hlq.le)
       rw [le_div_iff₀ hlq] at h
-      simp only [FunData.ee, if_true]
+      simp only [FunData.ee, ite_true]
       push_cast
       linarith
     rw [e1]

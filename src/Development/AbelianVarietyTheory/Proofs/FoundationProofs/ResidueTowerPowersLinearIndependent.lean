@@ -85,7 +85,7 @@ theorem field_indep {k : Type} [Field k] (p : ℕ) [hp : Fact p.Prime] [CharP k 
     rw [← hs, map_sum]
     refine Finset.sum_congr rfl fun j hj => ?_
     rw [aeval_monomial]
-    simp only [c', dif_pos (Finset.mem_range.1 hj)]
+    simp only [c', dite_eq_left (Finset.mem_range.1 hj)]
     rfl
   have hP0 : P = 0 := by
     by_contra h
@@ -104,7 +104,7 @@ theorem field_indep {k : Type} [Field k] (p : ℕ) [hp : Fact p.Prime] [CharP k 
     simp [P, coeff_monomial, Finsupp.single_apply] <;> omega
   rw [hP0, coeff_zero] at h1
   have h2 := congrArg Subtype.val h1
-  simp only [c', dif_pos hj] at h2
+  simp only [c', dite_eq_left hj] at h2
   exact h2.symm
 
 variable {p : ℕ} [hp : Fact p.Prime] {Ω : Type} [Field Ω] [Algebra (O0 p) Ω]

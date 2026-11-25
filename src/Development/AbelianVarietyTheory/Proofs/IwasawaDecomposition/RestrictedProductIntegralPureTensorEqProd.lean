@@ -90,11 +90,11 @@ theorem map_eq_smul_prod {ι Z Zi : Type} {Zv : ι → Type} [MeasurableSpace Z]
     have hfv : ∀ v, Measurable (fv v) := by
       intro v
       by_cases hv : v ∈ S
-      · simp only [fv, dif_pos hv]
+      · simp only [fv, dite_eq_left hv]
         exact measurable_one.indicator (ht' _)
-      · simp only [fv, dif_neg hv]
+      · simp only [fv, dite_eq_right hv]
         exact measurable_zero
-    have hfv' : ∀ v : S, fv v = (t v).indicator 1 := fun v => by simp only [fv, dif_pos v.2]
+    have hfv' : ∀ v : S, fv v = (t v).indicator 1 := fun v => by simp only [fv, dite_eq_left v.2]
     have h1 := h (s.indicator 1) fv (measurable_one.indicator hs') hfv
     have hm : MeasurableSet (s ×ˢ Set.pi Set.univ t) :=
       hs'.prod (MeasurableSet.univ_pi ht')
@@ -109,7 +109,7 @@ theorem map_eq_smul_prod {ι Z Zi : Type} {Zv : ι → Type} [MeasurableSpace Z]
         · rw [Set.indicator_of_mem (by simpa [hX] using hY)]
           simp [hX, hY]
         · rw [Set.indicator_of_notMem (by simpa [hX] using hY)]
-          push_neg at hY
+          push Not at hY
           obtain ⟨v, hv⟩ := hY
           rw [Finset.prod_eq_zero (Finset.mem_univ v) (by simp [hv])]
           simp

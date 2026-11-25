@@ -38,9 +38,9 @@ theorem finsum_liesOver_eq_finsum_good (c : ι) (p : Ideal (KTp K d.D d.N)) (g :
   refine finsum_congr fun w => ?_
   by_cases hG : w ∈ d.GoodP c p
   · have hO : w ∈ d.OverP c p := hG.1
-    simp only [finsum_eq_if, if_pos hO, if_pos hG]
+    simp only [finsum_eq_if, ite_eq_left hO, ite_eq_left hG]
     rfl
-  · simp only [finsum_eq_if, if_neg hG]
+  · simp only [finsum_eq_if, ite_eq_right hG]
     split_ifs with hO
     · have h0 : d.Wres c w g = 0 := by
         by_contra hne

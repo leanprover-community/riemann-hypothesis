@@ -28,7 +28,7 @@ private theorem raiB_apply_of_linePos_eq_true {l : FockH1Action.Ln p q r s}
     FockH1Action.raiB l P = X l * P := by
   first
   | (rw [FockH1Action.raiB, if_pos h]; done)
-  | (rw [FockH1Action.raiB, if_pos h]; rfl)
+  | (rw [FockH1Action.raiB, ite_eq_left h]; rfl)
 
 private theorem lowB_apply_of_linePos_eq_false {l : FockH1Action.Ln p q r s}
     (h : FockH1Action.linePos l = false) (P : FockH1Action.Pol p q r s) :
@@ -36,7 +36,7 @@ private theorem lowB_apply_of_linePos_eq_false {l : FockH1Action.Ln p q r s}
   have h' : ¬ (FockH1Action.linePos l = true) := by simp [h]
   first
   | (rw [FockH1Action.lowB, if_neg h']; done)
-  | (rw [FockH1Action.lowB, if_neg h']; rfl)
+  | (rw [FockH1Action.lowB, ite_eq_right h']; rfl)
 
 theorem omE_pos_neg {l l' : FockH1Action.Ln p q r s} (h1 : FockH1Action.linePos l = true)
     (h2 : FockH1Action.linePos l' = false) (P : FockH1Action.Pol p q r s) :
@@ -44,7 +44,7 @@ theorem omE_pos_neg {l l' : FockH1Action.Ln p q r s} (h1 : FockH1Action.linePos 
   have hne : l ≠ l' := by
     rintro rfl
     simp_all
-  rw [omE_apply, if_neg hne, add_zero, lowB_apply_of_linePos_eq_false h2, raiB_apply_of_linePos_eq_true h1]
+  rw [omE_apply, ite_eq_right hne, add_zero, lowB_apply_of_linePos_eq_false h2, raiB_apply_of_linePos_eq_true h1]
 
 private theorem raiB_apply_of_linePos_eq_false {l : FockH1Action.Ln p q r s}
     (h : FockH1Action.linePos l = false) (P : FockH1Action.Pol p q r s) :
@@ -52,14 +52,14 @@ private theorem raiB_apply_of_linePos_eq_false {l : FockH1Action.Ln p q r s}
   have h' : ¬ (FockH1Action.linePos l = true) := by simp [h]
   first
   | (rw [FockH1Action.raiB, if_neg h']; done)
-  | (rw [FockH1Action.raiB, if_neg h']; rfl)
+  | (rw [FockH1Action.raiB, ite_eq_right h']; rfl)
 
 private theorem lowB_apply_of_linePos_eq_true {l : FockH1Action.Ln p q r s}
     (h : FockH1Action.linePos l = true) (P : FockH1Action.Pol p q r s) :
     FockH1Action.lowB l P = pderiv l P := by
   first
   | (rw [FockH1Action.lowB, if_pos h]; done)
-  | (rw [FockH1Action.lowB, if_pos h]; rfl)
+  | (rw [FockH1Action.lowB, ite_eq_left h]; rfl)
 
 theorem omE_neg_pos {l l' : FockH1Action.Ln p q r s} (h1 : FockH1Action.linePos l = false)
     (h2 : FockH1Action.linePos l' = true) (P : FockH1Action.Pol p q r s) :
@@ -67,7 +67,7 @@ theorem omE_neg_pos {l l' : FockH1Action.Ln p q r s} (h1 : FockH1Action.linePos 
   have hne : l ≠ l' := by
     rintro rfl
     simp_all
-  rw [omE_apply, if_neg hne, add_zero, lowB_apply_of_linePos_eq_true h2, raiB_apply_of_linePos_eq_false h1]
+  rw [omE_apply, ite_eq_right hne, add_zero, lowB_apply_of_linePos_eq_true h2, raiB_apply_of_linePos_eq_false h1]
 
 private theorem mem_homog_iff_isHomogeneous' {σ : Type} {d : ℕ} {P : MvPolynomial σ ℂ} :
     P ∈ FockH1Action.homog σ d ↔ P.IsHomogeneous d := by
@@ -123,7 +123,7 @@ theorem pderiv_homog_zero {σ : Type} (l : σ) {P : MvPolynomial σ ℂ} (h : P.
   rw [← sum_homogeneousComponent (pderiv l P)]
   refine Finset.sum_eq_zero fun e _ => ?_
   rw [homogeneousComponent_pderiv, homogeneousComponent_eq_ite_of_isHomogeneous h,
-    if_neg (show ¬ (0 = e + 1) by omega), map_zero]
+    ite_eq_right (show ¬ (0 = e + 1) by omega), map_zero]
 
 private theorem isHomogeneous_zero_complex {σ : Type} (n : ℕ) : (0 : MvPolynomial σ ℂ).IsHomogeneous n :=
   mem_homog_iff_isHomogeneous'.mp (Submodule.zero_mem _)
@@ -131,7 +131,7 @@ private theorem isHomogeneous_zero_complex {σ : Type} (n : ℕ) : (0 : MvPolyno
 private theorem isHomogeneous_pderiv_of_isHomogeneous_succ {σ : Type} (l : σ) {n : ℕ} {P : MvPolynomial σ ℂ}
     (h : P.IsHomogeneous (n + 1)) : (pderiv l P).IsHomogeneous n := by
   have hP : homogeneousComponent (n + 1) P = P := by
-    rw [homogeneousComponent_eq_ite_of_isHomogeneous h, if_pos rfl]
+    rw [homogeneousComponent_eq_ite_of_isHomogeneous h, ite_eq_left rfl]
   rw [← hP, ← homogeneousComponent_pderiv]
   exact homogeneousComponent_isHomogeneous _ _
 
@@ -348,7 +348,7 @@ theorem adjStep_of (hS : PMSplit) (hL : FockLinL) (hR : FockLinR) (hX : FockXAdj
   conv_rhs => rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun l _ => Finset.sum_congr rfl fun l' _ => ?_
   by_cases h : FockH1Action.linePos l = true ∧ FockH1Action.linePos l' = false
-  · rw [if_pos h, if_pos ⟨h.2, h.1⟩, hA l l' h.1 h.2, neg_neg]
-  · rw [if_neg h, if_neg (fun h' => h ⟨h'.2, h'.1⟩), neg_zero]
+  · rw [ite_eq_left h, ite_eq_left ⟨h.2, h.1⟩, hA l l' h.1 h.2, neg_neg]
+  · rw [ite_eq_right h, ite_eq_right (fun h' => h ⟨h'.2, h'.1⟩), neg_zero]
 
 end FockRL

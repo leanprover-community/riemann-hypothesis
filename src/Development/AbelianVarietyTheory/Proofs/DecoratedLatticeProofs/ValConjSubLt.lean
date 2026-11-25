@@ -111,12 +111,6 @@ theorem val_pr_lt {z : AE D} (hz : Valued.v (adAt D.host.F PP (toEAf D z)) < 1) 
 
 end Split
 
-section Local
-
-variable {D : D7} {u : D.what₂.Word} {a : XPart D u} {ζ₀ : Fin a.Lz.rank → D.host.E} {PP : Formalism.L2.DIV.Pl D.host.E} (H : GX a ζ₀ PP)
-
-end Local
-
 end GlobalTheory.SeeSaw.LevChi
 
 end

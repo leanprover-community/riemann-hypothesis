@@ -79,10 +79,4 @@ theorem double_coset_indicator_mem : Formalism.UG.DosetIndMem := by
   by_contra h
   exact hx (dosetInd_of_not_mem k K g x h)
 
-section Basis
-
-variable {G : Type} [Group G]
-
-end Basis
-
 end Formalism.UG.P

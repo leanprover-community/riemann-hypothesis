@@ -123,8 +123,8 @@ theorem galois_condition_five_extra_of (D : D7) (i : D.nd.Loc) (hc : TameCharact
     have hov : v ∈ placesOver D.host.E (if D.nd.l i = D.host.pde then D.host.pde' else D.host.pde) := by
       rcases hp with hp | ⟨h1, hp⟩
       · have : D.nd.l i ≠ D.host.pde := fun h => hl (h ▸ hp)
-        rwa [if_neg this]
-      · rwa [if_pos h1]
+        rwa [ite_eq_right this]
+      · rwa [ite_eq_left h1]
     have hcard := hc.2 v hS hov
     set ζ := D.nd.chi i 1 (D.nd.gam0 i v) with hζ
     have hmem : ζ ∈ (Ine (F := D.host.E) (D.nd.plOm.1 v)).map (D.nd.chi i 1) :=

@@ -149,7 +149,7 @@ private theorem hw_eq {d : ℕ} (ν μ : Fin d → ℕ) (t : ℕ) (hν : ∀ k, 
       intro k
       unfold Formalism.GradedWeylDivisibility.nuNext
       have hk : (k.castSucc : ℕ) + 1 < m + 1 := by simp
-      rw [dif_pos hk, dif_pos hk]
+      rw [dite_eq_left hk, dite_eq_left hk]
       have h1 := hν k.castSucc
       have h2 := hν ⟨(k.castSucc : ℕ) + 1, hk⟩
       omega
@@ -176,7 +176,7 @@ theorem UpperTheory.TP.RP.exists_act2_equivariant_nablaSq_map_hitting_joint :
     rcases h.lt_or_eq with hlt | rfl
     · have hs : lam'.detShift = c := by
         have h0 : 0 < d := by omega
-        simp only [DomWeight.detShift, dif_pos h0]
+        simp only [DomWeight.detShift, dite_eq_left h0]
         rw [hμ]
         simp [show ¬ (d - 1 < n) by omega]
       rw [hs]
@@ -187,9 +187,9 @@ theorem UpperTheory.TP.RP.exists_act2_equivariant_nablaSq_map_hitting_joint :
       simp only [DomWeight.natW, hs]
       rw [hμ]
       split_ifs <;> simp
-    · have hμ' : ∀ k, lam'.w k = (μ k : ℤ) + c := fun k => by rw [hμ, dif_pos k.2]
+    · have hμ' : ∀ k, lam'.w k = (μ k : ℤ) + c := fun k => by rw [hμ, dite_eq_left k.2]
       have hsh : ∀ h0 : 0 < n, lam'.detShift = (μ ⟨n - 1, by omega⟩ : ℤ) + c := fun h0 => by
-        simp only [DomWeight.detShift, dif_pos h0, hμ']
+        simp only [DomWeight.detShift, dite_eq_left h0, hμ']
       refine ⟨fun g => ?_, ?_⟩
       · rw [rightSub_dTop, mul_pow, ← C_pow, ← mul_assoc, ← C_mul]
         congr 2

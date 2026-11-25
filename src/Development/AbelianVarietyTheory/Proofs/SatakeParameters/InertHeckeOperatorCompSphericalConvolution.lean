@@ -168,16 +168,16 @@ theorem exists_trivOutside_loc_eq : ∀ (L : Type) [Field L] [NumberField L] [Is
     ext i j
     show compAt L v (T (Xv i j) + if i = j then 1 - E else 0) = Xv i j
     by_cases h : i = j
-    · rw [if_pos h, map_add (f := _), hTv, map_sub, map_one, hEv, sub_self, add_zero]
-    · rw [if_neg h, map_add (f := _), hTv, map_zero, add_zero]
+    · rw [ite_eq_left h, map_add (f := _), hTv, map_sub, map_one, hEv, sub_self, add_zero]
+    · rw [ite_eq_right h, map_add (f := _), hTv, map_zero, add_zero]
   have hAu : ∀ u, u ≠ v → A.map (compAt L u) = 1 := by
     intro u hu
     ext i j
     show compAt L u (T (Xv i j) + if i = j then 1 - E else 0) = (1 : Matrix (Fin n) (Fin n) _) i j
     rw [Matrix.one_apply]
     by_cases h : i = j
-    · rw [if_pos h, if_pos h, map_add (f := _), hTu _ u hu, map_sub, map_one, hEu u hu, zero_add, sub_zero]
-    · rw [if_neg h, if_neg h, map_add (f := _), hTu _ u hu, map_zero, add_zero]
+    · rw [ite_eq_left h, ite_eq_left h, map_add (f := _), hTu _ u hu, map_sub, map_one, hEu u hu, zero_add, sub_zero]
+    · rw [ite_eq_right h, ite_eq_right h, map_add (f := _), hTu _ u hu, map_zero, add_zero]
   have hmap : ∀ u, (A * conjT (conjAL L) A).map (compAt L u) =
       A.map (compAt L u) * conjT (Formalism.UG.sigR (IsCMField.complexConj L).toAlgHom
         (u.adicCompletion (maximalRealSubfield L))) (A.map (compAt L u)) := by
@@ -253,7 +253,6 @@ namespace GlobalTheory.InertUmaxInt
 
 variable (L : Type) [Field L] [NumberField L] [IsCMField L]
 
-
 omit [IsCMField L] in
 theorem compAt_mem_tensInt (v : HeightOneSpectrum (𝓞 (maximalRealSubfield L))) {x : AL L}
     (hx : x ∈ ALint L) :
@@ -271,7 +270,6 @@ theorem compAt_mem_tensInt (v : HeightOneSpectrum (𝓞 (maximalRealSubfield L))
   exact key hx
 
 end GlobalTheory.InertUmaxInt
-
 
 open GlobalTheory.InertUmaxInt in
 theorem GlobalTheory.InertUmaxInt.loc_integral_of_mem_Umax : ∀ (L : Type) [Field L] [NumberField L] [IsCMField L] (n : ℕ) (v : HeightOneSpectrum (𝓞 (maximalRealSubfield L))) (w : HeightOneSpectrum (𝓞 L)) (Dv : InertDatum L n v w), ∀ u : GAf L n, u ∈ Umax L n → ∀ i j, ((Dv.loc u : GL (Fin n) (w.adicCompletion L)) : Matrix (Fin n) (Fin n) (w.adicCompletion L)) i j ∈ intL (w.adicCompletion L) := by
@@ -298,8 +296,6 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut Formalism.AUTREP Formalism.L2 Formalism.L2.Host Formalism.L2.NT NumberField IsDedekindDomain Polynomial GlobalTheory.HeightCounting GlobalTheory.RowTie GlobalTheory.SplitRead GlobalTheory.NPin
 open Formalism.UG
 
-theorem _root_.GlobalTheory.T.inertLocal_integral_of_mem_latticeStabilizer : ∀ (L : Type) [Field L] [NumberField L] [IsCMField L] (n : ℕ) (v : HeightOneSpectrum (𝓞 (maximalRealSubfield L))) (w : HeightOneSpectrum (𝓞 L)) (Dv : InertDatum L n v w), ∀ u : GAf L n, u ∈ Umax L n → ∀ i j, ((Dv.loc u : GL (Fin n) (w.adicCompletion L)) : Matrix (Fin n) (Fin n) (w.adicCompletion L)) i j ∈ intL (w.adicCompletion L) := by
-  first | exact @GlobalTheory.InertUmaxInt.loc_integral_of_mem_Umax
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.SatakeParameters.InertLocalIntegralOfMemLatticeStabilizerStatement =====
@@ -383,8 +379,6 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut Formalism.AUTREP Formalism.L2 Formalism.L2.Host Formalism.L2.NT NumberField IsDedekindDomain Polynomial GlobalTheory.HeightCounting GlobalTheory.RowTie GlobalTheory.SplitRead GlobalTheory.NPin
 open Formalism.UG
 
-theorem _root_.GlobalTheory.T.inertLocal_mem_localUnitaryGroup : ∀ (L : Type) [Field L] [NumberField L] [IsCMField L] (n : ℕ) (v : HeightOneSpectrum (𝓞 (maximalRealSubfield L))) (w : HeightOneSpectrum (𝓞 L)) (Dv : InertDatum L n v w), ∀ x : GAf L n, Dv.loc x ∈ GU Dv.σw n := by
-  first | exact @GlobalTheory.InertLocUnitary.main
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.SatakeParameters.InertLocalMemLocalUnitaryGroupStatement =====
@@ -594,7 +588,7 @@ theorem conv_of (Dv : InertDatum L n v w) (U : Subgroup (GAf L n))
 
 theorem heckeFunI_conv : ∀ (L : Type) [Field L] [NumberField L] [IsCMField L] (n : ℕ) (v : HeightOneSpectrum (𝓞 (maximalRealSubfield L))) (w : HeightOneSpectrum (𝓞 L)) (Dv : InertDatum L n v w) (U : Subgroup (GAf L n)), (∀ κ, TrivOutside {v} κ → (κ ∈ U ↔ κ ∈ Umax L n)) → ∀ (W : Type) [AddCommGroup W] [Module ℂ W], ∀ h ∈ Hecke ℂ (KU Dv.σw n), ∀ h' ∈ Hecke ℂ (KU Dv.σw n), ∀ f : GAf L n → W, (∀ κ ∈ U, NG.rt L n κ f = f) → heckeFunI L n U Dv (conv (KU Dv.σw n) h h') f = heckeFunI L n U Dv h (heckeFunI L n U Dv h' f) := by
   intro L _ _ _ n v w Dv U hU W _ _ h hh h' hh' f hf
-  exact conv_of Dv U hU (GlobalTheory.T.inertLocal_mem_localUnitaryGroup L n v w Dv) (GlobalTheory.T.inertLocal_integral_of_mem_latticeStabilizer L n v w Dv) (GlobalTheory.T.exists_trivOutside_inertLocal_eq L n v w Dv)
+  exact conv_of Dv U hU (GlobalTheory.InertLocUnitary.loc_mem_GU L n v w Dv) (GlobalTheory.InertUmaxInt.loc_integral_of_mem_Umax L n v w Dv) (GlobalTheory.T.exists_trivOutside_inertLocal_eq L n v w Dv)
     W h hh h' hh' f hf
 
 end GlobalTheory.InertConv

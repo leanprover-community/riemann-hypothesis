@@ -102,12 +102,12 @@ theorem convolution_count_holds : Formalism.UG.ConvCount := by
     split_ifs <;> simp_all
   show ∑ᶠ x : G ⧸ K, dosetInd k K a x.out * dosetInd k K b (x.out⁻¹ * g) = _
   rw [finsum_congr hterm, finsum_eq_sum_of_support_subset _ (s := hfin.toFinset) ?_]
-  · rw [Finset.sum_congr rfl (fun x hx => if_pos (hfin.mem_toFinset.1 hx))]
+  · rw [Finset.sum_congr rfl (fun x hx => ite_eq_left (hfin.mem_toFinset.1 hx))]
     simp [Nat.card_coe_set_eq, Set.ncard_eq_toFinset_card _ hfin]
   · intro x hx
     rw [Function.mem_support] at hx
     rw [Set.Finite.coe_toFinset]
     by_contra h
-    exact hx (if_neg h)
+    exact hx (ite_eq_right h)
 
 end Formalism.UG.P

@@ -66,7 +66,7 @@ theorem GlobalTheory.AdjRedOff.redM_frMapAdj_off : ∀ {D : D7} {G : Type} [Grou
   obtain ⟨hI, -⟩ := GlobalTheory.TameProd.resS_idemSum he
   ext a b
   have hm := hint a b
-  simp only [redM, dif_pos hm, Matrix.zero_apply]
+  simp only [redM, dite_eq_left hm, Matrix.zero_apply]
   have e1 : (⟨frMapAdj (Vc D i) (Wc D i) (R.βV i) (R.βW i) x a b, hm⟩ : Formalism.L2.Herm.intAf D.host.F D.host.E) =
       ⟨toEAf D e, hI⟩ * ⟨frMapAdj (Vc D i) (Wc D i) (R.βV i) (R.βW i) x a b, hm⟩ :=
     Subtype.ext (GlobalTheory.AdjVecLocal.frMapAdj_half _ _ _ _ hx a b).symm

@@ -57,7 +57,7 @@ theorem hlet_of [IsDomain O] (s' : ℕ) (hs : 1 ≤ s') (π' : LetA O n) (w₁ :
     intro m hm
     have h1 := congrArg (PowerSeries.coeff m) hc
     rw [π_at s' π' w₁ hπ c, mul_comm ((w₁ : LetA O n) c), mul_assoc, PowerSeries.coeff_X_pow_mul',
-      if_neg (by omega), map_smul, smul_eq_mul] at h1
+      ite_eq_right (by omega), map_smul, smul_eq_mul] at h1
     exact (mul_eq_zero.mp h1.symm).resolve_left ha
   obtain ⟨G', hG'⟩ := hdvd
   set g' : LetA O n := (letE c : LetA O n) * (fun _ => ((w₁⁻¹ : (LetA O n)ˣ) : LetA O n) c * G') with hg'

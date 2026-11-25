@@ -883,9 +883,9 @@ theorem mass_const {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup
     have h3 : E.indicator (1 : G → ℝ≥0∞) (q.1 * (q0 * k)) = E.indicator (1 : G → ℝ≥0∞) (q * p).1 := by
       classical
       by_cases hm : (q * p).1 ∈ E
-      · rw [Set.indicator_apply, Set.indicator_apply, if_pos (hmem.mpr hm), if_pos hm]
+      · rw [Set.indicator_apply, Set.indicator_apply, ite_eq_left (hmem.mpr hm), ite_eq_left hm]
         rfl
-      · rw [Set.indicator_apply, Set.indicator_apply, if_neg (fun h => hm (hmem.mp h)), if_neg hm]
+      · rw [Set.indicator_apply, Set.indicator_apply, ite_eq_right (fun h => hm (hmem.mp h)), ite_eq_right hm]
     rw [h3, h2]
     ring
   have hΔp : (Measure.modularCharacterFun p : ℝ≥0∞) = (δ p : ℝ≥0∞) := by

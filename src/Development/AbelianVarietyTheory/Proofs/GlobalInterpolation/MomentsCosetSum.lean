@@ -356,16 +356,16 @@ theorem lamC_sum (lam : TaylorLogMetric.Qbar →+* ℂ_[p]) {κ : Type} (s : Fin
     TaylorLogMetric.lamC lam (∑ i ∈ s, f i) = ∑ i ∈ s, TaylorLogMetric.lamC lam (f i) := by
   classical
   induction s using Finset.induction_on with
-  | empty => rw [Finset.sum_empty, Finset.sum_empty, TaylorLogMetric.lamC, dif_pos (zero_mem _)]; exact map_zero lam
+  | empty => rw [Finset.sum_empty, Finset.sum_empty, TaylorLogMetric.lamC, dite_eq_left (zero_mem _)]; exact map_zero lam
   | insert k s hk ih =>
     have h1 := h k (Finset.mem_insert_self _ _)
     have h2 : ∀ i ∈ s, f i ∈ TaylorLogMetric.Qbar := fun j hj => h j (Finset.mem_insert_of_mem hj)
     have h3 := sum_mem h2
     rw [Finset.sum_insert hk, Finset.sum_insert hk, ← ih h2]
-    simp only [TaylorLogMetric.lamC, dif_pos h1, dif_pos h3, dif_pos (add_mem h1 h3), ← map_add (f := _)]; rfl
+    simp only [TaylorLogMetric.lamC, dite_eq_left h1, dite_eq_left h3, dite_eq_left (add_mem h1 h3), ← map_add (f := _)]; rfl
 
 theorem lamC_nat (lam : TaylorLogMetric.Qbar →+* ℂ_[p]) (n : ℕ) : TaylorLogMetric.lamC lam (n : ℂ) = n := by
-  simp only [TaylorLogMetric.lamC, dif_pos (natCast_mem TaylorLogMetric.Qbar n)]; exact map_natCast lam n
+  simp only [TaylorLogMetric.lamC, dite_eq_left (natCast_mem TaylorLogMetric.Qbar n)]; exact map_natCast lam n
 
 theorem norm_nat_le (n : ℕ) : ‖(n : ℂ_[p])‖ ≤ 1 := IsUltrametricDist.norm_natCast_le_one _ n
 

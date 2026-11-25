@@ -100,14 +100,14 @@ theorem maj_add_le {D : D7} (θ : InfFam D) {m n : ℕ} (K K' : Set (Mx D m n)) 
       have : y - (k - x) = x + y - k := by abel
       rw [this]; exact hkx
     unfold maj
-    rw [if_pos hb, if_pos hb']
+    rw [ite_eq_left hb, ite_eq_left hb']
     have hadd := GlobalTheory.MajSum.realSize_add_le θ (x + y) (-x)
     have e2 : x + y + -x = y := by abel
     rw [e2, realSize_neg] at hadd
     exact inv_pow_le N (realSize_nonneg θ _) (realSize_nonneg θ _) hR (by linarith)
   · have e0 : maj θ K N (x + y) = 0 := by
       unfold maj
-      rw [if_neg hb]
+      rw [ite_eq_right hb]
     rw [e0]
     exact mul_nonneg (by positivity) (maj_nonneg θ _ N _)
 

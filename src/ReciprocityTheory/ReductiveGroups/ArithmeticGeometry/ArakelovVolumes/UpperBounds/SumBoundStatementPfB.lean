@@ -161,7 +161,7 @@ theorem sumBd_count {f : ℕ} {ι : Type*} (x : ι → Fin f → Matrix (Fin p �
     obtain ⟨k, i, j, hsep⟩ := hsep2 a ha b hb hne
     have hre := congrFun hab (k, i, j, true)
     have him := congrFun hab (k, i, j, false)
-    simp only [φ, val, if_true, Bool.false_eq_true, if_false] at hre him
+    simp only [φ, val, ite_true, Bool.false_eq_true, ite_false] at hre him
     have h1 := Int.abs_sub_lt_one_of_floor_eq_floor hre
     have h2 := Int.abs_sub_lt_one_of_floor_eq_floor him
     rw [← sub_div, abs_div, abs_of_pos hη, div_lt_one hη] at h1 h2

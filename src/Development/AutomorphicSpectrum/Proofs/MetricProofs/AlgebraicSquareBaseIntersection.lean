@@ -108,13 +108,13 @@ theorem isMultiHomog_X_pow' {K' : Type} [Fintype K'] [DecidableEq K'] {ι' : K' 
     rw [Finset.sum_eq_single i]
     · simp
     · intro j _ hj
-      rw [Finsupp.single_apply, if_neg]
+      rw [Finsupp.single_apply, ite_eq_right]
       intro h
       exact hj (eq_of_heq (Sigma.mk.inj_iff.mp h).2).symm
     · simp
   · rw [Pi.single_eq_of_ne hl]
     refine Finset.sum_eq_zero fun j _ => ?_
-    rw [Finsupp.single_apply, if_neg]
+    rw [Finsupp.single_apply, ite_eq_right]
     intro h
     exact hl (Sigma.mk.inj_iff.mp h).1.symm
 
@@ -190,14 +190,14 @@ theorem divCycle_eq (n : ℕ) (i : ι k₀) :
   ext W
   simp only [divCycle, Finsupp.ofSupportFinite_coe]
   by_cases h : W ∈ divSupp Q.Δ ((X (Q.v 0 ⟨k₀, i⟩) : MRing Q.ιW) ^ n)
-  · rw [if_pos h, if_pos ((hsupp W).1 h)]
+  · rw [ite_eq_left h, ite_eq_left ((hsupp W).1 h)]
     obtain ⟨hW, hr⟩ := h
     have hWp := hW.1.1
     obtain ⟨j, h0, h1⟩ := exists_both Q hWp (le_sup_left.trans hW.1.2) hr
     rw [multAt_eq_locLen' _ _ hWp, multAt_eq_locLen' _ _ hWp,
       GroundTheory.Heights₂.Heights.Inter.DiagPull.locLen_cross hV (hc j) ⟨W, hWp⟩ (le_sup_left.trans hW.1.2)
         (fun h => h0 (hWp.mem_of_pow_mem _ h)) (fun h => h1 (hWp.mem_of_pow_mem _ h))]
-  · rw [if_neg h, if_neg (mt (hsupp W).2 h)]
+  · rw [ite_eq_right h, ite_eq_right (mt (hsupp W).2 h)]
 
 theorem exists_prop {z : (Σ k, Q.ιW k) → ℂ} (hz : z ∈ mcPts Q.Δ) :
     ∃ c : ℂ, c ≠ 0 ∧ ∀ i : ι k₀, z (Q.v 1 ⟨k₀, i⟩) = c * z (Q.v 0 ⟨k₀, i⟩) := by
@@ -299,7 +299,7 @@ theorem PositivityTheory.Xgp.t_sq_diag : ∀ (K : Type) [Fintype K] (ι : K → 
     rw [ha0, ha1]
     by_cases hk0 : k = Q.κ 0 k₀
     · subst hk0
-      rw [hinj0.extend_apply, Function.extend_apply', if_pos rfl, if_neg hne]
+      rw [hinj0.extend_apply, Function.extend_apply', ite_eq_left rfl, ite_eq_right hne]
       · simp
       · rintro ⟨a, ha⟩
         by_cases hak : a = k₀
@@ -309,11 +309,11 @@ theorem PositivityTheory.Xgp.t_sq_diag : ∀ (K : Type) [Fintype K] (ι : K → 
           exact hak (hinj0 ha)
     · by_cases hk1 : k = Q.κ 1 k₀
       · subst hk1
-        rw [hinj1.extend_apply, Function.extend_apply', if_neg hk0, if_pos rfl]
+        rw [hinj1.extend_apply, Function.extend_apply', ite_eq_right hk0, ite_eq_left rfl]
         · simp
         · rintro ⟨a, ha⟩
           exact Q.new ⟨a, ha⟩
-      · rw [if_neg hk0, if_neg hk1]
+      · rw [ite_eq_right hk0, ite_eq_right hk1]
         rcases Q.all k with ⟨a, rfl⟩ | h
         · have hak : a ≠ k₀ := fun h => hk0 (by rw [h])
           rw [hinj0.extend_apply, PositivityTheory.Xgp.sq_diag.κ_eq Q a hak, hinj1.extend_apply]

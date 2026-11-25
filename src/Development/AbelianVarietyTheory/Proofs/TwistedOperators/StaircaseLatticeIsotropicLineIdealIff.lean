@@ -86,8 +86,8 @@ theorem hermOrthExt_gram_entry_eq_single_and_frame_gram_eq_zero {A B : HSp D} {c
     simp only [GlobalTheory.ChiGrid.antiDiagonalSignGramMatrix, Pi.single_apply, Fin.ext_iff]
     have := p.2; have := q.2
     by_cases hq : q.1 = p.1
-    · rw [if_pos (by omega), if_neg (by omega), if_pos hq]
-    · rw [if_neg (by omega), if_neg hq]
+    · rw [ite_eq_left (by omega), ite_eq_right (by omega), ite_eq_left hq]
+    · rw [ite_eq_right (by omega), ite_eq_right hq]
   · have e := d.perp
     change (frameMat B A d.ι)ᴴ * B.gram * d.a = 0 at e
     have hg : B.gramᴴ = B.gram := Matrix.ext fun i j => B.herm.eq (B.frame j) (B.frame i)

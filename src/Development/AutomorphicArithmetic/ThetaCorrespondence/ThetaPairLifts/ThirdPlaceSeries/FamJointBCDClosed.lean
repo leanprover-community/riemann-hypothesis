@@ -412,7 +412,7 @@ theorem winClusters_exists_step {n : ℕ} (th : ZMod n → Prop) (j : ℕ) (x : 
     refine ⟨Nat.find h, h2, fun h0 => absurd h0 (by omega), fun _ => h3, ?_⟩
     intro q hq hqs hth
     exact Nat.find_min h hqs ⟨hq, by omega, hth⟩
-  · push_neg at h
+  · push Not at h
     refine ⟨0, Nat.zero_le _, fun _ q hq hqj hth => absurd hth (h q hq hqj), fun h0 => absurd h0 (lt_irrefl 0),
       fun q hq hq0 => absurd hq0 (by omega)⟩
 
@@ -450,7 +450,7 @@ theorem winClusters : ∀ {n : ℕ} (th : ZMod n → Prop) (L j : ℕ), 1 ≤ j 
     have ex : ∃ x, x ∈ F ∧ (y = x ∨ y = x + (sp x : ZMod n)) := by
       by_cases hyF : ∀ q : ℕ, 1 ≤ q → q ≤ j → ¬ th (y - q)
       · exact ⟨y, ⟨hy, hyF⟩, Or.inl rfl⟩
-      · push_neg at hyF
+      · push Not at hyF
         obtain ⟨q, hq1, hqj, hq⟩ := hyF
         have hxF : y - (q : ZMod n) ∈ F := by
           refine ⟨hq, ?_⟩
@@ -649,9 +649,9 @@ theorem abs_szT_sub_floor_le {R : Ranks} (P : HCParam R) (j : Fin R.m) (s : Bool
   unfold szT
   generalize ((R.t : ℤ) + 1) / 2 = q at h0' h1'
   cases s
-  · simp only [Bool.false_eq_true, if_false, Int.cast_sub]
+  · simp only [Bool.false_eq_true, ite_false, Int.cast_sub]
     rw [abs_le]; constructor <;> linarith
-  · simp only [if_true, Int.cast_add]
+  · simp only [ite_true, Int.cast_add]
     rw [abs_le]; constructor <;> linarith
 
 theorem pageWord_not_thick_size : ∀ {D : D7} (L : SizeData₂ D) (C : ℝ) (j : Fin D.R.m) (ε : ℤˣ) (τ φ : D.R.GG), Roomy L C → ∀ i, ¬ (pageWord L j ε τ φ).thick i → ∃ s : ℝ, L.sc.w'' D.R.n ≤ s ∧ s ≤ (wMax D : ℝ) ∧ s ≤ 8 / 5 * L.sc.b' ∧ |(((pageWord L j ε τ φ).sz i : ℤ) : ℝ) - s| ≤ ((D.R.t : ℝ) + 1) / 2 := by

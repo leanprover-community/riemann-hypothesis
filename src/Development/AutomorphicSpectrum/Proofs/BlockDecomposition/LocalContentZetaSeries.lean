@@ -479,7 +479,7 @@ theorem norm_ne_zero (hD : w D = 1) (hsq : ∀ e : K, w e ≤ 1 → ¬ w (e ^ 2 
     · apply hsq _ hle
       rw [he, sub_self, map_zero]
       exact zero_lt_one
-    · push_neg at hle
+    · push Not at hle
       have h2 : w (x / y) ^ 2 = 1 := by rw [← map_pow, he, hD]
       have h3 : (1 : WithZero (Multiplicative ℤ)) < w (x / y) ^ 2 := one_lt_pow' hle two_ne_zero
       rw [h2] at h3
@@ -873,7 +873,7 @@ theorem content : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberFi
       obtain ⟨t, ht, hn⟩ := c3 i
       exact _root_.GlobalTheory.CompanionTheory.WeilSiegel.HypMass.ContentScale.coordK_map_mul F E σ h d b v lam hlam (c i) t _ (c1 i).1 ht hn
     · intro s hs
-      rw [zetaV, if_neg hnf]
+      rw [zetaV, ite_eq_right hnf]
       exact hasSum_split _ hq s hs
   · obtain ⟨hf, c, c1, c3, c4, c5⟩ := _root_.GlobalTheory.CompanionTheory.SW.QuadField.inert_content F E σ h d b b₂ D hb0 hσ1 hD v hD1 h21 hBC hCB hres
     refine ⟨ℕ, inferInstance, c, fun i => 2 * i, ⟨c1, ?_, c3, c4, c5⟩, ?_⟩
@@ -881,7 +881,7 @@ theorem content : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberFi
       obtain ⟨t, ht, hn⟩ := c3 i
       exact _root_.GlobalTheory.CompanionTheory.WeilSiegel.HypMass.ContentScale.coordK_map_mul F E σ h d b v lam hlam (c i) t _ (c1 i).1 ht hn
     · intro s hs
-      rw [zetaV, if_pos hf]
+      rw [zetaV, ite_eq_left hf]
       exact hasSum_field _ hq s hs
 
 end GlobalTheory.CompanionTheory.WeilSiegel.HypMass.Content

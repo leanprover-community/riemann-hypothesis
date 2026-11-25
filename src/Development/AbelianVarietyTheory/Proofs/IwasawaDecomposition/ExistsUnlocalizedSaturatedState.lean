@@ -53,12 +53,6 @@ set_option genSizeOfSpec false
 def SatU {K : Ctx} {B : Base} {f : Fr B.toPre} {T : TwDat B} {w : ColW B f T} (P : Pre2 K w) : Prop :=
   T = TwDat.untw B T.pl → ∀ v v', OverOne (w.D P.Z₀) v v' → v ∈ P.Wt → v' ∈ P.Wt
 
-section Slot
-
-variable (hL : GlobalTheory.Published.LocalLanglandsGL) (cDep : ℝ)
-
-end Slot
-
 def ExistsUnlocalizedSaturatedState : Prop := StepW Start fun K _ _ _ w => ∃ (P : Pre2 K w) (x : St P), SatU P ∧ IsEmpty x.o.N.nd.Loc ∧ ∀ j v, x.o.η j v = 0
 
 structure SameGal (D D' : D7) : Prop where

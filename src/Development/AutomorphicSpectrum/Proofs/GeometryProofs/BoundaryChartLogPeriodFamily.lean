@@ -151,7 +151,7 @@ theorem expCover_add_single (h : a ≤ n) (w : Fin n → ℂ) (i : Fin a) :
   by_cases hk : k = Fin.castLE h i
   · subst hk
     have hi : (Fin.castLE h i).val < a := i.2
-    simp only [expCover, Pi.add_apply, Pi.single_eq_same, if_pos hi, Complex.exp_add,
+    simp only [expCover, Pi.add_apply, Pi.single_eq_same, ite_eq_left hi, Complex.exp_add,
       Complex.exp_two_pi_mul_I]
     exact mul_one _
   · simp [expCover, hk]
@@ -159,7 +159,7 @@ theorem expCover_add_single (h : a ≤ n) (w : Fin n → ℂ) (i : Fin a) :
 theorem exists_mem_logCover (h : a ≤ n) : ∃ w : Fin n → ℂ, w ∈ logCover h := by
   refine ⟨fun k => if k.val < a then -1 else 0, fun i => ?_, fun k hk => ?_⟩
   · have hi : (Fin.castLE h i).val < a := i.2
-    simp only [if_pos hi]
+    simp only [ite_eq_left hi]
     simp
   · simp [not_lt.2 hk]
 

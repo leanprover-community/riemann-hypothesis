@@ -625,13 +625,13 @@ theorem exists_phla_bound' {r : ℕ} (X : Data E r) {x0 : Frame X.Ψ r} (h0 : Is
   set x := cpt X x0 z with hx
   let L' : ℕ → ℝ := fun k => if h : k < r + 1 then IW.Lm X x τ ⟨k, h⟩ else 0
   have h1 : ∀ i : Fin r, IW.Lm X x τ i.succ = L' (i + 1) := fun i => by
-    simp only [L', dif_pos (Nat.succ_lt_succ i.isLt)]; rfl
+    simp only [L', dite_eq_left (Nat.succ_lt_succ i.isLt)]; rfl
   have h2 : ∀ i : Fin r, IW.Lm X x τ i.castSucc = L' i := fun i => by
-    simp only [L', dif_pos (Nat.lt_succ_of_lt i.isLt)]; rfl
-  have h3 : ∀ i : Fin r, (la τ i : ℝ) = a τ i := fun i => by simp only [a, dif_pos i.isLt]
-  have hL0 : L' 0 = 0 := by simp only [L', dif_pos (Nat.succ_pos r)]; exact IW.Lm_zero X x τ
+    simp only [L', dite_eq_left (Nat.lt_succ_of_lt i.isLt)]; rfl
+  have h3 : ∀ i : Fin r, (la τ i : ℝ) = a τ i := fun i => by simp only [a, dite_eq_left i.isLt]
+  have hL0 : L' 0 = 0 := by simp only [L', dite_eq_left (Nat.succ_pos r)]; exact IW.Lm_zero X x τ
   have hLr : L' r = 0 := by
-    simp only [L', dif_pos (Nat.lt_succ_self r)]; exact IW.Lm_last_cpt X x0 h0 z τ
+    simp only [L', dite_eq_left (Nat.lt_succ_self r)]; exact IW.Lm_last_cpt X x0 h0 z τ
   simp_rw [h1, h2, h3]
   rw [Fin.sum_univ_eq_sum_range (fun i => a τ i * (L' (i + 1) - L' i)) r, sum_by_parts, hL0, hLr, mul_zero, mul_zero,
     sub_zero, zero_add, ← Finset.sum_neg_distrib]
@@ -643,7 +643,7 @@ theorem exists_phla_bound' {r : ℕ} (X : Data E r) {x0 : Frame X.Ψ r} (h0 : Is
   by_cases hp : i + 1 = X.p0
   · have h4 : |L' (i + 1)| ≤ C := by
       have := abs_Lm_le X h0 hz τ
-      simp only [L', dif_pos (Nat.succ_lt_succ hir)]
+      simp only [L', dite_eq_left (Nat.succ_lt_succ hir)]
       have e : (⟨i + 1, Nat.succ_lt_succ hir⟩ : Fin (r + 1)) = ⟨X.p0, Nat.lt_succ_of_le X.p0_le⟩ := Fin.ext hp
       rw [e]
       linarith
@@ -653,11 +653,11 @@ theorem exists_phla_bound' {r : ℕ} (X : Data E r) {x0 : Frame X.Ψ r} (h0 : Is
   · have hi1 : i + 1 < r := by omega
     have h5 : 0 ≤ a τ i - a τ (i + 1) := by
       have := hla τ ⟨i, hir⟩ ⟨i + 1, hi1⟩ rfl hp
-      simp only [a, dif_pos hir, dif_pos hi1]
+      simp only [a, dite_eq_left hir, dite_eq_left hi1]
       have : ((la τ ⟨i + 1, hi1⟩ : ℤ) : ℝ) ≤ la τ ⟨i, hir⟩ := by exact_mod_cast this
       linarith
     have h6 : -L' (i + 1) ≤ C := by
-      simp only [L', dif_pos (Nat.succ_lt_succ hir)]
+      simp only [L', dite_eq_left (Nat.succ_lt_succ hir)]
       have := neg_Lm_le X h0 hz hρ τ ⟨i + 1, Nat.succ_lt_succ hir⟩
       linarith
     rw [abs_of_nonneg h5, ← mul_neg]
@@ -934,7 +934,7 @@ theorem exists_ringHom_ne_zero_of_not_isNilpotent' {K R : Type} [Field K] [CommR
     obtain ⟨n, hn⟩ := Ideal.mem_radical_iff.1 h
     exact hb ⟨n, by simpa using hn⟩
   rw [Ideal.jacobson, Submodule.mem_sInf] at hrad
-  push_neg at hrad
+  push Not at hrad
   obtain ⟨m, ⟨-, hm⟩, hbm⟩ := hrad
   letI : Field (R ⧸ m) := Ideal.Quotient.field m
   haveI : Algebra.FiniteType K (R ⧸ m) :=
@@ -1190,7 +1190,7 @@ theorem exists_ne_zero_flat (hL : Laws U x) (Z : Comp Xo c) (τ : Psi H) (G : WT
   have hK := (exists_ne_zero_key hL).1
   have hn : ∀ σ, GoodEmb c σ → ∀ z ∈ framesOn (U σ) Z, homN (U σ) x (wtOf Dw (flatWt Dw τ) 0) s.sig z = s.cInf σ :=
     fun σ hσ => by
-      have e : goodOf c σ = σ := if_pos hσ
+      have e : goodOf c σ = σ := ite_eq_left hσ
       have h := (image_eq_singleton_iff.1 (s.norm_inf σ)).2
       rw [e] at h
       exact h
@@ -1345,9 +1345,9 @@ theorem exists_cuspOn_ne_zero_of_ball (hL : Laws U x) (hp : 1 ≤ Dw.p) (hq : 1 
   have hoff : ∀ ρ j, ¬ j < Dw.mult ρ → G.1 (ρ, j) = 0 := fun ρ j hj => by
     by_cases h : ρ (H.rt : E) = H.rt0
     · have hj' : ¬ j < Dw.p := by simpa [Datum.mult, h] using hj
-      simp only [hG, wtOf, dif_pos h, dif_neg hj']
+      simp only [hG, wtOf, dite_eq_left h, dite_eq_right hj']
     · have hj' : ¬ j < Dw.q := by simpa [Datum.mult, h] using hj
-      simp only [hG, wtOf, dif_neg h, dif_neg hj', dite_eq_ite, ite_self]
+      simp only [hG, wtOf, dite_eq_right h, dite_eq_right hj', dite_eq_ite, ite_self]
   have hnn : ∀ y, 0 ≤ G.1 y := fun ⟨ρ, j⟩ => by
     by_cases hj : j < Dw.mult ρ
     · have := (hstep ρ j j le_rfl hj).1; omega
@@ -1375,7 +1375,7 @@ theorem exists_cuspOn_ne_zero_of_ball (hL : Laws U x) (hp : 1 ≤ Dw.p) (hq : 1 
       · exact add_le_add_left (hanti τ 1 _ _ (by simp only; omega)) _)
     (fun τ' i0 i1 h0 h1 => by
       obtain ⟨τ, hτ⟩ := modelWt_entry (U σ) hσ hV (u + parWt Dw w) (4 * (m : ℤ)) k τ'
-      rw [hG, hτ, hτ, dif_neg (by omega), dif_pos (by omega)]
+      rw [hG, hτ, hτ, dite_eq_right (by omega), dite_eq_left (by omega)]
       have := hu τ ⟨i1 - Dw.q, by omega⟩ ⟨Dw.p + i0, by omega⟩ (by simp only; omega)
       have hdx : GlobalTheory.Up.dimX ((U σ).X k) = f * (Dw.q * Dw.p) := by
         unfold GlobalTheory.Up.dimX

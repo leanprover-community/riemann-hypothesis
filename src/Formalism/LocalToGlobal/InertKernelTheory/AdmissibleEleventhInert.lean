@@ -238,7 +238,7 @@ theorem be_ab (i0 : K0 p →+* ℂ_[p]) (be : MvPowerSeries (Fin 2) (K0 p)) (ep 
       fin_cases i
       · simp [h]
       · simp
-    rw [if_pos e1, h, zero_add, Nat.choose_zero_right, Nat.cast_one, one_mul]
+    rw [ite_eq_left e1, h, zero_add, Nat.choose_zero_right, Nat.cast_one, one_mul]
     split_ifs with h2
     · have : n 1 = 0 := by rw [h2]; simp
       rw [this, hψ0]; ring
@@ -248,7 +248,7 @@ theorem be_ab (i0 : K0 p →+* ℂ_[p]) (be : MvPowerSeries (Fin 2) (K0 p)) (ep 
       fin_cases i
       · simp
       · simp [h]
-    rw [if_pos e1, h, add_zero, Nat.choose_self, Nat.cast_one, one_mul]
+    rw [ite_eq_left e1, h, add_zero, Nat.choose_self, Nat.cast_one, one_mul]
     split_ifs with h2
     · have : n 0 = 0 := by rw [h2]; simp
       rw [this, hψ0]; ring

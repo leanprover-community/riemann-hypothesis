@@ -263,9 +263,9 @@ theorem shift_embOver (ρ : D.what₂.Tau) (b : Bool) :
   have h2 : D.R.nV / 2 = u + v + 1 := by omega
   unfold shift
   cases b
-  · rw [if_pos ⟨ρ, rfl⟩, h2, hn]
+  · rw [ite_eq_left ⟨ρ, rfl⟩, h2, hn]
     simp
-  · rw [if_neg (fun ⟨ρ', h⟩ => embOver_true_ne D ρ ρ' h), h2, hn]
+  · rw [ite_eq_right (fun ⟨ρ', h⟩ => embOver_true_ne D ρ ρ' h), h2, hn]
     simp
 
 end GlobalTheory.JumpDictionaryFoundation

@@ -122,9 +122,9 @@ theorem PHP_apply (k r j : ℕ) (V : ℕ → Fin (2 * r + k + 1) → ℂ) (p q :
   rw [HP_apply, Matrix.conjTranspose_apply]
   have hi := i.isLt
   by_cases h : r ≤ i.val ∧ i.val ≤ r + k
-  · rw [if_pos h, if_pos h]
+  · rw [ite_eq_left h, ite_eq_left h]
     ring
-  · rw [if_neg h, if_neg h]
+  · rw [ite_eq_right h, ite_eq_right h]
     by_cases h2 : i.val < r
     · rw [P_rowS k r j V (sg k r i) q (by simp only [sg_val]; omega), mul_zero]
     · rw [P_rowS k r j V i p (by omega), star_zero, zero_mul]

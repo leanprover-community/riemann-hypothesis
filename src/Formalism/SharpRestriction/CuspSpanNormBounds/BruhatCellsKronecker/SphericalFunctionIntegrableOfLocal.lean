@@ -72,12 +72,6 @@ variable (X : CData)
 
 end CData
 
-section Numbers
-
-open Formalism.HermitianLatticeCounting.S7 (Ydat epsN)
-
-end Numbers
-
 namespace CData
 
 variable (X : CData)

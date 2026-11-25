@@ -94,7 +94,7 @@ theorem eN_eq_zero {i : ℕ} (hi : n ≤ i) : Loc.eN K n i = 0 := by
   funext m
   have := m.2
   simp only [Loc.eN, Pi.zero_apply]
-  rw [if_neg (by omega)]
+  rw [ite_eq_right (by omega)]
 
 theorem mem_Ufl_iff {N c i : ℕ} (v : Fin (N + c) → K) : v ∈ Loc.Ufl K N c i ↔ Zab (N + i) v := by
   show (∀ l : Fin (N + c), l.1 ∉ {l : ℕ | l < N + i} → v l = 0) ↔ ∀ l : Fin (N + c), N + i ≤ l.1 → v l = 0

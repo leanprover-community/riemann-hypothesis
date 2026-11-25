@@ -432,11 +432,11 @@ theorem corankPos_tO (u u' : D.what₂.Word) : (Y.tO u u').CorankPos := by
   have hlam' : t.lam' = t'.lam' := congrArg (fun r => (r.2.1 : Submodule (𝓞 D.host.E) (VS D).V)) hr
   show 1 ≤ s0T t t'
   unfold s0T
-  rw [if_pos ⟨hlam, hlam'⟩]
+  rw [ite_eq_left ⟨hlam, hlam'⟩]
   have hΛ := (Y.rowsOK u).1 t.lam t.mem
   have hGv : Gval (lf D (X.Fu u)) t.frame ≠ 0 := by
     rw [← gterm_G Y t]
-    intro h; apply hG; show TermOp.Gt t = 0; unfold TermOp.Gt; rw [if_pos h]
+    intro h; apply hG; show TermOp.Gt t = 0; unfold TermOp.Gt; rw [ite_eq_left h]
   exact pair_corank_pos D.host.E (VS D) D.R.rS D.R.k (Formalism.L2.SG.Corank.finrank_VS D) t.lam
     hΛ.1.1 _ _ (lf D (X.Fu u)) t.frame t'.frame (t'.lin * t.lin⁻¹) hΛ.2.1.2.2.1 t.rep.2.2.2.2.1 hGv
 
@@ -449,7 +449,7 @@ theorem idDegenerate_tO (u u' : D.what₂.Word) : (Y.tO u u').IdDegenerate := by
   have hG' : t.G = 0 := hG
   show TermOp.Gt t = 0
   unfold TermOp.Gt
-  rw [if_pos hG']
+  rw [ite_eq_left hG']
 
 end Corank
 
@@ -477,7 +477,7 @@ theorem zs_map (S : Set τ) (intersection_update_fsHerm_neg_one : τ → Q) (ιt
     · have h' : ¬ (φ t ∈ S ∧ intersection_update_fsHerm_neg_one (φ t) = q) := fun h'' => h ((hS t).2 h'')
       have e1 : ¬ (φ t ∈ S ∧ intersection_update_fsHerm_neg_one (φ t) = q ∧ ιt (φ t) = f i) := fun h3 => h' ⟨h3.1, h3.2.1⟩
       have e2 : ¬ (t ∈ S ∧ intersection_update_fsHerm_neg_one t = q ∧ ιt t = i) := fun h3 => h ⟨h3.1, h3.2.1⟩
-      rw [if_neg e1, if_neg e2, map_zero]
+      rw [ite_eq_right e1, ite_eq_right e2, map_zero]
   simp_rw [hpt]
   exact (U.toContinuousLinearEquiv.map_tsum).symm
 
@@ -758,7 +758,7 @@ theorem gamma_one_eq_prod_card_ratio (TR : TypedRed X) :
     intro v
     have hU1 : Formalism.L2.SG.GGMirabolic.psiNat (TR.psi0 v) (1 : GL (Fin D.R.k) (TR.Fq v)) = 1 := by
       unfold Formalism.L2.SG.GGMirabolic.psiNat
-      rw [if_pos]
+      rw [ite_eq_left]
       · have h0 : (∑ i : Fin D.R.k, ∑ j : Fin D.R.k, if (j : ℕ) = (i : ℕ) + 1 then
             (1 : Matrix (Fin D.R.k) (Fin D.R.k) (TR.Fq v)) i j else 0) = 0 := by
           apply Finset.sum_eq_zero
@@ -1004,7 +1004,6 @@ end Formalism.L2.SG.Pf.SatGram
 namespace Formalism.L2.SG.Pf
 
 alias typed_count := SatGram.typed_count
-alias tt_eq := SatGram.tt_eq
 alias gamma_one_eq_prod_typed_places := SatGram.gamma_one_eq_prod_typed_places
 
 end Formalism.L2.SG.Pf

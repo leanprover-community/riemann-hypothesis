@@ -17,7 +17,7 @@ private theorem single_mem_ev_of_same_block {F : Type} [CommRing F] {n a : ℕ} 
     (h : ((p : ℕ) < a ↔ (q : ℕ) < a)) : Matrix.single p q c ∈ Ev F F n a := by
   intro i j
   refine ⟨fun _ => Submodule.mem_top, fun hij => ?_⟩
-  rw [Submodule.mem_bot, Matrix.single_apply, if_neg]
+  rw [Submodule.mem_bot, Matrix.single_apply, ite_eq_right]
   rintro ⟨rfl, rfl⟩
   exact hij h
 
@@ -30,17 +30,17 @@ theorem UpperTheory.V.Pa.Det.derEv :
   have hβ : ∀ i : Fin n, ((i : ℕ) < a ↔ (β i : ℕ) < a) := by
     intro i
     by_cases h : (i : ℕ) < a
-    · simp only [β, dif_pos h]
+    · simp only [β, dite_eq_left h]
       exact ⟨fun _ => Nat.zero_lt_of_lt h, fun _ => h⟩
-    · simp only [β, dif_neg h]
+    · simp only [β, dite_eq_right h]
       exact ⟨fun h' => absurd h' h, fun h' => absurd h' (lt_irrefl _)⟩
   have hβeq : ∀ i j : Fin n, ((i : ℕ) < a ↔ (j : ℕ) < a) → β i = β j := by
     intro i j h
     by_cases hi : (i : ℕ) < a
     · have hj := h.mp hi
-      simp only [β, dif_pos hi, dif_pos hj]
+      simp only [β, dite_eq_left hi, dite_eq_left hj]
     · have hj : ¬ (j : ℕ) < a := fun hj => hi (h.mpr hj)
-      simp only [β, dif_neg hi, dif_neg hj]
+      simp only [β, dite_eq_right hi, dite_eq_right hj]
   let E : Fin n → Fin n → Matrix (Fin n) (Fin n) F := fun i j => Matrix.single i j 1
   let u : Fin n → Matrix (Fin n) (Fin n) F := fun k => E k (β k)
   let v : Fin n → Matrix (Fin n) (Fin n) F := fun k => E (β k) k
@@ -82,9 +82,9 @@ theorem UpperTheory.V.Pa.Det.derEv :
             rw [Finset.sum_sub_distrib, ← Finset.mul_sum, hsum, mul_one]
             congr 1
             rw [Finset.sum_eq_single j]
-            · rw [hEu, if_pos rfl]
+            · rw [hEu, ite_eq_left rfl]
             · intro k _ hk
-              rw [hEu, if_neg (Ne.symm hk), map_zero, zero_mul]
+              rw [hEu, ite_eq_right (Ne.symm hk), map_zero, zero_mul]
             · simp
     rw [h1, h2]
     abel

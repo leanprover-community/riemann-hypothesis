@@ -63,7 +63,7 @@ theorem half (hm : ∀ i, m i ∈ I.L) (hgen : ∀ l ∈ I.L, ∃ z : Fin k → 
   have hTy : N • (I.fmat y *ᵥ ivec (F := I.F) (m j)) ∈ Tset (F := I.F) m :=
     lam_sub_alt hm hgen (hyj j).1
   have hej := congrFun he j
-  simp only [fN, dif_pos hTx, dif_pos hTy] at hej
+  simp only [fN, dite_eq_left hTx, dite_eq_left hTy] at hej
   obtain ⟨haI, haE⟩ := hTx.choose_spec
   obtain ⟨ha'I, ha'E⟩ := hTy.choose_spec
 

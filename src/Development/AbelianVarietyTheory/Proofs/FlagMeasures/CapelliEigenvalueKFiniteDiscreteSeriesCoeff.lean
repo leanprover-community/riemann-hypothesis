@@ -102,7 +102,7 @@ private theorem Tm_conj_eq_sum_conj_Tm {A : Type} [Ring A] [Algebra ℂ A] {n : 
       Finset.sum_congr rfl fun c _ => mul_comm _ _, this]
     by_cases h : a = b <;> simp [h, eq_comm]
   simp only [Formalism.REAL.Tm, smul_add, Finset.sum_add_distrib, smul_ite, smul_zero, Finset.sum_ite_eq,
-    Finset.mem_univ, if_true]
+    Finset.mem_univ, ite_true]
   congr 1
   rw [← Finset.sum_smul, h1]
   by_cases h : a = b <;> simp [h]

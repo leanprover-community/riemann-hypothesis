@@ -194,26 +194,9 @@ theorem v_pow_prime_pow (p : ℕ) (hp : p.Prime) (hodd : p ≠ 2) (hvp : v (p : 
     first
     | rfl
 
-private theorem exists_eq_prime_pow_mul_not_dvd' (p : ℕ) (hp : p.Prime) (k : ℕ) (hk : 0 < k) :
-    ∃ a m : ℕ, ¬ p ∣ m ∧ k = p ^ a * m := by
-  induction k using Nat.strong_induction_on with
-  | _ k ih =>
-    by_cases hdvd : p ∣ k
-    · obtain ⟨j, hj⟩ := hdvd
-      have hjpos : 0 < j := by
-        rcases Nat.eq_zero_or_pos j with h0 | h0
-        · rw [h0, mul_zero] at hj; omega
-        · exact h0
-      have hjlt : j < k := by
-        have h2 := hp.two_le
-        rw [hj]; nlinarith
-      obtain ⟨a, m, hm, hjm⟩ := ih j hjlt hjpos
-      exact ⟨a + 1, m, hm, by rw [hj, hjm]; ring⟩
-    · exact ⟨0, k, hdvd, by simp⟩
-
 theorem pow_ne_one (p : ℕ) (hp : p.Prime) (hodd : p ≠ 2) (hvp : v (p : LL) = 1) (u : LL)
     (hu : v (u - 1) = 1) (k : ℕ) (hk : 0 < k) : u ^ k ≠ 1 := by
-  obtain ⟨a, m, hm, hkm⟩ := exists_eq_prime_pow_mul_not_dvd' p hp k hk
+  obtain ⟨a, m, hm, hkm⟩ := Nat.exists_eq_pow_mul_and_not_dvd hk.ne' p hp.ne_one
   have hvp' : 0 < v (p : LL) := by rw [hvp]; exact withTop_rat_zero_lt_one
   have hu' : v (u - 1) = ((1 : ℚ) : WithTop ℚ) := by
     first

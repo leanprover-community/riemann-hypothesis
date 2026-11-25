@@ -69,17 +69,17 @@ lemma vext {u w : Fin (2 * (1 + r') + k + 1) → ℂ} (hF : u (iF k r') = w (iF 
 lemma hpk_mulVec (k r : ℕ) (u : Fin (2 * r + k + 1) → ℂ) (i : Fin (2 * r + k + 1)) :
     (Hpk k r *ᵥ u) i = WeylGroupFacts.sgn k r i * u (WeylGroupFacts.tau k r i) := by
   rw [Matrix.mulVec, dotProduct, Finset.sum_eq_single (WeylGroupFacts.tau k r i)]
-  · rw [WeylGroupFacts.hpk_row, if_pos rfl]
+  · rw [WeylGroupFacts.hpk_row, ite_eq_left rfl]
   · intro m _ hm
-    rw [WeylGroupFacts.hpk_row, if_neg hm, zero_mul]
+    rw [WeylGroupFacts.hpk_row, ite_eq_right hm, zero_mul]
   · intro h
     exact absurd (Finset.mem_univ _) h
 
 lemma tau_out {k r : ℕ} (i : Fin (2 * r + k + 1)) (h : i.val < r ∨ r + k < i.val) :
-    (WeylGroupFacts.tau k r i).val = 2 * r + k - i.val := if_pos h
+    (WeylGroupFacts.tau k r i).val = 2 * r + k - i.val := ite_eq_left h
 
 lemma tau_mid {k r : ℕ} (i : Fin (2 * r + k + 1)) (h : ¬ (i.val < r ∨ r + k < i.val)) :
-    (WeylGroupFacts.tau k r i).val = i.val := if_neg h
+    (WeylGroupFacts.tau k r i).val = i.val := ite_eq_right h
 
 lemma herm3 (u w : Fin (2 * (1 + r') + k + 1) → ℂ) :
     herm (Hpk k (1 + r')) u w =
@@ -95,13 +95,13 @@ lemma herm3 (u w : Fin (2 * (1 + r') + k + 1) → ℂ) :
     by_cases hj : j.val < r' ∨ r' + k < j.val
     · rw [tau_out _ hj, tau_out _ (by rw [lv_val]; omega), lv_val]; omega
     · rw [tau_mid _ hj, tau_mid _ (by rw [lv_val]; omega), lv_val]
-  have sF : WeylGroupFacts.sgn k (1 + r') (iF k r') = 1 := if_neg (by rw [iF_val]; omega)
-  have sL : WeylGroupFacts.sgn k (1 + r') (iL k r') = 1 := if_neg (by rw [iL_val]; omega)
+  have sF : WeylGroupFacts.sgn k (1 + r') (iF k r') = 1 := ite_eq_right (by rw [iF_val]; omega)
+  have sL : WeylGroupFacts.sgn k (1 + r') (iL k r') = 1 := ite_eq_right (by rw [iL_val]; omega)
   have sm : ∀ j, WeylGroupFacts.sgn k (1 + r') (lv k r' j) = WeylGroupFacts.sgn k r' j := by
     intro j
     by_cases hj : j.val = r' + k
-    · rw [WeylGroupFacts.sgn, WeylGroupFacts.sgn, if_pos hj, if_pos (by rw [lv_val]; omega)]
-    · rw [WeylGroupFacts.sgn, WeylGroupFacts.sgn, if_neg hj, if_neg (by rw [lv_val]; omega)]
+    · rw [WeylGroupFacts.sgn, WeylGroupFacts.sgn, ite_eq_left hj, ite_eq_left (by rw [lv_val]; omega)]
+    · rw [WeylGroupFacts.sgn, WeylGroupFacts.sgn, ite_eq_right hj, ite_eq_right (by rw [lv_val]; omega)]
   simp only [herm, dotProduct, hpk_mulVec, Pi.star_apply, sum3, tF, tL, tm, sF, sL, sm, res, one_mul]
   ring
 
@@ -224,7 +224,7 @@ lemma lev_n {g : Mat k r'} (hg : g ∈ Nset k r') : ιLev k 1 r' g ∈ Nset k (1
   · exact lev_F g j
   · exact lev_L g j
   · rcases cases3 j with rfl | rfl | ⟨j', rfl⟩
-    · rw [lev_mF, if_neg (lv_ne_iF i')]
+    · rw [lev_mF, ite_eq_right (lv_ne_iF i')]
     · rw [iL_val] at hj; omega
     · rw [lv_val] at hj hi
       rw [lv_val] at hi
@@ -301,7 +301,7 @@ lemma heis_n (x : HPar k r') : heis0 k r' x ∈ Nset k (1 + r') := by
   · rw [bvec_lv]
     rcases cases3 i with rfl | rfl | ⟨i', rfl⟩
     · rw [iF_val, lv_val] at hi; omega
-    · rw [heis_L, lift_L, if_neg (lv_ne_iL j').symm]
+    · rw [heis_L, lift_L, ite_eq_right (lv_ne_iL j').symm]
     · have := congrFun (heis_res x (liftVec k 1 r' (bvec j'))) i'
       rw [lift_res, lift_L] at this
       simp only [res] at this
@@ -351,12 +351,12 @@ lemma n_decomp {g : Mat k (1 + r')} (hg : g ∈ Nset k (1 + r')) :
   set aa : (Fin (2 * r' + k + 1) → ℂ) → ℂ := fun z => ∑ j, g (iF k r') (lv k r' j) * z j with haa
   have gF : ∀ u, (g *ᵥ u) (iF k r') = u (iF k r') + aa (res u) + β * u (iL k r') := by
     intro u
-    rw [mulVec3, cF, if_pos rfl, one_mul]
+    rw [mulVec3, cF, ite_eq_left rfl, one_mul]
   have gm : ∀ u, res (g *ᵥ u) = blk g *ᵥ res u + u (iL k r') • y := by
     intro u
     funext i
     simp only [res]
-    rw [mulVec3, cF, if_neg (lv_ne_iF i)]
+    rw [mulVec3, cF, ite_eq_right (lv_ne_iF i)]
     simp [blk, mulVec, dotProduct, res, hy, mul_comm]
 
   have r1 : ∀ z, aa z = - herm (Hpk k r') (blk g *ᵥ z) y := by

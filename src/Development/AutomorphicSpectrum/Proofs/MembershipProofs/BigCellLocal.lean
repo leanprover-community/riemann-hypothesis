@@ -86,7 +86,7 @@ theorem exists_skew_isUnit_det {F : Type} [Field F] (σ : F →+* F) {β : Type}
       by_cases hDj : D j = 0
       · rw [hDj, mul_zero]
       · have e := hE j
-        rw [if_neg hDj, mul_zero, add_zero] at e
+        rw [ite_eq_right hDj, mul_zero, add_zero] at e
         rw [(mul_eq_zero.1 e).resolve_right hDj, zero_mul]
     have hva : v ᵥ* a = 0 := by
       rw [hD, ← Matrix.vecMul_vecMul, ← Matrix.vecMul_vecMul, hwD, Matrix.zero_vecMul]
@@ -100,7 +100,7 @@ theorem exists_skew_isUnit_det {F : Type} [Field F] (σ : F →+* F) {β : Type}
       rw [Pi.zero_apply]
       by_cases hDj : D j = 0
       · have e := hE j
-        rw [if_pos hDj, hDj, mul_zero, zero_add] at e
+        rw [ite_eq_left hDj, hDj, mul_zero, zero_add] at e
         exact (mul_eq_zero.1 e).resolve_right hc
       · have e := congr_fun hud j
         rw [Matrix.vecMul_diagonal, Pi.zero_apply] at e
@@ -265,13 +265,6 @@ theorem decomp_split [IsLocalRing A] (hσ : ∀ z, σ (σ z) = z) {w : A} (hw : 
   simp [fromBlocks_multiply, ha']
 
 end Split
-
-section Lift
-
-variable {R : Type} [CommRing R] {E : Type} [CommRing E] [Algebra R E] {c : E →ₐ[R] E} {A : Subring E} {σ : A →+* A}
-  {ι : Type} [Fintype ι] [DecidableEq ι]
-
-end Lift
 
 end GlobalTheory.CompanionTheory.VacLoc.BigCellLocal
 end -- clump:auto

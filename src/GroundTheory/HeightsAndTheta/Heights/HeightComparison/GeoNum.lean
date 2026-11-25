@@ -119,7 +119,7 @@ theorem cycEval_divCycle_eq (Q : Ideal (MRing ι (ZMod p))) (s : MRing ι ℤ)
     have hd : divCycle Q (red p s) W' =
         ((NumbersDVR.multAt (Q ⊔ Ideal.span {red p s}) W').toNat : ℤ) := by
       unfold divCycle
-      exact dif_pos hW'
+      exact dite_eq_left hW'
     rw [multAt_eq_toNat, multAt_comap, ← hd]
     by_cases h0 : divCycle Q (red p s) W' = 0
     · rw [h0, zero_mul, zero_mul]
@@ -147,7 +147,7 @@ theorem intNum_eq_geoNum_comap (n : ℕ) : ∀ Q : Ideal (MRing ι (ZMod p)), Is
     obtain rfl : a = ![] := Subsingleton.elim _ _
     rw [IntNumPoint.proof IntNumBase.full (ZMod p) K ι Q _ hQ hd hi]
     simp only [Geo.geoNum]
-    rw [dif_pos hrel, ReciprocityTheory.ChartRestriction.G.AI.I1.ptDeg, ReciprocityTheory.ChartRestriction.G.AI.I1.chartIdeal,
+    rw [dite_eq_left hrel, ReciprocityTheory.ChartRestriction.G.AI.I1.ptDeg, ReciprocityTheory.ChartRestriction.G.AI.I1.chartIdeal,
       comap_sup_span, ← Set.range_comp]
     have hf : (red p ∘ fun k => (X ⟨k, (hrel k).choose⟩ : MRing ι ℤ) - 1) =
         fun k => (X ⟨k, (hrel k).choose⟩ : MRing ι (ZMod p)) - 1 := by
@@ -216,7 +216,7 @@ theorem intNum_eq_geoNum_comap (n : ℕ) : ∀ Q : Ideal (MRing ι (ZMod p)), Is
     conv_lhs => rw [← Fin.snoc_init_self a]
     rw [hlin]
     simp only [Geo.geoNum]
-    rw [dif_pos hrel]
+    rw [dite_eq_left hrel]
     refine Finset.sum_congr rfl fun k _ => ?_
     rw [hcut k]
 
@@ -269,7 +269,7 @@ theorem intNum_map_eq_geoNum_hyps (p : ℕ) [Fact p.Prime] (D : ℕ) :
       have h1 := MvPolynomial.mem_support_iff.mp hm
       rw [coeff_C] at h1
       by_contra hne
-      exact h1 (if_neg (Ne.symm hne))
+      exact h1 (ite_eq_right (Ne.symm hne))
     subst this
     simp
   · rw [RingHom.mem_ker, map_X]

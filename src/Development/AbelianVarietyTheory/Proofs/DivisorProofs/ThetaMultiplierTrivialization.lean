@@ -260,7 +260,7 @@ theorem transUnif_factor (u : HolUnif A M g) {Hm : Matrix (Fin g) (Fin g) ℂ} {
   have e3 := hF.2.2 l (J PUnit.unit ⟨{0, 1}⟩) (z + w) c3
   rw [transUnif_fr, transUnif_fr, prod_ulift_finset_fin_two_eq, prod_ulift_finset_fin_two_eq]
   simp only [shiftVec, expo]
-  simp only [Finset.notMem_empty, if_false, Finset.mem_singleton, Finset.mem_insert, Finset.card_empty,
+  simp only [Finset.notMem_empty, ite_false, Finset.mem_singleton, Finset.mem_insert, Finset.card_empty,
     Finset.card_singleton]
   norm_num
   rw [e1, e3, add_dotProduct, show z + l + w = z + w + l by abel]

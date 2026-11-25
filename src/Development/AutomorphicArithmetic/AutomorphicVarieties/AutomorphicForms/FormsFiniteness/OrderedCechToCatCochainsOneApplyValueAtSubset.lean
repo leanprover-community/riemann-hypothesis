@@ -62,9 +62,9 @@ theorem matrixExtendByZero_single (i j : Fin a) (x : R) : ext0 e (Matrix.single 
     · obtain ⟨l, rfl⟩ := hl
       simp [matrixExtendByZero_apply, Matrix.single_apply]
     · push Not at hl
-      rw [matrixExtendByZero_apply_of_outside_col e _ _ hl, Matrix.single_apply, if_neg fun h => hl j h.2.symm]
+      rw [matrixExtendByZero_apply_of_outside_col e _ _ hl, Matrix.single_apply, ite_eq_right fun h => hl j h.2.symm]
   · push Not at hk
-    rw [extendByZero_apply_eq_zero_of_row_not_mem e _ hk, Matrix.single_apply, if_neg fun h => hk i h.1.symm]
+    rw [extendByZero_apply_eq_zero_of_row_not_mem e _ hk, Matrix.single_apply, ite_eq_right fun h => hk i h.1.symm]
 
 def embM : Matrix (Fin a) (Fin a) R →* Matrix (Fin n) (Fin n) R where
   toFun X := 1 + ext0 e (X - 1)

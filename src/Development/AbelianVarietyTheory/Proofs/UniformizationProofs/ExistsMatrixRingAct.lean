@@ -82,9 +82,4 @@ theorem _root_.GlobalTheory.MatrixAction.isMonHom_of_points {G H : Over S} [GrpO
   · have := hm (G ⊗ G) (fst G G) (snd G G)
     simpa [Hom.mul_def] using this
 
-section
-variable {G : Over S} [GrpObj G] {O : Type} [Ring O] (ρ : RingAct G O)
-
-end
-
 end GlobalTheory.MatrixAction

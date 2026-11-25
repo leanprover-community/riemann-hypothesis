@@ -49,20 +49,6 @@ theorem exists_exact_of_nuStar_eq {p : R} {U : Set R} {tr ν : ℕ} (h : nuStar 
 
 end Def
 
-section Domain
-
-variable {R : Type*} [CommRing R] [IsDomain R]
-
-end Domain
-
-section Int
-
-end Int
-
-section Inhabitant
-
-end Inhabitant
-
 end KStar
 end -- clump:auto
 end -- clump:auto

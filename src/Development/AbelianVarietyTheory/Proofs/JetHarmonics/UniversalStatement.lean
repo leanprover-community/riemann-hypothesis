@@ -312,17 +312,17 @@ theorem univ_of_dirs {d : ℕ} {κ : Type} [Fintype κ] (β : Fin d ≃ κ)
 
       rw [AlgHom.comp_apply, hc, dualLift_zR, TrivSqZeroExt.snd_inr, ← β.sum_comp, map_sum, TrivSqZeroExt.snd_sum,
       Finset.sum_eq_single j] at e
-      · rw [map_smul, ht, if_pos rfl, TrivSqZeroExt.snd_smul, DualNumber.snd_eps, smul_eq_mul, _root_.mul_one,
+      · rw [map_smul, ht, ite_eq_left rfl, TrivSqZeroExt.snd_smul, DualNumber.snd_eps, smul_eq_mul, _root_.mul_one,
           Pi.single_apply] at e
         rw [e]
         simp only [eq_comm]
       · intro k _ hk
-        rw [map_smul, ht, if_neg hk, smul_zero, TrivSqZeroExt.snd_zero]
+        rw [map_smul, ht, ite_eq_right hk, smul_zero, TrivSqZeroExt.snd_zero]
       · intro h; exact absurd (Finset.mem_univ j) h
     rw [hc, ← β.sum_comp, Finset.sum_eq_single i]
-    · rw [hcj, if_pos rfl, one_smul]
+    · rw [hcj, ite_eq_left rfl, one_smul]
     · intro k _ hk
-      rw [hcj, if_neg hk, zero_smul]
+      rw [hcj, ite_eq_right hk, zero_smul]
     · intro h; exact absurd (Finset.mem_univ i) h
   have h3 : ∀ m, (toFirst κ m).comp (ψ (m + 1)) = (ψ 1).comp (toFirst (Fin d) m) := fun m => by
     have hp : RingHom.ker (Chart.jetAug V κ 1) ^ (m + 1 + 1) = ⊥ :=

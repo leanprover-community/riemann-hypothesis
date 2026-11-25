@@ -37,7 +37,7 @@ theorem sum_cz (x : Fin n → 𝓞 E) : ∑ m, cz x m • dl m = x := by
   simp only [dl, cz_apply, Pi.smul_apply, Pi.single_apply]
   simp only [smul_ite, smul_zero]
   rw [Finset.sum_comm]
-  simp only [Finset.sum_ite_eq, Finset.mem_univ, if_true]
+  simp only [Finset.sum_ite_eq, Finset.mem_univ, ite_true]
   exact (RingOfIntegers.basis E).sum_repr (x j)
 
 theorem hom_eq {A : Type} [AddCommGroup A] (f : (Fin n → 𝓞 E) →+ A) (x : Fin n → 𝓞 E) :
@@ -177,7 +177,7 @@ theorem Pm_mul_Jm (h : IsDualOf σ s) : Pm n σ * Jm n s = 1 := by
   rw [Matrix.mul_apply, Fintype.sum_prod_type, Matrix.one_apply]
   simp only [Pm, Jm, ite_mul, zero_mul, mul_ite, mul_zero]
   rw [Finset.sum_eq_single i]
-  · simp only [if_true]
+  · simp only [ite_true]
     split_ifs with hij
     · rw [← h.1]; simp [mul_comm]
     · simp
@@ -186,7 +186,7 @@ theorem Pm_mul_Jm (h : IsDualOf σ s) : Pm n σ * Jm n s = 1 := by
 
 theorem Pm_cz (k : Fin n) (x : Fin n → 𝓞 E) : ∑ m, Pm n σ k m * (cz x m : R) = σ (x k) := by
   rw [Fintype.sum_prod_type, Finset.sum_eq_single k]
-  · simp only [Pm, if_true, cz_apply]
+  · simp only [Pm, ite_true, cz_apply]
     conv_rhs => rw [← (RingOfIntegers.basis E).sum_repr (x k)]
 
     rw [map_sum]
@@ -219,7 +219,7 @@ theorem Jm_mul_Pm (h : IsDualOf σ s) : Jm n s * Pm n σ = ∑ k, s k • Ma R n
   simp only [Matrix.smul_apply, Ma, Jm, Pm, cz_apply, dl, smul_eq_mul, Pi.smul_apply, Pi.single_apply]
   by_cases hm : m.1 = m'.1
   · rw [Finset.sum_eq_single m.1 (by intro b _ hb; simp [Ne.symm hb]) (by simp)]
-    simp only [if_true, hm]
+    simp only [ite_true, hm]
     rw [mul_comm (s m.2), h.2 (RingOfIntegers.basis E m'.2) m.2]
     refine Finset.sum_congr rfl (fun k _ => ?_)
     rw [mul_comm (RingOfIntegers.basis E m'.2)]
