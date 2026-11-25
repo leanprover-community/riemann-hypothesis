@@ -1672,6 +1672,127 @@ class Pushed(unittest.TestCase):
         self.assertEqual(gh.writes, [])
 
 
+class BackAtItsHead(unittest.TestCase):
+    """A member pushed to after its batch took it gets `awaiting-author`. Once the batch holds its
+    head again, the label comes off, if the workflow put it on."""
+
+    def built(self):
+        gh = Fake()
+        queue(gh, 11, 12)
+        by_hand(gh, 11, 12)
+        sync(gh)
+        return gh
+
+    def taken(self, gh):
+        """The new head of #12 is merged into the batch."""
+        by_hand(gh, 11, 12, name="kim-with-12-later")
+
+    def stored(self, gh):
+        return note(gh.said(1018)[0])
+
+    def test_when_the_batch_takes_the_new_head_the_label_comes_off(self):
+        gh = self.built()
+        gh.push(12, "head12-later")
+        sync(gh)
+        self.assertEqual(gh.pulls[12]["labels"], IN | {WAITING})
+        self.assertEqual((self.stored(gh)["pushed"], self.stored(gh)["waiting"]), ({"12": sha("head12")}, ["12"]))
+        self.taken(gh)
+        log = sync(gh)
+        self.assertIn("#12 is in the batch #1018 at its head again: `awaiting-author` removed", log)
+        self.assertEqual(gh.pulls[12]["labels"], IN)
+        self.assertNotIn("waiting", self.stored(gh))
+        self.assertNotIn('"waiting"', gh.said(1018)[0])
+        gh.writes = []
+        self.assertEqual(sync(gh), ["nothing to do"])
+
+    def test_a_label_a_person_put_on_stays(self):
+        gh = self.built()
+        gh.label(12, add=WAITING, login="maintainer")  # `aa`
+        gh.push(12, "head12-later")
+        sync(gh)
+        [said] = [body for body in gh.said(12) if body.startswith("<!-- batch-queue-pushed-while-frozen")]
+        self.assertNotIn(batch.HANDED_BACK, said)
+        self.assertNotIn("waiting", self.stored(gh))
+        self.taken(gh)
+        sync(gh)
+        self.assertEqual(gh.pulls[12]["labels"], IN | {WAITING})
+
+    def test_a_label_put_back_by_a_person_after_ready_stays(self):
+        gh = self.built()
+        gh.push(12, "head12-later")
+        sync(gh)
+        gh.label(12, remove=WAITING, login="author")  # `ready`
+        sync(gh)
+        self.assertNotIn("waiting", self.stored(gh))
+        gh.label(12, add=WAITING, login="maintainer")  # `aa`
+        self.taken(gh)
+        sync(gh)
+        self.assertEqual(gh.pulls[12]["labels"], IN | {WAITING})
+
+    def test_told_by_pushed_before_the_sync_noted_it(self):
+        gh = self.built()
+        gh.push(12, "head12-later")
+        batch.pushed(gh, 12)
+        [said] = [body for body in gh.said(12) if body.startswith("<!-- batch-queue-pushed-while-frozen")]
+        self.assertIn(batch.HANDED_BACK, said)
+        # The batch takes the new head before any sync has read that comment.
+        self.taken(gh)
+        log = sync(gh)
+        self.assertIn("#12 is in the batch #1018 at its head again: `awaiting-author` removed", log)
+        self.assertEqual(gh.pulls[12]["labels"], IN)
+
+    def test_noted_by_a_sync_after_pushed_told_it(self):
+        gh = self.built()
+        gh.push(12, "head12-later")
+        batch.pushed(gh, 12)
+        sync(gh)
+        self.assertEqual(self.stored(gh)["waiting"], ["12"])
+        self.taken(gh)
+        sync(gh)
+        self.assertEqual(gh.pulls[12]["labels"], IN)
+
+    def test_pushed_back_to_the_commit_the_batch_took(self):
+        for noted in (True, False):
+            with self.subTest(noted=noted):
+                gh = self.built()
+                gh.push(12, "head12-later")
+                batch.pushed(gh, 12)
+                if noted:
+                    sync(gh)
+                gh.push(12, "head12")  # force-pushed back
+                log = batch.pushed(gh, 12)
+                self.assertIn("#12 is in the batch #1018 at its head again: `awaiting-author` removed", log)
+                self.assertEqual(gh.pulls[12]["labels"], IN)
+                sync(gh)
+                self.assertEqual(gh.pulls[12]["labels"], IN)
+                self.assertNotIn("waiting", self.stored(gh))
+
+    def test_pushed_back_with_a_label_a_person_put_on_it_stays(self):
+        gh = self.built()
+        gh.label(12, add=WAITING, login="maintainer")
+        gh.push(12, "head12-later")
+        batch.pushed(gh, 12)
+        gh.push(12, "head12")
+        self.assertEqual(batch.pushed(gh, 12), ["#12: nothing to do"])
+        sync(gh)
+        self.assertEqual(gh.pulls[12]["labels"], IN | {WAITING})
+
+    def test_taken_at_an_older_head_than_the_latest_push_it_waits_for_that_one(self):
+        gh = self.built()
+        gh.push(12, "head12-later")
+        gh.inside[sha("head12-later")] = {sha("head12")}
+        sync(gh)
+        self.taken(gh)
+        gh.push(12, "head12-latest")
+        gh.inside[sha("head12-latest")] = {sha("head12-later"), sha("head12")}
+        sync(gh)
+        self.assertEqual(gh.pulls[12]["labels"], IN | {WAITING})
+        self.assertEqual(self.stored(gh)["waiting"], ["12"])
+        by_hand(gh, 11, 12, name="kim-with-12-latest")
+        sync(gh)
+        self.assertEqual(gh.pulls[12]["labels"], IN)
+
+
 class LeftOutDigests(unittest.TestCase):
     def test_the_kind_of_reason_is_its_heading_up_to_any_parenthesis(self):
         digest = batch.left_out_digest
@@ -1814,6 +1935,13 @@ class Notes(unittest.TestCase):
         self.assertEqual(json.loads(batch.dump_note(stacked))["below"], {"1018": sha("kim")})
         self.assertEqual(batch.load_note(batch.dump_note(stacked)), stacked)
         self.assertNotIn("below", json.loads(batch.dump_note(dict(self.OLD, below={}))))
+
+    def test_the_labels_the_workflow_handed_back_are_kept(self):
+        kept = batch.load_note(batch.dump_note(self.OLD))
+        waiting = dict(kept, waiting=["12", "99"])  # #99 is not a member
+        self.assertEqual(json.loads(batch.dump_note(waiting))["waiting"], [12])
+        self.assertEqual(batch.load_note(batch.dump_note(waiting)), dict(kept, waiting=["12"]))
+        self.assertNotIn("waiting", json.loads(batch.dump_note(dict(kept, waiting=[]))))
 
     def test_a_key_the_note_lacks_stays_missing(self):
         # A note from before `queued` was recorded holds only queued pull requests.

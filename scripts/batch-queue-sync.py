@@ -87,7 +87,9 @@ line or branch name to match.
 
 A pull request that is pushed to after the batch took its commit is still in the batch, at that
 commit. It is told that the batch lands only that commit, and is labelled `awaiting-author`, as
-soon as the push comes in (see `pushed`) or else by the next sync. When
+soon as the push comes in (see `pushed`) or else by the next sync. If the batch then takes its
+new head, or it is pushed back to the commit the batch took, `awaiting-author` comes off again,
+but only if this workflow put it on along with that comment: a label a person put on stays. When
 the batch is merged, GitHub marks merged each pull request whose head commit is in it and whose
 base is main. One whose head has moved on stays open: it is told what landed and what did not,
 and keeps `awaiting-author`. One whose head landed but whose base is another branch is closed,
@@ -227,6 +229,9 @@ BY_HAND = re.compile(r"<!-- batch-queue-by-hand (\{.*\}) -->")
 FROZEN_NOTE = "<!-- batch-queue-frozen {number} {sha} -->"
 # `sha` is the commit the batch took, so that a member is told this once for each commit.
 PUSHED = "<!-- batch-queue-pushed-while-frozen {number} {sha} -->"
+# On the line after `PUSHED` when the workflow put `awaiting-author` on along with that comment, so
+# that it takes off only a label it put on itself (see `handed_back`).
+HANDED_BACK = "<!-- batch-queue-handed-back -->"
 DROPPED = "<!-- batch-queue-dropped {number} {sha} -->"
 UNFROZEN = "<!-- batch-queue-unfrozen {number} -->"
 LANDED_BEFORE_PUSH = "<!-- batch-queue-landed-before-push {number} {sha} -->"
@@ -620,6 +625,10 @@ def read_record(gh, number):
 #   told      {number: commit}: the members told that they are frozen, at that commit.
 #   pushed    {number: commit}: the members told that they were pushed to after the batch took
 #             that commit, and labelled `awaiting-author`.
+#   waiting   the members that this batch labelled `awaiting-author` when it told them they were
+#             pushed to, and that still carry it. It comes off once the batch holds their head
+#             again (see `unwait`). One that lost the label meanwhile leaves the list: a label put
+#             on later is a person's.
 #   left      {number: digest}: the pull requests told that the description leaves them out, with
 #             a digest of the entry they were told about (see `tell_left_out`).
 #   telling   true from just before the first comment of a round of telling (`tell_members` and
@@ -632,8 +641,9 @@ def read_record(gh, number):
 # JSON and keeps only the entries that count, as lists of numbers. `queued`, `labelled` and `told`
 # are each kept as that list or as the list of the members it leaves out (`unqueued`,
 # `unlabelled`, `untold`), whichever is shorter: a batch usually labels and tells nearly all of its
-# members. `below` is kept as it is in memory, and only when it is not empty. What is left is
-# about 50 characters for each member, nearly all of it `members` with its full commit ids.
+# members. `below` is kept as it is in memory, and `waiting` as a list of numbers, each only when
+# it is not empty. What is left is about 50 characters for each member, nearly all of it `members`
+# with its full commit ids.
 # `load_note` also reads the notes written before `dump_note`, which kept every key as it is in
 # memory.
 
@@ -664,6 +674,8 @@ def dump_note(note):
         shorter("told", counting(note["told"]))
     if "pushed" in note:
         kept["pushed"] = sorted(int(key) for key in counting(note["pushed"]))
+    if note.get("waiting"):
+        kept["waiting"] = sorted(int(key) for key in note["waiting"] if key in found)
     if note.get("telling"):
         kept["telling"] = True
     return json.dumps(kept, sort_keys=True, separators=(",", ":"))
@@ -708,6 +720,8 @@ def load_note(text):
         note["pushed"] = {key: found[key] for key in sorted(numbers("pushed"), key=int) if key in found}
     elif isinstance(kept.get("pushed"), dict):
         note["pushed"] = mapping("pushed")
+    if numbers("waiting"):
+        note["waiting"] = sorted(numbers("waiting"), key=int)
     if kept.get("telling") is True:
         note["telling"] = True
     return note
@@ -1049,7 +1063,8 @@ def keep_in_step(gh, batch, pulls, held, main, log):
     The note is written first, so that whatever carries `batch-building` because of this batch
     is in it when the batch is finished with. It then remembers what was done as it is done:
     which members were labelled (`labelled`), and who was told that they are frozen (`told`),
-    that they were pushed to afterwards (`pushed`, which also labels them `awaiting-author`), or
+    that they were pushed to afterwards (`pushed`, which also labels them `awaiting-author`, and
+    `waiting` when that label was this workflow's, see `unwait`), or
     what the description says about them being left out (`left`, see `tell_left_out`). Only what
     GitHub took counts as done, so what was refused or cut short is tried again by the next run,
     and nothing is done twice: a round of telling is marked in the note before its first comment
@@ -1101,7 +1116,7 @@ def keep_in_step(gh, batch, pulls, held, main, log):
         told = dict(found)
         log.append(f"the record of the batch #{number} is older than the notices that a pull request is frozen: "
                    f"its {len(told)} pull request(s) are labelled but not told")
-    note.update(labelled=labelled, told=told, left=left,
+    note.update(labelled=labelled, told=told, left=left, waiting=unwait(gh, batch, pulls, log),
                 pushed={key: commit for key, commit in kept(old, "pushed").items() if found.get(key) == commit})
     if batch["resumed"]:
         note["telling"] = True
@@ -1134,7 +1149,7 @@ def tell_members(gh, batch, pulls, main, log):
     it was pushed to after the batch took it, if it was. The note remembers it. Returns whether
     everything was told, False when the run is cut short."""
     note, number, since = batch["note"], batch["number"], 0
-    told, pushed = note["told"], note["pushed"]
+    told, pushed, waiting = note["told"], note["pushed"], note["waiting"]
     for key, commit in sorted(note["members"].items(), key=lambda entry: int(entry[0])):
         pr = pulls.get(int(key))
         if pr is None or by_hand(pr) or (told.get(key) == commit and (pr["sha"] == commit or pushed.get(key) == commit)):
@@ -1147,8 +1162,13 @@ def tell_members(gh, batch, pulls, main, log):
                                                  frozen_text(number, commit, pr, main)):
             told[key], since = commit, since + 1
             log.append(f"told #{key} that it is frozen while the batch #{number} is built")
-        if pr["sha"] != commit and pushed.get(key) != commit and tell_pushed(gh, number, commit, pr, main, log):
-            pushed[key], since = commit, since + 1
+        if pr["sha"] != commit and pushed.get(key) != commit:
+            done, handed = tell_pushed(gh, number, commit, pr, main, log)
+            if done:
+                pushed[key], since = commit, since + 1
+            if done and handed and key not in waiting:
+                waiting.append(key)
+                waiting.sort(key=int)
         if since >= SAVE_EVERY:
             save(gh, batch)
             since = 0
@@ -1176,20 +1196,62 @@ def tell_pushed(gh, number, commit, pr, main, log):
     first, so that a run cut short between the two leaves the label rather than the comment
     without it. Its comments are read to look for an earlier one: `pushed` tells it as soon as the
     push comes in, without writing the batch's note, and the sync takes that into its note.
-    Returns whether it has been told."""
+    Returns whether it has been told, and whether the workflow put `awaiting-author` on along with
+    the comment, which then says so (`HANDED_BACK`)."""
     marker = PUSHED.format(number=number, sha=commit)
-    if any((comment.get("body") or "").startswith(marker)
-           for comment in gh.pages(f"issues/{pr['number']}/comments") if by_workflow(comment)):
-        return True
-    relabel(gh, pr, add=WAITING)
-    if not say(gh, pr["number"], marker,
+    for comment in gh.pages(f"issues/{pr['number']}/comments"):
+        body = comment.get("body") or ""
+        if by_workflow(comment) and body.startswith(marker):
+            return True, HANDED_BACK in body
+    handed = WAITING not in pr["labels"] and relabel(gh, pr, add=WAITING)
+    if not say(gh, pr["number"], marker, (f"{HANDED_BACK}\n" if handed else "") +
                f"This pull request was pushed to after batch #{number} took its commit `{commit[:10]}`. The batch "
                f"builds and lands `{commit[:10]}` only, not `{pr['sha'][:10]}`, so when it lands this pull request "
                f"stays open with what came after `{commit[:10]}`. Once the batch has landed, merge `{main}` into "
                "this branch and comment `ready`, or close this pull request if nothing is left to change."):
-        return False
+        return False, False
     log.append(f"told #{pr['number']} that it was pushed to after the batch #{number} took it: now `{WAITING}`")
-    return True
+    return True, handed
+
+
+def handed_back(gh, number, key, commits):
+    """Whether the workflow put `awaiting-author` on the pull request `key` when it told it that it
+    was pushed to after the batch `number` took one of `commits`: that comment says so. A request."""
+    markers = tuple(PUSHED.format(number=number, sha=commit) for commit in commits)
+    return any(by_workflow(comment) and (comment.get("body") or "").startswith(markers)
+               and HANDED_BACK in comment["body"] for comment in gh.pages(f"issues/{key}/comments"))
+
+
+def unwait(gh, batch, pulls, log):
+    """Take `awaiting-author` off each member of a batch assembled by hand whose head is the commit
+    the batch holds again, if this workflow put it on when it told the member that it was pushed
+    to after the batch took it: the batch has taken its new head, or it was pushed back. A label a
+    person put on stays. Returns the note's new `waiting` (see `dump_note`).
+
+    The note's `waiting` says which labels were the workflow's. When `pushed` told a member, the
+    note does not know of it yet, so in the run where the batch takes a new head of a member that
+    the note says nothing about, the member's comments are read instead (see `handed_back`).
+    """
+    old, number, waiting = batch["old"], batch["number"], []
+    found, before, told = batch["note"]["members"], members(batch["old"]), kept(batch["old"], "pushed")
+    for key, commit in sorted(found.items(), key=lambda entry: int(entry[0])):
+        pr = pulls.get(int(key))
+        if pr is None or WAITING not in pr["labels"]:
+            continue
+        ours = key in (old.get("waiting") or ())
+        if pr["sha"] != commit:
+            if ours:
+                waiting.append(key)
+            continue
+        if not ours and key not in told and before.get(key) not in (None, commit):
+            ours = handed_back(gh, number, key, [before[key]])
+        if not ours:
+            continue
+        if relabel(gh, pr, remove=WAITING):
+            log.append(f"#{key} is in the batch #{number} at its head again: `{WAITING}` removed")
+        else:
+            waiting.append(key)
+    return waiting
 
 
 def frozen_text(number, commit, pr, main):
@@ -1723,7 +1785,9 @@ def pushed(gh, number):
     built. The pull request's own batch is the lowest of them, in the order `stack` puts them in,
     whose record holds it: a record written before batches were stacked may hold it too, and
     otherwise one record does. If that batch holds it at another commit than its head, it is told
-    so and labelled `awaiting-author`, as `tell_members` does (see `tell_pushed`). Its labels are then
+    so and labelled `awaiting-author`, as `tell_members` does (see `tell_pushed`). If it was pushed
+    back to that commit instead, `awaiting-author` comes off, if the workflow put it on when it told
+    it so, as `unwait` does. Its labels are then
     brought in step, as `reconcile` does for every open pull request. The batches' notes are left
     alone, so that this can run alongside a sync: the next sync finds the comment and notes it.
     Returns lines saying what was done."""
@@ -1745,6 +1809,12 @@ def pushed(gh, number):
             continue
         if commit != pr["sha"] and kept(batch["note"], "pushed").get(key) != commit:
             tell_pushed(gh, batch["number"], commit, pr, main, log)
+        elif commit == pr["sha"] and WAITING in pr["labels"] and (
+                key in (batch["note"].get("waiting") or ()) or key not in kept(batch["note"], "pushed")
+                and handed_back(gh, batch["number"], key, [commit])):
+            # Pushed back to the commit the batch took, as `unwait` does in a sync.
+            if relabel(gh, pr, remove=WAITING):
+                log.append(f"#{key} is in the batch #{batch['number']} at its head again: `{WAITING}` removed")
         break
     approved = {}
     approvals(gh, {number: pr}, main, approved, log)

@@ -21,7 +21,7 @@ request still under review adds. Until it lands, the label exists but nothing pu
 | `changed after frozen` *(planned, #1697)* | a frozen pull request whose head has moved on from the commit taken | it is pushed to after a batch or the queue took a commit of it | its head is that commit again, or it is no longer frozen |
 | `batch queue` | a pull request wanted in a batch | a maintainer or reviewer comments `batch` or `p` | `-batch`; it joins a batch assembled by hand (in exchange for `batch-building`); its queued commit lands; it is closed |
 | `priority` | a queued pull request that goes first | `p` | by hand |
-| `awaiting-author` | a pull request handed back to its author | `aa`; it is pushed to while in a batch; the description leaves it out; a batch lands an older commit of it; `batch-conflict` is first put on it *(planned, #1700)* | `ready`, by the author or a maintainer |
+| `awaiting-author` | a pull request handed back to its author | `aa`; it is pushed to while in a batch; the description leaves it out; a batch lands an older commit of it; `batch-conflict` is first put on it *(planned, #1700)* | `ready`, by the author or a maintainer; the batch takes the new head of a pull request it was put on for a push, or it is pushed back |
 | `main-conflict` *(planned, #1700)* | a pull request that conflicts with `main` | GitHub says so, unless it declares `depends on:` a batch being built | the conflict is gone, or it declares that dependency |
 | `batch-conflict` *(planned, #1700)* | a pull request that conflicts with a batch being built | git cannot merge it with the batch's head | the conflict is gone; the batch lands or is closed; it joins the batch |
 
@@ -106,7 +106,10 @@ of batches, what the branch shares with a batch it is stacked on belongs to that
 A pull request that is pushed to after the batch took its commit stays in the batch at the old
 commit. As soon as the push comes in, it is told that the batch lands only that commit, and is
 labelled `awaiting-author`: a push to a `frozen` pull request runs only this, not a whole sync.
-If its new head is merged into the branch, the batch holds that one instead.
+If its new head is merged into the branch, the batch holds that one instead, and
+`awaiting-author` comes off again, as it does when the pull request is pushed back to the commit
+the batch took. Only a label the workflow put on for the push comes off: one a person put on
+stays.
 
 When the batch is merged, what it contained loses `batch-building` and `frozen`. A pull request
 whose head has moved on since the batch took it stays open, and is told what landed and what did
