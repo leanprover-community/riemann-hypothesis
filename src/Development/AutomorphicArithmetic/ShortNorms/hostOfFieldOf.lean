@@ -1459,10 +1459,6 @@ private theorem hof_exists_host (R : Ranks) (H0 : HostAx R.toFrame) (hA : admitt
       g_level := by intro i; fin_cases i <;> simp
       pde := p, pde' := p', pde_prime := hp, pde'_prime := hp', pde_ne := hpp, pde_level := by simp
       pde_mod := hm, pde_ne_g := hpg, ccK := ⊤, ccK_ne_bot := top_ne_bot
-      ccK_primitive := fun m hm h => by
-        have h1 := congrArg Ideal.absNorm (top_le_iff.1 h)
-        rw [Ideal.absNorm_span_natCast, Ideal.absNorm_top, NumberField.RingOfIntegers.rank, H0.toHostRaw.finrank_K] at h1
-        nlinarith
       ccK_split := fun P hP h => absurd (top_le_iff.1 h) hP.ne_top, ccK_coprime := by simp, ccK_coprimeS := by simp
       level_coprimeS := hS
       TT := ∅, T2 := T, u0 := 0, Lw := Lw, two_le_Lw := hL, second_set_range := hT, second_set_no_relation := hT', CT2 := CT2 } hF hbig

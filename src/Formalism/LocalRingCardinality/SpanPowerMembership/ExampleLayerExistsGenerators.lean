@@ -1676,21 +1676,14 @@ def H0 : Host R0 where
   gal_sqq := Formalism.HC.D7.gal_sqq R0.toFrame hostHyp0 layer0
   QS_exact := Formalism.HC.D7.exact R0.toFrame exampleRanks_h_injective hostHyp0 (le_refl 2) layer0
   QS_le := (by norm_num : 2 ^ (2 + 2) ≤ 4 ^ 2)
-  o_pow := by
-    rw [exampleRanks_o, one_pow]
-    exact Nat.one_le_pow _ _ (by decide)
   q_ne_three := (by norm_num : (571 : ℕ) ≠ 3)
   qd_big := (by norm_num : 4 * 15 * 9 + 1 < 571 ∧ 4 * 15 * 9 + 1 < 599)
   splitBound := 2
   split_small := fun p hp h2 hle => absurd (le_antisymm hle hp.two_le) h2
-  small_le := fun l hl h2 hd =>
-    absurd ((Nat.prime_dvd_prime_iff_eq hl Nat.prime_two).mp
-      (hl.dvd_of_dvd_pow (show l ∣ 2 ^ (2 + 2) from hd))) h2
   φ₀ := hostAx0_cm_nonempty.some
   φ₀_mem := hostAx0_cm_nonempty.some_mem
   𝔟 := hostAx0.der.principal.choose
   𝔟_spec := ⟨hostAx0.der.principal.choose_spec.1, hostAx0.der.principal.choose_spec.2.1⟩
-  𝔟_stable := hostAx0.der.principal.choose_spec.2.2
   levelPrimes := {751, 991, 413718278401, 603339156001, 65794571027774832745588537266486439382601586586498771901135640963549130131839564588689999034983373394040350895271937}
   g := ![413718278401, 603339156001]
   g_prime := by intro i; fin_cases i; exacts [gA_prime, gB_prime]
@@ -1711,7 +1704,6 @@ def H0 : Host R0 where
     rcases hp with rfl | rfl | rfl | rfl | rfl <;> norm_num
   ccK := ⊤
   ccK_ne_bot := top_ne_bot
-  ccK_primitive := fun m hm => top_primitive m hm
   ccK_split := fun P hP hle => absurd (top_le_iff.1 hle) hP.ne_top
   ccK_coprime := fun p _ => by rw [Ideal.absNorm_top]; exact Nat.coprime_one_left p
   ccK_coprimeS := by rw [Ideal.absNorm_top]; exact Nat.coprime_one_left _

@@ -43,8 +43,6 @@ structure Host (R : Ranks) extends Formalism.HC.HostAx R.toFrame where
 
   QS_le : QS ≤ R.n ^ 2
 
-  o_pow : R.toFrame.o ^ 64 ≤ 2 ^ R.e
-
   q_ne_three : q ≠ 3
 
   qd_big : 4 * R.t * R.r + 1 < q ∧ 4 * R.t * R.r + 1 < d
@@ -52,15 +50,11 @@ structure Host (R : Ranks) extends Formalism.HC.HostAx R.toFrame where
   splitBound : ℕ
   split_small : ∀ p : ℕ, p.Prime → p ≠ 2 → p ≤ splitBound → jacobiSym (-(d : ℤ)) p = 1
 
-  small_le : ∀ l : ℕ, l.Prime → l ≠ 2 → l ∣ QS → 4 * l ≤ splitBound
-
   φ₀ : E →+* ℂ
   φ₀_mem : φ₀ ∈ toHostRaw.cmType
 
   𝔟 : Ideal (𝓞 E)
   𝔟_spec : differentIdeal (𝓞 toHostRaw.K) (𝓞 E) = 𝔟 * (toHostRaw.conj • 𝔟) ∧ 𝔟 ⊔ toHostRaw.conj • 𝔟 = ⊤
-
-  𝔟_stable : ∀ σ : E ≃ₐ[ℚ] E, gal σ ∈ R.Psi → σ • 𝔟 = 𝔟
 
   levelPrimes : Finset ℕ
 
@@ -81,8 +75,6 @@ structure Host (R : Ranks) extends Formalism.HC.HostAx R.toFrame where
 
   ccK : Ideal (𝓞 toHostRaw.K)
   ccK_ne_bot : ccK ≠ ⊥
-
-  ccK_primitive : ∀ m : ℕ, 1 < m → ¬ ccK ≤ Ideal.span {(m : 𝓞 toHostRaw.K)}
 
   ccK_split : ∀ P : Ideal (𝓞 toHostRaw.K), P.IsPrime → ccK ≤ P →
     (Ideal.absNorm P).Prime ∧ jacobiSym (-(d : ℤ)) (Ideal.absNorm P) = 1

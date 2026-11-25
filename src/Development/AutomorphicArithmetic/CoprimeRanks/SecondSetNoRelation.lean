@@ -18,10 +18,8 @@ structure FieldRows {φ : Frame} (H : HostRaw φ) (b : ℕ) : Prop where
   sqq : ∃ s : H.E, s ^ 2 = -(H.q : H.E) ∧ ∀ σ : H.E ≃ₐ[ℚ] H.E, σ s = ((((H.gal σ).1.1 : ℤˣ) : ℤ) : H.E) * s
   QS_exact : H.Exact
   QS_le : H.QS ≤ φ.ord ^ 2
-  o_pow : φ.o ^ 64 ≤ 2 ^ φ.e
   q_ne_three : H.q ≠ 3
   split_small : ∀ p : ℕ, p.Prime → p ≠ 2 → p ≤ b → jacobiSym (-(H.d : ℤ)) p = 1
-  small_le : ∀ l : ℕ, l.Prime → l ≠ 2 → l ∣ H.QS → 4 * l ≤ b
 
 structure Choices (φ : Frame) (H : HostRaw φ) where
   levelPrimes : Finset ℕ
@@ -39,7 +37,6 @@ structure Choices (φ : Frame) (H : HostRaw φ) where
   pde_ne_g : ∀ i, pde ≠ g i ∧ pde' ≠ g i
   ccK : Ideal (𝓞 H.K)
   ccK_ne_bot : ccK ≠ ⊥
-  ccK_primitive : ∀ m : ℕ, 1 < m → ¬ ccK ≤ Ideal.span {(m : 𝓞 H.K)}
   ccK_split : ∀ P : Ideal (𝓞 H.K), P.IsPrime → ccK ≤ P →
     (Ideal.absNorm P).Prime ∧ jacobiSym (-(H.d : ℤ)) (Ideal.absNorm P) = 1
   ccK_coprime : ∀ p ∈ insert 2 (insert 3 (insert 5 (insert H.q (insert H.d levelPrimes)))),
@@ -67,21 +64,20 @@ structure HostNF (R : Ranks) where
   φ₀_mem : φ₀ ∈ ax.toHostRaw.cmType
   𝔟 : Ideal (𝓞 ax.E)
   𝔟_spec : differentIdeal (𝓞 ax.toHostRaw.K) (𝓞 ax.E) = 𝔟 * (ax.toHostRaw.conj • 𝔟) ∧ 𝔟 ⊔ ax.toHostRaw.conj • 𝔟 = ⊤
-  𝔟_stable : ∀ σ : ax.E ≃ₐ[ℚ] ax.E, ax.gal σ ∈ R.Psi → σ • 𝔟 = 𝔟
   ch : Choices R.toFrame ax.toHostRaw
 
 def HostNF.toHost {R : Ranks} (N : HostNF R) : Formalism.BasicNotions.Host R :=
   { N.ax, N.ch with
     flPS := N.what₂.psQ, sqq := N.sqq, sqq_sq := N.sqq_sq, gal_sqq := N.gal_sqq
-    QS_exact := N.what₂.QS_exact, QS_le := N.what₂.QS_le, o_pow := N.what₂.o_pow, q_ne_three := N.what₂.q_ne_three
-    qd_big := N.qd_big, splitBound := N.splitBound, split_small := N.what₂.split_small, small_le := N.what₂.small_le
-    φ₀ := N.φ₀, φ₀_mem := N.φ₀_mem, 𝔟 := N.𝔟, 𝔟_spec := N.𝔟_spec, 𝔟_stable := N.𝔟_stable }
+    QS_exact := N.what₂.QS_exact, QS_le := N.what₂.QS_le, q_ne_three := N.what₂.q_ne_three
+    qd_big := N.qd_big, splitBound := N.splitBound, split_small := N.what₂.split_small
+    φ₀ := N.φ₀, φ₀_mem := N.φ₀_mem, 𝔟 := N.𝔟, 𝔟_spec := N.𝔟_spec }
 
 def HostNF.ofHost {R : Ranks} (H : Formalism.BasicNotions.Host R) : HostNF R :=
   { ax := H.toHostAx, splitBound := H.splitBound
-    what₂ := ⟨H.flPS, ⟨H.sqq, H.sqq_sq, H.gal_sqq⟩, H.QS_exact, H.QS_le, H.o_pow, H.q_ne_three, H.split_small, H.small_le⟩
+    what₂ := ⟨H.flPS, ⟨H.sqq, H.sqq_sq, H.gal_sqq⟩, H.QS_exact, H.QS_le, H.q_ne_three, H.split_small⟩
     qd_big := H.qd_big, sqq := H.sqq, sqq_sq := H.sqq_sq, gal_sqq := H.gal_sqq, φ₀ := H.φ₀, φ₀_mem := H.φ₀_mem
-    𝔟 := H.𝔟, 𝔟_spec := H.𝔟_spec, 𝔟_stable := H.𝔟_stable, ch := { H with } }
+    𝔟 := H.𝔟, 𝔟_spec := H.𝔟_spec, ch := { H with } }
 
 theorem exists_cmType {φ : Frame} (H : HostAx φ) : ∃ ψ : H.E →+* ℂ, ψ ∈ H.toHostRaw.cmType := by
   have h := H.der.cmType.2.1
@@ -93,8 +89,8 @@ theorem exists_hostNF (R : Ranks) (H : HostAx R.toFrame) {b : ℕ} (h : FieldRow
     ∃ N : HostNF R, N.ax = H ∧ N.splitBound = b ∧ HEq N.ch c := by
   obtain ⟨s, hs1, hs2⟩ := h.sqq
   obtain ⟨ψ, hψ⟩ := exists_cmType H
-  obtain ⟨𝔟, h1, h2, h3⟩ := H.der.principal
-  exact ⟨⟨H, b, h, hq, s, hs1, hs2, ψ, hψ, 𝔟, ⟨h1, h2⟩, h3, c⟩, rfl, rfl, HEq.rfl⟩
+  obtain ⟨𝔟, h1, h2, -⟩ := H.der.principal
+  exact ⟨⟨H, b, h, hq, s, hs1, hs2, ψ, hψ, 𝔟, ⟨h1, h2⟩, c⟩, rfl, rfl, HEq.rfl⟩
 
 theorem exists_host (R : Ranks) (H : HostAx R.toFrame) {b : ℕ} (h : FieldRows H.toHostRaw b)
     (hq : 4 * R.t * R.r + 1 < H.q ∧ 4 * R.t * R.r + 1 < H.d) (c : Choices R.toFrame H.toHostRaw) :
@@ -136,7 +132,6 @@ theorem nonempty_choices {φ : Frame} (H : HostRaw φ) : Nonempty (Choices φ H)
       pde_ne_g := fun i => by fin_cases i <;> simp <;> omega
       ccK := ⊤
       ccK_ne_bot := top_ne_bot
-      ccK_primitive := fun m hm => span_natCast_ne_whole_of_one_lt _ m hm
       ccK_split := fun P hP hle => absurd (top_le_iff.mp hle) hP.ne_top
       ccK_coprime := by simp
       ccK_coprimeS := by simp
