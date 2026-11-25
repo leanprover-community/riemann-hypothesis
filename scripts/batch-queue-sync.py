@@ -59,9 +59,12 @@ with a comment saying where its commit went, since GitHub does not mark it merge
 The description of a batch assembled by hand lists pull requests under headings ending with a
 colon. Those listed under a heading that says "left out" or "not included" are told so in a
 comment quoting the heading and their entry, and are labelled `awaiting-author`. `batch queue`
-stays on them. A pull request told before, by any batch, that it is left out under the same
+stays on them. The quote puts the pull requests it names in code spans, so that it does not
+mention each of them. A pull request told before, by any batch, that it is left out under the same
 heading is not told again: that comment is brought up to date instead, which notifies nobody.
-One whose entry is removed from the description is told that too. After every run, `frozen` is
+One whose entry is removed from the description is told that too. A batch whose record is older
+than these notices tells nobody what its description leaves out when this script first reads it,
+only what is added or changed after that. After every run, `frozen` is
 put on each open pull request a maintainer's `batch` stands for, and `frozen` and
 `batch-building` are taken off any that is neither queued nor in a batch being built. Which pull requests a batch
 contains is read from its branch, never from its description. The names of the labels are in
@@ -810,11 +813,20 @@ def hold(gh, batch, pulls, held, main, log):
     queued = {key for key in found if key in queued or QUEUED in (pulls.get(int(key)) or {}).get("labels", ())}
     # What was done for a pull request that has been closed since is done again if it is reopened.
     labelled = sorted({key for key in note.get("labelled") or () if key in found and int(key) in pulls}, key=int)
+    left = kept(note, "left")
+    if batch["comment"] is not None and "left" not in note:
+        # A record from before the description was read for what it leaves out. Its pull requests
+        # were told about it by people, if at all, so what the description says now counts as told,
+        # and only what is added or changed from here on is.
+        left = {str(key): entry_digest(entry) for key, entry in left_out(pulls[number]["body"], gh.repo).items()
+                if key in pulls and str(key) not in found}
+        log.append(f"the record of the batch #{number} is older than the notices of what a batch leaves out: "
+                   f"what its description leaves out now, {len(left)} pull request(s), is taken as told")
     batch["note"] = note = {
         "head": batch["sha"], "members": found, "queued": sorted(queued, key=int), "labelled": labelled,
         "told": {key: commit for key, commit in kept(note, "told").items() if found.get(key) == commit},
         "pushed": {key: commit for key, commit in kept(note, "pushed").items() if found.get(key) == commit},
-        "left": kept(note, "left")}
+        "left": left}
     save(gh, batch)
 
     try:
@@ -903,6 +915,27 @@ def left_out(body, repo):
     return found
 
 
+def entry_digest(entry):
+    """A short digest of a pull request's (heading, entry) in a batch's description, which the
+    note's `left` keeps."""
+    return hashlib.sha256("\n".join(entry).encode()).hexdigest()[:16]
+
+
+def unlinked(text, repo):
+    """Text quoted from a batch's description, with its references to pull requests and issues
+    of `repo` put in code spans: `#123`, and links to them. GitHub turns neither into a link
+    there, nor tells the pull request it names that it was mentioned, so quoting an entry does not
+    cross-link every pull request it names. What is already in a code span is left as it is."""
+    url = rf"https://github\.com/{re.escape(repo)}/(?:pull|issues)/\d+(?:[/#][\w/#-]*)?"
+    link = re.compile(rf"\[([^\]]*)\]\(({url})\)", re.IGNORECASE)
+    bare = re.compile(rf"(?<![\w`(]){url}|(?<![\w`/&#])#\d+\b", re.IGNORECASE)
+    parts = re.split(r"(`+[^`]*`+)", text)
+    for index in range(0, len(parts), 2):
+        part = link.sub(lambda match: f"{match.group(1)} (`{match.group(2)}`)", parts[index])
+        parts[index] = bare.sub(lambda match: f"`{match.group(0)}`", part)
+    return "".join(parts)
+
+
 def left_out_digest(heading, entry):
     """What kind of reason a pull request is left out for, as a short digest: its heading, up to
     any parenthesis, in lower case. The entry itself is left out of it. The descriptions of
@@ -920,10 +953,12 @@ def tell_left_out(gh, batch, pulls, log):
     for the same kind of reason (the same heading, see `left_out_digest`) is not told again:
     that comment is brought up to date with what the description says now, which notifies
     nobody, so a pull request left out of batch after batch hears it once and still finds the
-    latest reason there. One whose entry has
-    gone from the description since it was told is told that. What the batch contains is never
-    told it is left out. The note's `left` remembers, for each pull request, a digest of the entry
-    it was last told about for this batch, and is brought up to date as each is told.
+    latest reason there. The quote names pull requests and issues of this repository in code
+    spans (see `unlinked`). One whose entry has gone from the description since it was told is
+    told that, if this batch's comment told it. What the batch contains is never told it is left
+    out. The note's `left` remembers, for each pull request, a digest of the entry it was last
+    told about for this batch, and is brought up to date as each is told. `hold` fills it in
+    without telling anyone for a batch whose record is older than `left`.
     """
     note, number, since = batch["note"], batch["number"], 0
     found, left = note["members"], note["left"]
@@ -935,22 +970,16 @@ def tell_left_out(gh, batch, pulls, log):
             continue
         entry = listed.get(int(key))
         digest = left_out_digest(*entry) if entry else None
-        seen = hashlib.sha256("\n".join(entry).encode()).hexdigest()[:16] if entry else None
+        seen = entry_digest(entry) if entry else None
         if left.get(key) == seen:
             continue
         if gh.short():
             log.append(f"only {gh.remaining} requests left this hour: stopped telling what the batch #{number} leaves "
                        "out, and the next run carries on")
             return
-        if entry is None:
-            if tell(gh, pr["number"], None, NO_LONGER_LEFT_OUT.format(number=number),
-                    f"The description of batch #{number} no longer lists this pull request as left out. If you were "
-                    "waiting on that, comment `ready`."):
-                log.append(f"told #{key} that the batch #{number} no longer lists it as left out")
-            left.pop(key, None)
-            continue
+        comments = gh.pages(f"issues/{key}/comments")
         latest, previous = None, None
-        for comment in gh.pages(f"issues/{key}/comments"):
+        for comment in comments:
             match = LEFT_OUT.match(comment.get("body") or "") if by_workflow(comment) else None
             if match:
                 latest = comment
@@ -958,7 +987,17 @@ def tell_left_out(gh, batch, pulls, log):
                     previous = json.loads(match.group(1)).get("digest")
                 except ValueError:
                     previous = None
-        heading, text = entry
+        if entry is None:
+            # One that was never told it is left out, as when the note was filled in from an older
+            # record, is not told that it no longer is either.
+            if told_left_out(latest, number) and tell(
+                    gh, pr["number"], comments, NO_LONGER_LEFT_OUT.format(number=number),
+                    f"The description of batch #{number} no longer lists this pull request as left out. If you were "
+                    "waiting on that, comment `ready`."):
+                log.append(f"told #{key} that the batch #{number} no longer lists it as left out")
+            left.pop(key, None)
+            continue
+        heading, text = (unlinked(part, gh.repo) for part in entry)
         marker = f"<!-- batch-queue-left-out {json.dumps({'batch': number, 'digest': digest}, sort_keys=True)} -->"
         body = (f"{marker}\nBatch #{number} leaves this pull request out. Its description says:\n\n> {heading}\n>\n"
                 f"> {text}\n\nOnce you have dealt with that, comment `ready` to hand this pull request back to the "
@@ -975,6 +1014,15 @@ def tell_left_out(gh, batch, pulls, log):
         if since >= SAVE_EVERY:
             save(gh, batch)
             since = 0
+
+
+def told_left_out(comment, number):
+    """Whether a pull request's latest comment about being left out, or None, is from batch `number`."""
+    match = LEFT_OUT.match((comment or {}).get("body") or "")
+    try:
+        return bool(match) and json.loads(match.group(1)).get("batch") == number
+    except ValueError:
+        return False
 
 
 def describe_by_hand(note):

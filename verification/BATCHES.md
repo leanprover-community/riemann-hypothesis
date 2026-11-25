@@ -79,7 +79,10 @@ description doesn't mention, and pull requests reverted in the branch.
    show the new entry, which notifies nobody, so that `ready` is not undone every time a batch
    leaves it out for the same kind of reason. Keep the headings the same from one batch to the
    next for this to work. A pull request that is in the branch is never told it is left out,
-   whatever the description says.
+   whatever the description says. The comment puts `#123` and links to pull requests of this
+   repository in code spans, so that quoting an entry does not mention every pull request it
+   names. A batch that was being built before the workflow read descriptions tells nobody what
+   its description leaves out at that point: only entries added or changed afterwards are told.
 8. **Edit the description whenever the batch changes.** The workflow reads it again on every
    edit. A pull request listed under a new heading is sent a comment as above, one whose entry
    changed under the same heading has its comment brought up to date, and one whose entry is

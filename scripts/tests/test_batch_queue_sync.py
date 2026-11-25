@@ -1171,7 +1171,7 @@ class Members(unittest.TestCase):
         [note] = self.left(gh, 21)
         self.assertIn("Batch #1018 leaves this pull request out. Its description says:\n\n"
                       "> Left out because they conflict with a PR earlier in the batch:\n>\n"
-                      f"> {URL}21 refactor: fold modules", note)
+                      f"> `{URL}21` refactor: fold modules", note)
         self.assertIn("comment `ready`", note)
         self.assertEqual(gh.pulls[21]["labels"], QF | {WAITING})  # still queued
         self.assertEqual([gh.pulls[n]["labels"] for n in (22, 23, 24)], [{WAITING}, {WAITING}, set()])
@@ -1222,7 +1222,7 @@ class Members(unittest.TestCase):
         gh.touch(1018)
         sync(gh)
         first, second = self.left(gh, 23)
-        self.assertIn("conflicts with #11", second)
+        self.assertIn("conflicts with `#11`", second)
         self.assertIn(WAITING, gh.pulls[23]["labels"])
 
     def test_an_entry_reworded_in_the_description_is_brought_up_to_date(self):
@@ -1475,6 +1475,81 @@ class LeftOutDigests(unittest.TestCase):
                          digest("Left out under the maintainers' guidance in `AGENTS.md` (no workarounds):", "b"))
         self.assertNotEqual(digest("Left out for other reasons:", "a"),
                             digest("Left out because they conflict with a PR earlier in the batch:", "a"))
+
+
+class Unlinked(unittest.TestCase):
+    """Quoted entries name pull requests without linking to them."""
+
+    def test_references_to_this_repository_go_in_code_spans(self):
+        self.assertEqual(batch.unlinked(f"{URL}21 fold: conflicts with #11 (`A.lean`); #12.", REPO),
+                         f"`{URL}21` fold: conflicts with `#11` (`A.lean`); `#12`.")
+        self.assertEqual(batch.unlinked(f"see [the fix]({URL}30) and https://github.com/o/r/issues/7#issuecomment-1", REPO),
+                         f"see the fix (`{URL}30`) and `https://github.com/o/r/issues/7#issuecomment-1`")
+
+    def test_what_is_not_a_reference_here_is_left_alone(self):
+        for text in ("already `#11` or `see #12 here`", "other/repo#5 and https://github.com/x/y/pull/5",
+                     "issue#5, &#35; and C#", "a heading:"):
+            with self.subTest(text=text):
+                self.assertEqual(batch.unlinked(text, REPO), text)
+
+
+class OlderRecords(unittest.TestCase):
+    """A batch whose record is older than the notices of what a batch leaves out."""
+
+    def built(self):
+        gh = Fake()
+        queue(gh, 11, 12)
+        for number in (21, 22, 23, 24):
+            gh.add_pull(number, f"head{number}")
+        by_hand(gh, 11, 12)
+        gh.pulls[1018]["body"] = DESCRIPTION
+        # Its record, as the workflow before this kept it, labelled `building`.
+        gh.label(1018, add=BUILDING)
+        gh.say(1018, "<!-- batch-queue-by-hand " + json.dumps(
+            {"head": sha("kim"), "members": {"11": sha("head11"), "12": sha("head12")}, "queued": ["11", "12"]})
+               + " -->\nWhile this pull request is open, ...")
+        for number in (11, 12):
+            gh.label(number, remove=QUEUED)
+            gh.label(number, add=BUILDING)
+        return gh
+
+    def left(self, gh, number):
+        return [body for body in gh.said(number) if body.startswith("<!-- batch-queue-left-out")]
+
+    def test_what_the_description_leaves_out_now_is_not_told(self):
+        gh = self.built()
+        log = sync(gh)
+        self.assertEqual([self.left(gh, n) for n in (21, 22, 23)], [[], [], []])
+        self.assertEqual([gh.pulls[n]["labels"] for n in (21, 22, 23)], [set(), set(), set()])
+        self.assertIn("the record of the batch #1018 is older than the notices of what a batch leaves out: "
+                      "what its description leaves out now, 3 pull request(s), is taken as told", log)
+        # The members are labelled and told that they are frozen as usual.
+        self.assertEqual([gh.pulls[n]["labels"] for n in (11, 12)], [IN, IN])
+        self.assertEqual(sorted(note(gh.said(1018)[0])["left"]), ["21", "22", "23"])
+
+    def test_only_what_is_added_or_changed_afterwards_is_told(self):
+        gh = self.built()
+        sync(gh)
+        body = DESCRIPTION.replace("it changes `src/Main.lean`", "it edits `src/Main.lean`")
+        body = body.replace("Left out for other reasons:\n\n", f"Left out for other reasons:\n\n- {URL}24 New (@gil): too big.\n")
+        # #22's entry is removed: it was never told it was left out, so it is not told that it no longer is.
+        body = body.replace("- #22 chore: remove a lemma (@erin): conflicts with #11 (`C.lean`).\n", "")
+        gh.pulls[1018]["body"] = body
+        gh.touch(1018)
+        sync(gh)
+        self.assertEqual([len(self.left(gh, n)) for n in (21, 22, 23, 24)], [0, 0, 1, 1])
+        self.assertEqual(gh.said(22), [])
+        self.assertIn("it edits `src/Main.lean`", self.left(gh, 23)[0])
+        self.assertEqual([gh.pulls[n]["labels"] for n in (22, 23, 24)], [set(), {WAITING}, {WAITING}])
+        self.assertEqual(sorted(note(gh.said(1018)[0])["left"]), ["21", "23", "24"])
+
+    def test_a_record_with_left_out_notices_tells_what_is_new(self):
+        # A record of this workflow, which has `left`, even an empty one, is not filled in again.
+        gh = self.built()
+        record = gh.comments[1018][-1]
+        record["body"] = record["body"].replace('"queued"', '"left": {}, "queued"')
+        sync(gh)
+        self.assertEqual([len(self.left(gh, n)) for n in (21, 22, 23)], [1, 1, 1])
 
 
 def resets(gh):
