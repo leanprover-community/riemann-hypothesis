@@ -200,7 +200,7 @@ theorem quot_generic {Y : Type*} [AddCommGroup Y] [Module ℂ Y] (A : Fin n → 
       exact Submodule.mem_map_of_mem (hSk a b hab s hs)
     have hS'K := kStable_of_isKStableSub hR hDR S' inferInstance hS'k
     set SH : Submodule ℂ (L2 ε) := S'.map (smD ε (rreg ε)).subtype
-    have hle := data_kfin_le hgap hR hDR hW hcas SH
+    have hle := data_kfin_le hgap hR hDR hW hcas hWK SH
       (by rintro _ ⟨_, ⟨s, hs, rfl⟩, rfl⟩; exact hclos s (hSX hs)) inferInstance
       (by
         rintro k hk _ ⟨v, hv, rfl⟩

@@ -38,8 +38,8 @@ def TranslatesOfInertKernelAtPlace : Prop :=
       Formalism.L2.KerInert.RepFrame.LamPosG X E D pos lam ρ → Formalism.L2.KerInert.RepFrame.MInv X fd.frM →
       Formalism.L2.KerInert.RepLt.FrameLatMapLt X fd.frM hfin D (fun j La _ => fd.kerN j La)
         (fun j _ La' => fd.kerN (j + 1) La') ρ →
-      adm2 X (pendT X E hfin hst hLT pos (FrecG E.toCEmb pos fd B χ lam SS cl Ξ₀ muT (ltC g hLT))) ∧
-      adm2b X (pendT X E hfin hst hLT pos (FrecG E.toCEmb pos fd B χ lam SS cl Ξ₀ muT (ltC g hLT))) ∧
-      adm3 X (pendT X E hfin hst hLT pos (FrecG E.toCEmb pos fd B χ lam SS cl Ξ₀ muT (ltC g hLT)))
+      adm2 D X (pendT X E hfin hst hLT pos (FrecG E.toCEmb pos fd B χ lam SS cl Ξ₀ muT (ltC g hLT))) ∧
+      adm2b D X (pendT X E hfin hst hLT pos (FrecG E.toCEmb pos fd B χ lam SS cl Ξ₀ muT (ltC g hLT))) ∧
+      adm3 D X (pendT X E hfin hst hLT pos (FrecG E.toCEmb pos fd B χ lam SS cl Ξ₀ muT (ltC g hLT)))
 
 end Formalism.L2.KerInert.KGLt

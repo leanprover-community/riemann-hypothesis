@@ -51,7 +51,7 @@ namespace GlobalTheory.CxUnfold
 
 variable {p : ℕ} [Fact p.Prime]
 
-def PLv (G : HTGroup p) : Type := Projectivization ℂ (Fin G.n → ℂ)
+def PLv (G : HTGroup p) (v : InfinitePlace G.F) (β : G.Cˣ) : Type := Projectivization ℂ (Fin G.n → ℂ)
 
 theorem toV_injective (G : HTGroup p) (v : InfinitePlace G.F) (β : G.Cˣ) (y : grp G β) :
     Function.Injective (Matrix.toLin' (toV G v β y : Matrix (Fin G.n) (Fin G.n) ℂ)) := by
@@ -59,7 +59,7 @@ theorem toV_injective (G : HTGroup p) (v : InfinitePlace G.F) (β : G.Cˣ) (y : 
   have h' := congrArg (Matrix.toLin' (((toV G v β y)⁻¹ : GL (Fin G.n) ℂ) : Matrix (Fin G.n) (Fin G.n) ℂ)) h
   simpa [Matrix.toLin'_apply, Matrix.mulVec_mulVec] using h'
 
-instance (G : HTGroup p) (v : InfinitePlace G.F) (β : G.Cˣ) : MulAction (grp G β) (PLv G) where
+instance (G : HTGroup p) (v : InfinitePlace G.F) (β : G.Cˣ) : MulAction (grp G β) (PLv G v β) where
   smul y l := Projectivization.map (Matrix.toLin' (toV G v β y : Matrix (Fin G.n) (Fin G.n) ℂ))
     (toV_injective G v β y) (l : Projectivization ℂ (Fin G.n → ℂ))
   one_smul l := by
@@ -80,7 +80,7 @@ instance (G : HTGroup p) (v : InfinitePlace G.F) (β : G.Cˣ) : MulAction (grp G
 
 abbrev Ys (G : HTGroup p) (v : InfinitePlace G.F) (β : G.Cˣ) (x : (AfP p ⊗[ℚ] G.C)ˣ) (t : (AfP p)ˣ)
     (hx : Triv G (AfP p) β x t) (Kf : Subgroup G.GAf) (K' : Subgroup (Gr G 1)) : Type :=
-  LeftCosets ((toAfF G β x t hx).prod (toP1 G β)) (Kf.prod K') × PLv G
+  LeftCosets ((toAfF G β x t hx).prod (toP1 G β)) (Kf.prod K') × PLv G v β
 
 def cxF (G : HTGroup p) (v : InfinitePlace G.F) (wt : Polynomial G.F → ℂ) (β : G.Cˣ)
     (x : (AfP p ⊗[ℚ] G.C)ˣ) (t : (AfP p)ˣ) (hx : Triv G (AfP p) β x t) (Kf : Subgroup G.GAf) (f : G.GAf → ℂ)

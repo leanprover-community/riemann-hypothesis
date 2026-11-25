@@ -125,7 +125,7 @@ theorem exists_coords {m : ℕ} {φ : Fin m → (GA D (Wc D j) → ℂ)}
     (i : D.ntw.Tw) (b : Bool) (k : ℕ) (y : D.ntw.Ok i k ⊗[D.ntw.O i] D.nexp.Fm i ((j : ℕ) + 1) b) :
     ∃ A : Fin m → FractionRing (D.ntw.Ok i k), ∀ (ρ : Setup D.ntw) (hρ : ρ.Good) (ν : ℂ),
       rdK (realRd YS v₀ hρ i j b ν) hρ k y = ν⁻¹ • ∑ a, ρ.ek i b k (A a) • φ a := by
-  have key : ∀ x : NX.KB i ⊗[S.Ks] NX.FmK S ((j : ℕ) + 1), ∃ A : Fin m → FractionRing (D.ntw.O i),
+  have key : ∀ x : NX.KB S i b ⊗[S.Ks] NX.FmK S ((j : ℕ) + 1), ∃ A : Fin m → FractionRing (D.ntw.O i),
       ∀ (ρ : Setup D.ntw) (hρ : ρ.Good), evK YS v₀ hρ i j b x = ∑ a, ρ.e i b (A a) • φ a := fun x => by
     induction x using TensorProduct.induction_on with
     | zero => exact ⟨0, fun ρ hρ => by simp⟩

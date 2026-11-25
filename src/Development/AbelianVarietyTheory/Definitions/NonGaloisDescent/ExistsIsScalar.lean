@@ -105,19 +105,19 @@ section Read
 
 variable {ρ : Setup D.ntw} (hρ : ρ.Good) (i : D.ntw.Tw) (j : Fin D.R.m) (b : Bool)
 
-def evK : NX.KB i ⊗[S.Ks] NX.FmK S ((j : ℕ) + 1) →+ (GA D (Wc D j) → ℂ) :=
+def evK : NX.KB S i b ⊗[S.Ks] NX.FmK S ((j : ℕ) + 1) →+ (GA D (Wc D j) → ℂ) :=
   TensorProduct.liftAddHom
     { toFun := fun a => (DistribSMul.toAddMonoidHom _ (ρ.e i b a)).comp
         ((evW YS v₀ j).comp (S.A ((j : ℕ) + 1)).WK.subtype.toAddMonoidHom)
-      map_zero' := by ext; simp [show ρ.e i b (0 : NX.KB i) = 0 from map_zero _]
-      map_add' := fun x y => by ext; simp [show ρ.e i b (x + y : NX.KB i) = ρ.e i b x + ρ.e i b y from map_add _ _ _, add_mul] }
+      map_zero' := by ext; simp [show ρ.e i b (0 : NX.KB S i b) = 0 from map_zero _]
+      map_add' := fun x y => by ext; simp [show ρ.e i b (x + y : NX.KB S i b) = ρ.e i b x + ρ.e i b y from map_add _ _ _, add_mul] }
     fun c a f => by
       change ρ.e i b (sideEmb D.ntw i b (S.kKs c) * (show FractionRing (D.ntw.O i) from a)) • evW YS v₀ j (Subtype.val f) =
         ρ.e i b a • evW YS v₀ j (c • Subtype.val f)
       rw [← algebraMap_smul D.what₂.LL c, evW_smul, map_mul, hρ.e_LL0, smul_smul, mul_comm, ← S.kKs_spec]
       rfl
 
-theorem evK_tmul (a : NX.KB i) (f : NX.FmK S ((j : ℕ) + 1)) :
+theorem evK_tmul (a : NX.KB S i b) (f : NX.FmK S ((j : ℕ) + 1)) :
     evK YS v₀ hρ i j b (a ⊗ₜ f) = ρ.e i b a • evW YS v₀ j (Subtype.val f) := rfl
 
 def realRd (ν : ℂ) : Rd ρ D.nexp i j b where
@@ -129,7 +129,7 @@ def realRd (ν : ℂ) : Rd ρ D.nexp i j b where
     rw [map_smul, smul_comm]
     congr 1
     generalize YS.eF i _ b (Nat.le_add_left _ _) j.2 f = x
-    have key : ∀ (c : NX.KB i) (x : NX.KB i ⊗[S.Ks] NX.FmK S ((j : ℕ) + 1)),
+    have key : ∀ (c : NX.KB S i b) (x : NX.KB S i b ⊗[S.Ks] NX.FmK S ((j : ℕ) + 1)),
         evK YS v₀ hρ i j b (c • x) = ρ.e i b c • evK YS v₀ hρ i j b x := fun c x => by
       induction x using TensorProduct.induction_on with
       | zero => rw [smul_zero, map_zero, smul_zero]
@@ -139,8 +139,8 @@ def realRd (ν : ℂ) : Rd ρ D.nexp i j b where
         exact congrArg (· • _) (map_mul (ρ.e i b) c a)
     exact key c x
 
-theorem realRd_tmul (ν : ℂ) (a : NX.KB i) (f : NX.FmK S ((j : ℕ) + 1)) :
-    realRd YS v₀ hρ i j b ν ((YS.eF i _ b (Nat.le_add_left _ _) j.2).symm (a ⊗ₜ[S.Ks] f : NX.KB i ⊗[S.Ks] _)) =
+theorem realRd_tmul (ν : ℂ) (a : NX.KB S i b) (f : NX.FmK S ((j : ℕ) + 1)) :
+    realRd YS v₀ hρ i j b ν ((YS.eF i _ b (Nat.le_add_left _ _) j.2).symm (a ⊗ₜ[S.Ks] f : NX.KB S i b ⊗[S.Ks] _)) =
       (ν⁻¹ * ρ.e i b a) • evW YS v₀ j (Subtype.val f) := by
   change ν⁻¹ • evK YS v₀ hρ i j b (YS.eF i _ b _ j.2 ((YS.eF i _ b _ j.2).symm _)) = _
   rw [mul_smul]

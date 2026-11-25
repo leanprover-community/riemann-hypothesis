@@ -45,16 +45,16 @@ theorem dense_sm' {n : ℕ} {G : Set (Mat n)} {H : Type} [NormedAddCommGroup H] 
   change Dense (S : Set H)
   rw [Submodule.dense_iff_topologicalClosure_eq_top, Submodule.topologicalClosure_eq_top_iff, eq_bot_iff]
   intro z hz
-  have hρ : ∀ u, Continuous fun x : MG G => σ x.mat u := fun u =>
+  have hρ : ∀ u, Continuous fun x : MG G hG => σ x.mat u := fun u =>
     (hc u).comp_continuous MG.continuous_mat fun g => g.mem
-  obtain ⟨V, hV, hclose⟩ := admitted.Gard.exists_nhds_close (fun x : MG G => σ x.mat) hρ
+  obtain ⟨V, hV, hclose⟩ := admitted.Gard.exists_nhds_close (fun x : MG G hG => σ x.mat) hρ
     (fun u => by show σ 1 u = u; rw [hσ.map_one]; rfl) (Submodule.span ℂ {z})
   obtain ⟨φ, hφ, hφV⟩ := exists_isBump hG θ hθ hV
   let Q : H →L[ℂ] H := Sᗮ.starProjection
   have hQ : Q (avg hG φ σ z) = 0 :=
     (Submodule.starProjection_apply_eq_zero_iff _).2 (S.le_orthogonal_orthogonal (isSm_avg hσ hc hφ z))
   have hQz : Q z = z := Submodule.starProjection_eq_self_iff.2 hz
-  refine admitted.Gard.eq_zero_of_alt_alt (haar : Measure (MG G)) (fun x : MG G => Q ∘L σ x.mat)
+  refine admitted.Gard.eq_zero_of_alt_alt (haar : Measure (MG G hG)) (fun x : MG G hG => Q ∘L σ x.mat)
     (fun u => Q.continuous.comp (hρ u)) (hφ.smooth.continuous.comp MG.continuous_mat)
     (HasCompactSupport.intro (isCompact_supp hφ.cpt) fun x hx => image_eq_zero_of_notMem_tsupport (f := φ) hx)
     (fun x => hφ.nonneg _) hφ.one z (fun x hx => ?_) ?_
@@ -175,7 +175,7 @@ theorem etaleClosed_point_lifts_simple_roots_monic : Lift := by
     show _ = ∑ d : Unit, (1 : Matrix Unit Unit ℂ) u d • T.R.σ g (f x)
     simp
 
-abbrev GM (k r : ℕ) : Type := MG (GG k r)
+abbrev GM (k r : ℕ) : Type := MG (GG k r) (hGG k r)
 
 theorem isHaarOn_map : PI.BesselPeriodGGP.IsHaarOn (k := k) (r := r) (GG k r)
     ((haar : Measure (GM k r)).map MG.toM) := by

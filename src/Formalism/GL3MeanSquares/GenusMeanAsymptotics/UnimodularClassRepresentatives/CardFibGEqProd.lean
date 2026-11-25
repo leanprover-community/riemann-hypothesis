@@ -85,7 +85,7 @@ theorem locF_mem_fibSet (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF
   refine ⟨locF_idem 𝔭 Λ, ?_, le_locF 𝔭 Λ hx, ?_⟩
   · obtain ⟨g, hg, e⟩ := hgen P hP
     refine ⟨g, hg, ?_⟩
-    rw [← hPc, locF_eq_loc hF hP, locF_eq_loc hF hP]
+    rw [← hPc, locF_eq_loc hK hF hP, locF_eq_loc hK hF hP]
     exact e
   · rw [cut_locF, hc]
 
@@ -275,7 +275,7 @@ theorem card_fibG_eq_card_pi (hK : Formalism.HermitianLatticesTheory.IsCMUnram K
         have h𝔭 : (P.comap (algebraMap (𝓞 F) (𝓞 K))).IsMaximal := comap_algebraMap_isMaximal_of_isMaximal P hP
         obtain ⟨-, ⟨g', hg', e'⟩, -, -⟩ := hBmem ⟨_, h𝔭⟩
         refine ⟨g', hg', ?_⟩
-        rw [← locF_eq_loc hF hP, ← locF_eq_loc hF hP]
+        rw [← locF_eq_loc hK hF hP, ← locF_eq_loc hK hF hP]
         rw [hMloc ⟨_, h𝔭⟩]
         exact e'
       · rw [Submodule.mem_iInf]

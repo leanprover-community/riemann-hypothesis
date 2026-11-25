@@ -109,14 +109,14 @@ theorem realRd_faithful : ∀ (D : D7) (Γ : Type) [Group Γ] [Fintype Γ] (Pl0 
     have h1 : LinearIndependent D.what₂.LL fun k => (YS.fi j).e (bb k) :=
       hLL.map' (YS.fi j).e.toLinearMap (YS.fi j).e.ker
     exact ((hU j (sg0 D A3.A)).1 m _ h1).map' L hL
-  let B : Module.Basis (Fin m) (NX.KB i) (NX.Fm S i ((j : ℕ) + 1) b) :=
-    Algebra.TensorProduct.basis (NX.KB i) bK
+  let B : Module.Basis (Fin m) (NX.KB S i b) (NX.Fm S i ((j : ℕ) + 1) b) :=
+    Algebra.TensorProduct.basis (NX.KB S i b) bK
   intro n v hvi
   let w : Fin n → NX.Fm S i ((j : ℕ) + 1) b := fun c => YS.eF i _ b (Nat.le_add_left _ _) j.2 (v c)
   have hw0 : LinearIndependent (FractionRing (D.ntw.O i)) w :=
     hvi.map' (YS.eF i _ b (Nat.le_add_left _ _) j.2).toLinearMap (YS.eF i _ b (Nat.le_add_left _ _) j.2).ker
-  have hw1 : LinearIndependent (NX.KB i) w := hw0
-  have hw : LinearIndependent (NX.KB i) fun c => B.equivFun (w c) :=
+  have hw1 : LinearIndependent (NX.KB S i b) w := hw0
+  have hw : LinearIndependent (NX.KB S i b) fun c => B.equivFun (w c) :=
     hw1.map' B.equivFun.toLinearMap B.equivFun.ker
   have hr := linearIndependent_rows_map (ρ.e i b) (fun c => B.equivFun (w c)) hw
   let Ψ : (Fin m → ℂ) →ₗ[ℂ] (GA D (Wc D j) → ℂ) := ν⁻¹ • Fintype.linearCombination ℂ φ
@@ -135,9 +135,9 @@ theorem realRd_faithful : ∀ (D : D7) (Γ : Type) [Group Γ] [Fintype Γ] (Pl0 
   conv_lhs => rw [← B.sum_equivFun (w c)]
   refine (map_sum (evK YS v₀ hρ i j b) _ _).trans ?_
   refine Finset.sum_congr rfl fun k _ => ?_
-  rw [show B k = ((1 : NX.KB i) ⊗ₜ[S.Ks] bK k : NX.KB i ⊗[S.Ks] NX.FmK S ((j : ℕ) + 1)) from
+  rw [show B k = ((1 : NX.KB S i b) ⊗ₜ[S.Ks] bK k : NX.KB S i b ⊗[S.Ks] NX.FmK S ((j : ℕ) + 1)) from
     Algebra.TensorProduct.basis_apply _ _]
-  change evK YS v₀ hρ i j b ((B.equivFun (w c) k • (1 : NX.KB i)) ⊗ₜ[S.Ks] (bK k : NX.FmK S ((j : ℕ) + 1))) = _
+  change evK YS v₀ hρ i j b ((B.equivFun (w c) k • (1 : NX.KB S i b)) ⊗ₜ[S.Ks] (bK k : NX.FmK S ((j : ℕ) + 1))) = _
   rw [smul_eq_mul, mul_one]
   exact (evK_tmul YS v₀ hρ i j b _ _).trans (congrArg _ (congrArg (evW YS v₀ j) (hbK k)))
 

@@ -200,7 +200,7 @@ theorem dsExistsG (hS7 : ∀ m : ℕ, S7.PsiExistsStatement m) :
   rcases Nat.eq_zero_or_pos (S7.q0 ε) with hq | hq
   · have hm : min (pOf ε) (qOf ε) = 0 := hq
     have hpq : pOf ε = 0 ∨ qOf ε = 0 := by omega
-    obtain ⟨σ, hDS, hcas, hK⟩ := isDS_compact hpq T
+    obtain ⟨σ, hDS, hcas, hK⟩ := isDS_compact hpq hlam T
     refine ⟨T.V, inferInstance, inferInstance, σ, hDS, hcas, ?_, ?_, ?_⟩
     · exact fun S S' hS hS' => lowKMultOne_of_cas hDS hgap hcas S S' hS hS'
     · intro μ

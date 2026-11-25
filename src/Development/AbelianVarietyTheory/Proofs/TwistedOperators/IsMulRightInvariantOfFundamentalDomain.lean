@@ -161,7 +161,7 @@ theorem rational (D : D7) (ρ : ℕ) : Countable (UXQ D ρ) ∧ DiscreteTopology
 
 noncomputable def row (u : Matrix (Fin ρ) (Fin ρ) (AE D)) (pick : AE D → D.host.E) (i : Fin ρ) (j : Fin ρ) : D.host.E :=
   if j < i then 0 else if j = i then 1 else
-    pick (∑ l : Fin ρ, if _ : l < j then incA D (row u pick i l) * u l j else 0)
+    pick (∑ l : Fin ρ, if h : l < j then incA D (row u pick i l) * u l j else 0)
 termination_by j.val
 decreasing_by exact h
 

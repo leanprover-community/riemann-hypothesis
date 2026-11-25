@@ -62,20 +62,20 @@ section Lin
 
 variable {R : Type} [CommRing R] [IsDomain R]
 
-def Via (R : Type) [CommRing R] (A : Type) : Type := A
+def Via (R : Type) [CommRing R] (_e : FractionRing R →+* ℂ) (A : Type) : Type := A
 
 variable {e : FractionRing R →+* ℂ} {A : Type} [AddCommGroup A] [Module ℂ A]
 
-instance : AddCommGroup (Via R A) := inferInstanceAs (AddCommGroup A)
-instance : Module (FractionRing R) (Via R A) := Module.compHom A e
-instance : Module R (Via R A) := Module.compHom A (e.comp (algebraMap R (FractionRing R)))
+instance : AddCommGroup (Via R e A) := inferInstanceAs (AddCommGroup A)
+instance : Module (FractionRing R) (Via R e A) := Module.compHom A e
+instance : Module R (Via R e A) := Module.compHom A (e.comp (algebraMap R (FractionRing R)))
 
-def Via.out (e : FractionRing R →+* ℂ) (A : Type) [AddCommGroup A] [Module ℂ A] : Via R A →ₛₗ[e] A where
+def Via.out (e : FractionRing R →+* ℂ) (A : Type) [AddCommGroup A] [Module ℂ A] : Via R e A →ₛₗ[e] A where
   toFun x := x
   map_add' _ _ := rfl
   map_smul' _ _ := rfl
 
-def Via.lat (L : Submodule (e.comp (algebraMap R (FractionRing R))).range A) : Submodule R (Via R A) where
+def Via.lat (L : Submodule (e.comp (algebraMap R (FractionRing R))).range A) : Submodule R (Via R e A) where
   carrier := {x | Via.out e A x ∈ L}
   add_mem' := L.add_mem
   zero_mem' := L.zero_mem
@@ -85,7 +85,7 @@ theorem Via.lat_fg {L : Submodule (e.comp (algebraMap R (FractionRing R))).range
   obtain ⟨S, rfl⟩ := h
   refine ⟨S, le_antisymm (Submodule.span_le.2 fun x hx => Submodule.subset_span (M := A) hx) fun x hx => ?_⟩
   have key : ∀ y : A, y ∈ Submodule.span (e.comp (algebraMap R (FractionRing R))).range (S : Set A) →
-      (y : Via R A) ∈ Submodule.span R (M := Via R A) (S : Set A) := fun y hy => by
+      (y : Via R e A) ∈ Submodule.span R (M := Via R e A) (S : Set A) := fun y hy => by
     induction hy using Submodule.span_induction with
     | mem _ h => exact Submodule.subset_span h
     | zero => exact zero_mem _

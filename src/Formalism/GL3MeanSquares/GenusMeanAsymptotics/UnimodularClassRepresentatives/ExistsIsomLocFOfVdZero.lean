@@ -145,10 +145,10 @@ theorem exists_isom_locF_of_vd_zero (hK : Formalism.HermitianLatticesTheory.IsCM
     (hAi : Formalism.HermitianLatticesTheory.IsIntegralLat h A) (hBi : Formalism.HermitianLatticesTheory.IsIntegralLat h B) {𝔭 : Ideal (𝓞 F)}
     (h𝔭 : 𝔭.IsMaximal) (hvA : vd h A 𝔭 = 0) (hvB : vd h B 𝔭 = 0) :
     ∃ g ∈ Formalism.HermitianLatticesTheory.isom h, Formalism.HermitianLatticesTheory.gmap g (locF 𝔭 A) = locF 𝔭 B := by
-  obtain ⟨P, hP, rfl⟩ := exists_maximal_over h𝔭
+  obtain ⟨P, hP, rfl⟩ := exists_maximal_over hK hF h𝔭
   have hda := LocF.aniso_of_totPosDef hd
   obtain ⟨π, hπ, -, -⟩ := U0.exists_isUnif hF hP
-  rw [locF_eq_loc hF hP, locF_eq_loc hF hP]
+  rw [locF_eq_loc hK hF hP, locF_eq_loc hK hF hP]
   obtain ⟨g, hg, -, hgM⟩ := U0.sd_main (WA.isHermSemilocal_locRing hK hP) hπ hs hda _ ⊤ ⊤ _ _ 1
     le_rfl
     (U0.isSD_loc hA hP.isPrime ((isUnimodularAt_iff_vd hK hF hs hd hA hAi hP).mpr hvA))
@@ -162,10 +162,10 @@ theorem exists_isom_locF_of_vd_one (hK : Formalism.HermitianLatticesTheory.IsCMU
     (hAi : Formalism.HermitianLatticesTheory.IsIntegralLat h A) (hBi : Formalism.HermitianLatticesTheory.IsIntegralLat h B) {𝔭 : Ideal (𝓞 F)}
     (h𝔭 : 𝔭.IsMaximal) (hvA : vd h A 𝔭 = 1) (hvB : vd h B 𝔭 = 1) :
     ∃ g ∈ Formalism.HermitianLatticesTheory.isom h, Formalism.HermitianLatticesTheory.gmap g (locF 𝔭 A) = locF 𝔭 B := by
-  obtain ⟨P, hP, rfl⟩ := exists_maximal_over h𝔭
+  obtain ⟨P, hP, rfl⟩ := exists_maximal_over hK hF h𝔭
   have hda := LocF.aniso_of_totPosDef hd
   obtain ⟨π, hπ, h1, h2⟩ := U0.exists_isUnif hF hP
-  rw [locF_eq_loc hF hP, locF_eq_loc hF hP]
+  rw [locF_eq_loc hK hF hP, locF_eq_loc hK hF hP]
   obtain ⟨z₁, hM⟩ := U0.exists_isASD_loc hK hs hda hA hAi hP hvA hπ h1 h2
   obtain ⟨z₂, hN⟩ := U0.exists_isASD_loc hK hs hda hB hBi hP hvB hπ h1 h2
   obtain ⟨g, hg, -, hgM⟩ := U0.asd_main (WA.isHermSemilocal_locRing hK hP) hπ hs hda _ ⊤ ⊤ _ _

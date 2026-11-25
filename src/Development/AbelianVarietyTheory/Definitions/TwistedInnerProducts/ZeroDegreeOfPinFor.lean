@@ -115,14 +115,14 @@ theorem hkFR_of_smul (i : D.ntw.Tw) (j : ℕ) (b : Bool) {f : ℕ → PlE D.host
       ext x
       exact congrArg (fun t : Module.End D.what₂.LL (S.WL j) => t x) h
     rw [this]
-    exact map_zero (Module.End.baseChangeHom S.Ks (KB i) (FmK S j))
+    exact map_zero (Module.End.baseChangeHom S.Ks (KB S i b) (FmK S j))
   · intro h
     unfold hkFR
     have : ((f k P).restrictScalars S.Ks).restrict (p := (S.A j).WK) (q := (S.A j).WK) (fun x hx => hs k P x hx) = 1 := by
       ext x
       exact congrArg (fun t : Module.End D.what₂.LL (S.WL j) => t x) h
     rw [this]
-    exact map_one (Module.End.baseChangeHom S.Ks (KB i) (FmK S j))
+    exact map_one (Module.End.baseChangeHom S.Ks (KB S i b) (FmK S j))
 
 
 theorem exists_reads

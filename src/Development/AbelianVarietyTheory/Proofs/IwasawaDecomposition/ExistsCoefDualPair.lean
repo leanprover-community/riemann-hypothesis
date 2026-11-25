@@ -350,7 +350,7 @@ theorem infGL_coe (h : GA D V) (τ : D.what₂.Tau) :
 variable (lam : D.what₂.Tau → DomWeight V.rank) (B : D.what₂.Tau → GL (Fin V.rank) ℂ)
 
 def coefA : CoefA V where
-  W := HV lam
+  W := HV lam B
   ρ := (rhoK lam).comp (infGL θ V)
 
 variable {θ V}
@@ -362,13 +362,13 @@ theorem coefA_fin {h : GA D V} (hh : h ∈ GfC V) : (coefA θ V lam B).ρ h = 1 
   have h3 : rhoK lam (infGL θ V h) = 1 := by rw [h2, map_one]
   exact h3
 
-theorem coefA_unitary (hθ : IsInfFam θ) (hB : ∀ τ, gramOf B τ = gramAt D V τ) (h : GA D V) (x y : HV lam) :
+theorem coefA_unitary (hθ : IsInfFam θ) (hB : ∀ τ, gramOf B τ = gramAt D V τ) (h : GA D V) (x y : HV lam B) :
     inner ℂ ((coefA θ V lam B).ρ h x) ((coefA θ V lam B).ρ h y) = inner ℂ x y := by
   refine pairInv ℂ _ _ lam (gramOf B) (infGL θ V h) (fun τ => ?_) x y
   rw [hB, infGL_coe]
   exact GlobalTheory.FockCompare.RealAction.infMat_mem_UH hθ V h τ
 
-theorem coefA_cont (hθ : IsInfFam θ) (x : HV lam) : Continuous fun h => (coefA θ V lam B).ρ h x :=
+theorem coefA_cont (hθ : IsInfFam θ) (x : HV lam B) : Continuous fun h => (coefA θ V lam B).ρ h x :=
   continuous_HV lam B (infGL θ V) (fun τ => by
     simp only [infGL_coe]
     exact GlobalTheory.Mem.VolExists.continuous_infMat V.gram (hθ τ)) x
@@ -382,7 +382,7 @@ theorem coefA_irred (hθ : IsInfFam θ) (hB : ∀ τ, gramOf B τ = gramAt D V �
 
 theorem coefA_is (hθ : IsInfFam θ) (hB : ∀ τ, gramOf B τ = gramAt D V τ) : (coefA θ V lam B).Is :=
   ⟨fun _ hh => coefA_fin lam B hh, coefA_unitary lam B hθ hB, coefA_cont lam B hθ,
-    inferInstanceAs (Nontrivial (HV lam)),
+    inferInstanceAs (Nontrivial (HV lam B)),
     fun U hU => coefA_irred lam B hθ hB U fun h x hx => hU h ⟨x, hx, rfl⟩⟩
 
 theorem embLL_labLL (τ : D.what₂.Tau) (x : D.host.E) : D.what₂.embLL (labLL D τ x) = tauE D τ x :=
@@ -406,7 +406,7 @@ theorem coefA_tie (hθ : IsInfFam θ) :
   rw [map_actP, e]
 
 theorem coefA_inner (hB : ∀ τ, gramOf B τ = gramAt D V τ) (x y : VV D.what₂.LL lam) :
-    inner ℂ (E := HV lam) (bcVV D.what₂.embLL lam x) (bcVV D.what₂.embLL lam y) =
+    inner ℂ (E := HV lam B) (bcVV D.what₂.embLL lam x) (bcVV D.what₂.embLL lam y) =
       D.what₂.embLL (pairV (labLL D) lam V.gram x y) := by
   have e : gramOf B = fun τ => (gramK (labLL D) V.gram τ).map D.what₂.embLL := by
     funext τ

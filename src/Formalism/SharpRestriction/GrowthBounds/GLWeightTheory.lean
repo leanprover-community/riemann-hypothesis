@@ -1279,7 +1279,7 @@ theorem section_five_lemmas_hold (D : Formalism.BasicNotions.D7) : UnitProductLe
 
 theorem lattice_index_lemma_holds (D : Formalism.BasicNotions.D7) : DerivativeLemmaField D := show DerivativeValuationBound D ∧ DerivativeDigitExpansion ∧ TrueDerivativeDigitClass from ⟨derivative_valuation_bound D, derivative_digit_expansion D, true_derivative_digit_class D⟩
 
-theorem valuation_field_of_adm2 (D : Formalism.BasicNotions.D7) (h2 : adm2) : ValuationLemmaField D := show ValuationsAdditive ∧ ShaLengthVersionTwo D from ⟨valuationsAdditive_D7 D, generated_weight_lemma_of_reducibility D h2 (valuationsAdditive_D7 D)⟩
+theorem valuation_field_of_adm2 (D : Formalism.BasicNotions.D7) (h2 : adm2) : ValuationLemmaField D := show ValuationsAdditive D ∧ ShaLengthVersionTwo D from ⟨valuationsAdditive_D7 D, generated_weight_lemma_of_reducibility D h2 (valuationsAdditive_D7 D)⟩
 
 theorem valuation_field (D : Formalism.BasicNotions.D7) : ValuationLemmaField D := valuation_field_of_adm2 D (weight_condition_from_integral_form D)
 

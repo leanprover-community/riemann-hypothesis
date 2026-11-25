@@ -25,7 +25,7 @@ variable {K F : Type} [Field K] [NumberField K] [StarRing K] [Field F] [NumberFi
 variable {V : Type} [AddCommGroup V] [Module K V] [FiniteDimensional K V] [Module (𝓞 K) V]
   [IsScalarTower (𝓞 K) K V]
 
-theorem locF_eq_loc (hF : IsFixF K F) {P : Ideal (𝓞 K)}
+theorem locF_eq_loc (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF : IsFixF K F) {P : Ideal (𝓞 K)}
     (hP : P.IsMaximal) (L : Submodule (𝓞 K) V) :
     locF (P.comap (algebraMap (𝓞 F) (𝓞 K))) L = Formalism.HermitianLatticesTheory.loc (K := K) P L := by
   have hPp := hP.isPrime
@@ -155,7 +155,7 @@ theorem finite_vd_ne_zero (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (
   have hle : discrIdeal h L ≤ extP K 𝔭.1 := by
     by_contra hn
     exact h𝔭 (LocF.vd_eq_zero_of_not_le hn)
-  obtain ⟨P, hP, hP𝔭⟩ := exists_maximal_over 𝔭.2
+  obtain ⟨P, hP, hP𝔭⟩ := exists_maximal_over hK hF 𝔭.2
   have h2 : extP K 𝔭.1 ≤ P := by
     rw [← hP𝔭]
     exact Ideal.map_comap_le
@@ -165,7 +165,7 @@ theorem finite_vd_ne_zero (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (
   have hne : 𝔭.1 ≠ ⊥ := fun e => hD' (eq_bot_iff.mpr (e ▸ h1))
   exact ⟨⟨𝔭.1, 𝔭.2.isPrime, hne⟩, Ideal.dvd_iff_le.mpr h1, rfl⟩
 
-theorem exists_unique_patch {L₀ : Submodule (𝓞 K) V} (hL₀ : Submodule.IsFullLattice K L₀)
+theorem exists_unique_patch (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF : IsFixF K F) {L₀ : Submodule (𝓞 K) V} (hL₀ : Submodule.IsFullLattice K L₀)
     (s : Finset {𝔭 : Ideal (𝓞 F) // 𝔭.IsMaximal}) (T : {𝔭 : Ideal (𝓞 F) // 𝔭.IsMaximal} → Submodule (𝓞 K) V)
     (hT : ∀ 𝔭 ∈ s, locF 𝔭.1 (T 𝔭) = T 𝔭 ∧ ∃ A : Submodule (𝓞 K) V, Submodule.IsFullLattice K A ∧
       locF 𝔭.1 A = T 𝔭) :

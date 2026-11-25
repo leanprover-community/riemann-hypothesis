@@ -304,20 +304,20 @@ theorem _root_.GlobalTheory.Col.Model.spans (hu : (p : R) ∈ nonunits R) (h : P
 
 end Free
 
-def Up (R : Type) [CommRing R] : Type := PowerSeries R
+def Up (R : Type) [CommRing R] (_p : ℕ) : Type := PowerSeries R
 
-instance (R : Type) [CommRing R] (p : ℕ) : CommRing (Up R) := inferInstanceAs (CommRing (PowerSeries R))
+instance (R : Type) [CommRing R] (p : ℕ) : CommRing (Up R p) := inferInstanceAs (CommRing (PowerSeries R))
 
-instance (R : Type) [CommRing R] (p : ℕ) [hp : Fact p.Prime] : Algebra (PowerSeries R) (Up R) :=
-  RingHom.toAlgebra (S := Up R) (phi (R := R) p hp.out.pos).toRingHom
+instance (R : Type) [CommRing R] (p : ℕ) [hp : Fact p.Prime] : Algebra (PowerSeries R) (Up R p) :=
+  RingHom.toAlgebra (S := Up R p) (phi (R := R) p hp.out.pos).toRingHom
 
 section Basis
 variable {R : Type} [CommRing R] (p : ℕ) [hp : Fact p.Prime]
 
 variable [IsAdicComplete (Ideal.span {(p : R)}) R]
 
-def basis (hu : (p : R) ∈ nonunits R) : Module.Basis (Fin p) (PowerSeries R) (Up R) :=
-  Module.Basis.mk (v := fun i => (show Up R from (X : PowerSeries R) ^ (i : ℕ)))
+def basis (hu : (p : R) ∈ nonunits R) : Module.Basis (Fin p) (PowerSeries R) (Up R p) :=
+  Module.Basis.mk (v := fun i => (show Up R p from (X : PowerSeries R) ^ (i : ℕ)))
     (Fintype.linearIndependent_iff.2 fun g hg i => indep p hu g hg i)
     (fun h _ => by
       obtain ⟨g, hg⟩ := spans p hu h
@@ -326,19 +326,19 @@ def basis (hu : (p : R) ∈ nonunits R) : Module.Basis (Fin p) (PowerSeries R) (
 
 end Basis
 
-def UpL (R : Type) [CommRing R] (p m : ℕ) : Type := lev R p (m + 1)
+def UpL (R : Type) [CommRing R] (p m : ℕ) (_hm : 1 ≤ m) : Type := lev R p (m + 1)
 
-instance (R : Type) [CommRing R] (p m : ℕ) (hm : 1 ≤ m) : CommRing (UpL R p m) := inferInstanceAs (CommRing (lev R p (m + 1)))
+instance (R : Type) [CommRing R] (p m : ℕ) (hm : 1 ≤ m) : CommRing (UpL R p m hm) := inferInstanceAs (CommRing (lev R p (m + 1)))
 
-instance (R : Type) [CommRing R] (p m : ℕ) [Fact p.Prime] (hm : 1 ≤ m) : Algebra (lev R p m) (UpL R p m) :=
-  RingHom.toAlgebra (S := UpL R p m) (up (R := R) p m hm)
+instance (R : Type) [CommRing R] (p m : ℕ) [Fact p.Prime] (hm : 1 ≤ m) : Algebra (lev R p m) (UpL R p m hm) :=
+  RingHom.toAlgebra (S := UpL R p m hm) (up (R := R) p m hm)
 
 section Level
 variable {R : Type} [CommRing R] (p : ℕ) [hp : Fact p.Prime] (m : ℕ) (hm : 1 ≤ m)
 
-def toUp (p : ℕ) (h : PowerSeries R) : Up R := h
+def toUp (p : ℕ) (h : PowerSeries R) : Up R p := h
 
-def toUpL (p m : ℕ) (hm : 1 ≤ m) (x : lev R p (m + 1)) : UpL R p m := x
+def toUpL (p m : ℕ) (hm : 1 ≤ m) (x : lev R p (m + 1)) : UpL R p m hm := x
 
 theorem up_ev (g : PowerSeries R) : up p m hm (ev R p m g) = ev R p (m + 1) (phi p hp.out.pos g) := rfl
 
@@ -369,7 +369,7 @@ theorem _root_.GlobalTheory.Col.Model.indepL (hu : (p : R) ∈ nonunits R) (x : 
   rw [sub_eq_zero] at hgi
   rw [← hg, hgi, map_mul, _root_.GlobalTheory.Col.ev_cyc_self, mul_zero]
 
-def basisL (hu : (p : R) ∈ nonunits R) : Module.Basis (Fin p) (lev R p m) (UpL R p m) :=
+def basisL (hu : (p : R) ∈ nonunits R) : Module.Basis (Fin p) (lev R p m) (UpL R p m hm) :=
   Module.Basis.mk (v := fun i => toUpL p m hm (ev R p (m + 1) ((X : PowerSeries R) ^ (i : ℕ))))
     (Fintype.linearIndependent_iff.2 fun g hg i => indepL p m hm hu g hg i)
     (fun x _ => by

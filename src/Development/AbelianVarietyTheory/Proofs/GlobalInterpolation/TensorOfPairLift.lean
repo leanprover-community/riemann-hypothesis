@@ -593,7 +593,7 @@ theorem keptPair_thr : RestPairS :=
 
 theorem keptBlocks : KeptBlocksBeyondThreshold := kept_blocks_of_S_line keptPair_thr
 
-theorem closed_of_bounds {D : Formalism.BasicNotions.D7} (h3 : adm3)
+theorem closed_of_bounds {D : Formalism.BasicNotions.D7} (h3 : adm3 D)
     (hU : Formalism.MainNotions.ColumnSystems.Pf.RestUp) (hL : Formalism.MainNotions.ColumnSystems.Pf.RestLow) (hL1 : PartnersToFactors)
     (hLift : RestLift) : Closed (ExtendedAllConclusions D) :=
   have hA2 : RemainderSegmentBoundSecond D := restAlt2_of (restSegLow_of hL) (dimHH_of h3) charZeroAt

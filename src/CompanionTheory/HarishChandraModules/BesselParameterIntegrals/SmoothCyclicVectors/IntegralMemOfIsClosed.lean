@@ -149,69 +149,69 @@ theorem IsSm.hasDerivAt (h : RepOn G σ) {u : H} (hu : IsSm G σ u) {X : Mat n}
 
 variable {hG : IsMatGroup G}
 
-instance : T2Space (MG G) := MG.isClosedEmbedding_mat.isEmbedding.t2Space
+instance : T2Space (MG G hG) := MG.isClosedEmbedding_mat.isEmbedding.t2Space
 
 theorem isCompact_supp {φ : Mat n → ℝ} (hc : HasCompactSupport φ) :
-    IsCompact ((MG.mat : MG G → Mat n) ⁻¹' tsupport φ) :=
+    IsCompact ((MG.mat : MG G hG → Mat n) ⁻¹' tsupport φ) :=
   MG.isClosedEmbedding_mat.isCompact_preimage hc
 
 theorem integrable_smul {V : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V] {φ : Mat n → ℝ}
-    (hφ : Continuous φ) (hc : HasCompactSupport φ) {f : MG G → V} (hf : Continuous f) :
-    Integrable (fun g : MG G => φ g.mat • f g) haar :=
+    (hφ : Continuous φ) (hc : HasCompactSupport φ) {f : MG G hG → V} (hf : Continuous f) :
+    Integrable (fun g : MG G hG => φ g.mat • f g) haar :=
   ((hφ.comp MG.continuous_mat).smul hf).integrable_of_hasCompactSupport
     (HasCompactSupport.intro (isCompact_supp hc) fun g hg => by
       change φ g.mat • f g = 0
       rw [image_eq_zero_of_notMem_tsupport hg, zero_smul])
 
 theorem continuous_orbit (h : RepOn G σ) {v : H} (hv : IsSm G σ v) {W : List (Mat n)}
-    (hW : LieW G W) : Continuous fun g : MG G => dsW σ W (σ g.mat v) :=
+    (hW : LieW G W) : Continuous fun g : MG G hG => dsW σ W (σ g.mat v) :=
   (continuousOn_dsW_orbit h hv hW).comp_continuous MG.continuous_mat fun g => g.mem
 
 theorem continuous_orbit₂ (h : RepOn G σ) {v : H} (hv : IsSm G σ v) {W : List (Mat n)}
     (hW : LieW G W) {X : Mat n} (hX : ∀ t, ex X t ∈ G) :
-    Continuous fun p : ℝ × MG G => σ (ex X p.1) (dsW σ W (σ p.2.mat v)) :=
+    Continuous fun p : ℝ × MG G hG => σ (ex X p.1) (dsW σ W (σ p.2.mat v)) :=
   (smOn_dsW h (u := fun x => σ x v) (hv.smOn_mul h) hW).continuousOn.comp_continuous
-    (f := fun p : ℝ × MG G => (ex X p.1, p.2.mat))
+    (f := fun p : ℝ × MG G hG => (ex X p.1, p.2.mat))
     (((continuous_ex X).comp continuous_fst).prodMk (MG.continuous_mat.comp continuous_snd))
     fun p => ⟨hX _, p.2.mem⟩
 
 variable [CompleteSpace H]
 
 theorem apply_integral (L : H →L[ℂ] H) {φ : Mat n → ℝ} (hφ : Continuous φ)
-    (hc : HasCompactSupport φ) {f : MG G → H} (hf : Continuous f) :
-    L (∫ g : MG G, φ g.mat • f g ∂haar) = ∫ g : MG G, φ g.mat • L (f g) ∂haar := by
+    (hc : HasCompactSupport φ) {f : MG G hG → H} (hf : Continuous f) :
+    L (∫ g : MG G hG, φ g.mat • f g ∂haar) = ∫ g : MG G hG, φ g.mat • L (f g) ∂haar := by
   rw [← L.integral_comp_comm (integrable_smul hφ hc hf)]
   simp only [ContinuousLinearMap.map_smul_of_tower]
 
 theorem hasDerivAt_A (h : RepOn G σ) {v : H} (hv : IsSm G σ v) {X : Mat n} (hX : ∀ t, ex X t ∈ G)
     {ψ : Mat n → ℝ} (hψ : ContDiff ℝ ∞ ψ) (hc : HasCompactSupport ψ) :
-    HasDerivAt (fun t => σ (ex X t) (∫ g : MG G, ψ g.mat • σ g.mat v ∂haar))
-      (∫ g : MG G, Lx X ψ g.mat • σ g.mat v ∂haar) 0 := by
-  have hf : Continuous fun g : MG G => σ g.mat v :=
+    HasDerivAt (fun t => σ (ex X t) (∫ g : MG G hG, ψ g.mat • σ g.mat v ∂haar))
+      (∫ g : MG G hG, Lx X ψ g.mat • σ g.mat v ∂haar) 0 := by
+  have hf : Continuous fun g : MG G hG => σ g.mat v :=
     continuous_orbit h hv (W := []) fun _ h => by simp at h
-  have e : ∀ t, σ (ex X t) (∫ g : MG G, ψ g.mat • σ g.mat v ∂haar) =
-      ∫ g : MG G, ψ (ex X (-t) * g.mat) • σ g.mat v ∂haar := fun t => by
+  have e : ∀ t, σ (ex X t) (∫ g : MG G hG, ψ g.mat • σ g.mat v ∂haar) =
+      ∫ g : MG G hG, ψ (ex X (-t) * g.mat) • σ g.mat v ∂haar := fun t => by
     rw [apply_integral _ hψ.continuous hc hf, ← integral_mul_left_eq_self
-      (fun g : MG G => ψ (ex X (-t) * g.mat) • σ g.mat v) (MG.mk hG (ex X t) (hX t))]
+      (fun g : MG G hG => ψ (ex X (-t) * g.mat) • σ g.mat v) (MG.mk hG (ex X t) (hX t))]
     congr 1
     ext1 g
     rw [MG.mat_mul, MG.mat_mk, ← Matrix.mul_assoc, ← ex_add, neg_add_cancel, ex_zero,
       Matrix.one_mul, h.apply_mul (hX t) g.mem]
   simp_rw [e]
-  have hγ : Continuous fun p : ℝ × MG G => ex X (-p.1) * p.2.mat :=
+  have hγ : Continuous fun p : ℝ × MG G hG => ex X (-p.1) * p.2.mat :=
     ((continuous_ex X).comp continuous_fst.neg).matrix_mul (MG.continuous_mat.comp continuous_snd)
-  let m : ℝ × MG G → MG G := fun p => MG.mk hG (ex X p.1) (hX _) * p.2
+  let m : ℝ × MG G hG → MG G hG := fun p => MG.mk hG (ex X p.1) (hX _) * p.2
   have hm : Continuous m :=
     (MG.continuous_iff.2 ((continuous_ex X).comp continuous_fst)).mul continuous_snd
   have hK := (isCompact_Icc.prod (isCompact_supp (hG := hG) hc) :
     IsCompact (Icc (-1 : ℝ) 1 ×ˢ _)).image hm
-  have hout : ∀ t ∈ Icc (-1 : ℝ) 1, ∀ a : MG G,
+  have hout : ∀ t ∈ Icc (-1 : ℝ) 1, ∀ a : MG G hG,
       a ∉ m '' (Icc (-1 : ℝ) 1 ×ˢ (MG.mat ⁻¹' tsupport ψ)) → ex X (-t) * a.mat ∉ tsupport ψ := by
     intro t ht a ha hs
     refine ha ⟨(t, MG.mk hG (ex X (-t)) (hX _) * a), ⟨ht, hs⟩, MG.ext ?_⟩
     simp only [m, MG.mat_mul, MG.mat_mk]
     rw [← Matrix.mul_assoc, ← ex_add, add_neg_cancel, ex_zero, Matrix.one_mul]
-  have := hasDerivAt_integral_cpt (μ := (haar : Measure (MG G)))
+  have := hasDerivAt_integral_cpt (μ := (haar : Measure (MG G hG)))
     (F := fun t g => ψ (ex X (-t) * g.mat) • σ g.mat v)
     (F' := fun t g => Lx X ψ (ex X (-t) * g.mat) • σ g.mat v)
     (fun t => (hψ.continuous.comp (hγ.comp (Continuous.prodMk_right t))).smul hf)
@@ -227,14 +227,14 @@ theorem hasDerivAt_A (h : RepOn G σ) {v : H} (hv : IsSm G σ v) {X : Mat n} (hX
 theorem hasDerivAt_B (h : RepOn G σ) {v : H} (hv : IsSm G σ v) {X : Mat n} (hX : ∀ t, ex X t ∈ G)
     {W : List (Mat n)} (hW : LieW G W) {φ : Mat n → ℝ} (hφ : Continuous φ)
     (hc : HasCompactSupport φ) :
-    HasDerivAt (fun t => σ (ex X t) (∫ g : MG G, φ g.mat • dsW σ W (σ g.mat v) ∂haar))
-      (∫ g : MG G, φ g.mat • dsW σ (X :: W) (σ g.mat v) ∂haar) 0 := by
+    HasDerivAt (fun t => σ (ex X t) (∫ g : MG G hG, φ g.mat • dsW σ W (σ g.mat v) ∂haar))
+      (∫ g : MG G hG, φ g.mat • dsW σ (X :: W) (σ g.mat v) ∂haar) 0 := by
   have hXW : LieW G (X :: W) := fun Y hY => by
     rcases List.mem_cons.1 hY with rfl | hY
     exacts [hX, hW Y hY]
   simp_rw [apply_integral _ hφ hc (continuous_orbit h hv hW)]
-  have hφ' : Continuous fun g : MG G => φ g.mat := hφ.comp MG.continuous_mat
-  have := hasDerivAt_integral_cpt (μ := (haar : Measure (MG G)))
+  have hφ' : Continuous fun g : MG G hG => φ g.mat := hφ.comp MG.continuous_mat
+  have := hasDerivAt_integral_cpt (μ := (haar : Measure (MG G hG)))
     (F := fun t g => φ g.mat • σ (ex X t) (dsW σ W (σ g.mat v)))
     (F' := fun t g => φ g.mat • σ (ex X t) (dsW σ (X :: W) (σ g.mat v)))
     (fun t => hφ'.smul ((continuous_orbit₂ h hv hW hX).comp (Continuous.prodMk_right t)))
@@ -247,8 +247,8 @@ theorem hasDerivAt_B (h : RepOn G σ) {v : H} (hv : IsSm G σ v) {X : Mat n} (hX
 
 theorem integral_dsW (h : RepOn G σ) {v : H} (hv : IsSm G σ v) {φ : Mat n → ℝ}
     (hφ : ContDiff ℝ ∞ φ) (hc : HasCompactSupport φ) : ∀ {W : List (Mat n)}, LieW G W →
-    ∫ g : MG G, φ g.mat • dsW σ W (σ g.mat v) ∂haar =
-      ∫ g : MG G, LW W φ g.mat • σ g.mat v ∂haar
+    ∫ g : MG G hG, φ g.mat • dsW σ W (σ g.mat v) ∂haar =
+      ∫ g : MG G hG, LW W φ g.mat • σ g.mat v ∂haar
   | [], _ => rfl
   | X :: W, hXW => by
     have hW : LieW G W := fun Y hY => hXW Y (List.mem_cons_of_mem _ hY)
@@ -260,8 +260,8 @@ theorem integral_dsW (h : RepOn G σ) {v : H} (hv : IsSm G σ v) {φ : Mat n →
 theorem norm_integral_dsW_le (h : RepOn G σ) (hiso : ∀ g ∈ G, ∀ v, ‖σ g v‖ = ‖v‖) {v : H}
     (hv : IsSm G σ v) {φ : Mat n → ℝ} (hφ : ContDiff ℝ ∞ φ) (hc : HasCompactSupport φ)
     {W : List (Mat n)} (hW : LieW G W) :
-    ‖∫ g : MG G, φ g.mat • dsW σ W (σ g.mat v) ∂haar‖ ≤
-      (∫ g : MG G, ‖LW W φ g.mat‖ ∂haar) * ‖v‖ := by
+    ‖∫ g : MG G hG, φ g.mat • dsW σ W (σ g.mat v) ∂haar‖ ≤
+      (∫ g : MG G hG, ‖LW W φ g.mat‖ ∂haar) * ‖v‖ := by
   rw [integral_dsW h hv hφ hc hW, ← integral_mul_const]
   refine (norm_integral_le_integral_norm _).trans_eq ?_
   congr 1
@@ -310,30 +310,30 @@ theorem exists_approx (hG : IsMatGroup G) (h : RepOn G σ) (hiso : ∀ g ∈ G, 
           dsW_smul h (isSm_of_mem_orbSpan h hw ha) c (hW i)⟩ }
   let S := S₀.topologicalClosure
   have hS : IsClosed (S : Set (ι → H)) := S₀.isClosed_topologicalClosure
-  have hJc : ∀ v, IsSm G σ v → Continuous fun g : MG G => J (σ g.mat v) := fun v hv =>
+  have hJc : ∀ v, IsSm G σ v → Continuous fun g : MG G hG => J (σ g.mat v) := fun v hv =>
     continuous_pi fun i => continuous_orbit h hv (hW i)
   have key : ∀ φ : Mat n → ℝ, ContDiff ℝ ∞ φ → HasCompactSupport φ →
-      ∫ g : MG G, φ g.mat • J (σ g.mat x) ∂haar ∈ S := by
+      ∫ g : MG G hG, φ g.mat • J (σ g.mat x) ∂haar ∈ S := by
     intro φ hφ hc
-    let C : ℝ := ∑ i, ∫ g : MG G, ‖LW (W i) φ g.mat‖ ∂haar
-    have hC0 : ∀ i, 0 ≤ ∫ g : MG G, ‖LW (W i) φ g.mat‖ ∂haar := fun i =>
+    let C : ℝ := ∑ i, ∫ g : MG G hG, ‖LW (W i) φ g.mat‖ ∂haar
+    have hC0 : ∀ i, 0 ≤ ∫ g : MG G hG, ‖LW (W i) φ g.mat‖ ∂haar := fun i =>
       integral_nonneg fun _ => norm_nonneg _
     rw [← SetLike.mem_coe, ← hS.closure_eq, Metric.mem_closure_iff]
     intro ε hε
     obtain ⟨y, hy, hxy⟩ := Metric.mem_closure_iff.1 (hd x) (ε / (C + 1)) (by positivity)
     have hys := isSm_of_mem_orbSpan h hw hy
-    refine ⟨∫ g : MG G, φ g.mat • J (σ g.mat y) ∂haar,
+    refine ⟨∫ g : MG G hG, φ g.mat • J (σ g.mat y) ∂haar,
       integral_mem_of_isClosed S hS fun g => ?_, ?_⟩
     · exact S.smul_of_tower_mem _ (S₀.le_topologicalClosure ⟨_, apply_mem_orbSpan h g.mem hy, rfl⟩)
     · rw [dist_eq_norm, ← integral_sub (integrable_smul hφ.continuous hc (hJc x hx))
         (integrable_smul hφ.continuous hc (hJc y hys))]
-      have e : (fun g : MG G => φ g.mat • J (σ g.mat x) - φ g.mat • J (σ g.mat y)) =
+      have e : (fun g : MG G hG => φ g.mat • J (σ g.mat x) - φ g.mat • J (σ g.mat y)) =
           fun g => φ g.mat • J (σ g.mat (x - y)) := by
         ext g i
         simp only [J, Pi.sub_apply, Pi.smul_apply, map_sub]
         rw [dsW_sub h (hx.apply h g.mem) (hys.apply h g.mem) (hW i), smul_sub]
       rw [e]
-      have hle : ‖∫ g : MG G, φ g.mat • J (σ g.mat (x - y)) ∂haar‖ ≤ C * ‖x - y‖ := by
+      have hle : ‖∫ g : MG G hG, φ g.mat • J (σ g.mat (x - y)) ∂haar‖ ≤ C * ‖x - y‖ := by
         refine (pi_norm_le_iff_of_nonneg (by positivity)).2 fun i => ?_
         have := (ContinuousLinearMap.proj (R := ℝ) (φ := fun _ : ι => H) i).integral_comp_comm
           (integrable_smul hφ.continuous hc (hJc _ (hx.sub hys)))
@@ -347,32 +347,32 @@ theorem exists_approx (hG : IsMatGroup G) (h : RepOn G σ) (hiso : ∀ g ∈ G, 
   have hJx : J x ∈ S := by
     rw [← SetLike.mem_coe, ← hS.closure_eq, Metric.mem_closure_iff]
     intro ε hε
-    have hc1 : ContinuousAt (fun g : MG G => J (σ g.mat x)) 1 := (hJc x hx).continuousAt
-    have h1 : J (σ (1 : MG G).mat x) = J x := by
+    have hc1 : ContinuousAt (fun g : MG G hG => J (σ g.mat x)) 1 := (hJc x hx).continuousAt
+    have h1 : J (σ (1 : MG G hG).mat x) = J x := by
       change J (σ 1 x) = J x
       rw [h.map_one]; rfl
-    have hnb : {g : MG G | dist (J (σ g.mat x)) (J x) < ε / 2} ∈ 𝓝 (1 : MG G) := by
+    have hnb : {g : MG G hG | dist (J (σ g.mat x)) (J x) < ε / 2} ∈ 𝓝 (1 : MG G hG) := by
       rw [← h1]
       exact Metric.tendsto_nhds.1 hc1 _ (by positivity)
     rw [MG.isClosedEmbedding_mat.isInducing.nhds_eq_comap, mem_comap] at hnb
     obtain ⟨U, hU, hUs⟩ := hnb
     obtain ⟨φ, hφU, hc, hφ, hr, hφ1⟩ := exists_contDiff_tsupport_subset (n := ⊤) hU
     have hφ0 : ∀ g, 0 ≤ φ g := fun g => (hr ⟨g, rfl⟩).1
-    have hφ' : Continuous fun g : MG G => φ g.mat := hφ.continuous.comp MG.continuous_mat
-    have hc' : HasCompactSupport fun g : MG G => φ g.mat :=
+    have hφ' : Continuous fun g : MG G hG => φ g.mat := hφ.continuous.comp MG.continuous_mat
+    have hc' : HasCompactSupport fun g : MG G hG => φ g.mat :=
       hc.comp_isClosedEmbedding MG.isClosedEmbedding_mat
-    set c : ℝ := ∫ g : MG G, φ g.mat ∂haar with hcdef
+    set c : ℝ := ∫ g : MG G hG, φ g.mat ∂haar with hcdef
     have hcpos : 0 < c := hφ'.integral_pos_of_hasCompactSupport_nonneg_nonzero hc'
       (fun g => hφ0 _) (x := 1) (by rw [hφ1]; exact one_ne_zero)
-    refine ⟨c⁻¹ • ∫ g : MG G, φ g.mat • J (σ g.mat x) ∂haar,
+    refine ⟨c⁻¹ • ∫ g : MG G hG, φ g.mat • J (σ g.mat x) ∂haar,
       S.smul_of_tower_mem _ (key φ hφ hc), ?_⟩
-    have e : J x - c⁻¹ • ∫ g : MG G, φ g.mat • J (σ g.mat x) ∂haar =
-        c⁻¹ • ∫ g : MG G, φ g.mat • (J x - J (σ g.mat x)) ∂haar := by
+    have e : J x - c⁻¹ • ∫ g : MG G hG, φ g.mat • J (σ g.mat x) ∂haar =
+        c⁻¹ • ∫ g : MG G hG, φ g.mat • (J x - J (σ g.mat x)) ∂haar := by
       simp_rw [smul_sub]
       rw [integral_sub (integrable_smul hφ.continuous hc continuous_const)
         (integrable_smul hφ.continuous hc (hJc x hx)), integral_smul_const, smul_sub, smul_smul,
         inv_mul_cancel₀ hcpos.ne', one_smul]
-    have hle : ‖∫ g : MG G, φ g.mat • (J x - J (σ g.mat x)) ∂haar‖ ≤ c * (ε / 2) := by
+    have hle : ‖∫ g : MG G hG, φ g.mat • (J x - J (σ g.mat x)) ∂haar‖ ≤ c * (ε / 2) := by
       rw [hcdef, ← integral_mul_const]
       refine norm_integral_le_of_norm_le
         ((hφ'.integrable_of_hasCompactSupport hc').mul_const _) (Eventually.of_forall fun g => ?_)

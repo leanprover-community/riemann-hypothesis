@@ -449,14 +449,14 @@ theorem haarG_pos {μG : Measure (Formalism.QuantumDeterminants.Mt k r)} (hμ : 
     (hU.preimage WlocSk.Grp.continuous_of).measurableSet.inter
       (WlocSk.Grp.isClosed_Gr.preimage WlocSk.Grp.continuous_of).measurableSet
   have hvt : Continuous (WlocSk.HM.Grp.vt :
-      WlocSk.HM.Grp (Gr k r) → Formalism.QuantumDeterminants.Mt k r) := WlocSk.HM.Grp.embt.continuous
+      WlocSk.HM.Grp (Gr k r) WlocSk.HM.uh_clsub → Formalism.QuantumDeterminants.Mt k r) := WlocSk.HM.Grp.embt.continuous
   have hO : IsOpen ((fun a => Matrix.of (WlocSk.HM.Grp.vt a)) ⁻¹' U :
-      Set (WlocSk.HM.Grp (Gr k r))) :=
+      Set (WlocSk.HM.Grp (Gr k r) WlocSk.HM.uh_clsub)) :=
     hU.preimage (WlocSk.Grp.continuous_of.comp hvt)
   have hne : ((fun a => Matrix.of (WlocSk.HM.Grp.vt a)) ⁻¹' U :
-      Set (WlocSk.HM.Grp (Gr k r))).Nonempty :=
+      Set (WlocSk.HM.Grp (Gr k r) WlocSk.HM.uh_clsub)).Nonempty :=
     ⟨WlocSk.HM.Grp.mk x hxG, hxU⟩
-  have hpos := hO.measure_pos (Measure.haar : Measure (WlocSk.HM.Grp (Gr k r))) hne
+  have hpos := hO.measure_pos (Measure.haar : Measure (WlocSk.HM.Grp (Gr k r) WlocSk.HM.uh_clsub)) hne
   rw [hμeq, Measure.smul_apply, smul_eq_mul, WlocSk.HM.hmeas, Measure.map_apply hvt.measurable hVm]
   refine ENNReal.mul_pos hc0 (ne_of_gt (lt_of_lt_of_le hpos (measure_mono ?_)))
   intro a ha
@@ -766,7 +766,7 @@ open Formalism.QuantumDeterminants Formalism.MainNotions.S
 
 variable {k r : ℕ}
 
-abbrev GN (k r : ℕ) := Grp (Nset k r : Set (Mx k r))
+abbrev GN (k r : ℕ) := Grp (Nset k r : Set (Mx k r)) n_clsub
 
 def conjE (a : Mx k r) (ha : IsUnit a.det) (h1 : ∀ g ∈ Nset k r, a⁻¹ * g * a ∈ Nset k r)
     (h2 : ∀ g ∈ Nset k r, a * g * a⁻¹ ∈ Nset k r) : GN k r ≃* GN k r where
@@ -1265,16 +1265,16 @@ theorem haar_right_compact {G : Type*} [Group G] [TopologicalSpace G] [IsTopolog
 
 theorem hmeas_right (U : Set (Mx k r)) (hU : ClSub U) (hc : IsCompact U) (g : Mx k r) (hg : g ∈ U) :
     (hmeas U hU).map (fun x : Mt k r => fun i j => (Matrix.of x * g) i j) = hmeas U hU := by
-  have : CompactSpace (Grp U) := isCompact_iff_compactSpace.mp hc
-  have hvt : Measurable (Grp.vt : Grp U → Mt k r) := (val_cemb U hU).continuous.measurable
+  have : CompactSpace (Grp U hU) := isCompact_iff_compactSpace.mp hc
+  have hvt : Measurable (Grp.vt : Grp U hU → Mt k r) := (val_cemb U hU).continuous.measurable
   have hR : Measurable (fun x : Mt k r => fun i j => (Matrix.of x * g) i j) := by
     have : Continuous (fun x : Mt k r => fun i j => (Matrix.of x * g) i j) :=
       Continuous.matrix_mul continuous_id continuous_const
     exact this.measurable
   unfold hmeas
   rw [Measure.map_map hR hvt]
-  have : (fun x : Mt k r => fun i j => (Matrix.of x * g) i j) ∘ (Grp.vt : Grp U → Mt k r) =
-      (Grp.vt : Grp U → Mt k r) ∘ (fun a => a * Grp.mk g hg) := by
+  have : (fun x : Mt k r => fun i j => (Matrix.of x * g) i j) ∘ (Grp.vt : Grp U hU → Mt k r) =
+      (Grp.vt : Grp U hU → Mt k r) ∘ (fun a => a * Grp.mk g hg) := by
     funext a; rfl
   rw [this, ← Measure.map_map hvt (measurable_mul_const _), haar_right_compact]
 

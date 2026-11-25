@@ -326,7 +326,7 @@ theorem ext_mem (hI : I.Ok) (l : I.Laws) (u : B.Word) (a : I.ι) {Ch : Type} {ch
   rw [e₅, map_mul, map_inv, hc, hz₂', map_mul, hz₁', inv_one, mul_one, mul_one]
 
 theorem extM_map {A A' : Type} [CommRing A] [CommRing A'] {N n : ℕ} (hN : N = n + 1) (f : A →+* A') (g : Matrix (Fin n) (Fin n) A) :
-    (extM g).map f = extM (g.map f) := by
+    (extM hN g).map f = extM hN (g.map f) := by
   ext a b
   simp only [extM, Matrix.map_apply]
   split_ifs <;> simp
@@ -334,7 +334,7 @@ theorem extM_map {A A' : Type} [CommRing A] [CommRing A'] {N n : ℕ} (hN : N = 
 theorem isExt_iff (hI : I.Ok) (hP : TC.Pins B X) (l : I.Laws) (Z : TC.Later B (I.cols l)) (u : B.Word) {R' : Type} [CommRing R']
     (φ : (I.rec7 l Z).host.E →+* R') (g' : Matrix (Fin (B.R.N B.R.m - 1)) (Fin (B.R.N B.R.m - 1)) R')
     (g : Matrix (Fin (B.R.N B.R.m)) (Fin (B.R.N B.R.m)) R') :
-    IsExt (I.rec7 l Z) (z0 X u) φ g' g ↔ g = extM g' := by
+    IsExt (I.rec7 l Z) (z0 X u) φ g' g ↔ g = extM (N_m_succ B.R) g' := by
   obtain ⟨-, -, hiX, -⟩ := spaces_in_coordinates I hI hP l Z
   have hN := N_m_succ B.R
   have hPr := (base_fields_primes_ok B X).2.1
@@ -406,10 +406,10 @@ theorem emb_mem_chi : ∀ {B : GlobalTheory.Mem.Base} {X : PreX B.toPre} (I : TC
   have hG : emb h ∈ GfC _ := by
     refine (mem_GfC_iff _ (rankN (I.rec7 l Z) B.R.m le_rfl) _).2 ?_
     refine (congrArg (fun M => Matrix.map M (infPart (I.rec7 l Z))) he).trans ((extM_map _ _ _).trans ?_)
-    exact (congrArg (TilX.extM) ((mem_GfC_iff _ (rankP (I.rec7 l Z)) _).1 hh.1)).trans (TilX.extM_one _)
+    exact (congrArg (TilX.extM _) ((mem_GfC_iff _ (rankP (I.rec7 l Z)) _).1 hh.1)).trans (TilX.extM_one _)
   have hF : (TilX.extGL (Formalism.L2.Col.N_m_succ B.R) κ.1).1 = finM _ (rankN (I.rec7 l Z) B.R.m le_rfl) (emb h) := by
     refine Eq.symm ((congrArg (fun M => Matrix.map M (toEAf (I.rec7 l Z))) he).trans ((extM_map _ _ _).trans ?_))
-    exact congrArg (TilX.extM) (finM_of_hasMat hh)
+    exact congrArg (TilX.extM _) (finM_of_hasMat hh)
   have hU : emb h ∈ A.U B.R.m β := (hA.U B.R.m le_rfl β _).2 ⟨hG, ⟨_, hm⟩, hF⟩
   have e : A.chi B.R.m β ⟨emb h, hU⟩ = K.lev.chi κ := (hA.chi B.R.m le_rfl β ⟨emb h, hU⟩ ⟨_, hm⟩ hF).trans hc
   exact ⟨hU, e, e ▸ hA.norm_chi B.R.m le_rfl β _⟩

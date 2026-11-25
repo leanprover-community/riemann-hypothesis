@@ -1134,7 +1134,7 @@ theorem orth_mulVec {M : Matrix (Fin n) (Fin n) R} (hM : cT s M * Jm * M = Jm) {
     Formalism.UG.cT_mul] at h
   rw [Matrix.mulVec_mulVec, h, Matrix.mul_assoc, ← Matrix.mulVec_mulVec, hv, Matrix.mulVec_zero]
 
-theorem clause_extend {U : Matrix (Fin n) (Fin n) R} {B : Matrix (Fin r) (Fin r) R}
+theorem clause_extend (hF : PFr s Jm Xm Ym) {U : Matrix (Fin n) (Fin n) R} {B : Matrix (Fin r) (Fin r) R}
     (hU : U * Xm = Xm * B) {P : Matrix (Fin n) (Fin n) R}
     (hP : P = 1 - Xm * (cT s Ym * Jm) - Ym * (cT s Xm * Jm))
     (hc : ∀ k, ∃ a : Fin r → R, (U - 1) *ᵥ (fun i => P i k) = Xm *ᵥ a) {w : Fin n → R}
@@ -1216,7 +1216,7 @@ theorem leviMin_normalises_unipMin (F E : Type) [Field F] [NumberField F] [Field
       have := congrArg (inclR (F := F) (AF F)) (congrFun hzz i)
 
       simpa [Matrix.mulVec, dotProduct, Matrix.map_apply, map_sum, map_mul] using this
-    obtain ⟨a, ha⟩ := clause_extend eU (by
+    obtain ⟨a, ha⟩ := clause_extend hF eU (by
       unfold JR
       rw [← cT_map_inclR, ← cT_map_inclR, orthProj, Matrix.map_sub _ (map_sub _), Matrix.map_sub _ (map_sub _),
         Matrix.map_one _ (map_zero _) (map_one _), Matrix.map_mul, Matrix.map_mul, Matrix.map_mul, Matrix.map_mul]) hcol

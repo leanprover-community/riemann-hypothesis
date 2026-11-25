@@ -101,7 +101,7 @@ theorem ker_Q (ψ : AddChar k Circle) {n : ℕ} : ∀ (j : ℕ) (τ : MRep k (n 
       ((levi k (n + j + 1)).comp (Mir k (n + j)).subtype) (fun _ _ => rfl) (derUnipM k (n + j) n)
       (derCharM k ψ (n + j) n) (derUnipM k (n + j + 1) n) (derCharM k ψ (n + j + 1) n)
       (GlobalTheory.CompanionTheory.BZMirStep.MirUin_step ψ hnm) (GlobalTheory.CompanionTheory.BZMirStep.levi_step ψ hnm)
-      (GlobalTheory.CompanionTheory.BZMirStep.derUnipM_decomp)
+      (GlobalTheory.CompanionTheory.BZMirStep.derUnipM_decomp hnm)
     ext v
     have e1 := Submodule.ext_iff.1 H v
     rw [Submodule.mem_comap] at e1

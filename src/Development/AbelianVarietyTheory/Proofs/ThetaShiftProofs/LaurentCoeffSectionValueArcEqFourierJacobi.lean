@@ -607,7 +607,7 @@ theorem evR_eq_and_norm (hL : Out.Laws) (hL2 : Out.Laws2) (U : Unf Xo c σ r) (U
     rw [← (hsec a n hD F hF k).2.1 x.1 x.2 b hb, hrd x]
     exact ((hrd ⟨_, h⟩).trans (hB t _ _ hbor)).symm
   have e3 : (U.X k).nfac (laU U 0 n k) x.1 = ‖bchar (laU U 0 n k) b‖ := by
-    rw [← GlobalTheory.NormFactor.norm_bchar_mul_nfac_rmul (U.X k) _ hb]
+    rw [← GlobalTheory.NormFactor.norm_bchar_mul_nfac_rmul (U.X k) _ x.2 hb]
     unfold Data.nfac
     simp only [norm_div, hun, div_one, Real.one_rpow, Finset.prod_const_one, mul_one]
   refine ⟨e1, ?_⟩

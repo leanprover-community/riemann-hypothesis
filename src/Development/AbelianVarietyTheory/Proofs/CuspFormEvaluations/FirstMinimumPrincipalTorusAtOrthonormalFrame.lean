@@ -97,7 +97,7 @@ def realPt : (Fin g ⊕ Fin g → ℝ) →ₗ[ℝ] (Fin g → ℂ) where
 theorem realPt_apply (p : Fin g ⊕ Fin g → ℝ) :
     realPt τ p = (fun i => (p (.inl i) : ℂ)) + τ *ᵥ fun i => (p (.inr i) : ℂ) := rfl
 
-theorem realPt_injective (hp : (τ.map Complex.im).PosDef) :
+theorem realPt_injective (hs : τ.IsSymm) (hp : (τ.map Complex.im).PosDef) :
     Function.Injective (realPt τ) := by
   rw [← LinearMap.ker_eq_bot, LinearMap.ker_eq_bot']
   intro p hp0
@@ -158,7 +158,7 @@ variable (hs : τ.IsSymm) (hp : (τ.map Complex.im).PosDef)
   (φ : EuclideanSpace ℂ (Fin g) ≃ₗ[ℂ] (Fin g → ℂ))
 
 def realCoord : (Fin g ⊕ Fin g → ℝ) ≃ₗ[ℝ] EuclideanSpace ℂ (Fin g) :=
-  ((realPt τ).linearEquivOfInjective (realPt_injective hp) (by
+  ((realPt τ).linearEquivOfInjective (realPt_injective hs hp) (by
     simp [Module.finrank_pi_fintype, mul_two])).trans (φ.symm.restrictScalars ℝ)
 
 theorem apply_realCoord (p : Fin g ⊕ Fin g → ℝ) : φ (realCoord hs hp φ p) = realPt τ p := by
@@ -563,7 +563,7 @@ theorem per_ne_zero {v : Fin r → E} (hv : v ∈ X.Λ) (h0 : v ≠ 0) : per X x
   obtain rfl : v = bas m := by rw [hm]
   have h1 := hMat_mulVec_per X bas idx (riemann_of_isOrtho idx hs ho).1 m
   rw [h, mulVec_zero] at h1
-  have h2 := CanTh.realPt_injective.2.1
+  have h2 := CanTh.realPt_injective (riemann_of_isOrtho idx hs ho).2.1
     (riemann_of_isOrtho idx hs ho).2.2.1 (a₁ := fun j => (m j : ℝ)) (a₂ := 0)
     (by rw [map_zero, h1, CanTh.realPt_apply]; simp)
   obtain rfl : m = 0 := funext fun j => by simpa using congrFun h2 j

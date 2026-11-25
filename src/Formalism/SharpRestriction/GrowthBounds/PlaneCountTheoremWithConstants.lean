@@ -1010,7 +1010,7 @@ structure Loc8All : Prop where
 
   windowClauseTwo : ∀ D : D7, ColumnSystems.adm2
 
-  windowClauseThree : ∀ D : D7, ColumnSystems.adm3
+  windowClauseThree : ∀ D : D7, ColumnSystems.adm3 D
 
   lWeylV : flipOneThree.WeylV
 
@@ -1150,7 +1150,7 @@ structure Loc8 : Prop where
 
   windowClauseTwo : ∀ D : D7, ColumnSystems.adm2
 
-  windowClauseThree : ∀ D : D7, ColumnSystems.adm3
+  windowClauseThree : ∀ D : D7, ColumnSystems.adm3 D
 
   lWeylV : flipOneThree.WeylV
 

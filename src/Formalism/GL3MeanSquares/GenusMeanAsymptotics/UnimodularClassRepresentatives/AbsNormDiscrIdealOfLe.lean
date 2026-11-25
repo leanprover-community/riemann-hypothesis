@@ -297,7 +297,7 @@ theorem step_le (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) {h : V →�
     rcases hM.isPrime.mem_or_mem (hle hmem) with h2 | h2
     · exact hcQ (hcc _ (hMP ▸ h2))
     · exact hcP (hMP ▸ h2)
-  · have hMP := (conjIdeal_isMaximal hP).eq_of_le hM.ne_top h1
+  · have hMP := (conjIdeal_isMaximal hK hP).eq_of_le hM.ne_top h1
     rcases hM.isPrime.mem_or_mem (hle hmem) with h2 | h2
     · exact hcP (hcc' _ (hMP ▸ h2))
     · exact hcQ (hMP ▸ h2)

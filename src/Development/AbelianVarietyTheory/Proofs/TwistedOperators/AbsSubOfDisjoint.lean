@@ -123,7 +123,7 @@ private theorem sum_filter_lt_eq_sum_range_min (n i : ℕ) (G : ℕ → ℤ) :
   rw [hs, Finset.sum_filter]
   exact Finset.sum_congr rfl fun j _ => by split_ifs <;> rfl
 
-theorem sum_filter_pad' {n p : ℕ} (a : Fin p → ℕ) (i : ℕ) :
+theorem sum_filter_pad' {n p : ℕ} (a : Fin p → ℕ) (ha : ∀ i : Fin p, n ≤ i → a i = 0) (i : ℕ) :
     ∑ k ∈ Finset.univ.filter (fun k : Fin n => (k : ℕ) < i),
       (if h : (k : ℕ) < p then (a ⟨k, h⟩ : ℤ) else 0) =
       ∑ j ∈ Finset.univ.filter (fun j : Fin p => (j : ℕ) < min n i), (a j : ℤ) := by
@@ -147,7 +147,7 @@ private theorem sum_filter_not_lt_eq_sum_range_sub (n i : ℕ) (G : ℕ → ℤ)
     have e1 : n - 1 - j < i := by omega
     rw [ite_eq_right (not_not.mpr e1)]
 
-theorem sum_filter_pad_rev' {n q : ℕ} (b : Fin q → ℕ)
+theorem sum_filter_pad_rev' {n q : ℕ} (b : Fin q → ℕ) (hb : ∀ i : Fin q, n ≤ i → b i = 0)
     (i : ℕ) :
     ∑ k ∈ Finset.univ.filter (fun k : Fin n => ¬ (k : ℕ) < i),
       (if h : n - 1 - (k : ℕ) < q then (b ⟨n - 1 - k, h⟩ : ℤ) else 0) =
@@ -234,7 +234,7 @@ theorem sum_row_degree_eq : ∀ (σ : Type) [Fintype σ] [DecidableEq σ] (k l n
       have := hz h
       simp only [Prod.mk.injEq] at this
       exact (ne_of_lt hij) this.1
-    have := (rowAdd_invariant_iff (K := ℂ) (fun t => z (i, t)) (fun t => z (j, t)) huw P).out 2 3
+    have := (rowAdd_invariant_iff (K := ℂ) (fun t => z (i, t)) (fun t => z (j, t)) hw huw P).out 2 3
     exact this.mpr ((rowOp_apply z i j P).symm.trans (hzu i j hij))
   have hiy : ∀ i j : Fin l, i < j → ∀ t : ℂ,
       bind₁ (fun s => X s + ∑ t', if s = y (j, t') then C t * X (y (i, t')) else 0) P = P := by
@@ -245,7 +245,7 @@ theorem sum_row_degree_eq : ∀ (σ : Type) [Fintype σ] [DecidableEq σ] (k l n
       have := hy h
       simp only [Prod.mk.injEq] at this
       exact (ne_of_lt hij) this.1
-    have := (rowAdd_invariant_iff (K := ℂ) (fun t => y (i, t)) (fun t => y (j, t)) huw P).out 2 3
+    have := (rowAdd_invariant_iff (K := ℂ) (fun t => y (i, t)) (fun t => y (j, t)) hw huw P).out 2 3
     exact this.mpr ((rowOp_apply y i j P).symm.trans (hyu i j hij))
   have ha0 : ∀ i : Fin k, n ≤ i → a i = 0 := row_degree_eq_zero z hz hP a hrz hiz
   have hb0 : ∀ i : Fin l, n ≤ i → b i = 0 := row_degree_eq_zero y hy hP b hry hiy
@@ -315,11 +315,11 @@ theorem sum_row_degree_eq : ∀ (σ : Type) [Fintype σ] [DecidableEq σ] (k l n
     have f5 : ∑ t ∈ (Finset.univ.filter (fun t : Fin n => (t : ℕ) < i)), mixedWeight n a b t = ∑ t ∈ (Finset.univ.filter (fun t : Fin n => (t : ℕ) < i)), (if h : (t : ℕ) < k then (a ⟨t, h⟩ : ℤ) else 0) - ∑ t ∈ (Finset.univ.filter (fun t : Fin n => (t : ℕ) < i)), (if h : n - 1 - (t : ℕ) < l then (b ⟨n - 1 - t, h⟩ : ℤ) else 0) := by
       rw [← Finset.sum_sub_distrib]
       exact Finset.sum_congr rfl fun t _ => mixedWeight_apply n a b t
-    have f6 := sum_filter_pad' a i
+    have f6 := sum_filter_pad' a ha0 i
     have f7 : ∑ t ∈ (Finset.univ.filter (fun t : Fin n => (t : ℕ) < i)), (if h : n - 1 - (t : ℕ) < l then (b ⟨n - 1 - t, h⟩ : ℤ) else 0) + ∑ t ∈ (Finset.univ.filter (fun t : Fin n => ¬ (t : ℕ) < i)), (if h : n - 1 - (t : ℕ) < l then (b ⟨n - 1 - t, h⟩ : ℤ) else 0) = ∑ j, (b j : ℤ) := by
       rw [Finset.sum_filter_add_sum_filter_not]
       exact sum_pad_rev (fun j => (b j : ℤ)) hb0'
-    have f8 := sum_filter_pad_rev' b i
+    have f8 := sum_filter_pad_rev' b hb0 i
     linarith
   have hsum : ∑ t, κ t = ∑ t, mixedWeight n a b t := by
     have e1 : ∑ t, κ t = ∑ i, (a i : ℤ) - ∑ j, (b j : ℤ) := by
@@ -786,12 +786,14 @@ theorem exists_eq_mul_minorPoly (σ : Type) [DecidableEq σ] (p r : ℕ) (z : Fi
     (fun i j hij => by
       have h₁ := (rowOp_apply _ _ _ _).symm.trans (hru (e i) (e j) hij)
       refine ((rowAdd_invariant_iff (fun k => z (e i, f k)) (fun k => z (e j, f k))
+        (fun k l h => hfi (by simpa using hz h))
         (fun k l h => hij.ne (hei (congrArg Prod.fst (hz h)))) P).out 3 2).1 (Eq.trans ?_ h₁)
       refine Fintype.sum_of_injective f hfi _ _ (fun k hk => ?_) fun _ => rfl
       rw [pderiv_eq_zero_of_notMem_vars (hvf _ k hk), mul_zero])
     (fun i j hij => by
       have h₁ := (colOp_apply _ _ _ _).symm.trans (hcu (f i) (f j) hij)
       refine ((rowAdd_invariant_iff (fun k => z (e k, f i)) (fun k => z (e k, f j))
+        (fun k l h => hei (by simpa using hz h))
         (fun k l h => hij.ne (hfi (congrArg Prod.snd (hz h)))) P).out 3 2).1 (Eq.trans ?_ h₁)
       refine Fintype.sum_of_injective e hei _ _ (fun k hk => ?_) fun _ => rfl
       rw [pderiv_eq_zero_of_notMem_vars (hve k _ hk), mul_zero])
@@ -1110,7 +1112,7 @@ theorem partial_sum_le {σ : Type} [DecidableEq σ] {p r : ℕ} (z : Fin p × Fi
     have huw : ∀ k l : Fin r, z (b, k) ≠ z (c, l) := by
       exact fun k l h => (ne_of_lt hbc) (congrArg Prod.fst (hz h))
     have hT := GlobalTheory.rowAdd_invariant_iff (K := ℂ) (fun k : Fin r => z (b, k))
-      (fun k : Fin r => z (c, k)) huw P
+      (fun k : Fin r => z (c, k)) hw huw P
     have h0 : ∑ k, X (z (b, k)) * pderiv (z (c, k)) P = 0 := by
       rw [← GlobalTheory.Capelli.rowOp_apply]
       exact hrow b c hbc

@@ -97,33 +97,33 @@ def amb (G : Set (Mx m)) : Set (MtM m) := {x | Matrix.of x ∈ G}
 
 theorem amb_closed {G : Set (Mx m)} (hG : IsMatGroup G) : IsClosed (amb G) := hG.1
 
-def Grp (G : Set (Mx m)) : Type := {x : MtM m // x ∈ amb G}
+def Grp (G : Set (Mx m)) (_hG : IsMatGroup G) : Type := {x : MtM m // x ∈ amb G}
 
 variable {G : Set (Mx m)} {hG : IsMatGroup G}
 
-instance : TopologicalSpace (Grp G) := inferInstanceAs (TopologicalSpace {x : MtM m // x ∈ amb G})
-instance : MeasurableSpace (Grp G) := inferInstanceAs (MeasurableSpace {x : MtM m // x ∈ amb G})
-instance : BorelSpace (Grp G) := inferInstanceAs (BorelSpace {x : MtM m // x ∈ amb G})
-instance : SecondCountableTopology (Grp G) :=
+instance : TopologicalSpace (Grp G hG) := inferInstanceAs (TopologicalSpace {x : MtM m // x ∈ amb G})
+instance : MeasurableSpace (Grp G hG) := inferInstanceAs (MeasurableSpace {x : MtM m // x ∈ amb G})
+instance : BorelSpace (Grp G hG) := inferInstanceAs (BorelSpace {x : MtM m // x ∈ amb G})
+instance : SecondCountableTopology (Grp G hG) :=
   inferInstanceAs (SecondCountableTopology {x : MtM m // x ∈ amb G})
 
-def inc (x : Grp G) : MtM m := x.1
+def inc (x : Grp G hG) : MtM m := x.1
 
-theorem inc_mem (x : Grp G) : Matrix.of (inc x) ∈ G := x.2
+theorem inc_mem (x : Grp G hG) : Matrix.of (inc x) ∈ G := x.2
 
-theorem inc_cont : Continuous (inc : Grp G → MtM m) := continuous_subtype_val
+theorem inc_cont : Continuous (inc : Grp G hG → MtM m) := continuous_subtype_val
 
-theorem inc_closedEmb : IsClosedEmbedding (inc : Grp G → MtM m) :=
+theorem inc_closedEmb : IsClosedEmbedding (inc : Grp G hG → MtM m) :=
   (amb_closed hG).isClosedEmbedding_subtypeVal
 
-theorem inc_memb : MeasurableEmbedding (inc : Grp G → MtM m) :=
+theorem inc_memb : MeasurableEmbedding (inc : Grp G hG → MtM m) :=
   MeasurableEmbedding.subtype_coe (amb_closed hG).measurableSet
 
-theorem range_inc : Set.range (inc : Grp G → MtM m) = amb G := Subtype.range_coe
+theorem range_inc : Set.range (inc : Grp G hG → MtM m) = amb G := Subtype.range_coe
 
-instance : LocallyCompactSpace (Grp G) := inc_closedEmb.locallyCompactSpace
+instance : LocallyCompactSpace (Grp G hG) := inc_closedEmb.locallyCompactSpace
 
-instance : Group (Grp G) where
+instance : Group (Grp G hG) where
   mul a b := ⟨mulA (a.1, b.1), hG.2.2.1 _ a.2 _ b.2⟩
   one := ⟨(1 : Mx m), hG.2.1⟩
   inv a := ⟨invA a.1, (hG.2.2.2 _ a.2).1⟩
@@ -132,9 +132,9 @@ instance : Group (Grp G) where
   mul_one a := Subtype.ext (Matrix.mul_one (Matrix.of a.1 : Mx m))
   inv_mul_cancel a := Subtype.ext (Matrix.nonsing_inv_mul (Matrix.of a.1 : Mx m) (isUnit_det hG a.2))
 
-theorem inc_mul (a b : Grp G) : inc (a * b) = lmulQ (Matrix.of (inc a)) (inc b) := rfl
+theorem inc_mul (a b : Grp G hG) : inc (a * b) = lmulQ (Matrix.of (inc a)) (inc b) := rfl
 
-instance : IsTopologicalGroup (Grp G) where
+instance : IsTopologicalGroup (Grp G hG) where
   continuous_mul := by
     refine Continuous.subtype_mk (mulA_cont.comp ?_) _
     exact (continuous_subtype_val.comp continuous_fst).prodMk (continuous_subtype_val.comp continuous_snd)
@@ -142,7 +142,7 @@ instance : IsTopologicalGroup (Grp G) where
     refine Continuous.subtype_mk ?_ _
     exact invA_contOn.comp_continuous continuous_subtype_val (fun x => (isUnit_det hG x.2).ne_zero)
 
-def pull (hG : IsMatGroup G) (μ : Measure (MtM m)) : Measure (Grp G) := μ.comap inc
+def pull (hG : IsMatGroup G) (μ : Measure (MtM m)) : Measure (Grp G hG) := μ.comap inc
 
 theorem map_pull (μ : Measure (MtM m)) (h : μ {x | Matrix.of x ∉ G} = 0) : (pull hG μ).map inc = μ := by
   rw [pull, inc_memb.map_comap, range_inc]
@@ -189,7 +189,7 @@ theorem factor_pos_lt_top {X : Type*} [MeasurableSpace X] (μ ν : Measure X) [S
   · rw [h2, ENNReal.top_mul h3] at h1
     exact absurd h1 (lt_irrefl _)
 
-def haar0 (hG : IsMatGroup G) : Measure (Grp G) := Measure.haar
+def haar0 (hG : IsMatGroup G) : Measure (Grp G hG) := Measure.haar
 
 instance : (haar0 hG).IsHaarMeasure := inferInstanceAs (Measure.IsHaarMeasure Measure.haar)
 
@@ -199,8 +199,8 @@ theorem eq_smul_haar (hG : IsMatGroup G) (μ : Measure (MtM m)) (hμ : IsHaarOnM
   have := pull_sigmaFinite (hG := hG) μ
   have := pull_left (hG := hG) μ h4
   have e := Measure.haarMeasure_unique (pull hG μ) (Classical.arbitrary _)
-  have e' : μ = (pull hG μ (Classical.arbitrary (TopologicalSpace.PositiveCompacts (Grp G)) :
-      TopologicalSpace.PositiveCompacts (Grp G))) • (haar0 hG).map inc := by
+  have e' : μ = (pull hG μ (Classical.arbitrary (TopologicalSpace.PositiveCompacts (Grp G hG)) :
+      TopologicalSpace.PositiveCompacts (Grp G hG))) • (haar0 hG).map inc := by
     rw [← Measure.map_smul _ inc_cont.measurable.aemeasurable]
     refine (map_pull (hG := hG) μ h3).symm.trans ?_
     exact congrArg (Measure.map inc) e

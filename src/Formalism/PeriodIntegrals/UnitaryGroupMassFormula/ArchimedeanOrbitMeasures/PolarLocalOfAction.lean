@@ -17,17 +17,17 @@ def ActMeas : Prop := ∀ {D : D7} (X : HidaSetting D) (Z : TupI X),
     Measurable (fun g : HA (Ainf X.B.I.F) X.B.I.cm.sig X.B.I.J => g • Z)
 
 def FibOrbAt : Prop := ∀ {D : D7} (X : HidaSetting D) (u' : D.what₂.Word) (ψ : AddChar (AF X.B.I.F) ℂ) hT μinf νinf fibInf,
-    PushHyp X u' ψ μinf νinf fibInf → ∀ Ω a, IsChart X u' hT Ω a →
+    PushHyp X u' ψ hT μinf νinf fibInf → ∀ Ω a, IsChart X u' hT Ω a →
     ∃ Ω₁ ⊆ Ω, Ω₁ ∈ 𝓝 (TI X u' hT) ∧ ∀ T ∈ Ω₁, ∃ k : ENNReal,
       fibInf T = k • X.measG.μGinf.map (fun g => g • rmulT X (a T) (Y0 X u'))
 
 def OrbCont : Prop := ∀ {D : D7} (X : HidaSetting D) (u' : D.what₂.Word) (ψ : AddChar (AF X.B.I.F) ℂ) hT μinf νinf fibInf,
-    PushHyp X u' ψ μinf νinf fibInf → ∀ Ω a, IsChart X u' hT Ω a →
+    PushHyp X u' ψ hT μinf νinf fibInf → ∀ Ω a, IsChart X u' hT Ω a →
     ∃ Ω₁ ⊆ Ω, Ω₁ ∈ 𝓝 (TI X u' hT) ∧ ∃ c : HmI X → ENNReal, ContinuousAt c (TI X u' hT) ∧
       PolId X u' μinf νinf a Ω₁ c
 
 def JacOneC : Prop := ∀ {D : D7} (X : HidaSetting D) (u' : D.what₂.Word) (ψ : AddChar (AF X.B.I.F) ℂ) hT μinf νinf fibInf,
-    PushHyp X u' ψ μinf νinf fibInf → ∀ Ω a, IsChart X u' hT Ω a →
+    PushHyp X u' ψ hT μinf νinf fibInf → ∀ Ω a, IsChart X u' hT Ω a →
     ∀ Ω₂ ⊆ Ω, Ω₂ ∈ 𝓝 (TI X u' hT) → ∀ c : HmI X → ENNReal, ContinuousAt c (TI X u' hT) →
       PolId X u' μinf νinf a Ω₂ c → c (TI X u' hT) = (ENNReal.ofReal (KVal X u'))⁻¹
 

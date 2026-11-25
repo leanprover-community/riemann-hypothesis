@@ -108,7 +108,7 @@ private theorem exists_isHaarOnM_of_isMatGroup {m : ℕ} {G : Set (Matrix (Fin m
       exact GlobalTheory.MatHaar.inc_mem g
     rw [this, measure_empty]
   · intro a ha
-    let g0 : GlobalTheory.MatHaar.Grp G := ⟨a, ha⟩
+    let g0 : GlobalTheory.MatHaar.Grp G hG := ⟨a, ha⟩
     have hcomp : PI.lmulQ a ∘ GlobalTheory.MatHaar.inc (G := G) (hG := hG) =
         GlobalTheory.MatHaar.inc ∘ (fun g => g0 * g) := by
       funext g

@@ -361,7 +361,7 @@ theorem cls_eq_of_uniq : ∀ (p : ℕ) [Fact p.Prime] (G : HTGroup p) (v : Infin
     fun z' hp hfx => huniq' y₀ h₀ hh₀ z₀ z' hz₀pos hp hz₀fix hfx
   have hz₀ne : z₀ ≠ 0 := by
     rintro rfl; simp at hz₀pos
-  let l₀ : PLv G := Projectivization.mk ℂ z₀ hz₀ne
+  let l₀ : PLv G v β := Projectivization.mk ℂ z₀ hz₀ne
 
   have hl₀ : ∀ ζ ∈ Z, ζ • l₀ = l₀ := by
     intro ζ hζ

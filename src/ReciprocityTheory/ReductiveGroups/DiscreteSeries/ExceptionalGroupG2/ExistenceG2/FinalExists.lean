@@ -43,7 +43,7 @@ theorem final_existsG_of (hS7 : ∀ m : ℕ, S7.PsiExistsStatement m) :
       have h0 : S7.q0 ε = 0 := by omega
       unfold S7.q0 at h0
       omega
-    obtain ⟨σ, hσ, -⟩ := isDS_compact hpq T
+    obtain ⟨σ, hσ, -⟩ := isDS_compact hpq hl' T
     exact ⟨T.V, inferInstance, inferInstance, σ, hσ⟩
 
 end ReciprocityTheory.ChartRestriction.DS.G2

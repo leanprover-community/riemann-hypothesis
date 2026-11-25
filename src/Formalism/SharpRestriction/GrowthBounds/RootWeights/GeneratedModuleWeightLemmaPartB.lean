@@ -219,7 +219,7 @@ open Formalism.MainNotions.G Formalism.MainNotions.CovariantDegrees
 theorem generated_module_weight_lemma_part_b : GeneratedModuleWeightDescription :=
   generated_module_weight_lemma_of_interfaces transvectionExpansion torus_acts_through_weight binomial_stable_contains_components twist_exponents_are_weight_entries generic_monomials_specialise
 
-theorem valuationsAdditive_D7 (D : Formalism.BasicNotions.D7) : ValuationsAdditive := valuations_additive_of_generated_weight_description D generated_module_weight_lemma_part_b
+theorem valuationsAdditive_D7 (D : Formalism.BasicNotions.D7) : ValuationsAdditive D := valuations_additive_of_generated_weight_description D generated_module_weight_lemma_part_b
 
 end Formalism.MainNotions.G.GLWeightTheory
 end -- clump:auto

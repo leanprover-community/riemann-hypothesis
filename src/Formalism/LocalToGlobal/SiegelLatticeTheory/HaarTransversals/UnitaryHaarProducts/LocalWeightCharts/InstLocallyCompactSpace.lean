@@ -25,17 +25,17 @@ structure ClSub {k r : ℕ} (U : Set (Mx k r)) : Prop where
   unit : ∀ a ∈ U, IsUnit a.det
   closed : IsClosed U
 
-def Grp {k r : ℕ} (U : Set (Mx k r)) : Type := U
+def Grp {k r : ℕ} (U : Set (Mx k r)) (_h : ClSub U) : Type := U
 
 namespace Grp
 variable {k r : ℕ} {U : Set (Mx k r)} {h : ClSub U}
 
-def val (a : Grp U) : Mx k r := Subtype.val a
-lemma mem (a : Grp U) : a.val ∈ U := Subtype.property a
-def mk (x : Mx k r) (hx : x ∈ U) : Grp U := (⟨x, hx⟩ : U)
-lemma ext' {a b : Grp U} (e : a.val = b.val) : a = b := Subtype.ext e
+def val (a : Grp U h) : Mx k r := Subtype.val a
+lemma mem (a : Grp U h) : a.val ∈ U := Subtype.property a
+def mk (x : Mx k r) (hx : x ∈ U) : Grp U h := (⟨x, hx⟩ : U)
+lemma ext' {a b : Grp U h} (e : a.val = b.val) : a = b := Subtype.ext e
 
-instance : Group (Grp U) where
+instance : Group (Grp U h) where
   mul a b := mk (a.val * b.val) (h.mul_mem _ a.mem _ b.mem)
   one := mk 1 h.one_mem
   inv a := mk (a.val⁻¹) (h.inv_mem _ a.mem)
@@ -44,39 +44,39 @@ instance : Group (Grp U) where
   mul_one a := ext' (Matrix.mul_one _)
   inv_mul_cancel a := ext' (Matrix.nonsing_inv_mul _ (h.unit _ a.mem))
 
-instance : TopologicalSpace (Grp U) := inferInstanceAs (TopologicalSpace U)
-instance : MeasurableSpace (Grp U) := borel _
-instance : BorelSpace (Grp U) := ⟨rfl⟩
+instance : TopologicalSpace (Grp U h) := inferInstanceAs (TopologicalSpace U)
+instance : MeasurableSpace (Grp U h) := borel _
+instance : BorelSpace (Grp U h) := ⟨rfl⟩
 
-lemma val_one : (1 : Grp U).val = 1 := rfl
+lemma val_one : (1 : Grp U h).val = 1 := rfl
 
-lemma emb : IsClosedEmbedding (val : Grp U → Mx k r) := h.closed.isClosedEmbedding_subtypeVal
+lemma emb : IsClosedEmbedding (val : Grp U h → Mx k r) := h.closed.isClosedEmbedding_subtypeVal
 
-instance : IsTopologicalGroup (Grp U) where
+instance : IsTopologicalGroup (Grp U h) where
   continuous_mul := by
     rw [emb.isInducing.continuous_iff]
     exact Continuous.matrix_mul (emb.continuous.comp continuous_fst) (emb.continuous.comp continuous_snd)
   continuous_inv := by
     rw [emb.isInducing.continuous_iff]
-    have : (val ∘ fun a : Grp U => a⁻¹) = fun a : Grp U => (a.val.det)⁻¹ • a.val.adjugate := by
+    have : (val ∘ fun a : Grp U h => a⁻¹) = fun a : Grp U h => (a.val.det)⁻¹ • a.val.adjugate := by
       funext a
       show a.val⁻¹ = _
       rw [Matrix.inv_def, Ring.inverse_eq_inv']
     rw [this]
-    have hv : Continuous (val : Grp U → Mx k r) := emb.continuous
+    have hv : Continuous (val : Grp U h → Mx k r) := emb.continuous
     exact Continuous.smul (Continuous.inv₀ hv.matrix_det fun a => (h.unit _ a.mem).ne_zero) hv.matrix_adjugate
 
-instance : LocallyCompactSpace (Grp U) :=
+instance : LocallyCompactSpace (Grp U h) :=
   have : LocallyCompactSpace (Mx k r) := inferInstanceAs (LocallyCompactSpace (Mt k r))
   emb.locallyCompactSpace
 
-instance : T2Space (Grp U) := emb.isEmbedding.t2Space
+instance : T2Space (Grp U h) := emb.isEmbedding.t2Space
 
-def vt (a : Grp U) : Mt k r := a.val
+def vt (a : Grp U h) : Mt k r := a.val
 
-lemma embt : IsClosedEmbedding (vt : Grp U → Mt k r) := emb
+lemma embt : IsClosedEmbedding (vt : Grp U h → Mt k r) := emb
 
-instance : SecondCountableTopology (Grp U) :=
+instance : SecondCountableTopology (Grp U h) :=
   have : SecondCountableTopology (Mx k r) := inferInstanceAs (SecondCountableTopology (Mt k r))
   emb.isEmbedding.secondCountableTopology
 
@@ -85,13 +85,13 @@ end Grp
 variable {k r : ℕ}
 
 def hmeas (U : Set (Mx k r)) (h : ClSub U) : Measure (Mt k r) :=
-  (Measure.haar : Measure (Grp U)).map Grp.vt
+  (Measure.haar : Measure (Grp U h)).map Grp.vt
 
 lemma val_cemb (U : Set (Mx k r)) (h : ClSub U) :
-    IsClosedEmbedding (Grp.vt : Grp U → Mt k r) := Grp.embt
+    IsClosedEmbedding (Grp.vt : Grp U h → Mt k r) := Grp.embt
 
 lemma val_memb (U : Set (Mx k r)) (h : ClSub U) :
-    MeasurableEmbedding (Grp.vt : Grp U → Mt k r) := (val_cemb U h).measurableEmbedding
+    MeasurableEmbedding (Grp.vt : Grp U h → Mt k r) := (val_cemb U h).measurableEmbedding
 
 lemma hmeas_compact (U : Set (Mx k r)) (h : ClSub U) (K : Set (Mt k r)) (hK : IsCompact K) :
     hmeas U h K < ⊤ := by
@@ -106,7 +106,7 @@ lemma sigma_of_compact (μ : Measure (Mt k r)) (hμ : ∀ K : Set (Mt k r), IsCo
 
 theorem hmeas_haar (U : Set (Mx k r)) (h : ClSub U) : IsHaarOn U (hmeas U h) := by
   have hφ := val_cemb U h
-  have hmeas' : Measurable (Grp.vt : Grp U → Mt k r) := hφ.continuous.measurable
+  have hmeas' : Measurable (Grp.vt : Grp U h → Mt k r) := hφ.continuous.measurable
   have hUc : @IsClosed (Mt k r) _ U := h.closed
   refine ⟨sigma_of_compact _ (hmeas_compact U h), ?_, ?_, ?_⟩
   · intro h0
@@ -114,11 +114,11 @@ theorem hmeas_haar (U : Set (Mx k r)) (h : ClSub U) : IsHaarOn U (hmeas U h) := 
     simp only [hmeas, Measure.map_apply hmeas' MeasurableSet.univ, Measure.coe_zero,
       Pi.zero_apply] at h1
     rw [Set.preimage_univ] at h1
-    exact (NeZero.ne (Measure.haar : Measure (Grp U))) (Measure.measure_univ_eq_zero.mp h1)
+    exact (NeZero.ne (Measure.haar : Measure (Grp U h))) (Measure.measure_univ_eq_zero.mp h1)
   · have hm : MeasurableSet {x : Mt k r | Matrix.of x ∉ U} := hUc.measurableSet.compl
     unfold hmeas
     rw [Measure.map_apply hmeas' hm]
-    have : (Grp.vt : Grp U → Mt k r) ⁻¹' {x : Mt k r | Matrix.of x ∉ U} = ∅ := by
+    have : (Grp.vt : Grp U h → Mt k r) ⁻¹' {x : Mt k r | Matrix.of x ∉ U} = ∅ := by
       apply Set.eq_empty_of_forall_notMem
       intro a ha
       exact ha a.mem
@@ -131,8 +131,8 @@ theorem hmeas_haar (U : Set (Mx k r)) (h : ClSub U) : IsHaarOn U (hmeas U h) := 
       exact this.measurable
     unfold hmeas
     rw [Measure.map_map hl hmeas']
-    have : lmulM s ∘ (Grp.vt : Grp U → Mt k r) =
-        (Grp.vt : Grp U → Mt k r) ∘ (fun x => Grp.mk s hs * x) := by
+    have : lmulM s ∘ (Grp.vt : Grp U h → Mt k r) =
+        (Grp.vt : Grp U h → Mt k r) ∘ (fun x => Grp.mk s hs * x) := by
       funext x
       rfl
     rw [this, ← Measure.map_map hmeas' (measurable_const_mul _), map_mul_left_eq_self]
@@ -141,7 +141,7 @@ theorem haar_unique (U : Set (Mx k r)) (h : ClSub U) (μ : Measure (Mt k r)) (h�
     ∃ c : ℝ≥0∞, c ≠ 0 ∧ c ≠ ∞ ∧ μ = c • hmeas U h := by
   obtain ⟨hσ, h0, hconc, hinv⟩ := hμ
   have hE := val_memb U h
-  set ψ := (Grp.vt : Grp U → Mt k r) with hψdef
+  set ψ := (Grp.vt : Grp U h → Mt k r) with hψdef
   set ν := μ.comap ψ with hνdef
   have hmapν : ν.map ψ = μ := by
     rw [hνdef, hE.map_comap]
@@ -155,16 +155,16 @@ theorem haar_unique (U : Set (Mx k r)) (h : ClSub U) (μ : Measure (Mt k r)) (h�
     by_contra h'
     exact hc h'
   have hσν : SigmaFinite ν := SigmaFinite.of_map ν hE.measurable.aemeasurable (by rw [hmapν]; exact hσ)
-  have hinj : ∀ a b : Measure (Grp U), a.map ψ = b.map ψ → a = b := by
+  have hinj : ∀ a b : Measure (Grp U h), a.map ψ = b.map ψ → a = b := by
     intro a b hab
     rw [← hE.comap_map a, ← hE.comap_map b, hab]
   have hleft : ν.IsMulLeftInvariant := by
     refine ⟨fun g => ?_⟩
     apply hinj
-    have hcomp : ψ ∘ (fun x : Grp U => g * x) = lmulM (k := k) (r := r) g.val ∘ ψ := by
+    have hcomp : ψ ∘ (fun x : Grp U h => g * x) = lmulM (k := k) (r := r) g.val ∘ ψ := by
       funext x
       rfl
-    have hmul : Measurable (fun x : Grp U => g * x) := measurable_const_mul g
+    have hmul : Measurable (fun x : Grp U h => g * x) := measurable_const_mul g
     have hlm : Measurable (lmulM (k := k) (r := r) g.val) := by
       have : Continuous (lmulM (k := k) (r := r) g.val) := by
         unfold lmulM
@@ -172,31 +172,31 @@ theorem haar_unique (U : Set (Mx k r)) (h : ClSub U) (μ : Measure (Mt k r)) (h�
       exact this.measurable
     rw [Measure.map_map hE.measurable hmul, hcomp, ← Measure.map_map hlm hE.measurable, hmapν]
     exact hinv _ g.mem
-  obtain ⟨K, hK, hKn⟩ := exists_compact_mem_nhds (1 : Grp U)
-  have hK0 : (Measure.haar : Measure (Grp U)) K ≠ 0 :=
+  obtain ⟨K, hK, hKn⟩ := exists_compact_mem_nhds (1 : Grp U h)
+  have hK0 : (Measure.haar : Measure (Grp U h)) K ≠ 0 :=
     (Measure.measure_pos_of_mem_nhds _ hKn).ne'
-  have hKt : (Measure.haar : Measure (Grp U)) K ≠ ∞ := hK.measure_lt_top.ne
-  have heq := measure_eq_div_smul ν (Measure.haar : Measure (Grp U)) hK0 hKt
-  set c := ν K / (Measure.haar : Measure (Grp U)) K with hc
+  have hKt : (Measure.haar : Measure (Grp U h)) K ≠ ∞ := hK.measure_lt_top.ne
+  have heq := measure_eq_div_smul ν (Measure.haar : Measure (Grp U h)) hK0 hKt
+  set c := ν K / (Measure.haar : Measure (Grp U h)) K with hc
   have hcne0 : c ≠ 0 := by
     intro hc0
     apply h0
     rw [← hmapν, heq, hc0, zero_smul, Measure.map_zero]
   have hcnetop : c ≠ ∞ := by
     intro htop
-    have hnull : ∀ i, (Measure.haar : Measure (Grp U)) (spanningSets ν i) = 0 := by
+    have hnull : ∀ i, (Measure.haar : Measure (Grp U h)) (spanningSets ν i) = 0 := by
       intro i
       have hlt := measure_spanningSets_lt_top ν i
-      have hS : ν (spanningSets ν i) = (c • (Measure.haar : Measure (Grp U))) (spanningSets ν i) :=
-        congrArg (fun m : Measure (Grp U) => m (spanningSets ν i)) heq
+      have hS : ν (spanningSets ν i) = (c • (Measure.haar : Measure (Grp U h))) (spanningSets ν i) :=
+        congrArg (fun m : Measure (Grp U h) => m (spanningSets ν i)) heq
       rw [hS, Measure.smul_apply, smul_eq_mul, htop] at hlt
       by_contra hne
       rw [ENNReal.top_mul hne] at hlt
       exact lt_irrefl _ hlt
-    have : (Measure.haar : Measure (Grp U)) Set.univ = 0 := by
+    have : (Measure.haar : Measure (Grp U h)) Set.univ = 0 := by
       rw [← iUnion_spanningSets ν]
       exact measure_iUnion_null hnull
-    exact (NeZero.ne (Measure.haar : Measure (Grp U))) (Measure.measure_univ_eq_zero.mp this)
+    exact (NeZero.ne (Measure.haar : Measure (Grp U h))) (Measure.measure_univ_eq_zero.mp this)
   refine ⟨c, hcne0, hcnetop, ?_⟩
   rw [← hmapν, heq, Measure.map_smul c hE.measurable.aemeasurable]
   rfl
@@ -336,7 +336,7 @@ theorem n_clsub : ClSub (Nset k r : Set (Mx k r)) := by
 
 def haarNm (k r : ℕ) : Measure (Mt k r) := hmeas (Nset k r) n_clsub
 
-theorem haarNm_eq : haarNm k r = (Measure.haar : Measure (Grp (Nset k r : Set (Mx k r)))).map Grp.vt := rfl
+theorem haarNm_eq : haarNm k r = (Measure.haar : Measure (Grp (Nset k r : Set (Mx k r)) n_clsub)).map Grp.vt := rfl
 
 theorem haarNm_haar : IsHaarOn (Nset k r) (haarNm k r) := hmeas_haar _ _
 

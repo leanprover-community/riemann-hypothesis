@@ -111,6 +111,7 @@ theorem row_invariant [DecidableEq σ] (z : Fin k × Fin m → σ) (hz : Functio
       bind₁ (fun s => X s + ∑ i, if s = z (b, i) then C t * X (z (a, i)) else 0) P = P := by
   rw [rowOp_apply]
   exact (rowAdd_invariant_iff (fun k => z (a, k)) (fun k => z (b, k))
+      (fun k l e => by simpa using hz e)
       (fun k l e => hab.ne (congrArg Prod.fst (hz e))) P).out 3 2
 
 theorem polar_homog (u v : σ) {d : ℕ} {P : MvPolynomial σ ℂ} (h : P.IsHomogeneous d) :

@@ -29,15 +29,15 @@ def kerI {D : D7} (X : HidaSetting D) (u' : D.what₂.Word) (y : TupI X) : Measu
     (X.measW u').μHinf
 
 def KerMeas : Prop := ∀ {D : D7} (X : HidaSetting D) (u' : D.what₂.Word) (ψ : AddChar (AF X.B.I.F) ℂ) hT μinf νinf fibInf,
-    PushHyp X u' ψ μinf νinf fibInf → Measurable (kerI X u')
+    PushHyp X u' ψ hT μinf νinf fibInf → Measurable (kerI X u')
 
 def HaarUniqInf : Prop := ∀ {D : D7} (X : HidaSetting D) (u' : D.what₂.Word) (ψ : AddChar (AF X.B.I.F) ℂ) hT μinf νinf fibInf,
-    PushHyp X u' ψ μinf νinf fibInf →
+    PushHyp X u' ψ hT μinf νinf fibInf →
     ∀ m : Measure (GI X), (∀ g : GI X, m.map (fun x => g * x) = m) → (∀ C : Set (GI X), IsCompact C → m C < ⊤) →
       ∃ c : ENNReal, c ≠ ⊤ ∧ m = c • X.measG.μGinf
 
 def RegI : Prop := ∀ {D : D7} (X : HidaSetting D) (u' : D.what₂.Word) (ψ : AddChar (AF X.B.I.F) ℂ) hT μinf νinf fibInf,
-    PushHyp X u' ψ μinf νinf fibInf →
+    PushHyp X u' ψ hT μinf νinf fibInf →
     Measurable (orbM X u') ∧ (∀ g : GI X, Measurable (fun y : TupI X => g • y)) ∧
     (∀ g : GI X, Measurable (fun x : GI X => g * x)) ∧
     (∀ t : GI X, Measurable (fun h : (Hsub (Ainf X.B.I.F) X.B.I.cm.sig X.B.I.J (frameOf X u')) => t * (h : GI X))) ∧

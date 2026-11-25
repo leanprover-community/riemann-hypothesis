@@ -122,7 +122,7 @@ theorem degree_piece [CompactSpace Y] [T2Space Y] [CompactSpace X] [T2Space X]
     [MeasurableSpace X] [BorelSpace X]
     {A : FinHolAtlas e X} {B : FinHolAtlas e Y} {h : Y → X} (hh : HoloMap B A h) {d : ℕ}
     (Φ : Fin e → LocPot X) (hΦ : ∀ i, IsPotential A (Φ i)) (P : ChartPartition A)
-    (Q : ChartPartition B) {E V : Set X} (hE : MeasurableSet E) (hEV : E ⊆ V)
+    (Q : ChartPartition B) {E V : Set X} (hE : MeasurableSet E) (hEV : E ⊆ V) (hV : IsOpen V)
     {k : Fin A.n} (hVk : V ⊆ (A.chart k).source) {W : Fin d → Set Y} {j : Fin d → Fin B.n}
     (hW : ∀ i, IsOpen (W i)) (hdis : Pairwise (Function.onFun Disjoint W))
     (hpre : h ⁻¹' V = ⋃ i, W i) (hsh : ∀ i, Set.BijOn h (W i) V ∧ W i ⊆ (B.chart (j i)).source)
@@ -245,7 +245,7 @@ theorem degreeFormulaInt : DegreeFormulaIntStatement := by
   obtain ⟨Q⟩ := existsPartition B
   obtain ⟨E, V, k, W, j, hEm, hEd, hEU, hEV, hsh⟩ := exists_sheet_partition hh hd
   have hmh : Measurable h := hh.1.measurable
-  have hpiece := fun m => degree_piece hh Φ hΦ P Q (hEm m) (hEV m).1 (hsh m).2.1
+  have hpiece := fun m => degree_piece hh Φ hΦ P Q (hEm m) (hEV m) (hsh m).1 (hsh m).2.1
     (hsh m).2.2.1 (hsh m).2.2.2.1 (hsh m).2.2.2.2.1 (hsh m).2.2.2.2.2 g hg
   have hvX : ∀ m, IntegrableOn (fun z => (E m).indicator g ((A.chart (k m)).symm z) *
       locDens A Φ (k m) z) (A.chart (k m)).target :=

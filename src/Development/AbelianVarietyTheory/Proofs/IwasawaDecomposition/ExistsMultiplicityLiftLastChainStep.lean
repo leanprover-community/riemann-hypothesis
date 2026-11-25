@@ -181,6 +181,7 @@ theorem exists_eq_smul_base {T : Type} [Fintype T] {p n : ℕ} (h : p + 0 ≤ n)
   have hinv : ∀ t (i j : Fin p), i < j → ∀ s : ℂ,
       bind₁ (fun v => X v + ∑ k, if v = z t (j, k) then C s * X (z t (i, k)) else 0) P = P :=
     fun t i j hij => ((rowAdd_invariant_iff (fun k => z t (i, k)) (fun k => z t (j, k))
+      (fun k l e => by simpa using hz t e)
       (fun k l e => hij.ne (congrArg Prod.fst (hz t e))) P).out 3 2).1 (hup' t i j hij)
   have hw : ∀ t, κ t = mixedWeight n (a t) (fun _ : Fin 0 => 0) := fun t =>
     weight_eq_mixedWeight h (z t) (hz t) (y t) (hy t) (hzy t) (a t) _ (ha t) (fun i => i.elim0)

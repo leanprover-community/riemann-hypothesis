@@ -78,7 +78,7 @@ theorem weylDim_shift (n : ℕ) (lam : Fin n → ℤ) (c : ℤ) : weylDim n (fun
   refine Finset.prod_congr rfl fun i _ => Finset.prod_congr rfl fun j _ => ?_
   rw [add_sub_add_right_eq_sub]
 
-theorem finrank_wtPQ (D : Formalism.BasicNotions.D7) (h3 : Formalism.MainNotions.ColumnSystems.adm3) (K : Type) [Field K] [CharZero K] (m a b : ℕ) :
+theorem finrank_wtPQ (D : Formalism.BasicNotions.D7) (h3 : Formalism.MainNotions.ColumnSystems.adm3 D) (K : Type) [Field K] [CharZero K] (m a b : ℕ) :
     Module.finrank K (dualWeyl K (m + 1 + 1) (m + 1 + 1) (nuOf (wtPQ (m + 1) a b))) = dimHar (m + 1) a b := by
   have hanti : Antitone (nuOf (wtPQ (m + 1) a b)) := by
     intro i j hij
@@ -93,7 +93,7 @@ theorem finrank_wtPQ (D : Formalism.BasicNotions.D7) (h3 : Formalism.MainNotions
     exact nuOf_wtPQ_cast m a b i
   exact_mod_cast hq
 
-theorem tie4 (D : Formalism.BasicNotions.D7) (h3 : Formalism.MainNotions.ColumnSystems.adm3) (h2 : ExplicitMapOntoTwoLetters) (h5 : TwoLetterLatticeGaussInverse) (hCO : CartanOnto) {p n' : ℕ}
+theorem tie4 (D : Formalism.BasicNotions.D7) (h3 : Formalism.MainNotions.ColumnSystems.adm3 D) (h2 : ExplicitMapOntoTwoLetters) (h5 : TwoLetterLatticeGaussInverse) (hCO : CartanOnto) {p n' : ℕ}
     (R : RS p n') (m : ℕ) (hm : 1 ≤ m) (a b : ℕ) :
     ∀ f ∈ PolAB R.Kf (m + 1) a b, deltaB R.Kf m (PsiXY R.Kf m f) = 0 →
       ∃ G ∈ PolAB R.Kf (m + 1) (a - 1) (b - 1), f = hXY R.Kf (m + 1) * G := by
@@ -148,7 +148,7 @@ theorem tie4 (D : Formalism.BasicNotions.D7) (h3 : Formalism.MainNotions.ColumnS
     exact ⟨G, G.2, (congrArg Subtype.val hG).symm⟩
 
 theorem tiePsi_of (D : Formalism.BasicNotions.D7) (h1 : ExplicitMapInjective) (h2 : ExplicitMapOntoTwoLetters) (h5 : TwoLetterLatticeGaussInverse) (hCO : CartanOnto)
-    (h3 : Formalism.MainNotions.ColumnSystems.adm3) : TiePsi := by
+    (h3 : Formalism.MainNotions.ColumnSystems.adm3 D) : TiePsi := by
   intro p n' R m hm
   have hm1 : 1 ≤ m := by omega
   refine ⟨h1 R.Kf m hm1, h2 R.Kf m hm1, ?_, tie4 D h3 h2 h5 hCO R m hm1, ?_⟩

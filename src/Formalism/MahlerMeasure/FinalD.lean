@@ -183,7 +183,7 @@ lemma le_gaussR_mul (ρ : NNReal) (hρ : 0 < ρ) (P Q : K[X]) :
 
 end
 
-theorem gauss_norm_multiplicative : GaussMulRad := fun _ _ _ ρ P Q hρ => le_antisymm (gaussR_mul_le ρ P Q) (le_gaussR_mul ρ hρ P Q)
+theorem gauss_norm_multiplicative : GaussMulRad := fun K _ _ ρ P Q hρ => le_antisymm (gaussR_mul_le ρ P Q) (le_gaussR_mul ρ hρ P Q)
 
 end Formalism.GM
 end -- clump:auto
@@ -303,7 +303,7 @@ theorem logb_multiset_prod {α : Type} (b : ℝ) (m : Multiset α) (f : α → �
     simp only [Multiset.map_cons, Multiset.prod_cons, Multiset.sum_cons]
     rw [Real.logb_mul (hf a).ne' (multiset_prod_pos m f hf).ne', ih]
 
-theorem vmin_step (p : ℕ) (hp1 : (1 : ℝ) < p) (h : ℕ) (E : ℝ) (hE : 0 ≤ E) (u : ℝ)
+theorem vmin_step (p : ℕ) (hp1 : (1 : ℝ) < p) (h : ℕ) (E : ℝ) (hE : 0 ≤ E) (u : ℝ) (_hu : 0 ≤ u)
     [Decidable (u ≤ (p : ℝ) ^ (-(h : ℤ)))] :
     -Real.logb p (max u ((p : ℝ) ^ (-((h : ℝ) + E)))) ≤
       -Real.logb p (max u ((p : ℝ) ^ (-(h : ℤ)))) + E * (if u ≤ (p : ℝ) ^ (-(h : ℤ)) then 1 else 0) := by
@@ -382,7 +382,7 @@ theorem lieRoots_of (hG : GaussMulRad) : LieRoots := by
     (fun ζ => -Real.logb p (max ‖(t₀ : K) - ζ‖ ((p : ℝ) ^ (-((h : ℝ) + E)))))
     (fun ζ => vmin p h ((t₀ : K) - ζ) +
       E * (if ‖(t₀ : K) - ζ‖ ≤ (p : ℝ) ^ (-(h : ℤ)) then 1 else 0)) (fun ζ => by
-        have := vmin_step p hp1 h E hE ‖ - ζ‖ (norm_nonneg _)
+        have := vmin_step p hp1 h E hE ‖(t₀ : K) - ζ‖ (norm_nonneg _)
         unfold vmin
         simpa only using this)
   rw [multiset_sum_add, multiset_sum_mul_left, multiset_sum_neg] at hstep

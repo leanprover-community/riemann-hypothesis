@@ -1084,15 +1084,15 @@ def decRingHom {Ω : Type} [Field Ω] [Algebra ℚ Ω] (A : ValuationSubring Ω)
   map_zero' := Subtype.ext (by simp)
   map_add' x y := Subtype.ext (by simp)
 
-def TwDiff {Ω : Type} [Field Ω] [Algebra ℚ Ω] (A : ValuationSubring Ω) : Type :=
+def TwDiff {Ω : Type} [Field Ω] [Algebra ℚ Ω] (A : ValuationSubring Ω) (_τ : A →+* A) : Type :=
   KaehlerDifferential (fixA A) A
 
 instance {Ω : Type} [Field Ω] [Algebra ℚ Ω] (A : ValuationSubring Ω) (τ : A →+* A) :
-    AddCommGroup (TwDiff A) :=
+    AddCommGroup (TwDiff A τ) :=
   inferInstanceAs (AddCommGroup (KaehlerDifferential (fixA A) A))
 
 instance {Ω : Type} [Field Ω] [Algebra ℚ Ω] (A : ValuationSubring Ω) (τ : A →+* A) :
-    Module A (TwDiff A) :=
+    Module A (TwDiff A τ) :=
   Module.compHom (KaehlerDifferential (fixA A) A) τ
 
 theorem transp_rel : ∀ (Ω : Type) [Field Ω] [Algebra ℚ Ω] (A : ValuationSubring Ω) (s : G ℚ Ω),
@@ -1106,7 +1106,7 @@ theorem transp_rel : ∀ (Ω : Type) [Field Ω] [Algebra ℚ Ω] (A : ValuationS
   have hτd' : τ b' = d' := Subtype.ext hd'.symm
   obtain ⟨T, hT⟩ := kaehler_rel_local (fixA A) A 2 ![a, -a'] ![b, b']
     (by simp [Fin.sum_univ_two, h])
-  let D : A → TwDiff A := fun x => (dA A (τ x) : KaehlerDifferential (fixA A) A)
+  let D : A → TwDiff A τ := fun x => (dA A (τ x) : KaehlerDifferential (fixA A) A)
   have hD : IsDerOn (⊤ : Subalgebra (fixA A) A) D :=
     { add := fun x _ y _ => by
         show dA A (τ (x + y)) = dA A (τ x) + dA A (τ y)
@@ -1119,7 +1119,7 @@ theorem transp_rel : ∀ (Ω : Type) [Field Ω] [Algebra ℚ Ω] (A : ValuationS
         have e : τ (algebraMap (fixA A) A r) = algebraMap (fixA A) A r :=
           Subtype.ext (r.2 s hs)
         rw [e, Derivation.map_algebraMap] }
-  have key := hT ⊤ (by simp) (by simp) (TwDiff A) D hD
+  have key := hT ⊤ (by simp) (by simp) (TwDiff A τ) D hD
   simp only [Fin.sum_univ_two, Matrix.cons_val_zero, Matrix.cons_val_one] at key
   change τ a • dA A (τ b) + τ (-a') • dA A (τ b') = (0 : KaehlerDifferential (fixA A) A) at key
   rwa [map_neg, hτc, hτd, hτc', hτd', neg_smul, ← sub_eq_add_neg, sub_eq_zero] at key

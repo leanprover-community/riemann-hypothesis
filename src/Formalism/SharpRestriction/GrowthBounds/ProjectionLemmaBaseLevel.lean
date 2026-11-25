@@ -191,7 +191,7 @@ def TensorColumnFamily (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainN
 
 def BranchingColumnFamily (D : Formalism.BasicNotions.D7) : Prop := ArchimedeanSignatureMatching ∧ adm5 ∧ adm6 ∧ adm7
 
-def GlobalSectionsSchur (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.AutomorphicSideConclusion ∧ Formalism.MainNotions.CovariantDegrees.HyperplaneRank D ∧ Formalism.MainNotions.CovariantDegrees.DefiniteRankOne
+def GlobalSectionsSchur (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.AutomorphicSideConclusion ∧ Formalism.MainNotions.CovariantDegrees.HyperplaneRank D ∧ Formalism.MainNotions.CovariantDegrees.DefiniteRankOne D
 
 def BracketPolynomialSpan (D : Formalism.BasicNotions.D7) : Prop :=
   Formalism.MainNotions.CovariantDegrees.GlobalSectionsSchur ∧ Formalism.MainNotions.CovariantDegrees.BracketPolynomialSpan ∧ Formalism.MainNotions.CovariantDegrees.GradedLatticeStable ∧ Formalism.MainNotions.CovariantDegrees.WeylDualityLattice D
@@ -227,7 +227,7 @@ def WeylV : Prop :=
       if i < j then (((lamAt lam0 s i : ℤ) : ℚ) - ((lamAt lam0 s j : ℤ) : ℚ) + ((j : ℕ) : ℚ) - ((i : ℕ) : ℚ)) /
         (((j : ℕ) : ℚ) - ((i : ℕ) : ℚ)) else 1
 
-def PairedPathIndependence (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.ColumnSystems.adm3 ∧ WeylV
+def PairedPathIndependence (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.ColumnSystems.adm3 D ∧ WeylV
 
 def AdmT (D : Formalism.BasicNotions.D7) : Prop :=
   GenericProjectionCriterion D ∧ ColumnFamilyClosure D ∧ TensorColumnFamily D ∧ BranchingColumnFamily D ∧ GlobalSectionsSchur D ∧ BracketPolynomialSpan D ∧ GradedLatticeStable ∧ NestedTypeBound ∧ TypeDecompositionsCommute ∧ JointComponentsPaths ∧

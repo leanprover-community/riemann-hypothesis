@@ -668,7 +668,7 @@ theorem not_primitive_two (χ : DirichletCharacter ℂ 2) : ¬ χ.IsPrimitive :=
   rw [DirichletCharacter.isPrimitive_def, h1, DirichletCharacter.conductor_one] at hp
   norm_num at hp
 
-theorem exceptional_zero_real_of_landau_page {C1 c : ℝ} (hc : 0 < c) (D : D7) (h6 : adm6 C1 c) {Q : ℝ} {N : ℕ} [NeZero N]
+theorem exceptional_zero_real_of_landau_page {C1 c : ℝ} (hc : 0 < c) (D : D7) (h6 : adm6 D C1 c) {Q : ℝ} {N : ℕ} [NeZero N]
     {χ : DirichletCharacter ℂ N} (hp : χ.IsPrimitive) (hNQ : (N : ℝ) ≤ Q) {ρ : ℂ} (h0 : 0 < ρ.re)
     (hz : DirichletCharacter.LFunction χ ρ = 0) (hr : 1 - c / Real.log (Q * (|ρ.im| + 3)) < ρ.re) :
     3 ≤ N ∧ ρ.im = 0 ∧ IsRealChar χ := by
@@ -861,7 +861,7 @@ theorem rpow_le_mul_exp_neg_log {u v r k : ℝ} (hu0 : 0 < u) (hv : v = Real.log
 
 
 theorem psi_thin_core {C7 C2 c lam : ℝ} (hC7 : 0 < C7) (hC2 : 0 ≤ C2) (hc : 0 < c) (hlam : 1 ≤ lam) (D : D7)
-    (h7 : adm7 C7) {N : ℕ} [NeZero N] (χ : DirichletCharacter ℂ N) (hp : χ.IsPrimitive)
+    (h7 : adm7 D C7) {N : ℕ} [NeZero N] (χ : DirichletCharacter ℂ N) (hp : χ.IsPrimitive)
     (hN : Real.log N ≤ lam)
     (hzf : ∀ ρ : ℂ, 0 < ρ.re → ρ.re < 1 → DirichletCharacter.LFunction χ ρ = 0 →
       ρ.re ≤ 1 - c / (lam + Real.log (|ρ.im| + 3)))
@@ -1006,7 +1006,7 @@ theorem log_cond_le {D : D7} (hC : CondE D) {N : ℕ} [NeZero N] {χ : Dirichlet
   have hN1 : (0 : ℝ) < N := by exact_mod_cast Nat.pos_of_ne_zero (NeZero.ne N)
   exact (Real.log_le_log hN1 (hC N χ h)).trans (le_max_right _ _)
 
-theorem psiThin_of {C7 C2 c : ℝ} (hC7 : 0 < C7) (hC2 : 0 ≤ C2) (hc : 0 < c) (D : D7) (h7 : adm7 C7)
+theorem psiThin_of {C7 C2 c : ℝ} (hC7 : 0 < C7) (hC2 : 0 ≤ C2) (hc : 0 < c) (D : D7) (h7 : adm7 D C7)
     (hzf : ZeroFreeE D c) (hcond : CondE D) (hZ : ZeroSumE D C2) (x eps : ℝ) (hx : 3 ≤ x ^ (eps / 3)) :
     PsiThin D x eps (C7 * (5 + C2) + C2) (min (c / 3) 1) := by
   intro N _ χ hχ u hu
@@ -1025,7 +1025,7 @@ theorem psiThin_of {C7 C2 c : ℝ} (hC7 : 0 < C7) (hC2 : 0 ≤ C2) (hc : 0 < c) 
 
 
 theorem zero_sum_core {C7 C lam ka : ℝ} (hC : 0 < C) (hlam : 1 ≤ lam) (hka : 0 < ka) (D : D7)
-    (h7 : adm7 C7) (h11 : adm11 C) {N : ℕ} [NeZero N] (χ : DirichletCharacter ℂ N) (hp : χ.IsPrimitive)
+    (h7 : adm7 D C7) (h11 : adm11 D C) {N : ℕ} [NeZero N] (χ : DirichletCharacter ℂ N) (hp : χ.IsPrimitive)
     (hN : Real.log N ≤ lam)
     (hlow : ∀ ρ : ℂ, 0 < ρ.re → ρ.re < 1 → |ρ.im| ≤ 2 → DirichletCharacter.LFunction χ ρ = 0 → ka / lam ≤ ρ.re)
     (T : ℝ) (hT : 1 ≤ T) :
@@ -1197,7 +1197,7 @@ theorem zero_sum_core {C7 C lam ka : ℝ} (hC : 0 < C) (hlam : 1 ≤ lam) (hka :
 def InvE (D : D7) : Prop :=
   ∀ (N : ℕ) [NeZero N] (χ : DirichletCharacter ℂ N), IsCharED D χ → IsCharED D χ⁻¹
 
-theorem zeroSumE_of {C7 C c : ℝ} (hC : 0 < C) (hc : 0 < c) (D : D7) (h7 : adm7 C7) (h11 : adm11 C)
+theorem zeroSumE_of {C7 C c : ℝ} (hC : 0 < C) (hc : 0 < c) (D : D7) (h7 : adm7 D C7) (h11 : adm11 D C)
     (hzf : ZeroFreeE D c) (hcond : CondE D) (hinv : InvE D) :
     ZeroSumE D (6 * C * (3 / (c / 3) + 4)) := by
   intro N _ χ hχ T hT
@@ -1225,7 +1225,7 @@ theorem zeroSumE_of {C7 C c : ℝ} (hC : 0 < C) (hc : 0 < c) (D : D7) (h7 : adm7
 
 theorem thin_of_zeroFree (eps C7 C11 c : ℝ) (heps : 0 < eps) (hC7 : 0 < C7) (hC11 : 0 < C11) (hc : 0 < c) :
     ∃ c' x0 : ℝ, 0 < c' ∧ 1 < x0 ∧ ∀ x : ℝ, x0 ≤ x → ∀ D : D7,
-      Real.log (NE D : ℝ) ≤ 8 * x ^ (eps / 5) * Real.log x ^ 2 → adm7 C7 → adm11 C11 → ZeroFreeE D c →
+      Real.log (NE D : ℝ) ≤ 8 * x ^ (eps / 5) * Real.log x ^ 2 → adm7 D C7 → adm11 D C11 → ZeroFreeE D c →
       CondE D → InvE D → ThinE D x eps c' := by
   have hC2 : 0 < 6 * C11 * (3 / (c / 3) + 4) := by positivity
   obtain ⟨c', x0, hc', hx0, h⟩ := thin_of_psiThin eps (min (c / 3) 1)
@@ -1253,7 +1253,7 @@ def RealNoExcE (D : D7) (c : ℝ) : Prop :=
   ∀ (N : ℕ) [NeZero N] (χ : DirichletCharacter ℂ N), IsCharED D χ → IsRealChar χ → 3 ≤ N → ∀ b : ℝ, 1 - 1 / 400 < b →
     b < 1 → 1 - c / Real.log ((NE D : ℝ) * 3) ≤ b → DirichletCharacter.LFunction χ b ≠ 0
 
-theorem zeroFreeE_of {Cq c : ℝ} (hc : 0 < c) (D : D7) (h6 : adm6 Cq c) (hcond : CondE D) (hre : RealNoExcE D c) :
+theorem zeroFreeE_of {Cq c : ℝ} (hc : 0 < c) (D : D7) (h6 : adm6 D Cq c) (hcond : CondE D) (hre : RealNoExcE D c) :
     ZeroFreeE D (min c (1 / 400)) := by
   intro N _ χ hχ ρ r0 r1 hz
   by_contra hh
@@ -1390,7 +1390,7 @@ theorem realNoExcE_of (D : D7) (c : ℝ) (hc : 0 ≤ c) (hB : RealBoxE D)
     exact hq N χ hχ.1 hN3 (Nat.le_of_dvd (by have := oddQS_pos D; omega) h) b (by linarith) hb1.le
   · exact hB N χ hχ hr h b hb
 
-lemma lambda_size_bound_mono {D : Formalism.BasicNotions.D7} {C1 c c' : ℝ} (hcc : c' ≤ c) (h : adm6 C1 c) : adm6 C1 c' := by
+lemma lambda_size_bound_mono {D : Formalism.BasicNotions.D7} {C1 c c' : ℝ} (hcc : c' ≤ c) (h : adm6 D C1 c) : adm6 D C1 c' := by
   obtain ⟨h1, h2, h3⟩ := h
   have key : ∀ {N : ℕ} (_ : 3 ≤ N) (t : ℝ),
       c' / Real.log (max (N : ℝ) (N * |t|)) ≤ c / Real.log (max (N : ℝ) (N * |t|)) := by
@@ -1407,7 +1407,7 @@ lemma lambda_size_bound_mono {D : Formalism.BasicNotions.D7} {C1 c c' : ℝ} (hc
 
 theorem thin_of_adm (eps c6 C7 C11 : ℝ) (B : ℕ) (heps : 0 < eps) (hc6 : 0 < c6) (hC7 : 0 < C7) (hC11 : 0 < C11) :
     ∃ c' x0 : ℝ, 0 < c' ∧ 1 < x0 ∧ ∀ x : ℝ, x0 ≤ x → ∀ (D : D7) (Cq : ℝ), oddQS D ≤ B → RealBoxE D →
-      Real.log (NE D : ℝ) ≤ 8 * x ^ (eps / 5) * Real.log x ^ 2 → adm6 Cq c6 → adm7 C7 → adm11 C11 →
+      Real.log (NE D : ℝ) ≤ 8 * x ^ (eps / 5) * Real.log x ^ 2 → adm6 D Cq c6 → adm7 D C7 → adm11 D C11 →
       CondE D → RealClassE D → ThinE D x eps c' := by
   obtain ⟨c0, hc0, hq⟩ := small_no_zero_le (8 * B)
   have hcm : 0 < min c6 c0 := lt_min hc6 hc0
@@ -1672,8 +1672,8 @@ theorem pair_and_box_hypothesis_of_congruence_data_and_boxes {eps : ℝ} (Fm : F
   exact ⟨⟨Y, hY, hY2, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10⟩, ⟨Y', hY', hY2', hE⟩, hlog⟩
 
 def LitThin : Prop :=
-  (∃ C1 c : ℝ, 0 < C1 ∧ 0 < c ∧ ∀ D : D7, ShortIntervalPrimes.adm6 C1 c) ∧ (∃ C : ℝ, 0 < C ∧ ∀ D : D7, ShortIntervalPrimes.adm7 C) ∧
-    ∃ C : ℝ, 0 < C ∧ ∀ D : D7, ShortIntervalPrimes.adm11 C
+  (∃ C1 c : ℝ, 0 < C1 ∧ 0 < c ∧ ∀ D : D7, ShortIntervalPrimes.adm6 D C1 c) ∧ (∃ C : ℝ, 0 < C ∧ ∀ D : D7, ShortIntervalPrimes.adm7 D C) ∧
+    ∃ C : ℝ, 0 < C ∧ ∀ D : D7, ShortIntervalPrimes.adm11 D C
 
 theorem prop_two_six_congruence_family_of_literature {eps : ℝ} (Fm : FamP eps) (hL : LitThin) : ShortIntervalPrimes.FamilyPropTwoSixCongruenceForm Fm := by
   obtain ⟨⟨C1, c, hC1, hc, h6⟩, ⟨C7, hC7, h7⟩, C11, hC11, h11⟩ := hL

@@ -39,7 +39,7 @@ theorem ellN_supported (R : Type) [CommRing R] [Nontrivial R] {n' r : ℕ} [NeZe
   unfold Dat.ellN
   exact prod_mem fun x hx => prod_mem fun c _ => pow_mem ((MvPolynomial.X_mem_supported).2 (h x hx c)) _
 
-theorem allowed_letters_of_late_rows (D : Formalism.BasicNotions.D7) (hA3 : Formalism.MainNotions.CovariantDegrees.DefiniteRankOne) (C₀ : ℝ) (hRow : LateIndexInjective) : ProductAllowedLetters C₀ := by
+theorem allowed_letters_of_late_rows (D : Formalism.BasicNotions.D7) (hA3 : Formalism.MainNotions.CovariantDegrees.DefiniteRankOne D) (C₀ : ℝ) (hRow : LateIndexInjective) : ProductAllowedLetters C₀ := by
   intro p n' r K _ _ _ X O _ _ _ S j b e q I' I'' hW
   classical
   have hX := hW.hX

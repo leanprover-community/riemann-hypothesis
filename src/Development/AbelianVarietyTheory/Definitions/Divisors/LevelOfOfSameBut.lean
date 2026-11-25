@@ -163,7 +163,7 @@ variable {w j} in
 def IsCan (rd : Can p w j) : Prop :=
   ∀ f : NX.FmK p.Sx ((j : ℕ) + 1), rd ((p.nexp.fi j).e (Subtype.val f)) = (1 : FractionRing (ex.nch.Oe w)) ⊗ₜ[D.ntw.O (ex.nch.twI w)]
     (p.nexp.eF (ex.nch.twI w) _ (ex.nch.sd w) (Nat.le_add_left _ _) j.2).symm
-      ((1 : NX.KB (ex.nch.twI w)) ⊗ₜ[p.Sx.Ks] f : NX.KB (ex.nch.twI w) ⊗[p.Sx.Ks] _)
+      ((1 : NX.KB p.Sx (ex.nch.twI w) (ex.nch.sd w)) ⊗ₜ[p.Sx.Ks] f : NX.KB p.Sx (ex.nch.twI w) (ex.nch.sd w) ⊗[p.Sx.Ks] _)
 
 def Adapted (ρ : Setup D.ntw) : Prop :=
   RealPin p.R p.cG ρ ∧ ∃ e : FractionRing (ex.nch.Oe w) →+* ℂ, (∀ x, e (ex.nch.embW w x) = D.what₂.embLL x) ∧

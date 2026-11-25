@@ -142,7 +142,7 @@ theorem LowUnit.facSub_right {R : Subring ℂ} {f g : PowerSeries ℂ} {n n' : �
   · rw [map_sub, hflow k (hk.trans h), hglow k hk, sub_zero]
   · rw [map_sub, hflow n' h, hval, zero_sub]
 
-theorem hasUnitLeadingCoeff_rescaleExpand_eisensteinFourCubeSeries (R : Subring ℂ) (c : ℂ) {k : ℕ} :
+theorem hasUnitLeadingCoeff_rescaleExpand_eisensteinFourCubeSeries (R : Subring ℂ) (c : ℂ) {k : ℕ} (hk : k ≠ 0) :
     LowUnit R (sub1 c k aC) 0 1 := by
   refine ⟨one_mem R, by rw [inv_one]; exact one_mem R, one_ne_zero,
     fun n hn => absurd hn (Nat.not_lt_zero n), ?_⟩
@@ -172,12 +172,12 @@ theorem facSer_low {m : ℕ} (hm : 0 < m) {t : ℕ × ℕ × ℕ} (ht : t ∈ Tm
   have hk : t.1 ^ 2 ≠ 0 := pow_ne_zero _ ha0.ne'
   have hxa : LowUnit (Rm m) (xp m aC) 0 1 := by
     rw [← rescaleExpand_one]
-    exact hasUnitLeadingCoeff_rescaleExpand_eisensteinFourCubeSeries _ 1
+    exact hasUnitLeadingCoeff_rescaleExpand_eisensteinFourCubeSeries _ 1 hm.ne'
   have hxd : LowUnit (Rm m) (xp m dC) m 1 := by
     rw [← rescaleExpand_one]
     exact hasUnitLeadingCoeff_rescaleExpand_discriminantSeries (one_mem _) (by rw [inv_one]; exact one_mem _) one_ne_zero hm.ne'
   have h1 := hxa.mul (hasUnitLeadingCoeff_rescaleExpand_discriminantSeries hc hci hc0 hk)
-  have h2 := (hasUnitLeadingCoeff_rescaleExpand_eisensteinFourCubeSeries (Rm m) (zetaC t.2.2 ^ t.2.1)).mul hxd
+  have h2 := (hasUnitLeadingCoeff_rescaleExpand_eisensteinFourCubeSeries (Rm m) (zetaC t.2.2 ^ t.2.1) hk).mul hxd
   simp only [zero_add, one_mul] at h1 h2
   unfold facSer
   rcases lt_or_gt_of_ne hne with hlt | hgt

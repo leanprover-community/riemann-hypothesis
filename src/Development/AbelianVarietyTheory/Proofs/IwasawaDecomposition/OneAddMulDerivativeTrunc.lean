@@ -156,9 +156,9 @@ theorem log_add : ∀ (l : ℕ) [Fact l.Prime], ∀ (e e' : Per.Fl l) (y y' z : 
     have := (GlobalTheory.RingBasics.isUnit_nat l m hm).map q
     rwa [map_natCast] at this
   apply (hR _ n.factorial_ne_zero).mul_left_cancel
-  rw [map_add (f := _), mul_add, GlobalTheory.CrisIncl.factorial_mul_ev l e y hy n,
-    GlobalTheory.CrisIncl.factorial_mul_ev l e' y' hy' n,
-    GlobalTheory.CrisIncl.factorial_mul_ev l _ z hz n]
+  rw [map_add (f := _), mul_add, GlobalTheory.CrisIncl.factorial_mul_ev l e y he hy n,
+    GlobalTheory.CrisIncl.factorial_mul_ev l e' y' he' hy' n,
+    GlobalTheory.CrisIncl.factorial_mul_ev l _ z (by rw [map_mul, he, he', mul_one]) hz n]
   have hI : ((Per.kerP l).map q) ^ n = ⊥ := by
     rw [← Ideal.map_pow]
     exact Ideal.map_quotient_self _

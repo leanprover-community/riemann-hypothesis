@@ -170,7 +170,7 @@ theorem fibSet_eq_singleton (hK : Formalism.HermitianLatticesTheory.IsCMUnram K)
   rw [Set.mem_singleton_iff]
   constructor
   · rintro ⟨h1, ⟨g, hg, h2⟩, h3, h4⟩
-    rw [locF_eq_loc hF hP] at h1 h2 h4 ⊢
+    rw [locF_eq_loc hK hF hP] at h1 h2 h4 ⊢
     ext v
     obtain ⟨c, a, rfl⟩ := S.cover v
     rw [S.comb_mem_loc_adjoin_iff, ← h4, VecSplit.mem_cut_iff]

@@ -91,9 +91,9 @@ def HeckeStabR (j : ℕ) (hL : ℕ → PlE D.host → Module.End D.what₂.LL (S
 
 def hkFR (i : tw.Tw) (j : ℕ) (b : Bool) (hL : ℕ → PlE D.host → Module.End D.what₂.LL (S.WL j))
     (hs : HeckeStabR S j hL) (k : ℕ) (P : PlE D.host) : Module.End (FractionRing (tw.O i)) (Fm S i j b) :=
-  (Module.End.baseChangeHom S.Ks (KB i) (FmK S j)
+  (Module.End.baseChangeHom S.Ks (KB S i b) (FmK S j)
       (((hL k P).restrictScalars S.Ks).restrict (p := (S.A j).WK) (q := (S.A j).WK) fun x hx => hs k P x hx) :
-    Module.End (KB i) (KB i ⊗[S.Ks] FmK S j))
+    Module.End (KB S i b) (KB S i b ⊗[S.Ks] FmK S j))
 
 end Hecke
 
@@ -155,7 +155,7 @@ structure NMjRR (Rl : RealDat3 D A3 Ks) (cG : Formalism.L2.DIV.G0 Rl.Pg D.R.r �
     jD j x = ∑ k, a k • (show ↥(S.A j).WK from f k).1 →
       eMj w j x = ∑ k, c.embW w (a k) ⊗ₜ[D.ntw.O (c.twI w)]
         (Y.eF (c.twI w) j (c.sd w) h1 h2).symm
-          ((1 : KB (c.twI w)) ⊗ₜ[S.Ks] f k)
+          ((1 : KB S (c.twI w) (c.sd w)) ⊗ₜ[S.Ks] f k)
 
   embW_Ks : ∀ w j (a : S.Ks) (m : D.nexp.Fm (c.twI w) j (c.sd w)),
     (c.embW w (algebraMap S.Ks D.what₂.LL a) ⊗ₜ[D.ntw.O (c.twI w)] m :

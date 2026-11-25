@@ -60,7 +60,7 @@ theorem absNorm_eq_card (I : Ideal (𝓞 K)) : Ideal.absNorm I = Nat.card (𝓞 
   first
   | (rw [Ideal.absNorm_apply]; rfl)
 
-theorem conjIdeal_isMaximal {P : Ideal (𝓞 K)} (hP : P.IsMaximal) :
+theorem conjIdeal_isMaximal (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) {P : Ideal (𝓞 K)} (hP : P.IsMaximal) :
     (Formalism.HermitianLatticesTheory.conjIdeal (K := K) P).IsMaximal := by
   rw [conjIdeal_eq_comap]
   haveI := hP
@@ -127,13 +127,13 @@ theorem conjO_eq_iff_mem_range (hF : ∀ a : K, star a = a ↔ a ∈ Set.range (
     rw [hy]
     exact (hF _).2 ⟨_, rfl⟩
 
-theorem comap_eq_comap_iff (hF : ∀ a : K, star a = a ↔ a ∈ Set.range (algebraMap F K)) {P Q : Ideal (𝓞 K)}
+theorem comap_eq_comap_iff (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF : ∀ a : K, star a = a ↔ a ∈ Set.range (algebraMap F K)) {P Q : Ideal (𝓞 K)}
     (hP : P.IsMaximal) (hQ : Q.IsMaximal) :
     P.comap (algebraMap (𝓞 F) (𝓞 K)) = Q.comap (algebraMap (𝓞 F) (𝓞 K)) ↔ Q = P ∨ Q = Formalism.HermitianLatticesTheory.conjIdeal (K := K) P := by
   rw [conjIdeal_eq_comap]
   exact SplitPrimeIdeals.comap_eq_comap_iff conjO_conjO (conjO_eq_iff_mem_range hF) hP hQ
 
-theorem exists_maximal_over {𝔭 : Ideal (𝓞 F)}
+theorem exists_maximal_over (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF : ∀ a : K, star a = a ↔ a ∈ Set.range (algebraMap F K)) {𝔭 : Ideal (𝓞 F)}
     (h𝔭 : 𝔭.IsMaximal) : ∃ P : Ideal (𝓞 K), P.IsMaximal ∧ P.comap (algebraMap (𝓞 F) (𝓞 K)) = 𝔭 := by
   haveI := h𝔭
   have hinj : Function.Injective (algebraMap (𝓞 F) (𝓞 K)) := by

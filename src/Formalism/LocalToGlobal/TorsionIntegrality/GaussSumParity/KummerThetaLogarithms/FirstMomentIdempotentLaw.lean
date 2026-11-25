@@ -159,7 +159,7 @@ lemma zXY_eq [Fintype ι] (l : ℕ) (σ : K →+* K) (om oms : ι → K) (s : ZM
 lemma cc_zXY [Fintype ι] {l : ℕ} (hl : 2 ≤ l) (σ : K →+* K) (om oms : ι → K) (s : ZMod d) :
     constantCoeff (zXY l σ om oms s) = 0 := by
   have h0 : ∀ x : Bool × ι, MvPowerSeries.constantCoeff (at1 x (lgF K l)) = 0 := fun x =>
-    Formalism.InvariantFactorPaths.G7.FormalGroupLaws.constantCoeff_inVar x _ (Formalism.InvariantFactorPaths.G7.FormalGroupLaws.constantCoeff_lgF l)
+    Formalism.InvariantFactorPaths.G7.FormalGroupLaws.constantCoeff_inVar x _ (Formalism.InvariantFactorPaths.G7.FormalGroupLaws.constantCoeff_lgF l hl)
   unfold zXY
   split_ifs <;> simp [h0]
 

@@ -106,7 +106,7 @@ def aux₃ (_D : Formalism.BasicNotions.D7) (C0 CYb Cde Ck CD Cb CE1 CE2 Cm Ckap
         ((1 - X.kapP C0 CE1 CE2 Cm Ckap - ∑ j, kT j) * (dimHH (m := X.m) Kf X.TT X.aT X.bT : ℝ) /
           gaussianNumber (X.p ^ X.n') (X.m + 1))
 
-def PointsLemma (C0 CE1 CE2 : ℝ) : Prop :=
+def PointsLemma (_D : Formalism.BasicNotions.D7) (C0 CE1 CE2 : ℝ) : Prop :=
   ∀ (X : Loc) [NeZero X.m] (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
     (j : Fin (numSeg X.TT)) (aT' : Fin X.n' → ℕ) (m : ℝ),
     segNext X.TT j ≠ segStart X.TT j → (∀ s, s ≠ segStart X.TT j → aT' s = X.aT s) →
@@ -152,7 +152,7 @@ def adm2 : Prop :=
           (fun mu => ∀ i : Fin n, lam i.succ ≤ mu i ∧ mu i ≤ lam i.castSucc),
         Module.finrank K (Formalism.GradedWeylDivisibility.dualWeyl K n n mu)
 
-def adm3 : Prop :=
+def adm3 (_D : Formalism.BasicNotions.D7) : Prop :=
   ∀ (K : Type) [Field K] [CharZero K] (n : ℕ) (nu : Fin n → ℕ), Antitone nu →
     (Module.finrank K (Formalism.GradedWeylDivisibility.dualWeyl K n n nu) : ℚ) =
       ∏ i : Fin n, ∏ j : Fin n,
@@ -162,13 +162,13 @@ def ArchimedeanSignatureMatching (D : Formalism.BasicNotions.D7) : Prop := Forma
 
 def adm5 (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.AutomorphicSideConclusion
 
-def adm6 (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.DefiniteRankOne
+def adm6 (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.DefiniteRankOne D
 
-def adm7 (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.RotatedSumBound
+def adm7 (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.RotatedSumBound D
 
 def adm8 (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.PathWeightComponents
 
-def adm9 (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.ConclusionB3
+def adm9 (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.ConclusionB3 D
 
 def adm10 (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.CoefficientDependence D
 
@@ -229,7 +229,7 @@ def adm19 (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.Covari
 def adm20 (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.CanonicalTranslateJetIdentity
 
 def admitted (D : Formalism.BasicNotions.D7) : Prop :=
-  adm1 D ∧ adm2 ∧ adm3 ∧ ArchimedeanSignatureMatching D ∧ adm5 D ∧ adm6 D ∧ adm7 D ∧ adm8 D ∧ adm9 D ∧ adm10 D ∧ adm11 D ∧
+  adm1 D ∧ adm2 ∧ adm3 D ∧ ArchimedeanSignatureMatching D ∧ adm5 D ∧ adm6 D ∧ adm7 D ∧ adm8 D ∧ adm9 D ∧ adm10 D ∧ adm11 D ∧
     adm12 D ∧ adm13 D ∧ adm14 D ∧ adm15 D ∧ adm16 ∧ adm17 ∧ adm18 ∧ adm19 D ∧ adm20 D
 
 def Closed (P : ℝ → ℝ → ℝ → ℝ → ℝ → ℝ → ℝ → ℝ → ℝ → ℝ → ℝ → ℝ → ℝ → Prop) : Prop :=
@@ -290,7 +290,7 @@ theorem HI.toExt {C0 CYb Cde Ck CD Cb : ℝ} {X : Loc} (h : HI C0 CYb Cde Ck CD 
   have hJ := h0.cleaning_budget_nonneg
   exact HIext.of_le h0 (by linarith) (by linarith) hw
 
-def HerrExtensionClass (C0 CYb Cde Ck CD Cb CE1 CE2 Cm Ckap Ct Cc : ℝ) : Prop :=
+def HerrExtensionClass (_D : Formalism.BasicNotions.D7) (C0 CYb Cde Ck CD Cb CE1 CE2 Cm Ckap Ct Cc : ℝ) : Prop :=
   ∀ (X : Loc) [NeZero X.m] (W Qq O Kf : Type) [CommRing W] [IsDomain W] [IsDiscreteValuationRing W] [Field Qq]
     [Algebra W Qq] [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Field Kf] [Algebra O Kf]
     (ι : Qq →+* Kf) (σ : Qq ≃+* Qq) (jO : W →+* O) (w : O),
@@ -304,7 +304,7 @@ def HerrExtensionClass (C0 CYb Cde Ck CD Cb CE1 CE2 Cm Ckap Ct Cc : ℝ) : Prop 
         ((1 - X.kapP C0 CE1 CE2 Cm Ckap - ∑ j, kT j) * (dimHH (m := X.m) Kf X.TT X.aT X.bT : ℝ) /
           gaussianNumber (X.p ^ X.n') (X.m + 1))
 
-def ExtendedKappaBound (C0 CYb Cde Ck CD Cb CE1 CE2 Cm Ckap Cc Cs : ℝ) : Prop :=
+def ExtendedKappaBound (_D : Formalism.BasicNotions.D7) (C0 CYb Cde Ck CD Cb CE1 CE2 Cm Ckap Cc Cs : ℝ) : Prop :=
   ∀ X : Loc, D1num X → HIext C0 CYb Cde Ck CD Cb X → CBound Cc X →
     X.kapP C0 CE1 CE2 Cm Ckap ≤ Cs * X.N * X.N1 / X.Y
 
@@ -321,7 +321,7 @@ def ExtendedDigitRankBound (C0 CYb Cde Ck CD Cb CE1 CE2 Cc : ℝ) : Prop :=
             (fun i => coarseC X.p (X.seg C0 CE1 CE2 j) (segATop X.TT X.aT j) (digitBlock rz ry) i) *
           symDim (X.m + 1) ((X.seg C0 CE1 CE2 j).bPlus : ℤ)
 
-def ExtendedDichotomy (C0 CYb Cde Ck CD Cb CE1 CE2 Cc : ℝ) : Prop :=
+def ExtendedDichotomy (_D : Formalism.BasicNotions.D7) (C0 CYb Cde Ck CD Cb CE1 CE2 Cc : ℝ) : Prop :=
   ∀ (X : Loc) [NeZero X.m], D1num X → HIext C0 CYb Cde Ck CD Cb X → CBound Cc X →
     ∀ (j : Fin (numSeg X.TT)) (b : SegBlock (segS X.TT j) X.m),
       DigitsOK X.p (X.seg C0 CE1 CE2 j) (segATop X.TT X.aT j) b →
@@ -331,7 +331,7 @@ def ExtendedDichotomy (C0 CYb Cde Ck CD Cb CE1 CE2 Cc : ℝ) : Prop :=
         ((X.seg C0 CE1 CE2 j).sigma ≤ (i : ℕ) →
           ((X.seg C0 CE1 CE2 j).A0 X.p : ℝ) < (coarseA X.p (X.seg C0 CE1 CE2 j) b i : ℝ) * (1 - X.de C0 Cde))
 
-def ExtendedModelRank (C0 CYb Cde Ck CD Cb CE1 CE2 Ckap Cc : ℝ) : Prop :=
+def ExtendedModelRank (_D : Formalism.BasicNotions.D7) (C0 CYb Cde Ck CD Cb CE1 CE2 Ckap Cc : ℝ) : Prop :=
   ∀ (X : Loc) [NeZero X.m] (W Qq O Kf : Type) [CommRing W] [IsDomain W] [IsDiscreteValuationRing W] [Field Qq]
     [Algebra W Qq] [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Field Kf] [Algebra O Kf]
     (ι : Qq →+* Kf) (σ : Qq ≃+* Qq) (jO : W →+* O) (w : O),
@@ -341,7 +341,7 @@ def ExtendedModelRank (C0 CYb Cde Ck CD Cb CE1 CE2 Ckap Cc : ℝ) : Prop :=
         gaussianNumber (X.p ^ X.n') (X.m + 1) *
           ∏ j, (segRank O X.p X.m (X.seg C0 CE1 CE2 j) (segATop X.TT X.aT j) (segAPlus X.TT X.aT j) m : ℝ)
 
-def ExtendedOrderBound (C0 CYb Cde Ck CD Cb CE1 CE2 Ct Cc : ℝ) : Prop :=
+def ExtendedOrderBound (_D : Formalism.BasicNotions.D7) (C0 CYb Cde Ck CD Cb CE1 CE2 Ct Cc : ℝ) : Prop :=
   ∀ (X : Loc), D1num X → HIext C0 CYb Cde Ck CD Cb X → CBound Cc X →
     ∀ bs : ∀ j : Fin (numSeg X.TT), SegBlock (segS X.TT j) X.m,
       (∀ j, Kept X.p X.m (X.seg C0 CE1 CE2 j) (segATop X.TT X.aT j) (bs j)) →
@@ -366,10 +366,10 @@ def SegmentMarginBound (C0 CYb Cde Ck CD Cb CE1 CE2 Cc : ℝ) (M : Loc → ℝ) 
             (fun i => coarseC X.p (X.seg C0 CE1 CE2 j) (segATop X.TT X.aT j) (digitBlock rz ry) i) *
           symDim (X.m + 1) ((X.seg C0 CE1 CE2 j).bPlus : ℤ)
 
-def RootMultiplicityTwo (C0 CYb Cde Ck CD Cb CE1 CE2 Cc : ℝ) : Prop :=
+def RootMultiplicityTwo (_D : Formalism.BasicNotions.D7) (C0 CYb Cde Ck CD Cb CE1 CE2 Cc : ℝ) : Prop :=
   SegmentMarginBound C0 CYb Cde Ck CD Cb CE1 CE2 Cc fun X => X.b' / (X.k * X.Q * X.Y)
 
-def FreeTopRankBound (C0 CYb Cde Ck CD Cb CE1 CE2 Cc : ℝ) : Prop :=
+def FreeTopRankBound (_D : Formalism.BasicNotions.D7) (C0 CYb Cde Ck CD Cb CE1 CE2 Cc : ℝ) : Prop :=
   ∀ (X : Loc) (aT' : Fin X.n' → ℕ), D1num X → HIext C0 CYb Cde Ck CD Cb X →
     HIext C0 CYb Cde Ck CD Cb { X with aT := aT' } → CBound Cc X →
     ∀ (j : Fin (numSeg X.TT)) (b : SegBlock (segS X.TT j) X.m),
@@ -379,7 +379,7 @@ def FreeTopRankBound (C0 CYb Cde Ck CD Cb CE1 CE2 Cc : ℝ) : Prop :=
         Kept X.p X.m (X.seg C0 CE1 CE2 j) (segATop X.TT aT' j) b)
 
 theorem RootMultiplicityTwo.toExtendedDigitRankBound {D : Formalism.BasicNotions.D7} {C0 CYb Cde Ck CD Cb CE1 CE2 Cc : ℝ}
-    (h : RootMultiplicityTwo C0 CYb Cde Ck CD Cb CE1 CE2 Cc) : ExtendedDigitRankBound C0 CYb Cde Ck CD Cb CE1 CE2 Cc := by
+    (h : RootMultiplicityTwo D C0 CYb Cde Ck CD Cb CE1 CE2 Cc) : ExtendedDigitRankBound C0 CYb Cde Ck CD Cb CE1 CE2 Cc := by
   intro X _ W Qq O Kf _ _ _ _ _ _ _ _ _ _ ι σ jO w hS hE hC j rz ry hD
   have hM : 0 ≤ X.b' / (X.k * X.Q * X.Y) := by
     obtain ⟨⟨g1, -, -, -, -, -, -, -, g10, -⟩, -⟩ := hE
@@ -388,11 +388,11 @@ theorem RootMultiplicityTwo.toExtendedDigitRankBound {D : Formalism.BasicNotions
   exact (h X W Qq O Kf ι σ jO w hS hE hC j 0 le_rfl hM rz ry hD).2
 
 def ExtendedAllConclusions (D : Formalism.BasicNotions.D7) (C0 CYb Cde Ck CD Cb CE1 CE2 Cm Ckap Ct Cc Cs : ℝ) : Prop :=
-  HerrExtensionClass C0 CYb Cde Ck CD Cb CE1 CE2 Cm Ckap Ct Cc ∧ ExtendedKappaBound C0 CYb Cde Ck CD Cb CE1 CE2 Cm Ckap Cc Cs ∧
-    PointsLemma C0 CE1 CE2 ∧ Conclusion4 C0 CYb Cde Ck CD Cb CE1 CE2 Cc ∧ ExtendedDichotomy C0 CYb Cde Ck CD Cb CE1 CE2 Cc ∧
-    ExtendedModelRank C0 CYb Cde Ck CD Cb CE1 CE2 Ckap Cc ∧ ExtendedOrderBound C0 CYb Cde Ck CD Cb CE1 CE2 Ct Cc ∧
-    ExtendedDigitRankBound C0 CYb Cde Ck CD Cb CE1 CE2 Cc ∧ RootMultiplicityTwo C0 CYb Cde Ck CD Cb CE1 CE2 Cc ∧
-    FreeTopRankBound C0 CYb Cde Ck CD Cb CE1 CE2 Cc
+  HerrExtensionClass D C0 CYb Cde Ck CD Cb CE1 CE2 Cm Ckap Ct Cc ∧ ExtendedKappaBound D C0 CYb Cde Ck CD Cb CE1 CE2 Cm Ckap Cc Cs ∧
+    PointsLemma D C0 CE1 CE2 ∧ Conclusion4 C0 CYb Cde Ck CD Cb CE1 CE2 Cc ∧ ExtendedDichotomy D C0 CYb Cde Ck CD Cb CE1 CE2 Cc ∧
+    ExtendedModelRank D C0 CYb Cde Ck CD Cb CE1 CE2 Ckap Cc ∧ ExtendedOrderBound D C0 CYb Cde Ck CD Cb CE1 CE2 Ct Cc ∧
+    ExtendedDigitRankBound C0 CYb Cde Ck CD Cb CE1 CE2 Cc ∧ RootMultiplicityTwo D C0 CYb Cde Ck CD Cb CE1 CE2 Cc ∧
+    FreeTopRankBound D C0 CYb Cde Ck CD Cb CE1 CE2 Cc
 
 theorem ExtendedDigitRankBound.toDigitRankBound {D : Formalism.BasicNotions.D7} {C0 CYb Cde Ck CD Cb CE1 CE2 Cc : ℝ}
     (h : ExtendedDigitRankBound C0 CYb Cde Ck CD Cb CE1 CE2 Cc) : Conclusion4 C0 CYb Cde Ck CD Cb CE1 CE2 Cc := by

@@ -168,7 +168,7 @@ section Fam
 
 variable {g : ℕ}
 
-theorem isTayF_tay {θ : (Fin g → ℂ) → ℂ} :
+theorem isTayF_tay {θ : (Fin g → ℂ) → ℂ} (hθ : ContDiffAt ℂ ω θ 0) :
     IsTayF θ (fun p : Fin 1 × Fin g => (Pi.single p.2 1 : Fin g → ℂ)) (tay θ 0) := by
   have hc : ∀ (s : Multiset (Fin g → ℂ)) (k : Fin 1 × Fin g →₀ ℕ),
       coeff k (tay θ s) = mD θ 0 (dirs k + s) / fct k := fun _ _ => rfl
@@ -377,7 +377,7 @@ theorem partA (f : (Fin g → ℂ) → ℂ) (hf : ContDiffAt ℂ ω f 0) (c : Fi
     simp only [Function.comp, diagCLM_apply]
   have hA : ContDiffAt ℂ ω (f ∘ diagCLM c) 0 :=
     ContDiffAt.comp (0 : Fin g → ℂ) (by rw [map_zero]; exact hf) (diagCLM c).contDiff.contDiffAt
-  have h1 := isTayF_tay
+  have h1 := isTayF_tay hA
   rw [← e] at h1
   apply IsTayF.eq h1
   have h2 := isTayF_subst f hf (fun p : Fin 1 × Fin g => C (c p.2) * X p)

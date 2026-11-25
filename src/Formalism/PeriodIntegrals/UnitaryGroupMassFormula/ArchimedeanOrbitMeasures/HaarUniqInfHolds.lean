@@ -31,7 +31,7 @@ theorem haarUniqInf_holds : HaarUniqInf := by
   simp
 
 def WittInf : Prop := ∀ {D : D7} (X : HidaSetting D) (u' : D.what₂.Word) (ψ : AddChar (AF X.B.I.F) ℂ) hT μinf νinf fibInf,
-    PushHyp X u' ψ μinf νinf fibInf → FbI X u' hT ⊆ Set.range (orbM X u')
+    PushHyp X u' ψ hT μinf νinf fibInf → FbI X u' hT ⊆ Set.range (orbM X u')
 
 theorem regI_of (hW : WittInf) : RegI := by
   intro D X u' ψ hT μinf νinf fibInf hP

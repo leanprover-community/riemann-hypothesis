@@ -142,7 +142,7 @@ def IsBasis (q : Y ⟶ Sp K) (p : X ⟶ Sp R) (m : Y ⟶ X) (dd : Fin g → ∀ 
       ∀ W, W ≤ W₀ → ∀ f, d W f = ∑ a, rsT (c a) _ * pbT y (dd a (m ⁻¹ᵁ W) ((m.app W).hom f)) _
 
 theorem pbT_ι_comb {m : Y ⟶ X} (dd : Fin g → ∀ O : Y.Opens, Γ(Y, O) → Γ(Y, O)) (y : Z ⟶ Y) (O : Z.Opens)
-    {W₀ W : X.Opens} (hW : W ≤ W₀) (c : Fin g → Γ(Z, O)) (f : Γ(X, W)) :
+    {W₀ W : X.Opens} (hO : O ≤ y ⁻¹ᵁ m ⁻¹ᵁ W₀) (hW : W ≤ W₀) (c : Fin g → Γ(Z, O)) (f : Γ(X, W)) :
     pbT O.ι (∑ a, rsT (c a) (O ⊓ y ⁻¹ᵁ m ⁻¹ᵁ W) * pbT y (dd a (m ⁻¹ᵁ W) ((m.app W).hom f)) (O ⊓ y ⁻¹ᵁ m ⁻¹ᵁ W))
       (((O.ι ≫ y) ≫ m) ⁻¹ᵁ W) =
     ∑ a, rsT (pbT O.ι (c a) (((O.ι ≫ y) ≫ m) ⁻¹ᵁ W₀)) _ * pbT (O.ι ≫ y) (dd a (m ⁻¹ᵁ W) ((m.app W).hom f)) _ := by
@@ -174,7 +174,7 @@ theorem comb_unique {q : Y ⟶ Sp K} {p : X ⟶ Sp R} {m : Y ⟶ X} {dd : Fin g 
       ∑ a, rsT ((fun a => pbT O.ι (c a - c' a) (((O.ι ≫ y) ≫ m) ⁻¹ᵁ W₀)) a) _ *
         pbT (O.ι ≫ y) (dd a (m ⁻¹ᵁ W) ((m.app W).hom f)) _ := by
     intro W hW f
-    have e := pbT_ι_comb dd y O hW (fun a => c a - c' a) f
+    have e := pbT_ι_comb dd y O hO hW (fun a => c a - c' a) f
     beta_reduce at e ⊢
     rw [← e]
     simp only [_root_.GlobalTheory.KS.rsT_sub, sub_mul, Finset.sum_sub_distrib, h W hW f, sub_self, _root_.GlobalTheory.KS.pbT_zero]
@@ -206,7 +206,7 @@ theorem comb_exists {q : Y ⟶ Sp K} {p : X ⟶ Sp R} {m : Y ⟶ X} {dd : Fin g 
   apply (pbT_ι_bijective O (inf_le_left : O ⊓ y ⁻¹ᵁ m ⁻¹ᵁ W ≤ O) (pre_ι_eq O y m W)).1
   have e := hc₀ W hW f
   beta_reduce at e ⊢
-  rw [e, pbT_ι_comb dd y O hW c f]
+  rw [e, pbT_ι_comb dd y O hO hW c f]
   simp only [hc']
 
 private lemma pbT_mul_of_le_preimage {Y Z : Scheme.{0}} (f : Z ⟶ Y) {O₀ : Y.Opens} (a b : Γ(Y, O₀)) {V : Z.Opens}

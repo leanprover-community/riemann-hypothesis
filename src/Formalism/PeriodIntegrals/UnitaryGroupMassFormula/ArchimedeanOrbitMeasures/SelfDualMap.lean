@@ -105,7 +105,7 @@ theorem selfDual_map {D : D7} (X : HidaSetting D) (ψ : AddChar (AF X.B.I.F) ℂ
     (fun Φ hΦc hΦs => ⟨hΦc.comp e.continuous, hΦs.comp_homeomorph e⟩) hμ
 
 def SdTestI : Prop := ∀ {D : D7} (X : HidaSetting D) (u' : D.what₂.Word) (ψ : AddChar (AF X.B.I.F) ℂ) hT μinf νinf fibInf,
-    PushHyp X u' ψ μinf νinf fibInf →
+    PushHyp X u' ψ hT μinf νinf fibInf →
     ∃ Φ : TupI X → ℂ, Continuous Φ ∧ HasCompactSupport Φ ∧
       Integrable (fun y => ∫ x, Φ x * psiInf X.B.I.F ψ (BR (Ainf X.B.I.F) X.B.I.cm.sig X.B.I.J x y) ∂μinf) μinf ∧
       ∃ z, Φ (-z) ≠ 0

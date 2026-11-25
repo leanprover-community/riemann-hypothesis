@@ -464,16 +464,16 @@ private theorem nl_nrm {R : Type} [CommRing R] (p : ℕ) [hp : Fact p.Prime] (m 
     (hc : ∀ j : Fin p, h * PowerSeries.X ^ (j : ℕ) = ∑ i, phi p hp.out.pos (c i j) * PowerSeries.X ^ (i : ℕ)) :
     nrm p m hm (ev R p (m + 1) h) = ev R p m c.det := by
   classical
-  have hb : ∀ j : Fin p, (Model.basis p hu j : Model.Up R) = (PowerSeries.X ^ (j : ℕ) : PowerSeries R) := by
+  have hb : ∀ j : Fin p, (Model.basis p hu j : Model.Up R p) = (PowerSeries.X ^ (j : ℕ) : PowerSeries R) := by
     intro j
     rw [Model.basis, Module.Basis.mk_apply]
   have hn : normOp p h = c.det := by
-    have key := Algebra.norm_eq_matrix_det (Model.basis p hu) (show Model.Up R from h)
+    have key := Algebra.norm_eq_matrix_det (Model.basis p hu) (show Model.Up R p from h)
     refine key.trans ?_
     congr 1
     ext i j
     rw [Algebra.leftMulMatrix_eq_repr_mul]
-    have e : (show Model.Up R from h) * Model.basis p hu j = ∑ i', c i' j • Model.basis p hu i' := by
+    have e : (show Model.Up R p from h) * Model.basis p hu j = ∑ i', c i' j • Model.basis p hu i' := by
       rw [hb j]
       refine (hc j).trans ?_
       refine Finset.sum_congr rfl fun i' _ => ?_

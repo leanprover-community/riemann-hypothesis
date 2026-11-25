@@ -131,7 +131,7 @@ def LargeScaleConditions (D : D7) (L : SizeData₂ D) : Prop :=
 def EstimatedPrimesExceedScale (D : D7) (L : SizeData₂ D) : Prop :=
   ∀ p : ℕ, p.Prime → IsResidueClassZero D p → L.sc.x ^ (L.sc.ez / 5) < (p : ℝ)
 
-def MertensBound : Prop :=
+def MertensBound (_D : D7) : Prop :=
   ∀ y : ℝ, 1 ≤ y → ∑ p ∈ (Finset.range ⌈y⌉₊).filter Nat.Prime, Real.log p / p ≤ 2 * Real.log y
 
 
@@ -240,7 +240,7 @@ def FamilyWindowLogBound : Prop := ∃ x0 : ℝ, ∀ x ≥ x0, ∀ i : Fm.Ix x, 
 
 def FamilyInertPrimesLarge : Prop := ∃ x0 : ℝ, ∀ x ≥ x0, ∀ i : Fm.Ix x, EstimatedPrimesExceedScale (Fm.D x i) (Fm.L x i)
 
-def FamilyMertensBound : Prop := ∀ x (i : Fm.Ix x), MertensBound
+def FamilyMertensBound : Prop := ∀ x (i : Fm.Ix x), MertensBound (Fm.D x i)
 
 def FamilyCutSizes : Prop :=
   ∃ C x0 : ℝ, ∀ x ≥ x0, ∀ i : Fm.Ix x, CutSizes (Fm.D x i) (Fm.L x i) (Fm.Gx x i) Fm.GK C

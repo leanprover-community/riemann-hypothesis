@@ -65,7 +65,7 @@ def IndefiniteClassSumCondition (Q : _root_.Formalism.IndefR.IndefiniteRealisati
       NChoice.thPe D ex.nch w ((i : ℕ) + 1) (ex.nch.eMt w ((i : ℕ) + 1) x) =
         ∑ k, ex.nch.embW w (a k) ⊗ₜ[D.ntw.O (ex.nch.twI w)]
           (Q.nexp.eF (ex.nch.twI w) ((i : ℕ) + 1) (ex.nch.sd w) h1 h2).symm
-            ((1 : KB (ex.nch.twI w)) ⊗ₜ[Q.Sx.Ks] f k)
+            ((1 : KB Q.Sx (ex.nch.twI w) (ex.nch.sd w)) ⊗ₜ[Q.Sx.Ks] f k)
 end GlobalTheory.ExportPin
 end
 end

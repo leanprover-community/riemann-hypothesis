@@ -467,7 +467,7 @@ end Line
 
 theorem exists_norm_congr_pow {𝔭 : Ideal (𝓞 F)} (h𝔭 : 𝔭.IsMaximal) {c : 𝓞 F} (hc : c ∉ 𝔭) {k : ℕ}
     (hk : 1 ≤ k) : ∃ α : 𝓞 K, conjO K α * α - ι c ∈ extP K 𝔭 ^ k := by
-  obtain ⟨P, hP, rfl⟩ := exists_maximal_over h𝔭
+  obtain ⟨P, hP, rfl⟩ := exists_maximal_over hK hF h𝔭
   have hcP : ι c ∉ P := fun h => hc (Ideal.mem_comap.2 h)
   have hN := IdealNormInequalities.one_lt_absNorm hP
   obtain ⟨h1, h2⟩ := localDensity K hK P hP 1 k le_rfl hk (ι c) (idealPowerSpanBounds.conjO_map hF c) hcP
@@ -1581,7 +1581,7 @@ open Formalism.HermitianLattices.Ext.L3 Formalism.HermitianLattices.Ext.L3.U0 Fo
 theorem jordanIsom_of (hE : ExactVec) (hR : Rebase) (hL : LocSpan) (hU : UnifVal)
     : Formalism.L2.SG.Pf.Cnt.JordanIsom := by
   intro K F V _ _ _ _ _ _ _ _ _ _ _ hK hF h hs hd L L' hLl hLl' 𝔭 h𝔭 b a b' a' hb hb' hv
-  obtain ⟨P, hP, rfl⟩ := exists_maximal_over h𝔭
+  obtain ⟨P, hP, rfl⟩ := exists_maximal_over hK hF h𝔭
   obtain ⟨π, hπ, hval⟩ := hU K F hK hF P hP
   have hda := LocF.aniso_of_totPosDef hd
   obtain ⟨-, hbL, hbo, hbn, hba⟩ := hb
@@ -1611,7 +1611,7 @@ theorem jordanIsom_of (hE : ExactVec) (hR : Rebase) (hL : LocSpan) (hU : UnifVal
       rw [hsp, hsp']
       exact ⟨fun _ => Submodule.mem_top, fun _ => Submodule.mem_top⟩)
   refine ⟨g, hg, gmap_eq_of_iff fun v => ?_⟩
-  rw [← hbL, ← hbL', locF_eq_loc hF hP, locF_eq_loc hF hP, hL K F V hK hF P hP,
+  rw [← hbL, ← hbL', locF_eq_loc hK hF hP, locF_eq_loc hK hF hP, hL K F V hK hF P hP,
     hL K F V hK hF P hP]
   exact hgm v
 

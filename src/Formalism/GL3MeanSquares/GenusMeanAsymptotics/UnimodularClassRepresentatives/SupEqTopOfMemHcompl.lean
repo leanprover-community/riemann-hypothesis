@@ -39,7 +39,7 @@ theorem sup_eq_top_of_mem_hcompl (hK : Formalism.HermitianLatticesTheory.IsCMUnr
   haveI := hQ.isPrime
   have heq : P.comap (algebraMap (𝓞 F) (𝓞 K)) = Q.comap (algebraMap (𝓞 F) (𝓞 K)) :=
     hmax.eq_of_le (inferInstance : (Q.comap (algebraMap (𝓞 F) (𝓞 K))).IsPrime).ne_top hpQ
-  rcases (comap_eq_comap_iff hF hP hQ).1 heq with h | h
+  rcases (comap_eq_comap_iff hK hF hP hQ).1 heq with h | h
   · exact hu'.1 (h ▸ huQ)
   · exact hu'.2 (h ▸ huQ)
 
@@ -55,7 +55,7 @@ theorem exists_orth_basis (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (
       locF 𝔭 (Submodule.span (𝓞 K) (Set.range b)) = locF 𝔭 L ∧
       (∀ i j, algebraMap (𝓞 K) K (diagonal u i j) = h (b i) (b j)) ∧
       (∀ i, conjO K (u i) = u i) ∧ ∀ i, Ideal.span {u i} ⊔ extP K 𝔭 = ⊤ := by
-  obtain ⟨P, hP, rfl⟩ := exists_maximal_over h𝔭
+  obtain ⟨P, hP, rfl⟩ := exists_maximal_over hK hF h𝔭
   have hU : Formalism.HermitianLatticesTheory.IsUnimodularAt h P L :=
     (isUnimodularAt_iff_vd hK hF hs hd hL hLi hP).2 hv
   have hSD := Formalism.HermitianLattices.Ext.L3.WA.isSelfDualMod_loc hL hP.isPrime hU
@@ -117,7 +117,7 @@ theorem exists_orth_basis (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (
   · intro i
     rw [hb]
     exact hb0L i
-  · rw [hb, locF_eq_loc hF hP, locF_eq_loc hF hP]
+  · rw [hb, locF_eq_loc hK hF hP, locF_eq_loc hK hF hP]
     apply le_antisymm
     · rintro y ⟨t, ht, hy⟩
       exact ⟨t, ht, (Submodule.span_le.2 (by rintro _ ⟨i, rfl⟩; exact hb0L i)) hy⟩

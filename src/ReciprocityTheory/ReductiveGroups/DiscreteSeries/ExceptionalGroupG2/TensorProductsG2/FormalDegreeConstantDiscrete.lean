@@ -427,9 +427,9 @@ theorem cns_zuck_cpt {ε : Fin n → Bool} (hpq : pOf ε = 0 ∨ qOf ε = 0) {μ
     intro s
     by_cases hs : S7.IsHCParam (shiftF false μ s)
     · obtain ⟨T'⟩ := HW.kType_exists ε _ hs
-      obtain ⟨σ', h1, -, h3⟩ := isDS_compact hpq T'
+      obtain ⟨σ', h1, -, h3⟩ := isDS_compact hpq hs T'
       exact ⟨_, T', σ', hs, h1, h3, fun _ => rfl⟩
-    · obtain ⟨σ', h1, -, h3⟩ := isDS_compact hpq T
+    · obtain ⟨σ', h1, -, h3⟩ := isDS_compact hpq hμ' T
       exact ⟨μ, T, σ', hμ', h1, h3, fun h => absurd h hs⟩
   choose lamS Ts σs hHC hDS hσT hsh using hdat
   obtain ⟨hP1, hP2, hP3⟩ := HW.pieriStd n ε (lowK ε μ) T
@@ -513,9 +513,9 @@ theorem cns_zuckd_cpt {ε : Fin n → Bool} (hpq : pOf ε = 0 ∨ qOf ε = 0) {�
     intro s
     by_cases hs : S7.IsHCParam (shiftF true μ s)
     · obtain ⟨T'⟩ := HW.kType_exists ε _ hs
-      obtain ⟨σ', h1, -, h3⟩ := isDS_compact hpq T'
+      obtain ⟨σ', h1, -, h3⟩ := isDS_compact hpq hs T'
       exact ⟨_, T', σ', hs, h1, h3, fun _ => rfl⟩
-    · obtain ⟨σ', h1, -, h3⟩ := isDS_compact hpq T
+    · obtain ⟨σ', h1, -, h3⟩ := isDS_compact hpq hμ' T
       exact ⟨μ, T, σ', hμ', h1, h3, fun h => absurd h hs⟩
   choose lamS Ts σs hHC hDS hσT hsh using hdat
   obtain ⟨hP1, hP2, hP3⟩ := HW.pieriDual n ε (lowK ε μ) T

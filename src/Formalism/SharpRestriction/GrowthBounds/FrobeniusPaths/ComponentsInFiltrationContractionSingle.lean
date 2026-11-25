@@ -311,7 +311,7 @@ theorem lt_succ_set_eq_le_set (i : Fin N) : {j : Fin N | j.val < i.succ.val} = {
   simp only [Set.mem_ofPred_eq, Fin.val_succ, Fin.le_def]
   omega
 
-theorem mem_span_words_of_valuation_bounds (D : Formalism.BasicNotions.D7) (hV : ValuationsAdditive) (h17 : PathBasisOverRing) (h18 : FirstLettersLowerSet) [NeZero n]
+theorem mem_span_words_of_valuation_bounds (D : Formalism.BasicNotions.D7) (hV : ValuationsAdditive D) (h17 : PathBasisOverRing) (h18 : FirstLettersLowerSet) [NeZero n]
     (F : Type) [Field F] (th M : Fin N → ℤ) {G : MvPolynomial (Fin N × Fin n) F} (hG : G ∈ Pol F n B)
     (hc : ∀ i : Fin N, ((th i : ℤ) : WithTop ℤ) ≤ valS LL {j | j ≤ i} G ∧
       lam1S LL {j | j ≤ i} G ≤ ((M i : ℤ) : WithBot ℤ)) :
@@ -371,7 +371,7 @@ theorem valuation_bounds_iff_mem_span_words (R : Type) [CommRing R] [NeZero n] (
   rw [standard_word_set_eq_image LL B R (fun P => ∀ i : Fin N, th i ≤ P.mu i.succ (lastIdx n) ∧ P.mu i.succ 0 ≤ M i), Set.ext_iff]
   rfl
 
-theorem lemma_A3_over_field (D : Formalism.BasicNotions.D7) (hW : WordValuationBounds) (hV : ValuationsAdditive) (h17 : PathBasisOverRing) (h18 : FirstLettersLowerSet) [NeZero n]
+theorem lemma_A3_over_field (D : Formalism.BasicNotions.D7) (hW : WordValuationBounds) (hV : ValuationsAdditive D) (h17 : PathBasisOverRing) (h18 : FirstLettersLowerSet) [NeZero n]
     (F : Type) [Field F] (th M : Fin N → ℤ) : A3at F N n LL B th M :=
   (valuation_bounds_iff_mem_span_words LL B F th M).2 fun _ =>
     ⟨fun h => mem_span_words_of_valuation_bounds LL B D hV h17 h18 F th M h.1 h.2, fun h => valuation_bounds_of_mem_span_words LL B D hW h17 F th M h⟩
@@ -393,7 +393,7 @@ theorem map_mem_polynomials {R R' : Type*} [CommRing R] [CommRing R'] (φ : R �
   rw [MvPolynomial.mem_restrictSupport_iff] at hG ⊢
   exact (Finset.coe_subset.2 (MvPolynomial.support_map_subset φ G)).trans hG
 
-theorem lemma_A3_over_domain (D : Formalism.BasicNotions.D7) (hW : WordValuationBounds) (hV : ValuationsAdditive) (h17 : PathBasisOverRing) (h18 : FirstLettersLowerSet) [NeZero n]
+theorem lemma_A3_over_domain (D : Formalism.BasicNotions.D7) (hW : WordValuationBounds) (hV : ValuationsAdditive D) (h17 : PathBasisOverRing) (h18 : FirstLettersLowerSet) [NeZero n]
     (O : Type) [CommRing O] [IsDomain O] (th M : Fin N → ℤ) : A3at O N n LL B th M := by
   refine (valuation_bounds_iff_mem_span_words LL B O th M).2 fun G => ⟨fun h => ?_, fun h => valuation_bounds_of_mem_span_words LL B D hW h17 O th M h⟩
   obtain ⟨l, rfl⟩ := exists_linear_combination_words LL B D h17 O h.1

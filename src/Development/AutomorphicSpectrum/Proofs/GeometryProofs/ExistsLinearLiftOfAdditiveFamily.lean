@@ -156,7 +156,7 @@ end Analysis
 theorem lift_of_local {A E F : Type*} [NormedAddCommGroup A] [NormedSpace ℂ A]
     [NormedAddCommGroup E] [NormedSpace ℂ E] [NormedAddCommGroup F] [NormedSpace ℂ F]
     {P : A → Type*} [∀ b, Group (P b)]
-    (ex : ∀ b, F → P b) (u : ∀ b, E → P b) (k : A × E → F) {W : Set A} {r r₀ : ℝ}
+    (ex : ∀ b, F → P b) (u : ∀ b, E → P b) (k : A × E → F) {W : Set A} (hW : IsOpen W) {r r₀ : ℝ}
     (hr : 0 < r) (hr₀ : 0 < r₀)
     (hex : ∀ b ∈ W, ∀ z w, ex b (z + w) = ex b z * ex b w)
     (hu : ∀ b ∈ W, ∀ z w, u b (z + w) = u b z * u b w)
@@ -302,7 +302,7 @@ theorem exists_local_linear (e : FamExp G M B ψ) {m : ℕ} {B' : Set (Fin n →
   obtain ⟨W₂, hW₂, hb₀W₂, r, hr, hbox⟩ := box_of_eventually (hev.and hsmall)
   have hWB : ∀ b ∈ W₂, b ∈ B' := fun b hb => (hbox b hb 0 (mem_ball_self hr)).1.2.2
   obtain ⟨hl, hl1, hl2⟩ := lift_of_local (P := fun b => Over.mk (spMap (ψ b)) ⟶ G) e.ex u k
-    hr hr₀
+    (hW₁.inter hW₂) hr hr₀
     (fun b hb => e.add b (hsub (hWB b hb.2)))
     (fun b hb => hu b (hWB b hb.2))
     (fun b hb => hinj b hb.1)

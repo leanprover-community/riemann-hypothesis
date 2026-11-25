@@ -449,7 +449,7 @@ theorem pb_inv (a : ℂ) (ha : a = Complex.I ∨ a = -Complex.I) (lam : Fin n �
     rw [hx]
     by_cases hk : k = j
     · subst hk; simp [inv_mul_cancel₀ hwj.ne']
-    · simp [hk]; exact mul_nonneg (by positivity) (pbwt_pos lam k).le) i
+    · simp [Pi.single_apply, hk]; exact mul_nonneg (by positivity) (pbwt_pos lam k).le) i
   have e : (Y⁻¹ *ᵥ Pi.single j 1) i = Y⁻¹ i j := by
     simp [Matrix.mulVec, dotProduct, Pi.single_apply]
   rw [e] at key
@@ -685,7 +685,7 @@ theorem shift_mem (b : Mc n) {r : Fin n → Fin n → ℝ} (hr : ∀ i j, 0 < r 
   · simpa using (hr a c).le
 
 theorem shift_sub (b : Mc n) {r : Fin n → Fin n → ℝ} (hr : ∀ i j, 0 < r i j) (i j : Fin n) {w : ℂ}
-    {K l : ℝ} (hK : 0 < K) (hlK : l + 1 = K) (hw : ‖w‖ = r i j / K) :
+    {K l : ℝ} (hK : 0 < K) (hl : 0 ≤ l) (hlK : l + 1 = K) (hw : ‖w‖ = r i j / K) :
     pdisc (b + w • Matrix.single i j (1 : ℂ)) (fun a c => r a c * (l / K)) ⊆ pdisc b r := by
   intro x hx a c
   have h1 := hx a c
@@ -758,7 +758,7 @@ theorem cauchy_gen {F : Mc n → ℂ} {U : Set (Mc n)} (hU : IsOpen U) (hF : Con
       · have hl : (0 : ℝ) < L.length := by exact_mod_cast hL
         set r' : Fin n → Fin n → ℝ := fun a c => r a c * ((L.length : ℝ) / K) with hr'
         have hr'pos : ∀ a c, 0 < r' a c := fun a c => mul_pos (hr a c) (div_pos hl hK)
-        have hs := shift_sub b hr ij.1 ij.2 (w := w) hK (by simp [hKdef]) hw'
+        have hs := shift_sub b hr ij.1 ij.2 (w := w) hK hl.le (by simp [hKdef]) hw'
         have := ih (b + w • E) r' hr'pos (hs.trans hsub) (fun x hx => hM x (hs hx))
         have heq : (L.map fun ij => (L.length : ℝ) / r' ij.1 ij.2) = (L.map fun ij => K / r ij.1 ij.2) := by
           apply List.map_congr_left
@@ -1012,7 +1012,7 @@ theorem step (z : ℂ) (k l : Fin n) (c : ℕ → E n → ℂ) (M : ℕ) (hc : �
 
 theorem foldr_smooth (f : Fin n → Fin n) : ∀ (l : List (Fin n)) (c : ℕ → E n → ℂ),
     (∀ j, ContDiff ℝ (⊤ : ℕ∞) (c j)) → ∀ j, ContDiff ℝ (⊤ : ℕ∞) ((l.foldr (fun k c' => TD k (f k) c') c) j)
-  | [], _, hc => hc
+  | [], c, hc => hc
   | a :: l, c, hc => TD_smooth (foldr_smooth f l c hc) a (f a)
 
 theorem foldr_supp (f : Fin n → Fin n) : ∀ (l : List (Fin n)) (c : ℕ → E n → ℂ) (M : ℕ),

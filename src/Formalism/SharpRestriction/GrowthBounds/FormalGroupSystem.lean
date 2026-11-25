@@ -561,17 +561,17 @@ end Pend
 
 def adm1 : Prop := ∀ (p : ℕ) [Fact p.Prime], DworkLemma p
 
-def adm2 {p : ℕ} [Fact p.Prime] (X : Sys p) (Y : Pend X) : Prop :=
+def adm2 (_D : Formalism.BasicNotions.D7) {p : ℕ} [Fact p.Prime] (X : Sys p) (Y : Pend X) : Prop :=
   ∀ v, ∀ j < X.mm, ∀ (La : X.Lt j) (La' : X.Lt (j + 1)), (X.Pj j).IsLatTup La.2 → (X.Pj (j + 1)).IsLatTup La'.2 →
     ∀ (φ : Y.Frm j La La'), ExtensionLocalCondition p Y.Kc Y.Oc Y.be (Y.ThV v j La La' φ)
 
-def adm2b {p : ℕ} [Fact p.Prime] (X : Sys p) (Y : Pend X) : Prop :=
+def adm2b (_D : Formalism.BasicNotions.D7) {p : ℕ} [Fact p.Prime] (X : Sys p) (Y : Pend X) : Prop :=
   ∀ j < X.mm, ∀ (La : X.Lt j) (La' : X.Lt (j + 1)), (X.Pj j).IsLatTup La.2 → (X.Pj (j + 1)).IsLatTup La'.2 →
     ∀ (φ : Y.Frm j La La'), ExtensionGeneratorCondition p Y.Kc Y.Oc Y.be (Y.ThA j La La' φ)
 
 def adm2c {p : ℕ} [Fact p.Prime] (X : Sys p) (Y : Pend X) : Prop := BeProp p Y.be
 
-def adm3 {p : ℕ} [Fact p.Prime] (X : Sys p) (Y : Pend X) : Prop :=
+def adm3 (_D : Formalism.BasicNotions.D7) {p : ℕ} [Fact p.Prime] (X : Sys p) (Y : Pend X) : Prop :=
   ∀ j < X.mm, ∀ (La : X.Lt j) (La' : X.Lt (j + 1)), (X.Pj j).IsLatTup La.2 → (X.Pj (j + 1)).IsLatTup La'.2 →
     ∀ (φ : Y.Frm j La La') (I : X.ColCh j) (n : X.FrI j →₀ ℕ),
       Y.geC (AddMonoidAlgebra.coeff (applyD (X.PI j I fun _ => 0) (X.ThZA Y.Kc j (Y.ThA j La La' φ))) n) 0
@@ -744,7 +744,7 @@ def NumericalComparisonUniform : Prop :=
   ∃ C₀ : ℝ, ∀ (D : Formalism.BasicNotions.D7) (L : SizeData₂ D) (X : Inst D L) (Y : LatInst D), NumericalComparisonAt D L X Y C₀
 
 def admitted (D : Formalism.BasicNotions.D7) {p : ℕ} [Fact p.Prime] (X : Sys p) (Y : Pend X) : Prop :=
-  adm1 ∧ adm2 X Y ∧ adm2b X Y ∧ adm2c X Y ∧ adm3 X Y ∧ adm3b X ∧ ArchimedeanSignatureMatching D X Y ∧ adm5 X Y ∧ MinkowskiCounting X Y ∧ adm6 X Y ∧
+  adm1 ∧ adm2 D X Y ∧ adm2b D X Y ∧ adm2c X Y ∧ adm3 D X Y ∧ adm3b X ∧ ArchimedeanSignatureMatching D X Y ∧ adm5 X Y ∧ MinkowskiCounting X Y ∧ adm6 X Y ∧
     adm7 X Y ∧ adm8 D X ∧ adm11 X Y
 
 def Conclusion₂ (D : Formalism.BasicNotions.D7) {p : ℕ} [Fact p.Prime] (X : Sys p) (Y : Pend X) : Prop :=

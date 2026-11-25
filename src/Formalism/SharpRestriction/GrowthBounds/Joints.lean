@@ -69,13 +69,13 @@ theorem degree_bound_gives_symbol_space (D : Formalism.BasicNotions.D7)  (h : Fo
 theorem reducibility_gives_symbol_space (D : Formalism.BasicNotions.D7)  (h : Formalism.MainNotions.CovariantDegrees.ValuationLemmaField D) :
     Formalism.MainNotions.SelectionLemmas.BranchingColumnFamily D := h
 
-theorem third_degree_bound_gives_symbol_space (D : Formalism.BasicNotions.D7)  (h : Formalism.MainNotions.CovariantDegrees.DefiniteRankOne) :
+theorem third_degree_bound_gives_symbol_space (D : Formalism.BasicNotions.D7)  (h : Formalism.MainNotions.CovariantDegrees.DefiniteRankOne D) :
     Formalism.MainNotions.SelectionLemmas.GlobalSectionsSchur D := h
 
-theorem first_isotypic_gives_symbol_space (D : Formalism.BasicNotions.D7)  (h : Formalism.MainNotions.CovariantDegrees.RotatedSumBound) :
+theorem first_isotypic_gives_symbol_space (D : Formalism.BasicNotions.D7)  (h : Formalism.MainNotions.CovariantDegrees.RotatedSumBound D) :
     Formalism.MainNotions.SelectionLemmas.BracketPolynomialSpan D := h
 
-theorem third_isotypic_gives_symbol_space (D : Formalism.BasicNotions.D7)  (h : Formalism.MainNotions.CovariantDegrees.ConclusionB3) :
+theorem third_isotypic_gives_symbol_space (D : Formalism.BasicNotions.D7)  (h : Formalism.MainNotions.CovariantDegrees.ConclusionB3 D) :
     Formalism.MainNotions.SelectionLemmas.GradedLatticeStable D := h
 
 theorem integral_invariants_gives_counts (D : Formalism.BasicNotions.D7)  (h : Formalism.MainNotions.CovariantDegrees.FilteredProjectorCorollaryField) :
@@ -114,16 +114,16 @@ theorem first_degree_bound_gives_orbit_count (D : Formalism.BasicNotions.D7)  (h
 theorem degree_bound_gives_multiplicity (D : Formalism.BasicNotions.D7)  (h : Formalism.MainNotions.CovariantDegrees.HyperplaneRank D) :
     Formalism.MainNotions.tableLineDegreeFive.adm14 D := h
 
-theorem third_degree_bound_gives_orbit_count (D : Formalism.BasicNotions.D7)  (h : Formalism.MainNotions.CovariantDegrees.DefiniteRankOne) :
+theorem third_degree_bound_gives_orbit_count (D : Formalism.BasicNotions.D7)  (h : Formalism.MainNotions.CovariantDegrees.DefiniteRankOne D) :
     Formalism.MainNotions.tableLineDegreeFive.adm15 D := h
 
-theorem first_isotypic_gives_orbit_count (D : Formalism.BasicNotions.D7)  (h : Formalism.MainNotions.CovariantDegrees.RotatedSumBound) :
+theorem first_isotypic_gives_orbit_count (D : Formalism.BasicNotions.D7)  (h : Formalism.MainNotions.CovariantDegrees.RotatedSumBound D) :
     Formalism.MainNotions.tableLineDegreeFive.adm16 D := h
 
 theorem second_isotypic_gives_orbit_count (D : Formalism.BasicNotions.D7)  (h : Formalism.MainNotions.CovariantDegrees.PathWeightComponents) :
     Formalism.MainNotions.tableLineDegreeFive.adm17 D := h
 
-theorem third_isotypic_gives_orbit_count (D : Formalism.BasicNotions.D7)  (h : Formalism.MainNotions.CovariantDegrees.ConclusionB3) :
+theorem third_isotypic_gives_orbit_count (D : Formalism.BasicNotions.D7)  (h : Formalism.MainNotions.CovariantDegrees.ConclusionB3 D) :
     Formalism.MainNotions.tableLineDegreeFive.adm18 D := h
 
 theorem corollary_base_gives_orbit_count (D : Formalism.BasicNotions.D7)  (h : Formalism.MainNotions.CovariantDegrees.CoefficientDependence D) :
@@ -138,7 +138,7 @@ theorem invariant_denominator_gives_exponent_data (D : Formalism.BasicNotions.D7
 theorem integral_invariants_give_exponent_data (D : Formalism.BasicNotions.D7)  (h : Formalism.MainNotions.CovariantDegrees.IsotypicProjectorTheoremField ∧ Formalism.MainNotions.CovariantDegrees.FilteredProjectorCorollaryField) :
     Formalism.MainNotions.flipOneThree.ColumnFamilyClosure D := h
 
-theorem degree_bounds_give_exponent_data (D : Formalism.BasicNotions.D7)  (h : Formalism.MainNotions.CovariantDegrees.AutomorphicSideConclusion ∧ Formalism.MainNotions.CovariantDegrees.HyperplaneRank D ∧ Formalism.MainNotions.CovariantDegrees.DefiniteRankOne) :
+theorem degree_bounds_give_exponent_data (D : Formalism.BasicNotions.D7)  (h : Formalism.MainNotions.CovariantDegrees.AutomorphicSideConclusion ∧ Formalism.MainNotions.CovariantDegrees.HyperplaneRank D ∧ Formalism.MainNotions.CovariantDegrees.DefiniteRankOne D) :
     Formalism.MainNotions.flipOneThree.GlobalSectionsSchur D := h
 
 theorem reducibility_gives_counting_input (D : Formalism.BasicNotions.D7)  (h : Formalism.MainNotions.CovariantDegrees.ValuationLemmaField D) :
@@ -147,16 +147,16 @@ theorem reducibility_gives_counting_input (D : Formalism.BasicNotions.D7)  (h : 
 theorem first_degree_bound_gives_counting_input (D : Formalism.BasicNotions.D7)  (h : Formalism.MainNotions.CovariantDegrees.AutomorphicSideConclusion) :
     Formalism.MainNotions.ColumnSystems.adm5 D := h
 
-theorem third_degree_bound_gives_counting_input (D : Formalism.BasicNotions.D7)  (h : Formalism.MainNotions.CovariantDegrees.DefiniteRankOne) :
+theorem third_degree_bound_gives_counting_input (D : Formalism.BasicNotions.D7)  (h : Formalism.MainNotions.CovariantDegrees.DefiniteRankOne D) :
     Formalism.MainNotions.ColumnSystems.adm6 D := h
 
-theorem first_isotypic_gives_statement (D : Formalism.BasicNotions.D7)  (h : Formalism.MainNotions.CovariantDegrees.RotatedSumBound) :
+theorem first_isotypic_gives_statement (D : Formalism.BasicNotions.D7)  (h : Formalism.MainNotions.CovariantDegrees.RotatedSumBound D) :
     Formalism.MainNotions.ColumnSystems.adm7 D := h
 
 theorem second_isotypic_gives_counting_input (D : Formalism.BasicNotions.D7)  (h : Formalism.MainNotions.CovariantDegrees.PathWeightComponents) :
     Formalism.MainNotions.ColumnSystems.adm8 D := h
 
-theorem isotypic_bound_gives_statement (D : Formalism.BasicNotions.D7)  (h : Formalism.MainNotions.CovariantDegrees.ConclusionB3) :
+theorem isotypic_bound_gives_statement (D : Formalism.BasicNotions.D7)  (h : Formalism.MainNotions.CovariantDegrees.ConclusionB3 D) :
     Formalism.MainNotions.ColumnSystems.adm9 D := h
 
 theorem corollary_base_gives_counting_input (D : Formalism.BasicNotions.D7)  (h : Formalism.MainNotions.CovariantDegrees.CoefficientDependence D) :
@@ -201,16 +201,16 @@ theorem first_degree_bound_gives_localiser (D : Formalism.BasicNotions.D7)  (h :
 theorem second_degree_bound_gives_localiser (D : Formalism.BasicNotions.D7)  (h : Formalism.MainNotions.CovariantDegrees.HyperplaneRank D) :
     Formalism.MainNotions.SourceCleaning.PathColumnBasis D := h
 
-theorem third_degree_bound_gives_localiser (D : Formalism.BasicNotions.D7)  (h : Formalism.MainNotions.CovariantDegrees.DefiniteRankOne) :
+theorem third_degree_bound_gives_localiser (D : Formalism.BasicNotions.D7)  (h : Formalism.MainNotions.CovariantDegrees.DefiniteRankOne D) :
     Formalism.MainNotions.SourceCleaning.StandardMonomialSpanBis D := h
 
-theorem first_isotypic_gives_localiser (D : Formalism.BasicNotions.D7)  (h : Formalism.MainNotions.CovariantDegrees.RotatedSumBound) :
+theorem first_isotypic_gives_localiser (D : Formalism.BasicNotions.D7)  (h : Formalism.MainNotions.CovariantDegrees.RotatedSumBound D) :
     Formalism.MainNotions.SourceCleaning.PathPairCorrespondence D := h
 
 theorem second_isotypic_gives_localiser (D : Formalism.BasicNotions.D7)  (h : Formalism.MainNotions.CovariantDegrees.PathWeightComponents) :
     Formalism.MainNotions.SourceCleaning.admB2 D := h
 
-theorem third_isotypic_gives_localiser (D : Formalism.BasicNotions.D7)  (h : Formalism.MainNotions.CovariantDegrees.ConclusionB3) :
+theorem third_isotypic_gives_localiser (D : Formalism.BasicNotions.D7)  (h : Formalism.MainNotions.CovariantDegrees.ConclusionB3 D) :
     Formalism.MainNotions.SourceCleaning.admB3 D := h
 
 theorem corollary_base_gives_localiser (D : Formalism.BasicNotions.D7)  (h : Formalism.MainNotions.CovariantDegrees.CoefficientDependence D) :
@@ -624,7 +624,7 @@ theorem isotypic_coefficient_of_degree_bound (D : Formalism.BasicNotions.D7) (h 
   intro p O _ _ _ _ _ N r _ LL d
   exact h O N r LL d
 
-theorem third_degree_bound_gives_span_clause (D : Formalism.BasicNotions.D7) (h : Formalism.MainNotions.CovariantDegrees.DefiniteRankOne) : Formalism.MainNotions.PlaneGramData.adm3b := by
+theorem third_degree_bound_gives_span_clause (D : Formalism.BasicNotions.D7) (h : Formalism.MainNotions.CovariantDegrees.DefiniteRankOne D) : Formalism.MainNotions.PlaneGramData.adm3b := by
   intro p O _ _ _ _ hS N r _ LL d
   obtain ⟨⟨S⟩, n', hR⟩ := hS
   have : Fact p.Prime := ⟨hR.prime⟩
@@ -653,7 +653,7 @@ theorem extended_hypothesis_of_window {C0 CYb Cde Ck CD Cb Cc : ℝ} {X : Formal
     linarith
 
 theorem residue_bound_of_extension (D : Formalism.BasicNotions.D7) (C0 CYb Cde Ck CD Cb CE1 CE2 Cc : ℝ) (X : Formalism.MainNotions.flipOneThree.Inst)
-    (h : Formalism.MainNotions.ColumnSystems.RootMultiplicityTwo C0 CYb Cde Ck CD Cb CE1 CE2 Cc) : Formalism.MainNotions.flipOneThree.adm11 C0 CYb Cde Ck CD Cb CE1 CE2 Cc X := by
+    (h : Formalism.MainNotions.ColumnSystems.RootMultiplicityTwo D C0 CYb Cde Ck CD Cb CE1 CE2 Cc) : Formalism.MainNotions.flipOneThree.adm11 C0 CYb Cde Ck CD Cb CE1 CE2 Cc X := by
   intro hHI aT' hw m hm0 hm rz ry hd
   haveI : NeZero (X.LA aT').m := ⟨X.hm⟩
   letI := X.ringW
@@ -703,13 +703,13 @@ theorem type_one_hypothesis_to_local {C₀ CH : ℝ} {p n' m : ℕ} {TT : Finset
     Nat.cast_nonneg _, h21, h22, h23', h24⟩
 
 theorem alternative_extension_gives_bound (D : Formalism.BasicNotions.D7) (C₀ CH CE1 CE2 Ct Cc : ℝ)
-    (h : Formalism.MainNotions.ColumnSystems.ExtendedOrderBound C₀ CH CH CH CH CH CE1 CE2 Ct Cc) : ColumnFamilyLowerSet C₀ CH CE1 CE2 Ct Cc := by
+    (h : Formalism.MainNotions.ColumnSystems.ExtendedOrderBound D C₀ CH CH CH CH CH CE1 CE2 Ct Cc) : ColumnFamilyLowerSet C₀ CH CE1 CE2 Ct Cc := by
   intro p n' m _ TT G' N₁ Y Yb a b' bl bu ccl Dp cStar aT bT c hp h5 h2 he hH hW hc bs hk
   exact h (orbitLocalData p n' m TT G' N₁ Y Yb a b' bl bu ccl Dp cStar aT bT c) ⟨hp, h5, h2, he⟩
     ⟨type_one_hypothesis_to_local aT bT c hH, hW⟩ hc bs hk
 
 theorem kappa_share_of_extension_bounds (D : Formalism.BasicNotions.D7) (C₀ CH CE1 CE2 Ckap Cc Cs : ℝ)
-    (h : Formalism.MainNotions.ColumnSystems.ExtendedModelRank C₀ CH CH CH CH CH CE1 CE2 Ckap Cc)
+    (h : Formalism.MainNotions.ColumnSystems.ExtendedModelRank D C₀ CH CH CH CH CH CE1 CE2 Ckap Cc)
     (h2 : ∀ X : Formalism.MainNotions.ColumnSystems.Loc, Formalism.MainNotions.ColumnSystems.D1num X → Formalism.MainNotions.ColumnSystems.HIext C₀ CH CH CH CH CH X → Formalism.MainNotions.ColumnSystems.CBound Cc X →
       ∀ mm : ℝ, 0 ≤ mm → mm ≤ X.b' / (X.k * X.Q * X.Y) →
         kappaMarginBound Ckap X.N X.k X.Q mm X.N1 X.b' X.Y (X.E0 C₀ CE1 CE2) X.a (X.La C₀) ≤ Cs * X.N * X.N1 / X.Y) :
@@ -721,7 +721,7 @@ theorem kappa_share_of_extension_bounds (D : Formalism.BasicNotions.D7) (C₀ CH
       ⟨type_one_hypothesis_to_local aT bT c hH, hW⟩ hc mm h0 h1⟩
 
 theorem depth_bound_of_extension (D : Formalism.BasicNotions.D7) (C₀ CH CA CE1 CE2 Cm Ckap Ct Cc : ℝ)
-    (h : Formalism.MainNotions.ColumnSystems.HerrExtensionClass C₀ CH CH CH CH CH CE1 CE2 Cm Ckap Ct Cc)
+    (h : Formalism.MainNotions.ColumnSystems.HerrExtensionClass D C₀ CH CH CH CH CH CE1 CE2 Cm Ckap Ct Cc)
     (hk : ∀ (X : Formalism.MainNotions.ColumnSystems.Loc) [NeZero X.m] (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O],
       Formalism.MainNotions.ColumnSystems.HIext C₀ CH CH CH CH CH X →
       Formalism.MainNotions.ColumnSystems.DjHyp O C₀ CE1 CE2 Cm X (fun _ => depthD CA X.p X.a X.TT.card X.N1 X.m X.Y)
@@ -798,8 +798,8 @@ theorem loc_kap_facts (C0 CYb Cde Ck CD Cb Cm : ℝ) (X : Formalism.MainNotions.
   linarith
 
 theorem kappa_share_bound_of_extension (D : Formalism.BasicNotions.D7) (C₀ CH CE1 CE2 Cm Ckap Cc Cs : ℝ) (hCk : 0 ≤ Ckap) (hCm : 0 ≤ Cm)
-    (h : Formalism.MainNotions.ColumnSystems.ExtendedModelRank C₀ CH CH CH CH CH CE1 CE2 Ckap Cc)
-    (h2 : Formalism.MainNotions.ColumnSystems.ExtendedKappaBound C₀ CH CH CH CH CH CE1 CE2 Cm Ckap Cc Cs) :
+    (h : Formalism.MainNotions.ColumnSystems.ExtendedModelRank D C₀ CH CH CH CH CH CE1 CE2 Ckap Cc)
+    (h2 : Formalism.MainNotions.ColumnSystems.ExtendedKappaBound D C₀ CH CH CH CH CH CE1 CE2 Cm Ckap Cc Cs) :
     Formalism.MainNotions.flipOneThree.admB3 C₀ CH CE1 CE2 Ckap Cc (Cs + Ckap) :=
   kappa_share_of_extension_bounds D C₀ CH CE1 CE2 Ckap Cc (Cs + Ckap) h (fun X hD hX hc mm _ h1 => by
     obtain ⟨hN, hk, hQ, hb, hY, hN1, hm0⟩ := loc_kap_facts C₀ CH CH CH CH CH Cm X hCm hD hX.1
@@ -807,8 +807,8 @@ theorem kappa_share_bound_of_extension (D : Formalism.BasicNotions.D7) (C₀ CH 
       hb hY hN1 hm0 h1 (h2 X hD hX hc))
 
 theorem extension_gives_ratio_bound (D : Formalism.BasicNotions.D7) (C0 CYb Cde Ck CD Cb CE1 CE2 Cm Ckap Cc Cs : ℝ) (X : Formalism.MainNotions.flipOneThree.Inst)
-    (hCk : 0 ≤ Ckap) (hCm : 0 ≤ Cm) (h : Formalism.MainNotions.ColumnSystems.ExtendedModelRank C0 CYb Cde Ck CD Cb CE1 CE2 Ckap Cc)
-    (h2 : Formalism.MainNotions.ColumnSystems.ExtendedKappaBound C0 CYb Cde Ck CD Cb CE1 CE2 Cm Ckap Cc Cs) :
+    (hCk : 0 ≤ Ckap) (hCm : 0 ≤ Cm) (h : Formalism.MainNotions.ColumnSystems.ExtendedModelRank D C0 CYb Cde Ck CD Cb CE1 CE2 Ckap Cc)
+    (h2 : Formalism.MainNotions.ColumnSystems.ExtendedKappaBound D C0 CYb Cde Ck CD Cb CE1 CE2 Cm Ckap Cc Cs) :
     Formalism.MainNotions.flipOneThree.adm9 C0 CYb Cde Ck CD Cb CE1 CE2 Ckap Cc (Cs + Ckap) X :=
   fun hH aT' hw m h0 =>
     ⟨h (X.LA aT') X.W X.Qq X.O X.Kf X.ι X.σ X.jO X.w X.std (extended_hypothesis_of_window hH hw) hH.2.1 m h0, fun hm => by
@@ -891,7 +891,7 @@ theorem depthD_nonneg (CA : ℝ) (hCA : 0 ≤ CA) (p a Nt N₁ r : ℕ) (Y : ℝ
     (by positivity)) (by linarith)) (mul_nonneg (by norm_num) (mul_nonneg (by positivity) h2))
 
 theorem bad_share_of_extension_proposition (D : Formalism.BasicNotions.D7) (C₀ CH CA CE1 CE2 Cm Ckap Ct Cc : ℝ) (hCA : 0 ≤ CA)
-    (h : Formalism.MainNotions.ColumnSystems.HerrExtensionClass C₀ CH CH CH CH CH CE1 CE2 Cm Ckap Ct Cc) :
+    (h : Formalism.MainNotions.ColumnSystems.HerrExtensionClass D C₀ CH CH CH CH CH CE1 CE2 Cm Ckap Ct Cc) :
     Formalism.MainNotions.flipOneThree.admB2 C₀ CH CA CE1 CE2 Cm Ckap Ct Cc := by
   refine depth_bound_of_extension D C₀ CH CA CE1 CE2 Cm Ckap Ct Cc h ?_
   intro X _ O _ _ _ hX j

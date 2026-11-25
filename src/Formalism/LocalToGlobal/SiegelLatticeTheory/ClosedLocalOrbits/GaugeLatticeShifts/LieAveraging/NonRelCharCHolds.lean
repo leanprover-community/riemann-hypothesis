@@ -79,14 +79,14 @@ theorem psi_rat (w : D.what₂.Word) {x : X.B.I.GA} {m : (VS D).V ≃ₗ[D.host.
 theorem Φ_sub (X : HidaSetting D) (v) (a b : D.host.E) : Φ X v (a - b) = Φ X v a - Φ X v b := by
   simp [Φ]
 
-theorem star_F (y : D.host.E) (hy : y ∈ D.host.F) : star y = y := by
+theorem star_F (X : HidaSetting D) (y : D.host.E) (hy : y ∈ D.host.F) : star y = y := by
   rw [Formalism.BasicNotions.bridge_star_holds _ _ y]
   exact (D.host.der.mem_F y).mp hy
 
 def sigF (X : HidaSetting D) : D.host.E ≃ₐ[D.host.F] D.host.E :=
   AlgEquiv.ofRingEquiv (f := starRingAut) fun c => by
     show star (c : D.host.E) = c
-    exact star_F c c.2
+    exact star_F X c c.2
 
 theorem trace_zero (X : HidaSetting D) {y : D.host.E} (hy : y + star y = 0) : Algebra.trace D.host.F D.host.E y = 0 := by
   have h1 := Algebra.trace_eq_of_algEquiv (sigF X) y

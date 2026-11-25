@@ -353,7 +353,7 @@ open PI PI.QuotSetU PI.QuotSetU.UnitaryGroupMassFormula PI.QuotSetU.UnitaryGroup
 
 variable {k r : ℕ}
 
-abbrev GH (k r : ℕ) : Type := MG (UH (Hpk k r))
+abbrev GH (k r : ℕ) : Type := MG (UH (Hpk k r)) (unitary_hermitian_group k r)
 
 def Sg (k r : ℕ) (z : Fin (2 * r + k + 1) → ℂ) : Set (GH k r) := {g | g.toM ∈ Sset k r z}
 

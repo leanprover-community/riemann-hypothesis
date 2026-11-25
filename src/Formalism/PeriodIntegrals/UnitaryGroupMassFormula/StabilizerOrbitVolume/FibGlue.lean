@@ -271,7 +271,7 @@ def fibG (hD : DensAll μ f ι ν U) (hU : IsOpen U) (b : X) : Measure V :=
   haveI : LocallyCompactSpace U := hU.isOpenEmbedding_subtypeVal.locallyCompactSpace
   (RealRMK.rieszMeasure (lam hD hU b)).map Subtype.val
 
-def restr (φ : V → ℝ) (h : IsCcOn U φ) : C_c(U, ℝ) where
+def restr (hU : IsOpen U) (φ : V → ℝ) (h : IsCcOn U φ) : C_c(U, ℝ) where
   toFun := fun u => φ u
   continuous_toFun := h.1.comp continuous_subtype_val
   hasCompactSupport' := by
@@ -283,7 +283,7 @@ def restr (φ : V → ℝ) (h : IsCcOn U φ) : C_c(U, ℝ) where
       fun u hu => image_eq_zero_of_notMem_tsupport hu
 
 theorem extZ_restr (hU : IsOpen U) (φ : V → ℝ) (h : IsCcOn U φ) :
-    extZ U (restr φ h) = φ := by
+    extZ U (restr hU φ h) = φ := by
   funext v
   by_cases hv : v ∈ U
   · simp only [extZ, dite_eq_left hv]
@@ -300,10 +300,10 @@ theorem fibG_integral (hD : DensAll μ f ι ν U) (hU : IsOpen U) (b : X) (φ : 
   unfold fibG
   refine ⟨?_, ?_⟩
   · rw [hme.integrable_map_iff]
-    exact (restr φ h).continuous.integrable_of_hasCompactSupport
-      (restr φ h).hasCompactSupport
+    exact (restr hU φ h).continuous.integrable_of_hasCompactSupport
+      (restr hU φ h).hasCompactSupport
   · rw [hme.integral_map]
-    have hR := RealRMK.integral_rieszMeasure (lam hD hU b) (restr φ h)
+    have hR := RealRMK.integral_rieszMeasure (lam hD hU b) (restr hU φ h)
     rw [lam_apply, extZ_restr] at hR
     exact hR
 

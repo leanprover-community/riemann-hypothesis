@@ -798,7 +798,7 @@ def ScalarSizeConditions (H : WeightAlgebra.KHyp) (C2 A2 CR CT CRd : ℝ) : Prop
     X.cB CRd i0 j (WeightAlgebra.DF (X.run j).wL) (X.run j).nW ≤ WeightAlgebra.cc D L H.Cc H.Ac H.CRc (X.run j).wL
 
 def FurtherSizeConditions (H : WeightAlgebra.KHyp) (C2 A2 CR : ℝ) : Prop := ∀ j (h1 : 1 ≤ j) (h2 : j ≤ D.R.m),
-  WeightAlgebra.H4 L (X.W j h1 h2) C2 A2 CR (X.run j).ka (X.run j).wL (X.run j).wF X.TO (X.run j).nW
+  WeightAlgebra.H4 L (X.W j h1 h2) H C2 A2 CR (X.run j).ka (X.run j).wL (X.run j).wF X.TO (X.run j).nW
 
 def GlobalScalarBounds (H : WeightAlgebra.KHyp) : Prop := ∀ j (h1 : 1 ≤ j) (h2 : j ≤ D.R.m),
   WeightAlgebra.ScalB L (X.W j h1 h2) H.C1 H.A1 (X.run j).S (X.run j).ka (X.run j).wL (X.run j).wF X.TO

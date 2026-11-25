@@ -107,7 +107,7 @@ theorem isLocUnif (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF : IsF
     have := congrArg jK hz
     rwa [map_add (f := _), map_one, map_one] at this
   case skew =>
-    obtain ⟨P, hP, -⟩ := exists_maximal_over h𝔭
+    obtain ⟨P, hP, -⟩ := exists_maximal_over hK hF h𝔭
     obtain ⟨θ, hθ⟩ := exists_sub_conjO_notMem hK hP
     refine ⟨jK (θ - conjO K θ), jK_mem_SP _, ?_, ?_⟩
     · have : star (jK (θ - conjO K θ)) = jK (conjO K (θ - conjO K θ)) := rfl

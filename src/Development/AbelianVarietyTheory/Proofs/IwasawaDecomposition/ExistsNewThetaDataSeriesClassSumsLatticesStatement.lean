@@ -1146,7 +1146,7 @@ abbrev RdV (D : D7) (ρ : Setup D.ntw) : Type :=
 
 def rdVLin (rdV : RdV D ρ) (i) (j : Fin D.R.m) (b k Q ψ) :
     D.nexp.MtV i ((j : ℕ) + 1) b k Q ψ →ₗ[D.ntw.Ok i k]
-      Via (D.ntw.Ok i k) (Bridge.Gf (Vc D j) → PolF D (Wc D j).rank (Vc D j).rank) where
+      Via (D.ntw.Ok i k) (ρ.ek i b k) (Bridge.Gf (Vc D j) → PolF D (Wc D j).rank (Vc D j).rank) where
   toFun f := rdV i j b k Q ψ f
   map_add' f g := map_add _ f g
   map_smul' c f := by

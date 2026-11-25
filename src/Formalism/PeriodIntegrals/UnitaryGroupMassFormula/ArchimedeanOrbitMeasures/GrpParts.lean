@@ -74,7 +74,7 @@ def StdCtx {D : D7} (X : HidaSetting D) (u' : D.what₂.Word) (hb : Formalism.L2
     (c : X.B.I.Ginf) (S : NumberField.InfinitePlace X.B.I.F → Finset (Fin X.B.I.n)) {ι η : Type} [Fintype ι] [Fintype η]
     (L : EuclideanSpace ℝ ι →ₗ[ℝ] (NumberField.InfinitePlace X.B.I.F → Matrix (Fin X.B.I.n) (Fin X.B.I.n) ℂ))
     (L₁ : EuclideanSpace ℝ η →ₗ[ℝ] (NumberField.InfinitePlace X.B.I.F → Matrix (Fin X.B.I.n) (Fin X.B.I.n) ℂ)) : Prop :=
-  (∃ ψ : AddChar (AF X.B.I.F) ℂ, ∃ hT μinf νinf fibInf, PushHyp X u' ψ μinf νinf fibInf) ∧
+  (∃ ψ : AddChar (AF X.B.I.F) ℂ, ∃ hT μinf νinf fibInf, PushHyp X u' ψ hT μinf νinf fibInf) ∧
     StdConj X hb u' c S ∧ LieCompl X S L ∧ BlockLie X S L₁
 
 def ChiStab : Prop := ∀ {D : D7} (X : HidaSetting D) (u' : D.what₂.Word) hb c S {ι η : Type} [Fintype ι] [Fintype η] L L₁,

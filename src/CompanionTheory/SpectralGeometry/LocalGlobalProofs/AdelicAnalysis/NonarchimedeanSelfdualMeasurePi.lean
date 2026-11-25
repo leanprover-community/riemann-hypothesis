@@ -151,7 +151,7 @@ theorem integral_subgroup_eq_real (lam : Measure R) (A : Set R) (hA : Measurable
   rw [setIntegral_congr_fun hA (g := fun _ => (1 : ℂ)) (fun x hx => h x hx)]
   simp [Measure.real]
 
-theorem dual_facts (ha : ∀ x y, ψ (x + y) = ψ x * ψ y) (hn : ∀ x, ‖ψ x‖ = 1)
+theorem dual_facts (hc : Continuous ψ) (ha : ∀ x y, ψ (x + y) = ψ x * ψ y) (hn : ∀ x, ‖ψ x‖ = 1)
     (lam : Measure R) (hsd : SelfDual lam (fun s t => ψ (s * t))) (L : AddSubgroup R)
     (hLc : IsCompact (L : Set R)) (hLo : IsOpen (L : Set R))
     (hP : IsCompact (ann ha hn L : Set R)) :
@@ -327,7 +327,7 @@ theorem box_formula (hc : Continuous ψ) (ha : ∀ x y, ψ (x + y) = ψ x * ψ y
   rw [integral_add_right_eq_self g z, hg, integral_indicator hbm, integral_const_mul]
 
 theorem mean_close (lam : Measure R) [lam.IsAddHaarMeasure] [SigmaFinite lam] (A : Set R)
-    (hAf : lam A < ⊤) (c : ℝ) (hc0 : 0 ≤ c) (hcm : lam.real A * c = 1)
+    (hAm : MeasurableSet A) (hAf : lam A < ⊤) (c : ℝ) (hc0 : 0 ≤ c) (hcm : lam.real A * c = 1)
     (f : (ι → R) → ℂ) (hf : IntegrableOn f (box ι A) (Measure.pi fun _ : ι => lam)) (v : ℂ) (ε : ℝ)
     (h : ∀ u ∈ box ι A, ‖f u - v‖ ≤ ε) :
     ‖(c : ℂ) ^ Fintype.card ι * ∫ u in box ι A, f u ∂(Measure.pi fun _ : ι => lam) - v‖ ≤ ε := by
@@ -378,11 +378,11 @@ theorem selfDual_pi : ∀ (R : Type) [CommRing R] [TopologicalSpace R] [IsTopolo
     obtain ⟨N, -, hN⟩ := hUb.1.mem_iff.1 hS
     filter_upwards [Filter.eventually_ge_atTop N] with n hn
     exact (hLU n).trans ((hUb.2 hn).trans hN)
-  have hD := fun n => dual_facts ha hn lam hsd (L n) (hLc n) (hLo n) (hPc _ (hLc n) (hLo n))
+  have hD := fun n => dual_facts hc ha hn lam hsd (L n) (hLc n) (hLo n) (hPc _ (hLc n) (hLo n))
   have hex : ∀ t : R, ∀ᶠ n in Filter.atTop, t ∈ ann ha hn (L n) := by
     intro t
     obtain ⟨M, hMc, hMo, hMt⟩ := hK {t} isCompact_singleton
-    have hMo' := (dual_facts ha hn lam hsd M hMc hMo (hPc _ hMc hMo)).2.2
+    have hMo' := (dual_facts hc ha hn lam hsd M hMc hMo (hPc _ hMc hMo)).2.2
     have hnb : (ann ha hn M : Set R) ∈ 𝓝 (0 : R) :=
       hMo'.mem_nhds (ann ha hn M).zero_mem
     filter_upwards [hLs _ hnb] with n hn s hs
@@ -434,7 +434,7 @@ theorem selfDual_pi : ∀ (R : Type) [CommRing R] [TopologicalSpace R] [IsTopolo
       Φs.comp_homeomorph (Homeomorph.subRight z)
     have hint2 : Integrable (fun u : ι → R => Φ (u - z)) (Measure.pi fun _ : ι => lam) :=
       (Φc.comp (continuous_id.sub continuous_const)).integrable_of_hasCompactSupport hsub
-    refine lt_of_le_of_lt (mean_close lam (L n : Set R).measurableSet
+    refine lt_of_le_of_lt (mean_close lam (L n : Set R) (hLo n).measurableSet
       (hLc n).measure_lt_top _ measureReal_nonneg d1 _ hint2.integrableOn (Φ (-z)) (ε / 2) ?_)
       (half_lt_self hε)
     intro u hu

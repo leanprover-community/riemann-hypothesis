@@ -69,10 +69,10 @@ variable {n : ℕ} {H : Type} [NormedAddCommGroup H] [NormedSpace ℂ H] [Comple
 
 section Group
 
-variable {μ : Measure (MG G)} [IsFiniteMeasureOnCompacts μ] {φ : MG G → ℂ}
+variable {μ : Measure (MG G hG)} [IsFiniteMeasureOnCompacts μ] {φ : MG G hG → ℂ}
 
 theorem integrable_csmul {V : Type*} [NormedAddCommGroup V] [NormedSpace ℂ V] (hφ : Continuous φ)
-    (hc : HasCompactSupport φ) {f : MG G → V} (hf : Continuous f) :
+    (hc : HasCompactSupport φ) {f : MG G hG → V} (hf : Continuous f) :
     Integrable (fun g => φ g • f g) μ :=
   (hφ.smul hf).integrable_of_hasCompactSupport hc.smul_right
 

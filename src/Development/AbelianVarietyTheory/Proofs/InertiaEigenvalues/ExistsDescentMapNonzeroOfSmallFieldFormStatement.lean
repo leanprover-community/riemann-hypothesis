@@ -76,7 +76,7 @@ theorem exists_desc_of_isKsForm : ∀ (D : D7) (S : RatDat D.ntw) (j : ℕ), (S.
     ∃ Φ : S.WL j →+ Fm S i j b, Φ x ≠ 0 ∧
       (∀ (c : ↥D.LL0) (w : S.WL j), Φ (((c : ↥D.LL0) : D.what₂.LL) • w) = readLL0 S i b c • Φ w) ∧
       ∀ (T : Module.End D.what₂.LL (S.WL j)) (hT : ∀ w ∈ (S.A j).WK, T w ∈ (S.A j).WK) (w : S.WL j),
-        Φ (T w) = Module.End.baseChangeHom S.Ks (KB i) (FmK S j)
+        Φ (T w) = Module.End.baseChangeHom S.Ks (KB S i b) (FmK S j)
           ((T.restrictScalars S.Ks).restrict (p := (S.A j).WK) (q := (S.A j).WK) hT) (Φ w) := by
   intro D S j hK i b x hx
   classical
@@ -87,7 +87,7 @@ theorem exists_desc_of_isKsForm : ∀ (D : D7) (S : RatDat D.ntw) (j : ℕ), (S.
   let ι : FmK S j →ₗ[S.Ks] S.WL j := (S.A j).WK.subtype
   have hbK : ∀ r, ι (bK r) = v r := fun r => congrArg Subtype.val (Module.Basis.span_apply hliK r)
   have hbL : ∀ r, bL r = v r := by intro r; simp [bL]
-  let bF : Module.Basis (Fin n) (KB i) (Fm S i j b) := Algebra.TensorProduct.basis (KB i) bK
+  let bF : Module.Basis (Fin n) (KB S i b) (Fm S i j b) := Algebra.TensorProduct.basis (KB S i b) bK
   obtain ⟨r0, ha⟩ : ∃ r0, bL.repr x r0 ≠ 0 := by
     by_contra h; push Not at h; exact hx (bL.ext_elem fun r => by simpa using h r)
   obtain ⟨g, hg⟩ : ∃ g : Module.Dual ↥D.LL0 D.what₂.LL, g (bL.repr x r0) ≠ 0 := by
@@ -97,7 +97,7 @@ theorem exists_desc_of_isKsForm : ∀ (D : D7) (S : RatDat D.ntw) (j : ℕ), (S.
   have hfc : ∀ (c : ↥D.LL0) (y : D.what₂.LL), f ((c : D.what₂.LL) * y) = c * f y := by
     intro c y
     rw [show (c : D.what₂.LL) * y = c • y from (Algebra.smul_def c y).symm, map_smul, smul_eq_mul]
-  let φ : (Fin n → D.what₂.LL) →+ (Fin n → KB i) :=
+  let φ : (Fin n → D.what₂.LL) →+ (Fin n → KB S i b) :=
     AddMonoidHom.compLeft ((readLL0 S i b).toAddMonoidHom.comp f.toAddMonoidHom) (Fin n)
   let Φ : S.WL j →+ Fm S i j b :=
     (bF.equivFun.symm.toLinearMap.toAddMonoidHom).comp (φ.comp bL.equivFun.toLinearMap.toAddMonoidHom)
@@ -131,18 +131,18 @@ theorem exists_desc_of_isKsForm : ∀ (D : D7) (S : RatDat D.ntw) (j : ℕ), (S.
         rw [map_smul, hbK, hbL, algebraMap_smul]
       rw [e2, Module.Basis.repr_sum_self]
     apply bF.equivFun.injective
-    have hbc : Module.End.baseChangeHom S.Ks (KB i) (FmK S j) T' = LinearMap.baseChange (KB i) T' := rfl
-    change bF.equivFun (Φ (T w)) = bF.equivFun (Module.End.baseChangeHom S.Ks (KB i) (FmK S j) T' (Φ w))
+    have hbc : Module.End.baseChangeHom S.Ks (KB S i b) (FmK S j) T' = LinearMap.baseChange (KB S i b) T' := rfl
+    change bF.equivFun (Φ (T w)) = bF.equivFun (Module.End.baseChangeHom S.Ks (KB S i b) (FmK S j) T' (Φ w))
     rw [hbc]
-    have hMF : LinearMap.toMatrix bF bF (LinearMap.baseChange (KB i) T') = t.map (algebraMap S.Ks (KB i)) :=
+    have hMF : LinearMap.toMatrix bF bF (LinearMap.baseChange (KB S i b) T') = t.map (algebraMap S.Ks (KB S i b)) :=
       LinearMap.toMatrix_baseChange _ _ _ _
     have hL : ∀ r, bL.repr (T w) r = ∑ q, algebraMap S.Ks D.what₂.LL (t r q) * bL.repr w q := by
       intro r
       rw [← LinearMap.toMatrix_mulVec_repr bL bL T w, hTm]; rfl
-    have hKB : ∀ r, bF.equivFun (LinearMap.baseChange (KB i) T' (Φ w)) r =
-        ∑ q, algebraMap S.Ks (KB i) (t r q) * bF.equivFun (Φ w) q := by
+    have hKB : ∀ r, bF.equivFun (LinearMap.baseChange (KB S i b) T' (Φ w)) r =
+        ∑ q, algebraMap S.Ks (KB S i b) (t r q) * bF.equivFun (Φ w) q := by
       intro r
-      have h1 := congrFun (LinearMap.toMatrix_mulVec_repr bF bF (LinearMap.baseChange (KB i) T') (Φ w)) r
+      have h1 := congrFun (LinearMap.toMatrix_mulVec_repr bF bF (LinearMap.baseChange (KB S i b) T') (Φ w)) r
       rw [hMF] at h1
       exact h1.symm
     funext r

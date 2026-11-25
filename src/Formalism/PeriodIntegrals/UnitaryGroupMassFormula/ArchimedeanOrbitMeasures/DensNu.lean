@@ -185,7 +185,7 @@ def betaH (x y : Wh X) : ℝ := sumReI X (pairHerm (Ainf X.B.I.F) X.B.I.cm.sig (
 end Pair
 
 def DensNu : Prop := ∀ {D : D7} (X : HidaSetting D) (u' : D.what₂.Word) (ψ : AddChar (AF X.B.I.F) ℂ) hT μinf νinf fibInf,
-    PushHyp X u' ψ μinf νinf fibInf →
+    PushHyp X u' ψ hT μinf νinf fibInf →
     νinf.map (hermCoord X) = ENNReal.ofReal (Real.sqrt |(Matrix.of fun i j =>
       betaH X (stdOrthonormalBasis ℝ (Wh X) i) (stdOrthonormalBasis ℝ (Wh X) j)).det|) • volume
 

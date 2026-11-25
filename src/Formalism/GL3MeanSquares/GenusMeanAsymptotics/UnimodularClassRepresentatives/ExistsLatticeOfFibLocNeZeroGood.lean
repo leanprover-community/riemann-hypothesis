@@ -108,7 +108,7 @@ theorem locR_eq_locF (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF : 
     (hP : P.IsMaximal) :
     Formalism.HermitianLatticesTheory.locR (K := K) P =
       locF (P.comap (algebraMap (𝓞 F) (𝓞 K))) (1 : Submodule (𝓞 K) K) :=
-  (locF_eq_loc hF hP (1 : Submodule (𝓞 K) K)).symm
+  (locF_eq_loc hK hF hP (1 : Submodule (𝓞 K) K)).symm
 
 theorem inv_mem_locF_one {𝔭 : Ideal (𝓞 F)} (h𝔭 : 𝔭.IsMaximal) {n : 𝓞 F} (hn0 : n ≠ 0)
     (hn : n ∉ 𝔭) : (algebraMap F K (n : F))⁻¹ ∈ locF 𝔭 (1 : Submodule (𝓞 K) K) := by
@@ -133,7 +133,7 @@ theorem vd_cut_eq_zero (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF 
   rw [← isUnimodularAt_iff_vd hK hF (S.isSymm hs) (S.isTotPosDef hd) (StabilizerLattices.isFullLattice_cut S hB)
     (isIntegralLat_cut S hBi) hP]
   apply unimod_of_unimod_adjoin hs S
-  rw [locF_eq_loc hF hP] at hx
+  rw [locF_eq_loc hK hF hP] at hx
   have hn' : (h S.x₀ S.x₀)⁻¹ ∈ Formalism.HermitianLatticesTheory.locR (K := K) P := by
     rw [locR_eq_locF hK hF hP, hn]
     exact inv_mem_locF_one h𝔭 hn0 (LocalizedFibreSets.notMem_of_vF_zero h𝔭 hn0 hvn)

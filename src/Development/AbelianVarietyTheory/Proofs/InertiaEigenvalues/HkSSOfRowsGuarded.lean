@@ -544,7 +544,7 @@ theorem opK_comm : ∀ {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 I0 T : Typ
   constructor
   · have hcm := comm_of_conj (Y.eF i j b h1 h2) (D.nexp.hkF i j b k P) (D.nexp.hkF i j b k' P') _ _ _ _
       (hc k P) (hc k' P') (hkE k P hP) (hkE k' P' hP') (hHk i hi j hj b k P k' P' hP hP').eq
-    apply baseChange_inj (K := KB i)
+    apply baseChange_inj (K := KB S i b)
     rwa [map_mul, map_mul]
   · intro g
     have hne : (show FractionRing (D.ntw.O i) from (readLL0 S i b (chiL S j (Y.chi j h1 h2) (S.eG.symm (S.eG g))))⁻¹) ≠ 0 := by
@@ -553,7 +553,7 @@ theorem opK_comm : ∀ {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 I0 T : Typ
     have hA : ∀ x, Y.eF i j b h1 h2 (D.nexp.actG i j b (S.eG g) x) =
         (show FractionRing (D.ntw.O i) from (readLL0 S i b (chiL S j (Y.chi j h1 h2) (S.eG.symm (S.eG g))))⁻¹) •
           (show Module.End (FractionRing (D.ntw.O i)) (Fm S i j b) from
-            Module.End.baseChangeHom S.Ks (KB i) (FmK S j) (rhoKG S j (Y.rho j h1 h2) (S.eG.symm (S.eG g))))
+            Module.End.baseChangeHom S.Ks (KB S i b) (FmK S j) (rhoKG S j (Y.rho j h1 h2) (S.eG.symm (S.eG g))))
             (Y.eF i j b h1 h2 x) := by
       intro x
       rw [Y.act]
@@ -563,7 +563,7 @@ theorem opK_comm : ∀ {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 I0 T : Typ
     have hcm := comm_of_conj (Y.eF i j b h1 h2) _ _ _ _ _ _ hne (hc k P) hA (hkE k P hP) hCG'
     rw [MulEquiv.symm_apply_apply] at hcm
     symm
-    apply baseChange_inj (K := KB i)
+    apply baseChange_inj (K := KB S i b)
     rwa [map_mul, map_mul]
 
 end GlobalTheory.HkKs
@@ -1178,7 +1178,7 @@ theorem hkF_separable {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 I0 T : Type
   obtain ⟨h1, h2⟩ := Finset.mem_Icc.1 hj
   obtain ⟨q, hqs, hq⟩ := GlobalTheory.T.hecke_commutation_real_expansion Rl F cG S Y H hG hC hX hR hU hI hS0c hS02 hS0b i hi j h1 h2 b k P hk
 
-  set rd : ↥D.LL0 →+* KB i := readLL0 S i b with hrd
+  set rd : ↥D.LL0 →+* KB S i b := readLL0 S i b with hrd
   set hst := Y.rho j h1 h2
   set hχ := Y.chi j h1 h2
   set T0 := GlobalTheory.GoodSS.opK S j (H.hL j k P) (fun x hx => H.hs j h1 h2 k P x hx) with hT0
@@ -1199,27 +1199,27 @@ theorem hkF_separable {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 I0 T : Type
     by_contra hgs
     exact hg (by simp only [hsupp g hgs, zero_mul, zero_smul])
 
-  have hdesc := _root_.GlobalTheory.baseChange_polynomial_kills_descent S.Ks ↥D.LL0 (KB i) (FmK S j) (G0g D.nd) rd (fun _ => rfl) T0 s ρ a q
+  have hdesc := _root_.GlobalTheory.baseChange_polynomial_kills_descent S.Ks ↥D.LL0 (KB S i b) (FmK S j) (G0g D.nd) rd (fun _ => rfl) T0 s ρ a q
     (fun z hz => hq z (hE' ▸ hz))
   set c := H.cHk i b k P with hc
   have hc0 : c ≠ 0 := by
     rw [hc, H.cHk_pow]
     exact pow_ne_zero _ (H.cHk_unit i b P).ne_zero
 
-  set B : Module.End (FractionRing (D.ntw.O i)) (Fm S i j b) := LinearMap.baseChange (KB i) T0 with hB
+  set B : Module.End (FractionRing (D.ntw.O i)) (Fm S i j b) := LinearMap.baseChange (KB S i b) T0 with hB
   have hAB : ∀ x, Y.eF i j b h1 h2 (D.nexp.hkF i j b k P x) = (c • B) (Y.eF i j b h1 h2 x) := fun x =>
     H.hkEq i j b h1 h2 k P x hk.2.2.2 hk.2.2.1 hk.2.1
 
   have hE : ∀ x0, Y.eF i j b h1 h2 (eG D.nexp i j b x0) =
-      (∑ g ∈ s, rd (a g) • LinearMap.baseChange (KB i) (ρ g)) (Y.eF i j b h1 h2 x0) := by
+      (∑ g ∈ s, rd (a g) • LinearMap.baseChange (KB S i b) (ρ g)) (Y.eF i j b h1 h2 x0) := by
     intro x0
     have hact : ∀ g y, actG S i j b hst hχ g y =
-        (rd (chiL S j hχ (S.eG.symm g)))⁻¹ • LinearMap.baseChange (KB i) (ρ g) y := fun _ _ => rfl
+        (rd (chiL S j hχ (S.eG.symm g)))⁻¹ • LinearMap.baseChange (KB S i b) (ρ g) y := fun _ _ => rfl
 
     rw [eG, MonoidAlgebra.lift_apply, Finsupp.sum, LinearMap.sum_apply, map_sum]
     refine (Finset.sum_congr rfl fun g _ => ?_).trans (LinearMap.sum_apply _ _ _).symm
     change Y.eF i j b h1 h2 ((D.nexp.eAlg i b).coeff g • D.nexp.actG i j b g x0) =
-      rd (a g) • LinearMap.baseChange (KB i) (ρ g) (Y.eF i j b h1 h2 x0)
+      rd (a g) • LinearMap.baseChange (KB S i b) (ρ g) (Y.eF i j b h1 h2 x0)
     rw [map_smul, Y.act i j b h1 h2 g x0, hact, hcoef]
     have hag : rd (a g) = rd (D.nexp.eLL0 g) * (rd (chiL S j hχ (S.eG.symm g)))⁻¹ := by
       simp only [ha, map_mul, map_inv₀]

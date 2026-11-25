@@ -401,7 +401,7 @@ def H3 (large₂ : SizeData₂ D) (H : KHyp) (C2 A2 CR Bx : ℝ) (wL : WeightFam
   (D.R.f : ℝ) * (D.R.m : ℝ) ^ 3 * WeightFamilies.RRv D CR ^ 2 * cc D large₂ H.Cc H.Ac H.CRc wL ≤ 1 / 2 ∧
   ((WeightFamilies.dimY D j + 4) * DF wL : ℝ) ≤ (qq D : ℝ) - 2
 
-def H4 (large₂ : SizeData₂ D) (X : PJ D B P j) (C2 A2 CR : ℝ) (ka wL wF : WeightFamilies.Wt D j) (T nW : ℕ) : Prop :=
+def H4 (large₂ : SizeData₂ D) (X : PJ D B P j) (_H : KHyp) (C2 A2 CR : ℝ) (ka wL wF : WeightFamilies.Wt D j) (T nW : ℕ) : Prop :=
   large₂.sc.b ≤ ka.size ∧ (T : ℝ) * wL.size ≤ 2 * ka.size ∧
   wF.size ≤ ((WeightFamilies.dimY D j : ℝ) + 2) * wL.size + 5 * D.R.f * (D.R.r : ℝ) ^ 2 * T ∧
   WeightFamilies.PPv D large₂ C2 A2 ^ 3 * (T : ℝ) ^ 2 ≤ large₂.sc.b ∧
@@ -429,7 +429,7 @@ def Hyp (large₂ : SizeData₂ D) (X : PJ D B P j) (H : KHyp) (C2 A2 CR Bx CT :
     (ka wL wF : WeightFamilies.Wt D j) (T nP nW : ℕ) (h0 : ℝ) (nus : HeightOneSpectrum (𝓞 B.KO) → ℝ) : Prop :=
   ParA large₂ H.CA ∧ SetC large₂ X H.CK H.C1 H.A1 ka wL wF T nP nW h0 ∧ ScalB large₂ X H.C1 H.A1 S ka wL wF T ∧
     H1 large₂ X H S wL nus ∧ H2 X S ka wL wF ∧ H3 large₂ H C2 A2 CR Bx wL T ∧
-    H4 large₂ X C2 A2 CR ka wL wF T nW ∧ (T : ℝ) ≤ large₂.sc.x ^ CT
+    H4 large₂ X H C2 A2 CR ka wL wF T nW ∧ (T : ℝ) ≤ large₂.sc.x ^ CT
 
 end J
 

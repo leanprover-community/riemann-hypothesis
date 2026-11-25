@@ -31,7 +31,7 @@ theorem data_lowK_eq (hgap : StdGap ε lam) (hσ : IsURepOn (UJset ε) σ) (hD :
   have hSK' : ∀ k ∈ Kset ε, ∀ x ∈ S, σ k x ∈ S := by
     intro k hk x hx
     exact hST.2.1 k (by rw [mir_Kset_eq]; exact hk) x hx
-  have hSM : S ≤ (genSub E V).map D.subtype := data_kfin_le hgap hσ hD hV hc S hS hST.1 hSK'
+  have hSM : S ≤ (genSub E V).map D.subtype := data_kfin_le hgap hσ hD hV hc hVK S hS hST.1 hSK'
   have hSD : S ≤ D := fun x hx => by
     obtain ⟨y, -, rfl⟩ := Submodule.mem_map.1 (hSM hx)
     exact y.2

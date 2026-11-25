@@ -756,7 +756,7 @@ theorem term_eq_aux (V V' W : HSp D) (r : ℕ) (C C' : Matrix (Fin V.rank) (Fin 
     (hY : IsCovolOne (ratMx D W.rank r) μ 𝓨) (s : ℕ) (L : Matrix (Fin W.rank) (Fin s) D.host.E)
     (m : Matrix (Fin s) (Fin r) D.host.E) (hL : IsIsoFrame W L) (n : NI V C) (F : WO V W → ℂ)
     (hF : IsThetaFunO ψ V W F) (Lm : Matrix (Fin W.rank) (Fin s) (AE D)) (hLm : Lm = L.map (incA D))
-    (K : Matrix (Fin s) (Fin V.rank) (AE D)) :
+    (K : Matrix (Fin s) (Fin V.rank) (AE D)) (hK : K = (m * adj D C' * V.gram).map (incA D)) :
     res V V' W C B μ 𝓨 (heisO ψ V W (Lm * K) (ω ((n : GA D V), 1) F)) 0 =
       res V V' W C B μ 𝓨 (heisO ψ V W (Lm * K) F)
         (Lm * (K * (mt V (n : GA D V) - 1) * (B.map (incA D) : Matrix (Fin V.rank) (Fin V'.rank) (AE D)))) := by
@@ -859,7 +859,7 @@ theorem mean_isoTerm_invariant : ∀ (D : D7) (V V' W : HSp D) (r : ℕ) (C C' :
             (((m * adj D C' * V.gram).map (incA D) : Matrix (Fin s) (Fin V.rank) (AE D)) * (mt V (n : GA D V) - 1) *
               (B.map (incA D) : Matrix (Fin V.rank) (Fin V'.rank) (AE D)))) ∂κ := by
         congr 1; funext n
-        rw [hsplit n, term_eq_aux V V' W r C C' B hs h1 h2 h3 ψ χS χT ω hω μ 𝓨 hY s L m hL n _ hf1 _ rfl _, hG1]
+        rw [hsplit n, term_eq_aux V V' W r C C' B hs h1 h2 h3 ψ χS χT ω hω μ 𝓨 hY s L m hL n _ hf1 _ rfl _ rfl, hG1]
     _ = ((κ 𝓝).toReal : ℂ) * ∫ a in 𝓐, ω' (1, (n' : GA D W)) (res V V' W C B μ 𝓨 (heisO ψ V W
           ((L.map (incA D) : Matrix (Fin W.rank) (Fin s) (AE D)) *
           ((m * adj D C' * V.gram).map (incA D) : Matrix (Fin s) (Fin V.rank) (AE D))) f))
@@ -878,7 +878,7 @@ theorem mean_isoTerm_invariant : ∀ (D : D7) (V V' W : HSp D) (r : ℕ) (C C' :
     _ = _ := by
         refine (congrArg (fun φ : NI V C → ℂ => ∫ n in 𝓝, φ n ∂κ) (funext fun n => ?_)).symm
         exact term_eq_aux V V' W r C C' B hs h1 h2 h3 ψ χS χT ω hω μ 𝓨 hY s L m hL n f hf
-          (L.map (incA D)) rfl ((m * adj D C' * V.gram).map (incA D))
+          (L.map (incA D)) rfl ((m * adj D C' * V.gram).map (incA D)) rfl
 
 end GlobalTheory.IsoTermMean
 end -- clump:auto
@@ -923,7 +923,7 @@ theorem bound_pow (c a b M q : ℝ) (A : ℕ) (ha : 1 ≤ a) (haM : a ≤ M) (hb
   exact (mul_le_mul_of_nonneg_right (le_max_left c 0) (pow_nonneg (mul_nonneg (by linarith) (by linarith)) A)).trans
     (mul_le_mul_of_nonneg_left hXp (le_max_right c 0))
 
-theorem bound_mul (c M q f C' : ℝ) (A : ℕ) (hM : 0 ≤ M) (hF : f * q ^ A ≤ C') :
+theorem bound_mul (c M q f C' : ℝ) (A : ℕ) (hM : 0 ≤ M) (hq : 0 ≤ q) (hf : 0 ≤ f) (hF : f * q ^ A ≤ C') :
     max c 0 * (M * (2 * q)) ^ A * f ≤ max c 0 * (2 * M) ^ A * max C' 0 := by
   have e : max c 0 * (M * (2 * q)) ^ A * f = max c 0 * (2 * M) ^ A * (f * q ^ A) := by
     rw [mul_pow, mul_pow, mul_pow]; ring
@@ -950,7 +950,7 @@ theorem lintegral_ne_top : ∀ (D : D7) (V W : HSp D) (r : ℕ) (C : Matrix (Fin
     have hW1 := GlobalTheory.Grow.one_le_height W (γ' * h)
     have hq1 := GlobalTheory.Grow.one_le_quotHeight W h
     have hc1 := bound_pow c _ _ M (GlobalTheory.Grow.quotHeight W h) A hV1 hkM hW1 hh
-    have hb := bound_mul c M (GlobalTheory.Grow.quotHeight W h) ‖F h‖ C' A (norm_nonneg _) (hC' h)
+    have hb := bound_mul c M (GlobalTheory.Grow.quotHeight W h) ‖F h‖ C' A (by linarith) (by linarith) (norm_nonneg _) (hC' h)
     calc Sg ((k : GA D V) * g, γ' * h) * ‖F h‖ₑ
         ≤ ENNReal.ofReal (max c 0 * (M * (2 * GlobalTheory.Grow.quotHeight W h)) ^ A) * ENNReal.ofReal ‖F h‖ := by
           rw [ofReal_norm_eq_enorm]

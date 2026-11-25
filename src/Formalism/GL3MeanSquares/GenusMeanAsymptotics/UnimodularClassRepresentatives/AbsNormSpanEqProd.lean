@@ -41,8 +41,8 @@ theorem integral_of_mem_genus (hK : Formalism.HermitianLatticesTheory.IsCMUnram 
   have key : ∀ 𝔭 : Ideal (𝓞 F), 𝔭.IsMaximal →
       ∃ g ∈ Formalism.HermitianLatticesTheory.isom h, Formalism.HermitianLatticesTheory.gmap g (locF 𝔭 L) = locF 𝔭 M := by
     intro 𝔭 h𝔭
-    obtain ⟨P, hP, rfl⟩ := exists_maximal_over h𝔭
-    rw [locF_eq_loc hF hP, locF_eq_loc hF hP]
+    obtain ⟨P, hP, rfl⟩ := exists_maximal_over hK hF h𝔭
+    rw [locF_eq_loc hK hF hP, locF_eq_loc hK hF hP]
     exact hMg P hP
   have hMi : Formalism.HermitianLatticesTheory.IsIntegralLat h M := by
     intro x hx y hy

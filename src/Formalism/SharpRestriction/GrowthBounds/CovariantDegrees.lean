@@ -160,7 +160,7 @@ def FilteredProjectorCorollaryField : Prop :=
 
 def ProjectionTheorems (D : Formalism.BasicNotions.D7) : Prop := InvariantProjectionField ∧ NablaDeltaComparisonField ∧ IsotypicProjectorTheoremField ∧ TranslateCorollaryField ∧ FilteredProjectorCorollaryField
 
-def ValuationsAdditive : Prop :=
+def ValuationsAdditive (_D : Formalism.BasicNotions.D7) : Prop :=
   ∀ (R : Type) [Field R] (ι : Type) [Fintype ι] (LL : Letters ι) (n : ℕ) [NeZero n] (S : Set ι),
     (∀ F G : MvPolynomial (ι × Fin n) R, valS LL S (F * G) = valS LL S F + valS LL S G) ∧
     (∀ F G : MvPolynomial (ι × Fin n) R, min (valS LL S F) (valS LL S G) ≤ valS LL S (F + G)) ∧
@@ -180,7 +180,7 @@ def ShaLengthVersionTwo (_D : Formalism.BasicNotions.D7) : Prop :=
     (∀ (G : MvPolynomial (ι × Fin n) R) (M : ℤ),
       lam1S LL S G ≤ (M : WithBot ℤ) ↔ ∀ mu, e mu G ≠ 0 → mu 0 ≤ M)
 
-def ValuationLemmaField (D : Formalism.BasicNotions.D7) : Prop := ValuationsAdditive ∧ ShaLengthVersionTwo D
+def ValuationLemmaField (D : Formalism.BasicNotions.D7) : Prop := ValuationsAdditive D ∧ ShaLengthVersionTwo D
 
 def detA {R : Type} [CommRing R] {ι : Type} {r : ℕ} (A : Fin r → ι) : MvPolynomial (ι × Fin r) R :=
   (Matrix.of fun i j : Fin r => (X (A i, j) : MvPolynomial (ι × Fin r) R)).det

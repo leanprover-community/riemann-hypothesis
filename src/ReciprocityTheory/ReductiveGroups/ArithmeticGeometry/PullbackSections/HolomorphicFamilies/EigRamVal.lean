@@ -44,7 +44,7 @@ theorem w_nonneg (ψ : E →+* k) (x : 𝓞 E) : 0 ≤ vV V (ψ (x : E)) := by
   rw [← hy]
   exact vV_alg_nonneg y
 
-def primeOf (ψ : E →+* k) : Ideal (𝓞 E) where
+def primeOf (ψ : E →+* k) (hψ : Function.Injective ψ) : Ideal (𝓞 E) where
   carrier := {x | 0 < vV V (ψ (x : E)) ∨ x = 0}
   add_mem' := by
     intro a b ha hb
@@ -113,12 +113,12 @@ def primeOf (ψ : E →+* k) : Ideal (𝓞 E) where
 
 variable (V) in
 theorem mem_primeOf (ψ : E →+* k) (hψ : Function.Injective ψ) (x : 𝓞 E) :
-    x ∈ primeOf (V := V) ψ ↔ 0 < vV V (ψ (x : E)) ∨ x = 0 := Iff.rfl
+    x ∈ primeOf (V := V) ψ hψ ↔ 0 < vV V (ψ (x : E)) ∨ x = 0 := Iff.rfl
 
-theorem psi_ne_zero (ψ : E →+* k) {x : 𝓞 E} (hx : x ≠ 0) : ψ (x : E) ≠ 0 := by
+theorem psi_ne_zero (ψ : E →+* k) (hψ : Function.Injective ψ) {x : 𝓞 E} (hx : x ≠ 0) : ψ (x : E) ≠ 0 := by
   exact (map_ne_zero ψ).2 (by exact_mod_cast hx)
 
-theorem primeOf_isPrime (ψ : E →+* k) (hψ : Function.Injective ψ) : (primeOf (V := V) ψ).IsPrime := by
+theorem primeOf_isPrime (ψ : E →+* k) (hψ : Function.Injective ψ) : (primeOf (V := V) ψ hψ).IsPrime := by
   have hmul : ∀ a b : k, a ≠ 0 → b ≠ 0 → vV V (a * b) = vV V a + vV V b := by
     intro a b ha hb
     unfold vV
@@ -141,7 +141,7 @@ theorem primeOf_isPrime (ψ : E →+* k) (hψ : Function.Injective ψ) : (primeO
     · exact Or.inr (Or.inr hy0)
     have hxy' := hxy.resolve_right (mul_ne_zero hx0 hy0)
     have hc : ((x * y : 𝓞 E) : E) = (x : E) * (y : E) := by simp
-    rw [hc, map_mul, hmul _ _ (psi_ne_zero ψ hx0) (psi_ne_zero ψ hy0)] at hxy'
+    rw [hc, map_mul, hmul _ _ (psi_ne_zero ψ hψ hx0) (psi_ne_zero ψ hψ hy0)] at hxy'
     by_contra hno
     push Not at hno
     have := hno.1.1
@@ -149,7 +149,7 @@ theorem primeOf_isPrime (ψ : E →+* k) (hψ : Function.Injective ψ) : (primeO
     linarith
 
 theorem w_zero_of_not_mem (ψ : E →+* k) (hψ : Function.Injective ψ) {x : 𝓞 E}
-    (hx : x ∉ primeOf (V := V) ψ) : vV V (ψ (x : E)) = 0 := by
+    (hx : x ∉ primeOf (V := V) ψ hψ) : vV V (ψ (x : E)) = 0 := by
   rw [mem_primeOf] at hx
   push Not at hx
   exact le_antisymm hx.1 (w_nonneg ψ x)
@@ -181,11 +181,11 @@ theorem count_mul_span {P : Ideal (𝓞 E)} {x y : 𝓞 E} (hx : x ≠ 0) (hy : 
   rw [← Ideal.span_singleton_mul_span_singleton, UniqueFactorizationMonoid.normalizedFactors_mul hx' hy',
     Multiset.count_add]
 
-theorem w_eq_count (ψ : E →+* k) (hψ : Function.Injective ψ) (hP0 : primeOf (V := V) ψ ≠ ⊥) :
+theorem w_eq_count (ψ : E →+* k) (hψ : Function.Injective ψ) (hP0 : primeOf (V := V) ψ hψ ≠ ⊥) :
     ∃ π : 𝓞 E, π ≠ 0 ∧ ∀ (n : ℕ) (x : 𝓞 E), x ≠ 0 →
-      (normalizedFactors (Ideal.span {x})).count (primeOf (V := V) ψ) = n →
+      (normalizedFactors (Ideal.span {x})).count (primeOf (V := V) ψ hψ) = n →
       vV V (ψ (x : E)) = n * vV V (ψ (π : E)) := by
-  set P := primeOf (V := V) ψ with hPdef
+  set P := primeOf (V := V) ψ hψ with hPdef
   have hPp : P.IsPrime := primeOf_isPrime ψ hψ
   have hmulv : ∀ a b : 𝓞 E, a ≠ 0 → b ≠ 0 →
       vV V (ψ ((a * b : 𝓞 E) : E)) = vV V (ψ (a : E)) + vV V (ψ (b : E)) := by
@@ -193,8 +193,8 @@ theorem w_eq_count (ψ : E →+* k) (hψ : Function.Injective ψ) (hP0 : primeOf
     have hab : ((a * b : 𝓞 E) : E) = (a : E) * (b : E) := by simp
     rw [hab, map_mul]
     unfold vV
-    rw [map_mul, WithZero.log_mul ((valV V (K' := k)).ne_zero_iff.mpr (psi_ne_zero ψ ha))
-      ((valV V (K' := k)).ne_zero_iff.mpr (psi_ne_zero ψ hb))]
+    rw [map_mul, WithZero.log_mul ((valV V (K' := k)).ne_zero_iff.mpr (psi_ne_zero ψ hψ ha))
+      ((valV V (K' := k)).ne_zero_iff.mpr (psi_ne_zero ψ hψ hb))]
     ring
   have hspan : ∀ z : 𝓞 E, z ≠ 0 → Ideal.span {z} ≠ 0 := fun z hz => by
     rw [Ne, Ideal.zero_eq_bot, Ideal.span_singleton_eq_bot]; exact hz
@@ -264,7 +264,7 @@ theorem w_eq_count (ψ : E →+* k) (hψ : Function.Injective ψ) (hP0 : primeOf
     push_cast
     linarith
 
-theorem exists_delta_count {P : Ideal (𝓞 E)} (hP : P.IsPrime) :
+theorem exists_delta_count {P : Ideal (𝓞 E)} (hP : P.IsPrime) (hP0 : P ≠ ⊥) :
     ∃ δ : 𝓞 E, δ ∈ differentIdeal ℤ (𝓞 E) ∧ δ ≠ 0 ∧
       (normalizedFactors (Ideal.span {δ})).count P = (normalizedFactors (differentIdeal ℤ (𝓞 E))).count P := by
   set Dif := differentIdeal ℤ (𝓞 E) with hDif
@@ -300,13 +300,13 @@ theorem exists_delta_val [IsGalois ℚ E] (ℓ a m : ℕ) (hℓ : ℓ.Prime) (hm
     (hℓψ : 0 < vV V (ψ (ℓ : E))) :
     ∃ δ : 𝓞 E, δ ∈ differentIdeal ℤ (𝓞 E) ∧ δ ≠ 0 ∧
       vV V (ψ (δ : E)) * Module.finrank ℚ E = a * vV V (ψ (ℓ : E)) := by
-  set P := primeOf (V := V) ψ
+  set P := primeOf (V := V) ψ hψ
   have hPp : P.IsPrime := primeOf_isPrime ψ hψ
   have hℓ0 : (ℓ : 𝓞 E) ≠ 0 := Nat.cast_ne_zero.2 hℓ.ne_zero
   have hℓP : (ℓ : 𝓞 E) ∈ P := Or.inl (by simpa using hℓψ)
   have hP0 : P ≠ ⊥ := fun h => hℓ0 (by rw [h] at hℓP; exact (Submodule.mem_bot _).1 hℓP)
   obtain ⟨π, hπ0, hw⟩ := w_eq_count ψ hψ hP0
-  obtain ⟨δ, hδD, hδ0, hδc⟩ := exists_delta_count hPp
+  obtain ⟨δ, hδD, hδ0, hδc⟩ := exists_delta_count hPp hP0
   have hex := diffExp E ℓ a m hℓ hm hdisc P hPp hℓP
   have h1 := hw _ δ hδ0 rfl
   have h2 := hw _ (ℓ : 𝓞 E) hℓ0 rfl

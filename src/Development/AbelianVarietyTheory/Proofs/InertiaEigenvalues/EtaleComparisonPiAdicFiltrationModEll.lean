@@ -212,7 +212,7 @@ theorem letA_dvd_of_forall_pow (p : ℕ) (a : LetA O n)
   rw [h3, PowerSeries.coeff_C_mul, PowerSeries.coeff_mk, hc]
 
 theorem near_abstract (p : ℕ) (f : LetA O n →+* EE) (io : EE →+* R) (ι : RA →+* R) (t : R)
-    (τ : RA) (ht : io (f letπ) = t) (hu : IsUnit (f letπ))
+    (τ : RA) (hτ : ι τ = t) (ht : io (f letπ) = t) (hu : IsUnit (f letπ))
     (hd : ∀ x : EE, ∃ (a : LetA O n) (m : ℕ), x * f (letπ ^ m) - f a ∈ Ideal.span {(p : EE) ^ 1})
     (hs : ∀ a : LetA O n, f a ∈ Ideal.span {(p : EE) ^ 1} →
       ∃ b : LetA O n, a = (p : LetA O n) ^ 1 * b)
@@ -267,7 +267,7 @@ theorem near_ioE : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l
   have hs := W.EE_sat
   rw [P.PD_p K] at hd hs
   exact near_abstract l (algebraMap _ W.EE) (E.tie.ioE : W.EE →+* RW LL)
-    (inclR LL : RA LL →+* RW LL) (piR AI LL s) _ (_root_.GlobalTheory.Decompl.ioE_compat l P AI K s LL h W E).2.2.1
+    (inclR LL : RA LL →+* RW LL) (piR AI LL s) _ rfl (_root_.GlobalTheory.Decompl.ioE_compat l P AI K s LL h W E).2.2.1
     W.EE_π (fun x => hd x 1) (fun a => hs a 1)
     (fun m a ha => _root_.GlobalTheory.Decompl.mem_pow_pi_of_nearPi l P AI K s LL h W E m a (E.tie.ioE_ext a ▸ ha))
 

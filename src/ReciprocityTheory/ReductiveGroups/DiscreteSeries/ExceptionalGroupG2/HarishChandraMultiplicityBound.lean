@@ -29,7 +29,7 @@ theorem discrete_series_exists_large_gap :
   intro n ε lam hlam h hh hmax
   obtain ⟨T⟩ := HW.kType_exists ε lam hlam
   by_cases hpq : pOf ε = 0 ∨ qOf ε = 0
-  · obtain ⟨σ, hDS, -⟩ := isDS_compact hpq T
+  · obtain ⟨σ, hDS, -⟩ := isDS_compact hpq hlam T
     exact ⟨T.V, inferInstance, inferInstance, σ, hDS⟩
   · have hmax' := hmax.resolve_left hpq
     push Not at hpq

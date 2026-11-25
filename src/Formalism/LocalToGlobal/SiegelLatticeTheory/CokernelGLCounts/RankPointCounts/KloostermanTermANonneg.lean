@@ -18,7 +18,7 @@ section Asm
 
 variable {D : D7} {X : HidaSetting D}
 
-theorem kloostermanTermA_nonneg (large₂ : SizeData₂ D) {C Ch Cc : ℝ} (hC : 0 ≤ C) (j : ℕ) :
+theorem kloostermanTermA_nonneg (large₂ : SizeData₂ D) {C Ch Cc : ℝ} (hC : 0 ≤ C) (hCh : 0 ≤ Ch) (hCc : 0 ≤ Cc) (j : ℕ) :
     0 ≤ k2A1 large₂ C Ch Cc j := by
   have hHb : ∀ c, 0 < Hb large₂.sc.b c D.R.m D.R.f := fun c => by unfold Hb Scale.b; positivity
   have h1 : 0 ≤ C / (D.R.k : ℝ) := div_nonneg hC (Nat.cast_nonneg _)
@@ -28,7 +28,7 @@ theorem kloostermanTermA_nonneg (large₂ : SizeData₂ D) {C Ch Cc : ℝ} (hC :
     (Real.rpow_nonneg (hHb Cc).le _)
 
 theorem label_sum {large₂ : SizeData₂ D} {Y : Full X} {u : D.what₂.Word} {CH Cs C Ch Cp Cc : ℝ}
-    (hC : 0 ≤ C) (hCs : Cp + 4 ≤ Cs)
+    (hC : 0 ≤ C) (hCh : 0 ≤ Ch) (hCs : Cp + 4 ≤ Cs)
     (hDel : ∀ t ∈ relSet Y u, 0 < k2Del D (jT t) (labT t) ∧
       k2Del D (jT t) (labT t) ≤ Hb large₂.sc.b C D.R.m D.R.f * k2S D (H1C large₂ CH) (jT t) (labT t) ^ 2)
     (j : ℕ) (hj : j ∈ Finset.Icc 1 D.R.rS)
@@ -146,8 +146,8 @@ theorem rank_bound {large₂ : SizeData₂ D} {Y : Full X} {u : D.what₂.Word} 
   have hmap : ∀ p ∈ S, (labT p.1, labT p.2) ∈
       S.image (fun p => labT p.1) ×ˢ S.image (fun p => labT p.2) := fun p hp =>
     Finset.mem_product.2 ⟨Finset.mem_image_of_mem _ hp, Finset.mem_image_of_mem _ hp⟩
-  have hL1 := label_sum hC hCs hDel j' hj' (hcos j' hj') _ hT1
-  have hL2 := label_sum hC hCs hDel j'' hj'' (hcos j'' hj'') _ hT2
+  have hL1 := label_sum hC hCh hCs hDel j' hj' (hcos j' hj') _ hT1
+  have hL2 := label_sum hC hCh hCs hDel j'' hj'' (hcos j'' hj'') _ hT2
   have hs1 := Finset.sum_nonneg fun δ hδ => hA0 _ _ (hT1 δ hδ)
   have hs2 := Finset.sum_nonneg fun δ hδ => hA0 _ _ (hT2 δ hδ)
   rw [← Finset.sum_fiberwise_of_maps_to hmap]

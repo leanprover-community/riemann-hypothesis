@@ -3288,16 +3288,16 @@ theorem wmap_Nimg_γ (W : LocWach PD LL O v n) {T₁ T₂ : LocLat G Qp LL O} (F
 
 variable {ℓ : ℕ} [Fact ℓ.Prime] [Algebra ℤ_[ℓ] O]
 
-def DZ (W : LocWach PD LL O v n) (T : LocLat G Qp LL O) : Type := W.DD T
+def DZ (_ℓ : ℕ) (W : LocWach PD LL O v n) (T : LocLat G Qp LL O) : Type := W.DD T
 
-instance DZ.acg (W : LocWach PD LL O v n) (T : LocLat G Qp LL O) : AddCommGroup (DZ W T) :=
+instance DZ.acg (W : LocWach PD LL O v n) (T : LocLat G Qp LL O) : AddCommGroup (DZ ℓ W T) :=
   inferInstanceAs (AddCommGroup (W.DD T))
 
 instance DZ.modA (W : LocWach PD LL O v n) (T : LocLat G Qp LL O) :
-    Module (LetA O n) (DZ W T) :=
+    Module (LetA O n) (DZ ℓ W T) :=
   inferInstanceAs (Module (LetA O n) (W.DD T))
 
-instance DZ.modZ (W : LocWach PD LL O v n) (T : LocLat G Qp LL O) : Module ℤ_[ℓ] (DZ W T) :=
+instance DZ.modZ (W : LocWach PD LL O v n) (T : LocLat G Qp LL O) : Module ℤ_[ℓ] (DZ ℓ W T) :=
   Module.compHom (W.DD T) (algebraMap ℤ_[ℓ] O)
 
 theorem wmap_tow (W : LocWach PD LL O v n) (T : LocLat G Qp LL O) (z : ℤ_[ℓ]) (a : LetA O n)
@@ -3305,7 +3305,7 @@ theorem wmap_tow (W : LocWach PD LL O v n) (T : LocLat G Qp LL O) (z : ℤ_[ℓ]
   rw [← smul_assoc, algebraMap_smul]
 
 instance DZ.tow (W : LocWach PD LL O v n) (T : LocLat G Qp LL O) :
-    IsScalarTower ℤ_[ℓ] (LetA O n) (DZ W T) :=
+    IsScalarTower ℤ_[ℓ] (LetA O n) (DZ ℓ W T) :=
   ⟨fun z a x => wmap_tow W T z a x⟩
 
 theorem wmap_X_inj (W : LocWach PD LL O v n) (k : ℕ) (T : LocLat G Qp LL O) (x : W.DD T)
@@ -3329,7 +3329,7 @@ def gPair (W : LocWach PD LL O v n) (g : W.Gam) (z : ℤ_[ℓ]ˣ)
     (N N' : Submodule (LetA O n) (W.DD T)) (le : N' ≤ N)
     (hN : ∀ x ∈ N, ∃ x' ∈ N, W.γD T g x - x = (W.φA ^ k) letπ • x')
     (hN' : ∀ x ∈ N', ∃ x' ∈ N', W.γD T g x - x = (W.φA ^ k) letπ • x') :
-    GPair (gBase W g z hz k) (DZ W T) where
+    GPair (gBase W g z hz k) (DZ ℓ W T) where
   N := N
   N' := N'
   le := le
@@ -3386,7 +3386,7 @@ def gPairL (W : LocWach PD LL O v n) (g : W.Gam) (z : ℤ_[ℓ]ˣ)
     (F : LatHom T₁.L T₂.L) (c₁ : IsCrys PD T₁.ρ) (c₂ : IsCrys PD T₂.ρ)
     (h₁ : ∀ x ∈ W.N T₁, ∃ x' ∈ W.N T₁, W.γD T₁ g x - x = (W.φA ^ k) letπ • x')
     (h₂ : ∀ x ∈ W.N T₂, ∃ x' ∈ W.N T₂, W.γD T₂ g x - x = (W.φA ^ k) letπ • x') (i : ZMod n) :
-    GPair (gBase W g z hz k) (DZ W T₂) :=
+    GPair (gBase W g z hz k) (DZ ℓ W T₂) :=
   gPair W g z hz k T₂ (W.Nl T₂ i) (Nimg W F i) (wmap_Nimg_le W F c₁ c₂ i) (wmap_Nl_γ W T₂ g _ h₂ i)
     (wmap_Nimg_γ W F g _ i (wmap_Nl_γ W T₁ g _ h₁ i))
 
@@ -3396,7 +3396,7 @@ theorem coreWB_of (W : LocWach PD LL O v n) (hp : PD.p = ℓ) (z : ℤ_[ℓ]ˣ)
     coreWB W := by
   subst hp
   intro _ T₁ T₂ F Mi hi hS hJ i
-  exact lagrange_and_w_all.2.2.1 PD.p (LetA O n) _ (DZ W T₂)
+  exact lagrange_and_w_all.2.2.1 PD.p (LetA O n) _ (DZ PD.p W T₂)
     (gPairL W W.gam z hz (W.s - 1) F hS.1 hS.2.1 (wmap_P2X W h2 T₁ hS.1) (wmap_P2X W h2 T₂ hS.2.1) i)
     W.s (Hmax n Mi hi) W.s_pos W.s_two hv (hX T₁ T₂ F Mi hi hS hJ i)
 
@@ -3412,7 +3412,7 @@ theorem wmap_Q_one (W : LocWach PD LL O v n) (hs : W.s = 1) : W.Q = W.q := by
 
 def gPairπ (W : LocWach PD LL O v n) (g : W.Gam) (z : ℤ_[ℓ]ˣ)
     (hz : algebraMap ℤ_[ℓ] O (z : ℤ_[ℓ]) = (W.χΓ g : O)) {T₁ T₂ : LocLat G Qp LL O}
-    (F : LatHom T₁.L T₂.L) (c₁ : IsCrys PD T₁.ρ) (c₂ : IsCrys PD T₂.ρ) (i : ZMod n) : GPair (gBase W g z hz 0) (DZ W T₂) :=
+    (F : LatHom T₁.L T₂.L) (c₁ : IsCrys PD T₁.ρ) (c₂ : IsCrys PD T₂.ρ) (i : ZMod n) : GPair (gBase W g z hz 0) (DZ ℓ W T₂) :=
   gPairL W g z hz 0 F c₁ c₂ (wmap_P2π W T₁ g) (wmap_P2π W T₂ g) i
 
 theorem wmap_KillsH (W : LocWach PD LL O v n) (hs : W.s = 1) (hX : coreWX W)
@@ -3432,7 +3432,7 @@ theorem coreWA_of (W : LocWach PD LL O v n) (hp : PD.p = ℓ) (g : W.Gam) (z : �
     coreWA W := by
   subst hp
   intro hA T₁ T₂ F Mi hi hS hJ i
-  exact lagrange_and_w_all.2.2.2.1 PD.p hA.2.2 (LetA O n) _ (DZ W T₂) (gPairπ W g z hz F hS.1 hS.2.1 i)
+  exact lagrange_and_w_all.2.2.2.1 PD.p hA.2.2 (LetA O n) _ (DZ PD.p W T₂) (gPairπ W g z hz F hS.1 hS.2.1 i)
     (Hmax n Mi hi) hgen (wmap_KillsH W hA.2.1 hX F Mi hi hS hJ i)
 
 theorem wach_first_of_generator (W : LocWach PD LL O v n) (hp : PD.p = ℓ) (g : W.Gam) (z : ℤ_[ℓ]ˣ)
@@ -3441,7 +3441,7 @@ theorem wach_first_of_generator (W : LocWach PD LL O v n) (hp : PD.p = ℓ) (g :
   subst hp
   intro hA T₁ T₂ F Mi hi hS hJ i a j haj
   obtain ⟨h1, h2, _⟩ := wmap_sI_mem W F i _ (wmap_KillsH W hA.2.1 hX F Mi hi hS hJ i)
-  exact descent_cost_all.2.2.2.2.2.2.1 PD.p hA.2.2 (LetA O n) _ (DZ W T₂) (gPairπ W g z hz F hS.1 hS.2.1 i)
+  exact descent_cost_all.2.2.2.2.2.2.1 PD.p hA.2.2 (LetA O n) _ (DZ PD.p W T₂) (gPairπ W g z hz F hS.1 hS.2.1 i)
     (sI W F i) (Hmax n Mi hi) a j hgen h2 h1 haj
 
 theorem wmap_three {p : ℕ} (hp : p.Prime) (h2 : p ≠ 2) : 3 ≤ p := by
@@ -3507,7 +3507,7 @@ variable [Fact PD.p.Prime] [Algebra ℤ_[PD.p] O]
 
 def gLetters (W : LocWach PD LL O v n) (g : W.Gam) (z : ℤ_[PD.p]ˣ)
     (hz : algebraMap ℤ_[PD.p] O (z : ℤ_[PD.p]) = (W.χΓ g : O)) {T₁ T₂ : LocLat G Qp LL O}
-    (F : LatHom T₁.L T₂.L) (c₁ : IsCrys PD T₁.ρ) (c₂ : IsCrys PD T₂.ρ) : Letters (gBase W g z hz 0) n (DZ W T₂) where
+    (F : LatHom T₁.L T₂.L) (c₁ : IsCrys PD T₁.ρ) (c₂ : IsCrys PD T₂.ρ) : Letters (gBase W g z hz 0) n (DZ PD.p W T₂) where
   pair := gPairπ W g z hz F c₁ c₂
   φA := (W.φA : LetA O n →+* LetA O n)
   q := W.q
@@ -3531,7 +3531,7 @@ theorem wach_second_of_generator (W : LocWach PD LL O v n) (hp : PD.p = ℓ) (g 
   have hs := hA.2.1
   have hK := fun i => wmap_KillsH W hs hX F Mi hi hS hJ i
   have hsI := fun i => wmap_sI_mem W F i _ (hK i)
-  have C := dual_w_by_letters PD.p hA.2.2 (LetA O n) _ n (DZ W T₂) (gLetters W g z hz F hS.1 hS.2.1) Mi hi
+  have C := dual_w_by_letters PD.p hA.2.2 (LetA O n) _ n (DZ PD.p W T₂) (gLetters W g z hz F hS.1 hS.2.1) Mi hi
     (fun i => sI W F i) (Hmax n Mi hi) hgen
     (fun i => frobenius_q_pow_mem_letter W hs T₂ Mi hi
       (h5 T₂ Mi hi hS.2.1 (wmap_Jumps W T₂ Mi hi (hJQ T₁ T₂ F Mi hi hS hJ))) i)
@@ -3551,7 +3551,7 @@ theorem coreWR_of (W : LocWach PD LL O v n) (hp : PD.p = ℓ) (g : W.Gam) (z : �
   have hK := fun i => wmap_KillsH W hs hX F Mi hi hS hJ i
   have hsI := fun i => wmap_sI_mem W F i _ (hK i)
   obtain ⟨w, hw⟩ := ((h9 T₁ hS.1 hs hA.2.2).2.2 (gen_finrank_one hA.1)).1.2.2.1
-  obtain ⟨_, E2, _, _, _, E6⟩ := dual_w_by_letters_extended PD.p hA.2.2 (LetA O n) _ n (DZ W T₂)
+  obtain ⟨_, E2, _, _, _, E6⟩ := dual_w_by_letters_extended PD.p hA.2.2 (LetA O n) _ n (DZ PD.p W T₂)
     (gLetters W g z hz F hS.1 hS.2.1) (fun i => sI W F i) (Hmax n Mi hi) W.π₀ (w : LetA O n) hgen hw hK
     (fun i => ⟨(hsI i).1, (hsI i).2.2⟩)
   obtain ⟨UnramifiedEulerProductIntegral, E6b⟩ := E6 Mi hi
@@ -3560,7 +3560,7 @@ theorem coreWR_of (W : LocWach PD LL O v n) (hp : PD.p = ℓ) (g : W.Gam) (z : �
     (fun i => q_pow_smul_mem_frobenius_span W hs F Mi hi (h5 T₁ Mi hi hS.1 (wmap_Jumps W T₁ Mi hi hJ)) i)
     hB (hI T₂ hS.2.1)
   have hc : Kills W F i (lp W (cost PD.p 0 (sI W F i))) := by
-    have h := descent_cost_all.2.2.2.2.2.1 PD.p hA.2.2 (LetA O n) _ (DZ W T₂) (gPairπ W g z hz F hS.1 hS.2.1 i)
+    have h := descent_cost_all.2.2.2.2.2.1 PD.p hA.2.2 (LetA O n) _ (DZ PD.p W T₂) (gPairπ W g z hz F hS.1 hS.2.1 i)
       (sI W F i) 0 hgen (Nat.zero_le _) (hsI i).1
     rw [pow_zero, mul_one] at h
     exact h
@@ -3921,7 +3921,7 @@ def wk1γ (W : LocWach PD LL O v n) : ↥W.AΔ →ₐ[O] ↥W.AΔ :=
     rw [_root_.Formalism.MainNotions.LiftingTheory.gammaA_comm, a.2 δ hδ])
 
 instance DZ.towΔ (W : LocWach PD LL O v n) (T : LocLat G Qp LL O) :
-    IsScalarTower ℤ_[ℓ] ↥W.AΔ (DZ W T) :=
+    IsScalarTower ℤ_[ℓ] ↥W.AΔ (DZ ℓ W T) :=
   ⟨fun z a x => wmap_tow W T z (a : LetA O n) x⟩
 
 def wk1Base (W : LocWach PD LL O v n) (π' t : LetA O n) (hπ : π' ∈ W.AΔ) (ht : t ∈ W.AΔ)
@@ -3944,7 +3944,7 @@ def wk1Pair (W : LocWach PD LL O v n) (π' t : LetA O n) (hπ : π' ∈ W.AΔ) (
     (hc : c * (W.DelF.card : O) = 1) {T₁ T₂ : LocLat G Qp LL O} (F : LatHom T₁.L T₂.L) (c₁ : IsCrys PD T₁.ρ) (c₂ : IsCrys PD T₂.ρ) (i : ZMod n)
     (hm₁ : ∀ x ∈ W.NΔ T₁, ∃ x' ∈ W.NΔ T₁, W.γ T₁ x - x = π' • x')
     (hm₂ : ∀ x ∈ W.NΔ T₂, ∃ x' ∈ W.NΔ T₂, W.γ T₂ x - x = π' • x') :
-    GPair (wk1Base W π' t hπ ht u h) (DZ W T₂) where
+    GPair (wk1Base W π' t hπ ht u h) (DZ ℓ W T₂) where
   N := wk1Sub W T₂ (W.Nl T₂ i)
   N' := wk1Sub W T₂ (Nimg W F i)
   le := fun x hx => ⟨wmap_Nimg_le W F c₁ c₂ i hx.1, hx.2⟩
@@ -4002,7 +4002,7 @@ theorem coreWK1b_of (W : LocWach PD LL O v n) (hp : PD.p = ℓ) (z : ℤ_[ℓ]ˣ
     rw [h, padicValInt.of_nat, padicValNat.eq_zero_of_not_dvd (Nat.not_dvd_of_pos_of_lt hpos hlt)]
   have hKa := coreWK1a_of W h9 h3 e hK' F Mi hi hS hJ i π₁ w₁ e₁
   set a := ⌈((e * Hmax n Mi hi : ℕ) : ℝ) / ((PD.p : ℝ) - 1)⌉₊ with ha
-  have R := lagrange_and_w_all.2.2.1 PD.p ↥W.AΔ _ (DZ W T₂)
+  have R := lagrange_and_w_all.2.2.1 PD.p ↥W.AΔ _ (DZ PD.p W T₂)
     (wk1Pair W π₁ t hr₁.1 ht (z ^ s') hγ w₁ s' e₁ _ hc F hS.1 hS.2.1 i hm₁.2 hm₂') 1 a le_rfl
     (fun h => absurd h h2) hval
     (fun x hx => ⟨hKa x hx.1 hx.2, ((wk1Sub W T₂ (W.Nl T₂ i)).smul_mem _ hx).2⟩)

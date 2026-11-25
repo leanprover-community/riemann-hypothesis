@@ -120,7 +120,7 @@ theorem cfa_no_of_vogan (hgap : StdGap ε lam) (hσ : IsURepOn (UJset ε) σ) (h
   have hKT := isKTypeOf_of_isKIrrHW hσ hD hS' hK'
     (fun μ x hx hx0 hμ => weights_le_of_irr_hw hE hU hS' hx hx0 hμ)
   have h1 := hvog _ _ hKT
-  have h2 := vNormSq_lowK_sub_root_lt hgap.1 hab
+  have h2 := vNormSq_lowK_sub_root_lt hgap.1 hab hne
   rw [mir_lowK_eq] at h1 h2
   linarith
 

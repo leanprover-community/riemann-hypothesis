@@ -291,7 +291,7 @@ section Values
 theorem two_mul_nV_half (R : Ranks) : 2 * (R.nV / 2) = R.r + R.t :=
   Nat.two_mul_div_two_of_even ((GlobalTheory.GalChar.odd_r R).add_odd R.t_odd)
 
-theorem two_mul_half (R : Ranks) {k : ℕ} : 2 * (k * (R.r - k) / 2) = k * (R.r - k) := by
+theorem two_mul_half (R : Ranks) {k : ℕ} (hk : k ≤ R.r) : 2 * (k * (R.r - k) / 2) = k * (R.r - k) := by
   refine Nat.two_mul_div_two_of_even ?_
   rcases Nat.even_or_odd k with h | h
   · exact h.mul_right _
@@ -310,7 +310,7 @@ theorem pow_mul_heckeVal {k : ℕ} (hk : k ≤ D.R.r) :
     ((normV P : ℕ) : ℂ) ^ (k * (k - 1) / 2) * heckeVal μ π k P =
       ((satake μ π P).map fun α => ((normV P : ℕ) : ℂ) ^ ((D.R.r - 1) / 2) * α).esymm k := by
   have e : k * (k - 1) / 2 + k * (D.R.r - k) / 2 = (D.R.r - 1) / 2 * k := by
-    have h1 := two_mul_half D.R
+    have h1 := two_mul_half D.R hk
     have h2 : 2 * (k * (k - 1) / 2) = k * (k - 1) := Nat.two_mul_div_two_of_even (Nat.even_mul_pred_self k)
     obtain ⟨c, hc⟩ := GlobalTheory.GalChar.odd_r D.R
     have h3 : (D.R.r - 1) / 2 = c := by omega

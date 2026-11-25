@@ -350,7 +350,7 @@ theorem admissible_second_of_variant (D : Formalism.BasicNotions.D7) {p : ℕ} [
     (E : CEmbC X.G) (hfin : ∀ j c, (X.Lv.lev j c).FinClasses) (hst : FinStab X.Lv) {g : Formalism.MainNotions.GL3Theta.G1 p}
     (hLT : LTIso g) {T : Type} (pos : (Σ v : X.Pl, Fin (X.G.P.n' v)) ≃ T)
     (F : ∀ j, X.Lt j → X.Lt (j + 1) → MvPowerSeries (T × Fin ((X.Pj (j + 1)).m + 1) × Fin ((X.Pj j).m + 1)) ℂ_[p]) :
-    Formalism.MainNotions.FormalGroupSystem.adm2b X (pendT X E hfin hst hLT pos F) → Formalism.MainNotions.FormalGroupSystem.adm2 X (pendT X E hfin hst hLT pos F) :=
+    Formalism.MainNotions.FormalGroupSystem.adm2b D X (pendT X E hfin hst hLT pos F) → Formalism.MainNotions.FormalGroupSystem.adm2 D X (pendT X E hfin hst hLT pos F) :=
   fun h => (adm_two_iff_local_representative D X E hfin hst hLT pos F).2
     (first_kernel_local_of_general X E hfin _ pos F ((adm_two_pendant_iff_representative D X E hfin hst hLT pos F).1 h))
 

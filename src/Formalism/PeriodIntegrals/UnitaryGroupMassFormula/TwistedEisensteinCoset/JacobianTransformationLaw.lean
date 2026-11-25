@@ -69,7 +69,7 @@ open Loc LocE
 
 section F
 
-theorem fIdx_lt {k₀ c n p : ℕ} (hp : p < n + c) : fIdx k₀ c n p < n + c := by
+theorem fIdx_lt {k₀ c n p : ℕ} (hk : k₀ ≤ n) (hp : p < n + c) : fIdx k₀ c n p < n + c := by
   unfold fIdx
   split_ifs <;> omega
 
@@ -155,7 +155,7 @@ theorem row_tr {N' n c k₀ : ℕ} (hk : k₀ ≤ n) (g : Sp E (n + c) ≃ₗ[E]
     apply Finset.eq_of_subset_of_card_le
     · intro m hm
       obtain ⟨p'', hp'', rfl⟩ := Finset.mem_image.mp hm
-      exact Finset.mem_range.mpr (fIdx_lt (Finset.mem_range.mp hp''))
+      exact Finset.mem_range.mpr (fIdx_lt hk (Finset.mem_range.mp hp''))
     · rw [Finset.card_image_of_injOn]
       intro a ha b hb hab
       exact fIdx_inj (Finset.mem_range.mp ha) (Finset.mem_range.mp hb) hk hab
@@ -166,7 +166,7 @@ theorem row_tr {N' n c k₀ : ℕ} (hk : k₀ ≤ n) (g : Sp E (n + c) ≃ₗ[E]
     rw [Finset.sum_image (fun a ha b hb hab => fIdx_inj (Finset.mem_range.mp ha) (Finset.mem_range.mp hb) hk hab)]
   have hA : ∀ {M : ℕ} (v : Fin M → E) (m : Fin M), atN v m.1 = v m := fun v m => by
     rw [atN_of_lt v m.isLt]
-  have hB : ∀ (v : Fin (n + c) → E), atN v (fIdx k₀ c n p) = v ⟨_, fIdx_lt hp⟩ := fun v => atN_of_lt v _
+  have hB : ∀ (v : Fin (n + c) → E), atN v (fIdx k₀ c n p) = v ⟨_, fIdx_lt hk hp⟩ := fun v => atN_of_lt v _
   rw [hsum, Finset.sum_range (fun m => atN (g (eN E (n + c) m)) (fIdx k₀ c n p) * atN (y (eN E N' s)) m)]
   simp only [hA, hB, LinearMap.comp_apply, LinearEquiv.coe_coe]
   rw [apply_sum' g]
@@ -276,10 +276,10 @@ theorem supp_comp {g : Sp E (n + c) ≃ₗ[E] Sp E (n + c)} (hg : g ∈ JQ P q k
     · push Not at hr
       rw [mul_div_right_comm]
       refine ia_mul (P := P) ?_ (hyA p'' p' hp''' (by omega))
-      rw [atN_of_lt _ (fIdx_lt hp)]
+      rw [atN_of_lt _ (fIdx_lt (le_trans h2 h3) hp)]
       have hD := fIdx_D (k₀ := k₀) (c := c) (n := n) (kj := kj) h2 (by omega) hp
       have hnD := fIdx_notD (k₀ := k₀) (c := c) (n := n) (kj := kj) (p := p'') h2 (by omega)
-      exact jq_DA hg _ hnD ⟨_, fIdx_lt hp⟩ hD
+      exact jq_DA hg _ hnD ⟨_, fIdx_lt (le_trans h2 h3) hp⟩ hD
 
 theorem val_comp (hp : (Ideal.absNorm P.asIdeal).Prime) {g : Sp E (n + c) ≃ₗ[E] Sp E (n + c)} (hg : g ∈ JQ P q kj n c)
     {y : HomE E (n' + c') (n + c)} (hy : CondQ P q k₀ r c' n' c n y) :
@@ -350,8 +350,8 @@ theorem jacobian_transformation_law : JLawP := by
   have hent0 : ∀ p p', p < n + c → p' < n' + c' →
       entB (qOf P) k₀ c' n' c n 0 0 (Matrix.toLin' M0) p p' = if p' < r ∧ p = p' then 1 else 0 := by
     intro p p' hp hp'
-    have hfp := fIdx_lt hp
-    have hfp' := fIdx_lt (c := c') hp'
+    have hfp := fIdx_lt hk hp
+    have hfp' := fIdx_lt (c := c') h5 hp'
     rw [block_entry_zero_zero, atN_of_lt _ hfp, Matrix.toLin'_apply]
     rw [show (Matrix.mulVec M0 (eN E (n' + c') (fIdx k₀ c' n' p'))) ⟨fIdx k₀ c n p, hfp⟩ =
         M0 ⟨fIdx k₀ c n p, hfp⟩ ⟨fIdx k₀ c' n' p', hfp'⟩ by

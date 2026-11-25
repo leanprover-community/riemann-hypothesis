@@ -107,7 +107,7 @@ theorem cfa_no_of_vogan (hgap : StdGap ε lam) (hσ : IsURepOn (UJset ε) σ) (h
   have hKT := isKTypeOf_of_isKIrrHW hσ hD hS' hK'
     (fun μ x hx hx0 hμ => weights_le_of_irr_hw hE hU hS' hx hx0 hμ)
   have h1 := hvog _ _ hKT
-  have h2 := vNormSq_lowK_sub_root_lt hgap.1 hab
+  have h2 := vNormSq_lowK_sub_root_lt hgap.1 hab hne
   rw [mir_lowK_eq] at h1 h2
   linarith
 
@@ -155,7 +155,7 @@ theorem casOnSmooth_of_datum (hgap : StdGap ε lam) (hσ : IsURepOn (UJset ε) �
     obtain ⟨x, hx, rfl⟩ := Submodule.mem_map.1 hu
     have hcx : ((casimir (smE ε σ) x : smD ε σ) : H) = ((casVal lam : ℝ) : ℂ) • (x : H) := by
       rw [← casU_eq_casimir hD x]
-      exact data_casU hD hc x hx
+      exact data_casU hgap hσ hD hV hc hVK x hx
     have hsym := cf_inner_casimir hU x v'
     rw [Submodule.coe_inner, Submodule.coe_inner, hcx] at hsym
     rw [Submodule.subtype_apply, inner_sub_right, ← hsym, inner_smul_left, inner_smul_right,
@@ -174,7 +174,7 @@ theorem compact_isDS_unique_of_cas (hpq : pOf ε = 0 ∨ qOf ε = 0) (hlam : S7.
     (∀ S : Submodule ℂ H, Formalism.MainNotions.S.IsKTypeOf ε σ (Formalism.QuantumDeterminants.lowK ε lam) S → S = ⊤) ∧
       ∃ U : T.V ≃ₗᵢ[ℂ] H, ∀ k : S7.KG ε, ∀ v : T.V, U (T.op k v) = σ (S7.toMK k) (U v) := by
   have hgap := cf_stdGap_of_pq hpq (lam := lam) hlam.1
-  obtain ⟨σ₀, hDS₀, hcas₀, hσ₀K⟩ := isDS_compact hpq T
+  obtain ⟨σ₀, hDS₀, hcas₀, hσ₀K⟩ := isDS_compact hpq hlam T
   obtain ⟨U, hU⟩ := dsUnique_of_cas hgap hDS₀ hcas₀ hDS hcas
   have hUK : ∀ (k : S7.KG ε) (v : T.V), U (T.op k v) = σ (S7.toMK k) (U v) := by
     intro k v
@@ -235,7 +235,7 @@ theorem isDS_props_of_copies {ε : Fin n → Bool} {lam : Fin n → ℝ} (hlam :
     rw [hset] at hadm
     exact hadm
   · have hle : S ≤ closGen (smE ε σ) V := by rw [htop]; exact le_top
-    have hmem := data_kfin_le hgap hσ hD hV hc S hle hSf hSK hv
+    have hmem := data_kfin_le hgap hσ hD hV hc hVK S hle hSf hSK hv
     obtain ⟨x, -, rfl⟩ := Submodule.mem_map.1 hmem
     exact (mem_smD_iff ε σ _).1 x.2
   · exact dsUnique_of_cas hgap hDS hcas hDS' (casOnSmooth_of_copies hDS' hgap (hall H' σ' hDS'))

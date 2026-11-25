@@ -456,7 +456,7 @@ theorem ker_qIter (ψ : Ch k) {n : ℕ} :
       twKer_twAct_eq_map τ.ρ (MirUin k (n + j + 1)) (mirChar k ψ (n + j))
         ((levi k (n + j + 1)).comp (Mir k (n + j)).subtype) (levi_stab ψ (n + j))
         (derUnipM k (n + j) n) (derCharM k ψ (n + j) n) (derUnipM k (n + j + 1) n) (derCharM k ψ (n + j + 1) n)
-        (MirUin_step ψ hnm) (levi_step ψ hnm) (derUnipM_decomp)
+        (MirUin_step ψ hnm) (levi_step ψ hnm) (derUnipM_decomp hnm)
     have hcomap : (twKer (MRep.phiM k ψ τ).ρ (derUnipM k (n + j) n) (derCharM k ψ (n + j) n)).comap K.mkQ = L := by
       rw [hmap.1, Submodule.comap_map_mkQ, sup_eq_right.2 hmap.2]
     exact (congrArg (Submodule.comap K.mkQ) (ker_qIter ψ j (MRep.phiM k ψ τ))).trans hcomap

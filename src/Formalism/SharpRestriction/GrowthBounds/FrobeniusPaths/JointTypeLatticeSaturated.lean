@@ -305,7 +305,7 @@ def IntegralJointTypeSum : Prop :=
         (XXZ O PP : Set _) = {f | MvPolynomial.map (algebraMap O (KK O)) f ∈
           ⨆ q ∈ PP, jointType (KK O) LL q.1 q.2})
 
-theorem lemma_B3 (D : Formalism.BasicNotions.D7) (h16 : PairedPathIndependence) (hB2 : PathWeightComponents) (hc : IntegralJointTypeSum) : ConclusionB3 := by
+theorem lemma_B3 (D : Formalism.BasicNotions.D7) (h16 : PairedPathIndependence) (hB2 : PathWeightComponents) (hc : IntegralJointTypeSum) : ConclusionB3 D := by
   intro p _ O _ _ _ S N r K _ _ LL B om hK h1 h2 PP hPP
   refine ⟨joint_type_lattice_saturated D h16 p O S N r K LL B hK PP hPP, ?_, hc p O S N r K LL B hK PP⟩
   intro q hq I' I'' hI' hI''

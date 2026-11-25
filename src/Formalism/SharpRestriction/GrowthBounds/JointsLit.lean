@@ -399,7 +399,7 @@ end Formalism.MainNotions.G.Joints.Lit
 
 namespace Formalism.MainNotions.G.Joints.Lit
 
-theorem mertens_bound (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.CornerGLContinuity.MertensBound := by
+theorem mertens_bound (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.CornerGLContinuity.MertensBound D := by
   intro y hy
   have hly : 0 ≤ Real.log y := Real.log_nonneg hy
   have hterm : ∀ p ∈ (Finset.range ⌈y⌉₊).filter Nat.Prime, Real.log p / p ≤ Real.log y / p := by

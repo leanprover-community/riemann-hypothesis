@@ -15,7 +15,7 @@ open HM
 
 theorem uw_finite {k r : ℕ} (z : Fin (2 * r + k + 1) → ℂ) (hz : Formalism.QuantumDeterminants.inWb k r z)
     (hT : 0 < Formalism.QuantumDeterminants.Tz k r z) : IsFiniteMeasure (hmeas (Formalism.QuantumDeterminants.UWset k r z) (uw_clsub z)) := by
-  have : CompactSpace (Grp (Formalism.QuantumDeterminants.UWset k r z : Set (Mx k r))) :=
+  have : CompactSpace (Grp (Formalism.QuantumDeterminants.UWset k r z : Set (Mx k r)) (uw_clsub z)) :=
     isCompact_iff_compactSpace.mp (compactW z hz hT)
   refine ⟨?_⟩
   unfold hmeas

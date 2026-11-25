@@ -270,7 +270,7 @@ section H3
 
 variable {k : Type} [Field k]
 
-theorem derUnipM_decomp {m n : ℕ} (u : derUnipM k (m + 1) n) :
+theorem derUnipM_decomp {m n : ℕ} (hnm : n ≤ m) (u : derUnipM k (m + 1) n) :
     ∃ u₁ : MirUin k (m + 1), ∃ a : derUnipM k m n,
       (u : Mir k (m + 1)) = u₁ * ((levi k (m + 1)).comp (Mir k m).subtype) (a : Mir k m) := by
   have hu := Subgroup.mem_subgroupOf.1 u.2
@@ -334,6 +334,6 @@ theorem phiMinus_twJacquet_equiv : ∀ (k : Type) [Field k] [ValuativeRel k] [To
   intro k _ _ _ _ ψ m n hnm V _ _ τ
   exact twJacquet_twAct_equiv τ (MirUin k (m + 1)) (mirChar k ψ m) _ (levi_stab ψ m) (derUnipM k m n)
     (derCharM k ψ m n) (derUnipM k (m + 1) n) (derCharM k ψ (m + 1) n) (MirUin_step ψ hnm) (levi_step ψ hnm)
-    (derUnipM_decomp)
+    (derUnipM_decomp hnm)
 
 end GlobalTheory.CompanionTheory.BZMirStep

@@ -162,9 +162,9 @@ structure MtInput (D : D7) (M : MtFam D) (tup : D.what₂.Tup → Fin D.R.m → 
 def hkF (D : D7) {tw : NTw D.R D.host D.what₂ D.LL0 D.nd} (S : RatDat tw) (i : tw.Tw) (j : ℕ) (b : Bool)
     (hL : ℕ → PlE D.host → Module.End D.what₂.LL (S.WL j)) (hs : ∀ k P (x : S.WL j), x ∈ (S.A j).WK → hL k P x ∈ (S.A j).WK)
     (k : ℕ) (P : PlE D.host) : Module.End (FractionRing (tw.O i)) (Fm S i j b) :=
-  (Module.End.baseChangeHom S.Ks (KB i) (FmK S j)
+  (Module.End.baseChangeHom S.Ks (KB S i b) (FmK S j)
       (((hL k P).restrictScalars S.Ks).restrict (p := (S.A j).WK) (q := (S.A j).WK) fun x hx => hs k P x hx) :
-    Module.End (KB i) (KB i ⊗[S.Ks] FmK S j))
+    Module.End (KB S i b) (KB S i b ⊗[S.Ks] FmK S j))
 
 def actL (D : D7) {tw : NTw D.R D.host D.what₂ D.LL0 D.nd} (S : RatDat tw) (j : ℕ) (g : G0g D.nd) : Module.End D.what₂.LL (S.WL j) :=
   ((((S.A j).chi (S.eG.symm g) : D.what₂.LLˣ) : D.what₂.LL))⁻¹ • (S.A j).ρ (S.eG.symm g)

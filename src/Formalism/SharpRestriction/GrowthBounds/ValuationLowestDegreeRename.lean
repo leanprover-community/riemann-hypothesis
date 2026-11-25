@@ -63,7 +63,7 @@ def PathPairCorrespondence : Prop :=
       (∀ s < n' / ((6 * r + 1) * u), Formalism.G0.Marked (TT.map Fin.valEmbedding) r u s →
         ∃ j : ℤ, (F.fr j 0 % (n' : ℤ)).toNat ∈ Formalism.G0.cell r u s (2 * r + 2))
 
-def admB2 : Prop :=
+def admB2 (_D : Formalism.BasicNotions.D7) : Prop :=
   ∀ (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] (ι : Type) (n : ℕ) [NeZero n]
     (LL : Letters ι) (S : Set ι),
     (∀ F G : MvPolynomial (ι × Fin n) O,
@@ -110,11 +110,11 @@ def TensorColumnFamily (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainN
 
 def BranchingColumnFamily (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.ValuationLemmaField D
 
-def GlobalSectionsSchur (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.DefiniteRankOne
+def GlobalSectionsSchur (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.DefiniteRankOne D
 
-def BracketPolynomialSpan (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.RotatedSumBound
+def BracketPolynomialSpan (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.RotatedSumBound D
 
-def GradedLatticeStable (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.ConclusionB3
+def GradedLatticeStable (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.ConclusionB3 D
 
 section Seg
 
@@ -149,7 +149,7 @@ def segPairs [NeZero r] (K : ℕ) [NeZero K] (m : ℤ → ℤ) (th o : ℤ → �
 
 end Seg
 
-def NestedTypeBound : Prop :=
+def NestedTypeBound (_D : Formalism.BasicNotions.D7) : Prop :=
   ∀ (p : ℕ) [Fact p.Prime] (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] (_S : UniformizedDVR p O)
     (n' r K : ℕ) [NeZero n'] [NeZero r] [NeZero K]
     (F : Frames n' r) (L₁ N₁ : ℕ) (j : ℤ) (m : ℤ → ℤ) (th o : ℤ → ℝ),
@@ -189,7 +189,7 @@ def NestedTypeBound : Prop :=
     ∃ P ∈ XX' O r K F j m th o,
       MvPolynomial.map (IsLocalRing.residue O) P = plEmb (FF O) r K A * nmEmb (FF O) r K G)
 
-def TypeDecompositionsCommute : Prop :=
+def TypeDecompositionsCommute (_D : Formalism.BasicNotions.D7) : Prop :=
   (∀ (R : Type) [CommRing R] (ι κ : Type) (f : ι → κ) (n : ℕ) [NeZero n] (LL : Letters κ) (S : Set κ)
       (A : MvPolynomial (ι × Fin n) R), Function.Injective f →
     valS LL S (rename (fun v : ι × Fin n => (f v.1, v.2)) A) =
@@ -255,8 +255,8 @@ theorem space_criterion_clause (O : Type) [CommRing O] (n' r K : ℕ) [NeZero n'
   exact ⟨Submodule.subset_span ⟨A, G, M, hA, hG, hc, rfl⟩, ho⟩
 
 def AdmB (D : Formalism.BasicNotions.D7) : Prop :=
-  PathPairCorrespondence ∧ admB2 ∧ admB3 ∧ ColumnFamilyLowerSet ∧ GenericProjectionCriterion ∧ ColumnFamilyClosure ∧ TensorColumnFamily D ∧ BranchingColumnFamily D ∧ GlobalSectionsSchur D ∧ BracketPolynomialSpan D ∧ GradedLatticeStable D ∧
-    NestedTypeBound ∧ TypeDecompositionsCommute
+  PathPairCorrespondence ∧ admB2 D ∧ admB3 ∧ ColumnFamilyLowerSet ∧ GenericProjectionCriterion ∧ ColumnFamilyClosure ∧ TensorColumnFamily D ∧ BranchingColumnFamily D ∧ GlobalSectionsSchur D ∧ BracketPolynomialSpan D ∧ GradedLatticeStable D ∧
+    NestedTypeBound D ∧ TypeDecompositionsCommute D
 
 def SecondPartClosed (D : Formalism.BasicNotions.D7) : Prop :=
   AdmB D → ∃ C₀ : ℝ, 0 < C₀ ∧ ∀ CLa Ck : ℝ, C₀ ≤ CLa → C₀ ≤ Ck →

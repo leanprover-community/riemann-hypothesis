@@ -54,9 +54,9 @@ lemma mulP_meas : Measurable (mulP : Mt k r × Mt k r → Mt k r) := by
 
 theorem s_closed (z : Fin (2 * r + k + 1) → ℂ) (hz : inWb k r z) (hT : 0 < Tz k r z) :
     IsClosed (Sset k r z : Set (Mx k r)) := by
-  have hE : IsClosedEmbedding (Grp.val : Grp (UH (Hpk k r) : Set (Mx k r)) → Mx k r) := Grp.emb
-  let A : Set (Grp (UH (Hpk k r) : Set (Mx k r))) := Grp.val ⁻¹' (UWset k r z : Set (Mx k r))
-  let B : Set (Grp (UH (Hpk k r) : Set (Mx k r))) := Grp.val ⁻¹' (Nset k r : Set (Mx k r))
+  have hE : IsClosedEmbedding (Grp.val : Grp (UH (Hpk k r) : Set (Mx k r)) uh_clsub → Mx k r) := Grp.emb
+  let A : Set (Grp (UH (Hpk k r) : Set (Mx k r)) uh_clsub) := Grp.val ⁻¹' (UWset k r z : Set (Mx k r))
+  let B : Set (Grp (UH (Hpk k r) : Set (Mx k r)) uh_clsub) := Grp.val ⁻¹' (Nset k r : Set (Mx k r))
   have hA : IsCompact A := hE.isCompact_preimage (compactW z hz hT)
   have hB : IsClosed B := n_closed.preimage hE.continuous
   have hAB : IsClosed (A * B) := hB.mul_left_of_isCompact hA

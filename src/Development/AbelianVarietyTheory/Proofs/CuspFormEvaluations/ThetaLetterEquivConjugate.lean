@@ -340,7 +340,7 @@ theorem HHa_eq_zero_or_rowHighest [CharZero K] [Fintype ι] [Fintype {τ // Ψ �
         fun k l h => hij.ne (Fin.ext (congrArg (fun x : Formalism.L2.Pj.Letter ι dim n => (x.2.1 : ℕ)) h))
       rw [Capelli.rowOp_apply]
       exact ((rowAdd_invariant_iff (fun k : Fin n => (⟨τ, (i, k)⟩ : Formalism.L2.Pj.Letter ι dim n))
-        (fun k : Fin n => (⟨τ, (j, k)⟩ : Formalism.L2.Pj.Letter ι dim n)) huw P).out 2 3).1 hall
+        (fun k : Fin n => (⟨τ, (j, k)⟩ : Formalism.L2.Pj.Letter ι dim n)) hw huw P).out 2 3).1 hall
     have hκ : ∀ i : Fin (dim τ),
         Capelli.rowOp K (fun x : Fin (dim τ) × Fin n => (⟨τ, x⟩ : Formalism.L2.Pj.Letter ι dim n)) i i P =
           (((a τ i : ℕ) : ℤ) : K) • P :=

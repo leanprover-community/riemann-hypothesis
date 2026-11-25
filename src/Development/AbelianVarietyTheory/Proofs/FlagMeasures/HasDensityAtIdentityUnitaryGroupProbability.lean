@@ -465,25 +465,25 @@ theorem isMatGroup_UH_one (m : ℕ) : PI.IsMatGroup (UH (1 : Matrix (Fin m) (Fin
 
 theorem exists_prob_haar {m : ℕ} {G : Set (Matrix (Fin m) (Fin m) ℂ)} (hG : PI.IsMatGroup G) (hc : IsCompact G) :
     ∃ μ : Measure (PI.MtM m), PI.IsHaarOnM G μ ∧ μ Set.univ = 1 := by
-  have hc' : IsCompact (Set.range (MatHaar.inc : MatHaar.Grp G → PI.MtM m)) := by
+  have hc' : IsCompact (Set.range (MatHaar.inc : MatHaar.Grp G hG → PI.MtM m)) := by
     rw [MatHaar.range_inc]; exact hc
-  haveI : CompactSpace (MatHaar.Grp G) := ⟨by
+  haveI : CompactSpace (MatHaar.Grp G hG) := ⟨by
     rw [MatHaar.inc_closedEmb.isInducing.isCompact_iff, Set.image_univ]; exact hc'⟩
-  let ν : Measure (MatHaar.Grp G) := Measure.haarMeasure ⊤
-  have hν : ν Set.univ = 1 := Measure.haarMeasure_self (K₀ := (⊤ : TopologicalSpace.PositiveCompacts (MatHaar.Grp G)))
+  let ν : Measure (MatHaar.Grp G hG) := Measure.haarMeasure ⊤
+  have hν : ν Set.univ = 1 := Measure.haarMeasure_self (K₀ := (⊤ : TopologicalSpace.PositiveCompacts (MatHaar.Grp G hG)))
   have h1 : (ν.map MatHaar.inc) Set.univ = 1 := by
     rw [MatHaar.inc_memb.map_apply, Set.preimage_univ, hν]
   haveI : IsProbabilityMeasure (ν.map MatHaar.inc) := ⟨h1⟩
   refine ⟨ν.map MatHaar.inc, ⟨inferInstance, IsProbabilityMeasure.ne_zero _, ?_, fun s hs => ?_⟩, h1⟩
   · rw [MatHaar.inc_memb.map_apply]
-    have : (MatHaar.inc : MatHaar.Grp G → PI.MtM m) ⁻¹' {x | Matrix.of x ∉ G} = ∅ := by
+    have : (MatHaar.inc : MatHaar.Grp G hG → PI.MtM m) ⁻¹' {x | Matrix.of x ∉ G} = ∅ := by
       ext x
       simp only [Set.mem_preimage, Set.mem_setOf_eq, Set.mem_empty_iff_false, iff_false, not_not]
       exact MatHaar.inc_mem x
     rw [this, measure_empty]
-  · let a : MatHaar.Grp G := ⟨s, hs⟩
+  · let a : MatHaar.Grp G hG := ⟨s, hs⟩
     rw [Measure.map_map (MatHaar.lmulQ_cont s).measurable MatHaar.inc_memb.measurable]
-    have : PI.lmulQ s ∘ (MatHaar.inc : MatHaar.Grp G → PI.MtM m) = MatHaar.inc ∘ fun x => a * x := by
+    have : PI.lmulQ s ∘ (MatHaar.inc : MatHaar.Grp G hG → PI.MtM m) = MatHaar.inc ∘ fun x => a * x := by
       funext x; rfl
     rw [this, ← Measure.map_map MatHaar.inc_memb.measurable (measurable_const_mul a), map_mul_left_eq_self]
 

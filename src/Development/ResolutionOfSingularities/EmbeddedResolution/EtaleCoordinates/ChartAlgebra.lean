@@ -63,7 +63,7 @@ noncomputable def chartCoeffHom (g : V.toScheme ⟶ AffineSpace n W.toScheme) :
 noncomputable def chartVar (g : V.toScheme ⟶ AffineSpace n W.toScheme) (j : n) : Γ(Y, V) :=
   V.topIso.hom.hom (g.appTop.hom (AffineSpace.coord (S := W.toScheme) j))
 
-noncomputable def chartEvalHom (g : V.toScheme ⟶ AffineSpace n W.toScheme) :
+noncomputable def chartEvalHom (_hW : IsAffineOpen W) (g : V.toScheme ⟶ AffineSpace n W.toScheme) :
     MvPolynomial n Γ(X, W) →+* Γ(Y, V) :=
   MvPolynomial.eval₂Hom (chartCoeffHom g) (chartVar g)
 
@@ -81,25 +81,25 @@ private theorem resLE_appTop_conj_topIso_eq_appLE {X' Y' : Scheme.{u}} (h : Y' �
 theorem chartEvalHom_comp_C (hW : IsAffineOpen W) (h : Y ⟶ X) (e : V ≤ h ⁻¹ᵁ W)
     (g : V.toScheme ⟶ AffineSpace n W.toScheme)
     (hg : g ≫ (AffineSpace n W.toScheme ↘ W.toScheme) = h.resLE W V e) :
-    (chartEvalHom g).comp (MvPolynomial.C : Γ(X, W) →+* MvPolynomial n Γ(X, W)) =
+    (chartEvalHom hW g).comp (MvPolynomial.C : Γ(X, W) →+* MvPolynomial n Γ(X, W)) =
       (h.appLE W V e).hom := by
   have key : chartCoeffHom g = (h.appLE W V e).hom := by
     simp only [chartCoeffHom, hg, resLE_appTop_conj_topIso_eq_appLE]
   refine RingHom.ext fun a => ?_
-  have h1 : chartEvalHom g (MvPolynomial.C a) = chartCoeffHom g a := by simp [chartEvalHom]
+  have h1 : chartEvalHom hW g (MvPolynomial.C a) = chartCoeffHom g a := by simp [chartEvalHom]
   rw [RingHom.comp_apply, h1, key]
 
 theorem chartEvalHom_C (hW : IsAffineOpen W) (h : Y ⟶ X) (e : V ≤ h ⁻¹ᵁ W)
     (g : V.toScheme ⟶ AffineSpace n W.toScheme)
     (hg : g ≫ (AffineSpace n W.toScheme ↘ W.toScheme) = h.resLE W V e) (a : Γ(X, W)) :
-    chartEvalHom g (MvPolynomial.C a) = (h.appLE W V e).hom a :=
+    chartEvalHom hW g (MvPolynomial.C a) = (h.appLE W V e).hom a :=
   RingHom.congr_fun (chartEvalHom_comp_C hW h e g hg) a
 
 @[reducible]
 noncomputable def chartAlgebra (hW : IsAffineOpen W)
     (g : V.toScheme ⟶ AffineSpace n W.toScheme) :
     Algebra (MvPolynomial n Γ(X, W)) Γ(Y, V) :=
-  (chartEvalHom g).toAlgebra
+  (chartEvalHom hW g).toAlgebra
 
 theorem chartAlgebra_isScalarTower (hW : IsAffineOpen W) (h : Y ⟶ X) (e : V ≤ h ⁻¹ᵁ W)
     (g : V.toScheme ⟶ AffineSpace n W.toScheme)
@@ -110,7 +110,7 @@ theorem chartAlgebra_isScalarTower (hW : IsAffineOpen W) (h : Y ⟶ X) (e : V �
   let : Algebra Γ(X, W) Γ(Y, V) := (h.appLE W V e).hom.toAlgebra
   let : Algebra (MvPolynomial n Γ(X, W)) Γ(Y, V) := chartAlgebra hW g
   refine IsScalarTower.of_algebraMap_eq fun a => ?_
-  show (h.appLE W V e).hom a = chartEvalHom g (algebraMap Γ(X, W) (MvPolynomial n Γ(X, W)) a)
+  show (h.appLE W V e).hom a = chartEvalHom hW g (algebraMap Γ(X, W) (MvPolynomial n Γ(X, W)) a)
   rw [MvPolynomial.algebraMap_eq, chartEvalHom_C hW h e g hg]
 
 private theorem comp_appTop_apply {A B C : Scheme.{u}} (f : A ⟶ B) (k : B ⟶ C) (z : Γ(C, ⊤)) :
@@ -212,15 +212,15 @@ theorem chartAlgebra_etale (hW : IsAffineOpen W) (hV : IsAffineOpen V)
     change RingHom.Etale (chartEvalHom hW g)
     rwa [← heq]
   refine MvPolynomial.ringHom_ext (fun a => ?_) (fun j => ?_)
-  · have hC : chartEvalHom g (MvPolynomial.C a) = chartCoeffHom g a := by simp [chartEvalHom]
+  · have hC : chartEvalHom hW g (MvPolynomial.C a) = chartCoeffHom g a := by simp [chartEvalHom]
     show V.topIso.hom.hom ((g ≫ (affineSpaceOpenIsoSpecMvPolynomial hW n).hom).appTop.hom
         ((Scheme.ΓSpecIso (CommRingCat.of (MvPolynomial n Γ(X, W)))).inv.hom
-          (MvPolynomial.C a))) = chartEvalHom g (MvPolynomial.C a)
+          (MvPolynomial.C a))) = chartEvalHom hW g (MvPolynomial.C a)
     rw [comp_appTop_apply, affineSpaceOpenIsoSpecMvPolynomial_hom_appTop_C, ← comp_appTop_apply, hC]
     rfl
   · show V.topIso.hom.hom ((g ≫ (affineSpaceOpenIsoSpecMvPolynomial hW n).hom).appTop.hom
         ((Scheme.ΓSpecIso (CommRingCat.of (MvPolynomial n Γ(X, W)))).inv.hom
-          (MvPolynomial.X j))) = chartEvalHom g (MvPolynomial.X j)
+          (MvPolynomial.X j))) = chartEvalHom hW g (MvPolynomial.X j)
     rw [comp_appTop_apply, affineSpaceOpenIsoSpecMvPolynomial_hom_appTop_X]
     simp [chartEvalHom, chartVar]
 

@@ -943,7 +943,7 @@ private theorem desc_exists (D : D7) (S : RatDat D.ntw) (In : RatIn D S) (i : D.
       Submodule.span (FractionRing (D.ntw.O i)) (Set.range Φ) = ⊤ := by
   obtain ⟨n, bs, hb, -, hKs, hLi, hLs⟩ := In.ks j h1 h2
   obtain ⟨Φ, hc, hf, hw⟩ := _root_.GlobalTheory.exists_semilinear_descent_to_baseChange D.LL0 S.kKs S.kKs_spec (S.A j).WK bs hb hKs hLi hLs
-    (KT := KB i) (readLL0 S i b) (fun s => rfl)
+    (KT := KB S i b) (readLL0 S i b) (fun s => rfl)
   refine ⟨readLL0 S i b, Φ, fun _ => rfl, hc, fun g x => ?_, fun k P x => ?_, ?_⟩
   · have e1 : actL D S j g x = (((chiL S j (In.chi j h1 h2) (S.eG.symm g))⁻¹ : ↥D.LL0) : D.what₂.LL) •
         (S.A j).ρ (S.eG.symm g) x := by
@@ -953,7 +953,7 @@ private theorem desc_exists (D : D7) (S : RatDat D.ntw) (In : RatIn D S) (i : D.
     exact e2
   · exact hf (In.hL j k P) _ (fun w => rfl) x
   · refine top_le_iff.1 ?_
-    have h := GlobalTheory.HeightCounting.FormsSpan.span_one_tmul (R := S.Ks) (A := KB i) (M := ↥(S.A j).WK)
+    have h := GlobalTheory.HeightCounting.FormsSpan.span_one_tmul (R := S.Ks) (A := KB S i b) (M := ↥(S.A j).WK)
     refine (le_of_eq h.symm).trans (Submodule.span_mono ?_)
     rintro _ ⟨w, rfl⟩
     exact ⟨(w : S.WL j), hw w⟩

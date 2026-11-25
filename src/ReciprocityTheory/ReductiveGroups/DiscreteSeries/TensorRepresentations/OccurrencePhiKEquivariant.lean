@@ -118,7 +118,7 @@ theorem occurrence_projection_mem (dual : Bool) (hP : IsPsiFor ε lam T Ψ) (hv�
     refine (occurrence_phi_k_equivariant dual η _ _ hk ?_).symm
     funext c
     simp only [u', kDiag, Submodule.coe_sum, Submodule.coe_smul, hy]
-  have hle := data_kfin_le hgap' hσ hD (datumV_isKIrrHW hP' hv₀') (datumV_casimir hP' v₀')
+  have hle := data_kfin_le hgap' hσ hD (datumV_isKIrrHW hP' hv₀') (datumV_casimir hP' v₀') (datumV_kStable hP' v₀')
     (LinearMap.range Φ) hS hSf hSK
   apply hle
   refine ⟨fun c => ⟨f c, hj c⟩, ?_⟩

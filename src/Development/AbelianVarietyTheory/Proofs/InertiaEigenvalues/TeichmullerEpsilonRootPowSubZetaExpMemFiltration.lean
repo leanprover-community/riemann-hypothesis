@@ -178,7 +178,7 @@ theorem t_sub_log (T : LocTied l P AI) (M : ℕ) :
           (algebraMap (Per.Ainf l) (Per.AinfP l) (Per.tm AI.ε - 1)) ^ (k + 1)), ?_, ?_⟩
     · refine (GlobalTheory.RingIface.mem_filtration_iff_mem_kerTheta_pow l M _).2 ?_
       rw [map_sub, GlobalTheory.ThetaTie.ev_alg, map_mul, map_natCast,
-        GlobalTheory.CrisIncl.factorial_mul_ev l _ y.1 hy M, sub_self]
+        GlobalTheory.CrisIncl.factorial_mul_ev l _ y (GlobalTheory.ThetaTie.isEps AI).1 hy M, sub_self]
 
     · simp only [map_sub, map_mul, map_natCast, map_sum, map_pow, map_neg, e, io_eq]
       simp only [map_one]

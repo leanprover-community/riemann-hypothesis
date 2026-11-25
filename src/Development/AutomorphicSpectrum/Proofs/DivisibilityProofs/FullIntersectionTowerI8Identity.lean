@@ -968,7 +968,7 @@ theorem degNum_eq (hI : PB.Inputs) {d : ℕ} {σ : Type} {S : PB.AnSys d σ} {P 
         rw [show (Re.π ⁻¹' E m).indicator (fun _ => (1 : ℝ)) = fun y => (E m).indicator (fun _ => 1) (Re.π y) from
           funext fun y => Set.indicator_comp_right Re.π (s := E m) (g := fun _ => (1 : ℝ)) (x := y)]
         obtain ⟨hV, hVk, hW, hdis, hpre, hbij⟩ := hsh m
-        exact (degree_piece Re.holo Φ (fun j => hth (w j)) A B (hEm m) (hEV m) hVk hW hdis hpre hbij _ hΦ).2
+        exact (degree_piece Re.holo Φ (fun j => hth (w j)) A B (hEm m) (hEV m) hV hVk hW hdis hpre hbij _ hΦ).2
       simp only [hp] at hYsum
       rw [mIntEq Re.R.A B Ψ (fun j => hpb (w j)) _ hΨ, mIntEq S.A A Φ (fun j => hth (w j)) _ hΦ]
       exact HasSum.unique hYsum (hXsum.mul_left _)

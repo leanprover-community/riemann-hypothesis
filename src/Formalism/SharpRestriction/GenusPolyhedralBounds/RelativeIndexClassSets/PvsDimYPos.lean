@@ -169,7 +169,7 @@ theorem pvs_dimY_pos (D : D7) {j : ℕ} (h1 : 1 ≤ j) : 1 ≤ WeightFamilies.di
 theorem sumGP (large₂ : SizeData₂ D) (X : PJ D B P j) (h1 : 1 ≤ j) (K : KAdm) (H : KHyp) (Ch Ah Cq Aq C2 A2 CR : ℝ)
     {ka wL wF : WeightFamilies.Wt D j} (T nP nW : ℕ) (h0 : ℝ)
     (hA : ParA large₂ H.CA) (hS : SetC large₂ X H.CK H.C1 H.A1 ka wL wF T nP nW h0) (h3 : H3 large₂ H C2 A2 CR 0 wL T)
-    (h4 : H4 large₂ X C2 A2 CR ka wL wF T nW)
+    (h4 : H4 large₂ X H C2 A2 CR ka wL wF T nW)
     (G : GlobalFamilyData X ka wL wF) (Gc PH Prw Pet Pd : ℝ)
     (hth' : ∀ i, WeightFamilies.meanLogSup B (G.th' i) ≤ Gc * wF.size)
     (hlogd : Real.log (finrank B.KO (B.Cusp j ka) : ℝ) ≤ Pd)

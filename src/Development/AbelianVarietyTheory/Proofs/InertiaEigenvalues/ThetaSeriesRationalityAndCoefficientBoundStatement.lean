@@ -1647,14 +1647,14 @@ theorem main : GlobalTheory.Published.GlobalArtinReciprocity → GlobalTheory.In
     intro Q M hQ hs a x hx
     obtain ⟨n, o, m, hm, he⟩ := hK Q M hQ hs a
     let y : NX.Fm Y.S i ((j : ℕ) + 1) b :=
-      ∑ k, ((show NX.KB i from algebraMap (D.ntw.O i) (FractionRing (D.ntw.O i)) (o k)) • ((1 : NX.KB i) ⊗ₜ[Y.S.Ks] m k) :
-        NX.KB i ⊗[Y.S.Ks] NX.FmK Y.S ((j : ℕ) + 1))
+      ∑ k, ((show NX.KB Y.S i b from algebraMap (D.ntw.O i) (FractionRing (D.ntw.O i)) (o k)) • ((1 : NX.KB Y.S i b) ⊗ₜ[Y.S.Ks] m k) :
+        NX.KB Y.S i b ⊗[Y.S.Ks] NX.FmK Y.S ((j : ℕ) + 1))
     have hy : y ∈ NX.Bsup Y.S i ((j : ℕ) + 1) b := by
       refine Submodule.sum_mem _ fun k _ => ?_
       exact (NX.Bsup Y.S i ((j : ℕ) + 1) b).smul_mem (o k) (Submodule.subset_span ⟨m k, hm k, rfl⟩)
     have hey : evK Y.YS X.geo.v₀ Y.Z.good i j b y = ∑ k, Y.Z.ρ.eO i b (o k) • evW Y.YS X.geo.v₀ j (Subtype.val (m k)) := by
-      refine (map_sum (evK Y.YS X.geo.v₀ Y.Z.good i j b) (fun k => ((show NX.KB i from algebraMap (D.ntw.O i)
-        (FractionRing (D.ntw.O i)) (o k)) • ((1 : NX.KB i) ⊗ₜ[Y.S.Ks] m k) : NX.KB i ⊗[Y.S.Ks] NX.FmK Y.S ((j : ℕ) + 1)))
+      refine (map_sum (evK Y.YS X.geo.v₀ Y.Z.good i j b) (fun k => ((show NX.KB Y.S i b from algebraMap (D.ntw.O i)
+        (FractionRing (D.ntw.O i)) (o k)) • ((1 : NX.KB Y.S i b) ⊗ₜ[Y.S.Ks] m k) : NX.KB Y.S i b ⊗[Y.S.Ks] NX.FmK Y.S ((j : ℕ) + 1)))
         Finset.univ).trans (Finset.sum_congr rfl fun k _ => ?_)
       rw [TensorProduct.smul_tmul', evK_tmul, smul_eq_mul, mul_one]
       rfl

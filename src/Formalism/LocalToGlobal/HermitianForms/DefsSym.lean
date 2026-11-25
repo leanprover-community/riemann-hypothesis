@@ -38,7 +38,7 @@ theorem lvSym_of_ge {k rS t x : ℕ} (hx : ¬ x < rSym k rS) : rSym k rS ≤ lvS
   rw [ite_eq_right hx]
   exact Nat.le_add_right _ _
 
-theorem posSym_inj {k rS x z : ℕ} (h : posSym k rS z = posSym k rS x) : z = x := by
+theorem posSym_inj {k rS x z : ℕ} (hx : x < rSym k rS) (hz : z < rSym k rS) (h : posSym k rS z = posSym k rS x) : z = x := by
   unfold posSym rSym at *
   split_ifs at h <;> omega
 
@@ -46,7 +46,7 @@ theorem lvSym_eq {k rS t x z : ℕ} (hx : x < rSym k rS) (h : lvSym k rS t z = l
   rw [lvSym_of_lt hx] at h
   by_cases hz : z < rSym k rS
   · rw [lvSym_of_lt hz] at h
-    exact posSym_inj h
+    exact posSym_inj hx hz h
   · have h1 := lvSym_of_ge (t := t) hz
     have h2 := posSym_lt hx
     omega

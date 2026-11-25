@@ -491,7 +491,7 @@ private theorem exists_isFrameOf_singleton_of_Tz_pos {k r : ℕ} {z' : Fin (2 * 
       rw [hc0, zero_mul] at e2
       exact one_ne_zero e2
   obtain ⟨e, he, hez, hee, -⟩ := Q.LieAlgebraWeightVectors.exists_unit hz' hT' ha hind
-  obtain ⟨Bs, hBs⟩ := Q.LieAlgebraWeightVectors.exists_frame hz' hT'
+  obtain ⟨Bs, hBs⟩ := Q.LieAlgebraWeightVectors.exists_frame he hz' hT'
   refine ⟨Fin.cons e (fun i => Bs (Fin.cast (by omega) i)), fun i => ?_, fun i j => ?_, fun i v hv => ?_⟩
   · refine Fin.cases ?_ (fun j => ?_) i
     · simpa using he

@@ -420,13 +420,13 @@ namespace GlobalTheory.PtFib
 
 open MulAction GlobalTheory.MassConj
 
-def ConjTgt (H : Type) [Group H] : Type := H
+def ConjTgt (H : Type) [Group H] (_K : Subgroup H) : Type := H
 
 variable {H X : Type} [Group H] [MulAction H X]
 
-def ConjTgt.val {K : Subgroup H} (γ : ConjTgt H) : H := γ
+def ConjTgt.val {K : Subgroup H} (γ : ConjTgt H K) : H := γ
 
-instance (K : Subgroup H) : MulAction K (ConjTgt H) where
+instance (K : Subgroup H) : MulAction K (ConjTgt H K) where
   smul k γ := ((k : H) * (show H from γ) * (k : H)⁻¹ : H)
   one_smul := by
     show ∀ γ : H, (1 : H) * γ * (1 : H)⁻¹ = γ
@@ -454,7 +454,7 @@ open MulAction GlobalTheory.MassConj
 variable {H X : Type} [Group H] [MulAction H X]
 
 theorem card_stab_pair (x : X) (γ : H) :
-    Nat.card (stabilizer (stabilizer H x) (show ConjTgt H from γ)) =
+    Nat.card (stabilizer (stabilizer H x) (show ConjTgt H (stabilizer H x) from γ)) =
       Nat.card (stabilizer H (ConjPair.mk γ x : ConjPair H X)) := by
   apply Nat.card_congr
   refine
@@ -495,18 +495,18 @@ theorem ptFib_mass (H : Type) [Group H] (X : Type) [MulAction H X] (f : H → X 
       (1 / (Nat.card (MulAction.stabilizer H x) : ℂ)) * ∑ᶠ γ : H, f γ x := by
   haveI := hfin x
   let K := stabilizer H x
-  let F : ConjTgt H → ℂ := fun γ => f γ x
-  have hF : ∀ (k : K) (γ : ConjTgt H), F (k • γ) = F γ := by
+  let F : ConjTgt H K → ℂ := fun γ => f γ x
+  have hF : ∀ (k : K) (γ : ConjTgt H K), F (k • γ) = F γ := by
     intro k γ
     change H at γ
     show f ((k : H) * γ * (k : H)⁻¹) x = f γ x
     have h := hf k γ x
     rwa [show (k : H) • x = x from k.2] at h
   have key := GlobalTheory.finsum_orbits_stabilizer_mass F hF (hsupp x)
-  let g : ConjTgt H → {O : orbitRel.Quotient H (ConjPair H X) //
+  let g : ConjTgt H K → {O : orbitRel.Quotient H (ConjPair H X) //
       (Quotient.mk'' (Quotient.out O).pt : orbitRel.Quotient H X) = Quotient.mk'' x} :=
     fun γ => ⟨Quotient.mk'' (ConjPair.mk (H := H) γ x), by rw [mk_out_pt]⟩
-  have hg : ∀ a b : ConjTgt H, a ∈ orbit K b → g a = g b := by
+  have hg : ∀ a b : ConjTgt H K, a ∈ orbit K b → g a = g b := by
     rintro a b ⟨k, hk⟩
     apply Subtype.ext
     show (Quotient.mk'' (ConjPair.mk (H := H) a x) : orbitRel.Quotient H (ConjPair H X)) = Quotient.mk'' (ConjPair.mk (H := H) b x)
@@ -515,10 +515,10 @@ theorem ptFib_mass (H : Type) [Group H] (X : Type) [MulAction H X] (f : H → X 
       · rw [smul_elt, ← hk]; rfl
       · rw [smul_pt]; exact k.2.symm
     rw [this, mk_smul']
-  let φ : orbitRel.Quotient K (ConjTgt H) → {O : orbitRel.Quotient H (ConjPair H X) //
+  let φ : orbitRel.Quotient K (ConjTgt H K) → {O : orbitRel.Quotient H (ConjPair H X) //
       (Quotient.mk'' (Quotient.out O).pt : orbitRel.Quotient H X) = Quotient.mk'' x} :=
     Quotient.lift g (fun a b hab => hg a b (orbitRel_apply.1 hab))
-  have hφ : ∀ γ : ConjTgt H, φ (Quotient.mk'' γ) = g γ := fun γ => rfl
+  have hφ : ∀ γ : ConjTgt H K, φ (Quotient.mk'' γ) = g γ := fun γ => rfl
   have hinj : Function.Injective φ := by
     intro o1 o2 h
     induction o1 using Quotient.inductionOn' with | h a => ?_
@@ -535,7 +535,7 @@ theorem ptFib_mass (H : Type) [Group H] (X : Type) [MulAction H X] (f : H → X 
     rintro ⟨O, hO⟩
     obtain ⟨t, ht⟩ := orbitRel_apply.1 (Quotient.eq''.1 hO)
 
-    refine ⟨Quotient.mk'' (show ConjTgt H from (t⁻¹ * (Quotient.out O).elt * t : H)), ?_⟩
+    refine ⟨Quotient.mk'' (show ConjTgt H K from (t⁻¹ * (Quotient.out O).elt * t : H)), ?_⟩
     rw [hφ]
     apply Subtype.ext
     show (Quotient.mk'' (ConjPair.mk (t⁻¹ * (Quotient.out O).elt * t) x) :
@@ -548,7 +548,7 @@ theorem ptFib_mass (H : Type) [Group H] (X : Type) [MulAction H X] (f : H → X 
     exact Quotient.out_eq' O
   let e := Equiv.ofBijective φ ⟨hinj, hsurj⟩
   rw [← finsum_comp_equiv e]
-  have hterm : ∀ o : orbitRel.Quotient K (ConjTgt H),
+  have hterm : ∀ o : orbitRel.Quotient K (ConjTgt H K),
       (1 / (Nat.card (stabilizer H (Quotient.out (e o).1)) : ℂ)) *
           f (Quotient.out (e o).1).elt (Quotient.out (e o).1).pt =
         ((Nat.card (stabilizer K (Quotient.out o)) : ℕ) : ℂ)⁻¹ * F (Quotient.out o) := by

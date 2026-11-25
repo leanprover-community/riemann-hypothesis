@@ -742,7 +742,7 @@ theorem exists_period_acris (C : Core l) (μ : ℕ → Om l) (hs : ∀ m, μ (m 
   apply crisP_injective l C.j C.j_cris
   rw [map_add (f := _), CrisUnique.equivariant C.j_cris]
   refine IsLogP.add ((ThetaD.fontaineTheta_eq_zero l _).1 (by rw [ThetaD.fontaineTheta_algebraMap₂, hz]; rfl)) (LogFun.mu_mem he1) hY
-    (GlobalTheory.CrisIncl.factorial_mul_ev l e _ (LogFun.isLog_map he1 hy C.j_cris)) ?_
+    (GlobalTheory.CrisIncl.factorial_mul_ev l e _ he1 (LogFun.isLog_map he1 hy C.j_cris)) ?_
   have h := IsLogP.gal hY g
   rwa [GlobalTheory.RingBasics.awayMap_algebraMap₂, gal_quot g x e hxe v, map_quot] at h
 

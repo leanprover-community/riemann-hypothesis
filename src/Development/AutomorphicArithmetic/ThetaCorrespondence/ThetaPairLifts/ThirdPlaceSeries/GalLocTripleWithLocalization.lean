@@ -831,13 +831,13 @@ theorem hkFR_act (i : D.ntw.Tw) (j : ℕ) (b : Bool) (hL : ℕ → PlE D.host �
     hkFR S i j b hL hs k P (actG S i j b hst hχ g z) = actG S i j b hst hχ g (hkFR S i j b hL hs k P z) := by
   have hcomm : hLr S j hL hs k P * rhoKG S j hst (S.eG.symm g) = rhoKG S j hst (S.eG.symm g) * hLr S j hL hs k P := by
     exact LinearMap.ext fun x => Subtype.ext (hc (S.eG.symm g) (show ↥(S.A j).WK from x).1)
-  have h2 := LinearMap.congr_fun (congrArg (Module.End.baseChangeHom S.Ks (KB i) (FmK S j)) hcomm) z
+  have h2 := LinearMap.congr_fun (congrArg (Module.End.baseChangeHom S.Ks (KB S i b) (FmK S j)) hcomm) z
   rw [map_mul, map_mul] at h2
-  change Module.End.baseChangeHom S.Ks (KB i) (FmK S j) (hLr S j hL hs k P) ((readLL0 S i b (chiL S j hχ (S.eG.symm g)))⁻¹ •
-      Module.End.baseChangeHom S.Ks (KB i) (FmK S j) (rhoKG S j hst (S.eG.symm g)) z) =
+  change Module.End.baseChangeHom S.Ks (KB S i b) (FmK S j) (hLr S j hL hs k P) ((readLL0 S i b (chiL S j hχ (S.eG.symm g)))⁻¹ •
+      Module.End.baseChangeHom S.Ks (KB S i b) (FmK S j) (rhoKG S j hst (S.eG.symm g)) z) =
     (readLL0 S i b (chiL S j hχ (S.eG.symm g)))⁻¹ •
-      Module.End.baseChangeHom S.Ks (KB i) (FmK S j) (rhoKG S j hst (S.eG.symm g))
-        (Module.End.baseChangeHom S.Ks (KB i) (FmK S j) (hLr S j hL hs k P) z)
+      Module.End.baseChangeHom S.Ks (KB S i b) (FmK S j) (rhoKG S j hst (S.eG.symm g))
+        (Module.End.baseChangeHom S.Ks (KB S i b) (FmK S j) (hLr S j hL hs k P) z)
   rw [map_smul]
   congr 1
 end Act
@@ -893,9 +893,9 @@ def mkF (y : S.WL j) (h : y ∈ (S.A j).WK) : FmK S j := ⟨y, h⟩
 
 def rdF (c : S.Ks) : FractionRing (D.ntw.O i) := ιK S i b c
 
-def rdK (a : KB i) : FractionRing (D.ntw.O i) := a
+def rdK (a : KB S i b) : FractionRing (D.ntw.O i) := a
 
-def oneT (x : FmK S j) : Fm S i j b := ((1 : KB i) ⊗ₜ[S.Ks] x : KB i ⊗[S.Ks] FmK S j)
+def oneT (x : FmK S j) : Fm S i j b := ((1 : KB S i b) ⊗ₜ[S.Ks] x : KB S i b ⊗[S.Ks] FmK S j)
 
 theorem oneT_zero : oneT S i j b 0 = 0 := TensorProduct.tmul_zero _ _
 
@@ -904,7 +904,7 @@ theorem oneT_add (x y : FmK S j) : oneT S i j b (x + y) = oneT S i j b x + oneT 
 
 theorem oneT_smul (c : S.Ks) (x : FmK S j) :
     oneT S i j b (c • x) = (rdF S i b c) • oneT S i j b x := by
-  change (1 : KB i) ⊗ₜ[S.Ks] (c • x) = (ιK S i b c : KB i) • ((1 : KB i) ⊗ₜ[S.Ks] x)
+  change (1 : KB S i b) ⊗ₜ[S.Ks] (c • x) = (ιK S i b c : KB S i b) • ((1 : KB S i b) ⊗ₜ[S.Ks] x)
   rw [← TensorProduct.smul_tmul, TensorProduct.smul_tmul']
   congr 1
 
@@ -940,21 +940,21 @@ theorem Bsup_span (hS : Submodule.span S.Ks ((S.A j).MK : Set (S.WL j)) = (S.A j
         oneT_smul S i j b c (mkF S j x h1)
       rw [this]
       exact Submodule.smul_mem _ _ h2
-  have hall : ∀ (a : KB i) (x : FmK S j),
-      ((a ⊗ₜ[S.Ks] x : KB i ⊗[S.Ks] FmK S j) : Fm S i j b) ∈ B := by
+  have hall : ∀ (a : KB S i b) (x : FmK S j),
+      ((a ⊗ₜ[S.Ks] x : KB S i b ⊗[S.Ks] FmK S j) : Fm S i j b) ∈ B := by
     intro a x
     have hx : (show ↥(S.A j).WK from x).1 ∈ Submodule.span S.Ks ((S.A j).MK : Set (S.WL j)) := by
       rw [hS]; exact (show ↥(S.A j).WK from x).2
     obtain ⟨h, h'⟩ := aux _ hx
-    have e : ((a ⊗ₜ[S.Ks] x : KB i ⊗[S.Ks] FmK S j) : Fm S i j b) =
+    have e : ((a ⊗ₜ[S.Ks] x : KB S i b ⊗[S.Ks] FmK S j) : Fm S i j b) =
         (rdK S i b a) • oneT S i j b x := by
-      change a ⊗ₜ[S.Ks] x = a • ((1 : KB i) ⊗ₜ[S.Ks] x)
+      change a ⊗ₜ[S.Ks] x = a • ((1 : KB S i b) ⊗ₜ[S.Ks] x)
       rw [TensorProduct.smul_tmul', smul_eq_mul, mul_one]
     rw [e]
     exact Submodule.smul_mem _ _ h'
   refine eq_top_iff.2 fun t _ => ?_
   change t ∈ B
-  induction (show KB i ⊗[S.Ks] FmK S j from t) using TensorProduct.induction_on with
+  induction (show KB S i b ⊗[S.Ks] FmK S j from t) using TensorProduct.induction_on with
   | zero => exact Submodule.zero_mem _
   | tmul a x => exact hall a x
   | add x y hx hy => exact Submodule.add_mem _ hx hy

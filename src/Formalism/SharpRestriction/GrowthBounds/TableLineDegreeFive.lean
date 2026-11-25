@@ -203,27 +203,27 @@ def adm23 (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.Covari
 
 def FrobeniusExpansionCongruence (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.DerivativeLemma D
 
-def HerrExtensionClause (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.SelectionLemmas.admB2
+def HerrExtensionClause (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.SelectionLemmas.admB2 D
 
 def adm26 (D : Formalism.BasicNotions.D7) (CLa Ck Crk Cdeg : ℝ) : Prop := Formalism.MainNotions.SelectionLemmas.Conclusion2 CLa Ck Crk Cdeg
 
-def TopsChoiceLemma (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.SelectionLemmas.NestedTypeBound
+def TopsChoiceLemma (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.SelectionLemmas.NestedTypeBound D
 
 def ZeroGainAbove (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.SelectionLemmas.PathPairCorrespondence
 
-def ChosenTopsCount (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.SelectionLemmas.TypeDecompositionsCommute
+def ChosenTopsCount (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.SelectionLemmas.TypeDecompositionsCommute D
 
 def adm13 (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.AutomorphicSideConclusion
 
 def adm14 (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.HyperplaneRank D
 
-def adm15 (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.DefiniteRankOne
+def adm15 (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.DefiniteRankOne D
 
-def adm16 (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.RotatedSumBound
+def adm16 (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.RotatedSumBound D
 
 def adm17 (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.PathWeightComponents
 
-def adm18 (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.ConclusionB3
+def adm18 (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.ConclusionB3 D
 
 def adm19 (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.CoefficientDependence D
 

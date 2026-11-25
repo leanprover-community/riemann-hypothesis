@@ -88,7 +88,7 @@ theorem adm_two_pendant_iff (D : Formalism.BasicNotions.D7) (X : Sys p) [IsFract
     (F : ∀ j, X.Lt j → X.Lt (j + 1) → MvPowerSeries (T × Fin ((X.Pj (j + 1)).m + 1) × Fin ((X.Pj j).m + 1)) ℂ_[p]) :
     letI := wittFractionAlgebraCp p
     letI := algKfC E.toCEmb
-    adm2b X (pendT X E hfin hst hLT pos F) ↔
+    adm2b D X (pendT X E hfin hst hLT pos F) ↔
       ∀ j < X.mm, ∀ (La : X.Lt j) (La' : X.Lt (j + 1)), (X.Pj j).IsLatTup La.2 → (X.Pj (j + 1)).IsLatTup La'.2 →
         ∀ φ : Frm X j La La', ExtensionGeneratorCondition p ℂ_[p] (OcC p) (beLT hLT)
           (thA ℂ_[p] φ (SA X ℂ_[p] j (gamAt X j La.1 (delt X hfin j La.1 La.2))

@@ -107,7 +107,7 @@ theorem last_ne_zero {m : ℕ} (hm : 1 ≤ m) : Fin.last m ≠ 0 := by
   simp at this
   omega
 
-theorem finrank_letter {D : Formalism.BasicNotions.D7} (h3 : adm3) (K : Type) [Field K] [CharZero K] (m d : ℕ) (hm : 1 ≤ m)
+theorem finrank_letter {D : Formalism.BasicNotions.D7} (h3 : adm3 D) (K : Type) [Field K] [CharZero K] (m d : ℕ) (hm : 1 ≤ m)
     (vec : Bool) :
     Module.finrank K (Formalism.GradedWeylDivisibility.dualWeyl K (m + 1) (m + 1) (nuOf (letterWt m d vec))) = sd m d := by
   have hq : (Module.finrank K (Formalism.GradedWeylDivisibility.dualWeyl K (m + 1) (m + 1) (nuOf (letterWt m d vec))) : ℚ) = (sd m d : ℚ) := by
@@ -158,7 +158,7 @@ theorem finrank_tensor (Kf : Type) [Field Kf] (S : Type) [Fintype S] [DecidableE
   refine Finset.prod_congr rfl fun s _ => ?_
   rw [← (hb1 s).2.1, finrank_span_eq_card (hb1 s).1]
 
-theorem dimHH_of {D : Formalism.BasicNotions.D7} (h3 : adm3) : DimHHAt := by
+theorem dimHH_of {D : Formalism.BasicNotions.D7} (h3 : adm3 D) : DimHHAt := by
   intro Kf _ _ n' m TT aT bT hm
   classical
   unfold dimHH VHH

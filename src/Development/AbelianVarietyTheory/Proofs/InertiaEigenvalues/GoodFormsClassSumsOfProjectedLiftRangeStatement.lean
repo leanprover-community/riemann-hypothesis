@@ -107,31 +107,31 @@ section Read
 
 variable {ρ : Setup D.ntw} (hρ : ρ.Good) (i : D.ntw.Tw) (j : Fin D.R.m) (b : Bool)
 
-def evH : NX.KB i ⊗[S.Ks] NX.FmK S ((j : ℕ) + 1) →+ (Rl.HW j (sg0 D A3.A)).H :=
+def evH : NX.KB S i b ⊗[S.Ks] NX.FmK S ((j : ℕ) + 1) →+ (Rl.HW j (sg0 D A3.A)).H :=
   TensorProduct.liftAddHom
     { toFun := fun a => (DistribSMul.toAddMonoidHom _ (ρ.e i b a)).comp
         ((jH YS j).comp (S.A ((j : ℕ) + 1)).WK.subtype.toAddMonoidHom)
-      map_zero' := by ext; simp [show ρ.e i b (0 : NX.KB i) = 0 from map_zero _]
+      map_zero' := by ext; simp [show ρ.e i b (0 : NX.KB S i b) = 0 from map_zero _]
       map_add' := fun x y => by
-        ext; simp [show ρ.e i b (x + y : NX.KB i) = ρ.e i b x + ρ.e i b y from map_add _ _ _, add_smul] }
+        ext; simp [show ρ.e i b (x + y : NX.KB S i b) = ρ.e i b x + ρ.e i b y from map_add _ _ _, add_smul] }
     fun c a f => by
       change ρ.e i b (sideEmb D.ntw i b (S.kKs c) * (show FractionRing (D.ntw.O i) from a)) • jH YS j (Subtype.val f) =
         ρ.e i b a • jH YS j (c • Subtype.val f)
       rw [← algebraMap_smul D.what₂.LL c, jH_smul, map_mul, hρ.e_LL0, smul_smul, mul_comm, ← S.kKs_spec]
       rfl
 
-theorem evH_tmul (a : NX.KB i) (f : NX.FmK S ((j : ℕ) + 1)) :
+theorem evH_tmul (a : NX.KB S i b) (f : NX.FmK S ((j : ℕ) + 1)) :
     evH YS hρ i j b (a ⊗ₜ f) = ρ.e i b a • jH YS j (Subtype.val f) := rfl
 
 theorem evK_eq (v₀ : ∀ (j : Fin D.R.m) (σ : D.what₂.LL →+* ℂ), (Rl.MW j σ).Vec)
-    (t : NX.KB i ⊗[S.Ks] NX.FmK S ((j : ℕ) + 1)) :
+    (t : NX.KB S i b ⊗[S.Ks] NX.FmK S ((j : ℕ) + 1)) :
     evK YS v₀ hρ i j b t = (Rl.HW j (sg0 D A3.A)).e (evH YS hρ i j b t) (v₀ j _) := by
   induction t using TensorProduct.induction_on with
   | zero => rw [map_zero, map_zero, map_zero]; rfl
   | add x y hx hy => rw [map_add (f := _), map_add (f := _), map_add (f := _), hx, hy]; rfl
   | tmul a f => rw [evK_tmul, evH_tmul, map_smul]; rfl
 
-theorem evH_smul (c : NX.KB i) (t : NX.KB i ⊗[S.Ks] NX.FmK S ((j : ℕ) + 1)) :
+theorem evH_smul (c : NX.KB S i b) (t : NX.KB S i b ⊗[S.Ks] NX.FmK S ((j : ℕ) + 1)) :
     evH YS hρ i j b (c • t) = ρ.e i b c • evH YS hρ i j b t := by
   induction t using TensorProduct.induction_on with
   | zero => rw [smul_zero, map_zero, smul_zero]

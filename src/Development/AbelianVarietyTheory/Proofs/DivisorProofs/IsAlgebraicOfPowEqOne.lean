@@ -60,9 +60,9 @@ theorem exists_algExp {D : D7} {Γ : Type} [Group Γ] [Fintype Γ] {Pl0 I0 T : T
     (v₀ : ∀ (j : Fin D.R.m) (σ : D.what₂.LL →+* ℂ), (Rl.MW j σ).Vec) {ρ : Setup D.ntw} (hρ : ρ.Good) (i : D.ntw.Tw)
     (j : Fin D.R.m) (b : Bool) (hU : Rl.toRealDat.LUnif) (hW : Rl.toRealDat.models_HW)
     (hv : FWT.IsChosenExtremalVector Rl.toRealDat j (sg0 D A3.A) (v₀ j _)) (hK : (S.A ((j : ℕ) + 1)).IsKsForm)
-    (x : NX.KB i ⊗[S.Ks] NX.FmK S ((j : ℕ) + 1)) {n : ℕ} (z : Fin n → ℂ) (g : Fin n → NX.FmK S ((j : ℕ) + 1))
+    (x : NX.KB S i b ⊗[S.Ks] NX.FmK S ((j : ℕ) + 1)) {n : ℕ} (z : Fin n → ℂ) (g : Fin n → NX.FmK S ((j : ℕ) + 1))
     (hz : ∀ l, IsAlgebraic ℚ (z l)) (hx : evK YS v₀ hρ i j b x = ∑ l, z l • evW YS v₀ j (g l).val) :
-    ∃ (m : ℕ) (a : Fin m → NX.KB i) (g' : Fin m → NX.FmK S ((j : ℕ) + 1)),
+    ∃ (m : ℕ) (a : Fin m → NX.KB S i b) (g' : Fin m → NX.FmK S ((j : ℕ) + 1)),
       x = ∑ k, a k ⊗ₜ[S.Ks] g' k ∧ ∀ k, IsAlgebraic ℚ (ρ.e i b (a k)) := by
   classical
   let L : (Rl.HW j (sg0 D A3.A)).H →ₗ[ℂ] (GA D (Wc D j) → ℂ) :=
@@ -81,15 +81,15 @@ theorem exists_algExp {D : D7} {Γ : Type} [Group Γ] [Fintype Γ] {Pl0 I0 T : T
     have h1 : LinearIndependent D.what₂.LL fun k => (YS.fi j).e (bb k) :=
       hLL.map' (YS.fi j).e.toLinearMap (YS.fi j).e.ker
     exact ((hU j (sg0 D A3.A)).1 m _ h1).map' L hL
-  let B : Module.Basis (Fin m) (NX.KB i) (NX.KB i ⊗[S.Ks] NX.FmK S ((j : ℕ) + 1)) :=
-    Algebra.TensorProduct.basis (NX.KB i) bK
-  have hB : ∀ k, B k = ((1 : NX.KB i) ⊗ₜ[S.Ks] (bK k : NX.FmK S ((j : ℕ) + 1))) := fun k =>
+  let B : Module.Basis (Fin m) (NX.KB S i b) (NX.KB S i b ⊗[S.Ks] NX.FmK S ((j : ℕ) + 1)) :=
+    Algebra.TensorProduct.basis (NX.KB S i b) bK
+  have hB : ∀ k, B k = ((1 : NX.KB S i b) ⊗ₜ[S.Ks] (bK k : NX.FmK S ((j : ℕ) + 1))) := fun k =>
     Algebra.TensorProduct.basis_apply _ _
   have hxe : x = ∑ k, B.equivFun x k ⊗ₜ[S.Ks] (bK k : NX.FmK S ((j : ℕ) + 1)) := by
     conv_lhs => rw [← B.sum_equivFun x]
     refine Finset.sum_congr rfl fun k _ => ?_
     rw [hB]
-    change (B.equivFun x k • (1 : NX.KB i)) ⊗ₜ[S.Ks] (bK k : NX.FmK S ((j : ℕ) + 1)) = _
+    change (B.equivFun x k • (1 : NX.KB S i b)) ⊗ₜ[S.Ks] (bK k : NX.FmK S ((j : ℕ) + 1)) = _
     rw [smul_eq_mul, mul_one]
   refine ⟨m, B.equivFun x, fun k => bK k, hxe, ?_⟩
 

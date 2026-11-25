@@ -290,7 +290,7 @@ theorem param (h5 : 5 ≤ p) (g2 g3 ε : ℂ_[p]) (hε : ‖ε‖ = 1) (n2 : ‖
   have hthInt : Formalism.L2.Th1.C.IntPS (Formalism.L2.KerInert.ModelP.RB p) (Formalism.L2.Th1.D.thetaS p g2 g3 ε) :=
     fun n => (Formalism.L2.Th1.C.mem_unitBall_iff _).mpr (hth n)
   have hlg0 : constantCoeff (Formalism.InvariantFactorPaths.G7.lgF ℂ_[p] p) = 0 :=
-    Formalism.InvariantFactorPaths.G7.FormalGroupLaws.constantCoeff_lgF p
+    Formalism.InvariantFactorPaths.G7.FormalGroupLaws.constantCoeff_lgF p hp2
   have hth0 : constantCoeff (Formalism.L2.Th1.D.thetaS p g2 g3 ε) = 0 := by
     simp only [Formalism.L2.Th1.D.thetaS]
     refine PowerSeries.constantCoeff_subst_eq_zero
@@ -356,7 +356,7 @@ theorem sig_at (h5 : 5 ≤ p) (g2 g3 s2 ε : ℂ_[p]) :
   set L : PowerSeries ℂ_[p] := PowerSeries.C ε * Formalism.InvariantFactorPaths.G7.lgF ℂ_[p] p with hLdef
   set P := wpReg (shortW g2 g3)
   have hlg0 : constantCoeff (Formalism.InvariantFactorPaths.G7.lgF ℂ_[p] p) = 0 :=
-    Formalism.InvariantFactorPaths.G7.FormalGroupLaws.constantCoeff_lgF p
+    Formalism.InvariantFactorPaths.G7.FormalGroupLaws.constantCoeff_lgF p hp2
   have hL0 : constantCoeff L = 0 := by simp [hLdef, hlg0]
   have hL : PowerSeries.HasSubst L := PowerSeries.HasSubst.of_constantCoeff_zero' hL0
   have hS0 : constantCoeff (sigS P) = 0 := by
@@ -1226,7 +1226,7 @@ theorem scale_integrality : ScaleInt := by
         (MvPowerSeries.map (ι : ℂ →+* ℂ_[p])
           (Formalism.L2.Th1.H.taylorMv (Formalism.L2.Th1.H.opU (matH (hOne B.L D.what₂.Tau)) t B.thMM))) := by
     unfold Formalism.L2.Th1.Top.thetaH ReadTh1
-    rw [hfun, MMScale.thetaU_smul (ι : ℂ →+* ℂ_[p]) (Formalism.InvariantFactorPaths.G7.FormalGroupLaws.constantCoeff_lgF p) B' c⁻¹ _ hGan]
+    rw [hfun, MMScale.thetaU_smul (ι : ℂ →+* ℂ_[p]) (Formalism.InvariantFactorPaths.G7.FormalGroupLaws.constantCoeff_lgF p (by omega)) B' c⁻¹ _ hGan]
     simp only [RingEquiv.coe_toRingHom, map_inv₀]
   rwa [← hread]
 

@@ -909,7 +909,7 @@ open MvPolynomial Finset Formalism.MainNotions.G Formalism.MainNotions.Covariant
 
 namespace Formalism.MainNotions.LemmaBAlt
 
-theorem nested_sets_lemma_of_admitted (D : Formalism.BasicNotions.D7) (h14 : JointComponentsPaths) (h16 : PairedPathIndependence) : ConclusionB3 :=
+theorem nested_sets_lemma_of_admitted (D : Formalism.BasicNotions.D7) (h14 : JointComponentsPaths) (h16 : PairedPathIndependence) : ConclusionB3 D :=
   lemma_B3 D h16 (lemma_B2 D) (integral_joint_type_sum D h14 h16)
 
 end Formalism.MainNotions.LemmaBAlt
@@ -927,7 +927,7 @@ namespace Formalism.MainNotions.G.ColumnFamilies
 
 open Formalism.MainNotions.CovariantDegrees Formalism.MainNotions.LemmaBAlt Formalism.MainNotions.G.GLWeightTheory
 
-theorem splitting_third_part_holds (D : Formalism.BasicNotions.D7) : DefiniteRankOne := by
+theorem splitting_third_part_holds (D : Formalism.BasicNotions.D7) : DefiniteRankOne D := by
   intro p _ O _ _ _ _ N n _ LL B th M
   exact ⟨lemma_A3_over_domain LL B D word_valuation_bounds (valuation_field D).1 (admissible_standardPath_basis D) (admissible_word_basis D) O th M,
     lemma_A3_over_field LL B D word_valuation_bounds (valuation_field D).1 (admissible_standardPath_basis D) (admissible_word_basis D) (Formalism.MainNotions.G.FF O) th M⟩

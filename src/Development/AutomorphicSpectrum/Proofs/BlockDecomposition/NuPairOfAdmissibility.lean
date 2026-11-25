@@ -288,7 +288,7 @@ theorem comap_twKer_phiMinus (ψ : AddChar k Circle) {m n : ℕ} (hnm : n ≤ m)
   obtain ⟨e, hle⟩ := twKer_eq_map τ (MirUin k (m + 1)) (mirChar k ψ m) _ (levi_stab ψ m)
     (derUnipM k m n) (derCharM k ψ m n) (derUnipM k (m + 1) n) (derCharM k ψ (m + 1) n)
     (GlobalTheory.CompanionTheory.BZMirStep.MirUin_step ψ hnm) (GlobalTheory.CompanionTheory.BZMirStep.levi_step ψ hnm)
-    (GlobalTheory.CompanionTheory.BZMirStep.derUnipM_decomp)
+    (GlobalTheory.CompanionTheory.BZMirStep.derUnipM_decomp hnm)
   show (twKer (twAct τ (MirUin k (m + 1)) (mirChar k ψ m) _ (levi_stab ψ m)) (derUnipM k m n)
     (derCharM k ψ m n)).comap _ = _
   rw [e, Submodule.comap_map_eq, Submodule.ker_mkQ, sup_eq_left.2 hle]

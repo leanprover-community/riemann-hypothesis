@@ -355,13 +355,13 @@ def ValuationsOfProducts (D : Formalism.BasicNotions.D7) : Prop := Formalism.Mai
 
 def PathColumnBasis (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.HyperplaneRank D
 
-def StandardMonomialSpanBis (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.DefiniteRankOne
+def StandardMonomialSpanBis (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.DefiniteRankOne D
 
-def PathPairCorrespondence (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.RotatedSumBound
+def PathPairCorrespondence (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.RotatedSumBound D
 
 def admB2 (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.PathWeightComponents
 
-def admB3 (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.ConclusionB3
+def admB3 (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.ConclusionB3 D
 
 def CoefficientDependenceLemma (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.CoefficientDependence D
 
@@ -377,9 +377,9 @@ def DividedDerivativeLemma (D : Formalism.BasicNotions.D7) : Prop := Formalism.M
 
 def SegmentPositions (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.SelectionLemmas.PathPairCorrespondence
 
-def ValuationsOnPolynomials (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.SelectionLemmas.admB2
+def ValuationsOnPolynomials (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.SelectionLemmas.admB2 D
 
-def SpaceCriterionModuloUniformiser : Prop :=
+def SpaceCriterionModuloUniformiser (_D : Formalism.BasicNotions.D7) : Prop :=
   ∀ (p : ℕ) [Fact p.Prime] (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] (_S : UniformizedDVR p O)
     (n' r K : ℕ) [NeZero n'] [NeZero r] [NeZero K]
     (Fr : Frames n' r) (j : ℤ) (m : ℤ → ℤ) (th o : ℤ → ℝ),
@@ -413,7 +413,7 @@ def admG2 (D : Formalism.BasicNotions.D7) (CLa Ck Crk Cdeg : ℝ) : Prop := Form
 def admitted (D : Formalism.BasicNotions.D7) (CLa Ck Crk Cdeg : ℝ) : Prop :=
   GoodOrbitPositions ∧ BlochKatoExtensionCriterion D ∧ InvariantProjectionLemma D ∧ NablaDeltaComparison D ∧ IsotypicProjectorTheorem D ∧ TranslateCorollary D ∧ FilteredProjectorCorollary D ∧ ValuationLemma D ∧ ValuationsOfProducts D ∧ PathColumnBasis D ∧
     StandardMonomialSpanBis D ∧ PathPairCorrespondence D ∧ admB2 D ∧ admB3 D ∧ CoefficientDependenceLemma D ∧ CoefficientValuationLemma D ∧ LargePrimeLengthVanishing D ∧ CharpolyCoeffsLemmaFamily D ∧ SpanQuotientLemma D ∧ DividedDerivativeLemma D ∧
-    SegmentPositions D ∧ ValuationsOnPolynomials D ∧ SpaceCriterionModuloUniformiser ∧ admG2 D CLa Ck Crk Cdeg
+    SegmentPositions D ∧ ValuationsOnPolynomials D ∧ SpaceCriterionModuloUniformiser D ∧ admG2 D CLa Ck Crk Cdeg
 
 def aux₃ (D : Formalism.BasicNotions.D7) (CLa' CD Csz : ℝ) : Prop :=
   Conclusion1 ∧ Conclusion2 ∧ PointsLemma ∧ Conclusion4 ∧ Conclusion5 ∧ Conclusion6 CLa' CD Csz

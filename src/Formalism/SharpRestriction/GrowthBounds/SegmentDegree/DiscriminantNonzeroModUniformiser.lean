@@ -330,7 +330,7 @@ theorem degAt_ellN {R : Type} [CommRing R] {n' r : ℕ} [NeZero n'] (X : Dat n' 
     · intro h; exact absurd hx h
   rwa [hD] at h
 
-theorem word_order_bound_of_numeric_bound (D : Formalism.BasicNotions.D7) (hA3 : Formalism.MainNotions.CovariantDegrees.DefiniteRankOne) (C₀ : ℝ) (hRow : LateIndexInjective) (hN3 : OrderNumericBound C₀) :
+theorem word_order_bound_of_numeric_bound (D : Formalism.BasicNotions.D7) (hA3 : Formalism.MainNotions.CovariantDegrees.DefiniteRankOne D) (C₀ : ℝ) (hRow : LateIndexInjective) (hN3 : OrderNumericBound C₀) :
     ProductOrdersBounded C₀ := by
   intro p n' r K _ _ _ X O _ _ _ S j b e q I' I'' hc mm hmm x hx hW
   have : Fact p.Prime := ⟨hc.hX.prime⟩
@@ -408,9 +408,9 @@ open Formalism.MainNotions.G Formalism.MainNotions.SelectionLemmas
 theorem discriminant_nonzero_mod_uniformiser : DiscriminantNonzeroModUniformiser := discriminant_nonzero_of_injective_tops late_vectors_distinct_tops
 
 theorem generator_modulo_uniformiser_of_adm (D : Formalism.BasicNotions.D7) (hAdm : AdmB D) (C₀ : ℝ) (hC : 32 ≤ C₀) : GeneratorModuloUniformiser C₀ := by
-  have hV1 : Formalism.MainNotions.CovariantDegrees.ValuationsAdditive := hAdm.2.2.2.2.2.2.2.1.1
-  have hA3 : Formalism.MainNotions.CovariantDegrees.DefiniteRankOne := hAdm.2.2.2.2.2.2.2.2.1
-  have hB12 : NestedTypeBound := hAdm.2.2.2.2.2.2.2.2.2.2.2.1
+  have hV1 : Formalism.MainNotions.CovariantDegrees.ValuationsAdditive D := hAdm.2.2.2.2.2.2.2.1.1
+  have hA3 : Formalism.MainNotions.CovariantDegrees.DefiniteRankOne D := hAdm.2.2.2.2.2.2.2.2.1
+  have hB12 : NestedTypeBound D := hAdm.2.2.2.2.2.2.2.2.2.2.2.1
   have h41b : TopCountLowerBounds C₀ := top_count_lower_bounds_of_occurrence C₀ hC top_occurs_in_at_most_two_segments
   have hW3 := column_conditions_of_numeric_bounds D hV1 hA3 C₀ late_row_injective ell_degree_le_power_bound (power_exceeds_max_multiplicity C₀) (threshold_power_bound_of_counts C₀ h41b oldest_letter_in_segment)
   have hW4 := word_order_bound_of_numeric_bound D hA3 C₀ late_row_injective (order_numeric_bound_of_oldest C₀ oldest_letter_in_segment)

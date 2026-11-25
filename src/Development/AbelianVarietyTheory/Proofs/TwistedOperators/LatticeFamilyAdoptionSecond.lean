@@ -576,7 +576,7 @@ theorem stage1 (ht : NChTie D c) (j : ℕ) (S : RatDat D.ntw) (hks : (S.A j).IsK
       Function.Injective e ∧ Submodule.span (FractionRing (c.Oe w)) (Set.range e) = ⊤ ∧
       (∀ (n : ℕ) (a : Fin n → D.what₂.LL) (f : Fin n → FmK S j),
         e (∑ k, a k • (show ↥(S.A j).WK from f k).1) =
-          ∑ k, c.embW w (a k) ⊗ₜ[D.ntw.O (c.twI w)] eF.symm ((1 : KB (c.twI w)) ⊗ₜ[S.Ks] f k)) ∧
+          ∑ k, c.embW w (a k) ⊗ₜ[D.ntw.O (c.twI w)] eF.symm ((1 : KB S (c.twI w) (c.sd w)) ⊗ₜ[S.Ks] f k)) ∧
       (∀ (s : S.G) (x : S.WL j), e ((((S.A j).chi s)⁻¹ : D.what₂.LLˣ).val • (S.A j).ρ s x) =
         ext (D.ntw.O (c.twI w)) (FractionRing (c.Oe w))
           ((D.nexp.actG (c.twI w) j (c.sd w) (S.eG s)).toLinearMap) (e x)) := by
@@ -665,7 +665,7 @@ theorem stage2 (ht : NChTie D c) {Gp : Type} [Group Gp] [Fintype Gp] (I : Gp ≃
     ∃ e : S.WL j →ₛₗ[c.embW w] FractionRing (c.Oe w) ⊗[D.ntw.O (c.twI w)] D.nexp.Fm (c.twI w) j (c.sd w),
       (∀ (n : ℕ) (a : Fin n → D.what₂.LL) (f : Fin n → FmK S j),
         e (∑ k, a k • (show ↥(S.A j).WK from f k).1) =
-          ∑ k, c.embW w (a k) ⊗ₜ[D.ntw.O (c.twI w)] eF.symm ((1 : KB (c.twI w)) ⊗ₜ[S.Ks] f k)) ∧
+          ∑ k, c.embW w (a k) ⊗ₜ[D.ntw.O (c.twI w)] eF.symm ((1 : KB S (c.twI w) (c.sd w)) ⊗ₜ[S.Ks] f k)) ∧
       Submodule.span (FractionRing (c.Oe w)) ((fun y => e (fi.e.symm y)) '' (A'.Wgood P0 ψ eC : Set WL')) =
         ((NForms.V0 D (c.twI w) j (c.sd w)).restrictScalars (D.ntw.O (c.twI w))).baseChange (FractionRing (c.Oe w)) := by
   classical

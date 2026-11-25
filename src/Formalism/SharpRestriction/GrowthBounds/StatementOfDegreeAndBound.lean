@@ -253,7 +253,7 @@ def A3at (R : Type) [CommRing R] (N n : ℕ) [NeZero n] (LL : Letters (Fin N)) (
     (Submodule.span R {G | ∃ P : PPath n N LL B, ∃ I : ℤ → Finset (Fin n), IsSt P.mu I ∧
       (∀ i : Fin N, th i ≤ P.mu i.succ (lastIdx n) ∧ P.mu i.succ 0 ≤ M i) ∧ G = Psi R P.mu I} : Set _)
 
-def DefiniteRankOne : Prop :=
+def DefiniteRankOne (_D : Formalism.BasicNotions.D7) : Prop :=
   ∀ (p : ℕ) [Fact p.Prime] (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] (_S : UniformizedDVR p O)
     (N n : ℕ) [NeZero n] (LL : Letters (Fin N))
     (B : Fin N → ℕ) (th M : Fin N → ℤ), A3at O N n LL B th M ∧ A3at (FF O) N n LL B th M
@@ -262,7 +262,7 @@ def CondC {N r K : ℕ} [NeZero r] [NeZero K] (LL : Letters (Fin N)) (nu : Fin (
     (ka : Fin (N + 1) → Fin K → ℤ) (i : Fin N) : Prop :=
   if LL.vec i then ka i.succ 0 ≤ nu i.castSucc (lastIdx r) else ka i.castSucc 0 ≤ nu i.succ (lastIdx r)
 
-def RotatedSumBound : Prop :=
+def RotatedSumBound (_D : Formalism.BasicNotions.D7) : Prop :=
   ∀ (N r K : ℕ) [NeZero r] [NeZero K] (LL : Letters (Fin N)) (B : Fin N → ℕ), N + r ≤ K →
     ∀ (nu : Fin (N + 1) → Fin r → ℤ) (ka : Fin (N + 1) → Fin K → ℤ),
       (∃ P : PPath (r + K) N LL B, P.mu = joinPT nu ka) ↔
@@ -312,7 +312,7 @@ def PathInequality.Sat {N r K : ℕ} [NeZero r] [NeZero K] (nu : Fin (N + 1) →
   | .kaLe i M => ka i 0 ≤ M
   | .mix j i m => ka j 0 + m ≤ nu i (lastIdx r)
 
-def ConclusionB3 : Prop :=
+def ConclusionB3 (_D : Formalism.BasicNotions.D7) : Prop :=
   ∀ (p : ℕ) [Fact p.Prime] (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] (_S : UniformizedDVR p O)
     (N r K : ℕ) [NeZero r] [NeZero K]
     (LL : Letters (Fin N)) (B : Fin N → ℕ) (om : Fin N → ℕ), N + r ≤ K → StrictAnti om → (∀ i, 0 < om i) →
@@ -362,7 +362,7 @@ def CanonicalTranslateJetIdentity : Prop :=
         oc (fun i => p ^ (z - LL.pos i).toNat) P.mu c ≤ 2 * p ^ (z - LL.pos 0).toNat
 
 def Conclusion2 (D : Formalism.BasicNotions.D7) : Prop :=
-  AutomorphicSideConclusion ∧ DefiniteRankOne ∧ RotatedSumBound ∧ PathWeightComponents ∧ ConclusionB3 ∧ CoefficientDependence D ∧ CanonicalTranslateJetIdentity
+  AutomorphicSideConclusion ∧ DefiniteRankOne D ∧ RotatedSumBound D ∧ PathWeightComponents ∧ ConclusionB3 D ∧ CoefficientDependence D ∧ CanonicalTranslateJetIdentity
 
 def PairPath {N r K : ℕ} (LL : Letters (Fin N)) (B : Fin N → ℕ) (nu : Fin (N + 1) → Fin r → ℤ)
     (ka : Fin (N + 1) → Fin K → ℤ) : Prop :=

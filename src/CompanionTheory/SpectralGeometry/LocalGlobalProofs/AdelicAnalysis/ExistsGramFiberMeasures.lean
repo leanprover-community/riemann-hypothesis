@@ -856,7 +856,7 @@ theorem glue : ∀ (V X Y : Type) [TopologicalSpace V] [LocallyCompactSpace V] [
     have hcB : c ∈ B := hCB a ha hc
     have hI : IsOpen (C c ∩ C a) := (hCo c hcB).inter (hCo a ha)
     have r1 := restr_family hι hg hf hI Set.inter_subset_right (hF a ha)
-    have u := _root_.GlobalTheory.CompanionTheory.SW.FibreUniq.fibreFamily_eq V X Y μ ν f g ι hι hg hf (C c) (C c ∩ C a) hI
+    have u := _root_.GlobalTheory.CompanionTheory.SW.FibreUniq.fibreFamily_eq V X Y μ ν f g ι hι hg hf (C c) (C c ∩ C a) (hCo c hcB) hI
       Set.inter_subset_left (F c) (restr (C c ∩ C a) (F a)) (hF c hcB) r1 c ⟨hbC c hcB, hc⟩
     have hm : c ∈ C c ∩ C a := ⟨hbC c hcB, hc⟩
     simp only [restr, ite_eq_left hm] at u

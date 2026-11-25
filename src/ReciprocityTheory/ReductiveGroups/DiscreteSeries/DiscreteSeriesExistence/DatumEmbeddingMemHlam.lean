@@ -277,7 +277,7 @@ theorem sigLam_kfin (hgap : StdGap ε lam) (hP : IsPsiFor ε lam T Ψ) (hv₀ : 
     rw [← mir_Kset_eq] at hk
     exact (kStableOn_map_iff _ hinj hint S).1 hSK k hk x hx
   have h := data_kfin_le hgap (rreg_isURepOn ε) (isDerivedOn_smE (rreg_isURepOn ε))
-    (datumV_isKIrrHW hP hv₀) (datumV_casimir hP v₀) _ (map_subtype_le_closGen S) hf hK
+    (datumV_isKIrrHW hP hv₀) (datumV_casimir hP v₀) (datumV_kStable hP v₀) _ (map_subtype_le_closGen S) hf hK
   exact fun x hx => h ⟨x, hx, rfl⟩
 
 end ReciprocityTheory.ChartRestriction.DS

@@ -1207,7 +1207,7 @@ theorem pairsDegOfType_holds : PairsDegOfType := by
       _ ≤ _ := this
   have hA : (∑ j ∈ Finset.Icc 1 D.R.rS, k2A1 large₂ C Ch Cc j) ^ 2 ≤ k2B D large₂ (k2Cf C Ch Cc) := by
     unfold k2B
-    exact pow_le_pow_left₀ (Finset.sum_nonneg fun j _ => kloostermanTermA_nonneg large₂ hC0 j)
+    exact pow_le_pow_left₀ (Finset.sum_nonneg fun j _ => kloostermanTermA_nonneg large₂ hC0 hCh hCc j)
       (Finset.sum_le_sum fun j hj => rank_contribution_le large₂ hC0 j hj) 2
   have hclose := final_bound_closes D large₂ (k2Cf C Ch Cc) hCf _ hdu hk
   have hGB : (Y.tO u u).Gam1 * B ≤ duC X Y u * (∑ j ∈ Finset.Icc 1 D.R.rS, k2A1 large₂ C Ch Cc j) ^ 2 := by

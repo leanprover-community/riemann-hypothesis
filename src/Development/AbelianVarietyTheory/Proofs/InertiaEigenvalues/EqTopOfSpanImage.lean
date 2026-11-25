@@ -474,6 +474,7 @@ theorem DD_exact :
     ∀ (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW),
     adm9 D HW F → ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL),
     let S := sit D.loc HW l (D.locA l) K s LL h
+    let E : S.Comparison₂ := ((F l).E K s LL h).tie
     ∀ (T Yt Z : LocLat S.G S.Qp S.LL S.O) (ι : LatHom T.L Yt.L) (π : LatHom Yt.L Z.L),
     IsSESLat (Qp := S.Qp) ι π → Function.Injective (S.W.map ι) ∧
       Function.Exact (S.W.map ι) (S.W.map π) ∧ Function.Surjective (S.W.map π) := by

@@ -61,7 +61,7 @@ theorem finite_compact_of_sigmaFinite {k r : ℕ} {U : Set (B.Mat k r)} (hU : B2
   have : SigmaFinite (pull hU μ) := by
     have h : SigmaFinite ((pull hU μ).map inc) := by rw [map_pull μ hc]; infer_instance
     exact SigmaFinite.of_map _ inc_memb.measurable.aemeasurable h
-  obtain ⟨K₀⟩ : Nonempty (TopologicalSpace.PositiveCompacts (Gp U)) := inferInstance
+  obtain ⟨K₀⟩ : Nonempty (TopologicalSpace.PositiveCompacts (Gp U hU)) := inferInstance
   have huniq := Measure.haarMeasure_unique (pull hU μ) K₀
   have hfin : pull hU μ K₀ ≠ ∞ := by
     intro hinf
@@ -72,7 +72,7 @@ theorem finite_compact_of_sigmaFinite {k r : ℕ} {U : Set (B.Mat k r)} (hU : B2
       have h1 := measure_spanningSets_lt_top (pull hU μ) n
       have h2 : pull hU μ (spanningSets (pull hU μ) n) =
           ∞ * Measure.haarMeasure K₀ (spanningSets (pull hU μ) n) :=
-        congrArg (fun m : Measure (Gp U) => m (spanningSets (pull hU μ) n)) huniq
+        congrArg (fun m : Measure (Gp U hU) => m (spanningSets (pull hU μ) n)) huniq
       rw [h2, ENNReal.top_mul hne] at h1
       exact lt_irrefl _ h1
     have huniv : Measure.haarMeasure K₀ Set.univ = 0 := by
@@ -81,9 +81,9 @@ theorem finite_compact_of_sigmaFinite {k r : ℕ} {U : Set (B.Mat k r)} (hU : B2
     have h1 : Measure.haarMeasure K₀ K₀ = 0 := measure_mono_null (Set.subset_univ _) huniv
     rw [Measure.haarMeasure_self] at h1
     exact one_ne_zero h1
-  have hK' : IsCompact ((inc : Gp U → Formalism.QuantumDeterminants.Mt k r) ⁻¹' K) := inc_closedEmb.isCompact_preimage hK
+  have hK' : IsCompact ((inc : Gp U hU → Formalism.QuantumDeterminants.Mt k r) ⁻¹' K) := inc_closedEmb.isCompact_preimage hK
   have h3 : pull hU μ (inc ⁻¹' K) = pull hU μ K₀ * Measure.haarMeasure K₀ (inc ⁻¹' K) :=
-    congrArg (fun m : Measure (Gp U) => m (inc ⁻¹' K)) huniq
+    congrArg (fun m : Measure (Gp U hU) => m (inc ⁻¹' K)) huniq
   rw [← map_pull (hU := hU) μ hc, inc_memb.map_apply, h3]
   exact ENNReal.mul_lt_top hfin.lt_top hK'.measure_lt_top
 

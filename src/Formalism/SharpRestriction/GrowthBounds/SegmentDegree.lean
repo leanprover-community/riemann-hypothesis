@@ -382,7 +382,7 @@ theorem restLamA_of (D : Formalism.BasicNotions.D7) (hAdm : AdmB D) : RestLamA :
   classical
   have : Fact p.Prime := ⟨hX.prime⟩
   have hNK : segN X.F j + r ≤ K := le_trans (Nat.add_le_add_right (hX.card j) r) hX.NsK
-  have h12 : NestedTypeBound := hAdm.2.2.2.2.2.2.2.2.2.2.2.1
+  have h12 : NestedTypeBound D := hAdm.2.2.2.2.2.2.2.2.2.2.2.1
   have hsatX := (h12 p O Sd n' r K X.F X.L₁ X.N₁ j (fun _ => (X.m0 K : ℤ)) (X.thc p K j b) (X.oc p K j) hX.valid hNK
     (fun _ => by positivity)).2.2.1
   have hsat : ∀ (f : SegRing O r K) (a : O), a ≠ 0 → a • f ∈ X.Mj p K O j b → f ∈ X.Mj p K O j b := by
@@ -552,7 +552,7 @@ theorem restMemB_of (D : Formalism.BasicNotions.D7) (hAdm : AdmB D) (C₀ : ℝ)
   classical
   have : Fact p.Prime := ⟨hX.prime⟩
   have hV := hX.valid
-  have hA3 : Formalism.MainNotions.CovariantDegrees.DefiniteRankOne := hAdm.2.2.2.2.2.2.2.2.1
+  have hA3 : Formalism.MainNotions.CovariantDegrees.DefiniteRankOne D := hAdm.2.2.2.2.2.2.2.2.1
   obtain ⟨dd, b', b'', P, P1, P2, hPμ, h1, h2, hsum, hC, hPATH, hGood, hSt, hu, hd⟩ := exists_path_decomposition D hAdm hX j b q
   have H : PlHyp (segN X.F j - r) (X.beS p K j (X.restr j b) : ℤ) (plPart q.1.1) :=
     plHyp_of X p K hX j _ _ dd hPATH
@@ -670,7 +670,7 @@ theorem restMemC_of (D : Formalism.BasicNotions.D7) (hAdm : AdmB D) : RestMemC 1
   have : Fact p.Prime := ⟨hX.prime⟩
   have hV := hX.valid
   have hr : 0 < r := NeZero.pos r
-  have hA3 : Formalism.MainNotions.CovariantDegrees.DefiniteRankOne := hAdm.2.2.2.2.2.2.2.2.1
+  have hA3 : Formalism.MainNotions.CovariantDegrees.DefiniteRankOne D := hAdm.2.2.2.2.2.2.2.2.1
   obtain ⟨dd, b', b'', P, P1, P2, hPμ, h1, h2, hsum, hC, hPATH, hGood, hSt, hu, hd⟩ := exists_path_decomposition D hAdm hX j b q
   have H : PlHyp (segN X.F j - r) (X.beS p K j (X.restr j b) : ℤ) (plPart q.1.1) :=
     plHyp_of X p K hX j _ _ dd hPATH
@@ -760,7 +760,7 @@ theorem restMemD_of (D : Formalism.BasicNotions.D7) (hAdm : AdmB D) (C₀ : ℝ)
   have : Fact p.Prime := ⟨hX.prime⟩
   have hV := hX.valid
   have hr : 0 < r := NeZero.pos r
-  have hA3 : Formalism.MainNotions.CovariantDegrees.DefiniteRankOne := hAdm.2.2.2.2.2.2.2.2.1
+  have hA3 : Formalism.MainNotions.CovariantDegrees.DefiniteRankOne D := hAdm.2.2.2.2.2.2.2.2.1
   obtain ⟨dd, b', b'', P, P1, P2, hPμ, h1, h2, hsum, hC, hPATH, hGood, hSt, hu, hd⟩ := exists_path_decomposition D hAdm hX j b q
   have H : PlHyp (segN X.F j - r) (X.beS p K j (X.restr j b) : ℤ) (plPart q.1.1) :=
     plHyp_of X p K hX j _ _ dd hPATH

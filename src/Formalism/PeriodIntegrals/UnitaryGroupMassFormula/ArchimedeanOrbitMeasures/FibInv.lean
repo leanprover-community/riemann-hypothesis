@@ -15,7 +15,7 @@ open MeasureTheory NumberField Topology Set Formalism.BasicNotions Formalism.L2.
   Formalism.L2.SG.Sub Matrix
 
 def SdInvG : Prop := ∀ {D : D7} (X : HidaSetting D) (u' : D.what₂.Word) (ψ : AddChar (AF X.B.I.F) ℂ) hT μinf νinf fibInf,
-    PushHyp X u' ψ μinf νinf fibInf →
+    PushHyp X u' ψ hT μinf νinf fibInf →
     ∀ g : HA (Ainf X.B.I.F) X.B.I.cm.sig X.B.I.J, μinf.map (fun y => g • y) = μinf
 
 section Herm

@@ -116,7 +116,7 @@ theorem locF_eq_locF_adjoin_cut (hK : Formalism.HermitianLatticesTheory.IsCMUnra
     {𝔭 : Ideal (𝓞 F)} (h𝔭 : 𝔭.IsMaximal) (hx : S.x₀ ∈ locF 𝔭 B) :
     locF 𝔭 B = locF 𝔭 (S.adjoin (S.cut B)) := by
   obtain ⟨P, hP, rfl⟩ := LocalizedFibreSets.exists_max_over (K := K) h𝔭
-  simp only [locF_eq_loc hF hP] at hx ⊢
+  simp only [locF_eq_loc hK hF hP] at hx ⊢
   refine UnimodularLocalization.loc_eq_loc_adjoin_cut S hP.isPrime hBi hx ?_
   rw [h1, inv_one]
   exact ⟨1, Submonoid.one_mem _, by rw [one_smul]; exact Submodule.mem_one.mpr ⟨1, map_one _⟩⟩

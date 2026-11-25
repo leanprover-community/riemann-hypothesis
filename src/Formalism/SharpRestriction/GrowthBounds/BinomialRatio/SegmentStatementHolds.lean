@@ -273,7 +273,7 @@ theorem sum_segS (TT : Finset (Fin n')) :
           exact (Finset.mem_filter.1 hj).1
         · exact Finset.filter_subset _ _
 
-theorem segment_statement_holds (D : Formalism.BasicNotions.D7) (C0 CE1 CE2 : ℝ) : PointsLemma C0 CE1 CE2 := by
+theorem segment_statement_holds (D : Formalism.BasicNotions.D7) (C0 CE1 CE2 : ℝ) : PointsLemma D C0 CE1 CE2 := by
   intro X _ O _ _ _ j aT' m hne haT
   have h1 : segATop X.TT aT' j = segATop X.TT X.aT j :=
     funext fun i => haT _ (pos_ne_start _ _ _)

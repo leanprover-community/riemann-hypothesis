@@ -219,7 +219,7 @@ theorem tf_eq_case (dual : Bool) {lam lam' : Fin n → ℝ} (hσ : IsURepOn (UJs
     refine ⟨⟨w', hWle hw'⟩, hw', ?_⟩
     rw [hS0v, hS0v, tfRdiag_tfPh dual hσ (closure_inUJ_of_mem_Kset hk), tf_tensGrp_kDiag dual hk,
       hP.2.2 k hk w.1 w.2 w' (hWle hw') hww']
-  have hkf := data_kfin_le hgap' (tfRdiag_isURepOn ε) (isDerivedOn_smE (tfRdiag_isURepOn ε)) hV₂ hc₂
+  have hkf := data_kfin_le hgap' (tfRdiag_isURepOn ε) (isDerivedOn_smE (tfRdiag_isURepOn ε)) hV₂ hc₂ hVK₂
     S0 hS0 hS0f hS0K
   have hfS0 : tfPh dual ε σ (y : H) (fun c => ((P f c : D) : H)) ∈ S0 :=
     ⟨⟨f, hf⟩, hfW, hS0v ⟨f, hf⟩⟩

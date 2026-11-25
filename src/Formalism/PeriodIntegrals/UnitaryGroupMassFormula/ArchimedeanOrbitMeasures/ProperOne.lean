@@ -16,7 +16,7 @@ open MeasureTheory Topology Formalism.BasicNotions Formalism.L2.SG.HidaSetting F
 open scoped TensorProduct
 
 def ProperOne : Prop := ∀ {D : D7} (X : HidaSetting D) (u' : D.what₂.Word) (ψ : AddChar (AF X.B.I.F) ℂ) hT μinf νinf fibInf,
-    PushHyp X u' ψ μinf νinf fibInf →
+    PushHyp X u' ψ hT μinf νinf fibInf →
     ∀ K : Set (TupI X), IsCompact K →
       ∃ C : Set (HA (Ainf X.B.I.F) X.B.I.cm.sig X.B.I.J), IsCompact C ∧
         ∀ g : HA (Ainf X.B.I.F) X.B.I.cm.sig X.B.I.J, g • Y0 X u' ∈ K → g ∈ C

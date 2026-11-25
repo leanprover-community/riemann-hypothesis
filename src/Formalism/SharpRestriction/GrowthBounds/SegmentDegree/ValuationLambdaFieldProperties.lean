@@ -16,7 +16,7 @@ open Formalism.MainNotions.G Formalism.MainNotions.SelectionLemmas Formalism.Mai
 
 section Kit
 
-theorem valuation_lambda_field_properties (D : Formalism.BasicNotions.D7) (h : Formalism.MainNotions.CovariantDegrees.ValuationsAdditive) (R : Type) [Field R] (ι : Type) (n : ℕ) [NeZero n]
+theorem valuation_lambda_field_properties (D : Formalism.BasicNotions.D7) (h : Formalism.MainNotions.CovariantDegrees.ValuationsAdditive D) (R : Type) [Field R] (ι : Type) (n : ℕ) [NeZero n]
     (LL : Letters ι) (S : Set ι) (F G : MvPolynomial (ι × Fin n) R) :
     valS LL S (F * G) = valS LL S F + valS LL S G ∧ min (valS LL S F) (valS LL S G) ≤ valS LL S (F + G) ∧
       lam1S LL S (F * G) = lam1S LL S F + lam1S LL S G ∧
@@ -62,7 +62,7 @@ end Kit
 
 section Kit2
 
-variable (D : Formalism.BasicNotions.D7) (hV : Formalism.MainNotions.CovariantDegrees.ValuationsAdditive) {R : Type} [Field R] {n : ℕ} [NeZero n] (S : Set ℤ)
+variable (D : Formalism.BasicNotions.D7) (hV : Formalism.MainNotions.CovariantDegrees.ValuationsAdditive D) {R : Type} [Field R] {n : ℕ} [NeZero n] (S : Set ℤ)
 
 include hV
 
