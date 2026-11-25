@@ -1772,6 +1772,7 @@ class Pushed(unittest.TestCase):
         `main` that the batch was built from is pushed to the pull request afterwards."""
         merged = sha("head12-merged")
         gh.inside[gh.pulls[1018]["sha"]].add(merged)
+        gh.inside[merged] = {sha("head12"), MAIN}
         gh.push(12, "head12-merged")
         return merged
 
@@ -1809,7 +1810,46 @@ class Pushed(unittest.TestCase):
         self.assertEqual(self.pushes(gh, 12), [])
         self.assertEqual(gh.pulls[12]["labels"], IN)
         self.assertEqual(note(gh.said(1018)[0])["members"]["12"], merged)
-        self.assertEqual(len([path for path in gh.reads if path.startswith("compare/")]), 1)
+        # Whether the branch has the new head, and whether that has the commit the batch took.
+        self.assertEqual(len([path for path in gh.reads if path.startswith("compare/")]), 2)
+
+    def test_a_push_back_to_an_earlier_commit_the_batch_has_is_told(self):
+        # The batch took `head12`. Its author drops that commit by force-pushing its parent, which
+        # the branch has too. The batch still lands `head12`, so the push is told, by `pushed` or by
+        # the sync, and the record stays at `head12`, even once the branch is listed again.
+        for by_sync in (False, True):
+            with self.subTest(by_sync=by_sync):
+                gh = Fake()
+                queue(gh, 11)
+                gh.add_pull(12, "head12-first")
+                gh.inside[sha("head12")] = {sha("head12-first")}
+                gh.push(12, "head12")
+                queue(gh, 12)
+                by_hand(gh, 11, 12)
+                sync(gh)
+                self.assertIn(sha("head12-first"), gh.inside[gh.pulls[1018]["sha"]])
+                gh.push(12, "head12-first")
+                log = sync(gh) if by_sync else batch.pushed(gh, 12)
+                self.assertIn("told #12 that it was pushed to after the batch #1018 took it: now `awaiting-author`",
+                              log)
+                [said] = self.pushes(gh, 12)
+                self.assertTrue(said.startswith(f"<!-- batch-queue-pushed-while-frozen 1018 {sha('head12')} -->"))
+                self.assertIn(f"builds and lands `{short('head12')}` only, not `{short('head12-first')}`", said)
+                sync(gh)
+                self.assertEqual(note(gh.said(1018)[0])["members"]["12"], sha("head12"))
+                # Another pull request is merged into the branch, which is listed again.
+                gh.add_pull(14, "head14")
+                old = gh.pulls[1018]["sha"]
+                new = sha("kim-with-14")
+                gh.inside[new] = gh.inside[old] | {old, sha("head14")}
+                gh.commits[new] = {"message": "Merge #14", "parents": [{"sha": old}, {"sha": sha("head14")}]}
+                gh.refs[HAND], gh.pulls[1018]["sha"] = new, new
+                gh.touch(1018)
+                sync(gh)
+                record = note(gh.said(1018)[0])
+                self.assertEqual((record["members"]["12"], record["members"]["14"]), (sha("head12"), sha("head14")))
+                self.assertEqual(len(self.pushes(gh, 12)), 1)
+                self.assertEqual(gh.pulls[12]["labels"], IN | {WAITING})
 
     def test_a_batch_or_a_closed_pull_request_is_not_looked_at(self):
         gh = self.built()
@@ -1956,8 +1996,10 @@ class NewHeadTaken(unittest.TestCase):
         by_hand(gh, 11, 12, name="kim-with-12-later")
 
     def held_already(self, gh):
-        """#12 is pushed to with a commit that the batch's branch has already."""
+        """#12 is pushed to with a commit that the batch's branch has already, with the commit the
+        batch took in it."""
         gh.inside[gh.pulls[1018]["sha"]].add(sha("head12-merged"))
+        gh.inside[sha("head12-merged")] = {sha("head12"), MAIN}
         gh.push(12, "head12-merged")
 
     def ours(self, gh, number):
