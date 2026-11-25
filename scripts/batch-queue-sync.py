@@ -1949,6 +1949,7 @@ def pushed(gh, number):
             if by_hand(other) and BUILDING in other["labels"]]
     key = str(number)
     hand = stack(gh, hand, pulls, log)
+    held_at = holding(hand)
     for batch in hand:
         commit = members(batch["note"]).get(key)
         if commit is None:
@@ -1956,6 +1957,8 @@ def pushed(gh, number):
         if commit != pr["sha"] and kept(batch["note"], "pushed").get(key) != commit:
             inside = has_head(gh, batch, pr["sha"])
             if inside:
+                # Frozen at the new head, as the next sync records it.
+                held_at[key] = pr["sha"]
                 log.append(f"#{key} was pushed to with `{pr['sha'][:10]}`, which the batch #{batch['number']} has "
                            "already: nothing to say")
             elif inside is None:
@@ -1972,7 +1975,7 @@ def pushed(gh, number):
         break
     approved = {}
     approvals(gh, {number: pr}, main, approved, log, every=True)
-    reconcile(gh, {number: pr}, holding(hand), approved, log)
+    reconcile(gh, {number: pr}, held_at, approved, log)
     return log or [f"#{number}: nothing to do"]
 
 
@@ -2017,10 +2020,12 @@ def assemble(gh, now):
     by = {batch["number"]: batch for batch in hand}
     for batch in hand:
         look_through(gh, batch, by, pulls, before, {gone['number'] for gone in done}, log)
-    held, held_at = holders(hand), holding(hand)
+    held = holders(hand)
     requeued = False
     for batch in hand:
         requeued |= keep_in_step(gh, batch, pulls, held, main, log)
+    # After `keep_in_step`, which records a member at a new head its batch has already.
+    held_at = holding(hand)
     unsure = unsettled(gh, done, hand, pulls)
     for number in sorted(unsure):
         log.append(f"batch #{number} was closed without merging, and a batch stacked on it could not be looked "
