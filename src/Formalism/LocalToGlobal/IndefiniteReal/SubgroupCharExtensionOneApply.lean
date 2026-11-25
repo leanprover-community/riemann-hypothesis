@@ -12,8 +12,6 @@ open scoped TensorProduct
 
 namespace Formalism.IndefR.Lev
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 abbrev EAf (D : D7) : Type := D.host.E ⊗[D.host.F] Formalism.L2.Herm.Af D.host.F
 
 def swapAE (D : D7) : Af D.host.F ⊗[D.host.F] D.host.E →+* EAf D :=

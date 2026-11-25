@@ -64,7 +64,7 @@ end Refl
 section Std
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.L2 Formalism.L2.Col Formalism.L2.DIV Formalism.L2.Ker Formalism.UG Formalism.L2.Forms GlobalTheory.Mem GlobalTheory.Mem.Chr GlobalTheory.Mem.Col2 GlobalTheory.Mem.Col2.TC
-attribute [local instance] GlobalTheory.Mem.Col2.starE Formalism.BasicNotions.Host.cmStar
+attribute [local instance] GlobalTheory.Mem.Col2.starE
 
 theorem exists_vG_over {X : Fields} {Pr : Primes X} (hX : X.Ok) (hPr : Pr.Ok) (k : Fin 2) (v : HeightOneSpectrum (𝓞 X.F))
     (h : ((Pr.g k : ℕ) : 𝓞 X.F) ∈ v.asIdeal) : ∃ w ∈ Pr.vG k, w.under (𝓞 X.F) = v := by
@@ -208,8 +208,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.L2
 
 variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : G.Inst D L} {Gl : G.LatInst D} {K : G.Consts} {Y : DivX D} {cX : ExtraC}
   {ex : Extra D L hT Gi Gl K Y cX}
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 end Local
 

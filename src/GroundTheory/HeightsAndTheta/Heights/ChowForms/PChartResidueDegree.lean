@@ -67,17 +67,8 @@ namespace ChartResidueDegree
 theorem aeval_mul_of_isHomogeneous {F : Type} [Field F] {n : ℕ} {A : Type*} [CommRing A] [Algebra F A]
     {g : MvPolynomial (Fin n) F} {d : ℕ} (hg : g.IsHomogeneous d) (a : A) (x : Fin n → A) :
     aeval (fun m => a * x m) g = a ^ d * aeval x g := by
-  conv_lhs => rw [g.as_sum]
-  conv_rhs => rw [g.as_sum]
-
-  rw [map_sum, map_sum, Finset.mul_sum]
-  refine Finset.sum_congr rfl fun s hs => ?_
-  have hd := hg (mem_support_iff.mp hs)
-  simp only [aeval_monomial, mul_pow]
-  rw [Finsupp.prod_mul, Finsupp.prod_pow, Finsupp.prod_pow, Finset.prod_pow_eq_pow_sum, ← hd,
-    Finsupp.weight_apply, Finsupp.sum_fintype _ _ (by simp)]
-  simp only [smul_eq_mul, Pi.one_apply, mul_one]
-  ring
+  rw [aeval_def, aeval_def, ← eval_map, ← eval_map]
+  exact (hg.map (algebraMap F A)).eval_smul a x
 
 theorem exists_chartHom {F : Type} [Field F] {n e : ℕ} {I W : Ideal (MvPolynomial (Fin n) F)} [W.IsPrime]
     (hWh : IsHomogIdeal W) (hIW : I ≤ W) {t : Fin n → F}

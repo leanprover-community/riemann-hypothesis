@@ -19,8 +19,6 @@ namespace Formalism.L2.SG.RealObj.EnergyCut
 
 open Formalism.L2.SG.RealObj
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} (X : Formalism.L2.SG.HidaSetting.HidaSetting D)
 
 theorem tens_onb (u' : D.what₂.Word) :

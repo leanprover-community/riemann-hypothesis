@@ -563,8 +563,6 @@ end Functions
 
 section Host
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 open Formalism.BasicNotions.TH Formalism.L2.Theta
 
 variable {D : D7} (V : HSp D)

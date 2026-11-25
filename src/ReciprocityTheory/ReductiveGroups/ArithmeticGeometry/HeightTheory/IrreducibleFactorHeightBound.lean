@@ -38,7 +38,6 @@ namespace ReciprocityTheory.ChartRestriction.G.T0
 
 open MvPolynomial ReciprocityTheory.MultiplicativeHeights.DerivationAlgebraicIndependence
 
-open MvPolynomial ReciprocityTheory.MultiplicativeHeights.DerivationAlgebraicIndependence
 
 theorem algebraicIndependent_scaledForms {K Ω : Type} [Field K] [CharZero K] [Field Ω] [Algebra K Ω] {D N : ℕ}
     (y : Fin (N + 1) → Ω) (jc : Fin (N + 1)) (hy : y jc = 1)

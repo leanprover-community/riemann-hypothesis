@@ -249,7 +249,7 @@ theorem continuousSMul_actT : @ContinuousSMul (GzS Z) (Tset F P) (actT hFinv).to
       (Units.continuous_coe_inv.comp (continuous_subtypeVal.comp continuous_fst))).subtype_mk _
 
 include hP in
-theorem isPretransitive_actT (_hsT : s ∈ Tset F P) :
+theorem isPretransitive_actT :
     @MulAction.IsPretransitive (GzS Z) (Tset F P) (actT hFinv).toSMul :=
   @MulAction.IsPretransitive.mk _ _ (actT hFinv).toSMul fun x y => by
     obtain ⟨a, ha, hax⟩ := exists_conj_eq_semisimple hP x.2
@@ -280,7 +280,7 @@ theorem sliceVan_of_frob' [CharZero k] (hFr : FrobeniusReciprocity) (hU : Unimod
     exact e ▸ cj_mem_Tset hFinv hg (P_mem_Tset hP hx0)
   let A := actT (P := P) hFinv
   have := continuousSMul_actT (P := P) hFinv
-  have := isPretransitive_actT hFinv hP hsT
+  have := isPretransitive_actT hFinv hP
   have : LocallyCompactSpace (Tset F P) := (isClosed_Tset hFc P).isClosedEmbedding_subtypeVal.locallyCompactSpace
   let t : Tset F P := ⟨s, hsT⟩
   obtain ⟨e, he⟩ := exists_quotient_homeo (G := GzS Z) t

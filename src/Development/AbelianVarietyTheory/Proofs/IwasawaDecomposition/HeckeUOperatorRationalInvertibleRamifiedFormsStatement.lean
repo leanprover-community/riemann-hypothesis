@@ -166,7 +166,8 @@ theorem card_annihilator_mul (k W : Type) [Field k] [Fintype k] [AddCommGroup W]
   have hev : ∀ g, ev g = g y := fun g => rfl
   have hs : Function.Surjective ev := by
     obtain ⟨f, hf⟩ := Module.Projective.exists_dual_eq_one k hy
-    exact fun t => ⟨t • f, by simp [hev, hf]⟩
+    intro t
+    exact ⟨t • f, by simp [hev, hf]⟩
   have h1 := Submodule.card_eq_card_quotient_mul_card (LinearMap.ker ev)
   have h2 : Nat.card (Module.Dual k W ⧸ LinearMap.ker ev) = Nat.card k :=
     Nat.card_congr (ev.quotKerEquivOfSurjective hs).toEquiv
@@ -178,7 +179,6 @@ theorem card_annihilator_mul (k W : Type) [Field k] [Fintype k] [AddCommGroup W]
 
 theorem eq_zero_of_hyperplane_sums (k W M : Type) [Field k] [Fintype k] [DecidableEq k]
     [AddCommGroup W] [Module k W] [Finite W] [AddCommGroup M] [Module ℂ M] (ψ : W → M)
-    (_h0 : ψ 0 = 0)
     (h1 : ∀ g : Module.Dual k W, g ≠ 0 → ∑ᶠ x ∈ {x | g x = 1}, ψ x = 0)
     (h2 : ∀ x, ∑ a : kˣ, ψ ((a : k) • x) = 0) (x0 : W) : ψ x0 = 0 := by
   classical
@@ -207,7 +207,7 @@ theorem eq_zero_of_hyperplane_sums (k W M : Type) [Field k] [Fintype k] [Decidab
         Finset.sum_comm]
       refine Finset.sum_eq_zero fun x _ => ?_
       by_cases hx : g x = 0
-      · simp only [hx, ite_true]; exact h2 x
+      · simp only [hx, if_true]; exact h2 x
       · simp [hx]
     · by_cases hg : g = 0
       · subst hg
@@ -240,15 +240,15 @@ theorem eq_zero_of_hyperplane_sums (k W M : Type) [Field k] [Fintype k] [Decidab
     rw [← mul_smul]
     by_cases hx : x = x0
     · subst hx
-      simp only [sub_self, map_zero, Finset.filter_true, Finset.card_univ, ite_true, hr]
+      simp only [sub_self, map_zero, Finset.filter_true, Finset.card_univ, if_true, hr]
       rw [← add_smul]; congr 1; ring
     · have := card_annihilator_mul k W (x - x0) (sub_ne_zero.mpr hx)
-      rw [ite_eq_right hx, add_zero, hN, ← this]
+      rw [if_neg hx, add_zero, hN, ← this]
       congr!
   have D := congrArg (fun m => Fintype.card k • m) B
   simp only [Finset.smul_sum, C] at D
   simp only [smul_zero, Finset.sum_add_distrib, ← Finset.smul_sum, T,
-    Finset.sum_ite_eq', Finset.mem_univ, ite_true, zero_add] at D
+    Finset.sum_ite_eq', Finset.mem_univ, if_true, zero_add] at D
   exact hcancel _ _ (Nat.mul_ne_zero (show r ≠ 0 by omega) Fintype.card_ne_zero) D
 
 end GlobalTheory.FiniteRadon
@@ -388,14 +388,15 @@ theorem eq_zero_of_upSum_of_norm : ∀ (R V k W M : Type) [CommRing R] [AddCommG
   let ψ : W → M := fun w => if h : ∃ q, Rel res t Λ π q w then Φ h.choose else 0
   have ψ1 : ∀ q w, Rel res t Λ π q w → ψ w = Φ q := fun q w h => by
     have h0 : ∃ q, Rel res t Λ π q w := ⟨q, h⟩
-    simp only [ψ, dite_eq_left h0]
+    simp only [ψ, dif_pos h0]
     rw [rel_inj hs ht htf hsat hr h0.choose_spec h]
-  have ψ0 : ∀ w, (¬ ∃ q, Rel res t Λ π q w) → ψ w = 0 := fun w h => dite_eq_right h
+  have ψ0 : ∀ w, (¬ ∃ q, Rel res t Λ π q w) → ψ w = 0 := fun w h => dif_neg h
   let j : Pr R V k → W := fun q => if h : ∃ w, Rel res t Λ π q w then h.choose else 0
   have j1 : ∀ q : Pr R V k, q.Ok res → q.IsKer Λ → Rel res t Λ π q (j q) := fun q ho hk => by
     have h0 : ∃ w, Rel res t Λ π q w := rel_ex hs ho hk
-    simpa only [j, dite_eq_left h0] using h0.choose_spec
-  have key := _root_.GlobalTheory.FiniteRadon.eq_zero_of_hyperplane_sums k W M ψ (ψ0 _ fun ⟨q, h⟩ => rel_ne ht htf hsat hr q h) (fun g hg => ?_) (fun w => ?_)
+    simp only [j, dif_pos h0]
+    exact h0.choose_spec
+  have key := _root_.GlobalTheory.FiniteRadon.eq_zero_of_hyperplane_sums k W M ψ (fun g hg => ?_) (fun w => ?_)
   · intro q ho hk
     rw [← ψ1 q _ (j1 q ho hk)]
     exact key _
@@ -417,7 +418,8 @@ theorem eq_zero_of_upSum_of_norm : ∀ (R V k W M : Type) [CommRing R] [AddCommG
       · rintro ⟨q', ⟨ho, hk, e, he, h1⟩, rfl⟩
         rw [hd _ (te_mem ht ho hk (mem_of_one ho he))] at h1
         show g _ = 1
-        rwa [rel_fun ht hr (j1 q' ho hk) ⟨ho, hk, e, he, rfl⟩]
+        rw [rel_fun ht hr (j1 q' ho hk) ⟨ho, hk, e, he, rfl⟩]
+        exact h1
     rw [e1, finsum_mem_image hinj, ← hsum]
     exact finsum_mem_congr rfl fun q hq => ψ1 q _ (j1 q hq.1 hq.2.1)
   · by_cases hex : ∃ q, Rel res t Λ π q w
@@ -514,7 +516,8 @@ theorem stabFun_gen {n : ℕ} (v : HeightOneSpectrum (𝓞 F)) {L1 L2 : Submodul
   refine ⟨fun x => ?_, fun x => ?_⟩
   · rw [hG]
     constructor
-    · exact fun hx => (hy1 _).1 (hle (rlv_latS_mulLat v _ L2 _ ((hY2 x).1 hx)))
+    · intro hx
+      exact (hy1 _).1 (hle (rlv_latS_mulLat v _ L2 _ ((hY2 x).1 hx)))
     · intro hx
       have h1 := (hy1 _).2 hx
       have h2 := rlv_latS_mulLat v (g⁻¹).1 _ _ (hge h1)
@@ -890,7 +893,8 @@ theorem finsum_above : ∀ (R V k W M : Type) [CommRing R] [AddCommGroup V] [Mod
   · intro w hw
     obtain ⟨h1, h2, e, h3, h4⟩ := hq w hw
     refine ⟨h1, h2, e, h3, ?_⟩
-    rwa [hf _ (smul_mem_ker h1 h2 ht h3), h4]
+    rw [hf _ (smul_mem_ker h1 h2 ht h3), h4]
+    exact hw
   · intro w hw w' hw' hww
     obtain ⟨h1, h2, e, h3, h4⟩ := hq w hw
     obtain ⟨-, -, e', h3', h4'⟩ := hq w' hw'
@@ -1066,7 +1070,8 @@ theorem commensurable : ∀ (D : D7) (u : D.what₂.Word), (∀ v, ∀ x ∈ (D.
     have h1 := hg v x
     rw [hx, Submodule.coe_zero, map_zero] at h1
     have h2 := (smul_eq_zero.1 h1.symm).resolve_left (zpow_ne_zero _ (T_ne_zero D u))
-    exact Subtype.ext ((D.fm u).emb_inj 0 ((hinj v _ x.2 h2).trans (map_zero _).symm))
+    have h3 := hinj v _ x.2 h2
+    exact Subtype.ext ((D.fm u).emb_inj 0 (h3.trans (map_zero _).symm))
   set G : Module.End D.what₂.LL (D.fm u).ramSub := ((LT.VVT D u w).toList.map g).prod ^ D.R.m with hG
   have hGu : IsUnit G := by
     refine IsUnit.pow _ (List.prod_isUnit fun a ha => ?_)
@@ -1177,10 +1182,12 @@ theorem upAd_dia : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberF
     rw [hP.2.2 x δ a hδ, h2 x δ hδ.1]
     refine finsum_mem_eq_of_bijOn (fun q => q.dil (a : k)) ?_ (fun q _ => (h3 a δ x q ha' hδ).symm)
     refine (dilEquiv ha').bijOn' ?_ ?_
-    · exact fun q hq => inc_dil hs (hok x) hq ha'
+    · intro q hq
+      exact inc_dil hs (hok x) hq ha'
     · intro q hq
       have := inc_dil hs ((hok x).dil ha') hq (inv_ne_zero ha')
-      rwa [Pr.dil_dil, inv_mul_cancel₀ ha', Pr.dil_one] at this
+      rw [Pr.dil_dil, inv_mul_cancel₀ ha', Pr.dil_one] at this
+      exact this
   · have hp : ∀ y, p (y * δ) = p y := fun y => (hP.2.1 y δ).2 (by
       rw [hδ.1 v (Ne.symm hvv)]; exact one_mem _)
     have key : valAt v p (fun y => g (y * δ)) x = valAt v p g (x * δ) := by
@@ -1244,6 +1251,7 @@ theorem act_pairOf_value (res : R →+* k) (g : V ≃ₗ[R] V) (M M' : Submodule
   have h2 := h ⟨_, hx⟩ hx2
   have e2 : (⟨_, hx2⟩ : M) = s • z := Subtype.ext e1
   rw [locExt_spec res M' pr' hs' _ hm s hx, map_smul, e2, hs, map_smul, h1] at h2
+  show φ' (locExt res M' pr' (g.symm e)) = 1
   exact smul_right_injective k hs0 h2
 
 end

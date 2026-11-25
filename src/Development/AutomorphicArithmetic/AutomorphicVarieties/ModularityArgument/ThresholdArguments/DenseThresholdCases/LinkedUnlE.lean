@@ -1341,7 +1341,6 @@ private theorem ker_eq_bot_of_orderOf {Q : Type} [CommGroup Q] [Finite Q] (χ : 
   have h4 := Subgroup.card_mul_index χ.ker
   rw [h3] at h4
   have h5 : Nat.card χ.ker = 1 := by
-    have : Nonempty Q := ⟨1⟩
     have hp : 0 < Nat.card Q := Nat.card_pos
     exact Nat.eq_of_mul_eq_mul_right hp (by rw [h4, one_mul])
   exact Subgroup.card_eq_one.1 h5

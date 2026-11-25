@@ -1142,8 +1142,6 @@ open scoped TensorProduct
 
 
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 namespace GlobalTheory.TwInputs.Move
 
 variable {D D' : D7}

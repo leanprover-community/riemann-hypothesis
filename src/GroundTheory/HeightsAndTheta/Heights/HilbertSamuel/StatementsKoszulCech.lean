@@ -128,7 +128,6 @@ variable {S : Type} [CommRing S] {K : Type} [Fintype K] [LinearOrder K] {ι : K 
 
 end KoszulCech
 
-open KoszulCech
 
 end Inhabitants
 

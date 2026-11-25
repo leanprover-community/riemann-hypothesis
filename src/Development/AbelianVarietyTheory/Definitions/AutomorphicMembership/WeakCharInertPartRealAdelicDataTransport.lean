@@ -48,8 +48,6 @@ open Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.Lev Formalism
 
 namespace GlobalTheory.Mem.R3
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 open Tr
 
 def piSigmaIso {ι : Type} {P P' : ι → Type} (M : ι → Type) [∀ k, Group (M k)] (e : ∀ k, P k ≃ P' k) :

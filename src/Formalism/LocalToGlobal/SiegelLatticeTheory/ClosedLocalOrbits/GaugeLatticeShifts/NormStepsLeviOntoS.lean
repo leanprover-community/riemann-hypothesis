@@ -11,8 +11,6 @@ open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNo
 
 namespace Formalism.L2.SG.Pf.NormSteps
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 namespace LeviOntoSPf
 
 variable {D : D7}

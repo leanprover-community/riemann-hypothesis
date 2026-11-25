@@ -237,7 +237,12 @@ end General
 variable {D : D7} {T : Type}
 
 theorem g_mem {P : Formalism.L2.Host.PiBar D.host} {k : Fin 2} {PP : Pl D.host.E} (h : P.Div k PP) :
-    ((D.host.g k : ℕ) : 𝓞 D.host.E) ∈ PP.asIdeal := GlobalTheory.StepLaw.typePrime_mem_of_div h
+    ((D.host.g k : ℕ) : 𝓞 D.host.E) ∈ PP.asIdeal := by
+  have h1 := P.pb_over k
+  have h2 : PP.under (𝓞 D.host.K) = P.pb k := h
+  rw [← h2] at h1
+  have h3 : algebraMap (𝓞 D.host.K) (𝓞 D.host.E) ((D.host.g k : ℕ) : 𝓞 D.host.K) ∈ PP.asIdeal := h1
+  rwa [map_natCast] at h3
 
 theorem levRow_sub {L : LevCh D T} {μ0 : T} (hL : L.Is μ0) :
     (levRow L : Set (GA D (Yc D 0))) ⊆ levS _ (L.βY 0) (L.dat0 L.triv) := by
@@ -376,7 +381,8 @@ theorem integrableOn_corePeriod_rapidlyDecreasing {M : Vol G} (hM : M.IsRow) {F 
 theorem exists_reach_of_span {M : Vol G} (hM : M.IsRow) {v : CoreVol G}
     {u : GA D (Yc D 0) → ℂ} (hu : RapidDec (Yc D 0) u) {F : Fn G (.core 0)} (hF : F ∈ Submodule.span ℂ (Reach W v))
     (h0 : per0 G M F u ≠ 0) : ∃ F' ∈ Reach W v, per0 G M F' u ≠ 0 := by
-  by_contra! hn
+  by_contra hn
+  push_neg at hn
   have key : IntegrableOn (fun h => F (stabilizerEmbedding G.sp.dec0 h) * u h) (M.fd (.grid 0 0)) (M.ν (.grid 0 0)) ∧
       per0 G M F u = 0 := by
     clear h0
@@ -460,7 +466,11 @@ namespace GlobalTheory.RowConvAll
 
 theorem multT_le_empty {D : D7} {V : HSp D} {S : D.what₂.Tau → SPar} (θ : InfFam D) (M : DSModel V S) (J : Set (GA D V))
     (χ : GA D V → ℂ) : MultT θ M J χ ≤ MultT θ M ∅ 1 := by
-  exact GlobalTheory.ChainOnto.multT_le_noLevel θ M J χ
+  intro x hx
+  rw [mem_multT] at hx ⊢
+  refine Submodule.span_mono ?_ hx
+  intro T hT
+  exact ⟨hT.aut, hT.cusp, fun v k hk => absurd hk (Set.notMem_empty k), hT.equiv, hT.cont⟩
 
 end GlobalTheory.RowConvAll
 
@@ -691,14 +701,36 @@ namespace GlobalTheory.RowArrow
 variable {D : D7}
 
 theorem unit_of_gram {n : ℕ} {G b : Matrix (Fin n) (Fin n) ℂ} {ε : Fin n → Bool} (h : bᴴ * G * b = Formalism.REAL.Jm ε) :
-    IsUnit b.det := GlobalTheory.ConjFock.unit_of_gram h
+    IsUnit b.det := by
+  have hJ : IsUnit (Formalism.REAL.Jm ε).det := by
+    unfold Formalism.REAL.Jm
+    rw [det_diagonal, isUnit_iff_ne_zero]
+    exact Finset.prod_ne_zero_iff.2 fun a _ => by split_ifs <;> norm_num
+  rw [← h, det_mul] at hJ
+  exact isUnit_of_mul_isUnit_right hJ
 
 theorem inv_gram {n : ℕ} {G b : Matrix (Fin n) (Fin n) ℂ} {ε : Fin n → Bool} (h : bᴴ * G * b = Formalism.REAL.Jm ε) :
-    (b⁻¹)ᴴ * Formalism.REAL.Jm ε * b⁻¹ = G := GlobalTheory.ConjFock.inv_gram h
+    (b⁻¹)ᴴ * Formalism.REAL.Jm ε * b⁻¹ = G := by
+  have hb := unit_of_gram h
+  have h1 : (bᴴ)⁻¹ * bᴴ = 1 := nonsing_inv_mul _ (by rw [det_conjTranspose]; exact hb.star)
+  have h2 : b * b⁻¹ = 1 := mul_nonsing_inv _ hb
+  rw [← h, conjTranspose_nonsing_inv]
+  calc (bᴴ)⁻¹ * (bᴴ * G * b) * b⁻¹ = ((bᴴ)⁻¹ * bᴴ) * G * (b * b⁻¹) := by simp only [Matrix.mul_assoc]
+    _ = G := by rw [h1, h2, Matrix.one_mul, Matrix.mul_one]
 
 theorem exists_frame (V : HSp D) (c b : D.what₂.Tau → Matrix (Fin V.rank) (Fin V.rank) ℂ)
     (h : ∀ τ, ∃ ε : Fin V.rank → Bool, (b τ)ᴴ * gramAt D V τ * b τ = Formalism.REAL.Jm ε ∧ c τ * b τ = b τ * Formalism.REAL.Jm ε) :
-    ∃ A : Fr V, A.cart = c ∧ A.onb = b := GlobalTheory.ConjFock.frame_pos V c b h
+    ∃ A : Fr V, A.cart = c ∧ A.onb = b := by
+  choose ε hε using h
+  refine ⟨⟨ε, fun τ => (b τ)⁻¹, fun τ => isUnit_nonsing_inv_iff.2 ((isUnit_iff_isUnit_det _).2 (unit_of_gram (hε τ).1)),
+    fun τ => inv_gram (hε τ).1⟩, ?_, ?_⟩
+  · funext τ
+    simp only [Fr.cart]
+    rw [nonsing_inv_nonsing_inv _ (unit_of_gram (hε τ).1), ← (hε τ).2, Matrix.mul_assoc,
+      mul_nonsing_inv _ (unit_of_gram (hε τ).1), Matrix.mul_one]
+  · funext τ
+    simp only [Fr.onb]
+    rw [nonsing_inv_nonsing_inv _ (unit_of_gram (hε τ).1)]
 
 theorem lifts_neg {X : ProvA} (h3 : Formalism.MainNotions.SchurIrreducible.ArchimedeanRallisUpDownLine X) (h4 : Formalism.MainNotions.SchurIrreducible.ArchimedeanRallisFourth X) (h5 : Formalism.MainNotions.SchurIrreducible.ArchimedeanRallisFifth X)
     (hP : PairLifts D X) (hE : PairEx) {θ : InfFam D} (hθ : IsInfFam θ) {ψ : AddChar (AF D.host.F) ℂ} (hψ : IsStdChar D ψ (-1))
@@ -726,7 +758,8 @@ theorem lifts_neg {X : ProvA} (h3 : Formalism.MainNotions.SchurIrreducible.Archi
   refine ⟨F', hF', fun P v h => ?_⟩
   have := e₁ (j P) v ((GlobalTheory.Grid.ofSgn true B).symm h)
   rw [← ptF_ofModel, e'] at this
-  simpa only [hj f hf.1 P, MulEquiv.apply_symm_apply, RingHom.id_apply] using this
+  simp only [hj f hf.1 P, MulEquiv.apply_symm_apply, RingHom.id_apply] at this
+  exact this
 
 theorem cen_eq (τ : D.what₂.Tau) : GlobalTheory.Grid.cen D τ = GlobalTheory.ChiGrid.cen D 1 τ := by
   funext i
@@ -927,7 +960,8 @@ theorem coreOnto_of_chain (hO : ∀ D : D7, GlobalTheory.EvenOnto.OntoAll D) (hC
   obtain ⟨y', hy'⟩ := hsurj ⟨y, hyCC⟩
   have hx' : x ∈ (gridStage G v 0 r₀ MP).KF := by
     have h := (hRL.2.1 (G.V (.core 0)) r₀ W.θ _ MP (lev G (.core 0) : Set _)).2.1
-    rwa [← h] at hx
+    rw [← h] at hx
+    exact hx
   have key := hB y' x hx'
   rw [hy'] at key
   refine Submodule.span_mono ?_ key
@@ -1100,7 +1134,8 @@ theorem lam_top (G : GridData L sc) (M : DSModel (G.V (.core D.R.m)) (Node.par D
       hS ▸ Finset.mem_image.2 ⟨i, Finset.mem_univ _, rfl⟩
     rw [par_core_top G τ] at hx
     obtain ⟨y, hy, e⟩ := Finset.mem_image.1 hx
-    rwa [← (Prod.mk.inj e).1]
+    rw [← (Prod.mk.inj e).1]
+    exact hy
   have hqa : StrictAnti q := fun i j hij => by
     have := hanti hij
     rw [hq, hq] at this
@@ -1277,9 +1312,6 @@ namespace GlobalTheory.CoreOnto
 
 variable {D : D7} {T : Type} {L : LevCh D T} {sc : Consts}
 
-theorem coefPlus_is (G : GridData L sc) (θ : InfFam D) (hθ : IsInfFam θ) : (coefPlus G θ).Is := by
-  exact GlobalTheory.TopLineProof.coefPlus_is G hθ
-
 theorem eps_core_m (G : GridData L sc) (M : DSModel (G.V (.core D.R.m)) (Node.par D sc.cGap (.core D.R.m))) :
     ∀ τ a, M.ε τ a = true := by
   intro τ a
@@ -1293,7 +1325,7 @@ theorem eps_core_m (G : GridData L sc) (M : DSModel (G.V (.core D.R.m)) (Node.pa
 theorem topCols : TopCols := by
   intro D _ T L μ0 _ sc G W Mv _ M y hy w
   obtain ⟨pr, hpr⟩ := GlobalTheory.T.exists_dualPair_positiveWeightCoefficientSpace G W.θ W.θ_is M
-  obtain ⟨c, hc, e⟩ := GlobalTheory.T.exists_column_perfectPairing_definiteCoreNode G W.θ W.θ_is M (eps_core_m G M) (coefPlus_is G W.θ W.θ_is) pr hpr y hy
+  obtain ⟨c, hc, e⟩ := GlobalTheory.T.exists_column_perfectPairing_definiteCoreNode G W.θ W.θ_is M (eps_core_m G M) (GlobalTheory.TopLineProof.coefPlus_is G W.θ_is) pr hpr y hy
   refine ⟨c, hc, pr.flip w, ?_⟩
   subst e
   rfl

@@ -50,8 +50,6 @@ open NumberField Formalism.BasicNotions Formalism.MainNotions Formalism.L2 Forma
 
 namespace GlobalTheory.CovTop.SizeRows
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem prod_near_one {ι : Type} (s : Finset ι) (a : ι → ℝ) (e : ℝ) (n : ℕ) (he : 0 ≤ e) (hn : s.card ≤ n)
     (h : ∀ i ∈ s, 0 ≤ a i ∧ a i ≤ 1 ∧ 1 - a i ≤ e) :
     0 ≤ ∏ i ∈ s, a i ∧ ∏ i ∈ s, a i ≤ 1 ∧ 1 - ∏ i ∈ s, a i ≤ n * e := by

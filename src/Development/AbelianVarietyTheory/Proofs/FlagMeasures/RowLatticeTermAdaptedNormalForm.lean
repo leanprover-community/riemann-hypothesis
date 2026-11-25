@@ -407,7 +407,6 @@ theorem fl_mapLF {T : E} (γ : S.V ≃ₗ[E] S.V) (hγ : γ ∈ Formalism.Hermit
 end Gen
 
 section D7
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem termC_holds : GlobalTheory.TypeAsm.TermC := by
   intro D large₂ X Y u _hStd t N hAd

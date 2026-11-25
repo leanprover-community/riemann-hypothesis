@@ -120,7 +120,6 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor hiding Level Host
 open GlobalTheory.SW hiding Level IsSB
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Datum Formalism.IndefR.FWT Formalism.L2.Pj
 open scoped TensorProduct Classical ComplexConjugate
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 namespace GlobalTheory.AdTh.RecPair
 
 theorem isPair_record_ofCore : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T0 : Type) (A : Formalism.L2.DIV.FamIn D.what₂.LL G Pl0 T0 D.R.m) (Ks : Type) [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (F : Face D A), GlobalTheory.Hk3.Core R F → ∀ (i : Fin D.R.m) (t : T0), VStd D i → IsPair R.ψ R.θ (Vc D i) (Wc D i) (Lift.chrTh (R.toLevCh.mu t) R.eta ((i : ℕ) + 1)).1 (Lift.chrTh (R.toLevCh.mu t) R.eta ((i : ℕ) + 1)).2 (R.ωP i t) ∧ (Vc D i).rank ≠ 0 ∧ (R.ΛV i : Set (Fin (Vc D i).rank → D.host.E)) = L0c D (Vc D i) ∧ (R.ΛW i : Set (Fin (Wc D i).rank → D.host.E)) = L0c D (Wc D i) ∧ IsSelfDualC (Vc D i) (R.ΛV i) ∧ IsSelfDualC (Wc D i) (R.ΛW i) ∧ (R.ΛV i : Set (Fin (Vc D i).rank → D.host.E)) = (Formalism.L2.Pj.stdLat D.host.E (Vc D i).rank : Set (Fin (Vc D i).rank → D.host.E)) := by
@@ -137,7 +136,6 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor hiding Level Host
 open GlobalTheory.SW hiding Level IsSB
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Datum Formalism.IndefR.FWT Formalism.L2.Pj
 open scoped TensorProduct Classical ComplexConjugate
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 namespace GlobalTheory.AdTh.VecFock
 open scoped ComplexOrder
 variable {D : D7} {V : HSp D} {S : D.what₂.Tau → SPar}
@@ -167,7 +165,6 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor hiding Level Host
 open GlobalTheory.SW hiding Level IsSB
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Datum Formalism.IndefR.FWT Formalism.L2.Pj
 open scoped TensorProduct Classical ComplexConjugate
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 namespace GlobalTheory.AdTh.VecNe
 
 theorem thetaVector_ne_zero_of_core : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T0 : Type) (A : Formalism.L2.DIV.FamIn D.what₂.LL G Pl0 T0 D.R.m) (Ks : Type) [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (F : Face D A), GlobalTheory.Hk3.Core R F → ∀ i, VStd D i → R.vP i A.μ0 ≠ 0 := by
@@ -186,7 +183,6 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor hiding Level Host
 open GlobalTheory.SW hiding Level IsSB
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Datum Formalism.IndefR.FWT Formalism.L2.Pj
 open scoped TensorProduct Classical ComplexConjugate
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 namespace GlobalTheory.AdTh.MinorWeight
 open GlobalTheory.JointHarm
 
@@ -200,7 +196,6 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor hiding Level Host
 open GlobalTheory.SW hiding Level IsSB
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Datum Formalism.IndefR.FWT Formalism.L2.Pj
 open scoped TensorProduct Classical ComplexConjugate
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 namespace GlobalTheory.AdTh.IoExtPf
 
 end GlobalTheory.AdTh.IoExtPf
@@ -213,7 +208,6 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor hiding Level Host
 open GlobalTheory.SW hiding Level IsSB
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Datum Formalism.IndefR.FWT Formalism.L2.Pj
 open scoped TensorProduct Classical ComplexConjugate
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 namespace GlobalTheory.AdTh
 
 end GlobalTheory.AdTh
@@ -226,7 +220,6 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor hiding Level Host
 open GlobalTheory.SW hiding Level IsSB
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Datum Formalism.IndefR.FWT Formalism.L2.Pj
 open scoped TensorProduct Classical ComplexConjugate
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 namespace GlobalTheory.AdTh
 
 
@@ -294,7 +287,6 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor hiding Level Host
 open GlobalTheory.SW hiding Level IsSB
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Datum Formalism.IndefR.FWT Formalism.L2.Pj
 open scoped TensorProduct Classical ComplexConjugate
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 namespace GlobalTheory.AdTh.CcEx
 noncomputable section
 open GlobalTheory.ClsVal.Cmp
@@ -334,7 +326,6 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor hiding Level Host
 open GlobalTheory.SW hiding Level IsSB
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Datum Formalism.IndefR.FWT Formalism.L2.Pj
 open scoped TensorProduct Classical ComplexConjugate
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 namespace GlobalTheory.AdTh
 
 
@@ -364,7 +355,6 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor hiding Level Host
 open GlobalTheory.SW hiding Level IsSB
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Datum Formalism.IndefR.FWT Formalism.L2.Pj
 open scoped TensorProduct Classical ComplexConjugate
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 namespace GlobalTheory.AdTh.LevelLaw
 
 theorem omega_level_vP_of_core : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T0 : Type) (A : Formalism.L2.DIV.FamIn D.what₂.LL G Pl0 T0 D.R.m) (Ks : Type) [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (F : Face D A), GlobalTheory.Hk3.Core R F → ∀ (i : Fin D.R.m) (t : T0) (k : GA D (Vc D i)), VStd D i → k ∈ GfC (Vc D i) → ∀ hk : fin (Vc D i) k ∈ levJ R i t, R.ωP i t (k, 1) (R.vP i t) = (((levEnv (Vc D i) (R.βV i) (R.datVt i t)).χ ⟨fin (Vc D i) k, hk⟩ : ℂˣ) : ℂ)⁻¹ • R.vP i t := by
@@ -388,7 +378,6 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor hiding Level Host
 open GlobalTheory.SW hiding Level IsSB
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Datum Formalism.IndefR.FWT Formalism.L2.Pj
 open scoped TensorProduct Classical ComplexConjugate
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 namespace GlobalTheory.LiftUnfold
 
 
@@ -437,7 +426,6 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor hiding Level Host
 open GlobalTheory.SW hiding Level IsSB
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Datum Formalism.IndefR.FWT Formalism.L2.Pj
 open scoped TensorProduct Classical ComplexConjugate
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 
@@ -499,7 +487,6 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor hiding Level Host
 open GlobalTheory.SW hiding Level IsSB
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Datum Formalism.IndefR.FWT Formalism.L2.Pj
 open scoped TensorProduct Classical ComplexConjugate
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 noncomputable section
 namespace GlobalTheory.PtId
 variable {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T0 : Type} {A : Formalism.L2.DIV.FamIn D.what₂.LL G Pl0 T0 D.R.m}
@@ -590,7 +577,6 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor hiding Level Host
 open GlobalTheory.SW hiding Level IsSB
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Datum Formalism.IndefR.FWT Formalism.L2.Pj
 open scoped TensorProduct Classical ComplexConjugate
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 namespace GlobalTheory.AdTh
 
 theorem weil_twist_base_ofCore : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T0 : Type) (A : Formalism.L2.DIV.FamIn D.what₂.LL G Pl0 T0 D.R.m) (Ks : Type) [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (F : Face D A), GlobalTheory.Hk3.Core R F → ∀ (i : Fin D.R.m) (t : T0) (k : GA D (Wc D i)) (x : (AE D)ˣ), IsDetRoot (Wc D i) k x → ∀ f, IsThetaFunO R.ψ (Vc D i) (Wc D i) f → R.ωP i t (1, k) f = ((R.xi t x : Circle) : ℂ) • R.ωP i A.μ0 (1, k) f := by
@@ -609,7 +595,6 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor hiding Level Host
 open GlobalTheory.SW hiding Level IsSB
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Datum Formalism.IndefR.FWT Formalism.L2.Pj
 open scoped TensorProduct Classical ComplexConjugate
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 noncomputable section
 namespace GlobalTheory.PtId
 variable {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T0 : Type} {A : Formalism.L2.DIV.FamIn D.what₂.LL G Pl0 T0 D.R.m}
@@ -687,7 +672,6 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor hiding Level Host
 open GlobalTheory.SW hiding Level IsSB
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Datum Formalism.IndefR.FWT Formalism.L2.Pj
 open scoped TensorProduct Classical ComplexConjugate
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 
@@ -706,7 +690,6 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor hiding Level Host
 open GlobalTheory.SW hiding Level IsSB
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Datum Formalism.IndefR.FWT Formalism.L2.Pj
 open scoped TensorProduct Classical ComplexConjugate
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 set_option synthInstance.maxHeartbeats 400000
 set_option maxHeartbeats 1600000
 namespace GlobalTheory.AdTh.MovedDatum
@@ -758,7 +741,6 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor hiding Level Host
 open GlobalTheory.SW hiding Level IsSB
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Datum Formalism.IndefR.FWT Formalism.L2.Pj
 open scoped TensorProduct Classical ComplexConjugate
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 namespace GlobalTheory.AdTh.ShortSeries
 variable {D : D7} {ψ : AddChar (AF D.host.F) ℂ} {θ : InfFam D} {V W : HSp D} {r g : ℕ}
 
@@ -836,7 +818,6 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor hiding Level Host
 open GlobalTheory.SW hiding Level IsSB
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Datum Formalism.IndefR.FWT Formalism.L2.Pj
 open scoped TensorProduct Classical ComplexConjugate
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 namespace GlobalTheory.AdTh
 
 
@@ -899,7 +880,6 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor hiding Level Host
 open GlobalTheory.SW hiding Level IsSB
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Datum Formalism.IndefR.FWT Formalism.L2.Pj
 open scoped TensorProduct Classical ComplexConjugate
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 noncomputable section
 namespace GlobalTheory.AdTh.PhaseMap
 
@@ -1038,7 +1018,6 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor hiding Level Host
 open GlobalTheory.SW hiding Level IsSB
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Datum Formalism.IndefR.FWT Formalism.L2.Pj
 open scoped TensorProduct Classical ComplexConjugate
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 namespace GlobalTheory.AdTh.CoverVal
 
 end GlobalTheory.AdTh.CoverVal
@@ -1051,7 +1030,6 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor hiding Level Host
 open GlobalTheory.SW hiding Level IsSB
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Datum Formalism.IndefR.FWT Formalism.L2.Pj
 open scoped TensorProduct Classical ComplexConjugate
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 noncomputable section
 namespace GlobalTheory.AdTh.SerAll
 
@@ -1068,7 +1046,6 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor hiding Level Host
 open GlobalTheory.SW hiding Level IsSB
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Datum Formalism.IndefR.FWT Formalism.L2.Pj
 open scoped TensorProduct Classical ComplexConjugate
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 namespace GlobalTheory.FrameConstMove
 variable {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T0 : Type} {A : Formalism.L2.DIV.FamIn D.what₂.LL G Pl0 T0 D.R.m}
   {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] {R : RealDat D A Ks}
@@ -1086,7 +1063,6 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor hiding Level Host
 open GlobalTheory.SW hiding Level IsSB
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Datum Formalism.IndefR.FWT Formalism.L2.Pj
 open scoped TensorProduct Classical ComplexConjugate
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 namespace GlobalTheory.FrameConstMove
 variable {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T0 : Type} {A : Formalism.L2.DIV.FamIn D.what₂.LL G Pl0 T0 D.R.m}
   {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] {R : RealDat D A Ks}
@@ -1098,7 +1074,6 @@ end
 section
 open NumberField IsDedekindDomain ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism Formalism.IndefR Formalism.IndefR.FWT Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.L2.Pj Formalism.IndefR.Datum
 open scoped TensorProduct Matrix
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 noncomputable section
 section
 open NumberField Matrix Complex MeasureTheory IsDedekindDomain
@@ -1119,7 +1094,6 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor hiding Level Host
 open GlobalTheory.SW hiding Level IsSB
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Datum Formalism.IndefR.FWT Formalism.L2.Pj
 open scoped TensorProduct Classical ComplexConjugate
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 namespace GlobalTheory.AdTh
 
 end GlobalTheory.AdTh
@@ -1135,7 +1109,6 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor hiding Level Host
 open GlobalTheory.SW hiding Level IsSB
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Datum Formalism.IndefR.FWT Formalism.L2.Pj
 open scoped TensorProduct Classical ComplexConjugate
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 end GlobalTheory.PhRatCommon
 end
@@ -1148,7 +1121,6 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor hiding Level Host
 open GlobalTheory.SW hiding Level IsSB
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Datum Formalism.IndefR.FWT Formalism.L2.Pj
 open scoped TensorProduct Classical ComplexConjugate
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 namespace GlobalTheory.OneMapTies
 
 end GlobalTheory.OneMapTies
@@ -1161,7 +1133,6 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor hiding Level Host
 open GlobalTheory.SW hiding Level IsSB
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Datum Formalism.IndefR.FWT Formalism.L2.Pj
 open scoped TensorProduct Classical ComplexConjugate
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 end
 
@@ -1172,7 +1143,6 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor hiding Level Host
 open GlobalTheory.SW hiding Level IsSB
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Datum Formalism.IndefR.FWT Formalism.L2.Pj
 open scoped TensorProduct Classical ComplexConjugate
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 namespace GlobalTheory.OneMapPhaseOne
 
 end GlobalTheory.OneMapPhaseOne
@@ -1185,6 +1155,5 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor hiding Level Host
 open GlobalTheory.SW hiding Level IsSB
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Datum Formalism.IndefR.FWT Formalism.L2.Pj
 open scoped TensorProduct Classical ComplexConjugate
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 end

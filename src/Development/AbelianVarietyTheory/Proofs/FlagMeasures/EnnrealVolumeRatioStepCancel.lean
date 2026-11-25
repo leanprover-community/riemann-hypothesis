@@ -1419,10 +1419,6 @@ theorem exists_rat (I : AutInst) : ∃ Γ : Subgroup I.GA, (Γ : Set I.GA) = I.G
     continuous_subtype_val.continuousAt.preimage_mem_nhds hC1
   exact discreteTopology_of_isOpen_singleton_one (isOpen_singleton_of_finite_mem_nhds _ hn hfin)
 
-theorem gauge_pos {n : ℕ} {ε : Fin n → Bool} {c : ℝ} (h : IsGauge ε c) : 0 < c := by
-  obtain ⟨c₀, h0, -, hu⟩ := _root_.GlobalTheory.GaugeConst.gauge_exists_pos_unique n ε
-  exact hu c h ▸ h0
-
 theorem haar_muA (I : AutInst) (μf : Measure I.Gf) [SigmaFinite μf] [μf.IsHaarMeasure] :
     (I.muA μf).IsHaarMeasure ∧ (I.muA μf).IsMulRightInvariant := by
   obtain ⟨-, -, h3, h4⟩ := _root_.GlobalTheory.adelicStab_isCompact_isOpen I

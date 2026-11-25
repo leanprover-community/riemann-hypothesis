@@ -15,8 +15,6 @@ open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions.S
 
 namespace Formalism.L2.SG.Pf.FibD
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : Formalism.BasicNotions.D7} (Zd : LocDat D) (p : PlF D)
 
 theorem neg_one_pow_sq {R : Type*} [CommRing R] (k : ℕ) : (-1 : R) ^ k * (-1) ^ k = 1 := by

@@ -58,8 +58,6 @@ open scoped ComplexOrder
 
 namespace GlobalTheory.FunObj
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 theorem UA_le_range_finE (V : HSp D) : UA D.sp.cm V.gram ≤ (finE V).range := by

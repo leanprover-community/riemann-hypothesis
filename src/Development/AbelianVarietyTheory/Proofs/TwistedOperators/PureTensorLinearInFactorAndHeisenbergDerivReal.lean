@@ -58,8 +58,6 @@ open scoped TensorProduct ComplexOrder
 
 namespace GlobalTheory.PureLinear
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem finite_of_eq_off {ι : Type} {a b : ι → ℂ} (q : ι) (ha : (Function.mulSupport a).Finite)
     (h : ∀ p, p ≠ q → b p = a p) : (Function.mulSupport b).Finite := by
   refine (ha.union (Set.finite_singleton q)).subset fun p hp => ?_

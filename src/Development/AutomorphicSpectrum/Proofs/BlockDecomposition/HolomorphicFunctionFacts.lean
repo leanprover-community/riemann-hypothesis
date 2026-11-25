@@ -55,7 +55,7 @@ open Matrix ReciprocityTheory.ChartRestriction.DS.S7
 
 namespace GlobalTheory.CompanionTheory.HolOm
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 variable {n : ℕ}
 

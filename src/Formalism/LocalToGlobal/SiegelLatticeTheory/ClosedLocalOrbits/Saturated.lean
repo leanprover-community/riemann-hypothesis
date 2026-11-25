@@ -288,8 +288,6 @@ end Gen
 
 section D7
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable (D : D7)
 
 def BBneF (Λ : Submodule (𝓞 D.host.E) (VS D).V) {T T' : D.host.E} (F : LFlag (D.sp.Y 0) D.R.rS T)

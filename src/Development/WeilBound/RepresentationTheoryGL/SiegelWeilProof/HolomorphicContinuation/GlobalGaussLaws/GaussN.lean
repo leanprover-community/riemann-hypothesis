@@ -48,8 +48,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
 open GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctions.BC
 open Matrix
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 namespace PositivityTheory.Rg.Sw.Glob.GaussH
 
 variable {D : D7} {n : ℕ}

@@ -1241,8 +1241,6 @@ section
 variable {k R P M : Type*} [CommRing k] [AddCommGroup M] [Module k M] {n : ℕ}
 
 theorem permOnTensor_apply (σ : Equiv.Perm (Fin n)) (z : Tens R P M n) (g) : perm k σ z g = z (g ∘ σ) := rfl
-theorem permSecond_apply_formula (σ : Equiv.Perm (Fin n)) (z : Tens R P M n) (g) :
-    permY k σ z g = z (fun s => ((g (σ s)).1, (g s).2)) := rfl
 theorem contract_apply_eq_insertNth (j : Fin (n + 1)) (v : R × P) (z : Tens R P M (n + 1)) (g) :
     contr k j v z g = z (j.insertNth v g) := rfl
 theorem contract_last_apply_snoc (v : R × P) (z : Tens R P M (n + 1)) (g) :
@@ -1274,7 +1272,7 @@ theorem jucysMurphy_apply (EM : R → R → Module.End k M) (j : Fin n) (z : Ten
       ∑ j' ∈ Finset.univ.filter (· < j), z (fun s => ((g (Equiv.swap j' j s)).1, (g s).2)) := by
   unfold xJM
   simp only [LinearMap.add_apply, LinearMap.sum_apply, Pi.add_apply, Finset.sum_apply, mixedCasimir_apply,
-    permSecond_apply_formula]
+    permSecond_apply]
 
 theorem filter_lt_castSucc_eq_map (j : Fin n) :
     (Finset.univ.filter (· < j.castSucc) : Finset (Fin (n + 1))) =

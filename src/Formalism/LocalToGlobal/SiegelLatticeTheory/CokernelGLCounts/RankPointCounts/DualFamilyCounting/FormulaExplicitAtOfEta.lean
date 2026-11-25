@@ -37,8 +37,6 @@ namespace Formalism.L2.SG.Pf.Cnt.AtD
 
 open Formalism.HermitianLattices.Ext.L3 Formalism.L2.SG.Pf.Cnt
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 def EtaLocAt (D : Formalism.BasicNotions.D7) : Prop :=
   ∀ p : PlF D, (if ∀ x : (D.s.atP p).Ep, x ≠ 0 → IsUnit x then (-1 : ℝ) else 1) = etaF D.host.E D.host.F p.asIdeal
 
@@ -243,8 +241,6 @@ end Formalism.L2.SG.Pf.Cnt.AtD
 namespace Formalism.L2.SG.Pf
 
 open Formalism.HermitianLattices.Ext.L3 Formalism.L2.SG.Pf.Cnt Formalism.L2.SG.Pf.Asm Formalism.L2.SG.Pf.Cnt.AtD
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable [Fact Formalism.HermitianLattices.Ext.L3.HermRepUnram] in
 theorem formulaExplicitAt_of (D : Formalism.BasicNotions.D7) (h5 : DensAllAt D) : FormulaExplicitAt D := by

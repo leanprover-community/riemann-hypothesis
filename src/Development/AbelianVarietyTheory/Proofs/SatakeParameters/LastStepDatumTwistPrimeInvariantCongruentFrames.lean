@@ -48,7 +48,6 @@ import Development.AbelianVarietyTheory.Proofs.SatakeParameters.BlkDetEqDB
 @[expose] public section
 
 open NumberField IsDedekindDomain Matrix Formalism.BasicNotions Formalism.UG Formalism.L2.Col Formalism.L2.PairingIndexBounds.F Formalism.MainNotions.G.KAat Formalism.L2.Forms Formalism.L2.Ker Formalism.MainNotions Formalism.L2.DIV Formalism.MainNotions.G GlobalTheory.TwU GlobalTheory.TwV
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 open GlobalTheory.TopStep GlobalTheory.TopLaw
 

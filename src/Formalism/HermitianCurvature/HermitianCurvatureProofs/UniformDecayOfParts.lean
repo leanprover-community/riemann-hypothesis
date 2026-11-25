@@ -322,7 +322,7 @@ theorem continuous_fsv₂ : Continuous (fun q : ℂ × ℂ => fsv q.1 q.2) := by
   exact Complex.continuous_exp.comp ((continuous_fst.mul continuous_snd).sub
     ((Complex.continuous_conj.comp continuous_fst).mul (Complex.continuous_conj.comp continuous_snd)))
 
-theorem integrable_fsv_mul {φ : ℂ → ℂ} (hφ : Continuous φ) (hi : Integrable φ) (a : ℂ) :
+theorem integrable_fsv_mul {φ : ℂ → ℂ} (hi : Integrable φ) (a : ℂ) :
     Integrable (fun t => fsv a t * φ t) := by
   refine hi.bdd_mul (c := 1) ?_ (Filter.Eventually.of_forall fun t => (norm_fsv a t).le)
   exact (continuous_fsv₂.comp (continuous_const.prodMk continuous_id)).aestronglyMeasurable
@@ -613,7 +613,7 @@ namespace Formalism.FourierDecayAlt.P.PBO
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Q Formalism.FourierDecayAlt.Wd Formalism.YangianSpanCharacter.T Formalism.FourierDecayAlt.P5
 
-theorem transform_diff3 {φ : ℂ → ℂ} (hφ : Continuous φ) (hi : Integrable φ) (σ s : ℂ) :
+theorem transform_diff3 {φ : ℂ → ℂ} (hi : Integrable φ) (σ s : ℂ) :
     ∫ t, fsv s t * ((fsv σ t - 1) ^ 3 * φ t) =
       (∫ t, fsv (s + 3 * σ) t * φ t) - 3 * (∫ t, fsv (s + 2 * σ) t * φ t) + 3 * (∫ t, fsv (s + σ) t * φ t) -
         ∫ t, fsv s t * φ t := by
@@ -627,10 +627,10 @@ theorem transform_diff3 {φ : ℂ → ℂ} (hφ : Continuous φ) (hi : Integrabl
       rw [fsv_mul_fsv, fsv_mul_fsv, fsv_mul_fsv]; congr 1; ring
     rw [e1, e2, e3]; ring
   simp only [e]
-  have i0 := integrable_fsv_mul hφ hi s
-  have i1 := integrable_fsv_mul hφ hi (s + σ)
-  have i2 := integrable_fsv_mul hφ hi (s + 2 * σ)
-  have i3 := integrable_fsv_mul hφ hi (s + 3 * σ)
+  have i0 := integrable_fsv_mul hi s
+  have i1 := integrable_fsv_mul hi (s + σ)
+  have i2 := integrable_fsv_mul hi (s + 2 * σ)
+  have i3 := integrable_fsv_mul hi (s + 3 * σ)
   have j1 : Integrable (fun t => fsv (s + 3 * σ) t * φ t - 3 * (fsv (s + 2 * σ) t * φ t)) := i3.sub (i2.const_mul 3)
   have j2 : Integrable (fun t => fsv (s + 3 * σ) t * φ t - 3 * (fsv (s + 2 * σ) t * φ t) +
       3 * (fsv (s + σ) t * φ t)) := j1.add (i1.const_mul 3)
@@ -776,7 +776,7 @@ theorem decayUnif_of (hRH : KB.RadHead) (hHT : KB.HeadTop) (hWDF : WaveDiffForm)
     have hΨb : ∀ s, ‖∫ t, fsv s t * ((fsv σ t - 1) ^ 3 * φ t)‖ ≤
         (8 * (1 + K) * Real.sqrt (CW * ‖σ‖ ^ 6 * B)) * ((1 + ‖s‖) ^ 3)⁻¹ := by
       intro s
-      rw [transform_diff3 hφc hφi σ s, hφs, hφs, hφs, hφs, ← form_wave_mDiff P p j hj w _ _ hxc hyc s σ]
+      rw [transform_diff3 hφi σ s, hφs, hφs, hφs, hφs, ← form_wave_mDiff P p j hj w _ _ hxc hyc s σ]
       have hA0 : ‖p.form j hj w (mDiff (p.T.bs j) σ w (KB.slv p.T (fun g => cut m g • D.cutF p.T.base χ f ε g) j hj w h hh.2)) (mDiff (p.T.bs j) σ w (KB.slv p.T (fun g => cut m g • D.cutF p.T.base χ f ε g) j hj w h hh.2))‖ ≤ CW * ‖σ‖ ^ 6 :=
         (hC0 m σ hσ2).trans (mul_le_mul_of_nonneg_right hC0W hσ6)
       have hB0' : ‖p.form j hj w (KB.slv p.T (fun g => cut m g • D.cutF p.T.base χ f ε g) j hj w h' hh'.2) (KB.slv p.T (fun g => cut m g • D.cutF p.T.base χ f ε g) j hj w h' hh'.2)‖ ≤ B := by

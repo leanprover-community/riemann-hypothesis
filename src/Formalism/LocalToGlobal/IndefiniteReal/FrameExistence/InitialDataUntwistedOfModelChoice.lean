@@ -14,8 +14,6 @@ open scoped TensorProduct InnerProductSpace
 
 namespace Formalism.IndefR.Seed
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 open Formalism.IndefR.Links Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.Cx
 
 variable {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 I0 T : Type}

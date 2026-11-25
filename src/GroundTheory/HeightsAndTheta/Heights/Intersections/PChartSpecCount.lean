@@ -13,6 +13,7 @@ public import Mathlib.Algebra.MvPolynomial.CommRing
 public import Mathlib.Algebra.Polynomial.Lifts
 public import Mathlib.Algebra.Polynomial.Roots
 public import Mathlib.FieldTheory.IsAlgClosed.Basic
+import Mathlib.RingTheory.MvPolynomial.Localization
 
 @[expose] public section
 
@@ -31,20 +32,10 @@ theorem exists_pow_mul_eq_map {R : Type*} [CommRing R] (E : R) {Q : Type*}
     ∃ (n : ℕ) (F' : MvPolynomial Q R),
       MvPolynomial.map (algebraMap R (Localization.Away E)) F' =
         MvPolynomial.C (algebraMap R (Localization.Away E) (E ^ n)) * F := by
-  induction F using MvPolynomial.induction_on with
-  | C a =>
-    obtain ⟨n, b, hb⟩ := IsLocalization.Away.surj E a
-    refine ⟨n, MvPolynomial.C b, ?_⟩
-    rw [MvPolynomial.map_C, ← MvPolynomial.C_mul, map_pow, mul_comm, hb]
-  | add F G hF hG =>
-    obtain ⟨n, F', hF'⟩ := hF
-    obtain ⟨k, G', hG'⟩ := hG
-    refine ⟨n + k, MvPolynomial.C (E ^ k) * F' + MvPolynomial.C (E ^ n) * G', ?_⟩
-    simp only [map_add (f := _), map_mul, MvPolynomial.map_C, hF', hG', pow_add, map_pow]
-    ring
-  | mul_X F i hF =>
-    obtain ⟨n, F', hF'⟩ := hF
-    exact ⟨n, F' * MvPolynomial.X i, by rw [map_mul, MvPolynomial.map_X, hF', mul_assoc]⟩
+  let := MvPolynomial.algebraMvPolynomial (R := R) (S := Localization.Away E) (σ := Q)
+  obtain ⟨⟨F', _, ⟨_, ⟨n, rfl⟩, rfl⟩⟩, h⟩ :=
+    IsLocalization.surj ((Submonoid.powers E).map (MvPolynomial.C : R →+* MvPolynomial Q R)) F
+  exact ⟨n, F', by simpa only [MvPolynomial.algebraMap_def, MvPolynomial.map_C, mul_comm] using h.symm⟩
 
 theorem eval₂_mvEval₂_C {A K Q : Type*} [CommRing A] [CommRing K] (k : A →+* K) (x : K) (G : Q → A[X])
     (F : MvPolynomial Q A) :

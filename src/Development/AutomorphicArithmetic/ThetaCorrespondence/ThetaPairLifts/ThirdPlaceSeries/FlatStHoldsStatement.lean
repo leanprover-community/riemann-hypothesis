@@ -267,7 +267,7 @@ theorem eq_of_parts {D : D7} {z w : AE D} (h1 : infPart D z = infPart D w) (h2 :
 
 theorem redM_map {D : D7} (PP : Pl D.host.E) {b a : ℕ} (X : Matrix (Fin b) (Fin a) (Formalism.L2.Herm.intAf D.host.F D.host.E)) :
     redM PP (X.map (Formalism.L2.Herm.intAf D.host.F D.host.E).subtype) = X.map (resS D.host.F PP) :=
-  Matrix.ext fun i j => dite_eq_left (X i j).2
+  Matrix.ext fun i j => dif_pos (X i j).2
 
 theorem redM_mul' {D : D7} (PP : Pl D.host.E) {c b a : ℕ} {A : Matrix (Fin c) (Fin b) (Datum.EAf D)}
     {B : Matrix (Fin b) (Fin a) (Datum.EAf D)} (hA : IsIntM A) (hB : IsIntM B) :
@@ -302,7 +302,7 @@ theorem redM_conj {D : D7} (PP : Pl D.host.E) {a b : ℕ} {y : Matrix (Fin a) (F
   ext i j
   rw [Matrix.transpose_apply, Matrix.map_apply]
   unfold redM
-  rw [dite_eq_left (hy i j), dite_eq_left (int_ct hy j i)]
+  rw [dif_pos (hy i j), dif_pos (int_ct hy j i)]
   exact resS_conj PP _ _ (sigR_sigR D.sp.cm _).symm
 
 theorem det_topL_conj {D : D7} (PP : Pl D.host.E) {n r : ℕ} (hr : r ≤ n) {y : Matrix (Fin r) (Fin n) (Datum.EAf D)} (hy : IsIntM y) :
@@ -311,19 +311,19 @@ theorem det_topL_conj {D : D7} (PP : Pl D.host.E) {n r : ℕ} (hr : r ≤ n) {y 
   congr 1
   ext i j
   simp only [Matrix.transpose_apply, Matrix.map_apply, topL]
-  rw [dite_eq_left ⟨j.2, by omega⟩, dite_eq_left ⟨by omega, j.2⟩]
+  rw [dif_pos ⟨j.2, by omega⟩, dif_pos ⟨by omega, j.2⟩]
 
 theorem red_adj {κ : Type} [CommRing κ] {n r : ℕ} (hr : r ≤ n) (v : Matrix (Fin n) (Fin r) κ) (g : Matrix (Fin r) (Fin r) κ) :
     LowZero r ((Matrix.diagonal fun k : Fin n => if k.val < r then (1 : κ) else 0) * v * g) ∧
       topL r ((Matrix.diagonal fun k : Fin n => if k.val < r then (1 : κ) else 0) * v * g) = topL r v * g := by
   constructor
   · intro i j hi _
-    rw [Matrix.mul_assoc, Matrix.diagonal_mul, ite_eq_right (by omega), zero_mul]
+    rw [Matrix.mul_assoc, Matrix.diagonal_mul, if_neg (by omega), zero_mul]
   · ext i j
     have hi : i.val < n := by omega
-    rw [Matrix.mul_assoc, topL, dite_eq_left ⟨hi, j.2⟩, Matrix.diagonal_mul, ite_eq_left i.2, one_mul, Matrix.mul_apply, Matrix.mul_apply]
+    rw [Matrix.mul_assoc, topL, dif_pos ⟨hi, j.2⟩, Matrix.diagonal_mul, if_pos i.2, one_mul, Matrix.mul_apply, Matrix.mul_apply]
     refine Finset.sum_congr rfl fun k _ => ?_
-    rw [topL, dite_eq_left ⟨hi, k.2⟩]
+    rw [topL, dif_pos ⟨hi, k.2⟩]
 
 theorem X_pval : ∀ (D : D7) (Q : Finset (Pl D.host.E)) (ϖ : 𝓞 D.host.E), (∀ PP ∈ Q, ϖ ∈ PP.asIdeal) → ∀ (n r : ℕ), r ≤ n → ∀ (Γ Γ' : Matrix (Fin r) (Fin r) (Datum.EAf D)), IsIntM Γ → IsIntM Γ' → Γ * Γ' = 1 → ∀ (ξ ξ' : ∀ PP : Pl D.host.E, (kP PP)ˣ →* ℂˣ), (∀ PP ∈ Q, ∀ u : (kP PP)ˣ, ξ' (conjPl PP) (Units.map (conjK PP).toMonoidHom u) = (ξ PP u)⁻¹) → ∃ c₀ : ℂ, GlobalTheory.ConjTwist.IsRoot1 c₀ ∧ ∀ y : Matrix (Fin r) (Fin n) (Datum.EAf D), IsIntM y → GlobalTheory.ConjTwist.omegaFlat (Q.image conjPl) r ξ' (fun PP => redM PP y) = c₀ * omegaQ Q r ξ (-1) (fun PP => redM PP (diagW D n r (ϖ : D.host.E) * GlobalTheory.ExportSeries.Model.ct y * Γ)) := by
   intro D Q ϖ hϖ n r hr Γ Γ' iΓ iΓ' hΓ ξ ξ' hξ
@@ -359,7 +359,7 @@ theorem X_pval : ∀ (D : D7) (Q : Finset (Pl D.host.E)) (ϖ : 𝓞 D.host.E), (
       have h2 : ∀ PP ∈ Q, LowZero r (redM PP (diagW D n r (ϖ : D.host.E) * ct y * Γ)) ∧
           IsUnit (topL r (redM PP (diagW D n r (ϖ : D.host.E) * ct y * Γ))).det := fun PP hPP =>
         ⟨(key PP hPP).1, by rw [(key PP hPP).2]; exact (h PP hPP).mul (hu PP)⟩
-      rw [dite_eq_left h1, dite_eq_left h2, ← Finset.prod_mul_distrib]
+      rw [dif_pos h1, dif_pos h2, ← Finset.prod_mul_distrib]
       symm
       refine Finset.prod_bij (fun P _ => ⟨conjPl P.1, Finset.mem_image_of_mem _ P.2⟩) (fun _ _ => Finset.mem_attach _ _)
         (fun a _ b _ hab => Subtype.ext ?_) (fun b _ => ?_) fun P _ => ?_
@@ -386,15 +386,15 @@ theorem X_pint : ∀ (D : D7) (Q : Finset (Pl D.host.E)) (e : AE D), IsIdemSum e
     rw [e1, diagW, Matrix.diagonal_mul]
   have h2 := h1 k l
   by_cases hk : k.val < r
-  · rwa [e2, ite_eq_left hk, one_mul] at h2
-  · rw [ite_eq_right hk] at e2
+  · rwa [e2, if_pos hk, one_mul] at h2
+  · rw [if_neg hk] at e2
     refine GlobalTheory.DilKer.mem_int_of_mul he hϖ (congrFun (congrFun hv k) l) (e2 ▸ h2) fun PP hPP => ?_
     rw [← e2]
     refine (GlobalTheory.AdIsom.resS_eq_zero_iff_cpt PP ⟨_, h2⟩).1 ?_
     have h3 : redM PP (diagW D n r (ϖ : D.host.E) * v * Γ * Γ') k l = 0 := by
       rw [redM_mul' PP hi iΓ', Matrix.mul_apply]
       exact Finset.sum_eq_zero fun j _ => by rw [hz PP hPP k j (by omega) j.2, zero_mul]
-    exact (dite_eq_left h2).symm.trans h3
+    exact (dif_pos h2).symm.trans h3
 
 theorem exists_idF_of_fixed {D : D7} (V : HSp D) (y : (AE D)ˣ) (hy : cA D (y : AE D) = y) : ∃ a, y = idF D a := by
   have h1 : ∀ z : (AE D)ˣ, cA D (z : AE D) = z → IsDetRoot V 1 z := fun z hz => by
@@ -415,10 +415,12 @@ theorem isLocUnit_conj {D : D7} {PP : Pl D.host.E} (h : Formalism.L2.NTheta.IsId
   refine ⟨?_, ?_, hi _ hx.int, hi _ hx.int', ?_⟩
   · have := congrArg (cA D) hx.off
     rw [map_mul, map_sub, map_one] at this
-    rwa [GlobalTheory.FlatThreeSteps.idemAt_conj h]
+    rw [GlobalTheory.FlatThreeSteps.idemAt_conj h]
+    exact this
   · have h0 : infPart D ((x : AE D) - 1) = 0 := by rw [map_sub, hx.inf, map_one, sub_self]
     have h1 := GlobalTheory.PlaceVec.infPart_cA h0
-    rwa [map_sub, map_one, map_sub, map_one, sub_eq_zero] at h1
+    rw [map_sub, map_one, map_sub, map_one, sub_eq_zero] at h1
+    exact h1
   · obtain ⟨k1, k2⟩ := hx.res
     refine ⟨GlobalTheory.IdemRes.toEAf_mem_of_finPart (hi _ hx.int), ?_⟩
     rw [resS_conj PP ⟨_, k1⟩ _ (GlobalTheory.AdelicLatMove.toEAf_cA _), k2]
@@ -652,7 +654,8 @@ theorem unitary_fin {D : D7} {V : HSp D} (g : GA D V) :
     simp only [Matrix.map_mul] at h2
     have h3 : (Formalism.UG.cT (cA D) (mt V g)).map (toEAf D) = ct ((mt V g).map (toEAf D)) :=
       Matrix.ext fun i j => GlobalTheory.AdelicLatMove.toEAf_cA _
-    rwa [h3] at h2
+    rw [h3] at h2
+    exact h2
   have hJK := GlobalTheory.PlaceVec.gram_map_mul_inv V
   generalize (mt V g).map (toEAf D) = M at h1 ⊢
   generalize V.gram.map (eToEAf D) = J at h1 hJK
@@ -918,16 +921,16 @@ theorem pull_flat (hC : GlobalTheory.Hk3.Core R F) (i : Fin D.R.m) {Q : Finset (
   simp only [actPull, inv_one, flatDat, adjDat, Pi.smul_apply, smul_eq_mul]
   by_cases hx : IsHalf (cA D e) x
   swap
-  · rw [ite_eq_right fun h => hx ((isHalf_actO _ _ x).1 h.1), ite_eq_right fun h => hx h.1, mul_zero]
+  · rw [if_neg fun h => hx ((isHalf_actO _ _ x).1 h.1), if_neg fun h => hx h.1, mul_zero]
   have hx' : IsHalf (cA D e) (actO (Vc D i) (Wc D i) g⁻¹ 1 x) := (isHalf_actO _ _ x).2 hx
   rw [adj_eq (R.βW i) hg hx]
   have hy : toEAf D e • ct (frMapO (Vc D i) (Wc D i) (R.βV i) (R.βW i) (actO (Vc D i) (Wc D i) g⁻¹ 1 x)) =
       ct (frMapO (Vc D i) (Wc D i) (R.βV i) (R.βW i) (actO (Vc D i) (Wc D i) g⁻¹ 1 x)) := smul_ct_frMapO _ _ hx'
   generalize frMapO (Vc D i) (Wc D i) (R.βV i) (R.βW i) (actO (Vc D i) (Wc D i) g⁻¹ 1 x) = y at hy ⊢
   by_cases hi : IsIntM y
-  · rw [ite_eq_left ⟨hx', hi⟩, ite_eq_left ⟨hx, int_mul (int_mul (diagW_int _ _ ϖ) (int_ct hi)) iW⟩]
+  · rw [if_pos ⟨hx', hi⟩, if_pos ⟨hx, int_mul (int_mul (diagW_int _ _ ϖ) (int_ct hi)) iW⟩]
     exact hval y hi
-  · rw [ite_eq_right fun h => hi h.2]
+  · rw [if_neg fun h => hi h.2]
     split_ifs with h
     · unfold omegaQ
       rw [dite_eq_right, mul_zero]
@@ -1124,27 +1127,27 @@ theorem adjDat_union {Sa St : Finset (Pl D.host.E)} {ea et : AE D} (hg : IsIdemS
   have hc : cA D (ea + et) = cA D et + cA D ea := by rw [map_add (f := _), add_comm]
   by_cases hx : IsHalf (cA D (ea + et)) x
   · have hx' : IsHalf (cA D et + cA D ea) x := hc ▸ hx
-    rw [ite_eq_left hx', mul_one]
+    rw [if_pos hx', mul_one]
     by_cases hi : IsIntM (frMapAdj _ _ (R.βV i) (R.βW i) x)
     · obtain ⟨i1, i2⟩ := (hA x hx).1 hi
       obtain ⟨r1, r2⟩ := hB x hx hi
-      rw [ite_eq_left (And.intro hx hi), ite_eq_left (And.intro (hcQ x) i2), ite_eq_left (And.intro (hcg x) i1), omegaQ_union hd, mul_comm]
-      congr 1
+      rw [if_pos (And.intro hx hi), if_pos (And.intro (hcQ x) i2), if_pos (And.intro (hcg x) i1), omegaQ_union hd, mul_comm]
+      refine congrArg₂ (· * ·) ?_ ?_
       · exact GlobalTheory.PlaceVec.omegaQ_congr St _ ξ _ fun PP hPP => (r2 PP hPP).symm
       · exact GlobalTheory.PlaceVec.omegaQ_congr Sa _ ξ _ fun PP hPP => (r1 PP hPP).symm
     · have c1 : ¬ (IsHalf (cA D (ea + et)) x ∧ IsIntM (frMapAdj _ _ (R.βV i) (R.βW i) x)) := fun h => hi h.2
-      rw [ite_eq_right c1]
+      rw [if_neg c1]
       have := mt (hA x hx).2 hi
       rcases not_and_or.1 this with h | h
       · have c3 : ¬ (IsHalf (cA D ea) (cA D ea • x) ∧ IsIntM (frMapAdj _ _ (R.βV i) (R.βW i) (cA D ea • x))) :=
           fun h' => h h'.2
-        rw [ite_eq_right c3, mul_zero]
+        rw [if_neg c3, mul_zero]
       · have c2 : ¬ (IsHalf (cA D et) (cA D et • x) ∧ IsIntM (frMapAdj _ _ (R.βV i) (R.βW i) (cA D et • x))) :=
           fun h' => h h'.2
-        rw [ite_eq_right c2, zero_mul]
+        rw [if_neg c2, zero_mul]
   · have c1 : ¬ (IsHalf (cA D (ea + et)) x ∧ IsIntM (frMapAdj _ _ (R.βV i) (R.βW i) x)) := fun h => hx h.1
     have hx' : ¬ IsHalf (cA D et + cA D ea) x := hc ▸ hx
-    rw [ite_eq_right c1, ite_eq_right hx', mul_zero]
+    rw [if_neg c1, if_neg hx', mul_zero]
 
 end
 

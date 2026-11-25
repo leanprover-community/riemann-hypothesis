@@ -50,8 +50,6 @@ namespace GlobalTheory.ChainNS
 
 open GlobalTheory.ChainOnto
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 def invFam (B : GlobalTheory.LFun.Fam D.host.E) : GlobalTheory.LFun.Fam D.host.E := fun w => (B w).map (·⁻¹)

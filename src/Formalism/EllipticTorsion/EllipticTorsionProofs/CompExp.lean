@@ -1,49 +1,8 @@
 module
 
 public import Formalism.EllipticTorsion.CompExpWeight
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
 import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -60,7 +19,7 @@ def W (w : ℤ) (f : MvPowerSeries σ K) : Prop :=
 
 variable {c}
 
-theorem W_one (hc : 0 < c) (_hc1 : c ≤ 1) : W c 0 (1 : MvPowerSeries σ K) := by
+theorem W_one (hc : 0 < c) : W c 0 (1 : MvPowerSeries σ K) := by
   classical
   intro e
   rw [MvPowerSeries.coeff_one]
@@ -82,10 +41,10 @@ theorem W_mul (hc : 0 < c) {w₁ w₂ : ℤ} {f g : MvPowerSeries σ K} (hf : W 
     _ = c ^ (w₁ + w₂ - (e.degree : ℤ)) := by
         rw [← zpow_add₀ hc.ne', ← hp, map_add (f := _)]; push_cast; ring_nf
 
-theorem W_pow (hc : 0 < c) (hc1 : c ≤ 1) {w : ℤ} {f : MvPowerSeries σ K} (hf : W c w f) (n : ℕ) :
+theorem W_pow (hc : 0 < c) {w : ℤ} {f : MvPowerSeries σ K} (hf : W c w f) (n : ℕ) :
     W c (n * w) (f ^ n) := by
   induction n with
-  | zero => simpa using W_one hc hc1
+  | zero => simpa using W_one hc
   | succ n ih => rw [pow_succ]; push_cast; rw [add_mul, one_mul]; exact W_mul hc ih hf
 
 theorem W_E (E : PowerSeries K) (hE : constantCoeff E = 0)
@@ -101,7 +60,7 @@ theorem W_E (E : PowerSeries K) (hE : constantCoeff E = 0)
       exact hb _ h0
   · rw [norm_zero]; positivity
 
-theorem W_prod (hc : 0 < c) (hc1 : c ≤ 1) (a : σ → MvPowerSeries σ K) (ha : ∀ i, W c 1 (a i))
+theorem W_prod (hc : 0 < c) (a : σ → MvPowerSeries σ K) (ha : ∀ i, W c 1 (a i))
     (d : σ →₀ ℕ) : W c (d.degree : ℤ) (d.prod fun s n => a s ^ n) := by
   classical
   unfold Finsupp.prod
@@ -110,10 +69,10 @@ theorem W_prod (hc : 0 < c) (hc1 : c ≤ 1) (a : σ → MvPowerSeries σ K) (ha 
     push_cast; rfl
   rw [hdeg]
   induction d.support using Finset.induction_on with
-  | empty => simpa using W_one hc hc1
+  | empty => simpa using W_one hc
   | insert s S hs ih =>
     rw [Finset.prod_insert hs, Finset.sum_insert hs]
-    have := W_pow hc hc1 (ha s) (d s)
+    have := W_pow hc (ha s) (d s)
     rw [mul_one] at this
     exact W_mul hc this ih
 
@@ -128,7 +87,7 @@ theorem comp_exp_coeff_weight_of : CompExpWeight.{u} := by
   rw [finsum_eq_sum _ hfin]
   refine norm_sum_le_of_forall_le_of_nonneg (by positivity) fun d _ => ?_
   rw [smul_eq_mul, norm_mul]
-  have h1 := W_prod hc hc1 _ (W_E E hE hb hc) d α
+  have h1 := W_prod hc _ (W_E E hE hb hc) d α
   calc ‖MvPowerSeries.coeff d G‖ * ‖MvPowerSeries.coeff α
           (d.prod fun s e => (E.subst (MvPowerSeries.X s : MvPowerSeries σ K)) ^ e)‖
       ≤ 1 * c ^ ((d.degree : ℤ) - (α.degree : ℤ)) :=

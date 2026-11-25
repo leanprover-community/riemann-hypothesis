@@ -1550,14 +1550,8 @@ namespace PositivityTheory.AdelicQuotientData
 
 namespace tableDegreeOneUnipotent
 
-theorem mul_le_sq_add (a b : ℝ≥0∞) : a * b ≤ a ^ 2 + b ^ 2 := by
-  rcases le_total a b with h | h
-  · calc a * b ≤ b * b := by gcongr
-      _ = b ^ 2 := (sq b).symm
-      _ ≤ _ := le_add_self
-  · calc a * b ≤ a * a := by gcongr
-      _ = a ^ 2 := (sq a).symm
-      _ ≤ _ := le_self_add
+theorem mul_le_sq_add (a b : ℝ≥0∞) : a * b ≤ a ^ 2 + b ^ 2 :=
+  _root_.GroundTheory.Automorphic.ennreal_mul_le_sq_add_sq a b
 
 theorem integ {X : Type} [MeasurableSpace X] {ν : Measure X} {f φ : X → ℂ}
     (hf : AEStronglyMeasurable f ν) (hφ : AEStronglyMeasurable φ ν)

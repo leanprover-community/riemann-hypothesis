@@ -45,8 +45,6 @@ open Classical
 
 namespace GlobalTheory.KummerTwistLemmas
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem twist_places_under_split_coprime_conductor : ∀ {D : Formalism.BasicNotions.D7} {T : Type} {L : Formalism.IndefR.Links.LevCh D T} {sc : GlobalTheory.ChiGrid.Consts} (G : GlobalTheory.ChiGrid.GridData L sc) {μ₀ : T}, L.Is μ₀ → ∀ (t : T), GlobalTheory.CMVal.IsFinSetSplitPlacesCoprimeConductor (GlobalTheory.FunObj.SqNum.condF G.pl) ((GlobalTheory.SqTop.twPl G t).image fun P => P.under (𝓞 D.host.F)) := by
   intro D T L sc G μ₀ hL t q hq
   obtain ⟨P, hP, rfl⟩ := Finset.mem_image.1 hq

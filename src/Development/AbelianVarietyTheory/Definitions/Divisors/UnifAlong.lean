@@ -81,40 +81,6 @@ def PolOnAb {S : Scheme.{0}} (G : Over S) [GrpObj G] (L : LB G.left) : Prop :=
 def NzFib {S : Scheme.{0}} {G : Over S} {L : LB G.left} (σ : L.Sec) : Prop :=
   ∀ s : S, ∃ z : G.left, G.hom z = s ∧ z ∈ nonzeroLocus σ
 
-def KeyTrait (κ : GlobalTheory.KeyCl.Rule) : Prop :=
-  ∀ (V : Type) [CommRing V] [IsDomain V] [IsDiscreteValuationRing V] [CharZero V],
-    IsAdicComplete (IsLocalRing.maximalIdeal V) V → Finite (IsLocalRing.ResidueField V) →
-    ∀ (G : Over (Sp V)) [GrpObj G] [IsCommMonObj G] (L : RigLB G) (σ : L.L.Sec) (x : KeyIn (FractionRing V))
-      (y : Fin x.P.g → (epsR V ⟶ G)), IsSemiAbelian G → HasUnif G L.L → IsLieBasis y → NzFib σ →
-      KeyOn (algebraMap V (FractionRing V)) x G L σ y →
-      ∃ u : Vˣ, (κ (FractionRing V) x : FractionRing V) = algebraMap V (FractionRing V) u
-
-def KeyTraitU (κ : GlobalTheory.KeyCl.Rule) : Prop :=
-  ∀ (V : Type) [CommRing V] [IsDomain V] [IsDiscreteValuationRing V] [CharZero V],
-    IsAdicComplete (IsLocalRing.maximalIdeal V) V → Finite (IsLocalRing.ResidueField V) →
-    ∀ (D : DegData V (IsLocalRing.maximalIdeal V)) (x : KeyIn (FractionRing V)) (G : Over (Sp V)) [GrpObj G] [IsCommMonObj G],
-    IsSemiAbelian G → ∀ (U : Unif (IsLocalRing.maximalIdeal V) D x.P G) (w₀ : GlobalTheory.UT.W0 U.toUnifPre),
-    GlobalTheory.UT.NormW U.toUnifPre w₀ x.rig → ∀ y : Fin x.P.g → (epsR V ⟶ G), IsLieBasis y →
-    (∀ i, GlobalTheory.IsVecOver (algebraMap V (FractionRing V)) (U.gen.inv.left ≫ pullback.fst G.hom (jK V)) (y i) (x.v i)) →
-    ∀ σ : U.LG.L.Sec, NzFib σ →
-      GlobalTheory.Cartier.SecMaps w₀ (GlobalTheory.Cartier.secPull x.th U.gen.hom.left) (GlobalTheory.Cartier.secPull σ (pullback.fst G.hom (jK V))) →
-      ∃ u : Vˣ, (κ (FractionRing V) x : FractionRing V) = algebraMap V (FractionRing V) u
-
-def KeyLoc (κ : GlobalTheory.KeyCl.Rule) : Prop :=
-  ∀ (A : Type) [CommRing A] [IsDomain A] [IsIntegrallyClosed A] [CharZero A] [Algebra.FiniteType ℤ A]
-    (G : Over (Sp A)) [GrpObj G] [IsCommMonObj G] (L : RigLB G) (σ : L.L.Sec) (x : KeyIn (FractionRing A))
-    (y : Fin x.P.g → (epsR A ⟶ G)), IsSemiAbelian G → SmoothOfRelativeDimension x.P.g G.hom → IsOpen (abLocus G) →
-    L.IsSymmetric → PolOnAb G L.L → UnifAlong G L.L → IsLieBasis y → NzFib σ →
-    KeyOn (algebraMap A (FractionRing A)) x G L σ y →
-    ∃ u : Aˣ, (κ (FractionRing A) x : FractionRing A) = algebraMap A (FractionRing A) u
-
-def KeyGlob : Prop :=
-  ∀ (S : Scheme.{0}) (s : S ⟶ Sp ℤ) (G : Over S) [GrpObj G] [IsCommMonObj G] (g : ℕ) (L : RigLB G) (δ : LB S)
-    (σ : (CechPic.tens L.L (δ.pull G.hom)).Sec), 1 ≤ g → IsIntegral S → Geo.Tor.IsNormalScheme S → LocallyOfFiniteType s →
-    CharZero Γ(S, ⊤) → IsSemiAbelian G → SmoothOfRelativeDimension g G.hom → (abLocus G).Nonempty → IsOpen (abLocus G) →
-    L.IsSymmetric → δ.IsLB → PolOnAb G L.L → UnifAlong G L.L → NzFib σ →
-    LBIso (lbPow δ 8) (lbPow (GlobalTheory.SiegelTor.hodge G g) 4)
-
 end GlobalTheory.KeyEven
 
 end

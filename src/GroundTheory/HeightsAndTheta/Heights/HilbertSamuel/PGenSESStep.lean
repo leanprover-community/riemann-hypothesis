@@ -4,6 +4,7 @@ public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsGenSE
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.KleimanNefness.AlgCechSt
 import Mathlib.Order.CompletePartialOrder
 import Mathlib.Tactic.TypeStar
+import GroundTheory.HeightsAndTheta.Heights.HeightComparison.IsMultiHomogIdealIff
 
 @[expose] public section
 
@@ -23,25 +24,12 @@ variable {S : Type} [CommRing S] {K : Type} [Fintype K] [LinearOrder K] {ι : K 
   [∀ k, Fintype (ι k)] [∀ k, LinearOrder (ι k)]
 
 theorem isMultiHomog_mul {p q : MRingOver S ι} {a b : K → ℕ} (hp : IsMultiHomog p a)
-    (hq : IsMultiHomog q b) : IsMultiHomog (p * q) (a + b) := by
-  classical
-  intro m hm k
-  obtain ⟨m₁, h₁, m₂, h₂, rfl⟩ := Finset.mem_add.mp (MvPolynomial.support_mul p q hm)
-  simp only [Finsupp.add_apply, Finset.sum_add_distrib, Pi.add_apply, hp m₁ h₁ k, hq m₂ h₂ k]
+    (hq : IsMultiHomog q b) : IsMultiHomog (p * q) (a + b) :=
+  GroundTheory.Heights₂.Heights.Bridge.isMultiHomog_mul hp hq
 
 theorem isMultiHomog_X (k : K) (i : ι k) :
-    IsMultiHomog (X ⟨k, i⟩ : MRingOver S ι) (fun l => if l = k then 1 else 0) := by
-  classical
-  intro m hm l
-  rw [Finset.mem_singleton.mp (MvPolynomial.support_monomial_subset hm)]
-  by_cases hl : l = k
-  · subst hl
-    simp [Finsupp.single_apply]
-  · have : ∀ j : ι l, (Finsupp.single (⟨k, i⟩ : Σ k, ι k) 1) ⟨l, j⟩ = 0 := by
-      intro j
-      rw [Finsupp.single_apply, ite_eq_right]
-      exact fun h => hl (congrArg Sigma.fst h).symm
-    simp [this, hl]
+    IsMultiHomog (X ⟨k, i⟩ : MRingOver S ι) (fun l => if l = k then 1 else 0) :=
+  GroundTheory.Heights₂.Heights.Bridge.isMultiHomog_X_ite ⟨k, i⟩
 
 theorem cellMon_homog {I : ∀ k, Finset (ι k)} {u : MRingOver S ι} (hu : u ∈ KH.cellMon S I) :
     ∃ e : K → ℕ, IsMultiHomog u e := by
@@ -146,7 +134,8 @@ theorem mem_of_map_mem {M' : Type*} [AddCommGroup M'] [Module (MRingOver S ι) M
   have hc : g m' - g y ∈ 𝓜 c := sub_mem hm (hg c y hy)
   have h0 : g m' - g y = 0 := Submodule.disjoint_def.mp (h𝓜.1.submodule_iSupIndep c) _ hc hd
   rw [sub_eq_zero] at h0
-  rwa [hinj h0]
+  rw [hinj h0]
+  exact hy
 
 end Loc
 
@@ -183,7 +172,8 @@ theorem proof (hSES : KH.CechSESStatement) (hMap : KH.CechMapDegStatement) : Gen
   obtain ⟨u, hu⟩ := h0
   rw [one_smul, smul_zero, smul_zero] at hu
   have hker : u • m ∈ LinearMap.ker h := by
-    rwa [LinearMap.mem_ker, Submonoid.smul_def, map_smul, ← Submonoid.smul_def]
+    rw [LinearMap.mem_ker, Submonoid.smul_def, map_smul, ← Submonoid.smul_def]
+    exact hu
   rw [← hex] at hker
   obtain ⟨m', hm'⟩ := hker
   obtain ⟨e, hue⟩ := cellMon_homog u.2
@@ -201,7 +191,8 @@ theorem proof (hSES : KH.CechSESStatement) (hMap : KH.CechMapDegStatement) : Gen
       funext k
       simp only [Pi.add_apply, Nat.cast_add]
       ring
-    rwa [edeg]
+    rw [edeg]
+    exact hm'deg
   obtain ⟨t₂, a₂, r', p', z', ht₂T, ht₂, hp', hz', e₂⟩ := hgen' I _ hy''
 
   have hw : ∀ l, KH.cechMap S ι g 0 (z' l) ∈ KH.cechZc ι 𝓜 d 0 := by

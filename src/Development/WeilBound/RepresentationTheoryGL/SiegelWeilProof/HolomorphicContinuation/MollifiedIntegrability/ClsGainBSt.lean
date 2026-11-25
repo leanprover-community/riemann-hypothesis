@@ -52,7 +52,7 @@ namespace PositivityTheory.Rg.Sw.WR.K.GB
 
 open PositivityTheory.Rg.Sw PositivityTheory.Rg.Sw.WR
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 variable {n : ℕ}
 

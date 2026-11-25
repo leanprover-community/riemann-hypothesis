@@ -18,8 +18,6 @@ namespace Formalism.L2.SG.RealObj.InfCut
 
 open Formalism.L2.SG.RealObj
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 def HaarDisintegrationReal : Prop :=
   ∀ (D : D7) (X : Formalism.L2.SG.HidaSetting.HidaSetting D) (u u' : D.what₂.Word) (sc : ℝ), 0 < sc → DisintegrationConstantPositive X u u' sc
 

@@ -243,8 +243,6 @@ section Charts
 
 open Formalism.L2.Forms Formalism.MainNotions.G Formalism.MainNotions.G.CmpJ Formalism.L2.G Formalism.L2.G.Cmp
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} {u : D.what₂.Word}
 
 
@@ -317,8 +315,6 @@ section LevTie
 
 open Formalism.L2.Forms Formalism.L2.Ker Formalism.MainNotions
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} {X : Fields} (s : Seam D X) {i : ℕ} {hi : i ≤ D.R.m} {T : ℕ} {bad : Set (HeightOneSpectrum (𝓞 D.host.F))}
   (lev : StepLevel D.host.F D.host.E (sigD D) (gramN D i hi) T D.R.f bad) {SB : Finset (HeightOneSpectrum (𝓞 X.E))}
   (fb : SB → GL (Fin (D.R.N i)) D.host.E) (dep : SB → ℕ)
@@ -354,8 +350,6 @@ end LevTie
 section Comparison₂
 
 open Formalism.L2.Forms Formalism.L2.Ker Formalism.MainNotions Formalism.L2.DIV Formalism.MainNotions.G
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 def IsAdIso {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
     (ι : AfE F E ≃+* FiniteAdeleRing (𝓞 E) E) : Prop :=

@@ -65,23 +65,8 @@ section Dvr
 variable {V K' : Type} [CommRing V] [IsDomain V] [IsDiscreteValuationRing V] [Field K'] [Algebra V K']
   [IsFractionRing V K']
 
-theorem mem_range_of_vV_nonneg {x : K'} (h : 0 ≤ vV V x) : x ∈ Set.range (algebraMap V K') := by
-  by_cases hx : x = 0
-  · exact ⟨0, by simp [hx]⟩
-  have hv0 : HeightOneSpectrum.valuation K' (IsDiscreteValuationRing.maximalIdeal V) x ≠ 0 :=
-    (Valuation.ne_zero_iff _).mpr hx
-  have hle : HeightOneSpectrum.valuation K' (IsDiscreteValuationRing.maximalIdeal V) x ≤ 1 := by
-    rw [← WithZero.exp_log hv0, ← WithZero.exp_zero, WithZero.exp_le_exp]
-    unfold vV valV at h
-    linarith
-  have key : ∀ w : HeightOneSpectrum V, w.valuation K' x ≤ 1 := by
-    intro w
-    have hw : w = IsDiscreteValuationRing.maximalIdeal V :=
-      HeightOneSpectrum.ext (IsLocalRing.eq_maximalIdeal w.isMaximal)
-    rw [hw]
-    exact hle
-  obtain ⟨y, hy⟩ := HeightOneSpectrum.mem_integers_of_valuation_le_one (R := V) (K := K') x key
-  exact ⟨y, hy⟩
+theorem mem_range_of_vV_nonneg {x : K'} (h : 0 ≤ vV V x) : x ∈ Set.range (algebraMap V K') :=
+  _root_.Formalism.L2.Pj.mem_range_of_vV_nonneg h
 
 end Dvr
 
@@ -125,37 +110,11 @@ private lemma vV_alg_nonneg_lemma {V K' : Type} [CommRing V] [IsDomain V] [IsDis
     rw [← WithZero.exp_log ha, ← WithZero.exp_zero, WithZero.exp_le_exp] at h1
     linarith
 
-theorem intAll_of (hE : IntFrExt Xo c) (hB : FrBaseChg Xo c) (hR : ReFrame Xo c) : IntAll Xo c := by
-  intro la T io e hO hFin y
-  letI := io.toAlgebra
-  obtain ⟨T', i, r, hr, hv, hF', y0, hy0⟩ := hE T io hFin y.x y.x_over
-  letI := (i.comp io).toAlgebra
-  let φ : T.Fr →ₐ[c.F] T'.Fr := { i with commutes' := fun _ => rfl }
-  obtain ⟨z, hz⟩ := hB T.Fr T'.Fr φ y
-  obtain ⟨t, y', hy'⟩ := hR T' (i.comp io) y0 z (hz.1.trans hy0.symm)
-  refine ⟨T', i.comp io, r * e, y', ?_, hF', φ, z, t, ?_, hz, hy'⟩
-  · unfold OverLa at hO ⊢
-    refine ⟨Nat.mul_pos hr hO.1, fun a => ?_⟩
-    rw [RingHom.comp_apply, hv, hO.2 a]
-    push_cast
-    ring
-  · intro a
-    apply mem_range_of_vV_nonneg
-    show 0 ≤ vV T'.V (i (algebraMap T.V T.Fr a))
-    rw [hv]
-    exact mul_nonneg (Nat.cast_nonneg r) (vV_alg_nonneg_lemma a)
+theorem intAll_of (hE : IntFrExt Xo c) (hB : FrBaseChg Xo c) (hR : ReFrame Xo c) : IntAll Xo c :=
+  _root_.Formalism.L2.Pj.intAll_of hE hB hR
 
-theorem algPtLa_of (hN : XoNumPt Xo c) (hL : LocFld) : AlgPtLa Xo c := by
-  intro la
-  obtain ⟨L, _, _, j, x, hx⟩ := hN
-  obtain ⟨T, k, e, hO, hF⟩ := hL c.F L j la
-  refine ⟨T, k.comp j, e, hO, hF, spMap k ≫ x, ?_⟩
-  have hx' : x ≫ Xo.s = spMap (j.comp (IntermediateField.inclusion c.le).toRingHom) := hx
-  show (spMap k ≫ x) ≫ Xo.s = spMap ((k.comp j).comp (IntermediateField.inclusion c.le).toRingHom)
-  rw [Category.assoc, hx']
-  show Spec.map _ ≫ Spec.map _ = Spec.map _
-  rw [← Spec.map_comp]
-  rfl
+theorem algPtLa_of (hN : XoNumPt Xo c) (hL : LocFld) : AlgPtLa Xo c :=
+  _root_.Formalism.L2.Pj.algPtLa_of hN hL
 
 end Proofs
 
@@ -201,41 +160,17 @@ theorem isCombAt_epsPt {S : Type} [CommRing S] {Xo : Moduli Dw l} {x : Sp S ⟶ 
   ⟨fun i => epsPt (hv i) (a i), fun i => epsPt_left (hv i) (a i), rfl⟩
 
 theorem epsPt_zero {S : Type} [CommRing S] {Xo : Moduli Dw l} {x : Sp S ⟶ Xo.X}
-    {v : Sp (DualNumber S) ⟶ Xo.univ.t.G.left} (hv : IsTanAt x v) : epsPt hv 0 = 1 := by
-  have hm : (1 : tEps x ⟶ Xo.univ.t.G) =
-      (Over.homMk (spMap (algebraMap S (DualNumber S))) (by rfl) : tEps x ⟶ Over.mk x) ≫ 1 := by
-    rw [Hom.one_def, Hom.one_def, ← Category.assoc]
-    congr 1
-  have he : epsMul (0 : S) = (algebraMap S (DualNumber S)).comp (TrivSqZeroExt.fstHom S S S).toRingHom := by
-    first
-      | (ext d <;> simp [epsMul])
-  apply Over.OverMorphism.ext
-  rw [hm, Over.comp_left]
-  show (epsPt hv 0).left = spMap (algebraMap S (DualNumber S)) ≫ (1 : Over.mk x ⟶ Xo.univ.t.G).left
-  rw [← hv.2, epsPt_left, ← Category.assoc, spMap_comp', he]
+    {v : Sp (DualNumber S) ⟶ Xo.univ.t.G.left} (hv : IsTanAt x v) : epsPt hv 0 = 1 :=
+  _root_.Formalism.L2.Pj.epsPt_zero hv
 
 theorem epsPt_one_left {S : Type} [CommRing S] {Xo : Moduli Dw l} {x : Sp S ⟶ Xo.X}
-    {v : Sp (DualNumber S) ⟶ Xo.univ.t.G.left} (hv : IsTanAt x v) : (epsPt hv 1).left = v := by
-  rw [epsPt_left]
-  have h1 : epsMul (1 : S) = RingHom.id _ := by
-    ext x <;> simp [epsMul]
-  rw [h1]
-  show Spec.map (CommRingCat.ofHom (RingHom.id _)) ≫ v = v
-  rw [CommRingCat.ofHom_id, Spec.map_id, Category.id_comp]
+    {v : Sp (DualNumber S) ⟶ Xo.univ.t.G.left} (hv : IsTanAt x v) : (epsPt hv 1).left = v :=
+  _root_.Formalism.L2.Pj.epsPt_one_left hv
 
 theorem isCombAt_single {S : Type} [CommRing S] {Xo : Moduli Dw l} {x : Sp S ⟶ Xo.X} {m : ℕ}
     {v : Fin m → (Sp (DualNumber S) ⟶ Xo.univ.t.G.left)} (hv : ∀ j, IsTanAt x (v j)) (j : Fin m) :
-    IsCombAt x v (Pi.single j 1) (v j) := by
-  have h := isCombAt_epsPt hv (Pi.single j 1)
-  suffices e : (List.ofFn fun i => epsPt (hv i) ((Pi.single j 1 : Fin m → S) i)).prod.left = v j by
-    rw [e] at h; exact h
-  rw [List.prod_ofFn, Finset.prod_eq_single j]
-  · simp only [Pi.single_eq_same]
-    exact epsPt_one_left (hv j)
-  · intro i _ hij
-    rw [Pi.single_eq_of_ne hij]
-    exact epsPt_zero (hv i)
-  · intro h; exact absurd (Finset.mem_univ j) h
+    IsCombAt x v (Pi.single j 1) (v j) :=
+  _root_.Formalism.L2.Pj.isCombAt_single hv j
 
 variable (Xo : Moduli Dw l) (c : Coeff l)
 

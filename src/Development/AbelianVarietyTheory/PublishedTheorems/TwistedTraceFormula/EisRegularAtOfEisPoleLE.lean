@@ -52,8 +52,6 @@ open scoped NNReal ComplexConjugate
 open Filter Topology Set Metric MeasureTheory Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.L2.Pj GlobalTheory.AutomorphicL2Unitary GlobalTheory.Doubling GlobalTheory.Cont
 open GlobalTheory.Mem.Th (InfF CptF)
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 namespace GlobalTheory.Eis
 
 variable {D : D7} (V : HSp D)

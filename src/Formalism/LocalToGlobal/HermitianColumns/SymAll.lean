@@ -12,8 +12,6 @@ open scoped TensorProduct
 
 namespace Formalism.L2.Herm
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 def SymmetricLevelZeroData (D : D7) (H : HermColsCh D) (aT : ∀ u, AtT D u (H.vT u) (H.Fv u)) : Type :=
   ∀ u, ColLevelX (H.lev0 u) (fun x => x ∈ D.host.K) (aT u).piU (H.vT u)
     (fun v c z => (D.fm u).fv 0 v c ((aT u).pr 0 v c z))

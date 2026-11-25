@@ -868,7 +868,6 @@ theorem blocks {r p : ℕ} (G B k : Matrix (Fin r) (Fin r) ℂ) (S : Matrix (Fin
     rw [div_eq_mul_inv, inv_inv, mul_comm]
 
 theorem Th_mvB (D : D7) (S T : HSp D) (C : GlobalTheory.Ker.Ctx S T) (B : C.Bas) (hB : C.IsB B) (k : GA D T)
-    (_hk : k ∈ GinfC T)
     (hc : ∀ τ, compAt C.θ τ (Formalism.L2.Theta.mt T k) * C.sB B τ = C.sB B τ * compAt C.θ τ (Formalism.L2.Theta.mt T k))
     (φ : TF S.rank C.g) (hφ : GlobalTheory.SW.IsSB φ) :
     C.Th (C.xB (C.mvB k B)) φ = vacChar C.θ T (C.sB B) S.rank (fun _ => 0) k • C.Th (C.xB B) φ := by
@@ -1166,7 +1165,7 @@ theorem om_real (C : GlobalTheory.Ker.Ctx S T) {χS χT η : (AE D)ˣ →* Circl
       have e1 := om_compact C hW hη (fun τ => ((hJ B hB).2.2.1 τ).1) hk (fun τ => (hc τ).symm) (hrt k)
         (GlobalTheory.Ker.ZakEx.isZak_Th D S T C _ hd φ hφ).1.1 ((GlobalTheory.Ker.fvec_Th_zero D S T C).2 B hB φ hφ).1
       have e2 := hχ k hk B hB φ hφ
-      have e3 := GlobalTheory.FrameEquiv.CompactMove.Th_mvB D S T C B hB k hk hc φ hφ
+      have e3 := GlobalTheory.FrameEquiv.CompactMove.Th_mvB D S T C B hB k hc φ hφ
       rw [← smul_smul, ← e3, e2] at e1
       have e4 := smul_left_injective ℂ (th_ne_zero C
         (GlobalTheory.FrameEquiv.RealChar.xB_mem_dom C ((hJ B hB).2.2.2.2.2 k).1) hφ h0) e1

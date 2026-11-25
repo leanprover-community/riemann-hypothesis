@@ -1102,8 +1102,6 @@ section Terms
 
 open Formalism.MainNotions.S.Lat Formalism.L2.SG.TermOp Formalism.L2.SG.TermDef NumberField
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Gen
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {S : Formalism.BasicNotions.HSpace E} {r : ℕ}
@@ -1382,8 +1380,6 @@ end NO
 section RO
 
 open NumberField Formalism.MainNotions.S.Lat Formalism.L2.SG.TermOp Formalism.L2.SG.HidaSetting
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : Formalism.BasicNotions.D7} (X : Formalism.L2.SG.HidaSetting.HidaSetting D)
 

@@ -53,6 +53,7 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
+import GroundTheory.HeightsAndTheta.Heights.BlockScaling
 
 @[expose] public section
 
@@ -423,23 +424,8 @@ namespace ProjLine
 
 theorem mConeMap_eq_of_isMultiHomog {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
     {Ω : Type} [Field Ω] (y : (Σ k, ι k) → Ω) {f : MRing ι} {d : K → ℕ} (hf : IsMultiHomog f d) :
-    mConeMap y f = MvPolynomial.C (aeval y f) * ∏ k, MvPolynomial.X k ^ d k := by
-  classical
-  conv_lhs => rw [f.as_sum]
-  conv_rhs => rw [f.as_sum]
-
-  rw [map_sum, map_sum, map_sum, Finset.sum_mul]
-  refine Finset.sum_congr rfl fun m hm => ?_
-  have hX : ∏ p : (Σ k, ι k), (MvPolynomial.X p.1 : MvPolynomial K Ω) ^ m p = ∏ k, MvPolynomial.X k ^ d k := by
-    rw [Fintype.prod_sigma]
-    refine Finset.prod_congr rfl fun k _ => ?_
-    show ∏ i, (MvPolynomial.X k : MvPolynomial K Ω) ^ m ⟨k, i⟩ = _
-    rw [Finset.prod_pow_eq_pow_sum, hf m hm k]
-  simp only [mConeMap, aeval_monomial]
-  rw [Finsupp.prod_fintype _ _ (fun i => by simp), Finsupp.prod_fintype _ _ (fun i => by simp)]
-  simp only [mul_pow, Finset.prod_mul_distrib, hX, map_mul, map_prod, map_pow,
-    MvPolynomial.algebraMap_apply]
-  ring
+    mConeMap y f = MvPolynomial.C (aeval y f) * ∏ k, MvPolynomial.X k ^ d k :=
+  BlockScaling.aeval_cone_block y hf
 
 theorem geoNum_zero_nonneg {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] (V : Ideal (MRing ι))
     (a : Fin 0 → K → ℤ) : 0 ≤ geoNum 0 V a := by

@@ -50,7 +50,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Stan
 noncomputable section
 open IsDedekindDomain NumberField
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 

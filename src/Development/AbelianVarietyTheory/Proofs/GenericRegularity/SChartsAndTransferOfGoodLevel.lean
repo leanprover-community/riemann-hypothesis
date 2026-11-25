@@ -141,15 +141,8 @@ theorem nonneg_at_all_points {la : HeightOneSpectrum (𝓞 c.F)}
 
 theorem nonneg_at_trivial {la : HeightOneSpectrum (𝓞 c.F)}
     (S : SCharts Xo c la) (hQ : S.CovQ) {a n} {F : Rul Xo c} (hF : F ∈ sec Xo c a n)
-    (h0 : ∀ v ∈ valSet Xo c (algCls Xo c) la, 0 ≤ v F) : ∀ q ∈ trivSet Xo c, 0 ≤ q F := by
-  intro q hq
-  obtain ⟨j, V, _, _, _, _, φ, hcen, -, ⟨x, hxE, hφx⟩, hChV⟩ := hQ q hq
-  have hx0 : x ≠ 0 := fun h => hφx (by rw [h, map_zero])
-  obtain ⟨ϖ, hϖ⟩ := IsDiscreteValuationRing.exists_irreducible S.O
-  refine nonneg_at S hF h0 j x hxE hx0 V φ 1 (q F) (hChV a n F hF) ?_
-  have hm : maximalIdeal S.O = Ideal.span {ϖ} := (IsDiscreteValuationRing.irreducible_iff_uniformizer ϖ).1 hϖ
-  rw [hm, Ideal.map_span, Set.image_singleton, sup_comm]
-  exact hcen ϖ hϖ
+    (h0 : ∀ v ∈ valSet Xo c (algCls Xo c) la, 0 ≤ v F) : ∀ q ∈ trivSet Xo c, 0 ≤ q F :=
+  _root_.GlobalTheory.Reg.TrivBound.nonneg_triv S hQ hF h0
 
 theorem qpt_mem_trivSet (q : QPt Xo c) : (fun f => ordQ Xo c q f) ∈ trivSet Xo c := by
   refine ⟨q.T, q.ι, q.y, fun a ha => ?_, rfl⟩
@@ -241,12 +234,8 @@ theorem vr_mul (e : ℕ) {x y : V} (hx : x ≠ 0) (hy : y ≠ 0) : vr e (x * y) 
   push_cast
   ring
 
-theorem vr_one (e : ℕ) : vr e (1 : V) = 0 := by
-  have h := GlobalTheory.Reg.TrivBound.vV_unit (V := V) 1
-    (fun h => (maximalIdeal V).ne_top_iff_one.1 (Ideal.IsPrime.ne_top inferInstance) h)
-  unfold vr
-  rw [h]
-  simp
+theorem vr_one (e : ℕ) : vr e (1 : V) = 0 :=
+  _root_.GlobalTheory.Reg.TrivBound.vr_one e
 
 theorem chval_fin_iff (φ : A →+* V) (e : ℕ) (f : FractionRing A) (u : ℝ) :
     ChV φ e f (u : EReal) ↔ ∃ x s : A, φ s ≠ 0 ∧ φ x ≠ 0 ∧
@@ -419,40 +408,13 @@ variable {V : Type} [CommRing V] [IsDomain V] [IsDiscreteValuationRing V]
 variable {A : Type} [CommRing A] [IsDomain A]
 
 theorem ratio_ge {φ : A →+* V} {e : ℕ} {f1 : FractionRing A} {r1 r2 : EReal} {xk : A}
-    (h1 : ChV φ e f1 r1) (h2 : ChV φ e (algebraMap A (FractionRing A) xk * f1) r2) : r1 ≤ r2 := by
-  obtain ⟨x1, s1, hs1, hf1, rfl⟩ := h1
-  have hrel : algebraMap A (FractionRing A) xk * f1 * algebraMap A (FractionRing A) s1 =
-      algebraMap A (FractionRing A) (xk * x1) := by rw [mul_assoc, hf1, map_mul]
-  rw [chval_eq φ e _ r2 h2 (xk * x1) s1 hrel hs1, map_mul, map_mul, nval_mul, nval_eq_vr e hs1]
-  have h0 := GlobalTheory.Reg.TrivBound.nval_nonneg e (φ xk)
-  by_cases hx : φ x1 = 0
-  · have hX := nval_ne_bot (V := V) e (algebraMap V (FractionRing V) (φ xk))
-    rw [hx, map_zero, nval_zero]
-    exact EReal.sub_le_sub (le_of_eq (EReal.add_top_of_ne_bot hX).symm) le_rfl
-  · rw [nval_eq_vr e hx]
-    rcases eq_or_ne (nval V e (algebraMap V (FractionRing V) (φ xk))) ⊤ with ht | ht
-    · rw [ht, EReal.top_add_of_ne_bot (EReal.coe_ne_bot _), EReal.top_sub_coe]; exact le_top
-    · obtain ⟨u, hu⟩ := GlobalTheory.Reg.TrivBound.fin_of_ne_top ht (nval_ne_bot (V := V) e _)
-      rw [hu, ← EReal.coe_add, ← EReal.coe_sub, ← EReal.coe_sub, EReal.coe_le_coe_iff]
-      rw [hu] at h0
-      have := EReal.coe_nonneg.1 h0
-      linarith
+    (h1 : ChV φ e f1 r1) (h2 : ChV φ e (algebraMap A (FractionRing A) xk * f1) r2) : r1 ≤ r2 :=
+  _root_.GlobalTheory.Reg.TrivBound.ratio_ge h1 h2
 
 theorem w_fin {φ : A →+* V} {e : ℕ} {fw : FractionRing A} {W : EReal} (hW : ChV φ e fw W) (P yw : A)
     (hrel : fw⁻¹ * algebraMap A (FractionRing A) P = algebraMap A (FractionRing A) yw) (hfw0 : fw ≠ 0)
-    (hP : φ P ≠ 0) : ∃ w : ℝ, W = (w : EReal) := by
-  obtain ⟨xw, sw, hsw, hfws, hWv⟩ := hW
-  have hrel' : fw * algebraMap A (FractionRing A) yw = algebraMap A (FractionRing A) P := by
-    rw [← hrel]; field_simp
-  have hxy : xw * yw = sw * P := by
-    apply IsFractionRing.injective A (FractionRing A)
-    rw [map_mul, map_mul, ← hfws, ← hrel']; ring
-  have hxw : φ xw ≠ 0 := by
-    intro h0
-    have := congrArg φ hxy
-    rw [map_mul, map_mul, h0, zero_mul] at this
-    exact mul_ne_zero hsw hP this.symm
-  exact ⟨vr e (φ xw) - vr e (φ sw), by rw [hWv, nval_eq_vr e hxw, nval_eq_vr e hsw, EReal.coe_sub]⟩
+    (hP : φ P ≠ 0) : ∃ w : ℝ, W = (w : EReal) :=
+  _root_.GlobalTheory.Reg.TrivBound.w_fin hW P yw hrel hfw0 hP
 
 theorem limit_lam (w t nu c' : ℝ) (eO : ℕ) (heO : 0 < eO) (ht : 0 ≤ t) (hc' : 0 ≤ c')
     (h : ∀ N : ℕ, 0 < N → (N : ℝ) * w ≤ (⌈(eO : ℝ) * N * nu⌉ : ℝ) * (1 / eO) + (⌈(N : ℝ) * c'⌉₊ : ℝ) * t) :
@@ -460,12 +422,8 @@ theorem limit_lam (w t nu c' : ℝ) (eO : ℕ) (heO : 0 < eO) (ht : 0 ≤ t) (hc
   apply GlobalTheory.Reg.TrivBound.limit_lam <;> assumption
 
 theorem limit_triv (w t c' : ℝ) (ht : 0 ≤ t) (hc' : 0 ≤ c')
-    (h : ∀ N : ℕ, 0 < N → (N : ℝ) * w ≤ (⌈(N : ℝ) * c'⌉₊ : ℝ) * t) : w ≤ c' * t := by
-  have := limit_lam w t 0 c' 1 one_pos ht hc' (fun N hN => by
-    have := h N hN
-    simp only [mul_zero, Int.ceil_zero, Int.cast_zero, zero_mul, zero_add]
-    exact this)
-  linarith
+    (h : ∀ N : ℕ, 0 < N → (N : ℝ) * w ≤ (⌈(N : ℝ) * c'⌉₊ : ℝ) * t) : w ≤ c' * t :=
+  _root_.GlobalTheory.Reg.TrivBound.limit_triv w t c' ht hc' h
 
 end Small
 
@@ -526,15 +484,8 @@ theorem integral_place {la : HeightOneSpectrum (𝓞 c.F)}
 
 theorem integral_trivial {la : HeightOneSpectrum (𝓞 c.F)}
     (S : SCharts Xo c la) (hQ : S.CovQ) {a n} {F : Rul Xo c} (hF : F ∈ sec Xo c a n)
-    (h0 : ∀ v ∈ valSet Xo c (algCls Xo c) la, 0 ≤ v F) : ∀ q ∈ trivSet Xo c, 0 ≤ q F := by
-  intro q hq
-  obtain ⟨j, V, _, _, _, _, φ, hcen, -, ⟨x, hxE, hφx⟩, hChV⟩ := hQ q hq
-  have hx0 : x ≠ 0 := fun h => hφx (by rw [h, map_zero])
-  obtain ⟨ϖ, hϖ⟩ := IsDiscreteValuationRing.exists_irreducible S.O
-  refine nonneg_at S hF h0 j x hxE hx0 V φ 1 (q F) (hChV a n F hF) ?_
-  have hm : maximalIdeal S.O = Ideal.span {ϖ} := (IsDiscreteValuationRing.irreducible_iff_uniformizer ϖ).1 hϖ
-  rw [hm, Ideal.map_span, Set.image_singleton, sup_comm]
-  exact hcen ϖ hϖ
+    (h0 : ∀ v ∈ valSet Xo c (algCls Xo c) la, 0 ≤ v F) : ∀ q ∈ trivSet Xo c, 0 ≤ q F :=
+  _root_.GlobalTheory.Reg.TrivBound.nonneg_triv S hQ hF h0
 
 theorem vr_of_over {V : Type} [CommRing V] [IsDomain V] [IsDiscreteValuationRing V] (eO e : ℕ) (heO : 0 < eO)
     (he : 0 < e) (y : V) (hy : vV (K' := FractionRing V) V (algebraMap V (FractionRing V) y) * (eO : ℤ) = e) :

@@ -61,17 +61,6 @@ def IsLower {E ι : Type} [Ring E] (wt : ι → ℕ) (P : ι → E) (b : E) : Pr
 def IsLowerUni {E ι : Type} [Ring E] (wt : ι → ℕ) (P : ι → E) (b : E) : Prop :=
   IsLower wt P b ∧ ∀ i, P i * b * P i = P i
 
-section Concrete
-
-variable {L V : Type} [NontriviallyNormedField L] [AddCommGroup V] [Module L V]
-
-def hLin {s : L →+* L} {h : V → V → L} (hh : IsHerm s h) (x : V) : V →ₗ[L] L where
-  toFun := h x
-  map_add' := hh.1 x
-  map_smul' a y := by simpa using hh.2.1 a x y
-
-end Concrete
-
 end GlobalTheory.CompanionTheory.Iwahori
 
 end

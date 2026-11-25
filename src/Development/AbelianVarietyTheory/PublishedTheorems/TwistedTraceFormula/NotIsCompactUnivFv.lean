@@ -282,8 +282,6 @@ theorem not_isCompact_split (σ : E →ₐ[F] E) {M : ℕ} {J : Matrix (Fin M) (
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.StandardLattice Formalism.L2.Theta
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem dense_split (H : StrongApproxSU) (D : D7) (V : HSp D) (hV : 2 ≤ V.rank) (e : AE D) (he : IsSplitIdem D e)
     (g : GA D V) (hg : (Formalism.L2.Theta.mt V g).det = 1) :
     g ∈ closure {x : GA D V | ∃ γ ∈ GQ V, (Formalism.L2.Theta.mt V γ).det = 1 ∧

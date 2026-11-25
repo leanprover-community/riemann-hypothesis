@@ -430,9 +430,8 @@ theorem exists_etaleChart_on_open_of_hasStrictNormalCrossingsWith (q : W ⟶ Spe
       (eq_some_complOrderEmb_of_bind_complInv_eq_some m S (a i') j hjb)
 
 theorem exists_etaleChart_coord_mem_primeIdealOf_on_clopen (q : W ⟶ Spec (CommRingCat.of k)) [Smooth q]
-    (E : List W.IdealSheafData) (_hE : InStrictNormalCrossingPosition q E) (Z : W.IdealSheafData)
+    (E : List W.IdealSheafData) (Z : W.IdealSheafData)
     (hZ : HasStrictNormalCrossingsWith q Z E) (T : Z.subscheme.Opens)
-    (_hTclosed : IsClosed (T : Set ↥Z.subscheme))
     (hcomp : ∀ D ∈ E, ∀ C ∈ irreducibleComponents ↥T.toScheme,
       ¬ ((T.ι ≫ Z.subschemeι).base '' C ⊆ (D.support : Set ↥W)))
     (y : ↥T.toScheme) :

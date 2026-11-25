@@ -51,8 +51,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.TwistedLevelValues GlobalTheory.Ade
 
 namespace GlobalTheory.LowRow
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section
 
 variable {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T : Type} {A : FamIn D.what₂.LL G Pl0 T D.R.m}

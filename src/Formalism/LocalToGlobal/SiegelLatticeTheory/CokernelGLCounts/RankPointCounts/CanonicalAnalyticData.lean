@@ -16,8 +16,6 @@ open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Fo
 
 namespace Formalism.L2.SG.NGAnalytic.MassDataLemmas
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Inst
 
 variable {D : D7} (X : HidaSetting D) (hb : Formalism.L2.SG.AdBridge.AdBridgeIso X.B.I) (Y : Full X) (u u' : D.what₂.Word)

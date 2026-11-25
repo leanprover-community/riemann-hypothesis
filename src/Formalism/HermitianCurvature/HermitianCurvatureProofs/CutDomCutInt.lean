@@ -51,7 +51,7 @@ open Formalism.FourierDecayAlt Formalism.QuantumDeterminants Filter Topology Mea
 
 noncomputable section
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 section general
 

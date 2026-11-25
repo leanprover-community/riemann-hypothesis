@@ -192,7 +192,8 @@ theorem dmonOf_congr_dir {R : Type} [CommRing R] {d : ℕ} (F : Fin d → PS R 2
   congr 1
   funext l g
   by_cases hl : mo l = 0
-  · rw [hl]; rfl
+  · -- Not `rfl`: the kernel would first try to identify `Dof F (u l)` with `Dof F (u' l)`.
+    rw [hl, Function.iterate_zero, Function.iterate_zero]
   · rw [hu l hl]
 
 theorem nabVal_congr_dir {R : Type} [CommRing R] {d : ℕ} {O : Type} [CommRing O] [StarRing O]

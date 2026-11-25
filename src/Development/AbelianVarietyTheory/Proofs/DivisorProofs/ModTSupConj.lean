@@ -54,8 +54,6 @@ noncomputable section
 
 namespace GlobalTheory.SqTop
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem modT_sup_conj : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {μ₀ : T}, L.Is μ₀ → ∀ (G : GridData L sc) (t : T),
     modT G t ⊔ D.host.conj • modT G t = ⊤ := by
   intro D T L sc μ₀ hL G t

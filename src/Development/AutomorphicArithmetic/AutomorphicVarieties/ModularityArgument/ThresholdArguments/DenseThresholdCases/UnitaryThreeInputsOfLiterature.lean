@@ -647,8 +647,7 @@ private theorem ine_finite [Finite (K →ₐ[F] Ω)] {l : ℕ} [Fact l.Prime] {n
     (r '' (Ine (F := F) A : Set (G F Ω))).Finite := by
   classical
   let c : (K →ₐ[F] Ω) → GL (Fin n) (Qbar l) := fun φ =>
-    @dite _ (∃ g ∈ Ine (F := F) A, resK K g = φ) (Classical.propDecidable _)
-      (fun hφ => r (Classical.choose hφ)) (fun _ => 1)
+    if hφ : ∃ g ∈ Ine (F := F) A, resK K g = φ then r (Classical.choose hφ) else 1
   refine ((Set.finite_univ.prod h).image (fun p : (K →ₐ[F] Ω) × GL (Fin n) (Qbar l) => c p.1 * p.2)).subset ?_
   rintro _ ⟨σ, hσ, rfl⟩
   have hex : ∃ g ∈ Ine (F := F) A, resK K g = resK K σ := ⟨σ, hσ, rfl⟩
@@ -703,7 +702,6 @@ theorem UpperTheory.GalN.V.L.wup :
       unfold normV at hnorm
       haveI := w.isPrime
       obtain ⟨hs, _⟩ := Nat.card_eq_one_iff_unique.1 hnorm
-      haveI : Nontrivial (𝓞 K ⧸ w.asIdeal) := Ideal.Quotient.nontrivial_iff.mpr w.isPrime.ne_top
       exact not_subsingleton _ hs
     · exact h0
   have e : normV w ^ (j * m) = (normV v ^ j) ^ (m * f) := by

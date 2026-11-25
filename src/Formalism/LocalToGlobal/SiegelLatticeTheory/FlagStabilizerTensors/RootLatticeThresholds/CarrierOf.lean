@@ -10,7 +10,7 @@ open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S
 
 namespace Formalism.L2.SG.Pf.Carrier
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar instCM
+attribute [local instance] instCM
 
 structure CarrierIn {D : D7} (X : Formalism.L2.SG.HidaSetting.HidaSetting D) (u u' : D.what₂.Word) : Type 1 where
   Wp : InfinitePlace D.host.E → Type

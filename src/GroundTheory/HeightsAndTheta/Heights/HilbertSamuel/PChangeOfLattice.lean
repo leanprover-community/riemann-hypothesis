@@ -51,6 +51,7 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
+import Mathlib.RingTheory.Localization.Integer
 
 @[expose] public section
 
@@ -112,16 +113,13 @@ theorem matAct_mem_span {A : Matrix J J ℚ} (hA : ∀ i j, ∃ k : ℤ, A i j =
   exact Submodule.smul_mem _ k (Submodule.subset_span ⟨j, rfl⟩)
 
 theorem exists_clear_den (A : Matrix J J ℚ) : ∃ c : ℕ, c ≠ 0 ∧ ∀ i j, ∃ k : ℤ, (c : ℚ) * A i j = k := by
-  classical
-  refine ⟨∏ i, ∏ j, (A i j).den,
-    Finset.prod_ne_zero_iff.2 fun i _ => Finset.prod_ne_zero_iff.2 fun j _ => (A i j).den_nz, fun i j => ?_⟩
-  obtain ⟨t, ht⟩ : (A i j).den ∣ ∏ i, ∏ j, (A i j).den :=
-    (Finset.dvd_prod_of_mem (fun j => (A i j).den) (Finset.mem_univ j)).trans
-      (Finset.dvd_prod_of_mem (fun i => ∏ j, (A i j).den) (Finset.mem_univ i))
-  refine ⟨t * (A i j).num, ?_⟩
-  rw [ht]
-  push_cast
-  rw [mul_comm ((A i j).den : ℚ) t, mul_assoc, Rat.den_mul_eq_num]
+  obtain ⟨d, hd⟩ := IsLocalization.exist_integer_multiples_of_finite (nonZeroDivisors ℤ) (fun p : J × J => A p.1 p.2)
+  refine ⟨d.1.natAbs, Int.natAbs_ne_zero.mpr (nonZeroDivisors.ne_zero d.2), fun i j => ?_⟩
+  obtain ⟨k, hk⟩ := hd (i, j)
+  have hk' : (d.1 : ℚ) * A i j = k := by simpa [zsmul_eq_mul] using hk.symm
+  rcases Int.natAbs_eq d.1 with h | h
+  · exact ⟨k, by rw [← Int.cast_natCast, ← h, hk']⟩
+  · exact ⟨-k, by rw [← Int.cast_natCast, neg_eq_iff_eq_neg.mp h.symm, Int.cast_neg, neg_mul, hk', Int.cast_neg]⟩
 
 theorem isInvMat_of_mul [DecidableEq J] {A A' : Matrix J J ℚ} (h1 : A * A' = 1) (h2 : A' * A = 1) : IsInvMat A :=
   ⟨A', fun v => by simp [Matrix.mulVec_mulVec, h1, h2]⟩

@@ -295,7 +295,7 @@ end meas
 section ext
 open scoped Manifold
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 theorem ext_test {φ : Mat k r → ℂ} (hφ : IsTestG φ) :
     ∃ Φ : Mat k r → ℂ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Φ ∧ HasCompactSupport Φ ∧

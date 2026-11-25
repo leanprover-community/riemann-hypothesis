@@ -11,6 +11,7 @@ import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterDivSupp
+import GroundTheory.HeightsAndTheta.Heights.BlockScaling
 
 @[expose] public section
 
@@ -40,24 +41,8 @@ theorem isMultiHomog_comp (e : K → ℕ) (f : MRing ι) : IsMultiHomog (comp e 
 
 theorem aeval_mul_of_isMultiHomog {S : Type*} [CommRing S] [Algebra ℤ S] (r : (Σ k, ι k) → S) (t : K → S) {g : MRing ι}
     {e : K → ℕ} (hg : IsMultiHomog g e) :
-    aeval (fun p => r p * t p.1) g = aeval r g * ∏ k, t k ^ e k := by
-  classical
-  conv_lhs => rw [g.as_sum]
-  conv_rhs => rw [g.as_sum]
-
-  rw [map_sum, map_sum, Finset.sum_mul]
-  refine Finset.sum_congr rfl fun m hm => ?_
-  have hdeg := hg m hm
-  simp only [aeval_monomial]
-  rw [Finsupp.prod_fintype _ _ (fun _ => pow_zero _), Finsupp.prod_fintype _ _ (fun _ => pow_zero _)]
-  simp only [mul_pow, Finset.prod_mul_distrib]
-  have hX : (∏ p : Σ k, ι k, t p.1 ^ m p) = ∏ k, t k ^ e k := by
-    rw [Fintype.prod_sigma]
-    refine Finset.prod_congr rfl fun k _ => ?_
-    show ∏ i, t k ^ m ⟨k, i⟩ = _
-    rw [Finset.prod_pow_eq_pow_sum, hdeg k]
-  rw [hX]
-  ring
+    aeval (fun p => r p * t p.1) g = aeval r g * ∏ k, t k ^ e k :=
+  BlockScaling.eval₂_mul_block_right (algebraMap ℤ S) r t hg
 
 theorem aeval_C_mul_X_of_isMultiHomog {S : Type*} [CommRing S] [Algebra ℤ S] [Algebra ℤ (MvPolynomial K S)] (r : (Σ k, ι k) → S) {g : MRing ι}
     {e : K → ℕ} (hg : IsMultiHomog g e) :

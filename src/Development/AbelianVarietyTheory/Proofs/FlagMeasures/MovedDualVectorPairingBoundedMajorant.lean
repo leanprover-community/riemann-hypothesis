@@ -369,10 +369,7 @@ lemma pluck_flag {k r n : ℕ} (hn : n ≤ r) (z : Fin (2 * r + k + 1) → ℂ) 
       · intro h; have := congrArg Fin.val h; simp at this; omega
       · rw [Fin.lt_def]; simp; omega
   have hp := GlobalTheory.PlueckerBound.norm_det_inner_le_of_det_eq_one _ n (fun i => WithLp.toLp 2 (x⁻¹ *ᵥ bvec (eI k r (Fin.castLE hn i))))
-    (fun a => WithLp.toLp 2 (Hpk k r *ᵥ y a)) _ hdet (by
-      intro a a' h
-      rw [hsum, hsum, inner_toLp]
-      exact h2 _ _ fun h' => h (Fin.castLE_injective hn h'))
+    (fun a => WithLp.toLp 2 (Hpk k r *ᵥ y a)) _ hdet
   simp only [inner_H, hsum, norm_H] at hp
   simp only [← _root_.GlobalTheory.Amp.GramFlag.eucl_eq] at hp
   refine hp.trans (mul_le_mul ?_ ?_ ?_ ?_)

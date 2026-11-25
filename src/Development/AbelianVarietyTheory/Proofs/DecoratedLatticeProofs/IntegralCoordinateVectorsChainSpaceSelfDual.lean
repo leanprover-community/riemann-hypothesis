@@ -50,8 +50,6 @@ open scoped TensorProduct Pointwise
 
 namespace GlobalTheory.AdForm
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem intVec_isSelfDualC : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok → ∀ (l : I.Laws) (Z : TC.Later B (I.cols l)) (j : ℕ), j ≤ B.R.m →
     ∀ L : Lat ((I.rec7 l Z).sp.X j), (∀ z, z ∈ L ↔ z ∈ intVec (I.rec7 l Z) _) → IsSelfDualC ((I.rec7 l Z).sp.X j) L := by
   intro B X I hI l Z j hj L hL

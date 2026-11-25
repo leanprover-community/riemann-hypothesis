@@ -50,8 +50,6 @@ open scoped Matrix TensorProduct
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR.Datum
 open GlobalTheory.StdUnn
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 namespace PositivityTheory.Rg.Sw.Glob.EmbP
 
 open Formalism.IndefR.Eqv (glueA splitInv psiT psiT_glueA finPart_glueA mat_ext psiT_sigR finPart_sigR psiT_inclR

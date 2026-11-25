@@ -175,8 +175,6 @@ def IsSSClass {σ : E →ₐ[F] E} {n : ℕ} {J : Matrix (Fin n) (Fin n) E} (�
 
 end General
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} {V : HSp D} (Φ : WittFrame V) (K : Subgroup (GA D V))
 
 abbrev GF (V : HSp D) : Type := GRat D.sp.cm.sig V.gram

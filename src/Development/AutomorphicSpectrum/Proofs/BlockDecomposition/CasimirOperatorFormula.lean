@@ -56,7 +56,7 @@ open PositivityTheory.RgTw (Mat G)
 open PositivityTheory.RgBcC
 open PositivityTheory.RgBcC.Fc
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 variable {n : ℕ} {V : Type} [NormedAddCommGroup V] [NormedSpace ℂ V]
 

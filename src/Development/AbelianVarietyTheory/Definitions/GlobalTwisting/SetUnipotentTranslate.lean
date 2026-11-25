@@ -515,8 +515,7 @@ variable {D : D7} (N : ∀ u, Submodule (𝓞 D.what₂.LL) (D.div.Nu u).V) (h :
 
 @[reducible] def xdTr (x : ThData D) : ThData (setDiv D N h) := { x with }
 
-open DivX (md) in
-@[reducible] def divTr (X : DivX D) : DivX (setDiv D N h) := { X with md := fun S κ p _ la z => { md X S κ p la z with } }
+@[reducible] def divTr (X : DivX D) : DivX (setDiv D N h) := { X with }
 
 @[reducible] def sideTr {EE : Type} [NormedAddCommGroup EE] [InnerProductSpace ℂ EE] [FiniteDimensional ℂ EE] (S : RowSide D EE) :
     RowSide (setDiv D N h) EE := { S with }

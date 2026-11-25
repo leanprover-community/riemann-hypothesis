@@ -751,8 +751,6 @@ open scoped TensorProduct ENNReal
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.SquareComm
 open scoped Pointwise
-open Formalism.IndefR.Datum
-open GlobalTheory.Grid
 
 noncomputable section
 
@@ -1072,7 +1070,7 @@ theorem integrableOn_thetaKO : GlobalTheory.Published.SiegelSetUnitary → ∀ (
   have hν1 := hν.1
   obtain ⟨r, Xf, Yf, hW⟩ := GlobalTheory.SiegelSet.exists_isWittFrame (GlobalTheory.AdelicU.isCMExt_host D) (isHermND_gram M)
   have hr : r ≤ p := _root_.GlobalTheory.WittSig.wittIndex_le_neg M hτ hW
-  obtain ⟨K, Ω, c, hK, hΩ, -, hc, -, hcl, hcov, ⟨C₀, hC₀, hconj⟩, hmeas, -, -⟩ :=
+  obtain ⟨K, Ω, c, hK, hΩ, -, hc, -, -, hcov, ⟨C₀, hC₀, hconj⟩, hmeas, -, -⟩ :=
     hRT D.host.F D.host.E D.sp.cm.sig (GlobalTheory.AdelicU.isCMExt_host D) M.rank M.gram (isHermND_gram M) r Xf Yf hW
   obtain ⟨-, C₁, hC₁⟩ := hmeas ν hν1
   obtain ⟨B, hB⟩ := theta_le_height ψ θ hθ ε M X χ χ' ω hω Φ hΦ τ₀ hvan r Xf Yf hW Ω C₀ K c hC₀ hK hc hconj h
@@ -1086,7 +1084,6 @@ theorem integrableOn_thetaKO : GlobalTheory.Published.SiegelSetUnitary → ∀ (
     rw [e1, map_mul, Module.End.mul_apply]
     exact hω'.om_aut _ (ofSgn_symm_mem_GQ ε hγ) 1 (one_mem _) _ (hω'.om_pres _ _ hΦ)
   set S := GlobalTheory.SiegelSet.siegelSet D.sp.cm.sig M.gram Xf Yf Ω c K with hSdef
-  have hSm : MeasurableSet S := hcl.measurableSet
   have hScov : ∀ g, ∃ γ ∈ GQ M, γ * g ∈ S := fun g => by
     obtain ⟨γ, hγ, s, hs, e⟩ := hcov g
     refine ⟨γ⁻¹, inv_mem hγ, ?_⟩
@@ -1098,7 +1095,7 @@ theorem integrableOn_thetaKO : GlobalTheory.Published.SiegelSetUnitary → ∀ (
       C₁ * (ENNReal.ofReal B * ∫⁻ t in GlobalTheory.SiegelSet.cone r c,
         ENNReal.ofReal ((GlobalTheory.SiegelSet.modulus D.host.F M.rank t * ∏ i, t i)⁻¹)) := by
     calc ∫⁻ g in 𝓕, ‖thetaKO ω g h Φ‖ₑ ∂ν ≤ ∫⁻ g in S, ‖thetaKO ω g h Φ‖ₑ ∂ν :=
-          _root_.GlobalTheory.lintegral_fundamentalDomain_le_of_meets_orbits (GQ M) ν hν.2 hSm hScov hcont.enorm.measurable
+          _root_.GlobalTheory.lintegral_fundamentalDomain_le_of_meets_orbits (GQ M) ν hν.2 hScov
             (fun γ hγ g => by rw [hinv γ hγ g])
       _ ≤ C₁ * ∫⁻ t in GlobalTheory.SiegelSet.cone r c, ENNReal.ofReal B *
             ENNReal.ofReal ((GlobalTheory.SiegelSet.modulus D.host.F M.rank t * ∏ i, t i)⁻¹) :=

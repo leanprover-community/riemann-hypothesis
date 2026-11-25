@@ -141,8 +141,8 @@ theorem mem_stepCols_stepOf (N j : ℕ) (c : Fin N) :
     all_goals (try simp at hx)
     all_goals omega
 
-theorem minorIJ_stepCols_of_isLowerUni (N j : ℕ) (X : Matrix (Fin N) (Fin N) ℂ) (a' b' : Fin N) (_hj : j ≤ N)
-    (_hd : IsBlockDiag j X) (hX : IsLowerUni X) (hlt : b' < a') (_hs : (a' : ℕ) < N - j ↔ (b' : ℕ) < N - j) :
+theorem minorIJ_stepCols_of_isLowerUni (N j : ℕ) (X : Matrix (Fin N) (Fin N) ℂ) (a' b' : Fin N)
+    (hX : IsLowerUni X) (hlt : b' < a') :
     minorIJ X (stepCols N j (stepOf N j b')) (stepCols N j (stepOf N j b')) = 1 ∧
       minorIJ X (insert a' ((stepCols N j (stepOf N j b')).erase b')) (stepCols N j (stepOf N j b')) = X a' b' := by
   obtain ⟨hb, hmax⟩ := mem_stepCols_stepOf N j b'
@@ -194,7 +194,7 @@ theorem main : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι 
     rw [_root_.GlobalTheory.CompanionTheory.Ar.PB.WMan.TwRead.main K ι Φ y Ψ N j M F zb (τ', stepOf N j b') k A (hh τ')⁻¹ z α J hF hzb hG hk
       hA hzα, hLU, MinorCalc.minorIJ_mul_of_support L U J (stepCols N j (stepOf N j b'))
       (MinorCalc.support_stepCols (i := stepOf N j b') hj U hUb hUt)]
-  obtain ⟨h1, h2⟩ := _root_.GlobalTheory.CompanionTheory.Ar.PB.WMan.LowMinor.minorIJ_stepCols_of_isLowerUni N j L a' b' hj hLb hLu hba hs
+  obtain ⟨h1, h2⟩ := _root_.GlobalTheory.CompanionTheory.Ar.PB.WMan.LowMinor.minorIJ_stepCols_of_isLowerUni N j L a' b' hLu hba
   have hUne : minorIJ U (stepCols N j (stepOf N j b')) (stepCols N j (stepOf N j b')) ≠ 0 := by
     rw [MinorCalc.minorIJ_self_of_triangular U hUt]
     exact Finset.prod_ne_zero_iff.2 hUd

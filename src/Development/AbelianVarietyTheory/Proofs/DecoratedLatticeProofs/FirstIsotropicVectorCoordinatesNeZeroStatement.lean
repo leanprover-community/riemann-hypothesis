@@ -50,7 +50,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.DivisionValues Forma
 open Formalism.IndefR.Mult Formalism.IndefR.Datum MeasureTheory NumberField IsDedekindDomain
 open Formalism.L2.SG.RowsJoinPinned Formalism.L2.SG.RowDict Formalism.L2.SG.PoincareInHH.PoincareSetting
 open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Unf GlobalTheory.MiS GlobalTheory.Core.Mi
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.MiTop GlobalTheory.SeeSaw GlobalTheory.Fam ValuativeRel IsLocalRing GlobalTheory.FinPl
 
 theorem _root_.GlobalTheory.T.firstIsotropicVector_coordinates_ne_zero : ∀ {D : D7} (X : Formalism.L2.SG.HidaSetting.HidaSetting D) (h : X.B.I = Formalism.L2.SG.InstExistsPf.instOf D) (hr : 1 ≤ D.R.rS), (fun i : Fin (D.sp.Y 0).rank => X.ιE (X.eR ⟨0, hr⟩ (Fin.cast (GlobalTheory.Core.Mi.rank_eq X h) i))) ≠ 0 := by

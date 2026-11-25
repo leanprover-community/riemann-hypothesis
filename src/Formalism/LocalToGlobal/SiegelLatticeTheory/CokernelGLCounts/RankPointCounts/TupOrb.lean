@@ -163,8 +163,6 @@ end Gen
 
 section D7
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 theorem flagStabilizer_inv_mem {T : D.host.E} {F0 : FlagG (VS D) D.R.rS T} {Λ : Submodule (𝓞 D.host.E) (VS D).V}

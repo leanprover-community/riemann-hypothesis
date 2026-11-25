@@ -188,10 +188,6 @@ lemma differentiableOn_tsum_emE_of_neg_two_lt :
       gcongr)
   exact (this.differentiableAt (ho.mem_nhds ⟨hσs, by simp⟩)).differentiableWithinAt
 
-lemma differentiableOn_tsum_emE :
-    DifferentiableOn ℂ (fun s => ∑' n : ℕ, emE ((n : ℝ) + 1) s) {s : ℂ | -(15/8 : ℝ) < s.re} := by
-  exact differentiableOn_tsum_emE_of_neg_two_lt.mono (fun s hs => by dsimp at hs ⊢; linarith)
-
 lemma tendsto_cpow_zero {c : ℂ} (hc : c.re < 0) :
     Tendsto (fun n : ℕ => (((n : ℝ) + 1 : ℝ) : ℂ) ^ c) atTop (𝓝 0) := by
   rw [tendsto_zero_iff_norm_tendsto_zero]
@@ -253,10 +249,6 @@ lemma eq_of_neg_two_lt {s : ℂ} (hs : (-2 : ℝ) < s.re) (h1 : s ≠ 1) :
       rw [hf z (by rintro rfl; simp at hz), eq_of_one_lt hz])
   rw [← hf s h1]
   exact this hs
-
-lemma eq_of_lt {s : ℂ} (hs : -(15/8 : ℝ) < s.re) (h1 : s ≠ 1) :
-    (s - 1) * riemannZeta s = emT 1 s + ∑' n : ℕ, emE ((n : ℝ) + 1) s := by
-  exact eq_of_neg_two_lt (by linarith) h1
 
 /-- Polynomial growth on every closed half-plane strictly to the right of `-2`. -/
 theorem norm_sub_one_mul_riemannZeta_le_of_neg_two_lt {σ : ℝ} (hσ : -2 < σ) :

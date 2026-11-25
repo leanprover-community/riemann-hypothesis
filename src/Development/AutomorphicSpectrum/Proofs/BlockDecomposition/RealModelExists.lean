@@ -883,10 +883,7 @@ theorem exists_Pb_mul_unitary : ∀ (n : ℕ) (lev : Fin n → ℕ), Monotone le
     ∃ p ∈ GlobalTheory.CompanionTheory.ModelS.Pb lev, ∃ k : Matrix.unitaryGroup (Fin n) ℂ, g = p * k.1 := by
   intro n lev hlev g hg
   have hdet : g.det ≠ 0 := hg
-  have hu : IsUnit gᴴ := by
-    rw [Matrix.isUnit_iff_isUnit_det, Matrix.det_conjTranspose]
-    exact isUnit_iff_ne_zero.2 (by simpa using hdet)
-  obtain ⟨k, hk, b, hb, ht⟩ := GlobalTheory.CompanionTheory.QR.exists_unitary_mul_blockTriangular gᴴ hu
+  obtain ⟨k, hk, b, hb, ht⟩ := GlobalTheory.CompanionTheory.QR.exists_unitary_mul_blockTriangular gᴴ
   have hg' : g = bᴴ * kᴴ := by
     rw [← Matrix.conjTranspose_mul, ← hb, Matrix.conjTranspose_conjTranspose]
   have hkH : kᴴ ∈ Matrix.unitaryGroup (Fin n) ℂ := by
@@ -1383,7 +1380,7 @@ noncomputable section
 
 namespace GlobalTheory.CompanionTheory.ModelS
 
-theorem DR_one_of_eqv (n : ℕ) (lev : Fin n → ℕ) (f h : SmF n) (_hf : f ∈ Eqv lev f.1) (_hf1 : f.1 1 = 1)
+theorem DR_one_of_eqv (n : ℕ) (lev : Fin n → ℕ) (f h : SmF n)
     (hh : h ∈ Eqv lev f.1) (X : Mat n) (hX : ∀ a b, lev a < lev b → X a b = 0) :
     (DR X h).1 1 = (DR X f).1 1 * h.1 1 := by
   have h1 : (1 : Mat n) ∈ GLs n := by simp [GLs]
@@ -1434,7 +1431,7 @@ open PositivityTheory.RgTw (Mat)
 open GlobalTheory.CompanionTheory.GLK (e1 e2 f1)
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
-theorem _root_.GlobalTheory.T.right_derivative_lower_block_at_one : ∀ (n : ℕ) (lev : Fin n → ℕ) (f h : GlobalTheory.CompanionTheory.ModelS.SmF n), f ∈ GlobalTheory.CompanionTheory.ModelS.Eqv lev f.1 → f.1 1 = 1 → h ∈ GlobalTheory.CompanionTheory.ModelS.Eqv lev f.1 → ∀ X : Mat n, (∀ a b, lev a < lev b → X a b = 0) → (GlobalTheory.CompanionTheory.ModelS.DR X h).1 1 = (GlobalTheory.CompanionTheory.ModelS.DR X f).1 1 * h.1 1 := by
+theorem _root_.GlobalTheory.T.right_derivative_lower_block_at_one : ∀ (n : ℕ) (lev : Fin n → ℕ) (f h : GlobalTheory.CompanionTheory.ModelS.SmF n), h ∈ GlobalTheory.CompanionTheory.ModelS.Eqv lev f.1 → ∀ X : Mat n, (∀ a b, lev a < lev b → X a b = 0) → (GlobalTheory.CompanionTheory.ModelS.DR X h).1 1 = (GlobalTheory.CompanionTheory.ModelS.DR X f).1 1 * h.1 1 := by
   first | exact @GlobalTheory.CompanionTheory.ModelS.DR_one_of_eqv
 end -- clump:auto
 end -- clump:auto
@@ -1737,8 +1734,8 @@ theorem evaluation_raising_lowering (lev : Fin n → ℕ) (f h : SmF n) (hf : f 
     rw [Matrix.single_apply_of_ne]
     rintro ⟨rfl, rfl⟩
     exact absurd hlt (not_lt.2 hab)
-  have d1 := GlobalTheory.T.right_derivative_lower_block_at_one n lev f h hf h1 hh _ (hX 1)
-  have d2 := GlobalTheory.T.right_derivative_lower_block_at_one n lev f h hf h1 hh _ (hX Complex.I)
+  have d1 := GlobalTheory.T.right_derivative_lower_block_at_one n lev f h hh _ (hX 1)
+  have d2 := GlobalTheory.T.right_derivative_lower_block_at_one n lev f h hh _ (hX Complex.I)
   constructor
   · simp only [e1, LinearMap.smul_apply, LinearMap.sub_apply, Submodule.coe_smul, Submodule.coe_sub, Pi.smul_apply,
       Pi.sub_apply, d1, d2, smul_eq_mul]

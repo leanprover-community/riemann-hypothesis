@@ -46,7 +46,6 @@ open Formalism.BasicNotions Formalism.MainNotions NumberField IsDedekindDomain
 open Formalism.L2 Formalism.L2.DIV Formalism.L2.Indef Formalism.L2.Rows Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Cx Formalism.IndefR.FWT
 open GlobalTheory.EX GlobalTheory.EX.OB
 namespace GlobalTheory.Fc
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 section Point
 variable {D : D7} {O : Obj D} {c : ℝ}
 def BundleCondition.TiePins (b : _root_.GlobalTheory.Fc.BundleCondition D O c) (Rr : _root_.Formalism.IndefR.IndefiniteRealisationRecursion b.B.Q) : Prop :=

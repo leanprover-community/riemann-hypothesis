@@ -888,7 +888,7 @@ theorem isScalar_one_of_comm (hψ : IsStdChar D ψ (-1)) (hθ : IsInfFam θ) (hS
       rwa [Matrix.smul_mul, Matrix.one_mul, ← inv_inv k, ← _root_.mul_inv_rev] at this)
     sa (fun τ => by rw [hsm, Matrix.mul_smul, Matrix.smul_mul, sb])
     (by rw [Matrix.smul_kronecker]; exact ht'.1) (c * c') (mul_ne_zero hc0 hc0')
-    (sc.mul hψ hi (of_oi_comm hψ hS hT hη hf hi) sc' (one_mem _) (inv_mem hk))
+    (sc.mul hψ hi (of_oi_comm hψ hS hT hη hf hi) sc' (one_mem _) (inv_mem hk) :)
   have q' : (r' : ℂ) ≠ 0 := by exact_mod_cast p'.ne'
   have e1 : c = ((r / r' : ℝ) : ℂ) := by
     rw [Complex.ofReal_div, eq_div_iff q']

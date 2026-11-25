@@ -50,7 +50,7 @@ namespace PositivityTheory.RgBcC.LfSt.Kchain.KcInv
 open PositivityTheory.RgBcC PositivityTheory.RgBcC.LfSt PositivityTheory.RgBcC.LfSt.Kchain
 open PositivityTheory.RgTw (Mat G th tw hb)
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 variable {n : ℕ} {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] {s : Set E}
 

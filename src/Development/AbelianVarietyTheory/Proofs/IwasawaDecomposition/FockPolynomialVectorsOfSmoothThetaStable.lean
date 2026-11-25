@@ -48,8 +48,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Form
 
 namespace GlobalTheory.FockTheta
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem ptStable : ∀ D : D7, Formalism.IndefR.Fin.PtStable D := by
   intro D ψ θ hψ hθ S T sS sT BS BT f P hf
   exact (GlobalTheory.OrientedHeis.pureTensorL_intertwine (IsThetaFunO ψ S T) GlobalTheory.OrientedHeis.theta_zero

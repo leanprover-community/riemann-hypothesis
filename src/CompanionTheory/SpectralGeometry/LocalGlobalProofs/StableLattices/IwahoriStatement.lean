@@ -85,15 +85,6 @@ theorem diag_mul {wt : ι → ℕ} {P : ι → E} (hP : IsPieces P) (hw : Functi
   · exact absurd (hw h).symm hk
   · rw [hy k i h, mul_zero]
 
-theorem lowerUni_of_inv {wt : ι → ℕ} {P : ι → E} (hP : IsPieces P) (hw : Function.Injective wt)
-    {b b' : E} (hb : IsLowerUni wt P b) (hb' : IsLower wt P b') (h : b * b' = 1) :
-    IsLowerUni wt P b' := by
-  refine ⟨hb', fun i => ?_⟩
-  have h1 := diag_mul hP hw hb.1 hb' i
-  rw [h, mul_one, hP.idem, hb.2] at h1
-  calc P i * b' * P i = P i * (P i * b' * P i) := by simp only [← mul_assoc, hP.idem]
-    _ = P i := h1.symm
-
 end GlobalTheory.CompanionTheory.Iwahori.Unitary
 end -- clump:auto
 end -- clump:auto
@@ -107,19 +98,6 @@ section -- clump:auto
 open CompanionTheory.Rg.FlB
 
 noncomputable section
-
-namespace GlobalTheory.CompanionTheory.Iwahori
-
-section Concrete
-
-variable {L V : Type} [NontriviallyNormedField L] [AddCommGroup V] [Module L V]
-  {s : L →+* L} {h : V → V → L} {δ : L} {l : ℕ} {e f : Fin l → V} {W : Submodule L V}
-
-theorem hLin_apply (hh : IsHerm s h) (x y : V) : hLin hh x y = h x y := rfl
-
-end Concrete
-
-end GlobalTheory.CompanionTheory.Iwahori
 
 end
 end -- clump:auto

@@ -12,8 +12,6 @@ open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Fo
 
 namespace Formalism.L2.SG.VolPin
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 def VolPinGC : Prop :=
   ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u u' : D.what₂.Word), PrimeHyp D u (Tu D u') → ∀ (t : TT Y u u'),
     t.relevant → t.toTerm.generic → t.G ≠ 0 →

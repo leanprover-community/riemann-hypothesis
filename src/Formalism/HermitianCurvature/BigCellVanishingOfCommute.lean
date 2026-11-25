@@ -51,7 +51,7 @@ namespace Formalism.FourierDecayAlt.C6
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 def sq2 {m : ℕ} (v : Fin m → ℂ) : ℝ := ∑ a, Complex.normSq (v a)
 

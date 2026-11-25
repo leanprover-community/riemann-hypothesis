@@ -533,22 +533,6 @@ theorem val_mul_sqrt_unit_of_infExp (D : D7) (c : (AE D)ˣ →* Circle) (χ : Fo
     rw [map_mul, hvalP, _root_.GlobalTheory.valuation_sqrt_absNorm_eq_one _ A p hp hpA P hpP, one_mul]
   exact ⟨(A.valuation_le_one_iff _).1 hfinal.le, (A.valuation_le_one_iff _).1 (by rw [map_inv₀, hfinal, inv_one])⟩
 
-open Formalism.L2.Host in
-theorem val_mul_sqrt_unit : ∀ (D : D7) (V W : HSp D) (B : Base V W), B.Good → ∀ χ : Formalism.L2.Host.HChar D.host.E, ChrEq (B.mu * B.eta⁻¹) χ → ∀ (p : ℕ) (A : ValuationSubring ℂ), p.Prime → (p : ℂ) ∈ A.nonunits → ∀ bad : ℕ, p ∣ bad → (∀ PP, PP ∈ B.G.Pg ∨ PP ∈ B.de.Q → (bad : 𝓞 D.host.E) ∈ PP.asIdeal) → ∀ P : HeightOneSpectrum (𝓞 D.host.E), (bad : 𝓞 D.host.E) ∉ P.asIdeal → ((χ.val P : ℂˣ) : ℂ) * ((Real.sqrt (Ideal.absNorm P.asIdeal) : ℝ) : ℂ) ∈ A ∧ (((χ.val P : ℂˣ) : ℂ) * ((Real.sqrt (Ideal.absNorm P.asIdeal) : ℝ) : ℂ))⁻¹ ∈ A := by
-  intro D V W B hB χ hχ p A hp hpA bad hpb hbad P hP
-  classical
-  have hpP : ((p : ℕ) : 𝓞 D.host.E) ∉ P.asIdeal := by
-    intro h
-    apply hP
-    obtain ⟨r, rfl⟩ := hpb
-    rw [Nat.cast_mul]
-    exact Ideal.mul_mem_right _ _ h
-  have hinf : ∀ τ, HasInfExp D (B.mu * B.eta⁻¹) τ
-      (((B.w.c τ : ℚ) - ((B.w.p τ : ℚ) - B.w.q τ) / 2 + 1 / 2) + -(1 / 2)) := fun τ =>
-    GlobalTheory.Chain.StepVac.hasInfExp_mul (GlobalTheory.RealFockAction.hasInfExp_mul_of_isOpen_ker (hB.inf τ) hB.de.isOpen)
-      (GlobalTheory.Chain.StepVac.hasInfExp_inv (hB.eta.2.2.2 τ))
-  exact val_mul_sqrt_unit_of_infExp D _ χ hχ _ hinf p A hp hpA P hpP
-
 end GlobalTheory.UnitOverP
 end -- clump:auto
 end -- clump:auto

@@ -13,8 +13,6 @@ open scoped TensorProduct ContDiff InnerProductSpace
 
 namespace Formalism.IndefR.PeterssonHilbertSpace
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 structure IsHermPos {N : Type} [AddCommGroup N] [Module ℂ N] (C : Submodule ℂ N) (ip : N → N → ℂ) : Prop where
   fd : FiniteDimensional ℂ C
   add : ∀ x x' y : C, ip ((x : N) + x') y = ip x y + ip x' y

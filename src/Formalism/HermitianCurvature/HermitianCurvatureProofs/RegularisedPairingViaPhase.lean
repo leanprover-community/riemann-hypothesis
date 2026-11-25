@@ -72,7 +72,7 @@ namespace Formalism.FourierDecayAlt.P.B5
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 section basics
 

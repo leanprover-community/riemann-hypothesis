@@ -50,8 +50,6 @@ open scoped TensorProduct
 
 namespace GlobalTheory.Published
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 namespace AutFin
 
 def coeffSpan {K W : Type} [Group K] [AddCommGroup W] [Module ℂ W] (ρ : Representation ℂ K W) :

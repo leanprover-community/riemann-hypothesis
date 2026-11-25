@@ -59,8 +59,6 @@ open Formalism.L2.SG.Pf.AtPt
 
 namespace Formalism.L2.SG.Pf.FrameGlobalPatching.FStar
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section LocalXS
 
 variable {D : Formalism.BasicNotions.D7} (Zd : LocDat D) (p : PlF D)

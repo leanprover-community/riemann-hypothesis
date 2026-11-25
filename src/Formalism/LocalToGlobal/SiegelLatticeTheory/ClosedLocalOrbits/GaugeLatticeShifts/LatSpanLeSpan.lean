@@ -389,8 +389,6 @@ end Witt
 
 section Lift
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 open Formalism.L2.SG.TermOp Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full
 
 variable {D : D7} {X : Formalism.L2.SG.HidaSetting.HidaSetting D} {u u' : D.what₂.Word}

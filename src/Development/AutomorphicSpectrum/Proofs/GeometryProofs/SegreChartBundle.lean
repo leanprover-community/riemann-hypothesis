@@ -64,13 +64,8 @@ noncomputable def secVal (ξ : Spec (CommRingCat.of Ω) ⟶ X) (U : X.Opens) (h 
   (X.presheaf.germ U (genPt ξ) h ≫ Scheme.stalkClosedPointTo ξ).hom
 
 theorem genMap_germ (U : X.Opens) (h : genPt ξ ∈ U) (q : Cpt ξ) (hq : q.1 ∈ U) (t : Γ(X, U)) :
-    genMap ξ q (X.presheaf.germ U q.1 hq t) = secVal ξ U h t := by
-  have e : X.presheaf.germ U q.1 hq ≫ X.presheaf.stalkSpecializes q.2 = X.presheaf.germ U (genPt ξ) h :=
-    TopCat.Presheaf.germ_stalkSpecializes X.presheaf hq q.2
-  have e2 : X.presheaf.germ U q.1 hq ≫ (X.presheaf.stalkSpecializes q.2 ≫ Scheme.stalkClosedPointTo ξ) =
-      X.presheaf.germ U (genPt ξ) h ≫ Scheme.stalkClosedPointTo ξ :=
-    (Category.assoc _ _ _).symm.trans (congrArg (· ≫ Scheme.stalkClosedPointTo ξ) e)
-  exact congrArg (fun f => f.hom t) e2
+    genMap ξ q (X.presheaf.germ U q.1 hq t) = secVal ξ U h t :=
+  _root_.GlobalTheory.CompanionTheory.Ar.TieVB.genMap_germ U h q hq t
 
 theorem isUnit_iff_unitAt {q : Cpt ξ} (hi : Function.Injective (genMap ξ q)) (s : X.presheaf.stalk q.1) :
     IsUnit s ↔ unitAt ξ q (genMap ξ q s) := by
@@ -124,13 +119,8 @@ theorem unitAt_one (p : Cpt ξ) : unitAt ξ p 1 := ⟨one_ne_zero, one_mem _, by
 
 theorem not_unitAt_zero (p : Cpt ξ) : ¬ unitAt ξ p 0 := fun h => h.1 rfl
 
-theorem regAt_genPt (hg : IsCptGen ξ) (a : Ω) : a ∈ regAt ξ (⟨genPt ξ, specializes_rfl⟩ : Cpt ξ) := by
-  obtain ⟨s, rfl⟩ := hg.bij.2 a
-  refine ⟨s, ?_⟩
-  unfold genMap
-  rw [TopCat.Presheaf.stalkSpecializes_refl]
-  erw [Category.id_comp]
-  rfl
+theorem regAt_genPt (hg : IsCptGen ξ) (a : Ω) : a ∈ regAt ξ (⟨genPt ξ, specializes_rfl⟩ : Cpt ξ) :=
+  _root_.GlobalTheory.CompanionTheory.Ar.TieVB.regAt_genPt hg a
 
 section Chart
 
@@ -140,19 +130,8 @@ theorem exists_chart (hT : CoordTie o ξ x) {c : κ} (hc : x c ≠ 0) :
     ∃ (U : X.Opens) (h : genPt ξ ∈ U), IsAffineOpen U ∧ (∀ q : Cpt ξ, q.1 ∈ U ↔ InChart ξ x c q) ∧
       (∀ q : X, q ∈ U → genPt ξ ⤳ q) ∧
       Function.Injective (secVal ξ U h) ∧
-      ∀ a : Ω, a ∈ Algebra.adjoin o (Set.range fun j => x j / x c) ↔ a ∈ (secVal ξ U h).range := by
-  obtain ⟨U, hU, hmem⟩ := hT.affine c hc
-  have h : genPt ξ ∈ U := (hmem _).2 ⟨specializes_rfl, hc, fun c' => regAt_genPt hT.gen _⟩
-  have hsp : ∀ q : X, q ∈ U → genPt ξ ⤳ q := fun q hq => by
-    obtain ⟨h2, _⟩ := (hmem q).1 hq
-    exact h2
-  have hUq : ∀ q : Cpt ξ, q.1 ∈ U ↔ InChart ξ x c q := fun q =>
-    ⟨fun hq => by obtain ⟨_, h2⟩ := (hmem q.1).1 hq; exact h2, fun hq => (hmem q.1).2 ⟨q.2, hq⟩⟩
-  obtain ⟨hinj, hran⟩ := regAt_sections X Ω ξ hT.gen U h hsp
-  refine ⟨U, h, hU, hUq, hsp, hinj, fun a => ?_⟩
-  rw [hT.ring c hc a]
-  refine Iff.trans ?_ (hran a).symm
-  exact forall_congr' fun q => (by rw [hUq q])
+      ∀ a : Ω, a ∈ Algebra.adjoin o (Set.range fun j => x j / x c) ↔ a ∈ (secVal ξ U h).range :=
+  _root_.GlobalTheory.CompanionTheory.Ar.TieVB.exists_chart hT hc
 
 theorem exists_point (hT : CoordTie o ξ x) {c : κ} (hc : x c ≠ 0) (P : Ideal (chartRing o x c)) (hP : P.IsPrime) :
     ∃ p : Cpt ξ, InChart ξ x c p ∧ ∀ s : chartRing o x c, s ∈ P ↔ ¬ unitAt ξ p s := by

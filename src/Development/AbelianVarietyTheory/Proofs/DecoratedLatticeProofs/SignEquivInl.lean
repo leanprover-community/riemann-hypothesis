@@ -48,8 +48,6 @@ noncomputable section
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Matrix
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 namespace GlobalTheory.ChainOnto.RealData
 
 variable {D : D7} {V : HSp D} {S : D.what₂.Tau → SPar}

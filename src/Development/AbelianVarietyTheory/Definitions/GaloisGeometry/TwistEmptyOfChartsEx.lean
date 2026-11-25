@@ -57,8 +57,6 @@ end Idele
 
 section Central
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : G.Inst D L} {Gl : G.LatInst D} {Kc : G.Consts} {Y : DivX D} {cX : ExtraC}
   {ex : Extra D L hT Gi Gl Kc Y cX} (t : KerEntTied ex) {u : D.what₂.Word} (μ : D.what₂.Tup)
 
@@ -76,8 +74,6 @@ end Twist
 
 section Charts
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} {T : ℕ} {bad : Set (HeightOneSpectrum (𝓞 D.host.F))} {i : ℕ} {hi : i ≤ D.R.m} {cl : Type}
   {stab : cl → Type} [∀ c, Group (stab c)] {lat : cl → Submodule (𝓞 D.host.E) (Fin (D.R.N i) → D.host.E)}
 
@@ -88,7 +84,7 @@ section True
 
 open GlobalTheory.TwU.AtTrue
 
-attribute [local instance] GlobalTheory.Mem.Col2.starE Formalism.BasicNotions.Host.cmStar
+attribute [local instance] GlobalTheory.Mem.Col2.starE
 
 
 
@@ -105,8 +101,6 @@ namespace GlobalTheory.TwU.Rigid
 open _root_.Formalism.UG _root_.Formalism.L2.Col _root_.Formalism.L2.PairingIndexBounds.F _root_.Formalism.MainNotions.G.KAat _root_.Formalism.L2.Forms _root_.Formalism.L2.Ker _root_.Formalism.L2.DIV
 open NumberField IsDedekindDomain Matrix _root_.Formalism.BasicNotions _root_.Formalism.MainNotions _root_.Formalism.MainNotions.G
 open scoped TensorProduct
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : G.Inst D L} {Gl : G.LatInst D} {Kc : G.Consts} {Y : DivX D} {cX : ExtraC}
   {ex : Extra D L hT Gi Gl Kc Y cX} {t : KerEntTied ex} {u : D.what₂.Word} {μ : D.what₂.Tup} {St : ChainCharts D u μ}

@@ -149,8 +149,6 @@ namespace Formalism.L2.SG.Pf.NcReal.JX.FR
 open Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.L2.SG.HidaSetting Formalism.L2.SG.RealObj Formalism.L2.SG.Pf.WFL Formalism.L2.SG.Pf Formalism.L2.SG.Pf.NcReal.JX
   Formalism.L2.SG.RealObj.InfCut
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section HidaSetting
 
 variable {D : D7} (X : HidaSetting D)
@@ -194,8 +192,6 @@ namespace Formalism.L2.SG.Pf.NcReal.JX.FR
 
 open Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.L2.SG.HidaSetting Formalism.L2.SG.RealObj Formalism.L2.SG.Pf.WFL Formalism.L2.SG.Pf Formalism.L2.SG.Pf.NcReal.JX
   Formalism.L2.SG.RealObj.InfCut
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 section HidaSetting
 
@@ -346,8 +342,6 @@ namespace Formalism.L2.SG.Pf.NcReal.JX.FR
 
 open Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.L2.SG.HidaSetting Formalism.L2.SG.RealObj Formalism.L2.SG.Pf.WFL Formalism.L2.SG.Pf Formalism.L2.SG.Pf.NcReal.JX
   Formalism.L2.SG.RealObj.InfCut Formalism.L2.SG.Pf.LsNc5
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 section Final
 

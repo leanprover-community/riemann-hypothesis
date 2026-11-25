@@ -238,8 +238,6 @@ theorem lintegral_norm_sq_eq_toL2 [MeasurableSpace X] [BorelSpace X] [SecondCoun
 
 end Quasi
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 open GlobalTheory.FockCompare GlobalTheory.OrientedHeis
 
 variable {D : D7} {θ : InfFam D} {σ : (D.what₂.Tau → ℂ) →+ Formalism.L2.Theta.AE D} {ψ : AddChar (AF D.host.F) ℂ} {S T : HSp D}

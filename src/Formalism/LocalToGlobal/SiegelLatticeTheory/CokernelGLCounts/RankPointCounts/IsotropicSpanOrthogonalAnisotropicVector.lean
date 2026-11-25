@@ -13,8 +13,6 @@ open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNo
 
 namespace Formalism.L2.SG.Pf.FrameGlobalPatching.FStar.SpanOmPf
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : Formalism.BasicNotions.D7}
 
 theorem hsw' (x y : (VS D).V) : (VS D).hT y x = star ((VS D).hT x y) := ((VS D).herm.eq x y).symm

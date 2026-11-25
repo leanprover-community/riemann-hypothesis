@@ -48,8 +48,6 @@ namespace Formalism.MainNotions.S.UnitaryVolumeMass
 open NumberField Matrix Module Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.Cnt
 open scoped ENNReal NNReal InnerProductSpace
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 abbrev Lt (D : D7) : Type := Submodule (𝓞 D.host.E) (hS D).V
 
 abbrev Fl (D : D7) (T : ℕ) : Type := LFlag (hS D) D.R.rS ((T : ℕ) : D.host.E)

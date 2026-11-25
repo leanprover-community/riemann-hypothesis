@@ -7,8 +7,6 @@ public import Mathlib.RingTheory.MvPowerSeries.Basic
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace Formalism.L2.Pj

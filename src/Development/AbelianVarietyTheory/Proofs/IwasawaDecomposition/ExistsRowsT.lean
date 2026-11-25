@@ -8,7 +8,8 @@ public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.Force
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.EmbeddingOneApplyDivThree
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsProvisionalDivX
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PointGlobalSectionsNeBot
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SubRkOfPsiOfEqRkOfCEmb
+public import Formalism.LocalRingCardinality.DataDIV
+public import Formalism.LocalToGlobal.LatticeGeometry.CmTypeMeetsConjugatePair
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.NumbersEqConcreteNumbersAtBaseLevelStatement
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.RowsAre
 public import Formalism.LocalToGlobal.Columns.CoefModB
@@ -198,7 +199,7 @@ theorem GlobalTheory.Mem.R3.Rw.St.idx_zero_off_twisted : ∀ (K : Ctx) (B : Base
       mjLat_sub Zr x.m.z.pins x.m.intersectionNumber_baseChange k, MjModel.jM_metric_all Zr x.m.intersectionNumber_baseChange k⟩
   let Xd : DivX (w.st x.o.Z).toD7 := GlobalTheory.provisionalDivX (w.st x.o.Z).toD7 G Y
     (fun p _ => (GlobalTheory.WittFracComplex.nonempty_ringHom_complex p).some)
-    (fun p _ r => (GlobalTheory.nonempty_admissibleModel _ p _ (max r 2) 1 (by omega)).some) Fm
+    Fm
   have hMj := mjHTie_of_eq Zr Xd rfl (HEq.refl (jM Zr))
   have hIdx : IdxDefs (w.st x.o.Z).toD7 Xd := (P.q.num x.o.η x.o.hη x.o.V x.o.S x.o.N x.o.G).idx Xd
   have hT := _root_.GlobalTheory.Mem.ReadIndexNumerics.numTie_of_read _ _ _ _ _ _ _ x.m.z.R x.m.z.F x.m.z.cG x.s.p0 x.r.Y Zr Xd _ x.m.z.pins x.m.intersectionNumber_baseChange hMj hIdx

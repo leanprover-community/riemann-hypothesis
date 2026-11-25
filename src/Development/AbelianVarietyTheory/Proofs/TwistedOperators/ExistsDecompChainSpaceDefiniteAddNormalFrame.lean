@@ -59,8 +59,6 @@ open scoped TensorProduct
 
 namespace GlobalTheory.StdFrames
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 open GlobalTheory.IndefiniteRowSideFullHecke.ChainMatrices GlobalTheory.IdemSupport Formalism.IndefR.Datum Formalism.L2.NTheta GlobalTheory.NormSum.AdLattice Formalism.L2.Herm
 
 theorem exists_decomp {K X Y : Type} [Field K] [AddCommGroup X] [Module K X] [AddCommGroup Y] [Module K Y]

@@ -14,8 +14,6 @@ open MeasureTheory NumberField Matrix Formalism.BasicNotions Formalism.MainNotio
 
 namespace Formalism.L2.SG.RootCoordinatesIndex
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} {X : HidaSetting D} {θ : ℝ} (C : Choice X θ) (τ : D.what₂.Tau)
 
 abbrev eV (a : Fin D.R.rS) : Fin X.B.I.n → ℂ := rv X.B.I (vOf X τ) (X.eR a)

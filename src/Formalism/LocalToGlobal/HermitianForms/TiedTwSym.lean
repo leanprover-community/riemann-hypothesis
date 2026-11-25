@@ -13,8 +13,6 @@ open scoped TensorProduct
 
 namespace Formalism.L2.Herm
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 structure TwChJointS {D : D7} {inQ : D.what₂.Tup → HeightOneSpectrum (𝓞 D.host.F) → Prop} (T : TwChTied D inQ)
     (H : HermColsCh D) where
 
@@ -30,8 +28,6 @@ structure TwChJointS {D : D7} {inQ : D.what₂.Tup → HeightOneSpectrum (𝓞 D
 end Formalism.L2.Herm
 
 namespace Formalism.L2.Forms
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7}
 

@@ -62,11 +62,6 @@ def DirOf : Prop :=
     ∀ φ : G ℚ Ω →* (Qbar l)ˣ, KillsMu N φ → ∃ (M : ℕ) (_ : NeZero M) (χ : DirichletCharacter ℂ M), M ∣ N ∧ χ.IsPrimitive ∧
       φ = Chr.dirG ℚ Ω (χ.ringHomComp ι.symm.toRingHom)
 
-def PropEG : Prop :=
-  ∀ (l : ℕ) [Fact l.Prime] (Ω : Type) [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] (ι : Qbar l ≃+* ℂ) (c : G ℚ Ω), IsCC c →
-    ∀ (N w : ℕ) (φ θ : G ℚ Ω →* (Qbar l)ˣ), SlopeTestRemainingChoices N w θ → SplitAt N w φ → φ ≠ 1 → ∃ k₀ : ℕ, ∀ k ≥ k₀, φ c = (-1) ^ k →
-      ∃ ρ, EisRep ι φ θ k ρ
-
 def SIabs : Prop :=
   ∀ (l : ℕ) [Fact l.Prime], l ≠ 2 → ∀ (Γ : Type) [Group Γ] (ρ : Γ →* GL (Fin 2) (Qbar l)) (Φ : Γ →* (Qbar l)ˣ),
     (∀ s, ‖(Φ s : Qbar l)‖ = 1) → IsIrr ρ → ResSum ρ ![1, Φ] → ∀ H : Subgroup Γ, H.Normal →

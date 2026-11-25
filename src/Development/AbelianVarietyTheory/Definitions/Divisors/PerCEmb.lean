@@ -50,8 +50,6 @@ namespace GlobalTheory.AdTh
 
 noncomputable section
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} {r g : ℕ}
 
 structure IsMod (W : HSp D) (hr : W.rank = r) (X : Data D.host.E r) : Prop where

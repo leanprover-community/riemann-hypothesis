@@ -63,8 +63,6 @@ namespace GlobalTheory.NoExcl
 
 open Formalism.MainNotions.StandardLattice Formalism.IndefR.Datum Formalism.IndefR.Mult Formalism.IndefR.Lift GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 theorem isHermND_gram (V : HSp D) : IsHermND D.sp.cm.sig V.gram :=

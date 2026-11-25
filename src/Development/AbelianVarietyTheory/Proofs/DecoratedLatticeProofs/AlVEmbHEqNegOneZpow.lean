@@ -50,13 +50,10 @@ import Development.AbelianVarietyTheory.Definitions.LatticeFrames.FiniteDimensio
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.L2.Forms Formalism.L2.Ker Formalism.UG
 open NumberField IsDedekindDomain Matrix MeasureTheory GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.MixPer GlobalTheory.Core.Rk GlobalTheory.AdForm
 open scoped TensorProduct Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
 namespace GlobalTheory.SemiTrace
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem tauE_star (D : D7) (τ : D.what₂.Tau) (x : D.host.E) :
     tauE D τ (star x) = starRingEnd ℂ (tauE D τ x) :=
@@ -113,7 +110,6 @@ theorem re_xi_mul_sq (u : ℝ) (hu : 0 < u) :
 end GlobalTheory.SemiTrace
 
 namespace GlobalTheory.SemiTrace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem alV_embH_eq_neg_one_zpow : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) (S T : HSp D) (a b : ℕ) (hS : S.rank = a) (hT : T.rank = b) (δ : ℂ) (sc : ℝ), StdPair θ S T δ sc ψ → ∀ (y : Formalism.L2.Col.HomE D.host.E a b) (k : ℤ), (k : ℚ) = Algebra.trace ℚ D.host.E (D.host.xi0 * ((1 + D.host.sqrtMinusD) / 2) ^ 2 * GlobalTheory.LatVac.hRat S T ((LinearMap.toMatrix' (y)).reindex (finCongr hT.symm) (finCongr hS.symm)) ((LinearMap.toMatrix' (y)).reindex (finCongr hT.symm) (finCongr hS.symm))) → alV D.host.d sc (embH (tauE D) δ y) = (-1 : ℂ) ^ k := by
   intro D ψ θ S T a b hS hT δ sc hP y k hk

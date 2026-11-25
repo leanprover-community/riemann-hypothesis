@@ -167,18 +167,8 @@ theorem finrank_lie_eq (S : Scheme.{0}) (G : Over S) [GrpObj G] [Smooth G.hom]
     (R O : Type) [CommRing R] [IsDomain R] [CommRing O] [IsDomain O] [Algebra R O]
     (x : Sp R ⟶ S) (L L' : Type) [AddCommGroup L] [Module R L] [AddCommGroup L'] [Module O L']
     (M : LieModel G x L) (M' : LieModel G (spMap (algebraMap R O) ≫ x) L') :
-    Module.finrank O L' = Module.finrank R L := by
-  obtain ⟨hf, hp⟩ := _root_.GlobalTheory.CompanionTheory.Ar.lieModel_finite_projective S G R x L M
-  letI : Module R L' := Module.compHom L' (algebraMap R O)
-  haveI : IsScalarTower R O L' := ⟨fun a b c => by
-    rw [Algebra.smul_def, mul_smul]
-    rfl⟩
-  obtain ⟨j, hj⟩ := LieRank.exists_lift G x M M'
-  have hbc := _root_.GlobalTheory.CompanionTheory.Ar.lieModel_isBaseChange S G R O x L L' M M' j hj
-  rw [← LinearEquiv.finrank_eq hbc.equiv,
-    PositivityTheory.HtPt.Htat.TestPts.finrank_eq_rankAtStalk (IsLocalRing.closedPoint (FractionRing O) |> PrimeSpectrum.comap (algebraMap O (FractionRing O))),
-    Module.rankAtStalk_baseChange]
-  exact (PositivityTheory.HtPt.Htat.TestPts.finrank_eq_rankAtStalk _).symm
+    Module.finrank O L' = Module.finrank R L :=
+  _root_.PositivityTheory.HtPt.Htat.TestPts.finrank_lie_eq S G R O x L L' M M'
 
 theorem reduces_at_point (hPt : PointHT) (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H)
     (p : ℕ) [Fact p.Prime] (R K : Type) [CommRing R] [IsDomain R] [IsNoetherianRing R] [IsIntegrallyClosed R]

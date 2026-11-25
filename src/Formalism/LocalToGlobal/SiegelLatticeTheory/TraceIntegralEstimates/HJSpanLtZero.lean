@@ -17,8 +17,6 @@ namespace Formalism.L2.S.Pv.TauS
 
 open Formalism.L2.SG.HidaSetting
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Loc
 
 variable {n r : ℕ} (ε : Fin n → Bool) {e f : Fin r → Fin n → ℂ} {z : Fin n → ℂ}

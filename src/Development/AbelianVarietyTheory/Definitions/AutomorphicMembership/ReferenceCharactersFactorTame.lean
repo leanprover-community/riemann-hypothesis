@@ -482,8 +482,6 @@ end Conj
 
 section Kernel
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {R : Ranks} (H : Formalism.BasicNotions.Host R) (SG SQ : Finset (HeightOneSpectrum (𝓞 H.E)))
 
 theorem isConjPl_iff (w w' : HeightOneSpectrum (𝓞 H.E)) : IsConjPl H w w' ↔ w' = conjPrime₂ w := by
@@ -613,8 +611,6 @@ theorem mem_KDq_of_conj (h : LevOk H SG SQ) (b : Ideles H.E)
 end Kernel
 
 section Det
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {R : Ranks} (H : Formalism.BasicNotions.Host R) (SQ : Finset (HeightOneSpectrum (𝓞 H.E))) {n : ℕ}
   {ST SG Q : Finset (HeightOneSpectrum (𝓞 H.E))}

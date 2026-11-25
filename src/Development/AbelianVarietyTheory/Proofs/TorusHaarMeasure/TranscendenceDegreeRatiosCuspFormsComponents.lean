@@ -151,7 +151,7 @@ theorem exists_compact : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] 
   obtain ⟨B, hB⟩ : ∃ B : ℝ, B = max (K ^ a * K' / δ / (2 * (i - a * c))) 1 := ⟨_, rfl⟩
   have hB0 : 0 < B := by rw [hB]; exact lt_of_lt_of_le one_pos (le_max_right _ _)
   have hε : 0 < min ε0 (Real.sqrt (ca / B)) := lt_min hε0 (Real.sqrt_pos.2 (div_pos hca hB0))
-  obtain ⟨C, hC, hCd, hmeet⟩ := reductionTheory_holds (E := E) r X _ hε
+  obtain ⟨C, hC, hCd, hmeet⟩ := GlobalTheory.FlagMahler.mahler_compactness (E := E) r X _ hε
   refine ⟨C, hC, hCd, fun x hx h3 => hmeet x hx ?_⟩
   by_cases hsmall : X.la1 x < ε0
   · refine (min_le_right _ _).trans ?_

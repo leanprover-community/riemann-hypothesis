@@ -46,8 +46,6 @@ open IsDedekindDomain NumberField Matrix GlobalTheory.ChiGrid GlobalTheory.FunOb
 
 namespace GlobalTheory.ArchTens
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 def placeSz {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} (G : GridData L sc) (w : Pl D.host.E) : ℝ :=
   (cosExp G w : ℝ) * Real.log (Ideal.absNorm (w.under (𝓞 D.host.F)).asIdeal)
 

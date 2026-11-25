@@ -1461,7 +1461,7 @@ theorem antisymmetry : Antisymmetry := by
     congr 1
     simp [toWt, MvPolynomial.algebraMap_eq]
 
-  obtain ⟨Cst, hC⟩ := GlobalTheory.T.weighted_polynomial_homogeneous_coeff_bound Ψ N (antisymDegree Ψ N + 1)
+  obtain ⟨Cst, hC⟩ := PositivityTheory.Xgp.t_poly_towt_bound Ψ N (antisymDegree Ψ N + 1)
   have hhomT : (toWt (Re.PB II)).IsHomogeneous (antisymDegree Ψ N + 1) := by
     refine (hC.1 _ 0 ?_).1
     rw [← hdim]

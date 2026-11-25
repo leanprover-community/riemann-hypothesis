@@ -20,8 +20,6 @@ open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Fo
 
 namespace Formalism.L2.SG.Pf
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Lin
 
 variable {D : D7} (X : HidaSetting D) (u : D.what₂.Word) (hK : X.LevelSubgroupCharacter)

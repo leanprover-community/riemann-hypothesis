@@ -43,8 +43,6 @@ namespace GlobalTheory.HeightCounting.Up
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N NumberField IsDedekindDomain GlobalTheory.HeightCounting
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 structure CopyN (D : D7) {D' : D7} (N : TwNew D') (ι : D.what₂.LL →+* D'.what₂.LL) (e : ↥D'.LL0 ≃+* ↥D.LL0) : Prop where
   cp : GlobalTheory.TwInputs.Move.CopyTw D N.toD7 ι e
   ThetaPsi : HEq D.ntw.ThetaPsi N.tw.ThetaPsi

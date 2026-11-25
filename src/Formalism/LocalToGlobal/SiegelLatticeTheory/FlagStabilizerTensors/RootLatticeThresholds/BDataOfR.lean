@@ -21,8 +21,6 @@ set_option linter.dupNamespace false
 
 namespace Formalism.L2.SG.Pf.BDatR
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section J2
 
 variable {D : D7}

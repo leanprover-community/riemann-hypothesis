@@ -59,7 +59,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.UnramifiedCharacter (CharUnramAt)
 open GlobalTheory.IndefiniteRowSideFullHecke.AppendedVectorData (lastPair lastKer)
 open GlobalTheory.IndefiniteRowSideFullHecke.UnramifiedLocalFrameSequences (IsFockOver StepsAll vec atW IsMoved InAt InvOnUnits IsBesFrame IsJacFrame FrameMapsPrefix jacLat ptBF ptFB)
 open scoped TensorProduct Pointwise
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Mem.Isom
 
 namespace GlobalTheory.OverTgt

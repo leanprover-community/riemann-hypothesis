@@ -84,7 +84,7 @@ theorem fc_succ_eq_δ (n i : ℕ) (hi : i < n + 2) :
 def diagOp : SimplicialObject BOp := Functor.diag SimplexCategoryᵒᵖ ⋙ Free.embedding ℤ _
 
 theorem dD_succ_eq_objD (n : ℕ) : dD (n + 1) n = AlternatingFaceMapComplex.objD diagOp n := by
-  rw [dD, ite_eq_left rfl, AlternatingFaceMapComplex.objD, ← Fin.sum_univ_eq_sum_range]
+  rw [dD, if_pos rfl, AlternatingFaceMapComplex.objD, ← Fin.sum_univ_eq_sum_range]
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [fc_succ_eq_δ n i i.2]
   rfl
@@ -96,11 +96,11 @@ theorem dD_comp_dD (n m k : ℕ) : dD n m ≫ dD m k = 0 := by
     · subst h2
       rw [dD_succ_eq_objD, dD_succ_eq_objD]
       exact AlternatingFaceMapComplex.d_squared diagOp k
-    · rw [show dD m k = 0 from ite_eq_right h2, Limits.comp_zero]
-  · rw [show dD n m = 0 from ite_eq_right h1, Limits.zero_comp]
+    · rw [show dD m k = 0 from if_neg h2, Limits.comp_zero]
+  · rw [show dD n m = 0 from if_neg h1, Limits.zero_comp]
 
 theorem awO_zero : awO 0 0 0 = 𝟙 (bo 0 0) := by
-  rw [awO, ite_eq_left rfl]
+  rw [awO, if_pos rfl]
   have h1 : idc 0 0 = 𝟙 _ := Subsingleton.elim _ _
   have h2 : backc 0 0 0 = 𝟙 _ := Subsingleton.elim _ _
   rw [h1, h2]
@@ -191,7 +191,7 @@ theorem awThen_homotopic : ∀ G : ∀ a b n : ℕ, bo a b ⟶ bo n n, G 0 0 0 =
     simp [h0, hK, dD]
   | succ k =>
     change awThen G (k + 1) = _
-    simp only [dite_eq_left, eqToHom_refl, Category.comp_id, Nat.add_sub_cancel]
+    simp only [dif_pos, eqToHom_refl, Category.comp_id, Nat.add_sub_cancel]
     exact awHtpy_spec G hG0 hG haw cone hcone k
 
 end GlobalTheory.EZ
@@ -492,13 +492,13 @@ theorem backc_zero : backc 0 0 0 = 𝟙 _ := by
 theorem bop_id (a b : ℕ) : bop (𝟙 (SimplexCategory.mk a)) (𝟙 (SimplexCategory.mk b)) = 𝟙 (bo a b) := rfl
 
 theorem idO_self (a b : ℕ) : idO a b a b = 𝟙 (bo a b) := by
-  rw [idO, ite_eq_left ⟨rfl, rfl⟩, _root_.GlobalTheory.EZ.Acyc.idc_self', _root_.GlobalTheory.EZ.Acyc.idc_self', bop_id]
+  rw [idO, if_pos ⟨rfl, rfl⟩, _root_.GlobalTheory.EZ.Acyc.idc_self', _root_.GlobalTheory.EZ.Acyc.idc_self', bop_id]
 
 theorem idO_ne {a b c d : ℕ} (h : ¬ (a = c ∧ b = d)) : idO a b c d = 0 := by
-  rw [idO, ite_eq_right h]
+  rw [idO, if_neg h]
 
 theorem awO_zero : awO 0 0 0 = 𝟙 (bo 0 0) := by
-  rw [awO, ite_eq_left rfl, _root_.GlobalTheory.EZ.Acyc.idc_self', backc_zero, bop_id]
+  rw [awO, if_pos rfl, _root_.GlobalTheory.EZ.Acyc.idc_self', backc_zero, bop_id]
 
 theorem sum_idO_comp {T : BOp} (k a b : ℕ) (h : a + b = k) (g : ∀ p q : ℕ, bo p q ⟶ T) :
     ∑ y ∈ antidiagonal k, idO a b y.1 y.2 ≫ g y.1 y.2 = g a b := by
@@ -707,7 +707,7 @@ variable {C : Type u} [Category.{v} C] [Preadditive C]
 theorem dbl_d_f (Y : SimplicialObject (SimplicialObject C)) (a b : ℕ) :
     ((dbl Y).d (a + 1) a).f b = (ev Y).map (dH (a + 1) b a b) := by
 
-  simp only [dH, and_self, ite_true, Functor.map_sum, Functor.map_zsmul, ev_map_bop,
+  simp only [dH, and_self, if_true, Functor.map_sum, Functor.map_zsmul, ev_map_bop,
   idc_self, op_id, CategoryTheory.Functor.map_id, Category.comp_id]
   rw [Finset.sum_range]
   dsimp only [dbl, alternatingFaceMapComplex]
@@ -719,7 +719,7 @@ theorem dbl_d_f (Y : SimplicialObject (SimplicialObject C)) (a b : ℕ) :
 theorem dbl_X_d (Y : SimplicialObject (SimplicialObject C)) (a b : ℕ) :
     ((dbl Y).X a).d (b + 1) b = (ev Y).map (dV a (b + 1) a b) := by
 
-  simp only [dV, and_self, ite_true, Functor.map_sum, Functor.map_zsmul, ev_map_bop,
+  simp only [dV, and_self, if_true, Functor.map_sum, Functor.map_zsmul, ev_map_bop,
   idc_self, op_id, CategoryTheory.Functor.map_id, NatTrans.id_app, Category.id_comp]
   rw [Finset.sum_range]
   change (AlternatingFaceMapComplex.obj (Y.obj (op (SimplexCategory.mk a)))).d (b + 1) b = _
@@ -742,7 +742,7 @@ theorem ιTotal_D₁ (Y : SimplicialObject (SimplicialObject C)) (a b k : ℕ) (
     symm
     refine Finset.sum_eq_zero (fun x _ => ?_)
     have hx : ¬ (0 = x.1.1 + 1 ∧ b = x.1.2) := by omega
-    simp only [dH, hx, ite_false, Functor.map_zero]
+    simp only [dH, hx, if_false, Functor.map_zero]
     exact zero_comp
   · rw [HomologicalComplex₂.d₁_eq _ _ (show (ComplexShape.down ℕ).Rel (a + 1) a from rfl) b k
       (by simp only [ComplexShape.π_def]; omega)]
@@ -758,7 +758,7 @@ theorem ιTotal_D₁ (Y : SimplicialObject (SimplicialObject C)) (a b k : ℕ) (
         have : x1 = a := by omega
         subst this
         rfl
-      simp only [dH, this, ite_false, Functor.map_zero]
+      simp only [dH, this, if_false, Functor.map_zero]
       exact zero_comp
     · intro hn
       exact absurd (Finset.mem_attach _ _) hn
@@ -775,7 +775,7 @@ theorem ιTotal_D₂ (Y : SimplicialObject (SimplicialObject C)) (a b k : ℕ) (
     symm
     refine Finset.sum_eq_zero (fun x _ => ?_)
     have hx : ¬ (a = x.1.1 ∧ 0 = x.1.2 + 1) := by omega
-    simp only [dV, hx, ite_false, Functor.map_zero]
+    simp only [dV, hx, if_false, Functor.map_zero]
     exact (congrArg _ zero_comp).trans (zsmul_zero _)
   · rw [HomologicalComplex₂.d₂_eq _ _ a (show (ComplexShape.down ℕ).Rel (b + 1) b from rfl) k
       (by simp only [ComplexShape.π_def]; omega)]
@@ -791,7 +791,7 @@ theorem ιTotal_D₂ (Y : SimplicialObject (SimplicialObject C)) (a b k : ℕ) (
         have : x2 = b := by omega
         subst this
         rfl
-      simp only [dV, this, ite_false, Functor.map_zero]
+      simp only [dV, this, if_false, Functor.map_zero]
       exact (congrArg _ zero_comp).trans (zsmul_zero _)
     · intro hn
       exact absurd (Finset.mem_attach _ _) hn
@@ -864,7 +864,7 @@ theorem ιz_ne (a b n : ℕ) (h : a + b ≠ n) : ιz Y a b n = 0 :=
 
 theorem dT_eq_zero (a b a' b' : ℕ) (h : a + b ≠ a' + b' + 1) : dT a b a' b' = 0 := by
   unfold dT dH dV
-  rw [ite_eq_right (by omega), ite_eq_right (by omega), smul_zero, add_zero]
+  rw [if_neg (by omega), if_neg (by omega), smul_zero, add_zero]
 
 theorem awF_eq (n : ℕ) :
     awF Y n = ∑ x ∈ antidiagonal n, (ev Y).map (awO n x.1 x.2) ≫ ιz Y x.1 x.2 n := by
@@ -939,7 +939,7 @@ theorem idc_self (n : ℕ) : idc n n = 𝟙 _ := by
 
 theorem ev_idO_self (a b : ℕ) : (ev Y).map (idO a b a b) = 𝟙 _ := by
   unfold idO
-  rw [ite_eq_left ⟨rfl, rfl⟩, ev_map_bop, idc_self, _root_.GlobalTheory.EZ.idc_self]
+  rw [if_pos ⟨rfl, rfl⟩, ev_map_bop, idc_self, _root_.GlobalTheory.EZ.idc_self]
   simp
   rfl
 
@@ -949,7 +949,7 @@ theorem sum_idO (a b n : ℕ) (h : a + b = n) :
   · rw [ev_idO_self, Category.id_comp]
   · intro y _ hy
     unfold idO
-    rw [ite_eq_right (fun h' => hy (Prod.ext h'.1.symm h'.2.symm)), Functor.map_zero, zero_comp]
+    rw [if_neg (fun h' => hy (Prod.ext h'.1.symm h'.2.symm)), Functor.map_zero, zero_comp]
   · intro hy
     exact absurd (Finset.HasAntidiagonal.mem_antidiagonal.2 h) hy
 
@@ -965,7 +965,7 @@ def homT (K : ∀ a b a' b' : ℕ, bo a b ⟶ bo a' b') (i j : ℕ) : (tot Y).X 
 theorem ιz_homT (K : ∀ a b a' b' : ℕ, bo a b ⟶ bo a' b') (a b n : ℕ) (h : a + b = n) :
     ιz Y a b n ≫ homT Y K n (n + 1) =
       ∑ x ∈ antidiagonal (n + 1), (ev Y).map (K a b x.1 x.2) ≫ ιz Y x.1 x.2 (n + 1) := by
-  rw [homT, ite_eq_left rfl, ιz_eq Y _ _ _ h, ι_totalDesc]
+  rw [homT, if_pos rfl, ιz_eq Y _ _ _ h, ι_totalDesc]
 
 theorem ιz_dNext (K : ∀ a b a' b' : ℕ, bo a b ⟶ bo a' b') (a b n : ℕ) (h : a + b = n) :
     ιz Y a b n ≫ dNext n (homT Y K) =
@@ -1019,13 +1019,13 @@ def htpyD (G : ∀ a b n : ℕ, bo a b ⟶ bo n n)
       𝟙 (bo n n) + H n (n + 1) ≫ dD (n + 1) n + dD n (n - 1) ≫ H (n - 1) n) :
     Homotopy (awC Y ≫ shufC Y G hG) (𝟙 (diagCx Y)) where
   hom := homD Y H
-  zero i j hij := ite_eq_right hij
+  zero i j hij := if_neg hij
   comm n := by
     rw [HomologicalComplex.comp_f, HomologicalComplex.id_f, Homotopy.prevD_chainComplex]
     change awF Y n ≫ shufF Y G n = _
     rw [awF_shufF, hH n]
     simp only [Functor.map_add (ev Y), Functor.map_comp]
-    rw [_root_.GlobalTheory.EZ.ev_map_dD_eq_diagCx_d, homD, ite_eq_left rfl, show (ev Y).map (𝟙 (bo n n)) = 𝟙 ((diagCx Y).X n) from (ev Y).map_id _]
+    rw [_root_.GlobalTheory.EZ.ev_map_dD_eq_diagCx_d, homD, if_pos rfl, show (ev Y).map (𝟙 (bo n n)) = 𝟙 ((diagCx Y).X n) from (ev Y).map_id _]
     cases n with
     | zero =>
       rw [Homotopy.dNext_zero_chainComplex]
@@ -1033,7 +1033,7 @@ def htpyD (G : ∀ a b n : ℕ, bo a b ⟶ bo n n)
       rw [this, Functor.map_zero, zero_comp, add_zero]
       abel
     | succ m =>
-      rw [Homotopy.dNext_succ_chainComplex, Nat.add_sub_cancel, _root_.GlobalTheory.EZ.ev_map_dD_eq_diagCx_d, homD, ite_eq_left rfl]
+      rw [Homotopy.dNext_succ_chainComplex, Nat.add_sub_cancel, _root_.GlobalTheory.EZ.ev_map_dD_eq_diagCx_d, homD, if_pos rfl]
       abel
 
 def htpyT (G : ∀ a b n : ℕ, bo a b ⟶ bo n n)
@@ -1045,7 +1045,7 @@ def htpyT (G : ∀ a b n : ℕ, bo a b ⟶ bo n n)
       ∑ x ∈ Finset.HasAntidiagonal.antidiagonal (a + b - 1), dT a b x.1 x.2 ≫ K x.1 x.2 a' b') :
     Homotopy (shufC Y G hG ≫ awC Y) (𝟙 (tot Y)) where
   hom := homT Y K
-  zero i j hij := ite_eq_right hij
+  zero i j hij := if_neg hij
   comm n := by
     rw [HomologicalComplex.comp_f, HomologicalComplex.id_f, Homotopy.prevD_chainComplex]
     change shufF Y G n ≫ awF Y n = _
@@ -1384,7 +1384,7 @@ lemma diagIso_hom_f (X : SimplicialObject Spc) (n : ℕ) :
 
 lemma ev_awO (X : SimplicialObject Spc) (n a : ℕ) (ha : a ≤ n) :
     (ev ((freeBi R).obj X)).map (awO n a (n - a)) = (free R).map (awP X n a (n - a)) := by
-  rw [awO, ite_eq_left (by omega), ev_map_bop, awP]
+  rw [awO, if_pos (by omega), ev_map_bop, awP]
   exact ((free R).map_comp _ _).symm
 
 end Sheaves
@@ -1440,21 +1440,6 @@ namespace GlobalTheory.EZ.Shuf
 
 theorem bop_id (n m : ℕ) : bop (𝟙 (SimplexCategory.mk n)) (𝟙 (SimplexCategory.mk m)) = 𝟙 (bo n m) := rfl
 
-theorem idc_self (n : ℕ) : idc n n = 𝟙 _ := by
-  ext j
-  have hj : (j : ℕ) < n + 1 := j.isLt
-  simp only [idc, clampHom, SimplexCategory.mkHom, SimplexCategory.Hom.toOrderHom_mk]
-  change min n (j : ℕ) = ((j : Fin (n + 1)) : ℕ)
-  omega
-
-theorem fc_comp_fc (n i j : ℕ) (hji : j < i) (hi : i ≤ n + 2) :
-    fc (n + 1) n j ≫ fc (n + 2) (n + 1) i = fc (n + 1) n (i - 1) ≫ fc (n + 2) (n + 1) j := by
-  ext k
-  have hk : (k : ℕ) < n + 1 := k.isLt
-  simp only [fc, clampHom, faceFun, SimplexCategory.mkHom, SimplexCategory.comp_toOrderHom,
-    SimplexCategory.Hom.toOrderHom_mk, OrderHom.comp_coe, Function.comp_apply, OrderHom.coe_mk]
-  split_ifs <;> omega
-
 theorem alt_double_sum {M : Type*} [AddCommGroup M] (n : ℕ)
     (F : (SimplexCategory.mk n ⟶ SimplexCategory.mk (n + 2)) → M) :
     ∑ i ∈ Finset.range (n + 3), ∑ j ∈ Finset.range (n + 2),
@@ -1467,12 +1452,12 @@ theorem dH_comp_dH (a b x y c d : ℕ) : dH a b x y ≫ dH x y c d = 0 := by
   · by_cases h2 : x = c + 1 ∧ y = d
     · obtain ⟨rfl, rfl⟩ := h1
       obtain ⟨rfl, rfl⟩ := h2
-      rw [ite_eq_left ⟨rfl, rfl⟩, ite_eq_left ⟨rfl, rfl⟩, Preadditive.sum_comp]
+      rw [if_pos ⟨rfl, rfl⟩, if_pos ⟨rfl, rfl⟩, Preadditive.sum_comp]
       simp only [Preadditive.comp_sum, Preadditive.zsmul_comp, Preadditive.comp_zsmul, _root_.GlobalTheory.EZ.Cone.bop_comp, smul_smul]
       have := alt_double_sum c (fun α => bop α (idc b b ≫ idc b b))
       simpa only [mul_comm] using this
-    · rw [ite_eq_right h2, comp_zero]
-  · rw [ite_eq_right h1, zero_comp]
+    · rw [if_neg h2, comp_zero]
+  · rw [if_neg h1, zero_comp]
 
 theorem dV_comp_dV (a b x y c d : ℕ) : dV a b x y ≫ dV x y c d = 0 := by
   unfold dV
@@ -1480,20 +1465,20 @@ theorem dV_comp_dV (a b x y c d : ℕ) : dV a b x y ≫ dV x y c d = 0 := by
   · by_cases h2 : x = c ∧ y = d + 1
     · obtain ⟨rfl, rfl⟩ := h1
       obtain ⟨rfl, rfl⟩ := h2
-      rw [ite_eq_left ⟨rfl, rfl⟩, ite_eq_left ⟨rfl, rfl⟩, Preadditive.sum_comp]
+      rw [if_pos ⟨rfl, rfl⟩, if_pos ⟨rfl, rfl⟩, Preadditive.sum_comp]
       simp only [Preadditive.comp_sum, Preadditive.zsmul_comp, Preadditive.comp_zsmul, _root_.GlobalTheory.EZ.Cone.bop_comp, smul_smul]
       have := alt_double_sum d (fun β => bop (idc a a ≫ idc a a) β)
       simpa only [mul_comm] using this
-    · rw [ite_eq_right h2, comp_zero]
-  · rw [ite_eq_right h1, zero_comp]
+    · rw [if_neg h2, comp_zero]
+  · rw [if_neg h1, zero_comp]
 
 theorem dH_comp_dV (c d : ℕ) :
     dH (c + 1) (d + 1) c (d + 1) ≫ dV c (d + 1) c d = dV (c + 1) (d + 1) (c + 1) d ≫ dH (c + 1) d c d := by
   unfold dH dV
-  rw [ite_eq_left ⟨rfl, rfl⟩, ite_eq_left ⟨rfl, rfl⟩, ite_eq_left ⟨rfl, rfl⟩, ite_eq_left ⟨rfl, rfl⟩,
+  rw [if_pos ⟨rfl, rfl⟩, if_pos ⟨rfl, rfl⟩, if_pos ⟨rfl, rfl⟩, if_pos ⟨rfl, rfl⟩,
     Preadditive.sum_comp, Preadditive.sum_comp]
   simp only [Preadditive.comp_sum, Preadditive.zsmul_comp, Preadditive.comp_zsmul, _root_.GlobalTheory.EZ.Cone.bop_comp, smul_smul,
-    idc_self, Category.id_comp, Category.comp_id]
+    TotSq.idc_self, Category.id_comp, Category.comp_id]
   rw [Finset.sum_comm]
   exact Finset.sum_congr rfl fun _ _ => Finset.sum_congr rfl fun _ _ => by rw [mul_comm]
 
@@ -1520,7 +1505,7 @@ theorem exists_shuffle : ∃ G : ∀ a b n : ℕ, bo a b ⟶ bo n n, G 0 0 0 = �
   obtain ⟨cone, ε, hε, h0, hs⟩ := _root_.GlobalTheory.EZ.Cone.coneContraction
   have hid : shufRec cone 0 0 0 = 𝟙 (bo 0 0) := by
     rw [shufRec_zero]
-    rw [idO, ite_eq_left ⟨rfl, rfl⟩, idc_self]
+    rw [idO, if_pos ⟨rfl, rfl⟩, TotSq.idc_self]
     exact bop_id 0 0
   refine ⟨fun a b n => shufRec cone n a b, hid, ?_⟩
   intro a b n
@@ -1528,7 +1513,7 @@ theorem exists_shuffle : ∃ G : ∀ a b n : ℕ, bo a b ⟶ bo n n, G 0 0 0 = �
   | zero =>
     intro hab
     dsimp only
-    rw [shufRec_succ, ite_eq_left hab, h0]
+    rw [shufRec_succ, if_pos hab, h0]
     have hr : ε a b (∑ x ∈ Finset.HasAntidiagonal.antidiagonal 0, dT a b x.1 x.2 ≫ shufRec cone 0 x.1 x.2) = 0 := by
       rw [Finset.Nat.antidiagonal_zero, Finset.sum_singleton]
       dsimp only
@@ -1540,7 +1525,7 @@ theorem exists_shuffle : ∃ G : ∀ a b n : ℕ, bo a b ⟶ bo n n, G 0 0 0 = �
   | succ n ih =>
     intro hab
     dsimp only at ih ⊢
-    rw [shufRec_succ, ite_eq_left hab, hs]
+    rw [shufRec_succ, if_pos hab, hs]
     have step : ∀ x ∈ Finset.HasAntidiagonal.antidiagonal (n + 1),
         (dT a b x.1 x.2 ≫ shufRec cone (n + 1) x.1 x.2) ≫ dD (n + 1) n =
           ∑ y ∈ Finset.HasAntidiagonal.antidiagonal n, (dT a b x.1 x.2 ≫ dT x.1 x.2 y.1 y.2) ≫

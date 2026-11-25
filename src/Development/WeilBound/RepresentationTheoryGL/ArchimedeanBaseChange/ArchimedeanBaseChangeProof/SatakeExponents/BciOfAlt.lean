@@ -149,13 +149,8 @@ theorem mulChi_absC_mulChi (n : ℕ) (z z' : ℂ) (φ : Sm E n) :
   congr 2
   ring
 
-theorem tw_tw {n : ℕ} (V : Submodule ℂ (Sm E n)) (a b : ℂ) : tw (tw V a) b = tw V (a + b) := by
-  ext ψ
-  constructor
-  · rintro ⟨_, ⟨φ, hφ, rfl⟩, rfl⟩
-    exact ⟨φ, hφ, (mulChi_absC_mulChi n b a φ).symm⟩
-  · rintro ⟨φ, hφ, rfl⟩
-    exact ⟨_, ⟨φ, hφ, rfl⟩, mulChi_absC_mulChi n b a φ⟩
+theorem tw_tw {n : ℕ} (V : Submodule ℂ (Sm E n)) (a b : ℂ) : tw (tw V a) b = tw V (a + b) :=
+  _root_.PositivityTheory.Rg.BcB.SpectralAccumulation.Cz.TwistConcentration.tw_tw V a b
 
 theorem map_mem_finVec {n : ℕ} {V : Submodule ℂ (Sm E n)} (f : Sm E n →ₗ[ℂ] Sm E n)
     (heq : ∀ o, ∀ φ ∈ V, f (act o φ) = act o (f φ)) {φ : Sm E n} (hφ : φ ∈ V)
@@ -1271,12 +1266,8 @@ theorem allLeaves_addTw {N : ℕ} (t : Tr E N) (α : ℕ → ℂ) (P : ∀ M : �
   | leaf V z => exact Iff.rfl
   | node t₁ t₂ ih₁ ih₂ => exact and_congr (ih₁ _) (ih₂ _)
 
-theorem strip_twists_length {N : ℕ} (t : Tr E N) : t.strip.twists.length = t.twists.length := by
-  induction t with
-  | leaf V z => rfl
-  | node t₁ t₂ ih₁ ih₂ =>
-    change (t₁.strip.twists ++ t₂.strip.twists).length = (t₁.twists ++ t₂.twists).length
-    rw [List.length_append, List.length_append, ih₁, ih₂]
+theorem strip_twists_length {N : ℕ} (t : Tr E N) : t.strip.twists.length = t.twists.length :=
+  _root_.PositivityTheory.Rg.BcB.SpectralAccumulation.Lim5.length_twists_strip t
 
 theorem addTw_congr {N : ℕ} (t : Tr E N) {α α' : ℕ → ℂ} (h : ∀ i < t.twists.length, α i = α' i) :
     t.addTw α = t.addTw α' := by

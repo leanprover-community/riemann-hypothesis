@@ -12,6 +12,7 @@ import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Log.Sum
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
@@ -220,15 +221,6 @@ lemma Icc_one_eq_Ioc (k : ℕ) : Finset.Icc 1 k = Finset.Ioc 0 k := by
   simp only [Finset.mem_Icc, Finset.mem_Ioc]
   omega
 
-lemma sum_log_eq_log_factorial (k : ℕ) :
-    ∑ n ∈ Finset.Ioc 0 k, Real.log n = Real.log (k.factorial : ℝ) := by
-  induction k with
-  | zero => simp
-  | succ k ih =>
-    rw [Finset.sum_Ioc_succ_top (Nat.zero_le k), ih, Nat.factorial_succ, Nat.cast_mul,
-      Real.log_mul (by positivity) (Nat.cast_ne_zero.2 (Nat.factorial_ne_zero k))]
-    ring
-
 lemma sum_log_eq (k : ℕ) :
     ∑ n ∈ Finset.Ioc 0 k, Real.log n = ∑ n ∈ Finset.Ioc 0 k, Λ n * ((k / n : ℕ) : ℝ) := by
   have h1 : ∀ n ∈ Finset.Ioc 0 k, Real.log n = ∑ d ∈ n.divisors, Λ d :=
@@ -274,14 +266,14 @@ lemma mertens_upper (k : ℕ) (hk : 1 ≤ k) : A k ≤ Real.log k + (Real.log 4 
     have h3 : (k:ℝ) * (Λ n / n) = Λ n * ((k:ℝ) / n) := by ring
     rw [h3]
     nlinarith [mul_le_mul_of_nonneg_left h2 hΛ]
-  rw [← sum_log_eq, sum_log_eq_log_factorial] at hmain
+  rw [← sum_log_eq, Real.sum_log_eq_log_factorial] at hmain
   have h4 : (k:ℝ) * A k ≤ k * (Real.log k + (Real.log 4 + 4)) := by nlinarith
   exact le_of_mul_le_mul_left h4 hk0
 
 lemma mertens_lower (k : ℕ) (hk : 1 ≤ k) : Real.log k - 1 ≤ A k := by
   have hk0 : (0:ℝ) < k := by exact_mod_cast hk
   have hfl : Real.log (k.factorial : ℝ) ≤ k * A k := by
-    rw [← sum_log_eq_log_factorial, sum_log_eq, A, Finset.mul_sum]
+    rw [← Real.sum_log_eq_log_factorial, sum_log_eq, A, Finset.mul_sum]
     apply Finset.sum_le_sum
     intro n _
     have hΛ : 0 ≤ Λ n := ArithmeticFunction.vonMangoldt_nonneg

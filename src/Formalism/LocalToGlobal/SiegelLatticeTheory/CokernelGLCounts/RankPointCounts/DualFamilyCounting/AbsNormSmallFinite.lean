@@ -15,8 +15,6 @@ namespace Formalism.L2.SG.Pf.Cnt
 
 open Formalism.HermitianLattices.Ext.L3
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem absNorm_small_finite (D : Formalism.BasicNotions.D7) :
     {p : PlF D | (Ideal.absNorm p.asIdeal : ℝ) < 3}.Finite := by
   have h : {I : Ideal (𝓞 D.host.F) | Ideal.absNorm I < 3}.Finite := by

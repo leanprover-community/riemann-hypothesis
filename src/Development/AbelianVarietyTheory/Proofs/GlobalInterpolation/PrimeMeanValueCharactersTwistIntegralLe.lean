@@ -431,30 +431,6 @@ open scoped Classical
 
 namespace GlobalTheory.PrimeMeanValue
 
-theorem sum_integral_le {ι : Type*} (s : Finset ι) (μ : Measure ℝ) (f : ι → ℝ → ℝ) (G : ℝ → ℝ)
-    (hm : ∀ i, AEStronglyMeasurable (f i) μ) (h0 : ∀ᵐ x ∂μ, ∀ i, 0 ≤ f i x)
-    (hG : Integrable G μ) (h : ∀ᵐ x ∂μ, ∑ i ∈ s, f i x ≤ G x) :
-    ∑ i ∈ s, ∫ x, f i x ∂μ ≤ ∫ x, G x ∂μ := by
-  have hi : ∀ i ∈ s, Integrable (f i) μ := fun i hi => by
-    refine hG.mono' (hm i) ?_
-    filter_upwards [h0, h] with x hx0 hx
-    rw [Real.norm_of_nonneg (hx0 i)]
-    exact (Finset.single_le_sum (f := fun i => f i x) (fun j _ => hx0 j) hi).trans hx
-  rw [← integral_finsetSum s hi]
-  exact integral_mono_ae (integrable_finsetSum s hi) hG h
-
-theorem kernel_eq (n δ x : ℝ) :
-    (if x < n ∧ n ≤ x * Real.exp δ then 1 / x else 0) =
-      (Set.Ico (n / Real.exp δ) n).indicator (fun x => 1 / x) x := by
-  rw [Set.indicator_apply]
-  refine if_congr ?_ rfl rfl
-  rw [Set.mem_Ico, div_le_iff₀ (Real.exp_pos δ), and_comm]
-
-theorem kernel_integral (n δ : ℝ) (hn : 0 < n) (hδ : 0 ≤ δ) :
-    IntegrableOn (fun x : ℝ => if x < n ∧ n ≤ x * Real.exp δ then 1 / x else 0) (Set.Ioi 0) ∧
-    ∫ x in Set.Ioi (0 : ℝ), (if x < n ∧ n ≤ x * Real.exp δ then 1 / x else 0) = δ := by
-  apply GlobalTheory.HybridLargeSieve.kernel_integral <;> assumption
-
 theorem conj_char {q : ℕ} [NeZero q] (χ : DirichletCharacter ℂ q) {u : ZMod q} (hu : IsUnit u) :
     (starRingEnd ℂ) (χ u) = χ u⁻¹ := by
   have h1 : χ u * χ u⁻¹ = 1 := by rw [← map_mul, ZMod.mul_inv_of_unit u hu, map_one]
@@ -559,7 +535,6 @@ theorem window (C : ℝ) (hC : 0 < C)
   obtain ⟨hp, h1, h2, h3⟩ := hS n hn
   refine mul_le_mul_of_nonneg_right ?_ (by positivity)
   have hn3 : (n : ℝ) ≤ 3 * x := by linarith
-  have hx3 : (2 * q * T) ^ 2 ≤ 3 * x := by linarith
   have hY : 2 * (q : ℝ) ≤ 2 * x / T := by
     rw [le_div_iff₀ hT0]
     have h2 : (2 : ℝ) * (2 * q * T) ≤ (2 * q * T) ^ 2 := by
@@ -604,7 +579,6 @@ theorem prime_mean_value : ∃ C : ℝ, 0 < C ∧ ∀ (q : ℕ) [NeZero q] (T N 
   obtain ⟨C, hC, hG⟩ := GlobalTheory.GallagherLemma.gallagher
   obtain ⟨B, hB0, hB⟩ := _root_.GlobalTheory.Lin.brun_titchmarsh_const
   refine ⟨C * (4 * B), by positivity, fun q _ T N y a hT hN => ?_⟩
-  have hT0 : 0 < T := by linarith
   have hδ : 0 ≤ 1 / T := by positivity
   have hN0 : 0 ≤ N := (sq_nonneg _).trans hN
   set P := primesIoc N y with hP
@@ -637,8 +611,8 @@ theorem prime_mean_value : ∃ C : ℝ, 0 < C ∧ ∀ (q : ℕ) [NeZero q] (T N 
   have hint : ∀ n ∈ P, Integrable (fun x : ℝ => w n *
       (if x < n ∧ (n : ℝ) ≤ x * Real.exp (1 / T) then 1 / x else 0))
       (volume.restrict (Set.Ioi 0)) := fun n hn =>
-    (kernel_integral n (1 / T) (hk n hn) hδ).1.const_mul _
-  have key := sum_integral_le (Finset.univ : Finset (DirichletCharacter ℂ q))
+    (GlobalTheory.HybridLargeSieve.kernel_integral n (1 / T) (hk n hn) hδ).1.const_mul _
+  have key := GlobalTheory.HybridLargeSieve.sum_integral_le (Finset.univ : Finset (DirichletCharacter ℂ q))
     (volume.restrict (Set.Ioi 0))
     (fun χ x => ‖∑ n ∈ P.filter
         (fun n : ℕ => x < n ∧ (n : ℝ) ≤ x * Real.exp (1 / T)), a n * χ (n : ZMod q)‖ ^ 2 / x)
@@ -673,7 +647,7 @@ theorem prime_mean_value : ∃ C : ℝ, 0 < C ∧ ∀ (q : ℕ) [NeZero q] (T N 
   refine (mul_le_mul_of_nonneg_left key (by positivity)).trans ?_
   rw [integral_finsetSum _ hint, mul_assoc, mul_assoc, Finset.mul_sum, Finset.mul_sum _ _ (4 * B)]
   refine mul_le_mul_of_nonneg_left (le_of_eq (Finset.sum_congr rfl fun n hn => ?_)) hC.le
-  rw [integral_const_mul, (kernel_integral n (1 / T) (hk n hn) hδ).2]
+  rw [integral_const_mul, (GlobalTheory.HybridLargeSieve.kernel_integral n (1 / T) (hk n hn) hδ).2]
   simp only [hw]
   have hlog : 0 < Real.log n := Real.log_pos (by exact_mod_cast (hmem n hn).2.2.one_lt)
   field_simp

@@ -48,8 +48,6 @@ open scoped ComplexOrder
 
 namespace GlobalTheory.IndefiniteRowSideFullHecke.LevelPlusSubgroup
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 def SizeRows (large₂ : SizeData₂ D) : Prop :=

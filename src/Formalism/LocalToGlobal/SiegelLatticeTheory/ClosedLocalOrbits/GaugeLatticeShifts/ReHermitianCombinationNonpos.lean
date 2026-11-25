@@ -414,8 +414,6 @@ end Sig
 
 section D7
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.TermDef Formalism.L2.SG.Corank
 
 def IotaLift (D : D7) (u u' : D.what₂.Word) : Prop :=
@@ -430,8 +428,6 @@ def PosW (D : D7) : Prop :=
 end D7
 
 section PosWPf
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat
 
@@ -555,8 +551,6 @@ theorem posW_holds (D : D7) : PosW D := by
 end PosWPf
 
 section Final
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.TermDef Formalism.L2.SG.Corank
 

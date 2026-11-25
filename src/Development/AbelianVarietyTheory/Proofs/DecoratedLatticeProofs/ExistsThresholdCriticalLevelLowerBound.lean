@@ -54,8 +54,6 @@ namespace GlobalTheory.CritLevelSize
 
 open Formalism.FourierDecayAlt Finset GlobalTheory.CritLevel
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem num_bound_pow (k m r e : ℕ) (B P ae c ka : ℝ) (hm : m = 2 * r + 2) (he : 2 * e + 40 ≤ m) (hk : 5 ≤ k)
     (hB : (k : ℝ) ^ 40 ≤ B) (hP : B ^ m ≤ P) (ha0 : 0 < ae) (ha : ae ≤ B ^ e) (hc : 1 / 8 ≤ c) (hka0 : 0 < ka)
     (hka : ka ≤ 4) : (k : ℝ) ^ (3 * r) ≤ c * (ka ^ (m - 1))⁻¹ * P / ae := by

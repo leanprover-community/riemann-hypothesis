@@ -55,7 +55,7 @@ namespace GlobalTheory.CompanionTheory.CosetReps
 
 theorem exists_fin_coset_reps (G : Type) [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
     (J H A : Subgroup G) (hJ : IsCompact (J : Set G)) (hH : IsOpen (H : Set G))
-    (_hHJ : H ≤ J) (_hAJ : A ≤ J) (hcov : ∀ y ∈ J, ∃ a ∈ A, a⁻¹ * y ∈ H) :
+    (hcov : ∀ y ∈ J, ∃ a ∈ A, a⁻¹ * y ∈ H) :
     ∃ r : ℕ, 0 < r ∧ ∃ x : Fin r → G, (∀ i, x i ∈ A) ∧
       ∀ y ∈ J, ∃! i, (x i)⁻¹ * y ∈ H := by
   classical

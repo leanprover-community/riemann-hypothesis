@@ -50,14 +50,6 @@ open Complex
 
 namespace Claim
 
-/-- A zero in the open critical strip descends to the inducing primitive character:
-the extra Euler factors are nonzero there. -/
-theorem prim_zero {N : ℕ} [NeZero N] (χ : DirichletCharacter ℂ N) [NeZero χ.conductor] {s : ℂ}
-    (hs0 : 0 < s.re) (hs1 : s.re < 1) (h : DirichletCharacter.LFunction χ s = 0) :
-    DirichletCharacter.LFunction χ.primitiveCharacter s = 0 := by
-  have hs : s ≠ 1 := by rintro rfl; norm_num at hs1
-  exact (LFunction_eq_zero_iff_primitiveCharacter χ hs0 (Or.inr hs)).mp h
-
 theorem gamma_ne_zero {M : ℕ} [NeZero M] (φ : DirichletCharacter ℂ M) {t : ℂ} (ht : 0 < t.re) :
     DirichletCharacter.gammaFactor φ t ≠ 0 := by
   rcases φ.even_or_odd with hφ | hφ
@@ -83,15 +75,14 @@ theorem prim_reflect {M : ℕ} [NeZero M] (ψ : DirichletCharacter ℂ M) (hψ :
 /-- Right-half-plane nonvanishing for all Dirichlet characters forces all zeros in the
 open critical strip onto the critical line. A zero to the left is first reduced to a
 primitive character and then reflected into the right half-plane. -/
-theorem strip (h : HalfPlane) : Strip := by
-  unfold HalfPlane at h
+theorem strip (h : DirichletLNonvanishingRightOfHalf) : DirichletLZerosOnLine := by
   intro N _ χ s hs0 hs1 hz
   have hs : s ≠ 1 := fun e => by rw [e, Complex.one_re] at hs1; exact lt_irrefl _ hs1
   have hs0' : s ≠ 0 := fun e => by rw [e, Complex.zero_re] at hs0; exact lt_irrefl _ hs0
   rcases lt_trichotomy s.re (1 / 2) with hlt | heq | hgt
   · exfalso
     have : NeZero χ.conductor := ⟨χ.conductor_ne_zero⟩
-    have hprimitive := prim_zero χ hs0 hs1 hz
+    have hprimitive := (LFunction_eq_zero_iff_primitiveCharacter χ hs0 (Or.inr hs)).mp hz
     have hreflected := prim_reflect χ.primitiveCharacter χ.primitiveCharacter_isPrimitive hs0 hs1 hprimitive
     have ht : (1 : ℂ) - s ≠ 1 := fun e => hs0' (sub_eq_self.mp e)
     exact h χ.conductor χ.primitiveCharacter⁻¹ (1 - s)
@@ -102,7 +93,7 @@ theorem strip (h : HalfPlane) : Strip := by
 /-- Specialize the strip result to the character of modulus one. Outside the open
 critical strip, use zeta nonvanishing for real part at least one and the classification
 of zeros for nonpositive real part. -/
-theorem zeta (h : HalfPlane) : Zeta := by
+theorem zeta (h : DirichletLNonvanishingRightOfHalf) : RiemannZetaZerosOnLine := by
   intro s hz htriv _
   by_cases hpos : 0 < s.re
   · by_cases hlt : s.re < 1

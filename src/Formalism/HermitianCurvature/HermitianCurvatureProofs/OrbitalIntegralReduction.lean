@@ -65,7 +65,7 @@ import Std.Tactic.BVDecide.Normalize.Prop
 
 noncomputable section
 
-open Matrix Formalism.DoubleCosetMeasures Formalism.FourierDecayAlt.A5 Formalism.FourierDecayAlt.A6 Formalism.FourierDecayAlt.P.A5x5 Formalism.FourierDecayAlt.P.A5x8 Formalism.FourierDecayAlt.P.A6x8 Filter Topology
+open Matrix Formalism.DoubleCosetMeasures Formalism.FourierDecayAlt.A5 Formalism.FourierDecayAlt.A6 Formalism.FourierDecayAlt.P.A5x5 Formalism.FourierDecayAlt.P.A5x8 Formalism.FourierDecayAlt.P.A6x8 Filter Topology Formalism.FourierDecayAlt.P.AdicNeighbourhood
 
 namespace Formalism.FourierDecayAlt.P.OrbitalIntegralReduction
 
@@ -426,7 +426,7 @@ theorem tk_fin_box {ι : Type} [Finite ι] (Λ : AddSubgroup K) (hΛ : IsOpen (�
   intro y hy i
   exact hy i
 
-theorem bx_sum (_hD : LocalDatum K R ψ) {ι κ : Type} [Fintype ι] [Fintype κ] {Λ L : AddSubgroup K}
+theorem bx_sum {ι κ : Type} [Fintype ι] [Fintype κ] {Λ L : AddSubgroup K}
     (hΛ : IsLat Λ) (hL : IsLat L) (f : (ι ⊕ κ → K) → ℂ) (hs : BSupp L f) :
     bx R Λ (ι ⊕ κ) f = bx R Λ ι (fun a => bx R Λ κ (fun b => f (Sum.elim a b))) := by
   unfold bx
@@ -3169,12 +3169,12 @@ theorem fa_main (hD : LocalDatum K R ψ) (hC : Cst R ϖ L₀ Λ₀ Q a b) (hL₀
     rintro (i | p)
     · exact (h1 i).1
     · exact h2 p
-  have h7 := bx_sum hD (ι := Pr (m + 1)) (κ := Fin m) hlatt hL₀ (fun w => Jh (fun k => w (ee k))) (by
+  have h7 := bx_sum (R := R) (ι := Pr (m + 1)) (κ := Fin m) hlatt hL₀ (fun w => Jh (fun k => w (ee k))) (by
     intro w hw j
     obtain ⟨k, rfl⟩ := fa_ee_bij.2 j
     exact hsJh (fun k => w (ee k)) hw k)
   have h8 := bx_equiv (R := R) (Equiv.ofBijective ee (fa_ee_bij (m := m))).symm Λt Jh
-  have h9 := bx_sum hD (ι := Fin m) (κ := Pr (m + 1)) hlatt hL₀ Jh hsJh
+  have h9 := bx_sum (R := R) (ι := Fin m) (κ := Pr (m + 1)) hlatt hL₀ Jh hsJh
   have e7 : bx R Λt (Pr (m + 1)) f = bx R Λt (Fin m ⊕ Pr (m + 1)) Jh := by
     rw [h8]
     exact h7.symm

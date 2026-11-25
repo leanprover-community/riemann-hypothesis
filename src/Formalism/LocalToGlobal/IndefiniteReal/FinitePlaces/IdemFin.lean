@@ -53,8 +53,6 @@ open scoped TensorProduct
 
 namespace Formalism.IndefR.Fin
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 theorem pin_eq {P Q : HeightOneSpectrum (𝓞 D.host.E)} {x : AE D} (hP : Formalism.L2.NTheta.IsIdemAt x P)

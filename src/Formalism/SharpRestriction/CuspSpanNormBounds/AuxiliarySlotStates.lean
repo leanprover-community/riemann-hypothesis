@@ -203,7 +203,7 @@ end Vectors
 
 namespace Lev
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 def betaB (L : Lev) (φ ψ : L.PF) : ℂ :=
   ∫ x : Fin (L.r + 1) → ℂ, (((∏ a : Fin L.r, Complex.normSq (cOf x a))⁻¹ : ℝ) : ℂ) *
@@ -308,7 +308,7 @@ end Prods
 
 namespace Lev
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 def dw (L : Lev) {n : ℕ} (N : ℕ) (c : AuxiliarySlotStates n → (Fin L.k0 → ℝ) → ℝ) (α : AuxiliarySlotStates n)
     (p : Fin (L.r + 1) → ℂ) (A : L.Hom) : L.Hom :=
@@ -340,7 +340,7 @@ end Lev
 
 section Deg
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 end Deg
 

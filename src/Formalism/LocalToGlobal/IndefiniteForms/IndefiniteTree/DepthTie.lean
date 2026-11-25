@@ -12,8 +12,6 @@ import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.ValBasic
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace Formalism.L2.Indef.Tree.DepthTie

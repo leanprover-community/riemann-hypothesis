@@ -51,8 +51,6 @@ open scoped TensorProduct
 
 namespace Formalism.IndefR.Fin
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 instance intEF : Algebra.IsIntegral (𝓞 D.host.F) (𝓞 D.host.E) := inferInstance

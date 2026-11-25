@@ -60,7 +60,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 open NumberField Matrix Complex MeasureTheory IsDedekindDomain
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR.Datum
 open scoped TensorProduct Classical ComplexConjugate ContDiff
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 

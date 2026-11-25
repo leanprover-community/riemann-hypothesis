@@ -19,8 +19,6 @@ open Classical
 
 namespace Formalism.L2.SG.Pf.Cnt.R1
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Gen
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {S : Formalism.BasicNotions.HSpace E}

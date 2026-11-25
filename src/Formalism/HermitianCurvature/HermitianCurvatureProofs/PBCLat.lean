@@ -322,8 +322,6 @@ theorem mul_single {f : ℕ} (σ : crystallineComparison.V f) (v : Fin f) (w : �
   · subst h; simp
   · simp [h]
 
-alias add_conj := _root_.Complex.add_conj
-
 def gen (f : ℕ) (R : ℝ) (p : Fin f × Bool) : crystallineComparison.V f :=
   Pi.single p.1 (if p.2 then (R : ℂ) * Complex.I else (R : ℂ))
 
@@ -348,7 +346,8 @@ theorem mem_dual_iff (f : ℕ) (R : ℝ) (hR : 0 < R) (σ : crystallineCompariso
   have hgen : ∀ v (β : Bool), crystallineComparison.psi (σ * gen f R (v, β)) = 1 ↔
       ∃ n : ℤ, (if β then -(2 * R * (σ v).im) else 2 * R * (σ v).re) = n := by
     intro v β
-    rw [gen, mul_single, psi_single, add_conj, ← _root_.Bl.general_b_fact_right_side.goal1]
+    rw [gen, mul_single, psi_single, Complex.add_conj,
+      ← _root_.Bl.general_b_fact_right_side.goal1]
     congr! 4
     cases β <;> simp [Complex.mul_re, Complex.mul_im] <;> ring
   constructor

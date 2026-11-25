@@ -53,8 +53,6 @@ namespace Formalism.MainNotions.S.TieN
 
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Mass
 
 open Formalism.MainNotions.S.LocalSplitGroups

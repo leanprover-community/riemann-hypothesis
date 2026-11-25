@@ -27,18 +27,8 @@ theorem eq_of_forall_exp_mul_I {a b : ℝ}
     have e : ((((a - b) * t : ℝ) : ℂ) * I) = (a : ℂ) * t * I - (b : ℂ) * t * I := by
       push_cast; ring
     rw [e, Complex.exp_sub, h t, div_self (Complex.exp_ne_zero _)]
-  rw [ht, Complex.exp_eq_one_iff] at h1
-  obtain ⟨n, hn⟩ := h1
-  have h2 : (π : ℂ) = ((n * (2 * π) : ℝ) : ℂ) := by
-    refine mul_right_cancel₀ I_ne_zero (hn.trans ?_)
-    push_cast; ring
-  have h3 : π = n * (2 * π) := by exact_mod_cast h2
-  have h4 : (1 : ℝ) = 2 * n := by
-    have hπ : π ≠ 0 := Real.pi_ne_zero
-    field_simp at h3
-    linarith
-  have h5 : (1 : ℤ) = 2 * n := by exact_mod_cast h4
-  omega
+  rw [ht, Complex.exp_pi_mul_I] at h1
+  norm_num at h1
 
 
 omit [NumberField K] in

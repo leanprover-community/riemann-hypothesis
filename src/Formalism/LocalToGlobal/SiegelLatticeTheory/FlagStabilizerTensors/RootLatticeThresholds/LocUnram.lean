@@ -56,7 +56,7 @@ namespace Formalism.L2.SG.Pf.LocUnramP
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.LocalSplitGroups ValuativeRel Formalism.L2.SG.Pf.LocCP
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar factRes
+attribute [local instance] factRes
 
 variable {D : D7} (p : PlF D)
 
@@ -116,7 +116,7 @@ namespace Formalism.L2.SG.Pf.LocUnramP
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.LocalSplitGroups ValuativeRel Formalism.L2.SG.Pf.LocCP
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar factRes
+attribute [local instance] factRes
 
 variable {D : D7} (p : PlF D)
 
@@ -264,7 +264,7 @@ namespace Formalism.L2.SG.Pf.LocUnramP
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.LocalSplitGroups ValuativeRel Formalism.L2.SG.Pf.LocCP
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar factRes
+attribute [local instance] factRes
 
 variable {D : D7} (p : PlF D)
 
@@ -321,7 +321,7 @@ namespace Formalism.L2.SG.Pf.LocUnramP
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.LocalSplitGroups ValuativeRel Formalism.L2.SG.Pf.LocCP
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar factRes
+attribute [local instance] factRes
 
 variable {D : D7} (p : PlF D)
 
@@ -388,7 +388,7 @@ namespace Formalism.L2.SG.Pf.LocUnramP
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.LocalSplitGroups ValuativeRel Formalism.L2.SG.Pf.LocCP
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar factRes
+attribute [local instance] factRes
 
 theorem core {R : Type*} [CommRing R] (ϖ A B T N K C Dd : R) (hpr : Prime ϖ) (hK : IsUnit K)
     (hKe : K = T ^ 2 - (N + N + N + N)) (e1 : A ^ 2 - B ^ 2 * N = C * ϖ)

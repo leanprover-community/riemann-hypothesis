@@ -47,8 +47,6 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestric
 
 namespace GlobalTheory.CovTop.Model
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 section Cover

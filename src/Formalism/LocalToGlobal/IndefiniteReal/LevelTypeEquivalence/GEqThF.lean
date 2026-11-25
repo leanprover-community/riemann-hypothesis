@@ -15,8 +15,6 @@ namespace Formalism.IndefR.Eqv.Act
 
 open Formalism.IndefR.Links Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Links.RealDat Formalism.IndefR.Datum
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Kernel1
 
 variable {D : D7} {S T : HSp D}

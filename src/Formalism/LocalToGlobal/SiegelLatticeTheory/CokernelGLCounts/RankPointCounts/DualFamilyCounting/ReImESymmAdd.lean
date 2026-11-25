@@ -61,8 +61,6 @@ namespace Formalism.L2.SG.Pf.NcReal.JX.CovB
 open Formalism.L2.SG.HidaSetting Formalism.L2.SG.RealObj Formalism.L2.SG.RealObj.InfCut Formalism.MainNotions.S Formalism.L2.SG.Pf.NcReal.JX
 open Formalism.L2.SG.NGCut.LeadingMinorIntegrality (dI mem_inv_coe dI_ne_bot star_mem_inv)
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 local notation "FIE" => FractionalIdeal (nonZeroDivisors (𝓞 D.host.E)) D.host.E

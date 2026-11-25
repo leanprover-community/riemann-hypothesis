@@ -62,7 +62,7 @@ open scoped InnerProductSpace ComplexOrder ContDiff
 
 namespace GlobalTheory
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 private lemma hs_mul_sub_one_comm_of_mem_Kset {n : ℕ} (ε : Fin n → Bool) {k : Matrix (Fin n) (Fin n) ℂ}
     (hk : k ∈ Kset ε) (y : Matrix (Fin n) (Fin n) ℂ) :

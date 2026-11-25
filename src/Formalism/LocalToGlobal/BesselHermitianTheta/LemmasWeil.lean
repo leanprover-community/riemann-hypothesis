@@ -49,8 +49,6 @@ open scoped TensorProduct
 
 namespace Formalism.L2.Theta
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Generic
 
 variable {R : Type*} [CommRing R] (c : R →+* R) {n m : ℕ}

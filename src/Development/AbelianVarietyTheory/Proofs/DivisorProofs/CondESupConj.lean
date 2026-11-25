@@ -53,8 +53,6 @@ noncomputable section
 
 namespace GlobalTheory.FunObj.SqNum
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem condE_sup_conj : ∀ {D : D7} {T : Type} {L : LevCh D T} (P : Places L), condE P ⊔ D.host.conj • condE P = ⊤ := by
   intro D T L P
   classical

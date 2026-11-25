@@ -1012,65 +1012,22 @@ theorem supInf_ofW (C : CxSt F) (Y : Var F) (L : Y.Dv) (W : HLat F) (ι : W.V �
   have e : frameAt W v.embedding = W.X v := by simp [frameAt]
   simp [Adl.nrmInf, ofW, e, Real.sqrt_eq_rpow]
 
-def geoOf (C : CxSt F) (K : CutSt C) (R : ResSt C) : DV.Geo F where
+def geoOf (C : CxSt F) (_K : CutSt C) (_R : ResSt C) : DV.Geo F where
   Var := Var F
   dim := Var.dim
   Fn := Var.Fn
   Dv := Var.Dv
-  Eff := Var.Eff
-  eff_zero := Var.eff_zero
-  eff_add := Var.eff_add
   H0 := Var.H0
-  degreeZeroCohomology_finiteDimensional := riemannRoch_finite F
-  mul_mem_riemannRochSpace_add := Var.mul_mem_riemannRochSpace_add
-  riemannRoch_mono := Var.riemannRoch_mono
-  KY := Var.KY
   Cl := Var.Cl
-  properCl := Var.properCl
-  subCl := Var.subCl
   supp := Var.supp
   inter := Var.inter
-  nef := Var.nef
-  big := Var.big
-  bpf := Var.bpf
-  phiBir := Var.phiBir
-  phiNoContr := Var.phiNoContr
   vanishOn := Var.vanishOn
-  hdim := Var.hdim
-  pts := Pts
-  ptsMeas := C.ptsMeas
-  vol := C.vol
-  FnC := C.FnC
-  cx := C.cx
-  cx_smul := C.cx_smul
-  Met := C.Met
-  mAdd := C.mAdd
-  mPow := C.mPow
-  fsMet := C.fsMet
-  pn := C.pn
-  pnK := C.pnK
-  mSmooth := C.mSmooth
-  mPsh := C.mPsh
-  redZero := C.redZero
-  agreeOn := C.agreeOn
-  resNorm := C.resNorm
   Adl := Adl C
   ofW := ofW C
   twist := fun _ => Adl.twist
   arTop := fun _ => Adl.arTop
   arVol := fun _ => Adl.arVol
   nefA := fun _ => Adl.Nef
-  supInf := fun _ => Adl.supInf
-  supFin := fun _ => Adl.supFin
-  cutGood := K.cutGood
-  cutHt := K.cutHt
-  cutOrd := K.cutOrd
-  resFull := R.resFull
-  resDeg := R.resDeg
-  supInf_ofW := supInf_ofW C
-  supInf_twist := fun _ A ci cf _ => supInf_twist A ci cf
-  supFin_twist := fun _ A ci cf _ => supFin_twist A ci cf
-  regOn := C.regOn
 
 theorem deg_ofW (C : CxSt F) (Y : Var F) (L : Y.Dv) (W : HLat F) (ι : W.V →ₗ[F] Y.Fn) :
     (ofW C Y L W ι).deg = (Y.inter (fun _ => L) : ℝ) := by simp [Adl.deg, ofW]

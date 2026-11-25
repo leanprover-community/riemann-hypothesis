@@ -45,7 +45,7 @@ noncomputable section
 open PositivityTheory.RgBcC
 open PositivityTheory.RgTw (Mat)
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 namespace GlobalTheory.CompanionTheory.FcSmooth
 

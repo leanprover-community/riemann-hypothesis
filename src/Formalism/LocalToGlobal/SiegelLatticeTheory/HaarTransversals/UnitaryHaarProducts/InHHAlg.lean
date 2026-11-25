@@ -159,8 +159,6 @@ end KuK0
 
 section NGroup
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} (X : HidaSetting D) (u : D.what₂.Word)
 
 theorem sigA_inclE (e : X.B.I.E) :

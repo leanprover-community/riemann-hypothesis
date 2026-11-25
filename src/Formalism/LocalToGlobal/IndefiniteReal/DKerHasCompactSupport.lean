@@ -254,7 +254,7 @@ end Gen
 
 section Model
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar Matrix.normedAddCommGroup Matrix.normedSpace
+attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 variable {D : D7} {V : HSp D} {S : D.what₂.Tau → SPar}
 
@@ -378,7 +378,7 @@ end Model
 
 section Meet
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar Matrix.normedAddCommGroup Matrix.normedSpace
+attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 variable {D : D7} {V : HSp D} {S : D.what₂.Tau → SPar}
 

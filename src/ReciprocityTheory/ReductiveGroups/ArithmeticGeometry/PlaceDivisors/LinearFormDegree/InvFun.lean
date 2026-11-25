@@ -7,7 +7,6 @@ import Mathlib.Topology.Sheaves.Presheaf
 
 @[expose] public section
 
-set_option autoImplicit false
 noncomputable section
 open MvPowerSeries
 

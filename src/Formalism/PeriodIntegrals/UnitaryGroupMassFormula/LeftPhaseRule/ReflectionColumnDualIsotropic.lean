@@ -57,7 +57,7 @@ open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.Q Fo
 
 noncomputable section
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 namespace Formalism.FourierDecayAlt.Q.LeftMultiplicationRule
 

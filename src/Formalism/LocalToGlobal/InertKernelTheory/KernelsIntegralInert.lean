@@ -1694,8 +1694,7 @@ theorem core (D : D7) (g : G1 p) (hOk : g.Ok) (hp : p ≠ 2)
       exact PI.FglShared.int_of_mul_eq_one (fun α => hGI α) (cc_expMv hG0) hmul
     · rw [ePh_eq g he1 hp r, subst_expMv hS hsum0 (by rw [hsumS]; exact hS0), hsumS,
         ← expMv_add'' hS0 hd0]
-      congr 1
-      ring
+      exact congrArg _ (by ring)
 
 theorem unitSubstLoc_of (hC : CcPrime) (hE : EndIntInertAll) (hN : PhNormOKInertAll) (hB : BiaddInertAll) :
     UnitSubstLoc := by

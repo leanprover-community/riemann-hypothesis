@@ -15,8 +15,6 @@ namespace Formalism.L2.SG.Pf.NcReal.JX
 
 open Formalism.L2.SG.HidaSetting Formalism.L2.SG.RealObj Formalism.L2.SG.RealObj.InfCut Formalism.MainNotions.S
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Phi
 
 variable {ι : Type} [Fintype ι] {r k : ℕ}

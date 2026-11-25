@@ -6,8 +6,6 @@ import Mathlib.Analysis.Matrix.Normed
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace ReciprocityTheory.ChartRestriction.G.AR.Inst.KapPf

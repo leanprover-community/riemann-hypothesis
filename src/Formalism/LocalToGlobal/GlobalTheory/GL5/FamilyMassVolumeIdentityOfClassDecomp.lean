@@ -207,8 +207,6 @@ namespace Formalism.L2.GlobalTheoryTheory.GenusMassVolumes
 open Formalism.BasicNotions Formalism.MainNotions.StandardLattice Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes MeasureTheory
 open scoped TensorProduct
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem mapAlg_mul {R A B : Type*} [CommSemiring R] [Semiring A] [Semiring B] [Algebra R A] [Algebra R B]
     (φ : A →ₐ[R] B) {n : ℕ} (X Y : Matrix (Fin n) (Fin n) A) : (X * Y).map φ = X.map φ * Y.map φ := by
   ext i j

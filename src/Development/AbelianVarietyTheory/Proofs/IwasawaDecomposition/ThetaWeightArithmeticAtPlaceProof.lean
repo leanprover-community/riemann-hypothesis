@@ -45,7 +45,6 @@ import Mathlib.Topology.Sheaves.Init
 @[expose] public section
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S NumberField Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Cx Formalism.DivisionValues
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.IndefiniteRowSideFullHecke.InfinityTypes Formalism.L2.NTheta
 
 namespace GlobalTheory.PairWeightArith

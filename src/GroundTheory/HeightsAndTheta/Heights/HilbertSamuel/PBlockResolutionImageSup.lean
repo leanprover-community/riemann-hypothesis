@@ -121,11 +121,6 @@ theorem isOpen_blockNonzero : IsOpen {z : (Σ k, ι k) → ℂ | ∀ k, ∃ i, z
   exact isOpen_iInter_of_finite fun k => isOpen_iUnion fun i =>
     isOpen_ne_fun (continuous_apply _) continuous_const
 
-theorem eval_torus {f : MRingOver ℂ ι} {k₀ : K} {n : ℕ} (hf : IsMultiHomog f (blockDeg k₀ n))
-    (c : K → ℂ) (z : (Σ k, ι k) → ℂ) :
-    eval (fun p => c p.1 * z p) f = c k₀ ^ n * eval z f := by
-  apply _root_.GroundTheory.Heights₂.Heights.HilbertSamuel.BlockResolutionSupBound.eval_torus <;> assumption
-
 theorem lift_blockNonzero (d : HSMBlockDatum D K ι Ω) {x y : d.R.X} (hy : y ∈ d.R.U x) :
     ∀ k, ∃ i, d.R.lift x y ⟨k, i⟩ ≠ 0 :=
   (d.R.mem x y hy).1

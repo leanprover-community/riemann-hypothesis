@@ -56,8 +56,6 @@ namespace Formalism.L2.S.Pv.ConvG
 
 open Formalism.L2.SG.HidaSetting Formalism.L2.SG.RealObj Formalism.L2.SG.Pf.EnergyAbs
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Glob
 
 variable {D : D7} (X : Formalism.L2.SG.HidaSetting.HidaSetting D)

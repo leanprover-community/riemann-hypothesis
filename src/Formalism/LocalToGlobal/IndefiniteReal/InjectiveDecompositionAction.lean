@@ -10,8 +10,6 @@ noncomputable section
 open MeasureTheory Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR.Heis
   IsDedekindDomain NumberField
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 namespace Formalism.IndefR.InjectiveDecompositionAction
 
 variable {D : D7}

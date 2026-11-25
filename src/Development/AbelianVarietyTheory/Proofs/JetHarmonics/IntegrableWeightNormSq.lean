@@ -70,7 +70,7 @@ section beta
 open MeasureTheory Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.P.JCx2 Formalism.FourierDecayAlt.P.JCx4
 open scoped ComplexConjugate
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 section
 variable {k r : ℕ}

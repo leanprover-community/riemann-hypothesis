@@ -15,8 +15,6 @@ open NumberField IsDedekindDomain ValuativeRel Formalism.BasicNotions Formalism.
 
 namespace Formalism.L2.SG.Pf.PCountEx
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section IntInv
 
 variable {F E : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [CommRing E] [Algebra F E]

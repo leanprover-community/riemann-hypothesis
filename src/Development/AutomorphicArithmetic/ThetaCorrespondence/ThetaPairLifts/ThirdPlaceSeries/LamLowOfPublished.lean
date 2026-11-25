@@ -496,14 +496,14 @@ theorem isConjChars_base_ofCore {F : Face D A} (h : GlobalTheory.Hk3.Core R F) (
             have h3 : (c' : D.host.E) = (q : D.host.E) := by simpa using hc2
             exact h3
           exact not_both (D.host.g_prime l) hq1 (hq4 l) hl (this ▸ hc1)
-      simp only [ite_eq_left hg]
+      simp only [if_pos hg]
       rw [locK_eq_one hun a k hk ha, mul_one]
       exact h.lev.chi i PP hg a k u hk hu
     · have hq : PP ∈ R.Q t := hPP.resolve_left hg
       obtain ⟨⟨q, hq1, hq2, -, hq4⟩, -⟩ := h.lev.Q_pl t PP hq
       have hun : (R.C.mu0 i).UnrAt PP := (R.C.isMu0 i).unr PP fun l hl =>
         not_both (D.host.g_prime l) hq1 (hq4 l) hl (q_mem hq2)
-      simp only [ite_eq_right hg]
+      simp only [if_neg hg]
       rw [locK_eq_one hun a k hk ha, one_mul]
       exact h.lev.xiR t PP hq a k u hk hu
 
@@ -526,7 +526,7 @@ theorem isLevelVec_base_ofCore {F : Face D A} (h : GlobalTheory.Hk3.Core R F) (i
         obtain ⟨l, hl⟩ := g_mem_ofCore R h hg
         obtain ⟨⟨q, hq1, hq2, -, hq4⟩, -⟩ := h.lev.Q_pl t PP.1 PP.2
         exact not_both (D.host.g_prime l) hq1 (hq4 l) hl (q_mem hq2)
-      simp only [ite_eq_right hn]
+      simp only [if_neg hn]
     · rfl
   simp only [omegaG_triv, hQ]
   exact h1
@@ -541,13 +541,13 @@ theorem chr_base_ofCore {F : Face D A} (h : GlobalTheory.Hk3.Core R F) (i : Fin 
     (fun _ PP => if PP ∈ R.Pg then (R.chi ((i : ℕ) + 1) PP)⁻¹ else R.xiR t PP) (fun _ PP => (R.chi ((i : ℕ) + 1) PP)⁻¹)
     (fun PP => if PP ∈ R.Pg then (R.chi ((i : ℕ) + 1) PP)⁻¹ else R.xiR t PP) (R.xiR t) ?_ ?_ _
   · intro c PP hP
-    simp only [ite_eq_left hP]
+    simp only [if_pos hP]
   · intro PP hP
     have hn : PP ∉ R.Pg := fun hg => by
       obtain ⟨l, hl⟩ := g_mem_ofCore R h hg
       obtain ⟨⟨q, hq1, hq2, -, hq4⟩, -⟩ := h.lev.Q_pl t PP hP
       exact not_both (D.host.g_prime l) hq1 (hq4 l) hl (q_mem hq2)
-    simp only [ite_eq_right hn]
+    simp only [if_neg hn]
 
 theorem exists_lift_ofCore {F : Face D A} (h : GlobalTheory.Hk3.Core R F) (i : Fin D.R.m) (t : T0) :
     ∃ th : (R.HV i t).H →ₗ[ℂ] (R.HW i (sg0 D A)).H, ∀ x, (R.HW i (sg0 D A)).e (th x) = R.thF i t x :=
@@ -563,7 +563,8 @@ theorem isLift_of_ofCore {F : Face D A} (h : GlobalTheory.Hk3.Core R F) (i : Fin
   have a := GlobalTheory.BaseScalar.integrableOn_of_isThetaLift hP.1 x (PiTensorProduct.tprod ℂ v) g
   have c := (congrFun (hP.2 x v) g).trans a.2
   refine ⟨a.1, ?_⟩
-  rwa [hth x]
+  rw [hth x]
+  exact c
 
 theorem scalar_of_lift_ofCore {F : Face D A} (hA : GlobalTheory.LowRow.AdelC R F) (h : GlobalTheory.Hk3.Core R F) (i : Fin D.R.m) (b : ℝ)
     (hb : Sizes D i b) (t : T0) (ht : PrimeToHost R t)
@@ -662,7 +663,8 @@ theorem l6m_le_log_lam3_base_place {D : D7} {G : Type} [Group G] [Fintype G] {Pl
   · rw [hC.scal.abs0 j A3.A.μ0 p hW, Real.log_exp]
   · obtain ⟨x, hx, hx0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hW
     have hpos : 0 < R.lam3 j A3.A.μ0 p A3.A.v0 := hP.2 j A3.A.μ0 p A3.A.v0
-    exact (hB j).trans (hL j _ x hx0 hpos (hA j A3.A.μ0 p x hx))
+    have heig := hA j A3.A.μ0 p x hx
+    exact (hB j).trans (hL j _ x hx0 hpos heig)
 
 end GlobalTheory.LowRow
 end -- clump:auto
@@ -783,7 +785,17 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 theorem op_idem {G H : Type} [Group G] [Fintype G] [AddCommGroup H] [Module ℂ H] (ρ : Representation ℂ G H) {a : G → ℂ}
     (ha : GlobalTheory.IndefiniteRowSideFullHecke.GoodBasisCentralIdempotents.IsCentralIdem a) (u : H) :
     (∑ g, a g • ρ g : H →ₗ[ℂ] H) ((∑ g, a g • ρ g : H →ₗ[ℂ] H) u) = (∑ g, a g • ρ g : H →ₗ[ℂ] H) u := by
-  exact GlobalTheory.LowTopBound.idem_apply ρ ha u
+  set E : H →ₗ[ℂ] H := ∑ g, a g • ρ g with hE
+  have h1 : E u = ∑ g, ∑ h, (a h * a (h⁻¹ * g)) • ρ g u := by
+    simp only [← Finset.sum_smul, ha.2, hE, LinearMap.sum_apply, LinearMap.smul_apply]
+  have h2 : E (E u) = ∑ h, ∑ g, (a h * a g) • ρ h (ρ g u) := by
+
+    simp only [hE, LinearMap.sum_apply, LinearMap.smul_apply, map_sum, map_smul, Finset.smul_sum, smul_smul]
+    rw [Finset.sum_comm]
+    simp only [mul_comm]
+  rw [h2, h1, Finset.sum_comm (f := fun g h => (a h * a (h⁻¹ * g)) • ρ g u)]
+  refine Finset.sum_congr rfl fun h _ => Fintype.sum_equiv (Equiv.mulLeft h) _ _ fun g => ?_
+  simp only [Equiv.coe_mulLeft, inv_mul_cancel_left, map_mul, Module.End.mul_apply]
 
 theorem adjoint_eq_self {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [FiniteDimensional ℂ H] (E : H →ₗ[ℂ] H)
     (h1 : ∀ u, E (E u) = E u) (h2 : ∀ x, E x = x → ∀ y, ⟪x, E y⟫_ℂ = ⟪x, y⟫_ℂ) : LinearMap.adjoint E = E := by
@@ -997,19 +1009,31 @@ section Survey
 variable {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T : Type} {A : FamIn D.what₂.LL G Pl0 T D.R.m}
   {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks)
 
-
-open Classical in
-theorem isConjChars_base_six {F : Face D A} (h : GlobalTheory.Hk3.Core R F) (i : Fin D.R.m) (t : T) :
-    IsConjChars R i t (RingEquiv.refl ℂ) (R.toLevCh.mu t ((i : ℕ) + 1)) R.eta
-      (fun PP => if PP ∈ R.Pg then (R.chi ((i : ℕ) + 1) PP)⁻¹ else R.xiR t PP) := by
-  exact GlobalTheory.LowTopCore.isConjChars_base_ofCore R h i t
+theorem g_mem_six {F : Face D A} (h : GlobalTheory.Hk3.Core R F) {PP : Pl D.host.E} (hP : PP ∈ R.Pg) : ∃ k, ((D.host.g k : ℕ) : 𝓞 D.host.E) ∈ PP.asIdeal := by
+  obtain ⟨k, hk⟩ := (h.lev.Pg PP).1 hP
+  refine ⟨k, ?_⟩
+  have h1 := R.C.P.pb_over k
+  rw [← hk] at h1
+  have h2 : algebraMap (𝓞 D.host.K) (𝓞 D.host.E) (D.host.g k : ℕ) ∈ PP.asIdeal := h1
+  simpa using h2
 
 
 open Classical in
 theorem chr_base_six {F : Face D A} (h : GlobalTheory.Hk3.Core R F) (i : Fin D.R.m) (t : T) :
     chrOf (Vc D i) (R.βV i) (datV i R.Pg (R.Q t) R.triv
       (fun PP => if PP ∈ R.Pg then (R.chi ((i : ℕ) + 1) PP)⁻¹ else R.xiR t PP)) = (levEnv _ (R.βV i) (R.datVt i t)).χ := by
-  exact GlobalTheory.LowTopCore.chr_base_ofCore R h i t
+  ext1 x
+  refine levFn_congr (R.βV i) D.R.r (r_le_V i) D.R.t 1 R.Pg (R.Q t) R.triv
+    (fun _ PP => if PP ∈ R.Pg then (R.chi ((i : ℕ) + 1) PP)⁻¹ else R.xiR t PP) (fun _ PP => (R.chi ((i : ℕ) + 1) PP)⁻¹)
+    (fun PP => if PP ∈ R.Pg then (R.chi ((i : ℕ) + 1) PP)⁻¹ else R.xiR t PP) (R.xiR t) ?_ ?_ _
+  · intro c PP hP
+    simp only [if_pos hP]
+  · intro PP hP
+    have hn : PP ∉ R.Pg := fun hg => by
+      obtain ⟨l, hl⟩ := g_mem_six R h hg
+      obtain ⟨⟨q, hq1, hq2, -, hq4⟩, -⟩ := h.lev.Q_pl t PP hP
+      exact not_both (D.host.g_prime l) hq1 (hq4 l) hl (q_mem hq2)
+    simp only [if_neg hn]
 
 end Survey
 
@@ -1029,7 +1053,7 @@ theorem isConjChars_at_six (h : GlobalTheory.Hk3.Core R F) (i : Fin D.R.m) {σ :
     IsConjChars R i A.μ0 s μ' η' (conjChar s (blkChar R i)) := by
   obtain ⟨μH, a1, a2⟩ := GlobalTheory.T.principalLevel_eigenparts_and_conjugate_characters.2.2.1 R F (GlobalTheory.Core5.of_core h) i σ s hσ μ' hμ
   obtain ⟨ηH, b1, b2⟩ := GlobalTheory.T.principalLevel_eigenparts_and_conjugate_characters.2.2.2 R F (GlobalTheory.Core5.of_core h) σ s hσ η' hη
-  obtain ⟨μB, -, c1, -, -, -, c2⟩ := isConjChars_base_six R h i A.μ0
+  obtain ⟨μB, -, c1, -, -, -, c2⟩ := GlobalTheory.LowTopCore.isConjChars_base_ofCore R h i A.μ0
   refine ⟨μH, ηH, a1, b1, a2, b2, fun PP hP a k u hk hu => Units.ext ?_⟩
   have e1 := a1 PP k
   have e2 := c1 PP k
@@ -1110,7 +1134,8 @@ theorem parts_scalar_six (h : GlobalTheory.Hk3.Core R F) (i : Fin D.R.m) (σ : D
   refine (hT ev (fun h0 => hev (e.symm.trans h0))).elim fun l a => ?_
   refine ⟨l, a.1, fun y hy => ?_, le_trans (sub_le_sub_right (hookPlus_le i σ hlog) _) a.2.2⟩
   have e1 := LinearMap.congr_fun (GlobalTheory.BaseScalar.adjLev_triv R T) y
-  exact (congrArg T e1).symm.trans (a.2.1 y (e.ge hy))
+  have e2 := a.2.1 y (e.ge hy)
+  exact (congrArg T e1).symm.trans e2
 
 
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilGramSignature in
@@ -1168,7 +1193,7 @@ theorem lowForm_of_emb_six {s : ℕ} (hOk : A.fam.Ok s) (h : GlobalTheory.Hk3.Co
   have h1 := (GlobalTheory.BigOnBase.j_thetaMat_base hB i A.μ0 x).trans (one_smul ℂ _).symm
   have h2 := hE i (sgAt D.what₂.embLL v) _ _ h1 fun σ' u hu =>
     hm.2 u (fun x' => csum_eq_zero h.models.HV h.models.jV i A.μ0 (toF_mem i A.μ0 x') hu) σ' x
-  have e : sgAt D.what₂.embLL v = v.embedding := ite_eq_right fun h0 => hv (h0.trans R.hv0.symm)
+  have e : sgAt D.what₂.embLL v = v.embedding := if_neg fun h0 => hv (h0.trans R.hv0.symm)
   have h3 := congrArg (fun σ => csumAt (A.MtCSD i A.μ0) σ ((A.fam.L i A.μ0).toF (liftLvl F) (liftSub R F i A.μ0) x)
     ((A.fam.L i A.μ0).toF (liftLvl F) (liftSub R F i A.μ0) x)) e
   have h4 := norm_wC (R := R) (F := F) i v ((thetaMat R F i A.μ0).mulVec x)

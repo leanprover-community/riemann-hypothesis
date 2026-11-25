@@ -1437,7 +1437,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.KapRed
 
-open Formalism.L2.SG.RowsJoinPinned (castGA)
 
 variable {D : D7}
 

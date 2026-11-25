@@ -815,31 +815,8 @@ theorem lev_zero_of_wt_gap (hH : HypsG) (hk : 1 ≤ k) {ε : Fin (2 * r + k + 1)
       PI.UpqRep.CDom ε μ (Formalism.QuantumDeterminants.lowK ε mu))
     (w : R.smSub) (hwS : (w : R.H) ∈ S)
     (hw : PI.UpqRep.IsWtOn (PI.UpqRep.Kset ε) (fun g => R.σ (Q⁻¹ * g * Q)) (Formalism.QuantumDeterminants.lowK ε mu) (w : R.H)) :
-    Lev ε E mu 0 w := by
-  have hK : PI.KFinSmooth := hH.1.2.2.1
-  have hRS : R.IsDS ε mu := GlobalTheory.isDS_of_isDG hR
-  obtain ⟨-, hS2⟩ := GlobalTheory.CompactStable.kStable_smooth_and_stable hK k r ε mu R hRS Q hQ S hfin hst
-  obtain ⟨hw1, hw2⟩ := GlobalTheory.TorusWeight.torus_weight_action hK k r ε mu R hRS Q E hQ hE (Formalism.QuantumDeterminants.lowK ε mu) w hw
-  have hMod := Gp91.GlobalTheory.isMod_smooth_of_isDS hH k r ε mu R hk hR Q E hQ hE
-  refine GlobalTheory.lev_zero_of_kHighest _ _ _ E _ w hMod.1 hMod.2.1 ⟨hw1, ?_⟩ ?_
-  · intro a b hab he
-    by_contra h0
-    have hmem : ((E a b w : R.smSub) : R.H) ∈ S := by
-      rw [hE a b w]; exact hS2 a b he _ hwS
-    have h0' : ((E a b w : R.smSub) : R.H) ≠ 0 := fun h => h0 (Subtype.ext h)
-    exact GlobalTheory.DominantRootSums.not_cDom_add_root _ ε _ a b hab (hmax _ _ hmem h0' (hw2 a b))
-  · have hle : Formalism.REAL.kSpan ε E w ≤ S.comap R.smSub.subtype := by
-      refine sInf_le ⟨hwS, ?_⟩
-      intro a b he x hx
-      show ((E a b x : R.smSub) : R.H) ∈ S
-      rw [hE a b x]; exact hS2 a b he _ hx
-    have : FiniteDimensional ℂ (S.comap R.smSub.subtype) :=
-      FiniteDimensional.of_injective
-        ((R.smSub.subtype.comp (S.comap R.smSub.subtype).subtype).codRestrict S (fun x => x.2))
-        (fun x y h => by
-          have h' := congrArg Subtype.val h
-          exact Subtype.ext (Subtype.ext h'))
-    exact Submodule.finiteDimensional_of_le hle
+    Lev ε E mu 0 w :=
+  _root_.GlobalTheory.MomOneGap.lev_zero_of_wt hH hk hR hQ hE S hfin hst hmax w hwS hw
 
 theorem weightedMass_bound_lowestType_largeGap (hH : GlobalTheory.GapIn.Hyp) (k r : ℕ) (Wp : Type) [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
     [CompleteSpace Wp] [FiniteDimensional ℂ Wp] (lam : Fin (2 * r + k + 1) → ℝ) (u : ℕ → ℝ) (b bv ga h : ℝ) (q0 : ℕ)

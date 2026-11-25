@@ -54,8 +54,6 @@ open scoped TensorProduct
 
 namespace GlobalTheory.TwInputs.Move
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Tensor
 
 variable {R R' K K' M M' : Type} [CommRing R] [CommRing R'] [AddCommGroup K] [AddCommGroup K'] [AddCommGroup M] [AddCommGroup M']

@@ -53,7 +53,7 @@ namespace PositivityTheory.RgBcC.LfSt.ChainOf2
 open PositivityTheory.RgBcC PositivityTheory.RgBcC.LfSt.ChainPf
 open PositivityTheory.RgTw (Mat G th tw hb)
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 variable {n : ℕ}
 

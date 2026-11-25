@@ -50,7 +50,7 @@ namespace PositivityTheory.RgBcC
 
 open PositivityTheory.RgTw (Mat hb)
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 def TDOf : Prop := Avg → HbOrtho → SwapLaws → MatrixFrechetDerivativeAtZero → WedgeDer → ∀ (n : ℕ) (lam : Fin n → ℤ),
   lefT n lam * (∑ p, lefε n lam (hb p) * fderiv ℝ (lefFr n lam) 1 (hb p)) =

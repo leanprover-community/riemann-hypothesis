@@ -84,10 +84,8 @@ theorem phi_surjective (n t : ℕ) : Function.Surjective (phi (k := k) n t) := b
   rintro ⟨g, h⟩
   exact ⟨lift2 g h, phi_lift2 g h⟩
 
-theorem base (hc : Continuous ψ) (h1 : ψ ≠ 1) (Y : Representation ℂ (GL (Fin n) k × GL (Fin t) k) V)
-    (hYs : IsSmooth Y) (hYi : Y.IsIrreducible) :
-    HasFiniteLength (twAct Y (rightUnip k n t) (rightWhit k ψ n t) (MonoidHom.inl _ _) (inl_stab ψ n t)) := by
-  exact CompanionTheory.RgGu.NR.DerFin.base ψ hc h1 Y hYs hYi
+theorem phi_continuous (n t : ℕ) : Continuous (phi (k := k) n t) :=
+  (continuous_apply 0).prodMk (continuous_apply 1)
 
 theorem finLen (hc : Continuous ψ) (h1 : ψ ≠ 1) (Mr : Representation ℂ (GL (Fin n) k × GL (Fin t) k) V)
     (hMs : IsSmooth Mr) (hM : HasFiniteLength Mr) :

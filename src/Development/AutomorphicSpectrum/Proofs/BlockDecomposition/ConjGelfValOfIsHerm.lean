@@ -52,7 +52,7 @@ open scoped ContDiff ComplexConjugate InnerProductSpace
 open PositivityTheory.RgTw (Mat G)
 open PositivityTheory.RgBcC
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 namespace GlobalTheory.CompanionTheory.WaveMult
 

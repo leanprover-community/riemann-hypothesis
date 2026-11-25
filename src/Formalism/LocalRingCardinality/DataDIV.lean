@@ -63,75 +63,15 @@ structure Geo (F : Type) [Field F] [NumberField F] [StarRing F] where
   Dv : Var → Type
   [dvGrp : ∀ Y, AddCommGroup (Dv Y)]
 
-  Eff : ∀ Y, Dv Y → Prop
-  eff_zero : ∀ Y, Eff Y 0
-  eff_add : ∀ Y a b, Eff Y a → Eff Y b → Eff Y (a + b)
-
   H0 : ∀ Y, Dv Y → Submodule F (Fn Y)
-  degreeZeroCohomology_finiteDimensional : ∀ Y Δ, FiniteDimensional F (H0 Y Δ)
-  mul_mem_riemannRochSpace_add : ∀ Y Δ Δ' (f g : Fn Y), f ∈ H0 Y Δ → g ∈ H0 Y Δ' → f * g ∈ H0 Y (Δ + Δ')
-  riemannRoch_mono : ∀ Y Δ Δ', Eff Y (Δ' - Δ) → H0 Y Δ ≤ H0 Y Δ'
-
-  KY : ∀ Y, Dv Y
 
   Cl : Var → Type
-
-  properCl : ∀ Y, Cl Y → Prop
-
-  subCl : ∀ Y, Cl Y → Cl Y → Prop
 
   supp : ∀ Y, Dv Y → Cl Y
 
   inter : ∀ Y, (Fin (dim Y) → Dv Y) → ℤ
 
-  nef : ∀ Y, Dv Y → Prop
-
-  big : ∀ Y, Dv Y → Prop
-
-  bpf : ∀ Y, Dv Y → Set (Fn Y) → Prop
-
-  phiBir : ∀ Y, Dv Y → Set (Fn Y) → Prop
-
-  phiNoContr : ∀ Y, Dv Y → Set (Fn Y) → Cl Y → Prop
-
   vanishOn : ∀ Y, Dv Y → Fn Y → Cl Y → Prop
-
-  hdim : ∀ Y, ℕ → Dv Y → ℕ
-
-  pts : ∀ Y, (F →+* ℂ) → Type
-  [ptsMeas : ∀ Y σ, MeasurableSpace (pts Y σ)]
-
-  vol : ∀ Y σ, Measure (pts Y σ)
-
-  FnC : ∀ Y, (F →+* ℂ) → Type
-  [fnCRing : ∀ Y σ, CommRing (FnC Y σ)]
-  [fnCAlg : ∀ Y σ, Algebra ℂ (FnC Y σ)]
-
-  cx : ∀ Y σ, Fn Y →+* FnC Y σ
-  cx_smul : ∀ Y σ (a : F) (f : Fn Y), cx Y σ (a • f) = σ a • cx Y σ f
-
-  Met : ∀ Y, (F →+* ℂ) → Dv Y → Type
-
-  mAdd : ∀ Y σ Δ Δ', Met Y σ Δ → Met Y σ Δ' → Met Y σ (Δ + Δ')
-
-  mPow : ∀ Y σ Δ (k : ℕ), Met Y σ Δ → Met Y σ (k • Δ)
-
-  fsMet : ∀ Y σ Δ {k : Type} [Fintype k], (k → FnC Y σ) → Met Y σ Δ
-
-  pn : ∀ Y σ Δ, Met Y σ Δ → FnC Y σ → pts Y σ → ℝ
-
-  pnK : ∀ Y σ Δ, Met Y σ Δ → FnC Y σ → pts Y σ → ℝ
-
-  mSmooth : ∀ Y σ Δ, Met Y σ Δ → Prop
-
-  mPsh : ∀ Y σ Δ, Met Y σ Δ → (pts Y σ → ℝ) → Prop
-
-  redZero : ∀ Y σ, Dv Y → (Fin (dim Y) → FnC Y σ) → Set (pts Y σ) → Prop
-
-  agreeOn : ∀ Y σ, Dv Y → FnC Y σ → FnC Y σ → Set (pts Y σ) → Prop
-
-  resNorm : ∀ Y σ Δ, Met Y σ Δ → ∀ Δs, Met Y σ Δs → (Fin (dim Y) → FnC Y σ) → FnC Y σ →
-    pts Y σ → ℝ
 
   Adl : Var → Type
 
@@ -145,41 +85,7 @@ structure Geo (F : Type) [Field F] [NumberField F] [StarRing F] where
 
   nefA : ∀ Y, Adl Y → Prop
 
-  supInf : ∀ Y, Adl Y → InfinitePlace F → ℕ → Fn Y → ℝ
-
-  supFin : ∀ Y, Adl Y → HeightOneSpectrum (𝓞 F) → ℕ → Fn Y → ℝ
-
-  cutGood : ∀ Y, Cl Y → ∀ (E : Type) [Field E] [NumberField E] [Algebra F E] {n : ℕ},
-    (Fin n → Fn Y) → (Fin (dim Y) → Fin n → 𝓞 E) → Prop
-
-  cutHt : ∀ Y, Adl Y → ∀ (E : Type) [Field E] [NumberField E] [Algebra F E] {n : ℕ},
-    (Fin n → Fn Y) → (Fin (dim Y) → Fin n → 𝓞 E) → ℝ
-
-  cutOrd : ∀ Y (E : Type) [Field E] [NumberField E] [Algebra F E] {n : ℕ},
-    (Fin n → Fn Y) → (Fin (dim Y) → Fin n → 𝓞 E) → Dv Y → Fn Y → ℕ
-
-  resFull : ∀ Y (E : Type) [Field E] [NumberField E] [Algebra F E] {n : ℕ},
-    (Fin n → Fn Y) → (Fin (dim Y) → Fin n → 𝓞 E) → ∀ (M0 : HLat F), (M0.V →ₗ[F] Fn Y) →
-    Adl Y → Prop
-
-  resDeg : ∀ Y (E : Type) [Field E] [NumberField E] [Algebra F E] {n : ℕ},
-    (Fin n → Fn Y) → (Fin (dim Y) → Fin n → 𝓞 E) → ∀ (M0 : HLat F), (M0.V →ₗ[F] Fn Y) →
-    Adl Y → ℝ
-
-  supInf_ofW : ∀ Y (L : Dv Y) (W : HLat F) (ι : W.V →ₗ[F] Fn Y) (v : InfinitePlace F) (τ : ℕ)
-    (f : Fn Y), supInf Y (ofW Y L W ι) v τ f =
-      ⨆ y, Real.sqrt (pn Y v.embedding (τ • L) (mPow Y v.embedding L τ
-        (fsMet Y v.embedding L (fun k : W.ι => ∑ i, (W.X v) i k • cx Y v.embedding (ι (W.b i)))))
-        (cx Y v.embedding f) y)
-
-  supInf_twist : ∀ Y (Lb : Adl Y) ci cf, (Function.support cf).Finite → ∀ (v : InfinitePlace F) (τ : ℕ) (f : Fn Y),
-    supInf Y (twist Y Lb ci cf) v τ f = Real.exp (-((τ : ℝ) * ci v)) * supInf Y Lb v τ f
-  supFin_twist : ∀ Y (Lb : Adl Y) ci cf, (Function.support cf).Finite → ∀ (v : HeightOneSpectrum (𝓞 F)) (τ : ℕ)
-    (f : Fn Y), supFin Y (twist Y Lb ci cf) v τ f = Real.exp (-((τ : ℝ) * cf v)) * supFin Y Lb v τ f
-
-  regOn : ∀ Y σ, Dv Y → FnC Y σ → Set (pts Y σ) → Prop
-
-attribute [instance] Geo.fnField Geo.fnAlg Geo.dvGrp Geo.ptsMeas Geo.fnCRing Geo.fnCAlg
+attribute [instance] Geo.fnField Geo.fnAlg Geo.dvGrp
 
 section Poly
 variable (Tau : Type) [Fintype Tau] (N : ℕ)
@@ -468,10 +374,6 @@ structure DivX (D : D7) : Type 1 where
   jC : ∀ (p : ℕ) [Fact p.Prime], PlP p → (DV.KW p →+* ℂ)
 
   Mp : letI := D.host.cmStar; ∀ (_S : HSpace D.host.E) (_κ : Lev) (p : ℕ) [Fact p.Prime], PlP p → Type
-
-  md : letI := D.host.cmStar; ∀ (S : HSpace D.host.E) (κ : Lev) (p : ℕ) [Fact p.Prime] (la : PlP p),
-    Mp S κ p la →
-      DV.Mdl D p (shv S κ).N (DV.rkOf (DV.PsiOf D (jC p la)) (shv S κ).N (shv S κ).j)
 
   vdd : ℕ → D.what₂.Tau → ℝ
   vdd_unram : ∀ p τ, DV.UnramE D p → vdd p τ = 0

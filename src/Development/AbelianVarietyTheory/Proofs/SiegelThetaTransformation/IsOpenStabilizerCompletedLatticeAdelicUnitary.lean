@@ -46,7 +46,6 @@ public import Development.AbelianVarietyTheory.Definitions.ExistenceOfLattices.H
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta MeasureTheory NumberField
 open scoped TensorProduct Topology
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.StabOpen
 

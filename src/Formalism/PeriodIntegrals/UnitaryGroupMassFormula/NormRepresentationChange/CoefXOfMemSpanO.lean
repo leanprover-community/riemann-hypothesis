@@ -53,8 +53,6 @@ namespace PI.NRCW
 
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat PI.PairValDefs IsDedekindDomain
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section IntP
 
 variable {D : D7} (P : HeightOneSpectrum (𝓞 D.host.E))

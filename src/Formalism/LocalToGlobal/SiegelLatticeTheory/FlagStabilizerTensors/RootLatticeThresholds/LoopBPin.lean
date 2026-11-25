@@ -18,8 +18,6 @@ open NumberField MeasureTheory Formalism.BasicNotions Formalism.MainNotions.S Fo
 
 namespace Formalism.L2.SG.Pf.LoopBPin
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} {X : HidaSetting D} {Y : Full X}
 
 theorem isFundR_fundOf {u u' : D.what₂.Word} (s : TT Y u u') : LoopTerm.IsFundR s (TermOp.FundOf s) := by

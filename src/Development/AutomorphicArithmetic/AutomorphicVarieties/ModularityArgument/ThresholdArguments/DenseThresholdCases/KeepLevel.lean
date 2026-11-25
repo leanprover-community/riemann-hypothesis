@@ -161,7 +161,6 @@ theorem UpperTheory.V.Z.Win.T2.local_fixed_vectors_statement :
       rw [← map_natCast (algebraMap F (w.adicCompletion F)), map_ne_zero]
       exact Nat.cast_ne_zero.2 (by omega)
     have hu0 : uniformizer (w.adicCompletion F) ≠ 0 := by simp
-    have : Nontrivial (ValueGroupWithZero (w.adicCompletion F)) := GroupWithZero.toNontrivial
     have hv0 : valuation (w.adicCompletion F) (M : w.adicCompletion F) ≠ 0 := by simpa using hM0
     let γ : (ValueGroupWithZero (w.adicCompletion F))ˣ :=
       Units.mk0 (valuation _ (M : w.adicCompletion F) / uniformizer (w.adicCompletion F)) (div_ne_zero hv0 hu0)

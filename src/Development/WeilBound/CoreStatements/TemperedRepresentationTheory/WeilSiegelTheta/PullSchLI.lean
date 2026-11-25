@@ -45,8 +45,6 @@ open scoped Matrix
 open Formalism.BasicNotions Formalism.L2.Theta Formalism.IndefR.Datum
 open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 namespace PositivityTheory.GramSchwartzFunctions
 
 def PullSchLI : Prop :=

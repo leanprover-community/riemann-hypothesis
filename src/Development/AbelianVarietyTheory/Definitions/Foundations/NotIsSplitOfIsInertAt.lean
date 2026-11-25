@@ -417,8 +417,6 @@ section Record
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 theorem resEta_iff (χ : (AE D)ˣ →* Circle) (k : ℕ) :

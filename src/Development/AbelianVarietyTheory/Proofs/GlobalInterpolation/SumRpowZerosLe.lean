@@ -795,7 +795,6 @@ lemma pointwise (c : ℕ → ℂ) (hc : ∀ n, ‖c n‖ ≤ 1) {r δ : ℝ} (hr
   · simp [primesIoc]
   have hn' : (0 : ℝ) < n := by exact_mod_cast hn
   have hl : 0 ≤ Real.log n := Real.log_natCast_nonneg n
-  have hΛ : 0 ≤ Λ n := vonMangoldt_nonneg
   have key : ∀ w : ℝ, 0 ≤ w → ‖((Λ n / n * w : ℝ) : ℂ) * c n‖ ≤ Λ n / n * w := by
     intro w hw
     rw [norm_mul, Complex.norm_real, Real.norm_of_nonneg (by positivity)]
@@ -923,7 +922,6 @@ theorem large_mean_of_large_derivative : ∀ A : ℝ, 1 ≤ A → ∃ a b C r₀
     have : 0 ≤ Λ n := vonMangoldt_nonneg
     positivity
   have hA0 : 0 < A := by linarith
-  have hC0 : 0 < C := by linarith
   set η : ℝ := 1 / (16 * C * A) with hη
   have hη0 : 0 < η := by positivity
   have hη1 : η ≤ 1 := by
@@ -999,7 +997,6 @@ theorem large_mean_of_large_derivative : ∀ A : ℝ, 1 ≤ A → ∃ a b C r₀
         gcongr
         have : 0 ≤ δ / 3 * K / r := by positivity
         linarith
-  have hK0 : (0 : ℝ) < K := by linarith
   have e6 : A ^ (2 * (m + 2)) * (4 * (32 / δ * K)) ≤
       Real.exp ((6 * Real.log A + 4 * (32 / δ)) * K) := by
     have h3 : A ^ (2 * (m + 2)) ≤ A ^ (6 * K) := pow_le_pow_right₀ hA (by omega)
@@ -1125,7 +1122,6 @@ namespace GlobalTheory.Lin.LogFree
 theorem principal_height : ∃ η : ℝ, 0 < η ∧ ∀ (q : ℕ) [NeZero q] (s : ℂ), 1 - η ≤ s.re → s.re < 1 →
     LFunction (1 : DirichletCharacter ℂ q) s = 0 → 3 ≤ |s.im| := by
   obtain ⟨c, hc, H⟩ := GlobalTheory.ZeroFreePrincipal.zero_free
-  have h5 : 0 < Real.log 5 := Real.log_pos (by norm_num)
   refine ⟨min (1 / 2) (c / Real.log 5), by positivity, fun q _ s h1 h2 h0 => ?_⟩
   have hs : s ≠ 1 := by rintro rfl; simp at h2
   have hre : 0 < s.re := by have := min_le_left (1 / 2 : ℝ) (c / Real.log 5); linarith
@@ -1417,7 +1413,6 @@ theorem count_param : ∃ a D C C' r₀ K₀ η : ℝ, 0 < a ∧ 0 < D ∧ 0 < C
   rw [hMdef, Real.log_exp] at hmean
   have h6 := hsum.trans (mul_le_mul_of_nonneg_left hmean (by positivity))
   generalize (∑ χ : DirichletCharacter ℂ q, ∑ᶠ ρ ∈ zerosBox χ σ T, (ord χ ρ : ℝ)) = S at h6 ⊢
-  have he := Real.exp_pos (C4 * K)
   have h7 := mul_le_mul_of_nonneg_left h6 (show 0 ≤ Real.exp (C4 * K) * r ^ 2 by positivity)
   rw [Real.exp_neg] at h7
   calc S = Real.exp (C4 * K) * r ^ 2 * ((Real.exp (C4 * K))⁻¹ / r ^ 3 * (2 * (r / 2)) * S) := by
@@ -1562,11 +1557,6 @@ theorem mem_disc_of_nonneg {q : ℕ} [NeZero q] (χ : DirichletCharacter ℂ q) 
     linarith
   · rintro rfl
     simp at h2
-
-theorem mem_disc {q : ℕ} [NeZero q] (χ : DirichletCharacter ℂ q) {T : ℝ} {ρ : ℂ}
-    (h : ρ ∈ zerosBox χ (1 / 2) T) :
-    ⌊ρ.im⌋ ∈ Finset.Icc (-⌈T⌉) ⌈T⌉ ∧ ρ ∈ zerosDisc χ (2 + ((⌊ρ.im⌋ : ℝ) : ℂ) * I) 3 :=
-  mem_disc_of_nonneg χ (by norm_num : (0 : ℝ) ≤ 1 / 2) h
 
 /-- The weighted zero count retains logarithmic dependence on the level,
 including zeros on the imaginary axis when `σ = 0`. -/

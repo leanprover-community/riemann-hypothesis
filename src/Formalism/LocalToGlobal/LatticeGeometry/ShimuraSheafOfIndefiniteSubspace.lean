@@ -86,8 +86,6 @@ structure CompatiblePlaces' (X : DivX D) (ePl : ∀ (p : ℕ) [Fact p.Prime], X.
   jc : ∀ (p : ℕ) [Fact p.Prime] (la : X.PlP p), X.jC p la = jC p (ePl p la)
   mp : ∀ (w : Dat D X.Lev), w.Indef → ∀ (p : ℕ) [Fact p.Prime] (la : X.PlP p),
     X.Mp w.S w.κ p la = (U w).pad.Mp p (ePl p la)
-  md : ∀ (w : Dat D X.Lev), w.Indef → ∀ (p : ℕ) [Fact p.Prime] (la : X.PlP p),
-    HEq (X.md w.S w.κ p la) ((U w).pad.md p (ePl p la))
   curveM : ∀ (w : Dat D X.Lev), w.Indef → ∀ (p : ℕ) [Fact p.Prime] (la : X.PlP p),
     HEq (X.CurveM w.S w.κ p la) ((U w).pad.CurveM p (ePl p la))
   degM : ∀ (w : Dat D X.Lev), w.Indef → ∀ (p : ℕ) [Fact p.Prime] (la : X.PlP p),

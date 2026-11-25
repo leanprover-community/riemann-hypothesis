@@ -45,7 +45,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 @[expose] public section
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.IndefR.Mult Formalism.IndefR.Links MeasureTheory
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.SchurPolar
 

@@ -139,20 +139,13 @@ namespace Inputs
 variable {hL : GlobalTheory.Published.LocalLanglandsGL} {D : D7} (I : Inputs hL D)
 include I
 
-theorem hypO : SumRepresentations.hypO D := I.named.hypO
-
 theorem c1 : GlobalDatumCompatibility D := I.named.c1
 
 theorem bc : SphericalInertData.Conclusion1 D := I.named.bc
 
 theorem lam : LamUsed D := I.named.lam
 
-theorem isot : SumRepresentations.adm8 D := I.named.isot
-
 theorem ser : GlobalTheory.TypeLeaf.SerLoc D := I.named.ser
-
-theorem typeNZ : ∀ j t, GlobalTheory.DownLift.TypeNZ I.X.R j t := I.named.typeNZ
-
 
 end Inputs
 

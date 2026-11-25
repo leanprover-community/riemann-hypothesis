@@ -11,28 +11,6 @@ namespace GroundTheory.Heights₂.Heights.NumbersDVR
 
 universe u
 
-private theorem length_self_eq_of_ringEquiv' {S T : Type*} [CommRing S] [CommRing T] (e : S ≃+* T) :
-    Module.length S S = Module.length T T := by
-  rw [Module.length_eq_coheight, Module.length_eq_coheight]
-  have := Ideal.coheight_comap_of_surjective (e : S →+* T) e.surjective ⊥
-  have hb : Ideal.comap (e : S →+* T) ⊥ = ⊥ := Ideal.comap_bot_of_injective _ e.injective
-  rwa [hb] at this
-
-private theorem length_localizedModule_quot' {R : Type*} [CommRing R] (J W : Ideal R) [W.IsPrime] :
-    Module.length (Localization.AtPrime W) (LocalizedModule W.primeCompl (R ⧸ J)) =
-      Module.length (Localization.AtPrime W ⧸ J.map (algebraMap R (Localization.AtPrime W)))
-        (Localization.AtPrime W ⧸ J.map (algebraMap R (Localization.AtPrime W))) := by
-  let S := Localization.AtPrime W
-  have hJ : (J : Submodule R R).localized' S W.primeCompl (Algebra.linearMap R S) =
-      J.map (algebraMap R S) := by
-    rw [Submodule.localized'_eq_span, Ideal.map]
-    rfl
-  let e := (IsLocalizedModule.linearEquiv W.primeCompl
-    ((J : Submodule R R).toLocalizedQuotient' S W.primeCompl (Algebra.linearMap R S))
-    (LocalizedModule.mkLinearMap W.primeCompl (R ⧸ J))).extendScalarsOfIsLocalization W.primeCompl S
-  rw [← e.length_eq, (Submodule.quotEquivOfEq _ _ hJ).length_eq]
-  exact Module.length_eq_of_surjective Ideal.Quotient.mk_surjective
-
 theorem LocalizedQuotLength.proof : LocalizedQuotLength.Statement.{u} := by
   intro S _ P W₀ _ z
   set W := W₀.comap (Ideal.Quotient.mk P) with hWdef
@@ -48,7 +26,8 @@ theorem LocalizedQuotLength.proof : LocalizedQuotLength.Statement.{u} := by
     have hs : t' ∈ W.primeCompl := by
       intro h
       apply t.2
-      rwa [← ht']
+      rw [← ht']
+      exact h
     refine ⟨IsLocalization.mk' _ a' ⟨t', hs⟩, ?_⟩
     rw [Localization.localRingHom_mk']
     congr 1
@@ -63,7 +42,8 @@ theorem LocalizedQuotLength.proof : LocalizedQuotLength.Statement.{u} := by
     obtain ⟨t', rfl⟩ := Ideal.Quotient.mk_surjective t
     have ht'W : t' ∈ W.primeCompl := ht
     have hmemP : t' * r ∈ P := by
-      rwa [← Ideal.Quotient.eq_zero_iff_mem, map_mul]
+      rw [← Ideal.Quotient.eq_zero_iff_mem, map_mul]
+      exact htr
     have hrJ : algebraMap S (Localization.AtPrime W) r ∈ J.map (algebraMap S (Localization.AtPrime W)) := by
       rw [← Ideal.unit_mul_mem_iff_mem _ (IsLocalization.map_units (Localization.AtPrime W) ⟨_, ht'W⟩),
         ← map_mul]
@@ -85,9 +65,19 @@ theorem LocalizedQuotLength.proof : LocalizedQuotLength.Statement.{u} := by
   have hg : Function.Surjective g := Ideal.Quotient.mk_surjective.comp hψ
   have hgk : J.map (algebraMap S (Localization.AtPrime W)) = RingHom.ker g := by
     rw [← RingHom.comap_ker, Ideal.mk_ker, ← hI, Ideal.comap_map_of_surjective _ hψ, sup_eq_left.mpr hker]
-  have key := length_self_eq_of_ringEquiv'
-    ((Ideal.quotEquivOfEq hgk).trans (RingHom.quotientKerEquivOfSurjective hg))
-  rw [length_localizedModule_quot', key]
+  let : Algebra (Localization.AtPrime W)
+      (A ⧸ Ideal.span {algebraMap (S ⧸ P) A (Ideal.Quotient.mk P z)}) := g.toAlgebra
+  let e1 := (IsLocalizedModule.linearEquiv W.primeCompl
+    ((J : Submodule S S).toLocalizedQuotient' (Localization.AtPrime W) W.primeCompl
+      (Algebra.linearMap S (Localization.AtPrime W)))
+    (LocalizedModule.mkLinearMap W.primeCompl (S ⧸ J))).extendScalarsOfIsLocalization
+      W.primeCompl (Localization.AtPrime W)
+  let e2 := Submodule.quotEquivOfEq _ (RingHom.ker (Algebra.ofId (Localization.AtPrime W) _))
+    ((Ideal.localized'_eq_map (Localization.AtPrime W) W.primeCompl J).trans hgk)
+  let e3 := Ideal.quotientKerAlgEquivOfSurjective
+    (f := Algebra.ofId (Localization.AtPrime W) _) hg
+  rw [← e1.length_eq, e2.length_eq, e3.toLinearEquiv.length_eq,
+    Module.length_eq_of_surjective (S := Localization.AtPrime W) hg]
   exact (Module.length_eq_of_surjective Ideal.Quotient.mk_surjective).symm
 
 end GroundTheory.Heights₂.Heights.NumbersDVR

@@ -55,8 +55,6 @@ open Formalism.MainNotions.IntegralHeckeForms (TwOK ClsQ HkIdx)
 
 namespace GlobalTheory.SpecFac
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Fock
 
 variable {D : D7} {S T : HSp D} {ψ : AddChar (AF D.host.F) ℂ} {θ : InfFam D}

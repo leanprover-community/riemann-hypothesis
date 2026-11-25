@@ -58,9 +58,6 @@ namespace GlobalTheory.Mix.PartApply
 
 variable {k : Type} [CommRing k] {X : Scheme.{0}} {p : X ⟶ Sp k} {σ : k →+* ℂ} {D : ℕ}
 
-def colSum (H : Fin D → Matrix (Fin D) (Fin D) ℂ) : ℂ :=
-  ∑ τ : Equiv.Perm (Fin D), (Matrix.of fun j l => H (τ l) j l).det
-
 theorem dens_trans (L : Fin D → MLine p σ) (c c' : AlgChart p σ D) {y : CxPts p σ} (hy : y ∈ c.e.source)
     (hy' : y ∈ c'.e.source) : dens L c y = ‖transDet c.e c'.e y‖ ^ 2 * dens L c' y := by
   apply _root_.GlobalTheory.Mix.ChartChange.dens_trans <;> assumption

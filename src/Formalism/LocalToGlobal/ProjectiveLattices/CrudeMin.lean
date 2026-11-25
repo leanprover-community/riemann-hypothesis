@@ -9,8 +9,6 @@ import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace Formalism.L2.Pj.Crude

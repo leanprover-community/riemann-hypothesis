@@ -18,7 +18,7 @@ open ReciprocityTheory.ChartRestriction.DS ReciprocityTheory.ChartRestriction.DS
 
 variable {n : ℕ}
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 def blkMinor (ε : Fin n → Bool) (a : Fin n) (x : Matrix (Fin n) (Fin n) ℂ) : ℂ :=
   (x.submatrix (fun b : {b : Fin n // ε b = ε a ∧ b ≤ a} => (b : Fin n))

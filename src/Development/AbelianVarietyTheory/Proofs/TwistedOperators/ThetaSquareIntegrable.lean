@@ -56,8 +56,6 @@ open scoped TensorProduct ComplexConjugate
 
 namespace GlobalTheory.ThetaSquare
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} {ψ : AddChar (AF D.host.F) ℂ} {θ : InfFam D} {V W : HSp D}
 
 theorem cocompact (V W : HSp D) : Cocompact V W := by

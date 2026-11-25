@@ -31,7 +31,7 @@ namespace CompanionTheory.D.gk.FinalFormK
 open PI CompanionTheory.D.Upq.ModEx CompanionTheory.D.Upq.Sm CompanionTheory.D.gk.Poul CompanionTheory.Zuck BranchingSupport Formalism.FourierDecayAlt Formalism.FourierDecayAlt.ThreeDimData
 open PI.UpqRep (InLieHpk)
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 theorem dense_sm' {n : ℕ} {G : Set (Mat n)} {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
     [CompleteSpace H] {σ : Mat n → (H →L[ℂ] H)} (hG : IsMatGroup G) (θ : Mat n →L[ℝ] Mat n)

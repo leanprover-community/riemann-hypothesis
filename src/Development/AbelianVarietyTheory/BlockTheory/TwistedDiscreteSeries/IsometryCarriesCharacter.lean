@@ -47,8 +47,6 @@ open scoped TensorProduct
 
 namespace GlobalTheory.IndefiniteRowSideFullHecke.IsometryCarriesCharacter
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 abbrev mmul {A : Type} [CommRing A] {l m n : ℕ} (x : Matrix (Fin l) (Fin m) A) (y : Matrix (Fin m) (Fin n) A) :

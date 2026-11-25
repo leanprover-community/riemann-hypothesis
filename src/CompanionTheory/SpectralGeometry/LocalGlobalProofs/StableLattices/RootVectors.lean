@@ -14,7 +14,7 @@ noncomputable section
 
 namespace GlobalTheory.CompanionTheory.BmuRootVec
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 theorem mul_single_mul_entry {n : ℕ} (A B : Mat n) (a b i l : Fin n) (c : ℂ) :
     (A * single a b c * B) i l = A i a * c * B b l := by

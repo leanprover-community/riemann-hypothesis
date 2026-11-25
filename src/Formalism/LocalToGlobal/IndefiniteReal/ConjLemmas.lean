@@ -11,8 +11,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.FrobeniusOrbits
 
 namespace Formalism.IndefR.Conj
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 theorem emb_mul' (g g' : D.R.GG) (x : D.host.E) :

@@ -55,19 +55,6 @@ open CategoryTheory TensorProduct MvPowerSeries GlobalTheory GlobalTheory.PDiv G
 
 namespace GlobalTheory.FinProjComplete
 
-theorem smodEq_span_singleton_pow_iff {R M : Type} [CommRing R] [AddCommGroup M] [Module R M]
-    (a : R) (n : ℕ) (x y : M) :
-    x ≡ y [SMOD ((Ideal.span {a}) ^ n • ⊤ : Submodule R M)] ↔ ∃ z : M, x - y = a ^ n • z := by
-  rw [SModEq.sub_mem, Ideal.span_singleton_pow, Submodule.ideal_span_singleton_smul,
-    Submodule.mem_smul_pointwise_iff_exists]
-  constructor
-  · rintro ⟨z, -, hz⟩; exact ⟨z, hz.symm⟩
-  · rintro ⟨z, hz⟩; exact ⟨z, Submodule.mem_top, hz.symm⟩
-
-end GlobalTheory.FinProjComplete
-
-namespace GlobalTheory.FinProjComplete
-
 theorem isAdicComplete_of_finite_projective : ∀ (p : ℕ) (O A : Type) [CommRing O] [CommRing A]
     [Algebra O A] [Module.Finite O A] [Module.Projective O A]
     [IsAdicComplete (Ideal.span {(p : O)}) O], IsAdicComplete (Ideal.span {(p : A)}) A := by

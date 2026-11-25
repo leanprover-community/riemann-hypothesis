@@ -232,15 +232,6 @@ open scoped TensorProduct
 
 namespace GlobalTheory
 
-theorem adicCompletion_mem_integers_of_isIntegral_int {F : Type} [Field F] [NumberField F]
-    (v : HeightOneSpectrum (𝓞 F)) {y : v.adicCompletion F} (hy : IsIntegral ℤ y) :
-    y ∈ v.adicCompletionIntegers F := by
-  let O := v.adicCompletionIntegers F
-  have hint : (Valued.v : Valuation (v.adicCompletion F) _).Integers O :=
-    Valuation.integer.integers _
-  have hy' : IsIntegral O y := hy.tower_top
-  exact hint.mem_of_integral hy'
-
 theorem splitting_fst_mem_integers : ∀ {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
     (v : HeightOneSpectrum (𝓞 F)) (spl : E ⊗[F] v.adicCompletion F ≃+* v.adicCompletion F × v.adicCompletion F),
     (∀ a : v.adicCompletion F, spl ((1 : E) ⊗ₜ[F] a) = (a, a)) →

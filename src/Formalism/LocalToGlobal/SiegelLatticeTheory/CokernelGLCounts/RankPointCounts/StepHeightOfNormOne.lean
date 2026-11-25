@@ -14,8 +14,6 @@ set_option linter.dupNamespace false
 
 namespace Formalism.L2.SG.NGCut
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 def Ctx (Cg cb Cw cT CT C0 C' Cl : ℝ) (D : D7) (large₂ : SizeData₂ D) (X : HidaSetting D) (Y : Full X) (u u' : D.what₂.Word) :
     Prop :=
   Formalism.MainNotions.S.Cnt.Hyp0 D large₂ C' Cl Cg cb Cw cT CT C0 ∧ Formalism.MainNotions.S.Cnt.Stand D u u' ∧ ConcTie X Y

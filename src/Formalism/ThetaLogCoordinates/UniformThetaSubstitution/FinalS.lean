@@ -12,55 +12,11 @@ public import Mathlib.NumberTheory.Padics.PadicVal.Basic
 public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms.CoeffSubstLgFOfDegreeOne
 public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms.ConstantCoeffFirstTwoOfThree
 public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms.TheoremSFromKOneOf
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
 import Mathlib.Analysis.Normed.Ring.Ultra
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.Separation.CompletelyRegular
-import Mathlib.Topology.Sheaves.Init
 import Formalism.GaussJetBounds.GaussJetProofs.SubstitutionWeightBound
-import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Order.CompletePartialOrder
@@ -142,7 +98,8 @@ theorem pderiv_subst {R σ τ : Type} [CommRing R] [Fintype σ] {a : σ → MvPo
         · rw [pderiv_X_self, ← coe_substAlgHom ha, map_one, mul_one]
         · intro i _ hij
           rw [pderiv_X_of_ne hij.symm, ← coe_substAlgHom ha, map_zero, mul_zero, zero_mul]
-        · exact fun h => absurd (Finset.mem_univ j) h
+        · intro h
+          exact absurd (Finset.mem_univ j) h
       · exact Finset.sum_congr rfl fun i _ => by ring
   have key := WithPiTopology.denseRange_toMvPowerSeries (σ := σ) (R := R).equalizer hc1 hc2
     (funext main)
@@ -228,7 +185,7 @@ theorem subst_zero_pderiv {τ : Type} (G : MvPowerSeries (Fin 2) K)
     have hm1 : m = Finsupp.single 1 (m 1) := by
       ext i
       fin_cases i <;> simp [hm]
-    rw [map_sub, coeff_pderiv, coeff_single_variable_series, ite_eq_left hm1, hm, fLin, PowerSeries.coeff_mk,
+    rw [map_sub, coeff_pderiv, coeff_single_variable_series, if_pos hm1, hm, fLin, PowerSeries.coeff_mk,
       add_comm (Finsupp.single 0 1), ← hm1]
     simp
   obtain ⟨Q, hQ⟩ := hd
@@ -350,7 +307,8 @@ theorem FirstDeriv_of (hL : LawSymm) : FirstDeriv := by
 
   have hE : subst ![(X 0 : MvPowerSeries (Fin 2) K), 0, X 1] (in3 F) = X 0 := by
     unfold in3
-    rwa [subst_subst2 he0 HasSubst.X_X, subst_X he0, subst_X he0]
+    rw [subst_subst2 he0 HasSubst.X_X, subst_X he0, subst_X he0]
+    exact hF4
   have hx0 : subst ![(X 0 : MvPowerSeries (Fin 2) K), 0, X 1] (X 0 : MvPowerSeries (Fin 3) K) = X 0 :=
     subst_X he0 0
   have hx1 : subst ![(X 0 : MvPowerSeries (Fin 2) K), 0, X 1] (X 1 : MvPowerSeries (Fin 3) K) = 0 :=
@@ -407,7 +365,7 @@ theorem FirstDeriv_of (hL : LawSymm) : FirstDeriv := by
   exact LogarithmEquivalence.integral_mul' (integral_single_log_derivative hp hnp 0) hI
 
 open GramFrameCompositionLinFacts MvPowerSeries in
-theorem CobLin_of (_hL : LawSymm) : CobLin := by
+theorem CobLin_of : CobLin := by
   intro K _ _ _ p _ _ F hF G hG hS
   obtain ⟨hF0, -, -⟩ := hF
   obtain ⟨hD0, hDi⟩ := hS
@@ -458,7 +416,8 @@ theorem CobLin_of (_hL : LawSymm) : CobLin := by
     unfold d1 cob
     rw [map_sub, map_sub, subst_sub he, subst_sub he, b1, b2, b3, hE, subst_X he, subst_X he]
     rfl
-  rwa [← hC]
+  rw [← hC]
+  exact hI
 
 namespace GramFrameCompositionLinFacts
 
@@ -515,7 +474,7 @@ theorem StepI_of (h1 : LemmaOne) (hF : FirstDeriv) (hC : CobLin) : StepI := by
         rw [fLin, PowerSeries.coeff_mk] at h
         obtain ⟨-, -, hc⟩ := hS _ h
         simp only [Finsupp.add_apply, Finsupp.single_apply] at hc
-        simp only [ite_true, Fin.isValue, one_ne_zero, zero_ne_one, ite_false, add_zero,
+        simp only [if_true, Fin.isValue, one_ne_zero, zero_ne_one, if_false, add_zero,
           zero_add] at hc
         apply hj
         have h3 : p * 1 ≡ p * (p * j) [MOD p ^ 2 - 1] := hc.mul_left p
@@ -690,7 +649,8 @@ theorem divided_derivative : DivDeriv := by
           simp
           omega
         exact_mod_cast this
-      rwa [h2, h3, mul_comm] at h1
+      rw [h2, h3, mul_comm] at h1
+      exact h1
   have e3 : MvPowerSeries.coeff d Φ • MvPowerSeries.coeff n (d.prod fun s e => φ' s ^ e) -
       MvPowerSeries.coeff d Φ • MvPowerSeries.coeff n (d.prod fun s e => φ s ^ e) =
       MvPowerSeries.coeff n (MvPowerSeries.C (MvPowerSeries.coeff d Φ) *
@@ -796,7 +756,8 @@ theorem DeIntegral_of (hD : DivDeriv) (hL : LawSymm) : DeIntegral := by
   have hri : Integral r := by
     refine hscale _ fun n => ?_
     have h := frob_congr (σ := σ) hp hnp hσ (f := F) hFi n
-    rwa [PhiH_apply, hσF, map_sub, norm_sub_rev, ← map_sub] at h
+    rw [PhiH_apply, hσF, map_sub, norm_sub_rev, ← map_sub] at h
+    exact h
   have hr0 : MvPowerSeries.constantCoeff r = 0 := by
     have h1 : MvPowerSeries.constantCoeff (frobVar p F) = 0 := by
       have := coeff_frobVar_smul hp.ne_zero F 0
@@ -932,18 +893,6 @@ theorem embDomain_two (e : Fin 2 →₀ ℕ) : Finsupp.embDomain Fin.castSuccEmb
   simp at h1
   omega
 
-private theorem coeff_rename_map_lemma {σ τ : Type} (f : σ → τ) [Filter.TendstoCofinite f]
-    (hf : Function.Injective f) (g : MvPowerSeries σ K) (u : σ →₀ ℕ) :
-    MvPowerSeries.coeff (Finsupp.mapDomain f u) (MvPowerSeries.rename f g) = MvPowerSeries.coeff u g := by
-  classical
-  rw [MvPowerSeries.coeff_rename, Finset.sum_eq_single_of_mem u]
-  · simp
-  · intro b hb hne
-    exfalso
-    apply hne
-    simp only [Set.Finite.mem_toFinset, Set.mem_preimage, Set.mem_singleton_iff] at hb
-    exact Finsupp.mapDomain_injective hf hb
-
 theorem coeff_include_three_mul (g : MvPowerSeries (Fin 2) K) (e : Fin 2 →₀ ℕ) (m j : ℕ) :
     MvPowerSeries.coeff (ext3 e m) (in3 g * MvPowerSeries.X 2 ^ j) =
       if j = m then MvPowerSeries.coeff e g else 0 := by
@@ -951,10 +900,9 @@ theorem coeff_include_three_mul (g : MvPowerSeries (Fin 2) K) (e : Fin 2 →₀ 
   rw [include_three_eq_rename]
   by_cases h : j = m
   · subst h
-    rw [ite_eq_left rfl, MvPowerSeries.X_pow_eq, ext3, MvPowerSeries.coeff_add_mul_monomial, mul_one,
-      Finsupp.embDomain_eq_mapDomain]
-    exact coeff_rename_map_lemma _ (Fin.castSuccEmb (n := 2)).injective g e
-  · rw [ite_eq_right h, MvPowerSeries.coeff_mul]
+    rw [if_pos rfl, MvPowerSeries.X_pow_eq, ext3, MvPowerSeries.coeff_add_mul_monomial, mul_one]
+    exact MvPowerSeries.coeff_embDomain_rename (Fin.castSuccEmb (n := 2)) g e
+  · rw [if_neg h, MvPowerSeries.coeff_mul]
     apply Finset.sum_eq_zero
     rintro ⟨a, b⟩ hab
     replace hab : a + b = ext3 e m := by simpa using hab
@@ -1051,7 +999,8 @@ theorem coeff_partial_coboundary {F : MvPowerSeries (Fin 2) K} (hF : MvPowerSeri
   have h1 := coeff_subst_slice (f := (MvPowerSeries.X 1 : MvPowerSeries (Fin 2) K))
     (MvPowerSeries.constantCoeff_X 1) G e m
   rw [include_three_X] at h0 h1
-  rw [d1, map_sub, map_sub, coeff_subst_slice hF, cob, map_sub, map_sub, at1, at1, ← h0, ← h1]
+  rw [d1, map_sub, map_sub, coeff_subst_slice hF, cob, map_sub, map_sub, at1, at1]
+  rw [← h0, ← h1]
   rfl
 
 end Slice
@@ -1076,7 +1025,7 @@ theorem coeff_one_lgF {p : ℕ} (hp : 2 ≤ p) : PowerSeries.coeff 1 (lgF K p) =
   rw [lgF, PowerSeries.coeff_mk, Finset.sum_range_succ, Finset.sum_range_one]
   have h4 : 4 ≤ p ^ 2 := by nlinarith
   have hne : (1 : ℕ) ≠ (p ^ 2) ^ 1 := by rw [pow_one]; omega
-  rw [ite_eq_right hne, ite_eq_left (by rw [pow_zero]), pow_zero, inv_one, add_zero]
+  rw [if_neg hne, if_pos (by rw [pow_zero]), pow_zero, inv_one, add_zero]
 
 theorem swap_two_eq_rename (H : MvPowerSeries (Fin 2) K) :
     swap2 H = MvPowerSeries.rename (Equiv.swap (0 : Fin 2) 1).toEmbedding H := by
@@ -1094,7 +1043,7 @@ theorem coeff_swap2 (H : MvPowerSeries (Fin 2) K) (i k : ℕ) :
     rw [Finsupp.mapDomain_add, Finsupp.mapDomain_single, Finsupp.mapDomain_single]
     simp only [Equiv.coe_toEmbedding, Equiv.swap_apply_left, Equiv.swap_apply_right]
     exact add_comm _ _
-  rw [← hu, coeff_rename_map_lemma _ (Equiv.swap (0 : Fin 2) 1).toEmbedding.injective]
+  rw [← hu, ← Finsupp.embDomain_eq_mapDomain, MvPowerSeries.coeff_embDomain_rename]
 
 theorem pow_parity {p : ℕ} (hp : 2 ≤ p) (i j : ℕ) : p * (p ^ 2) ^ i ≠ (p ^ 2) ^ j := by
   intro h
@@ -1109,14 +1058,14 @@ theorem coeff_lgF_odd {p : ℕ} (hp : 2 ≤ p) (i : ℕ) :
   rw [lgF, PowerSeries.coeff_mk]
   apply Finset.sum_eq_zero
   intro j _
-  rw [ite_eq_right (pow_parity hp i j)]
+  rw [if_neg (pow_parity hp i j)]
 
 theorem coeff_g0F_even {p : ℕ} (hp : 2 ≤ p) (i : ℕ) :
     PowerSeries.coeff ((p ^ 2) ^ i) (g0F K p) = 0 := by
   rw [g0F, PowerSeries.coeff_mk]
   apply Finset.sum_eq_zero
   intro j _
-  rw [ite_eq_right (fun h => pow_parity hp j i h.symm)]
+  rw [if_neg (fun h => pow_parity hp j i h.symm)]
 
 end Additive
 
@@ -1164,10 +1113,11 @@ theorem LemmaTwo_of (h1 : LemmaOne) (hL : LawSymm) : LemmaTwo := by
   have lg_pow : ∀ k : ℕ, PowerSeries.coeff ((p ^ 2) ^ k) (lgF K p) = ((p : K) ^ k)⁻¹ := by
     intro k
     rw [lgF, PowerSeries.coeff_mk, Finset.sum_eq_single k]
-    · rw [ite_eq_left rfl]
+    · rw [if_pos rfl]
     · intro j _ hj
-      rw [ite_eq_right]
-      exact fun h => hj (Nat.pow_right_injective hpp h).symm
+      rw [if_neg]
+      intro h
+      exact hj (Nat.pow_right_injective hpp h).symm
     · intro hk
       exfalso
       apply hk
@@ -1177,10 +1127,11 @@ theorem LemmaTwo_of (h1 : LemmaOne) (hL : LawSymm) : LemmaTwo := by
   have g0_pow : ∀ k : ℕ, PowerSeries.coeff (p * (p ^ 2) ^ k) (g0F K p) = ((p : K) ^ (k + 1))⁻¹ := by
     intro k
     rw [g0F, PowerSeries.coeff_mk, Finset.sum_eq_single k]
-    · rw [ite_eq_left rfl]
+    · rw [if_pos rfl]
     · intro j _ hj
-      rw [ite_eq_right]
-      exact fun h => hj (Nat.pow_right_injective hpp (Nat.eq_of_mul_eq_mul_left (by omega) h)).symm
+      rw [if_neg]
+      intro h
+      exact hj (Nat.pow_right_injective hpp (Nat.eq_of_mul_eq_mul_left (by omega) h)).symm
     · intro hk
       exfalso
       apply hk
@@ -1193,7 +1144,7 @@ theorem LemmaTwo_of (h1 : LemmaOne) (hL : LawSymm) : LemmaTwo := by
     rw [lgF, PowerSeries.coeff_mk]
     apply Finset.sum_eq_zero
     intro j _
-    rw [ite_eq_right (hm j)]
+    rw [if_neg (hm j)]
   have g01 : PowerSeries.coeff 1 (g0F K p) = 0 := by
     have := LemTwo.coeff_g0F_even (K := K) hp2 0
     rwa [pow_zero] at this
@@ -1255,7 +1206,8 @@ theorem LemmaTwo_of (h1 : LemmaOne) (hL : LawSymm) : LemmaTwo := by
     simp only [mul_zero, add_zero, zero_add] at s
     refine ultra (b := α ((p ^ 2) ^ N) * ((p : K) ^ (k + 1))⁻¹) ?_ ?_
       (one_le_pow₀ (by exact_mod_cast (by omega : 1 ≤ p)))
-    · rwa [norm_sub_rev]
+    · rw [norm_sub_rev]
+      exact s
     · rw [norm_mul, np]
       exact mul_le_of_le_one_left (by positivity) (hα _)
   have hB : ∀ m, α m = 0 := by
@@ -1319,7 +1271,7 @@ theorem LemmaTwo_of (h1 : LemmaOne) (hL : LawSymm) : LemmaTwo := by
     · obtain ⟨l, hl⟩ := hm
       rw [hl, hD l, lg_pow l]
       ring
-    · push Not at hm
+    · push_neg at hm
       rw [hC m hm, lg_zero m hm]
       ring
   have e : 0 * PowerSeries.coeff i (g0F K p) + β m * PowerSeries.coeff i (lgF K p) + PowerSeries.coeff i (R m) -
@@ -1440,7 +1392,7 @@ theorem order_sub_lin {F : MvPowerSeries (Fin 2) K} (hF0 : MvPowerSeries.constan
     subst hd0
     have : MvPowerSeries.coeff (0 : Fin 2 →₀ ℕ) F = 0 := by
       rw [MvPowerSeries.coeff_zero_eq_constantCoeff_apply]; exact hF0
-    rw [this, ite_eq_right, ite_eq_right]
+    rw [this, if_neg, if_neg]
     · simp
     · intro h; have := congrArg (fun e => e 1) h; simp at this
     · intro h; have := congrArg (fun e => e 0) h; simp at this
@@ -1452,7 +1404,7 @@ theorem order_sub_lin {F : MvPowerSeries (Fin 2) K} (hF0 : MvPowerSeries.constan
         · simpa using h
         · simp; omega
       subst this
-      rw [ite_eq_left rfl, ite_eq_right]
+      rw [if_pos rfl, if_neg]
       · simp
       · intro h; have := congrArg (fun e => e 1) h; simp at this
     · have : d = Finsupp.single 1 1 := by
@@ -1460,7 +1412,7 @@ theorem order_sub_lin {F : MvPowerSeries (Fin 2) K} (hF0 : MvPowerSeries.constan
         · simp; omega
         · simp; omega
       subst this
-      rw [ite_eq_left rfl, ite_eq_right]
+      rw [if_pos rfl, if_neg]
       · simp
       · intro h; have := congrArg (fun e => e 1) h; simp at this
 
@@ -1504,12 +1456,13 @@ theorem coeff_lin_pow (n i : ℕ) (hi : i ≤ n) :
   · intro m _ hm
     rw [← map_natCast (MvPowerSeries.C (σ := Fin 2) (R := K)), MvPowerSeries.coeff_mul_C,
       MvPowerSeries.X_pow_eq, MvPowerSeries.X_pow_eq, MvPowerSeries.monomial_mul_monomial,
-      MvPowerSeries.coeff_monomial, ite_eq_right, zero_mul]
+      MvPowerSeries.coeff_monomial, if_neg, zero_mul]
     intro h
     apply hm
     have := congrArg (fun e => e 0) h
     simpa using this.symm
-  · exact fun h => absurd (mem_range.mpr (by omega)) h
+  · intro h
+    exact absurd (mem_range.mpr (by omega)) h
 
 theorem coeff_pow_top {F : MvPowerSeries (Fin 2) K} (hF0 : MvPowerSeries.constantCoeff F = 0)
     (hF1 : ∀ n : Fin 2 →₀ ℕ, n.degree = 1 → MvPowerSeries.coeff n F = 1) (n i : ℕ) (hi : i ≤ n) :
@@ -1545,13 +1498,13 @@ theorem norm_coeff_mul_choose {F : MvPowerSeries (Fin 2) K}
   have e0 : e 0 = i := by simp [he]
   have e1 : e 1 = n - i := by simp [he]
   have h0 : MvPowerSeries.coeff e (at1 0 h) = 0 := by
-    rw [coeff_single_variable_series, ite_eq_right]
+    rw [coeff_single_variable_series, if_neg]
     intro hh
     have := congrArg (fun u => u 1) hh
     simp [e1] at this
     omega
   have h1 : MvPowerSeries.coeff e (at1 1 h) = 0 := by
-    rw [coeff_single_variable_series, ite_eq_right]
+    rw [coeff_single_variable_series, if_neg]
     intro hh
     have := congrArg (fun u => u 0) hh
     simp [e0] at this
@@ -1757,11 +1710,13 @@ theorem good_zero {p : ℕ} (hp : p.Prime) (hnp : ‖(p : K)‖ = (p : ℝ)⁻¹
       by_contra hc
       obtain ⟨i, hi⟩ := coeff_lgF_ne_zero hc
       exact (pow_pos (pow_pos hp.pos 2) i).ne hi
-    rwa [hl, mul_zero, sub_zero, PowerSeries.coeff_zero_eq_constantCoeff_apply, hf0]
+    rw [hl, mul_zero, sub_zero, PowerSeries.coeff_zero_eq_constantCoeff_apply, hf0]
+    exact h0
   · have hl : PowerSeries.coeff 1 (lgF K p) = 1 := by
       have := coeff_lgF_pow K hp.two_le 0
       simpa using this
-    rwa [hl, mul_one, sub_self]
+    rw [hl, mul_one, sub_self]
+    exact h0
 
 theorem good_succ {p : ℕ} (hp : p.Prime) (hnp : ‖(p : K)‖ = (p : ℝ)⁻¹)
     {F : MvPowerSeries (Fin 2) K}
@@ -1854,7 +1809,8 @@ theorem exists_limit [CompleteSpace K] {p : ℕ} (hp : p.Prime) (hnp : ‖(p : K
     fun n => ?_⟩
   have hlim : Filter.Tendsto (fun j => PowerSeries.coeff n (rem p f (s j).1 (s j).2)) Filter.atTop
       (nhds (PowerSeries.coeff n (rem p f a b))) := by
-    simpa only [coeff_rem] using (tendsto_const_nhds.sub (hat.mul_const _)).sub (hbt.mul_const _)
+    simp only [coeff_rem]
+    exact (tendsto_const_nhds.sub (hat.mul_const _)).sub (hbt.mul_const _)
   refine le_of_tendsto hlim.norm (Filter.eventually_atTop.2 ⟨n, fun j hj => (hgood j).2 n ?_⟩)
   have : 2 * j + 1 < p ^ (2 * j + 1) := Nat.lt_pow_self hp.one_lt
   omega
@@ -1904,10 +1860,10 @@ theorem lemmaTwo : LemmaTwo := LemmaTwo_of lemmaOne _root_.Formalism.InvariantFa
 theorem lamModule : LamModule := LamModule_of _root_.Formalism.InvariantFactorPaths.G7.dwork_multivariable
 theorem zeroCondition : StepZero := StepZero_of lamModule simeqRules _root_.Formalism.InvariantFactorPaths.G7.formal_law_symmetric
 theorem firstDeriv : FirstDeriv := FirstDeriv_of _root_.Formalism.InvariantFactorPaths.G7.formal_law_symmetric
-theorem cobLin : CobLin := CobLin_of _root_.Formalism.InvariantFactorPaths.G7.formal_law_symmetric
+theorem cobLin : CobLin := CobLin_of
 theorem stepI : StepI := StepI_of lemmaOne firstDeriv cobLin
 theorem stepII : StepII := StepII_of _root_.Formalism.InvariantFactorPaths.G7.dwork_multivariable _root_.Formalism.InvariantFactorPaths.G7.divided_derivative deIntegral _root_.Formalism.InvariantFactorPaths.G7.formal_law_symmetric
-theorem stepH : StepH := StepH_of lemmaTwo _root_.Formalism.InvariantFactorPaths.G7.swap_rules _root_.Formalism.InvariantFactorPaths.G7.formal_law_symmetric
+theorem stepH : StepH := StepH_of lemmaTwo _root_.Formalism.InvariantFactorPaths.G7.swap_rules
 theorem stepIV : StepIV := StepIV_of _root_.Formalism.InvariantFactorPaths.G7.dwork_multivariable
 theorem betaIsG : BetaIsG :=
   BetaIsG_of zeroCondition stepI stepII stepH _root_.Formalism.InvariantFactorPaths.G7.c_add_sigma_c_eq_zero stepIV _root_.Formalism.InvariantFactorPaths.G7.swap_rules simeqRules

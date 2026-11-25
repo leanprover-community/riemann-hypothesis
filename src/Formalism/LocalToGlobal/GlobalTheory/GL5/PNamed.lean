@@ -50,8 +50,6 @@ namespace Formalism.L2.GlobalTheoryTheory.GenusMassVolumes
 open Formalism.BasicNotions Formalism.MainNotions.StandardLattice Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes MeasureTheory
 open scoped TensorProduct
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 def VolSigIndep (D : D7) : Prop :=
   ∀ (W W₀ : HSpace D.host.E) (P Q P₀ Q₀ : ℕ), W.SigOK → W₀.SigOK → (∀ τ, W.sig τ = (P, Q)) →
     (∀ τ, W₀.sig τ = (P₀, Q₀)) → W.rank = W₀.rank →

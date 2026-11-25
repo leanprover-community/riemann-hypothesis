@@ -14,8 +14,6 @@ open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions Form
 
 namespace Formalism.L2.SG.LoopsEv
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section One
 
 variable {D : D7} {large₂ : SizeData₂ D} {X : HidaSetting D} {Y : Full X} {u u' : D.what₂.Word}

@@ -345,7 +345,6 @@ theorem budget0_abs (R n N r Cc A₀ : ℝ) (hR1 : 1 ≤ R) (hnR : R ≤ n) (hr 
     (hCc : 150 ≤ Cc) (h : Cc * R ^ 4 * (N * n ^ 2 + n ^ 3) ≤ A₀) :
     (127 * R ^ 3 * (N * n ^ 2 + n ^ 3) + 1) + 2 * R * (5 + 3 * R * (N + 2) * n + N * r) ≤ A₀ := by
   have hn1 : 1 ≤ n := le_trans hR1 hnR
-  have hR0 : 0 ≤ R := by linarith
   have hn0 : 0 ≤ n := by linarith
   have hR2 : 1 ≤ R ^ 2 := one_le_pow₀ hR1
   have hRR : R ≤ R ^ 2 := le_self_pow₀ hR1 (by norm_num)
@@ -372,7 +371,6 @@ theorem budget0_abs (R n N r Cc A₀ : ℝ) (hR1 : 1 ≤ R) (hnR : R ≤ n) (hr 
       127 * (R ^ 3 * (N * n ^ 2 + n ^ 3)) + (1 + 10 * R + 12 * (R ^ 2 * n)) + 6 * (R ^ 2 * (N * n)) + 2 * (R * (N * r)) := by ring
   have he2 : 150 * (R ^ 4 * (N * n ^ 2 + n ^ 3)) =
       127 * (R ^ 4 * (N * n ^ 2 + n ^ 3)) + 23 * (R ^ 4 * n ^ 3) + 8 * (R ^ 4 * (N * n ^ 2)) + 15 * (R ^ 4 * (N * n ^ 2)) := by ring
-  have he3 : Cc * R ^ 4 * (N * n ^ 2 + n ^ 3) = Cc * (R ^ 4 * (N * n ^ 2 + n ^ 3)) := by ring
   linarith
 
 theorem budget0 (r k N : ℕ) (hk : 2 ≤ k) (A₀ Cc : ℝ) (hCc : 150 ≤ Cc)
@@ -611,8 +609,6 @@ theorem pos_levels (hL : LettersDD) (hP : PosCore) (hI : IntG) (hT : OrbitSliceI
       linarith)
     (by
       rw [hsumR, hAsR]
-      have hR4 : 0 ≤ ((r : ℝ) + 1) ^ 4 := by positivity
-      have hX0 : 0 ≤ (N : ℝ) * (nd : ℝ) ^ 2 + (nd : ℝ) ^ 3 := by linarith
       have s1 : Cp * ((r : ℝ) + 1) ^ 4 * (11 * ((N : ℝ) * (nd : ℝ) ^ 2 + (nd : ℝ) ^ 3) + 5) ≤
           Cp * ((r : ℝ) + 1) ^ 4 * (16 * ((N : ℝ) * (nd : ℝ) ^ 2 + (nd : ℝ) ^ 3)) := by
         apply mul_le_mul_of_nonneg_left _ (by positivity); linarith
@@ -1153,7 +1149,6 @@ theorem orbit_slice_integrable : OrbitSliceIntegrable := by
   have sR := sigma_RC k (ph + (n + 1)) ρ
   set μR : Measure RR := (U.muRC k (ph + (n + 1)) ρ).prod (U.muRC k (ph + (n + 1)) ρ)
   have sX : SFinite (U.muXiH (ph + (n + 1)) 0 (sigP σ)) := by
-    have hT := probT (ph + (n + 1))
     have b1 : SigmaFinite (volume : Measure (U.LW (sigP (n := n) σ) → ℂ)) := inferInstance
     have b2 : SigmaFinite (volume : Measure (G.UT (ph + (n + 1)) → ℂ)) := inferInstance
     have b3 : SigmaFinite (volume : Measure ((U.LW (sigP (n := n) σ) → ℂ) × (G.UT (ph + (n + 1)) → ℂ))) := by
@@ -1224,7 +1219,6 @@ lemma one_add_u_le (n : ℕ) {t : ℂ} (ht : t ≠ 0) (u : G.UT (n + 1) → ℂ)
   have hM1 : 1 ≤ max 1 ‖t‖⁻¹ := le_max_left _ _
   have hZ : 0 ≤ ‖Zu n t u‖ := norm_nonneg _
   have hmul := mul_le_mul_of_nonneg_right hM2 hZ
-  have he : max 1 ‖t‖⁻¹ * (1 + ‖Zu n t u‖) = max 1 ‖t‖⁻¹ + max 1 ‖t‖⁻¹ * ‖Zu n t u‖ := by ring
   linarith
 
 lemma detM_Zu (n : ℕ) {t : ℂ} (ht : t ≠ 0) (u : G.UT (n + 1) → ℂ) : G.detM (Zu n t u) ≠ 0 := by
@@ -1321,7 +1315,6 @@ theorem intG : IntG := by
     intro k ph n ρ σ d t hd ht K hK hK0 Q A₁ hA z z' E _ _ F₁ B₁ hStar γ hγ
     set R : ℝ := ((ph + (n + 1) + ρ : ℕ) : ℝ) with hR
     set a : ℝ := A₁ / (8 * (2 * R + 1)) with ha_def
-    have hden : 0 < 8 * (2 * R + 1) := by positivity
     have hR1 : (1 : ℝ) ≤ R := by rw [hR]; exact_mod_cast (by omega : 1 ≤ ph + (n + 1) + ρ)
     have hnd : R ≤ ((2 * (ph + (n + 1) + ρ) + k + 1 : ℕ) : ℝ) := by
       rw [hR]; exact_mod_cast (by omega : ph + (n + 1) + ρ ≤ 2 * (ph + (n + 1) + ρ) + k + 1)
@@ -1348,7 +1341,6 @@ theorem intG : IntG := by
         linarith
       have hmul := mul_le_mul hnR hn1 hn0 (by linarith)
       have hmul2 := mul_le_mul_of_nonneg_left hnd (by linarith : 0 ≤ R)
-      have hR20 : 0 ≤ R * R := by positivity
       linarith [show 2 * R * ((2 * (ph + (n + 1) + ρ) + k + 1 : ℕ) : ℝ) =
         2 * (R * ((2 * (ph + (n + 1) + ρ) + k + 1 : ℕ) : ℝ)) by ring]
     have hI2 : Integrable (fun u : G.UT (n + 1) → ℂ => (1 + ‖u‖) ^ (-a)) volume := integrable_one_add_norm hfr
@@ -1359,8 +1351,6 @@ theorem intG : IntG := by
       have c3 : SigmaFinite (volume : Measure (U.LW σ → ℂ)) := inferInstance
       have c4 : SigmaFinite (volume : Measure (G.UT ph → ℂ)) := inferInstance
       have c5 : SigmaFinite (volume : Measure ((Fin (n + 1) → Fin ph → ℂ) × (Fin ph → Fin (n + 1) → ℂ))) := by
-        rw [Measure.volume_eq_prod]; infer_instance
-      have c6 : SigmaFinite (volume : Measure ((U.LW σ → ℂ) × (G.UT ph → ℂ))) := by
         rw [Measure.volume_eq_prod]; infer_instance
       rw [Measure.volume_eq_prod]; infer_instance
     set μR := (U.muRC k (ph + (n + 1)) ρ).prod (U.muRC k (ph + (n + 1)) ρ) with hμR
@@ -1669,7 +1659,6 @@ theorem Zv_decay (n : ℕ) {t : ℂ} (ht : t ≠ 0) (u : G.UT (n + 1) → ℂ) {
     have h1 : min 1 ‖t‖ ≤ 1 := min_le_left _ _
     have h2 : min 1 ‖t‖ ≤ ‖t‖ := min_le_right _ _
     have hmul := mul_le_mul_of_nonneg_right h2 (norm_nonneg u)
-    have he : min 1 ‖t‖ * (1 + ‖u‖) = min 1 ‖t‖ + min 1 ‖t‖ * ‖u‖ := by ring
     linarith
   rw [← Real.mul_rpow hm.le (by positivity)]
   first

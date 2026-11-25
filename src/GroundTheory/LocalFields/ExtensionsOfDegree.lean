@@ -5,10 +5,6 @@ public import Mathlib.FieldTheory.IntermediateField.Adjoin.Defs
 public import Mathlib.FieldTheory.Separable
 public import Mathlib.Topology.MetricSpace.Ultra.Basic
 public import Mathlib.Analysis.Normed.Field.Krasner
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.Tactic.TypeStar
 public import Mathlib.Analysis.Normed.Algebra.Ultra
 public import Mathlib.NumberTheory.LocalField.Basic
 
@@ -30,36 +26,10 @@ variable {L : Type*} [NontriviallyNormedField L]
 theorem norm_le_one_of_aeval_eq_zero {C : Type*} [NormedField C] [IsUltrametricDist C]
     [NormedAlgebra L C] {g : L[X]} (hg : g.Monic) (hc : ∀ i, ‖g.coeff i‖ ≤ 1) {x : C}
     (hx : aeval x g = 0) : ‖x‖ ≤ 1 := by
-  by_contra h
-  push Not at h
-  set e := g.natDegree
-  have hsum : aeval x g = x ^ e + ∑ i ∈ Finset.range e, algebraMap L C (g.coeff i) * x ^ i := by
-    rw [aeval_eq_sum_range, Finset.sum_range_succ, hg.coeff_natDegree, one_smul, add_comm]
-    simp only [Algebra.smul_def]
-    rfl
-  have hx0 : x ≠ 0 := by
-    rintro rfl
-    rw [norm_zero] at h
-    linarith
-  have h1 : ‖∑ i ∈ Finset.range e, algebraMap L C (g.coeff i) * x ^ i‖ < ‖x ^ e‖ := by
-    rcases (Finset.range e).eq_empty_or_nonempty with he | he
-    · rw [he, Finset.sum_empty, norm_zero, norm_pow]
-      exact pow_pos (norm_pos_iff.2 hx0) _
-    · obtain ⟨i, hi, hle⟩ := IsUltrametricDist.exists_norm_finsetSum_le_of_nonempty he
-        (fun i ↦ algebraMap L C (g.coeff i) * x ^ i)
-      refine hle.trans_lt ?_
-      rw [norm_mul, norm_algebraMap', norm_pow, norm_pow]
-      calc ‖g.coeff i‖ * ‖x‖ ^ i ≤ 1 * ‖x‖ ^ i := by
-            gcongr
-            exact hc i
-        _ < ‖x‖ ^ e := by
-            rw [one_mul]
-            exact pow_lt_pow_right₀ h (Finset.mem_range.1 hi)
-  have h2 : x ^ e = -∑ i ∈ Finset.range e, algebraMap L C (g.coeff i) * x ^ i := by
-    rw [hsum] at hx
-    exact eq_neg_of_add_eq_zero_left hx
-  rw [h2, norm_neg] at h1
-  exact lt_irrefl _ h1
+  exact (norm_root_le_spectralValue
+    (f := (NormedAlgebra.toMulAlgebraNorm L C).toAlgebraNorm)
+    (MulRingNorm.isPowMul _) IsUltrametricDist.isNonarchimedean_norm hg hx).trans
+      ((spectralValue_le_one_iff hg).2 hc)
 
 variable [CompleteSpace L] [IsUltrametricDist L]
 
@@ -95,11 +65,7 @@ theorem exists_adjoin_eq_of_norm_coeff_sub_lt (f : L[X]) (hm : f.Monic) (hirr : 
   intro g hgm hdeg hgc hclose β hβ
   have hβint : IsIntegral L β := ⟨g, hgm, by rwa [← aeval_def]⟩
   have : FiniteDimensional L L⟮β⟯ := adjoin.finiteDimensional hβint
-  let ψ : L⟮β⟯ →ₐ[L] C := (by
-    refine @_root_.IsAlgClosed.lift _ _ _ _ _ _ _ _ _ _ _ ?_ ?_ ?_
-    solve_by_elim* (maxDepth := 2) only [*,
-      @_root_.DivisionSemiring.to_moduleIsTorsionFree,
-      @_root_.Algebra.IsIntegral.isAlgebraic, @_root_.inferInstance])
+  let ψ : L⟮β⟯ →ₐ[L] C := IsAlgClosed.lift
   set β' : C := ψ (AdjoinSimple.gen L β) with hβ'_def
   have hgen : aeval (AdjoinSimple.gen L β) g = 0 := by
     apply (algebraMap L⟮β⟯ Ω').injective

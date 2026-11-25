@@ -45,8 +45,6 @@ namespace GlobalTheory.Mem.Top.Bl
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.Inhab Formalism.L2.Host GlobalTheory.EX GlobalTheory.EX.OB GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top.GroupRetwisting NumberField IsDedekindDomain
   Formalism.L2.DIV
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section General
 
 variable (D : D7) {G : Type} [Group G] [Fintype G] {Pl0 T : Type} (A : FamIn D.what₂.LL G Pl0 T D.R.m)

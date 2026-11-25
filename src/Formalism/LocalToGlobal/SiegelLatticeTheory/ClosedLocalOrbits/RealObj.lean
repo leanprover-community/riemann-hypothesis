@@ -82,8 +82,6 @@ end HS
 
 section Glob
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat
 
 variable {D : D7} (X : Formalism.L2.SG.HidaSetting.HidaSetting D)
@@ -219,8 +217,6 @@ end Frame
 
 section GlobV
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat
 
 variable {D : D7} (X : Formalism.L2.SG.HidaSetting.HidaSetting D)
@@ -306,8 +302,6 @@ end GlobV
 
 section Comparison₂
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat
 
 variable {D : D7} (X : Formalism.L2.SG.HidaSetting.HidaSetting D)
@@ -357,8 +351,6 @@ def TopTie (S : Formalism.FourierDecayAlt.C.HidaSetting D.host.E Wp Wq) (u u' : 
 end Comparison₂
 
 section Built
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat
 
@@ -438,8 +430,6 @@ end Built
 
 section Carrier
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat
 
 variable {D : D7} (X : Formalism.L2.SG.HidaSetting.HidaSetting D)
@@ -447,8 +437,6 @@ variable {D : D7} (X : Formalism.L2.SG.HidaSetting.HidaSetting D)
 end Carrier
 
 section Proofs
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7} (X : Formalism.L2.SG.HidaSetting.HidaSetting D)
 

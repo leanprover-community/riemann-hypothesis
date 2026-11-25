@@ -35,38 +35,18 @@ variable {S : Type u} [CommRing S] {N : ℕ}
 
 theorem homogeneousComponent_mul_mem_span {g : Poly S N} {e : ℕ} (hg : g.IsHomogeneous e)
     (r : Poly S N) (d : ℕ) : homogeneousComponent d (r * g) ∈ Ideal.span {g} := by
-  classical
-
-  rw [← sum_homogeneousComponent r, Finset.sum_mul, map_sum]
-  refine Ideal.sum_mem _ fun m _ => ?_
-  rw [homogeneousComponent_of_mem
-    ((mem_homogeneousSubmodule _ _).mpr ((homogeneousComponent_isHomogeneous m r).mul hg))]
-  split_ifs
-  · exact Ideal.mul_mem_left _ _ (Ideal.mem_span_singleton_self g)
-  · exact zero_mem _
+  let := MvPolynomial.gradedAlgebra (σ := Fin (N + 1)) (R := S)
+  exact homogeneousComponent_mem_of_mem
+    (Ideal.homogeneous_span (homogeneousSubmodule (Fin (N + 1)) S) {g}
+      (by rintro _ rfl; exact ⟨e, hg⟩))
+    (Ideal.mul_mem_left _ r (Ideal.mem_span_singleton_self g)) d
 
 theorem hom_span {T : Set (Poly S N)} (hT : ∀ g ∈ T, ∃ e, g.IsHomogeneous e) :
     ∀ f ∈ Ideal.span T, ∀ d : ℕ, homogeneousComponent d f ∈ Ideal.span T := by
-  intro f hf
-  induction hf using Submodule.span_induction with
-  | mem g hg =>
-    intro d
-    obtain ⟨e, he⟩ := hT g hg
-    rw [homogeneousComponent_of_mem ((mem_homogeneousSubmodule _ _).mpr he)]
-    split_ifs
-    · exact Ideal.subset_span hg
-    · exact zero_mem _
-  | zero => intro d; simp
-  | add a b _ _ ha hb => intro d; rw [map_add (f := _)]; exact add_mem (ha d) (hb d)
-  | smul r a _ ha =>
-    intro d
-    classical
-    change homogeneousComponent d (r * a) ∈ _
-
-    rw [← sum_homogeneousComponent a, Finset.mul_sum, map_sum]
-    refine Ideal.sum_mem _ fun m _ => ?_
-    exact (Ideal.span_singleton_le_iff_mem _).mpr (ha m)
-      (homogeneousComponent_mul_mem_span (homogeneousComponent_isHomogeneous m a) r d)
+  let := MvPolynomial.gradedAlgebra (σ := Fin (N + 1)) (R := S)
+  exact fun _ hf => homogeneousComponent_mem_of_mem
+    (Ideal.homogeneous_span (homogeneousSubmodule (Fin (N + 1)) S) T
+      fun g hg => by obtain ⟨e, he⟩ := hT g hg; exact ⟨e, he⟩) hf
 
 theorem hom_sup {I I' : Ideal (Poly S N)} (h : ∀ f ∈ I, ∀ d : ℕ, homogeneousComponent d f ∈ I)
     (h' : ∀ f ∈ I', ∀ d : ℕ, homogeneousComponent d f ∈ I') :

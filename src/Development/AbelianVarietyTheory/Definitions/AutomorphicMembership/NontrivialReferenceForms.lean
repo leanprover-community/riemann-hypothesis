@@ -49,8 +49,6 @@ open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions F
 
 namespace GlobalTheory.Mem.Df.Model
 
-attribute [local instance] GlobalTheory.Mem.Col2.starE
-
 section Gen
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K] (H : HLat K) (σ : K →+* ℂ) {M : Type} [AddCommGroup M] [Module ℂ M]

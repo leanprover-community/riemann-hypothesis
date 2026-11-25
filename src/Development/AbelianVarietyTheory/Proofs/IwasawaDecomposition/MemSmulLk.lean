@@ -148,8 +148,6 @@ end Gen
 
 section Dd
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} {u : D.what₂.Word}
 
 theorem mem_Ld (i : ℕ) (hi : i ≤ D.R.m) (c : (D.mem u).C.cls i) (z : (D.sp.X i).V) :
@@ -238,8 +236,6 @@ theorem toLk_surj {i : ℕ} (hi : i ≤ D.R.m) (v : (D.mem u).A.vT) (c : (D.mem 
 end Dd
 
 section Mk
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7} {u : D.what₂.Word} (A : AtTTied u) (P : ∀ i hi, LvTied u A i hi)
 

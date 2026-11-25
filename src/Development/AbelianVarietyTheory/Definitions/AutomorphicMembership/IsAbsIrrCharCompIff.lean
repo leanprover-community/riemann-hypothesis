@@ -197,8 +197,6 @@ end Base
 
 section Record
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable (X : Stages) {px : PreX X.B.toPre} (I : ColIn X.B px)
 
 abbrev famR (hX : X.B.fields.Ok) (U : Set I.ι) (Xg : Finset (Gc X.B px → X.B.LL)) (tr : TrI X.B px) :

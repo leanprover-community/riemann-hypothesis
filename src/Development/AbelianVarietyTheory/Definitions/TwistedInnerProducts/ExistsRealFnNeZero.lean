@@ -59,8 +59,6 @@ open scoped Matrix ComplexOrder
 
 namespace GlobalTheory.RealType
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} {T : Type}
 
 section Frame

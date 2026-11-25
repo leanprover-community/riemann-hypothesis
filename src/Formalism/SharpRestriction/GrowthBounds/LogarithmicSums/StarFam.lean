@@ -430,10 +430,10 @@ theorem first_count_le_log (s : Scale) (hx : Real.exp 1 ≤ s.x) : (N1 s : ℝ) 
   nlinarith
 
 theorem hboB_arith (Y Pr1 G η c Nm kappaThresholdTwo Q DIf N k lb n' C31 lx DI v N1 Np : ℝ) (hY : 130 ≤ Y)
-    (a1 : 0 ≤ Pr1) (b1 : Pr1 ≤ Y) (a2 : 0 ≤ G) (b2 : G ≤ Y) (a3 : 0 ≤ η) (b3 : η ≤ Y) (a4 : 0 ≤ c) (b4 : c ≤ Y)
+    (b1 : Pr1 ≤ Y) (a2 : 0 ≤ G) (b2 : G ≤ Y) (a3 : 0 ≤ η) (b3 : η ≤ Y) (a4 : 0 ≤ c) (b4 : c ≤ Y)
     (a5 : 0 ≤ Nm) (b5 : Nm ≤ Y) (a6 : 0 ≤ kappaThresholdTwo) (b6 : kappaThresholdTwo ≤ Y) (a7 : 0 ≤ Q) (b7 : Q ≤ Y) (a8 : 0 ≤ DI) (b8 : DI ≤ Y)
     (a9 : 0 ≤ N) (b9 : N ≤ Y) (a10 : 0 ≤ k) (b10 : k ≤ Y) (a11 : 0 ≤ lb) (b11 : lb ≤ Y) (a12 : 0 ≤ n') (b12 : n' ≤ Y)
-    (a13 : 0 ≤ C31) (b13 : C31 ≤ Y) (a14 : 0 ≤ lx) (b14 : lx ≤ Y) (a15 : 0 ≤ v) (b15 : v ≤ Y) (a16 : 0 ≤ N1)
+    (b13 : C31 ≤ Y) (a14 : 0 ≤ lx) (b14 : lx ≤ Y) (a15 : 0 ≤ v) (b15 : v ≤ Y) (a16 : 0 ≤ N1)
     (b16 : N1 ≤ Y) (a17 : 0 ≤ Np) (b17 : Np ≤ Y) (a18 : 0 ≤ DIf)
     (hD : DIf ≤ DI * Np * v ^ 2 * (N1 ^ 5 + k ^ 3) * lb + 1) :
     Pr1 * G * (η + c + Nm) + kappaThresholdTwo * (Q * (8 * (DIf + 1) + kappaThresholdTwo * N * k * lb + 4 * N * c + 2 * n' * c) + k * Q +
@@ -462,7 +462,7 @@ theorem hboB_arith (Y Pr1 G η c Nm kappaThresholdTwo Q DIf N k lb n' C31 lx DI 
       _ = Y ^ 13 := by ring
   linarith
 
-theorem hDII_arith (Y DII N1 r k lb : ℝ) (hY : 130 ≤ Y) (a1 : 0 ≤ DII) (b1 : DII ≤ Y) (a2 : 0 ≤ N1) (b2 : N1 ≤ Y)
+theorem hDII_arith (Y DII N1 r k lb : ℝ) (hY : 130 ≤ Y) (b1 : DII ≤ Y) (a2 : 0 ≤ N1) (b2 : N1 ≤ Y)
     (a3 : 0 ≤ r) (b3 : r ≤ Y) (a4 : 0 ≤ k) (b4 : k ≤ Y) (a5 : 0 ≤ lb) (b5 : lb ≤ Y) :
     DII * (N1 ^ 3 + r ^ 5 + k ^ 2) * lb ≤ Y ^ 8 := by
   have hY0 : 0 ≤ Y := by linarith
@@ -518,7 +518,7 @@ theorem facts_ev (eps : ℝ) (K : Consts) (hK : K.Nonneg) (C31 : ℝ) (hC31 : 0 
     eventually_ge_atTop (Real.exp 1)] with x f1 f2 g1 g2 g3 g4 g5 g6 f4 f5 f6 f7 f8 f9 f10 hx40 hxe D L hx heps hS P h5
   subst hx
   subst heps
-  obtain ⟨_, _, _, _, hDII0, _, _, hDI0, _, htI20, _, _, _, hPr10, _⟩ := hK
+  obtain ⟨_, _, _, _, _, _, _, hDI0, _, htI20, _, _, _, _, _⟩ := hK
   have hx0 := sc_x_pos L.sc
   have hx1 := L.sc.one_lt_alt
   have hlx0 : 0 ≤ Real.log L.sc.x := Real.log_nonneg hx1.le
@@ -650,7 +650,7 @@ theorem facts_ev (eps : ℝ) (K : Consts) (hK : K.Nonneg) (C31 : ℝ) (hC31 : 0 
     linarith
   · intro p hp
     rw [rG_rE]
-    exact le_trans (hDII_arith (Real.exp (L.sc.x ^ (23 * L.sc.eps / 48))) K.DII _ _ _ _ hY130 hDII0 g4 (Nat.cast_nonneg _) e_N1 (Nat.cast_nonneg _) g6 hk0.le e_k
+    exact le_trans (hDII_arith (Real.exp (L.sc.x ^ (23 * L.sc.eps / 48))) K.DII _ _ _ _ hY130 g4 (Nat.cast_nonneg _) e_N1 (Nat.cast_nonneg _) g6 hk0.le e_k
       (e_lb p hp).1 (e_lb p hp).2) e8
   · intro p hp _ hpX n' hn'
     have hbo : L.sc.b ^ (L.sc.x ^ (-(L.sc.eps / 2))) = Real.exp (L.sc.x ^ (L.sc.eps / 2)) := by
@@ -683,9 +683,9 @@ theorem facts_ev (eps : ℝ) (K : Consts) (hK : K.Nonneg) (C31 : ℝ) (hC31 : 0 
     refine le_trans ?_ h13
     unfold c6f
     exact hboB_arith (Real.exp (L.sc.x ^ (23 * L.sc.eps / 48))) K.Pr1 _ L.etaSz (cG L) (Nm D) K.kappaThresholdTwo (Qp L.sc p) _ (NplusF L.sc n') (D.R.k : ℝ) _ (n' : ℝ) C31 _ K.DI _
-      (N1 L.sc : ℝ) (NplusF L.sc n') hY130 hPr10 g1 hG0 e_G L.etaSz_pos.le e_eta hcG0 e_c hNm0 e_Nm htI20 g2 (hQ0 p)
+      (N1 L.sc : ℝ) (NplusF L.sc n') hY130 g1 hG0 e_G L.etaSz_pos.le e_eta hcG0 e_c hNm0 e_Nm htI20 g2 (hQ0 p)
       (e_Q p hp hpX) hDI0 g3 hNp0 hNp hk0.le e_k (e_lb p hp).1 (e_lb p hp).2
-      (Nat.cast_nonneg _) (le_trans hn'R e_n) hC31.le g5 hlx0 e_lx (Real.rpow_nonneg hx0.le _) e_v (Nat.cast_nonneg _) e_N1
+      (Nat.cast_nonneg _) (le_trans hn'R e_n) g5 hlx0 e_lx (Real.rpow_nonneg hx0.le _) e_v (Nat.cast_nonneg _) e_N1
       hNp0 hNp (Nat.cast_nonneg _) hDIf
 
 end Formalism.MainNotions.AuxBlock8.Pf.St.B

@@ -1002,7 +1002,7 @@ theorem det_kapAt_val {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : Gri
 
 
 theorem detAt_conjPt_eq_prod {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} {W : G.Weil}
-    {U : Set T} (S : GridChoice W U) {t : T} (_ht : t ∈ U) (j : ℕ) (hj : j + 1 < D.R.m) (k : FinPt G (.top (j + 1)))
+    {U : Set T} (S : GridChoice W U) {t : T} (j : ℕ) (hj : j + 1 < D.R.m) (k : FinPt G (.top (j + 1)))
     (e : AE D) (hI : IsIdemSum e (locPl G t)) :
     detAt e (G.V (.top (j + 1))) (conjPt S j k) =
       ∏ w : locPl G t, GlobalTheory.LFun.locIdele D.host.F w.1 (gdet (kapAt S t j hj k w)) := by
@@ -1523,7 +1523,7 @@ theorem omega_conj_vac_low: ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts
   conv_lhs => rw [← hvac]
   refine (hlaw (halfInd e (stdLatO S (.top t j))) (_root_.GlobalTheory.isSBHalf_halfInd e _)).trans ?_
   congr 1
-  · rw [detAt_one' he2, detAt_resG_eq he2 hc hε halg, _root_.GlobalTheory.TopLevelInv.detAt_conjPt_eq_prod S ht j hj k e he]
+  · rw [detAt_one' he2, detAt_resG_eq he2 hc hε halg, _root_.GlobalTheory.TopLevelInv.detAt_conjPt_eq_prod S (t := t) j hj k e he]
     unfold GlobalTheory.SplitLinear.fac
     simp only [splitFacO, map_one, inv_one, one_mul]
     rw [GlobalTheory.T.topPairSourceChar_prod_localIdeles G hL j hj]

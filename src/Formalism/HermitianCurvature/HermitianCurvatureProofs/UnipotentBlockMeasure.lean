@@ -153,11 +153,7 @@ theorem t_FramePassage : FramePassage := by
   have h1 : (B.c0 * B.c0')⁻¹ * B.IntN = (B.unitLevelVolume / B.volZZ)⁻¹ * ((B.c0 * B.c0')⁻¹ * B.IntC) := by
     rw [hJac]
     field_simp
-  have hpb : 0 < rd ^ (((f * r * (r + 1) * (8 * r + 10) : ℕ) : ℝ) / 3) := Real.rpow_pos_of_pos hrd _
   rw [h1, F1, F2, F3, hexp, div_pow]
-  have h2 : (0 : ℝ) < 2 ^ (f * (r + 1)) := by positivity
-  have h3 : 0 < rd ^ (f * (r + 1)) := by positivity
-  have h4 : 0 < g ^ (f * (r + 1) * (2 * r + 3)) := by positivity
   field_simp
 
 theorem t_NormRe : NormRe := by
@@ -320,7 +316,6 @@ theorem t_MeanAmpJoint : Formalism.FourierDecayAlt.PN.MeanAmpJoint := by
   intro hS4 _ Cl Nu L C1 C0 r k hb hN hM hU S
   unfold e7
   have hH : ∀ p, 1 ≤ L.H p := hb.2.1
-  have hnn : ∀ p, 0 ≤ L.nn p := hb.2.2.2.2.1
   refine mean hS4 L C0 r (k - 2 * r - 5) _ (fun p => L.H p ^ (C1 * (r + 1) ^ 2))
     (fun p => if p ∈ L.Om then 8 * L.H p ^ (C0 * (r + 1) ^ 2 + 2 * (2 * r + 2)) else 1)
     (fun p => one_le_pow₀ (hH p)) ?_ hb hM hU hN.1 hN.2 ?_ ?_ S
@@ -646,12 +641,9 @@ theorem t_SecondBracket : SecondBracket := by
   rw [hinner]
   set σ : ℝ := ∑ y ∈ (T.filter (fun x => x.2.1 = γ)).image (fun x => (x.1, x.2.2)), a2 y.1 γ y.2 with hσ
   have hσ0 : 0 ≤ σ := sum_nonneg (fun y _ => ha2 _ _ _)
-  have hH0 : 0 ≤ Hh γ := by linarith
   have hσ1 : σ ≤ κ2 * Hh γ ^ e7 * (AAre * e1 * Hh γ ^ eN * n γ) := by
     refine le_trans (hmean γ hp _) ?_
     exact mul_le_mul_of_nonneg_left (hmass γ hp) (by positivity)
-  have hNG0 : 0 ≤ NG γ := by linarith
-  have hND0 : 0 ≤ ND γ := by linarith
   have hF : w γ * (Pc * NG γ ^ 6) * Jloc γ ≤ w γ * (Pc * NG γ ^ 6) * (cSt * JB γ) :=
     mul_le_mul_of_nonneg_left (hmeas γ hp) (by positivity)
   have hstep : (w γ * (Pc * NG γ ^ 6) * Jloc γ) * σ ≤
@@ -661,10 +653,8 @@ theorem t_SecondBracket : SecondBracket := by
 
   set Xx : ℝ := NG γ * ND γ with hX
   have hX1 : 1 ≤ Xx := by rw [hX]; nlinarith
-  have hX0 : 0 ≤ Xx := by linarith
   have hNGX : NG γ ≤ Xx := by rw [hX]; nlinarith
   have hHX : Hh γ ≤ gf * Xx := by rw [hX, ← mul_assoc]; exact hheight γ hp
-  have hgf0 : 0 ≤ gf := by linarith
   have hpw : NG γ ^ 6 * (Hh γ ^ e7 * Hh γ ^ eN) ≤ gf ^ Aexp * Xx ^ Aexp := by
     rw [← pow_add]
     calc NG γ ^ 6 * Hh γ ^ (e7 + eN) ≤ Xx ^ 6 * (gf * Xx) ^ (e7 + eN) := by gcongr
@@ -1007,10 +997,6 @@ theorem t_RowNGJoint : RowNGJoint := by
   set dd : ℝ := B.d * B.d' / B.Dstar with hdd
   set AAre : ℝ := abelian₂ rd r k f * B.AA with hAAre
   set EX : ℝ := Real.exp (Cn * ((2 * r + 2 : ℕ) : ℝ) ^ 5 * f * Real.log b) with hEX
-  have hS0 : 0 ≤ S := by rw [hS]; positivity
-  have hPc0 : 0 ≤ Pc := by rw [hPc]; positivity
-  have hgA0 : 0 ≤ gA := by rw [hgA]; positivity
-  have hex0 : 0 ≤ ex := by rw [hex]; positivity
   have hF : 0 ≤ S * κ * cSt * e1 * Pc * gA * ex := by positivity
   calc B.Gam1 * (S * (κ * cSt * AAre * e1 * Pc * gA * (ex * Ire)))
       = (S * κ * cSt * e1 * Pc * gA * ex) * (B.Gam1 * AAre * Ire) := by ring

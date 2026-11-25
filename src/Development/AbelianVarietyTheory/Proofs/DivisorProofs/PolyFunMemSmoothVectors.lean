@@ -48,7 +48,6 @@ open scoped TensorProduct ContDiff
 
 namespace GlobalTheory.CentralOps
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 attribute [local instance 100] LieRing.ofAssociativeRing
 
 variable {D : D7}

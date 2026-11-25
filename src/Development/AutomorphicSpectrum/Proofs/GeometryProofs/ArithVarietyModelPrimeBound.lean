@@ -238,15 +238,8 @@ theorem integers_regular {F : Type} [Field F] [NumberField F] (hN : Flat.NormalC
   exact h.tower_top
 
 theorem unitAt_nat {q : Cpt ξ} [CharZero Ω] (n : ℕ) (hn : n ≠ 0)
-    (h : ∀ p : ℕ, p.Prime → p ∣ n → unitAt ξ q (p : Ω)) : unitAt ξ q (n : Ω) := by
-  induction n using Nat.recOnMul with
-  | zero => exact absurd rfl hn
-  | one => simpa using Flat.ZUnit.one
-  | prime p hp => exact h p hp dvd_rfl
-  | mul a b ha hb =>
-    rw [Nat.cast_mul]
-    exact Flat.ZUnit.mul (ha (left_ne_zero_of_mul hn) fun p hp hd => h p hp (hd.mul_right b))
-      (hb (right_ne_zero_of_mul hn) fun p hp hd => h p hp (hd.mul_left a))
+    (h : ∀ p : ℕ, p.Prime → p ∣ n → unitAt ξ q (p : Ω)) : unitAt ξ q (n : Ω) :=
+  _root_.GlobalTheory.CompanionTheory.Ar.HcVb.unitAt_nat n hn h
 
 theorem unitAt_natAbs_discr {F : Type} [Field F] [NumberField F] {q : Cpt ξ} [CharZero Ω]
     (h : ∀ p : ℕ, p.Prime → (p : ℤ) ∣ discr F → unitAt ξ q (p : Ω)) :
@@ -626,40 +619,14 @@ theorem normalCpt_of_isCptGen {X : Scheme.{0}} {Ω : Type} [Field Ω] {ξ : Spec
     (hξ : IsCptGen ξ) (hX : IsNormalScheme X) : Flat.NormalCpt ξ := by
   apply GlobalTheory.CompanionTheory.Ar.XR.normalCpt_of_isCptGen <;> assumption
 
-theorem epiSp {Ω K : Type} [Field Ω] [Field K] (a : Ω →+* K) : Epi (spMap a) := by
-  constructor
-  intro Y g h hgh
-  have key : ∀ (x : Y) (φ : Y.residueField x ⟶ CommRingCat.of Ω),
-      spMap a ≫ (Scheme.SpecToEquivOfField Ω Y).symm ⟨x, φ⟩ =
-        (Scheme.SpecToEquivOfField K Y).symm ⟨x, φ ≫ CommRingCat.ofHom a⟩ := by
-    intro x φ
-    simp only [Scheme.SpecToEquivOfField, Equiv.coe_fn_symm_mk, spMap, Spec.map_comp, Category.assoc]
-  obtain ⟨⟨x, φ⟩, rfl⟩ := (Scheme.SpecToEquivOfField Ω Y).symm.surjective g
-  obtain ⟨⟨x', ψ⟩, rfl⟩ := (Scheme.SpecToEquivOfField Ω Y).symm.surjective h
-  rw [key, key] at hgh
-  have h2 := (Scheme.SpecToEquivOfField K Y).symm.injective hgh
-  rw [Scheme.SpecToEquivOfField_eq_iff] at h2
-  obtain ⟨e, he⟩ := h2
-  have : Mono (CommRingCat.ofHom a) := ConcreteCategory.mono_of_injective _ a.injective
-  apply congrArg
-  rw [Scheme.SpecToEquivOfField_eq_iff]
-  refine ⟨e, ?_⟩
-  dsimp only at he ⊢
-  apply (cancel_mono (CommRingCat.ofHom a)).1
-  rw [Category.assoc]
-  exact he
+theorem epiSp {Ω K : Type} [Field Ω] [Field K] (a : Ω →+* K) : Epi (spMap a) :=
+  _root_.GlobalTheory.CompanionTheory.Ar.HtEnd.epiSp a
 
 theorem pow_descend {X : Scheme.{0}} {G : Over X} [GrpObj G] {Ω K : Type} [Field Ω] [Field K]
     {ξ : Spec (CommRingCat.of Ω) ⟶ X} {N : ℕ} (a : Ω →+* K)
     {g₀ : Over.mk ξ ⟶ G} {g : Over.mk (spMap a ≫ ξ) ⟶ G} (e : g.left = spMap a ≫ g₀.left) (hg : g ^ N = 1) :
-    g₀ ^ N = 1 := by
-  have hmk : g = Over.homMk (U := Over.mk (spMap a ≫ ξ)) (V := Over.mk ξ) (spMap a) rfl ≫ g₀ := by
-    ext
-    simp [e]
-  have : Epi (Over.homMk (U := Over.mk (spMap a ≫ ξ)) (V := Over.mk ξ) (spMap a) rfl) :=
-    @Over.epi_of_epi_left _ _ _ _ _ _ (epiSp a)
-  apply (cancel_epi (Over.homMk (U := Over.mk (spMap a ≫ ξ)) (V := Over.mk ξ) (spMap a) rfl)).1
-  rw [MonObj.comp_pow, ← hmk, hg, MonObj.comp_one]
+    g₀ ^ N = 1 :=
+  _root_.GlobalTheory.CompanionTheory.Ar.HtEnd.powDescend a e hg
 
 variable {X : Scheme.{0}} {Ω : Type} [Field Ω] {ξ : Sp Ω ⟶ X}
   {Li : Type} [AddCommGroup Li] [Module Ω Li]

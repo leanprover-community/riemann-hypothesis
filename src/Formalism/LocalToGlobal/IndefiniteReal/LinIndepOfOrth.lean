@@ -132,8 +132,6 @@ end LinIndep
 
 section Fin
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : Formalism.BasicNotions.D7} {Y : Formalism.BasicNotions.TH.HSp D} {n : ℕ} {Sp : D.what₂.Tau → SPar}
 variable (θ : D.what₂.Tau → (Ainf D.host.F ⊗[D.host.F] D.host.E →+* ℂ))
 

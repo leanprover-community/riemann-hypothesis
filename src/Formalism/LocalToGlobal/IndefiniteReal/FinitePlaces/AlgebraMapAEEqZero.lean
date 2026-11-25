@@ -56,8 +56,6 @@ open scoped TensorProduct
 
 namespace Formalism.IndefR.Fin.LevelGroupLemmas
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 def LatPres {S T : HSp D} (ΛS : Submodule (𝓞 D.host.E) (Fin S.rank → D.host.E))

@@ -55,8 +55,6 @@ end Rep
 
 section Rel
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Λ : ∀ j, LevFam X.E X.K (R.N j) Pr.vGs)
 
 end Rel

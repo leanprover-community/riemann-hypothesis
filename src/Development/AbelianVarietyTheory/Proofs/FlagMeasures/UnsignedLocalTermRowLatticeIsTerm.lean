@@ -54,8 +54,6 @@ open scoped Classical
 
 namespace GlobalTheory.LocOver
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Scale
 
 open Formalism.MainNotions.S.Loc

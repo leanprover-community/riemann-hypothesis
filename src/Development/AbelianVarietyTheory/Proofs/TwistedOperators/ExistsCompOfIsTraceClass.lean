@@ -598,8 +598,6 @@ theorem traceIsDiagonal_Rop {G : Type} [Group G] [TopologicalSpace G] [IsTopolog
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta GlobalTheory.Mem.Th
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem RopG_eq_comp {D : D7} {V : HSp D} {μ : Measure (GA D V)} [μ.IsHaarMeasure] [μ.IsMulRightInvariant]
     {f : GA D V → ℂ} (hf : Continuous f) (hc : HasCompactSupport f) (h : MapsIntoCusp V μ (starFn f)) :
     RopG V μ f = (L2cusp V μ).subtypeL ∘L RcuspOp V μ f ∘L (L2cusp V μ).orthogonalProjection := by

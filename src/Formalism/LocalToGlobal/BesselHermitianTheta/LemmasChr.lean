@@ -12,8 +12,6 @@ open scoped TensorProduct
 
 namespace Formalism.L2.Theta
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 theorem norm_idF (a : (AF D.host.F)ˣ) :

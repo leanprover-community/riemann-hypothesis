@@ -20,8 +20,6 @@ open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestrictio
 open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
 open scoped TensorProduct Topology
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section BC
 
 theorem bcSp {A B C : Type} [CommRing A] [CommRing B] [CommRing C] (f : A →+* B) (g : B →+* C) :

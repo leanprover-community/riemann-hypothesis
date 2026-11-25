@@ -52,8 +52,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelA
 open GlobalTheory.OrbitSep
 open scoped GlobalTheory.CompHt
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.LogKSDiv.KSBasis

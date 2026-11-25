@@ -13,7 +13,8 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ThetaAdjoint
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsProvisionalDivX
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.NonemptyRingHomComplexOfLeContinuum
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PointGlobalSectionsNeBot
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SubRkOfPsiOfEqRkOfCEmb
+public import Formalism.LocalRingCardinality.DataDIV
+public import Formalism.LocalToGlobal.LatticeGeometry.CmTypeMeetsConjugatePair
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LatticeJwIndexEqConcreteLiftIndexStatement
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LatticeTjEqImageOfCoordinateLatticeStatement
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LiftLevelFormOrthogonalKilledByThetaMap
@@ -438,7 +439,7 @@ theorem GlobalTheory.Mem.R3.Rw.St.idx_zero_off_twisted_anyEta : ∀ (K : Ctx) (B
       mjLat_sub_noEta Zr x.m.z.pins x.m.intersectionNumber_baseChange k, MjModel.jM_metric_all_noEta Zr x.m.intersectionNumber_baseChange k⟩
   let Xd : DivX (w.st x.o.Z).toD7 := GlobalTheory.provisionalDivX (w.st x.o.Z).toD7 G Y
     (fun p _ => (GlobalTheory.WittFracComplex.nonempty_ringHom_complex p).some)
-    (fun p _ r => (GlobalTheory.nonempty_admissibleModel _ p _ (max r 2) 1 (by omega)).some) Fm
+    Fm
   have hMj := mjHTie_of_eq_noEta Zr Xd rfl (HEq.refl (jM_noEta Zr))
   have hIdx : IdxDefs (w.st x.o.Z).toD7 Xd := (P.q.num x.o.η x.o.hη x.o.V x.o.S x.o.N x.o.G).idx Xd
   have hT := GlobalTheory.Mem.ReadIndexNumerics.ij_jw_of_read_noEta _ _ _ _ _ _ _ x.m.z.R x.m.z.F x.m.z.cG x.s.p0 x.r.Y Zr Xd _ x.m.z.pins x.m.intersectionNumber_baseChange hMj hIdx

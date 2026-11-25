@@ -115,7 +115,6 @@ end Powers
 
 section Statements
 
-open ReciprocityTheory.ChartRestriction.G.AI
 
 end Statements
 

@@ -50,7 +50,7 @@ open scoped TensorProduct Matrix
 
 namespace GlobalTheory.StdFrameModel
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.StdFrame.instCMHostS
+attribute [local instance] GlobalTheory.StdFrame.instCMHostS
 
 variable {D : D7}
 

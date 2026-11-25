@@ -58,8 +58,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open GlobalTheory.Grow GlobalTheory.Size GlobalTheory.Mem.AutSpace GlobalTheory.RealWeil GlobalTheory.Mem.Lift GlobalTheory.IndefiniteRowSideFullHecke.RapidDecayLift
 open scoped ENNReal NNReal Classical
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 namespace GlobalTheory.Chain.LiftReg
 
 variable {D : D7} {ψ : AddChar (AF D.host.F) ℂ} {θ : InfFam D} {V W : HSp D}

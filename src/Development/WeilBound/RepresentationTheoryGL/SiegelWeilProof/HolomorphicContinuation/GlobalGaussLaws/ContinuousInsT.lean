@@ -53,8 +53,6 @@ open GlobalTheory.StdUnn
 open Formalism.IndefR.Eqv (psiT psiT_sigR psiT_inclR thetaC eq_thetaC glueA splitInv psiT_glueA finPart_glueA ae_ext'
   continuous_glueA continuous_splitInv continuous_psiT)
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 namespace PositivityTheory.Rg.Sw.Glob.FTP
 
 open Classical

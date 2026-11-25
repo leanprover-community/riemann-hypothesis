@@ -121,8 +121,6 @@ private theorem spec_cl {L Ω : Type} [Field L] [NumberField L] [Field Ω] [Alge
     rw [← hφ, ← Units.val_inv_eq_inv_val]
     exact h5 _
 
-attribute [local instance 2000] UpperTheory.V.W.coefLocal
-
 theorem UpperTheory.V.Hi.spec :
     ∀ (L Ω : Type) [Field L] [NumberField L] [Field Ω] [Algebra L Ω] [IsAlgClosure L Ω] (l : ℕ) [Fact l.Prime] (n : ℕ) (c : Coef l) (H : HSet L Ω l n c), H.Ax →
     ∀ (A : Type) [CommRing A] [Algebra c.O A] [Alg.IsCO c.O A] (θ : H.X.I.T →* Aˣ), H.IsWt θ →

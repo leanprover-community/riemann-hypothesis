@@ -525,7 +525,7 @@ theorem orbit_facts (X : Inst D L) {K : Consts} {C31 C bo : ℝ} (A1 : adm1 D L 
     exact h
 
 theorem caseD_arith (N n nd r lx b' G u c c0 kQ S1 Dw C31 Pr2 tc C : ℝ)
-    (hN : 1 ≤ N) (hn0 : 0 ≤ n) (_hnd0 : 0 ≤ nd) (hr : 1 ≤ r) (hlx : 1 ≤ lx) (hb : 1 ≤ b') (hnG : n ≤ N * G)
+    (hN : 1 ≤ N) (hn0 : 0 ≤ n) (hr : 1 ≤ r) (hlx : 1 ≤ lx) (hb : 1 ≤ b') (hnG : n ≤ N * G)
     (hnd : nd ≤ N * (C31 * lx)) (hGu : G * u ≤ b') (hc0' : 0 ≤ c) (hcu : c ≤ u) (hc03 : c0 ≤ 3 * b')
     (hc00 : 0 ≤ c0) (hkQ : kQ ≤ b') (hS1 : 0 ≤ S1) (hDw0 : 0 ≤ Dw) (hDw : Dw ≤ b') (hPr2 : 0 ≤ Pr2)
     (htc : 0 ≤ tc) (hC31 : 0 ≤ C31) (hC1 : tc * r ≤ C) (hC2 : 2 * Pr2 + 4 * tc + 160 * C31 + 7 ≤ C) :
@@ -659,7 +659,7 @@ theorem starAt_D (X : Inst D L) {K : Consts} (hK : K.Nonneg) (P : ParameterChoic
     (L.sc.w'' D.R.n + L.etaSz + cG L + Nm D) (cG L) (c0num L) ((D.R.k : ℝ) * Qp L.sc p)
     (La K L.sc * L.sc.a / ((p : ℝ) * D.R.k) + L.sc.a * (p : ℝ) ^ (-(L1 D L.sc p : ℝ)))
     (K.DII * ((N1 L.sc : ℝ) ^ 3 + (rG L.sc : ℝ) ^ 5 + (D.R.k : ℝ) ^ 2) * Real.logb p L.sc.a) C31 3 K.tII C
-    hN1 hn0 (mul_nonneg hn0 hδ.le) hr Nn.hlx (by linarith) hnG hnd Nn.hGu hc0 (by linarith) Nn.hc0 hc00
+    hN1 hn0 hr Nn.hlx (by linarith) hnG hnd Nn.hGu hc0 (by linarith) Nn.hc0 hc00
     (Nn.hkQ p hp h0) hS1 hDw0 (Nn.hDII p hp) (by norm_num) htII hC31.le Nn.hCt Nn.hCD
   have hPr : Pr X K b p j t0 ≤ 3 * (rG L.sc : ℝ) * ((Nv X p t0 : ℝ) * L.sc.b' +
       (addOrderOf (hP D p) : ℝ) * (L.sc.w'' D.R.n + L.etaSz + cG L + Nm D)) := by

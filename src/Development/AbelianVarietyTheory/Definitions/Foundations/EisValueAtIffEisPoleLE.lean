@@ -53,8 +53,6 @@ namespace GlobalTheory.Eis
 open scoped NNReal ENNReal ComplexConjugate
 open Filter Topology Set MeasureTheory Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.L2.Pj GlobalTheory.AutomorphicL2Unitary GlobalTheory.Doubling GlobalTheory.Cont
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} (V : HSp D)
 
 abbrev SiegelCosets : Type := Cosets (siegel V) (GQ (dblSp V))

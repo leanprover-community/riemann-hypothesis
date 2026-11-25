@@ -46,7 +46,6 @@ open Formalism.CohomologicalDescent.LogSmallConstantBounds (Par)
 open Formalism.CohomologicalDescent.ShortWeightBounds (Wts)
 open Formalism.CohomologicalDescent.DepthNonnegative (NablaT)
 open GlobalTheory.ExpFrame GlobalTheory.ExpTie GlobalTheory.UnitaryBC GlobalTheory.CuspRep GlobalTheory.SmGL GlobalTheory.FrameAut
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 private theorem UpperTheory.hecke_offprime_preimage {D : D7} (V : Formalism.BasicNotions.TH.HSp D) (β : GL (Fin V.rank) (Formalism.IndefR.Lev.EAf D))
     (Λ : Submodule (𝓞 D.host.E) (Fin V.rank → D.host.E)) (L : Formalism.L2.DIV.LevDat D.host.E ℂ V.rank)

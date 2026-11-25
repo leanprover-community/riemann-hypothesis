@@ -24,8 +24,6 @@ namespace Formalism.L2.SG.Pf.AlTieFD
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.HidaSetting Formalism.L2.SG.LocVol Formalism.L2.SG.TypedSets
   Formalism.L2.SG.Pf.AlTie
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} (X : HidaSetting D) (u u' : D.what₂.Word)
 
 def DiscriminantAbsEq : Prop := |(NumberField.discr X.B.I.F : ℝ)| = |(NumberField.discr D.host.F : ℝ)|

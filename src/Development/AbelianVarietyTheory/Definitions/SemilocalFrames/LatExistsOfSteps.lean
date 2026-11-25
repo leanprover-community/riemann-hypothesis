@@ -94,8 +94,6 @@ end GlobalTheory.St.Lat
 namespace GlobalTheory.St.Lat
 open Formalism.L2.SG.Pf Formalism.L2.SG.Pf.LatEx
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 def IsoW (D : D7) : Prop :=
   ∃ w : (VS D).V, w ≠ 0 ∧ (VS D).hT w w = 0 ∧ ∀ i, (VS D).hT (D.sp.hypE i) w = 0 ∧ (VS D).hT (D.sp.hypF i) w = 0
 
@@ -532,8 +530,6 @@ theorem satBasis_holds : SatBasis := by
 
 section D7sec
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable (D : D7)
 
 theorem ddG_of (hU : Unram) (hSD : LatEx.SplitDiff) : DdG D := by
@@ -561,8 +557,6 @@ namespace GlobalTheory.St.Lat
 open Formalism.L2.SG.Pf Formalism.L2.SG.Pf.LatEx
 
 section D7asm
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable (D : D7)
 
@@ -613,8 +607,6 @@ namespace GlobalTheory.St.Lat
 open Formalism.L2.SG.Pf Formalism.L2.SG.Pf.LatEx
 
 section D7main
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable (D : D7)
 

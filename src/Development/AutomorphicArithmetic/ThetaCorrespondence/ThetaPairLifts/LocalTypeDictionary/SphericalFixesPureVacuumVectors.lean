@@ -117,7 +117,6 @@ noncomputable section
 
 namespace GlobalTheory.LatExtract
 
-open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Spc latAtV incM At)
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
@@ -147,7 +146,6 @@ end GlobalTheory.LatExtract
 
 namespace GlobalTheory.LatExtract
 
-open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Spc latAtV incM At)
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
@@ -185,7 +183,6 @@ end GlobalTheory.LatExtract
 
 namespace GlobalTheory.LatExtract
 
-open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Spc latAtV incM At)
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 

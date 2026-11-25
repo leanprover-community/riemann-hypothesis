@@ -48,8 +48,6 @@ open Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Lev Formalism.Inde
 
 namespace GlobalTheory.ThetaFiresProbe
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 theorem labE_fixed (τ : D.what₂.Tau) : labE D.what₂.embLL τ = tauE D τ := by

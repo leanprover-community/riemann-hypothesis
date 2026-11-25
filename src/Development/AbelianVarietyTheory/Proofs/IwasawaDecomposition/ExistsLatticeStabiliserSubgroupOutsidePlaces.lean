@@ -46,8 +46,6 @@ open scoped TensorProduct
 
 namespace GlobalTheory.Mem.Ksph
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem exists_subgroup_ksph : ∀ (D : D7) (V : HSp D) (S : Finset (HeightOneSpectrum (𝓞 D.host.F))),
     ∃ K : Subgroup (GA D V), (K : Set (GA D V)) = KsphC V S ∧ ∀ S', S ⊆ S' → KsphC V S' ⊆ KsphC V S :=
   fun _ V S => ⟨_, (GlobalTheory.AutFunCompare.KsphC_eq V S).symm,

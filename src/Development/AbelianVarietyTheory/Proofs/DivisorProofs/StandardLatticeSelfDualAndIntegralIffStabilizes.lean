@@ -59,7 +59,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero (ip)
 open GlobalTheory.Core.Rk.IP (openOff integrand wcoef)
 open GlobalTheory.StdLoc (glVol blockIdx)
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.NormRatio
 
 noncomputable section

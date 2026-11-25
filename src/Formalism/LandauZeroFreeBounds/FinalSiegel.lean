@@ -958,14 +958,9 @@ theorem changeLevel_eq_of_agree_coprime {q₁ q : ℕ} [NeZero q₁] [NeZero q] 
 
 theorem euler_factor_term_norm_le {M : ℕ} (φ : DirichletCharacter ℂ M) (p : ℕ) :
     ‖φ (p : ZMod M) * (p : ℂ) ^ (-(1 : ℂ))‖ ≤ 1 / (p : ℝ) := by
-  rw [norm_mul]
-  rcases Nat.eq_zero_or_pos p with rfl | hp
-  · simp
-  · have h1 : ‖(p : ℂ) ^ (-(1 : ℂ))‖ = 1 / (p : ℝ) := by
-      rw [Complex.norm_natCast_cpow_of_pos hp]
-      simp [Real.rpow_neg_one]
-    rw [h1]
-    exact mul_le_of_le_one_left (by positivity) (DirichletCharacter.norm_le_one φ _)
+  rw [norm_mul, Complex.cpow_neg_one, norm_inv, Complex.norm_natCast, one_div]
+  exact mul_le_of_le_one_left (by positivity) (DirichletCharacter.norm_le_one φ _)
+
 
 theorem euler_factor_product_upper {M : ℕ} (φ : DirichletCharacter ℂ M) (S : Finset ℕ) :
     ‖∏ p ∈ S, (1 - φ (p : ZMod M) * (p : ℂ) ^ (-(1 : ℂ)))‖ ≤ ∏ p ∈ S, (1 + 1 / (p : ℝ)) := by

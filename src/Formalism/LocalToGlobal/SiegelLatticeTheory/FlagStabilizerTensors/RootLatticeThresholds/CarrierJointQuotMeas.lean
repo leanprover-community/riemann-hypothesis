@@ -19,8 +19,6 @@ namespace Formalism.L2.SG.Pf.Carrier.JointQuot
 
 open Formalism.L2.SG.RealObj
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section PiProd
 
 

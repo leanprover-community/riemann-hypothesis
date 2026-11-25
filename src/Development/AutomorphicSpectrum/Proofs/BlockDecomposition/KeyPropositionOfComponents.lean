@@ -58,7 +58,7 @@ namespace GlobalTheory.CompanionTheory.KeyAsm
 
 open ReciprocityTheory.ChartRestriction.DS ReciprocityTheory.ChartRestriction.DS.S7 PositivityTheory.RgDs PositivityTheory.RgDs.K
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 variable {n : ℕ}
 

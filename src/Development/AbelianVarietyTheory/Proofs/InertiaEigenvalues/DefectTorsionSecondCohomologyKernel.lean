@@ -1104,8 +1104,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibl
 
 variable {l : ℕ} [Fact l.Prime]
 
-def cZero (l : ℕ) (m : ℕ) (U : Finset ℤ) : ℕ := 2 + ∑ u ∈ U, (m + padicValInt l u)
-
 theorem finiteDimensional_Ks (K : FinExt l) (s : ℕ) : FiniteDimensional ℚ_[l] ↥(Ks K s) := by
   apply Formalism.MainNotions.WachCoordinates.Br.fd_Ks
 
@@ -1375,12 +1373,6 @@ variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp]
     {PD : PeriodData G Qp K₀ K B BdR} {LL O : Type} [Field LL] [Algebra Qp LL] [TopologicalSpace LL]
     [CommRing O] [Algebra O LL] {v : AddValuation LL (WithTop ℚ)} {n : ℕ}
     (W : LocWach PD LL O v n)
-
-theorem isUnit_φ (a : LetA O n) (ha : IsUnit (algebraMap (LetA O n) W.EE a)) :
-    IsUnit (algebraMap (LetA O n) W.EE (W.φA a)) := by
-  show IsUnit (algebraMap (LetA O n) W.EE (letφ W.φ₀ a))
-  rw [← W.φE_ext a]
-  exact ha.map W.φE
 
 private theorem letπ_dvd_phiA_of_dvd (a : LetA O n) (h : (letπ : LetA O n) ∣ a) :
     (letπ : LetA O n) ∣ W.φA a := by

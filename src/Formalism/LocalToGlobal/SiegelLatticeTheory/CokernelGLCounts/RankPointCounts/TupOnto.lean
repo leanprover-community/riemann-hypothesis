@@ -538,8 +538,6 @@ end Eich2
 
 section D7
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 open Formalism.L2.SG.Saturated
 
 theorem aaF_cs (D : D7) (c : Fin D.R.rS) : Formalism.L2.SG.Pf.FibQ.aaF D c.castSucc = aaS D c := by

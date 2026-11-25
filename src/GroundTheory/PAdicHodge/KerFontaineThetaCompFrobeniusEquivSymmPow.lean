@@ -1,6 +1,7 @@
 module
 
 public import GroundTheory.PAdicHodge.PerfectoidField
+public import Development.AutomorphicArithmetic.IntegralCasts.CrystallinePeriods.TruncLogEqOfPowEqZero
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -182,9 +183,9 @@ See [Bhatt–Morrow–Scholze, *Integral p-adic Hodge theory*
 `R = 𝒪_[ℂ_[p]]`, see [Fontaine, *Le corps des périodes p-adiques*
 (§1.3.3, p. 66, with `K = ℚ_[p]`)][fontaine1994].
 
-TODO: Unify this with `Reformulated.AutPerF.Ainf`. -/
+This is `Reformulated.AutPerF.Ainf` specialized to `normInteger K`. -/
 abbrev AInf (K : Type*) [NontriviallyNormedField K] [IsUltrametricDist K] (p : ℕ) [Fact p.Prime] :=
-  WittVector p (PreTilt (normInteger K) p)
+  Reformulated.AutPerF.Ainf p (normInteger K)
 
 namespace AInf
 

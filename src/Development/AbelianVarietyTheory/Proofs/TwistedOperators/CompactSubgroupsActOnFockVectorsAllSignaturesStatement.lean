@@ -40,7 +40,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 @[expose] public section
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum MeasureTheory NumberField Matrix
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem _root_.GlobalTheory.T.compact_subgroups_act_on_fock_vectors_all_signatures : ∀ D : D7, GlobalTheory.ChainFr.CompactFockAll D := by
   first | exact @GlobalTheory.CompactFockAction.compactFockAll

@@ -192,8 +192,6 @@ namespace Formalism.L2.SG.Pf.LocModel.LM
 open NumberField Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.CntLocal IsDedekindDomain
 open Classical ValuativeRel
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 def DeltaUnitCof : Prop :=
   ∀ (D : Formalism.BasicNotions.D7) (δ : ∀ p : PlF D, (D.s.atP p).Fp) (M : ∀ p : PlF D, Loc.Model (D.s.atP p).Fp (D.s.atP p).Ep),
     (∀ p, Agree δ M p) → ∀ᶠ p in Filter.cofinite, δ p ∈ 𝒪[(D.s.atP p).Fp] ∧ (δ p)⁻¹ ∈ 𝒪[(D.s.atP p).Fp]
@@ -259,8 +257,6 @@ namespace Formalism.L2.SG.Pf.LocModel.LM
 open NumberField Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.CntLocal IsDedekindDomain
 open Classical ValuativeRel
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 def DiffTrivCof : Prop :=
   ∀ (D : Formalism.BasicNotions.D7) (δ : ∀ p : PlF D, (D.s.atP p).Fp) (M : ∀ p : PlF D, Loc.Model (D.s.atP p).Fp (D.s.atP p).Ep),
     (∀ p, Agree δ M p) → ∀ᶠ p in Filter.cofinite, ∀ z : (D.s.atP p).Ep,
@@ -320,8 +316,6 @@ namespace Formalism.L2.SG.Pf.LocModel.LM
 
 open NumberField Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.CntLocal IsDedekindDomain
 open Classical ValuativeRel
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 def EpDualCof : Prop :=
   ∀ D : Formalism.BasicNotions.D7, ∀ᶠ p in Filter.cofinite, ∀ z : (D.s.atP p).Ep,
@@ -396,8 +390,6 @@ namespace Formalism.L2.SG.Pf.LocModel.LM
 
 open NumberField Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.CntLocal IsDedekindDomain
 open Classical ValuativeRel
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem memO_iff {K : Type} [Field K] [ValuativeRel K] (x : K) : x ∈ 𝒪[K] ↔ x ≤ᵥ 1 := by
   simp only [Valuation.mem_integer_iff]
@@ -534,8 +526,6 @@ namespace Formalism.L2.SG.Pf.LocModel.LM
 
 open NumberField Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.CntLocal IsDedekindDomain
 open Classical ValuativeRel
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem t2Space_of_nonarchimedeanLocalField' (K : Type) [Field K] [ValuativeRel K] [TopologicalSpace K] [IsNonarchimedeanLocalField K] :
     T2Space K :=
@@ -744,8 +734,6 @@ namespace Formalism.L2.SG.Pf.LocModel.LM
 open NumberField Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.CntLocal IsDedekindDomain
 open Classical ValuativeRel
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : Formalism.BasicNotions.D7}
 
 theorem ιE_int_mem_O (p : PlF D) (a : 𝓞 D.host.E) : (D.s.atP p).ιE (a : D.host.E) ∈ (D.s.atP p).O := iotaE_mem_of_int D p (NumberField.RingOfIntegers.isIntegral_coe a)
@@ -792,8 +780,6 @@ namespace Formalism.L2.SG.Pf.LocModel
 
 open NumberField IsDedekindDomain ValuativeRel Formalism.MainNotions.S Formalism.MainNotions.S.LocalSplitGroups
 open Classical
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem resCard_loc {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
     {sig : E →ₐ[F] E} {p : HeightOneSpectrum (𝓞 F)} (A : Loc.LocAt F E sig p) :
@@ -860,8 +846,6 @@ namespace Formalism.L2.SG.Pf.LocModel
 
 open NumberField IsDedekindDomain ValuativeRel Formalism.MainNotions.S Formalism.MainNotions.S.LocalSplitGroups
 open Classical
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 section PtUnit
 
@@ -952,8 +936,6 @@ namespace Formalism.L2.SG.Pf.LocModel
 
 open NumberField IsDedekindDomain ValuativeRel Formalism.MainNotions.S Formalism.MainNotions.S.LocalSplitGroups
 open Classical
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 section PtUnit2
 

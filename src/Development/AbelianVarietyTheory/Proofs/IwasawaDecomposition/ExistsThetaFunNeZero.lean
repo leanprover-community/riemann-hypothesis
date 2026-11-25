@@ -55,8 +55,6 @@ open scoped TensorProduct ComplexOrder
 
 namespace GlobalTheory.Mem.ThetaNonzero
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 theorem exists_isCartanInv {k : ℕ} {G : Matrix (Fin k) (Fin k) ℂ} (hG : G.IsHermitian) (hd : IsUnit G.det) :

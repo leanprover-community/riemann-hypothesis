@@ -484,7 +484,7 @@ end PeriodLatticeBasisLemmas
 
 
 open PeriodLatticeBasisLemmas in
-theorem sigmaQuasi_of (hq : ZetaQuasi) (hl : SigmaLogDeriv) (_he : SigmaEntire) (ho : SigmaOdd)
+theorem sigmaQuasi_of (hq : ZetaQuasi) (hl : SigmaLogDeriv) (ho : SigmaOdd)
     (hz : SigmaZero) : SigmaQuasi := by
   intro L ω z hω
   obtain ⟨a, b, rfl⟩ := (_root_.Formalism.L2.Th1.F.PeriodLatticeBasisLemmas.mem_lattice_iff_exists_int_comb' L).mp hω
@@ -623,7 +623,7 @@ theorem zetaQuasi : ZetaQuasi := zetaQuasi_of zetaHasDeriv _root_.Formalism.L2.T
 theorem sigmaEntire : SigmaEntire := sigmaEntire_of _root_.Formalism.L2.Th1.F.sigma_product_locally_uniform
 theorem sigmaZero : SigmaZero := sigmaZero_of _root_.Formalism.L2.Th1.F.sigma_summable
 theorem sigmaLogDeriv : SigmaLogDeriv := sigmaLogDeriv_of _root_.Formalism.L2.Th1.F.sigma_product_locally_uniform _root_.Formalism.L2.Th1.F.sigma_summable _root_.Formalism.L2.Th1.F.zeta_summable
-theorem sigmaQuasi : SigmaQuasi := sigmaQuasi_of zetaQuasi sigmaLogDeriv sigmaEntire _root_.Formalism.L2.Th1.F.sigma_odd sigmaZero
+theorem sigmaQuasi : SigmaQuasi := sigmaQuasi_of zetaQuasi sigmaLogDeriv _root_.Formalism.L2.Th1.F.sigma_odd sigmaZero
 theorem sigmaSimple : SigmaSimple := sigmaSimple_of sigmaQuasi sigmaEntire (sigmaDerivZero_of _root_.Formalism.L2.Th1.F.sigma_product_locally_uniform)
 theorem etaEisenstein : EtaEisenstein := etaEisenstein_of _root_.Formalism.L2.Th1.F.zeta_summable _root_.Formalism.L2.Th1.F.zeta_odd
 theorem legendre : Legendre := legendre_of etaEisenstein

@@ -182,7 +182,6 @@ theorem mem_of_isClosed {H : Subgroup (GAd σ J)} (hH : IsClosed (H : Set (GAd �
 end General
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.StandardLattice Formalism.L2.Theta GlobalTheory.WeilParts
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem ksph_le_of_isClosed : ∀ (D : D7) (V : HSp D) (Z : Finset (HeightOneSpectrum (𝓞 D.host.F))) (H : Subgroup (GA D V)), IsClosed (H : Set (GA D V)) → (∀ v, v ∉ Z → ∀ ε, IsPlaceIdem D v ε → ∀ g ∈ KsphC V ∅, SuppPl ε V g → g ∈ H) → ∀ k ∈ KsphC V Z, k ∈ H := by
   intro D V Z H hH h k hk

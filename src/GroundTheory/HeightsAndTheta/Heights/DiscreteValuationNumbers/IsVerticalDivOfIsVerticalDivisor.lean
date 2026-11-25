@@ -47,6 +47,7 @@ import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.TypeStar
 import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
+import GroundTheory.HeightsAndTheta.Heights.BlockScaling
 
 @[expose] public section
 
@@ -67,21 +68,8 @@ variable {R : Type*} [CommRing R] {Ω : Type*} [Field Ω] [Algebra R Ω]
 
 theorem pointConeMap_of_isMultiHomog (y : (Σ k, ι k) → Ω) {s : MRingOver R ι} {a : K → ℕ}
     (hs : IsMultiHomog s a) :
-    NumbersDVR.pointConeMap R y s = C (aeval y s) * ∏ k, X k ^ a k := by
-  conv_lhs => rw [s.as_sum]
-  conv_rhs => rw [s.as_sum]
-
-  rw [map_sum, map_sum, map_sum, Finset.sum_mul]
-  refine Finset.sum_congr rfl fun m hm => ?_
-  simp only [NumbersDVR.pointConeMap, aeval_monomial]
-  rw [Finsupp.prod_fintype _ _ (fun _ => pow_zero _), Finsupp.prod_fintype _ _ (fun _ => pow_zero _)]
-  simp only [mul_pow, Finset.prod_mul_distrib, map_mul, map_prod, map_pow, mul_assoc]
-  have hB : ∏ x : (Σ k, ι k), (X x.1 : MvPolynomial K Ω) ^ m x = ∏ k, X k ^ a k := by
-    rw [Fintype.prod_sigma]
-    refine Finset.prod_congr rfl fun k _ => ?_
-    show ∏ i : ι k, (X k : MvPolynomial K Ω) ^ m ⟨k, i⟩ = _
-    rw [Finset.prod_pow_eq_pow_sum, hs m hm k]
-  rw [hB, MvPolynomial.algebraMap_apply]
+    NumbersDVR.pointConeMap R y s = C (aeval y s) * ∏ k, X k ^ a k :=
+  BlockScaling.aeval_cone_block y hs
 
 end Points
 

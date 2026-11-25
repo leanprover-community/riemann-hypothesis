@@ -86,8 +86,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Form
 open scoped TensorProduct InnerProductSpace
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.exists_level_at_each_index : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T0 : Type) (A : FamIn D.what₂.LL G Pl0 T0 D.R.m) (T : CoreJ D) [Algebra T.Q.c.F D.what₂.LL] (R : RealDat D A T.Q.c.F) (F : Face D A) (κ : ∀ i : Fin D.R.m, WeightFamilies.Wt D ((i : ℕ) + 1)) (v₀ : ∀ (i : Fin D.R.m) (σ : D.what₂.LL →+* ℂ), (R.MW i σ).Vec), R.Char F → Nonempty (FWTie T R κ v₀) → T.pb = R.C.P.pb → ∀ i : Fin D.R.m, ∃ lev, LevIs R i (iotaW T i) T.Q.l.M (Mfr T.Q.l) lev := by
-  first | exact @GlobalTheory.LevelAction.exists_levIs
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsLevelAtEachIndexStatement =====
@@ -101,8 +99,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Form
 open scoped TensorProduct InnerProductSpace
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.level_coefficient_compatibility : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T0 : Type) (A : FamIn D.what₂.LL G Pl0 T0 D.R.m) (T : CoreJ D) [Algebra T.Q.c.F D.what₂.LL] (R : RealDat D A T.Q.c.F) (F : Face D A) (κ : ∀ i : Fin D.R.m, WeightFamilies.Wt D ((i : ℕ) + 1)) (v₀ : ∀ (i : Fin D.R.m) (σ : D.what₂.LL →+* ℂ), (R.MW i σ).Vec), R.Char F → Nonempty (FWTie T R κ v₀) → T.pb = R.C.P.pb → ∀ (i : Fin D.R.m) (c' : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Coeff T.Q.l) (lev : G → (T.Q.Dw ((i : ℕ) + 1)).La →ₗ[𝓞 D.host.E] (T.Q.Dw ((i : ℕ) + 1)).La), LevIs R i (iotaW T i) T.Q.l.M (Mfr T.Q.l) lev → ActLev (Xo := T.Q.Xo ((i : ℕ) + 1)) c' (fun g => (lev g, (LinearMap.id : (T.Q.Dw ((i : ℕ) + 1)).La →ₗ[𝓞 D.host.E] (T.Q.Dw ((i : ℕ) + 1)).La))) := by
-  first | exact @GlobalTheory.LevelActAnyField.actLev_of_levIs
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LevelCoefficientCompatibilityStatement =====
@@ -293,29 +289,6 @@ variable {G : Type} [Group G] [Fintype G] {Pl0 T0 : Type} {A : FamIn D.what₂.L
 
 
 
-theorem exists_phi {F : Face D A} (hR : R.Char F) (hV : VStd D i) (t : T0) {La : Type} [AddCommGroup La]
-    [Module (𝓞 D.host.E) La] (ι : La →ₗ[𝓞 D.host.E] (Fin (Wc D i).rank → D.host.E)) (hι : LatEmb (Wc D i) ι) :
-    ∃ M : IntermediateField ℚ ℂ, FiniteDimensional ℚ M ∧ ∀ M' : IntermediateField ℚ ℂ, M ≤ M' →
-      (∀ PP, PP ∈ R.Pg ∨ PP ∈ R.Q t → ((D.host.QS * D.host.q * Ideal.absNorm D.host.ccK : ℕ) : 𝓞 D.host.E) ∉ PP.asIdeal) →
-      ∀ J : Ideal (𝓞 D.host.E),
-        (∀ PP, PP ∈ R.Pg ∨ PP ∈ R.Q t → ∀ c ∈ J, ∃ c' ∈ PP.asIdeal, (c' : D.host.E) = D.sp.cm.sig (c : D.host.E)) →
-        ∃ φ : (Fin (Vc D i).rank → La ⧸ (J • ⊤ : Submodule (𝓞 D.host.E) La)) → M',
-          PhiIs R i M'.val.toRingHom t ι (J • ⊤) φ := by
-  obtain ⟨M, hM, hv⟩ := exists_omega_field R.Pg (R.Q t)
-  refine ⟨M, hM, fun M' hle hP J hJ => ?_⟩
-  obtain ⟨-, e, he, -⟩ := hR.thP.vP i t
-  have hβ := _root_.GlobalTheory.StdFrameInv.isIntM_inv D i _ _ hV (hR.lev.βV i)
-  have hi : ∀ x a, rowP (Wc D i) (R.βW i) e (ι x) a ∈ Formalism.L2.Herm.intAf D.host.F D.host.E := fun x a =>
-    rowP_int _ _ _ (hR.lev.βW i) e _ he (fun PP h => hP PP (by simpa using h)) _
-      (hι.2.le (LinearMap.mem_range_self ι x)) a
-  refine ⟨fun q => ⟨_, hle (hv (Wc D i).rank (R.xiR t) (-1) fun PP => redM PP
-    (FWT.uMat (Vc D i) (Wc D i) (R.βV i) (R.βW i) e fun b => ι (q b).out))⟩, e, he, fun x =>
-    ⟨(redM_uMat (Vc D i) (Wc D i) hV.1 _ hβ (R.βW i) e (fun b => ι (x b)) fun b a => hi (x b) a).1, ?_⟩⟩
-  exact omega_congr _ _ _ _ _ _ _ fun PP hPP => exists_datum (Vc D i) (Wc D i) hV.1 _ hβ (R.βW i) e ι hi J PP (hJ PP hPP) x _
-    fun b => (Submodule.Quotient.eq _).1 (Quotient.out_eq _)
-
-
-
 theorem exists_thAd {F : Face D A} (hR : R.Char F) (t : T0) {K' : Type} [Field K'] {σ' : K' →+* ℂ}
     (c0' : VsV D i K' →ₛₗ[σ'] (R.cV i).W) {Cl : Type} (h : Cl → GA D (Vc D i)) {J' : Subgroup (Bridge.Gf (Vc D i))}
     (hle : J' ≤ levJ R i t) (hr : Bridge.IsReps (Bridge.ratF (Vc D i)) J' (fun k => FWT.fin _ (h k)))
@@ -333,65 +306,6 @@ theorem exists_thAd {F : Face D A} (hR : R.Char F) (t : T0) {K' : Type} [Field K
 alias latEmb_iotaW := _root_.GlobalTheory.LevelAction.latEmb_iotaW
 
 
-
-theorem exists_pins : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T0 : Type) (A : FamIn D.what₂.LL G Pl0 T0 D.R.m) (T : CoreJ D) [Algebra T.Q.c.F D.what₂.LL] (R : RealDat D A T.Q.c.F) (F : Face D A) (κ : ∀ i : Fin D.R.m, WeightFamilies.Wt D ((i : ℕ) + 1)) (v₀ : ∀ (i : Fin D.R.m) (σ : D.what₂.LL →+* ℂ), (R.MW i σ).Vec), R.Char F → Nonempty (FWTie T R κ v₀) → T.pb = R.C.P.pb → Finite T0 → QGuard R → ∀ i : Fin D.R.m, VStd D i → ∃ O' : OMDat T.toCore R i T0 id, D.what₂.embLL.toRatAlgHom.fieldRange ≤ O'.c'.F ∧ O'.Pins (κ i) (v₀ i (sg0 D A)) (iotaW T i) (T.x₀ ((i : ℕ) + 1) O'.s0) := by
-  intro D G _ _ Pl0 T0 A T _ R F κ v₀ hR hfw hpb hfin hG i hV
-  obtain ⟨fw⟩ := id hfw
-  have hT := fw.laws
-  obtain ⟨pd, l₂, c₁, h1, h2, hc⟩ := GlobalTheory.TupleCover.exists_covers_of_char T R F hT hR hpb hG i
-  choose Mφ hMφ hφ using fun t => exists_phi R i hR hV t (iotaW T i) (latEmb_iotaW T hT i)
-  choose MB hMB hB using fun t => _root_.GlobalTheory.Mem.BVal.exists_field_BIs D G Pl0 T0 A _ R hR.lev i t
-  have := c₁.fin
-  obtain ⟨c', hc'⟩ := GlobalTheory.TupleCover.exists_coeff_ge T.Q.l (c₁.F ⊔ ⨆ t, (Mφ t ⊔ MB t))
-  have h3 : c₁.F ≤ c'.F := le_sup_left.trans hc'
-  have h4 : ∀ t, Mφ t ⊔ MB t ≤ c'.F := fun t => ((le_iSup (fun t => Mφ t ⊔ MB t) t).trans le_sup_right).trans hc'
-  have hle : T.Q.c.F ≤ c'.F := h1.trans h3
-  have hLL := h2.trans h3
-  obtain ⟨dδ, U₂, dict₂, xi, -, hcov, hhalf, hxi, hcxi, hmod, -⟩ := hc c' hle h3
-  let jL : D.what₂.LL →+* c'.F := D.what₂.embLL.codRestrict c'.F fun x => hLL ⟨x, rfl⟩
-  have hjL : (inC c').comp jL = D.what₂.embLL := RingHom.ext fun _ => rfl
-  obtain ⟨c0', hc0, hplace⟩ := _root_.GlobalTheory.Mem.PlaceVal.exists_coef_placeEx D G Pl0 T0 A T R F κ v₀ hR hfw hpb i c'.F jL (inC c') hjL
-  obtain ⟨lev, hlev⟩ := GlobalTheory.T.exists_level_at_each_index D G Pl0 T0 A T R F κ v₀ hR hfw hpb i
-  obtain ⟨Cl, fCl, h, J', bad, Lh, gam, vol, La, Nc, hrep, hbad, hcl⟩ :=
-    (GlobalTheory.SplitReps.reps_exist R i F hR c'.F).2 hV (T.Q.Xo ((i : ℕ) + 1)) c' id dδ
-  choose B hBis using fun t => hB t c'.F (le_sup_right.trans (h4 t)) (bad t) (hbad t).2.2.2.2
-    fun PP hPP => (hrep t).1.2.1 PP (Or.inr hPP)
-  have hodd : Odd ((T.Q.Dw ((i : ℕ) + 1)).p + (T.Q.Dw ((i : ℕ) + 1)).q) := by
-    obtain ⟨e1, e2, -⟩ := hT.pins.2.2.2 _ (inR i)
-    have h5 := Formalism.L2.NTheta.odd_r D.R
-    have h6 := i.2
-    have h7 := D.R.m_add_three_le_k
-    rw [e1, e2]
-    convert h5 using 1
-    simp only [Ranks.sigW, Ranks.r]
-    omega
-  choose epF hepF using fun t => (GlobalTheory.ClassTieCompare.exists_epIs_iff (n := (Vc D i).rank) (Dw := T.Q.Dw ((i : ℕ) + 1))
-    (bad t) (B t)).2 fun L cc g d => _root_.GlobalTheory.LawOfSquares.law_of_squares _ _ _ _ hodd L cc g.1 g.2.2 d.1 d.2
-  obtain ⟨io, hw, hio⟩ := _root_.GlobalTheory.CoefMapRecord.exists_io_record D T.Q hT.pins κ fw.kap i c'
-  choose φ hφis using fun t => hφ t c'.F (le_sup_left.trans (h4 t)) (hhalf t).2.2 (Mfr (dδ t).l₂) fun PP hPP c hc => by
-    have hM : (dδ t).l₂.Mb ≤ PP.asIdeal := by
-      rw [(hcov t).1.2.2.2.1]
-      rcases hPP with hPP | hPP
-      · rw [(hhalf t).1]
-        exact Ideal.mul_le_left.trans (Ideal.prod_le_inf.trans (Finset.inf_le hPP))
-      · exact Ideal.mul_le_right.trans ((hhalf t).2.1 PP hPP)
-    obtain ⟨b, hb, rfl⟩ := (Ideal.mem_map_iff_of_surjective _ T.Q.H.bar.surjective).1 hc
-    refine ⟨b, hM hb, ?_⟩
-    change _ = star ((T.Q.H.bar b : 𝓞 D.host.E) : D.host.E)
-    rw [T.Q.H.bar_eq]
-    exact (star_star _).symm
-  choose thAd hth using fun t => exists_thAd R i hR t c0' (h t) (hrep t).1.2.2.1 (hrep t).1.2.2.2.2.2.1 (v₀ i (sg0 D A))
-  refine ⟨{ c' := c', hle := hle, jL := jL, hV := hT.spaceW _ (inR i) _ rfl, c0' := c0', lev := lev, dδ := dδ, Cl' := Cl,
-            bad := bad, Lh := Lh, La := La, Nc := Nc, gam := gam, vol := vol, ep := fun t k => epF t (Lh t k), B := B,
-            epF := epF, io := io, hw := hw, φ := φ,
-            w := fun t _ q => (dδ t).eF.symm (phiHat (dδ t).c₂ (fun x => (dδ t).eF (φ t x)) q),
-            U₂ := U₂, dict₂ := dict₂, xi := xi, thAd := thAd,
-            Plc := fun t x => ∃ x₀, Place R i t (h t) c0' (jVx R i t x₀) x }, hLL,
-    ⟨hjL, hV, fw.hv₀ i _, hc0, hlev⟩,
-    fun t => ⟨⟨h t, J' t, (hrep t).1, hplace t _ _, hth t, fun _ => Iff.rfl⟩, hBis t, hxi t, hφis t, hhalf t⟩,
-    ⟨GlobalTheory.T.level_coefficient_compatibility D G Pl0 T0 A T R F κ v₀ hR hfw hpb i _ lev hlev,
-      GlobalTheory.T.level_coefficient_compatibility D G Pl0 T0 A T R F κ v₀ hR hfw hpb i _ lev hlev⟩,
-    hbad, hcl, fun t => ⟨fun _ => rfl, hepF t⟩, hio, fun t k q => AlgEquiv.apply_symm_apply _ _, hcov, hcxi, hmod⟩
 
 end GlobalTheory.PinnedData
 end -- clump:auto

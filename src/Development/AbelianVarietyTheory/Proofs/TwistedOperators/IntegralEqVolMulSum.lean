@@ -50,7 +50,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice MeasureTheory Formalism.L2.Theta
 open Formalism.IndefR
 open scoped TensorProduct ComplexOrder
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.ClassRegroup
 

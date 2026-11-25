@@ -17,8 +17,6 @@ open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions.S
 
 namespace Formalism.L2.SG.Pf
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem trExistsC_of (hP : ∀ (D : D7) (X : HidaSetting D), SatGram.PsiCond X) : TRExistsC :=
   fun D X _ => SatGram.typedRed_exists' SatGramLoc.split_prime_local_holds SatGramLoc.reduction_structure_holds (hP D X)
 

@@ -42,8 +42,3 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
-
-open CategoryTheory Limits AlgebraicGeometry Opposite GlobalTheory.EtC
-
-theorem _root_.GlobalTheory.T.smooth_affine_curve_etale_cohomologicalDimension_le_one : GlobalTheory.EtC.C2 := by
-  first | (exact @GlobalTheory.EtC.etC_c2)

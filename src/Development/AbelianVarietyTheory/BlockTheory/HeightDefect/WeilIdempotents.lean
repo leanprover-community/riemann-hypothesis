@@ -51,8 +51,6 @@ open scoped TensorProduct ContDiff
 
 namespace GlobalTheory.IndefiniteRowSideFullHecke.HeisenbergWeilMatrices
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 def cj (D : D7) : AE D →+* AE D := sigR (AF D.host.F) D.sp.cm.sig

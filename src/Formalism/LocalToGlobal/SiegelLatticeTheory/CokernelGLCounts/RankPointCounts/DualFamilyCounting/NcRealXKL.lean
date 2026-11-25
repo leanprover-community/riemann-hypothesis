@@ -21,8 +21,6 @@ namespace Formalism.L2.SG.Pf.NcReal.JX
 open Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.L2.SG.HidaSetting Formalism.L2.SG.RealObj Formalism.L2.SG.Pf.WFL Formalism.L2.SG.Pf
   Formalism.L2.SG.RealObj.InfCut.JacobianCoordinates Formalism.L2.SG.RealObj.InfCut
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 def mOf : {n r k : ℕ} → n = 2 * r + k + 1 → (ε : Fin n → Bool) → (Fin r → Fin n → ℂ) → (Fin r → Fin n → ℂ) →
     (Fin k → Fin n → ℂ) → (Fin n → ℂ) → Formalism.REAL.UJ ε → Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ
   | _, _, _, rfl, ε, e, f, w, z0, g => Qi ε e f w z0 * uMat g * Qm e f w z0

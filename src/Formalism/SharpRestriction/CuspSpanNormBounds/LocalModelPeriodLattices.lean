@@ -592,17 +592,8 @@ theorem isCompact_OF [IsNonarchimedeanLocalField F] : IsCompact (𝒪[F] : Set F
   IsNonarchimedeanLocalField.isCompact_closedBall F 1
 
 theorem mem_O_of_quad (L : LocE F E) (z : E) (t n : 𝒪[F])
-    (h : z * z - algebraMap F E t * z + algebraMap F E n = 0) : z ∈ L.O := by
-  rw [L.O_def]
-  have ht : algebraMap F E (t : F) = algebraMap 𝒪[F] E t := (IsScalarTower.algebraMap_apply 𝒪[F] F E t).symm
-  have hn : algebraMap F E (n : F) = algebraMap 𝒪[F] E n := (IsScalarTower.algebraMap_apply 𝒪[F] F E n).symm
-  rw [ht, hn] at h
-  refine ⟨Polynomial.X ^ 2 - Polynomial.C t * Polynomial.X + Polynomial.C n, ?_, ?_⟩
-  · first
-      | monicity!
-  · simp only [Polynomial.eval₂_add, Polynomial.eval₂_sub, Polynomial.eval₂_mul, Polynomial.eval₂_X_pow,
-      Polynomial.eval₂_C, Polynomial.eval₂_X]
-    linear_combination h
+    (h : z * z - algebraMap F E t * z + algebraMap F E n = 0) : z ∈ L.O :=
+  _root_.PI.LocHerm.SlopeTestRemainingChoices.mem_O_of_quad L z t n h
 
 theorem algebraMap_mem_O (L : LocE F E) (a : 𝒪[F]) : algebraMap F E a ∈ L.O := by
   rw [L.O_def]
@@ -610,13 +601,8 @@ theorem algebraMap_mem_O (L : LocE F E) (a : 𝒪[F]) : algebraMap F E a ∈ L.O
   rw [h]
   exact isIntegral_algebraMap
 
-theorem mem_OF_of_mem_O [Nontrivial E] (L : LocE F E) (a : F) (h : algebraMap F E a ∈ L.O) : a ∈ 𝒪[F] := by
-  rw [L.O_def] at h
-  have hinj : Function.Injective ((Algebra.ofId F E).restrictScalars 𝒪[F]) := (algebraMap F E).injective
-  have h' : IsIntegral 𝒪[F] a := (isIntegral_algHom_iff _ hinj).mp h
-  obtain ⟨y, hy⟩ := IsIntegrallyClosed.isIntegral_iff.mp h'
-  rw [← hy]
-  exact y.2
+theorem mem_OF_of_mem_O [Nontrivial E] (L : LocE F E) (a : F) (h : algebraMap F E a ∈ L.O) : a ∈ 𝒪[F] :=
+  _root_.PI.LocHerm.SlopeTestRemainingChoices.mem_OF_of_mem_O L a h
 
 theorem cj_mem_O (L : LocE F E) (x : E) (h : x ∈ L.O) : L.cj x ∈ L.O := by
   rw [L.O_def] at h ⊢
@@ -635,14 +621,8 @@ theorem inv_mem_OF (a : F) (h : a ∉ 𝒪[F]) : a⁻¹ ∈ 𝒪[F] := by
        rw [map_inv₀]
        exact inv_le_one_of_one_le₀ (le_of_lt (not_le.mp h)))
 
-theorem exists_scale (a : F) : ∃ r : 𝒪[F], (r : F) ≠ 0 ∧ (r : F) * a ∈ 𝒪[F] := by
-  by_cases ha : a ∈ 𝒪[F]
-  · exact ⟨1, by simp, by simpa using ha⟩
-  · have ha0 : a ≠ 0 := fun h0 => ha (by rw [h0]; exact zero_mem _)
-    refine ⟨⟨a⁻¹, inv_mem_OF a ha⟩, inv_ne_zero ha0, ?_⟩
-    show a⁻¹ * a ∈ 𝒪[F]
-    rw [inv_mul_cancel₀ ha0]
-    exact one_mem _
+theorem exists_scale (a : F) : ∃ r : 𝒪[F], (r : F) ≠ 0 ∧ (r : F) * a ∈ 𝒪[F] :=
+  _root_.PI.LocHerm.SlopeTestRemainingChoices.exists_scale a
 
 theorem exists_pow_mul_mem [IsNonarchimedeanLocalField F] (π : 𝒪[F]) (hπ : Irreducible π) (a : F) :
     ∃ m : ℕ, ∀ k, m ≤ k → (π : F) ^ k * a ∈ 𝒪[F] := by

@@ -57,8 +57,6 @@ open GlobalTheory.NormDict GlobalTheory.NormExact
 open GlobalTheory.BotFormula (IsFinPt)
 open GlobalTheory.IndefiniteRowSideFullHecke.ClassFunctionSumIntegral (IsDefiniteSpace IsOpenCompactLevel)
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 namespace GlobalTheory.LevelTr
 theorem exists_nat_IhE (D : D7) (cc : Ideal (𝓞 D.host.K)) (r : D.host.E) :
     ∃ c : ℕ, 0 < c ∧ ∀ t ∈ Formalism.MainNotions.StandardLatticesGL3.IhE D cc,

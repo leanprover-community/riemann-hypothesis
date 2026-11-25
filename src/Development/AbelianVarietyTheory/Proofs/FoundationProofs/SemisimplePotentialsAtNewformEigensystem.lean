@@ -948,20 +948,8 @@ theorem intCast_of_dvd {m n : ℕ} (h : m ∣ n) {x a : ℤ} (hx : ((x : ℤ) : 
   have := congrArg (ZMod.castHom h (ZMod m)) hx
   simpa using this
 
-theorem gamma_le_lev (N l : ℕ) : Gamma (N * l) ≤ Lev N l := by
-  intro γ hγ
-  rw [Gamma_mem] at hγ
-  obtain ⟨h00, h01, h10, h11⟩ := hγ
-  refine ⟨?_, ?_⟩
-  · change γ ∈ Gamma1 N
-    rw [Gamma1_mem]
-    refine ⟨?_, ?_, ?_⟩
-    · simpa using intCast_of_dvd (dvd_mul_right N l) (a := 1) (by simpa using h00)
-    · simpa using intCast_of_dvd (dvd_mul_right N l) (a := 1) (by simpa using h11)
-    · simpa using intCast_of_dvd (dvd_mul_right N l) (a := 0) (by simpa using h10)
-  · change γ ∈ Gamma0 l
-    rw [Gamma0_mem]
-    simpa using intCast_of_dvd (dvd_mul_left l N) (a := 0) (by simpa using h10)
+theorem gamma_le_lev (N l : ℕ) : Gamma (N * l) ≤ Lev N l :=
+  _root_.GlobalTheory.HeckeFamilyMatrices.EisT.gamma_le_lev N l
 
 theorem comm_of_decomp {Γ : Subgroup SL(2, ℤ)} {w : ℕ} (A B : Module.End ℂ (Γ → ℂ[X]))
     (hA : ∀ z ∈ B1 Γ w, A z ∈ B1 Γ w) (hB : ∀ z ∈ B1 Γ w, B z ∈ B1 Γ w)

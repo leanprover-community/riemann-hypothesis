@@ -263,6 +263,17 @@ theorem eq_ofReal_sub_of_dist_le_of_le_sub_re {w : ℂ} {σ D : ℝ} (h1 : dist 
   · rw [Complex.ofReal_re]; exact hre
   · rw [Complex.ofReal_im]; exact him
 
+/-- Include the cap among the candidate radii, so the minimum exists even with no competing poles. -/
+private theorem exists_capped_radius {α : Type*} {S : Set α} (hS : S.Finite) (f : α → ℝ)
+    {d cap : ℝ} (hcap : d < cap) (h : ∀ w ∈ S, d < f w) :
+    ∃ r, d < r ∧ r ≤ cap ∧ ∀ w ∈ S, r ≤ f w := by
+  obtain ⟨r, hr, hmin⟩ := Set.exists_min_image (insert cap (f '' S)) id
+    ((hS.image f).insert cap) ⟨cap, by simp⟩
+  refine ⟨r, ?_, hmin cap (by simp), fun w hw => hmin (f w) (Set.mem_insert_of_mem _ ⟨w, hw, rfl⟩)⟩
+  rcases Set.mem_insert_iff.mp hr with rfl | ⟨w, hw, rfl⟩
+  · exact hcap
+  · exact h w hw
+
 theorem landau_dichotomy {Z : Set ℂ} (hiso : ∀ z : ℂ, 0 < z.re → ∀ᶠ w in 𝓝[≠] z, w ∉ Z) {σ θ : ℝ}
     (hle : ∀ ρ ∈ Z, ρ.re < σ) (hθ : 0 < θ) (hθσ : θ < σ) {ρ₀ : ℂ} (h₀ : ρ₀ ∈ Z) (hρ₀ : θ < ρ₀.re) :
     (∃ D : ℝ, D ≤ σ - θ ∧ (∀ w ∈ Z, w ∉ Metric.ball (σ : ℂ) D) ∧ ∃ ρ₁ ∈ Z, σ - ρ₁.re < D) ∨
@@ -308,25 +319,15 @@ theorem landau_dichotomy {Z : Set ℂ} (hiso : ∀ z : ℂ, 0 < z.re → ∀ᶠ 
         rcases lt_or_eq_of_le hm with h | h
         · exact h
         · exact absurd (hreal t ht.1 h.symm) ht.2
-      obtain ⟨r, hr, hrT⟩ : ∃ r, d < r ∧ ∀ t ∈ F \ {((σ - d : ℝ) : ℂ)}, r ≤ dist t (σ : ℂ) := by
-        rcases (F \ {((σ - d : ℝ) : ℂ)}).eq_empty_or_nonempty with hTe | hTne
-        · refine ⟨d + 1, by linarith, ?_⟩
-          intro t ht
-          rw [hTe] at ht
-          exact absurd ht (Set.notMem_empty t)
-        · obtain ⟨t₀, ht₀, htmin⟩ := Set.exists_min_image (F \ {((σ - d : ℝ) : ℂ)})
-            (fun w => dist w (σ : ℂ)) (hfin.subset Set.diff_subset) hTne
-          exact ⟨dist t₀ (σ : ℂ), hT t₀ ht₀, htmin⟩
-      refine ⟨min r (σ - θ), ?_, min_le_right _ _, ?_⟩
-      · rw [sub_sub_cancel]
-        exact lt_min hr hdlt
+      obtain ⟨r, hr, hrCap, hrT⟩ := exists_capped_radius (hfin.subset Set.diff_subset)
+        (fun w => dist w (σ : ℂ)) hdlt hT
+      refine ⟨r, ?_, hrCap, ?_⟩
+      · rwa [sub_sub_cancel]
       · intro w hw hb
         rw [Metric.mem_ball] at hb
-        have hwF : w ∈ F := ⟨hw, Metric.mem_closedBall.mpr (le_trans hb.le (min_le_right _ _))⟩
+        have hwF : w ∈ F := ⟨hw, Metric.mem_closedBall.mpr (hb.le.trans hrCap)⟩
         by_contra hne
-        have h3 := hrT w ⟨hwF, hne⟩
-        have h4 := min_le_left r (σ - θ)
-        linarith
+        exact (not_lt_of_ge (hrT w ⟨hwF, hne⟩)) hb
 
 end Deduction
 
@@ -477,16 +478,9 @@ theorem landau_nearest {Z : Set ℂ} (hiso : ∀ z : ℂ, 0 < z.re → ∀ᶠ w 
       apply hw.2
       exact landau_nearest_equi (hle w hw.1.1) (hle ρ hρF.1) h.symm
         (fun hb => hγB ⟨(w, ρ), ⟨hw.1, hρF⟩, hb.symm⟩)
-  obtain ⟨r, hr, hrT⟩ : ∃ r, ‖c - ρ‖ < r ∧ ∀ t ∈ F \ {ρ}, r ≤ ‖c - t‖ := by
-    rcases (F \ {ρ}).eq_empty_or_nonempty with hTe | hTne
-    · refine ⟨‖c - ρ‖ + 1, by linarith, ?_⟩
-      intro t ht
-      rw [hTe] at ht
-      exact absurd ht (Set.notMem_empty t)
-    · obtain ⟨t₀, ht₀, htmin⟩ := Set.exists_min_image (F \ {ρ}) (fun w => ‖c - w‖)
-        (hF.subset Set.diff_subset) hTne
-      exact ⟨‖c - t₀‖, hT t₀ ht₀, htmin⟩
-  refine ⟨γ, ρ, hρF.1, min r D, lt_min hr (by linarith), min_le_right _ _, ?_⟩
+  obtain ⟨r, hr, hrD, hrT⟩ := exists_capped_radius (hF.subset Set.diff_subset)
+    (fun w => ‖c - w‖) (hm.trans_lt hρ₁c) hT
+  refine ⟨γ, ρ, hρF.1, r, hr, hrD, ?_⟩
   intro w hw hb
   rw [Metric.mem_ball, dist_eq_norm, norm_sub_rev] at hb
   have hwF : w ∈ F := by
@@ -494,10 +488,9 @@ theorem landau_nearest {Z : Set ℂ} (hiso : ∀ z : ℂ, 0 < z.re → ∀ᶠ w 
     rw [Metric.mem_closedBall, dist_eq_norm]
     have := norm_add_le (w - c) (c - c₀)
     rw [sub_add_sub_cancel, norm_sub_rev w c, hcc₀] at this
-    linarith [min_le_right r D]
+    linarith
   by_contra hne
-  have h3 := hrT w ⟨hwF, hne⟩
-  linarith [min_le_left r D]
+  exact (not_lt_of_ge (hrT w ⟨hwF, hne⟩)) hb
 
 end Deduction
 

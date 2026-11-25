@@ -15,8 +15,6 @@ open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions Form
 
 namespace Formalism.L2.SG.LoopTieOf
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Pins
 
 variable {D : D7} {X : HidaSetting D}

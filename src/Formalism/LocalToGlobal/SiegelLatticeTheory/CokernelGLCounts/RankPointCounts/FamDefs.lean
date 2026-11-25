@@ -50,8 +50,6 @@ open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Fo
 
 namespace Formalism.L2.SG.FamDefs
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Loc
 
 open Formalism.MainNotions.S.LocNG Formalism.MainNotions.S.Loc

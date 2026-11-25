@@ -52,7 +52,7 @@ import Std.Tactic.BVDecide.Normalize.Prop
 
 open Matrix Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.Q
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 noncomputable section
 

@@ -53,7 +53,7 @@ open scoped ContDiff Topology
 open PositivityTheory.RgBcC
 open PositivityTheory.RgTw (Mat G)
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
+open scoped Matrix.Norms.Elementwise
 
 namespace GlobalTheory.CompanionTheory.WaveAll
 

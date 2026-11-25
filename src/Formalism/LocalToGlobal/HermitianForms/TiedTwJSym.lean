@@ -11,8 +11,6 @@ open scoped TensorProduct
 
 namespace Formalism.L2.Forms
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} {inQ : D.what₂.Tup → HeightOneSpectrum (𝓞 D.host.F) → Prop}
 
 def redJS {Ch : D.what₂.Word → ℕ → Type} {chOf : ∀ u i, (D.mem u).C.cls i → Ch u i} (F : ∀ u, FormsTiedSym D u (Ch u) (chOf u))

@@ -623,16 +623,6 @@ namespace GlobalTheory.Proof.integralJets_normalisedThetaCombinations_away_d
 
 variable {D : D7} {cc : Ideal (𝓞 D.host.K)} {δ : ℂ} {N N' : ℕ}
 
-theorem analytic_U (B : Base D cc δ) (t : TaylorLogMetric.VC D N N') {G : TaylorLogMetric.VC D N N' → ℂ} (hG : AnalyticOnNhd ℂ G Set.univ) :
-    AnalyticOnNhd ℂ (TaylorLogMetric.U D B.tor t G) Set.univ := by
-  exact GlobalTheory.Proof.shape_normalisedThetaCombinations_dualBases_at_d.analytic_U B t hG
-
-end GlobalTheory.Proof.integralJets_normalisedThetaCombinations_away_d
-
-namespace GlobalTheory.Proof.integralJets_normalisedThetaCombinations_away_d
-
-variable {D : D7} {cc : Ideal (𝓞 D.host.K)} {δ : ℂ} {N N' : ℕ}
-
 theorem term_jets (hIn : GlobalTheory.ThLoc.Inputs) (hcc : TaylorLogMetric.IsCurveIdeal D cc) (hδ : TaylorLogMetric.IsDiscriminantTwelfthRootOfIdealLattice D cc δ)
     (B : Base D cc δ) (χ : TaylorLogMetric.IdE D → ℂ) (hχ : TaylorLogMetric.IsChi D χ) {X : Fields} (s : Seam D X) (hs : s.Ok)
     (a₀ : ℕ) (b₀ c₀ : ℤ) (ha : 0 < a₀) (hd : 0 < D.host.d) (lam : ℂ) (hlam : lam ≠ 0) (hcm : CmOK a₀ b₀ c₀ D.host.d)
@@ -661,7 +651,7 @@ theorem term_jets (hIn : GlobalTheory.ThLoc.Inputs) (hcc : TaylorLogMetric.IsCur
       simp
     rw [e]
     exact h2
-  have hGan := analytic_U B t hEan
+  have hGan := GlobalTheory.Proof.shape_normalisedThetaCombinations_dualBases_at_d.analytic_U B t hEan
   have hCo : TaylorLogMetric.CoefIn D (TaylorLogMetric.U D B.tor t (B.eNat χ N N' L₁ L₁')) TaylorLogMetric.Qbar :=
     hIn.algT D cc δ B χ hcc hδ hχ N N' L₁ L₁' hA₁ t ⟨M, hM0, hMm⟩
 
@@ -689,15 +679,15 @@ theorem term_jets (hIn : GlobalTheory.ThLoc.Inputs) (hcc : TaylorLogMetric.IsCur
   have hA : ∀ j x, ‖A j x‖ ≤ 1 := by
     intro j x
     by_cases h : j = x
-    · simp only [A, ite_eq_left h, norm_inv, hn1, inv_one, le_refl]
-    · simp only [A, ite_eq_right h, norm_zero, zero_le_one]
+    · simp only [A, if_pos h, norm_inv, hn1, inv_one, le_refl]
+    · simp only [A, if_neg h, norm_zero, zero_le_one]
   have hfr : (fun (i : DVar X.Tau N N') x => (fun (k : D.what₂.Tau × Fin N' × Fin N) (j : Fin n) =>
       TaylorLogMetric.tauEmb D lm k.1 (y j k.2.1 k.2.2)) (s.iT i.1, i.2) x) = frameM (ι : ℂ →+* ℂ_[p]) v A := by
     funext i x
     have e : v x i = ((s₁ * s₂ : ℕ) : ℂ) * TaylorLogMetric.embT D (s.iT i.1) (y x i.2.1 i.2.2) := by
       show TaylorLogMetric.embT D (s.iT i.1) ((((s₁ * s₂ : ℕ) : D.host.E) • y x) i.2.1 i.2.2) = _
       rw [Matrix.smul_apply, smul_eq_mul, map_mul, map_natCast]
-    simp only [frameM, A, mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
+    simp only [frameM, A, mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
     rw [tauEmb_eq hι, e]
     simp only [RingHom.coe_coe, map_mul, map_natCast]
     field_simp
@@ -882,7 +872,7 @@ theorem tauEmb_ringHom (D : D7) {p : ℕ} [Fact p.Prime] (lm : Qbar →+* ℂ_[p
     ∃ g : D.host.E →+* ℂ_[p], ∀ x, tauEmb D lm τ x = g x := by
   have hm : ∀ x, embT D τ x ∈ Qbar := fun x =>
     mem_algebraicClosure_iff.2 ((Algebra.IsAlgebraic.isAlgebraic (R := ℚ) x).algHom (embT D τ).toRatAlgHom)
-  exact ⟨lm.comp ((embT D τ).codRestrict Qbar hm), fun x => dite_eq_left (hm x)⟩
+  exact ⟨lm.comp ((embT D τ).codRestrict Qbar hm), fun x => dif_pos (hm x)⟩
 
 theorem jetsIntegral_basR : ∀ (D : D7) (cD : D.what₂.Tau → ℂ), Formalism.L2.Ker.IsDgen D cD → ∀ (N N' : ℕ) (L : Submodule (𝓞 D.host.E) (Fin N → D.host.E)) (L' : Submodule (𝓞 D.host.E) (Fin N' → D.host.E)), admitted D N N' L L' → ∀ (p : ℕ) [Fact p.Prime] (lm : TaylorLogMetric.Qbar →+* ℂ_[p]), ∀ (B : D.what₂.Tau → Matrix (Fin N) (Fin N) ℂ_[p]) (B' : D.what₂.Tau → Matrix (Fin N') (Fin N') ℂ_[p]) (κ : D.what₂.Tau → ℂ_[p]), (∀ τ, GL3Columns.BasR D lm τ L (B τ)) → (∀ τ, GL3Columns.BasR D lm τ L' (B' τ)) → (∀ τ, ‖κ τ‖ ≤ ‖lamC lm (cD τ)‖) → ∀ F : MvPowerSeries (D.what₂.Tau × Fin N' × Fin N) ℂ_[p], JetsInt D lm (YYl D L L') F → JetsIntegral (atLin (fun (k : D.what₂.Tau × Fin N' × Fin N) (j : (Bool × HH D) × Fin N × Fin N') => if tauPl D j.1 = k.1 then κ k.1 * B' k.1 k.2.1 j.2.2 * (B k.1)⁻¹ j.2.1 k.2.2 else 0) (fun j => MvPowerSeries.X j) F) := by
   intro D cD hD N N' L L' hA p _ lm B B' κ hB hB' hκ F hF
@@ -1368,7 +1358,12 @@ theorem rhoVal_holds (D : D7) {u : D.what₂.Word} (C : ColumnChain D.R D.what�
     val_of D _ _ lam t h z hp a2 (fun k hk => by obtain ⟨n, hn, -, x⟩ := b k hk; exact ⟨n, hn, x⟩) (c z).2⟩
 
 theorem norm_le_one_of_int {K : Type} [NormedField K] [IsUltrametricDist K] (x : K)
-    (hx : IsIntegral ℤ x) : ‖x‖ ≤ 1 := GlobalTheory.HeckeVal.norm_le_one_of_isIntegral hx
+    (hx : IsIntegral ℤ x) : ‖x‖ ≤ 1 := by
+  have h1 : IsIntegral (NormedField.valuation (K := K)).integer x := hx.tower_top
+  have h2 := (Valuation.integer.integers (NormedField.valuation (K := K))).mem_of_integral h1
+  have h3 : NormedField.valuation x ≤ 1 := h2
+  rw [NormedField.valuation_apply] at h3
+  exact_mod_cast h3
 
 section Nu
 
@@ -1574,7 +1569,7 @@ theorem mtType_stdO {B : Base} {X : PreX B.toPre} (I : TC B X) (hok : I.Ok) (hp 
   have hm : 1 ≤ j.1 + 1 ∧ j.1 + 1 ≤ B.R.m := ⟨by omega, j.2⟩
   have e1 : (O u a).mt (j.1 + 1) = (I.rec7 l Z).muTil (j.1 + 1) * (show (I.rec7 l Z).Dt →* ℂˣ from tildeQ B.host I.SQ (I.xi a)) := by
     rw [hO.mt u a]
-    exact ite_eq_left hm
+    exact if_pos hm
   rw [e1, MonoidHom.mul_apply, T.muTil_eq j x hx, hT x]
   have e2 : (tildeQ B.host I.SQ (I.xi a)) (QuotientGroup.mk x) = (I.xi a).1 x :=
     (tildeQ_mk B.host I.SQ hk x).trans (congrArg _ (finPartI_eq_self hx))

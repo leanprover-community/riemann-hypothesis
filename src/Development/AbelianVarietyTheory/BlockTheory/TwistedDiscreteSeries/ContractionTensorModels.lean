@@ -147,8 +147,6 @@ section Models
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 end Models
 
 theorem contrProps_of {H₁ H₂ FF : Type}
