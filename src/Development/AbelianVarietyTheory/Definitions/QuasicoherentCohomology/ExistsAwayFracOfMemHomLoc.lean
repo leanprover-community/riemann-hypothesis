@@ -624,14 +624,6 @@ theorem grCubeMap_congr {f g : M →ₗ[MvPolynomial ι R] N} (hf : IsGradedMap 
 
 variable [LinearOrder ι]
 
-variable (ℳ) in
-theorem grCech_eq (n : ℤ) : grCech ι ℳ n = cechComplex (grCube ι ℳ n) := rfl
-
-variable (ℳ) in
-theorem grCech_d (n : ℤ) (p : ℕ) :
-    (grCech ι ℳ n).d p (p + 1) = ModuleCat.ofHom (Cube.d (grCube ι ℳ n) (p + 1)) :=
-  cechComplex_d _ p
-
 def grCechMap {f : M →ₗ[MvPolynomial ι R] N} (hf : IsGradedMap ℳ 𝒩 f) (n : ℤ) :
     grCech ι ℳ n ⟶ grCech ι 𝒩 n := cechComplexMap (grCubeMap hf n)
 
@@ -781,11 +773,6 @@ variable {ι : Type} {R : Type u} [CommRing R]
 theorem xProd_smul_injective (s : Finset ι) :
     Function.Injective fun p : MvPolynomial ι R => xProd R s • p :=
   (IsRegular.prod fun _ _ => MvPolynomial.isRegular_X).left
-
-variable (ι R) in
-theorem operatorsCommute_id :
-    OperatorsCommute (ι := ι) (R := R) (A := fun _ => R) fun _ _ => LinearMap.id :=
-  fun _ _ _ _ => rfl
 
 end Examples
 

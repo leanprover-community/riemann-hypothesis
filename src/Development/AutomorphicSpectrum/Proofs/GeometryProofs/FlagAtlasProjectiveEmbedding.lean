@@ -103,7 +103,7 @@ theorem smooth_C (R σ : Type) [CommRing R] [Finite σ] :
     SmoothOfRelativeDimension (Nat.card σ) (spMap (MvPolynomial.C : R →+* MvPolynomial σ R)) := by
   refine (HasRingHomProperty.Spec_iff (P := @SmoothOfRelativeDimension (Nat.card σ))).2 ?_
   refine RingHom.locally_of RingHom.isStandardSmoothOfRelativeDimension_respectsIso _ ?_
-  exact (RingHom.isStandardSmoothOfRelativeDimension_algebraMap _).2 (GlobalTheory.Adelic.isStandardSmooth_mvPolynomial R σ)
+  exact (RingHom.isStandardSmoothOfRelativeDimension_algebraMap _).2 (Algebra.IsStandardSmoothOfRelativeDimension.mvPolynomial R σ)
 
 theorem smooth_cell {X : Scheme.{0}} {U : X.Opens} (hU : IsAffineOpen U) (σ : Type) [Finite σ] :
     SmoothOfRelativeDimension (Nat.card σ + 0)

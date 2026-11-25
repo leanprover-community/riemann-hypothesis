@@ -631,12 +631,6 @@ theorem AdLawAt.mu_ne {XiAd : AdDatum St} {muT : ℕ → (AfE D.host.F D.host.E)
   exact one_ne_zero h
 
 
-variable (St) in
-abbrev ChainBase : Type := ∀ i hi, (St i hi).Base
-
-
-variable (St) in
-def moveCharts (k : ChainBase St) : ChainCharts D u μ := fun i hi => (St i hi).move (k i hi)
 
 variable (A dtU a)
 

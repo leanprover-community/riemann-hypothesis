@@ -531,14 +531,5 @@ end IsTensor
 
 end Mult
 
-def Lie.splitTorusEquiv {R O X : Type} [CommRing R] [CommRing O] [AddCommGroup X]
-    (a : OAct O (ReciprocityTheory.ChartRestriction.G.Semi.splitTorus (Sp R) X)) : (X →+ R) ≃ₗ[R] Lie a :=
-  LinearEquiv.ofBijective
-    ({ toFun c := Lie.mk a (Diag.lieVec c) (Diag.isTangent_lieVec c)
-       map_add' c d := Lie.ext (Diag.lieVec_add c d)
-       map_smul' r c := Lie.ext (Diag.lieVec_smul r c) } : (X →+ R) →ₗ[R] Lie a)
-    ⟨fun _ _ e ↦ Diag.lieVec_injective (congrArg Lie.hom e), fun v ↦
-      ((Diag.isTangent_iff_exists _).mp v.isTangent).imp fun _ e ↦ Lie.ext e⟩
-
 
 end GlobalTheory.Serre

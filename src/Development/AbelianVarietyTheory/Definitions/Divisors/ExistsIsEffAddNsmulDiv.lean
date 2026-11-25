@@ -103,12 +103,6 @@ theorem flat_projSpace (R : Type) [CommRing R] (N : ℕ) : Flat (PSpace.str R N)
     rw [ProjSpace.chartι_str, HasRingHomProperty.Spec_iff (P := @Flat)]
     exact RingHom.flat_algebraMap_iff.2 (inferInstanceAs (Module.Flat R (MvPolynomial _ R)))
 
-theorem isNormalScheme_projSpace (R : Type) [CommRing R] [IsDomain R] [UniqueFactorizationMonoid R] (N : ℕ) :
-    Geo.Tor.IsNormalScheme (PSpace R N) := by
-  refine (isNormalScheme_iff_pred _).1 (IsNormalScheme.of_forall_exists_isOpenImmersion fun x => ?_)
-  obtain ⟨i, y, hy⟩ := (ProjSpace.chartCover R N).exists_eq x
-  exact ⟨_, ProjSpace.chartι R N i, ProjSpace.isOpenImmersion_chartι R N i, IsNormalScheme.of_pred (ZJ.isNormalScheme_sp _), y, hy⟩
-
 end GlobalTheory.Models
 
 end
@@ -443,12 +437,6 @@ theorem IsVertical.diffVanish [IsFiniteQC F] (h : Z.IsVertical F) :
 
 def IsVertical.deg [IsFiniteQC F] (h : Z.IsVertical F) : PicSym Z.X →ₗ[ℚ] ℚ := picForm h.diffVanish
 
-theorem IsVertical.deg_prod [IsFiniteQC F] (h : Z.IsVertical F) {ι : Type} [Fintype ι]
-    {L : ι → LB Z.X} (hL : ∀ i, (L i).IsLB) : h.deg (∏ i, c1 (L i) (hL i)) =
-      if Fintype.card ι = Z.relDim then (interLen O F L : ℚ) else 0 := by
-  rw [interLen_eq_multiDiff O F hL]
-  exact picForm_prod _ fun i => cls (L i) (hL i)
-
 end Model
 
 namespace Model
@@ -537,12 +525,6 @@ theorem ofEff_mul (I J : Z.effVert) : ofEff (I * J) = ofEff I + ofEff J :=
 theorem ofEff_injective : Function.Injective (ofEff (Z := Z)) :=
   Algebra.GrothendieckAddGroup.of_injective (M := Additive Z.effVert)
 
-theorem exists_eq_ofEff_sub (D : Z.VDivZ) : ∃ I J, D = ofEff I - ofEff J := by
-  induction D using AddLocalization.induction_on with
-  | H p =>
-    refine ⟨p.1.toMul, p.2.1.toMul, ?_⟩
-    exact ((Algebra.GrothendieckAddGroup.mk_sub_mk p.1 p.2.1 0 0).trans (by simp)).symm
-
 def vLift {A : Type*} [AddCommGroup A] (f : Z.effVert → A) (h : ∀ I J, f (I * J) = f I + f J) :
     Z.VDivZ →+ A :=
   Algebra.GrothendieckAddGroup.lift (AddMonoidHom.mk' (fun I => f I.toMul) h)
@@ -567,20 +549,6 @@ variable {Z} in
 @[simp] theorem vDeg_ofEff (I : Z.effVert) : Z.vDeg (ofEff I) = effDeg I := vLift_ofEff _ _ I
 
 
-variable {Z} in
-theorem vDeg_ofEff_prod (I : Z.effVert) {ι : Type} [Fintype ι] {L : ι → LB Z.X}
-    (hL : ∀ i, (L i).IsLB) : Z.vDeg (ofEff I) (∏ i, c1 (L i) (hL i)) =
-      if Fintype.card ι = Z.relDim then (interLen O (divMod I.1) L : ℚ) else 0 := by
-  rw [vDeg_ofEff]
-  exact (isVertical_divMod I).deg_prod hL
-
-
-variable {Z} in
-theorem vDeg_eq_zero (D : Z.VDivZ) {n : ℕ} (hn : n ≠ Z.relDim) {x : PicSym Z.X}
-    (hx : x ∈ symDeg (SmallPic Z.X) n) : Z.vDeg D x = 0 := by
-  obtain ⟨I, J, rfl⟩ := exists_eq_ofEff_sub D
-  rw [map_sub, vDeg_ofEff, vDeg_ofEff, LinearMap.sub_apply, effDeg, effDeg, IsVertical.deg,
-    IsVertical.deg, picForm_eq_zero _ hn hx, picForm_eq_zero _ hn hx, sub_zero]
 
 def effConst (g : O) (hg : g ≠ 0) : Z.effVert :=
   effMk (.principal (Z.const g) (Z.isRegularFn_const hg))

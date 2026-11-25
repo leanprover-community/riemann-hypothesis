@@ -199,8 +199,5 @@ structure Ht where
 
 variable (H : Ht Y)
 
-variable (Y) in
-def midWt : Wt Y := fun _ i => if (i : ℕ) < Y.j then 1 else 0
-
 
 end GlobalTheory.Mean4O

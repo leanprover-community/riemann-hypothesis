@@ -69,10 +69,6 @@ private theorem eqToHom_base_self {A : Scheme.{u}} (h : A = A) (x : ↥A) :
     (eqToHom h).base x = x := by
   simp
 
-private theorem inv_base_hom_base {A B : Scheme.{u}} (e : A ≅ B) (x : ↥A) :
-    e.inv.base (e.hom.base x) = x := by
-  simp
-
 private theorem eqToHom_base_mem_support_center {X : Scheme.{u}} (d : BlowupSequenceData X) {a b : ℕ}
     (hab : a = b) (h : d.obj a = d.obj b) (z : ↥(d.obj a))
     (hz : z ∈ (d.center a).support) : (eqToHom h).base z ∈ (d.center b).support := by
@@ -713,7 +709,7 @@ private theorem exists_mem_support_center_append {X : Scheme.{u}} (s : BlowupSeq
       refine Scheme.IdealSheafData.mem_support_comap.mpr ?_
       rw [eqToHom_base_trans, eqToHom_base_self]
       refine Scheme.IdealSheafData.mem_support_comap.mpr ?_
-      rw [inv_base_hom_base]
+      rw [AlgebraicGeometry.Scheme.hom_inv_apply]
       exact hz
     · rw [BlowupSequenceData.projectionToBase_append_of_le_length s n (le_refl s.length), base_comp_apply,
         eqToHom_base_trans, eqToHom_base_self, BlowupSequenceData.projectionToBase_zero]

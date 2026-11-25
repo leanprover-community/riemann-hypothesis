@@ -179,8 +179,8 @@ private theorem ordExStep {Z Y W : Scheme.{0}} (s : Y ⟶ Z) [IsFinite s] [Etale
         rw [Category.assoc, this, hφ1]
       · rw [Category.assoc, e2, hφ2]
 
-theorem pOrdEx : OrdStep → OrdEx := by
-  intro hS Z Y s _ _ d
+theorem pOrdEx : OrdEx := by
+  intro Z Y s _ _ d
   induction d with
   | zero =>
     refine ⟨Z, 𝟙 Z, Fin.elim0, inferInstance, inferInstance, fun j => j.elim0, ?_, ?_⟩

@@ -193,6 +193,5 @@ end Formalism.DoubleCosetMeasures.P.LemmaU
 namespace Formalism.DoubleCosetMeasures.P
 
 alias suppJ := _root_.Formalism.DoubleCosetMeasures.P.LemmaU.suppJ'
-alias lemmaUSplit := _root_.Formalism.DoubleCosetMeasures.P.LemmaU.lemmaU
 
 end Formalism.DoubleCosetMeasures.P

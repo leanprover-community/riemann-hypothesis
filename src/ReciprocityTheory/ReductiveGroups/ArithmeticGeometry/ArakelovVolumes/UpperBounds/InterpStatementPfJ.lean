@@ -198,7 +198,7 @@ theorem ker_bot_of_det {f' : V n →L[ℂ] V n} (hdet : f'.det ≠ 0) :
     ((LinearMap.isUnit_iff_isUnit_det _).2 (isUnit_iff_ne_zero.2 hdet))
 
 theorem iso_zero {f : V n → V n} {f' : V n →L[ℂ] V n} (hf : HasFDerivAt f f' 0) (hdet : f'.det ≠ 0)
-    : ∃ δ > 0, ∀ y ∈ closedBall (0 : V n) δ, f y = 0 → y = 0 := by
+    (h0 : f 0 = 0) : ∃ δ > 0, ∀ y ∈ closedBall (0 : V n) δ, f y = 0 → y = 0 := by
   obtain ⟨K, -, hK⟩ := (f' : V n →ₗ[ℂ] V n).exists_antilipschitzWith (ker_bot_of_det hdet)
   have hev : ∀ᶠ z in 𝓝[≠] (0 : V n), f z ≠ 0 := hf.eventually_ne (c := 0) ⟨K, hK⟩
   rw [eventually_nhdsWithin_iff, Metric.eventually_nhds_iff] at hev

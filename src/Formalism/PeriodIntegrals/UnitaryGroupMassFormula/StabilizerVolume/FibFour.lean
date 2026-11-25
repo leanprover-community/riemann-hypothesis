@@ -1,5 +1,6 @@
 module
 
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerOrbitVolume.FibFour
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerVolume.FibOfTens
 
 @[expose] public section
@@ -22,11 +23,7 @@ def DensOn (P : (V → ℝ) → Prop) (μ : Measure V) (f : V → Y) (ι : X →
 def IsCcOn (U : Set V) (φ : V → ℝ) : Prop :=
   Continuous φ ∧ HasCompactSupport φ ∧ tsupport φ ⊆ U
 
-theorem densAll_iff (μ : Measure V) (f : V → Y) (ι : X → Y) (ν : Measure X) (U : Set V) :
-    DensAll μ f ι ν U ↔ DensOn (IsCcOn U) μ f ι ν := by
-  constructor
-  · intro h φ hφ; exact h φ hφ.1 hφ.2.1 hφ.2.2
-  · intro h φ h1 h2 h3; exact h φ ⟨h1, h2, h3⟩
+export PI.VolStabSW (densAll_iff)
 
 def DensApprox (P : (V → ℝ) → Prop) (μ : Measure V) (f : V → Y) (ι : X → Y) (ν : Measure X)
     (U : Set V) : Prop :=

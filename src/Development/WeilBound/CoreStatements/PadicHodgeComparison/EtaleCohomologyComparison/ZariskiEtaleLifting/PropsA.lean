@@ -1177,7 +1177,7 @@ theorem exists_unit_chart (q : X ⟶ Spec (CommRingCat.of O)) [Smooth q] (x : X)
     intro hm
     obtain ⟨k, -, hk⟩ := (hP.prod_mem_iff).1 hm
     exact he k hk
-  have hxW : x ∈ X.basicOpen h := (mem_basicOpen_iff hV ⟨x, hx⟩ h).2 hh
+  have hxW : x ∈ X.basicOpen h := (AlgebraicGeometry.IsAffineOpen.mem_basicOpen_iff_notMem_primeIdealOf hV ⟨x, hx⟩ h).2 hh
   have hle : X.basicOpen h ≤ V := X.basicOpen_le h
   have hW := hV.basicOpen h
   have hunit : IsUnit (rs X hle h) := RingedSpace.isUnit_res_basicOpen _ h

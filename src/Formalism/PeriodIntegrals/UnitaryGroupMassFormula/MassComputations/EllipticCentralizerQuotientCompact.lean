@@ -62,10 +62,6 @@ theorem prod_rect_of_ne_zero {α β : Type*} [MeasurableSpace α] [MeasurableSpa
   letI : SFinite ν := hν
   exact Measure.prod_prod s t
 
-theorem tauF_eq_comm {D : D7} (X : HidaSetting D) (y : AF X.B.I.F ⊗[X.B.I.F] X.B.I.E) :
-    tauF X.B.I y = Algebra.TensorProduct.comm X.B.I.F (Af X.B.I.F) X.B.I.E
-      (tensMap (E := X.B.I.E) (sndA X.B.I.F) y) := PI.AprimeInfU.tauF_eq_comm X y
-
 theorem toHA_fin_one {D : D7} (X : HidaSetting D) (hb : AdBridgeIso X.B.I) (s : X.B.I.Ginf) :
     (splitA X.B.I.cm.sig X.B.I.J (toHA X.B.I hb (s, 1))).2 = 1 := by
   apply PI.AprimeInfU.toHA_fin_one

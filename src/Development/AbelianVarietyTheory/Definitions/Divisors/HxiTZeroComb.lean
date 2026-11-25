@@ -87,9 +87,6 @@ def op {A : Over S} [GrpObj A] (act : OActN O A) {m : ℕ} (p : S ⟶ B) (b : B'
   ε.sum fun M c => c • pullE l E (matBC act p b M) n
 
 
-variable (E) in
-abbrev HEt (Y : Scheme.{0}) (n t : ℤ) : Type 1 := E ⊗[ℚ_[l]] HQ l (sch.obj Y) n t
-
 
 
 end GlobalTheory.KS

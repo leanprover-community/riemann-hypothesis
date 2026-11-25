@@ -301,9 +301,6 @@ variable [Fintype n] [DecidableEq n]
 
 variable [Fintype m] [DecidableEq m]
 
-noncomputable def schurComplement₁₁ (G : Matrix (m ⊕ n) (m ⊕ n) ℂ) : Matrix n n ℂ :=
-  G.toBlocks₂₂ - G.toBlocks₂₁ * G.toBlocks₁₁⁻¹ * G.toBlocks₁₂
-
 
 
 end MatrixLemmas

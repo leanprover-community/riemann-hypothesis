@@ -68,10 +68,6 @@ theorem rcm_gr_mul (A B : Matrix (Fin X.B.I.n) (Fin X.B.I.n) X.B.I.E) : Gr X A *
 theorem rcm_gr_one : Gr X 1 = 1 := by
   rw [Gr, Matrix.mul_one, Bm'_mul_Bm]
 
-theorem rcm_gr_inv_mul (M : GL (Fin X.B.I.n) X.B.I.E) :
-    Gr X (↑M⁻¹ : Matrix _ _ _) * Gr X (M : Matrix _ _ _) = 1 := by
-  rw [rcm_gr_mul, Units.inv_mul, rcm_gr_one]
-
 theorem rcm_gr_mul_inv (M : GL (Fin X.B.I.n) X.B.I.E) :
     Gr X (M : Matrix _ _ _) * Gr X (↑M⁻¹ : Matrix _ _ _) = 1 := by
   rw [rcm_gr_mul, Units.mul_inv, rcm_gr_one]

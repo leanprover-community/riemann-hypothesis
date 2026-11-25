@@ -1222,14 +1222,3 @@ theorem e1hom_main (hU : WSubstUnique.{u}) (hS : WChordSubst.{u}) (hPar : Formal
 end MainLemma
 
 end Formalism.ELL.FormalGroupPointsHom
-
-theorem Formalism.ELL.formal_group_points_hom_of (hU : Formalism.ELL.WSubstUnique.{u}) (hS : Formalism.ELL.WChordSubst.{u})
-    (hFG : Formalism.ELL.WFormalGroup.{u}) (hPar : Formalism.ELL.FormalGroupPointsParametrisation.{u}) : Formalism.ELL.FormalGroupPointsHomomorphism.{u} := by
-  intro K _ _ _ W w F₂ hW hw hF₂i hF₂0 hch P Q hP hQ
-  obtain ⟨F, -, hFch⟩ := hFG K W w hw
-  obtain ⟨u0, hwu, hu⟩ := Formalism.ELL.WeierstrassCoordinateSubstitution.exists_unit_factor hw
-  have hFeq : F₂ = F.toPowerSeries :=
-    Formalism.ELL.WeierstrassCoordinateSubstitution.eq_of_xy hwu hu _ _ hF₂0 F.zero_constantCoeff (hch.1.trans hFch.1.symm)
-      (hch.2.trans hFch.2.symm)
-  subst hFeq
-  exact Formalism.ELL.FormalGroupPointsHom.e1hom_main hU hS hPar hW hw F hF₂i hch P Q hP hQ

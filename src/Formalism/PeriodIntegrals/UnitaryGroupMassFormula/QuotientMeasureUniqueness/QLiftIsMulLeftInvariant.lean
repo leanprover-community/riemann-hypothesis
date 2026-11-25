@@ -81,14 +81,10 @@ theorem hAvg_mul_mem {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGro
   simp only [hAvg, Subgroup.coe_mul, mul_assoc] at key ⊢
   exact key
 
-private theorem exists_out_eq_mul {G : Type} [Group G] {H : Subgroup G} (g : G) :
-    ∃ h : H, (g : G ⧸ H).out = g * (h : G) := by
-  exact QuotientGroup.mk_out_eq_mul H g
-
 theorem hAvg_out {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [MeasurableSpace G] [BorelSpace G] {H : Subgroup G}
     (ν : Measure H) [ν.IsMulLeftInvariant] (f : G → ℝ≥0∞) (g : G) :
     hAvg ν f ((g : G ⧸ H).out) = hAvg ν f g := by
-  obtain ⟨h0, hh⟩ := exists_out_eq_mul (H := H) g
+  obtain ⟨h0, hh⟩ := QuotientGroup.mk_out_eq_mul H g
   rw [hh]
   exact hAvg_mul_mem ν f g h0
 
@@ -101,10 +97,6 @@ theorem measurable_hAvg_out {G : Type} [Group G] [TopologicalSpace G] [IsTopolog
   funext g
   exact hAvg_out ν f g
 
-private theorem lintegral_indicator_one_le' {α : Type*} [MeasurableSpace α] (μ : Measure α)
-    (S : Set α) : ∫⁻ a, S.indicator 1 a ∂μ ≤ μ S := by
-  exact lintegral_indicator_one_le S
-
 theorem hAvg_indicator_le {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [MeasurableSpace G] [BorelSpace G] {H : Subgroup G}
     (ν : Measure H) [ν.IsMulLeftInvariant] (C K : Set G) (d g : G) (hC : ∀ x ∈ C, d⁻¹ * x ∈ K) :
     hAvg ν (C.indicator 1) g ≤ ν {h : H | (h : G) ∈ K⁻¹ * K} := by
@@ -113,7 +105,7 @@ theorem hAvg_indicator_le {G : Type} [Group G] [TopologicalSpace G] [IsTopologic
     unfold hAvg
     exact lintegral_congr fun h => (indicator_preimage_one (fun h : H => g * (h : G)) C h).symm
   rw [hint_r]
-  refine (lintegral_indicator_one_le' ν _).trans ?_
+  refine (MeasureTheory.lintegral_indicator_one_le (μ := ν) _).trans ?_
   rcases ((fun h : H => g * (h : G)) ⁻¹' C).eq_empty_or_nonempty with h0 | ⟨h1, hh1⟩
   · rw [h0]; simp
   · have hsub : (fun h : H => g * (h : G)) ⁻¹' C

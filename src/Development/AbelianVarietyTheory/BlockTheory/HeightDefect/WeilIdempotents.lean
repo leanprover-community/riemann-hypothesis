@@ -83,8 +83,6 @@ def herm {A B : HSp D} (x x' : WA A B) : AE D := Matrix.trace (HMul.hMul (colMat
 
 def symp {A B : HSp D} (x x' : WA A B) : AF D.host.F := trA D (incA D D.host.xi0 * herm x x')
 
-def riem {A B : HSp D} (x x' : WA A B) : AF D.host.F := -symp x x'
-
 theorem herm_add_left {A B : HSp D} (x y z : WA A B) : herm (x + y) z = herm x z + herm y z := by
   simp [herm, colMat, Matrix.transpose_add, Matrix.mul_add, Matrix.trace_add]
 

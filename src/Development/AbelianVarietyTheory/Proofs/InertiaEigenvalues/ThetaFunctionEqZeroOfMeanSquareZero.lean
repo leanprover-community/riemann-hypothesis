@@ -79,32 +79,6 @@ theorem psi_ne_zero (hψ : IsStdChar D ψ (-1)) (a : AF D.host.F) : ψ a ≠ 0 :
   rw [h, norm_zero] at this
   exact zero_ne_one this
 
-theorem isTheta_star_mul_mul (hψ : IsStdChar D ψ (-1)) {g h f : WO S T → ℂ} (hg : IsThetaFunO ψ S T g)
-    (hh : IsThetaFunO ψ S T h) (hf : IsThetaFunO ψ S T f) :
-    IsThetaFunO ψ S T (fun x => star (g x) * h x * f x) := {
-  quasi γ w := by
-    rw [hg.quasi, hh.quasi, hf.quasi, star_mul']
-    linear_combination (star (g w) * h w * f w * ψ (-(symplOH S T (ratW T S γ) w))) *
-      GlobalTheory.ThetaSchur.mul_star_psi hψ (-(symplOH S T (ratW T S γ) w))
-  level := by
-    obtain ⟨U1, o1, h1⟩ := hg.level
-    obtain ⟨U2, o2, h2⟩ := hh.level
-    obtain ⟨U3, o3, h3⟩ := hf.level
-    refine ⟨U1 ⊓ U2 ⊓ U3, (o1.inter o2).inter o3, fun u hu hfin => ?_⟩
-    funext x
-    have e1 := congrFun (h1 u hu.1.1 hfin) x
-    have e2 := congrFun (h2 u hu.1.2 hfin) x
-    have e3 := congrFun (h3 u hu.2 hfin) x
-    simp only [heisO] at e1 e2 e3 ⊢
-    have hs := GlobalTheory.ThetaSchur.mul_star_psi hψ (symplOH S T x u)
-    rw [← e1, ← e2, ← e3, star_mul']
-    linear_combination (-(ψ (symplOH S T x u) * (star (g (x + u)) * h (x + u) * f (x + u)))) * hs
-  cont := (hg.cont.star.mul hh.cont).mul hf.cont
-  smooth k L hL hL0 w := by
-    have hs : ContDiff ℝ ∞ (fun t => star (g (w + L t))) :=
-      Complex.conjCLE.contDiff.comp (hg.smooth k L hL hL0 w)
-    exact ContDiff.mul (ContDiff.mul hs (hh.smooth k L hL hL0 w)) (hf.smooth k L hL hL0 w) }
-
 theorem exists_bound (hψ : IsStdChar D ψ (-1)) {f : WO S T → ℂ} (hf : IsThetaFunO ψ S T f) :
     ∃ C : ℝ, ∀ x, ‖f x‖ ≤ C := by
   obtain ⟨i1, i2, i3, i4, i5, K, hK, hKc⟩ := GlobalTheory.AdelicMatrixLattice.lattice D T S

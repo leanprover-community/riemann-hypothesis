@@ -163,18 +163,7 @@ theorem basicOpen_formOn (hf : f.IsHomogeneous n) :
     (PSpace R N).basicOpen (formOn U i hi n f hf) = U ⊓ Proj.basicOpen (grading R N) f :=
   basicOpen_frac
 
-theorem formOn_X : formOn U i hi 1 (X j) (isHomogeneous_X R j) = ratioOn U i hi j :=
-  frac_eq (by ring)
-
-theorem formOn_add (hf : f.IsHomogeneous n) (hg : g.IsHomogeneous n) :
-    formOn U i hi n (f + g) (hf.add hg) = formOn U i hi n f hf + formOn U i hi n g hg :=
-  frac_add
-
 theorem formOn_zero : formOn U i hi n 0 (isHomogeneous_zero _ R n) = 0 := frac_zero
-
-theorem formOn_mul (hf : f.IsHomogeneous n) (hg : g.IsHomogeneous m) :
-    formOn U i hi (n + m) (f * g) (hf.mul hg) = formOn U i hi n f hf * formOn U i hi m g hg :=
-  (frac_mul_eq (by ring)).symm
 
 theorem formOn_eq_ratioOn_pow_mul (hj : U ≤ chart R N j) (hf : f.IsHomogeneous n) :
     formOn U i hi n f hf = ratioOn U i hi j ^ n * formOn U j hj n f hf := by

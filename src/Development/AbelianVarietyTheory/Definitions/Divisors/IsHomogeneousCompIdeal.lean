@@ -111,13 +111,6 @@ structure IsShortGen {κ : Type} (Nm : κ → V → ℝ) (L : Submodule (𝓞 K)
 
   one_le : 1 ≤ abelian₂
 
-theorem exists_isShortGen {κ : Type} [Finite κ] (Nm : κ → V → ℝ) {L : Submodule (𝓞 K) V} (hL : L.FG) :
-    ∃ (n : ℕ) (w : Fin n → V) (abelian₂ : ℝ), IsShortGen Nm L w abelian₂ := by
-  obtain ⟨n, w, hw⟩ := Submodule.fg_iff_exists_fin_generating_family.1 (hL.restrictScalars (R := ℤ))
-  obtain ⟨B, hB⟩ := (Set.finite_range fun p : Fin n × κ => Nm p.2 (w p.1)).bddAbove
-  exact ⟨n, w, max B 1, fun x => by rw [hw]; rfl, fun i k => (hB ⟨(i, k), rfl⟩).trans (le_max_left _ _),
-    le_max_right _ _⟩
-
 
 end Generic
 

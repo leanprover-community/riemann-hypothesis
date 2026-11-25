@@ -182,7 +182,11 @@ open ReciprocityTheory.ChartRestriction.DS ReciprocityTheory.ChartRestriction.DS
 variable {n : ℕ}
 
 theorem gMat_add {ε : Fin n → Bool} (s t : GCo ε) : gMat (s + t) = gMat s + gMat t := by
-  exact ReciprocityTheory.ChartRestriction.DS.OmegaPQAux.gMat_add s t
+  ext a b
+  simp only [gMat, Matrix.add_apply]
+  simp only [kMat, pmat, Prod.fst_add, Prod.snd_add, Pi.add_apply]
+  split_ifs <;> (try simp only [Complex.ofReal_add, star_add, mul_add, neg_add, add_zero]) <;>
+    (try ring)
 
 theorem gMat_smul {ε : Fin n → Bool} (c : ℝ) (s : GCo ε) : gMat (c • s) = (RingHom.id ℝ c) • gMat s := by
   ext a b
@@ -355,7 +359,8 @@ theorem haar_exp_density {ε : Fin n → Bool} (μ : Measure (UJ ε)) [μ.IsHaar
     obtain ⟨δ', hδ', h'⟩ := hsmall δ hδ
     refine ⟨δ', hδ', fun S hS hSδ => ?_⟩
     have := h (eC '' S) (hmeas S hS) (h' S hSδ)
-    rwa [himg, hlam S hS] at this
+    rw [himg, hlam S hS] at this
+    exact this
   have hL : ∃ δ > 0, ∀ S : Set (GCo ε), MeasurableSet S → (∀ s ∈ S, ‖s‖ < δ) →
       ENNReal.ofReal ((1 - η) * d) * volume S ≤ μ (expSet S) := by
     by_cases hη1 : (1 - η) * d ≤ 0
@@ -371,7 +376,8 @@ theorem haar_exp_density {ε : Fin n → Bool} (μ : Measure (UJ ε)) [μ.IsHaar
       obtain ⟨δ', hδ', h'⟩ := hsmall δ hδ
       refine ⟨δ', hδ', fun S hS hSδ => ?_⟩
       have := h (eC '' S) (hmeas S hS) (h' S hSδ)
-      rwa [himg, hlam S hS] at this
+      rw [himg, hlam S hS] at this
+      exact this
   obtain ⟨δ1, hδ1, h1⟩ := hU
   obtain ⟨δ2, hδ2, h2⟩ := hL
   refine ⟨min δ1 δ2, lt_min hδ1 hδ2, fun S hS hSδ => ⟨?_, ?_⟩⟩
@@ -416,21 +422,6 @@ theorem exp_strict :
 variable (n) in
 def logM : Matrix (Fin n) (Fin n) ℂ → Matrix (Fin n) (Fin n) ℂ :=
   (exp_strict (n := n)).localInverse _ _ _
-
-theorem logM_exp : ∀ᶠ X in 𝓝 (0 : Matrix (Fin n) (Fin n) ℂ), logM n (NormedSpace.exp X) = X := by
-  exact (exp_strict (n := n)).eventually_left_inverse
-
-theorem exp_logM : ∀ᶠ h in 𝓝 (1 : Matrix (Fin n) (Fin n) ℂ), NormedSpace.exp (logM n h) = h := by
-  have h := (exp_strict (n := n)).eventually_right_inverse
-  rwa [NormedSpace.exp_zero] at h
-
-theorem logM_one : logM n 1 = 0 := by
-  have h := (exp_strict (n := n)).localInverse_apply_image
-  rwa [NormedSpace.exp_zero] at h
-
-theorem logM_strict : HasStrictFDerivAt (logM n) (ContinuousLinearMap.id ℝ _) 1 := by
-  have h := (exp_strict (n := n)).to_localInverse
-  rwa [NormedSpace.exp_zero] at h
 
 end Log
 
@@ -682,7 +673,8 @@ theorem Lm_strict (ε : Fin n → Bool) :
       ((fun s : GCo ε => NormedSpace.exp (kMat s.1) * NormedSpace.exp (pmat s.2)) 0) := by
     have h := (exp_strict (n := n)).to_localInverse
     rw [NormedSpace.exp_zero] at h
-    rwa [h0]
+    rw [h0]
+    exact h
   have h := (LinearMap.toContinuousLinearMap (cLin ε)).hasStrictFDerivAt.comp (0 : GCo ε)
     (hl.comp (0 : GCo ε) (prod_strict ε))
   refine h.congr_fderiv (ContinuousLinearMap.ext fun s => ?_)
@@ -706,7 +698,8 @@ theorem Lm_exp (ε : Fin n → Bool) : ∀ᶠ s in 𝓝 (0 : GCo ε),
   have hlog := exp_strict (n := n)
   have hl : Tendsto (logM n) (𝓝 1) (𝓝 0) := by
     have h := hlog.to_localInverse.continuousAt.tendsto
-    rwa [hlog.localInverse_apply_image, NormedSpace.exp_zero] at h
+    rw [hlog.localInverse_apply_image, NormedSpace.exp_zero] at h
+    exact h
   have hΦ := hl.comp hP
   have hc : Continuous fun Y : Matrix (Fin n) (Fin n) ℂ => Jm ε * (-Yᴴ) * Jm ε :=
     (continuous_const.matrix_mul continuous_id.matrix_conjTranspose.neg).matrix_mul continuous_const
@@ -720,7 +713,8 @@ theorem Lm_exp (ε : Fin n → Bool) : ∀ᶠ s in 𝓝 (0 : GCo ε),
     hlog.eventually_left_inverse
   have hright : ∀ᶠ Y in 𝓝 (1 : Matrix (Fin n) (Fin n) ℂ), NormedSpace.exp (logM n Y) = Y := by
     have h := hlog.eventually_right_inverse
-    rwa [NormedSpace.exp_zero] at h
+    rw [NormedSpace.exp_zero] at h
+    exact h
   filter_upwards [hP.eventually hright, hΦ.eventually hleft, hJ.eventually hleft]
     with s h1 h2 h3
   have hU : inUJ ε (NormedSpace.exp (logM n (NormedSpace.exp (kMat s.1) * NormedSpace.exp (pmat s.2)))) := by
@@ -976,7 +970,8 @@ theorem tie_tendsto {f : ℝ → ENNReal} {x : ℝ} (hx : 0 < x)
 theorem tie_cancel {p q : ℝ} {v : ENNReal} (hv0 : v ≠ 0) (hvt : v ≠ ⊤) (hq : 0 ≤ q)
     (h : ENNReal.ofReal p * v ≤ ENNReal.ofReal q * v) : p ≤ q := by
   have := (ENNReal.mul_le_mul_iff_left hv0 hvt).1 h
-  exact (ENNReal.ofReal_le_ofReal_iff hq).1 this
+  have h2 := (ENNReal.ofReal_le_ofReal_iff hq).1 this
+  exact h2
 
 theorem tie_d_eq (ε : Fin n → Bool) (d : ℝ) (hd0 : 0 < d)
     (hd : DensOn (fun S => muPolar ε (expSet S)) d) : d = 1 / (volU (pOf ε) * volU (qOf ε)) := by
@@ -1057,7 +1052,8 @@ theorem tie_sum_reindex (e : Fin P ⊕ Fin Q ≃ Fin n) (M : Matrix (Fin n) (Fin
     ∑ i, ∑ j, ‖Matrix.reindex e.symm e.symm M i j‖ = ∑ a, ∑ b, ‖M a b‖ := by
   simp only [Matrix.reindex_apply, Matrix.submatrix_apply, Equiv.symm_symm]
   rw [← Equiv.sum_comp e (fun a => ∑ b, ‖M a b‖)]
-  exact Finset.sum_congr rfl fun i _ => Equiv.sum_comp e (fun b => ‖M (e i) b‖)
+  refine Finset.sum_congr rfl fun i _ => ?_
+  exact Equiv.sum_comp e (fun b => ‖M (e i) b‖)
 
 theorem tie_mem_ball (e : Fin P ⊕ Fin Q ≃ Fin n) {ε : Fin n → Bool}
     (he1 : ∀ i, ε (e (Sum.inl i)) = true) (he2 : ∀ j, ε (e (Sum.inr j)) = false) (r : ℝ) (s : GCo ε) :
@@ -1217,7 +1213,8 @@ lemma map_eq {P Q : ℕ} (e : Fin P ⊕ Fin Q ≃ Fin n) {ε : Fin n → Bool}
   constructor
   · rintro ⟨h, hh, rfl⟩
     have hh' : (h : Matrix (Fin P ⊕ Fin Q) (Fin P ⊕ Fin Q) ℂ)ᴴ * Formalism.UG.Jpq P Q * h = Formalism.UG.Jpq P Q := by
-      rwa [← cT_eq]
+      rw [← cT_eq]
+      exact hh
     show (Matrix.reindex e e (h : Matrix (Fin P ⊕ Fin Q) (Fin P ⊕ Fin Q) ℂ))ᴴ * Jm ε *
         Matrix.reindex e e (h : Matrix (Fin P ⊕ Fin Q) (Fin P ⊕ Fin Q) ℂ) = Jm ε
     rw [hk, hh', Matrix.reindex_apply, ← hJ']
@@ -1292,7 +1289,8 @@ private theorem isClosedEmbedding_coe_of_mem_iff_conjTranspose_Jm_mul_eq (ε : F
       _ = 1 := by rw [hM, hJJ]
   have hinv : ∀ g : H, (((g : (Matrix (Fin n) (Fin n) ℂ)ˣ)⁻¹ : (Matrix (Fin n) (Fin n) ℂ)ˣ) :
       Matrix (Fin n) (Fin n) ℂ) = J * ((g : (Matrix (Fin n) (Fin n) ℂ)ˣ) : Matrix (Fin n) (Fin n) ℂ)ᴴ * J := by
-    exact fun g => Units.inv_eq_of_mul_eq_one_left (hleft _ ((hH _).1 g.2))
+    intro g
+    exact Units.inv_eq_of_mul_eq_one_left (hleft _ ((hH _).1 g.2))
   have hcont : Continuous (fun g : H => ((g : (Matrix (Fin n) (Fin n) ℂ)ˣ) : Matrix (Fin n) (Fin n) ℂ)) :=
     Units.continuous_val.comp continuous_subtype_val
   have hct : Continuous (fun M : Matrix (Fin n) (Fin n) ℂ => J * Mᴴ * J) := by

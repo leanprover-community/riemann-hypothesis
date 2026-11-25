@@ -26,10 +26,7 @@ variable {V X Y : Type} [AddCommGroup V] [TopologicalSpace V] [IsTopologicalAddG
   [TopologicalSpace X] [MeasurableSpace X] [OpensMeasurableSpace X] [T2Space X]
   {μ : Measure V} {f : V → Y} {ι : X → Y} {ν : Measure X}
 
-theorem densLC_of_cosB [IsFiniteMeasureOnCompacts μ] [IsFiniteMeasureOnCompacts ν] (U : Set V)
-    (B : AddSubgroup V → Prop) (hB : IsCOBasis B) (h : DensCosB B μ f ι ν U) :
-    DensOn (IsLCcOn U) μ f ι ν := by
-  apply PI.VolStabSW.densLC_of_cosB <;> assumption
+export PI.VolStabSW (densLC_of_cosB)
 
 end Cos
 

@@ -237,17 +237,6 @@ theorem exists_isWittFrame (h : IsCMExt F E σ) (hJ : IsHermND σ J) :
     (fun i => (gram_mulVec (of y)ᵀ z i).symm.trans (congrFun h2 i)) ((hB z z).trans h3) hw₀)
 
 
-omit [NumberField F] [NumberField E] in
-theorem isWittFrame_plane : IsWittFrame σ !![0, 1; 1, 0] (!![1; 0] : Matrix (Fin 2) (Fin 1) E) !![0; 1] := by
-  refine ⟨?_, ?_, ?_, fun z h1 h2 _ => ?_⟩
-  · ext i j; simp [cT, Matrix.mul_apply, Fin.sum_univ_two]
-  · ext i j; simp [cT, Matrix.mul_apply, Fin.sum_univ_two]
-  · ext i j; simp [cT, Matrix.mul_apply, Fin.sum_univ_two, Subsingleton.elim i j, Matrix.one_apply]
-  · have e1 := congrFun h1 0
-    have e2 := congrFun h2 0
-    simp [cT, Matrix.mul_apply, Fin.sum_univ_two, mulVec, dotProduct] at e1 e2
-    funext i; fin_cases i <;> simp [e1, e2]
-
 theorem exists_unit_torus {A : Type} [CommRing A] {s : A →+* A} (hs : ∀ a, s (s a) = a) {J : Matrix (Fin n) (Fin n) A}
     (hJ : cT s J = J) {X Y : Matrix (Fin n) (Fin r) A} (xx : cT s X * J * X = 0) (yy : cT s Y * J * Y = 0)
     (xy : cT s X * J * Y = 1) (d : Fin r → Aˣ) (hd : ∀ i, s (d i) = d i) :

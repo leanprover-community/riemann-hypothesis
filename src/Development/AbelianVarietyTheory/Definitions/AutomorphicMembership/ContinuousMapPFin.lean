@@ -160,18 +160,11 @@ theorem Wt.at_conjugate (W : Wt E n) (τ : E →+* ℂ) : W.at (ComplexEmbedding
   unfold Wt.at
   rw [InfinitePlace.mk_conjugate_eq]
   rcases InfinitePlace.embedding_mk_eq τ with h | h
-  · rw [ite_eq_left h, ite_eq_right (by rw [h]; exact (conjugate_ne τ).symm)]
-  · rw [ite_eq_left h, ite_eq_right (by rw [h]; exact conjugate_ne τ), dual_dual]
+  · rw [if_pos h, if_neg (by rw [h]; exact (conjugate_ne τ).symm)]
+  · rw [if_pos h, if_neg (by rw [h]; exact conjugate_ne τ), dual_dual]
 
 
 def Wt.ofFam (lam : (E →+* ℂ) → DomWeight n) : Wt E n := fun v => lam v.embedding
-
-theorem Wt.at_ofFam {lam : (E →+* ℂ) → DomWeight n} (h : ∀ τ, lam (ComplexEmbedding.conjugate τ) = (lam τ).dual)
-    (τ : E →+* ℂ) : (Wt.ofFam lam).at τ = lam τ := by
-  unfold Wt.at Wt.ofFam
-  rcases InfinitePlace.embedding_mk_eq τ with e | e
-  · rw [ite_eq_left e, e]
-  · rw [ite_eq_right (by rw [e]; exact conjugate_ne τ), e, h, dual_dual]
 
 def infW (W : Wt E n) (τ : E →+* ℂ) : Multiset ℂ := infOfWeight (W.at τ)
 
@@ -381,10 +374,10 @@ theorem HasWt.wt {π : AU E n} {τ : E →+* ℂ} {lam : DomWeight n} (h : π.Ha
   rcases InfinitePlace.embedding_mk_eq τ with e | e
   · have := key (InfinitePlace.mk τ) lam (by rw [e]; exact h)
     rw [e] at this
-    rwa [ite_eq_left e]
+    rwa [if_pos e]
   · have := (key (InfinitePlace.mk τ) lam.dual (by rw [e]; exact h.conjugate)).conjugate
     rw [e, ComplexEmbedding.involutive_conjugate E τ] at this
-    rwa [ite_eq_right (by rw [e]; exact conjugate_ne τ)]
+    rwa [if_neg (by rw [e]; exact conjugate_ne τ)]
 
 end AU
 

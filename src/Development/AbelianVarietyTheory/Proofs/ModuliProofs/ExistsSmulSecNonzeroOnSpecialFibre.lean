@@ -102,23 +102,16 @@ theorem app_cst {g : R →+* R'} {f : X ⟶ Spec (CommRingCat.of R)} {π : X' �
 theorem mem_basicOpen_rs {U V : X.Opens} (h : V ≤ U) (a : Γ(X, U)) {x : X} (hx : x ∈ V) :
     x ∈ X.basicOpen (rs X h a) ↔ x ∈ X.basicOpen a := by
   have := X.basicOpen_res a (homOfLE h).op
-  exact (congrArg (x ∈ ·) this).to_iff.trans ⟨fun h => h.2, fun h => ⟨hx, h⟩⟩
+  refine (congrArg (x ∈ ·) this).to_iff.trans ?_
+  exact ⟨fun h => h.2, fun h => ⟨hx, h⟩⟩
 
 theorem mem_basicOpen_cst (f : X ⟶ Spec (CommRingCat.of R)) (W : X.Opens) (r : R) {x : X} (hx : x ∈ W) :
     x ∈ X.basicOpen (AbLaw.cst f W r) ↔ r ∉ (f x).asIdeal := by
   refine (mem_basicOpen_rs le_top _ hx).trans ?_
   have e₁ := f.preimage_basicOpen_top ((Scheme.ΓSpecIso (CommRingCat.of R)).inv.hom r)
   have e₂ := basicOpen_eq_of_affine (R := CommRingCat.of R) r
-  exact (congrArg (x ∈ ·) e₁).to_iff.symm.trans (congrArg (f x ∈ ·) e₂).to_iff
-
-theorem mem_basicOpen_iff {U : X.Opens} (hU : IsAffineOpen U) (x : U) (s : Γ(X, U)) :
-    x.1 ∈ X.basicOpen s ↔ s ∉ (hU.primeIdealOf x).asIdeal := by
-  have h : (hU.primeIdealOf x : Spec Γ(X, U)) ∈ hU.fromSpec ⁻¹ᵁ X.basicOpen s ↔
-      x.1 ∈ X.basicOpen s := by
-    conv_rhs => rw [← hU.fromSpec_primeIdealOf x]
-    rfl
-  rw [← h, hU.fromSpec_preimage_basicOpen]
-  rfl
+  refine (congrArg (x ∈ ·) e₁).to_iff.symm.trans ?_
+  exact (congrArg (f x ∈ ·) e₂).to_iff
 
 theorem cst_eq (f : X ⟶ Spec (CommRingCat.of R)) (U : X.Opens) :
     AbLaw.cst f U = (f.appLE ⊤ U le_top).hom.comp (Scheme.ΓSpecIso (CommRingCat.of R)).inv.hom := by
@@ -138,7 +131,8 @@ theorem exists_etale_chart (f : X ⟶ Spec (CommRingCat.of R)) [Smooth f] {U : X
   letI := (AbLaw.cst f W).toAlgebra
   haveI : Algebra.Smooth R Γ(X, W) := cst_smooth f hW
   obtain ⟨g, hg, hs⟩ := Algebra.IsSmoothAt.exists_notMem_isStandardSmooth R (hW.primeIdealOf ⟨x, hxW⟩).asIdeal
-  have hxg : x ∈ X.basicOpen g := (mem_basicOpen_iff hW ⟨x, hxW⟩ g).2 hg
+  have hxg : x ∈ X.basicOpen g := by
+    exact (AlgebraicGeometry.IsAffineOpen.mem_basicOpen_iff_notMem_primeIdealOf hW ⟨x, hxW⟩ g).2 hg
   haveI := hW.isLocalization_basicOpen g
   letI := (AbLaw.cst f (X.basicOpen g)).toAlgebra
   haveI : IsScalarTower R Γ(X, W) Γ(X, X.basicOpen g) :=
@@ -249,7 +243,8 @@ theorem exists_extension [Smooth f] {U : X.Opens} (t : Γ(XK, j ⁻¹ᵁ U))
       exact (rs_rs _ _ _).trans (rs_rs _ _ _).symm)
   refine ⟨s, XK.sheaf.eq_of_locally_eq' (fun x : U => j ⁻¹ᵁ V x.1 x.2) (j ⁻¹ᵁ U)
     (fun x => homOfLE fun _ hy => hV x.1 x.2 hy) ?_ _ _ fun x => ?_⟩
-  · exact fun y hy => TopologicalSpace.Opens.mem_iSup.2 ⟨⟨j y, hy⟩, hx _ hy⟩
+  · intro y hy
+    exact TopologicalSpace.Opens.mem_iSup.2 ⟨⟨j y, hy⟩, hx _ hy⟩
   · exact (app_rs j (hV x.1 x.2) s).symm.trans ((congrArg _ (hs x)).trans (hb x.1 x.2))
 
 end Generic
@@ -365,11 +360,11 @@ theorem exists_of_eq [Ring.DimensionLEOne O] [IsAlgClosed K] [Smooth f] [Geometr
       (⟨(IsLocalRing.maximalIdeal O).map (AbLaw.cst f V), hp⟩ : PrimeSpectrum Γ(X, V))
     have hy' : (hV.primeIdealOf y).asIdeal = (IsLocalRing.maximalIdeal O).map (AbLaw.cst f V) :=
       congrArg PrimeSpectrum.asIdeal hy
-    refine ⟨y.1, (mem_basicOpen_iff hV y b').2 (hy' ▸ hb'), ?_⟩
+    refine ⟨y.1, (AlgebraicGeometry.IsAffineOpen.mem_basicOpen_iff_notMem_primeIdealOf hV y b').2 (hy' ▸ hb'), ?_⟩
     refine PrimeSpectrum.ext (((IsLocalRing.maximalIdeal.isMaximal O).eq_of_le (f y.1).isPrime.ne_top
       fun a ha => ?_).symm)
     by_contra h
-    exact (mem_basicOpen_iff hV y _).1 ((mem_basicOpen_cst f V a y.2).2 h) (hy' ▸ Ideal.mem_map_of_mem _ ha)
+    exact (AlgebraicGeometry.IsAffineOpen.mem_basicOpen_iff_notMem_primeIdealOf hV y _).1 ((mem_basicOpen_cst f V a y.2).2 h) (hy' ▸ Ideal.mem_map_of_mem _ ha)
 
 theorem exists_eq_mul [Smooth f] [GeometricallyIntegral f] {i k : M.ι} {V W : X.Opens} (hV : V ≤ M.U i)
     (hW : W ≤ M.U k) {c d : K} (hd : d ≠ 0) {a : Γ(X, V)} {b : Γ(X, W)}

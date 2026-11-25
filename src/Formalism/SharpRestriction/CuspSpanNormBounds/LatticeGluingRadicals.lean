@@ -1423,11 +1423,6 @@ section Gen
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {S : HSpace E} {r : ℕ}
 
-theorem m_exists_smul_mem (M : Submodule (𝓞 E) S.V) {x : S.V} (hx : x ∈ Submodule.span E (M : Set S.V)) :
-    ∃ d : 𝓞 E, d ≠ 0 ∧ d • x ∈ M := by
-  first
-  | (apply Formalism.MainNotions.LatticeGluingRadicals.m_exists_smul_memL <;> assumption)
-
 omit [StarRing E] in
 theorem m_fin_quot {M : Type} [AddCommGroup M] [Module (𝓞 E) M] [Module.Finite (𝓞 E) M]
     (N : Submodule (𝓞 E) M) (h : ∀ w : M, ∃ n : ℕ, 0 < n ∧ n • w ∈ N) : Finite (M ⧸ N) := by

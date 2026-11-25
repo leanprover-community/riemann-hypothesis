@@ -43,16 +43,4 @@ import Mathlib.Topology.Sheaves.Init
 
 noncomputable section
 
-namespace Formalism.MainNotions.Pk
-
-open Formalism.BasicNotions
-
-def TopsF {eps : ℝ} (Fm : FamP eps) : Prop := ChosenTT Fm ∧ ∃ Cb : ℝ, 0 < Cb ∧ ChosenBad Fm Cb
-
-theorem topsF_of_chosenE {eps : ℝ} (Fm : FamP eps) {C0 CH : ℝ} (h : ChosenE Fm C0 CH) : TopsF Fm := by
-  obtain ⟨C5, c6, Cb, -, -, hCb, -, hTT, hBad, -⟩ := h
-  exact ⟨hTT, Cb, hCb, hBad⟩
-
-end Formalism.MainNotions.Pk
-
 end

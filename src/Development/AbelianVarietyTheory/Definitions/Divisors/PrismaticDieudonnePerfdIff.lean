@@ -81,19 +81,6 @@ def CycPerfd.Over {p : ℕ} [Fact p.Prime] (S S' : CycPerfd p) [Algebra S.R S'.R
   (∀ a, fontaineTheta S'.R p (α a) = algebraMap S.R S'.R (fontaineTheta S.R p a)) ∧
     (∀ a, α (frobenius a) = frobenius (α a)) ∧ α (teichmuller p S.ε) = teichmuller p S'.ε
 
-def CycPerfd.ofIntegers (p : ℕ) [Fact p.Prime] {C : Type} [Field C] [IsAlgClosed C] [CharZero C]
-    {v : Valuation C NNReal} (O : Type) [CommRing O] [Algebra O C]
-    [Fact ¬IsUnit (p : O)] [IsAdicComplete (span {(p : O)}) O] (hv : v.Integers O) (ε : PreTilt O p)
-    (hε : IsPrimitiveRoot (((_root_.frobeniusEquiv (PreTilt O p) p).symm ε).untilt) p) : CycPerfd p where
-  R := O
-  reg := fun a b h => sub_eq_zero.1 (ReciprocityTheory.PGsh.Ainf.torsion_free p O hv 1 _ (by
-    have h' : (p : O) * a = (p : O) * b := h
-    rw [pow_one, sub_mul, mul_comm a, mul_comm b, h', sub_self]))
-  ε := ε
-  zeta_zero := (zeta_succ_pow ε 0).symm.trans hε.pow_eq_one
-  surj := ReciprocityTheory.PGsh.Ainf.theta_surj p O hv
-  ker_eq := ReciprocityTheory.PGsh.Ainf.ker_theta p O hv ε hε
-
 
 end GlobalTheory.Published
 end -- clump:auto
@@ -289,41 +276,9 @@ def dual : ConstTate ε G.dual where
   t' i := tateCongr O G.bidual (c.t i)
   pair j i := by rw [pairing_bidual, c.pair]; simp only [eq_comm]
 
-def toTate : (Fin G.height → ℤ_[p]) →ₗ[ℤ_[p]] G.Tate := Fintype.linearCombination ℤ_[p] c.t
-
 def al : (Fin G.height → O) →ₗ[O] G.dual.omega := Fintype.linearCombination O fun i => hodgeTate G (c.t i)
 
-def alDual : G.Lie →ₗ[O] (Fin G.height → O) := LinearMap.pi fun j => Module.Dual.eval O _ (dlog G (c.t' j))
-
 def W : Submodule O (Fin G.height → O) := LinearMap.ker c.al
-
-theorem al_apply (x : Fin G.height → O) : c.al x = ∑ i, x i • hodgeTate G (c.t i) :=
-  Fintype.linearCombination_apply ..
-
-def ofConst (ε : (PDivGroup.mu p O).Tate) : ConstTate ε (const p O) where
-  t _ := constGen p O
-  t' _ := (charHom (const p O)).symm (constHom _ ε)
-  pair i j := by
-    rw [pairing_apply, LinearEquiv.apply_symm_apply, tateMap_constHom, ite_eq_left (Subsingleton.elim (α := Fin 1) i j)]
-
-def ofMu (ε : (PDivGroup.mu p O).Tate) : ConstTate ε (PDivGroup.mu p O) where
-  t _ := ε
-  t' _ := constGen p O
-  pair i j := by
-    rw [pairing_apply, charHom_constGen, tateMap_id, ite_eq_left (Subsingleton.elim (α := Fin 1) i j)]
-
-theorem exists_bijective (C : Type) [Field C] [Algebra O C] [IsIntegrallyClosedIn O C] [IsAlgClosed C] [CharZero C]
-    (ε : (PDivGroup.mu p O).Tate) (G : PDivGroup p O) : ∃ c : ConstTate ε G, Function.Bijective c.toTate := by
-  haveI := G.finite_tate C
-  haveI := G.free_tate C
-  let b := Module.finBasisOfFinrankEq ℤ_[p] G.Tate (G.finrank_tate C)
-  choose χ hχ using fun j : Fin G.height => (G.pairing_flip_bijective C).2
-    (LinearMap.toSpanSingleton ℤ_[p] _ ε ∘ₗ b.coord j)
-  refine ⟨⟨b, χ, fun i j => (LinearMap.congr_fun (hχ j) (b i)).trans ?_⟩, ?_⟩
-  · simp [Finsupp.single_apply]
-  · have h : ∀ x, Fintype.linearCombination ℤ_[p] b x = b.equivFun.symm x := fun x => by
-      simp [Fintype.linearCombination_apply]
-    exact (funext h : ⇑(Fintype.linearCombination ℤ_[p] b) = _) ▸ b.equivFun.symm.bijective
 
 section BaseChange
 
@@ -372,27 +327,6 @@ def eps : (PDivGroup.mu p S.R).Tate := muTate S.R (zeta S.ε) S.zeta_zero (zeta_
 
 @[simp] theorem muRoot_eps (n : ℕ) : muRoot (eps S) n = zeta S.ε n := muRoot_muTate ..
 
-def muN (n : ℕ) : Ainf p S.R := Sandwich.mu (root^[n] S.ε)
-
-theorem phiInv_muN (n : ℕ) : phiInv p S.R (muN S n) = muN S (n + 1) := by
-  rw [muN, muN, Function.iterate_succ_apply']
-  exact phiInv_mu _
-
-theorem frobenius_muN (n : ℕ) : frobenius (muN S (n + 1)) = muN S n := by
-  rw [← phiInv_muN, Dieudonne.frobenius_phiInv]
-
-theorem theta_muN (n : ℕ) : fontaineTheta S.R p (muN S n) = zeta S.ε n - 1 := by
-  rw [muN, Sandwich.mu, map_sub, fontaineTheta_teichmuller, map_one, zeta]
-
-theorem muRoot_eps_of_over {S S' : CycPerfd p} [Algebra S.R S'.R] {α : Ainf p S.R →+* Ainf p S'.R} (h : S.Over S' α)
-    (n : ℕ) : muRoot (eps S') n = algebraMap S.R S'.R (muRoot (eps S) n) := by
-  have h1 : α (muN S n) = muN S' n := by
-    induction n with
-    | zero => exact (map_sub α (teichmuller p S.ε) 1).trans (by rw [h.2.2, map_one]; rfl)
-    | succ n ih => exact Dieudonne.frobenius_injective (by rw [← h.2.1, frobenius_muN, frobenius_muN, ih])
-  have h2 := h.1 (muN S n)
-  rwa [h1, theta_muN, theta_muN, map_sub, map_one, sub_left_inj, ← muRoot_eps, ← muRoot_eps] at h2
-
 end Ring
 
 variable (D : PrismData p) {S : CycPerfd p}
@@ -413,8 +347,6 @@ def coord : D.Cov G →ₗ[Ainf p S.R] (Fin G.height → Ainf p S.R) :=
 def K (n : ℕ) : Submodule (Ainf p S.R) (Fin G.height → Ainf p S.R) :=
   Nat.rec (LinearMap.range (coord D c)) (fun _ N => N.comap (piMap frobenius _)) n
 
-theorem K_succ (n : ℕ) : K D c (n + 1) = (K D c n).comap (piMap frobenius _) := rfl
-
 def b : D.Cov G →ₛₗ[fontaineTheta S.R p] (Fin G.height → S.R) := (piMap (fontaineTheta S.R p) _).comp (coord D c)
 
 def thetaK (n : ℕ) : Submodule S.R (Fin G.height → S.R) := (K D c n).map (piMap (fontaineTheta S.R p) _)
@@ -422,25 +354,6 @@ def thetaK (n : ℕ) : Submodule S.R (Fin G.height → S.R) := (K D c n).map (pi
 def H (n : ℕ) : Submodule S.R (Fin G.height → S.R) :=
   ((zeta S.ε 1 - 1) • thetaK D c (n + 1)).comap (LinearMap.lsmul S.R _ (zeta S.ε (n + 1) - 1))
 
-theorem K_mu (n : ℕ) : K D (ConstTate.ofMu (eps S)) n = ⊤ := by
-  induction n with
-  | zero =>
-    refine eq_top_iff.2 fun x _ => ⟨x (0 : Fin 1) • D.e S, funext fun j => ?_⟩
-    change D.eCoord S (D.map S _ _ (constHom (const p S.R) (constGen p S.R)) _) = _
-    rw [show constHom _ (constGen p S.R) = 𝟙 _ by rw [← LinearEquiv.eq_symm_apply, constHom_symm_apply, tateMap_id],
-      D.map_id, LinearMap.id_apply, D.eCoord_smul_e, Subsingleton.elim (α := Fin 1) j 0]
-  | succ n ih => rw [K_succ, ih, Submodule.comap_top]
-
-
-open scoped Formalism.Per in
-theorem exists_constTate (p : ℕ) [Fact p.Prime] : ∃ S : CycPerfd p, IsPrimitiveRoot (zeta S.ε 1) p ∧
-    ∀ G : PDivGroup p S.R, ∃ c : ConstTate (eps S) G, Function.Bijective c.toTate := by
-  obtain ⟨e, he⟩ := GlobalTheory.MemLoc.Model.exists_isEps p
-  have hv := PadicComplexInt.integers p
-  haveI : IsIntegrallyClosedIn (Formalism.Per.OC p) ℂ_[p] := isIntegrallyClosedIn_iff.2
-    ⟨hv.hom_inj, fun hx => hv.exists_of_le_one (hv.isIntegral_iff_v_le_one.1 hx)⟩
-  have h := ConstTate.exists_bijective (p := p) (O := Formalism.Per.OC p) ℂ_[p]
-  exact ⟨CycPerfd.ofIntegers p (Formalism.Per.OC p) hv e he.isPrimitiveRoot_untilt, he.isPrimitiveRoot_untilt, h _⟩
 
 end Lattices
 

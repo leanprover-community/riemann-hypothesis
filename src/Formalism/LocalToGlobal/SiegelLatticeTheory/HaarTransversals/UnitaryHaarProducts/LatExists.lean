@@ -289,7 +289,6 @@ end Gen
 end Formalism.L2.SG.Pf.LatEx
 
 noncomputable section
-open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat IsDedekindDomain
 
 namespace Formalism.L2.SG.Pf.LatEx
 
@@ -372,7 +371,6 @@ end Gen2
 end Formalism.L2.SG.Pf.LatEx
 
 noncomputable section
-open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat IsDedekindDomain
 
 namespace Formalism.L2.SG.Pf.LatEx
 
@@ -402,7 +400,6 @@ end GF
 end Formalism.L2.SG.Pf.LatEx
 
 noncomputable section
-open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat IsDedekindDomain
 
 namespace Formalism.L2.SG.Pf.LatEx
 
@@ -736,7 +733,6 @@ end Formalism.L2.SG.Pf.LatEx
 
 noncomputable section
 
-open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat IsDedekindDomain Formalism.L2.SG.Saturated
 
 namespace Formalism.L2.SG.Pf.LatEx
 
@@ -810,7 +806,6 @@ end Formalism.L2.SG.Pf.LatEx
 
 noncomputable section
 
-open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat IsDedekindDomain Formalism.L2.SG.Saturated
 
 namespace Formalism.L2.SG.Pf.LatEx
 
@@ -832,7 +827,6 @@ end Formalism.L2.SG.Pf.LatEx
 
 noncomputable section
 
-open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat IsDedekindDomain Formalism.L2.SG.Saturated
 
 namespace Formalism.L2.SG.Pf.LatEx
 

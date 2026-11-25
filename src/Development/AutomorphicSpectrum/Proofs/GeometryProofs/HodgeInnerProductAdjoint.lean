@@ -117,10 +117,6 @@ theorem one_left_comp (h : IsGrpPullback A G z φ) (T : Over (Sp ℂ)) :
   have e' : push h 1 * push h 1 = push h (1 : T ⟶ A) := Over.OverMorphism.ext e
   exact congrArg (·.left) (mul_eq_left.1 e')
 
-theorem one_left {Y : Scheme.{0}} (y : Y ⟶ X) : (1 : Over.mk y ⟶ G).left = y ≫ η[G].left := by
-  rw [Hom.one_def, Over.comp_left]
-  congr 1
-
 def lft (h : IsGrpPullback A G z φ) (v : epsAt z ⟶ G) : epsR ℂ ⟶ A :=
   Over.homMk (h.1.lift v.left (spMap (algebraMap ℂ (DualNumber ℂ))) (Over.w v)) (h.1.lift_snd _ _ _)
 
@@ -138,7 +134,7 @@ theorem isTangent_lft (h : IsGrpPullback A G z φ) {v : epsAt z ⟶ G} (hv : IsT
     refine Eq.trans hv ?_
     have e := one_left_comp h (𝟙_ (Over (Sp ℂ)))
     rw [Hom.one_def, toUnit_unit, Category.id_comp] at e
-    rw [e, one_left, one_left]
+    rw [e, HodgeUnique.one_left, HodgeUnique.one_left]
     simp
   · rw [Category.assoc]
     have e1 : (lft h v).left ≫ A.hom = spMap (algebraMap ℂ (DualNumber ℂ)) := Over.w _

@@ -1742,10 +1742,6 @@ theorem weightedNormLimit : EpsLimit := by
         obtain ⟨n, hn⟩ := hb.exists
         exact hn.trans (hB _ (hpos n) (hle1 n))
 
-private theorem rpow_le_rpow_of_le_of_exponent_nonpos {x y z : ℝ} (hx : 0 < x) (hxy : x ≤ y) (hz : z ≤ 0) :
-    y ^ z ≤ x ^ z := by
-  exact Real.rpow_le_rpow_of_nonpos hx hxy hz
-
 private theorem sq_one_add_rpow_mul_rpow_le_max_mul_rpow (s M ε t : ℝ) (hε : 0 < ε) (ht : 0 ≤ t) :
     ((1 + t) ^ (s / 2) * (1 + ε ^ 2 * t) ^ (-(M / 2))) ^ 2 ≤
       max ((min 1 (ε ^ 2)) ^ (-M)) ((max 1 (ε ^ 2)) ^ (-M)) * (1 + t) ^ (s - M) := by
@@ -1769,7 +1765,7 @@ private theorem sq_one_add_rpow_mul_rpow_le_max_mul_rpow (s M ε t : ℝ) (hε :
     · have hle : min 1 (ε ^ 2) * (1 + t) ≤ 1 + ε ^ 2 * t := by
         rw [mul_add, mul_one]; exact add_le_add (min_le_left _ _) (mul_le_mul_of_nonneg_right (min_le_right _ _) ht)
       calc (1 + ε ^ 2 * t) ^ (-M) ≤ (min 1 (ε ^ 2) * (1 + t)) ^ (-M) :=
-            rpow_le_rpow_of_le_of_exponent_nonpos (mul_pos ha hA) hle (by linarith)
+            Real.rpow_le_rpow_of_nonpos (mul_pos ha hA) hle (by linarith)
         _ = (min 1 (ε ^ 2)) ^ (-M) * (1 + t) ^ (-M) := Real.mul_rpow ha.le hA.le
         _ ≤ max ((min 1 (ε ^ 2)) ^ (-M)) ((max 1 (ε ^ 2)) ^ (-M)) * (1 + t) ^ (-M) :=
             mul_le_mul_of_nonneg_right (le_max_left _ _) hAp

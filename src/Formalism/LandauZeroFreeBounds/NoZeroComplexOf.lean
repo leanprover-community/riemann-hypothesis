@@ -49,15 +49,6 @@ def Positivity : Prop :=
       0 ≤ (negLD (1 : DirichletCharacter ℂ q) (σ : ℂ)).re + (negLD χ₁ (σ : ℂ)).re
         + (negLD χ₂ (σ : ℂ)).re + (negLD (χ₁ * χ₂) (σ : ℂ)).re)
 
-def TrivLogDeriv : Prop :=
-  ∃ C : ℝ, ∀ (q : ℕ) [NeZero q] (σ t : ℝ), 1 < σ → σ ≤ 2 →
-    (negLD (1 : DirichletCharacter ℂ q) ((σ : ℂ) + t * I)).re ≤
-      (1 / ((σ : ℂ) - 1 + t * I)).re + C * Real.log ((q : ℝ) * (|t| + 2))
-
-def TrivZeros : Prop :=
-  ∀ (q : ℕ) [NeZero q] (s : ℂ), 0 < s.re → s ≠ 1 →
-    DirichletCharacter.LFunction (1 : DirichletCharacter ℂ q) s = 0 → riemannZeta s = 0
-
 def RealConj : Prop :=
   ∀ (q : ℕ) [NeZero q] (χ : DirichletCharacter ℂ q), χ ^ 2 = 1 → χ ≠ 1 → ∀ s : ℂ,
     DirichletCharacter.LFunction χ (starRingEnd ℂ s) = starRingEnd ℂ (DirichletCharacter.LFunction χ s)
@@ -77,35 +68,6 @@ def NoZeroComplex : Prop :=
   ∃ c : ℝ, 0 < c ∧ ∀ (q : ℕ) [NeZero q] (χ : DirichletCharacter ℂ q) (s : ℂ),
     χ ^ 2 ≠ 1 → InRegion c q s → DirichletCharacter.LFunction χ s ≠ 0
 
-def RealLargeT : Prop :=
-  ∀ δ : ℝ, 0 < δ → ∃ c : ℝ, 0 < c ∧ ∀ (q : ℕ) [NeZero q] (χ : DirichletCharacter ℂ q) (s : ℂ),
-    χ ^ 2 = 1 → χ ≠ 1 → δ / Real.log ((q : ℝ) * (|s.im| + 2)) ≤ |s.im| → InRegion c q s →
-      DirichletCharacter.LFunction χ s ≠ 0
-
-def RealSmallT : Prop :=
-  ∃ δ c : ℝ, 0 < δ ∧ 0 < c ∧ ∀ (q : ℕ) [NeZero q] (χ : DirichletCharacter ℂ q), χ ^ 2 = 1 → χ ≠ 1 →
-    ∀ s s' : ℂ, |s.im| < δ / Real.log ((q : ℝ) * (|s.im| + 2)) →
-      |s'.im| < δ / Real.log ((q : ℝ) * (|s'.im| + 2)) →
-      InRegion c q s → InRegion c q s' →
-      DirichletCharacter.LFunction χ s = 0 → DirichletCharacter.LFunction χ s' = 0 →
-      s.im = 0 ∧ deriv (DirichletCharacter.LFunction χ) s ≠ 0 ∧ s' = s
-
-def TwoReal : Prop :=
-  ∃ c : ℝ, 0 < c ∧ ∀ (q : ℕ) [NeZero q] (χ₁ χ₂ : DirichletCharacter ℂ q), χ₁ ^ 2 = 1 → χ₂ ^ 2 = 1 →
-    χ₁ ≠ 1 → χ₂ ≠ 1 → χ₁ ≠ χ₂ → ∀ β₁ β₂ : ℝ, InRegion c q (β₁ : ℂ) → InRegion c q (β₂ : ℂ) →
-      DirichletCharacter.LFunction χ₁ (β₁ : ℂ) ≠ 0 ∨ DirichletCharacter.LFunction χ₂ (β₂ : ℂ) ≠ 0
-
-def LocalZerosOf : Prop := LandauLocal2 → LGrowth → LInvBound → LocalZeros
-
 def NoZeroComplexOf : Prop := LocalZeros → LLogDerivRight → Positivity → NoZeroComplex
-
-def RealLargeTOf : Prop := LocalZeros → LLogDerivRight → Positivity → TrivLogDeriv → RealLargeT
-
-def RealSmallTOf : Prop := LocalZeros → LLogDerivRight → Positivity → RealConj → RealSmallT
-
-def TwoRealOf : Prop := LocalZeros → LLogDerivRight → Positivity → TwoReal
-
-def ZFRDirichletOf : Prop :=
-  Formalism.ZF.ZeroFreeRegion → TrivZeros → NoZeroComplex → RealLargeT → RealSmallT → TwoReal → ZFRDirichlet
 
 end Formalism.ZeroFreeDirichlet

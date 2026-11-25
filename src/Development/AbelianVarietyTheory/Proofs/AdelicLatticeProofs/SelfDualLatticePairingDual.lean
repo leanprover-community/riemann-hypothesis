@@ -265,11 +265,6 @@ theorem char_sympl_eq_one {ψ : AddChar (AF D.host.F) ℂ} (hψ : IsStdChar D ψ
     exact add_mem hx hy
   · intro x hx; rw [map_neg]; exact neg_mem hx
 
-private theorem selfDual_isFullLattice {D : D7} : ∀ (V : HSp D) (Λ : Submodule (𝓞 D.host.E) (Fin V.rank → D.host.E)),
-    IsSelfDualC V Λ → Submodule.IsFullLattice D.host.E Λ := by
-  intro V Λ hΛ
-  exact Formalism.IndefR.Datum.IsSelfDualC.isFullLattice V Λ hΛ
-
 
 theorem approx (hS : IsSelfDualC S ΛS) (hT : IsSelfDualC T ΛT) (γ : WO S T) :
     ∃ M : Matrix (Fin T.rank) (Fin S.rank) D.host.E,
@@ -297,7 +292,7 @@ theorem approx (hS : IsSelfDualC S ΛS) (hT : IsSelfDualC T ΛT) (γ : WO S T) :
     | zero => exact ⟨0, 0, zero_mem _, fun i j => by simp⟩
     | add x y hx hy => rw [Matrix.single_add]; exact hadd _ _ hx hy
     | tmul a x =>
-      obtain ⟨N, hN, hM⟩ := _root_.GlobalTheory.LatVacFull.latRat_full D S T ΛS ΛT (selfDual_isFullLattice S ΛS hS) (selfDual_isFullLattice T ΛT hT) (Matrix.single i j x)
+      obtain ⟨N, hN, hM⟩ := _root_.GlobalTheory.LatVacFull.latRat_full D S T ΛS ΛT (Formalism.IndefR.Datum.IsSelfDualC.isFullLattice S ΛS hS) (Formalism.IndefR.Datum.IsSelfDualC.isFullLattice T ΛT hT) (Matrix.single i j x)
       obtain ⟨a0, β, hβ, hab⟩ := (GlobalTheory.AdLat.strong_approximation_mod_nat D.host.F N hN).1 (sndA D.host.F a)
       refine ⟨Matrix.single i j (a0 • x), _, finTens_mem_latO (α := β) hβ hM, fun i' j' => ?_⟩
       have e : finPart D (finTens β (N • Matrix.single i j x) i' j') =

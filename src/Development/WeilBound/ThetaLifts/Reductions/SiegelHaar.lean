@@ -69,9 +69,6 @@ section -- clump:auto
 namespace MulEquivHaarCharEqOfProjection
 open MeasureTheory
 
-private lemma smul_nn {α : Type*} [MeasurableSpace α] (c : NNReal) (μ : Measure α) (s : Set α) :
-    (c • μ) s = (c : ENNReal) * μ s := Measure.coe_nnreal_smul_apply c μ s
-
 end MulEquivHaarCharEqOfProjection
 
 open MeasureTheory MeasureTheory.Measure in
@@ -129,7 +126,7 @@ theorem UpperTheory.Reformulated.B.Yhb4.main :
     exact measure_pos_of_nonempty_interior μH ⟨1, mem_interior_iff_mem_nhds.2 h1⟩
   have hc0 : (c : ENNReal) ≠ 0 := by
     intro h0
-    rw [hc, MulEquivHaarCharEqOfProjection.smul_nn, h0, zero_mul] at hmuniv
+    rw [hc, MeasureTheory.Measure.coe_nnreal_smul_apply, h0, zero_mul] at hmuniv
     exact lt_irrefl _ hmuniv
   obtain ⟨K, hKc, hKn⟩ := exists_compact_mem_nhds (1 : N)
   let A : Set N := ψ.symm ⁻¹' K
@@ -143,7 +140,7 @@ theorem UpperTheory.Reformulated.B.Yhb4.main :
   have hpre : ⇑φ ⁻¹' (π ⁻¹' A ∩ σ ⁻¹' C) = π ⁻¹' K ∩ σ ⁻¹' C := by
     ext p; simp [A, hφψ, hσφ]
   rw [hpre, ← hmA _ hKc.isClosed.measurableSet, ← hmA _ hAm, hc, ENNReal.smul_def,
-    MulEquivHaarCharEqOfProjection.smul_nn, MulEquivHaarCharEqOfProjection.smul_nn] at e1
+    MeasureTheory.Measure.coe_nnreal_smul_apply, MeasureTheory.Measure.coe_nnreal_smul_apply] at e1
   have e2 := mulEquivHaarChar_smul_preimage μN (X := A) ψ
   rw [hApre] at e2
   simp only [ENNReal.smul_def, smul_eq_mul] at e1 e2

@@ -1021,16 +1021,6 @@ theorem relAmple_originLB : RelAmple (schemeOver W) (originLB W) := by
     exact eval₂Hom_surjective_of_isPushout po (Scheme.ΓSpecIso (.of R)).inv.hom (ratio W i)
       (eval₂Hom_ratio_surjective W i)
 
-theorem not_isGen_originLB [Nontrivial R] (t : (originLB W).Gen) : ¬ t.IsGen := by
-  intro ht
-  obtain ⟨c, hc, -⟩ := existsUnique_eq_const_mul_originSec W
-    ⟨fun i => (t.s i).val, fun i j => congrArg Units.val (ht i j)⟩
-  have h : IsUnit (originParam W) :=
-    isUnit_of_mul_isUnit_right ((congrArg IsUnit (hc true)).mp (t.s true).isUnit)
-  have := h.map (originValue W)
-  rw [originValue_originParam] at this
-  exact not_isUnit_zero this
-
 end WeierstrassCurve
 
 end GlobalTheory

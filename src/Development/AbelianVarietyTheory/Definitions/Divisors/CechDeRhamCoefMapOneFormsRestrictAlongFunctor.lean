@@ -303,36 +303,6 @@ def coneMap : AlgebraFirstDeRham R B →ₗ[R] Hyp1 F :=
     refine ofForm_eq_zero.2 ⟨fun T ↦ e T b, fun T T' φ ↦ (he φ b).symm, fun T ↦ ?_⟩
     rw [coneForm_apply, show ω.1 = D R B b from hb.symm, SemiHom.m1_D]; rfl)
 
-theorem coneMap_mk (ω : LinearMap.ker (dOne R B)) :
-    coneMap e he (Submodule.Quotient.mk ω) = ofForm F (coneForm e he ω) := rfl
-
-theorem coneMap_bijective {T₀ : C} (h : Limits.IsInitial T₀) (hb : Function.Bijective (e T₀)) :
-    Function.Bijective (coneMap e he) := by
-  let i := (AlgEquiv.ofBijective _ hb).symm.toAlgHom
-  have hi : ∀ b, i (e T₀ b) = b := (AlgEquiv.ofBijective _ hb).symm_apply_apply
-  have hi' : ∀ b, e T₀ (i b) = b := (AlgEquiv.ofBijective _ hb).apply_symm_apply
-  constructor
-  · rw [injective_iff_map_eq_zero]
-    intro c hc
-    obtain ⟨ω, rfl⟩ := Submodule.Quotient.mk_surjective _ c
-    obtain ⟨g, -, hg⟩ := ofForm_eq_zero.1 hc
-    refine (Submodule.Quotient.mk_eq_zero _).2 ⟨i (g T₀), ?_⟩
-    have := congrArg (SemiHom.of_algHom i).m1 (hg T₀)
-    rw [SemiHom.m1_D, coneForm_apply] at this
-    exact this.trans ((SemiHom.oneFormMap_comp_oneFormMap _ _ (SemiHom.of_algHom (AlgHom.id R B)) (fun b ↦ hi b) _).trans
-      (SemiHom.oneFormMap_eq_self_of_id _ (fun _ ↦ rfl) _))
-  · intro c
-    have hc : c ∈ Fil1 F := H1.eq_zero_of_isInitial F h _
-    rw [Fil1_eq_range] at hc
-    obtain ⟨ω, rfl⟩ := hc
-    refine ⟨Submodule.Quotient.mk ⟨(SemiHom.of_algHom i).m1 (ω.1.1 T₀), ?_⟩, ?_⟩
-    · rw [LinearMap.mem_ker, ← SemiHom.mOm_dOne, ω.2 T₀, map_zero]
-    · rw [coneMap_mk]
-      refine congrArg _ (Subtype.ext (Subtype.ext (funext fun T ↦ ?_)))
-      rw [coneForm_apply, ω.1.2 (h.to T)]
-      exact SemiHom.oneFormMap_comp_oneFormMap _ _ (semiHom_mp F (h.to T))
-        (fun b ↦ ((he (h.to T) (i b)).symm.trans (congrArg _ (hi' b)))) _
-
 end Initial
 
 end GlobalTheory.CechDR

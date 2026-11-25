@@ -236,7 +236,7 @@ theorem exists_isBlockMetric (y : Sp ℂ ⟶ X) : ∃ h : TanM y t.G →ₗ[ℂ]
       by_cases h : τ' = ρ
       · subst h; rw [Pi.single_eq_same]; exact hv a
       · simp [Pi.single_eq_of_ne h]) τ
-    rwa [Finset.sum_pi_single', ite_eq_left (Finset.mem_univ _), Pi.single_eq_of_ne hτ] at this
+    rwa [Finset.sum_pi_single', if_pos (Finset.mem_univ _), Pi.single_eq_of_ne hτ] at this
   have hf : ∀ v w, (∑ τ, (g.compl₂ (e τ)).comp (e τ)) v w = ∑ τ, g (e τ v) (e τ w) := fun v w => by
     simp [LinearMap.sum_apply]
   refine ⟨∑ τ, (g.compl₂ (e τ)).comp (e τ), fun v w => ?_, fun v hv => ?_, fun ρ ρ' v w h hv hw => ?_⟩
@@ -274,17 +274,5 @@ def IsLieMetric (t : SAB H X) (f : Z ⟶ X) (R : AnRead p σ D)
     ∃ g : CxPts p σ → ℂ, R.SmoothOn (ptsIn p σ V.1) (fun y => (g y).re) ∧
       R.SmoothOn (ptsIn p σ V.1) (fun y => (g y).im) ∧
       ∀ y (hy : y ∈ ptsIn p σ V.1), g y = h y (valAt f v hy) (valAt f w hy)
-
-theorem smoothOn_dim_zero (hD : D = 0) (R : AnRead p σ D) (T : Set (CxPts p σ)) (g : CxPts p σ → ℝ) :
-    R.SmoothOn T g := fun i => by
-  subst hD
-  exact contDiffOn_const.congr fun v _ => congrArg (g ∘ (R.chart i).e.symm) (Subsingleton.elim v 0)
-
-theorem isLieMetric_dim_zero (hD : D = 0) (f : Z ⟶ X) (R : AnRead p σ D)
-    {h : ∀ y : CxPts p σ, TanM (y.1 ≫ f) t.G →ₗ[ℂ] TanM (y.1 ≫ f) t.G →ₗ⋆[ℂ] ℂ} (hh : ∀ y, IsBlockMetric (h y)) :
-    IsLieMetric t f R h := by
-  classical
-  exact ⟨hh, fun V v w => ⟨fun y => if hy : y ∈ ptsIn p σ V.1 then h y (valAt f v hy) (valAt f w hy) else 0,
-    smoothOn_dim_zero hD R _ _, smoothOn_dim_zero hD R _ _, fun y hy => dite_eq_left hy⟩⟩
 
 end GlobalTheory.LieMet

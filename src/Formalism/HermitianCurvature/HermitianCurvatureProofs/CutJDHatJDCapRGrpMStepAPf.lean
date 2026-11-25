@@ -211,7 +211,6 @@ end Formalism.FourierDecayAlt.P.CutMP.GrpMA
 
 namespace Formalism.FourierDecayAlt.P.Qx6
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.Q
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 

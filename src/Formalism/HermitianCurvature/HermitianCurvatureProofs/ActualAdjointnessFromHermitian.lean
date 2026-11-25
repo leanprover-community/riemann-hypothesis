@@ -400,13 +400,6 @@ theorem herm_bvec_right {m : ℕ} (H : Matrix (Fin m) (Fin m) ℂ) (v : Fin m �
     herm H v (bvec p) = (H *ᵥ v) p := by
   simp [herm, bvec, dotProduct, Pi.single_apply]
 
-theorem Hpk_mulVec (k r : ℕ) (v : Fin (2 * r + k + 1) → ℂ) (p : Fin (2 * r + k + 1)) :
-    (Hpk k r *ᵥ v) p = GBasic.sgn k r p * v (GBasic.sig k r p) := by
-  simp [mulVec, dotProduct, GBasic.Hpk_eq]
-
-theorem mulVec_bvec {m : ℕ} (g : Matrix (Fin m) (Fin m) ℂ) (i j : Fin m) : (g *ᵥ bvec j) i = g i j := by
-  simp [mulVec, dotProduct, bvec, Pi.single_apply]
-
 theorem Nlev_last {k r : ℕ} {n : Mx k r} (hn : n ∈ Nlev k r (Fin.last r)) : n = 1 := by
   apply Formalism.FourierDecayAlt.P.Qx8.Nlev_last <;> assumption
 

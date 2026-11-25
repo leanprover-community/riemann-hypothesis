@@ -172,8 +172,5 @@ instance isAffine_splitTorus_left (S : Scheme.{0}) [IsAffine S] (d : ℕ) :
   have := ((splitTorus_properties S).1 (Fin d → ℤ)).1
   isAffine_of_isAffineHom (splitTorus S (Fin d → ℤ)).hom
 
-def Charts.ofTorus (S : Scheme.{0}) [IsAffine S] (d : ℕ) : Charts (splitTorus S (Fin d → ℤ)).left :=
-  Charts.single _ fun k : Fin d => (charUnit S (Fin d → ℤ) (Pi.single k 1)).val
-
 end GlobalTheory.ZJ
 end

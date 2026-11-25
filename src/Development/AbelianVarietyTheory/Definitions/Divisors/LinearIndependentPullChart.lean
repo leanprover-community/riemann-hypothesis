@@ -258,16 +258,6 @@ variable (p B) in
 def polar (hP : P.IsLB) (hB : B.IsLB) (t : P.Sec) (ht : O ≤ nonzeroLocus t) : Submodule k (H0 p B O) :=
   LinearMap.range (polarMap (tensChart hP hB) t ht)
 
-theorem mem_polar {hP : P.IsLB} {hB : B.IsLB} {t : P.Sec} {ht : O ≤ nonzeroLocus t} {f : H0 p B O} :
-    f ∈ polar p B hP hB t ht ↔
-      ∃ g : H0 p (tens P B) ⊤, restr le_top g = (tensChart hP hB).mul (H0.ofSec p O t) f :=
-  exists_congr fun _ => LinearEquiv.symm_apply_eq _
-
-theorem range_restr_le_polar (hP : P.IsLB) (hB : B.IsLB) (t : P.Sec) (ht : O ≤ nonzeroLocus t) :
-    LinearMap.range (restr (le_top : O ≤ ⊤)) ≤ polar p B hP hB t ht := by
-  rintro _ ⟨f, rfl⟩
-  exact mem_polar.2 ⟨(tensChart hP hB).mul (H0.ofSec p ⊤ t) f, by rw [ProdChart.restr_mul, restr_ofSec]⟩
-
 variable (σ : k →+* ℂ)
 
 def cval : H0 p B O →ₛₗ[σ] (B.ι → CxPts p σ → ℂ) where

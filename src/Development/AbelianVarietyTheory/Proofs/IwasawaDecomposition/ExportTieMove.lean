@@ -1487,28 +1487,29 @@ namespace GlobalTheory.HeightCounting.SideCopy.LamCopy
 theorem lam_copy : ∀ {D D' : D7} {ι : D.what₂.LL →+* D'.what₂.LL} {e : ↥D'.LL0 ≃+* ↥D.LL0}, CopyAll D D' ι e → ∀ {cf : CharFrame D} {cf' : CharFrame D'}, SameFrame cf cf' → (∃ Z : GlobalTheory.LamTie.LamDat D, Z.Ok ∧ Z.Teich ∧ Z.C = cf ∧ Z.q0 = AbsolutelyIrreducibleSpan.q0 D ∧ GlobalTheory.LamTie.IsLamTieFull D.ntw Z) → ∃ Z : GlobalTheory.LamTie.LamDat D', Z.Ok ∧ Z.Teich ∧ Z.C = cf' ∧ Z.q0 = AbsolutelyIrreducibleSpan.q0 D' ∧ GlobalTheory.LamTie.IsLamTieFull D'.ntw Z := by
   rintro D D' ι e h cf cf' ⟨f1, f2, f3, f4⟩ ⟨⟨C, q, w0, c, chi⟩, hOk, hT, rfl, hq, hF⟩
   obtain ⟨r, rfl⟩ := h.cp.exists_rest
+  have hlam0 : ∀ l j a,
+      GlobalTheory.LamTie.LamDat.lam0 (D := overD D r) ⟨cf', q, w0, c, chi⟩ l j a =
+      GlobalTheory.LamTie.LamDat.lam0 (D := D) ⟨C, q, w0, c, chi⟩ l j a := by
+    cases C; cases cf'
+    dsimp only at f1 f2 f3 f4
+    subst f1; subst f2; subst f3; subst f4
+    intro l j a; rfl
   have he : ∀ x : ↥(overD D r).LL0, (overD D r).what₂.embLL (x : (overD D r).what₂.LL) = D.what₂.embLL (e x : D.what₂.LL) :=
     fun x => (h.cp.embLL0_eq x).symm
-  have hinW1 := h.cp.inW1
-  have hemb0 := h.cp.emb0
-  have hjL := h.jL
-  have hs2 := h.s2
-  have hlamG := h.lamG
-  have hXv := h.Xv
-  have hqs := h.qs
-  clear h ι
-  cases r
-  rename RestX _ _ _ _ => rx
-  cases rx
-  dsimp only [overD, overX] at hjL hs2 hlamG hXv hqs
-  cases hjL; cases hs2; cases hlamG; cases hXv; cases hqs
-  cases C; cases cf'
-  dsimp only at f1 f2 f3 f4
-  subst f1; subst f2; subst f3; subst f4
-  refine ⟨⟨_, q, w0, c, chi⟩, ⟨hOk.places, hOk.aux, hOk.big⟩, hT, rfl, hq, fun i hi => ?_⟩
-  obtain ⟨t0, j, t1, t2⟩ := hF i ((hinW1 i i HEq.rfl).2 hi)
-  refine ⟨t0, j, fun x => ?_, t2⟩
-  exact (congrArg j (he x)).trans ((t1 (e x)).trans (congrArg (GlobalTheory.ToricDenom.toBar _ i) (eq_of_heq (hemb0 i i HEq.rfl x))))
+  have hjL : (overD D r).ntw.jL = D.ntw.jL := (eq_of_heq h.jL).symm
+  have hs2 : (overD D r).ntw.s2 = D.ntw.s2 := (eq_of_heq h.s2).symm
+  have hXv : (overD D r).ntw.Xv = D.ntw.Xv := (eq_of_heq h.Xv).symm
+  have hLam : ∀ i j lam ja a s,
+      GlobalTheory.LamTie.IsLam D.ntw ⟨C, q, w0, c, chi⟩ i j lam ja a s →
+      GlobalTheory.LamTie.IsLam (overD D r).ntw ⟨cf', q, w0, c, chi⟩ i j lam ja a s := by
+    intro i j lam ja a s ⟨h1, ⟨h2a, h2b, h2c⟩, h3⟩
+    exact ⟨hjL ▸ h1, ⟨hs2 ▸ h2a, h2b, h2c⟩, fun P hP => hXv ▸ (hlam0 (D.ntw.l i) ja a).symm ▸ h3 P hP⟩
+  refine ⟨⟨cf', q, w0, c, chi⟩, ⟨hOk.places, hOk.aux, hOk.big⟩, hT, rfl, hq, fun i hi => ?_⟩
+  obtain ⟨t0, j, t1, t2, t3⟩ := hF i ((h.cp.inW1 i i HEq.rfl).2 hi)
+  refine ⟨t0, j, fun x => (congrArg j (he x)).trans ((t1 (e x)).trans
+      (congrArg (GlobalTheory.ToricDenom.toBar _ i) (eq_of_heq (h.cp.emb0 i i HEq.rfl x)))),
+    fun lam => let ⟨ja, a, s, hl, ht⟩ := t2 lam; ⟨ja, a, s, hLam _ _ _ _ _ _ hl, (hlam0 (D.ntw.l i) ja a).symm ▸ ht⟩,
+    fun ja a s b hs hs' => let ⟨lam, hb, hl, ht⟩ := t3 ja a s b hs hs'; ⟨lam, hb, hLam _ _ _ _ _ _ hl, (hlam0 (D.ntw.l i) ja a).symm ▸ ht⟩⟩
 
 end GlobalTheory.HeightCounting.SideCopy.LamCopy
 end -- clump:auto

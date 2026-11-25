@@ -400,8 +400,6 @@ def logRho (C h : ℝ) : ℝ := Real.log G.abelian₂ + C * Real.log (G.theta h)
 
 def g : ℝ := ((G.D : ℝ) + 1) * (Real.log G.n + 1) / 2 + 1
 
-def Ra (a : ℕ) : ℕ := (a + G.D - 1).choose (G.D - 1)
-
 def globalData (T : ℕ) (hT : G.D + 1 ≤ T) : Data F where
   toGeo := G
   T := T
@@ -430,10 +428,6 @@ variable {F : Type} [Field F] [NumberField F] (X : Data F)
 instance finiteDimensional (j : ℕ) : FiniteDimensional F (X.V j) := (X.full j).finiteDimensional
 
 theorem latRank_M (j : ℕ) : latRank F (X.M j) = Module.finrank F (X.V j) := (X.full j).latRank_eq
-
-def HasBoundedPoles : Prop :=
-  ∀ j ≤ X.T, ∃ (P : LB X.Y) (hP : P.IsLB) (t : P.Sec) (ht : X.U ≤ nonzeroLocus t),
-    X.V j ≤ polar X.str (X.adj j) hP (X.isLB_adj j) t ht
 
 def degM (j : ℕ) : ℝ := deg (X.nm j) (X.M j)
 
@@ -504,18 +498,6 @@ theorem MulStable.mem (h : X.MulStable) {j : ℕ} (hj : j < X.T) (u : Fin X.N �
   exact (Submodule.Quotient.mk_eq_zero _).1 (LinearMap.congr_fun₂ this u f)
 
 end Data
-
-theorem Geo.hasBoundedPoles_globalData {F : Type} [Field F] [NumberField F] (G : Geo F) {T : ℕ} (hT : G.D + 1 ≤ T) :
-    (G.globalData T hT).HasBoundedPoles := fun _ _ =>
-  ⟨_, LB.isLB_div G.isLBA (isLB_tw G.isLB₂ G.isLB _), G.e, G.U_le, range_restr_le_polar _ _ _ _⟩
-
-theorem Geo.shortFamily_globalData {F : Type} [Field F] [NumberField F] (G : Geo F) {T : ℕ} (hT : G.D + 1 ≤ T)
-    (j : ℕ) : (G.globalData T hT).ShortFamily j 1 := by
-  have e := (G.globalData T hT).latRank_M j
-  exact ⟨Module.finBasis F (G.global j) ∘ Fin.cast e,
-    fun i => Submodule.subset_span (M := G.global j) ⟨_, rfl⟩,
-    (Module.finBasis F (G.global j)).linearIndependent.comp _ (Fin.cast_injective e),
-    fun i σ => (nrm_ofBasis _ σ _).le⟩
 
 private theorem Geo.d_pos_globalData {F : Type} [Field F] [NumberField F] (G : Geo F) {T : ℕ}
     (hT : G.D + 1 ≤ T) (h : 0 < Module.finrank F (G.global T)) : 0 < (G.globalData T hT).d :=

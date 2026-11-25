@@ -237,10 +237,6 @@ def FactKaBlocks : Prop :=
 def FactShimRange : Prop :=
   ∀ R : Ranks, ∀ j, 1 ≤ j → j ≤ R.m - 1 → 1 ≤ (R.sigW j).1 ∧ (R.sigW j).1 < R.r
 
-def FactQZ : Prop :=
-  ∀ (R : Ranks) (D : Data R) (μ : D.Tup),
-    LinearMap.range (D.thetaUp μ) ≤ D.V0 μ → D.Qsp μ = LinearMap.range (D.thetaUp μ)
-
 def FactBuDetermined : Prop :=
   ∀ (R : Ranks) (D : Data R), BuDef D → (∀ x : D.EE, ∃ F ∈ D.V0 D.mu0, D.iota D.mu0 F = x) →
     ∀ B' : ∀ u, D.Mu u → D.EE → ℂ,

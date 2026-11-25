@@ -81,19 +81,6 @@ def FDExistsH : Prop :=
     ∃ 𝓕 : Set ↥(Hsub (AF X.B.I.F) X.B.I.cm.sig X.B.I.J (frameOf X u)),
       IsFundamentalDomain (ratOf (K := Hsub (AF X.B.I.F) X.B.I.cm.sig X.B.I.J (frameOf X u))) 𝓕 (X.measW u).μH
 
-def MassUnfold : Prop :=
-  ∀ {D : D7} (X : HidaSetting D) (u : D.what₂.Word),
-    (X.measW u).IsTextNorm →
-    CompactSpace (Hsub (Ainf X.B.I.F) X.B.I.cm.sig X.B.I.J (frameOf X u)) →
-    IsCompact (KX X : Set (HA (Af X.B.I.F) X.B.I.cm.sig X.B.I.J)) →
-    IsOpen (KX X : Set (HA (Af X.B.I.F) X.B.I.cm.sig X.B.I.J)) →
-    MassFinite (G := ↥(Hsub (Af X.B.I.F) X.B.I.cm.sig X.B.I.J (frameOf X u))) (GamH X u) (KH X u) →
-    ∀ 𝓕 : Set ↥(Hsub (AF X.B.I.F) X.B.I.cm.sig X.B.I.J (frameOf X u)),
-      IsFundamentalDomain (ratOf (K := Hsub (AF X.B.I.F) X.B.I.cm.sig X.B.I.J (frameOf X u))) 𝓕 (X.measW u).μH →
-      (X.measW u).μH 𝓕 = (X.measW u).μHinf Set.univ *
-        (X.measW u).μHf (Subtype.val ⁻¹' (KX X : Set (HA (Af X.B.I.F) X.B.I.cm.sig X.B.I.J))) *
-        ENNReal.ofReal (massH X.B.I.cm.sig X.B.I.J (X.B.I.L : Set (Fin X.B.I.n → X.B.I.E)) (frameOf X u))
-
 def NLevel : Prop :=
   ∀ {D : D7} (X : HidaSetting D) (u : D.what₂.Word) (y : X.B.I.Gf),
     y ∈ X.NfinU u → y ∈ X.B.I.Kset → (X.xu u)⁻¹ * y * X.xu u ∈ X.K2

@@ -532,9 +532,6 @@ variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [StarR
 theorem range_ofFin : (ofFin hc V).range = finPts hc V :=
   le_antisymm (by rintro _ ⟨y, rfl⟩; exact projInf_ofFin hc V y) fun g hg => ⟨_, ofFin_projFin hc V hg⟩
 
-theorem range_ofInf : (ofInf hc V).range = realPts hc V :=
-  le_antisymm (by rintro _ ⟨y, rfl⟩; exact projFin_ofInf hc V y) fun g hg => ⟨_, ofInf_projInf hc V hg⟩
-
 theorem embH_spec (B A : HSpace E) (ι : B.V →ₗ[E] A.V) (hι : HSpace.IsIsomEmb B A ι) (R : Type) [CommRing R]
     [Algebra F R] (g' : HA R hc.sig B.gram) :
     (HA.mat _ _ _ (embH hc B A ι hι R g')).1 * (embMat B A ι).map (inclR (F := F) R) =

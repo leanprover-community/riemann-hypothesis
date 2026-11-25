@@ -82,10 +82,6 @@ lemma herm_smul_r {n : ℕ} (H : Matrix (Fin n) (Fin n) ℂ) (s : ℂ) (v a : Fi
   simp only [herm, star_smul, smul_dotProduct, smul_eq_mul]
   try rfl
 
-lemma herm_neg_l {n : ℕ} (H : Matrix (Fin n) (Fin n) ℂ) (a w : Fin n → ℂ) :
-    herm H (-a) w = -herm H a w := by
-  simp only [herm, mulVec_neg, dotProduct_neg]
-
 lemma herm_X_left (v u : Fin (2 * r + k + 1) → ℂ) (hv : ∀ i : Fin (2 * r + k + 1), r ≤ i.val → v i = 0)
     (hu : ∀ i : Fin (2 * r + k + 1), r + k < i.val → u i = 0) : herm (Hpk k r) v u = 0 := by
   simp only [herm, dotProduct, mulVec, Pi.star_apply]
@@ -160,10 +156,6 @@ namespace HermitianXiVector
 open C2x5 FlagSpanVanishing
 
 variable {k r : ℕ}
-
-lemma herm_neg_r {n : ℕ} (H : Matrix (Fin n) (Fin n) ℂ) (v a : Fin n → ℂ) :
-    herm H v (-a) = -herm H v a := by
-  simp only [herm, star_neg, neg_dotProduct]
 
 lemma herm_basis {n : ℕ} (H A : Matrix (Fin n) (Fin n) ℂ) (i j : Fin n) :
     herm H (A *ᵥ Pi.single j 1) (A *ᵥ Pi.single i 1) = (Aᴴ * H * A) i j := by

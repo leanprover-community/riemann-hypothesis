@@ -70,11 +70,6 @@ def cP (p : ℕ) : ℝ := 1 / ((p : ℝ) - 1)
 
 variable {D : D7} (V : DivX D) (P : DIV.Align.PrinLev V)
 
-def TrivialFlagIntersectionCond : Prop := ∀ S κ, HidaSetting D V S κ → DIV.Align.LevB P κ → ∀ (Sx : Finset ℕ) (R : ℝ) (p : ℕ), p.Prime →
-  ∀ (τ : D.what₂.Tau) (k : ℕ), 1 ≤ k → ∀ Q : MvPolynomial (Rt D.what₂.Tau (V.shv S κ).N) ℝ,
-    (V.shv S κ).arMix Sx R p (tagHT D.what₂.Tau _ (pk D _ τ k) *
-      (tagDR D.what₂.Tau _ Q - tagHT D.what₂.Tau _ Q)) = 0
-
 structure Loc4 where
 
   dRho : V.Surf → ℕ

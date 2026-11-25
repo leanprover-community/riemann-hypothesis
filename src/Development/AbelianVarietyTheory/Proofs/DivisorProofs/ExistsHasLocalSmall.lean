@@ -223,11 +223,6 @@ theorem cpt_idemSum {e : AE D} {P : Finset (Pl D.host.E)} (he : IsIdemSum e P) {
   rw [map_sum, map_sum]
   exact Finset.sum_eq_zero fun P' hP => (cpt_of_isIdemAt (hes P' hP)).2 Q fun h => hQ (h ▸ hP)
 
-private theorem selfDual_isFullLattice {D : D7} : ∀ (V : HSp D) (Λ : Submodule (𝓞 D.host.E) (Fin V.rank → D.host.E)),
-    IsSelfDualC V Λ → Submodule.IsFullLattice D.host.E Λ := by
-  intro V Λ hΛ
-  exact Formalism.IndefR.Datum.IsSelfDualC.isFullLattice V Λ hΛ
-
 
 theorem exists_mult (hS : Submodule.IsFullLattice D.host.E ΛS) (hT : Submodule.IsFullLattice D.host.E ΛT) {e : AE D}
     {P : Finset (Pl D.host.E)} (he : IsIdemSum e P) (β : GL (Fin T.rank) (Formalism.IndefR.Lev.EAf D))
@@ -304,8 +299,8 @@ theorem exists_tensor {S' T' : HSp D} {ΛS' : Submodule (𝓞 D.host.E) (Fin S'.
   classical
   obtain ⟨T₁, t0, t1⟩ := exists_model hS hT he h₀
   obtain ⟨T₂, -, t2⟩ := exists_model hS' hT' he h₀'
-  obtain ⟨k, hk, a1, a2⟩ := exists_mult (selfDual_isFullLattice S ΛS hS) (selfDual_isFullLattice T ΛT hT) he β₁ β₂ n
-  obtain ⟨l, hl, b1, b2⟩ := exists_mult (selfDual_isFullLattice S' ΛS' hS') (selfDual_isFullLattice T' ΛT' hT') he β₃ β₄ n
+  obtain ⟨k, hk, a1, a2⟩ := exists_mult (Formalism.IndefR.Datum.IsSelfDualC.isFullLattice S ΛS hS) (Formalism.IndefR.Datum.IsSelfDualC.isFullLattice T ΛT hT) he β₁ β₂ n
+  obtain ⟨l, hl, b1, b2⟩ := exists_mult (Formalism.IndefR.Datum.IsSelfDualC.isFullLattice S' ΛS' hS') (Formalism.IndefR.Datum.IsSelfDualC.isFullLattice T' ΛT' hT') he β₃ β₄ n
   have z : ∀ {a b : ℕ} (β β') (w), GivenAdm.CongM (unifAt w ^ n w) (locM β β' w (0 : Mx D a b)) := fun β β' w i j => by
     rw [left_eq_add.1 ((congrArg _ (add_zero 0)).symm.trans (locM_add β β' w 0 0)), Matrix.zero_apply, map_zero]
     exact zero_le

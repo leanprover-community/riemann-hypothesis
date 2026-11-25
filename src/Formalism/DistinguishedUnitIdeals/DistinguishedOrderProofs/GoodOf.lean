@@ -507,7 +507,6 @@ end GoodPlacesAlt
 
 namespace GoodPlacesAlt
 
-open IdempotentNormalFormsRhoFacts
 
 section sat
 variable {O : Type} [CommRing O] {B : Base O} {n : ℕ} {V : Type} [AddCommGroup V]
@@ -588,7 +587,6 @@ end sat
 
 end GoodPlacesAlt
 
-open GoodPlacesAlt IdempotentNormalFormsRhoFacts
 
 theorem saturation_holds_alt : SatOf := by
   intro O _ B n _ j f V _ _ L c hS hF K v hv hKv
@@ -655,7 +653,6 @@ theorem extension_generated_holds : ExtGOf := by
 
 namespace GoodPlacesAlt
 
-open IdempotentNormalFormsRhoFacts
 
 section hh
 variable {O : Type} [CommRing O] {B : Base O} {n : ℕ} {V : Type} [AddCommGroup V]
@@ -804,7 +801,6 @@ end hh
 
 end GoodPlacesAlt
 
-open IdempotentNormalFormsRhoFacts GoodPlacesAlt
 
 theorem gamma_injective_holds : GamInjOf := by
   intro O _ B u₁ n _ M V _ _ L c hE h9 v hv hγ
@@ -892,7 +888,6 @@ theorem second_rule_first_form : ExistsTransport := by
 
 namespace GoodPlacesAlt
 
-open IdempotentNormalFormsRhoFacts
 
 section f1b_abs
 variable {R : Type} [CommRing R] {V : Type} [AddCommGroup V] [Module R V]
@@ -1232,7 +1227,6 @@ end e4u
 
 end GoodPlacesAlt
 
-open GoodPlacesAlt IdempotentNormalFormsRhoFacts
 
 theorem one_add_unit_pow_formula : ExistsGammaXUnitShape := by
   intro O _ _ _ ϖ B hϖ hd hp h3 h4
@@ -1436,7 +1430,6 @@ end cplat
 
 end GoodPlacesAlt
 
-open GoodPlacesAlt IdempotentNormalFormsRhoFacts
 
 theorem completion_holds : CompleteOf := by
   intro O _ B n _ V _ _ L hO hF i
@@ -1458,7 +1451,6 @@ theorem X_regular_on_lattice : XRegOf := by
   have h4 : (⟨v, hv⟩ : L.N i) = 0 := Φ.injective (by rw [h1, map_zero])
   exact congrArg Subtype.val h4
 
-open GoodPlacesAlt IdempotentNormalFormsRhoFacts
 
 theorem saturation_first_form_holds : SatAOf :=
   fun _ _ _ _ ϖ B j M g hϖ hd h0 h3 => satA_of ϖ B j M g hϖ hd h0 (e3it B h3)

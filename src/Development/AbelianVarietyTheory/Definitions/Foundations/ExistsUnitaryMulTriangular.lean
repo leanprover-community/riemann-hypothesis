@@ -295,11 +295,6 @@ theorem colLen_le (la : Fin N → ℕ) (c : ℕ) : colLen la c ≤ N :=
 
 abbrev Tableau (la : Fin N → ℕ) : Type := (c : Fin (width la)) → Fin (colLen la c) → Fin N
 
-def IsStandard {la : Fin N → ℕ} (T : Tableau la) : Prop :=
-  (∀ c, StrictMono (T c)) ∧
-    ∀ (c c' : Fin (width la)), c ≤ c' → ∀ (p : ℕ) (h : p < colLen la c) (h' : p < colLen la c'),
-      T c ⟨p, h⟩ ≤ T c' ⟨p, h'⟩
-
 def canon (la : Fin N → ℕ) : Tableau la := fun c => Fin.castLE (colLen_le la c)
 
 def extremal (la : Fin N → ℕ) (R : Type) [CommRing R] : Pol N R := hw R le_rfl la

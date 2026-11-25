@@ -15,7 +15,6 @@ open Formalism.MainNotions.G Formalism.MainNotions.CovariantDegrees
 
 namespace Formalism.MainNotions.G.ColumnFamilies
 
-open Formalism.MainNotions.G Formalism.MainNotions.CovariantDegrees
 
 theorem standardPath_basis_any_ring (R : Type) [CommRing R] (N n : ℕ) (LL : Letters (Fin N)) (B : Fin N → ℕ) :
     LinearIndependent R (fun x : {x : PPath n N LL B × (ℤ → Finset (Fin n)) // IsSt x.1.mu x.2} =>

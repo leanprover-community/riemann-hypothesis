@@ -309,8 +309,6 @@ variable (K : Type) [Field K] [NumberField K]
 private noncomputable def idealPrimeWeight (P : Ideal (𝓞 K)) : ℝ :=
   Real.log (Ideal.absNorm P : ℝ) / (2 * Real.log (residueCharacteristic K P : ℝ))
 
-private lemma log_prime_pos (p : ℕ) (hp : p.Prime) : 0 < Real.log (p : ℝ) := Real.log_pos (by exact_mod_cast hp.one_lt)
-
 private lemma sum_weights_over_prime_le_half_degree (p : ℕ) (T : Finset {P : Ideal (𝓞 K) // P.IsMaximal})
     (hT : ∀ P ∈ T, residueCharacteristic K P.1 = p) :
     ∑ P ∈ T, idealPrimeWeight K P.1 ≤ (Module.finrank ℚ K : ℝ) / 2 := by
@@ -318,7 +316,7 @@ private lemma sum_weights_over_prime_le_half_degree (p : ℕ) (T : Finset {P : I
   rcases T.eq_empty_or_nonempty with rfl | ⟨P0, hP0⟩
   · simp only [Finset.sum_empty]; positivity
   have hp : p.Prime := by rw [← hT P0 hP0]; exact residue_characteristic_prime K P0.1 P0.2
-  have hlp := log_prime_pos p hp
+  have hlp := Nat.Prime.log_pos hp
   have hdvd : ∏ P ∈ T, Ideal.absNorm P.1 ∣ p ^ Module.finrank ℚ K := by
     have := prod_norm_dvd_prime_pow_degree K p (T.map (Function.Embedding.subtype _)) (by
       intro P hP
@@ -351,7 +349,7 @@ private lemma euler_factor_log_bound (hK : Formalism.HermitianLatticesTheory.IsC
     |Real.log (Formalism.HermitianLatticesTheory.eulerFac K M P)| ≤ idealPrimeWeight K P * negLogOneSubInvPow M (residueCharacteristic K P) := by
   have hp := residue_characteristic_prime K P hP
   obtain ⟨k, hk1, hk⟩ := abs_norm_eq_prime_pow K P hP
-  have hlp := log_prime_pos _ hp
+  have hlp := Nat.Prime.log_pos hp
   have hlne := hlp.ne'
   have hc : idealPrimeWeight K P = (k : ℝ) / 2 := by
     rw [idealPrimeWeight, hk, Nat.cast_pow, Real.log_pow]; field_simp

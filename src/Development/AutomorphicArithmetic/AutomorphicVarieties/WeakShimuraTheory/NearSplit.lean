@@ -137,14 +137,6 @@ def Pure (ι : PadicAlgCl l ≃+* ℂ) (r : G ℚ Ω →* M4 (PadicAlgCl l)) : P
 def Con (D : Raw Ω c) : Prop :=
   ∀ 𝔞 : Amb l, CharP 𝔞.K l → ∀ r u, KPair D 𝔞 r u → ¬ Star (mapRep 𝔞.toK r)
 
-def Pur (D : Raw Ω c) (ι : PadicAlgCl l ≃+* ℂ) : Prop :=
-  ∀ (𝔞 : Amb l) (e : 𝔞.K ≃+* PadicAlgCl l), 𝔞.IsZero e → ∀ r u, KPair D 𝔞 r u → Star (mapRep 𝔞.toK r) →
-    Pure ι (mapRep ((e : 𝔞.K →+* _).comp 𝔞.toK) r)
-
-def Autm (D : Raw Ω c) (ι : PadicAlgCl l ≃+* ℂ) : Prop :=
-  ∀ (𝔞 : Amb l) (e : 𝔞.K ≃+* PadicAlgCl l), 𝔞.IsZero e → ∀ r u, KPair D 𝔞 r u → Irr (mapRep 𝔞.toK r) →
-    Aut.IsAut4 ι (mapRep ((e : 𝔞.K →+* _).comp 𝔞.toK) r)
-
 def VPt (D : Raw Ω c) (𝔞 : Amb l) (r : G ℚ Ω →* M4 𝔞.V) : Prop :=
   𝔞.Small (⟨r, fun _ => 1⟩ : PD Unit _ _) ∧
     ∃ (R : Type) (_ : CommRing R) (_ : Algebra c.O R) (_ : IsCO c.O R) (ρ : Lift c.O D.rbar R) (y : R →+* 𝔞.V),
@@ -359,19 +351,6 @@ structure PM (ι : PadicAlgCl l ≃+* ℂ) {c' : Coef l} {h : c.O ≤ c'.O} (X :
       Irr (r.comp T.L.fixingSubgroup.subtype) → Aut.IsAut4 ι r
 
 end Tower
-
-def PMEx : Prop :=
-  ∀ (Ω : Type) [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] (l : ℕ) [Fact l.Prime] (c : Coef l) (D : Raw Ω c) (T : Tower D),
-    T.Fit → T.Deep → ∀ ι : PadicAlgCl l ≃+* ℂ, ∃ c₁ : Coef l, ∀ (c' : Coef l) (h : c.O ≤ c'.O), c₁.O ≤ c'.O →
-      ∀ X : Space (T.fr ∅) (inc h), ∃ J, T.PM ι X J
-
-def ProMod (D : Raw Ω c) (ι : PadicAlgCl l ≃+* ℂ) (𝔞 : Amb l) (r : G ℚ Ω →* M4 𝔞.V) : Prop :=
-  ∃ (T : Tower D) (c' : Coef l) (h : c.O ≤ c'.O) (X : Space (T.fr ∅) (inc h)) (J : Ideal X.B) (y : X.A →+* 𝔞.V)
-    (r₁ : G ℚ Ω →* M4 𝔞.V), T.Fit ∧ T.Deep ∧ T.PM ι X J ∧ y.comp (algebraMap c'.O X.A) = 𝔞.a c' ∧
-    (∀ b ∈ maximalIdeal X.B, y (algebraMap X.B X.A b) ∈ maximalIdeal 𝔞.V) ∧ (∀ b ∈ J, y (algebraMap X.B X.A b) = 0) ∧
-    IsConj4 (mapRep 𝔞.toK r) (mapRep 𝔞.toK r₁) ∧ (∀ g, IsGSp (𝔞.a c (D.th g)) (r₁ g)) ∧
-    r₁.comp (resQ T.F) = (X.P.map y).r ∧
-    ∀ v i, ∀ s ∈ Ine (F := T.F) (T.pl v), y (X.P.ψ v i s) = 𝔞.a c (D.ps i (resQ T.F s))
 
 end UpperTheory.V.Ws
 

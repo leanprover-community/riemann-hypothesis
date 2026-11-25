@@ -106,9 +106,6 @@ omit [CommRing S] in
     (a : Pt R n d) (ha : ∀ i, constantCoeff (a i) = 0) (i : Fin d) :
     constantCoeff (comp1 ψ a i) = 0 := cc_ev ![a] (by intro j i; fin_cases j; simp [ha]) (ψ i) (hψ i)
 
-omit [CommRing S] in
-theorem zc_zero {n : ℕ} : ∀ i : Fin d, constantCoeff ((0 : Pt R n d) i) = 0 := fun i => by simp
-
 @[simp] theorem mpt_pt {n : ℕ} (j : Fin n) : mpt φ (pt R d j) = pt S d j := by
   funext i
   simp [mpt, pt]
@@ -116,11 +113,6 @@ theorem zc_zero {n : ℕ} : ∀ i : Fin d, constantCoeff ((0 : Pt R n d) i) = 0 
 @[simp] theorem mpt_zero {n : ℕ} : mpt φ (0 : Pt R n d) = 0 := by
   funext i
   simp [mpt]
-
-theorem mpt_comp1 {n : ℕ} (ψ : Pt R 1 d) (a : Pt R n d) (ha : ∀ i, constantCoeff (a i) = 0) :
-    mpt φ (comp1 ψ a) = comp1 (mpt φ ψ) (mpt φ a) := by
-  funext i
-  exact map_ev1 φ a ha (ψ i)
 
 end Formalism.L2.FormalSeriesBounds.MapFB
 

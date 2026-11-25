@@ -135,7 +135,7 @@ theorem sub_const_mem_span_X {κ : Type} (p : MvPolynomial κ R) :
     ext i
     exact hcon i (Set.mem_univ i)
   subst h0
-  rw [MvPolynomial.mem_support_iff, MvPolynomial.coeff_sub, MvPolynomial.coeff_C, ite_eq_left rfl] at hm
+  rw [MvPolynomial.mem_support_iff, MvPolynomial.coeff_sub, MvPolynomial.coeff_C, if_pos rfl] at hm
   apply hm
   rw [sub_eq_zero, MvPolynomial.aeval_zero', ← MvPolynomial.constantCoeff_eq]
   rfl
@@ -205,27 +205,6 @@ theorem ker_jetTruncate_pow_eq_bot (κ : Type) {m n k : ℕ} (h : m ≤ n) (hk :
   rw [ker_jetTruncate, ← pow_mul, ← le_bot_iff]
   exact (Ideal.pow_le_pow_right hk).trans (ker_jetAug_pow (R := R) κ n).le
 
-/-- The nilpotence bound is sharp when there is a variable and the coefficient ring is nontrivial. -/
-theorem ker_jetTruncate_pow_eq_bot_iff [Nontrivial R] (κ : Type) [Nonempty κ] {m n k : ℕ} (h : m ≤ n) :
-    (RingHom.ker (jetTruncate R κ h)) ^ k = ⊥ ↔ n + 1 ≤ (m + 1) * k := by
-  refine ⟨fun hbot => ?_, ker_jetTruncate_pow_eq_bot (R := R) κ h⟩
-  obtain ⟨j⟩ := ‹Nonempty κ›
-  rw [ker_jetTruncate, ← pow_mul] at hbot
-  have hz : zR (R := R) n j ∈ RingHom.ker (jetAug R κ n) := jetAug_zR n j
-  have hzpow := Ideal.pow_mem_pow hz ((m + 1) * k)
-  rw [hbot, Ideal.mem_bot] at hzpow
-  have hp : (MvPolynomial.X j : MvPolynomial κ R) ^ ((m + 1) * k) ∈
-      MvPolynomial.idealOfVars κ R ^ (n + 1) := by
-    apply Ideal.Quotient.eq_zero_iff_mem.mp
-    rwa [map_pow]
-  rwa [MvPolynomial.X_pow_eq_monomial, MvPolynomial.monomial_mem_pow_idealOfVars_iff _ _ one_ne_zero,
-    Finsupp.degree_single] at hp
-
-/-- The kernel of a one-step truncation is annihilated by the augmentation ideal. -/
-theorem ker_jetTruncR_mul_ker_jetAug (κ : Type) (m : ℕ) :
-    RingHom.ker (jetTruncR R κ m) * RingHom.ker (jetAug R κ (m + 1)) = ⊥ := by
-  rw [jetTruncR, ker_jetTruncate, ← pow_succ, ker_jetAug_pow]
-
 theorem ker_jetTruncR_sq (κ : Type) (m : ℕ) :
     (RingHom.ker (jetTruncR R κ m)) ^ 2 = ⊥ :=
   ker_jetTruncate_pow_eq_bot (R := R) κ (Nat.le_succ m) (by omega)
@@ -256,7 +235,9 @@ theorem etale_ext [Algebra.FormallyUnramified (MvPolynomial (Fin n) R) S]
     (hs : ∀ j : Fin n, φ₁ (sX (R := R) (S := S) j) = φ₂ (sX (R := R) (S := S) j)) : φ₁ = φ₂ := by
   let ρ : MvPolynomial (Fin n) R →ₐ[R] A := φ₁.comp (IsScalarTower.toAlgHom R (MvPolynomial (Fin n) R) S)
   have hρ2 : φ₂.comp (IsScalarTower.toAlgHom R (MvPolynomial (Fin n) R) S) = ρ := by
-    exact MvPolynomial.algHom_ext (fun j => (hs j).symm)
+    apply MvPolynomial.algHom_ext
+    intro j
+    exact (hs j).symm
   let : Algebra (MvPolynomial (Fin n) R) A := ρ.toRingHom.toAlgebra
   have : IsScalarTower R (MvPolynomial (Fin n) R) A := IsScalarTower.of_algebraMap_eq (fun r => (ρ.commutes r).symm)
   let ψ₁ : S →ₐ[MvPolynomial (Fin n) R] A :=
@@ -295,7 +276,8 @@ theorem exists_lift_with_coordinates [Algebra.FormallySmooth (MvPolynomial (Fin 
   let φ := Algebra.FormallySmooth.liftOfSurjective ε' aug' haug hJ
   refine ⟨φ.restrictScalars R, ?_, ?_⟩
   · exact AlgHom.ext (Algebra.FormallySmooth.liftOfSurjective_apply ε' aug' haug hJ)
-  · exact fun j => (φ.commutes (MvPolynomial.X j)).trans (MvPolynomial.aeval_X b j)
+  · intro j
+    exact (φ.commutes (MvPolynomial.X j)).trans (MvPolynomial.aeval_X b j)
 
 /-- A formally smooth chart admits lifts along nilpotent augmentations to the base ring. -/
 theorem etale_exists [Algebra.FormallySmooth (MvPolynomial (Fin n) R) S]

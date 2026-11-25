@@ -125,14 +125,6 @@ theorem isLattice_of_map (h : S.Ok) (L : Submodule (𝓞 K) S.EqFun)
     (Submodule.fg_of_fg_map_injective ((S.hCoord h).toLinearMap.restrictScalars (𝓞 K))
       (S.hCoord h).injective hL.fg)
 
-theorem intDel_isLattice (h : S.Ok) (hD : ∀ d, Submodule.IsLattice K (S.Del d)) :
-    Submodule.IsLattice K S.intDel := by
-  apply S.isLattice_of_map h
-  rw [show S.intDel.map ((S.hCoord h).toLinearMap.restrictScalars (𝓞 K)) = (S.toCSD h).delLat from
-    S.map_intDel h S.outSec]
-  let _ : Fintype S.Cl := h.fintypeCl
-  exact ValuationLatticeField.valLatF_isLattice _ (S.toCSD h).I_injective _ fun c => hD _
-
 theorem intNab_isLattice (h : S.Ok) (hD : ∀ d, Submodule.IsLattice K (S.Nab d)) :
     Submodule.IsLattice K S.intNab := by
   apply S.isLattice_of_map h

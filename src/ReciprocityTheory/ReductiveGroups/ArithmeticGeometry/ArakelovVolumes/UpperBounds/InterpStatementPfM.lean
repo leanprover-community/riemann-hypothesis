@@ -371,7 +371,7 @@ theorem coord_step (hLU : LUStatement (E := E)) (hC : OmFConnStatement (E := E))
     show WithLp.toLp 2 (fun k => Fl.s k (cpt X x0 0) / Fl.w0 (cpt X x0 0)) = 0
     simp only [cpt_zero, hs0, zero_div]
     rfl
-  obtain ⟨δ, hδ, hiso0⟩ := HE.iso_zero hσd.hasFDerivAt hdet
+  obtain ⟨δ, hδ, hiso0⟩ := HE.iso_zero hσd.hasFDerivAt hdet hσ0
   obtain ⟨ρ, hρ, hρU⟩ := Metric.isOpen_iff.1 hO 0 h00
   have hε : 0 < min (δ / 2) (ρ / 4) := lt_min (by positivity) (by positivity)
   have hε1 := min_le_left (δ / 2) (ρ / 4)

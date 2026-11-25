@@ -174,11 +174,6 @@ section Inhabitants
 
 variable {R : Type} [CommRing R] [IsDomain R] [IsLocalRing R]
 
-theorem base_powerSeries : Base (PowerSeries ℚ) := by
-  have hc : IsAdicComplete (maximalIdeal (PowerSeries ℚ)) (PowerSeries ℚ) := by
-    rw [PowerSeries.maximalIdeal_eq_span_X]; infer_instance
-  exact ⟨⟨inferInstance, inferInstance, inferInstance, hc⟩, algebraRat.charZero _⟩
-
 end Inhabitants
 
 end GlobalTheory.Mum

@@ -388,12 +388,6 @@ theorem _root_.GlobalTheory.Cube.SemiHom.homology_cechAugHomology (a : A.obj ∅
 
 
 
-omit [LinearOrder ι] in
-def constRingHom (ι : Type) (f : R →+* S) :
-    Cube.SemiHom f (Cube.const ι (ModuleCat.of R R)) (Cube.const ι (ModuleCat.of S S)) where
-  app _ := f.toSemilinearMap
-  app_res _ _ := rfl
-
 end Cube.SemiHom
 
 end GlobalTheory

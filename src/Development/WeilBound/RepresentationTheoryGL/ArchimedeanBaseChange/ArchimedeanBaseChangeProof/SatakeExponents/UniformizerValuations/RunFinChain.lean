@@ -293,7 +293,7 @@ section Gel
 
 variable {E : Type*} [CStarAlgebra E]
 
-theorem restr (S : StarSubalgebra ℂ E)
+theorem restr (S : StarSubalgebra ℂ E) (hS : ∀ x ∈ S, ∀ y ∈ S, x * y = y * x)
     (ψ : S.topologicalClosure →ₐ[ℂ] ℂ) :
     ∃ χ : S →⋆ₐ[ℂ] ℂ, (∀ y, ‖χ y‖ ≤ ‖(y : E)‖) ∧
       ∀ y, χ y = ψ (StarSubalgebra.inclusion S.le_topologicalClosure y) := by
@@ -528,7 +528,7 @@ theorem peak {A : Type} [CommRing A] [StarRing A] [Algebra ℂ A] [StarModule �
     intro ψ hψ
     by_contra hno
     push Not at hno
-    obtain ⟨χ, hχb, hχ⟩ := restr (S s) ψ
+    obtain ⟨χ, hχb, hχ⟩ := restr (S s) (hSc s) ψ
     have hz : ∀ g, θ s χ (d g) = 0 := by
       intro g
       by_contra hz
@@ -579,7 +579,7 @@ theorem peak {A : Type} [CommRing A] [StarRing A] [Algebra ℂ A] [StarModule �
   have hkey : ‖R s (star g) * B * R s g‖ ≤ ε0 := by
     apply norm_le_of_chars (S s) (hSc s) _ hx ε0 hε0p.le
     intro ψ
-    obtain ⟨χ, hχb, hχ⟩ := restr (S s) ψ
+    obtain ⟨χ, hχb, hχ⟩ := restr (S s) (hSc s) ψ
     rw [← hχ]
     have hsplit : (⟨R s (star g) * B * R s g, hx⟩ : S s) =
         ⟨R s (star g), hR s _⟩ * ⟨B, hB s⟩ * ⟨R s g, hR s g⟩ := rfl

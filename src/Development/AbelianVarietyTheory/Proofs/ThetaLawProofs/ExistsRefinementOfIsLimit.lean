@@ -100,14 +100,6 @@ variable {I : Type} [SmallCategory I] [IsCofiltered I]
   [∀ {i j} (f : i ⟶ j), IsAffineHom (D.map f)] [∀ i, QuasiSeparatedSpace (D.obj i)]
 
 
-set_option backward.isDefEq.respectTransparency false in
-include hc in
-theorem exists_appLE_eq {i : I} {U : (D.obj i).Opens} (hU : IsCompact (U : Set (D.obj i)))
-    (s : Γ(X, π i ⁻¹ᵁ U)) :
-    ∃ (j : I) (f : j ⟶ i) (t : Γ(D.obj j, D.map f ⁻¹ᵁ U)),
-      ((π j).appLE _ _ (cone_preimage_le D π w f U)).hom t = s := by
-  apply GlobalTheory.LBDescent.exists_appLE_eq <;> assumption
-
 
 include hc in
 theorem exists_unit_eq {i : I} {U : (D.obj i).Opens} (hU : IsCompact (U : Set (D.obj i)))

@@ -181,11 +181,6 @@ section Deg
 
 variable {K : Type} [Field K] [NumberField K]
 
-theorem image_places_eq_primesOver (p : ℕ) (hp : p.Prime) :
-    (fun v : HeightOneSpectrum (𝓞 K) => v.asIdeal) '' {v | (p : 𝓞 K) ∈ v.asIdeal} =
-      (Ideal.span {(p : ℤ)}).primesOver (𝓞 K) := by
-  apply Formalism.L2.SG.Pf.SatGramLoc.image_places_primesOver <;> assumption
-
 theorem ram_inertia_of_split (p : ℕ) (hp : p.Prime)
     (hs : {v : HeightOneSpectrum (𝓞 K) | (p : 𝓞 K) ∈ v.asIdeal}.ncard = Module.finrank ℚ K)
     (v : HeightOneSpectrum (𝓞 K)) (hv : (p : 𝓞 K) ∈ v.asIdeal) :

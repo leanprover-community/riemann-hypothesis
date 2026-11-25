@@ -97,7 +97,6 @@ end Formalism.L2.NT
 
 namespace Formalism.L2.PT
 
-open Polynomial CategoryTheory Formalism.IrreducibleCountingLemmas.TYPES
 
 section Transp
 

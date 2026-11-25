@@ -853,7 +853,7 @@ theorem eventually_split {r : ℕ} (X : Data E r) {x : Frame X.Ψ r} (hx : x ∈
 theorem isolated_of_det {n : ℕ} {f : V n → V n} (hdet : (fderiv ℂ f 0).det ≠ 0) (h0 : f 0 = 0) :
     ∃ δ > 0, ∀ y ∈ Metric.closedBall (0 : V n) δ, f y = 0 → y = 0 := by
   by_cases hd : DifferentiableAt ℂ f 0
-  · exact HE.iso_zero hd.hasFDerivAt hdet
+  · exact HE.iso_zero hd.hasFDerivAt hdet h0
   · refine ⟨1, one_pos, fun y _ _ => ?_⟩
     have hk := HE.ker_bot_of_det hdet
     rw [fderiv_zero_of_not_differentiableAt hd] at hk

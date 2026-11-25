@@ -138,10 +138,6 @@ def TrIso : Prop :=
       (D.fm u).ipV i c ((D.fm u).dilT i v a c (φ ((D.fm u).dil i v a c))) ((D.fm u).dilT i v a c (ψ ((D.fm u).dil i v a c))) =
         (D.fm u).ipV i ((D.fm u).dil i v a c) (φ ((D.fm u).dil i v a c)) (ψ ((D.fm u).dil i v a c))
 
-def DiaMul : Prop :=
-  ∀ i, i ≤ D.R.m → ∀ v, ∀ φ ∈ (D.fm u).Fi i,
-    dia D u i v 1 φ = φ ∧ ∀ a b, dia D u i v (a * b) φ = dia D u i v a (dia D u i v b φ)
-
 def Conclusion1 : Prop :=
   (∀ i, i ≤ D.R.m → ∀ v, ∀ φ ∈ (D.fm u).Fi i,
     Uop D u i v φ ∈ (D.fm u).Fi i ∧ Dop D u i v φ ∈ (D.fm u).Fi i ∧ ∀ a, dia D u i v a φ ∈ (D.fm u).Fi i) ∧

@@ -146,8 +146,6 @@ structure PkgLaws {Xo : Moduli Dw l} {c : Coeff l} {σ : c.F →+* ℂ} {r : ℕ
     (∀ k τ, Formalism.MainNotions.StandardLattice.IsInfEmb τ.1 (th k τ)) ∧ DictIsUnif V dict Kf th hr ∧
       DictLat U V hr dict ι e F ik φ th x₀
 
-theorem cF_apply_eq_complexConj (D : D7) (x : D.host.E) : cF D x = IsCMField.complexConj D.host.E x := rfl
-
 theorem mem_latC_iff_symm_mem (V : HSp D) (v : Fin V.rank → D.host.E) :
     v ∈ latC V ↔ V.frame.equivFun.symm v ∈ V.L0 := by
   constructor

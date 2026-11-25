@@ -18,8 +18,6 @@ structure PrinLev {D : D7} (V : DivX D) where
   κg_pr : V.levPr κg = {D.host.g 0, D.host.g 1}
   κs_pr : V.levPr κs = {D.host.g 0, D.host.g 1, 3, 5}
 
-def LevB {D : D7} {V : DivX D} (P : PrinLev V) (κ : V.Lev) : Prop := κ = P.κg ∨ κ = P.κs
-
 abbrev PrinLevF {eps : ℝ} (Fm : FamP eps) : Type :=
   ∀ x (_ : Fm.x1 < x) (i : Fm.Ix x), PrinLev (Fm.X x i)
 

@@ -88,31 +88,6 @@ def FormIs (P : Out.PolAV (Sp K)) (M : LB P.A.left) (s : P.A ⟶ P.A) : Prop :=
 
 def SymB {A : Over (Sp K)} [GrpObj A] (M : LB A.left) : Prop := LBIso M (M.pull (GrpObj.inv : A ⟶ A).left)
 
-theorem SectionsHaveFiniteDimension.one_of_isIso (p : X ⟶ Sp K) [IsIso p] {M : LB X} [Unique M.ι] (hU : M.U default = ⊤)
-    (hg : ∀ i j, M.g i j = 1) : SectionsHaveFiniteDimension p M 1 := by
-  have hb := AbLaw.cst_bijective p hU
-  refine ⟨fun _ => ⟨fun _ => 1, fun i j => by rw [hg, map_one, map_one, Units.val_one, _root_.mul_one]⟩, fun t => ?_⟩
-  obtain ⟨a, ha⟩ := hb.2 (t.f default)
-  refine ⟨fun _ => a, fun j => ?_, fun b hb' => ?_⟩
-  · obtain rfl : j = default := Subsingleton.elim _ _
-    rw [Fin.sum_univ_one, _root_.mul_one]
-    exact ha.symm
-  · funext i
-    obtain rfl : i = 0 := Subsingleton.elim _ _
-    have := hb' default
-    rw [Fin.sum_univ_one, _root_.mul_one] at this
-    exact hb.1 (this.symm.trans ha.symm)
-
-theorem SectionsHaveFiniteDimension.trivial_point (K : Type) [Field K] : SectionsHaveFiniteDimension (𝟙 (Sp K)) (Out.Inh.trivLB (Sp K)) 1 :=
-  haveI : Unique (Out.Inh.trivLB (Sp K)).ι := inferInstanceAs (Unique PUnit)
-  SectionsHaveFiniteDimension.one_of_isIso _ rfl fun _ _ => rfl
-
-theorem Vol.trivial_point (K : Type) [Field K] : Vol (𝟙 (Sp K)) (Out.Inh.trivLB (Sp K)) 0 1 := by
-  refine ⟨fun _ => 1, fun e => ?_, by simp⟩
-  haveI : Unique (lbPow (Out.Inh.trivLB (Sp K)) e).ι := inferInstanceAs (Unique (PUnit → PUnit))
-  exact SectionsHaveFiniteDimension.one_of_isIso _ (top_unique fun _ _ => Set.mem_iInter.2 fun _ => trivial)
-    fun i j => Out.Inh.linComb_triv_g _ _ i j
-
 theorem vAmp_iff_veryAmpleBy (p : X ⟶ Sp K) (M : LB X) {m : ℕ} (s : Fin (m + 1) → M.Sec) :
     VAmp p M s ↔ AbLaw.VeryAmpleBy p M s :=
   and_congr Iff.rfl (forall_congr' fun _ => and_congr Iff.rfl (exists_congr fun _ =>

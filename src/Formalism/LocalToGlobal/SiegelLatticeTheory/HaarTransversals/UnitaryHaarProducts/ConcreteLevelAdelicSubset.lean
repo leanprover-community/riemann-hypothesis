@@ -888,7 +888,6 @@ end T2
 
 section Fold
 
-open MeasureTheory
 
 variable (I : AutInst)
 

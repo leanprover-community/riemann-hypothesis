@@ -1120,7 +1120,7 @@ theorem fullTate (gb : GBase D.toG R) {N : ℕ} (h3 : 3 ≤ N) (hN : N.Coprime p
     exact algebraRat.charZero k
   exact _root_.GlobalTheory.gen_level_extends_tate p D R gb.toBaseAt N h3 hN S s o k x β h
 
-theorem kerPrimeTo {gb : GBase D.toG R} {N : ℕ} (h3 : 3 ≤ N) {s : S ⟶ Sp R} (o : GObj gb N s) :
+theorem kerPrimeTo {gb : GBase D.toG R} {N : ℕ} {s : S ⟶ Sp R} (o : GObj gb N s) :
     ∃ e : ℕ, e.Coprime p ∧ ∀ (T : Over S) (x : T ⟶ o.A),
       (∃ t : (o.P.pull (lift (snd o.A T ≫ x) (fst o.A T)).left).Gen, t.IsGen) → x ^ e = 1 :=
   _root_.GlobalTheory.UPel.HT.GenKer.exists_coprime_pow_eq_one p D R gb N S s o
@@ -1169,7 +1169,7 @@ def GObj.toObjAt {gb : GBase D.toG R} {N : ℕ} {s : S ⟶ Sp R} (o : GObj gb N 
   rig₂ := o.rig₂
   symm := o.symm
   ample := o.ample
-  kerP := kerPrimeTo h3 o
+  kerP := kerPrimeTo o
   rosati := o.rosati
   lie := o.lie
   lieRank := o.lieRank

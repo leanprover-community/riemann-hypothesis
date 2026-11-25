@@ -46,9 +46,6 @@ def isoPart {V : Type*} [AddCommGroup V] [Module ℂ V] {n : ℕ} (ε : Fin n �
 
 def ckv {n : ℕ} (ε : Fin n → Bool) (μ : Fin n → ℝ) : ℝ := nsq (μ + rhoC ε) - nsq (rhoC ε)
 
-def negT {A : Type*} [Ring A] {n : ℕ} (F : Fin n → Fin n → A) : Fin n → Fin n → A :=
-  fun a b => -F b a
-
 theorem glRel_kRel {A : Type*} [Ring A] {n : ℕ} (ε : Fin n → Bool) (F : Fin n → Fin n → A)
     (h : GlRel F) : KRel ε F := by
   unfold GlRel at h

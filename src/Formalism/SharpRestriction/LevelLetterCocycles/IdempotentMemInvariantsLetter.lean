@@ -598,7 +598,6 @@ end Scalar
 end Formalism.MainNotions.N.Pv.LocalLengthBound
 
 noncomputable section
-open Classical
 
 namespace Formalism.MainNotions.N.Pv.LocalLengthBound
 
@@ -733,7 +732,6 @@ end DelH2
 end Formalism.MainNotions.N.Pv.LocalLengthBound
 
 noncomputable section
-open Classical
 
 namespace Formalism.MainNotions.N.Pv.LocalLengthBound
 
@@ -874,7 +872,6 @@ end TrH2
 end Formalism.MainNotions.N.Pv.LocalLengthBound
 
 noncomputable section
-open Classical
 
 namespace Formalism.MainNotions.N.Pv.LocalLengthBound
 
@@ -1140,7 +1137,6 @@ end KR
 end Formalism.MainNotions.N.Pv.LocalLengthBound
 
 noncomputable section
-open Classical
 
 namespace Formalism.MainNotions.N.Pv.LocalLengthBound
 
@@ -1326,7 +1322,6 @@ theorem comparison_linear_sum (W : LocWach PD LL O v n) (T : LocLat G Qp LL O) {
 end Formalism.MainNotions.N.Pv.LocalLengthBound
 
 noncomputable section
-open Classical
 
 namespace Formalism.MainNotions.N.Pv.LocalLengthBound
 

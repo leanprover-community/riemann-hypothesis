@@ -182,19 +182,6 @@ theorem obj_epsSH_card (R : Formalism.BasicNotions.Ranks) :
 theorem obj_cayleyU_rows (D : Formalism.BasicNotions.D7) : ∃ P, IsCayleyU D.R.k D.R.rS (epsSH D.R) P :=
   obj_cayleyU_of_card _ _ _ (obj_epsSH_card D.R)
 
-lemma obj_lamSH_lo (R : Formalism.BasicNotions.Ranks) (P : Formalism.BasicNotions.HCParam R) (i : Fin (2 * R.rS + R.k + 1)) (h : i.val < R.k - 1) :
-    lamSH R P i = (P.v ⟨i.val, h⟩ : ℝ) := by
-  unfold lamSH lamS; simp only [Fin.val_cast]; rw [dite_eq_left h]
-
-lemma obj_lamSH_hi (R : Formalism.BasicNotions.Ranks) (P : Formalism.BasicNotions.HCParam R) (i : Fin (2 * R.rS + R.k + 1)) (h : ¬ i.val < R.k - 1)
-    (h' : i.val - (R.k - 1) < R.m) : lamSH R P i = -(P.b ⟨i.val - (R.k - 1), h'⟩ : ℝ) := by
-  unfold lamSH lamS; simp only [Fin.val_cast]; rw [dite_eq_right h, dite_eq_left h']
-
-lemma obj_m_eq (R : Formalism.BasicNotions.Ranks) : R.m = 2 * R.rS + 2 := by
-  obtain ⟨t, ht⟩ := R.m_even
-  have h2 := R.two_le_m
-  simp only [Formalism.BasicNotions.Ranks.rS]; omega
-
 theorem obj_isHCParam_lamSH (R : Formalism.BasicNotions.Ranks) (P : Formalism.BasicNotions.HCParam R) : IsHCParam (lamSH R P) := by
   apply Formalism.MainNotions.S.Inh.amp_isHCParam_lamSH <;> assumption
 

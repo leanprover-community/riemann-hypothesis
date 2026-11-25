@@ -1,5 +1,6 @@
 module
 
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerOrbitVolume.DensFibV
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerVolume.VolStabFromSWS
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicLocalCompactness.AdeleLC
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicLocalCompactness.T2SpaceTensorProductFiniteExtension
@@ -21,30 +22,8 @@ section Local
 
 variable (F : Type) [Field F] [NumberField F] (v : HeightOneSpectrum (𝓞 F))
 
-theorem countable_numberField : Countable F :=
-  Finsupp.Countable.of_moduleFinite (R := ℚ)
-
-theorem separableSpace_Fv : TopologicalSpace.SeparableSpace (Fv F v) := by
-  haveI := countable_numberField F
-  exact ⟨⟨Set.range (algebraMap F (Fv F v)), Set.countable_range _,
-    HeightOneSpectrum.denseRange_algebraMap F v⟩⟩
-
-theorem secondCountable_Fv : SecondCountableTopology (Fv F v) := by
-  haveI := separableSpace_Fv F v
-  exact UniformSpace.secondCountable_of_separable (Fv F v)
-
-theorem locallyCompact_Fv : LocallyCompactSpace (Fv F v) := by
-  have hK := PI.AdicCompletionValuation.isCompact_adicCompletionIntegers (F := F) (v := v)
-  have hN : (v.adicCompletionIntegers F : Set (v.adicCompletion F)) ∈ 𝓝 (0 : v.adicCompletion F) := by
-    exact (Valued.isOpen_valuationSubring _).mem_nhds (v.adicCompletionIntegers F).zero_mem
-  exact hK.locallyCompactSpace_of_mem_nhds_of_addGroup hN
-
-theorem isOpen_units_Fv : IsOpen {r : Fv F v | IsUnit r} := by
-  have h : {r : Fv F v | IsUnit r} = {0}ᶜ := by
-    ext r
-    simp [isUnit_iff_ne_zero]
-  rw [h]
-  exact isOpen_compl_singleton
+export PI.VolStabSW (countable_numberField separableSpace_Fv secondCountable_Fv locallyCompact_Fv
+  isOpen_units_Fv)
 
 end Local
 

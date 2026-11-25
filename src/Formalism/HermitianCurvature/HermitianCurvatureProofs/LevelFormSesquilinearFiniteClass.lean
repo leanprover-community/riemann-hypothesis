@@ -185,7 +185,6 @@ end Formalism.FourierDecayAlt.P.JCx2
 
 namespace Formalism.FourierDecayAlt.P
 
-open Formalism.FourierDecayAlt
 
 theorem radial_module_form_of_parts : Formalism.FourierDecayAlt.JC.RadialModuleFormOfParts := by
   intro hBeta hAct hJF hBes hNice Wp Wq _ _ _ _ _ _ P0 T j X μ L st l0 hD
@@ -203,7 +202,6 @@ end Formalism.FourierDecayAlt.P
 
 namespace Formalism.FourierDecayAlt.P.JCx2
 
-open Formalism.FourierDecayAlt
 
 theorem form_zero_indep {k r : ℕ} {z z' : Fin (2 * r + k + 1) → ℂ} {Wp Wq : Type} [NormedAddCommGroup Wp]
     [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wq]
@@ -220,7 +218,6 @@ end Formalism.FourierDecayAlt.P.JCx2
 
 namespace Formalism.FourierDecayAlt.P
 
-open Formalism.FourierDecayAlt
 open scoped ComplexOrder
 
 end Formalism.FourierDecayAlt.P
@@ -2064,7 +2061,6 @@ end Formalism.FourierDecayAlt.P.JCx2
 namespace Formalism.FourierDecayAlt.P
 
 open Formalism.FourierDecayAlt Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.P.JCx2
-open scoped ComplexConjugate
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 

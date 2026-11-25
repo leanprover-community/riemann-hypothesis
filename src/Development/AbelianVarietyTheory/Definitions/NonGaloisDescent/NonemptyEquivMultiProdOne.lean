@@ -235,7 +235,8 @@ omit [ValuativeRel k] [IsNonarchimedeanLocalField k] in
 theorem of_eq_of {N : ℕ} {π : Representation ℂ (GL (Fin N) k) V} {hs : IsSmooth π} {hi : π.IsIrreducible}
     {σ : Representation ℂ (GL (Fin N) k) W} {hs' : IsSmooth σ} {hi' : σ.IsIrreducible} :
     of π hs hi = of σ hs' hi' ↔ Nonempty (π.Equiv σ) := by
-  simpa only [IrrGL.of, Sigma.mk.inj_iff, heq_eq_eq, true_and] using IrrRep.cl_eq_iff
+  simp only [IrrGL.of, Sigma.mk.inj_iff, heq_eq_eq, true_and]
+  exact IrrRep.cl_eq_iff
 
 
 omit [ValuativeRel k] [IsNonarchimedeanLocalField k] in
@@ -749,7 +750,8 @@ theorem embeds_detRep_segment {χ : kˣ →* ℂˣ} (hχ : IsSmoothChar χ) {l :
   choose w hw using hw
   have ht0ne : PiTensorProduct.tprod ℂ w ≠ 0 := by
     have hφ : ∀ a, ∃ φ : Module.Dual ℂ (x a).2.rep.V, φ (w a) ≠ 0 := fun a => by
-      by_contra! h
+      by_contra h
+      push_neg at h
       exact hw a ((Module.forall_dual_apply_eq_zero_iff ℂ (w a)).1 h)
     choose φ hφ using hφ
     intro h0
@@ -838,40 +840,6 @@ theorem hasSupport_detRep {χ : kˣ →* ℂˣ} (hχ : IsSmoothChar χ) {l : ℕ
   exact ⟨l, (Segment.ofChar χ hχ l hl).term, rfl, isIrreducible_ofChar _,
     fun a => ⟨((Segment.ofChar χ hχ l hl).isCusp_term a).1, (((Segment.ofChar χ hχ l hl).term a)).2.rep.irr,
       ((Segment.ofChar χ hχ l hl).isCusp_term a).2⟩, stdBlocks _ hd, IsSubquotient.of_injective f hf⟩
-
-theorem single_precedes (χ : kˣ →* ℂˣ) (hχ : IsSmoothChar χ) :
-    (Segment.single _ (IrrGL.isCusp_ofChar χ hχ)).Precedes (.single _ ((IrrGL.isCusp_ofChar χ hχ).nu 1)) ∧
-      ¬ (Segment.single _ ((IrrGL.isCusp_ofChar χ hχ).nu 1)).Precedes (.single _ (IrrGL.isCusp_ofChar χ hχ)) := by
-  have hc := IrrGL.isCusp_ofChar χ hχ
-  have hne : IrrGL.ofChar χ hχ ≠ (IrrGL.ofChar χ hχ).nu 1 := by
-    intro h
-    have h0 := (IrrGL.nu_ofChar_inj χ hχ (s := 0) (t := 1)).1 (by simpa using h)
-    norm_num at h0
-  refine ⟨⟨⟨⟨Segment.ofFirst (IrrGL.ofChar χ hχ) hc 2 (by norm_num), ?_⟩, ?_, ?_⟩, 1, one_pos, ?_⟩, ?_⟩
-  · ext y
-    rw [Segment.mem_carrier, Segment.carrier_single, Segment.carrier_single]
-    simp only [Segment.first_ofFirst, Segment.len_ofFirst, Set.mem_union, Set.mem_singleton_iff]
-    constructor
-    · rintro ⟨a, ha, rfl⟩
-      interval_cases a
-      · left
-        simp
-      · right
-        simp
-    · rintro (rfl | rfl)
-      · exact ⟨0, by norm_num, by simp⟩
-      · exact ⟨1, by norm_num, by simp⟩
-  · rwa [Segment.carrier_single, Segment.carrier_single, Set.singleton_subset_singleton]
-  · rw [Segment.carrier_single, Segment.carrier_single, Set.singleton_subset_singleton]
-    exact fun h => hne h.symm
-  · show (IrrGL.ofChar χ hχ).nu 1 = (IrrGL.ofChar χ hχ).nu ((1 : ℕ) : ℂ)
-    simp
-  · rintro ⟨-, j, hj, h⟩
-    change IrrGL.ofChar χ hχ = ((IrrGL.ofChar χ hχ).nu 1).nu ((j : ℕ) : ℂ) at h
-    rw [IrrGL.nu_nu] at h
-    have h0 := (IrrGL.nu_ofChar_inj χ hχ (s := 0) (t := 1 + j)).1 (by push_cast; simpa using h)
-    have : (0 : ℝ) ≤ j := Nat.cast_nonneg j
-    linarith
 
 theorem isSpeh_one (x : IrrGL (k := k)) : IsSpeh x 1 x.rep := by
   have h0 : spehFactor x 1 (0 : Fin 1) = x := by simp [spehFactor]

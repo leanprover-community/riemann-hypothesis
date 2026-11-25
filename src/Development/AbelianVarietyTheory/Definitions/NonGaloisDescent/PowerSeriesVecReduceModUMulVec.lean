@@ -527,10 +527,6 @@ def rankOne (j : ZMod a → ℤ) : PhiMod O K l e a Unit where
 
 variable {O K l e a}
 
-theorem mx_rankOne {j : ZMod a → ℤ} {τ : ZMod a} {n : ℕ} (h : j τ = n) :
-    (rankOne O K l e j).mx τ () () = E K l e ^ n := by
-  simp [PhiMod.mx, rankOne, h, Matrix.diagonal_pow, Eunit]
-
 end RankOne
 
 end GlobalTheory.BK

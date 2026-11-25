@@ -72,8 +72,6 @@ variable (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) (ε : Bool) (V M V₁ 
 
 abbrev Pair : Type := (WO M.V V.V → ℂ) × (WO V₁.V M.V → ℂ)
 
-def IsFinPair (f : Pair V M V₁) : Prop := IsFinVec ψ θ ε M V f.1 ∧ IsFinVec ψ θ (!ε) V₁ M f.2
-
 variable {V M V₁}
 
 def route (a : ArrS M V) (b : ArrS V₁ M) (mV : V.MeasDat) (mM : M.MeasDat) {n : ℕ} (Φ : Fin n → Pair V M V₁)

@@ -334,7 +334,6 @@ theorem smat_inv (hJ2 : J * J = 1) (hJh : Jᴴ = J) (G : Matrix (Fin k) (Fin k) 
 
 end Formalism.L2.SG.Pf.IdBlocks2.UkEmb
 
-open scoped InnerProductSpace ComplexConjugate
 open Matrix Formalism.MainNotions.S
 
 namespace Formalism.L2.SG.Pf.IdBlocks2.HW
@@ -708,8 +707,6 @@ theorem piIrr : Formalism.L2.SG.TermOp.IdBlocks.PiIrr X u := by
 
 end Formalism.L2.SG.Pf.IdBlocks2.Geo
 
-open scoped Classical ComplexConjugate InnerProductSpace
-open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Matrix
 open Formalism.L2.SG.HidaSetting Formalism.L2.SG.PoincareInHH.PoincareSetting Formalism.L2.SG.TermOp
 
 namespace Formalism.L2.SG.Pf.IdBlocks2.Geo
@@ -744,9 +741,7 @@ theorem ro_of (hN : Formalism.L2.SG.TermOp.Vanish.NLamNinf) {D : D7} (X : HidaSe
 
 end Formalism.L2.SG.Pf.IdBlocks2.Geo
 
-open scoped Classical ComplexConjugate InnerProductSpace
 open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Matrix
-open Formalism.L2.SG.HidaSetting Formalism.L2.SG.PoincareInHH.PoincareSetting Formalism.L2.SG.TermOp
 
 namespace Formalism.L2.SG.Pf.IdBlocks2.Geo
 
@@ -812,8 +807,6 @@ end Formalism.L2.SG.Pf.IdBlocks2.Geo
 
 namespace Formalism.L2.SG.Pf
 
-open scoped Classical
-open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat
 open Formalism.L2.SG.HidaSetting Formalism.L2.SG.PoincareInHH.PoincareSetting Formalism.L2.SG.TermOp Formalism.L2.SG.TermOp.IdBlocks Formalism.L2.SG.Full
   Formalism.L2.SG.PoincareInHH.Cut
 

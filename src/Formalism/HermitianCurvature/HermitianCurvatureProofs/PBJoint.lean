@@ -62,6 +62,5 @@ end Formalism.FourierDecayAlt.P.PBJoint
 
 namespace Formalism.FourierDecayAlt.P
 
-open Formalism.FourierDecayAlt
 
 end Formalism.FourierDecayAlt.P

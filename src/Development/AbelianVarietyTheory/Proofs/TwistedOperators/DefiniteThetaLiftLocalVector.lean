@@ -322,16 +322,11 @@ theorem onHalfAdj_top {v : FinPl D} {φ : SplitProj D v} {e : AE D} (he : IsIdem
   exact onHalfAdj_eq S T βS βT he PP r h3 _ _ (int_of_phi_ne_zero ht _ _ _)
     (phi_top r h1 ht mu ξ fun u b h hb => hmu u b ((h2 _ _).2 ⟨h, hb⟩))
 
-private theorem selfDual_isFullLattice {D : D7} : ∀ (V : HSp D) (Λ : Submodule (𝓞 D.host.E) (Fin V.rank → D.host.E)),
-    IsSelfDualC V Λ → Submodule.IsFullLattice D.host.E Λ := by
-  intro V Λ hΛ
-  exact Formalism.IndefR.Datum.IsSelfDualC.isFullLattice V Λ hΛ
-
 theorem isSBHalf_redFun {ΛS : Submodule (𝓞 D.host.E) (Fin S.rank → D.host.E)}
     {ΛT : Submodule (𝓞 D.host.E) (Fin T.rank → D.host.E)} (hS : IsSelfDualC S ΛS) (hT : IsSelfDualC T ΛT) {a : AE D}
     (ha : infPart D a = 0) (PP : Formalism.L2.DIV.Pl D.host.E) (ω : Matrix (Fin S.rank) (Fin T.rank) (Formalism.L2.DIV.kP PP) → ℂ) :
     IsSBHalf a (latO S T ΛS ΛT fun _ => True) (redFun S T βS βT a PP ω) :=
-  GlobalTheory.PlaceVec.isSBHalf_of_red (selfDual_isFullLattice S ΛS hS) (selfDual_isFullLattice T ΛT hT) ha (frMapAdj S T βS βT) (GlobalTheory.PlaceVec.frMapAdj_add S T βS βT)
+  GlobalTheory.PlaceVec.isSBHalf_of_red (Formalism.IndefR.Datum.IsSelfDualC.isFullLattice S ΛS hS) (Formalism.IndefR.Datum.IsSelfDualC.isFullLattice T ΛT hT) ha (frMapAdj S T βS βT) (GlobalTheory.PlaceVec.frMapAdj_add S T βS βT)
     (GlobalTheory.PlaceVec.frMapAdj_up S T βS βT) (GlobalTheory.PlaceVec.frMapAdj_down S T βS βT) {PP} (fun y => ω (y PP))
     fun _ _ h => by rw [h PP (Finset.mem_singleton_self _)]
 

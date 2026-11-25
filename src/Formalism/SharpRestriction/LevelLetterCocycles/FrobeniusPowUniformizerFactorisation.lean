@@ -3211,12 +3211,6 @@ variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp]
     {PD : PeriodData G Qp K₀ K B BdR} {LL O : Type} [Field LL] [Algebra Qp LL] [TopologicalSpace LL]
     [CommRing O] [Algebra O LL] {v : AddValuation LL (WithTop ℚ)} {n : ℕ}
 
-theorem wmap_φpow_γA (W : LocWach PD LL O v n) (g : W.Gam) (k : ℕ) (a : LetA O n) :
-    W.γA g ((W.φA ^ k) a) = (W.φA ^ k) (W.γA g a) := by
-  induction k generalizing a with
-  | zero => simp
-  | succ k ih => rw [pow_succ, AlgHom.mul_apply, AlgHom.mul_apply, ih, W.φA_γA]
-
 theorem wmap_unit (W : LocWach PD LL O v n) (k : ℕ) :
     IsUnit (algebraMap (LetA O n) W.EE ((W.φA ^ k) letπ)) := by
   rw [_root_.Formalism.MainNotions.LiftingTheory.liftb_φE_pow]

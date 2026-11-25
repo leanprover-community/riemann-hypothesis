@@ -51,9 +51,6 @@ open scoped Matrix TensorProduct
 
 namespace UpperTheory.V.Published
 
-def DefQuatExists : Prop :=
-  ∀ (F : Type) [Field F] [NumberField F] [IsTotallyReal F], Even (Module.finrank ℚ F) → Nonempty (DefQuat F)
-
 def FormsFiniteReal : Prop :=
   ∀ (F : Type) [Field F] [NumberField F] [IsTotallyReal F] (a : ℕ) (L : Subgroup (GL (Fin a) (Af F))),
     IsOpen (L : Set (GL (Fin a) (Af F))) →

@@ -14,13 +14,10 @@ namespace Formalism.HermitianLattices.Ext.LogarithmicIntegralBounds
 
 namespace Pairs
 
-private lemma factorization_prime_pow_self (p k : ℕ) (hp : p.Prime) : (p ^ k).factorization p = k := by
-  simp [Nat.factorization_pow, hp.factorization_self]
-
 theorem soutPart_prime_pow (m₀ p k : ℕ) (hp : p.Prime) (hk : k ≠ 0) :
     soutPart m₀ (p ^ k) = if Odd k ∧ ¬ p ∣ m₀ then p else 1 := by
   unfold soutPart
-  rw [Nat.primeFactors_prime_pow hk hp, Finset.filter_singleton, factorization_prime_pow_self p k hp]
+  rw [Nat.primeFactors_prime_pow hk hp, Finset.filter_singleton, Nat.factorization_pow_self hp]
   split_ifs <;> simp
 
 theorem soutPart_mul_of_coprime (m₀ a b : ℕ) (h : a.Coprime b) :
@@ -51,7 +48,7 @@ theorem primePow_data {n : ℕ} (h : IsPrimePow n) :
   obtain ⟨p, k, hp, hk, rfl⟩ := (isPrimePow_nat_iff _).1 h
   have hm : (p ^ k).minFac = p := hp.pow_minFac hk.ne'
   refine ⟨p, k, hp, hk.ne', rfl, hm, ?_⟩
-  rw [hm, factorization_prime_pow_self p k hp]
+  rw [hm, Nat.factorization_pow_self hp]
 
 def tPart (m₀ n : ℕ) : ℕ :=
   if Even (n.factorization n.minFac) ∨ n.minFac ∣ m₀ then 1 else n.minFac
@@ -69,7 +66,7 @@ private lemma tPart_prime_pow_eq_soutPart (m₀ p k : ℕ) (hp : p.Prime) (hk : 
     tPart m₀ (p ^ k) = soutPart m₀ (p ^ k) := by
   rw [soutPart_prime_pow m₀ p k hp hk]
   unfold tPart
-  rw [hp.pow_minFac hk, factorization_prime_pow_self p k hp]
+  rw [hp.pow_minFac hk, Nat.factorization_pow_self hp]
   rcases Nat.even_or_odd k with h1 | h1
   · have h1' : ¬ Odd k := Nat.not_odd_iff_even.2 h1
     simp [h1, h1']

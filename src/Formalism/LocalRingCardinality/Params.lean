@@ -111,19 +111,4 @@ def FactSInt : Prop := ∀ R : Ranks, ∀ (z : ℤ) (j : ℕ), 1 ≤ j →
 
 def FactNV : Prop := ∀ R : Ranks, R.nV - R.r = R.t
 
-def FactHCMono : Prop := ∀ (R : Ranks) (P : HCParam R),
-  (∀ i : Fin (R.k - 1), P.v i < P.u ⟨i.1, by omega⟩ ∧ P.u ⟨i.1 + 1, by omega⟩ < P.v i) ∧
-  (∀ (h : 0 < R.k) (h' : 0 < R.m), -P.b ⟨0, h'⟩ < P.u ⟨R.k - 1, by omega⟩) ∧
-  (∀ j : Fin R.m, -P.e j < -P.b j) ∧
-  (∀ j : Fin R.m, ∀ h : j.1 + 1 < R.m, -P.b ⟨j.1 + 1, h⟩ < -P.e j)
-
-theorem factHCMono : FactHCMono := by
-  intro R P
-  have ht : (0 : ℚ) ≤ R.t := by positivity
-  refine ⟨fun i => ⟨P.u_gt_v i, P.v_gt_u i⟩, P.u_last_gt, fun j => ?_, fun j h => ?_⟩
-  · have := P.gap_be j
-    linarith
-  · have := P.gap_eb j h
-    linarith
-
 end Formalism.BasicNotions
