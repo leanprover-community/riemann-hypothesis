@@ -46,11 +46,8 @@ theorem integrable_mul_bcf (μ : Measure G) (g : G →ᵇ ℂ) {φ : G → ℂ} 
 
 private theorem exists_integer_complexConj (χ : A → G → ℂ) (ha : ∀ a b x, χ (a + b) x = χ a x * χ b x) (h0 : ∀ x, χ 0 x = 1)
     (hn : ∀ a x, ‖χ a x‖ = 1) (a : A) (x : G) : (starRingEnd ℂ) (χ a x) = χ (-a) x := by
-  have h1 : χ a x * χ (-a) x = 1 := by rw [← ha, add_neg_cancel, h0]
-  have h2 : χ a x * (starRingEnd ℂ) (χ a x) = 1 := by
-    rw [Complex.mul_conj, Complex.normSq_eq_norm_sq, hn]; norm_num
-  have hne : χ a x ≠ 0 := fun h => by simpa [h] using hn a x
-  exact mul_left_cancel₀ hne (h2.trans h1.symm)
+  rw [← Complex.inv_eq_conj (hn a x)]
+  exact inv_eq_of_mul_eq_one_right (by rw [← ha, add_neg_cancel, h0])
 
 theorem real_eq_zero (χ : A → G → ℂ) (hc : ∀ a, Continuous (χ a)) (hx : ∀ a x y, χ a (x + y) = χ a x * χ a y)
     (ha : ∀ a b x, χ (a + b) x = χ a x * χ b x) (h0 : ∀ x, χ 0 x = 1) (hn : ∀ a x, ‖χ a x‖ = 1)
@@ -121,11 +118,7 @@ theorem real_eq_zero (χ : A → G → ℂ) (hc : ∀ a, Continuous (χ a)) (hx 
     intro g
     rw [hpos f hi g, hpos (fun x => -f x) hi.neg g, ← integral_sub (hintp f hi g) (hintp (fun x => -f x) hi.neg g)]
     congr 1; funext x
-    have e : max (f x) 0 - max (-f x) 0 = f x := by
-      rcases le_total 0 (f x) with h | h
-      · rw [max_eq_left h, max_eq_right (by linarith)]; ring
-      · rw [max_eq_right h, max_eq_left (by linarith)]; ring
-    rw [← sub_mul, ← Complex.ofReal_sub, e]
+    rw [← sub_mul, ← Complex.ofReal_sub, max_zero_sub_max_neg_zero_eq_self]
   have hZ : ∀ g ∈ Submodule.span ℂ (Set.range B), ∫ x, (f x : ℂ) * g x ∂μ = 0 := by
     intro g hg
     induction hg using Submodule.span_induction with
@@ -160,11 +153,7 @@ theorem real_eq_zero (χ : A → G → ℂ) (hc : ∀ a, Continuous (χ a)) (hx 
     have h' : max (f x) 0 = max (-f x) 0 := by
       have := congrArg NNReal.toReal (ENNReal.coe_inj.mp hx)
       rwa [Real.coe_toNNReal', Real.coe_toNNReal'] at this
-    rw [Pi.zero_apply]
-    rcases lt_trichotomy (f x) 0 with hl | hl | hl
-    · rw [max_eq_right hl.le, max_eq_left (by linarith)] at h'; linarith
-    · exact hl
-    · rw [max_eq_left hl.le, max_eq_right (by linarith)] at h'; linarith
+    rw [Pi.zero_apply, ← max_zero_sub_max_neg_zero_eq_self (f x), h', sub_self]
   exact (Continuous.ae_eq_iff_eq (μ := μ) hf continuous_zero).mp h0ae
 
 end GlobalTheory.CharFourierInj

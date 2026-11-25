@@ -380,40 +380,4 @@ theorem tateCup_connecting_right (m : ℕ) : ∀ (p q : ℤ), (1 - p).toNat + (1
       ((tateIsoH A n n rfl).hom.hom a) y) e4.symm).trans ?_
     exact e5.symm
 
-
-theorem tateIsoH_tδ_homologyπ {S : ShortComplex (Rep.{u} k G)} (hS : S.ShortExact) (n : ℕ)
-    (z : (tateComplex S.X₃).cycles n) :
-    (tateIsoH S.X₁ (n + 1) (n + 1) (Nat.cast_succ n).symm).hom.hom
-      ((tδ hS n (n + 1) rfl).hom (((tateComplex S.X₃).homologyπ n).hom z)) =
-      δ hS n (n + 1) rfl (π S.X₃ n (cocyclesMk (((tateComplex S.X₃).iCycles n).hom z)
-        (tate_d_iCycles _ n z))) := by
-  have hz := tate_d_iCycles_int _ _ z
-  obtain ⟨y, x, hy, hx⟩ := exists_lift_of_cocycle hS
-    (cocyclesMk (((tateComplex S.X₃).iCycles n).hom z) (tate_d_iCycles _ n z))
-  have hd : ((tateComplex S.X₁).d (↑n + 1) (↑n + 1 + 1)).hom (iCocycles S.X₁ (n + 1) x) = 0 := by
-    have := d_iCocycles x
-    rw [← inhomogeneousCochains.d_def] at this
-    exact this
-  have hy' : ((tateComplex.map S.g).f n).hom y = ((tateComplex S.X₃).iCycles n).hom z :=
-    funext fun v => (hy v).trans (congrFun (iCocycles_mk _ _) v)
-  have hx' : ((tateComplex.map S.f).f (↑n + 1)).hom (iCocycles S.X₁ (n + 1) x) =
-      ((tateComplex S.X₂).d n (n + 1)).hom y := by
-    rw [tateComplex_d_ofNat, inhomogeneousCochains.d_def]
-    exact funext hx
-  have h2 := δ_π_eq hS _ y hy x hx
-  have h3 : (tδ hS n (n + 1) rfl).hom (((tateComplex S.X₃).homologyπ n).hom z) =
-      ((tateComplex S.X₁).homologyπ (n + 1)).hom
-        (tateCyclesMk S.X₁ (n + 1) (iCocycles S.X₁ (n + 1) x) hd) := by
-    have e := tδ_apply hS n _ hz y hy' (iCocycles S.X₁ (n + 1) x) hx' hd
-    rw [tateCyclesMk_iCycles] at e
-    exact e
-  have h4 := tateIsoH_homologyπ S.X₁ (n + 1)
-    (tateCyclesMk S.X₁ (n + 1) (iCocycles S.X₁ (n + 1) x) hd)
-  refine (congrArg (fun w => (tateIsoH S.X₁ (↑n + 1) (n + 1) (Nat.cast_succ n).symm).hom.hom w)
-    h3).trans ?_
-  refine (h4.trans ?_).trans h2.symm
-  congr 1
-  apply cocycles_ext
-  exact (iCocycles_mk _ _).trans (iCycles_tateCyclesMk _ _ _ _)
-
 end GroundTheory.GroupCoh

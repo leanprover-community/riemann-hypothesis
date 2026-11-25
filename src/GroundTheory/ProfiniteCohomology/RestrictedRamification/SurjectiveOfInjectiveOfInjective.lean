@@ -83,12 +83,9 @@ noncomputable section
 local notation "ℚ̄" => AlgebraicClosure ℚ
 
 theorem surjective_of_injective_of_injective {α β : Type*} [Finite α] {f : α → β} {g : β → α}
-    (hf : Function.Injective f) (hg : Function.Injective g) : Function.Surjective f := by
+    (hf : Function.Injective f) (hg : Function.Injective g) : Function.Surjective f :=
   have : Finite β := Finite.of_injective g hg
-  have hfg : Function.Injective (f ∘ g) := hf.comp hg
-  exact fun b => by
-    obtain ⟨a, ha⟩ := Finite.injective_iff_surjective.1 hfg b
-    exact ⟨g a, ha⟩
+  (Finite.injective_iff_surjective.1 (hf.comp hg)).of_comp
 
 section Val
 

@@ -31,7 +31,7 @@ theorem exists_section (R : Type) [CommRing R] [IsLocalRing R] [IsNoetherianRing
     (hO : ∃ g ∈ O, G.hom g = x pt) {J : Type} [Finite J] (k : J → (Over.mk x ⟶ G)) :
     ∃ a : 𝟙_ (Over (Sp R)) ⟶ G, ∀ i, (k i * (toUnit (Over.mk x) ≫ a)).left pt ∈ O ∧
       (k i * (toUnit (Over.mk x) ≫ a)⁻¹).left pt ∈ O := by
-  have hirr : IrreducibleSpace (pullback G.hom x : Scheme.{0}) := GlobalTheory.T.irreducibleSpace_fibre_semiAbelian_fieldPoint _ G hG Ω x
+  have hirr : IrreducibleSpace (pullback G.hom x : Scheme.{0}) := GlobalTheory.SemiAbFibre.irreducibleSpace_fibre _ G hG Ω x
   obtain ⟨g, hg, hgx⟩ := hO
   obtain ⟨z, hz, -⟩ := Scheme.Pullback.exists_preimage_pullback (f := G.hom) (g := x) g pt hgx
   let X : Over (Sp R) := Over.mk x
@@ -143,7 +143,7 @@ theorem exists_gen_off_closed : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLoca
   let V : G.left.Opens := ⟨⋂ f ∈ {f | f ∈ cubeTen (𝟙 G) a b c}, ((f.left ⁻¹ᵁ O' : G.left.Opens) : Set G.left),
     (List.finite_toSet _).isOpen_biInter fun f _ => (f.left ⁻¹ᵁ O').isOpen⟩
   refine ⟨V, Set.mem_iInter₂.2 h, ?_⟩
-  obtain ⟨hl, hm⟩ := GlobalTheory.T.grpPullback_points_lift_and_compat_mul_inv _ _ M.π G G' β hpb G' G β hpb.1.w
+  obtain ⟨hl, hm⟩ := GlobalTheory.Mum.grpPullback_points_lift_mul_inv _ _ M.π G G' β hpb G' G β hpb.1.w
   obtain ⟨a', ha⟩ := hl a
   obtain ⟨b', hb⟩ := hl b
   obtain ⟨c', hc⟩ := hl c

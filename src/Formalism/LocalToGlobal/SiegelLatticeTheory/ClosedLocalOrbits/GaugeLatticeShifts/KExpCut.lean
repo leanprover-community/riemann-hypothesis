@@ -330,13 +330,6 @@ variable {ι ι' : Type} [Fintype ι] [Fintype ι'] {V V' : Type}
   [NormedAddCommGroup V] [InnerProductSpace ℂ V] [FiniteDimensional ℂ V]
   [NormedAddCommGroup V'] [InnerProductSpace ℂ V'] [FiniteDimensional ℂ V']
 
-private theorem piLp_two_norm_apply_le_norm {κ : Type} [Fintype κ] {W : Type} [NormedAddCommGroup W]
-    (f : PiLp 2 (fun _ : κ => W)) (i : κ) : ‖f i‖ ≤ ‖f‖ := by
-  have h := PiLp.norm_sq_eq_of_L2 (fun _ : κ => W) f
-  have h2 : ‖f i‖ ^ 2 ≤ ∑ j, ‖f j‖ ^ 2 :=
-    Finset.single_le_sum (f := fun j => ‖f j‖ ^ 2) (fun j _ => sq_nonneg _) (Finset.mem_univ i)
-  nlinarith [norm_nonneg (f i), norm_nonneg f]
-
 theorem norm_le_blkOp (B : ι → ι' → (V' →L[ℂ] V)) (ρ : ι) (ρ' : ι') : ‖B ρ ρ'‖ ≤ ‖blkOp B‖ := by
   refine ContinuousLinearMap.opNorm_le_bound _ (norm_nonneg _) fun v => ?_
   let x : PiLp 2 (fun _ : ι' => V') := WithLp.toLp 2 (fun σ => if σ = ρ' then v else 0)
@@ -349,7 +342,7 @@ theorem norm_le_blkOp (B : ι → ι' → (V' →L[ℂ] V)) (ρ : ι) (ρ' : ι'
     rw [Finset.sum_eq_single ρ' (fun σ _ hσ => by simp [hx0 σ hσ]) (fun h => absurd (Finset.mem_univ ρ') h)]
     simp [x]
   calc ‖B ρ ρ' v‖ = ‖(blkOp B x) ρ‖ := by rw [h1]
-    _ ≤ ‖blkOp B x‖ := piLp_two_norm_apply_le_norm _ _
+    _ ≤ ‖blkOp B x‖ := PiLp.norm_apply_le _ _
     _ ≤ ‖blkOp B‖ * ‖x‖ := (blkOp B).le_opNorm x
     _ = ‖blkOp B‖ * ‖v‖ := by rw [hx]
 

@@ -118,8 +118,6 @@ open Formalism.AUTREP (GAf)
 open GlobalTheory.FormInner (frameEquiv)
 open scoped TensorProduct
 
-
-
 namespace GlobalTheory
 
 theorem adicIntegers_red_eq_zero_iff {K : Type} [Field K] [NumberField K]
@@ -194,8 +192,6 @@ open GlobalTheory.FormInner (frameEquiv)
 open scoped TensorProduct
 open GlobalTheory.MtRead
 
-
-
 namespace GlobalTheory.LevChiRead
 
 open Formalism.L2.DIV
@@ -219,7 +215,6 @@ theorem resRep_spec {L : Type} [Field L] [NumberField L] [IsCMField L] (s : Reci
     ring
   rw [e]
   exact lt_of_le_of_lt (Valuation.map_sub _ _ _) (max_lt h2 hux)
-
 
 open Classical in
 theorem psiU_prod (i : D.ntw.Tw) (b : Bool)
@@ -396,7 +391,6 @@ theorem typePlace {V : HSp D} {n : ℕ} {hF : D.host.F = maximalRealSubfield D.h
     · rw [Units.coe_map]
       exact iso.apply_symm_apply _
 
-
 open Classical in
 theorem levChi_read : ∀ (D : D7) (i : D.ntw.Tw) (j : Fin D.R.m) (b : Bool) (k : ℕ) (Q : Finset (PlE D.host)) (ψ : G D.host.E D.nd.Om →* (D.ntw.Ok i k)ˣ) (e : ℤ) (W₀ : Type) [AddCommGroup W₀] [Module (FractionRing (D.ntw.O i)) W₀] (ρ₀ : Representation (FractionRing (D.ntw.O i)) (ReciprocityTheory.Aut.GQ D.host.E D.R.nV) W₀) (τ : ∀ kv : (Σ kk : Fin 2, D.nd.PlG kk), (ZMod (D.host.g kv.1))ˣ →* (FractionRing (D.ntw.O i))ˣ) (M : NX.MtVReal D i (j.1 + 1) b k Q ψ e W₀ ρ₀ τ) (B : GlobalTheory.ExportSeries.Base (Vc D j) (Wc D j)) (t : Twist D Circle) (hF : D.host.F = maximalRealSubfield D.host.E) (P : principalLevelFrame.RowPsi (Vc D j) D.R.nV), IdFrame hF P → B.F.βS = 1 → (∀ PP, PP ∈ B.G.Pg ↔ ∃ kv, PP = NX.pG D kv) → Function.Injective (NX.pG D) → t.Q = M.QP → B.de.Q = M.DP → ∀ (iso : ∀ kv : (Σ kk : Fin 2, D.nd.PlG kk), ZMod (D.host.g kv.1) ≃+* kP (NX.pG D kv)) (eG : G0g D.nd ≃* G0 B.G.Pg (Wc D j).rank), (∀ (g : G0g D.nd) kv (h : NX.pG D kv ∈ B.G.Pg) (a c : Fin (Wc D j).rank), (eG g ⟨NX.pG D kv, h⟩).val a c = iso kv ((g kv).val (Fin.cast (FWT.rank_Wc j) a) (Fin.cast (FWT.rank_Wc j) c))) → (∀ g, eG g ∈ B.G.P.H ↔ g ∈ D.nexp.U) → D.nexp.U = NX.Uup (fun kv : (Σ kk : Fin 2, D.nd.PlG kk) => D.host.g kv.1) D.R.r → Disjoint M.QP M.DP → ∀ (e₀ : FractionRing (D.ntw.O i) →+* ℂ) (ek : NX.Kk D i k →+* ℂ), (∀ x, ek (NX.toKk D i k x) = e₀ x) → NX.IsStdGeneric (fun kv : (Σ kk : Fin 2, D.nd.PlG kk) => D.host.g kv.1) D.R.r (D.nexp.psiU i b) → (∀ (u : D.nexp.U) hu, ((B.G.P.chi ⟨eG u, hu⟩ : ℂˣ) : ℂ) = e₀ (D.nexp.psiU i b u : (FractionRing (D.ntw.O i))ˣ)) → (∀ kv (x : (ZMod (D.host.g kv.1))ˣ) (z : (kP (NX.pG D kv))ˣ), (z : kP (NX.pG D kv)) = iso kv x → ((B.G.muC (NX.pG D kv) z : ℂˣ) : ℂ) = e₀ (τ kv x : (FractionRing (D.ntw.O i))ˣ)) → (∀ PP ∈ M.QP, ∀ u : 𝓞 D.host.E, u ∉ PP.asIdeal → ∀ z : (kP PP)ˣ, (z : kP PP) = Ideal.Quotient.mk PP.asIdeal u → ((t.resC PP z : ℂˣ) : ℂ) = ek (NX.ofOk D i k (NX.tameVal ψ PP e u).1)) → (∀ PP ∈ M.DP, ∀ u : 𝓞 D.host.E, u ∉ PP.asIdeal → ∀ z : (kP PP)ˣ, (z : kP PP) = Ideal.Quotient.mk PP.asIdeal u → ((B.de.resC PP z : ℂˣ) : ℂ) = ek (NX.ofO0 D i k (NX.tameVal (D.ntw.delta i) PP (if b then e else -e) u).1)) → ∀ g (h : g ∈ M.J) (h' : frameEquiv P g ∈ B.levJ t), ek ((M.χ ⟨g, h⟩ : (NX.Kk D i k)ˣ) : NX.Kk D i k) = ((B.levLam t ⟨frameEquiv P g, h'⟩ : ℂˣ) : ℂ) := by
   intro D i j b k Q ψ e W₀ _ _ ρ₀ τ M B t hF P hP hβ hPg hinj htQ hdQ iso eG heG hU hUup hdisj e₀ ek hek hgen hchi hmu
@@ -507,8 +501,6 @@ open Formalism.AUTREP (GAf)
 open GlobalTheory.FormInner (frameEquiv)
 open scoped TensorProduct
 
-
-
 noncomputable section
 
 namespace GlobalTheory.TypeCharUnits
@@ -595,14 +587,11 @@ open GlobalTheory.FormInner (frameEquiv)
 open scoped TensorProduct
 open GlobalTheory.MtRead
 
-
-
 noncomputable section
 
 namespace GlobalTheory.MtRead.IdFrameStd
 
 variable {D : D7}
-
 
 open GlobalTheory.StdFrameExist in
 theorem exists_idFrame_of (hF : D.host.F = maximalRealSubfield D.host.E) (V : HSp D) (hg : V.gram = 1)
@@ -655,7 +644,6 @@ open GlobalTheory.FormInner (frameEquiv)
 open scoped TensorProduct
 open GlobalTheory.MtRead
 
-
 noncomputable section
 
 namespace GlobalTheory.MtRead.WtEmb
@@ -678,48 +666,37 @@ theorem mapVV_mapK {K L : Type} [Field K] [Field L] (φ : K →+* L) (ψ : L →
     change MvPolynomial.map ψ (MvPolynomial.map φ x.1) = MvPolynomial.map (ψ.comp φ) x.1
     rw [MvPolynomial.map_map])
 
-def cfn {n : ℕ} (lam : D.what₂.Tau → DomWeight n) : VV ℂ lam →ₗ[ℂ] (GLR D n → ℂ) where
-  toFun F := coefFn (RingHom.id ℂ) lam (F : Pol ℂ D.what₂.Tau n)
-  map_add' F G := by
-    funext x
-    simp only [coefFn, Submodule.coe_add, map_add (f := _), Pi.add_apply, mul_add]
-  map_smul' c F := by
-    funext x
-    simp only [coefFn, Submodule.coe_smul, MvPolynomial.smul_eq_C_mul, map_mul, MvPolynomial.eval₂Hom_C, RingHom.id_apply,
-      Pi.smul_apply, smul_eq_mul]
-    ring
-
 theorem cfn_apply {n : ℕ} (lam : D.what₂.Tau → DomWeight n) (F : VV ℂ lam) :
-    cfn lam F = coefFn (RingHom.id ℂ) lam (F : Pol ℂ D.what₂.Tau n) := rfl
+    GlobalTheory.SeriesTie.Scale.coefLin lam F = coefFn (RingHom.id ℂ) lam (F : Pol ℂ D.what₂.Tau n) := rfl
 
-theorem cfn_injective {n : ℕ} (lam : D.what₂.Tau → DomWeight n) : Function.Injective (cfn lam) :=
+theorem cfn_injective {n : ℕ} (lam : D.what₂.Tau → DomWeight n) : Function.Injective (GlobalTheory.SeriesTie.Scale.coefLin lam) :=
   (injective_iff_map_eq_zero _).2 fun F hF =>
     Subtype.ext (GlobalTheory.ExportSeries.eq_zero_of_coefFn_id_eq_zero D n lam F (congrFun hF))
 
 theorem coefFn_eq_cfn {n : ℕ} {K : Type} [Field K] (σ : K →+* ℂ) (lam : D.what₂.Tau → DomWeight n) (F : VV K lam) :
-    coefFn σ lam (F : Pol K D.what₂.Tau n) = cfn lam (GlobalTheory.CoefModel.mapVV σ lam F) := by
+    coefFn σ lam (F : Pol K D.what₂.Tau n) = GlobalTheory.SeriesTie.Scale.coefLin lam (GlobalTheory.CoefModel.mapVV σ lam F) := by
   funext x
   change _ = coefFn (RingHom.id ℂ) lam (MvPolynomial.map σ F.1) x
   simp only [coefFn, MvPolynomial.eval₂Hom_map_hom, RingHom.id_comp]
 
 theorem exists_psi {m n : ℕ} (w : Weight D n) (B : GLR D n) (hw : w.Good) (hm : ∀ τ, w.p τ + w.q τ ≤ m) :
-    ∃ Ψ : VV ℂ w.lam →ₗ[ℂ] PolF D m n, (∀ F, Ψ F ∈ harm m w B) ∧ (∀ F, harmFn m w B (Ψ F) = cfn w.lam F) ∧
+    ∃ Ψ : VV ℂ w.lam →ₗ[ℂ] PolF D m n, (∀ F, Ψ F ∈ harm m w B) ∧ (∀ F, harmFn m w B (Ψ F) = GlobalTheory.SeriesTie.Scale.coefLin w.lam F) ∧
       ∀ P ∈ harm m w B, ∃ F, Ψ F = P := by
   let H := harm m w B
   let hf : H →ₗ[ℂ] (GLR D n → ℂ) := harmFn m w B ∘ₗ H.subtype
   have hinj : Function.Injective hf := by
     refine (injective_iff_map_eq_zero _).2 fun P hP => Subtype.ext ?_
     exact GlobalTheory.T.harmonic_polynomial_eq_zero_of_function D m n w B hw hm P P.2 hP
-  have hr : LinearMap.range hf = LinearMap.range (cfn w.lam) := by
+  have hr : LinearMap.range hf = LinearMap.range (GlobalTheory.SeriesTie.Scale.coefLin w.lam) := by
     rw [LinearMap.range_comp, Submodule.range_subtype, _root_.GlobalTheory.ExportSeries.Onto.map_harm_eq D m n w B hw hm]
     have : {φ | ∃ F : VV ℂ w.lam, φ = coefFn (RingHom.id ℂ) w.lam (F : Pol ℂ D.what₂.Tau n)} =
-        (LinearMap.range (cfn w.lam) : Set (GLR D n → ℂ)) := by
+        (LinearMap.range (GlobalTheory.SeriesTie.Scale.coefLin w.lam) : Set (GLR D n → ℂ)) := by
       ext φ
       simp only [Set.mem_setOf_eq, SetLike.mem_coe, LinearMap.mem_range, cfn_apply]
       exact ⟨fun ⟨F, h⟩ => ⟨F, h.symm⟩, fun ⟨F, h⟩ => ⟨F, h.symm⟩⟩
     rw [this, Submodule.span_eq]
   let e1 := LinearEquiv.ofInjective hf hinj
-  let e2 := LinearEquiv.ofInjective (cfn w.lam) (cfn_injective w.lam)
+  let e2 := LinearEquiv.ofInjective (GlobalTheory.SeriesTie.Scale.coefLin w.lam) (cfn_injective w.lam)
   let e3 := LinearEquiv.ofEq _ _ hr.symm
   refine ⟨H.subtype ∘ₗ (e1.symm.toLinearMap ∘ₗ e3.toLinearMap ∘ₗ e2.toLinearMap), fun F => ?_, fun F => ?_,
     fun P hP => ?_⟩
@@ -727,17 +704,17 @@ theorem exists_psi {m n : ℕ} (w : Weight D n) (B : GLR D n) (hw : w.Good) (hm 
   · have h1 : (e1 (e1.symm (e3 (e2 F))) : GLR D n → ℂ) = hf (e1.symm (e3 (e2 F))) :=
       LinearEquiv.ofInjective_apply _ _
     rw [LinearEquiv.apply_symm_apply] at h1
-    exact h1.symm.trans (LinearEquiv.ofInjective_apply (cfn w.lam) (h := cfn_injective w.lam) F)
+    exact h1.symm.trans (LinearEquiv.ofInjective_apply (GlobalTheory.SeriesTie.Scale.coefLin w.lam) (h := cfn_injective w.lam) F)
   · refine ⟨e2.symm (e3.symm (e1 ⟨P, hP⟩)), ?_⟩
     change ((e1.symm (e3 (e2 (e2.symm (e3.symm (e1 ⟨P, hP⟩))))) : H) : PolF D m n) = P
     rw [LinearEquiv.apply_symm_apply, LinearEquiv.apply_symm_apply, LinearEquiv.symm_apply_apply]
 
 theorem psi_inj {m n : ℕ} {w : Weight D n} {B : GLR D n} {Ψ : VV ℂ w.lam →ₗ[ℂ] PolF D m n}
-    (h2 : ∀ F, harmFn m w B (Ψ F) = cfn w.lam F) : Function.Injective Ψ := fun F G h =>
+    (h2 : ∀ F, harmFn m w B (Ψ F) = GlobalTheory.SeriesTie.Scale.coefLin w.lam F) : Function.Injective Ψ := fun F G h =>
   cfn_injective w.lam (by rw [← h2, ← h2, h])
 
 theorem psi_rhoVr {m n : ℕ} {w : Weight D n} {B : GLR D n} (hw : w.Good) (hm : ∀ τ, w.p τ + w.q τ ≤ m)
-    {Ψ : VV ℂ w.lam →ₗ[ℂ] PolF D m n} (h1 : ∀ F, Ψ F ∈ harm m w B) (h2 : ∀ F, harmFn m w B (Ψ F) = cfn w.lam F)
+    {Ψ : VV ℂ w.lam →ₗ[ℂ] PolF D m n} (h1 : ∀ F, Ψ F ∈ harm m w B) (h2 : ∀ F, harmFn m w B (Ψ F) = GlobalTheory.SeriesTie.Scale.coefLin w.lam F)
     (γ : GL (Fin n) D.host.E) (F : VV ℂ w.lam) :
     Ψ (rhoVr (tauE D) w.lam γ F) = fockGL m w B (embGL (tauE D) γ) (Ψ F) := by
   refine sub_eq_zero.1 (GlobalTheory.T.harmonic_polynomial_eq_zero_of_function D m n w B hw hm _ (sub_mem (h1 _) (fockGL_mem_harm w B _ (h1 _))) ?_)
@@ -857,7 +834,7 @@ theorem exists_wtMap : ∀ (D : D7) (S T : HSp D) (B : GlobalTheory.ExportSeries
     obtain ⟨hx1, hx2⟩ := (mem_coefLat_iff B _ _ _ h x).1 hx
     obtain ⟨G, rfl⟩ := hΨ3 x hx1
     rw [hΨ2] at hx2
-    suffices ∀ φ ∈ coefLatFn (embLL0 D) (labLL0 D) O B.w.lam (B.latAt h), ∃ w, cfn B.w.lam (Ω w) = φ by
+    suffices ∀ φ ∈ coefLatFn (embLL0 D) (labLL0 D) O B.w.lam (B.latAt h), ∃ w, GlobalTheory.SeriesTie.Scale.coefLin B.w.lam (Ω w) = φ by
       obtain ⟨w, hw⟩ := this _ hx2
       exact ⟨w, by change Ψ (Ω w) = Ψ G; rw [cfn_injective _ hw]⟩
     intro φ hφ
@@ -883,7 +860,7 @@ theorem exists_wtMap : ∀ (D : D7) (S T : HSp D) (B : GlobalTheory.ExportSeries
     have hL : Submodule.IsFullLattice D.host.E (B.latAt h) :=
       Formalism.UG.P.csGlob_lattice _ (Module.Finite.iff_fg.2 hS.fg) hS.span_eq_top _
     let Lat : Submodule O (VV ℂ B.w.lam) :=
-      (coefLatFn (embLL0 D) (labLL0 D) O B.w.lam (B.latAt h)).comap ((cfn B.w.lam).restrictScalars O)
+      (coefLatFn (embLL0 D) (labLL0 D) O B.w.lam (B.latAt h)).comap ((GlobalTheory.SeriesTie.Scale.coefLin B.w.lam).restrictScalars O)
     have hsmul : ∀ (c : R) {G : VV ℂ B.w.lam}, G ∈ Lat → e (algebraMap R (FractionRing R) c) • G ∈ Lat :=
       fun c G hG => Lat.smul_mem (⟨_, c, rfl⟩ : O) hG
     let Q : VV K₀ B.w.lam → Prop := fun y => ∀ r : FractionRing R, ∃ c : R, c ≠ 0 ∧
@@ -908,7 +885,7 @@ theorem exists_wtMap : ∀ (D : D7) (S T : HSp D) (B : GlobalTheory.ExportSeries
       refine ⟨d, nonZeroDivisors.ne_zero d.2, ?_⟩
       rw [mul_comm (algebraMap R (FractionRing R) _) r, had, mapVV_mapK, hsO]
       refine hsmul a ?_
-      change cfn B.w.lam (GlobalTheory.CoefModel.mapVV (embLL0 D) B.w.lam F) ∈ coefLatFn _ _ _ _ _
+      change GlobalTheory.SeriesTie.Scale.coefLin B.w.lam (GlobalTheory.CoefModel.mapVV (embLL0 D) B.w.lam F) ∈ coefLatFn _ _ _ _ _
       rw [← coefFn_eq_cfn]
       exact Submodule.subset_span ⟨F, hF, rfl⟩
     have hspanLL : ∀ G ∈ Submodule.span (↥D.LL0) (nabAtr (labLL0 D) B.w.lam (B.latAt h) : Set (VV (↥D.LL0) B.w.lam)),
@@ -981,8 +958,6 @@ open Formalism.AUTREP (GAf)
 open GlobalTheory.FormInner (frameEquiv)
 open scoped TensorProduct
 
-
-
 namespace GlobalTheory.InertiaEigenvalues.LamParam
 
 theorem infOf_lamV_eq_paramV : ∀ (D : D7) (j : Fin D.R.m) (hn : (Vc D j).rank = D.R.nV) (t : D.what₂.Tau), NG.infOf (fun a : Fin D.R.nV => (FWT.lamV D j t).w (Fin.cast hn.symm a)) = NG.paramV D.R (D.hc t) j (1 / 2) := by
@@ -1013,9 +988,6 @@ open Formalism.MainNotions.IntegralHeckeForms (TwOK)
 open Formalism.AUTREP (GAf)
 open GlobalTheory.FormInner (frameEquiv)
 open scoped TensorProduct
-
-
-
 
 namespace GlobalTheory.MtRead
 variable {D : D7}
@@ -1117,8 +1089,6 @@ theorem exists_wtMap {cf : CharFrame D} (X : NExpTied D) (cs : CharSide D cf) (h
     (fun t a => by rw [hw, hB]; rfl) T₀ hT₀ M.W M.ρ M.bc
 
 end Cell
-
-
 
 theorem levMatch (hA : GlobalTheory.Published.GlobalArtinReciprocity) : ∀ (D : D7) (cf : CharFrame D) (Rw : RowSide D) (low : Finset ℕ) (Pq : HeightOneSpectrum (𝓞 (maximalRealSubfield D.host.E)) → PlE D.host) (S : RatDat D.ntw) (hL : ∀ j, ℕ → PlE D.host → Module.End D.what₂.LL (S.WL j)) (eig : ℕ → D.what₂.FT → ℕ → PlE D.host → ↥D.LL0) (θ : ∀ kk : Fin 2, Multiplicative (ZMod (D.host.g kk)) →* (↥D.LL0)ˣ) (Bs : SideB D cf Rw low Pq S hL eig θ), TauTrue Bs.exp → ValLL0 D cf →
     (∀ v, v ∈ placesOver D.host.E D.host.pde ∨ v ∈ placesOver D.host.E D.host.pde' → IsSplitPl D.host v) →
@@ -1225,8 +1195,6 @@ theorem levMatch (hA : GlobalTheory.Published.GlobalArtinReciprocity) : ∀ (D :
         (fun A hA σ hσ => ⟨1, by rw [pow_one, hord A hA σ hσ]⟩) hid _ hres 1 u hu z hz
       rw [zpow_one] at this
       exact this
-
-
 
 theorem exists_reading : GlobalTheory.Published.GlobalArtinReciprocity → ∀ (D : D7) (cf : CharFrame D) (Rw : RowSide D) (low : Finset ℕ) (Pq : HeightOneSpectrum (𝓞 (maximalRealSubfield D.host.E)) → PlE D.host) (S : RatDat D.ntw) (hL : ∀ j, ℕ → PlE D.host → Module.End D.what₂.LL (S.WL j)) (eig : ℕ → D.what₂.FT → ℕ → PlE D.host → ↥D.LL0) (θ : ∀ kk : Fin 2, Multiplicative (ZMod (D.host.g kk)) →* (↥D.LL0)ˣ) (Bs : SideB D cf Rw low Pq S hL eig θ), TauTrue Bs.exp → CharSide D cf → ValLL0 D cf →
     (∀ v, v ∈ placesOver D.host.E D.host.pde ∨ v ∈ placesOver D.host.E D.host.pde' → IsSplitPl D.host v) →

@@ -267,9 +267,6 @@ section -- clump:auto
 
 open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N Formalism.MainNotions.LocalSituation GlobalTheory.Cyc TensorProduct
 
-theorem _root_.GlobalTheory.T.exists_deRhamFil_graded_symbol_to_tate_twist : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l P), ThetaL P AI → ∀ (K : FinExt l), ∃ sy : ℤ → P.R.BdR → PadicComplex l, ∀ a : ℤ, (∀ x ∈ (P.PD K).Fil a, ∀ y ∈ (P.PD K).Fil a, sy a (x + y) = sy a x + sy a y) ∧ (∀ (c : Om l), ∀ x ∈ (P.PD K).Fil a, sy a (algebraMap (Om l) P.R.BdR c * x) = (c : PadicComplex l) * sy a x) ∧ (∀ x ∈ (P.PD K).Fil a, sy a x = 0 ↔ x ∈ (P.PD K).Fil (a + 1)) ∧ ∀ (g : GQ l), ∀ x ∈ (P.PD K).Fil a, sy a (P.actQdR g x) = chiC P.χQ a g * AI.actC g (sy a x) := by
-  intro l _ P AI h K
-  exact GlobalTheory.DeRhamSymbol.exists_symbol l P AI h K
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsDeRhamFilGradedSymbolToTateTwistStatement =====
@@ -303,12 +300,10 @@ variable {G : Type} [Group G] [TopologicalSpace G] {R Qp LL O : Type} [CommRing 
   (hφ : ∀ c, algebraMap O LL (φ c) = algebraMap Qp LL (algebraMap R Qp c))
   (hint : ∀ a : LL, ∃ c : R, c ≠ 0 ∧ ∃ o : O, algebraMap O LL o = algebraMap R Qp c • a)
 
-
 include hφ in
 omit [IsDomain R] in
 theorem smul_eq (c : R) (v : T.V) : φ c • v = algebraMap R Qp c • v := by
   rw [← algebraMap_smul LL (φ c) v, ← algebraMap_smul LL (algebraMap R Qp c) v, hφ]
-
 
 include hφ hint in
 theorem exists_smul_mem (v : T.V) : ∃ c : R, c ≠ 0 ∧ algebraMap R Qp c • v ∈ T.L.T := by
@@ -336,7 +331,6 @@ theorem exists_smul_mem (v : T.V) : ∃ c : R, c ≠ 0 ∧ algebraMap R Qp c •
     rw [← algebraMap_smul LL o, ho, smul_assoc, smul_comm a] at h3
     rw [map_mul, mul_smul]
     exact h3
-
 
 include hφ hint in
 theorem exists_basis_compHom [IsFractionRing R Qp] {ι : Type} :
@@ -426,7 +420,7 @@ theorem basis_of_invariants (P : LocPrime l) (AI : LocAinf l P) (Θ : ThetaL P A
       ∀ σ ∈ GK E, ∀ k, twAct AI.actC P.χQ (u k)
         (fun g => (M g).map (algebraMap ℚ_[l] (PadicComplex l))) σ (e k) = e k := by
   classical
-  obtain ⟨sy, hsy⟩ := GlobalTheory.T.exists_deRhamFil_graded_symbol_to_tate_twist l P AI Θ E
+  obtain ⟨sy, hsy⟩ := GlobalTheory.DeRhamSymbol.exists_symbol l P AI Θ E
   have hsum : ∀ (a : ℤ) (t : Finset (Fin d)) (f : Fin d → P.R.BdR),
       (∀ j ∈ t, f j ∈ (P.PD E).Fil a) → sy a (∑ j ∈ t, f j) = ∑ j ∈ t, sy a (f j) := by
     intro a t f
@@ -505,8 +499,6 @@ theorem basis_of_invariants (P : LocPrime l) (AI : LocAinf l P) (Θ : ThetaL P A
           Finset.mem_univ, ite_true]
         exact h i) k
     simp at this
-
-
 
 theorem htBasis_of_isCrys (P : LocPrime l) (AI : LocAinf l P) (Θ : ThetaL P AI) (K : FinExt l)
     (s : ℕ) (hs : Lev l s) (E : FinExt l) (hEs : E.1 = Ks K s) (hle : K.1 ≤ E.1) (LL : FinExt l)
@@ -679,11 +671,8 @@ variable {l : ℕ} [Fact l.Prime]
 
 theorem norm_OC (y : OC l) : ‖(y : PadicComplex l)‖ ≤ 1 := (_root_.GlobalTheory.RingBasics.mem_OC _).1 y.2
 
-theorem norm_alg (x : ℚ_[l]) : ‖algebraMap ℚ_[l] (PadicComplex l) x‖ = ‖x‖ := by
-  exact norm_algebraMap' _ x
-
 theorem norm_lpow (m : ℕ) : ‖(l : PadicComplex l) ^ m‖ = (l : ℝ) ^ (-(m : ℤ)) := by
-  have h := norm_alg ((l : ℚ_[l]) ^ m)
+  have h := GlobalTheory.Cyc.FrameTorsion.norm_algebraMap ((l : ℚ_[l]) ^ m)
   rw [map_pow, map_natCast] at h
   rw [h, Padic.norm_p_pow]
 
@@ -710,7 +699,7 @@ theorem theta_alg (θ : Ainf l →+* OC l) (z : ℤ_[l]) :
     generalize z.appr m = n at hz
     subst hz
     simp [zC]
-  have h2 : ‖zC w‖ ≤ 1 := by rw [zC, norm_alg]; exact w.2
+  have h2 : ‖zC w‖ ≤ 1 := by rw [zC, GlobalTheory.Cyc.FrameTorsion.norm_algebraMap]; exact w.2
   have h3 := norm_OC (θ (algebraMap ℤ_[l] (Ainf l) w))
   have h4 : 0 ≤ (l : ℝ) ^ (-(m : ℤ)) := by positivity
   rw [h1]
@@ -718,16 +707,7 @@ theorem theta_alg (θ : Ainf l →+* OC l) (z : ℤ_[l]) :
   rw [norm_mul, norm_mul, norm_lpow]
   nlinarith
 
-theorem inclW_inj : Function.Injective (inclW l) :=
-  WittVector.map_injective _ (IsFractionRing.injective (OCb l) (Cb l))
-
 variable {P : LocPrime l} (AI : LocAinf l P)
-
-theorem xi_cancel {a b : Ainf l} (h : AI.ξ * a = AI.ξ * b) : a = b := by
-  apply inclW_inj
-  have := congrArg (inclW l) h
-  rw [map_mul, map_mul] at this
-  exact AI.isUnit_inclW_ξ.mul_left_cancel this
 
 theorem εroot_pow (m : ℕ) : AI.εroot m ^ (l ^ m) = AI.ε := by
   induction m with
@@ -781,7 +761,7 @@ theorem theta_lambda (θ : Ainf l →+* OC l) (hθ : IsTheta AI θ) (g : GQ l)
   rw [hk, ← pow_mul, mul_comm a, pow_mul, hzl, hk', AI.μ_eq, map_mul, hlam] at h1
   have h2 : AI.actW g AI.π₁ * lam = (a : Ainf l) * AI.π₁ +
       (l : Ainf l) ^ m * ((z ^ a) ^ (l ^ m - 1) * b) + AI.ξ * (k' * AI.π₁ ^ 2 + k * b ^ 2) := by
-    apply xi_cancel AI
+    apply GlobalTheory.AinfCont.xi_mul_cancel AI
     rw [Nat.cast_pow, one_pow, one_pow] at h1
     linear_combination h1
   have hξ : θ AI.ξ = 0 := (hker _).2 dvd_rfl
@@ -798,7 +778,7 @@ theorem theta_lambda (θ : Ainf l →+* OC l) (hθ : IsTheta AI θ) (g : GQ l)
     linear_combination h3
   rw [h4]
   refine (norm_sub_le _ _).trans ?_
-  rw [norm_mul, norm_mul, norm_lpow, norm_alg]
+  rw [norm_mul, norm_mul, norm_lpow, GlobalTheory.Cyc.FrameTorsion.norm_algebraMap]
   have h5 := norm_OC u
   have h6 := norm_OC (AI.ζ 1 - 1)
   have h7 : 0 ≤ (l : ℝ) ^ (-(m : ℤ)) := by positivity
@@ -818,7 +798,7 @@ theorem toM_bij (i : ℤ) : Function.Bijective (toM AI i) := by
   · intro a b h
     have := congrArg Subtype.val h
     rw [toM_val, toM_val] at this
-    exact inclW_inj ((Units.mul_right_inj _).1 this)
+    exact GlobalTheory.AinfCont.inclW_injective ((Units.mul_right_inj _).1 this)
   · rintro ⟨x, y, ⟨a, rfl⟩, rfl⟩
     exact ⟨a, rfl⟩
 
@@ -835,7 +815,7 @@ theorem toM_mem (i : ℤ) (a : Ainf l) :
     have h' : ((xiU AI ^ (i + 1) : (WCb l)ˣ) : WCb l) * inclW l b =
       ((xiU AI ^ i : (WCb l)ˣ) : WCb l) * inclW l a := h
     rw [key] at h'
-    exact (inclW_inj ((Units.mul_right_inj _).1 h')).symm
+    exact (GlobalTheory.AinfCont.inclW_injective ((Units.mul_right_inj _).1 h')).symm
   · rintro ⟨b, rfl⟩
     exact ⟨inclW l b, ⟨b, rfl⟩, key b⟩
 
@@ -853,12 +833,12 @@ theorem toM_act (i : ℤ) (g : GQ l) : ∃ lam : (Ainf l)ˣ, AI.actW g AI.ξ = l
   have hb1 : inclW l b = u := hb
   have hb2 : inclW l b' = ((u⁻¹ : (WCb l)ˣ) : WCb l) := hb'
   have hbb : b * b' = 1 := by
-    apply inclW_inj
+    apply GlobalTheory.AinfCont.inclW_injective
     rw [map_mul, hb1, hb2, map_one, Units.mul_inv]
   let lam : (Ainf l)ˣ := ⟨b, b', hbb, by rw [mul_comm, hbb]⟩
   have hmap : Units.map (inclW l).toMonoidHom lam = u := Units.ext hb1
   refine ⟨lam, ?_, fun a => ?_⟩
-  · apply inclW_inj
+  · apply GlobalTheory.AinfCont.inclW_injective
     have h1 := inclW_act AI g AI.ξ
     have h2 : AI.actWCbHom g (inclW l AI.ξ) = u * inclW l AI.ξ := hu
     rw [map_mul]
@@ -964,13 +944,9 @@ namespace GlobalTheory.Cyc.GradedTorsion
 
 variable {l : ℕ} [Fact l.Prime]
 
-theorem algebraMap_eq (q : ℚ_[l]) :
-    algebraMap ℚ_[l] (PadicComplex l) q = ((algebraMap ℚ_[l] (Om l) q : Om l) : PadicComplex l) :=
-  IsScalarTower.algebraMap_apply ℚ_[l] (Om l) (PadicComplex l) q
-
 theorem norm_l_lt : ‖(l : PadicComplex l)‖ < 1 := by
   have h : (l : PadicComplex l) = algebraMap ℚ_[l] (PadicComplex l) (l : ℚ_[l]) := (map_natCast _ _).symm
-  rw [h, algebraMap_eq, PadicComplex.norm_extends, PadicAlgCl.norm_extends]
+  rw [h, GlobalTheory.Cyc.Procyclic.algebraMap_eq_coe, PadicComplex.norm_extends, PadicAlgCl.norm_extends]
   exact Padic.norm_p_lt_one
 
 theorem zC_add (x y : ℤ_[l]) : zC (x + y) = zC x + zC y := by simp [zC]
@@ -1608,8 +1584,6 @@ theorem tors_descend {P : LocPrime l} (AI : LocAinf l P) (K : FinExt l) {i j : �
   tors_repQ AI (Gj K i) (Gj K j) (Gj_anti K hij) _ _ (comp_inclusion (Gj_anti K hij) hle hle' ρ) a b _ _
     (relIndex_Gj K hi hij) h
 
-
-
 theorem tors_combine {P : LocPrime l} (AI : LocAinf l P) (K : FinExt l) {i j : ℕ} (hi : 1 ≤ i)
     (hij : i ≤ j) (G : Subgroup (GQ l)) (hle : Gj K i ≤ G) (hle' : Gj K j ≤ G)
     (T : Type) [AddCommGroup T] [Module ℤ_[l] T] [Module.Free ℤ_[l] T] [Module.Finite ℤ_[l] T]
@@ -1649,8 +1623,6 @@ theorem vdeg_eq (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (K : FinExt l)
   have h2 : (sit D.loc HW l (D.locA l) K s LL h).W.s = s := (HW l).W_s K s LL h
   rw [vdegMs, h1, h2]
   exact val_deg K h.1 hsm
-
-
 
 theorem torsion_bound_at_level : ∀ (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW), adm5 D → adm7 D → ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL), let S := sit D.loc HW l (D.locA l) K s LL h; let E : S.Comparison₂ := ((F l).E K s LL h).tie; ∀ (T : LocLat S.G S.Qp S.LL S.O) (M0 h0 : ℕ) (a b : ℤ) (hle : Gj K s ≤ GK K), a < b → HypW S E T M0 h0 → letI := zlMod LL T; letI : TopologicalSpace (TensorProduct ℤ_[l] ↥T.L.T (Qab (AinfSub l) (xiU (D.locA l)) a b)) := (Ideal.span {(l : ℤ_[l])}).adicModuleTopology _; TorsKilledBy (repQ (D.locA l) (Gj K s) ((actTZ LL T).comp (Subgroup.inclusion hle)) a b) (l : ℤ_[l]) ((l : ℤ_[l]) ^ cLL l (mN l s (M0 + h0)) (vdegMs S (mN l s (M0 + h0))) (Jset S T) a b) := by
   intro D HW F h5 h7 l _ K s LL h S E T M0 h0 a b hle hab hW

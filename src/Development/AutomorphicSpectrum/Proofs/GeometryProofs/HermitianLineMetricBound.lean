@@ -119,7 +119,6 @@ theorem continuousAt_aeval_segreRatio {K : Type} [Fintype K] {J : K → Type} {w
 
 end OpenNear
 
-
 open OpenNear in
 theorem open_near : ∀ (X : Scheme.{0}) (Ω : Type) [Field Ω] (ξ : Sp Ω ⟶ X) (K : Type) [Fintype K] (J : K → Type)
     [∀ k, Fintype (J k)] (y : (Σ k, J k) → Ω),
@@ -495,12 +494,9 @@ theorem val_finsetProd (hz : genPt ξ ⤳ centre z) {I : Type} (s : Finset I) (a
 
 variable {K : Type} [Fintype K] {J : K → Type} {y : (Σ k, J k) → Ω}
 
-def ratioAt (c : (k : K) → J k) (w : (Σ k, J k) → ℂ) (c' : (k : K) → J k) : ℂ :=
-  ∏ k, w ⟨k, c' k⟩ / w ⟨k, c k⟩
-
 theorem val_ratio {w : (Σ k, J k) → ℂ} {c : (k : K) → J k} (hz : genPt ξ ⤳ centre z) (hw : CoordsAt ξ y z w)
     (hc : ∀ k, w ⟨k, c k⟩ ≠ 0) (c' : (k : K) → J k) :
-    ValAt ξ z ((∏ k, y ⟨k, c' k⟩) / ∏ k, y ⟨k, c k⟩) (ratioAt c w c') := by
+    ValAt ξ z ((∏ k, y ⟨k, c' k⟩) / ∏ k, y ⟨k, c k⟩) (GlobalTheory.CompanionTheory.Ar.RootHt.ArchB.OpenNear.segreRatio c w c') := by
   rw [← Finset.prod_div_distrib]
   refine val_finsetProd hz _ _ _ fun k _ => ?_
   obtain ⟨-, h2⟩ := hw.2 k (c k) (isUnit_iff_ne_zero.2 (hc k))
@@ -511,7 +507,7 @@ theorem val_ratio {w : (Σ k, J k) → ℂ} {c : (k : K) → J k} (hz : genPt ξ
 theorem val_ratioPoly {w : (Σ k, J k) → ℂ} {c : (k : K) → J k} (hz : genPt ξ ⤳ centre z)
     (hw : CoordsAt ξ y z w) (hc : ∀ k, w ⟨k, c k⟩ ≠ 0) (P : MvPolynomial ((k : K) → J k) ℤ) :
     ValAt ξ z (MvPolynomial.aeval (fun c' : (k : K) → J k => (∏ k, y ⟨k, c' k⟩) / ∏ k, y ⟨k, c k⟩) P)
-      (MvPolynomial.aeval (ratioAt c w) P) := by
+      (MvPolynomial.aeval (GlobalTheory.CompanionTheory.Ar.RootHt.ArchB.OpenNear.segreRatio c w) P) := by
   induction P using MvPolynomial.induction_on with
   | C n => simpa using val_intCast hz n
   | add p q hp hq => simpa only [map_add (f := _)] using val_add hp hq
@@ -519,13 +515,13 @@ theorem val_ratioPoly {w : (Σ k, J k) → ℂ} {c : (k : K) → J k} (hz : genP
     simpa only [map_mul, MvPolynomial.aeval_X] using val_mul hp (val_ratio hz hw hc i)
 
 theorem continuousAt_ratioAt {w₀ : (Σ k, J k) → ℂ} {c : (k : K) → J k} (hc : ∀ k, w₀ ⟨k, c k⟩ ≠ 0)
-    (c' : (k : K) → J k) : ContinuousAt (fun w => ratioAt c w c') w₀ :=
+    (c' : (k : K) → J k) : ContinuousAt (fun w => GlobalTheory.CompanionTheory.Ar.RootHt.ArchB.OpenNear.segreRatio c w c') w₀ :=
   tendsto_finsetProd _ fun k _ =>
     ((continuous_apply _).continuousAt).div ((continuous_apply _).continuousAt) (hc k)
 
 theorem continuousAt_ratioPoly {w₀ : (Σ k, J k) → ℂ} {c : (k : K) → J k} (hc : ∀ k, w₀ ⟨k, c k⟩ ≠ 0)
     (P : MvPolynomial ((k : K) → J k) ℤ) :
-    ContinuousAt (fun w => MvPolynomial.aeval (ratioAt c w) P) w₀ := by
+    ContinuousAt (fun w => MvPolynomial.aeval (GlobalTheory.CompanionTheory.Ar.RootHt.ArchB.OpenNear.segreRatio c w) P) w₀ := by
   intros
   apply _root_.GlobalTheory.CompanionTheory.Ar.RootHt.ArchB.OpenNear.continuousAt_aeval_segreRatio <;> assumption
 
@@ -547,7 +543,7 @@ theorem val_near : ∀ (X : Scheme.{0}) (Ω : Type) [Field Ω] (ξ : Sp Ω ⟶ X
   have hvt : ValAt ξ z₀ (MvPolynomial.aeval
       (fun c' : (k : K) → J k => (∏ k, y ⟨k, c' k⟩) / ∏ k, y ⟨k, c k⟩) Q)
       ((Scheme.stalkClosedPointTo z₀).hom t) := ⟨h₀, t, hQ, rfl⟩
-  have hne : MvPolynomial.aeval (ratioAt c w₀) Q ≠ 0 := by
+  have hne : MvPolynomial.aeval (GlobalTheory.CompanionTheory.Ar.RootHt.ArchB.OpenNear.segreRatio c w₀) Q ≠ 0 := by
     rw [val_unique hT.gen hvQ hvt]
     exact (ht.map (Scheme.stalkClosedPointTo z₀).hom).ne_zero
   have hQa : MvPolynomial.aeval
@@ -558,9 +554,9 @@ theorem val_near : ∀ (X : Scheme.{0}) (Ω : Type) [Field Ω] (ξ : Sp Ω ⟶ X
       (fun c' : (k : K) → J k => (∏ k, y ⟨k, c' k⟩) / ∏ k, y ⟨k, c k⟩) P *
       (MvPolynomial.aeval (fun c' : (k : K) → J k => (∏ k, y ⟨k, c' k⟩) / ∏ k, y ⟨k, c k⟩) Q)⁻¹ := by
     rw [← hPQ, mul_inv_cancel_right₀ hQa]
-  refine ⟨fun w => MvPolynomial.aeval (ratioAt c w) P / MvPolynomial.aeval (ratioAt c w) Q,
+  refine ⟨fun w => MvPolynomial.aeval (GlobalTheory.CompanionTheory.Ar.RootHt.ArchB.OpenNear.segreRatio c w) P / MvPolynomial.aeval (GlobalTheory.CompanionTheory.Ar.RootHt.ArchB.OpenNear.segreRatio c w) Q,
     (continuousAt_ratioPoly hc' P).div (continuousAt_ratioPoly hc' Q) hne,
-    {w | (∀ k, w ⟨k, c k⟩ ≠ 0) ∧ MvPolynomial.aeval (ratioAt c w) Q ≠ 0}, ?_, ?_⟩
+    {w | (∀ k, w ⟨k, c k⟩ ≠ 0) ∧ MvPolynomial.aeval (GlobalTheory.CompanionTheory.Ar.RootHt.ArchB.OpenNear.segreRatio c w) Q ≠ 0}, ?_, ?_⟩
   · have e1 : ∀ᶠ w : (Σ k, J k) → ℂ in 𝓝 w₀, ∀ k, w ⟨k, c k⟩ ≠ 0 :=
       eventually_all.2 fun k => ((continuous_apply _).continuousAt).eventually_ne (hc' k)
     exact e1.and ((continuousAt_ratioPoly hc' Q).eventually_ne hne)

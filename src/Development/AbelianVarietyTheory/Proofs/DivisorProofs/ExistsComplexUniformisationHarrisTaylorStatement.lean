@@ -1234,8 +1234,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped Matrix
 open GlobalTheory.UPel.HT
 
-theorem _root_.GlobalTheory.T.uniformised_complex_fibre_marked_lattice_class : ∀ (p : ℕ) [Fact p.Prime] (D : Datum p) (R : Type) [CommRing R] (b : Base D R) (N : ℕ) (σ : R →+* ℂ) (ρ : D.O →+* Matrix (Fin D.g) (Fin D.g) ℂ) (o : Obj b N (spMap σ)) h hL (D' : PLat D.O D.inv) t Q e, 0 < N → N.Coprime p → UnifAt (o.fam h hL) σ ρ N D' t Q (𝟙 _) e → ∃ t', D.Cls N D' t' ∧ ∀ a, ∃ x, t' a = t a + N • x := by
-  first | exact @GlobalTheory.UPel.HT.unifAt_cls
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.UniformisedComplexFibreMarkedLatticeClassStatement =====
@@ -1408,7 +1406,7 @@ theorem exists_unifAt : ∀ (p : ℕ) [Fact p.Prime] (D : Datum p) (R : Type) [C
     show Mi *ᵥ (ρ' a *ᵥ z) = ρ a *ᵥ (Mi *ᵥ z)
     rw [Matrix.mulVec_mulVec, Matrix.mulVec_mulVec, hinv]
   have hU2 := unifAt_change hU hl hc
-  obtain ⟨t', hcls, ht'⟩ := GlobalTheory.T.uniformised_complex_fibre_marked_lattice_class p D R b N σ ρ o h hL D' t _ _ hN hNp hU2
+  obtain ⟨t', hcls, ht'⟩ := GlobalTheory.UPel.HT.unifAt_cls p D R b N σ ρ o h hL D' t _ _ hN hNp hU2
   have hmk : IsMarkedIsom N D' D' t t' (LinearEquiv.refl D.O D'.La) := by
     refine ⟨fun x y => rfl, fun a => ?_⟩
     obtain ⟨x, hx⟩ := ht' a

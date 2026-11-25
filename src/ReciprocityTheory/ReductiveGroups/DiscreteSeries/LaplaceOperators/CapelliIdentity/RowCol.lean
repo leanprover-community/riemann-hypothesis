@@ -5,6 +5,7 @@ public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.CapelliIdentity.ColAnti
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.CapelliIdentity.ProdOfFnUpdateEq
 public import Mathlib.GroupTheory.Perm.Fin
+import Mathlib.Algebra.Module.Torsion.Field
 import Mathlib.Tactic.TypeStar
 
 -- This file was produced by scripts/clump.py from the modules listed below.
@@ -271,15 +272,6 @@ open ReciprocityTheory.ChartRestriction.DS
 
 variable {𝒰 : Type*} [Ring 𝒰] [Algebra ℂ 𝒰] {n : ℕ} (E : Fin n → Fin n → 𝒰)
 
-private theorem eq_of_succ_nsmul_eq_succ_nsmul {M : Type*} [AddCommGroup M] [Module ℂ M] (k : ℕ) {a b : M}
-    (h : (k + 1) • a = (k + 1) • b) : a = b := by
-  have hne : ((k + 1 : ℕ) : ℂ) ≠ 0 := Nat.cast_ne_zero.mpr (Nat.succ_ne_zero k)
-  have h' : ((k + 1 : ℕ) : ℂ) • a = ((k + 1 : ℕ) : ℂ) • b := by
-    rw [Nat.cast_smul_eq_nsmul ℂ, Nat.cast_smul_eq_nsmul ℂ]; exact h
-  calc a = ((k + 1 : ℕ) : ℂ)⁻¹ • (((k + 1 : ℕ) : ℂ) • a) := (inv_smul_smul₀ hne a).symm
-    _ = ((k + 1 : ℕ) : ℂ)⁻¹ • (((k + 1 : ℕ) : ℂ) • b) := by rw [h']
-    _ = b := inv_smul_smul₀ hne b
-
 private theorem sum_sum_sub_sum_succAbove_eq_zero {M : Type*} [AddCommGroup M] {p : ℕ}
     (T : Fin (p + 1) → Fin (p + 1) → M) :
     ∑ i : Fin (p + 1), ∑ j : Fin (p + 1),
@@ -335,7 +327,7 @@ theorem cminor_eq_rminor (hE : GlRelR E) {p : ℕ} (R C : Fin p → Fin n) (x : 
       exact h0
     have hs := sub_eq_zero.mp hdiff
     rw [Finset.sum_const, Finset.sum_const, Finset.card_univ, Fintype.card_fin] at hs
-    exact eq_of_succ_nsmul_eq_succ_nsmul p hs
+    exact (HasUniqueDiv.of_isTorsionFree ℂ _).nsmul_right_injective (Nat.succ_ne_zero p) hs
 
 theorem cminor_succ_row (hE : GlRelR E) {p : ℕ} (R C : Fin (p + 1) → Fin n) (x : ℂ) :
     cminor E R C x = ∑ j : Fin (p + 1), ((-1 : ℂ) ^ (j : ℕ)) •

@@ -93,16 +93,11 @@ private theorem fib {ι κ V : Type} [Fintype ι] [Fintype κ] [AddCommMonoid V]
     [DecidablePred Q] [DecidablePred fun i => C i ∧ Q (d i)] [∀ z, DecidablePred fun i => C i ∧ d i = z] :
     ∑ i ∈ Finset.univ.filter (fun i => C i ∧ Q (d i)), F i =
       ∑ z ∈ Finset.univ.filter Q, ∑ i ∈ Finset.univ.filter (fun i => C i ∧ d i = z), F i := by
-  rw [← Finset.sum_fiberwise_of_maps_to (s := Finset.univ.filter (fun i => C i ∧ Q (d i))) (t := Finset.univ.filter Q) (g := d)
-    (fun i hi => by simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hi ⊢; exact hi.2)]
-  refine Finset.sum_congr rfl fun z hz => Finset.sum_congr ?_ fun _ _ => rfl
-  ext i
-  simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hz ⊢
-  constructor
-  · rintro ⟨⟨h1, -⟩, h2⟩
-    exact ⟨h1, h2⟩
-  · rintro ⟨h1, h2⟩
-    exact ⟨⟨h1, h2 ▸ hz⟩, h2⟩
+  classical
+  have h := (Finset.sum_fiberwise_eq_sum_filter (Finset.univ.filter C)
+    (Finset.univ.filter Q) d F).symm
+  simp_rw [Finset.filter_filter, Finset.mem_filter, Finset.mem_univ, true_and] at h
+  convert h
 
 theorem UpperTheory.V.Z.Kato.Nb.sXiMul :
     UpperTheory.V.Z.Kato.Nb.SXiMul := by

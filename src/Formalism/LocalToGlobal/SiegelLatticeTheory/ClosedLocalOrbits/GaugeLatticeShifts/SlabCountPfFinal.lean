@@ -852,7 +852,7 @@ theorem lw_isFullLattice (Λ : Submodule (𝓞 D.host.E) (VS D).V)
 theorem leviWFinC_of (hP : LeviPosC) : LeviWFinC := by
   intro D X Y u' Λ hΛ
   have hlat : Submodule.IsFullLattice D.host.E Λ := (((Y.rowsOK u').1 Λ hΛ).1).1
-  refine Formalism.HermitianLatticesTheory.autFinite D.host.E (Wsp X u') (hW X u') (hW_symm X u') ?_ (LW X u' Λ)
+  refine Formalism.HermitianLatticesTheory.autFinite D.host.E (Wsp X u') (hW X u') ?_ (LW X u' Λ)
     (lw_isFullLattice X u' Λ hlat)
   intro x hx
   exact hP D X u' x x.2 (fun h => hx (Subtype.ext h))

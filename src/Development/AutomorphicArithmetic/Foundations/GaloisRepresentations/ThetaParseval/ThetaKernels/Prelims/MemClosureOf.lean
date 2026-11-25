@@ -73,8 +73,8 @@ private theorem cmE : IsCMExt (maximalRealSubfield E) E (cj E) := isCMExt_of_isC
 private theorem conjAd_adeleMap (a : AF (maximalRealSubfield E)) :
     GlobalTheory.UnitaryBC.conjAd E (GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.adeleMap (maximalRealSubfield E) E a) =
       GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.adeleMap (maximalRealSubfield E) E a := by
-  haveI := GlobalTheory.AdelicUnitaryTop.t2Space_infiniteAdeleRing_of_numberField_field E
-  haveI := GlobalTheory.AdelicUnitaryTop.t2Space_finiteAdeleRing_of_numberField E
+  have := GlobalTheory.AdelicUnitaryTop.t2Space_infiniteAdeleRing_of_numberField_field E
+  have := GlobalTheory.AdelicUnitaryTop.t2Space_finiteAdeleRing_of_numberField E
   have key : ∀ k : maximalRealSubfield E,
       GlobalTheory.UnitaryBC.conjAd E (GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.adeleMap (maximalRealSubfield E) E (algebraMap _ _ k)) =
         GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.adeleMap (maximalRealSubfield E) E (algebraMap _ _ k) := fun k => by

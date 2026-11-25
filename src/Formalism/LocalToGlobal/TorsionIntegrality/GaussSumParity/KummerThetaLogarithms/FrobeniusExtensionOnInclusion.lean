@@ -254,13 +254,8 @@ lemma jBK_inj (hB : ∀ x : ℂ_[l], x ∈ ringB l ↔ x ∈ MaximalUnramifiedEx
   apply Subtype.ext
   rw [← jBK_coe hB x, ← jBK_coe hB y, h]
 
-lemma l_ne_zero_Kur : (l : MaximalUnramifiedExtension l) ≠ 0 := by
-  intro h
-  have h2 := congrArg (fun z : MaximalUnramifiedExtension l => (z : ℂ_[l])) h
-  push_cast at h2
-  have h3 := norm_l_eq l
-  rw [h2, norm_zero] at h3
-  exact (inv_pos.mpr (l_pos_real l)).ne h3
+lemma l_ne_zero_Kur : (l : MaximalUnramifiedExtension l) ≠ 0 :=
+  Nat.cast_ne_zero.2 hl.out.ne_zero
 
 lemma jBK_surj (hB : ∀ x : ℂ_[l], x ∈ ringB l ↔ x ∈ MaximalUnramifiedExtension l ∧ ‖x‖ ≤ 1) (z : MaximalUnramifiedExtension l) :
     ∃ (k : ℕ) (b : ringB l), z * (l : MaximalUnramifiedExtension l) ^ k = jBK hB b := by

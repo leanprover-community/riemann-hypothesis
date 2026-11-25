@@ -406,11 +406,6 @@ open Polynomial
 
 namespace GlobalTheory.PicDiv.SquarefreeFibre
 
-theorem algebraMap_norm_mem_span {R S : Type} [CommRing R] [CommRing S] [Algebra R S]
-    [Module.Free R S] [Module.Finite R S] (g : S) :
-    algebraMap R S (Algebra.norm R g) ∈ Ideal.span {g} := by
-  apply _root_.GlobalTheory.SquarefreeFibre.algebraMap_norm_mem_span
-
 theorem main : ∀ (k A : Type) [Field k] [IsAlgClosed k] [CommRing A] [IsDedekindDomain A] [Algebra k A] [Algebra k[X] A] [IsScalarTower k k[X] A] [Module.Finite k[X] A] [Module.Free k[X] A], (∃ δ : k[X], δ ≠ 0 ∧ ∀ α : k, δ.eval α ≠ 0 → ∀ Q : Ideal A, Q.IsMaximal → algebraMap k[X] A (X - C α) ∉ Q ^ 2) → ∀ (g : A) (s : ℕ), g ≠ 0 → ∃ (q : k[X]) (r : ℕ) (Q : Fin r → Ideal A), q.Monic ∧ q.natDegree = s ∧ (∀ i, (Q i).IsMaximal) ∧ Function.Injective Q ∧ (∀ i, g ∉ Q i) ∧ Ideal.span {algebraMap k[X] A q} = ∏ i, Q i := by
   intro k A _ _ _ _ _ _ _ _ _ hred g s hg
   classical
@@ -430,7 +425,7 @@ theorem main : ∀ (k A : Type) [Field k] [IsAlgClosed k] [CommRing A] [IsDedeki
 
   have hgnot : ∀ (P : Ideal A), P.IsPrime → ∀ α : k, N.eval α ≠ 0 → u (X - C α) ∈ P → g ∉ P := by
     intro P hP α hα hX hgP
-    have hNP : u N ∈ P := (Ideal.span_singleton_le_iff_mem P).mpr hgP (algebraMap_norm_mem_span g)
+    have hNP : u N ∈ P := (Ideal.span_singleton_le_iff_mem P).mpr hgP (GlobalTheory.SquarefreeFibre.algebraMap_norm_mem_span g)
     have hdec := modByMonic_add_div N (X - C α)
     rw [modByMonic_X_sub_C_eq_C_eval] at hdec
     have h5 : C (N.eval α) = N - (X - C α) * (N /ₘ (X - C α)) := eq_sub_of_add_eq hdec
@@ -603,11 +598,6 @@ section Bounded
 variable {k A : Type} [Field k] [CommRing A] [Algebra k A] [Algebra k[X] A]
   [IsScalarTower k k[X] A]
 
-theorem repr_smul_const {n : ℕ} (b : Module.Basis (Fin n) k[X] A) (c : k) (f : A) (i : Fin n) :
-    b.repr (c • f) i = C c * b.repr f i := by
-  rw [← algebraMap_smul k[X] c f, map_smul, Finsupp.smul_apply, smul_eq_mul,
-    Polynomial.algebraMap_eq]
-
 def boundedIn {n : ℕ} (b : Module.Basis (Fin n) k[X] A) (D : Ideal A) (d : ℕ) : Submodule k A where
   carrier := {f | f ∈ D ∧ ∀ i, (b.repr f i).natDegree ≤ d}
   zero_mem' := ⟨D.zero_mem, fun i => by simp⟩
@@ -615,14 +605,14 @@ def boundedIn {n : ℕ} (b : Module.Basis (Fin n) k[X] A) (D : Ideal A) (d : ℕ
     rw [map_add (f := _), Finsupp.add_apply]
     exact (natDegree_add_le _ _).trans (max_le (hf.2 i) (hg.2 i))⟩
   smul_mem' := fun c f hf => ⟨by rw [Algebra.smul_def]; exact D.mul_mem_left _ hf.1, fun i => by
-    rw [repr_smul_const]
+    rw [GlobalTheory.LinSys.repr_smul_const]
     exact (natDegree_C_mul_le _ _).trans (hf.2 i)⟩
 
 def coeffMap {n : ℕ} (b : Module.Basis (Fin n) k[X] A) (D : Ideal A) (d : ℕ) :
     boundedIn b D d →ₗ[k] (Fin n → Fin (d + 1) → k) where
   toFun f i j := (b.repr (f : A) i).coeff j
   map_add' f g := by ext i j; simp
-  map_smul' c f := by ext i j; simp [repr_smul_const, coeff_C_mul]
+  map_smul' c f := by ext i j; simp [GlobalTheory.LinSys.repr_smul_const, coeff_C_mul]
 
 theorem coeffMap_injective {n : ℕ} (b : Module.Basis (Fin n) k[X] A) (D : Ideal A) (d : ℕ) :
     Function.Injective (coeffMap b D d) := by
@@ -641,7 +631,6 @@ theorem isCoprime_of_not_le {A : Type} [CommRing A] {M D : Ideal A} (hM : M.IsMa
   exact h (le_sup_right.trans (hM.eq_of_le h' le_sup_left).ge)
 
 end GlobalTheory.PicDiv.LinSys
-
 
 open GlobalTheory.PicDiv.LinSys in
 theorem GlobalTheory.PicDiv.linear_system_setup : ∀ (k A : Type) [Field k] [IsAlgClosed k] [CommRing A] [IsDedekindDomain A] [Algebra k A] [Algebra k[X] A] [IsScalarTower k k[X] A] [Module.Finite k[X] A] [Module.Free k[X] A], (∃ δ : k[X], δ ≠ 0 ∧ ∀ α : k, δ.eval α ≠ 0 → ∀ Q : Ideal A, Q.IsMaximal → algebraMap k[X] A (X - C α) ∉ Q ^ 2) → ∀ (N : ℕ) (P₀ : Ideal A), 1 ≤ N → P₀.IsMaximal → ∃ (r : ℕ) (V : Submodule k A) (D : Ideal A) (Q : Fin r → Ideal A) (f₀ : A), (FiniteDimensional k V ∧ (∀ v ∈ V, v ∈ D) ∧ (∀ i, (Q i).IsMaximal) ∧ Function.Injective Q ∧ (∀ i, Q i ≠ P₀) ∧ (∀ i, ¬ D ≤ Q i) ∧ ¬ D ≤ P₀ ∧ f₀ ∈ V ∧ f₀ ≠ 0 ∧ Ideal.span {f₀} = P₀ * D * ∏ i, Q i ^ N ∧ (∀ u : A, ∃ v ∈ V, u - v ∈ P₀ * ∏ i, Q i ^ (N - 1))) ∧ (∀ f ∈ V, f ≠ 0 → Module.finrank k (A ⧸ Ideal.span {f}) ≤ Module.finrank k (A ⧸ Ideal.span {f₀})) := by

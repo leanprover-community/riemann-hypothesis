@@ -24,16 +24,6 @@ variable {F E : Type} [Field F] [Field E] [Algebra F E] [FiniteDimensional F E]
 variable (R : Type) [CommRing R] [Algebra F R] [TopologicalSpace R] [IsTopologicalRing R]
   [LocallyCompactSpace R] [T2Space R]
 
-theorem isClosed_HermRP (σ : E →ₐ[F] E) (n : ℕ) :
-    IsClosed (HermR R σ n : Set (Matrix (Fin n) (Fin n) (R ⊗[F] E))) := by
-  have : (HermR R σ n : Set (Matrix (Fin n) (Fin n) (R ⊗[F] E))) =
-      ⋂ a, ⋂ b, {S | sigR R σ (S b a) = S a b} := by
-    ext S; simp only [Set.mem_iInter, Set.mem_ofPred_eq, SetLike.mem_coe]; exact Iff.rfl
-  rw [this]
-  exact isClosed_iInter fun a => isClosed_iInter fun b =>
-    isClosed_eq ((continuous_sigRP R σ).comp ((continuous_apply a).comp (continuous_apply b)))
-      ((continuous_apply b).comp (continuous_apply a))
-
 end Herm
 
 section Gram

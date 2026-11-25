@@ -304,12 +304,12 @@ theorem formF_of (hS : HlamStable) (hZ : KmapZero) : FormF := by
     exact zero_ne_one h1
   have hσ := rreg_isURepOn ε
   obtain ⟨q, hq⟩ := LinearMap.mem_range.1
-    (Submodule.starProjection_apply_mem (LinearMap.range (ffaJ hP T.w)) (rreg ε g (uniformisationL2 ε Ψ T.w v)))
-  have hxo : rreg ε g (uniformisationL2 ε Ψ T.w v) - uniformisationL2 ε Ψ T.w q ∈ (LinearMap.range (ffaJ hP T.w))ᗮ := by
+    (Submodule.starProjection_apply_mem (LinearMap.range (ReciprocityTheory.ChartRestriction.DS.datumEmbeddingToL2 hP T.w)) (rreg ε g (uniformisationL2 ε Ψ T.w v)))
+  have hxo : rreg ε g (uniformisationL2 ε Ψ T.w v) - uniformisationL2 ε Ψ T.w q ∈ (LinearMap.range (ReciprocityTheory.ChartRestriction.DS.datumEmbeddingToL2 hP T.w))ᗮ := by
     rw [← ffaJ_apply hP T.w q, hq]
-    exact Submodule.sub_starProjection_mem_orthogonal (K := LinearMap.range (ffaJ hP T.w)) _
+    exact Submodule.sub_starProjection_mem_orthogonal (K := LinearMap.range (ReciprocityTheory.ChartRestriction.DS.datumEmbeddingToL2 hP T.w)) _
   have hxj : ∀ w, inner ℂ (rreg ε g (uniformisationL2 ε Ψ T.w v) - uniformisationL2 ε Ψ T.w q) (uniformisationL2 ε Ψ T.w w) = 0 := fun w =>
-    Submodule.inner_left_of_mem_orthogonal (LinearMap.mem_range_self (ffaJ hP T.w) w) hxo
+    Submodule.inner_left_of_mem_orthogonal (LinearMap.mem_range_self (ReciprocityTheory.ChartRestriction.DS.datumEmbeddingToL2 hP T.w) w) hxo
   have hfH : rreg ε g (uniformisationL2 ε Ψ T.w v) ∈ Hlam ε Ψ T.w := hS n ε lam T Ψ hP g hg _ (datumEmbedding_mem_Hlam hP v)
   have hxH : rreg ε g (uniformisationL2 ε Ψ T.w v) - uniformisationL2 ε Ψ T.w q ∈ Hlam ε Ψ T.w :=
     Submodule.sub_mem _ hfH (datumEmbedding_mem_Hlam hP q)

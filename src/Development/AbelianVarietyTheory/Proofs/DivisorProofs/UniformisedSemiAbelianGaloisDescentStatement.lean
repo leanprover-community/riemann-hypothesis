@@ -129,8 +129,6 @@ noncomputable section
 namespace GlobalTheory.Mum.PreEven
 open GlobalTheory.UU GlobalTheory.ClosedPol
 
-
-
 theorem evenOn_preU : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R] (D : DegPre R) (A : PolAV (Sp (FractionRing R))) (G : Over (Sp R)) [GrpObj G] [IsCommMonObj G] (U : GlobalTheory.UU.PreU (maximalIdeal R) D A G), EvenOn U.P := by
   intro R _ _ _ D A G _ _ U
   have hG := GlobalTheory.firstFiveLaws.1.globalFns
@@ -323,7 +321,6 @@ theorem normal_of_isInvariant (A B G : Type) [CommRing A] [CommRing B] [Algebra 
   obtain ⟨σ, rfl⟩ := IsFractionRing.stabilizerHom_surjective G P Q k K τ
   exact ⟨σ.1, fun x => (IsFractionRing.stabilizerHom_apply_apply_mk G P Q k K σ x).symm⟩
 
-
 open GlobalTheory.UU GlobalTheory.SplitTorus in
 theorem exists_baseChange {S S' : Scheme.{0}} {f : S' ⟶ S} {X : Type} [AddCommGroup X] {G B : Over S} [GrpObj G]
     [GrpObj B] {G' B' : Over S'} [GrpObj G'] [GrpObj B'] {F : G'.left ⟶ G.left} {p : B'.left ⟶ B.left}
@@ -370,7 +367,6 @@ variable {k K : Type} [Field k] [Field K] [Algebra k K] {G₀ B₀ : Over (Sp k)
   [Flat q.left] [Surjective q.left] [QuasiCompact q.left] [IsMonHom i] (H : IsPullback i (toUnit _) q η[B])
   (hinv : ∀ (τ : K ≃ₐ[k] K) (s : G.left ⟶ G.left), s ≫ φG = φG → s ≫ G.hom = G.hom ≫ spMap (τ : K →+* K) →
     s ≫ q.left ≫ φ = q.left ≫ φ ∧ bcMap (spMap (τ : K →+* K)) X ≫ i.left = i.left ≫ s)
-
 
 include hB₀ hG hB H hinv in
 theorem agree_artinian {A : Type} [CommRing A] [IsLocalRing A] [IsArtinianRing A] (a b : K →+* A) (τ : K ≃ₐ[k] K)
@@ -455,7 +451,6 @@ theorem agree_artinian {A : Type} [CommRing A] [IsLocalRing A] [IsArtinianRing A
     · rw [Category.assoc, hgb.1.w, reassoc_of% ez, hy]
   rw [← ex, ← ey, Category.assoc, Category.assoc, ← fa, ← fb, eq]
 
-
 include hB₀ hG hB H hinv in
 theorem nonempty_tq_of_normal [FiniteDimensional k K] [Normal k K] [Module.Free ℤ X] [Module.Finite ℤ X] :
     Nonempty (TQ G₀ X) := by
@@ -525,8 +520,6 @@ theorem nonempty_tq_of_normal [FiniteDimensional k K] [Normal k K] [Module.Free 
   exact ⟨Q⟩
 
 end Descent
-
-
 
 theorem nonempty_tq {R R' : Type} [CommRing R] [IsDomain R] [IsLocalRing R] [CommRing R'] [IsDomain R'] [IsLocalRing R']
     {ρ : R →+* R'} (hfin : ρ.Finite) (hgal : IsGal ρ) {D : DegData R (maximalIdeal R)}
@@ -671,7 +664,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped CategoryTheory.Obj
 open GlobalTheory.Mum
 
-
 namespace GlobalTheory.Mum
 
 theorem exists_comp_eq_fst {S S' U U' X X' : Scheme.{0}} {g : X ⟶ S} {g' : X' ⟶ S'} {s : S' ⟶ S} {β : X' ⟶ X}
@@ -746,11 +738,6 @@ noncomputable section
 
 namespace GlobalTheory.GalDescent
 
-theorem restrict_isPullback {R : Type} [CommRing R] {S Y Z Y' : Scheme.{0}} {π : S ⟶ Sp R} {y : Y ⟶ Sp R}
-    {p : Z ⟶ Y} {q : Z ⟶ S} (hpb : IsPullback p q y π) (f : Y' ⟶ Y) :
-    IsPullback (pullback.snd p f) (pullback.fst p f ≫ q) (f ≫ y) π :=
-  IsPullback.paste_vert (IsPullback.of_hasPullback p f).flip hpb
-
 theorem restrict_act {R R' : Type} [CommRing R] [CommRing R'] {ρ : R →+* R'} {Y Y' Z : Scheme.{0}}
     {y' : Y' ⟶ Sp R'} {β : Y' ⟶ Y} (act : Gal ρ → (Y' ⟶ Y')) (hβ : ∀ σ, act σ ≫ β = β)
     (hy' : ∀ σ, act σ ≫ y' = y' ≫ spMap (Gal.hom σ)) (f : Z ⟶ Y) :
@@ -773,14 +760,14 @@ theorem uniq : ∀ (R : Type) [CommRing R] [IsDomain R] (R' : Type) [CommRing R'
     simpa only [Scheme.Hom.comp_apply] using this
   refine Scheme.Hom.ext hbase fun U => ?_
   have : Mono (β.app (g₂ ⁻¹ᵁ U)) := ConcreteCategory.mono_of_injective _
-    (GlobalTheory.T.galois_invariant_functions_flat_baseChange R R' ρ hfin hgal Y Y' y y' β hflat hpb act hβ hy' _).1
+    (GlobalTheory.Mum.InvFun.invariant_functions R R' ρ hfin hgal Y Y' y y' β hflat hpb act hβ hy' _).1
   rw [← cancel_mono (β.app (g₂ ⁻¹ᵁ U)), ← Scheme.Hom.comp_app, Scheme.Hom.congr_app he.symm,
     Category.assoc, Scheme.Hom.naturality, ← Category.assoc, ← Scheme.Hom.comp_app]
   rfl
 
 theorem exAff : ∀ (R : Type) [CommRing R] [IsDomain R] (R' : Type) [CommRing R'] [IsDomain R'] [IsLocalRing R'] (ρ : R →+* R'), FinExt ρ → IsGal ρ → ∀ (Y Y' : Scheme.{0}) (y : Y ⟶ Sp R) (y' : Y' ⟶ Sp R') (β : Y' ⟶ Y), Flat y → IsPullback β y' y (spMap ρ) → ∀ (act : Gal ρ → (Y' ⟶ Y')), (∀ σ, act σ ≫ β = β) → (∀ σ, act σ ≫ y' = y' ≫ spMap (Gal.hom σ)) → ∀ (W : Scheme.{0}) [IsAffine W] (h : Y' ⟶ W), (∀ σ, act σ ≫ h = h) → ∃ h₀ : Y ⟶ W, β ≫ h₀ = h := by
   intro R _ _ R' _ _ _ ρ hfin hgal Y Y' y y' β hflat hpb act hβ hy' W _ h hh
-  obtain ⟨hinj, hdesc⟩ := GlobalTheory.T.galois_invariant_functions_flat_baseChange R R' ρ hfin hgal Y Y' y y' β hflat hpb act hβ hy' ⊤
+  obtain ⟨hinj, hdesc⟩ := GlobalTheory.Mum.InvFun.invariant_functions R R' ρ hfin hgal Y Y' y y' β hflat hpb act hβ hy' ⊤
   have hmem : ∀ x : Γ(W, ⊤), h.appTop x ∈ Set.range (β.app ⊤).hom := by
     intro x
     refine hdesc (h.appTop x) fun σ hle => ?_
@@ -838,7 +825,7 @@ theorem descend : ∀ (R : Type) [CommRing R] [IsDomain R] (R' : Type) [CommRing
   have hinv : ∀ V : Y.Opens, IsAffineOpen V → ∀ s : Γ(Y', β ⁻¹ᵁ V),
       GlobalTheory.IsInvariantSection ρ' _ s → s ∈ Set.range (β.app V) := by
     intro V _ s hs
-    refine (GlobalTheory.T.galois_invariant_functions_flat_baseChange R R' ρ hfin hgal Y Y' y y' β hflat hpb act hβ hy' V).2 s fun σ hle => ?_
+    refine (GlobalTheory.Mum.InvFun.invariant_functions R R' ρ hfin hgal Y Y' y y' β hflat hpb act hβ hy' V).2 s fun σ hle => ?_
     obtain ⟨h1, h2⟩ := hs σ⁻¹
     have key : ∀ (k : Y' ⟶ Y') (_ : k = act σ) (e : β ⁻¹ᵁ V ≤ k ⁻¹ᵁ (β ⁻¹ᵁ V)),
         (k.appLE _ _ e).hom s = s → ((act σ).appLE _ _ hle).hom s = s := by
@@ -871,7 +858,7 @@ theorem descend : ∀ (R : Type) [CommRing R] [IsDomain R] (R' : Type) [CommRing
       simp only [Category.assoc, hi, IsOpenImmersion.lift_fac]
       rw [reassoc_of% (ha3 σ), hh]
     obtain ⟨u, hu⟩ := exAff R R' ρ hfin hgal (V i).toScheme (pullback β (V i).ι) ((V i).ι ≫ y)
-      (pullback.fst β (V i).ι ≫ y') (pullback.snd β (V i).ι) inferInstance (restrict_isPullback hpb _)
+      (pullback.fst β (V i).ι ≫ y') (pullback.snd β (V i).ι) inferInstance (GlobalTheory.MorDescent.restrict_isPullback hpb _)
       act' ha1 ha2 i.1.toScheme hi hinv'
     exact ⟨u ≫ i.1.ι, by rw [← Category.assoc, hu, IsOpenImmersion.lift_fac]⟩
   choose u hu using hloc
@@ -880,7 +867,7 @@ theorem descend : ∀ (R : Type) [CommRing R] [IsDomain R] (R' : Type) [CommRing
     let f := pullback.fst (V i).ι (V j).ι ≫ (V i).ι
     obtain ⟨act', ha1, ha2, -⟩ := restrict_act act hβ hy' f
     apply uniq R R' ρ hfin hgal _ (pullback β f) (f ≫ y) (pullback.fst β f ≫ y') (pullback.snd β f)
-      inferInstance (restrict_isPullback hpb f) act' ha1 ha2 W
+      inferInstance (GlobalTheory.MorDescent.restrict_isPullback hpb f) act' ha1 ha2 W
     let mi : pullback β f ⟶ pullback β (V i).ι := pullback.lift (pullback.fst β f)
       (pullback.snd β f ≫ pullback.fst _ _) (by rw [pullback.condition, Category.assoc])
     let mj : pullback β f ⟶ pullback β (V j).ι := pullback.lift (pullback.fst β f)
@@ -1181,7 +1168,6 @@ theorem tri_om {X X' X'' Z : Scheme.{0}} {L : LB X} {L' : LB X'} {L'' : LB X''} 
     (T _ _ z _ _ _ (hJ ((x ≫ F') ≫ F)) (hJ' (x ≫ F')) (hJ'' _))
 
 variable {R R' : Type} [CommRing R] [IsDomain R] [CommRing R'] [IsDomain R'] [IsLocalRing R'] {ρ : R →+* R'}
-
 
 theorem cancel_of_gal (hρ : FinExt ρ) (hG : IsGal ρ) {Y Y' : Scheme.{0}} {y : Y ⟶ Sp R} {y' : Y' ⟶ Sp R'} {β : Y' ⟶ Y}
     (hy : Flat y) (pb : IsPullback β y' y (spMap ρ)) {W : Scheme.{0}} {g g' : Y ⟶ W} (h : β ≫ g = β ≫ g') : g = g' := by

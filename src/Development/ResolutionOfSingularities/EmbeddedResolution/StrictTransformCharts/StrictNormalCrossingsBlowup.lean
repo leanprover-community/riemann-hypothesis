@@ -18,8 +18,6 @@ universe u
 
 open CategoryTheory AlgebraicGeometry TopologicalSpace
 
-noncomputable section
-
 namespace FunctorialResolution.EmbeddedResolution
 
 private theorem restrictIdeal_comap_preimage {X X₁ : Scheme.{u}} (π : X₁ ⟶ X)
@@ -276,5 +274,3 @@ theorem inStrictNormalCrossingPosition_strictTransform_cons_append {X X₁ : Sch
   inStrictNormalCrossingPosition_strictTransform_append p π Z (H :: E) hπ hE hZE
 
 end FunctorialResolution.EmbeddedResolution
-
-end

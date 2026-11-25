@@ -8,7 +8,6 @@ import Mathlib.CategoryTheory.ExtremalEpi
 
 @[expose] public section
 
-noncomputable section
 open CategoryTheory Limits Pretriangulated Triangulated
 
 namespace LateralTheory.E.LeafTruncPf
@@ -129,5 +128,3 @@ theorem LateralTheory.E.LeafGhostRelCut.LeafTrunc_of : LateralTheory.E.LeafGhost
   refine ⟨f' ≫ w ≫ inv ℓ', ?_⟩
   rw [hf', hℓ']
   simp only [Category.assoc, IsIso.inv_hom_id_assoc, hw]
-
-end

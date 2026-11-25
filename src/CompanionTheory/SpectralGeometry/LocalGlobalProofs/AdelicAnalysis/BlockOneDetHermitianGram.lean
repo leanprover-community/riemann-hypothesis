@@ -12,31 +12,6 @@ open scoped TensorProduct ENNReal NNReal Matrix
 
 namespace GlobalTheory.CompanionTheory.SW.BlockAlg
 
-section Entries
-
-variable {K : Type} [Zero K] {M : ℕ} (t : K) (A : Matrix (Fin M) (Fin M) K)
-
-theorem blockOne_zero_zero : blockOne t A 0 0 = t := rfl
-
-theorem blockOne_zero_succ (j : Fin M) : blockOne t A 0 j.succ = 0 := rfl
-
-theorem blockOne_succ_zero (i : Fin M) : blockOne t A i.succ 0 = 0 := rfl
-
-theorem blockOne_succ_succ (i j : Fin M) : blockOne t A i.succ j.succ = A i j := rfl
-
-end Entries
-
-theorem det_blockOne {K : Type} [CommRing K] {M : ℕ} (t : K) (A : Matrix (Fin M) (Fin M) K) :
-    (blockOne t A).det = t * A.det := by
-  rw [Matrix.det_succ_row_zero, Fin.sum_univ_succ]
-  have h0 : (blockOne t A).submatrix Fin.succ (Fin.succAbove (0 : Fin (M + 1))) = A := by
-    ext i j
-    simp [blockOne_succ_succ]
-  rw [h0, Finset.sum_eq_zero]
-  · simp [blockOne_zero_zero]
-  · intro j _
-    simp [blockOne_zero_succ]
-
 variable {F E : Type} [Field F] [Field E] [Algebra F E]
 
 theorem hE_blockOne_cons (σ : E →ₐ[F] E) {M : ℕ} (J : Matrix (Fin M) (Fin M) E) (t a b : E)

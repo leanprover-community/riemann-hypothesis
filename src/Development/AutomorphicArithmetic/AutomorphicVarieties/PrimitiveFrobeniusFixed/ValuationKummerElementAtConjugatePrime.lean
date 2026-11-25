@@ -11,46 +11,26 @@ public import Mathlib.NumberTheory.NumberField.Cyclotomic.Ideal
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.GaloisCohomology UpperTheory.V UpperTheory.V.Base UpperTheory.V.Odd UpperTheory.V.Stick UpperTheory.V.ML
 open scoped nonZeroDivisors Pointwise
 
-private theorem val_int {E : Type} [Field E] [NumberField E] (v : HeightOneSpectrum (𝓞 E)) {r : 𝓞 E} (hr : r ≠ 0) :
-    v.valuation E (algebraMap (𝓞 E) E r) = WithZero.exp (-FractionalIdeal.count E v
-      (FractionalIdeal.spanSingleton (𝓞 E)⁰ (algebraMap (𝓞 E) E r))) := by
-  classical
-  have hr' : algebraMap (𝓞 E) E r ≠ 0 :=
-    (map_ne_zero_iff _ (IsFractionRing.injective (𝓞 E) E)).mpr hr
-  have hI : FractionalIdeal.spanSingleton (𝓞 E)⁰ (algebraMap (𝓞 E) E r) ≠ 0 := by
-    rw [Ne, FractionalIdeal.spanSingleton_eq_zero_iff]
-    exact hr'
-  have h : FractionalIdeal.spanSingleton (𝓞 E)⁰ (algebraMap (𝓞 E) E r) =
-      FractionalIdeal.spanSingleton (𝓞 E)⁰ ((algebraMap (𝓞 E) E 1)⁻¹) * ↑(Ideal.span {r}) := by
-    rw [map_one, inv_one, FractionalIdeal.spanSingleton_one, one_mul,
-      FractionalIdeal.coeIdeal_span_singleton]
-  rw [FractionalIdeal.count_well_defined E v hI h, HeightOneSpectrum.valuation_of_algebraMap,
-    v.intValuation_if_neg hr, Ideal.span_singleton_one, ← Ideal.one_eq_top, Associates.mk_one,
-    Associates.factors_one, Associates.count_zero v.associates_irreducible]
-  simp
-
-private theorem val_count {E : Type} [Field E] [NumberField E] (v : HeightOneSpectrum (𝓞 E)) {α : E} (hα : α ≠ 0) :
+private theorem val_count {E : Type} [Field E] [NumberField E] (v : HeightOneSpectrum (𝓞 E))
+    {α : E} (hα : α ≠ 0) :
     v.valuation E α = WithZero.exp (-FractionalIdeal.count E v
       (FractionalIdeal.spanSingleton (𝓞 E)⁰ α)) := by
-  obtain ⟨a, b, hb, rfl⟩ := IsFractionRing.div_surjective (𝓞 E) α
-  have hb0 : b ≠ 0 := nonZeroDivisors.ne_zero hb
-  have ha0 : a ≠ 0 := by
-    rintro rfl
-    simp at hα
-  have hb' : algebraMap (𝓞 E) E b ≠ 0 :=
-    (map_ne_zero_iff _ (IsFractionRing.injective (𝓞 E) E)).mpr hb0
-  have ha' : algebraMap (𝓞 E) E a ≠ 0 :=
-    (map_ne_zero_iff _ (IsFractionRing.injective (𝓞 E) E)).mpr ha0
-  have hIa : FractionalIdeal.spanSingleton (𝓞 E)⁰ (algebraMap (𝓞 E) E a) ≠ 0 := by
-    rw [Ne, FractionalIdeal.spanSingleton_eq_zero_iff]
-    exact ha'
-  have hIb : (FractionalIdeal.spanSingleton (𝓞 E)⁰ (algebraMap (𝓞 E) E b))⁻¹ ≠ 0 := by
-    rw [Ne, inv_eq_zero, FractionalIdeal.spanSingleton_eq_zero_iff]
-    exact hb'
-  rw [div_eq_mul_inv, ← FractionalIdeal.spanSingleton_mul_spanSingleton, ← FractionalIdeal.spanSingleton_inv,
-    FractionalIdeal.count_mul E v hIa hIb, FractionalIdeal.count_inv, map_mul, map_inv₀,
-    val_int v ha0, val_int v hb0, neg_add, neg_neg, WithZero.exp_add]
-  rw [← WithZero.exp_neg, neg_neg]
+  obtain ⟨⟨r, s⟩, hrs⟩ := IsLocalization.mk'_surjective (𝓞 E)⁰ α
+  change IsLocalization.mk' E r s = α at hrs
+  subst hrs
+  have hr : r ≠ 0 := by rintro rfl; simp at hα
+  have hs : (s : 𝓞 E) ≠ 0 := nonZeroDivisors.coe_ne_zero s
+  have hI : FractionalIdeal.spanSingleton (𝓞 E)⁰ (IsLocalization.mk' E r s) ≠ 0 := by
+    rwa [Ne, FractionalIdeal.spanSingleton_eq_zero_iff]
+  have hJ : FractionalIdeal.spanSingleton (𝓞 E)⁰ (IsLocalization.mk' E r s) =
+      FractionalIdeal.spanSingleton (𝓞 E)⁰ (algebraMap (𝓞 E) E (s : 𝓞 E))⁻¹ *
+        ↑(Ideal.span {r}) := by
+    rw [FractionalIdeal.coeIdeal_span_singleton, ← map_mul]
+    congr 1
+    rw [IsFractionRing.mk'_eq_div, div_eq_inv_mul]
+  rw [FractionalIdeal.count_well_defined E v hI hJ, HeightOneSpectrum.valuation_of_mk',
+    v.intValuation_if_neg hr, v.intValuation_if_neg hs, ← WithZero.exp_sub, WithZero.exp_inj]
+  ring
 
 private theorem count_fam {E ι : Type} [Field E] [NumberField E] [Fintype ι]
     (P : ι → HeightOneSpectrum (𝓞 E)) (hP : Function.Injective P) (k : ι → ℤ) (t : ι) :
@@ -107,9 +87,10 @@ theorem UpperTheory.valuation_kummerElement_at_conjugate_prime :
     exact hinj (congrArg HeightOneSpectrum.asIdeal h)
   obtain rfl : w = fam t := HeightOneSpectrum.ext hw
   have hX0 : X ≠ 0 := left_ne_zero_of_mul_eq_one hX.1
-  have hr0 : (r : 𝓞 K) ≠ 0 := by exact_mod_cast hr.ne_zero
+  have hr0 : algebraMap (𝓞 K) K (r : 𝓞 K) ≠ 0 :=
+    (map_ne_zero_iff _ (IsFractionRing.injective (𝓞 K) K)).mpr (by exact_mod_cast hr.ne_zero)
   have hrK : (r : K) = algebraMap (𝓞 K) K (r : 𝓞 K) := by simp
-  rw [val_count (fam t) hX0, hX.2, hrK, val_int (fam t) hr0,
+  rw [val_count (fam t) hX0, hX.2, hrK, val_count (fam t) hr0,
     ← FractionalIdeal.coeIdeal_span_singleton, ← hprod]
   have hcoe : ((∏ s, conjI M K v.asIdeal s : Ideal (𝓞 K)) : FractionalIdeal (𝓞 K)⁰ K) =
       ∏ s, (((fam s).asIdeal : FractionalIdeal (𝓞 K)⁰ K)) ^ ((fun _ => (1 : ℤ)) s) := by

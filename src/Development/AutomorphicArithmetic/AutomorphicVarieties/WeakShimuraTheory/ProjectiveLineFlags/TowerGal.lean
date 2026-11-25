@@ -8,21 +8,6 @@ import Mathlib.Tactic.Linter.HaveILetI
 
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual Formalism.HC ReciprocityTheory.Gal IsLocalRing Polynomial UpperTheory.V UpperTheory.V.Base UpperTheory.V.Alg UpperTheory.V.HV UpperTheory.V.GradeZeroInterpolatingElement UpperTheory.V.Ws GlobalTheory.GalOfCusp
 
-private theorem mul_eq_one_of_card_eq_two_of_ne_one {H : Type*} [Group H] (hH : Nat.card H = 2)
-    (x y : H) (hx : x ≠ 1) (hy : y ≠ 1) : x * y = 1 := by
-  classical
-  haveI : Finite H := Nat.finite_of_card_ne_zero (by omega)
-  haveI := Fintype.ofFinite H
-  rw [Nat.card_eq_fintype_card] at hH
-  by_contra hxy
-  have h3 : ({1, x, x * y} : Finset H).card = 3 := by
-    refine Finset.card_eq_three.mpr ⟨1, x, x * y, fun h => hx h.symm, fun h => hxy h.symm, ?_, rfl⟩
-    intro h
-    exact hy (mul_left_cancel (a := x) (by rw [mul_one]; exact h.symm))
-  have := Finset.card_le_univ ({1, x, x * y} : Finset H)
-  omega
-
-
 theorem UpperTheory.V.Ws.P1.towerGal :
     ∀ {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] {l : ℕ} [Fact l.Prime] {c : Coef l} (D : Raw Ω c) (T : Tower D), (resLe T.F_le).range = T.GalL ∧ Function.Injective (resLe T.F_le) ∧ Continuous (resLe T.F_le) ∧
           (∀ a b : G T.F Ω, a ∉ T.GalL → b ∉ T.GalL → a * b ∈ T.GalL) ∧
@@ -67,12 +52,14 @@ theorem UpperTheory.V.Ws.P1.towerGal :
     haveI : IsGalois ℚ T.K := {}
     have hcard : Nat.card (T.K ≃ₐ[ℚ] T.K) = 2 := by
       rw [IsGalois.card_aut_eq_finrank, T.degK]
+    obtain ⟨g, hg1, hg⟩ := (Nat.card_eq_two_iff' (1 : T.K ≃ₐ[ℚ] T.K)).1 hcard
     have hker := @IntermediateField.restrictNormalHom_ker ℚ Ω _ _ _ T.K
       (by convert hN)
     intro a b ha hb
     rw [Subgroup.mem_comap, ← hker, MonoidHom.mem_ker] at ha hb ⊢
-    rw [map_mul, map_mul]
-    exact mul_eq_one_of_card_eq_two_of_ne_one (by convert hcard) _ _ ha hb
+    rw [map_mul, map_mul, hg _ ha, hg _ hb]
+    nth_rw 1 [← hg g⁻¹ (inv_ne_one.2 hg1)]
+    exact inv_mul_cancel g
   · intro g
     exact ⟨by ext; rfl, rfl, rfl⟩
   · intro A g

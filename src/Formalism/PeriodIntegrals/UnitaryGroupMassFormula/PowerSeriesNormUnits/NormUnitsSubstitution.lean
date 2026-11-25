@@ -83,24 +83,9 @@ theorem integral_subst {σ τ : Type*} [Finite σ] (a : σ → MvPowerSeries τ 
 
 theorem coeff_pow_eq_zero {σ R : Type*} [CommRing R] {F : MvPowerSeries σ R}
     (hF : MvPowerSeries.constantCoeff F = 0) :
-    ∀ (d : ℕ) (α : σ →₀ ℕ), Finsupp.degree α < d → MvPowerSeries.coeff α (F ^ d) = 0 := by
-  intro d
-  induction d with
-  | zero => intro α h; omega
-  | succ d ih =>
-    intro α h
-    rw [pow_succ', MvPowerSeries.coeff_mul]
-    apply Finset.sum_eq_zero
-    rintro ⟨β, γ⟩ hβγ
-    rw [Finset.HasAntidiagonal.mem_antidiagonal] at hβγ
-    dsimp only
-    by_cases hβ : β = 0
-    · subst hβ
-      simp [hF]
-    · have hb : Finsupp.degree β ≠ 0 := fun h0 => hβ ((Finsupp.degree_eq_zero_iff β).1 h0)
-      have hdeg : Finsupp.degree α = Finsupp.degree β + Finsupp.degree γ := by
-        rw [← hβγ, map_add (f := _)]
-      rw [ih γ (by omega), mul_zero]
+    ∀ (d : ℕ) (α : σ →₀ ℕ), Finsupp.degree α < d → MvPowerSeries.coeff α (F ^ d) = 0 := fun d _ h =>
+  MvPowerSeries.coeff_of_lt_order <|
+    (ENat.natCast_lt_natCast.2 h).trans_le (MvPowerSeries.le_order_pow_of_constantCoeff_eq_zero d hF)
 
 theorem coeff_expMv {σ : Type*} (F : MvPowerSeries σ ℂ_[p]) (α : σ →₀ ℕ) :
     MvPowerSeries.coeff α (expMv F) =

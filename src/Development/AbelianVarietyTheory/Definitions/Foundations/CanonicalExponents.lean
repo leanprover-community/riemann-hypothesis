@@ -4,8 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.Foundations.IsProbabi
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.AllWt.Model
 
 open NumberField IsDedekindDomain MeasureTheory Module

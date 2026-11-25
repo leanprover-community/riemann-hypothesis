@@ -13,8 +13,6 @@ import Development.AbelianVarietyTheory.Proofs.SatakeParameters.XiTopEqProd
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.L2.DIV Formalism.L2.Col Formalism.MainNotions Formalism.L2.Ker GlobalTheory.TwU GlobalTheory.TwV GlobalTheory.TwTop GlobalTheory.TopStep
 
-noncomputable section
-
 namespace GlobalTheory.CplCosetPt
 
 section Gen
@@ -226,5 +224,3 @@ theorem cosetOf_frames_vG : UnderTie (fun {D L hT Gi Gl Kc Y cX ex t u μ St} A 
   exact intAt_sub (key l) (hloc p l)
 
 end GlobalTheory.CplCosetPt
-
-end

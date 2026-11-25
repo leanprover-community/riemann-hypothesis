@@ -11,8 +11,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
-noncomputable section
-
 open Finset Module Matrix
 open scoped InnerProductSpace TensorProduct MatrixOrder ComplexOrder
 

@@ -37,13 +37,6 @@ theorem compactSpace_of_projOver {R : Type} [CommRing R] {Y : Scheme.{0}} {f : Y
   have : IsProper (i ≫ PSpace.str R m) := inferInstance
   exact QuasiCompact.compactSpace_of_compactSpace (i ≫ PSpace.str R m)
 
-theorem unitAt_zpow {z : X} {u : X.functionField} (h : UnitAt z u) (n : ℤ) : UnitAt z (u ^ n) := by
-  have hu : u ≠ 0 := h.ne_zero
-  induction n using Int.induction_on with
-  | zero => rw [zpow_zero]; exact unitAt_one z
-  | succ n ih => rw [zpow_add_one₀ hu]; exact ih.mul h
-  | pred n ih => rw [zpow_sub_one₀ hu]; exact ih.mul h.inv
-
 theorem loc_change (P : Pair p) (a b : ℤ) (f : X.functionField) (i i' : P.L.B.ι) (j j' : P.A.B.ι) :
     P.loc a b f i' j' = P.loc a b f i j *
       (((P.r i' : X.functionField) / P.r i) ^ a * ((P.r' j' : X.functionField) / P.r' j) ^ b) := by
@@ -55,8 +48,8 @@ theorem loc_change (P : Pair p) (a b : ℤ) (f : X.functionField) (i i' : P.L.B.
 theorem unitAt_quot (P : Pair p) (a b : ℤ) {z : X} {i i' : P.L.B.ι} {j j' : P.A.B.ι}
     (hi : z ∈ P.L.B.U i) (hi' : z ∈ P.L.B.U i') (hj : z ∈ P.A.B.U j) (hj' : z ∈ P.A.B.U j') :
     UnitAt z (((P.r i' : X.functionField) / P.r i) ^ a * ((P.r' j' : X.functionField) / P.r' j) ^ b) :=
-  (unitAt_zpow (germOf_eq_iff.1 (P.hr.germOf_eq hi' hi)) a).mul
-    (unitAt_zpow (germOf_eq_iff.1 (P.hr'.germOf_eq hj' hj)) b)
+  (GlobalTheory.HSAmp.NVRules.unitAt_zpow (germOf_eq_iff.1 (P.hr.germOf_eq hi' hi)) a).mul
+    (GlobalTheory.HSAmp.NVRules.unitAt_zpow (germOf_eq_iff.1 (P.hr'.germOf_eq hj' hj)) b)
 
 theorem loc_pow_mul (P : Pair p) (e a b : ℤ) (c : ℕ) (x f : X.functionField) (i : P.L.B.ι) (j : P.A.B.ι) :
     P.loc (e * c + a) b (x ^ c * f) i j = P.loc e 0 x i j ^ c * P.loc a b f i j := by
@@ -81,7 +74,6 @@ theorem exists_pow_mul_regAt {W : X.Opens} (hW : IsAffineOpen W) (s : Γ(X, W)) 
   exact regAt_fnOf hz _ b
 
 end GlobalTheory.HSAmp.ExtPow
-
 
 open GlobalTheory.HSAmp.ExtPow in
 theorem GlobalTheory.HSAmp.eventually_pow_mul_mem_H : ∀ (k : Type) [CommRing k] (X : Scheme.{0}) [IsIntegral X] (p : X ⟶ Sp k) (D : ℕ), IsArithVar p D → ∀ (P : Pair p), ∀ (e a b : ℤ) (x f : X.functionField), x ∈ P.H e 0 → x ≠ 0 → (∀ z ∈ NV P e 0 x, ∀ i j, z ∈ P.L.B.U i → z ∈ P.A.B.U j → RegAt z (P.loc a b f i j)) → ∀ᶠ c : ℕ in atTop, x ^ c * f ∈ P.H (e * c + a) b := by

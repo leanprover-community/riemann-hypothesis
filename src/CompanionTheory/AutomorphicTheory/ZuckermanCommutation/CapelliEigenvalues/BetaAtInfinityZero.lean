@@ -8,8 +8,6 @@ public import CompanionTheory.AutomorphicTheory.SchurLimitBounds.SchurOrthogonal
 open Matrix PI.UpqRep Formalism.FourierDecayAlt MeasureTheory CompanionTheory.LimBd.Main CompanionTheory.LimBd.SchurHpk
 open scoped InnerProductSpace
 
-noncomputable section
-
 namespace CompanionTheory.CapEig
 
 theorem kfin_iff (k r : ℕ) (ε : Fin (2 * r + k + 1) → Bool) (P : B.Mat k r) (H : Type) [NormedAddCommGroup H]
@@ -82,5 +80,3 @@ theorem capelli_inequivalence : Inequiv := by
   exact mul_right_cancel₀ (inner_self_ne_zero.2 hv0) e3
 
 end CompanionTheory.CapEig
-
-end

@@ -8,6 +8,7 @@ public import GroundTheory.AutomorphicForms.TensorProductTheorem.Existence
 public import GroundTheory.AutomorphicForms.SmoothRep
 public import Mathlib.Topology.Algebra.Group.Units
 import GroundTheory.AutomorphicForms.LocallyProfinite
+import GroundTheory.AutomorphicForms.TensorProductTheorem.MatrixCoeff
 import GroundTheory.AutomorphicForms.TensorProductTheorem.Window
 
 -- This file was produced by scripts/clump.py from the modules listed below.
@@ -646,7 +647,7 @@ theorem exists_equiv_outerTensor (hirr : (prodRep ρ₁ ρ₂ hcomm).IsIrreducib
       exact hE' (T₂ b (n false))
     simp only [l₂, LinearMap.comp_apply]
     rw [this, hc₂, map_smul, hψ₂, smul_eq_mul, mul_one]
-  refine nonempty_equiv_of_matrixCoeff_eq' (v := (xs : V)) (l := φ ∘ₗ E')
+  refine nonempty_equiv_of_matrixCoeff_eq (v := (xs : V)) (l := φ ∘ₗ E')
     (w := mGenQuotMk ρ₁ e₁ N₁ n₁ ⊗ₜ mGenQuotMk ρ₂ e₂ N₂ n₂)
     (m := tensorForm (mGenQuotForm ρ₁ e₁ N₁ l₁) (mGenQuotForm ρ₂ e₂ N₂ l₂))
     (fun ⟨a, b⟩ => ?_) ⟨1, ?_⟩

@@ -6,8 +6,6 @@ public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficien
 
 @[expose] public section
 
-noncomputable section
-
 open Finset Matrix
 open scoped ComplexOrder
 

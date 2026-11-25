@@ -1267,12 +1267,6 @@ theorem key_of_gauss {T E F F₁ FH Ω : Type} [CommRing T] [IsDomain T] [IsPrin
 
 alias gauss_of_key := _root_.GlobalTheory.VandermondeEmbeddingVanishing.gaussAt
 
-theorem sp_comp {A B C : Type} [CommRing A] [CommRing B] [CommRing C] (f : A →+* B) (g : B →+* C) :
-    spMap g ≫ spMap f = spMap (g.comp f) := (Spec.map_comp (CommRingCat.ofHom f) (CommRingCat.ofHom g)).symm
-
-theorem sp_inj {A B : Type} [CommRing A] [CommRing B] {f g : A →+* B} (h : spMap f = spMap g) : f = g :=
-  congrArg CommRingCat.Hom.hom (Spec.map_injective h)
-
 theorem flat_ne_zero {R S : Type} [CommRing R] [IsDomain R] [CommRing S] [Nontrivial S] (a : R →+* S) (ha : a.Flat)
     {r : R} (hr : r ≠ 0) : a r ≠ 0 := by
   intro h
@@ -1336,8 +1330,8 @@ theorem cst_comm {R₁ : Type} [CommRing R₁] {Y V : Scheme.{0}} [IsIntegral Y]
     {θ : X.functionField →+* Y.functionField} (h : PFF i φ θ) (p : X ⟶ Sp R) (q : Y ⟶ Sp R₁) (ρ : R →+* R₁)
     (w : φ ≫ p = (i ≫ q) ≫ spMap ρ) : θ.comp (GlobalTheory.Desc.cst p) = (GlobalTheory.Desc.cst q).comp ρ := by
   obtain ⟨l, h1, h2⟩ := h
-  apply sp_inj
-  rw [← sp_comp, ← sp_comp, ← gp_comp, ← gp_comp, ← Category.assoc, ← h2, ← h1, Category.assoc, w]
+  apply GlobalTheory.FullPoint.spMap_inj
+  rw [← GlobalTheory.spMap_comp_ring, ← GlobalTheory.spMap_comp_ring, ← gp_comp, ← gp_comp, ← Category.assoc, ← h2, ← h1, Category.assoc, w]
   simp only [Category.assoc]
 
 theorem cst_injective [IsDomain R] (p : X ⟶ Sp R) [Surjective p] : Function.Injective (GlobalTheory.Desc.cst p) := by
@@ -1439,7 +1433,6 @@ theorem pff_refl (X : Scheme.{0}) [IsIntegral X] : PFF (𝟙 X) (𝟙 X) (RingHo
     rw [show spMap (RingHom.id X.functionField) = 𝟙 _ from Spec.map_id _, Category.comp_id, Category.id_comp]⟩
 
 end GaussDvr
-
 
 open GaussDvr in
 theorem gaussAt_chart_of_height_one : ∀ (σ : Setup) (p : Sp σ.R) (z : (σ.C p).G.left), p.asIdeal.height = 1 → Vert (σ.C p).G.hom (σ.ρ p σ.f) z → GaussAt (GlobalTheory.Desc.cst (σ.C p).G.hom) (maximalIdeal (σ.C p).R) (σ.θ p) (σ.W p) (regSet z) := by

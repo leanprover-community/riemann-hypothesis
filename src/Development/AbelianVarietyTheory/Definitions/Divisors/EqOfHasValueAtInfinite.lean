@@ -52,7 +52,6 @@ import Mathlib.Topology.Sheaves.Init
 
 open MeasureTheory Matrix
 
-noncomputable section
 namespace GlobalTheory.LGrp
 
 section Rational

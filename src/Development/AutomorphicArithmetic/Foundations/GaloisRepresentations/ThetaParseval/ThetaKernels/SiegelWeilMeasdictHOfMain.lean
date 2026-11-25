@@ -634,8 +634,8 @@ theorem eisBLW_k : EisBLW_k := by
     simp only [Ehat, ite_eq_left hs']
     exact hv s' (lt_of_le_of_lt (le_max_left _ _) hs') x
   · intro x
-    have hd : DifferentiableOn ℂ (fun s' => evAt x (v s')) {s' : ℂ | t₀ < s'.re} :=
-      hvh (evAt x) (SiegelEisensteinSeries.BRoad.isGrowForm_evAt x)
+    have hd : DifferentiableOn ℂ (fun s' => SiegelEisensteinSeries.BRoad.evAt x (v s')) {s' : ℂ | t₀ < s'.re} :=
+      hvh (SiegelEisensteinSeries.BRoad.evAt x) (SiegelEisensteinSeries.BRoad.isGrowForm_evAt x)
     have hd' : DifferentiableOn ℂ (fun s' => (v s').1 x) {s' : ℂ | max t₀ t₁ < s'.re} :=
       (hd.mono fun s' (hs' : max t₀ t₁ < s'.re) => (show t₀ < s'.re from lt_of_le_of_lt (le_max_left _ _) hs'))
     refine hd'.congr fun s' hs' => ?_

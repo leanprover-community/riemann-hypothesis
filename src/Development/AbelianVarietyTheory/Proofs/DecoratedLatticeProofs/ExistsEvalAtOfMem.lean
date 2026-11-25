@@ -90,25 +90,3 @@ theorem qdet_map (f : A →ₐ[ℂ] B) (E : Fin n → Fin n → A) (u : ℂ) :
 end Transport
 
 end GlobalTheory.CapelliUniv
-
-namespace GlobalTheory.CapelliUniv
-
-open Formalism.REAL GlobalTheory.SmoothForms
-
-end GlobalTheory.CapelliUniv
-
-namespace GlobalTheory.CapelliUniv
-
-open Formalism.REAL GlobalTheory.SmoothForms
-
-attribute [local instance] LieRing.ofAssociativeRing LieAlgebra.ofAssociativeAlgebra
-
-end GlobalTheory.CapelliUniv
-
-namespace GlobalTheory.CapelliUniv
-
-open Formalism.REAL GlobalTheory.SmoothForms
-
-attribute [local instance] LieRing.ofAssociativeRing LieAlgebra.ofAssociativeAlgebra
-
-end GlobalTheory.CapelliUniv

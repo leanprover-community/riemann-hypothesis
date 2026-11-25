@@ -9,8 +9,6 @@ public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.PhiMapsAn
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.DIV Formalism.L2.Col Formalism.L2.Ker GlobalTheory.TopStep
 
-noncomputable section
-
 namespace GlobalTheory.TopSrc
 
 open GlobalTheory.DatumLaw
@@ -103,5 +101,3 @@ theorem phiTop_level : ∀ {X : Fields} {Pr : Primes X} {R : Ranks} (Ch : Chars 
   exact phiTop_source Ch sel mu cst.sharp hL.hm P hJ _
 
 end GlobalTheory.TopSrc
-
-end

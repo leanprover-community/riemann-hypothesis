@@ -23,11 +23,6 @@ theorem pw_succ (k : ℤ) (x : Fl l) : pw (k + 1) x = pw k x ^ l := by
   rw [add_comm, zpow_add, zpow_one]
   rfl
 
-theorem pw_add (a b : ℤ) (x : Fl l) : pw (a + b) x = pw a (pw b x) := by
-  unfold pw
-  rw [zpow_add]
-  rfl
-
 theorem pw_nat (n : ℕ) (x : Fl l) : pw (n : ℤ) x = x ^ l ^ n := by
   induction n with
   | zero => simp [pw_zero]
@@ -35,9 +30,6 @@ theorem pw_nat (n : ℕ) (x : Fl l) : pw (n : ℤ) x = x ^ l ^ n := by
 
 theorem l_pos : (0 : ℝ) < l := by exact_mod_cast (Fact.out : l.Prime).pos
 theorem two_le_l : (2 : ℝ) ≤ l := by exact_mod_cast (Fact.out : l.Prime).two_le
-
-theorem norm_sh_pw (k : ℤ) (x : Fl l) : ‖sh (pw k x)‖ = ‖sh x‖ ^ ((l : ℝ) ^ k) := by
-  apply GlobalTheory.PSer.PwLaws.norm_sh_pw
 
 theorem norm_l : ‖(l : ℂ_[l])‖ = (l : ℝ)⁻¹ := by
   rw [GlobalTheory.RingBasics.norm_eq_val, PadicComplex.valuation_p]; simp
@@ -47,7 +39,7 @@ def sz (l : ℕ) [Fact l.Prime] (h j : ℕ) (r : ℝ) (n : ℤ) : ℝ :=
 
 theorem norm_term (h j : ℕ) (x : Fl l) (n : ℤ) :
     ‖(l : ℂ_[l]) ^ (-n) * sh (pw (n * h + j) x)‖ = sz l h j ‖sh x‖ n := by
-  rw [norm_mul, norm_zpow, norm_sh_pw]; rfl
+  rw [norm_mul, norm_zpow, GlobalTheory.PSer.PwLaws.norm_sh_pw]; rfl
 
 theorem sz_nonneg (h j : ℕ) {r : ℝ} (hr : 0 ≤ r) (n : ℤ) : 0 ≤ sz l h j r n :=
   mul_nonneg (zpow_nonneg (norm_nonneg _) _) (Real.rpow_nonneg hr _)
@@ -120,7 +112,7 @@ theorem lam_shift (h j : ℕ) (x : Fl l) : lam h (j + h) x = l * lam h j x := by
 theorem lam_pow (h j k : ℕ) (x : Fl l) : lam h j (x ^ l ^ k) = lam h (j + k) x := by
   unfold lam
   refine tsum_congr fun n => ?_
-  rw [← pw_nat, ← pw_add]
+  rw [← pw_nat, ← GlobalTheory.PSer.PwLaws.pw_zadd]
   congr 3
   push_cast; ring
 

@@ -56,7 +56,7 @@ theorem countOwn_of_rowsPEv (Cg cb Cu cT CT C0 : ℝ) (n0 : ℕ) (A C c cb7 : �
 
 end Ev
 
-theorem kExpTied_holds : KExpTied :=
+theorem kExpTied_holds : Formalism.L2.SG.PoincareAmplitudeLowerBounds.KernelExponentAgreement :=
   kExpTied_of_full Formalism.L2.SG.Closed.FoldOKC_outright _root_.Formalism.L2.SG.Pf.inHHC_holds _root_.Formalism.L2.SG.Pf.fundExistsC_holds
     Formalism.L2.SG.Closed.OOIntAllC_outright Formalism.L2.SG.Closed.OOFundIndepC_holds Formalism.L2.SG.Closed.AmpWellDefC_holds
     Formalism.L2.SG.Closed.AbsConvC_outright Formalism.L2.SG.Closed.KExpansionC_holds
@@ -66,7 +66,5 @@ theorem absConvTied_holds : Formalism.L2.SG.RowsConc.AbsConvTied :=
     Formalism.L2.SG.Closed.OOIntAllC_outright Formalism.L2.SG.Closed.AbsConvC_outright
 
 variable (C0 : ℝ)
-
-
 
 end Formalism.L2.SG.ThmSOwn

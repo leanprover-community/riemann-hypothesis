@@ -3789,14 +3789,11 @@ theorem pf_abs (s : Finset ℕ) (ρ : ℕ → ℂ) (hinj : ∀ i ∈ s, ∀ j �
       (∑ l ∈ s, N l * (Y + (ρ l + 1))⁻¹)) * (A * B) := by linear_combination hE
   rw [h5, mul_assoc, hAB, mul_one]
 
-def q1P (P : Par) : ℂ[X] :=
-  ∏ i ∈ Icc 1 P.k, ((X + C (1 / 2 + (P.u i : ℂ))) * (X + C (1 / 2 + (P.u' i : ℂ))))
-
-theorem q_polynomial_monic (P : Par) : (q1P P).Monic :=
+theorem q_polynomial_monic (P : Par) : (Formalism.FourierDecayAlt.P.MAx1.ModelAlgebraRelations.WB.q1P P).Monic :=
   monic_prod_of_monic _ _ (fun _ _ => (monic_X_add_C _).mul (monic_X_add_C _))
 
-theorem natDegree_q1_polynomial (P : Par) : (q1P P).natDegree = 2 * P.k := by
-  unfold q1P
+theorem natDegree_q1_polynomial (P : Par) : (Formalism.FourierDecayAlt.P.MAx1.ModelAlgebraRelations.WB.q1P P).natDegree = 2 * P.k := by
+  unfold Formalism.FourierDecayAlt.P.MAx1.ModelAlgebraRelations.WB.q1P
   rw [natDegree_prod_of_monic _ _ (fun _ _ => (monic_X_add_C _).mul (monic_X_add_C _))]
   have : ∀ i ∈ Icc 1 P.k, ((X + C (1 / 2 + (P.u i : ℂ))) * (X + C (1 / 2 + (P.u' i : ℂ)))).natDegree = 2 := by
     intro i _
@@ -3805,14 +3802,14 @@ theorem natDegree_q1_polynomial (P : Par) : (q1P P).natDegree = 2 * P.k := by
   simp [mul_comm]
 
 theorem q_polynomial_next_coeff (P : Par) :
-    (q1P P).nextCoeff = ∑ i ∈ Icc 1 P.k, ((1 / 2 + (P.u i : ℂ)) + (1 / 2 + (P.u' i : ℂ))) := by
-  unfold q1P
+    (Formalism.FourierDecayAlt.P.MAx1.ModelAlgebraRelations.WB.q1P P).nextCoeff = ∑ i ∈ Icc 1 P.k, ((1 / 2 + (P.u i : ℂ)) + (1 / 2 + (P.u' i : ℂ))) := by
+  unfold Formalism.FourierDecayAlt.P.MAx1.ModelAlgebraRelations.WB.q1P
   rw [Monic.nextCoeff_prod _ _ (fun _ _ => (monic_X_add_C _).mul (monic_X_add_C _))]
   refine Finset.sum_congr rfl (fun i _ => ?_)
   rw [Monic.nextCoeff_mul (monic_X_add_C _) (monic_X_add_C _), nextCoeff_X_add_C, nextCoeff_X_add_C]
 
-theorem qC_eq (P : Par) (Y : ℂ) : qC P Y = -((P.T : ℂ) * P.T') * (q1P P).eval Y := by
-  unfold qC q1P
+theorem qC_eq (P : Par) (Y : ℂ) : qC P Y = -((P.T : ℂ) * P.T') * (Formalism.FourierDecayAlt.P.MAx1.ModelAlgebraRelations.WB.q1P P).eval Y := by
+  unfold qC Formalism.FourierDecayAlt.P.MAx1.ModelAlgebraRelations.WB.q1P
   simp only [eval_prod, eval_mul, eval_add, eval_X, eval_C]
   congr 1
   exact Finset.prod_congr rfl (fun i _ => by ring)
@@ -3855,7 +3852,7 @@ theorem rhoC_inj (P : Par) (hP : P.OK) (π : Ty P) : ∀ i ∈ Icc 1 (P.k - 1), 
   · exact absurd h2 (ne_of_lt (Mx3.rho_inj P hP π j i hj hi h1))
 
 theorem moduleH1Alt (P : Par) (hP : P.OK) (π : Ty P) : ∀ l ∈ Icc 1 (P.k - 1),
-    -((P.T : ℂ) * P.T') * (q1P P).eval (-(rho P π l : ℂ)) + (NrmDown P l π : ℂ) *
+    -((P.T : ℂ) * P.T') * (Formalism.FourierDecayAlt.P.MAx1.ModelAlgebraRelations.WB.q1P P).eval (-(rho P π l : ℂ)) + (NrmDown P l π : ℂ) *
       ((∏ j ∈ (Icc 1 (P.k - 1)).erase l, (-(rho P π l : ℂ) + (rho P π j : ℂ))) *
         ∏ j ∈ Icc 1 (P.k - 1), (-(rho P π l : ℂ) + ((rho P π j : ℂ) + 1))) = 0 := by
   intro l hl
@@ -3875,7 +3872,7 @@ theorem moduleH1Alt (P : Par) (hP : P.OK) (π : Ty P) : ∀ l ∈ Icc 1 (P.k - 1
   linear_combination hk
 
 theorem residue_quadratic_identity (P : Par) (hP : P.OK) (π : Ty P) : ∀ l ∈ Icc 1 (P.k - 1),
-    -((P.T : ℂ) * P.T') * (q1P P).eval (-((rho P π l : ℂ) + 1)) - (Nrm P l π : ℂ) *
+    -((P.T : ℂ) * P.T') * (Formalism.FourierDecayAlt.P.MAx1.ModelAlgebraRelations.WB.q1P P).eval (-((rho P π l : ℂ) + 1)) - (Nrm P l π : ℂ) *
       ((∏ j ∈ Icc 1 (P.k - 1), (-((rho P π l : ℂ) + 1) + (rho P π j : ℂ))) *
         ∏ j ∈ (Icc 1 (P.k - 1)).erase l, (-((rho P π l : ℂ) + 1) + ((rho P π j : ℂ) + 1))) = 0 := by
   intro l hl
@@ -3897,7 +3894,7 @@ theorem residue_quadratic_identity (P : Par) (hP : P.OK) (π : Ty P) : ∀ l ∈
 
 theorem double_root_of_adjacent_rho (P : Par) (hP : P.OK) (π : Ty P) : ∀ l ∈ Icc 1 (P.k - 1), ∀ m ∈ Icc 1 (P.k - 1),
     (rho P π m : ℂ) = (rho P π l : ℂ) + 1 → (Nrm P l π : ℂ) = 0 ∧ (NrmDown P m π : ℂ) = 0 ∧
-      (X + C ((rho P π l : ℂ) + 1)) * (X + C ((rho P π l : ℂ) + 1)) ∣ q1P P := by
+      (X + C ((rho P π l : ℂ) + 1)) * (X + C ((rho P π l : ℂ) + 1)) ∣ Formalism.FourierDecayAlt.P.MAx1.ModelAlgebraRelations.WB.q1P P := by
   intro l hl m hm h
   have hl' := Finset.mem_Icc.1 hl
   have hr : rho P π m = rho P π l + 1 := by exact_mod_cast h
@@ -3920,7 +3917,7 @@ theorem double_root_of_adjacent_rho (P : Par) (hP : P.OK) (π : Ty P) : ∀ l �
     have b := hI l hl
     have hu : P.u l = rho P π l + 1 / 2 := by linarith [o3.1, b.1]
     have hu' : P.u' l = rho P π l + 1 / 2 := by linarith [o3.2, b.2.1]
-    have hd : (X + C (1 / 2 + (P.u l : ℂ))) * (X + C (1 / 2 + (P.u' l : ℂ))) ∣ q1P P :=
+    have hd : (X + C (1 / 2 + (P.u l : ℂ))) * (X + C (1 / 2 + (P.u' l : ℂ))) ∣ Formalism.FourierDecayAlt.P.MAx1.ModelAlgebraRelations.WB.q1P P :=
       Finset.dvd_prod_of_mem (fun i => (X + C (1 / 2 + (P.u i : ℂ))) * (X + C (1 / 2 + (P.u' i : ℂ))))
         (Finset.mem_Icc.2 ⟨hl'.1, by omega⟩)
     have e1 : (1 / 2 + (P.u l : ℂ)) = (rho P π l : ℂ) + 1 := by rw [hu]; push_cast; ring
@@ -3928,7 +3925,7 @@ theorem double_root_of_adjacent_rho (P : Par) (hP : P.OK) (π : Ty P) : ∀ l �
     rwa [e1, e2] at hd
 
 theorem modE (P : Par) (hP : P.OK) (π : Ty P) :
-    2 * (aC P π : ℂ) + 1 = (q1P P).nextCoeff - ∑ i ∈ Icc 1 (P.k - 1), (rho P π i : ℂ) -
+    2 * (aC P π : ℂ) + 1 = (Formalism.FourierDecayAlt.P.MAx1.ModelAlgebraRelations.WB.q1P P).nextCoeff - ∑ i ∈ Icc 1 (P.k - 1), (rho P π i : ℂ) -
       ∑ i ∈ Icc 1 (P.k - 1), ((rho P π i : ℂ) + 1) := by
   rw [q_polynomial_next_coeff]
   have s1 : ∑ i ∈ Icc 1 P.k, ((1 / 2 + (P.u i : ℂ)) + (1 / 2 + (P.u' i : ℂ))) =
@@ -3952,7 +3949,7 @@ theorem pf (P : Par) (hP : P.OK) (π : Ty P) (u : ℂ) (h0 : xC P π (u - 1) ≠
         ((Nrm P l π : ℂ) * ((u + rho P π l)⁻¹ * (u + rho P π l + 1)⁻¹) -
           (NrmDown P l π : ℂ) * ((u + rho P π l)⁻¹ * (u + rho P π l - 1)⁻¹)) := by
   obtain ⟨r, hr⟩ := pf_abs (Icc 1 (P.k - 1)) (fun i => (rho P π i : ℂ)) (rhoC_inj P hP π)
-    (-((P.T : ℂ) * P.T')) (q1P P) (fun l => (Nrm P l π : ℂ)) (fun l => (NrmDown P l π : ℂ))
+    (-((P.T : ℂ) * P.T')) (Formalism.FourierDecayAlt.P.MAx1.ModelAlgebraRelations.WB.q1P P) (fun l => (Nrm P l π : ℂ)) (fun l => (NrmDown P l π : ℂ))
     (moduleH1Alt P hP π) (residue_quadratic_identity P hP π) (double_root_of_adjacent_rho P hP π) (q_polynomial_monic P)
     (by rw [natDegree_q1_polynomial, Nat.card_Icc]; have := hP.k_pos; omega) (2 * (aC P π : ℂ) + 1) (modE P hP π)
   have f0 : ∀ i ∈ Icc 1 (P.k - 1), u - 1 + (rho P π i : ℂ) ≠ 0 := Finset.prod_ne_zero_iff.1 h0
@@ -5246,7 +5243,6 @@ end
 end Formalism.FourierDecayAlt.P.MAx1.WeylSymmetry
 
 namespace Formalism.FourierDecayAlt.P.MAx1
-
 
 theorem startIsStartAssemble : StartIsStartAssemble := by
   intro hH hR hD P D _ hP l

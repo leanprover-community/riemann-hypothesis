@@ -14,8 +14,6 @@ import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.IsRowFrame
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.DIV Formalism.L2.Col GlobalTheory.TwU Classical GlobalTheory.QNormal GlobalTheory.UnfoldLaw
 
-noncomputable section
-
 namespace GlobalTheory.UnfoldTwoSided
 
 section Affine
@@ -292,5 +290,3 @@ theorem xiAt_two_sided : ∀ {X : Fields} {Pr : Primes X} {R : Ranks} (Ch : Char
   ring
 
 end GlobalTheory.UnfoldTwoSided
-
-end

@@ -204,23 +204,10 @@ theorem exists_level {a : ℤ_[p]ˣ} (ha : a ≠ 1) :
     push Not at h
     exact ha (eq_one_of_forall_mem_unitsOneAdd h)
   classical
-  refine ⟨Nat.find hex - 1, ?_, ?_⟩
-  · by_contra h
-    have := Nat.find_min hex (show Nat.find hex - 1 < Nat.find hex by
-      have : Nat.find hex ≠ 0 := by
-        intro h0
-        have := Nat.find_spec hex
-        rw [h0, unitsOneAdd_zero] at this
-        exact this (Subgroup.mem_top _)
-      omega)
-    exact this h
-  · have h0 : Nat.find hex ≠ 0 := by
-      intro h0
-      have := Nat.find_spec hex
-      rw [h0, unitsOneAdd_zero] at this
-      exact this (Subgroup.mem_top _)
-    rw [Nat.sub_add_cancel (by omega)]
-    exact Nat.find_spec hex
+  have h0 : 0 < Nat.find hex := (Nat.find_pos hex).2 (by simp)
+  refine ⟨Nat.find hex - 1, not_not.1 (Nat.find_min hex (by omega)), ?_⟩
+  rw [Nat.sub_add_cancel h0]
+  exact Nat.find_spec hex
 
 theorem exists_mul_inv_pow_mem {s : ℕ} (hs : 2 ≤ s) {a : ℤ_[p]ˣ} (ha : a ∈ unitsOneAdd p s)
     (ha' : a ∉ unitsOneAdd p (s + 1)) {b : ℤ_[p]ˣ} (hb : b ∈ unitsOneAdd p s) (k : ℕ) :

@@ -101,16 +101,8 @@ theorem UpperTheory.height_blockEmbedding_le :
     · intro w _
       exact pow_le_pow_left₀ (locHeight_pos _).le (loc_le e _) _
   · have h1 := finite_mulSupport_locHeight_finAt (emb e g)
-    have h2 := finite_mulSupport_locHeight_finAt g
     simp only [hfin] at h1
-    rw [finprod_eq_prod_of_mulSupport_subset _ (s := h1.toFinset ∪ h2.toFinset)
-        (by intro x hx; simp [hx]),
-      finprod_eq_prod_of_mulSupport_subset _ (s := h1.toFinset ∪ h2.toFinset)
-        (by intro x hx; simp [hx])]
-    apply Finset.prod_le_prod₀
-    · intro v _
-      exact (locHeight_pos _).le
-    · intro v _
-      exact loc_le e _
+    exact finprod_le_finprod₀ h1 (fun _ => (locHeight_pos _).le)
+      (finite_mulSupport_locHeight_finAt g) fun v => loc_le e _
   · exact finprod_nonneg fun v => (locHeight_pos _).le
   · exact (zero_lt_one.trans_le (one_le_prod_locHeight g)).le

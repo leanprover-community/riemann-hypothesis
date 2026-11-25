@@ -46,14 +46,8 @@ theorem exists_extend_dual (hρ : IsSmooth ρ) (hτ : IsSmooth τ)
       rw [← LinearMap.comp_apply, hr, LinearMap.id_apply]
     rw [h1]
 
-    have hker : ∀ y ∈ coinvariantsKer ρ K, ℓ y = 0 := by
-      intro y hy
-      refine Submodule.span_induction ?_ (by simp) (fun a b _ _ ha hb => by rw [map_add (f := _), ha, hb, add_zero])
-        (fun c a _ ha => by rw [map_smul, ha, smul_zero]) hy
-      rintro _ ⟨k, rfl⟩
-      simp [hℓ k.1.1 k.1.2 k.2]
-    have := hker _ (sub_fixedProj_mem hρ hKc hKo v)
-    rw [map_sub, sub_eq_zero] at this
+    have := coinvariantsKer_le_ker_of_invariant hℓ (sub_fixedProj_mem hρ hKc hKo v)
+    rw [LinearMap.mem_ker, map_sub, sub_eq_zero] at this
     exact this.symm
 
 end Extension

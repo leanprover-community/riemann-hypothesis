@@ -3,7 +3,6 @@ module
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.GaussQ
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ComplexCoordinatesExistAtInfinity
 public import CompanionTheory.SpectralGeometry.CountingDefinitions.AdelicEulerProducts.IsEulerProd
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CoreR
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TrMMemFramesEIff
 public import Mathlib.NumberTheory.NumberField.Discriminant.Defs
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.ArchimedeanCoordinateMeasureTransport
@@ -29,6 +28,36 @@ import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HypOneZeroZero
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.CoordinateHomeomorphRankOneTuples
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.HermitianRankOneHomeomorphBase
 import Mathlib.Tactic.Linter.Style
+public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
+
+section
+@[expose] public section
+
+noncomputable section
+
+namespace GlobalTheory.CompanionTheory.WeilSiegel.Inf0
+
+open scoped Matrix
+
+variable {P ι : Type}
+
+def qR0 [Fintype ι] (A : P → Matrix ι ι ℝ) (x : P → ι → ℝ) : P → ℝ :=
+  fun w => (1 / 2 : ℝ) * (x w ⬝ᵥ (A w *ᵥ x w))
+
+def gaussR [Fintype P] [Fintype ι] (Pm : P → Matrix ι ι ℝ) (x : P → ι → ℝ) : ℝ :=
+  Real.exp (-Real.pi * ∑ w, x w ⬝ᵥ (Pm w *ᵥ x w))
+
+def boxR [Fintype ι] (t : P → ℝ) : Set (P → ι → ℝ) :=
+  {x | ∀ w, ‖x w‖ ≤ t w}
+
+def coreR [Fintype ι] (δ R : ℝ) : Set (P → ι → ℝ) :=
+  {x | ∀ w, δ ≤ ‖x w‖ ∧ ‖x w‖ ≤ R}
+
+end GlobalTheory.CompanionTheory.WeilSiegel.Inf0
+end
+end
+end
+
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ArchimedeanRankOneFreeOfPlaces, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ArchimedeanRankOneVolumeBound, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DisintegrationInjectiveOpenMap, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.QuadraticBoxIntegralSmallBall, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.QuadraticBoxVolumeBound, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ArchimedeanVolumeRankOneIsotropic

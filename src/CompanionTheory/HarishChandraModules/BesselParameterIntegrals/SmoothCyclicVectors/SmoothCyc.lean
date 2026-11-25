@@ -12,8 +12,6 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnitaryQuotientC
 
 open Matrix Filter Topology Set
 
-noncomputable section
-
 namespace CompanionTheory.D.Upq.Sm
 
 open PI.UpqRep
@@ -108,5 +106,3 @@ theorem smoothCyc_of_kFinSmooth (hK : PI.KFinSmooth) : PI.SmoothCyc :=
   smoothCyc_of_lowSmooth (PI.UnitaryGroupMassFormula.LowSmooth.lowSmooth_of_kFinSmooth hK)
 
 end CompanionTheory.D.Upq.Sm
-
-end

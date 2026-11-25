@@ -36,16 +36,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 
 noncomputable section
 
-namespace GlobalTheory.UPel.HT.EtLev.LevForget
-
-variable {p : ℕ} [Fact p.Prime] {D : Datum p} {R : Type} [CommRing R]
-
-def forgetMap {b : Base D R} {N' : ℕ} {S S' : Scheme.{0}} {s : S ⟶ Sp R} {s' : S' ⟶ Sp R} {o' : Obj b N' s'}
-    {o : Obj b N' s} {f : S' ⟶ S} (m : ObjMap o' o f) (N : ℕ) (hd : N ∣ N') (hc : N'.Coprime p) :
-    ObjMap (o'.forget N hd hc) (o.forget N hd hc) f :=
-  ⟨m.φ, m.φ₂, m.cart, m.sq, m.act, m.pol, fun y => m.eta _⟩
-
-end GlobalTheory.UPel.HT.EtLev.LevForget
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -181,7 +171,6 @@ private theorem wSub_one {q : ℕ} [Fact q.Prime] (D : Datum q) (𝔟 : Ideal (�
   unfold wSub idealSub
   rw [pow_one]
 
-
 theorem levDown : LevDown := by
   unfold LevDown
   intro q _ D hm R _ b N S s o 𝔟₁ 𝔟₂ ε h𝔟 hmul l hl
@@ -268,7 +257,7 @@ theorem UpperTheory.Gal.FiniteEtaleModels.O.downEx :
     obtain ⟨v, -, huniq⟩ := X₂.M.rep X₁.Y.X X₁.Y.s (X₁.Y.univ.forget N₀ hd hcq₁)
     have e1 := huniq (t ≫ X₂.π) ⟨by rw [Category.assoc, X₂.ov, ht], ⟨m.comp X₂.mπ⟩⟩
     have e2 := huniq (X₁.π ≫ u)
-      ⟨by rw [Category.assoc, hu, X₁.ov], ⟨(LevForget.forgetMap X₁.mπ N₀ hd hcq₁).comp mu⟩⟩
+      ⟨by rw [Category.assoc, hu, X₁.ov], ⟨(GlobalTheory.UPel.HT.OfLift.ObjMap.forget X₁.mπ N₀ hd hcq₁).comp mu⟩⟩
     rw [e1, e2]
   haveI := X₁.fin
   haveI := X₁.et
@@ -359,7 +348,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open UpperTheory.Gal.Int.Geo
 
 namespace UpperTheory.Gal.FiniteEtaleModels.O
-
 
 private theorem stepF_of (hGen : GenEx) (hComp : QComp) (hIso : QIso) (hCls : ClsEx) (hEta : TrEta) (hUnit : TrUnit)
     (hEps : EpsEx) (hDown : DownEx) : UpperTheory.Gal.FiniteEtaleModels.StepF := by

@@ -25,18 +25,12 @@ variable {n : ℕ}
 
 theorem sqrt_mul_sqrt_le {a b ε : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b) (hε : 0 < ε) :
     Real.sqrt a * Real.sqrt b ≤ ε * a + b / (4 * ε) := by
-  have h1 := Real.sq_sqrt ha
-  have h2 := Real.sq_sqrt hb
-  have h3 := sq_nonneg (2 * ε * Real.sqrt a - Real.sqrt b)
   have h4 : 0 < 4 * ε := by positivity
-  have key : 4 * ε * (Real.sqrt a * Real.sqrt b) ≤ 4 * ε * (ε * a + b / (4 * ε)) := by
-    rw [mul_add, mul_div_cancel₀ _ h4.ne']
-    have e : (2 * ε * Real.sqrt a - Real.sqrt b) ^ 2 =
-        4 * ε * (ε * a) + b - 4 * ε * (Real.sqrt a * Real.sqrt b) := by
-      rw [sub_sq, mul_pow, mul_pow, h1, h2]
-      ring
-    linarith
-  exact le_of_mul_le_mul_left key h4
+  have h := two_mul_le_add_sq (2 * ε * Real.sqrt a) (Real.sqrt b)
+  rw [mul_pow, mul_pow, Real.sq_sqrt ha, Real.sq_sqrt hb] at h
+  refine le_of_mul_le_mul_left ?_ h4
+  rw [mul_add, mul_div_cancel₀ _ h4.ne']
+  linarith
 
 def outer (n k : ℕ) : Set (Fin (n + 1) → ℂ) := {y | ((k : ℝ) + 1) ^ 2 ≤ ∑ i, ‖y i‖ ^ 2}
 

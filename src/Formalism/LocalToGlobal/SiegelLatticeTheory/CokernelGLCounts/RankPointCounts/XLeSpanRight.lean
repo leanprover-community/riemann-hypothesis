@@ -54,24 +54,12 @@ theorem surj_MMsharp (M : Model F E) (hM : M.OK) {V : Type} [AddCommGroup V] [Mo
   have hmU : (m : V) ∈ Submodule.span E (Set.range (Sum.elim t.f t.f')) := spanMM_le_U H t m.2.1
   obtain ⟨x, hx, hpx⟩ := ((local_hermitian_glue F E M hM V H t.abelian₂ hgen.1.1 _ hU').1 (m : V) hmU).2
     (fun y hy hyU => m.2.2 y (hgen.2.2.2 y hy (span_frames_le_MM H t hyU)))
-  have hx' : x ∈ Submodule.span E (Set.range (Sum.elim t.f t.f')) ⊔
-      H.perp (Submodule.span E (Set.range (Sum.elim t.f t.f'))) := by
-    rw [hU'.sup_eq_top]
-    exact Submodule.mem_top
-  obtain ⟨a, ha, b, hb, hab⟩ := Submodule.mem_sup.1 hx'
-  have hpa : ((Submodule.linearProjOfIsCompl _ _ hU' x :
-      ↥(Submodule.span E (Set.range (Sum.elim t.f t.f')))) : V) = a := by
-    rw [← hab, map_add (f := _)]
-    have e1 := Submodule.projectionOnto_apply_left hU' ⟨a, ha⟩
-    have e2 := Submodule.projectionOnto_apply_right hU' ⟨b, hb⟩
-    simp only [Submodule.linearProjOfIsCompl] at *
-    rw [e1, e2, add_zero]
-  have hma : (m : V) = a := by rw [← hpx, hpa]
-  have hbW : b ∈ H.W0 t.f t.f' := by rw [hermSp_W0_eq_perp_span_range_MMfam]; exact hb
-  refine ⟨⟨b, hbW⟩, ?_⟩
-  show (m : V) + b ∈ t.abelian₂
-  rw [hma, hab]
-  exact hx
+  have hbW : Submodule.projection _ _ hU'.symm x ∈ H.W0 t.f t.f' := by
+    rw [hermSp_W0_eq_perp_span_range_MMfam]; exact Submodule.projection_apply_mem _ _
+  refine ⟨⟨_, hbW⟩, ?_⟩
+  rw [← hpx]
+  convert hx using 1
+  exact Submodule.projection_add_projection_eq_self hU' x
 
 theorem claimRL_at (M : Model F E) (r n : ℕ) (hM : M.OK) : ClaimRL M r n := by
   intro hs V _ _ H hn t₁ f₂ f₂' φ φ' hyp Λ₂ hg hth θ hθ

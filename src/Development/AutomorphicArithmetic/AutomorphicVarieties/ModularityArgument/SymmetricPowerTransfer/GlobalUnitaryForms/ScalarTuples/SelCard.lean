@@ -70,18 +70,9 @@ variable {F : Type} [Field F] [NumberField F]
 
 private theorem dvd_of_ev (v : Pl F) (a : Fˣ) (h : EvenVal (Ov v) (cv v (a : F))) : ((2 : ℕ) : ℤ) ∣ Kum.ordv v a := by
   obtain ⟨u, s, hs, hx⟩ := h
-  have hu : ∀ w : (Ov v)ˣ, Valued.v (algebraMap (Ov v) (Kv v) ↑w) = 1 := by
-    intro w
-    have ha : Valued.v (algebraMap (Ov v) (Kv v) ↑w) ≤ 1 := (w : Ov v).2
-    have hb : Valued.v (algebraMap (Ov v) (Kv v) ↑w⁻¹) ≤ 1 := ((w⁻¹ : (Ov v)ˣ) : Ov v).2
-    have hm : Valued.v (algebraMap (Ov v) (Kv v) ↑w) * Valued.v (algebraMap (Ov v) (Kv v) ↑w⁻¹) = 1 := by
-      rw [← map_mul, ← map_mul, Units.mul_inv, map_one, map_one]
-    refine le_antisymm ha ?_
-    calc (1 : WithZero (Multiplicative ℤ)) = _ := hm.symm
-      _ ≤ Valued.v (algebraMap (Ov v) (Kv v) ↑w) * 1 := by gcongr
-      _ = _ := mul_one _
   have hv := congrArg Valued.v hx
-  rw [map_mul, hu, one_mul, map_pow] at hv
+  rw [map_mul, (HeightOneSpectrum.adicCompletionIntegers.integers F v).valuation_unit u,
+    one_mul, map_pow] at hv
   have hs0 : Valued.v s ≠ 0 := (Valuation.ne_zero_iff _).mpr hs
   obtain ⟨w, hw⟩ := WithZero.ne_zero_iff_exists.mp hs0
   have hva : Valued.v (cv v (a : F)) = v.valuation F (a : F) :=

@@ -185,10 +185,7 @@ theorem glue_two (hP : PowLoc) {L' L'' : Submodule (𝓞 E) (Fin N → E)} (h' :
     have hne : P ≠ P' := fun h => (Finset.mem_sdiff.mp hP').2 (h ▸ hPA)
     exact (Ideal.isCoprime_iff_sup_eq.mpr
       ((hAm P hPA).coprime_of_ne (hBm P' (Finset.mem_sdiff.mp hP').1) hne)).pow
-  have h1 : (1 : 𝓞 E) ∈ (∏ P ∈ A, P ^ K) ⊔ ∏ P ∈ B \ A, P ^ K := by
-    rw [Ideal.isCoprime_iff_sup_eq.mp hcop]
-    exact Submodule.mem_top
-  obtain ⟨a, ha, b, hb, hab⟩ := Submodule.mem_sup.mp h1
+  obtain ⟨a, ha, b, hb, hab⟩ := Ideal.isCoprime_iff_exists.mp hcop
   have memA : ∀ P ∈ A, a ∈ P ^ K := fun P h => by
     first
       | exact Ideal.le_of_dvd (Finset.dvd_prod_of_mem (fun Q => Q ^ K) h) ha

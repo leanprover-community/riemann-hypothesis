@@ -14,12 +14,9 @@ open Formalism.BasicNotions.TH MeasureTheory
 open Formalism.MainNotions.SchurIrreducible (IrrU IrrGK IsHCMod)
 open scoped TensorProduct
 
-def nextRow {l : ℕ} (a : Fin l → ℕ) (i : Fin l) : ℕ :=
-  if h : i.1 + 1 < l then a ⟨i.1 + 1, h⟩ else 0
-
 def minorProd {R : Type} [CommRing R] {n l : ℕ} (a : Fin l → ℕ) (y : Matrix (Fin n) (Fin l) R)
     (row : ∀ i : Fin l, Fin (i.1 + 1) → Fin n) : R :=
-  ∏ i : Fin l, (y.submatrix (row i) (Fin.castLE i.2)).det ^ (a i - nextRow a i)
+  ∏ i : Fin l, (y.submatrix (row i) (Fin.castLE i.2)).det ^ (a i - Formalism.GradedWeylDivisibility.nuNext a i)
 
 def topRows {n l : ℕ} (h : l ≤ n) (i : Fin l) (c : Fin (i.1 + 1)) : Fin n := ⟨c.1, by omega⟩
 

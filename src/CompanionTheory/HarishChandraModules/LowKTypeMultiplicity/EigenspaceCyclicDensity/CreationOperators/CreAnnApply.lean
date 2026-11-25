@@ -10,8 +10,6 @@ import Mathlib.Topology.Sheaves.Presheaf
 
 open Finset
 
-noncomputable section
-
 namespace CompanionTheory.D.LK
 
 open Car Formalism.REAL

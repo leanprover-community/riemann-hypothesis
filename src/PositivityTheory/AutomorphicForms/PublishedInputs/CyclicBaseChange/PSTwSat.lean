@@ -7,8 +7,6 @@ import Development.AutomorphicArithmetic.AutomorphicVarieties.PublishedTheorems.
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N Polynomial
 open GlobalTheory.CuspRep GlobalTheory.GalOfCusp UpperTheory.V.Af UpperTheory.V.Published
 

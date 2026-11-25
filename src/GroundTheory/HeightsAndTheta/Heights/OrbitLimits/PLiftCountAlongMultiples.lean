@@ -13,6 +13,7 @@ import ReciprocityTheory.GeometryOfNumbers.PluriharmonicAnalysis.BergmanDefs
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.ProjDefs
 import Mathlib.Algebra.Order.Star.Real
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.ArithModel
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PPowerBlockVeronese
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.AevalMulMemChartRingZ, GroundTheory.HeightsAndTheta.Heights.OrbitLimits.LiftBlockSections, GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PLiftCountAlongMultiples
@@ -85,44 +86,6 @@ theorem chartLat_smul_one (y : (Σ k, ι k) → Ω) (m : ℕ) (b : K → ℤ) :
       s * ∏ k, y ⟨k, c k⟩ ^ (-(((1 : ℕ) : ℤ) * (m • b) k)) ∈ chartRingZ y c) ↔
     (∀ c : ∀ k, ι k, (∀ k, y ⟨k, c k⟩ ≠ 0) → s * ∏ k, y ⟨k, c k⟩ ^ (-((m : ℤ) * b k)) ∈ chartRingZ y c)
   simp only [Pi.smul_apply, nsmul_eq_mul, Nat.cast_one, one_mul]
-
-theorem secM_le_chartLat [DecidableEq K] {r : ℕ} (y : (Σ k, ι k) → Ω) (v : Fin r → Ω) (b : K → ℤ)
-    (hv : ∀ j, v j ∈ chartLat y b 1) (n : ℕ) :
-    secM (addBlock y v) (blockDeg (none : Option K) n) ≤ chartLat y (n • b) 1 := by
-  classical
-  intro s hs
-  have hle : Submodule.span ℤ {s | ∃ g : MRing (addIdx ι r), IsMultiHomog g (blockDeg (none : Option K) n) ∧
-      aeval (addBlock y v) g = s} ≤ (chartLat y (n • b) 1).toIntSubmodule := by
-    rw [Submodule.span_le]
-    rintro _ ⟨g, hg, rfl⟩
-    show aeval (addBlock y v) g ∈ chartLat y (n • b) 1
-
-    rw [g.as_sum, map_sum]
-    refine AddSubgroup.sum_mem _ fun m hm => ?_
-    have hold : ∀ (k : K) (i : ι k), m ⟨some k, i⟩ = 0 := by
-      intro k i
-      have h := hg m hm (some k)
-      simp only [blockDeg, reduceCtorEq, ite_false] at h
-      exact Finset.sum_eq_zero_iff.mp h i (Finset.mem_univ _)
-    have htot : ∑ p ∈ m.support, m p = n := by
-      rw [Finset.sum_subset (Finset.subset_univ _) (fun p _ hp => Finsupp.notMem_support_iff.mp hp),
-        Fintype.sum_sigma, Fintype.sum_option]
-      have h0 := hg m hm none
-      simp only [blockDeg, ite_true] at h0
-      have h1 : ∑ k : K, ∑ i : addIdx ι r (some k), m ⟨some k, i⟩ = 0 :=
-        Finset.sum_eq_zero fun k _ => Finset.sum_eq_zero fun i _ => hold k i
-      rw [h0, h1, add_zero]
-    have hprod : m.prod (fun p e => addBlock y v p ^ e) ∈ chartLat y (n • b) 1 := by
-      have h := LiftBirationalAmple.chartLat_prod (y := y) m.support (fun p => addBlock y v p ^ m p)
-        (fun p => m p • b) (fun p _ => by
-          rcases p with ⟨_ | k, i⟩
-          · exact LiftBirationalAmple.chartLat_pow (hv i) _
-          · simp only [hold k i, pow_zero, zero_smul]
-            exact LiftBirationalAmple.chartLat_one_mem)
-      rwa [← Finset.sum_smul, htot] at h
-    rw [aeval_monomial, algebraMap_int_eq, eq_intCast, ← zsmul_eq_mul]
-    exact AddSubgroup.zsmul_mem _ hprod _
-  exact hle hs
 
 def oldEmb (r : ℕ) : (Σ k, ι k) → (Σ k, addIdx ι r k) := fun p => ⟨some p.1, p.2⟩
 
@@ -353,8 +316,7 @@ theorem LiftCountAlongMultiples.proof (hDat : LiftBlockDatum.Statement) (hTop : 
     intro n
     refine LiftBlockSections.smallSectionCount_mono (fun s hs hsm => ⟨?_, ?_⟩) (hfin _)
     · rw [hdy, hdk] at hs
-      have := LiftBlockSections.secM_le_chartLat y v (a • N.a) hv1 n hs
-      rwa [smul_smul, mul_comm, LiftBlockSections.chartLat_smul_one] at this
+      exact PowerBlockVeronese.secM_le_chartLat hv n hs
     · rw [hdy] at hsm
       exact LiftBlockSections.isSmallH_of_lift hB hv hmet hlift hsm
 

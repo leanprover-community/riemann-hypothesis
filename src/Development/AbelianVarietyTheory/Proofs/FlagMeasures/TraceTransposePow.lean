@@ -58,7 +58,6 @@ import Formalism.RealPlaceAnalysis.RealPlaceTaylor.LieOperatorConjHolds
 open MeasureTheory Matrix Finset Formalism.MainNotions.S Formalism.REAL Formalism.QuantumDeterminants GlobalTheory.Count GlobalTheory.Dec
 open scoped InnerProductSpace ComplexOrder
 
-noncomputable section
 namespace GlobalTheory.Dec.FormF
 
 private lemma matrix_of_pow_apply_eq_epow {n : ℕ} {A : Type} [Ring A] (E : Fin n → Fin n → A) (k : ℕ) (a b : Fin n) :

@@ -540,7 +540,7 @@ theorem conjFun_base_root : Formalism.MainNotions.ModuliIntegralCharts.H1.ChartI
   obtain ⟨n, α, ys, ys', hy, hy', hk⟩ := h5
   have hZ : ConjFun (O i) (κ i) τ 1 (fun _ => 0) (fun _ => 0) := by
     have := hP τ ta hta hB 0 0 (fun h => ⟨0, 0, by simp, by rw [map_zero, map_zero]; rfl, by rw [map_zero, map_zero]; rfl⟩)
-    simpa using this
+    simpa only [map_zero, zero_apply, Pi.zero_apply, mul_zero] using this
   have hL := conjFun_sum (O i) (κ i) τ hZ n α
     (fun k g => h4.choose * ph i * R.thF i A.μ0 (ys k) (v₀ i (sg0 D A)) g)
     (fun k g => h4.choose * ph i * R.thF i A.μ0 (ys' k) (v₀ i (sg0 D A)) g) (fun k => hP τ ta hta hB (ys k) (ys' k) (hk k))

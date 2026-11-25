@@ -57,21 +57,13 @@ theorem linV_apply (v : InfinitePlace F) (y : Fin 2 → UpperTheory.V.TR.Rinf F)
 def polyV (y : Fin 2 → UpperTheory.V.TR.Rinf F) : ℂ := ∏ v, linV F v y
 
 theorem polyV_hasTemperateGrowth : (polyV F).HasTemperateGrowth := by
-  classical
-  have h : ∀ s : Finset (InfinitePlace F),
-      (fun y : Fin 2 → UpperTheory.V.TR.Rinf F => ∏ v ∈ s, linV F v y).HasTemperateGrowth := by
-    intro s
-    induction s using Finset.induction_on with
-    | empty => simp only [Finset.prod_empty]; exact Function.HasTemperateGrowth.const (E := Fin 2 → UpperTheory.V.TR.Rinf F) (1 : ℂ)
-    | insert a s ha ih =>
-      have e : (fun y : Fin 2 → UpperTheory.V.TR.Rinf F => ∏ v ∈ insert a s, linV F v y) =
-          (fun y => linV F a y) * (fun y => ∏ v ∈ s, linV F v y) := by
-        funext y
-        rw [Finset.prod_insert ha]
-        rfl
-      rw [e]
-      exact (linV F a).hasTemperateGrowth.mul ih
-  exact h Finset.univ
+  have h : polyV F = ∏ v : InfinitePlace F, fun y => linV F v y := by
+    ext y
+    simp [polyV]
+  rw [h]
+  exact Finset.prod_induction (fun v y => linV F v y) Function.HasTemperateGrowth
+    (fun _ _ ha hb => ha.mul hb) (Function.HasTemperateGrowth.const 1)
+    fun v _ => (linV F v).hasTemperateGrowth
 
 def archS : 𝓢(Fin 2 → UpperTheory.V.TR.Rinf F, ℂ) :=
   SchwartzMap.smulLeftCLM ℂ (polyV F) (gaussV F)

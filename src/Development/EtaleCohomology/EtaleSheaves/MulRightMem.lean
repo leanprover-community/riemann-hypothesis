@@ -4,7 +4,6 @@ public import Development.EtaleCohomology.EtaleSheaves.NoetherianLocalChartOverl
 
 @[expose] public section
 
-noncomputable section
 open LateralTheory.E.StandardEtaleChartsIdempotentGluing
 
 namespace LateralTheory.E.LZIdemPowProof

@@ -259,13 +259,6 @@ noncomputable section
 
 namespace GlobalTheory.Katz.PullQuasiLog
 
-theorem lift_X (p : ℕ) [Fact p.Prime] {k : Type} [Field k] [CharP k p] {σ : Type} (j : σ) :
-    Katz.lift p (X j : MvPowerSeries σ k) = X j := by
-  classical
-  ext α
-  rw [coeff_lift, coeff_X, coeff_X]
-  split_ifs <;> simp
-
 theorem intBy_le_one (p : ℕ) [Fact p.Prime] {k : Type} [Field k] [CharP k p] {σ : Type}
     (c : WittVector p k) : intBy p k σ c ≤ intBy p k σ 1 := by
   intro f hf α
@@ -286,7 +279,7 @@ theorem main : ∀ (p : ℕ) [Fact p.Prime] (k : Type) [Field k] [CharP k p] [Pe
   have hf' : f ∈ quasiInt p k (Fin e) ∧ cob1 (fun i => lift p (ν i)) f ∈ intBy p k _ 1 := hf
   have hred := fun (σ : Type) => _root_.GlobalTheory.Katz.red_rules p k σ
   refine ⟨?_, ?_, ?_⟩
-  · have : (fun j => Katz.lift p (X j : MvPowerSeries (Fin e) k)) = X := funext fun j => lift_X p j
+  · have : (fun j => Katz.lift p (X j : MvPowerSeries (Fin e) k)) = X := funext fun j => GlobalTheory.KatzPull.lift_X p j
     rw [this, subst_self]; rfl
   · intro d' φ ψ hφ hψ
     have hΦ : ∀ j, constantCoeff (lift p (φ j)) = 0 := fun j => constantCoeff_lift p (hφ j)

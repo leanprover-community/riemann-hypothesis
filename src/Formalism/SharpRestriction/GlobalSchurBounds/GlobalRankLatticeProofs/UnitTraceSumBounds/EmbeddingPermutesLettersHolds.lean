@@ -19,15 +19,6 @@ import Mathlib.RingTheory.PicardGroup
 section -- clump:auto
 @[expose] public section
 
-namespace PI
-
-def EmbTraceSum : Prop :=
-  ∀ (E : Type) [Field E] [NumberField E] (K : IntermediateField ℚ E) (φ₀ : E →+* ℂ) (S : Type) [Fintype S]
-    (emb : S → E →+* ℂ), Function.Injective emb → (∀ (s : S) (a : K), emb s (a : E) = φ₀ (a : E)) →
-    Fintype.card S = Module.finrank K E →
-    ∀ y : E, ∑ s, emb s y = φ₀ ((Algebra.trace K E y : K) : E)
-
-end PI
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Formalism.PeriodIntegrals.EmbTraceSum =====
@@ -37,7 +28,7 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-theorem sumEqTrace_holds : PI.EmbTraceSum := by
+theorem sumEqTrace_holds : Formalism.MainNotions.Ext.TraceSum := by
   intro E _ _ K φ₀ S _ emb hinj hext hcard y
   let _ : Algebra K ℂ := (φ₀.comp (algebraMap K E)).toAlgebra
   have hcomm : ∀ (s : S) (a : K), emb s (algebraMap K E a) = algebraMap K ℂ a := fun s a => hext s a

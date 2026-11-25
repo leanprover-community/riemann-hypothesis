@@ -105,10 +105,7 @@ theorem ptBasisMap_lg (G : LogFGL v d) {γ : Fin d → Fin d → PowerSeries C}
 
 theorem pt_inv_int {M : Matrix (Fin d) (Fin d) C} (hM : ∀ i j, M i j ∈ ptIntSub v)
     (hdet : v M.det = 0) : IsUnit M.det ∧ ∀ i j, M⁻¹ i j ∈ ptIntSub v := by
-  have hdet0 : M.det ≠ 0 := by
-    intro h0
-    rw [h0, AddValuation.map_zero] at hdet
-    exact WithTop.top_ne_coe hdet
+  have hdet0 : M.det ≠ 0 := v.ne_top_iff.1 (hdet ▸ WithTop.zero_ne_top)
   refine ⟨isUnit_iff_ne_zero.mpr hdet0, fun i j => ?_⟩
   obtain ⟨M', rfl⟩ : ∃ M' : Matrix (Fin d) (Fin d) (ptIntSub v), M = M'.map (ptIntSub v).subtype :=
     ⟨fun i j => ⟨M i j, hM i j⟩, by ext i j; rfl⟩

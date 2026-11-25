@@ -5,7 +5,6 @@ import Mathlib.Tactic.Linter.Style
 
 @[expose] public section
 
-noncomputable section
 open CategoryTheory Limits AlgebraicGeometry Opposite GlobalTheory.EtC
 
 namespace LateralTheory.KummerTheory.MVnatPf
@@ -79,5 +78,3 @@ theorem MVnat_of (hD : Dict) (hΔ : Delta) (hE : Exact) : MVnat := by
     exW := fun n k w => (hδ n k w 0).symm.trans ((hE R F _ _ _ _ (hM k) n).2.2 w) }⟩
 
 end LateralTheory.KummerTheory.MVnatPf
-
-end

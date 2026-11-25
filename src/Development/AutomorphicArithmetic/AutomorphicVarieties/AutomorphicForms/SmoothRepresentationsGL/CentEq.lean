@@ -21,25 +21,14 @@ private theorem sc_val {R : Type} [CommRing R] (n : ℕ) (x : GL (Fin 1) R) (i j
   rw [Matrix.det_fin_one]
   by_cases e : i = j <;> simp [e]
 
-private theorem sc_scalar {R : Type} [CommRing R] (n : ℕ) (z : Rˣ) :
-    sc n (GeneralLinearGroup.scalar (Fin 1) z) = GeneralLinearGroup.scalar (Fin n) z := by
-  ext i j
-  rw [sc_val]
-  change (if i = j then Matrix.scalar (Fin 1) z.val 0 0 else 0) = Matrix.scalar (Fin n) z.val i j
-  by_cases e : i = j <;> simp [e]
-
 private theorem sc_comm {R : Type} [CommRing R] (n : ℕ) (x : GL (Fin 1) R) (g : GL (Fin n) R) :
     sc n x * g = g * sc n x :=
   Units.ext (Matrix.scalar_commute (Matrix.det x.val) (fun _ => Commute.all _ _) g.val).eq
 
-private theorem map_sc {R S : Type} [CommRing R] [CommRing S] (n : ℕ) (p : R →+* S) (x : GL (Fin 1) R) :
+private theorem map_sc {R S : Type} [CommRing R] [CommRing S] (n : ℕ) (p : R →+* S)
+    (x : GL (Fin 1) R) :
     GeneralLinearGroup.map p (sc n x) = sc n (GeneralLinearGroup.map p x) := by
-  ext i j
-  change p ((sc n x).val i j) = _
-  rw [sc_val, sc_val]
-  split_ifs
-  · rfl
-  · exact map_zero p
+  simp only [sc, MonoidHom.comp_apply, GeneralLinearGroup.map_scalar, GeneralLinearGroup.map_det]
 
 private theorem corner_sc {R S : Type} [CommRing R] [CommRing S] (n : ℕ) (s : R →ₙ+* S) (x : GL (Fin 1) R) :
     GlobalTheory.CuspRep.cornerGL n s (sc n x) = sc n (GlobalTheory.CuspRep.cornerGL 1 s x) := by
@@ -52,19 +41,15 @@ private theorem corner_sc {R S : Type} [CommRing R] [CommRing S] (n : ℕ) (s : 
 
 private theorem continuous_sc {R : Type} [CommRing R] [TopologicalSpace R] (n : ℕ) :
     Continuous (sc n : GL (Fin 1) R → GL (Fin n) R) := by
-  have h : Continuous fun x : GL (Fin 1) R => (sc n x).val := by
-    refine continuous_matrix fun i j => ?_
-    simp only [sc_val]
-    split_ifs
-    · exact Units.continuous_val.matrix_elem 0 0
-    · exact continuous_const
-  refine Units.continuous_iff.2 ⟨h, ?_⟩
-  simp only [← map_inv]
-  refine continuous_matrix fun i j => ?_
-  simp only [sc_val]
-  split_ifs
-  · exact Units.continuous_coe_inv.matrix_elem 0 0
-  · exact continuous_const
+  have h : ∀ f : GL (Fin 1) R → GL (Fin 1) R, Continuous (fun x => (f x).val) →
+      Continuous fun x => (sc n (f x)).val := fun f hf => by
+    have he : (fun x => (sc n (f x)).val) =
+        fun x => Matrix.diagonal fun _ : Fin n => (f x).val 0 0 :=
+      funext fun x => Matrix.ext fun i j => by rw [sc_val, Matrix.diagonal_apply]
+    rw [he]
+    exact (continuous_pi fun _ => hf.matrix_elem 0 0).matrix_diagonal
+  exact Units.continuous_iff.2 ⟨h id Units.continuous_val, by
+    simpa only [← map_inv] using h Inv.inv Units.continuous_coe_inv⟩
 
 private theorem sc_mem {K : Type} [Field K] (n : ℕ) (O : Subring K) (x : GL (Fin 1) K)
     (h : x ∈ Formalism.UG.GLint (Fin 1) O) : sc n x ∈ Formalism.UG.GLint (Fin n) O := by
@@ -112,5 +97,7 @@ theorem UpperTheory.V.Af.Smo.centEq :
       have b : ∀ u, f' (ratGL E n (sc n γ) * u) = f' u := hl' _
       rw [a, b]
       exact h1 k hk g g'
-  rw [← sc_scalar]
+  have hsc : sc n (GeneralLinearGroup.scalar (Fin 1) z) = GeneralLinearGroup.scalar (Fin n) z := by
+    rw [sc, MonoidHom.comp_apply, GeneralLinearGroup.det_scalar, Fintype.card_fin, pow_one]
+  rw [← hsc]
   exact h2 _

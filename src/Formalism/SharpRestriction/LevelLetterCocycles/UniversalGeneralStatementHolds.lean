@@ -198,11 +198,6 @@ namespace Formalism.MainNotions.N.Pv.LocalLengthBound.LB
 
 open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.ArcLiftingSetup Formalism.MainNotions.UnusedSlot80 Formalism.MainNotions.N.Ln03
 
-def GenUnitsC : Prop :=
-  ∀ (l : ℕ) [Fact l.Prime], l ≠ 2 → ∀ (s : ℕ) (u : ℤ_[l]ˣ),
-    ((u : ℤ_[l]) - 1 ∈ Ideal.span {(l : ℤ_[l])}) → ((u : ℤ_[l]) - 1 ∉ Ideal.span {(l : ℤ_[l]) ^ 2}) →
-      Subgroup.closure (insert (redU l s u) (Set.range fun d : DeltaT l => redU l s d.1)) = ⊤
-
 section Parts
 
 variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
@@ -399,14 +394,13 @@ theorem evAt_γ (z : W.Gam → ℤ_[PD.p]ˣ)
     evR_subst PD.p (s + 1) hlm (rs_root F s ζ) hyA _ h0 huy]
   exact evR_congr PD.p (s + 1) hlm hyA _ rfl _
 
-
 omit [IsLocalRing O] [IsAdicComplete (IsLocalRing.maximalIdeal O) O] [IsDomain O] [CharZero O] in
 theorem gen_of (z : W.Gam → ℤ_[PD.p]ˣ)
     (hz : ∀ g, algebraMap ℤ_[PD.p] O (z g : ℤ_[PD.p]) = (W.χΓ g : O))
     (hZinj : Function.Injective (algebraMap ℤ_[PD.p] O))
     (hγz : ∃ z0 : ℤ_[PD.p]ˣ, algebraMap ℤ_[PD.p] O (z0 : ℤ_[PD.p]) = (W.χΓ W.gam : O) ∧
       ((z0 : ℤ_[PD.p]) - 1).valuation = 1)
-    (hcard : W.DelF.card = PD.p - 1) (hp2 : PD.p ≠ 2) (hGen : GenUnitsC) (s : ℕ) :
+    (hcard : W.DelF.card = PD.p - 1) (hp2 : PD.p ≠ 2) (hGen : Formalism.MainNotions.UnusedSlot80.InvCut.GenUnits) (s : ℕ) :
     Subgroup.closure (insert (redU PD.p s (z W.gam))
       ((fun g => redU PD.p s (z g)) '' (W.DelF : Set W.Gam))) = ⊤ := by
   obtain ⟨z0, hz0, hv⟩ := hγz
@@ -490,7 +484,7 @@ theorem gen_of' (z : W.Gam → ℤ_[PD.p]ˣ)
     (hZinj : Function.Injective (algebraMap ℤ_[PD.p] O))
     (hγz : ∃ z0 : ℤ_[PD.p]ˣ, algebraMap ℤ_[PD.p] O (z0 : ℤ_[PD.p]) = (W.χΓ W.gam : O) ∧
       ((z0 : ℤ_[PD.p]) - 1).valuation = 1)
-    (hcard : W.DelF.card = PD.p - 1) (hp2 : PD.p ≠ 2) (hGen : GenUnitsC) (s : ℕ) :
+    (hcard : W.DelF.card = PD.p - 1) (hp2 : PD.p ≠ 2) (hGen : Formalism.MainNotions.UnusedSlot80.InvCut.GenUnits) (s : ℕ) :
     Subgroup.closure (insert ((fun g => redU PD.p s (z g)) W.gam)
       ((fun g => redU PD.p s (z g)) '' (W.DelF : Set W.Gam))) = ⊤ :=
   gen_of W z hz hZinj hγz hcard hp2 hGen s
@@ -501,7 +495,7 @@ def levBasics_of (hR : Formalism.MainNotions.UnusedSlot80.ToolsR.RingP W) [IsAlg
     (hχ : ∀ g : W.Gam, ∃ z : ℤ_[PD.p]ˣ, algebraMap ℤ_[PD.p] O (z : ℤ_[PD.p]) = (W.χΓ g : O))
     (hγz : ∃ z0 : ℤ_[PD.p]ˣ, algebraMap ℤ_[PD.p] O (z0 : ℤ_[PD.p]) = (W.χΓ W.gam : O) ∧
       ((z0 : ℤ_[PD.p]) - 1).valuation = 1)
-    (hcard : W.DelF.card = PD.p - 1) (hp2 : PD.p ≠ 2) (hGen : GenUnitsC) (a : ZMod n) (s : ℕ) :
+    (hcard : W.DelF.card = PD.p - 1) (hp2 : PD.p ≠ 2) (hGen : Formalism.MainNotions.UnusedSlot80.InvCut.GenUnits) (a : ZMod n) (s : ℕ) :
     LevBasics W a s where
   F := F
   fF := inferInstance
@@ -812,7 +806,7 @@ open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.Basi
 
 def levelBasicsOfRingCondition (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW)
     (h9 : Formalism.MainNotions.DeltaInvariantLattices.P9 D HW F)
-    (hGen : GenUnitsC) (l : ℕ) [Fact l.Prime] (K LL : FinExt l) (h : CaseA K LL)
+    (hGen : Formalism.MainNotions.UnusedSlot80.InvCut.GenUnits) (l : ℕ) [Fact l.Prime] (K LL : FinExt l) (h : CaseA K LL)
     (a : ZMod (Module.finrank ℚ_[l] ↥(K0 K))) (s : ℕ) :
     LevBasics ((HW l).W K 1 LL h.2.2) a s := by
   have e : ((D.loc l).PD K).p = l := (D.loc l).PD_p K

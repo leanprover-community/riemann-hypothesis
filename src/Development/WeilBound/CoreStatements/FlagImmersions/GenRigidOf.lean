@@ -42,24 +42,24 @@ theorem exists_rel {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host 
     (Mz : LieModel t.G z V) : ∃ Rel : Submodule ℂ ((Fin g → ℂ) × V), (∀ a s, v a = Mz.pt s → (x a, s) ∈ Rel) ∧
       (∀ d, (d, 0) ∈ Rel → d = 0) ∧ ∀ s, (0, s) ∈ Rel → s = 0 := by
   obtain ⟨A, _, φ, u, χ, hp, -, -, -, -, hv⟩ := h
-  have h1 : lft hp (1 : epsAt z ⟶ t.G) = 1 := by
+  have h1 : GlobalTheory.CompanionTheory.Ar.HodgeUnique.lft hp (1 : epsAt z ⟶ t.G) = 1 := by
     have := lft_mul hp (1 : epsAt z ⟶ t.G) 1
     rw [_root_.mul_one] at this
     exact left_eq_mul.1 this
-  have h0 : u.IsDiff 0 (lft hp (Mz.pt 0)) := by
+  have h0 : u.IsDiff 0 (GlobalTheory.CompanionTheory.Ar.HodgeUnique.lft hp (Mz.pt 0)) := by
     rw [Mz.pt_zero, h1, Hom.one_def]
     exact GlobalTheory.ArchMetricCompare.isDiff_zero u
-  have hc : ∀ (c c' : ℂ) (p q : (Fin g → ℂ) × V), u.IsDiff p.1 (lft hp (Mz.pt p.2)) → u.IsDiff q.1 (lft hp (Mz.pt q.2)) →
-      u.IsDiff (c • p.1 + c' • q.1) (lft hp (Mz.pt (c • p.2 + c' • q.2))) := fun c c' p q a b => by
+  have hc : ∀ (c c' : ℂ) (p q : (Fin g → ℂ) × V), u.IsDiff p.1 (GlobalTheory.CompanionTheory.Ar.HodgeUnique.lft hp (Mz.pt p.2)) → u.IsDiff q.1 (GlobalTheory.CompanionTheory.Ar.HodgeUnique.lft hp (Mz.pt q.2)) →
+      u.IsDiff (c • p.1 + c' • q.1) (GlobalTheory.CompanionTheory.Ar.HodgeUnique.lft hp (Mz.pt (c • p.2 + c' • q.2))) := fun c c' p q a b => by
     have := HodgePull.isDiff_comb Mz hp u ![p.2, q.2] ![p.1, q.1] (fun l => by fin_cases l; exacts [a, b]) 0 ![c, c']
     simpa [Fin.sum_univ_two] using this
-  have ht : ∀ s, IsTangent (lft hp (Mz.pt s)) := fun s => isTangent_lft hp (Mz.tan s)
-  refine ⟨{ carrier := {p | u.IsDiff p.1 (lft hp (Mz.pt p.2))}
+  have ht : ∀ s, IsTangent (GlobalTheory.CompanionTheory.Ar.HodgeUnique.lft hp (Mz.pt s)) := fun s => isTangent_lft hp (Mz.tan s)
+  refine ⟨{ carrier := {p | u.IsDiff p.1 (GlobalTheory.CompanionTheory.Ar.HodgeUnique.lft hp (Mz.pt p.2))}
             add_mem' := fun {p q} a b => by simpa using hc 1 1 p q a b
             zero_mem' := h0
             smul_mem' := fun c p a => by simpa using hc c 0 p p a a }, fun a s e => ?_, fun d hd => ?_, fun s hs => ?_⟩
   · obtain ⟨v', e', hd⟩ := hv a
-    show u.IsDiff (x a) (lft hp (Mz.pt s))
+    show u.IsDiff (x a) (GlobalTheory.CompanionTheory.Ar.HodgeUnique.lft hp (Mz.pt s))
     rw [← e, ← lft_unique hp e']
     exact hd
   · exact eq_of_isDiff u (ht 0) hd h0

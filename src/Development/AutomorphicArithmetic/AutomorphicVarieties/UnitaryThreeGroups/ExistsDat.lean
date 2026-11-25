@@ -88,10 +88,6 @@ private theorem dx_unr (Ω : Type) [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω
   rw [CF.ineAbs ℚ K Ω A w hw, hb, Subgroup.mem_bot] at h1
   exact (dx_ker Ω K σ).1 h1
 
-private theorem dx_zpow {Γ R : Type} [TopologicalSpace Γ] [CommRing R] (I : Ideal R)
-    (Ψ : Γ → Rˣ) (h : AdicCont I fun g => (Ψ g : R)) (j : ℤ) : AdicCont I fun g => ((Ψ g ^ j : Rˣ) : R) := by
-  apply _root_.UpperTheory.V.Loc.adicCont_zpow <;> assumption
-
 private theorem dx_alg {Γ R : Type} [TopologicalSpace Γ] [CommRing R] {l : ℕ} [Fact l.Prime] [Algebra ℤ_[l] R]
     (I : Ideal R) (hI : (l : R) ∈ I) (f : Γ → ℤ_[l]) (hf : Continuous f) :
     AdicCont I fun g => algebraMap ℤ_[l] R (f g) := by
@@ -121,10 +117,10 @@ private theorem dx_dir (Ω : Type) [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω
 private theorem dx_cont (Ω : Type) [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] {l : ℕ} [Fact l.Prime]
     {O : Type} [CommRing O] [IsLocalRing O] [Algebra ℤ_[l] O] [Module.Finite ℤ_[l] O]
     {N : ℕ} [NeZero N] (e : ℕ) (ψ : DirichletCharacter O N) : CharCont (Chr.Psi l e (Chr.dirG ℚ Ω ψ)) := by
-  refine dx_zpow _ _ fun n => ?_
+  refine _root_.UpperTheory.V.Loc.adicCont_zpow _ _ fun n => ?_
   have h1 : AdicCont (IsLocalRing.maximalIdeal O) fun g => (chiO ℚ Ω l O g : O) :=
     dx_alg _ (dx_lmem l O) (fun g => (cycZ ℚ Ω l g : ℤ_[l])) (Units.continuous_val.comp (contTw ℚ Ω l).1)
-  have h2 := dx_zpow _ _ h1 (e : ℤ) n
+  have h2 := _root_.UpperTheory.V.Loc.adicCont_zpow _ _ h1 (e : ℤ) n
   have h3 := (dx_dir Ω ψ).comp fun u : Oˣ => Ideal.Quotient.mk (IsLocalRing.maximalIdeal O ^ n) (u : O)
   have h4 := h2.mul h3
   convert h4 using 1

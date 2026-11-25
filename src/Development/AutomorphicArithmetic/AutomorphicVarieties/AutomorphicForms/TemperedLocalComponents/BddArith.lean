@@ -1425,20 +1425,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-noncomputable def UpperTheory.Reformulated.B.Qe19.LiftEquiv :
-    Prop :=
-    ∀ (Γ X : Type) [inst : Group Γ] [inst_1 : MulAction Γ X],
-      (∀ (x : X), Finite ↥(MulAction.stabilizer Γ x)) →
-        ∀ (A B : Rep.{0, 0, 0} ℂ Γ) (f : A ⟶ B),
-          Function.Surjective (⇑(Rep.Hom.hom f) : (↑A : Type) → (↑B : Type)) →
-            ∀ (φ : X → (↑B : Type)),
-              (∀ (g : Γ) (x : X),
-                  φ (g • x) = ((B.ρ : Γ → (↑B : Type) →ₗ[ℂ] (↑B : Type)) g : (↑B : Type) → (↑B : Type)) (φ x)) →
-                ∃ (ψ : X → (↑A : Type)),
-                  (∀ (g : Γ) (x : X),
-                      ψ (g • x) = ((A.ρ : Γ → (↑A : Type) →ₗ[ℂ] (↑A : Type)) g : (↑A : Type) → (↑A : Type)) (ψ x)) ∧
-                    ∀ (x : X), (Rep.Hom.hom f : (↑A : Type) → (↑B : Type)) (ψ x) = φ x
-
 private theorem UpperTheory.Reformulated.B.Qe19.fixed_lift {Γ : Type} [Group Γ] (H : Subgroup Γ) [Finite H]
     (A B : Rep.{0, 0, 0} ℂ Γ) (f : A ⟶ B) (hf : Function.Surjective (Rep.Hom.hom f))
     (b : B) (hb : ∀ h ∈ H, B.ρ h b = b) :
@@ -1463,7 +1449,7 @@ private theorem UpperTheory.Reformulated.B.Qe19.fixed_lift {Γ : Type} [Group Γ
     rw [← Nat.cast_smul_eq_nsmul ℂ, smul_smul, inv_mul_cancel₀ hc, one_smul]
 
 theorem UpperTheory.Reformulated.B.Qe19.pins_of_closed_subgroup_padic_character_inv :
-    UpperTheory.Reformulated.B.Qe19.LiftEquiv := by
+    UpperTheory.V.Af.BA.LiftEquiv := by
   intro Γ X _ _ hfin A B f hf φ hφ
   have h1 : ∀ x : X, ∃ a : A, (∀ h ∈ MulAction.stabilizer Γ x, A.ρ h a = a) ∧
       (Rep.Hom.hom f) a = φ x := by
@@ -1639,7 +1625,6 @@ section -- clump:auto
 @[expose] public section
 
 open NumberField UpperTheory.V UpperTheory.V.KT UpperTheory.V.Af.BA
-
 
 theorem UpperTheory.real_structure_action_of_real_involution :
     UpperTheory.V.Af.BA.ReInv → UpperTheory.V.Af.BA.ActRe := by

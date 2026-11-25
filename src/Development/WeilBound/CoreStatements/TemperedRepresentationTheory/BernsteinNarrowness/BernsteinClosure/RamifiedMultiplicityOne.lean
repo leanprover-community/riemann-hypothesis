@@ -583,8 +583,6 @@ theorem exists_diagonal_sizeMatrix (a b : ℕ) :
     funext i j
     cases i <;> cases j <;> simp <;> omega
 
-
-
 theorem mackey_maps_proportional : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (a b : ℕ) (χ₁ χ₂ : kˣ →* ℂˣ), JacquetOfInducedFiltration k → IsSmoothChar χ₁ → IsSmoothChar χ₂ → IsUnitaryChar χ₁ → IsUnitaryChar χ₂ → (a ≠ b ∨ χ₁ ≠ χ₂) → (∀ φ ψ : (jac (two (stdSum (rfl : a + b = a + b))) (parInd (two (stdSum (rfl : a + b = a + b))) ((extTensor (detRep (Fin a) χ₁) (detRep (Fin b) χ₂)).comp (leviTwo k (Fin a) (Fin b)).symm.toMonoidHom))).IntertwiningMap (((extTensor (detRep (Fin a) χ₁) (detRep (Fin b) χ₂)).comp (leviTwo k (Fin a) (Fin b)).symm.toMonoidHom)), φ.toLinearMap = 0 ∨ ∃ c : ℂ, ψ.toLinearMap = c • φ.toLinearMap) := by
   intro k _ _ _ _ a b χ₁ χ₂ hJ h₁ h₂ u₁ u₂ hne
   have hc : Continuous (leviTwo k (Fin a) (Fin b)).symm.toMonoidHom :=
@@ -904,17 +902,6 @@ namespace GlobalTheory.CompanionTheory.SoCoinvNarrow
 
 open PositivityTheory.KCo
 
-section Narrow
-
-open GlobalTheory.PRep GlobalTheory.SmGL
-
-def NarrowBernstein : Prop :=
-  ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (a b : ℕ)
-    (χ₁ χ₂ : kˣ →* ℂˣ), IsSmoothChar χ₁ → IsSmoothChar χ₂ → IsUnitaryChar χ₁ → IsUnitaryChar χ₂ →
-    (a ≠ b ∨ χ₁ ≠ χ₂) → (prod₂ (detRep (Fin a) χ₁) (detRep (Fin b) χ₂)).IsIrreducible
-
-end Narrow
-
 section Induced
 
 open GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.IndefiniteRowSideFullHecke.OpenClosedSequences GlobalTheory.RankStrataProof GlobalTheory.CompanionTheory.ThetaGLLen Matrix Topology
@@ -922,7 +909,7 @@ open scoped TensorProduct
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
-theorem irr_gen (NB : NarrowBernstein) (n t : ℕ) {μ : kˣ →* ℂˣ} (hμ : IsSmoothChar μ) (hμ1 : μ ≠ 1)
+theorem irr_gen (NB : GlobalTheory.CompanionTheory.BernBridge.Split.NarrowBernstein) (n t : ℕ) {μ : kˣ →* ℂˣ} (hμ : IsSmoothChar μ) (hμ1 : μ ≠ 1)
     (hu : ∀ x, ‖(μ x : ℂ)‖ = 1) {Γ W : Type} [Group Γ] [AddCommGroup W] [Module ℂ W]
     (τ : Representation ℂ (Γ × (GL (Fin n) k × GL (Fin t) k)) W) (hτ : IsSmooth (τ.comp (MonoidHom.inr Γ _)))
     (l : W →ₗ[ℂ] ℂ) (hs : Function.Surjective l)
@@ -991,7 +978,7 @@ theorem irr_gen (NB : NarrowBernstein) (n t : ℕ) {μ : kˣ →* ℂˣ} (hμ : 
     exact this
   · exact Or.inl (top_of_map Φ.toLinearMap hK hR (congrArg Subrepresentation.toSubmodule h))
 
-theorem irr_ind (NB : NarrowBernstein) (n t : ℕ) {μ : kˣ →* ℂˣ} (hμ : IsSmoothChar μ) (hμ1 : μ ≠ 1)
+theorem irr_ind (NB : GlobalTheory.CompanionTheory.BernBridge.Split.NarrowBernstein) (n t : ℕ) {μ : kˣ →* ℂˣ} (hμ : IsSmoothChar μ) (hμ1 : μ ≠ 1)
     (hu : ∀ x, ‖(μ x : ℂ)‖ = 1) (N : Submodule ℂ (IndSp (two (stdSum (rfl : n + t = n + t)))
       (MonoidHom.comp ((fibRep (Fin n) (Fin n) (Fin t) μ n).comp (MonoidHom.inr _ _)) (leviTwo k (Fin n) (Fin t)).symm.toMonoidHom)))
     (hR : twRel ((indSnd (stdSum rfl) (fibRep (Fin n) (Fin n) (Fin t) μ n)).comp (MonoidHom.inl _ _)) 1 ≤ N)
@@ -1044,7 +1031,7 @@ open GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.Ind
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] {n d : ℕ}
 
-theorem irrF (NB : NarrowBernstein) {ν α : kˣ →* ℂˣ} (hnd : n ≤ d) (hν : USm ν) (hν1 : ν ≠ 1)
+theorem irrF (NB : GlobalTheory.CompanionTheory.BernBridge.Split.NarrowBernstein) {ν α : kˣ →* ℂˣ} (hnd : n ≤ d) (hν : USm ν) (hν1 : ν ≠ 1)
     (N : Submodule ℂ (Matrix (Fin n) (Fin d) k → ℂ)) (hA : aug n d ν α ≤ N)
     (hN : ∀ h : GL (Fin d) k, ∀ Φ ∈ N, Φ ∈ GlobalTheory.WeilM.SB (Matrix (Fin n) (Fin d) k) → omB ν α 1 h Φ ∈ N) :
     (∀ Φ, Full Φ → Φ ∈ N) ∨ ∀ Φ ∈ N, Full Φ → Φ ∈ augF n d ν α := by
@@ -1084,7 +1071,7 @@ end Local
 
 open NumberField IsDedekindDomain GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.SplitFlip
 
-theorem soCoinv_of (NB : NarrowBernstein) (hD : DictSt) (hK : GlobalTheory.ThK.KFin) :
+theorem soCoinv_of (NB : GlobalTheory.CompanionTheory.BernBridge.Split.NarrowBernstein) (hD : DictSt) (hK : GlobalTheory.ThK.KFin) :
     PositivityTheory.ThKF.SoCoinv := by
   intro F E _ _ _ _ _ σ B a a' G X om om' hT φ hφ hA
   obtain ⟨Rf, hF⟩ := hK F E σ B a a' G X om om' hT
@@ -1134,7 +1121,6 @@ theorem soCoinv_of (NB : NarrowBernstein) (hD : DictSt) (hK : GlobalTheory.ThK.K
     rw [← hb.2.1 hχ.1 hs e]
     exact hχ.2
 
-
 open GlobalTheory.PRep GlobalTheory.SmGL in
 theorem soCoinv_of_narrow :
     (∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (a b : ℕ)
@@ -1160,12 +1146,7 @@ open GlobalTheory.PRep GlobalTheory.SmGL
 
 namespace PositivityTheory.BernsteinRamification
 
-def NarrowBern : Prop :=
-  ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (a b : ℕ)
-    (χ₁ χ₂ : kˣ →* ℂˣ), IsSmoothChar χ₁ → IsSmoothChar χ₂ → IsUnitaryChar χ₁ → IsUnitaryChar χ₂ →
-    (a ≠ b ∨ χ₁ ≠ χ₂) → (prod₂ (detRep (Fin a) χ₁) (detRep (Fin b) χ₂)).IsIrreducible
-
-theorem narrowBern (hG : GlobalTheory.Published.GeometricLemmaFiltration) : NarrowBern :=
+theorem narrowBern (hG : GlobalTheory.Published.GeometricLemmaFiltration) : GlobalTheory.CompanionTheory.BernBridge.Split.NarrowBernstein :=
   GlobalTheory.CompanionTheory.SmGL.Bernstein.prod₂_detRep_isIrreducible hG
 
 theorem kCoinv_of_geo (hG : GlobalTheory.Published.GeometricLemmaFiltration) (hD : PositivityTheory.KCo.DictSt) : GlobalTheory.ThK.KCoinv :=
@@ -1196,7 +1177,7 @@ section -- clump:auto
 
 namespace PositivityTheory.BernsteinRamification.Close
 
-theorem narrowBern : PositivityTheory.BernsteinRamification.NarrowBern :=
+theorem narrowBern : GlobalTheory.CompanionTheory.BernBridge.Split.NarrowBernstein :=
   PositivityTheory.BernsteinRamification.narrowBern PositivityTheory.Geo.geometricLemmaFiltration
 
 theorem kCoinv (hD : PositivityTheory.KCo.DictSt) : GlobalTheory.ThK.KCoinv :=

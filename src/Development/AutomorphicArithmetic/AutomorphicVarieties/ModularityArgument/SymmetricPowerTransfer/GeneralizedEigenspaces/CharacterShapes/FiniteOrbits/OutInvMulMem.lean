@@ -64,10 +64,6 @@ private theorem dc_left (U : Subgroup G) (b : G) {c g : G} (h : c ∈ U) (hg : g
   obtain ⟨u, hu, w, hw, rfl⟩ := hg
   exact ⟨c * u, U.mul_mem h hu, w, hw, by group⟩
 
-private theorem out_inv_mul_mem (U : Subgroup G) (s : G) :
-    (Quotient.out (s : G ⧸ U))⁻¹ * s ∈ U :=
-  QuotientGroup.eq.1 (QuotientGroup.out_eq' (s : G ⧸ U))
-
 private theorem uf_unique_iff (U : Subgroup G) (a b g : G) :
     (∃! y : G ⧸ U, y.out ∈ DC U a ∧ y.out⁻¹ * g ∈ DC U b) ↔
       ∃ r, (r ∈ DC U a ∧ r⁻¹ * g ∈ DC U b) ∧
@@ -75,7 +71,7 @@ private theorem uf_unique_iff (U : Subgroup G) (a b g : G) :
   have hq : ∀ s, s ∈ DC U a → s⁻¹ * g ∈ DC U b →
       (Quotient.out (s : G ⧸ U)) ∈ DC U a ∧ (Quotient.out (s : G ⧸ U))⁻¹ * g ∈ DC U b := by
     intro s hs hs'
-    have h1 := out_inv_mul_mem U s
+    have h1 := GroundTheory.GroupCoh.out_inv_mul_mem U s
     have h2 : s⁻¹ * Quotient.out (s : G ⧸ U) ∈ U := by
       have := U.inv_mem h1
       simpa using this
@@ -116,7 +112,7 @@ private theorem reps_of_finOrb (U : Subgroup G) (a : G) (h : AlgebraTools.FinOrb
     refine ⟨u, u.2, _, U.inv_mem h2, ?_⟩
     group
   · intro y hy
-    refine ⟨Quotient.out (y : G ⧸ U), ⟨?_, out_inv_mul_mem U y⟩, ?_⟩
+    refine ⟨Quotient.out (y : G ⧸ U), ⟨?_, GroundTheory.GroupCoh.out_inv_mul_mem U y⟩, ?_⟩
     · exact Finset.mem_image.2 ⟨_, hf.mem_toFinset.2 (hmk y hy), rfl⟩
     · rintro r ⟨hr, hr'⟩
       obtain ⟨q, _, rfl⟩ := Finset.mem_image.1 hr

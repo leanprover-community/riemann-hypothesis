@@ -101,13 +101,10 @@ theorem rootN_isAlgebraic (N : ℕ) : IsAlgebraic ℚ (rootN N) := by
 def ramSet {E : Type} [Field E] [NumberField E] (χ : Formalism.L2.Host.HChar E) : Set (HeightOneSpectrum (𝓞 E)) :=
   {Q | ¬ χ.UnrAt Q}
 
-def overN {E : Type} [Field E] [NumberField E] (n : ℕ) : Set (HeightOneSpectrum (𝓞 E)) :=
-  {Q' | ((n : ℕ) : 𝓞 E) ∈ Q'.asIdeal}
-
 def rootsOf {E : Type} [Field E] [NumberField E] (χ : Formalism.L2.Host.HChar E) : Finset ℂ := by
   classical
   exact (finOr (ramSet χ)).biUnion fun Q =>
-    (finOr (overN (E := E) (Ideal.absNorm Q.asIdeal))).image fun Q' => rootN (Nat.card (kP Q'))
+    (finOr (Formalism.BasicNotions.placesOver (E := E) (Ideal.absNorm Q.asIdeal))).image fun Q' => rootN (Nat.card (kP Q'))
 
 def Sv (P : Pre) (Ξ : Set (Formalism.L2.Host.HChar P.host.E)) : Finset ℂ := by
   classical
@@ -128,12 +125,12 @@ theorem ramSet_finite {E : Type} [Field E] [NumberField E] (χ : Formalism.L2.Ho
   simp only [ramSet, Set.mem_setOf_eq] at hQ ⊢
   rwa [GlobalTheory.HeckeSplit.unrAt_iff]
 
-theorem overN_finite {E : Type} [Field E] [NumberField E] {n : ℕ} (hn : n ≠ 0) : (overN (E := E) n).Finite := by
+theorem overN_finite {E : Type} [Field E] [NumberField E] {n : ℕ} (hn : n ≠ 0) : (Formalism.BasicNotions.placesOver (E := E) n).Finite := by
   have hne : (Ideal.span {((n : ℕ) : 𝓞 E)} : Ideal (𝓞 E)) ≠ 0 := by
     rw [Ne, Ideal.zero_eq_bot, Ideal.span_singleton_eq_bot]
     exact_mod_cast hn
   refine (Ideal.finite_factors hne).subset fun Q hQ => ?_
-  simp only [overN, Set.mem_setOf_eq] at hQ ⊢
+  simp only [Formalism.BasicNotions.placesOver, Set.mem_setOf_eq] at hQ ⊢
   rw [Ideal.dvd_iff_le, Ideal.span_singleton_le_iff_mem]
   exact hQ
 
@@ -200,7 +197,6 @@ theorem exists_ram {F E K : Type} [Field F] [NumberField F] [Field E] [NumberFie
   exact e1.symm
 
 end GlobalTheory.Mem.Col2.RootsIn
-
 
 open GlobalTheory.Mem.Col2.RootsIn in
 theorem GlobalTheory.Mem.Col2.exists_roots_valsIn : ∃ Sv : ∀ P : Pre, Set (Formalism.L2.Host.HChar P.host.E) → Finset ℂ, (∀ P Ξ, ∀ z ∈ Sv P Ξ, IsAlgebraic ℚ z) ∧
@@ -281,7 +277,6 @@ theorem mtTyQ_congr {X : Fields} (R : Ranks) {ξ ξ' : Chr X.F X.E X.K} (h : ξ 
     mtTyQ R ξ Q Pp = mtTyQ R ξ' Q' ⟨Pp.1, hp⟩ := by
   subst h
   rfl
-
 
 theorem core (B0 : Base) (px0 : PreX B0.toPre) (I0 : Col2.ColIn B0 px0) (B : Base) (px : PreX B.toPre)
     (I : Col2.ColIn B px) (hX0 : B0.fields.Ok) (hI0 : I0.Ok) (hI : I.Ok) (hcfg : SameCfg B px I B0 px0 I0)
@@ -508,7 +503,6 @@ theorem finite_piG (P : Pre) :
   intro g hg i _
   exact ⟨RingOfIntegers.isIntegral_coe _, hg i⟩
 
-
 open Classical in
 def chiOf {P : Pre} (f : Top.Fr P) : Fin P.R.m → HeightOneSpectrum (𝓞 P.host.E) → 𝓞 P.host.E → ℂ :=
   fun j w y => if h : (f.P.Div 0 w ∨ f.P.Div 1 w) ∧ (y : P.host.E) ≠ 0 ∧ IsUnit (Ideal.Quotient.mk w.asIdeal y) then
@@ -553,7 +547,6 @@ theorem qprime_eq_of_reads {F E K : Type} [Field F] [NumberField F] [Field E] [N
     refine ⟨_, ha, fun h1 => hne (Units.ext ?_)⟩
     rw [h a, h1]
     simp
-
 
 open Classical in
 def qBound {P : Pre} (ξ : Formalism.L2.Host.HChar P.host.E) : Set (HeightOneSpectrum (𝓞 P.host.E)) :=

@@ -187,15 +187,8 @@ theorem BranchAwayFromRim.proof (hex : NormalModelExists.Statement)
   have hσ0' : ‖σ0‖ < r := mem_ball_zero_iff.mp hσ0
   set δ := (r - ‖σ0‖) / 2 with hδ
   have hδpos : 0 < δ := by rw [hδ]; linarith
-  have hVsub : Metric.ball σ0 δ ⊆ Metric.ball 0 r := by
-    intro t ht
-    rw [mem_ball_zero_iff]
-    have h1 : ‖t‖ ≤ ‖σ0‖ + dist t σ0 := by
-      rw [dist_eq_norm]
-      calc ‖t‖ = ‖σ0 + (t - σ0)‖ := by rw [add_sub_cancel]
-        _ ≤ ‖σ0‖ + ‖t - σ0‖ := norm_add_le _ _
-    have h2 := Metric.mem_ball.mp ht
-    linarith
+  have hVsub : Metric.ball σ0 δ ⊆ Metric.ball 0 r :=
+    Metric.ball_subset_ball' (by rw [dist_zero_right]; linarith)
   obtain ⟨O', hO'o, hO'eq⟩ := hΓopen b (Metric.ball σ0 δ) hVsub Metric.isOpen_ball
   have hxO' : xh ∈ O' := by
     have : xh ∈ Γ b '' Metric.ball σ0 δ := ⟨σ0, Metric.mem_ball_self hδpos, hσx⟩
@@ -210,11 +203,7 @@ theorem BranchAwayFromRim.proof (hex : NormalModelExists.Statement)
   have htτ : t = τ (φ j) := hΓinj b (hVsub ht) (hτr _) hteq
   have hn1 : ‖τ (φ j)‖ < ‖σ0‖ + δ := by
     rw [← htτ]
-    have h2 := Metric.mem_ball.mp ht
-    rw [dist_eq_norm] at h2
-    calc ‖t‖ = ‖σ0 + (t - σ0)‖ := by rw [add_sub_cancel]
-      _ ≤ ‖σ0‖ + ‖t - σ0‖ := norm_add_le _ _
-      _ < ‖σ0‖ + δ := by linarith
+    exact norm_lt_of_mem_ball ht
   have hn2 := hτn (φ j)
   linarith
 

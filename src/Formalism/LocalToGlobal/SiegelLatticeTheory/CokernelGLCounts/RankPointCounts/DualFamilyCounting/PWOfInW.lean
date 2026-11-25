@@ -27,15 +27,12 @@ def nF (a : Fin D.R.rS) : (VS D).V := ∑ c, Ym X0 c a • X.fY c + om X0 xs a +
 
 def nWL : (VS D).V →ₗ[D.host.E] (VS D).V := LinearMap.id + ∑ b, ((VS D).hT (xs b)).smulRight (X.eX b)
 
-def pWL : (VS D).V →ₗ[D.host.E] (VS D).V :=
-  LinearMap.id - ∑ c, ((VS D).hT (X.fY c)).smulRight (X.eX c) - ∑ c, ((VS D).hT (X.eX c)).smulRight (X.fY c)
-
-theorem pWL_apply (y : (VS D).V) : pWL X y = pW X y := by
-  simp [pWL, pW, LinearMap.sub_apply, LinearMap.sum_apply, LinearMap.smulRight_apply]
+theorem pWL_apply (y : (VS D).V) : Formalism.L2.SG.Pf.Level.prV X y = pW X y := by
+  simp [Formalism.L2.SG.Pf.Level.prV, pW, LinearMap.sub_apply, LinearMap.sum_apply, LinearMap.smulRight_apply]
 
 def nL : (VS D).V →ₗ[D.host.E] (VS D).V :=
   ∑ c, ((VS D).hT (X.fY c)).smulRight (nE X X0 c) + ∑ c, ((VS D).hT (X.eX c)).smulRight (nF X X0 xs M c) +
-    (nWL X xs).comp (pWL X)
+    (nWL X xs).comp (Formalism.L2.SG.Pf.Level.prV X)
 
 theorem nL_apply (y : (VS D).V) : nL X X0 xs M y =
     ∑ c, (VS D).hT (X.fY c) y • nE X X0 c + ∑ c, (VS D).hT (X.eX c) y • nF X X0 xs M c +

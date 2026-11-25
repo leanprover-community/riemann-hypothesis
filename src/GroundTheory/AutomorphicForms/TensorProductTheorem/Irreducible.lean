@@ -24,13 +24,8 @@ variable {ι : Type*} {V : ι → Type*} [∀ v, AddCommGroup (V v)] [∀ v, Mod
 
 theorem tprod_ne_zero {ξ x : ∀ v, V v} (hx : IsRestricted ξ x) (h0 : ∀ v, x v ≠ 0) :
     tprod ℂ x ≠ 0 := by
-  have hex : ∀ v, ∃ f : Dual ℂ (V v), f (x v) = 1 := by
-    intro v
-    obtain ⟨f, hf⟩ : ∃ f : Dual ℂ (V v), f (x v) ≠ 0 := by
-      by_contra hcon
-      push Not at hcon
-      exact h0 v ((Module.forall_dual_apply_eq_zero_iff ℂ (x v)).1 hcon)
-    exact ⟨(f (x v))⁻¹ • f, by simp [hf]⟩
+  have hex : ∀ v, ∃ f : Dual ℂ (V v), f (x v) = 1 := fun v =>
+    Module.Projective.exists_dual_eq_one ℂ (h0 v)
   choose l hl using hex
   have hl' : ∀ᶠ v in cofinite, l v (ξ v) = 1 :=
     (show ∀ᶠ v in cofinite, x v = ξ v from hx).mono fun v h => by rw [← h, hl v]

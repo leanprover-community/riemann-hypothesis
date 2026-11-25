@@ -35,13 +35,8 @@ theorem weight_continuousAt (W : Weight L) (j : Fin A.n) {x : X} (hx : x ∈ (A.
     ⟨(A.chart j).map_source hx, by simpa [(A.chart j).left_inv hx] using hx⟩
   have hopen : IsOpen ((A.chart j).target ∩ (A.chart j).symm ⁻¹' (A.chart j).source) :=
     (A.chart j).isOpen_inter_preimage_symm (A.chart j).open_source
-  have h1 : ContinuousAt (W.φ j ∘ (A.chart j).symm) (A.chart j x) :=
-    ((W.smooth j j).continuousOn).continuousAt (hopen.mem_nhds hy)
-  have h2 : ContinuousAt ((W.φ j ∘ (A.chart j).symm) ∘ A.chart j) x :=
-    h1.comp ((A.chart j).continuousAt hx)
-  refine h2.congr ?_
-  filter_upwards [(A.chart j).open_source.mem_nhds hx] with y hy
-  simp [(A.chart j).left_inv hy]
+  exact ((A.chart j).symm.continuousAt_iff_continuousAt_comp_right hx).2
+    ((W.smooth j j).continuousOn.continuousAt (hopen.mem_nhds hy))
 
 theorem diff_continuous (W₁ W₀ : Weight L) : Continuous (Weight.diff W₁ W₀) := by
   refine continuous_iff_continuousAt.2 fun x ↦ ?_

@@ -6,8 +6,6 @@ public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.IsZero
 
 open CategoryTheory Limits AlgebraicGeometry Opposite
 
-noncomputable section
-
 namespace GlobalTheory.EtC.Tr
 
 theorem freePresheaf_map_app_freeMk (R : Type) [CommRing R] {P Q : Scheme.{0}ᵒᵖ ⥤ Type} (α : P ⟶ Q) (U : Scheme.{0}ᵒᵖ)

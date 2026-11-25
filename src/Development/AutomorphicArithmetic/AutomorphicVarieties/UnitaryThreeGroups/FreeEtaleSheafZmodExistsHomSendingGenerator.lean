@@ -109,16 +109,8 @@ theorem UpperTheory.V.U3.conjBy_tor_of_iso :
       (mat_gstar r' c g hN'.atc ((hr' c).trans hc) ((hr' g).trans h)).1, hJ, hJ] at e
   obtain ⟨t, ht⟩ := free_etale_sheaf_zmod_exists_hom_sending_generator (ι := η.ker) (fun i => M i i) hm (fun g => (r g).mat)
     (fun g => (r' g).mat) (fun g => h1 g g.2) (fun g => h2' g g.2)
-  have htor_val (u : κˣ) : (tor κ u : Matrix (Fin 3) (Fin 3) κ) =
-      Matrix.diagonal (fun i => ((u ^ wt1 i : κˣ) : κ)) := rfl
-  have htheta : theta (tor κ t) = tor κ t := by
-    apply Units.ext
-    rw [theta_val, ← map_inv, htor_val, htor_val]
-    ext i j
-    fin_cases i <;> fin_cases j <;>
-      simp [Matrix.mul_apply, Fin.sum_univ_three, Jmat, wt1, Matrix.diagonal, Fin.rev]
   have hact (s : ℤˣ) : sgnAct (m := 3) (R := κ) s (tor κ t) = tor κ t := by
-    rcases Int.units_eq_one_or s with rfl | rfl <;> simp [htheta]
+    rcases Int.units_eq_one_or s with rfl | rfl <;> simp [theta_tor]
   have hleft (g : G) : (conjBy (tor κ t) r g).left = tor κ t * (r g).left * tor κ t⁻¹ := by
     simp [conjBy, MulAut.conj_apply, SemidirectProduct.mul_left, SemidirectProduct.inv_left, hact, map_inv]
   have hright (g : G) : (conjBy (tor κ t) r g).right = (r g).right := by
@@ -126,7 +118,7 @@ theorem UpperTheory.V.U3.conjBy_tor_of_iso :
   have hmat (g : G) (i j : Fin 3) :
       (conjBy (tor κ t) r g).mat i j = ((t ^ wt i j : κˣ) : κ) * (r g).mat i j := by
     show (((conjBy (tor κ t) r g).left : GL (Fin 3) κ) : Matrix (Fin 3) (Fin 3) κ) i j = _
-    rw [hleft, Units.val_mul, Units.val_mul, htor_val, htor_val, mul_diagonal, diagonal_mul]
+    rw [hleft, Units.val_mul, Units.val_mul, tor_val, tor_val, mul_diagonal, diagonal_mul]
     have hweight : ((t ^ wt1 i : κˣ) : κ) * ((t⁻¹ ^ wt1 j : κˣ) : κ) = ((t ^ wt i j : κˣ) : κ) := by
       rw [← Units.val_mul, wt, _root_.zpow_sub, _root_.inv_zpow]
     rw [← hweight, GG.mat]

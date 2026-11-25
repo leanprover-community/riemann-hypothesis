@@ -31,13 +31,9 @@ theorem permMatrix_mul_apply (σ τ : Equiv.Perm n) (i j : n) :
   simp
 
 def permU (σ : Equiv.Perm n) : GL n R :=
-  ⟨σ.permMatrix R, σ⁻¹.permMatrix R, by
-    ext i j
-    rw [permMatrix_mul_apply, Matrix.one_apply]
-    simp, by
-    ext i j
-    rw [permMatrix_mul_apply, Matrix.one_apply]
-    simp⟩
+  ⟨σ.permMatrix R, σ⁻¹.permMatrix R,
+    by rw [← Matrix.permMatrix_mul, inv_mul_cancel, Matrix.permMatrix_one],
+    by rw [← Matrix.permMatrix_mul, mul_inv_cancel, Matrix.permMatrix_one]⟩
 
 theorem permU_coe (σ : Equiv.Perm n) : ((permU σ : GL n R) : Matrix n n R) = σ.permMatrix R := rfl
 

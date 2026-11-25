@@ -147,7 +147,7 @@ theorem lev_split_at : ∀ (X : Stages) {px : PreX X.B.toPre} (I : Col2.ColIn X.
     intro PP hPP
     rw [show (flag1L L').Q = L.Q t from rfl, hL.Q t] at hPP
     have e4 : I.Q (ixOf I U t) = Formalism.L2.Col.QE I.sel t.1 := by
-      simp only [ColIn.Q, tup_ixOf]
+      rw [← tup_ixOf I t]
     rw [e4] at hPP
     exact Finset.mem_union.2 (Or.inr hPP)
   have hoff : ∀ PP, PP ∈ (flag1L L').Pg ∨ PP ∈ (flag1L L').Q → PP ≠ P ∧ ¬ Formalism.IndefR.Lev.IsConjPl PP P := by
@@ -234,7 +234,7 @@ theorem chi_loc_lift : ∀ (X : Stages) {px : PreX X.B.toPre} (I : Col2.ColIn X.
     intro PP hPP
     rw [show (flag1L (L.datVt i t)).Q = L.Q t from rfl, hL.Q t] at hPP
     have e4 : I.Q (ixOf I U t) = Formalism.L2.Col.QE I.sel t.1 := by
-      simp only [ColIn.Q, tup_ixOf]
+      rw [← tup_ixOf I t]
     rw [e4] at hPP
     classical
     exact Finset.mem_union.2 (Or.inr hPP)

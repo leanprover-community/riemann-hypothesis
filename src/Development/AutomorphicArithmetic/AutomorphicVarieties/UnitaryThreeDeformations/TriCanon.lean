@@ -81,27 +81,6 @@ private theorem tc_up {R : Type} [CommRing R] (Δ k U : Matrix (Fin 3) (Fin 3) R
   intro a b hab
   fin_cases a <;> fin_cases b <;> first | assumption | exact absurd hab (by decide)
 
-private theorem tc_low {R : Type} [CommRing R] (Δ k U : Matrix (Fin 3) (Fin 3) R) (e : Δ * k = k * U)
-    (hΔ : Δ.IsDiag) (hU : ∀ a b, 0 < wt a b → U a b = 0) (hu : ∀ a b, a ≠ b → IsUnit (Δ a a - U b b)) :
-    ∀ a b, 0 < wt a b → k a b = 0 := by
-  have e01 := congrFun (congrFun e 0) 1
-  have e02 := congrFun (congrFun e 0) 2
-  have e12 := congrFun (congrFun e 1) 2
-  have u01 := hU 0 1 (by decide)
-  have u02 := hU 0 2 (by decide)
-  have u12 := hU 1 2 (by decide)
-  have d10 : Δ 1 0 = 0 := hΔ (by decide)
-  have d12 : Δ 1 2 = 0 := hΔ (by decide)
-  have d02 : Δ 0 2 = 0 := hΔ (by decide)
-  have d01 : Δ 0 1 = 0 := hΔ (by decide)
-  simp only [Matrix.mul_apply, Fin.sum_univ_three, u01, u02, u12, d10, d12, d02, d01] at e01 e02 e12
-  have k12 : k 1 2 = 0 := (hu 1 2 (by decide)).mul_right_eq_zero.1 (by linear_combination e12)
-  have k02 : k 0 2 = 0 := (hu 0 2 (by decide)).mul_right_eq_zero.1 (by linear_combination e02)
-  have k01 : k 0 1 = 0 := (hu 0 1 (by decide)).mul_right_eq_zero.1 (by
-    rw [k02] at e01; linear_combination e01)
-  intro a b hab
-  fin_cases a <;> fin_cases b <;> first | assumption | exact absurd hab (by decide)
-
 private theorem tc_up' {R : Type} [CommRing R] (M k U : Matrix (Fin 3) (Fin 3) R) (e : M * k = k * U)
     (hk : ∀ a b, wt a b < 0 → k a b = 0) (hU : ∀ a b, wt a b < 0 → U a b = 0) (hu : ∀ a, IsUnit (k a a)) :
     (∀ a b, wt a b < 0 → M a b = 0) ∧ ∀ a, M a a = U a a := by
@@ -129,25 +108,6 @@ private theorem tc_up' {R : Type} [CommRing R] (M k U : Matrix (Fin 3) (Fin 3) R
   refine ⟨fun a b hab => ?_, fun a => ?_⟩
   · fin_cases a <;> fin_cases b <;> first | assumption | exact absurd hab (by decide)
   · fin_cases a <;> assumption
-
-private theorem tc_low' {R : Type} [CommRing R] (M k U : Matrix (Fin 3) (Fin 3) R) (e : M * k = k * U)
-    (hk : ∀ a b, 0 < wt a b → k a b = 0) (hU : ∀ a b, 0 < wt a b → U a b = 0) (hu : ∀ a, IsUnit (k a a)) :
-    ∀ a b, 0 < wt a b → M a b = 0 := by
-  have e01 := congrFun (congrFun e 0) 1
-  have e02 := congrFun (congrFun e 0) 2
-  have e12 := congrFun (congrFun e 1) 2
-  have u01 := hU 0 1 (by decide)
-  have u02 := hU 0 2 (by decide)
-  have u12 := hU 1 2 (by decide)
-  have k01 := hk 0 1 (by decide)
-  have k02 := hk 0 2 (by decide)
-  have k12 := hk 1 2 (by decide)
-  simp only [Matrix.mul_apply, Fin.sum_univ_three, u01, u02, u12, k01, k02, k12] at e01 e02 e12
-  have m12 : M 1 2 = 0 := (hu 2).mul_left_eq_zero.1 (by linear_combination e12)
-  have m02 : M 0 2 = 0 := (hu 2).mul_left_eq_zero.1 (by linear_combination e02)
-  have m01 : M 0 1 = 0 := (hu 1).mul_left_eq_zero.1 (by rw [m02] at e01; linear_combination e01)
-  intro a b hab
-  fin_cases a <;> fin_cases b <;> first | assumption | exact absurd hab (by decide)
 
 private theorem tc_rel {R : Type} [CommRing R] (h h' : GL (Fin 3) R) (X : Matrix (Fin 3) (Fin 3) R) :
     (((h⁻¹ : GL (Fin 3) R) : Matrix (Fin 3) (Fin 3) R) * X * h) * (((h⁻¹ : GL (Fin 3) R) : Matrix (Fin 3) (Fin 3) R) * h') =
@@ -198,6 +158,21 @@ theorem UpperTheory.V.UnitaryThreeInertia.cond_iff_canon :
     · rw [cm h s hg, (k2 s hg).2, ← cm h' s hg]; exact ht.ine s hs hg a
   refine ⟨⟨fun ⟨h', hh', ht⟩ => hT h' hh' ht, fun ht => ⟨h, hc.hat, ht⟩⟩,
     ⟨fun ⟨h', hh', ht⟩ => ⟨hT h' hh' ht.toTriIn, fun g hg => ?_⟩, fun ht => ⟨h, hc.hat, ht⟩⟩⟩
-  have k1 := tc_low _ _ _ (tc_rel h h' (r x).mat) hc.diag (by rw [← cm h' x hx]; exact ht.low x hx) (hu h' hh')
+  have hwt : ∀ a b : Fin 3, wt a b < 0 ↔ 0 < wt a.rev b.rev := fun a b => by
+    fin_cases a <;> fin_cases b <;> decide
+  have hrev : ∀ A B C D : Matrix (Fin 3) (Fin 3) R, A * B = C * D →
+      A.submatrix Fin.rev Fin.rev * B.submatrix Fin.rev Fin.rev =
+        C.submatrix Fin.rev Fin.rev * D.submatrix Fin.rev Fin.rev := fun A B C D he =>
+    (Matrix.submatrix_mul_equiv A B Fin.rev Fin.revPerm Fin.rev).trans
+      ((congrArg (fun M => M.submatrix Fin.rev Fin.rev) he).trans
+        (Matrix.submatrix_mul_equiv C D Fin.rev Fin.revPerm Fin.rev).symm)
+  have k1 := tc_up _ _ _ (hrev _ _ _ _ (tc_rel h h' (r x).mat))
+    (by intro a b hab; exact hc.diag (Fin.rev_injective.ne hab))
+    (fun a b hab => by rw [← cm h' x hx]; exact ht.low x hx a.rev b.rev ((hwt a b).1 hab))
+    (fun a b hab => hu h' hh' a.rev b.rev (Fin.rev_injective.ne hab))
+  have k2 := (tc_up' _ _ _ (hrev _ _ _ _ (tc_rel h h' (r g).mat)) k1
+    (fun a b hab => by rw [← cm h' g hg]; exact ht.low g hg a.rev b.rev ((hwt a b).1 hab))
+    (fun a => hk h' hh' a.rev)).1
+  intro a b hab
   rw [cm h g hg]
-  exact tc_low' _ _ _ (tc_rel h h' (r g).mat) k1 (by rw [← cm h' g hg]; exact ht.low g hg) (hk h' hh')
+  simpa using k2 a.rev b.rev ((hwt a.rev b.rev).2 (by simpa using hab))

@@ -1,13 +1,10 @@
 module
-
 public import Formalism.LocalRingCardinality.DataErr
 public import Formalism.LocalRingCardinality.DataKerP
 public import Formalism.SharpRestriction.Divisibility.OrbitPlaces
 
 @[expose] public section
-
 noncomputable section
-
 open Formalism.BasicNotions Formalism.BasicNotions.DV Formalism.MainNotions NumberField
 
 namespace Formalism.MainNotions.DIV.HookProducts.AdmPerTw
@@ -16,31 +13,18 @@ variable {D : D7}
 
 theorem vAdd_dvd_le (w : D.what₂.places.Pl) {n N : ℕ} (hN : N ≠ 0) (hd : n ∣ N) :
     (vAdd (D.plEq w) (n : D.what₂.LL) : ℝ) ≤ ur D w (padicValNat (D.what₂.places.resChar w) N : ℝ) := by
-  have hpp := D.what₂.places.resChar_prime w
-  have hn : n ≠ 0 := fun h => hN (Nat.eq_zero_of_zero_dvd (h ▸ hd))
-  set p := D.what₂.places.resChar w with hp
-  set k := padicValNat p n with hk
-  obtain ⟨n', hn'⟩ : ∃ n', n' = n / p ^ n.factorization p := ⟨_, rfl⟩
-  have hfac : n.factorization p = k := by rw [hk, Nat.factorization_def n hpp, Nat.padicValNat_def]
-  have hprod : p ^ k * n' = n := by
-    rw [hn', ← hfac]; exact Nat.ordProj_mul_ordCompl_eq_self n _
-  have hcop : Nat.Coprime n' p := by
-    rw [hn']; exact (Nat.coprime_ordCompl hpp hn).symm
-  have hn'0 : n' ≠ 0 := by rintro rfl; simp at hprod; exact hn hprod.symm
-  have hv' : vAdd (D.plEq w) ((n' : ℕ) : D.what₂.LL) = 0 := by
-    have h := OrbitPlaces.val_coprime w n' hcop
-    rw [D.val_eq w _ (Nat.cast_ne_zero.2 hn'0)] at h
-    exact_mod_cast h
-  have hpk : ((p : ℕ) : D.what₂.LL) ^ k ≠ 0 := pow_ne_zero _ (OrbitPlaces.p_ne w)
-  have hv : vAdd (D.plEq w) (n : D.what₂.LL) = (k : ℤ) * (D.what₂.places.ramIdx w : ℤ) := by
-    rw [← hprod, Nat.cast_mul, Nat.cast_pow, OrbitPlaces.vAdd_mul w hpk (Nat.cast_ne_zero.2 hn'0), OrbitPlaces.vAdd_pow, hv', add_zero]
-  have hkN : k ≤ padicValNat p N := ((by simpa only [_root_.Nat.padicValNat_def] using @_root_.multiplicity_dvd_iff_le : ∀ {p : _root_.Nat} [hp : _root_.Fact (_root_.Nat.Prime p)] {a n : _root_.Nat} (ha : a ≠ 0), p ^ n ∣ a ↔ n ≤ _root_.padicValNat p a) hN).1 ((_root_.Dvd.intro_left _ (_root_.Nat.divMaxPow_mul_pow_padicValNat _ _)).trans hd)
-  rw [hv]
-  unfold ur
+  let p := D.what₂.places.resChar w
+  have hp : p.Prime := D.what₂.places.resChar_prime w
+  obtain ⟨k, m, hm, rfl⟩ := Nat.exists_eq_pow_mul_and_not_dvd (ne_zero_of_dvd_ne_zero hN hd) p hp.ne_one
+  have hm0 : (m : D.what₂.LL) ≠ 0 := Nat.cast_ne_zero.mpr fun h => hm (h ▸ dvd_zero p)
+  rw [Nat.cast_mul, Nat.cast_pow, OrbitPlaces.vAdd_mul w (pow_ne_zero _ (OrbitPlaces.p_ne w)) hm0,
+    OrbitPlaces.vAdd_pow]
+  rw [show vAdd (D.plEq w) (m : D.what₂.LL) = 0 by
+      simpa [D.val_eq w _ hm0] using OrbitPlaces.val_coprime w m (hp.coprime_iff_not_dvd.mpr hm).symm,
+    add_zero, ur, mul_comm (D.what₂.places.ramIdx w : ℝ), Nat.padicValNat_def]
   push_cast
-  have h0 : (0 : ℝ) ≤ (D.what₂.places.ramIdx w : ℝ) := Nat.cast_nonneg _
-  have h1 : (k : ℝ) ≤ (padicValNat p N : ℝ) := by exact_mod_cast hkN
-  nlinarith
+  gcongr
+  exact (Nat.pow_dvd_iff_le_multiplicity hp.ne_one hN).mp ((dvd_mul_right _ _).trans hd)
 
 theorem card_stabilizer_dvd₂ (hD : DGamDef D) (T : TwForms D) (u : D.what₂.Word) (μ : D.what₂.Tup) (c : (T.fm u μ).clsP) :
     Nat.card ((T.fm u μ).stabilizer₂ c) ∣ (D.mem u).C.DGam := by

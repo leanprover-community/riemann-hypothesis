@@ -26,29 +26,9 @@ theorem reFace_prim (R : RealDat3 D A3 Ks) (F : Face3 D A3)
   dsimp only [RealDat3.withErr, reFace]
   obtain ⟨⟨hE, hR⟩, ⟨hW, hL⟩⟩ := h.hecke
   exact
-  { heckeR := h.heckeR
-    heckeL := h.heckeL
+  { h with
     hecke := ⟨⟨hE, ⟨hR.intw, hR.comm, hR.parts⟩⟩, ⟨hW, ⟨hL.intw, hL.comm, hL.parts⟩⟩⟩
-    gUnit := h.gUnit
-    gEquiv := h.gEquiv
-    block := h.block
-    rowTest := h.rowTest
-    liftTest := h.liftTest
-    liftTestB := h.liftTestB
-    liftOnto := fun hW' hh => h.liftOnto hW' ⟨hh.intw, hh.comm, hh.parts⟩
-    pos := h.pos
-    posScal := h.posScal
-    levE := h.levE
-    h2P := h.h2P
-    thmB := h.thmB
-    sumE := h.sumE
-    unif := h.unif
-    mLat := h.mLat
-    levW := h.levW
-    thmA := h.thmA
-    sumW := h.sumW
-    scalConj := h.scalConj
-    dimParts := h.dimParts }
+    liftOnto := fun hW' hh => h.liftOnto hW' ⟨hh.intw, hh.comm, hh.parts⟩ }
 
 end GlobalTheory.Mem.R3
 

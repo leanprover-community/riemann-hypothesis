@@ -6,8 +6,6 @@ public import Mathlib.NumberTheory.NumberField.Completion.FinitePlace
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain GlobalTheory.LatHecke Formalism.UG
 
 namespace GlobalTheory.LatHecke

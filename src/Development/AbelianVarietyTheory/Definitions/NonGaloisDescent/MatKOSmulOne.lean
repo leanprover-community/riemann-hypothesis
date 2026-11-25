@@ -4,8 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.Glob
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.Cut.Check
 
 open Formalism Formalism.MainNotions Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N Formalism.WeaklyAdmissibleFiltrations NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal
@@ -75,5 +73,3 @@ theorem cocW_quad {k : ℕ} (ψ : (S.X' → MatN D.nd i) → Matrix (Fin k) (Fin
   | smul a b _ hb => simp only [Pi.smul_apply, hb, map_smul]
 
 end GlobalTheory.Cut.Check
-
-end

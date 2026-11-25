@@ -15,25 +15,6 @@ private theorem determinant_evaluation_aeval {n : ℕ} {A E : Type} [CommRing A]
   congr 1
   simp
 
-private theorem coeff_aeval_C_mul_X' {A : Type} [CommRing A] (P : A[X]) (a : A[X]) (j : ℕ) :
-    (aeval (Polynomial.C a * Polynomial.X : A[X][X]) P).coeff j = Polynomial.C (P.coeff j) * a ^ j := by
-  induction P using Polynomial.induction_on' with
-  | add p q hp hq => rw [map_add (f := _), Polynomial.coeff_add, hp, hq, Polynomial.coeff_add, map_add (f := _), add_mul]
-  | monomial i c =>
-    have e1 : aeval (Polynomial.C a * Polynomial.X : A[X][X]) (monomial i c) =
-        Polynomial.C (Polynomial.C c * a ^ i) * Polynomial.X ^ i := by
-      rw [aeval_monomial, mul_pow, ← Polynomial.C_pow, Polynomial.algebraMap_apply, Polynomial.algebraMap_apply]
-      simp [mul_assoc]
-    rw [e1, Polynomial.coeff_C_mul_X_pow, Polynomial.coeff_monomial]
-    by_cases h : j = i
-    · subst h; simp
-    · simp [h]
-
-private theorem aeval_C_X_eq_C {A : Type} [CommRing A] (P : A[X]) :
-    aeval (Polynomial.C (X : A[X]) : A[X][X]) P = Polynomial.C P := by
-  have := Polynomial.aeval_algHom_apply (Polynomial.CAlgHom (R := A) (A := A[X])) (X : A[X]) P
-  simpa [Polynomial.aeval_X_left_apply] using this
-
 private theorem pow_aux {n : ℕ} {A E : Type} [CommRing A] [IsLocalRing A] [Ring E] [Algebra A E]
     (D : Det n A E) (e : E) (he : IsIdempotentElem e) :
     ∃ r, D.D A[X] (1 + (X - 1) ⊗ₜ e) = X ^ r := by
@@ -53,10 +34,17 @@ private theorem pow_aux {n : ℕ} {A E : Type} [CommRing A] [IsLocalRing A] [Rin
     ring
   have hcoef : ∀ j, Polynomial.C (P.coeff j) * X ^ j = P * Polynomial.C (P.coeff j) := by
     intro j
+    have hmap : (algebraMap A[X] A[X][X]).comp (algebraMap A A[X]) = algebraMap A A[X][X] :=
+      RingHom.ext fun _ => rfl
     have hm := mul A[X][X] (Polynomial.C X) Polynomial.X
-    have h1 : (Polynomial.X : A[X][X]) = Polynomial.C 1 * Polynomial.X := by simp
-    have cj := congrArg (fun q => _root_.AddMonoidAlgebra.coeff (M := ℕ) q j) hm
-    rw [coeff_aeval_C_mul_X', aeval_C_X_eq_C, Polynomial.coeff_C_mul, h1, coeff_aeval_C_mul_X', one_pow, mul_one] at cj
+    rw [Polynomial.aeval_eq_aeval_map (T := A[X]) hmap P (Polynomial.C X * X),
+      Polynomial.aeval_eq_aeval_map (T := A[X]) hmap P (Polynomial.C X),
+      ← Polynomial.comp_eq_aeval, ← Polynomial.comp_eq_aeval, Polynomial.comp_C,
+      Polynomial.eval_map_algebraMap, Polynomial.aeval_X_left_apply,
+      Polynomial.aeval_X_left_eq_map] at hm
+    have cj := congrArg (fun q : A[X][X] => q.coeff j) hm
+    rw [Polynomial.comp_C_mul_X_coeff, Polynomial.coeff_C_mul, Polynomial.coeff_map,
+      Polynomial.algebraMap_eq] at cj
     exact cj
   have h1 : P.eval 1 = 1 := by
     have := ev A 1

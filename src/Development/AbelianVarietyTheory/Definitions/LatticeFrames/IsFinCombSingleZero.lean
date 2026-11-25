@@ -6,8 +6,6 @@ public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.Measu
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum MeasureTheory IsDedekindDomain NumberField Matrix
 open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Grow GlobalTheory.Unf
 open scoped TensorProduct ComplexOrder MatrixOrder
@@ -27,5 +25,3 @@ theorem vac_ne_zero {ψ : AddChar (AF D.host.F) ℂ} {θ : InfFam D} {S T : HSp 
   simp [nrm2] at this
 
 end GlobalTheory.SeeSaw.Inh
-
-end

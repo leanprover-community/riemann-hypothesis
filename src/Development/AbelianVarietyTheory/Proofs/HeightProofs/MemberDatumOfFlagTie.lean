@@ -121,14 +121,8 @@ theorem hA_smul_right (B : HSp D) (a : AE D) (x y) : hA B x (a • y) = cA D a *
   simp only [hA, Pi.smul_apply, smul_eq_mul, Finset.mul_sum, map_mul]
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => by ring
 
-theorem hA_sum (B : HSp D) {ρ : ℕ} (x : Fin ρ → Fin B.rank → AE D) (y) : hA B (∑ l, x l) y = ∑ l, hA B (x l) y := by
-  classical
-  have : ∀ s : Finset (Fin ρ), hA B (∑ l ∈ s, x l) y = ∑ l ∈ s, hA B (x l) y := by
-    intro s
-    induction s using Finset.induction_on with
-    | empty => simp [hA]
-    | insert a s ha ih => rw [Finset.sum_insert ha, Finset.sum_insert ha, hA_add, ih]
-  exact this _
+theorem hA_sum (B : HSp D) {ρ : ℕ} (x : Fin ρ → Fin B.rank → AE D) (y) : hA B (∑ l, x l) y = ∑ l, hA B (x l) y :=
+  map_sum (AddMonoidHom.mk' (hA B · y) fun x x' => hA_add B x x' y) x Finset.univ
 
 theorem eMat_mulVec (B : HSp D) {ρ : ℕ} (e : Fin ρ → B.V) (a : Fin ρ → AE D) :
     ((eMat B e).map (incA D)).mulVec a = ∑ l, a l • vecA B (e l) := by

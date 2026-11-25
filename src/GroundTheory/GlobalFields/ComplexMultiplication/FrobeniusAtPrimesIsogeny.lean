@@ -183,16 +183,9 @@ theorem classGroup_mk_primeUnit :
 
 theorem absNorm_dvd_of_natCast_mem (hv : (Ideal.absNorm v.asIdeal).Prime) {n : ℕ}
     (hn : (n : 𝓞 K) ∈ v.asIdeal) : Ideal.absNorm v.asIdeal ∣ n := by
-  by_contra h
-  have hcop : Nat.Coprime (Ideal.absNorm v.asIdeal) n := (Nat.Prime.coprime_iff_not_dvd hv).2 h
-  obtain ⟨a, b, hab⟩ := Nat.isCoprime_iff_coprime.2 hcop
-  have hp : ((Ideal.absNorm v.asIdeal : ℕ) : 𝓞 K) ∈ v.asIdeal := Ideal.absNorm_mem _
-  have h1 : (1 : 𝓞 K) ∈ v.asIdeal := by
-    have e := congrArg (Int.cast : ℤ → 𝓞 K) hab
-    push_cast at e
-    rw [← e]
-    exact v.asIdeal.add_mem (v.asIdeal.mul_mem_left _ hp) (v.asIdeal.mul_mem_left _ hn)
-  exact v.isPrime.ne_top ((Ideal.eq_top_iff_one _).2 h1)
+  have h := Ideal.absNorm_dvd_absNorm_of_le ((Ideal.span_singleton_le_iff_mem _).2 hn)
+  rw [Ideal.absNorm_span_natCast] at h
+  exact hv.dvd_of_dvd_pow h
 
 theorem inv_absNorm_notMem_inv (hK : finrank ℚ K = 2) (hv : (Ideal.absNorm v.asIdeal).Prime) :
     ((Ideal.absNorm v.asIdeal : K))⁻¹ ∉ (v.asIdeal : FractionalIdeal (𝓞 K)⁰ K)⁻¹ := by
@@ -210,9 +203,7 @@ theorem inv_absNorm_notMem_inv (hK : finrank ℚ K = 2) (hv : (Ideal.absNorm v.a
     field_simp
   have hdvd := Ideal.absNorm_dvd_absNorm_of_le hle
   have hnorm : Ideal.absNorm (Ideal.span {(p : 𝓞 K)}) = p ^ 2 := by
-    rw [Ideal.absNorm_span_singleton, ← map_natCast (algebraMap ℤ (𝓞 K)), Algebra.norm_algebraMap,
-      NumberField.RingOfIntegers.rank, hK]
-    simp
+    rw [Ideal.absNorm_span_natCast, NumberField.RingOfIntegers.rank, hK]
   rw [hnorm] at hdvd
   have := Nat.le_of_dvd hv.pos hdvd
   have h2 := hv.two_le

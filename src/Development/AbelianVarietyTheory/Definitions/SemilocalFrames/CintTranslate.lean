@@ -6,7 +6,6 @@ import Mathlib.Tactic.Linter.HaveILetI
 
 @[expose] public section
 
-noncomputable section
 open scoped Classical
 
 namespace GlobalTheory.IdxInt.Model

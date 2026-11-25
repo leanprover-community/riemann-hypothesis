@@ -125,7 +125,6 @@ private lemma finite_right_of_finite_tensor_of_nontrivial {V W : Type} [AddCommG
     Module.Finite.equiv (TensorProduct.comm ℂ V W)
   exact finite_left_of_finite_tensor_of_nontrivial (W := V)
 
-
 open scoped TensorProduct in
 theorem _root_.GlobalTheory.trace_tensorProduct_map_complex {U U' : Type} [AddCommGroup U] [Module ℂ U]
     [AddCommGroup U'] [Module ℂ U'] (T : U →ₗ[ℂ] U) (T' : U' →ₗ[ℂ] U') :
@@ -237,7 +236,7 @@ theorem mem_span_values (lam : InfinitePlace E → DomWeight n) (π : Submodule 
     | zero => simp
     | add a c _ _ ha hc => rw [map_add]; exact add_mem ha hc
     | smul c a _ ha => rw [map_smul]; exact Submodule.smul_mem _ c ha
-  obtain ⟨T, hT0, hTπ, hT⟩ := GlobalTheory.T.exists_ne_zero_weightTensor_intertwining_autRep E n lam π hπ hW
+  obtain ⟨T, hT0, hTπ, hT⟩ := GlobalTheory.BCT.TrKer.exists_ne_zero_wsp_intertwining E n lam π hπ hW
   obtain ⟨w, hw⟩ := DFunLike.ne_iff.1 hT0
   rcases hπ.irred Sv hle hst with h | h
   · have hm : T w ∈ Sv := Submodule.subset_span ⟨T, hT, hTπ, w, rfl⟩
@@ -1153,7 +1152,6 @@ theorem phiFun_mem_forms (hU : Unr E) (S : Set (Pl E)) (lam : InfinitePlace E �
 end GlobalTheory.BCT.TrKer.RangeLe
 
 namespace GlobalTheory.BCT.TrKer
-
 
 open GlobalTheory.BCT.TrKer.RangeLe in
 theorem range_Phi_le_forms : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E], Unr E → ∀ n : ℕ, 1 ≤ n → ∀ (S : Set (Pl E)), IsSection S → ∀ (lam : InfinitePlace E → DomWeight n) (K' : ∀ w : Pl E, Subgroup (UL n w)), IsLevelFam (fun w : Pl E => MonoidHom.id (UL n w)) (KL n) K' → LinearMap.range (Phi S lam K') ≤ forms S lam K' := by

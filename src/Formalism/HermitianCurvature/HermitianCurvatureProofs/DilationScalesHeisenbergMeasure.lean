@@ -220,10 +220,6 @@ namespace B2x7
 
 variable {k r' : ℕ}
 
-lemma conjM_cont {k r : ℕ} (a : Mat k r) : Continuous (conjM a : Mt k r → Mt k r) := by
-  unfold conjM
-  exact ((continuous_const (y := a)).matrix_mul (continuous_id (X := Mat k r))).matrix_mul continuous_const
-
 lemma liftVec_cont : Continuous (fun y : Fin (2 * r' + k + 1) → ℂ => liftVec k 1 r' y) := by
   apply continuous_pi
   intro p
@@ -292,7 +288,7 @@ theorem dilation_scales_heisenberg_measure : Formalism.FourierDecayAlt.B2.DilHei
   have ht0 : t ≠ 0 := ht.ne'
   have hL : Measurable (dilL k r' t) := (LinearMap.continuous_of_finiteDimensional _).measurable
   have hH : Measurable (heisF k r') := heisF_cont.measurable
-  have hC : Measurable (conjM (aDil k (1 + r') t) : Mt k (1 + r') → Mt k (1 + r')) := (conjM_cont _).measurable
+  have hC : Measurable (conjM (aDil k (1 + r') t) : Mt k (1 + r') → Mt k (1 + r')) := (_root_.Formalism.FourierDecayAlt.P.B2x2.conjM_cont _).measurable
   have hcomp : conjM (aDil k (1 + r') t) ∘ heisF k r' = heisF k r' ∘ dilL k r' t := by
     funext x
     show aDil k (1 + r') t * heis0 k r' x * (aDil k (1 + r') t)⁻¹ = heis0 k r' (dilL k r' t x)
@@ -307,10 +303,6 @@ namespace B2x7
 
 variable {k r' : ℕ}
 
-lemma sigmaFinite_of_haar {k r : ℕ} {U : Set (Mat k r)} {μ : Measure (Mt k r)} (h : IsHaarOn U μ) : SigmaFinite μ := by
-  have : IsFiniteMeasureOnCompacts μ := ⟨fun K hK => h.finite_compact K hK⟩
-  infer_instance
-
 lemma aDil_zero (k : ℕ) (t : ℝ) : aDil k 0 t = 1 := by
   rw [aDil_eq, ← Matrix.diagonal_one]
   congr 1
@@ -323,10 +315,6 @@ lemma conjM_one (k r : ℕ) : (conjM (1 : Mat k r) : Mt k r → Mt k r) = id := 
   funext x
   simp [conjM]
   rfl
-
-lemma mulM_cont {k r : ℕ} : Continuous (mulM : Mt k r × Mt k r → Mt k r) := by
-  unfold mulM
-  exact (continuous_fst (X := Mat k r) (Y := Mat k r)).matrix_mul continuous_snd
 
 lemma levM_cont : Continuous (levM k r') := by
   apply continuous_pi; intro p
@@ -355,9 +343,9 @@ lemma dil_step (μ' : Measure (Mt k r')) [SigmaFinite μ'] (t : ℝ) (ht : 0 < t
     (((μHeis k r').prod (μ'.map (levM k r'))).map mulM).map (conjM (aDil k (1 + r') t)) =
       ENNReal.ofReal ((t ^ kap k (1 + r'))⁻¹) • ((μHeis k r').prod (μ'.map (levM k r'))).map mulM := by
   have ht0 : t ≠ 0 := ht.ne'
-  have hC : Measurable (conjM (aDil k (1 + r') t) : Mt k (1 + r') → Mt k (1 + r')) := (conjM_cont _).measurable
-  have hC' : Measurable (conjM (aDil k r' t) : Mt k r' → Mt k r') := (conjM_cont _).measurable
-  have hM : Measurable (mulM : Mt k (1 + r') × Mt k (1 + r') → Mt k (1 + r')) := mulM_cont.measurable
+  have hC : Measurable (conjM (aDil k (1 + r') t) : Mt k (1 + r') → Mt k (1 + r')) := (_root_.Formalism.FourierDecayAlt.P.B2x2.conjM_cont _).measurable
+  have hC' : Measurable (conjM (aDil k r' t) : Mt k r' → Mt k r') := (_root_.Formalism.FourierDecayAlt.P.B2x2.conjM_cont _).measurable
+  have hM : Measurable (mulM : Mt k (1 + r') × Mt k (1 + r') → Mt k (1 + r')) := _root_.Formalism.FourierDecayAlt.P.B2x2.mulM_cont.measurable
   have hL : Measurable (levM k r') := levM_cont.measurable
   have hlev : (conjM (aDil k (1 + r') t) : Mt k (1 + r') → Mt k (1 + r')) ∘ levM k r' = levM k r' ∘ conjM (aDil k r' t) := by
     funext x
@@ -383,10 +371,10 @@ theorem dilJacRaw_of (hU : HaarUnique) (hN : ClosedN) (hR : NRecHaar) (hE : Haar
     rw [Nat.add_comm r' 1]
     intro μN hμ t ht
     obtain ⟨μ', hμ'⟩ := hE k r'
-    have := sigmaFinite_of_haar hμ'
+    have := _root_.Formalism.FourierDecayAlt.P.B2x2.sfin hμ'
     obtain ⟨c, hc⟩ := hU k (1 + r') (Nset k (1 + r')) _ μN (hN k (1 + r')) (hR k r' μ' hμ') hμ.conc hμ.left hμ.finite_compact
     rw [hc, Measure.map_smul, dil_step μ' t ht (ih μ' hμ' t ht), smul_comm]
-    exact (conjM_cont _).measurable.aemeasurable
+    exact (_root_.Formalism.FourierDecayAlt.P.B2x2.conjM_cont _).measurable.aemeasurable
 
 theorem dilJacAll_of (h : DilJacRaw) : DilJacAll := fun k r _ _ _ _ _ _ D t ht => h k r D.μN D.haarN t ht
 

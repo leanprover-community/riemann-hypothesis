@@ -44,7 +44,6 @@ import Mathlib.Tactic.Polynomial.Basic
 
 @[expose] public section
 
-noncomputable section
 open MvPolynomial GlobalTheory.FlagBundle
 open scoped Matrix
 namespace GlobalTheory.GoodMetric.PolyRep
@@ -100,4 +99,3 @@ theorem _root_.GlobalTheory.GoodMetric.PolyRep.ev_dual_model [Fintype ι] (ρ : 
   rw [h1]
 
 end GlobalTheory.GoodMetric.PolyRep
-end

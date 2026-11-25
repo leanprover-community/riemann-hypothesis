@@ -45,8 +45,6 @@ import Mathlib.Topology.Sheaves.Init
 
 open GlobalTheory.Diag.PG Filter
 
-noncomputable section
-
 namespace GlobalTheory.Diag.PG.SqrtBound
 
 theorem poly_ineq {t K a : ℝ} (ht2 : 2 ≤ t) (htK : K ≤ t) (ha : a ≤ K) : a * t + t ^ 2 ≤ t ^ 4 / 2 := by
@@ -175,5 +173,3 @@ theorem rankNums_sizes : ∀ eps CD : ℝ, 0 < eps → eps < 1 / 52 → 3 ≤ CD
     exact le_trans (Real.rpow_le_rpow_of_exponent_le hB1 hCC) h.Del_lo
 
 end GlobalTheory.Diag.PG.SqrtBound
-
-end

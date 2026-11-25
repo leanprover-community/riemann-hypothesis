@@ -19,8 +19,6 @@ public import Formalism.SharpRestriction.GlobalSchurBounds.MassRatioUnfoldedOfTh
 
 @[expose] public section
 
-
-
 section
 noncomputable section
 namespace GlobalTheory.Fc
@@ -30,7 +28,7 @@ set_option linter.unusedVariables false in
 def TopShapeAlt (V NR : Prop) (N : FamClass → Prop) (G : Prop) : Prop :=
   ∀     (𝒜 : FamClass)
     (cT : ℝ → ℝ → ℝ)
-    (hEx : MinkDiv → UpperTheory.Top.ExS 𝒜 cT)
+    (hEx : MinkDiv → UpperTheory.Top.ExD 𝒜 cT)
     (sel : _root_.Formalism.L2.TwistSelection 𝒜)
     (hduty : ∀ {eps : ℝ} (Fm : FamP eps), 𝒜 Fm → Duty Fm)
     (selS : _root_.Formalism.L2.Top4.SelectionSpectralCondition 𝒜 sel)

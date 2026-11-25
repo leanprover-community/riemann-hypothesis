@@ -213,14 +213,6 @@ private theorem units_mul_relation_rearrange_commRing {R : Type} [CommRing R] {�
     | succ n ih => rw [pow_succ, ← mul_assoc, ih, h]
   rw [this]; ring
 
-private theorem matrix_map_ringHom_add_smul_sandwich {R : Type} [CommRing R] {a b : ℕ} (βS : GL (Fin a) R) (βT : GL (Fin b) R) (ε : R)
-    (J : Matrix (Fin b) (Fin a) R) :
-    (βT⁻¹).val * (ε • (βT.val * J * (βS⁻¹).val)) * βS.val = ε • J := by
-  rw [Matrix.mul_smul, Matrix.smul_mul]
-  congr 1
-  rw [← Matrix.mul_assoc, ← Matrix.mul_assoc, Units.inv_mul, Matrix.one_mul, Matrix.mul_assoc, Units.inv_mul,
-    Matrix.mul_one]
-
 private theorem topL_smul_identity {R : Type} [CommRing R] {a b : ℕ} (hab : a ≤ b) (ε : R) :
     topL a (ε • (Matrix.of fun (i : Fin b) (j : Fin a) => if i.1 = j.1 then (1 : R) else 0)) =
       ε • (1 : Matrix (Fin a) (Fin a) R) := by
@@ -247,7 +239,7 @@ theorem UpperTheory.exists_stdFst_ne_zero_of_rank_le :
   have hf : frMapO S T βS βT x = toEAf D e • J := by
     unfold frMapO
     rw [hx]
-    exact matrix_map_ringHom_add_smul_sandwich βS βT (toEAf D e) J
+    exact GlobalTheory.Chain.StepVac.frame_cancel βS βT (toEAf D e) J
   have hJ : ∀ i j, (toEAf D e • J) i j = if i.1 = j.1 then toEAf D e else 0 := fun i j => by
     change toEAf D e * (if i.1 = j.1 then 1 else 0) = _
     split_ifs
@@ -349,8 +341,6 @@ private theorem UpperTheory.standard_section_integral_unit {D : D7} (S T : HSp D
     · exact absurd rfl hx
   · exact absurd rfl hx
 
-
-
 private theorem UpperTheory.integral_unit_det_both {D : D7} {e : AE D} {Z : Finset (Formalism.L2.DIV.Pl D.host.E)} (he : IsIdemSum e Z) {m n : ℕ}
     (N : Matrix (Fin m) (Fin n) (Lev.EAf D)) (γ : GL (Fin n) (Lev.EAf D)) (hI : IsIntM N)
     (hI' : IsIntM (HMul.hMul N (γ⁻¹ : GL (Fin n) (Lev.EAf D)).val)) (y y' : (AE D)ˣ)
@@ -366,7 +356,6 @@ private theorem UpperTheory.integral_unit_det_both {D : D7} {e : AE D} {Z : Fins
   · refine UpperTheory.idempotent_unit_det_integral he _ _ hA ?_ y hy
     rw [← UpperTheory.upperRows_mul_right]
     exact hB
-
 
 theorem UpperTheory.finiteComponent_mem_stabilizer_of_standardSection_ne_zero :
     ∀ (D : D7) (S T : HSp D) (ΛS : Submodule (𝓞 D.host.E) (Fin S.rank → D.host.E)) (βS : GL (Fin S.rank) (Lev.EAf D)) (βT : GL (Fin T.rank) (Lev.EAf D)) (ν : (AE D)ˣ →* Circle) (e : AE D) (Z : Finset (Formalism.L2.DIV.Pl D.host.E)) (I : Ideal (𝓞 D.host.E)),
@@ -554,7 +543,6 @@ private theorem isUnitDet_mul {e : AE D} {S : Finset (Formalism.L2.DIV.Pl D.host
   · rw [_root_.mul_inv_rev, Units.val_mul, map_mul]
     exact mul_mem hy.2.2 hx.2.2
 
-
 private theorem isUnitDet_div {e : AE D} {S : Finset (Formalism.L2.DIV.Pl D.host.E)} (he : IsIdemSum e S) {k : ℕ}
     {L κ : Matrix (Fin k) (Fin k) (Lev.EAf D)} (hκ : IsIntM κ) {z y : (AE D)ˣ} (hz : IsUnitDet e (L * κ) z)
     (hy : IsUnitDet e κ y) : IsUnitDet e L (z * y⁻¹) := by
@@ -615,7 +603,6 @@ private theorem st_int {n : ℕ} {β k : GL (Fin n) (Lev.EAf D)} (h : k ∈ Form
 end UpperTheory.standardActionStabilizer
 
 open UpperTheory.standardActionStabilizer in
-
 
 theorem UpperTheory.stdFst_actO_of_mem_stabilizer :
     ∀ (D : D7) (S T : HSp D) (βS : GL (Fin S.rank) (Lev.EAf D)) (βT : GL (Fin T.rank) (Lev.EAf D)) (ν : (AE D)ˣ →* Circle) (e : AE D) (Z : Finset (Formalism.L2.DIV.Pl D.host.E)) (I : Ideal (𝓞 D.host.E)),
@@ -747,8 +734,6 @@ private theorem f_fock (hX : IsBottomTri W i j X) (t : T) (τ : D.what₂.Tau) :
   have ho := GlobalTheory.PlaceModelSum.isOrthSum_of_isIdemSum (hX.is.idem t)
   GlobalTheory.DatumFock.isFockVacAt_of_isThetaAt hX.is.isVac.1.1.1 hX.is.isVac.2.inf ho.infPart_eq ho.conj.infPart_eq (hX.is.fst t)
     hX.is.isVac.2.theta (f_theta hX t) (hX.is.isVac.2.fock τ)
-
-
 
 private theorem real_fix (hX : IsBottomTri W i j X) (t : T) (hr : A.rank ≤ WW.rank) (n : D.what₂.Tau → ℕ)
     (hn : ∀ τ, HasInfExp D (betaB G i j / alphaB L i j t) τ ((n τ : ℚ) + (WW.rank : ℚ) / 2))
@@ -947,7 +932,7 @@ private theorem pt_ne_zero (hX : IsBottomTri W i j X) (t : T) {P : PolF D WW.ran
     · rw [(hX.std.2.2 τ).1, (hX.std.2.2 τ).2]
       ext a b
       simp [Matrix.one_apply, apply_ite]
-  have hinj := GlobalTheory.FockPolyInj.pureTensorO_injective_of_on W.ψ W.θ (GlobalTheory.Grid.neg A) WW h.isVac.1 h.isVac.2.inf
+  have hinj := GlobalTheory.FockVecInj.pureTensorO_injective_of_on W.ψ W.θ (GlobalTheory.Grid.neg A) WW h.isVac.1 h.isVac.2.inf
     (fun τ => -X.rA.s τ) X.rA.B X.rW.s X.rW.B (fun _ => 0) pW hA hpW (X.f t) (f_theta hX t) (f_fock hX t) (f_ne_zero hX t)
   exact fun h0 => hP (hinj (h0.trans (map_zero _).symm))
 
@@ -998,7 +983,6 @@ private theorem openOff_eq (hX : IsBottomTri W i j X) (Λ : Lat (GlobalTheory.Gr
   exact Commute.neg_one_right _
 
 end GlobalTheory.BottomLoc
-
 
 open GlobalTheory.BottomIPData GlobalTheory.BottomLoc in
 theorem _root_.GlobalTheory.T.definiteBottom_localDoublingIntegral_converges : GBig fun {D} T Lc _ G _ _ _ _ => ∀ (W : G.Weil) (i j : Fin D.R.m) (A A' WW : HSp D) (X : Tri T A A' WW),
@@ -1176,7 +1160,6 @@ theorem sig_of_gram_one {V : HSp D} (hg : V.gram = 1) (hV : V.SigOK) (τ : D.hos
   simp only [Fintype.card_fin, Fintype.card_sum, hq] at this
   omega
 
-
 open GlobalTheory.Grid (neg neg_gram) in
 def negFrame (A : HSp D) : CptF (neg A) := fun τ r c =>
   Sum.elim (fun _ => (0 : ℂ)) (fun k => if (k : ℕ) = (c : ℕ) then 1 else 0) r
@@ -1229,7 +1212,6 @@ theorem gramAt_neg_of_gram_one {A : HSp D} (hg : A.gram = 1) (τ : D.what₂.Tau
   simp only [gramAt, neg_gram, hg, Matrix.map_apply, Matrix.neg_apply, Matrix.one_apply]
   split_ifs <;> simp
 
-
 open GlobalTheory.Grid (neg neg_gram sigOK_sgn isCartanInv_sgn) in
 theorem exists_pair {T : Type} {A A' WW : HSp D} (X : Tri T A A' WW) {ψ : AddChar (AF D.host.F) ℂ} {θ : InfFam D}
     {α β : T → ((AE D)ˣ →* Circle)} {νH : T → Formalism.L2.Host.HChar D.host.E} {S}
@@ -1255,7 +1237,6 @@ theorem exists_pair {T : Type} {A A' WW : HSp D} (X : Tri T A A' WW) {ψ : AddCh
   · rw [hgn, hs]
     simp [compAt]
 
-
 open GlobalTheory.Grid (neg) in
 theorem one_le_bot (i j : Fin D.R.m) : 1 ≤ botBig D i j ∧ 1 ≤ botSmall D i j := by
   obtain ⟨u, hu⟩ := D.R.t_odd
@@ -1271,7 +1252,6 @@ theorem one_le_bot (i j : Fin D.R.m) : 1 ≤ botBig D i j ∧ 1 ≤ botSmall D i
   constructor <;> omega
 
 end GlobalTheory.BottomPairData
-
 
 open GlobalTheory.BottomPairData in
 theorem GlobalTheory.BottomPairData.pair_data : GBig fun {D} T Lc _ G _ _ _ _ => ∀ (W : G.Weil) (i j : Fin D.R.m) (A A' WW : HSp D) (X : Tri T A A' WW),

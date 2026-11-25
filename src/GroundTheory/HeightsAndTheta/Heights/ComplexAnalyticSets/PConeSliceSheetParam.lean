@@ -116,18 +116,8 @@ theorem SliceDim.proof : SliceDim.Statement := by
     exact le_sup_right (a := J) (Ideal.subset_span rfl)
   have key := ringKrullDim_succ_le_of_surjective (Ideal.Quotient.factor hle)
     (Ideal.Quotient.factor_surjective hle) hr hkill
-  rw [hdim] at key
-  generalize ringKrullDim (MvPolynomial (Fin n) ℂ ⧸ (J ⊔ Ideal.span {linForm ℓ - 1})) = D at key ⊢
-  induction D using WithBot.recBotCoe with
-  | bot => exact bot_le
-  | coe b =>
-    induction b using ENat.recTopCoe with
-    | top =>
-      exfalso
-      norm_cast at key
-    | coe m =>
-      have : m + 1 ≤ e + 1 := by exact_mod_cast key
-      exact_mod_cast (by omega : m ≤ e)
+  rw [hdim, Nat.cast_add, Nat.cast_one] at key
+  exact ENat.WithBot.add_le_add_one_right_iff.1 key
 
 end
 

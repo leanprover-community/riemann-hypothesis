@@ -90,11 +90,9 @@ theorem aeval_elim_eq_rename_linearSubstitution (c : ι)
         MvPolynomial (Option (Fin (d.D + 2) × Fin (d.N + 1))) (Ω c)))
       (fun i => ∑ j, MvPolynomial.X (some (i, j)) * MvPolynomial.C (d.affineCoord c j))) Q =
       MvPolynomial.rename some (d.linearSubstitution c Q) := by
-  induction Q using MvPolynomial.induction_on with
-  | C a => simp [linearSubstitution, MvPolynomial.algebraMap_eq]
-  | add p q hp hq => simp only [map_add (f := _), hp, hq]
-  | mul_X p v hp =>
-    cases v <;> simp [linearSubstitution, map_mul, hp, map_sum]
+  exact AlgHom.congr_fun (MvPolynomial.algHom_ext
+    (g := ((MvPolynomial.rename (R := Ω c) some).restrictScalars K).comp (d.linearSubstitution c))
+    fun v => by cases v <;> simp [linearSubstitution]) Q
 
 theorem scaledSubstitution_of_homogeneous (c : ι) (n : ℕ)
     (Q : MvPolynomial ((Fin (d.D + 2) × Fin (d.N + 1)) ⊕ Fin (d.D + 2)) K)
@@ -116,17 +114,11 @@ theorem eq_zero_of_xhom_zero (c : ι)
       have h0 := (Finset.sum_eq_zero_iff.mp (hQ s hs)) i (Finset.mem_univ _)
       exact (Finsupp.mem_support_iff.mp hxs) h0
   obtain ⟨Q0, rfl⟩ := MvPolynomial.exists_rename_eq_of_vars_subset_range Q Sum.inl Sum.inl_injective hvars
-  have hmap : ∀ q : MvPolynomial (Fin (d.D + 2) × Fin (d.N + 1)) K,
-      MvPolynomial.aeval (fun p => (MvPolynomial.X p : MvPolynomial (Fin (d.D + 2) × Fin (d.N + 1)) (Ω c))) q =
-        MvPolynomial.map (algebraMap K (Ω c)) q := by
-    intro q
-    induction q using MvPolynomial.induction_on with
-    | C a => simp
-    | add p q hp hq => simp only [map_add (f := _), hp, hq]
-    | mul_X p v hp => simp [map_mul, hp]
-  have e : d.linearSubstitution c (MvPolynomial.rename Sum.inl Q0) = MvPolynomial.map (algebraMap K (Ω c)) Q0 := by
-    rw [← hmap, linearSubstitution, MvPolynomial.aeval_rename]
-    rfl
+  have e : d.linearSubstitution c (MvPolynomial.rename Sum.inl Q0) =
+      MvPolynomial.map (algebraMap K (Ω c)) Q0 := by
+    rw [linearSubstitution, MvPolynomial.aeval_rename]
+    exact AlgHom.congr_fun (MvPolynomial.algHom_ext
+      (g := MvPolynomial.mapAlgHom (Algebra.ofId K (Ω c))) fun p => by simp) Q0
   rw [e] at h
   have hQ0 : Q0 = 0 := MvPolynomial.map_injective _ (algebraMap K (Ω c)).injective (by rw [h, map_zero])
   rw [hQ0, map_zero]

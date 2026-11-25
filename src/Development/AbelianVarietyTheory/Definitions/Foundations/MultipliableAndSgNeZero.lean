@@ -7,8 +7,6 @@ public import Mathlib.Analysis.SpecialFunctions.Complex.Log
 
 @[expose] public section
 
-noncomputable section
-
 open scoped UpperHalfPlane
 
 namespace GlobalTheory.Sieg.Model

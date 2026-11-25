@@ -92,12 +92,8 @@ lemma traceReal_lower (h : V →ₗ⋆[K] V →ₗ[K] K)
     simp
   have hco := hcoer (fun i => (c i : ℚ))
   rw [← hqc, ← hxc] at hco
-  obtain ⟨i, hi⟩ : ∃ i, c i ≠ 0 := by
-    by_contra hh
-    push Not at hh
-    exact hc0 (funext hh)
-  have h2 : 0 < (c i) ^ 2 := lt_of_le_of_ne (sq_nonneg _) (Ne.symm (pow_ne_zero 2 hi))
-  have h3 : (1 : ℤ) ≤ (c i) ^ 2 := by linarith [Int.add_one_le_iff.mpr h2]
+  obtain ⟨i, hi⟩ := Function.ne_iff.1 hc0
+  have h3 : (1 : ℤ) ≤ (c i) ^ 2 := (one_le_sq_iff_one_le_abs _).2 (Int.one_le_abs hi)
   have h4 : (1 : ℝ) ≤ (((c i : ℤ) : ℚ) : ℝ) ^ 2 := by exact_mod_cast h3
   have h5 : (1 : ℝ) ≤ ∑ j, (((c j : ℤ) : ℚ) : ℝ) ^ 2 :=
     h4.trans (Finset.single_le_sum (f := fun j => (((c j : ℤ) : ℚ) : ℝ) ^ 2)

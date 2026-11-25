@@ -24,7 +24,7 @@ private theorem inv_map_mulVec {R : Type} [CommRing R] (h : A K →+* R) (g : GL
   rw [map_mulVec_eq, Matrix.mulVec_mulVec, ← Matrix.map_mul, ← Units.val_mul, inv_mul_cancel,
     Units.val_one, Matrix.map_one h (map_zero h) (map_one h), Matrix.one_mulVec]
 
-private theorem continuous_adeleInfHom : Continuous (adeleInfHom : A K → mixedSpace K) :=
+private theorem continuous_adeleInfHom : Continuous (GroundTheory.Automorphic.Adele2.infRingHom : A K → mixedSpace K) :=
   (homeomorphMixedSpace K).continuous.comp continuous_fst
 
 private theorem continuous_adeleFinHom : Continuous (adeleFinHom : A K → FiniteAdeleRing (𝓞 K) K) :=
@@ -92,7 +92,7 @@ theorem UpperTheory.ConvolutionTheory.R2.Ff.wtLin :
       continuous_adeleFinHom).matrix_mulVec continuous_snd
   refine ⟨ψ '' (C ×ˢ K), (hC.prod hK).image hψ, fun N => ?_⟩
 
-  let β : GL (Fin 4) (A F) → ℝ := fun x => ∑ i, ∑ j, ‖(x⁻¹).val.map (adeleInfHom (K := F)) i j‖
+  let β : GL (Fin 4) (A F) → ℝ := fun x => ∑ i, ∑ j, ‖(x⁻¹).val.map (GroundTheory.Automorphic.Adele2.infRingHom (K := F)) i j‖
   have hβ : Continuous β := by
     refine continuous_finsetSum _ fun i _ => continuous_finsetSum _ fun j _ => ?_
     exact (continuous_adeleInfHom.comp (continuous_invEntry i j)).norm
@@ -106,8 +106,8 @@ theorem UpperTheory.ConvolutionTheory.R2.Ff.wtLin :
     refine ⟨(x, finPartPi (x.val *ᵥ v)), ⟨hx, hv⟩, ?_⟩
     have := inv_map_mulVec (adeleFinHom (K := F)) x v
     simpa only [ψ, finPartPi_eq_adeleFinHom] using this
-  have hinf : infPartPi v = (x⁻¹).val.map adeleInfHom *ᵥ infPartPi (x.val *ᵥ v) := by
-    have := inv_map_mulVec (adeleInfHom (K := F)) x v
+  have hinf : infPartPi v = (x⁻¹).val.map GroundTheory.Automorphic.Adele2.infRingHom *ᵥ infPartPi (x.val *ᵥ v) := by
+    have := inv_map_mulVec (GroundTheory.Automorphic.Adele2.infRingHom (K := F)) x v
     simpa only [infPartPi_eq_adeleInfHom] using this.symm
   refine ⟨hfin, ?_⟩
   rw [hinf]

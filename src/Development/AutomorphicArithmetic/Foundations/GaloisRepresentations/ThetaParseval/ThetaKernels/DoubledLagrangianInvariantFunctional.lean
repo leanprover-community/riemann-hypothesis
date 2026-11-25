@@ -659,8 +659,6 @@ end GlobalTheory.WeilAdmCMUnit
 end
 
 section
-abbrev GlobalTheory.T.weil_pair_local_factor :=
-  GlobalTheory.WeilAdmCMUnit.isUnitaryOn_transport_k
 
 abbrev GlobalTheory.T.weil_representation_pair_continuous :=
   GlobalTheory.TransportHeisF.pres_impl_k
@@ -697,7 +695,7 @@ theorem transport_admissible_weil_datum : ∀ (F E :
     GlobalTheory.T.weil_representation_pair_continuous F E σ B hB nS nT JS JT hS hT ξ₀ hξ0 hξσ χS χT hcS hcT hrS
       hrT ω hω JA JB ξ hJA hJB κ co hco om htr
   have hU :=
-    GlobalTheory.T.weil_pair_local_factor F E σ B hB nS nT JS JT hS hT ξ₀ hξ0 hξσ χS χT hcS hcT hrS hrT ω hω JA
+    GlobalTheory.T.weil_representation_pair_unitary F E σ B hB nS nT JS JT hS hT ξ₀ hξ0 hξσ χS χT hcS hcT hrS hrT ω hω JA
       JB ξ hJA hJB κ co hco om htr
   refine weilAdmissible_of_heisenberg_unitary B.ψ hB.std κ (co.e.symm.trans ((GlobalTheory.WeilAdm.actLin _ p).trans
     co.e)) (om p) (hP.1 p)

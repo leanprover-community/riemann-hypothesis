@@ -268,14 +268,11 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ}
 def basisMat (τ : E →+* ℂ) (v : Fin r → Fin r → E) : Matrix (Fin r) (Fin r) ℂ :=
   ((Matrix.of v)ᵀ).map τ
 
-def gramMat (G : Matrix (Fin r) (Fin r) E) (v : Fin r → Fin r → E) : Matrix (Fin r) (Fin r) E :=
-  Matrix.of fun i k => herm G (v i) (v k)
-
 theorem gram_basisMat (τ : E →+* ℂ) (G : Matrix (Fin r) (Fin r) E) (v : Fin r → Fin r → E) :
-    gram τ G (basisMat τ v) = (gramMat G v).map τ := by
+    gram τ G (basisMat τ v) = (GlobalTheory.BoundedBasis.gramOf G v).map τ := by
   ext a b
 
-  simp only [ReciprocityTheory.ChartRestriction.G.FD.gram, gramMat, basisMat, hermC, herm, ReciprocityTheory.ChartRestriction.G.FD.col, Matrix.of_apply, Matrix.map_apply,
+  simp only [ReciprocityTheory.ChartRestriction.G.FD.gram, GlobalTheory.BoundedBasis.gramOf, basisMat, hermC, herm, ReciprocityTheory.ChartRestriction.G.FD.col, Matrix.of_apply, Matrix.map_apply,
   Matrix.transpose_apply, map_sum, map_mul, cc, NumberField.IsCMField.complexEmbedding_complexConj]
 
 omit [NumberField E] [IsCMField E] in
@@ -298,8 +295,8 @@ theorem det_basisMat_ne_zero (τ : E →+* ℂ) {v : Fin r → Fin r → E} (hv 
   exact (map_ne_zero τ).mpr hd
 
 theorem norm_emb_det_gramMat (τ : E →+* ℂ) (G : Matrix (Fin r) (Fin r) E) (v : Fin r → Fin r → E) :
-    ‖τ (gramMat G v).det‖ = ‖(basisMat τ v).det‖ ^ 2 * ‖τ G.det‖ := by
-  have e : τ (gramMat G v).det = (gram τ G (basisMat τ v)).det := by
+    ‖τ (GlobalTheory.BoundedBasis.gramOf G v).det‖ = ‖(basisMat τ v).det‖ ^ 2 * ‖τ G.det‖ := by
+  have e : τ (GlobalTheory.BoundedBasis.gramOf G v).det = (gram τ G (basisMat τ v)).det := by
     rw [gram_basisMat, RingHom.map_det]; rfl
   rw [e]
   exact norm_det_gram τ G _
@@ -307,7 +304,7 @@ theorem norm_emb_det_gramMat (τ : E →+* ℂ) (G : Matrix (Fin r) (Fin r) E) (
 variable (X : Data E r)
 
 theorem det_gramMat_ne_zero {v : Fin r → Fin r → E} (hv : LinearIndependent E v) :
-    (gramMat X.Gm v).det ≠ 0 := by
+    (GlobalTheory.BoundedBasis.gramOf X.Gm v).det ≠ 0 := by
   obtain ⟨τ⟩ : Nonempty (E →+* ℂ) := inferInstance
   intro h0
   have h1 := norm_emb_det_gramMat τ X.Gm v
@@ -331,7 +328,7 @@ theorem det_ne_zero_of_ortho {x : Frame X.Ψ r} (hx : X.IsOrtho x) (τ : X.Ψ) :
   simp at h1
 
 theorem norm_det_coord {x : Frame X.Ψ r} (hx : X.IsOrtho x) (τ : X.Ψ) (v : Fin r → Fin r → E) :
-    ‖((mat x τ)⁻¹ * basisMat τ.1 v).det‖ = Real.sqrt ‖τ.1 (gramMat X.Gm v).det‖ := by
+    ‖((mat x τ)⁻¹ * basisMat τ.1 v).det‖ = Real.sqrt ‖τ.1 (GlobalTheory.BoundedBasis.gramOf X.Gm v).det‖ := by
   have h1 := norm_det_sq_of_ortho X hx τ
   have hd := det_ne_zero_of_ortho X hx τ
   have hdn : 0 < ‖(mat x τ).det‖ := norm_pos_iff.mpr hd
@@ -394,20 +391,20 @@ theorem exists_net_card_le (v : Fin r → Fin r → E) (hv : LinearIndependent E
       (N.card : ℝ) ≤ (6 * (r : ℝ) ^ 2 / η * ((r : ℝ) * B) ^ r) ^ (2 * fdeg E * r ^ 2) := by
   classical
   have hcard : Fintype.card X.Ψ = fdeg E := ReciprocityTheory.ChartRestriction.G.FD.QuadraticCoefficientForms.card_Psi X
-  have hdetG : (gramMat X.Gm v).det ≠ 0 := det_gramMat_ne_zero X hv
-  have hmem : (gramMat X.Gm v).det ∈ integralClosure ℤ E := by
+  have hdetG : (GlobalTheory.BoundedBasis.gramOf X.Gm v).det ≠ 0 := det_gramMat_ne_zero X hv
+  have hmem : (GlobalTheory.BoundedBasis.gramOf X.Gm v).det ∈ integralClosure ℤ E := by
     rw [Matrix.det_apply]
     refine sum_mem fun σ _ => ?_
     rw [Units.smul_def]
     exact zsmul_mem (prod_mem fun i _ => hint (σ i) i) _
-  have hint_det : IsIntegral ℤ (gramMat X.Gm v).det := hmem
-  obtain ⟨D, hDdef⟩ : ∃ D : X.Ψ → ℝ, ∀ τ, D τ = Real.sqrt ‖τ.1 (gramMat X.Gm v).det‖ :=
+  have hint_det : IsIntegral ℤ (GlobalTheory.BoundedBasis.gramOf X.Gm v).det := hmem
+  obtain ⟨D, hDdef⟩ : ∃ D : X.Ψ → ℝ, ∀ τ, D τ = Real.sqrt ‖τ.1 (GlobalTheory.BoundedBasis.gramOf X.Gm v).det‖ :=
     ⟨_, fun _ => rfl⟩
   have hD0 : ∀ τ, 0 < D τ := fun τ => by
     rw [hDdef]; exact Real.sqrt_pos.mpr (norm_pos_iff.mpr ((map_ne_zero _).mpr hdetG))
   have hD : 1 ≤ ∏ τ : X.Ψ, D τ := by
     have h1 := ReciprocityTheory.ChartRestriction.G.FD.QuadraticCoefficientForms.one_le_prod_norm X _ hint_det hdetG
-    have h2 : (∏ τ : X.Ψ, D τ) ^ 4 = ∏ τ : X.Ψ, ‖τ.1 (gramMat X.Gm v).det‖ ^ 2 := by
+    have h2 : (∏ τ : X.Ψ, D τ) ^ 4 = ∏ τ : X.Ψ, ‖τ.1 (GlobalTheory.BoundedBasis.gramOf X.Gm v).det‖ ^ 2 := by
       rw [← Finset.prod_pow]
       refine Finset.prod_congr rfl fun τ _ => ?_
       rw [hDdef τ, show (4 : ℕ) = 2 * 2 from rfl, pow_mul, Real.sq_sqrt (norm_nonneg _)]
@@ -770,7 +767,6 @@ theorem exists_finite_net {r : ℕ} (X : DataX E r) (la : Wt X.Ψ r) (M w : ℝ)
     rcases (hp0 P x).eq_or_lt with h | h
     · exact ⟨y₀, hy₀, by linarith [hp0 P y₀]⟩
     · exact hmain P hP x hx h
-
 
 end GlobalTheory
 end -- clump:auto

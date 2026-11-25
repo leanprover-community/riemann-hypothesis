@@ -12,9 +12,6 @@ open Formalism.MainNotions.G
 
 alias flt_twistMat_mem := Formalism.MainNotions.G.GLWeightTheory.flt_twistMat_mem
 
-abbrev flt_cost {ι : Type*} {n : ℕ} (LL : Letters ι) (S : Set ι) (b : Bool) : (ι × Fin n →₀ ℕ) →+ ℤ :=
-  Formalism.MainNotions.G.GLWeightTheory.flt_cost LL S b
-
 alias flt_cost_single := Formalism.MainNotions.G.GLWeightTheory.flt_cost_single
 
 abbrev flt_compat (e : ℤ) (bm : Bool) : Prop :=

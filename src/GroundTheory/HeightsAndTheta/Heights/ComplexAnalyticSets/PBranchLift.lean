@@ -6,6 +6,7 @@ public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StRiemann
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StBranchOffHypersurface
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StNormalModelOpenMapping
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.NormalModelGraph
+import Mathlib.Analysis.Analytic.Polynomial
 import Mathlib.Order.CompletePartialOrder
 public import Mathlib.Topology.Algebra.MvPolynomial
 
@@ -25,18 +26,9 @@ theorem BranchLift.proof (hR : RiemannExtensionAnalytic.Statement)
   have hγd : DifferentiableOn ℂ γ.toFun Δ := γ.differentiableOn
   have hγZ : ∀ τ ∈ Δ, γ.toFun τ ∈ zeroSetIn J := fun τ hτ => γ.mapsTo hτ
   choose a b hbJ hab using M.birational
-  have hpoly : ∀ q : MvPolynomial (Fin n) ℂ, Differentiable ℂ (fun z : Fin n → ℂ => eval z q) := by
-    intro q
-    induction q using MvPolynomial.induction_on with
-    | C c => simp
-    | add p q hp hq =>
-      simp only [eval_add]
-      exact hp.add hq
-    | mul_X p i hp =>
-      simp only [eval_mul, eval_X]
-      exact hp.mul (differentiable_apply i)
-  have hcomp : ∀ q, DifferentiableOn ℂ (fun τ => eval (γ.toFun τ) q) Δ := fun q =>
-    (hpoly q).comp_differentiableOn hγd
+  have hcomp : ∀ q : MvPolynomial (Fin n) ℂ,
+      DifferentiableOn ℂ (fun τ => eval (γ.toFun τ) q) Δ := fun q =>
+    (AnalyticOnNhd.eval_mvPolynomial q).differentiableOn.comp hγd (Set.mapsTo_univ _ _)
   set g : (Fin k → ℂ) → ℂ := fun τ => eval (γ.toFun τ) (∏ i, b i) with hg
   have hBJ : (∏ i, b i) ∉ J := fun h => by
     obtain ⟨i, -, hi⟩ := (Ideal.IsPrime.prod_mem_iff (hp := hJ)).1 h
@@ -69,7 +61,7 @@ theorem BranchLift.proof (hR : RiemannExtensionAnalytic.Statement)
     have hw := hC _ ⟨hgraph t htΔ hgt, ⟨t, ht, rfl⟩⟩
     exact (norm_le_pi_norm (Sum.elim (γ.toFun t) fun i => f i t) (Sum.inr i)).trans hw
   choose F hFd hFeq using fun i => hR k Δ g (f i) Metric.isOpen_ball
-    ((hpoly _).comp_differentiableOn hγd) hgne (hfd i) (hbdd i)
+    (hcomp _) hgne (hfd i) (hbdd i)
   set Γ : (Fin k → ℂ) → Fin n ⊕ Fin M.m → ℂ := fun τ => Sum.elim (γ.toFun τ) fun i => F i τ with hΓ
   have hΓd : DifferentiableOn ℂ Γ Δ := by
     refine differentiableOn_pi.2 fun s => ?_

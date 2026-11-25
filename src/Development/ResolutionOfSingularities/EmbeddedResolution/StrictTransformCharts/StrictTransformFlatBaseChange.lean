@@ -161,23 +161,6 @@ private theorem exists_pow_mul_mem_of_mem_map_basicOpen {X : Scheme.{u}} (U : X.
   have := U.2.isLocalization_basicOpen f
   exact exists_pow_mul_mem_of_mem_map_away (A := Γ(X, U.1)) (B := Γ(X, X.basicOpen f)) f I x hx
 
-private theorem span_eq_top_of_basicOpen_cover {X : Scheme.{u}} (U : X.Opens)
-    (hU : IsAffineOpen U) (s : Set Γ(X, U))
-    (hcov : ∀ y : X, y ∈ U → ∃ f ∈ s, y ∈ X.basicOpen f) :
-    Ideal.span s = ⊤ := by
-  by_contra hne
-  obtain ⟨m, hm, hsm⟩ := Ideal.exists_le_maximal _ hne
-  have hmp : m.IsPrime := hm.isPrime
-  have hy : (IsAffineOpen.fromSpec hU).base ⟨m, hmp⟩ ∈ U := by
-    have hr : (IsAffineOpen.fromSpec hU).base ⟨m, hmp⟩ ∈
-        Set.range (IsAffineOpen.fromSpec hU).base := Set.mem_range_self _
-    rwa [IsAffineOpen.range_fromSpec] at hr
-  obtain ⟨f, hfs, hf⟩ := hcov _ hy
-  have h1 : (⟨m, hmp⟩ : PrimeSpectrum Γ(X, U)) ∈
-      (IsAffineOpen.fromSpec hU) ⁻¹ᵁ X.basicOpen f := hf
-  rw [IsAffineOpen.fromSpec_preimage_basicOpen hU f] at h1
-  exact ((PrimeSpectrum.mem_basicOpen f _).1 h1) (hsm (Ideal.subset_span hfs))
-
 private theorem ideal_eq_of_ideal_basicOpen_eq_of_span_eq_top {X : Scheme.{u}} (I J : X.IdealSheafData)
     (U : X.affineOpens) (s : Set Γ(X, U.1)) (hs : Ideal.span s = ⊤)
     (h : ∀ f ∈ s, I.ideal (X.affineBasicOpen f) = J.ideal (X.affineBasicOpen f)) :
@@ -243,12 +226,13 @@ theorem comap_saturation_of_flat {Y Y' : Scheme.{u}} (g : Y' ⟶ Y)
   refine ideal_eq_of_ideal_basicOpen_eq_of_span_eq_top _ _ V
     {f : Γ(Y', V.1) | ∃ (U : Y.affineOpens) (t : Γ(Y, U.1)), F.ideal U = Ideal.span {t} ∧
       Y'.basicOpen f ≤ (TopologicalSpace.Opens.map g.base).obj U.1} ?_ ?_
-  · refine span_eq_top_of_basicOpen_cover V.1 V.2 _ ?_
+  · rw [← V.2.self_le_iSup_basicOpen_iff]
     intro y hy
     obtain ⟨U, t, hUmem, -, ht⟩ := hF (g.base y)
     obtain ⟨f, hf1, hf2⟩ := IsAffineOpen.exists_basicOpen_le V.2
       (⟨y, ⟨hy, hUmem⟩⟩ : (V.1 ⊓ (TopologicalSpace.Opens.map g.base).obj U.1 : Y'.Opens)) hy
-    exact ⟨f, ⟨U, t, ht, le_trans hf1 inf_le_right⟩, hf2⟩
+    exact TopologicalSpace.Opens.mem_iSup.2
+      ⟨⟨f, U, t, ht, le_trans hf1 inf_le_right⟩, hf2⟩
   · rintro f ⟨U, t, ht, hle⟩
     exact ideal_comap_saturation_of_ideal_eq_span_singleton g F T U (Y'.affineBasicOpen f) hle t ht
 

@@ -319,7 +319,6 @@ open MonObj
 noncomputable section
 namespace GlobalTheory.LieInjField
 
-
 open GlobalTheory.CechDR in
 theorem cmpForm_surjective (hC : GlobalTheory.Published.CrystallineSmoothLift) (hH : GlobalTheory.Published.AbelianHodgeDeRham)
     (R : Type) [CommRing R] (A : Over (Sp R)) [GrpObj A] (g : ℕ) (hab : IsAbelianScheme A)
@@ -399,7 +398,7 @@ theorem eq_of_tanVal_eq : GlobalTheory.Published.CrystallineSmoothLift → Globa
   have hcs : Function.Surjective c := cmpForm_surjective hC hH K B g hab hdim
   let P := lieVal K B
   have hker : LinearMap.ker c ≤ LinearMap.ker P.flip := fun f hf ↦
-    LinearMap.ext fun u ↦ GlobalTheory.T.formValueOnTangentVector_eq_zero_of_globalForm_zero K B u.hom f hf
+    LinearMap.ext fun u ↦ GlobalTheory.TanVanish.tanVal_eq_zero_of_cmpForm_eq_zero K B u.hom f hf
   let T : GlobalTheory.CechDR.ClosedForm (B.hom ≫ 𝟙 (Sp K)) →ₗ[K] Module.Dual K (Serre.Lie (Serre.intAct B)) :=
     (LinearMap.ker c).liftQ P.flip hker ∘ₗ (c.quotKerEquivOfSurjective hcs).symm.toLinearMap
   have hT : ∀ f, T (c f) = P.flip f := fun f ↦ by
@@ -583,7 +582,7 @@ theorem exists_tangent_field (hC : GlobalTheory.Published.CrystallineSmoothLift)
   exact exists_eq_comp (by rw [hG, Module.finrank_eq_card_basis b, Fintype.card_fin]) (glob _) hs
     (lieVal B) (fun v w h ↦ Serre.Lie.ext
       (GlobalTheory.LieInjField.eq_of_tanVal_eq hC hH K B g hab hdim _ _ v.isTangent w.isTangent (LinearMap.congr_fun h)))
-    (fun v ↦ exists_factor hs (lieVal B v) (GlobalTheory.T.formValueOnTangentVector_eq_zero_of_globalForm_zero K B v.hom)) ψ
+    (fun v ↦ exists_factor hs (lieVal B v) (GlobalTheory.TanVanish.tanVal_eq_zero_of_cmpForm_eq_zero K B v.hom)) ψ
 
 theorem dualMapR_comp {R'' : Type} [CommRing R''] (σ : R →+* R') (τ : R' →+* R'') :
     Chart.dualMapR (τ.comp σ) = (Chart.dualMapR τ).comp (Chart.dualMapR σ) := by
@@ -669,8 +668,6 @@ theorem exists_lift_of_basis {K : Type} [Field K] [Algebra R K]
   obtain ⟨u, hu, hv⟩ := h i
   exact (S.smul_mem_iff hu).1 hv
 
-
-
 theorem exists_tangent_residue (hC : GlobalTheory.Published.CrystallineSmoothLift)
     (hH : GlobalTheory.Published.AbelianHodgeDeRham) (K : Type) [Field K] [Algebra R K]
     (hσ : Function.Surjective (algebraMap R K)) (A : Over (Sp R)) [GrpObj A] [IsCommMonObj A] (g : ℕ)
@@ -720,7 +717,7 @@ theorem exists_tangent_of_functional : GlobalTheory.Published.CrystallineSmoothL
     ((LinearMap.range (lieVal A)).comap (glob (A.hom ≫ 𝟙 (Sp R))).dualMap) fun m hm α ↦ by
       letI := Ideal.Quotient.field m
       obtain ⟨v, hv⟩ := exists_tangent_residue hC hH (R ⧸ m) Ideal.Quotient.mk_surjective A g hab hdim α
-      obtain ⟨χ, hχ⟩ := exists_factor hs (lieVal A v) (GlobalTheory.T.formValueOnTangentVector_eq_zero_of_globalForm_zero R A v.hom)
+      obtain ⟨χ, hχ⟩ := exists_factor hs (lieVal A v) (GlobalTheory.TanVanish.tanVal_eq_zero_of_cmpForm_eq_zero R A v.hom)
       refine ⟨χ, ⟨v, LinearMap.ext fun f ↦ (hχ f).symm⟩, fun x ↦ ?_⟩
       obtain ⟨f, rfl⟩ := hs x
       rw [hχ]

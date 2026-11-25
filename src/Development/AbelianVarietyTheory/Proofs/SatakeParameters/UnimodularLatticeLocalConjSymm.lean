@@ -9,8 +9,6 @@ import Formalism.SharpRestriction.GrowthBounds.UnramifiedQuadraticSetting
 
 open NumberField IsDedekindDomain Formalism.MainNotions.G Formalism.L2.Col Formalism.HermitianLatticesTheory Formalism.BasicNotions Formalism.L2.DIV GlobalTheory.GO
 
-noncomputable section
-
 namespace GlobalTheory.GO.UniExt
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {n : ℕ}

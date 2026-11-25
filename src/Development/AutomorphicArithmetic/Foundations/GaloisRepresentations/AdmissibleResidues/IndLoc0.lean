@@ -550,7 +550,7 @@ private theorem near {K : Type} [NormedField K] [IsUltrametricDist K] (d x y z :
 
 theorem UpperTheory.GalN.V.indLoc0 :
     AllInd fun {Ω} _ _ _ {l} _ _ _ T _ R δ => ∃ n, LocOk T ⟨twF T R δ, n⟩ ∧ ∃ (m : Fin 4 → ℤ) (b : ℤ) (N : ℕ),
-  (∀ i : Fin 3, m i.succ + 2 ≤ m i.castSucc) ∧ Wts0 T (fun i => 2 * m i + b) ⟨twF T R δ, n⟩ ∧ 0 < N ∧
+  (∀ i : Fin 3, m i.succ + 2 ≤ m i.castSucc) ∧ UpperTheory.V.Ws.Tower.Wts T (fun i => 2 * m i + b) ⟨twF T R δ, n⟩ ∧ 0 < N ∧
   ∀ g, (δ g ^ 2 * cycBar T.F Ω l g ^ (-b)) ^ N = 1 := by
   intro Ω _ _ _ l _ c D T k₀ _ _ φ ι k t r α β R δ H
   obtain ⟨m, hm, hF⟩ := UpperTheory.induced_flag_condition Ω l c D T k₀ φ ι k t r α β R δ H

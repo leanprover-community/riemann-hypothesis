@@ -321,9 +321,6 @@ variable {l : ℕ} [Fact l.Prime] (P : LocPrime l)
 
 theorem fil_zero (a : ℤ) : (0 : P.R.BdR) ∈ Fil P a := ((P.PD (botExt l)).Fil a).zero_mem
 
-theorem fil_add {a : ℤ} {x y : P.R.BdR} (hx : x ∈ Fil P a) (hy : y ∈ Fil P a) : x + y ∈ Fil P a :=
-  ((P.PD (botExt l)).Fil a).add_mem hx hy
-
 theorem fil_sum {ι : Type} (s : Finset ι) {a : ℤ} (f : ι → P.R.BdR) (h : ∀ i ∈ s, f i ∈ Fil P a) :
     ∑ i ∈ s, f i ∈ Fil P a :=
   Submodule.sum_mem ((P.PD (botExt l)).Fil a) h
@@ -370,7 +367,7 @@ theorem frame_of_period_matrix : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (
         intro c d hc hd i
         have : vec (c + d) = vec c + vec d := by
           simp only [vec, Pi.add_apply, hEadd, ← Matrix.mulVec_add]; rfl
-        rw [this]; exact fil_add P (hc i) (hd i)
+        rw [this]; exact GlobalTheory.SecondKind.fil_add P (hc i) (hd i)
       zero_mem' := by
         intro i
         have : vec 0 = 0 := by
@@ -587,19 +584,9 @@ theorem fr_zero (c : ↥(MaximalUnramifiedExtension l)) : fr l 0 c = c := by
   rw [pow_zero]
   rfl
 
-theorem fr_add (a b : ℕ) (c : ↥(MaximalUnramifiedExtension l)) : fr l (a + b) c = fr l a (fr l b c) := by
-  show (frobUr l ^ (a + b)) c = (frobUr l ^ a) ((frobUr l ^ b) c)
-  rw [pow_add]
-  rfl
-
-theorem fr_mul_self {r : ℕ} {c : ↥(MaximalUnramifiedExtension l)} (hc : fr l r c = c) (q : ℕ) : fr l (r * q) c = c := by
-  induction q with
-  | zero => simpa using fr_zero c
-  | succ q ih => rw [Nat.mul_succ, fr_add, hc, ih]
-
 theorem fr_mod {r : ℕ} {c : ↥(MaximalUnramifiedExtension l)} (hc : fr l r c = c) (m : ℕ) : fr l m c = fr l (m % r) c := by
   conv_lhs => rw [← Nat.mod_add_div m r]
-  rw [fr_add, fr_mul_self hc]
+  rw [fr_add, GlobalTheory.PMon.fr_mul hc]
 
 variable (P : LocPrime l) {K : FinExt l} {n : Type} [Fintype n] [DecidableEq n]
 
@@ -758,8 +745,6 @@ open scoped Formalism.Per
 noncomputable section
 
 namespace GlobalTheory.PMon
-
-
 
 theorem lt_period_conj_ratio : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l P) (T : LocTied l P AI) (s : ℕ), 0 < s → ∀ (x : P.R.B), IsUnit x → P.φB^[s] x = (l : P.R.B) * x → P.ιB x ∈ Fil P 1 → P.ιB x ∉ Fil P 2 → (∀ j, 0 < j → j < s → ev P j x ∈ Fil P 0 ∧ ev P j x ∉ Fil P 1) → ∀ g : GQ l, ∃ a : ↥(MaximalUnramifiedExtension l), fr l s a = a ∧ P.actQ g x = algebraMap ↥(MaximalUnramifiedExtension l) P.R.B a * x := by
   intro l _ P AI T s hs x hx hφ h1 h2 hj g
@@ -939,11 +924,6 @@ theorem actdR_ι (g : GQ l) (b : P.R.B) : P.actQdR g (P.ιB b) = P.ιB (P.actQ g
   rw [P.PD_actB, P.PD_actdR, P.PD_ι, P.PD_ι] at h
   exact h.symm
 
-theorem act_tz (g : GQ l) (a : ℤ) : P.actQdR g (tz P a) =
-    algebraMap ℚ_[l] P.R.BdR ((P.χQ g ^ a : ℚ_[l]ˣ) : ℚ_[l]) * tz P a := by
-  change P.actQdR g (P.ιB ((tU P ^ a : P.R.Bˣ) : P.R.B)) = _ * P.ιB ((tU P ^ a : P.R.Bˣ) : P.R.B)
-  rw [actdR_ι, actQ_tU, map_mul, AlgHom.commutes]
-
 end GlobalTheory.PMon.Model
 
 end
@@ -1056,8 +1036,6 @@ end GlobalTheory.PMon.Twist
 
 namespace GlobalTheory.PMon.Twist
 
-
-
 theorem framed_twist : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l P) (_ : LocTied l P AI) (n : Type)
     [Fintype n] [DecidableEq n] (K K' : FinExt l) (hK : K.1 ≤ K'.1) (r N : ℕ) (hr : 0 < r)
     (ρ : ↥(GK K) →* GL n ↥(MaximalUnramifiedExtension l)) (w : Fin r → n → ℤ) (χ : ↥(GK K') →* (↥(MaximalUnramifiedExtension l))ˣ) (x : P.R.Bˣ) (a : ℤ),
@@ -1085,7 +1063,7 @@ theorem framed_twist : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAi
         apply hx2
         refine (hshift 2 (-1) (P.ιB x)).2 ?_
         rwa [show (2 : ℤ) + -1 = 1 by norm_num]
-      · rw [ite_eq_left hm, map_mul, GlobalTheory.PMon.Model.act_tz, hgal g]
+      · rw [ite_eq_left hm, map_mul, GlobalTheory.PMon.BdRTied.act_tz, hgal g]
         ring
     · have hj := hev m (Nat.pos_of_ne_zero hm) m.2
       refine ⟨ev P m x, hj.1, hj.2, fun g => ?_⟩

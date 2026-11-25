@@ -186,21 +186,13 @@ theorem lower_parabolic_coordinates : C2.LPCoords := by
       · rw [Matrix.one_apply_ne (ne_of_gt hij), zero_add]
         split_ifs with h
         · rfl
-        · have hlt : w.symm i < w.symm j := by
-            have hne : w.symm i ≠ w.symm j := fun e => (ne_of_gt hij) (w.symm.injective e)
-            rcases lt_or_gt_of_ne hne with h' | h'
-            · exact h'
-            · exact absurd ⟨hij, h'⟩ h
+        · have hne : w.symm i ≠ w.symm j := fun e => (ne_of_gt hij) (w.symm.injective e)
+          have hlt : w.symm i < w.symm j := (lt_or_gt_of_ne hne).resolve_right fun h' => h ⟨hij, h'⟩
           have := hc.1 _ _ hlt
           rw [monomialMatrix_conj_apply w d hd] at this
           simp only [Equiv.apply_symm_apply] at this
-          have hdi := hd (w.symm i)
-          have hdj := hd (w.symm j)
-          rcases mul_eq_zero.mp this with h1 | h1
-          · rcases mul_eq_zero.mp h1 with h2 | h2
-            · exact absurd h2 (inv_ne_zero hdi)
-            · exact h2.symm
-          · exact absurd h1 hdj
+          exact ((mul_eq_zero_iff_left (inv_ne_zero (hd _))).1
+            ((mul_eq_zero_iff_right (hd _)).1 this)).symm
   · ext l
     simp only [Set.mem_range, C2.Lstg, Set.mem_setOf_eq]
     constructor
@@ -225,20 +217,12 @@ theorem lower_parabolic_coordinates : C2.LPCoords := by
       · rw [Matrix.one_apply_ne (ne_of_gt hij), zero_add]
         split_ifs with h
         · rfl
-        · have hlt : w.symm j < w.symm i := by
-            have hne : w.symm i ≠ w.symm j := fun e => (ne_of_gt hij) (w.symm.injective e)
-            rcases lt_or_gt_of_ne hne with h' | h'
-            · exact absurd ⟨hij, h'⟩ h
-            · exact h'
+        · have hne : w.symm i ≠ w.symm j := fun e => (ne_of_gt hij) (w.symm.injective e)
+          have hlt : w.symm j < w.symm i := (lt_or_gt_of_ne hne).resolve_left fun h' => h ⟨hij, h'⟩
           have := hc.1 _ _ hlt
           rw [monomialMatrix_conj_apply w d hd] at this
           simp only [Equiv.apply_symm_apply] at this
-          have hdi := hd (w.symm i)
-          have hdj := hd (w.symm j)
-          rcases mul_eq_zero.mp this with h1 | h1
-          · rcases mul_eq_zero.mp h1 with h2 | h2
-            · exact absurd h2 (inv_ne_zero hdi)
-            · exact h2.symm
-          · exact absurd h1 hdj
+          exact ((mul_eq_zero_iff_left (inv_ne_zero (hd _))).1
+            ((mul_eq_zero_iff_right (hd _)).1 this)).symm
 
 end Formalism.FourierDecayAlt.P

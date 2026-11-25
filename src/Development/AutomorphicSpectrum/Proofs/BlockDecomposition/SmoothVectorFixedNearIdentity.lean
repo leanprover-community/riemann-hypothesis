@@ -18,13 +18,8 @@ private theorem continuous_leviProj_hpgIncl (k : Type) [Field k] [ValuativeRel k
   have hv : Continuous (fun h : HPG k i t =>
       ((leviProj k (ePG i t) (hpgIncl k i t h)) b : Matrix (Two (Fin (i + 1)) (Fin t) b) (Two (Fin (i + 1)) (Fin t) b) k)) :=
     (h0.matrix_submatrix (fun j => (ePG i t) ⟨b, j⟩) (fun j => (ePG i t) ⟨b, j⟩)).congr (fun _ => rfl)
-  rw [Units.continuous_iff]
-  refine ⟨hv, ?_⟩
-  have hinv : Continuous (fun h : HPG k i t =>
-      ((leviProj k (ePG i t) (hpgIncl k i t h⁻¹)) b : Matrix (Two (Fin (i + 1)) (Fin t) b) (Two (Fin (i + 1)) (Fin t) b) k)) :=
-    hv.comp continuous_inv
-  refine hinv.congr (fun h => ?_)
-  simp only [map_inv, Pi.inv_apply]
+  exact Continuous.of_coeHom_comp
+    (f := (Pi.evalMonoidHom _ b).comp ((leviProj k (ePG i t)).comp (hpgIncl k i t))) hv
 
 theorem continuous_pgProj (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k]
     [IsNonarchimedeanLocalField k] (i t : ℕ) : Continuous (pgProj k i t) := by

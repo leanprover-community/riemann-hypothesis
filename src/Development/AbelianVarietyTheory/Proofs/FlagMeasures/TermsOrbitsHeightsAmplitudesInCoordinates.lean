@@ -8,46 +8,7 @@ public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.FrameDualUnip
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.FramePairCoordinatesLocalHeightEqResidueCard
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermitianFramePairAmplitudeMassRepsEqOrbits
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermitianFramePairCoordinatesTransportInnerData
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
 import Mathlib.Tactic.Lemma
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.TermsCorrespond
 
@@ -71,12 +32,6 @@ variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E]
 variable {M : Model F E} {V : Type} [AddCommGroup V] [Module E V] {H : HermSp M V} {r : ℕ}
 
-theorem hR_add (x y z : V) : H.h x (y + z) = H.h x y + H.h x z := by
-  rw [H.h_herm (y + z) x, H.h_add_left, map_add (f := _), ← H.h_herm, ← H.h_herm]
-
-theorem hR_smul (c : E) (x y : V) : H.h x (c • y) = M.L.cj c * H.h x y := by
-  rw [H.h_herm (c • y) x, H.h_smul_left, map_mul, ← H.h_herm]
-
 theorem h_symm_zero {x y : V} (h : H.h y x = 0) : H.h x y = 0 := by
   rw [H.h_herm y x, h, map_zero]
 
@@ -88,8 +43,8 @@ theorem perp_of {k : V} (h : ∀ a : Fin r, H.h k (A.e a) = 0) : k ∈ H.perp (H
   induction hx using Submodule.span_induction with
   | mem x hx => obtain ⟨a, rfl⟩ := hx; exact h a
   | zero => exact h_symm_zero (H.h_zero_left k)
-  | add x y _ _ hx hy => rw [hR_add, hx, hy, add_zero]
-  | smul c x _ hx => rw [hR_smul, hx, mul_zero]
+  | add x y _ _ hx hy => rw [GlobalTheory.LocOver.UnipOnto.h_add_right, hx, hy, add_zero]
+  | smul c x _ hx => rw [GlobalTheory.LocOver.UnipOnto.h_smul_right, hx, mul_zero]
 
 theorem h_X_e {ξ : V} (hξ : ξ ∈ H.X A.f) (b : Fin r) : H.h ξ (A.e b) = 0 := by
   unfold HermSp.X at hξ
@@ -186,7 +141,7 @@ theorem swap_unit (x y : V) : H.h (swapMap A B x) (swapMap A B y) = H.h x y := b
     set η := B.prF (swapMap A B y) - A.prF y
     rw [show B.prF (swapMap A B x) = A.prF x + ξ by simp [ξ],
       show B.prF (swapMap A B y) = A.prF y + η by simp [η],
-      H.h_add_left, hR_add, hR_add, hX_perp A hx (GlobalTheory.HL.CoordInnerSnd.prF_perp A y), hX_perp A hx (X_le_perp A hy),
+      H.h_add_left, GlobalTheory.LocOver.UnipOnto.h_add_right, GlobalTheory.LocOver.UnipOnto.h_add_right, hX_perp A hx (GlobalTheory.HL.CoordInnerSnd.prF_perp A y), hX_perp A hx (X_le_perp A hy),
       h_symm_zero (hX_perp A hy (GlobalTheory.HL.CoordInnerSnd.prF_perp A x))]
     ring
   rw [ng_expand (Fr := B) (swapMap A B x) (swapMap A B y), ng_prF_prF (Fr := B) (swapMap A B x) (swapMap A B y),

@@ -209,14 +209,10 @@ theorem integral_comp_mul_mul (a b : GL (Fin n) 𝔸[K]) (f : Matrix (Fin n) (Fi
   push_cast
   rw [← mul_inv, inv_pow]
 
-def infHom : 𝔸[K] →+* mixedSpace K :=
-  (InfiniteAdeleRing.ringEquiv_mixedSpace K).toRingHom.comp
-    (RingHom.fst (InfiniteAdeleRing K) (FiniteAdeleRing (𝓞 K) K))
-
 def finHom : 𝔸[K] →+* FiniteAdeleRing (𝓞 K) K :=
   RingHom.snd (InfiniteAdeleRing K) (FiniteAdeleRing (𝓞 K) K)
 
-theorem infPartPi_eq' (z : Fin n × Fin n → 𝔸[K]) : infPartPi z = fun p => infHom (z p) := rfl
+theorem infPartPi_eq' (z : Fin n × Fin n → 𝔸[K]) : infPartPi z = fun p => GroundTheory.Automorphic.Adele2.infRingHom (z p) := rfl
 
 theorem finPartPi_eq' (z : Fin n × Fin n → 𝔸[K]) : finPartPi z = fun p => finHom (z p) := rfl
 
@@ -270,10 +266,10 @@ theorem map_mul_map_inv {R : Type*} [CommRing R] (f : 𝔸[K] →+* R) (g : GL (
 
 def twistInfLin (a b : GL (Fin n) 𝔸[K]) :
     (Fin n × Fin n → mixedSpace K) ≃ₗ[ℝ] (Fin n × Fin n → mixedSpace K) where
-  toFun := twistCoord ((a : Matrix (Fin n) (Fin n) 𝔸[K]).map infHom)
-    ((b : Matrix (Fin n) (Fin n) 𝔸[K]).map infHom)
-  invFun := twistCoord (((a⁻¹ : GL (Fin n) 𝔸[K]) : Matrix (Fin n) (Fin n) 𝔸[K]).map infHom)
-    (((b⁻¹ : GL (Fin n) 𝔸[K]) : Matrix (Fin n) (Fin n) 𝔸[K]).map infHom)
+  toFun := twistCoord ((a : Matrix (Fin n) (Fin n) 𝔸[K]).map GroundTheory.Automorphic.Adele2.infRingHom)
+    ((b : Matrix (Fin n) (Fin n) 𝔸[K]).map GroundTheory.Automorphic.Adele2.infRingHom)
+  invFun := twistCoord (((a⁻¹ : GL (Fin n) 𝔸[K]) : Matrix (Fin n) (Fin n) 𝔸[K]).map GroundTheory.Automorphic.Adele2.infRingHom)
+    (((b⁻¹ : GL (Fin n) 𝔸[K]) : Matrix (Fin n) (Fin n) 𝔸[K]).map GroundTheory.Automorphic.Adele2.infRingHom)
   map_add' u v := by
     funext p
     simp only [twistCoord, matrixCoord, Pi.add_apply]
@@ -289,16 +285,16 @@ def twistInfLin (a b : GL (Fin n) 𝔸[K]) :
       Matrix.ext fun i j => rfl
     rw [this, Matrix.mul_smul, Matrix.smul_mul]
     rfl
-  left_inv u := twistCoord_twistCoord (map_inv_mul_map infHom a) (map_mul_map_inv infHom b) u
-  right_inv u := twistCoord_twistCoord (map_mul_map_inv infHom a) (map_inv_mul_map infHom b) u
+  left_inv u := twistCoord_twistCoord (map_inv_mul_map GroundTheory.Automorphic.Adele2.infRingHom a) (map_mul_map_inv GroundTheory.Automorphic.Adele2.infRingHom b) u
+  right_inv u := twistCoord_twistCoord (map_mul_map_inv GroundTheory.Automorphic.Adele2.infRingHom a) (map_inv_mul_map GroundTheory.Automorphic.Adele2.infRingHom b) u
 
 def twistInf (a b : GL (Fin n) 𝔸[K]) :
     (Fin n × Fin n → mixedSpace K) ≃L[ℝ] (Fin n × Fin n → mixedSpace K) :=
   (twistInfLin a b).toContinuousLinearEquiv
 
 theorem coe_twistInf (a b : GL (Fin n) 𝔸[K]) :
-    ⇑(twistInf a b) = twistCoord ((a : Matrix (Fin n) (Fin n) 𝔸[K]).map infHom)
-      ((b : Matrix (Fin n) (Fin n) 𝔸[K]).map infHom) := rfl
+    ⇑(twistInf a b) = twistCoord ((a : Matrix (Fin n) (Fin n) 𝔸[K]).map GroundTheory.Automorphic.Adele2.infRingHom)
+      ((b : Matrix (Fin n) (Fin n) 𝔸[K]).map GroundTheory.Automorphic.Adele2.infRingHom) := rfl
 
 def twistFin (a b : GL (Fin n) 𝔸[K]) :
     (Fin n × Fin n → FiniteAdeleRing (𝓞 K) K) ≃ₜ (Fin n × Fin n → FiniteAdeleRing (𝓞 K) K) where
@@ -324,7 +320,7 @@ theorem tensor_comp_twistCoord (φ : 𝓢(Fin n × Fin n → mixedSpace K, ℂ))
   funext z
   simp only [Function.comp_apply, schwartzBruhatTensorPi,
     SchwartzMap.compCLMOfContinuousLinearEquiv_apply, coe_twistInf, coe_twistFin]
-  rw [infPartPi_eq', infPartPi_eq', finPartPi_eq', finPartPi_eq', twistCoord_map infHom,
+  rw [infPartPi_eq', infPartPi_eq', finPartPi_eq', finPartPi_eq', twistCoord_map GroundTheory.Automorphic.Adele2.infRingHom,
     twistCoord_map finHom]
 
 theorem comp_twistCoord_mem {F : (Fin n × Fin n → 𝔸[K]) → ℂ}
@@ -602,7 +598,6 @@ theorem tsum_inv_eq (Ψ : Matrix (Fin n) (Fin n) 𝔸[K] → ℂ) (t : {r : ℝ 
     rw [e1, ← map_inv, ← centralSection_mul_comm t⁻¹ (y⁻¹ * AdelicGLn.diagonal K n γ * x)]
     simp only [mul_assoc]
   rw [e, Units.val_mul, Units.val_mul, coe_diagonal]
-
 
 set_option maxHeartbeats 1600000 in
 set_option synthInstance.maxHeartbeats 400000 in

@@ -5,7 +5,6 @@ public import Formalism.HermitianLattices.StatementMass
 import Mathlib.Analysis.Matrix.Hermitian
 import Mathlib.Analysis.Matrix.Order
 import Mathlib.Analysis.Real.Pi.Bounds
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Mathlib.MeasureTheory.Constructions.Pi
 import Mathlib.MeasureTheory.Group.GeometryOfNumbers
 import Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls

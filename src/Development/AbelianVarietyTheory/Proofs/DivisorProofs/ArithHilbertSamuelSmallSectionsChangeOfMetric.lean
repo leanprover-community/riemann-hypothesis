@@ -639,7 +639,6 @@ lemma ofReal_re_of_nonneg {z : ℂ} (h : 0 ≤ z) : ((z.re : ℝ) : ℂ) = z := 
 
 end GlobalTheory.HSAmp.BergProof
 
-
 open GlobalTheory.HSAmp.BergProof in
 theorem GlobalTheory.HSAmp.berg_mass_extremal : ∀ (S : Type) (Y : S → Type) [∀ σ, MeasurableSpace (Y σ)] (ι : Type) [Fintype ι] [DecidableEq ι] (μ : ∀ σ, Measure (Y σ)) (v : ∀ σ, Y σ → ι → ℂ), IsFam μ v → (gram μ v).PosDef → (∀ σ, Integrable (bergmanDensity μ v σ) (μ σ)) ∧ ∑ᶠ σ, ∫ y, bergmanDensity μ v σ y ∂μ σ = Fintype.card ι ∧ (∀ σ y, 0 ≤ bergmanDensity μ v σ y) ∧ ∀ σ y (M : ℝ), 0 ≤ M → (∀ c : ι → ℂ, cmb v c σ y ≤ M * l2 μ v c) → bergmanDensity μ v σ y ≤ M := by
   intro S Y _ ι _ _ μ v hF hG
@@ -1034,21 +1033,16 @@ namespace GlobalTheory.SelfCont
 
 variable {k : Type} [CommRing k] {X : Scheme.{0}} {p : X ⟶ Sp k}
 
-theorem icls_fnB_add {u v w : ∀ σ : k →+* ℂ, CxPts p σ → ℝ} (hu hc hv hd hw he) (e : ∀ σ y, w σ y = u σ y + v σ y) :
-    (fnB w hw he).icls = (fnB u hu hc).icls + (fnB v hv hd).icls := by
-  rw [← icls_tens, icls_eq_iff.2 (isometric_tens_fnB _ v hv hd)]
-  exact icls_eq_iff.2 (isometric_of_eqOn fun σ _ y _ => (e σ y).symm)
-
 theorem icls_fnB_mul {u : ∀ σ : k →+* ℂ, CxPts p σ → ℝ} (hu : ∀ σ y, CInfAt (u σ) y)
     (hc : ∀ σ σ', (Weight.ofFun (u σ)).IsConj (Weight.ofFun (u σ'))) (n : ℤ) :
     (fnB (fun σ y => (n : ℝ) * u σ y) (fun σ y => (hu σ y).const_mul _) (GlobalTheory.GdegMetric.isConj_const_mul hc _)).icls =
       n • (fnB u hu hc).icls := by
-  have key (m : ℤ) := icls_fnB_add (p := p) (w := fun σ y => ((m + 1 : ℤ) : ℝ) * u σ y) (u := fun σ y => (m : ℝ) * u σ y)
+  have key (m : ℤ) := GlobalTheory.GdegMetric.icls_fnB_sum (p := p) (w := fun σ y => ((m + 1 : ℤ) : ℝ) * u σ y) (u := fun σ y => (m : ℝ) * u σ y)
     (fun σ y => (hu σ y).const_mul _) (GlobalTheory.GdegMetric.isConj_const_mul hc _) hu hc (fun σ y => (hu σ y).const_mul _) (GlobalTheory.GdegMetric.isConj_const_mul hc _)
     fun σ y => by push_cast; ring
   induction n using Int.induction_on with
   | zero =>
-    have := icls_fnB_add (p := p) (w := u) (u := fun σ y => ((0 : ℤ) : ℝ) * u σ y)
+    have := GlobalTheory.GdegMetric.icls_fnB_sum (p := p) (w := u) (u := fun σ y => ((0 : ℤ) : ℝ) * u σ y)
       (fun σ y => (hu σ y).const_mul _) (GlobalTheory.GdegMetric.isConj_const_mul hc _) hu hc hu hc fun σ y => by push_cast; ring
     rw [zero_smul]
     exact right_eq_add.1 this
@@ -1059,7 +1053,6 @@ theorem icls_fnB_mul {u : ∀ σ : k →+* ℂ, CxPts p σ → ℝ} (hu : ∀ σ
     rw [sub_smul, one_smul, ← ih, this, add_sub_cancel_right]
 
 variable [IsIntegral X] {D : ℕ} {t : ℝ → ℝ} {u : ℝ → ∀ σ : k →+* ℂ, CxPts p σ → ℝ}
-
 
 omit [IsIntegral X] in
 theorem isometric_comb_raise {v : ∀ σ : k →+* ℂ, CxPts p σ → ℝ} (hv : ∀ σ y, CInfAt (v σ) y)

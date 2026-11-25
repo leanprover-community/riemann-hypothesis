@@ -133,11 +133,8 @@ theorem bundleNum_congr (pp : Ideal (Poly k N)) {n : ℕ} {L L' : Fin n → Line
 
 theorem toSubSystem_update {n : ℕ} (L : Fin n → LineBundle k x) (i : Fin n) (Y : LineBundle k x) :
     (fun j => (Function.update L i Y j).toSubSystem) =
-      Function.update (fun j => (L j).toSubSystem) i Y.toSubSystem := by
-  funext j
-  by_cases hj : j = i
-  · subst hj; simp
-  · simp [hj]
+      Function.update (fun j => (L j).toSubSystem) i Y.toSubSystem :=
+  Function.comp_update (fun Y : LineBundle k x => Y.toSubSystem) L i Y
 
 variable (hR : GenericPointSectionInput.Statement.{u, w})
 include hR

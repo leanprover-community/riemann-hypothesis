@@ -232,11 +232,6 @@ noncomputable section
 
 namespace GlobalTheory.ResMap
 
-def stalkEquiv {X : Scheme.{0}} [IsIntegral X] (x : X) : X.presheaf.stalk x ≃+* locRing x :=
-  RingEquiv.ofBijective (algebraMap (X.presheaf.stalk x) X.functionField).rangeRestrict
-    ⟨fun _ _ e => IsFractionRing.injective _ X.functionField (congrArg Subtype.val e),
-      RingHom.rangeRestrict_surjective _⟩
-
 theorem residueMap : ∀ (X : Scheme.{0}) [IsIntegral X] [IsLocallyNoetherian X] (p : X ⟶ Sp ℂ), IsProjOver p → ∀ (z : X) (k : ℕ),
   topologicalKrullDim (closure ({z} : Set X)) = k →
   ∃ (κ : Type) (_ : Field κ) (_ : Algebra ℂ κ) (π₀ : locRing z →+* κ),
@@ -264,15 +259,15 @@ theorem residueMap : ∀ (X : Scheme.{0}) [IsIntegral X] [IsLocallyNoetherian X]
   obtain ⟨-, w, hw⟩ := isLocModel_locRing_and_exists_trBasis Z q k (genericPoint Z) hdim
   letI alg : Algebra ℂ Z.functionField := (Cartier.constFn q).toAlgebra
   let π₀ : locRing (i (genericPoint Z)) →+* Z.functionField :=
-    (i.stalkMap (genericPoint Z)).hom.comp (stalkEquiv (i (genericPoint Z))).symm.toRingHom
+    (i.stalkMap (genericPoint Z)).hom.comp (GlobalTheory.FieldPair.AdjUp.stalkEquiv (i (genericPoint Z))).symm.toRingHom
   refine ⟨Z.functionField, inferInstance, alg, π₀, ?_, ?_, ?_, ⟨w, hw⟩, ?_⟩
-  · exact (i.stalkMap_surjective _).comp (stalkEquiv _).symm.surjective
+  · exact (i.stalkMap_surjective _).comp (GlobalTheory.FieldPair.AdjUp.stalkEquiv _).symm.surjective
   · intro r
-    obtain ⟨a, rfl⟩ := (stalkEquiv _).surjective r
-    have e1 : π₀ (stalkEquiv _ a) = (i.stalkMap (genericPoint Z)).hom a := by
-      show (i.stalkMap (genericPoint Z)).hom ((stalkEquiv _).symm (stalkEquiv _ a)) = _
+    obtain ⟨a, rfl⟩ := (GlobalTheory.FieldPair.AdjUp.stalkEquiv _).surjective r
+    have e1 : π₀ (GlobalTheory.FieldPair.AdjUp.stalkEquiv _ a) = (i.stalkMap (genericPoint Z)).hom a := by
+      show (i.stalkMap (genericPoint Z)).hom ((GlobalTheory.FieldPair.AdjUp.stalkEquiv _).symm (GlobalTheory.FieldPair.AdjUp.stalkEquiv _ a)) = _
       rw [RingEquiv.symm_apply_apply]
-    have e2 : ((stalkEquiv _ a : locRing _) : X.functionField) = algebraMap _ _ a := rfl
+    have e2 : ((GlobalTheory.FieldPair.AdjUp.stalkEquiv _ a : locRing _) : X.functionField) = algebraMap _ _ a := rfl
     rw [e1, e2]
     constructor
     · intro h0
@@ -291,9 +286,9 @@ theorem residueMap : ∀ (X : Scheme.{0}) [IsIntegral X] [IsLocallyNoetherian X]
     have hg := (algebraMap_germ (X := X) (x := i (genericPoint Z)) (U := ⊤) trivial (algX p ⊤ a)).trans
       (RingHom.congr_fun (fnOf_comp_algX p ⊤ (gen_mem (x := i (genericPoint Z)) trivial)) a)
     have hr : (⟨Cartier.constFn p a, ha⟩ : locRing _) =
-        stalkEquiv _ (X.presheaf.germ ⊤ _ trivial (algX p ⊤ a)) := Subtype.ext hg.symm
+        GlobalTheory.FieldPair.AdjUp.stalkEquiv _ (X.presheaf.germ ⊤ _ trivial (algX p ⊤ a)) := Subtype.ext hg.symm
     rw [hr]
-    show (i.stalkMap (genericPoint Z)).hom ((stalkEquiv _).symm (stalkEquiv _ _)) = _
+    show (i.stalkMap (genericPoint Z)).hom ((GlobalTheory.FieldPair.AdjUp.stalkEquiv _).symm (GlobalTheory.FieldPair.AdjUp.stalkEquiv _ _)) = _
     rw [RingEquiv.symm_apply_apply]
     erw [Scheme.Hom.germ_stalkMap_apply i ⊤ (genericPoint Z) trivial (algX p ⊤ a)]
     have hc : (i.app ⊤).hom (algX p ⊤ a) = algX q (i ⁻¹ᵁ ⊤) a := by
@@ -314,14 +309,14 @@ theorem residueMap : ∀ (X : Scheme.{0}) [IsIntegral X] [IsLocallyNoetherian X]
           algebraMap (Z.presheaf.stalk y) Z.functionField ((i.stalkMap y).hom a) := by
       intro a
       have e : (Subring.inclusion h ⟨algebraMap _ X.functionField a, a, rfl⟩ : locRing _) =
-          stalkEquiv _ ((X.presheaf.stalkSpecializes hs).hom a) := by
+          GlobalTheory.FieldPair.AdjUp.stalkEquiv _ ((X.presheaf.stalkSpecializes hs).hom a) := by
         apply Subtype.ext
         show algebraMap _ X.functionField a =
           algebraMap _ X.functionField ((X.presheaf.stalkSpecializes hs).hom a)
         simp only [RingHom.algebraMap_toAlgebra]
         rw [← CommRingCat.comp_apply, TopCat.Presheaf.stalkSpecializes_comp]
       rw [e]
-      show (i.stalkMap (genericPoint Z)).hom ((stalkEquiv _).symm (stalkEquiv _ _)) = _
+      show (i.stalkMap (genericPoint Z)).hom ((GlobalTheory.FieldPair.AdjUp.stalkEquiv _).symm (GlobalTheory.FieldPair.AdjUp.stalkEquiv _ _)) = _
       rw [RingEquiv.symm_apply_apply]
       exact Scheme.Hom.stalkSpecializes_stalkMap_apply i (genericPoint Z) y
         ((genericPoint_spec Z).specializes trivial) a

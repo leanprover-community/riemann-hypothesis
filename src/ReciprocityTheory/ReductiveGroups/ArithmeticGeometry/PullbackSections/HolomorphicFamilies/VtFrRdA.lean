@@ -21,18 +21,12 @@ section Units
 
 variable {Z Z' : Scheme.{0}}
 
-private lemma ringHom_units_zpow_lemma {R S : Type*} [CommRing R] [Field S] (f : R →+* S) (u : Rˣ) (k : ℤ) :
-    f ↑(u ^ k) = (f ↑u) ^ k := by
-  have hk : ((Units.map (f : R →* S) (u ^ k) : Sˣ) : S) = ((Units.map (f : R →* S) u ^ k : Sˣ) : S) := by
-    rw [map_zpow]
-  rw [Units.val_zpow_eq_zpow_val] at hk
-  exact hk
-
 theorem vtf_valU (p : Sp ℂ ⟶ Z) {V : Z.Opens} (h : ⊤ ≤ p ⁻¹ᵁ V) (u : Γ(Z, V)ˣ) (k : ℤ) :
     valAt' p V ((u ^ k : Γ(Z, V)ˣ) : Γ(Z, V)) = valAt' p V (u : Γ(Z, V)) ^ k := by
   rw [valAt', valAt', dite_eq_left h, dite_eq_left h]
   delta valAt
-  exact ringHom_units_zpow_lemma ((Scheme.ΓSpecIso (CommRingCat.of ℂ)).hom.hom.comp (p.appLE V ⊤ h).hom) u k
+  exact map_zpow (((Scheme.ΓSpecIso (CommRingCat.of ℂ)).hom.hom.comp
+    (p.appLE V ⊤ h).hom).toMonoidHom.comp (Units.coeHom _)) u k
 
 theorem vtf_val_res (p : Sp ℂ ⟶ Z) {U V : Z.Opens} (hVU : V ≤ U) (h : ⊤ ≤ p ⁻¹ᵁ V) (u : Γ(Z, U)ˣ) :
     valAt' p V (res hVU u : Γ(Z, V)) = valAt' p U (u : Γ(Z, U)) := by

@@ -85,17 +85,8 @@ theorem nonempty_place (p : ℕ) [Fact p.Prime] : Nonempty (Qbar →+* ℂ_[p]) 
   exact ⟨(IsAlgClosed.lift (R := ℚ) (S := Qbar) (M := ℂ_[p])).toRingHom⟩
 
 private theorem bd_finsum {p : ℕ} [Fact p.Prime] {ι : Type*} {r : ℝ} (hr : 0 ≤ r) (f : ι → ℂ)
-    (h : ∀ i, GlobalTheory.NormVal.Bd p r (f i)) : GlobalTheory.NormVal.Bd p r (∑ᶠ i, f i) := by
-  classical
-  by_cases hf : (Function.support f).Finite
-  · rw [finsum_eq_sum f hf]
-    refine Finset.induction_on hf.toFinset ?_ ?_
-    · simpa using GlobalTheory.NormVal.Bd.zero (p := p) hr
-    · intro a t ha ih
-      rw [Finset.sum_insert ha]
-      exact (h a).add ih
-  · rw [finsum_of_infinite_support hf]
-    exact GlobalTheory.NormVal.Bd.zero hr
+    (h : ∀ i, GlobalTheory.NormVal.Bd p r (f i)) : GlobalTheory.NormVal.Bd p r (∑ᶠ i, f i) :=
+  finsum_induction _ (GlobalTheory.NormVal.Bd.zero hr) (fun _ _ hx hy => hx.add hy) h
 
 
 

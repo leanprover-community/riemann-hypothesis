@@ -809,30 +809,6 @@ variable {k r : ℕ} {z z' : Fin (2 * r + k + 1) → ℂ} {Wp Wq : Type} [Normed
   [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wp]
   [FiniteDimensional ℂ Wq] {π : Mx k r → (Wp →L[ℂ] Wp)} {π' : Mx k r → (Wq →L[ℂ] Wq)}
 
-private theorem opL_eq_zero_of_eventuallyEq_zero {m : ℕ} {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] (l : Fin m)
-    (j : Fin 6) (f : (Fin m → ℂ) → E) (x : Fin m → ℂ) (h : f =ᶠ[𝓝 x] 0) : opL l j f x = 0 := by
-  have h0 : f x = 0 := h.eq_of_nhds
-  have hd : fderiv ℝ f x = 0 := by
-    rw [h.fderiv_eq]
-    exact fderiv_const_apply (0 : E)
-  fin_cases j
-  · show pOp l f x = 0
-    unfold pOp QuantumDeterminants.wirt
-    rw [hd]
-    simp
-  · show cOp l f x = 0
-    simp [cOp, h0]
-  · show ciOp l f x = 0
-    simp [ciOp, h0]
-  · show pbOp l f x = 0
-    unfold pbOp QuantumDeterminants.wirtBar
-    rw [hd]
-    simp
-  · show cbOp l f x = 0
-    simp [cbOp, h0]
-  · show cbiOp l f x = 0
-    simp [cbiOp, h0]
-
 theorem jsl_wOp_lc (X : ActualOps k r z z' π π') (l : Fin r) (js : List (Fin 6)) :
     ∀ Φ ∈ lcSub k r z z' π π', wOp X l js Φ ∈ lcSub k r z z' π π' := by
   apply _root_.Formalism.FourierDecayAlt.P.CutSE.wOp_lcJ <;> assumption

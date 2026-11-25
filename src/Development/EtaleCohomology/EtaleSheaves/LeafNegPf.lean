@@ -4,7 +4,6 @@ public import Development.EtaleCohomology.EtaleSheaves.LeafDegCut
 
 @[expose] public section
 
-noncomputable section
 open CategoryTheory Limits CochainComplex CochainComplex.HomComplex GlobalTheory.EtC
 
 namespace LateralTheory.E.LeafNegPf

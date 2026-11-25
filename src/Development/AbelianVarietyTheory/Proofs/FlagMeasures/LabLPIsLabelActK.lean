@@ -46,8 +46,6 @@ import Mathlib.RingTheory.PicardGroup
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut Formalism.AUTREP Formalism.L2 Formalism.L2.NT NumberField IsDedekindDomain Polynomial GlobalTheory.TypeRec GlobalTheory.GLq GlobalTheory.GLp GlobalTheory.SerSys Formalism.MainNotions.ArithmeticCylinders
 
-noncomputable section
-
 namespace GlobalTheory.SerSys.LabDepth
 
 open GlobalTheory.WeilDeligne
@@ -195,4 +193,3 @@ theorem tame_of_isTameWD {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Alg
   exact mul_lt_of_lt_one_left h0 (hσ y hy)
 
 end GlobalTheory.SerSys.LabDepth
-

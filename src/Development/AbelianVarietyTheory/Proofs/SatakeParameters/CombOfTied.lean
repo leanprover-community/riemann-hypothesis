@@ -7,8 +7,6 @@ import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.StdOK
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.Ggeo.KerComb
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Ker Formalism.L2.Col Formalism.HermitianLatticesTheory Formalism.L2.DIV Classical

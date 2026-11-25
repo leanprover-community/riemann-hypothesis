@@ -139,19 +139,4 @@ theorem generatorPowDiagRecursion_holds : HWDiag := by
   simp only [lsh, add_smul]
   abel
 
-private theorem sum_Amat_smul_eq_smul_sub_sum_gt {V : Type*} [AddCommGroup V] [Module ℂ V] {n : ℕ}
-    (l : Fin n → ℂ) (y : Fin n → V) (a : Fin n) :
-    ∑ c, Amat l a c • y c = l a • y a - ∑ c ∈ univ.filter (fun b => a < b), y c := by
-  have hterm : ∀ c, Amat l a c • y c =
-      (if c = a then l a • y c else 0) - (if a < c then y c else 0) := by
-    intro c
-    simp only [Amat, Matrix.of_apply]
-    rcases lt_trichotomy c a with hca | hca | hca
-    · simp [hca.ne, hca.ne', not_lt.mpr hca.le]
-    · subst hca
-      simp
-    · simp [hca.ne, hca.ne', hca]
-  rw [Finset.sum_congr rfl (fun c _ => hterm c), Finset.sum_sub_distrib, Finset.sum_filter]
-  simp
-
 end Formalism.REAL

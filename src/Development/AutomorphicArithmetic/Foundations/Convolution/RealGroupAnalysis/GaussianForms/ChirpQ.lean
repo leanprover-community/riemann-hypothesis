@@ -88,13 +88,12 @@ private theorem continuous_eval_poly {R ι : Type*} [CommRing R] [TopologicalSpa
   | add p q hp hq => simp only [map_add (f := _)]; exact hp.add hq
   | mul_X p i hp => simp only [map_mul, MvPolynomial.eval_X]; exact hp.mul (continuous_apply i)
 
-
 variable (F) in
 private noncomputable def lT : mixedEmbedding.mixedSpace F →L[ℝ] ℝ :=
   LinearMap.toContinuousLinearMap (-((mixedTraceForm F).flip 1))
 
 private theorem psi_split (x : A F) :
-    ψ x = ((Real.fourierChar (lT F (adeleInfHom x)) : Circle) : ℂ) *
+    ψ x = ((Real.fourierChar (lT F (GroundTheory.Automorphic.Adele2.infRingHom x)) : Circle) : ℂ) *
       ((finiteAdelicChar F (adeleFinHom x) : Circle) : ℂ) := by
   have h := adelicChar_mul_eq (K := F) x 1
   rw [mul_one] at h
@@ -114,7 +113,7 @@ private theorem chirp_poly (p : MvPolynomial (Fin 4) (A F)) (φ : V4 F → ℂ)
     (p := fun f _ => (fun v => ψ (MvPolynomial.eval v p) * f v) ∈ schwartzBruhatPi (K := F) (ι := Fin 4))
     ?_ ?_ ?_ ?_ hφ
   · rintro _ ⟨φ0, g, hg, rfl⟩
-    have hT := chirpInf F (Fin 4) (p.map adeleInfHom) (lT F)
+    have hT := chirpInf F (Fin 4) (p.map GroundTheory.Automorphic.Adele2.infRingHom) (lT F)
     have hloc : IsLocallyConstant fun w : Fin 4 → FiniteAdeleRing (𝓞 F) F =>
         ((finiteAdelicChar F (MvPolynomial.eval w (p.map adeleFinHom)) : Circle) : ℂ) := by
       have h1 := (isLocallyConstant_finiteAdelicChar_mul (K := F) 1).comp_continuous
@@ -124,7 +123,7 @@ private theorem chirp_poly (p : MvPolynomial (Fin 4) (A F)) (φ : V4 F → ℂ)
         ∈ finiteSchwartzBruhatPi F (ι := Fin 4) :=
       ⟨hloc.mul hg.1, hg.2.mul_left⟩
     convert schwartzBruhatTensorPi_mem (SchwartzMap.smulLeftCLM ℂ (fun x : Fin 4 → mixedEmbedding.mixedSpace F =>
-      ((Real.fourierChar (lT F (MvPolynomial.eval x (p.map adeleInfHom))) : Circle) : ℂ)) φ0) hg' using 1
+      ((Real.fourierChar (lT F (MvPolynomial.eval x (p.map GroundTheory.Automorphic.Adele2.infRingHom))) : Circle) : ℂ)) φ0) hg' using 1
     funext v
     simp only [schwartzBruhatTensorPi]
     rw [SchwartzMap.smulLeftCLM_apply_apply hT, psi_split]

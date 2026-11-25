@@ -11,8 +11,6 @@ public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.Integra
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.Core.Rk.IP.Model
 
 open scoped ComplexConjugate Matrix NNReal ComplexOrder
@@ -91,5 +89,3 @@ theorem isSphOff_of_vac {ψ : AddChar (AF D.host.F) ℂ} {θ : InfFam D} {S T : 
     simpa [nrm2] using h' p hp
 
 end GlobalTheory.Core.Rk.IP.Model
-
-end

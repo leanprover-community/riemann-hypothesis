@@ -198,16 +198,10 @@ lemma pow_eq_algebraMap_iff (E : IntermediateField K Ω) (x : E) (a : K) :
 
 omit [NeZero n] [HasEnoughRootsOfUnity K n] in
 lemma adjoin_preimage_eq_top (S : Set Ω) :
-    adjoin K (((↑) : adjoin K S → Ω) ⁻¹' S) = ⊤ := by
-  apply IntermediateField.map_injective (adjoin K S).val
-  rw [adjoin_map, ← AlgHom.fieldRange_eq_map, IntermediateField.fieldRange_val]
-  congr 1
-  ext x
-  constructor
-  · rintro ⟨y, hy, rfl⟩
-    exact hy
-  · intro hx
-    exact ⟨⟨x, subset_adjoin K S hx⟩, hx, rfl⟩
+    adjoin K (((↑) : adjoin K S → Ω) ⁻¹' S) = ⊤ :=
+  lift_injective _ <| by
+    rw [lift_adjoin, lift_top, Set.image_preimage_eq_inter_range,
+      Set.inter_eq_left.2 (show S ⊆ Set.range _ from fun x hx => ⟨⟨x, subset_adjoin K S hx⟩, rfl⟩)]
 
 
 

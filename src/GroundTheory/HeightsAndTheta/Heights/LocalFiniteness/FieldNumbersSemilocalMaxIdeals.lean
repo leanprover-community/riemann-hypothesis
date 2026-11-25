@@ -246,12 +246,8 @@ theorem RegFixedBallMass.proof (hN : RegDensNonneg.Statement) (hS : StokesOnChar
   have hθR : tsupport θ ⊆ Metric.closedBall 0 (R + 1) := hθU.trans Metric.ball_subset_closedBall
   have hθc : HasCompactSupport θ :=
     (isCompact_closedBall (0 : Fin n → ℂ) (R + 1)).of_isClosed_subset (isClosed_tsupport θ) hθR
-  have hθw : ∀ x, (Metric.closedBall (0 : Fin n → ℂ) R).indicator (fun _ => (1 : ℝ)) x ≤ θ x := by
-    intro x
-    by_cases hx : x ∈ Metric.closedBall (0 : Fin n → ℂ) R
-    · rw [Set.indicator_of_mem hx, hθV x (hBV hx)]
-    · rw [Set.indicator_of_notMem hx]
-      exact (hθ01 x).1
+  have hθw : ∀ x, (Metric.closedBall (0 : Fin n → ℂ) R).indicator (fun _ => (1 : ℝ)) x ≤ θ x :=
+    fun x => Set.indicator_apply_le' (fun hx => (hθV x (hBV hx)).ge) fun _ => (hθ01 x).1
   have hηs : ∀ i : Fin d, SmoothNear (zeroSet J) ((fun _ => euclPot) i) :=
     fun _ => smoothNear_of_contDiff (contDiff_euclPot n)
   have hθη : ∀ i : Fin (d + 1), SmoothNear (zeroSet J) (vecCons θ (fun _ => euclPot) i) := by

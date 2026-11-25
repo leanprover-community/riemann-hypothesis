@@ -12,8 +12,6 @@ universe u
 
 open CategoryTheory AlgebraicGeometry TopologicalSpace
 
-noncomputable section
-
 namespace FunctorialResolution.EmbeddedResolution
 
 theorem dense_of_forall_mem_of_isGenericPoint {X : Type*} [TopologicalSpace X] [QuasiSober X]
@@ -190,5 +188,3 @@ theorem affineSmoothLocusPreimageDenseInDetached (A : PrincipalizationAlgorithm.
   exact hmem
 
 end FunctorialResolution.EmbeddedResolution
-
-end

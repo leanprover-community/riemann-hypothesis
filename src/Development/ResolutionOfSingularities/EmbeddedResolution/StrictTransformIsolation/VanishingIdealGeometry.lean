@@ -15,8 +15,6 @@ universe u
 
 open CategoryTheory AlgebraicGeometry TopologicalSpace
 
-noncomputable section
-
 namespace FunctorialResolution.EmbeddedResolution.OpenImmersionRestriction
 
 private theorem support_vanishingIdeal_eq_self {X : Scheme.{u}} (Z : Closeds ↥X) :
@@ -324,5 +322,3 @@ theorem orderAt_vanishingIdeal_eq_one {k : Type u} [Field k] [CharZero k] {W : S
       (Scheme.IdealSheafData.vanishingIdeal T) hD x hxU hxZ
 
 end FunctorialResolution.EmbeddedResolution.OpenImmersionRestriction
-
-end

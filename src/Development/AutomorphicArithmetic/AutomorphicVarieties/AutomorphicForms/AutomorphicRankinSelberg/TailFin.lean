@@ -9,14 +9,6 @@ open MeasureTheory Set
 open UpperHalfPlane hiding I
 open scoped ENNReal
 
-private lemma fd_meas : MeasurableSet ModularGroup.fd := by
-  apply IsClosed.measurableSet
-  have h1 : IsClosed {z : ℍ | 1 ≤ Complex.normSq (z : ℂ)} :=
-    isClosed_le continuous_const (Complex.continuous_normSq.comp UpperHalfPlane.continuous_coe)
-  have h2 : IsClosed {z : ℍ | |z.re| ≤ (1 : ℝ) / 2} :=
-    isClosed_le (UpperHalfPlane.continuous_re.abs) continuous_const
-  exact h1.inter h2
-
 private lemma tail_fin :
     ∫⁻ y in Ioi (1 / 2 : ℝ), ENNReal.ofReal (1 / y ^ 2) < ∞ := by
   have h : IntegrableOn (fun y : ℝ => y ^ (-2 : ℝ)) (Ioi (1 / 2 : ℝ)) :=
@@ -31,8 +23,8 @@ private lemma tail_fin :
 theorem UpperTheory.V.Af.Rs.fdFin :
     UpperTheory.V.Af.Rs.StripIm → UpperTheory.V.Af.Rs.VolMap → UpperTheory.V.Af.Rs.FdFin := by
   rintro - ⟨hm, hv⟩
-  refine ⟨fd_meas, ?_⟩
-  rw [hv, Measure.map_apply hm fd_meas]
+  refine ⟨ModularGroup.isClosed_fd.measurableSet, ?_⟩
+  rw [hv, Measure.map_apply hm ModularGroup.isClosed_fd.measurableSet]
   have hsub : (fun p : ℝ × ℝ => UpperTheory.V.Af.Rs.pt p.1 p.2) ⁻¹' ModularGroup.fd ⊆
       (Icc (-(1 / 2) : ℝ) (1 / 2) ×ˢ Ioi (1 / 2 : ℝ)) ∪ ((univ : Set ℝ) ×ˢ Iic (0 : ℝ)) := by
     rintro ⟨x, y⟩ hp

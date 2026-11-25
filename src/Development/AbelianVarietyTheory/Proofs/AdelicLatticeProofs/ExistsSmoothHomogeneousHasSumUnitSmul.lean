@@ -120,12 +120,6 @@ theorem contDiffAt_logMap (x : mixedSpace K) (hx : mixedEmbedding.norm x ≠ 0) 
   exact contDiffAt_const.mul (((contDiffAt_normAtPlace w.1 x (hN w.1)).log (hN w.1)).sub
     ((hnorm.log hx).mul contDiffAt_const))
 
-private lemma le_of_mul_le_of_one_le' {m t B : ℝ} (hm : 1 ≤ m) (hB : 0 ≤ B) (h : m * t ≤ B) :
-    t ≤ B := by
-  rcases le_or_gt t 0 with ht | ht
-  · exact ht.trans hB
-  · nlinarith
-
 theorem log_le (x : mixedSpace K) (hx : mixedEmbedding.norm x ≠ 0) (w : InfinitePlace K) :
     Real.log (normAtPlace w x) ≤ Fintype.card (InfinitePlace K) * ‖logMap x‖ +
       Real.log (mixedEmbedding.norm x) * (Module.finrank ℚ K : ℝ)⁻¹ := by
@@ -173,10 +167,10 @@ theorem log_le (x : mixedSpace K) (hx : mixedEmbedding.norm x ≠ 0) (w : Infini
         (Real.norm_eq_abs (logMap x v)).symm.trans_le (norm_le_pi_norm (logMap x) v))).trans ?_
       rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
       exact mul_le_mul_of_nonneg_right (by exact_mod_cast Fintype.card_subtype_le _) hpos
-    exact le_of_mul_le_of_one_le' one_le_mult hB (hkey.trans_le hSle)
+    exact le_of_mul_le_of_one_le ((mul_comm _ _).trans_le (hkey.trans_le hSle)) hB one_le_mult
   · have hv : logMap x ⟨w, hw⟩ = (mult w : ℝ) * (Real.log (normAtPlace w x) -
         Real.log (mixedEmbedding.norm x) * (Module.finrank ℚ K : ℝ)⁻¹) := logMap_apply x ⟨w, hw⟩
-    refine le_of_mul_le_of_one_le' (one_le_mult (w := w)) hB ?_
+    refine le_of_mul_le_of_one_le ((mul_comm _ _).trans_le ?_) hB (one_le_mult (w := w))
     rw [← hv]
     exact (le_abs_self _).trans (((Real.norm_eq_abs _).symm.trans_le
       (norm_le_pi_norm (logMap x) ⟨w, hw⟩)).trans hle)

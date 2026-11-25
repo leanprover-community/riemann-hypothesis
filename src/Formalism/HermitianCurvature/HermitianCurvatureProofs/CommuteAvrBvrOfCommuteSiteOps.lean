@@ -31,7 +31,7 @@ theorem z10 (h : IsLevelStart L st) {Y : ℂ} (hi : Y ∈ st.inv) :
   have mζb : L.ζb ∈ zfns L := Or.inr (Or.inr (Or.inl rfl))
   have mGG : L.GG ∈ zfns L := Or.inr (Or.inr (Or.inr (Or.inr (Or.inl rfl))))
   have mGGi : L.GGi ∈ zfns L := Or.inr (Or.inr (Or.inr (Or.inr (Or.inr rfl))))
-  have cm : ∀ {x y : A}, x ∈ zfns L → y ∈ zfns L → Commute x y := fun hx hy => Formalism.FourierDecayAlt.P.Fr5.fn_comm L hx hy
+  have cm : ∀ {x y : A}, x ∈ zfns L → y ∈ zfns L → Commute x y := fun {x y} hx hy => L.fns_comm x (Or.inr hx) y (Or.inr hy)
   have hX : ∀ g ∈ zfns L, Commute (st.x Y) g := h.x_fn Y
   have hE : ∀ g ∈ zfns L, Commute (st.ee Y) g := h.ee_fn Y
   have hc : ∀ a : A, Commute (algebraMap ℂ A (Y + 1 / 2)) a := fun a => Algebra.commutes _ a
@@ -87,8 +87,8 @@ theorem zetaQQ : ZetaQQ := by
     · have := congrArg star b.eq
       rw [star_mul, star_mul, herm Z hZ, sζb] at this
       exact this.symm
-    · rw [h.tau]; exact Commute.mul_left (Formalism.FourierDecayAlt.P.Fr5.fn_comm L mG mζ) (h.x_fn Z _ mζ)
-    · rw [h.tau]; exact Commute.mul_left (Formalism.FourierDecayAlt.P.Fr5.fn_comm L mG mζb) (h.x_fn Z _ mζb)
+    · rw [h.tau]; exact Commute.mul_left (L.fns_comm _ (Or.inr mG) _ (Or.inr mζ)) (h.x_fn Z _ mζ)
+    · rw [h.tau]; exact Commute.mul_left (L.fns_comm _ (Or.inr mG) _ (Or.inr mζb)) (h.x_fn Z _ mζb)
   refine ⟨base Y hY hi, fun hn => ?_⟩
   have cancel : ∀ Z ∈ st.inv, ∀ u : A, u * st.QQ Z 1 1 = 0 → u = 0 := fun Z hZ u hu => by
     rw [h.tau] at hu

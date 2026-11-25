@@ -6,8 +6,6 @@ public import Development.AbelianVarietyTheory.BlockTheory.ThetaLiftGeometry.The
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.ParUpRoad
 
 open Formalism.BasicNotions Formalism.MainNotions.N GlobalTheory.ThetaExh GlobalTheory.IndefiniteRowSideFullHecke.ThetaEigenspaceImage GlobalTheory.IndefiniteRowSideFullHecke.ThetaLiftOfEachComponent

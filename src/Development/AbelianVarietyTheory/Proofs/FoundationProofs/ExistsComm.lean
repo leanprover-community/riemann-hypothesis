@@ -6,8 +6,6 @@ public import Mathlib.RingTheory.AdicCompletion.Noetherian
 
 @[expose] public section
 
-noncomputable section
-
 open scoped Matrix
 
 namespace GlobalTheory.CommutingExistence
@@ -165,5 +163,3 @@ theorem main (l : ℕ) [Fact (Nat.Prime l)] (Ω : Type) [Field Ω] [Algebra ℚ 
     exact h.irr.2.2 V le_top (fun g v hv => hV g g.2 v hv)
 
 end GlobalTheory.CommutingExistence
-
-end

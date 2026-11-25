@@ -108,13 +108,6 @@ def satOf (π : NG.AutRep L n) (w : HeightOneSpectrum (𝓞 L)) : Multiset ℂ :
       NG.OverPl w v ∧ NG.SatAt π Dv α
   then Finset.univ.val.map h.choose_spec.choose_spec.choose else Multiset.replicate (n / 2) 1
 
-theorem satOf_card (π : NG.AutRep L n) (w : HeightOneSpectrum (𝓞 L)) : Multiset.card (satOf π w) = n / 2 := by
-  unfold satOf
-  split_ifs <;> simp
-
-theorem infOf_card (lam : Fin n → ℤ) : Multiset.card (NG.infOf lam) = n := by
-  simp [NG.infOf]
-
 theorem infOf_nodup_alg {lam : Fin n → ℤ} (hl : Antitone lam) : (NG.infOf lam).Nodup ∧
     ∀ x ∈ NG.infOf lam, ∃ k : ℤ, x = (k : ℂ) + ((n : ℂ) - 1) / 2 := by
   refine ⟨?_, ?_⟩

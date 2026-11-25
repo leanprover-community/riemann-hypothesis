@@ -54,7 +54,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped CategoryTheory.Obj TensorProduct
 open GlobalTheory.ZM
 
-noncomputable section
 namespace GlobalTheory.ZM.RepMap
 variable {X : Scheme.{0}} {σ : Type}
 
@@ -254,4 +253,3 @@ theorem exists_map_of_coord : ∀ (R σ : Type) [CommRing R] (I : Ideal (MvPolyn
     exact uniq _ _ _ (v p) (by rw [Category.assoc, hf', hg]) (h _ _ _ (hv p)) (hgv p)
 
 end GlobalTheory.ZM.RepMap
-end

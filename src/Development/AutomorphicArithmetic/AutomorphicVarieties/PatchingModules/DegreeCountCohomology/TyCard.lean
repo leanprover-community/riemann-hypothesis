@@ -93,17 +93,12 @@ private theorem tc_diff {n : ℕ} (t : Fin n → Bool) :
       (Finset.univ.filter fun i => ¬ t i = true).card = n := by
     rw [Finset.card_filter_add_card_filter_not]
     simp
-  have hch : ∀ a b : ℕ, (a + b).choose 2 = a.choose 2 + b.choose 2 + a * b := by
-    intro a b
-    induction b with
-    | zero => simp
-    | succ k ih =>
-      rw [← Nat.add_assoc, Nat.choose_succ_succ', Nat.choose_succ_succ' k, Nat.choose_one_right,
-        Nat.choose_one_right, ih]
-      ring
-  have hh := hch (Finset.univ.filter fun i => t i = true).card
-    (Finset.univ.filter fun i => ¬ t i = true).card
-  rw [hcard] at hh
+  have hh := Nat.add_choose_eq (Finset.univ.filter fun i => t i = true).card
+    (Finset.univ.filter fun i => ¬ t i = true).card 2
+  rw [Finset.Nat.sum_antidiagonal_eq_sum_range_succ_mk,
+    Finset.sum_range_succ, Finset.sum_range_succ, Finset.sum_range_one] at hh
+  simp only [Nat.reduceSub, Nat.choose_zero_right, Nat.choose_one_right,
+    one_mul, mul_one, hcard] at hh
   rw [htot, tc_same t] at hsplit
   linarith
 

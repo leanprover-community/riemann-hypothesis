@@ -176,7 +176,8 @@ theorem finite_adelic_estimates_holds : FinSt := by
       rw [locT_locW, LinearEquiv.coe_coe, S.symm_apply_apply]
     rw [LinearMap.smul_apply, LinearMap.smul_apply, e, hi v _ φ hφ]
     funext x
-    simp [schr, mul_left_comm]
+    simp only [Pi.smul_apply, schr, smul_eq_mul]
+    exact mul_left_comm _ _ _
   · have hd : ∀ᶠ v : Pl F in cofinite, ¬ differentIdeal ℤ (𝓞 F) ≤ v.asIdeal :=
       (Ideal.finite_factors differentIdeal_ne_bot).subset fun v hv => Ideal.dvd_iff_le.2 (not_not.1 hv)
     have h2 : ∀ᶠ v : Pl F in cofinite, evFin F v (algebraMap F (AF F) 2⁻¹) ∈ v.adicCompletionIntegers F :=

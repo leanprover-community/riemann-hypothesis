@@ -4,7 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.Divisors.PullHlComp
 
 @[expose] public section
 
-noncomputable section
 open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex GlobalTheory.EtC
 
 namespace LateralTheory.E.LeafKumSpecPf

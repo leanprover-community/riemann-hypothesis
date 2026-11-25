@@ -480,12 +480,6 @@ open scoped BigOperators
 
 namespace GlobalTheory.EvenTheta
 
-theorem norm_two_Cp_eq_one (p : ℕ) [Fact p.Prime] (hp : p ≠ 2) : ‖(2 : ℂ_[p])‖ = 1 := by
-  have h : ((2 : ℕ) : ℂ_[p]) = algebraMap ℚ_[p] ℂ_[p] ((2 : ℕ) : ℚ_[p]) := (map_natCast _ 2).symm
-  have h2 : (2 : ℂ_[p]) = ((2 : ℕ) : ℂ_[p]) := by norm_num
-  rw [h2, h, norm_algebraMap', Padic.norm_natCast_eq_one_iff]
-  exact (Nat.coprime_primes (Fact.out) Nat.prime_two).2 hp
-
 theorem intSer_of_sq (p : ℕ) [Fact p.Prime] (hp : p ≠ 2) (H : PowerSeries ℂ_[p])
     (h0 : PowerSeries.constantCoeff H = 1) (hH : IntSer (H ^ 2)) : IntSer H := by
   intro n
@@ -518,7 +512,7 @@ theorem intSer_of_sq (p : ℕ) [Fact p.Prime] (hp : p ≠ 2) (H : PowerSeries �
       simp only [hf, norm_mul]
       exact mul_le_one₀ (ih a ha) (norm_nonneg _) (ih b hb)
     have h2 : ‖2 * PowerSeries.coeff n H‖ = ‖PowerSeries.coeff n H‖ := by
-      rw [norm_mul, norm_two_Cp_eq_one p hp, one_mul]
+      rw [norm_mul, Formalism.L2.Th1.Top.OrthogonalGaussModelNormLemmas.norm_two p hp, one_mul]
     have e : 2 * PowerSeries.coeff n H = PowerSeries.coeff n (H ^ 2) - S := by rw [hdec]; ring
     rw [← h2, e]
     rw [sub_eq_add_neg]

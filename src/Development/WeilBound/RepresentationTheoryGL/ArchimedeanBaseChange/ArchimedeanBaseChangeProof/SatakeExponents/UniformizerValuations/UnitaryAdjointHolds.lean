@@ -841,7 +841,7 @@ theorem sphStar : LocAlg → SphStarU := by
     have heq := finsum_inv_eq τ hmulτ hinvτ hdcτ hKτ F hF
     rw [← eqμ', ← eqc] at heq
     exact mul_right_cancel₀ hBne heq
-  · have h := (GlobalTheory.T.twistedTrace_indicator_level_localUnitary E n w (KL n w) hlev σ).2.2.1
+  · have h := (GlobalTheory.TwTrUnit.twTr_unit E n w (KL n w) hlev σ).2.2.1
     rw [h, Subgroup.relIndex_self, hrank]
     simp
 

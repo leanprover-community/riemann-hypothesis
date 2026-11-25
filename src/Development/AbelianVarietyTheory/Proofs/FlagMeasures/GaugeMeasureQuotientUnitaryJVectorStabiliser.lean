@@ -525,10 +525,6 @@ namespace GlobalTheory.FibreScaling
 
 variable {P Q : ℕ}
 
-theorem qf_continuous : Continuous (qf : Sp P Q → ℝ) := by
-  unfold qf
-  fun_prop
-
 theorem qf_real_smul (r : ℝ) (x : Sp P Q) : qf (r • x) = r ^ 2 * qf x := by
   simp only [qf, Pi.smul_apply, Complex.real_smul, map_mul, Complex.normSq_ofReal, mul_sub,
     Finset.mul_sum, sq]
@@ -565,7 +561,7 @@ theorem isDxDq_scale {fib : ℝ → Measure (Sp P Q)} (h : IsDxDq fib) {t : ℝ}
     Set.ext fun x => by simp [hs]
   refine ⟨fun b => ?_, fun φ hφ => ?_, fun φ hφ hsu hts => ?_⟩
   · have hS : MeasurableSet (qf ⁻¹' {id b} ∩ {x : Sp P Q | x ≠ 0})ᶜ :=
-      ((qf_continuous.measurable (measurableSet_singleton _)).inter isOpen_ne.measurableSet).compl
+      ((GlobalTheory.FibrePolar.continuous_qf.measurable (measurableSet_singleton _)).inter isOpen_ne.measurableSet).compl
     have h0 : ((fib (t⁻¹ * b)).map (fun y => Real.sqrt t • y))
         (qf ⁻¹' {id b} ∩ {x : Sp P Q | x ≠ 0})ᶜ = 0 := by
       rw [Measure.map_apply hm hS]
@@ -606,7 +602,7 @@ theorem lintegral_fibre_scale : ∀ (P Q : ℕ) (fib : ℝ → Measure (Sp P Q))
     rintro x hx rfl
     exact mul_ne_zero ht.ne' hβ (by simpa [qf] using hx.symm)
   have e := GlobalTheory.IsFibreFamily_eq_at (dx P Q) qf {x | x ≠ 0} {x | x ≠ 0} {x | x ≠ 0} Set.univ
-    Set.univ fib _ (t * β) qf_continuous.measurable isOpen_ne subset_rfl subset_rfl hO isOpen_univ
+    Set.univ fib _ (t * β) GlobalTheory.FibrePolar.continuous_qf.measurable isOpen_ne subset_rfl subset_rfl hO isOpen_univ
     isOpen_univ trivial trivial h (isDxDq_scale h ht)
   rw [e, lintegral_smul_measure, smul_eq_mul, inv_mul_cancel_left₀ ht.ne',
     lintegral_map hφ (continuous_const_smul _).measurable]

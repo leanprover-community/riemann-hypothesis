@@ -744,14 +744,6 @@ open Formalism.UG
 
 variable {G : Type} [Group G] (K : Subgroup G)
 
-theorem out_smul_out (h : G) (z : G ⧸ K) : ∃ c : K, (h • z : G ⧸ K).out = h * z.out * c := by
-  obtain ⟨c, hc⟩ := QuotientGroup.mk_out_eq_mul K (h * z.out)
-  refine ⟨c, ?_⟩
-  have e : (h • z : G ⧸ K) = ((h * z.out : G) : G ⧸ K) := by
-    conv_lhs => rw [← QuotientGroup.out_eq' z]
-    rfl
-  rw [e, hc]
-
 theorem conv_assoc (hK : IsCommensurated K) {k : Type} [CommRing k] (f₁ f₂ f₃ : G → k)
     (h₁ : FinDosetSupp K f₁) (h₂ : IsBiInv K f₂) (h₃ : IsBiInv K f₃) (h₃' : FinDosetSupp K f₃) :
     conv K (conv K f₁ f₂) f₃ = conv K f₁ (conv K f₂ f₃) := by
@@ -771,7 +763,7 @@ theorem conv_assoc (hK : IsCommensurated K) {k : Type} [CommRing k] (f₁ f₂ f
   have key : ∀ x z : G ⧸ K, f₂ z.out * f₃ (z.out⁻¹ * (x.out⁻¹ * g)) =
       f₂ (x.out⁻¹ * (x.out • z).out) * f₃ ((x.out • z).out⁻¹ * g) := by
     intro x z
-    obtain ⟨c, hc⟩ := out_smul_out K x.out z
+    obtain ⟨c, hc⟩ := _root_.Formalism.UG.P.out_smul K x.out z
     rw [hc]
     have e2 : x.out⁻¹ * (x.out * z.out * c) = ((1 : K) : G) * z.out * c := by
       simp [mul_assoc]
@@ -836,7 +828,6 @@ section -- clump:auto
 
 namespace Formalism.UG.Final
 
-alias HeckeActMem := _root_.Formalism.UG.P.hecke_act_mem
 alias HeckeActMul := _root_.Formalism.UG.P.hecke_act_mul
 alias HeckeAssoc := _root_.Formalism.UG.P.hecke_assoc
 theorem BCMem : Formalism.UG.BCMem := by
@@ -1067,7 +1058,6 @@ theorem InclInj : Formalism.UG.InclInj := by
   apply hinj
   exact congrArg (fun u : GL n (TensorProduct F E R) => (u : Matrix n n (TensorProduct F E R)) i j) hgh
 alias SphericalExists := _root_.Formalism.UG.P.exists_spherical_function
-theorem SplitIso : Formalism.UG.SplitIso := Formalism.UG.P.split_unitary_group_iso
 theorem StabStd : Formalism.UG.StabStd := by
   apply Formalism.UG.P.stabilizer_standard_lattice
 alias StdFormDef := _root_.Formalism.UG.P.standard_hermitian_form_definite

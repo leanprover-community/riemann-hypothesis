@@ -4,7 +4,6 @@ public import Development.EtaleCohomology.EtaleSheaves.A9OfA0A1EigenbasisA6
 
 @[expose] public section
 
-noncomputable section
 open CategoryTheory AlgebraicGeometry GlobalTheory.EtC Polynomial IsLocalRing
 
 namespace LateralTheory.E.LeafClosedSH0PfPrim

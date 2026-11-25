@@ -2,8 +2,35 @@ module
 
 public import Formalism.SharpRestriction.CuspSpanNormBounds.GlobAut
 public import Formalism.SharpRestriction.CuspSpanNormBounds.RelevantZeroGramTerms
-public import Formalism.FlagUnipotentLattices.HalfDifferenceL1Bound
 import Formalism.SharpRestriction.CuspSpanNormBounds.PlaceDegreeData
+public import Mathlib.Analysis.Real.Sqrt
+import Mathlib.NumberTheory.Height.NumberField
+public import Formalism.LogSumExpBounds.StatementD
+
+section
+@[expose] public section
+
+open Finset MeasureTheory NumberField
+open scoped ComplexOrder
+
+noncomputable section
+
+namespace Formalism.HermitianLatticeCounting.S7
+
+open Formalism.NuclearRankWeightBounds.D (lead hs q0)
+
+def decExp (h : ℝ) (q : ℕ) (t : ℝ) : ℝ := h / 8 * min (t ^ 2) (t / Real.sqrt (2 * (q : ℝ)))
+
+def Ydat (n f : ℕ) (rd g b : ℝ) : ℝ := (n : ℝ) * f * rd * g * b
+
+def epsN (c : ℝ) (n f : ℕ) : ℝ := c / ((n : ℝ) ^ 8 * (f : ℝ) ^ 2)
+
+
+end Formalism.HermitianLatticeCounting.S7
+end
+end
+end
+
 
 @[expose] public section
 

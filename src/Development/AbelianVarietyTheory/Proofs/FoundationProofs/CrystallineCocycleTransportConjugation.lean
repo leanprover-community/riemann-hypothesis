@@ -4,8 +4,6 @@ public import Development.AbelianVarietyTheory.BlockTheory.TorsionBlocks.Lattice
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions Formalism.MainNotions.N Formalism.WeaklyAdmissibleFiltrations
 open scoped TensorProduct
 
@@ -108,5 +106,3 @@ theorem exists_coefMap (B₀ : LocBridge l E Ω Gw O₀) (B : LocBridge l E Ω G
 end Coef
 
 end GlobalTheory.TwistedSelmerCompare
-
-end

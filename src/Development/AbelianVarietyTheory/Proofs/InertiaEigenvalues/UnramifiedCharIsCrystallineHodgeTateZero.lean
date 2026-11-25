@@ -63,7 +63,6 @@ theorem isCrys_and_multV_eq : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI 
   obtain ⟨hcomp, -⟩ := GlobalTheory.Per.Components.components_finrank l P AI T K LL ↥LL.1 (charRep μ)
   obtain ⟨hfd, -, hdr⟩ := hcomp τ
   haveI := hfd
-  set_option synthInstance.maxHeartbeats 200000 in
   have hdim : finrank ↥LL.1 ↥(DdRE (P.PD K) (charRep μ) τ) = 1 := by
     rw [hdr (GlobalTheory.Per.CrisDR.isDR_of_isCrys l P AI T K LL ↥LL.1 (charRep μ) hc).1, finrank_self]
   have hnj : ∀ a, a ≠ 0 → multV (P.PD K) (charRep μ) τ a = 0 := fun a ha =>

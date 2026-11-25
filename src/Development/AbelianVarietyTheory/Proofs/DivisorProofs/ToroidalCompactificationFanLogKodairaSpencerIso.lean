@@ -394,16 +394,6 @@ open GlobalTheory.Toroidal GlobalTheory.LogKS GlobalTheory.LogKSChart GlobalTheo
 
 namespace GlobalTheory.KSInterior
 
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E}
-
-theorem exists_sab_chartPull {S S' : Scheme.{0}} (f : S' ⟶ S) (t : SAB H S) :
-    ∃ (t' : SAB H S') (m : SABMap t' t f), Nonempty (ChartPull t'.PP.L t.PP.L m.φ) :=
-  _root_.GlobalTheory.KSOpen.exists_pull_chart f t
-
-end GlobalTheory.KSInterior
-
-namespace GlobalTheory.KSInterior
-
 theorem exists_derivation_transport {A B : Type} [CommRing A] [CommRing B] (e : A ≃+* B) (D : Derivation ℤ A A) :
     ∃ D' : Derivation ℤ B B, ∀ r, D' (e r) = e (D r) := by
   let f : B →ₗ[ℤ] B :=
@@ -479,7 +469,7 @@ theorem isKS_transport : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] 
       rw [← cancel_mono j, Category.assoc, ← sq, ← Category.assoc, hg₀'φ, hg₀, Category.assoc, hx,
         ← Category.assoc, spc, hφS]
     have hw' : ∀ a, ∃ w', w' ≫ m.φ = w a ∧ IsTranslate t' φS' g₀' (v' a) w' := fun a =>
-      GlobalTheory.T.tangentTranslate_lifts_semiAbelianTripleMap E H X X' t t' j m _ _ ψ.hom (chart W) (chart W') hx (v a) (v' a) (hv a) (hv't a) (hvv a) S φS'
+      GlobalTheory.TransLift.lift_isTranslate E H X X' t t' j m _ _ ψ.hom (chart W) (chart W') hx (v a) (v' a) (hv a) (hv't a) (hvv a) S φS'
         g₀' hg₀' (w a) (by rw [hφS, hg₀'φ]; exact hw a)
     choose w' hw'φ hw'T using hw'
     have hOi : m.φ ⁻¹ᵁ O ≤ Wc i ⊓ Wc i' :=
@@ -512,7 +502,7 @@ namespace GlobalTheory.KSInterior
 
 theorem exists_isKS_interior : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H) (l : Geo.Tor.Level H) (Xo : Moduli Dw l) (c : Coeff l) (Y : Model Xo c (RingHom.id c.F)) (W : Y.X.affineOpens), W.1 ≤ interior Y → ∀ (n : ℕ) (v : Fin n → (Sp (DualNumber Γ(Y.X, W.1)) ⟶ Y.t.G.left)), (∀ i, IsTanAtG Y.t (chart W) (v i)) → (∀ w, IsTanAtG Y.t (chart W) w → ∃! cf : Fin n → Γ(Y.X, W.1), IsCombAtG Y.t (chart W) v cf w) → ∀ D : Derivation ℤ Γ(Y.X, W.1) Γ(Y.X, W.1), ∃ Θ, IsKS Y.t (interior Y) W v D Θ := by
   intro E _ _ _ H Dw l Xo c Y W hW n v hv hb D
-  obtain ⟨t', m, hcp⟩ := exists_sab_chartPull Y.j Y.t
+  obtain ⟨t', m, hcp⟩ := GlobalTheory.KSOpen.exists_pull_chart Y.j Y.t
   obtain ⟨m', -⟩ := GlobalTheory.ArcChartExt.exists_sab_cancel_id Y.m m
   obtain ⟨hP, hA, hK⟩ := GlobalTheory.KSObj.proper_ample_kTriv Y.oF m'
   have hWr : W.1 ≤ Y.j.opensRange := hW
@@ -857,8 +847,6 @@ theorem finrank_fibre : ∀ {R M : Type} [CommRing R] [AddCommGroup M] [Module R
 
 end GlobalTheory.LogDerProj
 
-
-
 theorem GlobalTheory.LogDerProj.main : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H) (l : Geo.Tor.Level H) (Xo : Moduli Dw l) (c : Coeff l) (Y : Model Xo c (RingHom.id c.F)), 1 ≤ Dw.p + Dw.q → SmoothOfRelativeDimension Dw.dim (genStr Y) → ReciprocityTheory.AnForm.R.FinalTheorems.Snc (genBdIdeal Y) → ∀ U : Y.X.affineOpens, Module.Finite Γ(Y.X, U.1) (logDer Y.s (Scheme.IdealSheafData.vanishingIdeal (interior Y).compl) U) ∧ Module.Projective Γ(Y.X, U.1) (logDer Y.s (Scheme.IdealSheafData.vanishingIdeal (interior Y).compl) U) ∧ ∀ m : Ideal Γ(Y.X, U.1), m.IsMaximal → Module.finrank (Γ(Y.X, U.1) ⧸ m) ((Γ(Y.X, U.1) ⧸ m) ⊗[Γ(Y.X, U.1)] (logDer Y.s (Scheme.IdealSheafData.vanishingIdeal (interior Y).compl) U)) = Dw.dim := by
   intro E _ _ _ H Dw l Xo c Y h1 hsm hsnc U
   have : SmoothOfRelativeDimension Dw.dim Y.s := smooth_gen_iff.1 hsm
@@ -965,8 +953,6 @@ theorem exists_equiv {R L : Type} [CommRing R] [AddCommGroup L] [Module R L] [Mo
   refine ⟨LinearEquiv.ofBijective f hf, fun D Θ' => ⟨fun h => huniq D Θ' (Θ D) h (hΘ D), fun h => ?_⟩⟩
   rw [h]
   exact hΘ D
-
-
 
 theorem hasLogKS : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H) (l : Geo.Tor.Level H) (Xo : Moduli Dw l) (c : Coeff l) (Y : Model Xo c (RingHom.id c.F)), 1 ≤ Dw.p + Dw.q → SmoothOfRelativeDimension Dw.dim (genStr Y) → ReciprocityTheory.AnForm.R.FinalTheorems.Snc (genBdIdeal Y) → (∀ x ∈ genBd Y, IsClosed ({x} : Set (gen Y)) → HasRigidChart Y x) → HasLogKS Y.t Y.s (interior Y) := by
   intro E _ _ _ H Dw l Xo c Y hr hsm hsnc hrig

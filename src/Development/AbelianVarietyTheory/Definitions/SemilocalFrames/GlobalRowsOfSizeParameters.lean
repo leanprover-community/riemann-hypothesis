@@ -7,8 +7,6 @@ import Formalism.LocalRingCardinality.SpanPowerMembership.NZTypeD
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.Diag.PG.Model0
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S
@@ -81,5 +79,3 @@ theorem globalRows_of_sizeData {D : D7} (L : SizeData₂ D) (P : ParameterChoice
 
 
 end GlobalTheory.Diag.PG.Model0
-
-end

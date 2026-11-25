@@ -25,11 +25,6 @@ open Matrix IsLocalRing UpperTheory.V.Alg UpperTheory.V.W UpperTheory.V.Pa
 section SlopeTestRemainingChoices
 open UpperTheory.V.CA
 
-private theorem tr_of_map {n : ℕ} {A G K : Type} [CommRing A] [Group G] [CommRing K] (hn : 1 ≤ n)
-    (D : GDet n A G) (f : A →+* K) (ρ : G →* Matrix (Fin n) (Fin n) K) (h : D.map f = GDet.ofRep ρ) (g : G) :
-    f (D.tr (MonoidAlgebra.single g 1)) = (ρ g).trace := by
-  apply _root_.UpperTheory.V.Pr.tr_single <;> assumption
-
 private theorem span_of_gram {n : ℕ} {K : Type} [Field K] (s : Set (Matrix (Fin n) (Fin n) K))
     (x y : Fin (n * n) → Matrix (Fin n) (Fin n) K) (hx : ∀ a, x a ∈ s)
     (hdet : Matrix.det (Matrix.of fun a b => (x a * y b).trace) ≠ 0) : Submodule.span K s = ⊤ := by
@@ -75,7 +70,7 @@ private theorem discSt_iff {n : ℕ} {A G K : Type} [CommRing A] [Group G] [Fiel
       have hm : f.mapMatrix (Matrix.of fun i j => D.tr (MonoidAlgebra.single (g i * h' j) 1)) =
           Matrix.of fun i j => (ρ (g i) * ρ (h' j)).trace := by
         ext i j
-        simp [tr_of_map hn D f ρ h, map_mul]
+        simp [_root_.UpperTheory.V.Pr.tr_single hn D f ρ h, map_mul]
       have e := hQ (Matrix.of fun i j => D.tr (MonoidAlgebra.single (g i * h' j) 1)).det
       rw [RingHom.map_det, hm] at e
       exact not_congr e.symm

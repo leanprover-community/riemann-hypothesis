@@ -9,8 +9,6 @@ import Mathlib.RingTheory.SimpleRing.Principal
 
 open scoped InnerProductSpace
 
-noncomputable section
-
 namespace CompanionTheory.HCMult
 
 open PI.UpqRep CompanionTheory.D.gk.admitted

@@ -8,7 +8,6 @@ import Mathlib.RingTheory.SimpleRing.Principal
 open NumberField IsDedekindDomain MeasureTheory Matrix Topology GlobalTheory.CompanionTheory.SW.Core
 open scoped ENNReal NNReal MatrixGroups
 
-noncomputable section
 namespace GlobalTheory.CompanionTheory.SW.ThetaUD
 
 variable {F : Type} [Field F] [NumberField F]

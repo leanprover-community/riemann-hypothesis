@@ -48,14 +48,8 @@ theorem belowTop : ∃ Cl : ℝ, 0 ≤ Cl ∧ ∀ Cc : ℝ, Cl ≤ Cc →
   intro Cc hCc Wp Wq _ _ _ _ _ _ P p f χ ε A N cut hχ hε hf hfA hA hcut i hi w hw a b
   have hk2 : 2 ≤ P.k := p.hl.2.2
   set X : ℝ := (N : ℝ) * (2 * (P.r : ℝ) + P.k + 1) ^ 2 + (2 * (P.r : ℝ) + P.k + 1) ^ 3 with hX
-  have hX1 : 1 ≤ X := by
-    have h1 : (1 : ℝ) ≤ 2 * (P.r : ℝ) + P.k + 1 := by
-      have : (0 : ℝ) ≤ P.r := Nat.cast_nonneg _
-      have : (0 : ℝ) ≤ P.k := Nat.cast_nonneg _
-      linarith
-    have : 1 ≤ (2 * (P.r : ℝ) + P.k + 1) ^ 3 := one_le_pow₀ h1
-    have : 0 ≤ (N : ℝ) * (2 * (P.r : ℝ) + P.k + 1) ^ 2 := by positivity
-    linarith
+  have hX1 : 1 ≤ X :=
+    le_add_of_nonneg_of_le (by positivity) (one_le_pow₀ (le_add_of_nonneg_left (by positivity)))
   have hR4 : 1 ≤ ((P.r : ℝ) + 1) ^ 4 := one_le_pow₀ (by have : (0 : ℝ) ≤ P.r := Nat.cast_nonneg _; linarith)
   have hA' : Cs * ((P.r : ℝ) + 1) ^ 4 * X ≤ A - 1 := by
     have h1 : (Cs + 1) * ((P.r : ℝ) + 1) ^ 4 * X ≤ A :=
@@ -108,34 +102,23 @@ theorem belowTop : ∃ Cl : ℝ, 0 ≤ Cl ∧ ∀ Cc : ℝ, Cl ≤ Cc →
   choose εa Ka hεa hKa hQ1a hQ2a using hQa
   choose εb Kb hεb hKb hQ1b hQ2b using hQb
   set S : ℝ := ∑ e, (εa e)⁻¹ + ∑ e, (εb e)⁻¹ with hS
-  have hSa : ∀ e, (εa e)⁻¹ ≤ S := by
-    intro e
-    have h1 : (εa e)⁻¹ ≤ ∑ e, (εa e)⁻¹ :=
-      Finset.single_le_sum (f := fun e => (εa e)⁻¹) (fun e _ => (inv_pos.2 (hεa e)).le) (Finset.mem_univ e)
-    have h2 : 0 ≤ ∑ e, (εb e)⁻¹ := Finset.sum_nonneg fun e _ => (inv_pos.2 (hεb e)).le
-    linarith
-  have hSb : ∀ e, (εb e)⁻¹ ≤ S := by
-    intro e
-    have h1 : (εb e)⁻¹ ≤ ∑ e, (εb e)⁻¹ :=
-      Finset.single_le_sum (f := fun e => (εb e)⁻¹) (fun e _ => (inv_pos.2 (hεb e)).le) (Finset.mem_univ e)
-    have h2 : 0 ≤ ∑ e, (εa e)⁻¹ := Finset.sum_nonneg fun e _ => (inv_pos.2 (hεa e)).le
-    linarith
+  have hSa : ∀ e, (εa e)⁻¹ ≤ S := fun e => le_add_of_le_of_nonneg
+    (Finset.single_le_sum (f := fun e => (εa e)⁻¹) (fun e _ => (inv_pos.2 (hεa e)).le)
+      (Finset.mem_univ e)) (Finset.sum_nonneg fun e _ => (inv_pos.2 (hεb e)).le)
+  have hSb : ∀ e, (εb e)⁻¹ ≤ S := fun e => le_add_of_nonneg_of_le
+    (Finset.sum_nonneg fun e _ => (inv_pos.2 (hεa e)).le)
+    (Finset.single_le_sum (f := fun e => (εb e)⁻¹) (fun e _ => (inv_pos.2 (hεb e)).le)
+      (Finset.mem_univ e))
   have hS0 : 0 < S := lt_of_lt_of_le (inv_pos.2 (hεa Wd.e1)) (hSa Wd.e1)
-  have hε₀a : ∀ e, S⁻¹ ≤ εa e := fun e => by
-    have := inv_anti₀ (inv_pos.2 (hεa e)) (hSa e); rwa [inv_inv] at this
-  have hε₀b : ∀ e, S⁻¹ ≤ εb e := fun e => by
-    have := inv_anti₀ (inv_pos.2 (hεb e)) (hSb e); rwa [inv_inv] at this
+  have hε₀a : ∀ e, S⁻¹ ≤ εa e := fun e => inv_le_of_inv_le₀ (hεa e) (hSa e)
+  have hε₀b : ∀ e, S⁻¹ ≤ εb e := fun e => inv_le_of_inv_le₀ (hεb e) (hSb e)
   set KK : ℝ := ∑ e, Ka e + ∑ e, Kb e with hKK
-  have hKa' : ∀ e, Ka e ≤ KK := by
-    intro e
-    have h1 : Ka e ≤ ∑ e, Ka e := Finset.single_le_sum (f := Ka) (fun e _ => hKa e) (Finset.mem_univ e)
-    have h2 : 0 ≤ ∑ e, Kb e := Finset.sum_nonneg fun e _ => hKb e
-    linarith
-  have hKb' : ∀ e, Kb e ≤ KK := by
-    intro e
-    have h1 : Kb e ≤ ∑ e, Kb e := Finset.single_le_sum (f := Kb) (fun e _ => hKb e) (Finset.mem_univ e)
-    have h2 : 0 ≤ ∑ e, Ka e := Finset.sum_nonneg fun e _ => hKa e
-    linarith
+  have hKa' : ∀ e, Ka e ≤ KK := fun e => le_add_of_le_of_nonneg
+    (Finset.single_le_sum (f := Ka) (fun e _ => hKa e) (Finset.mem_univ e))
+    (Finset.sum_nonneg fun e _ => hKb e)
+  have hKb' : ∀ e, Kb e ≤ KK := fun e => le_add_of_nonneg_of_le
+    (Finset.sum_nonneg fun e _ => hKa e)
+    (Finset.single_le_sum (f := Kb) (fun e _ => hKb e) (Finset.mem_univ e))
   have hKK0 : 0 ≤ KK := le_trans (hKa Wd.e1) (hKa' Wd.e1)
   have hB1 : bf ≤ bf + Kp * bf := by nlinarith
 

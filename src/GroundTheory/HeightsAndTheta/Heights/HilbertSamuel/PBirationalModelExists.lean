@@ -9,6 +9,7 @@ import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.Pro
 import Mathlib.RingTheory.LocalProperties.Reduced
 import Mathlib.Tactic.TypeStar
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.LengthLocQuotEqZero
+import GroundTheory.HeightsAndTheta.Heights.BlockScaling
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsBirationalModelExists, GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PBirationalModelExists
@@ -71,21 +72,6 @@ theorem isMultiHomog_neg' {f : MRing ι} {a : K → ℕ} (hf : IsMultiHomog f a)
   intro m hm
   rw [support_neg] at hm
   exact hf m hm
-
-theorem aeval_scale {S : Type*} [CommRing S] [Algebra ℤ S] {g : MRing ι} {a : K → ℕ} (hg : IsMultiHomog g a)
-    (z : (Σ k, ι k) → S) (u : K → S) :
-    aeval (fun p => z p * u p.1) g = aeval z g * ∏ k, u k ^ a k := by
-  rw [aeval_def, aeval_def, eval₂_eq', eval₂_eq', Finset.sum_mul]
-  refine Finset.sum_congr rfl fun m hm => ?_
-  have hprod : ∏ p, (z p * u p.1) ^ m p = (∏ p, z p ^ m p) * ∏ k, u k ^ a k := by
-    simp_rw [mul_pow, Finset.prod_mul_distrib]
-    congr 1
-    rw [Fintype.prod_sigma]
-    refine Finset.prod_congr rfl fun k _ => ?_
-    show ∏ i, u k ^ m ⟨k, i⟩ = u k ^ a k
-    rw [Finset.prod_pow_eq_pow_sum, hg m hm k]
-  rw [hprod]
-  ring
 
 theorem hom_aeval {S T : Type*} [CommRing S] [CommRing T] [Algebra ℤ S] [Algebra ℤ T] (φ : S →+* T) (z : (Σ k, ι k) → S) (g : MRing ι) :
     φ (aeval z g) = aeval (fun p => φ (z p)) g := by
@@ -166,7 +152,7 @@ theorem coe_aeval_birPoint (c : ∀ k, ι k) (hc : ∀ k, (X ⟨k, c k⟩ : MRin
     funext p
     exact div_eq_mul_inv _ _
   rw [hf] at h
-  exact h.trans (aeval_scale hg (coordClass P) fun k => (coordClass P ⟨k, c k⟩)⁻¹)
+  exact h.trans (BlockScaling.eval₂_mul_block_right (algebraMap ℤ _) (coordClass P) (fun k => (coordClass P ⟨k, c k⟩)⁻¹) hg)
 
 theorem prod_inv_ne_zero (c : ∀ k, ι k) (hc : ∀ k, (X ⟨k, c k⟩ : MRing ι) ∉ P) (a : K → ℕ) :
     ∏ k, (coordClass P ⟨k, c k⟩)⁻¹ ^ a k ≠ 0 :=
@@ -208,8 +194,7 @@ theorem mCoordIdeal_birPoint (hP : IsMultiHomogIdeal P) (c : ∀ k, ι k)
     show g ∈ RingHom.ker (mConeMap (birPoint c hc))
     rw [RingHom.mem_ker]
     show aeval (fun p => C (birPoint c hc p) * X p.1) g = 0
-    refine (aeval_scale ha (fun p => C (birPoint c hc p)) X).trans ?_
-    rw [← hom_aeval C, hy, map_zero, zero_mul]
+    rw [BlockScaling.aeval_cone_block (birPoint c hc) ha, hy, map_zero, zero_mul]
 
 theorem birational_birPoint (c : ∀ k, ι k) (hc : ∀ k, (X ⟨k, c k⟩ : MRing ι) ∉ P) :
     Birational (birPoint c hc) := by

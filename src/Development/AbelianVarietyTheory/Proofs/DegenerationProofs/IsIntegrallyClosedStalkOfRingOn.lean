@@ -47,7 +47,6 @@ open scoped CategoryTheory.Obj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.ZH
 open Classical
 
-noncomputable section
 namespace GlobalTheory.ZH
 namespace RatModel
 
@@ -141,4 +140,3 @@ theorem isNm_normal_and_div_prod : ∀ (o Ω : Type) [CommRing o] [Field Ω] [Al
     fun A _ JJ tt => RatModel.hasDiv_finprod_iff⟩
 
 end GlobalTheory.ZH
-end

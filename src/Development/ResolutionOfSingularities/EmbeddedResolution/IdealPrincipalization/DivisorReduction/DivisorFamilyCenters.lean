@@ -10,8 +10,6 @@ universe u
 
 open CategoryTheory AlgebraicGeometry
 
-noncomputable section
-
 namespace FunctorialResolution.EmbeddedResolution
 
 theorem divisorFamily_canonicalAlgorithmRules_eq_divisorReductionSeq (hres : FunctorialResolution.Blowup.StrictTransformIsBlowupOfClosedSubscheme.{u})
@@ -328,5 +326,3 @@ theorem divisorFamily_canonicalAlgorithmRules_orderAt_le_mult (hres : Functorial
   exact DivisorReduction.divisorReductionSeq_orderAt_le_mult hres hfacts n L j T hV hdim hO hD hj
 
 end FunctorialResolution.EmbeddedResolution
-
-end

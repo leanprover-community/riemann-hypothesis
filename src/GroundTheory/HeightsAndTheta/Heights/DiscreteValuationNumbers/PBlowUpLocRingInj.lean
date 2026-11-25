@@ -71,15 +71,8 @@ theorem mem_blowUpOf_of_isMultiHomog {P : Ideal (MRing ι R)} {u : J → MRing �
 theorem algebraMap_blowUpEval_ne_zero {P : Ideal (MRing ι R)} [P.IsPrime] {u : J → MRing ι R}
     {Q : Ideal (MRing (extIdx ι J) R)} (hle : blowUpOf P u ≤ Q) {G : MRing (extIdx ι J) R}
     {b : Option K → ℕ} (hG : IsMultiHomog G b) (hGQ : G ∉ Q) :
-    algebraMap (MRing ι R ⧸ P) (FractionRing (MRing ι R ⧸ P)) (blowUpEval P u G) ≠ 0 := by
-  intro h
-  have hmap : algebraMap (MRing ι R ⧸ P) (FractionRing (MRing ι R ⧸ P)) (blowUpEval P u G) =
-      algebraMap (MRing ι R ⧸ P) (FractionRing (MRing ι R ⧸ P)) 0 := by
-    rw [map_zero]
-    exact h
-  have hzero : blowUpEval P u G = 0 :=
-    IsFractionRing.injective (MRing ι R ⧸ P) (FractionRing (MRing ι R ⧸ P)) hmap
-  exact hGQ (hle (mem_blowUpOf_of_isMultiHomog hG hzero))
+    algebraMap (MRing ι R ⧸ P) (FractionRing (MRing ι R ⧸ P)) (blowUpEval P u G) ≠ 0 := fun h =>
+  hGQ (hle (mem_blowUpOf_of_isMultiHomog hG (IsFractionRing.to_map_eq_zero_iff.1 h)))
 
 theorem exists_eq_div_of_mem_blowUpLocRing {P : Ideal (MRing ι R)} [P.IsPrime] {u : J → MRing ι R}
     {Q : Ideal (MRing (extIdx ι J) R)} (hQ : Q.IsPrime) (hle : blowUpOf P u ≤ Q)

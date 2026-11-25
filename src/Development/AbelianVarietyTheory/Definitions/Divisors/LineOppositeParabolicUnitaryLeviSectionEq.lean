@@ -138,9 +138,7 @@ structure LeviDatum (G M : Type) [Group G] [TopologicalSpace G] [Group M] [Topol
 
   p : Q →* M
   s_mem : ∀ m, s m ∈ Q
-  p_s : ∀ m, p ⟨s m, s_mem m⟩ = m
   closed_Q : IsClosed (Q : Set G)
-  leviSection_continuous : Continuous s
   cont_p : Continuous p
 
 namespace LeviDatum
@@ -177,9 +175,7 @@ def restrict (H : Subgroup G) (hH : ∀ q : P.Q, (q : G) ∈ H → P.s (P.p q) �
   s := P.s.subgroupComap H
   p := ((P.p.comp ((H.subtype.subgroupComap P.Q)))).codRestrict _ fun q => hH _ q.1.2
   s_mem m := P.s_mem m
-  p_s m := Subtype.ext (P.p_s m)
   closed_Q := P.closed_Q.preimage continuous_subtype_val
-  leviSection_continuous := (P.leviSection_continuous.comp continuous_subtype_val).subtype_mk _
   cont_p := (P.cont_p.comp ((continuous_subtype_val.comp continuous_subtype_val).subtype_mk _)).subtype_mk _
 
 def comap {G' : Type} [Group G'] [TopologicalSpace G'] (e : G' ≃ₜ* G) : LeviDatum G' M where
@@ -189,11 +185,7 @@ def comap {G' : Type} [Group G'] [TopologicalSpace G'] (e : G' ≃ₜ* G) : Levi
   s_mem m := by
     show e (e.symm (P.s m)) ∈ P.Q
     rw [e.apply_symm_apply]; exact P.s_mem m
-  p_s m := by
-    refine Eq.trans (congrArg P.p (Subtype.ext ?_)) (P.p_s m)
-    exact e.apply_symm_apply _
   closed_Q := P.closed_Q.preimage e.continuous
-  leviSection_continuous := e.symm.continuous.comp P.leviSection_continuous
   cont_p := P.cont_p.comp ((e.continuous.comp continuous_subtype_val).subtype_mk _)
 
 variable [IsTopologicalGroup G] [LocallyCompactSpace G] [T1Space M]
@@ -288,12 +280,6 @@ theorem blockProj_val (b : n → α) (q : blockQ k b) : (blockProj b q).val = bl
 theorem blockProj_mem (b : n → α) (q : blockQ k b) : blockProj b q ∈ blockL k b :=
   fun i j h => by simp [blockProj_val, blockPart, h]
 
-theorem blockProj_of_mem (b : n → α) (q : blockQ k b) (h : (q : GL n k) ∈ blockL k b) : blockProj b q = q := by
-  ext i j
-  by_cases e : b i = b j
-  · simp [blockProj_val, blockPart, e]
-  · simp [blockProj_val, blockPart, e, h i j e]
-
 def diagHom (k n : Type) [Field k] [Fintype n] [DecidableEq n] : (n → kˣ) →* GL n k :=
   MonoidHom.toHomUnits
     { toFun := fun t => diagonal fun i => (t i : k)
@@ -360,9 +346,7 @@ def parIn (b : n → α) (H : Subgroup (GL n k)) (hH : ∀ q : blockQ k b, (q : 
   s := Subgroup.inclusion inf_le_left
   p := ((blockProj b).comp (H.subtype.subgroupComap _)).codRestrict _ fun q => ⟨hH _ q.1.2, blockProj_mem b _⟩
   s_mem m := blockL_le b m.2.2
-  p_s m := Subtype.ext (blockProj_of_mem b _ m.2.2)
   closed_Q := (isClosed_blockQ b).preimage continuous_subtype_val
-  leviSection_continuous := continuous_subtype_val.subtype_mk _
   cont_p := ((continuous_blockProj b).comp
     ((continuous_subtype_val.comp continuous_subtype_val).subtype_mk _)).subtype_mk _
 
@@ -371,11 +355,8 @@ def borelOf (k : Type) [Field k] [TopologicalSpace k] [IsTopologicalRing k] [T2S
   Q := blockQ k b
   s := diagHom k n
   p := diagEntries hb
-  s_mem m i j h := diagonal_apply_ne _ fun e => h.ne' (congrArg b e)
-  p_s m := by ext i; simp [diagEntries_val, diagHom_val]
+  s_mem _ _ _ h := diagonal_apply_ne _ fun e => h.ne' (congrArg b e)
   closed_Q := isClosed_blockQ b
-  leviSection_continuous := continuous_toHomUnits _ (Continuous.matrix_diagonal
-    (continuous_pi fun i => Units.continuous_val.comp (continuous_apply i)))
   cont_p := continuous_pi fun i => continuous_toHomUnits _ ((continuous_entry i i).comp continuous_subtype_val)
 
 def borelGL (k n : Type) [Field k] [TopologicalSpace k] [IsTopologicalRing k] [T2Space k] [Fintype n] [DecidableEq n]

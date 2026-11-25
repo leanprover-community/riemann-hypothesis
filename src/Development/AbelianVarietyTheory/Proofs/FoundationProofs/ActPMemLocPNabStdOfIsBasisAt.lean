@@ -13,8 +13,6 @@ import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 open NumberField IsDedekindDomain MvPolynomial Formalism.BasicNotions Formalism.L2.DIV Formalism.DivisionValues GlobalTheory.TestLat Formalism.L2.Indef.Tree.ArchimedeanLeafBounds.Cuts
 open scoped Matrix ComplexOrder
 
-noncomputable section
-
 namespace GlobalTheory.NabStab
 
 variable {K : Type} [Field K] [NumberField K] {n : ℕ}

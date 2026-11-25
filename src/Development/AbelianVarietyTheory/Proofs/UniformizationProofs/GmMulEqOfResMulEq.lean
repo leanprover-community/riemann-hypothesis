@@ -47,8 +47,6 @@ open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCate
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out
 open scoped CategoryTheory.Obj
 
-noncomputable section
-
 namespace GlobalTheory
 
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor

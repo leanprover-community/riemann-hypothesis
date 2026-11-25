@@ -1250,14 +1250,10 @@ theorem lev_mem (hc : ∀ x, c (c x) = x) (t : GL (Fin m) L) : lev L c m t ∈ P
     Matrix.transpose_zero, Matrix.map_zero _ (map_zero c), Matrix.mul_zero, Matrix.zero_mul,
     Matrix.mul_one, add_zero, zero_add, h1, h2]
 
-def un (X : Matrix (Fin m) (Fin m) L) : GL (Fin m ⊕ Fin m) L :=
-  ⟨fromBlocks 1 X 0 1, fromBlocks 1 (-X) 0 1, by simp [fromBlocks_multiply, fromBlocks_one],
-    by simp [fromBlocks_multiply, fromBlocks_one]⟩
-
 theorem un_val (X : Matrix (Fin m) (Fin m) L) :
-    ((un X : GL (Fin m ⊕ Fin m) L) : Matrix (Fin m ⊕ Fin m) (Fin m ⊕ Fin m) L) = fromBlocks 1 X 0 1 := rfl
+    ((PositivityTheory.Sph.M2.ZC.nU X : GL (Fin m ⊕ Fin m) L) : Matrix (Fin m ⊕ Fin m) (Fin m ⊕ Fin m) L) = fromBlocks 1 X 0 1 := rfl
 
-theorem un_mem {X : Matrix (Fin m) (Fin m) L} (h : X.map c = -Xᵀ) : un X ∈ PW L c m := by
+theorem un_mem {X : Matrix (Fin m) (Fin m) L} (h : X.map c = -Xᵀ) : PositivityTheory.Sph.M2.ZC.nU X ∈ PW L c m := by
   rw [mem_PW, un_val]
   refine ⟨?_, rfl⟩
   have hW : Wm L (Fin m) = fromBlocks (0 : Matrix (Fin m) (Fin m) L) 1 1 0 := rfl
@@ -1268,7 +1264,7 @@ theorem un_mem {X : Matrix (Fin m) (Fin m) L} (h : X.map c = -Xᵀ) : un X ∈ P
     Matrix.map_one _ (map_zero c) (map_one c), Matrix.mul_zero, Matrix.zero_mul,
     Matrix.mul_one, Matrix.one_mul, add_zero, zero_add, Matrix.mul_neg, neg_add_cancel, neg_zero]
 
-theorem un_mul (X Y : Matrix (Fin m) (Fin m) L) : un X * un Y = un (X + Y) := by
+theorem un_mul (X Y : Matrix (Fin m) (Fin m) L) : PositivityTheory.Sph.M2.ZC.nU X * PositivityTheory.Sph.M2.ZC.nU Y = PositivityTheory.Sph.M2.ZC.nU (X + Y) := by
   ext1
   rw [Units.val_mul, un_val, un_val, un_val, fromBlocks_multiply]
   simp [add_comm]
@@ -1277,7 +1273,7 @@ theorem zW_val (x : Lˣ) : ((zW L m x : GL (Fin m ⊕ Fin m) L) : Matrix (Fin m 
     fromBlocks ((x : L) • 1) 0 0 (((x⁻¹ : Lˣ) : L) • 1) := rfl
 
 theorem zW_un (x : Lˣ) (X : Matrix (Fin m) (Fin m) L) :
-    zW L m x * un X = un (((x : L) * x) • X) * zW L m x := by
+    zW L m x * PositivityTheory.Sph.M2.ZC.nU X = PositivityTheory.Sph.M2.ZC.nU (((x : L) * x) • X) * zW L m x := by
   have hx : (↑x⁻¹ : L) * (↑x * ↑x) = ↑x := by rw [← mul_assoc, Units.inv_mul, one_mul]
   ext1
   simp only [Units.val_mul, zW_val, un_val, fromBlocks_multiply, Matrix.mul_one, Matrix.one_mul,
@@ -1285,7 +1281,7 @@ theorem zW_un (x : Lˣ) (X : Matrix (Fin m) (Fin m) L) :
     smul_zero, hx]
 
 theorem decomp (hc : ∀ x, c (c x) = x) {p : GL (Fin m ⊕ Fin m) L} (hp : p ∈ PW L c m) :
-    ∃ (t : GL (Fin m) L) (X : Matrix (Fin m) (Fin m) L), X.map c = -Xᵀ ∧ p = lev L c m t * un X := by
+    ∃ (t : GL (Fin m) L) (X : Matrix (Fin m) (Fin m) L), X.map c = -Xᵀ ∧ p = lev L c m t * PositivityTheory.Sph.M2.ZC.nU X := by
   rw [mem_PW] at hp
   obtain ⟨hiso, h21⟩ := hp
   set P : Matrix (Fin m ⊕ Fin m) (Fin m ⊕ Fin m) L := (p : Matrix (Fin m ⊕ Fin m) (Fin m ⊕ Fin m) L) with hP
@@ -1448,7 +1444,7 @@ theorem gen : GenSt := by
   have m3 := un_mem hX
   have e1 := congrArg χ (zW_un x (r • X))
   rw [smul_smul] at e1
-  have e2 : un (r • X) = un ((ϖ * ϖ * r) • X) * un X := by
+  have e2 : PositivityTheory.Sph.M2.ZC.nU (r • X) = PositivityTheory.Sph.M2.ZC.nU ((ϖ * ϖ * r) • X) * PositivityTheory.Sph.M2.ZC.nU X := by
     rw [un_mul]
     congr 1
     have : r = ϖ * ϖ * r + 1 := by
@@ -1456,12 +1452,12 @@ theorem gen : GenSt := by
       rw [← hrd] at this
       linear_combination this
     conv_lhs => rw [this, add_smul, one_smul]
-  have e3 : χ (un (r • X)) = χ (un ((ϖ * ϖ * r) • X)) := by
+  have e3 : χ (PositivityTheory.Sph.M2.ZC.nU (r • X)) = χ (PositivityTheory.Sph.M2.ZC.nU ((ϖ * ϖ * r) • X)) := by
     rw [hmul _ hzm _ m1, hzx, one_mul] at e1
     rw [e1]
     exact (hmul _ m2 _ hzm).trans (by rw [hzx, mul_one])
   rw [e2, hmul _ m2 _ m3] at e3
-  have e4 : χ (un X) = 1 := mul_left_cancel₀ (hpos _ m2).ne' (e3.trans (mul_one _).symm)
+  have e4 : χ (PositivityTheory.Sph.M2.ZC.nU X) = 1 := mul_left_cancel₀ (hpos _ m2).ne' (e3.trans (mul_one _).symm)
   rw [hmul _ (lev_mem hc t) _ m3, e4, mul_one]
   exact hall t
 

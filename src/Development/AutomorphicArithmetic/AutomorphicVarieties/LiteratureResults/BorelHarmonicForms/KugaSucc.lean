@@ -8,11 +8,6 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.LiteratureR
 open NumberField Matrix GlobalTheory.CuspRep GlobalTheory.GKCoh UpperTheory.V.Af UpperTheory.V.AlgRepEndIrreducible UpperTheory.V.Lit UpperTheory.V.Lit.Bor
 open scoped TensorProduct
 
-private theorem ring_sq {R : Type} [Ring R] {x y : R} (h : Commute x y) : (y - x) * (x + y) = y * y - x * x := by
-  have h' := h.eq
-  rw [sub_mul, mul_add, mul_add, h']
-  abel
-
 private theorem ring_br {R : Type} [Ring R] {x y x' y' : R} (h : Commute x y') (h' : Commute x' y) :
     (x + y) * (y' - x') - (y' - x') * (x + y) = (y * y' - y' * y) - (x * x' - x' * x) := by
   simp only [sub_mul, mul_add, add_mul, mul_sub, h.eq, h'.eq]
@@ -24,8 +19,10 @@ theorem UpperTheory.V.Lit.Bor.kugaSucc :
   have hs : ∀ j, star (Complex.I • (e j).1) = -(Complex.I • (e j).1) := fun j => by
     have h : star (e j).1 = (e j).1 := (e j).2
     rw [star_smul, h, Complex.star_def, Complex.conj_I, neg_smul]
-  have hsq : ∀ (Z : Lie E a) (m : M), (B - A) Z ((A + B) Z m) = (B Z * B Z - A Z * A Z) m := fun Z m =>
-    LinearMap.congr_fun (ring_sq (hAB Z Z)) m
+  have hsq : ∀ (Z : Lie E a) (m : M), (B - A) Z ((A + B) Z m) = (B Z * B Z - A Z * A Z) m := by
+    intro Z m
+    rw [show (A + B) Z = B Z + A Z from add_comm (A Z) (B Z)]
+    exact LinearMap.congr_fun (hAB Z Z).symm.mul_self_sub_mul_self_eq'.symm m
   have hbr : ∀ (Y Z : Matrix (Fin a) (Fin a) (Cinf E)) (m : M),
       (A + B) (toL Y) ((B - A) (toL Z) m) - (B - A) (toL Z) ((A + B) (toL Y) m) =
         (B - A) (toL (Y * Z - Z * Y)) m := fun Y Z m => by

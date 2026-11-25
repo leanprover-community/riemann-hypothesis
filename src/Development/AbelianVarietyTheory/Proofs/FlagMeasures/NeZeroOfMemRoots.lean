@@ -44,8 +44,6 @@ import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.DetCharacte
 
 open Polynomial GlobalTheory.GLq GlobalTheory.GLp GlobalTheory.SerSys
 
-noncomputable section
-
 namespace GlobalTheory.SerSys.LabLoc
 
 open scoped Classical
@@ -107,4 +105,3 @@ theorem actK_one_of_mem {n : ℕ} {V : Type} [AddCommGroup V] [Module ℂ V]
   simpa using this
 
 end GlobalTheory.SerSys.LabLoc
-

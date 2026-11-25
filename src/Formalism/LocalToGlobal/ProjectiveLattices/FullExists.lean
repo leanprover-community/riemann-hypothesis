@@ -36,16 +36,9 @@ structure LawsFull (T : Full D) : Prop where
   j : LawsJ T.J
   sh : LawsSh T.toTop
 
-  canon : T.Q.Canon
-
   lvA : ∀ j, InR D j → ∀ n, (T.dδ j n).l₂.A = 1
 
   halfI : ∀ j, InR D j → ∀ n, (T.dδ j n).I = T.half₂
-
-  shUniq : ∀ j, InR D j → ∀ n (_ : StarRing (𝓞 D.host.E)) (nab' : NabV (T.dδ j n).Xo₂ (T.dδ j n).c₂),
-    IsNab (T.dδ j n).Xo₂ (T.dδ j n).c₂ nab' → ∀ a, Dom a n →
-      shortGen (T.Q.Xo j) T.Q.c (T.nab j) (badN D) D.R.nV a n { T.dδ j n with nab₂ := nab' } =
-        shortGen (T.Q.Xo j) T.Q.c (T.nab j) (badN D) D.R.nV a n (T.dδ j n)
 
   xiVal : ∀ j, InR D j → ∀ n, T.XiVal j n
 

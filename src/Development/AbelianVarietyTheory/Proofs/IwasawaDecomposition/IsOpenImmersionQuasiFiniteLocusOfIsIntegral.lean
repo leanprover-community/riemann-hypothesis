@@ -283,6 +283,7 @@ theorem existsUnique_hom_extension_of_dvr_of_preimmersion
     (hG : IsSemiAbelian G) (hG' : IsSemiAbelian G')
     (f : (Over.pullback j).obj G ⟶ (Over.pullback j).obj G') (hf : IsMonHom f) :
     ∃! F : G ⟶ G', IsMonHom F ∧ (Over.pullback j).map F = f := by
+  refine HomExt.existsUnique_hom_extension_of_graphClosure_lqf H j hX hG hG' f hf fun huφ hsurj key ↦ ?_
   have := hG.smooth
   have := hG'.smooth
   have := hG.quasiCompact
@@ -294,9 +295,6 @@ theorem existsUnique_hom_extension_of_dvr_of_preimmersion
   have : IsSchemeTheoreticallyDominant j := IsSchemeTheoreticallyDominant.of_isDominant j
   let u : pullback G.hom j ⟶ G.left := pullback.fst G.hom j
   let φ : pullback G.hom j ⟶ G'.left := f.left ≫ pullback.fst G'.hom j
-  have hw : f.left ≫ pullback.snd G'.hom j = pullback.snd G.hom j := Over.w f
-  have huφ : u ≫ G.hom = φ ≫ G'.hom := by
-    rw [Category.assoc, pullback.condition, pullback.condition, reassoc_of% hw]
   have : IsDominant u := isDominant_pullback_fst_of_isOpenMap j G.hom G.hom.isOpenMap
   have : IsPreimmersion u := inferInstanceAs (IsPreimmersion (pullback.fst G.hom j))
   have : Flat u := inferInstanceAs (Flat (pullback.fst G.hom j))
@@ -322,61 +320,10 @@ theorem existsUnique_hom_extension_of_dvr_of_preimmersion
   have : IsSeparated p := graphClosure.isSeparated_fst ..
   have : IsLocallyNoetherian G.left := LocallyOfFiniteType.isLocallyNoetherian G.hom
   have : IsLocallyNoetherian Γ := LocallyOfFiniteType.isLocallyNoetherian p
-  have : Surjective p := by
-    refine ⟨fun σ ↦ ?_⟩
-    rcases mem_range_or_exists_dvr u σ with ⟨w, rfl⟩ | ⟨T, _, _, _, a, c, hc, rfl⟩
-    · exact ⟨i w, by rw [← Scheme.Hom.comp_apply, hip]⟩
-    obtain ⟨F, s, -, -, hs₂, hs⟩ := exists_hom_along_dvr H j hG hG' f T _ a c hc
-    have := schemeTheoreticallyDominant_fractionField T (FractionRing T)
-    have hF : F.left ≫ pullback.snd G'.hom (a ≫ G.hom) = pullback.snd G.hom (a ≫ G.hom) := Over.w F
-    obtain ⟨l, ⟨hl, -⟩, -⟩ := graphClosure.existsUnique_lift G.hom G'.hom u φ huφ a
-      (s ≫ F.left ≫ pullback.fst G'.hom (a ≫ G.hom))
-      (by rw [Category.assoc, Category.assoc, pullback.condition, reassoc_of% hF, reassoc_of% hs₂])
-      (spMap (algebraMap T (FractionRing T))) c hc.symm hs
-    exact ⟨l (IsLocalRing.closedPoint T), by rw [← hl]; rfl⟩
   let Γ' : Over X := Over.mk (p ≫ G.hom)
   let p' : Γ' ⟶ G := Over.homMk p rfl
   let q' : Γ' ⟶ G' := Over.homMk q hpq.symm
   have : LocallyOfFiniteType p'.left := ‹LocallyOfFiniteType p›
-  have key : ∀ (k : Type) [Field k] (x : Sp k ⟶ Γ'.left) (n : ℕ),
-      x ≫ (p' ^ n).left = x ≫ (1 : Γ' ⟶ G).left → x ≫ (q' ^ n).left = x ≫ (1 : Γ' ⟶ G').left := by
-    intro k _ x n hx
-    rcases mem_range_or_exists_dvr i (x default) with hw | ⟨T, _, _, _, a, c, hc, ha⟩
-    · obtain ⟨c, rfl⟩ := exists_lift_of_range_subset i x (by
-        rintro _ ⟨t, rfl⟩
-        rwa [Subsingleton.elim t default])
-      exact comp_pow_eq_one_of_pullback_hom j f p' q' _ c
-        (by rw [Category.assoc]; exact congrArg (c ≫ ·) hip.symm)
-        (by rw [Category.assoc]; exact congrArg (c ≫ ·) hiq.symm) n hx
-    obtain ⟨F, s, _, hs₁, hs₂, hs⟩ := exists_hom_along_dvr H j hG hG' f T _ (a ≫ p) c
-      (by rw [← reassoc_of% hc, hip])
-    have := schemeTheoreticallyDominant_fractionField T (FractionRing T)
-    have hF : F.left ≫ pullback.snd G'.hom ((a ≫ p) ≫ G.hom) =
-      pullback.snd G.hom ((a ≫ p) ≫ G.hom) := Over.w F
-    have hb : s ≫ F.left ≫ pullback.fst G'.hom ((a ≫ p) ≫ G.hom) = a ≫ q := by
-      have := over_ext_of_schemeTheoreticallyDominant (Y := Over.mk ((a ≫ p) ≫ G.hom)) (X := G')
-        (spMap (algebraMap T (FractionRing T)))
-        (a := Over.homMk (s ≫ F.left ≫ pullback.fst G'.hom ((a ≫ p) ≫ G.hom)) (by
-          change (s ≫ F.left ≫ pullback.fst G'.hom ((a ≫ p) ≫ G.hom)) ≫ G'.hom = (a ≫ p) ≫ G.hom
-          rw [Category.assoc s, Category.assoc F.left, pullback.condition, reassoc_of% hF,
-            reassoc_of% hs₂]))
-        (b := Over.homMk (a ≫ q) (by
-          change (a ≫ q) ≫ G'.hom = (a ≫ p) ≫ G.hom
-          rw [Category.assoc, Category.assoc, hpq]))
-        (hs.trans (by
-          change _ = spMap (algebraMap T (FractionRing T)) ≫ a ≫ q
-          rw [← reassoc_of% hc, hiq]))
-      exact congrArg CommaMorphism.left this
-    let r : Sp (IsLocalRing.ResidueField T) ⟶ Sp T := spMap (IsLocalRing.residue T)
-    have hr : x default ∈ Set.range (r ≫ a) := by
-      refine ⟨IsLocalRing.closedPoint _, ?_⟩
-      exact (Scheme.Hom.comp_apply r a _).trans
-        ((congrArg a (IsLocalRing.comap_closedPoint (IsLocalRing.residue T))).trans ha)
-    rw [field_point_comp_eq_iff _ _ x _ ⟨default, rfl⟩,
-      ← field_point_comp_eq_iff (Z := Γ'.left) _ _ (r ≫ a) _ hr] at hx ⊢
-    exact comp_pow_eq_one_of_pullback_hom _ F p' q' (r ≫ a) (r ≫ s)
-      (by rw [Category.assoc, hs₁, Category.assoc]; rfl)
-      (by rw [Category.assoc, hb, Category.assoc]; rfl) n hx
   have : IsPreimmersion (i ≫ p) := by rwa [hip]
   have : Flat (i ≫ p) := by rwa [hip]
   have : IsDominant (i ≫ p) := by rwa [hip]
@@ -553,19 +500,8 @@ theorem existsUnique_hom_extension_of_dvr_of_preimmersion
     rw [Subsingleton.elim s₂ s₁]
     simp only [← Scheme.Hom.comp_apply]
     rw [hl]
-  have : LocallyQuasiFinite p := locallyQuasiFinite_iff_finite_preimage_singleton.mpr fun σ ↦
+  exact locallyQuasiFinite_iff_finite_preimage_singleton.mpr fun σ ↦
     Set.Subsingleton.finite fun a ha b hb ↦ hinj a b (ha.trans hb.symm)
-  have : IsIso p := isIso_of_densePart i p
-  obtain ⟨ψ, hψ, huψ⟩ := graphClosure.exists_extension_of_isIso_fst G.hom G'.hom u φ huφ
-  let F : G ⟶ G' := Over.homMk ψ hψ.symm
-  have hF : (Over.pullback j).map F = f := by
-    ext1
-    apply pullback.hom_ext
-    · exact (pullback.lift_fst _ _ _).trans huψ
-    · exact (Over.w _).trans hw.symm
-  refine ⟨F, ⟨?_, hF⟩, fun F' hF' ↦ pullback_map_injective_of_flat j (hF'.2.trans hF.symm)⟩
-  have : IsMonHom ((Over.pullback j).map F) := hF ▸ hf
-  exact isMonHom_of_pullback_of_flat j F
 
 theorem existsUnique_hom_extension_of_dvr
     (H : (∀ (T K : Type) [CommRing T] [IsDomain T] [IsDiscreteValuationRing T] [Field K]

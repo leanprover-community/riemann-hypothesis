@@ -7,8 +7,6 @@ public import CompanionTheory.AutomorphicTheory.BesselOrbitBounds.BesselMapUniqu
 
 open Matrix Formalism.QuantumDeterminants CompanionTheory.Bmu
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.BmuDecomp
 
 section general

@@ -8,8 +8,6 @@ import Formalism.PeriodIntegrals.PhMeasCore
 
 open Matrix Filter Topology Set
 
-noncomputable section
-
 namespace CompanionTheory.D.Upq.Sm
 
 open PI.PhMeasCore
@@ -52,5 +50,3 @@ theorem repOn_of_conj {J Hm P : Mat n} {σ : Mat n → (H →L[ℂ] H)} (hP : Is
     simp
 
 end CompanionTheory.D.Upq.Sm
-
-end

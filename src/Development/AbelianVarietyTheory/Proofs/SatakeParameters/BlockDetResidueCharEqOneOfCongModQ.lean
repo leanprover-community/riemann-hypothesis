@@ -7,8 +7,6 @@ public import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.RedPEq
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.DIV Formalism.L2.Col
 
-noncomputable section
-
 namespace GlobalTheory.LamQBCong
 
 open GlobalTheory.TopStep

@@ -36,10 +36,8 @@ theorem eq_one_of_unit_unif {B : Type} [Group B] (v : HeightOneSpectrum (𝓞 E)
   obtain ⟨π, hπ⟩ := HeightOneSpectrum.valuation_exists_uniformizer E v
   have hv : Valued.v ((π : E) : v.adicCompletion E) = WithZero.exp (-1) := by
     rw [HeightOneSpectrum.valuedAdicCompletion_eq_valuation', hπ]
-  have hπ0 : ((π : E) : v.adicCompletion E) ≠ 0 := by
-    intro h
-    rw [h, map_zero] at hv
-    exact WithZero.exp_ne_zero hv.symm
+  have hπ0 : ((π : E) : v.adicCompletion E) ≠ 0 :=
+    (Valuation.ne_zero_iff _).1 (by rw [hv]; exact WithZero.exp_ne_zero)
   let p : (v.adicCompletion E)ˣ := Units.mk0 _ hπ0
   have hpv : Valued.v (p : v.adicCompletion E) = WithZero.exp (-1) := hv
   have hfp : f p = 1 := hp p hpv

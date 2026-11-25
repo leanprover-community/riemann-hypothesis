@@ -52,15 +52,6 @@ private theorem restrict_basicOpen_mem_nonZeroDivisors {W : Scheme.{u}} (P : W.a
       (S := Γ(W, W.basicOpen d)) hu
   rwa [halg] at h
 
-private theorem mem_nonZeroDivisors_of_dvd {R : Type u} [CommRing R] {a b : R}
-    (hb : b ∈ nonZeroDivisors R) (hab : a ∣ b) : a ∈ nonZeroDivisors R := by
-  obtain ⟨c, hc⟩ := hab
-  have key : ∀ z : R, a * z = 0 → z = 0 := by
-    intro z hz
-    refine (mem_nonZeroDivisors_iff.mp hb).1 z ?_
-    rw [hc, mul_assoc, mul_comm c z, ← mul_assoc, hz, zero_mul]
-  exact mem_nonZeroDivisors_iff.mpr ⟨key, fun z hz => key z (by rw [mul_comm]; exact hz)⟩
-
 private theorem eq_zero_of_locally_eq_zero {W : Scheme.{u}} (U : W.Opens) (x : Γ(W, U))
     (h : ∀ w ∈ U, ∃ (P : W.Opens) (hP : P ≤ U), w ∈ P ∧
       (W.presheaf.map (homOfLE hP).op).hom x = 0) : x = 0 := by
@@ -254,7 +245,8 @@ theorem isBlowupAlongIdealSheaf_strictTransformLiftOfClosedImmersion {X X₁ S :
           rw [← hPspan', hPspan]
           exact Ideal.mem_span_singleton_self _
         exact Ideal.mem_span_singleton.mp hmem
-      have htnzd := mem_nonZeroDivisors_of_dvd hu'nzd hdvd
+      obtain ⟨e, he⟩ := hdvd
+      have htnzd := (mul_mem_nonZeroDivisors.1 (he ▸ hu'nzd)).1
       have hpownzd := Submonoid.pow_mem (nonZeroDivisors _) htnzd n
       have happLE : (Scheme.Hom.appLE a ((X₁.affineBasicOpen c : X₁.affineOpens) : X₁.Opens)
             ((W.affineBasicOpen d : W.affineOpens) : W.Opens) hdle').hom

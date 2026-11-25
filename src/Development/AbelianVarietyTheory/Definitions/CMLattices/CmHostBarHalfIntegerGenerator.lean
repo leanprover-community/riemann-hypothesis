@@ -9,7 +9,6 @@ open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.GeometryOfNumbersTheory
 open scoped CategoryTheory.Obj
 
-noncomputable section
 namespace GlobalTheory.CM.Test
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E}
@@ -66,4 +65,3 @@ theorem hasType_neg {ρ : 𝓞 K} (hρ : ρ ^ 2 = -(H.d : 𝓞 K)) {G : Over (Sp
       exact eq_neg_of_add_eq_zero_left h0
 
 end GlobalTheory.CM.Test
-end

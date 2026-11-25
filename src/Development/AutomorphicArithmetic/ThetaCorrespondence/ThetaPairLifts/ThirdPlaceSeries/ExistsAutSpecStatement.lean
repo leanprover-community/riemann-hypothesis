@@ -1221,7 +1221,6 @@ theorem GlobalTheory.AutPart.exists_autSpec_alt : GlobalTheory.Published.GlobalA
     chi_mu := fun i w hw => _root_.GlobalTheory.AutPart.chiMu_unr_frob_alt hArt D cf jE A low Pq S hL eig θ Bs M C tp hCS hMI hstar hE hsp hCh hψ big X T Sp i (μ i) (hμc i) (hμ i) w hw
     kFbar := κ }, {
     embAV := fun i P => (A.au.cls (X.nd.j i) (X.nd.j_range i).1 (X.nd.j_range i).2 { (mlX M X i).wt with S := F i P, irrS := irr i P })
-    embAV_inj := fun i P P' h => hinj i P P' ((A.au.iso _ _ _ _ _).1 h).2
     embAV_loc := fun _ _ _ => rfl
     embAV_sat := fun _ _ _ => rfl
     embAV_sph := fun i P w hw => haveI := hfin i; _root_.GlobalTheory.SphNonSplit.sphAU_of_not_split_m_alt D cf jE A low Pq S hL eig θ Bs M C tp hCS hMI hstar hE hsp hCh big X T Sp i (ι i) (F i) (irr i) (hinj i) (hsurj i) (hne i) (hind i) (htop i) P w hw

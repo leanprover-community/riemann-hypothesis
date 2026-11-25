@@ -4,6 +4,7 @@ public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.EqZeroOfBrau
 import GroundTheory.ProfiniteCohomology.Factor
 import GroundTheory.ProfiniteCohomology.FilteredHomology
 import GroundTheory.ProfiniteCohomology.InflationRestriction.DegreeOne
+import GroundTheory.ProfiniteCohomology.GlobalClassFormation.IdeleLimits.LevelsColimit
 import GroundTheory.ProfiniteCohomology.CohomologyFunctoriality.Naturality
 
 -- This file was produced by scripts/clump.py from the modules listed below.
@@ -84,91 +85,33 @@ abbrev unitsLevelCochainsInfl (p : GLevel K) :
   cochainsMapAlong restrictHom continuous_restrictHom (unitsLevelMor K p.1)
 
 theorem unitsLevelCochains_injective (p : GLevel K) (m : ℕ) :
-    Function.Injective ((unitsLevelCochainsInfl p).f m).hom := by
-  intro y y' h
-  apply (ModuleCat.mono_iff_injective ((cochainsComplexι (galUnitsZ K.1 p.1.1)).f m)).1 inferInstance
-  funext τ
-  let σ : Fin m → K.1.fixingSubgroup := fun i =>
-    Function.surjInv (restrictHom_surjective (F := K) (E := p.1)) (τ i)
-  have hσ : (fun i => restrictHom (E := p.1) (σ i)) = τ :=
-    funext fun i => Function.surjInv_eq (restrictHom_surjective (F := K) (E := p.1)) (τ i)
-  have h1 := congrFun (congrArg (fun c => ((cochainsComplexι (unitsLimitRep K)).f m).hom c) h) σ
-  simp only at h1
-  change Additive.ofMul (IdeleLimit.unitsIncl p.1 (((cochainsComplexι _).f m).hom y
-      (fun i => restrictHom (E := p.1) (σ i))).toMul) =
-    Additive.ofMul (IdeleLimit.unitsIncl p.1 (((cochainsComplexι _).f m).hom y'
-      (fun i => restrictHom (E := p.1) (σ i))).toMul) at h1
-  rw [hσ] at h1
-  exact congrArg Additive.ofMul (IdeleLimit.unitsIncl_injective p.1 (congrArg Additive.toMul h1))
+    Function.Injective ((unitsLevelCochainsInfl p).f m).hom :=
+  cochainsMapAlong_restrictHom_injective p (unitsLevelMor K p.1)
+    (fun _ _ h => congrArg Additive.ofMul (IdeleLimit.unitsIncl_injective p.1 (congrArg Additive.toMul h))) m
 
 theorem exists_unitsLevelCochains_eq (m : ℕ) (x : (cochainsComplex (unitsLimitRep K)).X m) :
     ∃ (p : GLevel K) (y : (cochainsComplex (galUnitsZ K.1 p.1.1)).X m),
-      ((unitsLevelCochainsInfl p).f m).hom y = x := by
-  classical
-  have hx : IsLocallyConstant (((cochainsComplexι (unitsLimitRep K)).f m).hom x :
-      (Fin m → K.1.fixingSubgroup) → unitsLimitRep K) :=
-    (show locallyConstantCochains (unitsLimitRep K) m from x).2
-  set f := ((cochainsComplexι (unitsLimitRep K)).f m).hom x with hf
-  obtain ⟨U, hU⟩ := exists_openNormalSubgroup_fin_of_isLocallyConstant hx
-  obtain ⟨t, ht, htU⟩ := isOpen_induced_iff.1 U.isOpen
-  have h1t : (1 : (AlgebraicClosure ℚ) ≃ₐ[ℚ] (AlgebraicClosure ℚ)) ∈ t := by
-    have : (1 : K.1.fixingSubgroup) ∈ Subtype.val ⁻¹' t := by
-      rw [htU]
-      exact U.one_mem
-    exact this
-  obtain ⟨E₀, hE₀fin, hE₀⟩ := (krullTopology_mem_nhds_one_iff ℚ (AlgebraicClosure ℚ) t).1 (ht.mem_nhds h1t)
-  have hfin : (Set.range f).Finite := hx.range_finite
-  choose idx x' hx' using fun a : unitsLimitRep K => IdeleLimit.exists_unitsIncl (Additive.toMul a)
-  choose lev hlev using fun E : FiniteSubfield => GLevel.exists_le (K := K) E
-  obtain ⟨p, hp⟩ := Finset.exists_le ((hfin.toFinset.image fun a => lev (idx a)) ∪
-    {lev ⟨E₀, hE₀fin⟩})
-  have hpE₀ : E₀ ≤ p.1.1 := (hlev ⟨E₀, hE₀fin⟩).trans
-    (hp _ (Finset.mem_union_right _ (Finset.mem_singleton_self _)))
-  have hker : ∀ g : K.1.fixingSubgroup, restrictHom (E := p.1) g = 1 → g ∈ U := by
-    intro g hg
-    have hg' : g ∈ p.1.1.fixingSubgroup.subgroupOf K.1.fixingSubgroup := by
-      rw [← ker_restrictHom, MonoidHom.mem_ker]
-      exact hg
-    rw [Subgroup.mem_subgroupOf] at hg'
-    have : g ∈ Subtype.val ⁻¹' t := hE₀ (IntermediateField.fixingSubgroup_le hpE₀ hg')
-    rw [htU] at this
-    exact this
-  have hval : ∀ g, ∃ z : p.1.1ˣ, IdeleLimit.unitsIncl p.1 z = Additive.toMul (f g) := by
-    intro g
-    have hmem : f g ∈ hfin.toFinset := by simp
-    have hle : idx (f g) ≤ p.1 := (hlev (idx (f g))).trans
-      (hp _ (Finset.mem_union_left _ (Finset.mem_image_of_mem _ hmem)))
-    let := algebraOfLE hle
-    refine ⟨Units.map (algebraMap (idx (f g)).1 p.1.1 : (idx (f g)).1 →* p.1.1) (x' (f g)), ?_⟩
-    exact (Units.ext rfl : IdeleLimit.unitsIncl p.1 _ = IdeleLimit.unitsIncl (idx (f g)) (x' (f g))).trans
-      (hx' (f g))
-  choose z hz using hval
-  let lift : (Fin m → (p.1.1 ≃ₐ[K.1] p.1.1)) → Fin m → K.1.fixingSubgroup := fun τ i =>
-    Function.surjInv (restrictHom_surjective (F := K) (E := p.1)) (τ i)
-  refine ⟨p, ⟨fun τ => Additive.ofMul (z (lift τ)), IsLocallyConstant.of_discrete _⟩, ?_⟩
-  apply (ModuleCat.mono_iff_injective ((cochainsComplexι (unitsLimitRep K)).f m)).1 inferInstance
-  funext g
-  change Additive.ofMul (IdeleLimit.unitsIncl p.1 (z (lift fun i => restrictHom (E := p.1) (g i)))) = f g
-  rw [hz]
-  refine hU _ _ fun i => hker _ ?_
-  rw [map_mul, map_inv, Function.surjInv_eq (restrictHom_surjective (F := K) (E := p.1)),
-    inv_mul_cancel]
+      ((unitsLevelCochainsInfl p).f m).hom y = x :=
+  exists_cochainsMapAlong_restrictHom_eq (fun p => galUnitsZ K.1 p.1.1) (fun p => unitsLevelMor K p.1)
+    (fun a => by
+      obtain ⟨E, x', hx'⟩ := IdeleLimit.exists_unitsIncl (Additive.toMul a)
+      exact ⟨E, fun p hle => by
+        let := algebraOfLE hle
+        exact ⟨Additive.ofMul (Units.map (algebraMap E.1 p.1.1 : E.1 →* p.1.1) x'), by
+          change Additive.ofMul (IdeleLimit.unitsIncl p.1 _) = a
+          rw [(Units.ext rfl : IdeleLimit.unitsIncl p.1 _ = IdeleLimit.unitsIncl E x'), hx']; rfl⟩⟩) m x
 
 theorem exists_unitsLevelInfl_eq (n : ℕ) (x : cohomology (unitsLimitRep K) n) :
-    ∃ (p : GLevel K) (y : cohomology (galUnitsZ K.1 p.1.1) n), (unitsLevelInfl K p.1 n).hom y = x := by
-  obtain ⟨z, rfl⟩ := (ModuleCat.epi_iff_surjective
-    ((cochainsComplex (unitsLimitRep K)).homologyπ n)).1 inferInstance x
-  obtain ⟨p, y₀, hy₀⟩ := exists_unitsLevelCochains_eq n
-    (((cochainsComplex (unitsLimitRep K)).iCycles n).hom z)
-  have hd : ((cochainsComplex (galUnitsZ K.1 p.1.1)).d n (n + 1)).hom y₀ = 0 := by
-    apply unitsLevelCochains_injective p (n + 1)
-    rw [map_zero, hom_f_d_apply, hy₀]
-    exact iCycles_d_apply _ n (n + 1) z
-  obtain ⟨w, hw⟩ := exists_iCycles_eq_of_d_eq_zero _ n y₀ hd
-  refine ⟨p, ((cochainsComplex (galUnitsZ K.1 p.1.1)).homologyπ n).hom w, ?_⟩
-  refine (homologyMap_homologyπ_apply (unitsLevelCochainsInfl p) n w).trans (congrArg _ ?_)
-  apply (ModuleCat.mono_iff_injective ((cochainsComplex (unitsLimitRep K)).iCycles n)).1 inferInstance
-  rw [iCycles_cyclesMap_apply, hw, hy₀]
+    ∃ (p : GLevel K) (y : cohomology (galUnitsZ K.1 p.1.1) n), (unitsLevelInfl K p.1 n).hom y = x :=
+  exists_cohomologyMapAlong_restrictHom_eq (fun p => galUnitsZ K.1 p.1.1) (fun p => unitsLevelMor K p.1)
+    (fun p _ _ h => congrArg Additive.ofMul (IdeleLimit.unitsIncl_injective p.1 (congrArg Additive.toMul h)))
+    (fun a => by
+      obtain ⟨E, x', hx'⟩ := IdeleLimit.exists_unitsIncl (Additive.toMul a)
+      exact ⟨E, fun p hle => by
+        let := algebraOfLE hle
+        exact ⟨Additive.ofMul (Units.map (algebraMap E.1 p.1.1 : E.1 →* p.1.1) x'), by
+          change Additive.ofMul (IdeleLimit.unitsIncl p.1 _) = a
+          rw [(Units.ext rfl : IdeleLimit.unitsIncl p.1 _ = IdeleLimit.unitsIncl E x'), hx']; rfl⟩⟩) n x
 
 end Colimit
 

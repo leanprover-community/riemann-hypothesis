@@ -69,23 +69,13 @@ theorem span_inf_eigSp : ∀ (F : Type) [Field F] [NumberField F] (Ω Ω' : Type
   · intro x hx
     obtain ⟨hx1, hx2⟩ := Submodule.mem_inf.1 hx
     have hx2' : x ∈ eigSp ρ' (i.comp σ) := hx2
-    have key : ∀ y ∈ Submodule.span R' (j '' (L : Set V)), P' y ∈ Submodule.span R'
+    have h2 : P'.restrictScalars R' x ∈ Submodule.span R'
         (j '' ((L ⊓ (eigSp ρ σ).restrictScalars R : Submodule R V) : Set V)) := by
-      intro y hy
-      induction hy using Submodule.span_induction with
-      | mem y hy =>
-        obtain ⟨e, he, rfl⟩ := hy
-        rw [hjP]
-        exact Submodule.subset_span ⟨P e, Submodule.mem_inf.2 ⟨hPL e he, hPeig e⟩, rfl⟩
-      | zero => rw [map_zero]; exact Submodule.zero_mem _
-      | add y z _ _ hy hz => rw [map_add (f := _)]; exact Submodule.add_mem _ hy hz
-      | smul r y _ hy =>
-        have h1 : P' (r • y) = r • P' y := by
-          rw [Subring.smul_def, Subring.smul_def, map_smul]
-        rw [h1]
-        exact Submodule.smul_mem _ r hy
-    have h2 := key x hx1
-    rwa [hP'id x hx2'] at h2
+      refine Submodule.mapsTo_span (f := P'.restrictScalars R') ?_ hx1
+      rintro _ ⟨e, he, rfl⟩
+      rw [LinearMap.restrictScalars_apply, hjP]
+      exact ⟨P e, Submodule.mem_inf.2 ⟨hPL e he, hPeig e⟩, rfl⟩
+    rwa [LinearMap.restrictScalars_apply, hP'id x hx2'] at h2
   · rw [Submodule.span_le]
     rintro _ ⟨e, he, rfl⟩
     obtain ⟨he1, he2⟩ := Submodule.mem_inf.1 he

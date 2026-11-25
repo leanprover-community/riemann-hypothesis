@@ -17,45 +17,6 @@ public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.SmulEq
 public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.CharLem
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.UnitaryHeckeCharacterValues
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.CmBaseFieldIntegersAndCurveIdealFacts
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IsOpenNsmulAdelicCompletionOfVectorSet
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.VacTheta
@@ -325,28 +286,10 @@ theorem exists_nsmul_kill {F : Type} [Field F] [NumberField F] {ψ : AddChar (AF
       (show N • (α * (c i).2) = (N • α) * (c i).2 from (smul_mul_assoc N α _).symm)
   rw [e, h1]
 
-def kerSub {A : Type} [AddCommGroup A] (ψ : AddChar A ℂ) : AddSubgroup A where
-  carrier := {a | ψ a = 1}
-  zero_mem' := ψ.map_zero_eq_one
-  add_mem' {a b} ha hb := by
-    have ha' : ψ a = 1 := ha
-    have hb' : ψ b = 1 := hb
-    show ψ (a + b) = 1
-    rw [AddChar.map_add_eq_mul, ha', hb', one_mul]
-  neg_mem' {a} ha := by
-    have ha' : ψ a = 1 := ha
-    show ψ (-a) = 1
-    have := AddChar.map_add_eq_mul ψ a (-a)
-    rw [add_neg_cancel, ψ.map_zero_eq_one, ha', one_mul] at this
-    exact this.symm
-
 variable {D : D7}
 
-noncomputable def finIncl (D : D7) : Af D.host.F ⊗[D.host.F] D.host.E →ₗ[D.host.F] AE D :=
-  TensorProduct.map (LinearMap.inr D.host.F (Ainf D.host.F) (Af D.host.F)) LinearMap.id
-
-theorem finIncl_finPart {a : AE D} (h : infPart D a = 0) : finIncl D (finPart D a) = a := by
-  have key : ∀ a : AE D, (1 - GlobalTheory.FinTranslate.eInf D) • a = finIncl D (finPart D a) := by
+theorem finIncl_finPart {a : AE D} (h : infPart D a = 0) : Formalism.IndefR.Fin.jF D (finPart D a) = a := by
+  have key : ∀ a : AE D, (1 - GlobalTheory.FinTranslate.eInf D) • a = Formalism.IndefR.Fin.jF D (finPart D a) := by
     intro a
     induction a using TensorProduct.induction_on with
     | zero => simp only [smul_zero, map_zero]
@@ -370,24 +313,24 @@ theorem exists_nsmul_kill_forms {ψ : AddChar (AF D.host.F) ℂ} (hc : Continuou
       lam p.1 ((1 : AF D.host.F) ⊗ₜ[D.host.F] (algebraMap (𝓞 D.host.E) D.host.E (w p.2))))
   refine ⟨N, hN, fun i a ha hint => ?_⟩
   let g : D.host.E ⊗[D.host.F] Af D.host.F →+ AF D.host.F :=
-    N • ((lam i).toAddMonoidHom.comp ((finIncl D).toAddMonoidHom.comp
+    N • ((lam i).toAddMonoidHom.comp ((Formalism.IndefR.Fin.jF D).toAddMonoidHom.comp
       (TensorProduct.comm D.host.F D.host.E (Af D.host.F)).toLinearMap.toAddMonoidHom))
-  have hg : ∀ y, g (Lev.swapAE D y) = N • lam i (finIncl D y) := by
+  have hg : ∀ y, g (Lev.swapAE D y) = N • lam i (Formalism.IndefR.Fin.jF D y) := by
     intro y
     have : TensorProduct.comm D.host.F D.host.E (Af D.host.F) (Lev.swapAE D y) = y :=
       (TensorProduct.comm D.host.F (Af D.host.F) D.host.E).symm_apply_apply y
-    show N • lam i (finIncl D (TensorProduct.comm D.host.F D.host.E (Af D.host.F) (Lev.swapAE D y))) = _
+    show N • lam i (Formalism.IndefR.Fin.jF D (TensorProduct.comm D.host.F D.host.E (Af D.host.F) (Lev.swapAE D y))) = _
     rw [this]
   have h1 : Lev.swapAE D (finPart D a) ∈ Formalism.L2.Herm.intAf D.host.F D.host.E := by
     have := (GlobalTheory.BotClassDict.toAfE_int_iff _).2 hint
     rwa [GlobalTheory.BotClassDict.toAfE_finQ] at this
-  have h2 : Lev.swapAE D (finPart D a) ∈ (kerSub ψ).comap g := by
+  have h2 : Lev.swapAE D (finPart D a) ∈ (GlobalTheory.LatVac.kerChar ψ).comap g := by
     refine tensInt_le _ _ _ ?_ h1
     rintro _ ⟨b, rfl⟩ α hα
     let φ : 𝓞 D.host.E →+ D.host.E ⊗[D.host.F] Af D.host.F :=
       ((TensorProduct.mk D.host.F D.host.E (Af D.host.F)).flip α).toAddMonoidHom.comp
         (algebraMap (𝓞 D.host.E) D.host.E).toAddMonoidHom
-    have hb : b ∈ (((kerSub ψ).comap g).comap φ).toIntSubmodule := by
+    have hb : b ∈ (((GlobalTheory.LatVac.kerChar ψ).comap g).comap φ).toIntSubmodule := by
       have hsp : b ∈ Submodule.span ℤ (Set.range w) := by rw [w.span_eq]; trivial
       refine Submodule.span_le.2 ?_ hsp
       rintro _ ⟨k, rfl⟩
@@ -410,7 +353,7 @@ theorem char_sympl_nsmul_int : ∀ {D : D7} (ψ : AddChar (AF D.host.F) ℂ), Co
   obtain ⟨N, hN, h⟩ := exists_nsmul_kill_forms hc hn
     (fun p : Fin T.rank × Fin S.rank => (symplR S T A0).comp (Matrix.singleLinearMap (AF D.host.F) p.1 p.2))
   refine ⟨N, hN, fun v hv hint => ?_⟩
-  show symplR S T A0 (N • v) ∈ kerSub ψ
+  show symplR S T A0 (N • v) ∈ GlobalTheory.LatVac.kerChar ψ
 
   rw [map_nsmul, Matrix.matrix_eq_sum_single v, map_sum, Finset.smul_sum]
   refine sum_mem fun i _ => ?_
@@ -483,13 +426,10 @@ namespace GlobalTheory.MovedTrChar
 open GlobalTheory.BotClassDict (finQ finStd)
 open scoped TensorProduct
 
-def secF (D : D7) : Af D.host.F ⊗[D.host.F] D.host.E →ₗ[D.host.F] AE D :=
-  TensorProduct.map (LinearMap.inr D.host.F (Ainf D.host.F) (Af D.host.F)) LinearMap.id
-
 def secI (D : D7) : Ainf D.host.F ⊗[D.host.F] D.host.E →ₗ[D.host.F] AE D :=
   TensorProduct.map (LinearMap.inl D.host.F (Ainf D.host.F) (Af D.host.F)) LinearMap.id
 
-theorem decomp {D : D7} (a : AE D) : a = secI D (infPart D a) + secF D (finPart D a) := by
+theorem decomp {D : D7} (a : AE D) : a = secI D (infPart D a) + Formalism.IndefR.Fin.jF D (finPart D a) := by
   induction a using TensorProduct.induction_on with
   | zero => rw [RingHom.map_zero, RingHom.map_zero, LinearMap.map_zero, LinearMap.map_zero, add_zero]
   | add a b ha hb =>
@@ -506,7 +446,7 @@ theorem decomp {D : D7} (a : AE D) : a = secI D (infPart D a) + secF D (finPart 
     erw [TensorProduct.add_tmul]
     rfl
 
-theorem infPart_secF {D : D7} (y : Af D.host.F ⊗[D.host.F] D.host.E) : infPart D (secF D y) = 0 := by
+theorem infPart_secF {D : D7} (y : Af D.host.F ⊗[D.host.F] D.host.E) : infPart D (Formalism.IndefR.Fin.jF D y) = 0 := by
   induction y using TensorProduct.induction_on with
   | zero => rw [LinearMap.map_zero, RingHom.map_zero]
   | add a b ha hb => rw [LinearMap.map_add (f := _), RingHom.map_add (f := _), ha, hb, add_zero]
@@ -515,7 +455,7 @@ theorem infPart_secF {D : D7} (y : Af D.host.F ⊗[D.host.F] D.host.E) : infPart
     have : fstA D.host.F (LinearMap.inr D.host.F (Ainf D.host.F) (Af D.host.F) c) = 0 := rfl
     rw [this, TensorProduct.zero_tmul]
 
-theorem finPart_secF {D : D7} (y : Af D.host.F ⊗[D.host.F] D.host.E) : finPart D (secF D y) = y := by
+theorem finPart_secF {D : D7} (y : Af D.host.F ⊗[D.host.F] D.host.E) : finPart D (Formalism.IndefR.Fin.jF D y) = y := by
   induction y using TensorProduct.induction_on with
   | zero => rw [LinearMap.map_zero, RingHom.map_zero]
   | add a b ha hb => rw [LinearMap.map_add (f := _), RingHom.map_add (f := _), ha, hb]
@@ -527,7 +467,7 @@ theorem finPart_secF {D : D7} (y : Af D.host.F ⊗[D.host.F] D.host.E) : finPart
 theorem finQ_eq {D : D7} (a : AE D) : finQ D a = (GlobalTheory.BotFormula.toAfE D).symm (finPart D a) := rfl
 
 theorem recon_ex {D : D7} (q : Formalism.MainNotions.StandardLatticesGL3.AE D) : ∃ a : AE D, infPart D a = 0 ∧ finQ D a = q :=
-  ⟨secF D (GlobalTheory.BotFormula.toAfE D q), infPart_secF _, by rw [finQ_eq, finPart_secF, RingEquiv.symm_apply_apply]⟩
+  ⟨Formalism.IndefR.Fin.jF D (GlobalTheory.BotFormula.toAfE D q), infPart_secF _, by rw [finQ_eq, finPart_secF, RingEquiv.symm_apply_apply]⟩
 
 theorem recon_uniq {D : D7} (a b : AE D) (h1 : infPart D a = infPart D b) (h2 : finQ D a = finQ D b) : a = b := by
   have h3 : finPart D a = finPart D b := by
@@ -602,8 +542,6 @@ theorem ent_smul {D : D7} {m n : ℕ} (Y : Matrix (Fin m) (Fin m) (Formalism.Mai
     (X : Matrix (Fin n) (Fin n) (Formalism.MainNotions.StandardLatticesGL3.AE D)) (c : Formalism.MainNotions.StandardLatticesGL3.AE D) (i : Fin m) (j : Fin n) :
     (Y * (c • Z) * X) i j = c * (Y * Z * X) i j := by
   rw [Matrix.mul_smul, Matrix.smul_mul, Matrix.smul_apply, smul_eq_mul]
-
-
 
 theorem psi_sympl_moved_eq_one : ∀ {D : D7} (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) (S T : HSp D) {a d : ℕ} (hS : S.rank = a) (hT : T.rank = d)
   (cc : Ideal (𝓞 D.host.K)) (δ : ℂ) (r : D.host.E), Setup ψ θ S T cc δ r →
@@ -747,7 +685,6 @@ open GlobalTheory.BotFormula (IsFinPt)
 open GlobalTheory.IndefiniteRowSideFullHecke.ClassFunctionSumIntegral (IsDefiniteSpace IsOpenCompactLevel)
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 
 end -- clump:auto
 end -- clump:auto

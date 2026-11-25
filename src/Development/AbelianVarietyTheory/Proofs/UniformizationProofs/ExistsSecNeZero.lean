@@ -52,7 +52,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped CategoryTheory.Obj
 open GlobalTheory.UT
 
-noncomputable section
 namespace GlobalTheory.UT.NonVan
 open GlobalTheory.UT.CoefBasic
 
@@ -90,4 +89,3 @@ theorem exists_sec_ne_zero : LL → ∀ (R : Type) [CommRing R] [IsDomain R] (A 
     module
 
 end GlobalTheory.UT.NonVan
-end

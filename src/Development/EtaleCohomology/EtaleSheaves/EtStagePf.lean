@@ -5,7 +5,6 @@ public import Mathlib.Algebra.Category.Ring.FinitePresentation
 
 @[expose] public section
 
-noncomputable section
 open CategoryTheory Limits TensorProduct
 
 namespace LateralTheory.E.EtStagePf

@@ -117,14 +117,7 @@ theorem integral_points_finite : Formalism.FourierDecayAlt.A5.IntFinite := by
     intro a ha b hb x y
     simp only [f, isInt_orbZ_inv R w a ha b hb x y]
   have hS := isCompact_intPairs R hL.isCompact w.1 w.2
-  have hc : HasCompactSupport f := by
-    refine hS.of_isClosed_subset isClosed_closure (closure_minimal ?_ hS.isClosed)
-    intro p hp
-    by_contra hn
-    apply hp
-    simp only [f]
-    rw [ite_eq_right]
-    exact hn
+  have hc : HasCompactSupport f := HasCompactSupport.intro' hS hS.isClosed fun p hp => ite_eq_right hp
   have : (0 : Measure (lowW K w.1 w.2)).IsMulRightInvariant := ⟨fun g => by simp⟩
   have : (0 : Measure (upUniG K w.1.sum)).IsMulLeftInvariant := ⟨fun g => by simp⟩
   have key := (Formalism.DoubleCosetMeasures.P.intTwoSided (lowW K w.1 w.2) (upUniG K w.1.sum) 0 0

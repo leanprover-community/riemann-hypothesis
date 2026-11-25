@@ -5,7 +5,6 @@ public import Mathlib.RingTheory.Polynomial.Cyclotomic.Roots
 
 @[expose] public section
 
-noncomputable section
 open Polynomial IsLocalRing GlobalTheory.EtC
 
 namespace LateralTheory.KummerTheory.PrimitiveRootTorsion

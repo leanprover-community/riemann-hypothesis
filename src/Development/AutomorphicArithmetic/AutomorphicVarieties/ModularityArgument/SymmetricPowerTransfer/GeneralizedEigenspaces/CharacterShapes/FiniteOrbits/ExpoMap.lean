@@ -4,40 +4,6 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityA
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SymmetricPowerTransfer.GeneralizedEigenspaces.CharacterShapes.FiniteOrbits.LocalLevelOutsideSigma
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SymmetricPowerTransfer.GeneralizedEigenspaces.GlobalRationalGL.IntegralConjugation.UaFacts
 import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SymmetricPowerTransfer.SignatureIntegrality.SignatureTorusFixedPoints.FinFacts
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
@@ -68,13 +34,6 @@ private theorem map_dg {k k' : Type} [Field k] [Field k'] {n : ℕ} (i : k ≃+*
   by_cases h : a = b
   · subst h; simp
   · simp [Matrix.diagonal_apply_ne _ h]
-
-private theorem map_inj {k k' : Type} [Field k] [Field k'] {n : ℕ} (i : k ≃+* k') :
-    Function.Injective (Matrix.GeneralLinearGroup.map (n := Fin n) (i : k →+* k')) := by
-  intro g g' h
-  ext a b
-  have := congrArg (fun x : GL (Fin n) k' => (x : Matrix (Fin n) (Fin n) k') a b) h
-  simpa using this
 
 private theorem levCore (hF : Fit T S VL A) {n : ℕ} (x : UA L n) (hx : x ∈ finU (E := L) (n := n))
     (P : Pl (Lp L) → Prop) (E : ∀ v, v ∈ A.Sg → GL (Fin n) (Kv v))
@@ -130,7 +89,9 @@ private theorem elCore (hF : Fit T S VL A) {n : ℕ} (x : UA L n) (hx : x ∈ fi
     refine ⟨fun v hv => ?_, fun v hv => (hO v).2 fun w e => h1 w fun w' hw' e' => hv ?_⟩
     · obtain ⟨w0, hw0, rfl⟩ := (hF.sg _).1 hv
       have sp := hF.pl.split w0 hw0
-      apply map_inj (T w0 sp).i
+      apply (Matrix.GeneralLinearGroup.mapEquiv _ (T w0 sp).i).injective
+      change Matrix.GeneralLinearGroup.map ((T w0 sp).i : Kv (un w0) →+* Kw w0) _ =
+        Matrix.GeneralLinearGroup.map ((T w0 sp).i : Kv (un w0) →+* Kw w0) _
       rw [← hE w0 hw0 sp hv, h2 w0 hw0 sp]
       exact (map_dg (T w0 sp).i (d (un w0))).symm
     · exact (hF.sg _).2 ⟨w', hw', by rw [← e', e]⟩

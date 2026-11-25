@@ -12,8 +12,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.KZ Matrix
 
 namespace GlobalTheory.KZ
@@ -67,5 +65,3 @@ theorem exists_fixing_mul_frobAt :
     simpa using add_mem hd' hxq
 
 end GlobalTheory.KZ
-
-end

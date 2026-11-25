@@ -4,7 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.HermL
 
 @[expose] public section
 
-noncomputable section
 open ValuativeRel Formalism.MainNotions.S.Loc
 open scoped Pointwise ENNReal Classical
 

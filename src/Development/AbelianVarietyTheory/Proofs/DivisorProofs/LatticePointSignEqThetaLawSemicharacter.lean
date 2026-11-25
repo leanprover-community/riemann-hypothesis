@@ -41,21 +41,17 @@ open scoped TensorProduct
 
 namespace GlobalTheory.SemiCharValue
 
-theorem exists_abstract_value {G R : Type} [AddCommGroup G] [AddCommGroup R] (ψ : AddChar R ℂ) (hψ : ∀ r, ‖ψ r‖ ≤ 1)
+theorem exists_abstract_value {G R : Type} [AddCommGroup G] [AddCommGroup R] (ψ : AddChar R ℂ)
     (B : G → G → R) (hl : ∀ x y z, B (x + y) z = B x z + B y z) (hr : ∀ x y z, B x (y + z) = B x y + B x z)
     (ha : ∀ x, B x x = 0) (L : AddSubgroup G) (K : G → Prop) (K0 : K 0) (Ksub : ∀ x y, K x → K y → K (x - y))
     (hKL : ∀ l ∈ L, K l → l = 0) (hB : ∀ x, K x → ∀ l ∈ L, B x l = 0)
     (h2 : ∀ a ∈ L, ∀ u ∈ L, ψ (B a u + B a u) = 1)
     (p q : G → G) (padd : ∀ x y, p (x + y) = p x + p y) (pq : ∀ x, p x + q x = x)
     (adj : ∀ x y, B (p x) y = B x (q y)) (pL : ∀ l ∈ L, p l ∈ L) :
-    ∃ χ : G → ℂ, (∀ x, (¬ ∃ l ∈ L, K (x - l)) → χ x = 0) ∧ (∀ x, ‖χ x‖ ≤ 1) ∧ χ 0 = 1 ∧
-      (∀ x y, K y → χ (x + y) = χ x) ∧ (∀ u ∈ L, ∀ x, ψ (B x (2 • u)) * χ (x + 2 • u) = χ x) ∧
+    ∃ χ : G → ℂ, (∀ u ∈ L, ∀ x, ψ (B x (2 • u)) * χ (x + 2 • u) = χ x) ∧
       (∀ u ∈ L, B (p u) u = 0 → ∀ x, ψ (B x u) * χ (x + u) = χ x) ∧
       ∀ l ∈ L, χ l = ψ (B (p l) l) := by
   classical
-  have Kadd : ∀ x y, K x → K y → K (x + y) := fun x y hx hy => by
-    have := Ksub x (0 - y) hx (Ksub 0 y K0 hy)
-    rwa [zero_sub, sub_neg_eq_add] at this
   have skew : ∀ x y, B x y + B y x = 0 := fun x y => by
     have := ha (x + y)
     rwa [hl, hr, hr, ha, ha, zero_add, add_zero] at this
@@ -80,26 +76,7 @@ theorem exists_abstract_value {G R : Type} [AddCommGroup G] [AddCommGroup R] (ψ
     · rw [hn x h, hn (x + u), mul_zero]
       rintro ⟨l, hl', hk⟩
       exact h ⟨l - u, L.sub_mem hl' hu, by rwa [← sub_add, sub_add_eq_add_sub]⟩
-  refine ⟨χ, hn, fun x => ?_, ?_, fun x y hk => ?_, fun u hu => ?_, fun u hu h0 => ?_,
-    fun l hl' => hy l l hl' (by rwa [sub_self])⟩
-  · by_cases h : ∃ l ∈ L, K (x - l)
-    · obtain ⟨l, hl', hk⟩ := h
-      rw [hy x l hl' hk]; exact hψ _
-    · rw [hn x h]; simp
-  · rw [hy 0 0 L.zero_mem (by rwa [sub_zero])]
-    have : B (p 0) 0 = 0 := by
-      have := hr (p 0) 0 0
-      rw [add_zero] at this
-      exact left_eq_add.1 this
-    rw [this, AddChar.map_zero_eq_one]
-  · by_cases h : ∃ l ∈ L, K (x - l)
-    · obtain ⟨l, hl', hk⟩ := h
-      rw [hy x l hl' hk, hy (x + y) l hl' (by rw [← sub_add_eq_add_sub]; exact Kadd _ _ hk ‹_›)]
-    · rw [hn x h, hn (x + y)]
-      rintro ⟨l, hl', hk'⟩
-      refine h ⟨l, hl', ?_⟩
-      have := Ksub _ _ hk' hk
-      rwa [show x + y - l - y = x - l by abel] at this
+  refine ⟨χ, fun u hu => ?_, fun u hu h0 => ?_, fun l hl' => hy l l hl' (by rwa [sub_self])⟩
   · refine gen _ (L.nsmul_mem hu 2) fun l hl' => ?_
     have e : B (p (l + 2 • u)) (l + 2 • u) = B (p l) l + (B (p l) u + B (p l) u) +
         (B (p u) (l + 2 • u) + B (p u) (l + 2 • u)) := by
@@ -122,7 +99,7 @@ theorem exists_semichar_value : ∀ {D : D7} (ψ : AddChar (AF D.host.F) ℂ) (S
   have hinf := GlobalTheory.SemiChar.latO_inf S T (ΛS : Set (Fin S.rank → D.host.E)) (ΛT : Set (Fin T.rank → D.host.E)) fun _ => True
   obtain ⟨f1, f2, f3, f4, -, -, f7, f8, f9⟩ := GlobalTheory.T.homSymplecticHalfForm_algebraic_laws_continuous D S T
   have g := (GlobalTheory.T.self_dual_lattice_pairing_dual D ψ S T ΛS ΛT hψ hS hT).1
-  obtain ⟨χ, -, -, -, -, c5, c6, c7⟩ := exists_abstract_value ψ (fun r => (hψ.1.2.1 r).le) (symplOH S T) f1 f2 f3
+  obtain ⟨χ, c5, c6, c7⟩ := exists_abstract_value ψ (symplOH S T) f1 f2 f3
     (latO S T (ΛS : Set (Fin S.rank → D.host.E)) (ΛT : Set (Fin T.rank → D.host.E)) fun _ => True)
     (fun x => x.map (finPart D) = 0) (by funext i j; exact (finPart D).map_zero)
     (fun x y hx hy => by

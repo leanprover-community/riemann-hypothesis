@@ -244,12 +244,7 @@ theorem mdisc_update_expand {D : ℕ} (A : Fin D → Matrix (Fin D) (Fin D) ℂ)
     simpa only [RingHom.id_apply, smul_eq_mul] using
       (_root_.ReciprocityTheory.AnForm.A.mdisc_update_smul A k c B))
   have hX : X = ∑ a, ∑ b, X a b • Matrix.single a b (1 : ℂ) := by
-    ext i j
-    simp only [Matrix.sum_apply, Matrix.smul_apply, Matrix.single_apply, smul_eq_mul, mul_ite, mul_one,
-      mul_zero]
-    rw [Finset.sum_eq_single i (fun c _ hc => by simp [hc]) (by simp),
-      Finset.sum_eq_single j (fun c _ hc => by simp [hc]) (by simp)]
-    simp
+    simpa using Matrix.matrix_eq_sum_single X
   have h : ∀ Y, mdisc (Function.update A q Y) = M.toLinearMap A q Y := fun Y => by
     rw [MultilinearMap.toLinearMap_apply, hM]
   rw [h]

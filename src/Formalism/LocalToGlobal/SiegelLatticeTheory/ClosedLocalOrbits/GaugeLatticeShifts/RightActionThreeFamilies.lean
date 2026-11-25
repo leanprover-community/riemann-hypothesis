@@ -24,14 +24,11 @@ section HSc
 variable {Wq Wp : Type} [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wq]
   [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [CompleteSpace Wp]
 
-def hsInv (f : Formalism.L2.SG.PackageTie.HS Wq Wp) : Wq →L[ℂ] Wp :=
-  ∑ i, (innerSL ℂ (stdOrthonormalBasis ℂ Wq i)).smulRight (f i)
-
 theorem hsInv_apply (f : Formalism.L2.SG.PackageTie.HS Wq Wp) (ξ : Wq) :
-    hsInv f ξ = ∑ i, ⟪stdOrthonormalBasis ℂ Wq i, ξ⟫_ℂ • f i := by
-  simp [hsInv]
+    Formalism.L2.SG.NormCut.opOf f ξ = ∑ i, ⟪stdOrthonormalBasis ℂ Wq i, ξ⟫_ℂ • f i := by
+  simp [Formalism.L2.SG.NormCut.opOf]
 
-theorem hsEmb_hsInv (f : Formalism.L2.SG.PackageTie.HS Wq Wp) : Formalism.L2.SG.PackageTie.hsEmb (hsInv f) = f := by
+theorem hsEmb_hsInv (f : Formalism.L2.SG.PackageTie.HS Wq Wp) : Formalism.L2.SG.PackageTie.hsEmb (Formalism.L2.SG.NormCut.opOf f) = f := by
   ext j
   simp only [Formalism.L2.SG.PackageTie.hsEmb, LinearMap.coe_mk, AddHom.coe_mk, PiLp.toLp_apply, hsInv_apply]
   rw [Finset.sum_eq_single j]
@@ -40,7 +37,7 @@ theorem hsEmb_hsInv (f : Formalism.L2.SG.PackageTie.HS Wq Wp) : Formalism.L2.SG.
     rw [(stdOrthonormalBasis ℂ Wq).inner_eq_zero hij, zero_smul]
   · intro h; exact absurd (Finset.mem_univ j) h
 
-theorem hsInv_hsEmb (A : Wq →L[ℂ] Wp) : hsInv (Formalism.L2.SG.PackageTie.hsEmb A) = A := by
+theorem hsInv_hsEmb (A : Wq →L[ℂ] Wp) : Formalism.L2.SG.NormCut.opOf (Formalism.L2.SG.PackageTie.hsEmb A) = A := by
   ext ξ
   rw [hsInv_apply]
   simp only [Formalism.L2.SG.PackageTie.hsEmb, LinearMap.coe_mk, AddHom.coe_mk, PiLp.toLp_apply]
@@ -55,10 +52,10 @@ theorem hsNormSq_comp_iso (A : Wq →L[ℂ] Wp) (P : Wq ≃ₗᵢ[ℂ] Wq) :
 
 def hsR (P : Wq ≃ₗᵢ[ℂ] Wq) :
     Formalism.L2.SG.PackageTie.HS Wq Wp ≃ₗᵢ[ℂ] Formalism.L2.SG.PackageTie.HS Wq Wp where
-  toFun f := Formalism.L2.SG.PackageTie.hsEmb ((hsInv f).comp (P.symm.toContinuousLinearEquiv : Wq →L[ℂ] Wq))
-  invFun f := Formalism.L2.SG.PackageTie.hsEmb ((hsInv f).comp (P.toContinuousLinearEquiv : Wq →L[ℂ] Wq))
+  toFun f := Formalism.L2.SG.PackageTie.hsEmb ((Formalism.L2.SG.NormCut.opOf f).comp (P.symm.toContinuousLinearEquiv : Wq →L[ℂ] Wq))
+  invFun f := Formalism.L2.SG.PackageTie.hsEmb ((Formalism.L2.SG.NormCut.opOf f).comp (P.toContinuousLinearEquiv : Wq →L[ℂ] Wq))
   map_add' f g := by
-    have e : hsInv (f + g) = hsInv f + hsInv g := by
+    have e : Formalism.L2.SG.NormCut.opOf (f + g) = Formalism.L2.SG.NormCut.opOf f + Formalism.L2.SG.NormCut.opOf g := by
       ext ξ
       simp only [_root_.add_apply, hsInv_apply]
       rw [← Finset.sum_add_distrib]
@@ -66,7 +63,7 @@ def hsR (P : Wq ≃ₗᵢ[ℂ] Wq) :
       rw [PiLp.add_apply, smul_add]
     rw [e, ContinuousLinearMap.add_comp, map_add (f := _)]
   map_smul' c f := by
-    have e : hsInv (c • f) = c • hsInv f := by
+    have e : Formalism.L2.SG.NormCut.opOf (c • f) = c • Formalism.L2.SG.NormCut.opOf f := by
       ext ξ
       simp only [_root_.smul_apply, hsInv_apply, Finset.smul_sum]
       refine Finset.sum_congr rfl fun i _ => ?_
@@ -86,7 +83,7 @@ def hsR (P : Wq ≃ₗᵢ[ℂ] Wq) :
         ContinuousLinearMap.id ℂ Wq := by ext x; simp
     rw [this, ContinuousLinearMap.comp_id, hsEmb_hsInv]
   norm_map' f := by
-    have h1 : ‖Formalism.L2.SG.PackageTie.hsEmb ((hsInv f).comp (P.symm.toContinuousLinearEquiv : Wq →L[ℂ] Wq))‖ ^ 2 =
+    have h1 : ‖Formalism.L2.SG.PackageTie.hsEmb ((Formalism.L2.SG.NormCut.opOf f).comp (P.symm.toContinuousLinearEquiv : Wq →L[ℂ] Wq))‖ ^ 2 =
         ‖f‖ ^ 2 := by
       rw [Formalism.L2.SG.PackageTie.norm_hsEmb_sq, hsNormSq_comp_iso, ← Formalism.L2.SG.PackageTie.norm_hsEmb_sq,
         hsEmb_hsInv]
@@ -96,7 +93,7 @@ def hsR (P : Wq ≃ₗᵢ[ℂ] Wq) :
 theorem hsR_emb (P : Wq ≃ₗᵢ[ℂ] Wq) (A : Wq →L[ℂ] Wp) :
     hsR (Wp := Wp) P (Formalism.L2.SG.PackageTie.hsEmb A) =
       Formalism.L2.SG.PackageTie.hsEmb (A.comp (P.symm.toContinuousLinearEquiv : Wq →L[ℂ] Wq)) := by
-  show Formalism.L2.SG.PackageTie.hsEmb ((hsInv (Formalism.L2.SG.PackageTie.hsEmb A)).comp _) = _
+  show Formalism.L2.SG.PackageTie.hsEmb ((Formalism.L2.SG.NormCut.opOf (Formalism.L2.SG.PackageTie.hsEmb A)).comp _) = _
   rw [hsInv_hsEmb]
 
 end HSc
@@ -196,7 +193,6 @@ theorem roset_mul_aut {Λ Λ' : Submodule (𝓞 D.host.E) (VS D).V} {β : (VS D)
 end RO
 
 section Main
-
 
 open Formalism.L2.SG.Pf.SatGramActL in
 theorem right_action_three_families (hB : ChiNBiAll) (hIR : IotaRepC) (hAR : AmpRepNC) : RightActC' := by

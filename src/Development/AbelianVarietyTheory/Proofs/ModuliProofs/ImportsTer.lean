@@ -23,8 +23,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open Classical
 open ReciprocityTheory.ChartRestriction.G.Out
 
-noncomputable section
-
 namespace GlobalTheory.UnifMove
 
 
@@ -85,5 +83,3 @@ theorem exists_pull {R R' : Type} [CommRing R] [IsDomain R] [CommRing R'] [IsDom
   exact ⟨D', hD, A', gA, U', hPU, gpA, LBIso.symm tA, by rw [hgenU]; exact heA⟩
 
 end GlobalTheory.UnifMove
-
-end

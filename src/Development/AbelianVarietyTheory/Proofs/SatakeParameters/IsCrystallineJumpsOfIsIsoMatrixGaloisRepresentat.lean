@@ -8,8 +8,6 @@ public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.FinrankAd
 open NumberField IsDedekindDomain GlobalTheory.HTW GlobalTheory.HTW.Rec Formalism.WeaklyAdmissibleFiltrations Formalism.MainNotions.N Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.FrobeniusOrbits
 open Module TensorProduct
 
-noncomputable section
-
 namespace GlobalTheory.HTW.Rec
 
 section Transport

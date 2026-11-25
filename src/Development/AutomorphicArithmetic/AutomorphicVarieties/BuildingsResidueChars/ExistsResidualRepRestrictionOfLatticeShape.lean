@@ -9,15 +9,11 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.WeakShimura
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.WeakShimuraTheory.RootsOfUnityShapes.PlaceMove
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.WeakShimuraTheory.RootsOfUnityShapes.ShapeQ
 import Mathlib.Tactic.Linter.HaveILetI
+import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.AdTransfer
 
 @[expose] public section
 
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual Formalism.HC ReciprocityTheory.Gal IsLocalRing Polynomial UpperTheory.V.Base UpperTheory.V.Alg UpperTheory.V.HV UpperTheory.V.GradeZeroInterpolatingElement UpperTheory.V.Ws
-
-private theorem cont_resQ {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] (F : IntermediateField ℚ Ω) [NumberField F] :
-    Continuous (resQ F) := by
-  haveI : IsAlgClosure F Ω := ⟨IsAlgClosure.isAlgClosed ℚ, inferInstance⟩
-  exact (galEmbTop ℚ F Ω).1.continuous
 
 theorem UpperTheory.exists_residualRep_restriction_of_latticeShape :
     ∀ {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] {l : ℕ} [Fact l.Prime] {c : Coef l} (D : Raw Ω c), D.Good → ∀ T : Tower D, T.Fit → ∀ (k : Type) [Field k] (a : c.O →+* k), (∀ x ∈ maximalIdeal c.O, a x = 0) → (T.fr ∅).Ok a → ∀ s : PD Unit (G ℚ Ω) k, LatShape D T.pr (resQ T.F T.g0) a s →
@@ -47,6 +43,8 @@ theorem UpperTheory.exists_residualRep_restriction_of_latticeShape :
   refine ⟨Q, ⟨⟨fun x => hP.mult (resQ T.F x), Rq.killQ D hD T hOk _ _ _ P.r hP.kill, hP.nrm, hn,
     fun v s hs => (key v s hs).1, fun v s hs i => ?_⟩,
     ⟨fun x i => hS.res.res.diag (resQ T.F x) i, hch, Or.inl ⟨fun x => hS.supp _, fun v => (sh v).2 _ (hn v) (hb v)⟩⟩,
-    fun i j N => (hS.res.cont i j N).comp_continuous (cont_resQ T.F)⟩, rfl, fun v => ⟨(), g v, hg v, hb v⟩⟩
+    fun i j N => (hS.res.cont i j N).comp_continuous
+      (UpperTheory.V.Af.continuous_restrictScalarsHom ℚ T.F Ω)⟩,
+    rfl, fun v => ⟨(), g v, hg v, hb v⟩⟩
   refine (hch v s hs.1 i).trans ?_
   rw [chi, Rq.muPs D hD T hOk _ s hs, Units.val_one, map_one]

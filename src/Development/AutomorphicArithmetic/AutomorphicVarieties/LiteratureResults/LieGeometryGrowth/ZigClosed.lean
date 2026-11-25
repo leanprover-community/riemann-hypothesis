@@ -28,21 +28,6 @@ section Hom
 
 variable {Γ M N : Type} [AddCommGroup M] [Module ℂ M] [AddCommGroup N] [Module ℂ N]
 
-omit [Module ℂ M] in
-private theorem hd_cons (c : List Γ → M) (g : Γ) (t : List Γ) :
-    hd c (g :: t) = c t - hd (fun s => c (g :: s)) t := by
-  simp only [hd, List.length_cons, Finset.sum_range_succ', List.eraseIdx_cons_succ, List.eraseIdx_cons_zero, pow_succ,
-    pow_zero, one_smul, mul_neg, mul_one, neg_smul, Finset.sum_neg_distrib]
-  abel
-
-omit [Module ℂ M] in
-private theorem hd_sub (c c' : List Γ → M) (x : List Γ) : hd (fun s => c s - c' s) x = hd c x - hd c' x := by
-  simp only [hd, smul_sub, Finset.sum_sub_distrib]
-
-omit [Module ℂ M] in
-private theorem hd_hd (x : List Γ) : ∀ c : List Γ → M, hd (hd c) x = 0 := by
-  apply _root_.UpperTheory.V.Lit.Geo.hd_hd <;> assumption
-
 private theorem hd_lin (c c' : List Γ → M) (s t : ℂ) : hd (s • c + t • c') = s • hd c + t • hd c' := by
   funext x
   simp only [hd, Pi.add_apply, Pi.smul_apply, smul_add, Finset.sum_add_distrib, Finset.smul_sum, smul_comm s, smul_comm t]
@@ -108,7 +93,8 @@ private theorem zig_ex (hc : Convex ℝ G.Y) (hn : G.Y.Nonempty) (q : ℕ) : ∀
     obtain ⟨b, hb1, hb⟩ := lift_equiv (G.act q) (G.act (q + 1)) (G.dOm q) (dEquiv Γ V S d G q) k u h1
       fun x hx => (dExact Γ V S d G hc q _).1 (h2 x hx)
     obtain ⟨c, hc⟩ := ih (k + 1) (hd b) (hequiv_hd _ _ _ hb1)
-      (fun x hx => (map_hd _ _ _ k hb x hx).trans (h3 x hx)) fun x _ => hd_hd x b
+      (fun x hx => (map_hd _ _ _ k hb x hx).trans (h3 x hx))
+      fun x _ => _root_.UpperTheory.V.Lit.Geo.hd_hd x b
     exact ⟨c, b, hb1, hb, hc⟩
 
 private theorem zig_coc (hc : Convex ℝ G.Y) (hn : G.Y.Nonempty) (q : ℕ) : ∀ (k n : ℕ) (u : List Γ → G.Om q) c,
@@ -123,7 +109,8 @@ private theorem zig_coc (hc : Convex ℝ G.Y) (hn : G.Y.Nonempty) (q : ℕ) : �
     · rw [map_hd _ _ u k (fun y hy => (hz y hy).symm) x hx, h3 x hx, map_zero]
   | succ q ih =>
     rintro k n u c e - - ⟨b, hb1, -, hz⟩
-    exact ih (k + 1) n (hd b) c (by omega) (hequiv_hd _ _ _ hb1) (fun x _ => hd_hd x b) hz
+    exact ih (k + 1) n (hd b) c (by omega) (hequiv_hd _ _ _ hb1)
+      (fun x _ => _root_.UpperTheory.V.Lit.Geo.hd_hd x b) hz
 
 private theorem zig_closed (hc : Convex ℝ G.Y) (hn : G.Y.Nonempty) (q k : ℕ) (u : List Γ → G.Om q) c
     (hz : Zig G q k u c) (x : List Γ) (hx : x.length = k + 1) : G.dOm q (u x) = 0 := by

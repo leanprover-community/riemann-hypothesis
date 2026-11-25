@@ -34,16 +34,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Col Formalism.L2.DIV Formalism.L2.Ker Formalism.UG Formalism.L2.Forms GlobalTheory.Mem GlobalTheory.Mem.Chr GlobalTheory.Mem.Col2 GlobalTheory.Mem.Col2.TC GlobalTheory.Mem.Col2.TC.ChTw GlobalTheory.Mem.Col2.TC.ChTw.Match Matrix
 
-theorem _root_.GlobalTheory.T.exists_conj_referenceChartIndex : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok → ∀ (l : I.Laws) (a : I.ι) (i : ℕ), 1 ≤ i → i < B.R.m →
-    ∀ b : Idx I.sel (I.tup a) (I.idx a) i, ∃ (b0 : Idx I.sel (I.tup I.mu0) (I.idx I.mu0) i)
-      (x : ∀ w : (B.primes X).vGs, GL (Fin (B.R.N i)) (𝓞 B.fields.E ⧸ w.1.asIdeal)),
-      (i + 1 = B.R.m → ∀ w, x w = 1) ∧
-      (∀ g : GLG (E := B.fields.E) (n := B.R.N i) (SG := (B.primes X).vGs), g ∈ (levGAt I.sel (I.tup a) (I.idx a) (I.Tp a) i b).grp ↔
-        (fun w => x w * g w * (x w)⁻¹) ∈ (levGAt I.sel (I.tup I.mu0) (I.idx I.mu0) (I.Tp I.mu0) i b0).grp) ∧
-      ∀ (g : ↥(levGAt I.sel (I.tup a) (I.idx a) (I.Tp a) i b).grp) (g0 : ↥(levGAt I.sel (I.tup I.mu0) (I.idx I.mu0) (I.Tp I.mu0) i b0).grp),
-        (∀ w, g0.1 w = x w * g.1 w * (x w)⁻¹) →
-        (levGAt I.sel (I.tup a) (I.idx a) (I.Tp a) i b).chr g = (levGAt I.sel (I.tup I.mu0) (I.idx I.mu0) (I.Tp I.mu0) i b0).chr g0 := by
-  first | exact @GlobalTheory.Mem.Col2.TC.ChTw.Match.IdxMatch.idx_match
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsConjReferenceChartIndexStatement =====
@@ -83,8 +73,6 @@ theorem conj_mem_setStab_image {κ : Type} [CommRing κ] {n : ℕ} (C : Set (Fin
     rwa [e2] at this
   · intro H w
     exact H _
-
-
 
 theorem coset_match : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok → ∀ (l : I.Laws) (u : B.Word) (a : I.ι) (i : ℕ), 1 ≤ i → i < B.R.m →
     ∀ (c : (I.stp u a i).Cl) (b0 : Idx I.sel (I.tup I.mu0) (I.idx I.mu0) i), ∃ c0 : (I.stp u I.mu0 i).Cl, c0.1 = b0 ∧
@@ -229,7 +217,6 @@ section General
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] [StarRing E]
 
-
 omit [StarRing E] in
 theorem val_mulVec_le {P : HeightOneSpectrum (𝓞 E)} {n : ℕ} (A : Matrix (Fin n) (Fin n) E)
     (hA : ∀ i j, P.valuation E (A i j) ≤ 1) {v : Fin n → E} (hv : ∀ i, P.valuation E (v i) ≤ 1) (i : Fin n) :
@@ -244,7 +231,6 @@ def matE {n : ℕ} (M : Matrix (Fin n) (Fin n) (𝓞 E)) : Matrix (Fin n) (Fin n
 omit [StarRing E] in
 theorem det_matE {n : ℕ} (M : Matrix (Fin n) (Fin n) (𝓞 E)) : (matE M).det = algebraMap (𝓞 E) E M.det :=
   (RingHom.map_det _ _).symm
-
 
 open Classical in
 def frOf {n : ℕ} (M : Matrix (Fin n) (Fin n) (𝓞 E)) : Sp E n ≃ₗ[E] Sp E n :=
@@ -478,12 +464,6 @@ section Res
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
-theorem hasRes_val_le {P : HeightOneSpectrum (𝓞 E)} {a : P.adicCompletion E} {c : 𝓞 E ⧸ P.asIdeal}
-    (h : HasRes P a c) : Valued.v a ≤ 1 := by
-  obtain ⟨r, -, hr⟩ := h
-  rw [← sub_add_cancel a (algebraMap E (P.adicCompletion E) (algebraMap (𝓞 E) E r))]
-  exact (Valuation.map_add _ _ _).trans (max_le hr.le (GlobalTheory.Mem.Dil.val_le_one P r))
-
 theorem hasRes_add {P : HeightOneSpectrum (𝓞 E)} {a b : P.adicCompletion E} {c d : 𝓞 E ⧸ P.asIdeal}
     (ha : HasRes P a c) (hb : HasRes P b d) : HasRes P (a + b) (c + d) := by
   first | exact _root_.GlobalTheory.Mem.Col2.LevRead.hasRes_add | exact @_root_.GlobalTheory.Mem.Col2.LevRead.hasRes_add | apply _root_.GlobalTheory.Mem.Col2.LevRead.hasRes_add <;> assumption
@@ -606,8 +586,6 @@ end GlobalTheory.Mem.Col2.TC.ChTw.Match
 noncomputable section
 namespace GlobalTheory.Mem.Col2.TC.ChTw.Match
 
-
-
 theorem conj_unitary_preserves_stdLat_of_ptOf : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok → ∀ (l : I.Laws) (u : B.Word) (n : ℕ) (t s : GA B n)
     (x : ∀ w : (B.primes X).vGs, GL (Fin n) (𝓞 B.fields.E ⧸ w.1.asIdeal)) (h : GLG (E := B.fields.E) (n := n) (SG := (B.primes X).vGs)),
     (∃ p : DecoF B.fields.E n ∅ ∅ ∅, PtOf t p ∧ p.deco.1.N = stdLat B.fields.E n) →
@@ -684,7 +662,7 @@ theorem conj_unitary_preserves_stdLat_of_ptOf : ∀ {B : Base} {X : PreX B.toPre
     · intro H w r j
       have key := hasRes_conj w.1 t⁻¹ (((t⁻¹ * s * t)⁻¹ : GA B n) : Matrix (Fin n) (Fin n) (AfE B.host.F B.host.E)) (x w)⁻¹
         ((h w : GL (Fin n) (𝓞 B.host.E ⧸ w.1.asIdeal)) : Matrix (Fin n) (Fin n) (𝓞 B.host.E ⧸ w.1.asIdeal)) (hasRes_inv_entry_of_le_one w.1 t (x w) (hx w) (hint w.1))
-        (fun a b => by rw [inv_inv]; exact hasRes_val_le (hx w a b)) (H w) r j
+        (fun a b => by rw [inv_inv]; exact GlobalTheory.Mem.Col2.DilPt.hasRes_le_one (hx w a b)) (H w) r j
       have eL : (((t⁻¹)⁻¹ : GA B n) : Matrix (Fin n) (Fin n) (AfE B.host.F B.host.E)) *
           (((t⁻¹ * s * t)⁻¹ : GA B n) : Matrix (Fin n) (Fin n) (AfE B.host.F B.host.E)) * ((t⁻¹ : GA B n) : Matrix (Fin n) (Fin n) (AfE B.host.F B.host.E)) =
           ((s⁻¹ : GA B n) : Matrix (Fin n) (Fin n) (AfE B.host.F B.host.E)) := by
@@ -742,12 +720,6 @@ section -- clump:auto
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Col Formalism.L2.DIV Formalism.L2.Ker Formalism.UG Formalism.L2.Forms GlobalTheory.Mem GlobalTheory.Mem.Chr GlobalTheory.Mem.Col2 GlobalTheory.Mem.Col2.TC GlobalTheory.Mem.Col2.TC.ChTw GlobalTheory.Mem.Col2.TC.ChTw.Match Matrix
 attribute [local instance] GlobalTheory.Mem.Col2.starE Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.localMove_classRep_iff_localConditions : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok → ∀ (u : B.Word) (a : I.ι) (i : ℕ), i ≤ B.R.m →
-    ∀ (c : (I.stp u a i).Cl) (s : GA B (B.R.N i)) (κ : (I.stp u a i).G c.1),
-    LocMv I u a i c s κ ↔ ((I.stp u a i).gam c.1 κ = 1 ∧
-      cosetIn ((I.stp u a i).act c.1 κ ((I.stp u a i).rep c)) = cosetIn ((I.stp u a i).rep c) ∧
-      LocalCondMoveDecoratedLattice u (B.R.N i) s κ.2.1.1 ∧ LocCQ (I.Q a) (B.R.N i) s κ.2.2.1) := by
-  exact @GlobalTheory.Mem.Col2.TC.ChTw.Match.locMv_iff
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LocalMoveClassRepIffLocalConditionsStatement =====
@@ -851,7 +823,6 @@ noncomputable section
 
 namespace GlobalTheory.Mem.Col2.TC.ChTw.Match
 
-
 theorem match_idx : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok → TC.Pins B X → ∀ (l : I.Laws) (u : B.Word) (a : I.ι) (Q : Finset (HeightOneSpectrum (𝓞 B.host.F))) (i : ℕ), i ≤ B.R.m → 1 ≤ i → i < B.R.m → (∀ v, v ∈ Q ↔ I.UnderQ a v) → ∃ (c0f : GlobalTheory.Mem.Col2.TC.ChTw.Chart I u a i → (I.stp u I.mu0 i).Cl) (t : GlobalTheory.Mem.Col2.TC.ChTw.Chart I u a i → GA B (B.R.N i)), (∀ β, ∃ p : DecoF B.fields.E (B.R.N i) ∅ ∅ ∅, PtOf (t β) p ∧ p.deco.1.N = stdLat B.fields.E (B.R.N i)) ∧ (∀ β (v : HeightOneSpectrum (𝓞 B.host.F)), ((B.T u : 𝓞 B.host.F) ∈ v.asIdeal ∨ ∀ j, (B.host.g j : 𝓞 B.host.F) ∉ v.asIdeal) → bc (prV (E := B.host.E) v) (t β) = 1) ∧ (a = I.mu0 → ∀ β, t β = 1) ∧ ∀ β, ∃ c, GlobalTheory.Mem.Col2.TC.ChTw.chartOf I u a i c = β ∧ ∀ s : GA B (B.R.N i), (∀ v ∈ Q, bc (prV (E := B.host.E) v) s = 1) → (∀ κ, GlobalTheory.Mem.Col2.TC.ChTw.LocMv I u a i c ((t β)⁻¹ * s * t β) κ → ∃ κ0, GlobalTheory.Mem.Col2.TC.ChTw.LocMv I u I.mu0 i (c0f β) s κ0 ∧ (I.stp u a i).chr c.1 κ = (I.stp u I.mu0 i).chr (c0f β).1 κ0) ∧ (∀ κ0, GlobalTheory.Mem.Col2.TC.ChTw.LocMv I u I.mu0 i (c0f β) s κ0 → ∃ κ, GlobalTheory.Mem.Col2.TC.ChTw.LocMv I u a i c ((t β)⁻¹ * s * t β) κ) := by
   intro B X I hI _hP l u a Q i hi h1 hm hQ
   by_cases ha : a = I.mu0
@@ -869,7 +840,7 @@ theorem match_idx : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok → TC.
           (∀ κ, LocMv I u a i c (t⁻¹ * s * t) κ → ∃ κ0, LocMv I u I.mu0 i c0 s κ0 ∧ (I.stp u a i).chr c.1 κ = (I.stp u I.mu0 i).chr c0.1 κ0) ∧
           (∀ κ0, LocMv I u I.mu0 i c0 s κ0 → ∃ κ, LocMv I u a i c (t⁻¹ * s * t) κ) := by
       intro β
-      obtain ⟨b0, x', hx1', hxg', hxc'⟩ := GlobalTheory.T.exists_conj_referenceChartIndex I hI l a i h1 hm (β.2.choose).1
+      obtain ⟨b0, x', hx1', hxg', hxc'⟩ := GlobalTheory.Mem.Col2.TC.ChTw.Match.IdxMatch.idx_match I hI l a i h1 hm (β.2.choose).1
       obtain ⟨c0, rfl, y, hy, hcos⟩ := GlobalTheory.T.exists_reference_class_matching_coupling_coset I hI l u a i h1 hm β.2.choose b0
       let x : ∀ w : (B.primes X).vGs, GL (Fin (B.R.N i)) (𝓞 B.fields.E ⧸ w.1.asIdeal) := fun w => y w * x' w
       have hx1 : i + 1 = B.R.m → ∀ w, x w = y w := fun h w => by simp [x, hx1' h w]
@@ -897,7 +868,7 @@ theorem match_idx : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok → TC.
       obtain ⟨t, ht_std, ht_off, ht_res⟩ := _root_.GlobalTheory.Mem.Col2.TC.ChTw.Match.exists_unitary_lift I hI l u (B.R.N i) x
       refine ⟨c0, t, ht_std, ht_off, β.2.choose, Subtype.ext β.2.choose_spec, fun s hs => ⟨?_, ?_⟩⟩
       · intro κ hκ
-        obtain ⟨hg, hco, hC0, hCQ⟩ := (GlobalTheory.T.localMove_classRep_iff_localConditions I hI u a i hi _ _ κ).1 hκ
+        obtain ⟨hg, hco, hC0, hCQ⟩ := (GlobalTheory.Mem.Col2.TC.ChTw.Match.locMv_iff I hI u a i hi _ _ κ).1 hκ
         rw [GlobalTheory.T.localConditions_conj_unitary_keepsStdLattice I hI l u (B.R.N i) t s x _ ht_std (fun v hv => ht_off v (Or.inl hv)) ht_res] at hC0
         have hθ : κ.2.2 = 1 := Subtype.ext ((_root_.GlobalTheory.Mem.Col2.TC.ChTw.Match.locCQ_conj_iff_eq_one I hI l u a Q hQ (B.R.N i) t s _ ht_off hs).1 hCQ)
         have hmem := (hxg κ.2.1.1).1 κ.2.1.2
@@ -905,7 +876,7 @@ theorem match_idx : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok → TC.
         have hg0 : (I.stp u I.mu0 i).gam c0.1 κ0 = 1 := by
           show ufGL B.fields.E (B.R.N i) 1 = 1
           exact map_one _
-        refine ⟨κ0, (GlobalTheory.T.localMove_classRep_iff_localConditions I hI u I.mu0 i hi _ _ κ0).2 ⟨hg0, ?_, hC0, ?_⟩, ?_⟩
+        refine ⟨κ0, (GlobalTheory.Mem.Col2.TC.ChTw.Match.locMv_iff I hI u I.mu0 i hi _ _ κ0).2 ⟨hg0, ?_, hC0, ?_⟩, ?_⟩
         · refine (hcos κ κ0 hg hg0 hθ fun h => ?_).1 hco
           intro w
           show x w * κ.2.1.1 w * (x w)⁻¹ = y w * κ.2.1.1 w * (y w)⁻¹
@@ -921,7 +892,7 @@ theorem match_idx : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok → TC.
           rw [hθ, map_one, map_one, mul_one, mul_one]
           exact hxc κ.2.1 κ0.2.1 fun w => rfl
       · intro κ0 hκ0
-        obtain ⟨hg, hco, hC0, -⟩ := (GlobalTheory.T.localMove_classRep_iff_localConditions I hI u I.mu0 i hi _ _ κ0).1 hκ0
+        obtain ⟨hg, hco, hC0, -⟩ := (GlobalTheory.Mem.Col2.TC.ChTw.Match.locMv_iff I hI u I.mu0 i hi _ _ κ0).1 hκ0
         have hmem : (fun w => (x w)⁻¹ * κ0.2.1.1 w * x w) ∈ (levGAt I.sel (I.tup a) (I.idx a) (I.Tp a) i (β.2.choose).1).grp := by
           have e1 : (fun w => x w * ((x w)⁻¹ * κ0.2.1.1 w * x w) * (x w)⁻¹) = κ0.2.1.1 := funext fun w => by group
           refine (hxg _).2 ?_
@@ -935,7 +906,7 @@ theorem match_idx : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok → TC.
           funext w
           show x w * ((x w)⁻¹ * κ0.2.1.1 w * x w) * (x w)⁻¹ = κ0.2.1.1 w
           group
-        refine ⟨κ, (GlobalTheory.T.localMove_classRep_iff_localConditions I hI u a i hi _ _ κ).2 ⟨hgk, ?_, ?_, ?_⟩⟩
+        refine ⟨κ, (GlobalTheory.Mem.Col2.TC.ChTw.Match.locMv_iff I hI u a i hi _ _ κ).2 ⟨hgk, ?_, ?_, ?_⟩⟩
         · refine (hcos κ κ0 hgk hg rfl fun h => ?_).2 hco
           intro w
           show κ0.2.1.1 w = y w * ((x w)⁻¹ * κ0.2.1.1 w * x w) * (y w)⁻¹

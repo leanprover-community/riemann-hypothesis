@@ -81,9 +81,6 @@ variable {E : Type} [Field E] [NumberField E] [StarRing E] {S : HSpace E} {r : �
 def Hom {T T' : E} (φ : S.V ≃ₗ[E] S.V) (A : LFlag S r T) (B : LFlag S r T') : Prop :=
   ∀ a : Fin (r + 1), φ (frame A a) - frame B a ∈ Xflag B a.val
 
-theorem xflag_mono {T : E} (A : LFlag S r T) {i j : ℕ} (h : i ≤ j) : Xflag A i ≤ Xflag A j := by
-  exact Submodule.span_mono (Set.image_mono (fun k hk => lt_of_lt_of_le hk h))
-
 theorem e_mem_xflag {T : E} (A : LFlag S r T) (i : Fin r) {j : ℕ} (h : i.1 < j) : A.fl.e i ∈ Xflag A j :=
   Submodule.subset_span ⟨i, h, rfl⟩
 
@@ -98,7 +95,7 @@ theorem Hom.map_mem {T T' : E} {φ : S.V ≃ₗ[E] S.V} {A : LFlag S r T} {B : L
     show φ (A.fl.e i) ∈ Xflag B j
     rw [h2]
     refine Submodule.add_mem _ ?_ (e_mem_xflag B i hi)
-    exact xflag_mono B (le_of_lt hi) h1
+    exact Formalism.L2.SG.Pf.xflag_mono_td B (le_of_lt hi) h1
   exact hle hx
 
 theorem Hom.comp {T T' T'' : E} {φ ψ : S.V ≃ₗ[E] S.V} {A : LFlag S r T} {B : LFlag S r T'} {C : LFlag S r T''}
@@ -156,27 +153,9 @@ theorem Hom.of_mapLF {T : E} {γ : S.V ≃ₗ[E] S.V} (hγ : γ ∈ Formalism.He
   rw [frame_mapLF hγ, sub_self]
   exact Submodule.zero_mem _
 
-theorem gmap_mul (φ ψ : S.V ≃ₗ[E] S.V) (Λ : Submodule (𝓞 E) S.V) :
-    Formalism.HermitianLatticesTheory.gmap (φ * ψ) Λ = Formalism.HermitianLatticesTheory.gmap φ (Formalism.HermitianLatticesTheory.gmap ψ Λ) := by
-  ext x
-  simp only [Formalism.HermitianLatticesTheory.gmap, Submodule.mem_map]
-  constructor
-  · rintro ⟨y, hy, rfl⟩
-    exact ⟨ψ y, ⟨y, hy, rfl⟩, rfl⟩
-  · rintro ⟨_, ⟨y, hy, rfl⟩, rfl⟩
-    exact ⟨y, hy, rfl⟩
-
-theorem gmap_inv {φ : S.V ≃ₗ[E] S.V} {Λ : Submodule (𝓞 E) S.V} (h : Formalism.HermitianLatticesTheory.gmap φ Λ = Λ) :
-    Formalism.HermitianLatticesTheory.gmap φ⁻¹ Λ = Λ := by
-  conv_lhs => rw [← h]
-  rw [← gmap_mul, inv_mul_cancel]
-  ext x
-  simp [Formalism.HermitianLatticesTheory.gmap]
-
 end GlobalTheory.Unfold.TgTr
 
 namespace GlobalTheory.Unfold
-
 
 open GlobalTheory.Unfold.TgTr in
 theorem tg_translate : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u u' : D.what₂.Word) (F : LFlag (D.sp.Y 0) D.R.rS (((D.mem u).A.T : ℕ) : D.host.E)) (F' : LFlag (D.sp.Y 0) D.R.rS (((D.mem u').A.T : ℕ) : D.host.E)) (t₀ s : TauC Y u u') (Λ₀ : LV D) (a a' n n' : GV D), TG F F' t₀ Λ₀ → a ∈ Aut0 (lf D (X.Fu u)) t₀.lam → a' ∈ Aut0 (lf D (X.Fu u')) t₀.lam' → n ∈ NLam t₀.lam (lf D (X.Fu u)) → n' ∈ NLam t₀.lam' (lf D (X.Fu u')) → s.lam = t₀.lam → s.lin = n * (a * t₀.lin * a'⁻¹) * n' → TG F F' s Λ₀ := by
@@ -202,7 +181,7 @@ theorem tg_translate : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u u' : D.w
     have hf : frame s.frame c = s.lin (frame (lf D (X.Fu u')) c) := frame_mapLF hsI _ c
     rw [hf, ← LinearEquiv.mul_apply, heq]
     exact hK c
-  · rw [hsl, gmap_mul, gmap_mul, gmap_inv hnΛ, gmap_inv haΛ, hΛ]
+  · rw [hsl, Formalism.L2.SG.Pf.gmap_mul_sat, Formalism.L2.SG.Pf.gmap_mul_sat, PI.DCRelEquiv.UnitaryGroupMassFormula.gmap_inv' hnΛ, PI.DCRelEquiv.UnitaryGroupMassFormula.gmap_inv' haΛ, hΛ]
 
 end GlobalTheory.Unfold
 end -- clump:auto
@@ -281,25 +260,6 @@ open Formalism.L2.SG.Pf
 
 variable {D : D7}
 
-theorem onto_gmap_mul (a b : GV D) (M : LV D) :
-    Formalism.HermitianLatticesTheory.gmap (a * b) M = Formalism.HermitianLatticesTheory.gmap a (Formalism.HermitianLatticesTheory.gmap b M) := by
-  ext x
-  simp only [Formalism.HermitianLatticesTheory.gmap, Submodule.mem_map]
-  constructor
-  · rintro ⟨y, hy, rfl⟩
-    exact ⟨b y, ⟨y, hy, rfl⟩, rfl⟩
-  · rintro ⟨_, ⟨y, hy, rfl⟩, rfl⟩
-    exact ⟨y, hy, rfl⟩
-
-theorem onto_gmap_one (M : LV D) : Formalism.HermitianLatticesTheory.gmap (1 : GV D) M = M := by
-  ext x
-  simp only [Formalism.HermitianLatticesTheory.gmap, Submodule.mem_map]
-  constructor
-  · rintro ⟨y, hy, rfl⟩
-    exact hy
-  · intro hx
-    exact ⟨x, hx, rfl⟩
-
 theorem onto_side {T : D.host.E} {A B : LFlag (D.sp.Y 0) D.R.rS T} {M : LV D} {G h : GV D}
     (hG : Adapt G A B) (hh : Adapt h B B)
     (hL : Lsub (Formalism.HermitianLatticesTheory.gmap h (Formalism.HermitianLatticesTheory.gmap G M)) B = Lsub (Formalism.HermitianLatticesTheory.gmap G M) B)
@@ -317,12 +277,12 @@ theorem onto_side {T : D.host.E} {A B : LFlag (D.sp.Y 0) D.R.rS T} {M : LV D} {G
   have hinj : ∀ X Y : LV D, Formalism.HermitianLatticesTheory.gmap G X = Formalism.HermitianLatticesTheory.gmap G Y → X = Y := by
     intro X Y hXY
     have hXY' := congrArg (Formalism.HermitianLatticesTheory.gmap G⁻¹) hXY
-    rwa [← onto_gmap_mul, ← onto_gmap_mul, inv_mul_cancel, onto_gmap_one, onto_gmap_one] at hXY'
+    rwa [← GlobalTheory.Unfold.Model.gmap_mul, ← GlobalTheory.Unfold.Model.gmap_mul, inv_mul_cancel, GlobalTheory.Unfold.Model.gmap_one, GlobalTheory.Unfold.Model.gmap_one] at hXY'
   have e : G * (G⁻¹ * h * G) = h * G := by group
   have hLσ : Lsub (Formalism.HermitianLatticesTheory.gmap (G⁻¹ * h * G) M) A = Lsub M A := by
     apply hinj
     rw [← lsub_gmap_of_map_Xsp_eq D T A B G _ hGiso hmap, ← lsub_gmap_of_map_Xsp_eq D T A B G M hGiso hmap,
-      ← onto_gmap_mul, e, onto_gmap_mul]
+      ← GlobalTheory.Unfold.Model.gmap_mul, e, GlobalTheory.Unfold.Model.gmap_mul]
     exact hL
   obtain ⟨n, hn, hnM⟩ := hs _ hσ hLσ
   refine ⟨n, hn, ?_, ?_⟩
@@ -346,7 +306,7 @@ theorem stab_onto : ∀ (D : D7) (T T' : D.host.E) (F0 F : LFlag (D.sp.Y 0) D.R.
   have hL2 : Lsub (Formalism.HermitianLatticesTheory.gmap h Λ) F' = Lsub Λ F' := congrArg (fun p => p.2.1) hdat
   obtain ⟨hhF, hhF'⟩ := frameAdaptedIsometry_of_fixing_both_frames hH0
   have hgγ : Adapt (g * γ) F0' F' := adapt_mul (adapt_mapLF hγ) hg'
-  have e2 : Formalism.HermitianLatticesTheory.gmap (g * γ) lam' = Λ := by rw [onto_gmap_mul, hlam, hΛ]
+  have e2 : Formalism.HermitianLatticesTheory.gmap (g * γ) lam' = Λ := by rw [GlobalTheory.Unfold.Model.gmap_mul, hlam, hΛ]
   obtain ⟨n, hn, hb1, hx1⟩ := onto_side (M := lam) hg hhF (by rw [← hΛ]; exact hL1) hs
   obtain ⟨n', hn', hb2, hx2⟩ := onto_side (M := lam') hgγ hhF' (by rw [e2]; exact hL2) hs'
 
@@ -1231,7 +1191,7 @@ theorem orbit_count : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u u' : D.wh
     intro p hp q hq
     obtain ⟨hp1, hp2, n, hn, n', hn', hpl⟩ := hs p hp
     obtain ⟨hq1, hq2, m, hm, m', hm', hql⟩ := hs q hq
-    rw [GlobalTheory.T.term_row_double_coset_eq_iff_isometries D X Y u u' (s p) (s q), hp1, hq1, hp2, hq2]
+    rw [GlobalTheory.Unfold.KeyIff.key_eq_iff D X Y u u' (s p) (s q), hp1, hq1, hp2, hq2]
     simp only [true_and]
     have ep : (s p).lin = (n * p.1) * t₀.lin * (n'⁻¹ * p.2)⁻¹ := by rw [hpl]; group
     have eq : (s q).lin = (m * q.1) * t₀.lin * (m'⁻¹ * q.2)⁻¹ := by rw [hql]; group

@@ -152,7 +152,6 @@ open Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLattice
 open scoped TensorProduct
 open GlobalTheory.MovedDict Formalism.L2.Ker GlobalTheory.SignedHC
 
-
 noncomputable section
 
 namespace GlobalTheory.MovedKappaEx
@@ -200,7 +199,6 @@ open Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLattice
 
 open scoped TensorProduct
 open GlobalTheory.MovedDict Formalism.L2.Ker GlobalTheory.SignedHC
-
 
 noncomputable section
 
@@ -302,7 +300,6 @@ open Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLattice
 
 open scoped TensorProduct
 open GlobalTheory.MovedDict Formalism.L2.Ker GlobalTheory.SignedHC
-
 
 noncomputable section
 
@@ -413,10 +410,6 @@ private theorem normOne_emb (lam : Qbar →+* F) {E : Type} [Field E] [NumberFie
     mem_algebraicClosure_iff.2 ((Algebra.IsAlgebraic.isAlgebraic (R := ℚ) b).algHom τ.toRatAlgHom)
   exact ⟨hm a, h (lam.comp (τ.codRestrict Qbar hm))⟩
 end
-private theorem norm_natCast_coprime {p : ℕ} [Fact p.Prime] {n : ℕ} (h : Nat.Coprime n p) : ‖(n : ℂ_[p])‖ = 1 := by
-  have e : (n : ℂ_[p]) = algebraMap ℚ_[p] ℂ_[p] (n : ℚ_[p]) := (map_natCast _ n).symm
-  rw [e, norm_algebraMap', Padic.norm_natCast_eq_one_iff]
-  exact h.symm
 private theorem det_mul_star {N : ℕ} (U : Matrix.unitaryGroup (Fin N) D.host.E) : U.1.det * (star U.1).det = 1 := by
   rw [← Matrix.det_mul, U.2.2, Matrix.det_one]
 private theorem norm_det_complex {N : ℕ} (U : Matrix.unitaryGroup (Fin N) D.host.E) (φ : D.host.E →+* ℂ) : ‖φ U.1.det‖ = 1 := by
@@ -442,7 +435,7 @@ private theorem norm_det_le {N q : ℕ} [Fact q.Prime] (A : Matrix (Fin N) (Fin 
       Matrix.ext hB, Matrix.det_smul, Fintype.card_fin]
   have h3 := GlobalTheory.Proof.IdempotentLatticeSequence.norm_int_le φ (Matrix.of B).det
   change ‖φ (algebraMap _ D.host.E _)‖ ≤ 1 at h3
-  rwa [e, map_mul, map_pow, map_natCast, norm_mul, norm_pow, norm_natCast_coprime hs, one_pow, one_mul] at h3
+  rwa [e, map_mul, map_pow, map_natCast, norm_mul, norm_pow, GlobalTheory.Vacuum.norm_nat_coprime hs, one_pow, one_mul] at h3
 private theorem norm_det_padic {N q : ℕ} [Fact q.Prime] (U : Matrix.unitaryGroup (Fin N) D.host.E)
     {M : Submodule (𝓞 D.host.E) (Fin N → D.host.E)} (h1 : EqAt D q M (stdL D N))
     (h2 : EqAt D q (SDLat.smulLat U.1 M) (stdL D N)) (φ : D.host.E →+* ℂ_[q]) : ‖φ U.1.det‖ = 1 := by
@@ -1366,7 +1359,6 @@ private theorem exists_pow_mem_open_subgroup {G : Type} [Group G] [TopologicalSp
     (H := U.subgroupOf K) Subgroup.index_ne_zero_of_finite ⟨k, hk⟩
   exact ⟨m, hm, h⟩
 
-
 private theorem exists_pow_mem_principal_level {D : D7} (V : HSp D) (Λ : Submodule (𝓞 D.host.E) (Fin V.rank → D.host.E))
     (hΛ : Submodule.IsFullLattice D.host.E Λ) {k : GA D V} (hk : k ∈ GfC V)
     (hfix : Formalism.UG.CS.globLat (Formalism.IndefR.Lev.finE V k) Λ = Λ) {N : ℕ} (hN : 0 < N) :
@@ -1384,7 +1376,6 @@ private theorem exists_pow_mem_principal_level {D : D7} (V : HSp D) (Λ : Submod
     exact hy
   exact exists_pow_mem_open_subgroup (GfC V) (Formalism.IndefR.Lev.levA V (Formalism.L2.DIV.St β)) _ inf_le_left
     (GlobalTheory.AscInh.stab_compact_open V β).1 (isOpen_principal_level_subgroup V hN) ⟨hk, hst⟩
-
 
 private theorem exists_root_of_unity_factor {D : D7} {ψ : AddChar (AF D.host.F) ℂ} {θ : InfFam D} {S T : HSp D}
     {χS χT : (Formalism.L2.Theta.AE D)ˣ →* Circle}
@@ -1434,7 +1425,6 @@ private theorem inverse_image_standard_lattice {D : D7} {n : ℕ} (B : GL (Fin n
     simp only [Finset.sum_apply, Pi.smul_apply, Algebra.smul_def, Matrix.mulVec, dotProduct]
     exact Finset.sum_congr rfl fun j _ => mul_comm _ _
 
-
 theorem movedVacuum_root_exists_algebraic (hP : _root_.GlobalTheory.FunPr.ThetaLocalInputs) (hI : ∀ D, GlobalTheory.NormSum.Inp D) {D : D7} {Γ : Type} [Group Γ] [Fintype Γ] {Pl0 T : Type}
     {A : FamIn D.what₂.LL Γ Pl0 T D.R.m} {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] {R : RealDat D A Ks}
     (ch : Choice R) (hch : ch.Is) (p : Pair T) (hp : DefPair D.R.m p) (x : FinPt ch.G p.small) (y : FinPt ch.G p.big)
@@ -1480,7 +1470,6 @@ theorem movedVacuum_root_exists_algebraic (hP : _root_.GlobalTheory.FunPr.ThetaL
 end GlobalTheory.MovedVacRoot
 end
 open GlobalTheory.MovedVacRoot in
-
 
 theorem _root_.GlobalTheory.T.moved_vacuum_has_algebraic_root : _root_.GlobalTheory.FunPr.ThetaLocalInputs → (∀ D, GlobalTheory.NormSum.Inp D) → ∀ {D : D7} {Γ : Type} [Group Γ] [Fintype Γ] {Pl0 T : Type}
     {A : FamIn D.what₂.LL Γ Pl0 T D.R.m} {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] {R : RealDat D A Ks}

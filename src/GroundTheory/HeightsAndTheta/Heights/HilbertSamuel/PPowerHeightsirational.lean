@@ -7,6 +7,7 @@ import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
 import GroundTheory.HeightsAndTheta.Heights.HeightComparison.IsMultiHomogIdealIff
+import GroundTheory.HeightsAndTheta.Heights.BlockScaling
 
 @[expose] public section
 
@@ -68,22 +69,6 @@ theorem inLat_prod (y : (Σ k, ι k) → Ω) (f : ∀ k, ι k) : InLat y 1 (∏ 
     rw [Pi.one_apply, zpow_neg_one, div_eq_mul_inv]
   rw [h]
   exact Subalgebra.prod_mem _ fun k _ => Algebra.subset_adjoin ⟨⟨k, f k⟩, rfl⟩
-
-theorem aeval_scale {d : K → ℕ} {g : MRing ι} (hg : IsMultiHomog g d) (lam : K → Ω) (z : (Σ k, ι k) → Ω) :
-    aeval (fun p => lam p.1 * z p) g = (∏ k, lam k ^ d k) * aeval z g := by
-  classical
-  rw [aeval_def, aeval_def, eval₂_eq', eval₂_eq', Finset.mul_sum]
-  refine Finset.sum_congr rfl fun m hm => ?_
-  have hm' : ∏ p, lam p.1 ^ m p = ∏ k, lam k ^ d k := by
-    rw [Fintype.prod_sigma]
-    refine Finset.prod_congr rfl fun k _ => ?_
-    show ∏ i, lam k ^ m ⟨k, i⟩ = lam k ^ d k
-    rw [Finset.prod_pow_eq_pow_sum, hg m hm k]
-  have hsplit : ∏ p, (lam p.1 * z p) ^ m p = (∏ p, lam p.1 ^ m p) * ∏ p, z p ^ m p := by
-    rw [← Finset.prod_mul_distrib]
-    exact Finset.prod_congr rfl fun p _ => mul_pow _ _ _
-  rw [hsplit, hm']
-  ring
 
 theorem exists_chart {y : (Σ k, ι k) → Ω} {d : ℕ} (hV : IsArithVar (mCoordIdeal y) d) :
     ∃ c : ∀ k, ι k, ∀ k, y ⟨k, c k⟩ ≠ 0 := by
@@ -252,8 +237,14 @@ theorem PowerHeightsirational.proof (hN : GeneratedNefGeneric.Statement) (hK : K
       funext p
       have := hc0 p.1
       field_simp
-    have eg := aeval_scale hg (fun κ => y ⟨κ, c0 κ⟩) (fun p => y p / y ⟨p.1, c0 p.1⟩)
-    have eh := aeval_scale hh (fun κ => y ⟨κ, c0 κ⟩) (fun p => y p / y ⟨p.1, c0 p.1⟩)
+    have eg : aeval (fun p => y ⟨p.1, c0 p.1⟩ * (y p / y ⟨p.1, c0 p.1⟩)) g =
+        (∏ κ, y ⟨κ, c0 κ⟩ ^ d κ) * aeval (fun p => y p / y ⟨p.1, c0 p.1⟩) g :=
+      BlockScaling.eval₂_mul_block_left (algebraMap ℤ Ω) (fun κ => y ⟨κ, c0 κ⟩)
+        (fun p => y p / y ⟨p.1, c0 p.1⟩) hg
+    have eh : aeval (fun p => y ⟨p.1, c0 p.1⟩ * (y p / y ⟨p.1, c0 p.1⟩)) h =
+        (∏ κ, y ⟨κ, c0 κ⟩ ^ d κ) * aeval (fun p => y p / y ⟨p.1, c0 p.1⟩) h :=
+      BlockScaling.eval₂_mul_block_left (algebraMap ℤ Ω) (fun κ => y ⟨κ, c0 κ⟩)
+        (fun p => y p / y ⟨p.1, c0 p.1⟩) hh
     rw [hy] at eg eh
     have hΛ : (∏ κ, y ⟨κ, c0 κ⟩ ^ d κ) ≠ 0 := Finset.prod_ne_zero_iff.mpr fun κ _ => pow_ne_zero _ (hc0 κ)
     have hh0' : aeval (fun p => y p / y ⟨p.1, c0 p.1⟩) h ≠ 0 := by

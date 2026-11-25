@@ -269,7 +269,6 @@ open GlobalTheory.NormRatio
 open scoped nonZeroDivisors
 open GlobalTheory.CosetOrth
 
-
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.AddCharTraceUnitBlockTrivialOfMovesStatement =====
@@ -550,7 +549,6 @@ open GlobalTheory.NormRatio
 open scoped nonZeroDivisors
 open GlobalTheory.CosetOrth
 
-
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.DenseRationalHomPointsIdealCompletionStatement =====
@@ -706,7 +704,6 @@ open GlobalTheory.StdLoc (glVol blockIdx)
 open GlobalTheory.NormRatio
 open scoped nonZeroDivisors
 open GlobalTheory.CosetOrth
-
 
 end -- clump:auto
 end -- clump:auto
@@ -1308,7 +1305,7 @@ theorem exists_read_of_wd (h : Setup ψ θ S T ⊤ δ r) {G : VC D a d → ℂ} 
     field_simp
   have h1 := hφ.smul (c * wdPh D (tor0 D ⊤ δ) x)⁻¹
   rw [e] at h1
-  have h2 := GlobalTheory.T.heisenbergFinitePoint_reads_classicalTranslation ψ θ S T hS hT ⊤ δ r h _ _ h1 (-z)
+  have h2 := GlobalTheory.NormExact.heisO_finPt_reads ψ θ S T hS hT ⊤ δ r h _ _ h1 (-z)
   have e2 : pt D (tor0 D ⊤ δ) δ (-z) = -x := by
     funext τ i j
     simp [hx, pt, Formalism.MainNotions.TaylorLogMetric.embV, tor0]
@@ -1327,7 +1324,7 @@ theorem heis_two_finPt (h : Setup ψ θ S T ⊤ δ r) {L L'} {G : VC D a d → �
   set x := pt D (tor0 D ⊤ δ) δ z with hx
   have hxm : x ∈ La D (tor0 D ⊤ δ) L L' :=
     AddSubgroup.subset_closure ⟨δ, AddSubgroup.subset_closure ⟨1, trivial, by simp⟩, z, hz, rfl⟩
-  have h1 := (GlobalTheory.T.heisenbergFinitePoint_reads_classicalTranslation ψ θ S T hS hT ⊤ δ r h _ _ hf z).smul (al D (tor0 D ⊤ δ) x)
+  have h1 := (GlobalTheory.NormExact.heisO_finPt_reads ψ θ S T hS hT ⊤ δ r h _ _ hf z).smul (al D (tor0 D ⊤ δ) x)
   have e : al D (tor0 D ⊤ δ) x • U D (tor0 D ⊤ δ) x G = G := funext fun y => hG.2 x hxm y
   rw [e] at h1
   have h2 := h1.unique hf
@@ -1561,7 +1558,6 @@ open GlobalTheory.Core.Rk.IP (openOff integrand wcoef)
 open GlobalTheory.StdLoc (glVol blockIdx)
 
 open GlobalTheory.NormRatio
-
 
 end -- clump:auto
 end -- clump:auto

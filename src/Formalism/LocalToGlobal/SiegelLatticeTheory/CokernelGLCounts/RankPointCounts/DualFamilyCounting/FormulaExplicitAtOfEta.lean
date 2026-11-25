@@ -48,20 +48,6 @@ def DensProdValAt (D : Formalism.BasicNotions.D7) : Prop :=
                 (if ∀ x : (D.s.atP p).Ep, x ≠ 0 → IsUnit x then -1 else 1) D.R.r (2 * (D.R.rS + 1)) c =
         alphaStd D.host.E p.asIdeal D.R.r / alphaStd D.host.E p.asIdeal (D.R.k - 1 - c)
 
-def DensAllAt (D : Formalism.BasicNotions.D7) : Prop :=
-  ∀ (δ : ∀ p : PlF D, (D.s.atP p).Fp)
-    (M : ∀ p : PlF D, Loc.Model (D.s.atP p).Fp (D.s.atP p).Ep),
-    (∀ p, Agree δ M p) → ∀ (L : LocSp D M) (u u' : D.what₂.Word),
-    (D.mem u).A.T ≡ (D.mem u').A.T [MOD (Lat.gS D) ^ 2] →
-    ∀ (F0 : FlagG (VS D) D.R.rS (Tn u)) (what₂ : Finset (Submodule (𝓞 D.host.E) (VS D).V)),
-      IsRowReps D F0 what₂ → ∀ (ϖ : ∀ p : PlF D, 𝒪[(D.s.atP p).Fp]), (∀ p, Irreducible (ϖ p)) → ∀ (Z : MatZ D) (F' : LFlag (D.sp.Y 0) D.R.rS (Tn u')), F'.zt = F'.fl.z → ZhatL (lf D F0) F' = Z →
-        Formalism.MainNotions.S.LocalSplitGroups.TotPos (GZ (Tn u) (Tn u') Z) →
-        (Formalism.HermitianLatticesTheory.IsIntegralLat (VS D).hT (MMof D F0 F') →
-          (∀ p : PlF D, densP L δ ϖ (Tn u) (Tn u') Z p = alphaStd D.host.E p.asIdeal D.R.r /
-            alphaStd D.host.E p.asIdeal (D.R.k - 1 - cJ (VS D).hT (UPair D F0 F') (MMof D F0 F') p.asIdeal)) ∧
-          Multipliable (densP L δ ϖ (Tn u) (Tn u') Z)) ∧
-        (¬ Formalism.HermitianLatticesTheory.IsIntegralLat (VS D).hT (MMof D F0 F') → ∃ p : PlF D, densP L δ ϖ (Tn u) (Tn u') Z p = 0)
-
 def FormulaExplicitAt (D : Formalism.BasicNotions.D7) : Prop :=
   ∀ (δ : ∀ p : PlF D, (D.s.atP p).Fp)
     (M : ∀ p : PlF D, Loc.Model (D.s.atP p).Fp (D.s.atP p).Ep),
@@ -105,7 +91,7 @@ theorem densMultIntAt_of (D : Formalism.BasicNotions.D7) (hF : DualityBasisChang
   Formalism.L2.SG.Pf.Cnt.densMultIntAt_of local_self_dual_holds
     (DualityBasisChange.gaPlusDiag_of hF jordan_decomposition_holds) h5
 
-theorem densAllAt_of (D : Formalism.BasicNotions.D7) (hF : DualityBasisChange.FrameBasisL) (hη : EtaLocAt D) : DensAllAt D := by
+theorem densAllAt_of (D : Formalism.BasicNotions.D7) (hF : DualityBasisChange.FrameBasisL) (hη : EtaLocAt D) : Formalism.L2.SG.Pf.DensLoc.DensAllAt D := by
   intro δ M hA L u u' hT F0 what₂ hR ϖ hϖ Z F' hz hZ hP
   have h5 := densProdValAt_of D hη
   exact ⟨fun hI => ⟨fun p => densValAt_of D hF h5 δ M hA L u u' hT F0 what₂ hR ϖ hϖ Z F' hz hZ hP hI p,
@@ -120,7 +106,7 @@ namespace Formalism.L2.SG.Pf
 open Formalism.HermitianLattices.Ext.L3 Formalism.L2.SG.Pf.Cnt Formalism.L2.SG.Pf.Asm Formalism.L2.SG.Pf.Cnt.AtD
 
 variable [Fact Formalism.HermitianLattices.Ext.L3.HermRepUnram] in
-theorem formulaExplicitAt_of (D : Formalism.BasicNotions.D7) (h5 : DensAllAt D) : FormulaExplicitAt D := by
+theorem formulaExplicitAt_of (D : Formalism.BasicNotions.D7) (h5 : Formalism.L2.SG.Pf.DensLoc.DensAllAt D) : FormulaExplicitAt D := by
   intro δ M hA L u u' hT F0 what₂ hR ϖ hϖ Z hP
   have h0 := Formalism.L2.SG.Pf.Cnt.field_dictionary_holds
   have h1 := Formalism.L2.SG.Pf.Cnt.rational_pair_holds

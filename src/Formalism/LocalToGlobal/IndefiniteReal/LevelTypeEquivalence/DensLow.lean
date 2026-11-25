@@ -205,7 +205,7 @@ theorem gt_of_uh (M : DSModel V S) {g : Matrix (Fin V.rank) (Fin V.rank) ℂ} (h
 def Ksub : Submodule ℂ (M.H τ) :=
   Submodule.span ℂ {x | ∃ g ∈ Formalism.QuantumDeterminants.UH (gramAt D V τ), ∃ w0 : lowT M τ, x = M.rep τ g ((w0 : M.sm τ) : M.H τ)}
 
-theorem ksub_sm : ∀ x ∈ Ksub M τ, ∃ w ∈ KfLow M τ, (w : M.H τ) = x := by
+theorem ksub_sm : ∀ x ∈ Ksub M τ, ∃ w ∈ UpperTheory.Reformulated.B.LowTypeThetaMapVanishing.KfLow M τ, (w : M.H τ) = x := by
   intro x hx
   induction hx using Submodule.span_induction with
   | mem x hx =>
@@ -303,7 +303,7 @@ theorem cont_orbit {ℓ : M.H τ →ₗ[ℂ] ℂ} (hℓ : Sobolev₂ (lieAt V τ
   simpa using hz
 
 theorem densLow_model (hlow : ∃ w0 : lowT M τ, ((w0 : M.sm τ) : M.H τ) ≠ 0) (ℓ : M.H τ →ₗ[ℂ] ℂ)
-    (hℓ : Sobolev₂ (lieAt V τ) (M.rep τ) ℓ) (hK : ∀ w ∈ KfLow M τ, ℓ (w : M.H τ) = 0) :
+    (hℓ : Sobolev₂ (lieAt V τ) (M.rep τ) ℓ) (hK : ∀ w ∈ UpperTheory.Reformulated.B.LowTypeThetaMapVanishing.KfLow M τ, ℓ (w : M.H τ) = 0) :
     ∀ w : M.sm τ, ℓ (w : M.H τ) = 0 := by
   have : CompleteSpace (M.H τ) := (M.ds τ).1
   have hKs : ∀ x ∈ Ksub M τ, ℓ x = 0 := fun x hx => by

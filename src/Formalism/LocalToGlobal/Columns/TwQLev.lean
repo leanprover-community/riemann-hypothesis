@@ -131,13 +131,8 @@ theorem lq_compact (hQ : QOpen q) : IsCompact (levUQ hc n ST SG Q H q : Set (GL 
     Subgroup.isClosed_of_isOpen _ (lq_open q H hQ)
   have hUA : levUQ hc n ST SG Q H q ≤ UAd hc n := (levUQ_le q H).trans (levU_le_UAd hc n ST SG H)
   have himg : (levUQ hc n ST SG Q H q : Set (GL (Fin n) 𝒜)) =
-      Subtype.val '' (((levUQ hc n ST SG Q H q).subgroupOf (UAd hc n) : Subgroup (UAd hc n)) : Set (UAd hc n)) := by
-    ext u
-    constructor
-    · intro hu
-      exact ⟨⟨u, hUA hu⟩, hu, rfl⟩
-    · rintro ⟨x, hx, rfl⟩
-      exact hx
+      Subtype.val '' (((levUQ hc n ST SG Q H q).subgroupOf (UAd hc n) : Subgroup (UAd hc n)) : Set (UAd hc n)) :=
+    (Set.image_preimage_eq_of_subset fun u hu => ⟨⟨u, hUA hu⟩, rfl⟩).symm
   have hclosed : IsClosed (levUQ hc n ST SG Q H q : Set (GL (Fin n) 𝒜)) := by
     rw [himg]
     exact (rlt_isClosed_UAd hc n).isClosedEmbedding_subtypeVal.isClosedMap _ hcl

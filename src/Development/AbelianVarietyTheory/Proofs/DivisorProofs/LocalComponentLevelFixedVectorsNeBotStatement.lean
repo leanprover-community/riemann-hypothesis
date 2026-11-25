@@ -90,11 +90,11 @@ theorem fixed_ne_bot : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E], U
     apply Subtype.ext
     simp only [MonoidHom.one_apply, Units.val_one, one_smul]
     exact hfixx (e.symm g) (by rw [hpx]; exact g.2)
-  let H : Subgroup (K' w) := ⨅ i ∈ c.support, GlobalTheory.LocVec.stabSub ρK (u i)
+  let H : Subgroup (K' w) := ⨅ i ∈ c.support, GlobalTheory.CuspRep.LocEx.stab ρK (u i)
   have hHo : IsOpen (H : Set (K' w)) := by
     simp only [H, Subgroup.coe_iInf]
     refine isOpen_biInter_finset fun i _ => ?_
-    have : (GlobalTheory.LocVec.stabSub ρK (u i) : Set (K' w)) =
+    have : (GlobalTheory.CuspRep.LocEx.stab ρK (u i) : Set (K' w)) =
         (fun g : K' w => (g : UL n w)) ⁻¹' {x | σ.ρ x (u i) = u i} := rfl
     rw [this]
     exact (σ.smooth (u i)).preimage continuous_subtype_val

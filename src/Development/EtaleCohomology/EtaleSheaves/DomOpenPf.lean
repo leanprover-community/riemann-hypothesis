@@ -8,7 +8,6 @@ public import Mathlib.RingTheory.Flat.TorsionFree
 
 @[expose] public section
 
-noncomputable section
 open CategoryTheory Limits AlgebraicGeometry Opposite GlobalTheory.EtC Polynomial
 
 namespace LateralTheory.E.DomOpenPf

@@ -148,16 +148,6 @@ private theorem eqs_iff (s : ℤˣ) (X : Matrix (Fin m ⊕ Fin m) (Fin m ⊕ Fin
     unfold eqs
     split_ifs <;> simp [GG.mat, mul_theta]
 
-private theorem lc_gg {Γ : Type} [TopologicalSpace Γ] (x : Γ → GG (m := m) (R := A)) (h1 : IsLocallyConstant fun g => (x g).right)
-    (h2 : ∀ a b, IsLocallyConstant fun g => (x g).mat a b) : IsLocallyConstant x := by
-  refine (IsLocallyConstant.iff_eventually_eq _).mpr fun g => ?_
-  have hr := h1.eventually_eq g
-  have hm : ∀ᶠ g' in nhds g, ∀ a b, (x g').mat a b = (x g).mat a b := by
-    simp only [Filter.eventually_all]
-    exact fun a b => (h2 a b).eventually_eq g
-  filter_upwards [hr, hm] with g' h1' h2'
-  exact SemidirectProduct.ext (Units.ext (Matrix.ext h2')) h1'
-
 end Emb
 
 section Desc

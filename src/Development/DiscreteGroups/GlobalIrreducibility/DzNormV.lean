@@ -12,8 +12,6 @@ open NumberField IsDedekindDomain Formalism.ConjugateSelfDual Filter Topology
 
 set_option linter.all false
 
-noncomputable section
-
 namespace DiscreteGroups.sglob.DzType
 
 variable {E : Type} [Field E] [NumberField E] (w : HeightOneSpectrum (𝓞 E)) (g : ℕ) [hg : Fact g.Prime]
@@ -102,5 +100,3 @@ theorem normV_eq_of_padic (i : ℚ_[g] ≃+* w.adicCompletion E) (hi : Continuou
   rw [← Nat.card_congr (RingEquiv.ofBijective f ⟨hinj, hsurj⟩).toEquiv, Nat.card_zmod]
 
 end DiscreteGroups.sglob.DzType
-
-end

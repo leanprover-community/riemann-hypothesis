@@ -9,7 +9,6 @@ open MeasureTheory ValuativeRel Matrix
 open scoped NNReal ENNReal Pointwise
 open scoped Classical
 
-noncomputable section
 namespace GlobalTheory.SplitFlip.Model
 open GlobalTheory.SplitWeil GlobalTheory.SplitWeil.Model GlobalTheory.SplitFlip
 

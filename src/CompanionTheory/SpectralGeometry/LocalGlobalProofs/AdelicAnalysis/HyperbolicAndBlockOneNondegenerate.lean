@@ -14,26 +14,6 @@ namespace GlobalTheory.CompanionTheory.SW.BlockForm
 open HeckeCharacterZeroLocus.SiegelWeilU GlobalTheory.CompanionTheory.SW NumberField IsDedekindDomain MeasureTheory Topology
 open scoped TensorProduct ENNReal NNReal Matrix
 
-theorem blockOne_zero_zero {K : Type} [Zero K] {M : ℕ} (t : K) (A : Matrix (Fin M) (Fin M) K) :
-    blockOne t A 0 0 = t := rfl
-
-theorem blockOne_zero_succ {K : Type} [Zero K] {M : ℕ} (t : K) (A : Matrix (Fin M) (Fin M) K)
-    (j : Fin M) : blockOne t A 0 j.succ = 0 := rfl
-
-theorem blockOne_succ_zero {K : Type} [Zero K] {M : ℕ} (t : K) (A : Matrix (Fin M) (Fin M) K)
-    (i : Fin M) : blockOne t A i.succ 0 = 0 := rfl
-
-theorem blockOne_succ_succ {K : Type} [Zero K] {M : ℕ} (t : K) (A : Matrix (Fin M) (Fin M) K)
-    (i j : Fin M) : blockOne t A i.succ j.succ = A i j := rfl
-
-theorem det_blockOne {K : Type} [CommRing K] {M : ℕ} (t : K) (A : Matrix (Fin M) (Fin M) K) :
-    (blockOne t A).det = t * A.det := by
-  have h0 : (blockOne t A).submatrix Fin.succ Fin.succ = A := by
-    ext i j
-    exact blockOne_succ_succ t A i j
-  rw [Matrix.det_succ_row_zero, Fin.sum_univ_succ]
-  simp [blockOne_zero_zero, blockOne_zero_succ, h0]
-
 theorem hypJ_zero_zero {K : Type} [Zero K] [One K] {M : ℕ} (A : Matrix (Fin M) (Fin M) K) :
     hypJ A 0 0 = 0 := rfl
 

@@ -103,7 +103,6 @@ open Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLattice
 open scoped TensorProduct
 open GlobalTheory.MovedDict Formalism.L2.Ker GlobalTheory.SignedHC
 
-
 noncomputable section
 
 namespace GlobalTheory.SplitMoveKappa
@@ -239,8 +238,6 @@ theorem finIso_one_tmul (D : D7) (x : D.host.E) : finIso D ((1 : Af D.host.F) �
 theorem mem_intAE_iff (D : D7) (y : Af D.host.F ⊗[D.host.F] D.host.E) :
     y ∈ intAE D ↔ ∀ P : HeightOneSpectrum (𝓞 D.host.E), Valued.v (finIso D y P) ≤ 1 :=
   (GlobalTheory.HostAdeleIso.mem_intAE_iff_comm D y).trans (GlobalTheory.Mem.Col2.mem_rInt_iff _ _ _)
-
-
 
 theorem exists_pow_rel (D : D7) (x : (Formalism.L2.Theta.AE D)ˣ) (hx : Formalism.L2.Theta.infPart D (x : Formalism.L2.Theta.AE D) = 1) :
     ∃ (h : ℕ) (k : D.host.Eˣ) (y w : (Formalism.L2.Theta.AE D)ˣ), 0 < h ∧ Formalism.L2.Pj.FinUnit w ∧ Formalism.L2.Theta.finPart D (y : Formalism.L2.Theta.AE D) = 1 ∧
@@ -403,7 +400,6 @@ open Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLattice
 
 open scoped TensorProduct
 open GlobalTheory.MovedDict Formalism.L2.Ker GlobalTheory.SignedHC
-
 
 noncomputable section
 
@@ -857,7 +853,7 @@ private theorem jets_move_with_frames {D : D7} {ψ : AddChar (AF D.host.F) ℂ} 
       ∀ z ∈ Formalism.MainNotions.TaylorLogMetric.La D (tor0 D D.host.ccK δ) Ls Lt, ∃ γ, z = P γ := by
     intro Ls Lt hLs hLt f hf
     obtain ⟨Φ, hΦd, hreal⟩ := GlobalTheory.T.fockVacuum_real_restriction_gaussian_entire ψ θ S T frS frT _ _ hS hT f hf
-    have hTh := GlobalTheory.T.unitVacuumEntireFactor_isTheta_movedLattices ψ θ S T frS frT hS hT δ hC hδ Ls Lt hLs hLt f hf Φ hΦd hreal
+    have hTh := GlobalTheory.ThetaLawMoved.theta_of_vacuum_moved ψ θ S T frS frT hS hT δ hC hδ Ls Lt hLs hLt f hf Φ hΦd hreal
     have hr := hrdΦ f Φ hreal
     have hne : rd f ≠ 0 := by
       intro h0
@@ -1143,7 +1139,6 @@ open Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLattice
 open scoped TensorProduct
 open GlobalTheory.MovedDict Formalism.L2.Ker GlobalTheory.SignedHC
 
-
 noncomputable section
 namespace GlobalTheory.MovedKappaNorm
 
@@ -1354,7 +1349,7 @@ theorem normSq_scalar {D : D7} (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) 
   have hsT := GlobalTheory.FockPos.cart_one frT hT hcT
   subst hsS hsT
   obtain ⟨Φ, hΦd, hreal⟩ := GlobalTheory.T.fockVacuum_real_restriction_gaussian_entire ψ θ S T frS frT _ _ hS hT f hf
-  have hTh := GlobalTheory.T.unitVacuumEntireFactor_isTheta_movedLattices ψ θ S T frS frT hS hT δ hC hδ Ls Lt hLs hLt f hf Φ hΦd hreal
+  have hTh := GlobalTheory.ThetaLawMoved.theta_of_vacuum_moved ψ θ S T frS frT hS hT δ hC hδ Ls Lt hLs hLt f hf Φ hΦd hreal
   obtain ⟨⟨μ, 𝓕⟩, hμ⟩ := hf.2.norm.1
   have k1 : KLat D (tor0 D D.host.ccK δ) (La D (tor0 D D.host.ccK δ) Ls Lt) := Or.inr ⟨_, _, hLs, hLt, rfl⟩
   have hN := normSq_real_form ψ θ S T frS frT hf.1 hf.2.inf hC hδ k1 f hf.2.theta hμ (hf.2.norm.2 (μ, 𝓕) hμ) Φ hreal hTh

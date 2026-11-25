@@ -30,7 +30,6 @@ section -- clump:auto
 open CategoryTheory Limits AlgebraicGeometry ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open scoped TensorProduct
 
-
 set_option backward.isDefEq.respectTransparency false in
 
 theorem _root_.GlobalTheory.T.irreducibleSpace_pullback_affine_open_of_isDomain_tensor : ∀ {F : Type} [Field F] {X : Scheme.{0}} (g : X ⟶ Sp F) (V : X.Opens), IsAffineOpen V →
@@ -93,20 +92,13 @@ theorem scheme_homOfLE_apply_mk {X : Scheme.{0}} {U V : X.Opens} (e : V ≤ U) (
   have h1 : (X.homOfLE e ≫ U.ι) ⟨x, hx⟩ = V.ι ⟨x, hx⟩ := by rw [X.homOfLE_ι]
   simpa using h1
 
-theorem surjective_spMap_of_field {F k : Type} [Field F] [Field k] (f : F →+* k) :
-    Surjective (spMap f) := by
-  constructor
-  intro x
-  obtain ⟨y⟩ : Nonempty (Sp k) := inferInstance
-  exact ⟨y, Subsingleton.elim _ _⟩
-
 theorem irreducibleSpace_pullback_of_cover : ∀ {F : Type} [Field F] {X : Scheme.{0}} (h : X ⟶ Sp F) (k : Type)
     [Field k] (f : F →+* k) (U : X.Opens),
     IsIrreducible (U : Set X) →
     (∀ y ∈ U, ∃ V : X.Opens, V ≤ U ∧ y ∈ V ∧ IrreducibleSpace ↑(pullback (V.ι ≫ h) (spMap f))) →
     IrreducibleSpace ↑(pullback (U.ι ≫ h) (spMap f)) := by
   intro F _ X h k _ f U hU hV
-  haveI := surjective_spMap_of_field f
+  haveI := GlobalTheory.LevelMap.surjective_spMap f
   set q := pullback.fst (U.ι ≫ h) (spMap f) with hq
   have hqs : Function.Surjective q := q.surjective
 
@@ -269,7 +261,6 @@ theorem algClosed_kap {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Re
   exact hb'
 
 end GlobalTheory.GeomIrrComp
-
 
 open GlobalTheory.GeomIrrComp in
 theorem GlobalTheory.GeomIrrComp.exists_open_irreducibleSpace_baseChange : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (l : Level H)

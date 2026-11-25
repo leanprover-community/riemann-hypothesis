@@ -4,8 +4,6 @@ public import CompanionTheory.RealGroups.DiscreteSeries.DiscreteSeriesClassifica
 
 @[expose] public section
 
-noncomputable section
-
 open Finset
 
 namespace CompanionTheory.RgDs.Hilb

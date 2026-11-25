@@ -7,8 +7,6 @@ public import Mathlib.LinearAlgebra.FreeModule.Finite.Matrix
 
 @[expose] public section
 
-noncomputable section
-
 namespace CompanionTheory.D.gk.admitted
 
 theorem std_eq_zero {A : Type} [Ring A] [Algebra ℂ A] [Module.Finite ℂ A] {M : ℕ} (hM : Module.finrank ℂ A < M)

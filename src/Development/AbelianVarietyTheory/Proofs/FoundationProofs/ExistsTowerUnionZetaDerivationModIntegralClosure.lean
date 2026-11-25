@@ -10,8 +10,6 @@ import Mathlib.Tactic.Linter.HaveILetI
 open GlobalTheory.AlmostEt GlobalTheory.K5
 open scoped NNReal
 
-noncomputable section
-
 namespace GlobalTheory.AlmostEt
 
 section DerLemmas

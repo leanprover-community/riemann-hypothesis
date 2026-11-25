@@ -385,12 +385,7 @@ theorem exists_map_val_withDensity [NeZero m] (μ : Measure (GL (Fin m) F)) [μ.
   rw [Measure.map_apply hv.measurable hS, hE.comap_apply]
   have himg : C.toFun '' (Units.val ⁻¹' S) =
       Measures.entries F m '' (S ∩ Set.range (Units.val : GL (Fin m) F → Matrix (Fin m) (Fin m) F)) := by
-    ext x
-    constructor
-    · rintro ⟨g, hg, rfl⟩
-      exact ⟨g, ⟨hg, g, rfl⟩, rfl⟩
-    · rintro ⟨X, ⟨hX, g, rfl⟩, rfl⟩
-      exact ⟨g, hX, rfl⟩
+    rw [← Set.image_preimage_eq_inter_range, ← Set.image_comp]; rfl
   have hrange : MeasurableSet (Set.range (Units.val : GL (Fin m) F → Matrix (Fin m) (Fin m) F)) :=
     hv.measurableSet_range
   rw [himg, ← matrixMeasure_apply_eq_pi μ₁ (hS.inter hrange)]
@@ -400,11 +395,7 @@ theorem exists_map_val_withDensity [NeZero m] (μ : Measure (GL (Fin m) F)) [μ.
     refine measure_mono_null (fun X hX => ?_) (matrixMeasure_det_eq_zero μ₁)
     by_contra hdet
     exact hX ⟨((Matrix.isUnit_iff_isUnit_det X).2 (isUnit_iff_ne_zero.2 hdet)).unit, rfl⟩
-  have h3 : (S ∩ Set.range (Units.val : GL (Fin m) F → Matrix (Fin m) (Fin m) F) :
-      Set (Matrix (Fin m) (Fin m) F)) =ᵐ[matrixMeasure (n := Fin m) μ₁] S := by
-    have := (Filter.EventuallyEqSet.rfl (s := S)).inter (ae_eq_univ.2 hnull)
-    rwa [Set.inter_univ] at this
-  exact h3
+  exact inter_ae_eq_left_of_ae_eq_univ (ae_eq_univ.2 hnull)
 
 theorem exists_integral_GL_eq [NeZero m] (μ : Measure (GL (Fin m) F)) [μ.IsHaarMeasure]
     (μ₁ : Measure F) [μ₁.IsAddHaarMeasure] :

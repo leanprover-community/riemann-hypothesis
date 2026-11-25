@@ -15,14 +15,6 @@ section -- clump:auto
 
 noncomputable section
 
-namespace GlobalTheory.IndefiniteRowSideFullHecke.AbsoluteLogMeanBounds
-
-open NumberField Formalism.BasicNotions Formalism.MainNotions.TaylorLogMetric GlobalTheory.Glob.IntegralWittCoefficients Classical
-
-def kronBound (D : D7) : ℝ :=
-  (1 / 2) * (Real.log (Real.sqrt (D.host.d : ℝ)) - Real.eulerMascheroniConstant + logDerivativeAtOne D)
-
-end GlobalTheory.IndefiniteRowSideFullHecke.AbsoluteLogMeanBounds
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -39,7 +31,7 @@ namespace GlobalTheory.Theta0MeanCompare
 
 open NumberField Formalism.BasicNotions Formalism.MainNotions.TaylorLogMetric GlobalTheory.Glob.IntegralWittCoefficients GlobalTheory.IndefiniteRowSideFullHecke
 
-theorem bound_eq (D : D7) : SignedLogMeans.bound D = AbsoluteLogMeanBounds.kronBound D := rfl
+theorem bound_eq (D : D7) : SignedLogMeans.bound D = GlobalTheory.IndefiniteRowSideFullHecke.SignedLogMeans.bound D := rfl
 
 theorem one_le_d (D : D7) : (1 : ℝ) ≤ D.host.d := by
   have h := D.host.qd_big.2
@@ -58,14 +50,14 @@ theorem two_sqrt_le_rd (D : D7) : 2 * Real.sqrt D.host.d ≤ D.host.rdE := by
 theorem one_le_sqrt_d (D : D7) : 1 ≤ Real.sqrt D.host.d := Real.one_le_sqrt.mpr (one_le_d D)
 
 theorem kronBound_le (D : D7) {L : ℝ} (h : Real.log D.host.rdE + |logDerivativeAtOne D| ≤ 2 * L) :
-    AbsoluteLogMeanBounds.kronBound D ≤ L := by
+    GlobalTheory.IndefiniteRowSideFullHecke.SignedLogMeans.bound D ≤ L := by
   have h1 := two_sqrt_le_rd D
   have h2 := one_le_sqrt_d D
   have h3 : Real.log (Real.sqrt D.host.d) ≤ Real.log D.host.rdE :=
     Real.log_le_log (by linarith) (by linarith)
   have h4 := Real.one_half_lt_eulerMascheroniConstant
   have h5 := le_abs_self (logDerivativeAtOne D)
-  unfold AbsoluteLogMeanBounds.kronBound
+  unfold GlobalTheory.IndefiniteRowSideFullHecke.SignedLogMeans.bound
   linarith
 
 end GlobalTheory.Theta0MeanCompare

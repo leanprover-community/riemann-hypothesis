@@ -191,7 +191,6 @@ variable {J : Type} (V : J → Z.Opens) (e : J → ∀ O : Z.Opens, Γ(Z, O) →
 def loc (O : Z.Opens) (f : Γ(Z, O)) (i : J) : Γ(Z, O ⊓ V i) :=
   e i (O ⊓ V i) (resG Z inf_le_left f)
 
-
 open Classical in
 def glue (O : Z.Opens) (f : Γ(Z, O)) : Γ(Z, O) :=
   if h : ∃ s : Γ(Z, O), ∀ i, resG Z (inf_le_left : O ⊓ V i ≤ O) s = loc V e O f i then h.choose else 0
@@ -720,7 +719,7 @@ theorem isTranslate_push {X X' : Scheme.{0}} {t : SAB H X} {t' : SAB H X'} {g : 
     rw [Category.assoc, mu.cart.1.w, ← Category.assoc, hg₀, Category.assoc, hx, ← Category.assoc,
       GlobalTheory.LogKSLoc.spMap_comp']
   obtain ⟨w, hw, -⟩ := existsUnique_isTranslate t (φS.comp (g.appLE U.1 U'.1 hU).hom) hg hvb
-  obtain ⟨w'', h1, h2⟩ := GlobalTheory.T.tangentTranslate_lifts_semiAbelianTripleMap E H X X' t t' g mu _ _ (g.appLE U.1 U'.1 hU).hom (chart U) (chart U') hx vb vb'
+  obtain ⟨w'', h1, h2⟩ := GlobalTheory.TransLift.lift_isTranslate E H X X' t t' g mu _ _ (g.appLE U.1 U'.1 hU).hom (chart U) (chart U') hx vb vb'
     hvb hvb' hvv S φS g₀ hg₀ w hw
   obtain ⟨_, _, huniq⟩ := existsUnique_isTranslate t' φS hg₀ hvb'
   have e : w'' = w' := (huniq _ h2).trans (huniq _ hw').symm

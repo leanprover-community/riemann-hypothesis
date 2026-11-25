@@ -14,10 +14,6 @@ open MeasureTheory MeasureTheory.Measure GlobalTheory.SplitWeil PositivityTheory
 
 namespace GlobalTheory.CompanionTheory.FrobNz
 
-private theorem three_halves_norm_sub_one_le_norm_sq_sub_one (u : ℂ) (hu : ‖u - 1‖ < 1/2) :
-    3/2 * ‖u - 1‖ ≤ ‖u ^ 2 - 1‖ := by
-  apply _root_.GroundTheory.Global.norm_sq_sub_one_ge <;> assumption
-
 theorem exists_compact_open_subgroup_trivial {G : Type} [Group G] [TopologicalSpace G]
     [IsTopologicalGroup G] [T2Space G] [LocallyCompactSpace G] [TotallyDisconnectedSpace G]
     (χ : G →* ℂˣ) (hχ : Continuous (fun g => (χ g : ℂ))) :

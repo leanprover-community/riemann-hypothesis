@@ -4,8 +4,6 @@ public import Formalism.SharpRestriction.LevelLetterCocycles.CyclotomicPowerSeri
 public import Mathlib.RingTheory.PowerSeries.WeierstrassPreparation
 public import Mathlib.RingTheory.Polynomial.Eisenstein.IsIntegral
 public import Formalism.SharpRestriction.LevelLetterCocycles.CyclotomicPowerSeries.ConstantCoeffAeval
-public import Formalism.SharpRestriction.LevelLetterCocycles.CyclotomicPowerSeries.CycloSimple
-public import Formalism.SharpRestriction.LevelLetterCocycles.CyclotomicPowerSeries.PiSeries
 public import Formalism.SharpRestriction.LevelLetterCocycles.CyclotomicPowerSeries.PsCycloStatement
 public import Mathlib.RingTheory.Polynomial.Cyclotomic.Expand
 public import Formalism.SharpRestriction.LevelLetterCocycles.MapEvalPsPi
@@ -15,6 +13,72 @@ import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.TypeStar
+
+section
+@[expose] public section
+
+noncomputable section
+
+namespace LevelStatements.Lv
+
+open PowerSeries IsLocalRing
+
+theorem piSeries : PiSeriesStatement := by
+  intro LL ι _
+  refine ⟨fun f => ?_, fun F => ⟨fun k => ?_, ?_⟩⟩
+  · refine ⟨PowerSeries.mk fun n i => coeff n (f i), fun i => ?_, fun G hG => ?_⟩
+    · ext n
+      simp [coeff_map]
+    · ext n i
+      rw [coeff_mk, ← hG i, coeff_map]
+      rfl
+  · simp only [X_pow_dvd_iff, coeff_map]
+    constructor
+    · intro h i d hd
+      rw [h d hd]
+      rfl
+    · intro h d hd
+      funext i
+      exact h i d hd
+  · rw [isUnit_iff_constantCoeff, Pi.isUnit_iff]
+    refine forall_congr' fun i => ?_
+    rw [isUnit_iff_constantCoeff, ← coeff_zero_eq_constantCoeff_apply, ← coeff_zero_eq_constantCoeff_apply,
+      coeff_map]
+    rfl
+
+end LevelStatements.Lv
+end
+end
+end
+
+
+section
+@[expose] public section
+
+noncomputable section
+
+namespace LevelStatements.Lv
+
+open PowerSeries IsLocalRing
+
+theorem cycloSimple : CycloSimpleStatement := by
+  intro LL S _ _ _ _ m hm ζ E hζ hE0 hE
+  obtain ⟨G, hG⟩ := (X_dvd_iff.2 (by
+    simpa [constantCoeff_aeval, hE0] using hζ) :
+    X ∣ Polynomial.aeval (C ζ * E) (Polynomial.cyclotomic m LL))
+  refine ⟨(isUnit_iff_constantCoeff.2 ?_).unit, mul_comm X G ▸ hG⟩
+  obtain ⟨Q, hQ⟩ := Polynomial.cyclotomic.dvd_X_pow_sub_one m LL
+  have hroot := congrArg (Polynomial.aeval ζ) hQ
+  apply_fun constantCoeff ∘ derivative ∘ Polynomial.aeval (C ζ * E) at hQ
+  have hmu := (Nat.cast_ne_zero.2 hm.ne').isUnit.map (algebraMap LL S)
+  simp_all [Function.comp_def, constantCoeff_aeval, Derivation.leibniz, smul_eq_mul,
+    sub_eq_zero, ← pow_succ, Nat.sub_add_cancel hm]
+
+end LevelStatements.Lv
+end
+end
+end
+
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.SharpRestriction.LevelLetterCocycles.CyclotomicPowerSeries.AlgHomPowerSeriesCoeEqAeval, Formalism.SharpRestriction.LevelLetterCocycles.CyclotomicPowerSeries.EqZeroOfBlockSumEqZero, Formalism.SharpRestriction.LevelLetterCocycles.CyclotomicPowerSeries.CycloDist, Formalism.SharpRestriction.LevelLetterCocycles.CyclotomicPowerSeries.MapEvalRingHomOfPiFamily, Formalism.SharpRestriction.LevelLetterCocycles.CyclotomicPowerSeries.PolynomialCoePowerSeriesEqAevalX, Formalism.SharpRestriction.LevelLetterCocycles.CyclotomicPowerSeries.RhoUnit, Formalism.SharpRestriction.LevelLetterCocycles.RingStepsOf

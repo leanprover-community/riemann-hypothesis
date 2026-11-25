@@ -45,8 +45,6 @@ import Formalism.SharpRestriction.LevelLetterCocycles.ArithmeticCylinders
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.MainNotions.ArithmeticCylinders IsDedekindDomain MeasureTheory Formalism.MainNotions.S Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.IndefR.Mult GlobalTheory.RowLev NumberField Matrix
 open scoped InnerProductSpace TensorProduct Classical
 
@@ -90,5 +88,3 @@ theorem postOn_mem_goodPart {J J' : Set (GA D V)} {χ χ' : GA D V → ℂ} {x :
   rw [hL, h.2]
 
 end GlobalTheory.MultTranslate
-
-end

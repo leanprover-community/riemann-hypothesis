@@ -16,20 +16,6 @@ section -- clump:auto
 
 open Polynomial
 
-noncomputable def UpperTheory.Reformulated.B.SplittingFieldConstruction.SplitField :
-    Prop :=
-    ∀ (A B : Type) [inst : CommRing A] [inst_1 : IsDomain A] [inst_2 : CommRing B] [inst_3 : Algebra A B]
-      [Module.Finite A B],
-      ∃ (L : Type) (x : Field L) (x_1 : Algebra A L) (x_2 : Algebra (FractionRing A) L) (_ :
-        IsScalarTower A (FractionRing A) L),
-        FiniteDimensional (FractionRing A) L ∧
-          Normal (FractionRing A) L ∧
-            Finite (B →ₐ[A] ↥(integralClosure A L)) ∧
-              ∀ (Ω : Type) [inst_5 : Field Ω] (φ : ↥(integralClosure A L) →+* Ω) (z : B →+* Ω),
-                Function.Injective (⇑(φ.comp (Algebra.algebraMap A ↥(integralClosure A L))) : A → Ω) →
-                  z.comp (Algebra.algebraMap A B) = φ.comp (Algebra.algebraMap A ↥(integralClosure A L)) →
-                    ∃! σ : B →ₐ[A] ↥(integralClosure A L), φ.comp (↑σ : B →+* ↥(integralClosure A L)) = z
-
 private theorem UpperTheory.Reformulated.B.SplittingFieldConstruction.exists_monic {A B : Type} [CommRing A] [CommRing B]
     [Algebra A B] [Module.Finite A B] (s : Finset B) :
     ∃ p : A[X], p.Monic ∧ ∀ b ∈ s, aeval b p = 0 := by
@@ -111,7 +97,7 @@ private theorem UpperTheory.Reformulated.B.SplittingFieldConstruction.splits_clo
   exact ⟨⟨a, p, hp, h1⟩, rfl⟩
 
 theorem UpperTheory.Reformulated.B.SplittingFieldConstruction.splitField_of :
-    UpperTheory.Reformulated.B.SplittingFieldConstruction.SplitField := by
+    UpperTheory.Gal.TranscendenceTraces.SplitField := by
   intro A B _ _ _ _ _
   obtain ⟨s, hs⟩ := Module.Finite.fg_top (R := A) (M := B)
   obtain ⟨p, hp, h0⟩ := UpperTheory.Reformulated.B.SplittingFieldConstruction.exists_monic (A := A) s

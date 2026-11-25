@@ -7,8 +7,6 @@ import Mathlib.Tactic.Linter.HaveILetI
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.LatticeComplement
 
 open Formalism.MainNotions.N Polynomial Matrix
@@ -353,5 +351,3 @@ theorem _root_.GlobalTheory.LatticeComplement.exists_lattice_complement : ∀ (�
     rw [hch₁ g, hch' g, Fin.prod_univ_castSucc, mul_assoc]
 
 end GlobalTheory.LatticeComplement
-
-end

@@ -1,6 +1,7 @@
 module
 
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsLocalRep
+public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PSectionBounded
 import GroundTheory.HeightsAndTheta.Heights.HeightComparison.IsMultiHomogIdealIff
 
 @[expose] public section
@@ -44,35 +45,6 @@ theorem isMultiHomog_chartMono (c : ∀ k, ι k) (e : K → ℕ) :
     IsMultiHomog (∏ k, (X ⟨k, c k⟩ : MRing ι) ^ e k) e :=
   GroundTheory.Heights₂.Heights.Bridge.isMultiHomog_chartMono c e
 
-theorem exists_form_of_mem_chartRingZ (y : (Σ k, ι k) → Ω) (c : ∀ k, ι k) (hc : ∀ k, y ⟨k, c k⟩ ≠ 0)
-    {x : Ω} (hx : x ∈ chartRingZ y c) :
-    ∃ (N : K → ℕ) (H : MRing ι), IsMultiHomog H N ∧ aeval y H = x * ∏ k, y ⟨k, c k⟩ ^ N k := by
-  classical
-  induction hx using Algebra.adjoin_induction with
-  | mem u hu =>
-    obtain ⟨⟨k, i⟩, rfl⟩ := hu
-    refine ⟨Pi.single k 1, X ⟨k, i⟩, isMultiHomog_X k i, ?_⟩
-    rw [aeval_X, Finset.prod_eq_single k (fun b _ hb => by simp [hb]) (by simp)]
-    simp only [Pi.single_eq_same, pow_one]
-    exact (div_mul_cancel₀ _ (hc k)).symm
-  | algebraMap r =>
-    exact ⟨0, C r, isMultiHomog_C r, by simp⟩
-  | add u v _ _ hu hv =>
-    obtain ⟨N₁, H₁, h₁, e₁⟩ := hu
-    obtain ⟨N₂, H₂, h₂, e₂⟩ := hv
-    refine ⟨N₁ + N₂, H₁ * ∏ k, (X ⟨k, c k⟩ : MRing ι) ^ N₂ k + H₂ * ∏ k, (X ⟨k, c k⟩ : MRing ι) ^ N₁ k,
-      isMultiHomog_add (isMultiHomog_mul h₁ (isMultiHomog_chartMono c N₂))
-        (add_comm N₂ N₁ ▸ isMultiHomog_mul h₂ (isMultiHomog_chartMono c N₁)), ?_⟩
-    simp only [map_add (f := _), map_mul, map_prod, map_pow, aeval_X, e₁, e₂, Pi.add_apply, pow_add,
-      Finset.prod_mul_distrib]
-    ring
-  | mul u v _ _ hu hv =>
-    obtain ⟨N₁, H₁, h₁, e₁⟩ := hu
-    obtain ⟨N₂, H₂, h₂, e₂⟩ := hv
-    refine ⟨N₁ + N₂, H₁ * H₂, isMultiHomog_mul h₁ h₂, ?_⟩
-    simp only [map_mul, e₁, e₂, Pi.add_apply, pow_add, Finset.prod_mul_distrib]
-    ring
-
 theorem proof : LocalRep.Statement := by
   intro K _ ι _ Ω _ y a n s z hs hz
   classical
@@ -84,7 +56,7 @@ theorem proof : LocalRep.Statement := by
       show mConeMap y (X ⟨k, c k⟩) = 0
       simp [mConeMap, h0]
     simpa using hz.2 _ hmem
-  obtain ⟨N, H, hH, he⟩ := exists_form_of_mem_chartRingZ y c hyc (hs c hyc)
+  obtain ⟨N, H, hH, he⟩ := SectionBounded.exists_form_of_mem_chartRingZ y c hyc (hs c hyc)
   refine ⟨N + fun k => ((n : ℤ) * a k).toNat, N + fun k => (-((n : ℤ) * a k)).toNat,
     H * ∏ k, (X ⟨k, c k⟩ : MRing ι) ^ ((n : ℤ) * a k).toNat,
     ∏ k, (X ⟨k, c k⟩ : MRing ι) ^ (N + fun k => (-((n : ℤ) * a k)).toNat) k,

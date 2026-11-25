@@ -6,7 +6,6 @@ import Mathlib.AlgebraicGeometry.QuasiAffine
 
 @[expose] public section
 
-noncomputable section
 open CategoryTheory Limits AlgebraicGeometry GlobalTheory.EtC LateralTheory.E.t_E2Cut LateralTheory.E.ZLGPf LateralTheory.E.StalkGermPf GlobalTheory.StalkLimit
 
 namespace LateralTheory.E.StalkContPf

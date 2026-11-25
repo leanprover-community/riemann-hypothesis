@@ -9,8 +9,6 @@ import Mathlib.Tactic.Linter.HaveILetI
 
 open KaehlerDifferential GlobalTheory.PD GlobalTheory.CechDR GlobalTheory.HodgeCoh
 
-noncomputable section
-
 namespace GlobalTheory.PD
 
 theorem mOm_ιMulti_D_algebraMap (k K A : Type) [Field k] [Field K] [Algebra k K] [CommRing A]

@@ -331,32 +331,6 @@ theorem monomialBlowupSeq_schemeAt (hinv : ComapIsoInvariance.{u}) (p : X ⟶ Sp
     (MarkedBlowupSequenceData.monomialBlowupIterate hinv (emptyMarkedBlowupSequenceData p I m E) n)
     (monomialStallIndex hinv p I m E - n)).2 n (le_of_eq hlen.symm)
 
-private theorem comap_eqToHom_self {Y : Scheme.{u}} (q : Y = Y) (Z : Y.IdealSheafData) :
-    Z.comap (eqToHom q) = Z := by
-  simp
-
-private theorem map_comap_eqToHom_self {Y : Scheme.{u}} (q : Y = Y) (L : List Y.IdealSheafData) :
-    List.map (fun D => D.comap (eqToHom q)) L = L := by
-  induction L with
-  | nil => rfl
-  | cons a l ih => rw [List.map_cons, ih, comap_eqToHom_self]
-
-private theorem comap_eqToHom_comp {A B C : Scheme.{u}} (hAB : A = B) (hBC : B = C) (hAC : A = C)
-    (D : C.IdealSheafData) :
-    (D.comap (eqToHom hBC)).comap (eqToHom hAB) = D.comap (eqToHom hAC) := by
-  cases hAB
-  cases hBC
-  simp only [comap_eqToHom_self]
-
-private theorem map_comap_eqToHom_comp {A B C : Scheme.{u}} (hAB : A = B) (hBC : B = C)
-    (hAC : A = C) (L : List C.IdealSheafData) :
-    List.map (fun D : B.IdealSheafData => D.comap (eqToHom hAB))
-        (List.map (fun D : C.IdealSheafData => D.comap (eqToHom hBC)) L)
-      = List.map (fun D : C.IdealSheafData => D.comap (eqToHom hAC)) L := by
-  induction L with
-  | nil => rfl
-  | cons a l ih => simp only [List.map_cons, ih, comap_eqToHom_comp hAB hBC hAC]
-
 private theorem blowupAtCenter_boundary_of_le (hinv : ComapIsoInvariance.{u})
     {p : X ⟶ Spec (CommRingCat.of k)} {I : X.IdealSheafData} {m : ℕ} {E : List X.IdealSheafData}
     (s : MarkedBlowupSequenceData p I m E) (h : MarkedBlowupSequenceData.IsAdmissibleCenter s) (i : ℕ) (hi : i ≤ s.length)
@@ -384,7 +358,8 @@ private theorem monomialBlowupIterate_boundary_of_le (hinv : ComapIsoInvariance.
   induction d with
   | zero =>
       intro _ ho
-      exact (map_comap_eqToHom_self ho (s.boundary i)).symm
+      dsimp only [MarkedBlowupSequenceData.monomialBlowupIterate] at ho ⊢
+      simp
   | succ d ih =>
       intro hstep ho
       have h2 : MarkedBlowupSequenceData.IsAdmissibleCenter (MarkedBlowupSequenceData.monomialBlowupIterate hinv s d) :=
@@ -401,9 +376,9 @@ private theorem monomialBlowupIterate_boundary_of_le (hinv : ComapIsoInvariance.
       have hstep1 := blowupAtCenter_boundary_of_le hinv
         (MarkedBlowupSequenceData.monomialBlowupIterate hinv s d) h2 i hi' hobj1
       have hprev := ih (fun j hj => hstep j (Nat.lt_succ_of_lt hj)) hobj2
-      exact Eq.trans hstep1
-        (Eq.trans (congrArg (List.map (fun D => D.comap (eqToHom hobj1))) hprev)
-          (map_comap_eqToHom_comp hobj1 hobj2 ho (s.boundary i)))
+      dsimp only [MarkedBlowupSequenceData.monomialBlowupIterate] at ho ⊢
+      rw [hstep1, hprev, List.map_map]
+      simp only [Function.comp_def, ← Scheme.IdealSheafData.comap_comp, eqToHom_trans]
 
 private theorem boundary_eq_map_comap_of_index_eq
     {p : X ⟶ Spec (CommRingCat.of k)} {I : X.IdealSheafData} {m : ℕ} {E : List X.IdealSheafData}
@@ -467,13 +442,6 @@ theorem monomialBlowupSeq_boundary (hinv : ComapIsoInvariance.{u}) (p : X ⟶ Sp
     (MarkedBlowupSequenceData.monomialBlowupIterate hinv (emptyMarkedBlowupSequenceData p I m E) n).length hlen
     (key (monomialBlowupSeq hinv p I m E) hseq) (monomialBlowupSeq_schemeAt hinv p I m E n hn)
 
-private theorem append_center_eq_appendToBlowupSequenceData_center {p : X ⟶ Spec (CommRingCat.of k)}
-    {I : X.IdealSheafData} {m : ℕ} {E : List X.IdealSheafData} (s : MarkedBlowupSequenceData p I m E)
-    (t : MarkedBlowupSequenceData (s.proj s.length ≫ p) (s.ideal s.length) m (s.boundary s.length))
-    (hinv : ComapIsoInvariance.{u}) (i : ℕ) :
-    (s.append t hinv).center i = (s.appendToBlowupSequenceData t).center i :=
-  rfl
-
 private theorem blowupAtCenter_center_of_lt {p : X ⟶ Spec (CommRingCat.of k)}
     {I : X.IdealSheafData} {m : ℕ} {E : List X.IdealSheafData} (hinv : ComapIsoInvariance.{u})
     (d : MarkedBlowupSequenceData p I m E) (i : ℕ) (hi : i < d.length)
@@ -484,9 +452,8 @@ private theorem blowupAtCenter_center_of_lt {p : X ⟶ Spec (CommRingCat.of k)}
         D = d.append (MarkedBlowupSequenceData.monomialBlowupStep d h) hinv →
         ∀ eD : D.obj i = d.obj i, D.center i = (d.center i).comap (eqToHom eD) := by
       rintro D rfl eD
-      refine Eq.trans
-        (append_center_eq_appendToBlowupSequenceData_center d (MarkedBlowupSequenceData.monomialBlowupStep d h) hinv i) ?_
-      exact MarkedBlowupSequenceData.appendToBlowupSequenceData_center_of_lt_length d (MarkedBlowupSequenceData.monomialBlowupStep d h) hi
+      exact MarkedBlowupSequenceData.appendToBlowupSequenceData_center_of_lt_length
+        d (MarkedBlowupSequenceData.monomialBlowupStep d h) hi
     exact key (MarkedBlowupSequenceData.blowupAtCenter hinv d)
       (MarkedBlowupSequenceData.blowupAtCenter_eq_append hinv d h) e
   · have hs : MarkedBlowupSequenceData.blowupAtCenter hinv d = d := by
@@ -495,7 +462,7 @@ private theorem blowupAtCenter_center_of_lt {p : X ⟶ Spec (CommRingCat.of k)}
     have key : ∀ D : MarkedBlowupSequenceData p I m E, D = d →
         ∀ eD : D.obj i = d.obj i, D.center i = (d.center i).comap (eqToHom eD) := by
       rintro D rfl eD
-      exact (comap_eqToHom_self eD _).symm
+      simp
     exact key (MarkedBlowupSequenceData.blowupAtCenter hinv d) hs e
 
 private theorem monomialBlowupIterate_center_of_lt {p : X ⟶ Spec (CommRingCat.of k)}
@@ -506,7 +473,8 @@ private theorem monomialBlowupIterate_center_of_lt {p : X ⟶ Spec (CommRingCat.
   induction j with
   | zero =>
       intro e
-      exact (comap_eqToHom_self e (d.center i)).symm
+      dsimp only [MarkedBlowupSequenceData.monomialBlowupIterate] at e ⊢
+      simp
   | succ j ih =>
       intro e
       have e2 : (MarkedBlowupSequenceData.monomialBlowupIterate hinv d j).obj i = d.obj i :=
@@ -519,8 +487,8 @@ private theorem monomialBlowupIterate_center_of_lt {p : X ⟶ Spec (CommRingCat.
         blowupAtCenter_schemeAt_of_le hinv (MarkedBlowupSequenceData.monomialBlowupIterate hinv d j) i (le_of_lt hij)
       refine Eq.trans
         (blowupAtCenter_center_of_lt hinv (MarkedBlowupSequenceData.monomialBlowupIterate hinv d j) i hij e1) ?_
-      rw [ih e2]
-      exact comap_eqToHom_comp e1 e2 e (d.center i)
+      rw [ih e2, ← Scheme.IdealSheafData.comap_comp, eqToHom_trans]
+      rfl
 
 private theorem blowupAtCenter_center_of_eq_length {p : X ⟶ Spec (CommRingCat.of k)}
     {I : X.IdealSheafData} {m : ℕ} {E : List X.IdealSheafData} (hinv : ComapIsoInvariance.{u})
@@ -534,31 +502,14 @@ private theorem blowupAtCenter_center_of_eq_length {p : X ⟶ Spec (CommRingCat.
       ∀ eD : D.obj d.length = d.obj d.length,
         D.center d.length = (MarkedBlowupSequenceData.centerAtLast d).comap (eqToHom eD) := by
     rintro D rfl eD
-    have hc : (d.appendToBlowupSequenceData (MarkedBlowupSequenceData.monomialBlowupStep d h)).obj d.length
-        = d.obj d.length :=
-      MarkedBlowupSequenceData.appendToBlowupSequenceData_schemeAt_of_le_length d (MarkedBlowupSequenceData.monomialBlowupStep d h) (le_refl d.length)
-    have e3 : (d.appendToBlowupSequenceData (MarkedBlowupSequenceData.monomialBlowupStep d h)).obj d.length
-        = (MarkedBlowupSequenceData.monomialBlowupStep d h).obj 0 :=
-      hc.trans (MarkedBlowupSequenceData.monomialBlowupStep_schemeAt_zero d h).symm
-    have s1 : (d.append (MarkedBlowupSequenceData.monomialBlowupStep d h) hinv).center d.length
-        = (((MarkedBlowupSequenceData.monomialBlowupStep d h).center 0).comap
-            (MarkedBlowupSequenceData.monomialBlowupStep d h).isoZero.inv).comap (eqToHom hc) :=
-      MarkedBlowupSequenceData.appendToBlowupSequenceData_center_length d (MarkedBlowupSequenceData.monomialBlowupStep d h)
-    have s2 : (((MarkedBlowupSequenceData.monomialBlowupStep d h).center 0).comap
-            (MarkedBlowupSequenceData.monomialBlowupStep d h).isoZero.inv).comap (eqToHom hc)
-        = (((MarkedBlowupSequenceData.monomialBlowupStep d h).center 0).comap
-            (eqToHom (MarkedBlowupSequenceData.monomialBlowupStep_schemeAt_zero d h).symm)).comap (eqToHom hc) := by
-      rw [MarkedBlowupSequenceData.monomialBlowupStep_isoObjZero_inv]
-    have s3 : (((MarkedBlowupSequenceData.monomialBlowupStep d h).center 0).comap
-            (eqToHom (MarkedBlowupSequenceData.monomialBlowupStep_schemeAt_zero d h).symm)).comap (eqToHom hc)
-        = ((MarkedBlowupSequenceData.monomialBlowupStep d h).center 0).comap (eqToHom e3) :=
-      comap_eqToHom_comp hc (MarkedBlowupSequenceData.monomialBlowupStep_schemeAt_zero d h).symm e3
-        ((MarkedBlowupSequenceData.monomialBlowupStep d h).center 0)
-    have s4 : ((MarkedBlowupSequenceData.monomialBlowupStep d h).center 0).comap (eqToHom e3)
-        = (MarkedBlowupSequenceData.centerAtLast d).comap (eqToHom eD) := by
-      rw [MarkedBlowupSequenceData.monomialBlowupStep_center_zero]
-      rfl
-    exact s1.trans (s2.trans (s3.trans s4))
+    change (d.appendToBlowupSequenceData
+      (MarkedBlowupSequenceData.monomialBlowupStep d h)).center d.length = _
+    rw [MarkedBlowupSequenceData.appendToBlowupSequenceData_center_length d
+        (MarkedBlowupSequenceData.monomialBlowupStep d h),
+      MarkedBlowupSequenceData.monomialBlowupStep_isoObjZero_inv,
+      ← Scheme.IdealSheafData.comap_comp, eqToHom_trans,
+      MarkedBlowupSequenceData.monomialBlowupStep_center_zero]
+    rfl
   exact key (MarkedBlowupSequenceData.blowupAtCenter hinv d)
     (MarkedBlowupSequenceData.blowupAtCenter_eq_append hinv d h) e
 
@@ -581,8 +532,8 @@ private theorem center_monomialBlowupIterate_blowupAtCenter_eq {p : X ⟶ Spec (
   have ejunc : (MarkedBlowupSequenceData.blowupAtCenter hinv d).obj n = d.obj d.length :=
     (blowupAtCenter_schemeAt_of_le hinv d n (le_of_eq hlen.symm)).trans (congrArg d.obj hlen.symm)
   rw [monomialBlowupIterate_center_of_lt hinv (MarkedBlowupSequenceData.blowupAtCenter hinv d) n hn1 r e1,
-    blowupAtCenter_center_of_eq_length hinv d h n hlen.symm ejunc]
-  exact comap_eqToHom_comp e1 ejunc eD (MarkedBlowupSequenceData.centerAtLast d)
+    blowupAtCenter_center_of_eq_length hinv d h n hlen.symm ejunc,
+    ← Scheme.IdealSheafData.comap_comp, eqToHom_trans]
 
 theorem monomialBlowupSeq_center (hinv : ComapIsoInvariance.{u}) (p : X ⟶ Spec (CommRingCat.of k))
     (I : X.IdealSheafData) (m : ℕ) (E : List X.IdealSheafData) (n : ℕ)

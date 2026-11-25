@@ -30,11 +30,8 @@ theorem halfL_append (x y : Fin g → ℂ) : halfL g (Fin.append x y) = x := by
 theorem halfR_append (x y : Fin g → ℂ) : halfR g (Fin.append x y) = y := by
   funext k; exact Fin.append_right x y k
 
-theorem append_halves (v : Fin (g + g) → ℂ) : Fin.append (halfL g v) (halfR g v) = v := by
-  funext q
-  refine Fin.addCases (fun k => ?_) (fun k => ?_) q
-  · rw [Fin.append_left, halfL_apply]
-  · rw [Fin.append_right, halfR_apply]
+theorem append_halves (v : Fin (g + g) → ℂ) : Fin.append (halfL g v) (halfR g v) = v :=
+  Fin.append_castAdd_natAdd
 
 def sqLat (Λ : Submodule ℤ (Fin g → ℂ)) : Submodule ℤ (Fin (g + g) → ℂ) :=
   Λ.comap ((halfL g).toLinearMap.restrictScalars ℤ) ⊓ Λ.comap ((halfR g).toLinearMap.restrictScalars ℤ)

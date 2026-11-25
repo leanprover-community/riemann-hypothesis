@@ -56,7 +56,7 @@ theorem twiceX_eq : R.ioX = twiceX b R := by
   exact (HEq.trans (real_ioX b R.toRealDat)
       (real_ioX (a := b) a (iK := alg b iK) (real b R.toRealDat)) :)
 
-theorem twice_eq : R = twice b R := congrArg₂ (setIo R) (twiceY_eq b R) (twiceX_eq b R)
+theorem twice_eq : R = twice b R := (congrArg₂ (setIo R) (twiceY_eq b R) (twiceX_eq b R) :)
 
 variable {R}
 
@@ -73,9 +73,13 @@ theorem multEq_tr {A : FamIn a.D.what₂.LL G Pl0 T a.D.R.m} {R : RealDat a.D A 
     letI := alg b iK; GlobalTheory.CuspMult.MultEq (real b R) := by
   intro i M₀ j Φ hI W _ _ σ h1 h2 h3
   have key := h ((by exact (i :))) ((by exact ((ds a M₀) :))) ((by exact (j :))) ((by exact (Φ :))) ⟨(by exact (hI.isom :)), (by exact (hI.conj :)), (by exact (hI.frame :))⟩ W ((by exact (σ :))) ((by exact (h1 :))) ((by exact (h2 :))) ((by exact (h3 :)))
-  delta GlobalTheory.CuspMult.cuspMult GlobalTheory.CuspMult.allMaps
-  rewrite [mult_eq a b]
-  exact key
+  have e : ∀ {V : HSp b.D} {S} (M : DSModel V S) {W : Type} [AddCommGroup W] [Module ℂ W] (σ : Representation ℂ (GfC V) W),
+      @GlobalTheory.CuspMult.cuspMult b.D R.θ V S M W _ _ σ = @GlobalTheory.CuspMult.cuspMult a.D R.θ V S (ds a M) W _ _ σ := by
+    intro V S M W _ _ σ
+    delta GlobalTheory.CuspMult.cuspMult GlobalTheory.CuspMult.allMaps
+    rewrite [mult_eq a b]
+    rfl
+  exact (e M₀ σ).trans (key.trans (e (V := Wc b.D i) (ds (a := a) b (R.MW i (sg0 b.D (famM b A)))) _).symm)
 
 section Dat
 

@@ -604,7 +604,6 @@ namespace Formalism.MainNotions.ShortIntervalPrimes
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.GlobalTheoryTheory Filter Topology
 
-
 open Classical in
 def badZero (Q : ℝ) {N : ℕ} [NeZero N] (χ : DirichletCharacter ℂ N) : ℂ :=
   if h : ∃ s : ℂ, 1 - 1 / 400 < s.re ∧ |s.im| ≤ Q ∧ DirichletCharacter.LFunction χ s = 0
@@ -660,7 +659,6 @@ theorem exceptional_zero_real_of_landau_page {C1 c : ℝ} (hc : 0 < c) (D : D7) 
       linarith
     · exact not_primitive_two χ hp
 
-
 theorem fam_eps {eps : ℝ} (Fm : FamP eps) : 0 < eps ∧ eps < 1 := by
   obtain ⟨i⟩ := Fm.Ix_zero
   have e := Fm.L_eps 0 i
@@ -687,10 +685,6 @@ def PsiThin (D : Formalism.BasicNotions.D7) (x eps C c : ℝ) : Prop :=
     ∀ u : ℝ, Real.exp (x ^ (eps / 3)) / 3 ≤ u → ‖psi0 χ u‖ ≤
       C * u * (Real.log u + lamE D) ^ 2 * Real.exp (-c * Real.log u / (lamE D + Real.sqrt (Real.log u)))
 
-def ThinE (D : Formalism.BasicNotions.D7) (x eps c : ℝ) : Prop :=
-  ∀ (N : ℕ) [NeZero N] (χ : DirichletCharacter ℂ N), IsCharED D χ →
-    ∀ y : ℝ, Real.exp (x ^ (eps / 3)) / 3 ≤ y → ‖gChi χ y‖ ≤ y * Real.exp (-(c * x ^ (eps / 8)))
-
 theorem log_conductor_le_of_proposition_two_six {D : Formalism.BasicNotions.D7} {x eps : ℝ} (hx : 0 ≤ x) (h5 : PropTwoSixBoxHypothesis D x eps) :
     Real.log (NE D : ℝ) ≤ 8 * x ^ (eps / 5) * Real.log x ^ 2 := by
   have h1 := h5.2
@@ -699,7 +693,7 @@ theorem log_conductor_le_of_proposition_two_six {D : Formalism.BasicNotions.D7} 
 
 theorem thin_of_psiThin (eps c C : ℝ) (heps : 0 < eps) (hc : 0 < c) (hC : 0 < C) :
     ∃ c' x0 : ℝ, 0 < c' ∧ 1 < x0 ∧ ∀ x : ℝ, x0 ≤ x → ∀ D : Formalism.BasicNotions.D7,
-      Real.log (NE D : ℝ) ≤ 8 * x ^ (eps / 5) * Real.log x ^ 2 → PsiThin D x eps C c → ThinE D x eps c' := by
+      Real.log (NE D : ℝ) ≤ 8 * x ^ (eps / 5) * Real.log x ^ 2 → PsiThin D x eps C c → Formalism.MainNotions.ChThin_at D x eps c' := by
   obtain ⟨c', x₀, hc', h⟩ := Formalism.HermitianLattices.ZeroFreeRegionGL2.nonvanishing_of_hypothesis (eps / 2) c C (by positivity) hc hC
   refine ⟨c', max x₀ (max 3 (2 ^ (3 / eps))), hc', lt_of_lt_of_le (by norm_num) ((le_max_left _ _).trans (le_max_right _ _)), ?_⟩
   intro x hx D hlast hpsi N _ χ hχ y hy
@@ -763,8 +757,6 @@ theorem rpow_le_mul_exp_neg_log {u v r k : ℝ} (hu0 : 0 < u) (hv : v = Real.log
         linarith)
     _ = Real.exp v * Real.exp (-k * v) := Real.exp_add _ _
     _ = u * Real.exp (-k * v) := by rw [← hu]
-
-
 
 theorem psi_thin_core {C7 C2 c lam : ℝ} (hC7 : 0 < C7) (hC2 : 0 ≤ C2) (hc : 0 < c) (hlam : 1 ≤ lam) (D : D7)
     (h7 : adm7 D C7) {N : ℕ} [NeZero N] (χ : DirichletCharacter ℂ N) (hp : χ.IsPrimitive)
@@ -927,8 +919,6 @@ theorem psiThin_of {C7 C2 c : ℝ} (hC7 : 0 < C7) (hC2 : 0 ≤ C2) (hc : 0 < c) 
     linarith
   exact psi_thin_core hC7 hC2 hc (le_max_left _ _) D h7 χ hχ.1 (log_cond_le hcond hχ)
     (fun ρ h0 h1 hz => hzf N χ hχ ρ h0 h1 hz) (fun T hT => hZ N χ hχ T hT) u hu1
-
-
 
 theorem zero_sum_core {C7 C lam ka : ℝ} (hC : 0 < C) (hlam : 1 ≤ lam) (hka : 0 < ka) (D : D7)
     (h7 : adm7 D C7) (h11 : adm11 D C) {N : ℕ} [NeZero N] (χ : DirichletCharacter ℂ N) (hp : χ.IsPrimitive)
@@ -1132,7 +1122,7 @@ theorem zeroSumE_of {C7 C c : ℝ} (hC : 0 < C) (hc : 0 < c) (D : D7) (h7 : adm7
 theorem thin_of_zeroFree (eps C7 C11 c : ℝ) (heps : 0 < eps) (hC7 : 0 < C7) (hC11 : 0 < C11) (hc : 0 < c) :
     ∃ c' x0 : ℝ, 0 < c' ∧ 1 < x0 ∧ ∀ x : ℝ, x0 ≤ x → ∀ D : D7,
       Real.log (NE D : ℝ) ≤ 8 * x ^ (eps / 5) * Real.log x ^ 2 → adm7 D C7 → adm11 D C11 → ZeroFreeE D c →
-      CondE D → InvE D → ThinE D x eps c' := by
+      CondE D → InvE D → Formalism.MainNotions.ChThin_at D x eps c' := by
   have hC2 : 0 < 6 * C11 * (3 / (c / 3) + 4) := by positivity
   obtain ⟨c', x0, hc', hx0, h⟩ := thin_of_psiThin eps (min (c / 3) 1)
     (C7 * (5 + 6 * C11 * (3 / (c / 3) + 4)) + 6 * C11 * (3 / (c / 3) + 4)) heps
@@ -1314,7 +1304,7 @@ lemma lambda_size_bound_mono {D : Formalism.BasicNotions.D7} {C1 c c' : ℝ} (hc
 theorem thin_of_adm (eps c6 C7 C11 : ℝ) (B : ℕ) (heps : 0 < eps) (hc6 : 0 < c6) (hC7 : 0 < C7) (hC11 : 0 < C11) :
     ∃ c' x0 : ℝ, 0 < c' ∧ 1 < x0 ∧ ∀ x : ℝ, x0 ≤ x → ∀ (D : D7) (Cq : ℝ), oddQS D ≤ B → RealBoxE D →
       Real.log (NE D : ℝ) ≤ 8 * x ^ (eps / 5) * Real.log x ^ 2 → adm6 D Cq c6 → adm7 D C7 → adm11 D C11 →
-      CondE D → RealClassE D → ThinE D x eps c' := by
+      CondE D → RealClassE D → Formalism.MainNotions.ChThin_at D x eps c' := by
   obtain ⟨c0, hc0, hq⟩ := small_no_zero_le (8 * B)
   have hcm : 0 < min c6 c0 := lt_min hc6 hc0
   obtain ⟨c', x0, hc', hx0, h⟩ := thin_of_zeroFree eps C7 C11 (min (min c6 c0) (1 / 400)) heps hC7 hC11
@@ -1329,7 +1319,7 @@ theorem thin_of_adm (eps c6 C7 C11 : ℝ) (B : ℕ) (heps : 0 < eps) (hc6 : 0 < 
 theorem thin_set_family_of_conditions {eps : ℝ} (Fm : FamP eps) (h6 : FamilySixthHypothesis Fm) (h7 : adm7F Fm) (h11 : ComplementTwoFamily Fm) :
     ∃ c : ℝ, 0 < c ∧ ∃ x0 : ℝ, 1 < x0 ∧ ∀ x ≥ x0, ∀ i : Fm.Ix x, CondE (Fm.D x i) → RealClassE (Fm.D x i) →
       RealBoxE (Fm.D x i) → Real.log (NE (Fm.D x i) : ℝ) ≤ 8 * x ^ (eps / 5) * Real.log x ^ 2 →
-      ThinE (Fm.D x i) x eps c := by
+      Formalism.MainNotions.ChThin_at (Fm.D x i) x eps c := by
   obtain ⟨Cq, c6, -, hc6, h6⟩ := h6
   obtain ⟨C7, hC7, h7⟩ := h7
   obtain ⟨C11, hC11, h11⟩ := h11

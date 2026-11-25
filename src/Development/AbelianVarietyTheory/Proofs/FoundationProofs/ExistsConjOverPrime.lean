@@ -92,12 +92,8 @@ theorem isClosed_apply_mem {F Ω : Type} [Field F] [Field Ω] [Algebra F Ω] [Al
     apply hσ
     have hfix : (σ⁻¹ * τ) x = x := (IntermediateField.mem_fixingSubgroup_iff _ _).mp hτ x
       (IntermediateField.mem_adjoin_simple_self F x)
-    have hinv : ∀ y, σ (σ⁻¹ y) = y := fun y => by
-      rw [← AlgEquiv.mul_apply, mul_inv_cancel, AlgEquiv.one_apply]
     rw [AlgEquiv.mul_apply] at hfix
-    have he : τ x = σ x :=
-      calc τ x = σ (σ⁻¹ (τ x)) := (hinv _).symm
-        _ = σ x := by rw [hfix]
+    have he : τ x = σ x := σ.symm_apply_eq.1 hfix
     change σ x ∈ T
     rw [← he]
     exact hT

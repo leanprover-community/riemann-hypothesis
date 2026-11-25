@@ -55,14 +55,9 @@ open GlobalTheory.Mum
 
 namespace GlobalTheory.MumMult
 
-theorem map_map_homOfLE {X : Scheme.{0}} {U V W : X.Opens} (h1 : V ≤ U) (h2 : W ≤ V) (x : Γ(X, U)) :
-    (X.presheaf.map (homOfLE h2).op).hom ((X.presheaf.map (homOfLE h1).op).hom x) =
-      (X.presheaf.map (homOfLE (h2.trans h1)).op).hom x := by
-  rw [← CommRingCat.comp_apply, ← Functor.map_comp]; rfl
-
 theorem map_res_homOfLE {X : Scheme.{0}} {U V W : X.Opens} (h1 : V ≤ U) (h2 : W ≤ V) (u : Γ(X, U)ˣ) :
     (X.presheaf.map (homOfLE h2).op).hom (res h1 u).val = (res (h2.trans h1) u).val :=
-  map_map_homOfLE h1 h2 u.val
+  ReciprocityTheory.ChartRestriction.G.Out.WeightPf.rres h1 h2 u.val
 
 theorem sum_attach_eq_sum_of_subset {β M : Type*} [AddCommMonoid M] {S S' : Finset β} (hS : S ⊆ S') (F : β → M)
     (T : S → M) (hT : ∀ x, T x = F x) (hz : ∀ α ∈ S', α ∉ S → F α = 0) :
@@ -118,7 +113,7 @@ theorem eq_of_expandsAt_of_chartExpOn : ∀ (R : Type) [CommRing R] [IsDomain R]
     have E2V := congrArg ((thickObj R I e G).left.presheaf.map (homOfLE hV2).op).hom
       (E2 p jf jt rfl (hcoh S₂))
 
-    simp only [map_mul, map_pow, map_sum, map_res_homOfLE, map_map_homOfLE] at E1V E2V
+    simp only [map_mul, map_pow, map_sum, map_res_homOfLE, ReciprocityTheory.ChartRestriction.G.Out.WeightPf.rres] at E1V E2V
     let tV : ∀ α, α ∈ S₁ ∪ S₂ → Γ((thickObj R I e G).left, U.expW e p i' (S₁ ∪ S₂) jf jt ⊓ W) :=
       fun α h => ((thickObj R I e G).left.presheaf.map
           (homOfLE (inf_le_left.trans (U.expW_le_f e p i' jf jt h))).op).hom
@@ -146,7 +141,7 @@ theorem eq_of_expandsAt_of_chartExpOn : ∀ (R : Type) [CommRing R] [IsDomain R]
     · simp only [F, dite_eq_left (Finset.mem_union_left S₂ x.2), tV]
       congr 1 <;> first | rfl | exact map_res_homOfLE _ _ _
     refine ⟨U.expW e p i' (S₁ ∪ S₂) jf jt ⊓ W, inf_le_right, ⟨hmem _, hy⟩, ?_⟩
-    rw [map_map_homOfLE]
+    rw [ReciprocityTheory.ChartRestriction.G.Out.WeightPf.rres]
     exact ((Units.isUnit _).pow k).mul_left_cancel (E1V.trans E2V.symm)
   choose V hVW hyV hEq using key
   refine TopCat.Sheaf.eq_of_locally_eq' (thickObj R I e G).left.sheaf (fun y : W => V y.1 y.2) W
@@ -250,7 +245,6 @@ section -- clump:auto
 open IsLocalRing ReciprocityTheory.ChartRestriction.G.Out
 
 namespace GlobalTheory
-
 
 open IsDiscreteValuationRing in
 theorem mul_dvd_pow_of_quadratic_bound_dvr {V : Type} [CommRing V] [IsDomain V]
@@ -647,7 +641,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.Mum
-
 
 end -- clump:auto
 end -- clump:auto

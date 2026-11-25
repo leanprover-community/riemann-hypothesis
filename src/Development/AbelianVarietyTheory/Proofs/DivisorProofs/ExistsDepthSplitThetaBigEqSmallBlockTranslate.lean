@@ -59,7 +59,7 @@ theorem exists_depth_bigP_eq_smallP : ∀ (k : Type) [Field k] [ValuativeRel k] 
     exact this
   obtain ⟨m, hm⟩ := GlobalTheory.T.schwartzBruhat_blockScaled_hasLatticeDepth k A' C ϖ P _ hΨ' hϖ
   refine ⟨m, fun n hn μ _ σ' r hr => ?_⟩
-  obtain ⟨u, hu, hphi⟩ := GlobalTheory.T.exists_ne_zero_primitiveFrameDatum_renumber k (Fin a) A' C μ σ σ' ν
+  obtain ⟨u, hu, hphi⟩ := GlobalTheory.ColumnRenumber.phiA_renumber k (Fin a) A' C μ σ σ' ν
   obtain ⟨c, hc0, hc⟩ : ∃ c : NNReal, c ≠ 0 ∧ μ = c • μ₀ :=
     ⟨Measure.haarScalarFactor μ μ₀, (Measure.haarScalarFactor_pos_of_isHaarMeasure μ μ₀).ne',
       Measure.isMulLeftInvariant_eq_smul μ μ₀⟩
@@ -81,7 +81,7 @@ theorem exists_depth_bigP_eq_smallP : ∀ (k : Type) [Field k] [ValuativeRel k] 
     simp only [hNT]
     exact h1
   · funext h
-    have h2 := GlobalTheory.T.zetaIntegral_twoSidedMovedDatum_eq_smallZeta k a A' C μ σ ν β ϖ n (blockUnits ϖ n P)
+    have h2 := GlobalTheory.OneSquareZeta.bigZeta_phiA_twist_eq_smallZeta k a A' C μ σ ν β ϖ n (blockUnits ϖ n P)
       (fun Y => (κ / (r * u * c)) * Ψ (Y * N.valᵀ)) g₀ N h hϖ
     have h3 : ∀ Y : Matrix A' C k, Y * (invT N).val * N.valᵀ = Y := fun Y => by
       rw [Matrix.mul_assoc, ← invT_inv_val, Units.mul_inv, Matrix.mul_one]

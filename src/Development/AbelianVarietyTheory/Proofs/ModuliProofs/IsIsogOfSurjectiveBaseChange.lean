@@ -57,8 +57,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped CategoryTheory.Obj
 open GlobalTheory.HkFam
 
-noncomputable section
-
 namespace GlobalTheory.IsogDescent
 
 section Grp
@@ -233,5 +231,3 @@ theorem GlobalTheory.isIsog_of_surjective_baseChange :
         (iso_linComb ((isGen_iff w₂).1 hw₂) (K := PUnit) (fun _ => ψ'.left) (fun _ => 1))
     exact LBIso.trans (pull_isLB hP _) hP' (pull_isLB hQ _) i₁.symm
       (LBIso.trans hP' (pull_isLB o₂'.t.PP.isLB _) (pull_isLB hQ _) hL i₂)
-
-end

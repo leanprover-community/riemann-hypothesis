@@ -1,6 +1,7 @@
 module
 
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.VeryAmpleCechObj
+import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PVeryAmpleZTwist
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.AlgebraMapMemChartRingLine
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.TwistAlg
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ZColumnsCechPartition
@@ -76,27 +77,6 @@ theorem prod_mem_pow {I : Chart x} (Q : Submodule (chartRing S x I) Ω) (h : Fin
 
 
 omit [Module S E] [IsScalarTower S Ω E] in
-theorem smul_mem_twist_pow {G : SubSystem S x E} {H : SubSystem S x Ω} {I : Chart x} {n c : ℕ}
-    {q : Ω} (hq : q ∈ H.sub I ^ c) {z : E} (hz : z ∈ (G.twist (H.pow n)).sub I) :
-    q • z ∈ (G.twist (H.pow (n + c))).sub I := by
-  change z ∈ Submodule.span _ _ at hz
-  induction hz using Submodule.span_induction with
-  | mem y hy =>
-    obtain ⟨q', hq', y, hy, rfl⟩ := hy
-    refine Submodule.subset_span ⟨q' * q, ?_, y, hy, by rw [mul_comm q' q, mul_smul]⟩
-    rw [SubSystem.pow_sub] at hq' ⊢
-    rw [pow_add]
-    exact Submodule.mul_mem_mul hq' hq
-  | zero => rw [smul_zero]; exact zero_mem _
-  | add y y' _ _ hy hy' => rw [smul_add]; exact add_mem hy hy'
-  | smul a y _ hy =>
-    have e1 : q • (a • y) = a • (q • y) := by
-      rw [chart_smul, chart_smul, smul_smul, smul_smul, mul_comm]
-    rw [e1]
-    exact Submodule.smul_mem _ a hy
-
-
-omit [Module S E] [IsScalarTower S Ω E] in
 theorem smul_mem_twist_of_inv {G : SubSystem S x E} {H : SubSystem S x Ω} {I : Chart x} {m c : ℕ}
     {w : Ω} (hw : ∀ q ∈ H.sub I ^ m, w * q ∈ chartRing S x I) {z : E}
     (hz : z ∈ (G.twist (H.pow (c + m))).sub I) : w • z ∈ (G.twist (H.pow c)).sub I := by
@@ -130,7 +110,7 @@ theorem pow_mono (hH : ∀ j, h j ∈ H.sub I) {J : Chart h} {e : E} {n : ℕ}
     xProd J ^ (n + k) • e ∈ (G.twist (H.pow (J.1.card * (n + k)))).sub I := by
   have hq : xProd J ^ k ∈ H.sub I ^ (J.1.card * k) := by
     rw [pow_mul]; exact Submodule.pow_mem_pow _ (prod_mem_pow _ h hH J.1) k
-  have := smul_mem_twist_pow hq he
+  have := VeryAmpleZTwist.smul_mem_twist_pow _ _ _ (by rwa [SubSystem.pow_sub]) he
   rwa [show J.1.card * (n + k) = J.1.card * n + J.1.card * k by ring, pow_add,
     mul_comm (xProd J ^ n), mul_smul]
 
@@ -169,7 +149,7 @@ theorem mono (hH : ∀ j, h j ∈ H.sub I) {J J' : Chart h} (hJJ' : J.1 ⊆ J'.1
   refine Submodule.subset_span ⟨n, ?_⟩
   have hq : (∏ j ∈ J'.1 \ J.1, h j) ^ n ∈ H.sub I ^ ((J'.1 \ J.1).card * n) := by
     rw [pow_mul]; exact Submodule.pow_mem_pow _ (prod_mem_pow _ h hH _) n
-  have := smul_mem_twist_pow hq hn
+  have := VeryAmpleZTwist.smul_mem_twist_pow _ _ _ (by rwa [SubSystem.pow_sub]) hn
   have hx : xProd J' = (∏ j ∈ J'.1 \ J.1, h j) * xProd J := (Finset.prod_sdiff hJJ').symm
   have hc : J'.1.card = J.1.card + (J'.1 \ J.1).card := by
     rw [Finset.card_sdiff_of_subset hJJ']; have := Finset.card_le_card hJJ'; omega

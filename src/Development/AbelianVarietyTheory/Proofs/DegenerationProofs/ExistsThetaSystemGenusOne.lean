@@ -12,8 +12,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open Classical
 open ReciprocityTheory.ChartRestriction.G.Out
 
-noncomputable section
-
 namespace GlobalTheory.ZH.RealDimOne
 
 open GlobalTheory.TorsionGenerators NumberField

@@ -34,14 +34,14 @@ theorem fromSpecStalk_mem_zeroLocus_iff {Y : Scheme.{0}} (U : Y.affineOpens) (x 
   exact (not_congr h2).trans not_not
 
 theorem effCartier_of_mem_comps {Y : Scheme.{0}} [IsNoetherian Y] {Z : Y.IdealSheafData}
-    (hZ : FinalTheorems.Snc Z) (C : Closeds Y) (hC : (C : Set Y) ∈ comps (Z.support : Set Y)) :
+    (hZ : FinalTheorems.Snc Z) (C : Closeds Y) (hC : (C : Set Y) ∈ ReciprocityTheory.AnForm.R.IrreducibleComponentPreimages.compsH (Z.support : Set Y)) :
     FinalTheorems.EffCartier (Scheme.IdealSheafData.vanishingIdeal C) := by
   refine effCartier_of_stalkId _ fun x => ?_
   obtain ⟨hreg, U, hx, n, f, J, hrsp, hZU⟩ := hZ x
   obtain ⟨O, hxO, -, hO⟩ := exists_open_comps x U hx f J hrsp hZU
   have hO' := hO _ hC
   have hq : ∀ q : PrimeSpectrum (Y.presheaf.stalk x), Y.fromSpecStalk x q ∈ (C : Set Y) ↔
-      ∃ i ∈ J, IsBranch (Z.support : Set Y) (f i) x C ∧
+      ∃ i ∈ J, ReciprocityTheory.AnForm.R.IrreducibleComponentPreimages.IsBranchH (Z.support : Set Y) (f i) x C ∧
         Y.presheaf.germ U.1 x hx (f i) ∈ q.asIdeal := by
     intro q
     have hqO : Y.fromSpecStalk x q ∈ (O : Set Y) := by
@@ -53,7 +53,7 @@ theorem effCartier_of_mem_comps {Y : Scheme.{0}} [IsNoetherian Y] {Z : Y.IdealSh
       fromSpecStalk_mem_zeroLocus_iff U x hx] at h
     exact h
   have hCC : C.compl.compl = C := SetLike.coe_injective (compl_compl _)
-  by_cases hb : ∃ i ∈ J, IsBranch (Z.support : Set Y) (f i) x C
+  by_cases hb : ∃ i ∈ J, ReciprocityTheory.AnForm.R.IrreducibleComponentPreimages.IsBranchH (Z.support : Set Y) (f i) x C
   · obtain ⟨i, hi, hbi⟩ := hb
     have hp : Prime (Y.presheaf.germ U.1 x hx (f i)) :=
       prime_of_regular_params (fun i => Y.presheaf.germ U.1 x hx (f i)) hrsp.1 hrsp.2 i
@@ -87,8 +87,8 @@ theorem exists_compList_effCartier (k : Type) [Field k] (Y : Scheme.{0}) (p : Y 
   haveI : IsLocallyNoetherian Y := LocallyOfFiniteType.isLocallyNoetherian p
   haveI : CompactSpace Y := QuasiCompact.compactSpace_of_compactSpace p
   haveI : IsNoetherian Y := {}
-  haveI : Finite (comps (B : Set Y)) := (comps_finite _).to_subtype
-  obtain ⟨m, ⟨e⟩⟩ := Finite.exists_equiv_fin (comps (B : Set Y))
+  haveI : Finite (ReciprocityTheory.AnForm.R.IrreducibleComponentPreimages.compsH (B : Set Y)) := (comps_finite _).to_subtype
+  obtain ⟨m, ⟨e⟩⟩ := Finite.exists_equiv_fin (ReciprocityTheory.AnForm.R.IrreducibleComponentPreimages.compsH (B : Set Y))
   refine ⟨m, fun i => ⟨(e.symm i).1, isClosed_of_mem_comps B.isClosed (e.symm i).2⟩,
     ⟨fun i => (e.symm i).2.1.1, ?_, fun i j hij => ?_⟩, fun i => ?_⟩
   · conv_rhs => rw [← sUnion_comps (B : Set Y), Set.sUnion_eq_iUnion]

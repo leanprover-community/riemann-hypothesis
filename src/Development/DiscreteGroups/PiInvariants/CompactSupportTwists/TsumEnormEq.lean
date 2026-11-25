@@ -7,8 +7,6 @@ public import Mathlib.MeasureTheory.Integral.DominatedConvergence
 
 @[expose] public section
 
-noncomputable section
-
 open MeasureTheory PositivityTheory.Rg.BcB.E1
 open scoped ENNReal Pointwise
 
@@ -87,5 +85,3 @@ theorem unfold (hb : KerBasic) (hl2 : KernelL2RowsColumns) {φ : X.G → ℂ} (h
     exact hint.2.ne
 
 end DiscreteGroups.T1.G
-
-end

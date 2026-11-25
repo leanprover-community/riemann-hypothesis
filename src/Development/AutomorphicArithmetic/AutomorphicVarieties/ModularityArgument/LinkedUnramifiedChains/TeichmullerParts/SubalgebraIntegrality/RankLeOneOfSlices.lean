@@ -212,19 +212,14 @@ open scoped TensorProduct
 
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
-
-
 namespace UpperTheory.V.Z.J.D.EigenvaluesTensorProduct
 
 section Tensor
 
 variable {I : Type} [Fintype I] [dI : DecidableEq I] {W : I → Type} [∀ i, AddCommGroup (W i)] [∀ i, Module ℂ (W i)]
 
-private noncomputable def ev (f : ∀ i, Module.Dual ℂ (W i)) : (⨂[ℂ] i, W i) →ₗ[ℂ] ℂ :=
-  PiTensorProduct.lift ((MultilinearMap.mkPiAlgebra ℂ I ℂ).compLinearMap f)
-
 private theorem ev_tprod (f : ∀ i, Module.Dual ℂ (W i)) (m : ∀ i, W i) :
-    ev f (PiTensorProduct.tprod ℂ m) = ∏ i, f i (m i) :=
+    UpperTheory.Reformulated.B.CuspidalIrreducibleSubrep.ev f (PiTensorProduct.tprod ℂ m) = ∏ i, f i (m i) :=
   _root_.UpperTheory.Reformulated.B.CuspidalIrreducibleSubrep.ev_tprod f m
 
 private noncomputable def slM (v : I) (f : ∀ i, Module.Dual ℂ (W i)) :
@@ -239,8 +234,8 @@ private theorem sl_tprod (v : I) (f : ∀ i, Module.Dual ℂ (W i)) (m : ∀ i, 
   _root_.UpperTheory.Reformulated.B.SpecialLinearTensor.sl_tprod v f m
 
 private theorem dual_sl (v : I) (f : ∀ i, Module.Dual ℂ (W i)) (g : Module.Dual ℂ (W v)) (x : ⨂[ℂ] i, W i) :
-    g (sl v f x) = ev (Function.update f v g) x := by
-  have : g ∘ₗ sl v f = ev (Function.update f v g) := by
+    g (sl v f x) = UpperTheory.Reformulated.B.CuspidalIrreducibleSubrep.ev (Function.update f v g) x := by
+  have : g ∘ₗ sl v f = UpperTheory.Reformulated.B.CuspidalIrreducibleSubrep.ev (Function.update f v g) := by
     refine PiTensorProduct.ext (MultilinearMap.ext fun m => ?_)
     simp only [LinearMap.compMultilinearMap_apply, LinearMap.comp_apply, sl_tprod, ev_tprod, map_smul, smul_eq_mul]
     rw [← Finset.mul_prod_erase Finset.univ _ (Finset.mem_univ v), Function.update_self, mul_comm]
@@ -248,11 +243,11 @@ private theorem dual_sl (v : I) (f : ∀ i, Module.Dual ℂ (W i)) (g : Module.D
     exact Finset.prod_congr rfl fun j hj => by rw [Function.update_of_ne (Finset.ne_of_mem_erase hj)]
   exact LinearMap.congr_fun this x
 
-private theorem ev_sep (x : ⨂[ℂ] i, W i) (h : ∀ f : ∀ i, Module.Dual ℂ (W i), ev f x = 0) : x = 0 := by
+private theorem ev_sep (x : ⨂[ℂ] i, W i) (h : ∀ f : ∀ i, Module.Dual ℂ (W i), UpperTheory.Reformulated.B.CuspidalIrreducibleSubrep.ev f x = 0) : x = 0 := by
   let b := fun i => Module.Free.chooseBasis ℂ (W i)
   let B := Basis.piTensorProduct b
   refine B.repr.map_eq_zero_iff.1 (Finsupp.ext fun p => ?_)
-  have e : B.coord p = ev fun i => (b i).coord (p i) := by
+  have e : B.coord p = UpperTheory.Reformulated.B.CuspidalIrreducibleSubrep.ev fun i => (b i).coord (p i) := by
     refine PiTensorProduct.ext (MultilinearMap.ext fun m => ?_)
     simp [B, ev_tprod, Basis.piTensorProduct_repr_tprod_apply]
   have := LinearMap.congr_fun e x
@@ -277,7 +272,7 @@ private theorem rank_le_one_of_slices (E : ∀ i, Submodule ℂ (W i)) (hE : ∀
     (X : Submodule ℂ (⨂[ℂ] i, W i)) (hX : ∀ x ∈ X, ∀ v f, sl v f x ∈ E v) : Module.rank ℂ X ≤ 1 := by
   choose e g hg using fun i => exists_coord (E i) (hE i)
   have key : ∀ x ∈ X, ∀ (s : Finset I) (f : ∀ i, Module.Dual ℂ (W i)),
-      ev (s.piecewise f g) x = (∏ i ∈ s, f i (e i)) * ev g x := by
+      UpperTheory.Reformulated.B.CuspidalIrreducibleSubrep.ev (s.piecewise f g) x = (∏ i ∈ s, f i (e i)) * UpperTheory.Reformulated.B.CuspidalIrreducibleSubrep.ev g x := by
     intro x hx s
     induction s using Finset.induction_on with
     | empty => intro f; simp
@@ -291,13 +286,13 @@ private theorem rank_le_one_of_slices (E : ∀ i, Submodule ℂ (W i)) (hE : ∀
         simp
       rw [Finset.piecewise_insert, ← dual_sl, h1, dual_sl, hk, ih f, Finset.prod_insert ha]
       ring
-  have hinj : Function.Injective ((ev g).domRestrict X) := by
+  have hinj : Function.Injective ((UpperTheory.Reformulated.B.CuspidalIrreducibleSubrep.ev g).domRestrict X) := by
     refine (injective_iff_map_eq_zero _).2 fun x hx => ?_
     refine Subtype.ext (ev_sep _ fun f => ?_)
     have := key x x.2 Finset.univ f
     rw [Finset.piecewise_univ] at this
     rw [this]
-    have h0 : ev g (x : ⨂[ℂ] i, W i) = 0 := hx
+    have h0 : UpperTheory.Reformulated.B.CuspidalIrreducibleSubrep.ev g (x : ⨂[ℂ] i, W i) = 0 := hx
     rw [h0, mul_zero]
   simpa using LinearMap.rank_le_of_injective _ hinj
 

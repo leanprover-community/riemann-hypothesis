@@ -407,7 +407,6 @@ theorem localized_nabla_eq_of_commensurable (lam : ι → DomWeight n) (w : Heig
     exact hB τ
   unfold nabAtr nabK
   rw [localized_comap, localized_comap]
-  congr 1
   rw [(nabDelLoc K ι n lam _ hlat w B hB).1,
     (nabDelLoc K ι n lam _ hlat' w B hB').1]
 

@@ -45,8 +45,6 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntAEMulMem
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.L2.NTheta Formalism.IndefR.Datum IsDedekindDomain NumberField Matrix GlobalTheory.SplitHecke
 open scoped TensorProduct
 
-noncomputable section
-
 namespace GlobalTheory.SplitHecke.HeckeComp
 
 variable {D : D7}
@@ -202,5 +200,3 @@ theorem hk_of_isHeckeElt : ∀ {D : D7} (e : AE D) (v : HeightOneSpectrum (𝓞 
     exact det_unit hinj π β (Formalism.L2.Theta.mt V α) p k he1 hp h1 h2 huu hdet
 
 end GlobalTheory.SplitHecke.HeckeComp
-
-end

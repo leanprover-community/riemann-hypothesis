@@ -11,8 +11,6 @@ import Development.AbelianVarietyTheory.Proofs.SatakeParameters.XiTopEqProd
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.L2.DIV Formalism.L2.Col Formalism.MainNotions Formalism.L2.Ker GlobalTheory.TwU GlobalTheory.TwV GlobalTheory.TwTop
 open scoped TensorProduct
 
-noncomputable section
-
 namespace GlobalTheory.FrameMove
 
 section Cong

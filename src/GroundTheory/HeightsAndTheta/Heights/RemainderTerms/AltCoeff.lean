@@ -120,19 +120,7 @@ theorem perm_eq_one_of_strictAnti {v : Fin m → ℕ} (hv : StrictAnti v) (σ : 
     have := h hab
     simp only [Function.comp_apply] at this
     exact hv.lt_iff_gt.mp this
-  have hmono' : StrictMono σ.symm := by
-    intro a b hab
-    by_contra hc
-    push Not at hc
-    have := hmono.monotone hc
-    simp at this
-    exact absurd hab (not_lt.mpr this)
-  ext i
-  have h1 : i ≤ σ i := hmono.le_apply
-  have h2 : i ≤ σ.symm i := hmono'.le_apply
-  have h3 : σ i ≤ σ (σ.symm i) := hmono.monotone h2
-  simp only [Equiv.apply_symm_apply] at h3
-  simp [le_antisymm h3 h1]
+  exact (Equiv.Perm.monotone_iff σ).1 hmono.monotone
 
 theorem cf_alt_of_strictAnti {l v : Fin m → ℕ} (hl : StrictAnti l) (hv : StrictAnti v) :
     cf l (alt v) = if l = v then 1 else 0 := by
@@ -193,13 +181,8 @@ theorem IsAlt.smul {P : MvPolynomial (Fin m) ℚ} (hP : IsAlt P) (c : ℚ) : IsA
 theorem IsAlt.zero : IsAlt (0 : MvPolynomial (Fin m) ℚ) := by intro σ; simp
 
 theorem IsAlt.sum {ι : Type*} (s : Finset ι) {P : ι → MvPolynomial (Fin m) ℚ}
-    (hP : ∀ i ∈ s, IsAlt (P i)) : IsAlt (∑ i ∈ s, P i) := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => simpa using IsAlt.zero
-  | insert a s ha ih =>
-    rw [Finset.sum_insert ha]
-    exact (hP a (mem_insert_self a s)).add (ih fun i hi => hP i (mem_insert_of_mem hi))
+    (hP : ∀ i ∈ s, IsAlt (P i)) : IsAlt (∑ i ∈ s, P i) :=
+  Finset.sum_induction P IsAlt (fun _ _ => IsAlt.add) IsAlt.zero hP
 
 theorem isSymmetric_prod_psum (ρ : List ℕ) :
     ((ρ.map fun q => psum (Fin m) ℚ q).prod).IsSymmetric := by

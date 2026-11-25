@@ -348,7 +348,7 @@ def reesRingHom (hV : IsAffineOpen V) : Γ(reesScheme I X, reesPr I X ⁻¹ᵁ V
 
 lemma reesRingHom_inl (hV : IsAffineOpen V) (c : Γ(X, V)) :
     reesRingHom hV ((reesPr I X).app V c) = Polynomial.C c :=
-  polyRingHom_inl hV c
+  polyRingHom_inl (I := I) hV c
 
 lemma reesRingHom_inr (hV : IsAffineOpen V) (r : reesAlgebra I) :
     reesRingHom hV (reesInr (I := I) V r) = (r : Polynomial A).map (algV (A := A) X V) := by
@@ -419,7 +419,7 @@ theorem reesRingHom_mem (hV : IsAffineOpen V) (s : Γ(reesScheme I X, reesPr I X
     · refine CommRingCat.hom_ext (RingHom.ext fun c => ?_)
       have := congrArg (fun f : Γ(X, V) ⟶ CommRingCat.of (reesCoeffRing I X V) =>
         (f.hom c : Polynomial Γ(X, V))) (IsPushout.inl_desc (isPushout_rees (I := I) hV) l r hw')
-      exact (reesRingHom_inl hV c).trans this.symm
+      exact (reesRingHom_inl (I := I) hV c).trans this.symm
     · refine CommRingCat.hom_ext (RingHom.ext fun x => ?_)
       have := congrArg (fun f : CommRingCat.of (reesAlgebra I) ⟶ CommRingCat.of (reesCoeffRing I X V) =>
         (f.hom x : Polynomial Γ(X, V))) (IsPushout.inr_desc (isPushout_rees (I := I) hV) l r hw')

@@ -28,13 +28,9 @@ theorem dw_integrable : Integrable dw := by
   norm_cast
 
 theorem bound_all {f : ℂ → ℂ} (hf : Continuous f) {C : ℝ} (h : ∀ c, c ≠ 0 → ‖f c‖ ≤ C * dw c) (c : ℂ) :
-    ‖f c‖ ≤ C * dw c := by
-  have hs : IsClosed {c : ℂ | ‖f c‖ ≤ C * dw c} :=
-    isClosed_le (continuous_norm.comp hf) (continuous_const.mul dw_cont)
-  have hsub : ({0}ᶜ : Set ℂ) ⊆ {c | ‖f c‖ ≤ C * dw c} := fun c hc => h c hc
-  have := hs.closure_subset_iff.mpr hsub
-  rw [(dense_compl_singleton (0 : ℂ)).closure_eq] at this
-  exact this (Set.mem_univ c)
+    ‖f c‖ ≤ C * dw c :=
+  le_on_closure (s := {0}ᶜ) (fun c hc => h c hc) (continuous_norm.comp hf).continuousOn
+    (continuous_const.mul dw_cont).continuousOn (dense_compl_singleton (0 : ℂ) c)
 
 theorem fourier_cont {f : ℂ → ℂ} (hf : Integrable f) : Continuous (𝓕 f) :=
   VectorFourier.fourierIntegral_continuous Real.continuous_fourierChar (innerSL ℝ).continuous₂ hf

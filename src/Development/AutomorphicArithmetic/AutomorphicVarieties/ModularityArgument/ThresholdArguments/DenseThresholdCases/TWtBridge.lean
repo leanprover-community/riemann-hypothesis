@@ -69,11 +69,6 @@ private theorem uc_eq (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k]
 section Loc
 variable {F Ω : Type} [Field F] [NumberField F] [Field Ω] [Algebra F Ω] [IsAlgClosure F Ω] {l : ℕ} [Fact l.Prime]
   {A : ValuationSubring Ω} {w : Plc F} {h : IsPlaceOver A w} {a : Weil h →* (w.adicCompletion F)ˣ}
-private theorem artin_unique (H : GlobalTheory.Published.GlobalArtinReciprocity) {a' : Weil h →* (w.adicCompletion F)ˣ}
-    (ha : IsLocalArtin h a) (ha' : IsLocalArtin h a') : a' = a := by
-  obtain ⟨art, hart⟩ := H F Ω
-  have hinj := GlobalTheory.ArtinLocalInj.artin_localIdele_injective GlobalTheory.Published.chevalleyUnits' F Ω art hart w
-  exact MonoidHom.ext fun σ => hinj ((ha'.glob art hart _).trans (ha.glob art hart _).symm)
 private theorem art_unit (ha : IsLocalArtin h a) (σ : Ine (F := F) A) : a (ineIncl h σ) ∈ Uo (w.adicCompletion F) := by
   have h2 := ha.ord_eq (ineIncl h σ)
   rw [deg_ineIncl, neg_zero] at h2
@@ -110,7 +105,7 @@ private theorem part_val (ha : IsLocalArtin h a) (hf : IsFin a κ wt f) {ph : In
   have h1 := hp.2 a ha σ
   rw [e, ← hf σ y e, Units.val_mul] at h1
   exact mul_left_cancel₀ (Units.ne_zero _) h1
-private theorem locAlg_iff (H : GlobalTheory.Published.GlobalArtinReciprocity) (ha : IsLocalArtin h a) (hf : IsFin a κ wt f) :
+private theorem locAlg_iff (ha : IsLocalArtin h a) (hf : IsFin a κ wt f) :
     W.IsLocAlg h κ wt ↔ ∃ e, ∀ y : Uo (w.adicCompletion F), (y : (w.adicCompletion F)ˣ) ∈ Uc _ e → f y = 1 := by
   constructor
   · rintro ⟨ph, hp⟩
@@ -141,7 +136,7 @@ private theorem locAlg_iff (H : GlobalTheory.Published.GlobalArtinReciprocity) (
       exact h1
     · rw [uc_eq]
       exact (GroundTheory.LocalField.isOpen_unitFiltrationUnits e).preimage ha.cont
-    · rw [artin_unique H ha ha', hv]
+    · rw [(UpperTheory.Zero.LLC.artEx F Ω A w h).unique ha' ha, hv]
 private theorem emb_lt (j : W.Emb l w) (x : 𝓞 F) (hx : x ∈ w.asIdeal) : ‖j.1 (algebraMap F _ (x : F))‖ < 1 := by
   have h1 : Valued.v (algebraMap F (w.adicCompletion F) (x : F)) < 1 := by
     rw [show algebraMap F (w.adicCompletion F) (x : F) = ((x : F) : w.adicCompletion F) from rfl,
@@ -256,7 +251,7 @@ theorem UpperTheory.V.Hi.arith_good_iff_hset_of_theta_incr_weight :
     rfl
   have hA : (∀ (v : Vl l L) (j : Fin n), W.IsLocAlg (s.hw v.1) (x.psi v j) (h v j)) ↔
       (hset Q τ₀).Arith θ (x.comp (Λ.toPair B.u)).toRingHom lam := by
-    simp only [fun v j => locAlg_iff H (ha v) (hf v j)]
+    simp only [fun v j => locAlg_iff (ha v) (hf v j)]
     refine ⟨fun h1 => ?_, fun ⟨e, he⟩ v j => ⟨e, he v j⟩⟩
     choose e he using h1
     haveI : Finite (Vl l L) := inferInstanceAs (Finite V.frame.Vl)

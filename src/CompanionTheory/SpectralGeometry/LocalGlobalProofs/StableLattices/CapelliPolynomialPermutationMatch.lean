@@ -14,8 +14,6 @@ public import Mathlib.FieldTheory.IsAlgClosed.Basic
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.CharOfLowK
 
 theorem roots_prod_X_sub_C {n : ℕ} (k : Fin n → ℂ) :

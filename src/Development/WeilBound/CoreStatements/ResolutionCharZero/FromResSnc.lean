@@ -87,15 +87,7 @@ theorem isStrictNormalCrossings_radical_prod {W : Scheme.{0}} {k : Type} [Field 
     obtain ⟨i, hi, hγi⟩ := hJ₀mem j hj
     rw [FunctorialResolution.EmbeddedResolution.EtaleChart.coord_restrict c hV'V j]
     exact presheaf_map_mem_primeIdealOf hV hV' hV'V y hyV hyV' (c.coord j) (hmem i hi j hγi)
-  have hntr : Nontrivial ↥(W.presheaf.obj (op V')) := by
-    rcases subsingleton_or_nontrivial ↥(W.presheaf.obj (op V')) with hs | hs
-    · exfalso
-      refine (hV'.primeIdealOf ⟨y, hyV'⟩).isPrime.ne_top ?_
-      rw [Ideal.eq_top_iff_one]
-      have h10 : (1 : ↥(W.presheaf.obj (op V'))) = 0 := @Subsingleton.elim _ hs 1 0
-      rw [h10]
-      exact Submodule.zero_mem _
-    · exact hs
+  have hntr : Nontrivial ↥(W.presheaf.obj (op V')) := (hV'.primeIdealOf ⟨y, hyV'⟩).nontrivial
   have hcinj : Function.Injective (c.restrictCompat hV'V).coord := by
     have h := @etaleChartCoord_injective k _ n ↥(W.presheaf.obj (op V')) _
       (c.restrictCompat hV'V).algebra ((c.restrictCompat hV'V).algebra_etale hV') hntr

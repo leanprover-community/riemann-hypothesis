@@ -16,8 +16,6 @@ import Mathlib.Topology.Algebra.Group.Units
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.SW.PiLocalization₂.Unfold1
 
 open HeckeCharacterZeroLocus.SiegelWeilU GlobalTheory.CompanionTheory.SW GlobalTheory.CompanionTheory.SW.PiLocalization₂ NumberField IsDedekindDomain MeasureTheory Topology

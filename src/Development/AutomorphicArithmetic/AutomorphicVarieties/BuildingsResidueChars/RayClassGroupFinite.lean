@@ -4,23 +4,12 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.IdeleGenera
 public import GroundTheory.AutomorphicForms.ReductionDirichlet
 public import GroundTheory.AutomorphicForms.ReductionIdele
 import Mathlib.Tactic.Linter.HaveILetI
+import PositivityTheory.AutomorphicForms.PublishedInputs.JacquetLanglands.TorusKernels.FinalH
 
 @[expose] public section
 
 open UpperTheory.V.Sd.Eis
 open NumberField IsDedekindDomain Topology Neutral.B1 Formalism.L2.Host GlobalTheory.CuspRep UpperTheory.V
-
-private theorem idele_split (F : Type) [Field F] [NumberField F] [IsTotallyReal F] (x : Ideles F) :
-    TR.infId F (Units.map (TR.pInf F).toMonoidHom x) * finId F (Units.map (pFin F).toMonoidHom x) = x := by
-  have h : ∀ x, TR.pInf F (TR.sInf F x) = x := fun x => (TR.infEq F).symm_apply_apply x
-  have h2 : ∀ x, TR.pInf F (sFin F x) = 0 := fun x => map_zero (TR.infEq F).symm
-  have h3 : ∀ x, pFin F (TR.sInf F x) = 0 := fun x => rfl
-  have h4 : ∀ x, pFin F (sFin F x) = x := fun x => rfl
-  refine Units.ext (TR.ad_ext ?_ ?_)
-  · change TR.pInf F ((1 - TR.sInf F 1 + TR.sInf F (TR.pInf F x.val)) * (1 - sFin F 1 + sFin F (pFin F x.val))) = _
-    simp [h, h2]
-  · change pFin F ((1 - TR.sInf F 1 + TR.sInf F (TR.pInf F x.val)) * (1 - sFin F 1 + sFin F (pFin F x.val))) = _
-    simp [h3, h4]
 
 private theorem cont_pInf (F : Type) [Field F] [NumberField F] [IsTotallyReal F] (v : InfinitePlace F) :
     Continuous fun x : Ad F => TR.pInf F x v :=
@@ -46,7 +35,7 @@ theorem UpperTheory.ray_class_group_finite :
       refine c.continuousAt.eventually (lt_mem_nhds ?_)
       simp
     filter_upwards [h1, h2] with x hx1 hx2
-    rw [← idele_split F x]
+    rw [← UpperTheory.Esk.IdeleSplittingLemmas.idele_split x]
     exact H.mul_mem (hR _ hx2) hx1
   refine ⟨hopen, ?_⟩
   have hsq : ∀ (ρ : ℝ) (hρ : 0 < ρ), ((posIdele ρ hρ : IdeleGroup F) : Ideles F) ^ 2 ∈ H := by
@@ -56,7 +45,7 @@ theorem UpperTheory.ray_class_group_finite :
       refine Units.ext ?_
       ext v
       exact congrArg _ (posIdele_finite ρ hρ v)
-    have e2 := idele_split F z
+    have e2 := UpperTheory.Esk.IdeleSplittingLemmas.idele_split z
     rw [e, map_one, mul_one] at e2
     rw [← e2, ← map_pow]
     refine hR _ fun v => ?_

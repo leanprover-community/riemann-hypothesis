@@ -101,10 +101,7 @@ private theorem sum_sign_iteratedFDeriv_single_eq_zero_of_not_inj (F : Matrix ι
     (a : Fin n ≃ ι) (r : Fin n → ι) (hr : ¬ Function.Injective r) :
     ∑ σ : Equiv.Perm ι, ((Equiv.Perm.sign σ : ℤ) : ℂ) *
       iteratedFDeriv ℂ n F 0 (fun k => Matrix.single (r k) (σ (a k)) (1 : ℂ)) = 0 := by
-  obtain ⟨i, j, hij, hne⟩ : ∃ i j, r i = r j ∧ i ≠ j := by
-    simp only [Function.Injective, not_forall] at hr
-    obtain ⟨i, j, h, hne⟩ := hr
-    exact ⟨i, j, h, hne⟩
+  obtain ⟨i, j, hij, hne⟩ := Function.not_injective_iff.mp hr
   have hane : a i ≠ a j := fun h => hne (a.injective h)
   have key : ∀ σ : Equiv.Perm ι, iteratedFDeriv ℂ n F 0
       (fun k => Matrix.single (r k) ((σ * Equiv.swap (a i) (a j)) (a k)) (1 : ℂ)) =
@@ -114,15 +111,7 @@ private theorem sum_sign_iteratedFDeriv_single_eq_zero_of_not_inj (F : Matrix ι
     congr 1
     funext k
     simp only [Equiv.Perm.mul_apply, Function.comp_apply]
-    by_cases hki : k = i
-    · subst hki
-      rw [Equiv.swap_apply_left, Equiv.swap_apply_left, hij]
-    · by_cases hkj : k = j
-      · subst hkj
-        rw [Equiv.swap_apply_right, Equiv.swap_apply_right, hij]
-      · have h1 : a k ≠ a i := fun h => hki (a.injective h)
-        have h2 : a k ≠ a j := fun h => hkj (a.injective h)
-        rw [Equiv.swap_apply_of_ne_of_ne h1 h2, Equiv.swap_apply_of_ne_of_ne hki hkj]
+    rw [a.injective.swap_apply, Equiv.apply_swap_eq_self hij]
   have hS := (Equiv.sum_comp (Equiv.mulRight (Equiv.swap (a i) (a j)))
     (fun σ : Equiv.Perm ι => ((Equiv.Perm.sign σ : ℤ) : ℂ) *
       iteratedFDeriv ℂ n F 0 (fun k => Matrix.single (r k) (σ (a k)) (1 : ℂ)))).symm

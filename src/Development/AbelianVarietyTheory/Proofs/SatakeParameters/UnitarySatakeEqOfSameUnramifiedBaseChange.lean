@@ -34,8 +34,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.SatBcZero
 
 section Weyl
@@ -172,5 +170,3 @@ theorem satU_eq_of_ubc_eq : ∀ (K : Type) [Field K] [Valued K (WithZero (Multip
   simpa only [Multiset.map_map, Function.comp_def] using e1
 
 end GlobalTheory.SatBcZero
-
-end

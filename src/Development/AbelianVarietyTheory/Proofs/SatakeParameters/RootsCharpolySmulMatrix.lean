@@ -53,8 +53,6 @@ import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal Polynomial NumberField IsDedekindDomain
 open GlobalTheory.WeilDeligne
 open scoped TensorProduct
@@ -115,4 +113,3 @@ theorem eig_lpChar (x y : WD h) (φ : Weil h) (hy : y.lpDim = 1) (c : ℂ) (hc :
     rw [← LinearEquiv.charpoly_conj e, he, roots_charpoly_smul]
 
 end GlobalTheory.RowTie.EigTwist
-

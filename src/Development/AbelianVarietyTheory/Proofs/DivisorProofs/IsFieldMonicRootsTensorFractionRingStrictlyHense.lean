@@ -65,18 +65,6 @@ theorem isIntegrallyClosed_of_aic {A : Type} [CommRing A] [IsDomain A] (h : Glob
     IsIntegrallyClosed A := by
   apply LateralTheory.E.LocalIntegralClosureRoots.isIntegrallyClosed_of_aic <;> assumption
 
-theorem aic_of_ringEquiv {R S : Type} [CommRing R] [CommRing S] (e : R ≃+* S) (h : GlobalTheory.EtC.AIC R) :
-    GlobalTheory.EtC.AIC S := by
-  intro p hpm hdeg
-  have hm : (p.map (e.symm : S →+* R)).Monic := hpm.map _
-  have hd : (p.map (e.symm : S →+* R)).natDegree = p.natDegree :=
-    natDegree_map_eq_of_injective e.symm.injective p
-  obtain ⟨a, ha⟩ := h _ hm (hd ▸ hdeg)
-  refine ⟨e a, ?_⟩
-  have hp : p = (p.map (e.symm : S →+* R)).map (e : R →+* S) := by
-    rw [Polynomial.map_map]; ext n; simp
-  rw [hp, Polynomial.eval_map, show e a = (e : R →+* S) a from rfl, Polynomial.eval₂_at_apply, ha, map_zero]
-
 theorem aic_of_isAlgClosed (K : Type) [Field K] [IsAlgClosed K] : GlobalTheory.EtC.AIC K := by
   intro p _ hdeg
   obtain ⟨a, ha⟩ := IsAlgClosed.exists_root p (by
@@ -134,7 +122,6 @@ theorem isDomain_of_indEt {A O : Type} [CommRing A] [IsDomain A] [IsIntegrallyCl
     rw [map_mul, map_zero, hw] at this
     exact Or.inr (((hq t ht).mul_right_eq_zero).mp this)
 
-
 attribute [local instance] Algebra.TensorProduct.rightAlgebra in
 theorem isIntegral_tmul_one {A O : Type} [CommRing A] [IsDomain A] [CommRing O] [Algebra A O]
     (h : GlobalTheory.EtC.IndEt A O) (o : O) :
@@ -155,7 +142,6 @@ theorem isIntegral_tmul_one {A O : Type} [CommRing A] [IsDomain A] [CommRing O] 
   exact (Algebra.IsIntegral.isIntegral _).map Χ
 
 end AICStalk
-
 
 open AICStalk in
 attribute [local instance] Algebra.TensorProduct.rightAlgebra in
@@ -193,6 +179,6 @@ theorem isField_aic_tensor_fractionRing_of_strictlyHenselian :
   let e := RingEquiv.ofBijective _
     (IsAlgClosed.algebraMap_bijective_of_isIntegral (k := FractionRing A) (K := O ⊗[A] FractionRing A))
   exact ⟨MulEquiv.isField (Field.toIsField (FractionRing A)) e.symm.toMulEquiv,
-    aic_of_ringEquiv e (aic_of_isAlgClosed _)⟩
+    LateralTheory.E.NormPf.OpenPf.aic_of_equiv e (aic_of_isAlgClosed _)⟩
 
 end GlobalTheory

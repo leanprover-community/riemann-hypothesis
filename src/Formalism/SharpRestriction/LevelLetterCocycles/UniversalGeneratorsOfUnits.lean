@@ -1,6 +1,5 @@
 module
 
-public import Formalism.SharpRestriction.LevelLetterCocycles.FinLev
 public import Formalism.SharpRestriction.LevelLetterCocycles.EvaluationAtUniformizerPower
 public import Formalism.SharpRestriction.LevelLetterCocycles.LemmasUnramifiedOfRingCondition
 public import Formalism.SharpRestriction.LevelLetterCocycles.ArcLiftingSetup
@@ -24,6 +23,36 @@ import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.Tactic.TypeStar
 import Mathlib.Order.Interval.Finset.Box
 import Mathlib.RingTheory.PiTensorProduct
+
+section
+@[expose] public section
+
+noncomputable section
+
+namespace Formalism.MainNotions.UnusedSlot80.UGen
+
+open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc
+
+variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
+    [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
+    {B BdR : Type} [CommRing B] [CommRing BdR] [Algebra Qp B] [Algebra K₀ B] [IsScalarTower Qp K₀ B]
+    [Algebra Qp BdR] [Algebra K₀ BdR] [Algebra K BdR] [IsScalarTower Qp K BdR]
+    [IsScalarTower K₀ K BdR] [IsScalarTower Qp K₀ BdR]
+    {PD : PeriodData G Qp K₀ K B BdR}
+    {LL O : Type} [Field LL] [Algebra Qp LL] [TopologicalSpace LL] [CommRing O] [Algebra O LL]
+    {v : AddValuation LL (WithTop ℚ)} {n : ℕ}
+
+def FinLev (W : LocWach PD LL O v n) : Prop :=
+  ∀ (a : ZMod n) (e : ℕ) (H : ℕ → ℕ), ∃ D : ℕ, ∀ u ∈ W.AΔ, ∃ (c : Fin D → O) (w : LetA O n),
+    w ∈ W.AΔ ∧ (letE a : LetA O n) * u =
+      letE a * ∑ j : Fin D, algebraMap O (LetA O n) (c j) * W.π₀ ^ (j : ℕ) +
+        W.π₀ * (∏ t ∈ Finset.range e, Formalism.MainNotions.ArcLiftingSetup.ps W t ^ H t) ^ 2 * (letE a * w)
+
+end Formalism.MainNotions.UnusedSlot80.UGen
+end
+end
+end
+
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.SharpRestriction.LevelLetterCocycles.EvalZeroXEqUniformizer, Formalism.SharpRestriction.LevelLetterCocycles.InFr1OfPi0Lam, Formalism.SharpRestriction.LevelLetterCocycles.CrtFamDet, Formalism.SharpRestriction.LevelLetterCocycles.GenOfKiller, Formalism.SharpRestriction.LevelLetterCocycles.SingleMemSpan, Formalism.SharpRestriction.LevelLetterCocycles.UniversalGeneratorsOfUnits

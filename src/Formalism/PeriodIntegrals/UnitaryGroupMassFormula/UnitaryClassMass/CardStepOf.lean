@@ -136,11 +136,8 @@ theorem image_latSet (σ : E →ₐ[F] E) {M : ℕ} (J : Matrix (Fin M) (Fin M) 
       exact hxv
 
 theorem set_of_coords_inj {M : ℕ} (b : Module.Basis (Fin M) E V) {A A' : Set (Fin M → E)}
-    (e : {v : V | b.equivFun v ∈ A} = {v | b.equivFun v ∈ A'}) : A = A' := by
-  ext x
-  have h1 : b.equivFun.symm x ∈ {v : V | b.equivFun v ∈ A} ↔ b.equivFun.symm x ∈ {v : V | b.equivFun v ∈ A'} := by
-    rw [e]
-  simpa only [Set.mem_setOf_eq, LinearEquiv.apply_symm_apply] using h1
+    (e : {v : V | b.equivFun v ∈ A} = {v | b.equivFun v ∈ A'}) : A = A' :=
+  Set.preimage_injective.2 b.equivFun.surjective e
 
 end Sets
 

@@ -62,7 +62,6 @@ open UpperTheory.V.Z.Mult (Cp)
 open UpperTheory.V.Z.J.D
 open scoped TensorProduct
 
-
 section Alg
 
 variable {G H W W' : Type} [Group G] [Group H] [AddCommGroup W] [Module ℂ W] [AddCommGroup W'] [Module ℂ W']
@@ -72,10 +71,10 @@ private theorem rank_le_of (f : W' →ₗ[ℂ] W) (hf : Function.Injective f) (Z
   LinearMap.rank_le_of_injective (f.codRestrict Z h) fun _ _ e => hf (congrArg Subtype.val e)
 
 private theorem box_tmul (ρ : Representation ℂ G W) (τ : Representation ℂ H W') (g : G × H) (x : W) (y : W') :
-    box ρ τ g (x ⊗ₜ y) = ρ g.1 x ⊗ₜ τ g.2 y := rfl
+    GlobalTheory.LGrp.extProd ρ τ g (x ⊗ₜ y) = ρ g.1 x ⊗ₜ τ g.2 y := rfl
 
 private theorem box_fix (ρ : Representation ℂ G W) (τ : Representation ℂ H W') (K : Subgroup G) (K' : Subgroup H) :
-    Module.rank ℂ (fixd ρ K) * Module.rank ℂ (fixd τ K') ≤ Module.rank ℂ (fixd (box ρ τ) (K.prod K')) := by
+    Module.rank ℂ (fixd ρ K) * Module.rank ℂ (fixd τ K') ≤ Module.rank ℂ (fixd (GlobalTheory.LGrp.extProd ρ τ) (K.prod K')) := by
   rw [← rank_tensorProduct']
   have hi : Function.Injective (TensorProduct.map (fixd ρ K).subtype (fixd τ K').subtype) :=
     TensorProduct.map_injective_of_flat_flat _ _ Subtype.val_injective Subtype.val_injective
@@ -485,7 +484,7 @@ section Model
 variable {l : ℕ} [Fact l.Prime] {L Ω : Type} [Field L] [NumberField L] [IsCMField L] [Field Ω] [Algebra L Ω]
   [IsAlgClosure L Ω] {n : ℕ} {s : HidaSetting l L Ω} {V : s.Lev} {σ : Submodule ℂ (UA L n → ℂ)} (C : Comps V σ)
 
-private theorem model_irr (hB : BoxIrr) (hP : PiIrr) (hG : SchurGL) : AbsIrr (box C.repL C.repS) := by
+private theorem model_irr (hB : BoxIrr) (hP : PiIrr) (hG : SchurGL) : AbsIrr (GlobalTheory.LGrp.extProd C.repL C.repS) := by
   classical
   letI : Fintype V.frame.Vl := V.frame.finV
   exact hB _ _ _ _ _ _ (hP _ _ _ _ fun v => hG L n _ _) (hB _ _ _ _ _ _ (hP _ _ _ _ fun u => hG L n _ _) (hG L n _ _))
@@ -493,7 +492,7 @@ private theorem model_irr (hB : BoxIrr) (hP : PiIrr) (hG : SchurGL) : AbsIrr (bo
 private theorem model_rank [Fintype V.frame.Vl] (K : ∀ w : Plc L, Subgroup (GLw n w)) (a : Plc (Lp L) → ℕ) (k4 : ∀ v, 0 < a v)
     (k3 : ∀ v ∈ s.S, ∀ τ, Cp σ (s.w v) τ → Module.finrank ℂ (fixd τ.ρ (K (s.w v))) = a v) :
     (((∏ v : V.frame.Vl, a v.1) * ((∏ u : s.St, a u) * a s.v0) : ℕ) : Cardinal) ≤
-      Module.rank ℂ (fixd (box C.repL C.repS) ((Subgroup.pi Set.univ fun v : V.frame.Vl => K (s.w v.1)).prod
+      Module.rank ℂ (fixd (GlobalTheory.LGrp.extProd C.repL C.repS) ((Subgroup.pi Set.univ fun v : V.frame.Vl => K (s.w v.1)).prod
         ((Subgroup.pi Set.univ fun u : s.St => K (s.w u)).prod (K (s.w s.v0))))) := by
   have el := fun v : V.frame.Vl => k3 v.1 (Or.inl v.2) _ (C.hl v)
   have eu := fun u : s.St => k3 u.1 (Or.inr (Or.inl u.2)) _ (C.hu u)
@@ -564,6 +563,6 @@ theorem UpperTheory.V.Z.J.D.flath :
     haveI := Module.finite_of_finrank_pos h
     (Module.finrank_eq_rank _ _).symm
   have h1 := model_rank C K a k.2.2.2.1 fun v h => k.2.2.1 v ((hT v).2 h)
-  exact one_copy hS (actS n V d) (box C.repL C.repS) _ ρ (model_irr C hB hP hG) hρ.1 hρ.2 hne _ _ hPp
+  exact one_copy hS (actS n V d) (GlobalTheory.LGrp.extProd C.repL C.repS) _ ρ (model_irr C hB hP hG) hρ.1 hρ.2 hne _ _ hPp
     ((congrArg Nat.cast (hprod a)).trans_le h1)
     ((Submodule.rank_mono (level_le (hSec l L Ω s n hn V hV).1 K k.2.1 U k.1 _)).trans hY)

@@ -13,8 +13,6 @@ universe u
 
 open CategoryTheory AlgebraicGeometry
 
-noncomputable section
-
 namespace FunctorialResolution.EmbeddedResolution
 
 theorem isMaxContactHypersurface_of_eq_of_eq_of_eq (k : Type u) [Field k] {P : Scheme.{u}}
@@ -272,5 +270,3 @@ theorem inStrictNormalCrossingPosition_iteratedStrictTransform_cons_drop (hstar 
         ((u.boundary j).drop S.boundary.length) (u.isBlowup j hjl) hsncj hcons
 
 end FunctorialResolution.EmbeddedResolution
-
-end

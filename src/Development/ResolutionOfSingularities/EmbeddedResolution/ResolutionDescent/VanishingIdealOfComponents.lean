@@ -18,14 +18,6 @@ namespace FunctorialResolution.EmbeddedResolution
 
 variable {α : Type*} [TopologicalSpace α]
 
-private theorem radical_ringHom_ker_eq {R S : Type*} [CommRing R] [CommRing S] [_root_.IsReduced S]
-    (φ : R →+* S) : (RingHom.ker φ).radical = RingHom.ker φ := by
-  refine le_antisymm ?_ Ideal.le_radical
-  rintro x ⟨n, hn⟩
-  rw [RingHom.mem_ker] at hn ⊢
-  have hx : φ x ^ n = 0 := by rw [← map_pow]; exact hn
-  exact IsNilpotent.eq_zero ⟨n, hx⟩
-
 theorem isClosed_sUnion_irreducibleComponents [NoetherianSpace α]
     {S : Set (Set α)} (hS : S ⊆ irreducibleComponents α) :
     IsClosed (⋃₀ S) := by
@@ -112,7 +104,7 @@ private theorem radical_scheme_ker_eq {X Y : Scheme.{u}} (g : X ⟶ Y)
   rw [Scheme.IdealSheafData.radical_ideal]
   calc ((Scheme.Hom.ker g).ideal U).radical
       ≤ (RingHom.ker (CommRingCat.Hom.hom (g.app U.1))).radical := Ideal.radical_mono hle
-    _ = RingHom.ker (CommRingCat.Hom.hom (g.app U.1)) := radical_ringHom_ker_eq _
+    _ = RingHom.ker (CommRingCat.Hom.hom (g.app U.1)) := (Ideal.isRadical_bot.comap _).radical
 
 private theorem ker_eq_vanishingIdeal_of_support {X Y : Scheme.{u}} (g : X ⟶ Y)
     [AlgebraicGeometry.IsReduced X] {Z : Closeds ↥Y}

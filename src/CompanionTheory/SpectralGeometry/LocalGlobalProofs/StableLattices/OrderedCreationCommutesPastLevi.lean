@@ -13,8 +13,6 @@ open Formalism.REAL (GlRel KHighest IsWeight)
 open CompanionTheory.D.DSIC (KUnit)
 open scoped InnerProductSpace
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.FarReg.BdProd
 
 variable {n : ℕ} {V : Type} [AddCommGroup V] [Module ℂ V]

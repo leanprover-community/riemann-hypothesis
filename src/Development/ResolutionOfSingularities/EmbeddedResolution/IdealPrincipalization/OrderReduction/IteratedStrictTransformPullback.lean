@@ -21,11 +21,6 @@ private theorem comap_eqToHom_of_eq {F : ℕ → Scheme.{u}} (K : ∀ i : ℕ, (
   subst h
   exact AlgebraicGeometry.Scheme.IdealSheafData.comap_id _
 
-private theorem smooth_of_isPullback_of_smooth_right {A B C D : Scheme.{u}} {f : A ⟶ B} {g : A ⟶ C}
-    {h : B ⟶ D} {k : C ⟶ D} (sq : IsPullback f g h k) [AlgebraicGeometry.Smooth k] :
-    AlgebraicGeometry.Smooth f :=
-  MorphismProperty.of_isPullback (P := @AlgebraicGeometry.Smooth) sq.flip inferInstance
-
 private theorem isPullback_of_unique {P A C B : Scheme.{u}} (e : P ⟶ A) [IsIso e]
     (ψ : A ⟶ C) (h : C ⟶ B) (φ : A ⟶ B) (hψ : ψ ≫ h = φ)
     (huniq : ∀ (T : Scheme.{u}) (v : T ⟶ A) (u : T ⟶ C), u ≫ h = v ≫ φ → u = v ≫ ψ) :
@@ -194,7 +189,8 @@ variable {X X' : Scheme.{u}} {φ : X' ⟶ X}
 
 theorem smooth_lastMap {s' : SequenceOfBlowups X'} {s : SequenceOfBlowups X} (c : SequenceOfBlowupsPullback φ s' s)
     [AlgebraicGeometry.Smooth φ] : AlgebraicGeometry.Smooth c.lastMap :=
-  smooth_of_isPullback_of_smooth_right c.isPullback_lastMap
+  MorphismProperty.of_isPullback (P := @AlgebraicGeometry.Smooth) c.isPullback_lastMap.flip
+    inferInstance
 
 end
 

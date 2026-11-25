@@ -6,8 +6,6 @@ import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.Se
 
 @[expose] public section
 
-noncomputable section
-
 open GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.JHMult GlobalTheory.Published GlobalTheory.SegmentRepModel
 
 namespace CompanionTheory.Pf1.SegRepC.Lift
@@ -30,5 +28,3 @@ theorem perm_eq_one_of_lt_succ {l : ℕ} (w : Equiv.Perm (Fin l))
     simp [← hx]
 
 end CompanionTheory.Pf1.SegRepC.Lift
-
-end

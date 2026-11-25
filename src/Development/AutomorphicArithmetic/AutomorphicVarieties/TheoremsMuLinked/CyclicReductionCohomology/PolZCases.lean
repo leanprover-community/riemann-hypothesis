@@ -49,16 +49,6 @@ private theorem polZ_mem {l : ℕ} [Fact l.Prime] (F : GFrame l) {γ : F.Γ} (h 
   rw [map_mul, F.η_c, (Int.units_eq_one_or (F.η γ)).resolve_left h]
   simp
 
-private theorem polZ_nmem {l : ℕ} [Fact l.Prime] (F : GFrame l) (g : F.G₀) : (g : F.Γ) * F.c ∉ F.η.ker := by
-  have := g.2
-  rw [MonoidHom.mem_ker] at this ⊢
-  rw [map_mul, F.η_c, this]
-  decide
-
-private theorem polZ_proj {l : ℕ} [Fact l.Prime] (F : GFrame l) :
-    ∃ p : F.Γ → F.G₀, Continuous p ∧ (∀ g : F.G₀, p g = g) ∧ ∀ g : F.G₀, p (g * F.c) = g := by
-  apply _root_.polZ_proj <;> assumption
-
 private theorem polZ_cases {l : ℕ} [Fact l.Prime] (F : GFrame l) (γ : F.Γ) :
     (∃ g : F.G₀, γ = g) ∨ ∃ g : F.G₀, γ = g * F.c := by
   by_cases h : γ ∈ F.η.ker
@@ -72,17 +62,11 @@ private theorem polZ_conj {l : ℕ} [Fact l.Prime] (F : GFrame l) (g : F.G₀) :
   show F.c * g * F.c⁻¹ = _
   rw [inv_eq_of_mul_eq_one_right F.c_sq]
 
-private theorem polZ_ext {l : ℕ} [Fact l.Prime] (F : GFrame l) {A M : Type} [CommRing A] [AddCommGroup M] [Module A M]
-    (rep : Representation A F.Γ M) (Z : F.G₀ → M) (hl : IsLocallyConstant Z)
-    (hm : ∀ g h, Z (g * h) = Z g + rep g (Z h)) (hc : ∀ g, Z (F.conj g) = rep F.c (Z g)) :
-    ∃ y ∈ Zl rep, y F.c = 0 ∧ ∀ g : F.G₀, y g = Z g := by
-  apply _root_.polZ_ext <;> assumption
-
 theorem UpperTheory.V.Th.polP :
     ∀ (l : ℕ) [Fact l.Prime] (F : GFrame l) (A R : Type) [CommRing A] [CommRing R] [Algebra A R] (n : ℕ) (ρ : F.G₀ → Matrix (Fin n) (Fin n) R) (P : Matrix (Fin n) (Fin n) R) (χ : F.Γ → R) (rep : Representation A F.Γ (Matrix (Fin n) (Fin n) R)), IsUnit P → IsAdP F ρ P χ rep → (∀ z : F.G₀ → Matrix (Fin n) (Fin n) R, IsLocallyConstant z → (∀ g g', z (g * g') = z g + χ g • (ρ g * z g' * ρ g⁻¹)) → (∀ g, P * z (F.conj g) = -(χ F.c • ((z g)ᵀ * P))) → ∃ y ∈ Zl rep, y F.c = 0 ∧ ∀ g : F.G₀, y g = z g) ∧ (∀ y ∈ Zl rep, y F.c = 0 → (∀ g : F.G₀, P * y (F.conj g) = -(χ F.c • ((y g)ᵀ * P))) ∧ ((∀ g : F.G₀, y g = 0) → y = 0)) := by
   intro l _ F A R _ _ _ n ρ P χ rep hP ⟨a1, a2⟩
   refine ⟨fun z hl hm hc => ?_, fun y ⟨_, hy⟩ hc => ⟨fun g => ?_, fun h0 => ?_⟩⟩
-  · exact polZ_ext F rep z hl (fun g h => by rw [a1]; exact hm g h)
+  · exact _root_.polZ_ext F rep z hl (fun g h => by rw [a1]; exact hm g h)
       (fun g => hP.mul_left_cancel (by rw [a2]; exact hc g))
   · rw [← a2, polZ_conj, hy, hc, map_zero, add_zero, hy, hc, zero_add]
   · funext γ

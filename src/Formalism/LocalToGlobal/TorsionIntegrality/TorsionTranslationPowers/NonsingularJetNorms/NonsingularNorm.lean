@@ -37,16 +37,8 @@ theorem i_pow {a : K} (ha : ‖a‖ ≤ 1) (n : ℕ) : ‖a ^ n‖ ≤ 1 := by
     rw [pow_succ]
     exact i_mul ih ha
 
-theorem i_ofNat (n : ℕ) [n.AtLeastTwo] : ‖(OfNat.ofNat n : K)‖ ≤ 1 := by
-  have key : ∀ m : ℕ, ‖(m : K)‖ ≤ 1 := by
-    intro m
-    induction m with
-    | zero => simp
-    | succ m ih =>
-      rw [Nat.cast_succ]
-      exact i_add ih (by simp)
-  first
-  | exact key n
+theorem i_ofNat (n : ℕ) [n.AtLeastTwo] : ‖(OfNat.ofNat n : K)‖ ≤ 1 :=
+  IsUltrametricDist.norm_natCast_le_one K n
 
 theorem s_add {a b : K} (ha : ‖a‖ < 1) (hb : ‖b‖ < 1) : ‖a + b‖ < 1 := (IsUltrametricDist.norm_add_le_max a b).trans_lt (max_lt ha hb)
 

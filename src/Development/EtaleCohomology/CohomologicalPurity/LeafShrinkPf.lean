@@ -4,8 +4,6 @@ public import Development.EtaleCohomology.CohomologicalPurity.LeafChartCut
 
 @[expose] public section
 
-noncomputable section
-
 namespace LateralTheory.CohomologicalPurity.ChartCut
 
 

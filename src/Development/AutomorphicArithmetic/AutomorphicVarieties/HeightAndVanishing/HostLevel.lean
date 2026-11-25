@@ -16,17 +16,9 @@ private theorem coe_unitsMap {g N : ℕ} [NeZero N] (h : g ∣ N) (u : (ZMod N)�
 
 private theorem pm_iff {n : ℕ} (v : (ZMod n)ˣ) (a : ℕ) (hv : (v : ZMod n) = (a : ZMod n)) :
     (a ≡ 1 [MOD n] ∨ a + 1 ≡ 0 [MOD n]) ↔ v ∈ Subgroup.zpowers (-1 : (ZMod n)ˣ) := by
-  have key : v ∈ Subgroup.zpowers (-1 : (ZMod n)ˣ) ↔ v = 1 ∨ v = -1 := by
-    constructor
-    · rintro ⟨k, rfl⟩
-      rcases Int.even_or_odd k with he | ho
-      · left
-        exact he.neg_one_zpow
-      · right
-        exact ho.neg_one_zpow
-    · rintro (rfl | rfl)
-      · exact Subgroup.one_mem _
-      · exact Subgroup.mem_zpowers _
+  have key : v ∈ Subgroup.zpowers (-1 : (ZMod n)ˣ) ↔ v = 1 ∨ v = -1 :=
+    ⟨fun ⟨k, hk⟩ => by dsimp only at hk; rw [← hk, neg_one_zpow_eq_ite]; split_ifs <;> simp,
+     by rintro (rfl | rfl); exacts [Subgroup.one_mem _, Subgroup.mem_zpowers _]⟩
   rw [key, ← ZMod.natCast_eq_natCast_iff, ← ZMod.natCast_eq_natCast_iff]
   push_cast
   rw [← hv]
@@ -34,26 +26,12 @@ private theorem pm_iff {n : ℕ} (v : (ZMod n)ˣ) (a : ℕ) (hv : (v : ZMod n) =
 
 private theorem jac_iff {p : ℕ} (hp : p.Prime) (v : (ZMod p)ˣ) (a : ℕ) (hv : (v : ZMod p) = (a : ZMod p)) :
     jacobiSym (a : ℤ) p = 1 ↔ v ∈ (powMonoidHom 2 : (ZMod p)ˣ →* (ZMod p)ˣ).range := by
-  haveI := Fact.mk hp
-  have ha : ((a : ℤ) : ZMod p) ≠ 0 := by
-    push_cast
-    rw [← hv]
-    exact v.ne_zero
+  have := Fact.mk hp
+  have ha : ((a : ℤ) : ZMod p) ≠ 0 := by push_cast; rw [← hv]; exact v.ne_zero
   rw [← jacobiSym.legendreSym.to_jacobiSym, legendreSym.eq_one_iff p ha]
   push_cast
-  rw [← hv]
-  constructor
-  · rintro ⟨r, hr⟩
-    have hr0 : r ≠ 0 := by
-      rintro rfl
-      exact v.ne_zero (by simpa using hr)
-    refine ⟨Units.mk0 r hr0, ?_⟩
-    ext
-    simp [hr, sq]
-  · rintro ⟨w, hw⟩
-    refine ⟨w, ?_⟩
-    rw [← hw]
-    simp [sq]
+  rw [← hv, Units.isSquare_coe_iff, isSquare_iff_exists_sq]
+  simp [MonoidHom.mem_range, powMonoidHom_apply, eq_comm]
 
 theorem UpperTheory.V.HV.hostLevel :
     ∀ (h : Host) (E : Type) [Field E] [NumberField E], IsChiField h.chi h.ex h.q1 h.d E → Chr.HasLevel E h.N h.H := by

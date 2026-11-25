@@ -22,8 +22,17 @@ theorem la_intmul {A M : Type} [Ring A] [Algebra ℂ A] [AddCommGroup M] [Module
     rw [Algebra.smul_def, map_intCast]
   rw [hz, map_smul]
 
-theorem chain_first_identity : LastColumnChain := by
-  intro A _ _ M _ _ k r z' c E La hG hc hR hL m hm u
+theorem chainX1' {A M : Type} [Ring A] [Algebra ℂ A] [AddCommGroup M] [Module ℂ M] (k r : ℕ) (c : Fin r → ℂ)
+    (E : Fin (2 * r + k + 1) → Fin (2 * r + k + 1) → A) (La : A →ₗ[ℂ] M) (hG : GlRel E) (m : ℕ) (hm : m + 2 ≤ r)
+    (u : ℂ)
+    (hR0 : ∀ (x : A) (l : ℕ) (hl : l < m), La (x * E (eI k r ⟨l, by omega⟩) (eI k r ⟨m + 1, by omega⟩)) = 0)
+    (hR1 : ∀ x : A, La (x * E (eI k r ⟨m, by omega⟩) (eI k r ⟨m + 1, by omega⟩)) = La x)
+    (hL : ∀ (x : A) (q : ℕ) (hq : q ≤ m), La (E (eI k r ⟨m + 1, by omega⟩) (eI k r ⟨q, by omega⟩) * x) =
+      (if q = m then c ⟨m + 1, by omega⟩ / c ⟨m, by omega⟩ else 0) • La x) :
+    La (qminor E (xR k r (m + 2) hm) (xR k r (m + 2) hm) u) =
+      La (qminor E (xR k r (m + 1) (by omega)) (xR k r (m + 1) (by omega)) u *
+          Tm E (u - ((m + 1 : ℕ) : ℂ)) (eI k r ⟨m + 1, by omega⟩) (eI k r ⟨m + 1, by omega⟩)) -
+        (c ⟨m + 1, by omega⟩ / c ⟨m, by omega⟩) • La (qminor E (xR k r m (by omega)) (xR k r m (by omega)) u) := by
   set a := xR k r (m + 2) hm with hadef
   have hav : ∀ l, (a l).val = l.val := by intro l; simp [a, xR, eI]
   have hcs : a ∘ Fin.castSucc = xR k r (m + 1) (by omega) := by
@@ -39,10 +48,10 @@ theorem chain_first_identity : LastColumnChain := by
     rw [la_intmul]
     have hne : a (Fin.castSucc (Fin.castSucc l)) ≠ a (Fin.last (m + 1)) := by
       intro h'; have := congrArg Fin.val h'; rw [hav, hav] at this; simp at this; omega
-    rw [tm_offdiag _ _ hne, hR _ _ _ (by simp only [InNp, hav]; simp; omega)]
-    have : dpsiP k r z' (a (Fin.castSucc (Fin.castSucc l))) (a (Fin.last (m + 1))) = 0 := by
-      unfold dpsiP; simp only [hav]; simp; split_ifs <;> first | rfl | omega
-    rw [this, zero_smul, smul_zero]
+    rw [tm_offdiag _ _ hne]
+    have ha1 : a (Fin.castSucc (Fin.castSucc l)) = eI k r ⟨l.val, by omega⟩ := by ext; rw [hav]; simp [eI]
+    have ha2 : a (Fin.last (m + 1)) = eI k r ⟨m + 1, by omega⟩ := by ext; rw [hav]; simp [eI]
+    rw [ha1, ha2, hR0 _ l.val l.isLt, smul_zero]
   rw [Finset.sum_eq_zero (fun l _ => hzero l), zero_add]
 
   have hlast : La ((((-1 : ℤ) ^ (m + 1 + ((Fin.last (m + 1) : Fin (m + 2)) : ℕ)) : ℤ) : A) *
@@ -89,7 +98,7 @@ theorem chain_first_identity : LastColumnChain := by
         intro h'; have := congrArg Fin.val h'; simp [eI, xR] at this
       rw [tm_offdiag _ _ hne]
       have hx : xR k r (m + 1) (by omega) (Fin.last m) = eI k r ⟨m, by omega⟩ := by ext; simp [xR, eI]
-      rw [hx, hL _ ⟨m + 1, by omega⟩ ⟨m, by omega⟩ (by simp), ite_eq_left rfl]
+      rw [hx, hL _ m le_rfl, ite_eq_left rfl]
       have hcs2 : xR k r (m + 1) (by omega) ∘ Fin.castSucc = xR k r m (by omega) := by funext q; ext; simp [xR, eI]
       rw [hcs2, smul_smul, smul_smul]
       congr 1
@@ -105,21 +114,40 @@ theorem chain_first_identity : LastColumnChain := by
         intro h'; have := congrArg Fin.val h'; rw [hqv] at this; simp [eI] at this; omega
       rw [tm_offdiag _ _ hne]
       have hx : xR k r (m + 1) (by omega) (Fin.castSucc q) = eI k r ⟨q.val, by omega⟩ := by ext; simp [xR, eI]
-      rw [hx, hL _ ⟨m + 1, by omega⟩ ⟨q.val, by omega⟩ (by simp), ite_eq_right (by simp <;> omega), zero_smul, smul_zero]
+      rw [hx, hL _ q.val (by omega), ite_eq_right (by omega), zero_smul, smul_zero]
   have hmT : La (qminor E (a ∘ (Fin.castSucc (Fin.last m) : Fin (m + 2)).succAbove) (a ∘ Fin.castSucc) u *
       Tm E (u - ((m + 1 : ℕ) : ℂ)) (a (Fin.castSucc (Fin.last m))) (a (Fin.last (m + 1)))) =
       La (qminor E (a ∘ (Fin.castSucc (Fin.last m) : Fin (m + 2)).succAbove) (a ∘ Fin.castSucc) u) := by
     have hne : a (Fin.castSucc (Fin.last m)) ≠ a (Fin.last (m + 1)) := by
       intro h'; have := congrArg Fin.val h'; rw [hav, hav] at this; simp at this
-    rw [tm_offdiag _ _ hne, hR _ _ _ (by simp only [InNp, hav]; simp; omega)]
-    have : dpsiP k r z' (a (Fin.castSucc (Fin.last m))) (a (Fin.last (m + 1))) = 1 := by
-      unfold dpsiP; simp only [hav]; simp; split_ifs <;> first | rfl | omega
-    rw [this, one_smul]
+    rw [tm_offdiag _ _ hne]
+    have ha1 : a (Fin.castSucc (Fin.last m)) = eI k r ⟨m, by omega⟩ := by ext; rw [hav]; simp [eI]
+    have ha2 : a (Fin.last (m + 1)) = eI k r ⟨m + 1, by omega⟩ := by ext; rw [hav]; simp [eI]
+    rw [ha1, ha2, hR1]
   rw [la_intmul, hmT, hQm]
   have h3 : ((((-1 : ℤ) ^ (m + 1 + ((Fin.castSucc (Fin.last m) : Fin (m + 2)) : ℕ))) : ℤ) : ℂ) = -1 := by
     simp only [Fin.val_castSucc, Fin.val_last]
     push_cast
     rw [show m + 1 + m = 2 * m + 1 by ring, pow_succ, pow_mul]; norm_num
   rw [h3, neg_one_smul]; abel
+
+theorem chain_first_identity : LastColumnChain := by
+  intro A _ _ M _ _ k r z' c E La hG _ hR hL m hm u
+  refine chainX1' k r c E La hG m hm u ?_ ?_ ?_
+  · intro x l hl
+    rw [hR x _ _ (by simp only [InNp, eI]; lia)]
+    have : dpsiP k r z' (eI k r ⟨l, by lia⟩) (eI k r ⟨m + 1, by lia⟩) = 0 := by
+      unfold dpsiP; simp [eI]; split_ifs <;> first | rfl | lia
+    rw [this, zero_smul]
+  · intro x
+    rw [hR x _ _ (by simp only [InNp, eI]; lia)]
+    have : dpsiP k r z' (eI k r ⟨m, by lia⟩) (eI k r ⟨m + 1, by lia⟩) = 1 := by
+      unfold dpsiP; simp [eI]; split_ifs <;> lia
+    rw [this, one_smul]
+  · intro x q hq
+    rw [hL x ⟨m + 1, by lia⟩ ⟨q, by lia⟩ (by simp; lia)]
+    by_cases hqm : q = m
+    · subst hqm; simp
+    · rw [ite_eq_right (by simp; lia), ite_eq_right hqm]
 
 end Formalism.FourierDecayAlt.P.SignAntidiagonal

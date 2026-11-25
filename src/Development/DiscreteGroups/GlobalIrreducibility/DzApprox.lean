@@ -13,8 +13,6 @@ open IsDedekindDomain NumberField
 
 set_option linter.all false
 
-noncomputable section
-
 namespace DiscreteGroups.sglob.DzType
 
 variable {E : Type} [Field E] [NumberField E] (w : HeightOneSpectrum (𝓞 E))
@@ -43,5 +41,3 @@ theorem exists_int_approx_compl (u : w.adicCompletion E) (hu : Valued.v u ≤ 1)
   exact Valuation.map_add_lt _ he (by rw [hvF]; exact hx)
 
 end DiscreteGroups.sglob.DzType
-
-end

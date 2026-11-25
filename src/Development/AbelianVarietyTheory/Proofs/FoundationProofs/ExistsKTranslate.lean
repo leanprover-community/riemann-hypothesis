@@ -1723,9 +1723,6 @@ theorem inv_mem_Kset (T : GrpData p q) {k : T.G} (hk : k ∈ T.Kset) : k⁻¹ �
   rw [map_inv]
   exact h.units_inv_left
 
-theorem one_mem_Kset (T : GrpData p q) : (1 : T.G) ∈ T.Kset :=
-  (GlobalTheory.RealPar.KStabLie.isKC_iff _).2 (by simp)
-
 theorem exists_k_translate (hpq : 1 ≤ p + q) (T : GrpData p q) (σ : URep T) (M : GKMod p q) (j : M.V →ₗ[ℂ] σ.H)
     (hder : ∀ Y ∈ upq p q, ∀ x, HasDerivAt (fun t : ℝ => σ.π (T.expt (t • Y)) (j x)) (j (M.act Y x)) 0)
     (W : Submodule ℂ M.V) [FiniteDimensional ℂ W] (hW : KStable M.act W) {k : T.G} (hk : k ∈ T.Kset) (e : W) :
@@ -1850,7 +1847,7 @@ theorem harmonicModule_of (hdec : GlobalTheory.IndefiniteRowSideFullHecke.FockSi
   have hjv : j₁ v ≠ 0 := (map_ne_zero_iff j₁ hHC.1).2 hv0
   obtain ⟨d, hd0, hschur⟩ := exists_fdeg T1 σ hσ (j₁ v) hjv
     (_root_.GlobalTheory.CoshSqInt.memLp_two_of_decay hint p q n hn T1 _ (‖j₁ v‖ * ‖j₁ v‖) (continuous_const.inner (σ.cont _)) fun k hk X hX => by
-      have := hdecay k hk 1 (one_mem_Kset T1) X hX ⟨v, hvW⟩ ⟨v, hvW⟩
+      have := hdecay k hk 1 (GlobalTheory.GradedKFin.kset_one T1) X hX ⟨v, hvW⟩ ⟨v, hvW⟩
       rw [mul_one] at this
       exact this.trans_eq (by ring))
   let D : DSRep T1 :=

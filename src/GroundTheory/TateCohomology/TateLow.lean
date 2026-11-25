@@ -204,22 +204,6 @@ section Tate
 
 variable {R G : Type u} [CommRing R] [Group G] [Fintype G]
 
-private lemma iso_hom_inv_apply {A B : ModuleCat.{u} R} (e : A ≅ B) (x : B) :
-    e.hom.hom (e.inv.hom x) = x := by
-  rw [← LinearMap.comp_apply, ← ModuleCat.hom_comp, Iso.inv_hom_id]
-  rfl
-
-private lemma iso_inv_hom_apply {A B : ModuleCat.{u} R} (e : A ≅ B) (x : A) :
-    e.inv.hom (e.hom.hom x) = x := by
-  rw [← LinearMap.comp_apply, ← ModuleCat.hom_comp, Iso.hom_inv_id]
-  rfl
-
-private lemma iso_hom_injective {A B : ModuleCat.{u} R} (e : A ≅ B) : Function.Injective e.hom.hom :=
-  fun a b h => by rw [← iso_inv_hom_apply e a, h, iso_inv_hom_apply]
-
-private lemma iso_inv_injective {A B : ModuleCat.{u} R} (e : A ≅ B) : Function.Injective e.inv.hom :=
-  fun a b h => by rw [← iso_hom_inv_apply e a, h, iso_hom_inv_apply]
-
 lemma repHom_norm_apply {X Y : Rep.{u} R G} (f : X ⟶ Y) (m : X) :
     f.hom (X.ρ.norm m) = Y.ρ.norm (f.hom m) := by
 
@@ -309,7 +293,7 @@ noncomputable def tateZeroι (M : Rep.{u} R G) :
   (cochainsIso₀ M).inv.hom ∘ₗ M.ρ.invariants.subtype
 
 lemma tateZeroι_injective (M : Rep.{u} R G) : Function.Injective (tateZeroι M) :=
-  (iso_inv_injective (cochainsIso₀ M)).comp Subtype.val_injective
+  (ConcreteCategory.bijective_of_isIso (cochainsIso₀ M).inv).1.comp Subtype.val_injective
 
 lemma tateZeroι_range (M : Rep.{u} R G) :
     LinearMap.range (tateZeroι M) = LinearMap.ker ((tateComplex M).sc' (-1) 0 1).g.hom := by
@@ -333,7 +317,7 @@ lemma tateZeroι_range (M : Rep.{u} R G) :
       congr(($(comp_d₀₁_eq M)).hom y)
     have hmem : (cochainsIso₀ M).hom.hom y ∈ M.ρ.invariants := by
       rw [← d₀₁_ker_eq_invariants, LinearMap.mem_ker, e, hy', map_zero]
-    exact ⟨⟨_, hmem⟩, iso_inv_hom_apply (cochainsIso₀ M) y⟩
+    exact ⟨⟨_, hmem⟩, (cochainsIso₀ M).hom_inv_id_apply y⟩
 
 lemma tateZero_mem_iff (M : Rep.{u} R G) (x : M.ρ.invariants) :
     x ∈ normRangeInvariants M ↔
@@ -343,13 +327,13 @@ lemma tateZero_mem_iff (M : Rep.{u} R G) (x : M.ρ.invariants) :
     refine ⟨(chainsIso₀ M).inv.hom m, ?_⟩
     change (cochainsIso₀ M).inv.hom (M.ρ.norm ((chainsIso₀ M).hom.hom ((chainsIso₀ M).inv.hom m))) =
       (cochainsIso₀ M).inv.hom x.1
-    rw [iso_hom_inv_apply, hm]
+    rw [(chainsIso₀ M).inv_hom_id_apply, hm]
     rfl
   · rintro ⟨c, hc⟩
     refine ⟨(chainsIso₀ M).hom.hom c, ?_⟩
     have hc' : (cochainsIso₀ M).inv.hom (M.ρ.norm ((chainsIso₀ M).hom.hom c)) =
         (cochainsIso₀ M).inv.hom x.1 := hc
-    exact iso_inv_injective _ hc'
+    exact (ConcreteCategory.bijective_of_isIso (cochainsIso₀ M).inv).1 hc'
 
 noncomputable def tateZeroData (M : Rep.{u} R G) :
     ((tateComplex M).sc' (-1) 0 1).LeftHomologyData :=
@@ -367,11 +351,11 @@ noncomputable def tateZeroMapData {X Y : Rep.{u} R G} (f : X ⟶ Y) :
           f.hom ((cochainsIso₀ X).hom.hom ((cochainsIso₀ X).inv.hom x.1)) :=
         congr(($(cochainsMap_f_0_comp_cochainsIso₀ (f := MonoidHom.id G) (φ := f))).hom
           ((cochainsIso₀ X).inv.hom x.1))
-      apply iso_hom_injective (cochainsIso₀ Y)
+      apply (ConcreteCategory.bijective_of_isIso (cochainsIso₀ Y).hom).1
       change (cochainsIso₀ Y).hom.hom ((cochainsIso₀ Y).inv.hom (f.hom x.1)) =
         (cochainsIso₀ Y).hom.hom
           (((cochainsMap (MonoidHom.id G) f).f 0).hom ((cochainsIso₀ X).inv.hom x.1))
-      rw [e, iso_hom_inv_apply, iso_hom_inv_apply])
+      rw [e, (cochainsIso₀ Y).inv_hom_id_apply, (cochainsIso₀ X).inv_hom_id_apply])
     (normRangeInvariants_le_comap f)
 
 
@@ -398,7 +382,7 @@ lemma tateCohomologyZeroIso_inv_mk (M : Rep.{u} R G) (z : (tateComplex M).cycles
       ((tateComplex M).homologyπ 0).hom z := by
   exact (congrArg (fun w => ((tateCohomologyZeroIso (R := R) (G := G)).app M).inv.hom w)
     (tateCohomologyZeroIso_hom_homologyπ M z x hx)).symm.trans
-      (iso_inv_hom_apply ((tateCohomologyZeroIso (R := R) (G := G)).app M) _)
+      (((tateCohomologyZeroIso (R := R) (G := G)).app M).hom_inv_id_apply _)
 
 lemma exists_tateComplex_cycles_zero (M : Rep.{u} R G) (x : M.ρ.invariants) :
     ∃ z : (tateComplex M).cycles 0,
@@ -431,7 +415,7 @@ noncomputable def tateNegOneι (M : Rep.{u} R G) :
   (chainsIso₀ M).inv.hom ∘ₗ (LinearMap.ker M.ρ.norm).subtype
 
 lemma tateNegOneι_injective (M : Rep.{u} R G) : Function.Injective (tateNegOneι M) :=
-  (iso_inv_injective (chainsIso₀ M)).comp Subtype.val_injective
+  (ConcreteCategory.bijective_of_isIso (chainsIso₀ M).inv).1.comp Subtype.val_injective
 
 lemma tateNegOneι_range (M : Rep.{u} R G) :
     LinearMap.range (tateNegOneι M) = LinearMap.ker ((tateComplex M).sc' (-2) (-1) 0).g.hom := by
@@ -441,15 +425,15 @@ lemma tateNegOneι_range (M : Rep.{u} R G) :
     rw [LinearMap.mem_ker]
     change (cochainsIso₀ M).inv.hom
       (M.ρ.norm ((chainsIso₀ M).hom.hom ((chainsIso₀ M).inv.hom x.1))) = 0
-    rw [iso_hom_inv_apply, LinearMap.mem_ker.1 x.2, map_zero]
+    rw [(chainsIso₀ M).inv_hom_id_apply, LinearMap.mem_ker.1 x.2, map_zero]
   · intro hy
     have hy' : (cochainsIso₀ M).inv.hom (M.ρ.norm ((chainsIso₀ M).hom.hom y)) = 0 :=
       LinearMap.mem_ker.1 hy
     have hmem : (chainsIso₀ M).hom.hom y ∈ LinearMap.ker M.ρ.norm := by
       rw [LinearMap.mem_ker]
-      apply iso_inv_injective (cochainsIso₀ M)
+      apply (ConcreteCategory.bijective_of_isIso (cochainsIso₀ M).inv).1
       rw [hy', map_zero]
-    exact ⟨⟨_, hmem⟩, iso_inv_hom_apply (chainsIso₀ M) y⟩
+    exact ⟨⟨_, hmem⟩, (chainsIso₀ M).hom_inv_id_apply y⟩
 
 lemma tateNegOne_mem_iff (M : Rep.{u} R G) (x : LinearMap.ker M.ρ.norm) :
     x ∈ augmentationKerNorm M ↔
@@ -460,18 +444,18 @@ lemma tateNegOne_mem_iff (M : Rep.{u} R G) (x : LinearMap.ker M.ρ.norm) :
     refine ⟨(chainsIso₁ M).inv.hom w, ?_⟩
     change ((inhomogeneousChains M).d 1 0).hom ((chainsIso₁ M).inv.hom w) =
       (chainsIso₀ M).inv.hom x.1
-    apply iso_hom_injective (chainsIso₀ M)
+    apply (ConcreteCategory.bijective_of_isIso (chainsIso₀ M).hom).1
     have e : (d₁₀ M).hom ((chainsIso₁ M).hom.hom ((chainsIso₁ M).inv.hom w)) =
         (chainsIso₀ M).hom.hom (((inhomogeneousChains M).d 1 0).hom ((chainsIso₁ M).inv.hom w)) :=
       congr(($(comp_d₁₀_eq M)).hom ((chainsIso₁ M).inv.hom w))
-    rw [← e, iso_hom_inv_apply, iso_hom_inv_apply, hw]
+    rw [← e, (chainsIso₁ M).inv_hom_id_apply, (chainsIso₀ M).inv_hom_id_apply, hw]
   · rintro ⟨c, hc⟩
     have hc' : ((inhomogeneousChains M).d 1 0).hom c = (chainsIso₀ M).inv.hom x.1 := hc
     refine ⟨(chainsIso₁ M).hom.hom c, ?_⟩
     have e : (d₁₀ M).hom ((chainsIso₁ M).hom.hom c) =
         (chainsIso₀ M).hom.hom (((inhomogeneousChains M).d 1 0).hom c) :=
       congr(($(comp_d₁₀_eq M)).hom c)
-    rw [e, hc', iso_hom_inv_apply]
+    rw [e, hc', (chainsIso₀ M).inv_hom_id_apply]
 
 noncomputable def tateNegOneData (M : Rep.{u} R G) :
     ((tateComplex M).sc' (-2) (-1) 0).LeftHomologyData :=
@@ -489,11 +473,11 @@ noncomputable def tateNegOneMapData {X Y : Rep.{u} R G} (f : X ⟶ Y) :
           f.hom ((chainsIso₀ X).hom.hom ((chainsIso₀ X).inv.hom x.1)) :=
         congr(($(chainsMap_f_0_comp_chainsIso₀ (f := MonoidHom.id G) (φ := f))).hom
           ((chainsIso₀ X).inv.hom x.1))
-      apply iso_hom_injective (chainsIso₀ Y)
+      apply (ConcreteCategory.bijective_of_isIso (chainsIso₀ Y).hom).1
       change (chainsIso₀ Y).hom.hom ((chainsIso₀ Y).inv.hom (f.hom x.1)) =
         (chainsIso₀ Y).hom.hom
           (((chainsMap (MonoidHom.id G) f).f 0).hom ((chainsIso₀ X).inv.hom x.1))
-      rw [e, iso_hom_inv_apply, iso_hom_inv_apply])
+      rw [e, (chainsIso₀ Y).inv_hom_id_apply, (chainsIso₀ X).inv_hom_id_apply])
     (fun x hx => coinvariantsKer_le_comap f hx)
 
 

@@ -52,8 +52,6 @@ open scoped CategoryTheory.Obj
 open GlobalTheory.UU
 open ReciprocityTheory.ChartRestriction.G.DVR
 
-noncomputable section
-
 namespace GlobalTheory.UU
 
 variable {R : Type} [CommRing R] [IsDomain R] {D : DegPre R} {F : Type} [Field F] [Algebra (FractionRing R) F]
@@ -165,5 +163,3 @@ theorem phi_comm : (GlobalFnsSt → ∀ (R : Type) [CommRing R] [IsDomain R] (D 
   linear_combination (norm := abel) key'
 
 end GlobalTheory.UU
-
-end

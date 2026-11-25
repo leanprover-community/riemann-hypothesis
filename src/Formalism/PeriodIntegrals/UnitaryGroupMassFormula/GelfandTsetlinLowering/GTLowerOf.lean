@@ -745,15 +745,6 @@ theorem normFockQ_symm {N : ℕ} (lam : DomWeight N) (a b : MvPolynomial (Fin N 
   refine Finset.sum_congr rfl fun m _ => ?_
   ring
 
-private theorem fockF_swap_eq_star {σ : Type*} [DecidableEq σ] (f g : MvPolynomial σ ℂ) :
-    fockF g f = star (fockF f g) := by
-  classical
-  rw [_root_.Formalism.REAL.fischerInner_eq_sum_of_subset g f (f.support ∪ g.support) Finset.subset_union_right,
-    _root_.Formalism.REAL.fischerInner_eq_sum_of_subset f g (f.support ∪ g.support) Finset.subset_union_left, star_sum]
-  refine Finset.sum_congr rfl fun m _ => ?_
-  simp only [star_mul', star_star, star_natCast]
-  ring
-
 theorem fockF_ext_ne {N : ℕ} (lam : DomWeight N) :
     fockF (extremal ℂ N lam) (extremal ℂ N lam) ≠ 0 := by
   rw [extremal_map, brFockF_map]

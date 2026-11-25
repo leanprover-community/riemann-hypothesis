@@ -89,11 +89,8 @@ theorem inId_mul {I : Ideal (𝓞 E)} {t x : E ⊗[F] Formalism.L2.Herm.Af F} (h
   exact ⟨⟨t, ht⟩ * s, Ideal.mul_mem_left _ _ hs, rfl⟩
 
 theorem inId_sum {I : Ideal (𝓞 E)} {n : ℕ} (f : Fin n → E ⊗[F] Formalism.L2.Herm.Af F) (h : ∀ i, InId I (f i)) :
-    InId I (∑ i, f i) := by
-  classical
-  induction (Finset.univ : Finset (Fin n)) using Finset.induction_on with
-  | empty => simpa using inId_zero (F := F) I
-  | insert a s ha ih => rw [Finset.sum_insert ha]; exact inId_add (h a) ih
+    InId I (∑ i, f i) :=
+  Finset.sum_induction f (InId (F := F) I) (fun _ _ => inId_add) (inId_zero (F := F) I) fun i _ => h i
 
 theorem inId_int {I : Ideal (𝓞 E)} {x : E ⊗[F] Formalism.L2.Herm.Af F} (hx : InId I x) :
     x ∈ Formalism.L2.Herm.intAf F E := by

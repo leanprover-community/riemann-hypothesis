@@ -10,8 +10,6 @@ public import Mathlib.Data.ZMod.Units
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.Glue
 
 open GlobalTheory.KZ GlobalTheory.K5 Polynomial

@@ -66,27 +66,6 @@ namespace GlobalTheory.KZ.JInt
 
 variable {Ω : Type} [Field Ω] [Algebra ℚ Ω] {ε : Ω →+* ℂ}
 
-lemma det_pos (g : GQ) : 0 < ent g 0 0 * ent g 1 1 - ent g 0 1 * ent g 1 0 := by
-  have h := g.2
-  rw [Matrix.mem_glpos] at h
-  simpa [ent, Matrix.det_fin_two] using h
-
-lemma den_ne (g : GQ) {z : ℂ} (hz : z ∈ Hs) : (ent g 1 0 : ℂ) * z + (ent g 1 1 : ℂ) ≠ 0 := by
-  intro h
-  have him := congrArg Complex.im h
-  have hre := congrArg Complex.re h
-  have hz' : 0 < z.im := hz
-  simp at him hre
-  have hc : ent g 1 0 = 0 := by
-    rcases him with h1 | h1
-    · exact h1
-    · exact absurd h1 hz'.ne'
-  rw [hc] at hre
-  simp at hre
-  have := det_pos g
-  rw [hc, hre] at this
-  simp at this
-
 lemma mob_im (g : GQ) {z : ℂ} (hz : z ∈ Hs) : mob g z ∈ Hs := by
   apply GlobalTheory.FNMob.mob_mem <;> assumption
 
@@ -95,7 +74,7 @@ lemma mob_diff (g : GQ) : DifferentiableOn ℂ (mob g) Hs := by
   apply DifferentiableAt.differentiableWithinAt
   show DifferentiableAt ℂ (fun z => ((ent g 0 0 : ℂ) * z + (ent g 0 1 : ℂ)) / ((ent g 1 0 : ℂ) * z + (ent g 1 1 : ℂ))) z
   exact ((differentiableAt_id.const_mul _).add_const _).div
-    ((differentiableAt_id.const_mul _).add_const _) (den_ne g hz)
+    ((differentiableAt_id.const_mul _).add_const _) (GlobalTheory.FNMob.denom_ne g hz)
 
 def holR (X : Tower Ω ε) : Subring X.K where
   carrier := {h | ∃ φ : ℂ → ℂ, DifferentiableOn ℂ φ Hs ∧ X.an h = (φ : Mero)}
@@ -114,7 +93,6 @@ def holR (X : Tower Ω ε) : Subring X.K where
 end GlobalTheory.KZ.JInt
 
 namespace GlobalTheory.KZ.JInt
-
 
 open Polynomial in
 theorem jK_sl_isIntegral : ∀ {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (ε : Ω →+* ℂ) (X : Tower Ω ε),

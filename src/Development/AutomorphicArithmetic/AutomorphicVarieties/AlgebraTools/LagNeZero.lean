@@ -5,21 +5,12 @@ public import Mathlib.LinearAlgebra.Matrix.Charpoly.Basic
 public import Mathlib.RingTheory.LocalRing.ResidueField.Defs
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.LagMap
 import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.LinearAlgebra.Eigenspace.Minpoly
 public import Mathlib.LinearAlgebra.Matrix.ToLinearEquiv
 
 @[expose] public section
 
 open Polynomial Matrix IsLocalRing TensorProduct UpperTheory.V.AlgebraTools
-
-private theorem UpperTheory.V.AlgebraTools.aeval_mulVec_eigen {k ι : Type} [CommRing k] [Fintype ι] [DecidableEq ι]
-    (M : Matrix ι ι k) (t : k) (v : ι → k) (hv : M *ᵥ v = t • v) (q : k[X]) :
-    (aeval M q) *ᵥ v = q.eval t • v := by
-  induction q using Polynomial.induction_on with
-  | C c => simp [Algebra.algebraMap_eq_smul_one, Matrix.smul_mulVec]
-  | add p q hp hq => rw [map_add (f := _), Matrix.add_mulVec, hp, hq, eval_add, add_smul]
-  | monomial n c h =>
-    rw [pow_succ, ← mul_assoc, map_mul, aeval_X, ← Matrix.mulVec_mulVec, hv, Matrix.mulVec_smul, h,
-      eval_mul (q := X), eval_X, smul_smul, mul_comm]
 
 private theorem UpperTheory.V.AlgebraTools.lag_ne_zero_field {k ι : Type} [Field k] [Fintype ι] [DecidableEq ι]
     (a : ι → k) (P : Matrix ι ι k) (hu : ∀ i j, i ≠ j → IsUnit (a i - a j))
@@ -37,8 +28,11 @@ private theorem UpperTheory.V.AlgebraTools.lag_ne_zero_field {k ι : Type} [Fiel
     rw [← hv]
     ext j
     simp [Matrix.mulVec_diagonal]
-  have h2 := UpperTheory.V.AlgebraTools.aeval_mulVec_eigen P (a i) v hv' (∏ j ∈ Finset.univ.erase i, (X - C (a j)))
-  rw [← h1, Matrix.zero_mulVec, eval_prod] at h2
+  have h2 := Module.End.aeval_apply_of_mem_apply_eq_smul
+    (p := ∏ j ∈ Finset.univ.erase i, (X - C (a j)))
+    ((Matrix.toLinAlgEquiv'_apply P v).trans hv')
+  rw [Polynomial.aeval_algHom_apply (Matrix.toLinAlgEquiv' (R := k) (n := ι)),
+    Matrix.toLinAlgEquiv'_apply, ← h1, Matrix.zero_mulVec, eval_prod] at h2
   rcases smul_eq_zero.1 h2.symm with h | h
   · obtain ⟨j, hj, hj0⟩ := Finset.prod_eq_zero_iff.1 h
     have := (hu i j (Finset.ne_of_mem_erase hj).symm).ne_zero

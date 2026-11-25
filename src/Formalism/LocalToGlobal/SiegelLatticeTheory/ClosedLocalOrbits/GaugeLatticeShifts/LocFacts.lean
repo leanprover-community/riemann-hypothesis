@@ -254,8 +254,6 @@ private theorem exists_linearMap_eq_cons_zero (R M : Type*) [Semiring R] [AddCom
        funext i
        cases i using Fin.cases <;> simp }, fun _ => rfl⟩
 
-
-
 theorem core_ind (hU : UnitP) (hA : AvoidP) (hI : IntP) (h2 : Module.finrank F E = 2)
     (A : LocAt F E sig p) : ∀ (n : ℕ) (Λ : Submodule (𝓞 E) (Fin n → E)), Λ.FG →
     ∀ y : Fin n → E, bc A y ∈ latL A Λ →
@@ -597,15 +595,6 @@ namespace Formalism.L2.SG.Pf
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.TermDef
   Formalism.L2.SG.Saturated Formalism.L2.SG.TermLoc ValuativeRel
 
-def DualLoc : Prop :=
-  ∀ (K : Type) [Field K] [NumberField K] (p : HeightOneSpectrum (𝓞 K)) [Fact (Loc.resChar p).Prime]
-    (Fp : Type) [Field Fp] [ValuativeRel Fp] [TopologicalSpace Fp] [IsNonarchimedeanLocalField Fp]
-    [Algebra ℚ_[Loc.resChar p] Fp], Continuous (algebraMap ℚ_[Loc.resChar p] Fp) →
-    FiniteDimensional ℚ_[Loc.resChar p] Fp → ∀ (ι : K →+* Fp), DenseRange ι →
-    (∀ x y : K, (ι x ≤ᵥ ι y) ↔ p.valuation K x ≤ p.valuation K y) →
-    ∀ t : K, (∀ a : 𝓞 K, ∃ n : ℤ, Algebra.trace ℚ K (t * a) = n) →
-    ∀ c ∈ 𝒪[Fp], ‖Algebra.trace ℚ_[Loc.resChar p] Fp (c * ι t)‖ ≤ 1
-
 namespace LocFacts
 
 variable {D : D7}
@@ -849,7 +838,7 @@ theorem lf_ddS_inv : (ddS D)⁻¹ = FractionalIdeal.extendedHom D.host.E (𝓞 D
     rw [FractionalIdeal.extendedHom_coeIdeal_eq_map]; rfl
   rw [h1, coeIdeal_differentIdeal ℤ ℚ D.host.F, map_inv₀, inv_inv]
 
-theorem lf_mem_inv (hDL : DualLoc) (Z : LocDat D) (y : D.host.E) (hy : y ∈ (ddS D)⁻¹) :
+theorem lf_mem_inv (hDL : PI.TrDualLoc.Stmt) (Z : LocDat D) (y : D.host.E) (hy : y ∈ (ddS D)⁻¹) :
     (D.s.atP p).ιE y * cP p Z ∈ (D.s.atP p).O := by
   rw [lf_ddS_inv, ← FractionalIdeal.mem_coe, FractionalIdeal.coe_extendedHom_eq_span] at hy
   induction hy using Submodule.span_induction with
@@ -876,7 +865,7 @@ theorem lf_mem_inv (hDL : DualLoc) (Z : LocDat D) (y : D.host.E) (hy : y ∈ (dd
     rw [Algebra.smul_def, map_mul, mul_assoc]
     exact mul_mem (iE_mem_O D p a) hx
 
-theorem lf_mem_pow (hDL : DualLoc) (Z : LocDat D) :
+theorem lf_mem_pow (hDL : PI.TrDualLoc.Stmt) (Z : LocDat D) :
     ∀ (m : ℕ) (x : D.host.E), x ∈ (ddS D)⁻¹ ^ m → (D.s.atP p).ιE x * cP p Z ^ m ∈ (D.s.atP p).O := by
   intro m
   induction m with
@@ -903,9 +892,8 @@ end Diff2
 
 end LocFacts
 
-
 open PI.CntNotIntW in
-theorem locDiffC_of (hDL : DualLoc) (D : D7) (Z : LocDat D) : LocDiffC D Z := by
+theorem locDiffC_of (hDL : PI.TrDualLoc.Stmt) (D : D7) (Z : LocDat D) : LocDiffC D Z := by
   intro p a
   have hO : (Z.M p).L.O = (D.s.atP p).O := (Z.agree p).2.2.2.1
   have hexp : (-((D.R.rS : ℤ) - ((a : ℕ) : ℤ))) = -((D.R.rS - a.val : ℕ) : ℤ) := by
@@ -1117,7 +1105,7 @@ theorem locUnimodC_holds (D : D7) (Z : LocDat D) : LocUnimodC D Z := by
     have hg : baseChange₂ D p ((g i : Λ) : (VS D).V) ∈ lattice₂ D Z.M p Λ := Submodule.subset_span ⟨_, (g i).2, rfl⟩
     exact Submodule.smul_mem _ (⟨_, hc⟩ : (Z.M p).L.O) hg
 
-theorem dualLoc_holds : DualLoc := trace_dual_local
+theorem dualLoc_holds : PI.TrDualLoc.Stmt := trace_dual_local
 
 theorem locDiffC_holds (D : D7) (Z : LocDat D) : LocDiffC D Z := locDiffC_of dualLoc_holds D Z
 

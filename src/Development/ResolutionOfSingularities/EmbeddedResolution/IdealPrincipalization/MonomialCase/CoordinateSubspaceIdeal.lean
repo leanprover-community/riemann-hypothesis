@@ -12,8 +12,6 @@ universe u v
 
 open CategoryTheory AlgebraicGeometry
 
-noncomputable section
-
 namespace FunctorialResolution.EmbeddedResolution
 
 namespace MonomialChart
@@ -146,5 +144,3 @@ theorem smooth_intersectionIdeal_subscheme : ∀ (T : MarkedIdealWithBoundary.{u
 end MonomialChart
 
 end FunctorialResolution.EmbeddedResolution
-
-end

@@ -2,54 +2,10 @@ module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.GammaLaurentFactors.PairGOps
 import Mathlib.Algebra.AffineMonoid.UniqueSums
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.AlgebraicTopology.FundamentalGroupoid.SimplyConnected
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Mathlib.Analysis.Convex.Contractible
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
 import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Lemma
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 public import Mathlib.Analysis.Analytic.Basic
 public import Mathlib.Analysis.Analytic.Uniqueness
 public import Mathlib.Analysis.Calculus.Deriv.Polynomial
@@ -101,20 +57,6 @@ private lemma cpow_eq {q : ℝ} (hq : 1 < q) (s : ℂ) :
   push_cast
   ring
 
-private lemma poly_zero {q : ℝ} (hq : 1 < q) (Q : ℂ[X]) (h : ∀ s : ℂ, Q.eval ((q : ℂ) ^ (-s)) = 0) : Q = 0 := by
-  have hl : ((Real.log q : ℝ) : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (Real.log_pos hq).ne'
-  refine Polynomial.eq_zero_of_infinite_isRoot Q ?_
-  refine (Set.finite_singleton (0 : ℂ)).infinite_compl.mono fun x hx => ?_
-  have hx' : x ≠ 0 := hx
-  have := h (-(Complex.log x / (Real.log q : ℝ)))
-  rw [cpow_eq hq] at this
-  have e : ((-Real.log q : ℝ) : ℂ) * (-(Complex.log x / (Real.log q : ℝ)) + 0) = Complex.log x := by
-    rw [Complex.ofReal_neg]
-    field_simp
-    ring
-  rw [e, Complex.exp_log hx'] at this
-  exact this
-
 private lemma poly_fun_ne {β : ℂ[X]} (h : β ≠ 0) : (fun s : ℂ => β.eval s) ≠ 0 := fun h0 =>
   h (Polynomial.funext fun s => by simpa using congrFun h0 s)
 
@@ -138,7 +80,12 @@ theorem crossGOf : CrossGOf := by
     simp only [cpow_eq hq]
     exact hpe Q _ 0
   have nP : ∀ Q : ℂ[X], Q.eval 0 ≠ 0 → (fun s : ℂ => Q.eval ((q : ℂ) ^ (-s))) ≠ 0 := fun Q hQ h =>
-    hQ (by rw [poly_zero hq Q fun s => congrFun h s]; simp)
+    hQ (by
+      rw [Polynomial.eq_zero_of_infinite_isRoot Q
+        (Set.infinite_of_injective_forall_mem
+          (Complex.ofReal_injective.comp (pow_right_strictMono₀ hq).injective)
+          fun n : ℕ => by
+            simpa [Complex.cpow_natCast] using congrFun h (-(n : ℂ))), eval_zero])
   have hR : (fun s => k₁ * β'.eval s * W₀ s * Z₁ s - k₀ * β.eval s * W₁ s * Z₀ s) = 0 := by
     refine zero_of_right ?_ (max c₀ c₁) fun s hs => ?_
     · have := β.differentiable
@@ -221,7 +168,12 @@ theorem crossGOf : CrossGOf := by
     have h2 := congrArg (Polynomial.eval s) huv
     simp only [hU, hV, eval_mul, eval_C, eval_sub, Pi.zero_apply] at h1 h2 ⊢
     linear_combination u * h1 - (a * R.eval ((q : ℂ) ^ (-s))) * h2
-  have hK' := poly_zero hq _ fun s => congrFun hK s
+  have hK' : C v * (C a * R) - C u * (C b * R') = 0 :=
+    Polynomial.eq_zero_of_infinite_isRoot _
+      (Set.infinite_of_injective_forall_mem
+        (Complex.ofReal_injective.comp (pow_right_strictMono₀ hq).injective)
+        fun n : ℕ => by
+          simpa [Complex.cpow_natCast] using congrFun hK (-(n : ℂ)))
   refine hsec q hq P P' (u * b / (v * a)) P1 P'1 ?_
   have hva : (C (v * a) : ℂ[X]) ≠ 0 := C_ne_zero.mpr (mul_ne_zero v0 a0)
   change R = C _ * R'

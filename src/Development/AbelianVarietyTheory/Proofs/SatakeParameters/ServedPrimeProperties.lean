@@ -7,8 +7,6 @@ import Formalism.SharpRestriction.GrowthBounds.FormalGroupSystem
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.TwU.Served
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.G Formalism.MainNotions.FormalGroupSystem Formalism.FrobeniusOrbits GlobalTheory.TwU Classical NumberField

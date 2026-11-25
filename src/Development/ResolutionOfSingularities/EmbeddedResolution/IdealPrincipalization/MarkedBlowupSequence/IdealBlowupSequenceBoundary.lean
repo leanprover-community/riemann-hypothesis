@@ -13,8 +13,6 @@ universe u
 
 open CategoryTheory AlgebraicGeometry TopologicalSpace
 
-noncomputable section
-
 namespace FunctorialResolution.EmbeddedResolution
 
 theorem inStrictNormalCrossingPositionAt_comap_iso {X X₀ : Scheme.{u}} {k : Type u} [Field k]
@@ -138,5 +136,3 @@ theorem inStrictNormalCrossingPosition_boundary_of_isNoetherian [AlgebraicGeomet
 end IdealBlowupSequence
 
 end FunctorialResolution.EmbeddedResolution
-
-end

@@ -601,22 +601,9 @@ theorem exists_compactOpen_psiN_trivial {ψ₀ : AddChar F ℂ} (hψ : Continuou
   let V : Set (Iwasawa.unipotent F n) :=
     ⋂ i : Fin n, ⋂ j : Fin n, {u | ((u : GL (Fin n) F) : Matrix (Fin n) (Fin n) F) i j ∈ A ∨
       j.val ≠ i.val + 1}
-  have hVo : IsOpen V := by
-    refine isOpen_iInter_of_finite fun i => isOpen_iInter_of_finite fun j => ?_
-    by_cases hij : j.val = i.val + 1
-    · have : {u : Iwasawa.unipotent F n | ((u : GL (Fin n) F) : Matrix (Fin n) (Fin n) F) i j ∈ A ∨
-          j.val ≠ i.val + 1} = (fun u : Iwasawa.unipotent F n =>
-            ((u : GL (Fin n) F) : Matrix (Fin n) (Fin n) F) i j) ⁻¹' (A : Set F) := by
-        ext u
-        simp [hij]
-      rw [this]
-      exact hAo.preimage ((GLnLocal.continuous_entry F n i j).comp continuous_subtype_val)
-    · have : {u : Iwasawa.unipotent F n | ((u : GL (Fin n) F) : Matrix (Fin n) (Fin n) F) i j ∈ A ∨
-          j.val ≠ i.val + 1} = Set.univ := by
-        ext u
-        simp [hij]
-      rw [this]
-      exact isOpen_univ
+  have hVo : IsOpen V := isOpen_iInter_of_finite fun i => isOpen_iInter_of_finite fun j =>
+    (hAo.preimage ((GLnLocal.continuous_entry F n i j).comp continuous_subtype_val)).union
+      isOpen_const
   have h1V : (1 : Iwasawa.unipotent F n) ∈ V := by
     simp only [V, Set.mem_iInter, Set.mem_ofPred_eq]
     intro i j

@@ -260,8 +260,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.G
 
 namespace GlobalTheory
 
-
-
 theorem dRel_pull : ∀ (R R' : Type) [CommRing R] [CommRing R'] (X X' : Scheme.{0}) (s : X ⟶ Sp R) (s' : X' ⟶ Sp R') (σ : R →+* R') (φ : X' ⟶ X) (h : φ ≫ s = s' ≫ spMap σ) (x : HO1 s) (n : ℕ) (y : Fin n → HO1 s) (w : Fin n → GlobForm s), DRel (OAff s) x y w → DRel (OAff s') (pullHO1 h x) (fun k ↦ pullHO1 h (y k)) (fun k ↦ GlobalTheory.CechDR.pullForm h (w k)) := by
   intro R R' _ _ X X' s s' σ φ h x n y w hx
   obtain ⟨f, g, ω, hf, hg, hD⟩ := hx
@@ -428,7 +426,7 @@ theorem exists_obRel_of_dRel : ∀ (R : Type) [CommRing R] (C : Type) [Category.
       dOne R (F.obj T') (ω' T') = pOm F 2 φ (dOne R (F.obj T) (ω' T)) := by
     intro T T' φ
     rw [hconn φ, map_add (f := _), dOne_D, add_zero, pOm_dOne]
-  obtain ⟨m, u, v, hζ⟩ := GlobalTheory.T.globalTwoForm_eq_sumWedgeGlobalOneForms R C F ⟨N, ⟨Φ⟩⟩ h0 (fun T ↦ dOne R (F.obj T) (ω' T)) hglob
+  obtain ⟨m, u, v, hζ⟩ := GlobalTheory.AbCoh.twoForm_eq_wsum R C F ⟨N, ⟨Φ⟩⟩ h0 (fun T ↦ dOne R (F.obj T) (ω' T)) hglob
   exact ⟨m, u, v, f, ω', hf, hconn, fun T ↦ congrFun hζ T⟩
 
 end GlobalTheory.AbCoh

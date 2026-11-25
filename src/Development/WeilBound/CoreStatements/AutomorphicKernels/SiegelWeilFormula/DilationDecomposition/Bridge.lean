@@ -67,80 +67,10 @@ theorem lowU_inG (t : ℝ) : InG (lowU t : M2 n) := by
 def lowG (t : ℝ) : GR n :=
   ⟨⟨lowU t, lowU (-t), by simp [lowU_mul, lowU_zero], by simp [lowU_mul, lowU_zero]⟩, lowU_inG t⟩
 
-theorem lowG_zero : (lowG 0 : GR n) = 1 :=
-  Subtype.ext (Units.ext lowU_zero)
-
-theorem continuous_lowU : Continuous (lowU : ℝ → M2 n) := by
-  unfold lowU
-  exact Continuous.matrix_fromBlocks continuous_const continuous_const
-    (Complex.continuous_ofReal.smul continuous_const) continuous_const
-
-theorem continuous_lowG : Continuous (lowG : ℝ → GR n) := by
-  have h : Continuous (fun t : ℝ => ((lowG t : GR n) : GL (Fin n ⊕ Fin n) ℂ)) :=
-    Units.continuous_iff.2 ⟨(continuous_lowU : Continuous (lowU : ℝ → M2 n)),
-      ((continuous_lowU : Continuous (lowU : ℝ → M2 n)).comp continuous_neg)⟩
-  exact h.subtype_mk _
-
 theorem JJ_mul_JJ : JJ n * JJ n = -1 := PositivityTheory.Rg.Sw.AbsSt.DF.JJ_mul_self
-
-theorem mul_JJ_mul_conj {M : M2 n} (h : InG M) : M * JJ n * Mᴴ = JJ n := by
-  apply _root_.PositivityTheory.Rg.Sw.AbsSt.IwaPf.inG_rows <;> assumption
-
-theorem lower_symm {A B C D : Matrix (Fin n) (Fin n) ℂ} (h : InG (fromBlocks A B C D)) :
-    C * Dᴴ = D * Cᴴ := by
-  have := congrArg toBlocks₂₂ (mul_JJ_mul_conj h)
-  simp [JJ, fromBlocks_multiply, fromBlocks_conjTranspose] at this
-  exact (neg_add_eq_zero.1 this).symm
-
-theorem det_lower_I_ne (y : GR n) :
-    ((mR y).toBlocks₂₁ + Complex.I • (mR y).toBlocks₂₂).det ≠ 0 := by
-  set C := (mR y).toBlocks₂₁ with hC
-  set D := (mR y).toBlocks₂₂ with hD
-  have hM : InG (fromBlocks (mR y).toBlocks₁₁ (mR y).toBlocks₁₂ C D) := by
-    rw [hC, hD, fromBlocks_toBlocks]; exact y.2
-  have hs : C * Dᴴ = D * Cᴴ := lower_symm hM
-  intro h0
-  obtain ⟨v, hv, hvE⟩ := Matrix.exists_vecMul_eq_zero_iff.2 h0
-  have hEE : (C + Complex.I • D) * (C + Complex.I • D)ᴴ = fromCols C D * (fromCols C D)ᴴ := by
-    rw [conjTranspose_fromCols_eq_fromRows_conjTranspose, fromCols_mul_fromRows]
-    simp only [conjTranspose_add, conjTranspose_smul, Matrix.add_mul, Matrix.mul_add,
-      Matrix.smul_mul, Matrix.mul_smul, hs, Complex.star_def, Complex.conj_I]
-    simp
-    abel_nf
-    simp [smul_smul]
-  have hL : v ᵥ* fromCols C D = 0 := by
-    rw [← Matrix.vecMul_self_mul_conjTranspose_eq_zero, ← hEE, ← Matrix.vecMul_vecMul, hvE,
-      Matrix.zero_vecMul]
-  have hw : (Sum.elim (0 : Fin n → ℂ) v) ᵥ* mR y = 0 := by
-    funext j
-    have := congrFun hL j
-    rcases j with j | j <;>
-      simpa [vecMul, dotProduct, Fintype.sum_sum_type, C, D, toBlocks₂₁, toBlocks₂₂] using this
-  have hdet : (mR y).det ≠ 0 := Matrix.GeneralLinearGroup.det_ne_zero y.1
-  have := Matrix.eq_zero_of_vecMul_eq_zero hdet hw
-  apply hv
-  funext i
-  simpa using congrFun this (Sum.inr i)
 
 def detPoly (C D : Matrix (Fin n) (Fin n) ℂ) : Polynomial ℂ :=
   (C.map Polynomial.C + (Polynomial.X : Polynomial ℂ) • D.map Polynomial.C).det
-
-theorem eval_detPoly (C D : Matrix (Fin n) (Fin n) ℂ) (z : ℂ) :
-    (detPoly C D).eval z = (C + z • D).det := by
-  have := (Polynomial.evalRingHom z).map_det
-    (C.map Polynomial.C + (Polynomial.X : Polynomial ℂ) • D.map Polynomial.C)
-  rw [detPoly, ← Polynomial.coe_evalRingHom, this]
-  congr 1
-  ext i j
-  simp
-  ring
-
-theorem lower_mul_lowG (y : GR n) (t : ℝ) :
-    (mR (y * lowG t)).toBlocks₂₁ = (mR y).toBlocks₂₁ + (t : ℂ) • (mR y).toBlocks₂₂ := by
-  have h : mR (y * lowG t) = mR y * lowU t := rfl
-  rw [h]
-  conv_lhs => rw [← fromBlocks_toBlocks (mR y)]
-  simp [lowU, fromBlocks_multiply]
 
 theorem dense_bigCell : ∀ n : ℕ, Dense {y : GR n | ((mR y).toBlocks₂₁).det ≠ 0} := by
   apply _root_.PositivityTheory.Rg.Sw.AbsSt.DF.dense_cell <;> assumption

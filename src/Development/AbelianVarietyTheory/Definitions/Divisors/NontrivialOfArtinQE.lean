@@ -4,7 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.Divisors.HxiTZeroComb
 
 @[expose] public section
 
-noncomputable section
 namespace GlobalTheory.KS
 namespace Model
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj

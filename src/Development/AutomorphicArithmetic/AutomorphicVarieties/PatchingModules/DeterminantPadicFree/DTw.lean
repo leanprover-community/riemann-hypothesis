@@ -120,22 +120,6 @@ section -- clump:auto
 
 open Matrix IsLocalRing UpperTheory.V.Alg UpperTheory.V.W UpperTheory.V.Pa
 
-private theorem exists_factor {F A M : Type} [Field F] [AddCommGroup A] [Module F A] [AddCommGroup M] [Module F M]
-    (T S : A →ₗ[F] M) (h : LinearMap.ker T ≤ LinearMap.ker S) : ∃ d : M →ₗ[F] M, ∀ c, d (T c) = S c := by
-  let S' : LinearMap.range T →ₗ[F] M :=
-    ((LinearMap.ker T).liftQ S h).comp T.quotKerEquivRange.symm.toLinearMap
-  obtain ⟨d, hd⟩ := LinearMap.exists_extend S'
-  refine ⟨d, fun c => ?_⟩
-  have h1 : d (T c) = S' ⟨T c, LinearMap.mem_range_self T c⟩ := by
-    rw [← hd]
-    rfl
-  have h2 : T.quotKerEquivRange.symm ⟨T c, LinearMap.mem_range_self T c⟩ = Submodule.Quotient.mk c := by
-    rw [LinearEquiv.symm_apply_eq]
-    apply Subtype.ext
-    rw [LinearMap.quotKerEquivRange_apply_mk]
-  rw [h1]
-  simp only [S', LinearMap.comp_apply, LinearEquiv.coe_coe, h2, Submodule.liftQ_apply]
-
 theorem UpperTheory.V.Pa.Det.der :
     ∀ {F G : Type} [Field F] [Group G] {n : ℕ} (D : DetFr F G n) (z : G → Matrix (Fin n) (Fin n) F), TwCoc (fun _ => 1) D.r D.G' z → (∀ i j, D.KillsRel z i j) → ∃ Y, ∀ g ∈ D.G', z g = dTw (fun _ => 1) D.r Y g := by
   intro F G _ _ n D z hz hk
@@ -152,11 +136,16 @@ theorem UpperTheory.V.Pa.Det.der :
       (Finsupp.mem_supported F _).1 c.2 hg
     have := hk i j (c : G →₀ F) hsupp (by simpa [T, Finsupp.linearCombination_apply] using hc)
     simpa [S, Finsupp.linearCombination_apply] using this
-  obtain ⟨d, hd⟩ := exists_factor T S hTS
-  have hdr : ∀ g ∈ D.G', d (D.r g) = z g * D.r g := by
-    intro g hg
-    have := hd ⟨Finsupp.single g 1, Finsupp.single_mem_supported F 1 hg⟩
-    simpa [T, S] using this
+  let S' : LinearMap.range T →ₗ[F] Matrix (Fin n) (Fin n) F :=
+    ((LinearMap.ker T).liftQ S hTS).comp T.quotKerEquivRange.symm.toLinearMap
+  obtain ⟨d, hd⟩ := LinearMap.exists_extend S'
+  have hdr : ∀ g ∈ D.G', d (D.r g) = z g * D.r g := fun g hg => by
+    let c : A := ⟨Finsupp.single g 1, Finsupp.single_mem_supported F 1 hg⟩
+    have h1 := LinearMap.congr_fun hd ⟨T c, LinearMap.mem_range_self T c⟩
+    simp only [LinearMap.comp_apply, Submodule.subtype_apply, S', LinearEquiv.coe_coe,
+      LinearMap.quotKerEquivRange_symm_apply_image, Submodule.mkQ_apply,
+      Submodule.liftQ_apply] at h1
+    simpa [T, S, c] using h1
   have hr1 : ∀ g, D.r g⁻¹ * D.r g = 1 := fun g => by
     rw [← map_mul, inv_mul_cancel, map_one]
   have hgen : ∀ g ∈ D.G', ∀ h ∈ D.G',

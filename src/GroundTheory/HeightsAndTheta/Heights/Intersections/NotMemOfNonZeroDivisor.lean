@@ -78,16 +78,10 @@ theorem evalQ_mk {P : Ideal (MRing ι)} {t : (Σ k, ι k) → ℂ} (ht : t ∈ m
 theorem isUnit_evalQ {P : Ideal (MRing ι)} {t : (Σ k, ι k) → ℂ} (ht : t ∈ mcPts P)
     (hne : ∀ (v : MRing ι) (a : K → ℕ), IsMultiHomog v a → v ∉ P → eval t (map (Int.castRingHom ℂ) v) ≠ 0)
     (y : formSub P) : IsUnit (evalQ P t ht y) := by
-  obtain ⟨y, hy⟩ := y
-  induction hy using Submonoid.closure_induction with
-  | mem x hx =>
-    obtain ⟨v, a, hva, hvP, rfl⟩ := hx
-    rw [evalQ_mk]
-    exact isUnit_iff_ne_zero.mpr (hne v a hva hvP)
-  | one => simp
-  | mul x y _ _ hx hy =>
-    rw [map_mul]
-    exact hx.mul hy
+  refine (Submonoid.closure_le
+    (S := (IsUnit.submonoid ℂ).comap (evalQ P t ht).toMonoidHom)).2 ?_ y.2
+  rintro _ ⟨v, a, hva, hvP, rfl⟩
+  exact isUnit_iff_ne_zero.mpr (by simpa [evalQ_mk] using hne v a hva hvP)
 
 def sigmaAt (P : Ideal (MRing ι)) [P.IsPrime] (t : (Σ k, ι k) → ℂ) (ht : t ∈ mcPts P)
     (hne : ∀ (v : MRing ι) (a : K → ℕ), IsMultiHomog v a → v ∉ P → eval t (map (Int.castRingHom ℂ) v) ≠ 0) :

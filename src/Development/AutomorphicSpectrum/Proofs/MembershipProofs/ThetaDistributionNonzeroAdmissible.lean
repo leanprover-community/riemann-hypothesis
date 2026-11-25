@@ -37,11 +37,7 @@ theorem iteratedDeriv_exp_I (n : ℕ) :
 
 open Complex in
 theorem temperate_exp_I : (fun t : ℝ => exp (I * t)).HasTemperateGrowth := by
-  refine ⟨Complex.contDiff_exp.comp (contDiff_const.mul Complex.ofRealCLM.contDiff),
-    fun n => ⟨0, 1, fun t => ?_⟩⟩
-  rw [norm_iteratedFDeriv_eq_norm_iteratedDeriv, iteratedDeriv_exp_I, norm_mul, norm_pow,
-    Complex.norm_I, one_pow, one_mul, Complex.norm_exp_I_mul_ofReal]
-  simp
+  simpa only [mul_comm I] using Complex.hasTemperateGrowth_exp_mul_I
 
 theorem temperate_char {V : Type} [NormedAddCommGroup V] [NormedSpace ℝ V] (g : V → ℂ) (hc : Continuous g)
     (hn : ∀ t, ‖g t‖ = 1) (h0 : g 0 = 1) (hadd : ∀ s t, g (s + t) = g s * g t) : g.HasTemperateGrowth := by

@@ -13,18 +13,10 @@ open scoped MatrixGroups Real ComplexConjugate Manifold ModularForm
 
 namespace GlobalTheory.EisM
 
-lemma summable_norm_qterm_of_polyB (a : ℕ → ℂ) (ha : PolyB a) (τ : ℍ) :
-    Summable fun n : ℕ => ‖a n * cexp (2 * π * Complex.I * n * τ)‖ := by
-  apply GlobalTheory.EisM.Lin.summ_norm <;> assumption
-
-end GlobalTheory.EisM
-
-namespace GlobalTheory.EisM
-
 lemma qs_sub_eq_const (a b : ℕ → ℂ) (ha : PolyB a) (hb : PolyB b) (hab : ∀ n, n ≠ 0 → a n = b n) (τ : ℍ) :
     qs a τ - qs b τ = a 0 - b 0 := by
   unfold qs
-  rw [← (summable_norm_qterm_of_polyB a ha τ).of_norm.tsum_sub (summable_norm_qterm_of_polyB b hb τ).of_norm]
+  rw [← (GlobalTheory.EisM.Lin.summ_norm a ha τ).of_norm.tsum_sub (GlobalTheory.EisM.Lin.summ_norm b hb τ).of_norm]
   rw [tsum_eq_single 0]
   · simp
   · intro n hn

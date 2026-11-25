@@ -140,11 +140,9 @@ theorem transfer {X Y : Type*} [MeasurableSpace X] [MeasurableSpace Y] {m : Meas
     (hu : Measurable u) (hv : Measurable v)
     (h : ∀ φ : ℂ → ℝ≥0∞, Measurable φ → ∫⁻ x, φ (u x) ∂m = ∫⁻ y, φ (v y) ∂n) :
     (Integrable u m ↔ Integrable v n) ∧ ∫ x, u x ∂m = ∫ y, v y ∂n := by
-  have e : m.map u = n.map v := by
-    ext s hs
-    rw [← lintegral_indicator_one hs, ← lintegral_indicator_one hs, lintegral_map (measurable_one.indicator hs) hu,
-      lintegral_map (measurable_one.indicator hs) hv]
-    exact h _ (measurable_one.indicator hs)
+  have e : m.map u = n.map v := Measure.ext_of_lintegral _ fun φ hφ => by
+    rw [lintegral_map hφ hu, lintegral_map hφ hv]
+    exact h φ hφ
   constructor
   · have h1 := integrable_map_measure (μ := m) (f := u) (g := id) aestronglyMeasurable_id hu.aemeasurable
     have h2 := integrable_map_measure (μ := n) (f := v) (g := id) aestronglyMeasurable_id hv.aemeasurable

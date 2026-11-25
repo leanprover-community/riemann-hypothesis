@@ -4,7 +4,6 @@ public import Development.EtaleCohomology.EtaleSheaves.PartDiagCut
 
 @[expose] public section
 
-noncomputable section
 open LateralTheory.E.PartDiagCut
 
 namespace LateralTheory.E.PartAPf

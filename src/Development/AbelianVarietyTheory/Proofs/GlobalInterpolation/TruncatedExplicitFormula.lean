@@ -264,11 +264,6 @@ private theorem half_le_norm_sub_of_re_eq_neg_half_of_LFunction_eq_zero {N : ℕ
   · rw [abs_of_neg (by linarith)]; linarith
 
 open Complex DirichletCharacter ArithmeticFunction MeasureTheory Filter Topology in
-private theorem LFunction_ne_zero_of_re_eq_neg_half {N : ℕ} [NeZero N]
-    (χ : DirichletCharacter ℂ N) {s : ℂ} (hs : s.re = -(1 / 2)) : LFunction χ s ≠ 0 :=
-  GlobalTheory.LFunction_ne_zero_of_re_eq_neg_half χ hs
-
-open Complex DirichletCharacter ArithmeticFunction MeasureTheory Filter Topology in
 private theorem norm_finsum_div_sub_le_two_mul_finsum_of_half_le_dist {S : Set ℂ} (hS : S.Finite) (k : ℂ → ℕ) (s : ℂ)
     (hd : ∀ w ∈ S, 1 / 2 ≤ ‖s - w‖) :
     ‖∑ᶠ (w : ℂ) (_ : w ∈ S), (k w : ℂ) / (s - w)‖ ≤ 2 * ∑ᶠ (w : ℂ) (_ : w ∈ S), (k w : ℝ) := by
@@ -460,7 +455,6 @@ private theorem norm_neg_add_inv_two_pi_mul_add_I_mul_sub_le (H₁ H₂ W E : �
   rw [norm_neg, norm_mul]
   have := mul_le_mul h1 h2 (norm_nonneg _) zero_le_one
   linarith
-
 
 open Complex DirichletCharacter ArithmeticFunction MeasureTheory Filter Topology in
 

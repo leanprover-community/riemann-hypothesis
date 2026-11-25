@@ -255,16 +255,6 @@ private theorem monomialRed_lemma_2 {K G : Type} [Field K] [Group G] {n : ℕ}
     · simp [hil]
   rw [h, Matrix.charpoly_diagonal]
 
-private theorem roots_prod_X_sub_C_fin_eq_map_univ {F : Type} [Field F] {n : ℕ} (f : Fin n → F) :
-    (∏ i, (X - C (f i))).roots = Finset.univ.val.map f := by
-  rw [Finset.prod_eq_multiset_prod]
-  have h : (Finset.univ.val.map fun i => X - C (f i)) =
-      (Finset.univ.val.map f).map (fun a => X - C a) := by
-    rw [Multiset.map_map]
-    rfl
-  rw [h, Polynomial.roots_multiset_prod_X_sub_C]
-
-
 theorem UpperTheory.V.AlgebraTools.monomialRed :
     ∀ (K k B G : Type) [Field K] [IsAlgClosed K] [Field k] [CommRing B] [Group G] (n : ℕ) (r : G →* Matrix (Fin n) (Fin n) K)
       (j : B →+* K) (φ : B →+* k) (χ : Fin n → G →* kˣ), Function.Injective j →
@@ -309,7 +299,11 @@ theorem UpperTheory.V.AlgebraTools.monomialRed :
       rw [Polynomial.map_map, Polynomial.map_map, hρj]
     rw [hq, hp2, Polynomial.map_prod, Polynomial.map_prod] at h1
     simp only [Polynomial.map_sub, Polynomial.map_X, Polynomial.map_C] at h1
-    rw [← roots_prod_X_sub_C_fin_eq_map_univ, ← roots_prod_X_sub_C_fin_eq_map_univ, h1]
+    have h2 := congrArg Polynomial.roots h1
+    simp only [Polynomial.roots_prod _ _
+      (Finset.prod_ne_zero_iff.2 fun _ _ => Polynomial.X_sub_C_ne_zero _),
+      Polynomial.roots_X_sub_C, Multiset.bind_singleton] at h2
+    exact h2
   have hg' : g⁻¹ ∈ π.ker := π.ker.inv_mem hg
   have hpair : ∀ l, e g l * e g⁻¹ l = 1 := by
     intro l

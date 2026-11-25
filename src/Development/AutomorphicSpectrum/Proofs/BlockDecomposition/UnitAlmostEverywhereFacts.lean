@@ -28,7 +28,7 @@ theorem eventually_one (hU : Unr E) (n : ℕ) (δ : GL (Fin n) E)
         ∃ t ∈ twCent (thL n w) (locEl n w δ), t⁻¹ * g ∈ GlobalTheory.LFun.KGL w (n := n)) ∧
       ∀ t ∈ twCent (thL n w) (locEl n w δ),
         IsCompact (closure (Subgroup.zpowers t : Set (GLw n w))) → t ∈ GlobalTheory.LFun.KGL w (n := n) := by
-  filter_upwards [GlobalTheory.T.eventually_bezout_separable_derivative_adicIntegers E _ hP, GlobalTheory.BCT.GoodInt.eventually_mem_KGL δ,
+  filter_upwards [GlobalTheory.BCT.SepBezout.bezout_eventually E _ hP, GlobalTheory.BCT.GoodInt.eventually_mem_KGL δ,
     GlobalTheory.BCT.GoodInt.eventually_mem_KGL (δ * thE E n δ)] with w hgood hd hN
   obtain ⟨-, hinv, hKθ, -, -, -, -, -, hchar, -⟩ := GlobalTheory.BCT.ThBasic.twist_basic E hU n w
   have hy : locEl n w δ ∈ GlobalTheory.LFun.KGL w (n := n) := by
@@ -53,11 +53,11 @@ theorem eventually_one (hU : Unr E) (n : ℕ) (δ : GL (Fin n) E)
       have hn1 : nrmL n w (locEl n w δ) = locEl n w δ := by unfold nrmL; rw [ite_eq_left hs]
       rw [hn1] at hgood'
       rw [hθ1] at hg ⊢
-      obtain ⟨t, ht, k, hk, rfl⟩ := GlobalTheory.T.integral_conj_etale_mem_centralizer_mul_integralGL E n w _ g hy hgood' hg
+      obtain ⟨t, ht, k, hk, rfl⟩ := GlobalTheory.SplitUniq.splitUniq E n w _ g hy hgood' hg
       exact ⟨t, ht, by simpa using hk⟩
-    · obtain ⟨t, ht, k, hk, rfl⟩ := GlobalTheory.T.inert_integral_twistedConjugates_twistedCentralizer_mul_maxCompact E hU n w hs _ g hy hgood' hg
+    · obtain ⟨t, ht, k, hk, rfl⟩ := GlobalTheory.InertUniq.eq_twCent_mul_KGL E hU n w hs _ g hy hgood' hg
       exact ⟨t, ht, by simpa using hk⟩
-  · refine GlobalTheory.T.mem_maxCompactGL_of_commute_etale_charpoly_bounded E n w (nrmL n w (locEl n w δ)) t hNK hgood' ?_ hc
+  · refine GlobalTheory.StabInt.mem_KGL_of_commute E n w (nrmL n w (locEl n w δ)) t hNK hgood' ?_ hc
     have ht' : t * locEl n w δ = locEl n w δ * thL n w t := ht
     by_cases hs : IsSplitAt w
     · have hθ1 : thL n w = MonoidHom.id _ := by unfold thL; rw [ite_eq_left hs]

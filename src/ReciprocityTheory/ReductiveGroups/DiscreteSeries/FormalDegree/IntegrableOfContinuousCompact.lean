@@ -273,12 +273,8 @@ theorem lemma6c {ε : Fin n → Bool} {lam : Fin n → ℝ} {H : Type*} [NormedA
   · rw [ENNReal.ofReal_of_nonpos (by rw [one_div]; exact inv_nonpos.mpr hd0)]
     exact zero_le
   have := (dk_props ε).1
-  have hD : (0:ℝ) < Module.finrank ℂ T.V := by
-    have : Nontrivial T.V := ⟨⟨T.w, 0, fun h => by
-      have h2 := T.w_norm
-      rw [h, norm_zero] at h2
-      exact zero_ne_one h2⟩⟩
-    exact_mod_cast Module.finrank_pos
+  have hD : (0:ℝ) < Module.finrank ℂ T.V := Nat.cast_pos.2 <|
+    Module.finrank_pos_iff_exists_ne_zero.2 ⟨T.w, norm_ne_zero_iff.1 (by rw [T.w_norm]; exact one_ne_zero)⟩
   have hD' : (Module.finrank ℂ T.V : ℝ) ≠ 0 := hD.ne'
   have hd' : d ≠ 0 := hd0.ne'
   have hc : 0 ≤ cPQ ε := by unfold cPQ; positivity

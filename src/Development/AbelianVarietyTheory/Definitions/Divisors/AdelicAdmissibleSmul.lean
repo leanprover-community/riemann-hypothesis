@@ -4,8 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.Divisors.HilbertNinet
 
 @[expose] public section
 
-noncomputable section
-
 open MeasureTheory Matrix ValuativeRel NumberField
 open scoped NNReal Topology
 
@@ -33,4 +31,3 @@ end Alg
 
 
 end GlobalTheory.WeilM.SiegelModel
-end

@@ -24,19 +24,7 @@ variable {n : ℕ} (ε : Fin n → Bool)
 theorem exists_dualVec {ι : Type} [Fintype ι] [DecidableEq ι] (u : ι → Fin n → ℂ) (hu : LinearIndependent ℂ u)
     (t : ι → ℂ) : ∃ v, ∀ i, hJ ε (u i) v = t i := by
   let A : Matrix (Fin n) ι ℂ := Matrix.of fun p i => u i p
-  have hA : ∀ c : ι → ℂ, A *ᵥ c = ∑ i, c i • u i := by
-    intro c
-    ext p
-    simp only [A, Matrix.mulVec, dotProduct, Matrix.of_apply, Finset.sum_apply, Pi.smul_apply, smul_eq_mul]
-    exact Finset.sum_congr rfl fun i _ => mul_comm _ _
-  have hinj : Function.Injective A.mulVec := by
-    intro c d hcd
-    have h0 : ∑ i, (c - d) i • u i = 0 := by
-      simp only [Pi.sub_apply, sub_smul, Finset.sum_sub_distrib]
-      rw [← hA, ← hA]
-      exact sub_eq_zero.2 hcd
-    funext i
-    exact sub_eq_zero.1 (Fintype.linearIndependent_iff.1 hu _ h0 i)
+  have hinj : Function.Injective A.mulVec := Matrix.mulVec_injective_iff.2 hu
   have hpd := Matrix.PosDef.conjTranspose_mul_self A hinj
   have hdet : IsUnit (Aᴴ * A).det := (Matrix.isUnit_iff_isUnit_det _).1 hpd.isUnit
   refine ⟨Formalism.REAL.Jm ε *ᵥ (A *ᵥ ((Aᴴ * A)⁻¹ *ᵥ t)), fun i => ?_⟩

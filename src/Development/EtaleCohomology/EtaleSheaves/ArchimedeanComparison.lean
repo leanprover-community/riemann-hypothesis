@@ -274,10 +274,7 @@ theorem fp_le (X : CommRingCat.{0}) : FP X ≤ isCardinalPresentable (Under X) (
   have h := CommRingCat.isFinitelyPresentable_under X S hS
   exact h
 
-def FPColim : Prop := ∀ (X : CommRingCat.{0}) (S : Under X),
-  ∃ (J : Type) (_ : SmallCategory J) (_ : IsFiltered J), (FP X).colimitsOfShape J S
-
-theorem UnderFA_of (hC : FPColim) : LateralTheory.E.IECompPf.UnderFA := by
+theorem UnderFA_of (hC : LateralTheory.E.FPColimPf.FPColim) : LateralTheory.E.IECompPf.UnderFA := by
   intro X
   have := fpSmall X
   have hg : (FP X).IsCardinalFilteredGenerator (ℵ₀ : Cardinal.{0}) :=

@@ -51,15 +51,12 @@ namespace GlobalTheory.SeeSaw.IdVOne
 
 variable {D : D7}
 
-def finIncl (D : D7) : Af D.host.F ⊗[D.host.F] D.host.E →ₗ[D.host.F] AE D :=
-  TensorProduct.map (LinearMap.inr D.host.F (Ainf D.host.F) (Af D.host.F)) LinearMap.id
-
 theorem finIncl_tmul (y : Af D.host.F) (x : D.host.E) :
-    finIncl D (y ⊗ₜ[D.host.F] x) = pairA D.host.F 0 y ⊗ₜ[D.host.F] x := rfl
+    GlobalTheory.FinPlLoc.finIn D (y ⊗ₜ[D.host.F] x) = pairA D.host.F 0 y ⊗ₜ[D.host.F] x := rfl
 
 theorem mul_eq_mul_finIncl (v : Pl D) (b : AE D) :
     algebraMap (AF D.host.F) (AE D) (GlobalTheory.SelfDualAt.cP (· = v)) * b =
-      algebraMap (AF D.host.F) (AE D) (GlobalTheory.SelfDualAt.cP (· = v)) * finIncl D (finPart D b) := by
+      algebraMap (AF D.host.F) (AE D) (GlobalTheory.SelfDualAt.cP (· = v)) * GlobalTheory.FinPlLoc.finIn D (finPart D b) := by
   induction b using TensorProduct.induction_on with
   | zero => simp
   | tmul x c =>
@@ -74,7 +71,7 @@ theorem mul_eq_mul_finIncl (v : Pl D) (b : AE D) :
   | add x y hx hy => rw [mul_add, hx, hy, RingHom.map_add (f := _), LinearMap.map_add (f := _), mul_add]
 
 theorem mul_finIncl_mem (v : Pl D) (t : Af D.host.F ⊗[D.host.F] D.host.E) (ht : t ∈ intAE D) :
-    algebraMap (AF D.host.F) (AE D) (GlobalTheory.SelfDualAt.cP (· = v)) * finIncl D t ∈ idV (1 : FI D) v := by
+    algebraMap (AF D.host.F) (AE D) (GlobalTheory.SelfDualAt.cP (· = v)) * GlobalTheory.FinPlLoc.finIn D t ∈ idV (1 : FI D) v := by
   induction ht using AddSubgroup.closure_induction with
   | mem y hy =>
     obtain ⟨α, hα, x, rfl⟩ := hy
@@ -102,7 +99,6 @@ theorem mul_finIncl_mem (v : Pl D) (t : Af D.host.F ⊗[D.host.F] D.host.E) (ht 
   | neg x _ h => rw [map_neg, mul_neg]; exact neg_mem h
 
 end GlobalTheory.SeeSaw.IdVOne
-
 
 open GlobalTheory.SeeSaw.IdVOne in
 theorem GlobalTheory.SeeSaw.idV_one_eq_intAt :

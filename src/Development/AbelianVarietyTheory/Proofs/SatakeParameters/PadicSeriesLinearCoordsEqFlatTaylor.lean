@@ -15,8 +15,6 @@ open Formalism.L2.Th1.GD (LocNorm InMul frameM thetaLin)
 open Formalism.L2.Th1.E (IntCurve curveL Unif)
 open Formalism.DworkPowerSeriesWeights (JetsIntegral)
 
-noncomputable section
-
 namespace GlobalTheory.FlatTaylorBridge
 
 open MvPowerSeries

@@ -7,8 +7,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal NumberField IsDedekindDomain Polynomial
 
-noncomputable section
-
 namespace GlobalTheory.MuBlock
 
 variable {R : Ranks} {H : Host R} {what₂ : Rows.Data R} (N : NData R H what₂) (A : NAut N)

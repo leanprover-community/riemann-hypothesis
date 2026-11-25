@@ -5,7 +5,6 @@ public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.Labe
 
 @[expose] public section
 
-noncomputable section
 namespace GlobalTheory.GLq.Model
 open Polynomial Formalism.CyclotomicNorms
 

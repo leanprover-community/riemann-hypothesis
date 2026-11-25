@@ -64,41 +64,16 @@ private theorem one_mem_of_coord_mem_span_singleton_of_ne {k : Type u} [Field k]
   obtain ⟨b, hb⟩ := Ideal.mem_span_singleton'.mp hm2
   have hne' : (ULift.up j₁ : ULift.{u} (Fin m)) ≠ ULift.up j₂ := fun hc =>
     hne (congrArg ULift.down hc)
-  classical
   let ι := ULift.{u} (Fin m)
-  have hc : IsBaseChange B (KaehlerDifferential.map k k (MvPolynomial ι k) B) :=
-    KaehlerDifferential.isBaseChange_of_formallyEtale k (MvPolynomial ι k) B
-  let basis : Module.Basis ι B (KaehlerDifferential k B) :=
-    (Algebra.TensorProduct.basis B (KaehlerDifferential.mvPolynomialBasis k ι)).map hc.equiv
-  have hbasis (i : ι) : basis i = KaehlerDifferential.D k B (EtaleCoordinates.coord k ι B i) := by
-    simp only [basis, Module.Basis.map_apply, Algebra.TensorProduct.basis_apply,
-      KaehlerDifferential.mvPolynomialBasis_apply, IsBaseChange.equiv_tmul, one_smul,
-      KaehlerDifferential.map_D]
-    rfl
-  let δ (i : ι) : Derivation k B B :=
-    ((Finsupp.lapply i).comp basis.repr.toLinearMap).compDer (KaehlerDifferential.D k B)
-  have hδ (i j : ι) : δ i (EtaleCoordinates.coord k ι B j) = if i = j then 1 else 0 := by
-    change basis.repr (KaehlerDifferential.D k B (EtaleCoordinates.coord k ι B j)) i = _
-    rw [← hbasis, Module.Basis.repr_self, Finsupp.single_apply]
-    exact if_congr eq_comm rfl rfl
   exact one_mem_of_mul_mem_of_dual_derivations I
     (EtaleCoordinates.coord k ι B (ULift.up j₁))
     (EtaleCoordinates.coord k ι B (ULift.up j₂)) h a b
-    (δ (ULift.up j₁)) (δ (ULift.up j₂)) hh ha.symm hb.symm
-    (by simp [hδ]) (by simp [hδ, hne']) (by simp [hδ, hne'.symm]) (by simp [hδ])
-
-private theorem ideal_eq_bot_of_opens_eq {X : Scheme.{u}} (D : X.IdealSheafData)
-    (W₁ W₂ : X.affineOpens) (hW : (W₁ : X.Opens) = (W₂ : X.Opens))
-    (h : D.ideal W₁ = ⊥) : D.ideal W₂ = ⊥ := by
-  obtain rfl : W₁ = W₂ := Subtype.ext hW
-  exact h
-
-private theorem exists_ideal_eq_span_singleton_of_opens_eq {X : Scheme.{u}} (D : X.IdealSheafData)
-    (W₁ W₂ : X.affineOpens) (hW : (W₁ : X.Opens) = (W₂ : X.Opens))
-    (h : ∃ f, D.ideal W₂ = Ideal.span ({f} : Set Γ(X, (W₂ : X.Opens)))) :
-    ∃ f, D.ideal W₁ = Ideal.span ({f} : Set Γ(X, (W₁ : X.Opens))) := by
-  obtain rfl : W₁ = W₂ := Subtype.ext hW
-  exact h
+    (EtaleCoordinates.partialDeriv k ι B (ULift.up j₁))
+    (EtaleCoordinates.partialDeriv k ι B (ULift.up j₂)) hh ha.symm hb.symm
+    (EtaleCoordinates.partialDeriv_coord_self k ι B _)
+    (EtaleCoordinates.partialDeriv_coord_of_ne k ι B _ _ hne')
+    (EtaleCoordinates.partialDeriv_coord_of_ne k ι B _ _ hne'.symm)
+    (EtaleCoordinates.partialDeriv_coord_self k ι B _)
 
 theorem exists_etaleChart_restrictIdeal_eq_coordIdeal_singleton {X : Scheme.{u}} {k : Type u} [Field k]
     [CharZero k] (p : X ⟶ Spec (CommRingCat.of k)) [AlgebraicGeometry.Smooth p]
@@ -126,42 +101,35 @@ theorem exists_etaleChart_restrictIdeal_eq_coordIdeal_singleton {X : Scheme.{u}}
   have hxg' : x ∈ X.basicOpen g' := hgg' ▸ hxg
   have hmap := D.map_ideal_basicOpen V g'
   rw [hVf, Ideal.map_span, Set.image_singleton] at hmap
+  have hW_eq : (⟨X.basicOpen g, hWaff⟩ : X.affineOpens) = X.affineBasicOpen g' :=
+    Subtype.ext hgg'
   have hSne : S.Nonempty := by
     rcases Finset.eq_empty_or_nonempty S with rfl | hne
     · exfalso
       have h0 : D.ideal ⟨X.basicOpen g, hWaff⟩ = ⊥ := by
         rw [hspan]; simp
-      have h0' : D.ideal (X.affineBasicOpen g') = ⊥ :=
-        ideal_eq_bot_of_opens_eq D ⟨X.basicOpen g, hWaff⟩ (X.affineBasicOpen g') hgg' h0
+      have h0' : D.ideal (X.affineBasicOpen g') = ⊥ := hW_eq ▸ h0
       have hfzero := Ideal.span_singleton_eq_bot.mp (hmap.trans h0')
       have instLoc' : IsLocalization.Away g' Γ(X, X.basicOpen g') :=
         V.2.isLocalization_basicOpen g'
       have hfa : algebraMap Γ(X, (V : X.Opens)) Γ(X, X.basicOpen g') f = 0 := hfzero
-      obtain ⟨cc, hcc⟩ :=
-        (IsLocalization.eq_iff_exists (Submonoid.powers g')
-          Γ(X, X.basicOpen g')).mp (show
-            algebraMap Γ(X, (V : X.Opens)) Γ(X, X.basicOpen g') f =
-              algebraMap Γ(X, (V : X.Opens)) Γ(X, X.basicOpen g') 0 by
-            rw [hfa, map_zero])
-      have hz : (cc : Γ(X, (V : X.Opens))) = 0 :=
-        (mem_nonZeroDivisors_iff.mp hfnzd).2 _ (by rw [hcc, mul_zero])
-      have hunit : IsUnit (algebraMap Γ(X, (V : X.Opens)) Γ(X, X.basicOpen g')
-          (cc : Γ(X, (V : X.Opens)))) :=
-        IsLocalization.map_units Γ(X, X.basicOpen g') cc
-      rw [hz, map_zero] at hunit
-      have h01 : (0 : Γ(X, X.basicOpen g')) = 1 := isUnit_zero_iff.mp hunit
-      have h10 : (0 : X.presheaf.stalk x) = 1 := by
-        have hq := congrArg (X.presheaf.germ (X.basicOpen g') x hxg').hom h01
-        rwa [map_zero, map_one] at hq
-      exact zero_ne_one h10
+      have hfnzd' : (0 : Γ(X, X.basicOpen g')) ∈ nonZeroDivisors Γ(X, X.basicOpen g') :=
+        hfa ▸ IsLocalization.nonZeroDivisors_le_comap (Submonoid.powers g')
+          Γ(X, X.basicOpen g') hfnzd
+      have h10 : (1 : Γ(X, X.basicOpen g')) = 0 :=
+        (mem_nonZeroDivisors_iff.mp hfnzd').1 1 (zero_mul 1)
+      have hq := congrArg (X.presheaf.germ (X.basicOpen g') x hxg').hom h10
+      rw [map_one, map_zero] at hq
+      exact one_ne_zero hq
     · exact hne
   have hcard1 : ∀ j₁ ∈ S, ∀ j₂ ∈ S, j₁ = j₂ := by
     intro j₁ hj₁ j₂ hj₂
     by_contra hne
     obtain ⟨h, hI⟩ : ∃ h, D.ideal ⟨X.basicOpen g, hWaff⟩ =
-        Ideal.span ({h} : Set Γ(X, X.basicOpen g)) :=
-      exists_ideal_eq_span_singleton_of_opens_eq D ⟨X.basicOpen g, hWaff⟩ (X.affineBasicOpen g') hgg'
-        ⟨_, hmap.symm⟩
+        Ideal.span ({h} : Set Γ(X, X.basicOpen g)) := by
+      have hsp : ∃ h, D.ideal (X.affineBasicOpen g') =
+          Ideal.span ({h} : Set Γ(X, (X.affineBasicOpen g' : X.Opens))) := ⟨_, hmap.symm⟩
+      rwa [← hW_eq] at hsp
     let instPB : Algebra (MvPolynomial (ULift.{u} (Fin m)) k) Γ(X, X.basicOpen g) :=
       (((X.presheaf.map (homOfLE (X.basicOpen_le g)).op).hom).comp c.coordRingHom).toAlgebra
     let instkB : Algebra k Γ(X, X.basicOpen g) :=
@@ -247,11 +215,7 @@ theorem inStrictNormalCrossingPosition_singleton_of_isSmoothDivisor {X : Scheme.
         rw [Scheme.IdealSheafData.support_comap]
         refine le_antisymm ?_ bot_le
         intro y hy
-        have h1 : U.ι.base y ∈ D.support := hy
-        have h2 : U.ι.base y ∈ (U : Set ↥X) := by
-          rw [← Scheme.Opens.range_ι U]
-          exact Set.mem_range_self y
-        exact absurd h1 (hUW h2)
+        exact absurd hy (hUW y.2)
       have htop : restrictIdeal D U = ⊤ := by
         rw [restrictIdeal_eq_comap_ι]
         exact (Scheme.IdealSheafData.support_eq_bot_iff _).mp hbot

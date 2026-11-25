@@ -6,8 +6,6 @@ public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.Inte
 
 @[expose] public section
 
-noncomputable section
-
 open Finset Matrix
 
 namespace CompanionTheory.RgFd

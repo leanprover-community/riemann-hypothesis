@@ -8,8 +8,6 @@ public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.NoMonodro
 open NumberField IsDedekindDomain ValuativeRel Polynomial Formalism.ConjugateSelfDual ReciprocityTheory.Gal
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.LocGL GlobalTheory.WeilDeligne GlobalTheory.LocLanglands
 
-noncomputable section
-
 namespace GlobalTheory.UnlinkedFirst
 
 theorem single_linked_single_nu {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]

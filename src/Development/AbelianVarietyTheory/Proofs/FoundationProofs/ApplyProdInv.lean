@@ -5,8 +5,6 @@ import Development.AbelianVarietyTheory.Definitions.Foundations.IsLocallyConstan
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.MainNotions.N GlobalTheory.GalOfCusp UpperTheory.V UpperTheory.V.Af UpperTheory.V.HV GlobalTheory.Ord2 GlobalTheory.KZ PowerSeries
 
 namespace GlobalTheory.KumUnit

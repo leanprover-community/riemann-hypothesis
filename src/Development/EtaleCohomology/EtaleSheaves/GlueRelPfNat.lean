@@ -7,7 +7,6 @@ import Development.EtaleCohomology.EtaleSheaves.H0TwistOverClosedField
 
 @[expose] public section
 
-noncomputable section
 open CategoryTheory Limits GlobalTheory.EtC CochainComplex.HomComplex CochainComplex AlgebraicGeometry LateralTheory.E.E4
 
 namespace LateralTheory.E.GlueRelPfNat

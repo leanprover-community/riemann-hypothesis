@@ -6,8 +6,6 @@ import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsIrreducibleIff
 
 @[expose] public section
 
-noncomputable section
-
 open ValuativeRel Matrix
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.LocGL
 

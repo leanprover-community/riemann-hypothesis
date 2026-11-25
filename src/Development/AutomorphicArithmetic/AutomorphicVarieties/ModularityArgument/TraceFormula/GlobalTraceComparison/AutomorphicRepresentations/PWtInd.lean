@@ -278,17 +278,6 @@ private theorem pair_integrable {D : Dom E n 0} {a b : GA E n → ℂ} (ha : Sla
   · have : χ (ldet x) = 1 := h1 (subset_tsupport _ h0)
     simp [this, mul_assoc]
 
-private theorem integral_u_shift (u : ℝ → ℂ) (r c : ℝ) (hc : 0 < c) :
-    ∫ s : ℝ, u (r + s * c) = (c : ℂ)⁻¹ * ∫ s, u s := by
-  have h := integral_affine u r c hc
-  have h2 := integral_neg_eq_self (fun s : ℝ => u (r - s * c)) volume
-  have e : (fun s : ℝ => u (r - -s * c)) = fun s => u (r + s * c) := by
-    funext s
-    congr 1
-    ring
-  simp only [e] at h2
-  rw [h2, h, Complex.real_smul, Complex.ofReal_inv]
-
 private theorem pair_wt (hn : 1 ≤ n) {D : Dom E n 0} {a b : GA E n → ℂ} (ha : Slab D a) (hb : Slab D b) {u w : ℝ → ℂ}
     (hu : Continuous u) (hs : HasCompactSupport u) (hw : Continuous w) (hws : HasCompactSupport w)
     (hw1 : ∫ s, w s = 1) : prW D u a b = (∫ s, u s) * prW D w a b := by
@@ -301,7 +290,10 @@ private theorem pair_wt (hn : 1 ≤ n) {D : Dom E n 0} {a b : GA E n → ℂ} (h
   have hin : ∀ x : H E n 0, w (ldet x) * ∫ s : ℝ, starRingEnd ℂ (a (x * aS E n s).1) * b (x * aS E n s).1 * u (ldet (x * aS E n s)) =
       ((ldet (aS E n 1) : ℂ)⁻¹ * ∫ s, u s) * (starRingEnd ℂ (a x.1) * b x.1 * w (ldet x)) := fun x => by
     simp only [slab_aS ha, slab_aS hb, ldet_mul_aS]
-    rw [integral_const_mul, integral_u_shift u _ _ hc]
+    rw [integral_const_mul,
+      Measure.integral_comp_mul_right (fun t : ℝ => u (ldet x + t)) (ldet (aS E n 1)),
+      integral_add_left_eq_self u (ldet x), abs_of_pos (inv_pos.2 hc),
+      Complex.real_smul, Complex.ofReal_inv]
     ring
   simp only [hin] at h
   rw [integral_const_mul] at h

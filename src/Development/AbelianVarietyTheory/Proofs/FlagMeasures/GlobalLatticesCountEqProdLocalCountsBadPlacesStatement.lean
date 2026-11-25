@@ -88,10 +88,6 @@ namespace GlobalTheory.LocStdInt
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] {E : Type} [CommRing E] [Algebra F E]
   [TopologicalSpace E] [MeasurableSpace E] {M : Model F E} {V : Type} [AddCommGroup V] [Module E V]
 
-lemma cj_mem {x : E} (hx : x ∈ M.L.O) : M.L.cj x ∈ M.L.O := by
-  rw [M.L.O_def] at hx ⊢
-  exact hx.map (M.L.cj.toAlgHom.restrictScalars (Valuation.integer (ValuativeRel.valuation F)))
-
 def hl (H : HermSp M V) (y : V) : V →ₗ[E] E where
   toFun x := H.h x y
   map_add' x x' := H.h_add_left x x' y
@@ -119,7 +115,7 @@ lemma h_prF_es (H : HermSp M V) {r : ℕ} (Fr : FrameD H r) (v : V) (b : Fin r) 
 
 lemma h_symm_mem (H : HermSp M V) {x y : V} (h : H.h x y ∈ M.L.O) : H.h y x ∈ M.L.O := by
   rw [H.h_herm]
-  exact cj_mem h
+  exact GlobalTheory.LocOver.TermLat.cj_mem h
 
 lemma span_left (H : HermSp M V) (S : Set V) (y : V) (h : ∀ x ∈ S, H.h x y ∈ M.L.O) :
     ∀ x ∈ Submodule.span M.L.O S, H.h x y ∈ M.L.O := by

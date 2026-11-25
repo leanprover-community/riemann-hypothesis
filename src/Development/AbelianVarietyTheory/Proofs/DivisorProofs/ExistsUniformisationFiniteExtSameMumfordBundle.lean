@@ -222,11 +222,9 @@ omit [IsDomain V] in
 instance connectedSpace_level (e : ℕ) : ConnectedSpace (Spec (CommRingCat.of (V ⧸ 𝔪 ^ (e + 1)))) :=
   SplitTorus.connectedSpace_of_isLocalRing _
 
-
 omit [IsDomain V] [GrpObj G] [IsCommMonObj G] in
 theorem thickMap_pr (e : ℕ) : thickMap V 𝔪 e G ≫ pr 𝔪 (e + 1) G = pr 𝔪 e G :=
   (pullback.lift_fst _ _ _).trans (Category.comp_id _)
-
 
 -- TODO: Stopgap for https://github.com/leanprover-community/riemann-hypothesis/issues/1038: remove once Mathlib lowers its priority.
 attribute [-instance] CategoryTheory.Monoidal.fromInducedMonoidal in
@@ -248,8 +246,6 @@ theorem nonempty_formalTorus (hG : IsSemiAbelian G) (Q₀ : TQ (thickObj V 𝔪 
   choose nxt hnxt using step
   let Q : ∀ e, TQ (thickObj V 𝔪 e G) X := fun e => Nat.rec (motive := fun e => TQ (thickObj V 𝔪 e G) X) Q₀ nxt e
   exact ⟨⟨fun e => (Q e).i, fun e => (Q e).i_hom, rfl, fun e => hnxt e (Q e)⟩⟩
-
-
 
 end Formal
 
@@ -818,7 +814,6 @@ theorem exists_points [IsAdicComplete 𝔪 R] {i₀ : splitTorus (Lv 𝔪 0) X �
     rw [MonObj.comp_mul, e₁, e₁, e₁, map_mul, MonObj.mul_comp, map_mul]
   exact congrArg (fun q => q.left) e₂
 
-
 omit [IsDomain R] in
 theorem exists_two_ne_zero [IsAdicComplete 𝔪 R] [CharZero R] : ∃ e, (2 : Γ(Lv 𝔪 e, ⊤)) ≠ 0 := by
   by_contra hn
@@ -827,7 +822,6 @@ theorem exists_two_ne_zero [IsAdicComplete 𝔪 R] [CharZero R] : ∃ e, (2 : Γ
     (map_ofNat _ 2).trans ((hn e).trans (map_zero _).symm)
   have b := congrArg (Scheme.ΓSpecIso (CommRingCat.of R)).hom.hom a
   exact two_ne_zero (α := R) ((map_ofNat _ 2).symm.trans (b.trans (map_zero _)))
-
 
 omit [IsLocalRing R] in
 theorem val_level {I : Ideal R} {P : CP G} {e : ℕ} {Pe : CP (thickObj R I e G)} (h : IsLevelCP I e Pe P) {Z : Scheme.{0}}
@@ -1022,7 +1016,6 @@ theorem transl_genPoint_fst (G : Over (Sp R)) [GrpObj G] (a : Over.mk (jK R) ⟶
 
 end GlobalTheory.GenTranslPkg
 
-
 open GlobalTheory.RigidTranslate GlobalTheory.PolTranslate GlobalTheory.GenTransl GlobalTheory.GenTranslPkg in
 theorem GlobalTheory.Mum.exists_transl_pkg : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R], GlobalTheory.LN.CDvr R → ∀ (G : Over (Sp R)) [GrpObj G] [IsCommMonObj G], IsSemiAbelian G → ∀ (P : GlobalTheory.UU.CP G) (A : PolAV (Sp (FractionRing R))) (gen : ((Over.pullback (jK R)).obj G) ≅ A.A), IsMonHom gen.hom → LBIso (A.L.pull gen.hom.left) (P.L.L.pull (pullback.fst G.hom (jK R))) → ∀ a : Over.mk (jK R) ⟶ G, a * a = 1 → ∃ (P₁ : GlobalTheory.UU.CP G) (A₁ : PolAV (Sp (FractionRing R))) (gen₁ : (Over.pullback (jK R)).obj G ≅ A₁.A), IsMonHom gen₁.hom ∧ LBIso (A₁.L.pull gen₁.hom.left) (P₁.L.L.pull (pullback.fst G.hom (jK R))) ∧ LBIso (abelian₂ G P₁.L.L) (abelian₂ G P.L.L) ∧ GlobalTheory.GenTransl.IsGenTransl G P.L.L P₁.L.L a := by
   intro R _ _ _ hR G _ _ hG P A gen hgen hL a ha
@@ -1054,8 +1047,8 @@ theorem GlobalTheory.Mum.exists_transl_pkg : ∀ (R : Type) [CommRing R] [IsDoma
     have : IsIso gen.hom.left := inferInstanceAs (IsIso ((Over.forget _).map gen.hom))
     rw [e]; infer_instance
   have hsym : Out.Sym ((Over.pullback (jK R)).obj G) (L'.pull (pullback.fst G.hom (jK R))) :=
-    GlobalTheory.T.symmetric_of_lineBundleIso_pull_groupHom _ _ _ gen.hom hgen L₁ _ hL₁ (pull_isLB hL' _) A₁.sym hLL'
-  obtain ⟨P₁, hP₁⟩ := GlobalTheory.T.exists_cubicalSymmetricStructure_of_genericSymmetric R G hG hpr L' hL' hsym
+    GlobalTheory.sym_of_lbIso_pull_hom _ _ _ gen.hom hgen L₁ _ hL₁ (pull_isLB hL' _) A₁.sym hLL'
+  obtain ⟨P₁, hP₁⟩ := GlobalTheory.CubSymPkg.exists_cp_of_generic_sym R G hG hpr L' hL' hsym
   have hPL := P.L.isLB
 
   have htr : LBIso LG (P.L.L.pull (genPr G * genPt G a).left) := by
@@ -1100,7 +1093,7 @@ theorem GlobalTheory.Mum.exists_transl_pkg : ∀ (R : Type) [CommRing R] [IsDoma
           (LBIso.symm e2) e4))
   refine ⟨P₁, A₁, gen, hgen, ?_, ?_, ?_⟩
   · rw [hP₁]; exact hLL'
-  · rw [hP₁]; exact GlobalTheory.T.lineBundleIso_mumford_of_generic_extension R G hG L' LG (abelian₂ G P.L.L) hL' hLG hLL' hext
+  · rw [hP₁]; exact GlobalTheory.Mum.lbIso_lam_of_extLam R G hG L' LG (abelian₂ G P.L.L) hL' hLG hLL' hext
   · show LBIso _ _
     rw [hP₁]
     exact LBIso.trans (pull_isLB hL' _) hLG (pull_isLB hPL _) (LBIso.symm hLL') htr
@@ -1410,7 +1403,6 @@ alias lbIso_pull := _root_.GlobalTheory.RigidBundleGlue.LBIso.pull
 
 end GlobalTheory.Mum.UExt
 
-
 open GlobalTheory.Mum.UExt in
 theorem GlobalTheory.Mum.exists_unif_finExt_lam : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R], GlobalTheory.LN.CDvr R → ∀ (G : Over (Sp R)) [GrpObj G] [IsCommMonObj G], IsSemiAbelian G → ∀ (A : PolAV (Sp (FractionRing R))) (gen : ((Over.pullback (jK R)).obj G) ≅ A.A), IsMonHom gen.hom → ∀ PP : LB (G2 G).left, ExtLam G (A.L.pull gen.hom.left) PP → ∃ (R' : Type) (_ : CommRing R') (_ : IsDomain R') (_ : IsLocalRing R') (ρ : R →+* R') (D₁ : DegData R' (maximalIdeal R')) (G₁ : Over (Sp R')) (_ : GrpObj G₁) (_ : IsCommMonObj G₁) (β : G₁.left ⟶ G.left) (β₂ : (G2 G₁).left ⟶ (G2 G).left) (A₁ : PolAV (Sp (FractionRing R'))) (U₁ : Unif (maximalIdeal R') D₁ A₁ G₁), GlobalTheory.LN.CDvr R' ∧ FinExt ρ ∧ IsGrpPullback G₁ G (spMap ρ) β ∧ Geo.Tor.IsSquare β β₂ ∧ LBIso (abelian₂ G₁ U₁.LG.L) (PP.pull β₂) := by
   intro R _ _ _ hR G _ _ hG A gen hgen PP hPP
@@ -1427,8 +1419,8 @@ theorem GlobalTheory.Mum.exists_unif_finExt_lam : ∀ (R : Type) [CommRing R] [I
     have : IsIso gen.hom.left := inferInstanceAs (IsIso ((Over.forget _).map gen.hom))
     rw [e]; infer_instance
   have hsym : Out.Sym ((Over.pullback (jK R)).obj G) (L'.pull (pullback.fst G.hom (jK R))) :=
-    GlobalTheory.T.symmetric_of_lineBundleIso_pull_groupHom _ _ _ gen.hom hgen A.L _ A.isLB (LB.isLB_pull hL' _) A.sym hLL'
-  obtain ⟨P, hP⟩ := GlobalTheory.T.exists_cubicalSymmetricStructure_of_genericSymmetric R G hG hpr L' hL' hsym
+    GlobalTheory.sym_of_lbIso_pull_hom _ _ _ gen.hom hgen A.L _ A.isLB (LB.isLB_pull hL' _) A.sym hLL'
+  obtain ⟨P, hP⟩ := GlobalTheory.CubSymPkg.exists_cp_of_generic_sym R G hG hpr L' hL' hsym
   subst hP
   obtain ⟨R', _, _, _, ρ, G₁, _, _, β, β₂, P₁, A₁, gen₁, hR', hρ, hβ, hsq, hgen₁, hL₁, hLam, hEven⟩ :=
     _root_.GlobalTheory.Mum.exists_even_translate R ⟨hdvr, hcomp, hchar⟩ G hG P A gen hgen hLL'
@@ -1437,7 +1429,7 @@ theorem GlobalTheory.Mum.exists_unif_finExt_lam : ∀ (R : Type) [CommRing R] [I
     obtain ⟨bc, mbc, -⟩ := grpPullback_iso hβ (isGrpPullback_pullback G (spMap ρ))
     exact GlobalTheory.isSemiAbelian_of_grpIso bc (Geo.Tor.IsSemiAbelian.pullback (spMap ρ) G hG)
   obtain ⟨D, U, hU, -⟩ := GlobalTheory.T.exists_uniformisation_completeLocal_evenOnTorus R' hB' G₁ P₁ hG₁ hEven A₁ gen₁ hgen₁ hL₁
-  have hE : LBIso (abelian₂ G P.L.L) PP := GlobalTheory.T.lineBundleIso_mumford_of_generic_extension R G hG P.L.L _ PP P.L.isLB hL hLL' hPP
+  have hE : LBIso (abelian₂ G P.L.L) PP := GlobalTheory.Mum.lbIso_lam_of_extLam R G hG P.L.L _ PP P.L.isLB hL hLL' hPP
   refine ⟨R', _, _, _, ρ, D, G₁, _, _, β, β₂, A₁, U, hR', hρ, hβ, hsq, ?_⟩
   rw [hU]
   exact LBIso.trans (lam_isLB G₁ P₁.L.isLB) (LB.isLB_pull (lam_isLB G P.L.isLB) _) (LB.isLB_pull hPP.1 _) hLam

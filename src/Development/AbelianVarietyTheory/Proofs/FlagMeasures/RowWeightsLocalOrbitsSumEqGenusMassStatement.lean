@@ -144,7 +144,7 @@ theorem tg_of_base_point : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u u' :
     apply hG
     rw [← hGw]
     exact (Formalism.L2.SG.NGCut.LeadingMinorIntegrality.gpt_eq (T := Tu D u) (T' := Tu D u') _ _ w hcell').trans h0
-  obtain ⟨-, γ, hγ, ⟨A, hA, hc⟩, ⟨B, hB, hd⟩⟩ := GlobalTheory.T.rationalFramePairs_differ_isometry_unitriangular D (lf D (X.Fu u)) F t.frame F' w
+  obtain ⟨-, γ, hγ, ⟨A, hA, hc⟩, ⟨B, hB, hd⟩⟩ := GlobalTheory.LocOver.witt_frames_at_point D (lf D (X.Fu u)) F t.frame F' w
     (Formalism.L2.SG.Corank.tu_ne_zero u) (Formalism.L2.SG.Corank.tu_ne_zero u') hGt hcell' hZ
   exact ⟨Formalism.HermitianLatticesTheory.gmap γ t.lam, γ, ⟨hγ, fun a => GlobalTheory.FlagChange.chg_sub_mem F.fl hA hc a⟩,
     ⟨hγ, fun a => GlobalTheory.FlagChange.chg_sub_mem F'.fl hB hd a⟩, rfl⟩
@@ -419,18 +419,10 @@ theorem tri_adapt_loc (Z : LocDat D) (p : PlF D) (g : GV D) {T : D.host.E} (F₁
     refine Finset.sum_congr rfl fun a _ => ?_
     rw [mul_assoc (frFac Z.δ p b * _), Ring.inverse_mul_cancel _ (hu a), mul_one]
 
-theorem finrank_Vp_eq (p : PlF D) : Module.finrank (D.s.atP p).Ep (Vp D p) = D.R.k + 2 * D.R.rS + 1 := by
-  rw [finrank_Vp]
-  have h1 := D.R.m_even
-  have h2 := D.R.two_le_m
-  obtain ⟨c, hc⟩ := h1
-  simp only [Ranks.r, Ranks.rS]
-  omega
-
 theorem local_data_of_term : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u u' : D.what₂.Word), ∀ (F : LFlag (D.sp.Y 0) D.R.rS (((D.mem u).A.T : ℕ) : D.host.E)) (F' : LFlag (D.sp.Y 0) D.R.rS (((D.mem u').A.T : ℕ) : D.host.E)) (w : Point D.host.E (D.R.rS + 1)), ZhatOM (ZhatL F F') = ptMat w → Gval F F' ≠ 0 → ∀ (Z : LocDat D) (FP : ∀ p : PlF D, LocNG.FPair (locH Z p) D.R.rS), Based Z FP (Tu D u) (Tu D u') F F' → (∀ p, (FP p).RelG (LocNG.theta (Z.M p))) → ∀ (t : TauC Y u u') (Λ : LV D), TG F F' t Λ → ∃ y : Dat Z FP, LocOver Λ y ∧ ∀ p d, GlobalTheory.LocOver.Over (FP p) d (GlobalTheory.LocOver.locU Z p t.toTerm.lam (lf D (X.Fu u)) (Quot.out t.toTerm.cls).1 (Tu D u) (Tu D u')) ↔ LocNG.Datum.Rel d (y p) := by
   intro D X Y u u' F F' w hZ hG Z FP hB hRel t Λ hTG
   obtain ⟨hExt, -, hlat, -⟩ := GlobalTheory.T.rationalAutomorphism_local_extension_moves_lattices D X Y u u' F F' w hZ hG Z FP hB hRel
-  have hGt : t.G ≠ 0 := (GlobalTheory.T.term_at_base_point_of_frames D X Y u u' F F' w hZ hG t Λ hTG).1
+  have hGt : t.G ≠ 0 := (GlobalTheory.Unfold.BasePt.term_at_base_point D X Y u u' F F' w hZ hG t Λ hTG).1
   obtain ⟨g, hgF, hgF', hΛ⟩ := hTG
   have hrow : IsRowLat D (X.Fu u) t.lam := (Y.rowsOK u).1 t.lam t.mem
   have hPD : Formalism.L2.SG.TermDef.PD D t.lam (lf D (X.Fu u)) u' t.frame := t.rep.2.2.2.2
@@ -461,7 +453,7 @@ theorem local_data_of_term : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u u'
     refine (GlobalTheory.LocOver.Check.over_move_iff (FP p) d _ (gp p) (hu p)).symm.trans ?_
     constructor
     · intro h
-      exact _root_.GlobalTheory.LocOver.orbit_over_unique (Z.M p) (Z.agree p).1 (locH Z p) D.R.rS D.R.k (FP p) (finrank_Vp_eq p) (hRel p) d (y p) _ h
+      exact _root_.GlobalTheory.LocOver.orbit_over_unique (Z.M p) (Z.agree p).1 (locH Z p) D.R.rS D.R.k (FP p) (GlobalTheory.LocBaseRel.finrank_eq p) (hRel p) d (y p) _ h
         (GlobalTheory.LocOver.Check.over_of_isTermOver _ _ _ (hy p))
     · intro h
       refine ⟨1, fun _ _ => rfl, y p, h, ?_⟩
@@ -515,10 +507,6 @@ namespace GlobalTheory.Unfold.GlueOrbit
 
 variable {D : D7}
 
-theorem finrank_loc (p : PlF D) :
-    Module.finrank (D.s.atP p).Ep (Vp D p) = D.R.k + 2 * D.R.rS + 1 :=
-  GlobalTheory.RatLocMove.finrank_Vp_eq p
-
 theorem img_lattice {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
     {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E]
     {M : Loc.Model F E} {V : Type} [AddCommGroup V] [Module E V] (g : V ≃ₗ[E] V) (L : Submodule M.L.O V)
@@ -542,7 +530,7 @@ theorem glue_local_orbits : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u u' 
     · exact ⟨1, one_mem _, fun _ => rfl, τ, hp ▸ hτ1, by rw [GlobalTheory.NonGenericLocalCheck.img_one, hτ2]⟩
     · obtain ⟨g, hg, hm⟩ := hrel p
       exact ⟨g, hg, fun h => absurd h hp, _,
-        (_root_.GlobalTheory.HL.LocalMove.main (Z.M p) (Z.agree p).1 (locH Z p) D.R.rS D.R.k (FP p) (finrank_loc p) (hR p) g hg
+        (_root_.GlobalTheory.HL.LocalMove.main (Z.M p) (Z.agree p).1 (locH Z p) D.R.rS D.R.k (FP p) (GlobalTheory.LocBaseRel.finrank_eq p) (hR p) g hg
           (y p) (y' p) τ hτ1 hm).1, by rw [← hτ2]⟩
   choose h hU h1 τ hτ1 hτ2 using key
   obtain ⟨M, hM⟩ := Ideal.exists_maximal (𝓞 D.host.F)
@@ -575,7 +563,7 @@ theorem glue_local_orbits : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u u' 
     rw [finrank_top, Module.finrank_eq_card_basis (VS D).frame, Fintype.card_fin]
     simpa only [Module.finrank_fin_fun, Fintype.card_fin] using
       finrank_le_of_span_eq_top (show Submodule.span (D.s.atP p).Ep _ = ⊤ from htop)
-  obtain ⟨Λ', hΛ', hp⟩ := (GlobalTheory.T.hermitianLattice_local_global_principle D Z).2 Λ hfull (fun p => LocNG.img (h p) (lattice₂ D Z.M p Λ))
+  obtain ⟨Λ', hΛ', hp⟩ := (GlobalTheory.Unfold.LatLoc.lattices_local_global D Z).2 Λ hfull (fun p => LocNG.img (h p) (lattice₂ D Z.M p Λ))
     (fun p => by
       obtain ⟨t, ht, heq⟩ := hτ p
       apply img_lattice
@@ -689,7 +677,7 @@ theorem inGen_of_gRel : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u u' : D.
       rw [finrank_top, Module.finrank_eq_card_basis (VS D).frame, Fintype.card_fin]
       simpa only [Module.finrank_fin_fun, Fintype.card_fin] using
         finrank_le_of_span_eq_top (show Submodule.span (D.s.atP p).Ep _ = ⊤ from htop)
-    have hfin := ((GlobalTheory.T.hermitianLattice_local_global_principle D Z).1 Λ (Formalism.HermitianLatticesTheory.gmap h Λ) (full_of_over Λ y hov) (full_of_over _ y'' hov'')).1
+    have hfin := ((GlobalTheory.Unfold.LatLoc.lattices_local_global D Z).1 Λ (Formalism.HermitianLatticesTheory.gmap h Λ) (full_of_over Λ y hov) (full_of_over _ y'' hov'')).1
     refine (hfin.union hgen.2).subset fun p hp => ?_
     by_cases hyd : y p = d p
     · left
@@ -728,23 +716,9 @@ variable {D : D7}
 theorem inv_app (a : GV D) (x : (VS D).V) : a⁻¹ (a x) = x := by
   show (a⁻¹ * a) x = x; rw [inv_mul_cancel]; rfl
 
-theorem xflag_mono {T : D.host.E} (P : LFlag (D.sp.Y 0) D.R.rS T) {i j : ℕ} (hij : i ≤ j) : Xflag P i ≤ Xflag P j := by
-  show Submodule.span _ _ ≤ Submodule.span _ _
-  apply Submodule.span_mono
-  rintro _ ⟨k, hk, rfl⟩
-  exact ⟨k, lt_of_lt_of_le hk hij, rfl⟩
-
 theorem e_mem_xflag {T : D.host.E} (P : LFlag (D.sp.Y 0) D.R.rS T) (i : Fin D.R.rS) {j : ℕ} (hij : i.1 < j) :
     P.fl.e i ∈ Xflag P j :=
   Submodule.subset_span ⟨i, hij, rfl⟩
-
-theorem frame_cs {T : D.host.E} (P : LFlag (D.sp.Y 0) D.R.rS T) (i : Fin D.R.rS) : frame P i.castSucc = P.fl.e i := by
-  show FlagG.fvec P.fl i.castSucc = _
-  unfold FlagG.fvec; simp
-
-theorem frame_last {T : D.host.E} (P : LFlag (D.sp.Y 0) D.R.rS T) : frame P (Fin.last D.R.rS) = P.fl.z := by
-  show FlagG.fvec P.fl (Fin.last _) = _
-  unfold FlagG.fvec; simp
 
 theorem tri_fwd {T T' : D.host.E} (P : LFlag (D.sp.Y 0) D.R.rS T) (Q : LFlag (D.sp.Y 0) D.R.rS T') (φ : GV D)
     (h : ∀ a : Fin (D.R.rS + 1), φ (frame P a) - frame Q a ∈ Xflag Q a.val) :
@@ -754,11 +728,11 @@ theorem tri_fwd {T T' : D.host.E} (P : LFlag (D.sp.Y 0) D.R.rS T) (Q : LFlag (D.
   rw [Submodule.map_span, Submodule.span_le]
   rintro _ ⟨_, ⟨i, hi, rfl⟩, rfl⟩
   have h1 := h i.castSucc
-  rw [frame_cs, frame_cs] at h1
+  rw [GlobalTheory.Unfold.InnerLoc.frame_castSucc, GlobalTheory.Unfold.InnerLoc.frame_castSucc] at h1
   have h2 : φ (P.fl.e i) = (φ (P.fl.e i) - Q.fl.e i) + Q.fl.e i := by abel
   show φ (P.fl.e i) ∈ _
   rw [h2]
-  exact add_mem (xflag_mono Q (le_of_lt hi) h1) (e_mem_xflag Q i hi)
+  exact add_mem (GlobalTheory.RowTermReal.xflag_mono Q (le_of_lt hi) h1) (e_mem_xflag Q i hi)
 
 theorem tri_rev {T T' : D.host.E} (P : LFlag (D.sp.Y 0) D.R.rS T) (Q : LFlag (D.sp.Y 0) D.R.rS T') (φ : GV D)
     (h : ∀ a : Fin (D.R.rS + 1), φ (frame P a) - frame Q a ∈ Xflag Q a.val) :
@@ -775,13 +749,13 @@ theorem tri_rev {T T' : D.host.E} (P : LFlag (D.sp.Y 0) D.R.rS T) (Q : LFlag (D.
     rw [Submodule.span_le]
     rintro _ ⟨i, hi, rfl⟩
     have h1 := h i.castSucc
-    rw [frame_cs, frame_cs] at h1
+    rw [GlobalTheory.Unfold.InnerLoc.frame_castSucc, GlobalTheory.Unfold.InnerLoc.frame_castSucc] at h1
     have hij : i.1 ≤ j := Nat.lt_succ_iff.1 hi
     have h2 : Q.fl.e i = φ (P.fl.e i) - (φ (P.fl.e i) - Q.fl.e i) := by abel
     show Q.fl.e i ∈ _
     rw [h2]
     refine sub_mem (Submodule.mem_map_of_mem (e_mem_xflag P i hi)) ?_
-    exact Submodule.map_mono (xflag_mono P (Nat.le_succ j)) (ih (xflag_mono Q hij h1))
+    exact Submodule.map_mono (GlobalTheory.RowTermReal.xflag_mono P (Nat.le_succ j)) (ih (GlobalTheory.RowTermReal.xflag_mono Q hij h1))
 
 theorem xsp_map_of_tri {T T' : D.host.E} (P : LFlag (D.sp.Y 0) D.R.rS T) (Q : LFlag (D.sp.Y 0) D.R.rS T') (φ : GV D)
     (h : ∀ a : Fin (D.R.rS + 1), φ (frame P a) - frame Q a ∈ Xflag Q a.val) :
@@ -806,7 +780,7 @@ theorem nrat_tri {T : D.host.E} (P : LFlag (D.sp.Y 0) D.R.rS T) (n : GV D) (hn :
     ∀ a : Fin (D.R.rS + 1), n (frame P a) - frame P a ∈ Xflag P a.val := by
   intro a
   refine Fin.lastCases ?_ (fun i => ?_) a
-  · rw [frame_last]
+  · rw [GlobalTheory.Unfold.SideEq.frame_last]
     have hz : P.fl.z ∈ orth (VS D) (Xsp P) := by
       unfold orth
       simp only [Submodule.mem_iInf, LinearMap.mem_ker]
@@ -820,7 +794,7 @@ theorem nrat_tri {T : D.host.E} (P : LFlag (D.sp.Y 0) D.R.rS T) (n : GV D) (hn :
     have := hn.2.2 _ hz
     rw [_root_.Formalism.L2.SG.NGCut.NormalVectorPairings.X_eq_Xflag] at this
     simpa using this
-  · rw [frame_cs]
+  · rw [GlobalTheory.Unfold.InnerLoc.frame_castSucc]
     exact hn.2.1 i.1 _ (e_mem_xflag P i (Nat.lt_succ_self _))
 
 theorem app_inv (a : GV D) (x : (VS D).V) : a (a⁻¹ x) = x := by
@@ -828,10 +802,6 @@ theorem app_inv (a : GV D) (x : (VS D).V) : a (a⁻¹ x) = x := by
 
 theorem iso_app {K : GV D} (hK : K ∈ Formalism.HermitianLatticesTheory.isom (VS D).hT) (x y : (VS D).V) :
     (VS D).hT (K x) (K y) = (VS D).hT x y := hK x y
-
-theorem mem_orth_iff (A : Submodule D.host.E (VS D).V) (y : (VS D).V) :
-    y ∈ orth (VS D) A ↔ ∀ x ∈ A, (VS D).hT x y = 0 := by
-  unfold orth; simp [Submodule.mem_iInf, LinearMap.mem_ker]
 
 theorem frame_mapLF {T : D.host.E} (P : LFlag (D.sp.Y 0) D.R.rS T) (γ : GV D) (hγ : γ ∈ Formalism.HermitianLatticesTheory.isom (VS D).hT) :
     ∀ a, frame (mapLF γ P) a = γ (frame P a) := by
@@ -845,7 +815,7 @@ theorem frame_mapLF {T : D.host.E} (P : LFlag (D.sp.Y 0) D.R.rS T) (γ : GV D) (
 
 theorem orth_map (K : GV D) (hK : K ∈ Formalism.HermitianLatticesTheory.isom (VS D).hT) (A : Submodule D.host.E (VS D).V) (y : (VS D).V) :
     K y ∈ orth (VS D) (A.map (K : (VS D).V →ₗ[D.host.E] (VS D).V)) ↔ y ∈ orth (VS D) A := by
-  rw [mem_orth_iff, mem_orth_iff]
+  rw [GlobalTheory.FrameProj.mem_orth_iff, GlobalTheory.FrameProj.mem_orth_iff]
   constructor
   · intro H x hx
     rw [← iso_app hK]; exact H _ (Submodule.mem_map_of_mem hx)
@@ -867,7 +837,7 @@ theorem iso_xsp {T : D.host.E} (P : LFlag (D.sp.Y 0) D.R.rS T) : ∀ x ∈ Xsp P
     rintro _ ⟨j, rfl⟩
     have := h1 j hx
     simpa using this
-  rw [mem_orth_iff]
+  rw [GlobalTheory.FrameProj.mem_orth_iff]
   intro z hz
   have := h2 hz
   simpa using this
@@ -875,7 +845,7 @@ theorem iso_xsp {T : D.host.E} (P : LFlag (D.sp.Y 0) D.R.rS T) : ∀ x ∈ Xsp P
 theorem nrat_inv_orth {T : D.host.E} (P : LFlag (D.sp.Y 0) D.R.rS T) (n : GV D) (hn : n ∈ NRat P) :
     ∀ y ∈ orth (VS D) (Xsp P), n⁻¹ y ∈ orth (VS D) (Xsp P) := by
   intro y hy
-  rw [mem_orth_iff] at hy ⊢
+  rw [GlobalTheory.FrameProj.mem_orth_iff] at hy ⊢
   intro x hx
   have h1 : n x ∈ Xsp P := by
     have := hn.2.2 x (iso_xsp P x hx)
@@ -974,13 +944,6 @@ theorem ngx_map (K : GV D) {T1 T2 T3 T4 : D.host.E}
     exact this ▸ hz
   · intro H; exact Submodule.mem_map_of_mem H
 
-theorem gmap_mul (a b : GV D) (Λ : LV D) :
-    Formalism.HermitianLatticesTheory.gmap (a * b) Λ = Formalism.HermitianLatticesTheory.gmap a (Formalism.HermitianLatticesTheory.gmap b Λ) := by
-  unfold Formalism.HermitianLatticesTheory.gmap; rw [← Submodule.map_comp]; rfl
-
-theorem gmap_one (Λ : LV D) : Formalism.HermitianLatticesTheory.gmap (1 : GV D) Λ = Λ := by
-  unfold Formalism.HermitianLatticesTheory.gmap; ext x; simp
-
 theorem map_mul' (a b : GV D) (A : Submodule D.host.E (VS D).V) :
     A.map ((a * b : GV D) : (VS D).V →ₗ[D.host.E] (VS D).V) =
       (A.map (b : (VS D).V →ₗ[D.host.E] (VS D).V)).map (a : (VS D).V →ₗ[D.host.E] (VS D).V) := by
@@ -1002,7 +965,7 @@ theorem same_key_lrel : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u u' : D.
   intro D X Y u u' F F' w hZ hG t t' Λ₁ Λ₂ hT1 hT2 hk
   obtain ⟨g1, hA1, hA1', rfl⟩ := hT1
   obtain ⟨g2, hA2, hA2', rfl⟩ := hT2
-  obtain ⟨hl, hl', ⟨n, hn, n', hn', heq⟩, hio⟩ := (GlobalTheory.T.term_row_double_coset_eq_iff_isometries D X Y u u' t t').1 hk
+  obtain ⟨hl, hl', ⟨n, hn, n', hn', heq⟩, hio⟩ := (GlobalTheory.Unfold.KeyIff.key_eq_iff D X Y u u' t t').1 hk
   have hγ1 : t.lin ∈ Formalism.HermitianLatticesTheory.isom (VS D).hT := t.rep.2.2.1
   have hγ2 : t'.lin ∈ Formalism.HermitianLatticesTheory.isom (VS D).hT := t'.rep.2.2.1
   have hΛ1 : Formalism.HermitianLatticesTheory.gmap t.lin t.lam' = t.lam := t.rep.2.2.2.1
@@ -1024,7 +987,7 @@ theorem same_key_lrel : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u u' : D.
   have hs2 : Adapt s F' F' := ⟨hsI, tri_comp (tri_comp (tri_inv _ _ _ hA1'.2) hnT) hA2'.2⟩
   obtain ⟨h, ⟨hH, hm, hm'⟩, -⟩ := _root_.GlobalTheory.Unfold.Inter.common_stabiliser D X Y u u' F F' w hZ hG s hs1 hs2
   refine ⟨h, hH, ?_⟩
-  rw [← hl, ← gmap_mul]
+  rw [← hl, ← GlobalTheory.Unfold.Model.gmap_mul]
 
   have hhF : ∀ a : Fin (D.R.rS + 1), h (frame F a) - frame F a ∈ Xflag F a.val := by
     intro a; rw [hH.2.1 a, sub_self]; exact zero_mem _
@@ -1047,8 +1010,8 @@ theorem same_key_lrel : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u u' : D.
   have hYY := (xsp_map_of_tri _ _ _ (tri_comp (tri_inv _ _ _ fr1) fr2)).1
   have hβΛ : Formalism.HermitianLatticesTheory.gmap (t'.lin * t.lin⁻¹) t.lam = t.lam := by
     have e1 : Formalism.HermitianLatticesTheory.gmap t.lin⁻¹ t.lam = t.lam' := by
-      rw [← hΛ1, ← gmap_mul, inv_mul_cancel, gmap_one]
-    rw [gmap_mul, e1, hl', hΛ2, hl]
+      rw [← hΛ1, ← GlobalTheory.Unfold.Model.gmap_mul, inv_mul_cancel, GlobalTheory.Unfold.Model.gmap_one]
+    rw [GlobalTheory.Unfold.Model.gmap_mul, e1, hl', hΛ2, hl]
   have hms : ∀ y, h ((h⁻¹ * s) y) = s y := by
     intro y; show (h * (h⁻¹ * s)) y = s y; rw [mul_inv_cancel_left]
   have hsg : ∀ x, s (g1 x) = g2 (n x) := by
@@ -1396,7 +1359,7 @@ theorem rows_mass_genus : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u u' : 
           full_of_local_span D (zOf Y) Λ₀ hL0 p0 (by
             rw [← hτ0l]
             exact (GlobalTheory.T.localTermLattice_over_innerDatum_fg_span D (zOf Y) Fm.FP p0 (Fm.d0 p0) τ0 hτ0o).2)
-        have hfin := ((GlobalTheory.T.hermitianLattice_local_global_principle D (zOf Y)).1 Λ Λ₀ hfull hfull0).1
+        have hfin := ((GlobalTheory.Unfold.LatLoc.lattices_local_global D (zOf Y)).1 Λ Λ₀ hfull hfull0).1
         refine ((Fm.P.finite_toSet).union hfin).subset ?_
         intro p hp
         simp only [Set.mem_setOf_eq] at hp
@@ -1467,7 +1430,7 @@ theorem rows_mass_genus : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u u' : 
     have hyt : LocOver Λt yt := hyt0
     have hgt : InGen dd yt := hgt0
     subst hkt
-    have hpt := (GlobalTheory.T.term_at_base_point_of_frames D X Y u u' F F' w hZ hG t Λt hΛt).2
+    have hpt := (GlobalTheory.Unfold.BasePt.term_at_base_point D X Y u u' F F' w hZ hG t Λt hΛt).2
     cases hdc : Fm.dat (cls t) (nmlOf Y u u' t) with
     | none =>
       exact absurd ⟨t, ht, rfl, hpt, rfl⟩ ((hdat (cls t) (nmlOf Y u u' t)).1 hdc)

@@ -43,8 +43,6 @@ noncomputable section
 open UpperTheory.V.Hi UpperTheory.V.Z.J.D
 open scoped TensorProduct
 
-
-
 namespace UpperTheory.V.Z.Desc.V0
 
 section Lin
@@ -113,28 +111,28 @@ private theorem memL_lemma_4 {A B ι : Type} [AddCommGroup A] [Module ℂ A] [Ad
 
 private theorem box_inl_apply_eq_rTensor {G H W W' : Type} [Group G] [Group H] [AddCommGroup W] [Module ℂ W]
     [AddCommGroup W'] [Module ℂ W'] (ρ : Representation ℂ G W) (κ : Representation ℂ H W') (g : G)
-    (y : W ⊗[ℂ] W') : box ρ κ (g, 1) y = LinearMap.rTensor W' (ρ g) y := by
-  simp only [box, Representation.tprod_apply, MonoidHom.comp_apply, MonoidHom.coe_fst, MonoidHom.coe_snd, map_one]
+    (y : W ⊗[ℂ] W') : GlobalTheory.LGrp.extProd ρ κ (g, 1) y = LinearMap.rTensor W' (ρ g) y := by
+  simp only [GlobalTheory.LGrp.extProd, Representation.tprod_apply, MonoidHom.comp_apply, MonoidHom.coe_fst, MonoidHom.coe_snd, map_one]
   rfl
 
 private theorem box_inr_apply_eq_lTensor {G H W W' : Type} [Group G] [Group H] [AddCommGroup W] [Module ℂ W]
     [AddCommGroup W'] [Module ℂ W'] (ρ : Representation ℂ G W) (κ : Representation ℂ H W') (h : H)
-    (y : W ⊗[ℂ] W') : box ρ κ (1, h) y = LinearMap.lTensor W (κ h) y := by
-  simp only [box, Representation.tprod_apply, MonoidHom.comp_apply, MonoidHom.coe_fst, MonoidHom.coe_snd, map_one]
+    (y : W ⊗[ℂ] W') : GlobalTheory.LGrp.extProd ρ κ (1, h) y = LinearMap.lTensor W (κ h) y := by
+  simp only [GlobalTheory.LGrp.extProd, Representation.tprod_apply, MonoidHom.comp_apply, MonoidHom.coe_fst, MonoidHom.coe_snd, map_one]
   rfl
 
 private theorem opE_box_comp_inr_tmul {G H W W' : Type} [Group G] [Group H] [AddCommGroup W] [Module ℂ W]
     [AddCommGroup W'] [Module ℂ W'] (ρ : Representation ℂ G W) (κ : Representation ℂ H W') (a : H →₀ ℤ)
-    (w : W) (y : W') : opE ((box ρ κ).comp (MonoidHom.inr G H)) a (w ⊗ₜ y) = w ⊗ₜ opE κ a y := by
+    (w : W) (y : W') : opE ((GlobalTheory.LGrp.extProd ρ κ).comp (MonoidHom.inr G H)) a (w ⊗ₜ y) = w ⊗ₜ opE κ a y := by
   simp only [opE, Finsupp.sum, LinearMap.sum_apply, LinearMap.smul_apply, MonoidHom.comp_apply,
-    MonoidHom.inr_apply, box, Representation.tprod_apply, MonoidHom.coe_fst, MonoidHom.coe_snd, map_one,
+    MonoidHom.inr_apply, GlobalTheory.LGrp.extProd, Representation.tprod_apply, MonoidHom.coe_fst, MonoidHom.coe_snd, map_one,
     TensorProduct.map_tmul, Module.End.one_apply, TensorProduct.tmul_sum, TensorProduct.tmul_smul]
 
 private theorem mem_box_inr_eigenspace_iff_lTensor_opE_sub_eq_zero {G H W W' : Type} [Group G] [Group H] [AddCommGroup W] [Module ℂ W]
     [AddCommGroup W'] [Module ℂ W'] (ρ : Representation ℂ G W) (κ : Representation ℂ H W') (a : H →₀ ℤ)
     (N : ℕ) (y : W ⊗[ℂ] W') :
-    y ∈ ePart ((box ρ κ).comp (MonoidHom.inr G H)) a N ↔ LinearMap.lTensor W (opE κ a - (N : Module.End ℂ W')) y = 0 := by
-  have e : opE ((box ρ κ).comp (MonoidHom.inr G H)) a - (N : Module.End ℂ (W ⊗[ℂ] W')) =
+    y ∈ ePart ((GlobalTheory.LGrp.extProd ρ κ).comp (MonoidHom.inr G H)) a N ↔ LinearMap.lTensor W (opE κ a - (N : Module.End ℂ W')) y = 0 := by
+  have e : opE ((GlobalTheory.LGrp.extProd ρ κ).comp (MonoidHom.inr G H)) a - (N : Module.End ℂ (W ⊗[ℂ] W')) =
       LinearMap.lTensor W (opE κ a - (N : Module.End ℂ W')) := by
     apply TensorProduct.ext'
     intro w v
@@ -147,7 +145,6 @@ private theorem mem_invT_iff_sum_smul_inl_eq_and_inr_fixed {G H W : Type} [Group
     (F : Fin m → W) :
     F ∈ invT K₁ K₂ τ₀ ρ ↔ (∀ (k : K₁) (i : Fin m), ∑ j, (τ₀ k : Matrix (Fin m) (Fin m) ℂ) i j • ρ (↑k, 1) (F j) = F i) ∧
       ∀ k ∈ K₂, ∀ i, ρ (1, k) (F i) = F i := Iff.rfl
-
 
 theorem invBox : InvBox := by
   intro G H W W' _ _ _ _ _ _ ρ κ m K₁ K₂ τ₀ a N
@@ -193,7 +190,7 @@ theorem invBox : InvBox := by
   have hinj : Function.Injective ι :=
     Ψ.injective.comp (TensorProduct.map_injective_of_flat_flat (inv1 K₁ τ₀ ρ).subtype
       (fixd κ K₂ ⊓ ePart κ a N : Submodule ℂ W').subtype (Submodule.injective_subtype _) (Submodule.injective_subtype _))
-  have hrange : invE K₁ K₂ τ₀ (box ρ κ) a N = LinearMap.range ι := by
+  have hrange : invE K₁ K₂ τ₀ (GlobalTheory.LGrp.extProd ρ κ) a N = LinearMap.range ι := by
     apply le_antisymm
     · intro F hF
       obtain ⟨x, rfl⟩ := Ψ.surjective F

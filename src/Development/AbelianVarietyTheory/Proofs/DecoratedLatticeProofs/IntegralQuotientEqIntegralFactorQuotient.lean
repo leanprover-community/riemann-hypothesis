@@ -132,13 +132,8 @@ theorem exists_eq_map_smul_prod {A B P : Type} [Group A] [TopologicalSpace A] [I
   simp
 
 theorem isCompact_setOf_val {X : Type} [TopologicalSpace X] {S K : Set X} (hK : IsCompact K) (hS : IsClosed S) :
-    IsCompact {x : S | (x : X) ∈ K} := by
-  rw [Subtype.isCompact_iff]
-  convert hK.inter_right hS using 1
-  ext x
-  constructor
-  · rintro ⟨y, hy, rfl⟩; exact ⟨hy, y.2⟩
-  · rintro ⟨hx, hxS⟩; exact ⟨⟨x, hxS⟩, hx, rfl⟩
+    IsCompact {x : S | (x : X) ∈ K} :=
+  hS.isClosedEmbedding_subtypeVal.isCompact_preimage hK
 
 end Meas
 

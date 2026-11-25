@@ -9,8 +9,6 @@ universe u
 
 open CategoryTheory AlgebraicGeometry TopologicalSpace
 
-noncomputable section
-
 namespace FunctorialResolution.EmbeddedResolution
 
 theorem closure_image_mem_irreducibleComponents_of_generalizingMap

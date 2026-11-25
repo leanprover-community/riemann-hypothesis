@@ -389,17 +389,12 @@ open GlobalTheory.KZ GlobalTheory.Sieg GlobalTheory.QFam Cardinal
 
 namespace GlobalTheory.KZ.GalUnits
 
-theorem exists_equiv_comp {R K L : Type} [Field R] [Field K] [Field L] [IsAlgClosed K]
-    [IsAlgClosed L] (f : R →+* K) (g : R →+* L) (hR : #R ≤ ℵ₀) (hK : ℵ₀ < #K) (hKL : #K = #L) :
-    ∃ σ : K ≃+* L, ∀ r : R, σ (f r) = g r := by
-  apply Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.B5.extEmb_equiv_comp <;> assumption
-
 theorem exists_ext {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (ε : Ω →+* ℂ) (s : Ω ≃ₐ[ℚ] Ω) :
     ∃ σ : ℂ ≃+* ℂ, ∀ x : Ω, σ (ε x) = ε (s x) := by
   haveI : Algebra.IsAlgebraic ℚ Ω := IsAlgClosure.isAlgebraic
   have hR : #Ω ≤ ℵ₀ :=
     (Algebra.IsAlgebraic.cardinalMk_le_max ℚ Ω).trans (max_le Cardinal.mk_le_aleph0 le_rfl)
-  exact exists_equiv_comp ε (ε.comp (s : Ω →+* Ω)) hR
+  exact Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.B5.extEmb_equiv_comp ε (ε.comp (s : Ω →+* Ω)) hR
     (by simp [Cardinal.mk_complex, Cardinal.aleph0_lt_continuum]) rfl
 
 theorem mem_range_of_pow_eq_one {Ω : Type} [Field Ω] [IsAlgClosed Ω] [CharZero Ω] (ε : Ω →+* ℂ) {n : ℕ}
@@ -427,7 +422,6 @@ theorem eps_eOm {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (�
   have hex := mem_range_of_pow_eq_one ε x.den_pos hw
   unfold eOm ee
   exact Function.invFun_eq hex
-
 
 open Classical in
 def lc {R : Type} [Zero R] (M : ℕ) (k : ℤ) (A : ℕ → R) (r : ℚ) : R :=

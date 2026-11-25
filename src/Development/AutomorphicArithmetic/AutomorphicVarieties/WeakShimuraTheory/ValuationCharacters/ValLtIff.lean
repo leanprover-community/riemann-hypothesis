@@ -25,12 +25,6 @@ private theorem card_eq {F Ω : Type} [Field F] [NumberField F] [Field Ω] [Alge
     · exact absurd (ovl v) ((places F Ω l (pl v)).2.1 htop).2
     · exact (places F Ω l (pl v)).1 htop
   choose w hw using hplace
-  have huniq : ∀ {A : ValuationSubring Ω} {w₁ w₂ : HeightOneSpectrum (𝓞 F)},
-      IsPlaceOver A w₁ → IsPlaceOver A w₂ → w₁ = w₂ := by
-    intro A w₁ w₂ h₁ h₂
-    apply HeightOneSpectrum.ext
-    ext x
-    rw [← h₁ x, ← h₂ x]
   have htrans : ∀ {A B : ValuationSubring Ω} (g : G F Ω), (∀ x, g x ∈ A ↔ x ∈ B) →
       ∀ u : HeightOneSpectrum (𝓞 F), IsPlaceOver A u → IsPlaceOver B u := by
     intro A B g hg u hA x
@@ -76,7 +70,7 @@ private theorem card_eq {F Ω : Type} [Field F] [NumberField F] [Field Ω] [Alge
     obtain ⟨A, hA⟩ := exists_isPlaceOver (F := F) Ω u
     have hAl : A.valuation (l : Ω) < 1 := (habove A u hA).2 hl'
     obtain ⟨v, ⟨g, hg⟩, -⟩ := cover A hAl
-    exact ⟨v, congrArg HeightOneSpectrum.asIdeal (huniq (hw v) (htrans g hg u hA))⟩
+    exact ⟨v, congrArg HeightOneSpectrum.asIdeal (eq_of_isPlaceOver (hw v) (htrans g hg u hA))⟩
 
 theorem UpperTheory.V.Ws.chDv :
     ∀ {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] {l : ℕ} [Fact l.Prime] {c : Coef l} (D : Raw Ω c) (T : Tower D), ∃ dv : ℕ, dv * Nat.card T.ι = T.d := by

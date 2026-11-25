@@ -72,11 +72,8 @@ theorem rawBT_congr (κ : ℂ) (w : List (Wd.Letter ℂ S)) {x y : Wd.Ix S → �
 theorem word_action_mul (M N : Wd.SlopeTestRemainingChoices S (Q.Pr (V1 E))) (x : Wd.Ix S → V1 E) :
     act1 (M * N) x = act1 M (act1 N x) := by
   funext a
-  have hs : ∀ (s : Finset (Wd.Ix S)) (f : Wd.Ix S → Q.Pr (V1 E)), (∑ j ∈ s, f j).1 = ∑ j ∈ s, (f j).1 := by
-    intro s f
-    refine Finset.induction_on s (by rw [Finset.sum_empty, Finset.sum_empty]; rfl) (fun j t hj ih => ?_)
-    rw [Finset.sum_insert hj, Finset.sum_insert hj, ← ih]
-    rfl
+  have hs : ∀ (s : Finset (Wd.Ix S)) (f : Wd.Ix S → Q.Pr (V1 E)), (∑ j ∈ s, f j).1 = ∑ j ∈ s, (f j).1 :=
+    fun _ _ => Prod.fst_sum
   have hm : ∀ p q : Q.Pr (V1 E), (p * q).1 = p.1 * q.1 := fun p q => rfl
 
   simp only [act1, Matrix.mul_apply, hs, hm, LinearMap.sum_apply, Module.End.mul_apply, map_sum]

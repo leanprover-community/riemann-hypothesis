@@ -10,8 +10,6 @@ import Mathlib.RingTheory.SimpleRing.Principal
 open NumberField IsDedekindDomain MeasureTheory Matrix Topology GlobalTheory.CompanionTheory.SW.Core
 open scoped ENNReal NNReal MatrixGroups
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.SW.Core.Mobius
 
 theorem den_ne (a b c d : ℝ) (hdet : a * d - b * c = 1) (τ : ℂ) (h : 0 < τ.im) :

@@ -6,7 +6,7 @@ import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Algebra.Group.Units
+import Mathlib.Topology.Algebra.Group.Matrix
 import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
@@ -181,18 +181,8 @@ theorem lg_eq_zero (A : Ad E R) (hA : A.GoodL) (u : Rˣ) (h1 : (u : R) ∈ A.O)
     · rw [Matrix.mem_unitaryGroup_iff]
       ext r c
       simp [j, Matrix.mul_apply, Complex.mul_conj, Complex.normSq_eq_norm_sq, hw w]
-  have hdet : Continuous fun g : GL Unit R => (Matrix.GeneralLinearGroup.det g : Rˣ) := by
-    rw [Units.continuous_iff]
-    constructor
-    · exact Units.continuous_val.matrix_det
-    · have : (fun g : GL Unit R => (((Matrix.GeneralLinearGroup.det g)⁻¹ : Rˣ) : R)) =
-          fun g => ((g⁻¹ : GL Unit R) : Matrix Unit Unit R).det := by
-        funext g
-        rw [← map_inv, Matrix.GeneralLinearGroup.val_det_apply]
-      rw [this]
-      exact (Units.continuous_val.comp continuous_inv).matrix_det
   have hc : Continuous fun g : GL Unit R => A.lg (Matrix.GeneralLinearGroup.det g) :=
-    hA.lgcont.comp hdet
+    hA.lgcont.comp Matrix.GeneralLinearGroup.continuous_det
   obtain ⟨C, hC⟩ := (hA.kcpt Unit).exists_bound_of_continuousOn hc.continuousOn
   have hone : A.lg 1 = 0 := by
     have := hA.lgmul 1 1

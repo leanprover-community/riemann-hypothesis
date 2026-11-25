@@ -469,8 +469,15 @@ def Compat (u : ∀ c, LB.Gen (twist L (t c))) {M : LB Y} (w : LB.Iso L (M.pull 
   ∀ c (Z : Scheme.{0}) (r : Z ⟶ X) (z : Z) y i k, π (r z) ∈ M.U y → r z ∈ L.U i →
     (r ≫ t c) z ∈ L.U k → gw w (r ≫ t c) z y k = uv (u c) r z i k * gw w r z y i
 
-theorem exists_descent_compat_of_invGen [Flat π] [Surjective π] [QuasiCompact π] (hL : L.IsLB)
-    (hπ : ∀ c, t c ≫ π = π) (h : LocTransitive t π) {u : ∀ c, LB.Gen (twist L (t c))}
+theorem exists_descent_compat_of_invGen_of [Surjective π] (hL : L.IsLB)
+    (hπ : ∀ c, t c ≫ π = π)
+    (hdesc : ∀ (V : Y.Opens) (f : Γ(X, π ⁻¹ᵁ V)),
+      (∀ c (Z : Scheme.{0}) (r : Z ⟶ X) (z : Z), r z ∈ π ⁻¹ᵁ V → gs (r ≫ t c) z _ f = gs r z _ f) →
+      ∃ a : Γ(Y, V), ∀ (Z : Scheme.{0}) (r : Z ⟶ X) (z : Z), r z ∈ π ⁻¹ᵁ V →
+        gs (r ≫ π) z V a = gs r z _ f)
+    (hunit : ∀ {V : Y.Opens} {a b : Γ(Y, V)ˣ},
+      (∀ x, π x ∈ V → gm (𝟙 X ≫ π) x V a = gm (𝟙 X ≫ π) x V b) → a = b)
+    {u : ∀ c, LB.Gen (twist L (t c))}
     (V : Y → Y.Opens) (hV : ∀ y, y ∈ V y) (e : ∀ y i, Γ(X, π ⁻¹ᵁ V y ⊓ L.U i)ˣ)
     (he : ∀ y, IsInvGen u (π ⁻¹ᵁ V y) (e y)) :
     ∃ M : LB Y, M.IsLB ∧ ∃ w : LB.Iso L (M.pull π), w.IsGen ∧ Compat u w := by
@@ -498,7 +505,7 @@ theorem exists_descent_compat_of_invGen [Flat π] [Surjective π] [QuasiCompact 
     have hρ' : ∀ (Z : Scheme.{0}) (r : Z ⟶ X) (z : Z) i, r z ∈ π ⁻¹ᵁ (V y ⊓ V y') →
         r z ∈ L.U i → gs r z _ ρ = (gm r z _ (e y' i) * (gm r z _ (e y i))⁻¹).val :=
       fun Z r z i h1 h2 => (hρ Z r z i ⟨h1, h2⟩).trans (v Z r z i ⟨h1, h2⟩)
-    obtain ⟨a, ha⟩ := h.exists_descend (V y ⊓ V y') ρ fun c Z r z hz => by
+    obtain ⟨a, ha⟩ := hdesc (V y ⊓ V y') ρ fun c Z r z hz => by
       obtain ⟨i, hi⟩ := exists_chart hL (r z)
       obtain ⟨k, hk⟩ := exists_chart hL ((r ≫ t c) z)
       rw [hρ' Z r z i hz hi, hρ' Z (r ≫ t c) z k (hmem _ c r z hz) hk,
@@ -517,11 +524,11 @@ theorem exists_descent_compat_of_invGen [Flat π] [Surjective π] [QuasiCompact 
   let M : LB Y := ⟨Y, V, g⟩
   refine ⟨M, ⟨eq_top_iff.2 fun y _ => Opens.mem_iSup.2 ⟨y, hV y⟩, fun y => ?_,
     fun y₁ y₂ y₃ => ?_⟩, ?_⟩
-  · refine unit_ext_of_flat (π := π) fun x hx => ?_
+  · refine hunit fun x hx => ?_
     obtain ⟨i, hi⟩ := exists_chart hL x
     refine (gm_res (𝟙 X ≫ π) x _ hx _).trans ((hg y y _ (𝟙 X) x i hx hx hi).trans ?_)
     rw [mul_inv_cancel, map_one]
-  · refine unit_ext_of_flat (π := π) fun x hx => ?_
+  · refine hunit fun x hx => ?_
     obtain ⟨i, hi⟩ := exists_chart hL x
     refine ((map_mul _ _ _).trans (congrArg₂ (· * ·)
       ((gm_res (𝟙 X ≫ π) x _ hx _).trans (hg y₁ y₂ _ (𝟙 X) x i hx.1.1 hx.1.2 hi))
@@ -548,6 +555,13 @@ theorem exists_descent_compat_of_invGen [Flat π] [Surjective π] [QuasiCompact 
     simp only [ofMul_mul, ofMul_inv]
     abel
 
+theorem exists_descent_compat_of_invGen [Flat π] [Surjective π] [QuasiCompact π] (hL : L.IsLB)
+    (hπ : ∀ c, t c ≫ π = π) (h : LocTransitive t π) {u : ∀ c, LB.Gen (twist L (t c))}
+    (V : Y → Y.Opens) (hV : ∀ y, y ∈ V y) (e : ∀ y i, Γ(X, π ⁻¹ᵁ V y ⊓ L.U i)ˣ)
+    (he : ∀ y, IsInvGen u (π ⁻¹ᵁ V y) (e y)) :
+    ∃ M : LB Y, M.IsLB ∧ ∃ w : LB.Iso L (M.pull π), w.IsGen ∧ Compat u w :=
+  exists_descent_compat_of_invGen_of hL hπ h.exists_descend (unit_ext_of_flat (π := π)) V hV e he
+
 theorem exists_descent_of_invGen [Flat π] [Surjective π] [QuasiCompact π] (hL : L.IsLB)
     (hπ : ∀ c, t c ≫ π = π) (h : LocTransitive t π) {u : ∀ c, LB.Gen (twist L (t c))}
     (V : Y → Y.Opens) (hV : ∀ y, y ∈ V y) (e : ∀ y i, Γ(X, π ⁻¹ᵁ V y ⊓ L.U i)ˣ)
@@ -555,6 +569,52 @@ theorem exists_descent_of_invGen [Flat π] [Surjective π] [QuasiCompact π] (hL
     ∃ M : LB Y, M.IsLB ∧ LBIso L (M.pull π) :=
   let ⟨M, hM, w, hw, _⟩ := exists_descent_compat_of_invGen hL hπ h V hV e he
   ⟨M, hM, w, hw⟩
+
+theorem exists_invGen_cover_of_invSec [IsIntegralHom π] [Surjective π]
+    (hL : L.IsLB) (hπ : ∀ c, t c ≫ π = π)
+    (horb : ∀ x x' : X, π x = π x' → ∃ c, x = t c x')
+    {u : ∀ c, LB.Gen (twist L (t c))}
+    (hsec : ∀ {W : X.Opens}, IsAffineOpen W → (∀ c, W ≤ t c ⁻¹ᵁ W) → ∀ x ∈ W,
+      ∃ s : ∀ i, Γ(X, W ⊓ L.U i), IsLocSec L W s ∧ IsInv u W s ∧ ∃ i, x ∈ X.basicOpen (s i)) :
+    ∀ y : Y, ∃ V : Y.Opens, y ∈ V ∧ ∃ e, IsInvGen u (π ⁻¹ᵁ V) e := fun y => by
+  obtain ⟨x, rfl⟩ := π.surjective y
+  obtain ⟨_, ⟨V₀, hV₀, rfl⟩, hx, -⟩ := Y.isBasis_affineOpens.exists_subset_of_mem_open
+    (Set.mem_univ (π x)) isOpen_univ
+  have hinv : ∀ (V : Y.Opens) c, π ⁻¹ᵁ V ≤ t c ⁻¹ᵁ π ⁻¹ᵁ V := fun V c => by
+    rw [← Scheme.Hom.comp_preimage, hπ]
+  obtain ⟨s, h1, h2, i₀, h3⟩ := hsec (IsAffineOpen.preimage hV₀ π) (hinv V₀) x hx
+  let N : X.Opens := ⨆ i, X.basicOpen (s i)
+  let V : Y.Opens := ⟨(π '' (N : Set X)ᶜ)ᶜ, (π.isClosedMap _ N.isOpen.isClosed_compl).isOpen_compl⟩
+  have hN : ∀ x', x' ∈ π ⁻¹ᵁ V → ∃ i, x' ∈ X.basicOpen (s i) := fun x' hx' => by
+    by_contra hh
+    exact hx' ⟨x', fun hh' => hh (Opens.mem_iSup.1 hh'), rfl⟩
+  have hN' : ∀ x', x' ∈ π ⁻¹ᵁ V → x' ∈ π ⁻¹ᵁ V₀ := fun x' hx' => by
+    obtain ⟨i, hi⟩ := hN x' hx'
+    exact (X.basicOpen_le _ hi).1
+  have l : ∀ i, π ⁻¹ᵁ V ⊓ L.U i ≤ π ⁻¹ᵁ V₀ ⊓ L.U i := fun i x' hx' => ⟨hN' x' hx'.1, hx'.2⟩
+  have hu' : ∀ i, IsUnit (rs (l i) (s i)) := fun i => isUnit_of_mem_basicOpen _ fun x' hx' => by
+    obtain ⟨j, hj⟩ := hN x' hx'.1
+    have hj' := X.basicOpen_le _ hj
+    refine (isUnit_gs_iff (𝟙 X) x' _ hx' _).1 ?_
+    rw [gs_res (𝟙 X) x' _ hx', h1 _ (𝟙 X) x' i j hj'.1 hx'.2 hj'.2]
+    exact (Units.isUnit _).mul ((isUnit_gs_iff (𝟙 X) x' _ hj' _).2 hj)
+  have v : ∀ (Z : Scheme.{0}) (r : Z ⟶ X) (z : Z) i, r z ∈ π ⁻¹ᵁ V → r z ∈ L.U i →
+      (gm r z _ (hu' i).unit).val = gs r z _ (s i) := fun Z r z i a b =>
+    (gs_unit r z (π ⁻¹ᵁ V ⊓ L.U i) ⟨a, b⟩ _).symm.trans (gs_res r z (l i) ⟨a, b⟩ _)
+  refine ⟨V, ?_, fun i => (hu' i).unit, fun Z r z i j a b c => Units.ext ?_,
+    fun c Z r z i k a b d => Units.ext ?_⟩
+  · rintro ⟨x', hx', e⟩
+    obtain ⟨c, rfl⟩ := horb _ _ e
+    obtain ⟨k, hk⟩ := exists_chart hL (t c x)
+    have h4 := X.basicOpen_le _ h3
+    have h5 := (isUnit_gs_iff (𝟙 X) x _ h4 _).2 h3
+    rw [h2 c _ (𝟙 X) x i₀ k hx h4.2 hk] at h5
+    exact hx' (Opens.mem_iSup.2 ⟨k, (isUnit_gs_iff (𝟙 X ≫ t c) x (π ⁻¹ᵁ V₀ ⊓ L.U k)
+      ⟨hinv V₀ c hx, hk⟩ _).1 (isUnit_of_mul_isUnit_right h5)⟩)
+  · rw [Units.val_mul, v Z r z i a b, v Z r z j a c]
+    exact h1 Z r z i j (hN' _ a) b c
+  · rw [Units.val_mul, v Z r z i a b, v Z (r ≫ t c) z k (hinv V c a) d]
+    exact h2 c Z r z i k (hN' _ a) b d
 
 theorem exists_descent_compat_of_galois [Group C] [Finite C] [IsFinite π] [Flat π] [Surjective π]
     (hL : L.IsLB) (ht1 : t 1 = 𝟙 X) (ht : ∀ c c', t c ≫ t c' = t (c * c'))
@@ -565,47 +625,8 @@ theorem exists_descent_compat_of_galois [Group C] [Finite C] [IsFinite π] [Flat
     (hc : ∀ c c', LB.Gen.Corr L _ _ _ _ (u (c * c'))
       (LB.mulGen L _ _ _ _ (u c) (LB.pullGen L _ _ (u c') (t c)))) :
     ∃ M : LB Y, M.IsLB ∧ ∃ w : LB.Iso L (M.pull π), w.IsGen ∧ Compat u w := by
-  have H : ∀ y : Y, ∃ V : Y.Opens, y ∈ V ∧ ∃ e, IsInvGen u (π ⁻¹ᵁ V) e := fun y => by
-    obtain ⟨x, rfl⟩ := π.surjective y
-    obtain ⟨_, ⟨V₀, hV₀, rfl⟩, hx, -⟩ := Y.isBasis_affineOpens.exists_subset_of_mem_open
-      (Set.mem_univ (π x)) isOpen_univ
-    have hinv : ∀ (V : Y.Opens) c, π ⁻¹ᵁ V ≤ t c ⁻¹ᵁ π ⁻¹ᵁ V := fun V c => by
-      rw [← Scheme.Hom.comp_preimage, hπ]
-    obtain ⟨s, h1, h2, i₀, h3⟩ := exists_inv_sec hL ht1 ht hfree hu hc
-      (IsAffineOpen.preimage hV₀ π) (hinv V₀) x hx
-    let N : X.Opens := ⨆ i, X.basicOpen (s i)
-    let V : Y.Opens := ⟨(π '' (N : Set X)ᶜ)ᶜ, (π.isClosedMap _ N.isOpen.isClosed_compl).isOpen_compl⟩
-    have hN : ∀ x', x' ∈ π ⁻¹ᵁ V → ∃ i, x' ∈ X.basicOpen (s i) := fun x' hx' => by
-      by_contra hh
-      exact hx' ⟨x', fun hh' => hh (Opens.mem_iSup.1 hh'), rfl⟩
-    have hN' : ∀ x', x' ∈ π ⁻¹ᵁ V → x' ∈ π ⁻¹ᵁ V₀ := fun x' hx' => by
-      obtain ⟨i, hi⟩ := hN x' hx'
-      exact (X.basicOpen_le _ hi).1
-    have l : ∀ i, π ⁻¹ᵁ V ⊓ L.U i ≤ π ⁻¹ᵁ V₀ ⊓ L.U i := fun i x' hx' => ⟨hN' x' hx'.1, hx'.2⟩
-    have hu' : ∀ i, IsUnit (rs (l i) (s i)) := fun i => isUnit_of_mem_basicOpen _ fun x' hx' => by
-      obtain ⟨j, hj⟩ := hN x' hx'.1
-      have hj' := X.basicOpen_le _ hj
-      refine (isUnit_gs_iff (𝟙 X) x' _ hx' _).1 ?_
-      rw [gs_res (𝟙 X) x' _ hx', h1 _ (𝟙 X) x' i j hj'.1 hx'.2 hj'.2]
-      exact (Units.isUnit _).mul ((isUnit_gs_iff (𝟙 X) x' _ hj' _).2 hj)
-    have v : ∀ (Z : Scheme.{0}) (r : Z ⟶ X) (z : Z) i, r z ∈ π ⁻¹ᵁ V → r z ∈ L.U i →
-        (gm r z _ (hu' i).unit).val = gs r z _ (s i) := fun Z r z i a b =>
-      (gs_unit r z (π ⁻¹ᵁ V ⊓ L.U i) ⟨a, b⟩ _).symm.trans (gs_res r z (l i) ⟨a, b⟩ _)
-    refine ⟨V, ?_, fun i => (hu' i).unit, fun Z r z i j a b c => Units.ext ?_,
-      fun c Z r z i k a b d => Units.ext ?_⟩
-    · rintro ⟨x', hx', e⟩
-      obtain ⟨c, rfl⟩ := h.exists_apply_eq e
-      obtain ⟨k, hk⟩ := exists_chart hL (t c x)
-      have h4 := X.basicOpen_le _ h3
-      have h5 := (isUnit_gs_iff (𝟙 X) x _ h4 _).2 h3
-      rw [h2 c _ (𝟙 X) x i₀ k hx h4.2 hk] at h5
-      exact hx' (Opens.mem_iSup.2 ⟨k, (isUnit_gs_iff (𝟙 X ≫ t c) x (π ⁻¹ᵁ V₀ ⊓ L.U k)
-        ⟨hinv V₀ c hx, hk⟩ _).1 (isUnit_of_mul_isUnit_right h5)⟩)
-    · rw [Units.val_mul, v Z r z i a b, v Z r z j a c]
-      exact h1 Z r z i j (hN' _ a) b c
-    · rw [Units.val_mul, v Z r z i a b, v Z (r ≫ t c) z k (hinv V c a) d]
-      exact h2 c Z r z i k (hN' _ a) b d
-  choose V hV e he using H
+  choose V hV e he using exists_invGen_cover_of_invSec hL hπ (fun _ _ e => h.exists_apply_eq e)
+    (fun hW hWi x hx => exists_inv_sec hL ht1 ht hfree hu hc hW hWi x hx)
   exact exists_descent_compat_of_invGen hL hπ h V hV e he
 
 theorem exists_descent_of_galois [Group C] [Finite C] [IsFinite π] [Flat π] [Surjective π]

@@ -47,8 +47,6 @@ public import Mathlib.Analysis.Matrix.Hermitian
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.Proof.GenusMassSignature
 
 open NumberField Formalism.BasicNotions Matrix

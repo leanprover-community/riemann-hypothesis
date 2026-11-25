@@ -168,19 +168,7 @@ theorem constant_coeff_zero_of_vanishing_alt (l d : ℕ) [Fact l.Prime] [NeZero 
   apply this
   simp [product_zeroth_first_parts.bideg]
 
-def KernelTwistOneLetterVanishing : Prop :=
-  ∀ (L : product_zeroth_first_parts.Loc1) (ep0 : ℂ_[L.l]) (be : MvPowerSeries (ZMod 2) ℂ_[L.l]), ‖ep0‖ = 1 → product_zeroth_first_parts.B3 L.l 2 be →
-    L.B0 ep0 be →
-    ∃ (g : Fin L.N0 × Fin L.N1 → MvPowerSeries (Fin L.N0 × Fin L.N1) ℂ_[L.l])
-      (U : MvPowerSeries (Fin L.N0 × Fin L.N1) ℂ_[L.l]) (sgn ep : ℂ_[L.l]), ‖ep‖ = 1 ∧
-      (∀ y, MvPowerSeries.constantCoeff (g y) = 0) ∧
-      (∀ y, MvPowerSeries.subst g (oneLog (K := ℂ_[L.l]) L.l y) = MvPowerSeries.X y) ∧
-      Integral U ∧ (sgn = 1 ∨ sgn = -1) ∧
-      MvPowerSeries.subst (fun v : ZMod 1 × Fin L.N0 × Fin L.N1 =>
-        MvPowerSeries.C ep0 * (MvPowerSeries.X v.2 : MvPowerSeries (Fin L.N0 × Fin L.N1) ℂ_[L.l])) L.Th =
-        thetaOne g U sgn ep be
-
-theorem kernel_twist_one_letter_vanishing : KernelTwistOneLetterVanishing := by
+theorem kernel_twist_one_letter_vanishing : Formalism.MainNotions.DIV.Bridge.DworkPowerSeriesWeights.KernelFromTwistOneLetter := by
   intro L ep0 be hep0 h3 hB0
   classical
   obtain ⟨ep, hep, sg, hsg, U, hU, hTh⟩ := hB0

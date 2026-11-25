@@ -148,7 +148,7 @@ theorem one_hermND (M : ℕ) : IsHermND σ (1 : Matrix (Fin M) (Fin M) E) := by
 theorem blockOne_hermND {M : ℕ} (t : F) (ht : t ≠ 0) :
     IsHermND σ (blockOne (algebraMap F E t) (1 : Matrix (Fin M) (Fin M) E)) := by
   refine ⟨blockOne_herm _ (σ.commutes t) _ (one_hermND M).1, ?_⟩
-  rw [AlgSplit.det_blockOne]
+  rw [det_blockOne]
   simpa using ht
 
 end Alg2

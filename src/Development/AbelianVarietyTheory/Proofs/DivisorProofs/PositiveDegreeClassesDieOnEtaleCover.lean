@@ -13,11 +13,6 @@ open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComp
 
 namespace GlobalTheory.EtC
 
-theorem secMap_secRes_comm {R : Type} [CommRing R] {F G : Shv R} (φ : F ⟶ G) {V U : Scheme.{0}} (g : V ⟶ U)
-    (x : Sec F U) : Sec.map φ (Sec.res g x) = Sec.res g (Sec.map φ x) := by
-  change (φ.hom.app (op V)).hom ((F.obj.map g.op).hom x) = (G.obj.map g.op).hom ((φ.hom.app (op U)).hom x)
-  rw [← ModuleCat.comp_apply, ← ModuleCat.comp_apply, φ.hom.naturality]
-
 theorem secRes_secRes {R : Type} [CommRing R] {F : Shv R} {W V U : Scheme.{0}} (k : W ⟶ V) (g : V ⟶ U)
     (x : Sec F U) : Sec.res k (Sec.res g x) = Sec.res (k ≫ g) x := by
   change (F.obj.map k.op).hom ((F.obj.map g.op).hom x) = (F.obj.map (k ≫ g).op).hom x
@@ -52,7 +47,7 @@ theorem classes_die_on_etale_cover : A5 := by
       funext i
       have hai : Sec.res (Sigma.ι V i) a = y i := congrFun ha i
       change Sec.res (Sigma.ι V i) (Sec.map _ a) = Sec.res (Sigma.ι V i) (Sec.res f z)
-      rw [← secMap_secRes_comm, hai, hy, secRes_secRes, hιf]
+      rw [← GlobalTheory.EtC.exactIff_map_res, hai, hy, secRes_secRes, hιf]
     have hY := GlobalTheory.T.cocycle_ev_d_eq_zero_and_mk_eq_zero_iff R (∐ V) (res R F) (n - 1) n (n + 1) (by omega) rfl
     have hev := GlobalTheory.T.etaleCochainEvalOnSimplex_basic_properties R (E := sch.obj X) (I := res R F) (n := n)
     let α' : Cocycle ((chains R).obj (sch.obj (∐ V))) (res R F) n :=

@@ -119,12 +119,8 @@ theorem coord_apply {A B : HSp D} {c : ℕ} {ε : D.host.E} (d : HermitianOrthog
     ∑ k, l k * (frameMat B A d.ι *ᵥ z + d.a *ᵥ u) k = u p := by
 
   have swap : ∀ {n : ℕ} (M : Matrix (Fin B.rank) (Fin n) D.host.E) (w : Fin n → D.host.E),
-      ∑ k, l k * (M *ᵥ w) k = ∑ j, (∑ k, l k * M k j) * w j := by
-    intro n M w
-    simp only [Matrix.mulVec, dotProduct, Finset.mul_sum, Finset.sum_mul]
-    rw [Finset.sum_comm]
-    refine Finset.sum_congr rfl fun j _ => Finset.sum_congr rfl fun k _ => ?_
-    ring
+      ∑ k, l k * (M *ᵥ w) k = ∑ j, (∑ k, l k * M k j) * w j :=
+    fun M w => Matrix.dotProduct_mulVec l M w
   simp only [Pi.add_apply, mul_add, Finset.sum_add_distrib, swap, h0, h1, zero_mul,
     Finset.sum_const_zero, zero_add, ite_mul, one_mul, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
 
@@ -262,11 +258,8 @@ theorem idV_inv_mul (I : Ideal (𝓞 D.host.E)) (v : GlobalTheory.FinPl.Pl D) (c
   ·
     apply idV_mono
     intro a ha
-    have h1 : (1 : D.host.E) ∈ ((I : FractionalIdeal (𝓞 D.host.E)⁰ D.host.E))⁻¹ := by
-      rw [FractionalIdeal.mem_inv_iff hI0]
-      intro y hy
-      rw [one_mul]
-      exact FractionalIdeal.coeIdeal_le_one hy
+    have h1 : (1 : D.host.E) ∈ ((I : FractionalIdeal (𝓞 D.host.E)⁰ D.host.E))⁻¹ :=
+      FractionalIdeal.one_mem_inv_coeIdeal (FractionalIdeal.coeIdeal_ne_zero.mp hI0)
     simpa using FractionalIdeal.mul_mem_mul h1 ha
 
 theorem exists_mem_modulBar {T : Type} {L : LevCh D T} (P : Places L) (sc : Consts) {v : GlobalTheory.FinPl.Pl D} (hv : v ∉ P.S0) :

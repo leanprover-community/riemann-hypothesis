@@ -620,7 +620,6 @@ theorem exists_kernel_padic {l : ℕ} [Fact l.Prime] (K LL : FinExt l) (T₁ T�
 
 end GlobalTheory.NL.CokerKill
 
-
 open GlobalTheory.NL.CokerKill in
 theorem GlobalTheory.NL.CokerKill.X_pow_kills_coker : ∀ (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F), lem3 D HW F := by
   intro D HW F Cm l _ K s LL hG T₁ T₂ π M h c1 c2
@@ -689,19 +688,12 @@ theorem single_mul_letE (i : ZMod n) (a : PowerSeries O) :
   · subst h; simp [letE]
   · simp [letE, h]
 
-theorem letE_mul_self (i : ZMod n) : (letE i : LetA O n) * letE i = letE i :=
-  single_mul_letE i 1
-
 theorem letE_mul_ne {i j : ZMod n} (h : i ≠ j) : (letE i : LetA O n) * letE j = 0 := by
   rw [letE_mul]
   simp [letE, h]
 
-theorem sum_letE [NeZero n] : ∑ i : ZMod n, (letE i : LetA O n) = 1 := by
-  funext j
-  simp [letE, Finset.sum_apply, Pi.single_apply]
-
 theorem sum_letE_smul [NeZero n] (x : W.DD T) : ∑ i : ZMod n, (letE i : LetA O n) • x = x := by
-  rw [← Finset.sum_smul, sum_letE, one_smul]
+  rw [← Finset.sum_smul, GlobalTheory.NL.NygaardFrobeniusPower.sum_letE, one_smul]
 
 theorem mem_Nl_iff (i : ZMod n) (x : W.DD T) :
     x ∈ W.Nl T i ↔ x ∈ W.N T ∧ (letE i : LetA O n) • x = x := by
@@ -709,7 +701,7 @@ theorem mem_Nl_iff (i : ZMod n) (x : W.DD T) :
   · rintro ⟨y, hy, rfl⟩
     refine ⟨(W.N T).smul_mem _ hy, ?_⟩
     change (letE i : LetA O n) • (letE i : LetA O n) • y = (letE i : LetA O n) • y
-    rw [smul_smul, letE_mul_self]
+    rw [smul_smul, GlobalTheory.NL.Heights.letE_mul_self]
   · rintro ⟨hx, he⟩
     exact ⟨x, hx, he⟩
 
@@ -882,22 +874,12 @@ variable {G : Type} [Group G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field 
     {V : Type} [AddCommGroup V] [Module LL V] [Module Qp V] [IsScalarTower Qp LL V]
     (ρ : Representation LL G V)
 
-theorem actVB_tmul (g : G) (x : V) (b : B) :
-    actVB PD ρ g (x ⊗ₜ[Qp] b) = ρ g x ⊗ₜ[Qp] PD.actB g b := rfl
-
-theorem actVB_mul (g h : G) (x : V ⊗[Qp] B) :
-    actVB PD ρ (g * h) x = actVB PD ρ g (actVB PD ρ h x) := by
-  induction x using TensorProduct.induction_on with
-  | zero => simp
-  | tmul x b => simp only [actVB_tmul, map_mul]; rfl
-  | add x y hx hy => simp only [map_add (f := _), hx, hy]
-
 theorem crisCob_of_finiteIndex [CharZero LL] (H : Subgroup G) [H.FiniteIndex] (c : G → V)
     (hc : ∀ g h, c (g * h) = c g + ρ g (c h)) (b : V ⊗[Qp] B)
     (hb : ∀ h ∈ H, c h ⊗ₜ[Qp] (1 : B) = actVB PD ρ h b - b) :
     ∃ x : V ⊗[Qp] B, ∀ g, c g ⊗ₜ[Qp] (1 : B) = actVB PD ρ g x - x :=
-  coboundary_of_finiteIndex (actVB PD ρ) (actVB_mul PD ρ) H (fun g => c g ⊗ₜ[Qp] (1 : B))
-    (fun g h => by simp only [hc, add_tmul, actVB_tmul, map_one]) b hb
+  coboundary_of_finiteIndex (actVB PD ρ) (GlobalTheory.FundDel.actVB_mul' PD ρ) H (fun g => c g ⊗ₜ[Qp] (1 : B))
+    (fun g h => by simp only [hc, add_tmul, GlobalTheory.FundDel.actVB_tmul', map_one]) b hb
 
 end Generic
 
@@ -928,7 +910,7 @@ theorem mem_H1fT_iff_res [CharZero LL] (H : Subgroup G) [H.FiniteIndex] (κ : La
     refine crisCob_of_finiteIndex PD T.ρ H z z.2.1.2 (x - y ⊗ₜ[Qp] (1 : B)) fun h hh => ?_
     have h1 : T.ρ h y - y = (c : ↥H → T.V) ⟨h, hh⟩ - (z : G → T.V) h := congrFun hy ⟨h, hh⟩
     have h2 : (z : G → T.V) h = (c : ↥H → T.V) ⟨h, hh⟩ - (T.ρ h y - y) := by rw [h1]; abel
-    rw [h2, sub_tmul, sub_tmul, hx ⟨h, hh⟩, map_sub, actVB_tmul, map_one]
+    rw [h2, sub_tmul, sub_tmul, hx ⟨h, hh⟩, map_sub, GlobalTheory.FundDel.actVB_tmul', map_one]
     abel
 
 end Classes
@@ -1097,10 +1079,6 @@ variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp]
 theorem prim_one (p : ℕ) : ∃ j : ℕ, IsPrimitiveRoot (1 : LL) (p ^ j) :=
   ⟨0, by simpa using IsPrimitiveRoot.one⟩
 
-theorem sum_letE [NeZero n] : ∑ i : ZMod n, (letE i : LetA O n) = 1 := by
-  funext j
-  simp [letE, Finset.sum_apply, Pi.single_apply]
-
 theorem const_lev_π (i : ZMod n) : PowerSeries.constantCoeff (W.lev i 1 letπ) = 0 := by
   obtain ⟨E, hE0, -, hE⟩ := W.lev_π i 1 (prim_one _)
   have := congrArg PowerSeries.constantCoeff hE
@@ -1142,7 +1120,7 @@ theorem π_dvd_of_van (hinj : Function.Injective (algebraMap O LL)) (a : LetA O 
 theorem cmp_eq_sum [NeZero n] (T : LocLat G Qp LL O) (x : ↥(W.N T)) :
     W.cmp T x = ∑ i : ZMod n, W.cmp T ((letE i : LetA O n) • x) := by
 
-  rw [← map_sum, ← Finset.sum_smul, sum_letE, one_smul]
+  rw [← map_sum, ← Finset.sum_smul, GlobalTheory.NL.NygaardFrobeniusPower.sum_letE, one_smul]
 
 theorem cmp_iso_of_expansions [NeZero n] (hinj : Function.Injective (algebraMap O LL))
     (T : LocLat G Qp LL O) (ex : ZMod n → ↥(W.N T) → ℤ → T.V ⊗[Qp] B)
@@ -1209,8 +1187,6 @@ theorem cmp_iso_of_expansions [NeZero n] (hinj : Function.Injective (algebraMap 
         smul_zero]
 
 end Generic
-
-
 
 theorem cmp_iso (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW)
     (Cm : CmpOf D.loc D.locA HW F) (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l)
@@ -1352,8 +1328,6 @@ theorem length_cokN_lt_top [NeZero n] [IsDomain O] [IsDiscreteValuationRing O]
   exact lt_top_iff_ne_top.2 (Module.length_ne_top_iff.2 (GlobalTheory.AdmLoc.finiteLength_of_smul_eq_zero (pow_ne_zero c hp0) hl'))
 
 end Generic
-
-
 
 theorem exactness_of_N : ∀ (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW)
     (Cm : CmpOf D.loc D.locA HW F), P6 D HW F := by

@@ -4,8 +4,6 @@ public import PositivityTheory.AutomorphicForms.PublishedInputs.NonzeroTypes.Fin
 
 @[expose] public section
 
-noncomputable section
-
 namespace UpperTheory.NonzeroTypeTheory
 
 namespace TwistedSphericalEquivalence

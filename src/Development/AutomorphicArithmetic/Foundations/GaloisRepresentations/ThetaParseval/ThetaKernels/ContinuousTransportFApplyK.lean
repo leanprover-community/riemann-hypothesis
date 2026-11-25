@@ -140,8 +140,8 @@ theorem exists_extend_hecke_k : ∀ (F E : Type) [Field F] [NumberField F] [Fiel
     filter_upwards [hVo.mem_nhds (one_mem V)] with z hz
     exact (hV1 z hz).symm
   · have hN' := hN
-    refine ⟨GlobalTheory.T.mem_tensorCongruence_of_supported_at_infinity F E _ hN' _ hz,
-      GlobalTheory.T.mem_tensorCongruence_of_supported_at_infinity F E _ hN' _ ?_⟩
+    refine ⟨GlobalTheory.HeckeExtend.AtInf.mem_CE_of_atInf F E _ hN' _ hz,
+      GlobalTheory.HeckeExtend.AtInf.mem_CE_of_atInf F E _ hN' _ ?_⟩
     intro u hu
     have e : ((z⁻¹ : (AF F ⊗[F] E)ˣ) : AF F ⊗[F] E) - 1 = -(((z⁻¹ : (AF F ⊗[F] E)ˣ) : AF F ⊗[F] E) * ((z : AF F ⊗[F] E)
       - 1)) := by

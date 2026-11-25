@@ -470,7 +470,6 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ}
 theorem ua_ext {g h : UA E n} (h1 : cInf g = cInf h) (h2 : ∀ u : Pl E, cLoc u g = cLoc u h) : g = h :=
   Subtype.ext (ga_ext' h1 h2)
 
-
 variable (n) in
 def proj (S : Set (Pl E)) : InfinitePlace E ⊕ S → UA E n →* UA E n :=
   Sum.elim (fun v => (embU n v.embedding).subtype.comp (embRet v.embedding)) fun w => ret0 w.1 n
@@ -684,7 +683,7 @@ theorem finrank_inf_fixed_globLev : ∀ (E : Type) [Field E] [NumberField E] [Is
   obtain ⟨φ, hφ, hφ0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hπ.ne_bot
   obtain ⟨T₀, hT₀⟩ := exists_finset_subset hU hn hS hK _ (hπ.aut φ hφ).level (by simp)
   have hbad : {w : S | Module.finrank ℂ (fixed (σ w.1).ρ (K' w.1)) ≠ 1}.Finite := by
-    have h := (Filter.eventually_cofinite.1 (hK.2.and (GlobalTheory.T.finrank_integral_fixed_vectors_eq_one_almost_all E hU n hn π hπ σ hσ))).preimage
+    have h := (Filter.eventually_cofinite.1 (hK.2.and (GlobalTheory.BCT.SphLine.finrank_fixed_KL_eq_one E hU n hn π hπ σ hσ))).preimage
       (Subtype.val_injective (p := (· ∈ S))).injOn
     refine h.subset fun w hw h' => hw ?_
     rw [h'.1]

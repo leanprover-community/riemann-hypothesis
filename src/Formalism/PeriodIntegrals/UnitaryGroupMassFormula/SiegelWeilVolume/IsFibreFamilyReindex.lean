@@ -21,33 +21,6 @@ variable {V X Y : Type} [TopologicalSpace V] [MeasurableSpace V] [OpensMeasurabl
   {μ : Measure V} {f : V → Y} {ι : X → Y} {U : Set V} {ν : Measure X} {B : Set X}
   {fib : X → Measure V}
 
-theorem ae_fib (hfib : IsFibreFamily μ f ι U ν B fib) {f' : V → X}
-    (hff' : ∀ v, f v = ι (f' v)) (hι : Function.Injective ι) (b : X) :
-    ∀ᵐ v ∂(fib b), f' v = b :=
-  PI.AprimeInfW.DG.ae_fib hfib hff' hι b
-
-theorem fib_set_nonneg [IsFiniteMeasureOnCompacts ν]
-    (hfib : IsFibreFamily μ f ι U ν B fib) {f' : V → X} (hf' : Continuous f')
-    (hff' : ∀ v, f v = ι (f' v)) (hι : Function.Injective ι)
-    (ρ : V → ℝ) (hρc : Continuous ρ) (hρs : HasCompactSupport ρ) (hρU : tsupport ρ ⊆ U)
-    (hρ0 : ∀ v, 0 ≤ ρ v) (S : Set X) (hS : IsCompact S) (hSB : S ⊆ B) :
-    ∫ v in f' ⁻¹' S, ρ v ∂μ = ∫ b in S, (∫ v, ρ v ∂(fib b)) ∂ν :=
-  PI.AprimeInfW.DG.fib_set_nonneg hfib hf' hff' hι ρ hρc hρs hρU hρ0 S hS hSB
-
-theorem fib_set [IsFiniteMeasureOnCompacts μ] [IsFiniteMeasureOnCompacts ν]
-    (hfib : IsFibreFamily μ f ι U ν B fib) {f' : V → X} (hf' : Continuous f')
-    (hff' : ∀ v, f v = ι (f' v)) (hι : Function.Injective ι)
-    (ρ : V → ℝ) (hρc : Continuous ρ) (hρs : HasCompactSupport ρ) (hρU : tsupport ρ ⊆ U)
-    (S : Set X) (hS : IsCompact S) (hSB : S ⊆ B) :
-    ∫ v in f' ⁻¹' S, ρ v ∂μ = ∫ b in S, (∫ v, ρ v ∂(fib b)) ∂ν :=
-  PI.AprimeInfW.DG.fib_set hfib hf' hff' hι ρ hρc hρs hρU S hS hSB
-
-theorem eq_zero_of_setIntegral [LocallyCompactSpace X] [ν.IsOpenPosMeasure]
-    [IsFiniteMeasureOnCompacts ν] (D : X → ℝ) (W : Set X) (b0 : X) (hW : W ∈ 𝓝 b0)
-    (hD : ContinuousOn D W) (h0 : ∀ S, IsCompact S → S ⊆ W → ∫ b in S, D b ∂ν = 0) :
-    D b0 = 0 :=
-  PI.AprimeInfW.DG.eq_zero_of_setIntegral D W b0 hW hD h0
-
 end PI.VolStabSW.DensGen
 
 namespace PI.DegenerateSiegelWeil.FibUniq
@@ -62,28 +35,6 @@ variable {V X Y : Type} [TopologicalSpace V] [MeasurableSpace V] [BorelSpace V] 
   {μ : Measure V} {ν : Measure X} [IsFiniteMeasureOnCompacts μ] [IsFiniteMeasureOnCompacts ν]
   [ν.IsOpenPosMeasure]
   {f : V → Y} {ι : X → Y} {U : Set V} {fib1 fib2 : X → Measure V}
-
-theorem integral_eq (h1 : IsFibreFamily μ f ι U ν univ fib1)
-    (h2 : IsFibreFamily μ f ι U ν univ fib2) {f' : V → X} (hf' : Continuous f')
-    (hff' : ∀ v, f v = ι (f' v)) (hι : Function.Injective ι) (φ : V → ℝ) (hφc : Continuous φ)
-    (hφs : HasCompactSupport φ) (hφU : tsupport φ ⊆ U) (b : X) :
-    ∫ v, φ v ∂(fib1 b) = ∫ v, φ v ∂(fib2 b) :=
-  PI.AprimeInfW.FU.integral_eq h1 h2 hf' hff' hι φ hφc hφs hφU b
-
-theorem fin_cpt {fib : X → Measure V} (h : IsFibreFamily μ f ι U ν univ fib) (hU : IsOpen U)
-    (b : X) (K : Set V) (hK : IsCompact K) (hKU : K ⊆ U) : fib b K < ⊤ :=
-  PI.AprimeInfW.FU.fin_cpt h hU b K hK hKU
-
-theorem open_eq (h1 : IsFibreFamily μ f ι U ν univ fib1)
-    (h2 : IsFibreFamily μ f ι U ν univ fib2) {f' : V → X} (hf' : Continuous f')
-    (hff' : ∀ v, f v = ι (f' v)) (hι : Function.Injective ι) (O : Set V) (hO : IsOpen O)
-    (hOU : O ⊆ U) (b : X) : fib1 b O = fib2 b O :=
-  PI.AprimeInfW.FU.open_eq h1 h2 hf' hff' hι O hO hOU b
-
-theorem fib_eq (h1 : IsFibreFamily μ f ι U ν univ fib1)
-    (h2 : IsFibreFamily μ f ι U ν univ fib2) {f' : V → X} (hf' : Continuous f')
-    (hff' : ∀ v, f v = ι (f' v)) (hι : Function.Injective ι) (hU : IsOpen U) : fib1 = fib2 :=
-  PI.AprimeInfW.FU.fib_eq h1 h2 hf' hff' hι hU
 
 end PI.DegenerateSiegelWeil.FibUniq
 
@@ -187,7 +138,7 @@ theorem fib_reindex_eq (e : V ≃ₜ V) (h : X ≃ₜ X) {f' : V → X} (hf' : C
     (fib (h.symm b)).map e.toMeasurableEquiv = (cμ * cν) • fib b := by
   have hc : cμ * cν ≠ ⊤ := ENNReal.mul_ne_top hcμ hcν
   haveI : IsFiniteMeasureOnCompacts ((cμ * cν) • μ) := IsFiniteMeasureOnCompacts.smul μ hc
-  have := PI.DegenerateSiegelWeil.FibUniq.fib_eq (isFibreFamily_reindex e h hff' hι heh hU hμ hν hfib)
+  have := _root_.PI.AprimeInfW.FU.fib_eq (isFibreFamily_reindex e h hff' hι heh hU hμ hν hfib)
     (isFibreFamily_smul hc hfib) hf' hff' hι hUo
   exact congrFun this b
 

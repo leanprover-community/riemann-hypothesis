@@ -183,15 +183,8 @@ open scoped ENNReal
 
 namespace GlobalTheory.FlagQuotHaar
 
-theorem secondCountable_GL_complex (r : ℕ) : SecondCountableTopology (GL (Fin r) ℂ) := by
-  have : SecondCountableTopology (Matrix (Fin r) (Fin r) ℂ) :=
-    inferInstanceAs (SecondCountableTopology (Fin r → Fin r → ℂ))
-  have : SecondCountableTopology (Matrix (Fin r) (Fin r) ℂ)ᵐᵒᵖ :=
-    MulOpposite.opHomeomorph.symm.isEmbedding.secondCountableTopology
-  exact Units.isEmbedding_embedProduct.secondCountableTopology
-
 theorem secondCountable_Upq (r p : ℕ) : SecondCountableTopology (Upq r p) := by
-  have := secondCountable_GL_complex r
+  have := GlobalTheory.UnitaryFrames.secondCountable_GL r
   exact TopologicalSpace.Subtype.secondCountableTopology _
 
 theorem sigmaFinite_haarU (r p : ℕ) : SigmaFinite (haarU r p) := by

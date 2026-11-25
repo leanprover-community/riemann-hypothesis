@@ -25,22 +25,6 @@ open scoped InnerProductSpace
 
 noncomputable section
 
-namespace Formalism.MainNotions.DoubleDerivativeSmoothness
-
-open Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.ThB Formalism.BasicNotions Formalism.MainNotions.OnePlaceEstimates Formalism.MainNotions.BridgeLemma₄
-
-section Side
-
-variable {k r : ℕ} {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
-    {Wp : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [CompleteSpace Wp]
-
-def FI (z : Fin (2 * r + k + 1) → ℂ) (c : ℂ) (π : Mx k r → (Wp →L[ℂ] Wp)) (σ : Mx k r → (H →L[ℂ] H))
-    (u v : H) : Mt k r × Mt k r → (Wp →L[ℂ] Wp) := fun p =>
-  (⟪v, σ (Matrix.of p.1 * Matrix.of p.2) u⟫_ℂ * star (psi k r z c (Matrix.of p.2))) • π (Matrix.of p.1)⁻¹
-
-end Side
-
-end Formalism.MainNotions.DoubleDerivativeSmoothness
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -100,7 +84,7 @@ theorem bessel_on_FI (z : Fin (2 * r + k + 1) → ℂ) (c : ℂ) (π : Mx k r �
     (hG : GrpF k r z) (hσ : SigU σ) (hπ : PiU z π) (hψ : PsiF k r z c) (hM : MeasF z π μW μN)
     (hD : DecayOn μW μN σ V) {v : H} (hv : V v) (ξ : Wp) :
     IsBesselMapSm z (psi k r z c) σ π
-      (fun u => (∫ p, Formalism.MainNotions.DoubleDerivativeSmoothness.FI z c π σ u v p ∂(μW.prod μN)) ξ) :=
+      (fun u => (∫ p, PI.WBL.beF z c π σ u v p ∂(μW.prod μN)) ξ) :=
   bessel_on z c π μW μN σ hG hσ hπ hψ hM hD hv ξ
 
 theorem beBessel_DD {ε : Fin (2 * r + k + 1) → Bool} {lam : Fin (2 * r + k + 1) → ℝ} {u : Fin k → ℝ}
@@ -112,7 +96,7 @@ theorem beBessel_DD {ε : Fin (2 * r + k + 1) → Bool} {lam : Fin (2 * r + k + 
       (μW.prod μN))
     (ha : 1 ≤ a) (h0 : PtB σ a w0) :
     ∀ v ∈ Formalism.MainNotions.BridgeLemma₄.DDsp σ w0, ∀ ξ : Wp, IsBesselMapSm z (psi k r z c) σ π
-      (fun u => (∫ p, Formalism.MainNotions.DoubleDerivativeSmoothness.FI z c π σ u v p ∂(μW.prod μN)) ξ) := by
+      (fun u => (∫ p, PI.WBL.beF z c π σ u v p ∂(μW.prod μN)) ξ) := by
   intro v hv ξ
   have hG := grpAll k r z
   have hS := sigAll k r ε lam H σ hσ
@@ -129,7 +113,7 @@ theorem beBessel_K {ε : Fin (2 * r + k + 1) → Bool} {lam : Fin (2 * r + k + 1
       (μW.prod μN))
     (hK : PtDec σ a (fun v => IsKFinHpk (k := k) (r := r) σ v)) :
     ∀ v : H, IsKFinHpk (k := k) (r := r) σ v → ∀ ξ : Wp, IsBesselMapSm z (psi k r z c) σ π
-      (fun u => (∫ p, Formalism.MainNotions.DoubleDerivativeSmoothness.FI z c π σ u v p ∂(μW.prod μN)) ξ) := by
+      (fun u => (∫ p, PI.WBL.beF z c π σ u v p ∂(μW.prod μN)) ξ) := by
   intro v hv ξ
   have hG := grpAll k r z
   have hS := sigAll k r ε lam H σ hσ

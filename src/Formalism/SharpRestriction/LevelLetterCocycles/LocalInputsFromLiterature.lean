@@ -106,10 +106,7 @@ theorem π₀_nzd (hw : ∃ w : (LetA O n)ˣ, W.π₀ = (w : LetA O n) * letπ ^
     (h : W.π₀ * x = 0) : x = 0 := by
   obtain ⟨w, hw⟩ := hw
   rw [hw] at h
-  have h2 : letπ ^ (PD.p - 1) * x = 0 := by
-    have h' := congrArg (fun z => (↑w⁻¹ : LetA O n) * z) h
-    simp only [mul_zero] at h'
-    rwa [← mul_assoc, ← mul_assoc, Units.inv_mul, one_mul] at h'
+  have h2 : letπ ^ (PD.p - 1) * x = 0 := (Units.mul_right_eq_zero w).1 (by rwa [mul_assoc] at h)
   funext i
   have hi := congrFun h2 i
   simp only [Pi.mul_apply, Pi.pow_apply, letπ, Pi.zero_apply] at hi

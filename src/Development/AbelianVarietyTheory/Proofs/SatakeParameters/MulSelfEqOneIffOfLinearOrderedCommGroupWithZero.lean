@@ -6,8 +6,6 @@ import Mathlib.Tactic.Linter.HaveILetI
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.UG Matrix
 
 namespace GlobalTheory.Hk3.Inh
@@ -21,5 +19,3 @@ theorem v_two {ϖ : L} {σ : L →+* L} {q : ℕ} (h : IsUnramInv ϖ σ q) (hq :
 
 
 end GlobalTheory.Hk3.Inh
-
-end

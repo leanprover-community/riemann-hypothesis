@@ -410,18 +410,6 @@ structure HermitianOrthogonalExtensionData (A B : Node D) (c : ℕ) where
 
 abbrev FrId (D : D7) : Type := FractionalIdeal (nonZeroDivisors (𝓞 D.host.E)) D.host.E
 
-structure HermitianOrthogonalExtensionData.Is {A B : Node D} {c : ℕ} (d : HermitianOrthogonalExtensionData A B c) (g : Fin c → Fin c → D.host.E) (𝔟 : Fin c → FrId D) : Prop where
-
-  isom : Formalism.BasicNotions.HSpace.IsIsomEmb A.V B.V d.ι
-
-  orth : ∀ x p, B.V.hD (d.ι x) (d.a p) = 0
-
-  gram : ∀ p q, B.V.hD (d.a p) (d.a q) = g p q
-
-  rank : A.V.rank + c = B.V.rank
-
-  lat : ∀ y, B.InLat y ↔ ∃ x, A.InLat x ∧ ∃ t : Fin c → D.host.E, (∀ p, t p ∈ 𝔟 p) ∧ y = d.ι x + ∑ p, t p • d.a p
-
 def antiDiagonalSignGramMatrix (K : Type) [Ring K] (c : ℕ) (p q : Fin c) : K :=
   if p.1 + q.1 + 1 = c then (if p = q then -1 else 1) else 0
 

@@ -50,7 +50,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped CategoryTheory.Obj
 open GlobalTheory.UU
 
-noncomputable section
 namespace GlobalTheory.UU.BiTrivUniq
 
 variable {X Y : Scheme.{0}} {M : LB X} {K : Type} [Fintype K] {φ : K → (Y ⟶ X)} {ε : K → ℤ}
@@ -121,4 +120,3 @@ theorem biTriv_unique : ∀ (S : Scheme.{0}) (X : Type) [AddCommGroup X] (G : Ov
   rfl
 
 end GlobalTheory.UU
-end

@@ -107,7 +107,6 @@ theorem main {G : Type u_1} {C : Type u_2} [Group G] [NormedField C] [IsUltramet
       hsum (fun g => act g b * c g)
     have hact : act h (-∑ s ∈ S, act s b * c s) = -(∑ s ∈ S, act s b * c s
         + ∑ s ∈ S, act (σ s) (b * c ((σ s)⁻¹ * (h * s))) - a * c h) := by
-      set_option synthInstance.maxHeartbeats 100000 in
         rw [map_neg, map_sum, Finset.sum_congr rfl hterm, Finset.sum_sub_distrib,
         Finset.sum_add_distrib, hsumT, ← Finset.sum_mul, hsumA]
     rw [hact]

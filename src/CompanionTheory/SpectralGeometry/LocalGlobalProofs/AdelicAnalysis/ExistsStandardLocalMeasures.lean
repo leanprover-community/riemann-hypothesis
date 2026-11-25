@@ -6,8 +6,6 @@ import Mathlib.Topology.Separation.CompletelyRegular
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.SW.StdEx
 
 open HeckeCharacterZeroLocus.SiegelWeilU GlobalTheory.CompanionTheory.SW NumberField IsDedekindDomain MeasureTheory Topology

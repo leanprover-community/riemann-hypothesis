@@ -48,11 +48,7 @@ theorem quot_meas_not_mem_UH_eq_zero {μG μS ν : Measure (Mt k r)} (hG : IsHaa
         _ = (Matrix.of s * Matrix.of x)ᴴ * Hpk k r * (Matrix.of s * Matrix.of x) := by
             simp only [Matrix.conjTranspose_mul, Matrix.mul_assoc]
         _ = Hpk k r := e1
-    calc μS Set.univ = μS ({s : Mt k r | Matrix.of s ∈ UH (Hpk k r)} ∪ {s : Mt k r | Matrix.of s ∈ UH (Hpk k r)}ᶜ) := by
-          rw [Set.union_compl_self]
-      _ ≤ μS {s : Mt k r | Matrix.of s ∈ UH (Hpk k r)} + μS {s : Mt k r | Matrix.of s ∈ UH (Hpk k r)}ᶜ :=
-          measure_union_le _ _
-      _ = μS {s : Mt k r | Matrix.of s ∈ UH (Hpk k r)} := by rw [hSc', add_zero]
+    calc μS Set.univ = μS {s : Mt k r | Matrix.of s ∈ UH (Hpk k r)} := (measure_congr (ae_eq_univ.2 hSc')).symm
       _ = ∫⁻ s, {s : Mt k r | Matrix.of s ∈ UH (Hpk k r)}.indicator 1 s ∂μS := (lintegral_indicator_one hA).symm
       _ ≤ _ := lintegral_mono (fun s => by
             by_cases hs : s ∈ {s : Mt k r | Matrix.of s ∈ UH (Hpk k r)}

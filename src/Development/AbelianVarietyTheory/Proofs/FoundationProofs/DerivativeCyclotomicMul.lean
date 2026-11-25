@@ -9,7 +9,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 
 open GlobalTheory.K5 Polynomial TrivSqZeroExt
 
-noncomputable section
 namespace GlobalTheory.K5.DlogUniq
 
 section generic

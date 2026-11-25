@@ -101,16 +101,6 @@ def halfGrp (S T : HSp D) (e : AE D) : AddSubgroup (WO S T) where
   zero_mem' := fun i j => by rw [Matrix.zero_apply, mul_zero]
   neg_mem' {a} ha := fun i j => by rw [Matrix.neg_apply, mul_neg, ha i j]
 
-def heisLin (ψ : AddChar (AF D.host.F) ℂ) (S T : HSp D) (w : WO S T) : Module.End ℂ (WO S T → ℂ) where
-  toFun := heisO ψ S T w
-  map_add' f g := by
-    funext x
-    simp only [heisO, Pi.add_apply, mul_add]
-  map_smul' c f := by
-    funext x
-    simp only [heisO, Pi.smul_apply, smul_eq_mul, RingHom.id_apply]
-    ring
-
 def annHalf (ψ : AddChar (AF D.host.F) ℂ) (S T : HSp D) (e : AE D) (Λ : AddSubgroup (WO S T)) :
     AddSubgroup (WO S T) where
   carrier := {y | IsHalf (cA D e) y ∧ ∀ x ∈ Λ, IsHalf e x → ψ (symplO S T x y) = 1}
@@ -253,10 +243,10 @@ theorem theta_of_facts (ψ : AddChar (AF D.host.F) ℂ) (hψ : IsStdChar D ψ (-
   have htf : ∀ k : ℕ, 0 < k → ∀ t : WO S T, k • t = 0 → t = 0 := fun k hk t h => nsmul_eq_zero' S T hk h
   have hSB : ∀ Φ', Four.IsSB L' X Φ' → IsSBHalf E₂ Λ Φ' := fun Φ' h =>
     half_of_isSB (isSB_congr hLX h)
-  have htr : ∀ Φ', Four.IsSB L' X Φ' → ∀ x ∈ X, T' (fun t => Φ' (t + x)) = heisLin ψ S T x (T' Φ') :=
+  have htr : ∀ Φ', Four.IsSB L' X Φ' → ∀ x ∈ X, T' (fun t => Φ' (t + x)) = GlobalTheory.SplitScalar.heisL ψ S T x (T' Φ') :=
     fun Φ' h x hx => hPM.trans Φ' (hSB Φ' h) x hx
   have hmo : ∀ Φ', Four.IsSB L' X Φ' → ∀ y ∈ Y,
-      T' (fun t => ψ (symplO S T t y) * Φ' t) = heisLin ψ S T y (T' Φ') :=
+      T' (fun t => ψ (symplO S T t y) * Φ' t) = GlobalTheory.SplitScalar.heisL ψ S T y (T' Φ') :=
     fun Φ' h y hy => hPM.modul Φ' (hSB Φ' h) y hy
   have hva : T' (fun t => if t ∈ L' ∧ t ∈ X then (1 : ℂ) else 0) = f₀ := by
     have h := hPM.vac
@@ -365,8 +355,6 @@ open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Grow GlobalTheory.Un
 open scoped TensorProduct Classical
 
 namespace GlobalTheory.LocMod
-
-
 
 theorem ratDatum_comb_place : ∀ (D : D7) (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (p : Place D k) (ψ : AddChar (AF D.host.F) ℂ), IsStdChar D ψ (-1) → DenseRange p.pr → ∀ (S T : HSp D) (Y Y' : Type) [Fintype Y] [DecidableEq Y] [Fintype Y'] [DecidableEq Y'] (FS : Frame k S.rank Y') (FT : Frame k T.rank Y) (P : Finset (Formalism.L2.DIV.Pl D.host.E)) (PP : Formalism.L2.DIV.Pl D.host.E) (e : AE D), PP ∉ P → Formalism.L2.NTheta.IsIdemAt p.e PP → IsIdemSum e P → IsIdemSum (e + p.e) (@insert _ _ (@Finset.instInsert _ (Classical.decEq _)) PP P) → (∀ x : Matrix Y Y' k, (∀ r q, x r q ∈ 𝒪[k]) ↔ p.up FS FT x ∈ stdHom S T) → ∀ (ΛS : Submodule (𝓞 D.host.E) (Fin S.rank → D.host.E)) (ΛT : Submodule (𝓞 D.host.E) (Fin T.rank → D.host.E)), IsSelfDualC S ΛS → IsSelfDualC T ΛT → (ΛS : Set (Fin S.rank → D.host.E)) = intVec D S.rank → (ΛT : Set (Fin T.rank → D.host.E)) = intVec D T.rank → ∀ (Ξ : Matrix (Fin T.rank) (Fin S.rank) D.host.E → ℂ) (Ξk : Matrix Y Y' k → ℂ), Ξk ∈ SB (Matrix Y Y' k) → ∀ c, p.IsCombAt ψ FS FT c Ξk → ∀ f₀ f, IsThetaFunO ψ S T f₀ → IsLatVac (heisO ψ S T) (stdHom S T) f₀ → IsRatDatum ψ S T e Ξ f₀ f → IsRatDatum ψ S T (e + p.e) (fun γ => Ξ γ * Ξk (FT.γ * γ.map p.pr * FS.β)) f₀ (comb ψ S T c f) := by
   intro D k _ _ _ _ p ψ hψ hdense S T Y Y' _ _ _ _ FS FT P PP e hPP hIdemAt hE hE' hstd ΛS ΛT hS hT hΛS hΛT Ξ Ξk hΞk c hc

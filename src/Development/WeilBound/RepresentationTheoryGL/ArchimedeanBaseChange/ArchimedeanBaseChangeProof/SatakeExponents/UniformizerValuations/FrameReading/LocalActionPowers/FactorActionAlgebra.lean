@@ -50,10 +50,6 @@ def epsS {S : Set (Pl E)} (a b : ℕ) : ∀ i : Slot S, GLw a i.pl × GLw b i.pl
   | .inl w => (locGL E a w.1).prodMap (locGL E b w.1)
   | .inr w => ((thF E a).comp (locGL E a w.1)).prodMap ((thF E b).comp (locGL E b w.1))
 
-def selS {S : Set (Pl E)} (φ₁ φ₂ : ∀ w : Pl E, LF a b w) : ∀ i : Slot S, LF a b i.pl
-  | .inl w => φ₁ w.1
-  | .inr w => φ₂ w.1
-
 theorem continuous_thF (n : ℕ) : Continuous (thF E n) :=
   GlobalTheory.ThetaPull.continuous_thetaGL _ (continuous_conjFin _)
 
@@ -72,7 +68,7 @@ theorem embT_prod (w : Pl E) : (embT a w).prodMap (embT b w) =
   · exact GlobalTheory.ThetaPull.thetaA_finGL _
 
 theorem actS_eq {S : Set (Pl E)} (φ₁ φ₂ : ∀ w : Pl E, LF a b w) (i : Slot S) (G : H E a b → ℂ) :
-    actS φ₁ φ₂ i G = act ((fHm E a b).comp (epsS a b i)) (K2 a b i.pl) (selS φ₁ φ₂ i) G := by
+    actS φ₁ φ₂ i G = act ((fHm E a b).comp (epsS a b i)) (K2 a b i.pl) (GlobalTheory.CompanionTheory.FinActS.sf φ₁ φ₂ i) G := by
   rcases i with w | w
   · rfl
   · show act ((embT a w.1).prodMap (embT b w.1)) (K2 a b w.1) (φ₂ w.1) G = _
@@ -89,7 +85,7 @@ theorem hecke_of_test {φ : ∀ w : Pl E, LF a b w} (h : IsTestP φ) (w : Pl E) 
   exact ⟨(K₁ w).prod (K₂ w), (h₁.1 w).1.prod (h₂.1 w).1, h₃.1 w⟩
 
 theorem hecke_sel {S : Set (Pl E)} {φ₁ φ₂ : ∀ w : Pl E, LF a b w} (h₁ : IsTestP φ₁) (h₂ : IsTestP φ₂) (i : Slot S) :
-    ∃ A : Subgroup (GLw a i.pl × GLw b i.pl), IsOpen (A : Set (GLw a i.pl × GLw b i.pl)) ∧ IsHecke A (selS φ₁ φ₂ i) := by
+    ∃ A : Subgroup (GLw a i.pl × GLw b i.pl), IsOpen (A : Set (GLw a i.pl × GLw b i.pl)) ∧ IsHecke A (GlobalTheory.CompanionTheory.FinActS.sf φ₁ φ₂ i) := by
   rcases i with w | w
   · exact hecke_of_test h₁ w.1
   · exact hecke_of_test h₂ w.1
@@ -144,8 +140,8 @@ theorem epsS_comm {S : Set (Pl E)} (hS : IsSection S) {i j : Slot S} (hij : i �
     exact Prod.ext (comm_TT hne _ _) (comm_TT hne _ _)
 
 theorem selS_conv {S : Set (Pl E)} (φ₁ φ₂ ψ₁ ψ₂ : ∀ w : Pl E, LF a b w) (i : Slot S) :
-    selS (fun w => PositivityTheory.Rg.BcN.F2.mconv (φ₁ w) (ψ₁ w)) (fun w => PositivityTheory.Rg.BcN.F2.mconv (φ₂ w) (ψ₂ w)) i =
-      fun m => hint (K2 a b i.pl) fun m' => selS φ₁ φ₂ i m' * selS ψ₁ ψ₂ i (m'⁻¹ * m) := by
+    GlobalTheory.CompanionTheory.FinActS.sf (fun w => PositivityTheory.Rg.BcN.F2.mconv (φ₁ w) (ψ₁ w)) (fun w => PositivityTheory.Rg.BcN.F2.mconv (φ₂ w) (ψ₂ w)) i =
+      fun m => hint (K2 a b i.pl) fun m' => GlobalTheory.CompanionTheory.FinActS.sf φ₁ φ₂ i m' * GlobalTheory.CompanionTheory.FinActS.sf ψ₁ ψ₂ i (m'⁻¹ * m) := by
   rcases i with w | w <;> rfl
 
 theorem actAlg : ActAlg := by

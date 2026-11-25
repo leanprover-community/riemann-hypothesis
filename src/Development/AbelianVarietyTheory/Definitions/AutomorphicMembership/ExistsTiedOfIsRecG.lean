@@ -4,8 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.Mem.Top.Bl.LayerTwoModel
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.Inhab Formalism.L2.Host GlobalTheory.EX GlobalTheory.EX.OB GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top.GroupRetwisting NumberField IsDedekindDomain
@@ -38,5 +36,3 @@ theorem gIs2_iff (w : ColW B f T) (G : GJStage B w.C) : GIs2 K w G ↔
       exact ⟨a, gatNum_of_isRecG t.isRec, ⟨t⟩⟩
 
 end GlobalTheory.Mem.Top.Bl.LayerTwoModel
-
-end

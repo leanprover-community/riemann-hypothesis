@@ -20,18 +20,10 @@ open scoped ComplexOrder
 theorem notMem_span_of_commute {V : Type} [AddCommGroup V] [Module ℂ V] (G : Set (Module.End ℂ V))
     (hc : ∀ a ∈ G, ∀ b ∈ G, Commute a b) (s : Set V) (hs : ∀ x ∈ s, ∃ g ∈ G, g x = 0) (f : V)
     (hf : ∀ B ∈ Submonoid.closure G, B f ≠ 0) : f ∉ Submodule.span ℂ s := by
-  have h1 : ∀ a ∈ G, ∀ B ∈ Submonoid.closure G, Commute a B := by
-    intro a ha B hB
-    induction hB using Submonoid.closure_induction with
-    | mem b hb => exact hc a ha b hb
-    | one => exact Commute.one_right _
-    | mul x y _ _ hx hy => exact hx.mul_right hy
-  have h2 : ∀ A ∈ Submonoid.closure G, ∀ B ∈ Submonoid.closure G, Commute A B := by
-    intro A hA B hB
-    induction hA using Submonoid.closure_induction with
-    | mem a ha => exact h1 a ha B hB
-    | one => exact Commute.one_left _
-    | mul x y _ _ hx hy => exact hx.mul_left hy
+  have h2 : ∀ A ∈ Submonoid.closure G, ∀ B ∈ Submonoid.closure G, Commute A B := fun A hA B hB =>
+    Set.centralizer_centralizer_comm_of_comm (fun a ha b hb _ => hc a ha b hb) A
+      (Submonoid.closure_le_centralizer_centralizer G hA) B
+      (Submonoid.closure_le_centralizer_centralizer G hB)
   have key : ∀ x ∈ Submodule.span ℂ s, ∃ B ∈ Submonoid.closure G, B x = 0 := by
     intro x hx
     induction hx using Submodule.span_induction with

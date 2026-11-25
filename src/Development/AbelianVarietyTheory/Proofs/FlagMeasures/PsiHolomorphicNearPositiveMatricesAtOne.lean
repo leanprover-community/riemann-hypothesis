@@ -55,7 +55,6 @@ set_option backward.isDefEq.respectTransparency false
 open MeasureTheory Matrix Finset Formalism.MainNotions.S Formalism.REAL Formalism.QuantumDeterminants GlobalTheory.Count GlobalTheory.Dec GlobalTheory.Dec.FormF
 open scoped InnerProductSpace ComplexOrder
 
-noncomputable section
 namespace GlobalTheory.Dec
 
 variable {n : ℕ}

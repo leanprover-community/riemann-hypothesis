@@ -117,20 +117,6 @@ private theorem hecke_eq_sum {G : Type} [Group G] (K : Subgroup G) (h : G → �
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ}
 
-private theorem comm_of_cLoc {w : HeightOneSpectrum (𝓞 E)} (hw : IsSplitAt w) (z : UA E n) (hz : cLoc w z = 1)
-    (y : UA E n) (hy : y ∈ locU n w) : y * z = z * y := by
-  have hyf := (Subgroup.mem_inf.1 hy).1
-  have hyo := (Subgroup.mem_inf.1 hy).2
-  have hc : z * y * z⁻¹ * y⁻¹ ∈ locU n w := by
-    refine Subgroup.mem_inf.2 ⟨?_, Subgroup.mem_iInf.2 fun u => Subgroup.mem_iInf.2 fun hu => ?_⟩
-    · have h1 : cInf y = 1 := MonoidHom.mem_ker.1 hyf
-      exact MonoidHom.mem_ker.2 (by simp [h1])
-    · have h1 : cLoc u y = 1 := MonoidHom.mem_ker.1 (Subgroup.mem_iInf.1 (Subgroup.mem_iInf.1 hyo u) hu)
-      exact MonoidHom.mem_ker.2 (by simp [h1])
-  have h1 := GlobalTheory.SplitPts.eq_one_of_cLoc hw ⟨_, hc⟩ (by simp [hz])
-  have h2 : z * y * z⁻¹ * y⁻¹ = 1 := congrArg Subtype.val h1
-  exact (mul_inv_eq_iff_eq_mul.1 (mul_inv_eq_one.1 h2)).symm
-
 private noncomputable def repG {w : HeightOneSpectrum (𝓞 E)} (e : locU n w ≃ₜ* GL (Fin n) (w.adicCompletion E)) :
     Representation ℂ (GL (Fin n) (w.adicCompletion E)) (UA E n → ℂ) :=
   (RU E n).comp ((locU n w).subtype.comp e.symm.toMulEquiv.toMonoidHom)

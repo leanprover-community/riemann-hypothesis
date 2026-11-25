@@ -79,13 +79,9 @@ theorem card_quot_extP (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF 
     Nat.card (↥L ⧸ ((extP K 𝔭) ^ k • ⊤ : Submodule (𝓞 K) ↥L)) =
       Ideal.absNorm 𝔭 ^ (2 * finrank K V * k) := by
   let _ : Module F V := Module.compHom V (algebraMap F K)
-  have t1 : IsScalarTower F K V := ⟨fun a b v => by
-    change (a • b) • v = (algebraMap F K a) • (b • v)
-    rw [Algebra.smul_def, mul_smul]⟩
+  have t1 : IsScalarTower F K V := IsScalarTower.of_algebraMap_smul fun _ _ => rfl
   let _ : Module (𝓞 F) V := Module.compHom V (algebraMap (𝓞 F) (𝓞 K))
-  have t2 : IsScalarTower (𝓞 F) (𝓞 K) V := ⟨fun a b v => by
-    change (a • b) • v = (algebraMap (𝓞 F) (𝓞 K) a) • (b • v)
-    rw [Algebra.smul_def, mul_smul]⟩
+  have t2 : IsScalarTower (𝓞 F) (𝓞 K) V := IsScalarTower.of_algebraMap_smul fun _ _ => rfl
   have t3 : IsScalarTower (𝓞 F) F V := ⟨fun a b v => by
     change (algebraMap F K (a • b)) • v = (algebraMap (𝓞 F) (𝓞 K) a) • ((algebraMap F K b) • v)
     rw [← algebraMap_smul K (algebraMap (𝓞 F) (𝓞 K) a), algebraMap_comp, Algebra.smul_def, map_mul,

@@ -48,7 +48,6 @@ open scoped CategoryTheory.Obj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.ZH
 open Classical
 
-noncomputable section
 namespace GlobalTheory.ZH
 
 open GlobalTheory.Points
@@ -140,4 +139,3 @@ theorem isIso_morphismRestrict_of_isNm_prod : ∀ (o Ω : Type) [CommRing o] [Fi
   exact ⟨(i, i'), RatModel.div_prod_iff.2 ⟨hi, hi'⟩⟩
 
 end GlobalTheory.ZH
-end

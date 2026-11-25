@@ -6,6 +6,7 @@ public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PFibreBou
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StComponentsGenericCount
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.Assembly
 import Mathlib.Tactic.TypeStar
+import Mathlib.Data.Set.Card.Arithmetic
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PComponentsPairPoly, GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PComponentsGenericCount
@@ -44,28 +45,14 @@ theorem exists_pair_poly {n d : ℕ} (J J' : Ideal (MvPolynomial (Fin n) ℂ)) (
   rwa [map_sub, map_mul, hx' f hfJ', mul_zero, sub_zero, ComplexSets.FibreBound.eval_pullback] at h2
 
 theorem encard_biUnion_le {ι α : Type*} (F : Finset ι) (S : ι → Set α) :
-    (⋃ i ∈ F, S i).encard ≤ ∑ i ∈ F, (S i).encard := by
-  classical
-  induction F using Finset.induction_on with
-  | empty => simp
-  | insert a s ha ih =>
-    rw [Finset.sum_insert ha, Finset.set_biUnion_insert]
-    exact (Set.encard_union_le _ _).trans (by gcongr)
+    (⋃ i ∈ F, S i).encard ≤ ∑ i ∈ F, (S i).encard :=
+  Finset.set_encard_biUnion_le F S
 
 theorem encard_biUnion_eq {ι α : Type*} (F : Finset ι) (S : ι → Set α)
     (h : ∀ i ∈ F, ∀ j ∈ F, i ≠ j → Disjoint (S i) (S j)) :
-    (⋃ i ∈ F, S i).encard = ∑ i ∈ F, (S i).encard := by
-  classical
-  induction F using Finset.induction_on with
-  | empty => simp
-  | insert a s ha ih =>
-    rw [Finset.sum_insert ha, Finset.set_biUnion_insert, Set.encard_union_eq, ih]
-    · exact fun i hi j hj hij =>
-        h i (Finset.mem_insert_of_mem hi) j (Finset.mem_insert_of_mem hj) hij
-    · refine Set.disjoint_iUnion₂_right.2 fun j hj =>
-        h a (Finset.mem_insert_self a s) j (Finset.mem_insert_of_mem hj) ?_
-      rintro rfl
-      exact ha hj
+    (⋃ i ∈ F, S i).encard = ∑ i ∈ F, (S i).encard :=
+  (F.finite_toSet.encard_biUnion fun i hi j hj hij => h i hi j hj hij).trans
+    (finsum_mem_coe_finset _ F)
 
 theorem exists_prod_ne_zero {ι : Type*} {k : ℕ} (F : Finset ι) (p : ι → MvPolynomial (Fin k) ℂ → Prop)
     (h : ∀ i ∈ F, ∃ P, P ≠ 0 ∧ p i P) :

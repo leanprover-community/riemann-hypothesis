@@ -13,8 +13,6 @@ import Mathlib.Topology.Algebra.Group.Units
 open MeasureTheory Matrix Topology Set Filter
 open scoped ContDiff
 
-noncomputable section
-
 namespace CompanionTheory.D.gk.admitted
 
 open PI.UpqRep

@@ -1,7 +1,9 @@
 module
 
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeilQuotientHaar.HaarExist
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeilQuotientHaar.LintegralFintypeProd
+public import Mathlib.MeasureTheory.Constructions.Pi
+public import Mathlib.MeasureTheory.Integral.Marginal
+import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.CarrierJointQuotMeas
 import Mathlib.Topology.Algebra.Group.Units
 
 @[expose] public section
@@ -56,9 +58,9 @@ theorem lintegral_pi_prod_mul (μ ν : ∀ v, Measure (G v)) [∀ v, SigmaFinite
   rw [lintegral_prod _ hm.aemeasurable]
   have hin : ∀ x : (∀ v, G v), ∫⁻ y, ∏ v, φ v (x v * y v) ∂(Measure.pi ν) =
       ∏ v, ∫⁻ y, φ v (x v * y) ∂(ν v) := fun x =>
-    lintegral_fintype_prod (fun v y => φ v (x v * y)) (fun v => (hφ v).comp (measurable_const_mul _))
+    Formalism.L2.SG.Pf.Carrier.JointQuot.lintegral_fintype_prod (fun v y => φ v (x v * y)) (fun v => (hφ v).comp (measurable_const_mul _))
   simp_rw [hin]
-  rw [lintegral_fintype_prod (fun v x => ∫⁻ y, φ v (x * y) ∂(ν v))
+  rw [Formalism.L2.SG.Pf.Carrier.JointQuot.lintegral_fintype_prod (fun v x => ∫⁻ y, φ v (x * y) ∂(ν v))
     (fun v => ((hφ v).comp measurable_mul).lintegral_prod_right')]
   refine Finset.prod_congr rfl fun v _ => ?_
   rw [mulMap, lintegral_map (hφ v) measurable_mul,
@@ -94,7 +96,7 @@ theorem weil_quotient_global_assumptions : GlobAsm := by
 
   have hL1 : ∫⁻ x, f x ∂(Measure.pi fun v => Formalism.REAL.muG (ε v)) =
       ∏ v, ∫⁻ y, F v y ∂((Formalism.REAL.muG (ε v)).withDensity (β v)) := by
-    rw [hfdef, lintegral_fintype_prod (fun v y => β v y * F v y) (fun v => (hβm v).mul (hFm v))]
+    rw [hfdef, Formalism.L2.SG.Pf.Carrier.JointQuot.lintegral_fintype_prod (fun v y => β v y * F v y) (fun v => (hβm v).mul (hFm v))]
     refine Finset.prod_congr rfl fun v _ => ?_
     rw [lintegral_withDensity_eq_lintegral_mul _ (hβm v) (hFm v)]
     rfl

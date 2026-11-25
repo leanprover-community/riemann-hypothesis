@@ -698,19 +698,16 @@ structure NBC {R : Ranks} {H : Host R} {what₂ : Rows.Data R} {N : NData R H wh
 
   AU : ℕ → Type
 
-  multAU : ∀ j, AU j → ℕ
 
   sphAU : ∀ j, AU j → PlE H → Prop
 
   locAU : ∀ j, AU j → ∀ w : PlE H, A.LP w
 
   satAU : ∀ j, AU j → PlE H → Multiset ℂ
-  satAU_card : ∀ j (π : AU j) w, Multiset.card (satAU j π w) = R.nV / 2
 
   Wt : ℕ → Type
 
   infW : ∀ j, Wt j → (H.E →+* ℂ) → Multiset ℂ
-  infW_card : ∀ j (W : Wt j) τ, Multiset.card (infW j W τ) = R.nV
 
   wtAU : ∀ j, AU j → Wt j
 
@@ -718,7 +715,6 @@ structure NBC {R : Ranks} {H : Host R} {what₂ : Rows.Data R} {N : NData R H wh
     ∀ x ∈ infW j W τ, ∃ k : ℤ, x = (k : ℂ) + ((R.nV : ℂ) - 1) / 2
 
   embAV : ∀ i, A.AV i → AU (N.j i)
-  embAV_inj : ∀ i, Function.Injective (embAV i)
   embAV_loc : ∀ i (P : A.AV i) w, A.locV i P w = locAU (N.j i) (embAV i P) w
   embAV_sat : ∀ i (P : A.AV i) w, A.satV i P w = satAU (N.j i) (embAV i P) w
   embAV_sph : ∀ i (P : A.AV i) w, ¬ IsSplitPl H w → sphAU (N.j i) (embAV i P) w
@@ -859,17 +855,12 @@ structure NTypes {R : Ranks} {H : Host R} {what₂ : Rows.Data R} {N : NData R H
   [nfMray : NumberField Mray]
 
   [algKM : Algebra H.K Mray]
-  Mray_gal : IsGalois H.K Mray
-  Mray_ab : ∀ σ τ : Mray ≃ₐ[H.K] Mray, σ * τ = τ * σ
-  Mray_unr : ∀ p : ℕ, p.Prime → (p : ℤ) ∣ NumberField.discr Mray → p ∣ H.QS * H.q * H.d
 
   g_Mray : ∀ k, (placesOver Mray (H.g k)).ncard = Module.finrank ℚ Mray
   g_cond : ∀ k, H.g k % (H.QS * H.q * H.d) = 1
   BB_disj : Disjoint (Formalism.CyclotomicNorms.BB R.r (H.g 0)) (Formalism.CyclotomicNorms.BB R.r (H.g 1))
 
   bc : what₂.FT → Multiset (ℕ × ℕ)
-  bc_pos : ∀ σ, ∀ p ∈ bc σ, 0 < p.1 ∧ 0 < p.2
-  bc_sum : ∀ σ, ((bc σ).map (fun p => p.1 * p.2)).sum = R.r
 
   rbar : what₂.FT → ∀ w : what₂.places.Pl,
     G H.E N.Om →* GL (Fin R.r) (Fb (what₂.places.resChar w) (what₂.places.resChar_prime w))
@@ -928,7 +919,6 @@ structure NTypes {R : Ranks} {H : Host R} {what₂ : Rows.Data R} {N : NData R H
   labPar_def : ∀ k σ v, labPar k σ v = A.items₂ k (A.plGw k v) (locPar σ (A.plGw k v))
   MtPar : ∀ μ j, Par → Submodule ℂ (what₂.Mt μ j)
 
-  AmbPar : ∀ μ, Par → Submodule ℂ (what₂.Amb μ)
 
 attribute [instance] NTypes.instMray NTypes.nfMray NTypes.algKM
 

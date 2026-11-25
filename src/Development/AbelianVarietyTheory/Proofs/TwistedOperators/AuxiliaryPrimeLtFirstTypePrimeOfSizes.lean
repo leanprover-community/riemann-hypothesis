@@ -102,75 +102,11 @@ namespace GlobalTheory.GridJoin
 
 variable {D : D7}
 
-theorem hT_cols (S : HSp D) {k l : ℕ} (a : Matrix (Fin S.rank) (Fin k) D.host.E) (b : Matrix (Fin S.rank) (Fin l) D.host.E)
-    (q : Fin k) (p : Fin l) :
-    S.hT (S.frame.equivFun.symm (fun i => a i q)) (S.frame.equivFun.symm (fun i => b i p)) =
-      (Formalism.UG.cT (D.sp.cm.sig : D.host.E →+* D.host.E) a * S.gram * b) q p := by
-  rw [GlobalTheory.AutFunCounterexample.hT_coord]
-  have e1 : ∀ v : Fin S.rank → D.host.E, S.frame.repr (S.frame.equivFun.symm v) = v := fun v => by
-    rw [← Module.Basis.equivFun_apply, LinearEquiv.apply_symm_apply]
-  simp only [e1, Matrix.mul_apply, Formalism.UG.cT, Matrix.transpose_apply, Matrix.map_apply, Finset.sum_mul]
-  rw [Finset.sum_comm]
-  rfl
-
 theorem exists_orthogonalSum_testGrid_of_levelChoiceGrid {D : D7} (A B : GlobalTheory.Grid.Node D) {c : ℕ} {ε : D.host.E}
     (d : GlobalTheory.ChiGrid.HermitianOrthogonalExtensionData A.V B.V c ε) (𝔟 : Fin c → GlobalTheory.Grid.FrId D)
-    (hΛ : B.Λ = d.lat A.Λ 𝔟) :
-    ∃ d' : GlobalTheory.Grid.HermitianOrthogonalExtensionData A B c, d'.ι = d.ι ∧ d'.Is (fun p q => GlobalTheory.ChiGrid.antiDiagonalSignGramMatrix c ε p q) 𝔟 := by
-  refine ⟨⟨d.ι, fun p => B.V.frame.equivFun.symm (fun k => d.a k p)⟩, rfl, ?_⟩
-  have e1 : ∀ v : Fin B.V.rank → D.host.E, B.V.frame.repr (B.V.frame.equivFun.symm v) = v := fun v => by
-    rw [← Module.Basis.equivFun_apply, LinearEquiv.apply_symm_apply]
-  refine ⟨d.isom, ?_, ?_, d.rank, ?_⟩
-  ·
-    intro x p
-    show B.V.hT _ (d.ι x) = 0
-    conv_lhs => rw [← A.V.frame.sum_repr x]
-
-    simp only [map_sum, map_smul, smul_eq_mul]
-    refine Finset.sum_eq_zero fun k _ => ?_
-    have h1 := B.V.herm.eq (d.ι (A.V.frame k)) (B.V.frame.equivFun.symm (fun i => d.a i p))
-    have h2 : d.ι (A.V.frame k) = B.V.frame.equivFun.symm (fun i => frameMat B.V A.V d.ι i k) := by
-      apply B.V.frame.equivFun.injective
-      rw [LinearEquiv.apply_symm_apply]
-      ext i
-      simp [frameMat, LinearMap.toMatrix_apply]
-    have h3 : B.V.hT (d.ι (A.V.frame k)) (B.V.frame.equivFun.symm (fun i => d.a i p)) = 0 := by
-      rw [h2, hT_cols, d.perp]; rfl
-    rw [← h1, h3]
-    simp
-  ·
-    intro p q
-    show B.V.hT _ _ = _
-    rw [hT_cols, d.gram]
-    simp only [GlobalTheory.ChiGrid.antiDiagonalSignGramMatrix]
-    split_ifs <;> first | rfl | (exfalso; omega)
-  ·
-    have key : ∀ (x : A.V.V) (t : Fin c → D.host.E),
-        B.V.frame.equivFun (d.ι x + ∑ p, t p • B.V.frame.equivFun.symm (fun k => d.a k p)) =
-          frameMat B.V A.V d.ι *ᵥ A.V.frame.equivFun x + d.a *ᵥ t := by
-      intro x t
-
-      rw [map_add (f := _), map_sum]
-      congr 1
-      · simp only [Module.Basis.equivFun_apply, frameMat]
-        exact (LinearMap.toMatrix_mulVec_repr _ _ _ _).symm
-      · simp only [map_smul, LinearEquiv.apply_symm_apply]
-        funext i
-        simp only [Finset.sum_apply, Pi.smul_apply, smul_eq_mul, Matrix.mulVec, dotProduct]
-        exact Finset.sum_congr rfl fun p _ => mul_comm _ _
-    intro y
-    show B.V.frame.equivFun y ∈ B.Λ ↔ _
-    rw [hΛ]
-    constructor
-    · rintro ⟨z, hz, u, hu, hy⟩
-      refine ⟨A.V.frame.equivFun.symm z, ?_, u, hu, ?_⟩
-      · show A.V.frame.equivFun (A.V.frame.equivFun.symm z) ∈ A.Λ
-        rwa [LinearEquiv.apply_symm_apply]
-      · apply B.V.frame.equivFun.injective
-        rw [key, LinearEquiv.apply_symm_apply]
-        exact hy
-    · rintro ⟨x, hx, t, ht, rfl⟩
-      exact ⟨A.V.frame.equivFun x, hx, t, ht, key x t⟩
+    (_hΛ : B.Λ = d.lat A.Λ 𝔟) :
+    ∃ d' : GlobalTheory.Grid.HermitianOrthogonalExtensionData A B c, d'.ι = d.ι :=
+  ⟨⟨d.ι, fun p => B.V.frame.equivFun.symm (fun k => d.a k p)⟩, rfl⟩
 
 end GlobalTheory.GridJoin
 
@@ -576,10 +512,6 @@ variable {D : D7}
 def hermitianOrthogonalExtensionDataCast {A A' B B' : GlobalTheory.Grid.Node D} {c : ℕ} (hA : A = A') (hB : B = B') (d : GlobalTheory.Grid.HermitianOrthogonalExtensionData A B c) :
     GlobalTheory.Grid.HermitianOrthogonalExtensionData A' B' c := hA ▸ hB ▸ d
 
-theorem gridDecompositionCast_is_iff {A A' B B' : GlobalTheory.Grid.Node D} {c : ℕ} (hA : A = A') (hB : B = B') (d : GlobalTheory.Grid.HermitianOrthogonalExtensionData A B c)
-    (g : Fin c → Fin c → D.host.E) (𝔟 : Fin c → GlobalTheory.Grid.FrId D) : (hermitianOrthogonalExtensionDataCast hA hB d).Is g 𝔟 ↔ d.Is g 𝔟 := by
-  subst hA hB; rfl
-
 def hermitianOrthogonalExtensionDataZero (A B : GlobalTheory.Grid.Node D) (c : ℕ) : GlobalTheory.Grid.HermitianOrthogonalExtensionData A B c := ⟨0, 0⟩
 
 theorem joinStair {T : Type} {L : LevCh D T} (P : GlobalTheory.ChiGrid.Places L) (sc : GlobalTheory.ChiGrid.Consts) (c : ℕ) :
@@ -662,22 +594,42 @@ theorem exists_gridPre_spaces : ∀ {D : D7} {Γ : Type} [Group Γ] [Fintype Γ]
   have gX : ∀ j, 1 ≤ j → j ≤ D.R.m → good (.top j) := fun j h1 h2 => ⟨h1, h2⟩
   have hm2 := D.R.two_le_m
 
-  obtain ⟨dP, -, hdP⟩ := _root_.GlobalTheory.GridJoin.exists_orthogonalSum_testGrid_of_levelChoiceGrid (GlobalTheory.Grid.row0 R 0) (mk (.core 0) (gP 0 (by omega))) G'.sp.dec0 (fun _ => 1)
+  obtain ⟨dP, -⟩ := _root_.GlobalTheory.GridJoin.exists_orthogonalSum_testGrid_of_levelChoiceGrid (GlobalTheory.Grid.row0 R 0) (mk (.core 0) (gP 0 (by omega))) G'.sp.dec0 (fun _ => 1)
     G'.sp.lat0
 
-  have exV : ∀ i (h : 1 ≤ i ∧ i ≤ D.R.m), ∃ d : GlobalTheory.Grid.HermitianOrthogonalExtensionData (mk (.core i) (gP i h.2)) (mk (.grid i 0) (gV i 0 h.1 h.2 (by omega))) (i - 1),
-      d.Is (fun p q => GlobalTheory.ChiGrid.antiDiagonalSignGramMatrix (i - 1) (-1 : D.host.E) p q) (GlobalTheory.ChiGrid.stairId (G'.pl.stA sc) (G'.pl.stAbar sc) (i - 1)) :=
-    fun i h => (_root_.GlobalTheory.GridJoin.exists_orthogonalSum_testGrid_of_levelChoiceGrid _ _ (G'.sp.colDec i h.1 h.2) _ (G'.sp.colLat i h.1 h.2)).imp fun _ h => h.2
-  choose dV hdV using exV
+  have exV : ∀ i (h : 1 ≤ i ∧ i ≤ D.R.m),
+      ∃ d : GlobalTheory.Grid.HermitianOrthogonalExtensionData (mk (.core i) (gP i h.2)) (mk (.grid i 0) (gV i 0 h.1 h.2 (by omega))) (i - 1),
+        True :=
+    fun i h => Exists.imp (fun _ _ => trivial)
+      (_root_.GlobalTheory.GridJoin.exists_orthogonalSum_testGrid_of_levelChoiceGrid
+        (mk (.core i) (gP i h.2)) (mk (.grid i 0) (gV i 0 h.1 h.2 (by omega)))
+        (G'.sp.colDec i h.1 h.2)
+        (GlobalTheory.ChiGrid.stairId (G'.pl.stA sc) (G'.pl.stAbar sc) (i - 1))
+        (G'.sp.colLat i h.1 h.2))
+  have dV : ∀ i (h : 1 ≤ i ∧ i ≤ D.R.m),
+      GlobalTheory.Grid.HermitianOrthogonalExtensionData (mk (.core i) (gP i h.2))
+        (mk (.grid i 0) (gV i 0 h.1 h.2 (by omega))) (i - 1) :=
+    fun i h => Classical.choose (exV i h)
 
-  have exX : ∀ j (h : j + 1 < D.R.m), ∃ d : GlobalTheory.Grid.HermitianOrthogonalExtensionData (mk (.top (j + 1)) (gX (j + 1) (by omega) h.le))
-      (mk (.grid D.R.m (j + 1)) (gV D.R.m (j + 1) (by omega) le_rfl h.le)) (D.R.m - 1 - (j + 1)),
-      d.Is (fun p q => GlobalTheory.ChiGrid.antiDiagonalSignGramMatrix (D.R.m - 1 - (j + 1)) (-1 : D.host.E) p q)
-        (GlobalTheory.ChiGrid.stairId D.host.AA D.host.AAbar (D.R.m - 1 - (j + 1))) :=
-    fun j h => (_root_.GlobalTheory.GridJoin.exists_orthogonalSum_testGrid_of_levelChoiceGrid _ _ (G'.sp.rowDecS j h) _ (G'.sp.rowLat j h)).imp fun _ h => h.2
-  choose dX hdX using exX
+  have exX : ∀ j (h : j + 1 < D.R.m),
+      ∃ d : GlobalTheory.Grid.HermitianOrthogonalExtensionData (mk (.top (j + 1)) (gX (j + 1) (by omega) h.le))
+        (mk (.grid D.R.m (j + 1)) (gV D.R.m (j + 1) (by omega) le_rfl h.le)) (D.R.m - 1 - (j + 1)),
+        True :=
+    fun j h => Exists.imp (fun _ _ => trivial)
+      (_root_.GlobalTheory.GridJoin.exists_orthogonalSum_testGrid_of_levelChoiceGrid
+        (mk (.top (j + 1)) (gX (j + 1) (by omega) h.le))
+        (mk (.grid D.R.m (j + 1)) (gV D.R.m (j + 1) (by omega) le_rfl h.le))
+        (G'.sp.rowDecS j h)
+        (GlobalTheory.ChiGrid.stairId D.host.AA D.host.AAbar (D.R.m - 1 - (j + 1)))
+        (G'.sp.rowLat j h))
+  have dX : ∀ j (h : j + 1 < D.R.m),
+      GlobalTheory.Grid.HermitianOrthogonalExtensionData
+        (mk (.top (j + 1)) (gX (j + 1) (by omega) h.le))
+        (mk (.grid D.R.m (j + 1)) (gV D.R.m (j + 1) (by omega) le_rfl h.le))
+        (D.R.m - 1 - (j + 1)) :=
+    fun j h => Classical.choose (exX j h)
 
-  obtain ⟨dZ, -, hdZ⟩ := _root_.GlobalTheory.GridJoin.exists_orthogonalSum_testGrid_of_levelChoiceGrid (mk (.grid D.R.m D.R.m) (gV D.R.m D.R.m (by omega) le_rfl le_rfl))
+  obtain ⟨dZ, -⟩ := _root_.GlobalTheory.GridJoin.exists_orthogonalSum_testGrid_of_levelChoiceGrid (mk (.grid D.R.m D.R.m) (gV D.R.m D.R.m (by omega) le_rfl le_rfl))
     (mk (.top D.R.m) (gX D.R.m (by omega) le_rfl)) G'.sp.topDec (fun _ => 1) G'.sp.topLat
   let G : GlobalTheory.Grid.GridPre R :=
     { toGridSp := GS
@@ -706,7 +658,7 @@ theorem exists_gridPre_spaces : ∀ {D : D7} {Γ : Type} [Group Γ] [Fintype Γ]
       mX := fun _ => ⟨0, ∅⟩
       vC := fun _ _ => 0 }
   refine ⟨G, rfl, ?_, ?_, ?_⟩
-  · refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · refine ⟨?_, ?_, ?_⟩
     · intro i j hi hj
       show (node (.grid (i + 1) j)).Is _ _ _
       rw [node_pos (.grid (i + 1) j) (gV (i + 1) j (by omega) hi hj)]
@@ -719,25 +671,6 @@ theorem exists_gridPre_spaces : ∀ {D : D7} {Γ : Type} [Group Γ] [Fintype Γ]
       show (node (.top (j + 1))).Is _ _ _
       rw [node_pos (.top (j + 1)) (gX (j + 1) (by omega) hj)]
       exact mk_is _ _
-    · dsimp only [G]
-      rw [gridDecompositionCast_is_iff, ← joinGram_one]
-      exact hdP
-    · intro i hi1 hi2
-      dsimp only [G]
-      rw [dite_eq_left ⟨hi1, hi2⟩, gridDecompositionCast_is_iff]
-      have hl' : Z.ideal R.Pg = G'.pl.modul sc := hlvl
-      have := hdV i ⟨hi1, hi2⟩
-      rw [joinGram_neg, joinStair, ← hl'] at this
-      exact this
-    · intro j hj
-      dsimp only [G]
-      rw [dite_eq_left hj, gridDecompositionCast_is_iff]
-      have := hdX j hj
-      rw [joinGram_neg, joinStair_top] at this
-      exact this
-    · dsimp only [G]
-      rw [gridDecompositionCast_is_iff, ← joinGram_one]
-      exact hdZ
   · exact ⟨hZ, fun i h1 h2 => GlobalTheory.T.heckeCharacterGrid_isAuxiliaryCharacter_testGrid (GlobalTheory.GridJoin.gap_eq_chiGap D) hsc Z hS0 hS1 hZ.Wd_over hw0 i h1 h2, fun i h1 h2 => G'.ch.chi_eq i h1 h2⟩
   · refine ⟨?_, ?_, ?_, hq0, hw0, he0, hWZ, hlvl, fun _ _ _ => rfl, fun _ _ _ => rfl⟩
     · intro i j hi hj
@@ -933,12 +866,12 @@ variable {D : D7} {Γ : Type} [Group Γ] [Fintype Γ] {Pl0 T : Type} {A : FamIn 
 
 theorem isSpaces_withArr {G : GridPre R} {X ωT vacT ItT ωC vacC ItC dn ItU vC} (h : G.IsSpaces) :
     (withArr G X ωT vacT ItT ωC vacC ItC dn ItU vC).IsSpaces := by
-  obtain ⟨a, b, c, d, e, f, g⟩ := h
-  exact ⟨a, b, c, d, e, f, g⟩
+  obtain ⟨a, b, c⟩ := h
+  exact ⟨a, b, c⟩
 
 theorem isSpaces_withMeas {G : GridPre R} {m00 mV mP mX} (h : G.IsSpaces) : (withMeas G m00 mV mP mX).IsSpaces := by
-  obtain ⟨a, b, c, d, e, f, g⟩ := h
-  exact ⟨a, b, c, d, e, f, g⟩
+  obtain ⟨a, b, c⟩ := h
+  exact ⟨a, b, c⟩
 
 theorem spAgree_withArr {G : GridPre R} {X ωT vacT ItT ωC vacC ItC dn ItU vC} {G' : GridData R.toLevCh sc} {W : G'.Weil}
     (h : SpAgree G W) : SpAgree (withArr G X ωT vacT ItT ωC vacC ItC dn ItU vC) W := by
@@ -1053,7 +986,7 @@ theorem exists_gridPre_of_sizes (hDS : GlobalTheory.Published.DiscreteSeriesUpqE
     (hsc : sc.cGap = 1) {G' : GlobalTheory.ChiGrid.GridData R.toLevCh sc} (W : G'.Weil) (hW : W.Over R) :
     ∃ G : GlobalTheory.Grid.GridPre R, G.Is ∧ Match G W := by
   obtain ⟨G₁, W₁, h₁, hL⟩ := exists_sameWeil W
-  obtain ⟨W₂, hW₂, -, -, ec, eo, ev, ek, e0, e1, -, oV, oP, oX, hc, hb⟩ := exists_weil_ordered hH hsc W₁ (h₁.over hW)
+  obtain ⟨W₂, hW₂, ec, eo, ev, ek, e0, e1, oV, oP, oX, hc, hb⟩ := exists_weil_ordered hH hsc W₁ (h₁.over hW)
   have eb : ∀ X : GlobalTheory.ChiGrid.Node, X.InRange D.R.m → X ≠ .top 0 → ∀ τ, ∃ σ : Equiv.Perm (Fin (G₁.V X).rank),
       W₂.onb X τ = (W₁.onb X τ).submatrix id σ := fun X hX h0 τ => by
     by_cases h : ∀ j, X ≠ .grid 0 j

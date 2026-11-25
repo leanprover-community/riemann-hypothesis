@@ -595,7 +595,6 @@ theorem cpt_zero {R : Type} [CommRing R] [IsDomain R] {D : DegPre R} {r : ℕ} {
 end GlobalTheory.Mum.TensData
 end
 
-
 open GlobalTheory.Mum.TensData in
 theorem GlobalTheory.Mum.TensData.main : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R], AdmBase R (maximalIdeal R) → ∀ (D : DegData R (maximalIdeal R)) {r : ℕ} (W : Matrix (Fin r) (Fin r) ℤ), ((W + W.transpose).map (Int.cast : ℤ → ℝ)).PosDef → IsUnit (W + W.transpose).det → ∃ (D' : DegPre R) (_ : Tens D.toPre D' W), ∀ (z : (TK R).left) (J : ((TK R).left ⟶ D'.P.A.left) → D'.P.L.ι), Good D'.P.L z J → val (D'.psi 0) (𝟙 _) z J * val D'.rigK (𝟙 _) z J = 1 := by
   intro R _ _ _ hA D r W hW hdet
@@ -889,10 +888,6 @@ theorem cast_trace_mul_bar (x y : 𝓞 E) :
     rfl
   rw [h2]; simp
 
-theorem bar_bar (a : 𝓞 E) : H.bar (H.bar a) = a := by
-  apply RingOfIntegers.ext
-  rw [H.bar_eq, H.bar_eq, IsCMField.complexConj_apply_apply]
-
 theorem exists_traceForm_matrix : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E), ∃ (m : ℕ) (B0 : Matrix (Fin m) (Fin m) ℤ) (ρ0 : 𝓞 E →+* Matrix (Fin m) (Fin m) ℤ), 1 ≤ m ∧ B0.transpose = B0 ∧ (B0.map (Int.cast : ℤ → ℝ)).PosDef ∧ ∀ a, (ρ0 a).transpose * B0 = B0 * ρ0 (H.bar a) := by
   intro E _ _ _ H
   classical
@@ -930,7 +925,7 @@ theorem exists_traceForm_matrix : ∀ (E : Type) [Field E] [NumberField E] [IsCM
       rw [map_sum, Finset.mul_sum, map_sum]
       refine Finset.sum_congr rfl fun k _ => ?_
       rw [map_zsmul, mul_smul_comm, map_zsmul, smul_eq_mul, mul_comm]
-    rw [h1, h2, map_mul H.bar, bar_bar]
+    rw [h1, h2, map_mul H.bar, GlobalTheory.CompRat.ConjIsometry.bar_bar]
     congr 1; ring
 
 end GlobalTheory.TraceLattice

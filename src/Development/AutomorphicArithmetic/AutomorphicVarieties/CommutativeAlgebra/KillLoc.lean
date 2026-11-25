@@ -3,56 +3,13 @@ module
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.FramedTwoCoboundaries
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.HhGroup
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.HhSmall
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.AdicCompletion.Noetherian
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.RingTheory.Radical.NatInt
 import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 public import Mathlib.Algebra.Module.Torsion.Basic
 public import Mathlib.RingTheory.Filtration
 
@@ -107,31 +64,14 @@ end MC
 
 private theorem ker_inf {R : Type} [CommRing R] [IsLocalRing R] [IsNoetherianRing R] (K : Ideal R)
     (hK : maximalIdeal R * K = ⊥) : ∃ N, ∀ k ∈ K, k ∈ maximalIdeal R ^ N → k = 0 := by
-  have htor : Module.IsTorsionBySet R K (maximalIdeal R) := by
-    rintro ⟨k, hk⟩ ⟨a, ha⟩
-    apply Subtype.ext
-    show a * k = 0
-    rw [← Ideal.mem_bot, ← hK]
-    exact Ideal.mul_mem_mul ha hk
-  have hart : IsArtinian R K := by
-    letI : Module (ResidueField R) K := htor.module
-    haveI : IsScalarTower R (ResidueField R) K := htor.isScalarTower
-    haveI : Module.Finite (ResidueField R) K := Module.Finite.of_restrictScalars_finite R _ _
-    exact isArtinian_of_surjective_algebraMap (R := ResidueField R) (S := R) (M := K) residue_surjective
-  obtain ⟨N, hN⟩ := IsArtinian.monotone_stabilizes (R := R) (M := K)
-    ⟨fun n => OrderDual.toDual (Submodule.comap K.subtype (maximalIdeal R ^ n)),
-      fun a b hab => Submodule.comap_mono (Ideal.pow_le_pow_right hab)⟩
-  refine ⟨N, fun x hx hxN => ?_⟩
-  have := Ideal.iInf_pow_eq_bot_of_isLocalRing (maximalIdeal R) (maximalIdeal.isMaximal R).ne_top
-  rw [← Ideal.mem_bot, ← this, Ideal.mem_iInf]
-  intro n
-  rcases le_total n N with h | h
-  · exact Ideal.pow_le_pow_right h hxN
-  · have h1 : Submodule.comap K.subtype (maximalIdeal R ^ N) = Submodule.comap K.subtype (maximalIdeal R ^ n) :=
-      hN n h
-    have h2 : (⟨x, hx⟩ : K) ∈ Submodule.comap K.subtype (maximalIdeal R ^ N) := hxN
-    rw [h1] at h2
-    exact h2
+  obtain ⟨n, hn⟩ := Ideal.exists_pow_inf_eq_pow_smul (maximalIdeal R) K
+  refine ⟨n + 1, fun k hk hkN => ?_⟩
+  have h := hn (n + 1) n.le_succ
+  simp only [Ideal.smul_eq_mul, Ideal.mul_top, Nat.add_sub_cancel_left, pow_one] at h
+  have : k ∈ maximalIdeal R ^ (n + 1) ⊓ K := Submodule.mem_inf.2 ⟨hkN, hk⟩
+  rw [h] at this
+  rw [← Ideal.mem_bot, ← hK]
+  exact Ideal.mul_mono_right inf_le_right this
 
 private theorem ker_coord (O : Type) [CommRing O] [IsLocalRing O] {R : Type} [CommRing R] [Algebra O R] [IsCO O R]
     (K : Ideal R) (hK : maximalIdeal R * K = ⊥) :

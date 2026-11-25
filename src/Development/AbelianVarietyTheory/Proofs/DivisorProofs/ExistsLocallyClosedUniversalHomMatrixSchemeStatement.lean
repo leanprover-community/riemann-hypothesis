@@ -698,13 +698,7 @@ theorem gs_appLE_self {X Y : Scheme.{0}} (q : Y ⟶ X) (U : X.Opens) (W : Y.Open
   rw [Category.id_comp] at h2
   exact h1.trans h2
 
-theorem gs_fsum {X Y : Scheme.{0}} (f : Y ⟶ X) (y : Y) (U : X.Opens) (h : f y ∈ U) {n : ℕ} (a : Fin n → Γ(X, U)) :
-    gs f y U (∑ i, a i) = ∑ i, gs f y U (a i) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [gs_eq f y U h, map_sum]
-
 end GlobalTheory.HomFixUniv.CondGen
-
 
 open GlobalTheory.HomFixUniv.CondGen in
 theorem GlobalTheory.HomFixUniv.isGen_of_matRel : ∀ (Rg : Type) [CommRing Rg] (A B : Over (Sp Rg)) [GrpObj A] [GrpObj B] (L : LB A.left) (M : LB B.left) (k mA mB : ℕ) (bA : Fin mA → LB.Sec (LPow A L (k : ℤ) (topS Rg))) (bB : Fin mB → LB.Sec (LPow B M (k : ℤ) (topS Rg))) (R : Type) [CommRing R] (A' B' : Over (Sp R)) (Φ' : A' ⟶ B') (ψA : A'.left ⟶ (topS Rg ⊗ A).left) (ψB : B'.left ⟶ (topS Rg ⊗ B).left) (c : Fin mA → Fin mB → Γ(Sp R, ⊤)) (u : ∀ p, Γ(A'.left, (isoLB (L := L) (M := M) k Φ' ψA ψB).U p)ˣ), GlobalTheory.HomFixUniv.Generates bA ψA A'.hom c → (∀ (j : Fin mB) (p : (Fin 1 → M.ι) × (Fin 1 → L.ι)),
@@ -734,7 +728,7 @@ theorem GlobalTheory.HomFixUniv.isGen_of_matRel : ∀ (Rg : Type) [CommRing Rg] 
     intro q hq j
     have e := congrArg (gs (𝟙 A'.left) z ((isoLB (L := L) (M := M) k Φ' ψA ψB).U q)) (hR j q)
     refine (gs_appLE_self _ _ _ _ z hq _).symm.trans (e.trans ?_)
-    rw [gs_mul _ z _ hq, gs_unit _ z _ hq, gs_fsum _ z _ hq]
+    rw [gs_mul _ z _ hq, gs_unit _ z _ hq, GlobalTheory.PowBasis.gs_sum _ z _ hq]
     unfold GlobalTheory.HomFixUniv.comb
     congr 1
     refine Finset.sum_congr rfl fun i _ => ?_
@@ -802,11 +796,6 @@ open GlobalTheory.HomFixMat GlobalTheory.HomFixUniv
 noncomputable section
 
 namespace GlobalTheory.HomFixNorm
-
-theorem gs_finsum {X Y : Scheme.{0}} (f : Y ⟶ X) (y : Y) (U : X.Opens) (h : f y ∈ U) {κ : Type} (s : Finset κ)
-    (a : κ → Γ(X, U)) : gs f y U (∑ i ∈ s, a i) = ∑ i ∈ s, gs f y U (a i) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [gs_eq f y U h, map_sum]
 
 theorem one_comp_of_isGrpPullback {S S' : Scheme.{0}} {f : S' ⟶ S} {G : Over S} {G' : Over S'} [GrpObj G]
     [GrpObj G'] {φ : G'.left ⟶ G.left} (hφ : IsGrpPullback G' G f φ) : (η[G']).left ≫ φ = f ≫ (η[G]).left := by
@@ -913,7 +902,7 @@ theorem norm_at_zero : ∀ (Rg : Type) [CommRing Rg] (A B : Over (Sp Rg)) [GrpOb
     exact e.symm
   have nN : ∀ j, ∑ i, gs (𝟙 _) z ⊤ (c i j) * gs t z ⊤ (αA i) = gs t z ⊤ (βB j) := by
     intro j
-    rw [gt, hN j, gs_finsum _ z ⊤ trivial]
+    rw [gt, hN j, GlobalTheory.TermSize.gs_sum' _ z ⊤ trivial]
     exact Finset.sum_congr rfl fun i _ => by rw [gt, gs_mul _ z ⊤ trivial]
   have hcz : (eSec B ≫ θ B) (t z) ∈ (⨆ j, nonzeroLocus (bB j)) := by rw [hcov]; trivial
   obtain ⟨j, hj⟩ := TopologicalSpace.Opens.mem_iSup.1 hcz
@@ -923,7 +912,7 @@ theorem norm_at_zero : ∀ (Rg : Type) [CommRing Rg] (A B : Over (Sp Rg)) [GrpOb
     rw [gs_stalkMap t z ⊤ trivial]
     exact (isUnit_of_mul_isUnit_left hu).map _
   have E := congrArg (gs (zeroPt A') z ((isoLB (L := L) (M := M) k Φ' (φA' ≫ θ A) (φB' ≫ θ B)).U p)) (hrel j p)
-  rw [sB j, gs_mul _ _ _ hzU, gs_finsum _ _ _ hzU] at E
+  rw [sB j, gs_mul _ _ _ hzU, GlobalTheory.TermSize.gs_sum' _ _ _ hzU] at E
   simp only [gs_mul _ _ _ hzU, sC, sA] at E
   have hs : ∑ i, gs (𝟙 _) z ⊤ (c i j) * (gs t z ⊤ (αA i) * gs t z (LB.wchart L (fun _ : PUnit => eSec A) (fun _ => p.2 0)) (eA.s (fun _ => p.2 0)).val ^ k) =
       (∑ i, gs (𝟙 _) z ⊤ (c i j) * gs t z ⊤ (αA i)) * gs t z (LB.wchart L (fun _ : PUnit => eSec A) (fun _ => p.2 0)) (eA.s (fun _ => p.2 0)).val ^ k := by
@@ -1198,10 +1187,6 @@ theorem eq_θ {Rg : Type} [CommRing Rg] (A : Over (Sp Rg)) {Y : Scheme.{0}} (φ 
       simp only [Over.comp_left, u, v, Over.homMk_left, Category.assoc, θ_snd, Category.comp_id, h]
   exact congrArg CommaMorphism.left this
 
-theorem gs_comp_stalk {X Y Z : Scheme.{0}} (t : Z ⟶ Y) (g : Y ⟶ X) (z : Z) (U : X.Opens) (h : g (t z) ∈ U)
-    (f : Γ(X, U)) : gs (t ≫ g) z U f = (t.stalkMap z).hom (gs g (t z) U f) := by
-  rw [← gs_pull t g z U h, gs_stalkMap t z _ h, gs_pull (𝟙 _) g (t z) U h, Category.id_comp]
-
 theorem gs_appTop' {X Y : Scheme.{0}} (f : Y ⟶ X) (y : Y) (a : Γ(X, ⊤)) :
     gs (𝟙 Y) y ⊤ (f.appTop.hom a) = gs f y ⊤ a :=
   (gs_pull (𝟙 _) f y ⊤ trivial a).trans (by rw [Category.id_comp])
@@ -1314,14 +1299,14 @@ theorem mat_cond : ∀ (Rg : Type) [CommRing Rg] (A B : Over (Sp Rg)) [GrpObj A]
     have hIA : ∀ i, gs (t ≫ eSec A ≫ θ A) x ((LPow A L (k : ℤ) (topS Rg)).U p.2) ((bA i).f p.2) =
         gs t x ⊤ (αA i) * gs t x _ (eA.s (fun _ => qA)).val ^ k := by
       intro i
-      rw [gs_comp_stalk _ _ _ _ hmemA, hvA i (t x) p.2 hmemA, map_mul]
+      rw [GlobalTheory.ZJ.OmTest.gs_comp _ _ _ _ hmemA, hvA i (t x) p.2 hmemA, map_mul]
       congr 1
       · exact (gs_stalkMap t x ⊤ trivial _).symm
       · show (t.stalkMap x).hom ((gm (𝟙 _) (t x) _ (eA.s _)) ^ k).val = _
         rw [Units.val_pow_eq_pow_val, map_pow, ← gs_unit (𝟙 _) (t x) _ hWA, ← gs_stalkMap t x _ hWA]
     have hIB : gs (t ≫ eSec B ≫ θ B) x ((LPow B M (k : ℤ) (topS Rg)).U p.1) ((bB j).f p.1) =
         gs t x ⊤ (βB j) * gs t x _ (eB.s (fun _ => qB)).val ^ k := by
-      rw [gs_comp_stalk _ _ _ _ hmemB, hvB j (t x) p.1 hmemB, map_mul]
+      rw [GlobalTheory.ZJ.OmTest.gs_comp _ _ _ _ hmemB, hvB j (t x) p.1 hmemB, map_mul]
       congr 1
       · exact (gs_stalkMap t x ⊤ trivial _).symm
       · show (t.stalkMap x).hom ((gm (𝟙 _) (t x) _ (eB.s _)) ^ k).val = _

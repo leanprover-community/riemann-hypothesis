@@ -139,7 +139,6 @@ theorem mulPull_gen_labCover {R : Type} [CommRing R] [IsDomain R] [IsLocalRing R
   push_cast
   rfl
 
-
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor in
 theorem exists_mulSecK (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R] (_hR : Base R) (D : DegData R (maximalIdeal R))
     (C : LabCover D) (m : ℕ) (_hm : Odd m) (θ₀ : SecK C.P.L.L C.α 1) :
@@ -184,11 +183,6 @@ namespace GlobalTheory.Mum.MulInt
 open ReciprocityTheory.ChartRestriction.G.DVR ReciprocityTheory.ChartRestriction.G.DVR.SectionScalarValuation GlobalTheory.FamPull
 
 variable {R : Type} [CommRing R] [IsDomain R] (D : DegPre R)
-
-theorem cPoint_neg' (T : Over (Spec (CommRingCat.of R))) (y : D.X) : cP D T (-y) = (cP D T y)⁻¹ := by
-  have := cPoint_add D T (-y) y
-  rw [neg_add_cancel, _root_.GlobalTheory.PsiZero.cPoint_zero'] at this
-  exact eq_inv_of_mul_eq_one_left this.symm
 
 section Values
 
@@ -282,7 +276,7 @@ theorem exists_sq (hB : D.TauBimult) (hE : D.PsiEven) (F : Type) [Field F] [Alge
         s₁ T z J hJ, ← pow_add]
       congr 1; ring
     · have f₁ := _root_.ReciprocityTheory.ChartRestriction.G.DVR.UUA.tau_nsmul σ hJ hB mu mu (-mu) n
-      rw [TauPull.val_tau _ hJ, TauPull.val_tau _ hJ, cPoint_neg', add_neg_cancel, val_rigK σ hJ, add_comm mu,
+      rw [TauPull.val_tau _ hJ, TauPull.val_tau _ hJ, GlobalTheory.UT.SymFrame.cPoint_neg, add_neg_cancel, val_rigK σ hJ, add_comm mu,
         add_neg_cancel_right, ← succ_nsmul] at f₁
       have f₂ := congrArg (· ^ n) (psi_even σ hJ hE mu)
       have f₃ := congrArg (· ^ (n + 1)) (psi_zero σ hJ hB)

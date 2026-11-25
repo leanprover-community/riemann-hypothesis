@@ -198,13 +198,6 @@ private theorem second_cohomology_equiv : Nonempty (H2 ρ ≃ H2 ρ') := by
 
 end Transport
 
-private theorem card_H0dual {R k Γ Γ' M : Type} [Field R] [Field k] [Finite k] [Algebra R k] [Group Γ] [Group Γ']
-    [AddCommGroup M] [Module R M] [Module k M] [IsScalarTower R k M] [Finite M]
-    (ρ : Representation k Γ M) (ρ' : Representation R Γ' M) (e : Γ' ≃* Γ) (h : ∀ g m, ρ' g m = ρ (e g) m)
-    (χ : Γ →* kˣ) (χ' : Γ' →* Rˣ) (hχ : ∀ g, (χ (e g) : k) = algebraMap R k (χ' g)) :
-    Nat.card (H0dual χ ρ) = Nat.card (H0dual χ' ρ') := by
-  apply _root_.card_H0dual <;> assumption
-
 private theorem card_twDual {R Γ M : Type} [CommRing R] [Group Γ] [AddCommGroup M] [Module R M]
     (χ : Γ →* Rˣ) (ρ : Representation R Γ M) :
     Nat.card (H0 ((twDual χ ρ).comp (MonoidHom.id Γ))) = Nat.card (H0dual χ ρ) := by
@@ -292,6 +285,7 @@ theorem UpperTheory.V.Loc.tateFin :
       (Equiv.ofBijective _ hb).trans (LinearEquiv.congrRight inv).toEquiv
     haveI : Finite B := Subtype.finite
     rw [← Module.natCard_eq_pow_finrank, ← Module.natCard_eq_pow_finrank, Nat.card_congr e2,
-      card_H0dual ρ ρ' e h _ χ fun g => (algebraMap_eq (l := l) (k := k) h0 _).trans (congrArg _ (hcyc l 1 g)),
+      _root_.card_H0dual ρ ρ' e h _ χ
+        (fun g => (algebraMap_eq (l := l) (k := k) h0 _).trans (congrArg _ (hcyc l 1 g))),
       ← card_twDual, Nat.card_congr E, Module.natCard_eq_pow_finrank (K := ZMod (l ^ 1)),
       Subspace.dual_finrank_eq, ← Module.natCard_eq_pow_finrank]

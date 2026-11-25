@@ -8,8 +8,6 @@ public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsE
 
 @[expose] public section
 
-noncomputable section
-
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.SplitWeil GlobalTheory.Published
 
 namespace CompanionTheory.RgGu.NR

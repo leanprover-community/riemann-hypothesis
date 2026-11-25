@@ -51,7 +51,7 @@ end AutFiniteSec
 theorem autFinite (K V : Type) [Field K] [NumberField K] [StarRing K] [AddCommGroup V]
     [Module K V] [FiniteDimensional K V] [Module (NumberField.RingOfIntegers K) V]
     [IsScalarTower (NumberField.RingOfIntegers K) K V]
-    (h : V →ₗ⋆[K] V →ₗ[K] K) (_hsymm : h.IsSymm)
+    (h : V →ₗ⋆[K] V →ₗ[K] K)
     (hpos : ∀ x : V, x ≠ 0 → 0 < Algebra.trace ℚ K (h x x))
     (L : Submodule (NumberField.RingOfIntegers K) V) (hL : Submodule.IsFullLattice K L) :
     Set.Finite {g : V ≃ₗ[K] V | g ∈ isom h ∧ gmap g L = L} := by

@@ -18,17 +18,12 @@ variable {ι : Type} [Fintype ι] [DecidableEq ι] {V : ι → Type} [∀ i, Nor
 
 theorem eq_of_inner_span (tens : (∀ i, V i) → W) (hspan : Submodule.span ℂ (Set.range tens) = ⊤) {a b : W}
     (h : ∀ z, ⟪tens z, a⟫_ℂ = ⟪tens z, b⟫_ℂ) : a = b := by
-  have h2 : ∀ w ∈ Submodule.span ℂ (Set.range tens), ⟪w, a - b⟫_ℂ = 0 := by
-    intro w hw
-    induction hw using Submodule.span_induction with
-    | mem x hx =>
-      obtain ⟨z, rfl⟩ := hx
-      rw [inner_sub_right, h z, sub_self]
-    | zero => exact inner_zero_left _
-    | add x y _ _ hx hy => rw [inner_add_left, hx, hy, add_zero]
-    | smul c x _ hx => rw [inner_smul_left, hx, mul_zero]
-  have h3 := h2 (a - b) (by rw [hspan]; exact Submodule.mem_top)
-  exact sub_eq_zero.1 (inner_self_eq_zero.1 h3)
+  have h2 : (Submodule.span ℂ (Set.range tens)).IsOrtho (Submodule.span ℂ {a - b}) := by
+    rw [Submodule.isOrtho_span]
+    rintro _ ⟨z, rfl⟩ _ rfl
+    rw [inner_sub_right, h z, sub_self]
+  rw [hspan, Submodule.isOrtho_top_left, Submodule.span_singleton_eq_bot] at h2
+  exact sub_eq_zero.1 h2
 
 theorem prod_upd_left (y z : ∀ i, V i) (i₀ : ι) (b : V i₀) :
     ∏ i, ⟪Function.update y i₀ b i, z i⟫_ℂ = ⟪b, z i₀⟫_ℂ * ∏ i ∈ Finset.univ.erase i₀, ⟪y i, z i⟫_ℂ := by

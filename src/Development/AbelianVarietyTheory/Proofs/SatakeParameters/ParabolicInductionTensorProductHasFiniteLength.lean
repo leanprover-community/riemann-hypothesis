@@ -21,8 +21,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formal
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil
 
 
-noncomputable section
-
 namespace GlobalTheory.ProdFiniteLength
 
 open GlobalTheory.SmGL

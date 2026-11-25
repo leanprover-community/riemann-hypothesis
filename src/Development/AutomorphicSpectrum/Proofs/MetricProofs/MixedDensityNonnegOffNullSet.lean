@@ -89,10 +89,7 @@ theorem restrict_target_eq (A : FinHolAtlas e X) {U : Set X}
   refine Measure.restrict_congr_set (ae_eq_set.2 ⟨?_, ?_⟩)
   · refine measure_mono_null (fun y hy => ?_) (hnull j)
     exact ⟨hy.1, fun h => hy.2 ⟨hy.1, h⟩⟩
-  · have : ov A U j \ (A.chart j).target = ∅ := by
-      ext y; simp only [Set.mem_diff, Set.mem_empty_iff_false, iff_false]
-      exact fun h => h.2 h.1.1
-    rw [this, measure_empty]
+  · rw [Set.sdiff_eq_empty.2 Set.inter_subset_left, measure_empty]
 
 theorem chi_continuousOn {A : FinHolAtlas e X} (P : ChartPartition A) (k j : Fin A.n) :
     ContinuousOn (fun y => P.χ k ((A.chart j).symm y)) (A.chart j).target :=

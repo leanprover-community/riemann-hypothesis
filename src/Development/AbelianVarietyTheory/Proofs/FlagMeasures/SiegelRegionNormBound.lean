@@ -388,17 +388,6 @@ theorem eucl_eq {N : ℕ} (v : Fin N → ℂ) : eucl v = ‖(WithLp.toLp 2 v : E
   rw [EuclideanSpace.norm_eq]
   simp only [eucl, Complex.normSq_eq_norm_sq]
 
-theorem eucl_mulVec_le {N : ℕ} (x : Matrix (Fin N) (Fin N) ℂ) (v : Fin N → ℂ) :
-    eucl (x *ᵥ v) ≤ opn x * eucl v := by
-  rw [eucl_eq, eucl_eq, ← Matrix.toEuclideanCLM_toLp]
-  exact ContinuousLinearMap.le_opNorm _ _
-
-theorem herm_le {N : ℕ} (H : Matrix (Fin N) (Fin N) ℂ) (u v : Fin N → ℂ) :
-    ‖herm H u v‖ ≤ opn H * eucl u * eucl v := by
-  have h := norm_inner_le_norm (𝕜 := ℂ) (WithLp.toLp 2 v : EuclideanSpace ℂ (Fin N)) (WithLp.toLp 2 (H *ᵥ u))
-  rw [EuclideanSpace.inner_toLp_toLp, dotProduct_comm, ← eucl_eq, ← eucl_eq, mul_comm] at h
-  exact h.trans (mul_le_mul_of_nonneg_right (eucl_mulVec_le H u) (Real.sqrt_nonneg _))
-
 theorem continuous_opn {N : ℕ} : Continuous fun x : Matrix (Fin N) (Fin N) ℂ => opn x :=
   (LinearMap.continuous_of_finiteDimensional
     (Matrix.toEuclideanCLM (𝕜 := ℂ) (n := Fin N)).toAlgEquiv.toLinearMap).norm
@@ -433,9 +422,9 @@ theorem exists_zhat_le (z z' : Fin (2 * r + k + 1) → ℂ) :
   have e2 : eucl (fvec k r z a) ≤ ∑ a, eucl (fvec k r z a) :=
     Finset.single_le_sum (f := fun a => eucl (fvec k r z a)) (fun _ _ => eucl_nonneg _) (Finset.mem_univ a)
   calc ‖Zhat k r z z' x a b‖ ≤ opn (Hpk k r) * eucl (x *ᵥ fvec k r z' b) * eucl (fvec k r z a) :=
-        herm_le _ _ _
+        GlobalTheory.SgInf.OpNormU.herm_le _ _ _
     _ ≤ opn (Hpk k r) * (opn x * eucl (fvec k r z' b)) * eucl (fvec k r z a) :=
-        mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left (eucl_mulVec_le _ _) (opn_nonneg _))
+        mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left (GlobalTheory.SgInf.OpNormU.eucl_mulVec_le _ _) (opn_nonneg _))
           (eucl_nonneg _)
     _ = opn (Hpk k r) * (eucl (fvec k r z' b) * eucl (fvec k r z a)) * opn x := by ring
     _ ≤ _ := mul_le_mul_of_nonneg_right (le_max_of_le_right (mul_le_mul_of_nonneg_left

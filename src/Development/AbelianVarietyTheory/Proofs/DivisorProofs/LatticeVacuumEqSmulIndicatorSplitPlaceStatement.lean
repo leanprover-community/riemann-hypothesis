@@ -606,7 +606,6 @@ end Main
 
 end GlobalTheory.VacShapeCl
 
-
 open GlobalTheory.VacShapeCl in
 theorem GlobalTheory.VacShapeCl.closure_Sa_eq_matLat : ∀ {D : D7} {a a' : ℕ} (Bs : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Base D.host.F D.host.E) (Γ : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Geo D.sp.cm.sig a a')
     (X : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Chars D.host.F D.host.E) (om : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Rep D.sp.cm.sig Γ.V Γ.W)
@@ -1056,7 +1055,7 @@ theorem sa_bd_uniq : ∀ {D : D7} {a a' : ℕ} (Bs : GlobalTheory.IndefiniteRowS
   have hχ1 : ∀ u, At (evFin D.host.F Bs.v₁) u →
       (u.map (piW Bs.τ₁) = 0 ∨ u.map (piW (Bs.τ₁.comp D.sp.cm.sig)) = 0) → χ u = 1 := by
     intro u hu h
-    rw [hχ, GlobalTheory.T.traceSymplectic_self_zero_splitSupported Bs Γ X om om' hTr u hu h, mul_zero, AddChar.map_zero_eq_one]
+    rw [hχ, GlobalTheory.VacIso.symp_self_eq_zero Bs Γ X om om' hTr u hu h, mul_zero, AddChar.map_zero_eq_one]
   obtain ⟨ψ₀, hψ₀, hιψ₀⟩ := hι.bij.surjOn hg
   have hA : ∀ γ ∈ latAtV {Γ.V' with L := L₁} {Γ.W with L := L₂} Bs.v₁, γ.map (piW Bs.τ₁) = 0 →
       schr (GlobalTheory.LatVac.psiAt Bs.ψ Bs.v₁) (GlobalTheory.LatVac.locCo Γ.M'.co Bs.v₁ γ) ψ₀ = ψ₀ := by
@@ -1332,7 +1331,7 @@ theorem vacuum_eq_smul_indicator : ∀ {D : D7} {a a' : ℕ} (Bs : GlobalTheory.
     rintro _ ⟨u, hu, hu0, rfl⟩ Y
     have hat := (GlobalTheory.LatVac.latAtV_at_stable _ _ _).1 u hu
     have hA := hfix u hu
-    rw [GlobalTheory.T.traceSymplectic_self_zero_splitSupported Bs Γ X om om' hTr u hat (Or.inl hu0), mul_zero, AddChar.map_zero_eq_one, one_smul] at hA
+    rw [GlobalTheory.VacIso.symp_self_eq_zero Bs Γ X om om' hTr u hat (Or.inl hu0), mul_zero, AddChar.map_zero_eq_one, one_smul] at hA
     exact (hι.trans u hat hu0 φ₀ h0 φ₀ h0 hA Y).symm
   have hsupp : ∀ Y ∉ GlobalTheory.VacShape.Bd Bs Γ L₁ L₂, ι φ₀ Y = 0 := by
     intro Y hY
@@ -1340,7 +1339,7 @@ theorem vacuum_eq_smul_indicator : ∀ {D : D7} {a a' : ℕ} (Bs : GlobalTheory.
     obtain ⟨x, hx, hx0, rfl, u, hu, hu0, hne1⟩ := hY
     have hat := (GlobalTheory.LatVac.latAtV_at_stable _ _ _).1 u hu
     have hB := hfix u hu
-    rw [GlobalTheory.T.traceSymplectic_self_zero_splitSupported Bs Γ X om om' hTr u hat (Or.inr hu0), mul_zero, AddChar.map_zero_eq_one, one_smul] at hB
+    rw [GlobalTheory.VacIso.symp_self_eq_zero Bs Γ X om om' hTr u hat (Or.inr hu0), mul_zero, AddChar.map_zero_eq_one, one_smul] at hB
     have hm := hι.mult u hat hu0 φ₀ h0 φ₀ h0 hB x hx hx0
     by_contra h
     exact hne1 ((mul_eq_right₀ h).mp hm.symm)
@@ -1377,7 +1376,6 @@ open GlobalTheory.FunObj GlobalTheory.ChiGrid GlobalTheory.SplitFlip GlobalTheor
 open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun
 open ValuativeRel
 open scoped GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
-
 
 end -- clump:auto
 end -- clump:auto

@@ -9,8 +9,6 @@ import Mathlib.Tactic.Lemma
 open Matrix Finset
 open scoped InnerProductSpace
 
-noncomputable section
-
 namespace CompanionTheory.D.LK
 
 open Formalism.REAL (GlRel IsUnitary KHighest IsWeight CasK Cas)

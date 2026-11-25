@@ -25,8 +25,8 @@ theorem wsum_eq_zero_iff : ∀ (R : Type) [CommRing R] (C : Type) [Category.{0} 
   intro R _ C _ F hfr hH n u v
   constructor
   · intro hw l l'
-    obtain ⟨δ, -, hδ⟩ := GlobalTheory.T.exists_globalVectorField_of_oneForm_functional R C F hfr hH l
-    obtain ⟨δ', -, hδ'⟩ := GlobalTheory.T.exists_globalVectorField_of_oneForm_functional R C F hfr hH l'
+    obtain ⟨δ, -, hδ⟩ := GlobalTheory.AbCoh.exists_vectorField_of_functional R C F hfr hH l
+    obtain ⟨δ', -, hδ'⟩ := GlobalTheory.AbCoh.exists_vectorField_of_functional R C F hfr hH l'
     have key : ∀ T, algebraMap R (F.obj T) (∑ k, (l (u k) * l' (v k) - l (v k) * l' (u k))) = 0 := by
       intro T
       have h0 := congrArg (exteriorPower.pairingDual (F.obj T) Ω[F.obj T⁄R] 2

@@ -475,20 +475,11 @@ structure Dat.Ok (D : Dat) : Prop where
 
   fieldsConditions : D.X.AbelianUnramifiedExtensionConditions
 
-  embeddingStarConj : ∀ x : D.X.K, D.sig0 (star x) = starRingEnd ℂ (D.sig0 x)
-
-  f_eq : D.X.f = D.R.f
   primes : D.Pr.Ok
-
-  piG_cong : D.Pr.PiGCong
-
-  cond : D.X.IsCond D.Pr.cond
-  chars : D.Ch.Ok
 
   hecke : D.Ch.FromHecke D.W D.sig0
   wts : D.W.Ok
 
-  e_even : ∀ j : Fin D.R.m, ∃ z : ℤ, ∑ τ, (D.W.row τ).e j = 2 * (z : ℚ)
   sizes : Sizes D.Pr D.W D.a
 
 theorem finite_pow_eq (n : ℕ) (hn : 0 < n) (a : Qb) : {z : Qb | z ^ n = a}.Finite := by

@@ -84,7 +84,7 @@ theorem GlobalTheory.ThetaIntAdm.exists_admissible_form_convergent_thetaIntegral
     (∀ Φ ∈ GlobalTheory.WeilM.schA F (Fin n × Fin d), M.Conv om Φ) →
     ∃ l ∈ (GlobalTheory.WeilM.adeleClass F).adm (Fin n × Fin d), ∀ Φ ∈ GlobalTheory.WeilM.schA F (Fin n × Fin d), l Φ = M.I om Φ 1 := by
   intro F E _ _ _ _ _ σ n d X Y M ψ χX χY om hW hC
-  obtain ⟨l₀, hl₀, hl₀e⟩ := GlobalTheory.T.exists_admitted_form_eq_adelicThetaDistribution F (Fin n × Fin d)
+  obtain ⟨l₀, hl₀, hl₀e⟩ := GlobalTheory.ThetaAdmitted.exists_admitted_form_eq_adelicThetaDistribution_alt F (Fin n × Fin d)
   have hS := GlobalTheory.WeilM.IsUWeilPair.isUSplitting hW
   have pres : ∀ p, ∀ Φ ∈ GlobalTheory.WeilM.schA F (Fin n × Fin d), om p Φ ∈ GlobalTheory.WeilM.schA F (Fin n × Fin d) :=
     hS.pres
@@ -120,7 +120,7 @@ theorem GlobalTheory.ThetaIntAdm.exists_admissible_form_convergent_thetaIntegral
     funext x
     rw [← hT x f, th _ (mem f)]
     rfl
-  haveI := GlobalTheory.T.schwartzMap_barrelledSpace' (Fin n × Fin d → mixedEmbedding.mixedSpace F)
+  haveI := GlobalTheory.schwartzMap_barrelledSpace (Fin n × Fin d → mixedEmbedding.mixedSpace F)
   obtain ⟨L, hL⟩ := GlobalTheory.ThetaIntAdm.exists_clm_integral (M.μ.restrict M.dom) T
     (fun f => by rw [eT f]; exact hC _ (mem f) 1)
   refine ⟨L, fun f => ?_⟩

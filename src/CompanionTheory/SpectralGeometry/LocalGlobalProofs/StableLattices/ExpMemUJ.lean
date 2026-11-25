@@ -12,8 +12,6 @@ public import Mathlib.Analysis.Calculus.MeanValue
 
 open Matrix Finset Filter Topology Set
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.DSStabLink
 
 open PI.UpqRep CompanionTheory.D.DSIC

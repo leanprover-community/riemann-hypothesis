@@ -131,7 +131,7 @@ theorem isCan_unique (R : Type) [CommRing R] (A : Over (Sp R)) [GrpObj A] (p : �
     rw [comp_mul] at h3
     simp only [e, Fn1.zero, Category.assoc, map_sub]
     linear_combination -h1 + h2 - h3 + h4 + h5
-  obtain ⟨r, hr⟩ := GlobalTheory.T.natural_pointwiseCochain_const_of_globalSections_base R (A ⊗ A) Unit (whole _) (by simp [whole]) (globalFns_holds _ (A ⊗ A)
+  obtain ⟨r, hr⟩ := GlobalTheory.PtExt.NatConst.const_of_natural R (A ⊗ A) Unit (whole _) (by simp [whole]) (globalFns_holds _ (A ⊗ A)
     (ReciprocityTheory.ChartRestriction.G.Geo.Tor.AbelianSchemeGerms.isAbelianScheme_tensor A A hA hA)).2 e hcob
   have he : ∀ (D : Type) [CommRing D] [Algebra R D] (y y' : Pt A D),
       d.g D y y' - d'.g D y y' - (κ D (y * y') - κ D y - κ D y') = algebraMap R D r := by

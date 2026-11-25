@@ -7,7 +7,6 @@ import Mathlib.Tactic.Linter.Style
 
 open AlgebraicGeometry CategoryTheory Limits
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
-noncomputable section
 namespace GlobalTheory.ZM.DwModel
 
 private lemma spMap_comp_moduli_spaces {A B C : Type} [CommRing A] [CommRing B] [CommRing C] (f : A →+* B) (g : B →+* C) :
@@ -89,4 +88,3 @@ theorem isGaloisCover_field (K L : Type) [Field K] [Field L] [Algebra K L] [Fini
       exact (RingHom.congr_fun hb' x).trans (AlgHom.congr_fun ha x).symm
 
 end GlobalTheory.ZM.DwModel
-end

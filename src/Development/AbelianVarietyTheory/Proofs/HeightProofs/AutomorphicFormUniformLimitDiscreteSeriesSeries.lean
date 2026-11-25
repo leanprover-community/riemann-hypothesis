@@ -191,7 +191,6 @@ open GlobalTheory.SmoothGlob GlobalTheory.LowTypeDetermined GlobalTheory.PointAt
 
 namespace GlobalTheory.TypeSum.GKCoef
 
-
 open CoefLow in
 theorem values_eq_coef : ∀ {D : D7} (θ : D.what₂.Tau → (Ainf D.host.F ⊗[D.host.F] D.host.E →+* ℂ)) (V : HSp D)
     (τ : D.what₂.Tau), IsInfFam (D := D) θ → GlobalTheory.Published.HarishChandraModules → GlobalTheory.Published.CasselmanWallach →
@@ -539,15 +538,6 @@ theorem sobCont_add_form {ℓ ℓ' : H →ₗ[ℂ] ℂ} (h : Sobolev₂ (lieSet 
   calc ‖ℓ w + ℓ' w‖ ≤ ‖ℓ w‖ + ‖ℓ' w‖ := norm_add_le _ _
     _ ≤ _ := by nlinarith
 
-theorem sobCont_smul_form (c : ℂ) {ℓ : H →ₗ[ℂ] ℂ} (h : Sobolev₂ (lieSet ε) σ ℓ) :
-    Sobolev₂ (lieSet ε) σ (c • ℓ) := by
-  obtain ⟨S, C, hS, hC⟩ := h
-  refine ⟨S, ‖c‖ * C, hS, fun w hw => ?_⟩
-  have b : ‖ℓ w‖ ≤ C * sobNorm σ S w := hC w hw
-  show ‖c • ℓ w‖ ≤ ‖c‖ * C * sobNorm σ S w
-  rw [norm_smul, mul_assoc]
-  exact mul_le_mul_of_nonneg_left b (norm_nonneg c)
-
 theorem sobCont_sum_form {ι : Type} (s : Finset ι) (f : ι → H →ₗ[ℂ] ℂ) (h : ∀ i, Sobolev₂ (lieSet ε) σ (f i)) :
     Sobolev₂ (lieSet ε) σ (∑ i ∈ s, f i) := by
   classical
@@ -578,7 +568,7 @@ theorem coefBound_two_finSum : ∀ (n : ℕ) (ε : Fin n → Bool) (H : Type) [N
   have h1 : ∀ b, Sm ε σ b → SobFun ε σ (γ b) := by
     intro b _
     have hL := sobCont_sum_form (ε := ε) (σ := σ) Finset.univ (fun j => ⟪b, x j⟫_ℂ • ℓ j)
-      (fun j => sobCont_smul_form _ (hℓ j))
+      (fun j => GlobalTheory.TypeSum.CoefLow.sob_smul _ (hℓ j))
     have e : γ b = ⇑(∑ j, ⟪b, x j⟫_ℂ • ℓ j) := by
       funext w
       simp [γ, LinearMap.sum_apply]
@@ -587,7 +577,7 @@ theorem coefBound_two_finSum : ∀ (n : ℕ) (ε : Fin n → Bool) (H : Type) [N
   have h2 : ∀ w, Sm ε σ w → SobFun ε σ (fun b => star (γ b w)) := by
     intro w _
     have hL := sobCont_sum_form (ε := ε) (σ := σ) Finset.univ
-      (fun j => star (ℓ j w) • (innerSL ℂ (x j) : H →ₗ[ℂ] ℂ)) (fun j => sobCont_smul_form _ (sobCont_inner _))
+      (fun j => star (ℓ j w) • (innerSL ℂ (x j) : H →ₗ[ℂ] ℂ)) (fun j => GlobalTheory.TypeSum.CoefLow.sob_smul _ (sobCont_inner _))
     have e : (fun b => star (γ b w)) = ⇑(∑ j, star (ℓ j w) • (innerSL ℂ (x j) : H →ₗ[ℂ] ℂ)) := by
       funext b
       simp only [γ, star_sum, LinearMap.sum_apply, LinearMap.smul_apply,
@@ -1019,7 +1009,6 @@ end GlobalTheory.TypeSum.KSeries
 
 namespace GlobalTheory.TypeSum.KSeries
 
-
 theorem hasTypeAll_of_kTypes : GlobalTheory.Published.HarishChandraModules → GlobalTheory.Published.CasselmanWallach →
     ∀ (n : ℕ) (ε : Fin n → Bool) (H : Type) [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
     (σ : GlobalTheory.TypeSum.Mx n → (H →L[ℂ] H)), GlobalTheory.TypeSum.Std ε σ →
@@ -1144,14 +1133,6 @@ theorem sobCont_add' {ℓ ℓ' : H →ₗ[ℂ] ℂ} (h : Sobolev₂ (lieSet ε) 
   calc ‖ℓ w + ℓ' w‖ ≤ ‖ℓ w‖ + ‖ℓ' w‖ := norm_add_le _ _
     _ ≤ _ := by nlinarith
 
-theorem sobCont_smul' (c : ℂ) {ℓ : H →ₗ[ℂ] ℂ} (h : Sobolev₂ (lieSet ε) σ ℓ) : Sobolev₂ (lieSet ε) σ (c • ℓ) := by
-  obtain ⟨S, C, hS, hC⟩ := h
-  refine ⟨S, ‖c‖ * C, hS, fun w hw => ?_⟩
-  have e1 := hC w hw
-  change ‖c * ℓ w‖ ≤ ‖c‖ * C * (S.map fun l => ‖l.foldr (dRep σ) w‖).sum
-  rw [norm_mul, mul_assoc]
-  exact mul_le_mul_of_nonneg_left e1 (norm_nonneg c)
-
 theorem sobCont_sum {ι : Type} (s : Finset ι) (ℓ : ι → (H →ₗ[ℂ] ℂ)) (h : ∀ i, Sobolev₂ (lieSet ε) σ (ℓ i)) :
     Sobolev₂ (lieSet ε) σ (∑ i ∈ s, ℓ i) :=
   Finset.sum_induction _ _ (fun _ _ => sobCont_add') sobCont_zero' fun i _ => h i
@@ -1184,7 +1165,7 @@ theorem kAvg_approx_coef : ∀ (n : ℕ) (ε : Fin n → Bool) (H : Type) [Norme
   have hC' : IsCompact ((fun p : Mx n × KG ε => p.1 * toMK p.2) '' (C ×ˢ Set.univ)) :=
     (hC.prod isCompact_univ).image (continuous_fst.mul ((continuous_toMK ε).comp continuous_snd))
   obtain ⟨m', ℓ, v, hℓ, hv, happ'⟩ := happ _ hC' (δ / (1 + I)) (by positivity)
-  refine ⟨fun j => ∑ i, ⟪c j, v i⟫_ℂ • ℓ i, fun j => sobCont_sum _ _ fun i => sobCont_smul' _ (hℓ i),
+  refine ⟨fun j => ∑ i, ⟪c j, v i⟫_ℂ • ℓ i, fun j => sobCont_sum _ _ fun i => GlobalTheory.TypeSum.CoefLow.sob_smul _ (hℓ i),
     fun y hy hyU => ?_⟩
   have hsm : ∀ w, Sm ε σ (kAvg ε σ e w) := fun w => h.2.2.1 _ (by
     rw [hsum]

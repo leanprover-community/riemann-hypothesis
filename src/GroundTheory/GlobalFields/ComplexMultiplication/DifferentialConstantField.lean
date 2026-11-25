@@ -57,16 +57,11 @@ theorem exists_algebraMap_eq_of_bcEmb {c : E.toAffine.FunctionField} {a : F'}
     ∃ a₀ : F, algebraMap F E.toAffine.FunctionField a₀ = c := by
   set K' := (E.baseChange F').toAffine.FunctionField
   have hinj : Function.Injective (bcEmb (F' := F') E) := (bcEmb (F' := F') E).toRingHom.injective
-  have hmap : ∀ w ∈ F⟮genX E⟯, bcEmb (F' := F') E w ∈ F'⟮genX (E.baseChange F')⟯ := by
-    intro w hw
-    induction hw using IntermediateField.adjoin_induction with
-    | mem x hx => rw [Set.mem_singleton_iff.mp hx, bcEmb_genX]; exact mem_adjoin_simple_self F' _
-    | algebraMap x =>
-      rw [AlgHom.commutes, IsScalarTower.algebraMap_apply F F' K']
-      exact IntermediateField.algebraMap_mem _ _
-    | add x y _ _ hx hy => rw [map_add]; exact add_mem hx hy
-    | inv x _ hx => rw [map_inv₀]; exact inv_mem hx
-    | mul x y _ _ hx hy => rw [map_mul]; exact mul_mem hx hy
+  have hmap : ∀ w ∈ F⟮genX E⟯, bcEmb (F' := F') E w ∈ F'⟮genX (E.baseChange F')⟯ :=
+    fun _ hw => (IntermediateField.adjoin_le_iff
+      (T := ((F'⟮genX (E.baseChange F')⟯).restrictScalars F).comap (bcEmb (F' := F') E))).2
+      (Set.singleton_subset_iff.2 <| by
+        simpa [bcEmb_genX] using mem_adjoin_simple_self F' _) hw
   obtain ⟨r, s, hr, hs, rfl⟩ := exists_eq_add_mul_genY E c
   rw [map_add (f := _), map_mul, bcEmb_genY] at h
   have hs0 : bcEmb (F' := F') E s = 0 := by

@@ -10,8 +10,6 @@ universe u
 
 open CategoryTheory CategoryTheory.Limits AlgebraicGeometry
 
-noncomputable section
-
 namespace FunctorialResolution.EmbeddedResolution
 
 namespace MarkedPullbackSquare
@@ -71,5 +69,3 @@ theorem baseChangeCompatible_of_smooth (hG : PrincipalizationGeometryHypotheses.
       E hE hV
 
 end FunctorialResolution.EmbeddedResolution
-
-end

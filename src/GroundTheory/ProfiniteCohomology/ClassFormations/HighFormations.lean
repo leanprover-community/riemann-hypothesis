@@ -477,7 +477,8 @@ theorem exists_cupH_top (n : ℕ) [NeZero n] [Fintype (⊤ : Subgroup Γ)]
       ((tateIsoH (res (⊤ : Subgroup Γ).subtype M) _ (n + 2) hp).inv_hom_id_apply x).symm
     rw [hx, ← hs, tateTheoremIso_hom_apply M u ⊤ h1 h2 h3 (n : ℤ) y0, tateIsoH_map_apply' _ _ hp]
     erw [tateIsoH_tateCup (show (2 : ℤ) = ((2 : ℕ) : ℤ) by norm_num) rfl hp (add_comm 2 (n : ℤ))
-        (add_comm 2 n)]
+        (add_comm 2 n) (res (⊤ : Subgroup Γ).subtype M) (Rep.trivial ℤ (⊤ : Subgroup Γ) ℤ)
+        (tateResClass M u ⊤) y0]
     exact congrArg (fun t => (groupCohomology.map (MonoidHom.id _)
       (ρ_ (res (⊤ : Subgroup Γ).subtype M)).hom (n + 2)) (cupH (add_comm 2 n) t
         ((tateIsoH (Rep.trivial ℤ (⊤ : Subgroup Γ) ℤ) n n rfl).hom.hom y0)))

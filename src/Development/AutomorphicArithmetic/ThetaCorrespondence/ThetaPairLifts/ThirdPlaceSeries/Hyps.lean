@@ -10,8 +10,6 @@ public import Formalism.SharpRestriction.GlobalSchurBounds.MassRatioUnfoldedOfTh
 
 @[expose] public section
 
-
-
 section
 noncomputable section
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.Pk Formalism.MainNotions.Lnk Formalism.MainNotions.GlobalTheoryTheory Formalism.L2.GlobalTheoryTheory Formalism.MainNotions.RT
@@ -23,7 +21,7 @@ structure HypsAlt (N : FamClass → Prop) (DR : _root_.GlobalTheory.Fc.R1.Defini
   𝒜 : FamClass
   σ : RawSel _root_.GlobalTheory.Fc.BundleCondition 𝒜
   cT : ℝ → ℝ → ℝ
-  hEx : MinkDiv → UpperTheory.Top.ExS 𝒜 cT
+  hEx : MinkDiv → UpperTheory.Top.ExD 𝒜 cT
   hduty : ∀ {eps : ℝ} (Fm : FamP eps), 𝒜 Fm → Duty Fm
   hRB : ∀ {eps : ℝ} (Fm : FamP eps) (hc : 𝒜 Fm) (x : ℝ) (hx : Fm.x1 < x) (h : ((_root_.GlobalTheory.Fc.familySelection σ) Fm hc).1 ≤ x) (i : Fm.Ix x),
       _root_.Formalism.IndefR.IndefiniteRealisationBoundedRows ((_root_.GlobalTheory.Fc.selectionBundleOfRawSelection σ) Fm hc x hx h i)

@@ -397,7 +397,8 @@ theorem decorated_lattice_mul_principal (x : GL (Fin n) (E ⊗[F] Formalism.L2.H
   have hSt : (k : GL (Fin n) (E ⊗[F] Formalism.L2.Herm.Af F)) ∈ St (1 : GL (Fin n) (E ⊗[F] Formalism.L2.Herm.Af F)) := congruence_subgroup_le_stabilizer hc n ST k.2
   have hSt' : (k : GL (Fin n) (E ⊗[F] Formalism.L2.Herm.Af F))⁻¹ ∈ St (1 : GL (Fin n) (E ⊗[F] Formalism.L2.Herm.Af F)) := inv_mem hSt
   have hredinv : ∀ P : Pl E, redAt (1 : GL (Fin n) (E ⊗[F] Formalism.L2.Herm.Af F)) P ⟨_, hSt'⟩ = (redAt (1 : GL (Fin n) (E ⊗[F] Formalism.L2.Herm.Af F)) P ⟨_, hSt⟩)⁻¹ :=
-    fun P => map_inv (redAt (1 : GL (Fin n) (E ⊗[F] Formalism.L2.Herm.Af F)) P) ⟨_, hSt⟩
+    fun P => map_inv (redAt (1 : GL (Fin n) (E ⊗[F] Formalism.L2.Herm.Af F)) P)
+      (⟨_, hSt⟩ : St (1 : GL (Fin n) (E ⊗[F] Formalism.L2.Herm.Af F)))
   have hmir : ∀ P ∈ ST, redAt (1 : GL (Fin n) (E ⊗[F] Formalism.L2.Herm.Af F)) P ⟨_, hSt⟩ ∈ mirab (kP P) n := by
     intro P hP
     have hJ' : (k : GL (Fin n) (E ⊗[F] Formalism.L2.Herm.Af F)) ∈

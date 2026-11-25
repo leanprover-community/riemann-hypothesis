@@ -40,21 +40,17 @@ theorem measurePreserving_comp_equiv {α : Type*} [MeasurableSpace α] (μ : Mea
   rw [hpre, Measure.pi_pi]
   exact Fintype.prod_equiv e.symm _ _ fun _ ↦ rfl
 
-def adeleInfHom : 𝔸[K] →+* mixedSpace K :=
-  (InfiniteAdeleRing.ringEquiv_mixedSpace K).toRingHom.comp
-    (RingHom.fst (InfiniteAdeleRing K) (FiniteAdeleRing (𝓞 K) K))
-
 def adeleFinHom : 𝔸[K] →+* 𝔸ᶠ[K] :=
   RingHom.snd (InfiniteAdeleRing K) (FiniteAdeleRing (𝓞 K) K)
 
 omit [Fintype ι] in
-theorem infPartPi_eq_adeleInfHom (x : ι → 𝔸[K]) : infPartPi x = fun i ↦ adeleInfHom (x i) := rfl
+theorem infPartPi_eq_adeleInfHom (x : ι → 𝔸[K]) : infPartPi x = fun i ↦ GroundTheory.Automorphic.Adele2.infRingHom (x i) := rfl
 
 omit [Fintype ι] in
 theorem finPartPi_eq_adeleFinHom (x : ι → 𝔸[K]) : finPartPi x = fun i ↦ adeleFinHom (x i) := rfl
 
 theorem adeleInfHom_algebraMap (k : K) :
-    adeleInfHom (algebraMap K 𝔸[K] k) = mixedEmbedding K k := by
+    GroundTheory.Automorphic.Adele2.infRingHom (algebraMap K 𝔸[K] k) = mixedEmbedding K k := by
   change homeomorphMixedSpace K (algebraMap K 𝔸[K] k).1 = _
   simp only [adeleRing_algebraMap_fst, homeomorphMixedSpace_algebraMap]
 
@@ -108,7 +104,7 @@ theorem mixedMulVecEquiv_apply (hNM : N * M = 1) (hMN : M * N = 1) (u : ι → m
 theorem infPartPi_mulVec (hNM : N * M = 1) (hMN : M * N = 1) (x : ι → 𝔸[K]) :
     infPartPi (M.map (algebraMap K 𝔸[K]) *ᵥ x) =
       mixedMulVecEquiv M N hNM hMN (infPartPi x) := by
-  have h : (⇑adeleInfHom ∘ ⇑(algebraMap K 𝔸[K])) = mixedEmbedding K :=
+  have h : (⇑GroundTheory.Automorphic.Adele2.infRingHom ∘ ⇑(algebraMap K 𝔸[K])) = mixedEmbedding K :=
     funext adeleInfHom_algebraMap
   rw [infPartPi_eq_adeleInfHom, infPartPi_eq_adeleInfHom, map_mulVec_eq, Matrix.map_map, h,
     mixedMulVecEquiv_apply]
@@ -143,7 +139,6 @@ theorem comp_mulVec_mem_schwartzBruhatPi (hNM : N * M = 1) (hMN : M * N = 1)
   | zero => exact zero_mem _
   | add G H _ _ hG hH => exact add_mem hG hH
   | smul c G _ hG => exact Submodule.smul_mem _ c hG
-
 
 omit [Fintype κ] [DecidableEq ι] [DecidableEq κ] in
 theorem measurePreserving_mulVec_fin {n : ℕ} (M N : Matrix (Fin n) (Fin n) K) (hNM : N * M = 1)
@@ -208,7 +203,6 @@ theorem measurePreserving_mulVec (hNM : N * M = 1) (hMN : M * N = 1) :
     simp
   rw [hfun]
   exact h3.comp (h2.comp h1)
-
 
 omit [Fintype κ] [DecidableEq κ] in
 theorem adelicFourierPi_comp_mulVec (M N : Matrix ι ι K) (hNM : N * M = 1) (hMN : M * N = 1)

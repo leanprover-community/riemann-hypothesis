@@ -6,8 +6,6 @@ import Mathlib.Tactic.Linter.HaveILetI
 
 @[expose] public section
 
-noncomputable section
-
 open MeasureTheory ValuativeRel Matrix GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.Doubling GlobalTheory.GLDoubling GlobalTheory.IndefiniteRowSideFullHecke.VolumeFlatSection GlobalTheory.ZonalCellDecomposition
 
 namespace GlobalTheory.ParHecke.Model
@@ -87,5 +85,3 @@ theorem exists_isRepsK (g : GL D k) : ∃ R, IsRepsK g R := by
     rw [hu j2 ⟨hj2, hy'⟩]
 
 end GlobalTheory.ParHecke.Model
-
-end

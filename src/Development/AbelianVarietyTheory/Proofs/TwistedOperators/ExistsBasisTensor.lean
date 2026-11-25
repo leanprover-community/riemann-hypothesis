@@ -71,31 +71,12 @@ variable {O K K'' : Type} [CommRing O] [Field K] [Algebra O K] [IsFractionRing O
 
 theorem algebraMap_tmul (c : K) (m : Fm) :
     algebraMap K K'' c ⊗ₜ[O] m = (1 : K'') ⊗ₜ[O] (c • m) := by
-  obtain ⟨⟨a, b⟩, hc⟩ := IsLocalization.mk'_surjective (nonZeroDivisors O) c
-  dsimp only at hc
-  subst hc
-  have hb : algebraMap O K (b : O) ≠ 0 := (IsLocalization.map_units K b).ne_zero
-  set m₀ : Fm := (algebraMap O K (b : O))⁻¹ • m with hm₀
-  have h1 : (b : O) • m₀ = m := by
-    rw [← algebraMap_smul K (b : O) m₀, hm₀, smul_smul, mul_inv_cancel₀ hb, one_smul]
-  have h2 : IsLocalization.mk' K a b • m = (a : O) • m₀ := by
-    rw [← algebraMap_smul K a m₀, hm₀, smul_smul, ← div_eq_mul_inv, IsFractionRing.mk'_eq_div]
-  have h3 : (b : O) • algebraMap K K'' (IsLocalization.mk' K a b) = (a : O) • (1 : K'') := by
-    rw [Algebra.smul_def, Algebra.smul_def, mul_one, IsScalarTower.algebraMap_apply O K K'' (b : O),
-      IsScalarTower.algebraMap_apply O K K'' a, ← map_mul, IsLocalization.mk'_spec']
-  calc algebraMap K K'' (IsLocalization.mk' K a b) ⊗ₜ[O] m
-      = algebraMap K K'' (IsLocalization.mk' K a b) ⊗ₜ[O] ((b : O) • m₀) := by rw [h1]
-    _ = ((b : O) • algebraMap K K'' (IsLocalization.mk' K a b)) ⊗ₜ[O] m₀ :=
-        (TensorProduct.smul_tmul _ _ _).symm
-    _ = ((a : O) • (1 : K'')) ⊗ₜ[O] m₀ := by rw [h3]
-    _ = (1 : K'') ⊗ₜ[O] ((a : O) • m₀) := TensorProduct.smul_tmul _ _ _
-    _ = (1 : K'') ⊗ₜ[O] (IsLocalization.mk' K a b • m) := by rw [h2]
+  have := IsLocalization.tensorProduct_compatibleSMul (nonZeroDivisors O) K K'' Fm
+  rw [Algebra.algebraMap_eq_smul_one, TensorProduct.smul_tmul]
 
 theorem exists_basis_tensor {ι : Type} (b : Basis ι K Fm) :
     ∃ c : Basis ι K'' (K'' ⊗[O] Fm), ∀ i, c i = (1 : K'') ⊗ₜ[O] b i := by
-  have : TensorProduct.CompatibleSMul O K K'' Fm := ⟨fun c x m => by
-    rw [Algebra.smul_def, mul_comm, ← smul_eq_mul x, ← TensorProduct.smul_tmul', algebraMap_tmul,
-      TensorProduct.smul_tmul', smul_eq_mul, mul_one]⟩
+  have := IsLocalization.tensorProduct_compatibleSMul (nonZeroDivisors O) K K'' Fm
   refine ⟨(Algebra.TensorProduct.basis K'' b).map (TensorProduct.equivOfCompatibleSMul O K K'' K'' Fm),
     fun i => ?_⟩
   rw [Basis.map_apply, Algebra.TensorProduct.basis_apply]

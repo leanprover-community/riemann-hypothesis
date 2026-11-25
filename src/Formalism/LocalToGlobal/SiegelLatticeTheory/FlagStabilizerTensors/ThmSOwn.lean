@@ -186,7 +186,6 @@ theorem kof_sOf (hA : (Y.tO u u').AbsConv) (S : Set (TT Y u u')) (Φ' : Set (RT 
   unfold KOf
   exact (tsum_subtype Φ' (aR hF u u')).trans h3.tsum_eq
 
-
 include hF in
 theorem hsEmb_tsum (hA : (Y.tO u u').AbsConv) (S : Set (TT Y u u')) :
     Formalism.L2.SG.PackageTie.hsEmb (∑' s, S.indicator (aM Y u u') s) = (Y.tO u u').part S := by
@@ -203,7 +202,6 @@ theorem hsEmb_tsum (hA : (Y.tO u u').AbsConv) (S : Set (TT Y u u')) :
     · simp only [Function.comp, Set.indicator_of_notMem hs, map_zero]
     · rfl
   exact h'.tsum_eq.symm
-
 
 include hF in
 theorem hsNormSq_tr [FiniteDimensional ℂ (ColT (hF.shInj u'))] (A : CM (Y.cs u') →L[ℂ] CM (Y.cs u)) :
@@ -261,7 +259,6 @@ theorem conjE_Kpp {u u' : D.what₂.Word} (hA : (Y.tO u u').AbsConv) :
   rw [show AdmissibleBoundsFromSource.Kpp D u u' = KOf D.s u u' {t | D.s.Gterm t = 0 ∧ ¬ D.s.isId t} from rfl,
     conjE_KOf hI u u' _ (PhiC (hF := hF) u u') (mem_PhiC_iff hI), kof_sOf hF hA _ _ mem_degSet_iff]
 
-
 include hI in
 theorem hsNormSq_Kpp {u u' : D.what₂.Word} (hA : (Y.tO u u').AbsConv) :
     hsNormSq (AdmissibleBoundsFromSource.Kpp D u u') = ‖(Y.tO u u').part (Y.tO u u').degSet‖ ^ 2 := by
@@ -279,7 +276,6 @@ theorem hsEmb_eq_zero {Wq Wp : Type} [NormedAddCommGroup Wq] [InnerProductSpace 
   apply ContinuousLinearMap.coe_injective
   exact (stdOrthonormalBasis ℂ Wq).toBasis.ext (f₁ := (A : Wq →ₗ[ℂ] Wp)) (f₂ := 0) (fun i => by
     rw [OrthonormalBasis.coe_toBasis]; exact hb i)
-
 
 include hI in
 theorem kpp_zero {u u' : D.what₂.Word} (hZ : Formalism.L2.SG.RowsOther.KppTermZero (Y.tO u u')) : AdmissibleBoundsFromSource.Kpp D u u' = 0 := by
@@ -308,7 +304,6 @@ open Formalism.L2.SG.Full
 
 variable {D : D7} {X : HidaSetting D} {Y : Full X} {hF : FinX Y} (hI : SIso D.s (sOf hF))
 
-
 include hI in
 theorem hsNormSq_off {u u' : D.what₂.Word}
     (hE : Formalism.L2.SG.TermOp.KExpansion (X.Fu u) (X.Fu u') (Y.cs u) (Y.cs u') (Y.FN u) (Y.FN u') Y.hK (Y.Dt u) (Y.Dt u'))
@@ -317,7 +312,6 @@ theorem hsNormSq_off {u u' : D.what₂.Word}
   rw [kpp_zero hI hZ, sub_zero, Formalism.L2.SG.Pf.isoNorm D.s (sOf hF) hI u u',
     Formalism.L2.SG.Pf.normTie hF u u' (Formalism.L2.SG.Pf.dimTie X u) (Formalism.L2.SG.Pf.dimTie X u') hE hA hId
       (Formalism.L2.SG.RowsOther.kppOff_of_termZero _ hZ)]
-
 
 include hI in
 theorem hsNormSq_diag {u : D.what₂.Word}
@@ -372,13 +366,9 @@ structure ConcK (D : D7) : Type 1 where
 def CSelF {eps : ℝ} (Fm : FamP eps) : Type 1 :=
   Σ' x0 : ℝ, ∀ x (_ : Fm.x1 < x), x0 ≤ x → ∀ i : Fm.Ix x, ConcK (Fm.D x i)
 
-def KExpTied : Prop :=
-  ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u u' : D.what₂.Word), Formalism.L2.SG.RowsConc.ConcTie X Y →
-    Formalism.L2.SG.TermOp.KExpansion (X.Fu u) (X.Fu u') (Y.cs u) (Y.cs u') (Y.FN u) (Y.FN u') Y.hK (Y.Dt u) (Y.Dt u')
-
 theorem kExpTied_of_full (hFo : Formalism.L2.SG.Full.FoldOKC) (hIn : Formalism.L2.SG.Full.InHHC) (hF : Formalism.L2.SG.Full.FundExistsC)
     (hO : Formalism.L2.SG.Full.OOIntAllC) (hOF : Formalism.L2.SG.Full.OOFundIndepC) (hAW : Formalism.L2.SG.Full.AmpWellDefC)
-    (hA : Formalism.L2.SG.Full.AbsConvC) (hK : Formalism.L2.SG.Full.KExpansionC) : KExpTied := by
+    (hA : Formalism.L2.SG.Full.AbsConvC) (hK : Formalism.L2.SG.Full.KExpansionC) : Formalism.L2.SG.PoincareAmplitudeLowerBounds.KernelExponentAgreement := by
   intro D X Y u u' hT
   have f1 := hFo D X Y u hT.1 hT.2.2.2.2.1
   have f2 := hFo D X Y u' hT.1 hT.2.2.2.2.1
@@ -591,7 +581,7 @@ theorem hypOwnE_kppOff (hC : Formalism.L2.SG.RowsConc.KppOffC) {𝒞 : FamClass}
   exact kpp_zero c.hI (hs _ _ (le_trans (le_max_left _ _) (le_trans (le_max_right _ _) h1))
     (le_trans (le_max_right _ _) (le_trans (le_max_right _ _) h2)) _ _ c.X c.Y u u' hK2 c.tie hne)
 
-theorem hypOwnS_off (hC : Formalism.L2.SG.RowsConc.KppOffC) (hExp : KExpTied) (hAbs : Formalism.L2.SG.RowsConc.AbsConvTied)
+theorem hypOwnS_off (hC : Formalism.L2.SG.RowsConc.KppOffC) (hExp : Formalism.L2.SG.PoincareAmplitudeLowerBounds.KernelExponentAgreement) (hAbs : Formalism.L2.SG.RowsConc.AbsConvTied)
     {𝒞 : FamClass} (sel : SSel 𝒞)
     (hOK : Closed 𝒞 fun Fm _ => ∀ hc : 𝒞 Fm, SelOK C0 Fm (sel Fm hc))
     (hO : Closed 𝒞 fun Fm _ => ∀ hc : 𝒞 Fm, TheoremSSelected Fm C0 (sel Fm hc)) :

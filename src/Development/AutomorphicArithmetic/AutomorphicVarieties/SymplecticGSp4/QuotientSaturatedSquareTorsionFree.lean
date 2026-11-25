@@ -887,16 +887,12 @@ section
 variable {O A X τ : Type} [CommRing O] [IsDomain O] [CommRing A] [Algebra O A] [AddCommGroup X]
   {𝒜 : X → Submodule O A} {x : A →ₐ[O] O} {wt : τ → X} {φ : A →ₐ[O] MvPowerSeries τ (FractionRing O)}
 
-private noncomputable def powerSeriesCoefficientLinear (φ : A →ₐ[O] MvPowerSeries τ (FractionRing O)) (i : τ) :
-    A →ₗ[O] FractionRing O :=
-  ((MvPowerSeries.coeff (Finsupp.single i 1)).restrictScalars O) ∘ₗ φ.toLinearMap
-
 private theorem m1bLin_apply (φ : A →ₐ[O] MvPowerSeries τ (FractionRing O)) (i : τ) (f : A) :
-    powerSeriesCoefficientLinear φ i f = MvPowerSeries.coeff (Finsupp.single i 1) (φ f) := rfl
+    crLin φ i f = MvPowerSeries.coeff (Finsupp.single i 1) (φ f) := rfl
 
-private theorem m1bLin_sat (h : IsChart 𝒜 x wt φ) (i : τ) : ∀ f ∈ satSq x, powerSeriesCoefficientLinear φ i f = 0 := by
+private theorem m1bLin_sat (h : IsChart 𝒜 x wt φ) (i : τ) : ∀ f ∈ satSq x, crLin φ i f = 0 := by
   classical
-  have h2 : ∀ f ∈ RingHom.ker x ^ 2, powerSeriesCoefficientLinear φ i f = 0 := by
+  have h2 : ∀ f ∈ RingHom.ker x ^ 2, crLin φ i f = 0 := by
     intro f hf
     rw [sq] at hf
     refine Submodule.mul_induction_on hf (fun a ha b hb => ?_) (fun a b ha hb => by rw [map_add (f := _), ha, hb, add_zero])
@@ -912,7 +908,7 @@ private theorem m1bLin_sat (h : IsChart 𝒜 x wt φ) (i : τ) : ∀ f ∈ satSq
   exact (smul_eq_zero.1 this).resolve_left hc
 
 private theorem m1bLin_wt (h : IsChart 𝒜 x wt φ) (i : τ) {j : X} (hij : wt i ≠ j)
-    {f : A} (hf : f ∈ 𝒜 j) : powerSeriesCoefficientLinear φ i f = 0 :=
+    {f : A} (hf : f ∈ 𝒜 j) : crLin φ i f = 0 :=
   h.graded j f hf _ (by simpa [Finsupp.weight_single] using hij)
 
 private theorem cotangent_rank_le_weight_count [Fintype τ] (h : IsChart 𝒜 x wt φ) (j : X) :
@@ -920,7 +916,7 @@ private theorem cotangent_rank_le_weight_count [Fintype τ] (h : IsChart 𝒜 x 
   classical
   rw [Nat.card_eq_fintype_card]
   let ψ : cotLat x 𝒜 j →ₗ[O] ({i // wt i = j} → FractionRing O) :=
-    LinearMap.pi fun i => ((satSq x).liftQ (powerSeriesCoefficientLinear φ i.1) (m1bLin_sat h i.1)) ∘ₗ (cotLat x 𝒜 j).subtype
+    LinearMap.pi fun i => ((satSq x).liftQ (crLin φ i.1) (m1bLin_sat h i.1)) ∘ₗ (cotLat x 𝒜 j).subtype
   have hinj : Function.Injective ψ := by
     rw [injective_iff_map_eq_zero]
     rintro ⟨_, f, hf, rfl⟩ h0

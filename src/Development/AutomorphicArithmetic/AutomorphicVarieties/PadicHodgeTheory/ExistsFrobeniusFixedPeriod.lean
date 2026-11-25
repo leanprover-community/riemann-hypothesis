@@ -72,15 +72,6 @@ private theorem exists_orbit (l : ℕ) [hl : Fact l.Prime] (n : ℕ) (hn : 2 ≤
     have h6 : z ^ l ^ (i : ℕ) = z ^ l ^ (j : ℕ) := congrArg Subtype.val hij
     exact Fin.ext (Nat.pow_right_injective h2 (hz.pow_inj (hlt _ i.2) (hlt _ j.2) h6))
 
-private theorem zpow_fix {k D : Type} [Field k] [AddCommGroup D] [Module k D] (u : (End k D)ˣ) (y : D)
-    (hy : (u : End k D) y = y) (n : ℤ) : ((u ^ n : (End k D)ˣ) : End k D) y = y :=
-  (GlobalTheory.PstLaws.vecStab (Units.coeHom (End k D)) y).zpow_mem hy n
-
-private theorem pow_fix {k D : Type} [Field k] [AddCommGroup D] [Module k D] (u : (End k D)ˣ) (a : End k D) (y : D)
-    (n : ℕ) (hc : Commute a ((u ^ (n : ℤ) : (End k D)ˣ) : End k D)) (ha : a y = y)
-    (hy : (a * ((u ^ (n : ℤ) : (End k D)ˣ) : End k D)) y = y) : ((u : End k D) ^ n) y = y := by
-  rwa [hc.eq, End.mul_apply, ha, zpow_natCast, Units.val_pow_eq_pow_val] at hy
-
 section
 variable {F Ω : Type} [Field F] [NumberField F] [Field Ω] [Algebra F Ω] [IsAlgClosure F Ω] {l : ℕ} [Fact l.Prime]
   {A : ValuationSubring Ω} {w : HeightOneSpectrum (𝓞 F)} (h : IsPlaceOver A w) {O : Type} [CommRing O]
@@ -92,14 +83,6 @@ private theorem exists_stab {K : FinExt l} (ρ : Representation LL ↥(GK K) V) 
     ∃ K' : FinExt l, ∀ g : ↥(GK K), (g : GQ l) ∈ GK K' → g ∈ GlobalTheory.PstLaws.vecStab (actD P ρ) y := by
   obtain ⟨K', hK'⟩ := (mem_Dpst P ρ).mp y.2
   exact ⟨K', fun g hg => Subtype.ext (hK' g hg)⟩
-
-private theorem deg_frob_inv_pow (s : ℕ) : deg ((frob h)⁻¹ ^ s) = -(s : ℤ) := by
-  induction s with
-  | zero => simp
-  | succ s ih =>
-    have h1 := deg_mul ((frob h)⁻¹ ^ (s + 1)) (frob h)
-    rw [pow_succ, inv_mul_cancel_right, ih, deg_frob] at h1
-    rw [pow_succ]; push_cast; omega
 
 variable (ρ : Representation LL ↥(GK Bw.Kw) V)
 
@@ -136,9 +119,11 @@ private theorem exists_period (x : ↥(Dpst P ρ)) (hx : ∀ σ, weilD Bw h P ρ
     exact (GlobalTheory.PstLaws.vecStab (actD P ρ) x).pow_mem hr 2
   have h2 := hx ((frob h)⁻¹ ^ (r * 2))
   have e : -alpha l ((frob h)⁻¹ ^ (r * 2)) = ((resDeg l w * (r * 2) : ℕ) : ℤ) := by
-    rw [alpha, deg_frob_inv_pow]; push_cast; ring
+    rw [alpha, deg_pow, deg_inv, deg_frob]; push_cast; ring
   rw [weilD_apply, e] at h2
-  refine ⟨_, ?_, pow_fix (phiU P ρ) _ x _ (commute_actD_phiU P ρ _ _) hr2 h2⟩
+  rw [(commute_actD_phiU P ρ _ _).eq, End.mul_apply, hr2, zpow_natCast,
+    Units.val_pow_eq_pow_val] at h2
+  refine ⟨_, ?_, h2⟩
   have : 0 < resDeg l w * r := Nat.mul_pos (Nat.pos_of_ne_zero hf) hr0
   rw [← mul_assoc]; omega
 
@@ -151,8 +136,9 @@ private theorem main (x : ↥(Dpst P ρ)) (hx0 : x ≠ 0) (hxI : ∀ s, weilD Bw
   obtain ⟨j, hz0, hz1⟩ := exists_trace (mulD P ρ) (phiD P ρ) n (by omega) (fun i => (frobUr l ^ i) c) hc2
     (by simpa using hc1) (fun i j => by rw [phiD_pow_mulD, pow_zero, AlgHom.one_apply, map_pow]) x hx0 hp
   refine ⟨_, hz0, hz1, fix_of_weil h Bw P ρ _ fun σ => ?_⟩
-  refine (congrArg (actD P ρ (weilToGK Bw h σ)) (zpow_fix (phiU P ρ) _ hz1 (-alpha l σ))).symm.trans
-    (hW _ (fun s => ?_) σ)
+  have hfix := (GlobalTheory.PstLaws.vecStab (Units.coeHom (End _ _)) _).zpow_mem
+    (show phiU P ρ ∈ _ from hz1) (-alpha l σ)
+  refine (congrArg (actD P ρ (weilToGK Bw h σ)) hfix).symm.trans (hW _ (fun s => ?_) σ)
   have hcm : Commute (weilD Bw h P ρ (ineIncl h s)) (∑ i ∈ Finset.range n, phiD P ρ ^ i *
       mulD P ρ ((frobUr l ^ 0) c ^ j)) := by
     refine Commute.sum_right _ _ _ fun i _ => Commute.mul_right (Commute.pow_right ?_ i)

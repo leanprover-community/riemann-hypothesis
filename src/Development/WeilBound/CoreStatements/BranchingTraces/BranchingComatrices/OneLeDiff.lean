@@ -162,12 +162,8 @@ theorem comat_of (hW : WordBd) : Comat := by
       linarith
     obtain ⟨hsm, hwb⟩ := hW (n + 1) ε lam B H π (by omega) hP.hc hπ hP.bd hGap v hv
     let vs : S := ⟨v, (hS.mem v).2 hsm⟩
-    have hx : (fun l' => ((Pi.single l vs : Fin (n + 1) → S) l' : H)) = Pi.single l v := by
-      funext l'
-      by_cases h : l' = l
-      · subst h
-        simp [vs]
-      · simp [h]
+    have hx : (fun l' => ((Pi.single l vs : Fin (n + 1) → S) l' : H)) = Pi.single l v :=
+      (Pi.single_op (fun _ (w : S) => (w : H)) (fun _ => rfl) l vs).symm
     have h1 := hform (Pi.single l vs) c
     rw [hx, th_single] at h1
     rw [h1, norm_smul, Submodule.coe_smul, norm_smul, norm_pow, norm_neg, norm_one, one_pow, one_mul]
@@ -250,12 +246,8 @@ theorem comat_of (hW : WordBd) : Comat := by
     · intro P hPI η hη
       have hηS : η ∈ S := (hS.mem η).2 hη
       let ηs : S := ⟨η, hηS⟩
-      have hx : (fun l => ((Pi.single (zi e) ηs : Fin (n + 1) → S) l : H)) = Pi.single (zi e) η := by
-        funext l
-        by_cases h : l = zi e
-        · subst h
-          simp [ηs]
-        · simp [h]
+      have hx : (fun l => ((Pi.single (zi e) ηs : Fin (n + 1) → S) l : H)) = Pi.single (zi e) η :=
+        (Pi.single_op (fun _ (w : S) => (w : H)) (fun _ => rfl) (zi e) ηs).symm
       have h1 := hform (Pi.single (zi e) ηs) (zi e)
       rw [hx, th_single] at h1
       rw [h1]

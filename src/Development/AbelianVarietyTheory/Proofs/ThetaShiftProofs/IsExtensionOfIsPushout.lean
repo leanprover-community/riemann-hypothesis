@@ -32,17 +32,10 @@ structure IsExtension (a : V →ₛₗ[algebraMap K F] W) : Prop where
 private theorem semilinear_range_span_induction {a : V →ₛₗ[algebraMap K F] W}
     (h : Submodule.span F (Set.range a) = ⊤) (p : W → Prop) (h0 : p 0)
     (hadd : ∀ x y, p x → p y → p (x + y)) (hb : ∀ (c : F) v, p (c • a v)) (x : W) : p x := by
-  have key : ∀ y ∈ Submodule.span F (Set.range a), ∀ c : F, p (c • y) := by
-    intro y hy
-    induction hy using Submodule.span_induction with
-    | mem y hy =>
-      obtain ⟨v, rfl⟩ := hy
-      exact fun c => hb c v
-    | zero => intro c; rw [smul_zero]; exact h0
-    | add y z _ _ hy hz => intro c; rw [smul_add]; exact hadd _ _ (hy c) (hz c)
-    | smul d y _ hy => intro c; rw [smul_smul]; exact hy (c * d)
-  have hx : x ∈ Submodule.span F (Set.range a) := by rw [h]; exact Submodule.mem_top
-  simpa using key x hx 1
+  refine Submodule.closure_induction (p := fun x _ => p x) h0 (fun x y _ _ => hadd x y) ?_
+    (by rw [h]; exact Submodule.mem_top)
+  rintro c _ ⟨v, rfl⟩
+  exact hb c v
 
 theorem addHom_ext {a : V →ₛₗ[algebraMap K F] W} (h : Submodule.span F (Set.range a) = ⊤)
     {M : Type} [AddCommGroup M] {f g : W →+ M} (e : ∀ (c : F) v, f (c • a v) = g (c • a v)) (x : W) :

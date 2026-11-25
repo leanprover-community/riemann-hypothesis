@@ -14,8 +14,6 @@ open scoped TensorProduct Classical
 
 namespace GlobalTheory.AdTh.PairModel
 
-noncomputable section
-
 variable {D : D7}
 
 theorem finite_levQc {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} (Dw : Datum H)
@@ -55,7 +53,5 @@ theorem hatC_phiHat {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host D.hos
 
 variable {G : Type} [Group G] [Fintype G] {Pl0 T0 : Type} {A : FamIn D.what₂.LL G Pl0 T0 D.R.m}
   {C : Core D} [Algebra C.Q.c.F D.what₂.LL] {R : RealDat D A C.Q.c.F} {i : Fin D.R.m} {Tp : Type} {tup : Tp → T0}
-
-end
 
 end GlobalTheory.AdTh.PairModel

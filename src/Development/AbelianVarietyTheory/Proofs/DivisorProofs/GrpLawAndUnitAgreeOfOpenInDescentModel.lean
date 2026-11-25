@@ -21,31 +21,6 @@ noncomputable section
 
 namespace GlobalTheory.Desc.UAgree
 
-theorem ext_of_schDom {W X Y Z : Scheme.{0}} {f g : X ⟶ Y} (s : Y ⟶ Z) [IsSeparated s] (h : f ≫ s = g ≫ s)
-    (d : W ⟶ X) [IsSchemeTheoreticallyDominant d] (hU : d ≫ f = d ≫ g) : f = g := by
-  let X' : Over Z := Over.mk (f ≫ s)
-  let Y' : Over Z := Over.mk s
-  let f' : X' ⟶ Y' := Over.homMk f
-  let g' : X' ⟶ Y' := Over.homMk g h.symm
-  haveI : IsSeparated Y'.hom := ‹IsSeparated s›
-  let U' : Over Z := Over.mk (d ≫ f ≫ s)
-  let d' : U' ⟶ X' := Over.homMk d
-  have e : d' ≫ f' = d' ≫ g' := by
-    ext1
-    exact hU
-  let l := equalizer.lift d' e
-  have hd : d = l.left ≫ (equalizer.ι f' g').left := by
-    rw [← Over.comp_left, equalizer.lift_ι]; rfl
-  have hker : (equalizer.ι f' g').left.ker = ⊥ := by
-    apply le_bot_iff.1
-    calc _ ≤ (l.left ≫ (equalizer.ι f' g').left).ker := Scheme.Hom.le_ker_comp _ _
-      _ = ⊥ := by rw [← hd]; exact d.ker_eq_bot
-  haveI : IsIso (equalizer.ι f' g').left := IsClosedImmersion.isIso_iff_ker_eq_bot.2 hker
-  have h0 : IsIso ((Over.forget Z).map (equalizer.ι f' g')) := (inferInstance : IsIso (equalizer.ι f' g').left)
-  have : IsIso (equalizer.ι f' g') := isIso_of_reflects_iso _ (Over.forget Z)
-  have hfg : f' = g' := (cancel_epi (equalizer.ι f' g')).1 (equalizer.condition f' g')
-  exact congrArg CommaMorphism.left hfg
-
 theorem schDom_away {R : Type} [CommRing R] [IsDomain R] {f : R} (hf : f ≠ 0) {T : Scheme.{0}} (q : T ⟶ Sp R)
     [Flat q] : IsSchemeTheoreticallyDominant (pullback.fst q (awayMap f)) := by
   have hinj : Function.Injective (algebraMap R (Localization.Away f)) :=
@@ -60,7 +35,7 @@ theorem ext_generic {R : Type} [CommRing R] [IsDomain R] {f : R} (hf : f ≠ 0) 
     (q : T ⟶ Sp R) [Flat q] (p : P ⟶ Sp R) [IsSeparated p] (u v : T ⟶ P) (hu : u ≫ p = q) (hv : v ≫ p = q)
     (h : pullback.fst q (awayMap f) ≫ u = pullback.fst q (awayMap f) ≫ v) : u = v := by
   haveI := schDom_away hf q
-  exact ext_of_schDom p (hu.trans hv.symm) _ h
+  exact _root_.GlobalTheory.SS.SectionTranslation.ext_of_schDom p (hu.trans hv.symm) _ h
 
 theorem flat_of_openIn {S S₁ P Y : Scheme.{0}} {h : Y ⟶ P} {q : Y ⟶ S₁} {p : P ⟶ S} {s : S₁ ⟶ S}
     (ho : OpenIn h q p s) [Flat s] : Flat h := by

@@ -136,15 +136,9 @@ private theorem fib_card (K : Subgroup H) (g : H) (y : Y) :
   rw [hrange, ← Nat.card_coe_set_eq, Nat.card_range_of_injective hinj]
   rfl
 
-private theorem w_conj (H₀ : Subgroup H) [hN : H₀.Normal] (g : H) (y : Y) :
+private theorem w_conj (H₀ : Subgroup H) [H₀.Normal] (g : H) (y : Y) :
     H₀.relIndex (stabilizer H (g • y)) = H₀.relIndex (stabilizer H y) := by
-  have hmap : H₀.map (MulAut.conj g).toMonoidHom = H₀ := by
-    ext x
-    constructor
-    · rintro ⟨a, ha, rfl⟩
-      exact hN.conj_mem a ha g
-    · intro hx
-      exact ⟨g⁻¹ * x * g, by simpa using hN.conj_mem x hx g⁻¹, by simp [mul_assoc]⟩
+  have hmap : H₀.map (MulAut.conj g).toMonoidHom = H₀ := Subgroup.Normal.map_conj_eq H₀ g
   rw [stabilizer_smul_eq_stabilizer_map_conj]
   conv_lhs => rw [← hmap]
   exact Subgroup.relIndex_map_map_of_injective _ _ (MulAut.conj g).injective

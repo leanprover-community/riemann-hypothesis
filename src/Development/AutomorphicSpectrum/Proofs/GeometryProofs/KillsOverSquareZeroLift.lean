@@ -26,28 +26,6 @@ open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestrictio
 
 namespace CoverDenseAlt
 
-private theorem val_spMap_comp_eq {Z : Scheme} {A A' : Type} [CommRing A] [CommRing A'] (g : A →+* A')
-    (z : Sp A ⟶ Z) (V : Z.Opens) (h : ⊤ ≤ z ⁻¹ᵁ V) (h' : ⊤ ≤ (spMap g ≫ z) ⁻¹ᵁ V) (f : Γ(Z, V)) :
-    val (spMap g ≫ z) V h' f = g (val z V h f) := by
-  have e1 : Scheme.Hom.appLE (spMap g ≫ z) V ⊤ h' = z.appLE V ⊤ h ≫ (spMap g).appTop := by
-    rw [Scheme.Hom.comp_appLE]
-    show _ = (z.app V ≫ (Sp A).presheaf.map (homOfLE h).op) ≫ _
-    rw [Category.assoc]
-    congr 1
-  have e2 := Scheme.ΓSpecIso_naturality (CommRingCat.ofHom g)
-  simp only [val]
-  rw [e1, Category.assoc]
-  erw [e2]
-  rfl
-
-private theorem spec_map_val_comp_fromSpec_eq {X : Scheme} {B : Type} [CommRing B] (z : Sp B ⟶ X) {W : X.Opens}
-    (hW : IsAffineOpen W) (h : ⊤ ≤ z ⁻¹ᵁ W) :
-    Spec.map (CommRingCat.ofHom (val z W h)) ≫ hW.fromSpec = z := by
-  simp only [val, CommRingCat.ofHom_hom, Spec.map_comp, Category.assoc,
-    IsAffineOpen.SpecMap_appLE_fromSpec z hW (isAffineOpen_top _) h, IsAffineOpen.fromSpec_top,
-    Scheme.isoSpec_Spec]
-  simp [← Spec.map_comp]
-
 private theorem cover_of_spMap_comp_cover_of_square_zero_kernel {X : Scheme} {R R' : Type} [CommRing R] [CommRing R'] (g : R →+* R')
     (hg : Function.Surjective g) (hk : ∀ r, g r = 0 → r * r = 0) (z : Sp R ⟶ X) (V : X.Opens)
     (h : ⊤ ≤ (spMap g ≫ z) ⁻¹ᵁ V) : ⊤ ≤ z ⁻¹ᵁ V := by
@@ -132,8 +110,8 @@ theorem val_add {S : Scheme.{0}} {G : Over S} [GrpObj G] {A : Type} [CommRing A]
         ∀ r, val z W hz r - val e W ho r ∈ J := by
     intro z hz hze r
     rw [← Ideal.Quotient.eq,
-      ← val_spMap_comp_eq (Ideal.Quotient.mk J) z W hz (fun p _ => hz (Set.mem_univ _)) r,
-      ← val_spMap_comp_eq (Ideal.Quotient.mk J) e W ho (fun p _ => ho (Set.mem_univ _)) r]
+      ← val_comp (Ideal.Quotient.mk J) z W hz rfl (fun p _ => hz (Set.mem_univ _)) r,
+      ← val_comp (Ideal.Quotient.mk J) e W ho rfl (fun p _ => ho (Set.mem_univ _)) r]
     exact hvcongr hze W _ _ r
   obtain ⟨Q, hQ⟩ := exists_subring_fin_four_of_square_zero_ideal J hJz
   set φx := val (A := A) x.left W hxW with hφx
@@ -191,18 +169,18 @@ theorem val_add {S : Scheme.{0}} {G : Over S} [GrpObj G] {A : Type} [CommRing A]
     intro i
     rw [hπ]
     fin_cases i
-    · exact spec_map_val_comp_fromSpec_eq x.left hW hxW
-    · exact spec_map_val_comp_fromSpec_eq e hW ho
-    · exact spec_map_val_comp_fromSpec_eq x.left hW hxW
-    · exact spec_map_val_comp_fromSpec_eq e hW ho
+    · exact val_rep x.left hW hxW
+    · exact val_rep e hW ho
+    · exact val_rep x.left hW hxW
+    · exact val_rep e hW ho
   have hXβ : ∀ i, spMap (pr i) ≫ Xβ = ![y.left, e, e, y.left] i := by
     intro i
     rw [hπ]
     fin_cases i
-    · exact spec_map_val_comp_fromSpec_eq y.left hW hyW
-    · exact spec_map_val_comp_fromSpec_eq e hW ho
-    · exact spec_map_val_comp_fromSpec_eq e hW ho
-    · exact spec_map_val_comp_fromSpec_eq y.left hW hyW
+    · exact val_rep y.left hW hyW
+    · exact val_rep e hW ho
+    · exact val_rep e hW ho
+    · exact val_rep y.left hW hyW
   have hpr0 : Function.Surjective (pr 0) := fun c =>
     ⟨⟨fun _ => c, (hQ _).2 ⟨fun i => by simp, rfl⟩⟩, rfl⟩
   have hnil0 : ∀ v, pr 0 v = 0 → v * v = 0 := by
@@ -219,17 +197,12 @@ theorem val_add {S : Scheme.{0}} {G : Over S} [GrpObj G] {A : Type} [CommRing A]
   have hsame : ∀ T1 T2 : Sp Q ⟶ S, (∀ i, spMap (pr i) ≫ T1 = a) →
       (∀ i, spMap (pr i) ≫ T2 = a) → T1 = T2 := by
     intro T1 T2 h1' h2'
-    rw [← spec_map_val_comp_fromSpec_eq T1 hU (hU' T1 (h1' 0)), ← spec_map_val_comp_fromSpec_eq T2 hU (hU' T2 (h2' 0))]
-    have hv : val T1 U (hU' T1 (h1' 0)) = val T2 U (hU' T2 (h2' 0)) := by
-      refine RingHom.ext fun r => ?_
-      apply Subtype.ext
-      funext i
-      have k1 := val_spMap_comp_eq (pr i) T1 U (hU' T1 (h1' 0)) (by rw [h1' i]; exact ha) r
-      have k2 := val_spMap_comp_eq (pr i) T2 U (hU' T2 (h2' 0)) (by rw [h2' i]; exact ha) r
-      change pr i (val T1 U _ r) = pr i (val T2 U _ r)
-      rw [← k1, ← k2]
-      exact (hvcongr (h1' i) U _ ha r).trans (hvcongr (h2' i) U _ ha r).symm
-    rw [hv]
+    refine val_ext hU (hU' T1 (h1' 0)) (hU' T2 (h2' 0)) fun r => Subtype.ext (funext fun i => ?_)
+    have k1 := val_comp (pr i) T1 U (hU' T1 (h1' 0)) rfl (by rw [h1' i]; exact ha) r
+    have k2 := val_comp (pr i) T2 U (hU' T2 (h2' 0)) rfl (by rw [h2' i]; exact ha) r
+    change pr i (val T1 U _ r) = pr i (val T2 U _ r)
+    rw [← k1, ← k2]
+    exact (hvcongr (h1' i) U _ ha r).trans (hvcongr (h2' i) U _ ha r).symm
   have hS : Xα ≫ G.hom = Xβ ≫ G.hom := by
     apply hsame
     · intro i
@@ -272,7 +245,7 @@ theorem val_add {S : Scheme.{0}} {G : Over S} [GrpObj G] {A : Type} [CommRing A]
   have k : ∀ (i : Fin 4) (z : Sp A ⟶ G.left) (hz : spMap (pr i) ≫ Ψ = z) (hzV : ⊤ ≤ z ⁻¹ᵁ V),
       ((val Ψ V hΨV f : Q) : Fin 4 → A) i = val z V hzV f := by
     intro i z hz hzV
-    have k' := val_spMap_comp_eq (pr i) Ψ V hΨV (by rw [hz]; exact hzV) f
+    have k' := val_comp (pr i) Ψ V hΨV rfl (by rw [hz]; exact hzV) f
     rw [hvcongr hz V _ hzV f] at k'
     exact k'.symm
   have hc := ((hQ _).1 (val Ψ V hΨV f).2).2
@@ -352,33 +325,20 @@ theorem red {G : Over S} [GrpObj G] {X : Type} [AddCommGroup X] {u : splitTorus 
 theorem sq_map {I : Ideal B} (hI : I ^ 2 = ⊥) (g : B →+* A) : (I.map g) ^ 2 = ⊥ := by
   rw [← Ideal.map_pow, hI, Ideal.map_bot]
 
-private theorem isGrpPullback_one_left {S : Scheme.{0}} {B : Type} [CommRing B] {b : Sp B ⟶ S} {A : Type} [CommRing A]
-    {G : Over S} [GrpObj G] (g : B →+* A) :
-    (1 : Over.mk (spMap g ≫ b) ⟶ G).left = spMap g ≫ (1 : Over.mk b ⟶ G).left := by
-  have : (Over.homMk (spMap g) rfl : Over.mk (spMap g ≫ b) ⟶ Over.mk b) ≫ (1 : Over.mk b ⟶ G) = 1 := by
-    rw [Hom.one_def, Hom.one_def, ← Category.assoc]
-    congr 1
-  rw [← this]
-  rfl
-
 theorem one_in {G : Over S} [GrpObj G] {W : G.left.Opens} (ho : ⊤ ≤ (1 : Over.mk b ⟶ G).left ⁻¹ᵁ W)
     (g : B →+* A) : ⊤ ≤ (1 : Over.mk (spMap g ≫ b) ⟶ G).left ⁻¹ᵁ W := by
-  rw [isGrpPullback_one_left]
+  rw [one_left_lemma_3 (Over.homMk (spMap g) rfl : Over.mk (spMap g ≫ b) ⟶ Over.mk b)]
   have hW : (1 : Over.mk b ⟶ G).left ⁻¹ᵁ W = ⊤ := top_le_iff.mp ho
   rw [Scheme.Hom.comp_preimage, hW]
   simp
-
-private theorem val_eq_of_eq_spMap_comp {Z : Scheme} {A A' : Type} [CommRing A] [CommRing A'] (φ : A →+* A')
-    (z : Sp A ⟶ Z) (z' : Sp A' ⟶ Z) (e : z' = spMap φ ≫ z) (V : Z.Opens) (hz : ⊤ ≤ z ⁻¹ᵁ V)
-    (hz' : ⊤ ≤ z' ⁻¹ᵁ V) (s : Γ(Z, V)) : val z' V hz' s = φ (val z V hz s) := by
-  intros
-  apply _root_.CoverDenseAlt.val_comp <;> assumption
 
 theorem val_one {G : Over S} [GrpObj G] {W : G.left.Opens} (ho : ⊤ ≤ (1 : Over.mk b ⟶ G).left ⁻¹ᵁ W)
     (g : B →+* A) (s : Γ(G.left, W)) :
     val (A := A) (1 : Over.mk (spMap g ≫ b) ⟶ G).left W (one_in ho g) s =
       g (val (A := B) (1 : Over.mk b ⟶ G).left W ho s) := by
-  exact val_eq_of_eq_spMap_comp g _ _ (isGrpPullback_one_left g) W ho (one_in ho g) s
+  exact val_comp g _ W ho
+    (one_left_lemma_3 (Over.homMk (spMap g) rfl : Over.mk (spMap g ≫ b) ⟶ Over.mk b))
+    (one_in ho g) s
 
 variable {G : Over S} [GrpObj G] {X : Type} [AddCommGroup X] {u : splitTorus S X ⟶ G} {Y : AddSubgroup X}
   {I : Ideal B}

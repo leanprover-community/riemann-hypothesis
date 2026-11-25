@@ -77,24 +77,18 @@ theorem nonempty_isogeny_of_cmCurve (A B : CMCurve K) : Nonempty (Isogeny A.curv
 
 
 include hK in
-theorem exists_models_isogenous (M : IntermediateField K ℂ) [FiniteDimensional K M] :
+theorem exists_models_isogenous_of (M J : IntermediateField K ℂ) [FiniteDimensional K M]
+    [FiniteDimensional K J] (E₀ : ELL K → WeierstrassCurve J) [∀ y, (E₀ y).IsElliptic]
+    (hE₀j : ∀ y, algebraMap J ℂ (E₀ y).j = ELL.j y) :
     ∃ L : IntermediateField K ℂ, M ≤ L ∧ FiniteDimensional K L ∧ IsGalois K L ∧
-      ∃ _ : ∀ x : ELL K, ELL.j x ∈ L, ∃ (E : ELL K → WeierstrassCurve L) (_ : ∀ x, (E x).IsElliptic),
-        (∀ x, ∃ h : Nonempty (isogEnd ((E x).baseChange ℂ) ≃+* 𝓞 K),
-          (⟨(E x).baseChange ℂ, h⟩ : CMCurve K).toEll = x) ∧
-        ∀ x y, Nonempty (Isogeny (E x) (E y)) := by
+      ∃ hJL : J ≤ L,
+        (∀ x, ∃ h : Nonempty (isogEnd (((E₀ x).map (inclusion hJL).toRingHom).baseChange ℂ) ≃+* 𝓞 K),
+          (⟨((E₀ x).map (inclusion hJL).toRingHom).baseChange ℂ, h⟩ : CMCurve K).toEll = x) ∧
+        ∀ x y, Nonempty (Isogeny ((E₀ x).map (inclusion hJL).toRingHom)
+          ((E₀ y).map (inclusion hJL).toRingHom)) := by
   classical
   haveI := finite_ell hK
-  set x₀ := ellEquiv (algebraMap K ℂ) hK 1
-  set J : IntermediateField K ℂ := K⟮ELL.j x₀⟯
-  have hJ : ∀ y, ELL.j y ∈ J := fun y ↦ ELL.j_mem_adjoin hK x₀ y
-  haveI : FiniteDimensional K J :=
-    adjoin.finiteDimensional (ELL.isAlgebraic_j_over hK x₀).isIntegral
   haveI : NumberField J := NumberField.of_module_finite K J
-  set E₀ : ELL K → WeierstrassCurve J := fun y ↦ ofJ (⟨ELL.j y, hJ y⟩ : J)
-  have hE₀j : ∀ y, algebraMap J ℂ (E₀ y).j = ELL.j y := fun y ↦ by
-    simp only [E₀, ofJ_j]
-    rfl
   have hE₀ : ∀ y, ∃ h : Nonempty (isogEnd ((E₀ y).baseChange ℂ) ≃+* 𝓞 K),
       (⟨(E₀ y).baseChange ℂ, h⟩ : CMCurve K).toEll = y := fun y ↦
     exists_cmCurve_toEll_of_j_eq y _ (by
@@ -122,8 +116,8 @@ theorem exists_models_isogenous (M : IntermediateField K ℂ) [FiniteDimensional
   have hFL : ∀ p, (F p).restrictScalars K ≤ L := fun p ↦
     le_trans (le_trans (le_iSup (fun p ↦ (F p).restrictScalars K) p) le_sup_right) hM'L
   set ι : J →+* L := (inclusion hJL).toRingHom
-  refine ⟨L, le_trans (le_trans le_sup_left le_sup_left) hM'L, hLfin, hLgal, fun y ↦ hJL (hJ y),
-    fun y ↦ (E₀ y).map ι, fun y ↦ inferInstance, fun y ↦ ?_, fun y z ↦ ?_⟩
+  refine ⟨L, le_trans (le_trans le_sup_left le_sup_left) hM'L, hLfin, hLgal, hJL,
+    fun y ↦ ?_, fun y z ↦ ?_⟩
   · refine exists_cmCurve_toEll_of_j_eq y _ ?_
     show (((E₀ y).map ι).map (algebraMap L ℂ)).j = _
     rw [map_j, map_j]
@@ -137,6 +131,24 @@ theorem exists_models_isogenous (M : IntermediateField K ℂ) [FiniteDimensional
       show ((E₀ w).map (algebraMap J (F (y, z)))).map κ = _
       rw [WeierstrassCurve.map_map, hκ]
     exact ⟨(φ.map κ).congr (e y) (e z)⟩
+
+include hK in
+theorem exists_models_isogenous (M : IntermediateField K ℂ) [FiniteDimensional K M] :
+    ∃ L : IntermediateField K ℂ, M ≤ L ∧ FiniteDimensional K L ∧ IsGalois K L ∧
+      ∃ _ : ∀ x : ELL K, ELL.j x ∈ L, ∃ (E : ELL K → WeierstrassCurve L) (_ : ∀ x, (E x).IsElliptic),
+        (∀ x, ∃ h : Nonempty (isogEnd ((E x).baseChange ℂ) ≃+* 𝓞 K),
+          (⟨(E x).baseChange ℂ, h⟩ : CMCurve K).toEll = x) ∧
+        ∀ x y, Nonempty (Isogeny (E x) (E y)) := by
+  set x₀ := ellEquiv (algebraMap K ℂ) hK 1
+  set J : IntermediateField K ℂ := K⟮ELL.j x₀⟯
+  have hJ : ∀ y, ELL.j y ∈ J := fun y ↦ ELL.j_mem_adjoin hK x₀ y
+  haveI : FiniteDimensional K J :=
+    adjoin.finiteDimensional (ELL.isAlgebraic_j_over hK x₀).isIntegral
+  obtain ⟨L, hML, hLfin, hLgal, hJL, hcm, hiso⟩ :=
+    exists_models_isogenous_of hK M J (fun y ↦ ofJ (⟨ELL.j y, hJ y⟩ : J))
+      (fun y ↦ by simp only [ofJ_j]; rfl)
+  exact ⟨L, hML, hLfin, hLgal, fun y ↦ hJL (hJ y), fun y ↦ (ofJ (⟨ELL.j y, hJ y⟩ : J)).map (inclusion hJL).toRingHom,
+    fun _ ↦ inferInstance, hcm, hiso⟩
 
 end Models
 

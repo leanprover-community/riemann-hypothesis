@@ -4,7 +4,6 @@ public import Development.EtaleCohomology.KummerTheory.ContCut
 
 @[expose] public section
 
-noncomputable section
 open CategoryTheory Limits AlgebraicGeometry Opposite GlobalTheory.EtC
 
 namespace LateralTheory.KummerTheory.AffPf
@@ -60,5 +59,3 @@ theorem Aff_of (hR : AffRing) : Aff := by
   exact lim_of_iso (Functor.isoWhiskerRight e (Hf (tw q i) n)).symm c key
 
 end LateralTheory.KummerTheory.AffPf
-
-end

@@ -34,9 +34,8 @@ theorem transcendental_genX : Transcendental F (genX W) := by
   exact (IsFractionRing.injective W.toAffine.CoordinateRing W.toAffine.FunctionField).comp
     (FaithfulSMul.algebraMap_injective F[X] W.toAffine.CoordinateRing) h
 
-theorem aeval_genX_eq_zero_iff (p : F[X]) : aeval (genX W) p = 0 ↔ p = 0 := by
-  have := (transcendental_iff_injective.mp (transcendental_genX W))
-  exact ⟨fun h => this (by rw [h, map_zero]), fun h => by rw [h, map_zero]⟩
+theorem aeval_genX_eq_zero_iff (p : F[X]) : aeval (genX W) p = 0 ↔ p = 0 :=
+  map_eq_zero_iff _ (transcendental_iff_injective.mp (transcendental_genX W))
 
 theorem equation_gen : (W.baseChange W.toAffine.FunctionField).toAffine.Equation (genX W) (genY W) := by
   have h0 : CoordinateRing.mk W W.toAffine.polynomial = 0 := AdjoinRoot.mk_self
@@ -95,17 +94,11 @@ instance : Algebra.IsIntegral F[X] W.toAffine.CoordinateRing := Algebra.IsIntegr
 
 theorem evalAt_injective (h : (W.baseChange L).toAffine.Equation u v) (hu : Transcendental F u) :
     Function.Injective (evalAt W h) := by
-  rw [injective_iff_map_eq_zero]
-  have hker : RingHom.ker (evalAt W h) = ⊥ := by
-    apply Ideal.eq_bot_of_comap_eq_bot (R := F[X])
-    ext p
-    simp only [Ideal.mem_comap, RingHom.mem_ker, Ideal.mem_bot]
-    rw [evalAt_algebraMap]
-    exact ⟨fun hp => (transcendental_iff_injective.mp hu) (by rw [hp, map_zero]), fun hp => by
-      rw [hp, map_zero]⟩
-  intro a ha
-  rw [← RingHom.mem_ker, hker] at ha
-  exact ha
+  refine (RingHom.injective_iff_ker_eq_bot _).2 (Ideal.eq_bot_of_comap_eq_bot (R := F[X]) ?_)
+  ext p
+  simp only [Ideal.mem_comap, RingHom.mem_ker, Ideal.mem_bot]
+  rw [evalAt_algebraMap]
+  exact map_eq_zero_iff _ (transcendental_iff_injective.mp hu)
 
 noncomputable def liftPoint (h : (W.baseChange L).toAffine.Equation u v)
     (hu : Transcendental F u) : W.toAffine.FunctionField →ₐ[F] L :=

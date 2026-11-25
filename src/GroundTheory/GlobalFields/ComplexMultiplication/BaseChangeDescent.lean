@@ -107,19 +107,9 @@ theorem exists_free_compositum :
     show MvPolynomial.aeval x p ∈ Algebra.adjoin k (Set.range x)
     rw [Algebra.adjoin_range_eq_range_aeval]
     exact ⟨p, rfl⟩
-  let f : R →+* R' :=
-    { toFun := fun r => ⟨f₀ r, hmem r⟩
-      map_one' := by ext; simp
-      map_mul' := fun a b => by ext; simp
-      map_zero' := by ext; simp
-      map_add' := fun a b => by ext; simp }
-  let g : M →+* K₁ :=
-    { toFun := fun m => ⟨j m, m, rfl⟩
-      map_one' := by ext; simp
-      map_mul' := fun a b => by ext; simp
-      map_zero' := by ext; simp
-      map_add' := fun a b => by ext; simp }
-  have hf : Function.Injective f := fun a b h => hf₀inj (congrArg Subtype.val h)
+  let f : R →+* R' := f₀.toRingHom.codRestrict R' hmem
+  let g : M →+* K₁ := j.toRingHom.rangeRestrictField
+  have hf : Function.Injective f := RingHom.injective_codRestrict.mpr hf₀inj
   have hcomp : (algebraMap R' K₁).comp f = g.comp (algebraMap R M) := by
     ext r
     exact (hjR r).symm

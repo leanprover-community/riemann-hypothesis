@@ -50,13 +50,13 @@ theorem levels_split : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E], �
       ∀ f, IsHecke K' f → IsHecke (K₁.prod K₂) (ctMu (Nat.add_sub_cancel' ha) w μ f) := by
   intro E _ _ _ n a ha w hw μ hμ K' hK'
   obtain ⟨N, hNo, hNK, hNn, hNf⟩ := GlobalTheory.T.exists_open_conjStable_subgroup_of_splitLevel E n w K' hw hK'
-  have hlev := GlobalTheory.T.isLevel_blockLevels_splitPlace E a (n - a) n (Nat.add_sub_cancel' ha) w N μ hw hNo hμ
+  have hlev := GlobalTheory.BCT.CtLevel.isLevel_lev_split E a (n - a) n (Nat.add_sub_cancel' ha) w N μ hw hNo hμ
   refine ⟨lev₁ (Nat.add_sub_cancel' ha) w N μ, lev₂ (Nat.add_sub_cancel' ha) w N μ, N, hlev.1, hlev.2, ?_, hNo, hNK,
-    ?_, ?_, ?_, fun f hf => ⟨GlobalTheory.T.hasCompactSupport_twistedConstantTermSplitPlace E a (n - a) n _ w μ f hw hf.1, fun k hk m =>
+    ?_, ?_, ?_, fun f hf => ⟨GlobalTheory.BCT.CtLevel.hasCompactSupport_ctMu_split E a (n - a) n _ w μ f hw hf.1, fun k hk m =>
       ctMu_inv_blocks _ w hw N K' μ f hf hNK hNn k hk m⟩⟩
   · rintro ⟨hK'e, hμ1⟩
     rw [hNf hK'e]
-    exact GlobalTheory.T.blockLevels_eq_integralGL_of_unramified E a (n - a) n _ w μ hμ1
+    exact GlobalTheory.BCT.CtLevel.lev_KGL_of_unram E a (n - a) n _ w μ hμ1
   · refine ⟨fun x hx k => ?_⟩
     rw [Subgroup.mem_subgroupOf] at hx ⊢
     have := hNn _ (inv_mem k.2) _ hx

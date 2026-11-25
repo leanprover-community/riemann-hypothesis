@@ -14,8 +14,6 @@ universe u
 
 open CategoryTheory CategoryTheory.Limits AlgebraicGeometry
 
-noncomputable section
-
 namespace FunctorialResolution.EmbeddedResolution
 
 variable {X : Scheme.{u}}
@@ -311,5 +309,3 @@ theorem nonMonomialPart_comap_of_sameNontrivialBoundary (hG : PrincipalizationGe
 end PrincipalizationGeometryHypotheses
 
 end FunctorialResolution.EmbeddedResolution
-
-end

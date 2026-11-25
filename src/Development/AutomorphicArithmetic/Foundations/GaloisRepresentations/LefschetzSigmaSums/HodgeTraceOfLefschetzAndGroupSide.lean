@@ -94,27 +94,12 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 
 namespace GlobalTheory.UPel.HT.GenProj
 
-def baseOfGBase {p : ℕ} [Fact p.Prime] {D : Datum p} (gb : GBase D.toG ℂ) : Base D ℂ where
-  unit k hk := by
-    refine isUnit_iff_ne_zero.mpr (Nat.cast_ne_zero.mpr ?_)
-    rintro rfl
-    exact (Fact.out : p.Prime).one_lt.ne' (Nat.coprime_zero_left p |>.mp hk)
-  ρ := gb.ρ
-  ρ_root := gb.ρ_root
-  t := gb.t
-  t_ω := gb.t_ω
-  comax := gb.comax
-  apart i j _ k _ _ β := by
-    exfalso
-    have : CharZero k := (RingHom.charZero_iff β.injective).mp inferInstance
-    exact (Nat.cast_ne_zero.mpr (Fact.out : p.Prime).ne_zero) (CharP.cast_eq_zero k p)
-
 theorem isProjOver_genModel : ∀ (p : ℕ) [Fact p.Prime] (D : Datum p), D.CompactB → ∀ (gb : GBase D.toG ℂ) (N : ℕ),
     3 ≤ N → N.Coprime p → ∀ X : GenModel gb N, IsProjOver X.s := by
   intro p _ D hC gb N hN hNp X
-  obtain ⟨M⟩ := _root_.GlobalTheory.UPel.HT.model_nonempty p D ℂ (baseOfGBase gb) N hN hNp
-  have hM : IsProjOver M.s := GlobalTheory.UPel.HT.Model.isProjOver_of_compactB p D ℂ (baseOfGBase gb) N hN hNp hC M
-  obtain ⟨j, _, hj, hjs, _⟩ := _root_.GlobalTheory.UPel.HT.GenCmp.genModel_eq_genericFibre p D ℂ (baseOfGBase gb) ℂ (RingHom.id ℂ) gb rfl (fun _ => rfl) N hN hNp M X
+  obtain ⟨M⟩ := _root_.GlobalTheory.UPel.HT.model_nonempty p D ℂ (GlobalTheory.UPel.HT.Gen.CxSmooth.baseOfG gb) N hN hNp
+  have hM : IsProjOver M.s := GlobalTheory.UPel.HT.Model.isProjOver_of_compactB p D ℂ (GlobalTheory.UPel.HT.Gen.CxSmooth.baseOfG gb) N hN hNp hC M
+  obtain ⟨j, _, hj, hjs, _⟩ := _root_.GlobalTheory.UPel.HT.GenCmp.genModel_eq_genericFibre p D ℂ (GlobalTheory.UPel.HT.Gen.CxSmooth.baseOfG gb) ℂ (RingHom.id ℂ) gb rfl (fun _ => rfl) N hN hNp M X
   rw [← hjs]
   exact GlobalTheory.ProjSpace.isProjOver_comp_of_isClosedImmersion j (GlobalTheory.ProjSpace.isProjOver_pullback_snd (RingHom.id ℂ) hM)
 
@@ -1373,7 +1358,6 @@ section -- clump:auto
 
 open UpperTheory.Gal.LocalSmoothExtension
 
-
 open AlgebraicGeometry CategoryTheory Limits GlobalTheory.HodgeCoh in
 theorem UpperTheory.Gal.LocalSmoothExtension.occOf_of :
     MemOp → UpperTheory.Gal.G3.HodgeGood → UpperTheory.Gal.G3.HodgeTr → UpperTheory.Gal.G3.BcGood.{0} → UpperTheory.Gal.G3.OpBc.{0} → UpperTheory.Gal.G3.OpTr.{0} → UpperTheory.Gal.G3.BcSplits → OccOf := by
@@ -1759,7 +1743,6 @@ private theorem pull_congr' {B : Scheme.{0}} {R : Type} [Field R] (Θ : UpperThe
   subst e
   rfl
 
-
 open CategoryTheory Limits AlgebraicGeometry in
 private theorem pull_base {B : Scheme.{0}} {R : Type} [Field R] (Θ : UpperTheory.Gal.G3.Th.{0} B R) {W Z Z' : Scheme.{0}}
     {p : Z ⟶ B} {p' : Z' ⟶ B} (c : W ⟶ Z) {J : Type} [Fintype J] (f : J → (W ⟶ Z')) (A : Θ.H p' →ₗ[R] Θ.H p)
@@ -1768,7 +1751,6 @@ private theorem pull_base {B : Scheme.{0}} {R : Type} [Field R] (Θ : UpperTheor
     Θ.pull c rfl (A x) = ∑ j, Θ.pull (f j) (hf' j) x := by
   subst hc
   exact H x
-
 
 open CategoryTheory Limits AlgebraicGeometry in
 private theorem op_core (hFn : CntFn) (hSum : CntSum) (hSig : SigmaFEt) (hSpl : SigmaSplit)

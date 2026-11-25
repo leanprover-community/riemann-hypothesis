@@ -14,21 +14,12 @@ noncomputable def eulerDerivation (k : Type*) [CommRing k] {R : Type*} [CommRing
     {ι : Type*} [Fintype ι] (x : ι → R) (D : ι → Derivation k R R) : Derivation k R R :=
   ∑ i, x i • D i
 
-private theorem sum_smul_derivation_apply (k : Type*) [CommRing k] {R : Type*} [CommRing R]
-    [Algebra k R] {ι : Type*} (s : Finset ι) (x : ι → R) (D : ι → Derivation k R R) (a : R) :
-    (∑ i ∈ s, x i • D i) a = ∑ i ∈ s, x i * D i a := by
-  classical
-  induction s using Finset.induction with
-  | empty => simp
-  | @insert i s hi ih =>
-      rw [Finset.sum_insert hi, Finset.sum_insert hi, Derivation.add_apply,
-        Derivation.smul_apply, smul_eq_mul, ih]
-
 theorem eulerDerivation_apply (k : Type*) [CommRing k] {R : Type*} [CommRing R] [Algebra k R]
     {ι : Type*} [Fintype ι] (x : ι → R) (D : ι → Derivation k R R) (a : R) :
     eulerDerivation k x D a = ∑ i, x i * D i a := by
-  show (∑ i, x i • D i) a = ∑ i, x i * D i a
-  exact sum_smul_derivation_apply k Finset.univ x D a
+  rw [eulerDerivation, ← Derivation.coeFn_coe, Derivation.coe_sum_linearMap,
+    LinearMap.sum_apply]
+  simp [smul_eq_mul]
 
 theorem eulerDerivation_apply_mem_span (k : Type*) [CommRing k] {R : Type*} [CommRing R] [Algebra k R]
     {ι : Type*} [Fintype ι] (x : ι → R) (D : ι → Derivation k R R) (a : R) :
@@ -165,18 +156,6 @@ theorem not_derivIdeal_le_pow (k : Type*) [CommRing k] {R : Type*} [CommRing R] 
   exact mem_pow_succ_of_deriv_mem_pow k x D hD hr (h1 hf)
     (fun i => h (derivation_apply_mem_derivIdeal k I (D i) hf))
 
-private theorem eq_natCast_of_le_of_not_succ_le (n : ℕ) (a : ℕ∞) (h1 : (n : ℕ∞) ≤ a)
-    (h2 : ¬ ((n + 1 : ℕ) : ℕ∞) ≤ a) : a = (n : ℕ∞) := by
-  rcases eq_top_or_lt_top a with rfl | hlt
-  · exact absurd le_top h2
-  · lift a to ℕ using hlt.ne
-    have hn : n ≤ a := by exact_mod_cast h1
-    have hn2 : ¬ (n + 1 ≤ a) := by
-      intro hc
-      exact h2 (by exact_mod_cast hc)
-    have ha : a = n := by omega
-    exact_mod_cast ha
-
 theorem idealOrder_derivIdeal_of_isUnit_natCast (k : Type*) [CommRing k] {R : Type*} [CommRing R] [IsLocalRing R]
     [Algebra k R] {ι : Type*} [Fintype ι] [DecidableEq ι] (x : ι → R) (D : ι → Derivation k R R)
     (hD : ∀ i j, D i (x j) = if i = j then 1 else 0)
@@ -205,7 +184,8 @@ theorem idealOrder_derivIdeal_of_isUnit_natCast (k : Type*) [CommRing k] {R : Ty
     rw [hx]
     have hrr : (r - 1) + 1 = r := by omega
     rwa [hrr] at h
-  exact eq_natCast_of_le_of_not_succ_le (r - 1) _ h1 h2
+  rw [Nat.cast_add, Nat.cast_one] at h2
+  exact le_antisymm (ENat.lt_natCast_add_one_iff.mp (not_le.mp h2)) h1
 
 theorem idealOrder_derivIdealIterate_of_isUnit_natCast (k : Type*) [CommRing k] {R : Type*} [CommRing R]
     [IsLocalRing R] [Algebra k R] {ι : Type*} [Fintype ι] [DecidableEq ι] (x : ι → R)

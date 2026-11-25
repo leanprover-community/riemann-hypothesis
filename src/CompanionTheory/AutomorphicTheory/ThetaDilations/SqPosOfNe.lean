@@ -7,8 +7,6 @@ public import Development.WeilBound.CoreStatements.ThetaDilations.IsOpenCoset
 open MeasureTheory Topology Set Matrix
 open scoped ENNReal ComplexConjugate MatrixGroups
 
-noncomputable section
-
 namespace CompanionTheory.PlacePermOperatorBicommutantSpan
 
 open PositivityTheory.PlacePermOperatorBicommutantSpan

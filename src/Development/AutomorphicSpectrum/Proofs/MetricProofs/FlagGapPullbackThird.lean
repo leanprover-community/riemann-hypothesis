@@ -48,20 +48,12 @@ theorem holo_zpow (n : ℤ) (hf : A.HoloOn W f) (h0 : ∀ t ∈ W, f t ≠ 0) : 
   fun j y hy => AnalyticAt.zpow (hf j y hy) (h0 _ hy.2)
 
 theorem holo_sum {T : Type} (s : Finset T) {F : T → X → ℂ} (h : ∀ a ∈ s, A.HoloOn W (F a)) :
-    A.HoloOn W fun t => ∑ a ∈ s, F a t := by
-  induction s using Finset.induction_on with
-  | empty => simpa using holo_const (A := A) (W := W) 0
-  | insert a s ha ih =>
-    simp only [Finset.sum_insert ha]
-    exact holo_add (h a (Finset.mem_insert_self _ _)) (ih fun b hb => h b (Finset.mem_insert_of_mem hb))
+    A.HoloOn W fun t => ∑ a ∈ s, F a t :=
+  fun j => Finset.analyticOnNhd_fun_sum s fun a ha => h a ha j
 
 theorem holo_prod {T : Type} (s : Finset T) {F : T → X → ℂ} (h : ∀ a ∈ s, A.HoloOn W (F a)) :
-    A.HoloOn W fun t => ∏ a ∈ s, F a t := by
-  induction s using Finset.induction_on with
-  | empty => simpa using holo_const (A := A) (W := W) 1
-  | insert a s ha ih =>
-    simp only [Finset.prod_insert ha]
-    exact holo_mul (h a (Finset.mem_insert_self _ _)) (ih fun b hb => h b (Finset.mem_insert_of_mem hb))
+    A.HoloOn W fun t => ∏ a ∈ s, F a t :=
+  fun j => Finset.analyticOnNhd_fun_prod s fun a ha => h a ha j
 
 theorem holo_continuousOn (hW : IsOpen W) (h : A.HoloOn W f) : ContinuousOn f W := by
   apply _root_.PositivityTheory.Xgp.c_bm_exists_boundary.holo_continuousOn <;> assumption

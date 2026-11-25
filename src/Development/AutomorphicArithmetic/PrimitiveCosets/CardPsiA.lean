@@ -17,24 +17,6 @@ import Formalism.SizeWindowBrackets.SChain
 open UpperTheory.Comparison₂ Deduction.CH Formalism Formalism.HC Formalism.D5 Formalism.RankGapBounds.WeightedMeanData Formalism.LFunctionChainParameters.WeightedSlopeBounds Formalism.LFunctionChainParameters.characterSumData Formalism.LFunctionChainParameters.ThickSetMeanBounds Formalism.LFunctionChainParameters.LErr
   Formalism.LFunctionChainParameters.LChain Formalism.LFunctionChainParameters.LHost
 
-private theorem exists_comp_eq {G Q M : Type} [AddCommGroup G] [AddCommGroup Q] [CommGroupWithZero M] (π : G →+ Q)
-    (hπ : Function.Surjective π) (ψ : AddChar G M) (h : ∀ x, π x = 0 → ψ x = 1) :
-    ∃ χ : AddChar Q M, χ.compAddMonoidHom π = ψ := by
-  have wd : ∀ x y, π x = π y → ψ x = ψ y := by
-    intro x y hxy
-    have h0 : π (x - y) = 0 := by rw [map_sub, hxy, sub_self]
-    calc ψ x = ψ (y + (x - y)) := by rw [add_sub_cancel]
-      _ = ψ y * ψ (x - y) := AddChar.map_add_eq_mul ψ _ _
-      _ = ψ y := by rw [h _ h0, mul_one]
-  let s := Function.surjInv hπ
-  have hs : ∀ q, π (s q) = q := Function.surjInv_eq hπ
-  refine ⟨{ toFun := fun q => ψ (s q), map_zero_eq_one' := ?_, map_add_eq_mul' := ?_ }, ?_⟩
-  · rw [wd (s 0) 0 (by rw [hs, map_zero]), AddChar.map_zero_eq_one]
-  · intro a b
-    rw [← AddChar.map_add_eq_mul, wd (s (a + b)) (s a + s b) (by rw [hs, map_add (f := _), hs, hs])]
-  · ext x
-    exact wd _ _ (hs _)
-
 private theorem card_PsiA_index {H : Type} [AddCommGroup H] [Fintype H] [DecidableEq H] (A0 : AddSubgroup H) :
     (PsiA A0).card = 4 * A0.index := by
   classical
@@ -43,23 +25,26 @@ private theorem card_PsiA_index {H : Type} [AddCommGroup H] [Fintype H] [Decidab
     rintro ⟨a, q⟩
     obtain ⟨b, rfl⟩ := QuotientAddGroup.mk'_surjective A0 q
     exact ⟨(a, b), rfl⟩
-  have inj : Function.Injective (fun χ : AddChar (E0 × (H ⧸ A0)) ℂ => χ.compAddMonoidHom π) := by
-    intro χ1 χ2 h
-    ext q
-    obtain ⟨x, rfl⟩ := hπ q
-    exact DFunLike.congr_fun h x
+  have inj := AddChar.compAddMonoidHom_injective_left (M := ℂ) π hπ
   have himg : PsiA A0 = Finset.univ.image (fun χ : AddChar (E0 × (H ⧸ A0)) ℂ => χ.compAddMonoidHom π) := by
     ext ψ
     simp only [PsiA, Finset.mem_filter, Finset.mem_univ, true_and, Finset.mem_image]
     constructor
     · intro h
-      refine exists_comp_eq π hπ ψ fun x hx => ?_
-      obtain ⟨a, b⟩ := x
-      have ha : a = 0 := congrArg Prod.fst hx
-      have hb : (QuotientAddGroup.mk' A0 b) = 0 := congrArg Prod.snd hx
-      rw [QuotientAddGroup.mk'_apply, QuotientAddGroup.eq_zero_iff] at hb
-      subst ha
-      exact h b hb
+      have hker : π.ker ≤ ψ.toAddMonoidHom.ker := by
+        rintro ⟨a, b⟩ hx
+        rw [AddMonoidHom.mem_ker] at hx ⊢
+        have ha : a = 0 := congrArg Prod.fst hx
+        have hb : QuotientAddGroup.mk' A0 b = 0 := congrArg Prod.snd hx
+        rw [QuotientAddGroup.mk'_apply, QuotientAddGroup.eq_zero_iff] at hb
+        subst ha
+        exact congrArg Additive.ofMul (h b hb)
+      let e := QuotientAddGroup.quotientKerEquivOfSurjective π hπ
+      refine ⟨AddChar.toAddMonoidHomEquiv.symm
+        ((QuotientAddGroup.lift π.ker ψ.toAddMonoidHom hker).comp e.symm.toAddMonoidHom), ?_⟩
+      ext x
+      have he : e.symm (π x) = QuotientAddGroup.mk x := e.symm_apply_eq.2 rfl
+      simp [he]
     · rintro ⟨χ, rfl⟩ s hs
       show χ (π (0, s)) = 1
       have : π (0, s) = 0 := by

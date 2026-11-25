@@ -67,16 +67,6 @@ namespace GlobalTheory.LocalSpan
 
 variable {D : D7}
 
-def cutPts (S T : HSp D) (e : AE D) : AddSubgroup (WO S T) where
-  carrier := {x | e • x = x}
-  zero_mem' := smul_zero e
-  add_mem' := fun {x y} hx hy => by
-    show e • (x + y) = x + y
-    rw [smul_add, show e • x = x from hx, show e • y = y from hy]
-  neg_mem' := fun {x} hx => by
-    show e • (-x) = -x
-    rw [smul_neg, show e • x = x from hx]
-
 theorem idem_fin (D : D7) (v : FinPl D) : idem D (.inl v) * idem D (.inl v) = idem D (.inl v) ∧
     cA D (idem D (.inl v)) = idem D (.inl v) ∧ infPart D (idem D (.inl v)) = 0 := by
   have hss : singleV D.host.F v 1 * singleV D.host.F v 1 = singleV D.host.F v 1 := by
@@ -155,8 +145,6 @@ private theorem isLatVac_latO_of_local_conditions {D : D7} {ψ : AddChar (AF D.h
     rw [hsum, GlobalTheory.SplitScalar.heisO_add_of_orth ψ S T horth, hoff.2 e he _ hb heb,
       hs e he _ ha hia ((GlobalTheory.SplitScalar.isHalf_iff e _).mpr hea)]
 
-
-
 theorem mem_span_local : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) (S T : HSp D) (sS : D.what₂.Tau → Matrix (Fin S.rank) (Fin S.rank) ℂ) (sT : D.what₂.Tau → Matrix (Fin T.rank) (Fin T.rank) ℂ) (ΛS : Submodule (𝓞 D.host.E) (Fin S.rank → D.host.E)) (ΛT : Submodule (𝓞 D.host.E) (Fin T.rank → D.host.E)) (f₀ : WO S T → ℂ), IsBase ψ θ S T sS sT ΛS ΛT f₀ → ∀ (v : FinPl D) (x : WO S T → ℂ), IsLocal ψ θ S T sS sT ΛS ΛT (.inl v) x → x ∈ Submodule.span ℂ (Set.range fun w : WO S T => heisO ψ S T (wAt (.inl v) w) f₀) := by
   intro D ψ θ S T sS sT ΛS ΛT f₀ hb v x hx
   obtain ⟨hii, hci, -⟩ := idem_fin D v
@@ -187,7 +175,7 @@ theorem mem_span_local : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (θ : Inf
       smul_mem' := fun c f hf => by
         have h := (hcl f hf).2 c 0 h0loc
         simpa using h }
-  let X := cutPts S T (idem D (.inl v))
+  let X := GlobalTheory.PlaceModel.half S T (idem D (.inl v))
   let ρ : ↥X → ↥Msub →ₗ[ℂ] ↥Msub := fun y =>
     { toFun := fun m => ⟨heisO ψ S T (y : WO S T) m, by
         have hy : idem D (.inl v) • (y : WO S T) = y := y.2
@@ -333,7 +321,6 @@ section -- clump:auto
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR.Datum MeasureTheory IsDedekindDomain NumberField Matrix GlobalTheory.IndefiniteRowSideFullHecke.RestrictedTensorSplitting GlobalTheory.PlaceTensor
 open scoped TensorProduct ComplexOrder
-
 
 end -- clump:auto
 end -- clump:auto

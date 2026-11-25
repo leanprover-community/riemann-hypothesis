@@ -5,8 +5,6 @@ import Mathlib.Tactic.Linter.Style
 
 @[expose] public section
 
-noncomputable section
-
 open MeasureTheory PositivityTheory.Rg.BcB.E1
 open scoped ENNReal Pointwise
 
@@ -55,5 +53,3 @@ theorem lint_rt (hr : X.μ.IsMulRightInvariant) {g : X.G → ℝ≥0∞}
   rw [h1, hfd.setLIntegral_eq X.fd g (fun γ y => by simpa [Subgroup.smul_def] using hinv γ y)]
 
 end DiscreteGroups.T1.G
-
-end

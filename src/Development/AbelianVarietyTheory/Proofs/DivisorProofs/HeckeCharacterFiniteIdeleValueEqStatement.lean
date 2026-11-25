@@ -19,8 +19,3 @@ open GlobalTheory.NormExact (Reads Setup IsFinIdl HasFinPart finPt)
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (InId IsUnitDet unitChar stdFst)
 
 open GlobalTheory.StdRead
-
-
-theorem _root_.GlobalTheory.T.heckeCharacter_finiteIdele_value_eq : ∀ {D : D7} (ν : (AE D)ˣ →* Circle) (χ : Formalism.L2.Host.HChar D.host.E), ChrEq ν χ → ∀ x y, IsFinIdl x y →
-  ((ν x : Circle) : ℂ) = ((χ.1 (GlobalTheory.Mem.Col2.SplitChar.finIdl D y) : ℂˣ) : ℂ) := by
-  first | exact @GlobalTheory.FinIdlRead.chr_finIdl

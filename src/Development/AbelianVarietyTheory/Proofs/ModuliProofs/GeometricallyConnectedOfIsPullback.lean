@@ -111,13 +111,7 @@ theorem quasiCompact_of_comp {X Y S : Scheme.{0}} (j : X ⟶ Y) (f : Y ⟶ S)
   refine ⟨fun U hU hU' => ?_⟩
   have h := (QuasiCompact.isCompact_preimage (f := j ≫ f) U hU hU').image j.continuous
   convert h using 1
-  ext x
-  constructor
-  · intro hx
-    obtain ⟨y, rfl⟩ := j.surjective x
-    exact ⟨y, by simpa using hx, rfl⟩
-  · rintro ⟨y, hy, rfl⟩
-    simpa using hy
+  exact (Set.image_preimage_eq _ j.surjective).symm
 
 theorem geometricallyConnected_of_isPullback {X X' Y Y' : Scheme.{0}} {π : X ⟶ X'} [IsIntegralHom π]
     [Surjective π] {f : Y ⟶ X} {f' : Y' ⟶ X'} {φ : Y ⟶ Y'} (h : IsPullback φ f f' π)

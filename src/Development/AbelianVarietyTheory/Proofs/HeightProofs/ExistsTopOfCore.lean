@@ -604,7 +604,6 @@ namespace GlobalTheory
 open AlgebraicGeometry CategoryTheory Limits NumberField IsDedekindDomain IsLocalRing ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Pj Formalism.MainNotions.DIV.Cons
 open scoped TensorProduct
 
-
 open GlobalTheory.PrescribedPoints Formalism.MainNotions.DIV.Inh Formalism.MainNotions.DIV.Inh.LocalProvisionModel in
 theorem exists_prov_prescribed_points :
     ∀ (D : D7) (Pt : ℕ → ℕ → Type) (fld : ∀ j p, Pt j p → ModuliIntegralCharts.CF p) (L : ∀ j p, Pt j p → LatB D.host.E), (∀ j p y, (∀ a b, (L j p y).beta a b = (L j p y).beta b a) ∧ (∀ a a' b, (L j p y).beta (a + a') b = (L j p y).beta a b + (L j p y).beta a' b) ∧ (∀ (x x' : 𝓞 D.host.E), (x' : D.host.E) = D.host.conj (x : D.host.E) → ∀ a b, (L j p y).beta (x • a) b = (L j p y).beta a (x' • b)) ∧ (∃ (ι : Type) (_ : Fintype ι) (b : Module.Basis ι ℤ (L j p y).Y), ∀ x : ι → ℝ, x ≠ 0 → 0 < ∑ i, ∑ k, x i * x k * (L j p y).beta (b i) (b k)) ∧ ∃ ρ : ℕ, Module.finrank ℤ (L j p y).Y = 2 * D.R.f * ρ ∧ ρ ≤ (D.R.sigW j).1 ∧ ρ + (D.R.sigW j).1 ≤ D.R.r) → ∃ (P : ModuliIntegralCharts.Prov D) (dat : ℕ → P.Dat), ∀ j, 1 ≤ j → j < D.R.m → (P.rk (dat j) = D.R.r ∧ P.jj (dat j) = (D.R.sigW j).1) ∧ ∀ p y, ∃ η : (P.loc (dat j) p).Pt (P.loc (dat j) p).YY, (P.loc (dat j) p).fld η = fld j p y ∧ ∃ e : (P.loc (dat j) p).Ylat η ≃ₗ[𝓞 D.host.E] (L j p y).Y, ∀ a b, (L j p y).beta (e a) (e b) = (P.loc (dat j) p).be η a b := by
@@ -707,30 +706,6 @@ theorem baseAt_of_eq {l : Level H} {c : Coeff l} {v : HeightOneSpectrum (𝓞 c.
   rintro ⟨y, rfl⟩
   exact y.2
 
-theorem exists_coeff_ge {l : Level H} (c : Coeff l) (l₂ : Level H) : ∃ c₂ : Coeff l₂, c.F ≤ c₂.F := by
-  classical
-  haveI := c.fin
-  let b := Module.finBasis ℚ c.F
-  obtain ⟨c₂, h⟩ := exists_coeff_containing E H l₂ (Finset.univ.image fun i => ((b i : c.F) : ℂ)) (by
-    intro z hz
-    obtain ⟨i, -, rfl⟩ := Finset.mem_image.1 hz
-    exact (Algebra.IsAlgebraic.isAlgebraic (R := ℚ) (b i)).algHom c.F.val)
-  refine ⟨c₂, fun x hx => ?_⟩
-  have key : ∀ y : c.F, (y : ℂ) ∈ c₂.F := by
-    intro y
-    have hy : y ∈ Submodule.span ℚ (Set.range b) := b.span_eq ▸ Submodule.mem_top
-    induction hy using Submodule.span_induction with
-    | mem z hz =>
-      obtain ⟨i, rfl⟩ := hz
-      exact h _ (Finset.mem_image_of_mem _ (Finset.mem_univ i))
-    | zero => exact zero_mem _
-    | add y z _ _ hy hz => exact add_mem hy hz
-    | smul a y _ hy =>
-      have e : ((a • y : c.F) : ℂ) = (a : ℂ) * (y : ℂ) := by simp [Rat.smul_def]
-      rw [e]
-      exact mul_mem (SubfieldClass.ratCast_mem _ a) hy
-  exact key ⟨x, hx⟩
-
 def deeper (l : Level H) (k : ℕ) (hk : 0 < k) : Level H :=
   { l with A := k * l.A, A_pos := Nat.mul_pos hk l.A_pos }
 
@@ -766,7 +741,7 @@ theorem exists_towerAt {Xo : ∀ l : Level H, Moduli D l} (S : System Xo) (hD : 
       Nonempty Y.X := fun l c O _ β Y =>
     ((_root_.GlobalTheory.PeriodExists.typeFn_period_exist E H D).2.2 _root_.GlobalTheory.closing_of_abelianSchemeLaws hD l (Xo l) c).map fun x => Y.j x
   let lv : ℕ → Level H := fun n => deeper l (p ^ n) (pow_pos hp.pos n)
-  choose cN hcN using fun n => exists_coeff_ge c (lv n)
+  choose cN hcN using fun n => GlobalTheory.RaisedAmple.exists_coeff c (lv n)
   choose W hW hWe using fun v : PointsOfFlagModel.abelian₂ p c => exists_valuationSubring c p v.1 v.2
   choose WN hWN hWNe using fun n (w : PointsOfFlagModel.abelian₂ p (cN n)) => exists_valuationSubring (cN n) p w.1 w.2
   refine ⟨{ O := fun v => c.V (W v)

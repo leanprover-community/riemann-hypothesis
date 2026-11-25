@@ -48,13 +48,6 @@ open scoped MatrixGroups ModularForm
 
 namespace UpperTheory.V.Z.Sym.Unl
 
-private theorem coe_comb {N : ℕ} {k : ℤ} {I : Type} (s : Finset I) (c : I → ℂ) (f : I → ModularForm (Gamma1 N) k) :
-    ((∑ a ∈ s, c a • f a : ModularForm (Gamma1 N) k) : ℍ → ℂ) = ∑ a ∈ s, c a • (f a : ℍ → ℂ) := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => simp
-  | insert a s ha ih => rw [Finset.sum_insert ha, Finset.sum_insert ha, ← ih]; rfl
-
 private theorem one_mem_per (N : ℕ) :
     (1 : ℝ) ∈ (Subgroup.map (Matrix.SpecialLinearGroup.mapGL ℝ) (Gamma1 N)).strictPeriods := by
   rw [strictPeriods_Gamma1]; exact AddSubgroup.mem_zmultiples 1
@@ -64,10 +57,6 @@ private theorem coef_smul {N : ℕ} {k : ℤ} (c : ℂ) (f : ModularForm (Gamma1
   unfold coef
   rw [ModularForm.qExpansion_smul one_pos (one_mem_per N) c f]
   simp
-
-private theorem coef_comb {N : ℕ} {k : ℤ} {I : Type} (s : Finset I) (c : I → ℂ) (f : I → ModularForm (Gamma1 N) k) (n : ℕ) :
-    coef (∑ a ∈ s, c a • f a : ModularForm (Gamma1 N) k) n = ∑ a ∈ s, c a * coef (f a) n := by
-  apply _root_.UpperTheory.V.Sd.coef_comb <;> assumption
 
 private theorem slash_neg_one (k : ℕ) (f : ℍ → ℂ) : f ∣[(k : ℤ)] (-1 : SL(2, ℤ)) = ((-1 : ℂ) ^ k) • f := by
   funext τ
@@ -101,8 +90,10 @@ private theorem hasChar_comb {N k : ℕ} [NeZero N] (χ : DirichletCharacter ℂ
     rw [Gamma0_mem.1 hγ, mul_zero, sub_zero] at h2
     exact IsUnit.of_mul_eq_one_right _ h2
   obtain ⟨d, hd⟩ := hd
-  rw [coe_comb, SlashAction.sum_slash, Finset.smul_sum, ← hd]
+  rw [← FunLike.coe_coeAddMonoidHom (F := ModularForm (Gamma1 N) (k : ℤ)), map_sum,
+    SlashAction.sum_slash, Finset.smul_sum, ← hd]
   refine Fintype.sum_equiv (Equiv.mulRight d) _ _ fun a => ?_
+  simp only [FunLike.coeAddMonoidHom_apply, FunLike.coe_smul]
   rw [ModularForm.SL_smul_slash, hfam a (a * d) γ hγ (by rw [← hd]; rfl), smul_smul]
   congr 1
   simp only [Equiv.coe_mulRight]
@@ -114,9 +105,10 @@ private theorem vanOff_comb {N k : ℕ} [NeZero N] (c : (ZMod N)ˣ → ℂ)
     (f : (ZMod N)ˣ → ModularForm (Gamma1 N) (k : ℤ)) (hvan : ∀ a, VanOff N k (f a)) :
     VanOff N k (∑ a : (ZMod N)ˣ, c a • f a : ModularForm (Gamma1 N) (k : ℤ)) := by
   intro γ hγ
-  rw [coe_comb, SlashAction.sum_slash]
+  rw [← FunLike.coe_coeAddMonoidHom (F := ModularForm (Gamma1 N) (k : ℤ)), map_sum,
+    SlashAction.sum_slash]
   refine (zeroAtImInftySubmodule ℂ).sum_mem fun a _ => ?_
-  rw [ModularForm.SL_smul_slash]
+  rw [FunLike.coeAddMonoidHom_apply, FunLike.coe_smul, ModularForm.SL_smul_slash]
   exact (zeroAtImInftySubmodule ℂ).smul_mem _ (hvan a γ hγ)
 
 end UpperTheory.V.Z.Sym.Unl

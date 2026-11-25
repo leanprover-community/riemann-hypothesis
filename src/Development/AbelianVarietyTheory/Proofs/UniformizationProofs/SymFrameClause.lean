@@ -14,8 +14,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped CategoryTheory.Obj
 open GlobalTheory.UT
 
-noncomputable section
-
 namespace GlobalTheory.SymFrameClause
 
 theorem exists_symLift (R : Type) [CommRing R] [IsDomain R] [CharZero R]

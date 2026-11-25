@@ -13,8 +13,6 @@ import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UnderEqIffCo
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain GlobalTheory.CuspRep
 
 namespace UpperTheory.CBC.SConjSatCAux

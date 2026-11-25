@@ -179,7 +179,7 @@ theorem UpperTheory.V.Z.Kato.Joint.admissibleFunctional_of_projection :
   have heig := hEig hLin hOp hStab hThP l Ω ε X A N (2 * e - 1) j χd (fun T => ι.symm (lamC T))
     ⟨hjl, hl2, hlN, hN, hodd, hjA⟩ hev P hP
     (fun T hT b hb => by
-      have hb' := GlobalTheory.T.hecke_letter_preserves_basis_set ε X ε.injective ⟨φ, hφ2, hφ1⟩ N l (2 * e - 1) hl2 hN hlcN.symm hodd T hT b hb
+      have hb' := GlobalTheory.KZ.B_stable_op ε X ε.injective ⟨φ, hφ2, hφ1⟩ N l (2 * e - 1) hl2 hN hlcN.symm hodd T hT b hb
       rw [hPx _ (tmul_mem X N l _ _ hb'), hPx _ (tmul_mem X N l _ _ hb), Finset.smul_sum]
       refine Finset.sum_congr rfl fun i _ => ?_
       rw [← map_smul, ← hπT i T hT _ (tmul_mem X N l _ _ hb)]
@@ -597,7 +597,7 @@ theorem UpperTheory.V.Z.Kato.Joint.chiStab :
   intro l hp Ω _ _ _ ε X N w χ hl hlN hN hw T b hT hb
   have hNl : Nat.Coprime N l := ((Nat.Prime.coprime_iff_not_dvd hp.out).2 hlN).symm
   obtain ⟨φ, h1, h2⟩ := X.j_hol
-  refine ⟨GlobalTheory.T.hecke_letter_preserves_basis_set ε X ε.injective ⟨φ, h2, h1⟩ N l w hl hN hNl hw T hT b hb.1, fun d hd => ?_⟩
+  refine ⟨GlobalTheory.KZ.B_stable_op ε X ε.injective ⟨φ, h2, h1⟩ N l w hl hN hNl hw T hT b hb.1, fun d hd => ?_⟩
   have h := _root_.GlobalTheory.KZ.B_op_comm ε X ε.injective ⟨φ, h2, h1⟩ N l w hl hN hNl hw T (GlobalTheory.KZ.Letter.D d) hT hd b hb.1
   change X.op N l T (X.diam N l d b) = X.diam N l d (X.op N l T b) at h
   rw [← h, hb.2 d hd, map_smul]

@@ -8,8 +8,6 @@ import Development.AbelianVarietyTheory.Definitions.Foundations.NormSumPairRankZ
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField Classical Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLatticesGL3 GlobalTheory.NormSum
 open scoped BigOperators
 

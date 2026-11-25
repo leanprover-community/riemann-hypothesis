@@ -8,8 +8,6 @@ public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.MemParaho
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.DIV Formalism.L2.Col
 
-noncomputable section
-
 namespace GlobalTheory.ParahoricOfCong
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E] (P : HeightOneSpectrum (𝓞 E))

@@ -168,7 +168,7 @@ theorem exists_family_one (hrat : ∀ (D : D7) (X : RealSide D) (i : Fin D.R.m),
       exact hr i k P hsp hso hk α Rc hα hdc x
 
 theorem exists_family_reads : GlobalTheory.Published.CuspRapidDecay → GlobalTheory.IndefiniteRowSideFullHecke.SplitOffDetection.HeckeTransform → GlobalTheory.HeckeSupSt.HeckeReadTie → ∀ (D : D7) (X : RealSide D), ∀ (S : RatDat D.ntw) (YS : NExpRealS X.R X.cG S), ∃ hL : ∀ j, ℕ → PlE D.host → Module.End D.what₂.LL (S.WL j), (∀ j, 1 ≤ j → j ≤ D.R.m → HeckeStabR S j (hL j)) ∧ (∀ j P, hL j 0 P = 1) ∧ GlobalTheory.ExportPin.Reads X.R X.cG S YS hL :=
-  fun hD hT hR D X S YS => exists_family_one (rat_side hT (GlobalTheory.T.heckeTransform_cuspForms_reads_cosetSum hD hR) GlobalTheory.T.exists_rationalHecke_read_as_cosetSums) D X S YS
+  fun hD hT hR D X S YS => exists_family_one (rat_side hT (GlobalTheory.HeckeSupReal.readsCusp_realSide hD hR) GlobalTheory.T.exists_rationalHecke_read_as_cosetSums) D X S YS
 
 end GlobalTheory.HeckeFamRead
 end -- clump:auto

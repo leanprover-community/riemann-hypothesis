@@ -179,11 +179,6 @@ theorem homogeneousComponent_fockAct1 {P Q R S : ℕ} (X : Mat P Q) (hX : IsKC X
     homogeneousComponent n (fockAct1 P Q R S X f) = fockAct1 P Q R S X (homogeneousComponent n f) := by
   apply _root_.GlobalTheory.FockAlg.MinFirst.comp_comm <;> assumption
 
-theorem homogeneousComponent_mem_chiOne {P Q R S : ℕ} (x : ℚ) (f : Pol P Q R S) (hf : f ∈ chiOne P Q R S x) (n : ℕ) :
-    homogeneousComponent n f ∈ chiOne P Q R S x := by
-  rw [mem_chiOne] at hf ⊢
-  intro X hX
-  rw [← homogeneousComponent_fockAct1 X hX, hf X hX, map_smul]
 
 end GlobalTheory.KFixIrr.TensProj
 

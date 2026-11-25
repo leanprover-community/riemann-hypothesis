@@ -57,11 +57,8 @@ theorem exists_rel {S L : Type} [CommRing S] [Field L] (φ : S →+* L) (W : Ide
   have key : ∀ m : ℕ, φ g ^ n * x ^ m ∈ A := by
     intro m
     let q : Polynomial A := Polynomial.X ^ m
-    have hq := Polynomial.modByMonic_add_div q p
     have hev : x ^ m = Polynomial.aeval x (q %ₘ p) := by
-      have := congrArg (Polynomial.aeval x) hq
-      simp only [map_add (f := _), map_mul, hpx', zero_mul, add_zero] at this
-      rw [this]
+      rw [Polynomial.aeval_modByMonic_eq_self_of_root hpx']
       simp [q]
     have hdeg : (q %ₘ p).natDegree < n := Polynomial.natDegree_modByMonic_lt _ hpm hp1
     rw [hev, Polynomial.aeval_eq_sum_range, Finset.mul_sum]

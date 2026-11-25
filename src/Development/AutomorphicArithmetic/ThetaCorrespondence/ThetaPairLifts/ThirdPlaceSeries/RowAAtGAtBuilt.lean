@@ -337,76 +337,6 @@ theorem badS_subset {B : GlobalTheory.Mem.Base} {X : GlobalTheory.Mem.PreX B.toP
   · exact h.T_mem u
   · exact h.small_mem (Finset.mem_coe.1 hp)
 
-theorem mem_tupGrp_of_subset {F E L : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] [Field L]
-    {S S' : Set ℕ} (hS : S' ⊆ S) {x : Chr F E L} (hx : x ∈ tupGrp F E L S) : x ∈ tupGrp F E L S' := by
-  obtain ⟨h1, h4⟩ := Subgroup.mem_inf.1 hx
-  refine Subgroup.mem_inf.2 ⟨h1, Subgroup.mem_iInf.2 fun v => Subgroup.mem_iInf.2 fun hv => ?_⟩
-  exact Subgroup.mem_iInf.1 (Subgroup.mem_iInf.1 h4 v) fun hg => hv ⟨hg.1, hg.2.1, fun hm => hg.2.2 (hS hm)⟩
-
-section Gen
-
-variable {D : D7} {EX : ErrX D} (Ch : Chars (recFields D) (recPrimes EX) D.R.m)
-  (sel : HeightOneSpectrum (𝓞 D.host.F) → HeightOneSpectrum (𝓞 D.host.E))
-
-def TwistTieS {S : Set ℕ} (Dx : DivX D) (μ : D.what₂.Tup) (ξ : Tup (recFields D).F (recFields D).E (recFields D).K S) : Prop :=
-  ((Dx.Qp μ : Set ℕ) = QprimeN (ξ : Chr (recFields D).F (recFields D).E (recFields D).K)) ∧
-    (μ = D.what₂.mu0 → (ξ : Chr (recFields D).F (recFields D).E (recFields D).K) = 1)
-
-def FieldTieS (A : Amb (recFields D)) {S : Set ℕ} (ξ : Tup (recFields D).F (recFields D).E (recFields D).K S)
-    (cst : LocCst (recFields D) (rowSG (recPrimes EX) sel ξ)) (u : D.what₂.Word) : Prop :=
-  ∀ i < D.R.m, JetsRatDeg A (D.R.N i) (D.R.N (i + 1)) (Sall (Pr := recPrimes EX) sel ξ u)
-    (cAof sel ξ cst * cBof sel ξ cst u) (fun τ => ∑ a, ((recWts EX).nuW u (i + 1) τ).w a)
-
-def RowTieS (μ : D.what₂.Tup) {S : Set ℕ} (ξ : Tup (recFields D).F (recFields D).E (recFields D).K S)
-    (jA : MtildeV (recWts EX) Ch sel ξ (rPsymF Ch) →ₛₗ[D.what₂.embLL] D.what₂.Amb μ) : Prop :=
-  (∀ s : Finset (MtildeV (recWts EX) Ch sel ξ (rPsymF Ch)),
-      LinearIndependent D.what₂.LL (fun x : s => (x : MtildeV (recWts EX) Ch sel ξ (rPsymF Ch))) →
-      LinearIndependent ℂ (fun x : s => jA x)) ∧
-    Submodule.span ℂ (Set.range jA) = ⊤ ∧
-    (∀ v ∈ (D.what₂.Mtilde μ).gen, v ∈ Set.range jA) ∧
-    ∀ x, x ∈ MtildeL (recWts EX) Ch sel ξ (rPsymF Ch) ↔ ∃ c : D.what₂.Amb μ → 𝓞 D.what₂.LL,
-      jA x = ∑ v ∈ (D.what₂.Mtilde μ).gen, D.what₂.embLL ((c v : 𝓞 D.what₂.LL) : D.what₂.LL) • v
-
-def PerTieS (u : D.what₂.Word) (μ : D.what₂.Tup) {S : Set ℕ} (ξ : Tup (recFields D).F (recFields D).E (recFields D).K S)
-    (hP : (mtildeGSD (recWts EX) Ch sel ξ (rPsymF Ch)).Ok)
-    (col : MfV (recWts EX) Ch u →ₗ[D.what₂.LL] (evGSD (recWts EX) Ch sel ξ (rPsymF Ch) u).EqFun)
-    (eM : (D.div.Nu u).V ≃ₗ[D.what₂.LL] MramV (recWts EX) Ch u)
-    (jA : MtildeV (recWts EX) Ch sel ξ (rPsymF Ch) →ₛₗ[D.what₂.embLL] D.what₂.Amb μ) : Prop :=
-  ∀ φ x, D.what₂.perCol u μ (D.jN u φ) (jA x) =
-    D.what₂.embLL (PtilE (recWts EX) Ch sel ξ (rPsymF Ch) hP u (col (eM φ : MfV (recWts EX) Ch u)) x)
-
-def ChainTieS (Dx : DivX D) (mu0 : Fin D.R.m → Formalism.L2.Host.HChar D.host.E) (A : Amb (recFields D))
-    (u : D.what₂.Word) (μ : D.what₂.Tup) {S : Set ℕ} (ξ : Tup (recFields D).F (recFields D).E (recFields D).K S) : Prop :=
-  ∃ (cst : LocCst (recFields D) (rowSG (recPrimes EX) sel ξ))
-    (I : ChIdx (recFields D) (recPrimes EX) D.R (QE sel (ξ : Chr (recFields D).F (recFields D).E (recFields D).K)))
-    (hI : I.Ok Ch sel ξ cst (recGlob D mu0) (D.R.m - 2))
-    (b : I.β (D.R.m - 2 + 1)) (hY : YbHyp (R := D.R) sel ξ cst I u (D.R.m - 2) b)
-    (hK : KerEquivC (recWts EX) Ch sel ξ cst I A u (D.R.m - 2) b hY (rPsymF Ch))
-    (hF : ∀ j, (chF (recWts EX) sel ξ I u j).Ok)
-    (hP : (mtildeGSD (recWts EX) Ch sel ξ (rPsymF Ch)).Ok)
-    (eM : (D.div.Nu u).V ≃ₗ[D.what₂.LL] MramV (recWts EX) Ch u)
-    (jA : MtildeV (recWts EX) Ch sel ξ (rPsymF Ch) →ₛₗ[D.what₂.embLL] D.what₂.Amb μ),
-    cst.sharp = true ∧ TwistTieS Dx μ ξ ∧ FieldTieS sel A ξ cst u ∧ ColTie Ch u eM ∧ RowTieS Ch sel μ ξ jA ∧
-      PerTieS Ch sel u μ ξ hP (colMu (recWts EX) Ch sel ξ cst I A u (D.R.m - 2) b hY (rPsymF Ch) hK hF hI) eM jA
-
-theorem chainPeriodRelation_read_for_character_avoiding_primes (Dx : DivX D) (mu0 : Fin D.R.m → Formalism.L2.Host.HChar D.host.E) (A : Amb (recFields D))
-    (u : D.what₂.Word) (μ : D.what₂.Tup) {S : Set ℕ} (χ : Chr (recFields D).F (recFields D).E (recFields D).K)
-    (h : IsTwist (recFields D).F (recFields D).E (recFields D).K S χ)
-    (h' : IsTwist (recFields D).F (recFields D).E (recFields D).K (badS D) χ)
-    (H : ChainTieS Ch sel Dx mu0 A u μ (@Subtype.mk _ (IsTwist _ _ _ S) χ h)) : ChainTie Ch sel Dx mu0 A u μ := by
-  obtain ⟨cst, I, hI, b, hY, hK, hF, hP, eM, jA, h1, h2, h3, h4, h5, h6⟩ := H
-  exact ⟨@Subtype.mk _ (IsTwist _ _ _ (badS D)) χ h', cst, I, { hI with }, b, ⟨hY.fin⟩, hK, hF, hP, eM, jA, h1,
-    ⟨h2.1, fun e => Subtype.ext (h2.2 e)⟩, h3, h4, h5, h6⟩
-
-theorem chainTie_of (Dx : DivX D) (mu0 : Fin D.R.m → Formalism.L2.Host.HChar D.host.E) (A : Amb (recFields D))
-    (u : D.what₂.Word) (μ : D.what₂.Tup) {S : Set ℕ} (ξ : Tup (recFields D).F (recFields D).E (recFields D).K S)
-    (hξ : (ξ : Chr (recFields D).F (recFields D).E (recFields D).K) ∈
-      tupGrp (recFields D).F (recFields D).E (recFields D).K (badS D))
-    (H : ChainTieS Ch sel Dx mu0 A u μ ξ) : ChainTie Ch sel Dx mu0 A u μ := by
-  obtain ⟨χ, h⟩ := ξ
-  exact chainPeriodRelation_read_for_character_avoiding_primes Ch sel Dx mu0 A u μ χ h hξ H
-
-end Gen
 
 theorem colTie_of_addEquiv {D : D7} {EX : ErrX D} (Ch : Chars (recFields D) (recPrimes EX) D.R.m) (u : D.what₂.Word)
     (eM : (D.div.Nu u).V ≃+ MramV (recWts EX) Ch u) (hs : ∀ (r : D.what₂.LL) x, eM (r • x) = r • eM x)
@@ -470,8 +400,7 @@ theorem tiesAt_true : ∀ {B : GlobalTheory.Mem.Base} {X : GlobalTheory.Mem.PreX
       let rE := GlobalTheory.PeriodOnStep.rowEmb (Pr := B.primes X) (I := I.chIn u a) B.wts I.Ch I.sel (I.tup a) I.Ps (I.perIn u a).b0
         (I.perIn u a).til (I.perIn u a).ext (I.perIn u a).tz (I.perIn u a).H (KerRat.tilOk I h u a).2.2 B.embLL
       have hrf : ⇑rE = KerRat.rowForm I l h u a := rfl
-      refine chainTie_of (D := I.rec7 l Z) (EX := exOf EX h1 h2) I.Ch I.sel Dx I.C.mu0 I.A u a (I.tup a) (mem_tupGrp_of_subset (badS_subset h l Z) (I.tup a).2) ?_
-      refine ⟨I.cst a, I.idx a, h.idx_ok a, hne.some, hY, hK, hF, hM, (show ((I.rec7 l Z).div.Nu u).V ≃+ MramV (recWts (exOf EX h1 h2)) I.Ch u from eM).toLinearEquiv heM1, LinearMap.comp (σ₁₃ := B.embLL) e.toLinearMap rE, h.sharp a, ?_, ?_, ?_, ?_, ?_⟩
+      refine ⟨I.S, badS_subset h l Z, I.tup a, I.cst a, I.idx a, h.idx_ok a, hne.some, hY, hK, hF, hM, (show ((I.rec7 l Z).div.Nu u).V ≃+ MramV (recWts (exOf EX h1 h2)) I.Ch u from eM).toLinearEquiv heM1, LinearMap.comp (σ₁₃ := B.embLL) e.toLinearMap rE, h.sharp a, ?_, ?_, ?_, ?_, ?_⟩
       · refine ⟨?_, fun e0 => by rw [e0]; exact congrArg Subtype.val I.trueColumn_tuple_trivial_eq_one⟩
         have hfin : (Qprime (I.tup a : Chr B.fields.F B.fields.E B.fields.K)).Finite :=
           GlobalTheory.OpenChrRam.qprime_finite _ _ _ _ (I.tup a).2.1.1.1.1.2
@@ -1130,7 +1059,7 @@ theorem boundAt_of_chainTie (D : D7) (L : SizeData₂ D) (EX : ErrX D) (Dx : Div
     BoundAt L EX C1 i w u μ := by
   classical
   obtain ⟨-, hTied, -, hsel⟩ := hCT
-  obtain ⟨ξ, cst, I, hI, b, hY, hK, hF, hP, eM, jA, -, -, hrat, hcol, hrow, hper⟩ := hCh
+  obtain ⟨S, hbadS, ξ, cst, I, hI, b, hY, hK, hF, hP, eM, jA, -, -, hrat, hcol, hrow, hper⟩ := hCh
   rintro φ hφ F ⟨c, hc⟩
   have hX := hH.2.2.2.1.ok
   have hPr := hH.2.2.2.2
@@ -1151,9 +1080,9 @@ theorem boundAt_of_chainTie (D : D7) (L : SizeData₂ D) (EX : ErrX D) (Dx : Div
     have h3 : (((D.host.g i : ℕ) : 𝓞 D.what₂.LL) : D.what₂.LL) = (D.host.g i : D.what₂.LL) := map_natCast (algebraMap _ _) _
     rw [h3, h2]
     exact_mod_cast D.what₂.places.ramIdx_pos w
-  have hTS : (recPrimes EX).T u ∈ badS D := Or.inr (Or.inl ⟨u, rfl⟩)
-  have hgS : ∀ k, (recPrimes EX).g k ∈ badS D := fun k => by
-    fin_cases k <;> simp [badS, hostS]
+  have hTS : (recPrimes EX).T u ∈ S := hbadS (Or.inr (Or.inl ⟨u, rfl⟩))
+  have hgS : ∀ k, (recPrimes EX).g k ∈ S := fun k => hbadS (by
+    fin_cases k <;> simp [badS, hostS])
   have hb : 2 * (recFields D).f * D.R.N D.R.m + 1 < D.host.g i := by
     rw [show (recFields D).f = D.R.f from D.what₂.card_Tau]
     exact hS.1
@@ -1167,7 +1096,15 @@ theorem boundAt_of_chainTie (D : D7) (L : SizeData₂ D) (EX : ErrX D) (Dx : Div
     rw [h2] at h1
     have h4 : 2 * (∑ τ, ∑ a, ((recWts EX).nuW u (j + 1) τ).w a) + 2 < (D.host.g i : ℤ) := by exact_mod_cast h1
     omega
-  have hcolb := colMu_bound_all (recWts EX) Ch sel ξ cst I _ (hJ hH hsel hA) GlobalTheory.JetOpWeylLat.jetOpWeyl chainWeights stdMove levelPrimes
+  have hJS : JetLossAllAt (recPrimes EX) D.R (ambOf (recSeam D) B χ cD) sel S :=
+    fun i w hw u mu =>
+      have hmem : (mu : Chr (recFields D).F (recFields D).E (recFields D).K) ∈
+          tupGrp (recFields D).F (recFields D).E (recFields D).K (badS D) := by
+        obtain ⟨h1, h4⟩ := Subgroup.mem_inf.1 mu.2
+        refine Subgroup.mem_inf.2 ⟨h1, Subgroup.mem_iInf.2 fun v => Subgroup.mem_iInf.2 fun hv => ?_⟩
+        exact Subgroup.mem_iInf.1 (Subgroup.mem_iInf.1 h4 v) fun hg => hv ⟨hg.1, hg.2.1, fun hm => hg.2.2 (hbadS hm)⟩
+      hJ hH hsel hA i w hw u ⟨mu.1, hmem⟩
+  have hcolb := colMu_bound_all (recWts EX) Ch sel ξ cst I _ hJS GlobalTheory.JetOpWeylLat.jetOpWeyl chainWeights stdMove levelPrimes
     (scalarUnit_of levelPrimes heckeUnit twistUnit) entryAtG (EntQ.entryAtQ volumeAtQ) TopTwist.topAtQ hX hPr hsel u hTS hgS hI
     hTied b hY (Formalism.L2.Col.rPsymF Ch) hK hF i (D.plEq w) hg
     (fun j hj b' => wtUnit_chF (recWts EX) sel ξ I hX u hF (hPr.g_prime i) hb _ hg hj b') hdeg hrat _ ((hcol φ).1 hφ)

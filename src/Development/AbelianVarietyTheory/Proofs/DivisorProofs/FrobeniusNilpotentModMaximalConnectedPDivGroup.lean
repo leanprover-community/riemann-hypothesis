@@ -728,12 +728,6 @@ theorem QL_map {B Q O C : Type} [CommRing B] [CommRing Q] [CommRing O] [CommRing
     refine ⟨θ b, trivial, ?_⟩
     rw [← map_formalGroupLawCoboundaryOne_square θ Θ hΘ μ ν hμ hν, coeff_map, hb, hΘ]
 
-theorem QL_comb' (O E : Type) [CommRing O] [CommRing E] [Algebra O E] (d : ℕ)
-    (μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) O) (hμ : ∀ i, constantCoeff (μ i) = 0)
-    (f g : MvPowerSeries (Fin d) E) (a : O) (hf : QL μ ⊤ f) (hg : QL μ ⊤ g) :
-    QL μ ⊤ (f + algebraMap O E a • g) := by
-  apply _root_.GlobalTheory.TangentIndep.QL_comb <;> assumption
-
 theorem isLie_comb (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C]
     (v : Valuation C NNReal) (O : Type) [CommRing O] [Algebra O C] [Fact ¬IsUnit (p : O)]
     [IsAdicComplete (Ideal.span {(p : O)}) O] [IsDomain O] (hv : v.Integers O) (G : PDivGroup p O)
@@ -778,7 +772,7 @@ theorem isLie_comb (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C]
       exact ⟨by simpa using hQL0, by simpa using h00⟩
     | insert a S ha ih =>
       rw [Finset.sum_insert ha, Finset.sum_insert ha, add_comm, add_comm (b a • lb a)]
-      exact ⟨QL_comb' O E d c.μ hμ _ _ (b a) ih.1 (hQL _), lin _ _ _ _ (b a) ih.2 (hLie a) ih.1 (hQL _)⟩
+      exact ⟨GlobalTheory.TangentIndep.QL_comb O E d c.μ hμ _ _ (b a) ih.1 (hQL _), lin _ _ _ _ (b a) ih.2 (hLie a) ih.1 (hQL _)⟩
   have hf_eq : comb (Sum.elim 0 b) e = ∑ i, algebraMap O E (b i) • e (Sum.inr i) := by
     simp [comb, Fintype.sum_sum_type]
   rw [hf_eq]
@@ -1117,7 +1111,6 @@ theorem defect_map {d : ℕ} (μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) B) 
 end GlobalTheory.FrobPowDefect
 
 namespace GlobalTheory.QLog
-
 
 open GlobalTheory.FrobPowDefect in
 theorem defect_frob_pow : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C] (v : Valuation C NNReal) (O : Type) [CommRing O] [Algebra O C] [Fact ¬IsUnit (p : O)] [IsAdicComplete (Ideal.span {(p : O)}) O] [IsDomain O], v.Integers O → ∀ (ε : PreTilt O p) (hε : IsPrimitiveSystem ε), ∀ F : BFrame ε, ∀ (G : PDivGroup p O) (d : ℕ) (c : QLog.Chart G d) (μ' : Fin d → MvPowerSeries (Fin d ⊕ Fin d) F.B), IsLift F.θ μ' → (∀ i, map F.θ (μ' i) = c.μ i) → ∀ (f g : MvPowerSeries (Fin d) F.Q) (a b : MvPowerSeries (Fin d) F.B), QL μ' ⊤ f → QL μ' ⊤ g → In (⊤ : Ideal F.B) (frob p F.s f - g) → map (algebraMap F.B F.Q) a = defect μ' p f → map (algebraMap F.B F.Q) b = defect μ' p g → c.ev 1 (map F.θ b) - c.ev 1 (map F.θ a) ^ p ∈ Ideal.span (algebraMap O (G.A 1) '' {o | ¬IsUnit o}) := by

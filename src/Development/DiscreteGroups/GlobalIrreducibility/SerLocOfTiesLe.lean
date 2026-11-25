@@ -7,8 +7,6 @@ import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.InjPrimeTo
 
 @[expose] public section
 
-noncomputable section
-
 namespace DiscreteGroups.sglob.DzType.Rt
 
 open Polynomial GlobalTheory.GLq GlobalTheory.GLp GlobalTheory.GLp.Supp Formalism.BasicNotions Formalism.MainNotions.N Formalism.MainNotions.ArithmeticCylinders GlobalTheory.TypeLeaf GlobalTheory.SerSys GlobalTheory.SerSys.Bridge
@@ -27,5 +25,3 @@ theorem labParamLe_of (D : D7) (L : ∀ k, LabelDatum (D.host.g k)) (rc : Corr D
     (labelsCusp _ _ _) ⟨n, π⟩ hn hπ.1 hπ.2 f hf
 
 end DiscreteGroups.sglob.DzType.Rt
-
-end

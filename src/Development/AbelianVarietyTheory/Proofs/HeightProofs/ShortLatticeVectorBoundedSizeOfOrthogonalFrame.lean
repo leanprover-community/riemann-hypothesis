@@ -95,15 +95,8 @@ theorem exists_imaginary (E : Type) [Field E] [NumberField E] [IsCMField E] :
 theorem size_sum_le {E : Type} [Field E] [NumberField E] [IsCMField E]
     {V : Type} [AddCommGroup V] [Module E V] {h : V →ₗ[E] V →ₗ⋆[E] E} {Λ : Submodule ℤ V} {N : ℤ}
     {ν : V → ℝ} {B : ℝ} (H : Sized h Λ N ν B) {ι : Type} (s : Finset ι) (f : ι → V) :
-    ν (∑ i ∈ s, f i) ≤ ∑ i ∈ s, ν (f i) := by
-  classical
-  induction s using Finset.induction_on with
-  | empty =>
-    have := H.smul_le 0 0
-    simpa [house] using this
-  | insert i s hi ih =>
-    rw [Finset.sum_insert hi, Finset.sum_insert hi]
-    exact (H.add_le _ _).trans (by linarith)
+    ν (∑ i ∈ s, f i) ≤ ∑ i ∈ s, ν (f i) :=
+  Finset.le_sum_of_subadditive ν (by simpa [house] using H.smul_le 0 0) H.add_le s f
 
 theorem shortSmall (E : Type) [Field E] [NumberField E] [IsCMField E] (hfr : FrameSmall E) : ShortSmall E := by
   classical

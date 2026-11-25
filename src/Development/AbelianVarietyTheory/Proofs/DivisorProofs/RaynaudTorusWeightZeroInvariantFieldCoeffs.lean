@@ -246,7 +246,7 @@ theorem isWt_coeff : ∀ (R : Type) [CommRing R] [IsDomain R] (Q : DegPre R) (O 
       refine Finset.sum_congr rfl fun i _ => ?_
       rw [map_mul, ← GlobalTheory.ZH.CrdCalc.valR_eq _ _ hb, ← GlobalTheory.ZH.CrdCalc.valR_eq _ _ hb, rsT, dite_eq_left hle', valR_res _ _ hb]
     have t := hδ α V' hle f hf S φ x x' c _ _ rfl rfl m m' hq hc
-    have td := fun i => GlobalTheory.T.isRaynaudTorusWeightFunction_invariantField Y (v i) (dd i) (hd i) α _ f hf S φ x x' c _ _ rfl rfl m m' hq hc
+    have td := fun i => GlobalTheory.Heat.IsInv.isWt Y (v i) (dd i) (hd i) α _ f hf S φ x x' c _ _ rfl rfl m m' hq hc
     rw [ev _ m, ev _ m', Finset.mul_sum] at t
     simp only [sub_mul, Finset.sum_sub_distrib]
     refine sub_eq_zero.2 (t.trans (Finset.sum_congr rfl fun i _ => ?_))

@@ -140,10 +140,6 @@ open scoped ComplexOrder
 
 namespace GlobalTheory.GaussHerm
 
-lemma finrank_V (n : ℕ) : Module.finrank ℝ (V n) = 2 * n := by
-  rw [← Module.finrank_mul_finrank ℝ ℂ (V n), Complex.finrank_real_complex, finrank_euclideanSpace,
-    Fintype.card_fin]
-
 lemma det_toEuclideanLin {n : ℕ} (C : Matrix (Fin n) (Fin n) ℂ) :
     LinearMap.det (Matrix.toEuclideanLin C) = C.det := by
   have : Matrix.toEuclideanLin C = Matrix.toLin (EuclideanSpace.basisFun (Fin n) ℂ).toBasis
@@ -205,7 +201,7 @@ theorem integral_exp_neg_herm : ∀ (n : ℕ) (H : Matrix (Fin n) (Fin n) ℂ), 
   have hmap := Measure.map_linearMap_addHaar_eq_smul_addHaar (volume : Measure (V n)) (f := L)
     (by rw [hdetL]; exact hpos.ne')
   have hG : ∫ v : V n, g v = Real.pi ^ n := by
-    rw [hg, GaussianFourier.integral_rexp_neg_mul_sq_norm one_pos, finrank_V, div_one]
+    rw [hg, GaussianFourier.integral_rexp_neg_mul_sq_norm one_pos, ReciprocityTheory.L2DbarEstimates.C.finrank_V, div_one]
     rw [show ((2 * n : ℕ) : ℝ) / 2 = (n : ℝ) by push_cast; ring, Real.rpow_natCast]
   have hgc : Continuous g := by rw [hg]; fun_prop
   have hI : ∫ w : V n, g (L w) = Real.pi ^ n / H.det.re := by

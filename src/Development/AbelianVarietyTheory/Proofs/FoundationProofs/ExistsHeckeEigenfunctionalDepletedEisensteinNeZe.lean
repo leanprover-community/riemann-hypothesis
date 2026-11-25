@@ -57,15 +57,8 @@ open scoped MatrixGroups Real ComplexConjugate Manifold ModularForm
 
 namespace GlobalTheory.DepletedValue
 
-lemma isUnit_of_isCoprime {n : ℕ} {d : ℤ} (h : IsCoprime d (n : ℤ)) : IsUnit (d : ZMod n) := by
-  obtain ⟨u, v, huv⟩ := h
-  have h1 := congrArg (Int.cast : ℤ → ZMod n) huv
-  push_cast at h1
-  simp only [ZMod.natCast_self, mul_zero, add_zero] at h1
-  exact isUnit_iff_exists_inv.mpr ⟨_, by rw [mul_comm]; exact h1⟩
-
 lemma ch_ne_zero {n : ℕ} (χ : DirichletCharacter ℂ n) {d : ℤ} (h : IsCoprime d (n : ℤ)) : ch χ d ≠ 0 :=
-  ((isUnit_of_isCoprime h).map χ).ne_zero
+  ((GlobalTheory.EisM.ZEdge.isUnit_of_isCoprime h).map χ).ne_zero
 
 lemma ch_inv {n : ℕ} (χ : DirichletCharacter ℂ n) (d : ℤ) : ch χ⁻¹ d = (ch χ d)⁻¹ :=
   MulChar.inv_apply_eq_inv' _ _
@@ -74,7 +67,7 @@ lemma ch_mul {n : ℕ} (θ χ : DirichletCharacter ℂ n) (d : ℤ) : ch (θ * �
   simp [ch]
 
 lemma ch_one {n : ℕ} {d : ℤ} (h : IsCoprime d (n : ℤ)) : ch (1 : DirichletCharacter ℂ n) d = 1 :=
-  MulChar.one_apply (isUnit_of_isCoprime h)
+  MulChar.one_apply (GlobalTheory.EisM.ZEdge.isUnit_of_isCoprime h)
 
 lemma ch_dvd {l : ℕ} (hl : l.Prime) (ψ : DirichletCharacter ℂ l) {d : ℤ} (h : (l : ℤ) ∣ d) : ch ψ d = 0 := by
   haveI : Fact l.Prime := ⟨hl⟩
@@ -1145,13 +1138,6 @@ noncomputable section
 
 namespace GlobalTheory.EisM
 
-theorem zv_unit_of_isCoprime {L : ℕ} {d : ℤ} (h : IsCoprime d (L : ℤ)) : IsUnit (d : ZMod L) := by
-  obtain ⟨u, v, huv⟩ := h
-  have h1 := congrArg (Int.cast : ℤ → ZMod L) huv
-  push_cast at h1
-  rw [ZMod.natCast_self, mul_zero, add_zero] at h1
-  exact isUnit_iff_exists_inv.mpr ⟨_, (mul_comm _ _).trans h1⟩
-
 theorem zv_apply_ne_zero {L : ℕ} (χ : DirichletCharacter ℂ L) {x : ZMod L} (hx : IsUnit x) : χ x ≠ 0 := by
   obtain ⟨u, rfl⟩ := hx
   intro h
@@ -1248,7 +1234,7 @@ theorem eigF_value_ne_zero : ∀ (l : ℕ) [Fact l.Prime] (ι : PadicAlgCl l ≃
   obtain ⟨c₁, hE, hlat⟩ := _root_.GlobalTheory.EisForm.eis_latF_mf (e + 1) (N * l) 1 (fun _ => 1) (ch φ⁻¹) (fun _ => 1) φ (by omega) hNl one_pos
     hat0 (fun _ => rfl)
     (fun d hd => by
-      have hu : IsUnit (d : ZMod (N * l)) := _root_.GlobalTheory.DepletedValue.isUnit_of_isCoprime (by simpa using hd)
+      have hu : IsUnit (d : ZMod (N * l)) := _root_.GlobalTheory.EisM.ZEdge.isUnit_of_isCoprime (by simpa using hd)
       refine ⟨fun y => ?_, fun x => by ring⟩
       unfold ch
       rw [map_mul, ← mul_assoc, mul_comm (φ⁻¹ _), mul_assoc, zv_inv_mul φ hu, mul_one])
@@ -1270,15 +1256,15 @@ theorem eigF_value_ne_zero : ∀ (l : ℕ) [Fact l.Prime] (ι : PadicAlgCl l ≃
     have h1 := (_root_.GlobalTheory.EisM.mul_main).2 e (e + 1) (N * l) _ _ FF E hFF hE'
     rw [show e + (e + 1) = 2 * e + 1 by ring] at h1
     refine (_root_.GlobalTheory.EisM.mf_linear (2 * e + 1) (N * l) _).2.2.2.1 _ _ (fun d hd => ?_) h1
-    have hu : IsUnit (d : ZMod (N * l)) := zv_unit_of_isCoprime hd
+    have hu : IsUnit (d : ZMod (N * l)) := GlobalTheory.EisM.ZEdge.isUnit_of_isCoprime hd
     have hd' : IsCoprime d (N : ℤ) := by
       have : IsCoprime d ((N : ℤ) * (l : ℤ)) := by simpa using hd
       exact this.of_mul_right_left
     have hd'' : IsCoprime d (l : ℤ) := by
       have : IsCoprime d ((N : ℤ) * (l : ℤ)) := by simpa using hd
       exact this.of_mul_right_right
-    have uN := _root_.GlobalTheory.DepletedValue.isUnit_of_isCoprime hd'
-    have ul := _root_.GlobalTheory.DepletedValue.isUnit_of_isCoprime hd''
+    have uN := _root_.GlobalTheory.EisM.ZEdge.isUnit_of_isCoprime hd'
+    have ul := _root_.GlobalTheory.EisM.ZEdge.isUnit_of_isCoprime hd''
     have e1 := hφ d
     unfold ch at e1 ⊢
     rw [MulChar.mul_apply] at e1

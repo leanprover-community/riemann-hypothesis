@@ -30,16 +30,6 @@ namespace GlobalTheory.Cyc.LogClass
 
 variable {l : ℕ} [Fact l.Prime]
 
-theorem ks_le_kinf (K : FinExt l) (s : ℕ) : Ks K s ≤ Kinf K :=
-  by
-    apply sup_le_sup_left _ _
-    apply IntermediateField.adjoin.mono
-    intro x hx
-    exact ⟨s, hx⟩
-
-theorem hinf_le_gj (K : FinExt l) (s : ℕ) : Hinf K ≤ Gj K s :=
-  IntermediateField.fixingSubgroup_antitone (ks_le_kinf K s)
-
 theorem act_inC {act : GQ l →* (PadicComplex l ≃+* PadicComplex l)} (ha : IsActC act)
     {F : IntermediateField ℚ_[l] (Om l)} {g : GQ l} (hg : g ∈ F.fixingSubgroup)
     {y : PadicComplex l} (hy : y ∈ inC F) : act g y = y := by
@@ -329,7 +319,7 @@ theorem coeff_eq_zero {act : GQ l →* (PadicComplex l ≃+* PadicComplex l)} {�
   obtain ⟨n, hn⟩ := exists_scale b
   have hO : (l : PadicComplex l) ^ n * b ∈ Ohat K := by
     refine (_root_.GlobalTheory.CycInvariants.fixed_iff_mem_Ohat l act ha K _ hn).1 fun h hh => ?_
-    have := hb h (hinf_le_gj K s hh)
+    have := hb h (GlobalTheory.Cyc.AlmostTrace.Hinf_le_Gj K s hh)
     rw [logC_hinf hχ K hh, zero_mul, eq_comm, sub_eq_zero] at this
     rw [map_mul, map_pow, map_natCast, this]
   obtain ⟨y, hy, x, hx, hyx⟩ := T1a _ hO

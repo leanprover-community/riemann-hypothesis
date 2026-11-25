@@ -43,16 +43,9 @@ theorem hermite_gram_minkowski {n : ℕ} (hn : 1 ≤ n) (G : Matrix (Fin n) (Fin
     rw [hGB, Matrix.mul_apply, PiLp.inner_apply]
     refine Finset.sum_congr rfl fun k _ => ?_
     simp [a, mul_comm]
-  have hli : LinearIndependent ℝ a := by
-    rw [Fintype.linearIndependent_iff]
-    intro c hc
-    have hz : B *ᵥ c = 0 := by
-      funext k
-      have := congrArg (fun w : EuclideanSpace ℝ (Fin n) => w k) hc
-      simpa [a, Matrix.mulVec, dotProduct, mul_comm] using this
-    have := Matrix.eq_zero_of_mulVec_eq_zero hdB hz
-    intro i
-    exact congrFun this i
+  have hli : LinearIndependent ℝ a :=
+    (linearIndependent_col_iff_isUnit.2 (B.isUnit_iff_isUnit_det.2 (isUnit_iff_ne_zero.2 hdB))).map'
+      (WithLp.linearEquiv 2 ℝ (Fin n → ℝ)).symm.toLinearMap (LinearEquiv.ker _)
   have hne : Nonempty (Fin n) := ⟨⟨0, hn⟩⟩
   have hcard : Fintype.card (Fin n) = Module.finrank ℝ (EuclideanSpace ℝ (Fin n)) := by simp
   let bb : Module.Basis (Fin n) ℝ (EuclideanSpace ℝ (Fin n)) := basisOfLinearIndependentOfCardEqFinrank hli hcard

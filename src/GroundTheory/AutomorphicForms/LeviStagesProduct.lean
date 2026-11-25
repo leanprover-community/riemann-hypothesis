@@ -195,12 +195,8 @@ variable {F : Type*} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchi
 def glReindex {ι κ : Type*} [Fintype ι] [DecidableEq ι] [Fintype κ] [DecidableEq κ]
     (e : ι ≃ κ) : GL ι F ≃ₜ* GL κ F where
   toMulEquiv := Units.mapEquiv (reindexAlgEquiv F F e).toMulEquiv
-  continuous_toFun := Units.continuous_iff.2
-    ⟨continuous_matrix fun i j => Units.continuous_val.matrix_elem (e.symm i) (e.symm j),
-      continuous_matrix fun i j => Units.continuous_coe_inv.matrix_elem (e.symm i) (e.symm j)⟩
-  continuous_invFun := Units.continuous_iff.2
-    ⟨continuous_matrix fun i j => Units.continuous_val.matrix_elem (e i) (e j),
-      continuous_matrix fun i j => Units.continuous_coe_inv.matrix_elem (e i) (e j)⟩
+  continuous_toFun := Continuous.units_map _ (continuous_id.matrix_reindex e e)
+  continuous_invFun := Continuous.units_map _ (continuous_id.matrix_reindex e.symm e.symm)
 
 variable {n : ℕ} {α : Type*} [LinearOrder α] (β : Fin n → α)
 

@@ -205,34 +205,31 @@ section Cub
 
 variable {A U : Type} [CommGroup A] [CommGroup U]
 
-def cob (h : A → U) (x x' y : A) : U :=
-  h (x * x' * y) * (h (x * x'))⁻¹ * (h (x * y))⁻¹ * (h (x' * y))⁻¹ * h x * h x' * h y * (h 1)⁻¹
-
-theorem isCub_cob (h : A → U) : IsCub (cob h) := by
+theorem isCub_cob (h : A → U) : IsCub (GlobalTheory.PrimNorm.diff₃ h) := by
   constructor
   case face =>
     intro x y
-    simp only [cob, _root_.one_mul]
+    simp only [GlobalTheory.PrimNorm.diff₃, _root_.one_mul]
     apply Additive.ofMul.injective
     simp only [ofMul_mul, ofMul_inv, ofMul_one]
     abel
   case s01 =>
     intro x y z
-    simp only [cob]
+    simp only [GlobalTheory.PrimNorm.diff₃]
     rw [mul_comm x y]
     apply Additive.ofMul.injective
     simp only [ofMul_mul, ofMul_inv]
     abel
   case s12 =>
     intro x y z
-    simp only [cob]
+    simp only [GlobalTheory.PrimNorm.diff₃]
     rw [mul_right_comm x y z, mul_comm z y]
     apply Additive.ofMul.injective
     simp only [ofMul_mul, ofMul_inv]
     abel
   case coc =>
     intro x x' x'' y
-    simp only [cob]
+    simp only [GlobalTheory.PrimNorm.diff₃]
     rw [_root_.mul_assoc x x' x'', _root_.mul_assoc x x' y, _root_.mul_assoc x' x'' y]
     apply Additive.ofMul.injective
     simp only [ofMul_mul, ofMul_inv]
@@ -331,7 +328,7 @@ theorem exists_tau_local (M : RigLB B) (cub : CubicalStr B M) {X : Type} [AddCom
           val (tau a b) (𝟙 _) z J * val (tau a' b) (𝟙 _) z J) := by
   obtain ⟨jj, hjj⟩ := exists_chart_all M
   have hlam : ∀ x x' y : 𝟙_ (Over (Sp R)) ⟶ B, ∃ w : Γ((𝟙_ (Over (Sp R))).left, ⊤)ˣ, ∀ z J, Good M.L z J →
-      cubV cub z J x x' y = gm (𝟙 _) z ⊤ w * cob (fun p : 𝟙_ (Over (Sp R)) ⟶ B => trH M.L jj z J p.left) x x' y := by
+      cubV cub z J x x' y = gm (𝟙 _) z ⊤ w * GlobalTheory.PrimNorm.diff₃ (fun p : 𝟙_ (Over (Sp R)) ⟶ B => trH M.L jj z J p.left) x x' y := by
     intro x x' y
     obtain ⟨w, hw⟩ := val_eq_trH jj hjj (t := LB.pullGen M.L (thφ B (x3 B)) thε cub.t (lift x (lift x' y)).left)
       (DVR.pullGen_isGen _ _ _ _ cub.isGen (lift x (lift x' y)).left)
@@ -347,7 +344,7 @@ theorem exists_tau_local (M : RigLB B) (cub : CubicalStr B M) {X : Type} [AddCom
       (fun p => gm (𝟙 (𝟙_ (Over (Sp R))).left) p.1.1 ⊤) (fun u u' h => eq_of_gm M.isLB fun z J hJ => by
         exact h ⟨(z, J), hJ⟩) fun p => ?_
     have e : (fun x x' y => gm (𝟙 _) p.1.1 ⊤ (lam x x' y)) = fun x x' y => cubV cub p.1.1 p.1.2 x x' y *
-        (cob (fun q : 𝟙_ (Over (Sp R)) ⟶ B => trH M.L jj p.1.1 p.1.2 q.left) x x' y)⁻¹ := by
+        (GlobalTheory.PrimNorm.diff₃ (fun q : 𝟙_ (Over (Sp R)) ⟶ B => trH M.L jj p.1.1 p.1.2 q.left) x x' y)⁻¹ := by
       funext x x' y
       rw [hlam x x' y p.1.1 p.1.2 p.2, mul_inv_cancel_right]
     rw [e]
@@ -380,7 +377,7 @@ theorem exists_tau_local (M : RigLB B) (cub : CubicalStr B M) {X : Type} [AddCom
   · rw [key _ _ z J hJ, key _ _ z J hJ, key _ _ z J hJ, hlam _ _ _ z J hJ, c_add]
     have e := congrArg Additive.ofMul (congrArg (gm (𝟙 (𝟙_ (Over (Sp R))).left) z ⊤) (hmua a a' b))
     simp only [map_mul] at e
-    simp only [cob]
+    simp only [GlobalTheory.PrimNorm.diff₃]
     apply Additive.ofMul.injective
     simp only [ofMul_mul, ofMul_inv] at e ⊢
     linear_combination (norm := abel) e

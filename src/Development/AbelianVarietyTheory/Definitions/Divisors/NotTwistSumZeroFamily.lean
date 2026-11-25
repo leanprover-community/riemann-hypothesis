@@ -16,8 +16,6 @@ open scoped CategoryTheory.Obj
 open ReciprocityTheory.AnForm.R GlobalTheory.ZH GlobalTheory.Poinc GlobalTheory.Poinc.Sep
 open GlobalTheory.UT ReciprocityTheory.ChartRestriction.G.DVR
 
-noncomputable section
-
 namespace GlobalTheory.GSep.TwistModel
 
 variable {I : Type} {X₁ : GSet} {z₁ : X₁.M.Z} {act : I → (X₁.ρ.P.A ⟶ X₁.ρ.P.A)}

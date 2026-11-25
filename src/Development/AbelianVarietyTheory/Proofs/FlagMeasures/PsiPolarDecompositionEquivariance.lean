@@ -49,8 +49,6 @@ import Development.AbelianVarietyTheory.Proofs.FlagMeasures.PsiRestrictionHolomo
 open Matrix Formalism.MainNotions.S Formalism.REAL Formalism.QuantumDeterminants
 open scoped ComplexOrder
 
-noncomputable section
-
 namespace GlobalTheory.Dec.PsiPolarProof
 
 variable {n : ℕ}

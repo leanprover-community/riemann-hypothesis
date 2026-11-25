@@ -176,13 +176,8 @@ lemma dblInt_eq (e : PowerSeries ℂ) : C.dblInt e = B.prim (B.prim e) := by
   · simp
   · simp
   · have h1 : ((n : ℂ) + 1 + 1) ≠ 0 := by
-      have : ((n + 2 : ℕ) : ℂ) ≠ 0 := Nat.cast_ne_zero.mpr (by omega)
-      push_cast at this
-      intro h; apply this; linear_combination h
-    have h2 : ((n : ℂ) + 1) ≠ 0 := by
-      have : ((n + 1 : ℕ) : ℂ) ≠ 0 := Nat.cast_ne_zero.mpr (by omega)
-      push_cast at this
-      exact this
+      rw [← Nat.cast_add_one]; exact Nat.cast_add_one_ne_zero (n + 1)
+    have h2 : ((n : ℂ) + 1) ≠ 0 := Nat.cast_add_one_ne_zero n
     simp
     field_simp
 

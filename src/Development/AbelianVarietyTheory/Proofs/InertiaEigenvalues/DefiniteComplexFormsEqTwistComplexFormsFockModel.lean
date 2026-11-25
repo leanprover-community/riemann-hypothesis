@@ -237,7 +237,7 @@ theorem _root_.GlobalTheory.T.definiteComplexForms_eq_twistComplexForms_fockMode
         Bridge.ratF (Vc D j) γ * h * (k : Bridge.Gf (Vc D j))) (fun γ => (γ : GA D (Vc D j)))
       (fun k => (((baseOf Z c w j).levLam (twVia Z.ρ ι) k : ℂˣ) : ℂ)) hlaw F
     refine Iff.trans ?_ (key.trans (Base.mem_formsC _).symm)
-    exact ⟨fun ⟨x, hx⟩ => ⟨x, fun h => congrFun hx h⟩, fun ⟨x, hx⟩ => ⟨x, funext hx⟩⟩
+    exact ⟨Exists.imp fun x hx h => congrFun hx h, Exists.imp fun x hx => funext hx⟩
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DefiniteComplexFormsEqTwistComplexFormsFockModel =====

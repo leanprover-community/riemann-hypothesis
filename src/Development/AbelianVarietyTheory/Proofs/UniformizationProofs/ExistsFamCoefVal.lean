@@ -62,7 +62,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped CategoryTheory.Obj
 open GlobalTheory.UT
 
-noncomputable section
 namespace GlobalTheory.UT.CoefUnit
 open GlobalTheory.UT.CoefBasic
 
@@ -200,4 +199,3 @@ theorem exists_fam_coef_val : LL → TwistBCSpanStatement → TWM.VRatioGtStatem
       AddValuation.map_mul, hζ, vc, hx, ← WithTop.coe_add, ← WithTop.coe_add, zero_add, add_assoc]
 
 end GlobalTheory.UT.CoefUnit
-end

@@ -317,7 +317,6 @@ def LocAut.naut {L : NLay0 R H what₂ LL0} {X : LocNd L} (Y : LocAut X) : NAut 
 
 structure LocBC {L : NLay0 R H what₂ LL0} {X : LocNd L} (Y : LocAut X) where
   embAV : ∀ i, Y.naut.AV i → L.nbc.AU (X.nd.j i)
-  embAV_inj : ∀ i, Function.Injective (embAV i)
   embAV_loc : ∀ i (P : Y.naut.AV i) w, Y.naut.locV i P w = L.nbc.locAU (X.nd.j i) (embAV i P) w
   embAV_sat : ∀ i (P : Y.naut.AV i) w, Y.naut.satV i P w = L.nbc.satAU (X.nd.j i) (embAV i P) w
   embAV_sph : ∀ i (P : Y.naut.AV i) w, ¬ IsSplitPl H w → L.nbc.sphAU (X.nd.j i) (embAV i P) w
@@ -326,7 +325,6 @@ structure LocBC {L : NLay0 R H what₂ LL0} {X : LocNd L} (Y : LocAut X) where
 def LocBC.nbc {L : NLay0 R H what₂ LL0} {X : LocNd L} {Y : LocAut X} (C : LocBC Y) : NBC Y.naut :=
   { L.nbc with
     embAV := C.embAV
-    embAV_inj := C.embAV_inj
     embAV_loc := C.embAV_loc
     embAV_sat := C.embAV_sat
     embAV_sph := C.embAV_sph
@@ -334,8 +332,6 @@ def LocBC.nbc {L : NLay0 R H what₂ LL0} {X : LocNd L} {Y : LocAut X} (C : LocB
 
 structure LocTy {L : NLay0 R H what₂ LL0} {X : LocNd L} (Y : LocAut X) where
   bc : what₂.FT → Multiset (ℕ × ℕ)
-  bc_pos : ∀ σ, ∀ p ∈ bc σ, 0 < p.1 ∧ 0 < p.2
-  bc_sum : ∀ σ, ((bc σ).map (fun p => p.1 * p.2)).sum = R.r
   rbar : what₂.FT → ∀ w : what₂.places.Pl,
     G H.E X.nd.Om →* GL (Fin R.r) (Fb (what₂.places.resChar w) (what₂.places.resChar_prime w))
   rbar_open : ∀ σ w, IsOpen ((rbar σ w).ker : Set (G H.E X.nd.Om))
@@ -355,8 +351,6 @@ structure LocTy {L : NLay0 R H what₂ LL0} {X : LocNd L} (Y : LocAut X) where
 def LocTy.ntypes {L : NLay0 R H what₂ LL0} {X : LocNd L} {Y : LocAut X} (Z : LocTy Y) : NTypes Y.naut :=
   { L.ntypes with
     bc := Z.bc
-    bc_pos := Z.bc_pos
-    bc_sum := Z.bc_sum
     rbar := Z.rbar
     rbar_open := Z.rbar_open
     heckeLoc_gamma_places := Z.heckeLoc_gamma_places

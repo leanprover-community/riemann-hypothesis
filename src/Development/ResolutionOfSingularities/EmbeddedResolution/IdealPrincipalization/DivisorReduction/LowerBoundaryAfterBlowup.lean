@@ -17,8 +17,6 @@ universe u
 
 open CategoryTheory AlgebraicGeometry TopologicalSpace
 
-noncomputable section
-
 namespace FunctorialResolution.EmbeddedResolution
 
 namespace DivisorReductionBoundary
@@ -189,5 +187,3 @@ theorem inStrictNormalCrossingPosition_comap_lowerBoundaryAfterBlowup (T : Marke
 end DivisorReductionBoundary
 
 end FunctorialResolution.EmbeddedResolution
-
-end

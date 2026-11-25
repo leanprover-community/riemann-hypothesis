@@ -79,7 +79,6 @@ def Mv.all {C : NChoice D} (a : NAllC D C) : NAllC m.D (m.ch C) := @_root_.Globa
         (cls := (by with_unfolding_all exact (a.gal.au.cls :)))
         (surj := (by with_unfolding_all exact (a.gal.au.surj :)))
         (iso := (by with_unfolding_all exact (a.gal.au.iso :)))
-        (mult := (by with_unfolding_all exact (a.gal.au.mult :)))
         (sph := (by with_unfolding_all exact (a.gal.au.sph :)))
         (sat := (by with_unfolding_all exact (a.gal.au.sat :)))
         (clsWt := (by with_unfolding_all exact (a.gal.au.clsWt :)))

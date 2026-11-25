@@ -6,8 +6,6 @@ public import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 
-noncomputable section
-
 namespace LateralTheory.KummerTheory.PlaceZornPf
 
 variable {k K : Type} [Field k] [Field K] [Algebra k K]

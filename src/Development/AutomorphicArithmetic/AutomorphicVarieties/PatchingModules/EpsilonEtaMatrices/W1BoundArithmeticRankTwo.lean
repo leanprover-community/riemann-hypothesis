@@ -866,13 +866,6 @@ section -- clump:auto
 
 open Matrix Filter NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal UpperTheory.V.Alg UpperTheory.V.W UpperTheory.V.Pa
 
-private def ddBaseCompRingHom (X : Type) [CommRing X] (g : ℕ) : DD X g →+* X where
-  toFun := DD.a
-  map_one' := rfl
-  map_zero' := rfl
-  map_add' _ _ := rfl
-  map_mul' _ _ := rfl
-
 private theorem sandwich_map_smul {R X : Type} [CommRing R] [CommRing X] {n : ℕ} (α : R → X) (φ : R →+ X)
     (c : R) (P Z Q : Matrix (Fin n) (Fin n) R) (h : ∀ i j u, φ (u * Z i j) = α u * φ (Z i j))
     (hα : ∀ u v, α (u * v) = α u * α v) :
@@ -886,8 +879,8 @@ private theorem sandwich_map_smul {R X : Type} [CommRing R] [CommRing X] {n : �
   ring
 
 private theorem rho1_map_ddBaseCompRingHom_eq_mat {l : ℕ} [Fact l.Prime] {F : GFrame l} {n : ℕ} {x : NP F n} (k : Kap x) (g : F.G₀) :
-    (k.ρ1 x.A g).map (ddBaseCompRingHom x.A k.g) = mat x.ρ g := by
-  have h1 : (1 + DD.epM fun j => (k.κ j g).map (algebraMap x.A x.A)).map (ddBaseCompRingHom x.A k.g) = 1 := by
+    (k.ρ1 x.A g).map (ddBaseRingHom x.A k.g) = mat x.ρ g := by
+  have h1 : (1 + DD.epM fun j => (k.κ j g).map (algebraMap x.A x.A)).map (ddBaseRingHom x.A k.g) = 1 := by
     rw [Matrix.map_add _ (map_add _), Matrix.map_one _ (map_zero _) (map_one _)]
     exact add_eq_left.2 (Matrix.ext fun _ _ => rfl)
   rw [Kap.ρ1, Matrix.map_mul, h1, one_mul]
@@ -910,7 +903,7 @@ private theorem site_vector_first {l : ℕ} [Fact l.Prime] {F : GFrame l} {n : �
     intro φ hφ
     have : Z.map φ = 0 := by
       refine h4 _ fun g hg => ?_
-      have e := sandwich_map_smul (ddBaseCompRingHom x.A k.g) φ (epsD k x.A g) (k.ρ1 x.A g) Z (k.ρ1 x.A g⁻¹) hφ (map_mul _)
+      have e := sandwich_map_smul (ddBaseRingHom x.A k.g) φ (epsD k x.A g) (k.ρ1 x.A g) Z (k.ρ1 x.A g⁻¹) hφ (map_mul _)
       rw [hZ g hg, rho1_map_ddBaseCompRingHom_eq_mat, rho1_map_ddBaseCompRingHom_eq_mat] at e
       conv_rhs => rw [e]
       rw [smul_mul_assoc, mul_assoc, ← map_mul, inv_mul_cancel, map_one, mul_one]

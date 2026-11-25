@@ -124,14 +124,8 @@ theorem finiteTest_add {v : HeightOneSpectrum (𝓞 K)} (x : v.adicCompletion K)
           hxh]
       rw [χ.finiteTest_eq_zero_of_dvd hv hx, χ.finiteTest_eq_zero_of_dvd hv hxh]
   · rw [multiplicity_eq_zero_of_not_dvd hv, Nat.cast_zero, neg_zero, exp_zero] at hh
-    have hiff : Valued.v (x + h) ≤ 1 ↔ Valued.v x ≤ 1 := by
-      constructor
-      · intro hxh
-        have : x = (x + h) + (-h) := by ring
-        rw [this]
-        exact (Valuation.map_add _ _ _).trans (max_le hxh (by rw [Valuation.map_neg]; exact hh))
-      · intro hx
-        exact (Valuation.map_add _ _ _).trans (max_le hx hh)
+    have hiff : Valued.v (x + h) ≤ 1 ↔ Valued.v x ≤ 1 :=
+      add_mem_cancel_right (H := (Valued.v (R := v.adicCompletion K)).integer) hh
     unfold finiteTest
     simp only [ite_eq_right hv, hiff]
 

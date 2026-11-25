@@ -789,15 +789,6 @@ section -- clump:auto
 
 open GlobalTheory.K5
 
-namespace GlobalTheory.K5.OrthDecomp
-
-theorem orth : ∀ (p : ℕ) [Fact p.Prime] (Ω : Type) [Field Ω] [Algebra (O0 p) Ω], IsClo p Ω →
-    ∀ (T : Tower p Ω) (N : ℕ) (c : ℕ → Ω), (∀ j, ∀ g ∈ Ggeo (p := p) Ω, g (c j) = c j) →
-      IsInt (p := p) (∑ j ∈ Finset.range (p ^ N), c j * T.qq N ^ j) →
-        ∀ j < p ^ N, IsInt (p := p) (c j) :=
-  GlobalTheory.K5.Orth.orth
-
-end GlobalTheory.K5.OrthDecomp
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsIntegralCoeffsOfGeometricFixedQExpansion =====
@@ -874,7 +865,6 @@ theorem exists_mult (T : Tower p Ω) (N j : ℕ) (hj0 : 0 < j) (hjN : j < p ^ N)
 
 end GlobalTheory.K5.Decomp
 
-
 open GlobalTheory.K5.Decomp in
 theorem GlobalTheory.K5.Decomp.decomp : ∀ (p : ℕ) [Fact p.Prime], p ≠ 2 → ∀ (Ω : Type) [Field Ω] [Algebra (O0 p) Ω], IsClo p Ω →
   ∀ (T : Tower p Ω) (τ : Gal p Ω), τ ∈ Ggeo p Ω → (∀ n, τ (T.qq n) = T.ζ n * T.qq n) →
@@ -884,7 +874,7 @@ theorem GlobalTheory.K5.Decomp.decomp : ∀ (p : ℕ) [Fact p.Prime], p ≠ 2 �
     (T.ζ 1 - 1) * y = (T.ζ 1 - 1) * o + (τ w - w) := by
   intro p _ _ Ω _ _ hΩ T τ hτ hτq N y hy hfix
   obtain ⟨c, hc, rfl⟩ := _root_.GlobalTheory.K5.span_fixed_ggeo_stab p Ω hΩ T N y hfix
-  have hci := _root_.GlobalTheory.K5.OrthDecomp.orth p Ω hΩ T N c hc hy
+  have hci := _root_.GlobalTheory.K5.Orth.orth p Ω hΩ T N c hc hy
   have hpos : 0 < p ^ N := pow_pos (Fact.out : p.Prime).pos N
   have hs : ∀ j, ∃ s : Ω, IsInt (p := p) s ∧ (∀ g ∈ Ggeo p Ω, g s = s) ∧
       (0 < j → j < p ^ N → s * (T.ζ N ^ j - 1) = T.ζ 1 - 1) := by

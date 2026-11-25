@@ -13,7 +13,6 @@ public import Development.AbelianVarietyTheory.Definitions.Divisors.GalMapMul
 public import Mathlib.RingTheory.Polynomial.Cyclotomic.Roots
 @[expose] public section
 
-noncomputable section
 open CategoryTheory Limits AlgebraicGeometry Opposite GlobalTheory.EtC LateralTheory.EtaleFoundations
 
 namespace LateralTheory.CohomologicalPurity.LeafAWCutTw

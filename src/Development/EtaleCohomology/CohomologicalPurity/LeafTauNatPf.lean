@@ -4,7 +4,6 @@ public import Development.EtaleCohomology.CohomologicalPurity.LeafThomCut
 
 @[expose] public section
 
-noncomputable section
 open CategoryTheory Limits AlgebraicGeometry Opposite GlobalTheory.EtC
 
 namespace LateralTheory.CohomologicalPurity.Thom

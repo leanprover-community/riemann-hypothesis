@@ -10,8 +10,6 @@ import Mathlib.RingTheory.SimpleRing.Principal
 open HeckeCharacterZeroLocus.SiegelWeilU GlobalTheory.CompanionTheory.SW GlobalTheory.CompanionTheory.SW.PiLocalization₂ NumberField IsDedekindDomain MeasureTheory Topology
 open scoped TensorProduct ENNReal NNReal Matrix
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.SW.StageValue
 
 section Alg

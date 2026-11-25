@@ -709,11 +709,11 @@ theorem UpperTheory.Gal.GamX.splitSuppOf :
     UpperTheory.Gal.GamX.SplitSuppOf := by
   unfold UpperTheory.Gal.GamX.SplitSuppOf
   intro hNm hSF hWS hSS K L _ _ _ _ _ _ _ _ hp n hn π P hW v w hw
-  haveI : w.1.asIdeal.LiesOver v.asIdeal := w.2
+  have : w.1.asIdeal.LiesOver v.asIdeal := w.2
   rcases GlobalTheory.CharLiftStep.cycAt_or_split hp v w.1 with hc | ⟨he, hf⟩
   · exfalso
     refine hw fun u => ?_
-    haveI : u.1.asIdeal.LiesOver v.asIdeal := u.2
+    have : u.1.asIdeal.LiesOver v.asIdeal := u.2
     have hu : u.1.under (𝓞 K) = v :=
       HeightOneSpectrum.ext (Ideal.LiesOver.over (P := u.1.asIdeal) (p := v.asIdeal)).symm
     obtain ⟨-, -, -, h⟩ := hc
@@ -727,8 +727,8 @@ theorem UpperTheory.Gal.GamX.splitSuppOf :
     · rw [hNm K L v w]
       exact MonoidHom.ext fun y => Units.ext (hN y)
     · rintro s s' ⟨τ, hτ, h⟩ ⟨τ', hτ', h'⟩
-      haveI : Fact (Module.finrank K L).Prime := ⟨hp⟩
-      haveI : IsCyclic (L ≃ₐ[K] L) := isCyclic_of_prime_card (IsGalois.card_aut_eq_finrank K L)
+      have : Fact (Module.finrank K L).Prime := ⟨hp⟩
+      have : IsCyclic (L ≃ₐ[K] L) := isCyclic_of_prime_card (IsGalois.card_aut_eq_finrank K L)
       obtain ⟨σ, hσ⟩ := IsCyclic.exists_generator (α := L ≃ₐ[K] L)
       have hW' : WeakBC (UpperTheory.CBC.Cusp.cx π).sat (UpperTheory.CBC.Cusp.cx P).sat := hW
       obtain ⟨e, he'⟩ := hSS K L σ hσ hp n hn π P (hWS K L hp n hn π P hW').1 hW' v w.1 i hi hcomp τ τ' hτ hτ'

@@ -12,7 +12,6 @@ open AlgebraicGeometry CategoryTheory Limits MvPolynomial TopologicalSpace
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open GlobalTheory.ProjSpace GlobalTheory.QCoh.Qcqs GlobalTheory.Cartier GlobalTheory.ProjFrac
 
-noncomputable section
 namespace GlobalTheory.ZM.ProjCoord
 variable {R : Type} [CommRing R] {N : ℕ} {A : Type} [CommRing A] {Y : Scheme.{0}}
 

@@ -16,8 +16,6 @@ import Mathlib.RingTheory.SimpleRing.Principal
 open HeckeCharacterZeroLocus.SiegelWeilU GlobalTheory.CompanionTheory.SW NumberField IsDedekindDomain MeasureTheory Topology
 open scoped TensorProduct ENNReal NNReal Matrix
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.SW.PfK
 
 

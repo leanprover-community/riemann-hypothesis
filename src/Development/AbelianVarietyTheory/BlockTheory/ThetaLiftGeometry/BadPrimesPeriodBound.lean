@@ -72,8 +72,10 @@ def SizeAt (D : D7) (i : Fin 2) : Prop :=
     ∀ u : D.what₂.Word, ∀ j ∈ LiftErrorLocal.lifts D,
       2 * LiftErrorLocal.Dpi D u j + 2 < (D.host.g i : ℝ) ∧ LiftErrorLocal.Dpi D u j + (D.R.N D.R.m : ℝ) < (D.host.g i : ℝ)
 
-def TwistTie {D : D7} (Dx : DivX D) (μ : D.what₂.Tup) (ξ : Twist D) : Prop :=
-  ((Dx.Qp μ : Set ℕ) = QprimeN (ξ : Chr (recFields D).F (recFields D).E (recFields D).K)) ∧ (μ = D.what₂.mu0 → ξ = 1)
+def TwistTie {D : D7} {S : Set ℕ} (Dx : DivX D) (μ : D.what₂.Tup)
+    (ξ : Tup (recFields D).F (recFields D).E (recFields D).K S) : Prop :=
+  ((Dx.Qp μ : Set ℕ) = QprimeN (ξ : Chr (recFields D).F (recFields D).E (recFields D).K)) ∧
+    (μ = D.what₂.mu0 → (ξ : Chr (recFields D).F (recFields D).E (recFields D).K) = 1)
 
 
 open Classical in
@@ -88,15 +90,15 @@ section Ties
 variable {D : D7} {EX : ErrX D} (Ch : Chars (recFields D) (recPrimes EX) D.R.m)
   (sel : HeightOneSpectrum (𝓞 D.host.F) → HeightOneSpectrum (𝓞 D.host.E))
 
-def FieldTie (A : Amb (recFields D)) (ξ : Twist D) (cst : LocCst (recFields D) (rowSG (recPrimes EX) sel ξ))
-    (u : D.what₂.Word) : Prop :=
+def FieldTie (A : Amb (recFields D)) {S : Set ℕ} (ξ : Tup (recFields D).F (recFields D).E (recFields D).K S)
+    (cst : LocCst (recFields D) (rowSG (recPrimes EX) sel ξ)) (u : D.what₂.Word) : Prop :=
   ∀ i < D.R.m, JetsRatDeg A (D.R.N i) (D.R.N (i + 1)) (Sall (Pr := recPrimes EX) sel ξ u)
     (cAof sel ξ cst * cBof sel ξ cst u) (fun τ => ∑ a, ((recWts EX).nuW u (i + 1) τ).w a)
 
 def ColTie (u : D.what₂.Word) (eM : (D.div.Nu u).V ≃ₗ[D.what₂.LL] MramV (recWts EX) Ch u) : Prop :=
   ∀ x, x ∈ DV.MramL D u ↔ eM x ∈ Formalism.L2.Col.MramL (recWts EX) Ch u
 
-def RowTie (μ : D.what₂.Tup) (ξ : Twist D)
+def RowTie (μ : D.what₂.Tup) {S : Set ℕ} (ξ : Tup (recFields D).F (recFields D).E (recFields D).K S)
     (jA : MtildeV (recWts EX) Ch sel ξ (rPsymF Ch) →ₛₗ[D.what₂.embLL] D.what₂.Amb μ) : Prop :=
   (∀ s : Finset (MtildeV (recWts EX) Ch sel ξ (rPsymF Ch)),
       LinearIndependent D.what₂.LL (fun x : s => (x : MtildeV (recWts EX) Ch sel ξ (rPsymF Ch))) →
@@ -106,7 +108,7 @@ def RowTie (μ : D.what₂.Tup) (ξ : Twist D)
     ∀ x, x ∈ MtildeL (recWts EX) Ch sel ξ (rPsymF Ch) ↔ ∃ c : D.what₂.Amb μ → 𝓞 D.what₂.LL,
       jA x = ∑ v ∈ (D.what₂.Mtilde μ).gen, D.what₂.embLL ((c v : 𝓞 D.what₂.LL) : D.what₂.LL) • v
 
-def PerTie (u : D.what₂.Word) (μ : D.what₂.Tup) (ξ : Twist D)
+def PerTie (u : D.what₂.Word) (μ : D.what₂.Tup) {S : Set ℕ} (ξ : Tup (recFields D).F (recFields D).E (recFields D).K S)
     (hP : (mtildeGSD (recWts EX) Ch sel ξ (rPsymF Ch)).Ok)
     (col : MfV (recWts EX) Ch u →ₗ[D.what₂.LL] (evGSD (recWts EX) Ch sel ξ (rPsymF Ch) u).EqFun)
     (eM : (D.div.Nu u).V ≃ₗ[D.what₂.LL] MramV (recWts EX) Ch u)
@@ -116,7 +118,8 @@ def PerTie (u : D.what₂.Word) (μ : D.what₂.Tup) (ξ : Twist D)
 
 def ChainTie (Dx : DivX D) (mu0 : Fin D.R.m → Formalism.L2.Host.HChar D.host.E) (A : Amb (recFields D))
     (u : D.what₂.Word) (μ : D.what₂.Tup) : Prop :=
-  ∃ (ξ : Twist D) (cst : LocCst (recFields D) (rowSG (recPrimes EX) sel ξ))
+  ∃ (S : Set ℕ) (_ : badS D ⊆ S) (ξ : Tup (recFields D).F (recFields D).E (recFields D).K S)
+    (cst : LocCst (recFields D) (rowSG (recPrimes EX) sel ξ))
     (I : ChIdx (recFields D) (recPrimes EX) D.R (QE sel (ξ : Chr (recFields D).F (recFields D).E (recFields D).K)))
     (hI : I.Ok Ch sel ξ cst (recGlob D mu0) (D.R.m - 2))
     (b : I.β (D.R.m - 2 + 1)) (hY : YbHyp (R := D.R) sel ξ cst I u (D.R.m - 2) b)

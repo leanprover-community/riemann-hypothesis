@@ -5,5 +5,4 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsCh
 
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
 open CategoryTheory AlgebraicGeometry TensorProduct GlobalTheory.LogCris DividedPowers CrystallineSemistableComparison CrystallineSemistableComparison.Pb

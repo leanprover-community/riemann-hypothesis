@@ -52,15 +52,9 @@ lemma nthRoots_eq (q : ℕ) [NeZero q] :
 
 lemma primRoots_eq (q : ℕ) [NeZero q] :
     primitiveRoots q ℂ = ((Finset.range q).filter (fun a => Nat.Coprime a q)).image (fun a => μc q ^ a) := by
-  have hμ := μc_prim q
   ext z
-  rw [mem_primitiveRoots (NeZero.pos q), Finset.mem_image]
-  constructor
-  · intro hz
-    obtain ⟨i, hi, rfl⟩ := hμ.eq_pow_of_pow_eq_one hz.pow_eq_one
-    exact ⟨i, Finset.mem_filter.2 ⟨Finset.mem_range.2 hi, (hμ.pow_iff_coprime (NeZero.pos q) i).1 hz⟩, rfl⟩
-  · rintro ⟨a, ha, rfl⟩
-    exact hμ.pow_of_coprime a (Finset.mem_filter.1 ha).2
+  rw [mem_primitiveRoots (NeZero.pos q), (μc_prim q).isPrimitiveRoot_iff, Finset.mem_image]
+  simp only [Finset.mem_filter, Finset.mem_range, and_assoc]
 
 lemma injOn (q : ℕ) [NeZero q] (s : Finset ℕ) (hs : s ⊆ Finset.range q) :
     Set.InjOn (fun a => μc q ^ a) s := by

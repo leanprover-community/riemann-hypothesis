@@ -257,10 +257,7 @@ theorem coeff_subst_pow {σ : Type} [Fintype σ] (w : σ → ℕ) (hw : ∀ s, 1
   have key : ∀ (S : Finset σ) (g : σ → ℕ),
       ∏ s ∈ S, (X s : MvPowerSeries σ R) ^ g s = monomial (∑ s ∈ S, Finsupp.single s (g s)) 1 := by
     intro S g
-    induction S using Finset.induction_on with
-    | empty => simp
-    | insert a S ha ih =>
-      rw [Finset.prod_insert ha, Finset.sum_insert ha, ih, X_pow_eq, monomial_mul_monomial, mul_one]
+    simp only [X_pow_eq, MvPowerSeries.prod_monomial, Finset.prod_const_one]
   have hs : HasSubst (fun s => (X s : MvPowerSeries σ R) ^ w s) :=
     hasSubst_of_constantCoeff_zero (fun s => by
       simp [zero_pow (show w s ≠ 0 by have := hw s; omega)])

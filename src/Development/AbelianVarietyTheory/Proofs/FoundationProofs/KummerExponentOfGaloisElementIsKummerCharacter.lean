@@ -47,8 +47,6 @@ import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
-noncomputable section
-
 open Polynomial IntermediateField
 
 namespace GlobalTheory.NeedB.KumLemma

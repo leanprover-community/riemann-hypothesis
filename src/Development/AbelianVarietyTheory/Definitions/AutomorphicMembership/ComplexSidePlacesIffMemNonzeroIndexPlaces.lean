@@ -5,8 +5,6 @@ import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.ValBasic
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH NumberField IsDedekindDomain Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.IndefR Formalism.IndefR.Links
   Formalism.IndefR.Cx GlobalTheory.Mem.Col2
 
@@ -79,5 +77,3 @@ end Dat
 end Record
 
 end GlobalTheory.Mem.R3
-
-end

@@ -22,16 +22,12 @@ namespace FrameImplicitGraph
 
 variable {n : ℕ}
 
-def polyDeriv (p : MvPolynomial (Fin n) ℂ) (x : EuclideanSpace ℂ (Fin n)) :
-    EuclideanSpace ℂ (Fin n) →L[ℂ] ℂ :=
-  ∑ l, eval (fun i => x i) (pderiv l p) • EuclideanSpace.proj l
-
 theorem polyDeriv_apply (p : MvPolynomial (Fin n) ℂ) (x v : EuclideanSpace ℂ (Fin n)) :
-    polyDeriv p x v = ∑ l, eval (fun i => x i) (pderiv l p) * v l := by
-  simp [polyDeriv]
+    UpperTheory.Reformulated.B.Qi29.polyDeriv p x v = ∑ l, eval (fun i => x i) (pderiv l p) * v l := by
+  simp [UpperTheory.Reformulated.B.Qi29.polyDeriv]
 
 theorem hasStrictFDerivAt_eval (p : MvPolynomial (Fin n) ℂ) (x : EuclideanSpace ℂ (Fin n)) :
-    HasStrictFDerivAt (fun y : EuclideanSpace ℂ (Fin n) => eval (fun i => y i) p) (polyDeriv p x) x :=
+    HasStrictFDerivAt (fun y : EuclideanSpace ℂ (Fin n) => eval (fun i => y i) p) (UpperTheory.Reformulated.B.Qi29.polyDeriv p x) x :=
   _root_.UpperTheory.Reformulated.B.Qi29.hasStrictFDerivAt_eval p x
 
 def projCLM (b : OrthonormalBasis (Fin n) ℂ (EuclideanSpace ℂ (Fin n))) (I : Finset (Fin n)) :
@@ -46,7 +42,7 @@ def phi (b : OrthonormalBasis (Fin n) ℂ (EuclideanSpace ℂ (Fin n))) (I : Fin
 def phiDeriv (b : OrthonormalBasis (Fin n) ℂ (EuclideanSpace ℂ (Fin n))) (I : Finset (Fin n))
     (f : {j // j ∉ I} → MvPolynomial (Fin n) ℂ) (x : EuclideanSpace ℂ (Fin n)) :
     EuclideanSpace ℂ (Fin n) →L[ℂ] (I → ℂ) × ({j // j ∉ I} → ℂ) :=
-  (projCLM b I).prod (ContinuousLinearMap.pi fun k => polyDeriv (f k) x)
+  (projCLM b I).prod (ContinuousLinearMap.pi fun k => UpperTheory.Reformulated.B.Qi29.polyDeriv (f k) x)
 
 theorem hasStrictFDerivAt_phi (b : OrthonormalBasis (Fin n) ℂ (EuclideanSpace ℂ (Fin n)))
     (I : Finset (Fin n)) (f : {j // j ∉ I} → MvPolynomial (Fin n) ℂ) (x : EuclideanSpace ℂ (Fin n)) :

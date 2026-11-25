@@ -45,10 +45,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal IsLocalRing UpperTheory.V UpperTheory.V.Base UpperTheory.V.Alg UpperTheory.V.HV UpperTheory.V.GradeZeroInterpolatingElement
 
-private theorem teich_not_lt {Ω : Type} [Field Ω] (A : ValuationSubring Ω) {l N : ℕ} (h : l.Coprime N)
-    (hl : A.valuation (l : Ω) < 1) : ¬ A.valuation (N : Ω) < 1 := by
-  apply _root_.not_both <;> assumption
-
 theorem UpperTheory.V.Lev.teichDvd :
     ∀ {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] {l : ℕ} [Fact l.Prime] {c : Coef l} (D : Raw Ω c), D.Good → ∀ N : ℕ, 1 ≤ N → Af.KillsMu N D.om → l ∣ N := by
   intro Ω _ _ _ l _ c D hD N hN hK
@@ -56,7 +52,7 @@ theorem UpperTheory.V.Lev.teichDvd :
   have hp : l.Prime := Fact.out
   have hcop : l.Coprime N := (Nat.Prime.coprime_iff_not_dvd hp).mpr hnd
   have hl := hD.pl_over l hp
-  have hNA := teich_not_lt (D.pl l) hcop hl
+  have hNA := _root_.not_both (D.pl l) hcop hl
   have hNz : NeZero N := ⟨by omega⟩
   have hIne := (Chr.clsFacts ℚ Ω N).2.2.2.2 (D.pl l) hNA
   obtain ⟨σ, hσ, hcyc⟩ := GlobalTheory.CycInertia.cycZ_Ine_surjective Ω l (D.pl l) hl (-1)

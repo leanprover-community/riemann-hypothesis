@@ -64,13 +64,6 @@ open Formalism.L2.Col NumberField IsDedekindDomain
 
 namespace GlobalTheory
 
-theorem colRoots_mem_of_mem_divs {A : Type} [CommRing A] [IsDedekindDomain A] {a : A}
-    {P : HeightOneSpectrum A} (h : P ∈ divs a) : a ∈ P.asIdeal := by
-  unfold divs at h
-  split_ifs at h with hfin
-  · exact (Set.Finite.mem_toFinset hfin).mp h
-  · exact absurd h (Finset.notMem_empty P)
-
 theorem colRoots_exists_primitiveRoots (X : Fields) (Pr : Primes X) (m : ℕ) (Ch : Chars X Pr m)
     (hf : 0 < X.f) (hP : Pr.Ok) (hC : Ch.Ok) (i : Fin 2) :
     (∃ ζ : X.K, IsPrimitiveRoot ζ (Pr.g i)) ∧ ∃ ζ : X.K, IsPrimitiveRoot ζ (Pr.g i - 1) := by
@@ -83,7 +76,7 @@ theorem colRoots_exists_primitiveRoots (X : Fields) (Pr : Primes X) (m : ℕ) (C
       fin_cases i
       · exact Or.inl hw
       · exact Or.inr hw
-    have hconj : X.conjO (Pr.piG i) ∈ w.asIdeal := colRoots_mem_of_mem_divs hw
+    have hconj : X.conjO (Pr.piG i) ∈ w.asIdeal := Formalism.L2.Col.decoFin_mem_of_mem_divs hw
     have hg : ((Pr.g i : ℕ) : 𝓞 X.E) ∈ w.asIdeal := by
       rw [← hP.piG_norm i]
       exact w.asIdeal.mul_mem_left _ hconj

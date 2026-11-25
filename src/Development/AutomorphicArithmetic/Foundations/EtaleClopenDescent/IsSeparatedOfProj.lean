@@ -99,8 +99,8 @@ theorem isSeparated_of_hom {Z Y : Scheme.{0}} [Z.IsSeparated] (c : Y ⟶ Z) [IsS
 attribute [local instance] MvPolynomial.gradedAlgebra in
 theorem isSeparated_of_proj {Z : Scheme.{0}} (p : Z ⟶ Sp ℂ) (hP : IsProjOver p) : Z.IsSeparated := by
   obtain ⟨N, i, hi, -⟩ := hP
-  haveI := hi
-  haveI : (PSpace ℂ N).IsSeparated := isSeparated_of_hom (Proj.toSpecZero (MvPolynomial.homogeneousSubmodule (Fin (N + 1)) ℂ))
+  have := hi
+  have : (PSpace ℂ N).IsSeparated := isSeparated_of_hom (Proj.toSpecZero (MvPolynomial.homogeneousSubmodule (Fin (N + 1)) ℂ))
   exact isSeparated_of_hom i
 
 theorem isAffineOpen_join {Z Y : Scheme.{0}} [Y.IsSeparated] {ι : Type} (c1 c2 : Y ⟶ Z) [IsFinite c1] [IsFinite c2]
@@ -124,8 +124,8 @@ theorem isAffCover_join {Z Y : Scheme.{0}} [IsIntegral Z] [IsIntegral Y] (p : Z 
     (B : Finset ι → Subalgebra ℂ Z.functionField) (hU : IsAffCover p U B) :
     IsAffCover p' (joinCover c1 c2 U) fun I => ringOn p' hL (I.inf (joinCover c1 c2 U))
       (generic_mem_inf _ (generic_mem_join c1 c2 U fun i => by simpa using hU.ne {i}) I) := by
-  haveI := isSeparated_of_proj p hP
-  haveI : Y.IsSeparated := isSeparated_of_hom c1
+  have := isSeparated_of_proj p hP
+  have : Y.IsSeparated := isSeparated_of_hom c1
   refine ⟨by subst hL; rfl, fun I hI => ?_, ?_, fun I => generic_mem_inf _ (generic_mem_join c1 c2 U fun i => by simpa using hU.ne {i}) I, fun I _ y => Iff.rfl⟩
   · exact isAffineOpen_join c1 c2 U (fun i => by simpa using hU.affine {i} ⟨i, by simp⟩) I hI
   · refine top_le_iff.1 fun x _ => ?_

@@ -12,7 +12,6 @@ open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCate
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.DVR
 open scoped CategoryTheory.Obj
 open GlobalTheory.UT
-noncomputable section
 namespace GlobalTheory.UT.ClModel
 
 theorem galois_all : AllU fun {_} _ _ {_} {_} {_} {_} _ _ U => Cl.Galois U := by
@@ -28,4 +27,3 @@ theorem galois_all : AllU fun {_} _ _ {_} {_} {_} {_} _ _ U => Cl.Galois U := by
   all_goals exact σ.commutes _
 
 end GlobalTheory.UT.ClModel
-end

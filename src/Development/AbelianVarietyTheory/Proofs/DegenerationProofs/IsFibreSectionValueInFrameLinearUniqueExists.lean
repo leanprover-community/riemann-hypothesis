@@ -51,8 +51,6 @@ open Classical
 open ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.DVR GlobalTheory.UT
 open GlobalTheory.TestFibre
 
-noncomputable section
-
 namespace GlobalTheory.TestFibre.CombValue
 
 open GlobalTheory.UT.CoefBasic
@@ -104,4 +102,3 @@ theorem valIs_linear : Laws → ∀ (R : Type) [CommRing R] [IsDomain R] (A : Po
       fun _ _ _ h h' => valIs_unique h h', fun he t => exists_valIs hL he t⟩
 
 end GlobalTheory.TestFibre.CombValue
-end

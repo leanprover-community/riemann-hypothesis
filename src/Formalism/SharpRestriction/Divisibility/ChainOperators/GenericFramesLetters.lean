@@ -7,7 +7,6 @@ public import Formalism.PeriodIntegrals.NablaSpans.MinorProdSpanHasCompl
 public import Formalism.GradedWeylDivisibility.StatementA
 public import Mathlib.Combinatorics.Young.YoungDiagram
 public import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
-public import Formalism.PeriodIntegrals.MinorSpanCompl
 public import Formalism.GradedWeylDivisibility.FinalC
 public import Formalism.GradedWeylDivisibility.FinalD
 public import Formalism.PeriodIntegrals.NablaSpans.ExpansionCoeffValuationGe
@@ -15,6 +14,30 @@ public import Formalism.SharpRestriction.Divisibility.OrbitPlaces
 import Mathlib.Tactic.TypeStar
 import Formalism.GradedWeylDivisibility.FockSpaceTableaux.BideterminantMem
 import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
+public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
+
+@[expose] public section
+
+noncomputable section
+
+namespace PI
+
+def minorX (R : Type) [CommRing R] (N p : ℕ) (I : Fin p ↪o Fin N) : MvPolynomial (ℕ × Fin N) R :=
+  Matrix.det (Matrix.of fun i k : Fin p => MvPolynomial.X ((i : ℕ), I k))
+
+def nablaSpan (R : Type) [CommRing R] (N : ℕ) (nu : YoungDiagram) :
+    Submodule R (MvPolynomial (ℕ × Fin N) R) :=
+  Submodule.span R (Set.range fun I : ∀ c : Fin (nu.rowLen 0), Fin (nu.colLen c) ↪o Fin N =>
+    ∏ c : Fin (nu.rowLen 0), minorX R N (nu.colLen c) (I c))
+
+def MinorSpanCompl : Prop :=
+  ∀ (R : Type) [CommRing R] (N : ℕ) (nu : YoungDiagram),
+    ∃ Cm : Submodule R (MvPolynomial (ℕ × Fin N) R), IsCompl (nablaSpan R N nu) Cm
+
+end PI
+end
+end
+
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.PeriodIntegrals.UnitaryGroupMassFormula.MonomialFrameSpan.BasisMonomialsApply, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.MonomialFrameSpan.GenFrameSBOf, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.MonomialFrameSpan.SatFin, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.MonomialFrameSpan.SatProj, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.MonomialFrameSpan.StepBack, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.MonomialFrameSpan.GenFrameSBOfSpan, Formalism.PeriodIntegrals.OrbitalBoundsConclusion.GenFrameSB, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.MinorSpanComplement.ShapeColumnDegreeColumnSizes, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.MinorSpanComplement.ExistsCoeffNeZeroOfMemSpan, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.MinorSpanComplement.RenameInitMinor, Formalism.SharpRestriction.Divisibility.ChainOperators.WeightFramesOfSubgroupFrames, Formalism.SharpRestriction.Divisibility.ChainOperators.GenericFramesLetters

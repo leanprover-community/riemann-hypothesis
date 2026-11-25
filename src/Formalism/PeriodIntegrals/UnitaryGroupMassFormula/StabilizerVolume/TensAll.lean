@@ -30,10 +30,6 @@ export PI.VolStabSW.TensAllW (lip_field lip_pi)
 
 variable {F E : Type} [Field F] [Field E] [Algebra F E] {d : ℕ} (b : Module.Basis (Fin d) F E)
 
-def wMat (R : Type) [CommRing R] [Algebra F R] {a M : ℕ} (X : Fin a → Fin M → R ⊗[F] E) :
-    Matrix (Fin M × Fin d) (Fin a × Fin d) R :=
-  fun p q => crd b R (((1 : R) ⊗ₜ[F] b q.2) * X q.1 p.1) p.2
-
 export PI.VolStabSW.TensAllW (linIndep_iff)
 
 section Top

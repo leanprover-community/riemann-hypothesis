@@ -58,7 +58,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped CategoryTheory.Obj TensorProduct
 open GlobalTheory.ZM
 
-noncomputable section
 namespace GlobalTheory.EmbPull
 
 open ReciprocityTheory.ChartRestriction.G.Out VVRank TopologicalSpace
@@ -350,4 +349,3 @@ theorem emb_baseChange : Out.Laws2 → ∀ (o : Type) [CommRing o] (g N' : ℕ) 
   rwa [MonObj.comp_pow, ← Category.assoc, e] at this
 
 end GlobalTheory
-end

@@ -19,8 +19,6 @@ public import Mathlib.MeasureTheory.Integral.Bochner.ContinuousLinearMap
 
 @[expose] public section
 
-noncomputable section
-
 open MeasureTheory
 
 namespace CompanionTheory.RgDs.K

@@ -385,7 +385,7 @@ theorem isOfFinOrder_of_isom (h : V →ₗ⋆[E] V →ₗ[E] E) (hsymm : h.IsSym
     (hpos : ∀ x : V, x ≠ 0 → 0 < Algebra.trace ℚ E (h x x))
     {N : Submodule (𝓞 E) V} (hN : Submodule.IsFullLattice E N) {γ : V ≃ₗ[E] V}
     (hγ : γ ∈ HermitianLatticesTheory.isom h) (hγN : γ ∈ autLat N) : IsOfFinOrder γ := by
-  have hfin := Formalism.HermitianLatticesTheory.autFinite E V h hsymm hpos N hN
+  have hfin := Formalism.HermitianLatticesTheory.autFinite E V h hpos N hN
   have : Finite (HermitianLatticesTheory.isom h ⊓ autLat N : Subgroup (V ≃ₗ[E] V)) := hfin.to_subtype
   have h1 := isOfFinOrder_of_finite (⟨γ, hγ, hγN⟩ : (HermitianLatticesTheory.isom h ⊓ autLat N : Subgroup (V ≃ₗ[E] V)))
   exact Submonoid.isOfFinOrder_coe.mpr h1

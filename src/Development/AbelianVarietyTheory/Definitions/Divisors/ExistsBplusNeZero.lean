@@ -6,8 +6,6 @@ import Formalism.LocalRingCardinality.SpanPowerMembership.HaarDensityNeZero
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links
 open IsDedekindDomain NumberField MeasureTheory GlobalTheory.ChiGrid GlobalTheory.FunObj
 
@@ -57,5 +55,3 @@ theorem isAt_unique {M M' : Vol G} {X : Node} {K} (h : M.IsAt X K) (h' : M'.IsAt
 variable (W : G.Weil)
 
 end GlobalTheory.FunObjModel
-
-end

@@ -3,40 +3,6 @@ module
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.CuspidalDescent.GLDenseRanges.KirCusp
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.LinkedUnramifiedChains.AbsGood
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.LinkedUnramifiedChains.TeichmullerParts.UnramifiedTrivialInertialType
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 
 @[expose] public section
 
@@ -49,8 +15,6 @@ open UpperTheory.V.HV (Coef)
 open UpperTheory.V.Hi UpperTheory.V.Hi.CaseU
 open UpperTheory.V.Z.Mult (Cp At IsDec CompOf Mult)
 open scoped Matrix TensorProduct
-
-
 
 open UpperTheory.V.Z.J.D
 
@@ -112,7 +76,6 @@ section U
 variable {l : ℕ} [Fact l.Prime] {L Ω : Type} [Field L] [NumberField L] [IsCMField L] [Field Ω] [Algebra L Ω] [IsAlgClosure L Ω]
   {n : ℕ} {s : HidaSetting l L Ω} {V : s.Lev} {c : Coef l} {m : ℕ}
 
-
 variable (n s) in
 def sec0 : GLw n (s.w s.v0) →* Ga l L n := (secS n s).comp (MonoidHom.inr _ _)
 
@@ -173,7 +136,7 @@ def EigBoxE : Prop :=
   ∀ (L : Type) [Field L] [NumberField L] (n : ℕ) (V : Type) [Fintype V] (S : V → Plc L) (G H W W' X : Type) [Group G] [Group H]
     [AddCommGroup W] [Module ℂ W] [AddCommGroup W'] [Module ℂ W'] [AddCommGroup X] [Module ℂ X] (ρ : Representation ℂ (GV n S) W)
     (κ : Representation ℂ (G × H) W') (π : Representation ℂ (GV n S × (G × H)) X) (f : W ⊗[ℂ] W' →ₗ[ℂ] X), Function.Injective f →
-    Intw (box ρ κ) π f → ∀ (m : ℕ) (K₁ : Subgroup G) (K₂ : Subgroup H) (τ₀ : K₁ →* GL (Fin m) ℂ) (b : ℕ)
+    Intw (GlobalTheory.LGrp.extProd ρ κ) π f → ∀ (m : ℕ) (K₁ : Subgroup G) (K₂ : Subgroup H) (τ₀ : K₁ →* GL (Fin m) ℂ) (b : ℕ)
     (φ : ∀ v, Fin n → Uo ((S v).adicCompletion L) → ℂ) (μ : V → Fin n → ℂ) (a : H →₀ ℤ) (N : ℕ),
     Module.rank ℂ ↥(invE K₁ K₂ τ₀ (π.comp (MonoidHom.inr _ _)) a N ⊓ Submodule.pi Set.univ fun _ =>
       LinearMap.range f ⊓ eigL S (π.comp (MonoidHom.inl _ _)) b φ μ) = Module.rank ℂ (eigL S ρ b φ μ) * Module.rank ℂ (invE K₁ K₂ τ₀ κ a N)
@@ -181,7 +144,7 @@ def EigBoxE : Prop :=
 def InvBox : Prop :=
   ∀ (G H W W' : Type) [Group G] [Group H] [AddCommGroup W] [Module ℂ W] [AddCommGroup W'] [Module ℂ W'] (ρ : Representation ℂ G W)
     (κ : Representation ℂ H W') (m : ℕ) (K₁ : Subgroup G) (K₂ : Subgroup H) (τ₀ : K₁ →* GL (Fin m) ℂ) (a : H →₀ ℤ) (N : ℕ),
-    Module.rank ℂ (invE K₁ K₂ τ₀ (box ρ κ) a N) = Module.rank ℂ (inv1 K₁ τ₀ ρ) * Module.rank ℂ ↥(fixd κ K₂ ⊓ ePart κ a N)
+    Module.rank ℂ (invE K₁ K₂ τ₀ (GlobalTheory.LGrp.extProd ρ κ) a N) = Module.rank ℂ (inv1 K₁ τ₀ ρ) * Module.rank ℂ ↥(fixd κ K₂ ⊓ ePart κ a N)
 
 def InvEq1 : Prop :=
   ∀ (l : ℕ) [Fact l.Prime] (L Ω : Type) [Field L] [NumberField L] [IsCMField L] [Field Ω] [Algebra L Ω] [IsAlgClosure L Ω]

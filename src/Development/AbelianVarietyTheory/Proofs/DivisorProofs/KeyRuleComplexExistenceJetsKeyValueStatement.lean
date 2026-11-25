@@ -381,13 +381,6 @@ namespace GlobalTheory.MBLow.Cl.Ev
 
 variable {N : NumD ℂ} {g' r g : ℕ} {bX : Module.Basis (Fin r) ℤ N.X} (d : CD N g' r bX) (σ : Fin g ≃ Fin g' ⊕ Fin r)
 
-theorem half_int {k : ℕ} {a : Fin k → ℂ} (ha : Half a) (M : Fin k → ℤ) : ∃ n : ℤ, 2 * (a ⬝ᵥ cv M) = n := by
-  refine ⟨∑ i, if a i = 0 then 0 else M i, ?_⟩
-  simp only [dotProduct, cv, Finset.mul_sum]
-  push_cast
-  refine Finset.sum_congr rfl fun i _ => ?_
-  rcases ha i with h | h <;> simp [h]
-
 theorem half_aF : Half (d.aF σ) := fun j => by
   simp only [CD.aF]
   rcases σ j with i | l
@@ -533,8 +526,8 @@ theorem wQ_fr {m t : ℕ} (ht : m ^ 2 = 2 * t + 1) (M Nn : Fin g → ℤ) (p : N
     have h2 : tP σ (d.bF σ) = d.b2 := by funext i; simp [tP, CD.bF]
     rw [FJ.dot_split σ, h1, h2, Exp.leftComponent_intCast, Exp.secondBlock_intCast, ← hy, dotProduct_comm d.b2]
   obtain ⟨nL, hL⟩ := int_dot Nn M
-  obtain ⟨nA, hA⟩ := half_int (half_aF d σ) M
-  obtain ⟨nB, hB⟩ := half_int (half_bF d σ) Nn
+  obtain ⟨nA, hA⟩ := GlobalTheory.MBLow.Cl.MulFrame.exists_two_mul_dot (half_aF d σ) M
+  obtain ⟨nB, hB⟩ := GlobalTheory.MBLow.Cl.MulFrame.exists_two_mul_dot (half_bF d σ) Nn
   have hw : (m : ℂ) ^ 2 * ((m : ℂ) ^ 2)⁻¹ = 1 := mul_inv_cancel₀ (pow_ne_zero _ m0)
   have htc : (m : ℂ) ^ 2 = 2 * t + 1 := by exact_mod_cast ht
   simp only [← Complex.exp_add, ← Complex.exp_nat_mul, dotProduct_zero, mul_zero, sub_zero]
@@ -552,7 +545,6 @@ end GlobalTheory.MBLow.Cl.Ev
 end
 
 namespace GlobalTheory.MBLow.Cl
-
 
 open Ev in
 theorem evT_eq_term : AllCD fun {N} {g'} {r} {g} {bX} d σ => ∀ m : ℕ, Odd m → ∀ M Nn (p : N.QT (m ^ 2)),
@@ -715,7 +707,6 @@ noncomputable section
 
 namespace GlobalTheory.WeilStd
 
-
 open ReciprocityTheory.PTheta Matrix in
 theorem im_hermForm_per {g : ℕ} {τ : Matrix (Fin g) (Fin g) ℂ} (hτ : τ ∈ SiegelH (Fin g))
     (k k' : Fin g → ℤ) {Hm : Matrix (Fin g) (Fin g) ℂ} (hH : Hm.IsHermitian)
@@ -801,7 +792,6 @@ theorem im_hermForm_per {g : ℕ} {τ : Matrix (Fin g) (Fin g) ℂ} (hτ : τ �
 end GlobalTheory.WeilStd
 
 namespace GlobalTheory.WeilStd
-
 
 open GlobalTheory.NormalUnique in
 theorem weilIs_per : ∀ (x : KeyIn ℂ) (g : ℕ) (u : HolUnif x.P.A x.P.L g) (τ : Matrix (Fin g) (Fin g) ℂ) (a b : Fin g → ℂ) (c : ℂ),
@@ -1045,10 +1035,6 @@ def eu (z : ℂ) : ℂˣ := Units.mk0 (Complex.exp z) (Complex.exp_ne_zero z)
 theorem eu_add (z w : ℂ) : eu (z + w) = eu z * eu w := by
   ext; simp [eu, Complex.exp_add]
 
-theorem co_add {X : Type} [AddCommGroup X] {r : ℕ} (bX : Module.Basis (Fin r) ℤ X) (a b : X) :
-    co bX (a + b) = co bX a + co bX b := by
-  ext l; simp [co]
-
 theorem co_neg {X : Type} [AddCommGroup X] {r : ℕ} (bX : Module.Basis (Fin r) ℤ X) (a : X) :
     co bX (-a) = - co bX a := by
   ext l; simp [co]
@@ -1079,9 +1065,9 @@ theorem exists_quad {X : Type} [AddCommGroup X] {r : ℕ} (bX : Module.Basis (Fi
   have TQ : ∀ a b, T a b = eu (2 * Real.pi * Complex.I * (co bX a ⬝ᵥ t *ᵥ co bX b)) := by
     intro a b
     refine char_ext bX (fun a => T a b) (fun a => eu (2 * Real.pi * Complex.I * (co bX a ⬝ᵥ t *ᵥ co bX b)))
-      (fun _ _ => Tl _ _ _) (fun _ _ => by rw [co_add, add_dotProduct, mul_add, eu_add]) (fun l => ?_) a
+      (fun _ _ => Tl _ _ _) (fun _ _ => by rw [GlobalTheory.MBLow.Cl.JetGen.co_add, add_dotProduct, mul_add, eu_add]) (fun l => ?_) a
     refine char_ext bX (fun b => T (bX l) b) (fun b => eu (2 * Real.pi * Complex.I * (co bX (bX l) ⬝ᵥ t *ᵥ co bX b)))
-      (fun _ _ => Tr _ _ _) (fun _ _ => by rw [co_add, Matrix.mulVec_add, dotProduct_add, mul_add, eu_add])
+      (fun _ _ => Tr _ _ _) (fun _ _ => by rw [GlobalTheory.MBLow.Cl.JetGen.co_add, Matrix.mulVec_add, dotProduct_add, mul_add, eu_add])
       (fun l' => ?_) b
     ext
     have : Pi.single l 1 ⬝ᵥ t *ᵥ Pi.single l' 1 = t l l' := by simp
@@ -1095,7 +1081,7 @@ theorem exists_quad {X : Type} [AddCommGroup X] {r : ℕ} (bX : Module.Basis (Fi
     have h2 : (Real.pi * Complex.I * (co bX (a + b) ⬝ᵥ t *ᵥ co bX (a + b)) : ℂ) =
         2 * Real.pi * Complex.I * (co bX a ⬝ᵥ t *ᵥ co bX b) + Real.pi * Complex.I * (co bX a ⬝ᵥ t *ᵥ co bX a) +
           Real.pi * Complex.I * (co bX b ⬝ᵥ t *ᵥ co bX b) := by
-      rw [co_add, Matrix.mulVec_add, add_dotProduct, dotProduct_add, dotProduct_add, hs (co bX b) (co bX a)]
+      rw [GlobalTheory.MBLow.Cl.JetGen.co_add, Matrix.mulVec_add, add_dotProduct, dotProduct_add, dotProduct_add, hs (co bX b) (co bX a)]
       ring
     simp only [φ]
     rw [h1, h2, eu_add, eu_add, ← TQ, _root_.mul_assoc, _root_.mul_assoc, mul_div_mul_left_eq_div, div_mul_div_comm]
@@ -1115,7 +1101,7 @@ theorem exists_quad {X : Type} [AddCommGroup X] {r : ℕ} (bX : Module.Basis (Fi
   · simp only [b2]; split_ifs <;> simp
   · have : φ χ = eu (2 * Real.pi * Complex.I * (co bX χ ⬝ᵥ b2)) := by
       refine char_ext bX φ (fun χ => eu (2 * Real.pi * Complex.I * (co bX χ ⬝ᵥ b2))) φadd
-        (fun _ _ => by rw [co_add, add_dotProduct, mul_add, eu_add]) (fun l => ?_) χ
+        (fun _ _ => by rw [GlobalTheory.MBLow.Cl.JetGen.co_add, add_dotProduct, mul_add, eu_add]) (fun l => ?_) χ
       ext
       simp only [co_basis, single_dotProduct, _root_.one_mul, eu, Units.val_mk0, b2]
       split_ifs with h
@@ -1132,7 +1118,7 @@ theorem exists_cd (N : NumD ℂ) (g' r : ℕ) (bX : Module.Basis (Fin r) ℤ N.X
   choose z hz using fun l => e.onto (N.c (bX l))
   let t12 : Matrix (Fin g') (Fin r) ℂ := Matrix.of fun i l => z l i
   let w : N.X → Fin g' → ℂ := fun χ => t12 *ᵥ co bX χ
-  have wadd : ∀ a b, w (a + b) = w a + w b := fun a b => by simp only [w, co_add, Matrix.mulVec_add]
+  have wadd : ∀ a b, w (a + b) = w a + w b := fun a b => by simp only [w, GlobalTheory.MBLow.Cl.JetGen.co_add, Matrix.mulVec_add]
   have wneg : ∀ a, w (-a) = - w a := fun a => by simp only [w, co_neg, Matrix.mulVec_neg]
   have ceq : ∀ χ, N.c χ = e.ex (w χ) := by
     refine char_ext bX N.c (fun χ => e.ex (w χ)) N.c_add (fun a b => by rw [wadd, e.ex_add]) (fun l => ?_)
@@ -1469,7 +1455,6 @@ theorem exists_bound {S : Matrix (Fin r) (Fin r) ℂ} (hpos : ((d.full σ S).map
 
 end GlobalTheory.MBLow.Cl.FJD
 
-
 open GlobalTheory.MBLow.Cl.FJD in
 theorem GlobalTheory.MBLow.Cl.fj_expansion_fderiv : AllCD fun {N} {g'} {r} {g} {bX} d σ => ∀ S : Matrix (Fin r) (Fin r) ℂ, S.IsSymm → ((d.full σ S).map Complex.im).PosDef → (∀ χ, Differentiable ℂ (d.fj σ S χ)) ∧ ∀ Z W, (Summable fun χ => ‖fderiv ℂ (d.fj σ S χ) Z W‖) ∧ ∑' χ, fderiv ℂ (d.fj σ S χ) Z W = fderiv ℂ (thetaChar (d.full σ S) (d.aF σ) (d.bF σ)) Z W := by
   intro N g' r g bX d σ S hS hpos
@@ -1496,8 +1481,6 @@ open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.MBLow.Cl Matrix
 
-theorem _root_.GlobalTheory.T.thetaChar_blockPeriodMatrix_fourierJacobiExpansion : AllCD fun {N} {g'} {r} {g} {bX} d σ => ∀ S : Matrix (Fin r) (Fin r) ℂ, S.IsSymm → ((d.full σ S).map Complex.im).PosDef → ∀ Z, (Summable fun χ => ‖d.fj σ S χ Z‖) ∧ ∑' χ, d.fj σ S χ Z = thetaChar (d.full σ S) (d.aF σ) (d.bF σ) Z := by
-  first | exact @GlobalTheory.MBLow.Cl.fj_expansion
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.ThetaCharBlockPeriodMatrixFourierJacobiExpansionStatement =====
@@ -1550,9 +1533,9 @@ theorem termsum_half_bF {N : NumD ℂ} {g' r g : ℕ} {bX : Module.Basis (Fin r)
 
 theorem term_sum_and_fderiv : AllCD fun {N} {g'} {r} {g} {bX} d σ => ∀ S : Matrix (Fin r) (Fin r) ℂ, S.IsSymm → ((d.full σ S).map Complex.im).PosDef → ∀ (m : ℕ) (M Nn : Fin g → ℤ) (W : Fin g → ℂ), (Summable fun χ => ‖d.term σ S m M Nn χ 0‖) ∧ (Summable fun χ => ‖fderiv ℂ (d.term σ S m M Nn χ) 0 W‖) ∧ ∑' χ, d.term σ S m M Nn χ 0 = trF (d.full σ S) (d.aF σ) (d.bF σ) m M Nn 0 ∧ ∑' χ, fderiv ℂ (d.term σ S m M Nn χ) 0 W = fderiv ℂ (trF (d.full σ S) (d.aF σ) (d.bF σ) m M Nn) 0 W := by
   intro N g' r g bX d σ S hS hpos m M Nn W
-  have hθ := (GlobalTheory.T.thetaChar_differentiable_ne_zero_automorphy g _ _ _ (termsum_full_isSymm d σ S hS) hpos (termsum_half_aF d σ) (termsum_half_bF d σ)).1
+  have hθ := (GlobalTheory.MBLow.Cl.thetaChar_entire_ne_zero_automorphy g _ _ _ (termsum_full_isSymm d σ S hS) hpos (termsum_half_aF d σ) (termsum_half_bF d σ)).1
   set p := (m : ℂ)⁻¹ • perV (d.full σ S) M Nn with hp
-  obtain ⟨hs, he⟩ := GlobalTheory.T.thetaChar_blockPeriodMatrix_fourierJacobiExpansion N g' r g bX d σ S hS hpos p
+  obtain ⟨hs, he⟩ := GlobalTheory.MBLow.Cl.fj_expansion N g' r g bX d σ S hS hpos p
   obtain ⟨hd, hD⟩ := _root_.GlobalTheory.MBLow.Cl.fj_expansion_fderiv N g' r g bX d σ S hS hpos
   obtain ⟨hs', he'⟩ := hD p ((m : ℂ) • W)
   have hf := termsum_trFac_differentiable (d.full σ S) (d.aF σ) (d.bF σ) m M Nn

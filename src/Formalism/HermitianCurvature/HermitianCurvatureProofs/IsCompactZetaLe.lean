@@ -71,10 +71,6 @@ variable {k r : ℕ}
 theorem hpk_herm (k r : ℕ) : (Hpk k r)ᴴ = Hpk k r := by
   apply _root_.Formalism.FourierDecayAlt.P.Qx8.hpk_herm <;> assumption
 
-theorem inWb_add {x y : Fin (2 * r + k + 1) → ℂ} (hx : inWb k r x) (hy : inWb k r y) : inWb k r (x + y) := by
-  intro i hi
-  simp only [Pi.add_apply, hx i hi, hy i hi, add_zero]
-
 theorem inWb_sub {x y : Fin (2 * r + k + 1) → ℂ} (hx : inWb k r x) (hy : inWb k r y) : inWb k r (x - y) := by
   intro i hi
   simp only [Pi.sub_apply, hx i hi, hy i hi, sub_zero]
@@ -101,7 +97,7 @@ theorem norm_perp_le {b u v : Fin (2 * r + k + 1) → ℂ} (hb : inWb k r b) (hb
   have key : ∀ s : ℂ, s * star s = 1 →
       0 ≤ (herm H u u).re + (herm H v v).re + (star s * herm H u v + s * star (herm H u v)).re := by
     intro s hs
-    have hw : inWb k r (u + s • v) := inWb_add hu (inWb_smul s hv)
+    have hw : inWb k r (u + s • v) := _root_.Formalism.FourierDecayAlt.P.Qx8.inWb_add hu (inWb_smul s hv)
     have hwb : herm H (u + s • v) b = 0 := by rw [hb_add_left, hb_smul_left, hub, hvb]; ring
     have h0 := perp_nonneg hb hbn hw hwb
     rw [hb_expand, hvu, hs, one_mul] at h0
@@ -239,15 +235,6 @@ theorem glev_fix {g : Mx k r} (hg : g ∈ Glev k r (Fin.last r)) (q : Fin (2 * r
     rw [e]
     exact (hg.2 ⟨2 * r + k - q.val, hlt⟩ (by simp only [Fin.val_last]; exact hlt)).2
 
-theorem glev_wb {g : Mx k r} (hg : g ∈ Glev k r (Fin.last r)) {v : Fin (2 * r + k + 1) → ℂ} (hv : inWb k r v) :
-    inWb k r (g *ᵥ v) := by
-  intro i hi
-  have hp := hpk_outer (g *ᵥ v) i hi
-  have hp' := hpk_outer v i hi
-  have hout : (⟨2 * r + k - i.val, by omega⟩ : Fin (2 * r + k + 1)).val < r ∨
-      r + k < (⟨2 * r + k - i.val, by omega⟩ : Fin (2 * r + k + 1)).val := by simp only; omega
-  rw [← hp, ← gn_herm_bvec_right, ← glev_fix hg _ hout, hb_UH _ hg.1, gn_herm_bvec_right, hp', hv i hi]
-
 theorem bvec_wb (q : Fin (2 * r + k + 1)) (hq : r ≤ q.val ∧ q.val ≤ r + k) : inWb k r (bvec q) := by
   intro i hi
   have hne : i ≠ q := by
@@ -286,7 +273,7 @@ theorem norm_herm_gz_le (hz : inWb k r z) (hz' : inWb k r z') (hT : 0 < Tz k r z
     (p : Fin (2 * r + k + 1)) (hp : r ≤ p.val ∧ p.val ≤ r + k) :
     ‖herm (Hpk k r) (bvec p) (g *ᵥ z')‖ ≤ bz z z' p R := by
   have hzn : (herm (Hpk k r) z z).re < 0 := by unfold Tz at hT; linarith
-  have h := norm_herm_le (bvec_wb p hp) hz (glev_wb hg hz') hzn
+  have h := norm_herm_le (bvec_wb p hp) hz (_root_.Formalism.FourierDecayAlt.P.Qx8.inWb_mulVec hg hz') hzn
   rw [hb_UH _ hg.1] at h
   have hζ : herm (Hpk k r) (g *ᵥ z') z = zetaL k r z z' (Fin.last r) g := by
     simp only [zetaL, fvec_last]
@@ -313,12 +300,12 @@ theorem norm_entry_le (hz : inWb k r z) (hz' : inWb k r z') (hT : 0 < Tz k r z) 
     · simp [bvec, hpq]; linarith
   have hq' : r ≤ q.val ∧ q.val ≤ r + k := by omega
   by_cases hp : p.val < r ∨ r + k < p.val
-  · rw [glev_wb hg (bvec_wb q hq') p hp, norm_zero]; linarith
+  · rw [_root_.Formalism.FourierDecayAlt.P.Qx8.inWb_mulVec hg (bvec_wb q hq') p hp, norm_zero]; linarith
   have hp' : r ≤ p.val ∧ p.val ≤ r + k := by omega
   have hz'n : (herm (Hpk k r) (g *ᵥ z') (g *ᵥ z')).re < 0 := by
     rw [hb_UH _ hg.1]; unfold Tz at hT'; linarith
   rw [← norm_hpk_mid _ p hp', ← gn_herm_bvec_right]
-  have h := norm_herm_le (glev_wb hg (bvec_wb q hq')) (glev_wb hg hz') (bvec_wb p hp') hz'n
+  have h := norm_herm_le (_root_.Formalism.FourierDecayAlt.P.Qx8.inWb_mulVec hg (bvec_wb q hq')) (_root_.Formalism.FourierDecayAlt.P.Qx8.inWb_mulVec hg hz') (bvec_wb p hp') hz'n
   rw [hb_UH _ hg.1, hb_UH _ hg.1, hb_UH _ hg.1] at h
   have hb := norm_herm_gz_le z z' hz hz' hT hg R hR p hp'
   have hbabs : ‖herm (Hpk k r) (bvec p) (g *ᵥ z')‖ ≤ |bz z z' p R| := hb.trans (le_abs_self _)

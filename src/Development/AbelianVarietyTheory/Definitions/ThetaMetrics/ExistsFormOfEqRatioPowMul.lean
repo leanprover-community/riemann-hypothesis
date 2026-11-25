@@ -5,8 +5,6 @@ import Mathlib.Tactic.Linter.HaveILetI
 
 @[expose] public section
 
-noncomputable section
-
 open AlgebraicGeometry CategoryTheory TopologicalSpace Opposite MvPolynomial
 open ReciprocityTheory.ChartRestriction.G.Semi (LB res pullU)
 open ReciprocityTheory.ChartRestriction.G.Out (nonzeroLocus)

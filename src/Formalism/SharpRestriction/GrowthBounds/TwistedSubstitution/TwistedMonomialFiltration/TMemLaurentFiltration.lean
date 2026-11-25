@@ -17,16 +17,9 @@ abbrev vecDeg {ι : Type} {n : ℕ} (LL : Letters ι) (S : Set ι) (al : ι × F
 abbrev covDeg {ι : Type} {n : ℕ} (LL : Letters ι) (S : Set ι) (al : ι × Fin n →₀ ℕ) : ℕ :=
   Formalism.MainNotions.CovariantDegrees.covDeg LL S al
 
-abbrev flt_L (A : Type*) [CommRing A] (e : ℤ) :=
-  Formalism.MainNotions.G.GLWeightTheory.flt_L A e
-
 alias flt_L_mem := Formalism.MainNotions.G.GLWeightTheory.flt_L_mem
 alias flt_L_C := Formalism.MainNotions.G.GLWeightTheory.flt_L_C
 alias T_mem_laurentFiltration := Formalism.MainNotions.G.GLWeightTheory.T_mem_laurentFiltration
-
-abbrev flt_lift {B : Type*} [CommRing B] {σ : Type*}
-    (Fl : Formalism.MainNotions.G.GLWeightTheory.flt_Fil B) (wt : (σ →₀ ℕ) →+ ℤ) :=
-  Formalism.MainNotions.G.GLWeightTheory.flt_lift Fl wt
 
 alias flt_lift_mem := Formalism.MainNotions.G.GLWeightTheory.flt_lift_mem
 alias flt_monomial_mem := Formalism.MainNotions.G.GLWeightTheory.flt_monomial_mem

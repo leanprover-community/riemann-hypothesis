@@ -23,14 +23,9 @@ namespace LiftGraphMetric
 theorem pderiv_rename_of_not_mem_range {σ τ R : Type*} [CommSemiring R] {f : σ → τ} {t : τ}
     (ht : t ∉ Set.range f) (p : MvPolynomial σ R) : pderiv t (rename f p) = 0 := by
   classical
-  induction p using MvPolynomial.induction_on with
-  | C a => simp
-  | add p q hp hq => simp [hp, hq]
-  | mul_X p n hp =>
-    have hne : f n ≠ t := fun h => ht ⟨n, h⟩
-    simp only [map_mul, rename_X, Derivation.leibniz, hp, smul_eq_mul]
-    rw [pderiv_X, Pi.single_eq_of_ne hne]
-    simp
+  refine pderiv_eq_zero_of_notMem_vars fun h => ?_
+  obtain ⟨i, _, hi⟩ := mem_vars_rename f p h
+  exact ht ⟨i, hi⟩
 
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] {r : ℕ}
 
@@ -38,10 +33,8 @@ def oldEmb (r : ℕ) : (Σ k, ι k) → (Σ k, addIdx ι r k) := fun p => ⟨som
 
 theorem oldEmb_injective : Function.Injective (oldEmb (ι := ι) r) := by
   rintro ⟨k, i⟩ ⟨k', i'⟩ h
-  have h1 : k = k' := Option.some.inj (congrArg Sigma.fst h)
-  subst h1
-  have h2 := eq_of_heq (Sigma.mk.inj h).2
-  subst h2
+  dsimp [oldEmb] at h
+  cases h
   rfl
 
 def oldCLM (r : ℕ) : ((Σ k, addIdx ι r k) → ℂ) →L[ℂ] ((Σ k, ι k) → ℂ) :=
@@ -60,15 +53,13 @@ variable {Ω : Type} [Field Ω]
 theorem rename_mem_mCoordIdeal (y : (Σ k, ι k) → Ω) (v : Fin r → Ω) {f : MRing ι}
     (hf : f ∈ mCoordIdeal y) : rename (oldEmb r) f ∈ mCoordIdeal (addBlock y v) := by
   rw [mCoordIdeal, RingHom.mem_ker] at hf ⊢
-  have key : ∀ g : MRing ι, mConeMap (addBlock y v) (rename (oldEmb r) g) = rename some (mConeMap y g) := by
-    intro g
-    simp only [mConeMap, aeval_rename]
-    induction g using MvPolynomial.induction_on with
-    | C a => simp
-    | add p q hp hq => simp [hp, hq]
-    | mul_X p n hp =>
-      simp only [map_mul, aeval_X, hp, Function.comp_apply, rename_C, rename_X]
-      rfl
+  have key := RingHom.congr_fun (MvPolynomial.ringHom_ext
+    (f := (mConeMap (addBlock y v)).toRingHom.comp (rename (oldEmb r)).toRingHom)
+    (g := (rename some).toRingHom.comp (mConeMap y).toRingHom)
+    (fun _ => by simp [mConeMap]) fun p => by
+      simp only [RingHom.comp_apply, AlgHom.toRingHom_eq_coe, RingHom.coe_coe, rename_X,
+        mConeMap, aeval_X, map_mul, rename_C]; rfl) f
+  dsimp only [RingHom.comp_apply, AlgHom.toRingHom_eq_coe, RingHom.coe_coe] at key
   rw [key, hf, map_zero]
 
 theorem oldPart_mem_mcPts {y : (Σ k, ι k) → Ω} {v : Fin r → Ω} {z : (Σ k, addIdx ι r k) → ℂ}

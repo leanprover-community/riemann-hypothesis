@@ -8,8 +8,6 @@ import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsFrameOfHasSign
 
 open MeasureTheory NumberField Matrix Finset
 
-noncomputable section
-
 namespace GlobalTheory.FlagBase.Test
 
 open Formalism.MainNotions.S GlobalTheory.Count GlobalTheory.FlagMeas GlobalTheory.AutInhab

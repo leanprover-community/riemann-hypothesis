@@ -113,7 +113,7 @@ theorem psiP_mul_B {r k : ℕ} {ε : Fin (2 * r + k + 1) → Bool} {P : Matrix (
   funext i j
   exact congrFun (congrFun key i) j
 
-theorem jacExGoodN_of_hpkEx_of_pFrame_of_haarCorr (hH : HpkEx) (hP : PFrame) (hHC : HaarCorr) (hZB : ZBig) (hBM : BigMem) (hW : CoordW)
+theorem jacExGoodN_of_hpkEx_of_pFrame_of_haarCorr (hH : HpkEx) (hP : PFrame) (hHC : HaarCorr) (hZB : ZBig) (hBM : Formalism.QuantumDeterminants.BigCellMem) (hW : CoordW)
     (hSec : _root_.Formalism.QuantumDeterminants.SectionExists) : JacExGoodN := by
   intro r k ε e z z' T T' sc hF hG hsc
   obtain ⟨P, hPJ, hPdet, hPe, zH, zH', hzH, hzH', hPz, hPz', hTz, hTz'⟩ := hP r k ε e z z' T T' hF hG

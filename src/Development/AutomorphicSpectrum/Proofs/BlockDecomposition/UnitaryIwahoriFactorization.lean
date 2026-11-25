@@ -213,40 +213,21 @@ theorem v_lt_of_ordL_lt {x y : L} (hx : x ≠ 0) (hy : y ≠ 0) (h : ordL x < or
 theorem diag_conj_apply {t : GL (Fin n) L} (ht : IsDiagM t) (Y : Matrix (Fin n) (Fin n) L) (a b : Fin n) :
     ((t⁻¹).val * Y * t.val) a b = ((t : Matrix (Fin n) (Fin n) L) a a)⁻¹ * Y a b * (t : Matrix (Fin n) (Fin n) L) b b ∧
       (t : Matrix (Fin n) (Fin n) L) a a ≠ 0 := by
-  classical
-  have hd : (t : Matrix (Fin n) (Fin n) L) = Matrix.diagonal fun i => (t : Matrix (Fin n) (Fin n) L) i i := by
+  let d : Fin n → L := fun i => (t : Matrix (Fin n) (Fin n) L) i i
+  have hd : (t : Matrix (Fin n) (Fin n) L) = Matrix.diagonal d := by
     ext i j
     by_cases hij : i = j
-    · subst hij; simp
+    · subst hij; simp [d]
     · simp [Matrix.diagonal_apply_ne _ hij, ht i j hij]
-  have hone : (t⁻¹).val * (t : Matrix (Fin n) (Fin n) L) = 1 := by
-    rw [← Units.val_mul, inv_mul_cancel, Units.val_one]
-  have hentry : ∀ i j, (t⁻¹).val i j * (t : Matrix (Fin n) (Fin n) L) j j = (1 : Matrix (Fin n) (Fin n) L) i j := by
-    intro i j
-    have h := congrFun (congrFun hone i) j
-    rw [hd, Matrix.mul_diagonal] at h
-    have e := congrFun (congrFun hd j) j
-    simpa using h
-  have hne : ∀ i, (t : Matrix (Fin n) (Fin n) L) i i ≠ 0 := by
-    intro i h
-    have := hentry i i
-    rw [h, mul_zero, Matrix.one_apply_eq] at this
-    exact zero_ne_one this
-  have hTi : (t⁻¹).val = Matrix.diagonal fun i => ((t : Matrix (Fin n) (Fin n) L) i i)⁻¹ := by
-    ext i j
-    by_cases hij : i = j
-    · subst hij
-      rw [Matrix.diagonal_apply_eq]
-      exact eq_inv_of_mul_eq_one_left (by rw [hentry, Matrix.one_apply_eq])
-    · rw [Matrix.diagonal_apply_ne _ hij]
-      have := hentry i j
-      rw [Matrix.one_apply_ne hij] at this
-      exact (mul_eq_zero.1 this).resolve_right (hne j)
+  have hne : ∀ i, d i ≠ 0 := fun i =>
+    (Pi.isUnit_iff.mp (Matrix.isUnit_diagonal.mp (hd ▸ t.isUnit)) i).ne_zero
+  have hTi : (t⁻¹).val = Matrix.diagonal fun i => (d i)⁻¹ := by
+    refine (Matrix.GeneralLinearGroup.coe_inv t).trans (Matrix.inv_eq_right_inv ?_)
+    rw [hd, Matrix.diagonal_mul_diagonal]
+    simp [hne]
   refine ⟨?_, hne a⟩
-  have h4 : ((t⁻¹).val * Y * t.val) a b = ((t⁻¹).val * Y) a b * (t : Matrix (Fin n) (Fin n) L) b b := by
-    conv_lhs => rw [hd]
-    rw [Matrix.mul_diagonal]
-  rw [h4, hTi, Matrix.diagonal_mul]
+  conv_lhs => rw [hTi, hd]
+  rw [Matrix.mul_diagonal, Matrix.diagonal_mul]
 
 theorem iwahori_fact : ∀ (L : Type) [Field L] [Valued L (WithZero (Multiplicative ℤ))] (σ : L →+* L) (n : ℕ),
     (∀ x, σ (σ x) = x) → (∀ x, Valued.v (σ x) = Valued.v x) → ∀ t : GU σ n, IsDiagM (t : GL (Fin n) L) →

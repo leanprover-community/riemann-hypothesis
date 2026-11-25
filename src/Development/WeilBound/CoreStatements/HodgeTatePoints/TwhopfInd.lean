@@ -28,10 +28,8 @@ theorem ind_hopf : ∀ (R : Type) [CommRing R] [IsDomain R] (T : Type) [CommGrou
   have : Module.Finite R A := hA.finite
   have : Module.Projective R A := hA.projective
   obtain ⟨κ, hκ⟩ := exists_coset_coord ι
-  have hmk : ∀ t h, (QuotientGroup.mk (t * ι h) : T ⧸ ι.range) = QuotientGroup.mk t := by
-    intro t h
-    rw [QuotientGroup.eq]
-    exact MonoidHom.mem_range.mpr ⟨h⁻¹, by rw [map_inv, mul_inv_rev, inv_mul_cancel_right]⟩
+  have hmk : ∀ t h, (QuotientGroup.mk (t * ι h) : T ⧸ ι.range) = QuotientGroup.mk t := fun t h =>
+    QuotientGroup.mk_mul_of_mem t (MonoidHom.mem_range.mpr ⟨h, rfl⟩)
   have hκmul : ∀ t h, κ (t * ι h) = κ t * h := by
     intro t h
     apply hι

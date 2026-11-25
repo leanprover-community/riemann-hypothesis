@@ -36,16 +36,9 @@ private theorem l_zero (l : ℕ) [Fact l.Prime] (K : Type) [Field K] [Finite K] 
   · subst hpl
     exact CharP.cast_eq_zero K p
   · exfalso
-    have hu : IsUnit (p : ℤ_[l]) := by
-      rw [PadicInt.isUnit_iff]
-      refine le_antisymm (PadicInt.norm_le_one _) ?_
-      have h1 : ¬ ‖((p : ℤ) : ℤ_[l])‖ < 1 := by
-        rw [PadicInt.norm_int_lt_one_iff_dvd]
-        intro hd
-        have e := (Nat.prime_dvd_prime_iff_eq (Fact.out : l.Prime) hpp).1 (Int.natCast_dvd_natCast.1 hd)
-        exact hpl e.symm
-      push Not at h1
-      simpa using h1
+    have hu : IsUnit (p : ℤ_[l]) := PadicInt.isUnit_iff.2
+      (PadicInt.norm_natCast_eq_one_iff.2
+        ((Nat.coprime_primes (Fact.out : l.Prime) hpp).2 (Ne.symm hpl)))
     have hu' := hu.map φ
     rw [map_natCast, CharP.cast_eq_zero K p] at hu'
     exact not_isUnit_zero hu'

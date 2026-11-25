@@ -4,8 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.Divisors.PrimitiveStr
 
 @[expose] public section
 
-noncomputable section
-
 open CategoryTheory AlgebraicGeometry KaehlerDifferential MonoidalCategory CartesianMonoidalCategory MonObj
 open scoped TensorProduct
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CatCoh GlobalTheory.Cris GlobalTheory.CechDR GlobalTheory.LiftSys

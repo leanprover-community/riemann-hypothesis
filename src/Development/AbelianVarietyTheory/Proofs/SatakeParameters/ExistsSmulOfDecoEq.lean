@@ -9,8 +9,6 @@ import Mathlib.Tactic.Linter.Style
 
 open NumberField IsDedekindDomain Formalism.L2.Col Formalism.HermitianLatticesTheory Formalism.BasicNotions Formalism.L2.DIV
 
-noncomputable section
-
 namespace GlobalTheory.FramedForms
 
 section Torsor

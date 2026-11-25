@@ -144,10 +144,7 @@ private theorem tame_of_dz {k : Type} [Field k] [ValuativeRel k] [TopologicalSpa
     have hdx : c • y.rep (dOf i₀ u) x = x := by
       have h1 := hx (dOf i₀ u) hd
       rwa [hσ, twist_apply, detChar_apply, det_dOf] at h1
-    have hdx' : y.rep (dOf i₀ u) x = c⁻¹ • x := by
-      calc y.rep (dOf i₀ u) x = c⁻¹ • (c • y.rep (dOf i₀ u) x) := by
-            rw [smul_smul, inv_mul_cancel₀ hc0, one_smul]
-        _ = c⁻¹ • x := by rw [hdx]
+    have hdx' : y.rep (dOf i₀ u) x = c⁻¹ • x := (eq_inv_smul_iff₀ hc0).2 hdx
     have hz : y.rep (dOf i₀ u) (y.rep (GroundTheory.Automorphic.Cartan.diagPow k y.fst μ) x)
         = c⁻¹ • y.rep (GroundTheory.Automorphic.Cartan.diagPow k y.fst μ) x := by
       rw [← Module.End.mul_apply, ← map_mul, dOf_comm, map_mul, Module.End.mul_apply, hdx', map_smul]

@@ -115,7 +115,7 @@ theorem thG_unique [IsCommMonObj G] (ρ : LB.Gen (L.pull (eSec G))) (hL : L.IsLB
     {K : Type} [Field K] {x : Sp K ⟶ S} (θ : SecAt G L x) (p : Over.mk x ⟶ G) {c c' : K} (hm : Odd m)
     (hm0 : (m : K) ≠ 0) (hP : PolFib G L g x) (h₁ : ThG G L ρ m θ p (GlobalTheory.ZH.fn c))
     (h₂ : ThG G L ρ m θ p (GlobalTheory.ZH.fn c')) : c' = c := by
-  have := (GlobalTheory.T.thetaConstant_unique_and_linear_in_section S G L ρ hL hρ g m K x θ θ p 1 c c' hm hm0 hP (by simp) h₁).1 h₂
+  have := (GlobalTheory.UMin.thG_smul_iff S G L ρ hL hρ g m K x θ θ p 1 c c' hm hm0 hP (by simp) h₁).1 h₂
   simpa using this
 end
 
@@ -146,7 +146,7 @@ theorem main : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host 
     have := hmu.map φF
     rw [map_natCast] at this
     exact this.ne_zero
-  obtain ⟨ptF, cF, hLF⟩ := GlobalTheory.T.exists_thetaConstantList_algClosed S t.G t.PP.L t.PP.rig t.PP.isLB t.PP.rigGen g m (m ^ (4 * g)) F x' θF hodd
+  obtain ⟨ptF, cF, hLF⟩ := GlobalTheory.UMin.exists_thList S t.G t.PP.L t.PP.rig t.PP.isLB t.PP.rigGen g m (m ^ (4 * g)) F x' θF hodd
     hmF rfl hPF
   let Kb := AlgebraicClosure K
   let i' : K →+* Kb := algebraMap K Kb
@@ -171,7 +171,7 @@ theorem main : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host 
     have := hmu.map (i'.comp i)
     rw [map_natCast] at this
     exact this.ne_zero
-  obtain ⟨pt1, hpt1, hL1⟩ := GlobalTheory.T.isThetaConstantListOfFibre_pullback_field_extension S t.G t.PP.L t.PP.rig t.PP.isLB t.PP.rigGen m N K Kb i' (spMap i ≫ χ)
+  obtain ⟨pt1, hpt1, hL1⟩ := GlobalTheory.UMin.ThPull.thList_pull S t.G t.PP.L t.PP.rig t.PP.isLB t.PP.rigGen m N K Kb i' (spMap i ≫ χ)
     (SecAt.pull t.G t.PP.L σ i) pt c hL
   have hθ : HEq (SecAt.pull t.G t.PP.L (SecAt.pull t.G t.PP.L σ i) i') (SecAt.pull t.G t.PP.L θF j) := by
     simp only [SecAt.pull, hθF, GlobalTheory.ThetaRuleCompare.pullS_comp]
@@ -180,7 +180,7 @@ theorem main : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host 
     change spMap i' ≫ spMap i = spMap j ≫ (spMap (algebraMap (FractionRing V) F) ≫ spMap (algebraMap V (FractionRing V)))
     rw [spMap_comp', spMap_comp', spMap_comp', hsq]
   obtain ⟨ptK, hptK, hLK⟩ := thList_of_eq t.PP.rig m hy hθ hL1
-  obtain ⟨ptF', hptF', hLF'⟩ := GlobalTheory.T.isThetaConstantListOfFibre_pullback_field_extension S t.G t.PP.L t.PP.rig t.PP.isLB t.PP.rigGen m (m ^ (4 * g)) F Kb j x' θF
+  obtain ⟨ptF', hptF', hLF'⟩ := GlobalTheory.UMin.ThPull.thList_pull S t.G t.PP.L t.PP.rig t.PP.isLB t.PP.rigGen m (m ^ (4 * g)) F Kb j x' θF
     ptF cF hLF
   have hint : ∀ b, φF.IsIntegralElem (cF b) := fun b =>
     GlobalTheory.T.isIntegralElem_of_val_nonneg_over_completeDVR V hV ϖ hϖ F v hv (cF b) (hA (ptF b) (cF b) (hLF.2.1 b))

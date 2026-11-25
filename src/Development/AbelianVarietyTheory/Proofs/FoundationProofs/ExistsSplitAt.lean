@@ -52,8 +52,6 @@ import Mathlib.Tactic.ReduceModChar
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta
 open scoped TensorProduct Matrix
 
-noncomputable section
-
 namespace GlobalTheory.MovedSplit
 
 open GlobalTheory.SplitIdem GlobalTheory.IdemModTwo
@@ -165,5 +163,3 @@ theorem exists_splitAt : ∀ (D : D7) (v : HeightOneSpectrum (𝓞 D.host.F)), G
   exact ⟨_, key⟩
 
 end GlobalTheory.MovedSplit
-
-end

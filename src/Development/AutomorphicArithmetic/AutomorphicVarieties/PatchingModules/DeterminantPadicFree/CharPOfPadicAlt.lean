@@ -246,8 +246,7 @@ open IsLocalRing
 theorem UpperTheory.V.AlgebraTools.powerSeries_equiv_of_complete_dvr :
     ∀ (A : Type) [CommRing A] [IsDomain A] [IsDiscreteValuationRing A] [IsAdicComplete (maximalIdeal A) A]
       (p : ℕ) [Fact p.Prime] [CharP A p] [Finite (ResidueField A)] (t : A), Irreducible t →
-      ∃ e : PowerSeries (ResidueField A) ≃+* A, e PowerSeries.X = t ∧
-        ∀ c, residue A (e (PowerSeries.C c)) = c := by
+      Nonempty (PowerSeries (ResidueField A) ≃+* A) := by
   intro A _ _ _ _ p _ _ _ t ht
   classical
   have hH : ∀ x y : A, (∀ n : ℕ, x - y ∈ maximalIdeal A ^ n) → x = y := fun x y h =>
@@ -347,9 +346,7 @@ theorem UpperTheory.V.AlgebraTools.powerSeries_equiv_of_complete_dvr :
       linear_combination -(hc n)
     rw [h2]
     exact Ideal.sub_mem _ (hEq n F) (Ideal.mul_mem_right _ _ (Ideal.pow_mem_pow htm n))
-  exact ⟨RingEquiv.ofBijective e0 ⟨hinj, hsurj⟩, hX, fun c => by
-    show residue A (e0 (PowerSeries.C c)) = c
-    rw [hres, PowerSeries.constantCoeff_C]⟩
+  exact ⟨RingEquiv.ofBijective e0 ⟨hinj, hsurj⟩⟩
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.CaDvrPs =====
@@ -496,7 +493,7 @@ theorem UpperTheory.V.Pa.Det.extEx :
   haveI := hA.finite
   haveI := hA.char
   obtain ⟨t, ht⟩ := IsDiscreteValuationRing.exists_irreducible A'
-  obtain ⟨e, -, -⟩ := UpperTheory.V.AlgebraTools.powerSeries_equiv_of_complete_dvr A' l t ht
+  obtain ⟨e⟩ := UpperTheory.V.AlgebraTools.powerSeries_equiv_of_complete_dvr A' l t ht
   letI : Algebra ℤ_[l] (ResidueField A') := ((residue A').comp (j₀.comp (algebraMap ℤ_[l] x.A))).toAlgebra
   let j : x.A →+* PowerSeries (ResidueField A') := (e.symm : A' →+* _).comp j₀
   have hj : Function.Injective j := e.symm.injective.comp hinj

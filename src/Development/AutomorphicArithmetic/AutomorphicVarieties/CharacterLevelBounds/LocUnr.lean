@@ -17,28 +17,17 @@ open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.
 private theorem not_both {Ω : Type} [Field Ω] (A : ValuationSubring Ω) {p l : ℕ} (h : Nat.Coprime p l)
     (hp : A.valuation (p : Ω) < 1) : ¬ A.valuation (l : Ω) < 1 := by
   intro hl
-  have hg : ((Nat.gcd p l : ℕ) : ℤ) = (p : ℤ) * Nat.gcdA p l + (l : ℤ) * Nat.gcdB p l := Nat.gcd_eq_gcd_ab p l
-  rw [h.gcd_eq_one, Nat.cast_one] at hg
-  have hΩ : (1 : Ω) = (p : Ω) * ((Nat.gcdA p l : ℤ) : Ω) + (l : Ω) * ((Nat.gcdB p l : ℤ) : Ω) := by
-    have := congrArg (fun z : ℤ => (z : Ω)) hg
-    push_cast at this
-    exact this
-  have hint : ∀ z : ℤ, A.valuation (z : Ω) ≤ 1 := fun z => A.valuation_le_one ⟨(z : Ω), intCast_mem A z⟩
-  have h1 : A.valuation ((p : Ω) * ((Nat.gcdA p l : ℤ) : Ω)) < 1 := by
+  obtain ⟨a, b, hab⟩ := Nat.isCoprime_iff_coprime.2 h
+  have h1 : (a : Ω) * p + (b : Ω) * l = 1 := by
+    have := congrArg (Int.cast : ℤ → Ω) hab; push_cast at this; exact this
+  have hlt {n : ℕ} (hn : A.valuation (n : Ω) < 1) (z : ℤ) :
+      A.valuation ((z : Ω) * n) < 1 := by
     rw [Valuation.map_mul]
-    calc A.valuation (p : Ω) * A.valuation ((Nat.gcdA p l : ℤ) : Ω) ≤ A.valuation (p : Ω) * 1 := by
-          gcongr
-          exact hint _
-      _ < 1 := by rw [mul_one]; exact hp
-  have h2 : A.valuation ((l : Ω) * ((Nat.gcdB p l : ℤ) : Ω)) < 1 := by
-    rw [Valuation.map_mul]
-    calc A.valuation (l : Ω) * A.valuation ((Nat.gcdB p l : ℤ) : Ω) ≤ A.valuation (l : Ω) * 1 := by
-          gcongr
-          exact hint _
-      _ < 1 := by rw [mul_one]; exact hl
-  have h3 := Valuation.map_add_lt A.valuation h1 h2
-  rw [← hΩ, Valuation.map_one] at h3
-  exact lt_irrefl _ h3
+    have hz : A.valuation (z : Ω) ≤ 1 := A.valuation_le_one ⟨z, intCast_mem A z⟩
+    exact lt_of_le_of_lt (mul_le_of_le_one_left' hz) hn
+  have hm := Valuation.map_add_lt A.valuation (hlt hp a) (hlt hl b)
+  rw [h1, Valuation.map_one] at hm
+  exact lt_irrefl _ hm
 
 theorem UpperTheory.V.Chr.locUnr :
     ∀ (Ω : Type) [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] (l : ℕ) [Fact l.Prime] (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Algebra ℤ_[l] O] [Module.Finite ℤ_[l] O] (e n : ℕ) (ψ : G ℚ Ω →* Oˣ), e ≠ 0 → n ≠ 0 → IsOpen (ψ.ker : Set (G ℚ Ω)) → ψ ^ n = 1 →

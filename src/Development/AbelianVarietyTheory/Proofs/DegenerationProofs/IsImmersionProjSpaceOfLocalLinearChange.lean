@@ -53,7 +53,6 @@ open CategoryTheory Limits AlgebraicGeometry
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open GlobalTheory GlobalTheory.ZH ReciprocityTheory.ChartRestriction.G.Out Classical
 
-noncomputable section
 namespace GlobalTheory.ZH.LinFrame
 open GlobalTheory.ProjSpace
 
@@ -70,4 +69,3 @@ theorem valR_pullRatio (x : Sp K ⟶ T) (p : T ⟶ PSpace o m) {W : T.Opens} {l 
   Points.valR_appLE x p hl h _
 
 end GlobalTheory.ZH.LinFrame
-end

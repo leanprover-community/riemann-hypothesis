@@ -32,56 +32,12 @@ public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HeightFlagPie
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.RationalBlockFrameLocalSplit
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.SelfDualHermitianFlagAtComplexEmbedding
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.SelfDualHermitianFlagPieceHeights
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.TotallySplit
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Lemma
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.RingTheory.WittVector.IsPoly
 import Formalism.SharpRestriction.CuspSpanNormBounds.Point
 import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
 import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
@@ -778,20 +734,6 @@ namespace GlobalTheory.RadCov.LowDim
 variable {n m : ℕ} {W : ℕ → Submodule ℂ (Fin n → ℂ)} {r : ℕ → ℕ}
   {U : ∀ b, Matrix (Fin n) (Fin (r b)) ℂ}
 
-theorem block_eq_zero (hB : Biorth r m U (fun b => (U b)ᴴ)) {s : ℕ} (hs : m ≤ s) : U s = 0 := by
-  obtain ⟨-, h2, h3⟩ := hB
-  calc U s = (∑ b ∈ range m, U b * (U b)ᴴ) * U s := by rw [h3, Matrix.one_mul]
-    _ = 0 := by
-      rw [Matrix.sum_mul]
-      refine Finset.sum_eq_zero fun b hb => ?_
-      have hb' : b ≠ s := by have := Finset.mem_range.1 hb; omega
-      rw [Matrix.mul_assoc, h2 b s hb', Matrix.mul_zero]
-
-theorem mem_lowers_iff_blocks (hB : Biorth r m U (fun b => (U b)ᴴ))
-    (hW : ∀ k y, y ∈ W k ↔ ∀ b, k ≤ b → (U b)ᴴ *ᵥ y = 0) (c : ℕ) (Y : Matrix (Fin n) (Fin n) ℂ) :
-    Y ∈ lowers W c ↔ ∀ s t, t ≤ s + c → (U s)ᴴ * Y * U t = 0 := by
-  apply GlobalTheory.LayerIso.mem_lowers_iff <;> assumption
-
 noncomputable def layer (m : ℕ) (U : ∀ b, Matrix (Fin n) (Fin (r b)) ℂ) (c : ℕ) :
     Matrix (Fin n) (Fin n) ℂ →ₗ[ℂ] ∀ b : Fin m, Matrix (Fin (r b)) (Fin (r (b + c + 1))) ℂ where
   toFun Y b := (U b)ᴴ * Y * U (b + c + 1)
@@ -806,7 +748,6 @@ end GlobalTheory.RadCov.LowDim
 
 namespace GlobalTheory.RadCov
 
-
 open LowDim in
 theorem finrank_lowers_eq_succ_add (n m : ℕ) (W : ℕ → Submodule ℂ (Fin n → ℂ)) (r : ℕ → ℕ)
     (U : ∀ b, Matrix (Fin n) (Fin (r b)) ℂ) (hB : Biorth r m U (fun b => (U b)ᴴ))
@@ -815,14 +756,14 @@ theorem finrank_lowers_eq_succ_add (n m : ℕ) (W : ℕ → Submodule ℂ (Fin n
       ∑ b ∈ Finset.range m, r b * r (b + c + 1) := by
   have hle : lowers W (c + 1) ≤ lowers W c := by
     intro Y hY
-    rw [mem_lowers_iff_blocks hB hW] at hY ⊢
+    rw [GlobalTheory.LayerIso.mem_lowers_iff hB hW] at hY ⊢
     exact fun s t hst => hY s t (by omega)
   let φ := (layer m U c).domRestrict (lowers W c)
   have hker : LinearMap.ker φ = (lowers W (c + 1)).comap (lowers W c).subtype := by
     ext ⟨Y, hY⟩
     rw [LinearMap.mem_ker, Submodule.mem_comap, Submodule.subtype_apply,
-      mem_lowers_iff_blocks hB hW]
-    rw [mem_lowers_iff_blocks hB hW] at hY
+      GlobalTheory.LayerIso.mem_lowers_iff hB hW]
+    rw [GlobalTheory.LayerIso.mem_lowers_iff hB hW] at hY
     constructor
     · intro h s t hst
       by_cases h' : t ≤ s + c
@@ -830,7 +771,7 @@ theorem finrank_lowers_eq_succ_add (n m : ℕ) (W : ℕ → Submodule ℂ (Fin n
       · obtain rfl : t = s + c + 1 := by omega
         by_cases hs : s < m
         · exact congrFun h ⟨s, hs⟩
-        · rw [block_eq_zero hB (not_lt.1 hs)]
+        · rw [GlobalTheory.LayerIso.block_eq_zero hB (not_lt.1 hs)]
           simp
     · intro h
       funext b
@@ -845,7 +786,7 @@ theorem finrank_lowers_eq_succ_add (n m : ℕ) (W : ℕ → Submodule ℂ (Fin n
       rw [Matrix.mul_sum, Matrix.sum_mul]
       exact Finset.sum_congr rfl fun b _ => by simp only [Matrix.mul_assoc]
     refine ⟨⟨∑ b : Fin m, U b * Z b * (U (b + c + 1))ᴴ, ?_⟩, ?_⟩
-    · rw [mem_lowers_iff_blocks hB hW]
+    · rw [GlobalTheory.LayerIso.mem_lowers_iff hB hW]
       intro s t hst
       rw [key]
       refine Finset.sum_eq_zero fun b _ => ?_

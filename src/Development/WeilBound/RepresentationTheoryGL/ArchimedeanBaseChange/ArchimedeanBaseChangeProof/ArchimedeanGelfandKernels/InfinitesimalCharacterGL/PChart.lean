@@ -38,11 +38,8 @@ theorem along_zero (w : InfinitePlace E) (g : GA E a) : along w g (0 : GA E a �
   funext fun x => chart_zero' g _
 
 theorem along_sum {ι : Type} (S : Finset ι) (w : InfinitePlace E) (g : GA E a) (φ : ι → GA E a → ℂ) :
-    along w g (∑ i ∈ S, φ i) = ∑ i ∈ S, along w g (φ i) := by
-  classical
-  induction S using Finset.induction_on with
-  | empty => simp [along_zero]
-  | insert b S hb ih => rw [sum_insert hb, sum_insert hb, along_add, ih]
+    along w g (∑ i ∈ S, φ i) = ∑ i ∈ S, along w g (φ i) :=
+  map_sum (AddMonoidHom.mk' (along w g) (along_add w g)) φ S
 
 theorem atW_one (w : InfinitePlace E) : atW w (1 : Matrix (Fin a) (Fin a) ℂ) = oneL E a := by
   funext i j v
@@ -165,11 +162,8 @@ theorem eu_along (w : InfinitePlace E) (g : GA E a) (s : Bool) (φ : Sm E a) (i 
     simp only [Pi.sub_apply, Pi.smul_apply, smul_eq_mul]
     ring
 
-theorem isOpen_GLs : IsOpen (PositivityTheory.RgBcC.GLs a) := by
-  have e : PositivityTheory.RgBcC.GLs a = (fun x : Matrix (Fin a) (Fin a) ℂ => x.det) ⁻¹' ({0}ᶜ : Set ℂ) := by
-    ext x; simp [PositivityTheory.RgBcC.GLs]
-  rw [e]
-  exact (continuous_id.matrix_det).isOpen_preimage _ isOpen_compl_singleton
+theorem isOpen_GLs : IsOpen (PositivityTheory.RgBcC.GLs a) :=
+  isOpen_ne.preimage (continuous_id.matrix_det (n := Fin a) (R := ℂ))
 
 theorem rd_congr (X : Matrix (Fin a) (Fin a) ℂ) {F G : Matrix (Fin a) (Fin a) ℂ → ℂ} {x : Matrix (Fin a) (Fin a) ℂ}
     (h : F =ᶠ[nhds x] G) : PositivityTheory.RgBcC.Rd X F x = PositivityTheory.RgBcC.Rd X G x := by

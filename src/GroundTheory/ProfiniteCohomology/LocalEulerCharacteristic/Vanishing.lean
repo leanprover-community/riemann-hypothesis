@@ -235,10 +235,9 @@ theorem mul_inv_mem_of_iterate_eq {l m : ℕ} (P O : Subgroup G) (s : G →* G)
   have hOs : ∀ e ∈ O, s e ∈ O := fun e he => by
     have := O.mul_mem (hO e) he
     rwa [inv_mul_cancel_right] at this
-  have hcO : ∀ j : ℕ, s^[j] c ∈ O := fun j => by
-    induction j with
-    | zero => exact hO x
-    | succ j ih => rw [Function.iterate_succ_apply']; exact hOs _ ih
+  have hcO : ∀ j : ℕ, s^[j] c ∈ O := fun j =>
+    Set.MapsTo.iterate (f := s) (s := (O : Set G))
+      (fun _ he => SetLike.mem_coe.2 (hOs _ (SetLike.mem_coe.1 he))) j (hO x)
   have hcj : ∀ j : ℕ, ((s^[j] c : G) : G ⧸ P) = c := fun j => by
     induction j with
     | zero => rfl
@@ -318,13 +317,8 @@ theorem exists_map_units_eq_mul_pow {l m : ℕ} (hl : (l : 𝓀[F]) ≠ 0) (σ :
     obtain ⟨z, -, hz⟩ := exists_pow_eq_of_mem_unitFiltration_one hl hmem
     refine ⟨unitsIncl F z, ?_⟩
     rw [powMonoidHom_apply, ← map_pow, hz, ht']
-  have hiter : ∀ (j : ℕ) (x : Fˣ), ((s^[j] x : Fˣ) : F) = σ^[j] (x : F) := fun j => by
-    induction j with
-    | zero => intro x; rfl
-    | succ j ih =>
-      intro x
-      rw [Function.iterate_succ_apply', Function.iterate_succ_apply', hs, ih]
-  have hsm : ∀ x : Fˣ, s^[m] x = x := fun x => Units.ext (by rw [hiter, hσm])
+  have hsm : ∀ x : Fˣ, s^[m] x = x := fun x =>
+    Units.ext ((Function.Semiconj.iterate_right hs m x).trans (hσm x))
   obtain ⟨y, hy⟩ := mul_inv_mem_of_iterate_eq P O s (fun y => ⟨y, rfl⟩) hO hOP hm hsm u
   refine ⟨y, ?_⟩
   rw [powMonoidHom_apply] at hy
@@ -508,18 +502,10 @@ theorem cohomologyConj_one_galRootsOfUnity_eq_id (hl : (l : 𝓀[K]) ≠ 0)
       rfl
     rw [e]
     exact hg x x.2 hx
-  have hiter : ∀ (j : ℕ) (x : fixedField (V : Subgroup Gal(Ksep/K))),
-      ((σ^[j] x : fixedField (V : Subgroup Gal(Ksep/K))) : Ksep) = ((g : Gal(Ksep/K)) ^ j) (x : Ksep) := by
-    intro j
-    induction j with
-    | zero => intro x; rfl
-    | succ j ih =>
-      intro x
-      rw [Function.iterate_succ_apply', hσx, ih, pow_succ', AlgEquiv.mul_apply]
   have hσm : ∀ x : fixedField (V : Subgroup Gal(Ksep/K)),
       σ^[(V : Subgroup Gal(Ksep/K)).relIndex W] x = x := fun x => by
     apply Subtype.ext
-    rw [hiter]
+    rw [Function.Semiconj.iterate_right hσx _ x, ← AlgEquiv.coe_pow (g : Gal(Ksep/K))]
     have hmem := Subgroup.pow_index_mem ((V : Subgroup Gal(Ksep/K)).subgroupOf W) g
     rw [Subgroup.mem_subgroupOf, Subgroup.coe_pow] at hmem
     exact (mem_fixedField_iff _ _).1 x.2 _ hmem

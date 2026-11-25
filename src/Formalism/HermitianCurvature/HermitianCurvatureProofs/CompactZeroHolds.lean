@@ -198,15 +198,12 @@ theorem row_in (v : Fin (2 * r + k + 1) → ℂ) :
 end lieW
 
 theorem sum_mulVec' {ι : Type*} (s : Finset ι) (M : ι → B.Mat k r) (v : Fin (2 * r + k + 1) → ℂ) :
-    (∑ i ∈ s, M i) *ᵥ v = ∑ i ∈ s, M i *ᵥ v := by
-  induction s using Finset.cons_induction with
-  | empty => simp
-  | cons a s ha ih => rw [Finset.sum_cons, Finset.sum_cons, add_mulVec, ih]
+    (∑ i ∈ s, M i) *ᵥ v = ∑ i ∈ s, M i *ᵥ v :=
+  Matrix.sum_mulVec s M v
 
 theorem smul_mulVec'' (c : ℂ) (M : B.Mat k r) (v : Fin (2 * r + k + 1) → ℂ) :
-    (c • M) *ᵥ v = c • (M *ᵥ v) := by
-  funext i
-  simp only [mulVec, dotProduct, Matrix.smul_apply, smul_eq_mul, Pi.smul_apply, Finset.mul_sum, mul_assoc]
+    (c • M) *ᵥ v = c • (M *ᵥ v) :=
+  Matrix.smul_mulVec c M v
 
 theorem trace_vmv (ξ : B.Mat k r) (a b : Fin (2 * r + k + 1) → ℂ) :
     Matrix.trace (ξ * vecMulVec a (star (Hpk k r *ᵥ b))) = herm (Hpk k r) (ξ *ᵥ a) b := by
@@ -235,13 +232,7 @@ theorem cmp_eq (Ξ : B.Mat k r) (Bs : Fin k → Fin (2 * r + k + 1) → ℂ) (a 
   show Matrix.trace (Ξ * Q.unitB (Hpk k r) Bs a b) = _
   rw [unitB_eq, trace_vmv]
 
-theorem le_two_pow (n : ℕ) : n ≤ 2 ^ n := by
-  induction n with
-  | zero => simp
-  | succ n ih =>
-    have h1 : 0 < 2 ^ n := by positivity
-    rw [pow_succ]
-    omega
+theorem le_two_pow (n : ℕ) : n ≤ 2 ^ n := Nat.lt_two_pow_self.le
 
 theorem skew_nil_zero {m : ℕ} (M : Matrix (Fin m) (Fin m) ℂ) (hs : Mᴴ = -M) (N : ℕ) (hN : M ^ N = 0) :
     M = 0 := by

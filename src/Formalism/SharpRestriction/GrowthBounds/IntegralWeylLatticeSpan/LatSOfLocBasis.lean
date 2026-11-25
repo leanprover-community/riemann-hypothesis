@@ -50,12 +50,8 @@ theorem entry_eq {R : Type} [CommRing R] (M : Matrix (Fin n) (Fin n) R) (a b : F
 variable (v : HeightOneSpectrum (𝓞 F))
 
 theorem mulVec_smul_int (M : Matrix (Fin n) (Fin n) (E ⊗[F] v.adicCompletion F)) (c : intV E v)
-    (y : Fin n → E ⊗[F] v.adicCompletion F) : M *ᵥ (c • y) = c • (M *ᵥ y) := by
-  funext i
-  simp only [Matrix.mulVec, dotProduct, Pi.smul_apply, Finset.smul_sum]
-  refine Finset.sum_congr rfl fun j _ => ?_
-  show _ * ((c : E ⊗[F] v.adicCompletion F) * y j) = (c : E ⊗[F] v.adicCompletion F) * (_ * y j)
-  ring
+    (y : Fin n → E ⊗[F] v.adicCompletion F) : M *ᵥ (c • y) = c • (M *ᵥ y) :=
+  Matrix.mulVec_smul M c y
 
 theorem incl_int (b : 𝓞 E) : inclE (F := F) (v.adicCompletion F) (algebraMap (𝓞 E) E b) ∈ intV E v :=
   Subring.subset_closure (Or.inl ⟨⟨_, ⟨b, rfl⟩⟩, rfl⟩)

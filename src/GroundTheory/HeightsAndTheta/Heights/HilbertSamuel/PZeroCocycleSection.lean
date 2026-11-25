@@ -1,6 +1,7 @@
 module
 
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsZeroCocycleSection
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PGenOnFibres
 import Mathlib.Algebra.Ring.IsFormallyReal
 import Mathlib.Order.Interval.Finset.Box
 import Mathlib.RingTheory.Henselian
@@ -298,76 +299,8 @@ theorem res_facesS {S : Type} [CommRing S] {M : Type} [AddCommGroup M] [Module (
     (hJ1 : J1.1 = Function.update I.1 k0 ((I.1 k0).erase i1))
     (hJ2 : J2.1 = Function.update I.1 k0 ((I.1 k0).erase i2)) :
     KH.cellRes S M J1.1 I.1 (z J1) = KH.cellRes S M J2.1 I.1 (z J2) := by
-  have hne : ∀ k, (I.1 k).Nonempty := I.2.1
-  have h2 : (I.1 k0).card = 2 := by rw [hI]; exact Finset.card_pair (ne_of_lt hlt)
-  have hface : ∀ i ∈ I.1 k0, (∀ l, (Function.update I.1 k0 ((I.1 k0).erase i) l).Nonempty) ∧
-      ∑ l, ((Function.update I.1 k0 ((I.1 k0).erase i) l).card - 1) = 0 := by
-    intro i hi
-    have hc : ((I.1 k0).erase i).card = 1 := by rw [Finset.card_erase_of_mem hi, h2]
-    refine ⟨fun l => ?_, Finset.sum_eq_zero fun l _ => ?_⟩
-    · by_cases hl : l = k0
-      · subst hl
-        rw [Function.update_self]
-        exact Finset.card_pos.mp (by omega)
-      · rw [Function.update_of_ne hl]
-        exact hne l
-    · by_cases hl : l = k0
-      · subst hl
-        rw [Function.update_self, hc]
-        rfl
-      · rw [Function.update_of_ne hl, hrest l hl]
-        rfl
-  have hsumsign : ∑ l ∈ Finset.univ.filter (· < k0), ((I.1 l).card - 1) = 0 :=
-    Finset.sum_eq_zero fun l hl => by rw [hrest l (ne_of_lt (Finset.mem_filter.mp hl).2)]; rfl
-  have hs1 : KH.faceSign I.1 k0 i1 = 1 := by
-    have f1 : (({i1, i2} : Finset (ι k0)).filter (· < i1)).card = 0 := by
-      simp [Finset.filter_insert, Finset.filter_singleton, not_lt.mpr hlt.le]
-    simp only [KH.faceSign, hsumsign, hI, add_zero, f1]
-    norm_num
-  have hs2 : KH.faceSign I.1 k0 i2 = -1 := by
-    have f2 : (({i1, i2} : Finset (ι k0)).filter (· < i2)).card = 1 := by
-      simp [Finset.filter_insert, Finset.filter_singleton, hlt]
-    simp only [KH.faceSign, hsumsign, hI, add_zero, f2]
-    norm_num
-  have hi1 : i1 ∈ I.1 k0 := by rw [hI]; simp
-  have hi2 : i2 ∈ I.1 k0 := by rw [hI]; simp
-  have key : KH.cechD S ι M 0 z I =
-      KH.faceSign I.1 k0 i1 • KH.cellRes S M (Function.update I.1 k0 ((I.1 k0).erase i1)) I.1
-        (z ⟨_, hface i1 hi1⟩) + KH.faceSign I.1 k0 i2 • KH.cellRes S M
-        (Function.update I.1 k0 ((I.1 k0).erase i2)) I.1 (z ⟨_, hface i2 hi2⟩) := by
-    rw [KH.cechD]
-    erw [LinearMap.pi_apply]
-    simp only [LinearMap.sum_apply]
-    rw [Finset.sum_eq_single k0]
-    · rw [Finset.sum_eq_add_of_mem i1 i2 hi1 hi2 (ne_of_lt hlt)]
-      · rw [dite_eq_left (hface i1 hi1), dite_eq_left (hface i2 hi2)]
-        rfl
-      · intro i hi hne'
-        rw [hI] at hi
-        simp only [Finset.mem_insert, Finset.mem_singleton] at hi
-        rcases hi with rfl | rfl
-        · exact absurd rfl hne'.1
-        · exact absurd rfl hne'.2
-    · intro k _ hk
-      refine Finset.sum_eq_zero fun i hi => ?_
-      split_ifs with hc
-      · exfalso
-        obtain ⟨hn, -⟩ := hc
-        have h3 := hn k
-        rw [Function.update_self] at h3
-        have h4 := Finset.card_erase_of_mem hi
-        rw [hrest k hk] at h4
-        have h5 := Finset.card_pos.mpr h3
-        omega
-      · rfl
-    · intro h
-      exact absurd (Finset.mem_univ k0) h
   have e0 : KH.cechD S ι M 0 z I = 0 := by rw [hz]; rfl
-  rw [key, hs1, hs2, one_smul, neg_one_smul, ← sub_eq_add_neg, sub_eq_zero] at e0
-  obtain ⟨A1, hA1⟩ := J1
-  obtain ⟨A2, hA2⟩ := J2
-  simp only at hJ1 hJ2
-  subst hJ1 hJ2
+  rw [GenOnFibres.cechD_zero_apply_of_pair z I k0 i1 i2 hlt hI hrest J1 J2 hJ1 hJ2, sub_eq_zero] at e0
   exact e0
 
 theorem res_faces {M : Type} [AddCommGroup M] [Module (MRing ι) M] (z : KH.CechC ℤ ι M 0)

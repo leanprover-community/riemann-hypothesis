@@ -8,6 +8,7 @@ public import GroundTheory.GlobalFields.LocalAtPlace
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.RingTheory.Henselian
 import Mathlib.Tactic.TypeStar
+import GroundTheory.LocalFields.ExistsUnitFiltrationUnitsLeAndRangePowLe
 
 @[expose] public section
 
@@ -106,7 +107,7 @@ theorem index_range_powMonoidHom_adicCompletion_of_hasEnoughRootsOfUnity {n : �
 theorem isOpen_range_powMonoidHom_adicCompletion {n : ℕ} (hn : n ≠ 0) :
     IsOpen ((powMonoidHom n : (v.adicCompletion K)ˣ →* (v.adicCompletion K)ˣ).range :
       Set (v.adicCompletion K)ˣ) :=
-  isOpen_range_powMonoidHom (natCast_ne_zero_adicCompletion hn)
+  GroundTheory.LocalField.isOpen_range_pow (natCast_ne_zero_adicCompletion hn)
 
 end FinitePlace
 

@@ -136,12 +136,11 @@ theorem cpull_bij_of_iso {K L : Cx R} (f : K ⟶ L) [IsIso f] (I : Cx R) (n : �
 
 end GlobalTheory.EtC.LevelCmp
 
-
 open GlobalTheory.EtC.LevelCmp in
 theorem GlobalTheory.EtC.levelwise_eqv : GlobalTheory.EtC.A3 := by
   intro R _ E E' f F hlev
   obtain ⟨hle, hnat, -⟩ := _root_.GlobalTheory.EtC.chains_basic R
-  obtain ⟨e, -, he⟩ := GlobalTheory.T.exists_natural_homotopyEquiv_chains_constant_presheaf R
+  obtain ⟨e, -, he⟩ := GlobalTheory.EtC.chains_disc_homotopyEquiv R
   obtain ⟨-, hinj, hge, -⟩ := _root_.GlobalTheory.EtC.ResBasic.res_basic R F
   haveI := hle E; haveI := hle E'; haveI := hge
   intro n

@@ -88,8 +88,8 @@ theorem wCoeff_add (w : Set ι) (M : ι × Fin n →₀ ℕ) (P Q : MvPolynomial
   split_ifs <;> simp
 
 theorem wCoeff_mem {Fl : Formalism.MainNotions.G.GLWeightTheory.flt_Fil R} (w : Set ι) (M : ι × Fin n →₀ ℕ) {t : ℤ}
-    {P : MvPolynomial (ι × Fin n) R} (hP : P ∈ (Formalism.MainNotions.TestSideWords.TwistedFiltration.G1.flt_lift Fl 0).F t) :
-    wCoeff w M P ∈ (Formalism.MainNotions.TestSideWords.TwistedFiltration.G1.flt_lift Fl 0).F t := by
+    {P : MvPolynomial (ι × Fin n) R} (hP : P ∈ (Formalism.MainNotions.G.GLWeightTheory.flt_lift Fl 0).F t) :
+    wCoeff w M P ∈ (Formalism.MainNotions.G.GLWeightTheory.flt_lift Fl 0).F t := by
   intro ν
   rw [coeff_wCoeff]
   split_ifs
@@ -381,7 +381,7 @@ theorem valS_wCoeff_ge (w : Set ι) (hw : ∀ l ∈ w, LL.vec l = true) (hd : Di
     intro B _ b; simp [trivFil]
 
   have hB : twistSub LL (S ∪ w) (lastIdx n) F ∈
-      (flt_lift (trivFil (GLLaurent R n)) (-wDegHom w)).F (-(dw : ℤ)) := by
+      (Formalism.MainNotions.G.GLWeightTheory.flt_lift (trivFil (GLLaurent R n)) (-wDegHom w)).F (-(dw : ℤ)) := by
     refine flt_hom_mem (trivFil R) _ _ (-wDegHom w) ?_ ?_ ?_
     · intro t b hb
       rw [twistSub, eval₂Hom_C]
@@ -422,12 +422,12 @@ theorem valS_wCoeff_ge (w : Set ι) (hw : ∀ l ∈ w, LL.vec l = true) (hd : Di
         exact AddSubgroup.zero_mem _
 
   have hC : twistSub LL (S ∪ w) (lastIdx n) F ∈
-      (flt_lift (flt_L (GLCoord R n) 1) (-wDegHom w)).F (th - dw) := by
+      (Formalism.MainNotions.G.GLWeightTheory.flt_lift (Formalism.MainNotions.G.GLWeightTheory.flt_L (GLCoord R n) 1) (-wDegHom w)).F (th - dw) := by
     intro m
     have h1 := ((flt_le_valS LL (S ∪ w) F th).1 hF) m
     have h2 := hB m
     by_cases hm : (wDeg w m : ℤ) ≤ dw
-    · refine (flt_L (GLCoord R n) 1).anti ?_ h1
+    · refine (Formalism.MainNotions.G.GLWeightTheory.flt_L (GLCoord R n) 1).anti ?_ h1
       rw [AddMonoidHom.neg_apply, wDegHom_eq]
       simp only [AddMonoidHom.zero_apply]
       omega
@@ -442,7 +442,7 @@ theorem valS_wCoeff_ge (w : Set ι) (hw : ∀ l ∈ w, LL.vec l = true) (hd : Di
 
   have hD : untw w (lastIdx n) (twistSub LL (S ∪ w) (lastIdx n) F) ∈
       (laurentCoeffFiltration R n (ι × Fin n) 1).F (th - dw) := by
-    refine flt_hom_mem (flt_L (GLCoord R n) 1) (laurentCoeffFiltration R n (ι × Fin n) 1) (untw w (lastIdx n)) (-wDegHom w) ?_ ?_ hC
+    refine flt_hom_mem (Formalism.MainNotions.G.GLWeightTheory.flt_L (GLCoord R n) 1) (laurentCoeffFiltration R n (ι × Fin n) 1) (untw w (lastIdx n)) (-wDegHom w) ?_ ?_ hC
     · intro t b hb
       rw [untw_C]
       exact flt_C_mem hb
@@ -457,7 +457,7 @@ theorem valS_wCoeff_ge (w : Set ι) (hw : ∀ l ∈ w, LL.vec l = true) (hd : Di
         exact flt_twistMat_mem R n (lastIdx n) (-1) 1 (-1) (by norm_num) (by norm_num) b v.2
       · apply flt_monomial_mem
         rw [AddMonoidHom.neg_apply, wDegHom_single, ite_eq_right hv]
-        simpa using (flt_L (GLCoord R n) 1).one_mem
+        simpa using (Formalism.MainNotions.G.GLWeightTheory.flt_L (GLCoord R n) 1).one_mem
   rw [← RingHom.comp_apply, untw_comp LL S w hw hd] at hD
   rw [flt_le_valS, twistSub_wCoeff LL S w hd]
   exact wCoeff_mem w M hD

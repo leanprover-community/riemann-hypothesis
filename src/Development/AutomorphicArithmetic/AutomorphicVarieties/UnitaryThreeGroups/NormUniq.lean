@@ -32,10 +32,6 @@ theorem aux2 {R : Type u_1} [CommRing R] (m : ℕ) :
   · simp [h]
   · simp [h, Ne.symm h]
 
-noncomputable def Jgl (R : Type u_1) [CommRing R] (m : ℕ) : GL (Fin m) R :=
-  { val := Jmat R m, inv := Jmat R m, val_inv := aux2 m, inv_val := aux2 m :
-    (Matrix (Fin m) (Fin m) R)ˣ }
-
 theorem aux4 {n : Type} [Fintype n] [DecidableEq n] {R : Type u_1} [CommRing R] (g : GL n R) :
     (↑g⁻¹ : Matrix n n R).transpose * (↑g : Matrix n n R).transpose = (1 : Matrix n n R) := by
   rw [← Matrix.transpose_mul, Units.mul_inv, Matrix.transpose_one]
@@ -50,7 +46,7 @@ noncomputable def trInv {n : Type} [Fintype n] [DecidableEq n] {R : Type u_1} [C
     val_inv := aux4 g, inv_val := aux5 g : (Matrix n n R)ˣ }
 
 noncomputable def theta {m : ℕ} {R : Type u_1} [CommRing R] (g : GL (Fin m) R) : GL (Fin m) R :=
-  Jgl R m * trInv g * Jgl R m
+  UpperTheory.V.U3.Jgl R m * trInv g * UpperTheory.V.U3.Jgl R m
 
 private theorem Jmat_transpose {R : Type u_1} [CommRing R] (m : ℕ) :
     (Jmat R m).transpose = Jmat R m := by
@@ -62,10 +58,10 @@ private theorem Jmat_transpose {R : Type u_1} [CommRing R] (m : ℕ) :
     · rintro rfl; simp
   simp [this]
 
-private theorem Jgl_mul_self {R : Type u_1} [CommRing R] (m : ℕ) : Jgl R m * Jgl R m = 1 :=
+private theorem Jgl_mul_self {R : Type u_1} [CommRing R] (m : ℕ) : UpperTheory.V.U3.Jgl R m * UpperTheory.V.U3.Jgl R m = 1 :=
   Units.ext (aux2 m)
 
-private theorem Jgl_inv {R : Type u_1} [CommRing R] (m : ℕ) : (Jgl R m)⁻¹ = Jgl R m :=
+private theorem Jgl_inv {R : Type u_1} [CommRing R] (m : ℕ) : (UpperTheory.V.U3.Jgl R m)⁻¹ = UpperTheory.V.U3.Jgl R m :=
   inv_eq_of_mul_eq_one_left (Jgl_mul_self m)
 
 private theorem trInv_mul {n : Type} [Fintype n] [DecidableEq n] {R : Type u_1} [CommRing R]
@@ -82,16 +78,16 @@ private theorem trInv_trInv {n : Type} [Fintype n] [DecidableEq n] {R : Type u_1
   change ((↑g : Matrix n n R).transpose).transpose = ↑g
   exact Matrix.transpose_transpose _
 
-private theorem trInv_Jgl {R : Type u_1} [CommRing R] (m : ℕ) : trInv (Jgl R m) = Jgl R m := by
+private theorem trInv_Jgl {R : Type u_1} [CommRing R] (m : ℕ) : trInv (UpperTheory.V.U3.Jgl R m) = UpperTheory.V.U3.Jgl R m := by
   apply Units.ext
-  change (((Jgl R m)⁻¹ : GL (Fin m) R) : Matrix (Fin m) (Fin m) R).transpose = Jmat R m
+  change (((UpperTheory.V.U3.Jgl R m)⁻¹ : GL (Fin m) R) : Matrix (Fin m) (Fin m) R).transpose = Jmat R m
   rw [Jgl_inv]
   exact Jmat_transpose m
 
 theorem aux8 {m : ℕ} {R : Type u_1} [CommRing R] (g : GL (Fin m) R) : theta (theta g) = g := by
   have hJ := Jgl_mul_self (R := R) m
   simp only [theta, trInv_mul, trInv_trInv, trInv_Jgl]
-  calc _ = (Jgl R m * Jgl R m) * g * (Jgl R m * Jgl R m) * (Jgl R m * Jgl R m) := by
+  calc _ = (UpperTheory.V.U3.Jgl R m * UpperTheory.V.U3.Jgl R m) * g * (UpperTheory.V.U3.Jgl R m * UpperTheory.V.U3.Jgl R m) * (UpperTheory.V.U3.Jgl R m * UpperTheory.V.U3.Jgl R m) := by
         simp only [hJ, mul_one, one_mul]
         simp only [mul_assoc, hJ, mul_one]
         simp only [← mul_assoc, hJ, one_mul]
@@ -101,7 +97,7 @@ theorem aux9 {m : ℕ} {R : Type u_1} [CommRing R] (g h : GL (Fin m) R) :
     theta (g * h) = theta g * theta h := by
   have hJ := Jgl_mul_self (R := R) m
   simp only [theta, trInv_mul]
-  calc _ = Jgl R m * trInv g * 1 * trInv h * Jgl R m := by simp only [mul_one, mul_assoc]
+  calc _ = UpperTheory.V.U3.Jgl R m * trInv g * 1 * trInv h * UpperTheory.V.U3.Jgl R m := by simp only [mul_one, mul_assoc]
     _ = _ := by rw [← hJ]; simp only [mul_assoc]
 
 noncomputable def thetaAut (m : ℕ) (R : Type u_1) [CommRing R] : MulAut (GL (Fin m) R) :=

@@ -52,8 +52,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped CategoryTheory.Obj
 open GlobalTheory.UU
 
-noncomputable section
-
 namespace GlobalTheory.GtCount
 
 open GlobalTheory.TorusExt

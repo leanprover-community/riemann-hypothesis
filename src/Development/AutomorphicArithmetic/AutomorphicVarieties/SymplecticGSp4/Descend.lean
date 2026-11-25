@@ -278,21 +278,10 @@ private theorem not_both (A : ValuationSubring Ω) {m n : ℕ} (hc : m.Coprime n
     exact h0
   have ha : A.valuation ((m.gcdA n : ℤ) : Ω) ≤ 1 := (A.valuation_le_one_iff _).mpr (intCast_mem A _)
   have hb2 : A.valuation ((m.gcdB n : ℤ) : Ω) ≤ 1 := (A.valuation_le_one_iff _).mpr (intCast_mem A _)
-  have h1 : A.valuation ((m : Ω) * ((m.gcdA n : ℤ) : Ω)) < 1 := by
-    rw [map_mul]
-    calc A.valuation (m : Ω) * A.valuation ((m.gcdA n : ℤ) : Ω) ≤ A.valuation (m : Ω) * 1 := by
-          gcongr
-      _ = A.valuation (m : Ω) := mul_one _
-      _ < 1 := hm
-  have h2 : A.valuation ((n : Ω) * ((m.gcdB n : ℤ) : Ω)) < 1 := by
-    rw [map_mul]
-    calc A.valuation (n : Ω) * A.valuation ((m.gcdB n : ℤ) : Ω) ≤ A.valuation (n : Ω) * 1 := by
-          gcongr
-      _ = A.valuation (n : Ω) := mul_one _
-      _ < 1 := hn
   have h3 : A.valuation (1 : Ω) < 1 := by
     rw [hb']
-    exact lt_of_le_of_lt (A.valuation.map_add _ _) (max_lt h1 h2)
+    exact A.valuation.map_add_lt ((map_mul _ _ _).trans_lt (mul_lt_one_of_lt_of_le hm ha))
+      ((map_mul _ _ _).trans_lt (mul_lt_one_of_lt_of_le hn hb2))
   rw [map_one] at h3
   exact lt_irrefl _ h3
 

@@ -50,27 +50,8 @@ section Lin
 
 theorem linInd_frac {O LL V ι : Type} [CommRing O] [IsDomain O] [Field LL] [Algebra O LL]
     [IsFractionRing O LL] [AddCommGroup V] [Module LL V] [Module O V] [IsScalarTower O LL V]
-    [Fintype ι] (b : ι → V) (hb : LinearIndependent O b) : LinearIndependent LL b := by
-  refine Fintype.linearIndependent_iff.2 fun x hx i => ?_
-  obtain ⟨s, hs⟩ := IsLocalization.exist_integer_multiples_of_finset (nonZeroDivisors O)
-    (Finset.univ.image x)
-  have ha : ∀ j, ∃ a : O, algebraMap O LL a = (s : O) • x j := fun j =>
-    hs (x j) (Finset.mem_image_of_mem _ (Finset.mem_univ j))
-  choose a ha using ha
-  have h0 : ∑ j, a j • b j = 0 := by
-    have : ∑ j, ((s : O) • x j) • b j = (s : O) • ∑ j, x j • b j := by
-      rw [Finset.smul_sum]; simp only [smul_assoc]
-    rw [hx, smul_zero] at this
-    rw [← this]
-    refine Finset.sum_congr rfl fun j _ => ?_
-    rw [← ha j, algebraMap_smul]
-  have h1 := Fintype.linearIndependent_iff.1 hb a h0 i
-  have h2 := ha i
-  rw [h1, map_zero] at h2
-  have hs0 : (algebraMap O LL (s : O)) ≠ 0 :=
-    IsFractionRing.to_map_ne_zero_of_mem_nonZeroDivisors s.2
-  rw [Algebra.smul_def] at h2
-  exact (mul_eq_zero.1 h2.symm).resolve_left hs0
+    [Fintype ι] (b : ι → V) (hb : LinearIndependent O b) : LinearIndependent LL b :=
+  (LinearIndependent.iff_fractionRing O LL).1 hb
 
 end Lin
 

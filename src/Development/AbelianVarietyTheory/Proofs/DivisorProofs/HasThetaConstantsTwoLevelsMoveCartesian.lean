@@ -129,26 +129,6 @@ variable {S S' : Scheme.{0}} {G : Over S} [GrpObj G] {A : Over S'} [GrpObj A]
   {T : Over S'} {T₀ : Over S} (τ : T.left ⟶ T₀.left) (hτ : τ ≫ T₀.hom = T.hom ≫ f)
 include hp hτ
 
-theorem torsion_up [IsIso τ] {n : ℕ} (x : T ⟶ A) (hx : x ^ n = 1) :
-    ∃ x₀ : T₀ ⟶ G, τ ≫ x₀.left = x.left ≫ φ ∧ x₀ ^ n = 1 := by
-  have hw : (inv τ ≫ x.left ≫ φ) ≫ G.hom = T₀.hom := by
-    rw [Category.assoc, Category.assoc, hp.1.w, ← Category.assoc x.left, Over.w x, ← hτ, IsIso.inv_hom_id_assoc]
-  have h1 : τ ≫ (Over.homMk (inv τ ≫ x.left ≫ φ) hw : T₀ ⟶ G).left = x.left ≫ φ := by simp
-  refine ⟨Over.homMk (inv τ ≫ x.left ≫ φ) hw, h1, ?_⟩
-  apply Over.OverMorphism.ext
-  apply (cancel_epi τ).1
-  rw [over_pow hp τ hτ h1 n, hx, over_one hp τ hτ]
-
-theorem torsion_down {n : ℕ} (x₀ : T₀ ⟶ G) (hx : x₀ ^ n = 1) :
-    ∃ x : T ⟶ A, τ ≫ x₀.left = x.left ≫ φ ∧ x ^ n = 1 := by
-  have hc : (τ ≫ x₀.left) ≫ G.hom = T.hom ≫ f := by rw [Category.assoc, Over.w x₀, hτ]
-  have h1 : τ ≫ x₀.left = (Over.homMk (hp.1.lift _ _ hc) (hp.1.lift_snd _ _ hc) : T ⟶ A).left ≫ φ := by simp
-  refine ⟨Over.homMk (hp.1.lift _ _ hc) (hp.1.lift_snd _ _ hc), h1, ?_⟩
-  apply Over.OverMorphism.ext
-  apply hp.1.hom_ext
-  · rw [← over_pow hp τ hτ h1 n, hx, over_one hp τ hτ]
-  · rw [Over.w, Over.w]
-
 theorem isGenSec_down [IsIso τ] {L₀ : LB G.left} {L₁ : LB A.left} {w : LB.Iso L₁ (L₀.pull φ)} (hw : w.IsGen)
     (hL₀ : L₀.IsLB) (hL₁ : L₁.IsLB) {a : ℤ} {th : LB.Sec (LPow A L₁ a T)} {th₀ : LB.Sec (LPow G L₀ a T₀)}
     (h : SecRel hp τ hτ w th th₀) (hg : IsGenSec G L₀ a th₀) : IsGenSec A L₁ a th := by
@@ -188,7 +168,7 @@ theorem thList_up (hw : w.IsGen) (hL₀ : L₀.IsLB) (hL₁ : L₁.IsLB) (hr : I
     ∃ pt₀, ThList G L₀ ρ₀ m (x ≫ f) θ₀ pt₀ c := by
   obtain ⟨hinj, hth, hall⟩ := H
   have hx : ∀ a, ∃ p₀ : Over.mk (x ≫ f) ⟶ G, idT f x (x ≫ f) ≫ p₀.left = (pt a).left ≫ φ ∧ p₀ ^ (m ^ 2) = 1 :=
-    fun a => torsion_up hp (idT f x (x ≫ f)) (idT_w rfl) (pt a) (hth a).1
+    fun a => GlobalTheory.Ex.OneGen.exists_torsion_up hp (idT f x (x ≫ f)) (idT_w rfl) (pt a) (hth a).1
   choose pt₀ hpt₀ hpow using hx
   have e : ∀ a, (pt₀ a).left = (pt a).left ≫ φ := fun a => by simpa [idT] using hpt₀ a
   refine ⟨pt₀, ?_, ?_, ?_⟩
@@ -202,7 +182,7 @@ theorem thList_up (hw : w.IsGen) (hL₀ : L₀.IsLB) (hL₁ : L₁.IsLB) (hr : I
     have := ThG.up hp (idT f x (x ≫ f)) (idT_w rfl) hw hL₀ hL₁ hr (hpt₀ a) (hpow a) hθ (hth a)
     simpa [idT] using this
   · intro K' _ _ i p hp2
-    obtain ⟨q, hq, hqn⟩ := torsion_down hp (idT f (spMap i ≫ x) (spMap i ≫ x ≫ f))
+    obtain ⟨q, hq, hqn⟩ := GlobalTheory.Ex.OneGen.exists_torsion_down hp (idT f (spMap i ≫ x) (spMap i ≫ x ≫ f))
       (idT_w (Category.assoc _ _ _).symm) p hp2
     obtain ⟨a, ha⟩ := hall K' i q hqn
     refine ⟨a, ?_⟩
@@ -215,7 +195,7 @@ theorem thList_down (hw : w.IsGen) (hL₀ : L₀.IsLB) (hL₁ : L₁.IsLB) (hr :
     ∃ pt, ThList A L₁ ρ₁ m x θ pt c := by
   obtain ⟨hinj, hth, hall⟩ := H
   have hx : ∀ a, ∃ p : Over.mk x ⟶ A, idT f x (x ≫ f) ≫ (pt₀ a).left = p.left ≫ φ ∧ p ^ (m ^ 2) = 1 :=
-    fun a => torsion_down hp (idT f x (x ≫ f)) (idT_w rfl) (pt₀ a) (hth a).1
+    fun a => GlobalTheory.Ex.OneGen.exists_torsion_down hp (idT f x (x ≫ f)) (idT_w rfl) (pt₀ a) (hth a).1
   choose pt hpt hpow using hx
   have e : ∀ a, (pt₀ a).left = (pt a).left ≫ φ := fun a => by simpa [idT] using hpt a
   refine ⟨pt, ?_, ?_, ?_⟩
@@ -227,7 +207,7 @@ theorem thList_down (hw : w.IsGen) (hL₀ : L₀.IsLB) (hL₁ : L₁.IsLB) (hr :
     have := ThG.move hp (idT f x (x ≫ f)) (idT_w rfl) hw hL₀ hL₁ hr (hpt a) (hpow a) hθ (hth a)
     simpa [idT] using this
   · intro K' _ _ i p hp2
-    obtain ⟨q, hq, hqn⟩ := torsion_up hp (idT f (spMap i ≫ x) (spMap i ≫ x ≫ f))
+    obtain ⟨q, hq, hqn⟩ := GlobalTheory.Ex.OneGen.exists_torsion_up hp (idT f (spMap i ≫ x) (spMap i ≫ x ≫ f))
       (idT_w (Category.assoc _ _ _).symm) p hp2
     obtain ⟨a, ha⟩ := hall K' i q hqn
     refine ⟨a, ?_⟩

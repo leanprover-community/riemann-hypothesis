@@ -146,12 +146,6 @@ theorem zhDmin : ZhDmin := by
   · simp; omega
   · simp; omega
 
-theorem symmetricScalarBlockMatrix_mul {p s : ℕ} (A A' : Matrix (Fin p) (Fin p) ℂ) (B B' : Matrix (Fin p) (Fin s) ℂ)
-    (C C' : Matrix (Fin s) (Fin p) ℂ) (D D' : Matrix (Fin s) (Fin s) ℂ) :
-    blk2 A B C D * blk2 A' B' C' D' = blk2 (A * A' + B * C') (A * B' + B * D') (C * A' + D * C') (C * B' + D * D') := by
-  simp only [blk2, Matrix.reindex_apply]
-  rw [Matrix.submatrix_mul_equiv, Matrix.fromBlocks_multiply]
-
 theorem block2_det_lower_triangular {p s : ℕ} (A : Matrix (Fin p) (Fin p) ℂ) (C : Matrix (Fin s) (Fin p) ℂ)
     (D : Matrix (Fin s) (Fin s) ℂ) : (blk2 A 0 C D).det = A.det * D.det := by
   simp only [blk2]
@@ -467,10 +461,6 @@ theorem skewOf_apply_lt {n : ℕ} (q : (G.UT n → ℂ) × (Fin n → ℝ)) (a b
     skewOf q a b = q.1 ⟨(a, b), h⟩ := by
   simp [skewOf, G.strictUpper, h, not_lt.mpr h.le, ne_of_lt h]
 
-theorem skewOf_apply_diag {n : ℕ} (q : (G.UT n → ℂ) × (Fin n → ℝ)) (a : Fin n) :
-    skewOf q a a = Complex.I * (q.2 a : ℂ) := by
-  simp [skewOf, G.strictUpper]
-
 theorem skewOf_inj {n : ℕ} (q q' : (G.UT n → ℂ) × (Fin n → ℝ)) (h : skewOf q = skewOf q') : q = q' := by
   obtain ⟨u, d⟩ := q
   obtain ⟨u', d'⟩ := q'
@@ -482,7 +472,7 @@ theorem skewOf_inj {n : ℕ} (q q' : (G.UT n → ℂ) × (Fin n → ℝ)) (h : s
   have h2 : d = d' := by
     funext i
     have := congrFun (congrFun h i) i
-    simp only [skewOf_apply_diag] at this
+    simp only [_root_.Formalism.FourierDecayAlt.P.Ux2.skewOf_diag] at this
     have h3 := mul_left_cancel₀ Complex.I_ne_zero this
     simpa using h3
   rw [h1, h2]
@@ -583,7 +573,7 @@ theorem skewOf_coords {n : ℕ} (S : Matrix (Fin n) (Fin n) ℂ) (hS : Sᴴ = -S
   rcases lt_trichotomy a b with h | rfl | h
   · rw [skewOf_apply_lt _ _ _ h]
     rfl
-  · rw [skewOf_apply_diag]
+  · rw [_root_.Formalism.FourierDecayAlt.P.Ux2.skewOf_diag]
     have h1 : star (S a a) = -S a a := by
       simpa [Matrix.conjTranspose_apply] using congrFun (congrFun hS a) a
     have h2 := congrArg Complex.re h1

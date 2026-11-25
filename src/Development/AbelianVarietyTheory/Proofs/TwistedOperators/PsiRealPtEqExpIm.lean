@@ -453,7 +453,10 @@ theorem gram_inv_eq (V : HSp D) (b : Matrix (Fin V.rank) (Fin V.rank) D.host.E) 
   exact Matrix.inv_eq_right_inv h2
 
 theorem infPart_realPt (S T : HSp D) (X : Matrix (Fin T.rank) (Fin S.rank) D.host.E) (i : Fin T.rank) (j : Fin S.rank) :
-    infPart D (realPt S T X i j) = infPart D (incA D (X i j)) := rfl
+    infPart D (realPt S T X i j) = infPart D (incA D (X i j)) := by
+  show infPart D (pairA D.host.F 1 0 ⊗ₜ[D.host.F] X i j) = infPart D ((1 : AF D.host.F) ⊗ₜ[D.host.F] X i j)
+  rw [infPart, AlgHom.toRingHom_eq_coe, RingHom.coe_coe, Algebra.TensorProduct.map_tmul, Algebra.TensorProduct.map_tmul, map_one]
+  rfl
 
 theorem sum_two_re_tauE (D : D7) (e : D.host.E) :
     ∑ t, (((2 * (tauE D t e).re : ℝ)) : ℂ) = ((Algebra.trace ℚ D.host.E e : ℚ) : ℂ) := by

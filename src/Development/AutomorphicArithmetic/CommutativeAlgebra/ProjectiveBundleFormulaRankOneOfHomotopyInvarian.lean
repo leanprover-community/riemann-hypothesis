@@ -154,7 +154,7 @@ private theorem hT_map {A B : Type} [One A] [One B] {n : ℕ} (f : A → B) (hf 
   unfold hT
   split_ifs <;> simp [hf]
 
-private def kap : Cn ⟶ Cn where
+private def c1 (E : Spc) : E ⟶ Cn where
   app k :=
     { app := fun T => TypeCat.ofHom fun _ _ => 1
       naturality := fun T T' g => by
@@ -165,7 +165,7 @@ private def kap : Cn ⟶ Cn where
     ext T v
     rfl
 
-private def Hc : SimplicialObject.Homotopy (𝟙 Cn) kap where
+private def Hc : SimplicialObject.Homotopy (𝟙 Cn) (c1 Cn) where
   h {n} i :=
     { app := fun T => TypeCat.ofHom (hT i)
       naturality := fun T T' g => by
@@ -349,17 +349,6 @@ private theorem comp_triv {E E' : Spc} (f : E ⟶ E') : f ≫ triv E' 1 = triv E
 private theorem phi_pr : phi ≫ PGL.pr 1 = triv Cn 1 := by
   ext k T v
   rfl
-
-private def c1 (E : Spc) : E ⟶ Cn where
-  app k :=
-    { app := fun T => TypeCat.ofHom fun _ _ => 1
-      naturality := fun T T' g => by
-        ext v
-        funext j
-        exact (map_one (Units.map g.unop.appTop.hom.toMonoidHom)).symm }
-  naturality k k' θ := by
-    ext T v
-    rfl
 
 private def sec1 (E : Spc) : E ⟶ X1 E :=
   pullback.lift (𝟙 E) (c1 E ≫ phi) (by rw [Category.assoc, phi_pr, comp_triv, comp_triv])

@@ -321,12 +321,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.MainNotions.N GlobalTheory.GalOfCusp UpperTheory.V UpperTheory.V.Af UpperTheory.V.HV GlobalTheory.Ord2 GlobalTheory.KZ PowerSeries
 
-namespace GlobalTheory.InertiaFieldUnram
-
-theorem valuation_eq_zpow : ∀ (l : ℕ) [Fact l.Prime] (Ω : Type) [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (A : ValuationSubring Ω), OverL l A → ∀ x : Ω, x ≠ 0 → (∀ s ∈ Ine (F := ℚ) A, s x = x) → ∃ k : ℤ, A.valuation x = A.valuation (l : Ω) ^ k :=
-  GlobalTheory.InertiaFixedValue.valuation_eq_zpow_of_ine_fixed
-
-end GlobalTheory.InertiaFieldUnram
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.FoundationProofs.InertiaFixedValuationEqZpowPrimeValuation =====
@@ -418,7 +412,7 @@ theorem exists_poly_of_fixed : ∀ (l : ℕ) [Fact l.Prime] (Ω : Type) [Field �
     have hK : ∀ x, x ∈ K ↔ ∀ s ∈ Ine (F := ℚ) A, s x = x := fun x =>
       IntermediateField.mem_fixedField_iff _ x
     obtain ⟨P, hP, hPe⟩ := _root_.GlobalTheory.exists_integral_poly_of_primitiveRoot_totally_ramified l Ω A hl K
-      (fun x hx hx0 => _root_.GlobalTheory.InertiaFieldUnram.valuation_eq_zpow l Ω A hA x hx0 ((hK x).1 hx)) m hm ζ hζ
+      (fun x hx hx0 => _root_.GlobalTheory.InertiaFixedValue.valuation_eq_zpow_of_ine_fixed l Ω A hA x hx0 ((hK x).1 hx)) m hm ζ hζ
       (_root_.GlobalTheory.valuation_primitiveRoot_sub_one_pow_totient l Ω A m hm ζ hζ) u hu ⟨Q, fun x hx => (hK x).2 (hQ x hx), hQe⟩
     exact ⟨P, fun x hx => ⟨(hP x hx).1, (hK x).1 (hP x hx).2⟩, hPe⟩
 

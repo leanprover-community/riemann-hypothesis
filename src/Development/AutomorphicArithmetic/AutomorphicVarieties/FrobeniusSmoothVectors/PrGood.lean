@@ -7,12 +7,6 @@ import Mathlib.RingTheory.AdicCompletion.Noetherian
 
 open IsLocalRing Matrix UpperTheory.V.Alg UpperTheory.V.U3 UpperTheory.V.Fr
 
-private theorem two_ne {l : ℕ} [Fact l.Prime] {k : Type} [Field k] [CharP k l] (h : l ≠ 2) : (2 : k) ≠ 0 := by
-  intro h2
-  have h3 : ((2 : ℕ) : k) = 0 := by simpa using h2
-  rw [CharP.cast_eq_zero_iff k l] at h3
-  exact h ((Nat.prime_dvd_prime_iff_eq Fact.out Nat.prime_two).1 h3)
-
 private theorem sq_facts {k : Type} [Field k] {t : kˣ} (h : t ^ 2 ≠ 1) :
     (t : k) ≠ (t : k)⁻¹ ∧ (t : k) ≠ 1 ∧ (t : k)⁻¹ ≠ 1 := by
   have h0 : (t : k) ≠ 0 := t.ne_zero
@@ -47,7 +41,7 @@ private theorem diff_inj {k : Type} [Field k] (h2 : (2 : k) ≠ 0) {t : kˣ} (h 
 theorem UpperTheory.V.Fr.pr_good :
     ∀ {l : ℕ} [Fact l.Prime] {k : Type} [Field k] [CharP k l] {F : Frame l k} {C₀ n : ℕ}, F.Ok C₀ → (n = 2 ∨ n = 3) → ∀ (K : Type) [Field K] (φ : k →+* K) (ρ : NRep F n K), ρ.IsBar φ → ρ.Good ∧ lieT K n ≠ 0 ∧ thetaLie (lieT K n) = lieT K n := by
   intro l _ k _ _ F C₀ n hF hn K _ φ ρ hρ
-  have h2 : (2 : k) ≠ 0 := two_ne hF.l_odd
+  have h2 : (2 : k) ≠ 0 := Ring.two_ne_zero (ringChar.eq k l ▸ hF.l_odd)
   have hs : F.Ψ (F.star F.g0) = (F.Ψ F.g0)⁻¹ := by
     have e : ((F.star F.g0 : F.G0) : F.Γ) = F.c * (F.g0 : F.Γ)⁻¹ * F.c⁻¹ := rfl
     rw [e, map_mul, map_mul, map_inv, map_inv, hF.Ψ_c]

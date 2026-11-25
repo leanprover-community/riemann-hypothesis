@@ -16,8 +16,6 @@ open GlobalTheory.KZ
 open UpperHalfPlane ModularForm
 open scoped Manifold
 
-noncomputable section
-
 namespace GlobalTheory.KZ.LevelOne
 
 theorem const_of_invariant_bounded :

@@ -291,24 +291,6 @@ theorem first_orbit_mul_fixed {γ r : d.G}
     rw [inFrame_mul, Matrix.mul_apply]
     simp only [hx, Matrix.one_apply, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   simp only [FirstOrbit, e]
-theorem first_orbit_parabolic_invariant {p g : d.G} (hp : p ∈ par2 σ d.Y) :
-  FirstOrbit L (p * g) ↔
-  FirstOrbit L g := by
-  have h21 : ∀ {q : d.G}, q ∈ par2 σ d.Y → ∀ i j, inFrame d.b q (Sum.inr i) (Sum.inl j) = 0 := by
-    intro q hq i j
-    have := (kunf.mem_stabiliser_iff_frame_lower_block d.ok.frame q).1 hq
-    have := congrFun (congrFun this i) j
-    simpa [Matrix.toBlocks₂₁] using this
-  have key : ∀ {q γ : d.G},
-    q ∈ par2 σ d.Y → FirstOrbit L γ →
-    FirstOrbit L (q * γ) := by
-    intro q γ hq hγ i
-    have hγ' : ∀ k, inFrame d.b γ (Sum.inr k) (Sum.inl L.i₀) = 0 := hγ
-    rw [inFrame_mul, Matrix.mul_apply, Fintype.sum_sum_type]
-    simp [h21 hq, hγ']
-  refine ⟨fun h => ?_, key hp⟩
-  have := key (inv_mem hp) h
-  rwa [inv_mul_cancel_left] at this
 theorem eisenstein_second_term_reindex {M : Type} [AddCommMonoid M] [TopologicalSpace M] (H : ℂ → M) {s₁ : ℂ} {f : d.G →
   ℂ}
     (hf : IsSec d.K d.χ s₁ f) (z : ℂ) {r : d.G} (hr : r ∈ rat2 σ d.Y)
@@ -350,7 +332,7 @@ theorem eisenstein_second_term_reindex {M : Type} [AddCommMonoid M] [Topological
     (e0 q)) := by
     intro q
     obtain ⟨p, hp, -, he⟩ := hrep q
-    rw [he, first_orbit_parabolic_invariant hp, first_orbit_mul_fixed hx]
+    rw [he, _root_.PositivityTheory.SiegelWeilFormula.Act.C6.first_orbit_parabolic_left hp, first_orbit_mul_fixed hx]
   let e : {q : Cs_k d // ¬
     FirstOrbit L (rep_k q)}
     ≃ {q : Cs_k d // ¬
@@ -494,32 +476,22 @@ theorem ratV_incl_k {v : Fin L.n → AE F E} (hv : v ∈ L.ratV) :
   | add v w _ _ hv hw =>
     obtain ⟨x, rfl⟩ := hv; obtain ⟨x', rfl⟩ := hw; exact ⟨x + x', by ext i; simp⟩
   | neg v _ hv => obtain ⟨x, rfl⟩ := hv; exact ⟨-x, by ext i; simp⟩
-theorem hz_uA_i0i0_k (u : Fin L.n → AE F E) : uA_k L u L.i₀ L.i₀ = 1 := by
-  simp [uA_k, Matrix.sum_apply, Matrix.single, ComplexParameterFamilyContinuity.em_ne_k L]
-theorem hz_uA_i0em_k (u : Fin L.n → AE F E) (l : Fin L.n) : uA_k L u L.i₀ (L.em l) = u l := by
-  simp [uA_k, Matrix.sum_apply, Matrix.single, em_ne'_k L, L.inj.eq_iff]
 theorem unipotent_block_entry_zero (u : Fin L.n → AE F E) (k : Fin L.n) : uA_k L u (L.em k) L.i₀ = 0 := by
   simp [uA_k, Matrix.sum_apply, Matrix.single, ComplexParameterFamilyContinuity.em_ne_k L, em_ne'_k L]
-theorem hz_uA_emem_k (u : Fin L.n → AE F E) (k l : Fin L.n) :
-    uA_k L u (L.em k) (L.em l) = if k = l then 1 else 0 := by
-  simp [uA_k, Matrix.sum_apply, Matrix.single, Matrix.one_apply, em_ne'_k L,
-    L.inj.eq_iff]
 def Dm_k (L : LD_k d) (u : Fin L.n → AE F E) : Matrix (Fin d.n) (Fin d.n) (AE F E) := (uA_k L (-u))ᵀ.map (cA σ)
 theorem hz_D_i0i0_k (u : Fin L.n → AE F E) : Dm_k L u L.i₀ L.i₀ = 1 := by
-  simp [Dm_k, hz_uA_i0i0_k]
+  simp [Dm_k, _root_.PositivityTheory.SiegelWeilFormula.Act.C6.B.unipotent_base_base_entry]
 theorem hz_D_i0em_k (u : Fin L.n → AE F E) (l : Fin L.n) : Dm_k L u L.i₀ (L.em l) = 0 := by
   simp [Dm_k, unipotent_block_entry_zero]
 theorem derivation_block_entry (u : Fin L.n → AE F E) (k : Fin L.n) : Dm_k L u (L.em k) L.i₀ = -cA σ (u k) := by
-  simp [Dm_k, hz_uA_i0em_k]
+  simp [Dm_k, _root_.PositivityTheory.SiegelWeilFormula.Act.C6.B.unipotent_base_row_entry]
 theorem hz_D_emem_k (u : Fin L.n → AE F E) (k l : Fin L.n) : Dm_k L u (L.em k) (L.em l) = if k = l then 1 else 0 := by
-  simp only [Dm_k, Matrix.map_apply, transpose_apply, hz_uA_emem_k]
+  simp only [Dm_k, Matrix.map_apply, transpose_apply, _root_.PositivityTheory.SiegelWeilFormula.Act.C6.B.uA_em_em_k]
   by_cases hkl : k = l
   · subst hkl; simp
   · simp [hkl, Ne.symm hkl]
 theorem hz_aB_i0i0_k (x : AF F) : aB_k L δ x L.i₀ L.i₀ = x • inclR (F := F) (AF F) δ := by
   simp [aB_k, Matrix.single]
-theorem hz_aB_i0em_k (x : AF F) (l : Fin L.n) : aB_k L δ x L.i₀ (L.em l) = 0 := by
-  simp [aB_k, Matrix.single, em_ne'_k L]
 theorem centre_block_entry_zero (x : AF F) (k : Fin L.n) : aB_k L δ x (L.em k) L.i₀ = 0 := by
   simp [aB_k, Matrix.single, em_ne'_k L]
 theorem hz_aB_emem_k (x : AF F) (k l : Fin L.n) : aB_k L δ x (L.em k) (L.em l) = 0 := by
@@ -586,9 +558,9 @@ theorem heis'_k (h : Hyp_k L nb uM nb' w₁ cM δ) :
         linear_combination (-(u₀ l * cA σ (b l))) * he
       ext i j
       rcases idx_k L i with rfl | ⟨k, rfl⟩ <;> rcases idx_k L j with rfl | ⟨l, rfl⟩ <;>
-        simp only [Matrix.add_apply, Matrix.mul_apply, sum_split_k L, hz_uA_i0i0_k, hz_uA_i0em_k,
-          unipotent_block_entry_zero, hz_uA_emem_k,
-          hz_D_i0i0_k, hz_D_i0em_k, derivation_block_entry, hz_D_emem_k, hz_aB_i0i0_k, hz_aB_i0em_k,
+        simp only [Matrix.add_apply, Matrix.mul_apply, sum_split_k L, _root_.PositivityTheory.SiegelWeilFormula.Act.C6.B.unipotent_base_base_entry, _root_.PositivityTheory.SiegelWeilFormula.Act.C6.B.unipotent_base_row_entry,
+          unipotent_block_entry_zero, _root_.PositivityTheory.SiegelWeilFormula.Act.C6.B.uA_em_em_k,
+          hz_D_i0i0_k, hz_D_i0em_k, derivation_block_entry, hz_D_emem_k, hz_aB_i0i0_k, _root_.PositivityTheory.SiegelWeilFormula.Act.C6.B.centre_base_row_entry,
             centre_block_entry_zero, hz_aB_emem_k, sB_i0i0_k,
           sB_i0em_k, section_entry_embedded_row, sB_emem_k, Pi.add_apply, map_add, mul_one, one_mul, mul_zero, zero_mul,
             add_zero, zero_add,
@@ -623,13 +595,6 @@ theorem aB_add_k (δ : E) (a a' : AF F) : aB_k L δ (a + a') = aB_k L δ a + aB_
 theorem sB_add_k (b b' : Fin L.n → AE F E) : sB_k R L (b + b') = sB_k R L b + sB_k R L b' := by
   simp only [sB_k, Pi.add_apply, map_add (f := _), mul_add, neg_add, Matrix.single_add, ← Finset.sum_add_distrib]
   refine Finset.sum_congr rfl fun j _ => by abel
-theorem index_cases_sum (r : Fin d.n ⊕ Fin d.n) : r = Sum.inl L.i₀ ∨ r = Sum.inr L.i₀ ∨ ∃ a,
-  r = Sum.map L.em L.em a := by
-  rcases r with i | i <;> rcases idx_k L i with rfl | ⟨k, rfl⟩
-  · exact Or.inl rfl
-  · exact Or.inr (Or.inr ⟨Sum.inl k, rfl⟩)
-  · exact Or.inr (Or.inl rfl)
-  · exact Or.inr (Or.inr ⟨Sum.inr k, rfl⟩)
 def padB_k (β : Matrix (Fin L.n) (Fin L.n) (AE F E)) : Matrix (Fin d.n) (Fin d.n) (AE F E) :=
   ∑ k, ∑ l, Matrix.single (L.em k) (L.em l) (β k l)
 theorem pad_block_row_zero (β : Matrix (Fin L.n) (Fin L.n) (AE F E)) (j : Fin d.n) : padB_k L β L.i₀ j = 0 := by
@@ -656,12 +621,12 @@ theorem inFrame_jn_k (h : Hyp_k L nb uM nb' w₁ cM δ) (β : nA σ L.Y L.b) :
   have hin : ∀ a b, inFrame d.b (L.j (nb' β)) (Sum.map L.em L.em a) (Sum.map L.em L.em b) = inFrame L.b (nb' β) a b :=
     fun a b => congrFun (congrFun (L.j_in (nb' β)) a) b
   ext r c
-  rcases index_cases_sum L r with rfl | rfl | ⟨a, rfl⟩
+  rcases _root_.PositivityTheory.SiegelWeilFormula.Act.C5.JC.index_cases_sum L r with rfl | rfl | ⟨a, rfl⟩
   · rw [(L.j_out _ _ (by simp) c).1]
     rcases c with c | c <;> simp [Matrix.one_apply, pad_block_row_zero]
   · rw [(L.j_out _ _ (by simp) c).1]
     rcases c with c | c <;> simp [Matrix.one_apply]
-  · rcases index_cases_sum L c with rfl | rfl | ⟨b, rfl⟩
+  · rcases _root_.PositivityTheory.SiegelWeilFormula.Act.C5.JC.index_cases_sum L c with rfl | rfl | ⟨b, rfl⟩
     · rw [(L.j_out _ _ (by simp) _).2]
       rcases a with a | a <;> simp [Matrix.one_apply, ComplexParameterFamilyContinuity.em_ne_k]
     · rw [(L.j_out _ _ (by simp) _).2]

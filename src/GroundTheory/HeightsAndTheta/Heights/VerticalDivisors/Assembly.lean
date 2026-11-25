@@ -632,22 +632,17 @@ section DvdBasis
 
 variable {R A : Type*} [CommRing R] [CommRing A] [Algebra R A] {n : ℕ}
 
-private def tensorPolyAlgEquiv (R A : Type*) [CommRing R] [CommRing A] [Algebra R A] (n : ℕ) :
-    (MvPolynomial (Fin n) R ⊗[R] A) ≃ₐ[R] MvPolynomial (Fin n) A :=
-  (Algebra.TensorProduct.comm R (MvPolynomial (Fin n) R) A).trans
-    ((algebraTensorAlgEquiv R A).restrictScalars R)
-
 private theorem tensorPolyAlgEquiv_tmul (p : MvPolynomial (Fin n) R) (a : A) :
-    tensorPolyAlgEquiv R A n (p ⊗ₜ a) = a • MvPolynomial.map (algebraMap R A) p := by
-  simp [tensorPolyAlgEquiv]
+    GroundTheory.Heights₂.Heights.Vertical.polyTensorAlgEquiv R A n (p ⊗ₜ a) = a • MvPolynomial.map (algebraMap R A) p := by
+  simp [GroundTheory.Heights₂.Heights.Vertical.polyTensorAlgEquiv]
 
 private def tensorPolyEquiv (R A : Type*) [CommRing R] [CommRing A] [Algebra R A] (n : ℕ) :
     (MvPolynomial (Fin n) R ⊗[R] A) ≃ₗ[MvPolynomial (Fin n) R] MvPolynomial (Fin n) A where
-  toFun := tensorPolyAlgEquiv R A n
-  invFun := (tensorPolyAlgEquiv R A n).symm
+  toFun := GroundTheory.Heights₂.Heights.Vertical.polyTensorAlgEquiv R A n
+  invFun := (GroundTheory.Heights₂.Heights.Vertical.polyTensorAlgEquiv R A n).symm
   map_add' := map_add _
-  left_inv := (tensorPolyAlgEquiv R A n).symm_apply_apply
-  right_inv := (tensorPolyAlgEquiv R A n).apply_symm_apply
+  left_inv := (GroundTheory.Heights₂.Heights.Vertical.polyTensorAlgEquiv R A n).symm_apply_apply
+  right_inv := (GroundTheory.Heights₂.Heights.Vertical.polyTensorAlgEquiv R A n).apply_symm_apply
   map_smul' q t := by
     induction t using TensorProduct.induction_on with
     | zero => simp
@@ -709,7 +704,6 @@ theorem vertComps_finite' {K : Type*} [Field K] [NumberField K] {n : ℕ}
     (I : Ideal (MvPolynomial (Fin n) K)) (u : Fin n → 𝓞 K) (v : HeightOneSpectrum (𝓞 K)) :
     (vertComps I u v).Finite :=
   (Ideal.finite_minimalPrimes_of_isNoetherianRing _ _).subset fun _ hW => hW.1.1
-
 
 open Classical in
 theorem OrdEq.proof (hni : NormIdentity.Statement) (hnl : NormLength.Statement)

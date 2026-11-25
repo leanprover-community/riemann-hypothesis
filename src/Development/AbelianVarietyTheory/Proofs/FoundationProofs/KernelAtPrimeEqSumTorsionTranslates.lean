@@ -196,7 +196,8 @@ theorem Hf_nsmul (D : D7) (T : Tor D) {N N' : ℕ} (n : ℕ) (x y : VC D N N') :
   ring
 
 theorem Hf_conj (D : D7) (T : Tor D) {N N' : ℕ} (x y : VC D N N') :
-    Hf D T y x = (starRingEnd ℂ) (Hf D T x y) := GlobalTheory.NormSum.Expand.Hf_conj x y
+    Hf D T y x = (starRingEnd ℂ) (Hf D T x y) := by
+  simp only [Hf, map_div₀, map_sum, map_mul, Complex.conj_conj, Complex.conj_ofReal, mul_comm]
 
 theorem U_U (D : D7) (T : Tor D) {N N' : ℕ} (x y : VC D N N') (G : VC D N N' → ℂ) (z : VC D N N') :
     U D T x (U D T y G) z =

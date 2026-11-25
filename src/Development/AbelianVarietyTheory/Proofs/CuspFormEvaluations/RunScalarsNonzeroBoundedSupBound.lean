@@ -107,7 +107,7 @@ theorem log_sup_short_generator_le : Formalism.MainNotions.ModuliIntegralCharts.
     apply Real.exp_le_exp.mpr
     push_cast
     have hfrn : (0:ℝ) ≤ D.R.f * D.R.r * w.n := by positivity
-    nlinarith [mul_le_mul_of_nonneg_left hlogp hfrn]
+    linarith [mul_le_mul_of_nonneg_left hlogp hfrn]
   have hp1 : 0 ≤ l1At σ P := by unfold l1At; exact Finset.sum_nonneg (fun _ _ => norm_nonneg _)
   exact GlobalTheory.log_exp_mul_le_of_generator_sup_bound D.R.f D.R.r w.n (Formalism.L2.Pj.DF (T.Q.Dw j) (wtA w))
     large₂.sc.L ℓ (absA w) (rdE D.host.E) lam (2 * xiR D) _ S _ (l1At σ P) hL hf1 hr1 hr

@@ -49,7 +49,7 @@ theorem absIso : AbsIso := by
   classical
   let ρH : Representation ℂ H V := ρ.comp H.subtype
   let R := MonoidAlgebra ℂ H
-  haveI : IsSimpleModule R τ.asModule := (Representation.irreducible_iff_isSimpleModule_asModule τ).1 hτ
+  have : IsSimpleModule R τ.asModule := (Representation.irreducible_iff_isSimpleModule_asModule τ).1 hτ
   let Z : Set G := {z | ∀ h' ∈ H, Commute z h'}
   let S : Set V := {v | ∃ z ∈ Z, ∃ x, v = ρ z (f x)}
   have hmul : ∀ (a b : G) v, ρ (a * b) v = ρ a (ρ b v) := fun a b v => by rw [map_mul]; rfl

@@ -3,6 +3,7 @@ module
 public import Mathlib.RingTheory.PowerSeries.Basic
 public import Mathlib.RingTheory.PowerSeries.Inverse
 public import Formalism.LocalToGlobal.TorsionIntegrality.TorsionTranslationPowers.StatementT
+import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.BallRing
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.
@@ -116,19 +117,6 @@ open PowerSeries
 
 namespace UpperTheory.Reformulated.B.SeriesSubgroup
 
-private def ball (K : Type) [NormedField K] [IsUltrametricDist K] : Subring K where
-  carrier := {x | ‖x‖ ≤ 1}
-  mul_mem' := fun {a b} ha hb => by
-    show ‖a * b‖ ≤ 1
-    rw [norm_mul]
-    exact mul_le_one₀ ha (norm_nonneg _) hb
-  one_mem' := by simp
-  add_mem' := fun {a b} ha hb => (IsUltrametricDist.norm_add_le_max a b).trans (max_le ha hb)
-  zero_mem' := by simp
-  neg_mem' := fun {a} ha => by
-    show ‖-a‖ ≤ 1
-    rwa [norm_neg]
-
 private def ser {R : Type} [CommRing R] (S : Subring R) : Subring R⟦X⟧ where
   carrier := {f | ∀ n, coeff n f ∈ S}
   mul_mem' := fun {a b} ha hb n => by
@@ -223,7 +211,8 @@ private lemma xPlus_coeff {R : Type} [CommRing R] (W : WeierstrassCurve R) (x y 
 theorem XTShape_holds : Formalism.L2.Th1.E.XTShape := by
   intro K _ _ _ W hW P _ hx hy
   obtain ⟨h₁, h₂, h₃, h₄, h₆, -⟩ := hW
-  exact ⟨xPlus_mem (ball K) W h₁ h₂ h₃ h₄ h₆ hx hy, xPlus_coeff W _ _⟩
+  exact ⟨xPlus_mem (UpperTheory.Reformulated.B.ClosedUnitBallSubring.ballRing K)
+    W h₁ h₂ h₃ h₄ h₆ hx hy, xPlus_coeff W _ _⟩
 
 end UpperTheory.Reformulated.B.SeriesSubgroup
 end -- clump:auto

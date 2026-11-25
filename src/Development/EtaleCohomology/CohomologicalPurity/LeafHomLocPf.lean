@@ -4,7 +4,6 @@ public import Development.EtaleCohomology.CohomologicalPurity.LeafAugLocalPf
 
 @[expose] public section
 
-noncomputable section
 open CategoryTheory Limits AlgebraicGeometry Opposite
 
 namespace LateralTheory.CohomologicalPurity.TubeCut

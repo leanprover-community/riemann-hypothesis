@@ -87,13 +87,8 @@ theorem atPl_cpt (w : Pl D.host.E) (a : AE D) : atPl w (cpt w (toEAf D a)) = atP
 theorem valuation_le_of_inv_mul {k : Type} [Field k] [ValuativeRel k] (u : kˣ) (b : k)
     (h : ValuativeRel.valuation k (((u⁻¹ : kˣ) : k) * b) ≤ 1) :
     ValuativeRel.valuation k b ≤ ValuativeRel.valuation k (u : k) := by
-  have hne : ValuativeRel.valuation k (u : k) ≠ 0 := by simp
   rw [Valuation.map_mul, Units.val_inv_eq_inv_val, map_inv₀] at h
-  calc ValuativeRel.valuation k b
-      = ValuativeRel.valuation k (u : k) * ((ValuativeRel.valuation k (u : k))⁻¹ * ValuativeRel.valuation k b) := by
-        rw [← mul_assoc, mul_inv_cancel₀ hne, one_mul]
-    _ ≤ ValuativeRel.valuation k (u : k) * 1 := by gcongr
-    _ = _ := mul_one _
+  exact (inv_mul_le_one₀ (pos_iff_ne_zero.2 (by simp))).1 h
 
 theorem cpt_atPl_mul (w : Pl D.host.E) (x : Kw w) (z : AE D) :
     cpt w (toEAf D (atPl w x * z)) = x * cpt w (toEAf D z) := by

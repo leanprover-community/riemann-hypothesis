@@ -78,19 +78,13 @@ theorem eq_zero_of_vecMul_tmat {γ : Fin d → Fin d → PowerSeries C} (hdet : 
 theorem isIntV_vecMul_inv {γ : Fin d → Fin d → PowerSeries C} (hγ : ∀ a, IsCurve v (γ a))
     (hdet : v (tmat γ).det = 0) {w : Fin d → C} (hw : ∀ c, IsIntV v (w c)) (b : Fin d) :
     IsIntV v (Matrix.vecMul w (tmat γ)⁻¹ b) := by
-  let S : Subring C :=
-    { carrier := {x | 0 ≤ v x}
-      mul_mem' := fun {a b} ha hb => by
-        simp only [Set.mem_setOf_eq, AddValuation.map_mul] at *
-        exact add_nonneg ha hb
-      one_mem' := by simp
-      add_mem' := fun {a b} ha hb => le_trans (le_min ha hb) (AddValuation.map_add v a b)
-      zero_mem' := by simp
-      neg_mem' := fun {a} ha => by simpa [AddValuation.map_neg] using ha }
-  have hmem : Matrix.vecMul w (tmat γ)⁻¹ b ∈ S := by
-    simp only [Matrix.vecMul, dotProduct]
-    exact S.sum_mem fun c _ => S.mul_mem (hw c) (isIntV_tmat_inv hγ hdet c b)
-  exact hmem
+  simp only [Matrix.vecMul, dotProduct]
+  refine Finset.sum_induction _ (IsIntV v)
+    (fun _ _ ha hb => le_trans (le_min ha hb) (AddValuation.map_add v _ _)) (by simp [IsIntV])
+    fun c _ => by
+      change 0 ≤ v (w c * (tmat γ)⁻¹ c b)
+      rw [AddValuation.map_mul]
+      exact add_nonneg (hw c) (isIntV_tmat_inv hγ hdet c b)
 
 theorem vecMul_tmat_support {h : ℕ} (ty : Fin d → ZMod h) {γ : Fin d → Fin d → PowerSeries C}
     (hdet : v (tmat γ).det = 0) (ht : ∀ b c, ty c ≠ ty b → tangent (γ b) c = 0)

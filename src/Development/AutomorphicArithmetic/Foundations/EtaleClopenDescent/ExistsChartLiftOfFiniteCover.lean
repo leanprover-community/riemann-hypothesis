@@ -1236,13 +1236,13 @@ private theorem tower_rA (y : Fin (d + 1) → F) : IsScalarTower (rA ℂ y {0}) 
 private theorem map_mem_rB (y : Fin (d + 1) → F) {b : K} (hb : b ∈ rB ℂ K y {0}) :
     algebraMap K K' b ∈ rB ℂ K' y {0} := by
   rw [rB, Subalgebra.mem_restrictScalars, mem_integralClosure_iff] at hb ⊢
-  haveI := tower_rA (K := K) (K' := K') y
+  have := tower_rA (K := K) (K' := K') y
   exact hb.algebraMap
 
 private theorem trace_mem_rB (y : Fin (d + 1) → F) [FiniteDimensional K K'] {v : K'}
     (hv : v ∈ rB ℂ K' y {0}) : Algebra.trace K K' v ∈ rB ℂ K y {0} := by
   rw [rB, Subalgebra.mem_restrictScalars, mem_integralClosure_iff] at hv ⊢
-  haveI := tower_rA (K := K) (K' := K') y
+  have := tower_rA (K := K) (K' := K') y
   exact Algebra.isIntegral_trace hv
 
 end
@@ -1250,8 +1250,8 @@ end
 theorem UpperTheory.Gal.productCup_of_system.redK_of :
     RedK := by
   intro F K K' _ _ _ _ _ _ _ _ _ _ _ _ _ d x j2 hY
-  haveI : FiniteDimensional F K' := hY.covY.fin
-  haveI : FiniteDimensional K K' := Module.Finite.of_restrictScalars_finite F K K'
+  have : FiniteDimensional F K' := hY.covY.fin
+  have : FiniteDimensional K K' := Module.Finite.of_restrictScalars_finite F K K'
   have hred := hY.red
   unfold RedFib at hred ⊢
   constructor

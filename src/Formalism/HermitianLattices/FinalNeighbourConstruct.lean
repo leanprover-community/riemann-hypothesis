@@ -42,7 +42,9 @@ theorem final_finIntermediate : FinIntermediate := Formalism.HermitianLatticesTh
 alias final_shortVectors := _root_.Formalism.HermitianLatticesTheory.shortVectors
 theorem final_isomOfTrace : IsomOfTrace := Formalism.HermitianLatticesTheory.isomOfTrace
 alias final_traceReal := _root_.Formalism.HermitianLatticesTheory.traceReal
-theorem final_autFinite : AutFinite := Formalism.HermitianLatticesTheory.autFinite
+theorem final_autFinite : AutFinite := by
+  intro K V _ _ _ _ _ _ _ _ h _
+  exact Formalism.HermitianLatticesTheory.autFinite K V h
 theorem final_classSetFinite : ClassSetFinite := Formalism.HermitianLatticesTheory.classSetFinite
 
 end Formalism.HermitianLatticesTheory

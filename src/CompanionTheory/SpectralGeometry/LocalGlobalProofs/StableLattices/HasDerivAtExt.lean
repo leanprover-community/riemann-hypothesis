@@ -12,8 +12,6 @@ import Mathlib.RingTheory.SimpleRing.Principal
 open Matrix Filter Topology
 open scoped ContDiff
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.SmBracket
 
 open CompanionTheory.D.Upq.Sm

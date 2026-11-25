@@ -53,14 +53,8 @@ open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.Weil
 variable {F : Type} [Field F] [NumberField F]
 
 theorem finite_nonint {κ : Type} [Finite κ] (x : κ → AF F) :
-    {w : Pl F | ¬ ∀ i, evFin F w (x i) ∈ w.adicCompletionIntegers F}.Finite := by
-  have h : ∀ i, {w : Pl F | evFin F w (x i) ∉ w.adicCompletionIntegers F}.Finite := fun i =>
-    Filter.eventually_cofinite.1 (x i).2.2
-  refine (Set.finite_iUnion h).subset ?_
-  intro w hw
-  push Not at hw
-  obtain ⟨i, hi⟩ := hw
-  exact Set.mem_iUnion.2 ⟨i, hi⟩
+    {w : Pl F | ¬ ∀ i, evFin F w (x i) ∈ w.adicCompletionIntegers F}.Finite :=
+  Filter.eventually_cofinite.1 (Filter.eventually_all.2 fun i => (x i).2.2)
 
 variable {E : Type} [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E} {n d : ℕ}
   {Y : Spc F E n} {W : Spc F E d}

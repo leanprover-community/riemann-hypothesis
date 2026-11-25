@@ -9,8 +9,6 @@ import Mathlib.RingTheory.TotallySplit
 
 @[expose] public section
 
-noncomputable section
-
 namespace UpperTheory.NonzeroTypeTheory.MaschkeCompactGroup
 
 variable {K : Type} [Group K] {m : ℕ}

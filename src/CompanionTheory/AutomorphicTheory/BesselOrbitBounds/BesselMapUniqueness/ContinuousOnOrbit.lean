@@ -9,8 +9,6 @@ import Mathlib.Algebra.Order.Star.Real
 open Matrix MeasureTheory Formalism.QuantumDeterminants CompanionTheory.D.Upq.Sm
 open scoped ContDiff InnerProductSpace ComplexConjugate
 
-noncomputable section
-
 namespace CompanionTheory.Bmu
 
 open scoped Matrix.Norms.Elementwise

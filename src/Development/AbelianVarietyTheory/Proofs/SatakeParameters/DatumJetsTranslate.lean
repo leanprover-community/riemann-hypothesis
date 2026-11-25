@@ -15,8 +15,6 @@ open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.HermitianLatt
 open GlobalTheory.IndefiniteRowSideFullHecke.BadPrimesPeriodBound (recFields recPrimes recSeam HostTie AnTie badS)
 open GlobalTheory.IndefiniteRowSideFullHecke.CharacterValuation (StdOver)
 
-noncomputable section
-
 namespace GlobalTheory.DatumJets.Transl
 
 open GlobalTheory.LiftTypePrime GlobalTheory.MomT.PtMoments

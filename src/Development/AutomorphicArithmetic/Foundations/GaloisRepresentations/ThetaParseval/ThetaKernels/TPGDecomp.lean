@@ -373,7 +373,8 @@ private theorem cont_pr_pk {e : AF F} (he : e * e = e) : Continuous (pr_pk e he 
   have c1 : Continuous fun g : UA σ X.J => cut e (mat g) := by
     have hm := cont_mat (σ := σ) (Y := X); unfold cut
     refine continuous_matrix fun i j => ?_
-    have := hm.matrix_elem i j; simp only [Matrix.add_apply, Matrix.smul_apply]; fun_prop
+    simp only [Matrix.add_apply, Matrix.smul_apply]
+    exact continuous_const.add ((hm.matrix_elem i j).const_smul e)
   exact Continuous.subtype_mk (Units.continuous_iff.2 ⟨c1, c1.comp continuous_inv⟩) _
 
 private theorem closed_fix_pk {e : AF F} (he : e * e = e) : IsClosed {g : UA σ X.J | e • (mat g - 1) = mat g - 1} := by

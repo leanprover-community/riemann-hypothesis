@@ -123,12 +123,9 @@ private theorem sec_le_of_monomial (x : κ → Ω) (n : ℕ) (P : Submodule ℤ 
 
 private theorem exists_le_of_sum_lt (N : κ → ℕ) (d : κ →₀ ℕ) (hd : ∑ i, (N i - 1) < d.degree) :
     ∃ i, N i ≤ d i := by
-  by_contra hc
-  push Not at hc
-  have : d.degree ≤ ∑ i, (N i - 1) := by
-    rw [Finsupp.degree_eq_sum]
-    exact Finset.sum_le_sum fun i _ => by have := hc i; omega
-  omega
+  rw [Finsupp.degree_eq_sum] at hd
+  obtain ⟨i, -, hi⟩ := Finset.exists_lt_of_sum_lt hd
+  exact ⟨i, by omega⟩
 
 private theorem mul_iSup_sec_le (x : κ → Ω) (e : Fin (D + 1) → κ) (K a b n : ℕ) (hab : a + b = n) :
     sec ℤ (x ∘ e) a * (⨆ (j : ℕ) (_ : j ≤ b ∧ j ≤ K), sec ℤ (x ∘ e) (b - j) * sec ℤ x j) ≤

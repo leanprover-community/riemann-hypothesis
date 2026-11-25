@@ -92,7 +92,6 @@ section
 variable {K V : Type} [Field K] [NumberField K] [StarRing K] [AddCommGroup V] [Module K V]
   [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V]
 
-
 omit [NumberField K] [StarRing K] in
 theorem primInv_span_gmap (γ : V ≃ₗ[K] V) (M : Submodule (𝓞 K) V) :
     Submodule.span K ((Formalism.HermitianLatticesTheory.gmap γ M : Submodule (𝓞 K) V) : Set V) =
@@ -100,7 +99,6 @@ theorem primInv_span_gmap (γ : V ≃ₗ[K] V) (M : Submodule (𝓞 K) V) :
   unfold Formalism.HermitianLatticesTheory.gmap
   rw [Submodule.map_coe, ← Submodule.span_image]
   try rfl
-
 
 omit [NumberField K] [StarRing K] in
 theorem primInv_gmap_injective (γ : V ≃ₗ[K] V) :
@@ -391,9 +389,6 @@ namespace GlobalTheory.LoopC.LatChain
 section
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {S : HSpace E}
 
-theorem mem_orth {U : Submodule E S.V} {v : S.V} : v ∈ orth S U ↔ ∀ x ∈ U, S.hT x v = 0 := by
-  simp [orth, Submodule.mem_iInf]
-
 theorem exists_mul_mem {Λ : Submodule (𝓞 E) S.V} (hΛ : Submodule.IsFullLattice E Λ) (v : S.V) :
     ∃ d : 𝓞 E, d ≠ 0 ∧ d • v ∈ Λ := by
   have hv : v ∈ Submodule.span E (Λ : Set S.V) := by
@@ -425,7 +420,7 @@ theorem mem_L0sub {F : LFlag S r T} {x : S.V} (hx : x ∈ Lrep Λ F) (hz : S.hT 
 theorem thp_le_la (g : ℕ) {F : LFlag S r T} {F' : LFlag S r T'} (hΛ : Submodule.IsFullLattice E Λ)
     (hF : IsLift Λ F) (hF' : IsLift Λ F') : Thp Λ F F' ≤ La Λ g F F' := by
   intro x hx
-  have hperp : ∀ y ∈ UUE Λ F F', S.hT y x = 0 := mem_orth.1 hx.2
+  have hperp : ∀ y ∈ UUE Λ F F', S.hT y x = 0 := GlobalTheory.LoopC.RowSplit.mem_orth.1 hx.2
   have hX : Xsp F ≤ UUE Λ F F' :=
     le_spanE hΛ (le_sup_of_le_left (le_sup_of_le_left le_sup_left))
   have hX' : Xsp F' ≤ UUE Λ F F' := le_spanE hΛ (le_sup_of_le_left le_sup_right)
@@ -436,8 +431,8 @@ theorem thp_le_la (g : ℕ) {F : LFlag S r T} {F' : LFlag S r T'} (hΛ : Submodu
   have hz' : F'.fl.z ∈ UUE Λ F F' := by
     rw [← hF'.2]
     exact Submodule.subset_span (Submodule.mem_sup_right (Submodule.mem_span_singleton_self _))
-  have h1 : x ∈ Lrep Λ F := ⟨hx.1, mem_orth.2 fun y hy => hperp y (hX hy)⟩
-  have h2 : x ∈ Lrep Λ F' := ⟨hx.1, mem_orth.2 fun y hy => hperp y (hX' hy)⟩
+  have h1 : x ∈ Lrep Λ F := ⟨hx.1, GlobalTheory.LoopC.RowSplit.mem_orth.2 fun y hy => hperp y (hX hy)⟩
+  have h2 : x ∈ Lrep Λ F' := ⟨hx.1, GlobalTheory.LoopC.RowSplit.mem_orth.2 fun y hy => hperp y (hX' hy)⟩
   refine Submodule.subset_span ⟨hx.2, mem_L0sub h1 (hperp _ hz), mem_L0sub h2 (hperp _ hz'),
     x, h1, ?_, x, h2, ?_, ?_⟩ <;> rw [sub_self] <;> exact Submodule.zero_mem _
 
@@ -966,9 +961,6 @@ namespace GlobalTheory.LoopC.PairLat
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {S : HSpace E} {r : ℕ} {T T' T₂ : E}
   {Λ : Submodule (𝓞 E) S.V} {g : ℕ}
 
-theorem mem_orth {U : Submodule E S.V} {x : S.V} : x ∈ orth S U ↔ ∀ u ∈ U, S.hT u x = 0 := by
-  simp [orth, Submodule.mem_iInf, LinearMap.mem_ker]
-
 theorem hT_z_X (F : LFlag S r T) {x : S.V} (hx : x ∈ Xsp F) : S.hT F.fl.z x = 0 := by
   induction hx using Submodule.span_induction with
   | mem x hx =>
@@ -1041,11 +1033,11 @@ theorem map_Lrep {F' F'' : LFlag S r T'} {β : S.V ≃ₗ[E] S.V} (hβ : IsAutLa
     β l ∈ Lrep Λ F'' := by
   obtain ⟨h1, h2⟩ := Submodule.mem_inf.1 hl
   refine Submodule.mem_inf.2 ⟨(FrEqv.aut_mem_iff hβ l).2 h1, ?_⟩
-  refine mem_orth.2 fun u hu => ?_
+  refine GlobalTheory.LoopC.RowSplit.mem_orth.2 fun u hu => ?_
   rw [← hX] at hu
   obtain ⟨v, hv, rfl⟩ := hu
   have := hβ.1 v l
-  exact this.trans (mem_orth.1 h2 v hv)
+  exact this.trans (GlobalTheory.LoopC.RowSplit.mem_orth.1 h2 v hv)
 
 theorem Mlat_le_La_sup (E : Type) [Field E] [NumberField E] [StarRing E] (S : HSpace E) (r : ℕ) (T T' : E)
     (Λ : Submodule (𝓞 E) S.V) (g : ℕ) (F : LFlag S r T) (F' F'' : LFlag S r T') (β : S.V ≃ₗ[E] S.V)

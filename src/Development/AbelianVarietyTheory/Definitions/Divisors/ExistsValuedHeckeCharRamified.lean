@@ -5,8 +5,6 @@ public import Mathlib.NumberTheory.NumberField.CMField
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain
 
 namespace GlobalTheory.CMVal.Model

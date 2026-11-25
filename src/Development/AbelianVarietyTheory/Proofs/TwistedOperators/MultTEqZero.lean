@@ -351,19 +351,6 @@ private theorem sum_smul_T_map_eq_zero_of_sum_eq_zero {D : D7} {θ : D.what₂.T
       exact h1
   simpa using step Finset.univ
 
-private theorem sobCont_zero_twisted_operators {n : ℕ} {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
-    (Lie : Set (Matrix (Fin n) (Fin n) ℂ)) (σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)) :
-    Sobolev₂ Lie σ (0 : H →ₗ[ℂ] ℂ) :=
-  ⟨[], 0, by simp, fun w _ => by simp⟩
-
-private theorem sobCont_smul_twisted_operators {n : ℕ} {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
-    {Lie : Set (Matrix (Fin n) (Fin n) ℂ)} {σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)} {ℓ : H →ₗ[ℂ] ℂ}
-    (h : Sobolev₂ Lie σ ℓ) (c : ℂ) : Sobolev₂ Lie σ (c • ℓ) := by
-  obtain ⟨S, C, hS, hC⟩ := h
-  refine ⟨S, ‖c‖ * C, hS, fun w hw => ?_⟩
-  rw [LinearMap.smul_apply, norm_smul, mul_assoc]
-  exact mul_le_mul_of_nonneg_left (hC w hw) (norm_nonneg c)
-
 private theorem equivariant_and_sobCont_slice {T : MMap M} (hT : T ∈ Mult θ M J χ) :
     (∀ τ, ∀ g ∈ Formalism.QuantumDeterminants.UH (gramAt D V τ), ∀ (v : M.Vec) (w : M.sm τ),
       (w : M.H τ) = M.rep τ g (v τ) → T (Function.update v τ w) = rTr V (atTau θ V τ g) (T v)) ∧
@@ -372,7 +359,7 @@ private theorem equivariant_and_sobCont_slice {T : MMap M} (hT : T ∈ Mult θ M
   induction hT using Submodule.span_induction with
   | mem T hT => exact ⟨hT.equiv, hT.cont⟩
   | zero =>
-    refine ⟨fun τ g _ v w _ => ?_, fun τ v y => ⟨0, sobCont_zero_twisted_operators _ _, fun w => ?_⟩⟩
+    refine ⟨fun τ g _ v w _ => ?_, fun τ v y => ⟨0, MultMem.sobCont_zero, fun w => ?_⟩⟩
     · simp only [MultilinearMap.zero_apply]
       rfl
     · simp
@@ -388,7 +375,7 @@ private theorem equivariant_and_sobCont_slice {T : MMap M} (hT : T ∈ Mult θ M
     · rw [MultilinearMap.smul_apply, MultilinearMap.smul_apply, hT.1 τ g hg v w hw]
       rfl
     · obtain ⟨ℓ, h1, h2⟩ := hT.2 τ v y
-      exact ⟨c • ℓ, sobCont_smul_twisted_operators h1 c, fun w => by simp [h2]⟩
+      exact ⟨c • ℓ, MultMem.sobCont_smul c h1, fun w => by simp [h2]⟩
 
 theorem multT_eq_zero {u : (⨂[ℂ] τ, M.sm τ) →ₗ[ℂ] (GA D V → ℂ)} (hu : u ∈ MultT θ M J χ) {x : ⨂[ℂ] τ, M.sm τ}
     (hx : x ≠ 0) (h : u x = 0) : u = 0 := by

@@ -1266,9 +1266,9 @@ private theorem continuous_th : Continuous (CertificateRingHomMap.th : GUf E n �
 
 private theorem relIndex_ne_zero_of_open {X : Type*} [Group X] [TopologicalSpace X] [IsTopologicalGroup X]
     {K O : Subgroup X} (hK : IsCompact (K : Set X)) (hO : IsOpen (O : Set X)) : O.relIndex K ≠ 0 := by
-  haveI : CompactSpace K := isCompact_iff_compactSpace.1 hK
+  have : CompactSpace K := isCompact_iff_compactSpace.1 hK
   have ho : IsOpen ((O.subgroupOf K : Subgroup K) : Set K) := hO.preimage continuous_subtype_val
-  haveI := Subgroup.quotient_finite_of_isOpen _ ho
+  have := Subgroup.quotient_finite_of_isOpen _ ho
   exact Nat.card_pos.ne'
 
 private theorem isCompact_comap_th (F : Frame S) {K : Subgroup (GUf E n)} (hK : IsCompact (K : Set (GUf E n))) :
@@ -1364,7 +1364,7 @@ theorem UpperTheory.Gal.Spc.tyEx :
   have hS0 : w₀ ∈ V.S := V.shape.mem
   have hw : IsSplitAt w₀ ∧ (p : 𝓞 E) ∉ w₀.asIdeal := ⟨V.split, hOff.1 w₀ hS0⟩
   have hN : 0 < N.1 := lt_of_lt_of_le (by norm_num) N.2.1
-  haveI : Fact r.Prime := ⟨hAux.prime⟩
+  have : Fact r.Prime := ⟨hAux.prime⟩
   choose L hL using fun w : Spl E p => facEx E A n p S F w
   have hcomp : ∀ (u : Plc E) (g : GUf E n), comp u (F.th g) = invT n _ (comp u g) := fun u g => by
     rw [th_eq, UpperTheory.Gal.CertificateRingHomMap.comp_th]
@@ -1737,7 +1737,7 @@ private theorem core {E R : Type} [Field E] [NumberField E] [CommRing R] [Algebr
 
 theorem regTr : RegTr := by
   intro E _ _ _ A n p _ S T q hq hqp g hg
-  haveI : Fact q.Prime := ⟨hq⟩
+  have : Fact q.Prime := ⟨hq⟩
   obtain ⟨e, he, heE⟩ := UpperTheory.Gal.W2.Seed.pIdemP q E
   obtain ⟨h1, h0⟩ := rho_idem hq hqp T.toAdQ e he
   refine ⟨placeAway hq Fact.out hqp, fun x y hx hy => ?_⟩

@@ -10,21 +10,13 @@ namespace FunctorialResolution.EmbeddedResolution
 
 namespace MonomialCenter
 
-private theorem sort_image_of_strictMono {α β : Type*} [LinearOrder α] [LinearOrder β]
-    [DecidableEq β] (f : α → β) (hf : StrictMono f) (s : Finset α) :
-    (s.image f).sort (· ≤ ·) = (s.sort (· ≤ ·)).map f := by
-  have hlt' : List.Pairwise (· < ·) ((s.image f).sort (· ≤ ·)) :=
-    (Finset.sortedLT_sort (s.image f)).pairwise
-  have hmap : List.Pairwise (· < ·) ((s.sort (· ≤ ·)).map f) :=
-    (Finset.sortedLT_sort s).pairwise.map f (fun _ _ hab => hf hab)
-  refine List.Pairwise.eq_of_mem_iff hlt' hmap ?_
-  intro b
-  simp [Finset.mem_sort]
-
 theorem sortedIndices_image_of_strictMono {n n' : ℕ} [DecidableEq (Fin n')]
     (φ : Fin n → Fin n') (hφ : StrictMono φ) (J : Finset (Fin n)) :
     sortedIndices (J.image φ) = (J.sort (· ≤ ·)).map (fun j => ((φ j : Fin n') : ℕ)) := by
-  rw [sortedIndices_eq_map_sort, sort_image_of_strictMono φ hφ J, List.map_map]
+  have h := (StrictMonoOn.map_finsetSort ⟨φ, hφ.injective⟩ J (hφ.strictMonoOn _)).symm
+  rw [Finset.map_eq_image] at h
+  change (J.image φ).sort (· ≤ ·) = (J.sort (· ≤ ·)).map φ at h
+  rw [sortedIndices_eq_map_sort, h, List.map_map]
   rfl
 
 theorem lex_map_iff_of_strictMono {α β : Type*} [LinearOrder α] [LinearOrder β]

@@ -56,9 +56,6 @@ section Gen
 variable {L : Type} [Field L] [NumberField L] [IsCMField L] {n : ℕ}
 variable {A : Type} [AddCommGroup A] [Module ℂ A]
 
-theorem rt_apply (h : Formalism.AUTREP.GAf L n) (f : Formalism.AUTREP.GAf L n → ℂ) (g : Formalism.AUTREP.GAf L n) :
-    Formalism.L2.NG.rt L n h f g = f (g * h) := rfl
-
 theorem range_equivariantMap_stable {ρ : Formalism.AUTREP.GAf L n →* Module.End ℂ A} {σ : Formalism.L2.NG.FinTyp L n} {Φ : σ.S →ₗ[ℂ] A}
     (hΦ : IsEqvA ρ σ Φ) (h : Formalism.AUTREP.GAf L n) (y : A) (hy : y ∈ LinearMap.range Φ) :
     ρ h y ∈ LinearMap.range Φ := by

@@ -4,8 +4,6 @@ public import Formalism.LocalToGlobal.Columns.FiniteSumNonzeroLargeDepth
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.PadicUnfold
 
 open Formalism.L2.Col

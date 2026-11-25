@@ -55,6 +55,3 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor (Datum Level Moduli Coeff SABM
 open GlobalTheory.SW hiding Level
 open scoped TensorProduct ComplexConjugate
 open GlobalTheory.OneMapRef GlobalTheory.WeilParts GlobalTheory.IndefiniteRowSideFullHecke.WeilGramSignature GlobalTheory.GalLift GlobalTheory.GalOne
-
-theorem _root_.GlobalTheory.T.extremal_vectors_holomorphic_model_unique_up_to_phase : ∀ (D : D7) (V : HSp D) (S : D.what₂.Tau → SPar) (M : DSModel V S), GlobalTheory.HolDict.HolShape M → ExtLine M := by
-  first | exact @GlobalTheory.HolLowOnce.extLine_of_holShape

@@ -36,10 +36,6 @@ variable {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [Norm
   [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wp] [FiniteDimensional ℂ Wq] {P : M.Par} {Bs : B.RealPlaceData P.k P.r Wp Wq}
   {e : M.Ty P → ℂ → (Wq →L[ℂ] Wp)}
 
-def Intw (P : M.Par) (Bs : B.RealPlaceData P.k P.r Wp Wq) (e : M.Ty P → ℂ → (Wq →L[ℂ] Wp))
-    (A : Q.Pr (Q.RadSp P.k P.r Bs.z Bs.z' Bs.π Bs.π')) (A' : MA.A P (MA.DQ P)) : Prop :=
-  ∀ Φ, trR P Bs e (A.1 Φ) = MA.actA P A' (trR P Bs e Φ)
-
 theorem rawR_add (Φ Ψ : Q.RadSp P.k P.r Bs.z Bs.z' Bs.π Bs.π') (ρ : M.Ty P) :
     rawR P Bs.μsec e ((Φ + Ψ : Q.RadSp P.k P.r Bs.z Bs.z' Bs.π Bs.π') : Q.Fn P.k P.r (Wq →L[ℂ] Wp)) ρ =
       rawR P Bs.μsec e (Φ : Q.Fn P.k P.r (Wq →L[ℂ] Wp)) ρ + rawR P Bs.μsec e (Ψ : Q.Fn P.k P.r (Wq →L[ℂ] Wp)) ρ := by
@@ -104,24 +100,24 @@ variable (hsm : ∀ (Φ : Q.RadSp P.k P.r Bs.z Bs.z' Bs.π Bs.π') ρ,
 include hsm
 
 theorem intw_add {A B : Q.Pr (Q.RadSp P.k P.r Bs.z Bs.z' Bs.π Bs.π')} {A' B' : MA.A P (MA.DQ P)}
-    (hA : Intw P Bs e A A') (hB : Intw P Bs e B B') : Intw P Bs e (A + B) (A' + B') := by
+    (hA : UpperTheory.Reformulated.B.IntertwinerStructure.Intw P Bs e A A') (hB : UpperTheory.Reformulated.B.IntertwinerStructure.Intw P Bs e B B') : UpperTheory.Reformulated.B.IntertwinerStructure.Intw P Bs e (A + B) (A' + B') := by
   intro Φ
   show trR P Bs e (A.1 Φ + B.1 Φ) = _
   rw [trR_add hsm, hA, hB, actA_add]
 
 theorem intw_mul {A B : Q.Pr (Q.RadSp P.k P.r Bs.z Bs.z' Bs.π Bs.π')} {A' B' : MA.A P (MA.DQ P)}
-    (hA : Intw P Bs e A A') (hB : Intw P Bs e B B') : Intw P Bs e (A * B) (A' * B') := by
+    (hA : UpperTheory.Reformulated.B.IntertwinerStructure.Intw P Bs e A A') (hB : UpperTheory.Reformulated.B.IntertwinerStructure.Intw P Bs e B B') : UpperTheory.Reformulated.B.IntertwinerStructure.Intw P Bs e (A * B) (A' * B') := by
   intro Φ
   show trR P Bs e (A.1 (B.1 Φ)) = _
   rw [hA, hB, actA_mul]
 
-theorem intw_alg (c : ℂ) : Intw P Bs e (algebraMap ℂ _ c) (algebraMap ℂ (MA.A P (MA.DQ P)) c) := by
+theorem intw_alg (c : ℂ) : UpperTheory.Reformulated.B.IntertwinerStructure.Intw P Bs e (algebraMap ℂ _ c) (algebraMap ℂ (MA.A P (MA.DQ P)) c) := by
   intro Φ
   show trR P Bs e (c • Φ) = _
   rw [trR_smul hsm, actA_alg]
 
 theorem intw_neg {A : Q.Pr (Q.RadSp P.k P.r Bs.z Bs.z' Bs.π Bs.π')} {A' : MA.A P (MA.DQ P)}
-    (hA : Intw P Bs e A A') : Intw P Bs e (-A) (-A') := by
+    (hA : UpperTheory.Reformulated.B.IntertwinerStructure.Intw P Bs e A A') : UpperTheory.Reformulated.B.IntertwinerStructure.Intw P Bs e (-A) (-A') := by
   have h := intw_mul hsm (intw_alg hsm (-1)) hA
   intro Φ
   have e1 : (-A) = algebraMap ℂ _ (-1) * A := by simp
@@ -130,13 +126,13 @@ theorem intw_neg {A : Q.Pr (Q.RadSp P.k P.r Bs.z Bs.z' Bs.π Bs.π')} {A' : MA.A
   exact h Φ
 
 theorem intw_sub {A B : Q.Pr (Q.RadSp P.k P.r Bs.z Bs.z' Bs.π Bs.π')} {A' B' : MA.A P (MA.DQ P)}
-    (hA : Intw P Bs e A A') (hB : Intw P Bs e B B') : Intw P Bs e (A - B) (A' - B') := by
+    (hA : UpperTheory.Reformulated.B.IntertwinerStructure.Intw P Bs e A A') (hB : UpperTheory.Reformulated.B.IntertwinerStructure.Intw P Bs e B B') : UpperTheory.Reformulated.B.IntertwinerStructure.Intw P Bs e (A - B) (A' - B') := by
   rw [sub_eq_add_neg, sub_eq_add_neg]
   exact intw_add hsm hA (intw_neg hsm hB)
 
 theorem intw_sum {ι : Type} (s : Finset ι) {A : ι → Q.Pr (Q.RadSp P.k P.r Bs.z Bs.z' Bs.π Bs.π')}
-    {A' : ι → MA.A P (MA.DQ P)} (h : ∀ i ∈ s, Intw P Bs e (A i) (A' i)) :
-    Intw P Bs e (∑ i ∈ s, A i) (∑ i ∈ s, A' i) := by
+    {A' : ι → MA.A P (MA.DQ P)} (h : ∀ i ∈ s, UpperTheory.Reformulated.B.IntertwinerStructure.Intw P Bs e (A i) (A' i)) :
+    UpperTheory.Reformulated.B.IntertwinerStructure.Intw P Bs e (∑ i ∈ s, A i) (∑ i ∈ s, A' i) := by
   first | (apply UpperTheory.Reformulated.B.IntertwinerStructure.intw_sum <;> assumption)
 
 end clos
@@ -150,49 +146,49 @@ theorem generator_to_quadratic_form : GenToQQ := by
     fun Φ ρ => hRS Wp Wq P Bs hPl hk e he Φ ρ
   refine ⟨e, he, fun Φ Y a b => ?_⟩
 
-  have hζ : Intw P Bs e d.L.ζ (MA.zA P (MA.DQ P)) := fun Φ => (hg Φ).1
-  have hζb : Intw P Bs e d.L.ζb (MA.zbA P (MA.DQ P)) := fun Φ => (hg Φ).2.2.1
-  have hGG : Intw P Bs e d.L.GG (MA.ggA P (MA.DQ P)) := fun Φ => (hg Φ).2.2.2.2.1
-  have hGGi : Intw P Bs e d.L.GGi (MA.ggiA P (MA.DQ P)) := fun Φ => (hg Φ).2.2.2.2.2.1
-  have hnab : Intw P Bs e d.L.nab (MA.nabA P (MA.DQ P)) := fun Φ => (hg Φ).2.2.2.2.2.2.1
-  have hnabs : Intw P Bs e d.L.nabs (MA.nabsA P (MA.DQ P)) := fun Φ => (hg Φ).2.2.2.2.2.2.2.1
-  have hκ : ∀ f, Intw P Bs e (d.κ f) (MA.kap P (MA.DQ P) f) := fun f Φ => (hg Φ).2.2.2.2.2.2.2.2.1 f
-  have hSS : ∀ l ∈ Finset.Icc 1 (P.k - 1), Intw P Bs e (d.SS l) (MA.SS P (MA.DQ P) l) :=
+  have hζ : UpperTheory.Reformulated.B.IntertwinerStructure.Intw P Bs e d.L.ζ (MA.zA P (MA.DQ P)) := fun Φ => (hg Φ).1
+  have hζb : UpperTheory.Reformulated.B.IntertwinerStructure.Intw P Bs e d.L.ζb (MA.zbA P (MA.DQ P)) := fun Φ => (hg Φ).2.2.1
+  have hGG : UpperTheory.Reformulated.B.IntertwinerStructure.Intw P Bs e d.L.GG (MA.ggA P (MA.DQ P)) := fun Φ => (hg Φ).2.2.2.2.1
+  have hGGi : UpperTheory.Reformulated.B.IntertwinerStructure.Intw P Bs e d.L.GGi (MA.ggiA P (MA.DQ P)) := fun Φ => (hg Φ).2.2.2.2.2.1
+  have hnab : UpperTheory.Reformulated.B.IntertwinerStructure.Intw P Bs e d.L.nab (MA.nabA P (MA.DQ P)) := fun Φ => (hg Φ).2.2.2.2.2.2.1
+  have hnabs : UpperTheory.Reformulated.B.IntertwinerStructure.Intw P Bs e d.L.nabs (MA.nabsA P (MA.DQ P)) := fun Φ => (hg Φ).2.2.2.2.2.2.2.1
+  have hκ : ∀ f, UpperTheory.Reformulated.B.IntertwinerStructure.Intw P Bs e (d.κ f) (MA.kap P (MA.DQ P) f) := fun f Φ => (hg Φ).2.2.2.2.2.2.2.2.1 f
+  have hSS : ∀ l ∈ Finset.Icc 1 (P.k - 1), UpperTheory.Reformulated.B.IntertwinerStructure.Intw P Bs e (d.SS l) (MA.SS P (MA.DQ P) l) :=
     fun l hl Φ => (hg Φ).2.2.2.2.2.2.2.2.2.1 l hl
-  have hSSs : ∀ l ∈ Finset.Icc 1 (P.k - 1), Intw P Bs e (star (d.SS l)) (star (MA.SS P (MA.DQ P) l)) :=
+  have hSSs : ∀ l ∈ Finset.Icc 1 (P.k - 1), UpperTheory.Reformulated.B.IntertwinerStructure.Intw P Bs e (star (d.SS l)) (star (MA.SS P (MA.DQ P) l)) :=
     fun l hl Φ => (hg Φ).2.2.2.2.2.2.2.2.2.2 l hl
 
-  have hx : Intw P Bs e (d.x Y) (MA.xA P (MA.DQ P) Y) := hκ _
-  have hl0 : Intw P Bs e (d.L.l0 Y) (MA.l0A P (MA.DQ P) Y) := by
-    show Intw P Bs e (-d.L.nab - algebraMap ℂ _ (Y + 1/2) * (d.L.ζb * d.L.GGi))
+  have hx : UpperTheory.Reformulated.B.IntertwinerStructure.Intw P Bs e (d.x Y) (MA.xA P (MA.DQ P) Y) := hκ _
+  have hl0 : UpperTheory.Reformulated.B.IntertwinerStructure.Intw P Bs e (d.L.l0 Y) (MA.l0A P (MA.DQ P) Y) := by
+    show UpperTheory.Reformulated.B.IntertwinerStructure.Intw P Bs e (-d.L.nab - algebraMap ℂ _ (Y + 1/2) * (d.L.ζb * d.L.GGi))
       (-MA.nabA P (MA.DQ P) - algebraMap ℂ (MA.A P (MA.DQ P)) (Y + 1 / 2) * (MA.zbA P (MA.DQ P) * MA.ggiA P (MA.DQ P)))
     exact intw_sub hsm (intw_neg hsm hnab) (intw_mul hsm (intw_alg hsm _) (intw_mul hsm hζb hGGi))
-  have hm0 : Intw P Bs e (d.L.m0 Y) (MA.m0A P (MA.DQ P) Y) := by
-    show Intw P Bs e (-d.L.nabs - algebraMap ℂ _ (Y - 1/2) * (d.L.ζ * d.L.GGi))
+  have hm0 : UpperTheory.Reformulated.B.IntertwinerStructure.Intw P Bs e (d.L.m0 Y) (MA.m0A P (MA.DQ P) Y) := by
+    show UpperTheory.Reformulated.B.IntertwinerStructure.Intw P Bs e (-d.L.nabs - algebraMap ℂ _ (Y - 1/2) * (d.L.ζ * d.L.GGi))
       (-MA.nabsA P (MA.DQ P) - algebraMap ℂ (MA.A P (MA.DQ P)) (Y - 1 / 2) * (MA.zA P (MA.DQ P) * MA.ggiA P (MA.DQ P)))
     exact intw_sub hsm (intw_neg hsm hnabs) (intw_mul hsm (intw_alg hsm _) (intw_mul hsm hζ hGGi))
-  have hS21 : Intw P Bs e (d.weightedSumBis Y) (MA.weightedSumBis P (MA.DQ P) Y) :=
+  have hS21 : UpperTheory.Reformulated.B.IntertwinerStructure.Intw P Bs e (d.weightedSumBis Y) (MA.weightedSumBis P (MA.DQ P) Y) :=
     intw_sum hsm _ fun l hl => intw_mul hsm (hSS l hl) (hκ _)
-  have hS12 : Intw P Bs e (d.S12 Y) (MA.S12 P (MA.DQ P) Y) :=
+  have hS12 : UpperTheory.Reformulated.B.IntertwinerStructure.Intw P Bs e (d.S12 Y) (MA.S12 P (MA.DQ P) Y) :=
     intw_sum hsm _ fun l hl => intw_mul hsm (hκ _) (hSSs l hl)
-  have hS4 : Intw P Bs e (d.S4 Y) (MA.S4 P (MA.DQ P) Y) :=
+  have hS4 : UpperTheory.Reformulated.B.IntertwinerStructure.Intw P Bs e (d.S4 Y) (MA.S4 P (MA.DQ P) Y) :=
     intw_sum hsm _ fun l hl => intw_sum hsm _ fun j hj =>
       intw_mul hsm (intw_mul hsm (hSSs l hl) (hSS j (Finset.mem_of_mem_erase hj))) (hκ _)
 
-  have hent : ∀ a b : Fin 2, Intw P Bs e (d.QQ Y a b) (MA.QQr P (MA.DQ P) Y a b) := by
+  have hent : ∀ a b : Fin 2, UpperTheory.Reformulated.B.IntertwinerStructure.Intw P Bs e (d.QQ Y a b) (MA.QQr P (MA.DQ P) Y a b) := by
     intro a b
     fin_cases a <;> fin_cases b
-    · show Intw P Bs e (d.L.GGi * (d.κ fun ρ => M.wC P ρ Y) + d.L.GG * d.x Y * d.L.m0 Y * d.L.l0 Y +
+    · show UpperTheory.Reformulated.B.IntertwinerStructure.Intw P Bs e (d.L.GGi * (d.κ fun ρ => M.wC P ρ Y) + d.L.GG * d.x Y * d.L.m0 Y * d.L.l0 Y +
           d.L.GG * d.L.m0 Y * d.L.GGi * d.weightedSumBis Y + d.S12 Y * d.L.l0 Y + d.L.GGi * d.S4 Y) (MA.t11 P (MA.DQ P) Y)
       exact intw_add hsm (intw_add hsm (intw_add hsm (intw_add hsm (intw_mul hsm hGGi (hκ _))
         (intw_mul hsm (intw_mul hsm (intw_mul hsm hGG hx) hm0) hl0))
         (intw_mul hsm (intw_mul hsm (intw_mul hsm hGG hm0) hGGi) hS21))
         (intw_mul hsm hS12 hl0)) (intw_mul hsm hGGi hS4)
-    · show Intw P Bs e (d.L.GG * d.x Y * d.L.m0 Y + d.S12 Y) (MA.t12 P (MA.DQ P) Y)
+    · show UpperTheory.Reformulated.B.IntertwinerStructure.Intw P Bs e (d.L.GG * d.x Y * d.L.m0 Y + d.S12 Y) (MA.t12 P (MA.DQ P) Y)
       exact intw_add hsm (intw_mul hsm (intw_mul hsm hGG hx) hm0) hS12
-    · show Intw P Bs e (d.L.GG * d.x Y * d.L.l0 Y + d.weightedSumBis Y) (MA.t21 P (MA.DQ P) Y)
+    · show UpperTheory.Reformulated.B.IntertwinerStructure.Intw P Bs e (d.L.GG * d.x Y * d.L.l0 Y + d.weightedSumBis Y) (MA.t21 P (MA.DQ P) Y)
       exact intw_add hsm (intw_mul hsm (intw_mul hsm hGG hx) hl0) hS21
-    · show Intw P Bs e (d.L.GG * d.x Y) (MA.t22 P (MA.DQ P) Y)
+    · show UpperTheory.Reformulated.B.IntertwinerStructure.Intw P Bs e (d.L.GG * d.x Y) (MA.t22 P (MA.DQ P) Y)
       exact intw_mul hsm hGG hx
   have ht : X.t Y a b = (X.QQ Y a b).1 := rfl
   rw [ht, hQQ Y]

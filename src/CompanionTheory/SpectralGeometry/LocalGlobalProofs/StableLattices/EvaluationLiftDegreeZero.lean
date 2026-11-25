@@ -727,7 +727,7 @@ theorem adL_eq {lev : Fin n → ℕ} {x : Cn n V} (hx : SuppIn (inU lev) x) (p q
 theorem bd_eq {lev : Fin n → ℕ} (E : Fin n → Fin n → Module.End ℂ V) {x : Cn n V} (hx : SuppIn (inU lev) x) :
     bd (allT n) E x = (LU lev E + TU V lev) x := by
   simp only [bd, LU, TU, LinearMap.add_apply, LinearMap.sum_apply, LinearMap.smul_apply, Module.End.mul_apply]
-  congr 1
+  refine congrArg₂ (· + ·) ?_ ?_
   · refine Finset.sum_congr rfl fun i _ => ?_
     rw [ite_eq_left trivial]
     by_cases hi : inU lev i

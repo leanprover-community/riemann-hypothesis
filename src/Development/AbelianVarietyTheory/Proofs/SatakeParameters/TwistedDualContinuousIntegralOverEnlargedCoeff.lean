@@ -8,8 +8,6 @@ public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.WeightReg
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal NumberField IsDedekindDomain
 
 namespace GlobalTheory.TwistedDualLoc

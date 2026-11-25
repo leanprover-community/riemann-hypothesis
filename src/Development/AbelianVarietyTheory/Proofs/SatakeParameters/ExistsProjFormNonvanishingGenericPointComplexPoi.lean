@@ -6,8 +6,6 @@ public import Mathlib.Algebra.Module.Submodule.Union
 
 @[expose] public section
 
-noncomputable section
-
 open CategoryTheory AlgebraicGeometry ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory
 
 attribute [local instance] MvPolynomial.gradedAlgebra

@@ -72,12 +72,7 @@ theorem firstCohomologyVanishes_pull_of_isIso (e : Y ⟶ X) [IsIso e] (M : LB X)
   have hb : ∀ a, V a ≤ e ⁻¹ᵁ (inv e ⁻¹ᵁ V a) := fun a => by
     have : V a ≤ (e ≫ inv e) ⁻¹ᵁ V a := by rw [h2]; exact le_rfl
     exact this
-  have hc' : ⨆ a, inv e ⁻¹ᵁ V a = ⊤ := by
-    apply top_unique
-    intro x _
-    have hx : (inv e).base x ∈ ⨆ a, V a := by rw [hc]; trivial
-    obtain ⟨a, ha⟩ := TopologicalSpace.Opens.mem_iSup.1 hx
-    exact TopologicalSpace.Opens.mem_iSup.2 ⟨a, ha⟩
+  have hc' : ⨆ a, inv e ⁻¹ᵁ V a = ⊤ := (inv e).iSup_preimage_eq_top hc
   obtain ⟨ψ, hψ⟩ := hM I (fun a => inv e ⁻¹ᵁ V a) (fun a => c a PUnit.unit) hV' hc'
     (fun a b => pb (inv e) (le_pre_inf _ inf_le_left inf_le_right : inv e ⁻¹ᵁ V a ⊓ inv e ⁻¹ᵁ V b ≤ inv e ⁻¹ᵁ (V a ⊓ V b)) (φ a b))
     (fun a b d => by

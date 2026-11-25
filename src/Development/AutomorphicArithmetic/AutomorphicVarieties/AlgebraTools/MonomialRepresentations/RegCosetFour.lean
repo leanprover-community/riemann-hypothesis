@@ -478,13 +478,8 @@ open Polynomial Matrix
 
 private theorem comp_image {G : Type} [TopologicalSpace G] (e : G ≃ₜ G) {Z : Set G}
     (hZ : Z ∈ irreducibleComponents G) : e '' Z ∈ irreducibleComponents G := by
-  refine ⟨hZ.1.image e e.continuous.continuousOn, fun y hy hsub => ?_⟩
-  have h1 : Z ⊆ e.symm '' y := by
-    intro z hz
-    exact ⟨e z, hsub ⟨z, hz, rfl⟩, e.symm_apply_apply z⟩
-  have h2 := hZ.2 (hy.image e.symm e.symm.continuous.continuousOn) h1
-  intro w hw
-  exact ⟨e.symm w, h2 ⟨w, hw, rfl⟩, e.apply_symm_apply w⟩
+  simpa [e.image_eq_preimage_symm] using
+    preimage_mem_irreducibleComponents hZ e.symm.isOpenEmbedding (by simp [hZ.1.1])
 
 private theorem exists_unique_pt {G : Type} [TopologicalSpace G] [TopologicalSpace.NoetherianSpace G]
     (a : G) : ∃ x : G, ∀ Z ∈ irreducibleComponents G, ∀ W ∈ irreducibleComponents G,
@@ -1295,11 +1290,6 @@ private theorem rel_cases [hN : N.Normal] [N.FiniteIndex] {t : G} (ht : t ∈ N)
 
 end
 
-private theorem det_ne {K G : Type} [Field K] [Group G] (r : G →* Matrix (Fin 4) (Fin 4) K) (g : G) :
-    (r g).det ≠ 0 := by
-  have h : (r g).det * (r g⁻¹).det = 1 := by rw [← Matrix.det_mul, ← map_mul]; simp
-  exact left_ne_zero_of_mul_eq_one h
-
 private theorem adj_eq {K G : Type} [Field K] [Group G] (r : G →* Matrix (Fin 4) (Fin 4) K) (g : G) :
     (r g).adjugate = (r g).det • r g⁻¹ := by
   have h : r g * r g⁻¹ = 1 := by rw [← map_mul]; simp
@@ -1357,7 +1347,7 @@ private theorem core (K G : Type) [Field K] [Group G] [TopologicalSpace G] [IsTo
         · obtain ⟨n, hn, h1⟩ := rel_symm hk.2 hd htd hs (h i)
           refine ⟨σ⁻¹ * n⁻¹ * σ, hN.conj_mem' _ (N.inv_mem hn) σ, ?_⟩
           rw [eval_adj, adj_eq, show (σ * (σ⁻¹ * n⁻¹ * σ))⁻¹ = σ⁻¹ * n by group]
-          exact mul_ne_zero (det_ne r _) h1)
+          exact mul_ne_zero (Matrix.isUnits_det_units (r.toHomUnits _)).ne_zero h1)
       refine ⟨g, hg.1, sepA h2 _ w hw (fun i => ?_) (fun i => ?_)⟩
       · simpa using hf (MvPolynomial.X (i, i))
           (Finset.mem_union_left _ (Finset.mem_image_of_mem _ (Finset.mem_univ i)))
@@ -1373,7 +1363,9 @@ private theorem core (K G : Type) [Field K] [Group G] [TopologicalSpace G] [IsTo
         simpa using hf (MvPolynomial.X (i, j)) (Finset.mem_image_of_mem _ (by simpa using hij))
       have hf'' : ∀ i j, ¬ Rel r N σ i j → r (σ * g) i j = 0 := fun i j hij => by
         by_contra h; exact hij ⟨g, hg.2, h⟩
-      exact ⟨g, hg.1, sepB h2 _ w hw e (det_ne r _) (fun i j => hf'' _ _ (h11 i j)) (fun i j => hf'' _ _ (h22 i j))
+      exact ⟨g, hg.1, sepB h2 _ w hw e
+        (Matrix.isUnits_det_units (r.toHomUnits _)).ne_zero
+        (fun i j => hf'' _ _ (h11 i j)) (fun i j => hf'' _ _ (h22 i j))
         (fun i j => hf' _ _ (h12 i j)) (fun i j => hf' _ _ (h21 i j))⟩
   obtain ⟨g, hg, hsep⟩ := main
   obtain ⟨m, hm⟩ := UpperTheory.V.AlgebraTools.torusTransfer K (Fin 4) _ (fun i => a i ^ k) w hwr hsep

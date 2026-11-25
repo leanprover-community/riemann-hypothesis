@@ -9,8 +9,6 @@ import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.TensorL
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.CompanionTheory.SW.PiLocalization₂
 
 open HeckeCharacterZeroLocus.SiegelWeilU GlobalTheory.CompanionTheory.SW GlobalTheory.CompanionTheory.SW.PiLocalization₂ NumberField IsDedekindDomain MeasureTheory Topology

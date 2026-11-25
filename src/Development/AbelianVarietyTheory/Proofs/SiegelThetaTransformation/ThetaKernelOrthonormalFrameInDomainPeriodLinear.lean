@@ -25,11 +25,7 @@ section Generic
 variable {k : ℕ} {G B s : Matrix (Fin k) (Fin k) ℂ}
 
 theorem isUnit_det (hs : s * s = 1) (h : Bᴴ * G * B = s) : IsUnit B.det := by
-  have hs0 : s.det ≠ 0 := by
-    intro h0
-    have h1 := congrArg Matrix.det hs
-    rw [Matrix.det_mul, h0, zero_mul, Matrix.det_one] at h1
-    exact zero_ne_one h1
+  have hs0 : s.det ≠ 0 := Matrix.det_ne_zero_of_left_inverse hs
   rw [← h, Matrix.det_mul, Matrix.det_mul] at hs0
   exact isUnit_iff_ne_zero.mpr (right_ne_zero_of_mul hs0)
 
@@ -69,10 +65,8 @@ theorem isCartanInv (hs : s * s = 1) (hs' : sᴴ = s) (h : Bᴴ * G * B = s) : I
             simp only [Matrix.mul_assoc]
         _ = B⁻¹ᴴ * B⁻¹ := by
             rw [hBi, Matrix.mul_one, Matrix.mul_assoc B⁻¹ᴴ s s, hs, Matrix.mul_one]
-    have hinj : Function.Injective (B⁻¹).mulVec := by
-      intro x y hxy
-      have h4 := congrArg B.mulVec hxy
-      simpa [Matrix.mulVec_mulVec, hBr] using h4
+    have hinj : Function.Injective (B⁻¹).mulVec :=
+      Matrix.mulVec_injective_iff_isUnit.2 ((Matrix.isUnit_iff_isUnit_det _).2 (Matrix.isUnit_nonsing_inv_det B hu))
     rw [hGM]
     exact Matrix.PosDef.conjTranspose_mul_self _ hinj
 

@@ -117,14 +117,9 @@ lemma card_H (e : ℕ) : Nat.card (HGrp e) = 2 ^ e := by
       Nat.totient_prime_pow Nat.prime_two (by omega), show e + 2 - 1 = e + 1 by omega]
     simp
   have ho : orderOf (-1 : (ZMod (2 ^ (e + 2)))ˣ) = 2 := by
-    refine orderOf_eq_prime neg_one_sq fun h => ?_
-    have h' : ((1 : ℤ) : ZMod (2 ^ (e + 2))) = -1 := by
-      simpa using (congrArg Units.val h).symm
-    have h5 := Int.le_of_dvd (by norm_num) ((cast_eq_neg_one _ _).mp h')
-    push_cast at h5
-    have : (0 : ℤ) < 2 ^ e := by positivity
-    rw [show (2 : ℤ) ^ (e + 2) = 4 * 2 ^ e by ring] at h5
-    omega
+    have : Fact (2 < 2 ^ (e + 2)) :=
+      ⟨lt_of_lt_of_le (by norm_num) (Nat.pow_le_pow_right two_pos (by omega : 2 ≤ e + 2))⟩
+    exact orderOf_eq_prime neg_one_sq fun h => ZMod.neg_one_ne_one (by simpa using congrArg Units.val h)
   have h := Subgroup.card_eq_card_quotient_mul_card_subgroup
     (Subgroup.zpowers (-1 : (ZMod (2 ^ (e + 2)))ˣ))
   rw [Nat.card_zpowers, ho, hc] at h
@@ -211,34 +206,10 @@ theorem hostGroup : HostGroup := by
   · exact hne
   · exact orderOf_eq_prime (Prod.ext (Prod.ext (by simp [sq]) (by simp [sq])) (by simp [sq]))
       fun h => hne (congrArg (fun x => x.1.1) h)
-  · have hg : hcl e (u5 (e + 2)) ^ (2 ^ e) = 1 := h5 ▸ pow_orderOf_eq_one _
-    let f0 : ℤ →+ Additive (HGrp e) := zmultiplesHom (Additive (HGrp e)) (Additive.ofMul (hcl e (u5 (e + 2))))
-    have hf0 : f0 ((2 ^ e : ℕ) : ℤ) = 0 := by
-      show ((2 ^ e : ℕ) : ℤ) • Additive.ofMul (hcl e (u5 (e + 2))) = 0
-      rw [← ofMul_zpow, zpow_natCast, hg, ofMul_one]
-    let f1 : ZMod (2 ^ e) →+ Additive (HGrp e) := ZMod.lift (2 ^ e) ⟨f0, hf0⟩
-    let f : Multiplicative (ZMod (2 ^ e)) →* HGrp e :=
-      { toFun := fun x => Additive.toMul (f1 (Multiplicative.toAdd x))
-        map_one' := by simp
-        map_mul' := fun x y => by simp }
-    have hf1 : f (Multiplicative.ofAdd 1) = hcl e (u5 (e + 2)) := by
-      change Additive.toMul (f1 1) = _
-      rw [show (1 : ZMod (2 ^ e)) = ((1 : ℤ) : ZMod (2 ^ e)) by simp, ZMod.lift_coe]
-      change Additive.toMul ((1 : ℤ) • Additive.ofMul (hcl e (u5 (e + 2)))) = _
-      rw [one_zsmul]; rfl
-    have hsurj : Function.Surjective f := fun y => by
-      have htop : Subgroup.zpowers (hcl e (u5 (e + 2))) = ⊤ :=
-        Subgroup.eq_top_of_card_eq _ (by rw [Nat.card_zpowers, h5, card_H])
-      obtain ⟨k, hk⟩ := Subgroup.mem_zpowers_iff.1 (htop ▸ Subgroup.mem_top y)
-      refine ⟨Multiplicative.ofAdd (k : ZMod (2 ^ e)), ?_⟩
-      change Additive.toMul (f1 (k : ZMod (2 ^ e))) = y
-      rw [ZMod.lift_coe]
-      exact hk
-    have : NeZero (2 ^ e) := ⟨by positivity⟩
-    have hc : Nat.card (Multiplicative (ZMod (2 ^ e))) ≤ Nat.card (HGrp e) := by
-      change Nat.card (ZMod (2 ^ e)) ≤ Nat.card (HGrp e)
-      rw [Nat.card_zmod, card_H]
-    exact ⟨MulEquiv.ofBijective f (hsurj.bijective_of_nat_card_le hc), hf1⟩
+  · have htop : Subgroup.zpowers (hcl e (u5 (e + 2))) = ⊤ :=
+      Subgroup.eq_top_of_card_eq _ (by rw [Nat.card_zpowers, h5, card_H])
+    exact ⟨zmodMulEquivOfGenerator (fun y => htop ▸ Subgroup.mem_top y) (card_H e),
+      zmodMulEquivOfGenerator_apply_ofAdd_one _ _⟩
 
 theorem hostOrders : HostOrders := by
   intro e

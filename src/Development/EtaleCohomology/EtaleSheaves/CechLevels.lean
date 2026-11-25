@@ -6,7 +6,6 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.GalMapMul
 
 @[expose] public section
 
-noncomputable section
 open CategoryTheory Limits AlgebraicGeometry Opposite GlobalTheory.EtC
 
 namespace LateralTheory.E.CechLevelsPf

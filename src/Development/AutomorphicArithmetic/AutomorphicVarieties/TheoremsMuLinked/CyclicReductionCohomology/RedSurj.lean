@@ -8,22 +8,9 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.TheoremsMuL
 
 open IsLocalRing Matrix Filter NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal UpperTheory.V.Alg UpperTheory.V.W UpperTheory.V.Pa UpperTheory.V.HV UpperTheory.V.Th GlobalTheory.GalOfCusp
 
-private theorem red_mul' {O : Type} [CommRing O] [IsLocalRing O] {n : ℕ} (m : ℕ) (A B : Matrix (Fin n) (Fin n) O) :
-    red m (A * B) = red m A * red m B := Matrix.map_mul
-
-private theorem red_sub' {O : Type} [CommRing O] [IsLocalRing O] {n : ℕ} (m : ℕ) (A B : Matrix (Fin n) (Fin n) O) :
-    red m (A - B) = red m A - red m B := by
-  ext i j
-  simp [red]
-
 private theorem red_surj {O : Type} [CommRing O] [IsLocalRing O] {n : ℕ} (m : ℕ) (Y : Mm O n m) : ∃ Y', red m Y' = Y := by
   choose Y' hY' using fun i j => Ideal.Quotient.mk_surjective (Y i j)
   exact ⟨Matrix.of Y', by ext i j; exact hY' i j⟩
-
-private theorem red_add' {O : Type} [CommRing O] [IsLocalRing O] {n : ℕ} (m : ℕ) (A B : Matrix (Fin n) (Fin n) O) :
-    red m (A + B) = red m A + red m B := by
-  ext i j
-  simp [red]
 
 theorem UpperTheory.V.Th.h0GO :
     ∀ (l : ℕ) [Fact l.Prime] (L : Loc) (G0 : Glob l L) (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [IsCoef l O] [Algebra ℤ_[l] O] (n : ℕ) (y : Pt G0.frame O n), l ≠ 2 → ∃ C : ℕ, ∀ m, {Y : Mm O n m | red m y.P * Y = -(Yᵀ * red m y.P) ∧ ∀ g, y.ρ0 m g * Y * y.ρ0 m g⁻¹ = Y}.ncard ≤ Nat.card (ResidueField O) ^ C := by
@@ -39,22 +26,21 @@ theorem UpperTheory.V.Th.h0GO :
   have hk : (⨅ g, LinearMap.ker (Φ g) : Submodule O (Matrix (Fin n) (Fin n) O)) = ⊥ := by
     refine eq_bot_iff.2 fun Y hY => ?_
     obtain ⟨c, hc, hsp⟩ := y.span
-    have h1 : ∀ Z ∈ Submodule.span O (Set.range (mat y.ρ)), Z * Y = Y * Z := by
-      intro Z hZ
-      induction hZ using Submodule.span_induction with
-      | mem Z hZ =>
-        obtain ⟨g, rfl⟩ := hZ
-        have h1 : Φ (some g) Y = 0 := (Submodule.mem_iInf _).mp hY (some g)
-        rw [hΦ, sub_eq_zero] at h1
-        have h2 := congrArg (· * mat y.ρ g) h1
-        simpa only [Matrix.mul_assoc, ← map_mul, inv_mul_cancel, map_one, Matrix.mul_one] using h2
-      | zero => simp
-      | add a b _ _ ha hb => rw [Matrix.add_mul, Matrix.mul_add, ha, hb]
-      | smul a b _ hb => rw [Matrix.smul_mul, Matrix.mul_smul, hb]
+    have h1 : Submodule.span O (Set.range (mat y.ρ)) ≤
+        LinearMap.ker (LinearMap.mulRight O Y - LinearMap.mulLeft O Y) :=
+      Submodule.span_le.2 <| by
+        rintro _ ⟨g, rfl⟩
+        have hg : Φ (some g) Y = 0 := (Submodule.mem_iInf _).mp hY (some g)
+        rw [hΦ, sub_eq_zero] at hg
+        rw [SetLike.mem_coe, LinearMap.mem_ker, LinearMap.sub_apply, LinearMap.mulRight_apply,
+          LinearMap.mulLeft_apply, sub_eq_zero]
+        simpa only [Matrix.mul_assoc, ← map_mul, inv_mul_cancel, map_one, Matrix.mul_one]
+          using congrArg (· * mat y.ρ g) hg
     have h2 : ∀ Z, Z * Y = Y * Z := fun Z => by
-      have := h1 _ (hsp Z)
-      rw [Matrix.smul_mul, Matrix.mul_smul] at this
-      exact smul_right_injective _ hc this
+      have hmem := h1 (hsp Z)
+      rw [LinearMap.mem_ker, LinearMap.sub_apply, LinearMap.mulRight_apply,
+        LinearMap.mulLeft_apply, sub_eq_zero, Matrix.smul_mul, Matrix.mul_smul] at hmem
+      exact smul_right_injective _ hc hmem
     obtain ⟨a, ha⟩ := Matrix.mem_range_scalar_of_commute_single (M := Y) fun i j _ => h2 _
     have h3 : Φ none Y = 0 := (Submodule.mem_iInf _).mp hY none
     have hs : Y = a • (1 : Matrix (Fin n) (Fin n) O) := by
@@ -67,20 +53,26 @@ theorem UpperTheory.V.Th.h0GO :
   rw [hk, finrank_bot, mul_zero, zero_add] at this
   refine le_trans (le_of_eq (congrArg Set.ncard ?_)) this
   have ht : ∀ Y : Matrix (Fin n) (Fin n) O, red m Yᵀ = (red m Y)ᵀ := fun _ => rfl
+  let q : Matrix (Fin n) (Fin n) O →+* Mm O n m := (Ideal.Quotient.mk _).mapMatrix
+  have hq : ∀ Z, red m Z = q Z := fun _ => rfl
   ext Y
   constructor
   · rintro ⟨h0, hY⟩
     obtain ⟨Y', e⟩ := red_surj m Y
     refine ⟨Y', e, ?_⟩
     rintro (_ | g)
-    · rw [hΦ0, red_add', red_mul', red_mul', ht, e, h0, neg_add_cancel]
-    · rw [hΦ, red_sub', red_mul', red_mul', e]
+    · rw [hΦ0, hq, map_add, map_mul, map_mul]
+      simp only [← hq, ht, e, h0, neg_add_cancel]
+    · rw [hΦ, hq, map_sub, map_mul, map_mul]
+      simp only [← hq, e]
       exact sub_eq_zero.mpr (hY g)
   · rintro ⟨Y', e, h⟩
     refine ⟨?_, fun g => ?_⟩
     · have h1 := h none
-      rw [hΦ0, red_add', red_mul', red_mul', ht, e] at h1
+      rw [hΦ0, hq, map_add, map_mul, map_mul] at h1
+      simp only [← hq, ht, e] at h1
       exact eq_neg_of_add_eq_zero_left h1
     · have h1 := h (some g)
-      rw [hΦ, red_sub', red_mul', red_mul', e] at h1
+      rw [hΦ, hq, map_sub, map_mul, map_mul] at h1
+      simp only [← hq, e] at h1
       exact sub_eq_zero.mp h1

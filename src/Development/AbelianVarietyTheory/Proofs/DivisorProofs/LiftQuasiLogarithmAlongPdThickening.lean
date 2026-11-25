@@ -37,12 +37,6 @@ theorem mvPowerSeriesMap_evalTwoGroups (φ : R →+* S) {τ : Type} (c : MvPower
   congr 1
   funext i; cases i <;> rfl
 
-theorem map_swap (φ : R →+* S) (c : MvPowerSeries (Fin d ⊕ Fin d) R) :
-    map φ (swap c) = swap (map φ c) := by
-  unfold swap
-  rw [mvPowerSeriesMap_evalTwoGroups φ c _ _ (fun _ => constantCoeff_X _) (fun _ => constantCoeff_X _)]
-  simp only [map_X]
-
 theorem const_op (μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) R) (hμ : ∀ i, constantCoeff (μ i) = 0)
     {τ : Type} (u v : Fin d → MvPowerSeries τ R) (hu : ∀ i, constantCoeff (u i) = 0)
     (hv : ∀ i, constantCoeff (v i) = 0) (i : Fin d) : constantCoeff (op μ u v i) = 0 :=
@@ -61,11 +55,6 @@ theorem formalGroupLawCoboundaryTwo_sub (μ : Fin d → MvPowerSeries (Fin d ⊕
   rw [_root_.GlobalTheory.CobLin.powerSeriesEvalTwoGroups_sub a b _ _ h2 h3, _root_.GlobalTheory.CobLin.powerSeriesEvalTwoGroups_sub a b _ _ (const_op μ hμ _ _ h1 h2) h3,
     _root_.GlobalTheory.CobLin.powerSeriesEvalTwoGroups_sub a b _ _ h1 (const_op μ hμ _ _ h2 h3), _root_.GlobalTheory.CobLin.powerSeriesEvalTwoGroups_sub a b _ _ h1 h2]
   ring
-
-theorem map_formalGroupLawCoboundaryTwo (φ : R →+* S) (μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) R)
-    (hμ : ∀ i, constantCoeff (μ i) = 0) (c : MvPowerSeries (Fin d ⊕ Fin d) R) :
-    map φ (cob2 μ c) = cob2 (fun i => map φ (μ i)) (map φ c) := by
-  apply GlobalTheory.CocLift.map_formalGroupLawCoboundaryTwo <;> assumption
 
 theorem constantCoeff_coboundaryOne_zero_of_constCoeff (μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) R) (hμ : ∀ i, constantCoeff (μ i) = 0)
     (f : MvPowerSeries (Fin d) R) (hf : constantCoeff f = 0) : constantCoeff (cob1 μ f) = 0 := by
@@ -296,18 +285,18 @@ theorem lift_quasiLog : ∀ (p : ℕ) [Fact p.Prime] (B O Q : Type) [CommRing B]
   have hJ : ∀ α, ∃ k : ℕ, ∃ c ∈ RingHom.ker θ, (p : Q) ^ k * coeff α κ₁ = algebraMap B Q c :=
     fun α => kerQ F G hΘ _ (by rw [← coeff_map, hκ1Θ, map_zero])
   have hupK2 : cob2 (up Q μ) (map (algebraMap B Q) K) = map (algebraMap B Q) (cob2 μ K) :=
-    (map_formalGroupLawCoboundaryTwo _ μ hμ.const K).symm
+    (GlobalTheory.CocLift.map_formalGroupLawCoboundaryTwo _ μ hμ.const K).symm
   have hcob : In (RingHom.ker θ) (cob2 (up Q μ) κ₁) := by
     apply in_ker G hΘ
     · rw [hκ1, formalGroupLawCoboundaryTwo_sub _ hμQ, hupK2]
       exact in_sub (in_mono le_top hcob2) (in_map _)
-    · rw [map_formalGroupLawCoboundaryTwo Θ _ hμQ, hΘμ, hκ1Θ, formalGroupLawCoboundaryTwo_zero _ hμC]
+    · rw [GlobalTheory.CocLift.map_formalGroupLawCoboundaryTwo Θ _ hμQ, hΘμ, hκ1Θ, formalGroupLawCoboundaryTwo_zero _ hμC]
   have hsw : In (RingHom.ker θ) (swap κ₁ - κ₁) := by
     apply in_ker G hΘ
     · have : swap κ₁ - κ₁ = map (algebraMap B Q) (K - swap K) := by
-        rw [hκ1, _root_.GlobalTheory.CobSwap.swap_sub, hsym, map_sub, ← map_swap]; ring
+        rw [hκ1, _root_.GlobalTheory.CobSwap.swap_sub, hsym, map_sub, ← GlobalTheory.CocLift.map_swap]; ring
       rw [this]; exact in_map _
-    · rw [map_sub, map_swap, hκ1Θ, swap_zero, sub_zero]
+    · rw [map_sub, GlobalTheory.CocLift.map_swap, hκ1Θ, swap_zero, sub_zero]
   obtain ⟨e, he0, hel, heJ, heN⟩ := _root_.GlobalTheory.symmetric_cocycle_is_coboundary_mod p B O Q θ F d μ hμ (RingHom.ker θ) (RingHom.ker θ)
     le_rfl κ₁ (Or.inr hD1) hc1 hJ hcob hsw
   have heΘ : map Θ e = 0 := by

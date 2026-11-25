@@ -167,11 +167,7 @@ theorem det_mul_diagonal_mul_eq_sum_minors {n : Type*} [Fintype n] [LinearOrder 
       A.submatrix id (subsetEnum S) * diagonal (d ∘ subsetEnum S) := by
     ext a c; simp
   have h2 : ∏ a, d (subsetEnum S a) = ∏ s ∈ S.1, d s := by
-    refine Finset.prod_bij (fun a _ => subsetEnum S a) (fun a _ => Finset.orderEmbOfFin_mem _ _ _)
-      (fun a _ b _ h => subsetEnum_injective S h) (fun s hs => ?_) (fun _ _ => rfl)
-    have : s ∈ Set.range (subsetEnum S) := by rw [range_subsetEnum]; exact hs
-    obtain ⟨a, ha⟩ := this
-    exact ⟨a, Finset.mem_univ _, ha⟩
+    rw [← Finset.map_orderEmbOfFin_univ S.1 S.2, Finset.prod_map]; rfl
   rw [h1, det_mul, det_diagonal, ← h2]
   simp only [Function.comp_apply]
   ring

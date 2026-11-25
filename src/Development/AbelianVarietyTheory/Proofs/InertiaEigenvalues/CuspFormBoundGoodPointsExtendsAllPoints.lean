@@ -148,7 +148,6 @@ theorem det_im_lower_bound {g : ℕ} (τ : ℂ → Matrix (Fin g) (Fin g) ℂ) (
 
 end GlobalTheory.ArcGenBound
 
-
 open GlobalTheory.ArcGenBound in
 theorem GlobalTheory.ArcGenBound.gen_ratio_bounded : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (r : ℕ) (σ : c.F →+* ℂ) (U : Formalism.L2.PjFree.Unf Xo c σ r) (Uw : UnfWit U) [Algebra (FractionRing ℂ) ℂ] [IsScalarTower ℂ (FractionRing ℂ) ℂ] (O : Type) [CommRing O] (β : O →+* c.F) (Y : Model Xo c β) (a : ArcIn Dw l β ℂ (σ.comp β)) (χ : Sp (PowerSeries ℂ) ⟶ Y.X) (W : Wit Y a χ) (Ha : HolArc Y σ a χ W Uw.F) (th : a.D₀.P.L.Sec) (Θ : ThetaDat Ha th) (z : ∀ τ : E →+* ℂ, Fin (Dw.mult τ) → (Fin Uw.g → ℂ)), Formalism.L2.PjFree.GoodEmb c σ → Formalism.L2.PjFree.IsUnf U → (∀ τ, LinearIndependent ℂ (z τ) ∧ ∀ i jj, z τ i jj ≠ 0 → (Uw.e jj).1 = τ) → ∃ T B : ℝ, ∀ w : ℂ, T < w.im → ∀ yw, AnFr Ha Θ z w yw → ∀ (k : U.Comp) (x : (U.X k).dom) (t : Ix Dw → (CAt σ)ˣ), GlobalTheory.FrameNorm.IsUnitFr (U.X k) x.1 → FrBor t (U.un k x) yw → ‖Formalism.L2.PjFree.toC (t none : CAt σ)‖ ≤ B := by
   intro E _ _ _ H Dw l Xo c r σ U Uw _ _ O _ β Y a χ W Ha th Θ z _ _ _
@@ -329,7 +328,6 @@ theorem im_tau_mono {w₀ w : ℂ} (hw : w₀.im ≤ w.im) (x : Fin g → ℝ) :
   have := mul_le_mul_of_nonneg_right hw hN
   linarith
 
-
 omit [IsScalarTower ℂ (FractionRing ℂ) ℂ] in
 theorem exists_riem_inv {w : ℂ} {Hm : Matrix (Fin g) (Fin g) ℂ} (hR : IsRiem Fu Ha.i (Ha.Pw w) Hm) :
     ∃ G : Matrix (Fin g) (Fin g) ℝ, G * (Θ.τ w).map Complex.im = 1 ∧ ∀ v, (hermForm Hm v v).re =
@@ -344,7 +342,6 @@ theorem exists_riem_inv {w : ℂ} {Hm : Matrix (Fin g) (Fin g) ℂ} (hR : IsRiem
       by_cases hij : i = j <;> simp [Pi.single_apply, hij, eq_comm]), fun v => ?_⟩
   rw [← re_hermForm_sum Hm p h1, ← eq_sum Θ.h p (fun i => (Θ.per w i).1)]
 
-
 include Θ in
 theorem riem_anti {w₀ w : ℂ} (h₀ : Ha.T < w₀.im) (hw : w₀.im ≤ w.im) {H₀ Hm : Matrix (Fin g) (Fin g) ℂ}
     (hR₀ : IsRiem Fu Ha.i (Ha.Pw w₀) H₀) (hR : IsRiem Fu Ha.i (Ha.Pw w) Hm) (v : Fin g → ℂ) :
@@ -356,7 +353,6 @@ theorem riem_anti {w₀ w : ℂ} (h₀ : Ha.T < w₀.im) (hw : w₀.im ≤ w.im)
     (inv_form_le (Θ.pos w₀ h₀).2 a₀ a₁ (im_tau_mono Θ hw) _)
 
 end ThetaShiftProofs
-
 
 open GlobalTheory.FrameNormLie GlobalTheory.FrameNorm in
 
@@ -611,9 +607,6 @@ namespace GlobalTheory.GoodRefine
 
 alias sp_comp := _root_.GlobalTheory.TanMod.spMap_comp'
 
-theorem sp_inj {A B : Type} [CommRing A] [CommRing B] {f g : A →+* B} (h : spMap f = spMap g) : f = g :=
-  congrArg CommRingCat.Hom.hom (Spec.map_injective h)
-
 theorem exists_lift {X : Scheme.{0}} {C A : Type} [CommRing C] [CommRing A] (ι : Sp C ⟶ X) [IsOpenImmersion ι]
     (f : Sp A ⟶ X) (h : Set.range f ⊆ Set.range ι) : ∃ φ : C →+* A, spMap φ ≫ ι = f := by
   refine ⟨(Spec.preimage (IsOpenImmersion.lift ι f h)).hom, ?_⟩
@@ -663,12 +656,12 @@ theorem exists_gens {O : Type} [CommRing O] {X : Scheme.{0}} (s : X ⟶ Sp O) [L
     exact (show PrimeSpectrum R' from p).isPrime.ne_top (Ideal.eq_top_of_isUnit_mem _ hm hu)
   obtain ⟨φ, hφ⟩ := exists_lift ι _ hri
   have hφβ : φ.comp β = i.comp b := by
-    apply sp_inj
+    apply GlobalTheory.FullPoint.spMap_inj
     rw [← sp_comp, ← sp_comp, hβ, ← hb, ← Category.assoc, hφ, Category.assoc]
   refine ⟨t.image φ, fun ψ' hψ x hx => ?_, fun V₁ F₁ _ _ a₁ ha ψ₁ h1 h2 => ?_⟩
   · obtain ⟨u, -, rfl⟩ := Finset.mem_image.1 hx
     have : ψ'.comp φ = a.comp γ := by
-      apply sp_inj
+      apply GlobalTheory.FullPoint.spMap_inj
       rw [← cancel_mono ι, ← sp_comp, ← sp_comp, Category.assoc, Category.assoc, hφ, hγ, ← hy, ← hψ, ← sp_comp,
         Category.assoc]
     exact ⟨γ u, (DFunLike.congr_fun this u).symm⟩
@@ -727,7 +720,6 @@ theorem exists_invert {K Ω L V : Type} [Field K] [Field Ω] [Field L] [Algebra 
         congr 1
         exact Subtype.ext (inv_mul_cancel₀ hg0)
       rw [e2]; exact hi
-
 
 set_option maxHeartbeats 800000 in
 theorem exists_refine_extIn : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (O : Type) [CommRing O] [IsDomain O] [Algebra O c.F] [IsFractionRing O c.F] (Y : Model Xo c (algebraMap O c.F)) (S : Set Y.X) (P : PChart Xo c (algebraMap O c.F)) (T : CDVR) (io : c.F →+* T.Fr), IsOpen S → letI := io.toAlgebra; ∀ (e : P.Ω) (he : e ∈ P.es) (ψ : P.R e →ₐ[c.F] T.Fr) (z : FrPt Xo c T.Fr), (∀ g : P.R e, (g : P.Ω) ∈ P.gens → InV T (ψ g)) → FrMap ψ (P.y e he) z → ExtIn Y S T io z.x → ∃ (P' : PChart Xo c (algebraMap O c.F)) (e' : P'.Ω) (he' : e' ∈ P'.es) (ψ' : P'.R e' →ₐ[c.F] T.Fr), (∀ g : P'.R e', (g : P'.Ω) ∈ P'.gens → InV T (ψ' g)) ∧ FrMap ψ' (P'.y e' he') z ∧ ∀ (T₁ : CDVR) (io₁ : c.F →+* T₁.Fr), (∀ a : O, InV T₁ (io₁ (algebraMap O c.F a))) → letI := io₁.toAlgebra; ∀ (ψ₁ : P'.R e' →ₐ[c.F] T₁.Fr) (z₁ : FrPt Xo c T₁.Fr), (∀ g : P'.R e', (g : P'.Ω) ∈ P'.gens → InV T₁ (ψ₁ g)) → FrMap ψ₁ (P'.y e' he') z₁ → ExtIn Y S T₁ io₁ z₁.x := by

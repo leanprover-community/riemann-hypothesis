@@ -49,8 +49,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 open MeasureTheory Matrix Formalism.QuantumDeterminants Formalism.MainNotions.S GlobalTheory.SgInf
 open scoped InnerProductSpace ContDiff
 
-noncomputable section
-
 namespace GlobalTheory.SgInfDD
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace

@@ -47,8 +47,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
-noncomputable section
-
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open scoped CategoryTheory.Obj TensorProduct
@@ -318,5 +316,3 @@ theorem GlobalTheory.hasTh_iff_of_tmap : ∀ (o : Type) [CommRing o] (g N' : ℕ
       (Category.assoc _ _ _).symm)
   · exact (MonObj.comp_pow _ _ _).symm.trans
       ((congrArg (_ ≫ ·) (GlobalTheory.ThetaPtUp.lab_pow t' a)).trans (MonObj.comp_one _))
-
-end

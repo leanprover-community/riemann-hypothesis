@@ -18,8 +18,6 @@ public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.NatCastMe
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.G Formalism.MainNotions.TaylorLogMetric GlobalTheory.KerStd Classical
 open Formalism.L2.Th1.CM (MaximalUnramifiedExtension)
 open Formalism.L2.Th1.D (F1 F2 OwOK TrDual addC thetaInZ sumE)

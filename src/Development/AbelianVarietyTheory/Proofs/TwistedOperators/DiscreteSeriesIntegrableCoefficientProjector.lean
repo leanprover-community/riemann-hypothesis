@@ -35,15 +35,6 @@ private lemma shc_nonneg' (x : ℝ) : 0 ≤ _root_.Formalism.MainNotions.SchurIr
     · exact (div_pos (Real.sinh_pos_iff.mpr h) h).le
 
 open MvPolynomial in
-private lemma sinh_div_le_exp_of_pos {y : ℝ} (hy : 0 < y) : Real.sinh y / y ≤ Real.exp y := by
-  rw [div_le_iff₀ hy, Real.sinh_eq]
-  have h1 : -(2 * y) + 1 ≤ Real.exp (-(2 * y)) := Real.add_one_le_exp _
-  have h2 : Real.exp (-y) = Real.exp y * Real.exp (-(2 * y)) := by
-    rw [← Real.exp_add]; ring_nf
-  have h3 : 0 < Real.exp y := Real.exp_pos y
-  rw [h2]
-  nlinarith [mul_le_mul_of_nonneg_left h1 h3.le]
-
 open MvPolynomial in
 private lemma shc_le_exp_abs (x : ℝ) : _root_.Formalism.MainNotions.SchurIrreducible.shc x ≤ Real.exp |x| := by
   apply _root_.GlobalTheory.CartanInt.shc_le_exp <;> assumption

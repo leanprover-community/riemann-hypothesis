@@ -435,12 +435,8 @@ theorem UpperTheory.galois_representation_irreducible_prime_dimension :
   have hcomm : commutator Γ ≤ φ.range := by
     haveI : Fact (φ.range.index).Prime := ⟨hp⟩
     haveI : IsCyclic (Γ ⧸ φ.range) := isCyclic_of_prime_card (p := φ.range.index) rfl
-    rw [commutator, Subgroup.commutator_le]
-    intro a _ b _
-    rw [← QuotientGroup.eq_one_iff]
-    rw [← QuotientGroup.mk'_apply, map_commutatorElement, commutatorElement_eq_one_iff_mul_comm]
     letI := IsCyclic.commGroup (α := Γ ⧸ φ.range)
-    exact mul_comm _ _
+    exact Subgroup.Normal.quotient_commutative_iff_commutator_le.mp inferInstance
   obtain ⟨η, hη, hker, e, he⟩ := UpperTheory.V.AlgebraTools.twistOfRed k Γ (Fin n → k) (linRep r) φ.range
     (Nat.cast_ne_zero.mpr hp.ne_zero) hcomm ((isIrr_iff r).mp hr) hred
   have hn0 : n ≠ 0 := by

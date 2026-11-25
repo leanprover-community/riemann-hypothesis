@@ -5,6 +5,7 @@ public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.MkMe
 public import Mathlib.Algebra.DualNumber
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.DeformCr
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.SnocZeroLastCoordinateLast
+import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.TriDefs
 import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.Z1fDescAvg
 import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.Z1fMap
 import Mathlib.FieldTheory.Galois.Profinite
@@ -39,12 +40,6 @@ private theorem crystalline_transfer_surjection {l : ℕ} [Fact l.Prime] {G G' A
     exact he.forall
   unfold IsCr
   rw [hr, ← hD, LinearEquiv.finrank_map_eq, f.finrank_eq]
-
-private theorem crystalline_iff_on_top {l : ℕ} [Fact l.Prime] {G A V : Type} [Group G] [CommRing A]
-    [Algebra ℚ_[l] A] [AddCommGroup V] [Module A V] [Module ℚ_[l] V] [IsScalarTower ℚ_[l] A V]
-    (φ : G →* GQ l) (ρ : Representation A G V) : IsCr φ ρ ↔ CrOn φ ρ ⊤ :=
-  crystalline_transfer_surjection φ (⊤ : Subgroup G).subtype (fun g => ⟨⟨g, trivial⟩, rfl⟩) ρ _ (LinearEquiv.refl _ _)
-    fun _ _ => rfl
 
 private theorem crystalline_conj_invariant {l : ℕ} [Fact l.Prime] {G A : Type} [Group G] [CommRing A] [Algebra ℚ_[l] A] {n : ℕ}
     (φ : G →* GQ l) (r : G →* GL (Fin n) A) (h : GL (Fin n) A) :
@@ -100,8 +95,8 @@ theorem UpperTheory.V.Loc.pr6 :
   have h1 : IsCr (φ.comp H.subtype) (colRep r') :=
     (crystalline_conj_invariant _ r' h).2 (prC P _ hφH (TrivSqZeroExt.fstHom E E E)
       (fun a ha => ⟨2, by ext <;> simp_all [pow_two]⟩) (conjGL h r') hcc κ w hU hw hκ hne)
-  obtain ⟨h2, h3⟩ := (deformCr _ hφH r hr _ hy' r' hr' ⊤ (by simp)).1 ((crystalline_iff_on_top _ _).1 h1)
-  refine ⟨(crystalline_iff_on_top _ _).2 h2, h1, (z1fDesc φ ρ H y hy).2 ?_⟩
+  obtain ⟨h2, h3⟩ := (deformCr _ hφH r hr _ hy' r' hr' ⊤ (by simp)).1 ((crOn_top _ _).2 h1)
+  refine ⟨(crOn_top _ _).1 h2, h1, (z1fDesc φ ρ H y hy).2 ?_⟩
   have := (z1fMap (φ.comp H.subtype) (adGL r) (ρ.comp H.subtype : Representation E H Y)).2
     (p.restrictScalars ℚ_[l]) hpe _ h3
   simpa [hp] using this

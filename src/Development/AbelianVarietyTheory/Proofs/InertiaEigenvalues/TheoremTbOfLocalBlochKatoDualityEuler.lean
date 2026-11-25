@@ -341,18 +341,9 @@ theorem sum_val (e : ℕ) : ∑ i ∈ Finset.range e, (padicValInt l ((i : ℤ) 
 
 variable {P : LocPrime l} {AI : LocAinf l P}
 
-theorem om_mem (x : Om l) : algebraMap (Om l) P.R.BdR x ∈ (P.PD (botExt l)).Fil 0 := by
-  obtain ⟨K, hK⟩ : ∃ K : FinExt l, x ∈ K.1 := ⟨⟨IntermediateField.adjoin ℚ_[l] {x},
-    IntermediateField.adjoin.finiteDimensional (Algebra.IsIntegral.isIntegral _)⟩,
-    IntermediateField.mem_adjoin_simple_self _ _⟩
-  have h2 := ((P.PD K).Fil 0).smul_mem (⟨x, hK⟩ : ↥K.1) (P.PD K).one_mem
-  rw [Algebra.smul_def, mul_one] at h2
-  rw [← SetLike.mem_coe, P.PD_Fil (botExt l) K 0]
-  exact h2
-
 theorem q_mem (x : ℚ_[l]) : algebraMap ℚ_[l] P.R.BdR x ∈ (P.PD (botExt l)).Fil 0 := by
   rw [IsScalarTower.algebraMap_apply ℚ_[l] (Om l) P.R.BdR]
-  exact om_mem _
+  exact GlobalTheory.DeRhamSymbol.om_mem _
 
 theorem theta_q (J : ThetaL P AI) (x : ℚ_[l]) :
     J.θ (algebraMap ℚ_[l] P.R.BdR x) = algebraMap ℚ_[l] (PadicComplex l) x := by
@@ -375,11 +366,6 @@ theorem act_mem (σ : GQ l) {a : ℤ} {x : P.R.BdR} (hx : x ∈ (P.PD (botExt l)
     P.actQdR σ x ∈ (P.PD (botExt l)).Fil a := by
   rw [← P.PD_actdR (botExt l) ⟨σ, mem_GK_bot σ⟩]
   exact (P.PD (botExt l)).Fil_G _ _ _ hx
-
-theorem act_ι (σ : GQ l) (b : P.R.B) : P.actQdR σ (P.ιB b) = P.ιB (P.actQ σ b) := by
-  have h3 := (P.PD (botExt l)).ι_comm ⟨σ, mem_GK_bot σ⟩ b
-  rw [P.PD_ι, P.PD_ι, P.PD_actB, P.PD_actdR] at h3
-  exact h3.symm
 
 theorem fil_mono {a : ℤ} (n : ℕ) : (P.PD (botExt l)).Fil (a + n) ≤ (P.PD (botExt l)).Fil a := by
   induction n with
@@ -457,7 +443,7 @@ theorem cob_ι (T : LocTied l P AI) (e : ℕ) (a : Ainf l) (σ : GQ l) :
   obtain ⟨z, hz⟩ : ∃ z : ℤ_[l], (z : ℚ_[l]) = ((P.χQ σ ^ (-(e : ℤ)) : ℚ_[l]ˣ) : ℚ_[l]) :=
     ⟨⟨_, hn⟩, rfl⟩
   refine ⟨Per.zA l z * AI.actW σ a - a, ?_⟩
-  rw [map_sub, map_sub, map_mul, map_mul, inclusion_ainf_padicInteger_eq_algebraMap T, hz, cob, act_ι, ← AI.ιA_act]
+  rw [map_sub, map_sub, map_mul, map_mul, inclusion_ainf_padicInteger_eq_algebraMap T, hz, cob, GlobalTheory.ExpDef.act_ι, ← AI.ιA_act]
   rfl
 
 theorem zeta_mem (K : FinExt l) {s : ℕ} (hs : 1 ≤ s) : P.ζQ 1 ∈ Ks K s := by
@@ -561,7 +547,7 @@ theorem norm_le_of_intMod (T : LocTied l P AI) (K : FinExt l) {s : ℕ} (hs : Le
   set J := GlobalTheory.ThetaTie.thetaL T
   have hG := iterate T K hs (e := e) (fun σ => algebraMap ℚ_[l] P.R.BdR (logZl l (P.χQ σ : ℚ_[l])) *
     (algebraMap (Om l) P.R.BdR α * P.ιB P.tB ^ e))
-    (fun σ => mul_mem_zero (q_mem _) (mul_mem_zero (om_mem _)
+    (fun σ => mul_mem_zero (q_mem _) (mul_mem_zero (GlobalTheory.DeRhamSymbol.om_mem _)
       (by simpa using pow_mem_Fil (t_mem (P := P)) e)))
     H e le_rfl
   have hsum : ∑ k ∈ Finset.range e, (1 + s + padicValInt l ((k : ℤ) - e)) =
@@ -580,14 +566,14 @@ theorem norm_le_of_intMod (T : LocTied l P AI) (K : FinExt l) {s : ℕ} (hs : Le
     (fun σ hσ => by
       obtain ⟨a, ha⟩ := H2 σ hσ
       have hm := mul_mem_zero (q_mem (P := P) (logZl l (P.χQ σ : ℚ_[l])))
-        (om_mem ((l : Om l) ^ n * α))
+        (GlobalTheory.DeRhamSymbol.om_mem ((l : Om l) ^ n * α))
       have hm2 := sub_mem (act_mem σ hy) hy
       have h2 := graded T J e (add_mem hm hm2) a (by
         rw [twistedCoboundary_t_pow_mul] at ha
         convert ha using 1
         simp only [sub_self, zpow_zero, Units.val_one, map_one, map_mul, map_pow, map_natCast]
         ring)
-      rw [J.θ_add _ hm _ hm2, theta_sub J (act_mem σ hy) hy, J.θ_mul _ (q_mem _) _ (om_mem _),
+      rw [J.θ_add _ hm _ hm2, theta_sub J (act_mem σ hy) hy, J.θ_mul _ (q_mem _) _ (GlobalTheory.DeRhamSymbol.om_mem _),
         theta_q, J.θ_Om, J.θ_act _ _ hy] at h2
       rw [map_mul, map_pow, map_sub, map_one, act_zeta K hs.1 hσ]
       convert h2 using 2
@@ -851,18 +837,14 @@ variable {G : Type} [Group G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field 
     [Module O V] [IsScalarTower O LL V]
     (ρ : Representation LL G V)
 
-theorem corHf_actVB_tmul (g : G) (v : V) (b : B) :
-    actVB PD ρ g (v ⊗ₜ[Qp] b) = ρ g v ⊗ₜ[Qp] PD.actB g b := by
-  simp [actVB]
-
 noncomputable def corHfRepVB : Representation LL G (V ⊗[Qp] B) where
   toFun g := actVB PD ρ g
   map_one' := by
     ext v b
-    simp [corHf_actVB_tmul]
+    simp [GlobalTheory.FundDel.actVB_tmul']
   map_mul' g h := by
     ext v b
-    simp [corHf_actVB_tmul]
+    simp [GlobalTheory.FundDel.actVB_tmul']
 
 def corHfRepO (O : Type) [CommRing O] [Algebra O LL] [Module O V] [IsScalarTower O LL V] :
     Representation O G V where
@@ -891,7 +873,7 @@ theorem index_smul_mem_HfD [CharZero LL] (L : Lattice (O := O) ρ) (hρ : ∀ g,
     exact (LinearMap.congr_fun ((corHfRepVB PD ρ).map_mul a b) y).symm
   have h1 : ∀ g (v : V), actVB PD ρ g (v ⊗ₜ[Qp] (1 : B)) = ρ g v ⊗ₜ[Qp] (1 : B) := by
     intro g v
-    rw [corHf_actVB_tmul, map_one]
+    rw [GlobalTheory.FundDel.actVB_tmul', map_one]
   obtain ⟨y, hy⟩ := index_smul_cocycle_eq_coboundary LL G (V ⊗[Qp] B) (corHfRepVB PD ρ) H
     (fun g => F g ⊗ₜ[Qp] (1 : B))
     (by
@@ -964,7 +946,6 @@ theorem corHf_nsmul_mem {O G M : Type} [CommRing O] [AddCommGroup M] [Module O M
   convert S.smul_mem u hf using 1
   funext g
   rw [Pi.smul_apply, ← Nat.cast_smul_eq_nsmul O, ← Nat.cast_smul_eq_nsmul O, smul_smul, hu]
-
 
 set_option synthInstance.maxHeartbeats 400000 in
 theorem pow_smul_mem_HfD_of_restriction : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (K LL : FinExt l) (V : LocLat ↥(GK K) ℚ_[l] ↥LL.1 ↥(OL LL)) (H : Subgroup ↥(GK K)) [H.Normal] [H.FiniteIndex], IsOpen (H : Set ↥(GK K)) → ∀ (Z f₀ : ↥(GK K) → V.V), ContinuousOn Z H → (∀ g ∈ H, ∀ h ∈ H, Z (g * h) = Z g + V.ρ g (Z h)) → (∃ X : TensorProduct ℚ_[l] V.V P.R.B, ∀ h ∈ H, Z h ⊗ₜ[ℚ_[l]] (1 : P.R.B) = actVB (P.PD K) V.ρ h X - X) → (∀ g h, f₀ (g * h) - (f₀ g + V.ρ g (f₀ h)) ∈ V.L.T) → (∀ h ∈ H, Z h - f₀ h ∈ V.L.T) → ∀ k : ℕ, padicValNat l H.index ≤ k → (fun g => (l ^ k : ℕ) • (Submodule.Quotient.mk (f₀ g) : V.V ⧸ V.L.T)) ∈ HfD (P.PD K) V.L := by
@@ -1206,8 +1187,6 @@ theorem map_eq_actVdR (ρ : Representation LL G V) (g : G) (x : V ⊗[Qp] BdR) :
 
 end Fil
 
-
-
 theorem exists_rational (AI : LocAinf l P) (LT : LocTied l P AI) (K LL : FinExt l)
     (h1F : (1 : P.R.BdR) ∈ (P.PD K).Fil 0)
     (Yt T Z : LocLat ↥(GK K) ℚ_[l] ↥LL.1 ↥(OL LL)) (ι : LatHom T.L Yt.L) (π : LatHom Yt.L Z.L)
@@ -1264,8 +1243,6 @@ theorem exists_rational (AI : LocAinf l P) (LT : LocTied l P AI) (K LL : FinExt 
       hx1G, AlgebraTensorModule.map_tmul, LinearMap.id_apply, hf, sub_tmul]
     abel
 
-
-
 theorem cob_of_rational (AI : LocAinf l P) (K LL : FinExt l)
     (T : LocLat ↥(GK K) ℚ_[l] ↥LL.1 ↥(OL LL)) (f : ↥(GK K) → ↥T.L.T)
     (e j : ℕ) (hle : Gj K j ≤ GK K)
@@ -1311,8 +1288,6 @@ theorem cob_of_rational (AI : LocAinf l P) (K LL : FinExt l)
       rw [map_eq_actVdR (P.PD K) T.ρ, hcob, hβ1]
       rfl)
   exact ⟨k, x, fun g => hx g⟩
-
-
 
 theorem cob_of_strict (AI : LocAinf l P) (LT : LocTied l P AI) (J : ThetaL P AI) (K LL : FinExt l)
     (Yt T Z : LocLat ↥(GK K) ℚ_[l] ↥LL.1 ↥(OL LL)) (ι : LatHom T.L Yt.L) (π : LatHom Yt.L Z.L)
@@ -1451,8 +1426,6 @@ theorem actVB_sum_tmul {G : Type} [Group G] {Qp K₀ K : Type} [Field Qp] [Field
   refine Finset.sum_congr rfl fun i _ => ?_
   change _ = ρ g (w i) ⊗ₜ[Qp] PD.actB g (x i) - _
   rw [hc, smul_tmul, smul_tmul, ← tmul_sub, ← hz i, Algebra.algebraMap_eq_smul_one]
-
-
 
 theorem mem_HfD_of_coords (P : LocPrime l) (K LL : FinExt l) (s : ℕ) (hK : K.1 ≤ Ks K s)
     (V : LocLat ↥(GK K) ℚ_[l] ↥LL.1 ↥(OL LL)) (c : GQ l → ℚ_[l])
@@ -1601,8 +1574,6 @@ theorem scalar_of_isCob (D : Formalism.BasicNotions.D7) (h2 : adm2 D) (h4 : Arch
   have := hzc g hg
   rwa [hc g g.2] at this
 
-
-
 theorem mem_HfD_of_isCob (D : Formalism.BasicNotions.D7) (h2 : adm2 D) (h4 : ArchimedeanSignatureMatching D) (K LL : FinExt l) (s : ℕ)
     (hs : Lev l s) (hK : K.1 ≤ Ks K s) (hle : Gj K s ≤ GK K) (e N r : ℕ)
     (Y : Type) [AddCommGroup Y] [Module ℤ_[l] Y]
@@ -1671,8 +1642,6 @@ theorem lift_equivariant {G : Type} [Group G] [TopologicalSpace G] {Qp LL O : Ty
   rw [← hΦ, ← hΦ] at h1
   exact h1
 
-
-
 theorem mem_HfD_of_lattice (D : Formalism.BasicNotions.D7) (h2 : adm2 D) (h4 : ArchimedeanSignatureMatching D) (K LL : FinExt l) (s : ℕ)
     (hs : Lev l s) (hK : K.1 ≤ Ks K s) (hle : Gj K s ≤ GK K) (e N : ℕ)
     (Y V : LocLat ↥(GK K) ℚ_[l] ↥LL.1 ↥(OL LL))
@@ -1702,8 +1671,6 @@ theorem mem_HfD_of_lattice (D : Formalism.BasicNotions.D7) (h2 : adm2 D) (h4 : A
   have h3 := fun a b g => pow_smul_eq_mk V.L.T l a b _ _ (hΦ (f g))
   rw [cTB, funext (h3 _ _)]
   exact key
-
-
 
 theorem class_bound : ∀ (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW), admitted D HW F → ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL), let S := sit D.loc HW l (D.locA l) K s LL h; let E : S.Comparison₂ := ((F l).E K s LL h).tie; TBat S E := by
   intro D HW F hA l _ K s LL h S E e M0 h0 Yt Y Z Ve ι π hses _ hZ _ hVe hcr hW yt hyt _ φ hφ f hf

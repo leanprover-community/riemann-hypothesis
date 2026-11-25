@@ -33,14 +33,8 @@ theorem setLIntegral_comp_addEquiv {G : Type} [AddCommGroup G] [TopologicalSpace
   have hmp' : MeasurePreserving e (μ.map e.symm) μ := hmp
   have hν : (μ.map e.symm).IsAddHaarMeasure := AddEquiv.isAddHaarMeasure_map μ e.symm hes (by simpa using he)
   have hF' : IsAddFundamentalDomain Γ (e ⁻¹' F) (μ.map e.symm) := by
-    let f : Γ → Γ := fun y => ⟨e.symm y, (hΓ _).1 (by simp)⟩
-    have hf : Function.Bijective f := by
-      constructor
-      · intro a b hab
-        exact Subtype.ext (e.symm.injective (congrArg Subtype.val hab))
-      · intro x
-        exact ⟨⟨e x, (hΓ _).2 x.2⟩, Subtype.ext (by simp [f])⟩
-    refine hF.preimage_of_equiv hmp'.quasiMeasurePreserving hf ?_
+    let f : Γ ≃ Γ := e.symm.toEquiv.subtypeEquiv fun y => by simpa using hΓ (e.symm y)
+    refine hF.preimage_of_equiv hmp'.quasiMeasurePreserving f.bijective ?_
     intro y x
     simp [f, AddSubgroup.vadd_def]
   obtain ⟨c, hc⟩ : ∃ c : NNReal, μ.map e.symm = c • μ := ⟨_, Measure.isAddLeftInvariant_eq_smul _ μ⟩

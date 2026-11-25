@@ -198,8 +198,6 @@ theorem coefficientField_reading_at_embedding_prod {LL : Type} [Field LL] (f : L
   rw [map_mul, map_zpow₀, map_pow, map_natCast, hy Q hQ, hn, Complex.ofReal_inv,
     pow_factor hs (Circle.coe_ne_zero _) _ _ hm, Complex.ofReal_pow]
 
-
-
 theorem exists_ideal_conj (V : HSp D) (hg : V.gram = 1) (hL : Bridge.hLat V 1 = Formalism.L2.Pj.stdLat D.host.E V.rank) (h : GA D V)
     (e : AE D) (P : Finset (HeightOneSpectrum (𝓞 D.host.E))) (y : (AE D)ˣ) (he : Formalism.IndefR.Datum.IsIdemSum e P)
     (hs : SuppAt e V h) (hy : IsDetAt e V h y) (b : ℕ) (hb : ∀ Q ∈ P, (b : 𝓞 D.host.E) ∉ Q.asIdeal)
@@ -217,7 +215,7 @@ theorem exists_ideal_conj (V : HSp D) (hg : V.gram = 1) (hL : Bridge.hLat V 1 = 
   classical
   obtain ⟨ι, h1, h2, h3⟩ := GlobalTheory.HostAdeleIso.exists_finiteAdele_equiv D
   have h4 := GlobalTheory.PlaceIdem.exists_isPlIdem D ι h1 h2 h3
-  obtain ⟨hid, hcj⟩ := GlobalTheory.T.placeIdempotent_components_conj_valuation D ι h1 h2 h4
+  obtain ⟨hid, hcj⟩ := GlobalTheory.ConjVal.components_and_conj_valuation D ι h1 h2 h4
   obtain ⟨ev, hev⟩ : ∃ ev : ∀ Q : HeightOneSpectrum (𝓞 D.host.E), AE D →+* Q.adicCompletion D.host.E,
       ∀ Q z, ev Q z = ι (finPart D z) Q :=
     ⟨fun Q => ((GlobalTheory.CharLocProd.evalAt Q).comp ι.toRingHom).comp (finPart D), fun _ _ => rfl⟩
@@ -297,7 +295,7 @@ theorem exists_ideal_conj (V : HSp D) (hg : V.gram = 1) (hL : Bridge.hLat V 1 = 
       rw [← a, ← a Q, ← hcj _ Q, GlobalTheory.IdemSupport.cA_incA]
     rw [GlobalTheory.ClassScalarValue.onId_eq χ _ δ c2 P hP δ0 δ1 fun Q hQ => GlobalTheory.ClassScalarValue.val_mul_val hv χ (fun a => hP Q hQ (a.symm ▸ hQ))
       (hr Q fun a => hP Q hQ (a.symm ▸ hQ)) (hu Q (hb Q hQ)) (hu _ fun a => hb Q hQ ((hbc Q).1 a))]
-    exact GlobalTheory.T.idelicCharacter_eq_prod_unramifiedValue_zpow D ι h1 h2 h4 c χ hc y y0 P δ (fun Q hQ => ⟨hu Q (hb Q hQ), y1 Q hQ⟩) y2
+    exact GlobalTheory.CharUnramVal.char_eq_prod_val_zpow D ι h1 h2 h4 c χ hc y y0 P δ (fun Q hQ => ⟨hu Q (hb Q hQ), y1 Q hQ⟩) y2
   · obtain ⟨es', hes'⟩ : ∃ es' : HeightOneSpectrum (𝓞 D.host.E) → AE D, ∀ Q, IsPlIdem D (es' Q) Q :=
       ⟨fun Q => (h4 Q).choose, fun Q => (h4 Q).choose_spec.1⟩
     let xs : HeightOneSpectrum (𝓞 D.host.E) → (AE D)ˣ := fun Q => locU (hes' Q).1 (unif Q)

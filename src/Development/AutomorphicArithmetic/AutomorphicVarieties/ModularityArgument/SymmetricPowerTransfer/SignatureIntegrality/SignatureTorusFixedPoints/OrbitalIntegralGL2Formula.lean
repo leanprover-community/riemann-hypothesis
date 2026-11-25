@@ -60,12 +60,6 @@ private theorem scal_eq (z : kˣ) : GeneralLinearGroup.scalar (Fin 2) z = dg (fu
   ext i j
   simp [dg, val_diagT, Matrix.diagonal_apply, GeneralLinearGroup.scalar]
 
-private theorem scal_comm (z : kˣ) (g : GL (Fin 2) k) :
-    GeneralLinearGroup.scalar (Fin 2) z * g = g * GeneralLinearGroup.scalar (Fin 2) z := by
-  ext : 1
-  simp only [Units.val_mul]
-  exact (Matrix.scalar_commute (n := Fin 2) (z : k) (fun _ => Commute.all _ _) (g : Matrix (Fin 2) (Fin 2) k))
-
 private theorem sdom2 {x y : kˣ} (h : valuation k (x : k) < valuation k (y : k)) : SDom ![x, y] := by
   intro i j hij
   fin_cases i <;> fin_cases j <;> simp_all
@@ -79,7 +73,7 @@ private theorem key (V : Lev k) {d : Fin 2 → kˣ} (hd : SDom d) {a b z : kˣ}
   simp only [Subgroup.mem_pi, Set.mem_univ, true_implies] at hs'
   have hv : ∀ i, valuation k ((s' i : kˣ) : k) = 1 := fun i => V.H_le (hs' i)
   have hE : (w * j)⁻¹ * dg ![a, b] * (w * j) = dg (fun i => z * s' i * d i) := by
-    have c := scal_comm z j⁻¹
+    have c := GeneralLinearGroup.scalar_commute z j⁻¹
     calc (w * j)⁻¹ * dg ![a, b] * (w * j)
         = GeneralLinearGroup.scalar (Fin 2) z * (j⁻¹ * ((GeneralLinearGroup.scalar (Fin 2) z)⁻¹ *
             (w⁻¹ * dg ![a, b] * w)) * MonoidHom.id _ j) := by

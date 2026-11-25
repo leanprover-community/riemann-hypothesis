@@ -11,7 +11,6 @@ open scoped CategoryTheory.Obj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 attribute [local instance] SplitExt.free SplitExt.finite
 
-noncomputable section
 namespace GlobalTheory.ZH
 
 namespace AbelianFibre
@@ -39,4 +38,3 @@ theorem lbIso_of_gens {X : Scheme.{0}} {A B : LB X} (s : A.Gen) (hs : s.IsGen) (
 end AbelianFibre
 
 end GlobalTheory.ZH
-end

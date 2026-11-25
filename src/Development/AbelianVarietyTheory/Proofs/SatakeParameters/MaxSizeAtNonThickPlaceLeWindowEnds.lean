@@ -6,8 +6,6 @@ public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.NotDvd
 
 open NumberField IsDedekindDomain GlobalTheory.HTW GlobalTheory.HTW.Rec Formalism.WeaklyAdmissibleFiltrations Formalism.MainNotions.N Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.FrobeniusOrbits
 
-noncomputable section
-
 namespace GlobalTheory.HTW.Rec
 
 theorem wB_nonneg {D : D7} (L : SizeData₂ D) : 0 ≤ wB L := by

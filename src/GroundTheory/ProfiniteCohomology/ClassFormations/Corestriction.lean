@@ -80,4 +80,34 @@ instance compactSpace_quotientGroup {H : Type*} [Group H] [TopologicalSpace H] [
 
 end Quot
 
+section CoresNaturality
+
+theorem coindMap_res_comp_coindTrace [CompactSpace G] (U : OpenSubgroup G) {A B : Rep.{u} k G}
+    (φ : A ⟶ B) :
+    Rep.coindMap (U : Subgroup G).subtype ((Rep.resFunctor (U : Subgroup G).subtype).map φ) ≫
+        coindTrace (U : Subgroup G) B =
+      coindTrace (U : Subgroup G) A ≫ φ := by
+  ext f
+  change (coindTrace (U : Subgroup G) B).hom
+      ((Rep.coindMap (U : Subgroup G).subtype ((Rep.resFunctor (U : Subgroup G).subtype).map φ)).hom f) =
+    φ.hom ((coindTrace (U : Subgroup G) A).hom f)
+  rw [coindTrace_hom_apply, coindTrace_hom_apply, map_sum]
+  refine Finset.sum_congr rfl fun c _ => ?_
+  induction c using QuotientGroup.induction_on with
+  | H x =>
+    rw [coindTraceTerm_apply, coindTraceTerm_apply]
+    change B.ρ x (φ.hom (f.1 x⁻¹)) = φ.hom (A.ρ x (f.1 x⁻¹))
+    rw [Rep.hom_comm_apply]
+
+theorem cohomologyCores_naturality [CompactSpace G] (U : OpenSubgroup G) {A B : Rep.{u} k G}
+    [IsDiscreteRep A] [IsDiscreteRep B] (φ : A ⟶ B) (n : ℕ) :
+    cohomologyCores U A n ≫ cohomologyMap φ n =
+      cohomologyMap ((Rep.resFunctor (U : Subgroup G).subtype).map φ) n ≫ cohomologyCores U B n := by
+  rw [cohomologyCores, cohomologyCores, Category.assoc, ← cohomologyMap_comp,
+    ← coindMap_res_comp_coindTrace, cohomologyMap_comp, ← Category.assoc, ← Category.assoc]
+  congr 1
+  rw [IsIso.inv_comp_eq, ← Category.assoc, IsIso.eq_comp_inv, shapiroMap_naturality]
+
+end CoresNaturality
+
 end GroundTheory.ProfCoh

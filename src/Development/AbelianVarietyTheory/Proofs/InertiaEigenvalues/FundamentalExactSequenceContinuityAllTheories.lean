@@ -93,12 +93,9 @@ theorem LatCont.add {h h' : X → P.R.BdR} (H : LatCont AI h) (H' : LatCont AI h
 
 theorem LatCont.sum {ι : Type} (s : Finset ι) (h : ι → X → P.R.BdR) (H : ∀ i, LatCont AI (h i)) :
     LatCont AI (fun x => ∑ i ∈ s, h i x) := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => simpa using latCont_const AI 0
-  | insert i s hi ih =>
-    simp only [Finset.sum_insert hi]
-    exact (H i).add AI ih
+  have := Finset.sum_induction (s := s) h (LatCont AI) (fun _ _ ha hb => ha.add AI hb)
+    (latCont_const AI 0) fun i _ => H i
+  rwa [Finset.sum_fn] at this
 
 theorem continuous_chi : Continuous fun g : GQ l => (P.χQ g : ℚ_[l]) := by
   obtain ⟨χ, h1, h2, -⟩ := exists_integral_cyclotomicChar l P

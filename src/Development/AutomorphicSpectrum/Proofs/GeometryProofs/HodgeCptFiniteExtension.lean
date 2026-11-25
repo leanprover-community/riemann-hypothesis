@@ -179,33 +179,33 @@ variable {X : Scheme.{0}} {G : Over X} [GrpObj G] {z : Sp ℂ ⟶ X} {V : Type} 
 
 theorem isDiff_comb {A : Over (Sp ℂ)} [GrpObj A] {φ : A.left ⟶ G.left} {L₀ : LB A.left} {g : ℕ} (Mz : LieModel G z V)
     (h : IsGrpPullback A G z φ) (u₀ : HolUnif A L₀ g) {r : ℕ} (a : Fin r → V) (d : Fin r → Fin g → ℂ)
-    (hd : ∀ l, u₀.IsDiff (d l) (lft h (Mz.pt (a l)))) (i0 : Fin r) (x : Fin r → ℂ) :
-    u₀.IsDiff (∑ l, x l • d l) (lft h (Mz.pt (∑ l, x l • a l))) := by
+    (hd : ∀ l, u₀.IsDiff (d l) (GlobalTheory.CompanionTheory.Ar.HodgeUnique.lft h (Mz.pt (a l)))) (i0 : Fin r) (x : Fin r → ℂ) :
+    u₀.IsDiff (∑ l, x l • d l) (GlobalTheory.CompanionTheory.Ar.HodgeUnique.lft h (Mz.pt (∑ l, x l • a l))) := by
   classical
-  have ht : ∀ a, IsTangent (lft h (Mz.pt a)) := fun a => isTangent_lft h (Mz.tan a)
-  have hadd : ∀ a b, lft h (Mz.pt (a + b)) = lft h (Mz.pt a) * lft h (Mz.pt b) := fun a b => by
+  have ht : ∀ a, IsTangent (GlobalTheory.CompanionTheory.Ar.HodgeUnique.lft h (Mz.pt a)) := fun a => isTangent_lft h (Mz.tan a)
+  have hadd : ∀ a b, GlobalTheory.CompanionTheory.Ar.HodgeUnique.lft h (Mz.pt (a + b)) = GlobalTheory.CompanionTheory.Ar.HodgeUnique.lft h (Mz.pt a) * GlobalTheory.CompanionTheory.Ar.HodgeUnique.lft h (Mz.pt b) := fun a b => by
     rw [Mz.add, lft_mul]
-  have hmul : ∀ {a b d d'}, u₀.IsDiff d (lft h (Mz.pt a)) → u₀.IsDiff d' (lft h (Mz.pt b)) →
-      u₀.IsDiff (d + d') (lft h (Mz.pt (a + b))) := fun {a b d d'} e e' => by
+  have hmul : ∀ {a b d d'}, u₀.IsDiff d (GlobalTheory.CompanionTheory.Ar.HodgeUnique.lft h (Mz.pt a)) → u₀.IsDiff d' (GlobalTheory.CompanionTheory.Ar.HodgeUnique.lft h (Mz.pt b)) →
+      u₀.IsDiff (d + d') (GlobalTheory.CompanionTheory.Ar.HodgeUnique.lft h (Mz.pt (a + b))) := fun {a b d d'} e e' => by
     rw [hadd]
     exact GlobalTheory.UnifDifferential.isDiff_mul u₀ ((Chart.isTan_iff _).2 (ht a)) ((Chart.isTan_iff _).2 (ht b)) e e'
-  have hsm : ∀ (c : ℂ) {a d}, u₀.IsDiff d (lft h (Mz.pt a)) → u₀.IsDiff (c • d) (lft h (Mz.pt (c • a))) :=
+  have hsm : ∀ (c : ℂ) {a d}, u₀.IsDiff d (GlobalTheory.CompanionTheory.Ar.HodgeUnique.lft h (Mz.pt a)) → u₀.IsDiff (c • d) (GlobalTheory.CompanionTheory.Ar.HodgeUnique.lft h (Mz.pt (c • a))) :=
     fun c {a d} e => by
-      refine GlobalTheory.CMNormIdentity.isDiff_of_isLieComb u₀ e c ⟨![lft h (Mz.pt (c • a))], fun i => ?_, by simp⟩
+      refine GlobalTheory.CMNormIdentity.isDiff_of_isLieComb u₀ e c ⟨![GlobalTheory.CompanionTheory.Ar.HodgeUnique.lft h (Mz.pt (c • a))], fun i => ?_, by simp⟩
       have hi : i = 0 := Subsingleton.elim _ _
       subst hi
-      change (lft h (Mz.pt (c • a))).left = spMap (epsScaleR c) ≫ (lft h (Mz.pt a)).left
+      change (GlobalTheory.CompanionTheory.Ar.HodgeUnique.lft h (Mz.pt (c • a))).left = spMap (epsScaleR c) ≫ (GlobalTheory.CompanionTheory.Ar.HodgeUnique.lft h (Mz.pt a)).left
       refine h.1.hom_ext ?_ ?_
       · rw [lft_left, Category.assoc, lft_left]
         exact Mz.smul c a
-      · have e1 : (lft h (Mz.pt (c • a))).left ≫ A.hom = spMap (algebraMap ℂ (DualNumber ℂ)) := Over.w _
-        have e2 : (lft h (Mz.pt a)).left ≫ A.hom = spMap (algebraMap ℂ (DualNumber ℂ)) := Over.w _
+      · have e1 : (GlobalTheory.CompanionTheory.Ar.HodgeUnique.lft h (Mz.pt (c • a))).left ≫ A.hom = spMap (algebraMap ℂ (DualNumber ℂ)) := Over.w _
+        have e2 : (GlobalTheory.CompanionTheory.Ar.HodgeUnique.lft h (Mz.pt a)).left ≫ A.hom = spMap (algebraMap ℂ (DualNumber ℂ)) := Over.w _
         rw [e1, Category.assoc, e2, ← Spec.map_comp, ← CommRingCat.ofHom_comp]
         have : (epsScaleR c).comp (algebraMap ℂ (DualNumber ℂ)) = algebraMap ℂ (DualNumber ℂ) := by
           ext x <;> simp [epsScaleR]
         rw [this]
-  have hz : u₀.IsDiff 0 (lft h (Mz.pt 0)) := by simpa using hsm 0 (hd i0)
-  suffices H : ∀ s : Finset (Fin r), u₀.IsDiff (∑ l ∈ s, x l • d l) (lft h (Mz.pt (∑ l ∈ s, x l • a l))) from
+  have hz : u₀.IsDiff 0 (GlobalTheory.CompanionTheory.Ar.HodgeUnique.lft h (Mz.pt 0)) := by simpa using hsm 0 (hd i0)
+  suffices H : ∀ s : Finset (Fin r), u₀.IsDiff (∑ l ∈ s, x l • d l) (GlobalTheory.CompanionTheory.Ar.HodgeUnique.lft h (Mz.pt (∑ l ∈ s, x l • a l))) from
     H Finset.univ
   intro s
   induction s using Finset.induction_on with
@@ -235,16 +235,16 @@ theorem gram_comb {L : LB G.left} (Mz : LieModel G z V) {r : ℕ} (a : Fin r →
     (huniq : ∀ v w c c', HodgeIP G L z v w c → HodgeIP G L z v w c' → c = c') (C : Matrix (Fin r) (Fin r) ℂ) (p q : Fin r) :
     HodgeIP G L z (Mz.pt (∑ l, C l p • a l)) (Mz.pt (∑ l, C l q • a l)) ((Cᴴ * Γ * C) p q) := by
   obtain ⟨hLB, -, -, A₀, _, φ₀, g, u₀, Hm₀, χ₀, -, -, -, -, hpb, hAH, -, -, -, -, -⟩ := hΓ i0 i0
-  have hc : ∀ l, ∃ d, u₀.IsDiff d (lft hpb (Mz.pt (a l))) := fun l => by
+  have hc : ∀ l, ∃ d, u₀.IsDiff d (GlobalTheory.CompanionTheory.Ar.HodgeUnique.lft hpb (Mz.pt (a l))) := fun l => by
     obtain ⟨-, -, -, A, _, φ, g', u, Hm, χ, v', -, α, -, hpb', -, e1, -, d1, -, -⟩ := hΓ l l
     exact exists_coords hpb u₀ (Mz.tan _) hpb' u e1 d1
   choose d hd using hc
   have hw : ∀ x y : Fin r → ℂ, HodgeIP G L z (Mz.pt (∑ l, x l • a l)) (Mz.pt (∑ l, y l • a l))
       ((Real.pi : ℂ) * ((∑ m, y m • d m) ⬝ᵥ Hm₀.mulVec (star (∑ l, x l • d l)))) := fun x y =>
-    ⟨hLB, Mz.tan _, Mz.tan _, A₀, _, φ₀, g, u₀, Hm₀, χ₀, lft hpb _, lft hpb _, _, _, hpb, hAH, lft_left hpb _,
+    ⟨hLB, Mz.tan _, Mz.tan _, A₀, _, φ₀, g, u₀, Hm₀, χ₀, GlobalTheory.CompanionTheory.Ar.HodgeUnique.lft hpb _, GlobalTheory.CompanionTheory.Ar.HodgeUnique.lft hpb _, _, _, hpb, hAH, lft_left hpb _,
       lft_left hpb _, isDiff_comb Mz hpb u₀ a d hd i0 x, isDiff_comb Mz hpb u₀ a d hd i0 y, rfl⟩
   have hτ : ∀ l m, (Real.pi : ℂ) * (d m ⬝ᵥ Hm₀.mulVec (star (d l))) = Γ l m := fun l m =>
-    huniq _ _ _ _ ⟨hLB, Mz.tan _, Mz.tan _, A₀, _, φ₀, g, u₀, Hm₀, χ₀, lft hpb _, lft hpb _, _, _, hpb, hAH,
+    huniq _ _ _ _ ⟨hLB, Mz.tan _, Mz.tan _, A₀, _, φ₀, g, u₀, Hm₀, χ₀, GlobalTheory.CompanionTheory.Ar.HodgeUnique.lft hpb _, GlobalTheory.CompanionTheory.Ar.HodgeUnique.lft hpb _, _, _, hpb, hAH,
       lft_left hpb _, lft_left hpb _, hd l, hd m, rfl⟩ (hΓ l m)
   have := hw (fun l => C l p) (fun l => C l q)
   rw [form_expand] at this

@@ -11,8 +11,6 @@ import Formalism.SharpRestriction.LevelLetterCocycles.LocCoh
 
 open Formalism.BasicNotions Formalism.ConjugateSelfDual Formalism.MainNotions Formalism.MainNotions.N Polynomial NumberField IsDedekindDomain ReciprocityTheory.Gal GlobalTheory.StringRepresentationDecomposition
 
-noncomputable section
-
 namespace GlobalTheory.StringRepresentationDecomposition
 
 theorem cycMod_eq_one_of_mem_Ine {F Ω : Type} [Field F] [NumberField F] [Field Ω] [Algebra F Ω]

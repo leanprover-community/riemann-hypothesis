@@ -7,8 +7,6 @@ public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.DatumPeri
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.DIV Formalism.L2.Col Formalism.L2.Ker GlobalTheory.TopStep
 
-noncomputable section
-
 namespace GlobalTheory.TopXiInv
 
 open Formalism.L2.Col.LocE Formalism.L2.Col.Loc

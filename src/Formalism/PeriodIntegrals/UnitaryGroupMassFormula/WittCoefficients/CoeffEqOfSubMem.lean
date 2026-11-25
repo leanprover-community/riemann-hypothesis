@@ -15,16 +15,8 @@ variable {p : ℕ} [hp : Fact p.Prime] {k : Type} [CommRing k]
 
 noncomputable abbrev I (n : ℕ) : Ideal (WittVector p k) := RingHom.ker (WittVector.truncate (p := p) (R := k) n)
 
-theorem mem_I {n : ℕ} {x : WittVector p k} : x ∈ I n ↔ ∀ i < n, x.coeff i = 0 := by
-  first
-    | rw [RingHom.mem_ker]
-      constructor
-      · intro h i hi
-        have h' := congrArg (TruncatedWittVector.coeff ⟨i, hi⟩) h
-        simpa [WittVector.coeff_truncate] using h'
-      · intro h
-        refine TruncatedWittVector.ext fun i => ?_
-        simpa [WittVector.coeff_truncate] using h i i.2
+theorem mem_I {n : ℕ} {x : WittVector p k} : x ∈ I n ↔ ∀ i < n, x.coeff i = 0 :=
+  WittVector.mem_ker_truncate n x
 
 theorem I_anti {m n : ℕ} (h : n ≤ m) {x : WittVector p k} (hx : x ∈ I m) : x ∈ I n :=
   mem_I.2 fun i hi => mem_I.1 hx i (Nat.lt_of_lt_of_le hi h)

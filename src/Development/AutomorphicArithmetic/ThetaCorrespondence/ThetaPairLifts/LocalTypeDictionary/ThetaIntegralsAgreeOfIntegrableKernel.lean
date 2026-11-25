@@ -108,7 +108,7 @@ theorem thetaIntegral_eq_zero_of_finiteRelation (hP : _root_.GlobalTheory.FunPr.
     thetaInt ωB ν₁ 𝓕₁ Ψ = 0 := by
   set S := algF ψ θ false A₁ B with hSdef
   have hL : ∀ Φ ∈ S, ∀ γ ∈ GQ W₁, ∀ g h, thetaKO ωB (γ * g) h Φ = thetaKO ωB g h Φ :=
-    GlobalTheory.T.thetaKernel_leftInvariant_rational_unitary D ψ θ hθ W₁ X A₁ B α (α / β) ωB hw
+    GlobalTheory.SquareComm.ThetaLeft.main D ψ θ hθ W₁ X A₁ B α (α / β) ωB hw
   have hle : finRel ωB S ≤ S := by
     refine Submodule.span_le.2 ?_
     rintro _ ⟨u, hu, Φ, hΦ, rfl⟩

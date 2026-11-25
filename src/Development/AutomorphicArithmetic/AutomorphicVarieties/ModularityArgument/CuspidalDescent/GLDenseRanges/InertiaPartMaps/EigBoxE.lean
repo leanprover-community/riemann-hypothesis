@@ -272,37 +272,37 @@ private theorem eigBoxL_lemma_9 {W Z : Type} [AddCommGroup W] [Module ℂ W] [Ad
 
 private theorem eigBoxL_lemma_10 {Γ Δ W W' : Type} [Group Γ] [Group Δ] [AddCommGroup W] [Module ℂ W]
     [AddCommGroup W'] [Module ℂ W'] (ρ : Representation ℂ Γ W) (κ : Representation ℂ Δ W') (l : W' →ₗ[ℂ] ℂ)
-    (x : Γ) (y : W ⊗[ℂ] W') : sl l ((box ρ κ).comp (MonoidHom.inl Γ Δ) x y) = ρ x (sl l y) := by
-  have key : sl l ∘ₗ ((box ρ κ).comp (MonoidHom.inl Γ Δ) x) = ρ x ∘ₗ sl l := by
+    (x : Γ) (y : W ⊗[ℂ] W') : sl l ((GlobalTheory.LGrp.extProd ρ κ).comp (MonoidHom.inl Γ Δ) x y) = ρ x (sl l y) := by
+  have key : sl l ∘ₗ ((GlobalTheory.LGrp.extProd ρ κ).comp (MonoidHom.inl Γ Δ) x) = ρ x ∘ₗ sl l := by
     apply TensorProduct.ext'
     intro w z
-    simp [box, Representation.tprod_apply, sl_tmul]
+    simp [GlobalTheory.LGrp.extProd, Representation.tprod_apply, sl_tmul]
   exact LinearMap.congr_fun key y
 
 private theorem eigBoxL_lemma_11 {Γ Δ W W' : Type} [Group Γ] [Group Δ] [AddCommGroup W] [Module ℂ W]
     [AddCommGroup W'] [Module ℂ W'] (ρ : Representation ℂ Γ W) (κ : Representation ℂ Δ W') (l : W →ₗ[ℂ] ℂ)
-    (x : Δ) (y : W ⊗[ℂ] W') : sr l ((box ρ κ).comp (MonoidHom.inr Γ Δ) x y) = κ x (sr l y) := by
-  have key : sr l ∘ₗ ((box ρ κ).comp (MonoidHom.inr Γ Δ) x) = κ x ∘ₗ sr l := by
+    (x : Δ) (y : W ⊗[ℂ] W') : sr l ((GlobalTheory.LGrp.extProd ρ κ).comp (MonoidHom.inr Γ Δ) x y) = κ x (sr l y) := by
+  have key : sr l ∘ₗ ((GlobalTheory.LGrp.extProd ρ κ).comp (MonoidHom.inr Γ Δ) x) = κ x ∘ₗ sr l := by
     apply TensorProduct.ext'
     intro w z
-    simp [box, Representation.tprod_apply, sr_tmul]
+    simp [GlobalTheory.LGrp.extProd, Representation.tprod_apply, sr_tmul]
   exact LinearMap.congr_fun key y
 
 private theorem eigBoxL_lemma_12 {Γ Δ W W' : Type} [Group Γ] [Group Δ] [AddCommGroup W] [Module ℂ W]
     [AddCommGroup W'] [Module ℂ W'] (ρ : Representation ℂ Γ W) (κ : Representation ℂ Δ W')
-    (x : Γ) (w : W) (z : W') : (box ρ κ).comp (MonoidHom.inl Γ Δ) x (w ⊗ₜ[ℂ] z) = ρ x w ⊗ₜ[ℂ] z := by
-  simp [box, Representation.tprod_apply]
+    (x : Γ) (w : W) (z : W') : (GlobalTheory.LGrp.extProd ρ κ).comp (MonoidHom.inl Γ Δ) x (w ⊗ₜ[ℂ] z) = ρ x w ⊗ₜ[ℂ] z := by
+  simp [GlobalTheory.LGrp.extProd, Representation.tprod_apply]
 
 private theorem eigBoxL_lemma_13 {Γ Δ W W' : Type} [Group Γ] [Group Δ] [AddCommGroup W] [Module ℂ W]
     [AddCommGroup W'] [Module ℂ W'] (ρ : Representation ℂ Γ W) (κ : Representation ℂ Δ W')
-    (x : Δ) (w : W) (z : W') : (box ρ κ).comp (MonoidHom.inr Γ Δ) x (w ⊗ₜ[ℂ] z) = w ⊗ₜ[ℂ] κ x z := by
-  simp [box, Representation.tprod_apply]
+    (x : Δ) (w : W) (z : W') : (GlobalTheory.LGrp.extProd ρ κ).comp (MonoidHom.inr Γ Δ) x (w ⊗ₜ[ℂ] z) = w ⊗ₜ[ℂ] κ x z := by
+  simp [GlobalTheory.LGrp.extProd, Representation.tprod_apply]
 
 theorem eigBoxL {L : Type} [Field L] [NumberField L] {n : ℕ} {V : Type} [Fintype V] {S : V → UpperTheory.V.W.Plc L}
     {G H W W' X : Type} [Group G] [Group H] [AddCommGroup W] [Module ℂ W] [AddCommGroup W'] [Module ℂ W']
     [AddCommGroup X] [Module ℂ X] (ρ : Representation ℂ (GV n S) W) (κ : Representation ℂ (G × H) W')
     (π : Representation ℂ (GV n S × (G × H)) X) (f : W ⊗[ℂ] W' →ₗ[ℂ] X) (hf : Function.Injective f)
-    (hint : Intw (box ρ κ) π f) (m : ℕ) (K₁ : Subgroup G) (K₂ : Subgroup H) (τ₀ : K₁ →* GL (Fin m) ℂ) (b : ℕ)
+    (hint : Intw (GlobalTheory.LGrp.extProd ρ κ) π f) (m : ℕ) (K₁ : Subgroup G) (K₂ : Subgroup H) (τ₀ : K₁ →* GL (Fin m) ℂ) (b : ℕ)
     (φ : ∀ v, Fin n → Uo ((S v).adicCompletion L) → ℂ) (μ : V → Fin n → ℂ) (a : H →₀ ℤ) (N : ℕ) :
     Module.rank ℂ ↥((invT K₁ K₂ τ₀ (π.comp (MonoidHom.inr _ _)) ⊓ Submodule.pi Set.univ fun _ =>
         ePart ((π.comp (MonoidHom.inr _ _)).comp (MonoidHom.inr G H)) a N) ⊓ Submodule.pi Set.univ fun _ =>
@@ -310,9 +310,9 @@ theorem eigBoxL {L : Type} [Field L] [NumberField L] {n : ℕ} {V : Type} [Finty
       Module.rank ℂ (eigL S ρ b φ μ) * Module.rank ℂ ↥(invT K₁ K₂ τ₀ κ ⊓ Submodule.pi Set.univ fun _ => ePart (κ.comp (MonoidHom.inr G H)) a N) := by
   classical
   unfold Intw at hint
-  have hl : ∀ x : GV n S, ∀ y, f ((box ρ κ).comp (MonoidHom.inl _ _) x y) = (π.comp (MonoidHom.inl _ _)) x (f y) :=
+  have hl : ∀ x : GV n S, ∀ y, f ((GlobalTheory.LGrp.extProd ρ κ).comp (MonoidHom.inl _ _) x y) = (π.comp (MonoidHom.inl _ _)) x (f y) :=
     fun x y => hint _ _
-  have hr : ∀ x : G × H, ∀ y, f ((box ρ κ).comp (MonoidHom.inr _ _) x y) = (π.comp (MonoidHom.inr _ _)) x (f y) :=
+  have hr : ∀ x : G × H, ∀ y, f ((GlobalTheory.LGrp.extProd ρ κ).comp (MonoidHom.inr _ _) x y) = (π.comp (MonoidHom.inr _ _)) x (f y) :=
     fun x y => hint _ _
   set A := eigL S ρ b φ μ with hA
   set B := invT K₁ K₂ τ₀ κ ⊓ Submodule.pi Set.univ fun _ => ePart (κ.comp (MonoidHom.inr G H)) a N with hB
@@ -352,10 +352,10 @@ theorem eigBoxL {L : Type} [Field L] [NumberField L] {n : ℕ} {V : Type} [Finty
       have hΦt : Φ t = x := by
         funext i
         rw [hΦ, hts, hs]
-      have hsE : ∀ i, s i ∈ eigL S ((box ρ κ).comp (MonoidHom.inl _ _)) b φ μ := fun i =>
+      have hsE : ∀ i, s i ∈ eigL S ((GlobalTheory.LGrp.extProd ρ κ).comp (MonoidHom.inl _ _)) b φ μ := fun i =>
         eigBoxL_lemma_4 _ _ f hf hl b φ μ (s i) (by rw [hs]; exact (hx2' i).2)
-      have hsB : s ∈ invT K₁ K₂ τ₀ ((box ρ κ).comp (MonoidHom.inr _ _)) ⊓ Submodule.pi Set.univ fun _ =>
-          ePart (((box ρ κ).comp (MonoidHom.inr _ _)).comp (MonoidHom.inr G H)) a N := by
+      have hsB : s ∈ invT K₁ K₂ τ₀ ((GlobalTheory.LGrp.extProd ρ κ).comp (MonoidHom.inr _ _)) ⊓ Submodule.pi Set.univ fun _ =>
+          ePart (((GlobalTheory.LGrp.extProd ρ κ).comp (MonoidHom.inr _ _)).comp (MonoidHom.inr G H)) a N := by
         refine eigBoxL_lemma_6 K₁ K₂ τ₀ _ _ f hf hr a N s ?_
         have e : (fun i => f (s i)) = x := funext hs
         rw [e]

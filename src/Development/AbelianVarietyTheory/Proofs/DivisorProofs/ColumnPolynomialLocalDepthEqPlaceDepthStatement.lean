@@ -513,7 +513,6 @@ theorem subst_univ (L : LogFGL v d) {hL : PS C 1 d} {h : PS C 2 d} (cL : constan
   simp only [subst_exPt L hs (hX _), subst_X hs]
   rfl
 
-
 include hGF heig in
 theorem exists_germ_close (hR : ∀ r, IsIntV v (algebraMap R C r)) {h : PS C 2 d} (hc : B.IsCanonGauge C h) (w0 : O)
     (hu : ∀ l e, IsIntV v (u l e)) (hσ : ∀ b a, IsIntV v (σ b a)) {n : ℕ}
@@ -663,23 +662,11 @@ theorem mfact_add_single [Fintype σ] (α : σ →₀ ℕ) (l : σ) :
      simp
      done)
 
-theorem derivAt0_monomial (α : σ →₀ ℕ) (a : C) (S : MvPowerSeries σ C) :
-    derivAt0 (MvPolynomial.monomial α a) S = a * mfact α * coeff α S := by
-  classical
-  first
-  | (rw [derivAt0_eq_sum_of_subset _ _ MvPolynomial.support_monomial_subset, Finset.sum_singleton,
-      MvPolynomial.coeff_monomial, ite_eq_left rfl]; done)
-
-private lemma hasSubst_lemma {ι τ : Type} [Finite ι] {a : ι → MvPowerSeries τ C}
-    (ha : ∀ i, constantCoeff (a i) = 0) : HasSubst a := by
-  first
-  | exact MvPowerSeries.hasSubst_of_constantCoeff_zero ha
-
 private lemma cc_subst_lemma_2 {σ τ : Type} [Finite σ] {a : σ → MvPowerSeries τ C}
     (ha : ∀ s, constantCoeff (a s) = 0) {f : MvPowerSeries σ C} (hf : constantCoeff f = 0) :
     constantCoeff (subst a f) = 0 := by
   first
-  | exact constantCoeff_subst_eq_zero (hasSubst_lemma ha) ha hf
+  | exact constantCoeff_subst_eq_zero (GlobalTheory.FGDepth.DepthAdd.hasSubst_of_constantCoeff_eq_zero ha) ha hf
 
 private lemma subst_zero_lemma_3 {σ τ : Type} {a : σ → MvPowerSeries τ C} (ha : HasSubst a) :
     subst a (0 : MvPowerSeries σ C) = 0 := by
@@ -738,14 +725,14 @@ theorem subst_jacEntry (G : FGLaw C d) (L : LogFGL v d)
     subst (fun i => ψ (j, i)) (GlobalTheory.LogJacobian.jacEntry L k e) =
       subst ψ (ev (n := n) ![pt C d j, 0] (pderiv ((1 : Fin 2), k) (G.F e))) := by
   classical
-  have hA : HasSubst (GlobalTheory.LogJacobian.substSecondBlockZero (C := C) d) := hasSubst_lemma (GlobalTheory.LogJacobian.constantCoeff_substSecondBlockZero d)
-  have hT : HasSubst (GlobalTheory.LawLog.twoVars C d) := hasSubst_lemma GlobalTheory.LawLog.cc_twoVars
-  have hB : HasSubst (fun i => ψ (j, i)) := hasSubst_lemma (fun i => hψ (j, i))
-  have hΨ : HasSubst ψ := hasSubst_lemma hψ
+  have hA : HasSubst (GlobalTheory.LogJacobian.substSecondBlockZero (C := C) d) := GlobalTheory.FGDepth.DepthAdd.hasSubst_of_constantCoeff_eq_zero (GlobalTheory.LogJacobian.constantCoeff_substSecondBlockZero d)
+  have hT : HasSubst (GlobalTheory.LawLog.twoVars C d) := GlobalTheory.FGDepth.DepthAdd.hasSubst_of_constantCoeff_eq_zero GlobalTheory.LawLog.cc_twoVars
+  have hB : HasSubst (fun i => ψ (j, i)) := GlobalTheory.FGDepth.DepthAdd.hasSubst_of_constantCoeff_eq_zero (fun i => hψ (j, i))
+  have hΨ : HasSubst ψ := GlobalTheory.FGDepth.DepthAdd.hasSubst_of_constantCoeff_eq_zero hψ
   have hAT : HasSubst (fun s => subst (GlobalTheory.LogJacobian.substSecondBlockZero (C := C) d) (GlobalTheory.LawLog.twoVars C d s)) :=
-    hasSubst_lemma (fun s => cc_subst_lemma_2 (GlobalTheory.LogJacobian.constantCoeff_substSecondBlockZero d) (GlobalTheory.LawLog.cc_twoVars s))
+    GlobalTheory.FGDepth.DepthAdd.hasSubst_of_constantCoeff_eq_zero (fun s => cc_subst_lemma_2 (GlobalTheory.LogJacobian.constantCoeff_substSecondBlockZero d) (GlobalTheory.LawLog.cc_twoVars s))
   have hP : HasSubst (fun p : Fin 2 × Fin d => (![fun i => X (j, i), 0] : Fin 2 → Fin d → MvPowerSeries (Fin n × Fin d) C) p.1 p.2) := by
-    refine hasSubst_lemma (fun p => ?_)
+    refine GlobalTheory.FGDepth.DepthAdd.hasSubst_of_constantCoeff_eq_zero (fun p => ?_)
     rcases p with ⟨a, i⟩
     fin_cases a <;> simp
   unfold GlobalTheory.LogJacobian.jacEntry ev pt
@@ -790,13 +777,13 @@ theorem pderiv_subst_psi (G : FGLaw C d) (hL : ∀ a, L.F a = subst (twoVars C d
     pderiv l (subst (psi L β w) g) =
       subst (psi L β w) (∑ j, MvPowerSeries.C (β l j) * DofN G.F j (w l) g) := by
   classical
-  have hΨ : HasSubst (psi L β w) := hasSubst_lemma (cc_psi L β w)
+  have hΨ : HasSubst (psi L β w) := GlobalTheory.FGDepth.DepthAdd.hasSubst_of_constantCoeff_eq_zero (cc_psi L β w)
   have hcol : ∀ (j : Fin n) (c : Fin d), pderiv l (psi L β w (j, c)) =
       ∑ e, subst (psi L β w) (ev ![pt C d j, 0] (pderiv ((1 : Fin 2), e) (G.F c))) *
         MvPowerSeries.C (β l j * w l e) := by
     intro j c
-    have hlin : HasSubst (lin β w j) := hasSubst_lemma (cc_lin β w j)
-    have hE : HasSubst (expOf L) := hasSubst_lemma (isExp_expOf L).1
+    have hlin : HasSubst (lin β w j) := GlobalTheory.FGDepth.DepthAdd.hasSubst_of_constantCoeff_eq_zero (cc_lin β w j)
+    have hE : HasSubst (expOf L) := GlobalTheory.FGDepth.DepthAdd.hasSubst_of_constantCoeff_eq_zero (isExp_expOf L).1
     show pderiv l (subst (lin β w j) (expOf L c)) = _
     rw [pderiv_subst (cc_lin β w j)]
     refine Finset.sum_congr rfl fun e _ => ?_
@@ -818,7 +805,6 @@ theorem pderiv_subst_psi (G : FGLaw C d) (hL : ∀ a, L.F a = subst (twoVars C d
 
 end Chain
 
-
 open Formalism.MainNotions.ModuliIntegralCharts.H1.FormalGroupCopies GlobalTheory.MatChain in
 theorem constantCoeff_dpolyN_eq_derivAt0 : ∀ (C : Type) [Field C] [CharZero C] (v : AddValuation C (WithTop ℝ)) (d : ℕ) (G : FGLaw C d) (L : LogFGL v d), (∀ a, L.F a = MvPowerSeries.subst (twoVars C d) (G.F a)) → ∀ (n : ℕ) (ι Λ : Type) [Fintype ι] [Fintype Λ] (cp : ι → Fin n) (u : ι → Fin d → C) (β : Λ → Fin n → C) (t : Λ → Fin n → ι) (w : Λ → Fin d → C), (∀ l j, cp (t l j) = j) → (∀ l j, u (t l j) = w l) → ∀ (P : MvPolynomial Λ C) (g : PS C n d), MvPowerSeries.constantCoeff (DpolyN G.F cp u (MvPolynomial.aeval (fun l => ∑ j, MvPolynomial.C (β l j) * (MvPolynomial.X (t l j) : MvPolynomial ι C)) P) g) = derivAt0 P (MvPowerSeries.subst (fun q : Fin n × Fin d => (MvPowerSeries.subst (fun e : Fin d => ∑ l, (β l q.1 * w l e) • (MvPowerSeries.X l : MvPowerSeries Λ C)) (expOf L q.2) : MvPowerSeries Λ C)) g) := by
   intro C _ _ v d G L hL n ι Λ _ _ cp u β t w hcp hu P g
@@ -826,7 +812,7 @@ theorem constantCoeff_dpolyN_eq_derivAt0 : ∀ (C : Type) [Field C] [CharZero C]
   show constantCoeff (DpolyN G.F cp u (MvPolynomial.aeval
       (fun l => ∑ j, MvPolynomial.C (β l j) * (MvPolynomial.X (t l j) : MvPolynomial ι C)) P) g) =
     derivAt0 P (subst (psi L β w) g)
-  have hΨ : HasSubst (psi L β w) := hasSubst_lemma (cc_psi L β w)
+  have hΨ : HasSubst (psi L β w) := GlobalTheory.FGDepth.DepthAdd.hasSubst_of_constantCoeff_eq_zero (cc_psi L β w)
   have hmon0 : ∀ f : PS C n d, DmonN G.F cp u 0 f = f := by
     intro f
     simp [DmonN]
@@ -883,7 +869,7 @@ theorem constantCoeff_dpolyN_eq_derivAt0 : ∀ (C : Type) [Field C] [CharZero C]
   induction P using MvPolynomial.induction_on
   next a =>
     intro g
-    rw [MvPolynomial.aeval_C, MvPolynomial.algebraMap_eq, hC, MvPolynomial.C_apply, derivAt0_monomial]
+    rw [MvPolynomial.aeval_C, MvPolynomial.algebraMap_eq, hC, MvPolynomial.C_apply, GlobalTheory.FGDepth.DepthAdd.derivAt0_monomial]
     simp [mfact, hccs, MvPowerSeries.coeff_zero_eq_constantCoeff_apply]
   next P1 P2 h1 h2 =>
     intro g
@@ -1462,7 +1448,6 @@ open GlobalTheory.AllWt GlobalTheory.FlatLine GlobalTheory.SlopeRec GlobalTheory
 attribute [local instance] Over.cartesianMonoidalCategory
 namespace GlobalTheory.IsoFactorDepth
 
-
 open GlobalTheory.IndefiniteRowSideFullHecke.LocalValuationColumns in
 def colEmb {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} {Dw : Datum H}
     (cx : Lt1 Dw → ℕ) : Col cx ↪ (Σ f : Lt1 Dw, Fin (rk f)) where
@@ -1473,7 +1458,6 @@ def colEmb {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTh
     obtain ⟨rfl, h⟩ := h
     cases h
     rfl
-
 
 open GlobalTheory.IndefiniteRowSideFullHecke.LocalValuationColumns in
 theorem prodP_eq_rename_polyH {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E}

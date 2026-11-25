@@ -160,25 +160,15 @@ private theorem units_mem {G C K : Type} [Monoid G] [CommRing C] [CommRing K] [A
     · rw [h, e1, Pi.single_eq_same]
     · rw [e2 j fun e => h (w2 _ _ e), Pi.single_eq_of_ne h]
   rw [diagonal_mul_diagonal] at hyy
-  rcases w1 i with h | h | h
-  · have := Submodule.smul_mem _ u (add_mem hyy hy)
-    rw [diagonal_add, ← diagonal_smul] at this
+  rcases w1 i with h | h | h <;>
+    [have := Submodule.smul_mem _ u (add_mem hyy hy); have := sub_mem h1 hyy;
+      have := Submodule.smul_mem _ u (sub_mem hyy hy)] <;>
+    [rw [diagonal_add, ← diagonal_smul] at this; rw [← diagonal_one, diagonal_sub] at this;
+      rw [diagonal_sub, ← diagonal_smul] at this] <;>
     refine key _ ?_ (fun j hj => ?_) ▸ this
-    · simp [h, Algebra.smul_def, one_add_one_eq_two, hu']
-    · rw [h] at hj
-      rcases w1 j with e | e | e <;> simp [e] at hj ⊢
-  · have := sub_mem h1 hyy
-    rw [← diagonal_one, diagonal_sub] at this
-    refine key _ ?_ (fun j hj => ?_) ▸ this
-    · simp [h]
-    · rw [h] at hj
-      rcases w1 j with e | e | e <;> simp [e] at hj ⊢
-  · have := Submodule.smul_mem _ u (sub_mem hyy hy)
-    rw [diagonal_sub, ← diagonal_smul] at this
-    refine key _ ?_ (fun j hj => ?_) ▸ this
-    · simp [h, Algebra.smul_def, one_add_one_eq_two, hu']
-    · rw [h] at hj
-      rcases w1 j with e | e | e <;> simp [e] at hj ⊢
+  all_goals first
+    | rw [h] at hj; rcases w1 j with e | e | e <;> simp [e] at hj ⊢
+    | simp [h, Algebra.smul_def, one_add_one_eq_two, hu']
 
 private theorem trace_mem {G C K : Type} [Monoid G] [CommRing C] [CommRing K] [Algebra C K] {n : ℕ}
     (r : G →* Matrix (Fin n) (Fin n) K) (ht : ∀ g, ∃ c, algebraMap C K c = (r g).trace)

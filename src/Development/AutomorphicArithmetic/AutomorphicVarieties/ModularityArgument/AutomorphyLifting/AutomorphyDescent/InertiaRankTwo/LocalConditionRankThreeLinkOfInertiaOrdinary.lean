@@ -4,6 +4,7 @@ import all Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgu
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.AutomorphyLifting.AutomorphyDescent.Loc2
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.AutomorphyLifting.AutomorphyDescent.DownCsdK
 import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.AdTransfer
+import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.LocallyConstantOfKernel
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.CharpolyEqProd
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CharacterLevelBounds.ClsFacts
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.UpperTriangularPlaces.OrdinaryFlagThree
@@ -49,19 +50,6 @@ namespace UpperTheory.V.Z.Win.Dn.L3
 
 variable {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] {l : ℕ} [Fact l.Prime]
 
-private theorem cycZ_ine {A : ValuationSubring Ω} (hA : ¬ A.valuation (l : Ω) < 1) {s : G ℚ Ω}
-    (hs : s ∈ Ine (F := ℚ) A) : cycZ ℚ Ω l s = 1 := by
-  apply _root_.UpperTheory.V.Z.Sym.Pl.cyc_one <;> assumption
-
-private theorem cls_const (N : ℕ) [NeZero N] : IsLocallyConstant (Chr.cls ℚ Ω N) := by
-  refine (IsLocallyConstant.iff_exists_open _).2 fun x => ?_
-  refine ⟨(fun y => x⁻¹ * y) ⁻¹' ((Chr.cls ℚ Ω N).ker : Set (G ℚ Ω)),
-    (Chr.clsFacts ℚ Ω N).1.preimage (continuous_const_mul x⁻¹), ?_, fun y hy => ?_⟩
-  · simp
-  · have h : Chr.cls ℚ Ω N (x⁻¹ * y) = 1 := hy
-    rw [map_mul, map_inv, inv_mul_eq_one] at h
-    exact h.symm
-
 private theorem away_char (c : Coef l) (N : ℕ) [NeZero N] (e : ℕ) (ψ : DirichletCharacter c.O N)
     (K : Type) [Field K] [NumberField K] [Algebra K Ω] [IsAlgClosure K Ω]
     {A : ValuationSubring Ω} (hA : ¬ A.valuation (l : Ω) < 1) :
@@ -78,7 +66,9 @@ private theorem away_char (c : Coef l) (N : ℕ) [NeZero N] (e : ℕ) (ψ : Diri
     rw [Chr.Psi, MonoidHom.mul_apply, MonoidHom.zpow_apply, map_mul, map_zpow, hcy]
     rfl
   have hdc : Continuous d :=
-    ((cls_const N).comp fun u : (ZMod N)ˣ => a (ψ.toUnitHom u)).continuous
+    ((_root_.UpperTheory.Reformulated.B.LocallyConstantOfKernel.lc_of_ker
+      (Chr.cls ℚ Ω N) (Chr.clsFacts ℚ Ω N).1).comp
+      fun u : (ZMod N)ˣ => a (ψ.toUnitHom u)).continuous
   have hcc : Continuous (cycBar ℚ Ω l) := UpperTheory.V.Af.Es.cyc_cont
   have hfull : Continuous (a.comp (Chr.Psi l e (Chr.dirG ℚ Ω ψ))) := by
     have : (a.comp (Chr.Psi l e (Chr.dirG ℚ Ω ψ)) : G ℚ Ω → (Qbar l)ˣ) =
@@ -92,7 +82,8 @@ private theorem away_char (c : Coef l) (N : ℕ) [NeZero N] (e : ℕ) (ψ : Diri
   have hg' : galEmb ℚ K Ω g ∈ Ine (F := ℚ) A := hg
   refine ⟨Chr.cls ℚ Ω N (galEmb ℚ K Ω g), ?_⟩
   have h1 : cycBar ℚ Ω l (galEmb ℚ K Ω g) = 1 := by
-    rw [cycBar, MonoidHom.comp_apply, cycZ_ine hA hg', map_one]
+    rw [cycBar, MonoidHom.comp_apply,
+      _root_.UpperTheory.V.Z.Sym.Pl.cyc_one Ω l A hA hg', map_one]
   change d (galEmb ℚ K Ω g) = a (Chr.Psi l e (Chr.dirG ℚ Ω ψ) (galEmb ℚ K Ω g))
   rw [hpsi, h1, one_zpow, one_mul]
 

@@ -263,11 +263,8 @@ lemma shiftPoly_expand (b : κ → ι → K) (Q : MvPolynomial ι K) :
   rw [shiftPoly_eq, MvPolynomial.aeval_def, MvPolynomial.eval₂_eq]
   rfl
 
-def biHom (d : ℕ) (F : MvPolynomial κ (MvPolynomial ι K)) : Prop :=
-  ∀ β n, AddMonoidAlgebra.coeff (AddMonoidAlgebra.coeff F β) n ≠ 0 → n.degree + β.degree = d
-
-lemma biHom_add {d : ℕ} {F G : MvPolynomial κ (MvPolynomial ι K)} (hF : biHom d F)
-    (hG : biHom d G) : biHom d (F + G) := by
+lemma biHom_add {d : ℕ} {F G : MvPolynomial κ (MvPolynomial ι K)} (hF : UpperTheory.Reformulated.B.Qf22.biHom d F)
+    (hG : UpperTheory.Reformulated.B.Qf22.biHom d G) : UpperTheory.Reformulated.B.Qf22.biHom d (F + G) := by
   intro β n h
   rw [MvPolynomial.coeff_add, MvPolynomial.coeff_add] at h
   by_cases h1 : AddMonoidAlgebra.coeff (AddMonoidAlgebra.coeff F β) n = 0
@@ -276,11 +273,11 @@ lemma biHom_add {d : ℕ} {F G : MvPolynomial κ (MvPolynomial ι K)} (hF : biHo
   · exact hF β n h1
 
 lemma biHom_sum {α : Type*} {d : ℕ} (s : Finset α) (F : α → MvPolynomial κ (MvPolynomial ι K))
-    (h : ∀ a ∈ s, biHom d (F a)) : biHom d (∑ a ∈ s, F a) := by
+    (h : ∀ a ∈ s, UpperTheory.Reformulated.B.Qf22.biHom d (F a)) : UpperTheory.Reformulated.B.Qf22.biHom d (∑ a ∈ s, F a) := by
   first | (apply UpperTheory.Reformulated.B.Qf22.biHom_sum <;> assumption)
 
-lemma biHom_mul {d e : ℕ} {F G : MvPolynomial κ (MvPolynomial ι K)} (hF : biHom d F)
-    (hG : biHom e G) : biHom (d + e) (F * G) := by
+lemma biHom_mul {d e : ℕ} {F G : MvPolynomial κ (MvPolynomial ι K)} (hF : UpperTheory.Reformulated.B.Qf22.biHom d F)
+    (hG : UpperTheory.Reformulated.B.Qf22.biHom e G) : UpperTheory.Reformulated.B.Qf22.biHom (d + e) (F * G) := by
   classical
   intro β n h
   rw [MvPolynomial.coeff_mul, MvPolynomial.coeff_sum] at h
@@ -293,7 +290,7 @@ lemma biHom_mul {d e : ℕ} {F G : MvPolynomial κ (MvPolynomial ι K)} (hF : bi
   rw [← hx, ← hy, map_add (f := _), map_add (f := _)]
   omega
 
-lemma biHom_one : biHom 0 (1 : MvPolynomial κ (MvPolynomial ι K)) := by
+lemma biHom_one : UpperTheory.Reformulated.B.Qf22.biHom 0 (1 : MvPolynomial κ (MvPolynomial ι K)) := by
   classical
   intro β n h
   rw [MvPolynomial.coeff_one] at h
@@ -305,16 +302,16 @@ lemma biHom_one : biHom 0 (1 : MvPolynomial κ (MvPolynomial ι K)) := by
     · exact absurd rfl h
   · simp at h
 
-lemma biHom_pow {d : ℕ} {F : MvPolynomial κ (MvPolynomial ι K)} (hF : biHom d F) (m : ℕ) :
-    biHom (m * d) (F ^ m) := by
+lemma biHom_pow {d : ℕ} {F : MvPolynomial κ (MvPolynomial ι K)} (hF : UpperTheory.Reformulated.B.Qf22.biHom d F) (m : ℕ) :
+    UpperTheory.Reformulated.B.Qf22.biHom (m * d) (F ^ m) := by
   induction m with
   | zero => simpa using biHom_one
   | succ m ih =>
     simpa [pow_succ, Nat.succ_mul] using biHom_mul ih hF
 
 lemma biHom_prod {α : Type*} (s : Finset α) (d : α → ℕ)
-    (F : α → MvPolynomial κ (MvPolynomial ι K)) (h : ∀ a ∈ s, biHom (d a) (F a)) :
-    biHom (∑ a ∈ s, d a) (∏ a ∈ s, F a) := by
+    (F : α → MvPolynomial κ (MvPolynomial ι K)) (h : ∀ a ∈ s, UpperTheory.Reformulated.B.Qf22.biHom (d a) (F a)) :
+    UpperTheory.Reformulated.B.Qf22.biHom (∑ a ∈ s, d a) (∏ a ∈ s, F a) := by
   classical
   induction s using Finset.induction_on with
   | empty => simpa using biHom_one
@@ -323,7 +320,7 @@ lemma biHom_prod {α : Type*} (s : Finset α) (d : α → ℕ)
       (ih fun a' ha' => h a' (Finset.mem_insert_of_mem ha'))
 
 lemma biHom_C {d : ℕ} {p : MvPolynomial ι K} (hp : p.IsHomogeneous d) :
-    biHom d (MvPolynomial.C p : MvPolynomial κ (MvPolynomial ι K)) := by
+    UpperTheory.Reformulated.B.Qf22.biHom d (MvPolynomial.C p : MvPolynomial κ (MvPolynomial ι K)) := by
   classical
   intro β n h
   rw [MvPolynomial.coeff_C] at h
@@ -334,7 +331,7 @@ lemma biHom_C {d : ℕ} {p : MvPolynomial ι K} (hp : p.IsHomogeneous d) :
     simp
   · simp at h
 
-lemma biHom_X (k : κ) : biHom 1 (MvPolynomial.X k : MvPolynomial κ (MvPolynomial ι K)) := by
+lemma biHom_X (k : κ) : UpperTheory.Reformulated.B.Qf22.biHom 1 (MvPolynomial.X k : MvPolynomial κ (MvPolynomial ι K)) := by
   classical
   intro β n h
   rw [MvPolynomial.coeff_X] at h
@@ -346,7 +343,7 @@ lemma biHom_X (k : κ) : biHom 1 (MvPolynomial.X k : MvPolynomial κ (MvPolynomi
     · exact absurd rfl h
   · simp at h
 
-lemma biHom_shiftGen (b : κ → ι → K) (x : ι) : biHom 1 (shiftGen b x) := by
+lemma biHom_shiftGen (b : κ → ι → K) (x : ι) : UpperTheory.Reformulated.B.Qf22.biHom 1 (shiftGen b x) := by
   unfold shiftGen
   refine biHom_add (biHom_C (MvPolynomial.isHomogeneous_X K x)) (biHom_sum _ _ fun k _ => ?_)
   have := biHom_mul (biHom_C (κ := κ) (MvPolynomial.isHomogeneous_C ι (b k x)))
@@ -354,7 +351,7 @@ lemma biHom_shiftGen (b : κ → ι → K) (x : ι) : biHom 1 (shiftGen b x) := 
   simpa using this
 
 lemma biHom_shiftPoly (b : κ → ι → K) {d : ℕ} {Q : MvPolynomial ι K} (hQ : Q.IsHomogeneous d) :
-    biHom d (shiftPoly b Q) := by
+    UpperTheory.Reformulated.B.Qf22.biHom d (shiftPoly b Q) := by
   rw [shiftPoly_expand]
   refine biHom_sum _ _ fun n hn => ?_
   have h1 : n.degree = d := by
@@ -465,17 +462,14 @@ section DegLE
 
 variable {κ R : Type} [CommRing R]
 
-def degLE (W : Finset κ) (n : ℕ) (F : MvPolynomial κ R) : Prop :=
-  ∀ β, AddMonoidAlgebra.coeff F β ≠ 0 → ∑ k ∈ W, β k ≤ n
+lemma degLE_zero (W : Finset κ) (n : ℕ) : UpperTheory.Reformulated.B.Qf21.degLE W n (0 : MvPolynomial κ R) := by
+  simp [UpperTheory.Reformulated.B.Qf21.degLE]
 
-lemma degLE_zero (W : Finset κ) (n : ℕ) : degLE W n (0 : MvPolynomial κ R) := by
-  simp [degLE]
+lemma degLE_mono {W : Finset κ} {n m : ℕ} {F : MvPolynomial κ R} (h : UpperTheory.Reformulated.B.Qf21.degLE W n F)
+    (hnm : n ≤ m) : UpperTheory.Reformulated.B.Qf21.degLE W m F := fun β hβ => (h β hβ).trans hnm
 
-lemma degLE_mono {W : Finset κ} {n m : ℕ} {F : MvPolynomial κ R} (h : degLE W n F)
-    (hnm : n ≤ m) : degLE W m F := fun β hβ => (h β hβ).trans hnm
-
-lemma degLE_add {W : Finset κ} {n : ℕ} {F G : MvPolynomial κ R} (hF : degLE W n F)
-    (hG : degLE W n G) : degLE W n (F + G) := by
+lemma degLE_add {W : Finset κ} {n : ℕ} {F G : MvPolynomial κ R} (hF : UpperTheory.Reformulated.B.Qf21.degLE W n F)
+    (hG : UpperTheory.Reformulated.B.Qf21.degLE W n G) : UpperTheory.Reformulated.B.Qf21.degLE W n (F + G) := by
   intro β h
   rw [MvPolynomial.coeff_add] at h
   by_cases h1 : AddMonoidAlgebra.coeff F β = 0
@@ -484,11 +478,11 @@ lemma degLE_add {W : Finset κ} {n : ℕ} {F G : MvPolynomial κ R} (hF : degLE 
   · exact hF β h1
 
 lemma degLE_sum {α : Type*} {W : Finset κ} {n : ℕ} (s : Finset α) (F : α → MvPolynomial κ R)
-    (h : ∀ a ∈ s, degLE W n (F a)) : degLE W n (∑ a ∈ s, F a) := by
+    (h : ∀ a ∈ s, UpperTheory.Reformulated.B.Qf21.degLE W n (F a)) : UpperTheory.Reformulated.B.Qf21.degLE W n (∑ a ∈ s, F a) := by
   first | (apply UpperTheory.Reformulated.B.Qf21.degLE_sum <;> assumption)
 
-lemma degLE_mul {W : Finset κ} {n m : ℕ} {F G : MvPolynomial κ R} (hF : degLE W n F)
-    (hG : degLE W m G) : degLE W (n + m) (F * G) := by
+lemma degLE_mul {W : Finset κ} {n m : ℕ} {F G : MvPolynomial κ R} (hF : UpperTheory.Reformulated.B.Qf21.degLE W n F)
+    (hG : UpperTheory.Reformulated.B.Qf21.degLE W m G) : UpperTheory.Reformulated.B.Qf21.degLE W (n + m) (F * G) := by
   classical
   intro β h
   rw [MvPolynomial.coeff_mul] at h
@@ -500,7 +494,7 @@ lemma degLE_mul {W : Finset κ} {n m : ℕ} {F G : MvPolynomial κ R} (hF : degL
   simp only [Finsupp.add_apply, Finset.sum_add_distrib]
   omega
 
-lemma degLE_C (W : Finset κ) (r : R) : degLE W 0 (MvPolynomial.C r : MvPolynomial κ R) := by
+lemma degLE_C (W : Finset κ) (r : R) : UpperTheory.Reformulated.B.Qf21.degLE W 0 (MvPolynomial.C r : MvPolynomial κ R) := by
   classical
   intro β h
   rw [MvPolynomial.coeff_C] at h
@@ -509,10 +503,10 @@ lemma degLE_C (W : Finset κ) (r : R) : degLE W 0 (MvPolynomial.C r : MvPolynomi
     simp
   · exact absurd rfl h
 
-lemma degLE_one (W : Finset κ) : degLE W 0 (1 : MvPolynomial κ R) := by
+lemma degLE_one (W : Finset κ) : UpperTheory.Reformulated.B.Qf21.degLE W 0 (1 : MvPolynomial κ R) := by
   simpa using degLE_C W (1 : R)
 
-lemma degLE_X (W : Finset κ) (k : κ) : degLE W 1 (MvPolynomial.X k : MvPolynomial κ R) := by
+lemma degLE_X (W : Finset κ) (k : κ) : UpperTheory.Reformulated.B.Qf21.degLE W 1 (MvPolynomial.X k : MvPolynomial κ R) := by
   classical
   intro β h
   rw [MvPolynomial.coeff_X] at h
@@ -523,7 +517,7 @@ lemma degLE_X (W : Finset κ) (k : κ) : degLE W 1 (MvPolynomial.X k : MvPolynom
   · exact absurd rfl h
 
 lemma degLE_X_of_notMem {W : Finset κ} {k : κ} (hk : k ∉ W) :
-    degLE W 0 (MvPolynomial.X k : MvPolynomial κ R) := by
+    UpperTheory.Reformulated.B.Qf21.degLE W 0 (MvPolynomial.X k : MvPolynomial κ R) := by
   classical
   intro β h
   rw [MvPolynomial.coeff_X] at h
@@ -533,8 +527,8 @@ lemma degLE_X_of_notMem {W : Finset κ} {k : κ} (hk : k ∉ W) :
   · exact absurd rfl h
 
 lemma degLE_prod {α : Type*} {W : Finset κ} (s : Finset α) (n : α → ℕ)
-    (F : α → MvPolynomial κ R) (h : ∀ a ∈ s, degLE W (n a) (F a)) :
-    degLE W (∑ a ∈ s, n a) (∏ a ∈ s, F a) := by
+    (F : α → MvPolynomial κ R) (h : ∀ a ∈ s, UpperTheory.Reformulated.B.Qf21.degLE W (n a) (F a)) :
+    UpperTheory.Reformulated.B.Qf21.degLE W (∑ a ∈ s, n a) (∏ a ∈ s, F a) := by
   classical
   induction s using Finset.induction_on with
   | empty => simpa using degLE_one W
@@ -543,23 +537,23 @@ lemma degLE_prod {α : Type*} {W : Finset κ} (s : Finset α) (n : α → ℕ)
       (ih fun a' ha' => h a' (Finset.mem_insert_of_mem ha'))
 
 lemma degLE_det_col {l : ℕ} {W : Finset κ} (N : Matrix (Fin l) (Fin l) (MvPolynomial κ R))
-    (n : Fin l → ℕ) (h : ∀ i c, degLE W (n c) (N i c)) : degLE W (∑ c, n c) N.det := by
+    (n : Fin l → ℕ) (h : ∀ i c, UpperTheory.Reformulated.B.Qf21.degLE W (n c) (N i c)) : UpperTheory.Reformulated.B.Qf21.degLE W (∑ c, n c) N.det := by
   rw [Matrix.det_apply']
   refine degLE_sum _ _ fun σ _ => ?_
-  have h1 : degLE W 0 (((Equiv.Perm.sign σ : ℤ) : MvPolynomial κ R)) := by
+  have h1 : UpperTheory.Reformulated.B.Qf21.degLE W 0 (((Equiv.Perm.sign σ : ℤ) : MvPolynomial κ R)) := by
     rw [← map_intCast (MvPolynomial.C : R →+* MvPolynomial κ R)]
     exact degLE_C W _
   have := degLE_mul h1 (degLE_prod Finset.univ n (fun c => N (σ c) c) fun c _ => h (σ c) c)
   rwa [zero_add] at this
 
 lemma degLE_det_row {l : ℕ} {W : Finset κ} (N : Matrix (Fin l) (Fin l) (MvPolynomial κ R))
-    (n : Fin l → ℕ) (h : ∀ i c, degLE W (n i) (N i c)) : degLE W (∑ c, n c) N.det := by
+    (n : Fin l → ℕ) (h : ∀ i c, UpperTheory.Reformulated.B.Qf21.degLE W (n i) (N i c)) : UpperTheory.Reformulated.B.Qf21.degLE W (∑ c, n c) N.det := by
   simpa [Matrix.det_transpose] using degLE_det_col (W := W) N.transpose n (fun i c => h c i)
 
 lemma degLE_det_rankOne {K : Type} [Field K] {l : ℕ} {W : Finset κ} (φ : K →+* MvPolynomial κ R)
-    (hφ : ∀ a, degLE W 0 (φ a)) (M' : Matrix (Fin l) (Fin l) (MvPolynomial κ R)) (v : Fin l → K)
-    (η : Fin l → MvPolynomial κ R) (hM : ∀ i c, degLE W 0 (M' i c)) (hη : ∀ c, degLE W 1 (η c)) :
-    degLE W 1 (Matrix.of fun i c => M' i c + φ (v i) * η c).det := by
+    (hφ : ∀ a, UpperTheory.Reformulated.B.Qf21.degLE W 0 (φ a)) (M' : Matrix (Fin l) (Fin l) (MvPolynomial κ R)) (v : Fin l → K)
+    (η : Fin l → MvPolynomial κ R) (hM : ∀ i c, UpperTheory.Reformulated.B.Qf21.degLE W 0 (M' i c)) (hη : ∀ c, UpperTheory.Reformulated.B.Qf21.degLE W 1 (η c)) :
+    UpperTheory.Reformulated.B.Qf21.degLE W 1 (Matrix.of fun i c => M' i c + φ (v i) * η c).det := by
   classical
   by_cases hv : ∀ i, v i = 0
   · have : (Matrix.of fun i c => M' i c + φ (v i) * η c) = M' := by
@@ -603,17 +597,17 @@ section Minor
 variable {K σ κ : Type} [Field K] [DecidableEq σ] [Fintype κ]
 
 lemma degLE_CC (W : Finset κ) {ι : Type} (a : K) :
-    degLE W 0 (MvPolynomial.C (MvPolynomial.C a) : MvPolynomial κ (MvPolynomial ι K)) :=
+    UpperTheory.Reformulated.B.Qf21.degLE W 0 (MvPolynomial.C (MvPolynomial.C a) : MvPolynomial κ (MvPolynomial ι K)) :=
   degLE_C W _
 
 lemma degLE_shiftGen {ι : Type} (W : Finset κ) (b : κ → ι → K) (x : ι) :
-    degLE W 1 (shiftGen b x) := by
+    UpperTheory.Reformulated.B.Qf21.degLE W 1 (shiftGen b x) := by
   unfold shiftGen
   refine degLE_add (degLE_mono (degLE_C W _) (Nat.zero_le _)) (degLE_sum _ _ fun k _ => ?_)
   simpa using degLE_mul (degLE_CC W (b k x)) (degLE_X W k)
 
 lemma degLE_shiftGen_zero {ι : Type} (W : Finset κ) (b : κ → ι → K) (x : ι)
-    (h : ∀ k ∈ W, b k x = 0) : degLE W 0 (shiftGen b x) := by
+    (h : ∀ k ∈ W, b k x = 0) : UpperTheory.Reformulated.B.Qf21.degLE W 0 (shiftGen b x) := by
   unfold shiftGen
   refine degLE_add (degLE_C W _) (degLE_sum _ _ fun k _ => ?_)
   by_cases hk : k ∈ W
@@ -637,7 +631,7 @@ variable {r0 r1 l : ℕ} (s : σ) (T : Fin l → Fin r0 → K) (I : Fin l → Fi
 
 lemma degLE_minor_col (hI : Function.Injective I) (S : Finset κ) (J : Finset (Fin r1))
     (hS : ∀ k ∈ S, pos k = s → col k ∈ J) :
-    degLE S ((univ.image I) ∩ J).card
+    UpperTheory.Reformulated.B.Qf21.degLE S ((univ.image I) ∩ J).card
       (shiftPoly (fun k => colDir (pos k) (ξ k) (col k)) (minorAt s T I)) := by
   classical
   rw [shiftPoly_minorAt]
@@ -685,7 +679,7 @@ lemma hits_col (S : Finset κ) (J : Finset (Fin r1)) (hS : ∀ k ∈ S, pos k = 
     rw [this, hasseDir_zero_right]
 
 lemma degLE_minor_row (W : Finset κ) (ξ0 : Fin r0 → K) (hW : ∀ k ∈ W, ξ k = ξ0) :
-    degLE W 1 (shiftPoly (fun k => colDir (pos k) (ξ k) (col k)) (minorAt s T I)) := by
+    UpperTheory.Reformulated.B.Qf21.degLE W 1 (shiftPoly (fun k => colDir (pos k) (ξ k) (col k)) (minorAt s T I)) := by
   classical
   rw [shiftPoly_minorAt]
   set φ : K →+* MvPolynomial κ (MvPolynomial (σ × Fin r0 × Fin r1) K) :=

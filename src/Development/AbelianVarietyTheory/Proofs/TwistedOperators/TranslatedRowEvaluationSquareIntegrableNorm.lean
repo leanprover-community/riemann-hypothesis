@@ -63,7 +63,7 @@ theorem evalTranslate_norm : ∀ {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 
   have hTr : SquareIntegrableTransfer R.ν0 R.fd0 X (iotaX X h).toMulEquiv t c :=
     squareIntegrableTransfer_of_rational_points R.ν0 R.fd0 X _ t c hι hιs hc hmap hνH hM.ν0.2 (iotaX_rat X h)
   refine ⟨c, hc, fun v₀ hv S hS => ?_⟩
-  have hI := GlobalTheory.T.goodRows_level_sub_principalLevel_hilbertModel R hM
+  have hI := GlobalTheory.GoodRowsLevel.eeat_sub_principal R hM
   have hS' : S ∈ R.EEat (R.levR F true) := hS
   have hMult : S ∈ Mult R.θ (R.MY 0) (levS _ (R.βY 0) (R.dat0 (R.levR F true)))
       (levChi _ (R.βY 0) (R.dat0 (R.levR F true))) := hS'.1

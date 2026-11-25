@@ -722,12 +722,6 @@ def unitOneSub {B : Type} [CommRing B] (w : B) (h : w * w = 0) : Bˣ where
 
 theorem unitOneSub_val {B : Type} [CommRing B] (w : B) (h : w * w = 0) : (unitOneSub w h : B) = 1 - w := rfl
 
-theorem mul_eq_zero_of_mem {R B : Type} [CommRing R] [CommRing B] [Algebra R B] {I : Ideal R} (hI : I ^ 2 = 0)
-    {x y : B} (hx : x ∈ I.map (algebraMap R B)) (hy : y ∈ I.map (algebraMap R B)) : x * y = 0 := by
-  have h := Ideal.mul_mem_mul hx hy
-  rw [← Ideal.map_mul, ← pow_two, hI, Ideal.zero_eq_bot, Ideal.map_bot] at h
-  simpa using h
-
 theorem lift_of_isObU_zero : ∀ (R R₀ : Type) [CommRing R] [CommRing R₀] (I : Ideal R) (hI : I ^ 2 = 0) (π : R →+* R₀) (hπ : Function.Surjective π) (hk : RingHom.ker π = I) (R₁ : Type) [CommRing R₁] [Algebra R₀ R₁] (α : Aug I π R₁) (C : Type) [Category.{0} C] (F : C ⥤ CommAlgCat.{0} R₀) (L : Pre I π F) (u : ∀ (T T' : C) (_ : T ⟶ T'), (F.obj T')ˣ), IsObU L α u 0 → ∃ v : ∀ (T T' : C) (_ : T ⟶ T'), (L.B T')ˣ, (∀ T T' a, L.p T' (v T T' a : L.B T') = (u T T' a : F.obj T')) ∧ ∀ (T T' T'' : C) (a : T ⟶ T') (b : T' ⟶ T''), (v T T'' (a ≫ b) : L.B T'') = L.ρ b (v T T' a : L.B T') * (v T' T'' b : L.B T'') := by
   intro R R₀ _ _ I hI π hπ hk R₁ _ _ α C _ F L u h
   obtain ⟨v, σ, z, hv, hσ, hz, hzv⟩ := h
@@ -735,7 +729,7 @@ theorem lift_of_isObU_zero : ∀ (R R₀ : Type) [CommRing R] [CommRing R₀] (I
   have hw : ∀ (T T' : C) (a : T ⟶ T'), σ T' (f T T' a) ∈ I.map (algebraMap R (L.B T')) := fun T T' a ↦
     (GlobalTheory.Obs.sig_basic R R₀ I hI π hπ hk R₁ α (L.B T') (F.obj T') (L.p T') (L.semi T') (L.surj T')
       (L.ker T') (σ T') (hσ T')).1 _
-  refine ⟨fun T T' a ↦ v T T' a * unitOneSub (σ T' (f T T' a)) (mul_eq_zero_of_mem hI (hw T T' a) (hw T T' a)),
+  refine ⟨fun T T' a ↦ v T T' a * unitOneSub (σ T' (f T T' a)) (GlobalTheory.LBObs.mul_eq_zero_of_mem_map hI (hw T T' a) (hw T T' a)),
     fun T T' a ↦ ?_, fun T T' T'' a b ↦ ?_⟩
   · have h0 : L.p T' (σ T' (f T T' a)) = 0 := (L.ker T' _).2 (hw T T' a)
     simp only [Units.val_mul, unitOneSub_val, map_mul, map_sub, map_one, h0, sub_zero, hv]
@@ -757,11 +751,11 @@ theorem lift_of_isObU_zero : ∀ (R R₀ : Type) [CommRing R] [CommRing R₀] (I
     set x := L.ρ b (σ T' (f T T' a)) with hxdef
     set W := σ T'' (f T T'' (a ≫ b))
     set y := σ T'' (f T' T'' b)
-    have hxx := mul_eq_zero_of_mem hI hρx hρx
-    have hxy := mul_eq_zero_of_mem hI hρx hy
-    have hyy := mul_eq_zero_of_mem hI hy hy
-    have hWx := mul_eq_zero_of_mem hI hW hρx
-    have hWy := mul_eq_zero_of_mem hI hW hy
+    have hxx := GlobalTheory.LBObs.mul_eq_zero_of_mem_map hI hρx hρx
+    have hxy := GlobalTheory.LBObs.mul_eq_zero_of_mem_map hI hρx hy
+    have hyy := GlobalTheory.LBObs.mul_eq_zero_of_mem_map hI hy hy
+    have hWx := GlobalTheory.LBObs.mul_eq_zero_of_mem_map hI hW hρx
+    have hWy := GlobalTheory.LBObs.mul_eq_zero_of_mem_map hI hW hy
     have key : (1 + (x - W + y)) * ((1 - x) * (1 - y)) = 1 - W := by
       linear_combination -hxx - hxy - hyy + hWx + hWy + y * hxx - y * hWx + y * hxy
     have hz' := (hzv T T' T'' a b).2
@@ -784,8 +778,6 @@ open CategoryTheory AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory
 open scoped TensorProduct
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CatCoh GlobalTheory.Cris GlobalTheory.CechDR GlobalTheory.LiftSys GlobalTheory.Obs GlobalTheory.LBObs GlobalTheory.AbLaw GlobalTheory.AbDual GlobalTheory.CechPic
 attribute [local instance] Over.cartesianMonoidalCategory
-
-
 
 theorem GlobalTheory.LBObs.exists_lift_of_isObL_zero : ∀ (R R₀ : Type) [CommRing R] [CommRing R₀] (I : Ideal R) (hI : I ^ 2 = 0) (π : R →+* R₀) (hπ : Function.Surjective π) (hk : RingHom.ker π = I) (R₁ : Type) [CommRing R₁] [Algebra R₀ R₁] (α : Aug I π R₁) (X₀ : Scheme.{0}) (s₀ : X₀ ⟶ Sp R₀) (S : Sys I π s₀) (X : Scheme.{0}) (s : X ⟶ Sp R) (i : X₀ ⟶ X) (P : S.Presents s i) (L₀ : LB X₀), IsPullback i s₀ s (spMap π) → L₀.IsLB → IsObL S α L₀ 0 → ∃ L : LB X, L.IsLB ∧ LBIso (L.pull i) L₀ := by
   intro R R₀ _ _ I hI π hπ hk R₁ _ _ α X₀ s₀ S X s i P L₀ hpb hL₀ hob
@@ -1091,9 +1083,6 @@ variable {C : Type} [Category.{0} C] {F : C ⥤ CommAlgCat.{0} R₀}
 
 variable (hI : I ^ 2 = 0)
 
-
-
-
 end Alg
 
 section Example
@@ -1198,7 +1187,6 @@ theorem isBas_pG (hI : I ^ 2 = 0) (P : S.Presents s i) {L : LB X} (hL : L.IsLB) 
 
 end GlobalTheory.LBObsZero
 
-
 open GlobalTheory.LBObsZero in
 theorem GlobalTheory.LBObs.isObL_pull_zero : ∀ (R R₀ : Type) [CommRing R] [CommRing R₀] (I : Ideal R) (hI : I ^ 2 = 0) (π : R →+* R₀) (hπ : Function.Surjective π) (hk : RingHom.ker π = I) (R₁ : Type) [CommRing R₁] [Algebra R₀ R₁] (α : Aug I π R₁) (X₀ : Scheme.{0}) (s₀ : X₀ ⟶ Sp R₀) (S : Sys I π s₀) (X : Scheme.{0}) (s : X ⟶ Sp R) (i : X₀ ⟶ X) (P : S.Presents s i) (L : LB X), IsPullback i s₀ s (spMap π) → L.IsLB → IsObL S α (L.pull i) 0 := by
   intro R R₀ _ _ I hI π hπ hk R₁ _ _ α X₀ s₀ S X s i P L h hL
@@ -1271,8 +1259,6 @@ open scoped CategoryTheory.Obj TensorProduct
 open GlobalTheory.CatCoh GlobalTheory.Cris GlobalTheory.CechDR GlobalTheory.LiftSys GlobalTheory.Obs GlobalTheory.LBObs GlobalTheory.AbLaw GlobalTheory.AbDual GlobalTheory.CechPic
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.PolRoot
-
-
 
 theorem GlobalTheory.LBObs.exists_lift_of_lam_iso_pull : ∀ (R R₀ : Type) [CommRing R] [CommRing R₀] [IsLocalRing R₀] (π : R →+* R₀), Function.Surjective π → RingHom.ker π ^ 2 = 0 → ∀ (B : Over (Sp R)) [GrpObj B] (B₀ : Over (Sp R₀)) [GrpObj B₀] [IsCommMonObj B₀] (i : B₀.left ⟶ B.left) (i₂ : (G2 B₀).left ⟶ (G2 B).left), IsAbelianScheme B → IsGrpPullback B₀ B (spMap π) i → IsSquare i i₂ → ∀ (P : LB (G2 B).left) (L₀ : LB B₀.left), P.IsLB → L₀.IsLB → LBIso (abelian₂ B₀ L₀) (P.pull i₂) → ∃ L : LB B.left, L.IsLB ∧ LBIso (L.pull i) L₀ := by
   intro R R₀ _ _ _ π hπ hI B _ B₀ _ _ i i₂ hB hgp hsq P L₀ hP hL₀ hΛ

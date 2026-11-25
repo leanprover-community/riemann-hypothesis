@@ -6,7 +6,6 @@ import Mathlib.Tactic.Linter.Style
 
 @[expose] public section
 
-noncomputable section
 open CategoryTheory Limits AlgebraicGeometry LateralTheory.E.t_E2Cut Polynomial
 
 namespace LateralTheory.E.LocalIntegralClosureRoots
@@ -86,5 +85,3 @@ theorem LocAIC_of : NormPf.AICPf.LocAIC := by
   rw [map_zero, ← hz', Polynomial.eval_map, ← ha, eval₂_at_apply]
 
 end LateralTheory.E.LocalIntegralClosureRoots
-
-end

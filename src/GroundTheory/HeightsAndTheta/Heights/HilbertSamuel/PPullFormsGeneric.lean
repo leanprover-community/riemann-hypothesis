@@ -37,12 +37,6 @@ theorem aeval_mem (F : IntermediateField ℚ Ω) (w : (Σ k, ι k) → Ω) (hw :
   | add p q hp hq => rw [map_add]; exact add_mem hp hq
   | mul_X p q hp => rw [map_mul, aeval_X]; exact mul_mem hp (hw q)
 
-
-omit [CharZero Ω] in
-theorem aeval_scale {g : MRing ι} {d : K → ℕ} (hg : IsMultiHomog g d) (y : (Σ k, ι k) → Ω) (t : K → Ω) :
-    aeval (fun p => y p * t p.1) g = aeval y g * ∏ k, t k ^ d k :=
-  BlockScaling.eval₂_mul_block_right (algebraMap ℤ Ω) y t hg
-
 theorem blockFnField_eq_top {y : (Σ k, ι k) → Ω} (c : ∀ k, ι k) (hc : ∀ k, y ⟨k, c k⟩ ≠ 0)
     (hB : Birational y) : blockFnField y = ⊤ := by
   refine eq_top_iff.mpr fun x _ => ?_
@@ -52,7 +46,9 @@ theorem blockFnField_eq_top {y : (Σ k, ι k) → Ω} (c : ∀ k, ι k) (hc : �
   have hw : ∀ p, y p * t p.1 ∈ blockFnField y := fun p =>
     IntermediateField.subset_adjoin _ _ ⟨p, ⟨p.1, c p.1⟩, rfl, by simp [t, div_eq_mul_inv]⟩
   have hx : x = aeval (fun p => y p * t p.1) g / aeval (fun p => y p * t p.1) h := by
-    rw [aeval_scale hg, aeval_scale hh, hgh, mul_div_mul_right _ _ ht, mul_div_cancel_right₀ _ hh0]
+    rw [aeval_def, aeval_def, BlockScaling.eval₂_mul_block_right _ _ _ hg,
+      BlockScaling.eval₂_mul_block_right _ _ _ hh, ← aeval_def, ← aeval_def, hgh,
+      mul_div_mul_right _ _ ht, mul_div_cancel_right₀ _ hh0]
   rw [hx]
   exact div_mem (aeval_mem _ _ hw g) (aeval_mem _ _ hw h)
 

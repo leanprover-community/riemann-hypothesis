@@ -242,7 +242,7 @@ theorem exists_rel (y : (Σ k, ι k) → Ω) (c : ∀ k, ι k) (hyc : ∀ k, y �
   simp only [Polynomial.eval₂_add, Polynomial.eval₂_X_pow, Polynomial.eval₂_finsetSum,
     Polynomial.eval₂_mul, Polynomial.eval₂_C] at hp
   choose Nf Rf hRf hRe using fun i : ℕ =>
-    LocalRep.exists_form_of_mem_chartRingZ y c hyc (p.coeff i).2
+    SectionBounded.exists_form_of_mem_chartRingZ y c hyc (p.coeff i).2
   set N : K → ℕ := ∑ i ∈ Finset.range n, Nf i
   have hN : ∀ i ∈ Finset.range n, ∀ k, Nf i k ≤ N k := by
     intro i hi k

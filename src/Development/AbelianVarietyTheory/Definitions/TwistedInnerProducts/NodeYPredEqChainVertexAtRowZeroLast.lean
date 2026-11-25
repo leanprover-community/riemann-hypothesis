@@ -333,14 +333,6 @@ structure IsSpaces : Prop where
 
   X : ∀ j, j + 1 ≤ D.R.m → (G.nX j).Is (rkX D (j + 1)) 0 (parXp D (j + 1))
 
-  decP : G.decP.Is (fun _ _ => 1) fun _ => 1
-
-  decV : ∀ i, 1 ≤ i → i ≤ D.R.m → (G.decV i).Is (antiDiagonalSignGramMatrix _ _) (staircaseExtensionIdeal (G.lvl R) _)
-
-  decX : ∀ j, j + 1 < D.R.m → (G.decX j).Is (antiDiagonalSignGramMatrix _ _) (staircaseExtensionIdeal ⊤ _)
-
-  decZ : G.decZ.Is (fun _ _ => 1) fun _ => 1
-
 structure IsChars : Prop where
 
   places : G.toPlaceDat.Is R.Pg R.Q G.idem

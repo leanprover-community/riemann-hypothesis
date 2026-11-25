@@ -10,8 +10,6 @@ open NumberField IsDedekindDomain Formalism.ConjugateSelfDual
 
 set_option linter.all false
 
-noncomputable section
-
 namespace DiscreteGroups.sglob.DzType
 
 variable {E : Type} [Field E] [NumberField E] (w : HeightOneSpectrum (𝓞 E)) (g : ℕ) [hg : Fact g.Prime]
@@ -57,5 +55,3 @@ theorem g_not_mem_sq (i : ℚ_[g] ≃+* w.adicCompletion E) (hi : Continuous i) 
   norm_num at h3
 
 end DiscreteGroups.sglob.DzType
-
-end

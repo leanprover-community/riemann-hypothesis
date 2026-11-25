@@ -448,26 +448,6 @@ section Coord
 
 variable {S : Scheme.{0}} (A B : Over S) [GrpObj A] [GrpObj B] [IsCommMonObj A] [IsCommMonObj B]
 
-theorem mkZ_pa {T : Over S} (u : Fin 4 → (T ⟶ A)) (v : Fin 4 → (T ⟶ B)) (i : Fin 4) :
-    mkZ A B u v ≫ pa A B i = u i := by
-  simp only [mkZ, pa, lift_fst_assoc]
-  exact (Out.powIsLimit A 4).fac (Fan.mk T u) ⟨i⟩
-
-theorem mkZ_pb {T : Over S} (u : Fin 4 → (T ⟶ A)) (v : Fin 4 → (T ⟶ B)) (j : Fin 4) :
-    mkZ A B u v ≫ pb A B j = v j := by
-  simp only [mkZ, pb, lift_snd_assoc]
-  exact (Out.powIsLimit B 4).fac (Fan.mk T v) ⟨j⟩
-
-theorem zob_hom_ext {T : Over S} (f g : T ⟶ Zob A B) (ha : ∀ i, f ≫ pa A B i = g ≫ pa A B i)
-    (hb : ∀ j, f ≫ pb A B j = g ≫ pb A B j) : f = g := by
-  apply CartesianMonoidalCategory.hom_ext
-  · apply (Out.powIsLimit A 4).hom_ext
-    rintro ⟨i⟩
-    simpa [pa] using ha i
-  · apply (Out.powIsLimit B 4).hom_ext
-    rintro ⟨j⟩
-    simpa [pb] using hb j
-
 instance pa_isMonHom (i : Fin 4) : IsMonHom (pa A B i) := by
   unfold pa; infer_instance
 
@@ -492,14 +472,14 @@ section Key
 variable {S : Scheme.{0}} (A B : Over S) [GrpObj A] [GrpObj B] [IsCommMonObj A] [IsCommMonObj B]
 
 theorem incZ_pa (j : Fin 4) : incZ A B ≫ pa A B j = if j = 0 then 𝟙 A else 1 := by
-  simp [incZ, mkZ_pa]
+  simp [incZ, GlobalTheory.ZarhinFam.RelAlg.mkZ_pa]
 
 theorem incZ_pb (j : Fin 4) : incZ A B ≫ pb A B j = 1 := by
-  simp [incZ, mkZ_pb]
+  simp [incZ, GlobalTheory.ZarhinFam.RelAlg.mkZ_pb]
 
 theorem inc_act_pa {T : Over S} (d : ℕ) (la : A ⟶ B) (mu : B ⟶ A) (y : T ⟶ A) (k : Fin 8) (i : Fin 4) :
     y ≫ incZ A B ≫ actZ A B d la mu (oMat d k) ≫ pa A B i = if sig k = Sum.inl i then y else 1 := by
-  rw [actZ, mkZ_pa]
+  rw [actZ, GlobalTheory.ZarhinFam.RelAlg.mkZ_pa]
   simp only [oMat_apply, Fin.prod_univ_four, comp_mul, GrpObj.comp_zpow, ← Category.assoc, incZ_pa]
   simp only [true_and, ite_true, Category.comp_id, reduceCtorEq, false_and, ite_false, zpow_zero,
     Sum.inl.injEq, Fin.reduceEq, comp_one]
@@ -507,7 +487,7 @@ theorem inc_act_pa {T : Over S} (d : ℕ) (la : A ⟶ B) (mu : B ⟶ A) (y : T �
 
 theorem inc_act_pb {T : Over S} (d : ℕ) (la : A ⟶ B) (mu : B ⟶ A) (y : T ⟶ A) (k : Fin 8) (j : Fin 4) :
     y ≫ incZ A B ≫ actZ A B d la mu (oMat d k) ≫ pb A B j = if sig k = Sum.inr j then y ≫ la else 1 := by
-  rw [actZ, mkZ_pb]
+  rw [actZ, GlobalTheory.ZarhinFam.RelAlg.mkZ_pb]
   simp only [oMat_apply, Fin.prod_univ_four, comp_mul, GrpObj.comp_zpow, ← Category.assoc, incZ_pa, incZ_pb]
   simp only [true_and, ite_true, Category.comp_id, reduceCtorEq, false_and, ite_false, zpow_zero,
     Sum.inl.injEq, Fin.reduceEq, comp_one]
@@ -526,13 +506,13 @@ theorem _root_.GlobalTheory.ZarhinFam.levZ_eq_mkZ {S : Scheme.{0}} (A B : Over S
     (κ : Fin 8 → (Fin h' ⊕ Fin h' → ℤ) →+ (Fin h ⊕ Fin h → ℤ)) (a : Fin h' ⊕ Fin h' → ℤ) :
     levZ lev (incZ A B) (actZ A B d la mu) (oMat d) κ a =
       mkZ A B (fun i => lev (κ (Fin.castAdd 4 i) a)) (fun j => lev (κ (Fin.natAdd 4 j) a) ≫ la) := by
-  apply zob_hom_ext
+  apply GlobalTheory.ZarhinFam.LevAlg.zob_ext
   · intro i
-    rw [mkZ_pa, levZ, list_prod_comp, List.map_ofFn]
+    rw [GlobalTheory.ZarhinFam.RelAlg.mkZ_pa, levZ, list_prod_comp, List.map_ofFn]
     simp only [Function.comp_def, Category.assoc, inc_act_pa, List.prod_ofFn, sig_eq_inl]
     exact Fintype.prod_ite_eq _ _
   · intro j
-    rw [mkZ_pb, levZ, list_prod_comp, List.map_ofFn]
+    rw [GlobalTheory.ZarhinFam.RelAlg.mkZ_pb, levZ, list_prod_comp, List.map_ofFn]
     simp only [Function.comp_def, Category.assoc, inc_act_pb, List.prod_ofFn, sig_eq_inr]
     exact Fintype.prod_ite_eq (Fin.natAdd 4 j) (fun k => lev (κ k a) ≫ la)
 
@@ -784,7 +764,6 @@ section -- clump:auto
 
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.UPel.HT GlobalTheory.SiegelTor GlobalTheory.EndLoc
-
 
 end -- clump:auto
 end -- clump:auto

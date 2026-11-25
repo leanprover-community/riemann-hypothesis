@@ -42,8 +42,6 @@ import Mathlib.Topology.Sheaves.Init
 open MeasureTheory NumberField IsDedekindDomain Matrix Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
 open scoped TensorProduct
 
-noncomputable section
-
 namespace GlobalTheory.GaussDecay
 
 theorem isCMFam_of_over {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]

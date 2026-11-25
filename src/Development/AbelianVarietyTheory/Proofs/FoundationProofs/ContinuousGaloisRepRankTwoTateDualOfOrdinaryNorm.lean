@@ -11,8 +11,6 @@ import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.InertialOrde
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.MainNotions.N GlobalTheory.GalOfCusp UpperTheory.V UpperTheory.V.Af UpperTheory.V.HV GlobalTheory.Ord2
 open scoped Matrix
 
-noncomputable section
-
 namespace GlobalTheory.Ord2.DualCont
 
 theorem cyc_cont' {Ω : Type} [Field Ω] [Algebra ℚ Ω] (l : ℕ) [Fact l.Prime] : Continuous (cycBar ℚ Ω l) :=

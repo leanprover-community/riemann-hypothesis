@@ -53,8 +53,6 @@ import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.P
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.MulDescent
 
 open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry

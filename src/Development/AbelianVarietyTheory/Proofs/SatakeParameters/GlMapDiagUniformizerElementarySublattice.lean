@@ -15,13 +15,9 @@ namespace GlobalTheory.DiagElem
 variable {E : Type} [Field E] [NumberField E] (w : HeightOneSpectrum (𝓞 E))
 
 theorem le_exp_neg_one_of_lt_one {x : WithZero (Multiplicative ℤ)} (h : x < 1) :
-    x ≤ WithZero.exp (-1) := by
-  rcases eq_or_ne x 0 with rfl | hx
-  · exact zero_le
-  · rw [← WithZero.exp_log hx] at h ⊢
-    rw [← WithZero.exp_zero, WithZero.exp_lt_exp] at h
-    rw [WithZero.exp_le_exp]
-    omega
+    x ≤ WithZero.exp (-1) :=
+  (WithZero.lt_mul_exp_iff_le WithZero.exp_ne_zero).1
+    (by rwa [← WithZero.exp_add, neg_add_cancel, WithZero.exp_zero])
 
 theorem mem_std {n : ℕ} (x : Fin n → w.adicCompletion E) :
     x ∈ (std (w.adicCompletionIntegers E) (w.adicCompletion E) n).1 ↔

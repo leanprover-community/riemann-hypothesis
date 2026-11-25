@@ -49,9 +49,6 @@ noncomputable section
 
 namespace UpperTheory.V.ZK
 
-private def gz (q e : ℕ) (j : Fin (e + 1) → ZMod q) : Fin (2 * e + 1 + 1) → Cq q :=
-  fun i => if (i : ℕ) % 2 = 0 then Multiplicative.ofAdd (j ⟨i / 2, by omega⟩) else Multiplicative.ofAdd 1
-
 theorem sZc : SZc := by
   apply LateralTheory.Q.SZcT.SZc_of
 

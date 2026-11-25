@@ -13,8 +13,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formal
 open scoped TensorProduct ComplexOrder
 open MeasureTheory Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.L2.Theta Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
 
-noncomputable section
-
 namespace GlobalTheory.ThetaFormV
 
 open Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.IndefR GlobalTheory.ThetaTri
@@ -100,5 +98,3 @@ variable {hL : GlobalTheory.Published.LocalLanglandsGL} {D : D7} {P : Pin hL D} 
 end Cont
 
 end GlobalTheory.ThetaFormV
-
-end

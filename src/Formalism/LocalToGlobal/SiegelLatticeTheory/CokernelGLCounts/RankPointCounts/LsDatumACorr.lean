@@ -31,12 +31,6 @@ private theorem h_finset_sum_smul_left {ι : Type} (s : Finset ι) (c : ι → E
   | insert a s ha ih =>
     rw [Finset.sum_insert ha, Finset.sum_insert ha, H.h_add_left, H.h_smul_left, ih]
 
-private theorem h_smul_right_eq_cj_mul (a : E) (x y : V) : H.h x (a • y) = M.L.cj a * H.h x y := by
-  rw [H.h_herm (a • y) x, H.h_smul_left, map_mul, ← H.h_herm]
-
-private theorem h_zero_right_rank_point_counts (x : V) : H.h x 0 = 0 := by
-  simpa using _root_.PI.LocHerm.Glue.h_add_right H x 0 0
-
 theorem mem_perpX_of {f : Fin (r + 1) → V} {v : V} (h : ∀ j : Fin r, H.h v (f j.castSucc) = 0) :
     v ∈ H.perp (H.X f) := by
   apply _root_.Formalism.MainNotions.S.Loc.HermSp.LprU.mem_perp_X <;> assumption

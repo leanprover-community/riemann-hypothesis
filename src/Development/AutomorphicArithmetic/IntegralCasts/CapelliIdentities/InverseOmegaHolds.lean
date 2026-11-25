@@ -150,29 +150,6 @@ private theorem key {R : Type*} [CommRing R] {a₁ a₂ a₃ a₄ a₆ : R} {w :
   push_cast at h
   linear_combination (-X) * h
 
-private noncomputable def ball (p : ℕ) [Fact (Nat.Prime p)] : Subring ℂ_[p] where
-  carrier := {x | ‖x‖ ≤ 1}
-  mul_mem' := by
-    intro x y hx hy
-    change ‖x * y‖ ≤ 1
-    rw [norm_mul]
-    exact mul_le_one₀ hx (norm_nonneg _) hy
-  one_mem' := by
-    change ‖(1 : ℂ_[p])‖ ≤ 1
-    rw [norm_one]
-  add_mem' := by
-    intro x y hx hy
-    exact (IsUltrametricDist.norm_add_le_max x y).trans (max_le hx hy)
-  zero_mem' := by
-    change ‖(0 : ℂ_[p])‖ ≤ 1
-    rw [norm_zero]
-    exact zero_le_one
-  neg_mem' := by
-    intro x hx
-    change ‖-x‖ ≤ 1
-    rw [norm_neg]
-    exact hx
-
 private theorem dX_flog {p : ℕ} [Fact (Nat.Prime p)] (W : WeierstrassCurve ℂ_[p])
     (w : ℂ_[p]⟦X⟧) : dX (flog W w) = omegaW W w := by
   ext n
@@ -190,19 +167,25 @@ theorem UpperTheory.Reformulated.B.Gwa1.inverse_omega_holds :
       + C W.a₄ * X ^ 4 * w ^ 2 + C W.a₆ * X ^ 6 * w ^ 3 := hw
   refine ⟨1 - C W.a₁ * X - C W.a₂ * X ^ 2 - 2 * (C W.a₃ * X ^ 3 * w) - 2 * (C W.a₄ * X ^ 4 * w)
       - 3 * (C W.a₆ * X ^ 6 * w ^ 2), fun n => ?_, ?_⟩
-  · have hX := X_mem (ball p) (n + 1)
-    have ih := w_mem (O := ball p) h₁ h₂ h₃ h₄ h₆ hw' (n + 1)
-    have c₁ := C_mem (O := ball p) (n + 1) h₁
-    have c₂ := C_mem (O := ball p) (n + 1) h₂
-    have c₃ := C_mem (O := ball p) (n + 1) h₃
-    have c₄ := C_mem (O := ball p) (n + 1) h₄
-    have c₆ := C_mem (O := ball p) (n + 1) h₆
-    exact (sub_mem (sub_mem (sub_mem (sub_mem (sub_mem (one_mem _) (mul_mem c₁ hX))
+  · let O := (PadicComplexInt p).toSubring
+    have hb : ∀ {x : ℂ_[p]}, x ∈ O ↔ ‖x‖ ≤ 1 := fun {x} => by
+      rw [PadicComplex.norm_eq_norm, Valuation.norm_def, ← NNReal.coe_one, NNReal.coe_le_coe,
+        ← map_one (Valuation.RankOne.hom (PadicComplex.valued p).v),
+        (Valuation.RankOne.strictMono _).le_iff_le, Valuation.restrict_le_one_iff]
+      rfl
+    have hX := X_mem O (n + 1)
+    have ih := w_mem (O := O) (hb.2 h₁) (hb.2 h₂) (hb.2 h₃) (hb.2 h₄) (hb.2 h₆) hw' (n + 1)
+    have c₁ := C_mem (O := O) (n + 1) (hb.2 h₁)
+    have c₂ := C_mem (O := O) (n + 1) (hb.2 h₂)
+    have c₃ := C_mem (O := O) (n + 1) (hb.2 h₃)
+    have c₄ := C_mem (O := O) (n + 1) (hb.2 h₄)
+    have c₆ := C_mem (O := O) (n + 1) (hb.2 h₆)
+    exact hb.1 ((sub_mem (sub_mem (sub_mem (sub_mem (sub_mem (one_mem _) (mul_mem c₁ hX))
       (mul_mem c₂ (pow_mem hX _)))
       (mul_mem (ofNat_mem _ 2) (mul_mem (mul_mem c₃ (pow_mem hX _)) ih)))
       (mul_mem (ofNat_mem _ 2) (mul_mem (mul_mem c₄ (pow_mem hX _)) ih)))
       (mul_mem (ofNat_mem _ 3) (mul_mem (mul_mem c₆ (pow_mem hX _)) (pow_mem ih _))) :
-        _ ∈ lowIn (ball p) (n + 1)) n (Nat.lt_succ_self n)
+        _ ∈ lowIn O (n + 1)) n (Nat.lt_succ_self n))
   · have h0 : constantCoeff w = 1 := by
       have h := congrArg constantCoeff hw'
       simpa using h

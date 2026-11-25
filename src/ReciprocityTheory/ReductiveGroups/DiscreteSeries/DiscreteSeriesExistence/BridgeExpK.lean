@@ -40,31 +40,27 @@ theorem actM_mem_of_isKStableSub_inK {S : Submodule ℂ D} (hS : IsKStableSub ε
 
 theorem actM_pow_mem_of_isKStableSub_inK {S : Submodule ℂ D} (hS : IsKStableSub ε E S)
     {Z : Matrix (Fin n) (Fin n) ℂ} (hZ : inK ε Z) {x : D} (hx : x ∈ S) (m : ℕ) :
-    ((actM E Z) ^ m) x ∈ S := by
-  induction m with
-  | zero => simpa using hx
-  | succ m ih =>
-    rw [pow_succ', Module.End.mul_apply]
-    exact actM_mem_of_isKStableSub_inK hS hZ ih
+    ((actM E Z) ^ m) x ∈ S :=
+  Module.End.pow_apply_mem_of_forall_mem m
+    (fun _ hy => actM_mem_of_isKStableSub_inK hS hZ hy) x hx
 
 theorem exists_norm_actM_pow_le_of_isKStableSub {S : Submodule ℂ D} (hS : IsKStableSub ε E S)
     (hSf : FiniteDimensional ℂ S) {Z : Matrix (Fin n) (Fin n) ℂ} (hZ : inK ε Z) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ x ∈ S, ∀ m : ℕ, ‖((actM E Z) ^ m) x‖ ≤ C ^ m * ‖x‖ := by
   haveI : FiniteDimensional ℂ S := hSf
-  let g : S →ₗ[ℂ] S := (actM E Z).restrict (fun x hx => actM_mem_of_isKStableSub_inK hS hZ hx)
-  let gL : S →L[ℂ] S := LinearMap.toContinuousLinearMap g
-  refine ⟨‖gL‖, norm_nonneg _, ?_⟩
-  have key : ∀ y : S, ‖actM E Z (y : D)‖ ≤ ‖gL‖ * ‖y‖ := fun y => gL.le_opNorm y
-  intro x hx m
-  induction m with
-  | zero => simp
-  | succ m ih =>
-    have hm := actM_pow_mem_of_isKStableSub_inK hS hZ hx m
-    have h1 := key ⟨_, hm⟩
-    rw [pow_succ', Module.End.mul_apply]
-    calc ‖actM E Z (((actM E Z) ^ m) x)‖ ≤ ‖gL‖ * ‖((actM E Z) ^ m) x‖ := h1
-      _ ≤ ‖gL‖ * (‖gL‖ ^ m * ‖x‖) := mul_le_mul_of_nonneg_left ih (norm_nonneg _)
-      _ = ‖gL‖ ^ (m + 1) * ‖x‖ := by ring
+  let g : S →ₗ[ℂ] S := (actM E Z).restrict fun x hx => actM_mem_of_isKStableSub_inK hS hZ hx
+  let gL := Module.End.toContinuousLinearMap S g
+  refine ⟨‖gL‖, norm_nonneg _, fun x hx m => ?_⟩
+  rcases m with _ | m
+  · simp
+  · have hpow : (gL ^ (m + 1)) ⟨x, hx⟩ =
+        ⟨((actM E Z) ^ (m + 1)) x, actM_pow_mem_of_isKStableSub_inK hS hZ hx _⟩ := by
+      dsimp only [gL, g]
+      rw [← map_pow, Module.End.pow_restrict]
+      rfl
+    have key := ((gL ^ (m + 1)).le_opNorm ⟨x, hx⟩).trans
+      (mul_le_mul_of_nonneg_right (norm_pow_le' gL m.succ_pos) (norm_nonneg _))
+    simpa [hpow] using key
 
 theorem kStable_of_isKStableSub (hσ : IsURepOn (UJset ε) σ) (hD : IsDerivedOn ε σ D E) (S : Submodule ℂ D)
     (hS : FiniteDimensional ℂ S) (hk : IsKStableSub ε E S) :

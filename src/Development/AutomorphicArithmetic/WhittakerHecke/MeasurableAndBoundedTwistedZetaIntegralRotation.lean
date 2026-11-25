@@ -29,11 +29,6 @@ private theorem norm_chi {ω χ : HChar ℚ} (hω : Unit1 ω) (h : ∀ a, (χ.1 
   simp only [Units.val_pow_eq_pow_val, Units.val_mul, norm_pow, norm_mul, Units.val_one, norm_one, hω a, mul_one] at h1
   exact (pow_eq_one_iff_of_nonneg (norm_nonneg _) two_ne_zero).1 h1
 
-private theorem ab_mul (a b : (A ℚ)ˣ) : ab (a * b) = ab a * ab b := by
-  show ((IdeleGroup.ideleModule ℚ (a * b) : {r : ℝ // 0 < r}) : ℝ) = _
-  rw [map_mul]
-  rfl
-
 private theorem rot_eq {a b : ℝ} (h1 : Real.sin a = Real.sin b) (h2 : Real.cos a = Real.cos b) : rot a = rot b := by
   unfold rot
   congr 2

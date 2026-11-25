@@ -255,10 +255,7 @@ theorem ffa_jfun_cont (hP : IsPsiFor ε lam T Ψ) (u v : T.V) : ContinuousOn (jf
   unfold jfun
   exact continuousOn_const.inner (hΨ.clm_apply continuousOn_const)
 
-def ffaJ (hP : IsPsiFor ε lam T Ψ) (v₀ : T.V) : T.V →ₗ[ℂ] L2 ε :=
-  ⟨⟨uniformisationL2 ε Ψ v₀, datumEmbedding_add hP v₀⟩, datumEmbedding_smul hP v₀⟩
-
-theorem ffaJ_apply (hP : IsPsiFor ε lam T Ψ) (v₀ u : T.V) : ffaJ hP v₀ u = uniformisationL2 ε Ψ v₀ u := rfl
+theorem ffaJ_apply (hP : IsPsiFor ε lam T Ψ) (v₀ u : T.V) : ReciprocityTheory.ChartRestriction.DS.datumEmbeddingToL2 hP v₀ u = uniformisationL2 ε Ψ v₀ u := rfl
 
 def ffaJinv (hP : IsPsiFor ε lam T Ψ) (x : datumV ε Ψ v₀) : T.V :=
   ((mem_datumV_iff hP v₀ (x : smD ε (rreg ε))).1 x.2).choose
@@ -276,7 +273,7 @@ def ffaJinvL (hP : IsPsiFor ε lam T Ψ) (hv₀ : v₀ ≠ 0) : datumV ε Ψ v�
 
 private theorem inner_uniformisationL2_eq_norm_sq_mul_inner (hP : IsPsiFor ε lam T Ψ) (v' u : T.V) :
     inner ℂ (uniformisationL2 ε Ψ v₀ v') (uniformisationL2 ε Ψ v₀ u) = ((‖uniformisationL2 ε Ψ v₀ T.w‖ ^ 2 : ℝ) : ℂ) * inner ℂ v' u := by
-  let J : T.V →L[ℂ] L2 ε := LinearMap.toContinuousLinearMap (ffaJ hP v₀)
+  let J : T.V →L[ℂ] L2 ε := LinearMap.toContinuousLinearMap (ReciprocityTheory.ChartRestriction.DS.datumEmbeddingToL2 hP v₀)
   have hJ : ∀ v, J v = uniformisationL2 ε Ψ v₀ v := fun v => rfl
   let A : T.V →L[ℂ] T.V := (ContinuousLinearMap.adjoint J).comp J
   have hA : ∀ a b : T.V, inner ℂ a (A b) = inner ℂ (uniformisationL2 ε Ψ v₀ a) (uniformisationL2 ε Ψ v₀ b) := by
@@ -305,7 +302,7 @@ theorem ffa_kmap_zero (hgap : StdGap ε lam) (hP : IsPsiFor ε lam T Ψ) (hv₀ 
     (hrange : ∀ v, B v ∈ Hlam ε Ψ v₀)
     (horth : ∀ v v' : T.V, inner ℂ (B v') (uniformisationL2 ε Ψ v₀ v) = 0) : B = 0 := by
   classical
-  let J : T.V →L[ℂ] L2 ε := LinearMap.toContinuousLinearMap (ffaJ hP v₀)
+  let J : T.V →L[ℂ] L2 ε := LinearMap.toContinuousLinearMap (ReciprocityTheory.ChartRestriction.DS.datumEmbeddingToL2 hP v₀)
   let Jd : L2 ε →L[ℂ] T.V := ContinuousLinearMap.adjoint J
   have hJd : ∀ (y : L2 ε) (v : T.V), inner ℂ v (Jd y) = inner ℂ (uniformisationL2 ε Ψ v₀ v) y := by
     intro y v
@@ -331,7 +328,7 @@ theorem ffa_kmap_zero (hgap : StdGap ε lam) (hP : IsPsiFor ε lam T Ψ) (hv₀ 
       apply hw0
       apply uniformisationL2_injective hP hv₀
       rw [h]
-      exact (map_zero (ffaJ hP v₀)).symm
+      exact (map_zero (ReciprocityTheory.ChartRestriction.DS.datumEmbeddingToL2 hP v₀)).symm
     rw [hc]
     exact Complex.ofReal_ne_zero.2 (pow_ne_zero 2 (norm_ne_zero_iff.2 hj))
   let φ : Hlam ε Ψ v₀ →ₗ[ℂ] Hlam ε Ψ v₀ :=

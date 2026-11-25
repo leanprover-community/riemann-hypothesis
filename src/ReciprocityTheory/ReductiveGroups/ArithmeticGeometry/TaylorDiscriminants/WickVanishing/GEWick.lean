@@ -204,14 +204,8 @@ theorem eq_zero_of_degLt_zero {P : MvPolynomial ι k} (h : DegLt 0 P) : P = 0 :=
   rw [MvPolynomial.coeff_zero]
   exact h m (Nat.zero_le _)
 
-theorem degLt_totalDegree (P : MvPolynomial ι k) : DegLt (P.totalDegree + 1) P := by
-  intro m hm
-  by_contra hne
-  have hmem : m ∈ P.support := MvPolynomial.mem_support_iff.mpr hne
-  have h1 : m.degree ≤ P.totalDegree := by
-    first
-    | exact MvPolynomial.le_totalDegree hmem
-  omega
+theorem degLt_totalDegree (P : MvPolynomial ι k) : DegLt (P.totalDegree + 1) P :=
+  fun _ hm => MvPolynomial.coeff_eq_zero_of_totalDegree_lt hm
 
 theorem iterate_eq_zero (c : ι → ι → k) (P : MvPolynomial ι k) :
     (secondOrder k c)^[P.totalDegree + 1] P = 0 :=

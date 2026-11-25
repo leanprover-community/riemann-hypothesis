@@ -49,12 +49,7 @@ section Div
 
 variable {R : Type*} [CommRing R]
 
-theorem inh_minimalPrimes_top : (⊤ : Ideal R).minimalPrimes = ∅ := by
-  ext W
-  simp only [Set.mem_empty_iff_false, iff_false]
-  intro h
-  obtain ⟨⟨hp, hle⟩, -⟩ := h
-  exact hp.ne_top (top_le_iff.mp hle)
+theorem inh_minimalPrimes_top : (⊤ : Ideal R).minimalPrimes = ∅ := Ideal.minimalPrimes_top
 
 variable {K : Type*} [Fintype K] {ι : K → Type*} [∀ k, Fintype (ι k)] {F : Type*} [Field F]
 

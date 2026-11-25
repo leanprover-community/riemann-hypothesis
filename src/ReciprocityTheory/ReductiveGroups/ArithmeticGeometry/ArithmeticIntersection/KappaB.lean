@@ -421,10 +421,6 @@ theorem exists_basis_zero_eq {u : E3} (hu : ‖u‖ = 1) :
   obtain ⟨b, hb⟩ := Orthonormal.exists_orthonormalBasis_extension_of_card_eq (by simp) hv
   exact ⟨b, hb 0 rfl⟩
 
-private theorem integral_const_mul_sphereMeasure (c : ℝ) (g : S2 → ℝ) :
-    ∫ n, c * g n ∂sphereMeasure = c * ∫ n, g n ∂sphereMeasure := by
-  exact integral_const_mul c g
-
 theorem archimedes_thm : ArchimedesStatement := by
   unfold ArchimedesStatement
   intro u v w f hu hf
@@ -464,7 +460,7 @@ theorem archimedes_thm : ArchimedesStatement := by
       ∑ i, inner ℝ (b i) v * ∫ n : S2, f (inner ℝ (n : E3) u) * inner ℝ (n : E3) (b i) ∂sphereMeasure := by
     simp only [hpt1]
     rw [integral_finsetSum]
-    · exact Finset.sum_congr rfl fun i _ => integral_const_mul_sphereMeasure _ _
+    · exact Finset.sum_congr rfl fun i _ => integral_const_mul _ _
     · intro i _; exact (integrable_mul_inner hI (b i)).const_mul _
   have hpt : ∀ n : S2, f (inner ℝ (n : E3) u) * inner ℝ (n : E3) v * inner ℝ (n : E3) w =
       ∑ i, ∑ j, (inner ℝ (b i) v * inner ℝ (b j) w) *
@@ -479,7 +475,7 @@ theorem archimedes_thm : ArchimedesStatement := by
     rw [integral_finsetSum]
     · refine Finset.sum_congr rfl (fun i _ => ?_)
       rw [integral_finsetSum]
-      · exact Finset.sum_congr rfl (fun j _ => integral_const_mul_sphereMeasure _ _)
+      · exact Finset.sum_congr rfl (fun j _ => integral_const_mul _ _)
       · intro j _; exact (hG i j).const_mul _
     · intro i _; exact integrable_finsetSum _ (fun j _ => (hG i j).const_mul _)
   have hM00 : ∫ n : S2, f (inner ℝ (n : E3) u) * inner ℝ (n : E3) (b 0) * inner ℝ (n : E3) (b 0) ∂sphereMeasure = 1 / 2 * ∫ t in (-1 : ℝ)..1, f t * t * t := by

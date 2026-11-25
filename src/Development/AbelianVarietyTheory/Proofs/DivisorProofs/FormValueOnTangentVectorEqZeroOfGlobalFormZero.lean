@@ -92,8 +92,8 @@ theorem snd_val_eq_zero (y : Sp (DualNumber R) ⟶ X)
     (hy : y ≫ s = spMap (algebraMap R (DualNumber R))) (f : Form s)
     (h0 : ∀ U : X.affineOpens, connForm f.1 (affPt s U) (affPt_w s U) = 0) :
     TrivSqZeroExt.snd (R := R) ((SqExt.dual R).val y hy f.1) = 0 := by
-  have loc : ∀ m : Ideal R, m.IsMaximal →
-      ∃ t ∉ m, t * TrivSqZeroExt.snd (R := R) ((SqExt.dual R).val y hy f.1) = 0 := by
+  have loc : ∀ (m : Ideal R) [m.IsMaximal], Algebra.linearMap R (Localization.AtPrime m)
+      (TrivSqZeroExt.snd (R := R) ((SqExt.dual R).val y hy f.1)) = 0 := by
     intro m hm
     haveI := hm.isPrime
     let R' := Localization.AtPrime m
@@ -139,17 +139,9 @@ theorem snd_val_eq_zero (y : Sp (DualNumber R) ⟶ X)
     rw [hv] at h1
     have h2 : algebraMap R R' (TrivSqZeroExt.snd (R := R) ((SqExt.dual R).val y hy f.1)) = 0 := by
       simpa [φ, Algebra.smul_def, TrivSqZeroExt.algebraMap_eq_inl'] using h1
-    obtain ⟨⟨t, ht⟩, ht'⟩ := (IsLocalization.map_eq_zero_iff m.primeCompl R' _).1 h2
-    exact ⟨t, ht, ht'⟩
-  by_contra hx
-  let J : Ideal R := LinearMap.ker (LinearMap.toSpanSingleton R R
-    (TrivSqZeroExt.snd (R := R) ((SqExt.dual R).val y hy f.1)))
-  have hJ : J ≠ ⊤ := fun h ↦ hx (by
-    have : (1 : R) ∈ J := h ▸ Submodule.mem_top
-    simpa [J] using this)
-  obtain ⟨m, hm, hJm⟩ := Ideal.exists_le_maximal J hJ
-  obtain ⟨t, ht, ht'⟩ := loc m hm
-  exact ht (hJm (by simpa [J] using ht'))
+    exact h2
+  exact Module.eq_zero_of_localization_maximal _
+    (fun P _ ↦ Algebra.linearMap R (Localization.AtPrime P)) _ loc
 
 theorem tanVal_eq_zero_of_cmpForm_eq_zero : ∀ (R : Type) [CommRing R] (A : Over (Sp R))
     (v : epsR R ⟶ A) (f : Form (A.hom ≫ 𝟙 (Sp R))),

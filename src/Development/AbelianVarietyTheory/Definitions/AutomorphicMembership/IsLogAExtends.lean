@@ -10,7 +10,6 @@ import Mathlib.Tactic.Linter.Style
 
 @[expose] public section
 
-noncomputable section
 namespace GlobalTheory.MemLoc.Model
 open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc
 open scoped Formalism.Per

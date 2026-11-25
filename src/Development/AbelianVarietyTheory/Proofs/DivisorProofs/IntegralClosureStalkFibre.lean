@@ -276,7 +276,7 @@ theorem isIntegral_of_mem_O (hF : IsFinite q) (hg : M₂.pt ≫ q = spMap (algeb
       have h4 : a⁻¹ ∈ M₁.O (q w) ↔ (algebraMap Ω₁ Ω₂ a)⁻¹ ∈ M₂.O w :=
         ⟨map_inv_mem_O hg, inv_mem_O_of_map hg h1 ha0⟩
       rw [h4, ← not_not (a := (algebraMap Ω₁ Ω₂ a)⁻¹ ∈ M₂.O w), ← h3, h2, not_not]
-    obtain ⟨c, hc', d, hd, hd0, hdinv, hbcd⟩ := GlobalTheory.T.exists_fraction_ringOn_of_mem_modelLocalRing _ _ M₂ _ hU₂ w hwU b (hb w hqw)
+    obtain ⟨c, hc', d, hd, hd0, hdinv, hbcd⟩ := GlobalTheory.Poinc.exists_eq_div_of_mem_O_affine _ _ M₂ _ hU₂ w hwU b (hb w hqw)
     have hdI : (⟨d, hd⟩ : M₂.ringOn ((q ⁻¹ᵁ U : M₂.Z.Opens) : Set M₂.Z)) ∈ I := by
       show d * b ∈ M₂.ringOn ((q ⁻¹ᵁ U : M₂.Z.Opens) : Set M₂.Z)
       rw [hbcd, mul_div_cancel₀ _ hd0]; exact hc'
@@ -333,7 +333,7 @@ theorem maximal_point (hN : ReciprocityTheory.ChartRestriction.G.Geo.Tor.IsNorma
     intro b hb
     by_contra! hcon
     obtain ⟨hb0, hbinv⟩ := hcon
-    obtain ⟨c, hc, d, hd, hd0, hdinv, hcd⟩ := GlobalTheory.T.exists_fraction_ringOn_of_mem_modelLocalRing _ _ M₂ _ hU₂ z₂ hz₂U _ hbinv
+    obtain ⟨c, hc, d, hd, hd0, hdinv, hcd⟩ := GlobalTheory.Poinc.exists_eq_div_of_mem_O_affine _ _ M₂ _ hU₂ z₂ hz₂U _ hbinv
     have e : ψ ⟨d, hd⟩ = ψ ⟨c, hc⟩ * b := by
       apply Subtype.ext
       show d = c * (b : Ω₂)
@@ -491,7 +491,7 @@ theorem lift_point (hN : ReciprocityTheory.ChartRestriction.G.Geo.Tor.IsNormalSc
   have hz₂U : y (cPt p) ∈ q ⁻¹ᵁ U := (le_preimage_iff y _).1 hyU
   have hb2 : (b : Ω₂) ∈ M₂.O (y (cPt p)) :=
     mem_O_of_isIntegral hN hg halg ((mem_integralClosure_iff _ _).1 b.2) hq2
-  obtain ⟨c, hc, d, hd, hd0, hdinv, hbcd⟩ := GlobalTheory.T.exists_fraction_ringOn_of_mem_modelLocalRing _ _ M₂ _ hU₂ _ hz₂U _ hb2
+  obtain ⟨c, hc, d, hd, hd0, hdinv, hbcd⟩ := GlobalTheory.Poinc.exists_eq_div_of_mem_O_affine _ _ M₂ _ hU₂ _ hz₂U _ hb2
   have hspec : ∀ w, (gPt p ≫ y) w ⤳ y (cPt p) := gPt_specializes rfl
   have hdO : d ∈ M₂.O (y (cPt p)) := mem_ringOn.1 hd _ hz₂U
   have hbd : (b : Ω₂) * d = c := by rw [hbcd, div_mul_cancel₀ _ hd0]
@@ -516,7 +516,6 @@ end Claim4
 end GlobalTheory.Poinc.FinPts
 
 end
-
 
 open GlobalTheory.Poinc.FinPts in
 theorem GlobalTheory.Poinc.integralClosure_stalk_fibre : ∀ (o₁ Ω₁ o₂ Ω₂ : Type) [CommRing o₁] [Field Ω₁] [Algebra o₁ Ω₁] [CommRing o₂] [Field Ω₂] [Algebra o₂ Ω₂] [Algebra Ω₁ Ω₂] (M₁ : RatModel o₁ Ω₁) (M₂ : RatModel o₂ Ω₂) (q : M₂.Z ⟶ M₁.Z), ReciprocityTheory.ChartRestriction.G.Geo.Tor.IsNormalScheme M₂.Z → IsFinite q → M₂.pt ≫ q = spMap (algebraMap Ω₁ Ω₂) ≫ M₁.pt → ∀ z₁ : M₁.Z, letI : Algebra (M₁.Z.presheaf.stalk z₁) Ω₂ := ((algebraMap Ω₁ Ω₂).comp (M₁.stalkHom z₁)).toAlgebra; (∀ b : Ω₂, b ∈ integralClosure (M₁.Z.presheaf.stalk z₁) Ω₂ ↔ ∀ z' : M₂.Z, q z' = z₁ → b ∈ M₂.O z') ∧ (∀ 𝔷 : Ideal (integralClosure (M₁.Z.presheaf.stalk z₁) Ω₂), 𝔷.IsMaximal → ∃ z₂ : M₂.Z, q z₂ = z₁ ∧ ∀ b : integralClosure (M₁.Z.presheaf.stalk z₁) Ω₂, b ∈ 𝔷 ↔ ((b : Ω₂) = 0 ∨ (b : Ω₂)⁻¹ ∉ M₂.O z₂)) ∧ (∀ z₂ z₂' : M₂.Z, q z₂ = z₁ → q z₂' = z₁ → (∀ b : integralClosure (M₁.Z.presheaf.stalk z₁) Ω₂, (b : Ω₂)⁻¹ ∈ M₂.O z₂ ↔ (b : Ω₂)⁻¹ ∈ M₂.O z₂') → z₂ = z₂') ∧ ∀ (p : ℕ) [Fact p.Prime] (y₁ : Sp (OO p) ⟶ M₁.Z), y₁ (cPt p) = z₁ → ∀ e : integralClosure (M₁.Z.presheaf.stalk z₁) Ω₂ →+* PadicAlgCl p, (∀ a, e (algebraMap (M₁.Z.presheaf.stalk z₁) _ a) = M₁.val (gPt p ≫ y₁) (M₁.stalkHom z₁ a)) → ∃ y : Sp (OO p) ⟶ M₂.Z, y ≫ q = y₁ ∧ ∀ b, e b = M₂.val (gPt p ≫ y) (b : Ω₂) := by

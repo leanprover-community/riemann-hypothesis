@@ -86,15 +86,9 @@ theorem transl_mem {G : X₀ × A → ℂ} (hG : G ∈ SB (X₀ × A)) (c : A) :
   exact hG.2.comp_homeomorph ((Homeomorph.refl X₀).prodCongr (Homeomorph.subRight c))
 
 theorem ind_mem {U : AddSubgroup A} (hUo : IsOpen (U : Set A)) (hUc : IsCompact (U : Set A)) :
-    (U : Set A).indicator (fun _ => (1 : ℂ)) ∈ SB A := by
-  have hcl : IsClopen (U : Set A) := ⟨U.isClosed_of_isOpen hUo, hUo⟩
-  refine ⟨(IsLocallyConstant.iff_eventually_eq _).mpr fun x => ?_,
+    (U : Set A).indicator (fun _ => (1 : ℂ)) ∈ SB A :=
+  ⟨((LocallyConstant.const A (1 : ℂ)).indicator ⟨U.isClosed_of_isOpen hUo, hUo⟩).isLocallyConstant,
     HasCompactSupport.intro hUc fun y hy => Set.indicator_of_notMem hy _⟩
-  by_cases hx : x ∈ (U : Set A)
-  · filter_upwards [hcl.isOpen.mem_nhds hx] with z hz
-    rw [Set.indicator_of_mem hx, Set.indicator_of_mem hz]
-  · filter_upwards [hcl.compl.isOpen.mem_nhds hx] with z hz
-    rw [Set.indicator_of_notMem hx, Set.indicator_of_notMem hz]
 
 def tensL (φ : SB A) : SB X₀ →ₗ[ℂ] SB (X₀ × A) where
   toFun f := ⟨fun z => f.1 z.1 * φ.1 z.2, tens_mem f.2 φ.2⟩

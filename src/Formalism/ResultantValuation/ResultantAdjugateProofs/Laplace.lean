@@ -142,39 +142,6 @@ private lemma prod_fin_add_lt_split (F : Fin (a + b) → Fin (a + b) → ℤˣ) 
     Fin.coe_natAdd, add_lt_add_iff_left, hlt, hnlt, ↓reduceIte, Finset.prod_const_one, one_mul,
     mul_assoc]
 
-private lemma card_filter_compl_orderEmbOfFin_le (J : Finset (Fin (a + b))) (hc : Jᶜ.card = b) (t : Fin (a + b)) :
-    (univ.filter (fun j : Fin b => Jᶜ.orderEmbOfFin hc j ≤ t)).card = (Jᶜ.filter (· ≤ t)).card := by
-  rw [← Finset.card_map (Jᶜ.orderEmbOfFin hc).toEmbedding]
-  congr 1
-  ext y
-  simp only [Finset.mem_map, Finset.mem_filter, Finset.mem_univ, true_and]
-  constructor
-  · rintro ⟨j, hj, rfl⟩
-    exact ⟨Finset.orderEmbOfFin_mem _ _ _, hj⟩
-  · rintro ⟨hy, hyt⟩
-    have hr : y ∈ Set.range (Jᶜ.orderEmbOfFin hc) := by
-      rw [Finset.range_orderEmbOfFin]
-      exact Finset.mem_coe.mpr hy
-    obtain ⟨j, rfl⟩ := hr
-    exact ⟨j, hyt, rfl⟩
-
-private lemma sum_val_eq_sum_orderEmbOfFin (J : Finset (Fin (a + b))) (h : J.card = a) :
-    ∑ j ∈ J, (j : ℕ) = ∑ i : Fin a, (J.orderEmbOfFin h i : ℕ) := by
-  have hJ : J = Finset.univ.map (J.orderEmbOfFin h).toEmbedding := by
-    ext y
-    simp only [Finset.mem_map, Finset.mem_univ, true_and]
-    constructor
-    · intro hy
-      have hr : y ∈ Set.range (J.orderEmbOfFin h) := by
-        rw [Finset.range_orderEmbOfFin]
-        exact Finset.mem_coe.mpr hy
-      obtain ⟨k, rfl⟩ := hr
-      exact ⟨k, rfl⟩
-    · rintro ⟨k, rfl⟩
-      exact Finset.orderEmbOfFin_mem _ _ _
-  conv_lhs => rw [hJ]
-  exact Finset.sum_map _ _ _
-
 theorem sign_shuffle (J : Finset (Fin (a + b))) (h : J.card = a) (hc : Jᶜ.card = b) :
     Perm.sign (shuffle J h hc) = (-1) ^ (a * (a - 1) / 2 + ∑ j ∈ J, (j : ℕ)) := by
   rw [perm_sign_eq_inversion_sign, perm_inversion_sign_eq_prod, prod_fin_add_lt_split]
@@ -200,9 +167,15 @@ theorem sign_shuffle (J : Finset (Fin (a + b))) (h : J.card = a) (hc : Jᶜ.card
   have hrow : ∀ i : Fin a, (∏ j : Fin b, if Jᶜ.orderEmbOfFin hc j ≤ J.orderEmbOfFin h i then
       (-1 : ℤˣ) else 1) = (-1) ^ (Jᶜ.filter (· ≤ J.orderEmbOfFin h i)).card := by
     intro i
-    rw [Finset.prod_ite, Finset.prod_const, Finset.prod_const_one, mul_one, card_filter_compl_orderEmbOfFin_le]
+    rw [Finset.prod_ite, Finset.prod_const, Finset.prod_const_one, mul_one]
+    conv_rhs => rw [← Finset.map_orderEmbOfFin_univ Jᶜ hc, Finset.filter_map, Finset.card_map]
+    exact congrArg (fun s : Finset (Fin b) => (-1 : ℤˣ) ^ s.card)
+      (Finset.filter_congr fun _ _ => Iff.rfl)
   refine (Finset.prod_congr rfl fun i _ => hrow i).trans ?_
-  rw [Finset.prod_pow_eq_pow_sum, sum_val_eq_sum_orderEmbOfFin J h]
+  rw [Finset.prod_pow_eq_pow_sum]
+  conv_rhs =>
+    rw [← Finset.map_orderEmbOfFin_univ J h, Finset.sum_map]
+    simp only [RelEmbedding.coe_toEmbedding]
   have hsum : ∑ i : Fin a, (J.orderEmbOfFin h i : ℕ) =
       ∑ i : Fin a, (Jᶜ.filter (· ≤ J.orderEmbOfFin h i)).card + a * (a - 1) / 2 := by
     rw [← Finset.sum_range_id, ← Fin.sum_univ_eq_sum_range (fun i => i) a, ← Finset.sum_add_distrib]

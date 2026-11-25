@@ -36,8 +36,16 @@ open Formalism.IndefR.Links
 namespace GlobalTheory.UnramPull
 
 
-theorem unramOutside_of_corr : ∀ (D : D7) (N : NData D.R D.host D.what₂) (art : Neutral.B1.Ideles D.host.E →* GlobalTheory.HeckeGal.Gab D.host.E N.Om), GlobalTheory.HeckeGal.IsGlobalArtin art → ∀ (r : G D.host.E N.Om →* ℂˣ) (l n : ℕ), l.Prime → (∀ σ, r σ ^ (l ^ n) = 1) → ∀ (c : (AE D)ˣ →* Circle) (χ : Formalism.L2.Host.HChar D.host.E), ChrEq c χ → GlobalTheory.ToricDistribution.Corr art r χ → ∀ Q : Finset (Pl D.host.E), SplitSet Q → (∀ P ∈ Q, ((l : ℕ) : 𝓞 D.host.E) ∉ P.asIdeal) → (∀ v : Pl D.host.E, v ∉ Q → (∀ P ∈ Q, ¬ Formalism.BasicNotions.IsConjPl D.host P v) → ∀ B : ValuationSubring N.Om, IsPlaceOver B v → ∀ σ ∈ Ine (F := D.host.E) B, r σ = 1) → GlobalTheory.ExportSeries.UnramOutside c Q := by
-  intro D N art hart r l n hl hp c χ hc hcorr Q hQ hlQ hine
+theorem unramOutside_of_tame (D : D7) (N : NData D.R D.host D.what₂)
+    (art : Neutral.B1.Ideles D.host.E →* GlobalTheory.HeckeGal.Gab D.host.E N.Om)
+    (hart : GlobalTheory.HeckeGal.IsGlobalArtin art) (r : G D.host.E N.Om →* ℂˣ)
+    (c : (AE D)ˣ →* Circle) (χ : Formalism.L2.Host.HChar D.host.E)
+    (hc : ChrEq c χ) (hcorr : GlobalTheory.ToricDistribution.Corr art r χ)
+    (Q : Finset (Pl D.host.E)) (hQ : SplitSet Q)
+    (htame : ∀ P ∈ Q, ∀ P' : Pl D.host.E, (P' = P ∨ Formalism.BasicNotions.IsConjPl D.host P P') → χ.TameAt P')
+    (hine : ∀ v : Pl D.host.E, v ∉ Q → (∀ P ∈ Q, ¬ Formalism.BasicNotions.IsConjPl D.host P v) →
+      ∀ B : ValuationSubring N.Om, IsPlaceOver B v → ∀ σ ∈ Ine (F := D.host.E) B, r σ = 1) :
+    GlobalTheory.ExportSeries.UnramOutside c Q := by
   intro x hx1 hx2 hx3 hxQ
   obtain ⟨ι, h1, h2, h3⟩ := GlobalTheory.HostAdeleIso.exists_finiteAdele_equiv D
   have hidem := GlobalTheory.PlaceIdem.exists_isPlIdem D ι h1 h2 h3
@@ -53,7 +61,6 @@ theorem unramOutside_of_corr : ∀ (D : D7) (N : NData D.R D.host D.what₂) (ar
     have k1 : idemAt P * idem Q = idemAt P :=
       GlobalTheory.PlaceModelSum.mul_sum_orth (fun a ha => (hQ.isIdemAt ha).1) (fun a ha b hb hab => hQ.mul_eq_zero ha hb hab) hP
     have k2 : idemAt P * cA D (idem Q) = 0 := by
-
       rw [idem, map_sum, Finset.mul_sum]
       exact Finset.sum_eq_zero fun j hj => hQ.mul_conj hP hj
     rw [hf, mul_add, k1, k2, add_zero]
@@ -74,12 +81,6 @@ theorem unramOutside_of_corr : ∀ (D : D7) (N : NData D.R D.host D.what₂) (ar
     refine (GlobalTheory.IdemSupport.eq_of_le fun y hy => ?_).symm
     refine (h (GlobalTheory.IdemSupport.cO D y) y ?_).1 hy
     rw [GlobalTheory.IdemSupport.cO_coe, ← hstar, star_star]
-  have hlconj : ∀ P' v : Pl D.host.E, Formalism.BasicNotions.IsConjPl D.host P' v →
-      (((l : ℕ) : 𝓞 D.host.E) ∈ P'.asIdeal ↔ ((l : ℕ) : 𝓞 D.host.E) ∈ v.asIdeal) := by
-    intro P' v h
-    refine h _ _ ?_
-    push_cast
-    exact (map_natCast _ l).symm
   have hv : ∀ P : HeightOneSpectrum (𝓞 D.host.E), Valued.v (ι (finPart D (x : AE D)) P) = 1 := by
     intro P
     have a := (h2 _).1 hx2 P
@@ -110,11 +111,7 @@ theorem unramOutside_of_corr : ∀ (D : D7) (N : NData D.R D.host D.what₂) (ar
   have : χ.locK P (k P) = 1 := by
     show χ.loc P (Formalism.L2.Host.atFin P (k P)) = 1
     by_cases hPQ : P ∈ Q ∨ ∃ P' ∈ Q, Formalism.BasicNotions.IsConjPl D.host P' P
-    · have hlP : ((l : ℕ) : 𝓞 D.host.E) ∉ P.asIdeal := by
-        rcases hPQ with hPQ | ⟨P', hP', hc'⟩
-        · exact hlQ P hPQ
-        · exact fun hm => hlQ P' hP' ((hlconj P' P hc').2 hm)
-      have h1P : ι (finPart D (x : AE D)) P = 1 := by
+    · have h1P : ι (finPart D (x : AE D)) P = 1 := by
         refine hcomp P ?_
         rcases hPQ with hPQ | ⟨P', hP', hc'⟩
         · exact ⟨idemAt P, hdelta P _ (GlobalTheory.IdemSupport.delta_of_isIdemAt hΦ (hQ.isIdemAt hPQ)), hfe P hPQ⟩
@@ -122,7 +119,10 @@ theorem unramOutside_of_corr : ∀ (D : D7) (N : NData D.R D.host D.what₂) (ar
           · rw [hconj P' P hc']
             exact hdelta _ _ (GlobalTheory.IdemSupport.delta_conj hΦ (GlobalTheory.IdemSupport.delta_of_isIdemAt hΦ (hQ.isIdemAt hP')))
           · rw [← hcf, ← map_mul, hfe P' hP']
-      have ht := GlobalTheory.ToricDistribution.levelLe_one_of_pow hl (hcorr.pow hp) hlP
+      have ht : χ.TameAt P := by
+        rcases hPQ with hPQ | ⟨P', hP', hc'⟩
+        · exact htame P hPQ P (Or.inl rfl)
+        · exact htame P' hP' P (Or.inr hc')
       refine ht _ hun ?_
       rw [h1P] at b'
       have e4 : ((Formalism.L2.Host.atFin P (k P) : (P.adicCompletion D.host.E)ˣ) : P.adicCompletion D.host.E) - 1 =
@@ -136,6 +136,14 @@ theorem unramOutside_of_corr : ∀ (D : D7) (N : NData D.R D.host D.what₂) (ar
       exact GlobalTheory.ToricDistribution.Corr.unr hart hcorr hB (hine P hPQ.1 hPQ.2 B hB) _ hun
   show ((χ.locK P (k P) : ℂˣ) : ℂ) = 1
   rw [this, Units.val_one]
+
+theorem unramOutside_of_corr : ∀ (D : D7) (N : NData D.R D.host D.what₂) (art : Neutral.B1.Ideles D.host.E →* GlobalTheory.HeckeGal.Gab D.host.E N.Om), GlobalTheory.HeckeGal.IsGlobalArtin art → ∀ (r : G D.host.E N.Om →* ℂˣ) (l n : ℕ), l.Prime → (∀ σ, r σ ^ (l ^ n) = 1) → ∀ (c : (AE D)ˣ →* Circle) (χ : Formalism.L2.Host.HChar D.host.E), ChrEq c χ → GlobalTheory.ToricDistribution.Corr art r χ → ∀ Q : Finset (Pl D.host.E), SplitSet Q → (∀ P ∈ Q, ((l : ℕ) : 𝓞 D.host.E) ∉ P.asIdeal) → (∀ v : Pl D.host.E, v ∉ Q → (∀ P ∈ Q, ¬ Formalism.BasicNotions.IsConjPl D.host P v) → ∀ B : ValuationSubring N.Om, IsPlaceOver B v → ∀ σ ∈ Ine (F := D.host.E) B, r σ = 1) → GlobalTheory.ExportSeries.UnramOutside c Q :=
+  fun D N art hart r l _ hl hp c χ hc hcorr Q hQ hlQ hine =>
+    unramOutside_of_tame D N art hart r c χ hc hcorr Q hQ (fun P hP P' hP' =>
+      GlobalTheory.ToricDistribution.levelLe_one_of_pow hl (hcorr.pow hp) (by
+        rcases hP' with h | hc'
+        · rw [h]; exact hlQ P hP
+        · exact fun hm => hlQ P hP ((hc' _ _ (by push_cast; exact (map_natCast _ l).symm)).2 hm))) hine
 
 end GlobalTheory.UnramPull
 end -- clump:auto
@@ -349,34 +357,46 @@ end GlobalTheory.TwistPull
 
 namespace GlobalTheory.TwistPull
 
-theorem good_pull : ∀ (D : D7) (N : NData D.R D.host D.what₂) (X : NTw D.R D.host D.what₂ D.LL0 N) (a : Recip D N.Om), a.Good → ∀ (A : Type) [CommGroup A] (φ : G D.host.E N.Om →* A) (l : ℕ), l.Prime → (∀ σ, ∃ n : ℕ, φ σ ^ (l ^ n) = 1) → IsOpen (φ.ker : Set (G D.host.E N.Om)) → AntiHom X.cc φ → ∀ Q : Finset (Pl D.host.E), SplitSet Q → (∀ P ∈ Q, ((l : ℕ) : 𝓞 D.host.E) ∉ P.asIdeal) → (∀ v : Pl D.host.E, v ∉ Q → (∀ P ∈ Q, ¬ Formalism.BasicNotions.IsConjPl D.host P v) → ∀ B : ValuationSubring N.Om, IsPlaceOver B v → ∀ σ ∈ Ine (F := D.host.E) B, φ σ = 1) → (⟨Q, a.pull φ, resOf (a.pull φ)⟩ : Twist D A).Good := by
-  intro D N X a ha A _ φ l hl hpow hφ hanti Q hQ hQl hunr
-  have hr := fun f => char_props (D := D) hφ hpow f
+theorem good_pull_of_tame (D : D7) (N : NData D.R D.host D.what₂) (X : NTw D.R D.host D.what₂ D.LL0 N)
+    (a : Recip D N.Om) (ha : a.Good) (A : Type) [CommGroup A] (φ : G D.host.E N.Om →* A)
+    (hφ : IsOpen (φ.ker : Set (G D.host.E N.Om))) (hanti : AntiHom X.cc φ)
+    (Q : Finset (Pl D.host.E)) (hQ : SplitSet Q)
+    (htame : ∀ (f : φ.range →* ℂˣ) (χ : Formalism.L2.Host.HChar D.host.E),
+      GlobalTheory.ToricDistribution.Corr a.art (f.comp φ.rangeRestrict) χ →
+      ∀ P ∈ Q, ∀ P' : Pl D.host.E, (P' = P ∨ Formalism.BasicNotions.IsConjPl D.host P P') → χ.TameAt P')
+    (hunr : ∀ v : Pl D.host.E, v ∉ Q → (∀ P ∈ Q, ¬ Formalism.BasicNotions.IsConjPl D.host P v) →
+      ∀ B : ValuationSubring N.Om, IsPlaceOver B v → ∀ σ ∈ Ine (F := D.host.E) B, φ σ = 1) :
+    (⟨Q, a.pull φ, resOf (a.pull φ)⟩ : Twist D A).Good := by
+  haveI := finite_range (D := D) hφ
+  set M := Nat.card φ.range with hMdef
+  have hM : M ≠ 0 := Nat.card_pos.ne'
+  have hr : ∀ f : φ.range →* ℂˣ, IsOpen ((f.comp φ.rangeRestrict).ker : Set (G D.host.E N.Om)) ∧
+      ∀ σ, (f.comp φ.rangeRestrict) σ ^ M = 1 := fun f => by
+    refine ⟨Subgroup.isOpen_mono (H₁ := φ.ker) (fun g hg => ?_) hφ, fun σ => ?_⟩
+    · have : φ.rangeRestrict g = 1 := Subtype.ext (MonoidHom.mem_ker.1 hg)
+      rw [MonoidHom.mem_ker, MonoidHom.comp_apply, this, map_one]
+    · rw [MonoidHom.comp_apply, ← map_pow, pow_card_eq_one', map_one]
   have hanti' : ∀ f : φ.range →* ℂˣ, AntiHom X.cc (f.comp φ.rangeRestrict) := fun f g g' hg => by
     have e : φ.rangeRestrict g' = (φ.rangeRestrict g)⁻¹ := Subtype.ext (hanti g g' hg)
     rw [MonoidHom.comp_apply, MonoidHom.comp_apply, e, map_inv]
   refine ⟨isOpen_ker_pull ha hφ, fun x => pull_rat ha φ x, fun y => ?_, hQ, ?_, fun PP hPP => isResAt_resOf ?_⟩
-  ·
-    refine (pull_eq_of_chars a hφ (y := 1) fun f => ?_).trans (map_one _)
-    obtain ⟨h1, n, h2⟩ := hr f
-    have hm := pow_ne_zero n hl.ne_zero
-    obtain ⟨c, χ, hc, hχ, hcr⟩ := exists_chrEq_pull ha h1 hm h2
+  · refine (pull_eq_of_chars a hφ (y := 1) fun f => ?_).trans (map_one _)
+    obtain ⟨h1, h2⟩ := hr f
+    obtain ⟨c, χ, hc, hχ, hcr⟩ := exists_chrEq_pull ha h1 hM h2
     rw [map_one]
     refine Units.ext ((hcr _).symm.trans ?_)
-    rw [real_C D N X a.art ha.artin _ _ hm h2 (hanti' f) c χ hc hχ y]
+    rw [real_C D N X a.art ha.artin _ _ hM h2 (hanti' f) c χ hc hχ y]
     simp
-  ·
-    intro x h1 h2 h3 h4
+  · intro x h1 h2 h3 h4
     refine (pull_eq_of_chars a hφ (y := 1) fun f => ?_).trans (map_one _)
-    obtain ⟨o1, n, o2⟩ := hr f
-    obtain ⟨c, χ, hc, hχ, hcr⟩ := exists_chrEq_pull ha o1 (pow_ne_zero n hl.ne_zero) o2
+    obtain ⟨o1, o2⟩ := hr f
+    obtain ⟨c, χ, hc, hχ, hcr⟩ := exists_chrEq_pull ha o1 hM o2
     rw [map_one]
     refine Units.ext ((hcr _).symm.trans ?_)
-    rw [_root_.GlobalTheory.UnramPull.unramOutside_of_corr D N a.art ha.artin _ l n hl o2 c χ hc hχ Q hQ hQl (fun v hv hc' B hB σ hσ => by
+    rw [_root_.GlobalTheory.UnramPull.unramOutside_of_tame D N a.art ha.artin _ c χ hc hχ Q hQ (htame f χ hχ) (fun v hv hc' B hB σ hσ => by
       rw [MonoidHom.comp_apply, show φ.rangeRestrict σ = 1 from Subtype.ext (hunr v hv hc' B hB σ hσ), map_one]) x h1 h2 h3 h4]
     simp
-  ·
-    have hPP := hQ.isIdemAt hPP
+  · have hPP := hQ.isIdemAt hPP
     have same : ∀ (x x' : (AE D)ˣ) (u : (kP PP)ˣ), (1 - idemAt PP) * (x : AE D) = 1 - idemAt PP →
         (1 - idemAt PP) * (x' : AE D) = 1 - idemAt PP →
         ∀ (hi : toEAf D (x : AE D) ∈ Formalism.L2.Herm.intAf D.host.F D.host.E)
@@ -384,9 +404,15 @@ theorem good_pull : ∀ (D : D7) (N : NData D.R D.host D.what₂) (X : NTw D.R D
         resS D.host.F PP ⟨_, hi⟩ = u → resS D.host.F PP ⟨_, hi'⟩ = u → a.pull φ x = a.pull φ x' := by
       intro x x' u hx hx' hi hi' hu hu'
       refine pull_eq_of_chars a hφ fun f => ?_
-      obtain ⟨o1, n, o2⟩ := hr f
-      obtain ⟨ρ, hρ⟩ := exists_res_pull ha o1 hl o2 hPP (hQl PP ‹_›)
-      rw [hρ x hx hi u hu, hρ x' hx' hi' u hu']
+      obtain ⟨o1, o2⟩ := hr f
+      obtain ⟨c, χ, hc, hχ, hcr⟩ := exists_chrEq_pull ha o1 hM o2
+      have ht : χ.TameAt PP := htame f χ hχ PP ‹_› PP (Or.inl rfl)
+      obtain ⟨ρ, hρ⟩ := GlobalTheory.exists_isRes_of_tameAt D χ PP ht
+      have e : ∀ z : (AE D)ˣ, (1 - idemAt PP) * (z : AE D) = 1 - idemAt PP →
+          ∀ (hz : toEAf D (z : AE D) ∈ Formalism.L2.Herm.intAf D.host.F D.host.E),
+          resS D.host.F PP ⟨_, hz⟩ = u → a.pull (f.comp φ.rangeRestrict) z = ρ u := fun z hz hzi hzu =>
+        Units.ext ((hcr z).symm.trans (GlobalTheory.ConjTwist.eq_res_of_chrEq hc hPP ht hρ z hz hzi u hzu))
+      rw [e x hx hi hu, e x' hx' hi' hu']
     have hlift := fun u => GlobalTheory.ConjTwist.exists_isLocUnit hPP u
     choose xs hxs using hlift
     have hmul : ∀ u v, a.pull φ (xs (u * v)) = a.pull φ (xs u * xs v) := fun u v => by
@@ -410,6 +436,15 @@ theorem good_pull : ∀ (D : D7) (N : NData D.R D.host D.what₂) (X : NTw D.R D
       show a.pull φ x = a.pull φ (xs u)
       obtain ⟨hi', hu'⟩ := (hxs u).res
       exact same x (xs u) u hx (hxs u).off hi hi' hu hu'
+
+theorem good_pull : ∀ (D : D7) (N : NData D.R D.host D.what₂) (X : NTw D.R D.host D.what₂ D.LL0 N) (a : Recip D N.Om), a.Good → ∀ (A : Type) [CommGroup A] (φ : G D.host.E N.Om →* A) (l : ℕ), l.Prime → (∀ σ, ∃ n : ℕ, φ σ ^ (l ^ n) = 1) → IsOpen (φ.ker : Set (G D.host.E N.Om)) → AntiHom X.cc φ → ∀ Q : Finset (Pl D.host.E), SplitSet Q → (∀ P ∈ Q, ((l : ℕ) : 𝓞 D.host.E) ∉ P.asIdeal) → (∀ v : Pl D.host.E, v ∉ Q → (∀ P ∈ Q, ¬ Formalism.BasicNotions.IsConjPl D.host P v) → ∀ B : ValuationSubring N.Om, IsPlaceOver B v → ∀ σ ∈ Ine (F := D.host.E) B, φ σ = 1) → (⟨Q, a.pull φ, resOf (a.pull φ)⟩ : Twist D A).Good := by
+  intro D N X a ha A _ φ l hl hpow hφ hanti Q hQ hQl hunr
+  refine good_pull_of_tame D N X a ha A φ hφ hanti Q hQ (fun f χ hχ P hP P' hP' => ?_) hunr
+  obtain ⟨_, n, h2⟩ := char_props (D := D) hφ hpow f
+  exact GlobalTheory.ToricDistribution.levelLe_one_of_pow hl (hχ.pow h2) (by
+    rcases hP' with h | hc'
+    · rw [h]; exact hQl P hP
+    · exact fun hm => hQl P hP ((hc' _ _ (by push_cast; exact (map_natCast _ l).symm)).2 hm))
 
 end GlobalTheory.TwistPull
 end -- clump:auto

@@ -45,8 +45,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
-noncomputable section
-
 open NumberField IsDedekindDomain ValuativeRel Filter Topology GlobalTheory.GLp GlobalTheory.SplitWeil
 
 namespace DiscreteGroups.sglob.DzIso

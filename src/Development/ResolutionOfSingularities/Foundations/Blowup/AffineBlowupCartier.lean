@@ -54,32 +54,15 @@ theorem chartSectionsIso_hom_apply (I : Ideal R) (a : ↥I)
             (CommRingCat.of
               (HomogeneousLocalization.Away (reesGrading I) (reesGenerator I a)))).inv.hom x) := rfl
 
-private theorem comp_presheaf_map_eq_of_heq {Z : Scheme.{u}} {A : CommRingCat.{u}} (U : Z.Opens) (hU : U = ⊤)
-    (φ : A ⟶ Γ(Z, U)) (h : (⊤ : Z.Opens) ≤ U) (ψ : A ⟶ Γ(Z, (⊤ : Z.Opens)))
-    (hφ : HEq φ ψ) : φ ≫ Z.presheaf.map (homOfLE h).op = ψ := by
-  subst hU
-  obtain rfl : φ = ψ := eq_of_heq hφ
-  rw [show (homOfLE h : (⊤ : Z.Opens) ⟶ ⊤) = 𝟙 (⊤ : Z.Opens) from rfl]
-  simp
-
-private theorem appTop_eq_appLE_top_top {Z S : Scheme.{u}} (f : Z ⟶ S)
-    (h : (⊤ : Z.Opens) ≤ f ⁻¹ᵁ (⊤ : S.Opens)) : f.appLE ⊤ ⊤ h = f.appTop :=
-  comp_presheaf_map_eq_of_heq (f ⁻¹ᵁ (⊤ : S.Opens)) (le_antisymm le_top h) (f.app ⊤) h f.appTop HEq.rfl
-
-private theorem appLE_image_top_comp_appIso_hom {Z X S : Scheme.{u}} (g : Z ⟶ X)
-    [IsOpenImmersion g] (p : X ⟶ S)
-    (e : (g ''ᵁ (⊤ : Z.Opens)) ≤ p ⁻¹ᵁ (⊤ : S.Opens)) :
-    p.appLE ⊤ (g ''ᵁ ⊤) e ≫ (g.appIso ⊤).hom = (g ≫ p).appTop := by
-  rw [Scheme.Hom.appIso_hom', Scheme.Hom.appLE_comp_appLE]
-  exact appTop_eq_appLE_top_top (g ≫ p) _
-
 theorem chartRingHom_comp_chartSectionsIso_hom (I : Ideal R) (a : ↥I) :
     CommRingCat.ofHom (chartRingHom I a) ≫ (chartSectionsIso I a).hom =
       (Scheme.ΓSpecIso (CommRingCat.of R)).inv ≫
         (AffineBlowup.toSpec I).appLE ⊤ (affineBlowupChart I a ''ᵁ ⊤)
           (le_top.trans_eq (Scheme.Hom.preimage_top (AffineBlowup.toSpec I)).symm) := by
   rw [chartSectionsIso_hom, ← Category.assoc, Iso.comp_inv_eq, Category.assoc,
-    appLE_image_top_comp_appIso_hom, affineBlowupChart_comp_toSpec, algebraMap_chart_eq_chartRingHom]
+    Scheme.Hom.appIso_hom', Scheme.Hom.appLE_comp_appLE]
+  erw [Scheme.Hom.appLE_eq_app]
+  rw [affineBlowupChart_comp_toSpec, algebraMap_chart_eq_chartRingHom]
   exact Scheme.ΓSpecIso_inv_naturality _
 
 theorem ideal_comap_toSpec_chart_eq_span (I : Ideal R) (a : ↥I)

@@ -169,7 +169,6 @@ noncomputable section
 
 namespace GlobalTheory.ThetaRegularizationComparison
 
-
 open GlobalTheory.RegCompare in
 theorem thetaInt_wop_intg {D : D7} {M X : HSp D} {ω : GlobalTheory.Grid.WRep M X} {ν : Measure (GA D M)} {𝓕 : Set (GA D M)}
     (hν : IsHaarFD M ν 𝓕) {Φ : WO M X → ℂ} (hL : ∀ γ ∈ GQ M, ∀ g h, thetaKO ω (γ * g) h Φ = thetaKO ω g h Φ)
@@ -184,7 +183,6 @@ theorem thetaInt_wop_intg {D : D7} {M X : HSp D} {ω : GlobalTheory.Grid.WRep M 
     exact (key h k).2
   rw [wop_apply, thetaInt_sum _ fun k _ => (hi k).smul _]
   simp only [thetaInt_smul, he, zdeg, Finsupp.sum, Finset.sum_smul]
-
 
 theorem tmul_cancel_left {P Q : Type} [AddCommGroup P] [Module ℂ P] [AddCommGroup Q] [Module ℂ Q] {x : P} (hx : x ≠ 0) {u u' : Q}
     (h : x ⊗ₜ[ℂ] u = x ⊗ₜ[ℂ] u') : u = u' := by
@@ -211,7 +209,6 @@ theorem eq_of_regConst (hK : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorM
   have e2 : ∫ u in M.fd _, kerBig W Θ g g₁ u ∂M.ν _ = c₀ * J := mul_left_cancel₀ hz₀ (by linear_combination e₀)
   have hJ0 : J ≠ 0 := fun h => hne (by rw [e1, h, mul_zero])
   exact mul_right_cancel₀ hJ0 (e2.symm.trans e1)
-
 
 end GlobalTheory.ThetaRegularizationComparison
 
@@ -440,7 +437,6 @@ theorem index_residue (w : Pl D.host.E) {n n' r s : ℕ} (h : n = r + s) (h' : n
     (Eq.trans ?_ (GlobalTheory.ParabIndex.index_maxParabolic_GL_finiteField (kP w) n' r s h').symm)
   rw [hq, hq', h, h']
 
-
 open Classical in
 theorem relIndex_lev (V : HSp D) (β : GL (Fin V.rank) (Lev.EAf D)) (Λ : Submodule (𝓞 D.host.E) (Fin V.rank → D.host.E)) (N : ℕ)
     (hN : Lev.IsBaseFrame V β Λ N) {r t j : ℕ} (hr : r ≤ V.rank) (Pg Q : Finset (Pl D.host.E))
@@ -523,7 +519,6 @@ theorem Q_base (h : L.Is μ₀) : L.Q μ₀ = ∅ := by
   have h1 := (h.Q_ram μ₀ PP).2 (Or.inl hPP)
   rw [h.xi_base] at h1
   exact h1 fun _ _ => rfl
-
 
 open Classical in
 theorem not_conj (h : L.Is μ₀) (t : T) : ∀ P ∈ L.Pg ∪ L.Q t, ∀ P' ∈ L.Pg ∪ L.Q t, ¬ Lev.IsConjPl P P' := by
@@ -766,13 +761,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Base Spc Model Ch
 open scoped TensorProduct GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 open GlobalTheory.TopFlip
 
-
-theorem _root_.GlobalTheory.T.mixedModel_vacuum_eq_integralMatrix_indicator : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : GlobalTheory.ChiGrid.Consts} {G : GridData L sc} {μ₀ : T}, L.Is μ₀ → ∀ (W : G.Weil) (B : Frames G) (t : T) (i j : Fin D.R.m) (M : Vol G), SquareStanding G t →
-    ∀ (e : Num G i j) (Bs : Base D.host.F D.host.E) (Γ : GlobalTheory.IndefiniteRowSideFullHecke.UnitaryConjugation.Geo G i j) (X : Chars D.host.F D.host.E)
-      (om : _root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Rep D.sp.cm.sig Γ.V Γ.W) (om' : _root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Rep D.sp.cm.sig Γ.V' Γ.W), IsTripleOf W M t i j e Bs Γ X →
-      GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.IsTriple Bs Γ X om om' → IsTied t i j e Bs Γ X → ∀ w ∈ locPl G t, ∀ ι : ToA G t i j w, IsMixModelA W B t e Γ w ι →
-      ι (Γ.M.vac _) = ι (Γ.M.vac _) 0 • Set.indicator {Z | ∀ r s, Z r s ∈ (ValuativeRel.valuation (Kw w)).integer} 1 := by
-  first | exact @GlobalTheory.MixVacBig.mix_vac
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.MixedModelVacuumEqIntegralMatrixIndicatorStatement =====
@@ -927,8 +915,6 @@ open GlobalTheory.FlipMatch
 namespace GlobalTheory.TopFlip
 open GlobalTheory.BigDat GlobalTheory.WeilM
 
-
-
 theorem mixglobA : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} {μ₀ : T} (hL : L.Is μ₀) (W : G.Weil) (B : Frames G) (ρ : RealMatch W) (t : T) (i j : Fin D.R.m) (M : Vol G) (hst : SquareStanding G t) (e : Num G i j) (Bs : _root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Base D.host.F D.host.E) (Γ : GlobalTheory.IndefiniteRowSideFullHecke.UnitaryConjugation.Geo G i j) (X : _root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Chars D.host.F D.host.E)
     (om : _root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Rep D.sp.cm.sig Γ.V Γ.W) (om' : _root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Rep D.sp.cm.sig Γ.V' Γ.W) (h : IsTripleOf W M t i j e Bs Γ X), IsTriple Bs Γ X om om' → IsTied t i j e Bs Γ X →
     ∀ f₀, IsDatumA (t := t) W e Γ (Finsupp.single (((), ρ.vX i (j + 1)), ρ.vT (i + 1) j) 1) (GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.pure f₀ Γ.M.vac) →
@@ -1073,9 +1059,6 @@ open GlobalTheory.BigDat.GraphHeis
 namespace GlobalTheory.TopFlip
 open GlobalTheory.SmallPlaces
 
-
-
-
 theorem mixglobB : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} {μ₀ : T} (hL : L.Is μ₀) (W : G.Weil) (B : Frames G) (ρ : RealMatch W) (t : T) (i j : Fin D.R.m) (M : Vol G) (hst : SquareStanding G t) (e : Num G i j) (Bs : Base D.host.F D.host.E) (Γ : GlobalTheory.IndefiniteRowSideFullHecke.UnitaryConjugation.Geo G i j) (X : Chars D.host.F D.host.E)
     (om : _root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Rep D.sp.cm.sig Γ.V Γ.W) (om' : _root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Rep D.sp.cm.sig Γ.V' Γ.W) (h : IsTripleOf W M t i j e Bs Γ X), IsTriple Bs Γ X om om' → IsDoublyCompatible t i j e Bs Γ X →
     ∀ f₀, IsDatumB (t := t) W e Γ (Finsupp.single (((), ρ.vT i j), ρ.vX i j) 1) (GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.pure f₀ Γ.M'.vac) →
@@ -1101,7 +1084,7 @@ theorem mixglobB : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : Gr
         (summable_of_mem_schA _ (GlobalTheory.HeisSchA.rho_mem_schA Γ.M' W.ψ hstd u _ hΦ')))
   have hf : thetaS Γ W.ψ (GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.pure f Γ.M'.vac) = boxS t e (ρ.vT i j) (ρ.vX i j) :=
     funext fun u => (hf₀.2 u).trans ((Finsupp.sum_single_index (zero_mul _)).trans (one_mul _))
-  obtain ⟨hid, hsumid⟩ := GlobalTheory.T.gridLocalTensorPlaces_splitIdempotent_sum hL (G := G) t
+  obtain ⟨hid, hsumid⟩ := GlobalTheory.IdemAtPl.main hL (G := G) t
   have hh := fun w hw => halves_split hL W t i j e Γ h.JW₁ h.JWW _ _ (hid w hw).1 (hid w hw).2
   have hco := mixCoS_spec B t i j e
   have hv := fun w hw => lagr_vac (hI w hw) (hG.vac _).1 (hG.vac _).2.1 (latPtS t e (w.under (𝓞 D.host.F)) : Set _)
@@ -1241,7 +1224,6 @@ theorem pureT_smul {ι : Type} {N : ι → Type} [∀ i, AddCommGroup (N i)] [�
   exact finprod_mul_distrib hc (GlobalTheory.SmallThetaModules.mulSupport_fin h l)
 
 variable {D : D7}
-
 
 end GlobalTheory.TopFlip
 
@@ -1493,7 +1475,7 @@ theorem thetaFlip_tuple_match (hP : _root_.GlobalTheory.FunPr.ThetaLocalInputs) 
   obtain ⟨hs, a⟩ := mixglobA hL W B ρ t i j M hst e Bs Γ X om om' h hT' hti.1 f f3 ι h3
   obtain ⟨hs', b⟩ := mixglobB hL W B ρ t i j M hst e Bs Γ X om om' h hT' hti f' g3 ι' h4
   have vA : ∏ w ∈ locPl G t, ιA w (Γ.M.vac _) 0 = ∏ w ∈ locPl G t, ι w (Γ.M.vac _) 0 := Finset.prod_congr rfl fun w hw => by
-    have k := GlobalTheory.T.mixedModel_vacuum_eq_integralMatrix_indicator hL W B t i j M hst e Bs Γ X om om' h hT' hti.1 w hw _ (h3 w hw)
+    have k := GlobalTheory.MixVacBig.mix_vac hL W B t i j M hst e Bs Γ X om om' h hT' hti.1 w hw _ (h3 w hw)
     have k2 := fourierSum_ind (A := Fin ((locGrid G t w).rank (i + 1, j + 1))) (psiAt W w)⁻¹ (isUnif_unifAt w)
       (Assignment.one.block (Fin ((locGrid G t w).rank (i, j + 1))) (Fin ((locGrid G t w).rank (i + 1, j))))ᶜ (ι w (Γ.M.vac _) 0)
     rw [← k] at k2
@@ -1721,7 +1703,7 @@ theorem regularised_thetaInt_comparison_smul (hP : _root_.GlobalTheory.FunPr.The
       rw [thetaInt_smul] at h1
       rw [mul_comm c, mul_smul, ← h1, smul_smul, mul_left_comm, mul_inv_cancel₀ h0, mul_one]
   refine ⟨⟨z, hz0, intg_of_modInt hzM, hI⟩, fun hi => ?_⟩
-  rw [thetaInt_wop_intg hν₁ (GlobalTheory.T.thetaKernel_leftInvariant_rational_unitary D ψ θ hθ W₁ X A₁ B _ _ ωB hm.weilB Φ' hΦ') hi z, smul_comm] at hI
+  rw [thetaInt_wop_intg hν₁ (GlobalTheory.SquareComm.ThetaLeft.main D ψ θ hθ W₁ X A₁ B _ _ ωB hm.weilB Φ' hΦ') hi z, smul_comm] at hI
   exact smul_right_injective _ hz0 hI
 
 theorem regulator_constant_eq : _root_.GlobalTheory.FunPr.ThetaLocalInputs → GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.ThetaIntegralsAgree → GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.LocalMatching →
@@ -1802,7 +1784,7 @@ theorem regulator_constant_eq : _root_.GlobalTheory.FunPr.ThetaLocalInputs → G
       fun γ hγ u => GlobalTheory.SquareIdent.thetaKO_left_neg W.θ_is _ _ wA mA γ hγ u h
     have cB := fun h => integral_change _ hIs.meas' hνB hs'
       (fun u => thetaKO (X.ω' t) u h (fockF W.ψ W.θ false A₁ (frSum AV AV₁) (X.f' t) (σ' P₀)))
-      fun γ hγ u => GlobalTheory.T.thetaKernel_leftInvariant_rational_unitary D W.ψ W.θ W.θ_is _ _ _ _ _ _ _ wB _ mB γ hγ u h
+      fun γ hγ u => GlobalTheory.SquareComm.ThetaLeft.main D W.ψ W.θ W.θ_is _ _ _ _ _ _ _ wB _ mB γ hγ u h
     have iB : GlobalTheory.RegCompare.Intg (X.ω' t) (M.ν _) (M.fd _) (fockF W.ψ W.θ false A₁ (frSum AV AV₁) (X.f' t) (σ' P₀)) :=
       fun h => (cB h).1 (by simpa only [← hk'] using hP₀i t h)
     have eA : thetaInt (X.ω t) (M.ν _) (M.fd _) (fockF W.ψ W.θ true A (frSum AV AV₁) (X.f t) P₁) =

@@ -26,16 +26,8 @@ theorem NullSmaller.zeroSetEuc_eq_preimage_equiv {n : ℕ} (J : Ideal (MvPolynom
   rfl
 
 theorem NullSmaller.ringKrullDim_le_of_lt_succ {R : Type*} [CommRing R] {k : ℕ}
-    (h : ringKrullDim R < ((k + 1 : ℕ) : WithBot ℕ∞)) : ringKrullDim R ≤ (k : WithBot ℕ∞) := by
-  generalize ringKrullDim R = a at h ⊢
-  induction a using WithBot.recBotCoe with
-  | bot => exact bot_le
-  | coe a =>
-    induction a using ENat.recTopCoe with
-    | top => exact absurd h (by simp)
-    | coe a =>
-      have h' : a < k + 1 := by exact_mod_cast h
-      exact_mod_cast Nat.lt_succ_iff.1 h'
+    (h : ringKrullDim R < ((k + 1 : ℕ) : WithBot ℕ∞)) : ringKrullDim R ≤ (k : WithBot ℕ∞) :=
+  ENat.WithBot.lt_add_one_iff.1 (by simpa using h)
 
 theorem NullSmaller.proof : NullSmaller.Statement := by
   intro n d J hJ

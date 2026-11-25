@@ -1194,8 +1194,6 @@ variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp]
 
 variable [FiniteDimensional Qp LL]
 
-private theorem sg_nonneg_of {x sg : ℝ} (h0 : 0 ≤ x) (h : x ≤ 3 * sg) : 0 ≤ sg := by linarith
-
 private theorem bandI_nonneg (l b w S η : ℕ) (size : ZMod n → ℕ) (Cb : ℝ) :
     0 ≤ bandI l b w S η size Cb := by
   unfold bandI; split_ifs <;> norm_num

@@ -28,7 +28,6 @@ theorem chiC_hinf {χ : GQ l →* ℚ_[l]ˣ} (hχ : IsCyc χ) (K : FinExt l) (j 
     (hh : h ∈ Hinf K) : chiC χ j h = 1 := by
   simp [chiC, chi_hinf hχ K hh]
 
-
 theorem solve {act : GQ l →* (PadicComplex l ≃+* PadicComplex l)} {χ : GQ l →* ℚ_[l]ˣ}
     (ha : IsActC act) (hχ : IsCyc χ) (K : FinExt l) (s : ℕ) (hs : Lev l s) (j : ℤ) (hj : j ≠ 0)
     (γ : GQ l) (hγ : IsGen χ K s γ) (w : PadicComplex l) (hw : w ∈ Ohat K) :
@@ -80,7 +79,7 @@ theorem solve {act : GQ l →* (PadicComplex l ≃+* PadicComplex l)} {χ : GQ l
       have := hs.1
       exact pow_le_of_le_one (norm_nonneg _) norm_l_lt.le (by omega)
   · intro h hh
-    rw [map_add (f := _), hfix h (hinf_le_gj K s hh), map_mul (act h) _ (v 0), hfix2 h (hinf_le_gj K s hh),
+    rw [map_add (f := _), hfix h (GlobalTheory.Cyc.AlmostTrace.Hinf_le_Gj K s hh), map_mul (act h) _ (v 0), hfix2 h (GlobalTheory.Cyc.AlmostTrace.Hinf_le_Gj K s hh),
       (_root_.GlobalTheory.CycInvariants.fixed_iff_mem_Ohat l act ha K _ (ohat_norm K hvO)).2 hvO h hh]
   · rw [map_add (f := _), hfix γ hγ.1, map_mul (act γ) _ (v 0), hfix2 γ hγ.1]
     have e : chiC χ j γ * act γ (v 0) = v 0 + (ζ - 1) * x := by rw [← hv3]; ring
@@ -95,7 +94,7 @@ theorem pow_kills_cyclotomic_H1 (l : ℕ) [Fact l.Prime] (act : GQ l →* (Padic
     (hc : CocOn (Gj K s) (fun g y => chiC χ j g * act g y) {y | ‖y‖ ≤ 1} c) :
     CobOn (Gj K s) (fun g y => chiC χ j g * act g y) {y | ‖y‖ ≤ 1}
       (fun g => (l : PadicComplex l) ^ (1 + s + padicValInt l j) * c g) := by
-  have hle := hinf_le_gj K s
+  have hle := GlobalTheory.Cyc.AlmostTrace.Hinf_le_Gj K s
   obtain ⟨x, hx, hx2⟩ := _root_.GlobalTheory.Cyc.AveragingRankOne.cyclotomic_maximalIdeal_smul_cocycle_isCoboundary l act ha K 1 (l : PadicComplex l)
     ⟨l, natCast_mem (Kinf K) l, by simp⟩ norm_l_lt (fun g _ => c g)
     ⟨continuousOn_pi.2 fun _ => hc.1.mono hle, fun g hg _ => hc.2.1 g (hle hg),

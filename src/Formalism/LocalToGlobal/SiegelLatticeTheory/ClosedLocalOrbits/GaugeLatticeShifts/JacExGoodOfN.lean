@@ -60,10 +60,6 @@ def ZBig : Prop :=
       Zhat ε (famSc sc e z) (famSc sc e z') (P * Formalism.QuantumDeterminants.bigCell k r q.1 (μsec q.2) * P⁻¹) =
         Matrix.diagonal (coordSc r sc q)
 
-def BigMem : Prop :=
-  ∀ (k r : ℕ) (c : Fin r → ℂ) (μ : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ), (∀ a, c a ≠ 0) →
-    μᴴ * Formalism.QuantumDeterminants.Hb k * μ = Formalism.QuantumDeterminants.Hb k → Formalism.QuantumDeterminants.bigCell k r c μ ∈ Formalism.QuantumDeterminants.UH (Formalism.QuantumDeterminants.Hpk k r)
-
 def CoordW : Prop :=
   ∀ (r k : ℕ) (T T' sc : ℝ), 1 ≤ k → 0 < T → 0 < T' → 0 < sc →
     ∃ κ : ℝ, 0 < κ ∧ ∀ F : (Fin (r + 1) → ℂ) → ℝ≥0∞,

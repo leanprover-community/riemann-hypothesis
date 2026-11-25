@@ -18,22 +18,11 @@ import Mathlib.Tactic.Linter.Style
 section -- clump:auto
 @[expose] public section
 
-@[reducible] noncomputable def UpperTheory.Reformulated.B.StronglyIrreducible.gm :
-    {G R : Type} → [inst : Group G] → [inst_1 : CommRing R] → {n : ℕ} → (G →* GL (Fin n) R) → G → Matrix (Fin n) (Fin n) R :=
-    fun {G R : Type} [Group G] [CommRing R] {n : ℕ} (r : G →* GL (Fin n) R) (g : G) ↦
-      (↑((r : G → GL (Fin n) R) g) : Matrix (Fin n) (Fin n) R)
-
-noncomputable def UpperTheory.Reformulated.B.StronglyIrreducible.StrongIrr :
-    {G κ : Type} → [inst : Group G] → [inst_1 : Field κ] → {n : ℕ} → (G →* GL (Fin n) κ) → Prop :=
-    fun {G κ : Type} [Group G] [Field κ] {n : ℕ} (r : G →* GL (Fin n) κ) ↦
-      ∀ (W : Submodule κ (Fin n → κ)) (S : Subgroup G),
-        S.FiniteIndex → (∀ (g : G), g ∈ S ↔ ∀ v ∈ W, (UpperTheory.Reformulated.B.StronglyIrreducible.gm r g).mulVec v ∈ W) → W = ⊥ ∨ W = ⊤
-
 theorem UpperTheory.Reformulated.B.StronglyIrreducible.strongIrr_conj :
     ∀ {G κ : Type} [inst : Group G] [inst_1 : Field κ] {n : ℕ} (r : G →* GL (Fin n) κ),
-      UpperTheory.Reformulated.B.StronglyIrreducible.StrongIrr r →
+      UpperTheory.Reformulated.B.StronglyIrreducibleFreeRatios.StrongIrr r →
         ∀ (P : GL (Fin n) κ),
-          UpperTheory.Reformulated.B.StronglyIrreducible.StrongIrr
+          UpperTheory.Reformulated.B.StronglyIrreducibleFreeRatios.StrongIrr
             ((MulEquiv.toMonoidHom ((MulAut.conj : GL (Fin n) κ → MulAut (GL (Fin n) κ)) P⁻¹)).comp r) := by
   intro G κ _ _ n r h P W S hS hW
   have h1 : ∀ v : Fin n → κ, ((P⁻¹ : GL (Fin n) κ) : Matrix (Fin n) (Fin n) κ).mulVec
@@ -45,10 +34,10 @@ theorem UpperTheory.Reformulated.B.StronglyIrreducible.strongIrr_conj :
     intro v
     rw [Matrix.mulVec_mulVec, Units.mul_inv, Matrix.one_mulVec]
   have h3 : ∀ (g : G) (v : Fin n → κ),
-      (UpperTheory.Reformulated.B.StronglyIrreducible.gm ((MulEquiv.toMonoidHom
+      (UpperTheory.Reformulated.B.StronglyIrreducibleFreeRatios.gm ((MulEquiv.toMonoidHom
         ((MulAut.conj : GL (Fin n) κ → MulAut (GL (Fin n) κ)) P⁻¹)).comp r) g).mulVec v
       = ((P⁻¹ : GL (Fin n) κ) : Matrix (Fin n) (Fin n) κ).mulVec
-        ((UpperTheory.Reformulated.B.StronglyIrreducible.gm r g).mulVec ((P : Matrix (Fin n) (Fin n) κ).mulVec v)) := by
+        ((UpperTheory.Reformulated.B.StronglyIrreducibleFreeRatios.gm r g).mulVec ((P : Matrix (Fin n) (Fin n) κ).mulVec v)) := by
     intro g v
     rw [Matrix.mulVec_mulVec, Matrix.mulVec_mulVec]
     change (((P⁻¹ * r g * P⁻¹⁻¹ : GL (Fin n) κ)) : Matrix (Fin n) (Fin n) κ).mulVec v = _

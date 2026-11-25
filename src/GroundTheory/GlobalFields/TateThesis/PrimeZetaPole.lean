@@ -50,12 +50,9 @@ theorem tendsto_sub_one_mul_dedekindZetaReal :
   rw [dedekindZeta_ofReal K hs0, ← Complex.ofReal_one, ← Complex.ofReal_sub,
     ← Complex.ofReal_mul, Complex.ofReal_re]
 
-theorem finite_absNorm_lt (N : ℕ) : {I : Ideal (𝓞 K) | absNorm I < N}.Finite := by
-  have : {I : Ideal (𝓞 K) | absNorm I < N} = ⋃ n ∈ Set.Iio N, {I | absNorm I = n} := by
-    ext I
-    simp
-  rw [this]
-  exact (Set.finite_Iio N).biUnion fun n _ => Ideal.finite_setOfPred_absNorm_eq n
+theorem finite_absNorm_lt (N : ℕ) : {I : Ideal (𝓞 K) | absNorm I < N}.Finite :=
+  (Ring.HasFiniteQuotients.finite_absNorm_le N).subset fun I (h : absNorm I < N) =>
+    show absNorm I ≤ N from h.le
 
 theorem sum_range_dedekindZetaTerm (s : ℝ) (N : ℕ) :
     ∑ n ∈ Finset.range N, dedekindZetaTerm K s n =

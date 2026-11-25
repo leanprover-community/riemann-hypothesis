@@ -60,22 +60,11 @@ private theorem blk_sand {U₁ U₂ V₁ V₂ : Submodule A R} (H : Act U₁ U�
   have h2 := blk_tr (blk_mul H (blk_tr hQ) (blk_tr h1))
   simpa [Matrix.transpose_mul] using h2
 
-private theorem alg_smul_mem {V : Submodule A (Matrix (Fin n) (Fin n) R)} (c : A) {Z : Matrix (Fin n) (Fin n) R}
-    (hZ : Z ∈ V) : algebraMap A R c • Z ∈ V := by
-  rw [algebraMap_smul]
-  exact V.smul_mem c hZ
-
 end Gen
 
 section Parts
 
 variable {A X : Type} [CommRing A] [CommRing X] [Algebra A X] {g : ℕ}
-
-private theorem ep_algebraMap_eq_zero (c : A) (j : Fin g) : (algebraMap A (DD X g) c).ep j = 0 := rfl
-
-private theorem ep'_algebraMap_eq_zero (c : A) (j : Fin g) : (algebraMap A (DD X g) c).ep' j = 0 := rfl
-
-private theorem eta_algebraMap_eq_zero (c : A) : (algebraMap A (DD X g) c).eta = 0 := rfl
 
 private theorem mem_part {p q r s : Bool} {y : DD X g} : y ∈ ddPart A X g p q r s ↔
     (p = false → y.a = 0) ∧ (q = false → ∀ j, y.ep j = 0) ∧ (r = false → ∀ j, y.ep' j = 0) ∧ (s = false → y.eta = 0) := by
@@ -118,7 +107,7 @@ private theorem galois_lift_mem_first_order_deformations {l : ℕ} [Fact l.Prime
     show _ ∈ blkMat n x.a (ddPart x.A X k.g true false false false) (ddPart x.A X k.g false true false false)
     refine mem_blkMat_iff_mem_of_same_block_and_mem_off.2 (fun i j => ⟨fun h => ?_, fun h => ?_⟩)
     · rw [mem_part]
-      simp [NP.ρX, ep_algebraMap_eq_zero, ep'_algebraMap_eq_zero, eta_algebraMap_eq_zero]
+      simp [NP.ρX, RingHom.algebraMap_toAlgebra]
     · have h0 : (mat x.ρ) g i j = 0 := by
         simpa using ((mem_blkMat_iff_mem_of_same_block_and_mem_off.1 (x.blk g)) i j).2 h
       rw [mem_part]
@@ -157,9 +146,12 @@ theorem UpperTheory.V.Pa.ok1 :
       show algebraMap x.A (DD X k.g) (χ (a * b)) = algebraMap x.A (DD X k.g) (χ a) * algebraMap x.A (DD X k.g) (χ b)
       simp
     · intro g Z hZ
-      show algebraMap x.A (DD X k.g) (χ g) • (k.ρ1 X (h.p₀ g) * Z * k.ρ1 X (h.p₀ g⁻¹)) ∈ _
-      exact alg_smul_mem _ (blk_sand H (galois_lift_mem_first_order_deformations k X _) (galois_lift_mem_first_order_deformations k X _) hZ)
+      show algebraMap x.A (DD X k.g) (χ g) • _ ∈ _
+      rw [algebraMap_smul]
+      exact Submodule.smul_mem _ _ (blk_sand H (galois_lift_mem_first_order_deformations k X _)
+        (galois_lift_mem_first_order_deformations k X _) hZ)
     · intro Z hZ
-      show algebraMap x.A (DD X k.g) (χ G.frame.c) • Zᵀ ∈ _
-      exact alg_smul_mem _ (blk_tr hZ)
+      show algebraMap x.A (DD X k.g) (χ G.frame.c) • _ ∈ _
+      rw [algebraMap_smul]
+      exact Submodule.smul_mem _ _ (blk_tr hZ)
   exact ⟨key _ _ act1, key _ _ act1s, key _ _ act2⟩

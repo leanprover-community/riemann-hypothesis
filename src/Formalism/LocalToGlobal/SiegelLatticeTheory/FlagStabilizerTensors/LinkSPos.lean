@@ -60,7 +60,7 @@ def thDLP (hC : Formalism.L2.SG.RowsPos.DiagLP) (l : List ℝ) : ℝ :=
       ((cDiagLP C0 hC (l.take 16)).choose_spec.choose_spec.2.2 (l.getD 17 0) h).choose_spec.choose)
   else 3
 
-theorem hypOwnL_diagP (hC : Formalism.L2.SG.RowsPos.DiagLP) (hExp : KExpTied) (hAbs : Formalism.L2.SG.RowsConc.AbsConvTied)
+theorem hypOwnL_diagP (hC : Formalism.L2.SG.RowsPos.DiagLP) (hExp : Formalism.L2.SG.PoincareAmplitudeLowerBounds.KernelExponentAgreement) (hAbs : Formalism.L2.SG.RowsConc.AbsConvTied)
     {𝒞 : FamClass} (sel : SSel 𝒞)
     (hOK : Closed 𝒞 fun Fm _ => ∀ hc : 𝒞 Fm, SelOK C0 Fm (sel Fm hc)) (hLp : LoopRowS C0 𝒞 sel) :
     Closed 𝒞 fun Fm _ => HypOwn Fm C0 fun D _ => ClDiag D := by
@@ -131,7 +131,6 @@ theorem theoremS_link_concrete (P : ∀ I : AutInst, Measure I.Gf → ℕ → (I
       obtain ⟨a1, a2, k1, k2, k3, k4, a6⟩ := h
       exact theoremS_link_of_evaluation P Fm (Fm.CYL + 1) (1 / 4) 3 (1 / 2) Fm.CTu C0 _ _ _ _ _ h1
         (hc30 Fm).1 (hc30 Fm).2 g2 g3 (standing_hypotheses_hold_family Fm C0 h1 ⟨g4, a0, a1⟩) a2 (thmSOwn_of_clauses k1 k2 k3 k4) a6
-
 
 variable [Fact Formalism.L2.SG.SplitPrimeNormLemmas.CoefWeightedLoc] in
 theorem theoremS_transport_link_zero (𝒞 : FamClass) (sel : SSel 𝒞)

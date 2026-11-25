@@ -69,22 +69,6 @@ private theorem vanishingIdeal_ideal_le_primeIdealOf {X : Scheme.{u}} (Z : Close
   rw [this]
   exact hxZ
 
-private theorem le_vanishingIdeal_of_subset_support {X : Scheme.{u}} (I : X.IdealSheafData)
-    (Z : Closeds ↥X) (h : (Z : Set ↥X) ⊆ (I.support : Set ↥X)) :
-    I ≤ Scheme.IdealSheafData.vanishingIdeal Z := by
-  have key : ∀ U : X.affineOpens,
-      I.ideal U ≤ (Scheme.IdealSheafData.vanishingIdeal Z).ideal U := by
-    intro U f hf
-    have heq : (Scheme.IdealSheafData.vanishingIdeal Z).ideal U
-        = PrimeSpectrum.vanishingIdeal (U.2.fromSpec.base ⁻¹' (Z : Set ↥X)) := rfl
-    rw [heq, PrimeSpectrum.mem_vanishingIdeal]
-    intro P hP
-    obtain ⟨hz, hzP⟩ := exists_fromSpec_mem_and_primeIdealOf_eq U.2 P
-    have hzs : U.2.fromSpec.base P ∈ I.support := h hP
-    rw [mem_support_iff_ideal_le_primeIdealOf I U.2 hz, hzP] at hzs
-    exact hzs hf
-  exact key
-
 structure IsIrreducibleComponentOfSupport {X : Scheme.{u}} (D : X.IdealSheafData) (C : Set X) : Prop where
   isIrreducible : IsIrreducible C
   maximal : ∀ C' : Set X, IsIrreducible C' → C ⊆ C' → C' ⊆ (D.support : Set X) → C' = C
@@ -214,15 +198,8 @@ theorem stalkIdeal_ne_bot_of_nonzeroOnComponents {X : Scheme.{u}} (I : X.IdealSh
   have hetabot : stalkIdeal I hTirr.genericPoint = ⊥ := by
     rw [stalkIdeal_eq_map_germ I hTirr.genericPoint V hetaV, hmapeq, ← Ideal.map_map,
       ← stalkIdeal_eq_map_germ I x V hxV, hbot, Ideal.map_bot]
-  have hbt : (⊥ : Ideal ↑(X.presheaf.stalk hTirr.genericPoint)) ≠ ⊤ := by
-    intro h
-    have h1 : (1 : ↑(X.presheaf.stalk hTirr.genericPoint)) ∈
-        (⊥ : Ideal ↑(X.presheaf.stalk hTirr.genericPoint)) := by
-      rw [h]; exact Submodule.mem_top
-    rw [Ideal.mem_bot] at h1
-    exact one_ne_zero h1
   have hmem : hTirr.genericPoint ∈ I.support :=
-    (mem_support_iff_stalkIdeal_ne_top I _).mpr (by rw [hetabot]; exact hbt)
+    (mem_support_iff_stalkIdeal_ne_top I _).mpr (by rw [hetabot]; exact bot_ne_top)
   calc irreducibleComponent x = closure {hTirr.genericPoint} := hgen.symm
     _ ⊆ closure ((I.support : Set ↥X)) :=
         closure_mono (Set.singleton_subset_iff.mpr hmem)
@@ -258,7 +235,8 @@ private theorem vanishingIdeal_ideal_eq_of_restrictIdeal_eq_coordIdeal {X : Sche
       vanishingIdeal_ideal_le_primeIdealOf (⟨C, hCcl⟩ : Closeds ↥X) hW hz hzC
     rw [hzP] at hfinal
     exact hfinal
-  · exact le_vanishingIdeal_of_subset_support D (⟨C, hCcl⟩ : Closeds ↥X) hCsub ⟨W, hW⟩
+  · exact (Scheme.IdealSheafData.le_support_iff_le_vanishingIdeal (I := D)
+      (Z := (⟨C, hCcl⟩ : Closeds ↥X))).1 hCsub ⟨W, hW⟩
 
 namespace IsIrreducibleComponentOfSupport
 

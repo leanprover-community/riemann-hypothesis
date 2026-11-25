@@ -6,8 +6,6 @@ public import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.LogCon
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.Mem.Top.V4.Model
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.Inhab Formalism.FrobeniusOrbits Formalism.L2.Host Formalism.L2.GlobalTheoryTheory GlobalTheory.EX GlobalTheory.EX.OB GlobalTheory.Mem NumberField IsDedekindDomain
@@ -39,5 +37,3 @@ variable (hH : DC.HostExQ) (hLP : LevelPrime) (hSP : SmallPrimeOne) (h2b : Stand
 
 
 end GlobalTheory.Mem.Top.V4.Model
-
-end

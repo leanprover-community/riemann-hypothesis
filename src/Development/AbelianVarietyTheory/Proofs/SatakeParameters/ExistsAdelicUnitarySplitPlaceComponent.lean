@@ -10,8 +10,6 @@ import Formalism.LocalToGlobal.IndefiniteReal.ScalarOnPartsFull
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.SplitLift
 
 section General
@@ -163,5 +161,3 @@ theorem split_lift : ∀ {D : D7} (V : HSp D) (e : Formalism.L2.Theta.AE D), IsS
   exact ⟨⟨g, hg⟩, h1, h2⟩
 
 end GlobalTheory.SplitLift
-
-end

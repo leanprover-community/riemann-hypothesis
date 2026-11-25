@@ -5,6 +5,7 @@ public import Mathlib.NumberTheory.NumberField.Basic
 public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.IsAdapted
 public import GroundTheory.HeightsAndTheta.Heights.Slopes.PCanonicalFiltration
 public import Mathlib.LinearAlgebra.Eigenspace.Basic
+import Mathlib.LinearAlgebra.Eigenspace.Minpoly
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.
@@ -141,18 +142,9 @@ theorem iSup_eigSp_eq_top {E L V ι : Type} [Field E] [NumberField E] [Field L] 
   refine le_trans ?_ (le_iSup _ s)
   intro x hx
   rw [Module.End.mem_eigenspace_iff] at hx
-  have hpow : ∀ k : ℕ, ((ρ θ) ^ k) x = (σ s θ) ^ k • x := by
-    intro k
-    induction k with
-    | zero => simp
-    | succ k ih => rw [pow_succ', Module.End.mul_apply, ih, map_smul, hx, smul_smul, pow_succ]
-  have hP : ∀ P : ℤ[X], (aeval (ρ θ) P) x = (aeval (σ s θ) P) • x := by
-    intro P
-    induction P using Polynomial.induction_on' with
-    | add p q hp hq => simp only [map_add (f := _), LinearMap.add_apply, hp, hq, add_smul]
-    | monomial k a =>
-      simp only [aeval_monomial, Module.End.mul_apply, hpow, eq_intCast]
-      rw [Module.End.intCast_apply, mul_smul, Int.cast_smul_eq_zsmul]
+  have hP : ∀ P : ℤ[X], (aeval (ρ θ) P) x = (aeval (σ s θ) P) • x := fun P => by
+    rw [aeval_eq_aeval_map (R := ℤ) (T := L) (RingHom.ext_int _ _) P (ρ θ),
+      Module.End.aeval_apply_of_mem_apply_eq_smul hx, eval_map_algebraMap]
   simp only [eigSp, Submodule.mem_iInf, LinearMap.mem_ker, LinearMap.sub_apply, LinearMap.smul_apply, LinearMap.id_apply,
     sub_eq_zero]
   intro a

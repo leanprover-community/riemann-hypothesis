@@ -98,14 +98,6 @@ theorem map_fourier_spanCols (e : H ≃ AddChar N C) (σ : H ≃ N) (Dm : Matrix
     simp only [Matrix.submatrix_apply]
     exact fourier_column_eq e σ Dm h (σ k)
 
-private theorem addChar_apply_ne_zero_dual_lattices (ψ : AddChar N C) (a : N) : ψ a ≠ 0 := by
-  intro h0
-  have h1 : ψ a * ψ (-a) = 1 := by
-    rw [← AddChar.map_add_eq_mul]
-    simp
-  rw [h0, zero_mul] at h1
-  exact zero_ne_one h1
-
 theorem e_zero (e : H ≃ AddChar N C) (he : ∀ h h', e (h + h') = e h * e h') : e 0 = 1 := by
   have h0 := he 0 0
   rw [add_zero] at h0
@@ -114,7 +106,7 @@ theorem e_zero (e : H ≃ AddChar N C) (he : ∀ h h', e (h + h') = e h * e h') 
     have := congrArg (fun ψ : AddChar N C => ψ a) h0
     simpa only [AddChar.mul_apply] using this
   rw [AddChar.one_apply]
-  exact mul_left_cancel₀ (addChar_apply_ne_zero_dual_lattices (e 0) a) (by rw [mul_one]; exact ha.symm)
+  exact mul_left_cancel₀ (AddChar.val_isUnit (e 0) a).ne_zero (by rw [mul_one]; exact ha.symm)
 
 theorem e_neg_apply (e : H ≃ AddChar N C) (he : ∀ h h', e (h + h') = e h * e h') (h : H) (a : N) :
     e (-h) a = e h (-a) := by
@@ -126,7 +118,7 @@ theorem e_neg_apply (e : H ≃ AddChar N C) (he : ∀ h h', e (h + h') = e h * e
   have h3 : e h (-a) * e h a = 1 := by
     rw [← AddChar.map_add_eq_mul]
     simp
-  exact mul_right_cancel₀ (addChar_apply_ne_zero_dual_lattices (e h) a) (h2.symm.trans h3.symm)
+  exact mul_right_cancel₀ (AddChar.val_isUnit (e h) a).ne_zero (h2.symm.trans h3.symm)
 
 private theorem mem_dualLat_iff_pairing_integral {X : Type} [Fintype X] {M : Submodule R (X → C)} {u : X → C} :
     u ∈ dualLat M ↔ ∀ f ∈ M, ∃ r : R, algebraMap R C r = ∑ a, u a * f a := Iff.rfl

@@ -103,7 +103,6 @@ theorem mem_range_emb_of_conjU_mem_UAt {D : D7} (V : HSp D) (Y : GlobalTheory.In
   rw [← Algebra.smul_def]
   exact hinj.symm
 
-
 open GlobalTheory.LocWeilAct in
 open scoped GlobalTheory.VacAny in
 theorem act_omB_at : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} (W : G.Weil) (t : T) (i j : Fin D.R.m) (M : Vol G)
@@ -195,7 +194,7 @@ theorem exists_datum_comb_mem_So_at : ∀ {D : D7} {T : Type} {L : LevCh D T} {s
     GlobalTheory.T.exists_routeDatum_finite_pureTensors_vacuum hL W B ρ t i j M hM Θ Θ' hΘ g₁ e Bs Γ X om om' h hTr hv
   classical
   obtain ⟨ν, α, hν, hact⟩ := act_omB_at W t i j M e Bs Γ X om om' h hTr
-  obtain ⟨zS, hz, hS⟩ := GlobalTheory.T.exists_goodPlace_translateCombination_latticeIndicator Bs Γ hTr.geo.hM' hTr.geo.lt om'
+  obtain ⟨zS, hz, hS⟩ := GlobalTheory.CombAtGood.exists_comb_translates_mem_So Bs Γ hTr.geo.hM' hTr.geo.lt om'
     (H := {k : GA D (G.V (.grid i j)) // k ∈ Set.range (emb D.sp.cm.sig (G.V (.grid i j)).gram Bs.v₁)})
     (fun k => GlobalTheory.IndefiniteRowSideFullHecke.UnitaryConjugation.conjU _ (-1) h.JW₁ k.1) ν α hν ι hι
     (fun g => by obtain ⟨k, hk1, hk2⟩ := hact ι hι g; exact ⟨⟨k, hk1⟩, hk2⟩) f φ φ₀ hSB hvac h₀ P Λ c hφ₀
@@ -207,7 +206,6 @@ theorem exists_datum_comb_mem_So_at : ∀ {D : D7} {T : Type} {L : LevCh D T} {s
   · intro b hb
     obtain ⟨k, -, rfl⟩ := Finset.mem_image.1 (Finsupp.mapDomain_support hb)
     exact k.2
-
 
 open GlobalTheory.ZConvIdent in
 theorem translates_kerSmall_le_theta_at : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} {μ₀ : T} (hL : L.Is μ₀) (W : G.Weil) (B : Frames G)

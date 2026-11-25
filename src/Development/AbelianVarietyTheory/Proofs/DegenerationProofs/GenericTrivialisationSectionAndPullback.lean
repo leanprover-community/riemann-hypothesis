@@ -48,7 +48,6 @@ open CategoryTheory Limits AlgebraicGeometry
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open ReciprocityTheory.ChartRestriction.G.Out GlobalTheory.ZH
 
-noncomputable section
 namespace GlobalTheory.ZH.RatModel
 
 open GlobalTheory.Points
@@ -108,4 +107,3 @@ theorem genTriv_sec_and_pull : ∀ (o Ω : Type) [CommRing o] [Field Ω] [Algebr
   fun _ _ _ _ _ _ _ _ h => ⟨h.exists_sec_hasVal, fun _ _ _ _ _ _ ha => h.pull ha⟩
 
 end GlobalTheory.ZH.RatModel
-end

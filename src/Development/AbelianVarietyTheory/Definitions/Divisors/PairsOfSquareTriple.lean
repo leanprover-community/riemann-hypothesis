@@ -46,8 +46,6 @@ import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LatSelfDualOfUni
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.ThK.Inhab
 
 open scoped TensorProduct NNReal Matrix
@@ -74,5 +72,3 @@ theorem conj_conj (h : IsCMExt F E σ) (x : E) : σ (σ x) = x := by
 end General
 
 end GlobalTheory.ThK.Inhab
-
-end

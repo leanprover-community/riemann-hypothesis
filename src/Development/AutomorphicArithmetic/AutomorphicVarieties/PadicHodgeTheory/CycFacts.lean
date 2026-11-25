@@ -15,18 +15,14 @@ private theorem cf_norm_root {v : ℕ} [Fact v.Prime] {n : ℕ} (hn : n ≠ 0) {
   rw [norm_pow, norm_one] at h
   exact (pow_eq_one_iff_of_nonneg (norm_nonneg _) hn).1 h
 
-private theorem cf_root_one {v : ℕ} [Fact v.Prime] {n : ℕ} (hn : ¬ v ∣ n) {x : Om v} (hx : x ^ n = 1)
-    (h : ‖x - 1‖ < 1) : x = 1 := by
-  intros
-  apply _root_.UpperTheory.Reformulated.B.S7.eq_one_of_near <;> assumption
-
 private theorem cf_root_eq {v : ℕ} [Fact v.Prime] {n : ℕ} (hn : ¬ v ∣ n) {x y : Om v} (hx : x ^ n = 1)
     (hy : y ^ n = 1) (h : ‖x - y‖ < 1) : x = y := by
   have hn0 : n ≠ 0 := by rintro rfl; exact hn (dvd_zero v)
   have hy1 := cf_norm_root hn0 hy
   have hy0 : y ≠ 0 := by rintro rfl; simp at hy1
   have h1 : x / y = 1 := by
-    refine cf_root_one hn (by rw [div_pow, hx, hy, div_one]) ?_
+    refine _root_.UpperTheory.Reformulated.B.S7.eq_one_of_near hn
+      (by rw [div_pow, hx, hy, div_one]) ?_
     rw [div_sub_one hy0, norm_div, hy1, div_one]
     exact h
   exact (div_eq_one_iff_eq hy0).1 h1

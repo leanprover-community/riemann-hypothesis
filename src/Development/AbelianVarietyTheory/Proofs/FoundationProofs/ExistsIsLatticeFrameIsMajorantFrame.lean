@@ -9,8 +9,6 @@ import Std.Tactic.BVDecide.Normalize.BitVec
 
 @[expose] public section
 
-noncomputable section
-
 namespace GlobalTheory.AdelicU.Frames
 
 open scoped TensorProduct NNReal Matrix
@@ -359,5 +357,3 @@ theorem exists_isLatticeFrame_isMajorantFrame (h : IsCMExt F E σ) {J : Matrix (
   exact ⟨a, ha, fun w => ⟨ε w, by rw [hw w]; exact hc w⟩⟩
 
 end GlobalTheory.AdelicU.Frames
-
-end

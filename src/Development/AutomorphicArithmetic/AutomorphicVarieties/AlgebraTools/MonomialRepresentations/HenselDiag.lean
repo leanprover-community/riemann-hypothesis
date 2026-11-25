@@ -19,10 +19,6 @@ private theorem res_one [IsLocalRing C] (u : Matrix ι ι C) :
   rw [← map_one (IsLocalRing.residue C).mapMatrix, ← sub_eq_zero, ← map_sub, ← Matrix.ext_iff]
   simp only [RingHom.mapMatrix_apply, Matrix.map_apply, Matrix.zero_apply, IsLocalRing.residue_eq_zero_iff]
 
-private theorem unit_of_res [IsLocalRing C] (x : C) (h : IsLocalRing.residue C x ≠ 0) : IsUnit x := by
-  by_contra hx
-  exact h ((IsLocalRing.residue_eq_zero_iff _).mpr hx)
-
 private theorem res_diag [IsLocalRing C] (M : Matrix ι ι C)
     (h : ∀ i j, i ≠ j → M i j ∈ IsLocalRing.maximalIdeal C) :
     (IsLocalRing.residue C).mapMatrix M = diagonal fun i => IsLocalRing.residue C (M i i) := by
@@ -40,7 +36,7 @@ private theorem exists_root [HenselianLocalRing C] (M : Matrix ι ι C)
     rw [← IsLocalRing.residue_eq_zero_iff, ← Polynomial.eval_map_apply, hc, eval_prod]
     exact Finset.prod_eq_zero (Finset.mem_univ i) (by simp)
   have h2 : IsUnit (M.charpoly.derivative.eval (M i i)) := by
-    apply unit_of_res
+    apply (IsLocalRing.residue_ne_zero_iff_isUnit _).mp
     rw [← Polynomial.eval_map_apply, ← Polynomial.derivative_map, hc,
       ← Finset.mul_prod_erase _ _ (Finset.mem_univ i), derivative_mul]
     simp only [derivative_sub, derivative_X, derivative_C, sub_zero, one_mul, eval_add, eval_mul, eval_sub, eval_X,
@@ -70,7 +66,7 @@ private theorem exists_vec [IsLocalRing C] (M : Matrix ι ι C)
       diagonal fun k => ∏ j ∈ Finset.univ.erase k, IsLocalRing.residue C (M i i - M j j) := by
     rw [hA, RingHom.map_adjugate, h1, Matrix.adjugate_diagonal]
   have h3 : IsUnit (A i i) := by
-    apply unit_of_res
+    apply (IsLocalRing.residue_ne_zero_iff_isUnit _).mp
     have := congrFun (congrFun h2 i) i
     rw [RingHom.mapMatrix_apply, Matrix.map_apply, Matrix.diagonal_apply_eq] at this
     rw [this]
@@ -114,7 +110,7 @@ theorem UpperTheory.V.AlgebraTools.henselDiag :
   have r2 := (res_one u').mp hu'
   have hdet : IsUnit u := by
     rw [Matrix.isUnit_iff_isUnit_det]
-    apply unit_of_res
+    apply (IsLocalRing.residue_ne_zero_iff_isUnit _).mp
     rw [RingHom.map_det, r1, Matrix.det_one]
     exact one_ne_zero
   obtain ⟨U, hU⟩ := hdet
@@ -142,7 +138,7 @@ theorem UpperTheory.V.AlgebraTools.henselDiag :
   constructor
   · funext i
     have hwi : IsUnit (w i i) := by
-      apply unit_of_res
+      apply (IsLocalRing.residue_ne_zero_iff_isUnit _).mp
       have := congrFun (congrFun r3 i) i
       rw [RingHom.mapMatrix_apply, Matrix.map_apply, Matrix.one_apply_eq] at this
       rw [this]; exact one_ne_zero
@@ -154,6 +150,6 @@ theorem UpperTheory.V.AlgebraTools.henselDiag :
     by_cases hij : i = j
     · subst hij; simp
     · rw [Matrix.diagonal_apply_ne _ hij]
-      refine (unit_of_res (d i - d' j) ?_).mul_right_eq_zero.mp (he i j)
+      refine ((IsLocalRing.residue_ne_zero_iff_isUnit _).mp ?_).mul_right_eq_zero.mp (he i j)
       rw [map_sub, hd1, hd2, ← map_sub]
       exact ((hu i j hij).map _).ne_zero

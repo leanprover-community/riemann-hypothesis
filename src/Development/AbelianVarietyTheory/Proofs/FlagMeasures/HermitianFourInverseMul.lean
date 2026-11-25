@@ -48,7 +48,6 @@ public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.Compl
 
 @[expose] public section
 
-noncomputable section
 open ValuativeRel Formalism.MainNotions.S.Loc
 open scoped Pointwise ENNReal Classical
 

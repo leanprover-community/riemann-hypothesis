@@ -66,7 +66,7 @@ theorem herm_map {La : Type} {g g' : ℕ} {Hm : Matrix (Fin g) (Fin g) ℂ} {Hm'
     (h : (Fin g → ℂ) →ₗ[ℂ] (Fin g' → ℂ)) {P : La → Fin g → ℂ} (hs : Submodule.span ℝ (Set.range P) = ⊤)
     (he : ∀ a b, (herm Hm' (h (P a)) (h (P b))).im = (herm Hm (P a) (P b)).im) (z w : Fin g → ℂ) :
     herm Hm' (h z) (h w) = herm Hm z w := by
-  have : (imHerm Hm').compl₁₂ (h.restrictScalars ℝ) (h.restrictScalars ℝ) = imHerm Hm :=
+  have : (GlobalTheory.PeriodCoord.imForm Hm').compl₁₂ (h.restrictScalars ℝ) (h.restrictScalars ℝ) = GlobalTheory.PeriodCoord.imForm Hm :=
     LinearMap.ext_on_range hs fun x => LinearMap.ext_on_range hs fun y => he x y
   have k : ∀ z w, (herm Hm' (h z) (h w)).im = (herm Hm z w).im := fun z w =>
     LinearMap.congr_fun (LinearMap.congr_fun this z) w
@@ -74,7 +74,6 @@ theorem herm_map {La : Type} {g g' : ℕ} {Hm : Matrix (Fin g) (Fin g) ℂ} {Hm'
   have := k (Complex.I • z) w
   rw [map_smul] at this
   simpa [herm] using this
-
 
 omit [IsCMField E] in
 theorem eq_zero_of_eig {ρ : E →+* ℂ} {v : Fin g → ℂ} (hv : ∀ a : 𝓞 E, tyAct ty a v = ρ a • v) {n : Fin g}
@@ -97,7 +96,6 @@ theorem herm_eq_zero (hP : IsPeriod D ty P) (hE : ∀ x y, (hermForm Hm (P x) (P
   have := hermForm_act Hm D ty P hP hE a (Pi.single k 1) v
   rw [hv, hermForm_smul_right, emb_bar, Complex.star_def, Complex.conj_conj] at this
   simpa [hermForm, tyAct, dotProduct, Pi.single_apply] using this
-
 
 open Classical in
 theorem flatCoord_ne_zero (hP : IsPeriod D ty P) (hE : ∀ x y, (hermForm Hm (P x) (P y)).im = D.EF x y)
@@ -247,7 +245,7 @@ theorem exists_transport_periods {P P' : (Fu.Di i).La →+ (Fin g₀ → ℂ)} (
   · obtain ⟨z, rfl⟩ := h.surjective z
     obtain ⟨w, rfl⟩ := h.surjective w
     let j := (h.restrictScalars ℝ).toLinearMap
-    have : (imHerm Hm').compl₁₂ (φ.toLinearMap.comp j) (φ.toLinearMap.comp j) = (imHerm Hm).compl₁₂ j j := by
+    have : (GlobalTheory.PeriodCoord.imForm Hm').compl₁₂ (φ.toLinearMap.comp j) (φ.toLinearMap.comp j) = (GlobalTheory.PeriodCoord.imForm Hm).compl₁₂ j j := by
       refine LinearMap.ext_on_range hP.2.2.2.1 fun x => LinearMap.ext_on_range hP.2.2.2.1 fun y => ?_
       change (herm Hm' (φ (h (P x))) (φ (h (P y)))).im = (herm Hm (h (P x)) (h (P y))).im
       rw [hφ, hφ, hφ₀, hφ₀, hE, hE']
@@ -321,7 +319,6 @@ theorem isDerivAt0_of_sameVecs {y : Sp ℂ ⟶ Xo.XF c} {g n : ℕ} {e : (Fin g 
   obtain ⟨v₁, k1, k2⟩ := h b
   rw [← k1, ← Y.m.cart.1.hom_ext (h1.trans k2.symm) ((Over.w v₀).trans (Over.w v₁).symm)]
   exact h2
-
 
 open Classical in
 theorem exists_reading (hU : IsClosed (U : Set (Xo.XF c))) {σb : RuleY Y} {σ : RuleU Xo c}
@@ -402,4 +399,3 @@ theorem isHorizontal_of_isFlatAt (hU : IsClosed (U : Set (Xo.XF c))) {σb : Rule
 end Model
 
 end GlobalTheory.DetLine.PeriodFlat
-

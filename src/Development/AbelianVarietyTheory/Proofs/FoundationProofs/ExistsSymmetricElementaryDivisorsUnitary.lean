@@ -10,8 +10,6 @@ import Development.AbelianVarietyTheory.Definitions.Foundations.SmoothPartStable
 
 @[expose] public section
 
-noncomputable section
-
 open Formalism.UG Formalism.IndefR.Mult GlobalTheory.PRep GlobalTheory.LFun GlobalTheory.InertThetaCompare
 
 namespace GlobalTheory.LFun.UnitaryDiv
@@ -74,5 +72,3 @@ theorem exists_good_div : ∀ (L : Type) [Field L] [Valued L (WithZero (Multipli
     (List.pairwise_ofFn.2 fun i j hij => ha hij.le) g.2 h₁ h₂ e', k₁, h₁, k₂, h₂, e'⟩
 
 end GlobalTheory.LFun.UnitaryDiv
-
-end

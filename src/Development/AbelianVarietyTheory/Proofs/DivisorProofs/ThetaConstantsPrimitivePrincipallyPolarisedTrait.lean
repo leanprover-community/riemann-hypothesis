@@ -126,7 +126,7 @@ theorem prim_of_polFib : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] 
   have hmuW : IsUnit (m : W) := by simpa using hmu.map gW
   let k : K →+* AlgebraicClosure K := algebraMap K (AlgebraicClosure K)
   obtain ⟨i', hi'c, hi'⟩ := exists_embed_integral gW hgi hginj (k.comp i) (k.injective.comp hi)
-  obtain ⟨pt₁, -, hT₁⟩ := GlobalTheory.T.isThetaConstantListOfFibre_pullback_field_extension S t.G t.PP.L t.PP.rig t.PP.isLB t.PP.rigGen m N K (AlgebraicClosure K) k
+  obtain ⟨pt₁, -, hT₁⟩ := GlobalTheory.UMin.ThPull.thList_pull S t.G t.PP.L t.PP.rig t.PP.isLB t.PP.rigGen m N K (AlgebraicClosure K) k
     (spMap i ≫ χ) (SecAt.pull t.G t.PP.L σ i) pt c hT
   let a₁ : Over.mk (spMap k ≫ spMap i ≫ χ) ⟶ Over.mk (spMap i ≫ χ) := Over.homMk (spMap k) rfl
   let a₂ : Over.mk (spMap i ≫ χ) ⟶ Over.mk χ := Over.homMk (spMap i) rfl

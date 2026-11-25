@@ -379,169 +379,7 @@ theorem cxHessian_comp_star (φ : (Fin D → ℂ) → ℝ) (z : Fin D → ℂ) :
   simp [h4]
   ring
 
-theorem mixedDisc_map_conj (A : Fin D → Matrix (Fin D) (Fin D) ℂ) :
-    mixedDisc (fun k => (A k).map (starRingEnd ℂ)) = starRingEnd ℂ (mixedDisc A) := by
-
-  simp only [mixedDisc, map_mul, map_sum, map_pow, map_neg, map_one, map_div₀, map_natCast]
-  congr 1
-  refine Finset.sum_congr rfl fun S _ => ?_
-  congr 1
-  rw [RingHom.map_det]
-  congr 1
-  ext i j
-  simp [Matrix.sum_apply]
-
-theorem maDensity_comp_star (φ : Fin D → (Fin D → ℂ) → ℝ) (y : Fin D → ℂ) :
-    maDensity (fun j y' => φ j (star y')) y = maDensity φ (star y) := by
-  simp only [maDensity, cxHessian_comp_star, mixedDisc_map_conj, Complex.conj_re]
-
-theorem star_measurePreserving :
-    MeasurePreserving (star : (Fin D → ℂ) → (Fin D → ℂ)) volume volume := by
-  have h : MeasurePreserving (starRingEnd ℂ : ℂ → ℂ) volume volume :=
-    Complex.conjLIE.measurePreserving
-  exact volume_preserving_pi (fun _ => h)
-
 end Hess
-
-section Pts
-
-variable {K : Type*} [Fintype K] {ι : K → Type*} [∀ k, Fintype (ι k)]
-
-theorem eval_star (z : (Σ k, ι k) → ℂ) (f : MRing ι) :
-    eval (star z) (map (Int.castRingHom ℂ) f) =
-      starRingEnd ℂ (eval z (map (Int.castRingHom ℂ) f)) := by
-  rw [eval_map, eval_map, eval₂_comp_left]
-  congr 1
-  exact Subsingleton.elim _ _
-
-theorem star_mem_mcPts {P : Ideal (MRing ι)} {z : (Σ k, ι k) → ℂ} (hz : z ∈ mcPts P) :
-    star z ∈ mcPts P := by
-  refine ⟨fun k => ?_, fun f hf => ?_⟩
-  · obtain ⟨i, hi⟩ := hz.1 k
-    exact ⟨i, by simpa using hi⟩
-  · rw [eval_star, hz.2 f hf, map_zero]
-
-theorem segre_star (z : (Σ k, ι k) → ℂ) : segre (star z) = star (segre z) := by
-  funext i
-  simp [segre]
-
-theorem cons_star {e : ℕ} (y : Fin e → ℂ) :
-    (Fin.cons 1 (star y) : Fin (e + 1) → ℂ) = star (Fin.cons 1 y) := by
-  funext i
-  refine Fin.cases ?_ (fun j => ?_) i <;> simp
-
-variable {e : ℕ} {P : Ideal (MRing ι)}
-  {Ψ Ψ' : (((k : K) → ι k) → ℂ) →ₗ[ℂ] (Fin (e + 1) → ℂ)}
-
-theorem star_mem_fibre (hΨ : ∀ w, Ψ' (star w) = star (Ψ w)) {y : Fin e → ℂ}
-    {w : ((k : K) → ι k) → ℂ} (hw : w ∈ fibre P Ψ y) : star w ∈ fibre P Ψ' (star y) := by
-  obtain ⟨z, hz, rfl, h⟩ := hw
-  exact ⟨star z, star_mem_mcPts hz, segre_star z, by rw [hΨ, h, cons_star]⟩
-
-theorem differentiableAt_star_star {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
-    [NormedSpace ℝ E] [IsScalarTower ℝ ℂ E] [StarAddMonoid E] [StarModule ℂ E] [StarModule ℝ E]
-    [ContinuousStar E] [NormedAddCommGroup F] [NormedSpace ℂ F] [NormedSpace ℝ F]
-    [IsScalarTower ℝ ℂ F] [StarAddMonoid F] [StarModule ℂ F] [StarModule ℝ F] [ContinuousStar F]
-    {γ : E → F} {x : E} (h : DifferentiableAt ℂ γ (star x)) :
-    DifferentiableAt ℂ (fun y => star (γ (star y))) x := by
-  have hD := h.hasFDerivAt
-  set D := fderiv ℂ γ (star x)
-  let sE : E →L[ℝ] E := (starL' ℝ : E ≃L[ℝ] E)
-  let sF : F →L[ℝ] F := (starL' ℝ : F ≃L[ℝ] F)
-  have hs : HasFDerivAt (star : E → E) sE x := sE.hasFDerivAt
-  have hr : HasFDerivAt γ (D.restrictScalars ℝ) (star x) := hD.restrictScalars ℝ
-  have hc : HasFDerivAt (fun y => star (γ (star y)))
-      (sF.comp ((D.restrictScalars ℝ).comp sE)) x :=
-    HasFDerivAt.comp x (g := (star : F → F)) sF.hasFDerivAt (hr.comp x hs)
-  let cE : E →SL[starRingEnd ℂ] E := ((starL ℂ : E ≃L⋆[ℂ] E) : E →SL[starRingEnd ℂ] E)
-  let cF : F →SL[starRingEnd ℂ] F := ((starL ℂ : F ≃L⋆[ℂ] F) : F →SL[starRingEnd ℂ] F)
-  let D' : E →L[ℂ] F := cF.comp (D.comp cE)
-  have : HasFDerivAt (fun y => star (γ (star y))) D' x :=
-    hasFDerivAt_of_restrictScalars ℝ hc (by ext v; rfl)
-  exact this.differentiableAt
-
-theorem isSheet_star (hΨ : ∀ w, Ψ' (star w) = star (Ψ w)) {y : Fin e → ℂ}
-    {w : ((k : K) → ι k) → ℂ} {γ : (Fin e → ℂ) → (Σ k, ι k) → ℂ} (h : IsSheet P Ψ y w γ) :
-    IsSheet P Ψ' (star y) (star w) (fun y' => star (γ (star y'))) := by
-  refine ⟨by simp only [star_star, segre_star, h.1], ?_⟩
-  have ht : Tendsto (star : (Fin e → ℂ) → (Fin e → ℂ)) (𝓝 (star y)) (𝓝 y) := by
-    have := (continuous_star (R := Fin e → ℂ)).tendsto (star y)
-    simpa using this
-  filter_upwards [ht.eventually h.2] with y' ⟨h1, h2, h3⟩
-  refine ⟨differentiableAt_star_star h1, star_mem_mcPts h2, ?_⟩
-  rw [segre_star, hΨ, h3, cons_star, star_star]
-
-theorem sheetDensity_star {L : Fin e → HermLine ι} (hLc : ∀ j, IsConjInvariantH (L j))
-    {B B' : HermLine ι} (hBB : ∀ z ∈ mcPts P, B'.h (star z) = B.h z)
-    (hΨ : ∀ w, Ψ' (star w) = star (Ψ w)) (hΨ' : ∀ w, Ψ (star w) = star (Ψ' w)) {y : Fin e → ℂ}
-    (hy : ∀ w γ γ', IsSheet P Ψ y w γ → IsSheet P Ψ y w γ' →
-      logNorm B 1 (γ y) * maDensity (fun j y' => pot L j (γ y')) y =
-        logNorm B 1 (γ' y) * maDensity (fun j y' => pot L j (γ' y')) y)
-    (w : ((k : K) → ι k) → ℂ) :
-    sheetDensity P Ψ (pot L) (logNorm B 1) y w =
-      sheetDensity P Ψ' (pot L) (logNorm B' 1) (star y) (star w) := by
-  have back : ∀ γ, IsSheet P Ψ' (star y) (star w) γ →
-      IsSheet P Ψ y w (fun y' => star (γ (star y'))) := fun γ h => by
-    have := isSheet_star hΨ' h
-    simpa only [star_star] using this
-  unfold sheetDensity
-  by_cases hex : ∃ γ, IsSheet P Ψ y w γ
-  · have hex' : ∃ γ, IsSheet P Ψ' (star y) (star w) γ :=
-      ⟨_, isSheet_star hΨ hex.choose_spec⟩
-    rw [dite_eq_left hex, dite_eq_left hex', hy w _ _ hex.choose_spec (back _ hex'.choose_spec)]
-    set γ := hex'.choose with hγ
-    have hspec : IsSheet P Ψ' (star y) (star w) γ := hex'.choose_spec
-    have hz : γ (star y) ∈ mcPts P := hspec.2.self_of_nhds.2.1
-    have h1 : logNorm B 1 (star (γ (star (y)))) = logNorm B' 1 (γ (star y)) := by
-      have h2 : B'.h (γ (star y)) = B.h (star (γ (star y))) := by
-        have := hBB _ (star_mem_mcPts hz)
-        rwa [star_star] at this
-      simp [logNorm, h2]
-    have h3 : maDensity (fun j y' => pot L j (star (γ (star y')))) y =
-        maDensity (fun j y' => pot L j (γ y')) (star y) := by
-      rw [← maDensity_comp_star]
-      congr 1
-      funext j y'
-      simp only [pot]
-      congr 1
-      exact hLc j _
-    rw [h1, h3]
-  · have hex' : ¬ ∃ γ, IsSheet P Ψ' (star y) (star w) γ := fun ⟨γ, h⟩ => hex ⟨_, back γ h⟩
-    rw [dite_eq_right hex, dite_eq_right hex']
-
-end Pts
-
-theorem ptsIntegralAt_conj : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (P : Ideal (MRing ι)) (e : ℕ) (Ψ Ψ' : (((k : K) → ι k) → ℂ) →ₗ[ℂ] (Fin (e + 1) → ℂ)) (L : Fin e → HermLine ι) (B B' : HermLine ι), IsArithVar P (e + 1) → IsGoodProj P Ψ → (∀ w, Ψ' (star w) = star (Ψ w)) → (∀ j, IsSmoothHerm (L j)) → (∀ j, IsConjInvariantH (L j)) → B.a = 0 → IsSmoothHerm B → B'.a = 0 → IsSmoothHerm B' → (∀ z ∈ mcPts P, B'.h (star z) = B.h z) → IsGoodProj P Ψ' ∧ ptsIntegralAt P Ψ' (pot L) (logNorm B' 1) = ptsIntegralAt P Ψ (pot L) (logNorm B 1) := by
-  intro K _ ι _ P e Ψ Ψ' L B B' hP hΨ hΨs hLs hLc hBa hBs _ _ hBB
-  have hΨ2 : ∀ w, Ψ (star w) = star (Ψ' w) := fun w => by
-    have := hΨs (star w)
-    rw [star_star] at this
-    rw [this, star_star]
-  refine ⟨fun z hz h0 => ?_, ?_⟩
-  · refine hΨ _ (star_mem_mcPts hz) ?_
-    rw [segre_star, hΨ2, h0, star_zero]
-  · have hsec : IsSectionOn P B 1 := by
-      refine ⟨0, fun k => by simp [hBa], fun m hm k => ?_, ?_⟩
-      · have : m = 0 := by
-          have := MvPolynomial.support_one (R := ℤ) (σ := Σ k, ι k)
-          rw [this] at hm
-          simpa using hm
-        simp [this]
-      · exact fun h => hP.2.1.1.ne_top ((Ideal.eq_top_iff_one _).mpr h)
-    have hme : MeasurableEmbedding (star : (Fin e → ℂ) → (Fin e → ℂ)) :=
-      (starL' ℝ : (Fin e → ℂ) ≃L[ℝ] (Fin e → ℂ)).toHomeomorph.measurableEmbedding
-    unfold ptsIntegralAt
-    rw [← star_measurePreserving.integral_comp hme]
-    refine integral_congr_ae ?_
-    filter_upwards [sheetIndep K ι P e Ψ L B 1 hP hΨ hLs hBs hsec] with y hy
-    symm
-    refine finsum_mem_eq_of_bijOn star ⟨fun w hw => star_mem_fibre hΨs hw, ?_, ?_⟩ fun w _ =>
-      sheetDensity_star hLc hBB hΨs hΨ2 hy w
-    · exact star_injective.injOn
-    · intro w hw
-      refine ⟨star w, ?_, star_star w⟩
-      have := star_mem_fibre hΨ2 hw
-      rwa [star_star] at this
 
 end GlobalTheory.CompanionTheory.Ar.Giv
 end -- clump:auto
@@ -572,22 +410,6 @@ noncomputable def conjugateProjection {e : ℕ} (Ψ : (((k : K) → ι k) → �
   map_smul' c w := by
     simp only [star_smul, map_smul, RingHom.id_apply, star_star]
 
-theorem conjugateProjection_star {e : ℕ} (Ψ : (((k : K) → ι k) → ℂ) →ₗ[ℂ] (Fin (e + 1) → ℂ))
-    (w : ((k : K) → ι k) → ℂ) : conjugateProjection Ψ (star w) = star (Ψ w) := by
-  change star (Ψ (star (star w))) = _
-  rw [star_star]
-
-theorem isSectionOn_one_of_degree_zero {P : Ideal (MRing ι)} {d : ℕ} {A : HermLine ι}
-    (hP : IsArithVar P d) (hA : A.a = 0) : IsSectionOn P A 1 := by
-  refine ⟨0, fun k => by simp [hA], ?_, ?_⟩
-  · intro m hm k
-    have hm0 : m = 0 := by
-      classical
-      have := MvPolynomial.support_one (R := ℤ) (σ := Σ k, ι k) ▸ hm
-      simpa using this
-    simp [hm0]
-  · exact (Ideal.ne_top_iff_one P).1 hP.2.1.1.ne_top
-
 open Classical in
 theorem logNorm_one_eq_indicator {Ω F : Type} [Field Ω] [Field F] [Algebra F Ω] {y : (Σ k, ι k) → Ω}
     {P : Ideal (MRing ι)} {tg : F →+* ℂ} {B : HermLine ι}
@@ -609,47 +431,6 @@ theorem logNorm_one_eq_indicator {Ω F : Type} [Field Ω] [Field F] [Algebra F �
 
 end SlopeTestRemainingChoices
 
-theorem conjugate_pieces_same_mass :
-    ResExistsStatement → ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (Ω : Type) [Field Ω] (F : Type) [Field F] [NumberField F] [Algebra F Ω] (y : (Σ k, ι k) → Ω) (D : ℕ) (L : Fin D → HermLine ι) (sg : F →+* ℂ), IsArithVar (mCoordIdeal y) (D + 1) → (∀ j, IsSmoothHerm (L j)) → (∀ j, IsConjInvariantH (L j)) → (∀ z ∈ mcPts (mCoordIdeal y), ∃! s : F →+* ℂ, LiesOver y s z) → ptsIntegral (mCoordIdeal y) (pot L) ({z | LiesOver y (ComplexEmbedding.conjugate sg) z}.indicator fun _ => (1 : ℝ)) = ptsIntegral (mCoordIdeal y) (pot L) ({z | LiesOver y sg z}.indicator fun _ => (1 : ℝ)) := by
-  intro hRes K _ ι _ Ω _ F _ _ _ y D L sg hP hL hC huniq
-  classical
-  have hpos : ∀ tg s : F →+* ℂ, 0 < (if s = tg then Real.exp (-1) else (1 : ℝ)) := by
-    intro tg s
-    split_ifs
-    · exact Real.exp_pos _
-    · exact one_pos
-  obtain ⟨B, hBa, hBs, hB⟩ := exists_smooth_weight_const_near_embeddings K ι Ω F y
-    (fun s => if s = sg then Real.exp (-1) else 1) (hpos sg) huniq
-  obtain ⟨B', hBa', hBs', hB'⟩ := exists_smooth_weight_const_near_embeddings K ι Ω F y
-    (fun s => if s = ComplexEmbedding.conjugate sg then Real.exp (-1) else 1)
-    (hpos (ComplexEmbedding.conjugate sg)) huniq
-  have hBv : ∀ z ∈ mcPts (mCoordIdeal y), ∀ s : F →+* ℂ, LiesOver y s z →
-      B.h z = if s = sg then Real.exp (-1) else 1 := fun z hz s hs => (hB z hz s hs).self_of_nhds
-  have hBv' : ∀ z ∈ mcPts (mCoordIdeal y), ∀ s : F →+* ℂ, LiesOver y s z →
-      B'.h z = if s = ComplexEmbedding.conjugate sg then Real.exp (-1) else 1 :=
-    fun z hz s hs => (hB' z hz s hs).self_of_nhds
-  rw [← GroundTheory.Heights₂.Heights.Inter.DiagRAux.ptsIntegral_congr_mcPts (mCoordIdeal y)
-      (fun _ _ _ => rfl) (logNorm_one_eq_indicator huniq hBv'),
-    ← GroundTheory.Heights₂.Heights.Inter.DiagRAux.ptsIntegral_congr_mcPts (mCoordIdeal y)
-      (fun _ _ _ => rfl) (logNorm_one_eq_indicator huniq hBv)]
-  by_cases hex : ∃ Ψ : (((k : K) → ι k) → ℂ) →ₗ[ℂ] (Fin (D + 1) → ℂ), IsGoodProj (mCoordIdeal y) Ψ
-  · obtain ⟨Ψ, hΨ⟩ := hex
-    have hstar : ∀ z ∈ mcPts (mCoordIdeal y), B'.h (star z) = B.h z := by
-      intro z hz
-      obtain ⟨s, hs, -⟩ := huniq z hz
-      have hzc : star z ∈ mcPts (mCoordIdeal y) := conjVec_mem_mcPts hz
-      have hsc : LiesOver y (ComplexEmbedding.conjugate s) (star z) := liesOver_conjVec hs
-      have hiff : ComplexEmbedding.conjugate s = ComplexEmbedding.conjugate sg ↔ s = sg :=
-        ⟨fun h => by simpa using congrArg ComplexEmbedding.conjugate h, fun h => by rw [h]⟩
-      rw [hBv' _ hzc _ hsc, hBv z hz s hs]
-      simp only [hiff]
-    obtain ⟨hΨ', hI⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Giv.ptsIntegralAt_conj K ι (mCoordIdeal y) D Ψ (conjugateProjection Ψ) L B B' hP hΨ
-      (conjugateProjection_star Ψ) hL hC hBa hBs hBa' hBs' hstar
-    rw [ptsIntegral_eq_at hRes resBridge hP hΨ' hL hBs' (isSectionOn_one_of_degree_zero hP hBa'),
-      ptsIntegral_eq_at hRes resBridge hP hΨ hL hBs (isSectionOn_one_of_degree_zero hP hBa), hI]
-  · unfold ptsIntegral
-    rw [dite_eq_right hex, dite_eq_right hex]
-
 end GlobalTheory.CompanionTheory.Ar.Giv
 end -- clump:auto
 end -- clump:auto
@@ -664,72 +445,6 @@ set_option maxSynthPendingDepth 1
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry Filter Topology NumberField
 
-namespace GlobalTheory.CompanionTheory.Ar.Giv
-
-theorem sum_log_unit_mul_mass_eq_zero : ArithIntersectionSystemStatement → PtsIntegrableStatement → ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (Ω : Type) [Field Ω] (F : Type) [Field F] [NumberField F] [Algebra F Ω] (y : (Σ k, ι k) → Ω) (D : ℕ) (L : Fin D → HermLine ι) (θ : (𝓞 F)ˣ), IsArithVar (mCoordIdeal y) (D + 1) → Birational y → (∀ j, IsSmoothHerm (L j)) → (∀ z ∈ mcPts (mCoordIdeal y), ∃! s : F →+* ℂ, LiesOver y s z) → ∑ sg : F →+* ℂ, Real.log ‖sg ((θ : 𝓞 F) : F)‖ * ptsIntegral (mCoordIdeal y) (pot L) ({z | LiesOver y sg z}.indicator fun _ => (1 : ℝ)) = 0 := by
-  intro hSys hInt K _ ι _ Ω _ F _ _ _ y D L θ hP hbir hL hex
-  classical
-  obtain ⟨II, hII, -⟩ := hSys
-  obtain ⟨x, hx⟩ : ∃ x : F, x = ((θ : 𝓞 F) : F) := ⟨_, rfl⟩
-  have hmul : ((((θ⁻¹ : (𝓞 F)ˣ) : 𝓞 F) : F)) * x = 1 := by
-    rw [hx]
-    have h1 : (((θ⁻¹ : (𝓞 F)ˣ) : 𝓞 F) * (θ : 𝓞 F)) = 1 := by simp
-    exact_mod_cast congrArg (fun u : 𝓞 F => (u : F)) h1
-  have hxinv : ((((θ⁻¹ : (𝓞 F)ˣ) : 𝓞 F) : F)) = x⁻¹ := eq_inv_of_mul_eq_one_left hmul
-  have hx0 : x ≠ 0 := by
-    intro h0
-    rw [h0, mul_zero] at hmul
-    exact zero_ne_one hmul
-  have hxI : IsIntegral ℤ x := hx ▸ RingOfIntegers.isIntegral_coe (θ : 𝓞 F)
-  have hxI' : IsIntegral ℤ x⁻¹ := hxinv ▸ RingOfIntegers.isIntegral_coe ((θ⁻¹ : (𝓞 F)ˣ) : 𝓞 F)
-  rw [← hx]
-  have ht0 : algebraMap F Ω x ≠ 0 := (map_ne_zero _).mpr hx0
-  have htI : IsIntegral ℤ (algebraMap F Ω x) := hxI.map (algebraMap F Ω).toIntAlgHom
-  have htI' : IsIntegral ℤ (algebraMap F Ω x)⁻¹ := by
-    rw [← map_inv₀]
-    exact hxI'.map (algebraMap F Ω).toIntAlgHom
-  obtain ⟨d, f, g, hf, hg, hg0, hfg⟩ := hbir (algebraMap F Ω x)
-  have hf0 : aeval y f ≠ 0 := by
-    rw [hfg]
-    exact mul_ne_zero ht0 hg0
-  have hgP : g ∉ mCoordIdeal y := fun h => hg0
-    ((GroundTheory.Heights₂.Heights.Targets.BoundedSectionTransfer.mem_mCoordIdeal_iff y hg).mp h)
-  have hfP : f ∉ mCoordIdeal y := fun h => hf0
-    ((GroundTheory.Heights₂.Heights.Targets.BoundedSectionTransfer.mem_mCoordIdeal_iff y hf).mp h)
-  obtain ⟨B, hB0, hBs, hBl⟩ := exists_smooth_weight_const_near_embeddings K ι Ω F y
-    (fun sg => ‖sg x‖) (fun sg => norm_pos_iff.mpr ((map_ne_zero sg).mpr hx0)) hex
-  obtain ⟨A, hAa, hA⟩ : ∃ A : HermLine ι, (∀ k, A.a k = d k) ∧ IsSmoothHerm A :=
-    ⟨HermLine.ofMetrics (fun k => fsMetric (ι := ι k)) (fun k => (d k : ℤ)), fun _ => rfl,
-      GroundTheory.Heights₂.Heights.Inter.isSmoothHerm_ofMetrics_fs _⟩
-  have hAB : IsSmoothHerm (A.tensor B) := ContDiffOn.mul hA hBs
-  have hABa : ∀ k, (A.tensor B).a k = d k := fun k => by
-    simp [HermLine.tensor, hB0, hAa k]
-  have hRA := (hII K ι).2.2 (mCoordIdeal y) D L A g d hP hL hA hAa hg hgP
-  have hRB := (hII K ι).2.2 (mCoordIdeal y) D L (A.tensor B) f d hP hL hAB hABa hf hfP
-  have hadd := (hII K ι).2.1 (mCoordIdeal y) D L A B hP hL hA hBs
-  obtain ⟨hsupp, hmult⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Giv.divCycle_eq_of_unit_ratio K ι Ω y D d f g (algebraMap F Ω x) hP hf hg hg0 ht0 htI htI' hfg
-  have hlog : ∀ z ∈ mcPts (mCoordIdeal y), logNorm (A.tensor B) f z = logNorm A g z := by
-    intro z hz
-    obtain ⟨sg, hsg, -⟩ := hex z hz
-    have hval : B.h z = ‖sg x‖ := (hBl z hz sg hsg).self_of_nhds
-    have hfz := hsg d f g x hf hg hfg
-    have hs0 : ‖sg x‖ ≠ 0 := norm_ne_zero_iff.mpr ((map_ne_zero sg).mpr hx0)
-    have hAz : A.h z ≠ 0 := (A.pos z hz.1).ne'
-    unfold logNorm
-    congr 1
-    show ‖eval z (map (Int.castRingHom ℂ) f)‖ / (A.h z * B.h z) = _
-    rw [hfz, hval, norm_mul]
-    field_simp
-  have hrec : recR (II K ι) (mCoordIdeal y) L (A.tensor B) f = recR (II K ι) (mCoordIdeal y) L A g := by
-    unfold recR
-    rw [hsupp]
-    congr 1
-    · exact finsum_mem_congr rfl fun W hW => by rw [hmult W hW]
-    · exact GroundTheory.Heights₂.Heights.Inter.DiagRAux.ptsIntegral_congr_mcPts _ (fun _ _ _ => rfl) hlog
-  rw [← intersection_locConst_trivial hInt K ι Ω F y D L B (fun sg => ‖sg x‖) II hII hP hL hB0 hBs hex hBl]
-  linarith [hRA, hRB, hadd, hrec]
-
-end GlobalTheory.CompanionTheory.Ar.Giv
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.MetricProofs.SumOverEmbeddingsUnitInvariance =====
@@ -748,38 +463,6 @@ noncomputable section
 def fsOfDegree {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] (A : HermLine ι) : HermLine ι :=
   HermLine.ofMetrics (fun k => fsMetric (ι := ι k)) A.a
 
-theorem fsOfDegree_a {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] (A : HermLine ι) :
-    (fsOfDegree A).a = A.a := rfl
-
-theorem isSmoothHerm_fsOfDegree {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] (A : HermLine ι) :
-    IsSmoothHerm (fsOfDegree A) :=
-  GroundTheory.Heights₂.Heights.Inter.isSmoothHerm_ofMetrics_fs A.a
-
-theorem isConjInvariantH_fsOfDegree {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] (A : HermLine ι) :
-    IsConjInvariantH (fsOfDegree A) := by
-  intro z
-  simp only [fsOfDegree, HermLine.ofMetrics]
-  exact Finset.prod_congr rfl fun k _ => by
-    rw [GroundTheory.Heights₂.Heights.FubiniStudyConjugationInvariant.fsMetric_conj (fun i => z ⟨k, i⟩)]
-
-theorem pieceDegree : ArithIntersectionSystemStatement → ResExistsStatement → PtsIntegrableStatement →
-    GroundTheory.Heights₂.Heights.HilbertSamuel.PieceDegree.Statement := by
-  intro hAr hRes hPts K _ ι _ Ω _ F _ _ _ y D L sg sg' har hbir hsm hone
-  have hsm₀ : ∀ j, IsSmoothHerm (fsOfDegree (L j)) := fun j => isSmoothHerm_fsOfDegree _
-  have hcj₀ : ∀ j, IsConjInvariantH (fsOfDegree (L j)) := fun j => isConjInvariantH_fsOfDegree _
-  have hind : ∀ s : F →+* ℂ,
-      ptsIntegral (mCoordIdeal y) (pot L) ({z | LiesOver y s z}.indicator fun _ => (1 : ℝ)) =
-        ptsIntegral (mCoordIdeal y) (pot fun j => fsOfDegree (L j))
-          ({z | LiesOver y s z}.indicator fun _ => (1 : ℝ)) := fun s =>
-    _root_.GlobalTheory.CompanionTheory.Ar.Giv.mass_eq_of_degrees hAr hPts K ι Ω F y D L (fun j => fsOfDegree (L j)) s har hsm hsm₀
-      (fun j => (fsOfDegree_a (L j)).symm) hone
-  rw [hind sg, hind sg']
-  exact _root_.GlobalTheory.CompanionTheory.Ar.Giv.const_of_orthogonal_log_units F
-    (fun s => ptsIntegral (mCoordIdeal y) (pot fun j => fsOfDegree (L j))
-      ({z | LiesOver y s z}.indicator fun _ => (1 : ℝ)))
-    (fun s => _root_.GlobalTheory.CompanionTheory.Ar.Giv.conjugate_pieces_same_mass hRes K ι Ω F y D _ s har hsm₀ hcj₀ hone)
-    (fun θ => _root_.GlobalTheory.CompanionTheory.Ar.Giv.sum_log_unit_mul_mass_eq_zero hAr hPts K ι Ω F y D _ θ har hbir hsm₀ hone) sg sg'
-
 end
 
 end GlobalTheory.CompanionTheory.Ar.Giv
@@ -794,18 +477,6 @@ section -- clump:auto
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry Filter Topology NumberField
 
-namespace GlobalTheory.CompanionTheory.Ar.Giv
-
-theorem embeddingPieces_of_resK (hA : ArithIntersectionSystemStatement)
-    (hR : ReciprocityTheory.ChartRestriction.G.Geo.ResK.ResKStatement) :
-    GroundTheory.Heights₂.Heights.HilbertSamuel.EmbeddingPieces.Statement :=
-  have hInt : PtsIntegrableStatement := _root_.GlobalTheory.CompanionTheory.Ar.Giv.ptsIntegrable_of_resK hR
-  have hRes : ResExistsStatement := GlobalTheory.T.resolution_exists_of_resolution_statement hR
-  GroundTheory.Heights₂.Heights.HilbertSamuel.EmbeddingPieces.proof
-    (GroundTheory.Heights₂.Heights.HilbertSamuel.PiecesAdditive.proof hInt)
-    (_root_.GlobalTheory.CompanionTheory.Ar.Giv.pieceDegree hA hRes hInt)
-
-end GlobalTheory.CompanionTheory.Ar.Giv
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.MetricProofs.EmbeddingPiecesOfIntersectionAndResolution =====

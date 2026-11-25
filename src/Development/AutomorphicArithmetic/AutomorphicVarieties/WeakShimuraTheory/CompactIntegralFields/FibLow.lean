@@ -28,47 +28,32 @@ section -- clump:auto
 
 open Polynomial UpperTheory.V.GradeZeroInterpolatingElement
 
-private theorem det_mem_subfield_of_entries_mem {K : Type} [Field K] (E : Subfield K) (M : Matrix (Fin 4) (Fin 4) K)
-    (hM : ∀ i j, M i j ∈ E) : M.det ∈ E := by
-  rw [Matrix.det_apply]
-  refine E.sum_mem fun σ _ => ?_
-  rw [Units.smul_def]
-  exact E.zsmul_mem (E.prod_mem fun i _ => hM _ _) _
-
-private theorem mem_subfield_of_vandermonde_sums_mem {K : Type} [Field K] (E : Subfield K) (d x : Fin 4 → K)
-    (hd : Function.Injective d) (hdE : ∀ i, d i ∈ E)
+private theorem mem_subfield_of_vandermonde_sums_mem {K : Type} [Field K] (E : Subfield K)
+    (d x : Fin 4 → K) (hd : Function.Injective d) (hdE : ∀ i, d i ∈ E)
     (h : ∀ b : Fin 4, ∑ j, d j ^ (b : ℕ) * x j ∈ E) : ∀ j, x j ∈ E := by
-  set V : Matrix (Fin 4) (Fin 4) K := Matrix.of fun b k => d k ^ (b : ℕ) with hV
-  have hVE : ∀ i j, V i j ∈ E := fun i j => E.pow_mem (hdE j) _
+  let V : Matrix (Fin 4) (Fin 4) E :=
+    (Matrix.vandermonde fun k => (⟨d k, hdE k⟩ : E)).transpose
   have hdet : V.det ≠ 0 := by
-    have : V = (Matrix.vandermonde d).transpose := by
-      ext i j; simp [hV, Matrix.vandermonde]
-    rw [this, Matrix.det_transpose]
-    exact Matrix.det_vandermonde_ne_zero_iff.mpr hd
-  have hx : x = V⁻¹.mulVec (V.mulVec x) := by
-    rw [Matrix.mulVec_mulVec, Matrix.nonsing_inv_mul _ (isUnit_iff_ne_zero.mpr hdet), Matrix.one_mulVec]
-  have hinv : ∀ i j, V⁻¹ i j ∈ E := by
-    intro i j
-    rw [Matrix.inv_def, Matrix.smul_apply, Ring.inverse_eq_inv', smul_eq_mul]
-    refine E.mul_mem (E.inv_mem (det_mem_subfield_of_entries_mem E V hVE)) ?_
-    rw [Matrix.adjugate_apply]
-    refine det_mem_subfield_of_entries_mem E _ fun a b => ?_
-    by_cases hab : a = j
-    · subst hab
-      simp only [Matrix.updateRow_self]
-      by_cases hbi : b = i
-      · subst hbi; simp [E.one_mem]
-      · simp [hbi, E.zero_mem]
-    · rw [Matrix.updateRow_ne hab]; exact hVE a b
-  have hy : ∀ b, V.mulVec x b ∈ E := by
-    intro b
-    have : V.mulVec x b = ∑ j, d j ^ (b : ℕ) * x j := by
-      simp [hV, Matrix.mulVec, dotProduct]
-    rw [this]; exact h b
+    rw [Matrix.det_transpose]
+    exact Matrix.det_vandermonde_ne_zero_iff.mpr fun i j hij => hd (congrArg Subtype.val hij)
+  let y : Fin 4 → E := fun b => ⟨∑ j, d j ^ (b : ℕ) * x j, h b⟩
+  let z : Fin 4 → E := V⁻¹.mulVec y
+  have hVz : V.mulVec z = y := by
+    dsimp only [z]
+    rw [Matrix.mulVec_mulVec, Matrix.mul_nonsing_inv V (isUnit_iff_ne_zero.mpr hdet),
+      Matrix.one_mulVec]
+  have hVKdet : (V.map E.subtype).det ≠ 0 := by
+    rw [← RingHom.mapMatrix_apply, ← RingHom.map_det]
+    exact (map_ne_zero E.subtype).mpr hdet
+  have hmul : (V.map E.subtype).mulVec (E.subtype ∘ z) = (V.map E.subtype).mulVec x := by
+    funext b
+    rw [← E.subtype.map_mulVec V z b, hVz]
+    simp [V, y, Matrix.mulVec, dotProduct, Matrix.vandermonde_apply]
+  have hzx := (Matrix.mulVec_injective_iff_isUnit.mpr
+    ((Matrix.isUnit_iff_isUnit_det _).mpr (isUnit_iff_ne_zero.mpr hVKdet))) hmul
   intro j
-  rw [hx]
-  show ∑ b, V⁻¹ j b * V.mulVec x b ∈ E
-  exact E.sum_mem fun b _ => E.mul_mem (hinv j b) (hy b)
+  rw [← congrFun hzx j]
+  exact (z j).2
 
 private theorem diag_entries_mem_of_trace_mem_of_regular_diag {Γ K : Type} [Group Γ] [Field K] (E : Subfield K) (r : Γ →* Matrix (Fin 4) (Fin 4) K)
     (g0 : Γ) (d : Fin 4 → K) (hD : r g0 = Matrix.diagonal d) (hd : Function.Injective d) (hdE : ∀ i, d i ∈ E)

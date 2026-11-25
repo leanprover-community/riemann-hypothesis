@@ -148,12 +148,8 @@ theorem integral_of_simeq (F : PowerSeries ℂ_[p]) (hF : constantCoeff F = 1)
   refine integral_of_mul_eq_one h3 (constantCoeff_expPS _) (exp_neg_log_mul F hF)
 
 theorem constantCoeff_subst' {a : PowerSeries ℂ_[p]} (ha : constantCoeff a = 0) (f : PowerSeries ℂ_[p]) :
-    constantCoeff (f.subst a : PowerSeries ℂ_[p]) = constantCoeff f := by
-  have hs := HasSubst.of_constantCoeff_zero' ha
-  rw [← coeff_zero_eq_constantCoeff_apply, coeff_subst' hs, finsum_eq_single _ 0]
-  · simp
-  · intro k hk
-    simp [ha, hk]
+    constantCoeff (f.subst a : PowerSeries ℂ_[p]) = constantCoeff f :=
+  constantCoeff_subst_of_constantCoeff_zero ha f
 
 theorem coeff_one_subst' {a : PowerSeries ℂ_[p]} (ha : constantCoeff a = 0) (f : PowerSeries ℂ_[p]) :
     coeff 1 (f.subst a : PowerSeries ℂ_[p]) = coeff 1 f * coeff 1 a := by

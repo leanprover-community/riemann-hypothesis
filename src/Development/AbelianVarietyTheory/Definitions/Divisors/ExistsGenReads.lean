@@ -14,8 +14,6 @@ open scoped TensorProduct Classical
 
 namespace GlobalTheory.AdTh.CcModel
 
-noncomputable section
-
 variable {D : D7}
 
 theorem realM_mt {θ : InfFam D} (hθ : IsInfFam θ) (W : HSp D) (h : GA D W) (τ : D.host.E →+* ℂ)
@@ -50,7 +48,5 @@ variable {θ : InfFam D} {V W : HSp D} {r : ℕ} {hr : W.rank = r} {H : Reciproc
     {Dw : Datum H} {l : Geo.Tor.Level H} {Xo : Moduli Dw l} {c : Coeff l} {σ : c.F →+* ℂ} {U : Unf Xo c σ r}
     {dict : GA D W → Σ k, Frame (U.X k).Ψ r} {mu : GA D W → ℂ} {x₀ : (D.host.E →+* ℂ) → Matrix (Fin r) (Fin r) ℂ}
     {om : GA D V × GA D W →* Module.End ℂ (WO V W → ℂ)} {f₀ : WO V W → ℂ} {cc cc' : U.Comp → ℂ}
-
-end
 
 end GlobalTheory.AdTh.CcModel

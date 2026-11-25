@@ -52,7 +52,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped CategoryTheory.Obj TensorProduct
 open GlobalTheory.ZM
 
-noncomputable section
 namespace GlobalTheory.SharpPull
 
 section
@@ -144,4 +143,3 @@ theorem sharp_pull : ∀ (h g k : ℕ) (W : Matrix (Fin 8) (Fin 8) ℤ) (J : Typ
     · rw [Over.w, Over.w]; rfl
 
 end GlobalTheory.SharpPull
-end

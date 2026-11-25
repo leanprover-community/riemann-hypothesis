@@ -46,7 +46,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped CategoryTheory.Obj
 open GlobalTheory.UU
 
-noncomputable section
 namespace GlobalTheory.UU
 variable {S S' S'' : Scheme.{0}} {G : Over S} {G' : Over S'} {G'' : Over S''} [GrpObj G] [IsCommMonObj G] [GrpObj G']
   [IsCommMonObj G'] [GrpObj G''] [IsCommMonObj G'']
@@ -119,4 +118,3 @@ theorem isCPMap_comp_cancel :
     exact ⟨w', h.cancel h'' mul Tw, Tw⟩
 
 end GlobalTheory.UU
-end

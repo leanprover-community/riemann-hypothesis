@@ -4,7 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.AdelicHermitianForms.
 
 @[expose] public section
 
-noncomputable section
 namespace GlobalTheory.UTrans.Model
 open GlobalTheory.UTrans
 variable {R : Type} [CommRing R] {n : ℕ}

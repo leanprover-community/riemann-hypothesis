@@ -228,7 +228,7 @@ private theorem exists_equivariant {I : Type} [Fintype I] (emb : I → (E →+* 
     (π : GlobalTheory.DefU.AutSub E n) (hw : ∀ i, GlobalTheory.UnitaryBC.HasWeightAt π.V (emb i) (lam i)) :
     ∃ μ : ((i : I) → nablaSq ℂ n (lam i)) →ₘₗ[ℂ] π.V, μ ≠ 0 ∧ ∀ x ∈ GlobalTheory.UnitaryBC.infU E n, ∀ v,
       π.rep x (μ v) = μ fun i => GlobalTheory.Branching.sqRep ℂ n (lam i) (GlobalTheory.UnitaryBC.cEmb (emb i) x) (v i) := by
-  haveI : Nontrivial π.V := Submodule.nontrivial_iff_ne_bot.2 π.isAut.ne_bot
+  have : Nontrivial π.V := Submodule.nontrivial_iff_ne_bot.2 π.isAut.ne_bot
   obtain ⟨hgen, hcomm⟩ := UpperTheory.archimedeanUnitary_le_iSup_embU_and_commute E n
   -- Inline the finite-family intertwiner argument with the current multilinear map API.
   have intertwiner (G : Type) [Group G] (H : I → Subgroup G)
@@ -393,7 +393,7 @@ theorem UpperTheory.TP.RP.formEx :
     have := LinearMap.congr_fun h (PiTensorProduct.tprod ℂ v)
     rw [PiTensorProduct.lift.tprod] at this
     simpa using this)
-  haveI : Nontrivial (⨂[ℂ] i, nablaSq ℂ n (lam i)) := by
+  have : Nontrivial (⨂[ℂ] i, nablaSq ℂ n (lam i)) := by
     by_contra hs
     rw [not_nontrivial_iff_subsingleton] at hs
     exact hl (LinearMap.ext fun x => by rw [Subsingleton.elim x 0, map_zero, map_zero])

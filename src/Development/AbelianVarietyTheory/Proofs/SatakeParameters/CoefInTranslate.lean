@@ -17,8 +17,6 @@ import Development.AbelianVarietyTheory.Proofs.FoundationProofs.InducedTypeTheta
 
 open Formalism.MainNotions.G Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.TaylorLogMetric NumberField
 
-noncomputable section
-
 namespace GlobalTheory.AlgTranslate
 
 open GlobalTheory.GalTheta

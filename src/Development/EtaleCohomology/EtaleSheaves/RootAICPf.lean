@@ -8,7 +8,6 @@ public import Mathlib.RingTheory.Polynomial.Cyclotomic.Roots
 
 @[expose] public section
 
-noncomputable section
 open CategoryTheory Limits AlgebraicGeometry Polynomial
 
 namespace LateralTheory.E.RootAICPf
