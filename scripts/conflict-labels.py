@@ -294,21 +294,22 @@ def compared(batches):
 
 def included_in(batches, repo):
     """The pull requests whose changes a batch being built carries by its own account, as {number:
-    {batch numbers}}: those its description lists as included, under a heading that does not leave
-    them out (see `batch-description.py`).
+    {batch numbers}}: those its description lists as included, under a heading that says so (see
+    `includes` in `batch-description.py`).
 
     Such a pull request is not compared. Its changes land with the batch even when its own head is
-    not in the branch, for instance when `main` was merged into it for the batch and the push to
-    its branch was refused, so a conflict with the batch, or with `main`, is not its author's to
-    fix. The batch queue's description check says when its head is not in the branch, since
-    GitHub will not mark it merged then.
+    not in the branch, for instance when it was pushed to after the batch merged it in, so a
+    conflict with the batch, or with `main`, is not its author's to fix. The batch queue's
+    description check says when its head is not in the branch, since GitHub will not mark it
+    merged then. One under a heading that says neither, such as "Held by the maintainers:", is
+    compared like any other.
     """
     found = {}
     for number, batch in batches.items():
         if BUILDING not in batch["labels"]:
             continue
         for listed, heading, _ in _description.list_entries(batch["body"], repo):
-            if heading and not _description.leaves_out(heading) and listed != number:
+            if _description.includes(heading) and listed != number:
                 found.setdefault(listed, set()).add(number)
     return found
 
