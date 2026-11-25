@@ -7,7 +7,10 @@ import io
 import json
 from pathlib import Path
 import subprocess
+import sys
+import tempfile
 import unittest
+from unittest import mock
 
 SCRIPT = Path(__file__).resolve().parents[1] / "inbox-sync.py"
 spec = importlib.util.spec_from_file_location("inbox_sync", SCRIPT)
@@ -493,6 +496,51 @@ class Gh(unittest.TestCase):
         gh = self.answering(b"HTTP/2.0 403 Forbidden\r\n\r\n{\"message\": \"API rate limit exceeded\"}", code=1)
         with self.assertRaises(inbox.Refused):
             gh.label(7, True)
+
+
+class RefusedWrites(unittest.TestCase):
+    """A write GitHub refuses, with the sweep started by `main` as the workflow starts it."""
+
+    def refuse(self, gh, number, status, message):
+        """GitHub answers `status` to every write to the labels of #`number`."""
+        answer = gh.call
+
+        def call(method, path, payload=None):
+            if method != "GET" and path.startswith(f"issues/{number}/labels"):
+                gh.calls += 1
+                return status, {"message": message}
+            return answer(method, path, payload)
+        gh.call = call
+
+    def run_main(self, gh):
+        with tempfile.TemporaryDirectory() as folder:
+            summary = Path(folder) / "summary.md"
+            argv = ["inbox-sync.py", "--repo", "o/r", "--summary", str(summary)]
+            with mock.patch.object(inbox, "GitHub", lambda repo, dry_run=False: gh), \
+                    mock.patch.object(sys, "argv", argv), contextlib.redirect_stdout(io.StringIO()), \
+                    self.assertRaises(SystemExit) as stop:
+                inbox.main()
+            return stop.exception.code, summary.read_text()
+
+    def test_a_refusal_for_the_rate_limit_keeps_what_was_done_before_it(self):
+        gh = Fake([node(1), node(2), node(3)])
+        self.refuse(gh, 2, 403, "API rate limit exceeded for installation")
+        code, summary = self.run_main(gh)
+        self.assertEqual(code, 1)
+        self.assertEqual(gh.writes, [("add", 1)])
+        lines = summary.splitlines()
+        self.assertEqual(lines[0], "- #1: put in the inbox, because it is waiting for a response")
+        self.assertIn("GitHub's rate limit refused POST issues/2/labels", lines[1])
+        self.assertIn("requests to GitHub", lines[2])
+
+    def test_another_refusal_skips_that_pull_request_and_fails_the_run(self):
+        gh = Fake([node(1), node(2), node(3)])
+        self.refuse(gh, 2, 422, "Validation Failed")
+        code, summary = self.run_main(gh)
+        self.assertEqual(code, 1)
+        self.assertEqual(gh.writes, [("add", 1), ("add", 3)])
+        self.assertIn("- #2: skipped, because could not add inbox on #2: 422\n", summary)
+        self.assertIn("- #3: put in the inbox, because it is waiting for a response\n", summary)
 
 
 if __name__ == "__main__":
