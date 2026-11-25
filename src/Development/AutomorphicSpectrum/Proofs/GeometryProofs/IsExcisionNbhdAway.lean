@@ -6,7 +6,6 @@ import Development.AutomorphicSpectrum.Proofs.GeometryProofs.StdSmoothMvPolynomi
 
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
@@ -176,7 +175,6 @@ theorem tan_ext [IsLocalRing R] {φ : R →+* R'} (hφ : Function.Injective φ)
   refine Over.OverMorphism.ext (ext_of_injective (R := DualNumber R) (dualMap_injective hφ) ?_ e)
   have hc := Spec_closedPoint (f := CommRingCat.ofHom (TrivSqZeroExt.fstHom R R R).toRingHom)
   have e1 := congrArg (fun g => g (IsLocalRing.closedPoint R)) (h.trans h'.symm)
-  simp only [Scheme.Hom.comp_apply] at e1
   exact hc ▸ e1
 
 end Dual
@@ -186,7 +184,8 @@ variable {X : Scheme.{0}} {Ω : Type} [Field Ω]
 theorem spec_genMap (ξ : Spec (CommRingCat.of Ω) ⟶ X) (p : Cpt ξ) :
     Spec.map (CommRingCat.ofHom (genMap ξ p)) ≫ X.fromSpecStalk p.1 = ξ := by
   change Spec.map (X.presheaf.stalkSpecializes p.2 ≫ Scheme.stalkClosedPointTo ξ) ≫ _ = _
-  rw [Spec.map_comp, Category.assoc, Scheme.SpecMap_stalkSpecializes_fromSpecStalk]
+  refine ((Spec.map_comp _ _) =≫ _).trans ?_
+  rw [Category.assoc, Scheme.SpecMap_stalkSpecializes_fromSpecStalk]
   exact Scheme.Spec_stalkClosedPointTo_fromSpecStalk (R := CommRingCat.of Ω) ξ
 
 theorem spec_centre {R : Type} [CommRing R] [IsLocalRing R] (z : Spec (CommRingCat.of R) ⟶ X) :
@@ -222,7 +221,7 @@ theorem extends_iff (p : Cpt ξ) (e : E)
   and_congr Iff.rfl (left_eq_iff _ _ _ _)
 
 theorem extends_zero (p : Cpt ξ) : M.Extends p 0 1 :=
-  (M.extends_iff _ _ _).2 ⟨isTanAt_one, by rw [pt_zero, comp_one]⟩
+  (M.extends_iff _ _ _).2 ⟨isTanAt_one, by rw [pt_zero]; exact (comp_one ..).symm⟩
 
 variable {M}
 
@@ -230,14 +229,17 @@ theorem Extends.add {p : Cpt ξ} {e e' : E}
     {v v' : epsAt (R := X.presheaf.stalk p.1) (X.fromSpecStalk p.1) ⟶ G}
     (h : M.Extends p e v) (h' : M.Extends p e' v') : M.Extends p (e + e') (v * v') := by
   rw [extends_iff] at *
-  exact ⟨isTanAt_mul h.1 h'.1, by rw [M.add, comp_mul, h.2, h'.2]⟩
+  exact ⟨isTanAt_mul h.1 h'.1, by
+    rw [M.add]; refine Eq.trans ?_ (comp_mul ..).symm; rw [h.2, h'.2]⟩
 
 theorem Extends.smul {p : Cpt ξ} {e : E}
     {v : epsAt (R := X.presheaf.stalk p.1) (X.fromSpecStalk p.1) ⟶ G}
     (h : M.Extends p e v) (s : X.presheaf.stalk p.1) :
     M.Extends p (genMap ξ p s • e) (epsScale (R := X.presheaf.stalk p.1) _ s ≫ v) := by
   rw [extends_iff] at *
-  exact ⟨isTanAt_scale s h.1, by rw [M.pt_smul, h.2, ← Category.assoc, ← base_scale, Category.assoc]⟩
+  exact ⟨isTanAt_scale s h.1, by
+    rw [M.pt_smul, h.2]
+    exact (Category.assoc _ _ _).symm.trans (((base_scale ..).symm =≫ _).trans (Category.assoc _ _ _))⟩
 
 theorem mem_lat_iff (M : LieModel G ξ E) (p : Cpt ξ) (e : E) : e ∈ M.lat p ↔ ∃ v, M.Extends p e v := by
   refine ⟨fun h => ?_, fun h => Submodule.subset_span h⟩
@@ -298,7 +300,8 @@ theorem ValAt.smul {e : E} {w : epsAt z ⟶ G} (h : M.ValAt z e w) (h1 : genPt �
     M.ValAt z (genMap ξ ⟨centre z, h1⟩ s • e) (epsScale z ((Scheme.stalkClosedPointTo z).hom s) ≫ w) := by
   rw [valAt_iff] at *
   obtain ⟨_, v, hv, rfl⟩ := h
-  exact ⟨h1, _, hv.smul s, by rw [← Category.assoc, ← base_scale, Category.assoc]⟩
+  exact ⟨h1, _, hv.smul s,
+    (Category.assoc _ _ _).symm.trans (((base_scale ..).symm =≫ _).trans (Category.assoc _ _ _))⟩
 
 end LieModel
 
@@ -320,13 +323,13 @@ theorem specializes_of_injective {p : Cpt ξ} (hp : Function.Injective (genMap �
     rw [CptModel.genPt_asIdeal, (RingHom.injective_iff_ker_eq_bot _).1 hp]
     exact bot_le)
   have h3 := h2.map (X.fromSpecStalk p.1).continuous
-  rwa [← e] at h3
+  exact (congrArg (· ⤳ X.fromSpecStalk p.1 t) e).mpr h3
 
 theorem genMap_specializes (p : Cpt ξ) {y : X} (hy : genPt ξ ⤳ y) (c : y ⤳ p.1) (s : X.presheaf.stalk p.1) :
     genMap ξ ⟨y, hy⟩ (X.presheaf.stalkSpecializes c s) = genMap ξ p s := by
   have e : X.presheaf.stalkSpecializes c ≫ X.presheaf.stalkSpecializes hy ≫ Scheme.stalkClosedPointTo ξ =
       X.presheaf.stalkSpecializes p.2 ≫ Scheme.stalkClosedPointTo ξ := by
-    rw [← Category.assoc, TopCat.Presheaf.stalkSpecializes_comp]
+    erw [← Category.assoc, TopCat.Presheaf.stalkSpecializes_comp]
   exact congrArg (fun g => g.hom s) e
 
 theorem centre_specializes {R' : Type} [CommRing R'] [IsLocalRing R'] (φ : R →+* R')
@@ -339,8 +342,9 @@ theorem stalk_base {R' : Type} [CommRing R'] [IsLocalRing R'] (φ : R →+* R')
         Scheme.stalkClosedPointTo (Spec.map (CommRingCat.ofHom φ) ≫ z) =
       Scheme.stalkClosedPointTo z ≫ CommRingCat.ofHom φ := by
   apply Spec.map_injective
-  rw [← cancel_mono (X.fromSpecStalk (centre z)), Spec.map_comp, Spec.map_comp, Category.assoc, Category.assoc,
-    Scheme.SpecMap_stalkSpecializes_fromSpecStalk]
+  rw [← cancel_mono (X.fromSpecStalk (centre z))]
+  refine ((Spec.map_comp _ _) =≫ _).trans (Eq.trans ?_ ((Spec.map_comp _ _) =≫ _).symm)
+  rw [Category.assoc, Category.assoc, Scheme.SpecMap_stalkSpecializes_fromSpecStalk]
   exact (spec_centre _).trans (congrArg (_ ≫ ·) (spec_centre z)).symm
 
 theorem valAt_base (hξ : IsCptGen ξ) {R' : Type} [CommRing R'] [IsLocalRing R'] (φ : R →+* R')

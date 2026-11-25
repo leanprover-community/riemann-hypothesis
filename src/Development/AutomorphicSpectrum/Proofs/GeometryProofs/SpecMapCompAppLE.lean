@@ -18,7 +18,6 @@ noncomputable section
 
 namespace GlobalTheory.CompanionTheory.Ar.InvDer
 
-set_option backward.isDefEq.respectTransparency false in
 private theorem specMap_comp_appLE' {Y : Scheme.{0}} {A B : CommRingCat.{0}} (χ : A ⟶ B) (q : Spec A ⟶ Y) (U : Y.Opens)
     (h : ⊤ ≤ (Spec.map χ ≫ q) ⁻¹ᵁ U) (hq : ⊤ ≤ q ⁻¹ᵁ U) :
     (Spec.map χ ≫ q).appLE U ⊤ h ≫ (Scheme.ΓSpecIso B).hom =
@@ -27,9 +26,9 @@ private theorem specMap_comp_appLE' {Y : Scheme.{0}} {A B : CommRingCat.{0}} (χ
   have e1 : ∀ h' : ⊤ ≤ Spec.map χ ⁻¹ᵁ (q ⁻¹ᵁ U), (Spec.map χ).appLE (q ⁻¹ᵁ U) ⊤ h' =
       (Spec A).presheaf.map (homOfLE hq).op ≫ (Spec.map χ).appTop := by
     intro h'
-    rw [Scheme.Hom.appTop, Scheme.Hom.app_eq_appLE, Scheme.Hom.map_appLE]
-    rfl
-  rw [e1, Category.assoc, Category.assoc, Scheme.ΓSpecIso_naturality, Scheme.Hom.appLE]
+    rw [Scheme.Hom.appTop, Scheme.Hom.app_eq_appLE]
+    exact (Scheme.Hom.map_appLE _ _ _).symm
+  erw [e1, Category.assoc, Category.assoc, Scheme.ΓSpecIso_naturality, Scheme.Hom.appLE]
   simp only [Category.assoc]
 
 def ev {C : Type} [CommRing C] {X : Scheme.{0}} (y : Sp C ⟶ X) (V : X.Opens) (h : ⊤ ≤ y ⁻¹ᵁ V) : Γ(X, V) →+* C :=

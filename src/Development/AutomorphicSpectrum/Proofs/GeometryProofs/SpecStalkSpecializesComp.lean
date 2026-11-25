@@ -25,11 +25,11 @@ theorem genMap_regIso_symm (h : IsCptGen ξ) (p : Cpt ξ) (a : regAt ξ p) :
     genMap ξ p ((regIso h p).symm a) = a := by
   exact congrArg Subtype.val ((regIso h p).apply_symm_apply a)
 
-set_option backward.isDefEq.respectTransparency false in
 theorem genMap_specializes {p q : Cpt ξ} (hs : q.1 ⤳ p.1) (s : X.presheaf.stalk p.1) :
     genMap ξ q ((X.presheaf.stalkSpecializes hs).hom s) = genMap ξ p s := by
   simp only [genMap]
-  rw [← CommRingCat.comp_apply, ← Category.assoc, TopCat.Presheaf.stalkSpecializes_comp]
+  rw [← CommRingCat.comp_apply]
+  erw [← Category.assoc, TopCat.Presheaf.stalkSpecializes_comp]
 
 theorem regAt_le {p q : Cpt ξ} (hs : q.1 ⤳ p.1) : regAt ξ p ≤ regAt ξ q := by
   rintro _ ⟨s, rfl⟩

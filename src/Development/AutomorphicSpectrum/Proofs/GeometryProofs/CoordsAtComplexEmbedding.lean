@@ -28,13 +28,13 @@ theorem centre_specializes (ψ : L →+* L') (z : Sp L ⟶ X) : centre (spMap ψ
   specializes_of_eq (centre_field ψ z)
 
 
-set_option backward.isDefEq.respectTransparency false in
 theorem stalk_comp (ψ : L →+* L') (z : Sp L ⟶ X) :
     X.presheaf.stalkSpecializes (centre_specializes ψ z) ≫ Scheme.stalkClosedPointTo (spMap ψ ≫ z) =
       Scheme.stalkClosedPointTo z ≫ CommRingCat.ofHom ψ := by
   apply Spec.map_injective
-  rw [← cancel_mono (X.fromSpecStalk (centre z)), Spec.map_comp, Spec.map_comp, Category.assoc, Category.assoc,
-    Scheme.SpecMap_stalkSpecializes_fromSpecStalk]
+  rw [← cancel_mono (X.fromSpecStalk (centre z))]
+  refine ((Spec.map_comp _ _) =≫ _).trans (Eq.trans ?_ ((Spec.map_comp _ _) =≫ _).symm)
+  rw [Category.assoc, Category.assoc, Scheme.SpecMap_stalkSpecializes_fromSpecStalk]
   exact (Scheme.Spec_stalkClosedPointTo_fromSpecStalk _).trans
     (congrArg (spMap ψ ≫ ·) (Scheme.Spec_stalkClosedPointTo_fromSpecStalk z).symm)
 

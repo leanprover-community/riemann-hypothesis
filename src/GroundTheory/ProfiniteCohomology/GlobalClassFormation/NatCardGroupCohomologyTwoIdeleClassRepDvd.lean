@@ -290,13 +290,13 @@ noncomputable def barIncl :
     exact h
 
 
-set_option backward.isDefEq.respectTransparency false in
 lemma barIncl_π : barIncl (k := k) S ≫ (resBarResolution (k := k) S).π = (barResolution k S).π := by
   ext : 1
   refine free_ext _ _ _ _ _ fun x => ?_
-  simp only [barIncl, resBarResolution, Functor.mapProjectiveResolution, HomologicalComplex.comp_f,
-    Rep.hom_comp, Representation.IntertwiningMap.comp_apply]
+  simp only [barIncl, resBarResolution, Functor.mapProjectiveResolution]
   simp
+  erw [HomologicalComplex.comp_f, HomologicalComplex.comp_f, Rep.hom_comp, Rep.hom_comp,
+    Representation.IntertwiningMap.comp_apply, Representation.IntertwiningMap.comp_apply]
   erw [barInclF_single]
   erw [barResolution_π_f_zero_single (k := k) (G := G)]
   erw [barResolution_π_f_zero_single (k := k) (G := S)]
@@ -347,7 +347,6 @@ lemma cochainsMap_subtype_comp_iso (A : Rep.{u} k G) :
   exact freeLift_cochainsMap_subtype S A n y
 
 
-set_option backward.isDefEq.respectTransparency false in
 lemma iso_resHomComplex_adj_iso (A : Rep.{u} k G) :
     (inhomogeneousCochainsIso A).hom ≫ resHomComplex S A ≫
       (linearYonedaObjResProjectiveResolutionIso (barResolution k G) (res S.subtype A)).hom ≫
@@ -360,7 +359,7 @@ lemma iso_resHomComplex_adj_iso (A : Rep.{u} k G) :
       ((resFunctor S.subtype).map (freeLift k G A y))).hom
         (Finsupp.single v (MonoidAlgebra.single 1 1))).1 g =
     ((resCoindToHom S.subtype A (res S.subtype A) (𝟙 _)).hom (y v)).1 g
-  rw [resCoindToHom_hom_apply_coe, resCoindToHom_hom_apply_coe]
+  erw [resCoindToHom_hom_apply_coe, resCoindToHom_hom_apply_coe]
   change (A.ρ.freeLift y) ((Representation.free k G (Fin n → G)) g
     (Finsupp.single v (MonoidAlgebra.single 1 1))) = _
   simp

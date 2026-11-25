@@ -60,7 +60,6 @@ open scoped CategoryTheory.Obj
 namespace GlobalTheory.ThickGlue
 
 
-set_option backward.isDefEq.respectTransparency false in
 /-- Glue the scheme with control of open preimages and descent of morphisms. -/
 theorem exists_glue_with_desc (B₀ : Scheme.{0}) (𝒰 : Set B₀.Opens)
     (hbas : ∀ U ∈ 𝒰, ∀ (W : B₀.Opens) (x : B₀), x ∈ U → x ∈ W → ∃ V ∈ 𝒰, x ∈ V ∧ V ≤ U ∧ V ≤ W)
@@ -76,7 +75,7 @@ theorem exists_glue_with_desc (B₀ : Scheme.{0}) (𝒰 : Set B₀.Opens)
       (∀ U, j ⁻¹ᵁ (κ U).opensRange = U.1) ∧
       (∀ {U V : 𝒰} (f : U ⟶ V), F.map f ≫ κ V = κ U) ∧
       ∀ (T : Scheme.{0}) (t : ∀ U, F.obj U ⟶ T), (∀ {U V : 𝒰} (f : U ⟶ V), F.map f ≫ t V = t U) →
-        ∃ s : B ⟶ T, ∀ U, κ U ≫ s = t U := set_option backward.isDefEq.respectTransparency false in by
+        ∃ s : B ⟶ T, ∀ U, κ U ≫ s = t U := by
   have hnat' : ∀ {U V : 𝒰} (f : U ⟶ V) (x : U.1.toScheme),
       F.map f (e U x) = e V (B₀.homOfLE (show U.1 ≤ V.1 from f.le) x) := by
     intro U V f x
@@ -89,8 +88,8 @@ theorem exists_glue_with_desc (B₀ : Scheme.{0}) (𝒰 : Set B₀.Opens)
     intro U V x y h
     obtain ⟨W, hW, hxW, h1, h2⟩ := hbas U.1 U.2 V.1 x.1 x.2 (h ▸ y.2)
     refine ⟨⟨W, hW⟩, homOfLE h1, homOfLE h2, e ⟨W, hW⟩ ⟨x.1, hxW⟩, ?_, ?_⟩
-    · rw [hnat']; congr 1; apply Subtype.ext; simp
-    · rw [hnat']; congr 1; apply Subtype.ext; simpa using h
+    · refine (hnat' (homOfLE h1) _).trans ?_; congr 1; apply Subtype.ext; simp
+    · refine (hnat' (homOfLE h2) _).trans ?_; congr 1; apply Subtype.ext; simpa using h
   have : (F ⋙ Scheme.forget).IsLocallyDirected := by
     constructor
     intro U V W f g x y h
@@ -99,7 +98,7 @@ theorem exists_glue_with_desc (B₀ : Scheme.{0}) (𝒰 : Set B₀.Opens)
     have h' : F.map f (e U x) = F.map g (e V y) := h
     rw [hnat', hnat'] at h'
     have h'' := congrArg Subtype.val (hinj _ h')
-    exact key x y (by simpa using h'')
+    exact key x y ((Scheme.homOfLE_apply _ _).symm.trans (h''.trans (Scheme.homOfLE_apply _ _)))
   have key2 : ∀ {U V : 𝒰} (x : U.1.toScheme) (y : V.1.toScheme),
       colimit.ι F U (e U x) = colimit.ι F V (e V y) → x.1 = y.1 := by
     intro U V x y h
@@ -108,8 +107,7 @@ theorem exists_glue_with_desc (B₀ : Scheme.{0}) (𝒰 : Set B₀.Opens)
     rw [hnat'] at h1 h2
     have h1' := congrArg Subtype.val (hinj _ h1)
     have h2' := congrArg Subtype.val (hinj _ h2)
-    simp only [Scheme.homOfLE_apply] at h1' h2'
-    exact h1'.symm.trans h2'
+    exact (h1'.symm.trans (Scheme.homOfLE_apply _ _)).trans ((Scheme.homOfLE_apply _ _).symm.trans h2')
   have hc : ∀ x : B₀, ∃ U : 𝒰, x ∈ U.1 := by
     intro x
     have : x ∈ sSup 𝒰 := by rw [hcov]; trivial
@@ -129,16 +127,23 @@ theorem exists_glue_with_desc (B₀ : Scheme.{0}) (𝒰 : Set B₀.Opens)
       pullback.lift (B₀.homOfLE h1) (B₀.homOfLE h2) ((B₀.homOfLE_ι h1).trans (B₀.homOfLE_ι h2).symm)
     have hα1 : α ≫ pullback.fst _ _ = B₀.homOfLE h1 := pullback.lift_fst _ _ _
     have hα2 : α ≫ pullback.snd _ _ = B₀.homOfLE h2 := pullback.lift_snd _ _ _
-    have : IsOpenImmersion (α ≫ pullback.fst _ _) := by rw [hα1]; infer_instance
+    have : IsOpenImmersion (α ≫ pullback.fst _ _) := by rw [hα1]; exact instIsOpenImmersionHomOfLE B₀ h1
     have : IsOpenImmersion α := .of_comp _ (pullback.fst _ _)
     refine ⟨α.opensRange, ⟨⟨_, hxW⟩, ?_⟩, ?_⟩
     · apply (pullback.fst (𝒱.f U) (𝒱.f V)).isOpenEmbedding.injective
-      rw [← Scheme.Hom.comp_apply, hα1]
+      refine (Scheme.Hom.comp_apply α (pullback.fst _ _) _).symm.trans ?_
+      rw [hα1]
       exact Subtype.ext (Scheme.homOfLE_apply _ _)
     · rw [← cancel_epi α.isoOpensRange.hom]
       simp only [Scheme.Hom.isoOpensRange_hom_ι_assoc]
-      rw [reassoc_of% hα1, reassoc_of% hα2, reassoc_of% (hnat (U := ⟨W, hW⟩) (V := U) h1),
-        reassoc_of% (hnat (U := ⟨W, hW⟩) (V := V) h2), colimit.w, colimit.w])
+      rw [reassoc_of% hα1, reassoc_of% hα2]
+      calc B₀.homOfLE h1 ≫ e U ≫ colimit.ι F U
+          = e ⟨W, hW⟩ ≫ F.map (homOfLE h1) ≫ colimit.ι F U := by
+            simpa only [Category.assoc] using hnat (U := ⟨W, hW⟩) (V := U) h1 =≫ colimit.ι F U
+        _ = e ⟨W, hW⟩ ≫ F.map (homOfLE h2) ≫ colimit.ι F V :=
+            congrArg (e ⟨W, hW⟩ ≫ ·) ((colimit.w F _).trans (colimit.w F _).symm)
+        _ = B₀.homOfLE h2 ≫ e V ≫ colimit.ι F V := by
+            simpa only [Category.assoc] using (hnat (U := ⟨W, hW⟩) (V := V) h2 =≫ colimit.ι F V).symm)
   have hj : ∀ U : 𝒰, U.1.ι ≫ j = e U ≫ colimit.ι F U := fun U ↦ 𝒱.ι_glueMorphisms _ _ U
   have hj' : ∀ (U : 𝒰) (x : U.1.toScheme), j x.1 = colimit.ι F U (e U x) := fun U x ↦
     congr($(hj U) x)
@@ -160,11 +165,13 @@ theorem exists_glue_with_desc (B₀ : Scheme.{0}) (𝒰 : Set B₀.Opens)
   · rw [IsZariskiLocalAtTarget.iff_of_openCover (P := @IsClosedImmersion)
       (Scheme.IsLocallyDirected.openCover F)]
     intro U
+    have : IsOpenImmersion (colimit.ι F U) := Scheme.IsLocallyDirected.instIsOpenImmersionι (F := F) U
     have H : IsPullback (e U) U.1.ι (colimit.ι F U) j :=
-      IsOpenImmersion.isPullback _ _ _ _ (hj U) (by rw [hpre]; simp)
+      IsOpenImmersion.isPullback _ _ _ _ (hj U) ((hpre U).trans (by simp))
     have : pullback.snd j (colimit.ι F U) = H.flip.isoPullback.inv ≫ e U := by simp
     change IsClosedImmersion (pullback.snd j (colimit.ι F U))
     rw [this]
+    have := he U
     infer_instance
   · intro b
     obtain ⟨U, x, rfl⟩ := Scheme.IsLocallyDirected.ι_jointly_surjective F b

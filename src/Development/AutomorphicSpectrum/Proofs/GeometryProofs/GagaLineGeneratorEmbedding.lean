@@ -34,7 +34,6 @@ section -- clump:auto
 
 open AlgebraicGeometry CategoryTheory Limits GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Flat TensorProduct
 
-set_option backward.isDefEq.respectTransparency false
 
 namespace GlobalTheory.CompanionTheory.Ar.Flat.Descend
 
@@ -53,7 +52,7 @@ theorem germ_closedPoint (ξ : Spec (CommRingCat.of Ω) ⟶ X) (U : X.Opens) (hU
   have e : X.presheaf.germ U (ξ (IsLocalRing.closedPoint (CommRingCat.of Ω))) hU ≫ Scheme.stalkClosedPointTo ξ =
       ξ.appLE U ⊤ (Scheme.preimage_eq_top_of_closedPoint_mem ξ hU).ge ≫
         (Scheme.ΓSpecIso (CommRingCat.of Ω)).hom := by
-    rw [Scheme.germ_stalkClosedPointTo]
+    erw [Scheme.germ_stalkClosedPointTo]
     simp [Iso.trans_hom, Scheme.Hom.app_eq_appLE, Scheme.Hom.appLE_map_assoc]
   exact congrArg (fun φ => φ.hom g) e
 
@@ -81,7 +80,8 @@ theorem val_pull {X' : Scheme.{0}} {Ω' : Type} [Field Ω'] {ξ : Spec (CommRing
     intro g hg e
     subst hg
     rw [← Scheme.Hom.appLE_comp_appLE (Spec.map (CommRingCat.ofHom i)) ξ W ⊤ ⊤
-      (Scheme.preimage_eq_top_of_closedPoint_mem ξ hne).ge le_top, Category.assoc, appLE_top_spec]
+      (Scheme.preimage_eq_top_of_closedPoint_mem ξ hne).ge le_top, Category.assoc]
+    exact congrArg (_ ≫ ·) (appLE_top_spec _ _)
   have e2 : f.appLE W W' hle ≫ ξ'.appLE W' ⊤ (Scheme.preimage_eq_top_of_closedPoint_mem ξ' hne').ge ≫
       (Scheme.ΓSpecIso (CommRingCat.of Ω')).hom =
         ξ.appLE W ⊤ (Scheme.preimage_eq_top_of_closedPoint_mem ξ hne).ge ≫
@@ -328,8 +328,8 @@ theorem exists_frac (ξ : Spec (CommRingCat.of Ω) ⟶ X) (hg : IsCptGen ξ) (W 
   · rw [hfac]
     exact ((IsLocalization.map_units (X.presheaf.stalk x.1) r).map
       (Scheme.stalkClosedPointTo ξ).hom).ne_zero
-  · rw [hfac, hfac, ← map_mul]
-    exact congrArg _ h
+  · rw [hfac, hfac]
+    exact (map_mul _ _ _).symm.trans (congrArg _ h)
 
 end Affine
 
