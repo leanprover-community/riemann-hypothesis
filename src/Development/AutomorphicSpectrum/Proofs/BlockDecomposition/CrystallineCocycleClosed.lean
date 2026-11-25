@@ -386,9 +386,6 @@ theorem red_w (Λ : CLift G D) {T T' : C} (φ : T ⟶ T') :
 def Rf (Λ : CLift G D) {T₀ T₁ T₂ : C} (f : T₀ ⟶ T₁) (g : T₁ ⟶ T₂) (k : T₀ ⟶ T₂) : ((G.obj T₂).B)ˣ :=
   um g G (Λ.w f) * Λ.w g * (Λ.w k)⁻¹
 
-theorem r_eq (Λ : CLift G D) (s : ComposableArrows C 2) :
-    Λ.r s = Rf Λ (s.map' 0 1) (s.map' 1 2) (s.map' 0 2) := rfl
-
 theorem red_Rf (Λ : CLift G D) {T₀ T₁ T₂ : C} (f : T₀ ⟶ T₁) (g : T₁ ⟶ T₂) :
     red T₂ G (Rf Λ f g (f ≫ g)) = 1 := by
   have e1 : red T₂ G (um g G (Λ.w f)) = uq D (thSp (G.map g) ≫ thSp (G.map f) ≫ Λ.p T₀) (thSp (G.map g) ≫ Λ.p T₁)

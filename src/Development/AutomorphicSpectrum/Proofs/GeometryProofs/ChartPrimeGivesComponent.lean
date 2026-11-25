@@ -90,10 +90,6 @@ theorem notMem_comap_iff {A B : Type} [CommRing A] [CommRing B] (f : A →+* B) 
     (h : ∀ t, t ∉ I.comap f ↔ P t) (t : A) : f t ∉ I ↔ P t := by
   rw [← h t, Ideal.mem_comap]
 
-theorem algebraMap_mem_regAt {ξ : Spec (CommRingCat.of Ω) ⟶ X} {p : Cpt ξ} (hp : Char0 ξ p) (r : ℚ) :
-    algebraMap ℚ Ω r ∈ regAt ξ p := by
-  simpa only [eq_ratCast] using Char0.algebraMap_mem hp r
-
 theorem chartQ_le_regAt {ξ : Spec (CommRingCat.of Ω) ⟶ X} {x : κ → Ω} {c : κ} {p : Cpt ξ} (hp : Char0 ξ p)
     (hc : InChart ξ x c p) {s : Ω} (hs : s ∈ chartQ x c) : s ∈ regAt ξ p := by
   have h : ∀ a b : Algebra ℚ Ω, a = b → s ∈ @chartQ Ω _ a κ x c → s ∈ @chartQ Ω _ b κ x c := by

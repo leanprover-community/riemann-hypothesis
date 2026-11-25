@@ -75,7 +75,6 @@ theorem sum_card_mul_modExp : ∑ a, (Fintype.card (m a) : ℤ) * modExp m a = 0
   refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => ?_
   split_ifs <;> simp [mul_comm]
 
-
 variable (k) in
 theorem deltaHalf_scalar (t : kˣ) :
     deltaHalf k m (fun a => Matrix.GeneralLinearGroup.scalar (m a) t) = 1 := by
@@ -130,13 +129,6 @@ theorem parInd_scalar {W : Type} [AddCommGroup W] [Module ℂ W] (e : (Σ a, m a
   rw [leviProj_scalar, deltaHalf_scalar, h] at h1
   rw [parInd_apply, scalar_comm]
   simpa using h1
-
-theorem prodIrr_scalar : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
-    (h N : ℕ) (x : Fin h → IrrGL (k := k)) (hd : ∑ a, (x a).1 = N) (t : kˣ) (c : Fin h → ℂ),
-    (∀ a, Zl.ScalarBy (x a) t (c a)) →
-      ∀ v, prodIrr x hd (Matrix.GeneralLinearGroup.scalar (Fin N) t) v = (∏ a, c a) • v := by
-  intro k _ _ _ _ h N x hd t c hc v
-  exact parInd_scalar _ _ t _ (fun w => piTensor_scalar _ _ c (fun a v => hc a v) w) v
 
 end GlobalTheory.CompanionTheory.ZCentre
 

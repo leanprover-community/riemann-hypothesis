@@ -82,21 +82,3 @@ noncomputable def UpperTheory.Reformulated.B.Qj21.MS :
           ∃ (L : List (ℕ × Fin N1)),
             Q = UpperTheory.Reformulated.B.Qj21.tmL t L (1 : UpperTheory.Reformulated.B.Qj21.PolyXZ H N0 N1) ∧
               UpperTheory.Reformulated.B.Qj21.nzc L = a ∧ UpperTheory.Reformulated.B.Qj21.z0c L = b}
-
-theorem UpperTheory.Reformulated.B.Qj21.ms_mul :
-    ∀ {H : Type} {N0 N1 : ℕ} (t : H) {a b a' b' : ℕ} {P Q : UpperTheory.Reformulated.B.Qj21.PolyXZ H N0 N1},
-      P ∈ UpperTheory.Reformulated.B.Qj21.MS t a b → Q ∈ UpperTheory.Reformulated.B.Qj21.MS t a' b' → P * Q ∈ UpperTheory.Reformulated.B.Qj21.MS t (a + a') (b + b') := by
-  intro H N0 N1 t a b a' b' P Q hP hQ
-  have key : UpperTheory.Reformulated.B.Qj21.MS (N0 := N0) (N1 := N1) t a b * UpperTheory.Reformulated.B.Qj21.MS t a' b'
-      ≤ UpperTheory.Reformulated.B.Qj21.MS t (a + a') (b + b') := by
-    unfold UpperTheory.Reformulated.B.Qj21.MS
-    rw [Submodule.span_mul_span]
-    apply Submodule.span_mono
-    rintro _ ⟨x, ⟨L, rfl, h1, h2⟩, y, ⟨L', rfl, h3, h4⟩, rfl⟩
-    refine ⟨L ++ L', ?_, ?_, ?_⟩
-    · simp only [UpperTheory.Reformulated.B.Qj21.tmL, List.map_append, List.prod_append, mul_one]
-    · rw [← h1, ← h3]
-      simp only [UpperTheory.Reformulated.B.Qj21.nzc, List.map_append, List.sum_append]
-    · rw [← h2, ← h4]
-      simp only [UpperTheory.Reformulated.B.Qj21.z0c, List.map_append, List.sum_append]
-  exact key (Submodule.mul_mem_mul hP hQ)

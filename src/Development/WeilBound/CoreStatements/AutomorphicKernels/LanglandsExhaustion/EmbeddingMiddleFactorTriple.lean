@@ -54,11 +54,6 @@ def codSub {G V W : Type} [Group G] [AddCommGroup V] [Module ℂ V] [AddCommGrou
     change f (ρ g v) = σ g (f v)
     rw [f.isIntertwining])⟩
 
-theorem codSub_injective {G V W : Type} [Group G] [AddCommGroup V] [Module ℂ V] [AddCommGroup W] [Module ℂ W]
-    {ρ : Representation ℂ G V} {σ : Representation ℂ G W} (f : ρ.IntertwiningMap σ) (S : Subrepresentation σ)
-    (h : ∀ v, f v ∈ S.toSubmodule) (hf : Function.Injective f) : Function.Injective (codSub f S h) :=
-  fun a b hab => hf (congrArg Subtype.val hab)
-
 end General
 
 end PositivityTheory.Exh
@@ -92,50 +87,7 @@ def FL {n : ℕ} (A : BR k n) : Prop := HasFiniteLength A.ρ
 theorem emb_trans {n : ℕ} {A C D : BR k n} (h : Emb A C) (h' : Emb C D) : Emb A D :=
   let ⟨f, hf⟩ := h; let ⟨g, hg⟩ := h'; ⟨g.comp f, hg.comp hf⟩
 
-unseal GlobalTheory.ProdFlatten.one GlobalTheory.ProdFlatten.two GlobalTheory.ProdFlatten.mp GlobalTheory.ProdFlatten.pr GlobalTheory.ProdFlatten.Iso GlobalTheory.ProdFlatten.Sm in
-theorem emb_of_iso {n : ℕ} {A C : BR k n} (h : Iso A C) : Emb A C :=
-  let ⟨e⟩ := h; ⟨e.toIntertwiningMap, e.toLinearEquiv.injective⟩
-
-unseal GlobalTheory.ProdFlatten.one GlobalTheory.ProdFlatten.two GlobalTheory.ProdFlatten.mp GlobalTheory.ProdFlatten.pr GlobalTheory.ProdFlatten.Iso GlobalTheory.ProdFlatten.Sm in
-theorem embedding_middle_factor_triple {nA nB m m' N : ℕ} (h2 : m + nB = m') (h1 : nA + m' = N) (A : BR k nA) (B : BR k nB) {M M' : BR k m}
-    (h : Emb M M') : Emb (two h1 A (two h2 M B)) (two h1 A (two h2 M' B)) := by
-  obtain ⟨f, hf⟩ := h
-  refine ⟨tripleProductMap h2 h1 A.ρ B.ρ f, (tripleProductMap_injective h2 h1 A.ρ B.ρ f (quotMk f.range) hf fun y => ?_).1⟩
-  show f.range.toSubmodule.mkQ y = 0 ↔ _
-  rw [Submodule.mkQ_apply, Submodule.Quotient.mk_eq_zero]
-  exact Iff.rfl
-
-unseal GlobalTheory.ProdFlatten.one GlobalTheory.ProdFlatten.two GlobalTheory.ProdFlatten.mp GlobalTheory.ProdFlatten.pr GlobalTheory.ProdFlatten.Iso GlobalTheory.ProdFlatten.Sm in
-theorem mid_br {nA nB m m' : ℕ} (x : IrrGL (k := k)) (h2 : m + nB = m') (h1 : nA + m' = x.1) (A : BR k nA) (B : BR k nB) (M : BR k m)
-    (hM : FL M) (hs : Sm M) (h : Emb (one x) (two h1 A (two h2 M B))) :
-    ∃ c : IrrCl (GL (Fin m) k), Sq (one ⟨m, c⟩) M ∧ Emb (one x) (two h1 A (two h2 (one ⟨m, c⟩) B)) :=
-  let ⟨f, hf⟩ := h
-  CompanionTheory.Exh.mid_gen (fun τ => ⟨_, T3 h2 h1 A.ρ B.ρ τ⟩) (fun f => tripleProductMap h2 h1 A.ρ B.ρ f) (fun f g => tripleProductMap_injective h2 h1 A.ρ B.ρ f g) hM hs x.2 f hf
-
-unseal GlobalTheory.ProdFlatten.one GlobalTheory.ProdFlatten.two GlobalTheory.ProdFlatten.mp GlobalTheory.ProdFlatten.pr GlobalTheory.ProdFlatten.Iso GlobalTheory.ProdFlatten.Sm in
-theorem emb_pr_iff (x : IrrGL (k := k)) {a : ℕ} (z : Fin a → IrrGL (k := k)) (hd : ∑ i, (z i).1 = x.1) :
-    Emb (one x) (pr z hd) ↔ ∃ f : x.rep.IntertwiningMap (prodIrr z hd), Function.Injective f := Iff.rfl
-
-unseal GlobalTheory.ProdFlatten.one GlobalTheory.ProdFlatten.two GlobalTheory.ProdFlatten.mp GlobalTheory.ProdFlatten.pr GlobalTheory.ProdFlatten.Iso GlobalTheory.ProdFlatten.Sm in
-theorem sq_pr_iff (x : IrrGL (k := k)) {a : ℕ} (z : Fin a → IrrGL (k := k)) (hd : ∑ i, (z i).1 = x.1) :
-    Sq (one x) (pr z hd) ↔ IsSubquotient x.rep (prodIrr z hd) := Iff.rfl
-
-unseal GlobalTheory.ProdFlatten.one GlobalTheory.ProdFlatten.two GlobalTheory.ProdFlatten.mp GlobalTheory.ProdFlatten.pr GlobalTheory.ProdFlatten.Iso GlobalTheory.ProdFlatten.Sm in
-theorem fl_pr (hA : GlobalTheory.Published.IrreducibleAdmissibleGL) {a N : ℕ} (z : Fin a → IrrGL (k := k)) (hd : ∑ i, (z i).1 = N) : FL (pr z hd) :=
-  _root_.GlobalTheory.CompanionTheory.ProdFL.main hA z hd
-
 attribute [irreducible] Emb Sq FL
-
-theorem embL_iff (x : IrrGL (k := k)) (l : List (IrrGL (k := k))) : EmbL x l ↔ ∃ hd, Emb (one x) (pr l.get hd) :=
-  exists_congr fun hd => (emb_pr_iff x l.get hd).symm
-
-theorem embL_block {x : IrrGL (k := k)} {A M M' B : List (IrrGL (k := k))} {m : ℕ} (hM : ∑ a, (M.get a).1 = m) (hM' : ∑ a, (M'.get a).1 = m)
-    (h : Emb (pr M.get hM) (pr M'.get hM')) (hx : EmbL x (A ++ M ++ B)) : EmbL x (A ++ M' ++ B) := by
-  obtain ⟨hd, e⟩ := (embL_iff _ _).1 hx
-  have h1 : ∑ a, (A.get a).1 + (m + ∑ a, (B.get a).1) = x.1 := by rw [← hM, ← CompanionTheory.Exh.deg3, hd]
-  have hd' : ∑ a, ((A ++ M' ++ B).get a).1 = x.1 := by rw [CompanionTheory.Exh.deg3, hM', h1]
-  exact (embL_iff _ _).2 ⟨hd', emb_trans (emb_trans (emb_trans e (emb_of_iso (stage3_iso A M B hd rfl hM rfl rfl h1)))
-    (embedding_middle_factor_triple rfl h1 _ _ h)) (emb_of_iso (iso_symm (stage3_iso A M' B hd' rfl hM' rfl rfl h1)))⟩
 
 end PositivityTheory.Exh
 

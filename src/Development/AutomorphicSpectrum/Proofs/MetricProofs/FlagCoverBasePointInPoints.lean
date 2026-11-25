@@ -30,13 +30,6 @@ theorem rename_mem_iff {Ω : Type} [Field Ω] (hv : IsBlockMap κ v) (y : (Σ k,
   rw [mConeMap_rename hv]
   exact map_eq_zero_iff _ (rename_injective κ hv.1)
 
-theorem mCoordIdeal_comp {Ω Ω' : Type} [Field Ω] [Field Ω'] (φ : Ω →+* Ω') (x : (Σ k, ι k) → Ω) :
-    mCoordIdeal (φ ∘ x) = mCoordIdeal x := by
-  ext g
-  change mConeMap (φ ∘ x) g = 0 ↔ mConeMap x g = 0
-  rw [_root_.GlobalTheory.CompanionTheory.Ar.PB.CPts.mConeMap_comp]
-  exact map_eq_zero_iff _ (map_injective φ φ.injective)
-
 theorem eval_rename_eq (z : (Σ k, ι' k) → ℂ) (g : MRing ι) :
     eval z (map (Int.castRingHom ℂ) (rename v g)) = eval (z ∘ v) (map (Int.castRingHom ℂ) g) := by
   rw [map_rename, eval_rename]

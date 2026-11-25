@@ -425,7 +425,6 @@ def FinAct_k : Prop := ForAllSD fun {_ _ _ _ _ _ _ _} d => ∀ x : d.G, (∀ w, 
 namespace KAway
 theorem inFrame_mul_k (d : SD_k σ) (x y : d.G) :
     inFrame d.b (x * y) = inFrame d.b x * inFrame d.b y := d.inFrame_mul x y
-theorem inFrame_one_k (d : SD_k σ) : inFrame d.b (1 : d.G) = 1 := d.inFrame_one
 theorem inFrame_inj_k (d : SD_k σ) {x y : d.G} (h : inFrame d.b x = inFrame d.b y) : x = y := d.inFrame_inj h
 namespace W
 private theorem cw_eW_self (d : SD_k σ) (w : InfinitePlace F) {p q : Type} (M : Matrix p q (AE F E)) :

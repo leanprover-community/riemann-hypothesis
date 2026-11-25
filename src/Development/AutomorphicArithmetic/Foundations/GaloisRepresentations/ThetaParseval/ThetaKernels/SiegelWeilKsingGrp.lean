@@ -73,8 +73,6 @@ theorem sc_pi_k (x : InfinitePlace F → ℂ) (w : InfinitePlace F) : piInf (d.B
   (Place.exists_sec d.cm d.B.emb).choose_spec.2.1 x w
 theorem sc_fin_k (x : InfinitePlace F → ℂ) : finOne F • sc_k d x = 0 :=
   (Place.exists_sec d.cm d.B.emb).choose_spec.2.2.1 x
-theorem sc_add_k (x y : InfinitePlace F → ℂ) : sc_k d (x + y) = sc_k d x + sc_k d y :=
-  (Place.exists_sec d.cm d.B.emb).choose_spec.2.2.2.1 x y
 section Glue
 variable {p : Type} [DecidableEq p]
 def atM_k (w : InfinitePlace F) (Z : Matrix p p ℂ) : Matrix p p (AE F E) :=

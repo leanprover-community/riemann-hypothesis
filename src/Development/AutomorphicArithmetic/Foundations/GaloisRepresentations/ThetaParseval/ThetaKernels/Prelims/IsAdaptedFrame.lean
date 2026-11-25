@@ -75,50 +75,7 @@ theorem indOp_eq {q : T →ₗ[ℂ] P} {L : Module.End ℂ T} (hq : Function.Sur
   obtain ⟨t, rfl⟩ := hq x
   rw [indOp_apply hq hL, h]
 
-theorem keeps_mul {q : T →ₗ[ℂ] P} {L L' : Module.End ℂ T} (h : Keeps q L) (h' : Keeps q L') : Keeps q (L * L') :=
-  fun t ht => h _ (h' t ht)
-
-theorem keeps_sub {q : T →ₗ[ℂ] P} {L L' : Module.End ℂ T} (h : Keeps q L) (h' : Keeps q L') : Keeps q (L - L') :=
-  fun t ht => by simp [h t ht, h' t ht]
-
-theorem indOp_mul {q : T →ₗ[ℂ] P} {L L' : Module.End ℂ T} (hq : Function.Surjective q) (h : Keeps q L)
-    (h' : Keeps q L') : indOp q (L * L') = indOp q L * indOp q L' :=
-  indOp_eq hq (keeps_mul h h') _ fun t => by
-    rw [Module.End.mul_apply, indOp_apply hq h', indOp_apply hq h]; rfl
-
-theorem indOp_sub {q : T →ₗ[ℂ] P} {L L' : Module.End ℂ T} (hq : Function.Surjective q) (h : Keeps q L)
-    (h' : Keeps q L') : indOp q (L - L') = indOp q L - indOp q L' :=
-  indOp_eq hq (keeps_sub h h') _ fun t => by
-    rw [LinearMap.sub_apply, indOp_apply hq h', indOp_apply hq h, LinearMap.sub_apply, map_sub]
-
 end Ind
-
-section Place
-
-variable {ι : Type} [Fintype ι] [DecidableEq ι] {V : ι → Type} [∀ i, AddCommGroup (V i)] [∀ i, Module ℂ (V i)]
-
-theorem atPl_mul (w : ι) (L L' : Module.End ℂ (V w)) : atPl w (L * L') = atPl w L * atPl w L' := by
-  unfold atPl
-  rw [← PiTensorProduct.map_mul]
-  congr 1
-  funext i
-  by_cases h : i = w
-  · subst h; simp
-  · simp only [Function.update_of_ne h]; first | rfl
-
-theorem atPl_comm {w w' : ι} (hw : w ≠ w') (L : Module.End ℂ (V w)) (L' : Module.End ℂ (V w')) :
-    atPl w L * atPl w' L' = atPl w' L' * atPl w L := by
-  unfold atPl
-  rw [← PiTensorProduct.map_mul, ← PiTensorProduct.map_mul]
-  congr 1
-  funext i
-  by_cases h : i = w
-  · subst h; simp only [Function.update_self, Function.update_of_ne hw]; first | rfl
-  · by_cases h' : i = w'
-    · subst h'; simp only [Function.update_self, Function.update_of_ne h]; first | rfl
-    · simp only [Function.update_of_ne h, Function.update_of_ne h']
-
-end Place
 
 section Fock
 
@@ -139,25 +96,11 @@ def fockOp (q : Tens F p₁ q₁ r s →ₗ[ℂ] P) (w : InfinitePlace F) : Mat 
           LinearMap.smul_apply, map_smul] }
   else 0
 
-theorem fockOp_eq {q : Tens F p₁ q₁ r s →ₗ[ℂ] P} {w : InfinitePlace F} (hq : Function.Surjective q)
-    (hK : ∀ Y, Keeps q (atPl w (fockAct2 p₁ q₁ r s Y))) (Y : Mat r s) :
-    fockOp q w Y = indOp q (atPl w (fockAct2 p₁ q₁ r s Y)) := by
-  rw [fockOp, dite_eq_left ⟨hq, hK⟩]
-  rfl
-
-theorem fockOp_apply {q : Tens F p₁ q₁ r s →ₗ[ℂ] P} {w : InfinitePlace F} (hq : Function.Surjective q)
-    (hK : ∀ Y, Keeps q (atPl w (fockAct2 p₁ q₁ r s Y))) (Y : Mat r s) (t : Tens F p₁ q₁ r s) :
-    fockOp q w Y (q t) = q (atPl w (fockAct2 p₁ q₁ r s Y) t) := by
-  rw [fockOp_eq hq hK, indOp_apply hq (hK Y)]
-
-
 variable (r s) in
 def negT : Mat r s →ₗ[ℂ] Mat r s where
   toFun Y := -Yᵀ
   map_add' Y Z := by rw [Matrix.transpose_add, neg_add]
   map_smul' c Y := by rw [Matrix.transpose_smul, RingHom.id_apply, smul_neg]
-
-theorem negT_apply (Y : Mat r s) : negT r s Y = -Yᵀ := rfl
 
 def twAct (ε : Bool) (q : Tens F p₁ q₁ r s →ₗ[ℂ] P) (w : InfinitePlace F) : Mat r s →ₗ[ℂ] Module.End ℂ P :=
   if ε then fockOp q w else fockOp q w ∘ₗ negT r s
@@ -185,61 +128,5 @@ def IsAdaptedFrame (B : Base F E) {d d₁ : ℕ} (H' : Plane E d d₁) {r s : �
     ∀ a, a ≠ .inl r₀ → a ≠ .inr s₀ → ∃ z : Fin d₁ → ℂ, ∀ i, C w i a = (H'.ι.map (B.emb w).1 *ᵥ z) i
 
 end Frames
-
-section Laws
-
-variable {F : Type} [Field F] [NumberField F] {P : Type} [AddCommGroup P] [Module ℂ P] {p₁ q₁ r s : ℕ}
-
-theorem atPl_sub {ι : Type} [Fintype ι] [DecidableEq ι] {V : ι → Type} [∀ i, AddCommGroup (V i)] [∀ i, Module ℂ (V i)]
-    (w : ι) (L L' : Module.End ℂ (V w)) : atPl w (L - L') = atPl w L - atPl w L' := by
-  simp only [Main.atPl_eq, MultilinearMap.map_update_sub]
-
-theorem fockOp_lie {q : Tens F p₁ q₁ r s →ₗ[ℂ] P} {w : InfinitePlace F} (hq : Function.Surjective q)
-    (hK : ∀ Y, Keeps q (atPl w (fockAct2 p₁ q₁ r s Y))) (Y Z : Mat r s) :
-    fockOp q w (Y * Z - Z * Y) = fockOp q w Y * fockOp q w Z - fockOp q w Z * fockOp q w Y := by
-  rw [fockOp_eq hq hK, fockOp_eq hq hK, fockOp_eq hq hK, (GlobalTheory.FockPair.pair_lie_commute p₁ q₁ r s).2.1 Y Z,
-    atPl_sub, atPl_mul, atPl_mul, indOp_sub hq (keeps_mul (hK Y) (hK Z)) (keeps_mul (hK Z) (hK Y)),
-    indOp_mul hq (hK Y) (hK Z), indOp_mul hq (hK Z) (hK Y)]
-
-theorem fockOp_comm {q : Tens F p₁ q₁ r s →ₗ[ℂ] P} (hq : Function.Surjective q)
-    (hK : ∀ w Y, Keeps q (atPl w (fockAct2 p₁ q₁ r s Y))) {w w' : InfinitePlace F} (hw : w ≠ w') (Y Z : Mat r s) :
-    fockOp q w Y * fockOp q w' Z = fockOp q w' Z * fockOp q w Y := by
-  rw [fockOp_eq hq (hK w), fockOp_eq hq (hK w'), ← indOp_mul hq (hK w Y) (hK w' Z),
-    ← indOp_mul hq (hK w' Z) (hK w Y), atPl_comm hw]
-
-theorem negT_negT (Y : Mat r s) : negT r s (negT r s Y) = Y := by
-  simp [negT_apply]
-
-theorem negT_lie (Y Z : Mat r s) : negT r s (Y * Z - Z * Y) = negT r s Y * negT r s Z - negT r s Z * negT r s Y := by
-  simp only [negT_apply, Matrix.transpose_sub, Matrix.transpose_mul, neg_mul_neg, neg_sub]
-
-theorem sameBlock_symm {a b : Ix r s} (h : sameBlock a b) : sameBlock b a := by
-  rcases a with a | a <;> rcases b with b | b <;> simp_all [sameBlock]
-
-theorem isKC_negT {Y : Mat r s} (hY : IsKC Y) : IsKC (negT r s Y) := fun a b hab => by
-  rw [negT_apply, Matrix.neg_apply, Matrix.transpose_apply, hY b a fun h => hab (sameBlock_symm h), neg_zero]
-
-theorem negT_Eab (a b : Ix r s) : negT r s (Eab a b) = -Eab b a := by
-  rw [negT_apply, Eab, Eab, Matrix.transpose_single]
-
-theorem twAct_lie {q : Tens F p₁ q₁ r s →ₗ[ℂ] P} {w : InfinitePlace F} (hq : Function.Surjective q)
-    (hK : ∀ Y, Keeps q (atPl w (fockAct2 p₁ q₁ r s Y))) (ε : Bool) (Y Z : Mat r s) :
-    twAct ε q w (Y * Z - Z * Y) = twAct ε q w Y * twAct ε q w Z - twAct ε q w Z * twAct ε q w Y := by
-  cases ε
-  · simp only [twAct, Bool.false_eq_true, if_false, LinearMap.comp_apply]
-    rw [negT_lie, fockOp_lie hq hK]
-  · simp only [twAct, if_true]
-    exact fockOp_lie hq hK Y Z
-
-theorem twAct_comm {q : Tens F p₁ q₁ r s →ₗ[ℂ] P} (hq : Function.Surjective q)
-    (hK : ∀ w Y, Keeps q (atPl w (fockAct2 p₁ q₁ r s Y))) (ε : Bool) {w w' : InfinitePlace F} (hw : w ≠ w')
-    (Y Z : Mat r s) : twAct ε q w Y * twAct ε q w' Z = twAct ε q w' Z * twAct ε q w Y := by
-  cases ε
-  · simp only [twAct, Bool.false_eq_true, if_false, LinearMap.comp_apply]
-    exact fockOp_comm hq hK hw _ _
-  · simp only [twAct, if_true]
-    exact fockOp_comm hq hK hw _ _
-
-end Laws
 
 end GlobalTheory.FockBridge

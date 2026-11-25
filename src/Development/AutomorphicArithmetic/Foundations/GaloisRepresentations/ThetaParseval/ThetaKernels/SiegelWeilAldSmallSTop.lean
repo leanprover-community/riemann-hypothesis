@@ -407,7 +407,6 @@ theorem orbRes_k : OrbRes_k := fun _F _E _ _ _ _ _ _σ d =>
 section Alg
 variable {d : SD_k σ} (L : LD_k d)
 abbrev uN_k := Act.ComplexParameterFamilyContinuity.unipotentNilpotentPart (σ := σ) (d := d) L
-theorem em_ne_k (j : Fin L.n) : L.em j ≠ L.i₀ := Act.ComplexParameterFamilyContinuity.em_ne_k L j
 theorem uN_mul_k (u v : Fin L.n → AE F E) : uN_k L u * uN_k L v = 0 :=
   Act.ComplexParameterFamilyContinuity.unipotent_nilpotent_mul_eq_zero L u v
 theorem uN_add_k (u v : Fin L.n → AE F E) : uN_k L (u + v) = uN_k L u + uN_k L v := by
@@ -521,9 +520,6 @@ theorem unipotentOfVector_add (u v : Fin L.n → AE F E) : unipotentOfVector L (
 theorem unipotentOfVector_zero : unipotentOfVector L 0 = 1 := by
   refine kfour.inFrame_injective d.b ?_
   rw [inFrame_one, inFrame_unipotentOfVector, uZ_zero_k]
-theorem uN_eq_sum_k (u : Fin L.n → AE F E) : uN_k L u = ∑ j, u j • Matrix.single L.i₀ (L.em j) (1 : AE F E) := by
-  simp only [uN_k, Act.ComplexParameterFamilyContinuity.unipotentNilpotentPart, Matrix.smul_single, smul_eq_mul,
-      mul_one]
 theorem continuous_uN_k : Continuous (uN_k L) :=
   Act.ComplexParameterFamilyContinuity.continuous_unipotent_nilpotent L
 theorem continuous_uZ_k : Continuous (uZ_k (σ := σ) L) := by

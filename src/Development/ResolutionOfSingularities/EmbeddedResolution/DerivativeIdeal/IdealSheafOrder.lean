@@ -567,10 +567,6 @@ theorem mem_orderAtLeastLocus_one_iff (I : X.IdealSheafData) (x : X) :
     x ∈ orderAtLeastLocus I 1 ↔ x ∈ I.support := by
   rw [mem_orderAtLeastLocus_iff, Nat.cast_one, one_le_orderAt_iff_mem_support]
 
-theorem orderAtLeastLocus_one (I : X.IdealSheafData) : orderAtLeastLocus I 1 = {x : X | x ∈ I.support} := by
-  ext x
-  exact mem_orderAtLeastLocus_one_iff I x
-
 theorem orderAtLeastLocus_top_eq_empty (m : ℕ) (hm : 1 ≤ m) :
     orderAtLeastLocus (⊤ : X.IdealSheafData) m = ∅ := by
   ext x

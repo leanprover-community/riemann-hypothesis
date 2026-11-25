@@ -365,11 +365,6 @@ namespace COneB
 variable {d : SD_k σ} (L : LD_k d)
 theorem uM_add_k {uM ν 𝓤} (hu : L.UData uM ν 𝓤) (u v : Fin L.n → AE F E) : uM (u + v) = uM u * uM v := by
   rw [Afc.uM_eq_k L hu, Afc.unipotentOfVector_add]
-theorem uM_zero_k {uM ν 𝓤} (hu : L.UData uM ν 𝓤) : uM 0 = 1 := by
-  rw [Afc.uM_eq_k L hu, Afc.unipotentOfVector_zero]
-theorem uM_neg_k {uM ν 𝓤} (hu : L.UData uM ν 𝓤) (u : Fin L.n → AE F E) : (uM u)⁻¹ = uM (-u) := by
-  have h := uM_add_k L hu (-u) u; rw [neg_add_cancel, uM_zero_k L hu] at h
-  exact (eq_inv_of_mul_eq_one_left h.symm).symm
 theorem uM_cont_k {uM ν 𝓤} (hu : L.UData uM ν 𝓤) : Continuous uM :=
   Act.ComplexParameterFamilyContinuity.continuous_uM_k L hu
 theorem ratV_cocompact_k : ∃ K : Set (Fin L.n → AE F E), IsCompact K ∧ ∀ u, ∃ r ∈ L.ratV, r + u ∈ K :=

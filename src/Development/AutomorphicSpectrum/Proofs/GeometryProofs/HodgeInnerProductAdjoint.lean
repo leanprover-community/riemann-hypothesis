@@ -42,10 +42,6 @@ alias isDiff_one_of_fderiv := HodgeUnique.isDiff_one_of_fderiv
 
 def transl (u : HolUnif A L g) (z : Fin g → ℂ) : A ⟶ A := (toUnit A ≫ u.ex z) * 𝟙 A
 
-theorem ex_comp_transl (u : HolUnif A L g) (z y : Fin g → ℂ) : u.ex y ≫ transl u z = u.ex (z + y) := by
-  rw [transl, MonObj.comp_mul, u.ex_add, Category.comp_id, ← Category.assoc, toUnit_unique (u.ex y ≫ toUnit A) (𝟙 _),
-    Category.id_comp]
-
 alias fderiv_eq_zero_of_isDiff_one := HodgeUnique.fderiv_eq_zero_of_isDiff_one
 
 alias eq_zero_of_isDiff_one := HodgeUnique.eq_zero_of_isDiff_one

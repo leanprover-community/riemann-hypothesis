@@ -146,19 +146,6 @@ theorem integral_mem {K K' : Type} [MeasurableSpace K'] (μ : Measure K') (S : S
 
 variable {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] {a r : ℕ}
 
-theorem eventually_eq_chart (φ : Sm E a) (hlev : IsOpen {k | finRep E a k φ = φ}) (g : GA E a)
-    (x₀ : BlockIx a r → Ad E) :
-    ∀ᶠ x in 𝓝 x₀, φ.1 (unip x * g) =
-      chart φ.1 (finGL E a (JointCont.finPart g x₀)) (toL (JointCont.infPart g x).val) := by
-  have hc : Continuous (fun x : BlockIx a r → Ad E => (JointCont.finPart g x₀)⁻¹ * JointCont.finPart g x) :=
-    continuous_const.mul (JointCont.continuous_finPart g)
-  have h1 : finRep E a ((JointCont.finPart g x₀)⁻¹ * JointCont.finPart g x₀) φ = φ := by rw [inv_mul_cancel]; simp
-  filter_upwards [hc.continuousAt.preimage_mem_nhds (hlev.mem_nhds h1)] with x hx
-  have hx' : finRep E a ((JointCont.finPart g x₀)⁻¹ * JointCont.finPart g x) φ = φ := hx
-  rw [chart_val, JointCont.unip_mul_eq, ← mul_inv_cancel_left (JointCont.finPart g x₀) (JointCont.finPart g x),
-    map_mul, mul_assoc, ← infGL_comm, ← mul_assoc]
-  exact congrArg (fun ψ : Sm E a => ψ.1 (finGL E a (JointCont.finPart g x₀) * infGL E a (JointCont.infPart g x))) hx'
-
 theorem continuous_unip_mul (φ : Sm E a) (hlev : IsOpen {k | finRep E a k φ = φ}) (g : GA E a) :
     Continuous fun x : BlockIx a r → Ad E => φ.1 (unip x * g) :=
   by apply _root_.GlobalTheory.CompanionTheory.CTFin.Central.continuous_unip_mul; assumption

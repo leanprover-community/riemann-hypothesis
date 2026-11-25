@@ -137,14 +137,6 @@ theorem casK_intertw {V : Type} [AddCommGroup V] [Module ℂ V] {ρ : Ix r s →
     rw [h a b hab, h b a (sameBlock_symm' hab)]
   · simp
 
-private theorem posC_props_and_sameBlock_trichotomy {r s : ℕ} (a b : Ix r s) :
-    (posC a b → sameBlock a b) ∧ (posC a b → a ≠ b) ∧ (posC a b → ¬ posC b a) ∧
-      (sameBlock a b → a = b ∨ posC a b ∨ posC b a) := by
-  rcases a with a | a <;> rcases b with b | b <;>
-    simp only [posC, sameBlock, ne_eq, Sum.inl.injEq, Sum.inr.injEq, reduceCtorEq,
-      not_false_eq_true, true_implies, false_implies, implies_true, and_true, true_and,
-      or_false, not_lt] <;> omega
-
 theorem local_of (act : Mat r s →ₗ[ℂ] Module.End ℂ M) (hL : IsLie act) (La : Ix r s → ℚ)
     {A : Type} [NormedAddCommGroup A] [InnerProductSpace ℂ A] [FiniteDimensional ℂ A]
     (ρ : Ix r s → Ix r s → Module.End ℂ A) (ι : A →ₗ[ℂ] M) (f : A)

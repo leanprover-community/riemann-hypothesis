@@ -67,10 +67,6 @@ def flat (S : Type) [AddCommGroup S] [TopologicalSpace S] (n M : ℕ) :
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [Algebra F E]
 
-theorem isSchwartzBruhat_flat {n M : ℕ} {Φ : (Fin n → Fin M → AF F ⊗[F] E) → ℂ}
-    (hΦ : IsSchwartzBruhat Φ) : IsSchwartzBruhat (Φ ∘ (flat (AF F ⊗[F] E) n M).symm) :=
-  Integ.Phase.isSchwartzBruhat_flat hΦ
-
 theorem continuous_integrable_tuple (σ : E →ₐ[F] E) [NumberField E] (hCM : IsCMExt F E σ) (M n : ℕ)
     (dx : Measure (Fin n → Fin M → AF F ⊗[F] E)) (hdx : dx.IsAddHaarMeasure)
     (Φ : (Fin n → Fin M → AF F ⊗[F] E) → ℂ) (hΦ : IsSchwartzBruhat Φ) :

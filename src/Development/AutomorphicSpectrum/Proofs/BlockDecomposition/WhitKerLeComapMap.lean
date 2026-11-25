@@ -84,10 +84,6 @@ def whit2 (ψ : AddChar k Circle) (d : Fin 2 → ℕ) (J : Representation ℂ (L
     ext v
     simp
 
-theorem whit2_mk (ψ : AddChar k Circle) (d : Fin 2 → ℕ) (J : Representation ℂ (Levi k fun a => Fin (d a)) X)
-    (g : GL (Fin (d 0)) k) (v : X) :
-    whit2 ψ d J g (Submodule.Quotient.mk v) = Submodule.Quotient.mk (J (firstEmb d g) v) := rfl
-
 end
 
 end GlobalTheory.CompanionTheory.BZNuPair

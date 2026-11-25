@@ -88,37 +88,6 @@ section Scale
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [Algebra F E]
 
-theorem scale_one (v : HeightOneSpectrum (𝓞 F)) (Q : Set (Fv F v)) (hQ : IsCompact Q) :
-    ∃ N : ℕ, 0 < N ∧ ∀ t ∈ Q, (N : Fv F v) * t ∈ v.adicCompletionIntegers F := by
-  set p : ℕ := Ideal.absNorm v.asIdeal with hp
-  have hp0 : 0 < p := Nat.pos_of_ne_zero fun h => v.ne_bot (Ideal.absNorm_eq_zero_iff.1 h)
-  have hp1 : Valued.v (p : Fv F v) < 1 := by
-    have h1 : ((p : 𝓞 F)) ∈ v.asIdeal := by
-      simpa [hp] using Ideal.absNorm_mem v.asIdeal
-    have h2 := (v.valuation_lt_one_iff_mem (K := F) (p : 𝓞 F)).2 h1
-    have h3 : (p : Fv F v) = algebraMap (𝓞 F) (Fv F v) (p : 𝓞 F) := (map_natCast _ p).symm
-    rw [h3]
-    exact (HeightOneSpectrum.valuedAdicCompletion_eq_valuation v (p : 𝓞 F)).trans_lt h2
-  have hO : IsOpen {t : Fv F v | Valued.v t ≤ 1} := Valued.isOpen_integer (Fv F v)
-  have hopen : ∀ k : ℕ, IsOpen {t : Fv F v | Valued.v ((p : Fv F v) ^ k * t) ≤ 1} := fun k =>
-    hO.preimage (continuous_const.mul continuous_id)
-  obtain ⟨k, hk⟩ := hQ.elim_directed_cover (fun k : ℕ => {t : Fv F v | Valued.v ((p : Fv F v) ^ k * t) ≤ 1}) hopen
-    (fun t _ => by
-      by_cases ht : t = 0
-      · exact Set.mem_iUnion.2 ⟨0, by simp [ht]⟩
-      · have hvt : Valued.v t ≠ 0 := (Valuation.ne_zero_iff _).2 ht
-        obtain ⟨n, hn⟩ := exists_pow_lt₀ hp1 (Units.mk0 _ (inv_ne_zero hvt))
-        refine Set.mem_iUnion.2 ⟨n, ?_⟩
-        simp only [Set.mem_ofPred_eq, map_mul, map_pow]
-        exact (mul_le_mul' hn.le le_rfl).trans (inv_mul_cancel₀ hvt).le)
-    (directed_of_isDirected_le fun i j hij t ht => by
-      simp only [Set.mem_ofPred_eq] at ht ⊢
-      rw [← Nat.sub_add_cancel hij, pow_add, mul_assoc, map_mul, map_pow]
-      exact mul_le_one' (pow_le_one' hp1.le _) ht)
-  exact ⟨p ^ k, pow_pos hp0 k, fun t ht => (HeightOneSpectrum.mem_adicCompletionIntegers (𝓞 F) F v).2 (by
-    rw [Nat.cast_pow]
-    exact hk ht)⟩
-
 theorem scale_lat [NumberField E] (σ : E →ₐ[F] E) (hcm : IsCMExt F E σ) {d : ℕ} (b : Module.Basis (Fin d) F E)
     (v : HeightOneSpectrum (𝓞 F)) (K : Set (Fin 1 → Fin 1 → Fv F v ⊗[F] E)) (hK : IsCompact K) :
     ∃ N : ℕ, 0 < N ∧ ∀ Y ∈ K, (fun a i => (N : Fv F v ⊗[F] E) * Y a i) ∈ latV b v :=

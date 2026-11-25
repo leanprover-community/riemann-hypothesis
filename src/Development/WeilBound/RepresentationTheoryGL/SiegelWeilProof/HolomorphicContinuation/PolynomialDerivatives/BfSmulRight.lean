@@ -191,12 +191,6 @@ theorem gf_pos (hs : ∀ s, star (w s) = w s) (hp : ∀ s, 0 < (w s).re) (p : Mv
   · rw [key]; exact mul_nonneg (Complex.normSq_nonneg _) (hp t).le
   · rw [key]; exact mul_pos (Complex.normSq_pos.mpr hs0) (hp s)
 
-omit [Fintype τ] in
-theorem pderiv_X' (v u : τ) : pderiv v (X u : MvPolynomial τ ℂ) = if v = u then 1 else 0 := by
-  rw [pderiv_X]; by_cases h : v = u
-  · subst h; simp
-  · simp [Ne.symm h, h]
-
 theorem der_expand (D : Derivation ℂ (MvPolynomial τ ℂ) (MvPolynomial τ ℂ)) (p : MvPolynomial τ ℂ) :
     D p = ∑ v, D (X v) * pderiv v p := by
   let D' : Derivation ℂ (MvPolynomial τ ℂ) (MvPolynomial τ ℂ) := ∑ v, D (X v) • pderiv (R := ℂ) v
@@ -241,12 +235,6 @@ theorem bf_eq (w : (τ →₀ ℕ) → ℂ) (S : Finset (τ →₀ ℕ)) {p q : 
     (hq : q.support ⊆ S) : bf w p q = ∑ s ∈ S, p.coeff s * q.coeff s * w s := by
   rw [bf_eq_gf, gf_eq w S ((support_map_subset (starRingEnd ℂ) p).trans hp) hq]
   simp only [coeff_map, ← Complex.star_def, star_star]
-
-theorem bf_add_left (w : (τ →₀ ℕ) → ℂ) (p p' q : MvPolynomial τ ℂ) : bf w (p + p') q = bf w p q + bf w p' q := by
-  rw [bf_eq_gf, map_add, gf_add_left, ← bf_eq_gf, ← bf_eq_gf]
-
-theorem bf_add_right (w : (τ →₀ ℕ) → ℂ) (p q q' : MvPolynomial τ ℂ) : bf w p (q + q') = bf w p q + bf w p q' := by
-  rw [bf_eq_gf, gf_add_right, ← bf_eq_gf, ← bf_eq_gf]
 
 theorem bf_monomial (w : (τ →₀ ℕ) → ℂ) (s t : τ →₀ ℕ) (a b : ℂ) :
     bf w (monomial s a) (monomial t b) = if s = t then a * b * w s else 0 := by
