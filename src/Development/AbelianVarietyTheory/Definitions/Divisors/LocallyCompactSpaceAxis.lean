@@ -82,7 +82,6 @@ open GlobalTheory.Doubling (conjUnit)
 variable {σ : E →ₐ[F] E}
   {n : ℕ} {J : Matrix (Fin n) (Fin n) E} {r : ℕ} {X Y : Matrix (Fin n) (Fin (r + 1)) E}
 
-
 theorem semiLat_ne_zero {G : Type} [Group G] [TopologicalSpace G] [MeasurableSpace G]
     {N M Λ : Subgroup G} {ν : Measure N} {π : Measure M} {𝓝 : Set N} {𝓜 : Set M}
     (H : SemiLat N M Λ ν π 𝓝 𝓜) : ν 𝓝 ≠ 0 := by
@@ -93,25 +92,6 @@ theorem semiLat_ne_zero {G : Type} [Group G] [TopologicalSpace G] [MeasurableSpa
   haveI : Countable (Λ.subgroupOf N) := Function.Injective.countable
     (f := fun x : Λ.subgroupOf N => (⟨x.1.1, x.2⟩ : Λ)) fun a b h => Subtype.ext (Subtype.ext (congrArg (·.1) h))
   exact H.domN.measure_ne_zero (NeZero.ne ν)
-
-theorem fd_one {H : Type} [Group H] [MeasurableSpace H] [MeasurableSingletonClass H] (Λ : Subgroup H) (hΛ : ∀ g, g ∈ Λ)
-    (μ : Measure H) : IsFundamentalDomain Λ ({1} : Set H) μ :=
-  IsFundamentalDomain.mk' (measurableSet_singleton _).nullMeasurableSet fun x =>
-    ⟨⟨x⁻¹, hΛ _⟩, inv_mul_cancel x, fun _ hy => Subtype.ext (eq_inv_of_mul_eq_one_left hy)⟩
-
-theorem haar_count {H : Type} [Group H] [Finite H] [TopologicalSpace H] [DiscreteTopology H] [MeasurableSpace H]
-    [BorelSpace H] : (Measure.count : Measure H).IsHaarMeasure :=
-  { toIsFiniteMeasureOnCompacts := inferInstance, toIsMulLeftInvariant := inferInstance,
-    open_pos := fun U _ hU h => hU.ne_empty (Measure.count_eq_zero_iff.1 h) }
-
-theorem semiLat_finite {G : Type} [Group G] [Finite G] [TopologicalSpace G] [DiscreteTopology G] [MeasurableSpace G]
-    [BorelSpace G] (N M : Subgroup G) [hN : N.Normal] (hd : ∀ g ∈ N, g ∈ M → g = 1) (hs : ∀ g, ∃ u ∈ N, ∃ m ∈ M, g = u * m) :
-    SemiLat N M ⊤ Measure.count Measure.count {1} {1} :=
-  ⟨isClosed_discrete _, isClosed_discrete _, fun m _ u hu => hN.conj_mem u hu m, hd,
-    fun γ _ => let ⟨u, hu, m, hm, e⟩ := hs γ; ⟨u, hu, m, hm, trivial, trivial, e⟩, haar_count, haar_count,
-    fd_one _ (fun _ => Subgroup.mem_subgroupOf.2 (Subgroup.mem_top _)) _,
-    fd_one _ (fun _ => Subgroup.mem_subgroupOf.2 (Subgroup.mem_top _)) _, by simp, by simp,
-    inferInstance, inferInstance, inferInstance⟩
 
 end Inhab
 

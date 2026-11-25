@@ -51,12 +51,6 @@ def rankOneDesc (j : ℤ) (χ : TameGal K l e a →* O) :
         mx_rankOne_eq, frob_C]
       rw [map_Ezpow l e _ (congrFun (ringAct_E g) τ), mul_comm]
 
-theorem rankOneDesc_act (j : ℤ) (χ : TameGal K l e a →* O) (g : TameGal K l e a)
-    (v : Vec K a Unit) (τ : ZMod a) : (rankOneDesc j χ).act g v τ () =
-      C (algebraMap O K (χ g)) * rescale (g.root τ) (v (τ - g.shift) ()) := by
-  change Descent.matAct g _ v τ () = _
-  simp [Descent.matAct_apply, Matrix.mulVec, dotProduct]
-
 variable [CompleteSpace K]
 
 omit [NeZero a] [TameDescentExponentData K l e a] in
@@ -72,7 +66,6 @@ theorem exists_EN_bas_rankOne (j : ℤ) : ∃ γ ∈ S O K e,
   rw [mul_comm, eq_sub_of_add_eq' h1, ← sub_smul]
   congr 1
   ring
-
 
 variable (O K l e a) in
 def rankOneDat (η H : ℕ) (j : ℤ) (h₁ : -(η : ℤ) ≤ j) (h₂ : j ≤ H) (χ : TameGal K l e a →* O) :
@@ -127,7 +120,6 @@ structure IsOfType (Sig : Set (ZMod e)) (U : Set ℤ) : Prop where
   chars_subset : ∀ τ, D.desc.chars τ ⊆ Sig
   jumps_subset : D.jumps ⊆ U
 
-
 omit [NeZero e] in
 theorem exists_conn_eq {m : Vec K a ι} (hm : m ∈ D.MM) : ∃ w ∈ D.MM, D.conn m = (X : K⟦X⟧) • w :=
   ⟨_, D.nabla_mem m hm, rfl⟩
@@ -144,8 +136,6 @@ theorem EN_mem_divE {n : ℕ} {y : Vec K a ι} (hy : y ∈ divE l e n D.Man) :
   rw [mem_divE, D.E_pow_smul_EN]
   exact sub_mem (D.EN_mem_Man hy) (D.smul_mem_Man
     (mul_mem (natCast_mem _ n) (N_mem (derivative_mem_R l (E_mem l e _)))) hy)
-
-
 
 omit [NeZero e] in
 theorem smul_mem_Mext {B : Subalgebra O K⟦X⟧} (hB : A O K ≤ B) {m : Vec K a ι} (hm : m ∈ D.ext B) :
@@ -194,11 +184,9 @@ abbrev plusMod (hy : y ∈ D.Y) : PhiMod O K l e a (ι ⊕ Unit) := D.plus (mem_
 
 abbrev plusDesc (hy : y ∈ D.Y) : Descent (plusMod hy) := D.desc.plus (mem_invE_of_mem_Y hy) hy.2
 
-
 omit [NeZero e] in
 theorem plusMod_upper (hy : y ∈ D.Y) : ∀ v ∈ (plusMod hy).L, E K l e ^ η • v ∈ (plusMod hy).M :=
   D.plus_upper _ D.upper hy.1
-
 
 end BKDat
 
@@ -259,98 +247,6 @@ theorem Ezpow_mem_invL_A_iff {i : ℤ} : Ezpow K l e i ∈ invL l (A O K) ↔ 0 
   have h3 : Ezpow K l e (-1) = 0 := eq_zero_of_E_mul l e (invL_A_le_Rpi l e h1) fun n => by
     rw [h2, coeff_one, ite_eq_right (by have := NeZero.pos e; omega)]
   exact Units.ne_zero _ h3
-
-theorem mem_shiftE_of_le {P : PhiMod O K l e a ι} {i k : ℤ} (h : i ≤ k) {v : Vec K a ι}
-    (hv : v ∈ shiftE l e k (P.Mext (invL l (A O K)))) :
-    v ∈ shiftE l e i (P.Mext (invL l (A O K))) := by
-  have := (P.Mext (invL l (A O K))).smul_mem
-    ⟨_, (Ezpow_mem_invL_A_iff (e := e)).2 (sub_nonneg.2 h)⟩ hv
-  rwa [Subalgebra.smul_def, smul_smul, ← Ezpow_add, show k - i + -k = -i by ring] at this
-
-theorem filL_rankOne (j i : ℤ) : (rankOne O K l e fun _ : ZMod a => j).filL i =
-    shiftE l e (if i ≤ j then j else j + 1)
-      ((rankOne O K l e fun _ : ZMod a => j).Mext (invL l (A O K))) := by
-  set P := rankOne O K l e fun _ : ZMod a => j
-  have h0 : P.ext (invL l (A O K)) = shiftE l e j (P.Mext (invL l (A O K))) := by
-    ext v
-    exact (mem_ext_rankOne j).trans
-      ⟨fun h => mem_tot.2 fun τ _ => h τ, fun h τ => mem_tot.1 h τ ()⟩
-  have h1 : shiftE l e 1 (P.ext (invL l (A O K))) =
-      shiftE l e (j + 1) (P.Mext (invL l (A O K))) := by
-    ext v
-    rw [h0, mem_shiftE, mem_shiftE, mem_shiftE, smul_smul, ← Ezpow_add, neg_add]
-  rw [PhiMod.filL, h1, h0]
-  split_ifs with h
-  · rw [inf_of_le_left fun _ => mem_shiftE_of_le h,
-      sup_of_le_left fun _ => mem_shiftE_of_le (by omega)]
-  · exact sup_of_le_right (inf_le_right.trans fun _ => mem_shiftE_of_le (by omega))
-
-theorem jumps_rankOne (j : ℤ) : (rankOne O K l e fun _ : ZMod a => j).jumps = {j} := by
-  ext i
-  simp only [PhiMod.jumps, Set.mem_ofPred_eq, filL_rankOne, Set.mem_singleton_iff]
-  constructor
-  · intro h
-    by_contra hi
-    exact h (by simp only [show i + 1 ≤ j ↔ i ≤ j by omega])
-  · rintro rfl h
-    rw [ite_eq_right (by omega), ite_eq_left le_rfl] at h
-    have h1 : Ezpow K l e i • (bas () : Vec K a Unit) ∈ shiftE l e i
-        ((rankOne O K l e fun _ : ZMod a => i).Mext (invL l (A O K))) := by
-      rw [mem_shiftE, smul_smul, Ezpow_neg_mul, one_smul]
-      exact PhiMod.Mext_mono _ (le_away _ _)
-        ((rankOne O K l e fun _ : ZMod a => i).bas_mem_M ())
-    rw [← h, mem_shiftE, smul_smul, ← Ezpow_add] at h1
-    have h2 := mem_tot.1 h1 0 ()
-    simp only [bas, Pi.smul_apply, Pi.single_eq_same, smul_eq_mul, mul_one,
-      Ezpow_mem_invL_A_iff] at h2
-    omega
-
-end Examples
-
-section Examples
-
-variable [CompleteSpace K] {j : ℤ} (h₁ : -(η : ℤ) ≤ j) (h₂ : j ≤ H)
-
-theorem Lc_rankOneDat (χ : TameGal K l e a →* O) :
-    (rankOneDat O K l e a η H j h₁ h₂ χ).Lc
-        ((rankOneDat O K l e a η H j h₁ h₂ χ).cls (Ezpow K l e (-1) • bas ())) =
-      (((j + 1) * e * l : ℤ) : K) •
-        (rankOneDat O K l e a η H j h₁ h₂ χ).cls (Ezpow K l e (-1) • bas ()) := by
-  obtain ⟨γ, hγ, h⟩ := exists_EN_bas_rankOne (O := O) (K := K) (l := l) (e := e) (a := a) j
-  have h2 : E K l e * Ezpow K l e (-1) = 1 := by simpa using E_pow_mul_Ezpow_neg (K := K) l e 1
-  have h3 : (rankOneDat O K l e a η H j h₁ h₂ χ).EN (Ezpow K l e (-1) • bas ()) =
-      (((j + 1) * e * l : ℤ) : K) • Ezpow K l e (-1) • (bas () : Vec K a Unit) +
-        (γ - ((j + 1) * e : ℤ)) • bas () := by
-    rw [PhiMod.EN_apply, PhiMod.conn_smul, smul_add, smul_comm (E K l e) (Ezpow K l e (-1)),
-      ← PhiMod.EN_apply]
-    erw [h]
-    rw [Int.cast_smul_eq_zsmul, ← Int.cast_smul_eq_zsmul K⟦X⟧]
-    simp only [smul_smul, ← add_smul]
-    congr 1
-    rw [E_mul_N_Ezpow, N_E]
-    rw [E] at h2 ⊢
-    push_cast
-    linear_combination (γ - (j + 1) * e) * h2
-  rw [BKDat.Lc_cls, h3, map_add (f := _), map_smul, add_eq_left, PhiMod.cls_eq_zero_iff]
-  exact PhiMod.smul_mem_Man _ (sub_mem (S_le_R l e hγ) (intCast_mem _ _))
-    (PhiMod.M_le_Man _ (PhiMod.bas_mem_M _ _))
-
-theorem cls_mem_Z_rankOneDat (hη : 1 ≤ η) :
-    (rankOneDat O K l e a η H j h₁ h₂ 1).cls (Ezpow K l e (-1) • bas ()) ∈
-        (rankOneDat O K l e a η H j h₁ h₂ 1).Z ∧
-      (rankOneDat O K l e a η H j h₁ h₂ 1).cls (Ezpow K l e (-1) • bas ()) ≠ 0 := by
-  refine ⟨Descent.cls_mem_Z _ ⟨mem_tot.2 fun τ i => ?_, fun g => ?_⟩, fun h => ?_⟩
-  · have := Ezpow_mem_A (O := O) (K := K) (l := l) (e := e) (i := η + -1) (by omega)
-    rw [Ezpow_add, Ezpow_natCast] at this
-    simpa [bas] using this
-  · ext τ i : 2
-    refine (rankOneDesc_act j 1 g _ τ).trans ?_
-    simpa [bas] using map_Ezpow l e _ (congrFun (ringAct_E g) τ) (-1)
-  · have h1 := mem_tot.1 ((PhiMod.cls_eq_zero_iff _).1 h) 0 ()
-    have h2 : E K l e * Ezpow K l e (-1) = 1 := by simpa using E_pow_mul_Ezpow_neg (K := K) l e 1
-    have h3 := eq_zero_of_E_mul (O := O) (g := Ezpow K l e (-1)) l e (by simpa [bas] using h1)
-      fun n => by rw [h2, coeff_one, ite_eq_right (by have := NeZero.pos e; omega)]
-    exact Units.ne_zero _ h3
 
 end Examples
 

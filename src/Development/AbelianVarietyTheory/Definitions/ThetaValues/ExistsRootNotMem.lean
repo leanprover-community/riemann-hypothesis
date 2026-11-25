@@ -63,9 +63,6 @@ def galRul {ta : c.F ≃+* c.F} (h : Fixes c ta) (f : Rul Xo c) : Rul Xo c :=
 def covAut {n : ℕ} (d : DeltaDat Xo c n) (ta : c.F ≃+* c.F) : d.c₂.F ≃+* d.c₂.F :=
   (d.eF.symm.toRingEquiv.trans ta).trans d.eF.toRingEquiv
 
-theorem Tw.val_algebraMap {K : Type} [Field K] (ta : K ≃+* K) (S : Type) [CommRing S] [Algebra K S] (a : K) :
-    (algebraMap K (Tw ta S) a).val = algebraMap K S (ta a) := rfl
-
 theorem fixes_of_le {c c' : Coeff l} (ta : c'.F ≃+* c'.F)
     (h : ∀ x : c'.F, (x : ℂ) ∈ c.F → ta x = x) : Fixes c' ta :=
   ⟨fun τ a => h _ (c.conj τ a), fun a => h _ (c.le a.2)⟩

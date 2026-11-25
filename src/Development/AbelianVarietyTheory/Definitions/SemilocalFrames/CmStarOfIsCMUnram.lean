@@ -21,25 +21,6 @@ variable {E : Type} [Field E] [NumberField E] [StarRing E]
 def NDLat (h : V →ₗ⋆[E] V →ₗ[E] E) (M : Submodule (𝓞 E) V) : Prop :=
   M.FG ∧ ∀ x ∈ Submodule.span E (M : Set V), (∀ y ∈ M, h y x = 0) → x = 0
 
-
-
-
-omit [NumberField E] [IsScalarTower (𝓞 E) E V] in
-theorem orth_span (h : V →ₗ⋆[E] V →ₗ[E] E) {M : Submodule (𝓞 E) V} {x : V} (hx : ∀ y ∈ M, h y x = 0) :
-    ∀ y ∈ Submodule.span E (M : Set V), h y x = 0 := by
-  intro y hy
-  induction hy using Submodule.span_induction with
-  | mem y hy => exact hx y hy
-  | zero => simp
-  | add a b _ _ ha hb => rw [map_add (f := _), LinearMap.add_apply, ha, hb, add_zero]
-  | smul c a _ ha => rw [LinearMap.map_smulₛₗ, LinearMap.smul_apply, ha, smul_zero]
-
-
-omit [NumberField E] in
-theorem ndLat_of_isLattice {h : V →ₗ⋆[E] V →ₗ[E] E} (hn : h.Nondegenerate) {M : Submodule (𝓞 E) V}
-    (hM : Submodule.IsFullLattice E M) : NDLat h M :=
-  ⟨hM.fg, fun x _ h0 => hn.2 x fun y => orth_span h h0 y (by rw [hM.span_eq_top]; trivial)⟩
-
 end AnySpace
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E]

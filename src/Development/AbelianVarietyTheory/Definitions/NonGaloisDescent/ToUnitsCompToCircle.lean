@@ -89,7 +89,6 @@ structure IsLocUnit (PP : Pl D.host.E) (u : (kP PP)ˣ) (x : (AE D)ˣ) : Prop whe
   int' : finPart D ((x⁻¹ : (AE D)ˣ) : AE D) ∈ intAE D
   res : ∃ hx : toEAf D (x : AE D) ∈ Formalism.L2.Herm.intAf D.host.F D.host.E, resS D.host.F PP ⟨_, hx⟩ = u
 
-
 theorem exists_isLocUnit {PP : Pl D.host.E} (h : Formalism.L2.NTheta.IsIdemAt (idemAt PP) PP) (u : (kP PP)ˣ) :
     ∃ x : (AE D)ˣ, IsLocUnit PP u x := by
   obtain ⟨a, ha⟩ := Ideal.Quotient.mk_surjective (u : kP PP)
@@ -204,7 +203,6 @@ structure BaseOf (B : Base (Vc D i) (Wc D i)) : Prop where
   c : B.w.c = liftC D i
 
 variable {i}
-
 
 open Classical in
 def IsTupOf (B : Base (Vc D i) (Wc D i)) (ψ : Twist D Circle) (t : T0) : Prop :=
@@ -330,7 +328,6 @@ theorem isUnit_of_isONBasis {k p : ℕ} {J s B : Matrix (Fin k) (Fin k) ℂ} (h 
   obtain ⟨a, -, ha⟩ := Finset.prod_eq_zero_iff.1 this.symm
   rcases h1 a with k | k <;> simp [k.1] at ha
 
-
 variable (i) in
 def baseAt (hB : R.models_BV) (δ : Twist D Circle) (P : LevelP R.Pg (Wc D i).rank ℂ) : Base (Vc D i) (Wc D i) where
   hr := (rank_Wc i).trans_le (r_le_V i)
@@ -345,10 +342,6 @@ def baseAt (hB : R.models_BV) (δ : Twist D Circle) (P : LevelP R.Pg (Wc D i).ra
 theorem baseOf_baseAt (hB : R.models_BV) (δ : Twist D Circle) (P : LevelP R.Pg (Wc D i).rank ℂ) :
     BaseOf R i (baseAt R i hB δ P) :=
   ⟨rfl, rfl, rfl, fun _ => rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩
-
-theorem isTupOf_baseAt (hB : R.models_BV) (t₀ : T0) (P : LevelP R.Pg (Wc D i).rank ℂ) :
-    IsTupOf R (baseAt R i hB (tupTwist R t₀) P) (Twist.triv Circle ∅) t₀ :=
-  ⟨(mul_one _).symm, by classical exact (Finset.union_empty _).symm.trans (by congr)⟩
 
 theorem isTupOf_tupTwist (hB : R.models_BV) (t : T0) (P : LevelP R.Pg (Wc D i).rank ℂ) :
     IsTupOf R (baseAt R i hB (Twist.triv Circle ∅) P) (tupTwist R t) t :=

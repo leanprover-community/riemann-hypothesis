@@ -49,7 +49,6 @@ def gamOf (W : LocWach PD LL O v n) {s : ℕ} (hs : W.s = s) : WGam PD LL O v n 
     gamK_eq_one := hs ▸ W.gamK_eq_one
     GKs_def := hs ▸ W.GKs_def }
 
-
 open Classical in
 def levOf (W : LocWach PD LL O v n) (i : ZMod n) (ζ : LL) : LetA O n →ₐ[O] PowerSeries LL :=
   if ∃ j : ℕ, IsPrimitiveRoot ζ (PD.p ^ j) then W.lev i ζ else W.lev i 1
@@ -92,14 +91,9 @@ variable {W : LocWach PD LL O v n} (E : EtTie W RA RW inclR φR gR πA) {s : ℕ
 def ioOf : WIo (serOf W hs hp hL) RA RW inclR φR gR πA :=
   { E with ioE_φ := hI.1, ioE_γ := hI.2 }
 
-
-
 def etOf : WEt (ioOf E hs hp hL hI) := { W, E with }
 
-
-
 def clOf : WCl (etOf E hs hp hL hI) := { W, E with }
-
 
 open Classical in
 def nOf (W : LocWach PD LL O v n) (T : LocLat G Qp LL O) : Submodule (LetA O n) (W.DD T) :=
@@ -110,8 +104,6 @@ theorem nOf_crys (W : LocWach PD LL O v n) {T : LocLat G Qp LL O} (h : IsCrys PD
 theorem nOf_ind (W : LocWach PD LL O v n) (T : LocLat G Qp LL O) (p : Submodule (LetA O n) (W.DD T) → Prop)
     (h1 : p (W.N T)) (h0 : p ⊥) : p (nOf W T) := by
   unfold nOf; split_ifs <;> assumption
-
-
 
 def latOf {Zl : Type} [CommRing Zl] (zl : PowerSeries Zl →+* LetA O n) (h1 : IsCrys PD W.one.ρ)
     (hP : ∀ T, @Module.Projective (PowerSeries Zl) _ ↥(W.N T) _ (Module.compHom _ zl)) :
@@ -167,35 +159,18 @@ abbrev GamL := gamOf (H.W K s LL h) (H.W_s K s LL h)
 
 variable (hL : Laws H F h)
 
-
-
 abbrev SerL := serOf (H.W K s LL h) (H.W_s K s LL h) (p_prime P K) hL.lev
-
-
 
 abbrev IoL := ioOf (F.E K s LL h).tie (H.W_s K s LL h) (p_prime P K) hL.lev hL.io
 
-
-
 theorem ioW : IoW (Γ := GamL H h) (R := SerL H F h hL) (IoL H F h hL) := (F.E K s LL h).inertia_action_on_roots
-
-
 
 abbrev EtL := etOf (F.E K s LL h).tie (H.W_s K s LL h) (p_prime P K) hL.lev hL.io
 
-
-
 abbrev ClL := clOf (F.E K s LL h).tie (H.W_s K s LL h) (p_prime P K) hL.lev hL.io
-
-
 
 abbrev LatL :=
   latOf (F.E K s LL h).tie (H.W_s K s LL h) (p_prime P K) hL.lev hL.io _ hL.one (H.W_proj K s LL h)
-
-
-
-theorem latL_N {T : LocLat ↥(GK K) ℚ_[l] ↥LL.1 ↥(OL LL)} (hT : IsCrys (P.PD K) T.ρ) :
-    (LatL H F h hL).N T = (H.W K s LL h).N T := nOf_crys _ hT
 
 theorem apply_layers (p : ∀ (Γ : GamS P K s LL) (R : WSer Γ) (I : IoS AI R) (E : WEt I), NS E → Prop)
     (hp : ∀ (Γ : GamS P K s LL) (R : WSer Γ) (I : IoS AI R), IoW I → ∀ (E : WEt I) (Mo : NS E), p Γ R I E Mo) :
@@ -220,7 +195,6 @@ variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp]
 
 def evL (W : LocWach PD L O v n) (i : ZMod n) (ζ : L) : O⟦X⟧ →ₐ[O] L⟦X⟧ :=
   (W.lev i ζ).comp (AlgHom.pi fun _ => AlgHom.id O O⟦X⟧)
-
 
 omit [CharZero L] [Algebra ℚ L] in
 theorem lev_eq_evL (W : LocWach PD L O v n) (i : ZMod n) (ζ : L) (a : LetA O n) :
@@ -283,8 +257,6 @@ theorem laws : Laws H F h := by
   exact ⟨levLaws H h, ⟨fun e => GlobalTheory.TorsionBoundCompare.ioE_φ _ Subtype.val_injective e,
     fun g e => GlobalTheory.TorsionBoundCompare.ioE_γ _ Subtype.val_injective g e⟩,
     GlobalTheory.TrivCrys.isCrys_lat_of_trivial _ (H.W K s LL h).one_triv⟩
-
-
 
 end Holds
 

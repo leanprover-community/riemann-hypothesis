@@ -13,11 +13,6 @@ namespace GlobalTheory.EX.DC
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.Inhab Formalism.FrobeniusOrbits Formalism.L2.GlobalTheoryTheory GlobalTheory.EX NumberField
 
-theorem auxiliaryPrime_coprime_smallConductor {R : Ranks} (H : Host R) : Nat.Coprime (q0H H) H.QS := by
-  have h1 : Nat.Coprime (q0H H) (H.QS * H.q * H.d) := by
-    rw [Nat.Coprime, Nat.gcd_comm, Nat.gcd_rec, mod_cond H, Nat.gcd_one_left]
-  exact h1.coprime_dvd_right ⟨H.q * H.d, by ring⟩
-
 def relevel {R : Ranks} (H : Host R) (hc : H.ccK = ⊤) (q0 : ℕ)
     (hq : Nat.Coprime q0 H.QS := by exact GlobalTheory.EX.DC.auxiliaryPrime_coprime_smallConductor _) : Host R :=
   { H with

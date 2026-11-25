@@ -251,13 +251,6 @@ theorem mx_rankOne_eq (j : ZMod a → ℤ) (τ : ZMod a) (i k : Unit) :
   generalize Eunit O K l e ^ j τ = u
   simp
 
-theorem mxInv_rankOne_eq (j : ZMod a → ℤ) (τ : ZMod a) (i k : Unit) :
-    (rankOne O K l e j).mxInv τ i k = Ezpow (K := K) l e (-j τ) := by
-  have h := congrFun (congrFun ((rankOne O K l e j).mxInv_mul_mx τ) ()) ()
-  rw [Matrix.mul_apply, Fintype.sum_unique, mx_rankOne_eq, Matrix.one_apply_eq,
-    ← Ezpow_neg_mul l e (j τ)] at h
-  exact mul_right_cancel₀ (Units.ne_zero _) h
-
 theorem phi_bas_rankOne (j : ℤ) : (rankOne O K l e fun _ : ZMod a => j).phi (bas ()) =
     Ezpow (K := K) l e j • bas () := by
   ext τ i : 2

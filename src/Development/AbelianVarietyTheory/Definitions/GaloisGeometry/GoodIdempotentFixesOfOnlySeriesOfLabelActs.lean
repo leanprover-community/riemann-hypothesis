@@ -100,21 +100,6 @@ theorem LamUsed.loc {D : D7} (h : LamUsed D) (i : D.nd.Loc) : LamPos D (D.nd.mu 
 theorem goodIdempotentFixes_of_onlySeriesOfLabelActs {D : D7} (h : GlobalTheory.TypeLeaf.SerLoc D) : GoodIdempotentFixesLocalisationForms D := fun i σ' F hF hg =>
   (PlaceLabelTeichmuller.idempotent_action_on_forms D (D.ntypes.cenMt (D.nd.mu i) (D.nd.j i)) σ' F fun k v f hf => h i σ' k v f F hF hf).1 hg
 
-namespace Inputs
-
-variable {hL : GlobalTheory.Published.LocalLanglandsGL} {D : D7} (I : Inputs hL D)
-include I
-
-theorem c1 : GlobalDatumCompatibility D := I.named.c1
-
-theorem bc : SphericalInertData.Conclusion1 D := I.named.bc
-
-theorem lam : LamUsed D := I.named.lam
-
-theorem ser : GlobalTheory.TypeLeaf.SerLoc D := I.named.ser
-
-end Inputs
-
 end GlobalTheory.NRows
 
 end

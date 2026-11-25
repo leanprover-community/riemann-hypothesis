@@ -28,17 +28,6 @@ def UOrdGe (T : UTrait Xo c) (ξ : Sp T.V ⟶ M.Z) (x : Ω) (a : ℕ) : Prop :=
 def UOrdEq (T : UTrait Xo c) (ξ : Sp T.V ⟶ M.Z) (x : Ω) (a : ℕ) : Prop :=
   ∃ w : T.Vˣ, M.val (jK T.V ≫ ξ) x = algebraMap T.V (FractionRing T.V) (T.ϖ ^ a * w)
 
-section API
-
-variable {M} {T : UTrait Xo c} {ξ : Sp T.V ⟶ M.Z} {x y : Ω} {a b : ℕ}
-
-theorem uOrdEq_one (T : UTrait Xo c) (ξ : Sp T.V ⟶ M.Z) : UOrdEq M T ξ 1 0 :=
-  ⟨1, by rw [RatModel.val_one, pow_zero, Units.val_one, mul_one, map_one]⟩
-
-end API
-
-variable {M}
-
 end Ord
 
 def UTraitExtSt : Prop :=

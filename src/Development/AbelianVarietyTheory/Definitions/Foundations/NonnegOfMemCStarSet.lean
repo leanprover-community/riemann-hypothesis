@@ -17,7 +17,6 @@ section Coord
 
 variable {K V W : Type} [Field K] [NumberField K] [AddCommGroup V] [Module K V] [AddCommGroup W] [Module K W]
 
-
 open Classical in
 def coordOf (N : (K →+* ℂ) → V → ℝ) :
     Σ n : ℕ, (V →ₗ[K] (Fin n → K)) × ((Fin n → K) →ₗ[K] V) × (InfinitePlace K → Matrix (Fin n) (Fin n) ℂ) :=
@@ -37,40 +36,10 @@ def mapCo (φ : V →ₗ[K] W) : (Fin (cDim N) → K) →ₗ[K] (Fin (cDim N') �
 
 variable {N N'}
 
-
-omit [NumberField K] in
-theorem exists_basis_co (h : HasGram N) : ∃ b : Basis (Fin (cDim N)) K V,
-    IsGram b (frameCo N) N ∧ toCo N = b.equivFun ∧ ofCo N = b.equivFun.symm := by
-  have key : ∀ s : Σ n : ℕ, (V →ₗ[K] (Fin n → K)) × ((Fin n → K) →ₗ[K] V) ×
-      (InfinitePlace K → Matrix (Fin n) (Fin n) ℂ),
-      s = ⟨h.some.1, h.some.2.1.1.equivFun, h.some.2.1.1.equivFun.symm, h.some.2.1.2⟩ →
-      ∃ b : Basis (Fin s.1) K V, IsGram b s.2.2.2 N ∧ s.2.1 = b.equivFun ∧ s.2.2.1 = b.equivFun.symm := by
-    rintro _ rfl
-    exact ⟨_, h.some.2.2, rfl, rfl⟩
-  exact key _ (dite_eq_left h)
-
-
-omit [NumberField K] in
-theorem cDim_eq (h : HasGram N) : cDim N = finrank K V := by
-  obtain ⟨b, -⟩ := exists_basis_co h
-  rw [finrank_eq_card_basis b, Fintype.card_fin]
-
-
-
-
-
 variable [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] [Module (𝓞 K) W] [IsScalarTower (𝓞 K) K W]
-
 
 variable (N) in
 def latCo (L : Submodule (𝓞 K) V) : Submodule (𝓞 K) (Fin (cDim N) → K) := L.map ((toCo N).restrictScalars (𝓞 K))
-
-
-
-
-
-
-
 
 variable [StarRing K]
 

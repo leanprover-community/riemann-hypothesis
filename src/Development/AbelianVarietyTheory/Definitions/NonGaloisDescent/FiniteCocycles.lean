@@ -278,27 +278,6 @@ open IsLocalRing Polynomial
 
 namespace GlobalTheory.Pat.Example
 
-theorem chi_ofRep {n : ℕ} {A G : Type} [CommRing A] [Group G]
-    (ρ : G →* Matrix (Fin n) (Fin n) A) (y : MonoidAlgebra A G) :
-    (GDet.ofRep ρ).chi y = (GDet.repAlg ρ A y).charpoly := by
-  change (GDet.repAlg ρ A[X] _).det = _
-  unfold Matrix.charpoly Matrix.charmatrix
-  congr 1
-  rw [map_sub]
-  congr 1
-  · ext i j; simp [GDet.repAlg, Matrix.one_apply, Matrix.diagonal_apply]
-  · induction y using MonoidAlgebra.induction_linear with
-    | zero => simp
-    | add a b ha hb => simp only [map_add (f := _), ha, hb]
-    | single g r => ext i j; simp [GDet.repAlg]
-
-theorem tr_ofRep {n : ℕ} {A G : Type} [CommRing A] [Nontrivial A] [Group G]
-    (ρ : G →* Matrix (Fin (n+1)) (Fin (n+1)) A) (y : MonoidAlgebra A G) :
-    (GDet.ofRep ρ).tr y = (GDet.repAlg ρ A y).trace := by
-  unfold GDet.tr GDet.lam
-  rw [chi_ofRep, Matrix.trace_eq_neg_charpoly_coeff]
-  simp
-
 def finPG (G : Type) [Group G] [Finite G] : PG :=
   letI : TopologicalSpace G := ⊥
   haveI : DiscreteTopology G := ⟨rfl⟩
@@ -412,14 +391,5 @@ def pol : PolGp frame where
     · exact absurd h.symm key
     · rfl
   fg := PhiFin.of_finite 3 _
-
-theorem rep_gp (A : Type) [CommRing A] (g : S3) : GDet.repAlg (rho A) A (gp A g) = rho A g := by
-  simp [GDet.repAlg]
-
-theorem star_gp (j : ℤ_[3] →+* ℤ_[3]) (g : S3) : star pol j (gp ℤ_[3] g) = gp ℤ_[3] g⁻¹ := by
-  unfold star
-  change (MonoidAlgebra.single g (1 : ℤ_[3])).coeff.sum
-    (fun (g : S3) (a : ℤ_[3]) => MonoidAlgebra.single g⁻¹ (a * j 1)) = _
-  rw [MonoidAlgebra.coeff_single, Finsupp.sum_single_index] <;> simp
 
 end GlobalTheory.Pat.Example

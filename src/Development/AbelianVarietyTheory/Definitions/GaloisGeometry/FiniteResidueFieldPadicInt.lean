@@ -43,18 +43,15 @@ variable {O K r}
 def glMap (g : GL (Fin r) K) (L : Submodule O (Fin r → K)) : Submodule O (Fin r → K) :=
   L.map ((Matrix.toLin' (g : Matrix (Fin r) (Fin r) K)).restrictScalars O)
 
-
 omit [IsDomain O] [IsDiscreteValuationRing O] [IsFractionRing O K] in
 theorem glMap_one (L : Submodule O (Fin r → K)) : glMap 1 L = L := by
   ext x; simp [glMap]
-
 
 omit [IsDomain O] [IsDiscreteValuationRing O] [IsFractionRing O K] in
 theorem glMap_mul (g h : GL (Fin r) K) (L : Submodule O (Fin r → K)) :
     glMap (g * h) L = glMap g (glMap h L) := by
   simp only [glMap, ← Submodule.map_comp, Units.val_mul, Matrix.toLin'_mul]
   rfl
-
 
 omit [IsDomain O] [IsDiscreteValuationRing O] [IsFractionRing O K] in
 theorem glMap_le_glMap_iff (g : GL (Fin r) K) (M L : Submodule O (Fin r → K)) :
@@ -63,11 +60,9 @@ theorem glMap_le_glMap_iff (g : GL (Fin r) K) (M L : Submodule O (Fin r → K)) 
   have h' : glMap g⁻¹ (glMap g M) ≤ glMap g⁻¹ (glMap g L) := Submodule.map_mono h
   rwa [← glMap_mul, ← glMap_mul, inv_mul_cancel, glMap_one, glMap_one] at h'
 
-
 omit [IsDomain O] [IsDiscreteValuationRing O] [IsFractionRing O K] in
 theorem glMap_smul (g : GL (Fin r) K) (I : Ideal O) (L : Submodule O (Fin r → K)) :
     glMap g (I • L) = I • glMap g L := Submodule.map_smul'' _ _ _
-
 
 omit [IsDomain O] [IsDiscreteValuationRing O] [IsFractionRing O K] in
 theorem relIndex_glMap (g : GL (Fin r) K) (M L : Submodule O (Fin r → K)) :
@@ -286,9 +281,6 @@ theorem heckeAll_zero (φ : Lat O K r → E) : heckeAll 0 φ = φ := by
 theorem heckeElem_zero (φ : Lat O K r → E) : heckeElem 0 φ = φ := by
   funext L; simp [heckeElem, subElem_zero]
 
-theorem heckeElem_top (φ : Lat O K r → E) (L : Lat O K r) : heckeElem r φ L = φ (maxMul L) := by
-  simp [heckeElem, subElem_top]
-
 theorem heckeElem_eq_zero {k : ℕ} (hk : r < k) (φ : Lat O K r → E) (L : Lat O K r) :
     heckeElem k φ L = 0 := by
   simp [heckeElem, subElem_eq_empty hk]
@@ -299,14 +291,5 @@ theorem heckeElem_smul (g : GL (Fin r) K) (k : ℕ) (φ : Lat O K r → E) (L : 
   refine finsum_mem_eq_of_bijOn (fun M => g • M) ⟨fun M hM => (smul_mem_subElem_iff g k M L).2 hM,
     (MulAction.injective g).injOn, fun M hM => ⟨g⁻¹ • M, ?_, smul_inv_smul g M⟩⟩ fun _ _ => rfl
   rw [← smul_mem_subElem_iff g, smul_inv_smul]; exact hM
-
-theorem finite_residueField_padicInt (p : ℕ) [Fact p.Prime] :
-    Finite (IsLocalRing.ResidueField ℤ_[p]) :=
-  Finite.of_equiv _ (PadicInt.residueField (p := p)).toEquiv.symm
-
-theorem qRes_padicInt (p : ℕ) [Fact p.Prime] [Finite (IsLocalRing.ResidueField ℤ_[p])] :
-    qRes ℤ_[p] = p := by
-  unfold qRes
-  rw [Nat.card_congr (PadicInt.residueField (p := p)).toEquiv, Nat.card_zmod]
 
 end GlobalTheory.LatHecke

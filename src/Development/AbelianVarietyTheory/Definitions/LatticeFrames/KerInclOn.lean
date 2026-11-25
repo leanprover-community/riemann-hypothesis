@@ -76,13 +76,6 @@ def SomeAt (Q : ℝ → ∀ D : D7, D.what₂.Word → Prop) : Prop :=
 
 variable {F}
 
-theorem SomeAt.exists {Q : ℝ → ∀ D : D7, D.what₂.Word → Prop} (h : F.SomeAt Q) :
-    ∃ x₀ : ℝ, ∀ x, x₀ ≤ x → Nonempty (F.Ix x) → ∃ (i : F.Ix x) (u : (F.D x i).what₂.Word), Q x (F.D x i) u := by
-  obtain ⟨x₀, h⟩ := h
-  refine ⟨x₀, fun x hx ⟨i₀⟩ => ?_⟩
-  obtain ⟨i, -, -, u, hu⟩ := h x hx i₀ 0 (F.D x i₀).R.ord_pos
-  exact ⟨i, u, hu⟩
-
 end Pts
 
 namespace Pts

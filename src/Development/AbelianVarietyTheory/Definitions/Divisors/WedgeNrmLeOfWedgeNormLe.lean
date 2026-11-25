@@ -14,7 +14,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
-
 noncomputable section
 
 namespace GlobalTheory.CompHS
@@ -59,13 +58,11 @@ section Fin
 
 variable {K : Type} [Field K] [NumberField K] [Algebra c.F K]
 
-
 omit [Algebra c.F K] in
 theorem nrmOf_nonneg (la : HeightOneSpectrum (𝓞 K)) (w : EReal) : 0 ≤ nrmOf la w := by
   simp only [nrmOf]
   split_ifs
   exacts [le_rfl, by positivity]
-
 
 omit [Algebra c.F K] in
 theorem nrmOf_anti (la : HeightOneSpectrum (𝓞 K)) {w w' : EReal} (hw : w ≠ ⊥) (h : w ≤ w') :
@@ -141,8 +138,6 @@ def abs : AbsoluteValue F.T.Fr ℝ where
     · exact (nrmOf_anti _ (nval_ne_bot _ _) h).trans (le_add_of_nonneg_right (nrmOf_nonneg _ _))
     · exact (nrmOf_anti _ (nval_ne_bot _ _) h).trans (le_add_of_nonneg_left (nrmOf_nonneg _ _))
 
-theorem abs_apply (a : F.T.Fr) : F.abs a = nrmOf v.maximalIdeal (nval F.T.V F.e a) := rfl
-
 def nrm (f : Rul Xo c) : ℝ := F.abs (evI F.pt f)
 
 variable {ι : Type} [Fintype ι]
@@ -167,10 +162,8 @@ section Inf
 
 variable {K : Type} [Field K] [Algebra c.F K] {r : ℕ}
 
-
 variable (c) in
 abbrev baseEmb (τ : K →+* ℂ) : c.F →+* ℂ := goodOf c (τ.comp (algebraMap c.F K))
-
 
 variable (c) in
 def goodHom (τ : K →+* ℂ) : K →ₐ[c.F] CAt (baseEmb c τ) :=
@@ -276,8 +269,6 @@ section Statements
 
 variable {r : ℕ} (U : ∀ σ : c.F →+* ℂ, Unf Xo c σ r) (x : ℝ) {D : Formalism.BasicNotions.D7} (V : (c.F →+* ℂ) → Formalism.BasicNotions.TH.HSp D)
   (dict : ∀ σ, Formalism.L2.Theta.GA D (V σ) → Σ k, FD.Frame ((U σ).X k).Ψ r) (Z : Comp Xo c) (P : WtPar Dw)
-
-
 
 section At
 

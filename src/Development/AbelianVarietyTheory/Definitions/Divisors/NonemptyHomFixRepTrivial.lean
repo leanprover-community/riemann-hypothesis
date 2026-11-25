@@ -50,8 +50,4 @@ def trivLB (X : Scheme.{0}) : LB X where
   U := fun _ => ⊤
   g := fun _ _ => 1
 
-theorem trivLB_isLB (X : Scheme.{0}) : (trivLB X).IsLB :=
-  ⟨by simp [trivLB], fun _ => map_one _, fun _ _ _ =>
-    (congrArg₂ (· * ·) (map_one _) (map_one _)).trans ((_root_.mul_one _).trans (map_one _).symm)⟩
-
 end GlobalTheory.EndLoc
