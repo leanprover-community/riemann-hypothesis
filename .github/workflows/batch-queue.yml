@@ -43,8 +43,8 @@ name: batch queue
 # rewritten. While its pull request is open, the sync job labels it `building`, labels
 # `batch-building` and `frozen` each open pull request whose head commit is in that branch,
 # queued or not, asks each of them once not to push until the batch has landed, and records them
-# in a comment there. The pull requests its description lists as left out are told why and
-# labelled `awaiting-author`. When the batch is merged, what it contained loses its labels; what
+# in a comment there. The pull requests its description lists as left out are told why, unless
+# they are labelled `deferred`; no label changes for that. When the batch is merged, what it contained loses its labels; what
 # was pushed to since is told what landed, and what targets another branch than main is closed.
 # When it is closed without being merged, what it contained loses its labels too, and the ones
 # that were queued go back to `batch queue`. The sync job runs when that pull request is opened,
@@ -402,8 +402,9 @@ jobs:
   pushed:
     name: Tell a frozen pull request that was pushed to what that means
     # A push to a `frozen` pull request that does not hold a batch. A batch that took an earlier
-    # commit of it tells it that the batch lands only that commit, and labels it `awaiting-author`;
-    # one pushed back to that commit loses the `awaiting-author` the workflow put on for the push.
+    # commit of it, and whose branch does not have the new head, tells it that the batch lands only
+    # that commit, and labels it `awaiting-author`; one pushed back to that commit loses the
+    # `awaiting-author` the workflow put on for the push.
     # Its labels are brought in step. This reads the open pull requests and the records of the
     # batches being built, about ten requests, where a sync costs a few hundred: the frozen pull
     # requests are many, and a sync for each push would use up the hour's allowance. The sync
