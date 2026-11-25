@@ -148,15 +148,15 @@ def description_check(number, body, repo, note, pulls, below=()):
     its own.
 
     It names what the description lists as included, under any heading but one that leaves pull
-    requests out, that is closed, saying which of those are still in the branch and so land with
-    it although GitHub will not mark them merged; and what it lists as included that is open but
-    whose head commit is not in the branch. It names what is in the branch that the description does not list at all, unless
-    the description lists nothing as included or it holds a batch itself; what is in the branch that
-    it lists as left out; and what the branch reverts, which is named for that alone. What is in
-    the branch is what the note records, at the commit it was found at, so a pull request pushed
-    to since it was merged in is still in it. A pull request that a batch under this one contains
-    is in the branch when the description lists it as included, and is not named when it does not
-    list it: the description of a stacked batch need list only its own.
+    requests out, that is closed, saying which of those are still in the branch and so land with it
+    although GitHub will not mark them merged; and what it lists as included that is open but whose
+    head commit is not in the branch. It names what is in the branch that the description does not
+    list at all, unless the description lists nothing as included or it holds a batch itself; what
+    is in the branch that it lists as left out; and what the branch reverts, which is named for that
+    alone. What is in the branch is what the note records, at the commit it was found at, so a pull
+    request pushed to since it was merged in is still in it. A pull request that a batch under this
+    one contains is in the branch when the description lists it as included, and is not named when
+    it does not list it: the description of a stacked batch need list only its own.
     """
     entries = list_entries(body, repo)
     found = {int(key) for key in note["members"]}

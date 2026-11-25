@@ -118,12 +118,13 @@ should do for all this to work.
 
 The description is also compared with the branch, in a comment of its own on the batch's pull
 request. It names the pull requests listed under any other heading, as included, that are closed,
-and which of those the branch still holds, or whose head commit is not in the branch; those in
-the branch that the description does not list, unless it lists nothing as included; those in the
-branch that it lists as left out; and those the branch merged and then reverted, read from the
-messages and parents of its commits. Each one reverted is told once that the batch would land it although its changes did not. The comment is
-posted once there is something to say, and edited in place after that, also to say that all is
-well again. The note remembers a digest of it, so a run that would say the same costs nothing.
+and which of those the branch still holds, or whose head commit is not in the branch; those in the
+branch that the description does not list, unless it lists nothing as included; those in the branch
+that it lists as left out; and those the branch merged and then reverted, read from the messages and
+parents of its commits. Each one reverted is told once that the batch would land it although its
+changes did not. The comment is posted once there is something to say, and edited in place after
+that, also to say that all is well again. The note remembers a digest of it, so a run that would say
+the same costs nothing.
 
 The batch being assembled is built on top of the batch assembled by hand labelled `latest batch`,
 when exactly one into main is: its branch starts at that batch's head, and its pull request is
@@ -661,14 +662,14 @@ def read_record(gh, number):
 #             may have posted comments its note does not show.
 #
 # An entry of `told` or `pushed` counts only while its commit is the member's, and one of `warned`
-# only while its commit is the one `reverted` names: `keep_in_step` drops the others. On GitHub, where a comment holds at most 65,536 characters, the note is compact
-# JSON and keeps only the entries that count, `warned` too, as lists of numbers. `queued`, `labelled` and `told`
-# are each kept as that list or as the list of the members it leaves out (`unqueued`,
-# `unlabelled`, `untold`), whichever is shorter: a batch usually labels and tells nearly all of its
-# members. `below` is kept as it is in memory, and only when it is not empty. What is left is
-# about 50 characters for each member, nearly all of it `members` with its full commit ids.
-# `load_note` also reads the notes written before `dump_note`, which kept every key as it is in
-# memory.
+# only while its commit is the one `reverted` names: `keep_in_step` drops the others. On GitHub,
+# where a comment holds at most 65,536 characters, the note is compact JSON and keeps only the
+# entries that count, `warned` too, as lists of numbers. `queued`, `labelled` and `told` are each
+# kept as that list or as the list of the members it leaves out (`unqueued`, `unlabelled`,
+# `untold`), whichever is shorter: a batch usually labels and tells nearly all of its members.
+# `below` is kept as it is in memory, and only when it is not empty. What is left is about 50
+# characters for each member, nearly all of it `members` with its full commit ids. `load_note` also
+# reads the notes written before `dump_note`, which kept every key as it is in memory.
 
 
 def dump_note(note):
