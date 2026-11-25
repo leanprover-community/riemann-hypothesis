@@ -1176,23 +1176,39 @@ class Members(unittest.TestCase):
         sync(gh)
         self.assertEqual([len(gh.said(number)) for number in (11, 12, 14)], [1, 1, 1])
 
-    def test_what_is_left_out_is_told_why_and_handed_to_its_author(self):
+    def test_what_is_left_out_is_told_why_and_nothing_more(self):
         gh = self.built()
         log = sync(gh)
         [note] = self.left(gh, 21)
         self.assertIn("Batch #1018 leaves this pull request out. Its description says:\n\n"
                       "> Left out because they conflict with a PR earlier in the batch:\n>\n"
                       f"> `{URL}21` refactor: fold modules", note)
-        self.assertIn("comment `ready`", note)
-        self.assertEqual(gh.pulls[21]["labels"], QF | {WAITING})  # still queued
-        self.assertEqual([gh.pulls[n]["labels"] for n in (22, 23, 24)], [{WAITING}, {WAITING}, set()])
+        self.assertIn("This is for your information: it changes no label of this pull request.", note)
+        self.assertNotIn("`ready`", note)
+        # Not handed back to its author.
+        self.assertEqual(gh.pulls[21]["labels"], QF)  # still queued
+        self.assertEqual([gh.pulls[n]["labels"] for n in (22, 23, 24)], [set(), set(), set()])
         self.assertEqual([len(self.left(gh, n)) for n in (11, 22, 23, 24)], [0, 1, 1, 0])
-        self.assertIn("told #23 that the batch #1018 leaves it out: now `awaiting-author`", log)
+        self.assertIn("told #23 that the batch #1018 leaves it out", log)
         # Nothing new: nothing said, nothing read. (#21 is queued, so the queue reads it again.)
         gh.reads = []
         sync(gh)
         self.assertEqual([len(self.left(gh, n)) for n in (21, 22, 23)], [1, 1, 1])
         self.assertEqual([path for path in gh.reads if path.startswith(("issues/22/", "issues/23/"))], [])
+
+    def test_a_deferred_pull_request_is_not_told(self):
+        gh = self.built()
+        gh.label(23, add="deferred", login="maintainer")
+        log = sync(gh)
+        self.assertEqual(gh.said(23), [])
+        self.assertEqual(gh.pulls[23]["labels"], {"deferred"})
+        self.assertNotIn("told #23 that the batch #1018 leaves it out", log)
+        self.assertNotIn("23", note(gh.said(1018)[0])["left"])
+        # Its entry removed, it is not told that either.
+        gh.pulls[1018]["body"] = DESCRIPTION.replace(f"- {URL}23 Drop imports", f"- {URL}25 Drop imports")
+        gh.touch(1018)
+        sync(gh)
+        self.assertEqual(gh.said(23), [])
 
     def test_the_same_kind_of_reason_reworded_updates_the_comment_quietly(self):
         gh = self.built()
@@ -1254,7 +1270,7 @@ class Members(unittest.TestCase):
         self.assertNotIn(WAITING, gh.pulls[23]["labels"])
         self.assertEqual([method for method, path, _ in gh.writes if path.startswith("issues/23/")], [])
 
-    def test_a_new_kind_of_reason_from_another_batch_is_told_and_hands_it_back_again(self):
+    def test_a_new_kind_of_reason_from_another_batch_is_told_again(self):
         gh = self.built()
         sync(gh)
         gh.label(23, remove=WAITING)
@@ -1267,8 +1283,8 @@ class Members(unittest.TestCase):
         self.assertIn("Batch #1018 leaves this pull request out", first)
         self.assertIn("Batch #1100 leaves this pull request out", second)
         self.assertIn("conflicts with `#11`", second)
-        self.assertIn(WAITING, gh.pulls[23]["labels"])
-        self.assertIn("told #23 that the batch #1100 leaves it out: now `awaiting-author`", log)
+        self.assertNotIn(WAITING, gh.pulls[23]["labels"])
+        self.assertIn("told #23 that the batch #1100 leaves it out", log)
 
     def test_an_entry_reworded_in_the_description_is_brought_up_to_date(self):
         gh = self.built()
@@ -1360,7 +1376,7 @@ class Members(unittest.TestCase):
         by_hand(gh, 12, 14, name="kim-without-11")  # the branch is rebuilt without #11
         log = sync(gh)
         # Out of the branch, it is also told what the description says about it.
-        self.assertEqual(gh.pulls[11]["labels"], QF | {WAITING})
+        self.assertEqual(gh.pulls[11]["labels"], QF)
         dropped = [note for note in gh.said(11) if note.startswith("<!-- batch-queue-dropped")]
         self.assertEqual(len(dropped), 1)
         self.assertIn("is no longer in batch #1018: its branch was changed without it", dropped[0])
@@ -1747,6 +1763,48 @@ class Pushed(unittest.TestCase):
         self.assertIn("told #12 that it was pushed to after the batch #1018 took it: now `awaiting-author`", log)
         self.assertEqual(len(self.pushes(gh, 12)), 1)
 
+    def held_already(self, gh):
+        """#12 is pushed to with a commit that the batch's branch already has, as when the merge of
+        `main` that the batch was built from is pushed to the pull request afterwards."""
+        merged = sha("head12-merged")
+        gh.inside[gh.pulls[1018]["sha"]].add(merged)
+        gh.push(12, "head12-merged")
+        return merged
+
+    def test_a_push_of_a_commit_the_batch_has_already_is_not_told(self):
+        gh = self.built()
+        merged = self.held_already(gh)
+        log = batch.pushed(gh, 12)
+        self.assertEqual(log, [f"#12 was pushed to with `{merged[:10]}`, which the batch #1018 has already: nothing "
+                               "to say"])
+        self.assertEqual((gh.writes, self.pushes(gh, 12)), ([], []))
+        self.assertEqual(gh.pulls[12]["labels"], IN)
+        # The sync records the new commit, says nothing, and asks no more once it has.
+        log = sync(gh)
+        self.assertIn(f"#12 was pushed to with `{merged[:10]}`, which the batch #1018 has already: recorded at that "
+                      "commit, and nothing said", log)
+        record = note(gh.said(1018)[0])
+        self.assertEqual((record["members"]["12"], record["told"]["12"]), (merged, merged))
+        self.assertEqual([body for body in gh.said(12) if not body.startswith("<!-- batch-queue-frozen 1018")], [])
+        gh.reads = []
+        sync(gh)
+        self.assertFalse([path for path in gh.reads if path.startswith("compare/")])
+        # A later push that the batch does not have is told, at the commit now recorded.
+        gh.push(12, "head12-later")
+        batch.pushed(gh, 12)
+        [said] = self.pushes(gh, 12)
+        self.assertTrue(said.startswith(f"<!-- batch-queue-pushed-while-frozen 1018 {merged} -->"))
+
+    def test_the_sync_alone_does_not_tell_a_push_the_batch_has_already(self):
+        gh = self.built()
+        merged = self.held_already(gh)
+        gh.reads = []
+        sync(gh)
+        self.assertEqual(self.pushes(gh, 12), [])
+        self.assertEqual(gh.pulls[12]["labels"], IN)
+        self.assertEqual(note(gh.said(1018)[0])["members"]["12"], merged)
+        self.assertEqual(len([path for path in gh.reads if path.startswith("compare/")]), 1)
+
     def test_a_batch_or_a_closed_pull_request_is_not_looked_at(self):
         gh = self.built()
         self.assertEqual(batch.pushed(gh, 1018), ["#1018 holds a batch: the sync looks after it"])
@@ -2031,7 +2089,7 @@ class OlderRecords(unittest.TestCase):
         self.assertEqual([len(self.left(gh, n)) for n in (21, 22, 23, 24)], [0, 0, 1, 1])
         self.assertEqual(gh.said(22), [])
         self.assertIn("it edits `src/Main.lean`", self.left(gh, 23)[0])
-        self.assertEqual([gh.pulls[n]["labels"] for n in (22, 23, 24)], [set(), {WAITING}, {WAITING}])
+        self.assertEqual([gh.pulls[n]["labels"] for n in (22, 23, 24)], [set(), set(), set()])
         self.assertEqual(sorted(note(gh.said(1018)[0])["left"]), ["21", "23", "24"])
 
     def test_a_record_with_left_out_notices_tells_what_is_new(self):
@@ -2719,10 +2777,10 @@ class StackedBatches(unittest.TestCase):
                                   f"- {URL}21 Changes `src/Main.lean`\n")
         gh.touch(1018)
         log = sync(gh)
-        self.assertEqual(self.labels(gh, 13, 21), [IN, {WAITING}])
+        self.assertEqual(self.labels(gh, 13, 21), [IN, set()])
         self.assertFalse([body for body in gh.said(13) if body.startswith("<!-- batch-queue-left-out")])
         self.assertEqual(len([body for body in gh.said(21) if body.startswith("<!-- batch-queue-left-out")]), 1)
-        self.assertIn(f"told #21 that the batch #1018 leaves it out: now `{WAITING}`", log)
+        self.assertIn("told #21 that the batch #1018 leaves it out", log)
         self.assertEqual(note(self.record(gh, 1018))["left"].keys(), {"21"})
 
     def test_a_lower_batch_an_old_record_lists_is_tidied_up_when_it_lands(self):

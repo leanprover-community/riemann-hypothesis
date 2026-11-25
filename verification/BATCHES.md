@@ -21,7 +21,7 @@ request still under review adds. Until it lands, the label exists but nothing pu
 | `changed after frozen` | a frozen pull request whose head has moved on from the commit taken | it is pushed to after a batch or the queue took a commit of it | its head is that commit again, or it is no longer frozen |
 | `batch queue` | a pull request wanted in a batch | a maintainer or reviewer comments `batch` or `p` | `-batch`; it joins a batch assembled by hand (in exchange for `batch-building`); its queued commit lands; it is closed |
 | `priority` | a queued pull request that goes first | `p` | by hand |
-| `awaiting-author` | a pull request handed back to its author | `aa`; it is pushed to while in a batch; the description leaves it out; a batch lands an older commit of it; `batch-conflict` is first put on it *(planned, #1700)* | `ready`, by the author or a maintainer; the batch takes the new head of a pull request it was put on for a push, or it is pushed back |
+| `awaiting-author` | a pull request handed back to its author | `aa`; it is pushed to while in a batch, with a commit the batch does not have; a batch lands an older commit of it; `batch-conflict` is first put on it *(planned, #1700)* | `ready`, by the author or a maintainer; the batch takes the new head of a pull request it was put on for a push, or it is pushed back |
 | `main-conflict` *(planned, #1700)* | a pull request that conflicts with `main` | GitHub says so, unless it declares `depends on:` a batch being built | the conflict is gone, or it declares that dependency |
 | `batch-conflict` *(planned, #1700)* | a pull request that conflicts with a batch being built | git cannot merge it with the batch's head | the conflict is gone; the batch lands or is closed; it joins the batch |
 
@@ -75,13 +75,15 @@ description doesn't mention, and pull requests reverted in the branch.
      and entries that don't start with a link, are not read.
    - A list ends at the next heading or paragraph.
 
-   Each pull request left out is sent a comment quoting the heading and its entry, and is
-   labelled `awaiting-author`. Write the entry for its author: it is what they see. A pull
-   request that an earlier batch, or an earlier version of the description, left out under the
-   same heading (ignoring anything in parentheses) is not told again. Its comment is edited to
-   show the new entry, which notifies nobody, so that `ready` is not undone every time a batch
-   leaves it out for the same kind of reason. Keep the headings the same from one batch to the
-   next for this to work. A pull request that is in the branch, or in another batch being built,
+   Each pull request left out is sent a comment quoting the heading and its entry. The comment
+   only informs: it asks nothing of the author and changes no label, since many reasons, such as
+   being `deferred`, are nothing the author can act on. Write the entry for its author: it is what
+   they see. A pull request labelled `deferred` is not sent anything. A pull request that an
+   earlier batch, or an earlier version of the description, left out under the same heading
+   (ignoring anything in parentheses) is not told again. Its comment is edited to show the new
+   entry, which notifies nobody, so that it is not told every time a batch leaves it out for the
+   same kind of reason. Keep the headings the same from one batch to the next for this to work.
+   A pull request that is in the branch, or in another batch being built,
    is never told it is left out, whatever the description says: a lower batch can list as left
    out what the batch stacked on it takes. The comment puts `#123` and links to pull requests of this
    repository in code spans, so that quoting an entry does not mention every pull request it
@@ -93,8 +95,8 @@ description doesn't mention, and pull requests reverted in the branch.
    which notifies nobody, so fixing a typo in a heading tells no one again. One whose entry is
    removed is told so. When three or more pull requests leave the left-out lists at once and are
    still listed elsewhere in the description, as when a heading is reworded so that it no longer
-   says "left out", none of them is told: the workflow only notes it in its log. A new comment, and `awaiting-author` again, comes only when another batch
-   leaves a pull request out under a different kind of heading.
+   says "left out", none of them is told: the workflow only notes it in its log. A new comment
+   comes only when another batch leaves a pull request out under a different kind of heading.
 
 ## What the workflow does
 
@@ -108,6 +110,9 @@ of batches, what the branch shares with a batch it is stacked on belongs to that
 A pull request that is pushed to after the batch took its commit stays in the batch at the old
 commit. As soon as the push comes in, it is told that the batch lands only that commit, and is
 labelled `awaiting-author`: a push to a `frozen` pull request runs only this, not a whole sync.
+If the batch's branch has the new head already, as when the merge of `main` the batch was built
+from is pushed to the pull request afterwards, nothing is said, and the batch's record takes the
+new head.
 If its new head is merged into the branch, the batch holds that one instead, and
 `awaiting-author` comes off again, as it does when the pull request is pushed back to the commit
 the batch took. Only a label the workflow put on for the push comes off: one a person put on
