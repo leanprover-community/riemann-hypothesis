@@ -257,10 +257,10 @@ heading about conflicts with the batch.
 Or wait until the batch has landed, then merge `main` into your branch, resolve the conflicts
 there and comment `ready`.
 
-A line counts as a dependency when it starts with `depends on`, `depend on`, `depends upon`,
-`blocked by`, `requires` or `needs`, optionally after a list marker or `>` and a task box such as
-`- [ ]` or `- [x]`, and names the batch's pull request as `#123` or by its address
-(`scripts/pr-dependencies.py` has the exact rules). Once the batch has landed, the dependencies
+A line counts as a dependency when it starts with `depends on`, `depend on` or `depends upon`,
+optionally after a list marker or `>` and a task box such as `- [ ]` or `- [x]`, and names the
+batch's pull request as `#123` or by its address. `blocked by`, `requires` and `needs` count too,
+but only after a task box or a list marker (`scripts/pr-dependencies.py` has the exact rules). Once the batch has landed, the dependencies
 workflow (`.github/workflows/dependencies.yml`) ticks the box: `- [x] depends on: #123`. Leave the
 line there: ticked, it still declares the dependency.
 
