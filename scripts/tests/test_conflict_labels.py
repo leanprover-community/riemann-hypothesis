@@ -202,7 +202,7 @@ class Message(unittest.TestCase):
                        "#900 deletes `src/Gone.lean`, which this pull request starts to import in `src/New.lean`",
                        "this pull request deletes `src/Old.lean`, which #900 starts to import in `src/X.lean`",
                        "Merge the batch's branch `batch/b9-on-1313` into your branch and resolve the conflicts",
-                       "at the top of the pull request's description", "- [ ] depends on: #900",
+                       "at the end of the pull request's description, under a line `---`", "- [ ] depends on: #900",
                        "Comment `ready`", "wait until #900 has landed, then merge `main`",
                        f"`{BATCH_CONFLICT}` and `{WAITING}`"):
             self.assertIn(needed, text)

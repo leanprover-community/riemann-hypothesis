@@ -415,7 +415,8 @@ def message(batch, result):
         "request is taken out of a batch, your branch still carries the pull request that was taken out. Then "
         "make a new branch from the new batch branch, copy only your own commits onto it with `git cherry-pick`, "
         "and push that to this pull request.".format(n=batch["number"]),
-        "2. Add this line at the top of the pull request's description:",
+        "2. Add this line at the end of the pull request's description, under a line `---`, as the template "
+        "in `AGENTS.md` has it:",
         "",
         "   ```",
         f"   - [ ] depends on: #{batch['number']}",

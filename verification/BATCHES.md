@@ -192,7 +192,8 @@ heading about conflicts.
    which is how a pull request is taken out of a batch (rule 5), your branch still carries the
    pull request that was taken out. Then make a new branch from the new batch branch, copy only
    your own commits onto it with `git cherry-pick`, and push that to your pull request.
-2. Add this line at the top of the description, where #123 is the batch's pull request:
+2. Add this line at the end of the description, under a line `---`, as the template in
+   [AGENTS.md](../AGENTS.md#pull-requests) has it, where #123 is the batch's pull request:
 
    ```
    - [ ] depends on: #123
