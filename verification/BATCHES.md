@@ -332,11 +332,13 @@ land: every open batch assembled by hand counts as being built.
 The issue titled "Batch status" shows, in one place, which batches are being built and what each
 contains, which pull requests are in the batch queue, and what each batch leaves out. The batch
 status workflow (`.github/workflows/batch-status.yml`, which runs `scripts/batch-status.py`) keeps
-it up to date. It looks every 15 minutes and after each run of the batch queue and conflict labels
-workflows, and rewrites the description only when what it says changes. The time in its footer is
-when that last happened. The workflow opens the issue the first time, and a maintainer pins it by
-hand. It is found by `<!-- batch-status -->` at the start of its description, in an issue the
-workflow opened.
+it up to date. It looks every 15 minutes and whenever the batch queue workflow has changed
+something, and rewrites the description when what it says changes. The footer says when that last
+happened, and when a run last found it up to date: that "last checked" time is brought up to date
+at least every six hours, so one older than that means the workflow's runs are failing. The
+workflow opens the issue the first time, and a maintainer pins it by hand. It is found by
+`<!-- batch-status -->` anywhere in its description, in an issue the workflow opened, so a line
+added above it does no harm.
 
 - **Batches being built** are the open pull requests from a `batch/...` branch of this
   repository that are labelled `building`. The batch labelled `latest batch` comes first, then the

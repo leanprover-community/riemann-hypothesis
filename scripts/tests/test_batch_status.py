@@ -6,7 +6,6 @@ import json
 from pathlib import Path
 import re
 import tempfile
-import types
 import unittest
 
 SCRIPTS = Path(__file__).resolve().parents[1]
@@ -53,12 +52,14 @@ def record(members, head):
 class Fake(status.GitHub):
     """Just enough of GitHub's GraphQL and REST APIs."""
 
-    def __init__(self, nodes=(), batches=None, issues=(), pinned=(), found=(), colours=None, dry_run=False):
+    def __init__(self, nodes=(), batches=None, issues=(), pinned=(), found=(), ours=(), colours=None, dry_run=False):
         super().__init__(REPO, dry_run)
         self.nodes = list(nodes)
         # {number: (description, [comments])}
         self.batches = batches or {}
-        self.issues, self.pinned, self.found = list(issues), list(pinned), list(found)
+        # `found` is what the search by title finds, and `ours` what the search for the workflow's
+        # issues that mention `batch-status` does.
+        self.issues, self.pinned, self.found, self.ours = list(issues), list(pinned), list(found), list(ours)
         self.colours_ = COLOURS if colours is None else colours
         self.writes = []
 
@@ -81,9 +82,10 @@ class Fake(status.GitHub):
                 "nodes": comments[start:start + 1],
                 "pageInfo": {"hasNextPage": start + 1 < len(comments), "endCursor": str(start + 1)}}}}}
         if query is status.ISSUES:
+            self.searched = (variables["q"], variables["ours"])
             return {"repository": {"pinnedIssues": {"nodes": [{"issue": issue} for issue in self.pinned]},
                                    "issues": {"nodes": self.issues}},
-                    "search": {"nodes": self.found}}
+                    "search": {"nodes": self.found}, "ours": {"nodes": self.ours}}
         raise AssertionError(f"unexpected query {query[:40]}")
 
     def call(self, method, path, payload=None):
@@ -235,12 +237,20 @@ class Issue(unittest.TestCase):
 
     def test_finds_it_by_its_marker_and_author(self):
         body = status.MARKER + "\nold"
+        someone = {"__typename": "User", "login": "x"}
         fake = Fake(*scene(),
-                    issues=[issue(5, "something else"), issue(6, body, author={"__typename": "User", "login": "x"}),
-                            issue(7, "quoting " + status.MARKER)],
+                    issues=[issue(5, "something else"), issue(6, body, author=someone),
+                            issue(7, "quoting " + status.MARKER, author=someone)],
                     found=[issue(9, body)], pinned=[issue(8, body, state="CLOSED")])
         status.run(fake)
         self.assertEqual([(method, path) for method, path, _ in fake.writes], [("PATCH", "issues/9")])
+
+    def test_a_line_added_above_the_marker_does_not_lose_it(self):
+        body = "Pinned: read this first.\n\n" + status.MARKER + "\nold"
+        fake = Fake(*scene(), ours=[issue(9, body)])
+        status.run(fake)
+        self.assertEqual([(method, path) for method, path, _ in fake.writes], [("PATCH", "issues/9")])
+        self.assertIn("author:app/github-actions", fake.searched[1])
 
     def test_a_closed_one_is_updated_not_duplicated(self):
         fake = Fake(*scene(), found=[issue(8, status.MARKER + "\nold", state="CLOSED")])
@@ -268,7 +278,39 @@ class Issue(unittest.TestCase):
         fake = Fake(nodes, batches, issues=[issue(99, old)])
         status.run(fake)
         self.assertEqual(fake.writes[0][:2], ("PATCH", "issues/99"))
-        self.assertIn("Last changed 2026-11-24 10:03 UTC.", fake.writes[0][2]["body"])
+        self.assertIn("Last changed 2026-11-24 10:03 UTC; last checked 2026-11-24 10:03 UTC.", fake.writes[0][2]["body"])
+
+    def written(self):
+        fake = Fake(*scene())
+        status.run(fake)
+        return fake.writes[0][2]["body"]
+
+    def test_last_checked_is_written_again_only_once_it_is_six_hours_old(self):
+        body = self.written()
+        # Five hours ago: nothing to write.
+        recent = body.replace("last checked 2026-11-24 10:03", "last checked 2026-11-24 05:04")
+        fake = Fake(*scene(), issues=[issue(99, recent)])
+        status.run(fake)
+        self.assertEqual(fake.writes, [])
+        # Six hours ago: written again, with only that time new.
+        old = body.replace("Last changed 2026-11-24 10:03 UTC; last checked 2026-11-24 10:03",
+                           "Last changed 2026-11-23 18:00 UTC; last checked 2026-11-24 04:03")
+        fake = Fake(*scene(), issues=[issue(99, old)])
+        log = status.run(fake)
+        [(method, path, payload)] = fake.writes
+        self.assertEqual((method, path), ("PATCH", "issues/99"))
+        self.assertIn("Last changed 2026-11-23 18:00 UTC; last checked 2026-11-24 10:03 UTC.", payload["body"])
+        self.assertEqual(payload["body"], body.replace("Last changed 2026-11-24 10:03", "Last changed 2026-11-23 18:00"))
+        self.assertIn('updated #99: only its "last checked" time', log[-1])
+
+    def test_a_footer_from_before_last_checked_is_written_again(self):
+        body = self.written()
+        before = body.replace("Last changed 2026-11-24 10:03 UTC; last checked 2026-11-24 10:03 UTC.",
+                              "Last changed 2026-11-24 09:00 UTC.")
+        fake = Fake(*scene(), issues=[issue(99, before)])
+        status.run(fake)
+        self.assertIn("Last changed 2026-11-24 09:00 UTC; last checked 2026-11-24 10:03 UTC.",
+                      fake.writes[0][2]["body"])
 
     def test_dry_run_and_short_write_nothing(self):
         with tempfile.TemporaryDirectory() as folder:
@@ -323,7 +365,7 @@ class Body(unittest.TestCase):
         self.assertIn("as of", body.replace("This is what it contained at", "as of"))
         self.assertIn("It also lists 1 pull request that is no longer open.", body)
         self.assertIn("`batch status` workflow", body)
-        self.assertIn("Last changed 2026-11-24 10:03 UTC.", body)
+        self.assertIn("Last changed 2026-11-24 10:03 UTC; last checked 2026-11-24 10:03 UTC.", body)
         self.assertIn("verification/BATCHES.md#the-status-issue", body)
         self.assertNotIn("Shortened", body)
 
@@ -358,19 +400,25 @@ class Size(unittest.TestCase):
 
 
 class Names(unittest.TestCase):
-    def test_missing_constants_fall_back_to_the_names_on_github(self):
-        bare = types.SimpleNamespace(QUEUED="batch queue", PRIORITY="priority", BUILDING="building",
-                                     MEMBER="batch-building", WAITING="awaiting-author")
-        found = status.names(bare)
-        self.assertEqual((found["CHANGED"], found["MAIN_CONFLICT"], found["BATCH_CONFLICT"], found["LATEST"]),
-                         ("changed after frozen", "main-conflict", "batch-conflict", "latest batch"))
-        given = types.SimpleNamespace(**vars(bare), CHANGED="pushed", LATEST="outermost")
-        self.assertEqual((status.names(given)["CHANGED"], status.names(given)["LATEST"]), ("pushed", "outermost"))
+    def test_the_label_names_are_those_of_batch_labels(self):
+        for key in ("QUEUED", "PRIORITY", "BUILDING", "MEMBER", "WAITING", "CHANGED", "MAIN_CONFLICT",
+                    "BATCH_CONFLICT", "LATEST"):
+            with self.subTest(key=key):
+                self.assertEqual(getattr(status, key), getattr(labels, key))
 
-    def test_fallbacks_agree_with_batch_labels_where_it_has_them(self):
-        for key, value in status.names(labels).items():
-            if hasattr(labels, key):
-                self.assertEqual(value, getattr(labels, key))
+
+class Workflows(unittest.TestCase):
+    WORKFLOWS = SCRIPTS.parent / ".github" / "workflows"
+
+    def test_the_batch_queue_starts_it_after_its_sync_or_pushed_job(self):
+        text = (self.WORKFLOWS / "batch-queue.yml").read_text()
+        job = text.split("\n  status:\n", 1)[1]
+        self.assertIn("needs: [pushed, sync]", job)
+        self.assertIn("actions/workflows/batch-status.yml/dispatches", job)
+
+    def test_it_follows_no_workflow_run(self):
+        # Following every batch queue run would show most of them as skipped runs here.
+        self.assertNotIn("workflow_run", (self.WORKFLOWS / "batch-status.yml").read_text().split("\non:", 1)[1])
 
 
 if __name__ == "__main__":

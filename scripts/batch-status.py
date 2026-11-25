@@ -3,15 +3,17 @@
 leaves out, and which pull requests are in the batch queue.
 
 The batch status workflow (`.github/workflows/batch-status.yml`) runs this from its trusted
-checkout, every fifteen minutes and after each run of the batch queue and conflict labels
-workflows. Nothing from a pull request is checked out or run. Everything is read from GitHub's API,
+checkout, every fifteen minutes and when the batch queue workflow has changed something. Nothing from a pull request is checked out or run. Everything is read from GitHub's API,
 and the only thing written is the issue.
 
-The issue is the one in this repository that the workflow opened and whose description starts
-with `<!-- batch-status -->`. This script opens it, titled "Batch status", when there is none. A
-maintainer pins it by hand. Its description is rewritten only when what it says changes, so the
-time in its footer is when that last happened. A closed status issue is still kept up to date. It
-is not reopened, and no second one is opened.
+The issue is the one in this repository that the workflow opened and whose description holds
+`<!-- batch-status -->`, at the start unless someone has added a line above it. This script opens
+it, titled "Batch status", when there is none. A maintainer pins it by hand. Its description is
+rewritten when what it says changes, and the footer's "last changed" says when that last happened.
+Its "last checked" says when a run last found it up to date; when that is more than
+`CHECKED_EVERY` ago, a run that finds nothing changed writes the description all the same, with
+only that time new, so that an issue whose runs fail shows it. A closed status issue is still kept
+up to date. It is not reopened, and no second one is opened.
 
 What it says:
 
@@ -47,9 +49,10 @@ then each table becomes a list of numbers, and as a last resort the end is cut o
 
 Pull requests, and the batches' descriptions and notes, are read through GraphQL, in a few
 requests, and the label colours through REST, in one. The issue is found through GraphQL too:
-among the pinned issues, the latest twenty, and those titled "Batch status". Only an issue the
-workflow opened counts, so that nobody can make the workflow write into an issue of theirs. The
-pinned and latest issues find it before GitHub's search index does.
+among the pinned issues, the latest twenty, those titled "Batch status", and those the workflow
+opened that mention `batch-status`. Only an issue the workflow opened counts, so that nobody can
+make the workflow write into an issue of theirs. The pinned and latest issues find it before
+GitHub's search index does.
 """
 from __future__ import annotations
 
@@ -71,29 +74,10 @@ _labels = _rest.load("batch-labels.py")
 _sync = _rest.load("batch-queue-sync.py")
 
 
-def names(labels):
-    """The label names this script uses, from `labels`, the module `batch-labels.py`.
-
-    `CHANGED`, `MAIN_CONFLICT`, `BATCH_CONFLICT` and `LATEST` come from other pull requests, which
-    may land before or after this one: `changed after frozen` from #1697, the two conflict labels
-    from #1700, and `latest batch` from the one that orders stacked batches. Until they land, the
-    names are the ones those labels already have on GitHub.
-    """
-    return {
-        "QUEUED": labels.QUEUED, "PRIORITY": labels.PRIORITY, "BUILDING": labels.BUILDING,
-        "MEMBER": labels.MEMBER, "WAITING": labels.WAITING,
-        "CHANGED": getattr(labels, "CHANGED", "changed after frozen"),
-        "MAIN_CONFLICT": getattr(labels, "MAIN_CONFLICT", "main-conflict"),
-        "BATCH_CONFLICT": getattr(labels, "BATCH_CONFLICT", "batch-conflict"),
-        "LATEST": getattr(labels, "LATEST", "latest batch"),
-    }
-
-
-_names = names(_labels)
 QUEUED, PRIORITY, BUILDING, MEMBER, WAITING = (
-    _names[key] for key in ("QUEUED", "PRIORITY", "BUILDING", "MEMBER", "WAITING"))
+    _labels.QUEUED, _labels.PRIORITY, _labels.BUILDING, _labels.MEMBER, _labels.WAITING)
 CHANGED, MAIN_CONFLICT, BATCH_CONFLICT, LATEST = (
-    _names[key] for key in ("CHANGED", "MAIN_CONFLICT", "BATCH_CONFLICT", "LATEST"))
+    _labels.CHANGED, _labels.MAIN_CONFLICT, _labels.BATCH_CONFLICT, _labels.LATEST)
 # The labels shown as badges, in this order. `building` is not one: see above.
 BADGES = (PRIORITY, CHANGED, BATCH_CONFLICT, MAIN_CONFLICT, WAITING, LATEST)
 
@@ -107,9 +91,16 @@ BOT = "github-actions"
 LIMIT = 65_000
 # The colour of a badge for a label GitHub does not have.
 GREY = "ededed"
-# The time in the footer, which alone is not a change.
-STAMP = "Last changed {} UTC."
-STAMPED = re.compile(r"Last changed \d{4}-\d\d-\d\d \d\d:\d\d UTC\.")
+# The times in the footer: when what the issue says last changed, and when a run last found it
+# up to date. Neither alone is a change.
+STAMP = "Last changed {} UTC; last checked {} UTC."
+STAMPED = re.compile(r"Last changed (\d{4}-\d\d-\d\d \d\d:\d\d) UTC(?:; last checked "
+                     r"(\d{4}-\d\d-\d\d \d\d:\d\d) UTC)?\.")
+TIME = "%Y-%m-%d %H:%M"
+# How old the footer's "last checked" may get before a run that finds nothing changed writes the
+# description anyway, to bring it up to date: so that a stale issue shows it, at four writes a day
+# at most.
+CHECKED_EVERY = datetime.timedelta(hours=6)
 # The ways a description is shortened to fit, each on top of those before it.
 SHORTENED = (
     "label badges are shown as plain label names",
@@ -145,13 +136,14 @@ BATCH = """query($owner: String!, $name: String!, $number: Int!, $after: String)
   }
 }"""
 ISSUE = "number state body author { __typename login }"
-ISSUES = """query($owner: String!, $name: String!, $q: String!) {
+ISSUES = """query($owner: String!, $name: String!, $q: String!, $ours: String!) {
   repository(owner: $owner, name: $name) {
     pinnedIssues(first: 3) { nodes { issue { %s } } }
     issues(first: 20, orderBy: {field: CREATED_AT, direction: DESC}) { nodes { %s } }
   }
   search(query: $q, type: ISSUE, first: 20) { nodes { ... on Issue { %s } } }
-}""" % (ISSUE, ISSUE, ISSUE)
+  ours: search(query: $ours, type: ISSUE, first: 20) { nodes { ... on Issue { %s } } }
+}""" % (ISSUE, ISSUE, ISSUE, ISSUE)
 
 Refused = _rest.Refused
 
@@ -203,14 +195,17 @@ class GitHub(_rest.GitHub):
 
     def issue(self):
         """The status issue as GraphQL gives it ({number, state, body, author}), or None when
-        there is none yet. Of several, the open one with the lowest number."""
+        there is none yet. Of several, the open one with the lowest number. It is an issue the
+        workflow opened whose description holds `MARKER` anywhere, so that a line a maintainer
+        adds above it, or a new title, does not lose it."""
         found = self.graphql(ISSUES, owner=self.owner, name=self.name,
-                             q=f'repo:{self.repo} is:issue in:title "{TITLE}"')
+                             q=f'repo:{self.repo} is:issue in:title "{TITLE}"',
+                             ours=f'repo:{self.repo} is:issue author:app/github-actions in:body "batch-status"')
         repository = found["repository"]
         nodes = [pinned.get("issue") for pinned in repository["pinnedIssues"]["nodes"]]
-        nodes += repository["issues"]["nodes"] + found["search"]["nodes"]
+        nodes += repository["issues"]["nodes"] + found["search"]["nodes"] + found["ours"]["nodes"]
         ours = {node["number"]: node for node in nodes
-                if node and (node.get("body") or "").startswith(MARKER) and by_workflow(node)}
+                if node and MARKER in (node.get("body") or "") and by_workflow(node)}
         if not ours:
             return None
         return min(ours.values(), key=lambda node: (node["state"] != "OPEN", node["number"]))
@@ -484,10 +479,11 @@ class Writer:
         return ["---", "",
                 "<sub>This issue shows the batches being built, the batch queue and what each batch leaves out. "
                 f"The `{WORKFLOW}` workflow (`.github/workflows/batch-status.yml`) keeps it up to date: it looks "
-                "every 15 minutes and after each run of the batch queue and conflict labels workflows, and "
-                f"rewrites this only when something in it changes. {STAMP.format(stamp)} Agents and scripts: "
-                "read the `batch-status` JSON block at the top of this description's source, not the tables. "
-                f"See [`verification/BATCHES.md`]({guide}).</sub>", ""]
+                "every 15 minutes and after the batch queue has changed something, and rewrites this when "
+                "something in it changes, or every six hours to say it still looks. "
+                f"{STAMP.format(*stamp)} A \"last checked\" more than six hours ago means its runs are failing. "
+                "Agents and scripts: read the `batch-status` JSON block at the top of this description's source, "
+                f"not the tables. See [`verification/BATCHES.md`]({guide}).</sub>", ""]
 
     def body(self, found, stamp):
         head = [MARKER, data(found), ""]
@@ -509,7 +505,8 @@ class Writer:
 
 
 def describe(repo, pulls, colours, found, stamp):
-    """The description, shortened as little as it can be to fit `LIMIT`, and how much it was."""
+    """The description, shortened as little as it can be to fit `LIMIT`, and how much it was.
+    `stamp` is (last changed, last checked), each as `TIME` writes it."""
     for level in range(len(SHORTENED) + 1):
         text = Writer(repo, pulls, colours, level).body(found, stamp)
         if len(text) <= LIMIT:
@@ -518,10 +515,18 @@ def describe(repo, pulls, colours, found, stamp):
 
 
 def same(old, new):
-    """Whether two descriptions say the same, the time in the footer apart."""
+    """Whether two descriptions say the same, the times in the footer apart."""
     def plain(text):
         return STAMPED.sub("", (text or "").replace("\r\n", "\n")).strip()
     return plain(old) == plain(new)
+
+
+def stamps(text):
+    """The times in a description's footer, as (last changed, last checked), each a string as
+    `TIME` writes it, or None where there is none. A footer from before "last checked" was written
+    has only the first."""
+    match = STAMPED.search(text or "")
+    return (match.group(1), match.group(2)) if match else (None, None)
 
 
 def run(gh, preview=None):
@@ -531,10 +536,23 @@ def run(gh, preview=None):
     colours = gh.colours()
     found = status(gh.repo, pulls, gh.batch)
     issue = gh.issue()
-    text, level = describe(gh.repo, pulls, colours, found, gh.now().strftime("%Y-%m-%d %H:%M"))
+    now = gh.now()
+    text, level = describe(gh.repo, pulls, colours, found, (now.strftime(TIME), now.strftime(TIME)))
     unchanged = issue is not None and same(issue["body"], text)
+    checked = False
     if unchanged:
-        text = issue["body"]
+        changed_at, checked_at = stamps(issue["body"])
+        try:
+            fresh = checked_at is not None and now - datetime.datetime.strptime(checked_at, TIME).replace(
+                tzinfo=datetime.timezone.utc) < CHECKED_EVERY
+        except ValueError:
+            fresh = False
+        if fresh:
+            text = issue["body"]
+        else:
+            # Nothing changed, but "last checked" is old: written again with the time it last changed.
+            text, level = describe(gh.repo, pulls, colours, found, (changed_at or now.strftime(TIME), now.strftime(TIME)))
+            unchanged, checked = False, True
     if preview:
         Path(preview).write_text(text)
     left = sum(len(numbers) for headings in found["left"].values() for _, numbers in headings)
@@ -549,13 +567,15 @@ def run(gh, preview=None):
         log.append(f"only {gh.remaining} requests left this hour: did not write {where}, and the next run does")
         return log
     if gh.dry_run:
-        log.append(f"would {'update' if issue else 'open'} {where}")
+        log.append(f"would {'update' if issue else 'open'} {where}"
+                   + (": only its \"last checked\" time" if checked else ""))
         return log
     if issue:
         answer, _ = gh.write("PATCH", f"issues/{issue['number']}", {"body": text})
         if answer != 200:
             raise RuntimeError(f"could not update #{issue['number']}: {answer}")
-        log.append(f"updated #{issue['number']}" + (" (it is closed)" if issue["state"] != "OPEN" else ""))
+        log.append(f"updated #{issue['number']}" + (": only its \"last checked\" time" if checked else "")
+                   + (" (it is closed)" if issue["state"] != "OPEN" else ""))
     else:
         answer, made = gh.write("POST", "issues", {"title": TITLE, "body": text})
         if answer != 201:

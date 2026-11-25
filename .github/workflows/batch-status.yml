@@ -10,20 +10,20 @@ name: batch status
 # The script opens the issue, titled "Batch status", the first time. A maintainer pins it by
 # hand. Each run reads the open pull requests, the batches' descriptions and the batch queue sync's
 # notes on them through GraphQL, in a few requests, and the label colours in one REST request. It
-# writes the issue at most once, and only when what it says has changed.
+# writes the issue at most once: when what it says has changed, or when its "last checked" time
+# is more than six hours old.
 #
-# It runs every fifteen minutes, at minutes no other workflow's schedule uses, after every run of
-# the batch queue workflow and of the conflict labels workflow, which change what the issue says,
-# and when started by hand. A workflow that does not exist yet is simply never followed.
-# workflow_run and schedule run this file and the script from the default branch, and nothing
-# from a pull request is checked out or run.
+# It runs every fifteen minutes, at minutes no other workflow's schedule uses, when started by
+# hand, and when the batch queue workflow starts it: its `status` job does after its sync or
+# pushed job ran. That is instead of following every batch queue run with `workflow_run`, most of
+# which are comments that start no job: those would each show here as a skipped run. What the
+# conflict labels workflow changes shows within fifteen minutes. schedule and workflow_dispatch run
+# this file and the script from the default branch, and nothing from a pull request is checked out
+# or run.
 
 on:
   schedule:
     - cron: '3,18,33,48 * * * *'
-  workflow_run:
-    workflows: [batch queue, conflict labels]
-    types: [completed]
   workflow_dispatch:
 
 permissions: {}
@@ -31,12 +31,8 @@ permissions: {}
 jobs:
   status:
     name: Bring the batch status issue up to date
-    # Forks with Actions turned on would otherwise run against themselves. Most batch queue runs
-    # are comments that start no job at all, and those runs are skipped here too.
-    if: >-
-      ${{ github.repository == 'leanprover-community/riemann-hypothesis' && (
-          github.event_name != 'workflow_run' ||
-          contains(fromJSON('["success", "failure"]'), github.event.workflow_run.conclusion)) }}
+    # Forks with Actions turned on would otherwise run against themselves.
+    if: ${{ github.repository == 'leanprover-community/riemann-hypothesis' }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     # One run at a time. A run still waiting when a newer one arrives can be dropped, and that

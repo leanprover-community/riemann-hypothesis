@@ -85,6 +85,9 @@ name: batch queue
 #
 # The workflow can be started by hand to bring the labels up to date, with a pull request number
 # to repeat the comparison for that pull request.
+#
+# After its sync or pushed job has run, it starts the batch status workflow, which shows the
+# batches and the queue in an issue (see batch-status.yml).
 
 on:
   issue_comment:
@@ -499,3 +502,24 @@ jobs:
           # starts it.
           CONFLICT_LABELS: ${{ vars.CONFLICT_LABELS }}
         run: python3 scripts/batch-queue-sync.py --repo "$REPO" --summary "$GITHUB_STEP_SUMMARY"
+
+  status:
+    name: Start the batch status workflow
+    needs: [pushed, sync]
+    # After the sync or the pushed job ran, whether it went through or not: either may have
+    # changed what the batch status issue says. A run where neither ran, such as most comments,
+    # starts nothing, so the batch status workflow's own list shows no skipped runs for them.
+    if: >-
+      ${{ always() && (contains(fromJSON('["success", "failure"]'), needs.sync.result) ||
+          contains(fromJSON('["success", "failure"]'), needs.pushed.result)) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      actions: write
+    steps:
+      - name: Start it on the default branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          MAIN: ${{ github.event.repository.default_branch }}
+        run: gh api -X POST "repos/$REPO/actions/workflows/batch-status.yml/dispatches" -f ref="$MAIN"
