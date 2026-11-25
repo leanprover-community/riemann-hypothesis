@@ -38,14 +38,20 @@ name: conflict labels
 # A sweep also looks for pull requests that merged a batch's branch and still carry the commits of a
 # pull request the batch was then rebuilt without, and tells each once for each head of the batch.
 #
-# pull_request_target gives the token write access for pull requests from forks. Nothing from a
-# pull request is checked out or run: the script comes from the same trusted commit as this
-# workflow, pull requests are read through GitHub's API, and their commits are fetched as git
-# objects without file contents and compared with `git merge-tree`. Only the files that both
-# sides of a comparison change, and the Lean files whose import lines are read, are fetched.
+# pull_request_target gives the token write access for pull requests from forks, so it runs only
+# for pull requests into main: the batches' own pull requests are, and the script leaves every other
+# pull request alone anyway. A pull request based on a `batch/...` branch would otherwise run that
+# branch's copy of this workflow and the scripts with a write token, and a batch assembled by hand
+# takes pull requests without review. One whose base is changed away from main loses its labels in
+# the next sweep. Nothing from a pull request is checked out or run: the script comes from the same
+# trusted commit as this workflow, pull requests are read through GitHub's API, and their commits
+# are fetched as git objects without file contents and compared with `git merge-tree`. Only the
+# files that both sides of a comparison change, and the Lean files whose import lines are read, are
+# fetched.
 
 on:
   pull_request_target:
+    branches: [main]
     types: [opened, reopened, synchronize, ready_for_review, edited, closed, labeled, unlabeled]
   push:
     branches: [main]
@@ -93,9 +99,10 @@ jobs:
     concurrency:
       group: conflict-labels-${{ (github.event_name == 'pull_request_target' && !(startsWith(github.event.pull_request.head.ref, 'batch/') && github.event.pull_request.head.repo.full_name == github.repository) && github.event.pull_request.number) || inputs.pr || 'sweep' }}
       cancel-in-progress: false
+    # `pull-requests: write` covers labels and comments on pull requests, through the issues API
+    # too, as in inbox.yml.
     permissions:
       contents: read
-      issues: write
       pull-requests: write
     steps:
       - name: Check out this workflow's own copy of the scripts
