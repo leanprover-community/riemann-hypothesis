@@ -1912,6 +1912,46 @@ class DescriptionCheck(unittest.TestCase):
         [told] = self.reverted(gh, 13)
         self.assertTrue(told.startswith(f"<!-- batch-queue-reverted 1018 {undo} -->"))
 
+    def merge_with_main_and_revert(self, gh, subject="Merge PR #13 into batch"):
+        """As batch 15's ten reverts: `main` was merged into #13 for the batch, the batch merged
+        that, and git reverted the batch's merge. Its head is a grandparent of that merge. Returns
+        the revert."""
+        old, head = gh.refs[HAND], gh.pulls[13]["sha"]
+        with_main, merge, undo = sha("13 with main"), sha("kim merge 13"), sha("kim revert 13")
+        gh.commits[with_main] = {"message": "Merge main into this branch", "parents": [{"sha": head}, {"sha": MAIN}]}
+        gh.inside[with_main] = gh.inside[head] | {head, MAIN}
+        gh.commits[merge] = {"message": subject, "parents": [{"sha": old}, {"sha": with_main}]}
+        gh.inside[merge] = gh.inside[old] | gh.inside[with_main] | {old, with_main}
+        gh.commits[undo] = {"message": f'Revert "{subject}"\n\nThis reverts commit {merge}, reversing\nchanges made '
+                                       f"to {old}.", "parents": [{"sha": merge}]}
+        gh.inside[undo] = gh.inside[merge] | {merge}
+        move(gh, undo)
+        return undo
+
+    def test_a_revert_of_a_batch_merge_that_brought_main_in_with_it_counts(self):
+        # The description lists it as left out, as batch 15's did: it is named as reverted, not as
+        # in the branch although left out, and told.
+        gh = self.built(LISTED.replace("- {URL}23".format(URL=URL), f"- #13 Taken out (@dan)\n- {URL}23"))
+        sync(gh)
+        undo = self.merge_with_main_and_revert(gh)
+        log = sync(gh)
+        self.assertEqual(note(self.record(gh))["reverted"], {"13": undo})
+        [check] = self.checks(gh)
+        self.assertIn(f"Reverted in this branch: #13 in `{undo[:10]}`.", check)
+        self.assertNotIn("listed as left out", check)
+        [told] = self.reverted(gh, 13)
+        self.assertTrue(told.startswith(f"<!-- batch-queue-reverted 1018 {undo} -->"))
+        self.assertIn("told #13 that the batch #1018 reverts it", log)
+
+    def test_a_batch_merge_naming_a_pull_request_it_did_not_bring_in_does_not_count_it(self):
+        # Named #12, which the merge does not hold: only #13's head is in it.
+        gh = self.built()
+        sync(gh)
+        self.merge_with_main_and_revert(gh, subject="Merge PR #12 into batch")
+        sync(gh)
+        self.assertEqual(note(self.record(gh))["reverted"], {})
+        self.assertEqual((self.reverted(gh, 12), self.reverted(gh, 13)), ([], []))
+
     def test_a_short_id_counts_only_for_a_merge_that_brought_a_pull_request_in(self):
         gh = self.built()
         undo = merge_and_revert(gh, 13)

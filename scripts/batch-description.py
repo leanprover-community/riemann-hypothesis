@@ -90,11 +90,14 @@ def reverts(commits, found):
     and `found` what the batch contains, as {number: commit}.
 
     A pull request is reverted when a commit of the branch reverts the merge commit that brought in
-    the commit of it the batch holds, as one of its parents after the first. A commit reverts
-    another when its message says `This reverts commit <commit>`, as git writes it, whatever its
-    first line says. A commit that is not a merge also reverts such a merge commit when its message
-    names it anywhere by its id, whole or abbreviated to seven characters or more, as the reverts
-    written by hand into batch 10b did: "This undoes the merge of #1673 into the batch
+    the commit of it the batch holds, as one of its parents after the first. A batch's merge commit
+    whose first line names the pull request (`BATCH_MERGE`) brings it in too when one of those
+    parents has that commit in it, as when `main` was merged into the pull request for the batch:
+    batch 15 reverted ten such merges, each with the pull request's head as a grandparent. A commit
+    reverts another when its message says `This reverts commit <commit>`, as git writes it,
+    whatever its first line says. A commit that is not a merge also reverts such a merge commit when
+    its message names it anywhere by its id, whole or abbreviated to seven characters or more, as
+    the reverts written by hand into batch 10b did: "This undoes the merge of #1673 into the batch
     (6e812fc62dbc)". A revert of that revert, which git calls `Revert "Revert "..."` or `Reapply
     "..."`, puts the pull request back, and so on. The commit named for a pull request is the
     revert in effect that comes last in that chain. A merge brings in a pull request only at the
@@ -105,11 +108,28 @@ def reverts(commits, found):
         found_ = [commit for commit in commits if commit.startswith(text)]
         return found_[0] if len(found_) == 1 else None
 
+    def has(commit, held):
+        # Whether `commit` has `held` in it, through the branch's commits: `held` is not on main.
+        seen, todo = set(), [commit]
+        while todo:
+            other = todo.pop()
+            if other == held:
+                return True
+            if other not in seen and other in commits:
+                seen.add(other)
+                todo += commits[other][1]
+        return False
+
     brought = {}
-    for commit, (_, parents) in commits.items():
+    for commit, (message, parents) in commits.items():
         for key, held in found.items():
             if held in parents[1:]:
                 brought.setdefault(key, set()).add(commit)
+        match = BATCH_MERGE.match(message.split("\n", 1)[0])
+        key = match and match.group(1)
+        if key in found and commit not in brought.get(key, ()) \
+                and any(has(parent, found[key]) for parent in parents[1:]):
+            brought.setdefault(key, set()).add(commit)
     merges = set().union(*brought.values())
     target = {}
     for commit, (message, parents) in commits.items():

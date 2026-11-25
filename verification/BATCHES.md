@@ -141,12 +141,15 @@ comment of its own on the batch's pull request. It names:
 - pull requests whose merge into the branch was reverted. The workflow knows a revert by the
   line git writes in its message, `This reverts commit <commit>`, naming the merge commit that
   brought in the commit of the pull request that the batch holds, whatever the revert's first line
-  says. A commit that is not a merge also counts when its message names that merge commit
-  anywhere by its id, whole or abbreviated, as in "This undoes the merge of #1673 into the batch
-  (6e812fc62dbc)". A revert of the revert puts the pull request back. A pull request merged in
-  again at a new head is in the batch at that head, and a revert of its earlier merge no longer
-  counts. Each pull request reverted is also told, once, that the batch would land it although its
-  changes did not (rule 5), unless it is labelled `deferred`.
+  says. A batch's merge commit for the pull request, `Merge PR #123 into batch` or `Merge #123
+  head (...) into batch/...`, also brought that commit in when what it merged only has it in it,
+  as when `main` was merged into the pull request for the batch. A commit that is not a merge
+  also counts when its message names that merge commit anywhere by its id, whole or abbreviated,
+  as in "This undoes the merge of #1673 into the batch (6e812fc62dbc)". A revert of the revert
+  puts the pull request back. A pull request merged in again at a new head is in the batch at
+  that head, and a revert of its earlier merge no longer counts. Each pull request reverted is
+  also told, once, that the batch would land it although its changes did not (rule 5), unless it
+  is labelled `deferred`.
 
 What is in the branch is what the workflow found there, at the commit it found, so a pull request
 pushed to after it was merged in is not named. In a stack, the description of a batch need list
