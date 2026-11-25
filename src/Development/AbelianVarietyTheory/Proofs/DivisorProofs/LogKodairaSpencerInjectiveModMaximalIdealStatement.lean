@@ -82,7 +82,7 @@ theorem rigidity_dualNumber {K : Type} [Field K] (A₀ : Over (Sp K)) (A' G' : O
     (hj : IsPullback j A₀.hom A'.hom (spMap (TrivSqZeroExt.fstHom K K K).toRingHom))
     (hab : j ≫ a.left = j ≫ b.left) (hη : η[A'] ≫ a = η[A'] ≫ b) : a = b := by
   have hL : Out.Laws := GlobalTheory.abelianSchemeLaws_all.1
-  haveI := _root_.GlobalTheory.LevelQuotUnram.subsingleton_sp_dual K
+  have := _root_.GlobalTheory.LevelQuotUnram.subsingleton_sp_dual K
   let c : A' ⟶ G' := a * b⁻¹
   let j' : Over.mk (j ≫ A'.hom) ⟶ A' := Over.homMk j rfl
   have h1 : j' ≫ a = j' ≫ b := Over.OverMorphism.ext hab
@@ -117,22 +117,22 @@ theorem act_const (hi : IsGrpPullback A A' (GlobalTheory.DeRham.epsRed K) i) (h�
     (o : Obj Dw l (baseKA l) (x' ≫ Xo.s)) (m : ObjMap o Xo.univ x') (g : o.t.G.left ⟶ A'.left)
     (hg : g ≫ π' = m.cm.F) (hgw : g ≫ A'.hom = o.t.G.hom) (a : 𝓞 E) :
     (o.t.act.act a).left ≫ (g ≫ q ≫ π) = (g ≫ q ≫ π) ≫ (Xo.univ.t.act.act a).left := by
-  haveI := Xo.univ.t.act.hom a
+  have := Xo.univ.t.act.hom a
   have wβ : (π ≫ (Xo.univ.t.act.act a).left) ≫ Xo.univ.t.G.hom = A.hom ≫ x₀ := by
     rw [Category.assoc, Over.w (Xo.univ.t.act.act a), hπ.1.w]
   let β : A ⟶ A := Over.homMk (hπ.1.lift _ A.hom wβ) (hπ.1.lift_snd _ _ _)
   have hβ : β.left ≫ π = π ≫ (Xo.univ.t.act.act a).left := hπ.1.lift_fst _ _ _
-  haveI : IsMonHom β := GlobalTheory.UU.isMonHom_of_over_isMonHom hπ hπ (Xo.univ.t.act.act a) β hβ
+  have : IsMonHom β := GlobalTheory.UU.isMonHom_of_over_isMonHom hπ hπ (Xo.univ.t.act.act a) β hβ
   have wα : (π' ≫ (Xo.univ.t.act.act a).left) ≫ Xo.univ.t.G.hom = A'.hom ≫ x' := by
     rw [Category.assoc, Over.w (Xo.univ.t.act.act a), hπ'.1.w]
   let α : A' ⟶ A' := Over.homMk (hπ'.1.lift _ A'.hom wα) (hπ'.1.lift_snd _ _ _)
   have hα : α.left ≫ π' = π' ≫ (Xo.univ.t.act.act a).left := hπ'.1.lift_fst _ _ _
-  haveI : IsMonHom α := GlobalTheory.UU.isMonHom_of_over_isMonHom hπ' hπ' (Xo.univ.t.act.act a) α hα
+  have : IsMonHom α := GlobalTheory.UU.isMonHom_of_over_isMonHom hπ' hπ' (Xo.univ.t.act.act a) α hα
   have wδ : (q ≫ β.left) ≫ A.hom = A'.hom ≫ spMap (algebraMap K (DualNumber K)) := by
     rw [Category.assoc, Over.w β, hq.1.w]
   let δ : A' ⟶ A' := Over.homMk (hq.1.lift _ A'.hom wδ) (hq.1.lift_snd _ _ _)
   have hδ : δ.left ≫ q = q ≫ β.left := hq.1.lift_fst _ _ _
-  haveI : IsMonHom δ := GlobalTheory.UU.isMonHom_of_over_isMonHom hq hq β δ hδ
+  have : IsMonHom δ := GlobalTheory.UU.isMonHom_of_over_isMonHom hq hq β δ hδ
   have hA' : IsAbelianScheme A' := by
     have hG := ObjDim.isAbelianScheme Xo.univ
     have := hG.comm
@@ -177,7 +177,7 @@ theorem cub_const (c : Coeff l) [Algebra c.F K] (hi : IsGrpPullback A A' (Global
     (o : Obj Dw l (baseKA l) (x' ≫ Xo.s)) (m : ObjMap o Xo.univ x') (g : o.t.G.left ⟶ A'.left)
     (hg1 : g ≫ π' = m.cm.F) (hF : IsGrpPullback o.t.G Xo.univ.t.G (constPt x') (g ≫ q ≫ π)) :
     (cubeMapOf hF).IsPullCubical o.t.cub Xo.univ.t.cub := by
-  haveI : IsProper o.t.G.hom := o.proper
+  have : IsProper o.t.G.hom := o.proper
   have hA : IsAbelianScheme o.t.G := AbelianSchemeGerms.isAbelianScheme_of_proper o.t.G o.t.semi
   refine GlobalTheory.TripleModel.isPullCubical_of_lbIso GlobalTheory.SemiRigid.globalFns hA hF o.t.cub Xo.univ.t.cub ?_
   obtain ⟨w, -, hw, -⟩ := rigIso_congr rfl m.cm m.lin rfl rfl
@@ -207,7 +207,7 @@ theorem objMap_const (c : Coeff l) [Algebra c.F K] (hx : GlobalTheory.DeRham.eps
     rw [← hx]; rfl
   have hF : IsGrpPullback o.t.G Xo.univ.t.G (constPt x') (g ≫ q ≫ π) :=
     (hgc.comp (hq.comp hπ)).congr (by rw [Category.id_comp, hred]) rfl
-  haveI : CharZero K := (RingHom.charZero_iff (algebraMap c.F K).injective).1 inferInstance
+  have : CharZero K := (RingHom.charZero_iff (algebraMap c.F K).injective).1 inferInstance
   have hgq := hgc.comp hq
   have hcomm : ∀ (T : Over (Sp K)) (x y : T ⟶ A), x * y = y * x := by
     intro T x y
@@ -338,8 +338,8 @@ theorem mem_smul_top {F : Type} [CommRing F] {X : Scheme.{0}} (s : X ⟶ Sp F) [
   have hφ : φ.Smooth := by
     refine RingHom.Smooth.comp ?_ (Smooth.smooth_appLE s (isAffineOpen_top _) U.2 _)
     exact RingHom.Smooth.of_bijective (ConcreteCategory.bijective_of_isIso (Scheme.ΓSpecIso (CommRingCat.of F)).inv)
-  letI := φ.toAlgebra
-  haveI : Algebra.Smooth F Γ(X, U.1) := hφ
+  let := φ.toAlgebra
+  have : Algebra.Smooth F Γ(X, U.1) := hφ
   obtain ⟨n, c, δ, hc, hδ, e⟩ := exists_sum_smul (F := F) D.1 D.2.1 m hD
   obtain ⟨y, z, hz, hyz⟩ := hm.exists_inv hh
   let δ' : Fin n → logDer s I U := fun k => ⟨(y * h) • δ k, fun a => by
@@ -380,7 +380,7 @@ theorem snd_eq_zero {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host
   obtain ⟨y', hy'⟩ : ∃ y' : Sp (DualNumber K) ⟶ Xo.XF c, y' ≫ Y.j = spMap φ ≫ chart U :=
     ⟨_, IsOpenImmersion.lift_fac Y.j _ (by rintro _ ⟨p, rfl⟩; exact hV (Set.mem_univ p))⟩
   obtain ⟨σ, hσ, hcs⟩ := chart_comp Y.s U
-  letI : Algebra c.F K := ((TrivSqZeroExt.fstHom K K K).toRingHom.comp (φ.comp σ)).toAlgebra
+  let : Algebra c.F K := ((TrivSqZeroExt.fstHom K K K).toRingHom.comp (φ.comp σ)).toAlgebra
   obtain ⟨A', _, lam, hlam⟩ := GlobalTheory.FlagTan.exists_isGrpPullback Y.oF.t.G y'
   obtain ⟨A₀, _, i, hi⟩ := GlobalTheory.FlagTan.exists_isGrpPullback A' (GlobalTheory.DeRham.epsRed K)
   have hπ' := hlam.comp Y.m0.cart
@@ -407,7 +407,7 @@ theorem snd_eq_zero {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host
     rw [← hy']
     exact congrArg (· ≫ Y.j) e₃
   have hU : IsAffineOpen U.1 := U.2
-  haveI : Mono (chart U) := inferInstanceAs (Mono hU.fromSpec)
+  have : Mono (chart U) := inferInstanceAs (Mono hU.fromSpec)
   have e₅ : φ = dualConst φ := congrArg CommRingCat.Hom.hom (Spec.map_injective ((cancel_mono _).1 e₄))
   rw [e₅]
   simp [dualConst, TrivSqZeroExt.algebraMap_eq_inl]
@@ -417,7 +417,7 @@ theorem snd_eq_zero {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host
 theorem mem_smul_top_of_isKS : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H) (l : Geo.Tor.Level H) (Xo : Moduli Dw l) (c : Coeff l) (Y : Model Xo c (RingHom.id c.F)), 1 ≤ Dw.p + Dw.q → SmoothOfRelativeDimension Dw.dim (genStr Y) → ReciprocityTheory.AnForm.R.FinalTheorems.Snc (genBdIdeal Y) → (∀ x ∈ genBd Y, IsClosed ({x} : Set (gen Y)) → HasRigidChart Y x) → ∀ (U : Y.X.affineOpens) (n : ℕ) (v : Fin n → (Sp (DualNumber Γ(Y.X, U.1)) ⟶ Y.t.G.left)) (A : 𝓞 E → Matrix (Fin n) (Fin n) Γ(Y.X, U.1)), (∀ i, IsTanAtG Y.t (chart U) (v i)) → (∀ w, IsTanAtG Y.t (chart U) w → ∃! cf : Fin n → Γ(Y.X, U.1), IsCombAtG Y.t (chart U) v cf w) → (∀ a i, IsCombAtG Y.t (chart U) v (A a i) (v i ≫ (Y.t.act.act a).left)) → ∀ (D : logDer Y.s (Scheme.IdealSheafData.vanishingIdeal (interior Y).compl) U) (Θ : Matrix (Fin n) (Fin n) Γ(Y.X, U.1)) (m : Ideal Γ(Y.X, U.1)), m.IsMaximal → (∃ x ∈ interior Y, x ∈ U.1 ∧ ∀ f ∈ m, x ∉ Y.X.basicOpen f) → IsKS Y.t (interior Y) U v D.1 Θ → (∀ a b, Θ a b ∈ m) → D ∈ m • (⊤ : Submodule Γ(Y.X, U.1) (logDer Y.s (Scheme.IdealSheafData.vanishingIdeal (interior Y).compl) U)) := by
   intro E _ _ _ H Dw l Xo c Y _ hs _ _ U n v A hv _ _ D Θ m hm ⟨x, hxi, hxU, hx⟩ hKS hΘ
   have hs' := smooth_gen_iff.1 hs
-  haveI : Smooth Y.s := SmoothOfRelativeDimension.smooth Dw.dim Y.s
+  have : Smooth Y.s := SmoothOfRelativeDimension.smooth Dw.dim Y.s
   have hU : IsAffineOpen U.1 := U.2
   obtain ⟨h, hle, hxh⟩ := hU.exists_basicOpen_le (V := interior Y) ⟨x, hxi⟩ hxU
   have hh : h ∉ m := fun hh => hx h hh hxh
@@ -613,7 +613,7 @@ theorem eq_of_eq_closedFibre {K : Type} [Field K] (A' G' : Over (Sp (DualNumber 
     (hab : pullback.fst A'.hom (spMap (TrivSqZeroExt.fstHom K K K).toRingHom) ≫ a.left =
       pullback.fst A'.hom (spMap (TrivSqZeroExt.fstHom K K K).toRingHom) ≫ b.left)
     (hη : η[A'] ≫ a = η[A'] ≫ b) : a = b := by
-  haveI := _root_.GlobalTheory.LevelQuotUnram.subsingleton_sp_dual K
+  have := _root_.GlobalTheory.LevelQuotUnram.subsingleton_sp_dual K
   let j := pullback.fst A'.hom (spMap (TrivSqZeroExt.fstHom K K K).toRingHom)
   have hj : IsPullback j (pullback.snd A'.hom (spMap (TrivSqZeroExt.fstHom K K K).toRingHom)) A'.hom
       (spMap (TrivSqZeroExt.fstHom K K K).toRingHom) := IsPullback.of_hasPullback _ _
@@ -645,7 +645,7 @@ theorem pullback_eq : ∀ {R : Type} [CommRing R] (k : Type) [Field k] (A : Over
   have hB := (GlobalTheory.AbBaseChange.isAbelianScheme_and_relDim_of_isGrpPullback f A B' π₂ g h2 hA hg).1
   let α : B' ⟶ B' := Over.homMk (h2.1.lift π₁ B'.hom h1.1.w) (h2.1.lift_snd _ _ _)
   have hα : α.left ≫ π₂ = π₁ := h2.1.lift_fst _ _ _
-  haveI : IsMonHom α := GlobalTheory.UU.isMonHom_of_over_isMonHom h1 h2 (𝟙 A) α (by rw [hα]; rfl)
+  have : IsMonHom α := GlobalTheory.UU.isMonHom_of_over_isMonHom h1 h2 (𝟙 A) α (by rw [hα]; rfl)
   have hα1 : α = 𝟙 B' := by
     refine eq_of_eq_closedFibre B' B' α (𝟙 B') hB ?_ (by rw [IsMonHom.one_hom, Category.comp_id])
     apply h2.1.hom_ext
@@ -1151,8 +1151,8 @@ theorem mem_smul_top_of_chart {K : Type} [Field K] [CharZero K] {X : Scheme.{0}}
   classical
   let I := Scheme.IdealSheafData.vanishingIdeal Z
   have hIdef : I = Scheme.IdealSheafData.vanishingIdeal Z := rfl
-  haveI : Smooth p := SmoothOfRelativeDimension.smooth n p
-  haveI : IsLocallyNoetherian X := LocallyOfFiniteType.isLocallyNoetherian p
+  have : Smooth p := SmoothOfRelativeDimension.smooth n p
+  have : IsLocallyNoetherian X := LocallyOfFiniteType.isLocallyNoetherian p
   obtain ⟨-, O, hxO, r, s, J, hrsp, hO⟩ := hI (χ (closedPoint R))
   obtain ⟨V, hV, e, hxV, he, H⟩ := exists_coords p n _ O.1 hxO s hrsp
   obtain ⟨f, hfV, hxf⟩ := U.2.exists_basicOpen_le ⟨_, hxV⟩ hx
@@ -1167,10 +1167,10 @@ theorem mem_smul_top_of_chart {K : Type} [Field K] [CharZero K] {X : Scheme.{0}}
     simp only [hz]
     rfl
   have hW : W.1 ≤ U.1 := X.basicOpen_le f
-  letI : Algebra K Γ(X, W.1) := (algX p W.1).toAlgebra
-  haveI : IsNoetherianRing Γ(X, W.1) := IsLocallyNoetherian.component_noetherian W
-  letI : Algebra Γ(X, U.1) Γ(X, W.1) := (resG X hW).toAlgebra
-  haveI : IsLocalization.Away f Γ(X, W.1) := U.2.isLocalization_basicOpen f
+  let : Algebra K Γ(X, W.1) := (algX p W.1).toAlgebra
+  have : IsNoetherianRing Γ(X, W.1) := IsLocallyNoetherian.component_noetherian W
+  let : Algebra Γ(X, U.1) Γ(X, W.1) := (resG X hW).toAlgebra
+  have : IsLocalization.Away f Γ(X, W.1) := U.2.isLocalization_basicOpen f
   have hφ : (algX p U.1).FiniteType := by
     have h1 : (p.appLE ⊤ U.1 (by simp)).hom.FiniteType :=
       HasRingHomProperty.appLE @LocallyOfFiniteType p inferInstance ⟨⊤, isAffineOpen_top _⟩ U _
@@ -1224,7 +1224,7 @@ open GlobalTheory.ChartDer
 
 theorem GlobalTheory.LogBack.mem_smul_top_of_vanish : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H) (l : Geo.Tor.Level H) (Xo : Moduli Dw l) (c : Coeff l) (Y : Model Xo c (RingHom.id c.F)), SmoothOfRelativeDimension Dw.dim (genStr Y) → FinalTheorems.Snc (genBdIdeal Y) → ∀ (U : Y.X.affineOpens) (D : logDer Y.s (Scheme.IdealSheafData.vanishingIdeal (interior Y).compl) U) (m : Ideal Γ(Y.X, U.1)), m.IsMaximal → ∀ x : Y.X, x ∉ interior Y → x ∈ U.1 → (∀ f ∈ m, x ∉ Y.X.basicOpen f) → ∀ (k : Type) [Field k] (m' d : ℕ) (ξ : Sp (ChartRing k m' d) ⟶ gen Y) (x' : gen Y), ξ (closedPoint _) = x' → genι Y x' = x → IsEtaleCompletion (Scheme.stalkClosedPointTo ξ).hom → (FinalTheorems.stalkId (genBdIdeal Y) (ξ (closedPoint _))).map (Scheme.stalkClosedPointTo ξ).hom = Ideal.span {∏ i, bdParam k m' d i} → (∀ p : Sp (ChartRing k m' d), ξ p ∈ genBd Y ↔ ∏ i, bdParam k m' d i ∈ p.asIdeal) → ∀ (hU : ⊤ ≤ (ξ ≫ genι Y) ⁻¹ᵁ U.1) (DR : Derivation ℤ (ChartRing k m' d) (ChartRing k m' d)) (a : Fin m' → (ChartRing k m' d)), (∀ r, DR (valR (ξ ≫ genι Y) U.1 r) = valR (ξ ≫ genι Y) U.1 (D.1 r)) → (∀ i, DR (bdParam k m' d i) = a i * bdParam k m' d i) → (∀ r, residue _ (DR r) = 0) → (∀ i, residue _ (a i) = 0) → D ∈ m • (⊤ : Submodule Γ(Y.X, U.1) (logDer Y.s (Scheme.IdealSheafData.vanishingIdeal (interior Y).compl) U)) := by
   intro E _ _ _ H Dw l Xo c Y hs hsnc U D m hm x _ hxU hxm k _ m' d ξ x' hξ hx' _ _ hbd _ DR a hD hT h0 ha
-  haveI := smooth_gen_iff.1 hs
+  have := smooth_gen_iff.1 hs
   subst hξ hx'
   refine GlobalTheory.LogBack.mem_smul_top_of_chart Y.s Dw.dim (interior Y).compl (snc_gen_iff.1 hsnc) U D m hm (ξ ≫ genι Y)
     hxU hxm (bdParam k m' d) a (fun i => GlobalTheory.LogBack.prime_X _) (fun q hq => (hbd q).1 ?_) DR hD hT
@@ -1318,7 +1318,7 @@ theorem logKS_inj_mod_boundary : ∀ (E : Type) [Field E] [NumberField E] [IsCMF
   have hres : ∀ r, residue _ (DR r) = 0 := fun r => by
     rw [residue_eq_zero_iff_constantCoeff]
     simpa [constEps_apply] using hsnd r
-  haveI : CharZero k := by
+  have : CharZero k := by
     let f : c.F →+* k := MvPowerSeries.constantCoeff.comp (Spec.preimage (ξ ≫ genι Y ≫ Y.s)).hom
     exact charZero_of_injective_ringHom f.injective
   have hli : LinearIndependent ℤ (fun i => (gam i : LinearMap.BilinForm ℤ P.D.toPre.X)) :=

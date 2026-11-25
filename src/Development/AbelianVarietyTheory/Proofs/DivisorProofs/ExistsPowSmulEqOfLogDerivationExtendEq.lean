@@ -61,7 +61,7 @@ theorem exists_pow_smul_eq_of_res_eq {k R S : Type} [Field k] [CommRing R] [Comm
       rw [hE, Derivation.sub_apply, map_sub, h1, sub_self]
     exact (IsLocalization.map_eq_zero_iff (Submonoid.powers f) S _).1 h2
   choose m hm using hloc
-  letI := φ.toAlgebra
+  let := φ.toAlgebra
   have hft : Algebra.FiniteType k R := hφ
   obtain ⟨s, hs⟩ := hft.out
   let c : Submonoid.powers f := ∏ x ∈ s, m x

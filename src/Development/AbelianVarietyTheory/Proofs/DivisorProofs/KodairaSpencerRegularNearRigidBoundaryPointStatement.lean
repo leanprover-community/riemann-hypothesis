@@ -150,9 +150,9 @@ theorem exists_derivation_intAlgebra' {A : Type} [CommRing A] (inst : Algebra �
 theorem exists_isKS_of_heat : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (k : Type) [Field k] [CharZero k] (m d : ℕ) (t : SAB H (Sp (ChartRing k m d))) (P : PELUnif (maximalIdeal (ChartRing k m d)) t) (gam : Fin m → LinearMap.BilinForm ℤ P.D.toPre.X), IsMonomial P.D.toPre (bdParam k m d) gam → LinearIndependent ℤ gam → (∀ p : Sp (ChartRing k m d), p ∈ abLocus t.G ↔ ∏ i, bdParam k m d i ∉ p.asIdeal) → ∀ (O : Type) [CommRing O] [StarRing O] [Module O P.D.toPre.X] (oa : P.D.toPre.OAct O) (Y : Ray oa) (n : ℕ) (vY : Module.Basis (Fin n) (ChartRing k m d) (TanM (𝟙 (Sp (ChartRing k m d))) Y.H)) (dd : Fin n → Fld Y.H.left), (∀ a, IsInv Y.H (vY a) (dd a)) → ∀ D : Derivation ℤ (ChartRing k m d) (ChartRing k m d), (∀ i, D (bdParam k m d i) ∈ Ideal.span {bdParam k m d i}) → ∀ h : Heat Y.H Y.q.left P.D.toPre.P.L dd ⇑D, IsBasic Y h → HasDefect Y h (fun _ _ _ => 0) → ∃ v : Fin n → (Sp (DualNumber Γ(Sp (ChartRing k m d), ⊤)) ⟶ t.G.left), (∀ i, IsTanAtG t (chart (⟨⊤, isAffineOpen_top _⟩ : (Sp (ChartRing k m d)).affineOpens)) (v i)) ∧ IsKS t ((Sp (ChartRing k m d)).basicOpen ((Scheme.ΓSpecIso (CommRingCat.of (ChartRing k m d))).inv.hom (∏ i, bdParam k m d i))) (⟨⊤, isAffineOpen_top _⟩ : (Sp (ChartRing k m d)).affineOpens) v (fun r => (Scheme.ΓSpecIso (CommRingCat.of (ChartRing k m d))).inv.hom (D ((Scheme.ΓSpecIso (CommRingCat.of (ChartRing k m d))).hom.hom r))) (h.Θ.map (Scheme.ΓSpecIso (CommRingCat.of (ChartRing k m d))).inv.hom) := by
   intro E _ _ _ H k _ _ m d t P gam hmon hli hab O _ _ _ oa Y n vY dd hdd D hD h hbas hdef
   have hA := GlobalTheory.MumfordChart.admissibleBase_chartRing k m d
-  haveI : IsNoetherianRing (ChartRing k m d) := hA.1
-  haveI : IsAdicComplete (maximalIdeal (ChartRing k m d)) (ChartRing k m d) := hA.2.2.2
-  letI := H.starRing
+  have : IsNoetherianRing (ChartRing k m d) := hA.1
+  have : IsAdicComplete (maximalIdeal (ChartRing k m d)) (ChartRing k m d) := hA.2.2.2
+  let := H.starRing
   have hne : ∀ i, bdParam k m d i ≠ 0 := fun i h0 => by
     have h4 := congrArg (fun f : ChartRing k m d => MvPowerSeries.coeff (Finsupp.single (Sum.inl i) 1) f) h0
     simp [bdParam, MvPowerSeries.coeff_X] at h4
@@ -195,9 +195,9 @@ namespace GlobalTheory.LogKSChart
 
 theorem exists_isKS_of_logDer : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (k : Type) [Field k] [CharZero k] (m d : ℕ) (t : SAB H (Sp (ChartRing k m d))) (P : PELUnif (maximalIdeal (ChartRing k m d)) t) (gam : Fin m → LinearMap.BilinForm ℤ P.D.toPre.X), IsMonomial P.D.toPre (bdParam k m d) gam → LinearIndependent ℤ gam → (∀ p : Sp (ChartRing k m d), p ∈ abLocus t.G ↔ ∏ i, bdParam k m d i ∉ p.asIdeal) → ∀ (n : ℕ) (v : Fin n → (Sp (DualNumber Γ(Sp (ChartRing k m d), ⊤)) ⟶ t.G.left)), (∀ i, IsTanAtG t (chart (⟨⊤, isAffineOpen_top _⟩ : (Sp (ChartRing k m d)).affineOpens)) (v i)) → (∀ w, IsTanAtG t (chart (⟨⊤, isAffineOpen_top _⟩ : (Sp (ChartRing k m d)).affineOpens)) w → ∃! cf : Fin n → Γ(Sp (ChartRing k m d), ⊤), IsCombAtG t (chart (⟨⊤, isAffineOpen_top _⟩ : (Sp (ChartRing k m d)).affineOpens)) v cf w) → ∀ D : Derivation ℤ (ChartRing k m d) (ChartRing k m d), (∀ i, D (bdParam k m d i) ∈ Ideal.span {bdParam k m d i}) → ∃ Θ, IsKS t ((Sp (ChartRing k m d)).basicOpen ((Scheme.ΓSpecIso (CommRingCat.of (ChartRing k m d))).inv.hom (∏ i, bdParam k m d i))) (⟨⊤, isAffineOpen_top _⟩ : (Sp (ChartRing k m d)).affineOpens) v (fun r => (Scheme.ΓSpecIso (CommRingCat.of (ChartRing k m d))).inv.hom (D ((Scheme.ΓSpecIso (CommRingCat.of (ChartRing k m d))).hom.hom r))) Θ := by
   intro E _ _ _ H k _ _ m d t P gam hmon hli hab n v hv hcomb D hD
-  letI := H.starRing
-  haveI : IsAdicComplete (maximalIdeal k) k := by rw [maximalIdeal_eq_bot]; infer_instance
-  haveI : IsAdicComplete (maximalIdeal (ChartRing k m d)) (ChartRing k m d) :=
+  let := H.starRing
+  have : IsAdicComplete (maximalIdeal k) k := by rw [maximalIdeal_eq_bot]; infer_instance
+  have : IsAdicComplete (maximalIdeal (ChartRing k m d)) (ChartRing k m d) :=
     GlobalTheory.PlaceInt.isAdicComplete_mvPowerSeries_finite (V := k) _
   obtain ⟨Y⟩ : Nonempty (Ray P.oD) := inferInstance
   obtain ⟨n', vY, dd, hdd⟩ := _root_.GlobalTheory.RayTan.exists_basis_isInv (ChartRing k m d) P.D.toPre (𝓞 E) P.oD Y
@@ -460,7 +460,7 @@ theorem exists_derivation_away {A B : Type} [CommRing A] [CommRing B] (φ : A �
     (hloc : letI := φ.toAlgebra; IsLocalization.Away f B) (d : A → A)
     (hadd : ∀ x y, d (x + y) = d x + d y) (hmul : ∀ x y, d (x * y) = x * d y + y * d x) :
     ∃ D : Derivation ℤ B B, ∀ a, D (φ a) = φ (d a) := by
-  letI := φ.toAlgebra
+  let := φ.toAlgebra
   have h0 : d 0 = 0 := by
     have e := hadd 0 0
     rw [add_zero] at e
@@ -536,7 +536,7 @@ theorem deriv_ext_basicOpen : ∀ (X : Scheme.{0}) (U W : X.affineOpens) (hWU : 
     rw [hψ, hDU, hDW, hψ]
   have hunit : IsUnit (ψU h) := by
     rw [hψU']
-    letI := φ.toAlgebra
+    let := φ.toAlgebra
     exact IsLocalization.Away.algebraMap_isUnit (S := Γ(Sp R, U'.1)) f
   have key : ∀ θ : Γ(X, W.1), ∃ (a : Γ(X, U.1)) (M : ℕ), resUW (h ^ M) * θ = resUW a := by
     intro θ
@@ -558,7 +558,7 @@ theorem deriv_ext_basicOpen : ∀ (X : Scheme.{0}) (U W : X.affineOpens) (hWU : 
     obtain ⟨⟨a, _, N, rfl⟩, hN⟩ := (letI := resUV.toAlgebra; IsLocalization.surj (Submonoid.powers h) (resWV θ))
     simp only [RingHom.algebraMap_toAlgebra] at hN
     rw [← hcomp, ← hcomp, ← map_mul] at hN
-    letI := resWV.toAlgebra
+    let := resWV.toAlgebra
     obtain ⟨⟨c, k, rfl⟩, hc⟩ := IsLocalization.exists_of_eq (M := Submonoid.powers (resUW h)) (S := Γ(X, V))
       (x := θ * resUW (h ^ N)) (y := resUW a) (by simpa only [RingHom.algebraMap_toAlgebra] using hN)
     refine ⟨h ^ k * a, k + N, ?_⟩
@@ -805,7 +805,7 @@ theorem ks_chart_eq : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H 
   let ι0 : ChartRing k m d →+* FractionRing (ChartRing k m d) := algebraMap _ _
   let g : Sp (ChartRing k m d) ⟶ Y.X := ξ ≫ genι Y
   have hι0 : Function.Injective ι0 := IsFractionRing.injective _ _
-  haveI : CharZero (FractionRing (ChartRing k m d)) :=
+  have : CharZero (FractionRing (ChartRing k m d)) :=
     charZero_of_injective_ringHom (f := ι0.comp (algebraMap k (ChartRing k m d))) (hι0.comp (algebraMap k _).injective)
   obtain ⟨hg, hgρ⟩ := GlobalTheory.LocReg.chart_appLE_eq E H Dw l Xo c Y U k m d ξ hx
   have eR : ∀ x : ChartRing k m d, (Scheme.ΓSpecIso (CommRingCat.of (ChartRing k m d))).hom.hom
@@ -942,8 +942,8 @@ namespace LocRegDesc
 theorem exists_unit_mul_eq_of_flat {A R : Type} [CommRing A] [CommRing R] [IsLocalRing R]
     (ρ : A →+* R) (hρ : ρ.Flat) (s b : A) (r : R) (hs : ρ s = ρ b * r) :
     ∃ g a : A, IsUnit (ρ g) ∧ g * s = b * a := by
-  letI := ρ.toAlgebra
-  haveI : Module.Flat A R := hρ
+  let := ρ.toAlgebra
+  have : Module.Flat A R := hρ
   have hrel : ∑ i, (![s, -b] : Fin 2 → A) i • (![1, r] : Fin 2 → R) i = 0 := by
     simp [Fin.sum_univ_two, Algebra.smul_def, RingHom.algebraMap_toAlgebra, hs]
   have ht : Module.IsTrivialRelation (![s, -b] : Fin 2 → A) (![1, r] : Fin 2 → R) :=
@@ -979,7 +979,7 @@ theorem exists_unit_kill_on_basicOpen (X : Scheme.{0}) (U : X.affineOpens) (W : 
     (f : Γ(X, U.1)) (hf : X.basicOpen f ≤ W) :
     ∃ g, IsUnit (ρ g) ∧
       (X.presheaf.map (homOfLE hf).op).hom ((X.presheaf.map (homOfLE hWU).op).hom g * δ) = 0 := by
-  haveI hloc := U.2.isLocalization_basicOpen f
+  have hloc := U.2.isLocalization_basicOpen f
   set δV := (X.presheaf.map (homOfLE hf).op).hom δ with hδV
   set hV := (X.presheaf.map (homOfLE (X.basicOpen_le f)).op).hom h with hhV
   have key : X.basicOpen hV = X.basicOpen f ⊓ X.basicOpen h := Scheme.basicOpen_res _ _ _
@@ -1057,7 +1057,7 @@ theorem exists_unit_one (X : Scheme.{0}) (U : X.affineOpens) (W : X.Opens)
         (X.presheaf.map (homOfLE hh).op).hom θ → ρ h ^ N ∣ ρ s) :
     ∃ g, IsUnit (ρ g) ∧ ∃ s : Γ(X, U.1),
       (X.presheaf.map (homOfLE hWU).op).hom s = (X.presheaf.map (homOfLE hWU).op).hom g * θ := by
-  haveI hloc := U.2.isLocalization_basicOpen h
+  have hloc := U.2.isLocalization_basicOpen h
   obtain ⟨⟨s, ⟨_, N, rfl⟩⟩, hsm⟩ :=
     IsLocalization.surj (Submonoid.powers h) ((X.presheaf.map (homOfLE hh).op).hom θ)
   simp only at hsm
@@ -1086,7 +1086,7 @@ end LocRegDesc
 theorem LocRegDesc.descent : ∀ (X : Scheme.{0}) (U : X.affineOpens) (W : X.Opens) (hWU : W ≤ U.1), IsCompact (W : Set X) → ∀ (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R] (ρ : Γ(X, U.1) →+* R), ρ.Flat → ∀ mm : Ideal Γ(X, U.1), (maximalIdeal R).comap ρ = mm → ∀ (h : Γ(X, U.1)) (hh : X.basicOpen h ≤ W), ρ h ≠ 0 → ∀ (J : Type) [Finite J] (θ : J → Γ(X, W)), (∀ i (s : Γ(X, U.1)) (N : ℕ), (X.presheaf.map (homOfLE (X.basicOpen_le h)).op).hom s = (X.presheaf.map (homOfLE (X.basicOpen_le h)).op).hom (h ^ N) * (X.presheaf.map (homOfLE hh).op).hom (θ i) → ρ h ^ N ∣ ρ s) → ∃ g ∉ mm, ∀ i, ∃ s : Γ(X, U.1), (X.presheaf.map (homOfLE hWU).op).hom s = (X.presheaf.map (homOfLE hWU).op).hom g * θ i := by
   intro X U W hWU hW R _ _ _ ρ hρ mm hmm h hh hρh J _ θ H
   choose g hg s hs using fun i => LocRegDesc.exists_unit_one X U W hWU hW R ρ hρ h hh hρh (θ i) (H i)
-  haveI := Fintype.ofFinite J
+  have := Fintype.ofFinite J
   classical
   refine ⟨∏ i, g i, ?_, fun i => ⟨s i * ∏ j ∈ Finset.univ.erase i, g j, ?_⟩⟩
   · rw [← hmm, Ideal.mem_comap, mem_maximalIdeal, mem_nonunits_iff, not_not, map_prod]
@@ -1171,7 +1171,7 @@ namespace GlobalTheory.LocRegRig
 theorem isKS_regular_at_boundary : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H) (l : Geo.Tor.Level H) (Xo : Moduli Dw l) (c : Coeff l) (Y : Model Xo c (RingHom.id c.F)), 1 ≤ Dw.p + Dw.q → SmoothOfRelativeDimension Dw.dim (genStr Y) → ReciprocityTheory.AnForm.R.FinalTheorems.Snc (genBdIdeal Y) → (∀ x ∈ genBd Y, IsClosed ({x} : Set (gen Y)) → HasRigidChart Y x) → ∀ (U W : Y.X.affineOpens) (hW : W.1 = U.1 ⊓ interior Y) (n : ℕ) (v : Fin n → (Sp (DualNumber Γ(Y.X, U.1)) ⟶ Y.t.G.left)), (∀ i, IsTanAtG Y.t (chart U) (v i)) → (∀ w, IsTanAtG Y.t (chart U) w → ∃! cf : Fin n → Γ(Y.X, U.1), IsCombAtG Y.t (chart U) v cf w) → ∀ (D : logDer Y.s (Scheme.IdealSheafData.vanishingIdeal (interior Y).compl) U) (DW : Derivation ℤ Γ(Y.X, W.1) Γ(Y.X, W.1)) (Θ : Matrix (Fin n) (Fin n) Γ(Y.X, W.1)), (∀ r, DW ((Y.X.presheaf.map (homOfLE (hW.le.trans inf_le_left)).op).hom r) = (Y.X.presheaf.map (homOfLE (hW.le.trans inf_le_left)).op).hom (D.1 r)) → IsKS Y.t (interior Y) W (fun i => spMap (dualMap (Y.X.presheaf.map (homOfLE (hW.le.trans inf_le_left)).op).hom) ≫ v i) DW Θ → ∀ (m : Ideal Γ(Y.X, U.1)), m.IsMaximal → (∃ x ∈ U.1, (∀ f ∈ m, x ∉ Y.X.basicOpen f) ∧ x ∉ interior Y) → ∃ g ∉ m, ∀ a b, ∃ s : Γ(Y.X, U.1), (Y.X.presheaf.map (homOfLE (hW.le.trans inf_le_left)).op).hom s = (Y.X.presheaf.map (homOfLE (hW.le.trans inf_le_left)).op).hom g * Θ a b := by
   intro E _ _ _ H Dw l Xo c Y hpq hsm hsnc hchart U W hW n v hv hbasis D DW Θ hDW hKS m hm hx0
   obtain ⟨x, hxU, hxm, hxint⟩ := hx0
-  haveI := isIso_fst Y
+  have := isIso_fst Y
   obtain ⟨x', rfl⟩ := (genι Y).surjective x
   have hbd : x' ∈ genBd Y := mem_genBd_iff.2 fun h => hxint (by
     rw [← SetLike.mem_coe, coe_interior]; exact h)
@@ -1179,7 +1179,7 @@ theorem isKS_regular_at_boundary : ∀ (E : Type) [Field E] [NumberField E] [IsC
   obtain ⟨k, _, m', d, ξ, t, P, gam, h₀, h₁, h₂, h₃, ⟨φ⟩, h₅, h₆, -⟩ := hchart x' hbd hcl
   subst h₀
   have hx : ξ (closedPoint _) ∈ genι Y ⁻¹ᵁ U.1 := hxU
-  haveI : CharZero k := _root_.GlobalTheory.LocReg.charZero_of_chart E H Dw l Xo c Y k m' d ξ
+  have : CharZero k := _root_.GlobalTheory.LocReg.charZero_of_chart E H Dw l Xo c Y k m' d ξ
   obtain ⟨D', hD', hDlog⟩ := _root_.GlobalTheory.ChartDer.logDer_extend_chartRing E H Dw l Xo c Y U D k m' d ξ hx h₁ h₂
   have hfac := _root_.GlobalTheory.LocReg.comp_genι_eq_spMap_chartHom E H Dw l Xo c Y U k m' d ξ hx
   obtain ⟨vR, hvR, hbR, hcomp⟩ := GlobalTheory.T.exists_tangentBasis_pullback_to_spec_of_affineOpen E H Y.X Y.t U _ (GlobalTheory.LocReg.chartHom Y U ξ hx) t _ hfac φ n v hv hbasis
