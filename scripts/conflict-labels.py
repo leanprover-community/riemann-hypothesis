@@ -62,7 +62,7 @@ only when it is about to be told something it may not have been told: when it ca
 Nothing is kept from one run to the next, so each sweep reads the comments of every pull request
 labelled `batch-conflict` that still conflicts.
 
-The workflow's token may make 1,000 REST requests an hour, shared with every other workflow
+The workflow's token has an hourly allowance of REST requests, shared with every other workflow
 here, and the batch-queue workflow can use several hundred of them. So everything is read
 through GraphQL, whose allowance is separate, and REST is used only to write, and only for a
 change. Writes are spaced a second apart, and the run stops writing when few REST requests are
