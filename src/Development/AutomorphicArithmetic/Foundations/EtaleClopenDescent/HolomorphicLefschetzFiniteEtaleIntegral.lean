@@ -195,7 +195,7 @@ theorem formGermI_res_mapOver : ∀ (Z Z' : Scheme.{0}) [IsIntegral Z] [IsIntegr
           φ (formGermI p j hV hη hinst y) := by
   intro Z Z' _ _ p p' inst inst' hinst hinst' f hf ψ φ hφ hψ j V V' hV hV' hη hη' h y
   subst hinst hinst'
-  letI := algΓ p; letI := algΓ p'
+  let := algΓ p; let := algΓ p'
   set x := (toOmEquiv p j hV).symm (sectionsOn.toΓ _ _ y) with hx
   have hy : sectionsOn.toΓ _ _ y = toOm p j V x := by
     exact (LinearEquiv.apply_symm_apply (toOmEquiv p j hV) _).symm
@@ -205,7 +205,7 @@ theorem formGermI_res_mapOver : ∀ (Z Z' : Scheme.{0}) [IsIntegral Z] [IsIntegr
     have h2 : (omegaPull hf j).app V (toOm p j V x) = toOm p' j (f ⁻¹ᵁ V) (formPull hf V j x) :=
       omegaPull_toOmega hf j V x
     rw [sectionsOn.toΓ_res, sectionsOn.toΓ_mapOver, hy, h2, res_toOm]
-  letI := ffAlg p; letI := ffAlg p'
+  let := ffAlg p; let := ffAlg p'
   rw [formGermI_ffAlg, formGermI_ffAlg]
   simp only [formGerm, LinearMap.coe_mk, AddHom.coe_mk]
   rw [hz, ← toOmEquiv_apply p' j hV', LinearEquiv.symm_apply_apply, ← hx]
@@ -256,8 +256,8 @@ theorem UpperTheory.isAffCover_prod_cechOpen :
               cmp d' p' hinst' hU' a b (hodgePull hf a b z) = Cx.hmap _ _ (pullC τ φ) hm b (cmp d p hinst hU a b z) := by
   classical
   intro d Z _ p _ inst ι _ _ U B hinst hU d' Z' _ p' _ inst' κ _ _ U' B' hinst' hU' f hf ψ φ τ hDR hψ hUU' a b hm z
-  letI := algΓ p
-  letI := algΓ p'
+  let := algΓ p
+  let := algΓ p'
   have hσ := appTop_algebraMap (k := ℂ) hf
   have hcov : ⨆ i, U i = ⊤ := hU.cover
   have haff : ∀ s : Finset ι, s.Nonempty → IsAffineOpen (⨅ i ∈ s, U i) := fun s hs => cover_biInf hU s hs
@@ -419,7 +419,7 @@ open UpperTheory.DeRhamTrace in
 theorem UpperTheory.exists_deRhamTrace_of_separable :
     ∀ (k K L : Type) [Field k] [Field K] [Field L] [Algebra k K] [Algebra k L] [Algebra K L] [IsScalarTower k K L] [FiniteDimensional K L] [Algebra.IsSeparable K L], ∃ T : DR k L →ₗ[k] DR k K, GlobalTheory.W1.IsTrDR k K L T := by
   intro k K L _ _ _ _ _ _ _ _ _
-  haveI : Algebra.FormallyEtale K L := Algebra.FormallyEtale.of_isSeparable K L
+  have : Algebra.FormallyEtale K L := Algebra.FormallyEtale.of_isSeparable K L
   let Tr : (L ⊗[K] DR k K) →ₗ[K] DR k K :=
     (TensorProduct.lid K (DR k K)).toLinearMap ∘ₗ LinearMap.rTensor (DR k K) (Algebra.trace K L)
   refine ⟨(Tr.restrictScalars k) ∘ₗ ((psi k K L).toLinearMap.restrictScalars k), ?_⟩
@@ -486,9 +486,9 @@ private theorem isPushout_of_integral [Algebra.IsIntegral B B'] : Algebra.IsPush
 
 private theorem algebraMap_etTrace [Module.Finite B B'] [Algebra.Etale B B'] (b : B') :
     algebraMap B K (etTrace B B' b) = Algebra.trace K L (algebraMap B' L b) := by
-  haveI := projective_of_etale B B'
-  haveI hp := isPushout_of_integral (B := B) (B' := B') (K := K) (L := L)
-  haveI : Module.Finite K L := Module.Finite.equiv hp.out.equiv
+  have := projective_of_etale B B'
+  have hp := isPushout_of_integral (B := B) (B' := B') (K := K) (L := L)
+  have : Module.Finite K L := Module.Finite.equiv hp.out.equiv
   rw [← algTrace_eq_trace, algTrace_of_isPushout (B := B) (B' := B') b]
   rfl
 
@@ -505,23 +505,23 @@ theorem germ_comap_eq_algebraMap_germ_of_finite_etale : ∀ (Z Y : Scheme.{0}) [
         Algebra.trace Z.functionField Y.functionField
           ((Y.presheaf.germ (c ⁻¹ᵁ V) (genericPoint Y) hg').hom b') := by
   intro Z Y _ _ p p' c _ _ _ hg V hVa hV hV' b'
-  haveI : Nonempty V := ⟨⟨_, hV⟩⟩
-  haveI : Nonempty (c ⁻¹ᵁ V : Y.Opens) := ⟨⟨_, hV'⟩⟩
-  letI := secAlg p p' c V
-  haveI := sec_finite (s := p) (s' := p') (f := c) hVa
-  haveI := sec_etale (s := p) (s' := p') (f := c) hVa
-  letI : Algebra (Sec p V) Z.functionField := (Z.germToFunctionField V).hom.toAlgebra
-  letI : Algebra (Sec p' (c ⁻¹ᵁ V)) Y.functionField := (Y.germToFunctionField (c ⁻¹ᵁ V)).hom.toAlgebra
-  letI : Algebra (Sec p V) Y.functionField :=
+  have : Nonempty V := ⟨⟨_, hV⟩⟩
+  have : Nonempty (c ⁻¹ᵁ V : Y.Opens) := ⟨⟨_, hV'⟩⟩
+  let := secAlg p p' c V
+  have := sec_finite (s := p) (s' := p') (f := c) hVa
+  have := sec_etale (s := p) (s' := p') (f := c) hVa
+  let : Algebra (Sec p V) Z.functionField := (Z.germToFunctionField V).hom.toAlgebra
+  let : Algebra (Sec p' (c ⁻¹ᵁ V)) Y.functionField := (Y.germToFunctionField (c ⁻¹ᵁ V)).hom.toAlgebra
+  let : Algebra (Sec p V) Y.functionField :=
     ((algebraMap Z.functionField Y.functionField).comp (algebraMap (Sec p V) Z.functionField)).toAlgebra
-  haveI : IsScalarTower (Sec p V) Z.functionField Y.functionField := .of_algebraMap_eq fun _ ↦ rfl
-  haveI : IsScalarTower (Sec p V) (Sec p' (c ⁻¹ᵁ V)) Y.functionField :=
+  have : IsScalarTower (Sec p V) Z.functionField Y.functionField := .of_algebraMap_eq fun _ ↦ rfl
+  have : IsScalarTower (Sec p V) (Sec p' (c ⁻¹ᵁ V)) Y.functionField :=
     .of_algebraMap_eq fun g ↦ (hg V hV hV' g).symm
-  haveI : IsDomain (Sec p V) := inferInstanceAs (IsDomain Γ(Z, V))
-  haveI : IsDomain (Sec p' (c ⁻¹ᵁ V)) := inferInstanceAs (IsDomain Γ(Y, c ⁻¹ᵁ V))
-  haveI : IsFractionRing (Sec p V) Z.functionField :=
+  have : IsDomain (Sec p V) := inferInstanceAs (IsDomain Γ(Z, V))
+  have : IsDomain (Sec p' (c ⁻¹ᵁ V)) := inferInstanceAs (IsDomain Γ(Y, c ⁻¹ᵁ V))
+  have : IsFractionRing (Sec p V) Z.functionField :=
     functionField_isFractionRing_of_isAffineOpen Z V hVa
-  haveI : IsFractionRing (Sec p' (c ⁻¹ᵁ V)) Y.functionField :=
+  have : IsFractionRing (Sec p' (c ⁻¹ᵁ V)) Y.functionField :=
     functionField_isFractionRing_of_isAffineOpen Y (c ⁻¹ᵁ V) (hVa.preimage c)
   exact algebraMap_etTrace (B := Sec p V) (B' := Sec p' (c ⁻¹ᵁ V)) (K := Z.functionField)
     (L := Y.functionField) b'
@@ -570,7 +570,7 @@ private theorem formGerm_toOm {k : Type} [Field k] {X : Scheme.{0}} [IsIntegral 
     {V : X.Opens} (hV : IsAffineOpen V) (hη : genericPoint X ∈ V) (x : OmU s V j) :
     letI := algΓ s; letI := ffAlg s
     formGerm s j hV hη (toOm s j V x) = (semiHom_germSec s hη).mDR (x : DR k (Sec s V)) := by
-  letI := algΓ s; letI := ffAlg s
+  let := algΓ s; let := ffAlg s
   change (semiHom_germSec s hη).mDR (((toOmEquiv s j hV).symm (toOm s j V x) : OmU s V j) : DR k (Sec s V)) = _
   rw [← toOmEquiv_apply s j hV, LinearEquiv.symm_apply_apply]
 
@@ -578,9 +578,9 @@ theorem UpperTheory.functionField_of_finite_etale_cover :
     ∀ (Z Y : Scheme.{0}) [IsIntegral Z] [IsIntegral Y] (p : Z ⟶ Sp ℂ) (p' : Y ⟶ Sp ℂ) (c : Y ⟶ Z) (hc : c ≫ p = p') [IsFinite c] [Etale c] [inst : Algebra ℂ Z.functionField] [inst' : Algebra ℂ Y.functionField] [Algebra Z.functionField Y.functionField] [IsScalarTower ℂ Z.functionField Y.functionField] (hinst : inst = ffAlg p) (hinst' : inst' = ffAlg p'), (∀ (V : Z.Opens) (hV : genericPoint Z ∈ V) (hV' : genericPoint Y ∈ c ⁻¹ᵁ V) (g : Γ(Z, V)), (Y.presheaf.germ (c ⁻¹ᵁ V) (genericPoint Y) hV').hom ((c.app V).hom g) = algebraMap Z.functionField Y.functionField ((Z.presheaf.germ V (genericPoint Z) hV).hom g)) → FiniteDimensional Z.functionField Y.functionField → ∀ (a : ℕ) (V : Z.Opens) (hV : IsAffineOpen V) (hη : genericPoint Z ∈ V) (hη' : genericPoint Y ∈ c ⁻¹ᵁ V) (y : Γ(Omega p' a, c ⁻¹ᵁ V)), letI := algΓ p; letI := algΓ p'; formGermI p a hV hη hinst ((omegaTrace hc a).app V y) = GlobalTheory.W1.trDR ℂ Z.functionField Y.functionField (formGermI p' a (hV.preimage c) hη' hinst' y) := by
   intro Z Y _ _ p p' c hc _ _ inst inst' _ _ hinst hinst' hg hfd a V hV hη hη' y
   subst hinst hinst'
-  letI := ffAlg p; letI := ffAlg p'
-  haveI : CharZero Z.functionField := charZero_of_injective_algebraMap (algebraMap ℂ Z.functionField).injective
-  haveI : Algebra.IsSeparable Z.functionField Y.functionField := Algebra.IsAlgebraic.isSeparable_of_perfectField
+  let := ffAlg p; let := ffAlg p'
+  have : CharZero Z.functionField := charZero_of_injective_algebraMap (algebraMap ℂ Z.functionField).injective
+  have : Algebra.IsSeparable Z.functionField Y.functionField := Algebra.IsAlgebraic.isSeparable_of_perfectField
   have hT := UpperTheory.exists_deRhamTrace_of_separable ℂ Z.functionField Y.functionField
   have hspec : GlobalTheory.W1.IsTrDR ℂ Z.functionField Y.functionField (GlobalTheory.W1.trDR ℂ Z.functionField Y.functionField) := by
     unfold GlobalTheory.W1.trDR; rw [dite_eq_left hT]; exact hT.choose_spec
@@ -648,7 +648,7 @@ def up (a : ℕ) (W : Z.Opens) :
 theorem up_bijective (a : ℕ) (W : Z.Opens) :
     letI := algΓ p; letI := algΓ p'
     Function.Bijective (up hc a W) := by
-  letI := algΓ p; letI := algΓ p'
+  let := algΓ p; let := algΓ p'
   exact ⟨fun x y h => (sectionsOn.toΓ _ _).injective
       ((sectionsOn.toΓ (Omega p' a) (c ⁻¹ᵁ W)).injective.eq_iff.2 h),
     fun y => ⟨(sectionsOn.toΓ _ _).symm (sectionsOn.toΓ (Omega p' a) (c ⁻¹ᵁ W) y), rfl⟩⟩
@@ -699,7 +699,7 @@ theorem gp_spec (d : ℕ) [SmoothOfRelativeDimension d p'] (hc : c ≫ p = p')
       gp p' hc hinst' hU' a t
         (Cube.res (cechCube ℂ ((Scheme.Modules.pushforward c).obj (Omega p' a)) ⊤ U) h y) =
       gp p' hc hinst' hU' a s y) := by
-  letI := algΓ p; letI := algΓ p'
+  let := algΓ p; let := algΓ p'
   refine ⟨fun s hs => ?_, fun s hs => ?_, fun s t h hs y => ?_⟩
   · rw [gp_pos p' hc hinst' hU' a hs]
     exact (germ_inj_range_pre p' d hinst' hU' a s hs _ (preimage_cech s) _ _).1.comp
@@ -719,8 +719,8 @@ theorem cmp_trace (d : ℕ) (Z : Scheme.{0}) [IsIntegral Z] (p : Z ⟶ Sp ℂ) [
     (hg : ∀ (V : Z.Opens) (hV : genericPoint Z ∈ V) (hV' : genericPoint Y ∈ c ⁻¹ᵁ V) (g : Γ(Z, V)), (Y.presheaf.germ (c ⁻¹ᵁ V) (genericPoint Y) hV').hom ((c.app V).hom g) = algebraMap Z.functionField Y.functionField ((Z.presheaf.germ V (genericPoint Z) hV).hom g))
     (a b : ℕ) (hm : IsMap (cech fun I => omB ℂ Y.functionField (B' I) a) (cech fun I => omB ℂ Z.functionField (B I) a) (LinearMap.pi fun s : Finset ι => (GlobalTheory.W1.trDR ℂ Z.functionField Y.functionField).comp (LinearMap.proj s))) (z : hodgeH p' a b) :
     cmp d p hinst hU a b (hodgeTrace hc a b z) = Cx.hmap _ _ (LinearMap.pi fun s : Finset ι => (GlobalTheory.W1.trDR ℂ Z.functionField Y.functionField).comp (LinearMap.proj s)) hm b (cmp d p' hinst' hU' a b z) := by
-  letI := algΓ p
-  letI := algΓ p'
+  let := algΓ p
+  let := algΓ p'
   have hfin := (_root_.GlobalTheory.W1.SchFF.finiteEtale_functionField Z Y p p' c hc inferInstance inferInstance d hinst hinst' hg).1
   obtain ⟨z1, hz1⟩ := cechClass_surjective
     (cechCube ℂ ((Scheme.Modules.pushforward c).obj (Omega p' a)) ⊤ U) b
@@ -1000,9 +1000,9 @@ private theorem mem_chart_of_ne_zero (hx : IsFinCover ℂ Z.functionField x)
     apply germ_injective_of_isIntegral Z (genericPoint Z) hgW
     rw [map_mul, map_one, germ_resG hle hgW hgl, hw, hvf, ← map_mul,
       div_mul_div_comm, mul_comm (x i), div_self (mul_ne_zero (hx.pd.ne _) (hx.pd.ne _)), map_one]
-  letI : Algebra Γ(Z, U l) Γ(Z, U l ⊓ U i) := (resG Z hle).toAlgebra
+  let : Algebra Γ(Z, U l) Γ(Z, U l ⊓ U i) := (resG Z hle).toAlgebra
   have hres : ∀ f, algebraMap Γ(Z, U l) Γ(Z, U l ⊓ U i) f = resG Z hle f := fun _ => rfl
-  haveI : IsLocalization.Away wf Γ(Z, U l ⊓ U i) := by
+  have : IsLocalization.Away wf Γ(Z, U l ⊓ U i) := by
     refine ⟨?_, ?_, ?_⟩
     · rintro ⟨_, n, rfl⟩
       rw [hres, map_pow]
@@ -1168,12 +1168,12 @@ private theorem red_of_fu {A B : Type} [CommRing A] [CommRing B] [Algebra ℂ A]
     IsReduced (B ⧸ I.map (algebraMap A B)) := by
   have h1 : Algebra.FormallyUnramified ℂ (A ⧸ I) := GlobalTheory.SepIdem.formallyUnramified_of_isReduced ℂ _
   have h2 : Algebra.FormallyUnramified A (B ⧸ I.map (algebraMap A B)) := by
-    haveI : Algebra.FormallyUnramified B (B ⧸ I.map (algebraMap A B)) :=
+    have : Algebra.FormallyUnramified B (B ⧸ I.map (algebraMap A B)) :=
       .of_surjective (Ideal.Quotient.mkₐ B _) Ideal.Quotient.mk_surjective
     exact .comp A B _
   have h3 : Algebra.FormallyUnramified (A ⧸ I) (B ⧸ I.map (algebraMap A B)) :=
     .of_restrictScalars A _ _
-  haveI : IsScalarTower ℂ (A ⧸ I) (B ⧸ I.map (algebraMap A B)) := .of_algebraMap_eq fun c => by
+  have : IsScalarTower ℂ (A ⧸ I) (B ⧸ I.map (algebraMap A B)) := .of_algebraMap_eq fun c => by
     have e : algebraMap ℂ (B ⧸ I.map (algebraMap A B)) c =
         algebraMap B (B ⧸ I.map (algebraMap A B)) (algebraMap A B (algebraMap ℂ A c)) := by
       rw [← IsScalarTower.algebraMap_apply ℂ A B, ← IsScalarTower.algebraMap_apply ℂ B _]
@@ -1254,7 +1254,7 @@ private theorem fin_quot {K F : Type} [Field K] [Field F] [Algebra ℂ K] [Algeb
       map_mul' := fun _ _ => rfl
       map_zero' := rfl
       map_add' := fun _ _ => rfl }
-  haveI hfin : Module.Finite (rA ℂ x {0}) (integralClosure (rA ℂ x {0}) K) :=
+  have hfin : Module.Finite (rA ℂ x {0}) (integralClosure (rA ℂ x {0}) K) :=
     rA_finite hx (Finset.mem_singleton_self 0)
   refine fin_of_const (R := rA ℂ x {0}) (E := integralClosure (rA ℂ x {0}) K) ψ.toRingHom
     ((Ideal.Quotient.mk J).comp ι) ?_ ?_ hψ
@@ -1270,7 +1270,7 @@ private noncomputable def upB (K L : Type) {F : Type} [Field K] [Field L] [Field
     [Algebra F K] [Algebra F L] [Algebra K L] [IsScalarTower ℂ F K] [IsScalarTower ℂ F L] [IsScalarTower ℂ K L]
     [IsScalarTower F K L] {d : ℕ} (x : Fin (d + 1) → F) : rB ℂ K x {0} →ₐ[ℂ] rB ℂ L x {0} :=
   { toFun := fun b => ⟨algebraMap K L b, by
-      haveI : IsScalarTower (rA ℂ x {0}) K L := .of_algebraMap_eq fun a => by
+      have : IsScalarTower (rA ℂ x {0}) K L := .of_algebraMap_eq fun a => by
         change algebraMap F L a = algebraMap K L (algebraMap F K a)
         exact IsScalarTower.algebraMap_apply F K L _
       have hb : IsIntegral (rA ℂ x {0}) (b : K) := b.2
@@ -1353,13 +1353,13 @@ theorem UpperTheory.etaleCorrespondence_fieldExtension_statement :
   intro d Z Y _ _ s s' _ _ hP c1 c2 h1 h2 _ _ _ _ instK instL hK hL _ _ g1 j2 g2 F _ _ _ _ _ _ _ x U hx hU hred
   obtain ⟨hxL, -⟩ := UpperTheory.A.isFinCover_pull h1 hK hL g1 hx hU
   have hfu := upB_fu h1 hK hL g1 x U hU
-  letI alg : Algebra (rB ℂ Z.functionField x {0}) (rB ℂ Y.functionField x {0}) :=
+  let alg : Algebra (rB ℂ Z.functionField x {0}) (rB ℂ Y.functionField x {0}) :=
     (upB Z.functionField Y.functionField x).toRingHom.toAlgebra
-  haveI : Algebra.FormallyUnramified (rB ℂ Z.functionField x {0}) (rB ℂ Y.functionField x {0}) := hfu
-  haveI : IsScalarTower ℂ (rB ℂ Z.functionField x {0}) (rB ℂ Y.functionField x {0}) :=
+  have : Algebra.FormallyUnramified (rB ℂ Z.functionField x {0}) (rB ℂ Y.functionField x {0}) := hfu
+  have : IsScalarTower ℂ (rB ℂ Z.functionField x {0}) (rB ℂ Y.functionField x {0}) :=
     .of_algebraMap_eq fun c => ((upB Z.functionField Y.functionField x).commutes c).symm
   have hI := map_upB_span_tco Z.functionField Y.functionField x
-  haveI := fin_quot x hx
+  have := fin_quot x hx
   have hfinL := fin_quot x hxL
   rw [← hI] at hfinL ⊢
   exact red_of_fu _
@@ -1634,29 +1634,29 @@ theorem UpperTheory.Cb.holomorphic_lefschetz_finiteEtale_integral :
           ∑ y ∈ F, (Matrix.det (1 + (Polynomial.X : Polynomial ℂ) • (A y).map Polynomial.C)).coeff a / (1 - A y).det := by
   classical
   intro Z _ s d _ hP Y _ s' c1 c2 h1 h2 _ _ hf2 he2 Fx hF A hA a
-  haveI := hf2
-  haveI := he2
-  haveI : SmoothOfRelativeDimension d s' := by
+  have := hf2
+  have := he2
+  have : SmoothOfRelativeDimension d s' := by
     subst h1
     have h0 : SmoothOfRelativeDimension 0 c1 := (Etale.iff_smoothOfRelativeDimension_zero c1).1 inferInstance
     have h3 : SmoothOfRelativeDimension (0 + d) (c1 ≫ s) := smoothOfRelativeDimension_comp 0 d c1 s
     rwa [Nat.zero_add] at h3
   have hfin := fun b => UpperTheory.finiteDimensional_hodgeCohomology_of_smooth_proj Z s d hP a b
   refine ⟨hfin, ?_⟩
-  letI iK : Algebra ℂ Z.functionField := ffAlg s
-  letI iL : Algebra ℂ Y.functionField := ffAlg s'
+  let iK : Algebra ℂ Z.functionField := ffAlg s
+  let iL : Algebra ℂ Y.functionField := ffAlg s'
   obtain ⟨ψ, hψ⟩ := UpperTheory.A.exists_ffMap s s' c1 h1 rfl rfl
   obtain ⟨j2, g2⟩ := UpperTheory.A.exists_ffMap s s' c2 h2 rfl rfl
-  letI : Algebra Z.functionField Y.functionField := ψ.toRingHom.toAlgebra
-  haveI : IsScalarTower ℂ Z.functionField Y.functionField := .of_algebraMap_eq fun c => (ψ.commutes c).symm
+  let : Algebra Z.functionField Y.functionField := ψ.toRingHom.toAlgebra
+  have : IsScalarTower ℂ Z.functionField Y.functionField := .of_algebraMap_eq fun c => (ψ.commutes c).symm
   have g1 : ∀ (V : Z.Opens) (hV : genericPoint Z ∈ V) (hV' : genericPoint Y ∈ c1 ⁻¹ᵁ V) (g : Γ(Z, V)),
       (Y.presheaf.germ (c1 ⁻¹ᵁ V) (genericPoint Y) hV').hom ((c1.app V).hom g) =
         algebraMap Z.functionField Y.functionField ((Z.presheaf.germ V (genericPoint Z) hV).hom g) :=
     fun V hV hV' g => (hψ V hV hV' g).symm
   obtain ⟨F, x, U, hx, hU, hred, hS⟩ := _root_.GlobalTheory.PD.FibRed.exists_finCover_fibre_reduced Z s d rfl hP (Fx.image (UpperTheory.A.zpt c1 h1))
-  letI : Algebra F Y.functionField := ((algebraMap Z.functionField Y.functionField).comp (algebraMap F Z.functionField)).toAlgebra
-  haveI : @IsScalarTower F Z.functionField Y.functionField Algebra.toSMul Algebra.toSMul Algebra.toSMul := IsScalarTower.of_algebraMap_eq fun _ => rfl
-  haveI : @IsScalarTower ℂ F Y.functionField Algebra.toSMul Algebra.toSMul Algebra.toSMul := IsScalarTower.of_algebraMap_eq fun c => by
+  let : Algebra F Y.functionField := ((algebraMap Z.functionField Y.functionField).comp (algebraMap F Z.functionField)).toAlgebra
+  have : @IsScalarTower F Z.functionField Y.functionField Algebra.toSMul Algebra.toSMul Algebra.toSMul := IsScalarTower.of_algebraMap_eq fun _ => rfl
+  have : @IsScalarTower ℂ F Y.functionField Algebra.toSMul Algebra.toSMul Algebra.toSMul := IsScalarTower.of_algebraMap_eq fun c => by
     rw [IsScalarTower.algebraMap_apply ℂ Z.functionField Y.functionField c, IsScalarTower.algebraMap_apply ℂ F Z.functionField c]
     rfl
   obtain ⟨hxY, hUY⟩ := UpperTheory.A.isFinCover_pull (instK := iK) (instL := iL) (c := c1) (p := s) (p' := s') (F := F) (x := x) (U := U) h1 rfl rfl g1 hx hU
@@ -1790,7 +1790,7 @@ theorem UpperTheory.Cb.holomorphic_lefschetz_finiteEtale_integral :
     (fun p b hb => UpperTheory.etaleCorrespondence_family_statement E nP nT d Z Y s s' hP c1 c2 h1 h2 rfl rfl g1 j2 g2 F x U hx hU hUY a p b hb)
     (fun p => haveI := hfin p; Module.Finite.equiv (E d Z s _ U (rB ℂ Z.functionField x) rfl hU a p))
   calc _ = _ := Finset.sum_congr rfl fun p _ => by
-          haveI := hfin p
+          have := hfin p
           rw [← LinearMap.trace_conj' (hodgeTrace h1 a p ∘ₗ hodgePull h2 a p) (E d Z s _ U (rB ℂ Z.functionField x) rfl hU a p)]
     _ = _ := key
     _ = _ := by
