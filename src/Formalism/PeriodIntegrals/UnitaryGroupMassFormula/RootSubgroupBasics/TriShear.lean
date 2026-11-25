@@ -44,14 +44,6 @@ namespace PI.AmpRootCommon.Tri
 def extNe {ι : Type} [DecidableEq ι] (a : ι) (y : {i // i ≠ a} → ℂ) : ι → ℂ :=
   fun j => if h : j ≠ a then y ⟨j, h⟩ else 0
 
-theorem measurable_extNe {ι : Type} [DecidableEq ι] (a : ι) : Measurable (extNe a) := by
-  refine Measurable.of_eval (fun j => ?_)
-  by_cases h : j ≠ a
-  · simp only [extNe, dif_pos h]
-    exact measurable_pi_apply _
-  · simp only [extNe, dif_neg h]
-    exact measurable_const
-
 theorem measurePreserving_of_card (n : ℕ) : ∀ (ι : Type) [Fintype ι] [DecidableEq ι], Fintype.card ι = n →
     ∀ (r : ι → ℕ) (g : ι → (ι → ℂ) → ℂ), (∀ i, Measurable (g i)) →
     (∀ i (x y : ι → ℂ), (∀ j, r j < r i → x j = y j) → g i x = g i y) →

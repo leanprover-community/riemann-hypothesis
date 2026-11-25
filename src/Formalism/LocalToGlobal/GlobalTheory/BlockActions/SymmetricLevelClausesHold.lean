@@ -119,9 +119,6 @@ theorem proj_dual (Tf : FormsTiedSym D u Ch chOf) (P : Matrix (Fin (D.R.N D.R.m 
     rw [← algebraMap_smul D.host.E a x, Matrix.mulVec_smul, algebraMap_smul]
     exact Submodule.smul_mem _ a hx
 
-
-
-
 theorem extV_lat (Tf : FormsTiedSym D u Ch chOf) (κ : Tf.clsP.lev.U)
     (G : GL (Fin (D.R.N D.R.m)) (D.host.E ⊗[D.host.F] (FiniteAdeleRing (𝓞 D.host.F) D.host.F)))
     (hE : IsExt D Tf.til.z0 (inclE (F := D.host.F) (FiniteAdeleRing (𝓞 D.host.F) D.host.F)) κ.1.1 G.1)
@@ -146,9 +143,6 @@ theorem extV_lat (Tf : FormsTiedSym D u Ch chOf) (κ : Tf.clsP.lev.U)
     rw [← Matrix.map_mul, hP1, Matrix.map_one _ (map_zero _) (map_one _)]
   exact ext_mem_gen _ Λd _ hmd _ _ (κ.1.1.map (prV (E := D.host.E) v)) _ hPI hform (fun y => hκst y) hI hO x
 
-
-
-
 theorem extV_unit (Tf : FormsTiedSym D u Ch chOf) (κ : Tf.clsP.lev.U)
     (G : GL (Fin (D.R.N D.R.m)) (D.host.E ⊗[D.host.F] (FiniteAdeleRing (𝓞 D.host.F) D.host.F)))
     (hE : IsExt D Tf.til.z0 (inclE (F := D.host.F) (FiniteAdeleRing (𝓞 D.host.F) D.host.F)) κ.1.1 G.1)
@@ -165,9 +159,6 @@ theorem extV_unit (Tf : FormsTiedSym D u Ch chOf) (κ : Tf.clsP.lev.U)
       (gramN D D.R.m le_rfl).map (inclE (F := D.host.F) (v.adicCompletion D.host.F))
   exact extUR Tf _ hκU _ (isExt_prV v hE)
 
-
-
-
 theorem extV_stabL (Tf : FormsTiedSym D u Ch chOf) (κ : Tf.clsP.lev.U)
     (G : GL (Fin (D.R.N D.R.m)) (D.host.E ⊗[D.host.F] (FiniteAdeleRing (𝓞 D.host.F) D.host.F)))
     (hE : IsExt D Tf.til.z0 (inclE (F := D.host.F) (FiniteAdeleRing (𝓞 D.host.F) D.host.F)) κ.1.1 G.1)
@@ -180,18 +171,12 @@ theorem extV_stabL (Tf : FormsTiedSym D u Ch chOf) (κ : Tf.clsP.lev.U)
   intro x
   exact (extV_lat Tf κ G hE v P hP1 hPz _ le_rfl hO x).1
 
-
-
-
 theorem extV_level (Tf : FormsTiedSym D u Ch chOf) (κ : Tf.clsP.lev.U)
     (G : GL (Fin (D.R.N D.R.m)) (D.host.E ⊗[D.host.F] (FiniteAdeleRing (𝓞 D.host.F) D.host.F)))
     (hE : IsExt D Tf.til.z0 (inclE (F := D.host.F) (FiniteAdeleRing (𝓞 D.host.F) D.host.F)) κ.1.1 G.1)
     (v : HeightOneSpectrum (𝓞 D.host.F)) :
     bc (prV (E := D.host.E) v) G ∈ levelVL (sigD D) (gramN D D.R.m le_rfl) v (Tf.cls D.R.m le_rfl (Or.inr rfl)).lev.Lb :=
   Subgroup.mem_inf.mpr ⟨extV_unit Tf κ G hE v, extV_stabL Tf κ G hE v⟩
-
-
-
 
 theorem extV_fT (Tf : FormsTiedSym D u Ch chOf) (κ : Tf.clsP.lev.U)
     (G : GL (Fin (D.R.N D.R.m)) (D.host.E ⊗[D.host.F] (FiniteAdeleRing (𝓞 D.host.F) D.host.F)))
@@ -247,10 +232,6 @@ variable {K : Type} {n : ℕ}
 @[simp] theorem blkDg_lc [Zero K] [One K] (h : n + 1 = n + 1) (M : Matrix (Fin n) (Fin n) K) (j : Fin n) :
     blkDg h M (Fin.last n) j.castSucc = 0 := by
   simp [blkDg, j.is_lt.ne']
-
-@[simp] theorem blkDg_ll [Zero K] [One K] (h : n + 1 = n + 1) (M : Matrix (Fin n) (Fin n) K) :
-    blkDg h M (Fin.last n) (Fin.last n) = 1 := by
-  simp [blkDg]
 
 theorem blkDg_mul [CommRing K] {N : ℕ} (hN : n + 1 = N) (A B : Matrix (Fin n) (Fin n) K) :
     blkDg hN (A * B) = blkDg hN A * blkDg hN B := by
@@ -402,8 +383,6 @@ theorem rSym_le_N (R : Ranks) : rSym R.k (rSD R) + R.m * R.t ≤ R.N R.m - 1 := 
 
 theorem rSym_le_N' (R : Ranks) : rSym R.k (rSD R) ≤ R.N R.m - 1 := le_trans (Nat.le_add_right _ _) (rSym_le_N R)
 
-
-
 theorem extB_mat (Tf : FormsTiedSym D u Ch chOf) (κ : Tf.clsP.lev.U)
     (G : GL (Fin (D.R.N D.R.m)) (D.host.E ⊗[D.host.F] (FiniteAdeleRing (𝓞 D.host.F) D.host.F)))
     (hE : IsExt D Tf.til.z0 (inclE (F := D.host.F) (FiniteAdeleRing (𝓞 D.host.F) D.host.F)) κ.1.1 G.1)
@@ -437,8 +416,6 @@ theorem extB_mat (Tf : FormsTiedSym D u Ch chOf) (κ : Tf.clsP.lev.U)
       exact (RingHom.map_mulVec (Tf.gl.phi i v h) _ _ a).symm.trans (congrArg (fun w => Tf.gl.phi i v h (w a)) hEv2))
     hF1 hF2
 
-
-
 theorem extB_mem (Tf : FormsTiedSym D u Ch chOf) (κ : Tf.clsP.lev.U)
     (G : GL (Fin (D.R.N D.R.m)) (D.host.E ⊗[D.host.F] (FiniteAdeleRing (𝓞 D.host.F) D.host.F)))
     (hE : IsExt D Tf.til.z0 (inclE (F := D.host.F) (FiniteAdeleRing (𝓞 D.host.F) D.host.F)) κ.1.1 G.1)
@@ -450,8 +427,6 @@ theorem extB_mem (Tf : FormsTiedSym D u Ch chOf) (κ : Tf.clsP.lev.U)
   obtain ⟨Mm, hMm, hMmeq⟩ := jsym_blk (Formalism.MainNotions.product_first_zeroth_parts.Nm_succ D.R) (rSym_le_N' D.R) Mp hMp
   refine ⟨Mm, hMm, ?_⟩
   rw [hMmeq, extB_mat Tf κ G hE i v h, redM_blkDg, hMpeq]
-
-
 
 theorem extB_chi (Tf : FormsTiedSym D u Ch chOf) (κ : Tf.clsP.lev.U)
     (G : GL (Fin (D.R.N D.R.m)) (D.host.E ⊗[D.host.F] (FiniteAdeleRing (𝓞 D.host.F) D.host.F)))
@@ -699,8 +674,6 @@ theorem isUnit_bZ_map (Tf : FormsTiedSym D u Ch chOf) (τ : D.what₂.Tau) :
   have := (bZ_isUnitS Tf).map (Formalism.L2.Forms.embT D τ)
   rw [RingHom.map_det] at this
   exact this
-
-
 
 theorem base_eq (Tf : FormsTiedSym D u Ch chOf) (hL : Formalism.L2.Rows.LowerMapTieS Tf) (h : (D.fm u).PRat) (x : Vl D u D.R.m)
     (Pc : (D.mem u).C.cls D.R.m → MvPolynomial (D.what₂.Tau × Fin (D.R.N D.R.m) × Fin (D.R.N D.R.m)) D.what₂.LL)
@@ -1229,8 +1202,6 @@ namespace Formalism.L2.GlobalTheoryTheory.Br
 
 open MvPolynomial Formalism.BasicNotions Formalism.MainNotions.product_first_zeroth_parts Formalism.L2.Forms Matrix NumberField
 open scoped ComplexOrder
-
-
 
 theorem normClsAt_of_tors (hT : ChiTors) : NormClsAt := by
   intro D u Ch chOf Tf hL hBe h s x Pc hPc Qc hQc o ho o' ho' c

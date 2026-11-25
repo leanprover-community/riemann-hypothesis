@@ -155,7 +155,6 @@ theorem beK_posDef (k : ℕ) (c : (Σ _ : Fin k, Module.Free.ChooseBasisIndex �
   exact Finset.sum_pos' (fun _ _ => Complex.normSq_nonneg _)
     ⟨σ, Finset.mem_univ _, Complex.normSq_pos.mpr hσ⟩
 
-
 open Classical in
 def rk01 (P : Prop) : ℕ := if P then 0 else 1
 
@@ -169,32 +168,10 @@ theorem finrank_copies (k : ℕ) : Module.finrank ℤ (Fin k → 𝓞 D.host.E) 
   simp only [Formalism.BasicNotions.Ranks.f, Formalism.BasicNotions.Ranks.n]
   ring
 
-theorem subsingleton_rank_indicator_iff (P : Prop) : Subsingleton (Fin (rk01 P) → 𝓞 D.host.E) ↔ P := by
-  unfold rk01
-  by_cases h : P
-  · rw [if_pos h]
-    exact ⟨fun _ => h, fun _ => inferInstance⟩
-  · rw [if_neg h]
-    refine ⟨fun hs => ?_, fun hp => absurd hp h⟩
-    have h1 := congrFun (hs.elim (fun _ => (0 : 𝓞 D.host.E)) (fun _ => 1)) 0
-    exact absurd h1 zero_ne_one
-
 def pmM (dg : PsiT D → ℕ → ℤ) (n : ℕ) : ℤ := ∑ t : D.what₂.Tau, ∑ k ∈ Finset.Icc 1 n, |dg (D.eTau t) k|
 
 theorem pmM_nonneg (dg : PsiT D → ℕ → ℤ) (n : ℕ) : 0 ≤ pmM D dg n := by
   exact Finset.sum_nonneg fun t _ => Finset.sum_nonneg fun k _ => abs_nonneg _
-
-theorem abs_le_pmM (dg : PsiT D → ℕ → ℤ) (n : ℕ) (τ : PsiT D) (s : Finset ℕ) (hs : s ⊆ Finset.Icc 1 n) :
-    |∑ k ∈ s, dg τ k| ≤ pmM D dg n := by
-  have h1 : |∑ k ∈ s, dg τ k| ≤ ∑ k ∈ s, |dg τ k| := Finset.abs_sum_le_sum_abs _ _
-  have h2 : ∑ k ∈ s, |dg τ k| ≤ ∑ k ∈ Finset.Icc 1 n, |dg τ k| :=
-    Finset.sum_le_sum_of_subset_of_nonneg hs (fun _ _ _ => abs_nonneg _)
-  have h3 : ∑ k ∈ Finset.Icc 1 n, |dg τ k| ≤ pmM D dg n := by
-    unfold pmM
-    have := Finset.single_le_sum (f := fun t => ∑ k ∈ Finset.Icc 1 n, |dg (D.eTau t) k|)
-      (fun t _ => Finset.sum_nonneg fun _ _ => abs_nonneg _) (Finset.mem_univ (D.eTau.symm τ))
-    simpa using this
-  linarith
 
 end Form
 

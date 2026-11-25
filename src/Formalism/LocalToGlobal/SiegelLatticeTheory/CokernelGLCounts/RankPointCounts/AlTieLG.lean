@@ -169,7 +169,6 @@ def maxEquiv : HeightOneSpectrum (𝓞 X.B.I.F) ≃ {𝔭 : Ideal (𝓞 D.host.F
     show ((plEquiv X) ((plEquiv X).symm _)).asIdeal = 𝔭.1
     rw [Equiv.apply_symm_apply]
 
-
 variable {X} in
 theorem summable_absNorm_inv (i : ℕ) (hi : 2 ≤ i) :
     Summable (fun p : PlF D => (((Ideal.absNorm p.asIdeal : ℕ) : ℝ))⁻¹ ^ i) := by
@@ -492,45 +491,8 @@ variable {R K F : Type} [CommRing R] [IsDedekindDomain R] [Field K] [Algebra R K
 abbrev OOv : Subalgebra R K :=
   Localization.subalgebra.ofField K v.asIdeal.primeCompl v.asIdeal.primeCompl_le_nonZeroDivisors
 
-theorem mem_OOv (x : K) :
-    x ∈ OOv (K := K) v ↔ ∃ (a s : R) (_ : s ∈ v.asIdeal.primeCompl),
-      x = algebraMap R K a * (algebraMap R K s)⁻¹ := by
-  first
-  | exact Iff.rfl
-
-theorem alg_ne_zero {s : R} (hs : s ∉ v.asIdeal) : algebraMap R K s ≠ 0 := by
-  intro h0
-  apply hs
-  have h1 : s = 0 := IsFractionRing.injective R K (h0.trans (map_zero _).symm)
-  rw [h1]
-  exact zero_mem _
-
 theorem val_alg (k : K) : Valued.v (algebraMap K (v.adicCompletion K) k) = v.valuation K k :=
   v.valuedAdicCompletion_eq_valuation' k
-
-theorem mem_OOv_of_val {a : K} (h : v.valuation K a ≤ 1) : a ∈ OOv (K := K) v := by
-  have h1 : a ∈ (IsDedekindDomain.HeightOneSpectrum.valuationSubringAtPrime K v).toSubring := by
-    show a ∈ IsDedekindDomain.HeightOneSpectrum.valuationSubringAtPrime K v
-    rw [IsDedekindDomain.HeightOneSpectrum.valuationSubringAtPrime_eq_valuationSubring]
-    exact (Valuation.mem_valuationSubring_iff _ _).2 h
-  rw [IsDedekindDomain.HeightOneSpectrum.valuationSubringAtPrime_toSubring] at h1
-  exact h1
-
-theorem exists_inv_mod (n : ℕ) {s : R} (hs : s ∉ v.asIdeal) : ∃ t : R, 1 - s * t ∈ v.asIdeal ^ n := by
-  have h1 : Ideal.span {s} ⊔ v.asIdeal = ⊤ := by
-    by_contra hne
-    have heq := v.isMaximal.eq_of_le hne (le_sup_right : v.asIdeal ≤ Ideal.span {s} ⊔ v.asIdeal)
-    apply hs
-    rw [heq]
-    exact Ideal.mem_sup_left (Ideal.mem_span_singleton_self s)
-  have h2 : Ideal.span {s} ⊔ v.asIdeal ^ n = ⊤ := Ideal.sup_pow_eq_top h1
-  have h3 : (1 : R) ∈ Ideal.span {s} ⊔ v.asIdeal ^ n := by rw [h2]; exact Submodule.mem_top
-  obtain ⟨y, hy, z, hz, hyz⟩ := Submodule.mem_sup.1 h3
-  obtain ⟨t, rfl⟩ := Ideal.mem_span_singleton'.1 hy
-  refine ⟨t, ?_⟩
-  have : 1 - s * t = z := by rw [← hyz]; ring
-  rw [this]
-  exact hz
 
 theorem approx (c : v.adicCompletionIntegers K) (n : ℕ) :
     ∃ r : R, Valued.v ((c : v.adicCompletion K) - algebraMap K (v.adicCompletion K) (algebraMap R K r)) ≤

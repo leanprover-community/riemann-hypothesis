@@ -183,10 +183,6 @@ namespace Formalism.KernelCokernelLengths.CoefficientHeightLimitLemmas
 
 def P (s : ℝ) : ℝ := 25 + 57 * s + 40 * s ^ 2 + 8 * s ^ 3
 
-lemma P_ge {s : ℝ} (hs : 0 ≤ s) : 25 ≤ P s := by
-  unfold P
-  nlinarith [pow_nonneg hs 2, pow_nonneg hs 3]
-
 end Formalism.KernelCokernelLengths.CoefficientHeightLimitLemmas
 
 end -- clump:auto
@@ -254,18 +250,6 @@ theorem main (O : Type) [Ring O] (M : Type) [AddCommGroup M] [Module O M]
     exact hM (h3.trans (by rw [h, top_add]))
   exact ENat.add_left_injective_of_ne_top hr (h1.symm.trans (h3.trans (add_comm _ _)))
 
-theorem coker (O : Type) [Ring O] (M M' : Type) [AddCommGroup M] [Module O M]
-    [AddCommGroup M'] [Module O M'] (f : Module.End O M) (f' : Module.End O M')
-    (g : M →ₗ[O] M') (hg : Function.Surjective g) (hc : g ∘ₗ f = f' ∘ₗ g) :
-    Module.length O (M' ⧸ LinearMap.range f') ≤ Module.length O (M ⧸ LinearMap.range f) := by
-  have hle : LinearMap.range f ≤ (LinearMap.range f').comap g := by
-    rintro _ ⟨m, rfl⟩
-    exact ⟨g m, (LinearMap.congr_fun hc m).symm⟩
-  have hs : Function.Surjective (Submodule.mapQ (LinearMap.range f) (LinearMap.range f') g hle) := by
-    rw [← LinearMap.range_eq_top, Submodule.range_mapQ, LinearMap.range_eq_top.mpr hg,
-      Submodule.map_top, LinearMap.range_eq_top.mpr (Submodule.mkQ_surjective _)]
-  exact Module.length_le_of_surjective _ hs
-
 end Formalism.KernelCokernelLengths.KernelCokernelEqualityLemmas
 
 end -- clump:auto
@@ -290,28 +274,6 @@ theorem decomp (d : Module.End O V) (P : O[X]) (v : V) :
   conv_lhs => rw [← Polynomial.divX_mul_X_add P]
   rw [map_add (f := _), map_mul, aeval_X, aeval_C, LinearMap.add_apply, Module.End.mul_apply,
     Module.algebraMap_end_apply, ← Polynomial.coeff_zero_eq_eval_zero, add_comm]
-
-theorem aeval_mem (d : Module.End O V) (M : Submodule O V) (hM : M.map d ≤ M) :
-    ∀ (Q : O[X]) (v : V), v ∈ M → aeval d Q v ∈ M := by
-  have hd : ∀ v ∈ M, d v ∈ M := fun v hv => hM (Submodule.mem_map_of_mem hv)
-  have hpow : ∀ (n : ℕ) (v : V), v ∈ M → (d ^ n) v ∈ M := by
-    intro n
-    induction n with
-    | zero => intro v hv; simpa using hv
-    | succ n ih =>
-      intro v hv
-      rw [pow_succ, Module.End.mul_apply]
-      exact ih _ (hd v hv)
-  intro Q
-  induction Q using Polynomial.induction_on' with
-  | add p q hp hq =>
-    intro v hv
-    rw [map_add (f := _), LinearMap.add_apply]
-    exact M.add_mem (hp v hv) (hq v hv)
-  | monomial n a =>
-    intro v hv
-    rw [aeval_monomial, Module.End.mul_apply, Module.algebraMap_end_apply]
-    exact M.smul_mem a (hpow n v hv)
 
 end Formalism.KernelCokernelLengths.PolynomialDegreeLemmas
 
@@ -408,23 +370,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-namespace Formalism.KernelCokernelLengths.ThicknessFirstBoundLogLemmas
-
-open Filter
-
-lemma coef_le (x : ℝ) (hx : 11 ≤ x) : (2 * x - 1) / (x - 1) ^ 2 ≤ 21 / 100 := by
-  rw [div_le_iff₀ (by nlinarith : (0 : ℝ) < (x - 1) ^ 2)]
-  nlinarith [mul_nonneg (sub_nonneg.mpr hx) (by linarith : (0 : ℝ) ≤ x - 11 / 21)]
-
-lemma coef_nonneg (x : ℝ) (hx : 11 ≤ x) : 0 ≤ (2 * x - 1) / (x - 1) ^ 2 := by
-  exact div_nonneg (by linarith) (sq_nonneg _)
-
-lemma one_le_log (x : ℝ) (hx : 11 ≤ x) : 1 ≤ Real.log x := by
-  rw [Real.le_log_iff_exp_le (by linarith)]
-  linarith [Real.exp_one_lt_d9]
-
-end Formalism.KernelCokernelLengths.ThicknessFirstBoundLogLemmas
-
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Formalism.JumpKernelCokernel.JumpShiftProofs.ThickA =====
@@ -433,23 +378,6 @@ end -- clump:auto
 -- clump-header: {"m": "Formalism.JumpKernelCokernel.JumpShiftProofs.ThickB", "h": "module\n\npublic import Formalism.JumpKernelCokernel.Statement\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Algebra.Order.Star.Real\npublic import Mathlib.Analysis.Complex.ExponentialBounds\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Lemma\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Topology.Sheaves.Init\n\n"}
 section -- clump:auto
 @[expose] public section
-
-namespace Formalism.KernelCokernelLengths.ThicknessSecondBoundLogLemmas
-
-lemma coef_le (ℓ : ℕ) (hℓ : 11 ≤ ℓ) :
-    (2 * (ℓ : ℝ) - 1) / ((ℓ : ℝ) - 1) ^ 2 ≤ 21 / 100 := by
-  have h : (11 : ℝ) ≤ ℓ := by exact_mod_cast hℓ
-  have hpos : 0 < ((ℓ : ℝ) - 1) ^ 2 := by nlinarith
-  rw [div_le_div_iff₀ hpos (by norm_num)]
-  nlinarith [mul_nonneg (sub_nonneg.mpr h) (by linarith : (0 : ℝ) ≤ 21 * ℓ - 11)]
-
-lemma one_le_log (ℓ : ℕ) (hℓ : 11 ≤ ℓ) : 1 ≤ Real.log (ℓ : ℝ) := by
-  have h : (11 : ℝ) ≤ ℓ := by exact_mod_cast hℓ
-  rw [Real.le_log_iff_exp_le (by linarith)]
-  have := Real.exp_one_lt_d9
-  linarith
-
-end Formalism.KernelCokernelLengths.ThicknessSecondBoundLogLemmas
 
 end -- clump:auto
 end -- clump:auto
@@ -472,9 +400,6 @@ abbrev J : Ideal (PowerSeries O) := Ideal.span {(X : PowerSeries O) ^ n, C (ℓ 
 
 noncomputable abbrev ψ : Polynomial O →+* (PowerSeries O ⧸ J ℓ n k) :=
   Polynomial.eval₂RingHom (algebraMap O (PowerSeries O ⧸ J ℓ n k)) (Ideal.Quotient.mk (J ℓ n k) X)
-
-theorem psi_apply (P : Polynomial O) :
-    ψ ℓ n k P = P.eval₂ (algebraMap O (PowerSeries O ⧸ J ℓ n k)) (Ideal.Quotient.mk (J ℓ n k) X) := rfl
 
 theorem alg_eq (a : O) :
     algebraMap O (PowerSeries O ⧸ J ℓ n k) a = Ideal.Quotient.mk (J ℓ n k) (C a) := rfl

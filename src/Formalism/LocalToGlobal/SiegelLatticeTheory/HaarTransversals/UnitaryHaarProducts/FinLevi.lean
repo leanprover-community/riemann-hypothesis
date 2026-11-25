@@ -58,9 +58,6 @@ theorem hA_z_e (a : Fin D.R.rS) : hA X.B.I (zA X u) (eA X a) = 0 := by
 theorem hA_z_f (a : Fin D.R.rS) : hA X.B.I (zA X u) (fA X a) = 0 := by
   have h := Level.hE_z_f X u a; unfold Level.hE at h; rw [unitaryCongruence.hA_incl, h, map_zero]
 
-theorem hA_sub_right (x y y' : VA X.B.I) : hA X.B.I x (y - y') = hA X.B.I x y - hA X.B.I x y' :=
-  unitaryCongruence.hA_sub_right X.B.I x y y'
-
 theorem hA_zero_left (y : VA X.B.I) : hA X.B.I 0 y = 0 := by
   simp [hA, Formalism.UG.hform]
 
@@ -370,7 +367,6 @@ theorem SA.sub_PW_mem (h : SA (u := u) G G') (w : VA X.B.I) (he : ∀ a, hA X.B.
   rw [sub_PW]
   simp only [hpe, hpz, zero_smul, Finset.sum_const_zero, add_zero, mul_zero]
   exact Submodule.sum_mem _ fun a _ => Submodule.smul_mem _ _ (e_mem_span X a)
-
 
 variable (X u) in
 def Hf (G : Matrix (Fin X.B.I.n) (Fin X.B.I.n) (X.B.I.E ⊗[X.B.I.F] Af X.B.I.F)) (y : VA X.B.I) : VA X.B.I :=

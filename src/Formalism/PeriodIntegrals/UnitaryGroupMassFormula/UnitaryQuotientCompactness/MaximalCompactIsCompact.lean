@@ -59,11 +59,6 @@ lemma hσ_hσ (k r : ℕ) (i : Fin (2 * r + k + 1)) : hσ k r (hσ k r i) = i :=
   rw [hsig_val_eq_ite, hsig_val_eq_ite]
   split_ifs <;> omega
 
-lemma hs_mul (k r : ℕ) (i : Fin (2 * r + k + 1)) : hs k r i * hs k r (hσ k r i) = 1 := by
-  have hi := i.isLt
-  simp only [hs, hsig_val_eq_ite]
-  split_ifs <;> first | (exfalso; omega) | norm_num
-
 lemma hpk_mul_self (k r : ℕ) : Hpk k r * Hpk k r = 1 := by
   first
   | exact _root_.Formalism.SharedLemmas.upq_hpk_mul_self

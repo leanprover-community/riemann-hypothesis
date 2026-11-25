@@ -14,13 +14,6 @@ namespace PI.AprimeInfG
 open MeasureTheory Set
 open scoped ENNReal
 
-set_option backward.isDefEq.respectTransparency false in
-theorem lintegral_fin_prod {n : ℕ} {E : Fin n → Type} {mE : ∀ i, MeasurableSpace (E i)}
-    {μ : (i : Fin n) → Measure (E i)} [∀ i, SigmaFinite (μ i)] (f : (i : Fin n) → E i → ℝ≥0∞)
-    (hf : ∀ i, Measurable (f i)) :
-    ∫⁻ x : (i : Fin n) → E i, ∏ i, f i (x i) ∂(Measure.pi μ) = ∏ i, ∫⁻ x, f i x ∂(μ i) := by
-  apply Formalism.L2.SG.RealObj.InfCut.ProductExactness.PiM.lintegral_fin_prod <;> assumption
-
 theorem lintegral_fintype_prod {ι : Type} [Fintype ι] {E : ι → Type} {mE : ∀ i, MeasurableSpace (E i)}
     {μ : (i : ι) → Measure (E i)} [∀ i, SigmaFinite (μ i)] (f : (i : ι) → E i → ℝ≥0∞)
     (hf : ∀ i, Measurable (f i)) :

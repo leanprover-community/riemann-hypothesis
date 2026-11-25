@@ -32,7 +32,6 @@ section Core
 
 variable {B : Type} [Ring B] [StarRing B] [Algebra ℂ B]
 
-
 lemma core (F Fi d τ τi τ' τi' l RR T00 T01 T10 T11 U10 U11 : B) (q : ℂ)
     (hRR : RR = star F * d * F) (hF : F * Fi = 1) (hF' : Fi * F = 1)
     (hdτ : star (d * τ) = d * τ) (hτ : τi * τ = 1) (hτ1 : τ' * τi' = 1) (hτ2 : τi' * τ' = 1)
@@ -100,7 +99,6 @@ lemma io_star (x : A) : star (io x : SlopeTestRemainingChoices S A) = io (star x
   first
   | exact Matrix.diagonal_conjTranspose (fun _ : Ix S => x)
 
-
 private lemma mul_scalar_comm_of_entries_zero_or_one {n : Type} [Fintype n] [DecidableEq n] (M : Matrix n n A) (x : A)
     (hM : ∀ k l, M k l = 0 ∨ M k l = 1) : M * Matrix.scalar n x = Matrix.scalar n x * M := by
   ext k l
@@ -115,26 +113,9 @@ lemma free_io (a : S) (x : A) : FreeOf a (io x : SlopeTestRemainingChoices S A) 
 
 lemma free_mul {a : S} {x y : SlopeTestRemainingChoices S A} (hx : FreeOf a x) (hy : FreeOf a y) : FreeOf a (x * y) := fun i j => (hx i j).mul_right (hy i j)
 
-
-
 lemma free_zero (a : S) : FreeOf a (0 : SlopeTestRemainingChoices S A) := fun _ _ => Commute.zero_right _
 
 lemma free_one (a : S) : FreeOf a (1 : SlopeTestRemainingChoices S A) := fun _ _ => Commute.one_right _
-
-
-private lemma star_eU_eq_eU_swap (a : S) (i j : Fin 2) : star (eU a i j : SlopeTestRemainingChoices S A) = eU a j i := by
-  have key : ∀ k l : Ix S, star ((eU a i j : SlopeTestRemainingChoices S A) l k) = (eU a j i : SlopeTestRemainingChoices S A) k l := by
-    intro k l
-    simp only [eU, Matrix.of_apply]
-    by_cases h1 : l a = i ∧ k a = j ∧ ∀ b, b ≠ a → l b = k b
-    · have h2 : k a = j ∧ l a = i ∧ ∀ b, b ≠ a → k b = l b :=
-        ⟨h1.2.1, h1.1, fun b hb => (h1.2.2 b hb).symm⟩
-      rw [if_pos h1, if_pos h2, star_one]
-    · have h2 : ¬ (k a = j ∧ l a = i ∧ ∀ b, b ≠ a → k b = l b) :=
-        fun h => h1 ⟨h.2.1, h.1, fun b hb => (h.2.2 b hb).symm⟩
-      rw [if_neg h1, if_neg h2, star_zero]
-  exact Matrix.ext key
-
 
 lemma freeOf2_of_four_entries {a : S} {x y z w : SlopeTestRemainingChoices S A} (hx : FreeOf a x) (hy : FreeOf a y) (hz : FreeOf a z)
     (hw : FreeOf a w) : FreeOf2 a !![x, y; z, w] := by
@@ -187,7 +168,6 @@ lemma mem_GG (L : LevelData A r) : L.GG ∈ zfns L := by
 lemma mem_GGi (L : LevelData A r) : L.GGi ∈ zfns L := by
   simp [zfns]
 
-
 lemma star_ζi {L : LevelData A r} (h : IsStarLevel L) : star L.ζi = L.ζbi := by
   have h' : star L.ζ = L.ζb ∧ star L.nab = L.nabs ∧ star L.TT = L.TT := h
   calc star L.ζi = star L.ζi * (L.ζb * L.ζbi) := by rw [L.ζb_ζbi, mul_one]
@@ -196,9 +176,6 @@ lemma star_ζi {L : LevelData A r} (h : IsStarLevel L) : star L.ζi = L.ζbi := 
 
 lemma star_ζbi {L : LevelData A r} (h : IsStarLevel L) : star L.ζbi = L.ζi := by
   rw [← star_ζi h, star_star]
-
-
-
 
 lemma wt_eq (L : LevelData A r) : (wt L : SlopeTestRemainingChoices S A) = io L.ζ * io L.ζb * io L.GGi := by
   show (io (L.ζ * L.ζb * L.GGi) : SlopeTestRemainingChoices S A) = _
@@ -220,7 +197,6 @@ lemma free_l (L : LevelData A r) (f : FrameData S A) {a : S} (h : f.Free a) (Y :
 lemma free_d (L : LevelData A r) (f : FrameData S A) {a : S} (h : f.Free a) : FreeOf a (f.d L) := by
   obtain ⟨-, -, -, -, -, -, hc, -, -⟩ := h
   exact free_mul (free_pow (free_wt L a) _) hc
-
 
 lemma comm_d (L : LevelData A r) (f : FrameData S A) {b : SlopeTestRemainingChoices S A} (h1 : ∀ g ∈ zfns L, Commute b (io g))
     (h2 : Commute b f.c) : Commute b (f.d L) := by
@@ -475,12 +451,6 @@ theorem mon2 {z zi w wi g gi : M} (hz : z * zi = 1) (hw : w * wi = 1) (hg : gi *
   simp only [mul_assoc]
   rw [← mul_assoc gi g, hg, one_mul, ← mul_assoc w wi, hw, one_mul, ← mul_assoc z zi, hz, one_mul]
 
-theorem mon3 {z zi w wi g gi : M} (hz : zi * z = 1) (hw : wi * w = 1) (hg : g * gi = 1)
-    (c : Commute wi z) : g * zi * wi * (z * w * gi) = 1 := by
-  simp only [mul_assoc]
-  rw [← mul_assoc wi z, c.eq, mul_assoc z wi, ← mul_assoc zi z, hz, one_mul, ← mul_assoc wi w, hw, one_mul, hg]
-
-
 end Mon
 
 theorem star_inv {R : Type} [Ring R] [StarRing R] {a b a' b' : R} (h1 : a * b = 1) (h : star a = a')
@@ -527,10 +497,6 @@ theorem free_mul {c : S} {b b' : SlopeTestRemainingChoices S A} (h : FreeOf c b)
   unfold FreeOf at h h' ⊢
   exact fun i j => (h i j).mul_right (h' i j)
 
-
-
-
-
 theorem free2 {c : S} {p q r s : SlopeTestRemainingChoices S A} (hp : FreeOf c p) (hq : FreeOf c q) (hr : FreeOf c r)
     (hs : FreeOf c s) : FreeOf2 c !![p, q; r, s] := by
   unfold Formalism.FourierDecayAlt.Wd.FreeOf2
@@ -556,11 +522,6 @@ section Level
 
 variable {A S : Type} [Ring A] [StarRing A] [Algebra ℂ A] [StarModule ℂ A] [Fintype S] [DecidableEq S] {r : ℕ}
 
-theorem pow_inv {M : Type} [Monoid M] {a b : M} (h : a * b = 1) (n : ℕ) : a ^ n * b ^ n = 1 := by
-  induction n with
-  | zero => simp
-  | succ n ih => rw [pow_succ, pow_succ', mul_assoc, ← mul_assoc a b, h, one_mul, ih]
-
 theorem fcomm (L : LevelData A r) {x y : A} (hx : x ∈ zfns L) (hy : y ∈ zfns L) : Commute x y := by
   obtain ⟨p, pb, c, ci, cb, cbi, ζ, ζi, ζb, ζbi, GG, GGi, nab, nabs, TT, hc⟩ := L
   exact hc x (Set.mem_union_right _ hx) y (Set.mem_union_right _ hy)
@@ -574,9 +535,6 @@ theorem mGG (L : LevelData A r) : L.GG ∈ zfns L := by
 theorem mGGi (L : LevelData A r) : L.GGi ∈ zfns L := by
   simp [Formalism.FourierDecayAlt.Fr.zfns]
 
-
-
-
 theorem star_ζi {L : LevelData A r} (h : IsStarLevel L) : star L.ζi = L.ζbi := by
   exact star_inv L.ζ_ζi h.1 L.ζb_ζbi
 
@@ -585,15 +543,10 @@ theorem star_ζbi {L : LevelData A r} (h : IsStarLevel L) : star L.ζbi = L.ζi 
 theorem wt_eq (L : LevelData A r) : (wt L : SlopeTestRemainingChoices S A) = io L.ζ * io L.ζb * io L.GGi := by
   simp only [Formalism.FourierDecayAlt.Fr.wt, io_mul]
 
-
 theorem wt_fn (L : LevelData A r) {g : A} (hg : g ∈ zfns L) : Commute (wt L : SlopeTestRemainingChoices S A) (io g) := by
   simpa only [Formalism.FourierDecayAlt.Fr.wt] using io_comm (((fcomm L (mζ L) hg).mul_left (fcomm L (mζb L) hg)).mul_left (fcomm L (mGGi L) hg))
 
-
 variable {L : LevelData A r} {f : FrameData S A}
-
-
-
 
 private theorem gaussMinusFrameModel (hf : IsFrame L f) :
     ModHyp (FrameData.hatT f) (fun Y => io L.GGi * f.xi Y) (FrameData.hatQ f) f.inv ∧
@@ -964,7 +917,6 @@ section Gen
 
 variable {B : Type} [Ring B]
 
-
 lemma star_inv [StarRing B] {x xi : B} (h1 : x * xi = 1) (h : star x = x) : star xi = xi := by
   have h3 : star xi * x = 1 := by
     simpa only [star_mul, star_one, h] using congrArg star h1
@@ -989,7 +941,6 @@ lemma io_mul (x y : A) : (io (x * y) : SlopeTestRemainingChoices S A) = io x * i
 
 lemma io_one : (io (1 : A) : SlopeTestRemainingChoices S A) = 1 := (Matrix.scalar (Ix S)).map_one
 
-
 lemma free_io (c : S) (x : A) : FreeOf c (io x : SlopeTestRemainingChoices S A) := by
   intro i j
   show (eU c i j : SlopeTestRemainingChoices S A) * io x = io x * eU c i j
@@ -1003,11 +954,6 @@ lemma free_zero (c : S) : FreeOf c (0 : SlopeTestRemainingChoices S A) := fun _ 
 
 lemma free_mul {c : S} {b b' : SlopeTestRemainingChoices S A} (h : FreeOf c b) (h' : FreeOf c b') : FreeOf c (b * b') :=
   fun i j => (h i j).mul_right (h' i j)
-
-
-
-
-
 
 lemma freeOf2_of_entries {c : S} {p q r s : SlopeTestRemainingChoices S A} (hp : FreeOf c p) (hq : FreeOf c q) (hr : FreeOf c r)
     (hs : FreeOf c s) : FreeOf2 c !![p, q; r, s] := by
@@ -1078,8 +1024,6 @@ lemma Rht0_mul_10 (b : S) (d : ℂ) (M : M2 (SlopeTestRemainingChoices S A)) :
 section Frame
 
 variable {r : ℕ} (L : LevelData A r) (f : FrameData S A)
-
-
 
 lemma tri_mul (m : SlopeTestRemainingChoices S A) :
     (!![io L.ζbi, 0; 0, io L.ζi] * !![1, 0; io L.GG * m, io L.GG]) *
@@ -1354,7 +1298,6 @@ theorem io_one : (io (1 : A) : SlopeTestRemainingChoices S A) = 1 :=
 theorem io_inv {x y : A} (h : x * y = 1) : (io x : SlopeTestRemainingChoices S A) * io y = 1 := by
   rw [← io_mul, h, io_one]
 
-
 theorem free_io (a : S) (x : A) : FreeOf a (io x : SlopeTestRemainingChoices S A) := by
   intro i j
   show eU a i j * io x = io x * eU a i j
@@ -1376,9 +1319,6 @@ theorem free_add {x y : SlopeTestRemainingChoices S A} (hx : FreeOf a x) (hy : F
 
 theorem free_smul (c : ℂ) {x : SlopeTestRemainingChoices S A} (hx : FreeOf a x) : FreeOf a (c • x) :=
   fun i j => (hx i j).smul_right c
-
-
-
 
 theorem free2 {p q s t : SlopeTestRemainingChoices S A} (hp : FreeOf a p) (hq : FreeOf a q) (hs : FreeOf a s) (ht : FreeOf a t) :
     FreeOf2 a !![p, q; s, t] := by

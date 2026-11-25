@@ -133,7 +133,6 @@ theorem sc_left_mem (v : HeightOneSpectrum (𝓞 F)) (y : 𝓞 E) :
 theorem sc_right_mem (v : HeightOneSpectrum (𝓞 F)) (c : v.adicCompletion F)
     (hc : c ∈ v.adicCompletionIntegers F) : (1 : E) ⊗ₜ[F] c ∈ intV E v := Subring.subset_closure (Or.inr ⟨⟨c, hc⟩, rfl⟩)
 
-
 open Polynomial in
 theorem sc_core (σ : E →ₐ[F] E) (hσ : ∀ x, σ (σ x) = x)
     (hfix : ∀ x, σ x = x → ∃ a, algebraMap F E a = x) (h2 : Module.finrank F E = 2)
@@ -305,7 +304,6 @@ open Formalism.MainNotions.Gaps.LevGap
 
 variable {R : Ranks} (H : Host R)
 
-
 end HostSplit
 
 section IwGen
@@ -343,9 +341,6 @@ theorem fm_card_residue (v : HeightOneSpectrum (𝓞 F)) :
 
 theorem fm_incl_mem (v : HeightOneSpectrum (𝓞 F)) (c : 𝓞 E) :
     inclE (F := F) (v.adicCompletion F) (c : E) ∈ intV E v := sc_left_mem v c
-
-theorem fm_one_tmul_mem (v : HeightOneSpectrum (𝓞 F)) (c : v.adicCompletionIntegers F) :
-    (1 : E) ⊗ₜ[F] (c : v.adicCompletion F) ∈ intV E v := sc_right_mem v (c : v.adicCompletion F) c.2
 
 theorem fm_mem_latS {n : Type} [Fintype n] [DecidableEq n] (v : HeightOneSpectrum (𝓞 F)) (a : n → E)
     (y : n → E ⊗[F] v.adicCompletion F) :

@@ -141,10 +141,6 @@ variable {V : Type*} [AddCommGroup V] [Module ℂ V]
 theorem pr_ext {a b : Pr V} (h1 : a.1 = b.1) (h2 : a.2.unop = b.2.unop) : a = b :=
   Prod.ext h1 (MulOpposite.unop_injective h2)
 
-@[simp] theorem pr_alg_fst (w : ℂ) : (algebraMap ℂ (Pr V) w).1 = algebraMap ℂ (Module.End ℂ V) w := rfl
-@[simp] theorem pr_alg_snd (w : ℂ) :
-    (algebraMap ℂ (Pr V) w).2.unop = algebraMap ℂ (Module.End ℂ V) (conj w) := rfl
-
 end PairLemmas
 
 theorem waveSiteAll : WaveSiteAll := by

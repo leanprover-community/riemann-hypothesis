@@ -34,10 +34,6 @@ theorem hk_eps_sig (k r : ℕ) (i : Fin (2 * r + k + 1)) : hkEps k r (hkSig k r 
   simp only [hkEps, hkSig]
   split_ifs <;> first | rfl | (exfalso; omega)
 
-theorem hk_eps_mul_self (k r : ℕ) (i : Fin (2 * r + k + 1)) : hkEps k r i * hkEps k r i = 1 := by
-  unfold hkEps
-  split_ifs <;> norm_num
-
 theorem hk_star_eps (k r : ℕ) (i : Fin (2 * r + k + 1)) : star (hkEps k r i) = hkEps k r i := by
   unfold hkEps
   split_ifs <;> simp

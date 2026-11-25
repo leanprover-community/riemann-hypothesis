@@ -212,30 +212,6 @@ theorem hpk_row (i m : Fin (2 * r + k + 1)) :
   simp only [Fin.ext_iff]
   split_ifs <;> first | rfl | (exfalso; omega)
 
-theorem hpk_mul_apply (A : Mx k r) (i j : Fin (2 * r + k + 1)) :
-    (Hpk k r * A) i j = sgn k r i * A (tau k r i) j := by
-  rw [Matrix.mul_apply, Finset.sum_eq_single (tau k r i)]
-  · rw [hpk_row, if_pos rfl]
-  · intro m _ hm
-    rw [hpk_row, if_neg hm, zero_mul]
-  · intro h
-    exact absurd (Finset.mem_univ _) h
-
-theorem tau_tau (i : Fin (2 * r + k + 1)) : tau k r (tau k r i) = i := by
-  unfold tau
-  apply Fin.ext
-  simp only
-  split_ifs <;> omega
-
-theorem sgn_tau (i : Fin (2 * r + k + 1)) : sgn k r (tau k r i) = sgn k r i := by
-  unfold sgn tau
-  simp only
-  split_ifs <;> first | rfl | (exfalso; omega)
-
-theorem sgn_mul_self (i : Fin (2 * r + k + 1)) : sgn k r i * sgn k r i = 1 := by
-  unfold sgn
-  split_ifs <;> norm_num
-
 theorem hpk_sq : Hpk k r * Hpk k r = 1 := by
   first
   | exact _root_.Formalism.SharedLemmas.upq_hpk_mul_self

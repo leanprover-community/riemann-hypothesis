@@ -27,22 +27,6 @@ theorem Hpk_apply (i j : Fin (2 * r + k + 1)) :
   simp only [Hpk, hτ, hs, Fin.ext_iff]
   split_ifs <;> first | rfl | (exfalso; omega)
 
-theorem hτ_lt (i : ℕ) (hi : i < 2 * r + k + 1) : hτ k r i < 2 * r + k + 1 := by
-  unfold hτ
-  split_ifs <;> omega
-
-theorem hτ_hτ (i : ℕ) (hi : i < 2 * r + k + 1) : hτ k r (hτ k r i) = i := by
-  unfold hτ
-  split_ifs <;> omega
-
-theorem hs_hτ (i : ℕ) (hi : i < 2 * r + k + 1) : hs k r (hτ k r i) = hs k r i := by
-  unfold hs hτ
-  split_ifs <;> first | rfl | (exfalso; omega)
-
-theorem hs_sq (i : ℕ) : hs k r i * hs k r i = 1 := by
-  unfold hs
-  split_ifs <;> norm_num
-
 theorem Hpk_mul_self : Hpk k r * Hpk k r = 1 := by
   first
   | exact _root_.Formalism.SharedLemmas.upq_hpk_mul_self

@@ -23,28 +23,6 @@ variable {k r : ℕ}
 
 def sgI (k r : ℕ) (i : ℕ) : ℕ := if i < r ∨ r + k < i then 2 * r + k - i else i
 
-lemma hpk_apply (i l : Fin (2 * r + k + 1)) :
-    Hpk k r i l = if l.val = sgI k r i.val then (if i.val = r + k then -1 else 1) else 0 := by
-  have hi := i.isLt
-  have hl := l.isLt
-  simp only [Hpk, sgI, Fin.ext_iff]
-  split_ifs <;> first | rfl | omega
-
-lemma sgI_lt (i : Fin (2 * r + k + 1)) : sgI k r i.val < 2 * r + k + 1 := by
-  have hi := i.isLt
-  unfold sgI
-  split_ifs <;> omega
-
-lemma sgI_sgI (i : Fin (2 * r + k + 1)) : sgI k r (sgI k r i.val) = i.val := by
-  have hi := i.isLt
-  unfold sgI
-  split_ifs <;> omega
-
-lemma sgI_eq_iff (i : Fin (2 * r + k + 1)) : sgI k r i.val = r + k ↔ i.val = r + k := by
-  have hi := i.isLt
-  unfold sgI
-  split_ifs <;> constructor <;> intro h <;> omega
-
 theorem hpk_mul_self : Hpk k r * Hpk k r = 1 := by
   apply GlobalTheory.Amp.RConj.H_sq
 
