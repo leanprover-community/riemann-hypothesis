@@ -274,9 +274,11 @@ def decide(gh, pr):
     return "add", "it is waiting for a response"
 
 
-def sync(gh, number=None):
-    """Bring the label up to date on one pull request, or on all open ones. Returns a log."""
-    log, checked = [], False
+def sync(gh, number=None, log=None):
+    """Bring the label up to date on one pull request, or on all open ones. Returns the log, the
+    list `log` if one is given: what it holds when an error stops the sweep is what was done."""
+    log = [] if log is None else log
+    checked = False
 
     def check_label():
         # Only adding needs the label to exist: GitHub would make a new one. Removing never does.
@@ -340,12 +342,14 @@ def main():
     args = parser.parse_args()
 
     gh = GitHub(args.repo, args.dry_run)
-    failure = None
+    failure, log = None, []
     try:
-        log = sync(gh, args.pr)
+        sync(gh, args.pr, log)
         failure = 1 if gh.failed else None
     except (Refused, RuntimeError) as error:
-        log, failure = [str(error)], 1
+        # Keep what was done before the stop.
+        log.append(str(error))
+        failure = 1
     left = f"; {gh.remaining} REST requests left this hour" if gh.remaining is not None else ""
     log.append(f"{gh.calls + gh.queries} requests to GitHub{left}")
     text = "".join(f"- {line}\n" for line in log)
