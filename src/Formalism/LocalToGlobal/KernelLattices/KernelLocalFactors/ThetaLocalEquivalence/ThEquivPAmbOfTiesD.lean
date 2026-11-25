@@ -35,31 +35,6 @@ namespace Formalism.L2.Ker
 
 open Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.DIV Formalism.L2.Col Formalism.MainNotions
 
-section An
-
-variable {D : D7} {cc : Ideal (𝓞 D.host.K)} {δ : ℂ}
-
-theorem eNat_analytic (B : Base D cc δ) (χ : TaylorLogMetric.IdE D → ℂ) (hθ : AnalyticOnNhd ℂ B.thMM Set.univ) (N N' : ℕ)
-    (L : Submodule (𝓞 D.host.E) (Fin N → D.host.E)) (L' : Submodule (𝓞 D.host.E) (Fin N' → D.host.E)) :
-    AnalyticOnNhd ℂ (B.eNat χ N N' L L') Set.univ := by
-  have hT := entireStatements_holds
-  have h0 : AnalyticOnNhd ℂ (B.thZero N N') Set.univ := hT.2 _ B.thMM N N' hθ
-  have h1 : AnalyticOnNhd ℂ (B.thHalf N N' L) Set.univ := hT.1 _ _ _ _ _ _ _ _ h0
-  have h2 : AnalyticOnNhd ℂ (B.thMoved N N' L L') Set.univ := hT.1 _ _ _ _ _ _ _ _ h1
-  intro z _
-  exact analyticAt_const.mul (h2 z (Set.mem_univ _))
-
-variable {X : Fields} (s : Seam D X) (B : Base D cc δ) (χ : TaylorLogMetric.IdE D → ℂ) (cD : D.what₂.Tau → ℂ)
-
-theorem eOmega_ambOf {σ₀ : X.K →+* ℂ} (hN : NatOk s cc δ χ cD σ₀) (a b : ℕ) : (ambOf s B χ cD : Amb X).EOmega a b := by
-  obtain ⟨hcc, hδ, -, -, -, -, -⟩ := hN
-  intro N N' _ _
-  have hA := eNat_analytic B χ (Formalism.L2.KerInert.AlgP.thMM_analytic B (B.stdOK hcc hδ)) a b (s.lat N) (s.lat N')
-  have hc : ContDiff ℂ ⊤ (B.eNat χ a b (s.lat N) (s.lat N')) := hA.contDiff
-  exact hc.comp (contDiff_pi.2 fun τ => contDiff_apply ℂ _ (s.iT.symm τ))
-
-end An
-
 section Main
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
@@ -224,31 +199,6 @@ theorem chThT_laws_of {m2 : ℕ} (hm : R.m = m2 + 2)
   ⟨fun i hi => h i (by omega), (top_cast W Ch sel mu cst A u hm).1.2 (h (m2 + 1) (by omega))⟩
 
 end Chain
-
-section Rec
-
-variable {X : Fields} {Pr : Primes X} {R : Ranks} {W : Wts X Pr.Word R} {Ch : Chars X Pr R.m}
-  {sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)} {S : Set ℕ}
-  {mu : Tup X.F X.E X.K S} {cst : LocCst X (rowSG Pr sel mu)} {G : ChGlob X R.m} (u : Pr.Word)
-  {D : D7} (s : Seam D X) {cc : Ideal (𝓞 D.host.K)} {δ : ℂ} (B : Base D cc δ) (χ : TaylorLogMetric.IdE D → ℂ) (cD : D.what₂.Tau → ℂ)
-
-theorem thEquivP_ambOf_tiesD (hIT : ThIndOfEq) {σ₀ : X.K →+* ℂ} (hN : NatOk s cc δ χ cD σ₀) (hX : X.AbelianUnramifiedExtensionConditions) (hPr : Pr.Ok) (hsel : IsSel X sel)
-    (hg : XiOffG Pr (mu : Chr X.F X.E X.K)) (hT : LawTies W Ch sel mu cst G) (hTu : 0 < Pr.T u) {i : ℕ} (hi : i < R.m) (e : X.Tau → ℤ)
-    (he : ∀ τ, (e τ : ℚ) = (W.row τ).e ⟨i, hi⟩)
-    (hLa : (ambOf s B χ cD : Amb X).LaHyp (R.N i) (R.N (i + 1)) (Sall sel mu u))
-    (hrat : (ambOf s B χ cD : Amb X).JetsRatDeg (R.N i) (R.N (i + 1)) (Sall sel mu u) (cAof sel mu cst * cBof sel mu cst u) (stepDeg W u i)) :
-    ThEquivP (stepT W Ch sel mu cst (ambOf s B χ cD) u i (W.lamTrue u (i + 1))) (Sall sel mu u) (cAof sel mu cst * cBof sel mu cst u)
-      (colValF W sel mu u i).rho (colValF W sel mu u (i + 1)).rho := by
-  have he' : ∀ τ, (e τ : ℚ) = (W.hc u τ).e ⟨i, hi⟩ := by
-    intro τ
-    rw [he τ, ← hT.2.2.2 u τ]
-    rfl
-  exact thEquivP_stepT_ofD W Ch sel mu cst (ambOf s B χ cD) u hi e he' hrat (eOmega_ambOf s B χ cD hN _ _)
-    (thIndEq_ambOf_of s B χ cD hIT hN (even_rankN R i) (even_rankN R (i + 1)) _ (modulus_pos sel mu cst u hTu) hLa)
-    (chiLaw_ambOf s B χ cD hN (even_rankN R i) (even_rankN R (i + 1)))
-    (muProdLaw_of hX hPr hsel hg hT i hi e he _) (muProdLaw_of hX hPr hsel hg hT i hi e he _)
-
-end Rec
 
 end Formalism.L2.Ker
 end -- clump:auto

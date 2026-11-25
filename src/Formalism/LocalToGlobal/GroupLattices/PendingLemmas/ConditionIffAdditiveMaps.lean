@@ -30,9 +30,6 @@ theorem condition_iff_additive_maps (D : Formalism.BasicNotions.D7) :
   · intro h v j hj
     exact xiOf_spec X ℂ_[p] ThF (h v j hj)
 
-theorem iC_int (x : (pendOf X E hfin hst be ThF DelF hDel).Kc) :
-    x ∈ (pendOf X E hfin hst be ThF DelF hDel).Oc ↔ ‖(RingHom.id ℂ_[p]) x‖ ≤ 1 := Iff.rfl
-
 end K3
 
 section Rename
@@ -66,29 +63,6 @@ section Conc
 variable {n : ℕ} (L : IntermediateField (KO p n) (Om p n)) [FiniteDimensional (KO p n) L]
 
 def rdW (p : ℕ) [Fact p.Prime] (n : ℕ) : WQ p n →+* WW p := (gWW p n).comp (jW p n)
-
-theorem rdW_frob (x : WQ p n) : rdW p n (WittVector.frobenius x) = sigW p (rdW p n x) := by
-  ext k
-  simp only [rdW, gWW, jW, sigW, RingHom.comp_apply, WittVector.map_coeff, WittVector.coeff_frobenius_charP, map_pow]
-
-theorem rdW_frob_iter (s : ℕ) (x : WQ p n) : rdW p n ((WittVector.frobenius^[s]) x) = (sigW p)^[s] (rdW p n x) := by
-  induction s generalizing x with
-  | zero => rfl
-  | succ s ih => rw [Function.iterate_succ_apply, ih, rdW_frob, ← Function.iterate_succ_apply]
-
-theorem iota_alg (x : WQ p n) : iota p n (algebraMap (WQ p n) (QQ p n) x) = algebraMap (OO p n) (KO p n) (jO p n x) :=
-  IsFractionRing.lift_algebraMap (inj_WK p n) x
-
-theorem compat_conc (s : ℕ) (x : WQ p n) :
-    embLC (k0ToC p) L (algebraMap (KO p n) L (iota p n ((sig p n ^ s) (algebraMap (WQ p n) (QQ p n) x)))) =
-      k0ToC p (algebraMap (WW p) (K0 p) ((sigW p)^[s] (rdW p n x))) := by
-  rw [sig_pow_alg, iota_alg, ← IsScalarTower.algebraMap_apply (OO p n) (KO p n) L, ← rdW_frob_iter]
-  show iC (k0ToC p) (gL L _) = _
-  rw [gL_jO, iC_alg]
-  rfl
-
-theorem embLC_int' (x : OL p n L) : ‖embLC (k0ToC p) L (algebraMap (OL p n L) L x)‖ ≤ 1 :=
-  embLC_int (k0ToC p) (fun y => by rw [witt_fraction_to_Cp_algebraMap]; exact norm_wToC_le p y) L x
 
 end Conc
 

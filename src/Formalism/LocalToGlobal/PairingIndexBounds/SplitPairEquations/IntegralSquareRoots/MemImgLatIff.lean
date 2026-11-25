@@ -111,11 +111,4 @@ theorem Copies.gauss (c : Copies e H H₁ α α₁ Λ Λ₁ δ Ae δ₁ Ae₁) {
     simp only [LinearEquiv.apply_symm_apply]
   rw [hcard, hsum, mul_pow, Nat.cast_pow, sqrt_pow' _ (Nat.cast_nonneg _), Complex.ofReal_pow, inv_pow]
 
-theorem det_copies [FiniteDimensional ℂ V₁] (e : V ≃ₗ[ℂ] (ι → V₁)) (g : V →ₗ[ℂ] V) (g₁ : V₁ →ₗ[ℂ] V₁)
-    (h : ∀ x i, e (g x) i = g₁ (e x i)) : LinearMap.det g = LinearMap.det g₁ ^ Fintype.card ι := by
-  rw [← LinearMap.det_conj g e, ← Finset.card_univ, ← Finset.prod_const, ← LinearMap.det_pi]
-  congr 1
-  ext x i
-  simp [h]
-
 end Formalism.L2.PairingIndexBounds.Eq.J

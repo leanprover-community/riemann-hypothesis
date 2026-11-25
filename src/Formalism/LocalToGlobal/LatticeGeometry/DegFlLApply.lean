@@ -40,9 +40,6 @@ theorem jcl_le (D : D7) (j : ℕ) : jcl D j ≤ D.R.m := by
   have := D.R.two_le_m
   unfold jcl; omega
 
-theorem jcl_eq (D : D7) {j : ℕ} (h1 : 1 ≤ j) (h2 : j ≤ D.R.m) : jcl D j = j := by
-  unfold jcl; omega
-
 theorem sigW_sum (D : D7) {j : ℕ} (h1 : 1 ≤ j) (h2 : j ≤ D.R.m) : (D.R.sigW j).1 + (D.R.sigW j).2 = D.R.r := by
   have := D.R.m_add_three_le_k
   simp only [Ranks.sigW, Ranks.r]; omega
@@ -68,14 +65,6 @@ def datW (D : D7) {Lev : Type} (κ : Lev) (j : ℕ) : Dat D Lev :=
       ext
       · rfl
       · simp only; omega }
-
-theorem datW_N (D : D7) {Lev : Type} (κ : Lev) (j : ℕ) : (datW D κ j).N = D.R.r := by
-  let := D.host.cmStar
-  exact D.sp.W_rank _ (one_le_jcl D j) (jcl_le D j)
-
-theorem datW_j (D : D7) {Lev : Type} (κ : Lev) {j : ℕ} (h1 : 1 ≤ j) (h2 : j ≤ D.R.m) :
-    (datW D κ j).j = (D.R.sigW j).1 := by
-  simp only [datW, jcl_eq D h1 h2]
 
 def degFlL (ι : Type) [Fintype ι] [DecidableEq ι] (N : ℕ) : MvPolynomial (ι × Fin N) ℝ →ₗ[ℝ] ℝ :=
   ((-1 : ℝ) ^ Formalism.DegreeFormula.dimFl ι N) • ∑ σ : ι → Equiv.Perm (Fin N),

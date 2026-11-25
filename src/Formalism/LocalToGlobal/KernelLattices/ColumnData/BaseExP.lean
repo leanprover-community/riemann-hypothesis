@@ -151,9 +151,6 @@ variable {R : Ranks} (H : Host R)
 
 theorem phi_b : H.φ₀ (H.sqd) = Complex.I * (Real.sqrt H.d : ℂ) := H.φ₀_mem
 
-theorem phi_conj (φ : H.E →+* ℂ) (x : H.E) : φ (H.conj x) = conj (φ x) :=
-  H.conjE_apply φ x
-
 theorem d_pos : 0 < H.d := H.hyp.2.1.pos
 
 theorem b_mem_K : H.sqd ∈ H.K := mem_adjoin_simple_self ℚ _
@@ -194,10 +191,6 @@ theorem K_induction {p : H.E → Prop} (hb : p (H.sqd)) (hq : ∀ r : ℚ, p (al
   | inv x _ hx => exact hinv x hx
   | mul x y _ _ hx hy => exact hmul x y hx hy
 
-theorem conj_conj (x : H.E) : H.conj (H.conj x) = x := by
-  apply H.φ₀.injective
-  rw [phi_conj, phi_conj, Complex.conj_conj]
-
 theorem emb_on_K (g : R.GG) (hg : g ∈ R.Psi) (k : H.K) : H.emb g (k : H.E) = H.φ₀ (k : H.E) := by
   have hs : (H.sigmaOf g) H.sqd = H.sqd := by
     rw [H.gal_sqd (H.sigmaOf g)]
@@ -231,8 +224,6 @@ section Facts
 variable (D : Car)
 
 theorem kQuad : KQuad D := finrank_K D.host
-
-theorem embInj : EmbInj D := fun _ _ h => D.eTau.injective (Subtype.ext ((factEmb D.R D.host).1.1 h))
 
 theorem embOnK : EmbOnK D := fun τ k => emb_on_K D.host _ (D.eTau τ).2 k
 

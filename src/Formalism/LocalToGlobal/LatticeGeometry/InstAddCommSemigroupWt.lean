@@ -24,13 +24,6 @@ def wtOfN (N : ℕ) (w : WeightFamilies.Wt D j) (τ : D.what₂.Tau) (i : Fin N)
 
 def wtOf (w : WeightFamilies.Wt D j) : D.what₂.Tau → Fin D.R.r → ℤ := wtOfN D.R.r w
 
-theorem wtOf_eq_kapW (w : WeightFamilies.Wt D j) (hP : ∀ τ i, (w.aP τ i : ℤ) = D.what₂.kaBig j τ i)
-    (hM : ∀ τ c, (w.aM τ c : ℤ) = -D.what₂.kaSmall j τ (Fin.rev c)) (hn : w.n = D.R.nV) :
-    wtOf w = DV.kapW D j := by
-  funext τ i
-  simp only [wtOf, wtOfN, DV.kapW, hP, hM, hn, Fin.rev_rev]
-  split_ifs <;> ring
-
 theorem wt_ext {w w' : WeightFamilies.Wt D j} (h1 : w.aP = w'.aP) (h2 : w.aM = w'.aM) (h3 : w.n = w'.n) :
     w = w' := by
   cases w; cases w'; cases h1; cases h2; cases h3; rfl
@@ -50,45 +43,6 @@ variable {K : Type} [Field K] [NumberField K]
 
 def vEK (la : HeightOneSpectrum (𝓞 K)) (a : K) : EReal :=
   open Classical in if a = 0 then ⊤ else (((vAdd la a : ℤ) : ℝ) : EReal)
-
-theorem fv_vAdd_mul (la : HeightOneSpectrum (𝓞 K)) {a b : K} (ha : a ≠ 0) (hb : b ≠ 0) :
-    vAdd la (a * b) = vAdd la a + vAdd la b := by
-  unfold vAdd
-  rw [map_mul, WithZero.log_mul ((Valuation.ne_zero_iff _).mpr ha) ((Valuation.ne_zero_iff _).mpr hb)]
-  ring
-
-theorem vEK_zero (la : HeightOneSpectrum (𝓞 K)) : vEK la (0 : K) = ⊤ := by simp [vEK]
-
-theorem vEK_ne_bot (la : HeightOneSpectrum (𝓞 K)) (a : K) : vEK la a ≠ ⊥ := by
-  unfold vEK; split_ifs <;> simp
-
-theorem vEK_of_ne (la : HeightOneSpectrum (𝓞 K)) {a : K} (ha : a ≠ 0) :
-    vEK la a = (((vAdd la a : ℤ) : ℝ) : EReal) := by simp [vEK, ha]
-
-theorem vEK_mul (la : HeightOneSpectrum (𝓞 K)) {a : K} (ha : a ≠ 0) (b : K) :
-    vEK la (a * b) = (((vAdd la a : ℤ) : ℝ) : EReal) + vEK la b := by
-  by_cases hb : b = 0
-  · simp [vEK, hb]
-  · rw [vEK_of_ne la (mul_ne_zero ha hb), vEK_of_ne la hb, fv_vAdd_mul la ha hb]
-    push_cast; rfl
-
-theorem vEK_add (la : HeightOneSpectrum (𝓞 K)) (a b : K) :
-    min (vEK la a) (vEK la b) ≤ vEK la (a + b) := by
-  by_cases hab : a + b = 0
-  · simp [vEK, hab]
-  by_cases ha : a = 0
-  · subst ha; simp
-  by_cases hb : b = 0
-  · subst hb; simp
-  rw [vEK_of_ne la hab, vEK_of_ne la ha, vEK_of_ne la hb]
-  have hn := fun (x : K) (hx : x ≠ 0) => (Valuation.ne_zero_iff (la.valuation K)).mpr hx
-  rcases le_max_iff.mp (Valuation.map_add (la.valuation K) a b) with h | h
-  · have := (WithZero.log_le_log (hn _ hab) (hn _ ha)).mpr h
-    have h' : vAdd la a ≤ vAdd la (a + b) := by unfold vAdd; omega
-    exact min_le_of_left_le (by exact_mod_cast h')
-  · have := (WithZero.log_le_log (hn _ hab) (hn _ hb)).mpr h
-    have h' : vAdd la b ≤ vAdd la (a + b) := by unfold vAdd; omega
-    exact min_le_of_right_le (by exact_mod_cast h')
 
 end Val
 
@@ -266,8 +220,6 @@ def cf (j : ℕ) (m : WithZero (WeightFamilies.Wt D j)) : P.FormsS j →ₗ[P.KO
   map_add' x y := by simp
   map_smul' a x := by simp
 
-theorem cf_apply {j : ℕ} (m : WithZero (WeightFamilies.Wt D j)) (x : P.FormsS j) : P.cf j m x = (x : P.Amb j).coeff m := rfl
-
 def incS (j : ℕ) (w : WeightFamilies.Wt D j) : P.Cusp j w →ₗ[P.KO] P.FormsS j where
   toFun F := ⟨AddMonoidAlgebra.single (w : WithZero (WeightFamilies.Wt D j)) (P.tup j w F), fun m => by
     classical
@@ -282,15 +234,6 @@ def incS (j : ℕ) (w : WeightFamilies.Wt D j) : P.Cusp j w →ₗ[P.KO] P.Forms
     apply Subtype.ext
     simp [AddMonoidAlgebra.smul_single]
 
-theorem incS_coe {j : ℕ} {w : WeightFamilies.Wt D j} (F : P.Cusp j w) :
-    (P.incS j w F : P.Amb j) = AddMonoidAlgebra.single (w : WithZero (WeightFamilies.Wt D j)) (P.tup j w F) := rfl
-
-open Classical in
-theorem cf_incS {j : ℕ} (m : WithZero (WeightFamilies.Wt D j)) {w : WeightFamilies.Wt D j} (F : P.Cusp j w) :
-    P.cf j m (P.incS j w F) = if (w : WithZero (WeightFamilies.Wt D j)) = m then P.tup j w F else 0 := by
-  classical
-  rw [cf_apply, incS_coe, AddMonoidAlgebra.coeff_single, Finsupp.single_apply]
-
 theorem exists_Fof {j : ℕ} (w : WeightFamilies.Wt D j) (x : P.FormsS j) :
     ∃ F, P.tup j w F = (x : P.Amb j).coeff (w : WithZero (WeightFamilies.Wt D j)) :=
   (P.mem_Vm_coe w _).mp (x.2 (w : WithZero (WeightFamilies.Wt D j)))
@@ -298,17 +241,6 @@ theorem exists_Fof {j : ℕ} (w : WeightFamilies.Wt D j) (x : P.FormsS j) :
 def Fof {j : ℕ} (w : WeightFamilies.Wt D j) (x : P.FormsS j) : P.Cusp j w := Classical.choose (P.exists_Fof w x)
 
 def scal {j : ℕ} (x : P.FormsS j) : P.KO := ((x : P.Amb j).coeff 0).1
-
-theorem scal_add {j : ℕ} (x y : P.FormsS j) : P.scal (x + y) = P.scal x + P.scal y := by
-  simp [scal]
-
-theorem scal_smul {j : ℕ} (a : P.KO) (x : P.FormsS j) : P.scal (a • x) = a * P.scal x := by
-  simp [scal]
-
-theorem scal_incS {j : ℕ} {w : WeightFamilies.Wt D j} (F : P.Cusp j w) : P.scal (P.incS j w F) = 0 := by
-  have h := P.cf_incS 0 F
-  rw [if_neg (WithZero.coe_ne_zero)] at h
-  rw [scal, ← cf_apply, h]; rfl
 
 variable {j : ℕ}
 
@@ -335,7 +267,6 @@ def inc (j : ℕ) (w : WeightFamilies.Wt D j) : P.Cusp j w →ₗ[P.KO] P.Forms 
   map_smul' a F := P.amb_injective (by
     change ((P.incS j w (a • F) : P.FormsS j) : P.Amb j) = a • (P.incS j w F : P.Amb j)
     rw [map_smul]; rfl)
-
 
 def vAt (la : HeightOneSpectrum (𝓞 P.KO)) (y : P.Pt j la) (x : P.Forms j) : EReal :=
   P.vAtS la y (x : P.FormsS j)

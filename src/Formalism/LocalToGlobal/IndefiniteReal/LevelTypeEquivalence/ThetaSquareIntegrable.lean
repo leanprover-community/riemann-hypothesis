@@ -27,12 +27,6 @@ theorem actO_add {S T : HSp D} (g : GA D S) (h : GA D T) (x y : WO S T) :
   unfold actO
   rw [Matrix.mul_add, Matrix.add_mul]
 
-theorem continuous_actO {S T : HSp D} (g : GA D S) (h : GA D T) : Continuous (actO S T g h) := by
-  have : IsModuleTopology (AF D.host.F) (AE D) := ⟨rfl⟩
-  have : IsTopologicalRing (AE D) := IsModuleTopology.isTopologicalRing (AF D.host.F) _
-  unfold actO
-  exact (continuous_const.matrix_mul continuous_id).matrix_mul continuous_const
-
 end Formalism.IndefR.Eqv
 
 end

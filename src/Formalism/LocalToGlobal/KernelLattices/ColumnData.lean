@@ -786,7 +786,6 @@ end Base
 
 end Fam
 
-
 section HostFacts
 
 variable (D : Car)
@@ -833,7 +832,6 @@ end HostFacts
 open IsDedekindDomain Formalism.HermitianLatticesTheory Formalism.L2.DIV Formalism.L2.Col Formalism.L2.Th1.H
 
 section Seam
-
 
 structure Seam (D : Car) (X : Fields) where
   iE : X.E ≃+* D.host.E
@@ -917,12 +915,6 @@ def LinkThIndep : Prop :=
   ∀ D : Car, ∀ cc : Ideal (𝓞 D.host.K), IsCurveIdeal D cc → ∀ δ : ℂ, IsDiscriminantTwelfthRootOfIdealLattice D cc δ →
     ∀ (χ : IdE D → ℂ) (e : FamE D), IsChi D χ → vec22 D (tor0 D cc δ) e →
       eq22 D (tor0 D cc δ) χ e → ThetaNormIndependent D (tor0 D cc δ) e
-
-theorem theta_norm_independent_of_bounds (D : Car) (T : Tor D) (C : ℝ) (e : FamE D) (h : th22 D T C e) :
-    ThetaNormIndependent D T e := h.1
-
-theorem theta_norm_unitary_invariant_of_bounds (D : Car) (T : Tor D) (C : ℝ) (e : FamE D) (h : th22 D T C e) :
-    th22U D T e := h.2.2.2
 
 end Formalism.L2.Ker.Cd.IntegralLatticeDensity
 

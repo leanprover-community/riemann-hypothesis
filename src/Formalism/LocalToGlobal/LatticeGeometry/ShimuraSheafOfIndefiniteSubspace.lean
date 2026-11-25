@@ -15,12 +15,6 @@ namespace Formalism.L2.Geo
 variable {D : D7} {G : DV.Geo D.what₂.LL} {Lev : Type} {jC : ∀ (p : ℕ) [Fact p.Prime], PlL D p → (DV.KW p →+* ℂ)}
   {ng : NgPkg}
 
-theorem chernOf_homog (Tau : Type) [Fintype Tau] (N : ℕ) (vol : ℝ) (P : MvPolynomial (DV.Rt Tau N) ℝ)
-    (d : ℕ) (hd : d ≠ Formalism.DegreeFormula.dimFl Tau N) (hP : P.IsHomogeneous d) : chernOf Tau N vol P = 0 := by
-  have hc : ∀ σ : Tau → Equiv.Perm (Fin N), P.coeff (Formalism.DegreeFormula.permExp σ) = 0 := fun σ =>
-    hP.coeff_eq_zero (by rw [_root_.Formalism.DegreeFormula.PPowSum.degree_permExp]; exact fun h => hd h.symm)
-  simp [chernOf, degFlL, LinearMap.sum_apply, MvPolynomial.lcoeff_apply, hc]
-
 def toShimX {w : Dat D Lev} (U : ShimU D G jC ng w) (h : w.Indef) (lev : Finset ℕ)
     (hlev : ∀ p ∈ lev, p.Prime) : DV.ShimX D.what₂.Tau where
   N := w.N

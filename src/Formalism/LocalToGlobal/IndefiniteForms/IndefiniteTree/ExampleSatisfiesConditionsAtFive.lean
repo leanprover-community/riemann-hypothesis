@@ -1388,8 +1388,6 @@ theorem errorTerm_nonneg (O : OnObj S P c) (hPg : LeafPage O) (hSz : LeafSizes O
       linarith
     · rw [if_neg hY]
 
-
-
 theorem bad_sum (O : OnObj S P c) (hPg : LeafPage O) (hSz : LeafSizes O) (hX : LeafX O) (hBad : LeafBad O) (j : Bs.J) :
     ∑ p ∈ O.Bad, Real.log (p : ℝ) * O.errP j p ≤ O.Cb * (O.f * O.m * O.b * O.L) := by
   obtain ⟨hC, hk, hm, hf, hT, hSc, heta, hbp, hvd, hNc, pg1, pg2, pq1, pdd, h12, hqd, hqg1, hqg2, hdg1, hdg2,
@@ -1743,11 +1741,6 @@ variable (K)
 def stdLat (n : ℕ) : Submodule (𝓞 K) (Fin n → K) :=
   Submodule.span (𝓞 K) (Set.range (Pi.basisFun K (Fin n)))
 
-theorem map_id' {n : ℕ} (A : Submodule (𝓞 K) (Fin n → K)) :
-    A.map ((LinearMap.id : (Fin n → K) →ₗ[K] (Fin n → K)).restrictScalars (𝓞 K)) = A := by
-  first
-  | exact Submodule.map_id A
-
 private theorem exists_place_lemma (p : ℕ) (hp : p.Prime) : ∃ w : HeightOneSpectrum (𝓞 K), plc w = p := by
   have hpZ : Prime (p : ℤ) := Nat.prime_iff_prime_int.mp hp
   haveI hmax : (Ideal.span {(p : ℤ)}).IsMaximal :=
@@ -1782,7 +1775,6 @@ private theorem exists_place_lemma (p : ℕ) (hp : p.Prime) : ∃ w : HeightOneS
 
 theorem exists_place3 : ∃ w : HeightOneSpectrum (𝓞 K), plc w = 3 := by
   exact exists_place_lemma K 3 Nat.prime_three
-
 
 variable {K} (v0 : InfinitePlace K) (Tw0 : Finset (HeightOneSpectrum (𝓞 K)))
 

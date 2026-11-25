@@ -848,16 +848,6 @@ abbrev KC : Type := CyclotomicField 143 ℚ
 
 @[instance_reducible] noncomputable def starKC : StarRing KC := starRingOfComm
 
-theorem one_hundred_forty_three_ne_zero : NeZero ((143 : ℕ) : ℚ) := ⟨by norm_num⟩
-
-attribute [local instance] starKC one_hundred_forty_three_ne_zero
-
-theorem cycKC : IsCyclotomicExtension {143} ℚ KC := CyclotomicField.isCyclotomicExtension 143 ℚ
-
-attribute [local instance] cycKC
-
-variable (v0 : InfinitePlace KC) (Tw0 : Finset (HeightOneSpectrum (𝓞 KC)))
-
 end ToyLevel
 
 section NotProjectiveExample

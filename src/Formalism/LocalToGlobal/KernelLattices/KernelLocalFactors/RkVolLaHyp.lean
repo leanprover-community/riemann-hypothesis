@@ -101,23 +101,11 @@ theorem opM_smul (e : D.host.E) (w : ℂ) (v : Formalism.L2.Ker.Cd.TaylorLogMetr
   show Formalism.L2.Ker.Cd.TaylorLogMetric.embT D τ e * (w * v τ i j) = w * (Formalism.L2.Ker.Cd.TaylorLogMetric.embT D τ e * v τ i j)
   ring
 
-theorem emV_smulE (e : D.host.E) (A : Matrix (Fin b) (Fin a) D.host.E) : emV (e • A) = opM e (emV A) := by
-  funext τ i j
-  show Formalism.L2.Ker.Cd.TaylorLogMetric.embT D τ (e * A i j) = _
-  rw [map_mul]
-  rfl
-
 theorem emV_smulO (r : 𝓞 D.host.E) (A : Matrix (Fin b) (Fin a) D.host.E) : emV (r • A) = opM (r : D.host.E) (emV A) := by
   funext τ i j
   show Formalism.L2.Ker.Cd.TaylorLogMetric.embT D τ (r • A i j) = _
   rw [Algebra.smul_def, map_mul]
   rfl
-
-theorem phi_smulE (δ : ℂ) (e : X.E) (x : HomE X.E a b) : phi s δ (e • x) = opM (s.iE e) (phi s δ x) := by
-  funext τ i j
-  show δ * Formalism.L2.Ker.Cd.TaylorLogMetric.embT D τ (s.iE (e * x (Pi.single j 1) i)) = Formalism.L2.Ker.Cd.TaylorLogMetric.embT D τ (s.iE e) * (δ * _)
-  rw [map_mul, map_mul]
-  ring
 
 theorem phi_smulO (δ : ℂ) (r : 𝓞 X.E) (x : HomE X.E a b) : phi s δ (r • x) = opM (s.iE (r : X.E)) (phi s δ x) := by
   funext τ i j
@@ -125,8 +113,6 @@ theorem phi_smulO (δ : ℂ) (r : 𝓞 X.E) (x : HomE X.E a b) : phi s δ (r •
   rw [Algebra.smul_def, map_mul, map_mul]
   show δ * (Formalism.L2.Ker.Cd.TaylorLogMetric.embT D τ (s.iE (r : X.E)) * _) = _
   ring
-
-theorem phi_eq (δ : ℂ) (x : HomE X.E a b) : phi s δ x = δ • emV (mat s x) := rfl
 
 end Maps
 
@@ -268,127 +254,12 @@ theorem phi_per : imS s cc δ N N' = Formalism.L2.Ker.Cd.TaylorLogMetric.La D (F
 
 end Per
 
-theorem embH_iff (hok : s.Ok) (δ : ℂ) {a b : ℕ} (x : HomE X.E a b) (z : DVar X.Tau a b → ℂ) :
-    embH (X.embC s.σ₀) δ x = flat X.Tau a b z ↔ phi s δ x = s.flatV a b z := by
-  constructor
-  · intro h
-    funext τ i j
-    have h1 := congrFun (congrFun (congrFun h (s.iT.symm τ)) i) j
-    have h2 : δ * s.σ₀ (X.emb (s.iT.symm τ) (x (Pi.single j 1) i)) = z (s.iT.symm τ, i, j) := h1
-    rw [hok.1, Equiv.apply_symm_apply] at h2
-    exact h2
-  · intro h
-    funext τ i j
-    have h1 := congrFun (congrFun (congrFun h (s.iT τ)) i) j
-    have h2 : δ * Formalism.L2.Ker.Cd.TaylorLogMetric.embT D (s.iT τ) (s.iE (x (Pi.single j 1) i)) = z (s.iT.symm (s.iT τ), i, j) := h1
-    rw [← hok.1, Equiv.symm_apply_apply] at h2
-    exact h2
-
-theorem lamTie : LamTie := by
-  intro D X s cc δ B χ cD a b N N' hok
-  ext z
-  have h1 : z ∈ lamF (ambOf s B χ cD) N N' ↔ ∃ x ∈ perO (aaX s cc) N N', embH (X.embC s.σ₀) δ x = flat X.Tau a b z := Iff.rfl
-  have h2 : z ∈ s.laF B.tor (s.lat N) (s.lat N') ↔ s.flatV a b z ∈ Formalism.L2.Ker.Cd.TaylorLogMetric.La D (Formalism.L2.Ker.Cd.TaylorLogMetric.tor0 D cc δ) (s.lat N) (s.lat N') := Iff.rfl
-  rw [h1, h2, ← phi_per]
-  constructor
-  · rintro ⟨x, hx, h⟩
-    exact ⟨x, hx, (embH_iff s hok δ x z).1 h⟩
-  · rintro ⟨x, hx, h⟩
-    exact ⟨x, hx, (embH_iff s hok δ x z).2 h⟩
-
 section Frame
 
 variable {cc : Ideal (𝓞 D.host.K)} {δ : ℂ} (B : Base D cc δ) (χ : Formalism.L2.Ker.Cd.TaylorLogMetric.IdE D → ℂ) (cD : D.what₂.Tau → ℂ)
 
 def unitM {a b : ℕ} (e : D.host.E) (β : Fin b) (α : Fin a) : Matrix (Fin b) (Fin a) D.host.E :=
   fun i j => if i = β ∧ j = α then e else 0
-
-theorem unitM_mulVec {a b : ℕ} (e : D.host.E) (β : Fin b) (α : Fin a) (y : Fin a → D.host.E) :
-    (unitM e β α).mulVec y = fun i => if i = β then e * y α else 0 := by
-  funext i
-  show ∑ j, (if i = β ∧ j = α then e else 0) * y j = _
-  by_cases hi : i = β
-  · simp [hi]
-  · simp [hi]
-
-theorem flatV_vecE (hok : s.Ok) {a b : ℕ} (n : ℕ) (ω : ℂ) (r : X.E) (β : Fin b) (α : Fin a) :
-    s.flatV a b (ω • ((n : ℂ) • vecE s.σ₀ r β α)) = ω • emV (unitM ((n : D.host.E) * s.iE r) β α) := by
-  funext τ i j
-  show ω * ((n : ℂ) * (if i = β ∧ j = α then s.σ₀ (X.emb (s.iT.symm τ) r) else 0)) =
-    ω * Formalism.L2.Ker.Cd.TaylorLogMetric.embT D τ (if i = β ∧ j = α then (n : D.host.E) * s.iE r else 0)
-  by_cases h : i = β ∧ j = α
-  · rw [ite_eq_left h, ite_eq_left h, hok.1, Equiv.apply_symm_apply, map_mul, map_natCast]
-  · rw [ite_eq_right h, ite_eq_right h, map_zero, mul_zero]
-
-theorem inMul_std (hok : s.Ok) {a b : ℕ} (N : Submodule (𝓞 X.E) (Sp X.E a)) (N' : Submodule (𝓞 X.E) (Sp X.E b)) (p : ℕ) [hp : Fact p.Prime]
-    (hN : s.StdAtP p N) (hN' : s.StdAtP p N') :
-    ∃ n₀ : ℕ, ¬ p ∣ n₀ ∧ ∀ (r : 𝓞 X.E) (β : Fin b) (α : Fin a),
-      InMul B.L (lamF (ambOf s B χ cD) N N') ((n₀ : ℂ) • vecE (ambOf s B χ cD).σ₀ (r : X.E) β α) := by
-  obtain ⟨s₁, hs₁, -, h1b⟩ := hN
-  obtain ⟨s₂, hs₂, h2a, -⟩ := hN'
-  refine ⟨s₂ * s₁, ?_, ?_⟩
-  · intro h
-    rcases (Nat.Prime.dvd_mul hp.out).1 h with h | h
-    · exact (Nat.Prime.coprime_iff_not_dvd hp.out).1 hs₂.symm h
-    · exact (Nat.Prime.coprime_iff_not_dvd hp.out).1 hs₁.symm h
-  · intro r β α ω hω
-    rw [lamTie D X s cc δ B χ cD a b N N' hok]
-    show s.flatV a b (ω • (((s₂ * s₁ : ℕ) : ℂ) • vecE s.σ₀ (r : X.E) β α)) ∈ Formalism.L2.Ker.Cd.TaylorLogMetric.La D (Formalism.L2.Ker.Cd.TaylorLogMetric.tor0 D cc δ) (s.lat N) (s.lat N')
-    rw [flatV_vecE s hok]
-    refine AddSubgroup.subset_closure ⟨ω, (Formalism.L2.Ker.Cd.IntegralLatticeDensity.SO.mem_iff B ω).1 hω, _,
-      Submodule.subset_span ⟨1, Formalism.L2.Ker.Cd.IntegralLatticeDensity.SO.int_mem_inverse_half_different isIntegral_one, _, Submodule.subset_span ?_, (one_smul _ _).symm⟩, rfl⟩
-    intro y hy
-    rw [unitM_mulVec]
-    obtain ⟨r', hr'⟩ := (s.int_iff (r : X.E)).2 ⟨r, rfl⟩
-    have hy1 := h1b y hy
-    unfold Formalism.L2.Ker.Cd.StandardLatticesGL3.stdL at hy1
-    rw [Submodule.mem_pi] at hy1
-    obtain ⟨u, hu⟩ := Submodule.mem_one.1 (hy1 α (Set.mem_univ _))
-    have hv : (fun i => if i = β then s.iE (r : X.E) * ((s₁ : D.host.E) * y α) else 0 : Fin b → D.host.E) ∈ Formalism.L2.Ker.Cd.StandardLatticesGL3.stdL D b := by
-      unfold Formalism.L2.Ker.Cd.StandardLatticesGL3.stdL
-      rw [Submodule.mem_pi]
-      intro i _
-      by_cases hi : i = β
-      · rw [ite_eq_left hi]
-        refine Submodule.mem_one.2 ⟨r' * u, ?_⟩
-        rw [map_mul, hr', hu]
-        rfl
-      · rw [ite_eq_right hi]
-        exact zero_mem _
-    have h3 := h2a _ hv
-    have e : (fun i => if i = β then ((s₂ * s₁ : ℕ) : D.host.E) * s.iE (r : X.E) * y α else 0 : Fin b → D.host.E) =
-        (s₂ : D.host.E) • (fun i => if i = β then s.iE (r : X.E) * ((s₁ : D.host.E) * y α) else 0 : Fin b → D.host.E) := by
-      funext i
-      by_cases hi : i = β
-      · simp only [Pi.smul_apply, ite_eq_left hi, smul_eq_mul]
-        push_cast
-        ring
-      · simp only [Pi.smul_apply, ite_eq_right hi, smul_zero]
-    rw [e]
-    exact h3
-
-theorem embC_injective (hok : s.Ok) : Function.Injective (X.embC (ambOf s B χ cD).σ₀) := by
-  intro τ τ' h
-  apply s.iT.injective
-  apply embInj D
-  apply RingHom.ext
-  intro y
-  have h1 := congrArg (fun f : X.E →+* ℂ => f (s.iE.symm y)) h
-  have h2 : s.σ₀ (X.emb τ (s.iE.symm y)) = s.σ₀ (X.emb τ' (s.iE.symm y)) := h1
-  rw [hok.1, hok.1, RingEquiv.apply_symm_apply] at h2
-  exact h2
-
-theorem thF_eq {a b : ℕ} (N : Submodule (𝓞 X.E) (Sp X.E a)) (N' : Submodule (𝓞 X.E) (Sp X.E b)) :
-    Formalism.L2.AlgTh.thF (ambOf s B χ cD) N N' = fun z => B.eNat χ a b (s.lat N) (s.lat N') (s.flatV a b z) := rfl
-
-theorem frame_std (hF : Formalism.L2.AlgTh.KerFrame) (hok : s.Ok) {a b : ℕ} (N : Submodule (𝓞 X.E) (Sp X.E a)) (N' : Submodule (𝓞 X.E) (Sp X.E b))
-    (p : ℕ) [Fact p.Prime] (ι : ℂ ≃+* ℂ_[p]) (hN : s.StdAtP p N) (hN' : s.StdAtP p N')
-    (hdisc : ¬ (p : ℤ) ∣ NumberField.discr X.E) (hc : ∀ τ, ‖ι (cD τ)‖ ≤ 1) :
-    ∃ (J : Type) (_ : Fintype J) (v : J → DVar X.Tau a b → ℂ) (M : J → DVar X.Tau a b → ℂ_[p]),
-      (∀ j, InMul B.L (lamF (ambOf s B χ cD) N N') (v j)) ∧ (∀ j k, ‖M j k‖ ≤ 1) ∧
-      ∀ i k, Formalism.L2.Th1.GD.frameM (ι : ℂ →+* ℂ_[p]) v M i k = if i = k then ι ((ambOf s B χ cD : Amb X).cD k.1) else 0 :=
-  hF X (ambOf s B χ cD) a b N N' B.L p ι hdisc (embC_injective s B χ cD hok) (fun τ => hc (s.iT τ))
-    (inMul_std s B χ cD hok N N' p hN hN')
 
 end Frame
 
@@ -523,88 +394,9 @@ theorem th_pb {Λ : AddSubgroup W} {α : V → ℂ} {α' : W → ℂ} (hα : ∀
 
 end GenTh
 
-section LaS
-
-variable {D : Car} {N N' : ℕ}
-
-theorem homL_nsmul (s : ℕ) {L₁ L₂ : Submodule (𝓞 D.host.E) (Fin N → D.host.E)} {L₁' L₂' : Submodule (𝓞 D.host.E) (Fin N' → D.host.E)}
-    (h : ∀ A : Matrix (Fin N') (Fin N) D.host.E, (∀ x ∈ L₂, A.mulVec x ∈ L₂') → ∀ x ∈ L₁, (s • A).mulVec x ∈ L₁')
-    {A : Matrix (Fin N') (Fin N) D.host.E} (hA : A ∈ Formalism.L2.Ker.Cd.TaylorLogMetric.homL D L₂ L₂') : s • A ∈ Formalism.L2.Ker.Cd.TaylorLogMetric.homL D L₁ L₁' := by
-  induction hA using Submodule.span_induction with
-  | mem A hA => exact Submodule.subset_span (h A hA)
-  | zero => rw [smul_zero]; exact Submodule.zero_mem _
-  | add A A' _ _ h1 h2 => rw [smul_add]; exact Submodule.add_mem _ h1 h2
-  | smul r A _ h1 => rw [smul_comm]; exact Submodule.smul_mem _ _ h1
-
-theorem YYl_nsmul (s : ℕ) {L₁ L₂ : Submodule (𝓞 D.host.E) (Fin N → D.host.E)} {L₁' L₂' : Submodule (𝓞 D.host.E) (Fin N' → D.host.E)}
-    (h : ∀ A : Matrix (Fin N') (Fin N) D.host.E, (∀ x ∈ L₂, A.mulVec x ∈ L₂') → ∀ x ∈ L₁, (s • A).mulVec x ∈ L₁')
-    {A : Matrix (Fin N') (Fin N) D.host.E} (hA : A ∈ Formalism.L2.Ker.Cd.TaylorLogMetric.YYl D L₂ L₂') : s • A ∈ Formalism.L2.Ker.Cd.TaylorLogMetric.YYl D L₁ L₁' := by
-  induction hA using Submodule.span_induction with
-  | mem A hA =>
-    obtain ⟨a, ha, A', hA', rfl⟩ := hA
-    exact Submodule.subset_span ⟨a, ha, s • A', homL_nsmul s h hA', smul_comm _ _ _⟩
-  | zero => rw [smul_zero]; exact Submodule.zero_mem _
-  | add A A' _ _ h1 h2 => rw [smul_add]; exact Submodule.add_mem _ h1 h2
-  | smul r A _ h1 => rw [smul_comm]; exact Submodule.smul_mem _ _ h1
-
-theorem La_nsmul (cc : Ideal (𝓞 D.host.K)) (δ : ℂ) (s : ℕ) {L₁ L₂ : Submodule (𝓞 D.host.E) (Fin N → D.host.E)}
-    {L₁' L₂' : Submodule (𝓞 D.host.E) (Fin N' → D.host.E)}
-    (h : ∀ A : Matrix (Fin N') (Fin N) D.host.E, (∀ x ∈ L₂, A.mulVec x ∈ L₂') → ∀ x ∈ L₁, (s • A).mulVec x ∈ L₁')
-    {z : Formalism.L2.Ker.Cd.TaylorLogMetric.VC D N N'} (hz : z ∈ Formalism.L2.Ker.Cd.TaylorLogMetric.La D (Formalism.L2.Ker.Cd.TaylorLogMetric.tor0 D cc δ) L₂ L₂') : s • z ∈ Formalism.L2.Ker.Cd.TaylorLogMetric.La D (Formalism.L2.Ker.Cd.TaylorLogMetric.tor0 D cc δ) L₁ L₁' := by
-  induction hz using AddSubgroup.closure_induction with
-  | mem z hz =>
-    obtain ⟨w, hw, A, hA, rfl⟩ := hz
-    refine AddSubgroup.subset_closure ⟨w, hw, s • A, YYl_nsmul s h hA, ?_⟩
-    rw [smul_comm]
-    congr 1
-    funext τ i j
-    show s • Formalism.L2.Ker.Cd.TaylorLogMetric.embT D τ (A i j) = Formalism.L2.Ker.Cd.TaylorLogMetric.embT D τ (s • A i j)
-    rw [map_nsmul]
-  | zero => rw [smul_zero]; exact zero_mem _
-  | add x y _ _ h1 h2 => rw [smul_add]; exact add_mem h1 h2
-  | neg x _ h1 => rw [smul_neg]; exact neg_mem h1
-
-theorem La_left (cc : Ideal (𝓞 D.host.K)) (δ : ℂ) (s : ℕ) {L₁ L : Submodule (𝓞 D.host.E) (Fin N → D.host.E)}
-    (L' : Submodule (𝓞 D.host.E) (Fin N' → D.host.E)) (h : ∀ x ∈ L₁, (s : D.host.E) • x ∈ L)
-    {z : Formalism.L2.Ker.Cd.TaylorLogMetric.VC D N N'} (hz : z ∈ Formalism.L2.Ker.Cd.TaylorLogMetric.La D (Formalism.L2.Ker.Cd.TaylorLogMetric.tor0 D cc δ) L L') : s • z ∈ Formalism.L2.Ker.Cd.TaylorLogMetric.La D (Formalism.L2.Ker.Cd.TaylorLogMetric.tor0 D cc δ) L₁ L' := by
-  refine La_nsmul cc δ s (fun A hA x hx => ?_) hz
-  have h1 := hA _ (h x hx)
-  rw [Matrix.mulVec_smul, Nat.cast_smul_eq_nsmul] at h1
-  rwa [Matrix.smul_mulVec]
-
-theorem La_right (cc : Ideal (𝓞 D.host.K)) (δ : ℂ) (s : ℕ) (L : Submodule (𝓞 D.host.E) (Fin N → D.host.E))
-    {L₁' L' : Submodule (𝓞 D.host.E) (Fin N' → D.host.E)} (h : ∀ x ∈ L', (s : D.host.E) • x ∈ L₁')
-    {z : Formalism.L2.Ker.Cd.TaylorLogMetric.VC D N N'} (hz : z ∈ Formalism.L2.Ker.Cd.TaylorLogMetric.La D (Formalism.L2.Ker.Cd.TaylorLogMetric.tor0 D cc δ) L L') : s • z ∈ Formalism.L2.Ker.Cd.TaylorLogMetric.La D (Formalism.L2.Ker.Cd.TaylorLogMetric.tor0 D cc δ) L L₁' := by
-  refine La_nsmul cc δ s (fun A hA x hx => ?_) hz
-  have h1 := h _ (hA x hx)
-  rw [Nat.cast_smul_eq_nsmul] at h1
-  rwa [Matrix.smul_mulVec]
-
-end LaS
-
 section Flat
 
 variable {D : Car} {X : Fields} (s : Seam D X) {a b : ℕ}
-
-theorem form_flat (A : ℝ) (x y : DVar X.Tau a b → ℂ) :
-    matH (hSc X.Tau a b A⁻¹) x y = formV A D.what₂.Tau a b (s.flatV a b x) (s.flatV a b y) := by
-  rw [formV_apply]
-  show (∑ i, ∑ j, x i * hSc X.Tau a b A⁻¹ i j * conj (y j)) = _
-  simp only [hSc, Matrix.diagonal_apply, mul_ite, mul_zero, ite_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, if_true]
-  rw [Fintype.sum_prod_type, ← Equiv.sum_comp s.iT.symm, Finset.sum_div]
-  refine Finset.sum_congr rfl fun τ _ => ?_
-  rw [Fintype.sum_prod_type, Finset.sum_div]
-  refine Finset.sum_congr rfl fun i _ => ?_
-  rw [Finset.sum_div]
-  refine Finset.sum_congr rfl fun j _ => ?_
-  show x (s.iT.symm τ, i, j) * ((A⁻¹ : ℝ) : ℂ) * conj (y (s.iT.symm τ, i, j)) =
-    x (s.iT.symm τ, i, j) * conj (y (s.iT.symm τ, i, j)) / (A : ℂ)
-  rw [Complex.ofReal_inv, div_eq_mul_inv]
-  ring
-
-theorem alpha_flat (c A : ℝ) (x : DVar X.Tau a b → ℂ) :
-    alphaQ c (matH (hSc X.Tau a b A⁻¹)) x = alphaQ c (formV A D.what₂.Tau a b) (s.flatV a b x) := by
-  simp only [alphaQ, Formalism.L2.Th1.H.qOf, form_flat s]
 
 variable {cc : Ideal (𝓞 D.host.K)} {δ : ℂ} (B : Base D cc δ)
 
@@ -612,118 +404,6 @@ def lamM' : AddSubgroup (X.Tau → ℂ) :=
   B.lamM.comap (LinearEquiv.funCongrLeft ℂ ℂ s.iT.symm).toLinearMap.toAddMonoidHom
 
 def thM' : (X.Tau → ℂ) → ℂ := fun z => B.thMM fun τ => z (s.iT.symm τ)
-
-theorem al_flat (hQ : B.QIntAll) {L : Submodule (𝓞 D.host.E) (Fin a → D.host.E)} {L' : Submodule (𝓞 D.host.E) (Fin b → D.host.E)}
-    (hA : Formalism.L2.Ker.Cd.TaylorLogMetric.admitted D a b L L') (x : DVar X.Tau a b → ℂ) (hx : s.flatV a b x ∈ Formalism.L2.Ker.Cd.TaylorLogMetric.La D B.tor L L') :
-    alphaQ (Real.sqrt D.host.d / 2) (matH (hSc X.Tau a b (TaylorLogMetric.area (Formalism.L2.Ker.Cd.TaylorLogMetric.lamOf D cc δ))⁻¹)) x = Formalism.L2.Ker.Cd.TaylorLogMetric.al D B.tor (s.flatV a b x) := by
-  obtain ⟨m, hm⟩ := hQ a b L L' hA _ hx
-  rw [alpha_flat s]
-  exact (al_eq D B.tor _ m hm).symm
-
-theorem latPow_eq : latPow (Fin b × Fin a) (lamM' s B) = s.laF B.tor (Formalism.L2.Ker.Cd.StandardLatticesGL3.stdL D a) (Formalism.L2.Ker.Cd.StandardLatticesGL3.stdL D b) := by
-  ext z
-  show (∀ i : Fin b × Fin a, (fun τ => z (s.iT.symm τ, i)) ∈ B.lamM) ↔ s.flatV a b z ∈ Formalism.L2.Ker.Cd.TaylorLogMetric.La D B.tor _ _
-  rw [show Formalism.L2.Ker.Cd.TaylorLogMetric.La D B.tor (Formalism.L2.Ker.Cd.StandardLatticesGL3.stdL D a) (Formalism.L2.Ker.Cd.StandardLatticesGL3.stdL D b) = powLat B.lamM a b from B.lat0OK a b]
-  show _ ↔ ∀ i j, (fun τ => z (s.iT.symm τ, i, j)) ∈ B.lamM
-  exact Prod.forall
-
-theorem fnPow_eq : fnPow (Fin b × Fin a) (thM' s B) = fun z => B.thZero a b (s.flatV a b z) := by
-  funext z
-  show ∏ i : Fin b × Fin a, B.thMM (fun τ => z (s.iT.symm τ, i)) = ∏ i : Fin b, ∏ j : Fin a, B.thMM fun τ => z (s.iT.symm τ, i, j)
-  rw [Fintype.prod_prod_type]
-
-theorem locNorm_thF_of (hS : LocNormScale) (hP : LocNormPow) (hI : LocNormInter) (χ : Formalism.L2.Ker.Cd.TaylorLogMetric.IdE D → ℂ)
-    (a₀ : ℕ) (b₀ c₀ : ℤ) (ha : 0 < a₀) (hd : 0 < D.host.d) (lam : ℂ) (hlam : lam ≠ 0) (p : ℕ) [Fact p.Prime] (ι : ℂ ≃+* ℂ_[p])
-    (hcc : Formalism.L2.Ker.Cd.TaylorLogMetric.IsCurveIdeal D cc) (hδ : Formalism.L2.Ker.Cd.TaylorLogMetric.IsDiscriminantTwelfthRootOfIdealLattice D cc δ) (hcm : CmOK a₀ b₀ c₀ D.host.d)
-    (hSDM : IsSelfDual (matH (hOne B.L X.Tau)) (lamM' s B))
-    (hStM : ∀ x ∈ lamM' s B, Formalism.L2.Th1.F.cmTheta b₀ D.host.d • x ∈ lamM' s B)
-    (hThM : thM' s B ∈ Th (matH (hOne B.L X.Tau)) (alphaQ (Real.sqrt D.host.d / 2) (matH (hOne B.L X.Tau))) (lamM' s B))
-    (hMM : LocNorm a₀ b₀ D.host.d ha hd lam hlam (hOne B.L X.Tau) (lamM' s B) (thM' s B) p ι)
-    (hPD : IsPosDef (matH (hSc X.Tau a b (TaylorLogMetric.area (Formalism.L2.Ker.Cd.TaylorLogMetric.lamOf D cc δ))⁻¹)))
-    (hLat : ∀ L L', Formalism.L2.Ker.Cd.TaylorLogMetric.admitted D a b L L' → IsLat (s.laF B.tor L L'))
-    (hSt : ∀ L L', Formalism.L2.Ker.Cd.TaylorLogMetric.admitted D a b L L' → ∀ x ∈ s.laF B.tor L L', Formalism.L2.Th1.F.cmTheta b₀ D.host.d • x ∈ s.laF B.tor L L')
-    {L : Submodule (𝓞 D.host.E) (Fin a → D.host.E)} {L' : Submodule (𝓞 D.host.E) (Fin b → D.host.E)}
-    (hA : Formalism.L2.Ker.Cd.TaylorLogMetric.admitted D a b L L') (hL : Formalism.L2.Ker.Cd.TaylorLogMetric.EqAt D p (Formalism.L2.Ker.Cd.StandardLatticesGL3.stdL D a) L) (hL' : Formalism.L2.Ker.Cd.TaylorLogMetric.EqAt D p (Formalism.L2.Ker.Cd.StandardLatticesGL3.stdL D b) L')
-    (hχ : ‖ι (Formalism.L2.Ker.Cd.Base.chiFac χ a b L L')‖ ≤ 1) :
-    LocNorm a₀ b₀ D.host.d ha hd lam hlam (hSc X.Tau a b (TaylorLogMetric.area (Formalism.L2.Ker.Cd.TaylorLogMetric.lamOf D cc δ))⁻¹) (s.laF B.tor L L')
-      (fun z => B.eNat χ a b L L' (s.flatV a b z)) p ι := by
-  have h0 : δ ≠ 0 := Formalism.L2.Ker.Cd.IntegralLatticeDensity.delta_nonzero_link D cc hcc δ hδ
-  have hStd := B.stdOK hcc hδ
-  have hLA := B.latAll hcc hδ h0
-  have hQ : B.QIntAll := Formalism.L2.Ker.Cd.IntegralLatticeDensity.rational_integrality_link D cc hcc δ hδ B
-  have hAr : TaylorLogMetric.area (Formalism.L2.Ker.Cd.TaylorLogMetric.lamOf D cc δ) = Formalism.L2.Th1.F.area B.L := B.areaOK
-  have hf := form_flat s (a := a) (b := b) (TaylorLogMetric.area (Formalism.L2.Ker.Cd.TaylorLogMetric.lamOf D cc δ))
-  have hHerm' := formV_herm (TaylorLogMetric.area (Formalism.L2.Ker.Cd.TaylorLogMetric.lamOf D cc δ)) D.what₂.Tau a b
-  have hHerm := herm_pb (s.flatV a b) _ _ hf hHerm'
-  have A0 := Formalism.L2.Ker.Cd.Base.first_coordinate_admissible hA
-  have A1 := Formalism.L2.Ker.Cd.Base.isAdmissible_flagPair_of_unitriangular_left_automorphism hA
-  have sd : ∀ L L', Formalism.L2.Ker.Cd.TaylorLogMetric.admitted D a b L L' →
-      IsSelfDual (matH (hSc X.Tau a b (TaylorLogMetric.area (Formalism.L2.Ker.Cd.TaylorLogMetric.lamOf D cc δ))⁻¹)) (s.laF B.tor L L') :=
-    fun L L' h => selfDual_pb (s.flatV a b) _ _ hf (hLA.1 a b L L' h).1
-  have idx : ∀ L₁ L₁' L₂ L₂', Formalism.L2.Ker.Cd.TaylorLogMetric.admitted D a b L₁ L₁' → Formalism.L2.Ker.Cd.TaylorLogMetric.admitted D a b L₂ L₂' →
-      relIdx (s.laF B.tor L₁ L₁') (s.laF B.tor L₂ L₂') ≠ 0 := by
-    intro L₁ L₁' L₂ L₂' h₁ h₂
-    show relIdx (pb (s.flatV a b) _) (pb (s.flatV a b) _) ≠ 0
-    rw [relIdx_pb]
-    exact (hLA.2 a b _ _ _ _ h₁ h₂).1
-
-  have l0 := hP a₀ b₀ c₀ D.host.d ha hd lam hlam hcm X.Tau (hOne B.L X.Tau) (lamM' s B) hSDM hStM _ hThM p ι hMM (Fin b × Fin a)
-  rw [hPow_hOne, latPow_eq, fnPow_eq, ← hAr] at l0
-
-  have t0 := th_pb (s.flatV a b) _ _ hf (al_flat s B hQ A0) (B.thZeroMem hStd a b)
-  have e1 := inter_pb (s.flatV a b) _ _ hf hHerm' _ _ _ _ (al_flat s B hQ A0) (al_flat s B hQ A1) (hLA.1 a b _ _ A1).2
-    (hLA.2 a b _ _ _ _ A0 A1).1 (B.thZero a b) (B.thZeroMem hStd a b).2
-  have n1 : ¬ p ∣ relIdx (s.laF B.tor (Formalism.L2.Ker.Cd.StandardLatticesGL3.stdL D a) (Formalism.L2.Ker.Cd.StandardLatticesGL3.stdL D b)) (s.laF B.tor L (Formalism.L2.Ker.Cd.StandardLatticesGL3.stdL D b)) := by
-    obtain ⟨s₁, hs₁, h₁, -⟩ := hL
-    show ¬ p ∣ relIdx (pb (s.flatV a b) _) (pb (s.flatV a b) _)
-    rw [relIdx_pb]
-    exact not_dvd_relIdx _ _ p s₁ hs₁ (hLA.2 a b _ _ _ _ A0 A1).1 fun x hx => La_left cc δ s₁ _ h₁ hx
-  have l1 := hI a₀ b₀ c₀ D.host.d ha hd lam hlam hcm (DVar X.Tau a b) _ _ _ hHerm hPD (hLat _ _ A0) (hLat _ _ A1) (sd _ _ A0) (sd _ _ A1)
-    (hSt _ _ A0) (hSt _ _ A1) _ t0 p ι (idx _ _ _ _ A0 A1) (idx _ _ _ _ A1 A0) n1 l0
-  have l1' : LocNorm a₀ b₀ D.host.d ha hd lam hlam (hSc X.Tau a b (TaylorLogMetric.area (Formalism.L2.Ker.Cd.TaylorLogMetric.lamOf D cc δ))⁻¹) (s.laF B.tor L (Formalism.L2.Ker.Cd.StandardLatticesGL3.stdL D b))
-      (fun z => B.thHalf a b L (s.flatV a b z)) p ι := by
-    have := l1
-    erw [e1] at this
-    exact this
-
-  have t1 := th_pb (s.flatV a b) _ _ hf (al_flat s B hQ A1) (B.thHalf_mem hStd hLA hA)
-  have e2 := inter_pb (s.flatV a b) _ _ hf hHerm' _ _ _ _ (al_flat s B hQ A1) (al_flat s B hQ hA) (hLA.1 a b _ _ hA).2
-    (hLA.2 a b _ _ _ _ A1 hA).1 (B.thHalf a b L) (B.thHalf_mem hStd hLA hA).2
-  have n2 : ¬ p ∣ relIdx (s.laF B.tor L (Formalism.L2.Ker.Cd.StandardLatticesGL3.stdL D b)) (s.laF B.tor L L') := by
-    obtain ⟨s₂, hs₂, -, h₂⟩ := hL'
-    show ¬ p ∣ relIdx (pb (s.flatV a b) _) (pb (s.flatV a b) _)
-    rw [relIdx_pb]
-    exact not_dvd_relIdx _ _ p s₂ hs₂ (hLA.2 a b _ _ _ _ A1 hA).1 fun x hx => La_right cc δ s₂ _ h₂ hx
-  have l2 := hI a₀ b₀ c₀ D.host.d ha hd lam hlam hcm (DVar X.Tau a b) _ _ _ hHerm hPD (hLat _ _ A1) (hLat _ _ hA) (sd _ _ A1) (sd _ _ hA)
-    (hSt _ _ A1) (hSt _ _ hA) _ t1 p ι (idx _ _ _ _ A1 hA) (idx _ _ _ _ hA A1) n2 l1'
-  have l2' : LocNorm a₀ b₀ D.host.d ha hd lam hlam (hSc X.Tau a b (TaylorLogMetric.area (Formalism.L2.Ker.Cd.TaylorLogMetric.lamOf D cc δ))⁻¹) (s.laF B.tor L L')
-      (fun z => B.thMoved a b L L' (s.flatV a b z)) p ι := by
-    have := l2
-    erw [e2] at this
-    exact this
-
-  exact hS a₀ b₀ D.host.d ha hd lam hlam (DVar X.Tau a b) _ _ _ p ι _ hχ l2'
-
-theorem thF_ambOf (χ : Formalism.L2.Ker.Cd.TaylorLogMetric.IdE D → ℂ) (cD : D.what₂.Tau → ℂ) (N : Submodule (𝓞 X.E) (Sp X.E a)) (N' : Submodule (𝓞 X.E) (Sp X.E b)) :
-    Formalism.L2.AlgTh.thF (ambOf s B χ cD) N N' = fun z => B.eNat χ a b (s.lat N) (s.lat N') (s.flatV a b z) := rfl
-
-theorem locNorm_ambOf_of (hT : LamTie) (hS : LocNormScale) (hP : LocNormPow) (hI : LocNormInter) (χ : Formalism.L2.Ker.Cd.TaylorLogMetric.IdE D → ℂ) (cD : D.what₂.Tau → ℂ)
-    (a₀ : ℕ) (b₀ c₀ : ℤ) (ha : 0 < a₀) (hd : 0 < D.host.d) (lam : ℂ) (hlam : lam ≠ 0) (p : ℕ) [Fact p.Prime] (ι : ℂ ≃+* ℂ_[p])
-    (hok : s.Ok) (hcc : Formalism.L2.Ker.Cd.TaylorLogMetric.IsCurveIdeal D cc) (hδ : Formalism.L2.Ker.Cd.TaylorLogMetric.IsDiscriminantTwelfthRootOfIdealLattice D cc δ) (hcm : CmOK a₀ b₀ c₀ D.host.d)
-    (hSDM : IsSelfDual (matH (hOne B.L X.Tau)) (lamM' s B))
-    (hStM : ∀ x ∈ lamM' s B, Formalism.L2.Th1.F.cmTheta b₀ D.host.d • x ∈ lamM' s B)
-    (hThM : thM' s B ∈ Th (matH (hOne B.L X.Tau)) (alphaQ (Real.sqrt D.host.d / 2) (matH (hOne B.L X.Tau))) (lamM' s B))
-    (hMM : LocNorm a₀ b₀ D.host.d ha hd lam hlam (hOne B.L X.Tau) (lamM' s B) (thM' s B) p ι)
-    (hPD : IsPosDef (matH (hSc X.Tau a b (TaylorLogMetric.area (Formalism.L2.Ker.Cd.TaylorLogMetric.lamOf D cc δ))⁻¹)))
-    (hLat : ∀ L L', Formalism.L2.Ker.Cd.TaylorLogMetric.admitted D a b L L' → IsLat (s.laF B.tor L L'))
-    (hSt : ∀ L L', Formalism.L2.Ker.Cd.TaylorLogMetric.admitted D a b L L' → ∀ x ∈ s.laF B.tor L L', Formalism.L2.Th1.F.cmTheta b₀ D.host.d • x ∈ s.laF B.tor L L')
-    {N : Submodule (𝓞 X.E) (Sp X.E a)} {N' : Submodule (𝓞 X.E) (Sp X.E b)}
-    (hA : Formalism.L2.Ker.Cd.TaylorLogMetric.admitted D a b (s.lat N) (s.lat N')) (hN : s.StdAtP p N) (hN' : s.StdAtP p N')
-    (hχ : ‖ι ((ambOf s B χ cD : Amb X).chiF a b N N')‖ ≤ 1) :
-    LocNorm a₀ b₀ (ambOf s B χ cD : Amb X).d ha hd lam hlam (hSc X.Tau a b (ambOf s B χ cD : Amb X).sc)
-      (Formalism.L2.AlgTh.lamF (ambOf s B χ cD) N N') (Formalism.L2.AlgTh.thF (ambOf s B χ cD) N N') p ι := by
-  rw [hT D X s cc δ B χ cD a b N N' hok, thF_ambOf]
-  exact locNorm_thF_of s B hS hP hI χ a₀ b₀ c₀ ha hd lam hlam p ι hcc hδ hcm hSDM hStM hThM hMM hPD hLat hSt hA hN hN' hχ
 
 end Flat
 
@@ -836,31 +516,6 @@ section Form
 
 variable {D : Car} {X : Fields} (s : Seam D X)
 
-theorem form_flat (A : ℝ) (a b : ℕ) (x y : DVar X.Tau a b → ℂ) :
-    matH (hSc X.Tau a b A⁻¹) x y = formV A D.what₂.Tau a b (s.flatV a b x) (s.flatV a b y) := by
-  rw [formV_apply]
-  show (∑ i, ∑ j, x i * hSc X.Tau a b A⁻¹ i j * conj (y j)) = _
-  have h1 : ∀ i : DVar X.Tau a b, (∑ j, x i * hSc X.Tau a b A⁻¹ i j * conj (y j)) = x i * conj (y i) / (A : ℂ) := by
-    intro i
-    rw [Finset.sum_eq_single i]
-    · unfold hSc
-      rw [Matrix.diagonal_apply_eq]
-      push_cast
-      field_simp
-    · intro j _ hj
-      unfold hSc
-      rw [Matrix.diagonal_apply_ne _ (Ne.symm hj)]
-      simp
-    · intro hi
-      exact absurd (Finset.mem_univ i) hi
-  simp only [h1]
-  rw [← Finset.sum_div]
-  congr 1
-  rw [Fintype.sum_prod_type, ← Equiv.sum_comp s.iT.symm]
-  refine Finset.sum_congr rfl fun τ _ => ?_
-  rw [Fintype.sum_prod_type]
-  rfl
-
 theorem isom_flat (A : ℝ) (a b : ℕ) :
     IsIsom (matH (hSc X.Tau a b A⁻¹)) (formV A D.what₂.Tau a b)
       ((s.flatV a b : (DVar X.Tau a b → ℂ) ≃ₗ[ℂ] Formalism.L2.Ker.Cd.TaylorLogMetric.VC D a b) : (DVar X.Tau a b → ℂ) →ₗ[ℂ] Formalism.L2.Ker.Cd.TaylorLogMetric.VC D a b) :=
@@ -910,7 +565,6 @@ section Lat
 
 variable {D : Car} {X : Fields} (s : Seam D X) {cc : Ideal (𝓞 D.host.K)} {δ : ℂ} (B : Base D cc δ)
 
-
 include B in
 theorem sc_pos : 0 < (TaylorLogMetric.area (Formalism.L2.Ker.Cd.TaylorLogMetric.lamOf D cc δ))⁻¹ := by
   rw [show TaylorLogMetric.area (Formalism.L2.Ker.Cd.TaylorLogMetric.lamOf D cc δ) = Formalism.L2.Th1.F.area B.L from B.areaOK]
@@ -920,32 +574,6 @@ theorem delta_ne (hcc : Formalism.L2.Ker.Cd.TaylorLogMetric.IsCurveIdeal D cc) (
   Formalism.L2.Ker.Cd.IntegralLatticeDensity.delta_nonzero_link D cc hcc δ hδ
 
 variable {a b : ℕ} {L : Submodule (𝓞 D.host.E) (Fin a → D.host.E)} {L' : Submodule (𝓞 D.host.E) (Fin b → D.host.E)}
-
-theorem isLat_La (hcc : Formalism.L2.Ker.Cd.TaylorLogMetric.IsCurveIdeal D cc) (hδ : Formalism.L2.Ker.Cd.TaylorLogMetric.IsDiscriminantTwelfthRootOfIdealLattice D cc δ) (hA : Formalism.L2.Ker.Cd.TaylorLogMetric.admitted D a b L L') :
-    IsLat (Formalism.L2.Ker.Cd.TaylorLogMetric.La D B.tor L L') := by
-  have hL := B.latAll hcc hδ (delta_ne hcc hδ)
-  have h0 : IsLat (Formalism.L2.Ker.Cd.TaylorLogMetric.La D B.tor (Formalism.L2.Ker.Cd.StandardLatticesGL3.stdL D a) (Formalism.L2.Ker.Cd.StandardLatticesGL3.stdL D b)) :=
-    Formalism.L2.Ker.Cd.PairingIndexBounds.Eq.J.lat0IsLat (B.stdOK hcc hδ) a b
-  have hc := hL.2 a b _ _ _ _ (Formalism.L2.Ker.Cd.Base.first_coordinate_admissible hA) hA
-  exact KR.isLat_of_comm h0 hc.2 hc.1
-
-theorem isLat_laF (hcc : Formalism.L2.Ker.Cd.TaylorLogMetric.IsCurveIdeal D cc) (hδ : Formalism.L2.Ker.Cd.TaylorLogMetric.IsDiscriminantTwelfthRootOfIdealLattice D cc δ) (hA : Formalism.L2.Ker.Cd.TaylorLogMetric.admitted D a b L L') :
-    IsLat (s.laF B.tor L L') :=
-  isLat_comap (s.flatV a b) (isLat_La B hcc hδ hA)
-
-theorem selfDual_laF (hcc : Formalism.L2.Ker.Cd.TaylorLogMetric.IsCurveIdeal D cc) (hδ : Formalism.L2.Ker.Cd.TaylorLogMetric.IsDiscriminantTwelfthRootOfIdealLattice D cc δ) (hA : Formalism.L2.Ker.Cd.TaylorLogMetric.admitted D a b L L') :
-    IsSelfDual (matH (hSc X.Tau a b (TaylorLogMetric.area (Formalism.L2.Ker.Cd.TaylorLogMetric.lamOf D cc δ))⁻¹)) (s.laF B.tor L L') :=
-  selfDual_comap (s.flatV a b) (isom_flat s _ a b) ((B.latAll hcc hδ (delta_ne hcc hδ)).1 a b L L' hA).1
-
-theorem La_theta {x : Formalism.L2.Ker.Cd.TaylorLogMetric.VC D a b} (hx : x ∈ Formalism.L2.Ker.Cd.TaylorLogMetric.La D B.tor L L') : cmTheta 1 D.host.d • x ∈ Formalism.L2.Ker.Cd.TaylorLogMetric.La D B.tor L L' := by
-  induction hx using AddSubgroup.closure_induction with
-  | mem x hx =>
-    obtain ⟨w, hw, A, hA, rfl⟩ := hx
-    refine AddSubgroup.subset_closure ⟨cmTheta 1 D.host.d * w, Formalism.L2.Ker.Cd.IntegralLatticeDensity.SO.lam_theta hw, A, hA, ?_⟩
-    rw [smul_smul]
-  | zero => rw [smul_zero]; exact zero_mem _
-  | add x y _ _ h1 h2 => rw [smul_add]; exact add_mem h1 h2
-  | neg x _ h => rw [smul_neg]; exact neg_mem h
 
 theorem theta_laF {b₀ : ℤ} (hb : Odd b₀) {x : DVar X.Tau a b → ℂ} (hx : x ∈ s.laF B.tor L L') :
     cmTheta b₀ D.host.d • x ∈ s.laF B.tor L L' := by
@@ -979,50 +607,6 @@ theorem al_eq_La (hcc : Formalism.L2.Ker.Cd.TaylorLogMetric.IsCurveIdeal D cc) (
   intro x hx
   obtain ⟨m, hm⟩ := Formalism.L2.Ker.Cd.IntegralLatticeDensity.rational_integrality_link D cc hcc δ hδ B a b L L' hA x hx
   exact al_eq D B.tor x m hm
-
-theorem th_laF (hcc : Formalism.L2.Ker.Cd.TaylorLogMetric.IsCurveIdeal D cc) (hδ : Formalism.L2.Ker.Cd.TaylorLogMetric.IsDiscriminantTwelfthRootOfIdealLattice D cc δ) (hA : Formalism.L2.Ker.Cd.TaylorLogMetric.admitted D a b L L') {G : Formalism.L2.Ker.Cd.TaylorLogMetric.VC D a b → ℂ}
-    (hG : G ∈ Th (formV (TaylorLogMetric.area (Formalism.L2.Ker.Cd.TaylorLogMetric.lamOf D cc δ)) D.what₂.Tau a b) (Formalism.L2.Ker.Cd.TaylorLogMetric.al D B.tor) (Formalism.L2.Ker.Cd.TaylorLogMetric.La D B.tor L L')) :
-    (fun z => G (s.flatV a b z)) ∈ Th (matH (hSc X.Tau a b (TaylorLogMetric.area (Formalism.L2.Ker.Cd.TaylorLogMetric.lamOf D cc δ))⁻¹))
-      (alphaQ (Real.sqrt D.host.d / 2) (matH (hSc X.Tau a b (TaylorLogMetric.area (Formalism.L2.Ker.Cd.TaylorLogMetric.lamOf D cc δ))⁻¹))) (s.laF B.tor L L') := by
-  have h1 := Th_congr _ _ _ _ (al_eq_La B hcc hδ hA) hG
-  have h2 := th_comap (s.flatV a b) (isom_flat s _ a b) h1
-  refine Th_congr _ _ _ _ (fun x _ => ?_) h2
-  exact alphaQ_isom (s.flatV a b) (isom_flat s _ a b) _ x
-
-theorem thZero_laF (hcc : Formalism.L2.Ker.Cd.TaylorLogMetric.IsCurveIdeal D cc) (hδ : Formalism.L2.Ker.Cd.TaylorLogMetric.IsDiscriminantTwelfthRootOfIdealLattice D cc δ) (ha : Even a) (hb : Even b) :
-    (fun z => B.thZero a b (s.flatV a b z)) ∈ Th (matH (hSc X.Tau a b (TaylorLogMetric.area (Formalism.L2.Ker.Cd.TaylorLogMetric.lamOf D cc δ))⁻¹))
-      (alphaQ (Real.sqrt D.host.d / 2) (matH (hSc X.Tau a b (TaylorLogMetric.area (Formalism.L2.Ker.Cd.TaylorLogMetric.lamOf D cc δ))⁻¹)))
-      (s.laF B.tor (Formalism.L2.Ker.Cd.StandardLatticesGL3.stdL D a) (Formalism.L2.Ker.Cd.StandardLatticesGL3.stdL D b)) :=
-  th_laF s B hcc hδ (Formalism.L2.Ker.Cd.Inhab.Adm_std D a b ha hb) (B.thZeroMem (B.stdOK hcc hδ) a b)
-
-theorem thHalf_laF (hcc : Formalism.L2.Ker.Cd.TaylorLogMetric.IsCurveIdeal D cc) (hδ : Formalism.L2.Ker.Cd.TaylorLogMetric.IsDiscriminantTwelfthRootOfIdealLattice D cc δ) (hA : Formalism.L2.Ker.Cd.TaylorLogMetric.admitted D a b L L') :
-    (fun z => B.thHalf a b L (s.flatV a b z)) ∈ Th (matH (hSc X.Tau a b (TaylorLogMetric.area (Formalism.L2.Ker.Cd.TaylorLogMetric.lamOf D cc δ))⁻¹))
-      (alphaQ (Real.sqrt D.host.d / 2) (matH (hSc X.Tau a b (TaylorLogMetric.area (Formalism.L2.Ker.Cd.TaylorLogMetric.lamOf D cc δ))⁻¹)))
-      (s.laF B.tor L (Formalism.L2.Ker.Cd.StandardLatticesGL3.stdL D b)) :=
-  th_laF s B hcc hδ (Formalism.L2.Ker.Cd.Base.isAdmissible_flagPair_of_unitriangular_left_automorphism hA) (B.thHalf_mem (B.stdOK hcc hδ) (B.latAll hcc hδ (delta_ne hcc hδ)) hA)
-
-theorem thMoved_laF (hcc : Formalism.L2.Ker.Cd.TaylorLogMetric.IsCurveIdeal D cc) (hδ : Formalism.L2.Ker.Cd.TaylorLogMetric.IsDiscriminantTwelfthRootOfIdealLattice D cc δ) (hA : Formalism.L2.Ker.Cd.TaylorLogMetric.admitted D a b L L') :
-    (fun z => B.thMoved a b L L' (s.flatV a b z)) ∈ Th (matH (hSc X.Tau a b (TaylorLogMetric.area (Formalism.L2.Ker.Cd.TaylorLogMetric.lamOf D cc δ))⁻¹))
-      (alphaQ (Real.sqrt D.host.d / 2) (matH (hSc X.Tau a b (TaylorLogMetric.area (Formalism.L2.Ker.Cd.TaylorLogMetric.lamOf D cc δ))⁻¹))) (s.laF B.tor L L') :=
-  th_laF s B hcc hδ hA (B.thMoved_mem (B.latAll hcc hδ (delta_ne hcc hδ)) (B.thZeroMem (B.stdOK hcc hδ) a b) hA)
-
-theorem eNat_laF (hcc : Formalism.L2.Ker.Cd.TaylorLogMetric.IsCurveIdeal D cc) (hδ : Formalism.L2.Ker.Cd.TaylorLogMetric.IsDiscriminantTwelfthRootOfIdealLattice D cc δ) (χ : Formalism.L2.Ker.Cd.TaylorLogMetric.IdE D → ℂ) (hA : Formalism.L2.Ker.Cd.TaylorLogMetric.admitted D a b L L') :
-    (fun z => B.eNat χ a b L L' (s.flatV a b z)) ∈ Th (matH (hSc X.Tau a b (TaylorLogMetric.area (Formalism.L2.Ker.Cd.TaylorLogMetric.lamOf D cc δ))⁻¹))
-      (alphaQ (Real.sqrt D.host.d / 2) (matH (hSc X.Tau a b (TaylorLogMetric.area (Formalism.L2.Ker.Cd.TaylorLogMetric.lamOf D cc δ))⁻¹))) (s.laF B.tor L L') :=
-  Submodule.smul_mem _ (Formalism.L2.Ker.Cd.Base.chiFac χ a b L L') (thMoved_laF s B hcc hδ hA)
-
-theorem relIdx_laF (hcc : Formalism.L2.Ker.Cd.TaylorLogMetric.IsCurveIdeal D cc) (hδ : Formalism.L2.Ker.Cd.TaylorLogMetric.IsDiscriminantTwelfthRootOfIdealLattice D cc δ)
-    {L₁ : Submodule (𝓞 D.host.E) (Fin a → D.host.E)} {L₁' : Submodule (𝓞 D.host.E) (Fin b → D.host.E)}
-    (hA : Formalism.L2.Ker.Cd.TaylorLogMetric.admitted D a b L L') (hA₁ : Formalism.L2.Ker.Cd.TaylorLogMetric.admitted D a b L₁ L₁') :
-    relIdx (s.laF B.tor L L') (s.laF B.tor L₁ L₁') ≠ 0 := by
-  unfold Formalism.L2.Ker.Cd.Seam.laF
-  rw [relIdx_comap]
-  exact ((B.latAll hcc hδ (delta_ne hcc hδ)).2 a b _ _ _ _ hA hA₁).1
-
-theorem relIdx_laF_eq {L₁ : Submodule (𝓞 D.host.E) (Fin a → D.host.E)} {L₁' : Submodule (𝓞 D.host.E) (Fin b → D.host.E)} :
-    relIdx (s.laF B.tor L L') (s.laF B.tor L₁ L₁') = relIdx (Formalism.L2.Ker.Cd.TaylorLogMetric.La D B.tor L L') (Formalism.L2.Ker.Cd.TaylorLogMetric.La D B.tor L₁ L₁') := by
-  unfold Formalism.L2.Ker.Cd.Seam.laF
-  rw [relIdx_comap]
 
 end Lat
 

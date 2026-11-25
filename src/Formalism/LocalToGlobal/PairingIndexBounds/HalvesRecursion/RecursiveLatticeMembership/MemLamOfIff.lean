@@ -39,32 +39,6 @@ def psi : 𝓞 D.host.K →+ ℂ where
   map_zero' := by simp
   map_add' a b := by simp
 
-theorem exists_sqrt : ∃ β : 𝓞 D.host.K,
-    D.host.φ₀ (((β : D.host.K) : D.host.E)) = Complex.I * (Real.sqrt D.host.d : ℂ) := by
-  have hsq : D.host.sqd ^ 2 = -(D.host.d : D.host.E) :=
-    Formalism.BasicNotions.Examples₂.bE_sq D.host
-  have hmem : D.host.sqd ∈ D.host.K :=
-    IntermediateField.mem_adjoin_simple_self ℚ _
-  set s : D.host.K := ⟨_, hmem⟩ with hs_def
-  have hs : s ^ 2 = -(D.host.d : D.host.K) := by apply Subtype.ext; push_cast; exact hsq
-  have hint : IsIntegral ℤ s := by
-    refine IsIntegral.of_pow (n := 2) two_pos ?_
-    rw [hs]
-    have := isIntegral_algebraMap (R := ℤ) (A := D.host.K) (x := -(D.host.d : ℤ))
-    simpa using this
-  refine ⟨⟨s, hint⟩, ?_⟩
-  exact D.host.φ₀_mem
-
-theorem finrank_K : Module.finrank ℚ D.host.K = 2 :=
-  Formalism.FrobeniusOrbits.SplitK.finrank_K (L := D.host.E) (b := D.host.sqd)
-    D.host.hyp.2.1.pos (Formalism.BasicNotions.Examples₂.bE_sq D.host)
-
-theorem exists_basis (cc : Ideal (𝓞 D.host.K)) (hcc : cc ≠ ⊥) : Nonempty (Module.Basis (Fin 2) ℤ cc) := by
-  have e := Ideal.selfBasis (RingOfIntegers.basis D.host.K) cc hcc
-  have hcard : Fintype.card (Module.Free.ChooseBasisIndex ℤ (𝓞 D.host.K)) = 2 := by
-    rw [← Module.finrank_eq_card_chooseBasisIndex, RingOfIntegers.rank, finrank_K]
-  exact ⟨e.reindex (Fintype.equivFinOfCardEq hcard)⟩
-
 theorem exists_pp (cc : Ideal (𝓞 D.host.K)) (hcc : cc ≠ ⊥) :
     ∃ L : PeriodPair, ∀ w : ℂ, w ∈ lamOf D cc 1 ↔ w ∈ L.lattice := by
   apply GlobalTheory.CurveLattice.exists_periodPair_one <;> assumption

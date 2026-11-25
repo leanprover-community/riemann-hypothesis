@@ -34,7 +34,6 @@ instance : Inv (HC E) where
 instance : One (HC E) where
   one := ⟨1, continuous_const, fun _ => rfl⟩
 
-
 open scoped Classical in
 def locM (P : HeightOneSpectrum (𝓞 E)) : P.adicCompletion E →* AdeleRing (𝓞 E) E where
   toFun x := ((1 : InfiniteAdeleRing E),
@@ -54,21 +53,6 @@ def HC.At (χ : HC E) (P : HeightOneSpectrum (𝓞 E)) (α : ℂ) : Prop :=
     ∀ ϖ : (P.adicCompletion E)ˣ, Valued.v (ϖ : P.adicCompletion E) = WithZero.exp (-1 : ℤ) →
       ((χ.χ (Units.map (locM P) ϖ) : ℂˣ) : ℂ) = α
 
-theorem HC.At.mul {χ ψ : HC E} {P : HeightOneSpectrum (𝓞 E)} {a b : ℂ} (h : χ.At P a) (h' : ψ.At P b) :
-    (χ * ψ).At P (a * b) := by
-  refine ⟨fun u hu => ?_, fun ϖ hϖ => ?_⟩
-  · change (χ.χ * ψ.χ) (Units.map (locM P) u) = 1
-    rw [MonoidHom.mul_apply, h.1 u hu, h'.1 u hu, one_mul]
-  · change (↑((χ.χ * ψ.χ) (Units.map (locM P) ϖ)) : ℂ) = a * b
-    rw [MonoidHom.mul_apply, Units.val_mul, h.2 ϖ hϖ, h'.2 ϖ hϖ]
-
-theorem HC.At.inv {χ : HC E} {P : HeightOneSpectrum (𝓞 E)} {a : ℂ} (h : χ.At P a) : (χ⁻¹).At P a⁻¹ := by
-  refine ⟨fun u hu => ?_, fun ϖ hϖ => ?_⟩
-  · change χ.χ⁻¹ (Units.map (locM P) u) = 1
-    rw [MonoidHom.inv_apply, h.1 u hu, inv_one]
-  · change (↑(χ.χ⁻¹ (Units.map (locM P) ϖ)) : ℂ) = a⁻¹
-    rw [MonoidHom.inv_apply, Units.val_inv_eq_inv_val, h.2 ϖ hϖ]
-
 theorem exists_unif (P : HeightOneSpectrum (𝓞 E)) :
     ∃ ϖ : (P.adicCompletion E)ˣ, Valued.v (ϖ : P.adicCompletion E) = WithZero.exp (-1 : ℤ) := by
   obtain ⟨π, hπ⟩ := P.valuation_exists_uniformizer E
@@ -83,7 +67,6 @@ theorem exists_unif (P : HeightOneSpectrum (𝓞 E)) :
 theorem HC.At.unique {χ : HC E} {P : HeightOneSpectrum (𝓞 E)} {a b : ℂ} (ha : χ.At P a) (hb : χ.At P b) : a = b := by
   obtain ⟨ϖ, hϖ⟩ := exists_unif P
   rw [← ha.2 ϖ hϖ, ← hb.2 ϖ hϖ]
-
 
 open scoped Classical in
 def locInf (v : InfinitePlace E) : v.Completion →* AdeleRing (𝓞 E) E where
@@ -120,7 +103,6 @@ def Read {A K L : Type} [CommRing A] [CommRing K] [CommRing L] (pl : HeightOneSp
 abbrev ReadC {A : Type} [CommRing A] (pl : HeightOneSpectrum (𝓞 E) → ValuationSubring Ω) (φ : G E Ω →* Aˣ)
     (rd : A →+* ℂ) (χ : HC E) (w : ℤ) : Prop :=
   Read pl φ rd (RingHom.id ℂ) (RingHom.id ℂ) χ w
-
 
 theorem normV_ne_zero (P : HeightOneSpectrum (𝓞 E)) : normV P ≠ 0 := by
   have h : normV P = Ideal.absNorm P.asIdeal := by

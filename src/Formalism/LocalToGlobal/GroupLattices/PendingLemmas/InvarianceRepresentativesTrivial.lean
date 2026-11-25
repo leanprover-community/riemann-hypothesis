@@ -230,10 +230,6 @@ def thGeo (j : ℕ) (La : X.Lt j) (La' : X.Lt (j + 1)) : MvPowerSeries (X.ZA j) 
   SA X Kc j (gamAt X j La.1 (delt X hfin j La.1 La.2))
     (ThR j (La.1, (X.Lv.lev j La.1).smul (delt X hfin j La.1 La.2)⁻¹ La.2) La')
 
-theorem gamAt_one (j : ℕ) (c : X.Lv.comp j) : gamAt X j c 1 = fun _ => 1 := by
-  funext v
-  cases j <;> exact map_one _
-
 end Geo
 
 section Rec

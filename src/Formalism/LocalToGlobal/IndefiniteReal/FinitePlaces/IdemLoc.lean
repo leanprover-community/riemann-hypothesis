@@ -12,8 +12,6 @@ noncomputable section
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta IsDedekindDomain NumberField Polynomial
 open scoped TensorProduct
 
-
-
 namespace Formalism.IndefR.Fin
 
 section Loc
@@ -23,7 +21,6 @@ variable {F : Type} [Field F] [NumberField F] (v : HeightOneSpectrum (𝓞 F))
 theorem af_ext {x y : Af F} (h : ∀ w, evalV F w x = evalV F w y) : x = y := by
   first
     | exact Subtype.ext (funext h)
-
 
 open Classical in
 def sglV (a : v.adicCompletion F) : Af F :=
@@ -112,19 +109,6 @@ theorem sA_one_mul (a : AF F) : sA v 1 * a = sA v (evalV F v (sndA F a)) := by
       rw [sglV_same, sglV_same, one_mul] <;> rfl
     · rw [sglV_ne _ _ h, sglV_ne _ _ h, zero_mul]
 
-theorem mem_O_of_integral {y : v.adicCompletion F} (hy : IsIntegral ℤ y) : Valued.v y ≤ 1 := by
-  first
-    | (have hm := (Valuation.integer.integers (Valued.v : Valuation (v.adicCompletion F) _)).mem_of_integral
-         (IsIntegral.tower_top hy)
-       first
-         | exact hm)
-    | (have hm := Valuation.Integers.mem_of_integral (Valuation.integer.integers (Valued.v : Valuation (v.adicCompletion F) _))
-         (IsIntegral.tower_top (A := (Valued.v : Valuation (v.adicCompletion F) _).integer) hy)
-       first
-         | exact hm
-         | (obtain ⟨o, rfl⟩ := hm
-            exact o.2))
-
 theorem val_coe_lt_one_iff (f : 𝓞 F) :
     Valued.v (((f : F) : v.adicCompletion F)) < 1 ↔ f ∈ v.asIdeal := by
   have e : Valued.v (((f : F) : v.adicCompletion F)) = v.intValuation f := by
@@ -145,8 +129,6 @@ theorem val_coe_le_one (f : 𝓞 F) : Valued.v (((f : F) : v.adicCompletion F)) 
          exact IsDedekindDomain.HeightOneSpectrum.valuation_of_algebraMap (v := v) (r := f)
        rw [e]
        exact IsDedekindDomain.HeightOneSpectrum.intValuation_le_one v f)
-
-
 
 theorem roots_exist (t N : 𝓞 F) (hN : N ∈ v.asIdeal) (ht : t ∉ v.asIdeal) :
     ∃ r₁ r₂ : v.adicCompletion F, r₁ + r₂ = ((t : F) : v.adicCompletion F) ∧ r₁ * r₂ = ((N : F) : v.adicCompletion F) ∧

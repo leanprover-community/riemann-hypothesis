@@ -1378,9 +1378,6 @@ theorem kappaAt (hcc : TaylorLogMetric.IsCurveIdeal D cc) (hδ : TaylorLogMetric
 theorem kappaAll (D : D7) : KappaAll D :=
   fun _ _ B hcc hδ p _ ι _ => kappaAt B hcc hδ p ι
 
-theorem kappaSplit (D : D7) : KappaSplit D :=
-  fun _ _ B hcc hδ p _ ι _ => kappaAt B hcc hδ p ι
-
 end Formalism.L2.Ker.KS
 end -- clump:auto
 end -- clump:auto

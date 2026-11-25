@@ -248,10 +248,6 @@ theorem YYl_std_entry {A : Matrix (Fin N') (Fin N) D.host.E}
     A i j ∈ D.host.AA0 :=
   Cd.YYl_std_entry (Car.ofRec D) hA i j
 
-theorem single_mem_homL (i : Fin N') (j : Fin N) :
-    (Matrix.single i j (1 : D.host.E)) ∈ TaylorLogMetric.homL D (StandardLatticesGL3.stdL D N) (StandardLatticesGL3.stdL D N') :=
-  Cd.single_mem_homL (Car.ofRec D) i j
-
 def putE (D : D7) (N N' : ℕ) (i : Fin N') (j : Fin N) : (D.what₂.Tau → ℂ) →+ TaylorLogMetric.VC D N N' where
   toFun v := fun τ i' j' => if i' = i ∧ j' = j then v τ else 0
   map_zero' := by funext τ i' j'; simp
@@ -296,45 +292,6 @@ theorem vec_parts (hS : B.StdOK) (hL : B.LatAll) (χ : TaylorLogMetric.IdE D →
   fun N N' _ _ hA => B.eNat_mem_ne hS hL (B.thZeroMem hS N N') χ hA (hχ N N' _ _ hA)
 
 end Base
-
-theorem inter_self {V : Type} [AddCommGroup V] [Module ℂ V] (H : Sesq V) (hH : IsHerm H) (Λ : AddSubgroup V)
-    (α : V → ℂ) (hα : IsSemiChar H Λ α) {F : V → ℂ} (hF : F ∈ fixedBy H α Λ) : inter H α Λ Λ F = F := by
-  funext z
-  have hS : IsReps Λ Λ ({0} : Finset V) :=
-    ⟨fun x hx => by rw [Finset.mem_singleton.1 hx]; exact Λ.zero_mem,
-      fun x hx y hy _ => by rw [Finset.mem_singleton.1 hx, Finset.mem_singleton.1 hy],
-      fun y hy => ⟨0, Finset.mem_singleton_self 0, by simpa using hy⟩⟩
-  rw [InterReps_of semicharacterHom V H hH Λ Λ α hα F hF {0} hS z]
-  have h1 : relIdx Λ Λ = 1 := AddSubgroup.relIndex_self Λ
-  rw [h1]
-  simp only [sumU, Finset.sum_singleton, Nat.cast_one, Real.sqrt_one, Complex.ofReal_one, inv_one, one_mul]
-  exact hF 0 Λ.zero_mem z
-
-theorem detId_std (D : D7) (N : ℕ) : TaylorLogMetric.detId D (StandardLatticesGL3.stdL D N) (StandardLatticesGL3.stdL D N) = 1 := by
-  apply le_antisymm
-  · unfold TaylorLogMetric.detId
-    rw [Submodule.span_le]
-    rintro x ⟨A, hA, rfl⟩
-    have hent : ∀ i j, A i j ∈ (algebraMap (𝓞 D.host.E) D.host.E).range := by
-      intro i j
-      have := (mem_stdL D _).1 (hA _ (single_mem_stdL D j)) i
-      simpa using this
-    choose A' hA' using hent
-    have e : A = (algebraMap (𝓞 D.host.E) D.host.E).mapMatrix (Matrix.of A') := by
-      ext i j; simp [hA']
-    show A.det ∈ (1 : Submodule (𝓞 D.host.E) D.host.E)
-    rw [e, ← RingHom.map_det]
-    exact Submodule.mem_one.2 ⟨_, rfl⟩
-  · rw [Submodule.one_le]
-    exact Submodule.subset_span ⟨1, fun v hv => by simpa using hv, by simp⟩
-
-theorem chi_one (D : D7) (χ : TaylorLogMetric.IdE D → ℂ) (hχ : TaylorLogMetric.IsChi D χ) : χ 1 = 1 := by
-  let _ := D.host.cmStar
-  have h := hχ.2 (1 : unitary D.host.E)
-  have e : Submodule.span (𝓞 D.host.E) {((1 : unitary D.host.E) : D.host.E)} = 1 := by
-    rw [Submodule.one_eq_span]; rfl
-  rw [e] at h
-  rw [h]; simp
 
 namespace Base
 
@@ -458,35 +415,5 @@ theorem Base.stdOK_of' {cc : Ideal (𝓞 D.host.K)} {δ : ℂ} (B : Base D cc δ
   B.toCd.stdOK_of' half betaStd betaSemi selfDual idx₁ idx₂
 
 end Isom
-
-section KapInh
-
-variable {D : D7}
-
-theorem exists_prime_over (D : D7) (p : ℕ) (hp : p.Prime) :
-    ∃ 𝔭 : IsDedekindDomain.HeightOneSpectrum (𝓞 D.host.K), ((p : ℕ) : 𝓞 D.host.K) ∈ 𝔭.asIdeal := by
-  have : Fact p.Prime := ⟨hp⟩
-  have : (Ideal.span {(p : ℤ)}).IsMaximal := Int.ideal_span_isMaximal_of_prime p
-  obtain ⟨P, hP, hO⟩ := Ideal.exists_maximal_ideal_liesOver_of_isIntegral (Ideal.span {(p : ℤ)}) (S := 𝓞 D.host.K)
-  have hmem : ((p : ℕ) : 𝓞 D.host.K) ∈ P := by
-    have h1 : (p : ℤ) ∈ P.under ℤ := by rw [← hO.over]; exact Ideal.mem_span_singleton_self _
-    have h2 := Ideal.mem_comap.1 h1
-    simpa using h2
-  have hne : P ≠ ⊥ := by
-    intro h
-    rw [h, Ideal.mem_bot] at hmem
-    exact hp.ne_zero (by exact_mod_cast hmem)
-  exact ⟨⟨P, hP.isPrime, hne⟩, hmem⟩
-
-theorem exists_gen (D : D7) (𝔭 : IsDedekindDomain.HeightOneSpectrum (𝓞 D.host.K)) :
-    ∃ π : 𝓞 D.host.K, 𝔭.asIdeal ^ classNumber D.host.K = Ideal.span {π} := by
-  have hmem : 𝔭.asIdeal ∈ nonZeroDivisors (Ideal (𝓞 D.host.K)) := mem_nonZeroDivisors_of_ne_zero 𝔭.ne_bot
-  have h1 : ClassGroup.mk0 (⟨𝔭.asIdeal, hmem⟩ ^ classNumber D.host.K : nonZeroDivisors (Ideal (𝓞 D.host.K))) = 1 := by
-    rw [map_pow]; exact pow_card_eq_one
-  have h2 := (ClassGroup.mk0_eq_one_iff (Submonoid.pow_mem _ hmem _)).1 (by simpa using h1)
-  obtain ⟨π, hπ⟩ := h2.principal
-  exact ⟨π, hπ⟩
-
-end KapInh
 
 end Formalism.L2.Ker

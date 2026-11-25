@@ -151,10 +151,6 @@ variable {n : ℕ} (f : K0 p →+* ℂ_[p]) (hf : ∀ x : WW p, ‖f (algebraMap
 
 def embLC : L →+* ℂ_[p] := (iC f).comp (gL L)
 
-include hf in
-theorem embLC_int (x : OL p n L) : ‖embLC f L (algebraMap (OL p n L) L x)‖ ≤ 1 :=
-  (iC_int_Cp f hf _).1 ((Oc_K L _).2 ⟨x, rfl⟩)
-
 end Conc
 
 end Formalism.L2.G.Pend

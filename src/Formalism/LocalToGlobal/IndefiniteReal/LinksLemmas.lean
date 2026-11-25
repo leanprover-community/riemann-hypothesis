@@ -41,11 +41,7 @@ def scalL (j : ℕ) : P.Forms j →ₗ[P.KO] P.KO where
 
 def cuspF (j : ℕ) : Submodule P.KO (P.Forms j) := LinearMap.ker (P.scalL j)
 
-theorem inc_mem_cuspF {j : ℕ} {w : WeightFamilies.Wt D j} (F : P.Cusp j w) : P.inc j w F ∈ P.cuspF j :=
-  P.scal_incS F
-
 variable {j : ℕ}
-
 
 section Gauss
 
@@ -56,7 +52,6 @@ end Gauss
 end FormsPkg
 
 variable {D : D7} {G : DV.Geo D.what₂.LL} {Lev : Type}
-
 
 open Classical in
 structure FormsKPkg (F : ShimFam D G Lev) : Type 1 where
@@ -257,7 +252,6 @@ namespace RealDat
 
 variable {R : RealDat D A Ks} {F : Face D A}
 
-
 theorem kFormR_of (hM : R.IsModels) : (R.toCx F).KFormR := by
   intro t
   have hB := Formalism.IndefR.Bridge.ClassPres.extBij_holds (R.B.R t).pres
@@ -266,7 +260,6 @@ theorem kFormR_of (hM : R.IsModels) : (R.toCx F).KFormR := by
     (Formalism.L2.DIV.CSD.basis _) (Module.Basis.ofVectorSpace _ _) hB.1
   exact ⟨Tw.linInd' (E := (R.HX t).H) _ h.1, Tw.span_top' (E := (R.HX t).H) _ h.2⟩
 
-
 theorem kFormL_of (hM : R.IsModels) : (R.toCx F).KFormL := by
   intro i t
   have hB := Formalism.IndefR.Bridge.ClassPres.extBij_holds (R.B.L i t).pres
@@ -274,8 +267,6 @@ theorem kFormL_of (hM : R.IsModels) : (R.toCx F).KFormL := by
   have h := kForm_semi (R.jV i t) (R.HV i t).e (R.B.L i t).pres.extL (fun x => hM.jV i t x) hinj (hrange.trans hB.2.symm)
     (Formalism.L2.DIV.CSD.basis _) (Module.Basis.ofVectorSpace _ _) hB.1
   exact ⟨Tw.linInd' (E := (R.HV i t).H) _ h.1, Tw.span_top' (E := (R.HV i t).H) _ h.2⟩
-
-
 
 theorem jIsoR_gen (hM : R.IsModels) (cv : CrdV A.fam.amb)
     (hcv : ∀ t x y, cv.hR t x y = (A.fam.R t).S.csum ((x : (A.fam.R t).S.Forms) : (A.fam.R t).S.Cl → (A.fam.R t).S.V) ((y : (A.fam.R t).S.Forms) : (A.fam.R t).S.Cl → (A.fam.R t).S.V)) :
@@ -292,8 +283,6 @@ theorem jIsoR_gen (hM : R.IsModels) (cv : CrdV A.fam.amb)
 theorem jIsoR_of (hM : R.IsModels) : (R.toCx F).JIsoR (cvOf A F.P0 F.ψ0 F.P1 F.ψ1) :=
   jIsoR_gen hM _ fun _ _ _ => rfl
 
-
-
 theorem jIsoL_gen (hM : R.IsModels) (cv : CrdV A.fam.amb)
     (hcv : ∀ i t x y, cv.hL i t x y = (A.fam.L i t).S.csum ((x : (A.fam.L i t).S.Forms) : (A.fam.L i t).S.Cl → (A.fam.L i t).S.V) ((y : (A.fam.L i t).S.Forms) : (A.fam.L i t).S.Cl → (A.fam.L i t).S.V)) :
     (R.toCx F).JIsoL cv := by
@@ -308,8 +297,6 @@ theorem jIsoL_gen (hM : R.IsModels) (cv : CrdV A.fam.amb)
 
 theorem jIsoL_of (hM : R.IsModels) : (R.toCx F).JIsoL (cvOf A F.P0 F.ψ0 F.P1 F.ψ1) :=
   jIsoL_gen hM _ fun _ _ _ _ => rfl
-
-
 
 end RealDat
 
@@ -337,7 +324,6 @@ variable {R F}
 
 end RealDat
 
-
 end Prim
 
 section Geo
@@ -353,7 +339,6 @@ section Exist
 
 open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.Cx
 
-
 variable {G : Type} [Group G] [Fintype G] {Pl0 T : Type} {A : FamIn D.what₂.LL G Pl0 T D.R.m}
   {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL]
 
@@ -363,11 +348,9 @@ variable (R : RealDat D A Ks) (F : Face D A)
 
 end RealDat
 
-
 end Exist
 
 section Host
-
 
 variable (D) in
 structure HostHyp : Prop where
@@ -379,7 +362,6 @@ structure HostHyp : Prop where
   cloudGap : ∀ τ : D.what₂.Tau, 100 * (D.R.r : ℚ) ^ 4 ≤ Formalism.L2.NTheta.lamAt (D.hc τ) (D.R.k - 2) - Formalism.L2.NTheta.lamAt (D.hc τ) (D.R.k - 1)
   nodeGap : D.NodeGap (4 * ((D.R.N D.R.m : ℕ) : ℝ) ^ 3 + 2 * D.R.t + 6)
   nodeGapR : D.NodeGap (256 * (D.R.r : ℝ) ^ 4)
-
 
 end Host
 

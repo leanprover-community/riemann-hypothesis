@@ -76,10 +76,6 @@ def belowE (v : PlE D.host) : HeightOneSpectrum (𝓞 Fp) where
     obtain ⟨y, hy, hy0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot v.ne_bot
     exact Ideal.comap_ne_bot_of_integral_mem hy0 hy (Algebra.IsIntegral.isIntegral y)
 
-theorem exists_splitPlace (v : PlE D.host) (x0 : 𝓞 D.host.E) (hx0 : x0 ∈ v.asIdeal) (hc0 : cO x0 ∉ v.asIdeal) :
-    ∃ s : SplitPlace D.host.E, s.v = belowE v :=
-  _root_.GlobalTheory.SplitConjPlace.exists_splitPlace v x0 hx0 hc0
-
 theorem splitEx_of_star (hstar : ∀ x : D.host.E, D.host.conj x = IsCMField.complexConj D.host.E x) : SplitEx D := by
   apply GlobalTheory.SplitConjPlace.splitEx_of_star <;> assumption
 

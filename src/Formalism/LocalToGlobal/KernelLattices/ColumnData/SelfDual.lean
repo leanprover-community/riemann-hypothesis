@@ -190,7 +190,6 @@ theorem alg_step (cc : Ideal (𝓞 D.host.K)) (hcc : cc ≠ ⊥) {N N' : ℕ}
   have h1 := main c0 (by rw [← hcc']; exact Ideal.mem_span_singleton_self c0)
   rwa [div_self hc0K, IntermediateField.coe_one, one_smul] at h1
 
-
 variable (D) in
 theorem coord (δ : ℂ) (hδ : δ ≠ 0) (u : D.what₂.Tau → ℂ)
     (hu : ∀ y : D.host.E, ∃ k : D.host.K,
@@ -482,10 +481,6 @@ theorem s_sq : (D.host.sqd) ^ 2 = -(D.host.d : D.host.E) :=
   D.host.sqd_sq
 
 theorem d_pos : (0 : ℚ) < D.host.d := by exact_mod_cast D.host.hyp.2.1.pos
-
-theorem K_repr (x : D.host.E) (hx : x ∈ D.host.K) :
-    ∃ p q : ℚ, x = (p : D.host.E) + (q : D.host.E) * D.host.sqd := by
-  first | (apply UpperTheory.Reformulated.B.ExportFamilies.K_repr <;> assumption)
 
 theorem embedding_sqrt_neg_d : D.host.φ₀ (D.host.sqd) = Complex.I * (Real.sqrt D.host.d : ℂ) :=
   D.host.φ₀_mem

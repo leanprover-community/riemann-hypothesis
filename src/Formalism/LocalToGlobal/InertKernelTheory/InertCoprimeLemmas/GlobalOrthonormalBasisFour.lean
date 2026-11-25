@@ -111,8 +111,6 @@ theorem isInt_mul {x y : D.host.E} (hx : IsInt (D := D) x) (hy : IsInt (D := D) 
   have := Submodule.mul_mem_mul hx hy
   rwa [one_mul] at this
 
-theorem isInt_one : IsInt (D := D) 1 := Submodule.mem_one.2 ⟨1, map_one _⟩
-
 theorem mem_stdL {N : ℕ} (x : Fin N → D.host.E) : x ∈ Formalism.MainNotions.StandardLatticesGL3.stdL D N ↔ ∀ i, IsInt (D := D) (x i) := by
   unfold Formalism.MainNotions.StandardLatticesGL3.stdL
   rw [Submodule.mem_pi]

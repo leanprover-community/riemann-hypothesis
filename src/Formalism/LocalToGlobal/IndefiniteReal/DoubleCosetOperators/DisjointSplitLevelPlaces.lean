@@ -101,10 +101,6 @@ def SplitLevPl (S : ExpSet D) (PP : Formalism.L2.DIV.Pl D.host.E) : Prop :=
   ∃ p : ℕ, p.Prime ∧ p ≠ 2 ∧ Nat.Coprime p S.l ∧ (∀ i, p ≠ S.pde i) ∧ D.host.cls p = .splitK ∧
     ((p : 𝓞 D.host.E) ∈ PP.asIdeal)
 
-theorem isConjPl_conjPl (PP : Formalism.L2.DIV.Pl D.host.E) : IsConjPl (D := D) PP (Formalism.L2.DIV.conjPl PP) :=
-  fun c hc => ⟨Formalism.L2.DIV.starO c,
-    (Formalism.L2.DIV.isConjPl_conjPl PP c (Formalism.L2.DIV.starO c) (Formalism.L2.DIV.starO_coe c)).1 hc, Formalism.L2.DIV.starO_coe c⟩
-
 def HasLevelType (S : ExpSet D) (f : WO S.V S.W → ℂ) : Prop :=
   ∀ κ ∈ levG S.W S.βW S.LW, S.om (1, κ) f = levChi S.W S.βW S.LW κ • f
 

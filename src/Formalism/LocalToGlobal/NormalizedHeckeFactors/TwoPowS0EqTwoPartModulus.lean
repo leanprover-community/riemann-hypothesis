@@ -102,10 +102,6 @@ def ptsNd (i : D.nd.Loc) : D.nd.X i ≃ (D.nd.T i →ₐ[D.nd.O i] D.nd.O i) :=
 theorem zgoodSub : D.nd.ZgoodSub := fun i x hx =>
   (D.Z_tie i x).2 ((D.Zgood_tie i x).1 hx).1
 
-theorem mem_Q_iff (i : D.nd.Loc) (v : HeightOneSpectrum (𝓞 D.host.E)) :
-    v ∈ D.nd.Q i ↔ ∃ σ ∈ Ine (F := D.host.E) (D.nd.plOm.1 v), D.ntw.psiL i σ ≠ 1 :=
-  (D.ntw.psiL_ram i v (D.nd.plOm.1 v) (D.nd.plOm.2 v)).symm
-
 end Record
 
 section Good

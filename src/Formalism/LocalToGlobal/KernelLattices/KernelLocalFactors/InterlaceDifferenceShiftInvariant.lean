@@ -124,17 +124,6 @@ theorem fockB_projVV [CharZero K] (p : Pol K ι n) (v : Pol K ι n) (hv : v ∈ 
   simp only [← fockBL_apply, map_sum, map_smul]
   simp only [fockBL_apply, fockB_projVV_basis]
 
-theorem projVV_of_mem [CharZero K] (v : Pol K ι n) (hv : v ∈ VV K sg) : (projVV sg v : Pol K ι n) = v := by
-  set d : VV K sg := projVV sg v - ⟨v, hv⟩ with hd
-  have hd0 : ∀ y : VV K sg, pairBK sg y d = 0 := by
-    intro y
-    rw [pairBK_apply, pairB_apply, hd, Submodule.coe_sub, ← fockBL_apply, map_sub, fockBL_apply, fockBL_apply,
-      fockB_comm (y : Pol K ι n), fockB_comm (y : Pol K ι n), fockB_projVV sg v y y.2]
-    simp
-  have := (pairingBNondegenerate_holds K ι n sg).2 d hd0
-  rw [hd, sub_eq_zero] at this
-  exact congrArg Subtype.val this
-
 end Proj
 
 section Adj
@@ -419,7 +408,6 @@ theorem lb_gram_det_ne : (gramB (K := K) lam).det ≠ 0 := by
   funext i
   exact Fintype.linearIndependent_iff.mp (bVVfun_spec K lam).1 c (by rw [← hxdef]; exact hx0) i
 
-
 open Classical in
 theorem lb_proj_spec (p : Pol K ι n) : ∀ v ∈ VV K lam, fockB ((projVV lam p : VV K lam) : Pol K ι n) v = fockB p v := by
   have hG : IsUnit (gramB (K := K) lam).det := isUnit_iff_ne_zero.mpr (lb_gram_det_ne lam)
@@ -542,13 +530,11 @@ end BCMaps
 
 end Formalism.L2.Ker
 
-
 noncomputable section
 
 namespace Formalism.L2.Ker
 
 end Formalism.L2.Ker
-
 
 noncomputable section
 
@@ -779,7 +765,6 @@ end One
 section Ten
 
 variable {K : Type} [Field K] {ι : Type} [Fintype ι] {N n : ℕ} (hN : N = n + 1)
-
 
 open Classical in
 def lxW (τ : ι) : ι × Fin N × Fin N → ℕ := fun v => if v.1 = τ ∧ v.2.1 = iL hN then v.2.2.val + 1 else 0
@@ -1073,7 +1058,6 @@ def XiTenMem : Prop := xiTen hN K lam sg ∈ VV K lam
 end Open
 
 end Formalism.L2.Ker
-
 
 noncomputable section
 
@@ -1752,7 +1736,6 @@ end Equiv
 
 end Formalism.L2.Ker
 
-
 noncomputable section
 
 namespace Formalism.L2.Ker
@@ -1773,7 +1756,6 @@ def IsHwRow {K : Type} [Field K] {N n : ℕ} (hN : N = n + 1) (sg : DomWeight n)
     ∀ a : Fin n, rE K N N (iC hN a) (iC hN a) f = (sg.natW a : K) • f
 
 end Formalism.L2.Ker
-
 
 noncomputable section
 
@@ -1924,7 +1906,6 @@ theorem hwA_slice_unique (ν : Fin N → ℕ) (ρ : Fin n → ℕ) (m m' : Fin N
     omega
   · exact h1 a j ha
 
-
 open Classical in
 def hwAw : Fin N × Fin N → ℕ := fun v => if v.1 = v.2 ∧ v.1 ≠ iL hN then 1 else 0
 
@@ -1991,7 +1972,6 @@ theorem hwA_mult_one (lam : DomWeight N) (sg : DomWeight n) (f ξ : MvPolynomial
 end Slice
 
 end Formalism.L2.Ker
-
 
 noncomputable section
 
@@ -2260,7 +2240,6 @@ end BPlevel
 
 end Formalism.L2.Ker
 
-
 noncomputable section
 
 namespace Formalism.L2.Ker
@@ -2363,7 +2342,6 @@ theorem hwC_single_of {K : Type} [Field K] [CharZero K] {N n : ℕ} (hN : N = n 
 
 end Formalism.L2.Ker
 
-
 noncomputable section
 
 namespace Formalism.L2.Ker
@@ -2425,13 +2403,6 @@ end A
 section B
 
 variable {K : Type} [Field K] {r n : ℕ}
-
-theorem hwD_sum_apply {ι' A : Type} [CommRing A] [Algebra K A] (s : Finset ι') (D : ι' → Derivation K A A) (x : A) :
-    (∑ i ∈ s, D i) x = ∑ i ∈ s, D i x := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => simp
-  | insert a s ha ih => rw [Finset.sum_insert ha, Finset.sum_insert ha, Derivation.add_apply, ih]
 
 theorem hwD_fockB_rE (a a' : Fin r) (f g : MvPolynomial (Fin r × Fin n) K) :
     fockB (rE K r n a a' f) g = fockB f (rE K r n a' a g) := by
@@ -2544,7 +2515,6 @@ theorem hwD_hw (hN : N = n + 1) (lam : DomWeight N) (sg : DomWeight n) (p v : Mv
 end C
 
 end Formalism.L2.Ker
-
 
 noncomputable section
 
@@ -2802,7 +2772,6 @@ end RecP4
 
 end Formalism.L2.Ker
 
-
 noncomputable section
 
 namespace Formalism.L2.Ker
@@ -2832,7 +2801,6 @@ theorem in_ioOne_mem {K : Type} [Field K] {N n : ℕ} (hN : N = n + 1) (l : DomW
   exact Submodule.smul_mem _ _ (unit_mem l _ (Subtype.coe_prop _))
 
 end Formalism.L2.Ker
-
 
 noncomputable section
 
@@ -2995,7 +2963,6 @@ theorem inB_capInt {n : ℕ} (lam sg : Fin n → ℕ) (hI : Formalism.BranchingD
     exact (inB_comm_Zop n lam sg G).symm
 
 end Formalism.L2.Ker
-
 
 noncomputable section
 
@@ -3302,7 +3269,6 @@ end Ident
 
 end Formalism.L2.Ker
 
-
 noncomputable section
 
 namespace Formalism.L2.Ker
@@ -3375,7 +3341,6 @@ end D
 
 end Formalism.L2.Ker
 
-
 noncomputable section
 
 namespace Formalism.L2.Ker
@@ -3403,7 +3368,6 @@ theorem int_brOne (hI : Interlace hN l s) (hS : SameShift l s) (f₀ : MvPolynom
     ∃ g ∈ delSq ℤ n s, brOne ℂ hN l s (map (Int.castRingHom ℂ) f₀) = map (Int.castRingHom ℂ) g :=
   inD_brInt hN l s (inE_ioInt hN l s hI hS) f₀ hf₀
 
-
 open Formalism.MainNotions.product_first_zeroth_parts in
 theorem int_member (D : Formalism.BasicNotions.D7) (u : D.what₂.Word) (τ : D.what₂.Tau)
     (hI : Formalism.MainNotions.PrimeDegreeVariant.Interlace (Nm_succ D.R) (lamTr D u τ) (sgTr D u τ)) :
@@ -3415,7 +3379,6 @@ theorem int_member (D : Formalism.BasicNotions.D7) (u : D.what₂.Word) (τ : D.
 end E
 
 end Formalism.L2.Ker
-
 
 noncomputable section
 
@@ -3546,7 +3509,6 @@ end NmA
 
 end Formalism.L2.Ker
 
-
 noncomputable section
 
 namespace Formalism.L2.Ker
@@ -3649,7 +3611,6 @@ theorem nmJ_iso (c : Fin n → ℕ) (p : MvPolynomial (Fin n × Fin n) ℂ) (hp 
 end NmB
 
 end Formalism.L2.Ker
-
 
 noncomputable section
 
@@ -3815,7 +3776,6 @@ end NmC
 
 end Formalism.L2.Ker
 
-
 noncomputable section
 
 namespace Formalism.L2.Ker
@@ -3921,7 +3881,6 @@ end NmRec
 
 end Formalism.L2.Ker
 
-
 noncomputable section
 
 namespace Formalism.L2.Ker
@@ -3997,7 +3956,6 @@ theorem nm_bd_of (hI : Br.Interlace hN l s) (hS : SameShift l s)
 end NmE
 
 end Formalism.L2.Ker
-
 
 noncomputable section
 

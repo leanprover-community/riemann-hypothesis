@@ -85,12 +85,10 @@ open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism
 variable {G : Type} [Group G] [Fintype G] {Pl0 T : Type} {A : FamIn D.what₂.LL G Pl0 T D.R.m}
   {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL]
 
-
 variable (D) in
 def CartanOK : Prop :=
   (∀ (V : HSp D) (S : D.what₂.Tau → SPar) (M : DSModel V S), V.SigOK → ∀ τ, IsCartanInv (gramAt D V τ) (cart M τ)) ∧
     ∀ V : HSp D, V.SigOK → V.IsPosDef → ∀ τ, IsCartanInv (gramAt D V τ) 1
-
 
 variable (D) in
 def SelfDualOK : Prop :=
@@ -113,7 +111,6 @@ def SplitAt : Prop :=
       IsHeckeChar D (Lift.chrTh (R.toLevCh.mu t) R.eta ((i : ℕ) + 1)).2 ∧
       ResEta D (Lift.chrTh (R.toLevCh.mu t) R.eta ((i : ℕ) + 1)).1 (Vc D i).rank ∧
       ResEta D (Lift.chrTh (R.toLevCh.mu t) R.eta ((i : ℕ) + 1)).2 (Wc D i).rank
-
 
 open Classical in
 def IdemAt : Prop := ∀ t, Disjoint R.Pg (R.Q t) ∧ ∃ e : AE D, IsIdemSum e (R.Pg ∪ R.Q t)
@@ -160,14 +157,6 @@ def IoWExists (F : Face D A) : Prop :=
     IsIoW R.θ (R.MW i (sg0 D A)) (R.cV i) (R.ωP i t) (R.ptP i t) (RealDat.Delta i) io
 
 variable {D A Ks}
-
-theorem exists_factor {X Y Z : Type} [AddCommGroup X] [Module ℂ X] [AddCommGroup Y] [Module ℂ Y] [AddCommGroup Z] [Module ℂ Z]
-    (e : Y →ₗ[ℂ] Z) (he : Function.Injective e) (f : X →ₗ[ℂ] Z) (hf : ∀ x, f x ∈ LinearMap.range e) :
-    ∃ g : X →ₗ[ℂ] Y, ∀ x, e (g x) = f x := by
-  refine ⟨(LinearEquiv.ofInjective e he).symm.toLinearMap ∘ₗ f.codRestrict (LinearMap.range e) hf, fun x => ?_⟩
-  show e ((LinearEquiv.ofInjective e he).symm (f.codRestrict (LinearMap.range e) hf x)) = f x
-  rw [← LinearEquiv.ofInjective_apply (h := he), LinearEquiv.apply_symm_apply]
-  rfl
 
 namespace RealDat
 
@@ -262,12 +251,10 @@ open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism
 variable {G : Type} [Group G] [Fintype G] {Pl0 T : Type} {A : FamIn D.what₂.LL G Pl0 T D.R.m}
   {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL]
 
-
 variable (D A Ks) in
 def LiftsAt (F : Face D A) : Prop :=
   ∀ R : RealDat D A Ks, R.Pre0 F →
     LiftsExist (Yc D 0) (R.βY 0) (R.dat0 R.triv) ∧ ∀ i, LiftsExist (Wc D i) (R.βW i) (R.datWp i R.triv)
-
 
 variable (D) in
 structure Inputs : Prop where

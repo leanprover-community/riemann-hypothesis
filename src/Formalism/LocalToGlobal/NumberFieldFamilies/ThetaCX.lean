@@ -148,7 +148,6 @@ variable {D : D7}
 
 def plE (τ : D.what₂.Tau) : InfinitePlace D.host.E := InfinitePlace.mk (tauE D τ)
 
-
 open Classical in
 def embAt (τ : D.what₂.Tau) : (plE τ).Completion →+* ℂ :=
   if (plE τ).embedding = tauE D τ then InfinitePlace.Completion.extensionEmbedding (plE τ)
@@ -204,8 +203,6 @@ variable (B : AdBC D)
 def up : (AE D)ˣ →* Ideles D.host.E := Units.map B.Φ.toMonoidHom
 
 def dn : Ideles D.host.E →* (AE D)ˣ := Units.map B.Φ.symm.toMonoidHom
-
-theorem dn_up (x : (AE D)ˣ) : B.dn (B.up x) = x := Units.ext (by simp [up, dn])
 
 theorem up_inc (k : D.host.Eˣ) : B.up (Units.map (incA D).toMonoidHom k) = diagUnits D.host.E k := Units.ext (by simp [up, B.inc]; rfl)
 

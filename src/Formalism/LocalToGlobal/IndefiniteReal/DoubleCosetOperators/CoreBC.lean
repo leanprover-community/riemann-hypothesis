@@ -130,20 +130,6 @@ def bc : Arith.FormsL L Ks (BCW Ks L0 L WL) (Wbc L0 L W) G0 where
 
 def wkE : A.WK ≃ₗ[Ks] (bc L A).WK := wkEquiv L A
 
-theorem bc_nrm_wkE (lp) (y : A.Pt lp) (f : A.WK) : (bc L A).nrm lp y (wkE L A f) = A.nrm lp y f := by
-  change A.nrm lp y ((wkEquiv L A).symm (wkEquiv L A f)) = _
-  rw [LinearEquiv.symm_apply_apply]
-
-theorem bc_rho_tmul (g : G0) (a : L) (x : WL) :
-    (bc L A).ρ g (a ⊗ₜ[L0] x : L ⊗[L0] WL) = (a ⊗ₜ[L0] (A.ρ g x) : L ⊗[L0] WL) :=
-  LinearMap.baseChange_tmul _ _ _
-
-theorem bc_rho_incl (g : G0) (x : WL) : (bc L A).ρ g (incl Ks L0 L WL x) = incl Ks L0 L WL (A.ρ g x) :=
-  bc_rho_tmul L A g 1 x
-
-variable [Module (𝓞 L0) WL] [IsScalarTower (𝓞 L0) L0 WL] [Module (𝓞 Ks) WL] [IsScalarTower (𝓞 Ks) Ks WL]
-  [Fintype G0]
-
 end Forms
 
 section Rec

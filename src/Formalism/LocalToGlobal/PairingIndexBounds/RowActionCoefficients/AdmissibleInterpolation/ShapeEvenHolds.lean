@@ -61,10 +61,6 @@ theorem card_fin_lt (c m : ℕ) (hm : m ≤ c) : (Finset.univ.filter fun k : Fin
       exact ⟨⟨x, by omega⟩, hx, rfl⟩
   rw [← Finset.card_map Fin.valEmbedding, e, Finset.card_range]
 
-theorem kap_antitone {n : ℕ} {μ : Fin n → ℕ} (hμ : Antitone μ) (c : ℕ) : Antitone fun t : Fin n => c - μ t.rev := by
-  intro s t hst
-  exact Nat.sub_le_sub_left (hμ (Fin.rev_le_rev.mpr hst)) c
-
 theorem card_ge_eq {n K K' : ℕ} (sz : Fin K → ℕ) (sz' : Fin K' → ℕ) (hsz : ∀ k, sz k ≤ n) (hsz' : ∀ k, sz' k ≤ n)
     (h : (shapeDeg sz : Fin n → ℕ) = shapeDeg sz') (l : ℕ) (hl : 0 < l) :
     (Finset.univ.filter fun k => l ≤ sz k).card = (Finset.univ.filter fun k => l ≤ sz' k).card := by

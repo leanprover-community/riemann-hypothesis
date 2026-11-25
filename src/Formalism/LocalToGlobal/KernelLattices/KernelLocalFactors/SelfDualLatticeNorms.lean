@@ -106,19 +106,6 @@ namespace Formalism.L2.Th1.Top
 open Formalism.L2.Th1.CM (HasCMBy jInv)
 open Formalism.L2.Th1.E (IntCurve curveL)
 
-namespace GM
-
-variable (p : ℕ) [Fact p.Prime]
-
-theorem norm_divisor_twelve_power_eq_one (h5 : 5 ≤ p) {N k : ℕ} (hN : N ∣ 12 ^ k) : ‖(N : ℂ_[p])‖ = 1 := by
-  refine Formalism.L2.Th1.E.ScaledModelNorms.norm_nat p fun h => ?_
-  have hp : p.Prime := Fact.out
-  have h12 : p ∣ 12 := hp.dvd_of_dvd_pow (h.trans hN)
-  have hle : p ≤ 12 := Nat.le_of_dvd (by norm_num) h12
-  interval_cases p <;> first | omega | exact absurd hp (by norm_num)
-
-end GM
-
 theorem good_model_exists_all_primes : GoodModelAll := by
   intro dK L hsq hd4 hcm p _ h5 ι
   have hD0 : L.g₂ ^ 3 - 27 * L.g₃ ^ 2 ≠ 0 := Formalism.L2.Th1.F.discNeZero L
@@ -1162,7 +1149,6 @@ theorem ne_zero_E (hp : 0 < p) (hprod : ϖ * cO E ϖ = p) :
     rw [h0, mul_zero] at h
     exact hp' h.symm
 
-
 include hS hprod hcop in
 theorem half_to (hp : 0 < p) (c' : ℕ) (hc' : 0 < c') {w : W} (hw : w ∈ twist₂ M (p * c') (expS S)) (hpw : (p : E) • w ∈ M) :
     (algebraMap (𝓞 E) E ϖ / algebraMap (𝓞 E) E (cO E ϖ)) • w ∈ M := by
@@ -1192,7 +1178,6 @@ theorem half_to (hp : 0 < p) (c' : ℕ) (hc' : 0 < c') {w : W} (hw : w ∈ twist
       field_simp
     rw [e]
     exact hpw
-
 
 include hS hprod hcop in
 theorem half_of (hp : 0 < p) (c' : ℕ) (hc' : 0 < c') (u : ℤ) {m : W} (hm : m ∈ M) :

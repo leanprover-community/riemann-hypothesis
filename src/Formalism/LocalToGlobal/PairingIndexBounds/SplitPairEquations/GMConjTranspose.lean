@@ -69,30 +69,4 @@ def phiL (h1 : (letI := D.host.cmStar; star γ * γ) = 1) (h2 : (letI := D.host.
     rw [Matrix.mul_assoc, Matrix.mul_assoc, gM_unit' γ h2, Matrix.mul_one, ← Matrix.mul_assoc, gM_unit' γ' h2',
       Matrix.one_mul]
 
-theorem sum_trace {m n : ℕ} (X Y : Matrix (Fin m) (Fin n) ℂ) :
-    ∑ i, ∑ j, X i j * (starRingEnd ℂ) (Y i j) = Matrix.trace (X * Yᴴ) := by
-  simp [Matrix.trace, Matrix.mul_apply, Matrix.conjTranspose_apply]
-
-theorem trace_unit {m n : ℕ} (P : Matrix (Fin m) (Fin m) ℂ) (Q : Matrix (Fin n) (Fin n) ℂ) (hP : Pᴴ * P = 1)
-    (hQ : Q * Qᴴ = 1) (Z W : Matrix (Fin m) (Fin n) ℂ) :
-    Matrix.trace (P * Z * Q * (P * W * Q)ᴴ) = Matrix.trace (Z * Wᴴ) := by
-  rw [Matrix.conjTranspose_mul, Matrix.conjTranspose_mul]
-  calc Matrix.trace (P * Z * Q * (Qᴴ * (Wᴴ * Pᴴ))) = Matrix.trace (P * (Z * Wᴴ * Pᴴ)) := by
-        rw [show P * Z * Q * (Qᴴ * (Wᴴ * Pᴴ)) = P * Z * (Q * Qᴴ) * (Wᴴ * Pᴴ) by simp only [Matrix.mul_assoc], hQ]
-        simp only [Matrix.mul_one, Matrix.mul_assoc]
-    _ = Matrix.trace (Z * Wᴴ * Pᴴ * P) := by rw [Matrix.trace_mul_comm, Matrix.mul_assoc]
-    _ = Matrix.trace (Z * Wᴴ) := by rw [Matrix.mul_assoc, hP, Matrix.mul_one]
-
-theorem phiL_isom (h1 h2 h1' h2') (A : ℝ) :
-    IsIsom (Ker.formV A D.what₂.Tau N N') (Ker.formV A D.what₂.Tau N N')
-      ((phiL γ γ' h1 h2 h1' h2' : TaylorLogMetric.VC D N N' ≃ₗ[ℂ] TaylorLogMetric.VC D N N') : TaylorLogMetric.VC D N N' →ₗ[ℂ] TaylorLogMetric.VC D N N') := by
-  intro x y
-  simp only [Ker.formV, LinearMap.mk₂'ₛₗ_apply]
-  congr 1
-  refine Finset.sum_congr rfl fun τ _ => ?_
-  have e := sum_trace (gM γ' τ * Matrix.of (x τ) * (gM γ τ)ᴴ) (gM γ' τ * Matrix.of (y τ) * (gM γ τ)ᴴ)
-  have e2 := sum_trace (Matrix.of (x τ)) (Matrix.of (y τ))
-  rw [trace_unit _ _ (gM_unit γ' h1' τ) (by rw [Matrix.conjTranspose_conjTranspose]; exact gM_unit γ h1 τ)] at e
-  exact e.trans e2.symm
-
 end Formalism.L2.PairingIndexBounds.Eq

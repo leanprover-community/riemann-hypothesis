@@ -223,18 +223,6 @@ theorem Oc_K (L : IntermediateField (KO p n) (Om p n)) [FiniteDimensional (KO p 
 
 def gWW (p : ℕ) [Fact p.Prime] (n : ℕ) : W2 p n →+* WW p := WittVector.map (gF p n)
 
-theorem intermediate_map_witt_quadratic (L : IntermediateField (KO p n) (Om p n)) (a : W2 p n) :
-    gL L (algebraMap (OO p n) L (algebraMap (W2 p n) (OO p n) a)) =
-      algebraMap (K0 p) (Kc p) (algebraMap (WW p) (K0 p) (gWW p n a)) := by
-  rw [gL_algO, gO_apply]
-  simp [gW, gWW, IsScalarTower.algebraMap_apply (WW p) (K0 p) (Kc p)]
-
-theorem gL_jO (L : IntermediateField (KO p n) (Om p n)) (a : WQ p n) :
-    gL L (algebraMap (OO p n) L (jO p n a)) =
-      algebraMap (K0 p) (Kc p) (algebraMap (WW p) (K0 p) (gWW p n (jW p n a))) := by
-  rw [jO, RingHom.comp_apply]
-  exact intermediate_map_witt_quadratic L (jW p n a)
-
 theorem exists_inv_pow {B L : Type*} [CommRing B] [IsDomain B] [IsDiscreteValuationRing B] [Field L] [Algebra B L]
     [IsFractionRing B L] {π : B} (hπ : π ≠ 0) {x : L} (hx : x ∉ Set.range (algebraMap B L)) :
     ∃ (e : ℕ) (d : B), x⁻¹ ^ e = algebraMap B L (π * d) := by

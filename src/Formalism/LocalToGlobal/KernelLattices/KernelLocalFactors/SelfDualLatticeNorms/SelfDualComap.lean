@@ -155,7 +155,6 @@ section Lat
 
 variable {D : D7} {X : Fields} (s : Seam D X) {cc : Ideal (𝓞 D.host.K)} {δ : ℂ} (B : Base D cc δ)
 
-
 include B in
 theorem sc_pos : 0 < (TaylorLogMetric.area (TaylorLogMetric.lamOf D cc δ))⁻¹ := by
   rw [show TaylorLogMetric.area (TaylorLogMetric.lamOf D cc δ) = Formalism.L2.Th1.F.area B.L from B.areaOK]
@@ -244,18 +243,6 @@ theorem th_laF (hcc : TaylorLogMetric.IsCurveIdeal D cc) (hδ : TaylorLogMetric.
   rw [e]
   exact h2' x hx z
 
-theorem thZero_laF (hcc : TaylorLogMetric.IsCurveIdeal D cc) (hδ : TaylorLogMetric.IsDiscriminantTwelfthRootOfIdealLattice D cc δ) (ha : Even a) (hb : Even b) :
-    (fun z => B.thZero a b (s.flatV a b z)) ∈ Th (matH (hSc X.Tau a b (TaylorLogMetric.area (TaylorLogMetric.lamOf D cc δ))⁻¹))
-      (alphaQ (Real.sqrt D.host.d / 2) (matH (hSc X.Tau a b (TaylorLogMetric.area (TaylorLogMetric.lamOf D cc δ))⁻¹)))
-      (s.laF B.tor (StandardLatticesGL3.stdL D a) (StandardLatticesGL3.stdL D b)) :=
-  th_laF s B hcc hδ (Formalism.MainNotions.GlobalTheoryTheory.Inhab.Adm_std D a b ha hb) (B.thZeroMem (B.stdOK hcc hδ) a b)
-
-theorem thHalf_laF (hcc : TaylorLogMetric.IsCurveIdeal D cc) (hδ : TaylorLogMetric.IsDiscriminantTwelfthRootOfIdealLattice D cc δ) (hA : TaylorLogMetric.admitted D a b L L') :
-    (fun z => B.thHalf a b L (s.flatV a b z)) ∈ Th (matH (hSc X.Tau a b (TaylorLogMetric.area (TaylorLogMetric.lamOf D cc δ))⁻¹))
-      (alphaQ (Real.sqrt D.host.d / 2) (matH (hSc X.Tau a b (TaylorLogMetric.area (TaylorLogMetric.lamOf D cc δ))⁻¹)))
-      (s.laF B.tor L (StandardLatticesGL3.stdL D b)) :=
-  th_laF s B hcc hδ (Base.isAdmissible_flagPair_of_unitriangular_left_automorphism hA) (B.thHalf_mem (B.stdOK hcc hδ) (B.latAll hcc hδ (delta_ne hcc hδ)) hA)
-
 theorem thMoved_laF (hcc : TaylorLogMetric.IsCurveIdeal D cc) (hδ : TaylorLogMetric.IsDiscriminantTwelfthRootOfIdealLattice D cc δ) (hA : TaylorLogMetric.admitted D a b L L') :
     (fun z => B.thMoved a b L L' (s.flatV a b z)) ∈ Th (matH (hSc X.Tau a b (TaylorLogMetric.area (TaylorLogMetric.lamOf D cc δ))⁻¹))
       (alphaQ (Real.sqrt D.host.d / 2) (matH (hSc X.Tau a b (TaylorLogMetric.area (TaylorLogMetric.lamOf D cc δ))⁻¹))) (s.laF B.tor L L') :=
@@ -265,18 +252,6 @@ theorem eNat_laF (hcc : TaylorLogMetric.IsCurveIdeal D cc) (hδ : TaylorLogMetri
     (fun z => B.eNat χ a b L L' (s.flatV a b z)) ∈ Th (matH (hSc X.Tau a b (TaylorLogMetric.area (TaylorLogMetric.lamOf D cc δ))⁻¹))
       (alphaQ (Real.sqrt D.host.d / 2) (matH (hSc X.Tau a b (TaylorLogMetric.area (TaylorLogMetric.lamOf D cc δ))⁻¹))) (s.laF B.tor L L') :=
   Submodule.smul_mem _ (Base.chiFac χ a b L L') (thMoved_laF s B hcc hδ hA)
-
-theorem relIdx_laF (hcc : TaylorLogMetric.IsCurveIdeal D cc) (hδ : TaylorLogMetric.IsDiscriminantTwelfthRootOfIdealLattice D cc δ)
-    {L₁ : Submodule (𝓞 D.host.E) (Fin a → D.host.E)} {L₁' : Submodule (𝓞 D.host.E) (Fin b → D.host.E)}
-    (hA : TaylorLogMetric.admitted D a b L L') (hA₁ : TaylorLogMetric.admitted D a b L₁ L₁') :
-    relIdx (s.laF B.tor L L') (s.laF B.tor L₁ L₁') ≠ 0 := by
-  unfold Seam.laF
-  rw [relIdx_comap]
-  exact ((B.latAll hcc hδ (delta_ne hcc hδ)).2 a b _ _ _ _ hA hA₁).1
-
-theorem relIdx_laF_eq {L₁ : Submodule (𝓞 D.host.E) (Fin a → D.host.E)} {L₁' : Submodule (𝓞 D.host.E) (Fin b → D.host.E)} :
-    relIdx (s.laF B.tor L L') (s.laF B.tor L₁ L₁') = relIdx (TaylorLogMetric.La D B.tor L L') (TaylorLogMetric.La D B.tor L₁ L₁') := by
-  exact relIdx_comap (s.flatV a b) _ _
 
 end Lat
 
