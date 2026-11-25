@@ -182,9 +182,11 @@ def description_check(number, body, repo, note, pulls):
                           "Rebuild the branch without any that should not land.")
     if missing:
         lines += ["", f"Listed as included, but their head commit is not in this branch: {links(missing)}. Merge the head "
-                  "commit of each into the branch, or take it off the list. One whose earlier commit is in the branch, "
-                  "for example because it was pushed to before the workflow first looked through the batch, does not "
-                  "count either: GitHub marks a pull request merged only when its head commit lands."]
+                  "commit of each into the branch. One whose earlier commit is in the branch, for example because it "
+                  "was pushed to after it was merged in but before the workflow first looked through the batch, does "
+                  "not count: GitHub marks a pull request merged only when its head commit lands. To leave such a one "
+                  "out instead, rebuild the branch without it, since its earlier commit would still land, and take it "
+                  "off the list. One that is not in the branch at all only needs to come off the list."]
     if unlisted:
         lines += ["", f"In this branch, but not listed in the description: {links(unlisted)}."]
     if against:

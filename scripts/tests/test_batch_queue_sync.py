@@ -1647,7 +1647,10 @@ class DescriptionCheck(unittest.TestCase):
         self.assertEqual(gh.pulls[12]["labels"], QF)
         [check] = self.checks(gh)
         self.assertIn("head commit is not in this branch: #12.", check)
-        self.assertIn("pushed to before the workflow first looked through the batch", check)
+        self.assertIn("pushed to after it was merged in but before the workflow first looked through the batch", check)
+        # Taking it off the list would leave its earlier commit in the batch: the advice is to rebuild.
+        self.assertIn("To leave such a one out instead, rebuild the branch without it, since its earlier commit would "
+                      "still land, and take it off the list.", check)
 
     def test_a_member_pushed_to_after_it_was_merged_in_is_not_named(self):
         gh = self.built()

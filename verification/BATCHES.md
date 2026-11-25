@@ -117,8 +117,9 @@ comment of its own on the batch's pull request. It names:
   merged;
 - pull requests listed as included whose head commit is not in the branch. That includes one
   pushed to after it was merged in but before the workflow first looked through the batch: the
-  workflow cannot count its old commit as in the batch. Merge its new head in, or take it off the
-  list;
+  workflow cannot count its old commit as in the batch. Merge its new head in. To leave it out
+  instead, rebuild the branch without it, since its old commit would still land, and take it off
+  the list; one that is not in the branch at all only needs to come off the list;
 - pull requests in the branch that the description does not list at all. This is left out when
   the description lists nothing as included, so a batch that does not follow this format is not
   flooded;
