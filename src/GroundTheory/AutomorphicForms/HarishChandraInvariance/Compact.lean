@@ -184,8 +184,7 @@ theorem isCompact_maxCompact_of_isClosed {G : Subgroup (Matrix ι ι 𝕜)ˣ}
     refine closure_mono ?_ ha
     rintro _ ⟨-, g, rfl⟩
     exact ⟨g, g.2, rfl⟩
-  have huG : u ∈ G := hG.closure_subset hu
-  exact ⟨haS, ⟨u, huG⟩, rfl⟩
+  exact ⟨haS, ⟨u, (hG.closure_subset hu)⟩, rfl⟩
 
 end MaxCompact
 

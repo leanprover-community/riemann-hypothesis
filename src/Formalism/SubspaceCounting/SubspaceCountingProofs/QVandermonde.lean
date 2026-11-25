@@ -33,8 +33,7 @@ theorem form2 (q m : ℕ) : ∀ g n : ℕ, gaussBinom q (m + g) n =
   induction g with
   | zero =>
     intro n
-    rw [Finset.sum_range_succ']
-    simp [gb_zero_succ, gb_zero_right]
+    simp [Finset.sum_range_succ', gb_zero_succ, gb_zero_right]
   | succ g ih =>
     intro n
     cases n with
@@ -53,8 +52,7 @@ theorem form2 (q m : ℕ) : ∀ g n : ℕ, gaussBinom q (m + g) n =
         have hl' : l ≤ k := by
           have := Finset.mem_range.mp hl
           omega
-        rw [gb_succ_succ]
-        simp only [Nat.add_sub_add_right]
+        simp only [gb_succ_succ, Nat.add_sub_add_right]
         rcases Nat.lt_or_ge g (l + 1) with h | h
         · rw [gb_eq_zero q g (l + 1) h]
           ring

@@ -82,14 +82,12 @@ theorem natCard_kerModRange_eq_of_finite [Finite A] {f g : A →+ A} (hfg : ∀ 
   have h2 := natCard_ker_eq hgf
   have h3 := natCard_eq_ker_mul_range f
   have h4 := natCard_eq_ker_mul_range g
-  have hf : 0 < Nat.card f.range := Nat.card_pos
-  have hg : 0 < Nat.card g.range := Nat.card_pos
   have key : Nat.card (KerModRange f g) * (Nat.card g.range * Nat.card f.range) =
       Nat.card (KerModRange g f) * (Nat.card g.range * Nat.card f.range) := by
     calc _ = Nat.card f.ker * Nat.card f.range := by rw [h1]; ring
       _ = Nat.card g.ker * Nat.card g.range := by rw [← h3, ← h4]
       _ = _ := by rw [h2]; ring
-  exact Nat.eq_of_mul_eq_mul_right (Nat.mul_pos hg hf) key
+  exact Nat.eq_of_mul_eq_mul_right (Nat.mul_pos Nat.card_pos Nat.card_pos) key
 
 theorem herbrandQuotient_eq_one_of_finite [Finite A] {f g : A →+ A} (hfg : ∀ x, f (g x) = 0)
     (hgf : ∀ x, g (f x) = 0) : herbrandQuotient f g = 1 := by

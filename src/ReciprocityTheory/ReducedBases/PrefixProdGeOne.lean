@@ -53,7 +53,7 @@ lemma prefix_prod_ge_one (e : Module.Basis (Fin d) ℤ (Fin d → ℤ))
       exact ⟨⟨j.val, by omega⟩, Finset.mem_univ _, Fin.ext rfl⟩
     · intro i _
       rw [hgs i]
-  have hdet := det_gram_eq w
+  have hdet := det_gram_eq w hw
   obtain ⟨G, hG⟩ : ∃ G : Matrix (Fin (k.val + 1)) (Fin (k.val + 1)) ℤ,
       Matrix.gram ℝ w = G.map (Int.cast) := by
     refine ⟨Matrix.of fun a b => ∑ l, e (Fin.castLE hk a) l * e (Fin.castLE hk b) l, ?_⟩

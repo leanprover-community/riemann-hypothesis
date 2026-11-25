@@ -176,8 +176,7 @@ theorem finsum_stabiliser_mul_blocks (F : Type) [Field F] [Finite F] (V : Type) 
         intro g
         refine Subtype.ext (LinearMap.ext fun x => ?_)
         show G _ x = _
-        rw [hG]
-        simp only [LinearMap.restrict_coe_apply, LinearMap.comp_apply]
+        simp only [hG, LinearMap.restrict_coe_apply, LinearMap.comp_apply]
         have hq : W.mapQ W g.1 (fun x hx => g.2 x hx) (W.mkQ x) = W.mkQ (g.1 (s (W.mkQ x))) := by
           conv_lhs => rw [← hs' (W.mkQ x)]
           rfl

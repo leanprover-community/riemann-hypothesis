@@ -64,8 +64,7 @@ theorem fnShape : ∀ (Ω : Type) [Field Ω] (h : HahnSeries ℚ Ω), Den h → 
     rw [hn₀] at hle
     have hNq : (0 : ℚ) < N := by exact_mod_cast hN
     have : (n₀ : ℚ) ≤ n := by
-      have := (div_le_div_iff_of_pos_right hNq).mp hle
-      exact this
+      exact (div_le_div_iff_of_pos_right hNq).mp hle
     have hnn : n₀ ≤ n := by exact_mod_cast this
     apply hr (n - n₀).toNat
     congr 2

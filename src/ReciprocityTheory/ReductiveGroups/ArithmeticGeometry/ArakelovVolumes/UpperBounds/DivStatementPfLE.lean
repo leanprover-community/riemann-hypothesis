@@ -28,11 +28,9 @@ theorem coordL {n : ℕ} (W : V n → ℂ) (S : Fin n → V n → ℂ) (hW : Ana
   let e := PiLp.continuousLinearEquiv 2 ℂ (fun _ : Fin n => ℂ)
   have hcomp : ∀ k, DifferentiableAt ℂ (fun y => S k y / W y) 0 :=
     fun k => ((hS k).div hW hW0).differentiableAt
-  have hG : DifferentiableAt ℂ (fun z k => S k z / W z) 0 := differentiableAt_pi.2 hcomp
-  have hFd : DifferentiableAt ℂ F 0 := e.symm.differentiableAt.comp 0 hG
-  have hdet' : LinearMap.det (fderiv ℂ F 0 : V n →ₗ[ℂ] V n) ≠ 0 := hdet
+  have hFd : DifferentiableAt ℂ F 0 := e.symm.differentiableAt.comp 0 (differentiableAt_pi.2 hcomp)
   let L : V n ≃L[ℂ] V n :=
-    (LinearMap.equivOfDetNeZero (fderiv ℂ F 0 : V n →ₗ[ℂ] V n) hdet').toContinuousLinearEquiv
+    (LinearMap.equivOfDetNeZero (fderiv ℂ F 0 : V n →ₗ[ℂ] V n) hdet).toContinuousLinearEquiv
   have hL : ∀ z, L z = fderiv ℂ F 0 z := fun z => rfl
   refine ⟨L, fun k z => ?_, ?_⟩
   · rw [hL]

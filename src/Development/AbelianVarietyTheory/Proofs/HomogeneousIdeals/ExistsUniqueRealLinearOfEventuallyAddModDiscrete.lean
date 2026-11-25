@@ -86,8 +86,7 @@ theorem existsUnique_realLinear_of_eventually_add_mod_discrete {Γ : AddSubgroup
     rw [sub_sub, sub_eq_zero] at hp
     exact hp
   replace hG := hG.symm
-  have hGc : Continuous G := continuous_of_continuousAt_zero G (hc.congr hG)
-  refine ⟨G.toRealLinearMap hGc, hG, fun L hL ↦ ?_⟩
+  refine ⟨G.toRealLinearMap (continuous_of_continuousAt_zero G (hc.congr hG)), hG, fun L hL ↦ ?_⟩
   have : (L : E →+ F) = G := addMonoidHom_eq_of_eventuallyEq (hL.symm.trans hG)
   ext x
   exact DFunLike.congr_fun this x

@@ -76,7 +76,7 @@ open Opposite
 variable {R' : Type} [CommRing R'] {X X' : Scheme.{0}}
 
 theorem Pair.exists_le (φ : X' ⟶ X) (W : X'.affineOpens) {x : X'} (hx : x ∈ W.1) :
-    ∃ (p : Pair φ) (_ : p.1.1 ≤ W), x ∈ p.1.1.1 := by
+    ∃ (p : Pair φ) (hp : p.1.1 ≤ W), x ∈ p.1.1.1 := by
   obtain ⟨p, f, e, hxp⟩ := Pair.exists_basicOpen φ W hx
   exact ⟨p, show p.1.1.1 ≤ W.1 from e ▸ X'.basicOpen_le f, hxp⟩
 

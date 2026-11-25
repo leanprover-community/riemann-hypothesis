@@ -133,8 +133,7 @@ theorem QFGroup.isFinOpenSub_of_closedFibre :
       ((fst _ _ ≫ openIncl Γ.G U) * (snd _ _ ≫ openIncl Γ.G U))
     have heq : x' ≫ openIncl Γ.G U * y' ≫ openIncl Γ.G U =
         lift x' y' ≫ ((fst _ _ ≫ openIncl Γ.G U) * (snd _ _ ≫ openIncl Γ.G U)) := by
-      rw [comp_mul]
-      simp
+      simp [comp_mul]
     rw [heq]
     simpa using key ((lift x' y').left z)
   · intro S x hx z

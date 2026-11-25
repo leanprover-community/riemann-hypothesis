@@ -80,8 +80,7 @@ theorem continuous_chr (t : ℝ) (β : E n) : Continuous (chr t β) := by
 
 theorem norm_chr (t : ℝ) (β y : E n) : ‖chr t β y‖ = 1 := by
   unfold chr
-  rw [Complex.norm_exp]
-  simp
+  simp [Complex.norm_exp]
 
 theorem abs_log_le (x δ : ℝ) (hx : 0 < x) (hδ : 0 < δ) : |Real.log x| ≤ (x ^ δ + x ^ (-δ)) / δ := by
   have h1 : δ * Real.log x ≤ x ^ δ := by

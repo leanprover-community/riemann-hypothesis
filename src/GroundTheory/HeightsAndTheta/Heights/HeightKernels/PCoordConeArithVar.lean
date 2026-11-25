@@ -318,8 +318,7 @@ theorem CoordConeArithVar.proof (hDim : IntDomainDim.Statement) : CoordConeArith
     (by rw [mCoordIdeal_ratioPtL y c hc]; exact hhor)
   rw [mCoordIdeal_ratioPtL y c hc, trdeg_ratioField y c d t ht htL halg] at htr
   have hA := hDim (MRing ι ⧸ mCoordIdeal y) (CoordinateConeArithVar.algebraMap_injective _ hhor)
-  rw [hA, htr]
-  simp only [map_add (f := _), map_natCast]
+  simp only [hA, htr, map_add (f := _), map_natCast]
   norm_cast
   omega
 

@@ -63,8 +63,8 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.CommonEigenvectorOfCommutingSet.common_eig :
-    ∀ {k : Type} [Field k] [IsAlgClosed k]
-    {V : Type} [AddCommGroup V] [_root_.Module k V] [FiniteDimensional k V] (S : Set (Module.End k V)),
+    ∀ {k : Type} [inst : Field k] [IsAlgClosed k]
+    {V : Type} [inst_2 : AddCommGroup V] [inst_3 : _root_.Module k V] [FiniteDimensional k V] (S : Set (Module.End k V)),
     (∀ f ∈ S, ∀ f' ∈ S, f * f' = f' * f) →
       ∀ (d : ℕ) (W : Submodule k V),
         Module.finrank k ↥W = d →

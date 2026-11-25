@@ -291,8 +291,7 @@ theorem mul_mem_DH {M : ℕ} {h g : Matrix (Fin n) (Fin n) E} (hh : h ∈ DH E n
         ← smul_add]
       congr 1
       noncomm_ring
-    rw [this, e, f]
-    simp only [Matrix.smul_mul, Matrix.mul_smul, smul_smul, smul_add, mul_comm (M : E)]
+    simp only [this, e, f, Matrix.smul_mul, Matrix.mul_smul, smul_smul, smul_add, mul_comm (M : E)]
 
 
 omit [IsCMField E] in

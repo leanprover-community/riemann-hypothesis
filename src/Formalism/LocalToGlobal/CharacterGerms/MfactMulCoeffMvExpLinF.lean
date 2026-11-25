@@ -75,8 +75,7 @@ theorem coeff_mvExp_linF_step (lam : τ → K) (w : τ) (m : τ →₀ ℕ) :
   field_simp
 
 theorem coeff_zero_mvExp (h : MvPowerSeries τ K) : coeff 0 (mvExp h) = 1 := by
-  rw [coeff_mvExp_eq_sum_range_degree]
-  simp
+  simp [coeff_mvExp_eq_sum_range_degree]
 
 end ExpLin
 

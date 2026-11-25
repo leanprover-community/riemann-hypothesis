@@ -88,7 +88,7 @@ open Matrix
 namespace GlobalTheory.CompanionTheory.Metric.Telescope
 
 theorem fin_iic_telescope : ∀ (N : ℕ) (M : Type) [AddCommGroup M] (f : Fin N → M) (i : Fin N),
-    f i = -∑ k ∈ Finset.Iic i, (if _ : (k : ℕ) = 0 then -f k else
+    f i = -∑ k ∈ Finset.Iic i, (if h : (k : ℕ) = 0 then -f k else
       f ⟨(k : ℕ) - 1, by have := k.2; omega⟩ - f k) := by
   intro N M _ f i
   obtain ⟨n, hn⟩ := i
@@ -1121,7 +1121,7 @@ open Matrix
 namespace GlobalTheory.CompanionTheory.Metric.UnitQuotients
 
 theorem consecutive_quotients_units :
-    ∀ (Φ : Type) [Field Φ] (R : Subring Φ) (N : ℕ) (G E : Fin N → Φ), (∀ i, E i ≠ 0) → (∀ i, (∏ k ∈ Finset.Iic i, G k) / E i ≠ 0 ∧ (∏ k ∈ Finset.Iic i, G k) / E i ∈ R ∧ ((∏ k ∈ Finset.Iic i, G k) / E i)⁻¹ ∈ R) → ∀ i : Fin N, G i / (if _ : (i : ℕ) = 0 then E i else E i / E ⟨(i : ℕ) - 1, by have := i.2; omega⟩) ≠ 0 ∧ G i / (if _ : (i : ℕ) = 0 then E i else E i / E ⟨(i : ℕ) - 1, by have := i.2; omega⟩) ∈ R ∧ (G i / (if _ : (i : ℕ) = 0 then E i else E i / E ⟨(i : ℕ) - 1, by have := i.2; omega⟩))⁻¹ ∈ R := by
+    ∀ (Φ : Type) [Field Φ] (R : Subring Φ) (N : ℕ) (G E : Fin N → Φ), (∀ i, E i ≠ 0) → (∀ i, (∏ k ∈ Finset.Iic i, G k) / E i ≠ 0 ∧ (∏ k ∈ Finset.Iic i, G k) / E i ∈ R ∧ ((∏ k ∈ Finset.Iic i, G k) / E i)⁻¹ ∈ R) → ∀ i : Fin N, G i / (if h : (i : ℕ) = 0 then E i else E i / E ⟨(i : ℕ) - 1, by have := i.2; omega⟩) ≠ 0 ∧ G i / (if h : (i : ℕ) = 0 then E i else E i / E ⟨(i : ℕ) - 1, by have := i.2; omega⟩) ∈ R ∧ (G i / (if h : (i : ℕ) = 0 then E i else E i / E ⟨(i : ℕ) - 1, by have := i.2; omega⟩))⁻¹ ∈ R := by
   intro Φ _ R N G E hE hU i
   by_cases h : (i : ℕ) = 0
   · have hI : Finset.Iic i = {i} := by
@@ -1268,7 +1268,7 @@ theorem point_gen {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E
     (hc : InChart 𝔐'.ξ (seg (yv (p := D.p) (q := D.q) (aOf 𝔐 bW bO φ) x₀)) cc p') :
     Fl.rootLat (τ, i) p' = Submodule.span (regAt 𝔐'.ξ p')
       {(∏ k, yv (p := D.p) (q := D.q) (aOf 𝔐 bW bO φ) x₀ ⟨k, cc k⟩ ^
-        (if _ : (i : ℕ) = 0 then -(model (aOf 𝔐 bW bO φ) x₀ m h).dy (τ, i)
+        (if h0 : (i : ℕ) = 0 then -(model (aOf 𝔐 bW bO φ) x₀ m h).dy (τ, i)
           else (model (aOf 𝔐 bW bO φ) x₀ m h).dy (τ, ⟨(i : ℕ) - 1, by have := i.2; omega⟩) -
             (model (aOf 𝔐 bW bO φ) x₀ m h).dy (τ, i)) k)} := by
   let yc : K₀ ⊕ StepIx (CMType H) D.p D.q → (GenField Ω (rk (CMType H) D.p D.q)) := fun k => yv (p := D.p) (q := D.q) (aOf 𝔐 bW bO φ) x₀ ⟨k, cc k⟩

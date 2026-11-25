@@ -91,11 +91,9 @@ private theorem UpperTheory.Reformulated.B.Qj14.cayley_form {ι : Type*} [Fintyp
   have hinv : (1 - Y) * (1 - Y)⁻¹ = 1 := Matrix.mul_nonsing_inv _ hu
   calc ((1 + Y) * (1 - Y)⁻¹).conjTranspose * H * ((1 + Y) * (1 - Y)⁻¹)
       = ((1 - Y)⁻¹).conjTranspose * ((1 + Y).conjTranspose * H * (1 + Y)) * (1 - Y)⁻¹ := by
-        rw [Matrix.conjTranspose_mul]
-        simp only [Matrix.mul_assoc]
+        simp only [Matrix.conjTranspose_mul, Matrix.mul_assoc]
     _ = ((1 - Y) * (1 - Y)⁻¹).conjTranspose * H * ((1 - Y) * (1 - Y)⁻¹) := by
-        rw [key, Matrix.conjTranspose_mul]
-        simp only [Matrix.mul_assoc]
+        simp only [key, Matrix.conjTranspose_mul, Matrix.mul_assoc]
     _ = H := by
         rw [hinv, Matrix.conjTranspose_one, Matrix.one_mul, Matrix.mul_one]
 

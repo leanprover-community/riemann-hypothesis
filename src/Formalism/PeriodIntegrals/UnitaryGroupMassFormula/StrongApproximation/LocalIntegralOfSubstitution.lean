@@ -46,9 +46,8 @@ theorem local_neighbourhood_small : LocSmall := by
     simp at hyv
     exact hx₀0 hyv.symm
   refine ⟨c, hc0, fun z hz => ?_⟩
-  have h1 : L.ιF z ≤ᵥ L.ιF c := (L.val z c).mpr hz
   have h2 : valuation L.Fp (L.ιF z) ≤ valuation L.Fp (L.ιF c) :=
-    (Valuation.Compatible.vle_iff_le (v := valuation L.Fp) _ _).mp h1
+    (Valuation.Compatible.vle_iff_le (v := valuation L.Fp) _ _).mp ((L.val z c).mpr hz)
   exact hγ (show valuation L.Fp (L.ιF z) < γ from lt_of_le_of_lt (h2.trans_eq hyv) hx₀v)
 
 theorem local_integral_of_substitution : LocInt := by

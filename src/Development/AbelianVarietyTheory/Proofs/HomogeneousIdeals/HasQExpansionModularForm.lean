@@ -169,8 +169,7 @@ lemma eq_zero (hh : 0 < h) (hf : HasQExpansion h (fun _ ↦ 0) φ) : φ = 0 := b
   | succ m ih =>
     have h0 : coeff 0 φ = 0 := (tendsto_nhds_unique tendsto_const_nhds (hf.tendsto hh)).symm
     obtain ⟨ψ, rfl⟩ : X ∣ φ := X_dvd_iff.mpr (by simpa using h0)
-    have := ih (φ := ψ) (of_qParam_mul (by simpa using hf))
-    simpa [coeff_succ_X_mul] using this
+    simpa [coeff_succ_X_mul] using ih (φ := ψ) (of_qParam_mul (by simpa using hf))
 
 lemma unique (hh : 0 < h) (hf : HasQExpansion h f φ) (hg : HasQExpansion h f ψ) : φ = ψ :=
   sub_eq_zero.mp (eq_zero hh (by simpa using hf.sub hg))

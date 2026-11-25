@@ -49,16 +49,14 @@ theorem invBaseChange : InvBaseChange := by
       coord_baseChange b V.subtype z₂] at h'
     apply (equivFinsuppOfBasisLeft b).injective
     ext i
-    have := congrArg (fun c => c i) h'
-    simpa using this
+    simpa using congrArg (fun c => c i) h'
   have hrange : (⨅ g, LinearMap.ker ((T g).baseChange LL' - LinearMap.id) :
       Submodule LL' (LL' ⊗[LL] W)) = LinearMap.range (V.subtype.baseChange LL') := by
     apply le_antisymm
     · intro x hx
       have hfix : ∀ g, (T g).baseChange LL' x = x := by
         intro g
-        have := (Submodule.mem_iInf _).1 hx g
-        simpa [sub_eq_zero] using this
+        simpa [sub_eq_zero] using (Submodule.mem_iInf _).1 hx g
       have hc : ∀ i, equivFinsuppOfBasisLeft b x i ∈ V := by
         intro i
         rw [memV]

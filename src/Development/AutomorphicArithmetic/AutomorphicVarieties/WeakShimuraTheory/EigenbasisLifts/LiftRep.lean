@@ -82,7 +82,7 @@ section -- clump:auto
 @[expose] public section
 
 noncomputable def UpperTheory.Reformulated.B.CayleyHamiltonSymmetric.Full :
-    {H K : Type} → [Group H] → [CommRing K] → {n : ℕ} → (H →* GL (Fin n) K) → Prop :=
+    {H K : Type} → [inst : Group H] → [inst_1 : CommRing K] → {n : ℕ} → (H →* GL (Fin n) K) → Prop :=
     fun {H K : Type} [Group H] [CommRing K] {n : ℕ} (ρ : H →* GL (Fin n) K) ↦
       Submodule.span K (Set.range (⇑(UpperTheory.V.W.mat ρ) : H → Matrix (Fin n) (Fin n) K)) = ⊤
 
@@ -1371,8 +1371,8 @@ end UpperTheory.Reformulated.B.CayleyHamiltonSymmetric
 end
 
 theorem UpperTheory.Reformulated.B.CayleyHamiltonSymmetric.detRep :
-    ∀ {A k G : Type} [CommRing A] [IsLocalRing A] [IsNoetherianRing A]
-      [IsAdicComplete (IsLocalRing.maximalIdeal A) A] [Field k] (f : A →+* k) [IsLocalHom f] [Group G]
+    ∀ {A k G : Type} [inst : CommRing A] [inst_1 : IsLocalRing A] [IsNoetherianRing A]
+      [IsAdicComplete (IsLocalRing.maximalIdeal A) A] [inst_4 : Field k] (f : A →+* k) [IsLocalHom f] [inst_6 : Group G]
       {n : ℕ} (D : UpperTheory.V.W.GDet n A G) (ρ : G →* GL (Fin n) k),
       (1 : ℕ) ≤ n →
         Function.Surjective (⇑f : A → k) →

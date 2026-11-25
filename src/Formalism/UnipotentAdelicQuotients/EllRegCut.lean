@@ -73,8 +73,7 @@ theorem localSobolev_of (hB : BaseLevel) (hC : CutCont) (hS : Step) : LocalSobol
       simpa using hB d (cut χ u) h.1 h.2
     | succ n ih =>
       intro χ hχ hχc hχs
-      have := hstep ((-(d : ℝ) - 1) + n) ih χ hχ hχc hχs
-      simpa [Nat.cast_succ, add_assoc] using this
+      simpa [Nat.cast_succ, add_assoc] using hstep ((-(d : ℝ) - 1) + n) ih χ hχ hχc hχs
   intro χ hχ hχc hχs s
   have h := key (s + d + 1) χ hχ hχc hχs
   have e : (-(d : ℝ) - 1) + ((s + d + 1 : ℕ) : ℝ) = (s : ℝ) := by push_cast; ring

@@ -119,8 +119,7 @@ private theorem mem_unit (M : Matrix (Fin 3) (Fin 3) (Lsq K Δ))
   refine Matrix.ext fun a b => ?_
   have := h (Pi.single b 1) (Pi.single a 1)
   simp only [Matrix.mulVec_single_one, Matrix.col_apply] at this
-  rw [Matrix.mul_apply]
-  simp only [Matrix.star_apply, mul_comm (star _)]
+  simp only [Matrix.mul_apply, Matrix.star_apply, mul_comm (star _)]
   rw [this, Matrix.one_apply, Finset.sum_eq_single a]
   · by_cases hab : a = b <;> simp [hab]
   · intro i _ hi

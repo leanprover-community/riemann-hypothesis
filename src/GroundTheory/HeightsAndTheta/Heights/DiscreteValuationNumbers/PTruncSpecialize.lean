@@ -95,8 +95,7 @@ theorem TruncSpecialize.proof : TruncSpecialize.Statement := by
     have ksub : map (sub : MvPolynomial (Fin N) Ω →+* MvPolynomial (Fin N) Ω)
         (eval₂ (C.comp algA) (fun p => C (cA ((i : ℕ) + 1) p) * X p.1) x) =
         eval₂ (C.comp algA) (fun p => C (cA i p) * X p.1) x := by
-      rw [map_coneMap, hsubA]
-      simp only [AlgHom.coe_toRingHom, hsubc]
+      simp only [map_coneMap, hsubA, AlgHom.coe_toRingHom, hsubc]
     simp only [projIdeal, RingHom.mem_ker] at hx ⊢
     rw [key] at hx ⊢
     have h0 : eval₂ (C.comp algA) (fun p => C (cA ((i : ℕ) + 1) p) * X p.1) x = 0 :=

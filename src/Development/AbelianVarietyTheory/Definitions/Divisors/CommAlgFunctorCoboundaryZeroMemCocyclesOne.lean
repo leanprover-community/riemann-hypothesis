@@ -129,9 +129,8 @@ theorem commAlgFunctorCocyclesOne_eq_ker : Z1 F = LinearMap.ker (d1 F) := by
   constructor
   · intro hf
     funext T T' T'' φ ψ
-    have h : f T T'' (φ ≫ ψ) = mp F ψ (f T T' φ) + f T' T'' ψ := hf φ ψ
     show mp F ψ (f T T' φ) - f T T'' (φ ≫ ψ) + f T' T'' ψ = 0
-    linear_combination -h
+    linear_combination -(hf φ ψ)
   · intro hf T T' T'' φ ψ
     have h := congrFun (congrFun (congrFun (congrFun (congrFun hf T) T') T'') φ) ψ
     change mp F ψ (f T T' φ) - f T T'' (φ ≫ ψ) + f T' T'' ψ = 0 at h

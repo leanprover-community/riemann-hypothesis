@@ -70,8 +70,7 @@ theorem exists_norm_le_norm_shifted (A : E →L[ℂ] F) :
   have hinj : Function.Injective ((A : E →ₗ[ℂ] F).comp Kᗮ.subtype) := by
     rw [← LinearMap.ker_eq_bot, LinearMap.ker_eq_bot']
     intro u hu
-    have h1 : (u : E) ∈ K := hu
-    have h2 : (u : E) ∈ K ⊓ Kᗮ := ⟨h1, u.2⟩
+    have h2 : (u : E) ∈ K ⊓ Kᗮ := ⟨hu, u.2⟩
     rw [K.inf_orthogonal_eq_bot, Submodule.mem_bot] at h2
     exact Subtype.ext h2
   obtain ⟨c, -, hc⟩ := ((A : E →ₗ[ℂ] F).comp Kᗮ.subtype).injective_iff_antilipschitz.1 hinj
@@ -104,8 +103,7 @@ theorem exists_norm_resolvent_sub_le (A : E →L[ℂ] F) :
   refine ContinuousLinearMap.opNorm_le_bound _ (by positivity) fun v => ?_
   set u := (resolvent A ε - K.starProjection) v with hu_def
   have hinv : shifted A ε (Ring.inverse (shifted A ε) v) = v := by
-    have := Ring.mul_inverse_cancel _ (isUnit_shifted A hε)
-    exact congrArg (fun T : E →L[ℂ] E => T v) this
+    exact congrArg (fun T : E →L[ℂ] E => T v) (Ring.mul_inverse_cancel _ (isUnit_shifted A hε))
   have hPv : A (K.starProjection v) = 0 := K.starProjection_apply_mem v
   have hTu : shifted A ε u = (ε : ℂ) • (v - K.starProjection v) := by
     rw [hu_def, resolvent, sub_apply, smul_apply, map_sub, map_smul, hinv,

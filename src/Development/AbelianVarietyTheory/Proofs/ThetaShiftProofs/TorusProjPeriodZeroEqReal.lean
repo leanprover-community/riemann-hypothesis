@@ -75,8 +75,7 @@ theorem real_pos_of_int_pos {ι : Type} [Fintype ι] [DecidableEq ι] (M : Matri
     have hd0 : ((d : ℤ) : ℝ) ≠ 0 := by exact_mod_cast nonZeroDivisors.coe_ne_zero d
     have hxy : (fun i => (y i : ℝ)) = ((d : ℤ) : ℝ) • (fun i => (x i : ℝ)) := by
       funext i
-      have := congrArg (fun q : ℚ => (q : ℝ)) (hy i)
-      simpa [Submonoid.smul_def] using this
+      simpa [Submonoid.smul_def] using congrArg (fun q : ℚ => (q : ℝ)) (hy i)
     have h1 : (0 : ℝ) ≤ ((y ⬝ᵥ M *ᵥ y : ℤ) : ℝ) := by
       by_cases h : y = 0
       · simp [h]
@@ -131,8 +130,7 @@ theorem lattice_of_im {L W : Type} [AddCommGroup L] [Module.Free ℤ L] [Module.
     intro h
     obtain ⟨v, hv, h0⟩ := exists_vecMul_eq_zero_iff.2 h
     have h1 : E (∑ i, v i • b i) = 0 := b.ext fun j => by
-      have := congrFun h0 j
-      simpa [M, vecMul, dotProduct] using this
+      simpa [M, vecMul, dotProduct] using congrFun h0 j
     have h2 : ∑ i, v i • b i = 0 := hE (by rw [h1, map_zero])
     exact hv (funext (Fintype.linearIndependent_iff.1 b.linearIndependent v h2))
   have hdet' : (M.map (Int.cast : ℤ → ℝ)).det ≠ 0 := by
@@ -184,8 +182,7 @@ theorem EF_bijective : Function.Bijective A.EF := by
     · have := h (La.mk x 0 0)
       simpa [EF_apply] using this
     · refine A.Ef_bij.1 (LinearMap.ext fun m => ?_)
-      have := h (La.mk 0 0 m)
-      simpa [EF_apply] using this
+      simpa [EF_apply] using h (La.mk 0 0 m)
   · intro φ
     let φ₁ : A.X →+ ℤ := AddMonoidHom.mk' (fun y => φ (La.mk y 0 0)) fun y y' => by
       rw [← map_add (f := _)]; congr 1; ext <;> simp

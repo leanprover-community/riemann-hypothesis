@@ -73,8 +73,7 @@ theorem geom_mul (q m l : ℕ) (hq : 0 < q) :
 
 theorem pow_modEq_pow_mod (q m x : ℕ) (hq : 1 ≤ q) :
     q ^ x ≡ q ^ (x % m) [MOD q ^ m - 1] := by
-  have h1 : 1 ≤ q ^ m := Nat.one_le_pow _ _ hq
-  have hm : q ^ m ≡ 1 [MOD q ^ m - 1] := Nat.modEq_sub h1
+  have hm : q ^ m ≡ 1 [MOD q ^ m - 1] := Nat.modEq_sub (Nat.one_le_pow _ _ hq)
   calc q ^ x = (q ^ m) ^ (x / m) * q ^ (x % m) := by
         rw [← pow_mul, ← pow_add, Nat.div_add_mod]
     _ ≡ 1 ^ (x / m) * q ^ (x % m) [MOD q ^ m - 1] := (hm.pow _).mul_right _

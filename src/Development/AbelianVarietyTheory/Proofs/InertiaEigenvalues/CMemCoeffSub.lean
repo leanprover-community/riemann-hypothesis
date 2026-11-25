@@ -133,8 +133,7 @@ theorem det_comb_mem {O X Q : Type} [CommRing O] [CommRing Q] (T : Subalgebra O 
       ∑ d ∈ A.det.support, (fun x => φ (AddMonoidAlgebra.coeff A.det d x)) *
         algebraMap Q (X → Q) (∏ k, c (e k) ^ d k) := by
     funext x
-    rw [h3, MvPolynomial.eval₂_eq', Finset.sum_apply]
-    simp
+    simp [h3, MvPolynomial.eval₂_eq', Finset.sum_apply]
   rw [key]
   exact S.sum_mem fun d _ => S.mul_mem (hS _ (hcoef d)) (S.algebraMap_mem _)
 

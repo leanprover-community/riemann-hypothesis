@@ -80,8 +80,7 @@ theorem avg_fd_prod {n : ℕ} (f : Fin n → Vsp X.dim → ℝ) :
     ⨍ v in X.fd n, ∏ k, f k (v k) = ∏ k, ⨍ x in ZSpan.fundamentalDomain X.b, f k x := by
   have hfd : X.fd n = Set.univ.pi (fun _ : Fin n => ZSpan.fundamentalDomain X.b) := by
     ext v; simp [PT.fd]
-  rw [hfd]
-  simp only [MeasureTheory.setAverage_eq, smul_eq_mul]
+  simp only [hfd, MeasureTheory.setAverage_eq, smul_eq_mul]
   rw [MeasureTheory.volume_pi, MeasureTheory.Measure.restrict_pi_pi]
   simp only [MeasureTheory.measureReal_def]
   rw [MeasureTheory.Measure.pi_pi, ENNReal.toReal_prod, ← Finset.prod_inv_distrib]
@@ -142,8 +141,7 @@ theorem eq_zero_of_l2_eq_zero (hP : Ext.PackingCount) {q : ℕ} (hq : 1 ≤ q) {
     have hre : (HC (fun _ : Fin 1 => x) (fun _ => x)).re = ‖x‖ ^ 2 := by simp [HC, jof_Hf_self_re]
     simp only [PT.ptN2, hre, hgdef]
   have hl := l2_norm_fundamental_domain X q s
-  rw [h0] at hl
-  simp only [hpx] at hl
+  simp only [h0, hpx] at hl
   set D := ZSpan.fundamentalDomain X.b with hD
   have hDm : MeasurableSet D := ZSpan.fundamentalDomain_measurableSet X.b
   have hDb : Bornology.IsBounded D := ZSpan.fundamentalDomain_isBounded X.b
@@ -183,8 +181,7 @@ theorem eq_zero_of_l2_eq_zero (hP : Ext.PackingCount) {q : ℕ} (hq : 1 ≤ q) {
   have hinv : ∀ γ : Submodule.span ℤ (Set.range X.b), γ +ᵥ {x | g x ≠ 0} = {x | g x ≠ 0} := by
     intro γ
     ext y
-    rw [Set.mem_vadd_set_iff_neg_vadd_mem]
-    simp only [Set.mem_setOf_eq]
+    simp only [Set.mem_vadd_set_iff_neg_vadd_mem, Set.mem_setOf_eq]
     have e : (-γ) +ᵥ y = y + -(γ : Vsp X.dim) := by
       first
       | (rw [Submodule.vadd_def, add_comm]; rfl)

@@ -213,7 +213,6 @@ theorem dec_of_monotone {ε : Fin n → Bool} (hε : Monotone ε) : Dec (Jm ε) 
 theorem dec_Jm (ε : Fin n → Bool) : Dec (Jm ε) := by
   classical
   let σ := Tuple.sort ε
-  have hmono : Monotone (ε ∘ σ) := Tuple.monotone_sort ε
   let V : Matrix (Fin n) (Fin n) ℂ := (1 : Matrix (Fin n) (Fin n) ℂ).submatrix id σ
   have hV : ∀ H : Matrix (Fin n) (Fin n) ℂ, V.conjTranspose * H * V = H.submatrix σ σ := by
     intro H
@@ -230,7 +229,7 @@ theorem dec_Jm (ε : Fin n → Bool) : Dec (Jm ε) := by
       rw [Matrix.submatrix_diagonal_equiv]
       rfl
     rw [h2]
-    exact dec_of_monotone hmono
+    exact dec_of_monotone (Tuple.monotone_sort ε)
 
 end CholeskyDecomposition
 

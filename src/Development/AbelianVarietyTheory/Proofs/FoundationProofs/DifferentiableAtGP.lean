@@ -314,8 +314,7 @@ private lemma E_ee_pt_eq_neg_F_of_mem_Ico {x : Fin 2 → ℚ}
   rcases h0.eq_or_lt with h | h
   · have hx0 : x 0 = 0 := h.symm
     have hte : t = _root_.GlobalTheory.Sieg.ee (x 1) := by
-      rw [ht_def, _root_.GlobalTheory.Sieg.pt, hx0]
-      simp
+      simp [ht_def, _root_.GlobalTheory.Sieg.pt, hx0]
     have h1t : 1 - t ≠ 0 := by simpa using (hne 0).1
     rw [ite_eq_left hx0, ite_eq_left hx0, ← hte, hx0]
     field_simp
@@ -342,8 +341,7 @@ private lemma E_mul_left_eq_sub_one {q : ℂ} (hq : ‖q‖ < 1) (hq0 : q ≠ 0)
   have h2 : _root_.GlobalTheory.Sieg.DlogOne.gS q (q * t)⁻¹ = t⁻¹ / (1 - t⁻¹) + _root_.GlobalTheory.Sieg.DlogOne.gS q t⁻¹ := by
     unfold _root_.GlobalTheory.Sieg.DlogOne.gS
     simp_rw [hterm]
-    rw [hsum.tsum_eq_zero_add]
-    simp only [pow_zero, one_mul]
+    simp only [hsum.tsum_eq_zero_add, pow_zero, one_mul]
   have key : t⁻¹ / (1 - t⁻¹) = -(t / (1 - t)) - 1 := by
     have h3 : 1 - t ≠ 0 := sub_ne_zero.mpr (Ne.symm ht1)
     have h4 : t - 1 ≠ 0 := sub_ne_zero.mpr ht1

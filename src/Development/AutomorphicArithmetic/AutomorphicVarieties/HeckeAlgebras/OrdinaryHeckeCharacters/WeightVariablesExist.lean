@@ -91,7 +91,7 @@ private theorem weight_variables_exist (l : ℕ) [Fact l.Prime] (F : W.GFrame l)
     rw [h1, h2, ← mul_assoc, ← map_mul, Units.inv_mul, map_one, one_mul, add_sub_cancel_left]
 
 theorem UpperTheory.V.Hi.levelUR2WtVars :
-    ∀ (l : ℕ) [Fact l.Prime] (L Ω : Type) [Field L] [NumberField L] [IsCMField L] [Field Ω] [Algebra L Ω] [IsAlgClosure L Ω] (s : HidaSetting l L Ω) (n : ℕ) (V : s.Lev) (c : Coef l) (r : Resid V.frame c.O n) (_ : UniversalOrdinaryDeterminantRing r) (Λ : LamObj r), Pa.LocCFT s → ∃ (wt : Pa.WtVars (Pa.locOf r) c.O n (n * Module.finrank ℚ (Lp L))) (e : Pa.abelian₂ c.O Empty (n * Module.finrank ℚ (Lp L)) ≃ₐ[c.O] Λ.Λ), ∀ k, ∃ hγ : wt.γ k ∈ V.frame.Iv (wt.v k), residue c.O (wt.c k) * (r.psib (wt.v k) (wt.i k) (wt.γ k) : ResidueField c.O) = 1 ∧ e (MvPowerSeries.X (.inr k)) = algebraMap c.O Λ.Λ (wt.c k) * (Λ.κ (wt.v k) (wt.i k) ⟨wt.γ k, hγ⟩ : Λ.Λˣ) - 1 := by
+    ∀ (l : ℕ) [Fact l.Prime] (L Ω : Type) [Field L] [NumberField L] [IsCMField L] [Field Ω] [Algebra L Ω] [IsAlgClosure L Ω] (s : HidaSetting l L Ω) (n : ℕ) (V : s.Lev) (c : Coef l) (r : Resid V.frame c.O n) (B : UniversalOrdinaryDeterminantRing r) (Λ : LamObj r), Pa.LocCFT s → ∃ (wt : Pa.WtVars (Pa.locOf r) c.O n (n * Module.finrank ℚ (Lp L))) (e : Pa.abelian₂ c.O Empty (n * Module.finrank ℚ (Lp L)) ≃ₐ[c.O] Λ.Λ), ∀ k, ∃ hγ : wt.γ k ∈ V.frame.Iv (wt.v k), residue c.O (wt.c k) * (r.psib (wt.v k) (wt.i k) (wt.γ k) : ResidueField c.O) = 1 ∧ e (MvPowerSeries.X (.inr k)) = algebraMap c.O Λ.Λ (wt.c k) * (Λ.κ (wt.v k) (wt.i k) ⟨wt.γ k, hγ⟩ : Λ.Λˣ) - 1 := by
   intro l hl L Ω _ _ _ _ _ _ s n V c r _ Λ h
   haveI : IsAdicComplete (maximalIdeal c.O) c.O := (UpperTheory.V.Base.dvrFacts l c.O).2.2.2.1
   haveI : IsLocalHom (algebraMap ℤ_[l] c.O) := (UpperTheory.V.Base.dvrFacts l c.O).2.2.1

@@ -306,7 +306,7 @@ theorem additive_of_sumFor (hW : GlobalTheory.IndefiniteRowSideFullHecke.UnitDua
 end Generic
 
 theorem additive_of_caseA : ∀ {l : ℕ} [Fact l.Prime] {P : LocPrime l} (AI : LocAinf l P) (H : LocHW l P)
-    (E : LocFon l P AI H) (_ : LocCmpT l P AI H E), ∀ (K LL : FinExt l) (h : CaseA K LL),
+    (E : LocFon l P AI H) (C : LocCmpT l P AI H E), ∀ (K LL : FinExt l) (h : CaseA K LL),
     Additive (H.W K 1 LL h.2.2) := by
   intro l _ P _ H _ _ K LL h
 
@@ -671,7 +671,7 @@ theorem rankOne_of_caseA (h : CaseA K LL) (hs : W.s = 1) (h1 : InvBasis W) (h2 :
 
 end Local
 
-theorem rankOne_of_senOp : ∀ {l : ℕ} [Fact l.Prime] {P : LocPrime l} (AI : LocAinf l P) (H : LocHW l P) (E : LocFon l P AI H) (_ : LocCmpT l P AI H E), ∀ (K LL : FinExt l) (h : CaseA K LL), InvBasis (H.W K 1 LL h.2.2) → SenOp (H.W K 1 LL h.2.2) → RankOne (H.W K 1 LL h.2.2) :=
+theorem rankOne_of_senOp : ∀ {l : ℕ} [Fact l.Prime] {P : LocPrime l} (AI : LocAinf l P) (H : LocHW l P) (E : LocFon l P AI H) (C : LocCmpT l P AI H E), ∀ (K LL : FinExt l) (h : CaseA K LL), InvBasis (H.W K 1 LL h.2.2) → SenOp (H.W K 1 LL h.2.2) → RankOne (H.W K 1 LL h.2.2) :=
   fun {_} _ {P} _ H _ _ K LL h => rankOne_of_caseA P K LL _ h (H.W_s K 1 LL h.2.2)
 
 end GlobalTheory.WachRankOne
@@ -1059,7 +1059,7 @@ theorem linesAt_of_record (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW)
     (_root_.GlobalTheory.NL.LatFil.lat_eq_fil D HW F Cm l K 1 LL hA.2.2 T hc.1 i ζ _ hP) u d fun a => ?_⟩
   exact (GlobalTheory.Per.FilLetUnram.toDR_FilLet _ T i _ a hbij.2 hτ (hfil a)).trans (hs a)
 
-theorem senOp_of_record : ∀ (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (_ : CmpOf D.loc D.locA HW F)
+theorem senOp_of_record : ∀ (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F)
     (l : ℕ) [Fact l.Prime] (K LL : FinExt l) (hA : CaseA K LL), GlobalTheory.WachUse.SenOp ((HW l).W K 1 LL hA.2.2) :=
   fun D HW F Cm l _ _ _ hA => senOp_of_lines (Cm l) hA (linesAt_of_record D HW F Cm l hA)
 

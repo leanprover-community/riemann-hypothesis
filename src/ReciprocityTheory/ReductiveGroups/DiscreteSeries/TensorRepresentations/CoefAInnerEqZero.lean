@@ -46,9 +46,8 @@ theorem coefA_inner_eq_zero {T : X →ₗ[ℂ] X} (hT : ∀ x y, inner ℂ (T x)
     inner ℂ u v = 0 := by
   have h := hT u v
   rw [hu, hv, inner_smul_left, inner_smul_right, Complex.conj_ofReal] at h
-  have hne' : (α : ℂ) - β ≠ 0 := sub_ne_zero.mpr (by exact_mod_cast hne)
   have h0 : ((α : ℂ) - β) * inner ℂ u v = 0 := by rw [sub_mul, h, sub_self]
-  exact (mul_eq_zero.mp h0).resolve_left hne'
+  exact (mul_eq_zero.mp h0).resolve_left (sub_ne_zero.mpr (by exact_mod_cast hne))
 
 end Spec
 

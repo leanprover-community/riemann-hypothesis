@@ -62,8 +62,7 @@ variable {p : ℕ} [Fact p.Prime] {V : Type} [CommRing V] [IsDomain V] [IsDiscre
 theorem norm_lt_one_of_mem_maximalIdeal
     (hV : ∀ x, ‖κ x‖ ≤ 1 ↔ x ∈ Set.range (algebraMap V (FractionRing V)))
     {v : V} (hv : v ∈ maximalIdeal V) : ‖κ (algebraMap V (FractionRing V) v)‖ < 1 := by
-  have hle : ‖κ (algebraMap V (FractionRing V) v)‖ ≤ 1 := (hV _).2 ⟨v, rfl⟩
-  refine lt_of_le_of_ne hle fun h1 => ?_
+  refine lt_of_le_of_ne ((hV _).2 ⟨v, rfl⟩) fun h1 => ?_
   have hv0 : v ≠ 0 := by
     rintro rfl; simp at h1
   have hι : algebraMap V (FractionRing V) v ≠ 0 :=

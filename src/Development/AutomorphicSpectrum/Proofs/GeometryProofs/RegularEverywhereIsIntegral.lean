@@ -189,8 +189,7 @@ theorem isIntegral_of_forall_valuationSubring' {R Ω : Type} [CommRing R] [Field
   have hcomp : (algebraMap R Ω).comp (e.symm : _ →+* R) =
       (RingHom.id Ω).comp (algebraMap (Subring.closure (Set.range (algebraMap R Ω))) Ω) := by
     ext x
-    have : g (e.symm x) = x := e.apply_symm_apply x
-    exact congrArg Subtype.val this
+    exact congrArg Subtype.val (e.apply_symm_apply x : g (e.symm x) = x)
   exact IsIntegral.map_of_comp_eq (e.symm : _ →+* R) (RingHom.id Ω) hcomp hall
 
 theorem isIntegral_and_isAlgebraic_of_regular : ∀ (X : Scheme.{0}) (Ω : Type) [Field Ω] (ξ : Spec (CommRingCat.of Ω) ⟶ X) (O : Type) [CommRing O] [IsDomain O] [Algebra O Ω] (s : X ⟶ Spec (CommRingCat.of O)) [IsProper s], ξ ≫ s = Spec.map (CommRingCat.ofHom (algebraMap O Ω)) → Function.Injective (algebraMap O Ω) → IsCptGen ξ → ∀ a : Ω, ((∀ p : Cpt ξ, a ∈ regAt ξ p) → IsIntegral O a) ∧ ((∀ p ∈ genFibre O ξ, a ∈ regAt ξ p) → IsAlgebraic O a) := by

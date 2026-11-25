@@ -225,7 +225,7 @@ theorem ratio_tor (p p' : QkPt D F k) (t : Multiplicative D.X →* Fˣ) (hy : p.
 
 end GlobalTheory.QkPairing
 
-theorem GlobalTheory.weilQk_existsUnique : LL → AllD fun {_} _ _ {_} D F _ _ => ∀ (k : ℕ), 1 ≤ k → ∀ p p' : QkPt D.toPre F k, (∃! ζ : Fˣ, WeilQkIs D.toPre F k p p' ζ) ∧ ∀ t, p.y = 0 → IsTor t p.g → WeilQkIs D.toPre F k p p' (t (Multiplicative.ofAdd p'.y)).val := by
+theorem GlobalTheory.weilQk_existsUnique : LL → AllD fun {R} _ _ {I} D F _ _ => ∀ (k : ℕ), 1 ≤ k → ∀ p p' : QkPt D.toPre F k, (∃! ζ : Fˣ, WeilQkIs D.toPre F k p p' ζ) ∧ ∀ t, p.y = 0 → IsTor t p.g → WeilQkIs D.toPre F k p p' (t (Multiplicative.ofAdd p'.y)).val := by
   intro hL R _ _ _ I _ D F _ _ _ k hk p p'
   obtain ⟨ζ, hζ⟩ := GlobalTheory.QkPairing.exists_ratio p p'
   have hW := GlobalTheory.QkPairing.weil_of_ratio hL.1.globalFns p p' hζ

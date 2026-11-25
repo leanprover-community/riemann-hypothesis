@@ -13,8 +13,7 @@ private theorem exists_generator_of_finrank_eq_one_zLattice {E : Type} [NormedAd
     [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] (Λ : Submodule ℤ E) [DiscreteTopology Λ]
     [IsZLattice ℝ Λ] (h1 : finrank ℝ E = 1) :
     ∃ a ∈ Λ, a ≠ 0 ∧ ∀ x ∈ Λ, ∃ k : ℤ, x = (k : ℝ) • a := by
-  have hrk : finrank ℤ Λ = 1 := (ZLattice.rank ℝ Λ).trans h1
-  let b := Module.finBasisOfFinrankEq ℤ Λ hrk
+  let b := Module.finBasisOfFinrankEq ℤ Λ ((ZLattice.rank ℝ Λ).trans h1)
   refine ⟨(b 0 : E), (b 0).2, fun h => b.ne_zero 0 (Subtype.ext h), ?_⟩
   intro x hx
   refine ⟨b.repr ⟨x, hx⟩ 0, ?_⟩

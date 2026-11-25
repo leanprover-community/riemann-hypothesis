@@ -182,8 +182,8 @@ theorem exists_nat_wittCoreInclusion_integral_at_place {S S₀ : HSp D} {ρ : �
   rw [e, hq, Nat.cast_mul, mul_assoc]
   exact hmul (k, l) _ (intAt_natCast_mul q (hs l))
 
-theorem selfDual_split : ∀ (D : D7) (S S₀ : HSp D) (ρ : ℕ) (d : HypDec S S₀ ρ) (v : Pl D) (ε : AE D) (_ : ε * ε = ε)
-    (_ : cA D ε = ε) (_ : ε ∈ intAt D (· = v)) (_ : ∀ a, a ∈ idAt D (· = v) ↔ ε * a = a)
+theorem selfDual_split : ∀ (D : D7) (S S₀ : HSp D) (ρ : ℕ) (d : HypDec S S₀ ρ) (v : Pl D) (ε : AE D) (hεε : ε * ε = ε)
+    (hεc : cA D ε = ε) (hεI : ε ∈ intAt D (· = v)) (hε : ∀ a, a ∈ idAt D (· = v) ↔ ε * a = a)
     (N : AddSubgroup (Fin S.rank → AE D)) (α β : Fin ρ → AE D), IsSDAt S v N → (∀ i, α i ∈ idAt D (· = v)) →
     (∀ i, β i ∈ idAt D (· = v)) → (∀ i, α i * β i = ε) → (∀ i, colMul d.jX i (α i) ∈ N) →
     (∀ i, colMul d.jY i (cA D (β i)) ∈ N) → ∃ Λ₀ : AddSubgroup (Fin S₀.rank → AE D), IsSDAt S₀ v Λ₀ ∧

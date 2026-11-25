@@ -66,11 +66,10 @@ theorem schwartz_logDeriv_linear_formula {V : Type} [NormedAddCommGroup V] [Norm
     f₀ y = f₀ 0 * Complex.exp (m y y / 2) := by
   have hg : ∀ t : ℝ, HasDerivAt (fun s : ℝ => f₀ (s • y)) ((t : ℂ) * m y y * f₀ (t • y)) t := by
     intro t
-    have h1 : HasFDerivAt f₀ (fderiv ℝ f₀ (t • y)) (t • y) := f₀.differentiableAt.hasFDerivAt
     have h2 : HasDerivAt (fun s : ℝ => s • y) y t := by
       simpa using (hasDerivAt_id t).smul_const y
     have h3 : HasDerivAt (fun s : ℝ => f₀ (s • y)) (fderiv ℝ f₀ (t • y) y) t :=
-      h1.comp_hasDerivAt t h2
+      f₀.differentiableAt.hasFDerivAt.comp_hasDerivAt t h2
     rw [hm, map_smul, Complex.real_smul] at h3
     exact h3
   have hE : ∀ t : ℝ, HasDerivAt (fun s : ℝ => Complex.exp (-((s : ℂ) ^ 2 * m y y / 2)))

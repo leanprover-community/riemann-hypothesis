@@ -130,9 +130,9 @@ private lemma UpperTheory.Reformulated.B.IntegralOfNormBounded.isIntegral_of_nor
   exact minpoly.aeval ℚ_[l] z
 
 theorem UpperTheory.Reformulated.B.IntegralOfNormBounded.ptc_field :
-    ∀ {l : ℕ} [Fact (Nat.Prime l)] {R : Type}
-    [CommRing R] [IsLocalRing R] [Algebra ℤ_[l] R] {K : Type} [Field K]
-    [Algebra ℚ_[l] K] [Module.Finite ℚ_[l] K] [Algebra ℤ_[l] K] [IsScalarTower ℤ_[l] ℚ_[l] K]
+    ∀ {l : ℕ} [inst : Fact (Nat.Prime l)] {R : Type}
+    [inst_1 : CommRing R] [inst_2 : IsLocalRing R] [inst_3 : Algebra ℤ_[l] R] {K : Type} [inst_4 : Field K]
+    [inst_5 : Algebra ℚ_[l] K] [Module.Finite ℚ_[l] K] [inst_7 : Algebra ℤ_[l] K] [IsScalarTower ℤ_[l] ℚ_[l] K]
     (x : R →ₐ[ℤ_[l]] K),
     ∀ a ∈ IsLocalRing.maximalIdeal R,
       IsIntegral ℤ_[l] ((x : R → K) a) ∧ ∃ (n : ℕ) (b : K), IsIntegral ℤ_[l] b ∧ (x : R → K) a ^ n = (↑l : K) * b := by

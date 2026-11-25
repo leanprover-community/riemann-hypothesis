@@ -167,8 +167,7 @@ def biRep (n : I → ℕ) : Representation ℂ (I → GL (Fin d) ℂ) (Bi d n) :
 theorem flip_mem {n : I → ℕ} {P : MvPolynomial ((I × Bool) × Fin d) ℂ} (h : P ∈ Bi d n) : rename (flip I d) P ∈ Bi d n := by
   intro s x
   rw [eval_rename, eval_rename]
-  have := h (fun k => s (k.1, !k.2)) (x ∘ flip I d)
-  refine this.trans ?_
+  refine (h (fun k => s (k.1, !k.2)) (x ∘ flip I d)).trans ?_
   congr 1
   simp [Fintype.prod_prod_type, mul_comm]
 

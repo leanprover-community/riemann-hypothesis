@@ -96,8 +96,7 @@ theorem finrank_fraction_over_adjoin_X_eq (Ω₀ Ω : Type) [Field Ω₀] [Field
       have hsum : ∑ k, q k • (MvPolynomial.C (b k) : MvPolynomial I Ω) = 0 := by
         apply IsFractionRing.injective (MvPolynomial I Ω) (FractionRing (MvPolynomial I Ω))
         change j (∑ k, q k • MvPolynomial.C (b k)) = j 0
-        rw [map_sum, map_zero]
-        simp only [hsmul]
+        simp only [map_sum, map_zero, hsmul]
         change ∑ k, (algebraMap (MvPolynomial I Ω₀) (FractionRing (MvPolynomial I Ω₀)) (q k)) •
           v k = 0
         simp_rw [hq, Algebra.smul_def (a : MvPolynomial I Ω₀), mul_smul, ← Finset.smul_sum,

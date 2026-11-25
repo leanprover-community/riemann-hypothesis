@@ -39,8 +39,7 @@ lemma exists_assoc [IsNoetherianRing A] {ι : Type*} (x : ι → K)
     intro h
     obtain ⟨i, hi⟩ := hx
     apply hi
-    have := h i
-    simpa using this
+    simpa using h i
   obtain ⟨P, hP, -⟩ := exists_le_isAssociatedPrime_of_isNoetherianRing A _ hne
   rw [isAssociatedPrime_iff] at hP
   obtain ⟨hPp, y, hy⟩ := hP
@@ -128,8 +127,7 @@ theorem exists_height_one_not_mem [IsNoetherianRing A] [IsIntegrallyClosed A] (x
   obtain ⟨a, ha⟩ := hsx
   have e : algebraMap A K (s * u) = algebraMap A K (b * a) := by
     rw [(algebraMap A K).map_mul, (algebraMap A K).map_mul, hu', ha, mul_left_comm]
-  have e2 : s * u = b * a := IsFractionRing.injective A K e
-  have h3 : s * u ∈ P := e2 ▸ P.mul_mem_right a hbP
+  have h3 : s * u ∈ P := (IsFractionRing.injective A K e) ▸ P.mul_mem_right a hbP
   rcases hP.mem_or_mem h3 with h4 | h4
   · exact hs h4
   · exact huP h4

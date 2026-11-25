@@ -83,8 +83,7 @@ theorem rel_zero {K F C Pt : Type} [Field K] [Field F] [Algebra K F] [IsGalois K
     rw [map_sum, Finset.sum_apply, Pi.zero_apply, ← ha'rel y]
     refine Finset.sum_congr rfl fun i hi => ?_
     rw [map_smul, Pi.smul_apply, Algebra.smul_def, hc i hi]
-  have hsum0 : ∑ i ∈ s, c i • b i = 0 := hinj (by rw [hv0, map_zero])
-  have hc0 := (linearIndependent_iff'.mp hb) s c hsum0 i0 hi0
+  have hc0 := (linearIndependent_iff'.mp hb) s c (hinj (by rw [hv0, map_zero])) i0 hi0
   rw [← hc i0 hi0, hc0, map_zero] at ha'1
   exact zero_ne_one ha'1
 
@@ -218,8 +217,7 @@ theorem indep_of_complex [Algebra K ℂ] (hWD : EvalWD pts mapR)
       solve_by_elim* (maxDepth := 2) only [*,
         @_root_.DivisionSemiring.to_moduleIsTorsionFree,
         @_root_.Algebra.IsIntegral.isAlgebraic, @_root_.inferInstance])
-    have h1 : e (φ (f p y)) = 0 := congrFun hf0 ⟨p, y, e.comp φ⟩
-    exact e.toRingHom.injective (h1.trans (map_zero e).symm)
+    exact e.toRingHom.injective ((congrFun hf0 ⟨p, y, e.comp φ⟩).trans (map_zero e).symm)
   have hli := indepDescent_holds K F ι.toRingHom (Rules pts) Pt v act hbij heq hinj n b hb
   rw [Fintype.linearIndependent_iff] at hli
   funext i

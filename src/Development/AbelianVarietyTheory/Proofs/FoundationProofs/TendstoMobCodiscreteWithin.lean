@@ -71,10 +71,9 @@ theorem tendsto_mob_codiscreteWithin :
   intro z hz
   have hw := hS (mob g z) (hmaps g z hz)
   have hHs : Hs ∈ nhds z := isOpen_Hs_mobt.mem_nhds hz
-  have hcont : ContinuousAt (mob g) z := (hdiff g).continuousOn.continuousAt hHs
   have htend : Filter.Tendsto (mob g) (nhdsWithin z {z}ᶜ) (nhdsWithin (mob g z) {mob g z}ᶜ) := by
     rw [tendsto_nhdsWithin_iff]
-    refine ⟨hcont.tendsto.mono_left nhdsWithin_le_nhds, ?_⟩
+    refine ⟨((hdiff g).continuousOn.continuousAt hHs).tendsto.mono_left nhdsWithin_le_nhds, ?_⟩
     filter_upwards [nhdsWithin_le_nhds hHs, self_mem_nhdsWithin] with x hx hxz
     exact fun h => hxz (hinj x z hx hz h)
   rw [Filter.disjoint_principal_right] at hw ⊢

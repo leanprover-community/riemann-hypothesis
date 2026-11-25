@@ -182,9 +182,8 @@ private lemma kronecker_tendsto_zero_real (c : ℕ → ℂ) (S : ℂ)
     (∑ n ∈ Icc 1 ⌊U⌋₊, c n) / (U : ℂ)
   have hf1 : 1 ≤ ⌊U⌋₊ := (Nat.one_le_floor_iff U).mpr hU
   have hf : (⌊U⌋₊ : ℂ) ≠ 0 := by exact_mod_cast (show ⌊U⌋₊ ≠ 0 by omega)
-  have e : (⌊U⌋₊ : ℂ) * ((⌊U⌋₊ : ℂ))⁻¹ = 1 := mul_inv_cancel₀ hf
   push_cast
-  linear_combination ((∑ n ∈ Icc 1 ⌊U⌋₊, c n) / (U : ℂ)) * e
+  linear_combination ((∑ n ∈ Icc 1 ⌊U⌋₊, c n) / (U : ℂ)) * (mul_inv_cancel₀ hf)
 
 theorem smoothedRemainderIntegralFormula : SmoothedRemainderIntegralFormula := by
   intro a S h y hy

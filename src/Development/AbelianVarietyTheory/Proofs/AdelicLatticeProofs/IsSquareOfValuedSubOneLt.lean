@@ -97,8 +97,7 @@ theorem _root_.GlobalTheory.LocalQuad.SquareTheorem.isSquare_of_norm_sub_one_lt 
   haveI : Nonempty s := ⟨⟨0, by simp [s, hr0]⟩⟩
   set z : s := ContractingWith.fixedPoint f hf
   have hz : (z : K) = c - (z : K) ^ 2 := by
-    have := ContractingWith.fixedPoint_isFixedPt (f := f) hf
-    exact (congrArg Subtype.val this).symm
+    exact (congrArg Subtype.val (ContractingWith.fixedPoint_isFixedPt (f := f) hf)).symm
   exact ⟨1 + 2 * (z : K), by linear_combination hx - 4 * hz⟩
 
 end SquareTheorem

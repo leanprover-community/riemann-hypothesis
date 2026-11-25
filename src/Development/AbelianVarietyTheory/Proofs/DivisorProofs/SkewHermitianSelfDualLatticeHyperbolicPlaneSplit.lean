@@ -399,7 +399,7 @@ section -- clump:auto
 
 namespace GlobalTheory.HermitianEigenvalueInequality
 
-theorem main : ∀ {E : Type} [Field E] [NumberField E] {n : ℕ} (L : Submodule (NumberField.RingOfIntegers E) (Fin n → E)), ∀ x ∈ Submodule.span E (↑L : Set (Fin n → E)), ∃ (d : NumberField.RingOfIntegers E), d ≠ (0 : NumberField.RingOfIntegers E) ∧ d • x ∈ L := by
+theorem main : ∀ {E : Type} [inst : Field E] [NumberField E] {n : ℕ} (L : Submodule (NumberField.RingOfIntegers E) (Fin n → E)), ∀ x ∈ Submodule.span E (↑L : Set (Fin n → E)), ∃ (d : NumberField.RingOfIntegers E), d ≠ (0 : NumberField.RingOfIntegers E) ∧ d • x ∈ L := by
   apply ReciprocityTheory.MultiplicativeHeights.SemiPt.clear_denom
 
 end GlobalTheory.HermitianEigenvalueInequality

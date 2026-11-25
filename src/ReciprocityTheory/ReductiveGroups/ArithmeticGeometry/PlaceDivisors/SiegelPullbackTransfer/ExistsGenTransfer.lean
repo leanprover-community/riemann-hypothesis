@@ -170,8 +170,7 @@ private theorem germ_cocycle_lemma_3 {L : LB X} (hL : L.IsLB) (i j k : L.ι) (y 
 
 private theorem germ_self_lemma_4 {L : LB X} (hL : L.IsLB) (i : L.ι) (y : X) (h : y ∈ L.U i ⊓ L.U i) :
     gU y h (L.g i i) = 1 := by
-  have hi : y ∈ L.U i := h.1
-  simpa only [map_one, gU_res] using congrArg (gU y hi) (hL.g_self i)
+  simpa only [map_one, gU_res] using congrArg (gU y h.1) (hL.g_self i)
 
 private theorem alg_lemma_8 {G : Type*} [CommGroup G] (ab aa' a'b' ab' b'b bb' : G)
     (h1 : aa' * a'b' = ab') (h2 : ab' * b'b = ab) (h3 : bb' * b'b = 1) :

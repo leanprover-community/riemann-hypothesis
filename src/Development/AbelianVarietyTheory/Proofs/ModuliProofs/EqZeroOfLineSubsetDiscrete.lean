@@ -59,8 +59,7 @@ theorem eq_zero_of_line_subset_discrete {g : ℕ} (Λ : Submodule ℤ (Fin g →
     intro s t hst
     exact smul_left_injective ℂ h (congrArg Subtype.val hst)
   have : Countable ℂ := hinj.countable
-  have : Countable ℝ := Complex.ofReal_injective.countable
-  exact not_countable this
+  exact not_countable (Complex.ofReal_injective.countable : Countable ℝ)
 
 theorem linear_eq_of_ex_eq {g : ℕ} {A : Over (Sp ℂ)} [GrpObj A] {L : LB A.left} (u : HolUnif A L g)
     (F F' : (Fin g → ℂ) →ₗ[ℂ] (Fin g → ℂ)) (h : ∀ z, u.ex (F z) = u.ex (F' z)) : F = F' := by

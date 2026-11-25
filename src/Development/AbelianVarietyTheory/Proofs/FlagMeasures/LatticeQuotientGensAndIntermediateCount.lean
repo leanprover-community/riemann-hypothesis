@@ -101,14 +101,13 @@ theorem exists_gens_of_between (A : Submodule R V) (m : R) (hm : m ≠ 0) (t : F
       rw [← ha] at hr
       obtain ⟨i, hi, j, hj, rfl⟩ := Submodule.mem_sup.1 hr
       obtain ⟨k, rfl⟩ := Ideal.mem_span_singleton'.1 hj
-      have hi' : i • x ∈ A ⊔ Submodule.span R (t : Set V) := hi
       have key : a0 + ((i + k * a) • x + s0) - k • l ∈
           L ⊓ (A ⊔ Submodule.span R (t : Set V)) := by
         refine ⟨sub_mem hy (L.smul_mem _ hl), ?_⟩
         have : a0 + ((i + k * a) • x + s0) - k • l = a0 + i • x + s0 + k • s := by
           rw [add_smul, mul_smul, ← hls', smul_add]; abel
         rw [this]
-        exact add_mem (add_mem (add_mem (Submodule.mem_sup_left ha0) hi')
+        exact add_mem (add_mem (add_mem (Submodule.mem_sup_left ha0) hi)
           (Submodule.mem_sup_right hs0)) (Submodule.mem_sup_right (Submodule.smul_mem _ _ hs))
       rw [ht'] at key
       have hle : A ⊔ Submodule.span R (t' : Set V) ≤

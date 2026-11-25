@@ -320,8 +320,7 @@ theorem ofMap_op_apply (tr : S'.G →* S.G) (p : S'.D → S.D) (T : S.V →ₗ[K
     (d' : S'.D) : (((ofMap tr p T hp hT).op φ : S'.EqFun) : S'.D → S'.V) d' = T ((φ : S.D → S.V) (p d')) := by
   rw [op_apply]
   show (Finsupp.single (p d') T).sum (fun d k => k ((φ : S.D → S.V) d)) = _
-  rw [Finsupp.sum_single_index]
-  simp
+  simp [Finsupp.sum_single_index]
 
 
 open Classical in

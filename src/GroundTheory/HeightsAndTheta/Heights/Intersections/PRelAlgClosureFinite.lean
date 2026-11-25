@@ -56,7 +56,6 @@ theorem RelAlgClosureFinite.proof : RelAlgClosureFinite.Statement := by
   intro K L _ _ _ S hS
   obtain ⟨t, ht⟩ := exists_isTranscendenceBasis K L
   set M := algebraicClosure K L
-  have hM : AlgebraicIndependent M ((↑) : t → L) := ht.1.algebraicClosure
   set E := IntermediateField.adjoin K (Set.range ((↑) : t → L))
   have halg : Algebra.IsAlgebraic E L := ht.isAlgebraic_field
   have htop : IntermediateField.adjoin E (S : Set L) = ⊤ := by
@@ -75,7 +74,7 @@ theorem RelAlgClosureFinite.proof : RelAlgClosureFinite.Statement := by
   let b := Module.Basis.ofVectorSpace K M
   have hli : LinearIndependent E (fun i => ((b i : M) : L)) :=
     (LinearIndependent.iff_fractionRing (Algebra.adjoin K (Set.range ((↑) : t → L))) E).1
-      (RelAlgClosureFinite.linearIndependent_adjoin M hM b.linearIndependent)
+      (RelAlgClosureFinite.linearIndependent_adjoin M ht.1.algebraicClosure b.linearIndependent)
   have : Finite (Module.Basis.ofVectorSpaceIndex K M) := hli.finite
   exact Module.Finite.of_basis b
 

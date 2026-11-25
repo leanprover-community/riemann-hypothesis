@@ -163,14 +163,12 @@ theorem NQ.of_blocks {i₀ : Fin n} {A B D : Matrix (Fin n) (Fin n) R}
     · simp [Matrix.sub_apply, Matrix.one_apply]
   · rcases l with l | l <;> rcases k with k | k
     · have hk : k ≠ i₀ := fun h => hkx (by rw [h])
-      have := hA k l hk
-      simpa [Matrix.sub_apply, Matrix.one_apply] using this
+      simpa [Matrix.sub_apply, Matrix.one_apply] using hA k l hk
     · simp [Matrix.sub_apply, Matrix.one_apply]
     · have hk : k ≠ i₀ := fun h => hkx (by rw [h])
       have hl : l ≠ i₀ := fun h => hly (by rw [h])
       simp [Matrix.sub_apply, Matrix.one_apply, hB k l hk hl]
     · have hl : l ≠ i₀ := fun h => hly (by rw [h])
-      have := hD k l hl
-      simpa [Matrix.sub_apply, Matrix.one_apply] using this
+      simpa [Matrix.sub_apply, Matrix.one_apply] using hD k l hl
 
 end PositivityTheory.SiegelWeilFormula.Act.C4.Bq

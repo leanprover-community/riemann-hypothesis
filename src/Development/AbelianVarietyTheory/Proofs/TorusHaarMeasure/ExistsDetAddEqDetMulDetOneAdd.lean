@@ -56,11 +56,9 @@ open scoped MatrixOrder in
 theorem exists_det_add_eq_det_mul_det_one_add {n : Type} [Fintype n] [DecidableEq n]
     {P Q : Matrix n n ℂ} (hP : P.PosSemidef) (hQ : Q.PosSemidef) (hd : P.det ≠ 0) :
     ∃ R : Matrix n n ℂ, R.PosSemidef ∧ (R = 0 → Q = 0) ∧ (P + Q).det = P.det * (1 + R).det := by
-  have hP0 : (0 : Matrix n n ℂ) ≤ P := nonneg_iff_posSemidef.mpr hP
   set S := CFC.sqrt P with hSdef
-  have hS0 : (0 : Matrix n n ℂ) ≤ S := CFC.sqrt_nonneg P
-  have hSS : S * S = P := CFC.sqrt_mul_sqrt_self P hP0
-  have hSh : Sᴴ = S := (nonneg_iff_posSemidef.mp hS0).1
+  have hSS : S * S = P := CFC.sqrt_mul_sqrt_self P (nonneg_iff_posSemidef.mpr hP)
+  have hSh : Sᴴ = S := (nonneg_iff_posSemidef.mp (CFC.sqrt_nonneg P)).1
   have hdS : S.det ≠ 0 := by
     intro h
     apply hd

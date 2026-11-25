@@ -138,8 +138,7 @@ namespace GlobalTheory.ThetaWeberRoad.OddDeriv
 theorem hasDerivAt_mul_of_eq_zero {F R : ℂ → ℂ} {F' : ℂ} (hF : HasDerivAt F F' 0) (hF0 : F 0 = 0)
     (hR : ContinuousAt R 0) : HasDerivAt (fun z => F z * R z) (F' * R 0) 0 := by
   rw [hasDerivAt_iff_tendsto_slope] at hF ⊢
-  have hR' : Tendsto R (𝓝[≠] (0 : ℂ)) (𝓝 (R 0)) := hR.tendsto.mono_left nhdsWithin_le_nhds
-  refine (hF.mul hR').congr' ?_
+  refine (hF.mul (hR.tendsto.mono_left nhdsWithin_le_nhds)).congr' ?_
   filter_upwards with z
   simp only [slope_def_field, hF0, sub_zero, zero_mul]
   ring

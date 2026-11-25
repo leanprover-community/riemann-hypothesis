@@ -325,8 +325,7 @@ theorem ne_top_of_mem_support (J : Y.IdealSheafData) (x : ↥Y) (hx : x ∈ J.su
   have hb : J.support = ⊥ :=
     (AlgebraicGeometry.Scheme.IdealSheafData.support_eq_bot_iff J).mpr hc
   have hx2 : x ∈ (J.support : Set ↥Y) := hx
-  rw [hb] at hx2
-  simp at hx2
+  simp [hb] at hx2
 
 theorem eq_top_iff_support_eq_empty {X : Scheme.{u}} (I : X.IdealSheafData) :
     I = ⊤ ↔ (I.support : Set X) = ∅ := by

@@ -82,10 +82,9 @@ theorem exists_finset_transversal_of_isCompact_of_isOpen
   · intro t ht
     simp only [Finset.mem_image, Set.Finite.mem_toFinset, Set.mem_image] at ht
     obtain ⟨_, ⟨a, ha, rfl⟩, rfl⟩ := ht
-    have h1 : -(a : X ⧸ L).out + a ∈ L := QuotientAddGroup.eq.1 (hout _)
     have h2 : (a : X ⧸ L).out = a - (-(a : X ⧸ L).out + a) := by abel
     rw [h2]
-    exact A.sub_mem ha (_hLA h1)
+    exact A.sub_mem ha (_hLA (QuotientAddGroup.eq.1 (hout _)))
   · intro a ha
     have hmem : (a : X ⧸ L).out ∈ hfin.toFinset.image Quotient.out :=
       Finset.mem_image.2 ⟨(a : X ⧸ L), (Set.Finite.mem_toFinset hfin).2 ⟨a, ha, rfl⟩, rfl⟩

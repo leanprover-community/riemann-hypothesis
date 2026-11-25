@@ -265,8 +265,7 @@ theorem gaussSumEighthPower : GaussEighth := by
         (pI v) (pJ v) (pK v) (pIJ v) (pIK v) (pJK v) a c d e
     have hsq : (∏ i, φ ((Fintype.card (Fin 4 → M) • v) i))
         = (∏ i, φ (v i)) ^ (Fintype.card (Fin 4 → M) ^ 2) := H.sq _ v
-    rw [card_nsmul_eq_zero] at hsq
-    simp only [Pi.zero_apply, h.phi_zero, Finset.prod_const_one] at hsq
+    simp only [card_nsmul_eq_zero, Pi.zero_apply, h.phi_zero, Finset.prod_const_one] at hsq
     rw [hTdef, hO, hPI, hPJ, hPK, ← pow_add, ← pow_add, ← pow_add, habcd, ← pow_succ',
       Nat.sub_add_cancel hN, ← hsq]
   have key : (∑ v : Fin 4 → M, ∏ i, φ (v i)) ^ 2 = (Fintype.card (Fin 4 → M) : ℂ) :=

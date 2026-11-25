@@ -70,8 +70,7 @@ theorem RatPrimeDense.proof (h₁ : FiniteSeparatingModel.Statement) (h₂ : Roo
   have hzR : z ∈ Metric.closedBall 0 Rb := by
     rw [mem_closedBall_zero_iff, pi_norm_le_iff_of_nonneg hRb]
     intro i
-    have := hyR i (z i) (by rw [← hzL]; exact hpz i z hz)
-    exact this.trans ((le_max_left _ _).trans
+    exact (hyR i (z i) (by rw [← hzL]; exact hpz i z hz)).trans ((le_max_left _ _).trans
       (Finset.single_le_sum (fun j _ => le_max_right (R j) 0) (Finset.mem_univ i)))
   by_contra hfar
   have hφz : φ z < δ := by

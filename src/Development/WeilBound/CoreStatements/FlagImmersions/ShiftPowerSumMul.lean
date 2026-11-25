@@ -66,8 +66,7 @@ namespace RootFieldNumerics
 private theorem coeff_X_pow_mul_flag_immersions {σ : Type*} [DecidableEq σ] (m : σ →₀ ℕ) (x : σ) (k : ℕ)
     (p : MvPolynomial σ ℝ) :
     (X x ^ k * p).coeff m = if k ≤ m x then p.coeff (m - Finsupp.single x k) else 0 := by
-  rw [X_pow_eq_monomial, coeff_monomial_mul', one_mul]
-  simp only [Finsupp.single_le_iff]
+  simp only [X_pow_eq_monomial, coeff_monomial_mul', one_mul, Finsupp.single_le_iff]
 
 theorem degFl_power_sum_mul : ∀ (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N : ℕ) (τ : Ψ) (k : ℕ) (G : RP Ψ N), 1 ≤ k → degFl (pk τ k * G) = 0 := by
   intro Ψ _ _ N τ k G hk
@@ -131,8 +130,7 @@ theorem degFl_power_sum_mul : ∀ (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N :
         have hcond : ∀ σ' : Ψ → Equiv.Perm (Fin N), ∀ a : Fin N, σ' τ a = j →
             (k ≤ permExp σ' (τ, a)) := by
           intro σ' a ha
-          rw [hval]
-          simp only [ha]
+          simp only [hval, ha]
           omega
         have hL : (ρ * σ) τ ((σ τ).symm j') = j := by
           rw [Pi.mul_apply, hρτ, Equiv.Perm.mul_apply, hbt, Equiv.swap_apply_right]
@@ -148,8 +146,7 @@ theorem degFl_power_sum_mul : ∀ (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N :
       linarith
     · refine Finset.sum_eq_zero fun σ _ => ?_
       have hlt : ¬ k ≤ permExp σ (τ, (σ τ).symm j) := by
-        rw [hval]
-        simp only [Equiv.apply_symm_apply]
+        simp only [hval, Equiv.apply_symm_apply]
         omega
       rw [coeff_X_pow_mul_flag_immersions, ite_eq_right hlt, mul_zero]
   have hsplit : degFl (pk τ k * G) = (-1) ^ dimFl Ψ N * ∑ j : Fin N, ∑ σ : Ψ → Equiv.Perm (Fin N),

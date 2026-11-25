@@ -193,8 +193,7 @@ theorem eq_zero_of_map {A B M N Q : Type*} [CommRing A] [CommRing B] [Algebra A 
     change ψ (ιMulti B a fun k => f (v k)) = _
     rw [alternatingMapLinearEquiv_apply_ιMulti]
     exact cong _ _ fun k => hs' _
-  have := LinearMap.congr_fun hψ ω
-  simpa [h0] using this.symm
+  simpa [h0] using (LinearMap.congr_fun hψ ω).symm
 
 theorem ker_le (K A B : Type*) [CommRing K] [CommRing A] [CommRing B] [Algebra K A] [Algebra K B]
     [Algebra A B] [IsScalarTower K A B] (hs : Function.Surjective (algebraMap A B))
@@ -209,8 +208,7 @@ theorem ker_le (K A B : Type*) [CommRing K] [CommRing A] [CommRing B] [Algebra K
   have hσ : ∀ b, algebraMap A B (σ b) = b := Function.surjInv_eq hs
   have hd : ∀ b, algebraMap A B (Finsupp.mapDomain (algebraMap A B) c b) = 0 := by
     intro b
-    have := DFunLike.congr_fun (LinearMap.mem_ker.mp hc) b
-    simpa using this
+    simpa using DFunLike.congr_fun (LinearMap.mem_ker.mp hc) b
   have e2 : Finsupp.linearCombination A (fun b => KaehlerDifferential.D K A (σ b))
       (Finsupp.mapDomain (algebraMap A B) c) ∈ L := by
     rw [Finsupp.linearCombination_apply, Finsupp.sum]
@@ -374,8 +372,7 @@ theorem formLaws : FormLaws := by
     obtain ⟨c₀, rfl⟩ := hsurj g₀
     choose c hc using fun k => hsurj (g k)
     refine ⟨form K c₀ c, ?_⟩
-    rw [h2]
-    simp only [hc]
+    simp only [h2, hc]
   · exact mem_of_map_eq_zero (hs hsurj) (KaehlerDifferential.map K K A B)
       (KaehlerDifferential.map_surjective_of_surjective K K A B (hs hsurj)) a _
       (fun v k hv => iota_mem_relOm (hs hsurj) _ (fun c hc => RingHom.mem_ker.mpr hc) v k hv)

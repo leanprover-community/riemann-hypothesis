@@ -65,7 +65,7 @@ section -- clump:auto
 namespace UpperTheory.Reformulated.B.Yzd4
 
 noncomputable def cT : {A : Type} →
-  [CommRing A] → (A →+* A) → {m p : Type} → Matrix m p A → Matrix p m A :=
+  [inst : CommRing A] → (A →+* A) → {m p : Type} → Matrix m p A → Matrix p m A :=
   fun {A} [CommRing A] σ {_ _} M => (M.map ⇑σ).transpose
 
 private theorem cT_mul {A : Type} [CommRing A] {n : Type} [Fintype n] [DecidableEq n]
@@ -79,8 +79,8 @@ private theorem cT_one {A : Type} [CommRing A] {n : Type} [Fintype n] [Decidable
   simp only [cT]
   rw [Matrix.map_one _ (map_zero σ) (map_one σ), Matrix.transpose_one]
 
-theorem aux2 : ∀ {A : Type} [CommRing A] {n : Type} [Fintype n]
-  [DecidableEq n] (σ : A →+* A) (J : Matrix n n A) {a b : GL n A},
+theorem aux2 : ∀ {A : Type} [inst : CommRing A] {n : Type} [inst_1 : Fintype n]
+  [inst_2 : DecidableEq n] (σ : A →+* A) (J : Matrix n n A) {a b : GL n A},
   a ∈ {g : GL n A | cT σ g.val * J * g.val = J} →
     b ∈ {g : GL n A | cT σ g.val * J * g.val = J} →
       a * b ∈ {g : GL n A | cT σ g.val * J * g.val = J} := by
@@ -95,13 +95,13 @@ theorem aux2 : ∀ {A : Type} [CommRing A] {n : Type} [Fintype n]
         simp only [Matrix.mul_assoc]
     _ = J := by rw [ha', hb']
 
-theorem aux3 : ∀ {A : Type} [CommRing A] {n : Type} [Fintype n]
-  [DecidableEq n] (σ : A →+* A) (J : Matrix n n A), cT σ (1 : GL n A).val * J * (1 : GL n A).val = J := by
+theorem aux3 : ∀ {A : Type} [inst : CommRing A] {n : Type} [inst_1 : Fintype n]
+  [inst_2 : DecidableEq n] (σ : A →+* A) (J : Matrix n n A), cT σ (1 : GL n A).val * J * (1 : GL n A).val = J := by
   intro A _ n _ _ σ J
   rw [Units.val_one, cT_one, Matrix.one_mul, Matrix.mul_one]
 
-theorem aux4 : ∀ {A : Type} [CommRing A] {n : Type} [Fintype n]
-  [DecidableEq n] (σ : A →+* A) (J : Matrix n n A) {g : GL n A},
+theorem aux4 : ∀ {A : Type} [inst : CommRing A] {n : Type} [inst_1 : Fintype n]
+  [inst_2 : DecidableEq n] (σ : A →+* A) (J : Matrix n n A) {g : GL n A},
   g ∈ {g : GL n A | cT σ g.val * J * g.val = J} →
     g⁻¹ ∈ {g : GL n A | cT σ g.val * J * g.val = J} := by
   intro A _ n _ _ σ J g hg
@@ -123,107 +123,107 @@ theorem aux4 : ∀ {A : Type} [CommRing A] {n : Type} [Fintype n]
     _ = J := by rw [h1, h2, Matrix.one_mul, Matrix.mul_one]
 
 noncomputable def UJ : {A : Type} →
-  [CommRing A] →
-    {n : Type} → [Fintype n] → [DecidableEq n] → (A →+* A) → Matrix n n A → Subgroup (GL n A) :=
+  [inst : CommRing A] →
+    {n : Type} → [inst_1 : Fintype n] → [inst_2 : DecidableEq n] → (A →+* A) → Matrix n n A → Subgroup (GL n A) :=
   fun {A} [inst : CommRing A] {n} [inst_1 : Fintype n] [inst_2 : DecidableEq n] σ J =>
     { carrier := {g : GL n A | cT σ g.val * J * g.val = J},
       mul_mem' := @aux2 A inst n inst_1 inst_2 σ J,
       one_mem' := aux3 σ J,
       inv_mem' := @aux4 A inst n inst_1 inst_2 σ J }
 
-theorem aux6 : ∀ {F : Type} [Field F] (R : Type) [CommRing R]
-  [Algebra F R], SMulCommClass F F R := by
+theorem aux6 : ∀ {F : Type} [inst : Field F] (R : Type) [inst_1 : CommRing R]
+  [inst_2 : Algebra F R], SMulCommClass F F R := by
   intro F _ R _ _
   exact inferInstance
 
-theorem aux7 : ∀ {F : Type} [Field F] (R : Type) [CommRing R]
-  [Algebra F R], IsScalarTower F F R := by
+theorem aux7 : ∀ {F : Type} [inst : Field F] (R : Type) [inst_1 : CommRing R]
+  [inst_2 : Algebra F R], IsScalarTower F F R := by
   intro F _ R _ _
   exact inferInstance
 
 noncomputable def sigR : {F E : Type} →
-  [Field F] →
-    [Field E] →
-      [Algebra F E] →
+  [inst : Field F] →
+    [inst_1 : Field E] →
+      [inst_2 : Algebra F E] →
         (R : Type) →
-          [CommRing R] → [Algebra F R] → (E →ₐ[F] E) → TensorProduct F R E →+* TensorProduct F R E :=
+          [inst_3 : CommRing R] → [inst_4 : Algebra F R] → (E →ₐ[F] E) → TensorProduct F R E →+* TensorProduct F R E :=
   fun {F E} [Field F] [Field E] [Algebra F E] R [CommRing R] [Algebra F R] σ =>
     (Algebra.TensorProduct.map (AlgHom.id F R) σ).toRingHom
 
-theorem aux9 : ∀ {F : Type} [Field F] (R : Type) [CommRing R]
-  [Algebra F R], SMulCommClass F R R := by
+theorem aux9 : ∀ {F : Type} [inst : Field F] (R : Type) [inst_1 : CommRing R]
+  [inst_2 : Algebra F R], SMulCommClass F R R := by
   intro F _ R _ _
   exact inferInstance
 
-theorem laurent_T_neg_one_mul_T_one : ∀ {F : Type} [Field F] (R : Type)
-  [CommRing R] [Algebra F R], IsScalarTower F R R := by
+theorem laurent_T_neg_one_mul_T_one : ∀ {F : Type} [inst : Field F] (R : Type)
+  [inst_1 : CommRing R] [inst_2 : Algebra F R], IsScalarTower F R R := by
   intro F _ R _ _
   exact inferInstance
 
-theorem aux11 : ∀ {F E : Type} [Field F] [Field E]
-  [Algebra F E], SMulCommClass F E E := by
+theorem aux11 : ∀ {F E : Type} [inst : Field F] [inst_1 : Field E]
+  [inst_2 : Algebra F E], SMulCommClass F E E := by
   intro F E _ _ _
   exact inferInstance
 
-theorem aux12 : ∀ {F E : Type} [Field F] [Field E]
-  [Algebra F E], IsScalarTower F E E := by
+theorem aux12 : ∀ {F E : Type} [inst : Field F] [inst_1 : Field E]
+  [inst_2 : Algebra F E], IsScalarTower F E E := by
   intro F E _ _ _
   exact inferInstance
 
 noncomputable def inclR : {F E : Type} →
-  [Field F] →
-    [Field E] →
-      [Algebra F E] →
-        (R : Type) → [CommRing R] → [Algebra F R] → E →+* TensorProduct F R E :=
+  [inst : Field F] →
+    [inst_1 : Field E] →
+      [inst_2 : Algebra F E] →
+        (R : Type) → [inst_3 : CommRing R] → [inst_4 : Algebra F R] → E →+* TensorProduct F R E :=
   fun {F E} [Field F] [Field E] [Algebra F E] R [CommRing R] [Algebra F R] => Algebra.TensorProduct.includeRight.toRingHom
 
 noncomputable def JR : {F E : Type} →
-  [Field F] →
-    [Field E] →
-      [Algebra F E] →
+  [inst : Field F] →
+    [inst_1 : Field E] →
+      [inst_2 : Algebra F E] →
         (R : Type) →
-          [CommRing R] →
-            [Algebra F R] →
+          [inst_3 : CommRing R] →
+            [inst_4 : Algebra F R] →
               {M : ℕ} → Matrix (Fin M) (Fin M) E → Matrix (Fin M) (Fin M) (TensorProduct F R E) :=
   fun {F E} [Field F] [Field E] [Algebra F E] R [CommRing R] [Algebra F R] {_} J =>
     J.map ⇑(inclR R)
 
 noncomputable def HR : {F E : Type} →
-  [Field F] →
-    [Field E] →
-      [Algebra F E] →
+  [inst : Field F] →
+    [inst_1 : Field E] →
+      [inst_2 : Algebra F E] →
         (R : Type) →
-          [CommRing R] →
-            [Algebra F R] →
+          [inst_3 : CommRing R] →
+            [inst_4 : Algebra F R] →
               (E →ₐ[F] E) → {M : ℕ} → Matrix (Fin M) (Fin M) E → Subgroup (GL (Fin M) (TensorProduct F R E)) :=
   fun {F E} [Field F] [Field E] [Algebra F E] R [CommRing R] [Algebra F R] σ {_} J =>
     UJ (sigR R σ) (JR R J)
 
 noncomputable def HA : {F E : Type} →
-  [Field F] →
-    [Field E] →
-      [Algebra F E] →
-        (R : Type) → [CommRing R] → [Algebra F R] → (E →ₐ[F] E) → {M : ℕ} → Matrix (Fin M) (Fin M) E → Type :=
+  [inst : Field F] →
+    [inst_1 : Field E] →
+      [inst_2 : Algebra F E] →
+        (R : Type) → [inst_3 : CommRing R] → [Algebra F R] → (E →ₐ[F] E) → {M : ℕ} → Matrix (Fin M) (Fin M) E → Type :=
   fun {F E} [Field F] [Field E] [Algebra F E] R [CommRing R] [Algebra F R] σ {_} J =>
     ↥(HR R σ J)
 
 noncomputable def topTens : {F E : Type} →
-  [Field F] →
-    [Field E] →
-      [Algebra F E] →
+  [inst : Field F] →
+    [inst_1 : Field E] →
+      [inst_2 : Algebra F E] →
         (R : Type) →
-          [CommRing R] →
-            [Algebra F R] → [TopologicalSpace R] → TopologicalSpace (TensorProduct F R E) :=
+          [inst_3 : CommRing R] →
+            [inst_4 : Algebra F R] → [TopologicalSpace R] → TopologicalSpace (TensorProduct F R E) :=
   fun {F E} [Field F] [Field E] [Algebra F E] R [CommRing R] [Algebra F R] [TopologicalSpace R] =>
     moduleTopology R (TensorProduct F R E)
 
 noncomputable def d18 : {F E : Type} →
-  [Field F] →
-    [Field E] →
-      [Algebra F E] →
+  [inst : Field F] →
+    [inst_1 : Field E] →
+      [inst_2 : Algebra F E] →
         (R : Type) →
-          [CommRing R] →
-            [Algebra F R] →
+          [inst_3 : CommRing R] →
+            [inst_4 : Algebra F R] →
               (σ : E →ₐ[F] E) →
                 {M : ℕ} →
                   (J : Matrix (Fin M) (Fin M) E) →
@@ -232,16 +232,16 @@ noncomputable def d18 : {F E : Type} →
     letI : TopologicalSpace (TensorProduct F R E) := topTens R
     ∃ t, IsOpen t ∧ Subtype.val ⁻¹' t = s
 
-theorem blockM_one_partner_eq_one : ∀ {F E : Type} [Field F] [Field E]
-  [Algebra F E] (R : Type) [CommRing R] [Algebra F R] (σ : E →ₐ[F] E) {M : ℕ}
-  (J : Matrix (Fin M) (Fin M) E) [TopologicalSpace R], d18 R σ J Set.univ := by
+theorem blockM_one_partner_eq_one : ∀ {F E : Type} [inst : Field F] [inst_1 : Field E]
+  [inst_2 : Algebra F E] (R : Type) [inst_3 : CommRing R] [inst_4 : Algebra F R] (σ : E →ₐ[F] E) {M : ℕ}
+  (J : Matrix (Fin M) (Fin M) E) [inst_5 : TopologicalSpace R], d18 R σ J Set.univ := by
   intro F E _ _ _ R _ _ σ M J _
   letI : TopologicalSpace (TensorProduct F R E) := topTens R
   exact ⟨Set.univ, isOpen_univ, rfl⟩
 
-theorem blockM_mul_alt : ∀ {F E : Type} [Field F] [Field E]
-  [Algebra F E] (R : Type) [CommRing R] [Algebra F R] (σ : E →ₐ[F] E) {M : ℕ}
-  (J : Matrix (Fin M) (Fin M) E) [TopologicalSpace R] (s t : Set (HA R σ J)),
+theorem blockM_mul_alt : ∀ {F E : Type} [inst : Field F] [inst_1 : Field E]
+  [inst_2 : Algebra F E] (R : Type) [inst_3 : CommRing R] [inst_4 : Algebra F R] (σ : E →ₐ[F] E) {M : ℕ}
+  (J : Matrix (Fin M) (Fin M) E) [inst_5 : TopologicalSpace R] (s t : Set (HA R σ J)),
   d18 R σ J s →
     d18 R σ J t → d18 R σ J (s ∩ t) := by
   intro F E _ _ _ R _ _ σ M J _ s t hs ht
@@ -250,9 +250,9 @@ theorem blockM_mul_alt : ∀ {F E : Type} [Field F] [Field E]
   obtain ⟨b, hb, rfl⟩ := ht
   exact ⟨a ∩ b, ha.inter hb, rfl⟩
 
-theorem conj_invariant_character_mem : ∀ {F E : Type} [Field F]
-  [Field E] [Algebra F E] (R : Type) [CommRing R] [Algebra F R] (σ : E →ₐ[F] E)
-  {M : ℕ} (J : Matrix (Fin M) (Fin M) E) [TopologicalSpace R]
+theorem conj_invariant_character_mem : ∀ {F E : Type} [inst : Field F]
+  [inst_1 : Field E] [inst_2 : Algebra F E] (R : Type) [inst_3 : CommRing R] [inst_4 : Algebra F R] (σ : E →ₐ[F] E)
+  {M : ℕ} (J : Matrix (Fin M) (Fin M) E) [inst_5 : TopologicalSpace R]
   (s : Set (Set (HA R σ J))),
   (∀ t ∈ s, d18 R σ J t) → d18 R σ J (⋃₀ s) := by
   intro F E _ _ _ R _ _ σ M J _ s hs
@@ -269,12 +269,12 @@ theorem conj_invariant_character_mem : ∀ {F E : Type} [Field F]
     exact ⟨u, ⟨hu, ht⟩, hx⟩
 
 @[reducible] noncomputable def instTopologicalSpaceHA : {F E : Type} →
-  [Field F] →
-    [Field E] →
-      [Algebra F E] →
+  [inst : Field F] →
+    [inst_1 : Field E] →
+      [inst_2 : Algebra F E] →
         (R : Type) →
-          [CommRing R] →
-            [Algebra F R] →
+          [inst_3 : CommRing R] →
+            [inst_4 : Algebra F R] →
               (σ : E →ₐ[F] E) →
                 {M : ℕ} →
                   (J : Matrix (Fin M) (Fin M) E) →
@@ -351,9 +351,9 @@ private theorem sigR_continuous {F E : Type} [Field F] [Field E] [Algebra F E]
   rw [h]
   exact IsModuleTopology.continuous_of_linearMap _
 
-theorem lcsc_HA : ∀ {F E : Type} [Field F] [Field E]
-  [Algebra F E] [FiniteDimensional F E] (R : Type) [CommRing R] [Algebra F R]
-  [TopologicalSpace R] [IsTopologicalRing R] [LocallyCompactSpace R] [SecondCountableTopology R] [T2Space R]
+theorem lcsc_HA : ∀ {F E : Type} [inst : Field F] [inst_1 : Field E]
+  [inst_2 : Algebra F E] [FiniteDimensional F E] (R : Type) [inst_4 : CommRing R] [inst_5 : Algebra F R]
+  [inst_6 : TopologicalSpace R] [IsTopologicalRing R] [LocallyCompactSpace R] [SecondCountableTopology R] [T2Space R]
   (σ : E →ₐ[F] E) (M : ℕ) (J : Matrix (Fin M) (Fin M) E),
   LocallyCompactSpace (HA R σ J) ∧
     SecondCountableTopology (HA R σ J) ∧

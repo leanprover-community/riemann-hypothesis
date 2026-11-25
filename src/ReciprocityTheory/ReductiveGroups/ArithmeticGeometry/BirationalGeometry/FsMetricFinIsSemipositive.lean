@@ -54,8 +54,7 @@ lemma hasFDerivAt_logFs {y : ι → ℂ} (hy : y ≠ 0) :
   refine h1.congr_fderiv ?_
   apply ContinuousLinearMap.ext
   intro v
-  rw [fsGrad_apply]
-  simp
+  simp [fsGrad_apply]
   ring
 
 lemma fderiv_logFs_eventuallyEq {z : ι → ℂ} (hz : z ≠ 0) :
@@ -78,8 +77,7 @@ lemma hess_logFs {z : ι → ℂ} (hz : z ≠ 0) (w : ι → ℂ) :
   rw [(fderiv_logFs_eventuallyEq hz).fderiv_eq]
   have hfG : (fsGrad (ι := ι)) = ((fun y : ℝ => y⁻¹) ∘ fun x => ‖fsLp ι x‖ ^ 2) •
       (fun y => (innerSL ℝ (fsLp ι y)).comp (fsLp ι)) := rfl
-  rw [hfG, hG.fderiv]
-  simp
+  simp [hfG, hG.fderiv]
   field_simp
   ring
 
@@ -98,10 +96,9 @@ lemma inner_sq_add_inner_I_sq (x y : EuclideanSpace ℂ ι) :
 theorem fsMetric_isSmooth : IsSmoothMetric (fsMetric (ι := ι)) := by
   intro z hz
   change ContDiffWithinAt ℝ _ (fun z => ‖fsLp ι z‖) _ z
-  have h0 : fsLp ι z ≠ 0 := fsLp_ne_zero hz
   have hn : ContDiffAt ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fun u : EuclideanSpace ℂ ι => ‖u‖) (fsLp ι z) := by
     first
-    | exact contDiffAt_norm ℝ h0
+    | exact contDiffAt_norm ℝ (fsLp_ne_zero hz)
   exact (hn.comp z (fsLp ι).contDiff.contDiffAt).contDiffWithinAt
 
 theorem leviForm_fsMetric {z : ι → ℂ} (hz : z ≠ 0) (w : ι → ℂ) :

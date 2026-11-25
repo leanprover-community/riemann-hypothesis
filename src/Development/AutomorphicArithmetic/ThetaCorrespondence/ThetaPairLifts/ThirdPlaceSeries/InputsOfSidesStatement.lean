@@ -1153,7 +1153,7 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.XiTypeProof
 
-theorem xiType : ∀ (D : D7) (ρ : Setup D.ntw) (_ : ρ.Good) (rd : Rds D.nexp ρ), (∀ i j b, Faithful (rd i j b)) →
+theorem xiType : ∀ (D : D7) (ρ : Setup D.ntw) (hρ : ρ.Good) (rd : Rds D.nexp ρ), (∀ i j b, Faithful (rd i j b)) →
     (∀ i j b, ActRead (rd i j b)) → ρ.LevelOf D.nexp → XiType rd := by
   intro D ρ hρ rd hF hA hL i _ j b Q M hQ s h P _ _ a x hx
   unfold Formalism.MainNotions.IntegralHeckeForms.Fm0

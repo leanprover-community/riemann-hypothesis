@@ -142,7 +142,7 @@ theorem lineId_mul_conj (D : D7) (j : ℕ) : lineId D j * GlobalTheory.SeeSaw.co
   have hB' := pow_ne_zero ((D.R.m - 2 - j) / 2 + 1) hB
   field_simp
 
-theorem coreL_selfDual_split : Big fun {D} {_} _ _ {_ _} {_} {_} _ _ _ {_} ch => ∀ j σ, j + 2 * σ + 2 = D.R.m → IsSelfDualC _ (GlobalTheory.RowShape.lineL D j) ∧
+theorem coreL_selfDual_split : Big fun {D} {Γ} _ _ {Pl0 T} {A} {Ks} _ _ _ {R} ch => ∀ j σ, j + 2 * σ + 2 = D.R.m → IsSelfDualC _ (GlobalTheory.RowShape.lineL D j) ∧
     IsSelfDualC _ (GlobalTheory.RowShape.coreL ch.G j) ∧ ∀ v, GlobalTheory.FinPl.OrthAt (GlobalTheory.OrthSumExists.orthDecHsum D (ch.G.V (.top j)) (GlobalTheory.SeeSaw.Model.nLine D))
       (GlobalTheory.RowShape.coreL ch.G j) (ch.G.Λ (.top j)) (GlobalTheory.RowShape.lineL D j) v := by
   refine ⟨0, fun _ _ _ => ⟨0, ?_⟩⟩

@@ -58,7 +58,7 @@ open GlobalTheory.SplitWeil (SB nabs)
 namespace GlobalTheory.KSp
 
 theorem inCell_iff_det_ne_zero : ∀ (F : Type) [Field F] [CharZero F] (E : Type) [Field E] [Algebra F E]
-    (c : E →ₐ[F] E) (δ : E) (_ : IsQuad c δ) (ν : Type) [Fintype ν] [DecidableEq ν] (g : UG c (stdJ ν E)),
+    (c : E →ₐ[F] E) (δ : E) (hE : IsQuad c δ) (ν : Type) [Fintype ν] [DecidableEq ν] (g : UG c (stdJ ν E)),
     InCell c g ↔ ((mat c g).toBlocks₂₁).det ≠ 0 := by
   intro F _ _ E _ _ c δ hE ν _ _ g
   constructor

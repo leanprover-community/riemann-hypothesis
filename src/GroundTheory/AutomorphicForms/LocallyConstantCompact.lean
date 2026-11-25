@@ -146,8 +146,7 @@ theorem exists_forall_mul_left {f : G → E} (hf : f ∈ locallyConstantCompactS
     ⟨hf.1.comp_continuous continuous_inv, hf.2.comp_homeomorph (Homeomorph.inv G)⟩
   obtain ⟨K, hKc, hK⟩ := exists_forall_mul_right hf'
   refine ⟨K, hKc, fun k hk g => ?_⟩
-  have := hK g⁻¹ k⁻¹ (inv_mem hk)
-  simpa [mul_inv_rev] using this
+  simpa [mul_inv_rev] using hK g⁻¹ k⁻¹ (inv_mem hk)
 
 theorem exists_forall_mul_left_mul_right {f : G → E}
     (hf : f ∈ locallyConstantCompactSupport G R E) :

@@ -81,8 +81,7 @@ theorem TanField_of (hChain : Chain) : TanField := by
     have hf' : f' ∈ Van (S : Set (Mat C N)) := fun x hx => by
       rw [hev, LinearMap.mulRight_apply]; exact hf _ (S.mul_mem hx hs)
     have h1 : dAt f' 1 Y = 0 := hY f' hf'
-    rw [hd] at h1
-    simp only [LinearMap.mulRight_apply, one_mul] at h1
+    simp only [hd, LinearMap.mulRight_apply, one_mul] at h1
     show ev s (DX Y f) = 0
     rw [ev_DX]; exact h1
   · intro h f hf

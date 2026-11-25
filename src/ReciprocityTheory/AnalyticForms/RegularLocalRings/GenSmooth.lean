@@ -42,10 +42,9 @@ theorem gs_exists_rows_det_ne_zero {K : Type*} [Field K] {t r : ℕ} (M : Matrix
     simpa using congrFun hc0 k
 
   obtain ⟨κ, a, ha, hsp, hli⟩ := exists_linearIndependent' K (fun i => M i)
-  have hsp' : Submodule.span K (Set.range ((fun i => M i) ∘ a)) = ⊤ := hsp.trans hspan
   haveI : Finite κ := Finite.of_injective a ha
   haveI : Fintype κ := Fintype.ofFinite κ
-  let B := Module.Basis.mk hli hsp'.ge
+  let B := Module.Basis.mk hli (hsp.trans hspan).ge
   have hcard : Fintype.card κ = r := by
     have h := Module.finrank_eq_card_basis B
     simpa using h.symm

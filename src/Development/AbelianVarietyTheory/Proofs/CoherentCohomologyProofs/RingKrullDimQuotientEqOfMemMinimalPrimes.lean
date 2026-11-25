@@ -84,8 +84,7 @@ theorem ringKrullDim_eq_of_isIntegral (R S : Type*) [CommRing R] [CommRing S] [A
   apply le_antisymm
   · refine Order.krullDim_le_of_strictMono (PrimeSpectrum.comap (algebraMap R S)) ?_
     intro P Q hPQ
-    have : P.asIdeal < Q.asIdeal := hPQ
-    exact Ideal.IsIntegral.comap_lt_comap this
+    exact Ideal.IsIntegral.comap_lt_comap (hPQ : P.asIdeal < Q.asIdeal)
   · refine iSup_le fun l ↦ ?_
     obtain ⟨P, hP⟩ := Algebra.IsIntegral.comap_surjective R S l.head
     have : P.asIdeal.LiesOver l.head.asIdeal := ⟨by rw [← hP]; rfl⟩

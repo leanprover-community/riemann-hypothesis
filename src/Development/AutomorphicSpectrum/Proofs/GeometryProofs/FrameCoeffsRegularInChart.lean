@@ -94,8 +94,7 @@ theorem twist_left_inverse : ∀ (X : Scheme.{0}) (Ω : Type) [Field Ω] (ξ : S
   choose g hgR hgw using hg
   refine ⟨Matrix.of fun a j => g a j, fun a j => hgR a j, fun j a => hT.1 j p c₁ hc (β a) (hβmem a), ?_⟩
   ext a b
-  rw [Matrix.mul_apply, Matrix.one_apply]
-  simp only [Matrix.of_apply]
+  simp only [Matrix.mul_apply, Matrix.one_apply, Matrix.of_apply]
   rw [← hgw a (β b) (hβmem b), hw]
 
 end GlobalTheory.CompanionTheory.Ar.FlagBun

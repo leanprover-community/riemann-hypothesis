@@ -181,9 +181,8 @@ theorem flat_tensor_embeds_tensor_fractionFields
   refine ⟨(e.symm.toRingHom : L ⊗[T] K →+* L ⊗[F] K).comp
     (Algebra.TensorProduct.map f g).toRingHom, ?_, ?_⟩
   · have hf : Function.Injective f.toLinearMap := IsFractionRing.injective U L
-    have hg : Function.Injective g.toLinearMap := IsFractionRing.injective C K
     have h1 : Function.Injective (LinearMap.lTensor U g.toLinearMap) :=
-      Module.Flat.lTensor_preserves_injective_linearMap _ hg
+      Module.Flat.lTensor_preserves_injective_linearMap _ (IsFractionRing.injective C K)
     have h2 : Function.Injective (LinearMap.rTensor K f.toLinearMap) :=
       Module.Flat.rTensor_preserves_injective_linearMap _ hf
     have h3 : Function.Injective (TensorProduct.map f.toLinearMap g.toLinearMap) := by

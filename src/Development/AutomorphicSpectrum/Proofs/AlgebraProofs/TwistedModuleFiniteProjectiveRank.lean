@@ -79,9 +79,8 @@ def twIn {n : ℕ} (r : L →ₗ[O] (Fin n → O)) : TwMod s L →ₗ[O] (Fin n 
 
 theorem twOut_twIn {n : ℕ} (f : (Fin n → O) →ₗ[O] L) (r : L →ₗ[O] (Fin n → O)) (h : f ∘ₗ r = LinearMap.id)
     (x : TwMod s L) : twOut s L f (twIn s L r x) = x := by
-  have hx : f (r (show L from x)) = (show L from x) := LinearMap.congr_fun h _
   show f (fun i => s (s.symm (r (show L from x) i))) = (show L from x)
-  simpa using hx
+  simpa using LinearMap.congr_fun h _
 
 theorem twOut_surjective {n : ℕ} (f : (Fin n → O) →ₗ[O] L) (hf : Function.Surjective f) :
     Function.Surjective (twOut s L f) := by

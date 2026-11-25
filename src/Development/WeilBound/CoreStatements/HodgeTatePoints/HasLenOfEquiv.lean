@@ -313,11 +313,9 @@ private theorem exists_smul_delta_mem_of_isLat {C : Type} [Field C] {R : Type} [
   choose a ha using hx
   have heq : (fun y => if y = x then algebraMap R C d else 0) = ∑ j, a j • (fun y => B y j) := by
     funext y
-    rw [Finset.sum_apply]
-    simp only [Pi.smul_apply]
+    simp only [Finset.sum_apply, Pi.smul_apply]
     simp only [Algebra.smul_def]
-    have hmul : B * B⁻¹ = 1 := Matrix.mul_nonsing_inv B hB
-    have h1 := congrFun (congrFun hmul y) x
+    have h1 := congrFun (congrFun (Matrix.mul_nonsing_inv B hB) y) x
     rw [Matrix.mul_apply, Matrix.one_apply] at h1
     have key : ∑ j, algebraMap R C (a j) * B y j = algebraMap R C d * ∑ j, B y j * B⁻¹ j x := by
       rw [Finset.mul_sum]
@@ -339,15 +337,13 @@ private theorem exists_smul_augIdeal_mem_sqIdeal_of_isLat {C : Type} [Field C] {
   have hf' : f ∈ M ⊓ LinearMap.ker (LinearMap.proj (R := R) (φ := fun _ : N => C) 0) := hf
   obtain ⟨hfM, hf0'⟩ := Submodule.mem_inf.1 hf'
   have hf0 : f 0 = 0 := LinearMap.mem_ker.1 hf0'
-  have hfi : ∀ x, ∃ r : R, algebraMap R C r = f x := hint hfM
-  choose c hc using hfi
+  choose c hc using hint hfM
   have hδaug : ∀ x, x ≠ 0 → δ x ∈ augIdeal M := fun x hx =>
     (show δ x ∈ M ⊓ LinearMap.ker (LinearMap.proj (R := R) (φ := fun _ : N => C) 0) from
       Submodule.mem_inf.2 ⟨hδ x, LinearMap.mem_ker.2 (by simp [hδdef, Ne.symm hx])⟩)
   have heq : (d * d) • f = ∑ x ∈ Finset.univ.erase 0, c x • (δ x * δ x) := by
     funext y
-    rw [Finset.sum_apply]
-    simp only [Pi.smul_apply, Pi.mul_apply, hδdef]
+    simp only [Finset.sum_apply, Pi.smul_apply, Pi.mul_apply, hδdef]
     by_cases hy : y = 0
     · subst hy
       rw [hf0, smul_zero]

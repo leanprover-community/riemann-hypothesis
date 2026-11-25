@@ -157,12 +157,11 @@ theorem UpperTheory.V.AlgebraTools.henselDiag :
   refine ⟨u, d, hu1, hMu, hd', fun u' d' hu' hM' => ?_⟩
   have r1 := (res_one u).mp hu1
   have r2 := (res_one u').mp hu'
-  have hdet : IsUnit u := by
+  obtain ⟨U, hU⟩ : IsUnit u := by
     rw [Matrix.isUnit_iff_isUnit_det]
     apply unit_of_res
     rw [RingHom.map_det, r1, Matrix.det_one]
     exact one_ne_zero
-  obtain ⟨U, hU⟩ := hdet
   set w : Matrix ι ι C := (U⁻¹ : (Matrix ι ι C)ˣ) * u' with hw
   have huw : u' = u * w := by rw [hw, ← hU, Units.mul_inv_cancel_left]
   have r3 : (IsLocalRing.residue C).mapMatrix w = 1 := by
@@ -179,8 +178,7 @@ theorem UpperTheory.V.AlgebraTools.henselDiag :
     intro j
     have := congrArg (IsLocalRing.residue C).mapMatrix hM'
     rw [map_mul, map_mul, r2, mul_one, one_mul] at this
-    have := congrFun (congrFun this j) j
-    simpa using this.symm
+    simpa using (congrFun (congrFun this j) j).symm
   have hd1 : ∀ j, IsLocalRing.residue C (d j) = IsLocalRing.residue C (M j j) := by
     intro j
     rw [← sub_eq_zero, ← map_sub, IsLocalRing.residue_eq_zero_iff]; exact hd' j

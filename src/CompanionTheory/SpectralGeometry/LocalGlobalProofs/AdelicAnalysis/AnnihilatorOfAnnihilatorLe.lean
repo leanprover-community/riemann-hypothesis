@@ -97,8 +97,7 @@ theorem relIndex_ne_zero_of_isOpen {V : Type} [AddCommGroup V] [TopologicalSpace
   have ho : IsOpen ((S.addSubgroupOf T : AddSubgroup T) : Set T) :=
     hS.preimage continuous_subtype_val
   haveI := AddSubgroup.quotient_finite_of_isOpen _ ho
-  have : (S.addSubgroupOf T).FiniteIndex := AddSubgroup.finiteIndex_of_finite_quotient
-  exact this.index_ne_zero
+  exact (AddSubgroup.finiteIndex_of_finite_quotient : (S.addSubgroupOf T).FiniteIndex).index_ne_zero
 
 theorem measure_eq_relIndex_mul {V : Type} [AddCommGroup V] [TopologicalSpace V]
     [IsTopologicalAddGroup V] [MeasurableSpace V] [BorelSpace V] (μ : Measure V)
@@ -119,16 +118,12 @@ theorem measure_eq_relIndex_mul {V : Type} [AddCommGroup V] [TopologicalSpace V]
       have h := QuotientAddGroup.eq.1 (ho ((⟨v, hv⟩ : T) : T ⧸ S.addSubgroupOf T))
       exact AddSubgroup.mem_addSubgroupOf.1 h
     · rintro ⟨q, hq⟩
-      have h1 : -(o q : V) + v ∈ T := hST hq
-      have := T.add_mem (o q).2 h1
-      simpa using this
+      simpa using T.add_mem (o q).2 (hST hq)
   have hd : Pairwise (Function.onFun Disjoint C) := by
     intro q q' hne
     refine Set.disjoint_left.2 fun v hv hv' => hne ?_
-    have h1 : -(o q : V) + v ∈ S := hv
-    have h2 : -(o q' : V) + v ∈ S := hv'
     have h3 : -(o q : V) + (o q' : V) ∈ S := by
-      have := S.sub_mem h1 h2
+      have := S.sub_mem hv hv'
       have e : -(o q : V) + v - (-(o q' : V) + v) = -(o q : V) + (o q' : V) := by abel
       rwa [e] at this
     have h4 : ((o q : T) : T ⧸ S.addSubgroupOf T) = (o q' : T) :=
@@ -204,13 +199,12 @@ theorem selfDual_of_between : ∀ (V : Type) [AddCommGroup V] [TopologicalSpace 
     exact hy x hx
   have P2 : Q L₂ ≤ Q L := anti _ _ h2
   have P1 : Q L ≤ Q L₁ := anti _ _ h1
-  have LM : L ≤ Q (Q L) := hself L
   have ML : Q (Q L) ≤ L₂ := fun z hz => dd₂ (anti _ _ P2 hz)
   have n0 : L₁.relIndex L₂ ≠ 0 := relIndex_ne_zero_of_isOpen _ _ oL₁ cL₂
   have p0 : (Q L₂).relIndex (Q L₁) ≠ 0 := relIndex_ne_zero_of_isOpen _ _ oP₂ cP₁
   have ea := AddSubgroup.relIndex_mul_relIndex L₁ L L₂ h1 h2
   have ep := AddSubgroup.relIndex_mul_relIndex (Q L₂) (Q L) (Q L₁) P2 P1
-  have ek := AddSubgroup.relIndex_mul_relIndex L (Q (Q L)) L₂ LM ML
+  have ek := AddSubgroup.relIndex_mul_relIndex L (Q (Q L)) L₂ (hself L) ML
   have a0 : L₁.relIndex L ≠ 0 := fun h => n0 (by rw [← ea, h, zero_mul])
   have a'0 : L.relIndex L₂ ≠ 0 := fun h => n0 (by rw [← ea, h, mul_zero])
   have q0 : (Q L₂).relIndex (Q L) ≠ 0 := fun h => p0 (by rw [← ep, h, zero_mul])
@@ -240,9 +234,8 @@ theorem selfDual_of_between : ∀ (V : Type) [AddCommGroup V] [TopologicalSpace 
     have : L.relIndex (Q (Q L)) * (Q (Q L)).relIndex L₂ = 1 * (Q (Q L)).relIndex L₂ := by
       rw [ek, one_mul, e2, e4]
     exact Nat.eq_of_mul_eq_mul_right (Nat.pos_of_ne_zero m0) this
-  have MLe : Q (Q L) ≤ L := AddSubgroup.relIndex_eq_one.1 hk
   have oP : IsOpen (Q L : Set V) := AddSubgroup.isOpen_mono P2 oP₂
-  refine ⟨?_, oP, MLe, ?_⟩
+  refine ⟨?_, oP, (AddSubgroup.relIndex_eq_one.1 hk), ?_⟩
   · exact cP₁.of_isClosed_subset (AddSubgroup.isClosed_of_isOpen _ oP) P1
   · change μ L * μ (Q L) = 1
     change μ L₂ * μ (Q L₂) = 1 at m₂

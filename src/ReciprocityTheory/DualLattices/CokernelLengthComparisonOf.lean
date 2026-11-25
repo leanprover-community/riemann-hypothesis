@@ -76,10 +76,9 @@ theorem cokernelLengthComparison_of (hW1 : WdetLenStatement) (hW2 : WdetDegState
     have h5 := hS.cp_val
     rw [h0, zero_pow (Nat.sub_pos_of_lt (Fact.out : p.Prime).one_lt).ne'] at h5
     exact hS.p_ne h5.symm
-  have hpos : 0 < v (algebraMap R C cp) ^ d := pow_pos (pos_iff_ne_zero.mpr hcp) d
   have h6 : v (algebraMap R C cp) ^ d * cwb ≤ v (algebraMap R C cp) ^ d * cw := by
     rw [← hXe]
     exact mul_le_mul_of_nonneg_right hle zero_le
-  exact le_of_mul_le_mul_left h6 hpos
+  exact le_of_mul_le_mul_left h6 (pow_pos (pos_iff_ne_zero.mpr hcp) d)
 
 end ReciprocityTheory.PGsh.Up

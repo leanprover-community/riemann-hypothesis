@@ -58,12 +58,11 @@ def blkM {n : ℕ} (b : Matrix (Fin n) (Fin n) ℂ) (u : Fin n → ℂ) (d : ℝ
 
 theorem blkM_mem {n : ℕ} (b : hermC n) (u : Fin n → ℂ) (d : ℝ) :
     blkM (b : Matrix (Fin n) (Fin n) ℂ) u d ∈ hermC (n + 1) := by
-  have hb : (b : Matrix (Fin n) (Fin n) ℂ).IsHermitian := mem_hermC.1 b.2
   rw [mem_hermC]
   unfold blkM
   simp only [Matrix.reindex_apply]
   apply Matrix.IsHermitian.submatrix
-  apply Matrix.IsHermitian.fromBlocks hb
+  apply Matrix.IsHermitian.fromBlocks (mem_hermC.1 b.2)
   · ext i j
     simp [Matrix.conjTranspose_apply]
   · ext i j

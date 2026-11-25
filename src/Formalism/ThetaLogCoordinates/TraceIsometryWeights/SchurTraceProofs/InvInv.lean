@@ -327,8 +327,7 @@ theorem E_Pstep_apply [CharZero K] (h : GlRel E) {S : Finset ι} {z j : ι} (hz 
     E j z (Pstep E S z n u) = cc K S.card n • Om E S z n (E j z u) := by
   induction n with
   | zero =>
-    rw [Pstep_eq]
-    simp [Om, cc_zero]
+    simp [Pstep_eq, Om, cc_zero]
   | succ n ih =>
     rw [Pstep_eq, Finset.sum_range_succ, ← Pstep_eq]
     simp only [LinearMap.add_apply, map_add (f := _), ih, LinearMap.smul_apply, map_smul,
@@ -396,8 +395,7 @@ theorem lower_kill [CharZero K] (h : GlRel E) {NN : Submodule K W} (hN : ∀ a b
       have hk0 : (k : K) ≠ 0 := by exact_mod_cast (show k ≠ 0 by omega)
       have hk2 : (k : K) + 1 ≠ 0 := by exact_mod_cast Nat.succ_ne_zero k
       exact (smul_eq_zero.mp h2.symm).resolve_left (neg_ne_zero.mpr (mul_ne_zero hk2 hk0))
-  have := down l 1 (by omega) le_rfl
-  simpa using this
+  simpa using down l 1 (by omega) le_rfl
 
 theorem range_mem {a b : ι} (hab : a ≠ b) (x : W) :
     E a b x ∈ ⨆ (a : ι) (b : ι) (_ : a ≠ b), LinearMap.range (E a b) := Submodule.mem_iSup_of_mem a (Submodule.mem_iSup_of_mem b

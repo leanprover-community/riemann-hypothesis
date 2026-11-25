@@ -125,7 +125,7 @@ end GlobalTheory.MBLow.Cl.FJ
 
 
 open GlobalTheory.MBLow.Cl.FJ in
-theorem GlobalTheory.MBLow.Cl.fj_expansion : AllCD fun {_} {_} {r} {_} {_} d σ => ∀ S : Matrix (Fin r) (Fin r) ℂ, S.IsSymm →
+theorem GlobalTheory.MBLow.Cl.fj_expansion : AllCD fun {N} {g'} {r} {g} {bX} d σ => ∀ S : Matrix (Fin r) (Fin r) ℂ, S.IsSymm →
     ((d.full σ S).map Complex.im).PosDef → ∀ Z, (Summable fun χ => ‖d.fj σ S χ Z‖) ∧
       ∑' χ, d.fj σ S χ Z = thetaChar (d.full σ S) (d.aF σ) (d.bF σ) Z := by
   intro N g' r g bX d σ S _ hpos Z

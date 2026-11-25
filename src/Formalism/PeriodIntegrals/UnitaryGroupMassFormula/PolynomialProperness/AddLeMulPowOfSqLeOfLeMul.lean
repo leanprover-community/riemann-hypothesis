@@ -169,16 +169,14 @@ theorem polyProper_of_steps (hG : GVGroup) (hN : NormInv) (hNF : GNFacts) (hF : 
   · intro σ hσ s' hs'
     obtain ⟨hσG, v, hv, hvL, hσf⟩ := hSg k r z z' γ hstd σ hσ
     obtain ⟨hs'G, u', hu, hsf⟩ := hS k r z' hstd.2.2 s' hs'
-    have hg : σ⁻¹ * γ * s' ∈ B.GV k r := hmul _ (hmul _ (hinv σ hσG).2.1 _ hγ) _ hs'G
-    have hg1 := (hN k r _ hg).2
+    have hg1 := (hN k r _ (hmul _ (hmul _ (hinv σ hσG).2.1 _ hγ) _ hs'G)).2
     have hZg := hZ k r z z' γ σ s' v u' hσG hs'G hσf hsf
     obtain ⟨hbv, hbu⟩ := hA1 v hv hvL u' hu _ hg1 hZg
     exact bound_core hG hN hNF hγ hCf hCf' hCc σ s' v u' hσG hs'G hv hu hσf hsf hbv hbu
   · intro s hs σ' hσ'
     obtain ⟨hsG, u, hu, hsf⟩ := hS k r z hstd.2.1 s hs
     obtain ⟨hσG, v', hv', hPv, hσf⟩ := hSg' k r z z' γ hstd σ' hσ'
-    have hg : s⁻¹ * γ * σ' ∈ B.GV k r := hmul _ (hmul _ (hinv s hsG).2.1 _ hγ) _ hσG
-    have hg1 := (hN k r _ hg).2
+    have hg1 := (hN k r _ (hmul _ (hmul _ (hinv s hsG).2.1 _ hγ) _ hσG)).2
     have hZg := hZ k r z z' γ s σ' u v' hsG hσG hsf hσf
     obtain ⟨hbu, hbv⟩ := hA2 u hu v' hv' hPv _ hg1 hZg
     exact bound_core hG hN hNF hγ hCf hCf' hCc s σ' u v' hsG hσG hu hv' hsf hσf hbu hbv

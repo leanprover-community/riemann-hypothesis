@@ -32,8 +32,7 @@ theorem RegularityOrder.order_of_integral {F : Type*} [Field F] [NumberField F] 
     obtain ⟨d, hd⟩ := Ideal.mem_span_singleton'.1 (Ideal.mem_comap.1 hm)
     refine ⟨m, hm0, ?_⟩
     have hmdc : (m : F) = (d : F) * c := by
-      have := congrArg Subtype.val hd
-      simpa using this.symm
+      simpa using (congrArg Subtype.val hd).symm
     rw [hmdc, mul_assoc, mul_comm c x]
     exact S.mul_mem d.2 hxc
 

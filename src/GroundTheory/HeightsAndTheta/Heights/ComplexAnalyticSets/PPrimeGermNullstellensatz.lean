@@ -107,8 +107,7 @@ theorem proof (hCover : PrimeGermCanonicalCover.Statement) : PrimeGermNullstelle
     obtain ⟨⟨hr, hv⟩, hpx, hAx⟩ := hx m
     have hg0 : g (x m) = 0 := hv hpx
     have h0 : δ (A (x m)) ^ M * g (x m) - ∑ j, a j (A (x m)) * ℓ (x m) ^ (j : ℕ) = 0 := by
-      rw [hr]
-      simp [hpx]
+      simp [hr, hpx]
     rw [hg0, mul_zero, zero_sub, neg_eq_zero, hAx] at h0
     exact h0
 

@@ -470,8 +470,7 @@ theorem core2 (hMM : MM R) (hun : ∀ x : K, conj (ψ x) = ψ (-x)) (hψR : ∀ 
     have hNz : 0 < modK R (z : K) := (hMM z z).1
     rw [amp_unit, one_mul, Units.val_one, one_mul]
     have e1 : γ (z * t₁) * conj (γ (z * t₁)) = 1 := by
-      rw [Complex.mul_conj, Complex.normSq_eq_norm_sq, hγ1]
-      simp
+      simp [Complex.mul_conj, Complex.normSq_eq_norm_sq, hγ1]
     have e2 : ψ (((m + 1 : ℕ) : K) * (z : K) * ((t₁⁻¹ : Kˣ) : K) -
         ((m + 1 : ℕ) : K) * ((κ : K) * (z : K)) * ((t₂⁻¹ : Kˣ) : K)) = ψ ((z : K) * d) := by
       have e := hψR _ (hphase _ hzOm)

@@ -75,8 +75,7 @@ variable {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [Measu
 def Inv (Γ : Subgroup G) (F : G → ℂ) : Prop := ∀ γ ∈ Γ, ∀ x, F (γ * x) = F x
 
 theorem fd_right (h : IsFundamentalDomain Γ 𝓕 μ) (g : G) : IsFundamentalDomain Γ ((fun x => x * g) '' 𝓕) μ := by
-  have := h.smul_of_comm (MulOpposite.op g)
-  simpa [← Set.image_smul] using this
+  simpa [← Set.image_smul] using h.smul_of_comm (MulOpposite.op g)
 
 theorem emb (g : G) : MeasurableEmbedding fun x : G => x * g := (Homeomorph.mulRight g).measurableEmbedding
 
@@ -135,8 +134,7 @@ theorem integral_deriv [SFinite μ] (h : IsFundamentalDomain Γ 𝓕 μ) (γ : M
   have hd' : ∀ x s, HasDerivAt (fun t : ℝ => F (x * γ (Multiplicative.ofAdd t))) (F₁ (x * γ (Multiplicative.ofAdd s))) s := by
     intro x s
     have h1 := hd (x * γ (Multiplicative.ofAdd s))
-    have h2 : HasDerivAt (fun t : ℝ => t - s) 1 s := (hasDerivAt_id s).sub_const s
-    have h3 := HasDerivAt.scomp s (by simpa using h1) h2
+    have h3 := HasDerivAt.scomp s (by simpa using h1) ((hasDerivAt_id s).sub_const s)
     simp only [one_smul] at h3
     refine h3.congr_of_eventuallyEq (Filter.Eventually.of_forall fun t => ?_)
     show F _ = F (x * γ (Multiplicative.ofAdd s) * γ (Multiplicative.ofAdd (t - s)))

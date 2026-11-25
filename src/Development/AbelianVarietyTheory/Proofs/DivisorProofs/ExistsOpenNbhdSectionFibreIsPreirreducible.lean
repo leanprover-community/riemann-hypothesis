@@ -1154,7 +1154,7 @@ theorem isPullback_comp_mono_right_of_isPullback {𝒞 : Type*} [Category 𝒞] 
 
 theorem preirreducibleSpace_tensor_of_pullback :
     ∀ (X S : Scheme.{0}) (f : X ⟶ S) (V : S.Opens) (W : X.Opens) (h : W ≤ f ⁻¹ᵁ V)
-      (hV : IsAffineOpen V) (_ : IsAffineOpen W) (k : Type) [Field k] [Algebra Γ(S, V) k]
+      (hV : IsAffineOpen V) (hW : IsAffineOpen W) (k : Type) [Field k] [Algebra Γ(S, V) k]
       [Algebra Γ(S, V) Γ(X, W)], algebraMap Γ(S, V) Γ(X, W) = (f.appLE V W h).hom →
       PreirreducibleSpace ↥(pullback (W.ι ≫ f)
         (Spec.map (CommRingCat.ofHom (algebraMap Γ(S, V) k)) ≫ hV.fromSpec)) →

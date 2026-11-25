@@ -262,8 +262,7 @@ theorem hasDerivAt_expG_apply (hπ : ∀ g, ‖π g‖ ≤ 1) {w : ℝ → E} {w
           · rw [norm_smul]; gcongr
       _ ≤ c / 2 * ‖t‖ + ‖t‖ * (c / 2) := by gcongr
       _ = c * ‖t‖ := by ring
-  have := hA.add hB
-  refine this.congr_of_eventuallyEq (Eventually.of_forall fun t => ?_)
+  refine (hA.add hB).congr_of_eventuallyEq (Eventually.of_forall fun t => ?_)
   simp only [Pi.add_apply, map_sub]
   abel
 
@@ -325,8 +324,7 @@ theorem hasDerivAt_wordOp_expG (hπ : ∀ g, ‖π g‖ ≤ 1) {v : E} (hv : h.I
 theorem continuous_Ad_apply (X : 𝔤) : Continuous fun g : G => h.Ad g X := by
   refine Continuous.subtype_mk ?_ _
   have h1 : Continuous fun g : G => ((g : 𝔸ˣ) : 𝔸) := continuous_val_val G
-  have h2 : Continuous fun g : G => (((g⁻¹ : G) : 𝔸ˣ) : 𝔸) := h1.comp continuous_inv
-  exact (h1.mul continuous_const).mul h2
+  exact (h1.mul continuous_const).mul (h1.comp continuous_inv)
 
 theorem continuous_apply_apply (hπ : ∀ g, ‖π g‖ ≤ 1) {T : Type*} [TopologicalSpace T]
     {p : T → G} {u : T → E} (hp : Continuous p) (hu : Continuous u) :

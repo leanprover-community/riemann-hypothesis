@@ -1494,7 +1494,7 @@ open CategoryTheory AlgebraicGeometry TensorProduct GlobalTheory GlobalTheory.PD
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor
 attribute [local instance] CategoryTheory.Over.cartesianMonoidalCategory
 
-theorem _root_.GlobalTheory.T.exists_torsionTower_and_height_eq_two_dim : ∀ (p : ℕ) [Fact p.Prime] (k : Type) [Field k] (A : AbVar k), (∃ G : PDivGroup p k, Nonempty (G.TorsionTower A.X)) ∧ ∀ (G : PDivGroup p k) (_ : G.TorsionTower A.X), G.height = 2 * A.dim := by
+theorem _root_.GlobalTheory.T.exists_torsionTower_and_height_eq_two_dim : ∀ (p : ℕ) [Fact p.Prime] (k : Type) [Field k] (A : AbVar k), (∃ G : PDivGroup p k, Nonempty (G.TorsionTower A.X)) ∧ ∀ (G : PDivGroup p k) (t : G.TorsionTower A.X), G.height = 2 * A.dim := by
   first | exact @GlobalTheory.AVTower.exists_tower_and_height_eq
 end -- clump:auto
 end -- clump:auto

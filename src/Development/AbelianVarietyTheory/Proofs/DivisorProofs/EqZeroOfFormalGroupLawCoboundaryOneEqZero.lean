@@ -50,7 +50,7 @@ open CategoryTheory TensorProduct MvPowerSeries GlobalTheory GlobalTheory.PDiv G
 
 namespace GlobalTheory.Katz
 
-theorem eq_zero_of_cob1_eq_zero : ∀ (p : ℕ) (k : Type) [CommRing k] (_ : (p : k) = 0) (d : ℕ)
+theorem eq_zero_of_cob1_eq_zero : ∀ (p : ℕ) (k : Type) [CommRing k] (h : (p : k) = 0) (d : ℕ)
     (G : PDivGroup p k) (c : Chart G d) (μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) k),
     c.IsLawOf μ → ∀ b, cob1 μ b = 0 → b = 0 := by
   intro p k _ h d G c μ hμ b hb

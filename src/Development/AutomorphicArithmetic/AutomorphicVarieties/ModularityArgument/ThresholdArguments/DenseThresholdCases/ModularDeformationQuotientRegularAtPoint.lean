@@ -1291,24 +1291,24 @@ section -- clump:auto
 namespace UpperTheory.Reformulated.B.Qi38
 
 noncomputable def Irr : {R : Type} →
-  [CommRing R] →
+  [inst : CommRing R] →
     {H : Type} →
-      [Group H] → {n : Type} → [Fintype n] → [DecidableEq n] → (H →* Matrix n n R) → Prop :=
+      [inst_1 : Group H] → {n : Type} → [inst_2 : Fintype n] → [inst_3 : DecidableEq n] → (H →* Matrix n n R) → Prop :=
   fun {R} [CommRing R] {H} [Group H] {n} [Fintype n] [DecidableEq n] r => Submodule.span R (Set.range ⇑r) = ⊤
 
 @[reducible] noncomputable def modFun : {O M ι : Type} →
-  [CommRing O] → [AddCommGroup M] → [Module O M] → Module O (ι → M) :=
+  [inst : CommRing O] → [inst_1 : AddCommGroup M] → [Module O M] → Module O (ι → M) :=
   fun {O M ι} [CommRing O] [AddCommGroup M] [Module O M] => Pi.Function.module ι O M
 
 attribute [local instance] modFun
 
 noncomputable def mapRep : {R R' : Type} →
-  [CommRing R] →
-    [CommRing R'] →
+  [inst : CommRing R] →
+    [inst_1 : CommRing R'] →
       {H : Type} →
-        [Group H] →
+        [inst_2 : Group H] →
           {n : Type} →
-            [Fintype n] → [DecidableEq n] → (R →+* R') → (H →* Matrix n n R) → H →* Matrix n n R' :=
+            [inst_3 : Fintype n] → [inst_4 : DecidableEq n] → (R →+* R') → (H →* Matrix n n R) → H →* Matrix n n R' :=
   fun {R R'} [CommRing R] [CommRing R'] {H} [Group H] {n} [Fintype n] [DecidableEq n] f r => f.mapMatrix.toMonoidHom.comp r
 
 private theorem aux {Γ E E' : Type} [Field E] [Field E'] (f : E →+* E') {n : Nat}
@@ -1352,8 +1352,8 @@ private theorem aux {Γ E E' : Type} [Field E] [Field E'] (f : E →+* E') {n : 
     · simp [hk]
   rwa [h2] at h1
 
-theorem irr_map : ∀ {Γ E E' : Type} [Group Γ] [Field E]
-  [Field E'] (f : E →+* E') {n : ℕ} (r : Γ →* Matrix (Fin n) (Fin n) E),
+theorem irr_map : ∀ {Γ E E' : Type} [inst : Group Γ] [inst_1 : Field E]
+  [inst_2 : Field E'] (f : E →+* E') {n : ℕ} (r : Γ →* Matrix (Fin n) (Fin n) E),
   Irr r →
     ∀ (N : Submodule E' (Fin n → E')),
       (∀ (g : Γ), ∀ v ∈ N, ((mapRep f r) g).mulVec v ∈ N) → N = ⊥ ∨ N = ⊤ := by

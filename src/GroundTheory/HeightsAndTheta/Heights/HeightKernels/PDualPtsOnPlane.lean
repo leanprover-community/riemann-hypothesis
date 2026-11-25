@@ -103,8 +103,7 @@ theorem quad_mem (b : Module.Basis T ℤ (dualLattice F)) (α : 𝓞 K) (s r : T
     simp only [mConeMap, aeval_X, map_mul, map_intCast, eq_intCast]
     ring
   show quad b α s r ∈ RingHom.ker (mConeMap (dualLatticeCoord b))
-  rw [RingHom.mem_ker]
-  simp only [quad, map_sub, map_mul, hsum]
+  simp only [RingHom.mem_ker, quad, map_sub, map_mul, hsum]
   simp only [mConeMap, aeval_X]
   ring
 
@@ -128,8 +127,7 @@ theorem agree (b : Module.Basis T ℤ (dualLattice F))
       (∑ t, (mulMat b α s t : ℂ) * Z t) * Z r := by
     intro s r
     have h := hz.2 _ (quad_mem b α s r)
-    rw [eval_quad] at h
-    simp only [hZt] at h
+    simp only [eval_quad, hZt] at h
     exact sub_eq_zero.mp h
   have hL : ∀ r, ∑ t, (mulMat b α r t : ℂ) * Z t =
       ((∑ t, (mulMat b α s0 t : ℂ) * Z t) / Z s0) * Z r := by

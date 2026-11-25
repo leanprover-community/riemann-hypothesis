@@ -81,7 +81,6 @@ theorem UpperTheory.V.AlgebraTools.Conn.chain :
     ⟨hfin.toFinset.filter (fun x => ¬ Relation.ReflTransGen rel p x), fun x => by
       rw [Finset.mem_filter, Set.Finite.mem_toFinset]⟩
   have hpK : p ∈ K := (hK p).mpr ⟨hp, Relation.ReflTransGen.refl⟩
-  have hqL : q ∈ L := (hL q).mpr ⟨hq, hpq⟩
   obtain ⟨g, hg⟩ : ∃ g : Ideal R × Ideal R → WithBot ℕ∞,
       ∀ xy, g xy = ringKrullDim (R ⧸ (xy.1 ⊔ xy.2)) := ⟨_, fun _ => rfl⟩
   have hnl : ∀ x ∈ K, ∀ y ∈ L, g (x, y) < k := by
@@ -91,7 +90,7 @@ theorem UpperTheory.V.AlgebraTools.Conn.chain :
     rw [hg]
     by_contra hle
     exact hpy (hpx.tail ⟨hxM, hyM, not_lt.mp hle⟩)
-  have hk : ⊥ < k := lt_of_le_of_lt bot_le (hnl p hpK q hqL)
+  have hk : ⊥ < k := lt_of_le_of_lt bot_le (hnl p hpK q ((hL q).mpr ⟨hq, hpq⟩))
   obtain ⟨J1, hJ1⟩ : ∃ J1 : Ideal R, J1 = K.inf id := ⟨_, rfl⟩
   obtain ⟨J2, hJ2⟩ : ∃ J2 : Ideal R, J2 = L.inf id := ⟨_, rfl⟩
   have haJ1 : a ≤ J1 := hJ1 ▸ Finset.le_inf (fun x hx => ((hK x).mp hx).1.1.2)
@@ -120,15 +119,13 @@ theorem UpperTheory.V.AlgebraTools.Conn.chain :
     rw [hJ2] at h
     obtain ⟨y, hy, hyp⟩ := (Ideal.IsPrime.inf_le' (s := L) (f := id) hp.1.1).mp h
     have hyM := ((hL y).mp hy).1
-    have hyeq : y = p := le_antisymm hyp (hp.2 hyM.1 hyp)
-    exact ((hL y).mp hy).2 (hyeq ▸ Relation.ReflTransGen.refl)
+    exact ((hL y).mp hy).2 ((le_antisymm hyp (hp.2 hyM.1 hyp)) ▸ Relation.ReflTransGen.refl)
   have hJ1q : ¬ J1 ≤ q := by
     intro h
     rw [hJ1] at h
     obtain ⟨x, hx, hxq⟩ := (Ideal.IsPrime.inf_le' (s := K) (f := id) hq.1.1).mp h
     have hxM := ((hK x).mp hx).1
-    have hxeq : x = q := le_antisymm hxq (hq.2 hxM.1 hxq)
-    exact hpq (hxeq ▸ ((hK x).mp hx).2)
+    exact hpq ((le_antisymm hxq (hq.2 hxM.1 hxq)) ▸ ((hK x).mp hx).2)
   obtain ⟨z, hzS, hzu, hzv⟩ := (hconn (J1 ⊔ J2) haI hdim).isPreconnected
     (PrimeSpectrum.zeroLocus (J2 : Set R))ᶜ (PrimeSpectrum.zeroLocus (J1 : Set R))ᶜ
     (PrimeSpectrum.isClosed_zeroLocus _).isOpen_compl (PrimeSpectrum.isClosed_zeroLocus _).isOpen_compl

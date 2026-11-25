@@ -107,8 +107,7 @@ theorem exists_invertible_first_column :
   · rw [Matrix.mul_apply]
     by_cases hi : i = 0
     · subst hi
-      rw [Fin.sum_univ_succ]
-      simp [E, D, b, (Fin.succ_ne_zero _).symm, hu, Finset.sum_neg_distrib]
+      simp [Fin.sum_univ_succ, E, D, b, (Fin.succ_ne_zero _).symm, hu, Finset.sum_neg_distrib]
     · rw [Finset.sum_eq_single i]
       · simp [E, D, hi]
       · intro j _ hji
@@ -304,8 +303,7 @@ theorem diagonalise : ∀ (A : Type) [CommRing A] [Finite (MaximalSpectrum A)] (
       · simpa using hd₁ i'
     · have e : cT σ (g₀ * uni r * bd 1 g₁) * J * (g₀ * uni r * bd 1 g₁) =
           cT σ (bd 1 g₁) * (cT σ (uni r) * K * uni r) * bd 1 g₁ := by
-        rw [hKdef, cT_mul, cT_mul]
-        simp only [Matrix.mul_assoc]
+        simp only [hKdef, cT_mul, cT_mul, Matrix.mul_assoc]
       rw [e, hstep, cT_bd, bd_mul, bd_mul, hdiag, map_one, one_mul, mul_one, bd_diagonal]
 
 end GlobalTheory.CompanionTheory.SW.RingDiag

@@ -149,15 +149,13 @@ theorem lev_apply (t s : R) (v) : lev c J ε x y t s *ᵥ v = v + ((t - 1) * bf 
   rfl
 
 theorem levi_element_fixes_first_vector (t s : R) : lev c J ε x y t s *ᵥ x = t • x := by
-  rw [lev_apply, h.xy, h.xx]
-  simp only [mul_one, mul_zero, zero_smul, add_zero]
+  simp only [lev_apply, h.xy, h.xx, mul_one, mul_zero, zero_smul, add_zero]
   rw [sub_smul, one_smul]
   abel
 theorem lev_y (t s : R) : lev c J ε x y t s *ᵥ y = s • y := by
   rw [lev_apply, h.yy, h.yx]
   have e : (s - 1) * ε * ε = s - 1 := by rw [mul_assoc, h.ee, mul_one]
-  rw [e]
-  simp only [mul_zero, zero_smul, add_zero]
+  simp only [e, mul_zero, zero_smul, add_zero]
   rw [sub_smul, one_smul]
   abel
 theorem lev_i (t s : R) (z) : lev c J ε x y t s *ᵥ (ι *ᵥ z) = ι *ᵥ z := by

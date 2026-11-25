@@ -166,8 +166,8 @@ theorem const_one_mem_cuspForms_of_anisotropic {D : D7} {V : HSp D} (h : IsAniso
     (fun _ => (1 : ℂ)) ∈ A0 θ V A :=
   GlobalTheory.Cusp.mem_cuspForms.2 ⟨⟨isAutFunSm_const θ V 1, fun r C hC => absurd hC (h r C)⟩, .of_invariant fun _ _ _ => rfl⟩
 
-theorem one_mem_A0_of_isBottomTri : GBig fun {D} T _ _ G _ _ _ _ => ∀ (W : G.Weil) (i j : Fin D.R.m) (A A' WW : HSp D) (X : Tri T A A' WW),
-  IsBottomTri W i j X → ∀ _ : T, ∀ cA : CptF (GlobalTheory.Grid.neg A), HidaSetting W.θ (GlobalTheory.Grid.neg A) WW (fun τ => -X.rA.s τ) X.rW.s A'.rank cA → (fun _ => (1 : ℂ)) ∈ A0 W.θ (GlobalTheory.Grid.neg A) cA := by
+theorem one_mem_A0_of_isBottomTri : GBig fun {D} T Lc _ G _ _ _ _ => ∀ (W : G.Weil) (i j : Fin D.R.m) (A A' WW : HSp D) (X : Tri T A A' WW),
+  IsBottomTri W i j X → ∀ t : T, ∀ cA : CptF (GlobalTheory.Grid.neg A), HidaSetting W.θ (GlobalTheory.Grid.neg A) WW (fun τ => -X.rA.s τ) X.rW.s A'.rank cA → (fun _ => (1 : ℂ)) ∈ A0 W.θ (GlobalTheory.Grid.neg A) cA := by
   refine ⟨0, fun _ _ _ => ⟨0, 0, fun C _ D large₂ _ _ _ T Lc μ₀ _ G => ?_⟩⟩
   intro W i j A A' WW X hX t cA _
   exact const_one_mem_cuspForms_of_anisotropic (isAniso_neg (GlobalTheory.Mem.ColAd.isAniso_of_gram hX.std.1)) W.θ cA
@@ -194,8 +194,8 @@ open GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero (sZero)
 open GlobalTheory.Mem.Th (CptF)
 open GlobalTheory.Core.Rk.IP (Pair Unram SphFun openOff integrand wcoef rcoef up)
 
-theorem _root_.GlobalTheory.T.const_one_mem_cuspForms_definiteBottom : GBig fun {D} T _ _ G _ _ _ _ => ∀ (W : G.Weil) (i j : Fin D.R.m) (A A' WW : HSp D) (X : Tri T A A' WW),
-  IsBottomTri W i j X → ∀ _ : T, ∀ cA : CptF (GlobalTheory.Grid.neg A), HidaSetting W.θ (GlobalTheory.Grid.neg A) WW (fun τ => -X.rA.s τ) X.rW.s A'.rank cA → (fun _ => (1 : ℂ)) ∈ A0 W.θ (GlobalTheory.Grid.neg A) cA := by
+theorem _root_.GlobalTheory.T.const_one_mem_cuspForms_definiteBottom : GBig fun {D} T Lc _ G _ _ _ _ => ∀ (W : G.Weil) (i j : Fin D.R.m) (A A' WW : HSp D) (X : Tri T A A' WW),
+  IsBottomTri W i j X → ∀ t : T, ∀ cA : CptF (GlobalTheory.Grid.neg A), HidaSetting W.θ (GlobalTheory.Grid.neg A) WW (fun τ => -X.rA.s τ) X.rW.s A'.rank cA → (fun _ => (1 : ℂ)) ∈ A0 W.θ (GlobalTheory.Grid.neg A) cA := by
   first | exact @GlobalTheory.BottomCusp.one_mem_A0_of_isBottomTri
 end -- clump:auto
 end -- clump:auto
@@ -1103,7 +1103,7 @@ open GlobalTheory.Core.Rk.IP (Pair Unram SphFun openOff integrand wcoef rcoef up
 noncomputable section
 namespace GlobalTheory.BottomIPData
 
-theorem isParamFun_one_bottom : GBig fun {D} T _ _ G _ _ _ _ => ∀ (W : G.Weil) (i j : Fin D.R.m) (A A' WW : HSp D) (X : Tri T A A' WW),
+theorem isParamFun_one_bottom : GBig fun {D} T Lc _ G _ _ _ _ => ∀ (W : G.Weil) (i j : Fin D.R.m) (A A' WW : HSp D) (X : Tri T A A' WW),
   IsBottomTri W i j X → ∀ t : T, ∃ par : GlobalTheory.LFun.Fam D.host.E, GlobalTheory.LFun.IsParamFun D.sp.cm.sig (GlobalTheory.Grid.neg A).gram X.rA.Λ ((GlobalTheory.BottomIPData.sfB G t : Finset (FinPl D)) : Set (FinPl D)) (fun _ => (1 : ℂ)) par := by
   refine ⟨0, fun _ _ _ => ⟨0, 0, fun _ _ D _ _ _ _ T Lc _ _ G => ?_⟩⟩
   intro W i j A A' WW X hX t
@@ -1132,7 +1132,7 @@ open GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero (sZero)
 open GlobalTheory.Mem.Th (CptF)
 open GlobalTheory.Core.Rk.IP (Pair Unram SphFun openOff integrand wcoef rcoef up)
 
-theorem _root_.GlobalTheory.T.exists_satakeParameters_const_one_definiteBottom : GBig fun {D} T _ _ G _ _ _ _ => ∀ (W : G.Weil) (i j : Fin D.R.m) (A A' WW : HSp D) (X : Tri T A A' WW),
+theorem _root_.GlobalTheory.T.exists_satakeParameters_const_one_definiteBottom : GBig fun {D} T Lc _ G _ _ _ _ => ∀ (W : G.Weil) (i j : Fin D.R.m) (A A' WW : HSp D) (X : Tri T A A' WW),
   IsBottomTri W i j X → ∀ t : T, ∃ par : GlobalTheory.LFun.Fam D.host.E, GlobalTheory.LFun.IsParamFun D.sp.cm.sig (GlobalTheory.Grid.neg A).gram X.rA.Λ ((GlobalTheory.BottomIPData.sfB G t : Finset (FinPl D)) : Set (FinPl D)) (fun _ => (1 : ℂ)) par := by
   first | exact @GlobalTheory.BottomIPData.isParamFun_one_bottom
 end -- clump:auto
@@ -1315,8 +1315,8 @@ open GlobalTheory.Core.Rk.IP (Pair Unram SphFun openOff integrand wcoef rcoef up
 namespace GlobalTheory.BottomWitt
 
 theorem wittIndex_eq_zero :
-    GBig fun {D} T _ _ G _ _ _ _ => ∀ (W : G.Weil) (i j : Fin D.R.m) (A A' WW : HSp D) (X : Tri T A A' WW),
-  IsBottomTri W i j X → ∀ _ : T, wittIndex WW = 0 := by
+    GBig fun {D} T Lc _ G _ _ _ _ => ∀ (W : G.Weil) (i j : Fin D.R.m) (A A' WW : HSp D) (X : Tri T A A' WW),
+  IsBottomTri W i j X → ∀ t : T, wittIndex WW = 0 := by
   refine ⟨0, fun _ _ _ => ⟨0, 0, fun _ _ D large₂ _ _ _ T Lc μ₀ _ G => ?_⟩⟩
   intro W i j A A' WW X h _
   exact GlobalTheory.Cusp.wittIndex_eq_zero_iff_isAniso.2 (GlobalTheory.Mem.ColAd.isAniso_of_gram h.stdW.1)
@@ -1342,8 +1342,8 @@ open GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero (sZero)
 open GlobalTheory.Mem.Th (CptF)
 open GlobalTheory.Core.Rk.IP (Pair Unram SphFun openOff integrand wcoef rcoef up)
 
-theorem _root_.GlobalTheory.T.hermitianWittIndex_eq_zero_definiteBottom : GBig fun {D} T _ _ G _ _ _ _ => ∀ (W : G.Weil) (i j : Fin D.R.m) (A A' WW : HSp D) (X : Tri T A A' WW),
-  IsBottomTri W i j X → ∀ _ : T, wittIndex WW = 0 := by
+theorem _root_.GlobalTheory.T.hermitianWittIndex_eq_zero_definiteBottom : GBig fun {D} T Lc _ G _ _ _ _ => ∀ (W : G.Weil) (i j : Fin D.R.m) (A A' WW : HSp D) (X : Tri T A A' WW),
+  IsBottomTri W i j X → ∀ t : T, wittIndex WW = 0 := by
   first | exact @GlobalTheory.BottomWitt.wittIndex_eq_zero
 end -- clump:auto
 end -- clump:auto
@@ -1369,7 +1369,7 @@ noncomputable section
 
 namespace GlobalTheory.BottomIPData
 
-theorem isFockVec_bottom : GBig fun {D} T _ _ G _ _ _ _ => ∀ (W : G.Weil) (i j : Fin D.R.m) (A A' WW : HSp D) (X : Tri T A A' WW),
+theorem isFockVec_bottom : GBig fun {D} T Lc _ G _ _ _ _ => ∀ (W : G.Weil) (i j : Fin D.R.m) (A A' WW : HSp D) (X : Tri T A A' WW),
   IsBottomTri W i j X → ∀ t : T, ∀ P : PolF D WW.rank A.rank, IsFockVec W.ψ W.θ (GlobalTheory.Grid.neg A) WW (fun τ => -X.rA.s τ) X.rW.s (pureTensorO W.ψ W.θ (GlobalTheory.Grid.neg A) WW (fun τ => -X.rA.s τ) X.rW.s X.rA.B X.rW.B (X.f t) P) := by
   refine ⟨0, fun ε CF _ => ⟨0, 0, fun C _ D large₂ _ _ _ T Lc μ₀ _ G => ?_⟩⟩
   intro W i j A A' WW X hX t P
@@ -1410,7 +1410,7 @@ open GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero (sZero)
 open GlobalTheory.Mem.Th (CptF)
 open GlobalTheory.Core.Rk.IP (Pair Unram SphFun openOff integrand wcoef rcoef up)
 
-theorem _root_.GlobalTheory.T.isPolynomialFockThetaVector_definiteBottom : GBig fun {D} T _ _ G _ _ _ _ => ∀ (W : G.Weil) (i j : Fin D.R.m) (A A' WW : HSp D) (X : Tri T A A' WW),
+theorem _root_.GlobalTheory.T.isPolynomialFockThetaVector_definiteBottom : GBig fun {D} T Lc _ G _ _ _ _ => ∀ (W : G.Weil) (i j : Fin D.R.m) (A A' WW : HSp D) (X : Tri T A A' WW),
   IsBottomTri W i j X → ∀ t : T, ∀ P : PolF D WW.rank A.rank, IsFockVec W.ψ W.θ (GlobalTheory.Grid.neg A) WW (fun τ => -X.rA.s τ) X.rW.s (pureTensorO W.ψ W.θ (GlobalTheory.Grid.neg A) WW (fun τ => -X.rA.s τ) X.rW.s X.rA.B X.rW.B (X.f t) P) := by
   first | exact @GlobalTheory.BottomIPData.isFockVec_bottom
 end -- clump:auto
@@ -1599,7 +1599,7 @@ open GlobalTheory.Core.Rk.IP (Pair Unram SphFun openOff integrand wcoef rcoef up
 
 namespace GlobalTheory.BottomIPData
 
-theorem dSfun_bottom_ne_zero : GBig fun {D} T _ _ G _ _ _ _ => ∀ (W : G.Weil) (i j : Fin D.R.m) (A A' WW : HSp D) (X : Tri T A A' WW),
+theorem dSfun_bottom_ne_zero : GBig fun {D} T Lc _ G _ _ _ _ => ∀ (W : G.Weil) (i j : Fin D.R.m) (A A' WW : HSp D) (X : Tri T A A' WW),
   IsBottomTri W i j X → ∀ t : T, GlobalTheory.LFun.dSfun D.host.E ((GlobalTheory.BottomIPData.sfB G t : Finset (FinPl D)) : Set (FinPl D)) (GlobalTheory.Grid.neg A).rank WW.rank ((A'.rank : ℂ) / 2) ≠ 0 := by
   refine ⟨0, fun ε CF _ => ⟨0, 0, fun C _ D large₂ _ _ _ T Lc μ₀ _ G => ?_⟩⟩
   intro W i j A A' WW X h t
@@ -1630,7 +1630,7 @@ open GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero (sZero)
 open GlobalTheory.Mem.Th (CptF)
 open GlobalTheory.Core.Rk.IP (Pair Unram SphFun openOff integrand wcoef rcoef up)
 
-theorem _root_.GlobalTheory.T.partialNormalizingFactor_ne_zero_definiteBottom : GBig fun {D} T _ _ G _ _ _ _ => ∀ (W : G.Weil) (i j : Fin D.R.m) (A A' WW : HSp D) (X : Tri T A A' WW),
+theorem _root_.GlobalTheory.T.partialNormalizingFactor_ne_zero_definiteBottom : GBig fun {D} T Lc _ G _ _ _ _ => ∀ (W : G.Weil) (i j : Fin D.R.m) (A A' WW : HSp D) (X : Tri T A A' WW),
   IsBottomTri W i j X → ∀ t : T, GlobalTheory.LFun.dSfun D.host.E ((GlobalTheory.BottomIPData.sfB G t : Finset (FinPl D)) : Set (FinPl D)) (GlobalTheory.Grid.neg A).rank WW.rank ((A'.rank : ℂ) / 2) ≠ 0 := by
   first | exact @GlobalTheory.BottomIPData.dSfun_bottom_ne_zero
 end -- clump:auto

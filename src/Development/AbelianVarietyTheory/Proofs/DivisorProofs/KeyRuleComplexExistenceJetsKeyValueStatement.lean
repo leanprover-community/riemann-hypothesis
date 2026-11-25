@@ -337,7 +337,7 @@ theorem keyOK_zero (κ : Rule) (ν : NumOf D ℂ N) (hg : D.P.g = 0) (d : AB N.t
   rw [Matrix.det_isEmpty, one_pow, hc, mul_comm]
   exact ⟨one_ne_zero, hk.1 hg⟩
 
-theorem main : ∀ κ : Rule, AllC fun {_} _ _ {D} _ {N} ν => D.P.g = 0 →
+theorem main : ∀ κ : Rule, AllC fun {R} _ _ {D} _ {N} ν => D.P.g = 0 →
     ∃ (d : AB N.toNumB D.P.g) (_ : Geo ν d), KeyOK κ ν d := by
   intro κ R _ _ _ _ D _ _ _ N ν hg
   let d := abZero N.toNumB D.P.g hg (subsingleton_A ν hg) (th_one_ne_zero ν hg)
@@ -609,7 +609,7 @@ namespace GlobalTheory.MBLow.Cl
 
 
 open Ev in
-theorem evT_eq_term : AllCD fun {N} {_} {_} {_} {_} d σ => ∀ m : ℕ, Odd m → ∀ M Nn (p : N.QT (m ^ 2)),
+theorem evT_eq_term : AllCD fun {N} {g'} {r} {g} {bX} d σ => ∀ m : ℕ, Odd m → ∀ M Nn (p : N.QT (m ^ 2)),
     d.Rep σ (m ^ 2) M Nn p → ∀ Z h, d.IsPt σ Z h → ∀ χ,
       N.evT m p h χ = d.c * (d.fr (zP σ Z) : ℂ) ^ (m ^ 2) * d.term σ 0 m M Nn χ Z := by
   intro N g' r g bX d σ m hm M Nn p hp Z h hZ χ
@@ -1048,7 +1048,7 @@ theorem exists_posDef_fromBlocks {m n : Type} [Fintype m] [Fintype n] [Decidable
       simpa using (dotProduct_star_self_pos_iff (v := x ∘ Sum.inr)).mpr h2
     nlinarith [mul_pos (sub_pos.mpr htC) a3]
 
-theorem full_posDef : AllCD fun {N} {_} {_} {_} {bX} d σ => ∀ (k : ℕ) (β : N.Form k), ∃ T : ℝ, ∀ w : ℂ, T < w.im →
+theorem full_posDef : AllCD fun {N} {g'} {r} {g} {bX} d σ => ∀ (k : ℕ) (β : N.Form k), ∃ T : ℝ, ∀ w : ℂ, T < w.im →
     (w • bmat bX β).IsSymm ∧ (d.full σ (w • bmat bX β)).IsSymm ∧
       ((d.full σ (w • bmat bX β)).map Complex.im).PosDef := by
   intro N g' r g bX d σ k β
@@ -1370,7 +1370,7 @@ end GlobalTheory.MBLow.Cl.TwistExp
 
 namespace GlobalTheory.MBLow.Cl
 
-theorem term_smul_bmat : AllCD fun {N} {_} {_} {g} {bX} d σ => (∀ S m M Nn χ, Differentiable ℂ (d.term σ S m M Nn χ)) ∧ ∀ (k m : ℕ) (β : N.Form k), 1 ≤ m → m ^ 2 ∣ k → ∀ (w : ℂ) (M Nn : Fin g → ℤ) (χ : N.X) (Z : Fin g → ℂ), d.term σ (w • bmat bX β) m M Nn χ Z = d.term σ 0 m M Nn χ Z * Complex.exp ((2 * Real.pi * Complex.I : ℂ) * w) ^ (β.be ((∑ l, tP σ Nn l • bX l) + m • χ) ((∑ l, tP σ Nn l • bX l) + m • χ) / (2 * m ^ 2)).toNat := by
+theorem term_smul_bmat : AllCD fun {N} {g'} {r} {g} {bX} d σ => (∀ S m M Nn χ, Differentiable ℂ (d.term σ S m M Nn χ)) ∧ ∀ (k m : ℕ) (β : N.Form k), 1 ≤ m → m ^ 2 ∣ k → ∀ (w : ℂ) (M Nn : Fin g → ℤ) (χ : N.X) (Z : Fin g → ℂ), d.term σ (w • bmat bX β) m M Nn χ Z = d.term σ 0 m M Nn χ Z * Complex.exp ((2 * Real.pi * Complex.I : ℂ) * w) ^ (β.be ((∑ l, tP σ Nn l • bX l) + m • χ) ((∑ l, tP σ Nn l • bX l) + m • χ) / (2 * m ^ 2)).toNat := by
   intro N g' r g bX d σ
   exact ⟨fun S m M Nn χ => TwistExp.term_differentiable d σ S m M Nn χ,
     fun k m β hm hk w M Nn χ Z => TwistExp.main_eq d σ k m β hm hk w M Nn χ Z⟩
@@ -1531,7 +1531,7 @@ end GlobalTheory.MBLow.Cl.FJD
 
 
 open GlobalTheory.MBLow.Cl.FJD in
-theorem GlobalTheory.MBLow.Cl.fj_expansion_fderiv : AllCD fun {_} {_} {r} {_} {_} d σ => ∀ S : Matrix (Fin r) (Fin r) ℂ, S.IsSymm → ((d.full σ S).map Complex.im).PosDef → (∀ χ, Differentiable ℂ (d.fj σ S χ)) ∧ ∀ Z W, (Summable fun χ => ‖fderiv ℂ (d.fj σ S χ) Z W‖) ∧ ∑' χ, fderiv ℂ (d.fj σ S χ) Z W = fderiv ℂ (thetaChar (d.full σ S) (d.aF σ) (d.bF σ)) Z W := by
+theorem GlobalTheory.MBLow.Cl.fj_expansion_fderiv : AllCD fun {N} {g'} {r} {g} {bX} d σ => ∀ S : Matrix (Fin r) (Fin r) ℂ, S.IsSymm → ((d.full σ S).map Complex.im).PosDef → (∀ χ, Differentiable ℂ (d.fj σ S χ)) ∧ ∀ Z W, (Summable fun χ => ‖fderiv ℂ (d.fj σ S χ) Z W‖) ∧ ∑' χ, fderiv ℂ (d.fj σ S χ) Z W = fderiv ℂ (thetaChar (d.full σ S) (d.aF σ) (d.bF σ)) Z W := by
   intro N g' r g bX d σ S hS hpos
   refine ⟨differentiable_fj d σ S, fun Z W => ?_⟩
   obtain ⟨u, hu, hb⟩ := exists_bound d σ hpos Z W
@@ -1556,7 +1556,7 @@ open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.MBLow.Cl Matrix
 
-theorem _root_.GlobalTheory.T.fourierJacobiExpansion_fderiv_termwise : AllCD fun {_} {_} {r} {_} {_} d σ => ∀ S : Matrix (Fin r) (Fin r) ℂ, S.IsSymm → ((d.full σ S).map Complex.im).PosDef → (∀ χ, Differentiable ℂ (d.fj σ S χ)) ∧ ∀ Z W, (Summable fun χ => ‖fderiv ℂ (d.fj σ S χ) Z W‖) ∧ ∑' χ, fderiv ℂ (d.fj σ S χ) Z W = fderiv ℂ (thetaChar (d.full σ S) (d.aF σ) (d.bF σ)) Z W := by
+theorem _root_.GlobalTheory.T.fourierJacobiExpansion_fderiv_termwise : AllCD fun {N} {g'} {r} {g} {bX} d σ => ∀ S : Matrix (Fin r) (Fin r) ℂ, S.IsSymm → ((d.full σ S).map Complex.im).PosDef → (∀ χ, Differentiable ℂ (d.fj σ S χ)) ∧ ∀ Z W, (Summable fun χ => ‖fderiv ℂ (d.fj σ S χ) Z W‖) ∧ ∑' χ, fderiv ℂ (d.fj σ S χ) Z W = fderiv ℂ (thetaChar (d.full σ S) (d.aF σ) (d.bF σ)) Z W := by
   first | exact @GlobalTheory.MBLow.Cl.fj_expansion_fderiv
 end -- clump:auto
 end -- clump:auto
@@ -1574,7 +1574,7 @@ open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.MBLow.Cl Matrix
 
-theorem _root_.GlobalTheory.T.thetaChar_blockPeriodMatrix_fourierJacobiExpansion : AllCD fun {_} {_} {r} {_} {_} d σ => ∀ S : Matrix (Fin r) (Fin r) ℂ, S.IsSymm → ((d.full σ S).map Complex.im).PosDef → ∀ Z, (Summable fun χ => ‖d.fj σ S χ Z‖) ∧ ∑' χ, d.fj σ S χ Z = thetaChar (d.full σ S) (d.aF σ) (d.bF σ) Z := by
+theorem _root_.GlobalTheory.T.thetaChar_blockPeriodMatrix_fourierJacobiExpansion : AllCD fun {N} {g'} {r} {g} {bX} d σ => ∀ S : Matrix (Fin r) (Fin r) ℂ, S.IsSymm → ((d.full σ S).map Complex.im).PosDef → ∀ Z, (Summable fun χ => ‖d.fj σ S χ Z‖) ∧ ∑' χ, d.fj σ S χ Z = thetaChar (d.full σ S) (d.aF σ) (d.bF σ) Z := by
   first | exact @GlobalTheory.MBLow.Cl.fj_expansion
 end -- clump:auto
 end -- clump:auto
@@ -1627,7 +1627,7 @@ theorem termsum_half_bF {N : NumD ℂ} {g' r g : ℕ} {bX : Module.Basis (Fin r)
     (σ : Fin g ≃ Fin g' ⊕ Fin r) : Half (d.bF σ) := by
   apply _root_.GlobalTheory.MBLow.Cl.Ev.half_bF <;> assumption
 
-theorem term_sum_and_fderiv : AllCD fun {_} {_} {r} {g} {_} d σ => ∀ S : Matrix (Fin r) (Fin r) ℂ, S.IsSymm → ((d.full σ S).map Complex.im).PosDef → ∀ (m : ℕ) (M Nn : Fin g → ℤ) (W : Fin g → ℂ), (Summable fun χ => ‖d.term σ S m M Nn χ 0‖) ∧ (Summable fun χ => ‖fderiv ℂ (d.term σ S m M Nn χ) 0 W‖) ∧ ∑' χ, d.term σ S m M Nn χ 0 = trF (d.full σ S) (d.aF σ) (d.bF σ) m M Nn 0 ∧ ∑' χ, fderiv ℂ (d.term σ S m M Nn χ) 0 W = fderiv ℂ (trF (d.full σ S) (d.aF σ) (d.bF σ) m M Nn) 0 W := by
+theorem term_sum_and_fderiv : AllCD fun {N} {g'} {r} {g} {bX} d σ => ∀ S : Matrix (Fin r) (Fin r) ℂ, S.IsSymm → ((d.full σ S).map Complex.im).PosDef → ∀ (m : ℕ) (M Nn : Fin g → ℤ) (W : Fin g → ℂ), (Summable fun χ => ‖d.term σ S m M Nn χ 0‖) ∧ (Summable fun χ => ‖fderiv ℂ (d.term σ S m M Nn χ) 0 W‖) ∧ ∑' χ, d.term σ S m M Nn χ 0 = trF (d.full σ S) (d.aF σ) (d.bF σ) m M Nn 0 ∧ ∑' χ, fderiv ℂ (d.term σ S m M Nn χ) 0 W = fderiv ℂ (trF (d.full σ S) (d.aF σ) (d.bF σ) m M Nn) 0 W := by
   intro N g' r g bX d σ S hS hpos m M Nn W
   have hθ := (GlobalTheory.T.thetaChar_differentiable_ne_zero_automorphy g _ _ _ (termsum_full_isSymm d σ S hS) hpos (termsum_half_aF d σ) (termsum_half_bF d σ)).1
   set p := (m : ℂ)⁻¹ • perV (d.full σ S) M Nn with hp

@@ -74,8 +74,7 @@ theorem aeval_translate_eq {K : Type*} [Field K] [CharZero K] [Algebra R K] (f :
   have hD : ∀ q, D q = Polynomial.derivative q := fun q => rfl
   have hDφ : ∀ v, D (φ v) = Polynomial.C (z v) := by
     intro v
-    rw [hD, hφ]
-    simp
+    simp [hD, hφ]
   have hS : ∀ v, v ∉ S → D (φ v) = 0 := by
     intro v hv
     rw [hDφ, hz v hv, map_zero]

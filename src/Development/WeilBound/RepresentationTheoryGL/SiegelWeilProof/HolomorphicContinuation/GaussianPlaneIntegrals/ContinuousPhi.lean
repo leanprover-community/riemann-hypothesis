@@ -160,8 +160,7 @@ theorem map_PhiL (U : Matrix ι ι ℂ) (hU1 : star U * U = 1) (hU2 : U * star U
     have h := Measure.addHaar_image_linearMap (volume : Measure (Sg ι A B → ℂ)) L S
     rw [himg] at h
     have h' : ENNReal.ofReal |LinearMap.det L| * volume S = 1 * volume S := by rw [← h, one_mul]
-    have := (ENNReal.mul_left_inj hpos.ne' hfin).1 h'
-    exact (ENNReal.ofReal_eq_one).1 this
+    exact (ENNReal.ofReal_eq_one).1 ((ENNReal.mul_left_inj hpos.ne' hfin).1 h')
   have hne : LinearMap.det L ≠ 0 := by
     intro h0
     rw [h0, abs_zero] at hdet

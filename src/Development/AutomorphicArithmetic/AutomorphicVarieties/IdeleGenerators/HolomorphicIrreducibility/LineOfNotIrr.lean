@@ -64,12 +64,12 @@ section -- clump:auto
 @[expose] public section
 
 @[reducible] noncomputable def UpperTheory.Reformulated.B.Qf25.modFun :
-    {O M ι : Type} → [CommRing O] → [AddCommGroup M] → [_root_.Module O M] → _root_.Module O (ι → M) :=
+    {O M ι : Type} → [inst : CommRing O] → [inst_1 : AddCommGroup M] → [_root_.Module O M] → _root_.Module O (ι → M) :=
     fun {O M ι : Type} [CommRing O] [AddCommGroup M] [_root_.Module O M] ↦ Pi.Function.module ι O M
 attribute [local instance] UpperTheory.Reformulated.B.Qf25.modFun
 
 theorem UpperTheory.Reformulated.B.Qf25.trace_zero :
-    ∀ {k : Type} [Field k] (S T : Matrix (Fin (2 : ℕ)) (Fin (2 : ℕ)) k),
+    ∀ {k : Type} [inst : Field k] (S T : Matrix (Fin (2 : ℕ)) (Fin (2 : ℕ)) k),
       T.det ≠ (0 : k) →
         S.charpoly.Separable →
           ∀ (v : Fin (2 : ℕ) → k),

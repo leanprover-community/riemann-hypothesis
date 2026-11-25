@@ -243,10 +243,9 @@ theorem _root_.GlobalTheory.FieldSize.RaySplit.ncard_eq_finrank_iff : ∀ (K R :
   rw [hchar, hart 𝔭.asIdeal 𝔭.ne_bot hcop]
   constructor
   · rintro ⟨α, β, ⟨-, hβ, -, hβcop, hαβ, -⟩, hI⟩
-    have hdvd : β ∣ α := by
+    obtain ⟨π, rfl⟩ : β ∣ α := by
       rw [← Ideal.span_singleton_le_span_singleton, ← hI]
       exact Submodule.mul_le.mpr fun a _ b hb => Ideal.mul_mem_left _ a hb
-    obtain ⟨π, rfl⟩ := hdvd
     refine ⟨π, ?_, ?_⟩
     · have hβ0 : Ideal.span {β} ≠ 0 := by
         rwa [Ne, Ideal.zero_eq_bot, Ideal.span_singleton_eq_bot]

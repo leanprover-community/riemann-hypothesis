@@ -73,8 +73,7 @@ theorem exists_mul_involution_eq_neg_one {k : Type*} [Field k] [Finite k] (σ : 
   let d : F := ⟨(x - σ x) * (x - σ x), (memF _).2 (by rw [map_mul, hθ]; ring)⟩
   have hd0 : d ≠ 0 := by
     intro h
-    have h' : (x - σ x) * (x - σ x) = 0 := congrArg Subtype.val h
-    exact hθ0 (mul_self_eq_zero.mp h')
+    exact hθ0 (mul_self_eq_zero.mp (congrArg Subtype.val h))
   have hchar : ringChar F ≠ 2 := by
     intro hc
     apply h2

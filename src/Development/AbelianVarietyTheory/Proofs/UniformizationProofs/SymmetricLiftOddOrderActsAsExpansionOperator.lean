@@ -452,7 +452,7 @@ theorem phiPow_eq_one (hG : GlobalFnsSt) (hB : D.TauBimult) (hE : D.PsiEven) {k 
   refine e₁.trans ?_
   rw [mul_inv_eq_one.1 (Units.ext e₃)]
 
-theorem main : LL → AllD fun {_} _ _ {_} D F _ _ => ∀ (N : ℕ), Odd N → ∀ (p : QkPt D.toPre F N) (w : Frm D.toPre F N p.g.b), TXFrame N p w → ∀ ss : Fin (N + 1) → Fam D.toPre F N, (∀ i : Fin N, PhiRel D.toPre F N p w (ss i.castSucc) (ss i.succ)) → ss (Fin.last N) = ss 0 :=
+theorem main : LL → AllD fun {R} _ _ {I} D F _ _ => ∀ (N : ℕ), Odd N → ∀ (p : QkPt D.toPre F N) (w : Frm D.toPre F N p.g.b), TXFrame N p w → ∀ ss : Fin (N + 1) → Fam D.toPre F N, (∀ i : Fin N, PhiRel D.toPre F N p w (ss i.castSucc) (ss i.succ)) → ss (Fin.last N) = ss 0 :=
   fun hL _ _ _ _ _ _ D _ _ _ _ _ hN p w hX ss H =>
     phiPow_eq_one hL.1.globalFns D.tau_bimult D.psi_even hN p w hX ss H
 
@@ -536,7 +536,7 @@ end GlobalTheory.UT.SymLiftPhi
 namespace GlobalTheory.UT
 
 open SymLiftPhi in
-theorem symLift_acts_as_phi : LL → AllUF fun {R} _ _ {_} {D} {A} {_} _ _ U F _ _ => ∀ (N : ℕ), Odd N → ∀ (p : QkPt D.toPre F N) x, QkToAkU U.toUnifPre F N p x → ∀ (θ : ThetaGrp A.A A.L (N : ℤ) (TFK (R := R) F)), SymLift A.A A.L N N x θ → ∀ (w₀ : W0 U.toUnifPre), w₀.IsGen → ∀ w, TXFrame N p w → ∀ t t' s s', U.ExpandsF F N w₀ t s → U.ExpandsF F N w₀ t' s' → IsActOf A.A A.L N θ t t' → PhiRel D.toPre F N p w s s' := by
+theorem symLift_acts_as_phi : LL → AllUF fun {R} _ _ {I} {D} {A} {G} _ _ U F _ _ => ∀ (N : ℕ), Odd N → ∀ (p : QkPt D.toPre F N) x, QkToAkU U.toUnifPre F N p x → ∀ (θ : ThetaGrp A.A A.L (N : ℤ) (TFK (R := R) F)), SymLift A.A A.L N N x θ → ∀ (w₀ : W0 U.toUnifPre), w₀.IsGen → ∀ w, TXFrame N p w → ∀ t t' s s', U.ExpandsF F N w₀ t s → U.ExpandsF F N w₀ t' s' → IsActOf A.A A.L N θ t t' → PhiRel D.toPre F N p w s s' := by
   intro hL R _ _ _ I hI D A G _ _ hG U F _ _ _ N hN p x hx θ hθ w₀ hw₀ w hw t t' s s' hs hs' hact
   have hN1 : 1 ≤ N := hN.pos
   have gf : GlobalFnsSt := hL.1.globalFns

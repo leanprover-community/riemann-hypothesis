@@ -104,8 +104,7 @@ theorem geom_mul_linear (b : ℂ) : (mk fun m => b ^ m : ℂ⟦X⟧) * (1 - C b 
 theorem coeff_prod_geom {n : ℕ} (β : Fin n → ℂ) (m : ℕ) :
     coeff m (∏ i, (mk fun k => β i ^ k : ℂ⟦X⟧)) =
       ∑ a ∈ Finset.piAntidiag Finset.univ m, ∏ i, β i ^ a i := by
-  rw [coeff_prod]
-  simp only [coeff_mk]
+  simp only [coeff_prod, coeff_mk]
   refine Finset.sum_bij' (fun l _ => (l : Fin n → ℕ))
     (fun a _ => Finsupp.equivFunOnFinite.symm a) ?_ ?_ ?_ ?_ ?_
   · intro l hl

@@ -273,10 +273,9 @@ theorem exists_discreteValuationSubring_of_subring (B : Subring L) [IsNoetherian
   have hKA := krullAkizuki_of_birational (A := A0) (B := V) hbir
   haveI : IsNoetherianRing V := hKA.1
   haveI : IsPrincipalIdealRing V := ((IsBezout.tfae (R := V)).out 1 2).mp hKA.1
-  have hVy0 : y ∈ V := hBV hy
   have hne : IsLocalRing.maximalIdeal V ≠ ⊥ := by
     intro h
-    have hm : (⟨y, hVy0⟩ : V) ∈ IsLocalRing.maximalIdeal V :=
+    have hm : (⟨y, (hBV hy)⟩ : V) ∈ IsLocalRing.maximalIdeal V :=
       (ValuationSubring.valuation_lt_one_iff V _).mpr ((ValuationSubring.mem_nonunits_iff V).mp hyV)
     rw [h, Ideal.mem_bot] at hm
     exact hy0 (congrArg Subtype.val hm)
@@ -504,12 +503,11 @@ theorem isDiscreteValuationRing_of_maximalIdeal_eq_span {S : Type*} [CommRing S]
       rw [SModEq.zero, smul_eq_mul, Ideal.mul_top, hπ, Ideal.span_singleton_pow,
         Ideal.mem_span_singleton]
       exact (pow_dvd_pow π n.le_succ).trans (h n)
-    have h2 : π ^ Nat.find h1 ∣ x := by
+    obtain ⟨u, hu⟩ : π ^ Nat.find h1 ∣ x := by
       rcases Nat.eq_zero_or_eq_succ_pred (Nat.find h1) with h | h
       · simp [h]
       · rw [h]
         exact of_not_not (Nat.find_min h1 (by omega))
-    obtain ⟨u, hu⟩ := h2
     have h3 : IsUnit u := by
       by_contra h
       have h4 : u ∈ maximalIdeal S := h
@@ -600,8 +598,7 @@ theorem krullAkizuki (B : Subalgebra A L) : IsNoetherianRing B ∧ Ring.Dimensio
   have h1 : c • (x : L) ∈ Submodule.span K (s : Set L) :=
     hs ▸ Submodule.subset_span ⟨B.smul_mem x.2 c, hcx⟩
   obtain ⟨d, hd⟩ := multiple_mem_span_of_mem_localization_span (nonZeroDivisors A) K _ _ h1
-  have h2 : (d : A) • c • (x : L) ∈ C := Algebra.span_le_adjoin A _ hd
-  refine ⟨algebraMap A C (d * c), ?_, ⟨_, h2⟩, Subtype.ext ?_⟩
+  refine ⟨algebraMap A C (d * c), ?_, ⟨_, (Algebra.span_le_adjoin A _ hd)⟩, Subtype.ext ?_⟩
   · intro h
     have h3 : algebraMap A L (d * c) = 0 := congrArg Subtype.val h
     exact mul_ne_zero (nonZeroDivisors.coe_ne_zero d) hc (hinj (h3.trans (map_zero _).symm))

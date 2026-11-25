@@ -104,8 +104,7 @@ lemma matrix_ext_coord (e : K ≃+* ∀ m, F m) {A B : Matrix ι ι K}
   ext a b
   apply e.injective
   funext m
-  have := congrFun (congrFun (h m) a) b
-  simpa [coord] using this
+  simpa [coord] using congrFun (congrFun (h m) a) b
 
 theorem factor_of_pi [Fintype M] (e : K ≃+* ∀ m, F m)
     (hF : ∀ (m : M) (A : Matrix ι ι (F m)),

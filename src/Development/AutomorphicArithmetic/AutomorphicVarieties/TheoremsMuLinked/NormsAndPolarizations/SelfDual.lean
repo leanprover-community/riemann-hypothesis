@@ -236,7 +236,7 @@ end
 end UpperTheory.Reformulated.B.StringRepresentationDecomposition
 
 theorem UpperTheory.Reformulated.B.StringRepresentationDecomposition.smith_gen.{u_1} :
-    ∀ {K : Type u_1} [NormedField K] [IsUltrametricDist K] {n : ℕ} (P : GL (Fin n) K),
+    ∀ {K : Type u_1} [inst : NormedField K] [IsUltrametricDist K] {n : ℕ} (P : GL (Fin n) K),
       ∃ (U : GL (Fin n) K) (V : GL (Fin n) K) (d : Fin n → K),
         (∀ (i j : Fin n), ‖(↑U : Matrix (Fin n) (Fin n) K) i j‖ ≤ (1 : ℝ)) ∧
           (∀ (i j : Fin n), ‖(↑U⁻¹ : Matrix (Fin n) (Fin n) K) i j‖ ≤ (1 : ℝ)) ∧

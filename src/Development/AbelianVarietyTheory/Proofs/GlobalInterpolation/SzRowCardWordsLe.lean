@@ -113,7 +113,7 @@ theorem words_real_bound {x e G F m n : ℝ} {k : ℕ} (hx : 1 < x) (he : 0 < e)
         push_cast
         nlinarith
 
-theorem szRow_card_words_le : SzRow (fun _ D _ => (Fintype.card D.what₂.Word ≤ 2 ^ (D.R.k - 3))) := by
+theorem szRow_card_words_le : SzRow (fun C D L => (Fintype.card D.what₂.Word ≤ 2 ^ (D.R.k - 3))) := by
   intro eps he he' C hC
   obtain ⟨-, -, -, -, -, -, -, -, -, -, -, -, hP, -, hmid, -⟩ := hC
   have hG : 1 ≤ C.CGam := hmid _ (by simp [FC.cMid])

@@ -126,8 +126,7 @@ theorem exists_isDiff (hV : ⨆ a, V a = ⊤) {O O' P : Z.Opens} {ψ : ∀ a, Γ
       simp only [map_sub, rs_rs]
       linear_combination e2 - e1)
   refine ⟨c, fun a M hM ha => ?_⟩
-  have := congrArg (rs (le_inf hM ha)) (hc a)
-  simpa only [map_sub, rs_rs] using this
+  simpa only [map_sub, rs_rs] using congrArg (rs (le_inf hM ha)) (hc a)
 
 theorem splits_glue {J : Type} (O : J → Z.Opens) (ψ : ∀ j a, Γ(Z, O j ⊓ V a))
     (h : ∀ j, Splits V φ (O j) (ψ j)) (g : ∀ j, Γ(Z, O j))

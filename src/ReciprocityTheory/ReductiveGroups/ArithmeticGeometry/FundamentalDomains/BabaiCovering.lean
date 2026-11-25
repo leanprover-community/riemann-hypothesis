@@ -45,8 +45,7 @@ theorem babai : ∀ (m : ℕ) (y : Fin m → V) (v : V), v ∈ span ℝ (Set.ran
       have hsplit : ∀ N : ℤ, ∑ i, (c i - ((Fin.snoc (α := fun _ => ℤ) n N i : ℤ) : ℝ)) • y i =
           u + (c (Fin.last m) - (N : ℝ)) • w := by
         intro N
-        rw [Fin.sum_univ_castSucc]
-        simp only [Fin.snoc_castSucc, Fin.snoc_last, hu, hw]
+        simp only [Fin.sum_univ_castSucc, Fin.snoc_castSucc, Fin.snoc_last, hu, hw]
       by_cases hc : ‖u + f • w‖ ^ 2 ≤ ‖u + (f - 1) • w‖ ^ 2
       · refine ⟨Fin.snoc (α := fun _ => ℤ) n ⌊c (Fin.last m)⌋, ?_⟩
         rw [hsplit, ← Int.fract]

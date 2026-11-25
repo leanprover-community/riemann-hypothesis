@@ -77,8 +77,7 @@ theorem norm_exp_sub_one_le_exp_norm {A : Type*} [NormedRing A] [NormedAlgebra �
 variable {n : ℕ}
 
 theorem sqrt_hs_eq_norm (A : Matrix (Fin n) (Fin n) ℂ) : Real.sqrt (hs A) = ‖A‖ := by
-  rw [frobenius_norm_def, Real.sqrt_eq_rpow, hs]
-  simp only [Real.rpow_two]
+  simp only [frobenius_norm_def, Real.sqrt_eq_rpow, hs, Real.rpow_two]
 
 theorem hs_nonneg' (A : Matrix (Fin n) (Fin n) ℂ) : 0 ≤ hs A :=
   Finset.sum_nonneg fun _ _ => Finset.sum_nonneg fun _ _ => sq_nonneg _

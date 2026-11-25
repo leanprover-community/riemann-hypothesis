@@ -89,8 +89,7 @@ theorem linIndep_alg_pts [CharZero K] {Kb : Type} [Field Kb] [IsAlgClosed Kb] [A
   have hg : ∀ (g : L →ₐ[K] Kb) (φ : p.R →ₐ[K] Kb), ∑ i, g (u i) * φ (a i) = 0 := by
     intro g φ
     let G : Kb →ₐ[K] Kb := g.liftNormal Kb
-    have hb : Function.Bijective G := Algebra.IsAlgebraic.algHom_bijective G
-    let Ge : Kb ≃ₐ[K] Kb := AlgEquiv.ofBijective G hb
+    let Ge : Kb ≃ₐ[K] Kb := AlgEquiv.ofBijective G (Algebra.IsAlgebraic.algHom_bijective G)
     have h1 := h ((Ge.symm : Kb →ₐ[K] Kb).comp φ)
     have h2 := congrArg G h1
 
@@ -170,8 +169,7 @@ theorem descend_cpts [CharZero K] (σ : K →+* ℂ) (p : TRing K) {r : ℕ} (a 
   let t : Fin r → Fin (Module.finrank K S) → K := fun j l => e.repr ⟨a j, Submodule.subset_span ⟨j, rfl⟩⟩ l
   have hat : ∀ j, a j = ∑ l, t j l • (e l : p.R) := by
     intro j
-    have := e.sum_repr ⟨a j, Submodule.subset_span ⟨j, rfl⟩⟩
-    have h2 := congrArg (fun x : S => (x : p.R)) this
+    have h2 := congrArg (fun x : S => (x : p.R)) (e.sum_repr ⟨a j, Submodule.subset_span ⟨j, rfl⟩⟩)
     simp only [Submodule.coe_sum, Submodule.coe_smul] at h2
     exact h2.symm
   have hind : LinearIndependent K (fun l => (e l : p.R)) :=

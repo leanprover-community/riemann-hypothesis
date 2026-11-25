@@ -168,8 +168,7 @@ theorem burnside [Nontrivial Y] {R : Type} [Ring R] [Algebra ℂ R] (φ : R →�
   have hnt : Nontrivial (Submodule R Y) := by
     refine ⟨⟨⊥, ⊤, fun h => ?_⟩⟩
     obtain ⟨y, hy⟩ := exists_ne (0 : Y)
-    have : y ∈ (⊥ : Submodule R Y) := h ▸ Submodule.mem_top
-    exact hy ((Submodule.mem_bot R).1 this)
+    exact hy ((Submodule.mem_bot R).1 (h ▸ Submodule.mem_top : y ∈ (⊥ : Submodule R Y)))
   have hsimple : IsSimpleModule R Y := by
     refine { exists_pair_ne := hnt.exists_pair_ne, eq_bot_or_eq_top := fun W => ?_ }
     let W' : Submodule ℂ Y :=

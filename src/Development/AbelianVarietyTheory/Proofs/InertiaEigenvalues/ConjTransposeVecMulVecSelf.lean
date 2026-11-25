@@ -101,8 +101,7 @@ theorem star_dot (x y : Fin r → E) : star (star x ⬝ᵥ y) = star y ⬝ᵥ x 
 theorem exists_of_ne (u v : Fin r → E) (hc : star u ⬝ᵥ u = star v ⬝ᵥ v) (ha : star (u - v) ⬝ᵥ u ≠ 0) :
     ∃ g : unitaryGroup (Fin r) E, g.1 *ᵥ u = v := by
   have hN : star (u - v) ⬝ᵥ (u - v) = star (u - v) ⬝ᵥ u + star (star (u - v) ⬝ᵥ u) := by
-    rw [star_dot]
-    simp only [star_sub, sub_dotProduct, dotProduct_sub]
+    simp only [star_dot, star_sub, sub_dotProduct, dotProduct_sub]
     rw [← hc]
     ring
   refine ⟨⟨_, refl_mem (u - v) _ ha hN⟩, ?_⟩

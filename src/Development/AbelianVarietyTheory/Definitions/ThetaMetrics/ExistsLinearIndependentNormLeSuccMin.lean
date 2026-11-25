@@ -341,8 +341,7 @@ theorem det_mul_det_innerDualBasis {ι : Type*} [Fintype ι] [DecidableEq ι]
   simp only [Matrix.mul_apply, Matrix.transpose_apply, Basis.toMatrix_apply,
     OrthonormalBasis.coe_toBasis_repr_apply, OrthonormalBasis.repr_apply_apply, Matrix.one_apply]
   simp_rw [real_inner_comm (innerDualBasis b i)]
-  rw [o.sum_inner_mul_inner, inner_innerDualBasis]
-  simp only [eq_comm]
+  simp only [o.sum_inner_mul_inner, inner_innerDualBasis, eq_comm]
 
 variable [MeasurableSpace E] [BorelSpace E]
 

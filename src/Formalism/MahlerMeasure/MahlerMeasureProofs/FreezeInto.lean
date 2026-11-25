@@ -103,8 +103,7 @@ theorem pol_isWH (p : ℕ) [Fact p.Prime] {N r : ℕ} (LL : M.Letters N) (G : Fi
     {f : MvPolynomial (Fin N × Fin r) ℚ_[p]} (hf : f ∈ M.Pol p r LL) :
     IsWeightedHomogeneous (fun x : Fin N × Fin r => G x.1) f (∑ b, G b * LL.deg b) := by
   intro m hm
-  have hf' : (↑f.support : Set (Fin N × Fin r →₀ ℕ)) ⊆ {m | M.MultiDeg LL m} := hf
-  have hms : M.MultiDeg LL m := hf' (mem_support_iff.mpr hm)
+  have hms : M.MultiDeg LL m := hf (mem_support_iff.mpr hm)
   rw [weight_fst]
   exact Finset.sum_congr rfl (fun b _ => by rw [hms b])
 
@@ -169,8 +168,7 @@ theorem glAct_full_mul (F G : MvPolynomial (Fin K × Fin r) ℚ_[p]) :
     ring
 
 theorem glAct_full_C (a : ℚ_[p]) : M.glAct p L K c ρ (C a) = 0 := by
-  rw [glAct_full_apply]
-  simp
+  simp [glAct_full_apply]
 
 theorem glAct_full_X (b : Fin K) (d : Fin r) :
     M.glAct p L K c ρ (X (b, d)) =

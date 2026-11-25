@@ -155,9 +155,8 @@ theorem exists_basis (l r : ℕ) [Fact l.Prime]
     ∃ b : Fin r → M, (∀ i, l • b i = 0) ∧
       (∀ a : Fin r → ℤ, ∑ i, a i • b i = 0 → ∀ i, (l : ℤ) ∣ a i) ∧
       (∀ y : M, l • y = 0 → ∃ a : Fin r → ℤ, ∑ i, a i • b i = y) := by
-  have hc : Nat.card (tors M l) = l ^ r := h
   obtain ⟨b, h1, h2⟩ := @exists_basis_adapted_lattice_subspace l r _ (tors M l) _
-    (AddCommGroup.zmodModule (fun x => Subtype.ext x.2)) hc
+    (AddCommGroup.zmodModule (fun x => Subtype.ext x.2)) h
   refine ⟨fun i => (b i).1, fun i => (b i).2, ?_, ?_⟩
   · intro a ha
     refine h1 a (Subtype.ext ?_)
@@ -284,8 +283,7 @@ theorem exists_tateModule_of_card :
     · show _ = _ • ∑ i, c n (x i) • e n i
       rw [Finset.smul_sum]
       refine Finset.sum_congr rfl fun i _ => ?_
-      rw [mul_smul]
-      simp only [c, natCast_zsmul]
+      simp only [mul_smul, c, natCast_zsmul]
     · intro i
       push_cast
       simp [hc]

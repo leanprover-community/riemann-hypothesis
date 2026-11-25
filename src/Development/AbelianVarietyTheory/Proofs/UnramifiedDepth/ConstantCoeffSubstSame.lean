@@ -166,8 +166,7 @@ theorem pderiv_subst {σ τ : Type} [Fintype σ] {a : σ → MvPowerSeries τ k}
   have hf : f = (p : MvPowerSeries σ k) + (f - p) := by ring
   rw [hf, subst_add hs, map_add (f := _), map_add (f := _), h1, add_zero]
   simp only [map_add (f := _), subst_add hs, add_mul, Finset.sum_add_distrib]
-  rw [h2, add_zero, subst_coe, pderiv_aeval]
-  simp only [pderiv_coe, subst_coe]
+  simp only [h2, add_zero, subst_coe, pderiv_aeval, pderiv_coe, subst_coe]
 
 theorem constantCoeff_subst_same {σ τ : Type} [Finite σ] {a : σ → MvPowerSeries τ k}
     (ha : ∀ s, constantCoeff (a s) = 0) (f : MvPowerSeries σ k) :
@@ -368,13 +367,11 @@ theorem complete_step (V : VF K) {n j : ℕ} (hj : j < n) (A : Fin j → Fin n �
     split_ifs
     exacts [VF.Ge.one, VF.Ge.zero _]
   · simp only [sub_mul, Finset.sum_sub_distrib, Finset.sum_mul, mul_assoc]
-    rw [Finset.sum_comm]
-    simp only [← Finset.mul_sum, hAs]
+    simp only [Finset.sum_comm, ← Finset.mul_sum, hAs]
     simp [hup]
   · intro c'
     simp only [sub_mul, Finset.sum_sub_distrib, Finset.sum_mul, mul_assoc]
-    rw [Finset.sum_comm]
-    simp only [← Finset.mul_sum, hAB]
+    simp only [Finset.sum_comm, ← Finset.mul_sum, hAB]
     simp
 
 theorem complete_rows (V : VF K) {n n0 : ℕ} (A : Fin n0 → Fin n → K) (B : Fin n → Fin n0 → K)

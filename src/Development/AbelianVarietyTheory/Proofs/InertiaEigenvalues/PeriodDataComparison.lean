@@ -289,8 +289,7 @@ theorem _root_.GlobalTheory.SplitJump.jump_eq_zero (W W' : Matrix (Fin n) (Fin n
     rw [_root_.GlobalTheory.SplitJump.mem_filV PD e]
     intro i
     apply _root_.GlobalTheory.SplitJump.fil_mono PD hb
-    rw [hc]
-    simp only [Matrix.mulVec, dotProduct]
+    simp only [hc, Matrix.mulVec, dotProduct]
     refine Submodule.sum_mem _ fun j _ => ?_
     simpa using PD.Fil_mul 0 0 _ _ (hW i j) (hK0 (k j))
   have hhigh : ∀ y ∈ _root_.Formalism.WeaklyAdmissibleFiltrations.DdR PD ρ, ∀ b : ℤ, 1 ≤ b →
@@ -302,8 +301,7 @@ theorem _root_.GlobalTheory.SplitJump.jump_eq_zero (W W' : Matrix (Fin n) (Fin n
       funext i
       apply _root_.GlobalTheory.SplitJump.eq_zero_of_mem_fil_one PD
       have := congrFun hk i
-      rw [this]
-      simp only [Matrix.mulVec, dotProduct]
+      simp only [this, Matrix.mulVec, dotProduct]
       refine Submodule.sum_mem _ fun j _ => ?_
       simpa using PD.Fil_mul 0 1 _ _ (hW' i j) (_root_.GlobalTheory.SplitJump.fil_mono PD hb (hyb j))
     apply (_root_.GlobalTheory.SplitJump.coord e BdR).injective

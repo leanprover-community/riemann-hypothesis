@@ -77,8 +77,7 @@ theorem extK_basis (c0 : V0 →ₛₗ[e] W0) (c1 : V1 →ₛₗ[e] W1) (b : Modu
   rw [hp]
   have e2 : (LinearEquiv.ofEq _ _ (span_basis_eq c0 b).symm) (⟨c0 (b i), hm⟩ : spanK c0) =
       ⟨c0 (b i), Submodule.subset_span ⟨i, rfl⟩⟩ := Subtype.ext rfl
-  rw [LinearEquiv.coe_toLinearMap, e2]
-  simp only [extSpan, LinearMap.comp_apply]
+  simp only [LinearEquiv.coe_toLinearMap, e2, extSpan, LinearMap.comp_apply]
   rw [hli.repr_eq_single i _ rfl]
   simp
 
@@ -111,8 +110,7 @@ private theorem li_core_lemma_2 {κ : Type*} (c0 : V0 →ₛₗ[e] W0) (b : Modu
     rw [h1, hv.repr_eq_single i _ rfl, Finsupp.single_apply]
   have h2 := congrArg (extK c0 c1 b hli φ) hs
 
-  rw [map_sum, map_zero] at h2
-  simp only [map_smul, extK_apply] at h2
+  simp only [map_sum, map_zero, map_smul, extK_apply] at h2
   rw [Finset.sum_eq_single k (fun i _ hik => by rw [hφv, ite_eq_right hik]; simp [c1])
     (fun h => absurd hk h), hφv, ite_eq_left rfl] at h2
   simpa [c1] using h2

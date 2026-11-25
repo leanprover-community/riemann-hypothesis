@@ -241,8 +241,7 @@ theorem associated_trace_and_lvl_dvd {l : ℕ} [Fact l.Prime] {O : Type} [CommRi
       have := Finset.add_sum_erase Finset.univ (fun x : ZMod l => (1 + X : O⟦X⟧) ^ x.val)
         (Finset.mem_univ 0)
       simp only [ZMod.val_zero, pow_zero] at this
-      rw [this, lvl]
-      simp only [pow_zero, pow_one]
+      simp only [this, lvl, pow_zero, pow_one]
       refine Finset.sum_bij (fun x _ => x.val) ?_ ?_ ?_ ?_
       · intro x _; exact Finset.mem_range.2 (ZMod.val_lt x)
       · intro x _ y _ h; exact ZMod.val_injective l h

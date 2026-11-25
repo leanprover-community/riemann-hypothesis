@@ -93,8 +93,7 @@ theorem top_le {C : Type} [CommRing C] (t : Sp (DualNumber C) ⟶ X) (u : Γ(X, 
   obtain ⟨q, rfl⟩ := red_surj C p
   show t (red C q) ∈ U
   have e : t (red C q) = hU.fromSpec (spMap u q) := by
-    have := congrArg (fun f : Sp C ⟶ X => f q) h
-    simpa using this
+    simpa using congrArg (fun f : Sp C ⟶ X => f q) h
   rw [e]
   exact hU.range_fromSpec.subset (Set.mem_range_self _)
 
@@ -115,8 +114,7 @@ include hU in
 theorem ring_inj {A : Type} [CommRing A] {f g : Γ(X, U) →+* A}
     (h : spMap f ≫ hU.fromSpec = spMap g ≫ hU.fromSpec) : f = g := by
   rw [cancel_mono] at h
-  have := congrArg CommRingCat.Hom.hom (Spec.map_injective h)
-  simpa using this
+  simpa using congrArg CommRingCat.Hom.hom (Spec.map_injective h)
 
 theorem ringOf_eq {A : Type} [CommRing A] {t : Sp A ⟶ X} (h : ⊤ ≤ t ⁻¹ᵁ U) {f : Γ(X, U) →+* A}
     (e : t = spMap f ≫ hU.fromSpec) : ringOf t h = f :=

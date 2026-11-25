@@ -173,11 +173,10 @@ theorem eq_zero_of_p_mul_eq_zero {x : Acris p R} (h : (p : Acris p R) * x = 0) :
     ← map_natCast (Ideal.Quotient.mk (span {(p : AcrisZero p R)} ^ (n + 1))), ← map_mul,
     Ideal.Quotient.eq_zero_iff_mem, AcrisZero.mem_span_pow_iff] at h1
   obtain ⟨b, hb⟩ := h1
-  have hab : a = p ^ n * b := AcrisZero.p_mul_cancel (by rw [hb]; ring)
   rw [← factorPow_eval (Nat.le_succ n), ← ha, map_zero]
   simp only [Ideal.Quotient.factorPow, Ideal.Quotient.factor_mk]
   rw [Ideal.Quotient.eq_zero_iff_mem, AcrisZero.mem_span_pow_iff]
-  exact ⟨b, hab⟩
+  exact ⟨b, (AcrisZero.p_mul_cancel (by rw [hb]; ring))⟩
 
 theorem p_mul_cancel {x y : Acris p R} (h : (p : Acris p R) * x = p * y) : x = y :=
   sub_eq_zero.1 (eq_zero_of_p_mul_eq_zero (by rw [mul_sub, h, sub_self]))

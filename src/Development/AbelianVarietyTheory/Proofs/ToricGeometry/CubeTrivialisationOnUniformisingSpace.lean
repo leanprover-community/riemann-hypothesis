@@ -94,8 +94,7 @@ lemma val_unit_prod_zpow (hv : ValueRules) {U : X.Opens} (h : ⊤ ≤ x ⁻¹ᵁ
     fun w => he w.val
   calc valAt' x U (∏ k, f k ^ ε k).val = ((Units.map (e : Γ(X, U) →* ℂ) (∏ k, f k ^ ε k) : ℂˣ) : ℂ) := hm _
     _ = ∏ k, ((Units.map (e : Γ(X, U) →* ℂ) (f k) : ℂˣ) : ℂ) ^ ε k := by
-      rw [map_prod, Units.coe_prod]
-      simp only [map_zpow, Units.val_zpow_eq_zpow_val]
+      simp only [map_prod, Units.coe_prod, map_zpow, Units.val_zpow_eq_zpow_val]
     _ = ∏ k, valAt' x U (f k).val ^ ε k := by simp only [hm]
 
 lemma val_res (hv : ValueRules) {U V : X.Opens} (hVU : V ≤ U) (h : ⊤ ≤ x ⁻¹ᵁ V) (f : Γ(X, U)ˣ) :

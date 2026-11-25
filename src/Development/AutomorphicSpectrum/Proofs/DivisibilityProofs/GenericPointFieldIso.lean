@@ -78,7 +78,6 @@ theorem exists_iso_of_genPt_eq : ∀ (X : Scheme.{0}) (Ω Ω' : Type) [Field Ω]
   let e := RingEquiv.ofBijective (genMap ξ p) (genMap_bijective_of_eq ξ h _ hs hq.symm)
   let e' := RingEquiv.ofBijective (genMap ξ' p') (genMap_bijective_of_eq ξ' h' _ specializes_rfl rfl)
   refine ⟨e'.symm.trans e, ?_⟩
-  have c1 : spMap (genMap ξ p) ≫ X.fromSpecStalk (genPt ξ') = ξ := genMap_comp ξ _ hs
   have c2 : spMap (genMap ξ' p') ≫ X.fromSpecStalk (genPt ξ') = ξ' := genMap_comp ξ' _ specializes_rfl
   calc spMap (e'.symm.trans e).toRingHom ≫ ξ'
       = spMap (e'.symm.trans e).toRingHom ≫ (spMap (genMap ξ' p') ≫ X.fromSpecStalk (genPt ξ')) := by
@@ -93,6 +92,6 @@ theorem exists_iso_of_genPt_eq : ∀ (X : Scheme.{0}) (Ω Ω' : Type) [Field Ω]
         change e (e'.symm (genMap ξ' p' x)) = genMap ξ p x
         rw [show e'.symm (genMap ξ' p' x) = x from e'.symm_apply_apply x]
         rfl
-    _ = ξ := c1
+    _ = ξ := genMap_comp ξ _ hs
 
 end GlobalTheory.CompanionTheory.Ar.GenIso

@@ -75,10 +75,8 @@ theorem mem_genFib_of_char0 [CharZero Ω] {ξ : Spec (CommRingCat.of Ω) ⟶ X} 
     | one => intro _; simpa using (regAt ξ p).one_mem
     | prime_mul r a hr ih =>
       intro h
-      have ha : 0 < a := Nat.pos_of_mul_pos_left h
-      have hu : unitAt ξ p (r : Ω) := not_not.1 (hp r hr)
       rw [Nat.cast_mul, mul_inv]
-      exact mul_mem hu.2.2 (ih ha)
+      exact mul_mem (not_not.1 (hp r hr)).2.2 (ih (Nat.pos_of_mul_pos_left h))
   exact fun n hn => ⟨Nat.cast_ne_zero.2 hn.ne', natCast_mem _ n, key n hn⟩
 
 theorem exists_below [CharZero Ω] {X₁ X₂ : Scheme.{0}} {ξ₁ : Spec (CommRingCat.of Ω) ⟶ X₁}

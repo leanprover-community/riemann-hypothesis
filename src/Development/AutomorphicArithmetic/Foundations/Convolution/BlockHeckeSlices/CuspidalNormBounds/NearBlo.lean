@@ -1132,8 +1132,8 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.IndependenceEigenvectors.indep :
-    ∀ {V I J : Type} [AddCommGroup V]
-    [_root_.Module ℂ V] (T : I → Module.End ℂ V) (v : J → V) (lam : J → I → ℂ),
+    ∀ {V I J : Type} [inst : AddCommGroup V]
+    [inst_1 : _root_.Module ℂ V] (T : I → Module.End ℂ V) (v : J → V) (lam : J → I → ℂ),
     (∀ (j : J), v j ≠ (0 : V)) →
       (∀ (j : J) (i : I), (T i : V → V) (v j) = lam j i • v j) → Function.Injective lam → LinearIndependent ℂ v := by
   intro V I J _ _ T v lam hv hT hinj
@@ -1191,8 +1191,8 @@ private theorem UpperTheory.Reformulated.B.NoSmallSubgroupsNormedAlgebra.step {A
   linarith
 
 theorem UpperTheory.Reformulated.B.NoSmallSubgroupsNormedAlgebra.nss :
-    ∀ {G A : Type} [Group G]
-    [NormedRing A] [NormedAlgebra ℝ A] (ρ : G →* A) (H : Subgroup G),
+    ∀ {G A : Type} [inst : Group G]
+    [inst_1 : NormedRing A] [NormedAlgebra ℝ A] (ρ : G →* A) (H : Subgroup G),
     (∀ g ∈ H, ‖(ρ : G → A) g - (1 : A)‖ ≤ (1 / 2 : ℝ)) → ∀ g ∈ H, (ρ : G → A) g = (1 : A) := by
   intro G A _ _ _ ρ H h
   have key : ∀ n : ℕ, ∀ g ∈ H, ‖ρ g - 1‖ ≤ (2 / 3 : ℝ) ^ n := by

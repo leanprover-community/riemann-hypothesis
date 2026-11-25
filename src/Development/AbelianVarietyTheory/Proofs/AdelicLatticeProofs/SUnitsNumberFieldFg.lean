@@ -112,8 +112,7 @@ theorem _root_.GlobalTheory.QNorm.sUnits_fg :
       obtain ⟨u, hu⟩ := exists_unit_of_valuation_eq_one ((x.toMul : G) : Fˣ) fun v => by
         by_cases hv : v ∈ S
         · rw [← hval]
-          have := congrFun hx ⟨v, hv⟩
-          simpa [f] using this
+          simpa [f] using congrFun hx ⟨v, hv⟩
         · exact (_root_.GlobalTheory.QNorm.mem_sUnits F S _).mp x.toMul.2 v hv
       refine ⟨Additive.ofMul u, ?_⟩
       apply Additive.toMul.injective

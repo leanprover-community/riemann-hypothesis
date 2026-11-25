@@ -68,8 +68,7 @@ theorem exists_isom_map_of_eq {h : V →ₗ⋆[K] V →ₗ[K] K}
     rw [h0, map_zero, Complex.zero_re] at this
     exact lt_irrefl _ this
   have huu : h (x - y) (x - y) = starRingEnd K (h (x - y) x) + h (x - y) x := by
-    rw [hsym]
-    simp only [map_sub, LinearMap.sub_apply]
+    simp only [hsym, map_sub, LinearMap.sub_apply]
     rw [← hxy]
     ring
   have hux : h (x - y) x ≠ 0 := by

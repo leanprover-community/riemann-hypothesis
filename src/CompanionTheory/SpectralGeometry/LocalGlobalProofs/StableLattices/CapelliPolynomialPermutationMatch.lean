@@ -50,8 +50,7 @@ theorem exists_perm_of_capelliPolynomial_eq {n : ℕ} (f g : Fin n → ℂ)
     ((Equiv.sigmaFiberEquiv (fun a => -f a)).symm.trans (Equiv.sigmaCongrRight e)).trans
       (Equiv.sigmaFiberEquiv (fun a => -g a))
   refine ⟨τ, fun a => ?_⟩
-  have key : -g (τ a) = -f a := (e (-f a) ⟨a, rfl⟩).2
-  exact neg_inj.mp key.symm
+  exact neg_inj.mp ((e (-f a) ⟨a, rfl⟩).2).symm
 
 end GlobalTheory.CompanionTheory.CharOfLowK
 

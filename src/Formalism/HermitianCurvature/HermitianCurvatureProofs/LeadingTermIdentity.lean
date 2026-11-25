@@ -58,8 +58,7 @@ theorem pl_lmul {t : ℕ} {f : ℂ → A} (c : A) (hf : PolyLe t f) : PolyLe t (
 theorem pl_mono {t : ℕ} {f : ℂ → A} (hf : PolyLe t f) : PolyLe (t + 1) f := by
   obtain ⟨C, hC⟩ := hf
   refine ⟨Fin.snoc (α := fun _ => A) C 0, fun u => ?_⟩
-  rw [hC, Fin.sum_univ_castSucc]
-  simp [Fin.snoc_castSucc, Fin.snoc_last]
+  simp [hC, Fin.sum_univ_castSucc, Fin.snoc_castSucc, Fin.snoc_last]
 
 theorem pl_mulu {t : ℕ} {f : ℂ → A} (hf : PolyLe t f) : PolyLe (t + 1) (fun u => f u * algebraMap ℂ A u) := by
   obtain ⟨C, hC⟩ := hf
@@ -72,8 +71,7 @@ theorem pl_mulu {t : ℕ} {f : ℂ → A} (hf : PolyLe t f) : PolyLe (t + 1) (fu
 
 theorem pl_mono_const (t : ℕ) (x : A) : PolyLe (t + 1) (fun u => algebraMap ℂ A (u ^ t) * x) := by
   refine ⟨Fin.snoc (α := fun _ => A) 0 x, fun u => ?_⟩
-  rw [Fin.sum_univ_castSucc]
-  simp [Fin.snoc_castSucc, Fin.snoc_last]
+  simp [Fin.sum_univ_castSucc, Fin.snoc_castSucc, Fin.snoc_last]
 
 theorem prod_poly : ∀ (t : ℕ) (c δ : Fin t → ℂ) (F : Fin t → A),
     PolyLe t (fun u => (List.ofFn fun k => algebraMap ℂ A ((u + c k) * δ k) + F k).prod -

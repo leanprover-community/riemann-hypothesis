@@ -362,8 +362,7 @@ theorem _root_.GlobalTheory.SmGL.parab_le_normalizer (e : (Σ a, m a) ≃ n) :
   constructor
   · exact conj_mem_unipRad_of_mem_parab R hp
   · intro h
-    have := conj_mem_unipRad_of_mem_parab R (inv_mem hp) h
-    simpa [mul_assoc] using this
+    simpa [mul_assoc] using conj_mem_unipRad_of_mem_parab R (inv_mem hp) h
 
 
 open Matrix in

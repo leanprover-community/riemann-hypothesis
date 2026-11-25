@@ -103,8 +103,7 @@ theorem main : ∀ (F E : Type) [NontriviallyNormedField F] [NontriviallyNormedF
     have e := congrArg (algebraMap F E) (h1.symm.trans h2)
     rw [traceE, hss, map_nsmul, two_nsmul, ← two_mul, ← two_mul] at e
     have : CharZero E := charZero_of_injective_algebraMap (algebraMap F E).injective
-    have h20 : (2 : E) ≠ 0 := two_ne_zero
-    exact mul_left_cancel₀ h20 e
+    exact mul_left_cancel₀ two_ne_zero e
   have hT1 : ‖T‖ ≤ 1 := by rw [← norm_algebraMap' E T, h3]; exact hs1
   exact hψ.1 T hT1
 

@@ -240,16 +240,14 @@ theorem exists_quot : ∃ q : ℝ → ℂ, ContDiffOn ℝ ∞ q (Metric.ball 0 1
     (hd.contDiff.restrict_scalars ℝ).comp Complex.ofRealCLM.contDiff
   have hmul : ∀ t : ℝ, (t : ℂ) * dslope E 0 t = cexp (2 * π * I * t) - 1 := by
     intro t
-    have := sub_smul_dslope E 0 (t : ℂ)
-    simpa [hE] using this
+    simpa [hE] using sub_smul_dslope E 0 (t : ℂ)
   have hne : ∀ t ∈ Metric.ball (0 : ℝ) 1, dslope E 0 (t : ℂ) ≠ 0 := by
     intro t ht h0
     by_cases h : t = 0
     · subst h
       have hD : HasDerivAt E (cexp (2 * π * I * 0) * (2 * π * I * 1)) 0 :=
         ((hasDerivAt_id (0 : ℂ)).const_mul (2 * π * I)).cexp
-      rw [Complex.ofReal_zero, dslope_same, hD.deriv] at h0
-      simp [Real.pi_ne_zero] at h0
+      simp [Complex.ofReal_zero, dslope_same, hD.deriv, Real.pi_ne_zero] at h0
     · have h1 := hmul t
       rw [h0, mul_zero, eq_comm, sub_eq_zero, Complex.exp_eq_one_iff] at h1
       obtain ⟨k, hk⟩ := h1
@@ -379,8 +377,7 @@ theorem eq_mul_comb : ∀ (n : ℕ) (T : SchwartzMap (Fin n → ℝ) ℂ →L[�
         exact fun x hx => subset_tsupport _ (by rwa [Function.mem_support, hg] at hx)
       refine (closure_minimal hsub ((isClosed_tsupport _).preimage (by fun_prop))).trans ?_
       intro x hx
-      have := hf hx
-      simpa [Metric.mem_ball, dist_eq_norm] using this
+      simpa [Metric.mem_ball, dist_eq_norm] using hf hx
     rw [← hτ m f g hg, hB g hgs, hg, zero_add, hS, tsum_eq_single m]
     intro k hk
     refine image_eq_zero_of_notMem_tsupport fun h => hk ?_

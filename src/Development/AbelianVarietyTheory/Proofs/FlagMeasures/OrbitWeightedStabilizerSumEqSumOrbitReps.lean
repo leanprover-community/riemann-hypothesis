@@ -59,7 +59,6 @@ theorem _root_.GlobalTheory.Mass.orbSum_eq_sum_reps : ∀ (G α : Type) [Group G
     _root_.GlobalTheory.Mass.orbSum G X N =
       ∑ x ∈ s, ((ENat.card (MulAction.stabilizer G x) : ℕ∞) : ℝ≥0∞)⁻¹ * N x := by
   intro G α _ _ X N hX hN s hs huniq
-  have hX' : ∀ (g : G), ∀ x ∈ X, g • x ∈ X := hX
   unfold _root_.GlobalTheory.Mass.orbSum
   have hout : ∀ x : α, ∃ g : G, g • x = (Quotient.mk (MulAction.orbitRel G α) x).out := fun x =>
     MulAction.mem_orbit_iff.mp (MulAction.orbitRel_apply.mp
@@ -73,7 +72,7 @@ theorem _root_.GlobalTheory.Mass.orbSum_eq_sum_reps : ∀ (G α : Type) [Group G
     rw [← hg, hN,
       ENat.card_congr (MulAction.stabilizerEquivStabilizer (rfl : g • x = g • x)).toEquiv.symm]
   let e : {x // x ∈ s} → {q : MulAction.orbitRel.Quotient G α // q.out ∈ X} := fun x =>
-    ⟨Quotient.mk _ x.1, by obtain ⟨g, hg⟩ := hout x.1; rw [← hg]; exact hX' g _ (hs _ x.2)⟩
+    ⟨Quotient.mk _ x.1, by obtain ⟨g, hg⟩ := hout x.1; rw [← hg]; exact hX g _ (hs _ x.2)⟩
   have he_inj : Function.Injective e := by
     rintro ⟨x, hx⟩ ⟨y, hy⟩ hxy
     have hq : Quotient.mk (MulAction.orbitRel G α) x = Quotient.mk _ y := congrArg Subtype.val hxy

@@ -61,8 +61,7 @@ theorem firstColumnSplit_bijective (m : ℕ) : Function.Bijective (phi0 m) := by
       mul_left_cancel (show cyc0 m j * ext0 τ = cyc0 m j * ext0 τ' from h)
     have h2 : τ = τ' := by
       refine Equiv.ext fun k => ?_
-      have := congrArg (fun σ : Equiv.Perm (Fin (m + 1)) => σ k.succ) h1
-      simpa [extByZero_succ] using this
+      simpa [extByZero_succ] using congrArg (fun σ : Equiv.Perm (Fin (m + 1)) => σ k.succ) h1
     subst h2
     rfl
   · simp [Fintype.card_perm, Fintype.card_prod, Fintype.card_fin, Nat.factorial_succ]

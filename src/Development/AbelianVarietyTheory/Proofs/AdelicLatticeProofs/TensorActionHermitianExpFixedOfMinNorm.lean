@@ -118,8 +118,7 @@ theorem _root_.GlobalTheory.ClassFin.act_exp_eq_of_isMinVec : ∀ (ι : Type) [F
           - 2 * ∑ k, ‖u k‖ ^ 2 * Real.exp (1 / 2 * lam k) ^ 2 := by
       rw [Finset.mul_sum, ← Finset.sum_add_distrib, ← Finset.sum_sub_distrib]
       refine Finset.sum_congr rfl fun k _ => ?_
-      rw [hsq]
-      simp only [zero_mul, Real.exp_zero]
+      simp only [hsq, zero_mul, Real.exp_zero]
       ring
     refine le_antisymm ?_ (Finset.sum_nonneg hterm)
     rw [e, h0, h1]

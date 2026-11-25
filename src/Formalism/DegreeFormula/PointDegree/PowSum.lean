@@ -41,8 +41,7 @@ theorem permExp_apply {ι : Type} [Fintype ι] {N : ℕ} (σ : ι → Equiv.Perm
 
 theorem degree_permExp {ι : Type} [Fintype ι] {N : ℕ} (σ : ι → Equiv.Perm (Fin N)) :
     (permExp σ).degree = dimFl ι N := by
-  rw [Finsupp.degree_eq_sum]
-  simp only [permExp_apply]
+  simp only [Finsupp.degree_eq_sum, permExp_apply]
   rw [Fintype.sum_prod_type]
   have h : ∀ t : ι, ∑ i : Fin N, (N - 1 - ((σ t i : Fin N) : ℕ)) = N * (N - 1) / 2 := by
     intro t

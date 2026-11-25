@@ -24,8 +24,7 @@ private theorem pow_sub_pow_eq_pow_mul_pow_sub_one_of_lt (q r i : ℕ) (hq : 0 <
   have h1 : q ^ r = q ^ i * q ^ (r - i) := by rw [← pow_add, Nat.add_sub_cancel' hi.le]
   have h2 : 1 ≤ q ^ (r - i) := Nat.one_le_pow _ _ hq
   obtain ⟨k, hk⟩ : ∃ k, q ^ (r - i) = k + 1 := ⟨q ^ (r - i) - 1, (Nat.sub_add_cancel h2).symm⟩
-  rw [h1, hk]
-  simp [mul_add]
+  simp [h1, hk, mul_add]
 
 theorem padicValNat_prod_pow_sub (g q r : ℕ) [Fact g.Prime] (hq : 2 ≤ q) :
     padicValNat g (∏ i ∈ Finset.range r, (q ^ r - q ^ i)) =
@@ -75,11 +74,10 @@ theorem padicValCardGeneralLinear : GLCardVal := by
     apply multiplicity_eq_zero_of_not_dvd
     intro hd
     have ha1 : 1 ≤ a := (Finset.mem_Icc.mp ha).1
-    have h1 : g ∣ g ^ a := dvd_pow_self g (by omega)
     have h2 : 1 ≤ g ^ a := Nat.one_le_pow _ _ hg.pos
     have h3 : g ∣ g ^ a - (g ^ a - 1) := by
       first
-        | exact Nat.dvd_sub h1 hd
+        | exact Nat.dvd_sub (dvd_pow_self g (by omega)) hd
     rw [Nat.sub_sub_self h2] at h3
     exact hg.one_lt.ne' (Nat.dvd_one.mp h3)
   · rw [card_GL_zmod, padicValNat_prod_pow_sub g g' r hg'.two_le]

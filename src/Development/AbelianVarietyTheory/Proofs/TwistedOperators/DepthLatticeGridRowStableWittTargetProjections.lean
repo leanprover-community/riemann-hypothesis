@@ -281,7 +281,7 @@ end Keep
 
 end GlobalTheory.AscFin.ProjTgt
 
-theorem GlobalTheory.AscFin.latRow_proj_tgt : OnStd fun {D} _ _ {_} {G} _ F => ∀ σ (_ : 2 * (σ + 1) + 2 ≤ D.R.m)
+theorem GlobalTheory.AscFin.latRow_proj_tgt : OnStd fun {D} _ _ {sc} {G} _ F => ∀ σ (_ : 2 * (σ + 1) + 2 ≤ D.R.m)
     (h' : 2 * σ + 2 ≤ D.R.m), ∀ u ∈ latRow G (2 * σ + 2),
       ((F.dB σ h').jX * (F.dB σ h').pX) * u ∈ latRow G (2 * σ + 2) ∧
       ((F.dB σ h').jY * (F.dB σ h').pY) * u ∈ latRow G (2 * σ + 2) := by

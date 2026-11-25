@@ -71,8 +71,7 @@ theorem sb_derivcut (H : ℝ → ℝ) (hH : IsCutFn H) : IsCutFn (deriv H) := by
   have h : H =ᶠ[nhds x] fun _ => (0 : ℝ) := by
     filter_upwards [Ioi_mem_nhds (show R < x by linarith)] with y hy
     exact hR y (le_of_lt hy)
-  rw [h.deriv_eq]
-  simp
+  simp [h.deriv_eq]
 
 theorem sb_evrp {n : ℕ} (ε : Fin n → Bool) (g : Mat n) : ev g (rP ε) = ((rM ε g : ℝ) : ℂ) := by
 
@@ -204,8 +203,7 @@ theorem cutoffPolynomial_conjugation_deriv_mem_shapeSpan : StBasDeriv := by
     obtain ⟨c, hc⟩ : ∃ c, c = ev (NormedSpace.exp (-((s : ℂ) • Z)) * g * NormedSpace.exp ((s : ℂ) • Z)) (dZ ε Z (rP ε)) := ⟨_, rfl⟩
     rw [← hc] at hE
     have hre : HasDerivAt (fun u : ℝ => rM ε (NormedSpace.exp (-((u : ℂ) • Z)) * g * NormedSpace.exp ((u : ℂ) • Z))) c.re s := by
-      have := Complex.reCLM.hasFDerivAt.comp_hasDerivAt s hE
-      simpa [Function.comp_def] using this
+      simpa [Function.comp_def] using Complex.reCLM.hasFDerivAt.comp_hasDerivAt s hE
     have him : c.im = 0 := by
       have h1 := Complex.imCLM.hasFDerivAt.comp_hasDerivAt s hE
       simp [Function.comp_def] at h1

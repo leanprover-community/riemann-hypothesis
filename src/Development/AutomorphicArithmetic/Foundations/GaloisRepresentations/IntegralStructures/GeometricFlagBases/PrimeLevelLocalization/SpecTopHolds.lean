@@ -307,8 +307,8 @@ section -- clump:auto
 open scoped IntermediateField TensorProduct Matrix Pointwise NumberField Topology ContDiff NNReal ENNReal Polynomial DirectSum BigOperators InnerProductSpace Manifold
 
 theorem UpperTheory.Reformulated.B.Qk58.agree_of_adjoin :
-    ∀ {E : Type} [Field E]
-    [NumberField E] (φ ψ : E →+* ℂ) {a b : E},
+    ∀ {E : Type} [inst : Field E]
+    [inst_1 : NumberField E] (φ ψ : E →+* ℂ) {a b : E},
     (φ : E → ℂ) a = (ψ : E → ℂ) a → b ∈ ℚ⟮a⟯ → (φ : E → ℂ) b = (ψ : E → ℂ) b := by
   intro E _ _ φ ψ a b ha hb
   induction hb using IntermediateField.adjoin_induction with
@@ -964,7 +964,7 @@ section -- clump:auto
     fun (E : Type) [Field E] ↦ IsDedekindDomain.HeightOneSpectrum (NumberField.RingOfIntegers E)
 
 theorem UpperTheory.Reformulated.B.ExistsPlace.exists_place :
-    ∀ {E : Type} [Field E] [NumberField E] [NumberField.IsCMField E] (q : ℕ),
+    ∀ {E : Type} [inst : Field E] [inst_1 : NumberField E] [NumberField.IsCMField E] (q : ℕ),
       Nat.Prime q → ∃ (w : UpperTheory.Reformulated.B.ExistsPlace.Plc E), (↑q : NumberField.RingOfIntegers E) ∈ w.asIdeal := by
   intro E _ _ _ q hq
   have hne : (q : NumberField.RingOfIntegers E) ≠ 0 := by

@@ -341,8 +341,7 @@ theorem hilbertPrime_succ (d : ℕ) (hM : MixedNumberPolynomial.Statement.{u})
         |g a - g (Function.update a b (a b - 1))| ≤ 0 * ((∑ k, (a k : ℝ)) + 1) ^ 0 := by
       intro a ha b hb
       have hR := multilinear_step (ofPositionAdditive (intNum F q) hadd) hsym (fun k => (a k : ℤ)) (unitDeg b)
-      rw [hempty, Finset.sum_empty, neg_zero] at hR
-      simp only [ofPositionAdditive_apply] at hR
+      simp only [hempty, Finset.sum_empty, neg_zero, ofPositionAdditive_apply] at hR
       have hIb := hAC b a (hAb a ha b)
       have hlt : |C b| < (∑ k, (a k : ℝ)) + 1 := by
         have h1 : (a₀ : ℝ) < a b := by exact_mod_cast hb
@@ -352,8 +351,7 @@ theorem hilbertPrime_succ (d : ℕ) (hM : MixedNumberPolynomial.Statement.{u})
       rw [key a ha b hb, hR]
       simp only [Nat.factorial_zero, Nat.cast_one, div_one, Int.cast_zero, zero_div, sub_zero] at hIb ⊢
       have hz := int_eq_of_abs_sub_le (hs0 a) hlt hIb
-      rw [hz, sub_self]
-      simp
+      simp [hz, sub_self]
     refine ⟨a₀, |g (fun _ => a₀)|, fun a ha => ?_⟩
     have hw := walk_bound g a₀ 0 le_rfl 0 hstep a ha
     have hexp : (((0 + 1 : ℕ) : ℝ) - 1) = 0 := by norm_num

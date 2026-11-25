@@ -80,13 +80,13 @@ section -- clump:auto
     fun (l : ℕ) [Fact (Nat.Prime l)] ↦ PadicAlgCl l
 
 @[reducible] noncomputable def UpperTheory.Reformulated.B.Qh13.Emb :
-    {F : Type} → [Field F] → [NumberField F] → (l : ℕ) → [Fact (Nat.Prime l)] → UpperTheory.Reformulated.B.Qh13.Plc F → Type :=
+    {F : Type} → [inst : Field F] → [NumberField F] → (l : ℕ) → [Fact (Nat.Prime l)] → UpperTheory.Reformulated.B.Qh13.Plc F → Type :=
     fun {F : Type} [Field F] [NumberField F] (l : ℕ) [Fact (Nat.Prime l)] (w : UpperTheory.Reformulated.B.Qh13.Plc F) ↦
       { j : IsDedekindDomain.HeightOneSpectrum.adicCompletion F w →+* UpperTheory.Reformulated.B.Qh13.Qbar l //
         Continuous (⇑j : IsDedekindDomain.HeightOneSpectrum.adicCompletion F w → UpperTheory.Reformulated.B.Qh13.Qbar l) }
 
 theorem UpperTheory.Reformulated.B.Qh13.ec_field :
-    ∀ {L : Type} [Field L] [NumberField L] {l : ℕ} [Fact (Nat.Prime l)]
+    ∀ {L : Type} [inst : Field L] [inst_1 : NumberField L] {l : ℕ} [inst_2 : Fact (Nat.Prime l)]
       {w : UpperTheory.Reformulated.B.Qh13.Plc L} (j : UpperTheory.Reformulated.B.Qh13.Emb l w),
       ∃ (K : IntermediateField ℚ_[l] (PadicAlgCl l)),
         FiniteDimensional ℚ_[l] ↥K ∧

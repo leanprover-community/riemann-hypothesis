@@ -147,8 +147,7 @@ variable {ε} in
 lemma pointDer_algebraMap {D : A →ₗ[R] N} (hD : ∀ a b, D (a * b) = ε a • D b + ε b • D a)
     (r : R) : D (algebraMap R A r) = 0 := by
   have h1 : D 1 = 0 := by
-    have := hD 1 1
-    simpa using this
+    simpa using hD 1 1
   rw [Algebra.algebraMap_eq_smul_one, map_smul, h1, smul_zero]
 
 def lift (D : A →ₗ[R] N) (hD : ∀ a b, D (a * b) = ε a • D b + ε b • D a) : AugCot ε →ₗ[R] N :=
@@ -553,10 +552,9 @@ lemma rankAtStalk_kaehler_of_locally
   obtain ⟨t, hts, htq⟩ : ∃ t ∈ s, t ∉ q.asIdeal := by
     by_contra! hc
     exact q.2.ne_top (top_le_iff.1 (hs ▸ Ideal.span_le.2 hc))
-  have hq : q ∈ Set.range (PrimeSpectrum.comap (algebraMap A (Localization.Away t))) := by
+  obtain ⟨q', rfl⟩ : q ∈ Set.range (PrimeSpectrum.comap (algebraMap A (Localization.Away t))) := by
     rw [PrimeSpectrum.localization_away_comap_range (Localization.Away t) t]
     exact htq
-  obtain ⟨q', rfl⟩ := hq
   have Ht := H t hts
   rw [← IsScalarTower.algebraMap_eq, RingHom.isStandardSmoothOfRelativeDimension_algebraMap] at Ht
   haveI := Algebra.IsStandardSmoothOfRelativeDimension.isStandardSmooth n (R := R)

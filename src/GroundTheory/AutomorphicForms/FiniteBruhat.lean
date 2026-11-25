@@ -71,10 +71,9 @@ lemma borel_diag_ne_zero {b : GL (Fin n) k} (hb : b ∈ borel n k) (i : Fin n) :
 lemma exists_borel_of_isUpperTriangular (M : Matrix (Fin n) (Fin n) k)
     (hM : M.IsUpperTriangular) (hd : ∀ i, M i i ≠ 0) :
     ∃ b ∈ borel n k, (b : Matrix (Fin n) (Fin n) k) = M := by
-  have hdet : IsUnit M := by
+  obtain ⟨u, hu⟩ : IsUnit M := by
     rw [Matrix.isUnit_iff_isUnit_det, det_of_isUpperTriangular hM, isUnit_iff_ne_zero]
     exact Finset.prod_ne_zero_iff.mpr fun i _ => hd i
-  obtain ⟨u, hu⟩ := hdet
   refine ⟨u, ?_, hu⟩
   show (u : Matrix (Fin n) (Fin n) k).IsUpperTriangular
   rwa [hu]
@@ -194,8 +193,7 @@ lemma rowsReduced_step (h : GL (Fin n) k) (t : ℕ) (ht : t < n)
   have hu0 : ∀ r : Fin n, t ≤ r.val → u r = 0 := by
     intro r hr
     have : ¬ r < i₀ := by
-      rw [Fin.lt_def]
-      simp [i₀]
+      simp [Fin.lt_def, i₀]
       omega
     simp [u, this]
   have hM₂j : ∀ r : Fin n, r.val < t → M₂ r j = 0 := by
@@ -296,7 +294,6 @@ theorem exists_mem_doubleCoset_permGL (g : GL (Fin n) k) :
 theorem eq_of_permGL_mem_doubleCoset {σ τ : Equiv.Perm (Fin n)}
     (h : permGL k τ ∈ doubleCoset (permGL k σ) (borel n k) (borel n k)) : σ = τ := by
   obtain ⟨x, hx, y, hy, hxy⟩ := mem_doubleCoset.mp h
-  have hy' : y⁻¹ ∈ borel n k := (borel n k).inv_mem hy
   have hmat : (x : Matrix (Fin n) (Fin n) k) * (permGL k σ : Matrix (Fin n) (Fin n) k) =
       (permGL k τ : Matrix (Fin n) (Fin n) k) * ((y⁻¹ : GL (Fin n) k) : Matrix (Fin n) (Fin n) k) := by
     rw [← Units.val_mul, ← Units.val_mul, hxy]
@@ -310,11 +307,10 @@ theorem eq_of_permGL_mem_doubleCoset {σ τ : Equiv.Perm (Fin n)}
     push Not at hlt
     have h0 := (mem_borel_iff x).mp hx (τ a) (σ a) hlt
     rw [hent, show τ⁻¹ (τ a) = a from τ.symm_apply_apply a] at h0
-    exact borel_diag_ne_zero hy' a h0
+    exact borel_diag_ne_zero ((borel n k).inv_mem hy) a h0
   have hπ := perm_eq_one_of_forall_le (τ * σ⁻¹) (fun x => by
     simpa using hle (σ⁻¹ x))
-  have := congrArg (· * σ) hπ
-  simpa using this.symm
+  simpa using (congrArg (· * σ) hπ).symm
 
 theorem doubleCoset_permGL_injective {σ τ : Equiv.Perm (Fin n)} {g : GL (Fin n) k}
     (hσ : g ∈ doubleCoset (permGL k σ) (borel n k) (borel n k))

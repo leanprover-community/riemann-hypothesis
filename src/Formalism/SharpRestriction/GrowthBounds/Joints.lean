@@ -1386,7 +1386,7 @@ theorem padicGe_sum {p : ℕ} [Fact p.Prime] {ι : Type*} (s : Finset ι) (f : �
   rw [Finset.sum_insert ha]
   exact padicGe_add (h a (Finset.mem_insert_self a s)) (ih fun i hi => h i (Finset.mem_insert_of_mem hi))
 
-theorem padicValNat_lt_of_lt_pow {p : ℕ} [Fact p.Prime] {y t : ℕ} (hy : 1 ≤ y) (hlt : y < p ^ (t + 1)) :
+theorem padicValNat_lt_of_lt_pow {p : ℕ} [hp : Fact p.Prime] {y t : ℕ} (hy : 1 ≤ y) (hlt : y < p ^ (t + 1)) :
     padicValNat p y ≤ t := by
   by_contra hc
   push Not at hc

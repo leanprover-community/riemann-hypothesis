@@ -185,8 +185,7 @@ theorem exists_value_isotropic [CharZero k] {n : ℕ} {a a' : k} (ha : a ≠ 0) 
         linear_combination -hXY
       refine ⟨X, Y, by rw [e]; exact neg_ne_zero.2 hb, key _ (by rw [e]; exact neg_ne_zero.2 hb)
         (Pi.single 0 1) ?_⟩
-      rw [e, Fin.sum_univ_succ]
-      simp
+      simp [e, Fin.sum_univ_succ]
     · refine ⟨1, 0, by simpa using ha, fun μ _ => ⟨0, z, Or.inr hz, ?_⟩⟩
       linear_combination h - hμ
   · exact ⟨x, y, hμ, key _ hμ z (by linear_combination h)⟩

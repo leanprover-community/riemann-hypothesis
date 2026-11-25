@@ -132,8 +132,7 @@ theorem plOrd_none {p : k[X]} (hp : p ≠ 0) :
     show RatFunc.inftyValuation k _ = _
     rw [RatFunc.inftyValuation_apply, RatFunc.inftyValuation.polynomial (F := k) hp]
   unfold plOrd
-  rw [h, WithZero.log_exp]
-  simp [plDeg]
+  simp [h, WithZero.log_exp, plDeg]
 
 theorem plOrd_some_of_not_dvd (π : MonIrr k) {p : k[X]} (h : ¬ π.1 ∣ p) :
     plOrd k (some π) (algebraMap k[X] (RatFunc k) p) = 0 := by
@@ -160,8 +159,7 @@ theorem plOrd_some_of_associated (π : MonIrr k) {p : k[X]} (h : Associated π.1
   have hd : p.natDegree = π.1.natDegree :=
     Polynomial.natDegree_eq_of_degree_eq (Polynomial.degree_eq_degree_of_associated h).symm
   unfold plOrd
-  rw [h1, WithZero.log_exp, hd]
-  simp [plDeg]
+  simp [h1, WithZero.log_exp, hd, plDeg]
 
 def PF (x : RatFunc k) : Prop :=
   (Function.support fun i => plOrd k i x).Finite ∧ ∑ᶠ i, plOrd k i x = 0

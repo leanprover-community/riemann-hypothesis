@@ -64,8 +64,7 @@ theorem exists_mul_eq_zero_of_mem_minimalPrimes_of_isDomain_atPrime {S : Type*} 
     exact (hq.1.1.mem_or_mem hsy).resolve_left hsq
   have hqP : q ≤ (⊥ : Ideal (Localization.AtPrime m)).comap (algebraMap S _) :=
     hq.2 ⟨Ideal.comap_isPrime _ _, bot_le⟩ hPq
-  have hx0 : algebraMap S (Localization.AtPrime m) x = 0 := hqP hx
-  exact (IsLocalization.map_eq_zero_iff m.primeCompl _ x).1 hx0
+  exact (IsLocalization.map_eq_zero_iff m.primeCompl _ x).1 (hqP hx)
 
 theorem isIntegrallyClosed_quotient_of_mem_minimalPrimes {S : Type*} [CommRing S]
     (hS : ∀ (m : Ideal S) [m.IsPrime],

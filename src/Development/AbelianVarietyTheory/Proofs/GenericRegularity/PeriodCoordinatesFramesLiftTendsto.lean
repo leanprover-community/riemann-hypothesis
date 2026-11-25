@@ -78,8 +78,7 @@ theorem exists_matrix_lift {r : ℕ} {ι : Type} {𝓕 : Filter ι} (p : Fin r �
     · simpa [hDdef, h] using tendsto_const_nhds
     · have e : (1 : Matrix (Fin r) (Fin r) ℂ) a j = ∑ k, A₀⁻¹ a k * A₀ k j := by
         rw [← Matrix.mul_apply, Matrix.nonsing_inv_mul _ (Ne.isUnit h0)]
-      rw [e]
-      simp only [hDdef, Matrix.of_apply, h, ite_false, Matrix.mul_apply]
+      simp only [e, hDdef, Matrix.of_apply, h, ite_false, Matrix.mul_apply]
       exact tendsto_finsetSum _ fun k _ => (hr a h k).mul (hQe k j)
   have hdet : Continuous fun M : Matrix (Fin r) (Fin r) ℂ => M.det := continuous_id.matrix_det
   have hDi : Tendsto (fun n => (D n)⁻¹) 𝓕 (𝓝 1) := by
@@ -87,8 +86,7 @@ theorem exists_matrix_lift {r : ℕ} {ι : Type} {𝓕 : Filter ι} (p : Fin r �
       apply continuousAt_matrix_inv
       rw [Matrix.det_one, Ring.inverse_eq_inv']
       exact continuousAt_inv₀ one_ne_zero
-    have := hc1.tendsto.comp hD
-    simpa [Function.comp_def] using this
+    simpa [Function.comp_def] using hc1.tendsto.comp hD
   have hQd : ∀ᶠ n in 𝓕, (Q n).det ≠ 0 := ((hdet.tendsto _).comp hQ).eventually_ne h0
   have hDd : ∀ᶠ n in 𝓕, (D n).det ≠ 0 :=
     ((hdet.tendsto _).comp hD).eventually_ne (by simp)
@@ -103,8 +101,7 @@ theorem exists_matrix_lift {r : ℕ} {ι : Type} {𝓕 : Filter ι} (p : Fin r �
       · rw [← Matrix.nonsing_inv_mul _ (Ne.isUnit hAn)]
         simp [hDdef, hQdef, h, hj, Matrix.mul_apply]
     have e : (Q n * (D n)⁻¹ * D n) k j = (Q n * (D n)⁻¹ * (1 : Matrix (Fin r) (Fin r) ℂ)) k j := by
-      rw [Matrix.mul_apply, Matrix.mul_apply]
-      simp only [hDj]
+      simp only [Matrix.mul_apply, Matrix.mul_apply, hDj]
     rw [Matrix.mul_one, Matrix.nonsing_inv_mul_cancel_right _ _ (Ne.isUnit hDn)] at e
     rw [← e]
     simp [hQdef, hj]

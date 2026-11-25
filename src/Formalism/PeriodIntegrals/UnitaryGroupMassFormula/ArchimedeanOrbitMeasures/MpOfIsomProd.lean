@@ -75,8 +75,7 @@ theorem norm_reim_sq {n m : ℕ} (Y : Matrix (Fin n) (Fin m) ℂ) :
   rw [EuclideanSpace.norm_eq, Real.sq_sqrt (Finset.sum_nonneg (fun _ _ => sq_nonneg _))]
   simp only [reim, Fintype.sum_prod_type, Fintype.sum_bool]
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
-  rw [Complex.sq_norm, Complex.normSq_apply]
-  simp
+  simp [Complex.sq_norm, Complex.normSq_apply]
   ring
 
 theorem reim_surj {n m : ℕ} (y : EuclideanSpace ℝ (Fin n × Fin m × Bool)) :

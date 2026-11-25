@@ -71,7 +71,7 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.ComplexConjugateRootEqNeg.rt0_conj_neg_ne_zero :
-    ∀ {E : Type} [Field E] [NumberField E] [NumberField.IsCMField E]
+    ∀ {E : Type} [inst : Field E] [inst_1 : NumberField E] [inst_2 : NumberField.IsCMField E]
       (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E), (starRingEnd ℂ : ℂ → ℂ) H.rt0 = -H.rt0 := by
   intro E _ _ _ H
   have h := H.sqrt_neg_disc_sq

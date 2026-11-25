@@ -128,11 +128,10 @@ theorem quot (h : IsDer δ) (I : Ideal A) (hI : ∀ x ∈ I, δ x ∈ I) :
     ∃ δ' : A ⧸ I → A ⧸ I, IsDer δ' ∧ ∀ x, δ' (Ideal.Quotient.mk I x) = Ideal.Quotient.mk I (δ x) := by
   classical
   let s := Function.surjInv (Ideal.Quotient.mk_surjective (I := I))
-  have hs : ∀ q, Ideal.Quotient.mk I (s q) = q := Function.surjInv_eq _
   have key : ∀ x, Ideal.Quotient.mk I (δ (s (Ideal.Quotient.mk I x))) = Ideal.Quotient.mk I (δ x) := by
     intro x
     rw [Ideal.Quotient.eq, ← h.der_sub]
-    exact hI _ (Ideal.Quotient.eq.mp (hs _))
+    exact hI _ (Ideal.Quotient.eq.mp ((Function.surjInv_eq _) _))
   refine ⟨fun q => Ideal.Quotient.mk I (δ (s q)), ⟨fun a b => ?_, fun a b => ?_⟩, key⟩
   · obtain ⟨x, rfl⟩ := Ideal.Quotient.mk_surjective a
     obtain ⟨y, rfl⟩ := Ideal.Quotient.mk_surjective b

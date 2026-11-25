@@ -94,8 +94,7 @@ theorem exists_unit_of_inert (σ : K →+* K) (hσ : ∀ x, σ (σ x) = x)
     rw [← this, sub_self]
   · have e : (1 - σ x * x⁻¹)⁻¹ = x * (x - σ x)⁻¹ := by
       field_simp
-    rw [e, map_mul, map_inv₀, hvx, hvd]
-    simp
+    simp [e, map_mul, map_inv₀, hvx, hvd]
 
 theorem single_mem_of_mem (σ : K →+* K) {n : ℕ} (L : AddSubgroup (Fin n → K))
     (hO : ∀ a : K, Valued.v a ≤ 1 → ∀ w ∈ L, a • w ∈ L)

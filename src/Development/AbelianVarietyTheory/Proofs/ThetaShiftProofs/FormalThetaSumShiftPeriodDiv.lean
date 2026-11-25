@@ -77,8 +77,7 @@ theorem eq_zero_of_tsum_mFourier {d : Type} [Fintype d] {f : (d → ℤ) → ℂ
     Summable.of_norm (by simpa only [norm_smul, mFourier_norm, mul_one] using hf.norm)
   have h0 : ∑' n, f n • mFourier n = 0 := by
     ext x
-    have := ((ContinuousMap.evalCLM ℂ x).hasSum hs.hasSum).tsum_eq
-    exact this.symm.trans (h x)
+    exact (((ContinuousMap.evalCLM ℂ x).hasSum hs.hasSum).tsum_eq).symm.trans (h x)
   have h1 : HasSum (fun n => f n • mFourier n) 0 := h0 ▸ hs.hasSum
   funext m
   have h2 := (innerSL ℂ (mFourierLp (d := d) 2 m)).hasSum
@@ -340,8 +339,7 @@ theorem eq_zero_of_tsum_char {f : A.X → ℂ} (hf : Summable f)
     choose t ht using fun i => QuotientAddGroup.mk_surjective (x i)
     have hl : ∀ χ, A.coord.symm (fun i => (t i : ℂ)) χ = ∑ i, (E χ i : ℂ) * t i := fun χ => by
       change b.constr ℤ (fun i => (t i : ℂ)) χ = _
-      rw [Module.Basis.constr_apply_fintype]
-      simp [E]
+      simp [Module.Basis.constr_apply_fintype, E]
     have := h (A.coord.symm fun i => (t i : ℂ)) fun x => by simp [hl]
     rw [← E.symm.tsum_eq] at this
     refine Eq.trans (tsum_congr fun n => ?_) this

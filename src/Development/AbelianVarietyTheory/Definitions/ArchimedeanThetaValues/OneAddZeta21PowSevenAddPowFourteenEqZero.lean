@@ -155,10 +155,9 @@ private theorem ringOfIntegersComplexConj_zeta21_eq_pow_twenty :
     rw [Complex.mul_conj, Complex.normSq_eq_norm_sq, hw.norm'_eq_one (by norm_num)]
     norm_num
   have h21 : w * w ^ 20 = 1 := by rw [← pow_succ']; exact hw.pow_eq_one
-  have hw0 : w ≠ 0 := hw.ne_zero (by norm_num)
   push_cast
   rw [map_pow]
-  exact mul_left_cancel₀ hw0 (hnorm.trans h21.symm)
+  exact mul_left_cancel₀ (hw.ne_zero (by norm_num)) (hnorm.trans h21.symm)
 
 open NumberField in
 private theorem isUnit_one_sub_of_isPrimitiveRoot_twentyOne {R : Type*} [CommRing R] [IsDomain R] {u : R}

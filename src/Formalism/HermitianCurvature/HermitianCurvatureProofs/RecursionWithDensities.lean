@@ -169,9 +169,7 @@ theorem recT : Formalism.FourierDecayAlt.RecursionText := by
           have e1 : lam ^ (k + 1 - t) ≤ lam ^ k := pow_le_pow_right₀ hlam1 (by omega)
           have e2 : Q (k + 1 - t) ≤ Q (k + 1) := hQmono (by omega)
           have e4 : 0 ≤ Q (k + 1 - t) := by linarith [hQ1 (k + 1 - t)]
-          have e5 : 0 ≤ lam ^ k := pow_nonneg (by linarith) _
-          have := mul_le_mul e1 e2 e4 e5
-          exact mul_le_mul_of_nonneg_right this hs0
+          exact mul_le_mul_of_nonneg_right (mul_le_mul e1 e2 e4 (pow_nonneg (by linarith) _)) hs0
         have h3 : ∑ t ∈ Icc 2 (k + 1), a ^ (t - 1) * M ≤ 2 * a * M := by
           rw [← Finset.sum_mul]
           have := geo a ha0 ha1 (k + 1) (by omega)
@@ -191,8 +189,7 @@ theorem recT : Formalism.FourierDecayAlt.RecursionText := by
   have hsr := hσ (r + 1)
   have step1 : σ (r + 1) ^ 2 ≤ (lam ^ (r + 1)) ^ 2 * (∏ i ∈ Icc 1 (r + 1), (1 + e i)) * σ 0 ^ 2 := by
     rw [← hQsq]
-    have := pow_le_pow_left₀ hsr hfin 2
-    calc σ (r + 1) ^ 2 ≤ (lam ^ (r + 1) * Q (r + 1) * σ 0) ^ 2 := this
+    calc σ (r + 1) ^ 2 ≤ (lam ^ (r + 1) * Q (r + 1) * σ 0) ^ 2 := pow_le_pow_left₀ hsr hfin 2
       _ = _ := by ring
   set x := ((r : ℝ) + 1) * a with hxdef
   have hx0 : 0 ≤ x := by positivity
@@ -881,8 +878,7 @@ theorem mean_dom (hG : D.GramPSD) (hW : D.WordsPos) {ε : ℝ} (hε : 0 < ε) (k
     (h : PSDOn Y (fun a b => (c : ℂ) * κ a b - ∑ t ∈ R, Th t a b)) (M : ℝ)
     (hM : ∀ w' ∈ S, D.N0 ε k w' Y κ ≤ M) :
     ∑ t ∈ R, ∑ w' ∈ S, θ w' * D.N0 ε k w' Y (Th t) ≤ c * M := by
-  rw [Finset.sum_comm]
-  simp only [← Finset.mul_sum]
+  simp only [Finset.sum_comm, ← Finset.mul_sum]
   refine prob_le S θ _ hθ _ fun w' hw' => ?_
   exact (sum_baseGram_le D hG hW hε k w' Y R c κ Th h).trans (mul_le_mul_of_nonneg_left (hM w' hw') hc)
 
@@ -1046,8 +1042,7 @@ theorem star_ind {α : Type} (Y A : Finset α) : star (ind Y A) = ind Y A := by
 
 theorem form_ind {α : Type} (Y A : Finset α) (hA : A ⊆ Y) (k : α → α → ℂ) :
     ((Matrix.of fun x y : Y => k x y) *ᵥ ind Y A) ⬝ᵥ star (ind Y A) = ∑ p ∈ A, ∑ q ∈ A, k p q := by
-  rw [star_ind]
-  simp only [dotProduct, mulVec, of_apply]
+  simp only [star_ind, dotProduct, mulVec, of_apply]
   have h1 : ∀ p : Y, ∑ q : Y, k p q * ind Y A q = ∑ q ∈ A, k p q :=
     fun p => sum_mul_ind Y A hA (fun q => k p q)
   simp only [h1]
@@ -1502,8 +1497,7 @@ theorem thetaDomination_dp_of_krPSD_of_domMin (D : Data E W) (T : Tower E) (Th :
         · have : ¬ ((1 ≤ s ∧ s ≤ i ∧ i ≤ D.r + 1) ∧ good L G (t : E ⧸ L)) := fun h => hg h.2
           simp only [ThR, ite_eq_right hg]
           exact ite_eq_right this
-      rw [hsum]
-      simp only [KrR, ite_eq_left hxy]
+      simp only [hsum, KrR, ite_eq_left hxy]
     · have : ∀ t ∈ S, ThR D T Th i s t x y = 0 := by
         intro t _
         simp only [ThR, ite_eq_right hxy, ite_self]
@@ -1686,11 +1680,10 @@ theorem theoremAAfterOfSteps : TC.TheoremAAfterOfSteps := by
   have hQS : D.Q T ε (D.r + 1) D.emp = D.Sf ε (D.r + 1) D.emp (T.X (D.r + 1)) := by
     simp [Data.Q, D.wt_emp]
   rw [hQS] at hQ
-  have hs0 : 0 ≤ σ 0 ^ 2 := sq_nonneg _
   calc D.Sf ε (D.r + 1) D.emp (T.X (D.r + 1)) ≤ σ (D.r + 1) ^ 2 := hQ
     _ ≤ (1 + CJ * ((D.r : ℝ) + 1) * (C₀ / Θ) ^ D.f) * (∏ i ∈ Icc 1 (D.r + 1), (1 + D.e i)) * σ 0 ^ 2 := hfin
     _ ≤ (1 + C * ((D.r : ℝ) + 1) * (C / Θ) ^ D.f) * (∏ i ∈ Icc 1 (D.r + 1), (1 + D.e i)) * σ 0 ^ 2 :=
-        mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right hBJ hprod0) hs0
+        mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right hBJ hprod0) (sq_nonneg _)
     _ ≤ (1 + C * ((D.r : ℝ) + 1) * (C / Θ) ^ D.f) * (∏ i ∈ Icc 1 (D.r + 1), (1 + D.e i)) * σ₀ :=
         mul_le_mul_of_nonneg_left hσ00 (mul_nonneg hB0 hprod0)
 

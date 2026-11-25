@@ -67,8 +67,7 @@ lemma det_le_det_add {m : Type*} [Fintype m] [DecidableEq m] {X Y : Matrix m m �
     rw [e]
     have hone := one_le_det_one_add hZ
     have hXd : 0 ≤ X.det := hX.det_nonneg
-    have := mul_le_mul_of_nonneg_left hone hXd
-    simpa using this
+    simpa using mul_le_mul_of_nonneg_left hone hXd
   · have hd : X.det = 0 := by
       by_contra h
       exact hXu ((Matrix.isUnit_iff_isUnit_det X).mpr (isUnit_iff_ne_zero.mpr h))

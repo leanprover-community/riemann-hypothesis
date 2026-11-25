@@ -41,7 +41,7 @@ theorem avgOver_eq_of_forall_mul_eq {K : Subgroup G} {f : G → W} (hf : AvgFini
     rw [Subgroup.relIndex, Subgroup.index, Nat.card_eq_fintype_card]
   rw [hcard, inv_mul_cancel₀ (Nat.cast_ne_zero.2 hf), one_smul]
 
-theorem relIndex_ne_zero_trans {H K K' : Subgroup G} (hH : H.relIndex K ≠ 0)
+theorem relIndex_ne_zero_trans {H K K' : Subgroup G} (hKK' : K ≤ K') (hH : H.relIndex K ≠ 0)
     (hK : K.relIndex K' ≠ 0) : H.relIndex K' ≠ 0 :=
   Subgroup.relIndex_ne_zero_trans hH hK
 
@@ -86,7 +86,7 @@ theorem avgOver_eq_smul_avgOver_inf {K K' : Subgroup G} {h : G → W} (hKK' : K 
   classical
   set g := avgOver K h with hg
   have hgK : K ≤ rightStab g := le_rightStab_avgOver hf
-  have hf' : AvgFinite K' h := relIndex_ne_zero_trans hf hK
+  have hf' : AvgFinite K' h := relIndex_ne_zero_trans hKK' hf hK
   rw [← avgOver_avgOver hKK' hf']
 
   set S := K.subgroupOf K'

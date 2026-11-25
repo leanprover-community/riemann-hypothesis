@@ -133,16 +133,13 @@ theorem smith_mat (hv : v.Integers R) : ∀ (d n : ℕ) (A : Matrix (Fin d) (Fin
       by_cases ha : a = 0
       · have hA : A = 0 := by
           ext i j
-          have := congrFun (hz ha j) i
-          simpa [hg] using this
+          simpa [hg] using congrFun (hz ha j) i
         exact ⟨1, 1, 0, by simp, by simp, fun j k => by simp [hA]⟩
       · obtain ⟨j0, hj0, hs0⟩ := hnz ha
         have hAj0 : ∀ i, A i j0 = a * u i := fun i => by
-          have := congrFun hj0 i
-          simpa [hg] using this
+          simpa [hg] using congrFun hj0 i
         have hAi0 : ∀ l, A i0 l = a * s l := fun l => by
-          have := hs l
-          simpa [hg] using this
+          simpa [hg] using hs l
         set B := (Vm i0 u)ᵀ * A * Vm j0 s with hBdef
         have hB : ∀ k l, B k l = if k = i0 then (if l = j0 then a else 0) else
             (if l = j0 then 0 else A k l - s l * (a * u k)) := by

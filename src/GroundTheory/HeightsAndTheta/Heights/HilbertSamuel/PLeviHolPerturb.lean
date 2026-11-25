@@ -99,8 +99,7 @@ theorem sndDeriv_I_I {φ : (J → ℂ) → ℂ} {z : J → ℂ} (hφ : AnalyticA
       rw [hy.differentiableAt.fderiv_restrictScalars ℝ]
       simp
     have h3 := (h1.congr_of_eventuallyEq hev.symm).unique h2
-    have := congrArg (fun L => L a) h3
-    simpa using this
+    simpa using congrArg (fun L => L a) h3
   have hsymm : IsSymmSndFDerivAt ℝ φ z := (hR.contDiffAt (n := ω)).isSymmSndFDerivAt le_top
   calc fderiv ℝ (fderiv ℝ φ) z (Complex.I • a) (Complex.I • a)
       = Complex.I • fderiv ℝ (fderiv ℝ φ) z (Complex.I • a) a := hlin _ _
@@ -175,9 +174,8 @@ theorem along {ξ : (J → ℂ) → ℝ} {a φ : (J → ℂ) → ℂ} {z : J →
 theorem proof : LeviHolPerturb.Statement := by
   intro J _ ξ a φ z w hξ ha hφ hφ0 hdφ
   have haR : ContDiffAt ℝ 2 a z := ha.restrictScalars.contDiffAt
-  have hφR : ContDiffAt ℝ 2 φ z := hφ.restrictScalars.contDiffAt
   have hu : ContDiffAt ℝ 2 (fun x => ξ x * (‖a x + φ x‖ ^ 2 - ‖a x‖ ^ 2)) z :=
-    hξ.mul (((haR.add hφR).norm_sq ℝ).sub (haR.norm_sq ℝ))
+    hξ.mul (((haR.add hφ.restrictScalars.contDiffAt).norm_sq ℝ).sub (haR.norm_sq ℝ))
   have hw := along hξ ha hφ hφ0 hu w hdφ
   have hIw := along hξ ha hφ hφ0 hu (Complex.I • w) (by rw [map_smul, hdφ, smul_zero])
   refine ⟨hu, by simp [hφ0], hw.1, hIw.1, ?_⟩

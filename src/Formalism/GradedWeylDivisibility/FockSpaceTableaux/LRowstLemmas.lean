@@ -21,8 +21,7 @@ theorem isWH_algHom_monomial (φ : MvPolynomial σ R →ₐ[R] MvPolynomial τ R
   have hC : φ (C c) = C c := by
     rw [← MvPolynomial.algebraMap_eq]
     exact φ.commutes c
-  rw [monomial_eq, map_mul, hC, Finsupp.prod, map_prod]
-  simp only [map_pow]
+  simp only [monomial_eq, map_mul, hC, Finsupp.prod, map_prod, map_pow]
   have h := (isWeightedHomogeneous_C w' c).mul
     (IsWeightedHomogeneous.prod m.support (fun v => φ (X v) ^ m v) (fun v => m v • w v)
       (fun v _ => (hφ v).pow (m v)))

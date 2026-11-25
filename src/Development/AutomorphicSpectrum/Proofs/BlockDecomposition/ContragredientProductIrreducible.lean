@@ -225,7 +225,7 @@ theorem contra_prodIrr_multiProd (hA : GlobalTheory.Published.IrreducibleAdmissi
     (isSmooth_piTensor fun a => (x a).2.rep.smooth) (contra_piTensor_rep hA x)
 
 theorem contra_prodIrr : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k]
-    [IsNonarchimedeanLocalField k] (_ : GlobalTheory.Published.IrreducibleAdmissibleGL) {h N : ℕ}
+    [IsNonarchimedeanLocalField k] (hA : GlobalTheory.Published.IrreducibleAdmissibleGL) {h N : ℕ}
     (x : Fin h → IrrGL (k := k)) (hd : ∑ a, (x a).1 = N), ∃ hd' : ∑ a, (dualCl (x a)).1 = N,
       Nonempty ((contra (prodIrr x hd)).Equiv (prodIrr (fun a => dualCl (x a)) hd')) := by
   intro k _ _ _ _ hA h N x hd

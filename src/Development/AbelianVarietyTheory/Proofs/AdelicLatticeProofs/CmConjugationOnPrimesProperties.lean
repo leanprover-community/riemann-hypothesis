@@ -269,8 +269,7 @@ theorem cmConjugation_on_primes_adeles_idempotents : ∀ (F E : Type) [Field F] 
       rintro rfl
       apply hx
       apply RingOfIntegers.ext
-      rw [hxz]
-      simp
+      simp [hxz]
     have hm : cA σ e * incA F E ((x : E)⁻¹) = cA σ (e * incA F E ((z : E)⁻¹)) := by
       rw [map_mul, conjIdem_sigR_inclR, map_inv₀ σ, hxz]
     rw [(hc3 P z x hxz).1, h z hz0, hm, hfin]

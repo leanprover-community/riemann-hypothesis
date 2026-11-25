@@ -654,7 +654,7 @@ end GlobalTheory.EqCovol.IsoPlane
 
 namespace GlobalTheory.EqCovol
 
-theorem exists_isotropic_of_isSelfDualTr : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (_ : Host E) (r : ℕ)
+theorem exists_isotropic_of_isSelfDualTr : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (r : ℕ)
     (Y : Data E r), 1 ≤ Y.p0 → Y.p0 < r → GlobalTheory.EqCovol.IsSelfDualTr Y →
     ∃ z : Fin r → E, z ≠ 0 ∧ herm Y.Gm z z = 0 := by
   intro E _ _ _ H r Y h1 h2 hY

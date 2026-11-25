@@ -82,7 +82,6 @@ theorem gelfandSeries_eq (l : Fin n → ℂ) :
 
 theorem sum_gx_eq_gval (l : Fin n → ℂ) (k : ℕ) : ∑ r, gx l k r = gval l k := by
 
-  rw [gval, gelfandSeries_eq, PowerSeries.coeff_succ_X_mul, map_sum]
-  simp [gxSeries]
+  simp [gval, gelfandSeries_eq, PowerSeries.coeff_succ_X_mul, map_sum, gxSeries]
 
 end ReciprocityTheory.ChartRestriction.DS

@@ -375,8 +375,7 @@ theorem _root_.GlobalTheory.JacobiDeriv.deriv_thetaChar_pow_eight : ∀ τ : Upp
     have h := hpt τ
     rw [ModularForm.discriminant_eq_q_prod, _root_.GlobalTheory.JacobiDeriv.qParam_one,
       _root_.GlobalTheory.JacobiDeriv.eighthPower] at h
-    have hq : cexp (2 * π * I * τ) ≠ 0 := Complex.exp_ne_zero _
-    apply mul_left_cancel₀ hq
+    apply mul_left_cancel₀ (Complex.exp_ne_zero _)
     rw [h]; ring
   have hlim1 := _root_.GlobalTheory.JacobiDeriv.tendsto_derivAtZero.pow 8
   have hlim2 := ModularForm.tendsto_atImInfty_tprod_one_sub_eta_q_pow.const_mul c

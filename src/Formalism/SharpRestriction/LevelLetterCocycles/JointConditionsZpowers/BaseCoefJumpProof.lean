@@ -186,8 +186,7 @@ theorem dR_ext (M : G →* Matrix (Fin k) (Fin k) LL) :
       = DdR PD (rep (((IsScalarTower.toAlgHom Qp LL LL').mapMatrix :
           Matrix (Fin k) (Fin k) LL →ₐ[Qp] Matrix (Fin k) (Fin k) LL').toRingHom.toMonoidHom.comp M)) := by
   unfold DdR
-  rw [extS_iInf]
-  simp only [extS_ker]
+  simp only [extS_iInf, extS_ker]
   exact map_iInf_ker _ _ _ (fun g x => comm_act (M g) _ x)
 
 theorem dRE_ext (M : G →* Matrix (Fin k) (Fin k) LL) (τ : K →ₐ[Qp] LL) :
@@ -197,8 +196,7 @@ theorem dRE_ext (M : G →* Matrix (Fin k) (Fin k) LL) (τ : K →ₐ[Qp] LL) :
           Matrix (Fin k) (Fin k) LL →ₐ[Qp] Matrix (Fin k) (Fin k) LL').toRingHom.toMonoidHom.comp M))
           ((IsScalarTower.toAlgHom Qp LL LL').comp τ) := by
   unfold DdRE
-  rw [extS_inf, map_inf_equiv, dR_ext, extS_iInf]
-  simp only [extS_ker]
+  simp only [extS_inf, map_inf_equiv, dR_ext, extS_iInf, extS_ker]
   congr 1
   exact map_iInf_ker _ _ _ (fun c x => comm_mul _ (τ c) x)
 

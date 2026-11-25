@@ -89,8 +89,7 @@ theorem exists_measure_of_positive (Λ : C(X, ℂ) →ₗ[ℂ] ℂ)
   let Lp := PositiveLinearMap.mk₀ L (fun f hf => by
     show 0 ≤ (Λ (ofR (e.symm f))).re
     have hfx : ∀ x, 0 ≤ (e.symm f) x := fun x => by
-      have h2 : (0 : CompactlySupportedContinuousMap X ℝ) x ≤ f x := hf x
-      simpa [e] using h2
+      simpa [e] using hf x
     exact (Complex.nonneg_iff.1 (nonneg_ofR Λ hΛ hfx)).1)
   refine ⟨RealRMK.rieszMeasure Lp, inferInstance, fun f => ?_⟩
   have hint : ∀ g : C(X, ℝ), ∫ x, g x ∂(RealRMK.rieszMeasure Lp) = (Λ (ofR g)).re := fun g => by

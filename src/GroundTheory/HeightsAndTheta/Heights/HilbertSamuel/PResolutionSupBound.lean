@@ -25,9 +25,8 @@ theorem eval_smul_homog {ι : Type*} {f : MvPolynomial ι ℂ} {n : ℕ} (hf : f
 theorem ptNorm_smul {ι : Type*} (m : ConeMetric ℂ ι) {n : ℕ} {f : MvPolynomial ι ℂ} (hf : f.IsHomogeneous n)
     {c : ℂ} (hc : c ≠ 0) (z : ι → ℂ) :
     ptNorm m (RingHom.id ℂ) n f (c • z) = ptNorm m (RingHom.id ℂ) n f z := by
-  have hc' : (0 : ℝ) < ‖c‖ ^ n := pow_pos (norm_pos_iff.2 hc) n
   simp only [ptNorm, MvPolynomial.map_id, eval_smul_homog hf, m.smul, norm_mul, norm_pow, mul_pow]
-  exact mul_div_mul_left _ _ hc'.ne'
+  exact mul_div_mul_left _ _ (pow_pos (norm_pos_iff.2 hc) n).ne'
 
 theorem proof (hI : ResolutionImageSup.Statement) (hND : NonvanishingDense.Statement) :
     ResolutionSupBound.Statement := by

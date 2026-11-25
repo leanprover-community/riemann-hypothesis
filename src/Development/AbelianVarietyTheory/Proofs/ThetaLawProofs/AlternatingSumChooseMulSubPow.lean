@@ -74,8 +74,7 @@ theorem alternating_sum_choose_mul_sub_pow :
         = (g.factorial * n ^ g : ℕ) := by
   intro g n l hgl
   have key := fwdDiff_iter_affine_pow g (-(n : ℤ)) (l : ℤ) 0
-  rw [fwdDiff_iter_eq_sum_shift] at key
-  simp only [smul_eq_mul, nsmul_eq_mul, zero_add, mul_one] at key
+  simp only [fwdDiff_iter_eq_sum_shift, smul_eq_mul, nsmul_eq_mul, zero_add, mul_one] at key
   have hterm : ∀ k ∈ range (g + 1),
       (-1 : ℤ) ^ k * (g.choose k : ℤ) * (((l - k * n) ^ g : ℕ) : ℤ) =
         (-1) ^ g * ((-1 : ℤ) ^ (g - k) * (g.choose k : ℤ) * (-(n : ℤ) * (k : ℤ) + l) ^ g) := by

@@ -261,14 +261,13 @@ end Bd
 theorem powCongr : Formalism.LT.PowCongr.{u, v} := by
   unfold Formalism.LT.PowCongr
   intro K _ _ ι p hp A B hA hB r hr hD j m
-  have hA' : Bd 1 A := hA
   have hB' : Bd 1 B := hB
   have hD' : Bd (‖(p : K)‖ ^ r) (A - B) := by
     intro d
     rw [← norm_pow]
     exact hD d
   have h1 := powpj hp hr hB' hD' j
-  have hAj : Bd 1 (A ^ (p ^ j)) := by simpa using Bd.pow hA' zero_le_one (p ^ j)
+  have hAj : Bd 1 (A ^ (p ^ j)) := by simpa using Bd.pow hA zero_le_one (p ^ j)
   have hBj : Bd 1 (B ^ (p ^ j)) := by simpa using Bd.pow hB' zero_le_one (p ^ j)
   have h2 := pow_sub_pow_bd (pow_nonneg (norm_nonneg _) _) hAj hBj h1 m
   intro d

@@ -92,8 +92,7 @@ private theorem exists_sq_eq_neg_of_quadratic_discr {K : Type*} [Field K] [Numbe
     rw [show x = b 1 by simp [hb]]
     exact b.repr_self 1
   have t1 : Algebra.trace ℚ K 1 = 2 := by
-    have := Algebra.trace_algebraMap (R := ℚ) (S := K) 1
-    simpa [hK] using this
+    simpa [hK] using Algebra.trace_algebraMap (R := ℚ) (S := K) 1
   have tx : Algebra.trace ℚ K x = B := by
     rw [Algebra.trace_eq_matrix_trace b, Matrix.trace_fin_two, Algebra.leftMulMatrix_eq_repr_mul,
       Algebra.leftMulMatrix_eq_repr_mul]

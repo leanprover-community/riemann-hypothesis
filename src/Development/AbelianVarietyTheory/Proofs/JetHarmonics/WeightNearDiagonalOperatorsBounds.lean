@@ -163,8 +163,7 @@ theorem wtNear_diag_bounds : ∀ (M : Type) [NormedAddCommGroup M] [InnerProduct
   obtain ⟨T, x, hx, hsum, horth⟩ := _root_.GlobalTheory.WtOrth.wtNear_orth_decomp M n ε E Λ t w hU hw
   have P := wtdiag_pyth T x horth
   have hw2 : ‖w‖ ^ 2 = ∑ ω ∈ T, ‖x ω‖ ^ 2 := by
-    have := P (fun _ => 1)
-    simpa [← hsum] using this
+    simpa [← hsum] using P (fun _ => 1)
   have hE : ∀ a, E a a w = ∑ ω ∈ T, (ω a : ℂ) • x ω := by
     intro a
 

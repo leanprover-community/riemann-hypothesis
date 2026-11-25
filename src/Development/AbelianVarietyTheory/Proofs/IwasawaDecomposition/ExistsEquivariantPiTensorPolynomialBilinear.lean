@@ -120,8 +120,7 @@ theorem tens_prod (I : ∀ i, MvPolynomial σ ℂ →ₗ[ℂ] A i →ₗ[ℂ] B 
       (∑ i, Finsupp.mapDomain (Prod.mk i) (a i))
     rw [res_sum, coe_basisMonomials] at this
     exact this
-  have := congrArg (fun f => f P) key
-  simpa [prodRename_apply] using this
+  simpa [prodRename_apply] using congrArg (fun f => f P) key
 
 omit [Fintype ι] in
 theorem tprod_ne_zero [Finite ι] (v : ∀ i, B i) (hv : ∀ i, v i ≠ 0) :

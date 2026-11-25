@@ -66,7 +66,7 @@ theorem symplectic_eq_parabolic_J_parabolic_J_parabolic :
   obtain ⟨A, B, C, D, rfl⟩ : ∃ A B C D, σ = fromBlocks A B C D :=
     ⟨_, _, _, _, σ.fromBlocks_toBlocks.symm⟩
   have hb := (SymplecticGroup.fromBlocks_mem_iff.1 hσ).1
-  have hex : ∃ X : Matrix ι ι ℚ, X.IsSymm ∧ IsUnit (A + X * C).det := by
+  obtain ⟨X, hX, hu⟩ : ∃ X : Matrix ι ι ℚ, X.IsSymm ∧ IsUnit (A + X * C).det := by
     have hker (x : ι → ℚ) (hAx : A *ᵥ x = 0) (hCx : C *ᵥ x = 0) : x = 0 := by
       have h :
           fromBlocks A B C D *ᵥ Sum.elim x 0 = fromBlocks A B C D *ᵥ Sum.elim 0 0 := by
@@ -134,7 +134,6 @@ theorem symplectic_eq_parabolic_J_parabolic_J_parabolic :
       refine ⟨⟨isUnit_of_invertible _, ?_⟩, f_unit (isUnit_nonsing_inv_iff.2 hU)⟩
       nth_rw 1 [Y_def, hP, ← (f Q).fromBlocks_toBlocks, hblocks.2]
       simpa [hf, fromBlocks_multiply, fromBlocks_add]
-  obtain ⟨X, hX, hu⟩ := hex
   have h1 : (A + X * C)ᵀ * C = Cᵀ * (A + X * C) := by
     rw [transpose_add, transpose_mul, hX.eq, add_mul, mul_add, hb, Matrix.mul_assoc]
   generalize hc : A + X * C = c at hu h1

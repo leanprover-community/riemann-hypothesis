@@ -67,8 +67,7 @@ theorem exists_one_tmul (i : ι) (M : Type) [AddCommGroup M] [Module ((j : ι) �
     refine ⟨(Pi.single i r : (j : ι) → R j) • y, ?_⟩
     rw [← TensorProduct.smul_tmul]
     congr 1
-    rw [Algebra.smul_def, hA]
-    simp
+    simp [Algebra.smul_def, hA]
   | add a b ha hb =>
     obtain ⟨ya, rfl⟩ := ha
     obtain ⟨yb, rfl⟩ := hb
@@ -90,8 +89,7 @@ theorem single_smul_eq_zero (i : ι) (M : Type) [AddCommGroup M] [Module ((j : �
         simp only [hs, mul_smul])
       (fun r y₁ y₂ => smul_add _ _ _)
       (fun s r y => smul_comm _ _ _)
-  have := congrArg (TensorProduct.lift φ) h
-  simpa [φ] using this
+  simpa [φ] using congrArg (TensorProduct.lift φ) h
 
 variable [Fintype ι]
 

@@ -181,7 +181,7 @@ theorem coe_smul_mem {E : Type} [Field E] [NumberField E] {j : ℕ}
   have := Λ.smul_mem r hv
   rwa [← algebraMap_smul E r v] at this
 
-theorem main : ∀ {E : Type} [Field E] [NumberField E] {j : ℕ}
+theorem main : ∀ {E : Type} [inst : Field E] [NumberField E] {j : ℕ}
     (Λ : Submodule (NumberField.RingOfIntegers E) (Fin j → E)),
     Submodule.IsFullLattice E Λ → ∀ (x : Fin j → E), ∃ (n : ℤ), n ≠ (0 : ℤ) ∧ (↑n : E) • x ∈ Λ := by
   intro E _ _ j Λ hΛ x

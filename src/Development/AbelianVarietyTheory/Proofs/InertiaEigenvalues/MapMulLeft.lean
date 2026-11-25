@@ -132,7 +132,7 @@ theorem ioLaws_of_injective (E : EtTie W RA RW inclR φR gR πA)
 
 end Generic
 
-theorem ioLaws : ∀ (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL), let _ := (HW l).W K s LL h; let E := ((F l).E K s LL h).tie; IoLaws E := by
+theorem ioLaws : ∀ (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL), let W := (HW l).W K s LL h; let E := ((F l).E K s LL h).tie; IoLaws E := by
   intro D HW F l _ K s LL h
   exact ioLaws_of_injective _ Subtype.val_injective
 
@@ -162,7 +162,7 @@ open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.Basi
 
 namespace GlobalTheory.NL.AllLaws
 
-theorem laws : ∀ (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL), let _ := (HW l).W K s LL h; let _ := ((F l).E K s LL h).tie; Laws (HW l) (F l) h := by
+theorem laws : ∀ (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL), let W := (HW l).W K s LL h; let _ := ((F l).E K s LL h).tie; Laws (HW l) (F l) h := by
   intro D HW F l _ K s LL h W E
   haveI : FiniteDimensional ℚ_[l] ↥LL.1 := LL.2
   exact ⟨_root_.GlobalTheory.NL.Expansion.levLaws D HW l K s LL h, _root_.GlobalTheory.NL.ioLaws D HW F l K s LL h,

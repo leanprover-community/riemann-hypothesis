@@ -108,8 +108,7 @@ theorem mem_perp_span {m : ℕ} (x : Fin m → Fin n → E) (v : Fin n → E) :
 
 theorem gram_mulVec {m : ℕ} (x : Fin m → Fin n → E) (c : Fin m → E) (a : Fin m) :
     (gramT L Hm x *ᵥ c) a = hf L Hm (∑ b, c b • x b) (x a) := by
-  rw [hf_sum_left]
-  simp [gramT, mulVec, dotProduct, mul_comm]
+  simp [hf_sum_left, gramT, mulVec, dotProduct, mul_comm]
 
 theorem coeff_eq_zero {m : ℕ} (x : Fin m → Fin n → E) (hx : IsUnit (gramT L Hm x).det)
     (c : Fin m → E) (h : ∀ a, hf L Hm (∑ b, c b • x b) (x a) = 0) : c = 0 := by
@@ -181,8 +180,7 @@ theorem exists_unit_norm [CharZero F] (hH : IsHermND L Hm) {m : ℕ} (x : Fin m 
     obtain ⟨s, hs, t, ht, rfl⟩ := Submodule.mem_sup.1 hy
     rw [hf_add_right, hv s hs, h2 v hv t ht, add_zero]
   have h4 : v ᵥ* Hm = 0 := funext fun j => by
-    have := h3 (Pi.single j 1)
-    simpa [hf, vecMul, dotProduct, Pi.single_apply, apply_ite] using this
+    simpa [hf, vecMul, dotProduct, Pi.single_apply, apply_ite] using h3 (Pi.single j 1)
   have h5 := congrArg (fun u => u ᵥ* Hm⁻¹) h4
   simpa only [vecMul_vecMul, mul_nonsing_inv _ hH.2, vecMul_one, zero_vecMul,
     Submodule.mem_bot] using h5

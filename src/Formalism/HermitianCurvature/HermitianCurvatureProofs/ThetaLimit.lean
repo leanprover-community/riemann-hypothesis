@@ -112,8 +112,7 @@ theorem iterDeriv_poly (P : ℂ[X]) (p : ℕ) :
     have : deriv (fun s : ℝ => P.eval (s : ℂ)) = fun s : ℝ => (derivative P).eval (s : ℂ) := by
       funext s
       exact ((P.hasDerivAt (s : ℂ)).comp_ofReal).deriv
-    rw [this, ih]
-    simp [Function.iterate_succ]
+    simp [this, ih, Function.iterate_succ]
 
 open Polynomial in
 noncomputable def mkP (m : ℕ) (c : ℕ → ℂ) : ℂ[X] := ∑ q ∈ range (m + 1), C (c q) * X ^ q
@@ -173,8 +172,7 @@ theorem leibniz : Leibniz := by
     intro p
     unfold dS
     simp_rw [hconj]
-    rw [iterDeriv_poly]
-    simp only [Complex.ofReal_zero]
+    simp only [iterDeriv_poly, Complex.ofReal_zero]
     rw [← coeff_zero_eq_eval_zero, coeff_iterate_derivative]
     simp [Nat.descFactorial_self]
   rw [hc φ hφ ω a]
@@ -455,8 +453,7 @@ theorem pairLimit : PairLimit := by
   have hδ : 0 < δ := by positivity
   have hsum : Tendsto (fun ε : ℝ => ((∫ ω, LE.sq B wt (fun ω a => f ε ω a - v ω a) ω ∂B.μ) +
       ∫ ω, LE.sq B wt (fun ω a => f' ε ω a - v' ω a) ω ∂B.μ) * (1 / 2 + 1 / (2 * δ))) (𝓝[>] 0) (𝓝 0) := by
-    have := (hT.add hT').mul_const (1 / 2 + 1 / (2 * δ))
-    simpa using this
+    simpa using (hT.add hT').mul_const (1 / 2 + 1 / (2 * δ))
   have hev := (tendsto_order.mp hsum).2 (η / 2) (by positivity)
   filter_upwards [hev, self_mem_nhdsWithin] with ε hε hpos'
   have hε0 : 0 < ε := hpos'
@@ -518,8 +515,7 @@ theorem limitB : LimitB := by
     (fun ε => F.gw Y (mulF B (c.sc ε 1) F.u)) hpos hmw hmg hmg (fun ε a _ => hmT ε a) (fun ε a _ => hmT ε a)
     (hCl Y hY) (hCl Y hY) L.1 L.1 L.2 L.2
   simp_rw [int_pr_self] at P
-  have := (Complex.continuous_re.tendsto _).comp P
-  simpa [Function.comp_def] using this
+  simpa [Function.comp_def] using (Complex.continuous_re.tendsto _).comp P
 
 theorem ld_zero' (φ : ℝ → ℝ) (x : ℝ) (hx : 0 < x) : ld 0 φ x = φ x := by
   simp [ld, Real.exp_log hx]
@@ -590,16 +586,14 @@ theorem Fk_deriv (k : ℕ) (s : ℝ) : deriv (Fk k s) = fun t => -(k:ℝ) * Fk k
 theorem Fk_lim (k : ℕ) (s : ℝ) : Tendsto (Fk k s) atTop (𝓝 (if k = 0 then 1 else 0)) := by
   have h0 : Tendsto (fun t : ℝ => Real.exp (-t)) atTop (𝓝 0) := Real.tendsto_exp_neg_atTop_nhds_zero
   have h1 : Tendsto (fun t : ℝ => (1 + Real.exp (-t)) ^ (-s)) atTop (𝓝 1) := by
-    have := (h0.const_add 1).rpow_const (p := -s) (Or.inl (by norm_num))
-    simpa using this
+    simpa using (h0.const_add 1).rpow_const (p := -s) (Or.inl (by norm_num))
   unfold Fk
   split_ifs with hk
   · subst hk; simpa using h1
   · have h2 : Tendsto (fun t : ℝ => Real.exp (-(k:ℝ) * t)) atTop (𝓝 0) := by
       have hk' : (0:ℝ) < k := by exact_mod_cast Nat.pos_of_ne_zero hk
       have : Tendsto (fun t : ℝ => (k:ℝ) * t) atTop atTop := tendsto_id.const_mul_atTop hk'
-      have := h0.comp this
-      simpa [Function.comp_def] using this
+      simpa [Function.comp_def] using h0.comp this
     simpa using h2.mul h1
 
 theorem Fk_iter_lim (p : ℕ) : ∀ (k : ℕ) (s : ℝ),

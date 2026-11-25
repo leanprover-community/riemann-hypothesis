@@ -81,8 +81,7 @@ theorem adjoin_eq_top_of_gen [Module.Finite A B] (hinj : Function.Injective (alg
     rw [e1]
     exact Submodule.add_mem_sup ((Subalgebra.mem_toSubmodule _).mpr hs)
       (Submodule.smul_mem_smul hϖm Submodule.mem_top)
-  have hfg : (⊤ : Submodule A B).FG := Module.Finite.fg_top
-  have hle := Submodule.le_of_le_smul_of_le_jacobson_bot hfg
+  have hle := Submodule.le_of_le_smul_of_le_jacobson_bot Module.Finite.fg_top
     (IsLocalRing.jacobson_eq_maximalIdeal ⊥ bot_ne_top).ge key
   rw [eq_top_iff]
   exact fun x _ => (Subalgebra.mem_toSubmodule _).mp (hle Submodule.mem_top)

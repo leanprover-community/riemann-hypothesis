@@ -59,7 +59,6 @@ theorem is_c1_of_finite_of_tsen_lang_systems : ∀ (F K : Type) [Field F] [Field
     ∃ x : Fin n → F, x ≠ 0 ∧ ∀ i, MvPolynomial.eval x (f i) = 0) → IsFirstChernClassOfLineBundle K := by
   intro F K _ _ _ _ hF n d f hf hd hdn
   set m := Module.finrank F K with hm
-  have hm0 : 0 < m := Module.finrank_pos
   let b : Module.Basis (Fin m) F K := Module.finBasis F K
   let e : Fin n × Fin m ≃ Fin (n * m) := finProdFinEquiv
   let g : Fin n → MvPolynomial (Fin (n * m)) K := fun i => ∑ j, MvPolynomial.C (b j) * MvPolynomial.X (e (i, j))
@@ -75,7 +74,7 @@ theorem is_c1_of_finite_of_tsen_lang_systems : ∀ (F K : Type) [Field F] [Field
     IsHomogeneous.sum _ _ _ (fun s hs => isHomogeneous_monomial _ (by
       rw [Finsupp.degree_eq_weight_one]; exact hG (mem_support_iff.mp hs)))
   have hlt : m * d < n * m := by
-    rw [mul_comm n m]; exact Nat.mul_lt_mul_of_pos_left hdn hm0
+    rw [mul_comm n m]; exact Nat.mul_lt_mul_of_pos_left hdn Module.finrank_pos
   obtain ⟨y, hy0, hy⟩ := hF (n * m) m d P hP hd hlt
   let x : Fin n → K := fun i => ∑ j, algebraMap F K (y (e (i, j))) * b j
   refine ⟨x, ?_, ?_⟩
@@ -84,8 +83,7 @@ theorem is_c1_of_finite_of_tsen_lang_systems : ∀ (F K : Type) [Field F] [Field
     funext k
     obtain ⟨⟨i, j⟩, rfl⟩ := e.surjective k
     have hxi : ∑ j, y (e (i, j)) • b j = 0 := by
-      have := congrFun hx i
-      simpa [x, Algebra.smul_def] using this
+      simpa [x, Algebra.smul_def] using congrFun hx i
     exact Fintype.linearIndependent_iff.mp b.linearIndependent (fun j => y (e (i, j))) hxi j
   · have key : MvPolynomial.eval x f = MvPolynomial.eval (fun k => algebraMap F K (y k)) G := by
       rw [← MvPolynomial.coe_aeval_eq_eval, ← MvPolynomial.coe_aeval_eq_eval]

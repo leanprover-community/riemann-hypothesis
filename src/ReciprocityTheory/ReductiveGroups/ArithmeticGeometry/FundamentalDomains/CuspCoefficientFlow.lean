@@ -105,9 +105,8 @@ theorem diffOn_param_bdd {K : Set (ι → ℝ)} (hKv : volume K < ⊤)
     refine he.aestronglyMeasurable.smul ?_
     letI : MeasurableSpace (F →L[ℂ] ℂ) := borel _
     haveI : BorelSpace (F →L[ℂ] ℂ) := ⟨rfl⟩
-    have hm : Measurable (fderiv ℂ G) := measurable_fderiv ℂ G
     have h1 : AEStronglyMeasurable (fun t => fderiv ℂ G (A t x0)) (volume.restrict K) :=
-      (hm.comp (hAx x0).measurable).aestronglyMeasurable
+      ((measurable_fderiv ℂ G).comp (hAx x0).measurable).aestronglyMeasurable
     exact (ContinuousLinearMap.compL ℂ F F ℂ).aestronglyMeasurable_comp₂ h1 hA.aestronglyMeasurable
   have key := hasFDerivAt_integral_of_dominated_of_fderiv_le (μ := volume.restrict K)
     (F := fun x t => G (A t x) * e t) (F' := fun x t => e t • fderiv ℂ (fun z => G (A t z)) x)

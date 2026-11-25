@@ -67,18 +67,18 @@ section -- clump:auto
 @[expose] public section
 
 @[reducible] noncomputable def UpperTheory.Reformulated.B.StronglyIrreducible.gm :
-    {G R : Type} → [Group G] → [CommRing R] → {n : ℕ} → (G →* GL (Fin n) R) → G → Matrix (Fin n) (Fin n) R :=
+    {G R : Type} → [inst : Group G] → [inst_1 : CommRing R] → {n : ℕ} → (G →* GL (Fin n) R) → G → Matrix (Fin n) (Fin n) R :=
     fun {G R : Type} [Group G] [CommRing R] {n : ℕ} (r : G →* GL (Fin n) R) (g : G) ↦
       (↑((r : G → GL (Fin n) R) g) : Matrix (Fin n) (Fin n) R)
 
 noncomputable def UpperTheory.Reformulated.B.StronglyIrreducible.StrongIrr :
-    {G κ : Type} → [Group G] → [Field κ] → {n : ℕ} → (G →* GL (Fin n) κ) → Prop :=
+    {G κ : Type} → [inst : Group G] → [inst_1 : Field κ] → {n : ℕ} → (G →* GL (Fin n) κ) → Prop :=
     fun {G κ : Type} [Group G] [Field κ] {n : ℕ} (r : G →* GL (Fin n) κ) ↦
       ∀ (W : Submodule κ (Fin n → κ)) (S : Subgroup G),
         S.FiniteIndex → (∀ (g : G), g ∈ S ↔ ∀ v ∈ W, (UpperTheory.Reformulated.B.StronglyIrreducible.gm r g).mulVec v ∈ W) → W = ⊥ ∨ W = ⊤
 
 theorem UpperTheory.Reformulated.B.StronglyIrreducible.strongIrr_conj :
-    ∀ {G κ : Type} [Group G] [Field κ] {n : ℕ} (r : G →* GL (Fin n) κ),
+    ∀ {G κ : Type} [inst : Group G] [inst_1 : Field κ] {n : ℕ} (r : G →* GL (Fin n) κ),
       UpperTheory.Reformulated.B.StronglyIrreducible.StrongIrr r →
         ∀ (P : GL (Fin n) κ),
           UpperTheory.Reformulated.B.StronglyIrreducible.StrongIrr

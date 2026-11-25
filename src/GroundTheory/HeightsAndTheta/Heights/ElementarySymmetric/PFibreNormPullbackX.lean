@@ -62,8 +62,7 @@ theorem norm_last_le {n : ℕ} (a : ℕ → ℂ) (ha : a 0 = 1) {B : ℝ} (hB : 
   set p : Polynomial ℂ := ∑ i ∈ Finset.range (n + 1), Polynomial.C (a i) * Polynomial.X ^ (n - i) with hp
   have hcoeff : ∀ k, p.coeff k = ∑ i ∈ Finset.range (n + 1), if k = n - i then a i else 0 := by
     intro k
-    rw [hp, Polynomial.finsetSum_coeff]
-    simp only [Polynomial.coeff_C_mul_X_pow]
+    simp only [hp, Polynomial.finsetSum_coeff, Polynomial.coeff_C_mul_X_pow]
   have hdeg : p.natDegree ≤ n :=
     Polynomial.natDegree_sum_le_of_forall_le _ _ fun i _ =>
       (Polynomial.natDegree_C_mul_X_pow_le _ _).trans (Nat.sub_le n i)

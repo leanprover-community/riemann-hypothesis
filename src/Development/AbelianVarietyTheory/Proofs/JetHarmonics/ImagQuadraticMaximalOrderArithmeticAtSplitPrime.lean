@@ -265,8 +265,7 @@ theorem GlobalTheory.MomOne.okArith : ∀ (d q : ℕ) [Fact q.Prime] (ι : ℂ �
       rw [show (u + v * r - (u + v * (1 - r)) : ℤ_[q]) = v * (2 * r - 1) by ring] at this
       exact hu.dvd_mul_right.1 this
     have hu' : (q : ℤ_[q]) ^ n ∣ (u : ℤ_[q]) := by
-      have := dvd_sub h1 (hv.mul_right r)
-      simpa using this
+      simpa using dvd_sub h1 (hv.mul_right r)
     obtain ⟨a, rfl⟩ := int_dvd hu'
     obtain ⟨b, rfl⟩ := int_dvd hv
     refine ⟨a, b, ?_⟩
@@ -300,14 +299,12 @@ theorem GlobalTheory.MomOne.okArith : ∀ (d q : ℕ) [Fact q.Prime] (ι : ℂ �
         have h4 : (u : ℂ) + v * wK d = ((2 * a : ℤ) : ℂ) + ((2 * b : ℤ) : ℂ) * wK d := by
           push_cast; linear_combination 2 * hab
         obtain ⟨rfl, rfl⟩ := coord_unique hd.pos h4
-        have h5 : (q : ℤ_[q]) ∣ _ := (dvd_pow_self _ (Nat.succ_ne_zero n)).trans h3
         have h6 : (q : ℤ_[q]) ∣ ((2 * a : ℤ) + (2 * b : ℤ) * (1 - r)) := by
           refine ⟨a + b * (1 - r), ?_⟩
           have : (q : ℤ_[q]) = 2 := by
-            have := congrArg (Nat.cast : ℕ → ℤ_[q]) h2
-            simpa using this
+            simpa using congrArg (Nat.cast : ℕ → ℤ_[q]) h2
           rw [this]; push_cast; ring
-        have h7 := dvd_sub h6 h5
+        have h7 := dvd_sub h6 ((dvd_pow_self _ (Nat.succ_ne_zero n)).trans h3)
         rw [sub_sub_cancel] at h7
         exact PadicInt.prime_p.not_dvd_one h7
     · refine ⟨(q : ℂ) ^ n, ⟨q ^ n, 0, by simp⟩, ?_, ?_⟩

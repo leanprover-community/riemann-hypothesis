@@ -143,7 +143,7 @@ theorem section_eq_of_isWt {S S' : Scheme.{0}} {B : Over S} [GrpObj B] {L : LB B
     (pull_isLB (DVR.linComb_isLB _ hL _ _) _) hv hv'
   exact congrArg (fun q => q.left) (section_eq_of_lbIso hL hK c c' (T := Over.mk f) pb H)
 
-theorem repWt_unique : Laws → AllSet fun {_} _ _ _ {_} {_} _ _ s => ∀ (t : Tower s) (a : t.Alg), KTriv a.B a.M.L.L → ∀ (χ : s.X) (c c' : 𝟙_ _ ⟶ a.B), (∀ e, a.RepWt c χ e) → (∀ e, a.RepWt c' χ e) → c = c' := by
+theorem repWt_unique : Laws → AllSet fun {V} _ _ _ {A} {G} _ _ s => ∀ (t : Tower s) (a : t.Alg), KTriv a.B a.M.L.L → ∀ (χ : s.X) (c c' : 𝟙_ _ ⟶ a.B), (∀ e, a.RepWt c χ e) → (∀ e, a.RepWt c' χ e) → c = c' := by
   intro _ V _ _ _ A G _ _ s t a hK χ c c' hc hc'
   have := s.cdvr.2.1
   refine Over.OverMorphism.ext (GlobalTheory.hom_ext_of_isHausdorff (IsLocalRing.maximalIdeal V) fun e => ?_)

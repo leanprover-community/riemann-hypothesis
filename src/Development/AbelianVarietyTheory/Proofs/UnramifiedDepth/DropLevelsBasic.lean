@@ -77,8 +77,7 @@ lemma pivot {ι κ : Type} [DecidableEq ι] [Fintype κ] (s : Finset ι)
     intro h
     apply hw0
     ext ⟨i, hi⟩
-    have := congrFun h i
-    simpa [E, hi] using this
+    simpa [E, hi] using congrFun h i
   have hEt : ∀ i, i ∉ t → E w i = 0 := fun i hi => by simp [E, hi]
   obtain ⟨v, hv0, hvt, hvT, hvφ⟩ :
       ∃ v : ι → ℝ, v ≠ 0 ∧ (∀ i, i ∉ t → v i = 0) ∧ T v = 0 ∧ 0 ≤ φ v := by

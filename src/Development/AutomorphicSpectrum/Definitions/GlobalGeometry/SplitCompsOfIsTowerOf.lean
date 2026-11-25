@@ -73,8 +73,7 @@ theorem factor {X : Scheme.{0}} {Ω Ω' : Type} [Field Ω] [Field Ω'] (ξ : Spe
 
 theorem spec_inj {A B : Type} [CommRing A] [CommRing B] {f g : A →+* B}
     (h : Spec.map (CommRingCat.ofHom f) = Spec.map (CommRingCat.ofHom g)) : f = g := by
-  have := Spec.map_injective h
-  exact congrArg CommRingCat.Hom.hom this
+  exact congrArg CommRingCat.Hom.hom (Spec.map_injective h)
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {D : Datum H} {l : Level H}
   {Xo : Moduli D l} {c : Coeff l}

@@ -180,13 +180,12 @@ private lemma conductor_localPart_dvd_iff (ψ : DirichletCharacter ℂ N) (t : �
       refine ⟨?_, compl_localUnits l u⟩
       rw [← unitsMap_trans h1 (Nat.ordProj_dvd N l), proj_localUnits, hu]
   rw [key, condExp]
-  have hc : ψ.conductor ≠ 0 := conductor_ne_zero ψ
   have hcN : ψ.conductor ∣ N := conductor_dvd_level ψ
   have hN' : ordCompl[l] N ≠ 0 := (Nat.ordCompl_pos l hN).ne'
   have hlt : l ^ t ≠ 0 := pow_ne_zero _ hl.ne_zero
   constructor
   · intro h
-    have := (Nat.factorization_le_iff_dvd hc (mul_ne_zero hlt hN')).2 h l
+    have := (Nat.factorization_le_iff_dvd (conductor_ne_zero ψ) (mul_ne_zero hlt hN')).2 h l
     rw [Nat.factorization_mul hlt hN', Nat.factorization_ordCompl, hl.factorization_pow] at this
     simpa using this
   · intro h
@@ -236,8 +235,7 @@ private theorem prime_dvd_finset_lcm {ι : Type*} {p : ℕ} (hp : p.Prime) (s : 
   · intro a t ha ih
     rw [Finset.lcm_insert]
     change p ∣ Nat.lcm (c a) (t.lcm c) ↔ _
-    rw [hp.dvd_lcm, ih]
-    simp
+    simp [hp.dvd_lcm, ih]
 
 variable {N : ℕ} [NeZero N] (l : ℕ) [Fact l.Prime]
 
@@ -295,8 +293,7 @@ private theorem minpoly_map_eq_prod_gal {F L : Type*} [Field F] [Field L] [Algeb
     · intro σ _ τ _ hne
       exact pairwise_coprime_X_sub_C hinj hne
     · intro σ _
-      rw [dvd_iff_isRoot, IsRoot.def, eval_map_algebraMap, aeval_algEquiv]
-      simp
+      simp [dvd_iff_isRoot, IsRoot.def, eval_map_algebraMap, aeval_algEquiv]
   refine eq_of_monic_of_dvd_of_natDegree_le hm ((minpoly.monic hint).map _) hdvd ?_
   rw [natDegree_map, natDegree_prod_of_monic _ _ (fun σ _ => monic_X_sub_C _)]
   simp only [natDegree_X_sub_C, Finset.sum_const, Finset.card_univ, smul_eq_mul, mul_one]
@@ -475,9 +472,8 @@ private lemma filt_card_ker {d : ℕ} (hd : d ∣ N) :
 private lemma filt_card_higher {t : ℕ} (ht : t ≤ N.factorization l) :
     Nat.card (higherUnits N l t) * Nat.totient (l ^ t) =
       Nat.totient (l ^ N.factorization l) := by
-  have hl : l.Prime := Fact.out
   have h := filt_card_ker (Nat.gcd_dvd_left N (ordCompl[l] N * l ^ t))
-  have hc : Nat.Coprime l (ordCompl[l] N) := Nat.coprime_ordCompl hl (NeZero.ne N)
+  have hc : Nat.Coprime l (ordCompl[l] N) := Nat.coprime_ordCompl Fact.out (NeZero.ne N)
   have hN : Nat.totient N = Nat.totient (l ^ N.factorization l) * Nat.totient (ordCompl[l] N) := by
     rw [← Nat.totient_mul (hc.pow_left _), Nat.ordProj_mul_ordCompl_eq_self]
   have hpos : 0 < Nat.totient (ordCompl[l] N) :=
@@ -514,8 +510,7 @@ private lemma filt_mem_ann {t : ℕ} (ht : t ≤ N.factorization l) (ψ : Dirich
     rw [← mem_conductorSet_iff_conductor_dvd _ (Nat.gcd_dvd_left _ _), mem_conductorSet_iff,
       factorsThrough_iff_ker_unitsMap (Nat.gcd_dvd_left _ _), mem_annihilator_iff]
     refine forall_congr' fun a => imp_congr Iff.rfl ?_
-    rw [MonoidHom.mem_ker, Units.ext_iff]
-    simp
+    simp [MonoidHom.mem_ker, Units.ext_iff]
   rw [h1, filt_gcd_eq l ht, condExp]
   have hc := ψ.conductor_ne_zero
   have hN' : ordCompl[l] N ≠ 0 := (Nat.ordCompl_pos l (NeZero.ne N)).ne'
@@ -598,8 +593,7 @@ theorem avgCondExp_annihilator (H : Subgroup (ZMod N)ˣ) :
         Finset.range (condExp l ψ) := by
       ext t; simp only [Finset.mem_filter, Finset.mem_range]; omega
     rw [this, Finset.card_range]
-  rw [avgCondExp, finsum_eq_sum_of_fintype]
-  simp only [hc]
+  simp only [avgCondExp, finsum_eq_sum_of_fintype, hc]
   rw [Finset.sum_comm, Finset.sum_div]
   refine Finset.sum_congr rfl fun t _ => ?_
   rw [← filt_index, ← filt_card_ann, ← filt_card_ann H, ← hX, Finset.sum_sub_distrib,

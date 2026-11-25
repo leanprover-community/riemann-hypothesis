@@ -57,8 +57,7 @@ lemma ext_at (L : PeriodPair) (α : ℂ) (T : Finset ℂ) (hα : α ≠ 0) (hst 
     intro hmem
     rw [one_mul] at hmem
     refine (Finset.mem_erase.1 hP).1 (h2 P (Finset.mem_erase.1 hP).2 P' hP' ?_)
-    have := L.lattice.sub_mem hmem hz
-    simpa using this
+    simpa using L.lattice.sub_mem hmem hz
   · have hαz : α * z₀ ∈ L.lattice := by
       have := L.lattice.sub_mem (hst _ hz) (h1 P' hP')
       have e : α * (z₀ + P') - α * P' = α * z₀ := by ring
@@ -69,8 +68,7 @@ lemma ext_at (L : PeriodPair) (α : ℂ) (T : Finset ℂ) (hα : α ≠ 0) (hst 
       P_local L (z₀ + P') hz (w + P')]
     have e1 : α * w - α * z₀ = α * (w - z₀) := by ring
     have e2 : w + P' - (z₀ + P') = w - z₀ := by ring
-    rw [e1, e2]
-    simp only [one_mul]
+    simp only [e1, e2, one_mul]
     field_simp
     ring
 
@@ -152,8 +150,7 @@ theorem isogenyWeierstrassP_of_ellipticNoPole (hN : EllipticNoPole) : IsogenyP :
     rw [this, hT, Finset.erase_insert h0S]
     simp
   have hfz := hc z (han z hz).continuousAt
-  rw [hc0] at hfz
-  simp only [hf, hT, Finset.sum_insert h0S, add_zero] at hfz
+  simp only [hc0, hf, hT, Finset.sum_insert h0S, add_zero] at hfz
   rw [Finset.sum_sub_distrib]
   linear_combination hfz
 

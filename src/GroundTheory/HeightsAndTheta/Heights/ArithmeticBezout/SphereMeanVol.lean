@@ -89,8 +89,7 @@ theorem ballSet_eq_smul {n : ℕ} {s : ℝ} (hs : 0 < s) : ballSet n s = √s �
   rw [inv_mul_lt_iff₀ hs, mul_one]
 
 theorem finrank_fun_complex (n : ℕ) : Module.finrank ℝ (Fin n → ℂ) = 2 * n := by
-  rw [Module.finrank_pi_fintype]
-  simp [Complex.finrank_real_complex, mul_comm]
+  simp [Module.finrank_pi_fintype, Complex.finrank_real_complex, mul_comm]
 
 theorem volume_ballSet {n : ℕ} {s : ℝ} (hs : 0 < s) :
     volume (ballSet n s) = ENNReal.ofReal (s ^ n) * volume (ballSet n 1) := by

@@ -50,8 +50,7 @@ theorem mI_isMaximal (hv : v.Integers R) : (mI hv).IsMaximal := by
   rw [Ideal.isMaximal_iff]
   refine ⟨by simp [mem_mI], fun J x hle hx hxJ => ?_⟩
   obtain ⟨u, rfl⟩ := isUnit_of_not_mem hv hx
-  have : (↑u⁻¹ : R) * u ∈ J := J.mul_mem_left _ hxJ
-  simpa using this
+  simpa using (J.mul_mem_left _ hxJ : (↑u⁻¹ : R) * u ∈ J)
 
 theorem isDomain (hv : v.Integers R) : IsDomain R := by
   have : Nontrivial R := ⟨0, 1, fun h => by

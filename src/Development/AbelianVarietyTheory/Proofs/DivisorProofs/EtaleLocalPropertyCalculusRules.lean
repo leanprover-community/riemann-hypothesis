@@ -80,8 +80,7 @@ theorem loc_trans (U : Scheme.{0}) (P : ∀ V : Scheme.{0}, (V ⟶ U) → Prop)
   obtain ⟨T, hT, hP⟩ := hloc V g hg
   refine Scheme.etaleTopology.superset_covering ?_ hT
   intro W k hk W' k'
-  have := hP W' (k' ≫ k) (T.downward_closed hk k')
-  simpa [Category.assoc] using this
+  simpa [Category.assoc] using hP W' (k' ≫ k) (T.downward_closed hk k')
 
 theorem loc_top (U : Scheme.{0}) : Loc U fun _ _ => True :=
   loc_of_forall U _ fun _ _ => trivial

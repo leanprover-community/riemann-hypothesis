@@ -53,8 +53,8 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Gc4.conj_embedding_rt :
-    ∀ {E : Type} [Field E] [NumberField E]
-    [NumberField.IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (τ : E →+* ℂ),
+    ∀ {E : Type} [inst : Field E] [inst_1 : NumberField E]
+    [inst_2 : NumberField.IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (τ : E →+* ℂ),
     (starRingEnd ℂ : ℂ → ℂ) ((τ : E → ℂ) (↑H.rt : E)) =
       -(τ : E → ℂ)
           (↑H.rt :
@@ -97,8 +97,7 @@ theorem coe_rt_sq (H : Host E) : (H.rt : E) ^ 2 = -(H.d : E) := by
   apply RingOfIntegers.ext
   apply τ.injective
   have h := IsCMField.complexEmbedding_complexConj E τ (H.rt : E)
-  rw [H.bar_eq, h, _root_.UpperTheory.Reformulated.B.Gc4.conj_embedding_rt]
-  simp
+  simp [H.bar_eq, h, _root_.UpperTheory.Reformulated.B.Gc4.conj_embedding_rt]
 
 @[simp] theorem bar_bar (H : Host E) (a : 𝓞 E) : H.bar (H.bar a) = a := by
   apply RingOfIntegers.ext

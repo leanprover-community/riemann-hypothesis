@@ -84,8 +84,7 @@ theorem exists_nhds_one_mul_mem_iff {R : Type} [Group R] [TopologicalSpace R]
   rintro w ⟨hw, hw'⟩ x
   constructor
   · intro h
-    have : w⁻¹ * (w * x) ∈ U := hVU (Set.mul_mem_mul (Set.mem_inv.1 hw') h)
-    simpa using this
+    simpa using (hVU (Set.mul_mem_mul (Set.mem_inv.1 hw') h) : w⁻¹ * (w * x) ∈ U)
   · exact fun h => hVU (Set.mul_mem_mul hw h)
 
 theorem isLocallyConstant_indicator_one {R : Type} [TopologicalSpace R] {U : Set R}
@@ -105,13 +104,11 @@ theorem exists_cutoff : ∀ (R S : Type) [Group R] [TopologicalSpace R] [IsTopol
   obtain ⟨W, hW, hWU⟩ := exists_nhds_one_mul_mem_iff hUc.isOpen hUk
   set β : R → ℝ := U.indicator (fun _ => (1 : ℝ)) with hβ
   have hβlc : IsLocallyConstant β := isLocallyConstant_indicator_one hUc
-  have hβc : Continuous β := hβlc.continuous
   have hβ0 : ∀ x, 0 ≤ β x := fun x => Set.indicator_nonneg (fun _ _ => zero_le_one) x
   set F : R → ℝ := fun g => ∫ s, β (g * i s) ∂ν with hF
   have hFinv : ∀ g t, F (g * i t) = F g := by
     intro g t
-    have := integral_mul_left_eq_self (μ := ν) (fun s => β (g * i s)) t
-    simpa [hF, mul_assoc, map_mul] using this
+    simpa [hF, mul_assoc, map_mul] using integral_mul_left_eq_self (μ := ν) (fun s => β (g * i s)) t
   have hβmul : ∀ w ∈ W, ∀ x, β (w * x) = β x := by
     intro w hw x
     simp [hβ, Set.indicator, hWU w hw x]
@@ -129,7 +126,7 @@ theorem exists_cutoff : ∀ (R S : Type) [Group R] [TopologicalSpace R] [IsTopol
   have hFpos : ∀ g ∈ U, 0 < F g := by
     intro g hg
     have hcont : Continuous (fun s => β (g * i s)) :=
-      hβc.comp (continuous_const.mul hi.continuous)
+      hβlc.continuous.comp (continuous_const.mul hi.continuous)
     have hKc : IsCompact (i ⁻¹' ((Homeomorph.mulLeft g) ⁻¹' U)) :=
       hi.isCompact_preimage ((Homeomorph.mulLeft g).isCompact_preimage.2 hUk)
     have hKcl : IsClosed (i ⁻¹' ((Homeomorph.mulLeft g) ⁻¹' U)) :=

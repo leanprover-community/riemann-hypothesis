@@ -250,7 +250,7 @@ open WithZero in
 theorem exists_fixed_val {E : Type} [Field E] (v : Valuation E (WithZero (Multiplicative ℤ))) (π : E)
     (hπ : v π = exp (-1)) (c : E ≃+* E) (hc : ∀ x, c (c x) = x) (hv : ∀ y, v (c y) = v y)
     (a : E) (ha : v a ≤ 1) (hd : v (a - c a) = 1) (y : E) : ∃ x, c x = x ∧ v y = v x := by
-  have key : ∃ ϖ, c ϖ = ϖ ∧ v ϖ = v π := by
+  obtain ⟨ϖ, h1, h2⟩ : ∃ ϖ, c ϖ = ϖ ∧ v ϖ = v π := by
     by_contra h
     push Not at h
     have h1 : v (π + c π) < v π :=
@@ -264,7 +264,6 @@ theorem exists_fixed_val {E : Type} [Field E] (v : Valuation E (WithZero (Multip
     rw [show a * π + c (a * π) - c a * (π + c π) = (a - c a) * π by rw [map_mul]; ring, map_mul, hd,
       one_mul] at h4
     exact lt_irrefl _ h4
-  obtain ⟨ϖ, h1, h2⟩ := key
   by_cases hy : y = 0
   · exact ⟨0, map_zero _, by rw [hy]⟩
   refine ⟨ϖ ^ (-log (v y)), by rw [map_zpow₀, h1], ?_⟩
@@ -296,7 +295,7 @@ end GlobalTheory.UnitLemma.Bridge
 namespace GlobalTheory.UnitLemma
 open Bridge
 
-theorem UQ.exists_unram : ∀ K : UQ, ∃ (F : Type) (_ : NontriviallyNormedField F) (nE : NontriviallyNormedField K.E) (_ : nE.toField = K.fE) (_ : @NormedAlgebra F K.E _ nE.toNormedField.toNormedCommRing.toSeminormedCommRing.toSeminormedRing) (st : @StarRing K.E nE.toNormedField.toNormedCommRing.toRing.toNonAssocRing.toNonUnitalNonAssocRing.toNonUnitalNonAssocSemiring), @GlobalTheory.JR.Unram F K.E _ nE _ st ∧ (∀ y, st.star y = K.c y) ∧ ∀ y : K.E, nE.norm y ≤ 1 ↔ y ∈ (algebraMap K.O K.E).range := by
+theorem UQ.exists_unram : ∀ K : UQ, ∃ (F : Type) (_ : NontriviallyNormedField F) (nE : NontriviallyNormedField K.E) (hE : nE.toField = K.fE) (_ : @NormedAlgebra F K.E _ nE.toNormedField.toNormedCommRing.toSeminormedCommRing.toSeminormedRing) (st : @StarRing K.E nE.toNormedField.toNormedCommRing.toRing.toNonAssocRing.toNonUnitalNonAssocRing.toNonUnitalNonAssocSemiring), @GlobalTheory.JR.Unram F K.E _ nE _ st ∧ (∀ y, st.star y = K.c y) ∧ ∀ y : K.E, nE.norm y ≤ 1 ↔ y ∈ (algebraMap K.O K.E).range := by
   intro K
   let v := (IsDiscreteValuationRing.maximalIdeal K.O).valuation K.E
   obtain ⟨π, hπ⟩ := (IsDiscreteValuationRing.maximalIdeal K.O).valuation_exists_uniformizer K.E

@@ -164,8 +164,7 @@ theorem exists_relIndex_ne_zero_stab : ∀ {E : Type} [Field E] [NumberField E] 
       (γ : Matrix (Fin r) (Fin r) E).mulVec x ∈ Λ' := by
     rintro γ ⟨g, hg, rfl⟩ x hx
     refine mulVec_mem_of_rep_eq_one hn h1 h2 hG g ?_ x hx
-    have := congrArg Units.val (MonoidHom.mem_ker.1 hg)
-    simpa [hφ] using this
+    simpa [hφ] using congrArg Units.val (MonoidHom.mem_ker.1 hg)
   refine ⟨φ.ker.map G.subtype, ?_, ?_⟩
   · show (Subgroup.comap G.subtype (φ.ker.map G.subtype)).index ≠ 0
     rw [Subgroup.comap_map_eq_self_of_injective G.subtype_injective]

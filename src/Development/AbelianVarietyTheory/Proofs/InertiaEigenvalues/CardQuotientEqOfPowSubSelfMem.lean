@@ -115,7 +115,6 @@ theorem card_quotient_eq_of_pow_sub_self_mem : ∀ {R : Type} [CommRing R] (P : 
       · have := hinj (show (a : ℕ) - 1 ∈ Set.Iio (q - 1) by simp; omega)
           (show (b : ℕ) - 1 ∈ Set.Iio (q - 1) by simp; omega) hab
         omega
-    have := Nat.card_le_card_of_injective g hg
-    simpa using this
+    simpa using Nat.card_le_card_of_injective g hg
 
 end GlobalTheory

@@ -84,8 +84,7 @@ theorem _root_.GlobalTheory.PeriodConn.isPeriod_mulVec {D : _root_.ReciprocityTh
     · rw [hty i j h]; simp
   · intro x y hxy
     apply hinj
-    have := congrArg (fun v => A⁻¹ *ᵥ v) hxy
-    simpa [hcancel] using this
+    simpa [hcancel] using congrArg (fun v => A⁻¹ *ᵥ v) hxy
   · let f : (A.mulVecLin.toAddMonoidHom.comp P).range → P.range := fun v =>
       ⟨A⁻¹ *ᵥ (v : Fin g → ℂ), by
         obtain ⟨x, hx⟩ := AddMonoidHom.mem_range.mp v.2
@@ -96,8 +95,7 @@ theorem _root_.GlobalTheory.PeriodConn.isPeriod_mulVec {D : _root_.ReciprocityTh
     · exact (continuous_const.matrix_mulVec continuous_subtype_val).subtype_mk _
     · intro v w hvw
       apply Subtype.ext
-      have := congrArg (fun u : P.range => A *ᵥ (u : Fin g → ℂ)) hvw
-      simpa [f, hcancel'] using this
+      simpa [f, hcancel'] using congrArg (fun u : P.range => A *ᵥ (u : Fin g → ℂ)) hvw
   · have hr : Set.range ⇑(A.mulVecLin.toAddMonoidHom.comp P) =
         ((A.mulVecLin).restrictScalars ℝ) '' Set.range ⇑P := by
       rw [← Set.range_comp]; rfl

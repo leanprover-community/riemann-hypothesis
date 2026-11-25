@@ -1300,7 +1300,7 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.ExistsNatMulMem.exists_nat_mul_mem :
-    ∀ (F : Type) [Field F] [NumberField F] (x : F),
+    ∀ (F : Type) [inst : Field F] [NumberField F] (x : F),
     ∃ (m : ℕ), (0 : ℕ) < m ∧ ∃ (r : NumberField.RingOfIntegers F), (↑r : F) = (↑m : F) * x := by
   apply GlobalTheory.NatMulMemUnitaryExistence.exists_nat_mul_mem
 end -- clump:auto

@@ -103,9 +103,9 @@ theorem exists_pow_smul_mem {l : ℕ} [hl : Fact (Nat.Prime l)] {O K : Type} [Co
     rw [h]
     exact T.smul_mem _ hn
 
-theorem main : ∀ {l : ℕ} [Fact (Nat.Prime l)] {O K : Type} [CommRing O]
-    [NormedField K] [Algebra O K] [GlobalTheory.BK.IsUnitBall O K]
-    [NormedAlgebra ℚ_[l] K] {G : Type} [Group G] [TopologicalSpace G]
+theorem main : ∀ {l : ℕ} [hl : Fact (Nat.Prime l)] {O K : Type} [inst : CommRing O]
+    [inst_1 : NormedField K] [inst_2 : Algebra O K] [GlobalTheory.BK.IsUnitBall O K]
+    [inst_4 : NormedAlgebra ℚ_[l] K] {G : Type} [inst_5 : Group G] [inst_6 : TopologicalSpace G]
     (T : Formalism.BasicNotions.LocLat G ℚ_[l] K O) (v : Formalism.BasicNotions.LocLat.V T),
     ∃ (n : ℕ), (↑l : K) ^ n • v ∈ Formalism.WeaklyAdmissibleFiltrations.Lattice.T (Formalism.BasicNotions.LocLat.L T) := by
   intro l _ O K _ _ _ _ _ G _ _ T v

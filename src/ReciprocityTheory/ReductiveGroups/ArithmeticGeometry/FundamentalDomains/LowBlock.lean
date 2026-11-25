@@ -98,8 +98,7 @@ lemma sgn_p (a : Fin X.p0) : sgn X.p0 ((Fin.castLE X.p0_le a : Fin r) : ℕ) = 1
   simp [ReciprocityTheory.ChartRestriction.G.FD.sgn, a.isLt]
 
 lemma sgn_n (m : Fin (r - X.p0)) : sgn X.p0 ((nI X m : Fin r) : ℕ) = -1 := by
-  rw [nI_val_eq_p0_add]
-  simp [ReciprocityTheory.ChartRestriction.G.FD.sgn]
+  simp [nI_val_eq_p0_add, ReciprocityTheory.ChartRestriction.G.FD.sgn]
 
 def Gp (Z : X.Coord) (τ : X.Ψ) : Matrix (Fin r) (Fin r) ℂ :=
   (X.lowBlock Z τ)ᵀ * Matrix.diagonal (fun a : Fin r => ((sgn X.p0 (a : ℕ) : ℝ) : ℂ)) *

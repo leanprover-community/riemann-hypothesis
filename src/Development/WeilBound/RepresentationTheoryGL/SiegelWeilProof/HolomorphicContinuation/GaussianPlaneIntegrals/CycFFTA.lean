@@ -96,13 +96,11 @@ theorem blk_unitary (β : Bool) (v : Matrix (Rw ε β) (Rw ε β) ℂ) (hv : v �
     blk ε β v ∈ Matrix.unitaryGroup (Fin m) ℂ := by
   rw [Matrix.mem_unitaryGroup_iff] at hv ⊢
   ext a c
-  rw [Matrix.mul_apply, Matrix.one_apply]
-  simp only [Matrix.star_apply]
+  simp only [Matrix.mul_apply, Matrix.one_apply, Matrix.star_apply]
   by_cases ha : ε a = β
   · by_cases hc : ε c = β
     · have key := congrFun (congrFun hv ⟨a, ha⟩) ⟨c, hc⟩
-      rw [Matrix.mul_apply, Matrix.one_apply] at key
-      simp only [Matrix.star_apply] at key
+      simp only [Matrix.mul_apply, Matrix.one_apply, Matrix.star_apply] at key
       have e1 : ∀ b, blk ε β v a b * star (blk ε β v c b) =
           if h : ε b = β then v ⟨a, ha⟩ ⟨b, h⟩ * star (v ⟨c, hc⟩ ⟨b, h⟩) else 0 := by
         intro b

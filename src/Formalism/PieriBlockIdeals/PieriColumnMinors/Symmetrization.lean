@@ -260,8 +260,7 @@ theorem integral_quotient_holds : IntegralQuotient := by
     | C r =>
       intro m _
       have h1 : φ (MvPolynomial.C r) = algebraMap O (Module.End O M) r := φ.commutes r
-      rw [h1, Module.algebraMap_end_apply]
-      simp [ψ]
+      simp [h1, Module.algebraMap_end_apply, ψ]
     | add p q hp hq =>
       intro m hm
       rw [map_add (f := _), map_add (f := _), LinearMap.add_apply, add_smul, hp m hm, hq m hm]
@@ -435,8 +434,7 @@ theorem sum_unitSecond_products_eq_swap {i j : Fin n} (h : i ≠ j) :
   refine LinearMap.ext fun z => funext fun g => ?_
   simp only [LinearMap.sum_apply, Finset.sum_apply, Module.End.mul_apply, unitOnTensor_apply,
     permSecond_apply, Function.update_of_ne h.symm]
-  rw [Finset.sum_comm]
-  simp only [Finset.sum_ite_eq, Finset.mem_univ, ite_true]
+  simp only [Finset.sum_comm, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
   congr 1
   funext s
   by_cases hs : s = j
@@ -710,8 +708,7 @@ theorem mixedCasimir_apply_sum [Fintype R] (EM : R → R → Module.End k M) (j 
     onModule_apply_eval]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun b' _ => ?_
-  rw [Finset.sum_ite_eq]
-  simp
+  simp [Finset.sum_ite_eq]
 
 theorem swap_insertNth_eq_update (s : Fin (n + 1)) (t : Fin n) (v : R × P) (g : Fin n → R × P) :
     (fun x => (((s.insertNth v g : Fin (n + 1) → R × P) (Equiv.swap (s.succAbove t) s x)).1,
@@ -1206,8 +1203,7 @@ theorem raisingRemainder_of_perm_invariant (n : ℕ) (v : R × P) (z : Tens R P 
     refine Finset.sum_congr rfl fun j _ => Finset.sum_congr rfl fun l _ => ?_
     rw [Equiv.swap_comm l j]
   unfold raisingRemainder
-  rw [hB]
-  simp only [hA]
+  simp only [hB, hA]
   rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, jucysMurphy_last_eq, ← smul_sub]
   congr 1
 
@@ -1261,8 +1257,7 @@ theorem mixedCasimir_apply (EM : R → R → Module.End k M) (j : Fin n) (z : Te
   simp only [LinearMap.sum_apply, Finset.sum_apply, Module.End.mul_apply, unitSecond_apply, onFactor_apply]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun b' _ => ?_
-  rw [Finset.sum_ite_eq]
-  simp
+  simp [Finset.sum_ite_eq]
 
 theorem jucysMurphy_apply (EM : R → R → Module.End k M) (j : Fin n) (z : Tens R P M n) (g) :
     xJM k EM j z g = ∑ b', EM b' (g j).1 (z (Function.update g j (b', (g j).2))) +
@@ -1449,8 +1444,7 @@ variable [DecidableEq ι]
 theorem count_content_eq_card_fiber (g : Fin n → ι) (v : ι) :
     Multiset.count v (cont g).1 = Fintype.card {a // g a = v} := by
   change Multiset.count v (Finset.univ.val.map g) = _
-  rw [Multiset.count_map, Fintype.card_subtype]
-  simp only [eq_comm (a := v)]
+  simp only [Multiset.count_map, Fintype.card_subtype, eq_comm (a := v)]
   rfl
 
 theorem exists_perm_of_content_eq (g g' : Fin n → ι) (h : cont g = cont g') : ∃ σ : Equiv.Perm (Fin n), g ∘ σ = g' := by
@@ -1504,8 +1498,7 @@ theorem norm_apply_eq_mfact_smul (y : Sym (R × P) n → M) (g : Fin n → R × 
 
 theorem norm_toSym_eq_sum_perm (z : Tens R P M n) : NmS k (toSym k z) = ∑ σ : Equiv.Perm (Fin n), perm k σ z := by
   funext g
-  rw [norm_apply_eq_mfact_smul, toSym_apply_sum_fiber, Finset.sum_apply]
-  simp only [permOnTensor_apply]
+  simp only [norm_apply_eq_mfact_smul, toSym_apply_sum_fiber, Finset.sum_apply, permOnTensor_apply]
   rw [Finset.sum_comp z (fun σ : Equiv.Perm (Fin n) => g ∘ σ), Finset.smul_sum]
   have himg : (Finset.univ.image fun σ : Equiv.Perm (Fin n) => g ∘ σ) =
       Finset.univ.filter (fun g' : Fin n → R × P => cont g' = cont g) := by
@@ -1521,16 +1514,14 @@ theorem norm_toSym_eq_sum_perm (z : Tens R P M n) : NmS k (toSym k z) = ∑ σ :
 
 theorem toSym_perm_eq (z : Tens R P M n) (σ : Equiv.Perm (Fin n)) : toSym k (perm k σ z) = toSym k z := by
   funext m
-  rw [toSym_apply_sum_fiber, toSym_apply_sum_fiber]
-  simp only [permOnTensor_apply]
+  simp only [toSym_apply_sum_fiber, toSym_apply_sum_fiber, permOnTensor_apply]
   refine Finset.sum_bij (fun g _ => g ∘ σ) ?_ ?_ ?_ ?_
   · intro g hg
     simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hg ⊢
     rw [content_comp_perm_eq, hg]
   · intro a _ b _ hab
     funext s
-    have := congrFun hab (σ⁻¹ s)
-    simpa using this
+    simpa using congrFun hab (σ⁻¹ s)
   · intro g hg
     simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hg
     refine ⟨g ∘ (σ⁻¹ : Equiv.Perm (Fin n)), ?_, ?_⟩
@@ -1559,8 +1550,7 @@ theorem toSym_surjective : Function.Surjective (toSym k : Tens R P M n →ₗ[k]
   intro y
   refine ⟨∑ m, Pi.single (Function.surjInv content_surjective m) (y m), ?_⟩
 
-  rw [map_sum]
-  simp only [toSym_single_eq_single_content, Function.surjInv_eq]
+  simp only [map_sum, toSym_single_eq_single_content, Function.surjInv_eq]
   funext m
   simp [Finset.sum_apply, Pi.single_apply]
 

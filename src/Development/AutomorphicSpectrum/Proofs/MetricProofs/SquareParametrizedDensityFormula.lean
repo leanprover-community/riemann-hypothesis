@@ -156,10 +156,9 @@ theorem holo_comp {e : ℕ} {X : Type} [TopologicalSpace X] (A : FinHolAtlas e X
     (hz : z ∈ Vp) (hzV : Φ z ∈ V) : AnalyticAt ℂ (fun w => G (Φ w)) z := by
   obtain ⟨j, hj⟩ := A.cover (Φ z)
   have hcont : ContinuousAt Φ z := hΦ.2.1.continuousAt (hΦ.1.mem_nhds hz)
-  have h1 : AnalyticAt ℂ (A.chart j ∘ Φ) z := hΦ.2.2.2 j z ⟨hz, hj⟩
   have h2 : AnalyticAt ℂ (G ∘ (A.chart j).symm) ((A.chart j ∘ Φ) z) :=
     hG j _ ⟨(A.chart j).map_source hj, by simp [(A.chart j).left_inv hj, hzV]⟩
-  refine (h2.comp h1).congr ?_
+  refine (h2.comp (hΦ.2.2.2 j z ⟨hz, hj⟩)).congr ?_
   filter_upwards [hcont.preimage_mem_nhds ((A.chart j).open_source.mem_nhds hj)] with w hw
   simp [Function.comp, (A.chart j).left_inv hw]
 
@@ -340,8 +339,7 @@ theorem K0 (n : ℕ) {z : Fin (d + 2) → ℂ} (hz : Fin.tail (Fin.tail z) ∈ Q
   refine ((PH.sum (f := fun a z' => (ε a : ℝ) * (Q.SW.potH (some a)).φ (Q.ΦW n z) (Q.ΦW n z'))
     (g := fun a z' => (ε a : ℝ) * (SY.potH a).φ (Q.ΦY n (lin (τ0 d) z)) (Q.ΦY n (lin (τ0 d) z')))
     Finset.univ fun a _ => (M0 Q n a hz).smul _).trans (Y0 Q n hz)).congr' (fun w => ?_) (fun w => rfl)
-  rw [Fintype.sum_option]
-  simp [AnSq.pull0]
+  simp [Fintype.sum_option, AnSq.pull0]
 
 theorem KA (n : ℕ) (c : σ → ℝ) (hc : c a₀ = 0) {z : Fin (d + 2) → ℂ} (hz : Fin.tail (Fin.tail z) ∈ Q.U n) :
     PH z (fun z' => ∑ o, Q.pull0 c o * (Q.SW.potH o).φ (Q.ΦW n z) (Q.ΦW n z'))

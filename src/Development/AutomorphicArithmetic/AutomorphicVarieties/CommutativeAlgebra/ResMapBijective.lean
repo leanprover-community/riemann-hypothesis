@@ -118,8 +118,7 @@ theorem res_map {R' : Type} [CommRing R'] [Algebra O R'] [IsCO O R'] (f : R →�
     · exfalso
       have h2 : IsUnit (y - algebraMap O R b) := by
         by_contra hn
-        have h3 : y - algebraMap O R b ∈ maximalIdeal R := hn
-        have h4 : algebraMap O R b ∈ maximalIdeal R := by simpa using Ideal.sub_mem _ hy h3
+        have h4 : algebraMap O R b ∈ maximalIdeal R := by simpa using Ideal.sub_mem _ hy hn
         exact h4 (hu.map _)
       have h5 := h2.map f
       rw [map_sub, AlgHom.commutes] at h5

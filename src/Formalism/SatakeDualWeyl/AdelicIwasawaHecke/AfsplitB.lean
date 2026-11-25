@@ -118,8 +118,7 @@ theorem afsplit_coord_prV (b : Module.Basis (Module.Free.ChooseBasisIndex F E) F
   induction y using TensorProduct.induction_on with
   | zero => simp only [map_zero]; rfl
   | tmul a b =>
-    rw [afsplit_prV_tmul]
-    simp only [LinearMap.rTensor_tmul, TensorProduct.lid_tmul, afsplit_smul_apply]
+    simp only [afsplit_prV_tmul, LinearMap.rTensor_tmul, TensorProduct.lid_tmul, afsplit_smul_apply]
   | add x y hx hy => simp only [map_add (f := _), hx, hy, afsplit_add_apply]
 
 theorem afsplit_inj (y : E ⊗[F] (FiniteAdeleRing (𝓞 F) F)) (hy : ∀ w : HeightOneSpectrum (𝓞 F), prV (E := E) w y = 0) :

@@ -48,8 +48,8 @@ import Mathlib.Topology.Sheaves.Init
 
 noncomputable def UpperTheory.Reformulated.B.SpanTopFamily.Mι :
     {E K : Type} →
-      [Field E] →
-        [Field K] →
+      [inst : Field E] →
+        [inst_1 : Field K] →
           (O : ValuationSubring K) →
             (E →+* K) → {n : Type} → Submodule (NumberField.RingOfIntegers E) (n → E) → Submodule (↥O) (n → K) :=
     fun {E K : Type} [Field E] [Field K] (O : ValuationSubring K) (ι : E →+* K) {n : Type}
@@ -57,7 +57,7 @@ noncomputable def UpperTheory.Reformulated.B.SpanTopFamily.Mι :
       Submodule.span (↥O) ((fun (l : n → E) (j : n) ↦ (ι : E → K) (l j)) '' (↑L : Set (n → E)))
 
 theorem UpperTheory.Reformulated.B.SpanTopFamily.span_top :
-    ∀ {E K : Type} [Field E] [NumberField E] [Field K] (O : ValuationSubring K) (ι : E →+* K) {n : Type}
+    ∀ {E K : Type} [inst : Field E] [NumberField E] [inst_2 : Field K] (O : ValuationSubring K) (ι : E →+* K) {n : Type}
       [Fintype n] [DecidableEq n] (L : Submodule (NumberField.RingOfIntegers E) (n → E)),
       Submodule.span E (↑L : Set (n → E)) = ⊤ → Submodule.span K (↑(UpperTheory.Reformulated.B.SpanTopFamily.Mι O ι L) : Set (n → K)) = ⊤ := by
   intro E K _ _ _ O ι n _ _ L hL

@@ -1269,8 +1269,8 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Ra6.irr_iff :
-    ∀ {G W : Type} [Group G] [AddCommGroup W]
-    [_root_.Module ℂ W] (ρ : Representation ℂ G W),
+    ∀ {G W : Type} [inst : Group G] [inst_1 : AddCommGroup W]
+    [inst_2 : _root_.Module ℂ W] (ρ : Representation ℂ G W),
     ρ.IsIrreducible ↔
       Nontrivial W ∧
         ∀ (N : Submodule ℂ W), (∀ (g : G), ∀ v ∈ N, ((ρ : G → W →ₗ[ℂ] W) g : W → W) v ∈ N) → N = ⊥ ∨ N = ⊤ := by

@@ -27,7 +27,6 @@ theorem kernel_eq_of_maximal {k d r : ℕ} (A : (Fin k → ℂ) →L[ℂ] (Fin d
     (hmax : ∀ u : Fin (r + 1) → Fin k → ℂ, ¬ LinearIndependent ℂ (fun j => A (u j)))
     (hind : LinearIndependent ℂ (fun j => Λ (A (v j)))) {x : Fin k → ℂ} (hx : Λ (A x) = 0) :
     A x = 0 := by
-  have hv : LinearIndependent ℂ (fun j => A (v j)) := LinearIndependent.of_comp Λ hind
   by_cases hs : A x ∈ Submodule.span ℂ (Set.range fun j => A (v j))
   · obtain ⟨c, hc⟩ := (Submodule.mem_span_range_iff_exists_fun ℂ).1 hs
     have h0 : ∑ j, c j • Λ (A (v j)) = 0 := by
@@ -44,7 +43,7 @@ theorem kernel_eq_of_maximal {k d r : ℕ} (A : (Fin k → ℂ) →L[ℂ] (Fin d
       funext j
       refine Fin.cases ?_ (fun i => ?_) j <;> simp
     rw [hfun]
-    exact hv.finCons hs
+    exact (LinearIndependent.of_comp Λ hind).finCons hs
 
 theorem proof : HolomorphicFibreInfinite.Statement := by
   intro k d U f hdk hU hUne hf

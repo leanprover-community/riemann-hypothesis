@@ -60,8 +60,7 @@ theorem sep {F : Shv R} {U : Scheme.{0}} (a : Sec F U)
       have := hP _ I.f I.hf
       simp only [Sec.res] at this
       simp [LinearMap.toSpanSingleton_apply, this])
-  have := congrArg (fun f => f.hom (1 : ULift.{1} R)) key
-  simpa using this
+  simpa using congrArg (fun f => f.hom (1 : ULift.{1} R)) key
 
 theorem mono_iff_inj {F G : Shv R} (φ : F ⟶ G) :
     Mono φ ↔ ∀ U, Function.Injective (Sec.map φ (U := U)) := by

@@ -101,8 +101,7 @@ theorem app_cst {g : R →+* R'} {f : X ⟶ Spec (CommRingCat.of R)} {π : X' �
 
 theorem mem_basicOpen_rs {U V : X.Opens} (h : V ≤ U) (a : Γ(X, U)) {x : X} (hx : x ∈ V) :
     x ∈ X.basicOpen (rs X h a) ↔ x ∈ X.basicOpen a := by
-  have := X.basicOpen_res a (homOfLE h).op
-  refine (congrArg (x ∈ ·) this).to_iff.trans ?_
+  refine (congrArg (x ∈ ·) (X.basicOpen_res a (homOfLE h).op)).to_iff.trans ?_
   exact ⟨fun h => h.2, fun h => ⟨hx, h⟩⟩
 
 theorem mem_basicOpen_cst (f : X ⟶ Spec (CommRingCat.of R)) (W : X.Opens) (r : R) {x : X} (hx : x ∈ W) :

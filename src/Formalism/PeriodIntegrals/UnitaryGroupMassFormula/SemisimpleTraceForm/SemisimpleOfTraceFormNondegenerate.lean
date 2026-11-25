@@ -163,14 +163,13 @@ private theorem eq_zero_of_trace_mul_eq_zero' {K : Type} [Field K] [CharZero K] 
   have hnil : ∀ z : A, (∀ y ∈ A, Matrix.trace ((z : Matrix (Fin a) (Fin a) K) * y) = 0) →
       IsNilpotent z := by
     intro z hz
-    have hM : IsNilpotent (z : Matrix (Fin a) (Fin a) K) := by
+    obtain ⟨n, hn⟩ : IsNilpotent (z : Matrix (Fin a) (Fin a) K) := by
       refine hT K a _ fun m hm => ?_
       cases m with
       | zero => exact absurd hm (lt_irrefl 0)
       | succ m =>
         rw [pow_succ']
         exact hz _ (pow_mem z.2 m)
-    obtain ⟨n, hn⟩ := hM
     exact ⟨n, Subtype.ext (by simpa using hn)⟩
   have hspan : ∀ e ∈ Ideal.span ({x} : Set A), IsNilpotent e := by
     intro e he
@@ -188,14 +187,13 @@ private theorem eq_zero_of_trace_mul_eq_zero' {K : Type} [Field K] [CharZero K] 
   obtain ⟨e, he, f, hf, hef⟩ := Submodule.mem_sup.mp h1
   have hdis := Submodule.disjoint_def.mp hc.disjoint
   have hee : e * e = e := by
-    have h2 : e - e * e ∈ Ideal.span ({x} : Set A) := sub_mem he (Ideal.mul_mem_left _ e he)
     have h3 : e - e * e ∈ L := by
       have h4 : e - e * e = e * f := by
         calc e - e * e = e * (e + f) - e * e := by rw [hef, mul_one]
           _ = e * f := by rw [mul_add]; abel
       rw [h4]
       exact Ideal.mul_mem_left _ e hf
-    exact (sub_eq_zero.mp (hdis _ h2 h3)).symm
+    exact (sub_eq_zero.mp (hdis _ (sub_mem he (Ideal.mul_mem_left _ e he)) h3)).symm
   have he0 : e = 0 := by
     obtain ⟨n, hn⟩ := hspan e he
     have key : ∀ m : ℕ, e ^ (m + 1) = e := by
@@ -236,9 +234,8 @@ private theorem isSemisimpleRing_of_trNondeg {k : Type} [Field k] {a : ℕ}
   refine (Submodule.eq_bot_iff _).mpr fun x hx => ?_
   have hx0 : (x : Matrix (Fin a) (Fin a) k) = 0 := by
     refine h x x.2 fun y hy => ?_
-    have hyx : ((⟨y, hy⟩ : A) * x) ∈ Ring.jacobson A := Ideal.mul_mem_left _ _ hx
     have hn : IsNilpotent (((⟨y, hy⟩ : A) * x : A) : Matrix (Fin a) (Fin a) k) :=
-      (isNilpotent_of_mem_jacobson_of_artinian _ hyx).map A.val
+      (isNilpotent_of_mem_jacobson_of_artinian _ (Ideal.mul_mem_left _ _ hx)).map A.val
     rw [Matrix.trace_mul_comm]
     exact (Matrix.isNilpotent_trace_of_isNilpotent hn).eq_zero
   exact Subtype.ext hx0

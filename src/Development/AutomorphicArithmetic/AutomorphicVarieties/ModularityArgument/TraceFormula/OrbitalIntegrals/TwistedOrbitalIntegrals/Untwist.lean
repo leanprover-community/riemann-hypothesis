@@ -66,8 +66,7 @@ theorem UpperTheory.V.Z.Tf.Orb.untwist :
     rw [this]
     exact one_mem _
   · have : normGL (1 : k ≃ₐ[k] k) γ = γ := by
-      rw [normGL, Module.finrank_self]
-      simp [twNorm]
+      simp [normGL, Module.finrank_self, twNorm]
     rwa [IsTwRegSemisimple, this]
   · have e : twCent (sigmaGL (1 : k ≃ₐ[k] k)) γ = Subgroup.centralizer {γ} := by
       ext x
@@ -75,5 +74,4 @@ theorem UpperTheory.V.Z.Tf.Orb.untwist :
       rw [commute_iff_eq]
     obtain ⟨μ', a, b, c⟩ := aux μk _ _ e μ hμ
     refine ⟨μ', a, b, fun f => ?_⟩
-    rw [twOrbIntegralC, orbIntegralC, c]
-    simp only [twConj, h1]
+    simp only [twOrbIntegralC, orbIntegralC, c, twConj, h1]

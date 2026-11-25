@@ -172,13 +172,12 @@ theorem filtX_perm [Fintype I] (e : K → Module.End ℂ M) (X : I → Module.En
     | succ n => exact filtX_X X ι n a _ (ih n (by simpa using hn))
   | swap a b l =>
     have hl : l.length ≤ n := by simp only [List.length_cons] at hn; omega
-    have hm : wordX X l (ι v) ∈ filtX X ι n := Submodule.subset_span ⟨l, v, hl, rfl⟩
     have hall : ∀ E ∈ Submodule.span ℂ (Set.range e), E (wordX X l (ι v)) ∈ filtX X ι n := by
       intro E hE
       induction hE using Submodule.span_induction with
       | mem E hE =>
         obtain ⟨k, rfl⟩ := hE
-        exact filtX_e e X c h1 ρ ι hι n k _ hm
+        exact filtX_e e X c h1 ρ ι hι n k _ (Submodule.subset_span ⟨l, v, hl, rfl⟩)
       | zero => simp
       | add E F _ _ h1 h2 => exact Submodule.add_mem _ h1 h2
       | smul a E _ h1 => exact Submodule.smul_mem _ a h1
@@ -198,8 +197,7 @@ theorem wordX_comm [Fintype I] (e : K → Module.End ℂ M) (X : I → Module.En
     have hc : ∀ (a : I) (l : List I), wordX X (a :: l) = X a * wordX X l := fun a l => by simp [wordX]
     have u0 : ∀ j, List.ofFn (Function.update w 0 j) = j :: List.ofFn (fun i : Fin n => w i.succ) := by
       intro j
-      rw [List.ofFn_succ]
-      simp
+      simp [List.ofFn_succ]
     have us : ∀ (i : Fin n) j, List.ofFn (Function.update w i.succ j) =
         w 0 :: List.ofFn (Function.update (fun i : Fin n => w i.succ) i j) := by
       intro i j
@@ -209,8 +207,7 @@ theorem wordX_comm [Fintype I] (e : K → Module.End ℂ M) (X : I → Module.En
       by_cases hm : m = i
       · subst hm; simp
       · rw [Function.update_of_ne hm, Function.update_of_ne (fun h => hm (Fin.succ_injective _ h))]
-    rw [Fin.sum_univ_succ]
-    simp only [u0, us, hc]
+    simp only [Fin.sum_univ_succ, u0, us, hc]
     rw [List.ofFn_succ, hc, ← mul_assoc, sub_eq_iff_eq_add.1 (h1 k (w 0)), add_mul, mul_assoc,
       ih (fun i => w i.succ), mul_add, Finset.sum_mul, Finset.mul_sum]
     simp only [Finset.mul_sum, mul_smul_comm, smul_mul_assoc, mul_assoc]

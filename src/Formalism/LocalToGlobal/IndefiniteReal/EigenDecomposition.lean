@@ -103,11 +103,9 @@ theorem exists_onb_of_commuting (A : Set (H →ₗ[ℂ] H))
   have hB : ∀ S (hS : S ∈ B), ∃ μ : ℂ, S (b k) = μ • b k := by
     intro S hS
     have e1 : S (b k) + LinearMap.adjoint S (b k) = lab k (⟨S, hS⟩, true) • b k := by
-      have := hv (⟨S, hS⟩, true)
-      simpa [F, r1] using this
+      simpa [F, r1] using hv (⟨S, hS⟩, true)
     have e2 : Complex.I • (S (b k) - LinearMap.adjoint S (b k)) = lab k (⟨S, hS⟩, false) • b k := by
-      have := hv (⟨S, hS⟩, false)
-      simpa [F, r2] using this
+      simpa [F, r2] using hv (⟨S, hS⟩, false)
     have e2' : S (b k) - LinearMap.adjoint S (b k) = (-Complex.I * lab k (⟨S, hS⟩, false)) • b k := by
       rw [mul_smul, ← e2, smul_smul]
       simp

@@ -35,9 +35,8 @@ theorem ComplexMinimalPrimesContract.proof : ComplexMinimalPrimesContract.Statem
   have hflat := mvPolynomial_int_complex_flat σ
   have hAlg := algebraMap_mvPolynomial_int_complex σ
   have : Q.IsPrime := hQ.1.1
-  have hPQ : P.map (MvPolynomial.map (Int.castRingHom ℂ)) ≤ Q := hQ.1.2
   have hle : P ≤ Q.comap (MvPolynomial.map (Int.castRingHom ℂ)) :=
-    Ideal.map_le_iff_le_comap.mp hPQ
+    Ideal.map_le_iff_le_comap.mp hQ.1.2
   have : (Q.comap (MvPolynomial.map (Int.castRingHom ℂ))).IsPrime := Ideal.comap_isPrime _ Q
   have : Q.LiesOver (Q.comap (MvPolynomial.map (Int.castRingHom ℂ))) :=
     ⟨by rw [Ideal.under, Ideal.comap, hAlg]; rfl⟩

@@ -141,8 +141,7 @@ theorem proof : LocIdealKer.Statement := by
       Submodule.Quotient.mk_eq_zero] at hu
     obtain ⟨e, he⟩ := hT u u.2
     set D : K → ℤ := (d + fun k => (a k : ℤ)) + fun k => (e k : ℤ) with hD
-    have humD : (u : MRingOver S ι) • m ∈ 𝓜 D := h𝓜.2 e _ _ m he hm
-    have hspan := mem_span_degProducts h𝓜 hP hu humD
+    have hspan := mem_span_degProducts h𝓜 hP hu (h𝓜.2 e _ _ m he hm)
     have hut : IsMultiHomog ((u * t : T) : MRingOver S ι) (e + a) := GenSESStep.isMultiHomog_mul he ht
     rw [← LocalizedModule.mk_cancel_common_left u t m, Submonoid.smul_def]
     generalize (u : MRingOver S ι) • m = x at hspan ⊢

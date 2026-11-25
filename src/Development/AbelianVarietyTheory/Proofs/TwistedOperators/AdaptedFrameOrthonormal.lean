@@ -877,7 +877,7 @@ theorem om_fock_top_of_mat {μ0 : T} (hL : L.Is μ0) (W : G.Weil) {U : Set T} (S
   show W.om (.top t j) (ptTop W g j, ptTop W g (j + 1)) _ = _
   rw [key, hQ', LinearMap.map_smul]
 
-theorem exists_fock_transport : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} {μ0 : T} (_ : L.Is μ0)
+theorem exists_fock_transport : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} {μ0 : T} (hL : L.Is μ0)
     (W : G.Weil), ∃ (tc : ∀ j : Fin D.R.m, PolF D (G.V (.top ((j : ℕ) + 1))).rank (G.V (.top j)).rank ≃ₗ[ℂ]
         Pol D.what₂.Tau ((rowSizes D).nR (j.castSucc : Fin ((rowSizes D).m + 1))) ((rowSizes D).nR (j.succ : Fin ((rowSizes D).m + 1))))
       (tr : ∀ i : Fin D.R.m, PolF D (G.V (.grid i D.R.m)).rank (G.V (.grid ((i : ℕ) + 1) D.R.m)).rank ≃ₗ[ℂ]

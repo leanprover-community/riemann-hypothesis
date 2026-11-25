@@ -36,11 +36,10 @@ private theorem memcc_lemma_19 {σ : Type} {p : MvPolynomial σ S} (hp : constan
   intro x hx
   by_contra hlt
   have h0 : Finsupp.degree x = 0 := by omega
-  have hs : ∑ j ∈ x.support, x j = 0 := h0
   have hx0 : x = 0 := by
     ext i
     by_contra hi
-    exact hi ((Finset.sum_eq_zero_iff.1 hs) i (Finsupp.mem_support_iff.2 hi))
+    exact hi ((Finset.sum_eq_zero_iff.1 h0) i (Finsupp.mem_support_iff.2 hi))
   subst hx0
   exact (MvPolynomial.mem_support_iff.1 hx) hp
 
@@ -231,8 +230,7 @@ private theorem coeffDiag_lemma_5 {σ : Type} (s : σ → S) (h : MvPolynomial �
   classical
   conv_lhs => rw [h.as_sum]
 
-  rw [map_sum, coeff_sum]
-  simp only [monoDiag_lemma_4, coeff_monomial]
+  simp only [map_sum, coeff_sum, monoDiag_lemma_4, coeff_monomial]
   rw [Finset.sum_eq_single e]
   · rw [if_pos rfl]
   · intro b _ hb
@@ -427,11 +425,10 @@ theorem const_one {P : MvPolynomial (Fin 2 × Fin d) S} {m : ℕ}
   intro x hx
   by_contra hlt
   have h0 : Finsupp.degree x = 0 := by omega
-  have hs : ∑ j ∈ x.support, x j = 0 := h0
   have hx0 : x = 0 := by
     ext i
     by_contra hi
-    exact hi ((Finset.sum_eq_zero_iff.1 hs) i (Finsupp.mem_support_iff.2 hi))
+    exact hi ((Finset.sum_eq_zero_iff.1 h0) i (Finsupp.mem_support_iff.2 hi))
   subst hx0
   apply MvPolynomial.mem_support_iff.1 hx
   rw [MvPolynomial.coeff_sub, coeff_zero_one]

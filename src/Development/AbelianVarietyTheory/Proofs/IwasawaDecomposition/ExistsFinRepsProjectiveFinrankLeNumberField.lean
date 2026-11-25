@@ -77,8 +77,7 @@ instance ideal_projective (I : Ideal R) : Module.Projective R I := by
 theorem map_mulLeft_eq (x : R) (I : Ideal R) :
     Submodule.map (LinearMap.mulLeft R x) I = Ideal.span {x} * I := by
   ext z
-  rw [Ideal.mem_span_singleton_mul, Submodule.mem_map]
-  simp [LinearMap.mulLeft_apply]
+  simp [Ideal.mem_span_singleton_mul, Submodule.mem_map, LinearMap.mulLeft_apply]
 
 noncomputable def mulEquiv {x : R} (hx : x ≠ 0) (I : Ideal R) :
     I ≃ₗ[R] (Ideal.span {x} * I : Ideal R) :=

@@ -185,7 +185,7 @@ theorem psi_pull (hD : IsPullDeg φ D D') (x : D'.X) {Z : Scheme.{0}} (r : Z ⟶
   rfl
 
 theorem psiEven_pull : GlobalFnsSt → ∀ (R R' : Type) [CommRing R] [IsDomain R] [CommRing R'] [IsDomain R']
-    (φ : R →+* R') (D : DegPre R) (D' : DegPre R') (_ : IsPullDeg φ D D'), D.PsiEven → D'.PsiEven := by
+    (φ : R →+* R') (D : DegPre R) (D' : DegPre R') (hD : IsPullDeg φ D D'), D.PsiEven → D'.PsiEven := by
   intro hG R R' _ _ _ _ φ D D' hD h x
   refine corr_of_val D'.P.isLB fun y J' hJ' => ?_
   choose J hJ using fun χ : (TK R').left ⟶ D.P.A.left => exists_chart D.P.isLB (χ y)

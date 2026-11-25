@@ -38,8 +38,7 @@ theorem exists_congr_eq_one {N : Matrix n n ℂ} (hN : N.PosDef) :
   refine ⟨U * diagonal d, ?_, ?_⟩
   · rw [det_mul, det_diagonal]
     refine mul_ne_zero (det_ne_zero_of_star_mul_self hU) (Finset.prod_ne_zero_iff.mpr fun j _ => ?_)
-    have := Real.sqrt_pos.mpr (hμ j)
-    simpa only [hd, ne_eq, Complex.ofReal_eq_zero, inv_eq_zero] using this.ne'
+    simpa only [hd, ne_eq, Complex.ofReal_eq_zero, inv_eq_zero] using (Real.sqrt_pos.mpr (hμ j)).ne'
   · have hstar : Uᴴ = star U := rfl
     rw [hN', conjTranspose_mul, diagonal_conjTranspose, hstar]
     calc diagonal (star d) * star U * (U * diagonal (fun j => (μ j : ℂ)) * star U) * (U * diagonal d)

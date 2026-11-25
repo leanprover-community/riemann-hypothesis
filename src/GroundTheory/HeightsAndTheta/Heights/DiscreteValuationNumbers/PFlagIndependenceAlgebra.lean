@@ -250,8 +250,7 @@ theorem exists_isPairExpansion {n m : ℕ} {A : MvPolynomial (Fin n) ℤ} (hA : 
     simpa using key
   · refine ⟨fun i => homogeneousComponent (m - 1) (Gs i), ?_,
       fun i => homogeneousComponent_isHomogeneous _ _⟩
-    rw [key]
-    simp only [hm.ne', if_false]
+    simp only [key, hm.ne', if_false]
 
 end Expansions
 

@@ -164,8 +164,7 @@ theorem hermDual_of (h : SubIndexNorm) : HermDual := by
   have hbexp : ∀ j, bM j = ∑ k, GS k j • bD k := by
     intro j
     apply Subtype.ext
-    rw [Submodule.coe_sum]
-    simp only [Submodule.coe_smul, hbD, hdM', hbM']
+    simp only [Submodule.coe_sum, Submodule.coe_smul, hbD, hdM', hbM']
     refine (sub_eq_zero.1 (hnd _ fun i => ?_))
     rw [map_sub, hGS, show B (b i) (∑ k, GS k j • d k) = algebraMap S K (GS i j) from
       hBsum (fun k => GS k j) i, sub_self]
@@ -228,8 +227,7 @@ theorem indexEqNormDet : SubIndexNorm := by
     rw [Basis.det_apply, ← LinearMap.det_toMatrix b]
     congr 1
     ext x y
-    rw [Basis.toMatrix_apply, LinearMap.toMatrix_apply]
-    simp [f, e0]
+    simp [Basis.toMatrix_apply, LinearMap.toMatrix_apply, f, e0]
   let N' : Submodule ℤ M := N.restrictScalars ℤ
   let e : M ≃ₗ[ℤ] N' := (e0.trans (Submodule.restrictScalarsEquiv ℤ S M N).symm).restrictScalars ℤ
   have h1 := Submodule.natAbs_det_equiv N' e

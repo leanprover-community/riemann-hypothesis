@@ -97,8 +97,8 @@ private theorem UpperTheory.Reformulated.B.NormOnValuationRing.norm_le_one {l : 
   exact (hv y).1 ((Valuation.integer.integers v).mem_of_integral h)
 
 theorem UpperTheory.Reformulated.B.NormOnValuationRing.mem_max_iff :
-    ∀ {l : ℕ} [Fact (Nat.Prime l)] {T : Type}
-    [CommRing T] [IsLocalRing T] [Algebra ℤ_[l] T] [Algebra.IsIntegral ℤ_[l] T]
+    ∀ {l : ℕ} [inst : Fact (Nat.Prime l)] {T : Type}
+    [inst_1 : CommRing T] [inst_2 : IsLocalRing T] [inst_3 : Algebra ℤ_[l] T] [Algebra.IsIntegral ℤ_[l] T]
     (φ : T →ₐ[ℤ_[l]] PadicAlgCl l) (x : T), x ∈ IsLocalRing.maximalIdeal T ↔ ‖(φ : T → PadicAlgCl l) x‖ < (1 : ℝ) := by
   intro l _ T _ _ _ _ φ x
   have hle : ∀ t : T, ‖φ t‖ ≤ 1 := fun t =>

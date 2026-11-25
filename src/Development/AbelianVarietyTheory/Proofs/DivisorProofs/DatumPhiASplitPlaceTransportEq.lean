@@ -168,8 +168,8 @@ theorem mem_one_block_iff {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G :
   · simp [Assignment.block, blockV, GlobalTheory.SquareFlipReach.colE]
   · simp [Assignment.block, blockV, GlobalTheory.SquareFlipReach.colE]
 
-theorem phiA_transport_split_place : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} {μ₀ : T} (_ : L.Is μ₀) (t : T)
-    (i j : Fin D.R.m) (e : Num G i j) (w : Pl D.host.E) (_ : w ∈ locPl G t) (v : Pl D.host.F) (hv : w.under (𝓞 D.host.F) = v)
+theorem phiA_transport_split_place : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} {μ₀ : T} (hL : L.Is μ₀) (t : T)
+    (i j : Fin D.R.m) (e : Num G i j) (w : Pl D.host.E) (hw : w ∈ locPl G t) (v : Pl D.host.F) (hv : w.under (𝓞 D.host.F) = v)
     (τ : D.host.E →ₐ[D.host.F] Fv D.host.F v), splitPrime τ = w → ∀ n : ℕ,
     ∃ (μ : @Measure (GL (Fin (spW₁ G i j).rank) (Fv D.host.F v)) Units.instMeasurableSpace)
       (_ : @Measure.IsHaarMeasure _ _ _ Units.instMeasurableSpace μ)

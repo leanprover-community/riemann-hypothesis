@@ -76,8 +76,7 @@ theorem mem_minimalPrimes_span_singleton_of_height_eq_one {p : Ideal A} [p.IsPri
   refine ⟨⟨inferInstance, (Ideal.span_singleton_le_iff_mem p).mpr hap⟩, ?_⟩
   rintro q ⟨hq, haq⟩ hqp
   by_contra hne
-  have hlt : q < p := lt_of_le_not_ge hqp hne
-  have h1 : q.height < p.height := Ideal.height_strict_mono_of_isPrime hlt
+  have h1 : q.height < p.height := Ideal.height_strict_mono_of_isPrime (lt_of_le_not_ge hqp hne)
   rw [hp, ENat.lt_one_iff_eq_zero, Ideal.height_eq_zero_iff_eq_bot] at h1
   rw [h1, Ideal.span_singleton_le_iff_mem] at haq
   exact ha haq
@@ -287,8 +286,7 @@ theorem mem_range_rTensor_iff {M : Type*} [AddCommGroup M] [Module A M] (v : K �
     refine ⟨s, s.2, m, ?_⟩
     rw [← map_smul]
     change _ = LinearMap.rTensor M _ (s • w)
-    rw [e]
-    simp
+    simp [e]
   · rintro ⟨s, hs, m, e⟩
     have := isTorsionFree_of_isLocalizedModule (TensorProduct.mk A K M 1)
     have hs0 : s ≠ 0 := fun h => hs (h ▸ p.zero_mem)

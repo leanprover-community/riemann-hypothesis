@@ -284,8 +284,7 @@ theorem padic_case (a b : Multiset Ω)
   have := congrFun heq fun i => F.coeff i
   have hx : ∀ x : Ω, aeval x F = ∑ i : Fin n, algebraMap ℚ_[l] Ω (F.coeff i) * x ^ (i : ℕ) := by
     intro x
-    rw [aeval_eq_sum_range, Finset.sum_range]
-    simp only [Algebra.smul_def]
+    simp only [aeval_eq_sum_range, Finset.sum_range, Algebra.smul_def]
     rfl
   simpa only [hx] using this
 
@@ -579,8 +578,7 @@ theorem eq_det : ∀ (l : ℕ) [Fact l.Prime] (m : ℕ) (U : Matrix (Fin m) (Fin
     intro r F hF
     have := hΦ r fun i => F.coeff i
     rw [show ∑ i : Fin r, monomial (i : ℕ) (F.coeff i) = F from gen_coeff F hF] at this
-    rw [this]
-    simp [ev, MvPolynomial.aeval_eq_eval]
+    simp [this, ev, MvPolynomial.aeval_eq_eval]
   have hm' := mul_all N Φ hN Good hG hm
   have hn' := norm_all U N Good (shift_poly N Φ hN) hG hn
   obtain ⟨E, _, _, _, _⟩ : ∃ (E : Type) (_ : Field E) (_ : Algebra ℚ_[l] E),

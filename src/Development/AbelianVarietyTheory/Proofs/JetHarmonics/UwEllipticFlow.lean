@@ -291,12 +291,10 @@ private lemma exists_analytic_u_w_factor_near_lattice (h : M.Ok) {l : ℂ} (hl :
     have e := M.L.derivWeierstrassPExcept_def ⟨l, hl⟩ z
     linear_combination -e
   have hx : (z - l) ^ 2 * M.x z = Xt z := by
-    rw [hXdef]
-    simp only [Mdl.x, hP]
+    simp only [hXdef, Mdl.x, hP]
     field_simp
   have hy : (z - l) ^ 3 * M.y z = Yt z := by
-    rw [hYdef]
-    simp only [Mdl.y, hD]
+    simp only [hYdef, Mdl.y, hD]
     rw [← hx]
     field_simp
   have hy0 : M.y z ≠ 0 := by

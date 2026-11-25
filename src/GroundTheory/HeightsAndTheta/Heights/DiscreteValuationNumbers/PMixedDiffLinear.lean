@@ -50,8 +50,7 @@ theorem MixedDiffLinear.proof : MixedDiffLinear.Statement := by
   obtain ⟨h1, h2, h3, h4⟩ := foldr_diffStep_props (List.ofFn bs) f g c s b
   refine ⟨h1, h2, h3, h4, ?_⟩
   unfold mixedDiff
-  rw [List.ofFn_succ]
-  simp only [Matrix.cons_val_zero, Matrix.cons_val_succ, List.foldr_cons]
+  simp only [List.ofFn_succ, Matrix.cons_val_zero, Matrix.cons_val_succ, List.foldr_cons]
 
 end MixedDiffLinearProof
 

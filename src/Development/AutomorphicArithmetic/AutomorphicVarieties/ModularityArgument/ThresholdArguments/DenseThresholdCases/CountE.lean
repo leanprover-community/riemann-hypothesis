@@ -721,7 +721,7 @@ section -- clump:auto
 
 noncomputable def UpperTheory.Reformulated.B.StabilizerSubgroup.stabG :
     {G V : Type} →
-      [Group G] → [AddCommGroup V] → [_root_.Module ℂ V] → Representation ℂ G V → V → Subgroup G :=
+      [inst : Group G] → [inst_1 : AddCommGroup V] → [inst_2 : _root_.Module ℂ V] → Representation ℂ G V → V → Subgroup G :=
   fun {G _V} _ _ _ ρ v =>
     { carrier := {g : G | ρ g v = v}
       mul_mem' := fun {a b} ha hb => by

@@ -74,16 +74,14 @@ private lemma coeff_substX_lemma_2 (i : Fin 2) (f : PowerSeries k) (e : Fin 2 �
       rw [ite_eq_right, smul_zero]
       intro h'
       apply hd
-      rw [h']
-      simp
+      simp [h']
   · rw [ite_eq_right h]
     have hz : ∀ d : ℕ, (PowerSeries.coeff d f • if e = Finsupp.single i d then (1 : k) else 0) = 0 := by
       intro d
       rw [ite_eq_right, smul_zero]
       intro h'
       apply h
-      rw [h']
-      simp
+      simp [h']
     simp only [hz, finsum_zero]
 
 theorem exp_biv :

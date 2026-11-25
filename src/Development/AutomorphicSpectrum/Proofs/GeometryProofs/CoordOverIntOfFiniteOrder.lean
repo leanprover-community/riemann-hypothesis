@@ -166,8 +166,7 @@ theorem mem_adjoin_iff (hT : CoordTie o ξ x) {c : κ} (hxc : x c ≠ 0) {U : X.
     exact ⟨b, by simpa using hb⟩
   · rintro ⟨b, rfl⟩
     refine (hT.ring c hxc _).2 fun p hp => ?_
-    have hpU : p.1 ∈ U := (hmem p.1).2 ⟨p.2, hp⟩
-    exact ⟨_, genMap_germ_val U hg p hpU b⟩
+    exact ⟨_, genMap_germ_val U hg p ((hmem p.1).2 ⟨p.2, hp⟩) b⟩
 
 end Chart
 

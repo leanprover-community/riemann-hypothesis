@@ -120,8 +120,7 @@ theorem isClosed_subgroup_of_isOpen_inter_closure_subset (H : Subgroup G) {V : S
     map_mem_closure continuous_inv hg fun x hx => H.inv_mem hx
   obtain ⟨h, hhV, hhH⟩ := mem_closure_iff.1 (hmul _ hg' u huH) ((fun y => g * y) ⁻¹' V)
     (hV.preimage (continuous_const_mul g)) (by simpa using huV)
-  have : g * h ∈ H := hVH ⟨hhV, hmul g hg h hhH⟩
-  simpa using H.mul_mem this (H.inv_mem hhH)
+  simpa using H.mul_mem (hVH ⟨hhV, hmul g hg h hhH⟩ : g * h ∈ H) (H.inv_mem hhH)
 
 theorem isClosed_subgroup_of_eq_preimage_isConstructible (H : Subgroup G) {f : G → Z}
     (hf : Continuous f) {C : Set Z} (hC : IsConstructible C) (hH : (H : Set G) = f ⁻¹' C) :

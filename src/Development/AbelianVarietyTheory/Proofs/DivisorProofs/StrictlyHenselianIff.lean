@@ -83,8 +83,7 @@ theorem henselian_of_sections {R : Type} [CommRing R] [IsLocalRing R]
   refine ⟨s P.X, ?_, ?_⟩
   · simpa [P, IsRoot, coe_aeval_eq_eval] using (P.hasMap_X.map s).1
   · have hmem : P.X - algebraMap R P.Ring a₀ ∈ RingHom.ker ψ := by
-      rw [RingHom.mem_ker, map_sub, AlgHom.commutes, ResidueField.algebraMap_eq]
-      simp [ψ]
+      simp [RingHom.mem_ker, map_sub, AlgHom.commutes, ResidueField.algebraMap_eq, ψ]
     rw [← hs, Ideal.mem_comap] at hmem
     simpa using hmem
 
@@ -136,8 +135,7 @@ theorem sections_of_henselian_sepClosed {R : Type} [CommRing R] [IsLocalRing R]
   haveI : IsLocalHom (algebraMap R S) := ⟨fun r hr => by
     rw [IsScalarTower.algebraMap_apply R A S, IsLocalization.AtPrime.isUnit_to_map_iff S q] at hr
     exact (notMem_maximalIdeal).mp fun h => hr (by
-      have : r ∈ q.comap (algebraMap R A) := hq ▸ h
-      exact this)⟩
+      exact (hq ▸ h : r ∈ q.comap (algebraMap R A)))⟩
   haveI : Algebra.FormallyUnramified R S := Algebra.FormallyUnramified.comp R A S
   haveI : Algebra.EssFiniteType R S := Algebra.EssFiniteType.comp R A S
   have hsurj := IsSepClosed.algebraMap_surjective (ResidueField R) (ResidueField S)

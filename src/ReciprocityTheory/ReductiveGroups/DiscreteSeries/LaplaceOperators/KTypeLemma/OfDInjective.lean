@@ -149,8 +149,7 @@ theorem ofD_smul (c : ℂ) (u : D) : ofD (c • u) = conj c • ofD u := by
 
 theorem ofD_injective : Function.Injective (ofD : D → cjSub D) := by
   intro u v h
-  have := congrArg toD h
-  simpa using this
+  simpa using congrArg toD h
 
 def ofDh : D →+ cjSub D where
   toFun := ofD

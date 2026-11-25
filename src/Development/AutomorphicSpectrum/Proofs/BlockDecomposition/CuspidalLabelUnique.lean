@@ -427,7 +427,6 @@ theorem hasCuspLabel_unique : ∀ (K : Type) [Field K] [Fintype K] [DecidableEq 
   have hx0' : x' ≠ 0 := by
     rw [← hs']
     exact pow_ne_zero _ (gen_ne_zero C hd)
-  have hq : 2 ≤ Fintype.card K := two_le_card
   have epow : ∀ (y : ℂ) (a j : ℕ), (y ^ Fintype.card K ^ a) ^ j = y ^ (j * Fintype.card K ^ a) := by
     intro y a j
     rw [← pow_mul, mul_comm]
@@ -436,7 +435,7 @@ theorem hasCuspLabel_unique : ∀ (K : Type) [Field K] [Fintype K] [DecidableEq 
       ∑ a : Fin (Fintype.card ι), (C.ι x' ^ Fintype.card K ^ (a : ℕ)) ^ j := by
     intro j hj1 hjd
     obtain ⟨γ, hγ, hγr⟩ :=
-      exists_elliptic C hd j (fun e he hed => reg_small_lemma_4 hq hj1 hjd e he hed)
+      exists_elliptic C hd j (fun e he hed => reg_small_lemma_4 two_le_card hj1 hjd e he hed)
     have h1 := htr x hx γ hγ _ hγr j rfl
     have h2 := htr' x' hx' γ hγ _ hγr j rfl
     rw [h1] at h2

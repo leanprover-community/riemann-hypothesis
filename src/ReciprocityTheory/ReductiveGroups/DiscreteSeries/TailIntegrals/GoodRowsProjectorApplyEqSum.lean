@@ -45,20 +45,16 @@ theorem sum_split (f : Fin (2 * (1 + r') + k + 1) → ℂ) :
 
 theorem goodRowsProjector_apply_eq_sum (p : Fin (2 * (1 + r') + k + 1)) : e0 k r' p = if p.val = 0 then 1 else 0 := by
   have key : (p = eI k (1 + r') (a0 r')) ↔ p.val = 0 := by
-    rw [Fin.ext_iff]
-    simp only [eI, a0]
+    simp only [Fin.ext_iff, eI, a0]
   unfold e0 bvec
-  rw [Pi.single_apply]
-  simp only [key]
+  simp only [Pi.single_apply, key]
 
 theorem last_basis_apply (p : Fin (2 * (1 + r') + k + 1)) :
     es0 k r' p = if p.val = 2 * (1 + r') + k then 1 else 0 := by
   have key : (p = esI k (1 + r') (a0 r')) ↔ p.val = 2 * (1 + r') + k := by
-    rw [Fin.ext_iff]
-    simp only [esI, a0, Nat.sub_zero]
+    simp only [Fin.ext_iff, esI, a0, Nat.sub_zero]
   unfold es0 bvec
-  rw [Pi.single_apply]
-  simp only [key]
+  simp only [Pi.single_apply, key]
 
 theorem dot_lift_lift (u v : Fin (2 * r' + k + 1) → ℂ) :
     star (liftVec k 1 r' u) ⬝ᵥ liftVec k 1 r' v = star u ⬝ᵥ v := by

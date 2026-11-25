@@ -53,9 +53,9 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.ExistsSmulMemOfIsLattice₂.dual_lattice_denom :
-    ∀ {A : Type} [CommRing A]
-    [IsDomain A] {F V : Type} [Field F] [Algebra A F] [IsFractionRing A F] [AddCommGroup V]
-    [_root_.Module F V] [_root_.Module A V] [IsScalarTower A F V] (Y : Submodule A V),
+    ∀ {A : Type} [inst : CommRing A]
+    [IsDomain A] {F V : Type} [inst_2 : Field F] [inst_3 : Algebra A F] [IsFractionRing A F] [inst_5 : AddCommGroup V]
+    [inst_6 : _root_.Module F V] [inst_7 : _root_.Module A V] [inst_8 : IsScalarTower A F V] (Y : Submodule A V),
     Submodule.IsFullLattice F Y → ∀ (z : V), ∃ (a : A), a ≠ (0 : A) ∧ a • z ∈ Y := by
   intro A _ _ F V _ _ _ _ _ _ _ Y hY z
   have hz : z ∈ Submodule.span F (Y : Set V) := by

@@ -87,8 +87,7 @@ theorem le_order_sum {ι : Type*} {k : ℕ∞} (s : Finset ι) {f : ι → MvPow
 
 theorem coeff_eq_of_le_order_sub {k : ℕ} {f g : MvPowerSeries σ R} (h : (k : ℕ∞) ≤ (f - g).order)
     {d : σ →₀ ℕ} (hd : d.degree < k) : coeff d f = coeff d g := by
-  have h' : (d.degree : ℕ∞) < (f - g).order := lt_of_lt_of_le (by exact_mod_cast hd) h
-  have := coeff_of_lt_order h'
+  have := coeff_of_lt_order (lt_of_lt_of_le (by exact_mod_cast hd) h)
   rwa [map_sub, sub_eq_zero] at this
 
 theorem eq_of_forall_le_order_sub {f g : MvPowerSeries σ R}

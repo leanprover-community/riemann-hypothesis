@@ -45,17 +45,17 @@ import Mathlib.Topology.Sheaves.Init
 namespace UpperTheory.Reformulated.B.Qe28
 
 @[reducible] noncomputable def FDSec : {E : Type} →
-  [Field E] →
-    [NumberField E] →
-      [NumberField.IsCMField E] →
+  [inst : Field E] →
+    [inst_1 : NumberField E] →
+      [inst_2 : NumberField.IsCMField E] →
         {r : ℕ} → {Comp : Type} → (Comp → ReciprocityTheory.ChartRestriction.G.FD.Data E r) → Type :=
   fun {E} [Field E] [NumberField E] [NumberField.IsCMField E] {r} {Comp} X =>
     (c : Comp) → ReciprocityTheory.ChartRestriction.G.FD.Frame (X c).Ψ r → ℂ
 
 noncomputable def IsHolCusp : {E : Type} →
-  [Field E] →
-    [NumberField E] →
-      [NumberField.IsCMField E] →
+  [inst : Field E] →
+    [inst_1 : NumberField E] →
+      [inst_2 : NumberField.IsCMField E] →
         {r : ℕ} →
           {Comp : Type} →
             (X : Comp → ReciprocityTheory.ChartRestriction.G.FD.Data E r) →
@@ -64,9 +64,9 @@ noncomputable def IsHolCusp : {E : Type} →
   fun {E} [Field E] [NumberField E] [NumberField.IsCMField E] {_} {Comp} X la P => ∀ (c : Comp), P c ∈ (X c).SS (la c)
 
 noncomputable def holSub : {E : Type} →
-  [Field E] →
-    [NumberField E] →
-      [NumberField.IsCMField E] →
+  [inst : Field E] →
+    [inst_1 : NumberField E] →
+      [inst_2 : NumberField.IsCMField E] →
         {r : ℕ} →
           {Comp : Type} →
             (X : Comp → ReciprocityTheory.ChartRestriction.G.FD.Data E r) →
@@ -75,8 +75,8 @@ noncomputable def holSub : {E : Type} →
   fun {E} [Field E] [NumberField E] [NumberField.IsCMField E] {_} {_} X la =>
     Submodule.span ℂ {P | IsHolCusp X la P}
 
-theorem holSub_mul : ∀ {E : Type} [Field E] [NumberField E]
-  [NumberField.IsCMField E] {r : ℕ},
+theorem holSub_mul : ∀ {E : Type} [inst : Field E] [inst_1 : NumberField E]
+  [inst_2 : NumberField.IsCMField E] {r : ℕ},
   ReciprocityTheory.ChartRestriction.G.FD.SiegelSpaceAlgebra (E := E) →
     ∀ {Comp : Type} {X : Comp → ReciprocityTheory.ChartRestriction.G.FD.Data E r}
       {la la' : (k : Comp) → ReciprocityTheory.ChartRestriction.G.FD.Wt (X k).Ψ r}

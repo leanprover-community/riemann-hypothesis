@@ -73,8 +73,7 @@ theorem exists_int_exponent_cyclotomic {Ω : Type} [Field Ω] [Algebra ℚ Ω] [
   have hsη : s (ζ ^ k) = (ζ ^ k) ^ e := by
     rw [map_pow, hs ζ hζ, ← zpow_natCast, ← zpow_natCast, ← _root_.zpow_mul, ← _root_.zpow_mul, mul_comm]
   set c := (cyclotomicCharacter Ω l s.toRingEquiv : ℤ_[l]) with hc
-  have hpow : (ζ ^ k) ^ (l ^ n) = 1 := hη.pow_eq_one
-  have hspec := cyclotomicCharacter.spec (L := Ω) l s.toRingEquiv (ζ ^ k) hpow
+  have hspec := cyclotomicCharacter.spec (L := Ω) l s.toRingEquiv (ζ ^ k) hη.pow_eq_one
   have heq : (ζ ^ k) ^ e = (ζ ^ k) ^ (((cyclotomicCharacter Ω l s.toRingEquiv).val.toZModPow n).val : ℤ) := by
     rwa [← hsη, zpow_natCast]
   have hdvd : ((l ^ n : ℕ) : ℤ) ∣ e - (((cyclotomicCharacter Ω l s.toRingEquiv).val.toZModPow n).val : ℤ) := by
@@ -84,8 +83,7 @@ theorem exists_int_exponent_cyclotomic {Ω : Type} [Field Ω] [Algebra ℚ Ω] [
     rw [map_sub, map_intCast, hc, sub_eq_zero]
     have := (ZMod.intCast_zmod_eq_zero_iff_dvd _ (l ^ n)).mpr hdvd
     rw [Int.cast_sub, sub_eq_zero] at this
-    rw [this]
-    simp
+    simp [this]
   have hmem : (e : ℤ_[l]) - c ∈ RingHom.ker (PadicInt.toZModPow n : ℤ_[l] →+* ZMod (l ^ n)) := hz
   rwa [PadicInt.ker_toZModPow, ← Ideal.span_singleton_pow] at hmem
 

@@ -182,8 +182,7 @@ theorem UpperTheory.V.KH.hZero :
   have hak' : ∀ f : X →₀ ℤ, a' f = 0 ↔
       ∃ x ∈ LinearMap.ker L, f - x ∈ Submodule.span ℤ S := by
     intro f
-    rw [hL]
-    simp only [← hS]
+    simp only [hL, ← hS]
     exact hak f
   let b : (X →₀ ℤ) →+ (_ ⧸ (Submodule.span ℤ S).map L) :=
     (((Submodule.span ℤ S).map L).mkQ ∘ₗ L).toAddMonoidHom

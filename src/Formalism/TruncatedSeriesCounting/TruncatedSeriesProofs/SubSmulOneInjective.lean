@@ -37,8 +37,7 @@ theorem len_coker_add {A B C : Type} [AddCommGroup A] [Module O A] [AddCommGroup
   · rw [← LinearMap.ker_eq_bot, eq_bot_iff]
     intro x hx
     obtain ⟨x, rfl⟩ := Submodule.Quotient.mk_surjective _ x
-    rw [LinearMap.mem_ker] at hx
-    simp only [F, Submodule.mapQ_apply, Submodule.Quotient.mk_eq_zero] at hx
+    simp only [LinearMap.mem_ker, F, Submodule.mapQ_apply, Submodule.Quotient.mk_eq_zero] at hx
     obtain ⟨y, hy⟩ := hx
     have hgy : g y = 0 := by
       apply hc

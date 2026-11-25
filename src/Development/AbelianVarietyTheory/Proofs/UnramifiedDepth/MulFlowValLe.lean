@@ -100,8 +100,7 @@ lemma maxFlow_le_div (hl : 1 ≤ l) {D : ZMod d → ℝ} (hD : ∀ a, 0 ≤ D a)
 
 lemma maxFlow_nonneg (hl : 1 ≤ l) {D : ZMod d → ℝ} (hD : ∀ a, 0 ≤ D a) :
     0 ≤ maxFlow l d D := by
-  have := le_maxFlow hl (isFlow_zero (l := l) hD)
-  simpa [flowVal] using this
+  simpa [flowVal] using le_maxFlow hl (isFlow_zero (l := l) hD)
 
 lemma mul_maxFlow_le (hl : 1 ≤ l) {c : ℝ} {D D' : ZMod d → ℝ} (hc : 0 ≤ c) (hD : ∀ a, 0 ≤ D a)
     (h : ∀ a, c * D a ≤ D' a) : c * maxFlow l d D ≤ maxFlow l d D' := by

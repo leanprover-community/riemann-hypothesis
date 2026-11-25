@@ -149,7 +149,7 @@ theorem cechPt_nat {Y X : Scheme.{0}} (f : Y ⟶ X) (k : ℕ) {Z Z' : Scheme.{0}
 
 theorem cechPt_face {Y X : Scheme.{0}} (f : Y ⟶ X) (k : ℕ) {Z : Scheme.{0}} (x : Z ⟶ X)
     (y : Fin (k + 2) → (Z ⟶ Y)) (h : ∀ i, y i ≫ f = x) (i : Fin (k + 2)) :
-    ((cech f).δ i).app (op Z) (cechPt f (k + 1) x y h) = cechPt f k x (fun j => y (i.succAbove j)) (fun _ => h _) := by
+    ((cech f).δ i).app (op Z) (cechPt f (k + 1) x y h) = cechPt f k x (fun j => y (i.succAbove j)) (fun j => h _) := by
   apply map_cechPt
   apply WidePullback.hom_ext
   · intro j

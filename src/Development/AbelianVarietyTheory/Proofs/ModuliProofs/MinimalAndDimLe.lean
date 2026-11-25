@@ -117,8 +117,7 @@ theorem _root_.GlobalTheory.ZM.FullLevel.dim_generic_chart {o K : Type} [CommRin
   haveI : IsOpenImmersion j := hVa.isOpenImmersion_fromSpec
   letI : Algebra o A := (Spec.preimage (j ≫ s)).hom.toAlgebra
   have hjs : j ≫ s = _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.spMap (algebraMap o A) := by
-    rw [RingHom.algebraMap_toAlgebra]
-    simp [_root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.spMap]
+    simp [RingHom.algebraMap_toAlgebra, _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.spMap]
   have hbound := h A j inferInstance hjs
   let e : A ⊗[o] K ≃ₐ[o] FractionRing o ⊗[o] A :=
     (Algebra.TensorProduct.comm o A K).trans
@@ -139,7 +138,7 @@ theorem _root_.GlobalTheory.ZM.FullLevel.dim_generic_chart {o K : Type} [CommRin
     show pr (F w) ∈ O
     rw [hF]
     exact hVO hmem'
-  have hy : x y₀ ∈ Set.range F := by
+  obtain ⟨z, hz⟩ : x y₀ ∈ Set.range F := by
     have : x y₀ ∈ Set.range (pullback.snd j pr) := by
       rw [IsOpenImmersion.range_pullbackSnd]
       show pr (x y₀) ∈ j.opensRange
@@ -148,7 +147,6 @@ theorem _root_.GlobalTheory.ZM.FullLevel.dim_generic_chart {o K : Type} [CommRin
     refine ⟨I.inv p, ?_⟩
     show (I.inv ≫ I.hom ≫ pullback.snd j pr) p = _
     rw [Iso.inv_hom_id_assoc, hp]
-  obtain ⟨z, hz⟩ := hy
   let g := IsOpenImmersion.lift x F hrange
   have hg : g ≫ x = F := IsOpenImmersion.lift_fac x F hrange
   haveI : IsOpenImmersion g := by
@@ -165,10 +163,8 @@ theorem _root_.GlobalTheory.ZM.FullLevel.dim_generic_chart {o K : Type} [CommRin
   have hzmin : z.asIdeal ∈ minimalPrimes (FractionRing o ⊗[o] A) := by
     refine ⟨⟨z.isPrime, bot_le⟩, fun p' hp' hp'le => ?_⟩
     let w : PrimeSpectrum (FractionRing o ⊗[o] A) := ⟨p', hp'.1⟩
-    have hwz : w ≤ z := hp'le
-    have h1 : gf w ≤ y₀ := hgz ▸ (hle w z).2 hwz
-    have h2 : y₀ ≤ gf w := hq.2 ⟨(gf w).isPrime, bot_le⟩ h1
-    exact (hle z w).1 (hgz ▸ h2)
+    have h1 : gf w ≤ y₀ := hgz ▸ (hle w z).2 hp'le
+    exact (hle z w).1 (hgz ▸ (hq.2 ⟨(gf w).isPrime, bot_le⟩ h1))
   have hq' : (gf z).asIdeal = q := congrArg PrimeSpectrum.asIdeal hgz
   calc d ≤ ringKrullDim ((FractionRing o ⊗[o] A) ⧸ z.asIdeal) := hbound _ hzmin
     _ = Order.krullDim (PrimeSpectrum.zeroLocus (z.asIdeal : Set (FractionRing o ⊗[o] A))) :=

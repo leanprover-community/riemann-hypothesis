@@ -80,8 +80,7 @@ theorem codiscreteWithin_Hs_neBot : (Filter.codiscreteWithin Hs).NeBot := by
   rw [Set.empty_union] at h1
   have h2 : Hs ∈ 𝓝[≠] Complex.I := mem_nhdsWithin_of_mem_nhds (isOpen_Hs.mem_nhds hI)
   have h3 : (∅ : Set ℂ) ∈ 𝓝[≠] Complex.I := by
-    have := Filter.inter_mem h2 h1
-    simpa using this
+    simpa using Filter.inter_mem h2 h1
   exact (Filter.empty_mem_iff_bot.mp h3 ▸ (inferInstance : (𝓝[≠] Complex.I).NeBot)).ne rfl
 
 theorem eqOn_zero_of_germ_eq_zero {a : ℂ → ℂ} (ha : DifferentiableOn ℂ a Hs) (h0 : (a : Mero) = 0) :
@@ -101,8 +100,7 @@ theorem germ_main : Nontrivial Mero ∧ (∀ a b : ℂ → ℂ, DifferentiableOn
   · intro a b ha hb hab z hz
     have h0 : ((a - b : ℂ → ℂ) : Mero) = 0 := by
       rw [Filter.Germ.coe_sub, hab, sub_self]
-    have := eqOn_zero_of_germ_eq_zero (ha.sub hb) h0 z hz
-    simpa [sub_eq_zero] using this
+    simpa [sub_eq_zero] using eqOn_zero_of_germ_eq_zero (ha.sub hb) h0 z hz
   · intro a ha hne
     have han : AnalyticOnNhd ℂ a Hs := ha.analyticOnNhd isOpen_Hs
     have hev : ∀ᶠ z in Filter.codiscreteWithin Hs, a z ≠ 0 := by

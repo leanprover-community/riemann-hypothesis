@@ -76,7 +76,6 @@ theorem inv_entry_le_one (v : Valuation k Γ) {r : Γ} (hr : r < 1)
   refine (hM i j).trans ?_
   by_contra hlt
   have hgt : 1 < v (B a b) := not_le.mp hlt
-  have hpos : 0 < v (B a b) := zero_lt_one.trans hgt
   have hB : B = 1 - B * A := by
     have : B + B * A = 1 := by rw [← hBA, mul_add, mul_one]
     exact eq_sub_of_add_eq this
@@ -87,7 +86,7 @@ theorem inv_entry_le_one (v : Valuation k Γ) {r : Γ} (hr : r < 1)
     exact mul_le_mul' (hM a l) (hA l b)
   have hlt' : v (B a b) * r < v (B a b) := by
     calc v (B a b) * r < v (B a b) * 1 := by
-          exact mul_lt_mul_of_pos_left hr hpos
+          exact mul_lt_mul_of_pos_left hr (zero_lt_one.trans hgt)
       _ = v (B a b) := mul_one _
   have hone : v ((1 : Matrix n n k) a b) ≤ 1 := by
     by_cases h : a = b

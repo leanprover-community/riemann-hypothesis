@@ -197,8 +197,7 @@ theorem volume_simplex_le (ι : Type) [Fintype ι] (a : ι → ℝ) (L : ℝ) (h
     have hnull : volume (⋃ i, {t : ι → ℝ | t i = a i}) = 0 :=
       measure_iUnion_null fun i => Measure.pi_hyperplane (fun _ : ι => (volume : Measure ℝ)) i (a i)
     refine le_trans (measure_mono hsub) (le_trans (measure_union_le _ _) ?_)
-    rw [hnull, add_zero]
-    simp only [sub_eq_add_neg]
+    simp only [hnull, add_zero, sub_eq_add_neg]
     rw [measure_preimage_add_right]
     exact volume_pos_simplex_le ι L hL
 
@@ -362,8 +361,7 @@ theorem regulator_le_sum_class : ∀ (K : Type) [Field K] [NumberField K], IsTot
         exact (inv_injective this).symm
       · have h0 : 0 ≤ Real.log (Y / Ideal.absNorm I) :=
           hsum ▸ Finset.sum_nonneg fun w _ => hs w
-        have := (Real.log_nonneg_iff (div_pos hD (hpos I hI0))).1 h0
-        exact (one_le_div (hpos I hI0)).1 this
+        exact (one_le_div (hpos I hI0)).1 ((Real.log_nonneg_iff (div_pos hD (hpos I hI0))).1 h0)
     have hyI : Ideal.span {x} = Ideal.span {y I} := hI.trans (hy I ⟨x, hI⟩).symm
     obtain ⟨u, hu⟩ := Ideal.span_singleton_eq_span_singleton.1 hyI
     have key : ∀ i : {w : InfinitePlace K // w ≠ w₀},

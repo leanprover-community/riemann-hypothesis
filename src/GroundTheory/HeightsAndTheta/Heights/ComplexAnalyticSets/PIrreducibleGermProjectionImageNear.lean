@@ -70,8 +70,7 @@ theorem IrreducibleGermProjectionImageNear.proof (hdim : IrreducibleGermRegularD
     exact hcl
   obtain ⟨hrX, e, A', O, V', g, hO, hV', hrV', hg, hA'g, hXV'⟩ := hr
   have hgX : ∀ t ∈ O, g t ∈ X ∩ V1 := fun t ht => by
-    have : g t ∈ X ∩ V1 ∩ V' := hXV' ▸ mem_image_of_mem g ht
-    exact this.1
+    exact (hXV' ▸ mem_image_of_mem g ht : g t ∈ X ∩ V1 ∩ V').1
   have hN12 : ∀ z ∈ V1, z ∈ N1 ∩ N2 := fun z hz => interior_subset hz.1.2.1
   have hchart : X ∩ (V1 ∩ V') = g '' O := by rw [← hXV']; exact (inter_assoc X V1 V').symm
   have hde : d ≤ e := hdimN r ⟨hrX.1, (hN12 r hrX.2).1⟩ e A' O (V1 ∩ V') g hO (hV1o.inter hV')

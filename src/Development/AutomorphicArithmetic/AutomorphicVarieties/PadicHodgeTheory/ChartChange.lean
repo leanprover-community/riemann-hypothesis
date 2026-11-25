@@ -62,7 +62,7 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.MemSpanMonomial.mem_span_X :
-    ∀ {O σ : Type} [CommRing O] [Fintype σ]
+    ∀ {O σ : Type} [inst : CommRing O] [inst_1 : Fintype σ]
     (f : MvPowerSeries σ O),
     (MvPowerSeries.constantCoeff : MvPowerSeries σ O → O) f = (0 : O) →
       ∃ (g : σ → MvPowerSeries σ O), f = ∑ i : σ, MvPowerSeries.X i * g i := by

@@ -74,8 +74,7 @@ theorem preimage_eq_of_finite_appLE : ∀ {X Y : Scheme.{0}} [IsIntegral Y] (π 
   refine le_antisymm (fun x hx => ?_) h
   obtain ⟨⟨w, hw⟩, hz⟩ : (⟨x, hx⟩ : π ⁻¹ᵁ U) ∈ Set.range (Y.homOfLE h).base := by
     rw [huniv]; trivial
-  have hz' : ((Y.homOfLE h) ⟨w, hw⟩).1 = x := congrArg Subtype.val hz
-  have hzx : w = x := (Scheme.homOfLE_apply h ⟨w, hw⟩).symm.trans hz'
+  have hzx : w = x := (Scheme.homOfLE_apply h ⟨w, hw⟩).symm.trans (congrArg Subtype.val hz)
   exact hzx ▸ hw
 
 end GlobalTheory

@@ -142,8 +142,7 @@ theorem exists_int_of_intM {κ ι : Type} [Fintype κ] [Fintype ι] {R : ℕ} (h
     {x : Matrix κ ι ℚ} (hx : IntM ((R : ℚ) • x)) :
     ∃ n : κ → ι → ℤ, x = Matrix.of fun k i => (n k i : ℚ) / R := by
   have : ∀ k i, ∃ n : ℤ, (n : ℚ) = R * x k i := fun k i => by
-    have := IsIntegrallyClosed.isIntegral_iff.1 (hx k i)
-    simpa using this
+    simpa using IsIntegrallyClosed.isIntegral_iff.1 (hx k i)
   choose n hn using this
   refine ⟨n, ?_⟩
   ext k i

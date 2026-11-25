@@ -284,7 +284,7 @@ theorem exists_isIsoCols (c : Coeff l) (T : CDVR) (io : c.F →+* T.Fr) (p : ℕ
       simpa [h21] using hh
     · simp [h11, h12, h21, h22, hbb]
 
-theorem exists_isCols : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H) (l : Level H) (_ : Moduli Dw l) (c : Coeff l), ∀ (p : ℕ) [Fact p.Prime] (la : PointsOfFlagModel.abelian₂ p c) (T : CDVR) (io : c.F →+* T.Fr) (e : ℕ), OverLa la.1 T.V io e → ∀ (cx : Lt1 Dw → ℕ) (n : ℕ), (∑ f : Lt1 Dw, if cx f ≠ 0 then 2 * rk f else 0) ≤ n → ∃ B : ∀ f : Lt1 Dw, Fin (rk f) → Fin n → T.V, IsCols c T io p cx B := by
+theorem exists_isCols : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l), ∀ (p : ℕ) [Fact p.Prime] (la : PointsOfFlagModel.abelian₂ p c) (T : CDVR) (io : c.F →+* T.Fr) (e : ℕ), OverLa la.1 T.V io e → ∀ (cx : Lt1 Dw → ℕ) (n : ℕ), (∑ f : Lt1 Dw, if cx f ≠ 0 then 2 * rk f else 0) ≤ n → ∃ B : ∀ f : Lt1 Dw, Fin (rk f) → Fin n → T.V, IsCols c T io p cx B := by
   intro E _ _ _ H Dw l _ c p _ la T io e ho cx n hn
   classical
   have hp := not_isUnit_of_overLa la ho

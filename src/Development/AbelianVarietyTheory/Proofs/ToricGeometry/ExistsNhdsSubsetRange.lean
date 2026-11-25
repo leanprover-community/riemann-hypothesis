@@ -398,8 +398,7 @@ theorem cone_eq_zeroLocus {E ι : Type} [NormedAddCommGroup E] [NormedSpace ℂ 
             have h2 := (hasFDerivAt_fst (𝕜 := ℂ) (p := w₀)).mul
               (((hf c) w₀.2).hasFDerivAt.comp w₀ hasFDerivAt_snd)
             have h3 : fderiv ℂ (fun w : ℂ × E => w.1 * f c w.2) w₀ = _ := h2.fderiv
-            rw [h3] at h1
-            simp at h1
+            simp [h3] at h1
             linear_combination h1
           have h2 : ξ.2 = 0 := htan w₀.2 ξ.2 (-ξ.1 / w₀.1) fun c => by
             field_simp

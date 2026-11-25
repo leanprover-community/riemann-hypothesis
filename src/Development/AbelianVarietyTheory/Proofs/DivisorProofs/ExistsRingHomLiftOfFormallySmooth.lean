@@ -60,8 +60,7 @@ theorem exists_ringHom_lift_of_formallySmooth {R A C : Type} [CommRing R] [CommR
   let g' : A →ₐ[R] C ⧸ I :=
     { g with
       commutes' := fun r => by
-        have := congrArg (· r) hg
-        exact this }
+        exact (congrArg (· r) hg) }
   refine ⟨(Algebra.FormallySmooth.lift I hI g').toRingHom, fun x => ?_, fun r => ?_⟩
   · exact Algebra.FormallySmooth.mk_lift I hI g' x
   · have := (Algebra.FormallySmooth.lift I hI g').commutes r

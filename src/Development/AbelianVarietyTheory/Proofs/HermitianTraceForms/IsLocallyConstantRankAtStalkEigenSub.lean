@@ -221,8 +221,7 @@ noncomputable def tensorAction (ρ : O →+* Module.End R N) : R ⊗[ℤ] O →�
 
 @[simp] theorem tensorAction_tmul (ρ : O →+* Module.End R N) (r : R) (a : O) (x : N) :
     tensorAction ρ (r ⊗ₜ a) x = r • ρ a x := by
-  rw [tensorAction, Algebra.TensorProduct.lift_tmul]
-  simp [Algebra.ofId_apply]
+  simp [tensorAction, Algebra.TensorProduct.lift_tmul, Algebra.ofId_apply]
 
 theorem tensorAction_of_mem {ρ : O →+* Module.End R N} {σ : ι → O →+* R} {i : ι} {x : N}
     (hx : x ∈ eigenSub ρ (σ i)) (t : R ⊗[ℤ] O) :

@@ -87,8 +87,7 @@ theorem isClosed_image_of_closed {T : Scheme.{0}} (t : T ⟶ Spec (CommRingCat.o
   haveI : AlgebraicGeometry.LocallyOfFiniteType (g ≫ t) := by rw [hg]; infer_instance
   haveI : AlgebraicGeometry.LocallyOfFiniteType g := AlgebraicGeometry.locallyOfFiniteType_of_comp g t
   have hx : x ∈ closedPoints S := by simpa [mem_closedPoints_iff] using hc
-  have := g.closePoints_subset_preimage_closedPoints hx
-  simpa [mem_closedPoints_iff] using this
+  simpa [mem_closedPoints_iff] using g.closePoints_subset_preimage_closedPoints hx
 
 theorem residueFieldMap_constRes {T : Scheme.{0}} (t : T ⟶ Spec (CommRingCat.of ℂ)) (g : S ⟶ T)
     (hg : g ≫ t = s) (x : S) :

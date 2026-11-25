@@ -54,8 +54,8 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Qg4.sxLimPt :
-    ∀ {Λ A R S : Type} [CommRing Λ] [CommRing A] [Algebra Λ A]
-    [CommRing R] [Algebra Λ R] (I : Ideal R) [IsAdicComplete I R] (e : S → A) (y : S → R),
+    ∀ {Λ A R S : Type} [inst : CommRing Λ] [inst_1 : CommRing A] [inst_2 : Algebra Λ A]
+    [inst_3 : CommRing R] [inst_4 : Algebra Λ R] (I : Ideal R) [IsAdicComplete I R] (e : S → A) (y : S → R),
     (∀ (N : ℕ),
         ∃ (f : A →ₐ[Λ] R ⧸ I ^ (N + (1 : ℕ))),
           ∀ (s : S),

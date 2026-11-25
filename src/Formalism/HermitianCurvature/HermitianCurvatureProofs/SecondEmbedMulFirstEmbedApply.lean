@@ -120,8 +120,7 @@ theorem ins_mul_eU (a : S) (j k : Fin 2) (m : SlopeTestRemainingChoices S A) (N 
     (hN : FreeOf2 a N) :
     ins a N * (m * eU a j k) = ∑ r, eU a r k * (N r j * m) := by
   have hm' : ∀ i j, Commute (eU a i j) m := hm
-  have h1 : ∀ r s, FreeOf a (N r s) := hN
-  have hN' : ∀ r s i j, Commute (eU a i j) (N r s) := fun r s => h1 r s
+  have hN' : ∀ r s i j, Commute (eU a i j) (N r s) := fun r s => hN r s
   rw [← mul_assoc, ins_mul a m N, Finset.sum_mul]
   refine Finset.sum_congr rfl fun r _ => ?_
   rw [Finset.sum_mul, Finset.sum_eq_single j]
@@ -145,13 +144,11 @@ theorem secondEmbed_mul_firstEmbed_apply {B : Type} [Ring B] (M N : M2 B) (i r j
 
 theorem Pf_mul {B : Type} [Ring B] (X : Matrix (Fin 2 × Fin 2) (Fin 2 × Fin 2) B) (i r : Fin 2)
     (y : Fin 2 × Fin 2) : (Pf B * X) (i, r) y = X (r, i) y := by
-  rw [Matrix.mul_apply, Fintype.sum_prod_type]
-  simp [Pf, ite_and, ite_mul, Finset.sum_ite_eq]
+  simp [Matrix.mul_apply, Fintype.sum_prod_type, Pf, ite_and, ite_mul, Finset.sum_ite_eq]
 
 theorem mul_Pf {B : Type} [Ring B] (X : Matrix (Fin 2 × Fin 2) (Fin 2 × Fin 2) B) (j s : Fin 2)
     (x : Fin 2 × Fin 2) : (X * Pf B) x (j, s) = X x (s, j) := by
-  rw [Matrix.mul_apply, Fintype.sum_prod_type]
-  simp [Pf, ite_and, mul_ite, Finset.sum_ite_eq']
+  simp [Matrix.mul_apply, Fintype.sum_prod_type, Pf, ite_and, mul_ite, Finset.sum_ite_eq']
 
 theorem rtt_entry {B : Type} [Ring B] [Algebra K B] (M N : M2 B) (D : K)
     (h : (D • (1 : Matrix (Fin 2 × Fin 2) (Fin 2 × Fin 2) B) - Pf B) * E1 M * E2 N =
@@ -200,8 +197,7 @@ theorem minus_core (b : S) (M N : M2 (SlopeTestRemainingChoices S A)) (d : K) (h
       M * (d • (1 : M2 (SlopeTestRemainingChoices S A)) - Q0 b) * d0 (ins b Nᵀ) := by
   have hM' : ∀ i j, FreeOf b (M i j) := hM
   have hC : ∀ i j k l, Commute (eU b k l) (M i j) := fun i j => hM' i j
-  have h1 : ∀ r s, FreeOf b (N r s) := hN
-  have hT : FreeOf2 b Nᵀ := fun r s => h1 s r
+  have hT : FreeOf2 b Nᵀ := fun r s => hN s r
   refine Matrix.ext fun i j => ?_
   have key : ∀ r s, d • (eU b r s * (N s r * M i j)) - eU b r s * (N i r * M s j) =
       d • (eU b r s * (M i j * N s r)) - eU b r s * (M i r * N s j) := fun r s => by
@@ -246,18 +242,16 @@ theorem exchange_relation_plus : Formalism.FourierDecayAlt.Wd.ExchPlus := by
   unfold Formalism.FourierDecayAlt.Wd.ExchPlus
   intro K A S _ _ _ _ _ _ _ _ Ω RR TT q a Y Ya hmod hfree hY hYa
   obtain ⟨_, _, hrtt, _, _⟩ := hmod
-  have hr : RTTat TT Ya Y := hrtt Ya hYa Y hY
   have hc := Wd3.plus_core a (TT Y) (TT Ya) (Y - Ya) (hfree Y) (hfree Ya)
-    (Wd3.rtt_entry (TT Y) (TT Ya) (Y - Ya) hr)
+    (Wd3.rtt_entry (TT Y) (TT Ya) (Y - Ya) (hrtt Ya hYa Y hY))
   rw [Rh0, Matrix.mul_smul, Matrix.smul_mul, Matrix.smul_mul, hc]
 
 theorem exchange_relation_minus : Formalism.FourierDecayAlt.Wd.ExchMinus := by
   unfold Formalism.FourierDecayAlt.Wd.ExchMinus
   intro K A S _ _ _ _ _ _ _ _ Ω RR TT q b Y Yb hmod hfree hY hYb
   obtain ⟨_, _, hrtt, _, _⟩ := hmod
-  have hr : RTTat TT Y Yb := hrtt Y hY Yb hYb
   have hc := Wd3.minus_core b (TT Y) (TT Yb) (Yb - Y) (hfree Y) (hfree Yb)
-    (Wd3.rtt_entry (TT Yb) (TT Y) (Yb - Y) hr)
+    (Wd3.rtt_entry (TT Yb) (TT Y) (Yb - Y) (hrtt Y hY Yb hYb))
   simp only [Rht0, Matrix.mul_smul, Matrix.smul_mul, hc]
 
 end Formalism.FourierDecayAlt.P

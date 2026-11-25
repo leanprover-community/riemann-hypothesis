@@ -270,8 +270,7 @@ theorem skew (hσ : IsURepOn (UJset ε) σ) {X : Matrix (Fin n) (Fin n) ℂ} (hX
   have h := HasDerivAt.inner ℂ hv hw
   simp only [inner_rep hσ (exp_mem (inG_smul _ hX)), Complex.ofReal_zero, zero_smul, NormedSpace.exp_zero,
     hσ.1.1, one_apply_eq_self] at h
-  have := h.unique (hasDerivAt_const _ _)
-  linear_combination this
+  linear_combination (h.unique (hasDerivAt_const _ _))
 
 theorem conj_deriv (hσ : IsURepOn (UJset ε) σ) {X g : Matrix (Fin n) (Fin n) ℂ} (hX : inG ε X)
     (hg : g ∈ UJset ε) {v v' : H}

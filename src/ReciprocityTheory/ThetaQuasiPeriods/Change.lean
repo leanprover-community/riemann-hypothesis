@@ -34,8 +34,7 @@ theorem quad_diag_int (B : Matrix ι ι ℤ) (hB : B.IsSymm) (l : ι → ℤ) :
       · intro p _ hne heq
         apply hne
         have h12 : p.1 = p.2 := by
-          have := congrArg Prod.fst heq
-          simpa using this.symm
+          simpa using (congrArg Prod.fst heq).symm
         simp only [ite_eq_left h12, sub_self]
     rw [Fintype.sum_prod_type] at h
     simp only [Finset.sum_sub_distrib, Finset.sum_ite_eq, Finset.mem_univ, ite_true] at h
@@ -106,8 +105,7 @@ theorem thetaTranslTau_holds : ThetaTranslTauStatement := by
   unfold thetaTerm
   rw [← eC_add]
   apply eC_eq_of_int _ _ k
-  rw [hb', shiftVec_eq]
-  simp only [Matrix.add_mulVec, Matrix.mulVec_add, dotProduct_add, add_dotProduct]
+  simp only [hb', shiftVec_eq, Matrix.add_mulVec, Matrix.mulVec_add, dotProduct_add, add_dotProduct]
   linear_combination (1 / 2 : ℂ) * hkC + (1 / 2 : ℂ) * hsA - hhL
 
 def transpEquiv [DecidableEq ι] (U : (Matrix ι ι ℤ)ˣ) : (ι → ℤ) ≃ (ι → ℤ) where

@@ -48,8 +48,7 @@ theorem thetaRealTransl_holds : ThetaRealTranslStatement := by
   unfold thetaTerm
   rw [← eC_add]
   apply congrArg eC
-  rw [ofRealVec_add]
-  simp only [shiftVec_add_char, mulVec_add, dotProduct_add, add_dotProduct]
+  simp only [ofRealVec_add, shiftVec_add_char, mulVec_add, dotProduct_add, add_dotProduct]
   rw [dot_mulVec_symm hτ (ofRealVec u) (shiftVec a l)]
   ring
 

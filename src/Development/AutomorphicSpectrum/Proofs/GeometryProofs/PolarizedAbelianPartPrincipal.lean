@@ -562,7 +562,7 @@ open scoped CategoryTheory.Obj
 
 
 attribute [local instance] SplitExt.free SplitExt.finite in
-theorem fibre : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (V : Type) [CommRing V] [IsDomain V] [IsLocalRing V] (r : V →+* ℂ) (tV : SAB H (Sp V)), Function.Surjective r → RingHom.ker r = IsLocalRing.maximalIdeal V → ∀ (_ : PELUnif (IsLocalRing.maximalIdeal V) tV) (P : AbPart tV (spMap r)), ∃ (Q : Out.PolAV (Sp ℂ)) (X : Type) (_ : AddCommGroup X) (_ : Module.Free ℤ X) (_ : Module.Finite ℤ X) (T : GlobalTheory.UU.TQ P.tK.G X) (β : T.B ≅ Q.A), IsMonHom β.hom ∧ LBIso P.tK.PP.L (Q.L.pull (T.q ≫ β.hom).left) := by
+theorem fibre : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (V : Type) [CommRing V] [IsDomain V] [IsLocalRing V] (r : V →+* ℂ) (tV : SAB H (Sp V)), Function.Surjective r → RingHom.ker r = IsLocalRing.maximalIdeal V → ∀ (Pu : PELUnif (IsLocalRing.maximalIdeal V) tV) (P : AbPart tV (spMap r)), ∃ (Q : Out.PolAV (Sp ℂ)) (X : Type) (_ : AddCommGroup X) (_ : Module.Free ℤ X) (_ : Module.Finite ℤ X) (T : GlobalTheory.UU.TQ P.tK.G X) (β : T.B ≅ Q.A), IsMonHom β.hom ∧ LBIso P.tK.PP.L (Q.L.pull (T.q ≫ β.hom).left) := by
   intro E _ _ _ H V _ _ _ r tV _ hk Pu P
   obtain ⟨s, hs⟩ : ∃ s : V ⧸ IsLocalRing.maximalIdeal V ^ (0 + 1) →+* ℂ,
       s.comp (Ideal.Quotient.mk _) = r :=
@@ -615,7 +615,7 @@ open scoped CategoryTheory.Obj
 
 namespace PositivityTheory.HtPt.Pquo
 
-theorem split : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (V : Type) [CommRing V] [IsDomain V] [IsLocalRing V] (r : V →+* ℂ) (tV : SAB H (Sp V)), Function.Surjective r → RingHom.ker r = IsLocalRing.maximalIdeal V → ∀ _ : AbPart tV (spMap r), GlobalTheory.LN.SplitOver tV.G (IsLocalRing.maximalIdeal V) := by
+theorem split : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (V : Type) [CommRing V] [IsDomain V] [IsLocalRing V] (r : V →+* ℂ) (tV : SAB H (Sp V)), Function.Surjective r → RingHom.ker r = IsLocalRing.maximalIdeal V → ∀ P : AbPart tV (spMap r), GlobalTheory.LN.SplitOver tV.G (IsLocalRing.maximalIdeal V) := by
   intro E _ _ _ H V _ _ _ r tV hs hk P
   obtain ⟨ψ, hψ⟩ : ∃ ψ : ℂ →+* V ⧸ IsLocalRing.maximalIdeal V,
       ψ.comp r = Ideal.Quotient.mk (IsLocalRing.maximalIdeal V) :=

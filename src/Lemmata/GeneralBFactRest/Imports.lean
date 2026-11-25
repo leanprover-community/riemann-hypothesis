@@ -31,7 +31,7 @@ theorem exists_associatedPrime_quotSMulTop_of_mem_jacobson {R : Type u_1} [CommR
   set N : Submodule R M := Submodule.torsionBySet R M ((⊥ : Submodule R M).colon {m0} : Set R)
   have hNmem (n : M) : n ∈ N ↔ ∀ r ∈ (⊥ : Submodule R M).colon {m0}, r • n = 0 := by
     simp [N, Submodule.mem_torsionBySet_iff]
-  have hex : ∃ n ∈ N, n ∉ x • (⊤ : Submodule R M) := by
+  obtain ⟨n, hnN, hnx⟩ : ∃ n ∈ N, n ∉ x • (⊤ : Submodule R M) := by
     by_contra hcon
     push Not at hcon
     have hle : N ≤ Ideal.span {x} • N := fun n hn => by
@@ -48,7 +48,6 @@ theorem exists_associatedPrime_quotSMulTop_of_mem_jacobson {R : Type u_1} [CommR
     have hm0N : m0 ∈ N := (hNmem m0).mpr fun r hr => by
       simpa [Submodule.mem_colon_singleton] using hr
     exact hm0 ((Submodule.mem_bot R).1 (hbot ▸ hm0N))
-  obtain ⟨n, hnN, hnx⟩ := hex
   have hz0 : (Submodule.Quotient.mk n : QuotSMulTop x M) ≠ 0 := by
     rwa [Ne, Submodule.Quotient.mk_eq_zero]
   obtain ⟨q, hq, hqle⟩ := exists_le_isAssociatedPrime_of_isNoetherianRing R _ hz0

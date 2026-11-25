@@ -134,13 +134,11 @@ theorem scale_add_comp (hy : ptMap (TrivSqZeroExt.fstHom O R R) ≫ y = 1) (a b 
       exact TrivSqZeroExt.ext h₃ (Prod.ext h₄ h₅)
     · refine congrArg Over.Hom.left
         (?_ : ofTwo O (LinearMap.fst R R R) ≫ _ = ofTwo O (LinearMap.fst R R R) ≫ _)
-      rw [comp_mul]
-      simp only [← Category.assoc, ofTwo_toTwo]
+      simp only [comp_mul, ← Category.assoc, ofTwo_toTwo]
       simp [i₁, i₂, scale_zero_comp hy]
     · refine congrArg Over.Hom.left
         (?_ : ofTwo O (LinearMap.snd R R R) ≫ _ = ofTwo O (LinearMap.snd R R R) ≫ _)
-      rw [comp_mul]
-      simp only [← Category.assoc, ofTwo_toTwo]
+      simp only [comp_mul, ← Category.assoc, ofTwo_toTwo]
       simp [i₁, i₂, scale_zero_comp hy]
   let l := a • LinearMap.fst R R R + b • LinearMap.snd R R R
   have := congrArg (ofTwo O l ≫ ·) key

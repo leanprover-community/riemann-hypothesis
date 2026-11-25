@@ -47,8 +47,7 @@ theorem latL_le {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E]
   have hmem : ((⟨u, hu⟩ : A.O) • bc A (algebraMap (𝓞 F) (𝓞 E) d • x)) ∈ latL A Λ' :=
     Submodule.smul_mem _ _ (Submodule.subset_span ⟨_, hdx, rfl⟩)
   have heq : (⟨u, hu⟩ : A.O) • bc A (algebraMap (𝓞 F) (𝓞 E) d • x) = bc A x := by
-    rw [Subring.smul_def, bc_smul, smul_smul]
-    simp only [hu1, one_smul]
+    simp only [Subring.smul_def, bc_smul, smul_smul, hu1, one_smul]
   rwa [SetLike.mem_coe, ← heq]
 
 theorem locLatEq_of (hU : UnitP) (hA : AvoidP) (hC : CoreP) : PI.LocLatEq.Stmt := by

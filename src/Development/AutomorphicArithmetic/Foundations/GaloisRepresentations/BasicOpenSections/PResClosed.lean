@@ -56,10 +56,9 @@ theorem resClosed : ResClosed := by
     rw [Polynomial.mem_lifts]
     exact Polynomial.map_surjective _ IsLocalRing.residue_surjective P
   obtain ⟨Q, hQ, hdeg, hQm⟩ := Polynomial.lifts_and_degree_eq_and_monic hl hmon
-  have hpos : 0 < P.degree := Polynomial.degree_pos_of_irreducible hirr
   have hdeg' : (Q.map (algebraMap V (FractionRing V))).degree ≠ 0 := by
     rw [hQm.degree_map, hdeg]
-    exact hpos.ne'
+    exact (Polynomial.degree_pos_of_irreducible hirr).ne'
   obtain ⟨x, hx⟩ := IsAlgClosed.exists_root (Q.map (algebraMap V (FractionRing V))) hdeg'
   have hint : IsIntegral V x := ⟨Q, hQm, by
     rw [Polynomial.IsRoot.def, Polynomial.eval_map] at hx

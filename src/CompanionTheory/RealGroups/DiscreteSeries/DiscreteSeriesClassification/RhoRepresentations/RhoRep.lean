@@ -66,8 +66,7 @@ theorem rho_representation_holds : CompanionTheory.RgDs.K.RhoRep := by
     rw [← Finset.sum_smul, rr_op_mul]
     congr 1
     simp only [rr_toMK_mul, rr_adC_mul]
-    rw [Finset.prod_univ_sum]
-    simp only [Fintype.piFinset_univ]
+    simp only [Finset.prod_univ_sum, Fintype.piFinset_univ]
     refine Finset.sum_congr rfl fun v _ => ?_
     rw [← Finset.prod_mul_distrib]
     refine Finset.prod_congr rfl fun i _ => ?_

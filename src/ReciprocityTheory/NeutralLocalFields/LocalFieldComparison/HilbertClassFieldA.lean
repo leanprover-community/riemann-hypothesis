@@ -47,8 +47,7 @@ theorem classGroup_hom_ext {G : Type*} [Monoid G] (f₁ f₂ : ClassGroup R →*
     rw [this, map_mul, map_mul, map_mul, ih hI0]
     congr 1
     have hpp : p.IsPrime := Ideal.isPrime_of_prime hp
-    have hpb : p ≠ ⊥ := hp.ne_zero
-    exact h ⟨p, hpp, hpb⟩
+    exact h ⟨p, hpp, hp.ne_zero⟩
 
 end classGroup
 

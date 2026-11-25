@@ -143,8 +143,7 @@ theorem LateralTheory.EtaleFoundations.acyc.column_of_cut (hL : lift) (hK : kill
       rfl
     rw [e2, ← hx', ← LinearMap.comp_apply, ← TensorProduct.map_comp]
     congr 2
-    have := φ.naturality k.op
-    exact congrArg ModuleCat.Hom.hom this
+    exact congrArg ModuleCat.Hom.hom (φ.naturality k.op)
   · have : IsEmpty V := not_nonempty_iff.1 hV
     exact loc_empty V _
 

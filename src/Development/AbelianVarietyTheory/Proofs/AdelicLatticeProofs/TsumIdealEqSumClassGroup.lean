@@ -85,8 +85,7 @@ theorem _root_.GlobalTheory.tsum_isPrincipal_mul_eq {K : Type} [Field K] [Number
   have he : Function.Bijective e := by
     constructor
     · intro I I' h
-      have h' : I.1 * B = I'.1 * B := congrArg Subtype.val h
-      exact Subtype.ext (mul_right_cancel₀ hB h')
+      exact Subtype.ext (mul_right_cancel₀ hB (congrArg Subtype.val h))
     · intro J
       obtain ⟨I, hI⟩ := Ideal.dvd_iff_le.2 J.2.2.2
       have hI0 : I ≠ ⊥ := by

@@ -147,8 +147,7 @@ def monicOfCoeffs {n : ℕ} (c : Fin n → R) : R[X] := X ^ n + ∑ i : Fin n, C
 theorem coeff_sum_fin_C_mul_X_pow {n : ℕ} (c : Fin n → R) (k : ℕ) :
     (∑ i : Fin n, C (c i) * X ^ (i : ℕ)).coeff k = if h : k < n then c ⟨k, h⟩ else 0 := by
   classical
-  rw [finsetSum_coeff]
-  simp only [coeff_C_mul_X_pow]
+  simp only [finsetSum_coeff, coeff_C_mul_X_pow]
   split_ifs with h
   · rw [Finset.sum_eq_single ⟨k, h⟩ (fun j _ hj ↦ ite_eq_right fun hk ↦ hj (Fin.ext hk.symm))
       (fun h' ↦ absurd (Finset.mem_univ _) h'), ite_eq_left rfl]

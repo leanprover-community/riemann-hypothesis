@@ -75,8 +75,7 @@ theorem PrimitiveFormSheetedIffRootFull.proof : PrimitiveFormSheetedIffRootFull.
   have hzD : A z ∈ D := ⟨hzS.2, hδz⟩
   constructor
   · rintro ⟨O, V, g, hOo, hVo, hzV, hg, hAg, hXV⟩
-    have hzg : z ∈ g '' O := by rw [← hXV]; exact ⟨hzX, hzV⟩
-    obtain ⟨t₀, ht₀, hgt₀⟩ := hzg
+    obtain ⟨t₀, ht₀, hgt₀⟩ : z ∈ g '' O := by rw [← hXV]; exact ⟨hzX, hzV⟩
     have hAz : A z = t₀ := by rw [← hgt₀, hAg t₀ ht₀]
     subst hAz
     have hO'o : IsOpen ((O ∩ g ⁻¹' (S ∩ W)) ∩ D) :=

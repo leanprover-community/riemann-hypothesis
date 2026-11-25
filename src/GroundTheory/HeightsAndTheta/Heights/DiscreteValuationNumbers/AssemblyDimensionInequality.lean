@@ -160,8 +160,7 @@ theorem DimensionInequalityOneGenerator.proof (h₁ : PolynomialDimensionInequal
 
   have H₁' : ofENat P'.height + lift.{u} (Algebra.trdeg (A ⧸ P.under A) (B ⧸ P)) ≤
       ofENat (P.under A).height + 1 := by
-    have := Cardinal.lift_le.{v}.mpr H₁
-    simpa only [lift_add, lift_ofENat, lift_one, htr] using this
+    simpa only [lift_add, lift_ofENat, lift_one, htr] using Cardinal.lift_le.{v}.mpr H₁
   rw [← Cardinal.lift_le.{u}]
   simp only [lift_add, lift_ofENat]
   by_cases hker : RingHom.ker φ = ⊥
@@ -305,8 +304,7 @@ theorem PolynomialPrimeOverZeroHeight.proof : PolynomialPrimeOverZeroHeight.Stat
   let K := FractionRing D
   have disj : Disjoint ((nonZeroDivisors D).map (C : D →+* D[X]) : Set D[X]) (Q : Set D[X]) := by
     refine Set.disjoint_left.mpr fun a ⟨b, hb⟩ ha ↦ ?_
-    have hb0 : b ≠ 0 := nonZeroDivisors.ne_zero hb.1
-    apply hb0
+    apply (nonZeroDivisors.ne_zero hb.1)
     have : b ∈ Q.comap (C : D →+* D[X]) := by
       rw [Ideal.mem_comap]
       simpa [hb.2] using ha
@@ -364,8 +362,7 @@ theorem QuotientHeightAddOne.proof : QuotientHeightAddOne.Statement := by
   let l' : LTSeries (PrimeSpectrum R) :=
     (l.map φ hφ).cons z (by simpa using hz l.head)
   have hlast : l'.last = φ p := by simp [l', hl]
-  have := Order.length_le_height (p := l') hlast.le
-  simpa [l'] using this
+  simpa [l'] using Order.length_le_height (p := l') hlast.le
 
 end GroundTheory.Heights₂.Heights.NumbersDVR
 end -- clump:auto
@@ -391,8 +388,7 @@ theorem ReesAlgebraDim.proof (h₁ : DimensionInequality.Statement.{u, u}) :
   obtain ⟨a, haI, ha0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hI
   have hinj : Function.Injective (algebraMap A (reesAlgebra I)) := by
     intro x y h
-    have := congrArg (fun r : reesAlgebra I => (r : A[X])) h
-    simpa using this
+    simpa using congrArg (fun r : reesAlgebra I => (r : A[X])) h
   apply le_antisymm
   · rw [ringKrullDim_le_iff_height_le]
     intro P hP

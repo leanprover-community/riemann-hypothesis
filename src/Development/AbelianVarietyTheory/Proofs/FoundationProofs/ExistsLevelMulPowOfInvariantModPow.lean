@@ -195,7 +195,6 @@ theorem exists_lev_mul_pow_of_invariant_mod_pow :
       obtain ⟨g, hg⟩ := hf γ (CongruenceDescent.Gamma_le_of_dvd (dvd_mul_right _ _) γ.2)
       exact ⟨g, Units.ext (by simpa using hg)⟩)
   refine ⟨a * e, h, fun γ hγ => ?_⟩
-  have := congrArg Units.val (hh ⟨γ, hγ⟩)
-  simpa using this
+  simpa using congrArg Units.val (hh ⟨γ, hγ⟩)
 
 end GlobalTheory.KZ.ES

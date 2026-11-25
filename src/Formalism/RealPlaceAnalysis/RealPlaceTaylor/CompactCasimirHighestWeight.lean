@@ -57,8 +57,7 @@ theorem compact_weight_shift (h : KRel ε F) {ν : Fin n → ℝ} {y : V} (hy : 
   intro a
   have := compact_lie_commutator h (a := a) (b := a) rfl hcd y
   rw [hy a, map_smul, sub_eq_iff_eq_add] at this
-  rw [this]
-  simp only [Pi.add_apply, Pi.sub_apply, Pi.single_apply]
+  simp only [this, Pi.add_apply, Pi.sub_apply, Pi.single_apply]
   rcases eq_or_ne a c with h1 | h1 <;> rcases eq_or_ne d a with h2 | h2
   · subst h1; subst h2; simp
   · subst h1; simp [h2, Ne.symm h2, add_smul]; abel
@@ -284,8 +283,7 @@ theorem compact_lie_commute_casimir {A : Type*} [Ring A] {n : ℕ} {ε : Fin n �
           = (F a b * F c d - F c d * F a b) * F d c + F c d * (F a b * F d c - F d c * F a b) := by
             noncomm_ring
         _ = _ := by
-            rw [e1, e2]
-            simp only [sub_mul, mul_sub, ite_mul, mul_ite, zero_mul, mul_zero]
+            simp only [e1, e2, sub_mul, mul_sub, ite_mul, mul_ite, zero_mul, mul_zero]
             abel
     · simp [hcd]
   unfold CasK

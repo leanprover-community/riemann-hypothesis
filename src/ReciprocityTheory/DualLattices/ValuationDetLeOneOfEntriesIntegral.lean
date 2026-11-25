@@ -140,8 +140,9 @@ theorem cosetCoordinateMatrix_add (K : AddSubgroup N) [DecidablePred (· ∈ K)]
   rw [cosetCoordinates_add K β hβ (f j) x k]
   simp [Matrix.vecMul, dotProduct]
 
-theorem valuation_det_cosetCoordinateMatrix_add (AA : HopfOrder (C := C) R N) (K : AddSubgroup N) [DecidablePred (· ∈ K)]
+theorem valuation_det_cosetCoordinateMatrix_add (hv : v.Integers R) (AA : HopfOrder (C := C) R N) (K : AddSubgroup N) [DecidablePred (· ∈ K)]
     (β : Matrix K K C) (hβ : IsUnit β.det)
+    (hAK : AA.carrier.map (resK (R := R) K) = Submodule.span R (Set.range fun j k => β k j))
     (f : K → N → C) (x : N) (k : K) :
     v (h3mm K β f (x + k)).det = v (h3mm K β f x).det := by
   rw [cosetCoordinateMatrix_add K β hβ f x k, Matrix.det_mul, map_mul]
@@ -150,12 +151,11 @@ theorem valuation_det_cosetCoordinateMatrix_add (AA : HopfOrder (C := C) R N) (K
     ext l l'
     simp [h3T, Matrix.mulVec, dotProduct, Matrix.mul_apply]
   rw [hT, Matrix.det_transpose, Matrix.det_mul, Matrix.det_permute, Matrix.det_nonsing_inv]
-  have hd : β.det ≠ 0 := hβ.ne_zero
   have hs : v ((Equiv.Perm.sign (Equiv.addLeft k) : ℤ) : C) = 1 := by
     rcases Int.units_eq_one_or (Equiv.Perm.sign (Equiv.addLeft k)) with h | h <;>
       simp [h, Valuation.map_neg]
   rw [Ring.inverse_eq_inv', map_mul, map_mul, hs, one_mul, map_inv₀, inv_mul_cancel₀]
-  exact (Valuation.ne_zero_iff v).mpr hd
+  exact (Valuation.ne_zero_iff v).mpr hβ.ne_zero
 
 def hopfOrderSubgroup (AA : HopfOrder (C := C) R N) : Subring (N → C) where
   carrier := AA.carrier

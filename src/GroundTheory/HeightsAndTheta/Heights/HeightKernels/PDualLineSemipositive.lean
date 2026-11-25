@@ -80,8 +80,7 @@ theorem DualLineSemipositive.proof : DualLineSemipositive.Statement := by
   have hne : ∀ z : (Σ _ : Unit, T) → ℂ, (∀ k, ∃ j, z ⟨k, j⟩ ≠ 0) → τc z ≠ 0 := by
     intro z hz h0
     have hp := (dualLine F b hb).pos z hz
-    rw [hh, h0] at hp
-    simp [fsMetric] at hp
+    simp [hh, h0, fsMetric] at hp
   have hfun : (dualLine F b hb).h = (fsMetric (ι := (K →+* ℂ) × Fin i)).ρ ∘ τc := funext hh
   refine ⟨?_, fun z hz w _ => ?_⟩
   · intro z hz

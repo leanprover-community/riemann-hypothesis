@@ -63,10 +63,9 @@ theorem inv_mem_connectedComponentIn_fibre (S : Scheme.{0}) (G : Over S) [GrpObj
   rw [hw]
   set F := G.hom ⁻¹' {G.hom y}
   set e := (η[G]).left (G.hom y)
-  have heF : e ∈ F := (connectedComponentIn_nonempty_iff.mp ⟨y, hy⟩)
   have hsub : (ι[G]).left '' connectedComponentIn F e ⊆ connectedComponentIn F e := by
     refine (isPreconnected_connectedComponentIn.image _ (ι[G]).left.continuous.continuousOn).subset_connectedComponentIn
-      ⟨e, mem_connectedComponentIn heF, hη _⟩ ?_
+      ⟨e, mem_connectedComponentIn (connectedComponentIn_nonempty_iff.mp ⟨y, hy⟩), hη _⟩ ?_
     rintro _ ⟨z, hz, rfl⟩
     have hzF : z ∈ F := connectedComponentIn_subset _ _ hz
     simp only [F, Set.mem_preimage, Set.mem_singleton_iff] at hzF ⊢

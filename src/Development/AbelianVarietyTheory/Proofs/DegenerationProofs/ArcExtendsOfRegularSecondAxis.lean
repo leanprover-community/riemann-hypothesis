@@ -99,8 +99,7 @@ theorem exists_extend_of_localSubring : ∀ (k : Type) [CommRing k] (G : Over (S
   have hj : IsOpenImmersion j.left := hi
   have hrb : Set.range b'.left ⊆ Set.range j.left := by
     rintro _ ⟨y, rfl⟩
-    have hs : y ⤳ x0 := IsLocalRing.specializes_closedPoint (R := L) y
-    have hs' := hs.map b'.left.continuous
+    have hs' := (IsLocalRing.specializes_closedPoint (R := L) y).map b'.left.continuous
     exact hs'.mem_open j.left.isOpenEmbedding.isOpen_range hx
   have hra : Set.range a.left ⊆ Set.range j.left := by
     rintro _ ⟨y, rfl⟩

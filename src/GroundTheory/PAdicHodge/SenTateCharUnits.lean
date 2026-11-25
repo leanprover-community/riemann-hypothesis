@@ -102,8 +102,7 @@ theorem dvd_one_add_pow_sub {k : ℕ} (hk : 2 ≤ k) {x : ℤ_[p]} (hx : (p : �
         mul_dvd_mul (h1.mul_right _) hch
   ·
     rw [hmp]
-    have h1 : (p : ℤ_[p]) ^ (k + 2) ∣ (p : ℤ_[p]) ^ (k * p) := pow_dvd_pow _ (by nlinarith)
-    exact (h1.mul_right _).mul_right _
+    exact ((pow_dvd_pow _ (by nlinarith)).mul_right _).mul_right _
 
 theorem pow_prime_mem_iff {k : ℕ} (hk : 2 ≤ k) {u : ℤ_[p]ˣ} (hu : u ∈ unitsOneAdd p k) :
     u ^ p ∈ unitsOneAdd p (k + 1) ∧ (u ^ p ∈ unitsOneAdd p (k + 2) ↔ u ∈ unitsOneAdd p (k + 1)) := by
@@ -167,8 +166,7 @@ theorem levelHom_eq_one_iff {k : ℕ} (hk : 1 ≤ k) (u : unitsOneAdd p k) :
   rw [levelHom_apply, ← ofAdd_zero, EmbeddingLike.apply_eq_iff_eq, ← RingHom.mem_ker, PadicInt.ker_toZMod,
     PadicInt.maximalIdeal_eq_span_p, Ideal.mem_span_singleton, mem_unitsOneAdd, levelQuot_spec,
     pow_succ]
-  have hp0 : (p : ℤ_[p]) ^ k ≠ 0 := pow_ne_zero _ (by exact_mod_cast hp.out.ne_zero)
-  exact (mul_dvd_mul_iff_left hp0).symm
+  exact (mul_dvd_mul_iff_left (pow_ne_zero _ (by exact_mod_cast hp.out.ne_zero))).symm
 
 theorem pow_prime_pow_mem_not_mem {s : ℕ} (hs : 2 ≤ s) {a : ℤ_[p]ˣ} (ha : a ∈ unitsOneAdd p s)
     (ha' : a ∉ unitsOneAdd p (s + 1)) (i : ℕ) :

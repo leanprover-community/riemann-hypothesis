@@ -245,11 +245,9 @@ theorem _root_.GlobalTheory.Mass.StabSplit.main : ∀ (K V : Type) [Field K] [Nu
   have hinj : Function.Injective (_root_.GlobalTheory.Mass.StabSplit.resHom h U) := by
     intro γ δ hγδ
     have eU : ∀ u ∈ U, γ.1.1 u = δ.1.1 u := fun u hu => by
-      have := congrArg (fun p => ((p.1.1 ⟨u, hu⟩ : U) : V)) hγδ
-      exact this
+      exact congrArg (fun p => ((p.1.1 ⟨u, hu⟩ : U) : V)) hγδ
     have eW : ∀ w ∈ W, γ.1.1 w = δ.1.1 w := fun w hw => by
-      have := congrArg (fun p => ((p.2.1 ⟨w, hw⟩ : W) : V)) hγδ
-      exact this
+      exact congrArg (fun p => ((p.2.1 ⟨w, hw⟩ : W) : V)) hγδ
     apply Subtype.ext
     apply Subtype.ext
     apply LinearEquiv.ext

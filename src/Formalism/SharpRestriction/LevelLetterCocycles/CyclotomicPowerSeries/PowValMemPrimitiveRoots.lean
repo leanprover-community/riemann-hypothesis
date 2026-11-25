@@ -51,8 +51,7 @@ theorem eq_of_pow_pred_eq_one {l : ℕ} [Fact l.Prime] (s : ℕ) (a b : ZMod (l 
     hkx.isUnit_add_left_of_commute (hl1.mul (ha'.pow _)) (Commute.all _ _)
   have hx0 : x * (((l - 1 : ℕ) : ZMod (l ^ (s + 1))) * a ^ (l - 1 - 1) + k * x) = 0 := by
     linear_combination (-1 : ZMod (l ^ (s + 1))) * hk
-  have hx' : x = 0 := hU.mul_left_eq_zero.mp hx0
-  exact sub_eq_zero.mp hx'
+  exact sub_eq_zero.mp (hU.mul_left_eq_zero.mp hx0)
 
 theorem exists_toZModPow_eq_of_pow_pred_eq_one {l : ℕ} [Fact l.Prime] {Δ : Type*} (om : Δ → ℤ_[l])
     (hom : ∀ j, om j ^ (l - 1) = 1)

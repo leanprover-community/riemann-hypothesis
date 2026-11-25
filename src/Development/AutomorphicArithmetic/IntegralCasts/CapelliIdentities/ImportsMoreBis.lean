@@ -44,7 +44,7 @@ import Mathlib.Topology.Sheaves.Init
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Qf46.cover :
-    ∀ {G Y : Type} [Group G] [Countable G] [MeasurableSpace Y] [MulAction G Y]
+    ∀ {G Y : Type} [inst : Group G] [Countable G] [inst_2 : MeasurableSpace Y] [inst_3 : MulAction G Y]
       (μ : MeasureTheory.Measure Y),
       UpperTheory.Esk.Pres G μ →
         ∀ (b : Y → ℝ),

@@ -109,14 +109,13 @@ theorem mvPolynomial_exists_content (O : Type) [CommRing O] [IsDomain O] [Valuat
       F' ∉ (IsLocalRing.maximalIdeal O).map (MvPolynomial.C : O →+* MvPolynomial (Fin g) O) := by
   obtain ⟨i, hi, h⟩ := valuationRing_exists_dvd_all (fun m => F.coeff m) F.support
     (MvPolynomial.support_nonempty.2 hF)
-  have hd : MvPolynomial.C (F.coeff i) ∣ F := by
+  obtain ⟨F', hF'⟩ : MvPolynomial.C (F.coeff i) ∣ F := by
     rw [MvPolynomial.C_dvd_iff_dvd_coeff]
     intro m
     by_cases hm : m ∈ F.support
     · exact h m hm
     · rw [MvPolynomial.notMem_support_iff.1 hm]
       exact dvd_zero _
-  obtain ⟨F', hF'⟩ := hd
   refine ⟨F.coeff i, F', hF', fun hmem => ?_⟩
   have h1 := MvPolynomial.mem_map_C_iff.1 hmem i
   have h2 : F.coeff i = F.coeff i * F'.coeff i := by
@@ -144,8 +143,7 @@ theorem mvPolynomial_content_valuationRing :
   have h1 : π ∣ π' * (u * F').coeff m := by
     have := (MvPolynomial.C_dvd_iff_dvd_coeff _ _).1 hdvd m
     rwa [mul_left_comm, MvPolynomial.coeff_C_mul] at this
-  have h2 : π ∣ π' := (hunit.dvd_mul_right).1 h1
-  exact Dvd.dvd.mul_right (map_dvd _ h2) _
+  exact Dvd.dvd.mul_right (map_dvd _ ((hunit.dvd_mul_right).1 h1)) _
 
 end GlobalTheory
 end -- clump:auto
@@ -359,7 +357,7 @@ theorem etale_mvPolynomial_exists_content :
     refine ⟨π, s, t, hs, t.2, hBinj ?_⟩
     rw [map_mul, map_mul, ← hv, ← hst, mul_assoc, IsLocalization.mk'_spec, mul_comm]
   obtain ⟨π, s, t, hs, ht, hst⟩ := step1
-  have step2 : algebraMap O B π ∣ b := by
+  obtain ⟨b', rfl⟩ : algebraMap O B π ∣ b := by
     by_cases hu : IsUnit π
     · exact (hu.map _).dvd
     have hs0 : s ≠ 0 := fun h => hs (h ▸ η.zero_mem)
@@ -383,8 +381,7 @@ theorem etale_mvPolynomial_exists_content :
         rw [← hlo.over]
         by_contra hxp
         exact Set.disjoint_left.1 hdis hx ⟨x, hxp, rfl⟩
-      have := Algebra.QuasiFinite.eq_of_le_of_under_eq η Q hηQ hunder
-      exact hs (this ▸ hsQ)
+      exact hs ((Algebra.QuasiFinite.eq_of_le_of_under_eq η Q hηQ hunder) ▸ hsQ)
     obtain ⟨_, hy, u, hu, rfl⟩ := Set.not_disjoint_iff.1 hnd
     obtain ⟨c, d, hcd⟩ := Ideal.mem_span_pair.1 hy
     rw [← hC]
@@ -393,7 +390,6 @@ theorem etale_mvPolynomial_exists_content :
     refine ⟨c * t + d * b, ?_⟩
     rw [← hcd]
     linear_combination c * hst
-  obtain ⟨b', rfl⟩ := step2
   refine ⟨π, b', rfl, fun hb' => ht ?_⟩
   have : s * b' = t := by
     apply mul_left_cancel₀ (left_ne_zero_of_mul hb)

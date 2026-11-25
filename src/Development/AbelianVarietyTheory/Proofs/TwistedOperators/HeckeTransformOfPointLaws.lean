@@ -877,7 +877,7 @@ section -- clump:auto
 
 namespace GlobalTheory.AlgHomEqEval
 
-theorem algHom_eq_eval : ∀ {K : Type} [Field K] {P : Type} [Fintype P] [DecidableEq P]
+theorem algHom_eq_eval : ∀ {K : Type} [inst : Field K] {P : Type} [Fintype P] [DecidableEq P]
     (θ : (P → K) →ₐ[K] K), ∃ (p : P), ∀ (z : P → K), (θ : (P → K) → K) z = z p := by
   intro K _ P _ _ θ
   have hsum : ∑ p, (Pi.single p (1:K) : P → K) = 1 := by

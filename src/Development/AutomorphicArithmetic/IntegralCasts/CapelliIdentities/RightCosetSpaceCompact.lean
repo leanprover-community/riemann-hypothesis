@@ -49,15 +49,15 @@ public import Mathlib.Topology.Algebra.ConstMulAction
 @[expose] public section
 
 @[reducible] noncomputable def UpperTheory.Reformulated.B.RightCosetSpaceCompact.RightCosetSpace.{u_1} :
-    {G : Type u_1} → [Group G] → Subgroup G → Type u_1 :=
+    {G : Type u_1} → [inst : Group G] → Subgroup G → Type u_1 :=
     fun {G : Type u_1} [Group G] (Γ : Subgroup G) ↦ Quotient (MulAction.orbitRel (↥Γ) G)
 
 noncomputable def UpperTheory.Reformulated.B.RightCosetSpaceCompact.mk.{u_1} :
-    {G : Type u_1} → [Group G] → (Γ : Subgroup G) → G → UpperTheory.Reformulated.B.RightCosetSpaceCompact.RightCosetSpace Γ :=
+    {G : Type u_1} → [inst : Group G] → (Γ : Subgroup G) → G → UpperTheory.Reformulated.B.RightCosetSpaceCompact.RightCosetSpace Γ :=
     fun {G : Type u_1} [Group G] (Γ : Subgroup G) ↦ Quotient.mk (MulAction.orbitRel (↥Γ) G)
 
 theorem UpperTheory.Reformulated.B.RightCosetSpaceCompact.exists_isCompact_subset_mk_image.{u_1} :
-    ∀ {G : Type u_1} [Group G] (Γ : Subgroup G) [TopologicalSpace G] [IsTopologicalGroup G]
+    ∀ {G : Type u_1} [inst : Group G] (Γ : Subgroup G) [inst_1 : TopologicalSpace G] [IsTopologicalGroup G]
       [LocallyCompactSpace G] {K : Set (UpperTheory.Reformulated.B.RightCosetSpaceCompact.RightCosetSpace Γ)},
       IsCompact K → ∃ (D : Set G), IsCompact D ∧ K ⊆ UpperTheory.Reformulated.B.RightCosetSpaceCompact.mk Γ '' D := by
   intro G _ Γ _ _ _ K hK

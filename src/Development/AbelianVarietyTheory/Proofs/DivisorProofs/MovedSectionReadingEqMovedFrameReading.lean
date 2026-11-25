@@ -597,8 +597,8 @@ section -- clump:auto
 open scoped IntermediateField TensorProduct Matrix Pointwise NumberField Topology ContDiff NNReal ENNReal Polynomial DirectSum BigOperators InnerProductSpace Manifold
 
 theorem UpperTheory.Reformulated.B.ReprMem.repr_mem :
-    ∀ {F E : Type} [Field F] [Field E]
-    [Algebra F E] (t : E) (c : F),
+    ∀ {F E : Type} [inst : Field F] [inst_1 : Field E]
+    [inst_2 : Algebra F E] (t : E) (c : F),
     t ^ (2 : ℕ) = (Algebra.algebraMap F E : F → E) c →
       ∀ x ∈ F⟮t⟯, ∃ (a : F) (b : F), x = (Algebra.algebraMap F E : F → E) a + (Algebra.algebraMap F E : F → E) b * t := by
   intro F E _ _ _ t c h x hx

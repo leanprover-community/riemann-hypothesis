@@ -183,8 +183,7 @@ theorem two_le_order_nl (φ : σ → MvPowerSeries σ R) (L : Matrix σ σ R)
     simp
   · obtain ⟨j, rfl⟩ := eq_single_of_degree_eq_one h
 
-    rw [nl, map_sub, h1, lin, map_sum]
-    simp only [coeff_C_mul, coeff_X]
+    simp only [nl, map_sub, h1, lin, map_sum, coeff_C_mul, coeff_X]
     rw [Finset.sum_eq_single j]
     · simp
     · intro b _ hb
@@ -304,8 +303,7 @@ theorem coeff_lim_single (φ : σ → MvPowerSeries σ R) (L M : Matrix σ σ R)
   change coeff (Finsupp.single j 1) (lin M (fun l => X l - subst (0 : σ → MvPowerSeries σ R) (nl φ L l)) i) = M i j
   simp only [subst_zero_of_constantCoeff_zero (constantCoeff_nl φ L hnl _), sub_zero]
 
-  rw [lin, map_sum]
-  simp only [coeff_C_mul, coeff_X]
+  simp only [lin, map_sum, coeff_C_mul, coeff_X]
   rw [Finset.sum_eq_single j]
   · simp
   · intro b _ hb

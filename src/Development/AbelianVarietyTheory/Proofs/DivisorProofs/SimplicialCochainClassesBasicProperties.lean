@@ -94,8 +94,7 @@ theorem chainsXIso_nat {E E' : Spc} (f : E' ⟶ E) (n : ℕ) :
     ((chains R).map f).f (-(n : ℤ)) ≫ (chainsXIso R E n).hom = (chainsXIso R E' n).hom ≫ (free R).map (f.app (op ⦋n⦌)) := by
   have h := HomologicalComplex.extendMap_f ((chainsN R).map f) ComplexShape.embeddingDownNat (i := n) (i' := -(n : ℤ)) rfl
   change (HomologicalComplex.extendMap ((chainsN R).map f) ComplexShape.embeddingDownNat).f (-(n : ℤ)) ≫ _ = _
-  rw [h]
-  simp only [chainsXIso]
+  simp only [h, chainsXIso]
   erw [Category.assoc, Category.assoc, Iso.inv_hom_id, Category.comp_id]
   rfl
 

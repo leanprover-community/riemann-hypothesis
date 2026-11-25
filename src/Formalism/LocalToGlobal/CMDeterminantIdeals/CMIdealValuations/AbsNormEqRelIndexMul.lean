@@ -34,8 +34,7 @@ theorem absNorm_eq_relIndex_mul (J J' : FractionalIdeal (𝓞 K)⁰ K) (hJ' : J'
     inv_ne_zero ((map_ne_zero_iff _ (IsFractionRing.injective (𝓞 K) K)).2 hc)
   have hφ : Function.Injective φ := by
     intro r s h
-    have h' : (algebraMap (𝓞 K) K c)⁻¹ * algebraMap (𝓞 K) K r = (algebraMap (𝓞 K) K c)⁻¹ * algebraMap (𝓞 K) K s := h
-    exact IsFractionRing.injective (𝓞 K) K (mul_left_cancel₀ hc' h')
+    exact IsFractionRing.injective (𝓞 K) K (mul_left_cancel₀ hc' h)
   have hmap : ∀ Q : Ideal (𝓞 K), ((FractionalIdeal.spanSingleton (𝓞 K)⁰ (algebraMap (𝓞 K) K c)⁻¹ *
       (Q : FractionalIdeal (𝓞 K)⁰ K) : FractionalIdeal (𝓞 K)⁰ K) : Submodule (𝓞 K) K).toAddSubgroup =
       Q.toAddSubgroup.map φ := by

@@ -88,8 +88,7 @@ theorem exists_ideal (σ : K →+* ℂ) (hσ : ¬ ComplexEmbedding.IsReal σ) (L
     intro h0
     rw [h0, zero_mul, add_zero] at hmn
     have : σ (a : K) = m := (mul_right_cancel₀ hω hmn).symm
-    rw [this] at ha
-    simp at ha
+    simp [this] at ha
   set t : K := ((a : K) - m) / n with ht
   have hσt : σ t * L.ω₁ = L.ω₂ := by
     rw [ht, map_div₀, map_sub, map_intCast, map_intCast, div_mul_eq_mul_div, div_eq_iff hn]

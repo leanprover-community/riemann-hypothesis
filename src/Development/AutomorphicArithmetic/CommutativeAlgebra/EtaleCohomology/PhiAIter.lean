@@ -477,14 +477,14 @@ section -- clump:auto
     fun (l : ℕ) [Fact (Nat.Prime l)] ↦ GroundTheory.PAdicHodge.AInf ℂ_[l] l
 
 noncomputable def UpperTheory.Reformulated.B.Qi53.zA :
-    (l : ℕ) → [Fact (Nat.Prime l)] → ℤ_[l] →+* UpperTheory.Reformulated.B.Qi53.Acris l :=
+    (l : ℕ) → [inst : Fact (Nat.Prime l)] → ℤ_[l] →+* UpperTheory.Reformulated.B.Qi53.Acris l :=
     fun (l : ℕ) [Fact (Nat.Prime l)] ↦
       (Algebra.algebraMap (UpperTheory.Reformulated.B.Qi53.Ainf l) (UpperTheory.Reformulated.B.Qi53.Acris l)).comp
         (GroundTheory.PAdicHodge.IsPerfectoidField.padicIntToWitt l)
 
 theorem UpperTheory.Reformulated.B.Qi53.zA_smul.{u_1} :
-    ∀ {l : ℕ} [Fact (Nat.Prime l)] {N : Type u_1} [AddCommGroup N]
-      [_root_.Module (UpperTheory.Reformulated.B.Qi53.Acris l) N] (n : ℕ),
+    ∀ {l : ℕ} [inst : Fact (Nat.Prime l)] {N : Type u_1} [inst_1 : AddCommGroup N]
+      [inst_2 : _root_.Module (UpperTheory.Reformulated.B.Qi53.Acris l) N] (n : ℕ),
       (∀ (y : N), (↑l : UpperTheory.Reformulated.B.Qi53.Acris l) ^ n • y = (0 : N)) →
         ∀ (z : ℤ_[l]) (y : N),
           (UpperTheory.Reformulated.B.Qi53.zA l : ℤ_[l] → UpperTheory.Reformulated.B.Qi53.Acris l) z • y =

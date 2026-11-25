@@ -72,8 +72,7 @@ theorem close (ex ey : L.Ep) (hex : ex ∈ L.O) (hey : ey ∈ L.O) (hxx : ex * e
 
   have E1 : ex • (h1i * l - 1) = (h1i * Δ) * (ex • D) * Δi := by
     have a1 : (h1i * Δ) * (ex • D) * Δi = h1i * (Δ * (ex • G) * Δi) - h1i * (Δ * (ex • τ) * Δi) := by
-      rw [hD, smul_sub, Matrix.mul_sub, Matrix.sub_mul]
-      simp only [Matrix.mul_assoc]
+      simp only [hD, smul_sub, Matrix.mul_sub, Matrix.sub_mul, Matrix.mul_assoc]
     have a2 : Δ * (ex • G) * Δi = ex • (l : Matrix (Fin n) (Fin n) L.Ep) := by rw [smul_sandwich, hlx]
     have a3 : Δ * (ex • τ) * Δi = ex • (h1 : Matrix (Fin n) (Fin n) L.Ep) := by
       rw [hτx, smul_sandwich]

@@ -82,8 +82,7 @@ private theorem conj_transpose_intertwine {g : ℕ} (M₀ C : Matrix (Fin g) (Fi
     (hS : (Cᵀ * M₀)ᵀ = Cᵀ * M₀) : (C.map star)ᵀ * Cᵀ * M₀ = M₀ * C.map star * C := by
   have f0 : M₀.map star = M₀ᵀ := by
     ext i j
-    have := congrFun (congrFun hH j) i
-    simpa [conjTranspose_apply] using this
+    simpa [conjTranspose_apply] using congrFun (congrFun hH j) i
   have f1 : M₀ᵀ * C = Cᵀ * M₀ := by rw [transpose_mul, transpose_transpose] at hS; exact hS
   have f1' : M₀ * C.map star = (C.map star)ᵀ * M₀ᵀ := by
     have := congrArg (fun A => A.map star) f1
@@ -118,8 +117,7 @@ theorem riemann_converse {g : ℕ} (M₀ C : Matrix (Fin g) (Fin g) ℂ) (hH : M
 
   have hMbar : M.map star = Mᵀ := by
     ext i j
-    have := congrFun (congrFun ha j) i
-    simpa [conjTranspose_apply] using this
+    simpa [conjTranspose_apply] using congrFun (congrFun ha j) i
   have hb : M.map star * C = Cᵀ * M := by
     rw [hMbar, hMdef, transpose_mul, transpose_nonsing_inv, Matrix.mul_assoc, f1, ← Matrix.mul_assoc,
       ← Matrix.mul_assoc]

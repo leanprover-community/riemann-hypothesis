@@ -362,8 +362,7 @@ theorem strict_est {F : 𝔸 × 𝔸 → 𝔸} {F' : 𝔸 × 𝔸 →L[ℝ] 𝔸
     rw [show ((0 : 𝔸 × 𝔸), (0 : 𝔸 × 𝔸)) = 0 from rfl, mem_ball_zero_iff]
     simp only [Prod.norm_def, norm_zero]
     simp [hX, hY]
-  have := h _ hm
-  simpa [Prod.norm_def] using this
+  simpa [Prod.norm_def] using h _ hm
 
 theorem distortion {ε : ℝ} (hε : 0 < ε) : ∃ δ > 0, ∀ X Y : 𝔸, ‖X‖ < δ → ‖Y‖ < δ →
     (exp (F1 (X, Y)) = exp (-X) * exp (X + Y) ∧ ‖F1 (X, Y) - Y‖ ≤ ε * ‖Y‖) ∧
@@ -532,21 +531,18 @@ theorem nu_qinv (hρ : 0 < ρ) (ε : ℝ) (hε0 : 0 < ε) (hε1 : ε < 1) : ∃ 
     rintro _ ⟨W, ⟨hW, -⟩, rfl⟩
     set Y : V := W - X with hY
     have hYn : ‖(Y : 𝔸)‖ ≤ (1 - ε) * r := by
-      have := mem_closedBall_iff_norm.mp hW
-      exact this
+      exact mem_closedBall_iff_norm.mp hW
     have hYr : ‖(Y : 𝔸)‖ < δ0 := by nlinarith
     obtain ⟨⟨e1, e2⟩, -⟩ := hD X Y hXδ hYr
     have hZn : ‖F1 ((X : 𝔸), (Y : 𝔸))‖ ≤ r := by
       have h1 : ‖F1 ((X : 𝔸), (Y : 𝔸))‖ ≤ ‖F1 ((X : 𝔸), (Y : 𝔸)) - Y‖ + ‖(Y : 𝔸)‖ := by
-        have := norm_add_le (F1 ((X : 𝔸), (Y : 𝔸)) - Y) (Y : 𝔸)
-        simpa using this
+        simpa using norm_add_le (F1 ((X : 𝔸), (Y : 𝔸)) - Y) (Y : 𝔸)
       have h2 : (1 + ε) * ((1 - ε) * r) ≤ r := by nlinarith [mul_pos hε0 hε0]
       nlinarith [norm_nonneg (Y : 𝔸)]
     have hXY : (X : 𝔸) + (Y : 𝔸) = (W : 𝔸) := by simp [hY]
     have hZV : F1 ((X : 𝔸), (Y : 𝔸)) ∈ V := by
       refine (hR _ (by linarith)).2 ⟨C.expG (-X) * C.expG W, ?_⟩
-      rw [map_mul, mat_expG, mat_expG, e1, hXY]
-      simp
+      simp [map_mul, mat_expG, mat_expG, e1, hXY]
     refine ⟨⟨_, hZV⟩, ⟨?_, ?_⟩, C.emb.injective ?_⟩
     · rw [mem_closedBall_zero_iff]; exact hZn
     · rw [mem_ball_zero_iff]
@@ -565,8 +561,7 @@ theorem nu_qinv (hρ : 0 < ρ) (ε : ℝ) (hε0 : 0 < ε) (hε1 : ε < 1) : ∃ 
     refine measure_mono ?_
     rintro _ ⟨Z, ⟨hZ, -⟩, rfl⟩
     have hZn : ‖(Z : 𝔸)‖ ≤ r := by
-      have := mem_closedBall_zero_iff.mp hZ
-      exact this
+      exact mem_closedBall_zero_iff.mp hZ
     obtain ⟨-, ⟨e1, e2⟩⟩ := hD X Z hXδ (lt_of_le_of_lt hZn hrδ)
     have h1 : ‖F2 ((X : 𝔸), (Z : 𝔸)) - X‖ ≤ (1 + ε) * r := by
       have := norm_add_le (F2 ((X : 𝔸), (Z : 𝔸)) - X - Z) (Z : 𝔸)

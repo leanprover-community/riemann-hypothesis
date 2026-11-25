@@ -399,8 +399,7 @@ theorem exists_forms_algebraicIndependent_finite {I : Ideal (MvPolynomial σ k)}
       _ he (le_max_right N e) fun d hd p hp => ?_
     obtain ⟨G, hG, hs⟩ := hgen d hd p hp
     refine ⟨G, hG, ?_⟩
-    have := Ideal.Quotient.eq.mpr hs
-    simpa using this
+    simpa using Ideal.Quotient.eq.mpr hs
   exact ⟨e, max N e, F, he, le_max_right N e, hF,
     injective_of_finite_of_ringKrullDim_eq _ hfin hdim, hgen, hfin⟩
 

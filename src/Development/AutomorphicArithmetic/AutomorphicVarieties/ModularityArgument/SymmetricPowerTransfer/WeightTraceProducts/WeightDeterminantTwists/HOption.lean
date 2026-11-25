@@ -113,5 +113,4 @@ theorem UpperTheory.V.Z.Sym.Wt.hqTwo :
   | succ k ih =>
     rw [hq_step, ← ih]
     refine (h_succ 1 ![a, b] k).trans ?_
-    rw [h_one]
-    simp
+    simp [h_one]

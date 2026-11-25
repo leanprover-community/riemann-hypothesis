@@ -41,8 +41,7 @@ theorem exists_isOpen_small (Γ : Subgroup G) [DiscreteTopology Γ] (c : G) :
     ⟨⟨hc₁, hc₂⟩, mem_interior_iff_mem_nhds.mpr hLn⟩, ⟨L, hL, fun x hx => interior_subset hx.2⟩, ?_⟩
   intro γ hγ x hx hγx
   apply hWΓ γ hγ
-  have : (γ * x, x) ∈ U₁ ×ˢ U₂ := ⟨hγx.1.1, hx.1.2⟩
-  simpa using hsub this
+  simpa using hsub (⟨hγx.1.1, hx.1.2⟩ : (γ * x, x) ∈ U₁ ×ˢ U₂)
 
 def saturate (Γ : Subgroup G) (A : Set G) : Set G := {y | ∃ γ ∈ Γ, γ⁻¹ * y ∈ A}
 
@@ -103,8 +102,7 @@ theorem existsUnique_mem_firstHit (Γ : Subgroup G) (A : ℕ → Set G)
       (by simpa [mul_assoc] using hi'.1)
     apply Subtype.ext
     have : (γ : G) = β := by
-      have := congrArg (· * (β : G)) hmul
-      simpa using this
+      simpa using congrArg (· * (β : G)) hmul
     exact this.symm
 
 theorem exists_isFundamentalDomain_of_isCompact [MeasurableSpace G] [BorelSpace G]

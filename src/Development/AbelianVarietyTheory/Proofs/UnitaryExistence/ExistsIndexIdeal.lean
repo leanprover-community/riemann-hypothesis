@@ -262,14 +262,13 @@ theorem exists_index_ideal (M' M : Submodule (𝓞 E) (Fin n → E)) (hle : M' �
       · rw [map_mul, h2, index_cyclic]
         exact AddSubgroup.relIndex_mul_relIndex _ _ _ (Submodule.toAddSubgroup_mono le_sup_left)
           (Submodule.toAddSubgroup_mono le_sup_left)
-  have hfg : M.FG := by
+  obtain ⟨s, rfl⟩ : M.FG := by
     obtain ⟨k, hk, h⟩ := hb
     have hs : (stdLat E n).FG := Submodule.fg_pi fun _ => by
       rw [Submodule.one_eq_span]; exact Submodule.fg_span_singleton _
     apply Submodule.fg_of_fg_map_injective (LinearMap.lsmul (𝓞 E) (Fin n → E) k)
       (fun x y hxy => smul_right_injective _ hk hxy)
     exact hs.of_le (by rintro _ ⟨v, hv, rfl⟩; exact h v hv)
-  obtain ⟨s, rfl⟩ := hfg
   have := key s fun x hx => Submodule.subset_span hx
   rwa [sup_eq_right.2 hle] at this
 

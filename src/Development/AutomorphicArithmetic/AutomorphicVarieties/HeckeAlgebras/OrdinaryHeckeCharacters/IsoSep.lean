@@ -141,8 +141,8 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.IsoSeparation.isoSep :
-    ∀ {H M : Type} [Group H] [TopologicalSpace H] [IsTopologicalGroup H] [AddCommGroup M]
-      [_root_.Module ℂ M] {ρ : Representation ℂ H M} {Y : Submodule ℂ M} {σ : GlobalTheory.CuspRep.SmIrr H},
+    ∀ {H M : Type} [inst : Group H] [inst_1 : TopologicalSpace H] [inst_2 : IsTopologicalGroup H] [inst_3 : AddCommGroup M]
+      [inst_4 : _root_.Module ℂ M] {ρ : Representation ℂ H M} {Y : Submodule ℂ M} {σ : GlobalTheory.CuspRep.SmIrr H},
       UpperTheory.V.Hi.IsoSum ρ Y σ →
         ∀ {F : M},
           F ∈ Y →

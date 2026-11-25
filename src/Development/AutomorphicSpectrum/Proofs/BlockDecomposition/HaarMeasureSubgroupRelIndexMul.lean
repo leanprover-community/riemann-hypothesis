@@ -76,21 +76,16 @@ theorem measure_eq_relIndex_mul : ∀ (G : Type) [AddGroup G] [MeasurableSpace G
       rw [AddSubgroup.mem_addSubgroupOf] at h1
       simpa [S, o] using h1
     · rintro ⟨q, hq⟩
-      have hq' : -o q + x ∈ H := hq
-      have hoK : o q ∈ K := (Quotient.out q).2
       have hx : x = o q + (-o q + x) := (add_neg_cancel_left (o q) x).symm
       rw [hx]
-      exact K.add_mem hoK (hHK hq')
+      exact K.add_mem ((Quotient.out q).2) (hHK hq)
   have hdisj : Pairwise (Function.onFun Disjoint S) := by
     intro q r hqr
     rw [Function.onFun, Set.disjoint_left]
     intro x hxq hxr
     apply hqr
-    have hq' : -o q + x ∈ H := hxq
-    have hr' : -o r + x ∈ H := hxr
     have h2 : -o q + o r ∈ H := by
-      have := H.add_mem hq' (H.neg_mem hr')
-      simpa [neg_add_rev, add_assoc] using this
+      simpa [neg_add_rev, add_assoc] using H.add_mem hxq (H.neg_mem hxr)
     rw [← QuotientAddGroup.out_eq' q, ← QuotientAddGroup.out_eq' r]
     apply QuotientAddGroup.eq.mpr
     rw [AddSubgroup.mem_addSubgroupOf]

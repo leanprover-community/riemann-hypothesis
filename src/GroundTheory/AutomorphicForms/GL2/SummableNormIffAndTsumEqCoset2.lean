@@ -157,8 +157,7 @@ theorem isAddFundamentalDomain_idealLattice2 (I : Fin 2 → (FractionalIdeal (�
     have hgi : (g : Fin 2 → mixedSpace K) i ∈ Submodule.span ℤ (Set.range (b i)) := by
       rw [hspan i]
       exact mem_idealLattice2.mp g.2 i
-    have := hvu i ⟨_, hgi⟩ (hg i trivial)
-    exact congrArg Subtype.val this
+    exact congrArg Subtype.val (hvu i ⟨_, hgi⟩ (hg i trivial))
 
 theorem covolume_idealLattice2 (I : Fin 2 → (FractionalIdeal (𝓞 K)⁰ K)ˣ) :
     ZLattice.covolume (idealLattice2 I) (mixedMeasure2 K) =

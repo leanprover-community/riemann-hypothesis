@@ -73,7 +73,7 @@ theorem wG_succ_eq_shift (R : Ranks) (z : ℤ) (j : ℕ) :
 
 
 
-theorem fillAt_of_comp : Sites (fun {D _ hT _ _ _ _ _ _ _ _ w _ _ _ H X} [Fact (D.what₂.places.resChar w).Prime] {std _ _} _ =>
+theorem fillAt_of_comp : Sites (fun {D L hT Gi Gl Kc Dx cX ex u μ w hg Lv I H X} [Fact (D.what₂.places.resChar w).Prime] {std t J} S =>
     ∀ j (hj : j < D.R.m), (sysS H X std).Lv.comp (j + 1) → FillAt (hT := hT) (H := H) (X := X) std j hj) := by
   intro D L hT Gi Gl Kc Dx cX ex u μ w hg Lv I H X _ std t J S hD hS j hj c
   have hj' : j + 1 ≤ D.R.m := hj
@@ -125,7 +125,7 @@ section -- clump:auto
 open Formalism.BasicNotions NumberField IsDedekindDomain Formalism.MainNotions Formalism.MainNotions.G Formalism.MainNotions.FormalGroupSystem Formalism.MainNotions.G.KAat Formalism.MainNotions.G.CmpJ Formalism.L2.G Formalism.L2.G.Cmp Formalism.L2.Forms Formalism.L2.DIV Formalism.UG Formalism.L2.Ker Formalism.L2.G.Pend Formalism.L2.PairingIndexBounds.F Formalism.L2.KerInert GlobalTheory.TwV GlobalTheory.TwV.Xc TensorProduct
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.systemWeights_eq_shifted_character_exponents : Sites (fun {D _ hT _ _ _ _ _ _ _ _ w _ _ _ H X} [Fact (D.what₂.places.resChar w).Prime] {std _ _} _ => ∀ j (hj : j < D.R.m), (sysS H X std).Lv.comp (j + 1) → FillAt (hT := hT) (H := H) (X := X) std j hj) := by
+theorem _root_.GlobalTheory.T.systemWeights_eq_shifted_character_exponents : Sites (fun {D L hT Gi Gl Kc Dx cX ex u μ w hg Lv I H X} [Fact (D.what₂.places.resChar w).Prime] {std t J} S => ∀ j (hj : j < D.R.m), (sysS H X std).Lv.comp (j + 1) → FillAt (hT := hT) (H := H) (X := X) std j hj) := by
   first | exact @GlobalTheory.TwV.Xc.fillAt_of_comp
 end -- clump:auto
 end -- clump:auto

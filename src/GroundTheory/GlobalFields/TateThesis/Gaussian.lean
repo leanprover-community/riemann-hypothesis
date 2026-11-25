@@ -51,8 +51,7 @@ theorem integrable_realGaussianOdd : Integrable realGaussianOdd := by
 theorem hasDerivAt_realGaussian (x : ℝ) :
     HasDerivAt realGaussian (-2 * π * x * realGaussian x) x := by
   have h : HasDerivAt (fun y : ℝ ↦ -π * (y : ℂ) ^ 2) (-π * (2 * (x : ℂ))) x := by
-    have := ((hasDerivAt_id x).ofReal_comp).pow 2
-    simpa using this.const_mul (-(π : ℂ))
+    simpa using (((hasDerivAt_id x).ofReal_comp).pow 2).const_mul (-(π : ℂ))
   unfold realGaussian
   convert h.cexp using 1
   ring
@@ -84,8 +83,7 @@ theorem integral_comp_abs_complex (f : ℝ → ℂ) :
     ∫ x : ℝ, f |x| = 2 * ∫ y in Ioi (0 : ℝ), f y := by
   have h := integral_fun_norm_addHaar (volume : Measure ℝ) f
   simp only [Real.norm_eq_abs] at h
-  rw [h]
-  simp [Complex.real_smul]
+  simp [h, Complex.real_smul]
 
 theorem mellin_exp_neg_pi_mul_sq {s : ℂ} (hs : 0 < s.re) :
     mellin (fun t : ℝ ↦ ((Real.exp (-(π * t ^ 2)) : ℝ) : ℂ)) s = Gammaℝ s / 2 := by

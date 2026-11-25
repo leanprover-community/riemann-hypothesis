@@ -63,7 +63,7 @@ section -- clump:auto
 
 theorem UpperTheory.Reformulated.B.ExistsEvaluation.exists_eval :
     ∀ {C Ω J : Type}
-    [CommRing C] [Field Ω] [Fintype J] (f : (J → C) →+* Ω),
+    [inst : CommRing C] [inst_1 : Field Ω] [Fintype J] (f : (J → C) →+* Ω),
     ∃ (j : J),
       ∀ (v : J → C), (f : (J → C) → Ω) v = (f : (J → C) → Ω) ((Algebra.algebraMap C (J → C) : C → J → C) (v j)) := by
   intro C Ω J _ _ _ f
@@ -105,8 +105,8 @@ section -- clump:auto
 
 theorem UpperTheory.Reformulated.B.Qk54.tensor_hom_ext :
     ∀ {A A' C Ω : Type}
-    [CommRing A] [CommRing A'] [CommRing C] [Algebra A A'] [Algebra A C]
-    [CommRing Ω] {u v : TensorProduct A C A' →+* Ω},
+    [inst : CommRing A] [inst_1 : CommRing A'] [inst_2 : CommRing C] [inst_3 : Algebra A A'] [inst_4 : Algebra A C]
+    [inst_5 : CommRing Ω] {u v : TensorProduct A C A' →+* Ω},
     (∀ (c : C), (u : TensorProduct A C A' → Ω) (c ⊗ₜ[A] (1 : A')) = (v : TensorProduct A C A' → Ω) (c ⊗ₜ[A] (1 : A'))) →
       (∀ (b : A'), (u : TensorProduct A C A' → Ω) ((1 : C) ⊗ₜ[A] b) = (v : TensorProduct A C A' → Ω) ((1 : C) ⊗ₜ[A] b)) →
         u = v := by

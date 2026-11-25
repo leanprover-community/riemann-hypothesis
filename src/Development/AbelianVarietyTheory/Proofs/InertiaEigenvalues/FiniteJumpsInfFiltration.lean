@@ -64,9 +64,8 @@ theorem finite_jumps_inf_filtration (E W : Type) [Field E] [AddCommGroup W] [Mod
     intro a b ha hab
     haveI := hfin a
     apply Submodule.finrank_lt_finrank_of_lt
-    have h1 : D ⊓ F b ≤ D ⊓ F (a + 1) := inf_le_inf_left _ (hanti (by omega))
     have h2 : D ⊓ F (a + 1) < D ⊓ F a := lt_of_le_of_ne (inf_le_inf_left _ (hF a)) ha
-    exact lt_of_le_of_lt h1 h2
+    exact lt_of_le_of_lt (inf_le_inf_left _ (hanti (by omega))) h2
   refine Set.Finite.of_injOn (f := fun a => Module.finrank E ↥(D ⊓ F a))
     (t := Set.Iic (Module.finrank E ↥D)) ?_ ?_ (Set.finite_Iic _)
   · intro a _

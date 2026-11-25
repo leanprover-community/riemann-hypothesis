@@ -40,8 +40,7 @@ theorem goal1 {R : Type u_1} [CommRing R] [IsDedekindDomain R] {K : Type u_2} [F
       mul_ne_zero ((Valuation.ne_zero_iff _).mpr (hc p hp)) (p.intValuation_ne_zero _ hd0)
     have h3 : WithZero.exp (-(N p : ℤ)) ≤ p.valuation K (c p) * p.intValuation (b : R) := by
       conv_rhs => rw [← WithZero.exp_log hγ]
-      rw [WithZero.exp_le_exp]
-      simp only [N]
+      simp only [WithZero.exp_le_exp, N]
       omega
     have hsub : algebraMap R K y / algebraMap R K (b : R) - a p =
         algebraMap R K (y - x p) / algebraMap R K (b : R) := by

@@ -90,8 +90,7 @@ theorem sum_rho_eq_trace {ρ : InfinitePlace F → (F →+* ℝ)} (hT : IsTotall
     rw [← (Equiv.ofBijective _ hb).sum_comp]
     rfl
   apply Complex.ofReal_injective
-  rw [Complex.ofReal_sum]
-  simp only [hρ]
+  simp only [Complex.ofReal_sum, hρ]
   rw [← h2, ← h1]
   simp
 

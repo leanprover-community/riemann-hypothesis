@@ -86,16 +86,14 @@ theorem exists_matrix_no_invariant_subspace :
     | zero => intro x hx; simpa using hx
     | succ n ih =>
       intro x hx
-      have := stepβ _ (ih x hx)
-      simpa [pow_succ', mul_assoc] using this
+      simpa [pow_succ', mul_assoc] using stepβ _ (ih x hx)
   have stepAll : ∀ y x : L, e x ∈ W → e (y * x) ∈ W := by
     intro y x hx
     by_cases hy : y = 0
     · subst hy; simpa using W.zero_mem
     · obtain ⟨n, hn⟩ := Submonoid.mem_powers_iff _ _ |>.1 (hg (Units.mk0 y hy))
       have : β ^ n = y := by
-        have := congrArg (fun u : Lˣ => (u : L)) hn
-        simpa [β] using this
+        simpa [β] using congrArg (fun u : Lˣ => (u : L)) hn
       rw [← this]; exact stepPow n x hx
   by_cases h : W = ⊥
   · exact Or.inl h

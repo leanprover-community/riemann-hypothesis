@@ -249,7 +249,7 @@ theorem swapSum_swapSum (P Q : ℕ → Cx.{w} K) (c n : ℕ) (z) :
   exact LinearMap.congr_fun key z
 
 theorem kunE_swap {P Q T : ℕ → Cx.{1} K} (pr : ∀ {a a' c : ℕ}, a + a' = c → CxPairing (P a) (Q a') (T c)) (h : KunE pr) :
-    KunE (P := Q) (Q := P) (T := T) (fun {_ _ _} ha => swapPr pr ha) := by
+    KunE (P := Q) (Q := P) (T := T) (fun {a a' c} ha => swapPr pr ha) := by
   intro c n
   obtain ⟨e, he⟩ := h c n
   let σ : (⨁ t : Idx c n, (Q t.a).H t.i ⊗[K] (P t.a').H t.j) ≃ₗ[K]
@@ -286,7 +286,7 @@ section -- clump:auto
 set_option backward.isDefEq.respectTransparency false
 open CategoryTheory AlgebraicGeometry TensorProduct DirectSum GlobalTheory.LogCris CrystallineSemistableComparison CrystallineSemistableComparison.Onto CrystallineSemistableComparison.Pb CrystallineSemistableComparison.HT GlobalTheory.CompanionTheory.KunGlue
 
-theorem _root_.GlobalTheory.T.kuenneth_swap : ∀ {K : Type} [Field K] {P Q T : ℕ → Cx.{1} K} (pr : ∀ {a a' c : ℕ}, a + a' = c → CxPairing (P a) (Q a') (T c)), KunE pr → KunE (P := Q) (Q := P) (T := T) (fun {_ _ _} ha => swapPr pr ha) := by
+theorem _root_.GlobalTheory.T.kuenneth_swap : ∀ {K : Type} [Field K] {P Q T : ℕ → Cx.{1} K} (pr : ∀ {a a' c : ℕ}, a + a' = c → CxPairing (P a) (Q a') (T c)), KunE pr → KunE (P := Q) (Q := P) (T := T) (fun {a a' c} ha => swapPr pr ha) := by
   first | exact @GlobalTheory.CompanionTheory.KunGlue.kunE_swap
 end -- clump:auto
 end -- clump:auto
@@ -313,7 +313,7 @@ theorem mapH_id_bij {K : Type} [Field K] (C : Cx.{1} K) (n : ℕ) :
 theorem swapPr_swapPr_apply {K : Type} [Field K] {P Q T : ℕ → Cx.{1} K}
     (pr : ∀ {a a' c : ℕ}, a + a' = c → CxPairing (P a) (Q a') (T c)) {a a' c : ℕ} (ha : a + a' = c)
     {i j n : ℕ} (h : i + j = n) (x : (P a).X i) (y : (Q a').X j) :
-    (swapPr (P := Q) (Q := P) (T := T) (fun {_ _ _} ha => swapPr pr ha) ha).μ h x y = (pr ha).μ h x y := by
+    (swapPr (P := Q) (Q := P) (T := T) (fun {a a' c} ha => swapPr pr ha) ha).μ h x y = (pr ha).μ h x y := by
   simp only [swapPr, LinearMap.smul_apply, LinearMap.flip_apply, smul_smul]
   have s : ((-1 : ℤ) ^ (i * j) * (-1) ^ (j * i)) = 1 := by
     rw [mul_comm j i, ← mul_pow]
@@ -383,8 +383,8 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Qn17.tensor_sub_right.{u} :
-    ∀ {R : Type} [CommRing R] (M N : Type u) [AddCommMonoid M]
-    [AddCommMonoid N] [_root_.Module R M] [_root_.Module R N] [Subsingleton N],
+    ∀ {R : Type} [inst : CommRing R] (M N : Type u) [inst_1 : AddCommMonoid M]
+    [inst_2 : AddCommMonoid N] [inst_3 : _root_.Module R M] [inst_4 : _root_.Module R N] [Subsingleton N],
     Subsingleton (TensorProduct R M N) := by
   intro R _ M N _ _ _ _ _
   have h : ∀ x : TensorProduct R M N, x = 0 := by

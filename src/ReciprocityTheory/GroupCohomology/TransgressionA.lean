@@ -82,11 +82,9 @@ lemma adm_of_section_mem (U K : Subgroup G) (S : Set G) (h : admitted U (K, S)) 
     have habK := hSK a haS b hbS hab
     refine ⟨habK, ?_⟩
     have hr : rep K N b = rep K N a := rep_eq K N ⟨a * b⁻¹, habK, 1, N.one_mem, by group⟩
-    have ha : a * (rep K N a)⁻¹ ∈ N := haT
     have hb : b * (rep K N b)⁻¹ ∈ N := hbT
     rw [hr] at hb
-    have := N.mul_mem ha (N.inv_mem hb)
-    simpa [mul_assoc] using this
+    simpa [mul_assoc] using N.mul_mem haT (N.inv_mem hb)
   · intro g
     obtain ⟨a, haS, hag⟩ := hSU g
     obtain ⟨k, hk, n, hn, ha⟩ := rep_spec K N a
@@ -166,16 +164,13 @@ theorem core [CompactSpace G] [T2Space G] [TotallyDisconnectedSpace G] (U : Subg
     have hstep := adm_of_section_mem U K S hA N.toSubgroup N.isOpen'
     have hle := hm.2 (y := OrderDual.toDual (K ⊓ N.toSubgroup, S ∩ tr K N.toSubgroup)) hstep
       (Prod.le_def.2 ⟨inf_le_left, Set.inter_subset_left⟩)
-    have hkN : k ∈ N.toSubgroup := ((Prod.le_def.1 hle).1 hk).2
-    exact hN hkN rfl
-  have hex : ∀ g, ∃ a ∈ S, a * g⁻¹ ∈ U := hA.2.2.2.2
+    exact hN (((Prod.le_def.1 hle).1 hk).2) rfl
   have huniq : ∀ g a a', a ∈ S → a' ∈ S → a * g⁻¹ ∈ U → a' * g⁻¹ ∈ U → a = a' := by
     intro g a a' ha ha' hag ha'g
     have hU' : a * a'⁻¹ ∈ U := by
-      have := U.mul_mem hag (U.inv_mem ha'g)
-      simpa [mul_assoc] using this
+      simpa [mul_assoc] using U.mul_mem hag (U.inv_mem ha'g)
     exact mul_inv_eq_one.1 (hK1 _ (hA.2.2.2.1 a ha a' ha' hU'))
-  choose t htS htU using hex
+  choose t htS htU using hA.2.2.2.2
   refine ⟨t, ?_, htU, fun g h hgh => ?_⟩
   · rw [continuous_iff_isClosed]
     intro C hC

@@ -45,10 +45,8 @@ theorem vandermondeOf_X_ne_zero (f N : ℕ) (τ : Fin f) :
     vandermondeOf (fun i : Fin N => (X (τ, i) : RootRing f N)) ≠ 0 := by
   unfold vandermondeOf
   refine Finset.prod_ne_zero_iff.mpr fun i _ => Finset.prod_ne_zero_iff.mpr fun j hj => ?_
-  have hij : i ≠ j := (ne_of_lt (Finset.mem_Ioi.mp hj))
-  refine sub_ne_zero.mpr fun h => hij ?_
-  have := X_injective (R := ℚ) h
-  simpa using this
+  refine sub_ne_zero.mpr fun h => ((ne_of_lt (Finset.mem_Ioi.mp hj))) ?_
+  simpa using X_injective (R := ℚ) h
 
 theorem blockVandermonde_ne_zero (f N : ℕ) : blockVandermonde f N ≠ 0 :=
   Finset.prod_ne_zero_iff.mpr fun τ _ => vandermondeOf_X_ne_zero f N τ
@@ -148,8 +146,7 @@ theorem fibreClass_eq_prod (f r a : ℕ) (c : SmallBlock) :
   have h := vandermondeOf_map (blockEmb f (r + a) σ).toRingHom (yRoot 1 r a c 0)
   have h' := vandermondeOf_map (blockEmb f (r + a) σ).toRingHom (zRoot 1 r a c 0)
   simp only [AlgHom.toRingHom_eq_coe, RingHom.coe_coe] at h h'
-  rw [fib1, map_mul, h, h']
-  simp only [← yRoot_eq_blockEmb, ← zRoot_eq_blockEmb]
+  simp only [fib1, map_mul, h, h', ← yRoot_eq_blockEmb, ← zRoot_eq_blockEmb]
 
 def yEval (r a : ℕ) (c : SmallBlock) : MvPolynomial (Fin r) ℚ →ₐ[ℚ] RootRing 1 (r + a) :=
   aeval (yRoot 1 r a c 0)
@@ -320,8 +317,7 @@ theorem expand_blocks (f r a : ℕ) (c : SmallBlock) (g : Fin f → MvPolynomial
   rw [smallBlockMu_eq_sum, Finset.sum_pow_eq_sum_piAntidiag, fibreClass_eq_prod, Finset.mul_sum,
     Finset.sum_mul]
   refine Finset.sum_congr rfl fun m _ => ?_
-  rw [Nat.cast_smul_eq_nsmul, nsmul_eq_mul]
-  simp only [map_mul, map_pow, Finset.prod_mul_distrib]
+  simp only [Nat.cast_smul_eq_nsmul, nsmul_eq_mul, map_mul, map_pow, Finset.prod_mul_distrib]
   ring
 
 def extraFactor (r q : ℕ) : MvPolynomial (Fin r) ℚ := if q = 0 then 1 else psum (Fin r) ℚ q
@@ -337,8 +333,7 @@ theorem partitionsOf_zero (r : ℕ) : partitionsOf r 0 = {0} := by
   constructor
   · rintro ⟨h, -⟩
     funext i
-    have := Finset.sum_eq_zero_iff.mp h i (Finset.mem_univ i)
-    simpa using this
+    simpa using Finset.sum_eq_zero_iff.mp h i (Finset.mem_univ i)
   · rintro rfl
     simp
 

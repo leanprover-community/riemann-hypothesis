@@ -56,12 +56,11 @@ theorem EtNbhd.exists_sub_mem_maximalIdeal :
   obtain ⟨r₁, hr₁⟩ := residue_surjective (i.pt a)
   obtain ⟨r₂, hr₂⟩ := residue_surjective (i.pt (s : i.A))
   have hs : i.pt (s : i.A) ≠ 0 := fun h => s.2 (show (s : i.A) ∈ RingHom.ker i.pt from h)
-  have hu : IsUnit r₂ := by
+  obtain ⟨u, rfl⟩ : IsUnit r₂ := by
     by_contra hn
     apply hs
     rw [← hr₂]
     exact (residue_eq_zero_iff r₂).2 hn
-  obtain ⟨u, rfl⟩ := hu
   refine ⟨r₁ * ((u⁻¹ : Rˣ) : R), ?_⟩
   have key : IsLocalization.mk' i.B a s - algebraMap R i.B (r₁ * ((u⁻¹ : Rˣ) : R)) =
       IsLocalization.mk' i.B (a - (s : i.A) * algebraMap R i.A (r₁ * ((u⁻¹ : Rˣ) : R))) s := by

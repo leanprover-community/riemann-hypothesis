@@ -80,9 +80,8 @@ theorem wa_exists_int_approx (T : Finset (HeightOneSpectrum (𝓞 F)))
     rw [eq_div_iff hdF, sub_mul, div_mul_cancel₀ _ hdF, map_sub, hn v hv]
     ring
   rw [hkey, map_div₀, v.valuation_of_algebraMap, v.valuation_of_algebraMap]
-  have hlt : (0 : WithZero (Multiplicative ℤ)) < v.intValuation (d : 𝓞 F) := zero_lt_iff.mpr (hne v)
   first
-    | exact (div_le_one₀ hlt).mpr (h1.trans (he v))
+    | exact (div_le_one₀ (zero_lt_iff.mpr (hne v))).mpr (h1.trans (he v))
 
 theorem weak_approximation_finite_unitary : WeakApproxF := by
   intro F _ _ T c D hD

@@ -56,8 +56,7 @@ theorem gaussNorm_nonneg (hρ : 0 < ρ) : 0 ≤ gaussNorm a ρ :=
 
 theorem ConvergesAt.finite_le (h : ConvergesAt a ρ) {ε : ℝ} (hε : 0 < ε) :
     {n | ε ≤ ‖a n‖ * ρ ^ n}.Finite := by
-  have := Filter.eventually_cofinite.1 (h.eventually (gt_mem_nhds hε))
-  simpa only [not_lt] using this
+  simpa only [not_lt] using Filter.eventually_cofinite.1 (h.eventually (gt_mem_nhds hε))
 
 end Basic
 

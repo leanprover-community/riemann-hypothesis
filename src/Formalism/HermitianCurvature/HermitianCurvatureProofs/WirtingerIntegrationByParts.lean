@@ -137,8 +137,7 @@ theorem hol_continuousOn_fderiv_apply {Ω : Set (Fin d → ℂ)} {g : (Fin d →
     simpa using hx1
   have h1 := Complex.norm_deriv_le_of_forall_mem_sphere_norm_le hr hdc hb
   have h2 := (hd 0 (Metric.mem_closedBall_self hr.le)).deriv
-  rw [h2] at h1
-  simp only [zero_smul, add_zero] at h1
+  simp only [h2, zero_smul, add_zero] at h1
   rw [dist_eq_norm]
   calc ‖fderiv ℂ g x v - fderiv ℂ g x₀ v‖ ≤ ε * r / 2 / r := h1
     _ = ε / 2 := by field_simp
@@ -176,8 +175,7 @@ theorem hol_differentiableOn_fderiv_apply [CompleteSpace F] {Ω : Set (Fin d →
       exact (continuous_circleMap 0 r).mul continuous_const
     refine h1.mul (Continuous.inv₀ (((continuous_circleMap 0 r).sub continuous_const).pow 2) ?_)
     intro θ
-    have := circleMap_ne_center (c := (0 : ℂ)) (θ := θ) hr.ne'
-    simpa using this
+    simpa using circleMap_ne_center (c := (0 : ℂ)) (θ := θ) hr.ne'
   have hp : ∀ x : Fin d → ℂ, Continuous fun θ : ℝ => x + circleMap 0 r θ • v := fun x =>
     continuous_const.add ((continuous_circleMap 0 r).smul continuous_const)
   have hFc : ∀ x ∈ Metric.ball x₀ (R / 2), Continuous fun θ : ℝ => c θ • g (x + circleMap 0 r θ • v) :=
@@ -255,8 +253,7 @@ theorem wir_hasLineDerivAt {d : ℕ} (β t : ℂ) {g : (Fin d → ℂ) → ℂ} 
     (hg : DifferentiableAt ℂ g x) (v : Fin d → ℂ) :
     HasLineDerivAt ℝ (fun y => psi β (g y / t))
       (psi β (g x / t) * (Complex.I * (((β / t * fderiv ℂ g x v).re : ℝ) : ℂ))) x v := by
-  have h0 : HasFDerivAt g ((fderiv ℂ g x).restrictScalars ℝ) x := hg.hasFDerivAt.restrictScalars ℝ
-  have h1 := h0.const_mul (β / t)
+  have h1 := (hg.hasFDerivAt.restrictScalars ℝ).const_mul (β / t)
   have h2 := Complex.reCLM.hasFDerivAt.comp x h1
   have h3 := Complex.ofRealCLM.hasFDerivAt.comp x h2
   have h4 := (h3.const_mul Complex.I).cexp
@@ -272,8 +269,7 @@ theorem wir_hasLineDerivAt {d : ℕ} (β t : ℂ) {g : (Fin d → ℂ) → ℂ} 
         Complex.I • Complex.ofRealCLM ∘SL Complex.reCLM ∘SL
           ((β / t) • ContinuousLinearMap.restrictScalars ℝ (fderiv ℂ g x))) v := by
     have := congrFun e x
-    rw [this]
-    simp
+    simp [this]
   rwa [e, ev]
 
 theorem wir_dir {d : ℕ} (β t : ℂ) {Ω : Set (Fin d → ℂ)} {g : (Fin d → ℂ) → ℂ} (hΩ : IsOpen Ω)
@@ -291,8 +287,7 @@ theorem wir_dir {d : ℕ} (β t : ℂ) {Ω : Set (Fin d → ℂ)} {g : (Fin d �
     fun_prop
   have hg1 : ContDiffOn ℂ 1 g Ω := by exact_mod_cast holo_contDiffOn hΩ hg 1
   have hdg : ContinuousOn (fun x => fderiv ℂ g x v) Ω := by
-    have := hg1.continuousOn_fderiv_of_isOpen hΩ le_rfl
-    exact this.clm_apply continuousOn_const
+    exact (hg1.continuousOn_fderiv_of_isOpen hΩ le_rfl).clm_apply continuousOn_const
   have hψ' : ContinuousOn
       (fun x => psi β (g x / t) * (Complex.I * (((β / t * fderiv ℂ g x v).re : ℝ) : ℂ))) Ω := by
     refine hψ.mul (continuousOn_const.mul ?_)
@@ -300,10 +295,9 @@ theorem wir_dir {d : ℕ} (β t : ℂ) {Ω : Set (Fin d → ℂ)} {g : (Fin d �
       (Complex.continuous_re.comp_continuousOn (continuousOn_const.mul hdg))
   have hdb : Continuous (fun x => fderiv ℝ b x v) :=
     (hb.continuous_fderiv one_ne_zero).clm_apply continuous_const
-  have hdbc : HasCompactSupport (fun x => fderiv ℝ b x v) := hc.fderiv_apply (𝕜 := ℝ) v
   have hdbs : tsupport (fun x => fderiv ℝ b x v) ⊆ Ω :=
     (tsupport_fderiv_apply_subset ℝ v).trans hsupp
-  have i1 := wir_integrable hΩ hψ hdb hdbc hdbs
+  have i1 := wir_integrable hΩ hψ hdb (hc.fderiv_apply (𝕜 := ℝ) v) hdbs
   have i2 := wir_integrable hΩ hψ' hb.continuous hc hsupp
   have i3 := wir_integrable hΩ hψ hb.continuous hc hsupp
   refine ⟨i1, i2, ?_⟩
@@ -428,8 +422,7 @@ theorem Bd.clm {W W' : Type*} [NormedAddCommGroup W] [NormedSpace ℝ W] [Normed
   intro j hj
   have h1 := L.norm_iteratedFDerivWithin_comp_left (hf.contDiffWithinAt hx) hs.uniqueDiffOn hx
     (n := j) (by exact_mod_cast hj)
-  have h2 : ‖iteratedFDerivWithin ℝ j (fun y => L (f y)) s x‖ ≤ ‖L‖ * ‖iteratedFDerivWithin ℝ j f s x‖ := h1
-  refine h2.trans ?_
+  refine h1.trans ?_
   rw [mul_assoc]
   exact mul_le_mul hL (bf j hj) (norm_nonneg _) ((norm_nonneg _).trans hL)
 
@@ -801,7 +794,6 @@ theorem ibp_identity {β t : ℂ} (hβ : β ≠ 0) (ht : t ≠ 0) {Ω : Set (Fin
     intro k
     have h1 : ContinuousOn (fderiv ℂ g) Ω :=
       ((holo_contDiffOn hΩ hg 1).continuousOn_fderiv_of_isOpen hΩ (by norm_num))
-    have h2 : ContinuousOn (fun x => fderiv ℂ g x (Pi.single k 1)) Ω := h1.clm_apply continuousOn_const
     have h3 : ContinuousOn (fun x => psi β (g x / t)) Ω := by
       unfold psi
       refine Complex.continuous_exp.comp_continuousOn ?_
@@ -809,7 +801,7 @@ theorem ibp_identity {β t : ℂ} (hβ : β ≠ 0) (ht : t ≠ 0) {Ω : Set (Fin
       refine Complex.continuous_ofReal.comp_continuousOn ?_
       refine Complex.continuous_re.comp_continuousOn ?_
       exact continuousOn_const.mul (hg.continuousOn.div_const _)
-    exact (((continuousOn_const.mul h2).div_const _).mul h3)
+    exact (((continuousOn_const.mul (h1.clm_apply continuousOn_const)).div_const _).mul h3)
   have hint : ∀ k, Integrable (fun x => (Complex.I * β * fderiv ℂ g x (Pi.single k 1) / (2 * t) *
       psi β (g x / t)) • (bk g k x • a x)) (muPi β (Fin d)) := by
     intro k
@@ -862,8 +854,7 @@ theorem main_induction {q : ℕ} {β t : ℂ} (hβ : β ≠ 0) (ht : t ≠ 0) {�
     intro _ S a _ hc _ hb
     simp only [pow_zero, one_mul, mul_one]
     refine base_bound β t g hc fun x => ?_
-    have := hb 0 le_rfl x
-    simpa using this
+    simpa using hb 0 le_rfl x
   | succ n ih =>
     intro hn S a ha hc hsupp hb
     have hS : 0 ≤ S := by

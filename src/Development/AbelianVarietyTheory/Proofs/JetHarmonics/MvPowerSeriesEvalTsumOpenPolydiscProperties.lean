@@ -97,8 +97,7 @@ theorem small_csub_of_small (K : Type) [NormedField K] [IsUltrametricDist K] [Co
     (u : MvPowerSeries σ K) (hu : Small u) : Small (csub t u) := by
   obtain ⟨hI, hB, hP, hC, -⟩ := GlobalTheory.BddAlg.bdd_alg K σ
   set c := MvPowerSeries.constantCoeff u with hc
-  have hCi : Intg (MvPowerSeries.C c : MvPowerSeries σ K) := (hC c).2.1 hu.2.le
-  have h1 : Intg (u - MvPowerSeries.C c) := (hI _ _ hu.1 hCi).2.1
+  have h1 : Intg (u - MvPowerSeries.C c) := (hI _ _ hu.1 ((hC c).2.1 hu.2.le)).2.1
   have hb1 : Bdd (u - MvPowerSeries.C c) := (hP _ 0).2.2 h1
   have hbu : Bdd u := (hP _ 0).2.2 hu.1
   have h2 : Small (csub t (u - MvPowerSeries.C c)) :=
@@ -232,22 +231,19 @@ theorem ev_algebra : ∀ (K : Type) [NormedField K] [IsUltrametricDist K] [Compl
 
     set c0 := MvPowerSeries.constantCoeff S with hc0d
     have hc0 : ‖c0‖ ≤ 1 := by simpa [hc0d] using hS 0
-    have hCI : Intg (MvPowerSeries.C c0 : MvPowerSeries σ K) := (B.2.2.2.1 c0).2.1 hc0
-    have hCB : Bdd (MvPowerSeries.C c0 : MvPowerSeries σ K) := (B.2.2.2.1 c0).1
-    have hT : Intg (S - MvPowerSeries.C c0) := (B.1 S _ hS hCI).2.1
+    have hT : Intg (S - MvPowerSeries.C c0) := (B.1 S _ hS ((B.2.2.2.1 c0).2.1 hc0)).2.1
     have hT0 : MvPowerSeries.constantCoeff (S - MvPowerSeries.C c0) = 0 := by simp [hc0d]
     have hTB : Bdd (S - MvPowerSeries.C c0) := (B.2.2.1 _ 0).2.2 hT
     have hsm := (_root_.GlobalTheory.ConvSer.csub_hasSum_and_bounds K σ Unit c _ hcs hTB).2.2.2 hT hT0
     rw [E'] at hsm
     have hlt : ‖ev (S - MvPowerSeries.C c0) x‖ < 1 := by simpa using hsm.2
     have hadd : ev S x = ev (S - MvPowerSeries.C c0) x + c0 := by
-      have h := (p2 (S - MvPowerSeries.C c0) _ hTB hCB).1
+      have h := (p2 (S - MvPowerSeries.C c0) _ hTB ((B.2.2.2.1 c0).1)).1
       rw [sub_add_cancel, p3] at h
       exact h
-    have hlt0 : ‖c0‖ < 1 := hSm.2
     calc ‖ev S x‖ = ‖ev (S - MvPowerSeries.C c0) x + c0‖ := by rw [← hadd]
       _ ≤ max ‖ev (S - MvPowerSeries.C c0) x‖ ‖c0‖ := IsUltrametricDist.norm_add_le_max _ _
-      _ < 1 := max_lt hlt hlt0
+      _ < 1 := max_lt hlt hSm.2
   have p6 : ∀ (ρ : Type) [Fintype ρ] (s : ρ → MvPowerSeries σ K) (S : MvPowerSeries ρ K),
       (∀ j, Small (s j)) → Bdd S → ev (csub s S) x = ev S (fun j => ev (s j) x) := by
     intro ρ _ s S hs hS

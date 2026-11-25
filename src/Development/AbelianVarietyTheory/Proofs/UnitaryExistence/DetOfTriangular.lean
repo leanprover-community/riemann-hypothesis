@@ -301,9 +301,9 @@ theorem _root_.GlobalTheory.per_move :
     ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H
         : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (D
         : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Datum H) (r : ℕ) (ξ : E) (Gm
-        : Matrix (Fin r) (Fin r) E) (φ : D.La →ₗ[𝓞 E] (Fin r → E)) (Ψ : Finset (E →+* ℂ)) (_
+        : Matrix (Fin r) (Fin r) E) (φ : D.La →ₗ[𝓞 E] (Fin r → E)) (Ψ : Finset (E →+* ℂ)) (hΨ
         : ∀ τ, τ ∈ Ψ ↔ τ (H.rt : E) = H.rt0) (g : ℕ) (idx : Fin g ≃ Ψ × Fin r) (ty : Fin g → (E →+*
-        ℂ)) (_ : ∀ k, ty k = if ((idx k).2 : ℕ) < D.q then ComplexEmbedding.conjugate (idx
+        ℂ)) (hty : ∀ k, ty k = if ((idx k).2 : ℕ) < D.q then ComplexEmbedding.conjugate (idx
         k).1.1 else (idx
         k).1.1), _root_.ReciprocityTheory.ChartRestriction.G.FD.cc ξ = -ξ → (∀ τ ∈ Ψ, 0 < (τ
         ξ).im) → (Function.Injective φ ∧ Submodule.span E (Set.range φ) = ⊤ ∧

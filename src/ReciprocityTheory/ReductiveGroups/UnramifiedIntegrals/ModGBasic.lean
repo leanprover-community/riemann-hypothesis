@@ -33,8 +33,7 @@ theorem mem_nonunits_Aio {d l : ℕ} [Fact l.Prime] (ι : ℂ ≃+* ℂ_[l]) (x 
   rw [ValuationSubring.mem_nonunits_iff_exists_mem_maximalIdeal (A := Aio d l ι)]
   constructor
   · rintro ⟨h1, h2⟩
-    have hle : ‖ι (x : ℂ)‖ ≤ 1 := (mem_Aio ι x).1 h1
-    refine lt_of_le_of_ne hle fun heq => ?_
+    refine lt_of_le_of_ne ((mem_Aio ι x).1 h1) fun heq => ?_
     rw [IsLocalRing.mem_maximalIdeal, mem_nonunits_iff] at h2
     apply h2
     have hx0 : x ≠ 0 := by

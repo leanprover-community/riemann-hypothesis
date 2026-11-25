@@ -76,7 +76,7 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.ExistsDiagonalization.exists_diag :
-    ∀ {K : Type} [Field K] {n : ℕ}
+    ∀ {K : Type} [inst : Field K] {n : ℕ}
     (P : Matrix (Fin n) (Fin n) K) (α : Fin n → K),
     Function.Injective α →
       P.charpoly = ∏ i : Fin n, (Polynomial.X - (Polynomial.C : K → Polynomial K) (α i)) →

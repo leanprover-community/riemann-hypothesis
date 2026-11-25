@@ -128,10 +128,8 @@ theorem prim_of_isUnit_det (hc : ∀ u, c (c u) = u) {m : ℕ} (x y : Fin m → 
   refine ⟨fun b => ∑ k, c ((Matrix.of fun a b => ip c (x a) (y b))⁻¹ k b) • y k,
     fun a b => ?_⟩
   have h1 := congrFun (congrFun (Matrix.mul_nonsing_inv _ h) a) b
-  rw [Matrix.mul_apply, Matrix.one_apply] at h1
-  simp only [Matrix.of_apply] at h1
-  rw [ip_sum_right]
-  simp only [ip_smul_right, hc]
+  simp only [Matrix.mul_apply, Matrix.one_apply, Matrix.of_apply] at h1
+  simp only [ip_sum_right, ip_smul_right, hc]
   rw [← h1]
   exact Finset.sum_congr rfl fun k _ => mul_comm _ _
 

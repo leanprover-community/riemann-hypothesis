@@ -62,8 +62,7 @@ theorem isOpen_lt (γ : ValueGroupWithZero K) : IsOpen {x : K | valuation K x < 
   intro x hx
   have hγ : γ ≠ 0 := (lt_of_le_of_lt zero_le hx).ne'
   refine (IsValuativeTopology.hasBasis_nhds' x).mem_iff.2 ⟨γ, hγ, fun y hy => ?_⟩
-  have := (valuation K).map_add_lt (x := y - x) (y := x) hy hx
-  simpa using this
+  simpa using (valuation K).map_add_lt (x := y - x) (y := x) hy hx
 
 theorem tendsto_pow {x : K} (h : valuation K x < 1) :
     Tendsto (fun n : ℕ => x ^ n) atTop (𝓝 0) := by

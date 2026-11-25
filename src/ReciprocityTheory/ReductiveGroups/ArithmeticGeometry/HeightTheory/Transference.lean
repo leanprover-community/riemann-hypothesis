@@ -245,8 +245,7 @@ theorem gtE_main (n : ℕ) : ∀ (b : Basis (Fin n) ℝ (EuclideanSpace ℝ (Fin
     refine ⟨Fin.cons y0 u, ?_, ?_, ?_⟩
     · rw [Fintype.linearIndependent_iff]
       intro g hg
-      rw [Fin.sum_univ_succ] at hg
-      simp only [Fin.cons_zero, Fin.cons_succ] at hg
+      simp only [Fin.sum_univ_succ, Fin.cons_zero, Fin.cons_succ] at hg
       have hexp : ∑ i : Fin m, g i.succ • u i = ∑ i : Fin m, g i.succ • w i -
           (∑ i : Fin m, g i.succ * (inner ℝ (w i) xu - round (inner ℝ (w i) xu))) • y0 := by
         simp only [hu, smul_sub, Finset.sum_sub_distrib, smul_smul, Finset.sum_smul]
@@ -313,8 +312,7 @@ theorem gtE_main (n : ℕ) : ∀ (b : Basis (Fin n) ℝ (EuclideanSpace ℝ (Fin
           ring
         have hA : ‖w k‖ ≤ (m : ℝ) ^ 2 / lam := by rw [hwn]; exact hzn k
         have hN : ‖y0‖ ≤ ((m : ℝ) + 1) / lam := by
-          have := hy0n.trans hy1n
-          simpa using this
+          simpa using hy0n.trans hy1n
         have hbd := gtE_bound m lam ‖w k‖ _ ‖y0‖ (Nat.cast_nonneg m) hlam (norm_nonneg _) hA
           (abs_nonneg _) hc' (norm_nonneg _) hN
         rw [← hsq] at hbd

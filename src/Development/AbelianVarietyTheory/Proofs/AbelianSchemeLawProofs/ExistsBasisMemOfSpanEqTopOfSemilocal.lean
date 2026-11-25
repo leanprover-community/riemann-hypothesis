@@ -83,11 +83,10 @@ theorem exists_forall_notMem {A V J : Type*} [CommRing A] [IsLocalRing A]
     { toFun := Submodule.Quotient.mk
       map_add' := map_add N.mkQ
       map_smul' := Module.Quotient.mk_smul_mk V I }
-  have hq : LinearMap.ker q = N := Submodule.ker_mkQ N
   have hle (i : J) : N ≤ p i := Submodule.smul_le.mpr fun a ha x _ => hm i a ha x
   have hne (i : J) : (p i).map q ≠ ⊤ := by
     intro h
-    have hc := Submodule.comap_map_eq_self (f := q) (hq ▸ hle i)
+    have hc := Submodule.comap_map_eq_self (f := q) ((Submodule.ker_mkQ N) ▸ hle i)
     rw [h, Submodule.comap_top] at hc
     exact hp i hc.symm
   obtain ⟨y, hy⟩ := Submodule.exists_forall_notMem_of_forall_ne_top (K := A ⧸ I) (fun i => (p i).map q) hne

@@ -144,7 +144,7 @@ end GlobalTheory.MBLow.Cl.Qk
 namespace GlobalTheory.MBLow.Cl
 open Qk
 
-theorem torsion_eq_periods_mod : AllCD fun {N} {_} {_} {_} {_} d σ => ∀ k : ℕ, 0 < k → (∀ p, ∃ M Nn, d.Rep σ k M Nn p) ∧ (∀ M Nn, ∃! p, d.Rep σ k M Nn p) ∧ (∀ M Nn M' Nn' p p', d.Rep σ k M Nn p → d.Rep σ k M' Nn' p' → d.Rep σ k (M + M') (Nn + Nn') (p * p')) ∧ ∀ M Nn M' Nn' p p', d.Rep σ k M Nn p → d.Rep σ k M' Nn' p' → (N.QEq p p' ↔ ∃ M₁ N₁, M' = M + (k : ℤ) • M₁ ∧ Nn' = Nn + (k : ℤ) • N₁) := by
+theorem torsion_eq_periods_mod : AllCD fun {N} {g'} {r} {g} {bX} d σ => ∀ k : ℕ, 0 < k → (∀ p, ∃ M Nn, d.Rep σ k M Nn p) ∧ (∀ M Nn, ∃! p, d.Rep σ k M Nn p) ∧ (∀ M Nn M' Nn' p p', d.Rep σ k M Nn p → d.Rep σ k M' Nn' p' → d.Rep σ k (M + M') (Nn + Nn') (p * p')) ∧ ∀ M Nn M' Nn' p p', d.Rep σ k M Nn p → d.Rep σ k M' Nn' p' → (N.QEq p p' ↔ ∃ M₁ N₁, M' = M + (k : ℤ) • M₁ ∧ Nn' = Nn + (k : ℤ) • N₁) := by
   intro N g' r g bX d σ k hk
   obtain ⟨h1, h2, h3, h4, h5⟩ := exp_onto_torusExt N g' r g bX d σ
   choose E hE hU using h1
@@ -234,7 +234,7 @@ open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.MBLow.Cl Matrix
 
-theorem _root_.GlobalTheory.T.degenerationTorsion_eq_periodLattice_mod_level : AllCD fun {N} {_} {_} {_} {_} d σ => ∀ k : ℕ, 0 < k → (∀ p, ∃ M Nn, d.Rep σ k M Nn p) ∧ (∀ M Nn, ∃! p, d.Rep σ k M Nn p) ∧ (∀ M Nn M' Nn' p p', d.Rep σ k M Nn p → d.Rep σ k M' Nn' p' → d.Rep σ k (M + M') (Nn + Nn') (p * p')) ∧ ∀ M Nn M' Nn' p p', d.Rep σ k M Nn p → d.Rep σ k M' Nn' p' → (N.QEq p p' ↔ ∃ M₁ N₁, M' = M + (k : ℤ) • M₁ ∧ Nn' = Nn + (k : ℤ) • N₁) := by
+theorem _root_.GlobalTheory.T.degenerationTorsion_eq_periodLattice_mod_level : AllCD fun {N} {g'} {r} {g} {bX} d σ => ∀ k : ℕ, 0 < k → (∀ p, ∃ M Nn, d.Rep σ k M Nn p) ∧ (∀ M Nn, ∃! p, d.Rep σ k M Nn p) ∧ (∀ M Nn M' Nn' p p', d.Rep σ k M Nn p → d.Rep σ k M' Nn' p' → d.Rep σ k (M + M') (Nn + Nn') (p * p')) ∧ ∀ M Nn M' Nn' p p', d.Rep σ k M Nn p → d.Rep σ k M' Nn' p' → (N.QEq p p' ↔ ∃ M₁ N₁, M' = M + (k : ℤ) • M₁ ∧ Nn' = Nn + (k : ℤ) • N₁) := by
   first | exact @GlobalTheory.MBLow.Cl.torsion_eq_periods_mod
 end -- clump:auto
 end -- clump:auto
@@ -345,7 +345,7 @@ end
 
 namespace GlobalTheory.MBLow.Cl
 
-theorem wp_classical : AllCD fun {N} {_} {_} {_} {_} d σ => ∀ k : ℕ, 0 < k → ∀ M Nn M' Nn' p p', d.Rep σ k M Nn p →
+theorem wp_classical : AllCD fun {N} {g'} {r} {g} {bX} d σ => ∀ k : ℕ, 0 < k → ∀ M Nn M' Nn' p p', d.Rep σ k M Nn p →
     d.Rep σ k M' Nn' p' → (N.wp p p' : ℂ) =
       Complex.exp ((2 * Real.pi * Complex.I : ℂ) * (cv M ⬝ᵥ cv Nn' - cv Nn ⬝ᵥ cv M') / k) := by
   intro N g' r g bX d σ k hk M Nn M' Nn' p p' h h'
@@ -387,7 +387,7 @@ open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.MBLow.Cl Matrix
 
-theorem _root_.GlobalTheory.T.weilPairing_degenerationTorsion_classical : AllCD fun {N} {_} {_} {_} {_} d σ => ∀ k : ℕ, 0 < k → ∀ M Nn M' Nn' p p', d.Rep σ k M Nn p → d.Rep σ k M' Nn' p' → (N.wp p p' : ℂ) = Complex.exp ((2 * Real.pi * Complex.I : ℂ) * (cv M ⬝ᵥ cv Nn' - cv Nn ⬝ᵥ cv M') / k) := by
+theorem _root_.GlobalTheory.T.weilPairing_degenerationTorsion_classical : AllCD fun {N} {g'} {r} {g} {bX} d σ => ∀ k : ℕ, 0 < k → ∀ M Nn M' Nn' p p', d.Rep σ k M Nn p → d.Rep σ k M' Nn' p' → (N.wp p p' : ℂ) = Complex.exp ((2 * Real.pi * Complex.I : ℂ) * (cv M ⬝ᵥ cv Nn' - cv Nn ⬝ᵥ cv M') / k) := by
   first | exact @GlobalTheory.MBLow.Cl.wp_classical
 end -- clump:auto
 end -- clump:auto
@@ -407,7 +407,7 @@ open GlobalTheory.MBLow.Cl Matrix
 
 namespace GlobalTheory.MBLow.Cl
 
-theorem exists_integral_labels : AllCD fun {N} {_} {_} {g} {_} d σ => ∀ (k : ℕ), 0 < k → ∀ (ζ : ℂˣ) (q : (Fin (2 * g) → ZMod k) → N.QT k), QLevel N g k ζ q → ∃ M Nn : (Fin (2 * g) → ZMod k) → Fin g → ℤ, (∀ a, d.Rep σ k (M a) (Nn a) (q a)) ∧ (∀ a a', ∃ M' N', M (a + a') = M a + M a' + (k : ℤ) • M' ∧ Nn (a + a') = Nn a + Nn a' + (k : ℤ) • N') ∧ (∀ a a' M' N', M a' = M a + (k : ℤ) • M' → Nn a' = Nn a + (k : ℤ) • N' → a = a') ∧ (∀ M₁ N₁, ∃ a M' N', M₁ = M a + (k : ℤ) • M' ∧ N₁ = Nn a + (k : ℤ) • N') ∧ ∀ i j, Complex.exp ((2 * Real.pi * Complex.I : ℂ) * (cv (M (Pi.single i 1)) ⬝ᵥ cv (Nn (Pi.single j 1)) - cv (Nn (Pi.single i 1)) ⬝ᵥ cv (M (Pi.single j 1))) / k) = ((ζ ^ stdSymp g i j : ℂˣ) : ℂ) := by
+theorem exists_integral_labels : AllCD fun {N} {g'} {r} {g} {bX} d σ => ∀ (k : ℕ), 0 < k → ∀ (ζ : ℂˣ) (q : (Fin (2 * g) → ZMod k) → N.QT k), QLevel N g k ζ q → ∃ M Nn : (Fin (2 * g) → ZMod k) → Fin g → ℤ, (∀ a, d.Rep σ k (M a) (Nn a) (q a)) ∧ (∀ a a', ∃ M' N', M (a + a') = M a + M a' + (k : ℤ) • M' ∧ Nn (a + a') = Nn a + Nn a' + (k : ℤ) • N') ∧ (∀ a a' M' N', M a' = M a + (k : ℤ) • M' → Nn a' = Nn a + (k : ℤ) • N' → a = a') ∧ (∀ M₁ N₁, ∃ a M' N', M₁ = M a + (k : ℤ) • M' ∧ N₁ = Nn a + (k : ℤ) • N') ∧ ∀ i j, Complex.exp ((2 * Real.pi * Complex.I : ℂ) * (cv (M (Pi.single i 1)) ⬝ᵥ cv (Nn (Pi.single j 1)) - cv (Nn (Pi.single i 1)) ⬝ᵥ cv (M (Pi.single j 1))) / k) = ((ζ ^ stdSymp g i j : ℂˣ) : ℂ) := by
   intro N g' r g bX d σ k hk ζ q hq
   obtain ⟨-, hadd, hinj, hsurj, hwp⟩ := hq
   obtain ⟨h1, h2, h3, h4⟩ := GlobalTheory.T.degenerationTorsion_eq_periodLattice_mod_level N g' r g bX d σ k hk

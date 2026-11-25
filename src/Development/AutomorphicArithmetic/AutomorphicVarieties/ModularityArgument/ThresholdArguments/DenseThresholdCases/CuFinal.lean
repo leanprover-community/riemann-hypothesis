@@ -1374,7 +1374,7 @@ section -- clump:auto
     fun (l : ℕ) [Fact (Nat.Prime l)] ↦ PadicAlgCl l
 
 theorem UpperTheory.Reformulated.B.Qk14.norm_eq_one :
-    ∀ {l : ℕ} [Fact (Nat.Prime l)] {x : UpperTheory.Reformulated.B.Qk14.Qbar l},
+    ∀ {l : ℕ} [inst : Fact (Nat.Prime l)] {x : UpperTheory.Reformulated.B.Qk14.Qbar l},
       ‖x - (1 : UpperTheory.Reformulated.B.Qk14.Qbar l)‖ < (1 : ℝ) → ‖x‖ = (1 : ℝ) := by
   intro l _ x h
   have hne : ‖x - 1‖ ≠ ‖(1 : UpperTheory.Reformulated.B.Qk14.Qbar l)‖ := by

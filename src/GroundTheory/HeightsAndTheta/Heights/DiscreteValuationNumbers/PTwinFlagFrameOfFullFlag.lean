@@ -123,8 +123,7 @@ theorem FlagFrameOfFullFlag.proof : FlagFrameOfFullFlag.Statement := by
     obtain ⟨i, hi⟩ := hV.1.2.2 k
     refine ⟨i, fun h0 => hi ?_⟩
     show _ ∈ RingHom.ker _
-    rw [RingHom.mem_ker]
-    simp [IndefiniteRowSideFullHecke.NumbersDVR.Bundles.mcMap, h0]
+    simp [RingHom.mem_ker, IndefiniteRowSideFullHecke.NumbersDVR.Bundles.mcMap, h0]
   choose s0 hs0 using hx
   have hseg : IndefiniteRowSideFullHecke.NumbersDVR.Bundles.mseg x s0 ≠ 0 :=
     Finset.prod_ne_zero_iff.mpr fun k _ => hs0 k
@@ -300,8 +299,7 @@ theorem FlagFrameOfFullFlag.proof : FlagFrameOfFullFlag.Statement := by
           have hu0 := (hu i).1.1
           field_simp
           ring
-    have hrJ : (⟨r, hr⟩ : R) ∈ J := hJ ▸ Submodule.mem_top
-    obtain ⟨v, hv, hz, hvi⟩ := hrJ
+    obtain ⟨v, hv, hz, hvi⟩ : (⟨r, hr⟩ : R) ∈ J := hJ ▸ Submodule.mem_top
     exact ⟨v, hv, hz, hvi⟩
 
 end GroundTheory.Heights₂.Heights.NumbersDVR.BundleExamples

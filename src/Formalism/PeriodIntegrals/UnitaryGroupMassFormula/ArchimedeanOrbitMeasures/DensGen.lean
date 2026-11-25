@@ -42,8 +42,7 @@ private theorem exists_linearMap_inner_eq_and_det_eq_gram_det (β : W → W → 
       conv_lhs => rw [← b.sum_repr' x]
       change (AddMonoidHom.mk' (fun x => β x y) (fun x x' => hL x x' y)) (∑ i, ⟪b i, x⟫ • b i) = _
 
-      rw [map_sum]
-      simp [sL]
+      simp [map_sum, sL]
     have h2 : ⟪x, A y⟫ = ∑ i, β (b i) y * ⟪x, b i⟫ := by
       simp [A, inner_sum, inner_smul_right]
     rw [h1, h2]
@@ -53,8 +52,7 @@ private theorem exists_linearMap_inner_eq_and_det_eq_gram_det (β : W → W → 
   rw [← LinearMap.det_toMatrix b.toBasis]
   congr 1
   ext i j
-  rw [LinearMap.toMatrix_apply, Matrix.of_apply, hA]
-  simp [OrthonormalBasis.repr_apply_apply]
+  simp [LinearMap.toMatrix_apply, Matrix.of_apply, hA, OrthonormalBasis.repr_apply_apply]
 
 private theorem integral_fourier_map_eq_neg_of_integrable (μ : Measure V) (χ : V → V → ℂ) (hμ : SelfDual μ χ) (e : V ≃ₜ W)
     (he : ∀ x y, e (x + y) = e x + e y) (β : W → W → ℝ)
@@ -77,8 +75,7 @@ private theorem integral_fourier_map_eq_neg_of_integrable (μ : Measure V) (χ :
     exact hme.integrable_map_iff.mp hint
   have key := hμ.2 (Φ ∘ e) (hΦc.comp e.continuous) (hΦs.comp_homeomorph e) hint' (e.symm z)
   have hneg : e (-(e.symm z)) = -z := by
-    have := map_neg (AddMonoidHom.mk' e he) (e.symm z)
-    simpa using this
+    simpa using map_neg (AddMonoidHom.mk' e he) (e.symm z)
   simp only [hχ', Homeomorph.apply_symm_apply, Function.comp_apply, hneg] at key
   rw [hmap]
   simp only [hmap]
@@ -120,8 +117,7 @@ private theorem false_of_degenerate_of_fourier_inversion (ν : Measure W) [ν.Is
   have h0 : bump 0 = 1 := bump.one_of_mem_closedBall (by simp; positivity)
   have h1 : bump k = 0 := by
     apply Function.notMem_support.mp
-    rw [bump.support_eq]
-    simp
+    simp [bump.support_eq]
     exact le_rfl
   simp [Φ, ψ, h0, h1] at key
 
@@ -184,8 +180,7 @@ private theorem measure_eq_sqrt_abs_det_smul_volume_of_inversion (ν : Measure W
   have hreal : (s : ℝ) * ((s : ℝ) * |(LinearMap.det A)⁻¹|) = 1 := by
     have h2 : Φ (-0) = 1 := by simp [Φ, h0]
     rw [h2] at key
-    have := congrArg Complex.re key
-    simpa only [Complex.smul_re, Complex.one_re, smul_eq_mul, mul_one] using this
+    simpa only [Complex.smul_re, Complex.one_re, smul_eq_mul, mul_one] using congrArg Complex.re key
   have hdpos : 0 < |LinearMap.det A| := abs_pos.mpr hdet
   have hsq : (s : ℝ) ^ 2 = |LinearMap.det A| := by
     rw [abs_inv] at hreal

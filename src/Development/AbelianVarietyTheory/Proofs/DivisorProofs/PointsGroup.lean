@@ -131,8 +131,7 @@ theorem shear (R A B : Type) [CommRing R] [CommRing A] [CommRing B] [HopfAlgebra
       commutes' := by
         rintro ⟨_, b, rfl⟩
         have h : pre f (l' * p) = pre f l' := by rw [map_mul, hpf, mul_one]
-        have h2 : (l' * p).ofConv (f b) = f b ⊗ₜ 1 := congrArg (fun x => x.ofConv b) h
-        exact h2 }
+        exact (congrArg (fun x => x.ofConv b) h) }
   let Φ : A ⊗[S] A →ₐ[A] A ⊗[R] (A ⧸ I) :=
     Algebra.TensorProduct.lift (Algebra.ofId A _) g fun _ _ => Commute.all _ _
   have hk : ∀ a ∈ I, (l⁻¹ * r).ofConv a = 0 := by

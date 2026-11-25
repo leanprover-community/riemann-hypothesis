@@ -91,7 +91,7 @@ private theorem UpperTheory.Reformulated.B.HermitianFormImEqSum.re_hermitian_com
   rw [mul_smul_comm, Complex.smul_re, smul_eq_mul]
 
 theorem UpperTheory.Reformulated.B.HermitianFormImEqSum.bil_eq :
-    ∀ {P : Type} [Fintype P] [DecidableEq P] {n g : ℕ} (R : (P → Fin n → ℂ) ≃ₗ[ℝ] Fin g → ℂ)
+    ∀ {P : Type} [inst : Fintype P] [DecidableEq P] {n g : ℕ} (R : (P → Fin n → ℂ) ≃ₗ[ℝ] Fin g → ℂ)
       (Hm : Matrix (Fin g) (Fin g) ℂ) (M : P → Matrix (Fin n) (Fin n) ℂ) (s : P → ℂ) (r : P → ℝ) (S : Set (P → Fin n → ℂ)),
       Submodule.span ℝ S = ⊤ →
         (∀ a ∈ S,

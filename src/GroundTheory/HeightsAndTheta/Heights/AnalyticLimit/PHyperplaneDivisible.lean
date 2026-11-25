@@ -68,8 +68,7 @@ theorem hasDerivAt_coordScale (i : Fin D) (z : Fin D → ℂ) (t : ℝ) :
   refine (h.congr_deriv (by simp)).congr_of_eventuallyEq (Eventually.of_forall fun s => ?_)
   funext j
   show coordScale i s z j = _
-  rw [coordScale_apply]
-  simp only [Pi.add_apply, Pi.smul_apply, smul_eq_mul, Pi.single_apply, id_eq]
+  simp only [coordScale_apply, Pi.add_apply, Pi.smul_apply, smul_eq_mul, Pi.single_apply, id_eq]
   split_ifs <;> subst_vars <;> ring
 
 theorem continuous_coordScale (i : Fin D) : Continuous (coordScale (D := D) i) :=
@@ -84,7 +83,6 @@ theorem eq_mul_integral_partial {Ω : Set (Fin D → ℂ)} {F : (Fin D → ℂ) 
     (hF : AnalyticOnNhd ℂ F Ω) (h0 : ∀ z ∈ Ω, z i = 0 → F z = 0) {p : Fin D → ℂ} {r : ℝ}
     (hp : p i = 0) (hball : ball p r ⊆ Ω) {z : Fin D → ℂ} (hz : z ∈ ball p r) :
     F z = z i * ∫ t in (0 : ℝ)..1, fderiv ℂ F (coordScale i t z) (Pi.single i 1) := by
-  have hFi : AnalyticOnNhd ℂ (fun w => fderiv ℂ F w (Pi.single i 1)) Ω := analyticOnNhd_fderiv_apply hF _
   have hmem : ∀ t ∈ Icc (0 : ℝ) 1, coordScale i t z ∈ Ω := fun t ht => hball (coordScale_mem_ball i hp hz ht)
   have hd : ∀ t ∈ uIcc (0 : ℝ) 1, HasDerivAt (fun s : ℝ => F (coordScale i s z))
       (z i * fderiv ℂ F (coordScale i t z) (Pi.single i 1)) t := by
@@ -95,7 +93,7 @@ theorem eq_mul_integral_partial {Ω : Set (Fin D → ℂ)} {F : (Fin D → ℂ) 
     refine h1.congr_deriv ?_
     simp only [ContinuousLinearMap.coe_restrictScalars', map_smul, smul_eq_mul]
   have hc : ContinuousOn (fun t : ℝ => z i * fderiv ℂ F (coordScale i t z) (Pi.single i 1)) (uIcc 0 1) := by
-    refine continuousOn_const.mul (hFi.continuousOn.comp
+    refine continuousOn_const.mul ((analyticOnNhd_fderiv_apply hF _).continuousOn.comp
       ((continuous_coordScale i).clm_apply continuous_const).continuousOn fun t ht => hmem t ?_)
     rwa [uIcc_of_le zero_le_one] at ht
   have h := intervalIntegral.integral_eq_sub_of_hasDerivAt hd hc.intervalIntegrable

@@ -81,8 +81,7 @@ theorem res_comp {F : Shv R} {W V U : Scheme.{0}} (k : W ⟶ V) (g : V ⟶ U) (x
 
 theorem map_res {F G : Shv R} (φ : F ⟶ G) {V U : Scheme.{0}} (g : V ⟶ U) (x : Sec F U) :
     Sec.map φ (Sec.res g x) = Sec.res g (Sec.map φ x) := by
-  have := congrArg (fun f => f.hom x) (φ.hom.naturality g.op)
-  simpa [Sec.map, Sec.res] using this.symm
+  simpa [Sec.map, Sec.res] using (congrArg (fun f => f.hom x) (φ.hom.naturality g.op)).symm
 
 theorem map_dd {C : Cx R} {U : Scheme.{0}} (i j k : ℤ) (x : Sec (C.X i) U) :
     Sec.map (C.d j k) (Sec.map (C.d i j) x) = 0 := by

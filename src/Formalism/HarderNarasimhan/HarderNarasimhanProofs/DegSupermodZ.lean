@@ -106,8 +106,7 @@ theorem covol_eq_relIndex_mul_covol (N N' : Submodule ℤ E) [DiscreteTopology N
     rw [Finset.sum_comm]
     refine Finset.sum_congr rfl fun _ _ => Finset.sum_congr rfl fun _ _ => by ring
   have hA : Ar.det = (A.det : ℝ) := by
-    have := ((Int.castRingHom ℝ).map_det A).symm
-    simpa [Ar, A, RingHom.mapMatrix_apply, Matrix.map] using this
+    simpa [Ar, A, RingHom.mapMatrix_apply, Matrix.map] using ((Int.castRingHom ℝ).map_det A).symm
   have hdet : (Matrix.gram ℝ w).det = (A.det : ℝ) ^ 2 * (Matrix.gram ℝ v).det := by
     rw [hgram, Matrix.det_mul, Matrix.det_mul, Matrix.det_transpose, hA]
     ring
@@ -197,8 +196,7 @@ theorem degree_supermodular_integral : DegSupermodZ := by
   have hiA : A.toAddSubgroup.relIndex (satur (A ⊔ B) A).toAddSubgroup ≠ 0 := by
     intro h0
     have := covol_pos A
-    rw [hcA, h0] at this
-    simp at this
+    simp [hcA, h0] at this
   have hiC : (A ⊓ B).toAddSubgroup.relIndex (satur B (A ⊓ B)).toAddSubgroup =
       A.toAddSubgroup.relIndex (satur B (A ⊓ B)).toAddSubgroup := by
     unfold AddSubgroup.relIndex

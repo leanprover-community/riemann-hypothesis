@@ -32,8 +32,7 @@ private theorem mul_div_cancel_left_of_ne_zero {w : ℂ} (hw : w ≠ 0) (x : ℂ
 private theorem mem_cmL_lattice_iff (z : ℂ) :
     z ∈ (PI.ULS.cmL a b d ha hd lam hlam).lattice ↔
       ∃ p q : ℤ, z = lam * ((p : ℂ) * a + q * PI.ULS.cmTheta b d) := by
-  rw [lattice_iff]
-  simp only [cmL_omega1, cmL_omega2, Complex.real_smul, Complex.ofReal_intCast]
+  simp only [lattice_iff, cmL_omega1, cmL_omega2, Complex.real_smul, Complex.ofReal_intCast]
   constructor
   · rintro ⟨p, q, h⟩
     exact ⟨p, q, by rw [h]; ring⟩
@@ -125,14 +124,12 @@ lemma stdH_kappa (L : PeriodPair) (hlam : lam ≠ 0) (x y : m → ℂ) :
     stdH L m x y = kappa L lam * ∑ i, (x i / lam) * conj (y i / lam) := by
   have hc : conj lam ≠ 0 := by rwa [Ne, map_eq_zero]
   have h1 : lam * lam⁻¹ = 1 := mul_inv_cancel₀ hlam
-  have h2 : conj lam * (conj lam)⁻¹ = 1 := mul_inv_cancel₀ hc
-  rw [stdH_apply]
-  simp only [kappa]
+  simp only [stdH_apply, kappa]
   rw [Finset.mul_sum, Finset.sum_mul]
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [map_div₀]
   linear_combination (-(x i * conj (y i) * ((area L : ℝ) : ℂ)⁻¹) * (conj lam * (conj lam)⁻¹)) * h1 +
-    (-(x i * conj (y i) * ((area L : ℝ) : ℂ)⁻¹)) * h2
+    (-(x i * conj (y i) * ((area L : ℝ) : ℂ)⁻¹)) * (mul_inv_cancel₀ hc)
 
 lemma isK_H {e : ℤ} (hn : cmTheta b d * (b - cmTheta b d) = (e : ℂ)) (L : PeriodPair) (hlam : lam ≠ 0)
     {x y : m → ℂ} (hx : IsKv b d lam x) (hy : IsKv b d lam y) :

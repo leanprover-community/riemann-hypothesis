@@ -201,8 +201,7 @@ theorem v_alg_nonneg (hϖ : Irreducible ϖ) (hv : ValOver ϖ F v) (c : V) :
 
 theorem v_alg_unit (hv : ValOver ϖ F v) (u : Vˣ) :
     v (algebraMap (FractionRing V) F (algebraMap V (FractionRing V) (u : V))) = 0 := by
-  have := hv (algebraMap V (FractionRing V) (u : V)) 0 ⟨u, by simp⟩
-  simpa using this
+  simpa using hv (algebraMap V (FractionRing V) (u : V)) 0 ⟨u, by simp⟩
 
 end Val
 

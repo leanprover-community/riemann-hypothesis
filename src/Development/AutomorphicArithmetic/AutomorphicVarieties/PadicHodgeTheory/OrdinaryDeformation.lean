@@ -66,7 +66,7 @@ noncomputable def UpperTheory.Reformulated.B.AntidiagonalConjugation.Jmat.{u_1} 
     fun (R : Type u_1) [CommRing R] (m : ℕ) (i j : Fin m) ↦ if j = i.rev then (1 : R) else (0 : R)
 
 theorem UpperTheory.Reformulated.B.AntidiagonalConjugation.aux2.{u_1} :
-    ∀ {R : Type u_1} [CommRing R] (m : ℕ),
+    ∀ {R : Type u_1} [inst : CommRing R] (m : ℕ),
       UpperTheory.Reformulated.B.AntidiagonalConjugation.Jmat R m * UpperTheory.Reformulated.B.AntidiagonalConjugation.Jmat R m = (1 : Matrix (Fin m) (Fin m) R) := by
   intro R _ m
   ext i j
@@ -77,31 +77,31 @@ theorem UpperTheory.Reformulated.B.AntidiagonalConjugation.aux2.{u_1} :
   · simp
 
 noncomputable def UpperTheory.Reformulated.B.AntidiagonalConjugation.Jgl.{u_1} :
-    (R : Type u_1) → [CommRing R] → (m : ℕ) → GL (Fin m) R :=
+    (R : Type u_1) → [inst : CommRing R] → (m : ℕ) → GL (Fin m) R :=
     fun (R : Type u_1) [CommRing R] (m : ℕ) ↦
       { val := UpperTheory.Reformulated.B.AntidiagonalConjugation.Jmat R m, inv := UpperTheory.Reformulated.B.AntidiagonalConjugation.Jmat R m, val_inv := UpperTheory.Reformulated.B.AntidiagonalConjugation.aux2 m,
         inv_val := UpperTheory.Reformulated.B.AntidiagonalConjugation.aux2 m : (Matrix (Fin m) (Fin m) R)ˣ }
 
 theorem UpperTheory.Reformulated.B.AntidiagonalConjugation.aux4.{u_1} :
-    ∀ {n : Type} [Fintype n] [DecidableEq n] {R : Type u_1} [CommRing R] (g : GL n R),
+    ∀ {n : Type} [inst : Fintype n] [inst_1 : DecidableEq n] {R : Type u_1} [inst_2 : CommRing R] (g : GL n R),
       (↑g⁻¹ : Matrix n n R).transpose * (↑g : Matrix n n R).transpose = (1 : Matrix n n R) := by
   intro n _ _ R _ g
   rw [← Matrix.transpose_mul, Units.mul_inv, Matrix.transpose_one]
 
 theorem UpperTheory.Reformulated.B.AntidiagonalConjugation.aux5.{u_1} :
-    ∀ {n : Type} [Fintype n] [DecidableEq n] {R : Type u_1} [CommRing R] (g : GL n R),
+    ∀ {n : Type} [inst : Fintype n] [inst_1 : DecidableEq n] {R : Type u_1} [inst_2 : CommRing R] (g : GL n R),
       (↑g : Matrix n n R).transpose * (↑g⁻¹ : Matrix n n R).transpose = (1 : Matrix n n R) := by
   intro n _ _ R _ g
   rw [← Matrix.transpose_mul, Units.inv_mul, Matrix.transpose_one]
 
 noncomputable def UpperTheory.Reformulated.B.AntidiagonalConjugation.trInv.{u_1} :
-    {n : Type} → [Fintype n] → [DecidableEq n] → {R : Type u_1} → [CommRing R] → GL n R → GL n R :=
+    {n : Type} → [inst : Fintype n] → [inst_1 : DecidableEq n] → {R : Type u_1} → [inst_2 : CommRing R] → GL n R → GL n R :=
     fun {n : Type} [Fintype n] [DecidableEq n] {R : Type u_1} [CommRing R] (g : GL n R) ↦
       { val := (↑g⁻¹ : Matrix n n R).transpose, inv := (↑g : Matrix n n R).transpose, val_inv := UpperTheory.Reformulated.B.AntidiagonalConjugation.aux4 g,
         inv_val := UpperTheory.Reformulated.B.AntidiagonalConjugation.aux5 g : (Matrix n n R)ˣ }
 
 noncomputable def UpperTheory.Reformulated.B.AntidiagonalConjugation.theta.{u_1} :
-    {m : ℕ} → {R : Type u_1} → [CommRing R] → GL (Fin m) R → GL (Fin m) R :=
+    {m : ℕ} → {R : Type u_1} → [inst : CommRing R] → GL (Fin m) R → GL (Fin m) R :=
     fun {m : ℕ} {R : Type u_1} [CommRing R] (g : GL (Fin m) R) ↦
       UpperTheory.Reformulated.B.AntidiagonalConjugation.Jgl R m * UpperTheory.Reformulated.B.AntidiagonalConjugation.trInv g * UpperTheory.Reformulated.B.AntidiagonalConjugation.Jgl R m
 
@@ -130,7 +130,7 @@ private theorem UpperTheory.Reformulated.B.AntidiagonalConjugation.trInv_Jgl {R 
   refine if_congr ⟨?_, ?_⟩ rfl rfl <;> rintro rfl <;> simp
 
 theorem UpperTheory.Reformulated.B.AntidiagonalConjugation.aux8.{u_1} :
-    ∀ {m : ℕ} {R : Type u_1} [CommRing R] (g : GL (Fin m) R), UpperTheory.Reformulated.B.AntidiagonalConjugation.theta (UpperTheory.Reformulated.B.AntidiagonalConjugation.theta g) = g := by
+    ∀ {m : ℕ} {R : Type u_1} [inst : CommRing R] (g : GL (Fin m) R), UpperTheory.Reformulated.B.AntidiagonalConjugation.theta (UpperTheory.Reformulated.B.AntidiagonalConjugation.theta g) = g := by
   intro m R _ g
   simp only [UpperTheory.Reformulated.B.AntidiagonalConjugation.theta, UpperTheory.Reformulated.B.AntidiagonalConjugation.trInv_mul, UpperTheory.Reformulated.B.AntidiagonalConjugation.trInv_trInv,
     UpperTheory.Reformulated.B.AntidiagonalConjugation.trInv_Jgl]
@@ -138,27 +138,27 @@ theorem UpperTheory.Reformulated.B.AntidiagonalConjugation.aux8.{u_1} :
     UpperTheory.Reformulated.B.AntidiagonalConjugation.Jgl_mul_self, one_mul]
 
 theorem UpperTheory.Reformulated.B.AntidiagonalConjugation.aux9.{u_1} :
-    ∀ {m : ℕ} {R : Type u_1} [CommRing R] (g h : GL (Fin m) R),
+    ∀ {m : ℕ} {R : Type u_1} [inst : CommRing R] (g h : GL (Fin m) R),
       UpperTheory.Reformulated.B.AntidiagonalConjugation.theta (g * h) = UpperTheory.Reformulated.B.AntidiagonalConjugation.theta g * UpperTheory.Reformulated.B.AntidiagonalConjugation.theta h := by
   intro m R _ g h
   simp only [UpperTheory.Reformulated.B.AntidiagonalConjugation.theta, UpperTheory.Reformulated.B.AntidiagonalConjugation.trInv_mul, mul_assoc]
   rw [← mul_assoc (UpperTheory.Reformulated.B.AntidiagonalConjugation.Jgl R m) (UpperTheory.Reformulated.B.AntidiagonalConjugation.Jgl R m), UpperTheory.Reformulated.B.AntidiagonalConjugation.Jgl_mul_self, one_mul]
 
 noncomputable def UpperTheory.Reformulated.B.AntidiagonalConjugation.thetaAut.{u_1} :
-    (m : ℕ) → (R : Type u_1) → [CommRing R] → MulAut (GL (Fin m) R) :=
+    (m : ℕ) → (R : Type u_1) → [inst : CommRing R] → MulAut (GL (Fin m) R) :=
     fun (m : ℕ) (R : Type u_1) [CommRing R] ↦
       { toFun := UpperTheory.Reformulated.B.AntidiagonalConjugation.theta, invFun := UpperTheory.Reformulated.B.AntidiagonalConjugation.theta, left_inv := UpperTheory.Reformulated.B.AntidiagonalConjugation.aux8,
         right_inv := UpperTheory.Reformulated.B.AntidiagonalConjugation.aux8, map_mul' := UpperTheory.Reformulated.B.AntidiagonalConjugation.aux9 : GL (Fin m) R ≃* GL (Fin m) R }
 
 theorem UpperTheory.Reformulated.B.AntidiagonalConjugation.aux11.{u_1} :
-    ∀ (m : ℕ) (R : Type u_1) [CommRing R],
+    ∀ (m : ℕ) (R : Type u_1) [inst : CommRing R],
       (if (1 : ℤˣ) = (1 : ℤˣ) then (1 : MulAut (GL (Fin m) R)) else UpperTheory.Reformulated.B.AntidiagonalConjugation.thetaAut m R) =
         (1 : MulAut (GL (Fin m) R)) := by
   intro m R _
   exact ite_eq_left rfl
 
 theorem UpperTheory.Reformulated.B.AntidiagonalConjugation.aux12.{u_1} :
-    ∀ (m : ℕ) (R : Type u_1) [CommRing R] (s t : ℤˣ),
+    ∀ (m : ℕ) (R : Type u_1) [inst : CommRing R] (s t : ℤˣ),
       (if s * t = (1 : ℤˣ) then (1 : MulAut (GL (Fin m) R)) else UpperTheory.Reformulated.B.AntidiagonalConjugation.thetaAut m R) =
         (if s = (1 : ℤˣ) then (1 : MulAut (GL (Fin m) R)) else UpperTheory.Reformulated.B.AntidiagonalConjugation.thetaAut m R) *
           if t = (1 : ℤˣ) then (1 : MulAut (GL (Fin m) R)) else UpperTheory.Reformulated.B.AntidiagonalConjugation.thetaAut m R := by
@@ -170,7 +170,7 @@ theorem UpperTheory.Reformulated.B.AntidiagonalConjugation.aux12.{u_1} :
     simp [hne, hsq]
 
 noncomputable def UpperTheory.Reformulated.B.AntidiagonalConjugation.sgnAct.{u_1} :
-    (m : ℕ) → (R : Type u_1) → [CommRing R] → ℤˣ →* MulAut (GL (Fin m) R) :=
+    (m : ℕ) → (R : Type u_1) → [inst : CommRing R] → ℤˣ →* MulAut (GL (Fin m) R) :=
     fun (m : ℕ) (R : Type u_1) [CommRing R] ↦
       { toFun := fun (s : ℤˣ) ↦ if s = (1 : ℤˣ) then (1 : MulAut (GL (Fin m) R)) else UpperTheory.Reformulated.B.AntidiagonalConjugation.thetaAut m R,
         map_one' := UpperTheory.Reformulated.B.AntidiagonalConjugation.aux11 m R, map_mul' := UpperTheory.Reformulated.B.AntidiagonalConjugation.aux12 m R : ℤˣ →* MulAut (GL (Fin m) R) }
@@ -180,14 +180,14 @@ noncomputable def UpperTheory.Reformulated.B.AntidiagonalConjugation.sgnAct.{u_1
     fun (m : ℕ) (R : Type u_1) [CommRing R] ↦ GL (Fin m) R ⋊[UpperTheory.Reformulated.B.AntidiagonalConjugation.sgnAct m R] ℤˣ
 
 @[reducible] noncomputable def UpperTheory.Reformulated.B.AntidiagonalConjugation.ofGL.{u_1} :
-    {m : ℕ} → {R : Type u_1} → [CommRing R] → GL (Fin m) R →* UpperTheory.Reformulated.B.AntidiagonalConjugation.GG m R :=
+    {m : ℕ} → {R : Type u_1} → [inst : CommRing R] → GL (Fin m) R →* UpperTheory.Reformulated.B.AntidiagonalConjugation.GG m R :=
     fun {_ : ℕ} {R : Type u_1} [CommRing R] ↦ SemidirectProduct.inl
 
 noncomputable def UpperTheory.Reformulated.B.AntidiagonalConjugation.conjBy.{u_1, u_3} :
     {m : ℕ} →
       {R : Type u_1} →
-        [CommRing R] →
-          {G : Type u_3} → [Group G] → GL (Fin m) R → (G →* UpperTheory.Reformulated.B.AntidiagonalConjugation.GG m R) → G →* UpperTheory.Reformulated.B.AntidiagonalConjugation.GG m R :=
+        [inst : CommRing R] →
+          {G : Type u_3} → [inst_1 : Group G] → GL (Fin m) R → (G →* UpperTheory.Reformulated.B.AntidiagonalConjugation.GG m R) → G →* UpperTheory.Reformulated.B.AntidiagonalConjugation.GG m R :=
     fun {m : ℕ} {R : Type u_1} [CommRing R] {G : Type u_3} [Group G] (h : GL (Fin m) R) (r : G →* UpperTheory.Reformulated.B.AntidiagonalConjugation.GG m R) ↦
       (MulEquiv.toMonoidHom
             ((MulAut.conj : UpperTheory.Reformulated.B.AntidiagonalConjugation.GG m R → MulAut (UpperTheory.Reformulated.B.AntidiagonalConjugation.GG m R))
@@ -195,7 +195,7 @@ noncomputable def UpperTheory.Reformulated.B.AntidiagonalConjugation.conjBy.{u_1
         r
 
 theorem UpperTheory.Reformulated.B.AntidiagonalConjugation.conjBy_left :
-    ∀ {G R : Type} [Group G] [CommRing R] {m : ℕ} (h : GL (Fin m) R) (r : G →* UpperTheory.Reformulated.B.AntidiagonalConjugation.GG m R)
+    ∀ {G R : Type} [inst : Group G] [inst_1 : CommRing R] {m : ℕ} (h : GL (Fin m) R) (r : G →* UpperTheory.Reformulated.B.AntidiagonalConjugation.GG m R)
       (g : G),
       ((UpperTheory.Reformulated.B.AntidiagonalConjugation.conjBy h r : G → UpperTheory.Reformulated.B.AntidiagonalConjugation.GG m R) g).left =
         h * ((r : G → UpperTheory.Reformulated.B.AntidiagonalConjugation.GG m R) g).left *
@@ -221,7 +221,7 @@ noncomputable def UpperTheory.Reformulated.B.ConjugationByInvolution.Jmat.{u_1} 
     fun (R : Type u_1) [CommRing R] (m : ℕ) (i j : Fin m) ↦ if j = i.rev then (1 : R) else (0 : R)
 
 theorem UpperTheory.Reformulated.B.ConjugationByInvolution.aux2.{u_1} :
-    ∀ {R : Type u_1} [CommRing R] (m : ℕ),
+    ∀ {R : Type u_1} [inst : CommRing R] (m : ℕ),
       UpperTheory.Reformulated.B.ConjugationByInvolution.Jmat R m * UpperTheory.Reformulated.B.ConjugationByInvolution.Jmat R m = (1 : Matrix (Fin m) (Fin m) R) := by
   intro R _ m
   ext i j
@@ -233,31 +233,31 @@ theorem UpperTheory.Reformulated.B.ConjugationByInvolution.aux2.{u_1} :
     exact absurd (Finset.mem_univ _) hb
 
 noncomputable def UpperTheory.Reformulated.B.ConjugationByInvolution.Jgl.{u_1} :
-    (R : Type u_1) → [CommRing R] → (m : ℕ) → GL (Fin m) R :=
+    (R : Type u_1) → [inst : CommRing R] → (m : ℕ) → GL (Fin m) R :=
     fun (R : Type u_1) [CommRing R] (m : ℕ) ↦
       { val := UpperTheory.Reformulated.B.ConjugationByInvolution.Jmat R m, inv := UpperTheory.Reformulated.B.ConjugationByInvolution.Jmat R m, val_inv := UpperTheory.Reformulated.B.ConjugationByInvolution.aux2 m,
         inv_val := UpperTheory.Reformulated.B.ConjugationByInvolution.aux2 m : (Matrix (Fin m) (Fin m) R)ˣ }
 
 theorem UpperTheory.Reformulated.B.ConjugationByInvolution.aux4.{u_1} :
-    ∀ {n : Type} [Fintype n] [DecidableEq n] {R : Type u_1} [CommRing R] (g : GL n R),
+    ∀ {n : Type} [inst : Fintype n] [inst_1 : DecidableEq n] {R : Type u_1} [inst_2 : CommRing R] (g : GL n R),
       (↑g⁻¹ : Matrix n n R).transpose * (↑g : Matrix n n R).transpose = (1 : Matrix n n R) := by
   intro n _ _ R _ g
   rw [← Matrix.transpose_mul, Units.mul_inv, Matrix.transpose_one]
 
 theorem UpperTheory.Reformulated.B.ConjugationByInvolution.aux5.{u_1} :
-    ∀ {n : Type} [Fintype n] [DecidableEq n] {R : Type u_1} [CommRing R] (g : GL n R),
+    ∀ {n : Type} [inst : Fintype n] [inst_1 : DecidableEq n] {R : Type u_1} [inst_2 : CommRing R] (g : GL n R),
       (↑g : Matrix n n R).transpose * (↑g⁻¹ : Matrix n n R).transpose = (1 : Matrix n n R) := by
   intro n _ _ R _ g
   rw [← Matrix.transpose_mul, Units.inv_mul, Matrix.transpose_one]
 
 noncomputable def UpperTheory.Reformulated.B.ConjugationByInvolution.trInv.{u_1} :
-    {n : Type} → [Fintype n] → [DecidableEq n] → {R : Type u_1} → [CommRing R] → GL n R → GL n R :=
+    {n : Type} → [inst : Fintype n] → [inst_1 : DecidableEq n] → {R : Type u_1} → [inst_2 : CommRing R] → GL n R → GL n R :=
     fun {n : Type} [Fintype n] [DecidableEq n] {R : Type u_1} [CommRing R] (g : GL n R) ↦
       { val := (↑g⁻¹ : Matrix n n R).transpose, inv := (↑g : Matrix n n R).transpose, val_inv := UpperTheory.Reformulated.B.ConjugationByInvolution.aux4 g,
         inv_val := UpperTheory.Reformulated.B.ConjugationByInvolution.aux5 g : (Matrix n n R)ˣ }
 
 noncomputable def UpperTheory.Reformulated.B.ConjugationByInvolution.theta.{u_1} :
-    {m : ℕ} → {R : Type u_1} → [CommRing R] → GL (Fin m) R → GL (Fin m) R :=
+    {m : ℕ} → {R : Type u_1} → [inst : CommRing R] → GL (Fin m) R → GL (Fin m) R :=
     fun {m : ℕ} {R : Type u_1} [CommRing R] (g : GL (Fin m) R) ↦
       UpperTheory.Reformulated.B.ConjugationByInvolution.Jgl R m * UpperTheory.Reformulated.B.ConjugationByInvolution.trInv g * UpperTheory.Reformulated.B.ConjugationByInvolution.Jgl R m
 
@@ -287,7 +287,7 @@ private theorem UpperTheory.Reformulated.B.ConjugationByInvolution.trInv_Jgl {m 
   simp only [Matrix.transpose_apply, UpperTheory.Reformulated.B.ConjugationByInvolution.Jmat, this]
 
 theorem UpperTheory.Reformulated.B.ConjugationByInvolution.aux8.{u_1} :
-    ∀ {m : ℕ} {R : Type u_1} [CommRing R] (g : GL (Fin m) R), UpperTheory.Reformulated.B.ConjugationByInvolution.theta (UpperTheory.Reformulated.B.ConjugationByInvolution.theta g) = g := by
+    ∀ {m : ℕ} {R : Type u_1} [inst : CommRing R] (g : GL (Fin m) R), UpperTheory.Reformulated.B.ConjugationByInvolution.theta (UpperTheory.Reformulated.B.ConjugationByInvolution.theta g) = g := by
   intro m R _ g
   unfold UpperTheory.Reformulated.B.ConjugationByInvolution.theta
   rw [UpperTheory.Reformulated.B.ConjugationByInvolution.trInv_mul, UpperTheory.Reformulated.B.ConjugationByInvolution.trInv_mul, UpperTheory.Reformulated.B.ConjugationByInvolution.trInv_Jgl,
@@ -295,7 +295,7 @@ theorem UpperTheory.Reformulated.B.ConjugationByInvolution.aux8.{u_1} :
     mul_assoc, UpperTheory.Reformulated.B.ConjugationByInvolution.Jgl_sq, mul_one]
 
 theorem UpperTheory.Reformulated.B.ConjugationByInvolution.aux9.{u_1} :
-    ∀ {m : ℕ} {R : Type u_1} [CommRing R] (g h : GL (Fin m) R),
+    ∀ {m : ℕ} {R : Type u_1} [inst : CommRing R] (g h : GL (Fin m) R),
       UpperTheory.Reformulated.B.ConjugationByInvolution.theta (g * h) = UpperTheory.Reformulated.B.ConjugationByInvolution.theta g * UpperTheory.Reformulated.B.ConjugationByInvolution.theta h := by
   intro m R _ g h
   unfold UpperTheory.Reformulated.B.ConjugationByInvolution.theta
@@ -304,20 +304,20 @@ theorem UpperTheory.Reformulated.B.ConjugationByInvolution.aux9.{u_1} :
   rw [← mul_assoc (UpperTheory.Reformulated.B.ConjugationByInvolution.Jgl R m) (UpperTheory.Reformulated.B.ConjugationByInvolution.Jgl R m), UpperTheory.Reformulated.B.ConjugationByInvolution.Jgl_sq, one_mul]
 
 noncomputable def UpperTheory.Reformulated.B.ConjugationByInvolution.thetaAut.{u_1} :
-    (m : ℕ) → (R : Type u_1) → [CommRing R] → MulAut (GL (Fin m) R) :=
+    (m : ℕ) → (R : Type u_1) → [inst : CommRing R] → MulAut (GL (Fin m) R) :=
     fun (m : ℕ) (R : Type u_1) [CommRing R] ↦
       { toFun := UpperTheory.Reformulated.B.ConjugationByInvolution.theta, invFun := UpperTheory.Reformulated.B.ConjugationByInvolution.theta, left_inv := UpperTheory.Reformulated.B.ConjugationByInvolution.aux8,
         right_inv := UpperTheory.Reformulated.B.ConjugationByInvolution.aux8, map_mul' := UpperTheory.Reformulated.B.ConjugationByInvolution.aux9 : GL (Fin m) R ≃* GL (Fin m) R }
 
 theorem UpperTheory.Reformulated.B.ConjugationByInvolution.aux11.{u_1} :
-    ∀ (m : ℕ) (R : Type u_1) [CommRing R],
+    ∀ (m : ℕ) (R : Type u_1) [inst : CommRing R],
       (if (1 : ℤˣ) = (1 : ℤˣ) then (1 : MulAut (GL (Fin m) R)) else UpperTheory.Reformulated.B.ConjugationByInvolution.thetaAut m R) =
         (1 : MulAut (GL (Fin m) R)) := by
   intro m R _
   exact ite_eq_left rfl
 
 theorem UpperTheory.Reformulated.B.ConjugationByInvolution.aux12.{u_1} :
-    ∀ (m : ℕ) (R : Type u_1) [CommRing R] (s t : ℤˣ),
+    ∀ (m : ℕ) (R : Type u_1) [inst : CommRing R] (s t : ℤˣ),
       (if s * t = (1 : ℤˣ) then (1 : MulAut (GL (Fin m) R)) else UpperTheory.Reformulated.B.ConjugationByInvolution.thetaAut m R) =
         (if s = (1 : ℤˣ) then (1 : MulAut (GL (Fin m) R)) else UpperTheory.Reformulated.B.ConjugationByInvolution.thetaAut m R) *
           if t = (1 : ℤˣ) then (1 : MulAut (GL (Fin m) R)) else UpperTheory.Reformulated.B.ConjugationByInvolution.thetaAut m R := by
@@ -329,7 +329,7 @@ theorem UpperTheory.Reformulated.B.ConjugationByInvolution.aux12.{u_1} :
     simp [hne, hsq]
 
 noncomputable def UpperTheory.Reformulated.B.ConjugationByInvolution.sgnAct.{u_1} :
-    (m : ℕ) → (R : Type u_1) → [CommRing R] → ℤˣ →* MulAut (GL (Fin m) R) :=
+    (m : ℕ) → (R : Type u_1) → [inst : CommRing R] → ℤˣ →* MulAut (GL (Fin m) R) :=
     fun (m : ℕ) (R : Type u_1) [CommRing R] ↦
       { toFun := fun (s : ℤˣ) ↦ if s = (1 : ℤˣ) then (1 : MulAut (GL (Fin m) R)) else UpperTheory.Reformulated.B.ConjugationByInvolution.thetaAut m R,
         map_one' := UpperTheory.Reformulated.B.ConjugationByInvolution.aux11 m R, map_mul' := UpperTheory.Reformulated.B.ConjugationByInvolution.aux12 m R : ℤˣ →* MulAut (GL (Fin m) R) }
@@ -339,14 +339,14 @@ noncomputable def UpperTheory.Reformulated.B.ConjugationByInvolution.sgnAct.{u_1
     fun (m : ℕ) (R : Type u_1) [CommRing R] ↦ GL (Fin m) R ⋊[UpperTheory.Reformulated.B.ConjugationByInvolution.sgnAct m R] ℤˣ
 
 @[reducible] noncomputable def UpperTheory.Reformulated.B.ConjugationByInvolution.ofGL.{u_1} :
-    {m : ℕ} → {R : Type u_1} → [CommRing R] → GL (Fin m) R →* UpperTheory.Reformulated.B.ConjugationByInvolution.GG m R :=
+    {m : ℕ} → {R : Type u_1} → [inst : CommRing R] → GL (Fin m) R →* UpperTheory.Reformulated.B.ConjugationByInvolution.GG m R :=
     fun {_ : ℕ} {R : Type u_1} [CommRing R] ↦ SemidirectProduct.inl
 
 noncomputable def UpperTheory.Reformulated.B.ConjugationByInvolution.conjBy.{u_1, u_3} :
     {m : ℕ} →
       {R : Type u_1} →
-        [CommRing R] →
-          {G : Type u_3} → [Group G] → GL (Fin m) R → (G →* UpperTheory.Reformulated.B.ConjugationByInvolution.GG m R) → G →* UpperTheory.Reformulated.B.ConjugationByInvolution.GG m R :=
+        [inst : CommRing R] →
+          {G : Type u_3} → [inst_1 : Group G] → GL (Fin m) R → (G →* UpperTheory.Reformulated.B.ConjugationByInvolution.GG m R) → G →* UpperTheory.Reformulated.B.ConjugationByInvolution.GG m R :=
     fun {m : ℕ} {R : Type u_1} [CommRing R] {G : Type u_3} [Group G] (h : GL (Fin m) R) (r : G →* UpperTheory.Reformulated.B.ConjugationByInvolution.GG m R) ↦
       (MulEquiv.toMonoidHom
             ((MulAut.conj : UpperTheory.Reformulated.B.ConjugationByInvolution.GG m R → MulAut (UpperTheory.Reformulated.B.ConjugationByInvolution.GG m R))
@@ -354,7 +354,7 @@ noncomputable def UpperTheory.Reformulated.B.ConjugationByInvolution.conjBy.{u_1
         r
 
 theorem UpperTheory.Reformulated.B.ConjugationByInvolution.conjBy_right :
-    ∀ {G R : Type} [Group G] [CommRing R] {m : ℕ} (h : GL (Fin m) R) (r : G →* UpperTheory.Reformulated.B.ConjugationByInvolution.GG m R)
+    ∀ {G R : Type} [inst : Group G] [inst_1 : CommRing R] {m : ℕ} (h : GL (Fin m) R) (r : G →* UpperTheory.Reformulated.B.ConjugationByInvolution.GG m R)
       (g : G),
       ((UpperTheory.Reformulated.B.ConjugationByInvolution.conjBy h r : G → UpperTheory.Reformulated.B.ConjugationByInvolution.GG m R) g).right = ((r : G → UpperTheory.Reformulated.B.ConjugationByInvolution.GG m R) g).right := by
   intro G R _ _ m h r g
@@ -375,7 +375,7 @@ noncomputable def UpperTheory.Reformulated.B.SignActionTheta.Jmat.{u_1} :
     fun (R : Type u_1) [CommRing R] (m : ℕ) (i j : Fin m) ↦ if j = i.rev then (1 : R) else (0 : R)
 
 theorem UpperTheory.Reformulated.B.SignActionTheta.aux2.{u_1} :
-    ∀ {R : Type u_1} [CommRing R] (m : ℕ),
+    ∀ {R : Type u_1} [inst : CommRing R] (m : ℕ),
       UpperTheory.Reformulated.B.SignActionTheta.Jmat R m * UpperTheory.Reformulated.B.SignActionTheta.Jmat R m = (1 : Matrix (Fin m) (Fin m) R) := by
   intro R _ m
   ext i j
@@ -384,31 +384,31 @@ theorem UpperTheory.Reformulated.B.SignActionTheta.aux2.{u_1} :
   simp only [eq_comm]
 
 noncomputable def UpperTheory.Reformulated.B.SignActionTheta.Jgl.{u_1} :
-    (R : Type u_1) → [CommRing R] → (m : ℕ) → GL (Fin m) R :=
+    (R : Type u_1) → [inst : CommRing R] → (m : ℕ) → GL (Fin m) R :=
     fun (R : Type u_1) [CommRing R] (m : ℕ) ↦
       { val := UpperTheory.Reformulated.B.SignActionTheta.Jmat R m, inv := UpperTheory.Reformulated.B.SignActionTheta.Jmat R m, val_inv := UpperTheory.Reformulated.B.SignActionTheta.aux2 m,
         inv_val := UpperTheory.Reformulated.B.SignActionTheta.aux2 m : (Matrix (Fin m) (Fin m) R)ˣ }
 
 theorem UpperTheory.Reformulated.B.SignActionTheta.aux4.{u_1} :
-    ∀ {n : Type} [Fintype n] [DecidableEq n] {R : Type u_1} [CommRing R] (g : GL n R),
+    ∀ {n : Type} [inst : Fintype n] [inst_1 : DecidableEq n] {R : Type u_1} [inst_2 : CommRing R] (g : GL n R),
       (↑g⁻¹ : Matrix n n R).transpose * (↑g : Matrix n n R).transpose = (1 : Matrix n n R) := by
   intro n _ _ R _ g
   rw [← Matrix.transpose_mul, Units.mul_inv, Matrix.transpose_one]
 
 theorem UpperTheory.Reformulated.B.SignActionTheta.aux5.{u_1} :
-    ∀ {n : Type} [Fintype n] [DecidableEq n] {R : Type u_1} [CommRing R] (g : GL n R),
+    ∀ {n : Type} [inst : Fintype n] [inst_1 : DecidableEq n] {R : Type u_1} [inst_2 : CommRing R] (g : GL n R),
       (↑g : Matrix n n R).transpose * (↑g⁻¹ : Matrix n n R).transpose = (1 : Matrix n n R) := by
   intro n _ _ R _ g
   rw [← Matrix.transpose_mul, Units.inv_mul, Matrix.transpose_one]
 
 noncomputable def UpperTheory.Reformulated.B.SignActionTheta.trInv.{u_1} :
-    {n : Type} → [Fintype n] → [DecidableEq n] → {R : Type u_1} → [CommRing R] → GL n R → GL n R :=
+    {n : Type} → [inst : Fintype n] → [inst_1 : DecidableEq n] → {R : Type u_1} → [inst_2 : CommRing R] → GL n R → GL n R :=
     fun {n : Type} [Fintype n] [DecidableEq n] {R : Type u_1} [CommRing R] (g : GL n R) ↦
       { val := (↑g⁻¹ : Matrix n n R).transpose, inv := (↑g : Matrix n n R).transpose, val_inv := UpperTheory.Reformulated.B.SignActionTheta.aux4 g,
         inv_val := UpperTheory.Reformulated.B.SignActionTheta.aux5 g : (Matrix n n R)ˣ }
 
 noncomputable def UpperTheory.Reformulated.B.SignActionTheta.theta.{u_1} :
-    {m : ℕ} → {R : Type u_1} → [CommRing R] → GL (Fin m) R → GL (Fin m) R :=
+    {m : ℕ} → {R : Type u_1} → [inst : CommRing R] → GL (Fin m) R → GL (Fin m) R :=
     fun {m : ℕ} {R : Type u_1} [CommRing R] (g : GL (Fin m) R) ↦
       UpperTheory.Reformulated.B.SignActionTheta.Jgl R m * UpperTheory.Reformulated.B.SignActionTheta.trInv g * UpperTheory.Reformulated.B.SignActionTheta.Jgl R m
 
@@ -437,7 +437,7 @@ private theorem UpperTheory.Reformulated.B.SignActionTheta.trInv_J {m : ℕ} {R 
   refine if_congr ⟨fun h => ?_, fun h => ?_⟩ rfl rfl <;> rw [h, Fin.rev_rev]
 
 theorem UpperTheory.Reformulated.B.SignActionTheta.aux8.{u_1} :
-    ∀ {m : ℕ} {R : Type u_1} [CommRing R] (g : GL (Fin m) R), UpperTheory.Reformulated.B.SignActionTheta.theta (UpperTheory.Reformulated.B.SignActionTheta.theta g) = g := by
+    ∀ {m : ℕ} {R : Type u_1} [inst : CommRing R] (g : GL (Fin m) R), UpperTheory.Reformulated.B.SignActionTheta.theta (UpperTheory.Reformulated.B.SignActionTheta.theta g) = g := by
   intro m R _ g
   unfold UpperTheory.Reformulated.B.SignActionTheta.theta
   rw [UpperTheory.Reformulated.B.SignActionTheta.trInv_mul, UpperTheory.Reformulated.B.SignActionTheta.trInv_mul, UpperTheory.Reformulated.B.SignActionTheta.trInv_trInv,
@@ -446,7 +446,7 @@ theorem UpperTheory.Reformulated.B.SignActionTheta.aux8.{u_1} :
   rw [UpperTheory.Reformulated.B.SignActionTheta.J_mul_J, one_mul, mul_assoc, UpperTheory.Reformulated.B.SignActionTheta.J_mul_J, mul_one]
 
 theorem UpperTheory.Reformulated.B.SignActionTheta.aux9.{u_1} :
-    ∀ {m : ℕ} {R : Type u_1} [CommRing R] (g h : GL (Fin m) R),
+    ∀ {m : ℕ} {R : Type u_1} [inst : CommRing R] (g h : GL (Fin m) R),
       UpperTheory.Reformulated.B.SignActionTheta.theta (g * h) = UpperTheory.Reformulated.B.SignActionTheta.theta g * UpperTheory.Reformulated.B.SignActionTheta.theta h := by
   intro m R _ g h
   unfold UpperTheory.Reformulated.B.SignActionTheta.theta
@@ -456,20 +456,20 @@ theorem UpperTheory.Reformulated.B.SignActionTheta.aux9.{u_1} :
     UpperTheory.Reformulated.B.SignActionTheta.J_mul_J, one_mul]
 
 noncomputable def UpperTheory.Reformulated.B.SignActionTheta.thetaAut.{u_1} :
-    (m : ℕ) → (R : Type u_1) → [CommRing R] → MulAut (GL (Fin m) R) :=
+    (m : ℕ) → (R : Type u_1) → [inst : CommRing R] → MulAut (GL (Fin m) R) :=
     fun (m : ℕ) (R : Type u_1) [CommRing R] ↦
       { toFun := UpperTheory.Reformulated.B.SignActionTheta.theta, invFun := UpperTheory.Reformulated.B.SignActionTheta.theta, left_inv := UpperTheory.Reformulated.B.SignActionTheta.aux8,
         right_inv := UpperTheory.Reformulated.B.SignActionTheta.aux8, map_mul' := UpperTheory.Reformulated.B.SignActionTheta.aux9 : GL (Fin m) R ≃* GL (Fin m) R }
 
 theorem UpperTheory.Reformulated.B.SignActionTheta.aux11.{u_1} :
-    ∀ (m : ℕ) (R : Type u_1) [CommRing R],
+    ∀ (m : ℕ) (R : Type u_1) [inst : CommRing R],
       (if (1 : ℤˣ) = (1 : ℤˣ) then (1 : MulAut (GL (Fin m) R)) else UpperTheory.Reformulated.B.SignActionTheta.thetaAut m R) =
         (1 : MulAut (GL (Fin m) R)) := by
   intro m R _
   exact ite_eq_left rfl
 
 theorem UpperTheory.Reformulated.B.SignActionTheta.aux12.{u_1} :
-    ∀ (m : ℕ) (R : Type u_1) [CommRing R] (s t : ℤˣ),
+    ∀ (m : ℕ) (R : Type u_1) [inst : CommRing R] (s t : ℤˣ),
       (if s * t = (1 : ℤˣ) then (1 : MulAut (GL (Fin m) R)) else UpperTheory.Reformulated.B.SignActionTheta.thetaAut m R) =
         (if s = (1 : ℤˣ) then (1 : MulAut (GL (Fin m) R)) else UpperTheory.Reformulated.B.SignActionTheta.thetaAut m R) *
           if t = (1 : ℤˣ) then (1 : MulAut (GL (Fin m) R)) else UpperTheory.Reformulated.B.SignActionTheta.thetaAut m R := by
@@ -484,7 +484,7 @@ theorem UpperTheory.Reformulated.B.SignActionTheta.aux12.{u_1} :
     exact (UpperTheory.Reformulated.B.SignActionTheta.aux8 g).symm
 
 noncomputable def UpperTheory.Reformulated.B.SignActionTheta.sgnAct.{u_1} :
-    (m : ℕ) → (R : Type u_1) → [CommRing R] → ℤˣ →* MulAut (GL (Fin m) R) :=
+    (m : ℕ) → (R : Type u_1) → [inst : CommRing R] → ℤˣ →* MulAut (GL (Fin m) R) :=
     fun (m : ℕ) (R : Type u_1) [CommRing R] ↦
       { toFun := fun (s : ℤˣ) ↦ if s = (1 : ℤˣ) then (1 : MulAut (GL (Fin m) R)) else UpperTheory.Reformulated.B.SignActionTheta.thetaAut m R,
         map_one' := UpperTheory.Reformulated.B.SignActionTheta.aux11 m R, map_mul' := UpperTheory.Reformulated.B.SignActionTheta.aux12 m R : ℤˣ →* MulAut (GL (Fin m) R) }
@@ -510,7 +510,7 @@ private theorem UpperTheory.Reformulated.B.SignActionTheta.map_theta {m : ℕ} {
   rw [map_mul, map_mul, hJ, hT]
 
 theorem UpperTheory.Reformulated.B.SignActionTheta.sign_action_map_comm.{u_1, u_2} :
-    ∀ {m : ℕ} {R : Type u_1} {S : Type u_2} [CommRing R] [CommRing S] (f : R →+* S) (s : ℤˣ),
+    ∀ {m : ℕ} {R : Type u_1} {S : Type u_2} [inst : CommRing R] [inst_1 : CommRing S] (f : R →+* S) (s : ℤˣ),
       (Matrix.GeneralLinearGroup.map f).comp
           (MulEquiv.toMonoidHom ((UpperTheory.Reformulated.B.SignActionTheta.sgnAct m R : ℤˣ → MulAut (GL (Fin m) R)) s)) =
         (MulEquiv.toMonoidHom
@@ -533,19 +533,19 @@ noncomputable def UpperTheory.Reformulated.B.SignActionTheta.map.{u_1, u_2} :
     {m : ℕ} →
       {R : Type u_1} →
         {S : Type u_2} →
-          [CommRing R] → [CommRing S] → (R →+* S) → UpperTheory.Reformulated.B.SignActionTheta.GG m R →* UpperTheory.Reformulated.B.SignActionTheta.GG m S :=
+          [inst : CommRing R] → [inst_1 : CommRing S] → (R →+* S) → UpperTheory.Reformulated.B.SignActionTheta.GG m R →* UpperTheory.Reformulated.B.SignActionTheta.GG m S :=
     fun {_ : ℕ} {R : Type u_1} {S : Type u_2} [CommRing R] [CommRing S] (f : R →+* S) ↦
       SemidirectProduct.map (Matrix.GeneralLinearGroup.map f) (MonoidHom.id ℤˣ) (UpperTheory.Reformulated.B.SignActionTheta.sign_action_map_comm f)
 
 @[reducible] noncomputable def UpperTheory.Reformulated.B.SignActionTheta.ofGL.{u_1} :
-    {m : ℕ} → {R : Type u_1} → [CommRing R] → GL (Fin m) R →* UpperTheory.Reformulated.B.SignActionTheta.GG m R :=
+    {m : ℕ} → {R : Type u_1} → [inst : CommRing R] → GL (Fin m) R →* UpperTheory.Reformulated.B.SignActionTheta.GG m R :=
     fun {_ : ℕ} {R : Type u_1} [CommRing R] ↦ SemidirectProduct.inl
 
 noncomputable def UpperTheory.Reformulated.B.SignActionTheta.conjBy.{u_1, u_3} :
     {m : ℕ} →
       {R : Type u_1} →
-        [CommRing R] →
-          {G : Type u_3} → [Group G] → GL (Fin m) R → (G →* UpperTheory.Reformulated.B.SignActionTheta.GG m R) → G →* UpperTheory.Reformulated.B.SignActionTheta.GG m R :=
+        [inst : CommRing R] →
+          {G : Type u_3} → [inst_1 : Group G] → GL (Fin m) R → (G →* UpperTheory.Reformulated.B.SignActionTheta.GG m R) → G →* UpperTheory.Reformulated.B.SignActionTheta.GG m R :=
     fun {m : ℕ} {R : Type u_1} [CommRing R] {G : Type u_3} [Group G] (h : GL (Fin m) R) (r : G →* UpperTheory.Reformulated.B.SignActionTheta.GG m R) ↦
       (MulEquiv.toMonoidHom
             ((MulAut.conj : UpperTheory.Reformulated.B.SignActionTheta.GG m R → MulAut (UpperTheory.Reformulated.B.SignActionTheta.GG m R))
@@ -553,7 +553,7 @@ noncomputable def UpperTheory.Reformulated.B.SignActionTheta.conjBy.{u_1, u_3} :
         r
 
 theorem UpperTheory.Reformulated.B.SignActionTheta.map_conjBy :
-    ∀ {G R S : Type} [Group G] [CommRing R] [CommRing S] {m : ℕ} (f : R →+* S) (h : GL (Fin m) R)
+    ∀ {G R S : Type} [inst : Group G] [inst_1 : CommRing R] [inst_2 : CommRing S] {m : ℕ} (f : R →+* S) (h : GL (Fin m) R)
       (r : G →* UpperTheory.Reformulated.B.SignActionTheta.GG m R),
       (UpperTheory.Reformulated.B.SignActionTheta.map f).comp (UpperTheory.Reformulated.B.SignActionTheta.conjBy h r) =
         UpperTheory.Reformulated.B.SignActionTheta.conjBy ((Matrix.GeneralLinearGroup.map f : GL (Fin m) R → GL (Fin m) S) h)

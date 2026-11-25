@@ -712,7 +712,7 @@ theorem local_gen {R : Type*} [CommRing R] [IsDedekindDomain R]
   obtain ⟨o, ho⟩ := Ideal.mem_span_singleton'.mp hm
   exact ⟨o, ho.symm⟩
 
-theorem main : ∀ {E : Type} [Field E] [NumberField E]
+theorem main : ∀ {E : Type} [inst : Field E] [NumberField E]
     (P : IsDedekindDomain.HeightOneSpectrum (NumberField.RingOfIntegers E))
     (J : Ideal (NumberField.RingOfIntegers E)), J ≠ ⊥ →
     ∃ d ∈ J, d ≠ (0 : NumberField.RingOfIntegers E) ∧

@@ -103,7 +103,6 @@ theorem span_X_pow_le_sup_of_residue :
   refine mvPowerSeries_mem_map_C_of_coeff_mem _ (IsNoetherian.noetherian _) g fun n => ?_
   have h0 : φ g = 0 := by simpa using hg
   rw [← residue_eq_zero_iff]
-  have := congrArg (MvPowerSeries.coeff n) h0
-  simpa [hφ] using this
+  simpa [hφ] using congrArg (MvPowerSeries.coeff n) h0
 
 end GlobalTheory

@@ -58,8 +58,7 @@ private theorem UpperTheory.V.Pr.exp_product_chart_local {X : Type} [Topological
       ⟨j c, hc, c, rfl⟩
   refine h2.trans (closure_minimal ?_ isClosed_closure)
   rintro _ ⟨hy, y, rfl⟩
-  have h3 : q ⤳ y := hq.specializes (subset_closure hy)
-  exact specializes_iff_mem_closure.mp (h3.map hj.continuous)
+  exact specializes_iff_mem_closure.mp ((hq.specializes (subset_closure hy)).map hj.continuous)
 
 open PrimeSpectrum in
 theorem UpperTheory.V.Pr.chartOfFlat :
@@ -77,8 +76,7 @@ theorem UpperTheory.V.Pr.chartOfFlat :
     obtain ⟨q, hq, hZq⟩ := UpperTheory.V.Pr.exp_product_chart_local hj hZ hmem
     obtain ⟨P', hP', rfl⟩ := hg hq
     have h1 : P' ≤ P := (PrimeSpectrum.le_iff_specializes _ _).mpr hP'
-    have h2 : P.asIdeal ≤ P'.asIdeal := hP.2 ⟨P'.isPrime, bot_le⟩ h1
-    have h3 : P' = P := le_antisymm h1 h2
+    have h3 : P' = P := le_antisymm h1 (hP.2 ⟨P'.isPrime, bot_le⟩ h1)
     subst h3
     exact hZq
   · intro Y hY hx

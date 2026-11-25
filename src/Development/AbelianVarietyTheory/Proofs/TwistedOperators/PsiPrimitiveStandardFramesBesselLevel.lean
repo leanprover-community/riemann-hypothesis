@@ -113,7 +113,7 @@ end GlobalTheory.AscFin.PrimStd
 
 open GlobalTheory.SeeSaw (idV FI dI) in
 open GlobalTheory.AscFin.PrimStd in
-theorem GlobalTheory.AscFin.primAt_std_bessel : OnStd fun {D} _ _ {_} {G} W F => ∀ ρ (h : 2 * ρ + 2 ≤ D.R.m), ∀ v ∉ G.pl.S0,
+theorem GlobalTheory.AscFin.primAt_std_bessel : OnStd fun {D} _ _ {sc} {G} W F => ∀ ρ (h : 2 * ρ + 2 ≤ D.R.m), ∀ v ∉ G.pl.S0,
     PrimAt W.ψ (F.dB ρ h) (G.Λ (.grid (2 * ρ + 2) 0)) v := by
   intro D _ T L μ0 _ sc G W M _ F hF ρ h v hv
   have hψ := W.ψ_std

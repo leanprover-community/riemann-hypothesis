@@ -162,7 +162,7 @@ theorem hodgeTate_constGen (p : ℕ) [Fact p.Prime] (O : Type) [CommRing O] :
 theorem latt_const_equiv : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C]
     (v : Valuation C NNReal) (O : Type) [CommRing O] [Algebra O C] [Fact ¬IsUnit (p : O)]
     [IsAdicComplete (Ideal.span {(p : O)}) O] [IsDomain O], v.Integers O →
-    ∀ (ε : PreTilt O p) (_ : IsPrimitiveSystem ε),
+    ∀ (ε : PreTilt O p) (hε : IsPrimitiveSystem ε),
     ∃ e : latt (const p O) ≃ₗ[Ainf p O] Ainf p O, ∀ y, e y = y.1 (constGen p O) := by
   intro p _ C _ _ _ v O _ _ _ _ _ _ ε hε
   have hO : ∀ e : O, IsIdempotentElem e → e = 0 ∨ e = 1 := fun e he =>

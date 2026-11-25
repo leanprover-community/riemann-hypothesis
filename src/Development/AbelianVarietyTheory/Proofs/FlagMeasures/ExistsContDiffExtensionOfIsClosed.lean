@@ -105,8 +105,7 @@ theorem _root_.GlobalTheory.smoothOnG_exists_contDiff_extension :
       let U' : Set (Fin n → Fin n → ℂ) := U
       let G' : (Fin n → Fin n → ℂ) → ℂ := G
       have hU' : IsOpen U' := hU
-      have hG' : ContDiffOn ℝ ∞ G' U' := hG
-      exact ⟨U', G', hU', hxU, hG', fun y hy hyS => hfG (Matrix.of y) hy hyS⟩)
+      exact ⟨U', G', hU', hxU, hG, fun y hy hyS => hfG (Matrix.of y) hy hyS⟩)
   exact ⟨F, hF, fun g hg => hFS (fun i j => g i j) hg⟩
 
 end GlobalTheory

@@ -81,8 +81,7 @@ theorem det_algHom_basis_ne_zero (e : Basis ι R S) {P : ι → (S →ₐ[R] L)}
   have hli := (linearIndependent_algHom_toLinearMap R S L).comp P hP
   rw [Fintype.linearIndependent_iff] at hli
   refine hc (funext (hli c (e.ext fun i => ?_)))
-  have := congrFun hc₀ i
-  simpa [Matrix.mulVec, dotProduct, mul_comm] using this
+  simpa [Matrix.mulVec, dotProduct, mul_comm] using congrFun hc₀ i
 
 
 omit [IsDomain L] in

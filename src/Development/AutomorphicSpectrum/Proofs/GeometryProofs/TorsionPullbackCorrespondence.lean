@@ -78,8 +78,7 @@ theorem tors_push {S S' U : Scheme.{0}} {G : Over S} {G' : Over S'} [GrpObj G] [
     apply h.1.hom_ext e1
     rw [Over.w x, Over.w y]
   · intro g
-    have hg : g.left ≫ G.hom = a ≫ f := Over.w g
-    refine ⟨Over.homMk (h.1.lift g.left a hg) (h.1.lift_snd _ _ _), ?_⟩
+    refine ⟨Over.homMk (h.1.lift g.left a (Over.w g)) (h.1.lift_snd _ _ _), ?_⟩
     exact Over.OverMorphism.ext (h.1.lift_fst _ _ _)
 
 theorem tors_iff {R : Type} [CommRing R] [IsDomain R] {T : Type} [CommGroup T] (Γ : BT.QFGroup R T) {X : Scheme.{0}}
@@ -97,8 +96,7 @@ theorem tors_iff {R : Type} [CommRing R] [IsDomain R] {T : Type} [CommGroup T] (
     exact fun Y => tors_push h (Y.hom ≫ 𝟙 _) (Y.hom ≫ x) (by simp)
   have w1 : ∀ (Y : Over (Sp R)) (g : Over.mk (Y.hom ≫ 𝟙 _) ⟶ G₀), g.left ≫ G₀.hom = Y.hom := by
     intro Y g
-    have := Over.w g
-    simpa using this
+    simpa using Over.w g
   constructor
   · intro t
     refine ⟨?_, ?_, ?_, ?_⟩
@@ -167,8 +165,7 @@ theorem isTorsionAlong_iff_of_isGrpPullback : ∀ (R : Type) [CommRing R] [IsDom
     exact e t
   · intro i₀ t
     have hi : i₀ ≫ G₀.hom = Γ.G.hom := by
-      have := t.isOver
-      simpa using this
+      simpa using t.isOver
     exact (tors_iff Γ N h i₀ hi).1 t
 
 end PositivityTheory.UnitarySelfGeneration

@@ -62,7 +62,7 @@ section -- clump:auto
 @[expose] public section
 
 noncomputable def UpperTheory.Reformulated.B.LocalHeightDeterminant.locHeight.{u_1} :
-    {E : Type u_1} → [NormedField E] → {n : ℕ} → GL (Fin n) E → ℝ :=
+    {E : Type u_1} → [inst : NormedField E] → {n : ℕ} → GL (Fin n) E → ℝ :=
     fun {E : Type u_1} [NormedField E] {n : ℕ} (g : GL (Fin n) E) ↦
       Max.max (1 : ℝ)
         (↑(Finset.univ.sup fun (p : Fin n × Fin n) ↦
@@ -70,7 +70,7 @@ noncomputable def UpperTheory.Reformulated.B.LocalHeightDeterminant.locHeight.{u
           ℝ)
 
 theorem UpperTheory.Reformulated.B.LocalHeightDeterminant.norm_det_le_pow.{u_1} :
-    ∀ {R : Type u_1} [NormedField R] [IsUltrametricDist R] {n : ℕ} (g : GL (Fin n) R),
+    ∀ {R : Type u_1} [inst : NormedField R] [IsUltrametricDist R] {n : ℕ} (g : GL (Fin n) R),
       ‖(↑g : Matrix (Fin n) (Fin n) R).det‖ ≤ UpperTheory.Reformulated.B.LocalHeightDeterminant.locHeight g ^ n := by
   intro R _ _ n g
   have h1 : (1 : ℝ) ≤ UpperTheory.Reformulated.B.LocalHeightDeterminant.locHeight g := le_max_left _ _

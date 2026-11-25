@@ -341,8 +341,7 @@ def Rc (n : ℕ) : Matrix (Fin n ⊕ Fin n) (Fin n) ℂ := Matrix.fromRows 1 0
 theorem ub_eq (Z : M2 n) :
     Z.toBlocks₁₁ + Complex.I • Z.toBlocks₂₁ = (Lr n * Z : Matrix (Fin n) (Fin n ⊕ Fin n) ℂ) * Rc n := by
   conv_rhs => rw [← Matrix.fromBlocks_toBlocks Z]
-  rw [Lr, Rc, Matrix.fromCols_mul_fromBlocks, Matrix.fromCols_mul_fromRows]
-  simp
+  simp [Lr, Rc, Matrix.fromCols_mul_fromBlocks, Matrix.fromCols_mul_fromRows]
 
 theorem Lr_mX (Q R : Matrix (Fin n) (Fin n) ℂ) :
     (Lr n * mX 1 Q R 1 : Matrix (Fin n) (Fin n ⊕ Fin n) ℂ) = Matrix.fromCols (1 - Q) (Complex.I • (1 + Q)) := by
@@ -359,8 +358,7 @@ theorem Lr_mX (Q R : Matrix (Fin n) (Fin n) ℂ) :
   have e2 : ((Matrix.fromCols ((2 * Complex.I) • (1 : Matrix (Fin n) (Fin n) ℂ)) (0 : Matrix (Fin n) (Fin n) ℂ) : Matrix (Fin n) (Fin n ⊕ Fin n) ℂ) * Matrix.fromBlocks (1 : Matrix (Fin n) (Fin n) ℂ) Q R 1 :
         Matrix (Fin n) (Fin n ⊕ Fin n) ℂ) =
       (Matrix.fromCols ((2 * Complex.I) • (1 : Matrix (Fin n) (Fin n) ℂ)) ((2 * Complex.I) • Q) : Matrix (Fin n) (Fin n ⊕ Fin n) ℂ) := by
-    rw [Matrix.fromCols_mul_fromBlocks]
-    simp
+    simp [Matrix.fromCols_mul_fromBlocks]
   have e3 : ((Matrix.fromCols ((2 * Complex.I) • (1 : Matrix (Fin n) (Fin n) ℂ)) ((2 * Complex.I) • Q) : Matrix (Fin n) (Fin n ⊕ Fin n) ℂ) * CmI n :
         Matrix (Fin n) (Fin n ⊕ Fin n) ℂ) = Matrix.fromCols (1 - Q) (Complex.I • (1 + Q)) := by
     rw [CmI, Matrix.mul_smul, Matrix.fromCols_mul_fromBlocks]

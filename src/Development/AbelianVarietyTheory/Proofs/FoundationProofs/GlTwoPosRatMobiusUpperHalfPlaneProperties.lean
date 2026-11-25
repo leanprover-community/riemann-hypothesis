@@ -88,8 +88,7 @@ theorem denom_ne (g : GQ) {z : ℂ} (hz : z ∈ Hs) : (ent g 1 0 : ℂ) * z + (e
   rw [hc] at hr
   have hd : ent g 1 1 = 0 := by simpa using hr
   have := det_pos g
-  rw [hc, hd] at this
-  simp at this
+  simp [hc, hd] at this
 
 theorem mob_mem (g : GQ) {z : ℂ} (hz : z ∈ Hs) : mob g z ∈ Hs := by
   have hne := denom_ne g hz

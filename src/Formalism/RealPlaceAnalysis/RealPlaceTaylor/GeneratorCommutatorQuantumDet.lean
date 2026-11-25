@@ -238,10 +238,9 @@ theorem lastColumnSplit_bijective (m : ℕ) : Function.Bijective (lastColumnSpli
       have h' := congrArg (fun σ : Equiv.Perm (Fin (m + 1)) => σ (Fin.last m)) h
       simpa [Equiv.Perm.mul_apply, extendLast_last, cycleToLast_last] using h'
     subst hj
-    have he : extendLast τ = extendLast τ' := mul_left_cancel h
     have hτ : τ = τ' := by
       refine Equiv.ext (fun k => ?_)
-      have h' := congrArg (fun σ : Equiv.Perm (Fin (m + 1)) => σ k.castSucc) he
+      have h' := congrArg (fun σ : Equiv.Perm (Fin (m + 1)) => σ k.castSucc) (mul_left_cancel h)
       simpa [extendLast_castSucc] using h'
     rw [hτ]
   · simp [Fintype.card_perm, Nat.factorial_succ]
@@ -269,8 +268,7 @@ theorem qComatrix_of (hc : QSkewCol) : QComatrix := by
     ⟨Fin.snoc (α := fun _ => Fin (m + 1)) (fun k => i.succAbove k) l, fun k => by simp, by simp⟩
   have hexp := quantumMinor_expand_last E id b' u
   have hbc' : b' ∘ Fin.castSucc = Fin.succAbove i := funext hbc
-  rw [hbc', hbl] at hexp
-  simp only [Function.id_comp, id_eq] at hexp
+  simp only [hbc', hbl, Function.id_comp, id_eq] at hexp
   have hsign : ∀ j : Fin (m + 1), ((-1 : ℤ) ^ ((i : ℕ) + (j : ℕ))) =
       (-1) ^ (m - (i : ℕ)) * (-1) ^ (m - (j : ℕ)) := by
     intro j

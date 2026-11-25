@@ -38,8 +38,7 @@ theorem range_mapRep {Γ : Type} [Group Γ] {K L : Type} [Field K] [Field L] [Al
 theorem ssAscent_of (hD : DownStep) (hA : AscendStep) (hU : UpStep) : PI.SSAscent := by
   intro K L _ _ _ _ Γ _ a ρ hρ
   apply hU L Γ a
-  have h1 : TrNondeg (imAlg ρ) := hD K Γ a ρ hρ
-  have h2 := hA K L a (Set.range fun g => (ρ g : Matrix (Fin a) (Fin a) K)) h1
+  have h2 := hA K L a (Set.range fun g => (ρ g : Matrix (Fin a) (Fin a) K)) (hD K Γ a ρ hρ)
   have h3 : imAlg (mapRep (algebraMap K L) ρ) =
       Algebra.adjoin L ((algebraMap K L).mapMatrix '' Set.range fun g => (ρ g : Matrix (Fin a) (Fin a) K)) :=
     congrArg (Algebra.adjoin L) (range_mapRep (L := L) ρ)

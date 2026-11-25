@@ -19,8 +19,7 @@ variable {R : Type} [Semiring R]
 theorem le_lord_iff (n : WithTop ℤ) (f : LaurentPolynomial R) :
     n ≤ lord f ↔ ∀ k : ℤ, f.coeff k ≠ 0 → n ≤ (k : WithTop ℤ) := by
   unfold lord
-  rw [Finset.le_min_iff]
-  simp only [Finsupp.mem_support_iff]
+  simp only [Finset.le_min_iff, Finsupp.mem_support_iff]
 
 theorem lord_zero : lord (0 : LaurentPolynomial R) = ⊤ := by
   rw [eq_top_iff, le_lord_iff]
@@ -52,8 +51,7 @@ theorem le_lord_mul {m n : WithTop ℤ} {f g : LaurentPolynomial R} (hf : m ≤ 
   classical
   rw [le_lord_iff] at *
   intro k hk
-  have hk' : k ∈ (f * g).coeff.support := Finsupp.mem_support_iff.mpr hk
-  have := AddMonoidAlgebra.support_coeff_mul_subset f g hk'
+  have := AddMonoidAlgebra.support_coeff_mul_subset f g (Finsupp.mem_support_iff.mpr hk)
   obtain ⟨a, ha, b, hb, rfl⟩ := Finset.mem_add.mp this
   have h1 := hf a (Finsupp.mem_support_iff.mp ha)
   have h2 := hg b (Finsupp.mem_support_iff.mp hb)
@@ -301,8 +299,7 @@ theorem coeff_substS_eIn_eq_zero (α δ : L × Fin r →₀ ℕ) (hδ : eOut out
     refine subX_mem_supported sg S A B out x ?_
     have hγ' : γ = eIn out α := by
       classical
-      have := support_monomial_subset hγ
-      simpa using this
+      simpa using support_monomial_subset hγ
     rw [hγ', Finsupp.mem_support_iff, eIn_apply] at hx
     intro ho
     rw [ite_eq_left ho] at hx
@@ -519,8 +516,7 @@ theorem lord_nonneg_of_mem {R : Type} [CommRing R] (f : LaurentPolynomial R)
 theorem hMat_mem (r : ℕ) (a b : Fin r) :
     hMat K r a b ∈ (Polynomial.toLaurent : Polynomial (GenF K r) →+* LauF K r).range := by
   unfold hMat sDiag Formalism.MainNotions.G.gL Formalism.MainNotions.G.gLinv
-  rw [Matrix.transpose_apply]
-  simp only [Matrix.mul_apply, Matrix.map_apply]
+  simp only [Matrix.transpose_apply, Matrix.mul_apply, Matrix.map_apply]
   refine Subring.sum_mem _ fun k _ => ?_
   refine Subring.mul_mem _ ?_ (RingHom.mem_range.mpr ⟨Polynomial.C _, Polynomial.toLaurent_C _⟩)
   refine Subring.sum_mem _ fun l _ => Subring.mul_mem _
@@ -682,8 +678,7 @@ theorem HomD_C_mul_X [DecidableEq L] (c : R) (i : L) (b b' : Fin r) :
     rw [X, C_mul_monomial, mul_one]
   rw [hm] at hβ
   have : β = Finsupp.single (i, b) 1 := by
-    have := support_monomial_subset hβ
-    simpa using this
+    simpa using support_monomial_subset hβ
   rw [this, ldeg_single, ldeg_single]
 
 end HomD
@@ -762,8 +757,7 @@ theorem hcomp_mem_PolK (d : L → ℕ) (F : MvPolynomial (L × Fin r) K) : hcomp
 theorem sum_hcomp (F : MvPolynomial (L × Fin r) K) :
     F = ∑ d ∈ F.support.image (fun α i => ldeg α i), hcomp d F := by
   ext β
-  rw [coeff_sum]
-  simp only [coeff_hcomp]
+  simp only [coeff_sum, coeff_hcomp]
   by_cases hβ : β ∈ F.support
   · rw [Finset.sum_eq_single (fun i => ldeg β i)]
     · rw [ite_eq_left fun i => rfl]
@@ -956,8 +950,7 @@ theorem vala_X (hV2 : V2 K) (i : L) (a : Fin r) :
     rw [vala_iff, Int.ceil_zero]; exact h
   · rw [ite_eq_right hs] at h ⊢
     have h1 : ⌈(-1 : ℝ)⌉ = -1 := by
-      have := Int.ceil_intCast (R := ℝ) (-1)
-      simpa using this
+      simpa using Int.ceil_intCast (R := ℝ) (-1)
     rw [vala_iff, h1]; exact h
 
 theorem vala_ddiv_letter' (hV2 : V2 K) {θ : ℝ} (i : L) (β : Fin r →₀ ℕ)
@@ -1058,8 +1051,7 @@ theorem valS_monomial_nonneg_of_free (μ : L × Fin r →₀ ℕ) (c : K) (h : �
   classical
   refine valS_nonneg_of_free sg S _ fun α hα i hi a => ?_
   have : α = μ := by
-    have := support_monomial_subset hα
-    simpa using this
+    simpa using support_monomial_subset hα
   rw [this]; exact h i hi a
 
 theorem valS_monomial_nonneg_of_vec (μ : L × Fin r →₀ ℕ) (c : K)
@@ -1067,8 +1059,7 @@ theorem valS_monomial_nonneg_of_vec (μ : L × Fin r →₀ ℕ) (c : K)
   classical
   refine valS_nonneg_of_vec sg S _ fun α hα i a hne => ?_
   have : α = μ := by
-    have := support_monomial_subset hα
-    simpa using this
+    simpa using support_monomial_subset hα
   rw [this] at hne; exact h i a hne
 
 end TotallyRealRoots

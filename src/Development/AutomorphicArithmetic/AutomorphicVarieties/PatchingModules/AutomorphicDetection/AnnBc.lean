@@ -785,11 +785,11 @@ private lemma free_of_flat {Λ L N : Type} [CommRing Λ] [CommRing L] [IsLocalRi
 end UpperTheory.Reformulated.B.FlatnessPrecompleteProducts
 
 theorem UpperTheory.Reformulated.B.FlatnessPrecompleteProducts.finite_free_baseChange :
-    ∀ (Λ R : Type) [CommRing Λ] [IsNoetherianRing Λ] [CommRing R] [IsNoetherianRing R]
-      [Algebra Λ R] (p : Ideal Λ) (q : Ideal R) (L B : Type) [CommRing L] [IsLocalRing L]
-      [CommRing B] [IsLocalRing B] [Algebra Λ L] [Algebra R B] [Algebra L B]
-      [Algebra Λ B] [IsScalarTower Λ R B] [IsScalarTower Λ L B] (M : Type) [AddCommGroup M]
-      [_root_.Module R M] [_root_.Module Λ M] [IsScalarTower Λ R M] [Module.Finite Λ M]
+    ∀ (Λ R : Type) [inst : CommRing Λ] [IsNoetherianRing Λ] [inst_2 : CommRing R] [IsNoetherianRing R]
+      [inst_4 : Algebra Λ R] (p : Ideal Λ) (q : Ideal R) (L B : Type) [inst_5 : CommRing L] [inst_6 : IsLocalRing L]
+      [inst_7 : CommRing B] [inst_8 : IsLocalRing B] [inst_9 : Algebra Λ L] [inst_10 : Algebra R B] [inst_11 : Algebra L B]
+      [inst_12 : Algebra Λ B] [IsScalarTower Λ R B] [IsScalarTower Λ L B] (M : Type) [inst_15 : AddCommGroup M]
+      [inst_16 : _root_.Module R M] [inst_17 : _root_.Module Λ M] [IsScalarTower Λ R M] [Module.Finite Λ M]
       [Module.Flat Λ M],
       UpperTheory.V.AlgebraTools.IsCplAt Λ p L →
         UpperTheory.V.AlgebraTools.IsCplAt R q B →

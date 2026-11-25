@@ -289,7 +289,6 @@ theorem ordAt_localIdele (v w : HeightOneSpectrum (𝓞 K)) (π : (v.adicComplet
     norm_num
   · have hc : ((localIdele K v π : Ideles K) : AdeleRing (𝓞 K) K).2 w = 1 :=
       RestrictedProduct.mulSingle_eq_of_ne _ _ h
-    rw [hc]
-    simp
+    simp [hc]
 
 end ReciprocityTheory.Neutral.Bridge.HCFR

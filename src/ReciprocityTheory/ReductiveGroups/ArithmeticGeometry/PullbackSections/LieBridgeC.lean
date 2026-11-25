@@ -50,8 +50,7 @@ theorem exists_sepElt {E : Type} [Field E] [NumberField E] {F : Type} [Field F] 
     rw [← Polynomial.aeval_algebraMap_apply, map_zero]
     exact minpoly.aeval ℤ _
   · have hp : (∏ τ, (X - C (χ τ α))).Monic := Polynomial.monic_prod_X_sub_C _ _
-    have hq : ((minpoly ℤ ((α : 𝓞 E) : E)).map (Int.castRingHom F)).Monic := (minpoly.monic hintα).map _
-    refine Polynomial.eq_of_monic_of_dvd_of_natDegree_le hp hq ?_ ?_
+    refine Polynomial.eq_of_monic_of_dvd_of_natDegree_le hp ((minpoly.monic hintα).map _) ?_ ?_
     · refine Finset.prod_dvd_of_coprime (fun τ _ τ' _ h => Polynomial.pairwise_coprime_X_sub_C hinj h)
         fun τ _ => Polynomial.dvd_iff_isRoot.2 ?_
       have hχa : aeval (χ τ α) (minpoly ℤ ((α : 𝓞 E) : E)) = χ τ (aeval α (minpoly ℤ ((α : 𝓞 E) : E))) :=

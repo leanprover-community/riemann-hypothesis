@@ -88,15 +88,13 @@ lemma dvd_entries_of_pow_eq_one [IsDomain R] [IsLocalRing R] [CharZero R] {l p :
       rw [eq_neg_iff_add_eq_zero, add_comm]; exact he
     rw [this, dvd_neg]
     exact dvd_sum fun m _ => dvd_mul_of_dvd_left (ht.trans (dvd_pow_self t (Nat.succ_ne_zero m))) _
-  have hl0 : (l : R) ≠ 0 := Nat.cast_ne_zero.mpr hl.ne_zero
   by_cases hpl : q + 1 = l
   · rw [hpl, pow_two] at hdiv
-    exact (mul_dvd_mul_iff_left hl0).mp hdiv
+    exact (mul_dvd_mul_iff_left (Nat.cast_ne_zero.mpr hl.ne_zero)).mp hdiv
   · have hcop : Nat.Coprime (q + 1) l := (Nat.coprime_primes hp hl).mpr hpl
-    have hc : IsCoprime ((q + 1 : ℕ) : R) (l : R) := by
+    obtain ⟨u, v, huv⟩ : IsCoprime ((q + 1 : ℕ) : R) (l : R) := by
       have := (Nat.isCoprime_iff_coprime.mpr hcop).map (Int.castRingHom R)
       simpa using this
-    obtain ⟨u, v, huv⟩ := hc
     have hpu : IsUnit ((q + 1 : ℕ) : R) := by
       rcases IsLocalRing.isUnit_or_isUnit_of_add_one huv with h1 | h1
       · exact isUnit_of_mul_isUnit_right h1

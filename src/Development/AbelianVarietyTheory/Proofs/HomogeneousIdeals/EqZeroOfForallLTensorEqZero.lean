@@ -126,8 +126,7 @@ theorem isReduced_field_tensor_domain {k : Type*} [Field k] [PerfectField k] (K 
   obtain ⟨v, ⟨f, rfl⟩, hv, hsub⟩ := PrimeSpectrum.isTopologicalBasis_basic_opens.exists_subset_of_mem_open
     hgen Algebra.isOpen_smoothLocus
   have hf0 : f ≠ 0 := by
-    have := (PrimeSpectrum.mem_basicOpen f _).1 hv
-    simpa using this
+    simpa using (PrimeSpectrum.mem_basicOpen f _).1 hv
   have hsm : Algebra.Smooth k (Localization.Away f) :=
     Algebra.basicOpen_subset_smoothLocus_iff_smooth.1 hsub
   have hred : IsReduced (K ⊗[k] Localization.Away f) :=

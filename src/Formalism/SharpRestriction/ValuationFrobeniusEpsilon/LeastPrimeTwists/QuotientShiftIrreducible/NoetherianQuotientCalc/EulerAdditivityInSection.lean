@@ -189,17 +189,15 @@ theorem kernel_inclusion_product_exact : Function.Exact (phi1 F s s' d d') (phi2
   intro y
   constructor
   · intro h
-    have h' : s' • y.1 = 0 := congrArg Subtype.val h
-    exact ⟨⟨y.1, h'⟩, Subtype.ext rfl⟩
+    exact ⟨⟨y.1, (congrArg Subtype.val h)⟩, Subtype.ext rfl⟩
   · rintro ⟨x, rfl⟩
     exact Subtype.ext x.2
 
 theorem product_kernel_to_kernel_isGraded (hF : F.IsGr 𝒜) (hs' : s' ∈ 𝒜 d') :
     IsGrHom (F.ann (s * s') (d + d')) (F.ann s d) (phi2 F s s' d d') := by
   intro m x hx
-  have hx' : x.1 ∈ F.gr (m - (d + d')) := hx
   show s' • x.1 ∈ F.gr (m - d)
-  have h := hF.smul_mem hs' hx'
+  have h := hF.smul_mem hs' hx
   rwa [show d' + (m - (d + d')) = m - d by abel] at h
 
 theorem ker3 (y : (F.ann s d).M) :
@@ -243,8 +241,7 @@ theorem ker4 (y : ((F.shift d).quot s').M) :
 theorem quotient_to_product_quotient_isGraded (hF : F.IsGr 𝒜) (hs : s ∈ 𝒜 d) :
     IsGrHom ((F.shift d).quot s') (F.quot (s * s')) (phi4 F s s' d) := by
   rintro m _ ⟨x, hx, rfl⟩
-  have hx' : x ∈ F.gr (m - d) := hx
-  have h := hF.smul_mem hs hx'
+  have h := hF.smul_mem hs hx
   rw [show d + (m - d) = m by abel] at h
   exact ⟨s • x, h, rfl⟩
 

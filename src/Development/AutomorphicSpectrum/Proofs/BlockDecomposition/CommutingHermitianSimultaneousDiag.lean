@@ -71,8 +71,7 @@ theorem exists_unitary_isDiag {n : ℕ} (S : Set (Matrix (Fin n) (Fin n) ℂ))
       change Matrix.toEuclideanLin M = LinearMap.adjoint (Matrix.toEuclideanLin M)
       rw [← Matrix.toEuclideanLin_conjTranspose_eq_adjoint, hH M hM])
   have hm : m = n := by
-    have := Module.finrank_eq_card_basis b.toBasis
-    simpa [finrank_euclideanSpace] using this.symm
+    simpa [finrank_euclideanSpace] using (Module.finrank_eq_card_basis b.toBasis).symm
   subst hm
   have hinner : ∀ j k, ∑ i, star (WithLp.ofLp (b j) i) * WithLp.ofLp (b k) i =
       if j = k then 1 else 0 := by
@@ -89,12 +88,10 @@ theorem exists_unitary_isDiag {n : ℕ} (S : Set (Matrix (Fin n) (Fin n) ℂ))
   · intro j k hjk
     obtain ⟨μ, hμ⟩ := hb k (L A) ⟨A, hA, rfl⟩
     have hv : A *ᵥ WithLp.ofLp (b k) = μ • WithLp.ofLp (b k) := by
-      have := congrArg WithLp.ofLp hμ
-      simpa [hL] using this
+      simpa [hL] using congrArg WithLp.ofLp hμ
     have hAU : ∀ i, (A * U) i k = μ * WithLp.ofLp (b k) i := by
       intro i
-      have := congrFun hv i
-      simpa [Matrix.mul_apply, Matrix.mulVec, dotProduct, U] using this
+      simpa [Matrix.mul_apply, Matrix.mulVec, dotProduct, U] using congrFun hv i
     have h0 := hinner j k
     rw [ite_eq_right hjk] at h0
     rw [Matrix.mul_assoc, Matrix.mul_apply]

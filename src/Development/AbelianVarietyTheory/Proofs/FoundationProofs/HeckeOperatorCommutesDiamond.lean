@@ -177,8 +177,7 @@ theorem rep_inj {q : ℕ} (hp : q.Prime) (w : SL(2, ℤ)) (γ : SL(2, ℤ)) {x y
   · simp [rep, tri, Matrix.mul_apply, Fin.sum_univ_two] at h00 h01 ⊢
     rw [← h00] at h01
     have : (u : ℤ) ≡ (v : ℤ) [ZMOD q] := (Int.modEq_iff_dvd.2 ⟨γ 0 1, by linear_combination h01⟩).symm
-    have h2 : (u : ℕ) ≡ (v : ℕ) [MOD q] := Int.natCast_modEq_iff.1 this
-    exact Fin.ext (Nat.ModEq.eq_of_lt_of_lt h2 u.2 v.2)
+    exact Fin.ext (Nat.ModEq.eq_of_lt_of_lt (Int.natCast_modEq_iff.1 this) u.2 v.2)
 
 end GlobalTheory.Hk.CommTD
 
@@ -232,8 +231,7 @@ theorem conj_cong {N l : ℕ} (ρ : SL(2, ℤ)) (hρ : ((ρ 1 0 : ℤ) : ZMod (N
     (((ρ.1 * m * (ρ⁻¹).1) 1 0 : ℤ) : ZMod (N * l)) = 0 ∧
       (((ρ.1 * m * (ρ⁻¹).1) 0 0 : ℤ) : ZMod N) = 1 := by
   have hi : (((ρ⁻¹).1 1 0 : ℤ) : ZMod (N * l)) = 0 := by
-    rw [Matrix.SpecialLinearGroup.coe_inv, Matrix.adjugate_fin_two]
-    simp [hρ]
+    simp [Matrix.SpecialLinearGroup.coe_inv, Matrix.adjugate_fin_two, hρ]
   obtain ⟨a1, a2⟩ := mul_cong ρ.1 m hρ h10
   obtain ⟨b1, b2⟩ := mul_cong (ρ.1 * m) (ρ⁻¹).1 a1 hi
   refine ⟨b1, ?_⟩
@@ -259,8 +257,7 @@ theorem exists_rep {N l q : ℕ} (hq : q.Prime) (hqN : ¬ q ∣ N * l) {w : SL(2
       exact hu.mul_left_eq_zero.1 h10
     refine ⟨γ * w⁻¹, ?_, none, ?_⟩
     · have hwi : (((w⁻¹ : SL(2, ℤ)).1 1 0 : ℤ) : ZMod (N * l)) = 0 := by
-        rw [Matrix.SpecialLinearGroup.coe_inv, Matrix.adjugate_fin_two]
-        simp [hw.1]
+        simp [Matrix.SpecialLinearGroup.coe_inv, Matrix.adjugate_fin_two, hw.1]
       obtain ⟨a1, a2⟩ := mul_cong γ.1 (w⁻¹).1 c10 hwi
       refine mem_lev _ (by rw [Matrix.SpecialLinearGroup.coe_mul]; exact a1) ?_
       rw [Matrix.SpecialLinearGroup.coe_mul, a2]
@@ -354,8 +351,7 @@ theorem heckeT_eq {q : ℕ} (hq : 0 < q) (k : ℤ) (w : SL(2, ℤ)) (g : ℍ →
   rw [Fintype.sum_option, heckeT, repG_none, SlashAction.slash_mul, ← SL_slash, slash_diag, add_comm]
   congr 1
   funext z
-  rw [Finset.sum_apply]
-  simp only [slash_tri]
+  simp only [Finset.sum_apply, slash_tri]
   rw [uOp, ← Finset.mul_sum, ← Fin.sum_univ_eq_sum_range (fun b : ℕ => g (ofComplex (((z : ℂ) + b) / q)))]
 
 end GlobalTheory.Hk.CommTD

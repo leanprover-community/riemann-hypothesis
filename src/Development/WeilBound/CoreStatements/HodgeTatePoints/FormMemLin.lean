@@ -98,12 +98,11 @@ theorem afLat_eq (p : ℕ) {ι : Type} [Fintype ι] (M : Submodule R ((ι → ZM
       simp
   · rintro ⟨g, hg, z, hz, he⟩
     refine ⟨g, hg, fun x => ?_⟩
-    have hx : z x ∈ pInt R p := (Submodule.mem_pi.mp hz) x (Set.mem_univ x)
     have e : g x - algebraMap R C (∑ i, l i * ((x i).val : R)) = - z x := by
       rw [← congrFun he x]
       simp
     rw [e]
-    exact neg_mem hx
+    exact neg_mem ((Submodule.mem_pi.mp hz) x (Set.mem_univ x))
 
 theorem form_mem_lin (p : ℕ) [NeZero p] {ι : Type} [Fintype ι] (l : ι → R) :
     (toC (C := C) R _ ∘ₗ formR R p ι) l ∈ linFun (C := C) R p (ι → ZMod p) := by
@@ -127,8 +126,7 @@ theorem add_mem_pFun {p : ℕ} [Fact p.Prime] {ι : Type} [Fintype ι] [Decidabl
     {h : (ι → ZMod p) → C} (hh : h ∈ addFun R p (ι → ZMod p))
     (h1 : ∀ i, h (Pi.single i 1) ∈ pInt (C := C) R p) : h ∈ pFun R p (ι → ZMod p) := by
   have h0 : h 0 ∈ pInt (C := C) R p := by
-    have := neg_mem (hh 0 0)
-    simpa using this
+    simpa using neg_mem (hh 0 0)
   let S : AddSubmonoid (ι → ZMod p) :=
     { carrier := {x | h x ∈ pInt (C := C) R p}
       add_mem' := by

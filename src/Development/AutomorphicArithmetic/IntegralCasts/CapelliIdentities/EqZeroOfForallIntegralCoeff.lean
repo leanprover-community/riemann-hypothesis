@@ -237,8 +237,7 @@ open UpperTheory.Reformulated.B.Gwa7 in
 private theorem star_entry_lin [CompactSpace U2] (i j : Fin 2) : ∃ a b c d : ℂ,
     star (entry i j) = detPow (-1) * lin (entry 0 0) (entry 0 1) (entry 1 0) (entry 1 1) a b c d := by
   have h : ∀ k : U2, star (k.1 i j) = (k.1.det)⁻¹ * k.1.adjugate j i := fun k => by
-    have := congrFun (congrFun (star_eq k) j) i
-    simpa [Matrix.star_apply] using this
+    simpa [Matrix.star_apply] using congrFun (congrFun (star_eq k) j) i
   fin_cases i <;> fin_cases j
   · refine ⟨0, 1, 0, 1, ContinuousMap.ext fun k => (h k).trans ?_⟩
     simp [lin, detPow, entry, Matrix.adjugate_fin_two]
@@ -333,8 +332,7 @@ private theorem functional_zero [CompactSpace U2] (φ : C(U2, ℂ) →L[ℂ] ℂ
     exact this
   refine closure_minimal (t := {f | φ f = 0}) ?_ (isClosed_eq φ.continuous continuous_const) hf
   intro x hx
-  have := hmul x hx 1 h 0 0 0 0 0 0
-  simpa [hD0] using this
+  simpa [hD0] using hmul x hx 1 h 0 0 0 0 0 0
 
 open UpperTheory.Reformulated.B.Gwa7 MeasureTheory in
 private theorem main [CompactSpace U2] [BorelSpace U2] (μ : Measure U2)
@@ -346,8 +344,7 @@ private theorem main [CompactSpace U2] [BorelSpace U2] (μ : Measure U2)
     (innerSL ℂ (ContinuousMap.toLp 2 μ ℂ G)).comp (ContinuousMap.toLp 2 μ ℂ)
   have hφ : ∀ f, φ f = ∫ k, f k * g k ∂μ := by
     intro f
-    have := MeasureTheory.ContinuousMap.inner_toLp (𝕜 := ℂ) μ G f
-    refine this.trans ?_
+    refine (MeasureTheory.ContinuousMap.inner_toLp (𝕜 := ℂ) μ G f).trans ?_
     simp [G]
   have h0 : φ G = 0 := by
     refine functional_zero φ (fun n m a b c d => ?_) G

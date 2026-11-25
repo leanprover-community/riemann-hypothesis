@@ -204,8 +204,7 @@ lemma coeff_psi (m : ℕ) (P : MvPolynomial (Fin m) K) :
     rfl
   conv_lhs => rw [P.as_sum]
 
-  rw [map_sum, map_sum]
-  simp only [hpsi, PowerSeries.coeff_C_mul_X_pow]
+  simp only [map_sum, map_sum, hpsi, PowerSeries.coeff_C_mul_X_pow]
   have h1 : ∑ e ∈ P.support, (if m = wt e then AddMonoidAlgebra.coeff P e else 0) =
       ∑ e ∈ P.support ∪ Finset.Iic (bnd m), (if m = wt e then AddMonoidAlgebra.coeff P e else 0) :=
     Finset.sum_subset Finset.subset_union_left (fun e _ he => by

@@ -65,8 +65,7 @@ theorem BoundaryPtsNull.proof : BoundaryPtsNull.Statement := by
     have hγ : DifferentiableAt ℂ (D.chart a).γ t :=
       ((D.chart a).analytic t (mem_ball_zero_iff.2 ht.1)).differentiableAt
     have hS : DifferentiableAt ℂ (fun t => segre ((D.chart a).γ t)) t := by
-      have := differentiable_segre.differentiableAt.comp t hγ
-      exact this
+      exact differentiable_segre.differentiableAt.comp t hγ
     have hG : DifferentiableAt ℂ (fun t => Ψ (segre ((D.chart a).γ t))) t := by
       have := (LinearMap.toContinuousLinearMap Ψ).differentiableAt.comp t hS
       exact this

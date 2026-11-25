@@ -1192,8 +1192,8 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Ga5b.exists_nat_smul_mem :
-    ∀ {E : Type} [Field E] [NumberField E]
-    [NumberField.IsCMField E] {N : ℕ} (X : ReciprocityTheory.ChartRestriction.G.FD.Data E N) (v : Fin N → E),
+    ∀ {E : Type} [inst : Field E] [inst_1 : NumberField E]
+    [inst_2 : NumberField.IsCMField E] {N : ℕ} (X : ReciprocityTheory.ChartRestriction.G.FD.Data E N) (v : Fin N → E),
     ∃ (n : ℕ),
       (0 : ℕ) < n ∧
         (↑n : E) • v ∈

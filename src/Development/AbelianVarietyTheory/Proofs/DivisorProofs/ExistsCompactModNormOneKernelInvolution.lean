@@ -65,7 +65,6 @@ theorem exists_compact_mod_kernel : ∀ (Z : Type) [Group Z] [TopologicalSpace Z
       map_mul' := fun a b => by
         simp only [map_mul]
         rw [mul_assoc, mul_assoc, ← mul_assoc (τ b) a b, hc (τ b) a, mul_assoc] }
-  have hN : Continuous N := hτ.mul continuous_id
   have hNval : ∀ z, N z = τ z * z := fun _ => rfl
   let I : Subgroup Z := N.range
   have hIH : ∀ y ∈ I, τ y = y := by
@@ -86,13 +85,12 @@ theorem exists_compact_mod_kernel : ∀ (Z : Type) [Group Z] [TopologicalSpace Z
     rw [this]
     exact I.mul_mem hiI (I.inv_mem ⟨r, rfl⟩)
   let f : Z →* I := N.rangeRestrict
-  have hfc : Continuous f := hN.subtype_mk _
   have hfs : Function.Surjective f := N.rangeRestrict_surjective
   have : LocallyCompactSpace I := hIcl.isClosedEmbedding_subtypeVal.locallyCompactSpace
-  have hopen : IsOpenMap f := f.isOpenMap_of_sigmaCompact hfs hfc
+  have hopen : IsOpenMap f := f.isOpenMap_of_sigmaCompact hfs ((hτ.mul continuous_id).subtype_mk _)
   have hK' : IsCompact (Subtype.val ⁻¹' D : Set I) :=
     hIcl.isClosedEmbedding_subtypeVal.isCompact_preimage hD
-  have key : ∃ C : Set Z, IsCompact C ∧ (Subtype.val ⁻¹' D : Set I) ⊆ f '' C := by
+  obtain ⟨C, hC, hCD⟩ : ∃ C : Set Z, IsCompact C ∧ (Subtype.val ⁻¹' D : Set I) ⊆ f '' C := by
     refine hK'.induction_on (p := fun s => ∃ C : Set Z, IsCompact C ∧ s ⊆ f '' C)
       ⟨∅, isCompact_empty, Set.empty_subset _⟩ (fun s t hst ⟨C, hC, h⟩ => ⟨C, hC, hst.trans h⟩) ?_ ?_
     · rintro s t ⟨C, hC, h⟩ ⟨D, hD, h'⟩
@@ -101,7 +99,6 @@ theorem exists_compact_mod_kernel : ∀ (Z : Type) [Group Z] [TopologicalSpace Z
       obtain ⟨g, rfl⟩ := hfs y
       obtain ⟨C, hC, hg⟩ := exists_compact_mem_nhds g
       exact ⟨_, mem_nhdsWithin_of_mem_nhds (hopen.image_mem_nhds hg), C, hC, subset_rfl⟩
-  obtain ⟨C, hC, hCD⟩ := key
   refine ⟨C, hC, fun z hz => ?_⟩
   obtain ⟨c, hcC, e⟩ := hCD (a := f z) hz
   have e' : N c = N z := congrArg Subtype.val e

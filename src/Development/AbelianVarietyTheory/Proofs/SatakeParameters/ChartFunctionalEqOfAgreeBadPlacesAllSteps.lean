@@ -219,7 +219,7 @@ open Formalism.L2.Forms
 
 
 open FnlAwayCpl in
-theorem fnl_eq_of_away_cpl : UnderTie (fun {D _ _ _ _ _ _ _ _ t u μ _} A _ a => ∀ j (hj : j ≤ D.R.m) β x x₁ p p₁,
+theorem fnl_eq_of_away_cpl : UnderTie (fun {D L hT Gi Gl Kc Y cX ex t u μ St} A dtU a => ∀ j (hj : j ≤ D.R.m) β x x₁ p p₁,
     IsPtAd A a j hj β x p → IsPtAd A a j hj β x₁ p₁ →
     (∀ v ∈ plUnder D.host.F (ssRec t u μ), bc (prV (E := D.host.E) v) x₁.1 = bc (prV (E := D.host.E) v) x.1) →
     ∀ P : t.Pr.vT (t.word u), p₁.deco.1.at P.1 = p.deco.1.at P.1 → ∀ y ∈ p.deco.1.at P.1, p₁.deco.1.f P y = p.deco.1.f P y) := by

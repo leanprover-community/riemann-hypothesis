@@ -49,8 +49,7 @@ theorem pow_prime_add_of_sq_eq_bot (hp : p.Prime) (hpC : (p : C) = 0) (hN : N ^ 
 
 theorem pow_prime_eq_of_mk_eq (hp : p.Prime) (hpC : (p : C) = 0) (hN : N ^ 2 = ⊥) {c c' : C}
     (h : Ideal.Quotient.mk N c = Ideal.Quotient.mk N c') : c ^ p = c' ^ p := by
-  have hmem : c - c' ∈ N := Ideal.Quotient.eq.mp h
-  have := pow_prime_add_of_sq_eq_bot hp hpC hN c' hmem
+  have := pow_prime_add_of_sq_eq_bot hp hpC hN c' (Ideal.Quotient.eq.mp h)
   rwa [add_sub_cancel] at this
 
 noncomputable def sqZeroFrobeniusLift (N : Ideal C) (hp : p.Prime) (hpC : (p : C) = 0) (hN : N ^ 2 = ⊥) :
@@ -124,7 +123,6 @@ theorem exists_isGoodPartialLift_upperBound {p : ℕ} {N : Ideal B} {u : K →�
     rcases hc i.2 j.2 (fun h => hij (Subtype.ext h)) with h | h
     · exact ⟨j, h.1, le_rfl⟩
     · exact ⟨i, le_rfl, h.1⟩
-  have dir' : Directed (· ≤ ·) (fun i => (t i).toSubalgebra) := dir.mono_comp _ (fun _ _ h => h)
   let f : ∀ i, (t i).toSubalgebra →ₐ[F] B := fun i => i.1.1.2
   have hf : ∀ (i j : c) (h : (t i).toSubalgebra ≤ (t j).toSubalgebra),
       f i = (f j).comp (Subalgebra.inclusion h) := by
@@ -137,7 +135,7 @@ theorem exists_isGoodPartialLift_upperBound {p : ℕ} {N : Ideal B} {u : K →�
     · exact h'' (Subalgebra.inclusion h y)
   have hT : (iSup t).toSubalgebra ≤ ⨆ i, (t i).toSubalgebra :=
     (IntermediateField.toSubalgebra_iSup_of_directed dir).le
-  let φ : ↥(iSup t) →ₐ[F] B := Subalgebra.iSupLift _ dir' f hf _ hT
+  let φ : ↥(iSup t) →ₐ[F] B := Subalgebra.iSupLift _ (dir.mono_comp _ (fun _ _ h => h)) f hf _ hT
   have hφ : ∀ (i : c) (y : K) (hy : y ∈ t i), φ ⟨y, (le_iSup t i) hy⟩ = i.1.1.2 ⟨y, hy⟩ :=
     fun i y hy => Subalgebra.iSupLift_mk _ (i := i) ⟨y, hy⟩ _
   refine ⟨⟨⟨iSup t, φ⟩, ⟨fun z => ?_, fun y => ?_⟩⟩,
@@ -216,9 +214,8 @@ theorem exists_isGoodPartialLift_extend (p : ℕ) [hp : Fact p.Prime] [CharP K p
   obtain ⟨hxp, hφx⟩ := hgood.1 x
   let a : L := ⟨x ^ p, hxp⟩
   have hirr : Irreducible (X ^ p - Polynomial.C a) := X_pow_sub_C_irreducible_of_prime hp.out fun b hb => hx (by
-    have hb' : (b : K) ^ p = x ^ p := congrArg Subtype.val hb
     have hbx := frobenius_inj K p (show frobenius K p (b : K) = frobenius K p x by
-      rw [frobenius_def, frobenius_def]; exact hb')
+      rw [frobenius_def, frobenius_def]; exact (congrArg Subtype.val hb))
     rw [← hbx]
     exact b.2)
   have hmonic : (X ^ p - Polynomial.C a).Monic := monic_X_pow_sub_C a hp.out.ne_zero

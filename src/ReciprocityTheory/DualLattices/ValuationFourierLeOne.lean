@@ -78,8 +78,7 @@ theorem conv_mem_dualLat (AA : HopfOrder (C := C) R N) {u w : N → C}
   intro f hf
   obtain ⟨r, hr⟩ := (mem_pairInt_iff _ _).1 (key (AA.comul f hf))
   refine ⟨r, hr.trans ?_⟩
-  rw [Fintype.sum_prod_type]
-  simp only [addPull, LinearMap.funLeft_apply, conv, Finset.sum_mul]
+  simp only [Fintype.sum_prod_type, addPull, LinearMap.funLeft_apply, conv, Finset.sum_mul]
   conv_rhs => rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun a _ => Fintype.sum_equiv (Equiv.addLeft a) _ _ fun b => ?_
   simp
@@ -90,8 +89,7 @@ theorem single_mem_dualLat (AA : HopfOrder (C := C) R N) :
   intro f hf
   obtain ⟨r, hr⟩ := AA.le_int hf 0
   refine ⟨r, ?_⟩
-  rw [hr]
-  simp [Pi.single_apply]
+  simp [hr, Pi.single_apply]
 
 def cpow (u : N → C) : ℕ → N → C
   | 0 => Pi.single 0 1

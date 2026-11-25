@@ -136,9 +136,8 @@ theorem nrm_surj_adjoin : ∀ (F F' : Type) [Field F] [Field F'] [Algebra F F'] 
     fun t δ h => by
       show ((galAct F F' n t δ : GL (Fin n) F') : Matrix (Fin n) (Fin n) F') ∈ B
       rw [coe_galAct]; exact adjoin_stable n t γ _ h
-  have hcommB : ∀ x ∈ B, ∀ y ∈ B, x * y = y * x := adjoin_comm M
   have hcommU : ∀ δ ∈ unitsIn B, ∀ ε ∈ unitsIn B, δ * ε = ε * δ := fun δ hδ ε hε =>
-    Units.ext (by simpa using hcommB _ hδ _ hε)
+    Units.ext (by simpa using (adjoin_comm M) _ hδ _ hε)
   have hnrm_mem : ∀ δ ∈ unitsIn B, nrm s δ ∈ unitsIn B := by
     intro δ hδ
     unfold nrm nrmG
@@ -164,8 +163,7 @@ theorem nrm_surj_adjoin : ∀ (F F' : Type) [Field F] [Field F'] [Algebra F F'] 
     apply Nat.card_congr
     refine Equiv.ofBijective (fun x => ⟨⟨incl F F' n x.1, x.2⟩, (hfix _).2 ⟨x.1, rfl⟩⟩) ⟨?_, ?_⟩
     · intro a b h
-      have := congrArg (fun y : W => ((y : unitsIn B) : GL (Fin n) F')) h
-      exact Subtype.ext (hinj this)
+      exact Subtype.ext (hinj (congrArg (fun y : W => ((y : unitsIn B) : GL (Fin n) F')) h))
     · rintro ⟨⟨x, hx⟩, hxW⟩
       obtain ⟨y, rfl⟩ := (hfix x).1 hxW
       exact ⟨⟨y, hx⟩, rfl⟩
@@ -181,11 +179,10 @@ theorem nrm_surj_adjoin : ∀ (F F' : Type) [Field F] [Field F'] [Algebra F F'] 
         right_inv := fun _ => rfl }
   have hsplit : Nat.card N.ker * Nat.card N.range = Nat.card (unitsIn B) := by
     rw [← Subgroup.index_ker]; exact Subgroup.card_mul_index _
-  have hKpos : 0 < Nat.card N.ker := Nat.card_pos
   have hVR : Nat.card W = Nat.card N.range := by
     rw [← hVW]
     rw [hKc, hUc, ← hsplit] at hcard
-    exact Nat.eq_of_mul_eq_mul_left hKpos hcard
+    exact Nat.eq_of_mul_eq_mul_left Nat.card_pos hcard
   have hEq : (N.range : Set (unitsIn B)) = W := by
     apply Set.eq_of_subset_of_ncard_le hRW
     · rw [← Nat.card_coe_set_eq, ← Nat.card_coe_set_eq, hVR]; rfl

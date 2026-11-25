@@ -73,8 +73,7 @@ noncomputable def form {M : Type} [AddCommGroup M] {n : ℕ} (f : MultilinearMap
 theorem form_cast {M : Type} [AddCommGroup M] {n : ℕ} (f : MultilinearMap (RingHom.id ℤ) (fun _ : Fin n => M) ℤ) (μ e : M)
     (x y : Fin n → ℤ) :
     (f (fun i => x i • μ + y i • e) : ℚ) = form f μ e (fun i => x i) (fun i => y i) := by
-  rw [PositivityTheory.HtPt.Siua.expand]
-  simp only [PositivityTheory.HtPt.Siua.form]
+  simp only [PositivityTheory.HtPt.Siua.expand, PositivityTheory.HtPt.Siua.form]
   push_cast
   refine Finset.sum_congr rfl fun s _ => ?_
   congr 1

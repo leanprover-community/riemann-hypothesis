@@ -273,9 +273,8 @@ theorem finite_codim_one_zero_set_and_exists :
     rw [ringKrullDim_stalk_fromSpec (hU y) P] at hx1
     exact_mod_cast hx1
   · intro y hy
-    have hy' : y ∈ Set.range (hU y).fromSpec := by
+    obtain ⟨P, hP⟩ : y ∈ Set.range (hU y).fromSpec := by
       rw [(hU y).range_fromSpec]; exact hyU y
-    obtain ⟨P, hP⟩ := hy'
     obtain ⟨Q, hQ, hQ1, hQP⟩ := exists_primeSpectrum_height_one_le (hres y) P
       ((fromSpec_notMem_basicOpen_iff (hU y) ϖ P).mp (by rw [hP]; exact hy))
     refine ⟨(hU y).fromSpec Q, (fromSpec_notMem_basicOpen_iff (hU y) ϖ Q).mpr hQ, ?_, ?_⟩

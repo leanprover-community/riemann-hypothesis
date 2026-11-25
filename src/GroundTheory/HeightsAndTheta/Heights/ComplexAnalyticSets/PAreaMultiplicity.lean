@@ -153,8 +153,7 @@ theorem lintegral_abs_det_eq_lintegral_encard {E : Type*} [NormedAddCommGroup E]
             ext z
             simp only [mem_ofPred_eq, mem_empty_iff_false, iff_false, not_and]
             exact fun hz e => hyn ⟨z, hz, e⟩
-          rw [hs, encard_empty]
-          simp [hyn]
+          simp [hs, encard_empty, hyn]
 
 theorem AreaMultiplicity.proof : AreaMultiplicity.Statement := by
   intro E F _ _ _ _ _ _ _ _ _ _ k hE hF A f f' hA hf'

@@ -159,8 +159,7 @@ theorem kbInvHomeomorph_equivariant (q : unitaryGroup n ℝ × upperPosSubgroup 
   have e : Unitary.toUnits q.1 * kbHomeomorph p * ((q.2 : GL n ℝ))⁻¹ =
       kbHomeomorph (q.1 * p.1, p.2 * q.2⁻¹) := by
     simp only [kbHomeomorph_apply, map_mul, Subgroup.coe_mul, Subgroup.coe_inv, mul_assoc]
-  rw [e]
-  simp only [kbInvHomeomorph, Homeomorph.trans_apply, Homeomorph.symm_apply_apply]
+  simp only [e, kbInvHomeomorph, Homeomorph.trans_apply, Homeomorph.symm_apply_apply]
   refine Prod.ext rfl ?_
   show (p.2 * q.2⁻¹)⁻¹ = q.2 * p.2⁻¹
   rw [_root_.mul_inv_rev, inv_inv]

@@ -465,7 +465,7 @@ end Main
 theorem UpperTheory.V.U3.tanCoc_determines :
     ∀ {l : ℕ} [Fact l.Prime] {c : Coef l} {Γ H : Type} [Group Γ] [TopologicalSpace Γ] [IsTopologicalGroup Γ] [Group H] [TopologicalSpace H] [IsTopologicalGroup H]
       {η : Γ →* ℤˣ} {Ψ : Γ →* (c.O)ˣ} {N : Set Γ} {ι : H →* Γ} {hι : Continuous ι}
-      {U : Univ (GCond.noCondition c.O (η.comp ι) (Ψ.comp ι))} {I : Ideal U.R} {cc g₁ : Γ} (S : SRing N hι U I cc g₁) (_ : Model S (PadicAlgCl l)), l ≠ 2 → Marks η Ψ cc g₁ →
+      {U : Univ (GCond.noCondition c.O (η.comp ι) (Ψ.comp ι))} {I : Ideal U.R} {cc g₁ : Γ} (S : SRing N hι U I cc g₁) (M : Model S (PadicAlgCl l)), l ≠ 2 → Marks η Ψ cc g₁ →
       ∀ F : S.R →ₐ[c.O] DualNumber (PadicAlgCl l), IsLocPt (dualFst F) →
         IsCoc (push (dualFst F) S.r.hom) (tanCoc F S.r.hom) ∧ NormCoc cc g₁ (push (dualFst F) S.r.hom) (tanCoc F S.r.hom) ∧
         (∀ g ∈ N, tanCoc F S.r.hom g = 0) ∧ Continuous (tanCoc F S.r.hom) ∧

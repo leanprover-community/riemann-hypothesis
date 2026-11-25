@@ -603,8 +603,7 @@ theorem flat : Module.Flat R (etaleColimit R K) := by
     simp only [map_smul, ofAlgHom_apply, hx']
   obtain ⟨Y, g, hg⟩ := exists_hom_eq_of_of_eq h0
 
-  rw [map_zero, map_sum] at hg
-  simp only [map_smul] at hg
+  simp only [map_zero, map_sum, map_smul] at hg
   obtain ⟨k, a, y, h1, h2⟩ := Module.Flat.isTrivialRelation_of_sum_smul_eq_zero (R := R) (M := Y) (f := f)
     (x := fun i => g.alg (x' i)) hg
   refine ⟨k, a, fun j => of Y (y j), fun i => ?_, h2⟩
@@ -671,13 +670,12 @@ theorem dvd_of_root {r : R} (hr : r ≠ 0) {h : etaleColimit R K} {p : (etaleCol
     rw [Algebra.algebraMap_eq_smul_one, smul_tmul, Algebra.smul_def, mul_inv_cancel₀ hr']
     rfl
   let q' : Y.carrier[X] := q.map g.alg.toRingHom
-  have hq' : q'.Monic := hq.map _
   have h1 : (q'.scaleRoots (algebraMap R Y r)).eval (g.alg x) = 0 := by
     have := sc g.alg.toRingHom q hq (algebraMap R X r) x
     rw [show g.alg.toRingHom (algebraMap R X r) = algebraMap R Y r from g.alg.commutes r] at this
     exact this.symm.trans hg
   have hi : IsIntegral Y (ι (g.alg x) * t) := by
-    refine ⟨q', hq', ?_⟩
+    refine ⟨q', (hq.map _), ?_⟩
     have h2 := scaleRoots_eval₂_mul (p := q') ι (ι (g.alg x) * t) (algebraMap R Y r)
     rw [show ι (algebraMap R Y r) * (ι (g.alg x) * t) = ι (g.alg x) by linear_combination ι (g.alg x) * hrt,
       eval₂_at_apply, h1, map_zero] at h2

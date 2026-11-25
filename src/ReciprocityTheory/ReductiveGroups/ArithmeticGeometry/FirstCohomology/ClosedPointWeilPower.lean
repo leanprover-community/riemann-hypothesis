@@ -103,8 +103,7 @@ theorem gen_local {V : Type} [CommRing V] [IsLocalRing V]
   refine ⟨⟨fun i => res (le_inf le_rfl (hle _) : M.U i ≤ M.U i ⊓ M.U i0) (M.g i i0)⟩, ?_⟩
   intro i j
   have hc := hM.cocycle i j i0
-  have h' : M.U i ⊓ M.U j ≤ M.U i ⊓ M.U j ⊓ M.U i0 := le_inf le_rfl (hle _)
-  have hc' := congrArg (fun z => res h' z) hc
+  have hc' := congrArg (fun z => res (le_inf le_rfl (hle _)) z) hc
   simp only [map_mul, res_res', hid] at hc'
   simp only [res_res']
   exact hc'.symm

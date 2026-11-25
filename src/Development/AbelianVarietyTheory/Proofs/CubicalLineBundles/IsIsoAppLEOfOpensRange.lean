@@ -100,7 +100,7 @@ theorem surjective_eval₂Hom_awayCoord {R : Type} [CommRing R] (W : Weierstrass
   obtain ⟨p, rfl⟩ := Ideal.Quotient.mk_surjective a
   exact ⟨p, rfl⟩
 
-theorem exists_coordFn : ∀ (R : Type) [CommRing R] (W : WeierstrassCurve R), ∃ c : ∀ i _ : Fin 3, Γ(scheme W, coordOpen W i), (∀ (i j : Fin 3) (A : Type) [CommRing A] (ρ : R →+* A) (P : Fin 3 → A) (hP : IsUnimodularSol (W.map ρ) P) (h : ⊤ ≤ ptHom W ρ P hP ⁻¹ᵁ coordOpen W i), (Scheme.ΓSpecIso (CommRingCat.of A)).hom.hom (((ptHom W ρ P hP).appLE (coordOpen W i) ⊤ h).hom (c i j)) * P i = P j) ∧ ∀ i, Function.Surjective (MvPolynomial.eval₂Hom (((toSpec W).appLE ⊤ (coordOpen W i) le_top).hom.comp (Scheme.ΓSpecIso (CommRingCat.of R)).inv.hom) (c i)) := by
+theorem exists_coordFn : ∀ (R : Type) [CommRing R] (W : WeierstrassCurve R), ∃ c : ∀ i j : Fin 3, Γ(scheme W, coordOpen W i), (∀ (i j : Fin 3) (A : Type) [CommRing A] (ρ : R →+* A) (P : Fin 3 → A) (hP : IsUnimodularSol (W.map ρ) P) (h : ⊤ ≤ ptHom W ρ P hP ⁻¹ᵁ coordOpen W i), (Scheme.ΓSpecIso (CommRingCat.of A)).hom.hom (((ptHom W ρ P hP).appLE (coordOpen W i) ⊤ h).hom (c i j)) * P i = P j) ∧ ∀ i, Function.Surjective (MvPolynomial.eval₂Hom (((toSpec W).appLE ⊤ (coordOpen W i) le_top).hom.comp (Scheme.ΓSpecIso (CommRingCat.of R)).inv.hom) (c i)) := by
   intro R _ W
   let φ : ∀ i : Fin 3, Γ(scheme W, coordOpen W i) ⟶ CommRingCat.of (AwayRing W i) := fun i =>
     (awayChart W i).appLE (coordOpen W i) ⊤ (top_le_preimage W i) ≫ (Scheme.ΓSpecIso _).hom

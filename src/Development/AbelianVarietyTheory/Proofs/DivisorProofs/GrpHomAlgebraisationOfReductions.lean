@@ -58,8 +58,7 @@ theorem isMonHom_of_fst_mul_snd {S : Scheme.{0}} {A B : Over S} [GrpObj A] [GrpO
   refine ⟨?_, ?_⟩
   · have h1 := hm (𝟙_ _) 1 1
     rw [_root_.mul_one] at h1
-    have h2 : (1 : 𝟙_ (Over S) ⟶ A) ≫ g = 1 := left_eq_mul.1 h1
-    simpa [Hom.one_def] using h2
+    simpa [Hom.one_def] using left_eq_mul.1 h1
   · have e : (fst A A * snd A A) = μ[A] := by simp [Hom.mul_def]
     rw [e] at h
     rw [h, Hom.mul_def]

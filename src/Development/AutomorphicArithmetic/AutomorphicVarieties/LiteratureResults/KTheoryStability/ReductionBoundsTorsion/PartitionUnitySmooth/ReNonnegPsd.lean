@@ -83,8 +83,7 @@ theorem expand (A : Matrix n n ℂ) (u v : n → ℂ) (s : ℂ) :
 
 theorem re_nonneg_psd {H : Matrix n n ℂ} (hH : H.PosSemidef) (x : n → ℂ) :
     0 ≤ (star x ⬝ᵥ (H *ᵥ x)).re := by
-  have := hH.dotProduct_mulVec_nonneg x
-  exact (Complex.nonneg_iff.1 this).1
+  exact (Complex.nonneg_iff.1 (hH.dotProduct_mulVec_nonneg x)).1
 
 private theorem hermitian_form_add_real_smul_expand (M : Matrix n n ℂ) (hM : M.IsHermitian) (u v : n → ℂ) (s : ℝ) :
     (star (u + (s:ℂ) • v) ⬝ᵥ (M *ᵥ (u + (s:ℂ) • v))).re =
@@ -103,8 +102,7 @@ private theorem re_inner_sq_le_sq_mul_of_hermitian_form_bound (A H : Matrix n n 
     intro t
     have b1 := hb (u + (t:ℂ) • v)
     have b2 := hb (u + ((-t:ℝ):ℂ) • v)
-    rw [hermitian_form_add_real_smul_expand A hA, hermitian_form_add_real_smul_expand H hH] at b1
-    rw [hermitian_form_add_real_smul_expand A hA, hermitian_form_add_real_smul_expand H hH] at b2
+    rw [hermitian_form_add_real_smul_expand A hA, hermitian_form_add_real_smul_expand H hH] at b1 b2
     have c1 := (abs_le.mp b1).2
     have c2 := (abs_le.mp b2).1
     nlinarith
@@ -175,17 +173,15 @@ theorem cd_det {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] {n : Type} 
 theorem cd_inv {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] {n : Type} [Fintype n] [DecidableEq n]
     {k : WithTop ℕ∞} (f : E → Matrix n n ℂ) (hf : ∀ i j, ContDiff ℝ k (fun x => f x i j)) (i j : n) (x : E)
     (hx : (f x).det ≠ 0) : ContDiffAt ℝ k (fun x => (f x)⁻¹ i j) x := by
-  have hdet : ContDiff ℝ k (fun x => (f x).det) := cd_det f hf
   have hadj : ContDiff ℝ k (fun x => (f x).adjugate i j) := by
     simp only [Matrix.adjugate_apply]
     apply cd_det (fun x => (f x).updateRow j (Pi.single i 1))
     intro a b
     by_cases h : a = j <;> simp [Matrix.updateRow_apply, h, contDiff_const, hf]
-  have hinv : ContDiffAt ℝ k (fun x => ((f x).det)⁻¹) x := hdet.contDiffAt.inv hx
   have heq : (fun x => (f x)⁻¹ i j) = fun x => ((f x).det)⁻¹ * (f x).adjugate i j := by
     funext y
     rw [Matrix.inv_def, Matrix.smul_apply, Ring.inverse_eq_inv', smul_eq_mul]
   rw [heq]
-  exact hinv.mul hadj.contDiffAt
+  exact ((cd_det f hf).contDiffAt.inv hx).mul hadj.contDiffAt
 
 end PositivityTheory.KB.SmoothPartitionUnityBasic.BasicAux

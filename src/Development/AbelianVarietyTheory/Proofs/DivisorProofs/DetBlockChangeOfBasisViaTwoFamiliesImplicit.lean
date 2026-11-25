@@ -98,8 +98,7 @@ theorem det_block_change (F : Type) [Field F] {N : Type} [AddCommGroup N] [Modul
     rw [Fintype.linearIndependent_iff]
     intro a ha
     have h0 : (0 : N) = ∑ k, (0 : (Σ b, Fin (m b)) → F) k • ℓ k := by simp
-    have := (hℓ 0).unique ha.symm h0
-    exact fun i => congrFun this i
+    exact fun i => congrFun ((hℓ 0).unique ha.symm h0) i
   have hsp : ⊤ ≤ Submodule.span F (Set.range ℓ) := by
     intro x _
     obtain ⟨a, ha, -⟩ := hℓ x
@@ -125,12 +124,10 @@ theorem det_block_change (F : Type) [Field F] {N : Type} [AddCommGroup N] [Modul
     have hrows : LinearIndependent F (fun i => U i) := by
       rw [Fintype.linearIndependent_iff]
       intro a ha
-      have hli' : LinearIndependent F (ℓ ∘ e.symm) := hli.comp e.symm e.symm.injective
-      refine Fintype.linearIndependent_iff.mp hli' a ?_
+      refine Fintype.linearIndependent_iff.mp (hli.comp e.symm e.symm.injective) a ?_
       have hcol : ∀ k, ∑ i, a i * U i k = 0 := by
         intro k
-        have := congrFun ha k
-        simpa [Finset.sum_apply] using this
+        simpa [Finset.sum_apply] using congrFun ha k
       calc ∑ i, a i • (ℓ ∘ e.symm) i
           = ∑ i, a i • ∑ k, U i k • nu k := by
             refine Finset.sum_congr rfl (fun i _ => ?_)

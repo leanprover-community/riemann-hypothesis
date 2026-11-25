@@ -149,8 +149,7 @@ theorem eq_zero_of_imForm {M : Matrix (Fin g) (Fin g) ℂ}
   by_contra hu
   have h1 := LinearMap.congr_fun h (Complex.I • u)
   have h2 := hpos u hu
-  rw [imForm_apply, herm_smul_right] at h1
-  simp at h1
+  simp [imForm_apply, herm_smul_right] at h1
   linarith
 
 theorem det_ne_zero_of_pos {M : Matrix (Fin g) (Fin g) ℂ}
@@ -158,8 +157,7 @@ theorem det_ne_zero_of_pos {M : Matrix (Fin g) (Fin g) ℂ}
   intro h
   obtain ⟨v, hv, h0⟩ := exists_vecMul_eq_zero_iff.2 h
   have := hpos v hv
-  rw [hermForm, dotProduct_mulVec, h0] at this
-  simp at this
+  simp [hermForm, dotProduct_mulVec, h0] at this
 
 theorem exists_finset_of_mem_nhds {L : Type} {f₀ : L → Fin g → ℂ} {U : Set (L → Fin g → ℂ)} (hU : U ∈ nhds f₀) :
     ∃ (s : Finset L) (ε : ℝ), 0 < ε ∧ ∀ f, (∀ x ∈ s, ‖f x - f₀ x‖ < ε) → f ∈ U := by
@@ -320,8 +318,7 @@ theorem conjugate_mem_iff (H : Host E) (τ : E →+* ℂ) :
   have hne : H.rt0 ≠ -H.rt0 := fun h => by
     have h1 : H.rt0 = 0 := by linear_combination h / 2
     have := H.sqrt_neg_disc_sq
-    rw [h1] at this
-    simp at this
+    simp [h1] at this
     simp [this] at hd
   have hsq : τ (H.rt : E) = H.rt0 ∨ τ (H.rt : E) = -H.rt0 := by
     apply sq_eq_sq_iff_eq_or_eq_neg.1

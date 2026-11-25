@@ -151,8 +151,7 @@ theorem integral_tsum_dom {ι α : Type*} [MeasurableSpace α] (μ : Measure α)
   have hs := hu.countable_support
   have : Countable (Function.support u) := hs.to_subtype
   have h0 : ∀ i, i ∉ Function.support u → ∀ a, F i a = 0 := fun i hi a => by
-    have : u i = 0 := Function.notMem_support.1 hi
-    exact norm_le_zero_iff.1 (this ▸ hF i a)
+    exact norm_le_zero_iff.1 ((Function.notMem_support.1 hi : u i = 0) ▸ hF i a)
   have e1 : ∀ a, ∑' i, F i a = ∑' i : Function.support u, F i a := fun a =>
     (tsum_subtype_eq_of_support_subset fun i hi => by_contra fun h => hi (h0 i h a)).symm
   have e2 : ∑' i, ∫ a, F i a ∂μ = ∑' i : Function.support u, ∫ a, F i a ∂μ :=

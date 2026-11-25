@@ -68,8 +68,7 @@ theorem isUnit_det_of_inG' {g : M2 n} (hg : InG g) : IsUnit g.det := by
   have hJ : (JJ n).det ≠ 0 := by
     intro h0
     have := congrArg Matrix.det (JJ_mul_JJ (n := n))
-    rw [det_mul, h0, zero_mul, det_neg, det_one] at this
-    simp at this
+    simp [det_mul, h0, zero_mul, det_neg, det_one] at this
   refine isUnit_iff_ne_zero.2 fun h0 => hJ ?_
   rw [h0, mul_zero] at h
   exact h.symm

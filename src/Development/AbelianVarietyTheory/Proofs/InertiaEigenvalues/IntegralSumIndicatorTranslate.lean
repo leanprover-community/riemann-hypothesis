@@ -88,8 +88,7 @@ theorem integral_eq_of_coset_support
   have hS₀o : IsOpen (i ⁻¹' (R₀ : Set R)) := hR₀o.preimage hi.continuous
   have hconst : ∀ g r, g * (i r)⁻¹ ∈ R₀ → h (i r) = h g := by
     intro g r hg
-    have := hinv _ hg (i r)
-    simpa using this.symm
+    simpa using (hinv _ hg (i r)).symm
   let U : S → Set S := fun s => (fun x => x * s⁻¹) ⁻¹' (i ⁻¹' (R₀ : Set R))
   have hUo : ∀ s, IsOpen (U s) := fun s => hS₀o.preimage (continuous_mul_const _)
   obtain ⟨t, ht⟩ := hcs.isCompact.elim_finite_subcover U hUo
@@ -126,8 +125,7 @@ theorem integral_eq_of_coset_support
       have hmem : ∀ q, (k * i s ∈ ((fun y => y * (i q.out)⁻¹) ⁻¹' (R₀ : Set R))) ↔ mk s = q := by
         intro q
         have e : mk s = q ↔ i s * (i q.out)⁻¹ ∈ R₀ := by rw [← hrel q.out s, hout q, eq_comm]
-        rw [e]
-        simp only [Set.mem_preimage, SetLike.mem_coe, mul_assoc]
+        simp only [e, Set.mem_preimage, SetLike.mem_coe, mul_assoc]
         exact Subgroup.mul_mem_cancel_left R₀ hk
       simp only [Set.indicator, hmem, Finset.sum_ite_eq, ite_eq_left (hsuppT s hs), hrep, hinv k hk]
   have hS : (fun x => h (i x)) = fun x => ∑ q ∈ T,
@@ -136,8 +134,7 @@ theorem integral_eq_of_coset_support
     have hmem : ∀ q, x ∈ ((fun y => y * q.out⁻¹) ⁻¹' (i ⁻¹' (R₀ : Set R))) ↔ mk x = q := by
       intro q
       have e : mk x = q ↔ i x * (i q.out)⁻¹ ∈ R₀ := by rw [← hrel q.out x, hout q, eq_comm]
-      rw [e]
-      simp
+      simp [e]
     simp only [Set.indicator, hmem, Finset.sum_ite_eq]
     split_ifs with hx
     · rw [hrep]

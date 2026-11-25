@@ -72,8 +72,7 @@ theorem fSatake_borel_mul {b b' : GU σ n} (hb : IsBorelU b) (hb' : IsBorelU b')
 theorem fSatake_borel_inv {b : GU σ n} (hb : IsBorelU b) : IsBorelU b⁻¹ := by
   rw [fSatake_borel_iff] at hb ⊢
   have : Invertible (((b : GU σ n) : GL (Fin n) L) : Matrix (Fin n) (Fin n) L) := Units.invertible _
-  have := Matrix.blockTriangular_inv_of_blockTriangular hb
-  simpa [Matrix.coe_units_inv] using this
+  simpa [Matrix.coe_units_inv] using Matrix.blockTriangular_inv_of_blockTriangular hb
 
 theorem fSatake_diag_mul {M N : Matrix (Fin n) (Fin n) L} (hM : M.BlockTriangular id)
     (hN : N.BlockTriangular id) (i : Fin n) : (M * N) i i = M i i * N i i := by
@@ -157,8 +156,7 @@ theorem fSatake_diag_exists (e : Fin n → L) (he : ∀ i, σ (e i) * e i.rev = 
   have hg : g ∈ GU σ n := by
     show cT σ (Matrix.diagonal e) * antiJ L n * Matrix.diagonal e = antiJ L n
     ext i l
-    rw [hc, Matrix.mul_diagonal, Matrix.diagonal_mul]
-    simp only [antiJ]
+    simp only [hc, Matrix.mul_diagonal, Matrix.diagonal_mul, antiJ]
     split_ifs with h
     · have hl : l = i.rev := (fSatake_rev_iff l i).1 (by omega)
       subst hl

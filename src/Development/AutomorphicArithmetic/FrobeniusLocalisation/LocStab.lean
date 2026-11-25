@@ -175,8 +175,7 @@ theorem approx (β γ : PadicAlgCl l) (f : ℚ_[l][X]) {ε : ℝ} (hε : 0 < ε)
     have key : ∀ δ : PadicAlgCl l, ‖δ‖ ^ n ≤ M → ‖aeval δ (monomial n r : ℚ[X]) - aeval δ (monomial n a : ℚ_[l][X])‖ < ε := by
       intro δ hδ
       have e1 : aeval δ (monomial n r : ℚ[X]) = algebraMap ℚ_[l] (PadicAlgCl l) (r : ℚ_[l]) * δ ^ n := by
-        rw [aeval_monomial]
-        simp
+        simp [aeval_monomial]
       have e2 : aeval δ (monomial n a : ℚ_[l][X]) = algebraMap ℚ_[l] (PadicAlgCl l) a * δ ^ n := by
         rw [aeval_monomial]
       rw [e1, e2, ← sub_mul, ← map_sub, norm_mul, norm_pow, PadicAlgCl.norm_extends, norm_sub_rev]
@@ -241,8 +240,7 @@ theorem root_of_stab (c : E →+* PadicAlgCl l) (α : E) (s : E ≃ₐ[ℚ] E)
   have hx' := lt_one_of_lt_one c c' v hc hc' _ hx
   rw [map_div₀, norm_div, norm_natCast_pow, hy2, div_lt_one hδ] at hx'
   have h3 : ‖aeval γ g‖ ≤ ‖aeval γ G‖ + ‖aeval γ G - aeval γ g‖ := by
-    have := norm_sub_le (aeval γ G) (aeval γ G - aeval γ g)
-    simpa using this
+    simpa using norm_sub_le (aeval γ G) (aeval γ G - aeval γ g)
   linarith
 
 theorem stab_of_root (c : E →+* PadicAlgCl l) {α : E}
@@ -315,17 +313,14 @@ theorem finrank_adjoin_range_eq_card_stabilizer :
   rw [adjoin_range_eq c hα, IntermediateField.adjoin.finrank hint]
   set g := minpoly ℚ_[l] (c α) with hg
   have hg0 : g ≠ 0 := minpoly.ne_zero hint
-  have hsep : g.Separable := (minpoly.irreducible hint).separable
   have hcard : Fintype.card (g.rootSet (PadicAlgCl l)) = g.natDegree :=
-    card_rootSet_eq_natDegree hsep (IsAlgClosed.splits _)
+    card_rootSet_eq_natDegree ((minpoly.irreducible hint).separable) (IsAlgClosed.splits _)
   rw [← hcard, ← Nat.card_eq_fintype_card]
   symm
   refine Nat.card_congr (Equiv.ofBijective
     (fun s => ⟨c (s.1 α), mem_rootSet.2 ⟨hg0, root_of_stab c α s.1 v hc s.2⟩⟩) ⟨?_, ?_⟩)
   · rintro ⟨s, hs⟩ ⟨t, ht⟩ h
-    have h1 : c (s α) = c (t α) := congrArg Subtype.val h
-    have h2 : s α = t α := c.injective h1
-    have h3 := ringHom_ext hα (s : E →+* E) (t : E →+* E) h2
+    have h3 := ringHom_ext hα (s : E →+* E) (t : E →+* E) (c.injective (congrArg Subtype.val h))
     apply Subtype.ext
     ext x
     exact DFunLike.congr_fun h3 x

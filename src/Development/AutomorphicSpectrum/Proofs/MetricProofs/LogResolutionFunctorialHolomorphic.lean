@@ -137,16 +137,14 @@ theorem exists_analytic_retraction {D : ℕ} {E : Type*} [NormedAddCommGroup E] 
   obtain ⟨g, hg⟩ := LinearMap.exists_leftInverse_of_injective
     ((fderiv ℂ a w₀ : (Fin D → ℂ) →L[ℂ] E) : (Fin D → ℂ) →ₗ[ℂ] E) (by simpa using hker)
   let L : E →L[ℂ] Fin D → ℂ := LinearMap.toContinuousLinearMap g
-  have hf : AnalyticAt ℂ (L ∘ a) w₀ := L.analyticAt _ |>.comp ha
-  have hcd : ContDiffAt ℂ ⊤ (L ∘ a) w₀ := hf.contDiffAt
+  have hcd : ContDiffAt ℂ ⊤ (L ∘ a) w₀ := (L.analyticAt _ |>.comp ha).contDiffAt
   have hd : HasFDerivAt (L ∘ a)
       ((ContinuousLinearEquiv.refl ℂ (Fin D → ℂ) : (Fin D → ℂ) ≃L[ℂ] (Fin D → ℂ)) :
         (Fin D → ℂ) →L[ℂ] (Fin D → ℂ)) w₀ := by
     have h1 := L.hasFDerivAt.comp w₀ ha.differentiableAt.hasFDerivAt
     refine h1.congr_fderiv ?_
     ext1 v
-    have := congrArg (fun T : (Fin D → ℂ) →ₗ[ℂ] (Fin D → ℂ) => T v) hg
-    simpa [L] using this
+    simpa [L] using congrArg (fun T : (Fin D → ℂ) →ₗ[ℂ] (Fin D → ℂ) => T v) hg
   have hn : (⊤ : WithTop ℕ∞) ≠ 0 := by simp
   refine ⟨hcd.localInverse hd hn ∘ L, ?_, ?_⟩
   · have h1 := (hcd.to_localInverse hd hn).analyticAt
@@ -254,8 +252,7 @@ theorem analytic_of_orbit (hVo : ∀ y, IsOpen (V y)) (hVm : ∀ y, y ∈ V y)
       (by rw [← hy₀, ← hx₀]; exact ⟨R.mem_U _, hsrc'⟩))
   have c3 : Tendsto (fun u' => R.A.chart k (h ((B.chart j).symm u'))) (𝓝 u)
       (𝓝 (R.A.chart k x₀)) := by
-    have := ((R.A.chart k).continuousAt hsrc').tendsto
-    refine this.comp ?_
+    refine (((R.A.chart k).continuousAt hsrc').tendsto).comp ?_
     have t := c2.tendsto
     rwa [← hy₀, ← hx₀] at t
   have e3 := c3.eventually hGl
@@ -308,7 +305,6 @@ theorem holoMap_of_blockProj : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀
   obtain ⟨c, hc, e⟩ := R'.compat y y' u hu
   refine ⟨c ∘ κ, fun k => hc _, ?_⟩
   funext p
-  have := congrFun e (v p)
-  simpa [hb.2.2.1 p] using this
+  simpa [hb.2.2.1 p] using congrFun e (v p)
 
 end GlobalTheory.CompanionTheory.Ar.PB.Proj

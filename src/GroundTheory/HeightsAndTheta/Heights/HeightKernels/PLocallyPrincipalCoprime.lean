@@ -31,10 +31,8 @@ theorem finite_maximal_of_ne_zero [CharZero L] (B : Subring L) [Module.Finite �
     intro m m' hs' h x hx
     obtain ⟨y, hy, hxy⟩ : Ideal.Quotient.mk (Ideal.span {s}) x ∈
         Ideal.Quotient.mk (Ideal.span {s}) '' (m' : Set B) := h ▸ ⟨x, hx, rfl⟩
-    have hd : x - y ∈ Ideal.span {s} := Ideal.Quotient.eq.mp hxy.symm
     have hle : Ideal.span {s} ≤ m' := (Ideal.span_singleton_le_iff_mem _).mpr hs'
-    have := m'.add_mem (hle hd) hy
-    simpa using this
+    simpa using m'.add_mem (hle (Ideal.Quotient.eq.mp hxy.symm)) hy
   intro m hm m' hm' h
   exact le_antisymm (key m m' hm'.2 h) (key m' m hm.2 h.symm)
 
@@ -165,13 +163,12 @@ theorem LocallyPrincipalCoprime.proof : LocallyPrincipalCoprime.Statement := by
     have hym' : toB B (g m * a (idx m)) = y m := by
       apply Subtype.ext
       rw [coe_toB (hgM m hmS'.1 _ (haM _)), hy m hmS'.1]
-    have h1 : s * toB B (g m₀ * a (idx m)) ∈ m := m.mul_mem_right _ hmS'.2
     have h2 : ∑ m' ∈ S.erase m, e m' * toB B (g m' * a (idx m)) ∈ m := by
       refine m.sum_mem fun m' hm' => m.mul_mem_right _ (he m' (Finset.mem_of_mem_erase hm') m ?_)
       exact Finset.mem_erase.mpr ⟨(Finset.ne_of_mem_erase hm').symm, hmS⟩
     rw [hw] at hin
     have h3 : e m * toB B (g m * a (idx m)) ∈ m :=
-      (m.add_mem_iff_left h2).mp ((m.add_mem_iff_right h1).mp hin)
+      (m.add_mem_iff_left h2).mp ((m.add_mem_iff_right (m.mul_mem_right _ hmS'.2)).mp hin)
     rw [hym'] at h3
     rcases hmS'.1.isPrime.mem_or_mem h3 with h4 | h4
     · exact hem m hmS h4
@@ -205,11 +202,9 @@ theorem LocallyPrincipalCoprime.proof : LocallyPrincipalCoprime.Statement := by
   have memI : ∀ w : B, w ∈ I ↔ (w : L) * γ⁻¹ ∈ M := fun w => Iff.rfl
   refine ⟨⟨γ * a₀ * c₀, B.mul_mem (hγM _ (haM _)) hc₀B⟩, ⟨c₀ * a₀, hc₀a⟩, I, ?_, ?_, ?_, ?_⟩
   · intro h
-    have h' : γ * a₀ * c₀ = 0 := congrArg Subtype.val h
-    exact mul_ne_zero (mul_ne_zero hγ ha0) hc₀ h'
+    exact mul_ne_zero (mul_ne_zero hγ ha0) hc₀ (congrArg Subtype.val h)
   · intro h
-    have h' : c₀ * a₀ = 0 := congrArg Subtype.val h
-    exact mul_ne_zero hc₀ ha0 h'
+    exact mul_ne_zero hc₀ ha0 (congrArg Subtype.val h)
   · by_contra h
     obtain ⟨m, hm, hle⟩ := Ideal.exists_le_maximal _ h
     have hsm : s ∈ m := hle (Ideal.mem_sup_right (Ideal.mem_span_singleton_self s))

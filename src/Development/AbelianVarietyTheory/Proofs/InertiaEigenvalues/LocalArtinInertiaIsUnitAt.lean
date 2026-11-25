@@ -59,7 +59,7 @@ namespace GlobalTheory.ArtinInertia
 
 theorem isUnitAt_artin_ine : ∀ {E' Ω : Type} [Field E'] [NumberField E'] [Field Ω] [Algebra E' Ω] [IsAlgClosure E' Ω]
     {A : ValuationSubring Ω} {w' : HeightOneSpectrum (𝓞 E')} (h' : IsPlaceOver A w')
-    (a' : Weil h' →* (w'.adicCompletion E')ˣ) (_ : IsLocalArtin h' a') (t : Ine (F := E') A),
+    (a' : Weil h' →* (w'.adicCompletion E')ˣ) (ha : IsLocalArtin h' a') (t : Ine (F := E') A),
     IsUnitAt w' (a' (ineIncl h' t)) := by
   intro E' Ω _ _ _ _ _ A w' h' a' ha t
   have h1 := ha.ord_eq (ineIncl h' t)

@@ -140,8 +140,7 @@ theorem RootFieldNumerics.exists_degree_one_class : ∀ (Ψ : Type) [Fintype Ψ]
     intro h
     have hi1 : i ≠ i1 := by
       intro h'
-      rw [Finset.mem_filter, h'] at hi
-      simp [i1] at hi
+      simp [Finset.mem_filter, h', i1] at hi
     have e0 := DFunLike.congr_fun h (τ, i0)
     have e1 := DFunLike.congr_fun h (τ, i1)
     rw [Finsupp.add_apply, Finsupp.single_eq_of_ne' (by simpa using hi0), hm0,

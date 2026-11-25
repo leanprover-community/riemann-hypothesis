@@ -72,8 +72,8 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Qe16.ext_integral :
-    ∀ {B S K : Type} [CommRing B] [CommRing S]
-    [Field K] [IsAlgClosed K] [Algebra B S] [Algebra.IsIntegral B S],
+    ∀ {B S K : Type} [inst : CommRing B] [inst_1 : CommRing S]
+    [inst_2 : Field K] [IsAlgClosed K] [inst_4 : Algebra B S] [Algebra.IsIntegral B S],
     Function.Injective (⇑(Algebra.algebraMap B S) : B → S) →
       ∀ (φ : B →+* K), ∃ (Φ : S →+* K), ∀ (b : B), (Φ : S → K) ((Algebra.algebraMap B S : B → S) b) = (φ : B → K) b := by
   intro B S K _ _ _ _ _ _ hinj φ

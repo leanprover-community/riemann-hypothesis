@@ -77,8 +77,7 @@ theorem normDet_le_pow_finrank {R F : Type*} [NormedAddCommGroup R] [InnerProduc
             rfl
           rw [← h1, h2, ← mul_pow]
           exact pow_le_pow_left₀ (norm_nonneg _) (hg v) 2
-        have hv0 : 0 < ‖v‖ ^ 2 := sq_pos_of_pos (norm_pos_iff.mpr hv.2)
-        exact le_of_sq_le_sq (le_of_mul_le_mul_right hsq hv0) hK
+        exact le_of_sq_le_sq (le_of_mul_le_mul_right hsq (sq_pos_of_pos (norm_pos_iff.mpr hv.2))) hK
     _ = K ^ finrank ℝ R := by simp
 
 def linearCombinationMap {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]

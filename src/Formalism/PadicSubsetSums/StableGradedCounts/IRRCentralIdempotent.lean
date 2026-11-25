@@ -57,8 +57,7 @@ theorem schur_scalar [Nontrivial V] (ρ : Representation ℂ G V)
       rw [h0]
       exact Submodule.mem_top
     rw [Module.End.mem_eigenspace_iff] at hx
-    rw [hx]
-    simp
+    simp [hx]
 
 theorem conv_char [Nontrivial V] (ρ : Representation ℂ G V)
     (h : ∀ W : Submodule ℂ V, (∀ g, ∀ x ∈ W, ρ g x ∈ W) → W = ⊥ ∨ W = ⊤)

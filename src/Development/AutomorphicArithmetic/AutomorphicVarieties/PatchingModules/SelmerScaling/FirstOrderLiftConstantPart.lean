@@ -232,7 +232,7 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Qi37.eig_ex :
-    ∀ {k : Type} [Field k] {n : ℕ} (P : Matrix (Fin n) (Fin n) k)
+    ∀ {k : Type} [inst : Field k] {n : ℕ} (P : Matrix (Fin n) (Fin n) k)
     (a : Fin n → k),
     P.charpoly = ∏ i : Fin n, (Polynomial.X - (Polynomial.C : k → Polynomial k) (a i)) →
       ∀ (i : Fin n), ∃ (v : Fin n → k), v ≠ (0 : Fin n → k) ∧ P.mulVec v = a i • v := by
@@ -866,7 +866,7 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Qe38.upper_triangular_mul :
-    ∀ {K : Type} [Field K] {n : ℕ}
+    ∀ {K : Type} [inst : Field K] {n : ℕ}
     (U T : Matrix (Fin n) (Fin n) K),
     (∀ (i j : Fin n), j < i → U i j = (0 : K)) →
       (∀ (i j : Fin n), j < i → T i j = (0 : K)) → ∀ (i j : Fin n), j < i → (U * T) i j = (0 : K) := by
@@ -930,7 +930,7 @@ private theorem conjugate_commutator_identity {K : Type} [Field K] {n : ℕ} (w 
   simp only [Matrix.mul_sub, Matrix.sub_mul, Matrix.mul_assoc, e1, e2]
 
 theorem UpperTheory.V.Pa.localInvariants_eq_zero :
-    ∀ (l : ℕ) [Fact l.Prime] (L : Loc) (G G0 : Glob l L) (_ : G.Hom G0) (n : ℕ) (x : NP G0.frame n), ∀ (v : L.Vl) (Y : Matrix (Fin n) (Fin n) x.Fr), (∀ g i j, j < i → (x.wiX x.Fr v * dY G0.frame (x.ρX x.Fr) Y (G0.φ v g) * x.wX x.Fr v) i j = 0) → ∀ i j, j < i → (x.wiX x.Fr v * Y * x.wX x.Fr v) i j = 0 := by
+    ∀ (l : ℕ) [Fact l.Prime] (L : Loc) (G G0 : Glob l L) (h : G.Hom G0) (n : ℕ) (x : NP G0.frame n), ∀ (v : L.Vl) (Y : Matrix (Fin n) (Fin n) x.Fr), (∀ g i j, j < i → (x.wiX x.Fr v * dY G0.frame (x.ρX x.Fr) Y (G0.φ v g) * x.wX x.Fr v) i j = 0) → ∀ i j, j < i → (x.wiX x.Fr v * Y * x.wX x.Fr v) i j = 0 := by
   intro l _ L G G0 h n x v Y H i j hij
   obtain ⟨h1, -, -, h4, h5, h6, -, -⟩ := UpperTheory.V.Pa.oddDiag l L G G0 h n x x.Fr v
   refine lower_entries_zero_of_commuting_triangular (fun g : L.Gv v => x.wiX x.Fr v * x.ρX x.Fr (G0.φ v g) * x.wX x.Fr v)

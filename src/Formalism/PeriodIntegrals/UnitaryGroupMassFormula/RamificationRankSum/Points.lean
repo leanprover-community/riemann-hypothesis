@@ -20,9 +20,8 @@ theorem isMaximal_of_mem_primesOver (O : Type) [CommRing O] [IsDomain O] [IsDisc
     (A : Type) [CommRing A] [Algebra O A] {q : Ideal ↥(As O A)}
     (hq : q ∈ (maximalIdeal O).primesOver ↥(As O A)) : q.IsMaximal := by
   obtain ⟨hp, hl⟩ := hq
-  have h : q.under O = maximalIdeal O := hl.over.symm
   exact Ideal.isMaximal_of_isIntegral_of_isMaximal_under (R := O) q
-    (h ▸ IsLocalRing.maximalIdeal.isMaximal O)
+    (hl.over.symm ▸ IsLocalRing.maximalIdeal.isMaximal O)
 
 noncomputable def ptsEquiv (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
     (A : Type) [CommRing A] [Algebra O A] :

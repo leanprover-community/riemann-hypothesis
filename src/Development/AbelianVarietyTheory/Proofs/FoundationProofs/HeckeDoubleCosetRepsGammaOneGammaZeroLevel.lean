@@ -356,7 +356,7 @@ theorem tq_reps {N l q : ℕ} (hq : q.Prime) (hqNl : ¬ q ∣ N * l) (σ : SL(2,
     · rw [tqFam_ge σ i hi]
       exact diag_mem hq hqNl hqN σ hσ
   · obtain ⟨hdet, ha, hc, hcl⟩ := dc_entries q γ₁ γ₂ γ₁.2 γ₂.2
-    have key : ∃ i, ∃ γ : Lev N l, mat γ₁ * dg 1 q * mat γ₂ = mat γ * tqFam q σ i := by
+    obtain ⟨i, γ, hγ⟩ : ∃ i, ∃ γ : Lev N l, mat γ₁ * dg 1 q * mat γ₂ = mat γ * tqFam q σ i := by
       by_cases hnd : (((mat γ₁ * dg 1 q * mat γ₂) 0 0 : ℤ) : ZMod q) = 0 ∧
           (((mat γ₁ * dg 1 q * mat γ₂) 1 0 : ℤ) : ZMod q) = 0
       · obtain ⟨γ, hγ, hM⟩ := diam_case hq.ne_zero hql σ hσ _ hdet ha hc hcl
@@ -364,7 +364,6 @@ theorem tq_reps {N l q : ℕ} (hq : q.Prime) (hqNl : ¬ q ∣ N * l) (σ : SL(2,
         exact ⟨Fin.last q, ⟨γ, hγ⟩, by rw [tqFam_ge σ _ (by simp)]; exact hM⟩
       · obtain ⟨j, hj, γ, hγ, hM⟩ := exists_upper hq _ hdet ha hc hcl hnd
         exact ⟨⟨j, by omega⟩, ⟨γ, hγ⟩, by rw [tqFam_lt σ _ hj]; exact hM⟩
-    obtain ⟨i, γ, hγ⟩ := key
     exact ⟨i, ⟨γ, hγ⟩, fun i' ⟨γ', hγ'⟩ => tq_inj hq σ γ' γ i' i (hγ'.symm.trans hγ)⟩
 
 private lemma mul_dg_mul_entry_ne_zero_mod_prime (l : ℕ) [Fact l.Prime] (A B : Matrix (Fin 2) (Fin 2) ℤ)

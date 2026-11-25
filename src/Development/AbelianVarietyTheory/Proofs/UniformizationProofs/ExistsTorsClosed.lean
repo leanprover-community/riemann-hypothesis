@@ -51,7 +51,7 @@ open GlobalTheory.UT
 namespace GlobalTheory.TorsionIso
 
 theorem exists_tors_closed :
-    AllUF fun {_} _ _ {_} {_} {_} {_} _ _ U F _ _ => ∀ (k : ℕ), 1 ≤ k → ∃ f, Tors U.toUnifPre F k f :=
+    AllUF fun {R} _ _ {I} {D} {A} {G} _ _ U F _ _ => ∀ (k : ℕ), 1 ≤ k → ∃ f, Tors U.toUnifPre F k f :=
   GlobalTheory.T.uniformisation_torsion_identification_with_pairing GlobalTheory.T.all_uniformization_laws_hold
 
 end GlobalTheory.TorsionIso

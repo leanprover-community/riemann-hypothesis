@@ -66,8 +66,7 @@ theorem _root_.GlobalTheory.FlagDim.dim_add_card_flagVar : ∀ (E : Type) [Field
   classical
   have hcard : Nat.card (_root_.Formalism.L2.Pj.FlagVar Dw) = ∑ τ : E →+* ℂ, Dw.mult τ * (Dw.mult τ - 1) / 2 := by
     show Nat.card ((τ : E →+* ℂ) × {p : Fin (Dw.mult τ) × Fin (Dw.mult τ) // p.1 < p.2}) = _
-    rw [Nat.card_sigma]
-    simp only [_root_.GlobalTheory.FlagDim.card_pairs_lt]
+    simp only [Nat.card_sigma, _root_.GlobalTheory.FlagDim.card_pairs_lt]
   have hdim : Dw.dim = Module.finrank ℚ E / 2 * Dw.p * Dw.q := by
     unfold _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Datum.dim; rfl
   have hall : Fintype.card (E →+* ℂ) = Module.finrank ℚ E := Embeddings.card E ℂ

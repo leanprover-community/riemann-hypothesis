@@ -75,8 +75,7 @@ theorem sum_refine {W : Type} [AddCommGroup W] {A B C : AddSubgroup W} {φ : W �
     rfl
   have hcong : ∀ u v : W, (QuotientAddGroup.mk u : W ⧸ B) = QuotientAddGroup.mk v → φ u = φ v := by
     intro u v huv
-    have hb : -u + v ∈ B := QuotientAddGroup.eq.1 huv
-    have h1 := hinv u (-u + v) hb
+    have h1 := hinv u (-u + v) (QuotientAddGroup.eq.1 huv)
     rw [add_neg_cancel_left] at h1
     exact h1.symm
   have hval : ∀ x : W ⧸ C, φ (Quotient.out x) = φ (Quotient.out (e x).1) := by

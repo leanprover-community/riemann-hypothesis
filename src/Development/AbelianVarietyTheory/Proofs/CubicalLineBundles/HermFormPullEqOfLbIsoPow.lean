@@ -284,8 +284,7 @@ theorem hermForm_pull_eq_of_lbIso_pow :
       have h5 := u.fr_ne _ _ hi'
       rw [hrφ (i, j) z ⟨hi, hj⟩, hrφ (i, j) (z + l) ⟨hi', hj'⟩]
       simp only [hper, hermForm_sub_smul, hH₂, hermForm_pull, map_add (f := _)]
-      rw [h1, h2]
-      simp only [hermForm]
+      simp only [h1, h2, hermForm]
       generalize (z ⬝ᵥ Hm.mulVec (star (l : Fin g → ℂ))) = a
       generalize ((l : Fin g → ℂ) ⬝ᵥ Hm.mulVec (star (l : Fin g → ℂ))) = b
       generalize (F z ⬝ᵥ Hm'.mulVec (star (F l))) = a'

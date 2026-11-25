@@ -82,7 +82,7 @@ section -- clump:auto
     fun (l : ℕ) [Fact (Nat.Prime l)] ↦ PadicAlgCl l
 
 theorem UpperTheory.Reformulated.B.Qh58.norm_det_le :
-    ∀ {l : ℕ} [Fact (Nat.Prime l)] (ι : UpperTheory.Reformulated.B.Qh58.Qbar l ≃+* ℂ) {n : ℕ} (M : Matrix (Fin n) (Fin n) ℂ)
+    ∀ {l : ℕ} [inst : Fact (Nat.Prime l)] (ι : UpperTheory.Reformulated.B.Qh58.Qbar l ≃+* ℂ) {n : ℕ} (M : Matrix (Fin n) (Fin n) ℂ)
       (R : ℝ),
       (1 : ℝ) ≤ R →
         (∀ (i j : Fin n), ‖(ι.symm : ℂ → UpperTheory.Reformulated.B.Qh58.Qbar l) (M i j)‖ ≤ R) →

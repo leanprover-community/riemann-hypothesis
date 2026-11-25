@@ -391,7 +391,7 @@ theorem exists_sections_cover_closed (k : Type) [Field k] [Infinite k] (X : Sche
       exact ⟨i.succ, by simpa using hi⟩
 
 theorem exists_generating_sections_of_dim_le :
-    ∀ (k : Type) [Field k] [Infinite k] (X : Scheme.{0}) [AlgebraicGeometry.IsNoetherian X] (_ : X ⟶ Sp k) (L : LB X), L.IsLB → ∀ d : ℕ, topologicalKrullDim X ≤ d → ∀ (n : ℕ) (u : Fin n → L.Sec), ⨆ i, nonzeroLocus (u i) = ⊤ → ∃ s : Fin (d + 1) → L.Sec, ⨆ i, nonzeroLocus (s i) = ⊤ := by
+    ∀ (k : Type) [Field k] [Infinite k] (X : Scheme.{0}) [AlgebraicGeometry.IsNoetherian X] (p : X ⟶ Sp k) (L : LB X), L.IsLB → ∀ d : ℕ, topologicalKrullDim X ≤ d → ∀ (n : ℕ) (u : Fin n → L.Sec), ⨆ i, nonzeroLocus (u i) = ⊤ → ∃ s : Fin (d + 1) → L.Sec, ⨆ i, nonzeroLocus (s i) = ⊤ := by
   intro k _ _ X _ p L hL d hd n u hu
   have h1 : topologicalKrullDim (Set.univ : Set X) ≤ topologicalKrullDim X :=
     topologicalKrullDim_subspace_le X _

@@ -162,8 +162,7 @@ private theorem injective_liftBaseChange_dTensor (k A : Type*) [CommRing k] [Com
   have hle : RingHom.ker (algebraMap A (IsLocalRing.ResidueField A))
       ≤ IsLocalRing.maximalIdeal A := by
     intro a ha
-    have ha' : algebraMap A (IsLocalRing.ResidueField A) a = 0 := ha
-    exact Ideal.Quotient.eq_zero_iff_mem.mp ha'
+    exact Ideal.Quotient.eq_zero_iff_mem.mp ha
   refine tmul_eq_zero_of_toCotangent_eq_zero A
     (RingHom.ker (algebraMap A (IsLocalRing.ResidueField A))) hle x ?_
   rwa [Ideal.toCotangent_eq_zero]

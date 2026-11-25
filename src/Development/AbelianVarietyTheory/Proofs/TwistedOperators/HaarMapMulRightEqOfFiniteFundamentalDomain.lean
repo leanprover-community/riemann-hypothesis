@@ -61,8 +61,7 @@ theorem haar_map_mul_right_eq_of_fundamentalDomain (H : Type) [Group H] [Topolog
   haveI : Countable (Γ.subgroupOf N) := by
     refine Function.Injective.countable (f := fun x : Γ.subgroupOf N => (⟨((x : N) : H), x.2⟩ : Γ)) ?_
     intro a b h
-    have h' : ((a : N) : H) = ((b : N) : H) := congrArg (fun y : Γ => (y : H)) h
-    exact Subtype.ext (Subtype.ext h')
+    exact Subtype.ext (Subtype.ext (congrArg (fun y : Γ => (y : H)) h))
   haveI : (κ.map (· * n₀)).IsHaarMeasure := Measure.isHaarMeasure_map_mul_right κ n₀
   have hc := Measure.isMulLeftInvariant_eq_smul (κ.map (· * n₀)) κ
   set c := Measure.haarScalarFactor (κ.map (· * n₀)) κ

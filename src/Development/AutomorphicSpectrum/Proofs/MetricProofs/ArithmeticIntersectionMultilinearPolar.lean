@@ -129,8 +129,7 @@ private theorem II_update_combLine (hML : MetricLocalStatement) (II : Intersecti
     intro a
     apply hloc _ _ (isSmoothHerm_combLine' A hA _) (hA a)
     · funext k
-      rw [combLine_a]
-      simp [Pi.single_apply]
+      simp [combLine_a, Pi.single_apply]
     · intro z _
       rw [combLine_h, Finset.prod_eq_single a]
       · simp
@@ -228,8 +227,7 @@ private theorem II_combLine_eq_polar (hML : MetricLocalStatement) (II : Intersec
           · subst h
             simp [t]
           · rw [Function.update_of_ne h]
-            have := hp.1 r
-            simpa [t, Finset.mem_insert, h] using this
+            simpa [t, Finset.mem_insert, h] using hp.1 r
         · intro w hw
           simp only [Finset.mem_product, Finset.mem_univ, and_true, Fintype.mem_piFinset] at hw ⊢
           intro r
@@ -237,8 +235,7 @@ private theorem II_combLine_eq_polar (hML : MetricLocalStatement) (II : Intersec
           · subst h
             simp [t, hj]
           · rw [Function.update_of_ne h]
-            have := hw r
-            simpa [t, Finset.mem_insert, h] using this
+            simpa [t, Finset.mem_insert, h] using hw r
         · rintro ⟨w, a⟩ hp
           simp only [Finset.mem_product, Fintype.mem_piFinset] at hp
           have hwj : w j = a0 := by simpa [t, hj] using hp.1 j

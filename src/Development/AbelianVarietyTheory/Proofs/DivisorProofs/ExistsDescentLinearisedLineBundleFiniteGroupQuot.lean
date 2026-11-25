@@ -765,7 +765,7 @@ theorem eq_of_mem_closure [Finite Γ] (ρ : Γ →* Aut X) (γ : Γ) (x : X)
   calc (ρ γ).asIso.hom x = a 1 := by rw [hs 0, h0]
     _ = x := this
 
-theorem exists_invariant_isEqn : ∀ (F : Type) [Field F] [CharZero F] (X W : Scheme.{0}) [IsIntegral X] (_ : X ⟶ Sp F)
+theorem exists_invariant_isEqn : ∀ (F : Type) [Field F] [CharZero F] (X W : Scheme.{0}) [IsIntegral X] (s : X ⟶ Sp F)
     (Γ : Type) [Group Γ] [Finite Γ] (ρ : Γ →* Aut X) (q : X ⟶ W), IsAffineQuotient ρ q → ∀ (D : CartierDiv X),
     (∀ γ x g, D.IsEqn ((ρ γ).asIso.hom x) g → D.IsEqn x (fnAct ρ γ g)) →
     (∀ γ x g, X.fromSpecResidueField x ≫ (ρ γ).asIso.hom = X.fromSpecResidueField x → D.IsEqn x g →

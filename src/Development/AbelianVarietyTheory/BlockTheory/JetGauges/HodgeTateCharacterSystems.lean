@@ -109,8 +109,7 @@ instance : Module O (Cotangent G) := inferInstanceAs (Module O (augIdeal G).Cota
 abbrev Lie : Type u := Module.Dual O (Cotangent G)
 
 lemma sub_aug_mem (a : LocRing G) : a - algebraMap O (LocRing G) (aug G a) ∈ augIdeal G := by
-  rw [augIdeal, RingHom.mem_ker]
-  simp
+  simp [augIdeal, RingHom.mem_ker]
 
 def dAt (a : LocRing G) : Cotangent G :=
   (augIdeal G).toCotangent ⟨a - algebraMap O (LocRing G) (aug G a), sub_aug_mem G a⟩

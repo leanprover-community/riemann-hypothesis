@@ -52,8 +52,7 @@ theorem edge (S : Type) [CommRing S] {Ω : Type} [Field Ω] [Algebra S Ω] (y : 
     intro l j hj
     by_cases hl : l = k
     · subst hl
-      rw [hJk] at hj
-      simp only [Finset.mem_insert, Finset.mem_singleton] at hj
+      simp only [hJk, Finset.mem_insert, Finset.mem_singleton] at hj
       rcases hj with rfl | rfl <;> assumption
     · rw [hJl l hl, Finset.mem_singleton] at hj
       subst hj
@@ -75,12 +74,10 @@ theorem edge (S : Type) [CommRing S] {Ω : Type} [Field Ω] [Algebra S Ω] (y : 
       simp
   have hsa : faceSign J k i = 1 := by
     unfold faceSign
-    rw [hlow, hJk]
-    simp [Finset.filter_insert, Finset.filter_singleton, not_lt_of_gt hii]
+    simp [hlow, hJk, Finset.filter_insert, Finset.filter_singleton, not_lt_of_gt hii]
   have hsb : faceSign J k i' = -1 := by
     unfold faceSign
-    rw [hlow, hJk]
-    simp [Finset.filter_insert, Finset.filter_singleton, hii]
+    simp [hlow, hJk, Finset.filter_insert, Finset.filter_singleton, hii]
   have h0 : cellD S y 0 s ⟨J, hJ1⟩ = 0 := by rw [hs]; rfl
   unfold cellD at h0
   erw [LinearMap.pi_apply] at h0
@@ -106,8 +103,7 @@ theorem edge (S : Type) [CommRing S] {Ω : Type} [Field Ω] [Algebra S Ω] (y : 
   rotate_left
   · intro j hj hj2
     change j ∈ J k at hj
-    rw [hJk] at hj
-    simp only [Finset.mem_insert, Finset.mem_singleton] at hj
+    simp only [hJk, Finset.mem_insert, Finset.mem_singleton] at hj
     rcases hj with rfl | rfl
     · exact absurd rfl hj2.1
     · exact absurd rfl hj2.2

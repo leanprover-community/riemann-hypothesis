@@ -79,7 +79,7 @@ namespace GlobalTheory.RatFrame
 
 
 
-theorem frame_rat : UnderTie (fun {D _ _ _ _ _ _ _ _ t _ μ St} A _ a =>
+theorem frame_rat : UnderTie (fun {D L hT Gi Gl Kc Y cX ex t u μ St} A dtU a =>
     ∀ i (hi : i ≤ D.R.m) (β : (St i hi).Ch) (x x₁ : UA D i hi) (γ : GL (Fin (D.R.N i)) D.host.E),
       γ ∈ UJ (sigD D : D.host.E →+* D.host.E) (gramN D i hi) → x₁.1 = ratA D.host.F γ * x.1 →
       ∀ g : UF t.X.E (D.R.N i), seamGL t.seam g.1 = A.crd i hi * γ * (A.crd i hi)⁻¹ →
@@ -380,7 +380,7 @@ theorem unitV_det_one {E K : Type} [Field E] [NumberField E] [StarRing E] [Field
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem xiPt_cpl_smul : UnderTie (fun {D _ _ _ _ _ _ _ _ t _ μ _} A _ a =>
+theorem xiPt_cpl_smul : UnderTie (fun {D L hT Gi Gl Kc Y cX ex t u μ St} A dtU a =>
     ∀ i (hi : i + 1 ≤ D.R.m), i = t.m2 → ∀ β β' (x : UA D i (Nat.le_of_succ_le hi)) (x' : UA D (i + 1) hi) p p',
       IsPtAd A a i (Nat.le_of_succ_le hi) β x p → IsPtAd A a (i + 1) hi β' x' p' →
       ∀ (g : UF t.X.E (D.R.N i)) (g' : UF t.X.E (D.R.N (i + 1))) (w : HomE t.X.E (D.R.N i) (D.R.N (i + 1))),
@@ -486,7 +486,7 @@ theorem frsF_rat_G (hq : ∀ P : rowSG Pr sel mu, P.1 ∈ Pr.vGs → ((qOf P.1 :
 
 end Frames
 
-theorem xiPt_top_smul : UnderTie (fun {D _ _ _ _ _ _ _ _ t _ μ _} A _ a =>
+theorem xiPt_top_smul : UnderTie (fun {D L hT Gi Gl Kc Y cX ex t u μ St} A dtU a =>
     ∀ i (hi : i + 1 ≤ D.R.m), t.m2 < i → ∀ β β' (x : UA D i (Nat.le_of_succ_le hi)) (x' : UA D (i + 1) hi) p p',
       IsPtAd A a i (Nat.le_of_succ_le hi) β x p → IsPtAd A a (i + 1) hi β' x' p' →
       ∀ (g : UF t.X.E (D.R.N i)) (g' : UF t.X.E (D.R.N (i + 1))) (w : HomE t.X.E (D.R.N i) (D.R.N (i + 1))),
@@ -653,7 +653,7 @@ open NumberField IsDedekindDomain Matrix Formalism.BasicNotions Formalism.UG For
 
 namespace GlobalTheory.TwV
 
-theorem funMoved_ptAd_rat : UnderTie (fun {D _ _ _ _ _ _ _ _ t u μ St} A _ a =>
+theorem funMoved_ptAd_rat : UnderTie (fun {D L hT Gi Gl Kc Y cX ex t u μ St} A dtU a =>
     ∀ i (hi : i ≤ D.R.m) (β : (St i hi).Ch) (x x₁ : UA D i hi) (γ : GL (Fin (D.R.N i)) D.host.E),
       γ ∈ UJ (sigD D : D.host.E →+* D.host.E) (gramN D i hi) → x₁.1 = ratA D.host.F γ * x.1 →
       ∀ g : UF t.X.E (D.R.N i), seamGL t.seam g.1 = A.crd i hi * γ * (A.crd i hi)⁻¹ →
@@ -755,7 +755,7 @@ end GlobalTheory.RatEntry
 
 namespace GlobalTheory.RatEntry
 
-theorem xiPt_rat : UnderTie (fun {D _ _ _ _ _ _ _ _ t _ μ _} A _ a =>
+theorem xiPt_rat : UnderTie (fun {D L hT Gi Gl Kc Y cX ex t u μ St} A dtU a =>
     ∀ i (hi : i + 1 ≤ D.R.m), i < t.m2 → ∀ β β' (x : UA D i (Nat.le_of_succ_le hi)) (x' : UA D (i + 1) hi) p p',
       IsPtAd A a i (Nat.le_of_succ_le hi) β x p → IsPtAd A a (i + 1) hi β' x' p' →
       ∀ (g : UF t.X.E (D.R.N i)) (g' : UF t.X.E (D.R.N (i + 1))) (w : HomE t.X.E (D.R.N i) (D.R.N (i + 1))),
@@ -813,7 +813,7 @@ theorem coordRat_inFr {a b : ℕ} (σ : E →+* E) (J : Matrix (Fin a) (Fin a) E
 
 end Alg
 
-theorem seamHom_inFr_stdG : UnderTie (fun {D _ _ _ _ _ _ _ _ t _ _ _} A _ _ =>
+theorem seamHom_inFr_stdG : UnderTie (fun {D L hT Gi Gl Kc Y cX ex t u μ St} A dtU a =>
     ∀ i (hi : i + 1 ≤ D.R.m) (γ : GL (Fin (D.R.N i)) D.host.E) (γ' : GL (Fin (D.R.N (i + 1))) D.host.E)
       (g : UF t.X.E (D.R.N i)) (g' : UF t.X.E (D.R.N (i + 1))),
       seamGL t.seam g.1 = A.crd i (Nat.le_of_succ_le hi) * γ * (A.crd i (Nat.le_of_succ_le hi))⁻¹ →
@@ -893,7 +893,7 @@ theorem seam_lat_gmap {D : D7} {X : Fields} (s : Seam D X) {n : ℕ} (g : Sp X.E
 
 
 
-theorem lat_moved : UnderTie (fun {D _ _ _ _ _ _ _ _ t _ μ St} A _ a =>
+theorem lat_moved : UnderTie (fun {D L hT Gi Gl Kc Y cX ex t u μ St} A dtU a =>
     ∀ i (hi : i ≤ D.R.m) (β : (St i hi).Ch) (x x₁ : UA D i hi) (γ : GL (Fin (D.R.N i)) D.host.E),
       γ ∈ UJ (sigD D : D.host.E →+* D.host.E) (gramN D i hi) → x₁.1 = ratA D.host.F γ * x.1 →
       ∀ g : UF t.X.E (D.R.N i), seamGL t.seam g.1 = A.crd i hi * γ * (A.crd i hi)⁻¹ →
@@ -916,7 +916,7 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Matrix Formalism.BasicNotions Formalism.UG Formalism.MainNotions Formalism.L2.Col Formalism.L2.Ker Formalism.L2.DIV Formalism.L2.PairingIndexBounds.F Formalism.MainNotions.G.KAat Formalism.L2.Forms Formalism.MainNotions.G GlobalTheory.TwU GlobalTheory.TwV
 
-theorem _root_.GlobalTheory.T.pointLattice_moved_rational_isometry : UnderTie (fun {D _ _ _ _ _ _ _ _ t _ μ St} A _ a =>
+theorem _root_.GlobalTheory.T.pointLattice_moved_rational_isometry : UnderTie (fun {D L hT Gi Gl Kc Y cX ex t u μ St} A dtU a =>
     ∀ i (hi : i ≤ D.R.m) (β : (St i hi).Ch) (x x₁ : UA D i hi) (γ : GL (Fin (D.R.N i)) D.host.E),
       γ ∈ UJ (sigD D : D.host.E →+* D.host.E) (gramN D i hi) → x₁.1 = ratA D.host.F γ * x.1 →
       ∀ g : UF t.X.E (D.R.N i), seamGL t.seam g.1 = A.crd i hi * γ * (A.crd i hi)⁻¹ →
@@ -937,7 +937,7 @@ noncomputable section
 
 namespace GlobalTheory.TwRat
 
-theorem ratUnitCol : UnderTie (fun {D _ _ _ _ _ _ _ _ t _ _ _} A _ _ =>
+theorem ratUnitCol : UnderTie (fun {D L hT Gi Gl Kc Y cX ex t u μ St} A dtU a =>
     ∀ i (hi : i ≤ D.R.m) (γ : GL (Fin (D.R.N i)) D.host.E), γ ∈ UJ (sigD D : D.host.E →+* D.host.E) (gramN D i hi) →
       ∃ g : UF t.X.E (D.R.N i), seamGL t.seam g.1 = A.crd i hi * γ * (A.crd i hi)⁻¹) := by
   intro D _ _ _ _ _ _ _ _ t u μ St A dtU a hP _ i hi γ hγ
@@ -961,7 +961,7 @@ noncomputable section
 
 namespace GlobalTheory.RatPt
 
-theorem isPtAd_rat : UnderTie (fun {D _ _ _ _ _ _ _ _ t _ μ St} A _ a =>
+theorem isPtAd_rat : UnderTie (fun {D L hT Gi Gl Kc Y cX ex t u μ St} A dtU a =>
     ∀ i (hi : i ≤ D.R.m) (β : (St i hi).Ch) (x x₁ : UA D i hi) (γ : GL (Fin (D.R.N i)) D.host.E),
       γ ∈ UJ (sigD D : D.host.E →+* D.host.E) (gramN D i hi) → x₁.1 = ratA D.host.F γ * x.1 →
       ∀ g : UF t.X.E (D.R.N i), seamGL t.seam g.1 = A.crd i hi * γ * (A.crd i hi)⁻¹ →
@@ -971,7 +971,7 @@ theorem isPtAd_rat : UnderTie (fun {D _ _ _ _ _ _ _ _ t _ μ St} A _ a =>
   exact ⟨GlobalTheory.T.pointLattice_moved_rational_isometry A dtU a hP hTie i hi β x x₁ γ hγ h₁ g hg p hp, _root_.GlobalTheory.RatFrame.frame_rat A dtU a hP hTie i hi β x x₁ γ hγ h₁ g hg p hp,
     _root_.GlobalTheory.TwV.funMoved_ptAd_rat A dtU a hP hTie i hi β x x₁ γ hγ h₁ g hg p hp⟩
 
-theorem xiPt_smul : UnderTie (fun {D _ _ _ _ _ _ _ _ t _ μ _} A _ a =>
+theorem xiPt_smul : UnderTie (fun {D L hT Gi Gl Kc Y cX ex t u μ St} A dtU a =>
     ∀ i (hi : i + 1 ≤ D.R.m) β β' (x : UA D i (Nat.le_of_succ_le hi)) (x' : UA D (i + 1) hi) p p',
       IsPtAd A a i (Nat.le_of_succ_le hi) β x p → IsPtAd A a (i + 1) hi β' x' p' →
       ∀ (g : UF t.X.E (D.R.N i)) (g' : UF t.X.E (D.R.N (i + 1))) (w : HomE t.X.E (D.R.N i) (D.R.N (i + 1))),
@@ -984,7 +984,7 @@ theorem xiPt_smul : UnderTie (fun {D _ _ _ _ _ _ _ _ t _ μ _} A _ a =>
   · exact _root_.GlobalTheory.CplRat.xiPt_cpl_smul A dtU a hP hTie i hi h
   · exact _root_.GlobalTheory.TopRat.xiPt_top_smul A dtU a hP hTie i hi h
 
-theorem ratLaw_of_tie : UnderTie (fun {_ _ _ _ _ _ _ _ _ _ _ _ _} A _ a =>
+theorem ratLaw_of_tie : UnderTie (fun {D L hT Gi Gl Kc Y cX ex t u μ St} A dtU a =>
     PtEx A a → (∀ i hi, PtAway A a i hi) → RatLaw A a) := by
   intro D L hT Gi Gl Kc Y cX ex t u μ St A dtU a hP hTie hEx hAw
   intro i hi β β' x x' x₁ x₁' γ hγ γ' hγ' h₁ h₁' z

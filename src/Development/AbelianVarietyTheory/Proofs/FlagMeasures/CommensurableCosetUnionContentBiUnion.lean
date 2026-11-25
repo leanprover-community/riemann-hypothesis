@@ -98,8 +98,7 @@ theorem cont_biUnion : ∀ {W : Type} [AddCommGroup W] (W0 : AddSubgroup W) {ι 
       intro i hi j hj hij
       refine Set.disjoint_left.2 ?_
       rintro _ ⟨x, hx, rfl⟩ ⟨y, hy, hxy⟩
-      have hm : -y + x ∈ A := QuotientAddGroup.eq.1 hxy
-      have := (hA j hj).2.2.1 y hy _ hm
+      have := (hA j hj).2.2.1 y hy _ (QuotientAddGroup.eq.1 hxy)
       rw [add_neg_cancel_left] at this
       exact Set.disjoint_left.1 (hd i hi j hj hij) hx this)
   rw [finsum_mem_coe_finset] at key

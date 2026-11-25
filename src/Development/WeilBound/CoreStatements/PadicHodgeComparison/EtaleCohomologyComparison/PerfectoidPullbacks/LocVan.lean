@@ -74,7 +74,7 @@ section -- clump:auto
 set_option backward.isDefEq.respectTransparency false
 open CategoryTheory CrystallineSemistableComparison CrystallineSemistableComparison.Pb
 
-theorem _root_.GlobalTheory.T.frame_form_respects_filtration : ∀ {R : Type} [CommRing R] {C : Type 1} [Category.{0} C] {Φ : PDF R C} {Fil : ℤ → IdF Φ.A} (_ : IsFil Φ Fil)
+theorem _root_.GlobalTheory.T.frame_form_respects_filtration : ∀ {R : Type} [CommRing R] {C : Type 1} [Category.{0} C] {Φ : PDF R C} {Fil : ℤ → IdF Φ.A} (hF : IsFil Φ Fil)
     {d : ℕ} (E : Frame (Φ := Φ) d) (σ : ∀ T : C, E.D ⟶ T) (j q : ℕ) (I : Fin j → Fin d) (x : Φ.A.obj E.D), x ∈ (Fil q).S E.D →
     ∀ s : ComposableArrows C j, E.form σ I x s ∈ (Fil ((j + q : ℕ) : ℤ)).S (s.obj (Fin.last j)) := by
   intro R _ C _ Φ Fil hF d E σ j q I x hx s
@@ -104,7 +104,7 @@ set_option backward.isDefEq.respectTransparency false
 open CategoryTheory CrystallineSemistableComparison CrystallineSemistableComparison.Pb
 
 theorem _root_.GlobalTheory.T.graded_cohomology_of_frame : ∀ {R : Type} [CommRing R] {C : Type 1} [Category.{0} C] {Φ : PDF R C} {Fil : ℤ → IdF Φ.A}
-    (_ : IsFil Φ Fil) (E : CrystallineSemistableComparison.Pb.Frame Φ 0)
+    (hF : IsFil Φ Fil) (E : CrystallineSemistableComparison.Pb.Frame Φ 0)
     (σ : ∀ T : C, E.D ⟶ T) (r : ℤ) (j : ℕ),
     (r < j → Subsingleton (CH.H (gr Fil r) j)) ∧
     ∀ q : ℕ, r = j + q →
@@ -367,8 +367,8 @@ theorem cyc0 {Fil : ℤ → IdF Φ.A} (hF : IsFil Φ Fil) (E : Frame Φ 0) (σ :
   simp
 
 theorem cyc : ∀ (d : ℕ) {R : Type} [CommRing R] {C : Type 1} [Category.{0} C] {Φ : PDF R C} (Q : Poly Φ) {Fil : ℤ → IdF Φ.A}
-    (hF : IsFil Φ Fil) (E : Frame Φ d) (σ : ∀ T : C, E.D ⟶ T) (_ : E.GrConst Fil) (r : ℤ)
-    (_ : ∀ r' ≤ r + 1, Q.Crit Fil r') {j q : ℕ} (hr : r = j + q) (I : Idx j d) (x : Φ.A.obj E.D) (hx : x ∈ (Fil q).S E.D),
+    (hF : IsFil Φ Fil) (E : Frame Φ d) (σ : ∀ T : C, E.D ⟶ T) (hc : E.GrConst Fil) (r : ℤ)
+    (hQ : ∀ r' ≤ r + 1, Q.Crit Fil r') {j q : ℕ} (hr : r = j + q) (I : Idx j d) (x : Φ.A.obj E.D) (hx : x ∈ (Fil q).S E.D),
     CH.d (gr Fil r) j (fc hF E σ hr I.1 x hx) = 0 := by
   intro d
   induction d with
@@ -443,12 +443,12 @@ theorem d_fsZ (hF : IsFil Φ Fil) (hc : E.GrConst Fil) (r : ℤ) (hQ : ∀ r' �
 
 theorem fs_split (hF : IsFil Φ Fil) {j q : ℕ} {r : ℤ} (hr : r = (j + 1 : ℕ) + q) (x : Idx (j + 1) (d + 1) → Φ.A.obj E.D)
     (hx : ∀ I, x I ∈ (Fil q).S E.D) :
-    fs hF E σ hr x hx = fsS E σ hF hr (x ∘ idxS) (fun _ => hx _) + fsZ E σ hF hr (x ∘ idxZ) (fun _ => hx _) :=
+    fs hF E σ hr x hx = fsS E σ hF hr (x ∘ idxS) (fun I => hx _) + fsZ E σ hF hr (x ∘ idxZ) (fun I => hx _) :=
   sum_idx _
 
 theorem fs_split0 (hF : IsFil Φ Fil) {q : ℕ} {r : ℤ} (hr : r = (0 : ℕ) + q) (x : Idx 0 (d + 1) → Φ.A.obj E.D)
     (hx : ∀ I, x I ∈ (Fil q).S E.D) :
-    fs hF E σ hr x hx = fsS E σ hF hr (x ∘ idxS) (fun _ => hx _) :=
+    fs hF E σ hr x hx = fsS E σ hF hr (x ∘ idxS) (fun I => hx _) :=
   (Fintype.sum_bijective _ index_zero_extend_bij _ _ fun _ => rfl).symm
 
 def ys (hF : IsFil Φ Fil) {j q : ℕ} {r : ℤ} (hr : r = (j + 1 : ℕ) + q) (x : Idx j d → Φ.A.obj E.D)
@@ -669,8 +669,8 @@ theorem st : ∀ d, St d := by
   | succ d ih => exact step ih
 
 theorem loc_gr : ∀ {R : Type} [CommRing R] {C : Type 1} [Category.{0} C] {Φ : PDF R C} (Q : Poly Φ) {Fil : ℤ → IdF Φ.A}
-    (_ : IsFil Φ Fil) {d : ℕ} (E : Frame Φ d) (σ : ∀ T : C, E.D ⟶ T) (_ : E.GrConst Fil) (r : ℤ)
-    (_ : ∀ r' ≤ r + 1, Q.Crit Fil r') (j : ℕ),
+    (hF : IsFil Φ Fil) {d : ℕ} (E : Frame Φ d) (σ : ∀ T : C, E.D ⟶ T) (hc : E.GrConst Fil) (r : ℤ)
+    (hQ : ∀ r' ≤ r + 1, Q.Crit Fil r') (j : ℕ),
     (r < j → Subsingleton (CH.H (gr Fil r) j)) ∧
     ∀ q : ℕ, r = j + q →
       (∀ c : CH.H (gr Fil r) j, ∃ x : Idx j d → Φ.A.obj E.D, (∀ I, x I ∈ (Fil q).S E.D) ∧

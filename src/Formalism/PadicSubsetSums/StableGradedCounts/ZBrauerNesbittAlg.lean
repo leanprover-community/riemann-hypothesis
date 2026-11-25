@@ -59,8 +59,7 @@ theorem mul_eq_one_of_covolume_identity {k A : Type} [Field k] [Ring A] [Algebra
   | _ n ih =>
   intro V W _ _ _ _ _ _ _ _ _ _ hn hV hW h
   have hdim : Module.finrank k V = Module.finrank k W := by
-    have := congrArg natDegree (h 0)
-    simpa [cp, LinearMap.charpoly_natDegree] using this
+    simpa [cp, LinearMap.charpoly_natDegree] using congrArg natDegree (h 0)
   by_cases hV0 : Subsingleton V
   · have hW0 : Subsingleton W := by
       rw [← Module.finrank_zero_iff (R := k)] at hV0 ⊢
@@ -76,13 +75,12 @@ theorem mul_eq_one_of_covolume_identity {k A : Type} [Field k] [Ring A] [Algebra
       have hcW : Algebra.lsmul k k W (u * a) = 0 := by
         ext w
         simp [ha]
-      have hnil : IsNilpotent (Algebra.lsmul k k V (u * a)) := by
+      obtain ⟨m, hm⟩ : IsNilpotent (Algebra.lsmul k k V (u * a)) := by
         rw [LinearMap.isNilpotent_iff_charpoly]
         have h1 := h (u * a)
         unfold cp at h1
         rw [h1, hcW, hdim]
         exact (LinearMap.isNilpotent_iff_charpoly (0 : Module.End k W)).mp IsNilpotent.zero
-      obtain ⟨m, hm⟩ := hnil
       have hfix : ∀ j : ℕ, ((Algebra.lsmul k k V (u * a)) ^ j) (s : V) = s := by
         intro j
         induction j with
@@ -90,8 +88,7 @@ theorem mul_eq_one_of_covolume_identity {k A : Type} [Field k] [Ring A] [Algebra
         | succ j ihj =>
           rw [pow_succ, Module.End.mul_apply]
           have : (Algebra.lsmul k k V (u * a)) (s : V) = s := by
-            have := congrArg (Subtype.val) hu'
-            simpa [mul_smul] using this
+            simpa [mul_smul] using congrArg (Subtype.val) hu'
           rw [this, ihj]
       have hs0 : (s : V) = 0 := by
         rw [← hfix m, hm]

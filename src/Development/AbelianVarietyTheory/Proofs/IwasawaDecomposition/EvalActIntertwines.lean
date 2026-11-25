@@ -77,7 +77,7 @@ theorem coeFn_finset_sum_smul {α : Type} [MeasurableSpace α] {μ : Measure α}
     change (((c a • u a + ∑ i ∈ s, c i • u i : Lp ℂ (2 : ENNReal) μ)) : α → ℂ) x = _
     rw [h1, Pi.add_apply, h2, h3, Pi.smul_apply, smul_eq_mul]
 
-theorem main : ∀ {α : Type} [MeasurableSpace α] {μ : MeasureTheory.Measure α} {ι : Type} [Fintype ι] (c : ι → ℂ) (u : ι → ↥(MeasureTheory.Lp ℂ (2 : ENNReal) μ)), (↑(↑(∑ i : ι, c i • u i) : α →ₘ[μ] ℂ) : α → ℂ) =ᵐ[μ] fun (x : α) ↦ ∑ i : ι, c i * (↑(↑(u i) : α →ₘ[μ] ℂ) : α → ℂ) x := by
+theorem main : ∀ {α : Type} [inst : MeasurableSpace α] {μ : MeasureTheory.Measure α} {ι : Type} [inst_1 : Fintype ι] (c : ι → ℂ) (u : ι → ↥(MeasureTheory.Lp ℂ (2 : ENNReal) μ)), (↑(↑(∑ i : ι, c i • u i) : α →ₘ[μ] ℂ) : α → ℂ) =ᵐ[μ] fun (x : α) ↦ ∑ i : ι, c i * (↑(↑(u i) : α →ₘ[μ] ℂ) : α → ℂ) x := by
   intro α _ μ ι _ c u
   exact coeFn_finset_sum_smul c u Finset.univ
 

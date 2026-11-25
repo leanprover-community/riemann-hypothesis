@@ -64,8 +64,7 @@ theorem comp_injective {K Ω : Type} [Field K] [Field Ω] {x : Sp K ⟶ S} {x' :
   have : Surjective v := ⟨fun z => ⟨(default : PrimeSpectrum Ω), Subsingleton.elim (α := PrimeSpectrum K) _ _⟩⟩
   have : Epi v := Flat.epi_of_flat_of_surjective v
   intro a b h
-  have h' : v ≫ a.left = v ≫ b.left := congrArg (fun q => q.left) h
-  exact Over.OverMorphism.ext ((cancel_epi v).1 h')
+  exact Over.OverMorphism.ext ((cancel_epi v).1 (congrArg (fun q => q.left) h))
 
 theorem card_torsion (hL : Out.Laws) (P : Out.PolAV S) {K : Type} [Field K] [IsAlgClosed K] (x : Sp K ⟶ S) {n : ℕ}
     (hn : (n : K) ≠ 0) : Nat.card {y : Over.mk x ⟶ P.A // y ^ n = 1} = n ^ (2 * P.g) := by

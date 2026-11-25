@@ -59,8 +59,7 @@ namespace GlobalTheory
 
 lemma shiftDiffPoly_coeff_comp (f : ℂ[X]) (n : ℕ) :
     (f.comp (X + 1)).coeff n = ∑ i ∈ range (f.natDegree + 1), f.coeff i * (i.choose n : ℂ) := by
-  rw [comp, eval₂_eq_sum_range]
-  simp [coeff_C_mul, coeff_X_add_one_pow]
+  simp [comp, eval₂_eq_sum_range, coeff_C_mul, coeff_X_add_one_pow]
 
 lemma shiftDiffPoly_coeff_top (f : ℂ[X]) (n : ℕ) (hn : f.natDegree ≤ n) :
     (f.comp (X + 1) - f).coeff n = 0 := by

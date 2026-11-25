@@ -53,8 +53,7 @@ theorem oneLevel_of_steps : OneLevelOfSteps := by
       D.Sf ε i w (Xs T i s) / D.wt w ≤ (1 + 3 ^ D.f * ep) * M := by
     intro s hs hsi M hM
     have hN : D.cnt w + D.K ≤ D.Ntop := by
-      have := budget_top D.K D.r i s (D.cnt w) 1 hsi hi hwc (by omega)
-      simpa [Data.Ntop] using this
+      simpa [Data.Ntop] using budget_top D.K D.r i s (D.cnt w) 1 hsi hi hwc (by omega)
     have h := hSchur E W D ep hG hKer hW hA2 hEL hLat T ε hε i s hs hsi hi w hwW hN M hM
     have h2 := hM w (Finset.mem_filter.2 ⟨hwW, Nat.le_add_right _ _⟩)
     calc D.Sf ε i w (Xs T i s) / D.wt w ≤ D.Dg T ε i s w + 3 ^ D.f * ep * M := h

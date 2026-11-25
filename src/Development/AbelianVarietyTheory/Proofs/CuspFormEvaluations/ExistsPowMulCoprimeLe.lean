@@ -75,11 +75,10 @@ theorem exists_pow_mul_coprime_le {R : Type} [CommRing R] [IsDedekindDomain R] (
   by_contra hne'
   obtain ⟨P, hP, hle⟩ := Ideal.exists_le_maximal _ hne'
   have hJP : J ≤ P := le_trans le_sup_right hle
-  have hAP : A ≤ P := le_trans le_sup_left hle
   obtain ⟨Q, hQ⟩ := Ideal.dvd_iff_le.mpr hJP
   have hQmem : A ^ (j + 1) * Q ≤ K :=
     calc A ^ (j + 1) * Q = A ^ j * (A * Q) := by rw [pow_succ, _root_.mul_assoc]
-      _ ≤ A ^ j * (P * Q) := Ideal.mul_mono_right (Ideal.mul_mono_left hAP)
+      _ ≤ A ^ j * (P * Q) := Ideal.mul_mono_right (Ideal.mul_mono_left (le_trans le_sup_left hle))
       _ = A ^ j * J := by rw [hQ]
       _ ≤ K := hj
   have hJQ : J ≤ Q := by

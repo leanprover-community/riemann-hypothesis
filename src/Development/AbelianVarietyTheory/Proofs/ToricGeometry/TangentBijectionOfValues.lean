@@ -101,8 +101,7 @@ theorem exists_evalPt_eq {U : X.Opens} (hU : IsAffineOpen U) (ψ : Γ(X, U) →+
   refine ⟨Spec.map (CommRingCat.ofHom ψ) ≫ hU.fromSpec, h, ?_⟩
   have := eq_spec_fromSpec hU _ h
   rw [cancel_mono] at this
-  have := Spec.map_injective this
-  exact (congrArg CommRingCat.Hom.hom this).symm
+  exact (congrArg CommRingCat.Hom.hom (Spec.map_injective this)).symm
 
 theorem evalPt_constFn {k : Type} [CommRing k] (p : X ⟶ Sp k) (x : Sp R ⟶ X) (U : X.Opens)
     (h : ⊤ ≤ x ⁻¹ᵁ U) (a : k) :
@@ -200,8 +199,7 @@ theorem fderiv_val_const {W : A.left.Opens} (h : ⊤ ≤ (u.ex 0).left ⁻¹ᵁ 
       (ex_left_comp u z).trans (Spec.map_id _).symm
     exact (congrArg (fun y : Sp ℂ ⟶ Sp ℂ => evalPt y ⊤ le_rfl
       ((Scheme.ΓSpecIso (CommRingCat.of ℂ)).inv.hom a)) e).trans (evalPt_spMap _ a)
-  rw [this.fderiv_eq]
-  simp
+  simp [this.fderiv_eq]
 
 theorem fderiv_val_add {W : A.left.Opens} (h : ⊤ ≤ (u.ex 0).left ⁻¹ᵁ W) (f f' : Γ(A.left, W)) :
     fderiv ℂ (fun z => valAt' (u.ex z).left W (f + f')) 0 =
@@ -312,9 +310,8 @@ theorem tangent_fst {v : epsR ℂ ⟶ A} (hv : IsTangent v) {W : A.left.Opens}
 theorem tangent_const (v : epsR ℂ ⟶ A) {W : A.left.Opens} (h : ⊤ ≤ v.left ⁻¹ᵁ W) (a : ℂ) :
     evalPt (R := DualNumber ℂ) v.left W h (constFn A.hom W a) = algebraMap ℂ (DualNumber ℂ) a := by
   rw [evalPt_constFn]
-  have e : v.left ≫ A.hom = spMap (algebraMap ℂ (DualNumber ℂ)) := Over.w v
   exact (congrArg (fun y : Sp (DualNumber ℂ) ⟶ Sp ℂ => evalPt y ⊤ le_rfl
-    ((Scheme.ΓSpecIso (CommRingCat.of ℂ)).inv.hom a)) e).trans (evalPt_spMap _ a)
+    ((Scheme.ΓSpecIso (CommRingCat.of ℂ)).inv.hom a)) (Over.w v)).trans (evalPt_spMap _ a)
 
 theorem isDiff_iff {v : epsR ℂ ⟶ A} (hv : IsTangent v) {U : A.left.Opens} (hU : IsAffineOpen U)
     (h : ⊤ ≤ v.left ⁻¹ᵁ U) (h0 : ⊤ ≤ (u.ex 0).left ⁻¹ᵁ U) (w : Fin g → ℂ) :

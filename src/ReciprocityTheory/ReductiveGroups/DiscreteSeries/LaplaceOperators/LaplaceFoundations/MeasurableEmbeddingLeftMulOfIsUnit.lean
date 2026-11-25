@@ -155,8 +155,7 @@ theorem schur_orthogonality_unitary_rep (G : Set (Matrix (Fin (2 * r + k + 1)) (
       rfl
     have h3 : tr B = c * (Module.finrank ℂ V : ℂ) := by
       have eB : B = c • (1 : V →L[ℂ] V) := by ext z; simp [hc z]
-      rw [htrv, eB]
-      simp [LinearMap.trace_one]
+      simp [htrv, eB, LinearMap.trace_one]
     rw [← h3, h1, integral_congr_ae h2, integral_const]
     simp
   have hfin : ⟪v', B v⟫_ℂ = ∫ x, ⟪v', σ (Matrix.of x) u⟫_ℂ * ⟪σ (Matrix.of x) u', v⟫_ℂ ∂μ := by

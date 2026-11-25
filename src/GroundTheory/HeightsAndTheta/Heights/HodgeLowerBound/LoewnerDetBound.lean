@@ -107,8 +107,7 @@ theorem norm_det_le_of_loewner {H A : Matrix n n ℂ} {c : ℝ} (hc : 0 < c)
       rw [← Complex.re_add_im A.det, ← him]
       simp [Complex.norm_real, abs_of_nonneg hre]
     have hdH : ‖H.det‖ = ‖M.det‖ * ‖A.det‖ := by
-      rw [hHM, det_mul, det_mul, hdA]
-      simp only [norm_mul]
+      simp only [hHM, det_mul, det_mul, hdA, norm_mul]
       ring
     have hdM : ‖M.det‖ ≤ c ^ Fintype.card n := by
       rw [hM.det_eq_prod_eigenvalues, norm_prod]

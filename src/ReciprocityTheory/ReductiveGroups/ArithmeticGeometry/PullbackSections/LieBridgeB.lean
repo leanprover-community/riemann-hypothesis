@@ -41,8 +41,7 @@ def lagr (x : ι → K) (τ : ι) : K[X] := Lagrange.basis Finset.univ x τ
 theorem X_sub_mul_lagr (x : ι → K) (τ : ι) :
     (X - C (x τ)) * lagr x τ = C (∏ τ' ∈ Finset.univ.erase τ, (x τ - x τ')⁻¹) * ∏ τ', (X - C (x τ')) := by
   unfold lagr
-  rw [Lagrange.basis]
-  simp only [Lagrange.basisDivisor, Finset.prod_mul_distrib]
+  simp only [Lagrange.basis, Lagrange.basisDivisor, Finset.prod_mul_distrib]
   rw [← map_prod, ← Finset.mul_prod_erase Finset.univ (fun τ' => X - C (x τ')) (Finset.mem_univ τ)]
   ring
 

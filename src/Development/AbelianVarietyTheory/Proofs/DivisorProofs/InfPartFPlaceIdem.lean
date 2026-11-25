@@ -153,8 +153,7 @@ theorem mtF_mul {n : ℕ} {J : Matrix (Fin n) (Fin n) E} (g g' : GAF σ J) : mtF
 theorem actOF_mul (g g' : GAF σ JS) (h h' : GAF σ JT) (u : WOF F E nS nT) :
     actOF σ JS JT (g * g') (h * h') u = actOF σ JS JT g h (actOF σ JS JT g' h' u) := by
   unfold actOF
-  rw [_root_.mul_inv_rev, mtF_mul, mtF_mul]
-  simp only [Matrix.mul_assoc]
+  simp only [_root_.mul_inv_rev, mtF_mul, mtF_mul, Matrix.mul_assoc]
 
 theorem mem_GfCF_of_supp {n : ℕ} {J : Matrix (Fin n) (Fin n) E} {a : AEF F E} (ha : infPartF F E a = 0) {g : GAF σ J}
     (hg : ∀ i j, a * (mtF σ J g - 1) i j = (mtF σ J g - 1) i j) : g ∈ GfCF σ J := by

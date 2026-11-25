@@ -46,8 +46,7 @@ theorem db_expNeg {M : Type*} [TopologicalSpace M] (n : ℕ) (z : M → V n) (ph
       exact e.left_inv hx
     have hP := differentiableAt_comp_chart_symm_of_ck_one n z (fun y => (ph y : ℂ)) hph e he x hx
     have hQ : DifferentiableAt ℝ (fun w => ph (e.symm w)) (z x) := by
-      have := Complex.reCLM.differentiableAt.comp (z x) hP
-      simpa [Function.comp_def] using this
+      simpa [Function.comp_def] using Complex.reCLM.differentiableAt.comp (z x) hP
     have h1 : fderiv ℝ ((fun y => (Real.exp (-ph y) : ℂ)) ∘ e.symm) (z x) =
         Complex.ofRealCLM.comp (Real.exp (-ph (e.symm (z x))) •
           -(fderiv ℝ (fun w => ph (e.symm w)) (z x))) :=

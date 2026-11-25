@@ -80,8 +80,7 @@ theorem repr_of_pair {Ω : Type} [Field Ω] {V : Type} [AddCommGroup V] [Module 
     w₁.repr y j = β (w j.rev) y := by
   have hy := congrArg (β (w j.rev)) (w₁.sum_repr y)
 
-  rw [map_sum] at hy
-  simp only [map_smul, h, smul_eq_mul, mul_ite, mul_one, mul_zero, Fin.rev_inj] at hy
+  simp only [map_sum, map_smul, h, smul_eq_mul, mul_ite, mul_one, mul_zero, Fin.rev_inj] at hy
   rw [← hy]
   simp
 
@@ -140,11 +139,9 @@ theorem PositivityTheory.Xgn.t_flagframe_dual : ∀ (O : Type) [CommRing O] (Ω 
       intro v hv hz k
       by_cases hn : n < N
       · let i : Fin N := ⟨n, hn⟩
-        have hmem : w.repr v i ∈ degLat O x (b i) c := by
+        obtain ⟨α, hα, hs⟩ : w.repr v i ∈ degLat O x (b i) c := by
           rw [← hgr i]
           exact ⟨v, hv, fun j hij => hz j hij, rfl⟩
-        obtain ⟨α, hα, hs⟩ := hmem
-        have hv' : v - α • e i ∈ E.lat c := sub_mem hv (E.stable c α hα (e i) (he1 i))
         have hz' : ∀ k : Fin N, n ≤ k.val → w.repr (v - α • e i) k = 0 := by
           intro k hk
           rw [map_sub, map_smul, Finsupp.sub_apply, Finsupp.smul_apply, smul_eq_mul]
@@ -154,7 +151,7 @@ theorem PositivityTheory.Xgn.t_flagframe_dual : ∀ (O : Type) [CommRing O] (Ω 
           · have hik : k = i := Fin.ext hk.symm
             rw [hik, hs, he3]
             exact sub_self _
-        have h1 := ih _ hv' hz' k
+        have h1 := ih _ (sub_mem hv (E.stable c α hα (e i) (he1 i))) hz' k
         have h2 : eb.repr v k = eb.repr (v - α • e i) k + α * eb.repr (e i) k := by
           rw [map_sub, map_smul, Finsupp.sub_apply, Finsupp.smul_apply, smul_eq_mul]
           ring
@@ -190,8 +187,7 @@ theorem PositivityTheory.Xgn.t_flagframe_dual : ∀ (O : Type) [CommRing O] (Ω 
     obtain ⟨f, hf⟩ := hD.1.2 (a • eb.coord j.rev)
     have hfv : ∀ v, β v f = a * eb.repr v j.rev := by
       intro v
-      have := LinearMap.congr_fun hf v
-      simpa using this
+      simpa using LinearMap.congr_fun hf v
     refine ⟨f, (hD.2 c hc f).2 fun v hv => ?_, fun k hk => ?_, ?_⟩
     · rw [hfv]
       exact mul_mem ha (hcoef v hv _)

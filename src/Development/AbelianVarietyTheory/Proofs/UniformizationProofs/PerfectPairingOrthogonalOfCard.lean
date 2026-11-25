@@ -106,8 +106,7 @@ theorem card_ker_mul_le (E : A →* (A →* Fˣ)) (hE : ∀ a, (∀ b, E a b = 1
     have h1 : E k = E k' := by
       apply MonoidHom.ext
       intro b
-      have := DFunLike.congr_fun hkk (QuotientGroup.mk b)
-      exact this
+      exact DFunLike.congr_fun hkk (QuotientGroup.mk b)
     have h2 : (k : A) * (k' : A)⁻¹ = 1 := by
       apply hE
       intro b
@@ -122,13 +121,11 @@ theorem card_ker_mul_le (E : A →* (A →* Fˣ)) (hE : ∀ a, (∀ b, E a b = 1
 theorem right_nondegenerate (E : A →* (A →* Fˣ)) (hE : ∀ a, (∀ b, E a b = 1) → a = 1)
     (b : A) (hb : ∀ a, E a b = 1) : b = 1 := by
   have h := card_ker_mul_le E hE E.flip.ker ⊤ (fun k _ h hh => by
-    have := DFunLike.congr_fun (MonoidHom.mem_ker.mp hh) k
-    simpa using this)
+    simpa using (DFunLike.congr_fun (MonoidHom.mem_ker.mp hh) k))
   rw [Subgroup.card_top] at h
-  have hpos : 0 < Nat.card A := Nat.card_pos
   have h1 : Nat.card E.flip.ker ≤ 1 := by
     have : Nat.card A * Nat.card E.flip.ker ≤ Nat.card A * 1 := by simpa using h
-    exact Nat.le_of_mul_le_mul_left this hpos
+    exact Nat.le_of_mul_le_mul_left this Nat.card_pos
   have h2 : E.flip.ker = ⊥ := Subgroup.card_le_one_iff_eq_bot _ |>.mp h1
   have h3 : b ∈ E.flip.ker := by
     rw [MonoidHom.mem_ker]

@@ -54,8 +54,7 @@ theorem sum_vals (hp : (Ideal.absNorm P.asIdeal).Prime) (A B : ℕ) (φ : E → 
   rw [Finset.sum_image]
   intro x _ y _ hxy
   have h2 : ((x : ℕ) : E) = y := by
-    have := congrArg (· * (qOf P : E) ^ A) hxy
-    simpa [div_mul_cancel₀ _ hq] using this
+    simpa [div_mul_cancel₀ _ hq] using congrArg (· * (qOf P : E) ^ A) hxy
   exact_mod_cast h2
 
 theorem good_function_mono {a b a' : ℕ} (ha : a ≤ a') {φ : E → K} (h : Good1 P a b φ) : Good1 P a' b φ :=

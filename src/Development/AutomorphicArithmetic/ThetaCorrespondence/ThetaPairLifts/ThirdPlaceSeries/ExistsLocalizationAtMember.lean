@@ -137,7 +137,7 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formal
 attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.TypeRec.factG
 noncomputable section
 namespace GlobalTheory.HeightCounting.Up.LocEx
-theorem exists_localization_at_member_alt : _root_.GlobalTheory.HeightCounting.Up.PublishedInputsThirdLayerAlt → ∀ hL : _root_.UpperTheory.Zero.LLC.RecTExists, _root_.GlobalTheory.HeightCounting.Up.MemberAtLayerPoint hL fun _ _ _ _ w Z _ _ _ _ _ _ => ∀ v, TwistedAt (w.D Z) v → ∀ j, 1 ≤ j → j ≤ (w.D Z).R.m → ∀ σ, (w.D Z).what₂.isot j σ ≠ ⊥ → ∃ i : (w.D Z).nd.Loc, (w.D Z).nd.w i = v ∧ (w.D Z).nd.j i = j :=
+theorem exists_localization_at_member_alt : _root_.GlobalTheory.HeightCounting.Up.PublishedInputsThirdLayerAlt → ∀ hL : _root_.UpperTheory.Zero.LLC.RecTExists, _root_.GlobalTheory.HeightCounting.Up.MemberAtLayerPoint hL fun _ _ _ _ w Z _ _ t nch n c => ∀ v, TwistedAt (w.D Z) v → ∀ j, 1 ≤ j → j ≤ (w.D Z).R.m → ∀ σ, (w.D Z).what₂.isot j σ ≠ ⊥ → ∃ i : (w.D Z).nd.Loc, (w.D Z).nd.w i = v ∧ (w.D Z).nd.j i = j :=
   fun hP hL => _root_.GlobalTheory.HeightCounting.Up.LocEx.atMem_mono (_root_.GlobalTheory.Mem.LamPosTw.lambda_pos_of_twisted_mu_alt hP hL) fun _ _ _ _ w Z _ _ t _ _ c h v hv j h1 h2 σ hσ => by
     have hl := h v hv j h1 h2 σ hσ
     obtain ⟨f, -, hf⟩ := thetaT_ne_of_lamTr (D := w.D Z) (hl.trans_eq (t.r.Y.lam _ j h1 h2 σ hσ))

@@ -266,8 +266,7 @@ theorem scalar_section_compact_block_invariant (hU : UAct) (j : ℕ) (p q : ℤ)
       have := hS b a h0
       exact ((hmB b).1 this.1) (lt_trans (Fin.lt_def.1 hba) ((hmA a).1 this.2))
   obtain ⟨e1, e2⟩ := hU n x (1 + P') 0 0 (1 + S')
-  rw [f0, f0, e1, e2]
-  simp only [Matrix.mul_zero, add_zero, zero_add, det_mul, dP, dS, mul_one]
+  simp only [f0, f0, e1, e2, Matrix.mul_zero, add_zero, zero_add, det_mul, dP, dS, mul_one]
 
 theorem wM_one : wM (1 : M2 n) = 1 := by
   have h1 : u1 (1 : M2 n) = 1 := by simp [u1, ← fromBlocks_one]

@@ -125,8 +125,7 @@ theorem intSer_of_funEq (f h A B : ℂ_[q]⟦X⟧) (N : ℕ) (hf : constantCoeff
     conv_lhs => rw [this, subst_add hs, subst_mul hs, subst_X hs]
     have hC : (PowerSeries.subst h (C (constantCoeff Q) : ℂ_[q]⟦X⟧) : ℂ_[q]⟦X⟧) = C (constantCoeff Q) := by
       rw [← Polynomial.coe_C, subst_coe hs, Polynomial.aeval_C]; simp
-    rw [hC]
-    simp [hh0]
+    simp [hC, hh0]
   have hL : (PowerSeries.subst h f : ℂ_[q]⟦X⟧) * A =
       Polynomial.aeval h P * A + X ^ n * (h' ^ n * PowerSeries.subst h Q * A) := by
     conv_lhs => rw [hfe, subst_add hs, subst_mul hs, subst_pow hs, subst_X hs, subst_coe hs]

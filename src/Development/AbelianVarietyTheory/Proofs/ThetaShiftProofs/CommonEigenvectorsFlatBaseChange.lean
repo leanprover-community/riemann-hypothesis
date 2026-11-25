@@ -224,8 +224,7 @@ theorem commonEigenvectors_flat_baseChange :
     have key : ∀ cf : Fin n → A, (∑ k, cf k • (b k : Fin g → A))
         = ((b.equivFun.symm cf : N) : Fin g → A) := by
       intro cf
-      rw [Module.Basis.equivFun_symm_apply]
-      simp
+      simp [Module.Basis.equivFun_symm_apply]
     refine ⟨b.equivFun ⟨w, hw⟩, ?_, fun cf hcf => ?_⟩
     · beta_reduce
       rw [key]; simp

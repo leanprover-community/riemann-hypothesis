@@ -122,11 +122,10 @@ theorem isOpen_valuation_le {γ : ValueGroupWithZero F} (hγ : γ ≠ 0) :
   rw [IsValuativeTopology.mem_nhds_iff']
   refine ⟨Units.mk0 γ hγ, fun z hz => ?_⟩
   have hz' : valuation F (z - x) < γ := by simpa using hz
-  have hx' : valuation F x ≤ γ := hx
   show valuation F z ≤ γ
   calc valuation F z = valuation F ((z - x) + x) := by rw [sub_add_cancel]
     _ ≤ max (valuation F (z - x)) (valuation F x) := Valuation.map_add _ _ _
-    _ ≤ γ := max_le hz'.le hx'
+    _ ≤ γ := max_le hz'.le hx
 
 end Uniformizer
 
@@ -163,8 +162,7 @@ theorem isCompact_integralGL : IsCompact (integralGL F n : Set (GL (Fin n) F)) :
       Set.pi Set.univ fun _ => Set.pi Set.univ fun _ => (𝒪[F] : Set F) := by
     ext A
     change A ∈ integralMatrices F n ↔ ∀ i ∈ Set.univ, ∀ j ∈ Set.univ, A i j ∈ (𝒪[F] : Set F)
-    rw [mem_integralMatrices]
-    simp
+    simp [mem_integralMatrices]
   rw [this]
   exact isCompact_univ_pi fun _ => isCompact_univ_pi fun _ =>
     isCompact_iff_compactSpace.mpr (inferInstanceAs (CompactSpace 𝒪[F]))

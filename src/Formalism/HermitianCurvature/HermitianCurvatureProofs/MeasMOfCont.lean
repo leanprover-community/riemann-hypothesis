@@ -45,12 +45,11 @@ theorem cont_adj : Continuous fun M : Fin n → Fin n → ℂ => (Matrix.of.symm
   Continuous.matrix_adjugate continuous_id
 
 theorem measM_inv {A : X → Matrix (Fin n) (Fin n) ℂ} (hA : MeasM A) : MeasM (fun x => (A x)⁻¹) := by
-  have hd : Measurable fun x => (A x).det := cont_det.measurable.comp hA
   have hadj : MeasM (fun x => (A x).adjugate) := cont_adj.measurable.comp hA
   rw [measM_iff] at hadj ⊢
   intro i j
   simp only [Matrix.inv_def, Ring.inverse_eq_inv', Matrix.smul_apply, smul_eq_mul]
-  exact hd.inv.mul (hadj i j)
+  exact (cont_det.measurable.comp hA).inv.mul (hadj i j)
 
 variable {k r : ℕ}
 

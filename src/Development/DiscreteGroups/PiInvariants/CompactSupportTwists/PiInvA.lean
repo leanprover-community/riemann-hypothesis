@@ -78,8 +78,7 @@ theorem aesm_of_inv {f : X.G → ℂ} (hinv : ∀ γ : X.Γ, ∀ y, f ((γ : X.G
     rw [h2] at h1
     exact h1
   refine (hf.comp_measurePreserving hmp).congr (Filter.Eventually.of_forall fun y => ?_)
-  have := hinv γ⁻¹ y
-  simpa using this
+  simpa using hinv γ⁻¹ y
 
 theorem lint_rt (hr : X.μ.IsMulRightInvariant) {g : X.G → ℝ≥0∞}
     (hinv : ∀ γ : X.Γ, ∀ y, g ((γ : X.G) * y) = g y) (z : X.G) :

@@ -57,7 +57,7 @@ section -- clump:auto
 @[expose] public section
 
 noncomputable def UpperTheory.Reformulated.B.SaturationByPowers.saturationByPowers.{u_1} :
-    {A : Type u_1} → [CommRing A] → Ideal A → A → Ideal A :=
+    {A : Type u_1} → [inst : CommRing A] → Ideal A → A → Ideal A :=
   fun {A} _ J a =>
     { carrier := {x : A | ∃ n : ℕ, a ^ n * x ∈ J}
       add_mem' := by

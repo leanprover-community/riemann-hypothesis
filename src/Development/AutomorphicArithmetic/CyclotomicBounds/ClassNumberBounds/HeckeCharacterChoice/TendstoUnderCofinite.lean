@@ -137,12 +137,11 @@ theorem valued_complMap (v : HeightOneSpectrum (𝓞 K)) (w : HeightOneSpectrum 
   · subst hx
     have := w.isPrime
     rw [map_zero, map_zero, map_zero, zero_pow (Ideal.ramificationIdx_pos (R := 𝓞 K) w.asIdeal).ne']
-  have hx' : complMap v w x ≠ 0 := (map_ne_zero _).2 hx
   have h1 : {y | Valued.v y = Valued.v x} ∈ nhds x :=
     Valued.locally_const ((Valuation.ne_zero_iff _).2 hx)
   have h2 : complMap v w ⁻¹' {y | Valued.v y = Valued.v (complMap v w x)} ∈ nhds x :=
     (continuous_complMap v w).continuousAt.preimage_mem_nhds
-      (Valued.locally_const ((Valuation.ne_zero_iff _).2 hx'))
+      (Valued.locally_const ((Valuation.ne_zero_iff _).2 ((map_ne_zero _).2 hx)))
   obtain ⟨a, ha1, ha2⟩ := (denseRange_algebraMap K v).mem_nhds (Filter.inter_mem h1 h2)
   have e1 : Valued.v (algebraMap K (v.adicCompletion K) a) = Valued.v x := ha1
   have e2 : Valued.v (complMap v w (algebraMap K (v.adicCompletion K) a)) =

@@ -60,8 +60,7 @@ theorem gram_eq (τ : E →+* ℂ) (G : Matrix (Fin r) (Fin r) E) (x : Matrix (F
 
 theorem gram_mul_right (τ : E →+* ℂ) (G : Matrix (Fin r) (Fin r) E) (M N : Matrix (Fin r) (Fin r) ℂ) :
     gram τ G (M * N) = Nᵀ * gram τ G M * N.map (starRingEnd ℂ) := by
-  rw [gram_eq, gram_eq, Matrix.transpose_mul, Matrix.map_mul]
-  simp only [Matrix.mul_assoc]
+  simp only [gram_eq, gram_eq, Matrix.transpose_mul, Matrix.map_mul, Matrix.mul_assoc]
 
 variable (X : Data E r) (X' : Data E' r) (e : X.Ψ ≃ X'.Ψ)
 
@@ -148,8 +147,7 @@ theorem mem_dom_coordIso (hp : X.p0 = X'.p0) (z : V (nd X)) :
   refine forall_congr' fun τ' => ?_
   have h2 : mat (nmat X' (coordIso X X' e z)) τ' = mat (nmat X z) (e.symm τ') := by
     unfold mat; rw [nmat_coordIso]
-  rw [det_cpt_base_ne, det_cpt_base_ne, h2, hp]
-  simp only [dmin_coordIso e hp]
+  simp only [det_cpt_base_ne, det_cpt_base_ne, h2, hp, dmin_coordIso e hp]
 
 variable {X X'} in
 theorem densF_coordIso (hp : X.p0 = X'.p0) (z : V (nd X)) :

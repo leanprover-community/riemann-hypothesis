@@ -73,7 +73,7 @@ theorem secLin_one {X Y Y' : Scheme.{0}} {L : LB X} (hL : L.IsLB) {K K' : Type} 
   rw [Fin.sum_univ_one, H y J hJ, ReciprocityTheory.ChartRestriction.G.Out.scal, map_one, map_one, gs_eq _ y ⊤ trivial, map_one, map_one,
     _root_.one_mul]
 
-theorem exists_expansion_nonneg : GlobalTheory.UT.AllUV fun {_} _ _ _ {_} _ {D} Q {F} _ _ {v} _ {A} {_} _ _ U => ∀ (w₀ : GlobalTheory.UT.W0 U.toUnifPre), w₀.IsGen → ∀ th : GlobalTheory.UT.SecA A F 1, IntTh U.toUnifPre w₀ th → ∃ ϑ : Fam D.toPre F 1, U.ExpandsF F 1 w₀ th ϑ ∧ NuGe D Q F v 1 ϑ 0 := by
+theorem exists_expansion_nonneg : GlobalTheory.UT.AllUV fun {V} _ _ _ {ϖ} hϖ {D} Q {F} _ _ {v} hv {A} {G} _ _ U => ∀ (w₀ : GlobalTheory.UT.W0 U.toUnifPre), w₀.IsGen → ∀ th : GlobalTheory.UT.SecA A F 1, IntTh U.toUnifPre w₀ th → ∃ ϑ : Fam D.toPre F 1, U.ExpandsF F 1 w₀ th ϑ ∧ NuGe D Q F v 1 ϑ 0 := by
   intro V _ _ _ _ _ ϖ hϖ D Q hQ F _ _ _ v hv A G _ _ _ U w₀ _ th ⟨_, σ, hσ⟩
   let s : U.toUnifPre.SecK 1 := GlobalTheory.FieldBaseChange.pullOver (π := G.hom) (π' := pullback.snd G.hom (jK V)) U.LG.L _
     (p := pullback.fst G.hom (jK V)) pullback.condition (fun _ => (Category.comp_id _).symm) σ
@@ -119,7 +119,7 @@ open Formalism.MainNotions.DIV.Cons (SCF intO)
 open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 
-theorem _root_.GlobalTheory.T.exists_expandsF_nuGe_zero_of_intTh : GlobalTheory.UT.AllUV fun {_} _ _ _ {_} _ {D} Q {F} _ _ {v} _ {A} {_} _ _ U => ∀ (w₀ : GlobalTheory.UT.W0 U.toUnifPre), w₀.IsGen → ∀ th : GlobalTheory.UT.SecA A F 1, IntTh U.toUnifPre w₀ th → ∃ ϑ : Fam D.toPre F 1, U.ExpandsF F 1 w₀ th ϑ ∧ NuGe D Q F v 1 ϑ 0 := by
+theorem _root_.GlobalTheory.T.exists_expandsF_nuGe_zero_of_intTh : GlobalTheory.UT.AllUV fun {V} _ _ _ {ϖ} hϖ {D} Q {F} _ _ {v} hv {A} {G} _ _ U => ∀ (w₀ : GlobalTheory.UT.W0 U.toUnifPre), w₀.IsGen → ∀ th : GlobalTheory.UT.SecA A F 1, IntTh U.toUnifPre w₀ th → ∃ ϑ : Fam D.toPre F 1, U.ExpandsF F 1 w₀ th ϑ ∧ NuGe D Q F v 1 ϑ 0 := by
   first | exact @GlobalTheory.EtaVal.exists_expansion_nonneg
 end -- clump:auto
 end -- clump:auto

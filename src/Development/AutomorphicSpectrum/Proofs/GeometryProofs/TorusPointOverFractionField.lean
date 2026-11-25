@@ -109,8 +109,7 @@ private theorem eq_specMap_comp_of_apply_eq {X : Scheme.{0}} {B K Ω : Type} [Co
     have h0 : ψ.hom (x * α.hom u - α.hom r) = 0 := hker _ (by
       rw [map_sub, map_mul, hσα, hσα, hxu, sub_self])
     rw [map_sub, map_mul, hψα, hψα, sub_eq_zero] at h0
-    have hku : k (β u) ≠ 0 := (map_ne_zero k).mpr hu
-    apply mul_right_cancel₀ hku
+    apply mul_right_cancel₀ ((map_ne_zero k).mpr hu)
     rw [h0, ← map_mul, hxu]
   calc y = IsOpenImmersion.lift hW.fromSpec y hyW ≫ hW.fromSpec :=
         (IsOpenImmersion.lift_fac _ _ _).symm

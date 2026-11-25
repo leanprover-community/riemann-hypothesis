@@ -54,8 +54,7 @@ theorem exists_finset_leftTransversal_of_relIndex_ne_zero : ∀ {G : Type} [Grou
     apply Nat.finite_of_card_ne_zero
     simpa [Subgroup.relIndex, Subgroup.index] using hrel
   let f : H ⧸ K.subgroupOf H → G := fun q => ((Quotient.out q : H) : G)
-  have hR : (Set.range f).Finite := Set.finite_range f
-  refine ⟨hR.toFinset, ?_, ?_⟩
+  refine ⟨(Set.finite_range f).toFinset, ?_, ?_⟩
   · intro r hr
     rw [Set.Finite.mem_toFinset] at hr
     obtain ⟨q, rfl⟩ := hr

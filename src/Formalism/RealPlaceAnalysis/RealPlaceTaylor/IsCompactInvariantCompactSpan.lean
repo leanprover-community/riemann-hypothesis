@@ -57,8 +57,7 @@ theorem eigenvalue_real {V : Type*} [NormedAddCommGroup V] [InnerProductSpace �
     {v : V} (hv : v ≠ 0) (a : Fin n) {c : ℂ} (hc : F a a v = c • v) : ((c.re : ℝ) : ℂ) = c := by
   have h := hunit a a rfl v v
   rw [hc, inner_smul_left, inner_smul_right] at h
-  have hvv : ⟪v, v⟫_ℂ ≠ 0 := inner_self_ne_zero.2 hv
-  exact Complex.conj_eq_iff_re.1 (mul_right_cancel₀ hvv h)
+  exact Complex.conj_eq_iff_re.1 (mul_right_cancel₀ (inner_self_ne_zero.2 hv) h)
 
 theorem kHiUniq_of (hl : KLow) (ho : KOrth) : KHiUniq := by
   intro V _ _ n ε F μ ν x y hrel hunit hx hyx hy

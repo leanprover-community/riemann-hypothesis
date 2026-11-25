@@ -196,9 +196,8 @@ theorem derivIdealSheaf_mono (k : Type u) [CommRing k] [IsNoetherianRing k] {X :
   have key : ∀ U : X.affineOpens,
       (derivIdealSheaf k p I).ideal U ≤ (derivIdealSheaf k p J).ideal U := by
     intro U
-    have hU : I.ideal U ≤ J.ideal U := h U
     rw [derivIdealSheaf_ideal, derivIdealSheaf_ideal]
-    exact @derivIdeal_le_derivIdeal k _ _ _ (sectionsAlgebra k p U.1) _ _ hU
+    exact @derivIdeal_le_derivIdeal k _ _ _ (sectionsAlgebra k p U.1) _ _ (h U)
   exact key
 
 theorem derivIdealSheaf_mul_le (k : Type u) [CommRing k] [IsNoetherianRing k] {X : Scheme.{u}}

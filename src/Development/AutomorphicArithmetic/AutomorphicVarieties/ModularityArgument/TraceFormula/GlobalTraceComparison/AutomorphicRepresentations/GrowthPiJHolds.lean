@@ -1341,9 +1341,9 @@ private theorem UpperTheory.Reformulated.B.Qh1.map_involution_eq {G : Type*} [Gr
   rwa [h3, one_smul] at h4
 
 theorem UpperTheory.Reformulated.B.Qh1.twist_general.{u_1} :
-    ∀ {G : Type u_1} [Group G]
-    [TopologicalSpace G] [IsTopologicalGroup G] [LocallyCompactSpace G] [SecondCountableTopology G]
-    [MeasurableSpace G] [BorelSpace G] (μ : MeasureTheory.Measure G) [μ.IsHaarMeasure] (Γ : Subgroup G)
+    ∀ {G : Type u_1} [inst : Group G]
+    [inst_1 : TopologicalSpace G] [IsTopologicalGroup G] [LocallyCompactSpace G] [SecondCountableTopology G]
+    [inst_5 : MeasurableSpace G] [BorelSpace G] (μ : MeasureTheory.Measure G) [μ.IsHaarMeasure] (Γ : Subgroup G)
     [Countable ↥Γ] {F : Set G},
     MeasureTheory.IsFundamentalDomain (↥Γ) F μ →
       ∀ (θ : G →* G),

@@ -61,8 +61,7 @@ theorem card_quot_ker_le (n : ℕ) [NeZero n] (A B : Type) [AddCommGroup A] [Mod
     rintro _ ⟨a, rfl⟩
     rw [Submodule.mem_dualAnnihilator]
     intro y hy
-    have := LinearMap.congr_fun (LinearMap.mem_ker.1 hy) a
-    simpa using this
+    simpa using LinearMap.congr_fun (LinearMap.mem_ker.1 hy) a
   calc Nat.card (A ⧸ LinearMap.ker b) = Nat.card (LinearMap.range b) :=
         Nat.card_congr (LinearMap.quotKerEquivRange b).toEquiv
     _ ≤ Nat.card K'.dualAnnihilator :=

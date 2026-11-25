@@ -75,8 +75,7 @@ theorem bijective_of_algEquiv {R X Y T : Type} [CommRing R] [CommRing X] [CommRi
       simp only at hφ ⊢
       rw [← AlgHom.comp_assoc, ← AlgHom.comp_assoc, hφ]
     ext y
-    have := DFunLike.congr_fun hc (e.symm y)
-    simpa using this
+    simpa using DFunLike.congr_fun hc (e.symm y)
   · intro ψ
     obtain ⟨φ, hφ⟩ := h.2 (ψ.comp (e : X →ₐ[R] Y))
     refine ⟨φ.comp (e.symm : Y →ₐ[R] X), ?_⟩

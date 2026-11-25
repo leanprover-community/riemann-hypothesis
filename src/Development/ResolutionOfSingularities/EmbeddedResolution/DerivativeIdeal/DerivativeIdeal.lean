@@ -59,11 +59,10 @@ theorem derivation_apply_mem_of_mem_span {k : Type*} [CommRing k] {S : Type*} [C
   | zero => simp
   | add a b _ _ iha ihb => simpa using Submodule.add_mem T iha ihb
   | smul a b hb ihb =>
-      have hb' : b ∈ T := hGT hb
       have hD' : D (a • b) = a • D b + b • D a := by
         rw [smul_eq_mul, D.leibniz]
       rw [hD', smul_eq_mul, smul_eq_mul]
-      exact Submodule.add_mem T (Ideal.mul_mem_left T a ihb) (Ideal.mul_mem_right (D a) T hb')
+      exact Submodule.add_mem T (Ideal.mul_mem_left T a ihb) (Ideal.mul_mem_right (D a) T (hGT hb))
 
 def derivIdeal (k : Type*) [CommRing k] {S : Type*} [CommRing S] [Algebra k S]
     (J : Ideal S) : Ideal S :=
@@ -130,9 +129,8 @@ theorem derivIdeal_iSup_le (k : Type*) [CommRing k] {S : Type*} [CommRing S] [Al
     exact hle
   · intro g hg
     obtain ⟨i, hi⟩ := Set.mem_iUnion.mp hg
-    have hi' : g ∈ J i := hi
     exact le_iSup (fun j => derivIdeal k (J j)) i
-      (derivation_apply_mem_derivIdeal k (J i) D hi')
+      (derivation_apply_mem_derivIdeal k (J i) D hi)
 
 theorem derivIdeal_mul_le (k : Type*) [CommRing k] {S : Type*} [CommRing S] [Algebra k S]
     (I J : Ideal S) :

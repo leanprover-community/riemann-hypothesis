@@ -232,7 +232,7 @@ open IsDedekindDomain NumberField
 
 namespace GlobalTheory.CompanionTheory.MuC
 
-theorem isB_unique : ∀ {D : D7} {p : ℕ} {e : AE D} {g : G D p} {x x' : hermS D p e} (_ : IsB e g x) (_ : IsB e g x'), x = x' := by
+theorem isB_unique : ∀ {D : D7} {p : ℕ} {e : AE D} {g : G D p} {x x' : hermS D p e} (h : IsB e g x) (h' : IsB e g x'), x = x' := by
   intro D p e g x x' h h'
   obtain ⟨⟨y, hy⟩, hx⟩ := h
   obtain ⟨-, hx'⟩ := h'
@@ -268,7 +268,7 @@ namespace GlobalTheory.CompanionTheory.MuC
 
 open GlobalTheory.StdUnn.Model GlobalTheory.StdUnn.LeftInvSect
 
-theorem isNMap_add : ∀ {D : D7} {p : ℕ} {nb : hermA D p → G D p} (_ : IsNMap nb) (x y : hermA D p), nb (x + y) = nb x * nb y := by
+theorem isNMap_add : ∀ {D : D7} {p : ℕ} {nb : hermA D p → G D p} (hnb : IsNMap nb) (x y : hermA D p), nb (x + y) = nb x * nb y := by
   intro D p nb hnb x y
   apply mat_inj
   rw [mat_mul, hnb, hnb, hnb, submatrix_fromBlocks_mul]
@@ -342,7 +342,7 @@ theorem isB_mul {e : AE D} {q g : G D p} (hq : q ∈ P D p) {x : hermS D p e} (h
     change lowC g * x.1.1 = _ at hx
     rw [hC, hD, Matrix.mul_assoc, hx, Matrix.mul_smul]
 
-theorem isB_left : ∀ {D : D7} {p : ℕ} {e : AE D} {q g : G D p} (_ : q ∈ P D p) (x : hermS D p e),
+theorem isB_left : ∀ {D : D7} {p : ℕ} {e : AE D} {q g : G D p} (hq : q ∈ P D p) (x : hermS D p e),
     IsB e (q * g) x ↔ IsB e g x := by
   intro D p e q g hq x
   refine ⟨fun h => ?_, isB_mul hq⟩
@@ -552,8 +552,8 @@ theorem lowC_mul_adj_lowD (g : G D p) : lowC g * adj (lowD g) = lowD g * adj (lo
   rw [hc, hd]
   exact symplectic_lower_block_relation h
 
-theorem exists_isB : ∀ {D : D7} {p : ℕ} {e : AE D} (_ : e * e = e) (_ : cA D e = e) {g : G D p}
-    (_ : InCell e g), ∃ x, IsB e g x := by
+theorem exists_isB : ∀ {D : D7} {p : ℕ} {e : AE D} (he : e * e = e) (hc : cA D e = e) {g : G D p}
+    (hg : InCell e g), ∃ x, IsB e g x := by
   intro D p e he hc g hg
   obtain ⟨y, hy⟩ := id hg
   obtain ⟨h1, h2, h3⟩ := cell_core_ring (R := AE D) (n := p) (s := cA D) adj adj_mul adj_smul adj_one he hc

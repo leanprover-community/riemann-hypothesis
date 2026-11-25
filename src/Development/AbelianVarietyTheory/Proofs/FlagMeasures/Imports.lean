@@ -72,7 +72,7 @@ theorem main {K V : Type} [Field K] [NumberField K] [AddCommGroup V] [Module K V
     rw [mul_smul, key, smul_comm d a x]
     exact Λ.smul_mem a h₁
 
-theorem target : ∀ {K V : Type} [Field K] [NumberField K] [AddCommGroup V] [Module K V] [Module (NumberField.RingOfIntegers K) V] [IsScalarTower (NumberField.RingOfIntegers K) K V] (Λ : Submodule (NumberField.RingOfIntegers K) V), Submodule.span K (↑Λ : Set V) = ⊤ → ∀ (v : V), ∃ (d : NumberField.RingOfIntegers K), d ≠ (0 : NumberField.RingOfIntegers K) ∧ d • v ∈ Λ :=
+theorem target : ∀ {K V : Type} [inst : Field K] [NumberField K] [inst_2 : AddCommGroup V] [inst_3 : Module K V] [inst_4 : Module (NumberField.RingOfIntegers K) V] [IsScalarTower (NumberField.RingOfIntegers K) K V] (Λ : Submodule (NumberField.RingOfIntegers K) V), Submodule.span K (↑Λ : Set V) = ⊤ → ∀ (v : V), ∃ (d : NumberField.RingOfIntegers K), d ≠ (0 : NumberField.RingOfIntegers K) ∧ d • v ∈ Λ :=
   fun Λ h v => main Λ h v
 
 end GlobalTheory.TargetStatementBis

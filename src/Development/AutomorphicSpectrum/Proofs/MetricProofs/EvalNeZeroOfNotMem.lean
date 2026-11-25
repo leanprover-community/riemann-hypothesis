@@ -474,7 +474,7 @@ theorem flat_off_boundary : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k,
     (BM : BaseMetric M n) (p : Ψ × Fin N), (p.2 : ℕ) + 1 = N → ∀ (Kk : Type) [Fintype Kk] (ιk : Kk → Type)
     [∀ k, Fintype (ιk k)] (κ : Kk → K) (v : (Σ k, ιk k) → (Σ k, ι k)), IsBlockMap κ v →
     (∀ k, (∀ p', M.blk p' ≠ some k) → k ∈ Set.range κ) →
-    ∀ (e : ℕ) (R : AnLogRes (mCoordIdeal (y ∘ v)) ⊤ e) (pr : R.X → BM.Rb.X) (_ : HoloMap R.A BM.Rb.A pr)
+    ∀ (e : ℕ) (R : AnLogRes (mCoordIdeal (y ∘ v)) ⊤ e) (pr : R.X → BM.Rb.X) (hp : HoloMap R.A BM.Rb.A pr)
       (ph : R.X → ℝ),
     (∀ x, ∃ z ∈ mcPts (mCoordIdeal y), z ∘ v = R.lift x x ∧ SameOrbit (basePart M.blk z) (BM.Rb.lift (pr x) (pr x))) →
     (∀ x, pr x ∉ bdry BM.s → ∀ z ∈ mcPts (mCoordIdeal y), z ∘ v = R.lift x x →

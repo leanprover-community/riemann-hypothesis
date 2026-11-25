@@ -52,7 +52,7 @@ namespace GlobalTheory.CompanionTheory.Ar.LieFreeSmooth
 
 theorem lieModel_free_of_smooth : ∀ (S : Scheme.{0}) (G : Over S) [GrpObj G], Smooth G.hom →
     ∀ (R : Type) [CommRing R] [IsLocalRing R] (x : Spec (CommRingCat.of R) ⟶ S) (E : Type) [AddCommGroup E]
-      [Module R E] (_ : LieModel G x E), ∃ n : ℕ, Nonempty (Module.Basis (Fin n) R E) := by
+      [Module R E] (M : LieModel G x E), ∃ n : ℕ, Nonempty (Module.Basis (Fin n) R E) := by
   intro S G _ hG R _ _ x E _ _ M
   haveI := hG
   obtain ⟨hfin, hproj⟩ := _root_.GlobalTheory.CompanionTheory.Ar.lieModel_finite_projective S G R x E M

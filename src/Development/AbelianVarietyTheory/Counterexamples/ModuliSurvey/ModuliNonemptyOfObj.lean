@@ -58,8 +58,7 @@ theorem le_of_conj (l : Level H) (F : IntermediateField ℚ ℂ) (hc : ∀ (τ :
   rintro x (rfl | rfl)
   · obtain ⟨τ⟩ : Nonempty (E →+* ℂ) := inferInstance
     have h0 : ((H.rt : E)) ^ 2 = -(H.d : E) := by
-      have := congrArg (algebraMap (𝓞 E) E) H.rt_sq
-      simpa using this
+      simpa using congrArg (algebraMap (𝓞 E) E) H.rt_sq
     have h1 : (τ (H.rt : E)) ^ 2 = H.rt0 ^ 2 := by
       rw [← map_pow, h0, H.sqrt_neg_disc_sq]; simp
     rcases sq_eq_sq_iff_eq_or_eq_neg.1 h1 with h | h

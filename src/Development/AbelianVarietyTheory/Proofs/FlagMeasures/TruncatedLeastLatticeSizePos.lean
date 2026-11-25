@@ -194,7 +194,7 @@ theorem separated (hn : 1 ≤ I.n) (x y a b : I.GA) (ha : a ∈ I.GFset) (hb : b
   exact mul_le_mul (min_le_right _ _) (min_le_right _ _) (truncatedLeastLatticeSize_pos I hn y).le
     ((truncatedLeastLatticeSize_pos I hn x).le.trans (min_le_right _ _))
 
-theorem count_le (I : AutInst) (x y : I.GA) (r : InfinitePlace I.F → ℝ) (hn : 1 ≤ I.n) :
+theorem count_le (I : AutInst) (x y : I.GA) (r : InfinitePlace I.F → ℝ) (hn : 1 ≤ I.n) (_hr : ∀ v, 0 ≤ r v) :
     {a : I.GA | a ∈ I.GFset ∧ (x⁻¹ * a * y).2 ∈ I.Kset ∧ ∀ v, dOp (uMat ((x⁻¹ * a * y).1 v)) ≤ r v}.Finite ∧
     (({a : I.GA | a ∈ I.GFset ∧ (x⁻¹ * a * y).2 ∈ I.Kset ∧
         ∀ v, dOp (uMat ((x⁻¹ * a * y).1 v)) ≤ r v}.ncard : ℕ) : ℝ) ≤

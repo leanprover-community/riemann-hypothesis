@@ -286,8 +286,7 @@ theorem step_dC (hA : TAv) {k : ℕ} {ω : Form (HS L N) (k + 1)} (hc : Continuo
       funext i
       rw [intervalIntegral.integral_const_mul]
     · exact fun i _ => ((hcont _).const_mul _).intervalIntegrable _ _
-  rw [e, hd]
-  simp
+  simp [e, hd]
 
 theorem step_ev (hEv : SEv) (hSc : TScal) (hSi : TSimp) (hA : TAv) {k : ℕ} {ω : Form (HS L N) (k + 1)}
     (hc : ContinuousOn ω (Pos L N)) (hd : dC (intP ω) = 0) (hΓ : ∀ γ, FInv ω (emb L N γ))
@@ -316,8 +315,7 @@ theorem step_ev (hEv : SEv) (hSc : TScal) (hSi : TSimp) (hA : TAv) {k : ℕ} {ω
       funext g
       rw [intervalIntegral.integral_const_mul]
     · exact fun g _ => ((hcont _).const_mul _).intervalIntegrable _ _
-  rw [e]
-  simp only [key]
+  simp only [e, key]
   simp
 
 theorem step_bd (hSc : TScal) (hA : TAv) {k : ℕ} {ω : Form (HS L N) (k + 1)} (hc : ContinuousOn ω (Pos L N))
@@ -336,8 +334,7 @@ theorem step_bd (hSc : TScal) (hA : TAv) {k : ℕ} {ω : Form (HS L N) (k + 1)} 
       _ ≤ C * (max CK 0 * B x) := mul_le_mul_of_nonneg_left
           ((hCK _ ⟨τ, ⟨hτ.1.le, hτ.2⟩, rfl⟩ x).trans (mul_le_mul_of_nonneg_right (le_max_left _ _) (hB0 x))) hC0
       _ = C * max CK 0 * B x := by ring
-  have := intervalIntegral.norm_integral_le_of_norm_le_const hb
-  simpa using this
+  simpa using intervalIntegral.norm_integral_le_of_norm_le_const hb
 
 theorem step (hEv : SEv) (hSc : TScal) (hSi : TSimp) (hA : TAv) {k : ℕ} {ω₀ ω : Form (HS L N) (k + 1)}
     {B : Gp L N → ℝ} (hB : ∀ K : Set (Gp L N), IsCompact K → ∃ C, ∀ g ∈ K, ∀ x, B (x * g) ≤ C * B x)
@@ -744,8 +741,7 @@ theorem span_units : ∃ l : List (𝓞 L)ˣ, ∀ t : InfinitePlace L → ℝ,
       have : (∑ w' : {w : InfinitePlace L // w ≠ w₀}, t' w') =
           -((mult (w₀ : InfinitePlace L) : ℝ) * (t w₀ - c)) := by
         simp only [t']; linarith
-      rw [this]
-      simp only [Pi.sub_apply, Pi.smul_apply, smul_eq_mul, mul_one]
+      simp only [this, Pi.sub_apply, Pi.smul_apply, smul_eq_mul, mul_one]
       field_simp [NumberField.InfinitePlace.mult_coe_ne_zero (w := w₀)]
     · rw [dite_eq_right h]
       simp only [t', Pi.sub_apply, Pi.smul_apply, smul_eq_mul, mul_one]

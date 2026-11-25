@@ -27,7 +27,6 @@ theorem eq_of_lt_of_le_of_mem_minimalPrimes {A : Type*} [CommRing A] [IsNoetheri
     {P Q W : Ideal A} [P.IsPrime] [Q.IsPrime] {x : A}
     (hW : W ∈ (P ⊔ Ideal.span {x}).minimalPrimes) (hPQ : P < Q) (hQW : Q ≤ W) : Q = W := by
   by_contra hne
-  have hQW' : Q < W := lt_of_le_of_ne hQW hne
   have : W.IsPrime := hW.1.1
   let f := Ideal.Quotient.mk P
   have hf : Function.Surjective f := Ideal.Quotient.mk_surjective
@@ -37,7 +36,7 @@ theorem eq_of_lt_of_le_of_mem_minimalPrimes {A : Type*} [CommRing A] [IsNoetheri
   have : (Q.map f).IsPrime := Ideal.map_isPrime_of_surjective hf (by rw [hker]; exact hPQ.le)
   have h1 : (W.map f).height ≤ 1 := Ideal.map_height_le_one_of_mem_minimalPrimes hW
   have hlt : Q.map f < W.map f := by
-    refine (Ideal.map_mono hQW).lt_of_not_ge fun e => hQW'.not_ge ?_
+    refine (Ideal.map_mono hQW).lt_of_not_ge fun e => (lt_of_le_of_ne hQW hne).not_ge ?_
     have := Ideal.comap_mono (f := f) e
     rwa [Ideal.comap_map_of_surjective f hf, Ideal.comap_map_of_surjective f hf,
       ← RingHom.ker_eq_comap_bot, hker, sup_eq_left.mpr hPW, sup_eq_left.mpr hPQ.le] at this

@@ -69,12 +69,11 @@ theorem isHausdorff_of_pow_le {K J : Ideal A} {N : ℕ} (h : J ^ N ≤ K) [IsHau
 
 theorem isPrecomplete_of_pow_le {K J : Ideal A} {N : ℕ} (h : J ^ N ≤ K) (hKJ : K ≤ J)
     [IsPrecomplete K A] : IsPrecomplete J A := by
-  have h' : J ^ (N + 1) ≤ K := (Ideal.pow_le_pow_right N.le_succ).trans h
   refine ⟨fun f hf => ?_⟩
   simp only [SModEq.sub_mem, smul_eq_mul, Ideal.mul_top] at hf ⊢
   obtain ⟨L, hL⟩ := IsPrecomplete.prec' (I := K) (fun n => f ((N + 1) * n)) fun {m n} hmn => by
     simp only [SModEq.sub_mem, smul_eq_mul, Ideal.mul_top]
-    exact pow_mul_le h' m (hf (Nat.mul_le_mul_left _ hmn))
+    exact pow_mul_le ((Ideal.pow_le_pow_right N.le_succ).trans h) m (hf (Nat.mul_le_mul_left _ hmn))
   simp only [SModEq.sub_mem, smul_eq_mul, Ideal.mul_top] at hL
   refine ⟨L, fun n => ?_⟩
   have h1 := hf (m := n) (n := (N + 1) * n) (Nat.le_mul_of_pos_left n N.succ_pos)

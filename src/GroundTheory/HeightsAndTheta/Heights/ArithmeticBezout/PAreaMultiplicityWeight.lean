@@ -128,8 +128,7 @@ theorem AreaMultiplicityWeight.proof : AreaMultiplicityWeight.Statement := by
         ext z
         simp only [mem_ofPred_eq, mem_empty_iff_false, iff_false, not_and]
         exact fun hz e => hyn ⟨z, hz, e⟩
-      rw [hs, encard_empty]
-      simp [hyn]
+      simp [hs, encard_empty, hyn]
   refine ⟨(AEMeasurable.tsum fun n => aemeasurable_one.indicator₀ (himg n)).congr hNae,
     fun g hg => ?_⟩
   calc ∫⁻ x in A, g (f x) * ENNReal.ofReal |(f' x).det| ∂μ

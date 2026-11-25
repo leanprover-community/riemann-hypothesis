@@ -263,7 +263,7 @@ theorem main : ∀ (K V : Type) [Field K] [NumberField K] [StarRing K] [AddCommG
         rintro a ⟨s, hs, r, hr, e⟩
         exact ⟨s, hs, -r, P.neg_mem hr, by rw [map_neg, e]; ring⟩ }
   obtain ⟨θ, t, et, hθ⟩ := hK.2.2 P hP
-  have key : Rel h (loc (K := K) P L).toAddSubgroup x y := by
+  obtain ⟨g, g1, g2, g3⟩ : Rel h (loc (K := K) P L).toAddSubgroup x y := by
     refine abs_main (A := A) (M := M) (θ := algebraMap (𝓞 K) K θ) hs ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_ hx hy hn px py
     · intro a ha
       obtain ⟨s, hs, r, e⟩ := (mR a).1 ha
@@ -301,7 +301,6 @@ theorem main : ∀ (K V : Type) [Field K] [NumberField K] [StarRing K] [AddCommG
     · rintro ⟨s, hs, r, hr, e⟩
       rw [← et, ← map_sub, ← map_mul] at e
       exact nm hs hθ (inj e ▸ hr)
-  obtain ⟨g, g1, g2, g3⟩ := key
   refine ⟨g, g1, ?_, g3⟩
   ext v
   simp only [gmap, Submodule.mem_map]

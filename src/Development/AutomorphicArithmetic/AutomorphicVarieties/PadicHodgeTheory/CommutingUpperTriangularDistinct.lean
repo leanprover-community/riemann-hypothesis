@@ -69,7 +69,7 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.DiagonalizeThreeByThree.diagonalize_three_by_three_split :
-    ∀ {K : Type} [Field K] (d : Fin (3 : ℕ) → K),
+    ∀ {K : Type} [inst : Field K] (d : Fin (3 : ℕ) → K),
     Function.Injective d →
       ∀ (M : Matrix (Fin (3 : ℕ)) (Fin (3 : ℕ)) K),
         M.charpoly = ∏ a : Fin (3 : ℕ), (Polynomial.X - (Polynomial.C : K → Polynomial K) (d a)) →

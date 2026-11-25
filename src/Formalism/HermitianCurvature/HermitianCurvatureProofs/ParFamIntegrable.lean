@@ -42,8 +42,7 @@ theorem parFam_sum {ι : Type} (s : Finset ι) {f : ι → Par × Mt k ρ → E}
   | insert a s ha ih =>
     have h1 := hf a (Finset.mem_insert_self a s)
     have h2 := ih (fun i hi => hf i (Finset.mem_insert_of_mem hi))
-    have := parFam_add h1 h2
-    simpa [Finset.sum_insert ha] using this
+    simpa [Finset.sum_insert ha] using parFam_add h1 h2
 
 theorem parFam_contAt {f : Par × Mt k ρ → E} (hf : PBI.ParFam k ρ U₀ f) {Z : Par} {y : Mt k ρ} (hq : (Z, y) ∈ U₀)
     (hy : Matrix.of y ∈ Q.Glev k ρ (Fin.last ρ)) : ContinuousAt (fun Z' => f (Z', y)) Z := by

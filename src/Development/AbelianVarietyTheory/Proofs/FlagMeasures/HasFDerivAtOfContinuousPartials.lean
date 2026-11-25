@@ -119,8 +119,7 @@ theorem _root_.GlobalTheory.hasFDerivAt_of_continuous_partials :
     simp [hp, m.isLt]
   have hsumL : (∑ i, (ContinuousLinearMap.proj i : (Fin k → ℝ) →L[ℝ] ℝ).smulRight (d i t)) h =
       ∑ j ∈ Finset.range k, a j := by
-    rw [Finset.sum_range]
-    simp [ha]
+    simp [Finset.sum_range, ha]
   have htel : F (t + h) - F t = ∑ j ∈ Finset.range k, (F (p (j + 1)) - F (p j)) := by
     rw [Finset.sum_range_sub (fun j => F (p j)) k, hpk, hp0]
   have hpdist : ∀ j, dist (p j) t < δ := by
@@ -150,8 +149,7 @@ theorem _root_.GlobalTheory.hasFDerivAt_of_continuous_partials :
         simp only [this]
     have hcur : p j = Function.update (p j) i (t i) := by
       symm
-      rw [Function.update_eq_self_iff]
-      simp [hp, hi]
+      simp [Function.update_eq_self_iff, hp, hi]
     have hx : dist (t i + h i) (t i) < δ := by
       rw [Real.dist_eq, add_sub_cancel_left]
       exact lt_of_le_of_lt (by simpa using norm_le_pi_norm h i) hh

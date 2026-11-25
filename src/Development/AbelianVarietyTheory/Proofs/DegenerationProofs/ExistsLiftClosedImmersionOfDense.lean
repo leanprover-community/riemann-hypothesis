@@ -68,9 +68,8 @@ theorem hom_ext_of_geometricPoints_dense {X Y S : Scheme.{0}} [IsReduced X] (t :
   let y : Sp K ⟶ X :=
     Spec.map (CommRingCat.ofHom (algebraMap (X.residueField x) K)) ≫ X.fromSpecResidueField x
   have hy : ∀ p, y p = x := fun p ↦ Scheme.fromSpecResidueField_apply x _
-  have hxy : y ≫ f = y ≫ g := H K y (by rintro _ ⟨p, rfl⟩; rwa [hy])
   have p : Sp K := IsLocalRing.closedPoint K
-  refine ⟨equalizer.lift y hxy p, ?_⟩
+  refine ⟨equalizer.lift y (H K y (by rintro _ ⟨p, rfl⟩; rwa [hy])) p, ?_⟩
   rw [← Scheme.Hom.comp_apply, equalizer.lift_ι, hy]
 
 theorem exists_lift_closedImmersion_of_dense {X Y Z : Scheme.{0}} [IsReduced X] (i : Z ⟶ Y)

@@ -427,12 +427,10 @@ theorem exists_intertwiner {V : Type} [AddCommGroup V] [Module ℂ V] (h : IsBic
       rw [wave_trans, hT _ (X.add_mem hx hx₀) _ hy₀, hT _ hx₀ _ hy₀, ρX x hx x₀ hx₀]
     | zero =>
       have e : (fun t => (0 : G → ℂ) (t + x)) = 0 := rfl
-      rw [e]
-      simp only [map_zero]
+      simp only [e, map_zero]
     | add Φ₁ Φ₂ _ _ h₁ h₂ =>
       have e : (fun t => (Φ₁ + Φ₂) (t + x)) = (fun t => Φ₁ (t + x)) + (fun t => Φ₂ (t + x)) := rfl
-      rw [e]
-      simp only [map_add (f := _), h₁, h₂]
+      simp only [e, map_add (f := _), h₁, h₂]
     | smul a Φ₁ _ h₁ =>
       have e : (fun t => (a • Φ₁) (t + x)) = a • (fun t => Φ₁ (t + x)) := rfl
       rw [e]
@@ -450,22 +448,19 @@ theorem exists_intertwiner {V : Type} [AddCommGroup V] [Module ℂ V] (h : IsBic
       have e : (fun t => χ t y * (0 : G → ℂ) t) = 0 := by
         funext t
         simp
-      rw [e]
-      simp only [map_zero]
+      simp only [e, map_zero]
     | add Φ₁ Φ₂ _ _ h₁ h₂ =>
       have e : (fun t => χ t y * (Φ₁ + Φ₂) t) =
           (fun t => χ t y * Φ₁ t) + (fun t => χ t y * Φ₂ t) := by
         funext t
         simp [mul_add]
-      rw [e]
-      simp only [map_add (f := _), h₁, h₂]
+      simp only [e, map_add (f := _), h₁, h₂]
     | smul a Φ₁ _ h₁ =>
       have e : (fun t => χ t y * (a • Φ₁) t) = a • (fun t => χ t y * Φ₁ t) := by
         funext t
         simp only [Pi.smul_apply, smul_eq_mul]
         ring
-      rw [e]
-      simp only [map_smul, h₁]
+      simp only [e, map_smul, h₁]
   refine ⟨T, ?_, fun Φ hΦX k hk hinv hsupp => ?_⟩
   · rw [← wave_zero (χ := χ) (L := L) h, hT 0 X.zero_mem 0 Y.zero_mem, hf 0 L.zero_mem,
       hf 0 L.zero_mem]

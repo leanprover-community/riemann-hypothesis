@@ -179,8 +179,7 @@ theorem indEtale_localization_of_etale : ∀ (R A : Type) [CommRing R] [CommRing
         have h2 := IsLocalization.mk'_spec (Localization.Away x.el) a p
         have h3 := congrArg φx h2
         rw [map_mul, hw, huv', zero_mul] at h3
-        rw [h3]
-        simp [φx, IsLocalization.Away.lift, IsLocalization.lift_eq]
+        simp [h3, φx, IsLocalization.Away.lift, IsLocalization.lift_eq]
       obtain ⟨m, hm⟩ := (IsLocalization.map_eq_zero_iff M (Localization M) a).1 ha
       let k : DivIdx M := (show DivIdx M from ((show M from x) * m))
       have hk : k.el = x.el * (m : A) := rfl

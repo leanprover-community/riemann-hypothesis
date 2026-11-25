@@ -25,8 +25,7 @@ theorem BlowUpVerticalPush.proof (hfib : BlowUpVerticalFibre.Statement.{u}) :
   have hC : ∀ W' : Ideal (MRing (extIdx ι J) O), (C ϖ : MRing (extIdx ι J) O) ∈ W' ↔
       (C ϖ : MRing ι O) ∈ W'.comap (liftForm (ι := ι) (J := J) (R := O)) := by
     intro W'
-    rw [Ideal.mem_comap]
-    simp [liftForm]
+    simp [Ideal.mem_comap, liftForm]
   set g : Ideal (MRing (extIdx ι J) O) → ℤ := fun W' =>
     divCycle (blowUpOf P u) (liftForm x) W' *
       (if (C ϖ : MRing (extIdx ι J) O) ∈ W' then vNum W' (liftDegs a) else 0) with hg_def

@@ -63,7 +63,6 @@ theorem existsUnique_valuationRing_lift : ∀ (O V C : Type) [CommRing O] [CommR
   obtain ⟨u⟩ := hv S
   refine ⟨u.default.l, ⟨u.default.fac_left, u.default.fac_right⟩, ?_⟩
   rintro y' ⟨h1, h2⟩
-  have := u.uniq ⟨y', h1, h2⟩
-  exact congrArg CommSq.LiftStruct.l this
+  exact congrArg CommSq.LiftStruct.l (u.uniq ⟨y', h1, h2⟩)
 
 end GlobalTheory.CompanionTheory.Ar.Flat

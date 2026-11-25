@@ -16,8 +16,7 @@ theorem dmin_ne {x : Frame X.Ψ r} (hx : x ∈ X.dom) (τ : X.Ψ) (i : Fin (r + 
     dmin X.Gm x τ i ≠ 0 := by
   intro h
   have h1 := (hx τ).2 i
-  rw [h] at h1
-  simp at h1
+  simp [h] at h1
 
 theorem nfac_pos {x : Frame X.Ψ r} (hx : x ∈ X.dom) (la : Wt X.Ψ r) : 0 < X.nfac la x := by
   unfold Data.nfac
@@ -152,8 +151,7 @@ theorem fj_bound (la : Wt X.Ψ r) (P : Frame X.Ψ r → ℂ) (C : ℝ)
 theorem herm_of_LZ {g : ℕ} {b : X.Ψ → Fin 2 → Fin 2 → ℂ} (hb : b ∈ X.LZ g) : IsHermFam b := by
   obtain ⟨β, hβ, -, he⟩ := hb
   intro τ i k
-  rw [he]
-  simp only [Data.embH]
+  simp only [he, Data.embH]
   rw [← hβ i k, cc, IsCMField.complexEmbedding_complexConj]
 
 theorem herm_sum {n : ℕ} (ω : Fin n → X.Ψ → Fin 2 → Fin 2 → ℂ) (hω : ∀ j, IsHermFam (ω j))

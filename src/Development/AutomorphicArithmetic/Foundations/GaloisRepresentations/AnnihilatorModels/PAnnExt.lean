@@ -82,8 +82,7 @@ theorem UpperTheory.Gal.crystallineComparison.annExt_of :
       exact Submodule.mem_map_of_mem hx
     apply (AlgebraTensorModule.assoc F F L L V B).injective
 
-    rw [map_sum, map_zero]
-    simp only [map_zsmul, comm]
+    simp only [map_sum, map_zero, map_zsmul, comm]
     obtain ⟨z, hz⟩ := Submodule.toBaseChange_surjective' L (Dinv σ ρ) hmem
     rw [← hz]
     clear hz hmem

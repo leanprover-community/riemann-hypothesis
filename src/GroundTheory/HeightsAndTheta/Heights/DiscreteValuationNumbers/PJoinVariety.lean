@@ -70,14 +70,12 @@ theorem JoinVariety.proof : JoinVariety.Statement := by
       have h1 : (optionEquivLeft F (Σ k, ι k)).symm (Polynomial.C (C r)) = C r := by
         rw [AlgEquiv.symm_apply_eq]; simp
       show renameEquiv F varEquiv ((optionEquivLeft F (Σ k, ι k)).symm (Polynomial.C (C r))) = _
-      rw [h1]
-      simp
+      simp [h1]
     · intro s
       have h1 : (optionEquivLeft F (Σ k, ι k)).symm (Polynomial.C (X s)) = X (some s) := by
         rw [AlgEquiv.symm_apply_eq]; simp
       show renameEquiv F varEquiv ((optionEquivLeft F (Σ k, ι k)).symm (Polynomial.C (X s))) = _
-      rw [h1]
-      simp [varEquiv]
+      simp [h1, varEquiv]
   have hV' : V' = (V.map (Polynomial.C : MvPolynomial (Σ k, ι k) F →+* Polynomial (MvPolynomial (Σ k, ι k) F))).map (Φ : Polynomial (MvPolynomial (Σ k, ι k) F) →+* _) := by
     rw [Ideal.map_map, hΦC]
     rfl
@@ -115,8 +113,7 @@ theorem JoinVariety.proof : JoinVariety.Statement := by
   · rintro (k | u)
     · obtain ⟨i, hi⟩ := hrel k
       refine ⟨i, fun h => hi ?_⟩
-      have := hmem _ h
-      simpa [retr] using this
+      simpa [retr] using hmem _ h
     · refine ⟨(0 : Fin 1), fun h => hprime.ne_top ?_⟩
       have := hmem _ h
       rw [Ideal.eq_top_iff_one]

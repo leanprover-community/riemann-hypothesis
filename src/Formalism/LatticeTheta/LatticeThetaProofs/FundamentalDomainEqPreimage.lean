@@ -21,8 +21,7 @@ variable {ι : Type*} [Fintype ι]
 abbrev boxIco (ι : Type*) : Set (ι → ℝ) := Set.univ.pi fun _ => Set.Ico (0 : ℝ) 1
 
 theorem volume_boxIco : volume (boxIco ι) = 1 := by
-  rw [volume_pi_pi]
-  simp [Real.volume_Ico]
+  simp [volume_pi_pi, Real.volume_Ico]
 
 theorem fundamentalDomain_eq_preimage (e : Module.Basis ι ℝ V) :
     ZSpan.fundamentalDomain e = e.equivFunL ⁻¹' boxIco ι := by

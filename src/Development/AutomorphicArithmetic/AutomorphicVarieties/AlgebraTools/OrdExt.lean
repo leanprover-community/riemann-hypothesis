@@ -66,5 +66,4 @@ theorem UpperTheory.V.AlgebraTools.ord_ext :
     convert h v using 3
     funext i
     simp [φ, MonoidAlgebra.lift_single]
-  have := congrArg (fun G => G z) hF
-  simpa [F, φ] using this
+  simpa [F, φ] using congrArg (fun G => G z) hF

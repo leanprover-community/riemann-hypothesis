@@ -80,7 +80,7 @@ theorem val_root_eq_one {Ω : Type} [Field Ω] (A : ValuationSubring Ω) {n : �
   · exact h'
   · exact absurd h (one_lt_pow₀ h' hn0).ne'
 
-theorem main : ∀ {Ω : Type} [Field Ω] (A : ValuationSubring Ω) (n : ℕ),
+theorem main : ∀ {Ω : Type} [inst : Field Ω] (A : ValuationSubring Ω) (n : ℕ),
     ¬(ValuationSubring.valuation A : Ω → ValuationSubring.ValueGroup A) (↑n : Ω) < (1 : ValuationSubring.ValueGroup A) →
     ∀ {ξ ξ' : Ω}, ξ ^ n = (1 : Ω) → ξ' ^ n = (1 : Ω) →
     (ValuationSubring.valuation A : Ω → ValuationSubring.ValueGroup A) (ξ - ξ') < (1 : ValuationSubring.ValueGroup A) → ξ = ξ' := by

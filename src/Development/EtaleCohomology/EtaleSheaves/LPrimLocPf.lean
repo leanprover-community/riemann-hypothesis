@@ -61,8 +61,7 @@ section Alg
 variable {q : ℕ} [NeZero q] {A : Type} [CommRing A]
 
 theorem prim_pow_q (ζ : Prim q A) : ζ.1 ^ q = 1 := by
-  have h := Polynomial.cyclotomic.dvd_X_pow_sub_one q ℤ
-  obtain ⟨r, hr⟩ := h
+  obtain ⟨r, hr⟩ := Polynomial.cyclotomic.dvd_X_pow_sub_one q ℤ
   have h2 := congrArg (Polynomial.aeval ζ.1) hr
   rw [map_mul, ζ.2.2, zero_mul, map_sub, map_pow, Polynomial.aeval_X, map_one] at h2
   exact sub_eq_zero.1 h2

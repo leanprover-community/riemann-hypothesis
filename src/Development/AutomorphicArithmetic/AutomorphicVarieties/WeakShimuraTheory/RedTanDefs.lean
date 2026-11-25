@@ -66,7 +66,7 @@ noncomputable def UpperTheory.Reformulated.B.Qk42.FGe :
       ∀ (i j : Fin (4 : ℕ)), m i - m j < p → X i j = (0 : R)
 
 theorem UpperTheory.Reformulated.B.Qk42.mul :
-    ∀ {R : Type} [CommRing R] {m : Fin (4 : ℕ) → ℤ} {p q : ℤ} {A B : UpperTheory.Reformulated.B.Qk42.M4 R},
+    ∀ {R : Type} [inst : CommRing R] {m : Fin (4 : ℕ) → ℤ} {p q : ℤ} {A B : UpperTheory.Reformulated.B.Qk42.M4 R},
       UpperTheory.Reformulated.B.Qk42.FGe m p A → UpperTheory.Reformulated.B.Qk42.FGe m q B → UpperTheory.Reformulated.B.Qk42.FGe m (p + q) (A * B) := by
   intro R _ m p q A B hA hB i j hij
   rw [Matrix.mul_apply]

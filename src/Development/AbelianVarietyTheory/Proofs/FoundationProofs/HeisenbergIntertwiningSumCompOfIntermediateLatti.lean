@@ -84,11 +84,10 @@ theorem sumOp_comp_of_between : ∀ {R X M : Type} [CommRing R] [AddCommGroup X]
     refine ⟨(j, i), by simpa [sub_add_eq_sub_sub] using hi, ?_⟩
     rintro ⟨j', i'⟩ hp
     have hp' : x - (g j' + f i') ∈ A := hp
-    have h1 : x - (g j' + f i') ∈ B := hAC _ hp' (C.sub_mem hx (hkC (j', i')))
     have h2 : x - g j' ∈ B := by
       have e : x - g j' = (x - (g j' + f i')) + f i' := by abel
       rw [e]
-      exact B.add_mem h1 (hfB i')
+      exact B.add_mem (hAC _ hp' (C.sub_mem hx (hkC (j', i')))) (hfB i')
     obtain rfl : j' = j := hju j' h2
     obtain rfl : i' = i := hiu i' (by simpa [sub_add_eq_sub_sub] using hp')
     rfl

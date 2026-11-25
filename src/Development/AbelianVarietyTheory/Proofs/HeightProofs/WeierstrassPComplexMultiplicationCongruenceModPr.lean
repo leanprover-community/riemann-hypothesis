@@ -169,7 +169,7 @@ namespace GlobalTheory.ThreeDistinctRoots
 open Polynomial
 
 theorem three_distinct_roots :
-    ∀ {K : Type} [Field K] [IsAlgClosed K] (g₂ g₃ : K), (2 : K) ≠ (0 : K) →
+    ∀ {K : Type} [inst : Field K] [IsAlgClosed K] (g₂ g₃ : K), (2 : K) ≠ (0 : K) →
       g₂ ^ (3 : ℕ) - (27 : K) * g₃ ^ (2 : ℕ) ≠ (0 : K) →
       ∃ (x : K) (y : K) (z : K), x ≠ y ∧ x ≠ z ∧ y ≠ z ∧
         (4 : K) * x ^ (3 : ℕ) - g₂ * x - g₃ = (0 : K) ∧

@@ -148,8 +148,7 @@ theorem det_ptMatN_app (c : ℂ) (H : C.LPt) (n : ℕ) (hn : D.ptSize H = n) :
   refine ⟨?_, ?_⟩
   · rw [Matrix.det_succ_row _ (Fin.last _), Finset.sum_eq_single (Fin.last _)]
     · simp only [Fin.val_last, Fin.succAbove_last]
-      rw [hsub]
-      simp only [D.ptMatN, Fin.val_last, ptEntry_app_last]
+      simp only [hsub, D.ptMatN, Fin.val_last, ptEntry_app_last]
       simp
     · intro j _ hj
       have hj' : (j : ℕ) < D.ptSize H := by
@@ -221,8 +220,7 @@ theorem cutWord_of_adm (S : C.HidaSetting E Wp Wq) (hG : C.GridsOK S) (hC : KB.C
         rcases Finset.mem_union.1 h1 with h | h
         · exact Or.inl ⟨_, h⟩
         · exact Or.inr h
-      have := hcut _ (hnode _ hy).2.1
-      simpa using this
+      simpa using hcut _ (hnode _ hy).2.1
   · have h2 := hA.2 v a b a.isLt b.isLt (fun h => hab (Fin.ext h)) 0 (by norm_num) (by norm_num)
     simpa using h2
 

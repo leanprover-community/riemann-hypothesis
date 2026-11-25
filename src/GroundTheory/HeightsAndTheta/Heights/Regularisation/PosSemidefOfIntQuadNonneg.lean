@@ -58,8 +58,7 @@ theorem analyticAt_of_exp_eq {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ
     have h1 : |(m : ℝ)| < 1 := by nlinarith
     rw [← Int.cast_abs] at h1
     exact Int.abs_lt_one_iff.mp (by exact_mod_cast h1)
-  rw [hm, hm0]
-  simp
+  simp [hm, hm0]
 
 theorem exists_analytic_log {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] {U : Set E}
     (hU : IsOpen U) (hc : Convex ℝ U) (hne : U.Nonempty) {h : E → ℂ} (hh : AnalyticOnNhd ℂ h U)
@@ -297,8 +296,7 @@ theorem polarise {g : ℕ} (M : Matrix (Fin g) (Fin g) ℂ) (hM : Mᵀ = M) (p q
     funext k
     simp
   have hqp : M q p = M p q := by
-    have := congrFun (congrFun hM p) q
-    simpa [transpose_apply] using this
+    simpa [transpose_apply] using congrFun (congrFun hM p) q
   rw [hadd, hc p, hc q]
   simp only [mulVec_add, dotProduct_add, add_dotProduct, mulVec_single_one, single_one_dotProduct,
     col_apply, hqp]

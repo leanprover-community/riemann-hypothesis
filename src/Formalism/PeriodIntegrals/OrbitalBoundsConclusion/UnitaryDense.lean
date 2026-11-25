@@ -305,8 +305,7 @@ theorem framesDense_of (hs : SVDStep) (hg : GramStep) : PI.FramesDense := by
   rw [map_zero]
   have h4 := eval_bind_leftSubst (fun τ => (C τ)⁻¹) P
     (fun τ => C τ * Matrix.of fun i j => x (τ, i, j))
-  rw [h0, map_zero] at h4
-  simp only [← Matrix.mul_assoc, hiC, Matrix.one_mul, Matrix.of_apply] at h4
+  simp only [h0, map_zero, ← Matrix.mul_assoc, hiC, Matrix.one_mul, Matrix.of_apply] at h4
   exact h4.symm
 
 end PI.UD

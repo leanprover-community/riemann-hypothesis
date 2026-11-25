@@ -74,9 +74,8 @@ theorem dense_ne_zero [FiniteDimensional ℂ E] {f : E → ℂ} (hf : Differenti
   by_contra h
   rw [Filter.not_frequently] at h
   apply h0
-  have h1 : f =ᶠ[𝓝 x] (fun _ => (0 : ℂ)) := h.mono fun y hy => by simpa using hy
   have := GlobalTheory.SCV.eqOn_of_eventuallyEq isOpen_univ isPreconnected_univ hf.differentiableOn
-    (differentiableOn_const (0 : ℂ)) (Set.mem_univ x) h1
+    (differentiableOn_const (0 : ℂ)) (Set.mem_univ x) (h.mono fun y hy => by simpa using hy)
   funext y
   exact this (Set.mem_univ y)
 
@@ -87,9 +86,8 @@ theorem exists_entire_quotient {θ D : E → ℂ} (hU : Dense {x | θ x ≠ 0})
   refine ⟨fun a => φ a a, fun a => ?_, fun x => (hφ x).self_of_nhds.2⟩
   have key : (fun x => φ x x) =ᶠ[𝓝 a] φ a := by
     filter_upwards [(hφ a).eventually_nhds] with x hx
-    have hfr : ∃ᶠ y in 𝓝 x, y ∈ {x | θ x ≠ 0} := mem_closure_iff_frequently.mp (hU x)
     have hfr2 : ∃ᶠ y in 𝓝 x, φ x y = φ a y := by
-      refine (hfr.and_eventually (hx.and (hφ x))).mono ?_
+      refine ((mem_closure_iff_frequently.mp (hU x)).and_eventually (hx.and (hφ x))).mono ?_
       rintro y ⟨hy, ⟨-, h1⟩, -, h2⟩
       exact mul_right_cancel₀ hy (h2.symm.trans h1)
     exact tendsto_nhds_unique_of_frequently_eq (hφ x).self_of_nhds.1.continuousAt
@@ -116,8 +114,7 @@ theorem exists_unit_of_three_term [FiniteDimensional ℂ E] {θ : E → ℂ} (h�
   have hU' : ∀ (p : E) (c : ℂ), c ≠ 0 → Dense {x | θ (p - c • x) ≠ 0} := by
     intro p c hc
     refine dense_ne_zero (f := fun x => θ (p - c • x)) (hθ.comp (by fun_prop)) fun h => hx₀ ?_
-    have := congrFun h (c⁻¹ • (p - x₀))
-    simpa [smul_smul, hc] using this
+    simpa [smul_smul, hc] using congrFun h (c⁻¹ • (p - x₀))
   obtain ⟨ψ, hψ, hDψ⟩ := exists_entire_quotient (D := D) hU (by
     intro a
     obtain ⟨b, hb1, hb2⟩ := ((hU' (s - a) k hk0).inter_of_isOpen_right hU hUo).nonempty
@@ -227,8 +224,7 @@ theorem level_three_separates_tangent_vectors :
         have e : (fun x => θ (x + (a - z)) * θ (x + (b - z)) ^ (m + 1) * θ (x + (c - z)))
           = ((fun x => θ (x + (a - z))) * (fun x => θ (x + (b - z)) ^ (m + 1)))
             * fun x => θ (x + (c - z)) := rfl
-        rw [e, hD] at key
-        simp at key
+        simp [e, hD] at key
         linear_combination key
       · intro n n' x
         have e : ∀ p : Fin g → ℂ, x + τ *ᵥ ofIntVec n + ofIntVec n' + p

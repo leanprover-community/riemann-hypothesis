@@ -158,8 +158,7 @@ theorem gram_leading_minor_lower_bound :
   let Cz : Matrix (Fin N) (Fin j) ℤ := γ.submatrix id E
   have hGram : ((g * Γ)ᵀ * (g * Γ)).submatrix E E = Cᵀ * (gᵀ * g) * C := by
     have e1 : (g * Γ)ᵀ * (g * Γ) = Γᵀ * (gᵀ * g) * Γ := by
-      rw [transpose_mul]
-      simp only [Matrix.mul_assoc]
+      simp only [transpose_mul, Matrix.mul_assoc]
     rw [e1, Matrix.submatrix_mul _ _ E id E Function.bijective_id,
       Matrix.submatrix_mul _ _ E id id Function.bijective_id, submatrix_id_id, transpose_submatrix]
   have hsplit : Cᵀ * (gᵀ * g) * C = k • (Cᵀ * C) + Cᵀ * (gᵀ * g - k • 1) * C := by

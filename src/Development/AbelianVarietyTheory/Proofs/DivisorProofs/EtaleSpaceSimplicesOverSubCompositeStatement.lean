@@ -75,8 +75,7 @@ theorem res_along {E : Spc} {U V : Scheme.{0}} {N p : ℕ} (x : Sx E N U) (g : V
 theorem map_along {E E' : Spc} {U : Scheme.{0}} {N p : ℕ} (x : Sx E N U) (f : E ⟶ E')
     (a : SimplexCategory.mk p ⟶ SimplexCategory.mk N) : (x.map f).along a = (x.along a).map f := by
   unfold Sx.along Sx.map
-  have := f.naturality a.op
-  have h2 := congrArg (fun φ => φ.app (op U)) this
+  have h2 := congrArg (fun φ => φ.app (op U)) (f.naturality a.op)
   simp only [NatTrans.comp_app] at h2
   exact (congrFun (congrArg (fun φ => (ConcreteCategory.hom φ : _ → _)) h2) x).symm
 

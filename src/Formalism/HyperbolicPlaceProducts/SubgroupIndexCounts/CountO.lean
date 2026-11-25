@@ -126,9 +126,8 @@ theorem exists_gen_mod (P : Ideal R) [hPm : P.IsMaximal] (hP : P ≠ ⊥) {X : T
       rw [h2]
       refine Submodule.neg_mem _ (Submodule.sum_mem _ fun i hi =>
         Submodule.smul_mem _ _ (Submodule.subset_span ?_))
-      have hne : i ≠ i0 := Finset.ne_of_mem_erase hi
       simp only [s', Finset.coe_erase, Set.mem_sdiff, Finset.mem_coe, Set.mem_singleton_iff]
-      exact ⟨i.2, fun h => hne (Subtype.ext h)⟩
+      exact ⟨i.2, fun h => (Finset.ne_of_mem_erase hi) (Subtype.ext h)⟩
     have h3 : (i0 : X) = a • (d i0 • (i0 : X)) + b • (i0 : X) := by
       rw [smul_smul, ← add_smul, hab, one_smul]
     rw [h3]
@@ -354,12 +353,10 @@ theorem mul_count {a b : ℕ} (hab : a.Coprime b) (ha : 0 < a) (hb : 0 < b)
     have l2 : i2 ≤ b := Nat.le_of_dvd hb d2
     have e1 : i1 = a := by
       refine le_antisymm l1 ?_
-      have : a * b ≤ i1 * b := hle.trans (Nat.mul_le_mul_left _ l2)
-      exact Nat.le_of_mul_le_mul_right this hb
+      exact Nat.le_of_mul_le_mul_right (hle.trans (Nat.mul_le_mul_left _ l2) : a * b ≤ i1 * b) hb
     have e2 : i2 = b := by
       refine le_antisymm l2 ?_
-      have : a * b ≤ a * i2 := hle.trans (Nat.mul_le_mul_right _ l1)
-      exact Nat.le_of_mul_le_mul_left this ha
+      exact Nat.le_of_mul_le_mul_left (hle.trans (Nat.mul_le_mul_right _ l1) : a * b ≤ a * i2) ha
     exact ⟨e1, e2⟩
   have hinj : Set.InjOn F (idxSet R X (a * b)) := by
     intro N₁ h₁ N₂ h₂ h
@@ -406,8 +403,7 @@ theorem mem_of_card_dvd {P : Ideal (𝓞 E)} [P.IsMaximal] {p e : ℕ}
     have hdvd : ℓ ∣ Nat.card (𝓞 E ⧸ P) := by
       rw [Nat.card_eq_fintype_card, hn]
       exact dvd_pow_self ℓ (PNat.ne_zero n)
-    have h2 : ℓ ∣ p := hℓp.dvd_of_dvd_pow (dvd_trans hdvd h)
-    exact (CharP.cast_eq_zero_iff (𝓞 E ⧸ P) ℓ p).2 h2
+    exact (CharP.cast_eq_zero_iff (𝓞 E ⧸ P) ℓ p).2 (hℓp.dvd_of_dvd_pow (dvd_trans hdvd h))
   · haveI : Infinite (𝓞 E ⧸ P) := not_finite_iff_infinite.1 hfin
     rw [Nat.card_eq_zero_of_infinite] at h
     have h0 : p ^ e = 0 := zero_dvd_iff.1 h

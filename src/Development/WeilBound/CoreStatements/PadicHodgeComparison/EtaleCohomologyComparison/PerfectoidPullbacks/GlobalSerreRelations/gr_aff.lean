@@ -627,9 +627,9 @@ def restrictVB (hUW : ∀ α, U α ≤ W) (V : VB str U K) :
 
 end Restrict
 
-theorem subsingleton_H : ∀ {O : Type} [CommRing O] {X : Scheme.{0}} (str : ∀ W : X.Opens, O →+* Γ(X, W)) (W : X.Opens) (_ : IsAffineOpen W)
-    {ι : Type} [Fintype ι] (U : ι → X.Opens) (_ : (⨆ α, U α) = W) (_ : ∀ n (i : Fin (n + 1) → ι), IsAffineOpen (capO U i))
-    (K : Cos.{1} O) (_ : VB str U K) (p : ℕ), Subsingleton (K.cx.H (p + 1)) := by
+theorem subsingleton_H : ∀ {O : Type} [CommRing O] {X : Scheme.{0}} (str : ∀ W : X.Opens, O →+* Γ(X, W)) (W : X.Opens) (hW : IsAffineOpen W)
+    {ι : Type} [Fintype ι] (U : ι → X.Opens) (hU : (⨆ α, U α) = W) (ha : ∀ n (i : Fin (n + 1) → ι), IsAffineOpen (capO U i))
+    (K : Cos.{1} O) (V : VB str U K) (p : ℕ), Subsingleton (K.cx.H (p + 1)) := by
   intro O _ X str W hW ι _ U hU ha K V p
   haveI : IsAffine W.toScheme := hW
   have hUW (α : ι) : U α ≤ W := hU ▸ le_iSup U α
@@ -848,7 +848,7 @@ theorem cech_pos (hB : StVB) {O : Type} [CommRing O] (l s : ℕ) (hb : TFBase (d
 
 
 theorem main (hV : StVan) (hB : StVB) (hC : StCover) : KH.GlobSerreSt → ∀ {K : Type} [Field K] [CharZero K] {X : Scheme.{0}} (q : X ⟶ Spec (CommRingCat.of K)) [Smooth q]
-    (V : X.Opens) (_ : IsAffineOpen V) (s r j : ℕ), r < s → j ≠ r → Subsingleton (HQ (KS q s {V}) r ((r : ℤ) + 1) j) := by
+    (V : X.Opens) (hV : IsAffineOpen V) (s r j : ℕ), r < s → j ≠ r → Subsingleton (HQ (KS q s {V}) r ((r : ℤ) + 1) j) := by
   intro hS K _ _ X q _ V hVa s r j hr hj
   have hs : 0 < s := by omega
   have hb : TFBase (dividedPowersBot K) 1 s := tfBase hs
@@ -879,7 +879,7 @@ end GlobalTheory.CompanionTheory.GrForm
 namespace GlobalTheory.CompanionTheory.GrForm
 
 theorem gr_aff : KH.LocGr → KH.LocVan → KH.PolyTf → KH.GlobSerreSt → KH.GlobVanSt → ∀ {K : Type} [Field K] [CharZero K] {X : Scheme.{0}} (q : X ⟶ Spec (CommRingCat.of K)) [Smooth q]
-    (V : X.Opens) (_ : IsAffineOpen V) (s r j : ℕ), r < s → j ≠ r → Subsingleton (HQ (KS q s {V}) r ((r : ℤ) + 1) j) := fun hL _ hP hS _ =>
+    (V : X.Opens) (hV : IsAffineOpen V) (s r j : ℕ), r < s → j ≠ r → Subsingleton (HQ (KS q s {V}) r ((r : ℤ) + 1) j) := fun hL _ hP hS _ =>
   main (_root_.GlobalTheory.CompanionTheory.GrForm.van _root_.GlobalTheory.CompanionTheory.GrForm.stFrame hL hP)
     (_root_.GlobalTheory.CompanionTheory.GrVB.main (_root_.GlobalTheory.CompanionTheory.GrForm.exists_of_cocycle _root_.GlobalTheory.CompanionTheory.GrForm.stCocycle) _root_.GlobalTheory.CompanionTheory.GrForm.stAdd _root_.GlobalTheory.CompanionTheory.GrFormSmul.stSmul _root_.GlobalTheory.CompanionTheory.GrForm.stRes _root_.GlobalTheory.CompanionTheory.GrForm.stAct (_root_.GlobalTheory.CompanionTheory.GrForm.stLoc _root_.GlobalTheory.CompanionTheory.GrForm.stFrame hL hP))
     _root_.GlobalTheory.CompanionTheory.GrForm.AffCover.stCover hS

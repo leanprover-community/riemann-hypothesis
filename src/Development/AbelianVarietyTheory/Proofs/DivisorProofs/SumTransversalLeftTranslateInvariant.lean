@@ -60,8 +60,7 @@ theorem sum_transversal_left_translate_invariant :
     rw [heq] at h1
     set r' := Classical.choose (hU (k * a₂) (hkH a₂ ha₂)).exists
     have hm : a₁⁻¹ * a₂ ∈ K := by
-      have := K.mul_mem (K.inv_mem h1) h2
-      simpa [mul_assoc] using this
+      simpa [mul_assoc] using K.mul_mem (K.inv_mem h1) h2
     exact (hU a₂ (hR a₂ ha₂)).unique (y₁ := a₁) (y₂ := a₂) ⟨ha₁, hm⟩ ⟨ha₂, by simpa using K.one_mem⟩
   · intro b hb
     have hb' : k⁻¹ * b ∈ H := H.mul_mem (H.inv_mem hk) (hR b hb)
@@ -69,8 +68,7 @@ theorem sum_transversal_left_translate_invariant :
     refine ⟨a, ha, ?_⟩
     have hs := Classical.choose_spec (hU (k * a) (hkH a ha)).exists
     have hbK : b⁻¹ * (k * a) ∈ K := by
-      have := K.inv_mem haK
-      simpa [mul_assoc] using this
+      simpa [mul_assoc] using K.inv_mem haK
     exact (hU (k * a) (hkH a ha)).unique hs ⟨hb, hbK⟩
   · intro a ha
     have hs := Classical.choose_spec (hU (k * a) (hkH a ha)).exists

@@ -449,7 +449,7 @@ theorem eventually_map_eq_zero_finite (hc : IsColimit c) {k : J} {κ : Type} [Fi
     · exact (h k' f).2 i hi
 
 theorem exists_stage_rep (hc : IsColimit c) (k₁ : J) {ι : Type} [Finite ι] (t : ι → c.pt) :
-    ∃ (K : J) (_ : k₁ ⟶ K) (u : ι → F.obj K), ∀ i, (c.ι.app K).hom (u i) = t i := by
+    ∃ (K : J) (h : k₁ ⟶ K) (u : ι → F.obj K), ∀ i, (c.ι.app K).hom (u i) = t i := by
   classical
   have hc' := isColimitOfPreserves (forget _) hc
   choose jx x hx using fun i : ι => Types.jointly_surjective_of_isColimit hc' (t i)

@@ -150,12 +150,11 @@ theorem ringKrullDim_quotient_eq_trdeg_of_mem_minimalPrimes_natPrime (A : Type) 
   have : FaithfulSMul ℤ A := (faithfulSMul_iff_algebraMap_injective _ _).mpr
     (by rw [algebraMap_int_eq]; exact Int.cast_injective)
   have hq' : q ∈ (Ideal.span {algebraMap ℤ A (l : ℤ)}).minimalPrimes := by simpa using hq
-  have hlq : (l : A) ∈ q := hq.1.2 (Ideal.mem_span_singleton_self _)
   have hle : RingHom.ker (algebraMap ℤ (ZMod l)) ≤ RingHom.ker (algebraMap ℤ (A ⧸ q)) := by
     rw [hker, Ideal.span_singleton_le_iff_mem, RingHom.mem_ker,
       IsScalarTower.algebraMap_apply ℤ A (A ⧸ q), Ideal.Quotient.algebraMap_eq,
       Ideal.Quotient.eq_zero_iff_mem]
-    simpa using hlq
+    simpa using hq.1.2 (Ideal.mem_span_singleton_self _)
   let := ((algebraMap ℤ (ZMod l)).liftOfSurjective hk ⟨_, hle⟩).toAlgebra
   have : IsScalarTower ℤ (ZMod l) (A ⧸ q) := IsScalarTower.of_algebraMap_eq fun x ↦
     (RingHom.liftOfSurjective_comp_apply _ hk ⟨_, hle⟩ x).symm

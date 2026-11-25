@@ -277,17 +277,15 @@ theorem t_PoissonJoint : PoissonJoint := by
     rw [Finset.sum_image]
     · rw [← Finset.sum_attach]; refine Finset.sum_congr rfl (fun t _ => ?_); simp [map_sub]
     · intro a _ b _ h
-      have h2 : emb (a.1 - t₀) = emb (b.1 - t₀) := congrArg Subtype.val h
-      have h3 := hinj h2
+      have h3 := hinj (congrArg Subtype.val h)
       exact Subtype.ext (by simpa using h3)
   rw [h1]
   refine (hP S').trans ?_
   unfold F7.poissonBound
-  have hre : (F 0).re ≤ ‖F 0‖ := Complex.re_le_norm _
   have hn0 : ‖nh 0‖ = (ZLattice.covolume Λ)⁻¹ * ‖F 0‖ := by
     rw [hnh, hd0, norm_mul, norm_inv, Complex.norm_real, Real.norm_of_nonneg hcv.le]
   rw [hn0, mul_add]
-  refine add_le_add (mul_le_mul_of_nonneg_left hre (inv_nonneg.2 hcv.le)) ?_
+  refine add_le_add (mul_le_mul_of_nonneg_left (Complex.re_le_norm _) (inv_nonneg.2 hcv.le)) ?_
   rw [inv_mul_le_iff₀ hcv]
   exact hts
 

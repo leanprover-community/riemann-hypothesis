@@ -27,8 +27,7 @@ theorem uh_mul {g h : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ}
     (hh : hᴴ * Hpk k r * h = Hpk k r) (hg : gᴴ * Hpk k r * g = Hpk k r) :
     (h * g)ᴴ * Hpk k r * (h * g) = Hpk k r := by
   calc (h * g)ᴴ * Hpk k r * (h * g) = gᴴ * (hᴴ * Hpk k r * h) * g := by
-        rw [Matrix.conjTranspose_mul]
-        simp only [Matrix.mul_assoc]
+        simp only [Matrix.conjTranspose_mul, Matrix.mul_assoc]
     _ = Hpk k r := by rw [hh, hg]
 
 theorem sigma_mul {ε : Fin (2 * r + k + 1) → Bool} {lam : Fin (2 * r + k + 1) → ℝ}

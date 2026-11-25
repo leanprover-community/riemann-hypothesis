@@ -106,7 +106,6 @@ variable {F E : Type} [Field F] [NumberField F] [Field E] [Algebra F E]
 
 theorem bc_mem_UPts (σ : E →ₐ[F] E) (J : Matrix n n E) (R : Type) [CommRing R] [Algebra F R]
     (g : UJ (σ : E →+* E) J) : bc (inclE (F := F) R) (g : GL n E) ∈ UPts σ J R := by
-  have hg : cT (σ : E →+* E) ((g : GL n E) : Matrix n n E) * J * ((g : GL n E) : Matrix n n E) = J := g.2
   show cT (sigR σ R) ((inclE (F := F) R).mapMatrix ((g : GL n E) : Matrix n n E)) * J.map (inclE (F := F) R) *
     (inclE (F := F) R).mapMatrix ((g : GL n E) : Matrix n n E) = J.map (inclE (F := F) R)
   have key : cT (sigR σ R) ((inclE (F := F) R).mapMatrix ((g : GL n E) : Matrix n n E)) =
@@ -114,7 +113,7 @@ theorem bc_mem_UPts (σ : E →ₐ[F] E) (J : Matrix n n E) (R : Type) [CommRing
     first
     | (unfold cT; ext i j; simp [sigR, inclE]; done)
   rw [key]
-  have h2 := congrArg (inclE (F := F) R).mapMatrix hg
+  have h2 := congrArg (inclE (F := F) R).mapMatrix g.2
   simpa only [map_mul, RingHom.mapMatrix_apply] using h2
 
 def ratHom (σ : E →ₐ[F] E) (J : Matrix n n E) (R : Type) [CommRing R] [Algebra F R] :

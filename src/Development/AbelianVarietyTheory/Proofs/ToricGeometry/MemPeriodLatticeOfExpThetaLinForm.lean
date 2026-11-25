@@ -99,8 +99,7 @@ theorem linForm_eq_dotProduct {g : ℕ} (lam : (Fin g → ℂ) →ₗ[ℂ] ℂ) 
     lam z = (fun i => lam (Pi.single i 1)) ⬝ᵥ z := by
   conv_lhs => rw [← Finset.univ_sum_single z]
 
-  rw [map_sum]
-  simp only [dotProduct]
+  simp only [map_sum, dotProduct]
   refine Finset.sum_congr rfl fun i _ => ?_
   have hs : (Pi.single i (z i) : Fin g → ℂ) = z i • Pi.single i 1 := by
     ext j

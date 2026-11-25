@@ -61,11 +61,9 @@ theorem isTest_coord : ∀ (F E : Type) [NontriviallyNormedField F] [Nontriviall
   have hf : ∀ p, f p = cc A e p := fun p => rfl
   have hg : ∀ y, g y = ci A e y := fun y => rfl
   have cf : Continuous (cc A e) := by
-    have := IsModuleTopology.continuous_of_linearMap f
-    simpa [funext hf] using this
+    simpa [funext hf] using IsModuleTopology.continuous_of_linearMap f
   have cg : Continuous (ci A e) := by
-    have := IsModuleTopology.continuous_of_linearMap g
-    simpa [funext hg] using this
+    simpa [funext hg] using IsModuleTopology.continuous_of_linearMap g
   let H : (A.K × A.K) ≃ₜ A.L :=
     { toFun := cc A e, invFun := ci A e, left_inv := h1, right_inv := h2,
       continuous_toFun := cf, continuous_invFun := cg }

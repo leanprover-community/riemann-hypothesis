@@ -72,8 +72,7 @@ theorem le_nuStar_iff (p : R) (U : Set R) (tr n : ℕ) :
 
 theorem exists_eq_nuStar {p : R} {U : Set R} (hU : U.Nonempty) (tr : ℕ) :
     ∃ u ∈ U, emultiplicity p (u ^ tr - 1) = nuStar p U tr := by
-  have h := csInf_mem (hU.image (fun u => emultiplicity p (u ^ tr - 1)))
-  obtain ⟨u, hu, e⟩ := h
+  obtain ⟨u, hu, e⟩ := csInf_mem (hU.image (fun u => emultiplicity p (u ^ tr - 1)))
   exact ⟨u, hu, e⟩
 
 theorem exists_exact_of_nuStar_eq {p : R} {U : Set R} {tr ν : ℕ} (h : nuStar p U tr = ν) :
@@ -163,8 +162,7 @@ theorem le_nu_iff {U : Subgroup ℤ_[l]ˣ} {tr n : ℕ} :
 
 theorem le_nu_iff_pow_mem_princ {U : Subgroup ℤ_[l]ˣ} {tr n : ℕ} :
     (n : ℕ∞) ≤ nu l U tr ↔ ∀ u ∈ U, u ^ tr ∈ princ l n := by
-  rw [le_nu_iff]
-  simp only [mem_princ, Units.val_pow_eq_pow_val]
+  simp only [le_nu_iff, mem_princ, Units.val_pow_eq_pow_val]
 
 theorem mem_twistInv {A : Type*} [AddCommGroup A] [Module ℤ_[l] A] {U : Subgroup ℤ_[l]ˣ} {tr : ℕ}
     {x : A} : x ∈ twistInv l A U tr ↔ ∀ u ∈ U, ((u : ℤ_[l]) ^ tr) • x = x := Iff.rfl

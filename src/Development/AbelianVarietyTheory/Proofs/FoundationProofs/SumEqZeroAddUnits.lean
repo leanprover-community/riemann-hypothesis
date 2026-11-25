@@ -94,8 +94,7 @@ theorem card_eq_sq {k : Type} [Field k] [Fintype k] (s : k →+* k) (hs : ∀ x,
         rwa [AddMonoidHom.mem_ker, hT, sub_eq_zero] at this
       rw [hT, map_mul, hu]; ring
     · intro u v huv
-      have := congrArg Subtype.val huv
-      exact Subtype.ext (mul_left_cancel₀ hr this)
+      exact Subtype.ext (mul_left_cancel₀ hr (congrArg Subtype.val huv))
     · rintro ⟨_, t, rfl⟩
       refine ⟨⟨(s t - t) / (s r - r), ?_⟩, ?_⟩
       · rw [AddMonoidHom.mem_ker, hT, sub_eq_zero, map_div₀, hθ, map_sub, hs]
@@ -199,8 +198,7 @@ theorem gauss_field {k : Type} [Field k] [Fintype k] (s : k →+* k) (hs : ∀ x
     rw [hqdef, hadef, Finset.card_filter, Finset.card_filter, this, ite_eq_left (map_zero s)]
   have ha : 0 < a := Finset.card_pos.2 ⟨1, by simp⟩
   have hcard : Fintype.card k = 1 + Fintype.card kˣ := by
-    have := sum_eq_zero_add_units (fun _ : k => (1 : ℕ))
-    simpa using this
+    simpa using sum_eq_zero_add_units (fun _ : k => (1 : ℕ))
   have hmq : m = q + 1 := by
     apply Nat.eq_of_mul_eq_mul_right ha
     rw [hm, hq, hqa] at hcard

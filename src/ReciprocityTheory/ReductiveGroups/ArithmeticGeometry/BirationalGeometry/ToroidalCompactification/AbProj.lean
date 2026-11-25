@@ -34,13 +34,11 @@ theorem isProper_str (R : Type) [CommRing R] (N : ℕ) : IsProper (PSpace.str R 
       (algebraMap R ↥(MvPolynomial.homogeneousSubmodule (Fin (N + 1)) R 0)) := by
     constructor
     · intro a b hab
-      have := congrArg Subtype.val hab
-      exact MvPolynomial.C_injective _ _ this
+      exact MvPolynomial.C_injective _ _ (congrArg Subtype.val hab)
     · rintro ⟨p, hp⟩
       rw [MvPolynomial.mem_homogeneousSubmodule] at hp
-      have ht : p.totalDegree = 0 := Nat.le_zero.mp hp.totalDegree_le
       refine ⟨AddMonoidAlgebra.coeff p 0, Subtype.ext ?_⟩
-      exact ((MvPolynomial.totalDegree_eq_zero_iff_eq_C).mp ht).symm
+      exact ((MvPolynomial.totalDegree_eq_zero_iff_eq_C).mp (Nat.le_zero.mp hp.totalDegree_le)).symm
   haveI : IsIso (CommRingCat.ofHom
       (algebraMap R ↥(MvPolynomial.homogeneousSubmodule (Fin (N + 1)) R 0))) :=
     (RingEquiv.ofBijective _ hbij).toCommRingCatIso.isIso_hom

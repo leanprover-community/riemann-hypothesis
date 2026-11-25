@@ -1116,8 +1116,8 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Qk55.exists_kill.{u_1} :
-    ∀ {l : ℕ} [Fact (Nat.Prime l)] {H : Type u_1}
-    [AddCommGroup H] [_root_.Module ℤ_[l] H] (h : H),
+    ∀ {l : ℕ} [inst : Fact (Nat.Prime l)] {H : Type u_1}
+    [inst_1 : AddCommGroup H] [inst_2 : _root_.Module ℤ_[l] H] (h : H),
     (1 : ℚ_[l]) ⊗ₜ[ℤ_[l]] h = (0 : TensorProduct ℤ_[l] ℚ_[l] H) → ∃ (b : ℕ), l ^ b • h = (0 : H) := by
   intro l _ H _ _ h hh
   have h0 : TensorProduct.mk ℤ_[l] ℚ_[l] H 1 h = 0 := hh

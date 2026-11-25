@@ -39,8 +39,7 @@ theorem exists_chart_cover (n : ℕ) (z : M → V n) (hz : IsLocalHomeomorph z) 
     ∃ T : ℕ → Set M, (∀ i, IsOpen (T i)) ∧ (⋃ i, T i = univ) ∧
       ∀ i, T i = ∅ ∨ ∃ e : OpenPartialHomeomorph M (V n), IsChart n z e ∧ T i ⊆ e.source := by
   classical
-  have hz' : ∀ x, ∃ e : OpenPartialHomeomorph M (V n), x ∈ e.source ∧ z = e := hz
-  choose e hxe hze using hz'
+  choose e hxe hze using hz
   obtain ⟨T, hTc, hTU⟩ := TopologicalSpace.isOpen_iUnion_countable (fun x => (e x).source)
     (fun x => (e x).open_source)
   have hmem : ∀ x, x ∈ ⋃ y ∈ T, (e y).source := by
@@ -60,8 +59,7 @@ theorem exists_chart_cover (n : ℕ) (z : M → V n) (hz : IsLocalHomeomorph z) 
     ext x
     exfalso
     have h1 := hmem x
-    rw [hT] at h1
-    simp at h1
+    simp [hT] at h1
 
 theorem measurableSet_image_of_isLocalHomeomorph (n : ℕ) (z : M → V n) (hz : IsLocalHomeomorph z)
     (A : Set M) (hA : MeasurableSet A) : MeasurableSet (z '' A) := by
@@ -86,16 +84,14 @@ theorem encard_inter_fiber_of_injOn (n : ℕ) (z : M → V n) (S : Set M) (hS : 
       constructor
       · rintro ⟨hb, hba⟩; exact hS hb ha hba
       · rintro rfl; exact ⟨ha, rfl⟩
-    rw [h1, Set.encard_singleton]
-    simp [Set.mem_image_of_mem z ha]
+    simp [h1, Set.encard_singleton, Set.mem_image_of_mem z ha]
   · have h1 : S ∩ z ⁻¹' {y} = ∅ := by
       ext b
       simp only [Set.mem_inter_iff, Set.mem_preimage, Set.mem_singleton_iff,
         Set.mem_empty_iff_false, iff_false, not_and]
       intro hb hby
       exact hy ⟨b, hb, hby⟩
-    rw [h1, Set.encard_empty]
-    simp [hy]
+    simp [h1, Set.encard_empty, hy]
 
 end VolAux
 

@@ -70,8 +70,7 @@ theorem eq_of_unit_smul_combination {K B V M : Type*} [Field K] [CommRing B] [Ad
   let bs := Module.finBasis K V
   have h0 : ∑ s, (f (bs.coord s) - f' (bs.coord s)) • μ (bs s) = 0 := by
     obtain ⟨u, rfl⟩ := hc
-    have := congrArg (fun x => ((u⁻¹ : Bˣ) : B) • x) (h _ bs)
-    simpa [smul_smul] using this
+    simpa [smul_smul] using congrArg (fun x => ((u⁻¹ : Bˣ) : B) • x) (h _ bs)
   have hco : ∀ s, f (bs.coord s) = f' (bs.coord s) :=
     fun s => sub_eq_zero.mp (hind _ bs _ h0 s)
   have key : ∀ F : Dual K V →+ B, (∀ (k : K) (φ : Dual K V), F (k • φ) = o k * F φ) →

@@ -72,15 +72,13 @@ theorem iteratedFDeriv_comp_clm (F : Matrix κ κ ℂ → ℂ) (hF : AnalyticAt 
   have hcd : ContDiffOn ℂ ω F (interior s) := (hAs.mono interior_subset).contDiffOn ht.uniqueDiffOn
   have hpre : IsOpen (L ⁻¹' interior s) := ht.preimage L.continuous
   have hL0 : L 0 ∈ interior s := by simpa using h0t
-  have h0pre : (0 : Matrix ι ι ℂ) ∈ L ⁻¹' interior s := hL0
   have key := L.iteratedFDerivWithin_comp_right hcd ht.uniqueDiffOn hpre.uniqueDiffOn hL0
     (i := n) le_top
-  have e1 := iteratedFDerivWithin_of_isOpen (𝕜 := ℂ) (f := F ∘ L) n hpre h0pre
+  have e1 := iteratedFDerivWithin_of_isOpen (𝕜 := ℂ) (f := F ∘ L) n hpre hL0
   have e2 := iteratedFDerivWithin_of_isOpen (𝕜 := ℂ) (f := F) n ht h0t
-  have hz : L 0 = 0 := L.map_zero
   rw [← e1, ← e2]
   erw [key]
-  exact congrArg (fun y => iteratedFDerivWithin ℂ n F (interior s) y (fun i => L (v i))) hz
+  exact congrArg (fun y => iteratedFDerivWithin ℂ n F (interior s) y (fun i => L (v i))) L.map_zero
 
 omit [DecidableEq κ] in
 theorem symm_perm (F : Matrix κ κ ℂ → ℂ) (hF : AnalyticAt ℂ F 0) {n : ℕ} (v : Fin n → Matrix κ κ ℂ)

@@ -170,15 +170,13 @@ theorem HasBasisAway.comap {a : R} (π : X →ₗ[R] M) (hπ : Function.Surjecti
   · obtain ⟨n, hn⟩ := h3 (π m) trivial
     refine ⟨n, ?_⟩
     have : s = π '' (σ '' s) := by
-      rw [Set.image_image]
-      simp [hσ _]
+      simp [Set.image_image, hσ _]
     rw [bot_sup_eq, this, ← map_span, ← map_smul] at hn
     rwa [sup_comm, ← comap_map_eq]
 
 theorem HasBasisAway.quotient {a : R} {P : Submodule R M} (h : HasBasisAway a P ⊤) :
     HasBasisAway a (⊥ : Submodule R (M ⧸ P)) ⊤ := by
-  have := HasBasisAway.map (a := a) P.mkQ ⊥ (by simpa using h)
-  simpa using this
+  simpa using HasBasisAway.map (a := a) P.mkQ ⊥ (by simpa using h)
 
 theorem IsBasisAway.linearIndepOn {a : R} {s : Set M}
     (h : IsBasisAway a (⊥ : Submodule R M) ⊤ s) : LinearIndepOn R id s :=
@@ -290,8 +288,7 @@ theorem exists_hasBasisAway_powerChain [IsDomain R] (t : Module.End T M) (N : Su
       HasBasisAway a (N.restrictScalars R) (⨆ d, (powerChain t N d).restrictScalars R) := by
   let K : ℕ → Submodule T N := fun d => (powerChain t N d).comap ((t ^ (d + 1)) ∘ₗ N.subtype)
   have hK : Monotone K := monotone_nat_of_le_succ fun d x hx => by
-    have := map_powerChain_le t N d (mem_map_of_mem hx)
-    simpa [K, pow_succ' t (d + 1)] using this
+    simpa [K, pow_succ' t (d + 1)] using map_powerChain_le t N d (mem_map_of_mem hx)
   obtain ⟨n, hn⟩ := monotone_stabilizes_iff_noetherian.2 inferInstance ⟨K, hK⟩
   choose a ha0 ha using H
   refine ⟨∏ i ∈ Finset.range (n + 1), a (K i), Finset.prod_ne_zero_iff.2 fun i _ => ha0 _, ?_⟩

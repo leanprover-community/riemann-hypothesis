@@ -100,7 +100,6 @@ theorem LateralTheory.EtaleFoundations.etale_chain_cochain_exists_of_eval_data :
     rw [dite_eq_left (by omega)]
     exact gen _ (by omega) _ _
   simp only [GlobalTheory.EtC.ev]
-  rw [hv]
-  simp only [f]
+  simp only [hv, f]
   rw [Iso.inv_hom_id_assoc]
   exact hφ p s h U x

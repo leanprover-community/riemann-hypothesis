@@ -19,8 +19,7 @@ theorem I_apply (x : Fin S.dim → K) : S.I x = ((S.basis.equivFun.symm x : S.Fo
 
 theorem I_injective : Function.Injective S.I := by
   intro x y h
-  have h' : (S.basis.equivFun.symm x : S.Forms) = S.basis.equivFun.symm y := Subtype.ext h
-  exact S.basis.equivFun.symm.injective h'
+  exact S.basis.equivFun.symm.injective (Subtype.ext h)
 
 theorem I_onto (f : S.Cl → S.V) : (∃ x, S.I x = f) ↔ ∀ c (γ : S.Gam c), S.ρ c γ (f c) = f c := by
   constructor
@@ -30,8 +29,7 @@ theorem I_onto (f : S.Cl → S.V) : (∃ x, S.I x = f) ↔ ∀ c (γ : S.Gam c),
     exact ⟨S.basis.equivFun ⟨f, h⟩, by simp [I_apply]⟩
 
 theorem I_eq_sum (x : Fin S.dim → K) : S.I x = ∑ i, x i • (S.basis i : S.Cl → S.V) := by
-  rw [I_apply, Basis.equivFun_symm_apply]
-  simp
+  simp [I_apply, Basis.equivFun_symm_apply]
 
 theorem csum_sum (x y : Fin S.dim → K) :
     S.csum (S.I x) (S.I y) = ∑ i, ∑ j, star (x i) * S.H i j * y j := by

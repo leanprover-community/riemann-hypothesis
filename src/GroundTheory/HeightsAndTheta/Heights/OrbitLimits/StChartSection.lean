@@ -28,8 +28,7 @@ theorem eval_chartSection {m : ℕ} (σ : Fin m ≃ ((k : K) → ι k)) (i : (k 
     (x : Fin m → ℂ) :
     eval x (chartSection σ i s) = eval (chartLift σ i x) (map (Int.castRingHom ℂ) s) := by
   show eval₂Hom (RingHom.id ℂ) x _ = _
-  rw [chartSection, eval₂Hom_bind₁]
-  simp only [eval₂Hom_X']
+  simp only [chartSection, eval₂Hom_bind₁, eval₂Hom_X']
   rfl
 
 def ChartSectionNotMem.Statement : Prop :=

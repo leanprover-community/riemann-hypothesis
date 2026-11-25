@@ -567,7 +567,7 @@ open scoped Formalism.Per
 
 namespace GlobalTheory.Pst.StLat
 
-theorem filtration_eq_span_pow : ∀ (l : ℕ) [Fact l.Prime] (_ : Core l) (ϖ : Per.Fl l), Per.kerP l = Ideal.span {beta ϖ} →
+theorem filtration_eq_span_pow : ∀ (l : ℕ) [Fact l.Prime] (Co : Core l) (ϖ : Per.Fl l), Per.kerP l = Ideal.span {beta ϖ} →
   ∀ n : ℕ, Per.FilP l n = Ideal.span {betaD ϖ ^ n} := by
   intro l _ Co ϖ hb n
   have he := core_isEps l Co
@@ -594,7 +594,7 @@ section -- clump:auto
 
 namespace GlobalTheory.PolynomialNormBound
 
-theorem main : ∀ {l : ℕ} [Fact (Nat.Prime l)] {j m : ℕ}, j ≠ (0 : ℕ) → ¬l ^ m ∣ j →
+theorem main : ∀ {l : ℕ} [inst : Fact (Nat.Prime l)] {j m : ℕ}, j ≠ (0 : ℕ) → ¬l ^ m ∣ j →
     ∃ (c : ℤ_[l]), (↑j : ℤ_[l]) * c = (↑l : ℤ_[l]) ^ (m - (1 : ℕ)) := by
   intro l inst j m hj hdvd
   have hl : l.Prime := inst.out

@@ -110,8 +110,7 @@ theorem exists_orthonormalBasis_singularValues {E F : Type*}
   · have hjc : (σ j : ℂ) ≠ 0 := by exact_mod_cast hj
     have h1 := hu ⟨j, (hlt _ hj).1⟩ hj
     have h2 : T (v j) = (σ j : ℂ) • u ⟨j, (hlt _ hj).1⟩ := by
-      rw [h1]
-      simp only [w, dite_eq_left j.isLt, Fin.eta, smul_smul, mul_inv_cancel₀ hjc, one_smul]
+      simp only [h1, w, dite_eq_left j.isLt, Fin.eta, smul_smul, mul_inv_cancel₀ hjc, one_smul]
     rw [h2, inner_smul_right, orthonormal_iff_ite.mp u.orthonormal]
     simp only [Fin.ext_iff]
     split_ifs with h

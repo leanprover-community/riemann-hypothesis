@@ -177,8 +177,8 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.IntegralExtensionAlgClosed.exists_ringHom_extension_of_integral :
-    ∀ (R S K : Type) [CommRing R] [CommRing S]
-    [Algebra R S] [Algebra.IsIntegral R S] [Field K] [IsAlgClosed K],
+    ∀ (R S K : Type) [inst : CommRing R] [inst_1 : CommRing S]
+    [inst_2 : Algebra R S] [Algebra.IsIntegral R S] [inst_4 : Field K] [IsAlgClosed K],
     Function.Injective (⇑(Algebra.algebraMap R S) : R → S) →
       ∀ (b : R →+* K), ∃ (Φ : S →+* K), Φ.comp (Algebra.algebraMap R S) = b := by
   intro R S K _ _ _ _ _ _ hinj b

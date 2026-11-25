@@ -77,8 +77,7 @@ theorem div_q (σ : E →+* K) (q m : 𝒪[K]) (j n : ℕ) (c x : E) (o : 𝓞 E
     rw [h0, Valuation.map_zero] at hc
     exact zero_ne_one hc
   have hσ : σ c * σ x = (n : K) * σ (o : E) := by
-    have := congrArg σ h
-    simpa [map_mul, map_natCast] using this
+    simpa [map_mul, map_natCast] using congrArg σ h
   have hm : valuation K (m : K) ≤ 1 := (Valuation.mem_integer_iff _ _).1 m.2
   have ho : valuation K (σ (o : E)) ≤ 1 := sig_le_one σ o
   refine ⟨⟨(m : K) * σ (o : E) * (σ c)⁻¹, ?_⟩, ?_⟩

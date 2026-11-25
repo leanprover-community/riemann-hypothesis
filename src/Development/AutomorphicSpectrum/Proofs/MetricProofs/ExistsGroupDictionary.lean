@@ -730,7 +730,7 @@ theorem star_mulVec_dot {m k : Type} [Fintype m] [Fintype k] (c : Matrix m k ℂ
   rw [star_mulVec, ← Matrix.mulVec_mulVec, Matrix.dotProduct_mulVec (star y) cᴴ]
 
 theorem groupDict_nonempty : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (Ψ : Type) [Fintype Ψ] (j j' n g : ℕ)
-    (Λ : Type) [AddCommGroup Λ] [Module (𝓞 E) Λ] (_ : Host E) (F : UnivFam E Ψ j j' n g Λ), Nonempty (GroupDict F) := by
+    (Λ : Type) [AddCommGroup Λ] [Module (𝓞 E) Λ] (H : Host E) (F : UnivFam E Ψ j j' n g Λ), Nonempty (GroupDict F) := by
   intro E _ _ _ Ψ _ j j' n g Λ _ _ H F
   classical
   obtain ⟨C⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Cusp.Dict.LatEmbEx.exists_latEmb E Ψ j j' n g Λ H F

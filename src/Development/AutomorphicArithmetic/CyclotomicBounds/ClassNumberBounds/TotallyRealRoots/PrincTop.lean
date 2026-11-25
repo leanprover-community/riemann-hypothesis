@@ -121,7 +121,6 @@ theorem mem_of_isClosed {U : Subgroup ℤ_[l]ˣ} (hU : IsClosed (U : Set ℤ_[l]
     show x⁻¹ * u ∈ (redPow l b).ker
     rw [MonoidHom.mem_ker, map_mul, map_inv, hux, inv_mul_cancel]
   refine ⟨u, ?_, hu⟩
-  have := hb hmem
-  simpa using this
+  simpa using hb hmem
 
 end KStar.TotallyRealRoots

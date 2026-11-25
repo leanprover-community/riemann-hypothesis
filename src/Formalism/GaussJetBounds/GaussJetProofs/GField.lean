@@ -123,7 +123,7 @@ lemma gN_mul (P Q : MvPolynomial σ F) : gN (P * Q) = gN P * gN Q := by
     rintro ⟨a, b⟩ hab hne
     replace hab : a + b = i + j := by simpa using hab
     simp only [norm_mul, hi, hj]
-    have hcase : toLex a < toLex i ∨ toLex b < toLex j := by
+    obtain h | h : toLex a < toLex i ∨ toLex b < toLex j := by
       by_contra hcon
       push Not at hcon
       obtain ⟨h1, h2⟩ := hcon
@@ -135,7 +135,6 @@ lemma gN_mul (P Q : MvPolynomial σ F) : gN (P * Q) = gN P * gN Q := by
       rcases h2.lt_or_eq with h2 | h2
       · exact absurd hsum (add_lt_add_of_le_of_lt h1.le h2).ne'
       exact hne (Prod.ext (toLex.injective h1.symm) (toLex.injective h2.symm))
-    rcases hcase with h | h
     · exact (mul_le_mul_of_nonneg_left (le_gN Q b) (norm_nonneg _)).trans_lt
         (mul_lt_mul_of_pos_right (hi' a h) (gN_pos hQ))
     · exact (mul_le_mul_of_nonneg_right (le_gN P a) (norm_nonneg _)).trans_lt

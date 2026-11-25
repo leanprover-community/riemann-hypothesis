@@ -108,8 +108,7 @@ theorem GrassArithVar.proof (h : CoordConeArithVar.Statement) : GrassArithVar.St
         IntermediateField.adjoin ℚ (coneRatios (grassCoord f j m) fun _ => plAnchor j m) :=
       IntermediateField.subset_adjoin _ _ ⟨⟨τ, idx a b⟩, rfl⟩
     have hy : grassCoord f j m ⟨τ, idx a b⟩ = ((s : ℤ) : GrassField f j m) * t i := by
-      rw [grassCoord, hs, map_mul, map_intCast]
-      simp [t, φ, hi]
+      simp [grassCoord, hs, map_mul, map_intCast, t, φ, hi]
     rw [anchor, div_one, hy] at hr
     rcases Int.units_eq_one_or s with rfl | rfl
     · simpa using hr

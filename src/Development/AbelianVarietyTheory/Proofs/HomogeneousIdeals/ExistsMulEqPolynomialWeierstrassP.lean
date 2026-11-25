@@ -265,8 +265,7 @@ theorem exists_mul_eq_polynomial_weierstrassP {f : ℂ → ℂ} (hf : Meromorphi
     rw [hfun]
     have h1 := (hn a).differentiableAt
     have h3 := hPd (∏ b ∈ S.erase a, (X - C (℘[L] b)) ^ (n b + 1)) a hal
-    have h0 : DifferentiableAt ℂ (fun w : ℂ => w - a) a := differentiableAt_id.sub_const a
-    exact ((h0.mul h1).mul (hψ.pow _)).mul h3
+    exact (((differentiableAt_id.sub_const a).mul h1).mul (hψ.pow _)).mul h3
   have hgd : ∀ z ∉ L.lattice, DifferentiableAt ℂ g z := by
     intro z hz
     by_cases hfa : AnalyticAt ℂ f z
@@ -288,8 +287,7 @@ theorem exists_mul_eq_polynomial_weierstrassP {f : ℂ → ℂ} (hf : Meromorphi
       rw [← htf]
       have h2 : AnalyticAt ℂ (fun w : ℂ => w - l) (a + l) := by fun_prop
       exact hfa'.comp_of_eq h2 (by simp)
-    have haS : a ∈ S := (hS a).mpr ⟨haK, haB⟩
-    have hga := hgS a haS hal
+    have hga := hgS a ((hS a).mpr ⟨haK, haB⟩) hal
     have htr : g = fun w => g (w - l) := funext fun w => by
       have := hgp (w - l) l hlL
       rwa [sub_add_cancel] at this

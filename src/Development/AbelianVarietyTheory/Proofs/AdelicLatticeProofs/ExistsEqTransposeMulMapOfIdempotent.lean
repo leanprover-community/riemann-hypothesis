@@ -119,8 +119,7 @@ theorem exists_shear (G : Matrix ι ι R) (p : ι) (τ : ι → R) (hτ : τ p =
       = G x y + τ x * G p y + c (τ y) * G x p + τ x * c (τ y) * G p p := by
   refine ⟨1 + vecMulVec (Pi.single p 1) τ, ?_, fun x y => ?_⟩
   · refine Matrix.isUnit_det_of_right_inverse (B := 1 - vecMulVec (Pi.single p 1) τ) ?_
-    rw [mul_sub, mul_one, add_mul, one_mul, vecMulVec_mul_vecMulVec]
-    simp [hτ]
+    simp [mul_sub, mul_one, add_mul, one_mul, vecMulVec_mul_vecMulVec, hτ]
   · simp only [Matrix.mul_apply, transpose_apply, map_apply, Matrix.add_apply, vecMulVec_apply,
       Matrix.one_apply, Pi.single_apply, map_add, apply_ite c, map_one, map_zero,
       add_mul, mul_add, ite_mul, mul_ite, one_mul, zero_mul, mul_one, mul_zero,
@@ -147,8 +146,7 @@ theorem det_congr (G P : Matrix ι ι R) :
 omit [DecidableEq ι] in
 theorem congr_mul (G P Q : Matrix ι ι R) :
     (P * Q)ᵀ * G * (P * Q).map c = Qᵀ * (Pᵀ * G * P.map c) * Q.map c := by
-  rw [transpose_mul, Matrix.map_mul]
-  simp only [Matrix.mul_assoc]
+  simp only [transpose_mul, Matrix.map_mul, Matrix.mul_assoc]
 
 theorem exists_congr_symm {G H P : Matrix ι ι R} (hP : IsUnit P.det)
     (h : Pᵀ * G * P.map c = H) : ∃ Q : Matrix ι ι R, IsUnit Q.det ∧ G = Qᵀ * H * Q.map c := by
@@ -169,8 +167,7 @@ theorem mem_of_fixed_of_not_isUnit (hc : ∀ x, c (c x) = x)
     have hy' : y = 1 - r * x := by linear_combination hry
     have := n.mul_mem_right (c y) hy
     convert this using 1
-    rw [hy']
-    simp only [map_mul, map_sub, map_one, hx]
+    simp only [hy', map_mul, map_sub, map_one, hx]
     ring
 
 theorem mem_of_forall_trace_mem (hc : ∀ x, c (c x) = x) (hw : ∃ w, w + c w = 1)
@@ -181,8 +178,7 @@ theorem mem_of_forall_trace_mem (hc : ∀ x, c (c x) = x) (hw : ∃ w, w + c w =
     convert hg (w * c g) using 1
     simp only [map_mul, hc]
     linear_combination (-(g * c g)) * hw
-  have h2 : c g ∈ n := (hn.isPrime.mem_or_mem h1).resolve_left hgn
-  have h3 := n.sub_mem (hg 1) h2
+  have h3 := n.sub_mem (hg 1) ((hn.isPrime.mem_or_mem h1).resolve_left hgn)
   apply hgn
   simpa using h3
 
@@ -304,8 +300,7 @@ theorem exists_eq_transpose_mul_map_of_isUnit_or (hc : ∀ x, c (c x) = x)
     have := congr_mul c 1 (diagonal x) P
     rw [Matrix.mul_one, Matrix.mul_one, diagonal_transpose, diagonal_map (map_zero c),
       diagonal_mul_diagonal] at this
-    rw [this, h]
-    simp only [hx]
+    simp only [this, h, hx]
   refine ⟨diagonal x * P, ?_, hGe⟩
   rw [hGe, det_mul, det_transpose] at hdet
   exact isUnit_of_mul_isUnit_left hdet

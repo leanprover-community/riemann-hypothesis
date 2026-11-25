@@ -67,8 +67,7 @@ theorem polar_symm_eq (p : ℝ × ℝ) : Complex.polarCoord.symm p = p.1 • ee 
 
 theorem laplacian_eq_fderiv_fderiv (u : ℂ → ℝ) (z : ℂ) :
     Δ u z = fderiv ℝ (fderiv ℝ u) z 1 1 + fderiv ℝ (fderiv ℝ u) z Complex.I Complex.I := by
-  rw [laplacian_eq_iteratedFDeriv_complexPlane]
-  simp [iteratedFDeriv_two_apply]
+  simp [laplacian_eq_iteratedFDeriv_complexPlane, iteratedFDeriv_two_apply]
 
 theorem lap_eq_rot (u : ℂ → ℝ) (z : ℂ) (θ : ℝ) :
     Δ u z = fderiv ℝ (fderiv ℝ u) z (ee θ) (ee θ)

@@ -80,9 +80,8 @@ theorem irreducibleSpace_of_smooth_of_geometricallyConnected_domain :
   have hspec : ∀ z : G.left, ξ ⤳ z := by
     intro z
     obtain ⟨z', hz', e⟩ := Flat.generalizingMap G.hom (genericPoint_specializes (G.hom z))
-    have hr : z' ∈ Set.range (pullback.fst G.hom g) := by
+    obtain ⟨w, rfl⟩ : z' ∈ Set.range (pullback.fst G.hom g) := by
       rw [Scheme.Pullback.range_fst, Set.mem_preimage, e]; exact hη
-    obtain ⟨w, rfl⟩ := hr
     exact ((genericPoint_specializes w).map (pullback.fst G.hom g).continuous).trans hz'
   have hcl : closure ({ξ} : Set G.left) = Set.univ :=
     Set.eq_univ_of_forall fun z => specializes_iff_mem_closure.mp (hspec z)

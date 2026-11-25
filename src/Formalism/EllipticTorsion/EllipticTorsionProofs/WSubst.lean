@@ -67,8 +67,7 @@ theorem Formalism.ELL.wChordSubst_of (hU : Formalism.ELL.WSubstUnique.{u}) : For
       ring
     have hX : V.addX (x0 / w0) (x1 / w1) ((-1 / w0 - -1 / w1) / (x0 / w0 - x1 / w1)) =
         PX / (D ^ 2 * w0 * w1) := by
-      rw [hl, hPX]
-      simp only [WeierstrassCurve.Affine.addX]
+      simp only [hl, hPX, WeierstrassCurve.Affine.addX]
       field_simp
     refine ⟨hX, ?_⟩
     simp only [WeierstrassCurve.Affine.addY, WeierstrassCurve.Affine.negY,

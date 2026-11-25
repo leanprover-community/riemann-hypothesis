@@ -621,7 +621,7 @@ end GlobalTheory.NL.CokerKill
 
 
 open GlobalTheory.NL.CokerKill in
-theorem GlobalTheory.NL.CokerKill.X_pow_kills_coker : ∀ (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (_ : CmpOf D.loc D.locA HW F), lem3 D HW F := by
+theorem GlobalTheory.NL.CokerKill.X_pow_kills_coker : ∀ (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F), lem3 D HW F := by
   intro D HW F Cm l _ K s LL hG T₁ T₂ π M h c1 c2
   obtain ⟨_, hcomp, hu⟩ := GlobalTheory.FinExtIntegers.dvr_complete LL
   obtain ⟨χ, -, hφ, -, hX, hQ, -⟩ := GlobalTheory.NL.CycRing.rings_cyclotomic D HW l K s LL hG
@@ -1368,7 +1368,7 @@ end Generic
 
 
 theorem exactness_of_N : ∀ (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW)
-    (_ : CmpOf D.loc D.locA HW F), P6 D HW F := by
+    (Cm : CmpOf D.loc D.locA HW F), P6 D HW F := by
   intro D HW F Cm l _ K s LL h
   obtain ⟨h1, h2⟩ := GlobalTheory.NL.Isog.saturated_and_isogeny_invariant D HW F l K s LL h
   refine ⟨h1, h2, fun T₀ T₁ T₂ ι π c0 c1 c2 hses => ?_⟩

@@ -141,23 +141,23 @@ section -- clump:auto
 @[expose] public section
 
 noncomputable def UpperTheory.Reformulated.B.HeckeGelfandPair.IsHecke :
-    {G : Type} → [Group G] → [TopologicalSpace G] → Subgroup G → (G → ℂ) → Prop :=
+    {G : Type} → [inst : Group G] → [TopologicalSpace G] → Subgroup G → (G → ℂ) → Prop :=
     fun {G : Type} [Group G] [TopologicalSpace G] (K' : Subgroup G) (f : G → ℂ) ↦
       HasCompactSupport f ∧ ∀ k ∈ K', ∀ (x : G), f (k * x) = f x ∧ f (x * k) = f x
 
 theorem UpperTheory.Reformulated.B.HeckeGelfandPair.aux2 :
-    ∀ {H : Type} [Group H] (u : H → ℂ) {a b : H},
+    ∀ {H : Type} [inst : Group H] (u : H → ℂ) {a b : H},
       a ∈ {k : H | ∀ (x : H), u (x * k) = u x} → b ∈ {k : H | ∀ (x : H), u (x * k) = u x} → ∀ (x : H), u (x * (a * b)) = u x := by
   intro H _ u a b ha hb x
   rw [← mul_assoc, hb, ha]
 
 theorem UpperTheory.Reformulated.B.HeckeGelfandPair.aux3 :
-    ∀ {H : Type} [Group H] (u : H → ℂ) (a : H), u (a * (1 : H)) = u a := by
+    ∀ {H : Type} [inst : Group H] (u : H → ℂ) (a : H), u (a * (1 : H)) = u a := by
   intro H _ u a
   rw [mul_one]
 
 theorem UpperTheory.Reformulated.B.HeckeGelfandPair.aux4 :
-    ∀ {H : Type} [Group H] (u : H → ℂ) {a : H},
+    ∀ {H : Type} [inst : Group H] (u : H → ℂ) {a : H},
       a ∈ {k : H | ∀ (x : H), u (x * k) = u x} → ∀ (x : H), u (x * a⁻¹) = u x := by
   intro H _ u a ha x
   have h := ha (x * a⁻¹)
@@ -165,18 +165,18 @@ theorem UpperTheory.Reformulated.B.HeckeGelfandPair.aux4 :
   exact h.symm
 
 noncomputable def UpperTheory.Reformulated.B.HeckeGelfandPair.rStab :
-    {H : Type} → [Group H] → (H → ℂ) → Subgroup H :=
+    {H : Type} → [inst : Group H] → (H → ℂ) → Subgroup H :=
     fun {H : Type} [inst : Group H] (u : H → ℂ) ↦
       { carrier := {k : H | ∀ (x : H), u (x * k) = u x}, mul_mem' := @UpperTheory.Reformulated.B.HeckeGelfandPair.aux2 H inst u,
         one_mem' := UpperTheory.Reformulated.B.HeckeGelfandPair.aux3 u, inv_mem' := @UpperTheory.Reformulated.B.HeckeGelfandPair.aux4 H inst u : Subgroup H }
 
 noncomputable def UpperTheory.Reformulated.B.HeckeGelfandPair.hint :
-    {H : Type} → [Group H] → Subgroup H → (H → ℂ) → ℂ :=
+    {H : Type} → [inst : Group H] → Subgroup H → (H → ℂ) → ℂ :=
     fun {H : Type} [Group H] (K : Subgroup H) (u : H → ℂ) ↦
       (↑((UpperTheory.Reformulated.B.HeckeGelfandPair.rStab u ⊓ K).relIndex K) : ℂ)⁻¹ * ∑ᶠ (q : H ⧸ UpperTheory.Reformulated.B.HeckeGelfandPair.rStab u ⊓ K), u (Quotient.out q)
 
 noncomputable def UpperTheory.Reformulated.B.HeckeGelfandPair.cv :
-    {G : Type} → [Group G] → Subgroup G → (G → ℂ) → (G → ℂ) → G → ℂ :=
+    {G : Type} → [inst : Group G] → Subgroup G → (G → ℂ) → (G → ℂ) → G → ℂ :=
     fun {G : Type} [Group G] (K : Subgroup G) (f g : G → ℂ) (y : G) ↦ UpperTheory.Reformulated.B.HeckeGelfandPair.hint K fun (z : G) ↦ f z * g (z⁻¹ * y)
 
 noncomputable def UpperTheory.Reformulated.B.HeckeGelfandPair.CvGelfand :

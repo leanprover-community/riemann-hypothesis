@@ -88,16 +88,14 @@ theorem exists_ringHom_of_isIndEtale {R S T : Type} [CommRing R] [CommRing S] [C
     (hψ : ψ.comp a = (residue T).comp b) : ∃ g : S →+* T, g.comp a = b := by
   obtain ⟨J, _, _, D, t, s, hs, hts⟩ := ha
   have hts' : ∀ j, (s.app j).hom.comp (t.app j).hom = a := fun j => by
-    have := congrArg CommRingCat.Hom.hom (hts j).2
-    simpa using this
+    simpa using congrArg CommRingCat.Hom.hom (hts j).2
   have hψj : ∀ j, (ψ.comp (s.app j).hom).comp (t.app j).hom = (residue T).comp b := fun j => by
     rw [RingHom.comp_assoc, hts' j, hψ]
   choose g hg using fun j => lift_exists (t.app j).hom (hts j).1 b (ψ.comp (s.app j).hom) (hψj j)
   have nat : ∀ {j k : J} (u : j ⟶ k), (g k).comp (D.map u).hom = g j := by
     intro j k u
     have ht : (D.map u).hom.comp (t.app j).hom = (t.app k).hom := by
-      have := congrArg CommRingCat.Hom.hom (t.naturality u)
-      simpa using this.symm
+      simpa using (congrArg CommRingCat.Hom.hom (t.naturality u)).symm
     have hs' : (s.app k).hom.comp (D.map u).hom = (s.app j).hom := by
       have e : D.map u ≫ s.app k = s.app j := by
         have := s.naturality u
@@ -118,8 +116,7 @@ theorem exists_ringHom_of_isIndEtale {R S T : Type} [CommRing R] [CommRing S] [C
   refine ⟨(hs.desc c).hom, ?_⟩
   obtain ⟨j⟩ : Nonempty J := IsFiltered.nonempty
   have hf : (hs.desc c).hom.comp (s.app j).hom = g j := by
-    have := congrArg CommRingCat.Hom.hom (hs.fac c j)
-    simpa [c] using this
+    simpa [c] using congrArg CommRingCat.Hom.hom (hs.fac c j)
   rw [← hts' j, ← RingHom.comp_assoc, hf, (hg j).1]
 
 end GlobalTheory.NCyc.StrictLocLift

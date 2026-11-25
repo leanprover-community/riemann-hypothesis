@@ -112,8 +112,7 @@ theorem exists_separability_element (O : Type) [CommRing O] [Module.Free ℤ O] 
       ∀ c : O, (TensorProduct.tmul ℤ c (1 : O) - TensorProduct.tmul ℤ (1 : O) c) * e = 0 := by
   obtain ⟨N, hN, hΩ⟩ := exists_smul_kaehler_eq_zero O
   set I := KaehlerDifferential.ideal ℤ O with hI
-  have hfg : I.FG := KaehlerDifferential.ideal_fg ℤ O
-  have : Module.Finite (O ⊗[ℤ] O) I := Module.Finite.iff_fg.2 hfg
+  have : Module.Finite (O ⊗[ℤ] O) I := Module.Finite.iff_fg.2 (KaehlerDifferential.ideal_fg ℤ O)
   have hsq : ∀ x ∈ I, (N : O ⊗[ℤ] O) * x ∈ I ^ 2 := by
     intro x hx
     have h := hΩ (I.toCotangent ⟨x, hx⟩)

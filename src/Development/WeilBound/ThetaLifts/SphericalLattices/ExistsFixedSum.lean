@@ -66,8 +66,8 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.InvariantSumOfTranslates.main :
-    ∀ {K S : Type} [Group K] [TopologicalSpace K] [IsTopologicalGroup K] [CompactSpace K]
-      [AddCommGroup S] [_root_.Module ℂ S] (ω : K →* Module.End ℂ S) (f₀ : S),
+    ∀ {K S : Type} [inst : Group K] [inst_1 : TopologicalSpace K] [IsTopologicalGroup K] [CompactSpace K]
+      [inst_4 : AddCommGroup S] [inst_5 : _root_.Module ℂ S] (ω : K →* Module.End ℂ S) (f₀ : S),
       (∃ U ∈ nhds (1 : K), ∀ k ∈ U, ((ω : K → Module.End ℂ S) k : S → S) f₀ = f₀) →
         ∃ (m : ℕ) (k : Fin (m + (1 : ℕ)) → K),
           ∀ (g : K),

@@ -25,8 +25,7 @@ theorem FiniteProjectionProperBall.proof : FiniteProjectionProperBall.Statement 
     have : x ∈ X ∩ N := by
       rw [hXN]
       refine ⟨hxN, fun i => ?_⟩
-      have := congrFun (show (fun i => f i x) = 0 from hx.2) i
-      simpa using this
+      simpa using congrFun (show (fun i => f i x) = 0 from hx.2) i
     exact this.1
   have hXC : ∀ x ∈ X, x ∈ Metric.closedBall w ρ → x ∈ C := by
     intro x hxX hxB

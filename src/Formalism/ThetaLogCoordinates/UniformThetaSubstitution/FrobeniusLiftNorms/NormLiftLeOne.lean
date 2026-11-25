@@ -43,18 +43,16 @@ theorem BetaIsG_of (h0 : StepZero) (h1 : StepI) (h2 : StepII) (hH : StepH) (h3 :
   have hI1 := h2 K p σ hU F hF G c hdG hG1 hc hcG
   have hI2 := h2 K p σ hU F hF (swap2 G) c' (hdivsw hdG) hG2 hc' hcG'
   have hHs := hH K p σ hU F hF G (σ c) (σ c') hGs hI1 hI2
-  have e1 : c + σ c' = 0 := h3 K p σ hU G c c' hc hc' hcG hHs
   have hHs' : Integral (Hser p σ (swap2 G) (σ c') (σ c)) := by
     rw [(hSw K p σ G (σ c) (σ c') hp2).2.2.2.2.2]
     exact (hSw K p σ (Hser p σ G (σ c) (σ c')) 0 0 hp2).2.2.2.1 hHs
   have e2 : c' + σ c = 0 := h3 K p σ hU (swap2 G) c' c hc' hc hcG' hHs'
-  have hA : σ c' = -c := by linear_combination e1
+  have hA : σ c' = -c := by linear_combination (h3 K p σ hU G c c' hc hc' hcG hHs)
   have hB : σ c' = -σ (σ c) := by
     rw [show c' = -σ c by linear_combination e2, map_neg]
   have hσσ : σ (σ c) = c := by linear_combination hB - hA
   rw [hA] at hHs
-  have hSimG : Simeq G (Gser p c (σ c)) := h4 K p σ hU G c hdG hσσ hHs
   obtain ⟨-, hsymm, htrans, -, -⟩ := hS K (Fin 2)
-  exact ⟨c, hc, hσσ, htrans _ _ _ (hsymm _ _ hGbe) hSimG⟩
+  exact ⟨c, hc, hσσ, htrans _ _ _ (hsymm _ _ hGbe) (h4 K p σ hU G c hdG hσσ hHs)⟩
 
 end Formalism.InvariantFactorPaths.G7

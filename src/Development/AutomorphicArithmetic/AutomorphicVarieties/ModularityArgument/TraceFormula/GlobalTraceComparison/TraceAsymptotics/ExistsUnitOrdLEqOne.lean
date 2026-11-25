@@ -658,7 +658,7 @@ section -- clump:auto
 open scoped Classical
 
 theorem UpperTheory.Reformulated.B.trace_eq_twisted_trace_of_fixed.aux1 :
-    ∀ {k G V : Type} [Field k] [Group G] [AddCommGroup V] [_root_.Module k V]
+    ∀ {k G V : Type} [inst : Field k] [inst_1 : Group G] [inst_2 : AddCommGroup V] [inst_3 : _root_.Module k V]
       (ρ : Representation k G V) (H : Subgroup G) (χ : ↥H →* kˣ) {a b : V},
       a ∈ {v : V | ∀ (h : ↥H), ((ρ : G → V →ₗ[k] V) (↑h : G) : V → V) v = (↑((χ : ↥H → kˣ) h) : k) • v} →
         b ∈ {v : V | ∀ (h : ↥H), ((ρ : G → V →ₗ[k] V) (↑h : G) : V → V) v = (↑((χ : ↥H → kˣ) h) : k) • v} →
@@ -667,14 +667,14 @@ theorem UpperTheory.Reformulated.B.trace_eq_twisted_trace_of_fixed.aux1 :
   rw [map_add (f := _), ha h, hb h, smul_add]
 
 theorem UpperTheory.Reformulated.B.trace_eq_twisted_trace_of_fixed.aux2 :
-    ∀ {k G V : Type} [Field k] [Group G] [AddCommGroup V] [_root_.Module k V]
+    ∀ {k G V : Type} [inst : Field k] [inst_1 : Group G] [inst_2 : AddCommGroup V] [inst_3 : _root_.Module k V]
       (ρ : Representation k G V) (H : Subgroup G) (χ : ↥H →* kˣ) (h : ↥H),
       ((ρ : G → V →ₗ[k] V) (↑h : G) : V → V) (0 : V) = (↑((χ : ↥H → kˣ) h) : k) • (0 : V) := by
   intro k G V _ _ _ _ ρ H χ h
   rw [map_zero, smul_zero]
 
 theorem UpperTheory.Reformulated.B.trace_eq_twisted_trace_of_fixed.aux3 :
-    ∀ {k G V : Type} [Field k] [Group G] [AddCommGroup V] [_root_.Module k V]
+    ∀ {k G V : Type} [inst : Field k] [inst_1 : Group G] [inst_2 : AddCommGroup V] [inst_3 : _root_.Module k V]
       (ρ : Representation k G V) (H : Subgroup G) (χ : ↥H →* kˣ) (c : k) {v : V},
       v ∈ {v : V | ∀ (h : ↥H), ((ρ : G → V →ₗ[k] V) (↑h : G) : V → V) v = (↑((χ : ↥H → kˣ) h) : k) • v} →
         ∀ (h : ↥H), ((ρ : G → V →ₗ[k] V) (↑h : G) : V → V) (c • v) = (↑((χ : ↥H → kˣ) h) : k) • c • v := by
@@ -683,10 +683,10 @@ theorem UpperTheory.Reformulated.B.trace_eq_twisted_trace_of_fixed.aux3 :
 
 noncomputable def UpperTheory.Reformulated.B.trace_eq_twisted_trace_of_fixed.eig :
     {k G V : Type} →
-      [Field k] →
-        [Group G] →
-          [AddCommGroup V] →
-            [_root_.Module k V] → Representation k G V → (H : Subgroup G) → (↥H →* kˣ) → Submodule k V :=
+      [inst : Field k] →
+        [inst_1 : Group G] →
+          [inst_2 : AddCommGroup V] →
+            [inst_3 : _root_.Module k V] → Representation k G V → (H : Subgroup G) → (↥H →* kˣ) → Submodule k V :=
     fun {k G V : Type} [inst : Field k] [inst_1 : Group G] [inst_2 : AddCommGroup V] [inst_3 : _root_.Module k V]
         (ρ : Representation k G V) (H : Subgroup G) (χ : ↥H →* kˣ) ↦
       { carrier := {v : V | ∀ (h : ↥H), ((ρ : G → V →ₗ[k] V) (↑h : G) : V → V) v = (↑((χ : ↥H → kˣ) h) : k) • v},
@@ -695,19 +695,19 @@ noncomputable def UpperTheory.Reformulated.B.trace_eq_twisted_trace_of_fixed.eig
 
 noncomputable def UpperTheory.Reformulated.B.trace_eq_twisted_trace_of_fixed.fixed :
     {k G V : Type} →
-      [Field k] →
-        [Group G] →
-          [AddCommGroup V] → [_root_.Module k V] → Representation k G V → Subgroup G → Submodule k V :=
+      [inst : Field k] →
+        [inst_1 : Group G] →
+          [inst_2 : AddCommGroup V] → [inst_3 : _root_.Module k V] → Representation k G V → Subgroup G → Submodule k V :=
     fun {k G V : Type} [Field k] [Group G] [AddCommGroup V] [_root_.Module k V] (ρ : Representation k G V)
         (H : Subgroup G) ↦
       UpperTheory.Reformulated.B.trace_eq_twisted_trace_of_fixed.eig ρ H (1 : ↥H →* kˣ)
 
 noncomputable def UpperTheory.Reformulated.B.trace_eq_twisted_trace_of_fixed.levOp :
     {G : Type} →
-      [Group G] →
+      [inst : Group G] →
         {V : Type} →
-          [AddCommGroup V] →
-            [_root_.Module ℂ V] →
+          [inst_1 : AddCommGroup V] →
+            [inst_2 : _root_.Module ℂ V] →
               Representation ℂ G V → Subgroup G → Subgroup G → (G → ℂ) → (V →ₗ[ℂ] V) → V →ₗ[ℂ] V :=
     fun {G : Type} [Group G] {V : Type} [AddCommGroup V] [_root_.Module ℂ V] (ρ : Representation ℂ G V) (K K' : Subgroup G)
         (f : G → ℂ) (A : V →ₗ[ℂ] V) ↦
@@ -715,10 +715,10 @@ noncomputable def UpperTheory.Reformulated.B.trace_eq_twisted_trace_of_fixed.lev
 
 noncomputable def UpperTheory.Reformulated.B.trace_eq_twisted_trace_of_fixed.twTr :
     {G : Type} →
-      [Group G] →
+      [inst : Group G] →
         {V : Type} →
-          [AddCommGroup V] →
-            [_root_.Module ℂ V] → Representation ℂ G V → Subgroup G → Subgroup G → (G → ℂ) → (V →ₗ[ℂ] V) → ℂ :=
+          [inst_1 : AddCommGroup V] →
+            [inst_2 : _root_.Module ℂ V] → Representation ℂ G V → Subgroup G → Subgroup G → (G → ℂ) → (V →ₗ[ℂ] V) → ℂ :=
     fun {G : Type} [Group G] {V : Type} [AddCommGroup V] [_root_.Module ℂ V] (ρ : Representation ℂ G V) (K K' : Subgroup G)
         (f : G → ℂ) (A : V →ₗ[ℂ] V) ↦
       if h :
@@ -729,33 +729,33 @@ noncomputable def UpperTheory.Reformulated.B.trace_eq_twisted_trace_of_fixed.twT
       else (0 : ℂ)
 
 theorem UpperTheory.Reformulated.B.trace_eq_twisted_trace_of_fixed.aux11 :
-    ∀ {H : Type} [Group H] (u : H → ℂ) {a b : H},
+    ∀ {H : Type} [inst : Group H] (u : H → ℂ) {a b : H},
       a ∈ {k : H | ∀ (x : H), u (x * k) = u x} → b ∈ {k : H | ∀ (x : H), u (x * k) = u x} → ∀ (x : H), u (x * (a * b)) = u x := by
   intro H _ u a b ha hb x
   rw [← mul_assoc, hb, ha]
 
 theorem UpperTheory.Reformulated.B.trace_eq_twisted_trace_of_fixed.aux12 :
-    ∀ {H : Type} [Group H] (u : H → ℂ) (a : H), u (a * (1 : H)) = u a := by
+    ∀ {H : Type} [inst : Group H] (u : H → ℂ) (a : H), u (a * (1 : H)) = u a := by
   intro H _ u a
   rw [mul_one]
 
 theorem UpperTheory.Reformulated.B.trace_eq_twisted_trace_of_fixed.algebra_smulCommClass_complex :
-    ∀ {H : Type} [Group H] (u : H → ℂ) {a : H},
+    ∀ {H : Type} [inst : Group H] (u : H → ℂ) {a : H},
       a ∈ {k : H | ∀ (x : H), u (x * k) = u x} → ∀ (x : H), u (x * a⁻¹) = u x := by
   intro H _ u a ha x
   have := ha (x * a⁻¹)
   rw [← this, inv_mul_cancel_right]
 
 noncomputable def UpperTheory.Reformulated.B.trace_eq_twisted_trace_of_fixed.rStab :
-    {H : Type} → [Group H] → (H → ℂ) → Subgroup H :=
+    {H : Type} → [inst : Group H] → (H → ℂ) → Subgroup H :=
     fun {H : Type} [inst : Group H] (u : H → ℂ) ↦
       { carrier := {k : H | ∀ (x : H), u (x * k) = u x}, mul_mem' := @UpperTheory.Reformulated.B.trace_eq_twisted_trace_of_fixed.aux11 H inst u,
         one_mem' := UpperTheory.Reformulated.B.trace_eq_twisted_trace_of_fixed.aux12 u, inv_mem' := @UpperTheory.Reformulated.B.trace_eq_twisted_trace_of_fixed.algebra_smulCommClass_complex H inst u : Subgroup H }
 
 noncomputable def UpperTheory.Reformulated.B.trace_eq_twisted_trace_of_fixed.trc :
     {G V : Type} →
-      [Group G] →
-        [AddCommGroup V] → [_root_.Module ℂ V] → Representation ℂ G V → Subgroup G → (G → ℂ) → ℂ :=
+      [inst : Group G] →
+        [inst_1 : AddCommGroup V] → [inst_2 : _root_.Module ℂ V] → Representation ℂ G V → Subgroup G → (G → ℂ) → ℂ :=
     fun {G V : Type} [Group G] [AddCommGroup V] [_root_.Module ℂ V] (ρ : Representation ℂ G V) (K : Subgroup G)
         (f : G → ℂ) ↦
       UpperTheory.Reformulated.B.trace_eq_twisted_trace_of_fixed.twTr ρ K (K ⊓ UpperTheory.Reformulated.B.trace_eq_twisted_trace_of_fixed.rStab f ⊓ UpperTheory.Reformulated.B.trace_eq_twisted_trace_of_fixed.rStab fun (y : G) ↦ f y⁻¹) f LinearMap.id
@@ -858,8 +858,8 @@ private theorem UpperTheory.Reformulated.B.trace_eq_twisted_trace_of_fixed.trace
   exact LinearMap.trace_comp_comm' (Submodule.inclusion hle) (T.restrict h)
 
 theorem UpperTheory.Reformulated.B.trace_eq_twisted_trace_of_fixed.trc_eq :
-    ∀ {G V : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [AddCommGroup V]
-      [_root_.Module ℂ V] (ρ : Representation ℂ G V) (K I : Subgroup G),
+    ∀ {G V : Type} [inst : Group G] [inst_1 : TopologicalSpace G] [IsTopologicalGroup G] [inst_3 : AddCommGroup V]
+      [inst_4 : _root_.Module ℂ V] (ρ : Representation ℂ G V) (K I : Subgroup G),
       IsOpen (↑K : Set G) →
         IsCompact (↑K : Set G) →
           IsOpen (↑I : Set G) →

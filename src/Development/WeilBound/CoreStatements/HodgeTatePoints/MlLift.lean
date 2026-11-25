@@ -71,10 +71,9 @@ theorem lift_frac {O F : Type} [CommRing O] [Field F] (β : O →+* F)
     ∃ y : Sp K ⟶ pullback s (spMap β), y ≫ pullback.fst _ _ = x := by
   haveI : IsPreimmersion (spMap β) := preimm_frac β h
   obtain ⟨⟨p, a⟩, rfl⟩ := (X.SpecToEquivOfField K).symm.surjective x
-  have hp : p ∈ Set.range (pullback.fst s (spMap β)) := by
+  obtain ⟨q, rfl⟩ : p ∈ Set.range (pullback.fst s (spMap β)) := by
     apply hx
     exact ⟨IsLocalRing.closedPoint K, Scheme.fromSpecResidueField_apply p _⟩
-  obtain ⟨q, rfl⟩ := hp
   have hsurj : Function.Surjective (Scheme.Hom.residueFieldMap (pullback.fst s (spMap β)) q) := by
     have h1 : Function.Surjective
         (Scheme.Hom.stalkMap (pullback.fst s (spMap β)) q ≫ (pullback s (spMap β)).residue q) :=
@@ -114,8 +113,7 @@ theorem lift_generic_point : ∀ (E : Type) [Field E] [NumberField E] [IsCMField
 theorem generic_max {X : Type} [TopologicalSpace X] [T0Space X] {v v' : X} (h : v ∈ genericPoints X)
     (hs : v' ⤳ v) : v' = v := by
   have h1 : closure {v} ⊆ closure {v'} := specializes_iff_closure_subset.1 hs
-  have h2 : closure {v'} ⊆ closure {v} := h.2 isIrreducible_singleton.closure h1
-  exact (hs.antisymm (specializes_iff_closure_subset.2 h2)).eq
+  exact (hs.antisymm (specializes_iff_closure_subset.2 (h.2 isIrreducible_singleton.closure h1))).eq
 
 theorem mem_of_dense_of_max {X : Type} [TopologicalSpace X] [TopologicalSpace.NoetherianSpace X] [QuasiSober X]
     {U : Set X} (ho : IsOpen U) (hd : Dense U) {z : X} (hz : ∀ z', z' ⤳ z → z' = z) : z ∈ U := by
@@ -125,8 +123,7 @@ theorem mem_of_dense_of_max {X : Type} [TopologicalSpace X] [TopologicalSpace.No
   obtain ⟨w, hwo, hwU⟩ := hd.inter_open_nonempty o hoo ⟨u, hu⟩
   have hg := hC.1.isGenericPoint_genericPoint_closure
   rw [(isClosed_of_mem_irreducibleComponents _ hC).closure_eq] at hg
-  have hgz : hC.1.genericPoint = z := hz _ (hg.specializes mem_irreducibleComponent)
-  have hzw : z ⤳ w := hgz ▸ hg.specializes (hoC hwo)
+  have hzw : z ⤳ w := (hz _ (hg.specializes mem_irreducibleComponent)) ▸ hg.specializes (hoC hwo)
   exact hzw.mem_open ho hwU
 
 private theorem isLocallyNoetherian_of_closedImmersion_pSpace (O F : Type) [CommRing O] [Field F] (β : O →+* F) (X : Scheme.{0}) (s : X ⟶ Sp O)

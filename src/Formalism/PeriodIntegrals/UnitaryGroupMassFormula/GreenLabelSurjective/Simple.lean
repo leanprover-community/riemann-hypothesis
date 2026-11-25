@@ -47,8 +47,7 @@ theorem exists_simple_constituent {V : Type} [AddCommGroup V] [Module ℂ V] [Fi
       intro x hx
       have h2 : (⟨x, hx⟩ : A.toSubmodule) ∈ (⊥ : Subrepresentation A.toRepresentation).toSubmodule := by
         rw [h1]; exact Submodule.mem_top
-      have h3 : (⟨x, hx⟩ : A.toSubmodule) = 0 := (Submodule.mem_bot ℂ).mp h2
-      exact congrArg Subtype.val h3
+      exact congrArg Subtype.val ((Submodule.mem_bot ℂ).mp h2)
     · by_cases hU : U.toSubmodule = ⊥
       · left
         exact Subrepresentation.toSubmodule_injective hU

@@ -50,7 +50,7 @@ theorem sInter_mem_cosetSelectors (N : Subgroup G) (hN : IsClosed (N : Set G))
   · intro x
     have : IsClosed (N : Set G) := hN
     have : T2Space (G ⧸ N) := inferInstance
-    have hne' : (⋂ T : c, ((T : Set G) ∩ {t | (t : G ⧸ N) = x})).Nonempty := by
+    obtain ⟨t, ht⟩ : (⋂ T : c, ((T : Set G) ∩ {t | (t : G ⧸ N) = x})).Nonempty := by
       refine IsCompact.nonempty_iInter_of_directed_nonempty_isCompact_isClosed _ ?_ ?_ ?_ ?_
       · intro T T'
         rcases hc.total T.2 T'.2 with h | h
@@ -62,7 +62,6 @@ theorem sInter_mem_cosetSelectors (N : Subgroup G) (hN : IsClosed (N : Set G))
       · intro T
         exact ((hcS T.2).1.inter (isClosed_eq QuotientGroup.continuous_mk continuous_const)).isCompact
       · exact fun T => (hcS T.2).1.inter (isClosed_eq QuotientGroup.continuous_mk continuous_const)
-    obtain ⟨t, ht⟩ := hne'
     rw [Set.mem_iInter] at ht
     exact ⟨t, Set.mem_sInter.2 fun T hT => (ht ⟨T, hT⟩).1, (ht (Classical.arbitrary c)).2⟩
   · intro t ht t' ht' h

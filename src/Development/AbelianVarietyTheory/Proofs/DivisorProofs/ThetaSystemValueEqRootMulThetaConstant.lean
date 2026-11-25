@@ -198,7 +198,7 @@ private theorem exists_rootOfUnity_mul_of_pow_eq_pow {K : Type} [Field K] (a b :
   · refine ⟨a / b, ?_, (div_mul_cancel₀ a hb).symm⟩
     rw [div_pow, h, div_self (pow_ne_zero n hb)]
 
-theorem ev_eq_root_mul_th : ∀ (o Ω : Type) [CommRing o] [Field Ω] [Algebra o Ω] [ArithBase o Ω] (S : ThetaSys o Ω) (_ : S.Real) (x : S.Gam) (j : S.J), ∃ (y : S.Gam) (u : Ω) (k : ℕ), 0 < k ∧ u ^ k = 1 ∧ S.ev x j = u * S.th y := by
+theorem ev_eq_root_mul_th : ∀ (o Ω : Type) [CommRing o] [Field Ω] [Algebra o Ω] [ArithBase o Ω] (S : ThetaSys o Ω) (ρ : S.Real) (x : S.Gam) (j : S.J), ∃ (y : S.Gam) (u : Ω) (k : ℕ), 0 < k ∧ u ^ k = 1 ∧ S.ev x j = u * S.th y := by
   intro o Ω _ _ _ _ S ρ x j
   have hG : GlobalFnsSt := GlobalTheory.abelianSchemeLaws_all.1.globalFns
   obtain ⟨a, e, ha⟩ := ρ.orbit j

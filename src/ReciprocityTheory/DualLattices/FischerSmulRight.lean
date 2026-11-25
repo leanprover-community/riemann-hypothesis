@@ -198,8 +198,7 @@ theorem fischer_mul_X (P Q : MvPolynomial (Fin ν × ι) ℂ) (v : Fin ν × ι)
       rw [hw, map_mul, map_natCast]
       ring
     · have hv : m v = 0 := by simpa [Finsupp.mem_support_iff] using h
-      rw [hv]
-      simp
+      simp [hv]
   next Q₁ Q₂ h₁ h₂ =>
     rw [fischer_add_right, map_add (f := _), fischer_add_right, h₁, h₂]
 

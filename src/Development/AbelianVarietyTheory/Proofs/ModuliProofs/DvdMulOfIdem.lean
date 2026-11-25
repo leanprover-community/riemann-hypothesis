@@ -104,9 +104,8 @@ theorem IsPart.exists_inv {P : Ideal R} {N e s : R} (h : IsPart P N e) (hs : s �
     obtain ⟨q, hq, hle⟩ := Ideal.exists_le_maximal _ hne
     have h1 : N ∈ q := hle (Ideal.subset_span (by simp))
     have h2 : 1 - e ∈ q := hle (Ideal.subset_span (by simp))
-    have h3 : s ∈ q := hle (Ideal.subset_span (by simp))
     by_cases hqP : q = P
-    · exact hs (hqP ▸ h3)
+    · exact hs (hqP ▸ (hle (Ideal.subset_span (by simp))))
     · exact hq.ne_top ((Ideal.eq_top_iff_one _).2 (by simpa using q.add_mem h2 (h.2.2 q hq h1 hqP)))
   obtain ⟨a, b, c, habc⟩ := Submodule.mem_span_triple.1 ((Ideal.eq_top_iff_one _).1 htop)
   simp only [smul_eq_mul] at habc
@@ -120,8 +119,7 @@ theorem exists_isPart [IsDedekindDomain R] {P : Ideal R} (hP : P.IsMaximal) {N :
     (fun h => hP.ne_top (Ideal.isUnit_iff.1 h))
   have hCP : P ⊔ C = ⊤ := by
     by_contra hne
-    have := hP.eq_of_le hne le_sup_left
-    exact hC (Ideal.dvd_iff_le.2 (this ▸ le_sup_right))
+    exact hC (Ideal.dvd_iff_le.2 ((hP.eq_of_le hne le_sup_left) ▸ le_sup_right))
   have hCP' : P ^ (k + 1) ⊔ C = ⊤ := Ideal.pow_sup_eq_top hCP
   obtain ⟨x, hx, e, he, hxe⟩ := Submodule.mem_sup.1 ((Ideal.eq_top_iff_one _).1 hCP')
   have hx' : 1 - e = x := by rw [← hxe]; ring

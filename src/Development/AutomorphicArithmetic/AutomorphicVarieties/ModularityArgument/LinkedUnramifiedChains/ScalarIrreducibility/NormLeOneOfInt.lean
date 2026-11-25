@@ -90,9 +90,9 @@ open IsLocalRing
 theorem UpperTheory.digit_expansion_lattice :
     ∀ {O Ω : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
         [IsAdicComplete (IsLocalRing.maximalIdeal O) O] [NormedField Ω] [IsUltrametricDist Ω] [Algebra O Ω]
-        (_ : ∀ a : O, ‖algebraMap O Ω a‖ ≤ 1) (ϖ : O) (_ : Irreducible ϖ) (_ : ‖algebraMap O Ω ϖ‖ < 1)
-        (S : Submodule O Ω) (_ : ∀ s ∈ S, ‖s‖ ≤ 1) (E : Finset Ω) (_ : ∀ e ∈ E, e ∈ S)
-        (_ : ∀ s ∈ S, ∃ e ∈ E, ∃ s' ∈ S, s = e + ϖ • s'),
+        (hO : ∀ a : O, ‖algebraMap O Ω a‖ ≤ 1) (ϖ : O) (hϖ : Irreducible ϖ) (hlt : ‖algebraMap O Ω ϖ‖ < 1)
+        (S : Submodule O Ω) (hS : ∀ s ∈ S, ‖s‖ ≤ 1) (E : Finset Ω) (hE : ∀ e ∈ E, e ∈ S)
+        (hdig : ∀ s ∈ S, ∃ e ∈ E, ∃ s' ∈ S, s = e + ϖ • s'),
         Module.Finite O S := by
   intro O Ω _ _ _ _ _ _ _ hO ϖ hϖ hlt S hS E hE hdig
   classical
@@ -187,9 +187,9 @@ theorem UpperTheory.monic_ideal_completion :
     ∀ {O R : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
         [Finite (IsLocalRing.ResidueField O)] [CommRing R] [IsLocalRing R] [IsNoetherianRing R] [Algebra O R]
         [IsLocalHom (algebraMap O R)]
-        (_ : ∀ x : R, ∃ a : O, x - algebraMap O R a ∈ IsLocalRing.maximalIdeal R)
-        (J : Ideal R) (_ : ∀ x : R, ∃ P : Polynomial O, P.Monic ∧ Polynomial.aeval x P ∈ J)
-        (ϖ : O) (_ : Irreducible ϖ),
+        (hres : ∀ x : R, ∃ a : O, x - algebraMap O R a ∈ IsLocalRing.maximalIdeal R)
+        (J : Ideal R) (hJ : ∀ x : R, ∃ P : Polynomial O, P.Monic ∧ Polynomial.aeval x P ∈ J)
+        (ϖ : O) (hϖ : Irreducible ϖ),
         Finite (R ⧸ (J ⊔ Ideal.span {algebraMap O R ϖ})) := by
   intro O R _ _ _ _ _ _ _ _ _ hres J hJ ϖ hϖ
   obtain ⟨I, hIdef⟩ : ∃ I, I = J ⊔ Ideal.span {algebraMap O R ϖ} := ⟨_, rfl⟩
@@ -343,8 +343,8 @@ section -- clump:auto
 theorem UpperTheory.residue_hom_norm :
     ∀ {O R Ω : Type} [CommRing O] [CommRing R] [IsLocalRing R] [Algebra O R] [NormedField Ω]
         [IsUltrametricDist Ω] [Algebra O Ω]
-        (_ : ∀ x : R, ∃ a : O, x - algebraMap O R a ∈ IsLocalRing.maximalIdeal R)
-        (_ : ∀ a : O, ‖algebraMap O Ω a‖ ≤ 1) (_ : ∀ x : Ω, ‖x‖ ≤ 1 → IsIntegral O x)
+        (hres : ∀ x : R, ∃ a : O, x - algebraMap O R a ∈ IsLocalRing.maximalIdeal R)
+        (hO : ∀ a : O, ‖algebraMap O Ω a‖ ≤ 1) (hint : ∀ x : Ω, ‖x‖ ≤ 1 → IsIntegral O x)
         (y : R →ₐ[O] Ω),
         (∀ a, ‖y a‖ ≤ 1) ∧ ∀ a ∈ IsLocalRing.maximalIdeal R, ‖y a‖ < 1 := by
   intro O R Ω _ _ _ _ _ _ _ hres hO hint y
@@ -405,8 +405,8 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.CoPoint.coPt :
-    ∀ (l : ℕ) [Fact (Nat.Prime l)] (c : UpperTheory.V.HV.Coef l) [UpperTheory.V.Fr.IsCoef l ↥c.O] (R : Type)
-    [CommRing R] [Algebra (↥c.O) R] [UpperTheory.V.Alg.IsCO (↥c.O) R]
+    ∀ (l : ℕ) [inst : Fact (Nat.Prime l)] (c : UpperTheory.V.HV.Coef l) [UpperTheory.V.Fr.IsCoef l ↥c.O] (R : Type)
+    [inst_2 : CommRing R] [inst_3 : Algebra (↥c.O) R] [inst_4 : UpperTheory.V.Alg.IsCO (↥c.O) R]
     (y : R →ₐ[↥c.O] Formalism.ConjugateSelfDual.Qbar l),
     Module.Finite ↥c.O ↥y.range ∧
       (∀ (a : R), ‖(y : R → Formalism.ConjugateSelfDual.Qbar l) a‖ ≤ (1 : ℝ)) ∧

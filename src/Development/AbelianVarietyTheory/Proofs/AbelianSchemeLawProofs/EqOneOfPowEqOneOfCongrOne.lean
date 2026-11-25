@@ -100,7 +100,7 @@ theorem step (htf : ∀ (n : ℕ) (x : E), n ≠ 0 → n • x = 0 → x = 0) {q
   obtain ⟨d, rfl⟩ := hqc
   by_cases hlq : l = q
   · subst hlq
-    have hdiv : l ∣ l.choose 2 * d := by
+    obtain ⟨e, he⟩ : l ∣ l.choose 2 * d := by
       by_cases hl2 : l = 2
       · subst hl2
         have := h2 rfl
@@ -108,7 +108,6 @@ theorem step (htf : ∀ (n : ℕ) (x : E), n ≠ 0 → n • x = 0 → x = 0) {q
         omega
       · have := hl.two_le
         exact Dvd.dvd.mul_right (hl.dvd_choose_self (by norm_num) (by omega)) _
-    obtain ⟨e, he⟩ := hdiv
     have h1 : l • (ψ + l • (e • ψ ^ 2 + (d ^ 2) • z)) = 0 := by
       rw [← h0, mul_left_comm, he]
       module
@@ -149,10 +148,9 @@ theorem eq_one_of_pow (htf : ∀ (n : ℕ) (x : E), n ≠ 0 → n • x = 0 → 
   | one => intro _ ψ h; simpa only [pow_one] using h
   | prime_mul l a hl ih =>
     intro hm ψ h
-    have ha : a ≠ 0 := right_ne_zero_of_mul hm
     obtain ⟨z, hz⟩ := one_add_smul_pow_expand c ψ l
     rw [pow_mul, hz] at h
-    have h1 := ih ha _ h
+    have h1 := ih (right_ne_zero_of_mul hm) _ h
     rw [← hz] at h1
     rw [eq_zero_of_prime htf hq hsep hl hc0 hqc h2 ψ h1, smul_zero, add_zero]
 

@@ -23,15 +23,13 @@ lemma poissonKernel_zero_continuousOn {r : ℝ} (hr : 0 < r) {w : ℂ} (hw : w �
 
 lemma poissonKernel_zero_nonneg {r : ℝ} {w z : ℂ} (hw : w ∈ ball (0 : ℂ) r)
     (hz : z ∈ sphere (0 : ℂ) r) : 0 ≤ poissonKernel 0 w z := by
-  rw [poissonKernel_def]
-  simp only [sub_zero, mem_sphere_zero_iff_norm.mp hz]
+  simp only [poissonKernel_def, sub_zero, mem_sphere_zero_iff_norm.mp hz]
   exact div_nonneg (by nlinarith [mem_ball_zero_iff.mp hw, norm_nonneg w]) (sq_nonneg _)
 
 lemma poissonKernel_zero_le {r δ : ℝ} {w z : ℂ} (hw : w ∈ ball (0 : ℂ) r)
     (hz : z ∈ sphere (0 : ℂ) r) (hδ : 0 < δ) (hzw : δ ≤ ‖z - w‖) :
     poissonKernel 0 w z ≤ (r ^ 2 - ‖w‖ ^ 2) / δ ^ 2 := by
-  rw [poissonKernel_def]
-  simp only [sub_zero, mem_sphere_zero_iff_norm.mp hz]
+  simp only [poissonKernel_def, sub_zero, mem_sphere_zero_iff_norm.mp hz]
   exact div_le_div_of_nonneg_left (by nlinarith [mem_ball_zero_iff.mp hw, norm_nonneg w])
     (sq_pos_of_pos hδ) (by gcongr)
 

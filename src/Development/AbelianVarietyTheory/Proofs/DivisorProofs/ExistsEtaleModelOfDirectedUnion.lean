@@ -66,12 +66,11 @@ theorem exists_etale_model_of_directed_union :
       inferInstance |>.out
 
   have hfin := P.finite_coeffs
-  have hex : ∃ i, P.coeffs ⊆ (Ri i : Set R) := by
+  obtain ⟨i, hi⟩ : ∃ i, P.coeffs ⊆ (Ri i : Set R) := by
     classical
     choose j hj using hcov
     obtain ⟨i, hi⟩ := Finset.exists_le (hfin.toFinset.image j)
     refine ⟨i, fun x hx ↦ hmono (hi _ (Finset.mem_image_of_mem _ (hfin.mem_toFinset.mpr hx))) (hj x)⟩
-  obtain ⟨i, hi⟩ := hex
   letI : Algebra (Ri i) A := ((algebraMap R A).comp (algebraMap (Ri i) R)).toAlgebra
   haveI : IsScalarTower (Ri i) R A := IsScalarTower.of_algebraMap_eq (fun _ ↦ rfl)
   haveI : P.HasCoeffs (Ri i) := ⟨fun x hx ↦ ⟨⟨x, hi hx⟩, rfl⟩⟩

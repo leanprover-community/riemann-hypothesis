@@ -155,8 +155,7 @@ theorem tv_uniTri {R : Type} [CommRing R] (hr : 2 ≤ r) (c : R) : IsUniTri r (t
     simp only [tv, Matrix.transvection, Matrix.add_apply, Matrix.one_apply_ne hne, zero_add]
     apply Matrix.single_apply_of_ne
     rintro ⟨h1, h2⟩
-    rw [Fin.ext_iff] at h1 h2
-    simp only at h1 h2
+    simp only [Fin.ext_iff] at h1 h2
     omega
   · simp only [tv, Matrix.transvection, Matrix.add_apply, Matrix.one_apply_eq]
     rw [Matrix.single_apply_of_ne, add_zero]

@@ -254,7 +254,7 @@ theorem comp_zsmul {L : Type} [AddCommGroup L] {G T T' : Over S} [GrpObj G] (e :
 theorem loc_one (G : Over S) [GrpObj G] [IsCommMonObj G] (hG : IsAbelianScheme G) (M : ℕ)
     (hM : IsUnit (M : Γ(S, ⊤))) {L : Type} [AddCommGroup L] (Z : Over S) (e : L → (Z ⟶ G))
     (he : ∀ a c, e (a + c) = e a * e c) (hM' : ∀ a, e a ^ M = 1) (a : L) :
-    GlobalTheory.HkClopen.Loc (S := Z.left) (fun _ _ _ x =>
+    GlobalTheory.HkClopen.Loc (S := Z.left) (fun k _ _ x =>
       (Over.homMk x rfl : Over.mk (x ≫ Z.hom) ⟶ Z) ≫ e a = 1) := by
   obtain ⟨Z₁, et, R⟩ := GlobalTheory.exists_finiteEtale_latticeTorsionHom S G M ℤ hG hM
   have hx : ∀ n m : ℤ, e ((n + m) • a) = e (n • a) * e (m • a) := fun n m => by rw [add_smul, he]
@@ -274,7 +274,7 @@ theorem loc_one (G : Over S) [GrpObj G] [IsCommMonObj G] (hG : IsAbelianScheme G
 end GlobalTheory.KerClopen
 
 open GlobalTheory.KerClopen in
-theorem GlobalTheory.kerClopen_geom : ∀ (S : Scheme.{0}) (G : Over S) [GrpObj G] [IsCommMonObj G], IsAbelianScheme G → ∀ (M h : ℕ), 0 < M → IsUnit (M : Γ(S, ⊤)) → ∀ (Z : Over S) (e : (Fin h ⊕ Fin h → ℤ) → (Z ⟶ G)), (∀ a c, e (a + c) = e a * e c) → (∀ a, e a ^ M = 1) → GlobalTheory.HkClopen.Loc (S := Z.left) (fun _ _ _ x => ∀ a, (Over.homMk x rfl : Over.mk (x ≫ Z.hom) ⟶ Z) ≫ e a = 1 ↔ ∃ c, a = M • c) := by
+theorem GlobalTheory.kerClopen_geom : ∀ (S : Scheme.{0}) (G : Over S) [GrpObj G] [IsCommMonObj G], IsAbelianScheme G → ∀ (M h : ℕ), 0 < M → IsUnit (M : Γ(S, ⊤)) → ∀ (Z : Over S) (e : (Fin h ⊕ Fin h → ℤ) → (Z ⟶ G)), (∀ a c, e (a + c) = e a * e c) → (∀ a, e a ^ M = 1) → GlobalTheory.HkClopen.Loc (S := Z.left) (fun k _ _ x => ∀ a, (Over.homMk x rfl : Over.mk (x ≫ Z.hom) ⟶ Z) ≫ e a = 1 ↔ ∃ c, a = M • c) := by
   intro S G _ _ hG M h hM0 hM Z e he hM'
   let L := Fin h ⊕ Fin h → ℤ
   obtain ⟨κ, _, q, hq⟩ := GlobalTheory.LevCover.exists_finite_mod L hM0

@@ -89,8 +89,7 @@ theorem push_inv (h : IsGrpPullback G' G f φ) {T : Scheme.{0}} {ρ : T ⟶ S'} 
   let z : Over.mk (ρ ≫ f) ⟶ G := Over.homMk _ hw
   have hxz : (x * z).left = (p * p⁻¹).left ≫ φ := push_mul h rfl p p⁻¹ x z hx rfl
   rw [_root_.mul_inv_cancel, ← isGrpPullback_one_left h ρ] at hxz
-  have hxz' : x * z = 1 := Over.OverMorphism.ext hxz
-  have hz : x⁻¹ = z := (_root_.eq_inv_of_mul_eq_one_right hxz').symm
+  have hz : x⁻¹ = z := (_root_.eq_inv_of_mul_eq_one_right (Over.OverMorphism.ext hxz)).symm
   rw [hz]
   rfl
 
@@ -117,7 +116,6 @@ theorem opCompat : ∀ (S : Scheme.{0}) (I : Type) (U : I → S.Opens) (A : Over
     have hpa : p ≫ a i j = x.left := (hsq i j).lift_fst _ _ _
     have hpb : p ≫ b i j = x'.left := (hsq i j).lift_snd _ _ _
     have hqa : q ≫ a i j = y.left := (hsq i j).lift_fst _ _ _
-    have hqb : q ≫ b i j = y'.left := (hsq i j).lift_snd _ _ _
     let ρ : T ⟶ (U i ⊓ U j).toScheme := p ≫ (B i j).hom
     have er : r = ρ ≫ S.homOfLE (inf_le_left : U i ⊓ U j ≤ U i) := by
       show r = (p ≫ (B i j).hom) ≫ _
@@ -134,7 +132,7 @@ theorem opCompat : ∀ (S : Scheme.{0}) (I : Type) (U : I → S.Opens) (A : Over
     let P : Over.mk ρ ⟶ B i j := Over.homMk p rfl
     let Q : Over.mk ρ ⟶ B i j := Over.homMk q eq
     have m1 := push_mul (ha i j) er P Q x y hpa.symm hqa.symm
-    have m2 := push_mul (hb i j) er' P Q x' y' hpb.symm hqb.symm
+    have m2 := push_mul (hb i j) er' P Q x' y' hpb.symm ((hsq i j).lift_snd _ _ _).symm
     have i1 := push_inv (ha i j) er P x hpa.symm
     have i2 := push_inv (hb i j) er' P x' hpb.symm
     refine ⟨?_, ?_⟩

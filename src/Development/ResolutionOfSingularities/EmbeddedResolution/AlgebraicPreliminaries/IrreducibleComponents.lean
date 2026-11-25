@@ -55,10 +55,9 @@ open Set TopologicalSpace
 theorem isClosed_sUnion_of_subset_irreducibleComponents {X : Type*} [TopologicalSpace X]
     [NoetherianSpace X] {𝒜 : Set (Set X)} (h𝒜 : ∀ C ∈ 𝒜, C ∈ irreducibleComponents X) :
     IsClosed (⋃₀ 𝒜) := by
-  have hfin : (irreducibleComponents X).Finite := NoetherianSpace.finite_irreducibleComponents ..
   have hsub : 𝒜 ⊆ irreducibleComponents X := fun C hC => h𝒜 C hC
   rw [Set.sUnion_eq_biUnion]
-  exact (hfin.subset hsub).isClosed_biUnion
+  exact ((NoetherianSpace.finite_irreducibleComponents ..).subset hsub).isClosed_biUnion
     (fun C hC => isClosed_of_mem_irreducibleComponents _ (h𝒜 C hC))
 
 theorem isOpen_sUnion_of_subset_irreducibleComponents {X : Type*} [TopologicalSpace X]
@@ -102,12 +101,11 @@ theorem irreducibleComponents_eq_of_stalk_isDomain (X : AlgebraicGeometry.Scheme
   have hm₂ : ξ₂ ∈ Set.range (X.fromSpecStalk x).base := by
     rw [hrange]
     exact specializes_iff_mem_closure.mpr (by rw [hξ₂]; exact hx₂)
-  have hcont : Continuous (X.fromSpecStalk x).base := (X.fromSpecStalk x).continuous
   have hirrU : IsIrreducible (Set.univ : Set (PrimeSpectrum (X.presheaf.stalk x))) :=
     IrreducibleSpace.isIrreducible_univ ..
   have himg : IsIrreducible (Set.range (X.fromSpecStalk x).base) := by
     rw [← Set.image_univ]
-    exact hirrU.image _ hcont.continuousOn
+    exact hirrU.image _ ((X.fromSpecStalk x).continuous).continuousOn
   have hcl : IsIrreducible (closure (Set.range (X.fromSpecStalk x).base)) := himg.closure
   have hs₁ : C₁ ⊆ closure (Set.range (X.fromSpecStalk x).base) := by
     rw [← hξ₁]
@@ -115,8 +113,6 @@ theorem irreducibleComponents_eq_of_stalk_isDomain (X : AlgebraicGeometry.Scheme
   have hs₂ : C₂ ⊆ closure (Set.range (X.fromSpecStalk x).base) := by
     rw [← hξ₂]
     exact closure_mono (Set.singleton_subset_iff.mpr hm₂)
-  have e₁ : closure (Set.range (X.fromSpecStalk x).base) ⊆ C₁ := h₁.2 hcl hs₁
-  have e₂ : closure (Set.range (X.fromSpecStalk x).base) ⊆ C₂ := h₂.2 hcl hs₂
-  exact Set.Subset.antisymm (hs₁.trans e₂) (hs₂.trans e₁)
+  exact Set.Subset.antisymm (hs₁.trans (h₂.2 hcl hs₂)) (hs₂.trans (h₁.2 hcl hs₁))
 
 end FunctorialResolution.EmbeddedResolution

@@ -182,8 +182,7 @@ theorem second_moment_of_columns : A0 → A1 → FiltrationAdjointStable → Cas
   have hne : (Finset.univ : Finset (Fin n)).Nonempty := by
     by_contra hne
     rw [Finset.not_nonempty_iff_eq_empty] at hne
-    rw [hne] at hX
-    simp at hX
+    simp [hne] at hX
     linarith
   obtain ⟨e0, -⟩ := hne
   have hn1 : (1:ℝ) ≤ n := by exact_mod_cast Nat.succ_le_of_lt (Fin.pos e0)

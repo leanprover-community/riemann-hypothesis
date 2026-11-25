@@ -37,8 +37,7 @@ theorem BranchInverseHolomorphic.proof (hdim : BranchFillDimension.Statement)
     have hmem : φ t ∈ zeroSetIn I ∩ O' := hO' ▸ Set.mem_image_of_mem φ ⟨htV, ht⟩
     filter_upwards [inter_mem_nhdsWithin (φ '' Δ) (hO'o.mem_nhds hmem.2)] with z hz
     obtain ⟨⟨s, hs, rfl⟩, hzO'⟩ := hz
-    have hs' : φ s ∈ φ '' (V ∩ Δ) := by rw [hO']; exact ⟨hφZ hs, hzO'⟩
-    obtain ⟨s', hs'V, hss'⟩ := hs'
+    obtain ⟨s', hs'V, hss'⟩ : φ s ∈ φ '' (V ∩ Δ) := by rw [hO']; exact ⟨hφZ hs, hzO'⟩
     rw [Set.mem_preimage, hψφ s hs, ← hφi hs'V.2 hs hss']
     exact hs'V.1
   obtain ⟨h', hh', hreg'⟩ := hreg σ I k hI hk
@@ -55,8 +54,7 @@ theorem BranchInverseHolomorphic.proof (hdim : BranchFillDimension.Statement)
         fun y hy => congrFun (hFeq hy) j⟩
     · refine (Metric.isBounded_closedBall (x := (0 : ℂ)) (r := r)).subset ?_
       rintro _ ⟨z, hz, rfl⟩
-      have hz' : z ∈ φ '' Δ := by rw [hO]; exact hz.1
-      obtain ⟨t, ht, rfl⟩ := hz'
+      obtain ⟨t, ht, rfl⟩ : z ∈ φ '' Δ := by rw [hO]; exact hz.1
       rw [Metric.mem_closedBall, dist_zero_right]
       show ‖ψ (φ t) j‖ ≤ r
       rw [hψφ t ht]

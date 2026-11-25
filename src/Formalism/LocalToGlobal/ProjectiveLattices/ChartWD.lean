@@ -97,8 +97,7 @@ theorem wtAll_of_borChart [Fintype ι] (h : BorChart pts mapR borR) (e : ι → 
     _ = cB (wchar e tB) * cB (f B uB) := by rw [hw B tB uB uB' hbB, map_mul]
     _ = locM K m (wchar e t) * c (f A u) := by
       have k1 : cB (f B uB) = c (f A u) := by rw [← e1, AlgHom.comp_apply, hf A B π u uB hπ]
-      rw [k1]
-      simp [wchar, map_prod, map_pow, e3]
+      simp [k1, wchar, map_prod, map_pow, e3]
 
 end Charts
 

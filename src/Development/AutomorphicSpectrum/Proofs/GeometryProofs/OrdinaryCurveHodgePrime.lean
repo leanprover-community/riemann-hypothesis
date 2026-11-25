@@ -185,15 +185,15 @@ section -- clump:auto
 
 noncomputable def UpperTheory.Reformulated.B.Qi34.flagSub :
     {F : Type} →
-      [Field F] →
+      [inst : Field F] →
         {N : Type} →
-          [AddCommGroup N] → [_root_.Module F N] → {n : ℕ} → Module.Basis (Fin n) F N → ℕ → Submodule F N :=
+          [inst_1 : AddCommGroup N] → [inst_2 : _root_.Module F N] → {n : ℕ} → Module.Basis (Fin n) F N → ℕ → Submodule F N :=
     fun {F : Type} [Field F] {N : Type} [AddCommGroup N] [_root_.Module F N] {n : ℕ} (b : Module.Basis (Fin n) F N)
         (i : ℕ) ↦
       Submodule.span F ((⇑b : Fin n → N) '' {j : Fin n | (↑j : ℕ) < i})
 
 theorem UpperTheory.Reformulated.B.Qi34.mem_flagSub_iff :
-    ∀ {F : Type} [Field F] {n : ℕ} (i : ℕ) (x : Fin n → F),
+    ∀ {F : Type} [inst : Field F] {n : ℕ} (i : ℕ) (x : Fin n → F),
       x ∈ UpperTheory.Reformulated.B.Qi34.flagSub (Pi.basisFun F (Fin n)) i ↔ ∀ (j : Fin n), i ≤ (↑j : ℕ) → x j = (0 : F) := by
   intro F _ n i x
   unfold UpperTheory.Reformulated.B.Qi34.flagSub

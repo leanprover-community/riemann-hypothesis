@@ -69,10 +69,9 @@ theorem sections_isDomain_isFractionRing_stalk : ∀ (Y Z : Scheme.{0}) (π : Y 
   have hl := hU.isLocalization_stalk ⟨ζ, h⟩
   have hbot : (hU.primeIdealOf ⟨ζ, h⟩).asIdeal = ⊥ := by
     let q : PrimeSpectrum Γ(Z, U) := ⟨⊥, Ideal.isPrime_bot⟩
-    have hq : hU.fromSpec q ∈ U := hU.range_fromSpec.le ⟨_, rfl⟩
     have hs : hU.fromSpec (hU.primeIdealOf ⟨ζ, h⟩) ⤳ hU.fromSpec q := by
       rw [hU.fromSpec_primeIdealOf]
-      exact specializes_iff_mem_closure.mpr (hcl hq)
+      exact specializes_iff_mem_closure.mpr (hcl (hU.range_fromSpec.le ⟨_, rfl⟩))
     have hs' := hU.fromSpec.isOpenEmbedding.toIsInducing.specializes_iff.mp hs
     exact le_bot_iff.mp ((PrimeSpectrum.le_iff_specializes _ q).mpr hs')
   have hc : (hU.primeIdealOf ⟨ζ, h⟩).asIdeal.primeCompl = nonZeroDivisors Γ(Z, U) := by

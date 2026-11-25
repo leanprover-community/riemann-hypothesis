@@ -42,8 +42,7 @@ theorem mcPts_smul {J : Ideal (MRing ι)} (hJ : IsMultiHomogIdeal J) (c : K → 
       obtain ⟨a, ha⟩ := hS0 s hs
       simp only [SetLike.mem_coe, RingHom.mem_ker, RingHom.coe_comp, Function.comp_apply]
       rw [eval_smul_homog s a ha c z, hz.2 s (Ideal.subset_span hs), mul_zero]
-    have := hle hf
-    simpa using this
+    simpa using hle hf
 
 theorem mem_mcPts_of_sameOrbit {J : Ideal (MRing ι)} (hJ : IsMultiHomogIdeal J)
     {z z' : (Σ k, ι k) → ℂ} (h : SameOrbit z z') (hz' : z' ∈ mcPts J) : z ∈ mcPts J := by

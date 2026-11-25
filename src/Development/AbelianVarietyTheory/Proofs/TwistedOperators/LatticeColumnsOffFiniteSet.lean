@@ -325,7 +325,7 @@ theorem wittDecompositionColumns_auxiliaryVectors {A B B₀ : HSp D} {c ρ : ℕ
     show t * incA D ((-D.host.xi0) ^ (i.1 + 1) * a.a k _) = _
     rw [map_mul, mul_assoc]
 
-theorem colsAt_xZero : OnStd fun {D} _ _ {_} {G} _ F => ∀ ρ (h : 2 * ρ + 2 ≤ D.R.m), ∀ v ∉ G.pl.S0, ColsAt (F.dB ρ h) (xZero (F.dJ ρ h)) (G.Λ (.grid (2 * ρ + 2) 0)) (G.Λ (.grid (2 * ρ + 1) 0)) v := by
+theorem colsAt_xZero : OnStd fun {D} _ _ {sc} {G} W F => ∀ ρ (h : 2 * ρ + 2 ≤ D.R.m), ∀ v ∉ G.pl.S0, ColsAt (F.dB ρ h) (xZero (F.dJ ρ h)) (G.Λ (.grid (2 * ρ + 2) 0)) (G.Λ (.grid (2 * ρ + 1) 0)) v := by
   intro D hD T L μ0 hL sc G W M hM F hF ρ h v hv
   intro i a _ha
 

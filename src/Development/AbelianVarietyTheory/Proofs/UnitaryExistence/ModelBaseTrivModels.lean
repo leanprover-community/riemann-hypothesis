@@ -56,8 +56,7 @@ theorem isTypeFn_letters (c : Coeff l) (σ : c.F →+* ℂ) (hσ : GoodEmb c σ)
   have hinj : Function.Injective (relab c σ) := by
     intro τ₁ τ₂ h
     ext a
-    have := congrArg (fun f : E →+* ℂ => f a) h
-    exact congrArg Subtype.val (σ.injective this)
+    exact congrArg Subtype.val (σ.injective (congrArg (fun f : E →+* ℂ => f a) h))
   have hσ0 : σ ⟨H.rt0, c.le (baseKA l).ρ.2⟩ = H.rt0 := hσ
   have hrel : ∀ τ : E →+* ℂ, relab c σ τ (H.rt : E) = H.rt0 ↔ τ (H.rt : E) = H.rt0 := fun τ => by
     have hval : relab c σ τ (H.rt : E) = σ ⟨τ (H.rt : E), c.conj τ _⟩ := rfl

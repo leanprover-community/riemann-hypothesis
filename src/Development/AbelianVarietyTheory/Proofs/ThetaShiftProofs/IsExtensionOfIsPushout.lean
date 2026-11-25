@@ -146,8 +146,7 @@ theorem IsExtension.exists_sum {a : V →ₛₗ[algebraMap K F] W} (h : IsExtens
   · exact ⟨0, Fin.elim0, Fin.elim0, by simp⟩
   · rintro x y ⟨n, c, v, rfl⟩ ⟨m, c', v', rfl⟩
     refine ⟨n + m, Fin.append c c', Fin.append v v', ?_⟩
-    rw [Fin.sum_univ_add]
-    simp only [Fin.append_left, Fin.append_right]
+    simp only [Fin.sum_univ_add, Fin.append_left, Fin.append_right]
   · intro c v
     exact ⟨1, fun _ => c, fun _ => v, by simp⟩
 
@@ -184,8 +183,7 @@ theorem IsExtension.of_proj {J : Type} {P Q : J → Type} [∀ j, AddCommGroup (
   have hx : x = ∑ i ∈ T.biUnion S, β i • a (v i) := by
     refine (sub_eq_zero.mp (inj' _ (fun j => ?_)))
 
-    rw [map_sub, sub_eq_zero, map_sum]
-    simp only [map_smul, comm, hv]
+    simp only [map_sub, sub_eq_zero, map_sum, map_smul, comm, hv]
     conv_lhs => rw [hS' j (T.biUnion S ∪ S j) Finset.subset_union_right]
     symm
     apply Finset.sum_subset Finset.subset_union_left

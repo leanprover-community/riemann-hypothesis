@@ -30,15 +30,13 @@ theorem ArithKleiman.trivial_hyps (P P0 : Ideal (MRing ι)) :
       rw [hh]
       funext z
       simp
-    rw [hf]
-    simp [leviForm]
+    simp [hf, leviForm]
   · have h0 : ∀ p, μ p = 0 := by
       rintro ⟨k, i⟩
       have := hμ k
       simp only [Pi.zero_apply, Finset.sum_eq_zero_iff, Finset.mem_univ, true_implies] at this
       exact this i
-    rw [hh]
-    simp [h0]
+    simp [hh, h0]
 
 theorem ArithKleiman.proof (hMix : MixedKleiman.Statement) : ArithKleiman.Statement := by
   intro K _ ι _ P P0 D A II hII hP hP0 hsemi hnef hconj hW

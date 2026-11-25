@@ -70,11 +70,10 @@ theorem UpperTheory.V.KT.exbasis :
   choose y hyM hy using hmem
   refine ⟨fun i a => y a i, ?_, fun a => hyM a⟩
   intro h0
-  have hli' : LinearIndependent L (fun a => ((e a : s) : Fin N → L)) := hli.comp e e.injective
   let C : Matrix (Fin N) (Fin N) L := fun i a => ((e a : s) : Fin N → L) i
   have hC : IsUnit C := by
     rw [← Matrix.linearIndependent_cols_iff_isUnit]
-    exact hli'
+    exact hli.comp e e.injective
   let A : Matrix (Fin N) (Fin N) (𝓞 L) := fun i a => y a i
   have hCA : C = (algebraMap (𝓞 L) L).mapMatrix A := by
     ext i a

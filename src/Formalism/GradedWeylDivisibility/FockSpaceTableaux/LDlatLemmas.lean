@@ -72,8 +72,7 @@ lemma ldlat_linInd_field {F K : Type*} [Field F] [Field K] [Algebra F K] {σ ι 
     rw [← h2]
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [mul_comm (c i), ← Algebra.smul_def, map_smul, Finsupp.smul_apply, smul_eq_mul, mul_comm]
-  have := hv s (fun i => B.repr (c i) j) key i hi
-  simpa using this
+  simpa using hv s (fun i => B.repr (c i) j) key i hi
 
 lemma ldlat_linInd_base {R K : Type*} [CommRing R] [IsDomain R] [Field K] [Algebra R K]
     (hinj : Function.Injective (algebraMap R K)) {σ ι : Type*} {b : ι → MvPolynomial σ R}

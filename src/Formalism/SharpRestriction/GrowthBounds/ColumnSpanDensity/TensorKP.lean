@@ -51,8 +51,7 @@ theorem tensorMap {K : Type} [Field K] {S α B : Type} [Fintype S] [DecidableEq 
     refine Finset.prod_congr rfl fun s _ => ?_
     rw [tm_comap]
   intro P
-  have := congrArg (fun f => f P) key
-  simpa using this
+  simpa using congrArg (fun f => f P) key
 
 end Formalism.MainNotions.flipOneThree.Pf.KP
 

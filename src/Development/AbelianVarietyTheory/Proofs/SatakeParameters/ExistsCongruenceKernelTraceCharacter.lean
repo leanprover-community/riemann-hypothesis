@@ -78,9 +78,8 @@ theorem exists_eq_one_add_smul
 
 theorem smul_injective (hc : c ≠ 0) {x y : Matrix (Fin a) (Fin a) R}
     (h : (1 : Matrix (Fin a) (Fin a) R) + c • x = 1 + c • y) : x = y := by
-  have h' : c • x = c • y := add_left_cancel h
   ext i j
-  have := congrArg (fun M => M i j) h'
+  have := congrArg (fun M => M i j) (add_left_cancel h)
   simp only [Matrix.smul_apply, smul_eq_mul] at this
   exact mul_left_cancel₀ hc this
 

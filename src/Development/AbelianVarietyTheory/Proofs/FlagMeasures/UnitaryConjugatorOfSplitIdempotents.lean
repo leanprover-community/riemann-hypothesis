@@ -71,8 +71,7 @@ theorem unitary_conjugator_of_split_idempotents :
     · exact (hcross j k hk).2
   have hee : e * e = e := by
     nth_rewrite 1 [he]
-    rw [Finset.sum_mul]
-    simp only [hje]
+    simp only [Finset.sum_mul, hje]
     exact he.symm
   have hese : e * σ e = 0 := by
     nth_rewrite 1 [he]
@@ -117,8 +116,7 @@ theorem unitary_conjugator_of_split_idempotents :
     conv_rhs => rw [← one_smul R (1 : Matrix (Fin n) (Fin n) R), ← hsum]
     simp only [add_smul]
     abel
-  have hcc' : conjT σ c * c = 1 := mul_eq_one_comm.mp hcc
-  refine ⟨⟨c, conjT σ c, hcc, hcc'⟩, hcc, fun j => ⟨?_, ?_⟩⟩
+  refine ⟨⟨c, conjT σ c, hcc, (mul_eq_one_comm.mp hcc)⟩, hcc, fun j => ⟨?_, ?_⟩⟩
   · show ε j • (Z * c) = ε j • P
     have hjf : ε j * f = 0 := by
       rw [hf]; linear_combination -hje j - hjse j

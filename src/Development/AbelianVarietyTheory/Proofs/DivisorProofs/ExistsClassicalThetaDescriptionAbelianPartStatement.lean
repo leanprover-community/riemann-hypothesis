@@ -1350,7 +1350,7 @@ theorem isD_unique {R : Type} [CommRing R] [IsDomain R] {D : DegPre R} [Algebra 
   have h3 : W₁ - W₂ = 0 := by simpa using this
   exact sub_eq_zero.1 h3
 
-theorem exists_ab_keyOK : ∀ κ : Rule, Rule4 κ → AllC fun {_} _ _ {D} _ {N} ν => 1 ≤ D.P.g → ∃ (d : AB N.toNumB D.P.g) (_ : Geo ν d), KeyOK κ ν d := by
+theorem exists_ab_keyOK : ∀ κ : Rule, Rule4 κ → AllC fun {R} _ _ {D} _ {N} ν => 1 ≤ D.P.g → ∃ (d : AB N.toNumB D.P.g) (_ : Geo ν d), KeyOK κ ν d := by
   intro κ hκ R _ _ _ _ D hψ hτ _ N ν hg
   obtain ⟨th, hth, hcomp⟩ := GlobalTheory.T.exists_degenerationThetaSection_nonvanishingFibres R D ℂ N ν
   obtain ⟨vB₀, hv₀⟩ := GlobalTheory.KeyPow.exists_isLieBasis D.P.A D.P.smoothDim
@@ -1416,7 +1416,7 @@ open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.MBLow.Cl Matrix
 
-theorem _root_.GlobalTheory.T.exists_classicalThetaDescription_abelianPart : ∀ κ : Rule, Rule4 κ → AllC fun {_} _ _ {D} _ {N} ν => 1 ≤ D.P.g → ∃ (d : AB N.toNumB D.P.g) (_ : Geo ν d), KeyOK κ ν d := by
+theorem _root_.GlobalTheory.T.exists_classicalThetaDescription_abelianPart : ∀ κ : Rule, Rule4 κ → AllC fun {R} _ _ {D} _ {N} ν => 1 ≤ D.P.g → ∃ (d : AB N.toNumB D.P.g) (_ : Geo ν d), KeyOK κ ν d := by
   first | exact @GlobalTheory.MBLow.AbCl.exists_ab_keyOK
 end -- clump:auto
 end -- clump:auto

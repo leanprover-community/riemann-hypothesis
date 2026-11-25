@@ -113,7 +113,7 @@ end GlobalTheory.ShareEig
 
 namespace GlobalTheory.ShareEig
 
-theorem eq_zero_of_det : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (U C : Type) [Group U] [MulAction U C] (M : TwoLevels E r U C) (_ : C) (D f : Frame M.Ψ r → ℂ), DifferentiableOn ℂ D M.dom → ContinuousOn f M.dom → (∃ x ∈ M.dom, D x ≠ 0) → (∀ z ∈ M.dom, D z ≠ 0 → f z = 0) → ∀ z ∈ M.dom, f z = 0 := by
+theorem eq_zero_of_det : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (U C : Type) [Group U] [MulAction U C] (M : TwoLevels E r U C) (c : C) (D f : Frame M.Ψ r → ℂ), DifferentiableOn ℂ D M.dom → ContinuousOn f M.dom → (∃ x ∈ M.dom, D x ≠ 0) → (∀ z ∈ M.dom, D z ≠ 0 → f z = 0) → ∀ z ∈ M.dom, f z = 0 := by
   intro E _ _ _ r U C _ _ M c D f hD hf hne h0 z hz
   have hopen : IsOpen M.dom := by
     rw [dom_eq_preimage M c]

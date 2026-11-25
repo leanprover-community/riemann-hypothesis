@@ -112,8 +112,7 @@ theorem exists_grpObj {A H Q : Over S} [GrpObj A] [IsCommMonObj A] [GrpObj H] (i
       rw [comp_mul, hq.lift_snd] at h1
       rw [Category.assoc, h1]
     · rintro ⟨t, rfl⟩
-      have := lift t b ≫= hq.w
-      simpa [comp_mul, ← Category.assoc] using this
+      simpa [comp_mul, ← Category.assoc] using lift t b ≫= hq.w
   have := flat_tensorHom q q
   have := surjective_tensorHom q q
   have := quasiCompact_tensorHom q q

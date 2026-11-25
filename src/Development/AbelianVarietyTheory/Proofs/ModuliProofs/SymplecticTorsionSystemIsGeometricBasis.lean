@@ -176,8 +176,7 @@ private theorem comp_list_prod_eq_prod_map_comp_over {S : Scheme.{0}} {A T T' : 
 theorem comp_linComb {S : Scheme.{0}} {A T T' : Over S} [GrpObj A] (f : T' ⟶ T) {n : ℕ} (y : Fin n → (T ⟶ A))
     (a : Fin n → ℕ) : f ≫ Out.linComb y a = Out.linComb (fun i => f ≫ y i) a := by
   unfold Out.linComb
-  rw [comp_list_prod_eq_prod_map_comp_over, List.map_ofFn]
-  simp [Function.comp_def, MonObj.comp_pow]
+  simp [comp_list_prod_eq_prod_map_comp_over, List.map_ofFn, Function.comp_def, MonObj.comp_pow]
 
 end GlobalTheory.SympBasis
 

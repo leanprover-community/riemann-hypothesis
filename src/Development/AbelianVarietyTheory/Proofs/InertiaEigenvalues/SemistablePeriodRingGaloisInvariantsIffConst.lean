@@ -50,7 +50,7 @@ open scoped Formalism.Per
 
 namespace GlobalTheory.PMon
 
-theorem stInv_iff : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l P) (_ : LocTied l P AI) (K : FinExt l)
+theorem stInv_iff : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l P) (T : LocTied l P AI) (K : FinExt l)
     (x : Bst P), (∀ g : ↥(GK K), actSt P (g : GQ l) x = x) ↔
       ∃ c : ↥(K0 K), x = Polynomial.C (algebraMap ↥(K0 K) P.R.B c) := by
   intro l _ P AI T K x

@@ -109,7 +109,7 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.DiagonalizeTwoByTwo.diagE :
-    ∀ {κ : Type} [Field κ]
+    ∀ {κ : Type} [inst : Field κ]
     (M : Matrix (Fin (2 : ℕ)) (Fin (2 : ℕ)) κ) (α : Fin (2 : ℕ) → κ),
     Function.Injective α →
       M.charpoly = ∏ i : Fin (2 : ℕ), (Polynomial.X - (Polynomial.C : κ → Polynomial κ) (α i)) →

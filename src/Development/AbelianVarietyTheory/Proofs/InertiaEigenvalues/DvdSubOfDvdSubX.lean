@@ -96,8 +96,7 @@ theorem _root_.GlobalTheory.NB.LT.exists_poly_mod [Nontrivial R] {I : Ideal R} [
     ∃ r : Polynomial R, r.degree < p.degree ∧ (p : R⟦X⟧) ∣ a - r := by
   have hI : I ≠ ⊤ := by
     intro h
-    have := subsingleton_of_isHausdorff_whole_ideal (I := I) h
-    exact not_subsingleton R this
+    exact not_subsingleton R (subsingleton_of_isHausdorff_whole_ideal (I := I) h)
   have D := H.isWeierstrassDivisorAt' (I := I)
   have hd := D.isWeierstrassDivisionAt_div_mod a
   refine ⟨D.mod a, ?_, D.div a, sub_eq_iff_eq_add.mpr hd.eq_mul_add⟩
@@ -131,8 +130,7 @@ theorem _root_.GlobalTheory.NB.LT.poly_dvd_of_dvd {I : Ideal R} [IsAdicComplete 
       rw [← Polynomial.coe_mul, ← Polynomial.coe_add, e]
     rw [mul_sub, ← hh, ← e']
     ring
-  have := (D.eq_zero_of_mul_eq hdeg hmul).2
-  exact (Polynomial.modByMonic_eq_zero_iff_dvd hm).mp this
+  exact (Polynomial.modByMonic_eq_zero_iff_dvd hm).mp ((D.eq_zero_of_mul_eq hdeg hmul).2)
 
 open PowerSeries in
 variable {R S : Type} [CommRing R] [CommRing S] {l : ℕ} in

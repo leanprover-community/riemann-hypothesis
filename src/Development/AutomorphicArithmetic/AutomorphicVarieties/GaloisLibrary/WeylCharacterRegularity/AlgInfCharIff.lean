@@ -54,9 +54,9 @@ section -- clump:auto
 
 noncomputable def UpperTheory.Reformulated.B.ProjectionCompact.piK :
     {T κ : Type} →
-      [Fintype T] →
-        [DecidableEq T] →
-          [Fintype κ] → [DecidableEq κ] → (T → Matrix κ κ ℂ) →* Matrix (T → κ) (T → κ) ℂ :=
+      [inst : Fintype T] →
+        [inst_1 : DecidableEq T] →
+          [inst_2 : Fintype κ] → [inst_3 : DecidableEq κ] → (T → Matrix κ κ ℂ) →* Matrix (T → κ) (T → κ) ℂ :=
   fun {T κ} _ _ _ _ =>
     { toFun := fun M => Matrix.of fun f g => ∏ t, M t (f t) (g t)
       map_one' := by

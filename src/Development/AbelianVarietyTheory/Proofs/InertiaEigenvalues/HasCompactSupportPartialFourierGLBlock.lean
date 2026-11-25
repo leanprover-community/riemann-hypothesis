@@ -127,13 +127,11 @@ theorem fourG_hasCompactSupport : ∀ (F E : Type) [NontriviallyNormedField F] [
   have key2 : ∀ (A : Matrix (Fin r) (Fin r) F) (b c : Fin r → F) (l : F) (t : Fin r → F), ‖t‖ < ε2 →
       f' (A, b + t, c, l) = f' (A, b, c, l) := by
     intro A b c l t ht
-    have := hUinv (A, b, c, l) _ (hB t ht)
-    simpa only [Prod.mk_add_mk, add_zero] using this
+    simpa only [Prod.mk_add_mk, add_zero] using hUinv (A, b, c, l) _ (hB t ht)
   have key3 : ∀ (A : Matrix (Fin r) (Fin r) F) (b c : Fin r → F) (l : F) (t : Fin r → F), ‖t‖ < ε3 →
       f' (A, b, c + t, l) = f' (A, b, c, l) := by
     intro A b c l t ht
-    have := hUinv (A, b, c, l) _ (hC t ht)
-    simpa only [Prod.mk_add_mk, add_zero] using this
+    simpa only [Prod.mk_add_mk, add_zero] using hUinv (A, b, c, l) _ (hC t ht)
   let P : Set (Matrix (Fin r) (Fin r) F × F) := (fun Y : Gl r F => (Y.1, Y.2.2.2)) '' tsupport f'
   have hPc : IsCompact P := hf'.2.image (by fun_prop)
   let K : Set (Gl r F) :=

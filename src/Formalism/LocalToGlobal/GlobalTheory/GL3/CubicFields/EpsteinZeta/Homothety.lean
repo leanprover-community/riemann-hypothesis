@@ -13,8 +13,7 @@ open scoped Pointwise
 
 theorem mem_smul_iff' (Λ : AddSubgroup ℂ) (c : ℂ) (w : ℂ) :
     w ∈ c • Λ ↔ ∃ x ∈ Λ, c * x = w := by
-  rw [AddSubgroup.mem_smul_pointwise_iff_exists]
-  simp only [smul_eq_mul]
+  simp only [AddSubgroup.mem_smul_pointwise_iff_exists, smul_eq_mul]
 
 def smulEquivNZ (Λ : AddSubgroup ℂ) (c : ℂ) (hc : c ≠ 0) :
     {w : ℂ // w ∈ Λ ∧ w ≠ 0} ≃ {w : ℂ // w ∈ c • Λ ∧ w ≠ 0} where

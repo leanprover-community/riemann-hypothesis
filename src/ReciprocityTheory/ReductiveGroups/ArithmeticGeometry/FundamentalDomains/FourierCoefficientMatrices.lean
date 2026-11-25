@@ -53,8 +53,7 @@ lemma th_kap {b : ι → Fin 2 → Fin 2 → ℂ} (hb : IsHermFam b) : th (kap b
   have h00 := hb τ 0 0
   have h11 := hb τ 1 1
   have h01 := hb τ 0 1
-  rw [Complex.ext_iff] at h00 h11 h01
-  simp at h00 h11 h01
+  simp [Complex.ext_iff] at h00 h11 h01
   fin_cases i <;> fin_cases k <;> apply Complex.ext <;> simp [th, kap] <;> linarith
 
 lemma th_zero : th (0 : ι → Fin 2 → Fin 2 → ℝ) = 0 := by
@@ -113,8 +112,7 @@ lemma eq_zero_of_pr_conj {χ : ι → Fin 2 → Fin 2 → ℂ}
   exact Complex.normSq_eq_zero.mp (h3 k (Finset.mem_univ _))
 
 lemma finrank_rfam : Module.finrank ℝ (ι → Fin 2 → Fin 2 → ℝ) = 4 * Fintype.card ι := by
-  rw [Module.finrank_pi_fintype]
-  simp [Module.finrank_pi_fintype, mul_comm]
+  simp [Module.finrank_pi_fintype, Module.finrank_pi_fintype, mul_comm]
 
 end Fam
 

@@ -29,8 +29,7 @@ theorem bNormSq_nonneg' (μ : Measure (Ix κ → ℂ)) (m : ConeMetric (C := ℂ
 theorem norm_le_of_sq_wgt_le {m : ConeMetric (C := ℂ) (ι := Ix κ)} {n : ℕ} {z : Ix κ → ℂ} (hz : z ≠ 0)
     {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b) (h : a ^ 2 * wgt m n z ≤ b) :
     a ≤ Real.sqrt b * m.ρ z ^ n := by
-  have hρ : 0 < m.ρ z := m.pos z hz
-  have hP : 0 < m.ρ z ^ n := pow_pos hρ n
+  have hP : 0 < m.ρ z ^ n := pow_pos (m.pos z hz) n
   have hw : wgt m n z = ((m.ρ z ^ n) ^ 2)⁻¹ := by
     unfold wgt
     rw [← pow_mul, mul_comm n 2]

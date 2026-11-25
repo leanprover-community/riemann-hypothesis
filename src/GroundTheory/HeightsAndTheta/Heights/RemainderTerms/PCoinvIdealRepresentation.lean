@@ -21,7 +21,6 @@ theorem CoinvIdealRepresentation.proof : CoinvIdealRepresentation.Statement := b
   | mem x hx =>
     obtain ⟨m₀, b₀, h1, h2, rfl⟩ := hx
     refine ⟨fun m b => if m = m₀ ∧ b = b₀ then 1 else 0, ?_⟩
-    have hm₀ : m₀ ∈ Finset.Icc 1 n := Finset.mem_Icc.mpr ⟨h1, h2⟩
     symm
     rw [Finset.sum_eq_single m₀]
     · rw [Finset.sum_eq_single b₀]
@@ -33,7 +32,7 @@ theorem CoinvIdealRepresentation.proof : CoinvIdealRepresentation.Statement := b
       apply Finset.sum_eq_zero
       intro b _
       simp [hm]
-    · exact fun h => absurd hm₀ h
+    · exact fun h => absurd (Finset.mem_Icc.mpr ⟨h1, h2⟩) h
   | zero =>
     exact ⟨0, by simp⟩
   | add x y _ _ hx hy =>

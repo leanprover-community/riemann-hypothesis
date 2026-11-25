@@ -73,11 +73,10 @@ theorem exists_fderiv_fderiv_re {H : (Fin D → ℂ) → ℂ} {y : Fin D → ℂ
     have h1 : HasFDerivAt H ((fderiv ℂ H z).restrictScalars ℝ) z :=
       hz.differentiableAt.hasFDerivAt.restrictScalars ℝ
     exact (Complex.reCLM.hasFDerivAt.comp z h1).fderiv
-  have hd : DifferentiableAt ℂ (fderiv ℂ H) y := hH.fderiv.differentiableAt
   refine ⟨fderiv ℂ (fderiv ℂ H) y, fun v w => ?_⟩
   have h2 : HasFDerivAt (fun z => Φ (fderiv ℂ H z))
       (Φ.comp ((fderiv ℂ (fderiv ℂ H) y).restrictScalars ℝ)) y :=
-    Φ.hasFDerivAt.comp y (hd.hasFDerivAt.restrictScalars ℝ)
+    Φ.hasFDerivAt.comp y (hH.fderiv.differentiableAt.hasFDerivAt.restrictScalars ℝ)
   rw [hev.fderiv_eq, h2.fderiv]
   rfl
 
@@ -125,13 +124,11 @@ theorem locDens_eq_of_samePot (A : FinHolAtlas e X) {U : Set X} {P Q : Fin e →
       hessC (fun y' => (Q i).φ ((A.chart j).symm y) ((A.chart j).symm y')) y := by
     intro i
     obtain ⟨V, hVo, hxV, G, hG, hPQV⟩ := hPQ i _ hU
-    have hsrc : (A.chart j).symm y ∈ (A.chart j).source := (A.chart j).map_target hy
     have ha : ContDiffAt ℝ 2 (fun y' => (Q i).φ ((A.chart j).symm y) ((A.chart j).symm y')) y := by
-      have h := hC i _ hU j hsrc
+      have h := hC i _ hU j ((A.chart j).map_target hy)
       rw [(A.chart j).right_inv hy] at h
       exact h
-    have hH : AnalyticAt ℂ (fun y' => G ((A.chart j).symm y')) y := hG j y ⟨hy, hxV⟩
-    refine hessC_eq_of_eventuallyEq_add_re ha hH ?_
+    refine hessC_eq_of_eventuallyEq_add_re ha (hG j y ⟨hy, hxV⟩) ?_
     have hV : (A.chart j).symm ⁻¹' V ∈ 𝓝 y :=
       ((A.chart j).continuousAt_symm hy).preimage_mem_nhds (hVo.mem_nhds hxV)
     filter_upwards [hV] with z hz

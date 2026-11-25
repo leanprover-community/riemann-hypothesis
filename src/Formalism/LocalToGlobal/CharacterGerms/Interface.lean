@@ -102,8 +102,7 @@ theorem lift_apply (h : I ⊕ J → C) (i : ℕ) (n : I ⊕ J) : X.lift h i n =
 
 theorem lift_zero (h : I ⊕ J → C) : X.lift h 0 = h := by
   funext n
-  rw [lift_apply]
-  simp only [pow_zero, pow_one, (X.std_spec _).2.1, const0]
+  simp only [lift_apply, pow_zero, pow_one, (X.std_spec _).2.1, const0]
   cases n with
   | inl b' => simp [Pi.single_apply]
   | inr j => simp

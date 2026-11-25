@@ -52,8 +52,7 @@ theorem SpecialDimBound.proof : SpecialDimBound.Statement := by
     have hmem : ϖ ∈ P.comap (C : O →+* MRing ι O) := h0
     rw [hP.noTorsion, Ideal.mem_bot] at hmem
     exact hϖ.ne_zero hmem
-  have hr : r ∈ nonZeroDivisors (MRing ι O ⧸ P) := mem_nonZeroDivisors_of_ne_zero hr0
-  have hle := ringKrullDim_quotient_succ_le_of_nonZeroDivisor hr
+  have hle := ringKrullDim_quotient_succ_le_of_nonZeroDivisor (mem_nonZeroDivisors_of_ne_zero hr0)
   rw [hP.dim, ringKrullDim_eq_of_ringEquiv e2, ringKrullDim_eq_of_ringEquiv e1] at hle
   exact withBotENat_lt_of_add_one_le hle
 

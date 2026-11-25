@@ -64,8 +64,7 @@ theorem IdealSheafData.ideal_comap_top_of_isAffine (X Y : Scheme.{0}) [IsAffine 
       rw [h1]
       erw [CommRingCat.hom_id, Ideal.map_id]
       exact Ideal.mem_map_of_mem _ hj
-    have := hle ⟨⊤, isAffineOpen_top X⟩
-    simpa using this
+    simpa using hle ⟨⊤, isAffineOpen_top X⟩
   · rw [Ideal.map_le_iff_le_comap]
     intro j hj
     rw [Ideal.mem_comap, Scheme.IdealSheafData.comap, Scheme.Hom.ker_apply, RingHom.mem_ker]

@@ -108,13 +108,12 @@ theorem isSeparable_of_pow_coeff {F F' Ω : Type*} [Field F] [Field F'] [Field �
   have hsepΩ : (h.map (algebraMap F' Ω)).Separable := by
     rw [← separable_map (iterateFrobenius Ω p e), hmap]
     exact hg.map
-  have hsep : h.Separable := (separable_map (algebraMap F' Ω)).mp hsepΩ
   have hroot : aeval ω h = 0 := by
     have : (aeval ω h) ^ p ^ e = 0 := by
       rw [aeval_def, ← eval_map, ← iterateFrobenius_def (R := Ω) p e, ← eval₂_hom,
         ← eval_map, hmap, eval_map, iterateFrobenius_def, ← aeval_def, hω]
     exact pow_eq_zero_iff (pow_ne_zero _ (Fact.out : p.Prime).ne_zero) |>.mp this
-  exact hsep.of_dvd (minpoly.dvd F' ω hroot)
+  exact ((separable_map (algebraMap F' Ω)).mp hsepΩ).of_dvd (minpoly.dvd F' ω hroot)
 
 end GroundTheory.Heights₂.Heights.FieldNumbers
 end -- clump:auto

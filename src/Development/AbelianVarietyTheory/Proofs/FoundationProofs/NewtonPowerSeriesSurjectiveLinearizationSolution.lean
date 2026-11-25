@@ -137,8 +137,7 @@ theorem newton_powerSeries_of_surjective_linearisation (k ι κ : Type) [Field k
       have := dvd_add (h3.trans key) (dvd_mul_right ((PowerSeries.X : PowerSeries k) ^ (n + 1))
         (PowerSeries.C (L (fun i => PowerSeries.constantCoeff (d i)) e)))
       simpa using this
-    have := dvd_add k1 ((inv n).2 e)
-    simpa using this
+    simpa using dvd_add k1 ((inv n).2 e)
   refine ⟨xl, fun i => ?_, fun e => ?_⟩
   · rw [← PowerSeries.coeff_zero_eq_constantCoeff_apply]
     simp only [xl, PowerSeries.coeff_mk]

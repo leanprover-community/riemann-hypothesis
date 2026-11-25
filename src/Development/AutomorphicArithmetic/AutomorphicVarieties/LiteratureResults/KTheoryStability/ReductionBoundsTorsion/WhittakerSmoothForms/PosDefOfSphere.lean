@@ -93,8 +93,7 @@ theorem isOpen_posW {L : Type} [Field L] [NumberField L] {N : ℕ} (w : Infinite
         rintro rfl
         simp at hv
       have hpos : 0 < (star v ⬝ᵥ (mat h0 w *ᵥ v)).re := by
-        have := (show (mat h0 w).PosDef from h0p).re_dotProduct_pos hv0
-        simpa using this
+        simpa using (show (mat h0 w).PosDef from h0p).re_dotProduct_pos hv0
       exact (isOpen_lt continuous_const hg).mem_nhds hpos)
   filter_upwards [hev] with h hh
   exact posDef_of_sphere (mat_herm h w) fun v hv => hh v (by simpa using hv)

@@ -68,7 +68,6 @@ theorem limit_fourier (g : ℕ → ℂ → ℂ) (g0 : ℂ → ℂ) (φ : ℕ →
     aestronglyMeasurable_of_tendsto_ae atTop (fun n => (fourier_cont (hφi n)).aestronglyMeasurable)
       (ae_of_all _ hFt)
   have hGb : ∀ w, ‖𝓕 g0 w‖ ≤ C' * dw w := fun w => le_of_tendsto' (hFt w).norm fun n => hT n w
-  have hGi : Integrable (𝓕 g0) := hB'i.mono' hGm (Eventually.of_forall hGb)
   have hinv : ∀ n, 𝓕⁻ (𝓕 (φ n)) = φ n := fun n =>
     (hφc n).fourierInv_fourier_eq (hφi n)
       (hB'i.mono' (fourier_cont (hφi n)).aestronglyMeasurable (Eventually.of_forall (hT n)))
@@ -76,8 +75,7 @@ theorem limit_fourier (g : ℕ → ℂ → ℂ) (g0 : ℂ → ℂ) (φ : ℕ →
   have hψlim : ∀ c, Tendsto (fun n => φ n c) atTop (𝓝 (ψ c)) := by
     intro c
     have : (fun n => φ n c) = fun n => 𝓕⁻ (𝓕 (φ n)) c := funext fun n => by rw [hinv n]
-    rw [this, hψ]
-    simp only [Real.fourierInv_eq]
+    simp only [this, hψ, Real.fourierInv_eq]
     refine tendsto_integral_of_dominated_convergence (fun w => C' * dw w) (fun n => ?_) hB'i (fun n => ?_) ?_
     · exact ((Real.continuous_fourierChar.comp (continuous_id.inner continuous_const)).smul
         (fourier_cont (hφi n))).aestronglyMeasurable
@@ -86,7 +84,7 @@ theorem limit_fourier (g : ℕ → ℂ → ℂ) (g0 : ℂ → ℂ) (φ : ℕ →
   refine ⟨ψ, ?_, fun c hc => ?_, fun c => le_of_tendsto' (hψlim c).norm fun n => hφb n c, ?_⟩
   · have : ψ = fun c => 𝓕 (𝓕 g0) (-c) := funext fun c => Real.fourierInv_eq_fourier_neg _ c
     rw [this]
-    exact (fourier_cont hGi).comp continuous_neg
+    exact (fourier_cont (hB'i.mono' hGm (Eventually.of_forall hGb))).comp continuous_neg
   · refine tendsto_nhds_unique (hψlim c) ?_
     have : (fun n => φ n c) = fun n => g n c := funext fun n => hφg n c hc
     rw [this]
@@ -117,8 +115,7 @@ theorem Lm_inv (g : ℕ) (hg : (g : ℝ) ≠ 0) (w : ℂ) : Lm g ((((-(g : ℝ) 
   simp only [Lm, map_mul, Complex.conj_ofReal, Complex.conj_conj]
   rw [← mul_assoc, ← Complex.ofReal_neg, ← Complex.ofReal_mul]
   have : (-(2 / (g : ℝ)) * (-(g : ℝ) / 2)) = 1 := by field_simp
-  rw [this]
-  simp
+  simp [this]
 
 theorem decay_scale (g : ℝ) (hg : 1 ≤ g) (w : ℂ) :
     ((1 + ‖(((-g / 2 : ℝ)) : ℂ) * conj w‖) ^ 3)⁻¹ ≤ 8 * dw w := by
@@ -162,8 +159,7 @@ theorem intAll_limit (S : C.HidaSetting E Wp Wq)
   intro v ε hε i hi1 hi2 w h h' hh hh'
   obtain ⟨C, hC⟩ := hB v ε hε i hi1 hi2 (w.1 v) ⟨w, rfl⟩ h h' hh hh'
   have hC0 : 0 ≤ C := by
-    have := ((hC 0).2 0).trans' (norm_nonneg _)
-    simpa using this
+    simpa using ((hC 0).2 0).trans' (norm_nonneg _)
   have H := fun n => hInt n v ε hε i hi1 hi2 w h h' hh hh'
   choose φ hφc hφe hφb hφi using H
   have hg := g_ge_one S hg1 hg2

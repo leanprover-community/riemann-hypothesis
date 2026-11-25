@@ -74,11 +74,9 @@ theorem isClosedImmersion_torsion_lift {X : Scheme.{0}} (G : Over X) [GrpObj G] 
   have l2 : pullback.lift f g hfg ≫ pullback.snd G.hom G.hom = g := pullback.lift_snd _ _ _
   have cond := pullback.condition (f := pullback.diagonal G.hom) (g := pullback.lift f g hfg)
   have jqf : jq ≫ f = pullback.fst _ _ := by
-    have := congrArg (· ≫ pullback.fst G.hom G.hom) cond
-    simpa [jq, l1] using this.symm
+    simpa [jq, l1] using (congrArg (· ≫ pullback.fst G.hom G.hom) cond).symm
   have jqg : jq ≫ g = pullback.fst _ _ := by
-    have := congrArg (· ≫ pullback.snd G.hom G.hom) cond
-    simpa [jq, l2] using this.symm
+    simpa [jq, l2] using (congrArg (· ≫ pullback.snd G.hom G.hom) cond).symm
   have jqeq : jq ≫ f = jq ≫ g := jqf.trans jqg.symm
 
   have key : i' ≫ f = i' ≫ g := by

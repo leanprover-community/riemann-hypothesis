@@ -58,8 +58,8 @@ section -- clump:auto
 open scoped Classical
 
 theorem UpperTheory.Reformulated.B.SumOverPlacesFibre.sum_fibre_place :
-    ∀ (F : Type) [Field F]
-    [NumberField F] [NumberField.IsTotallyComplex F] (x : F) (v : NumberField.InfinitePlace F),
+    ∀ (F : Type) [inst : Field F]
+    [inst_1 : NumberField F] [NumberField.IsTotallyComplex F] (x : F) (v : NumberField.InfinitePlace F),
     ∑ φ : F →+* ℂ with NumberField.InfinitePlace.mk φ = v, (φ : F → ℂ) x =
       (↑((2 : ℝ) * ((v.embedding : F → ℂ) x).re) : ℂ) := by
   intro F _ _ _ x v

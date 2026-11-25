@@ -64,7 +64,7 @@ theorem absNorm_halfDifferent_dvd_discr (D : D7) :
   have h1 := map_dvd Ideal.absNorm hdvd
   rwa [NumberField.absNorm_differentIdeal D.host.E (𝓞 D.host.E)] at h1
 
-theorem exists_dataX_discr_absNorm : FactPrincipalDatum → ∀ (D : D7) (T : Core D) (_ : LawsCore T), GlobalTheory.RunIn.GamAt T → ∀ j, InR D j → ∀ σ, GoodEmb T.Q.c σ → ∀ k : (T.U j σ).Comp, ∃ Xx : DataX D.host.E D.R.r, Xx.toData = (T.U j σ).X k ∧ Xx.g = T.Q.l.M ∧ Xx.NA = (discr D.host.E).natAbs ∧ Xx.NC = Ideal.absNorm D.host.ccK ∧ Xx.Λ = Submodule.span (𝓞 D.host.E) {v | ∃ a ∈ D.host.AA, ∃ u ∈ Xx.L', v = a • u} := by
+theorem exists_dataX_discr_absNorm : FactPrincipalDatum → ∀ (D : D7) (T : Core D) (h : LawsCore T), GlobalTheory.RunIn.GamAt T → ∀ j, InR D j → ∀ σ, GoodEmb T.Q.c σ → ∀ k : (T.U j σ).Comp, ∃ Xx : DataX D.host.E D.R.r, Xx.toData = (T.U j σ).X k ∧ Xx.g = T.Q.l.M ∧ Xx.NA = (discr D.host.E).natAbs ∧ Xx.NC = Ideal.absNorm D.host.ccK ∧ Xx.Λ = Submodule.span (𝓞 D.host.E) {v | ∃ a ∈ D.host.AA, ∃ u ∈ Xx.L', v = a • u} := by
   intro _ D T h hG j hj σ hσ k
   obtain ⟨Xx, h1, h2, h3, -⟩ :=
     GlobalTheory.LatticeData.exists_dataX_of_hasPrinc D T h j hj σ hσ (hG j hj σ hσ) k

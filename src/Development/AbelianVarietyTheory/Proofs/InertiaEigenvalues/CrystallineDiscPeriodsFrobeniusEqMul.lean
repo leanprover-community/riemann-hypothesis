@@ -113,8 +113,8 @@ theorem BK.frobenius_ev_E_ne_zero {K : FinExt l} (bk : BK K) {τ : Ainf l} (hτ 
   simp only [WittVector.coeff_frobenius_charP, WittVector.zero_coeff] at h3
   exact hc0 (pow_eq_zero_iff (Fact.out : l.Prime).ne_zero |>.1 (pow_eq_zero_iff (Fact.out : l.Prime).ne_zero |>.1 h3))
 
-theorem Seed.crystallineDiscPeriods_frobenius_eq_mul : ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (bk : BK K) (τ : Ainf l) (_ : bk.IsPer τ) (d : ℕ)
-    (ρ : ↥(GK K) → Matrix (Fin d) (Fin d) ℤ_[l]) (_ : ∀ g, IsUnit (ρ g)) (s : Seed bk d ρ τ),
+theorem Seed.crystallineDiscPeriods_frobenius_eq_mul : ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (bk : BK K) (τ : Ainf l) (hτ : bk.IsPer τ) (d : ℕ)
+    (ρ : ↥(GK K) → Matrix (Fin d) (Fin d) ℤ_[l]) (hρ : ∀ g, IsUnit (ρ g)) (s : Seed bk d ρ τ),
     ∀ Φ : bk.DA bk.ρ₀ →+* bk.DA bk.ρ₀, IsDiscMap (l := _) (u := _) (ρ := _) WittVector.frobenius Φ →
       ((l : bk.DA bk.ρ₀) ^ (s.c₁ + s.c₂) * bk.iS (frobS l bk.a bk.E) ^ s.N) • s.W.map Φ =
         s.W * (s.X' * s.F.map (C : Wq l bk.a →+* bk.S) * s.X.map (frobS l bk.a)).map bk.iS := by

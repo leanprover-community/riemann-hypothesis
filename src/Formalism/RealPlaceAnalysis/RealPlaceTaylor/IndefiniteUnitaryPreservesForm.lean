@@ -206,8 +206,7 @@ lemma mul_exp_neg_polarLog_mem_compact {ε : Fin n → Bool} {g : Matrix (Fin n)
   · rw [Matrix.mem_unitaryGroup_iff']
     calc star (g * NormedSpace.exp (-L)) * (g * NormedSpace.exp (-L))
         = NormedSpace.exp (-L) * (gᴴ * g) * NormedSpace.exp (-L) := by
-          rw [Matrix.star_eq_conjTranspose, Matrix.conjTranspose_mul, hEH]
-          simp only [mul_assoc]
+          simp only [Matrix.star_eq_conjTranspose, Matrix.conjTranspose_mul, hEH, mul_assoc]
       _ = 1 := by
           rw [← hFF]
           simp only [← mul_assoc]
@@ -215,8 +214,7 @@ lemma mul_exp_neg_polarLog_mem_compact {ε : Fin n → Bool} {g : Matrix (Fin n)
   · have h4 : g * Jm ε * (NormedSpace.exp L * NormedSpace.exp L) = Jm ε * g := by
       rw [hFF, ← mul_assoc, hgJ]
     calc g * NormedSpace.exp (-L) * Jm ε = g * Jm ε * NormedSpace.exp L := by
-          rw [hJE]
-          simp only [mul_assoc, Jm_mul_Jm_eq_one, mul_one]
+          simp only [hJE, mul_assoc, Jm_mul_Jm_eq_one, mul_one]
       _ = Jm ε * (g * NormedSpace.exp (-L)) := by
           rw [← mul_assoc, ← h4]
           simp only [mul_assoc]
@@ -256,8 +254,7 @@ lemma polar_decomposition_unique {ε : Fin n → Bool} (k k' X X' : Matrix (Fin 
     rw [Matrix.conjTranspose_mul, hY, exp_add_self]
     calc NormedSpace.exp Y * cᴴ * (c * NormedSpace.exp Y)
         = NormedSpace.exp Y * (star c * c) * NormedSpace.exp Y := by
-          rw [Matrix.star_eq_conjTranspose]
-          simp only [mul_assoc]
+          simp only [Matrix.star_eq_conjTranspose, mul_assoc]
       _ = _ := by rw [hc, mul_one]
   have h2 : NormedSpace.exp (X + X) = NormedSpace.exp (X' + X') := by
     rw [← key k X hu (exp_conjTranspose_of_hermitian hXh), ← key k' X' hu' (exp_conjTranspose_of_hermitian hX'h), h]

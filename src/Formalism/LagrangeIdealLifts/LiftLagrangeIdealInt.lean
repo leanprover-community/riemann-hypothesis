@@ -57,8 +57,7 @@ theorem uGraded_of (h : GradedStep) : UGraded := by
       rw [e1, LinearMap.map_add (f := _), LinearMap.map_smul]
       have e2 : W.γ (B.X ^ (K + 1) • n') = ((B.u : ℤ_[ℓ]) ^ (K + 1)) • (B.X ^ (K + 1) • n')
           + B.X ^ (K + 1 + 1) • n'' := by rw [← hg]; abel
-      rw [e2]
-      simp only [sub_smul, one_smul, smul_add, smul_sub, smul_neg]
+      simp only [e2, sub_smul, one_smul, smul_add, smul_sub, smul_neg]
       abel
 
 namespace GradedDegree
@@ -241,7 +240,7 @@ theorem lagrangian_ideal_holds : LagrangeIdeal := by
     have := (hw a ha a' (Finset.mem_union_left _ ha') hne).ne_zero_iff.mpr hpow
     exact this (by rw [heq, sub_self])
   set F : R[X] := ∑ a ∈ S₁, C (u a) * ∏ a' ∈ S₁.erase a, (X - C (c a')) with hF
-  have hQ : (∏ a ∈ S₁, (X - C (c a))) ∣ F * ∏ b ∈ S₂, (X - C (c b)) - C (ℓ ^ N) := by
+  obtain ⟨k, hk⟩ : (∏ a ∈ S₁, (X - C (c a))) ∣ F * ∏ b ∈ S₂, (X - C (c b)) - C (ℓ ^ N) := by
     apply prod_X_sub_C_dvd_of_injOn S₁ c hinj
     intro a ha
     rw [eval_sub, eval_mul, eval_C, hF, Polynomial.eval_finsetSum, Finset.sum_eq_single a]
@@ -252,7 +251,6 @@ theorem lagrangian_ideal_holds : LagrangeIdeal := by
       rw [eval_mul, eval_prod, Finset.prod_eq_zero (Finset.mem_erase.mpr ⟨Ne.symm hne, ha⟩)
         (by simp), mul_zero]
     · exact fun h => absurd ha h
-  obtain ⟨k, hk⟩ := hQ
   have hC : C (ℓ ^ N) = F * ∏ b ∈ S₂, (X - C (c b)) - (∏ a ∈ S₁, (X - C (c a))) * k := by
     rw [← hk]
     ring
@@ -842,8 +840,7 @@ theorem main (P : Polynomial ℤ_[ℓ]) (cG : ℤ_[ℓ]) (hcG : cG ≠ 0)
     rw [mul_smul, hk, WD.d1]
     have e1 : cG • W.φ (B.X • n) = W.φ (cG • (B.X • n)) := (map_smul _ _ _).symm
     have e2 : cG • W.γ y = W.γ (cG • y) := (map_smul _ _ _).symm
-    rw [smul_sub, smul_sub, smul_sub, e1, e2, hxe]
-    simp only [map_sub, map_add (f := _), W.comm]
+    simp only [smul_sub, smul_sub, smul_sub, e1, e2, hxe, map_sub, map_add (f := _), W.comm]
     abel
   have hω' : ω ∈ CS W := hω
   set p := Polynomial.aeval W.γ P with hp

@@ -273,8 +273,7 @@ private theorem vol_act {n : ℕ} (g : Matrix (Fin n) (Fin n) ℂ)
     LinearMap.pi fun j => ((Matrix.toLin' g).restrictScalars ℝ).comp (LinearMap.proj j)
   have hf : LinearMap.det f = 1 := by
     simp only [f]
-    rw [LinearMap.det_pi]
-    simp [LinearMap.det_restrictScalars, Algebra.norm_complex_apply, hg]
+    simp [LinearMap.det_pi, LinearMap.det_restrictScalars, Algebra.norm_complex_apply, hg]
   have : act g = f := rfl
   rw [this, Measure.addHaar_preimage_linearMap _ (by rw [hf]; exact one_ne_zero), hf]
   simp

@@ -292,7 +292,7 @@ def expDiag : (Fin (m + 1) → ℝ) ≃ₜ diagPosSubgroup (Fin (m + 1)) 𝕜 :=
 
 theorem coe_expDiag (x : Fin (m + 1) → ℝ) :
     ((expDiag 𝕜 m x : diagPosSubgroup (Fin (m + 1)) 𝕜) : GL (Fin (m + 1)) 𝕜) =
-      diagPosOf ⟨fun i => Real.exp (x i), fun _ => Real.exp_pos _⟩ := rfl
+      diagPosOf ⟨fun i => Real.exp (x i), fun i => Real.exp_pos _⟩ := rfl
 
 theorem expDiag_add (x y : Fin (m + 1) → ℝ) :
     expDiag 𝕜 m (x + y) = expDiag 𝕜 m x * expDiag 𝕜 m y := by

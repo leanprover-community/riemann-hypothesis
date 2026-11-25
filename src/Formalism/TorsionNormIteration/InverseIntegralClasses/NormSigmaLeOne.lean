@@ -88,8 +88,7 @@ theorem FunEqSubst_of (h4 : Formalism.LT.IntegralSubst.{u, v}) (h5 : Formalism.L
   intro K _ _ _ p q hq σ hS f hf0 hfT ι α hα0 hαI
   obtain ⟨hp, ⟨h, hh, hqh⟩, hp1, hσ⟩ := id hS
   have hp1' : ‖(p : K)‖ ≤ 1 := hp1.le
-  have hpne : (p : K) ≠ 0 := Nat.cast_ne_zero.mpr hp.ne_zero
-  have hppos : 0 < ‖(p : K)‖ := norm_pos_iff.mpr hpne
+  have hppos : 0 < ‖(p : K)‖ := norm_pos_iff.mpr (Nat.cast_ne_zero.mpr hp.ne_zero)
 
   set fs : PowerSeries K := PowerSeries.map σ f with hfs
   set g : PowerSeries K := f - (p : K)⁻¹ • fs.subst ((PowerSeries.X : PowerSeries K) ^ q) with hg

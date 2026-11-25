@@ -238,8 +238,7 @@ theorem exists_dual (hJ : Jᴴ = J) (hd : IsUnit J.det) {κ : Type} [Fintype κ]
   obtain ⟨g, hg⟩ := LinearMap.exists_leftInverse_of_injective _ hk
   refine ⟨fun i => J⁻¹ *ᵥ star fun k => g (Pi.single k 1) i, fun i j => ?_⟩
   have h1 : g (v j) = Pi.single j 1 := by
-    have := LinearMap.congr_fun hg (Pi.single j 1)
-    simpa [Fintype.linearCombination_apply_single] using this
+    simpa [Fintype.linearCombination_apply_single] using LinearMap.congr_fun hg (Pi.single j 1)
   have h2 : (J⁻¹)ᴴ = J⁻¹ := by rw [conjTranspose_nonsing_inv, hJ]
   unfold hf
   rw [star_mulVec, star_star, h2, dotProduct_mulVec, vecMul_vecMul, nonsing_inv_mul J hd, vecMul_one]
@@ -360,7 +359,7 @@ theorem successive_minima_gap : Gap := by
     have : u₀ ∈ Wj j := Submodule.subset_span ⟨hu₀, hν.trans
       (mul_le_mul_of_nonneg_left (pow_le_pow_of_le_one hη.le hη1.le hj) hs.le)⟩
     rwa [h, Submodule.mem_bot] at this)
-  have hex : ∃ j ≤ n, Wj (j + 1) = Wj j := by
+  obtain ⟨j, hj, he⟩ : ∃ j ≤ n, Wj (j + 1) = Wj j := by
     by_contra hc
     push Not at hc
     have : ∀ j ≤ n + 1, Module.finrank K (Wj j) + j ≤ n := by
@@ -373,7 +372,6 @@ theorem successive_minima_gap : Gap := by
         omega
     have := this (n + 1) le_rfl
     omega
-  obtain ⟨j, hj, he⟩ := hex
   obtain ⟨B, hBS, hBsp, hli⟩ := exists_linearIndependent K (S (j + 1))
   have hfin : B.Finite := hli.setFinite
   have := hfin.fintype

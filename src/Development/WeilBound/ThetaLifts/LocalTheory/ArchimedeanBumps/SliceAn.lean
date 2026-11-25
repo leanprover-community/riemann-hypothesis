@@ -203,14 +203,12 @@ theorem norming (q : Seminorm ℂ S) (g : S) : ∃ T : S →ₗ[ℂ] ℂ, ‖T g
   have hf : ∀ x : Submodule.span ℂ {g}, ‖f x‖ ≤ q x := fun x => by
     have h := LinearEquiv.coord_apply_smul ℂ S g hg x
     have : q x = ‖LinearEquiv.coord ℂ S g hg x‖ * q g := by rw [← map_smul_eq_mul, h]
-    rw [this]
-    simp [f, mul_comm, abs_of_nonneg (apply_nonneg q g)]
+    simp [this, f, mul_comm, abs_of_nonneg (apply_nonneg q g)]
   obtain ⟨T, hT, hle⟩ := Module.Dual.exists_extension_of_le_seminorm _ f hf
   refine ⟨T, ?_, hle⟩
   have := hT ⟨g, Submodule.mem_span_singleton_self g⟩
   simp only at this
-  rw [this]
-  simp [f, abs_of_nonneg (apply_nonneg q g), LinearEquiv.coord_self]
+  simp [this, f, abs_of_nonneg (apply_nonneg q g), LinearEquiv.coord_self]
 
 variable [TopologicalSpace S] [IsTopologicalAddGroup S]
 

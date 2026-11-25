@@ -85,8 +85,7 @@ theorem xOf_ne_of_hom {u w : PowerSeries K} (hwu : w = X ^ 3 * u) (hu : constant
   have h3 := congrArg φ h2
   rw [map_mul, map_mul, map_pow, map_pow, hφs] at h3
   have hut : IsUnit (φ (u.subst t)) := (isUnit_subst hu t ht0).map φ
-  have h4 : φ t ^ 2 * φ (u.subst t) ≠ 0 := mul_ne_zero (pow_ne_zero _ hφt) hut.ne_zero
-  apply h4
+  apply (mul_ne_zero (pow_ne_zero _ hφt) hut.ne_zero)
   rw [← h3]
   simp
 
@@ -186,8 +185,7 @@ private theorem subst_X_X_ne_zero (F : MvPowerSeries (Fin 2) K)
     funext k
     fin_cases k <;> rfl
   rw [h0, e, MvPowerSeries.subst_self, id_eq] at h1
-  rw [h1] at hF1
-  simp at hF1
+  simp [h1] at hF1
 
 theorem assoc_of (hS : WChordSubst.{u}) (hP : WPoint.{u}) {W : WeierstrassCurve K}
     {w : PowerSeries K} (hw : WFixed W w) {u : PowerSeries K} (hwu : w = X ^ 3 * u)

@@ -131,17 +131,15 @@ theorem UpperTheory.sum_log_div_cube_le_of_two_pow_dvd :
           have := Int.le_of_dvd (by norm_num) h'
           omega
         · exact h0
-      have h' : N ∣ l - 1 := by
+      obtain ⟨u, hu⟩ : N ∣ l - 1 := by
         rw [← Int.natCast_dvd_natCast, Nat.cast_sub hl1]; simpa using h
-      obtain ⟨u, hu⟩ := h'
       refine ⟨u, ?_, by omega⟩
       have : u ≤ N * u := Nat.le_mul_of_pos_left u hN1
       rw [hR, Finset.mem_range]; omega
     · right
       rw [hZ] at h
-      have h' : N ∣ l + 1 := by
+      obtain ⟨u, hu⟩ : N ∣ l + 1 := by
         rw [← Int.natCast_dvd_natCast]; simpa using h
-      obtain ⟨u, hu⟩ := h'
       refine ⟨u, ?_, by omega⟩
       have : u ≤ N * u := Nat.le_mul_of_pos_left u hN1
       rw [hR, Finset.mem_range]; omega

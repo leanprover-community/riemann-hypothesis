@@ -141,11 +141,10 @@ theorem quot_map_inv {μ μS ν : Measure G} [SFinite ν] [SFinite μS] (hq : Is
   rw [lintegral_indicator_one hs] at h
   rw [h]
   refine lintegral_congr fun x => ?_
-  have hx : MeasurableSet ((fun t : G => t * x) ⁻¹' s) := measurable_mul_const x hs
   have hx' : MeasurableSet ((fun t : G => t⁻¹ * x) ⁻¹' s) := (measurable_inv.mul_const x) hs
   calc ∫⁻ t, s.indicator (1 : G → ℝ≥0∞) (t * x) ∂μS
       = ∫⁻ t, ((fun t : G => t * x) ⁻¹' s).indicator (1 : G → ℝ≥0∞) t ∂μS := rfl
-    _ = μS ((fun t : G => t * x) ⁻¹' s) := lintegral_indicator_one hx
+    _ = μS ((fun t : G => t * x) ⁻¹' s) := lintegral_indicator_one (measurable_mul_const x hs)
     _ = (μS.map (fun t => t⁻¹)) ((fun t : G => t⁻¹ * x) ⁻¹' s) := by
         rw [Measure.map_apply measurable_inv hx']
         congr 1

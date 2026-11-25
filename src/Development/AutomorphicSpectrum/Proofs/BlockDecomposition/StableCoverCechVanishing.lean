@@ -87,7 +87,7 @@ theorem subsingleton_HU_iter {R : Type} [CommRing R] {C : Type 1} [Category.{0} 
   exact subsingleton_H_of_retract m.hom m'.hom (fun n x => funext fun s => rfl) j hB
 
 theorem glob_van_rel : ∀ {R : Type} [CommRing R] {C : Type 1} [Category.{0} C] (F : C ⥤ ModuleCat.{0} R) {ι : Type} [Fintype ι]
-    (W : ι → ObjectProperty C) (_ : ∀ α ⦃T T' : C⦄, (T ⟶ T') → W α T → (∃ β, W β T') → W α T') (s : ℕ),
+    (W : ι → ObjectProperty C) (hW : ∀ α ⦃T T' : C⦄, (T ⟶ T') → W α T → (∃ β, W β T') → W α T') (s : ℕ),
     ((∀ S : Finset ι, S.Nonempty → ∀ j < s, Subsingleton (HU F (capS W S) j)) →
       ∀ j < s, Subsingleton (CH.H ((ObjectProperty.ι fun T : C => ∃ α, W α T) ⋙ F) j)) ∧
     ((∀ S : Finset ι, S.Nonempty → ∀ j, Subsingleton (HU F (capS W S) j)) →
@@ -182,7 +182,7 @@ theorem isoH_morU {R' : Type} [CommRing R'] {σ : R →+* R'} {C' : Type 1} [Cat
     {U' P' : ObjectProperty C'} (hU : ∀ T, U' T → U (m.G.obj T)) (hP : ∀ T, P' T → P (m.G.obj T))
     (h : P ≤ U) (h' : P' ≤ U') (j : ℕ) (x : HU F P j) :
     isoH F' h' j ((morU m hP).pull j x) =
-      (morU (morU m hU) (U := inn U P) (U' := inn U' P') fun _ hT => hP _ hT).pull j (isoH F h j x) := by
+      (morU (morU m hU) (U := inn U P) (U' := inn U' P') fun T hT => hP _ hT).pull j (isoH F h j x) := by
   obtain ⟨z, rfl⟩ := Submodule.Quotient.mk_surjective _ x
   rfl
 
@@ -191,10 +191,10 @@ theorem base_change_rel : ∀ {R R' : Type} [CommRing R] [CommRing R'] {σ : R �
     [∀ i, Module.Flat R (N i)] (F : ι → (C ⥤ ModuleCat.{0} R)) (F' : C' ⥤ ModuleCat.{0} R')
     (τ : ∀ i, N i → ∀ T : C', (F i).obj (G.obj T) →ₛₗ[σ] F'.obj T) (hτ : ∀ i n {T T' : C'} (φ : T ⟶ T') x,
       τ i n T' (((F i).map (G.map φ)).hom x) = (F'.map φ).hom (τ i n T x))
-    (_ : ∀ i n n' T x, τ i (n + n') T x = τ i n T x + τ i n' T x) (_ : ∀ i (r : R) n T x, τ i (r • n) T x = σ r • τ i n T x)
+    (hadd : ∀ i n n' T x, τ i (n + n') T x = τ i n T x + τ i n' T x) (hsm : ∀ i (r : R) n T x, τ i (r • n) T x = σ r • τ i n T x)
     {A : Type} [Fintype A] (W : A → ObjectProperty C) (W' : A → ObjectProperty C')
-    (_ : ∀ α ⦃T T' : C⦄, (T ⟶ T') → W α T → (∃ β, W β T') → W α T')
-    (_ : ∀ α ⦃T T' : C'⦄, (T ⟶ T') → W' α T → (∃ β, W' β T') → W' α T') (h : ∀ α T, W' α T → W α (G.obj T)),
+    (hW : ∀ α ⦃T T' : C⦄, (T ⟶ T') → W α T → (∃ β, W β T') → W α T')
+    (hW' : ∀ α ⦃T T' : C'⦄, (T ⟶ T') → W' α T → (∃ β, W' β T') → W' α T') (h : ∀ α T, W' α T → W α (G.obj T)),
     (∀ S : Finset A, S.Nonempty → ∀ j, Tens R (N := N) (M := fun i => HU (F i) (capS W S) j) (M' := HU F' (capS W' S) j)
       fun i n x => (morU (⟨G, τ i n, hτ i n⟩ : CH.Mor (F i) F' σ) (U := capS W S) (U' := capS W' S)
         fun T hT α hα => h α T (hT α hα)).pull j x) →
@@ -376,7 +376,7 @@ theorem serre_of_equiv {R : Type} [CommRing R] (𝒮 : Serre.{1} R) {M N : Type 
   exact iff_of_true (Subsingleton.elim _ _) ⟨e.symm y, e.apply_symm_apply y⟩
 
 theorem serre_union : ∀ {R : Type} [CommRing R] {C : Type 1} [Category.{0} C] (F : C ⥤ ModuleCat.{0} R) {ι : Type}
-    (W : ι → ObjectProperty C) (_ : ∀ α ⦃T T' : C⦄, (T ⟶ T') → W α T → (∃ β, W β T') → W α T') (𝒮 : Serre.{1} R) (n : ℕ),
+    (W : ι → ObjectProperty C) (hW : ∀ α ⦃T T' : C⦄, (T ⟶ T') → W α T → (∃ β, W β T') → W α T') (𝒮 : Serre.{1} R) (n : ℕ),
     (∀ p q, p + q = n → 𝒮.P ((cechH F W q).cx.H p)) → 𝒮.P (HU F (fun T => ∃ α, W α T) n) := by
   intro R _ C _ F ι W hW 𝒮 n h
   have hle : ∀ α, W α ≤ (fun T => ∃ β, W β T : ObjectProperty C) := fun α T hT => ⟨α, hT⟩
@@ -480,9 +480,9 @@ theorem glob_st : (∀ {O : Type} [CommRing O] {R : Type} [CommRing R] {I : Idea
     (F : ι → (Thick (nlFun γ p X q κ) ⥤ ModuleCat.{0} Λ)) (F' : Thick (nlFun γ' p' X' q' κ') ⥤ ModuleCat.{0} Λ')
     (τ : ∀ i, N i → ∀ T, (F i).obj (G.obj T) →ₛₗ[σ] F'.obj T) (hτ : ∀ i n {T T'} (φ : T ⟶ T') x,
       τ i n T' (((F i).map (G.map φ)).hom x) = (F'.map φ).hom (τ i n T x))
-    (_ : ∀ i n n' T x, τ i (n + n') T x = τ i n T x + τ i n' T x) (_ : ∀ i (r : Λ) n T x, τ i (r • n) T x = σ r • τ i n T x)
+    (hadd : ∀ i n n' T x, τ i (n + n') T x = τ i n T x + τ i n' T x) (hsm : ∀ i (r : Λ) n T x, τ i (r • n) T x = σ r • τ i n T x)
     (Q : ObjectProperty (Thick (nlFun γ p X q κ))) (Q' : ObjectProperty (Thick (nlFun γ' p' X' q' κ')))
-    {A : Type} [Fintype A] (U : A → X.Opens) (U' : A → X'.Opens) (_ : ∀ α T, St Q' {U' α} T → St Q {U α} (G.obj T))
+    {A : Type} [Fintype A] (U : A → X.Opens) (U' : A → X'.Opens) (h : ∀ α T, St Q' {U' α} T → St Q {U α} (G.obj T))
     (hS : ∀ (S : Finset A) T, St Q' {⨅ α ∈ S, U' α} T → St Q {⨅ α ∈ S, U α} (G.obj T))
     (hR : ∀ T, St Q' (Set.range U') T → St Q (Set.range U) (G.obj T)),
     (∀ S : Finset A, S.Nonempty → ∀ j, Tens Λ (N := N) (M := fun i => HU (F i) (St Q {⨅ α ∈ S, U α}) j)

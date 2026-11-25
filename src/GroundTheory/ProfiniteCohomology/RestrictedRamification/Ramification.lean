@@ -57,14 +57,12 @@ theorem isUnramifiedAt_under_iff_inertia (Q : Ideal (𝓞 M)) [Q.IsPrime] :
       (Q.under (𝓞 E)).ramificationIdx (𝓞 F) * Q.ramificationIdx (𝓞 E) :=
     Ideal.ramificationIdx_tower (q := Q.under (𝓞 E)) (r := Q)
   set φ : Gal(M/E) →* Gal(M/F) := AlgEquiv.restrictScalarsHom F with hφ
-  have hinj : Function.Injective φ := AlgEquiv.restrictScalarsHom_injective F
   have hcomap : (Q.inertia Gal(M/F)).comap φ = Q.inertia Gal(M/E) :=
     Subgroup.ext fun _ => Iff.rfl
   have hmap : (Q.inertia Gal(M/E)).map φ = Q.inertia Gal(M/F) ⊓ φ.range := by
     rw [← hcomap, Subgroup.map_comap_eq, inf_comm]
   have hcardmap : Nat.card ((Q.inertia Gal(M/E)).map φ) = Nat.card (Q.inertia Gal(M/E)) :=
-    Subgroup.card_map_of_injective hinj
-  have hpos : 0 < Nat.card (Q.inertia Gal(M/E)) := Nat.card_pos
+    Subgroup.card_map_of_injective (AlgEquiv.restrictScalarsHom_injective F)
   rw [← Ideal.ramificationIdx_eq_one_iff]
   constructor
   · intro h1 σ hσ
@@ -82,7 +80,7 @@ theorem isUnramifiedAt_under_iff_inertia (Q : Ideal (𝓞 M)) [Q.IsPrime] :
     have hc : (Q.under (𝓞 E)).ramificationIdx (𝓞 F) * Q.ramificationIdx (𝓞 E) =
         1 * Q.ramificationIdx (𝓞 E) := by
       rw [← htow, ← cF, ← cE, ← hmap', hcardmap, one_mul]
-    exact Nat.eq_of_mul_eq_mul_right (cE ▸ hpos) hc
+    exact Nat.eq_of_mul_eq_mul_right (cE ▸ Nat.card_pos) hc
 
 end Inertia
 

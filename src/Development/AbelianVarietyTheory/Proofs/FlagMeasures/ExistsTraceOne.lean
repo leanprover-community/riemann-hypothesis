@@ -88,8 +88,7 @@ theorem exists_trace_one : ∀ (E : Type) [Field E] [NumberField E] [StarRing E]
     push_cast
     simp only [ht', star_sub, star_mul', star_star]
     ring
-  have h1 : (1 : 𝓞 E) ∈ normTraceIdeal E := htop ▸ Submodule.mem_top
-  obtain ⟨w, hw⟩ := h1
+  obtain ⟨w, hw⟩ : (1 : 𝓞 E) ∈ normTraceIdeal E := htop ▸ Submodule.mem_top
   exact ⟨w, by simpa using hw⟩
 
 end GlobalTheory.TraceOnto

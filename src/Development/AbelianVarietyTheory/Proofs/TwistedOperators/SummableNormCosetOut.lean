@@ -68,14 +68,11 @@ theorem summable_norm_coset_out (G : Type) [Group G] [TopologicalSpace G] [IsTop
     rw [measure_preimage_mul]; exact hμ
   have hconst : ∀ x, ∀ y ∈ C x, F y = F x.out := by
     intro x y hy
-    have hy' : x.out⁻¹ * y ∈ K := hy
-    have := hF x.out _ hy'
-    simpa using this
+    simpa using hF x.out _ hy
   have hmk : ∀ x, ∀ y ∈ C x, (QuotientGroup.mk y : G ⧸ K) = x := by
     intro x y hy
-    have hy' : x.out⁻¹ * y ∈ K := hy
     have h1 : (QuotientGroup.mk y : G ⧸ K) = QuotientGroup.mk x.out :=
-      (QuotientGroup.eq.mpr hy').symm
+      (QuotientGroup.eq.mpr hy).symm
     rw [h1]; exact Quotient.out_eq x
   have hdisj : Pairwise (Function.onFun Disjoint C) := by
     intro x y hxy

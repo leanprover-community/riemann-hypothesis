@@ -61,34 +61,34 @@ section -- clump:auto
 
 noncomputable def UpperTheory.Reformulated.B.KoszulComplexHomotopy.Stab :
     {S E : Type} →
-      [CommRing S] →
-        [Algebra ℂ S] →
-          [AddCommGroup E] →
-            [_root_.Module ℂ E] → (S →ₐ[ℂ] Module.End ℂ E) → Subalgebra ℂ S → Submodule ℂ E → Prop :=
+      [inst : CommRing S] →
+        [inst_1 : Algebra ℂ S] →
+          [inst_2 : AddCommGroup E] →
+            [inst_3 : _root_.Module ℂ E] → (S →ₐ[ℂ] Module.End ℂ E) → Subalgebra ℂ S → Submodule ℂ E → Prop :=
     fun {S E : Type} [CommRing S] [Algebra ℂ S] [AddCommGroup E] [_root_.Module ℂ E] (act : S →ₐ[ℂ] Module.End ℂ E)
         (R : Subalgebra ℂ S) (M : Submodule ℂ E) ↦
       ∀ r ∈ R, ∀ m ∈ M, ((act : S → Module.End ℂ E) r : E → E) m ∈ M
 
 noncomputable def UpperTheory.Reformulated.B.KoszulComplexHomotopy.wd :
     {k : Type} →
-      [Field k] →
+      [inst : Field k] →
         {ι : Type} →
           [LinearOrder ι] →
             {E : Type} →
-              [AddCommGroup E] →
-                [_root_.Module k E] → (ι → Module.End k E) → (Finset ι → E) →ₗ[k] Finset ι → E :=
+              [inst_2 : AddCommGroup E] →
+                [inst_3 : _root_.Module k E] → (ι → Module.End k E) → (Finset ι → E) →ₗ[k] Finset ι → E :=
     fun {k : Type} [Field k] {ι : Type} [LinearOrder ι] {E : Type} [AddCommGroup E] [_root_.Module k E]
         (w : ι → Module.End k E) ↦
       LinearMap.pi fun (t : Finset ι) ↦ ∑ i ∈ t, GlobalTheory.cubeSign t i • w i ∘ₗ LinearMap.proj (t.erase i)
 
 noncomputable def UpperTheory.Reformulated.B.KoszulComplexHomotopy.acx :
     {k : Type} →
-      [Field k] →
+      [inst : Field k] →
         {ι : Type} →
           [LinearOrder ι] →
             {E : Type} →
-              [AddCommGroup E] →
-                [_root_.Module k E] →
+              [inst_2 : AddCommGroup E] →
+                [inst_3 : _root_.Module k E] →
                   (Finset ι → Submodule k E) → (ι → Module.End k E) → GlobalTheory.PD.Cx k (Finset ι → E) :=
     fun {k : Type} [Field k] {ι : Type} [LinearOrder ι] {E : Type} [AddCommGroup E] [_root_.Module k E]
         (A : Finset ι → Submodule k E) (w : ι → Module.End k E) ↦
@@ -97,17 +97,17 @@ noncomputable def UpperTheory.Reformulated.B.KoszulComplexHomotopy.acx :
 
 noncomputable def UpperTheory.Reformulated.B.KoszulComplexHomotopy.kos :
     {S E : Type} →
-      [CommRing S] →
-        [Algebra ℂ S] →
-          [AddCommGroup E] →
-            [_root_.Module ℂ E] →
+      [inst : CommRing S] →
+        [inst_1 : Algebra ℂ S] →
+          [inst_2 : AddCommGroup E] →
+            [inst_3 : _root_.Module ℂ E] →
               (S →ₐ[ℂ] Module.End ℂ E) → {κ : Type} → [LinearOrder κ] → Submodule ℂ E → (κ → S) → GlobalTheory.PD.Cx ℂ (Finset κ → E) :=
     fun {S E : Type} [CommRing S] [Algebra ℂ S] [AddCommGroup E] [_root_.Module ℂ E] (act : S →ₐ[ℂ] Module.End ℂ E)
         {κ : Type} [LinearOrder κ] (M : Submodule ℂ E) (r : κ → S) ↦
       UpperTheory.Reformulated.B.KoszulComplexHomotopy.acx (fun (_ : Finset κ) ↦ M) fun (l : κ) ↦ (act : S → Module.End ℂ E) (r l)
 
 noncomputable def UpperTheory.Reformulated.B.KoszulComplexHomotopy.InSp :
-    {S κ : Type} → [CommRing S] → [Algebra ℂ S] → [Fintype κ] → Subalgebra ℂ S → (κ → S) → S → Prop :=
+    {S κ : Type} → [inst : CommRing S] → [inst_1 : Algebra ℂ S] → [Fintype κ] → Subalgebra ℂ S → (κ → S) → S → Prop :=
     fun {S κ : Type} [CommRing S] [Algebra ℂ S] [Fintype κ] (R : Subalgebra ℂ S) (r : κ → S) (g : S) ↦
       ∃ (a : κ → S), (∀ (l : κ), a l ∈ R) ∧ g = ∑ l : κ, a l * r l
 
@@ -124,7 +124,7 @@ noncomputable def UpperTheory.Reformulated.B.KoszulComplexHomotopy.Htpy :
                 (fun (L : Finset κ) ↦ ((act : S → Module.End ℂ E) g : E → E) (c L)) ∈ (UpperTheory.Reformulated.B.KoszulComplexHomotopy.kos act M r).B n
 
 noncomputable def UpperTheory.Reformulated.B.KoszulComplexHomotopy.KE :
-    {M : Type} → [AddCommGroup M] → [_root_.Module ℂ M] → GlobalTheory.PD.Cx ℂ M → ℤ → Prop :=
+    {M : Type} → [inst : AddCommGroup M] → [inst_1 : _root_.Module ℂ M] → GlobalTheory.PD.Cx ℂ M → ℤ → Prop :=
     fun {M : Type} [AddCommGroup M] [_root_.Module ℂ M] (C : GlobalTheory.PD.Cx ℂ M) (d : ℤ) ↦ ∀ m < d, C.Z m ≤ C.B m
 
 noncomputable def UpperTheory.Reformulated.B.KoszulComplexHomotopy.KoszulExactBelowLengthOfWeaklyRegular :

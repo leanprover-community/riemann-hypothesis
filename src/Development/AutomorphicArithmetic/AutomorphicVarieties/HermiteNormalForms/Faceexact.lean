@@ -107,7 +107,7 @@ private theorem UpperTheory.V.KT.fe_aug {I : Type} (s : Set (Fin 1 → I)) (f : 
 theorem UpperTheory.V.KT.faceexact :
     ∀ (I : Type) (S : ∀ n, Set (Fin n → I)) (hS : ConeExtensionAcyclic.FaceClosed S), S 0 = Set.univ → ConeExtensionAcyclic.Acyc S → ∀ m : ℕ,
     KH.FaceExactTo (fun p => {t : Fin (p + 1) → I // t ∈ S (p + 1)})
-      (fun _ i t => ⟨t.1 ∘ i.succAbove, hS _ t.1 t.2 i⟩) m := by
+      (fun p i t => ⟨t.1 ∘ i.succAbove, hS _ t.1 t.2 i⟩) m := by
   intro I S hS hS0 hA m
   obtain ⟨hA0, hAn⟩ := hA
   have inj : ∀ n, Function.Injective (Finsupp.mapDomain (M := ℤ) (Subtype.val : {t : Fin n → I // t ∈ S n} → (Fin n → I))) :=

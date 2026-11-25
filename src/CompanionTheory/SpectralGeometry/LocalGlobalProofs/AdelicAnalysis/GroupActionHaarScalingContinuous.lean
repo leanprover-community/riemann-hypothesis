@@ -66,8 +66,7 @@ theorem exists_continuous_modulus :
   have hone : c 1 = 1 := by
     apply NNReal.coe_injective
     apply mul_right_cancel₀ hI.ne'
-    rw [hform, NNReal.coe_one, one_mul]
-    simp only [h1]
+    simp only [hform, NNReal.coe_one, one_mul, h1]
   have hmulc : ∀ s t, c (s * t) = c s * c t := by
     intro s t
     apply NNReal.coe_injective

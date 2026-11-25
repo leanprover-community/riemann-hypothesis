@@ -474,7 +474,7 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Ylb4.main :
-    ∀ {k : Type} [Field k] [ValuativeRel k] {N : ℕ} {P Q B : Matrix (Fin N) (Fin N) k}
+    ∀ {k : Type} [inst : Field k] [inst_1 : ValuativeRel k] {N : ℕ} {P Q B : Matrix (Fin N) (Fin N) k}
       {C : ValuativeRel.ValueGroupWithZero k},
       (∀ (i j : Fin N),
           (ValuativeRel.valuation k : k → ValuativeRel.ValueGroupWithZero k) (P i j) ≤
@@ -1139,7 +1139,7 @@ theorem nabs_lt_one_of_valuation_lt_one (k : Type) [Field k] [ValuativeRel k] [T
   exact (hle t 1).2 (by simpa using ht.le)
 
 theorem modulus_zj_lt_one : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k]
-    [IsNonarchimedeanLocalField k], ∀ (h N : ℕ) (d : Fin h → ℕ) (_ : ∑ a, d a = N), (∀ a, 0 < d a) →
+    [IsNonarchimedeanLocalField k], ∀ (h N : ℕ) (d : Fin h → ℕ) (hd : ∑ a, d a = N), (∀ a, 0 < d a) →
     ∀ (t : kˣ), ValuativeRel.valuation k (t : k) < 1 → ∀ (j : Fin h), j.val + 1 < h →
     modulus k (fun a => Fin (d a)) (Zl.JC.zj d t j) < 1 := by
   intro k _ _ _ _ h N d _ hpos t ht j hj

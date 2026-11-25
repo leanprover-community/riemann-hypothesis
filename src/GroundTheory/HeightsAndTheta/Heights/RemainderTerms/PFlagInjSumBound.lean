@@ -41,8 +41,7 @@ theorem FlagInjSumBound.proof : FlagInjSumBound.Statement := by
   rw [hcard, Finset.sum_range_id] at h₁ h₂
   rw [hsum]
   refine ⟨h₁, fun heq i => ?_⟩
-  have hi : g i ∈ S := Finset.mem_image_of_mem g (Finset.mem_univ i)
-  exact Finset.mem_range.1 (h₂ heq hi)
+  exact Finset.mem_range.1 (h₂ heq (Finset.mem_image_of_mem g (Finset.mem_univ i)))
 
 end RestTerms
 

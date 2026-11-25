@@ -110,8 +110,7 @@ theorem dd_sum {ι : Type*} (s : Finset ι) (a : ι → ℂ) (g : ι → Mc n �
   unfold dd
   have h : HasFDerivAt (fun y => ∑ i ∈ s, a i * g i y) (∑ i ∈ s, a i • fderiv ℂ (g i) x) x :=
     HasFDerivAt.fun_sum fun i hi => (hg i hi).hasFDerivAt.const_mul (a i)
-  rw [h.fderiv]
-  simp
+  simp [h.fderiv]
 
 theorem eq_sum_E (H : Mc n) : H = ∑ p : Fin n × Fin n, H p.1 p.2 • E p := by
   ext a b
@@ -219,8 +218,7 @@ theorem alg (A B : Matrix (Fin n) (Fin n) ℂ) (Φ : (Fin n → Fin n × Fin n) 
     intro r
     rw [← Matrix.det_transpose, Matrix.det_apply', Finset.sum_mul, Finset.sum_mul]
     refine Finset.sum_congr rfl fun σ _ => ?_
-    rw [Finset.prod_mul_distrib]
-    simp only [Matrix.transpose_apply, Matrix.submatrix_apply, id]
+    simp only [Finset.prod_mul_distrib, Matrix.transpose_apply, Matrix.submatrix_apply, id]
     ring
   have e1 : ∑ σ : Equiv.Perm (Fin n), ((Equiv.Perm.sign σ : ℤ) : ℂ) *
         ∑ r : Fin n → Fin n × Fin n, (∏ t, (A (r t).1 (σ t) * B (r t).2 t)) * Φ r =
@@ -332,12 +330,11 @@ theorem invar_one {F : Mc n → ℂ} {U : Set (Mc n)} (hU : IsOpen U) (hF : Cont
   simp_rw [h1]
   rw [alg k (k.map star) (fun r => wd (List.ofFn fun t => E (r t)) F (k * b * kᴴ))
     (fun r π => wd_perm hU hF (Equiv.Perm.ofFn_comp_perm π fun t => E (r t)) _ hb)]
-  have hu : star k * k = 1 := (Matrix.mem_unitaryGroup_iff').1 hk
   have hdet : k.det * (k.map star).det = 1 := by
     have h2 : (k.map star).det = star k.det := by
       rw [← Matrix.det_conjTranspose, ← Matrix.det_transpose]
       rfl
-    have h3 := congrArg Matrix.det hu
+    have h3 := congrArg Matrix.det ((Matrix.mem_unitaryGroup_iff').1 hk)
     rw [Matrix.det_mul, Matrix.det_one, Matrix.star_eq_conjTranspose, Matrix.det_conjTranspose] at h3
     rwa [h2, mul_comm]
   rw [hdet, one_mul]

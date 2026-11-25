@@ -142,8 +142,7 @@ theorem mem_of_forall_ringEquiv_fixed {Ω : Type} [Field Ω] [IsAlgClosed Ω] [C
   · exfalso
     obtain ⟨σ, hσk, hσc⟩ := _root_.GlobalTheory.ShiftVariables.exists_ringEquiv_add_one k c hc
     have := hfix σ hσk
-    rw [hσc] at this
-    simp at this
+    simp [hσc] at this
   · have hcA : IsAlgebraic k c := by simpa [Transcendental] using hc
     have hzA : c ∈ algebraicClosure k Ω := (mem_algebraicClosure_iff).2 hcA
     have : IsGalois k (algebraicClosure k Ω) := inferInstance

@@ -107,8 +107,7 @@ theorem rel_of_quad {H : Type} [Ring H] [Algebra R H] {q : R} (hq : IsUnit q) (T
   have cancel : ∀ a c : H, q • a = q • c → a = c := by
     intro a c hac
     obtain ⟨u, rfl⟩ := hq
-    have := congrArg (fun z => ((u⁻¹ : Rˣ) : R) • z) hac
-    simpa [smul_smul] using this
+    simpa [smul_smul] using congrArg (fun z => ((u⁻¹ : Rˣ) : R) • z) hac
   constructor
   · apply cancel
     rw [← mul_smul_comm, ← h, ← mul_assoc, ← mul_assoc, hT]

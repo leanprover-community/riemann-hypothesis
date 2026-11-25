@@ -55,9 +55,8 @@ theorem UpperTheory.Lit.Cusp.conv_assoc :
       Continuous e → Integrable e μ → Continuous f → Integrable f μ → Continuous h → (∀ g, ‖h g‖ ≤ C) →
       (∀ x, conv μ e f x = f x) → ∀ x, conv μ f h x = conv μ e (conv μ f h) x := by
   intro G _ _ _ _ _ _ _ _ μ _ e f h C _ hei _ hfi hh hC hef x
-  have h1 : Integrable (fun z : G × G => e z.1 * f z.2) (μ.prod μ) := hei.mul_prod hfi
   have h2 : Integrable (fun z : G × G => e z.1 * f (z.1⁻¹ * z.2)) (μ.prod μ) :=
-    (measurePreserving_prod_inv_mul μ μ).integrable_comp_of_integrable h1
+    (measurePreserving_prod_inv_mul μ μ).integrable_comp_of_integrable (hei.mul_prod hfi)
   have h3 : Integrable (fun z : G × G => e z.1 * f (z.1⁻¹ * z.2) * h (z.2⁻¹ * x)) (μ.prod μ) := by
     refine h2.mul_bdd (c := C) ?_ (Eventually.of_forall fun z => hC _)
     exact (hh.comp (continuous_snd.inv.mul continuous_const)).aestronglyMeasurable

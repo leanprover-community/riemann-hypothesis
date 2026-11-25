@@ -27,8 +27,7 @@ theorem eval_bsmul_of_isMultiHomog {s : MRing ι} {a : K → ℕ} (hs : IsMultiH
       (∏ k, c k ^ a k) * eval z (map (Int.castRingHom ℂ) s) := by
   rw [eval_eq', eval_eq', Finset.mul_sum]
   refine Finset.sum_congr rfl fun m hm => ?_
-  have hm' : m ∈ s.support := support_map_subset _ _ hm
-  have hblk := hs m hm'
+  have hblk := hs m (support_map_subset _ _ hm)
   simp only [bsmul, mul_pow, Finset.prod_mul_distrib]
   have hc : ∏ p : (Σ k, ι k), c p.1 ^ m p = ∏ k, c k ^ a k := by
     rw [Fintype.prod_sigma]
@@ -46,8 +45,7 @@ theorem logNorm_bsmul (A : HermLine ι) {s : MRing ι} {a : K → ℕ} (hA : ∀
   have hh : A.h (bsmul c z) = (∏ k, ‖c k‖ ^ (a k)) * A.h z := by
     rw [show bsmul c z = fun p => c p.1 * z p from rfl, A.smul c z hc]
     simp [hA, zpow_natCast]
-  rw [hh, norm_mul, norm_prod]
-  simp only [norm_pow]
+  simp only [hh, norm_mul, norm_prod, norm_pow]
   rw [mul_div_mul_left _ _ (Finset.prod_ne_zero_iff.2 fun k _ => pow_ne_zero _ (norm_ne_zero_iff.2 (hc k)))]
 
 theorem prod_update_eq [DecidableEq K] (z : (Σ k, ι k) → ℂ) (i0 : (k : K) → ι k) (k : K) (i : ι k) :

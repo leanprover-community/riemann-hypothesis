@@ -94,14 +94,12 @@ theorem bij_of_gmult_zero {k U : Type} [Field k] [AddCommGroup U] [Module k U] (
   have hi : Function.Injective (Sq.restrict hSq) := by
     rw [← LinearMap.ker_eq_bot, LinearMap.ker_eq_bot']
     rintro ⟨_, p, hp, rfl⟩ hz
-    have h1 : Q.mkQ (S p) = 0 := congrArg Subtype.val hz
-    have h2 : p ∈ Q := hinj p hp ((Submodule.Quotient.mk_eq_zero _).mp h1)
+    have h2 : p ∈ Q := hinj p hp ((Submodule.Quotient.mk_eq_zero _).mp (congrArg Subtype.val hz))
     exact Subtype.ext ((Submodule.Quotient.mk_eq_zero _).mpr h2)
   have hs := LinearMap.injective_iff_surjective.mp hi
   intro y hy
   obtain ⟨⟨_, p, hp, rfl⟩, hz⟩ := hs ⟨Q.mkQ y, y, hy, rfl⟩
-  have h1 : Q.mkQ (S p) = Q.mkQ y := congrArg Subtype.val hz
-  exact ⟨p, hp, (Submodule.Quotient.eq _).mp h1.symm⟩
+  exact ⟨p, hp, (Submodule.Quotient.eq _).mp (congrArg Subtype.val hz).symm⟩
 
 variable {k : Type} [Field k]
 
@@ -132,7 +130,7 @@ theorem gam_zpow {l : ℕ} (R : RingPG k l) (b : ℤ) :
     rw [hw, hv, hι]; exact this
   have hw0 : w ≠ 0 := left_ne_zero_of_mul_eq_one hww
   have hinv : w⁻¹ = ι w' := (eq_inv_of_mul_eq_one_right hww).symm
-  have key : ∃ c : k⟦X⟧, w ^ b = 1 - (b : k⸨X⸩) * vv k + ι c * vv k ^ 2 := by
+  obtain ⟨c, hc⟩ : ∃ c : k⟦X⟧, w ^ b = 1 - (b : k⸨X⸩) * vv k + ι c * vv k ^ 2 := by
     induction b using Int.induction_on with
     | zero => exact ⟨0, by simp⟩
     | succ n ih =>
@@ -150,7 +148,6 @@ theorem gam_zpow {l : ℕ} (R : RingPG k l) (b : ℤ) :
       push_cast
       rw [hw1] at hww
       linear_combination (1 + ((n : k⸨X⸩) + 1) * vv k) * hww
-  obtain ⟨c, hc⟩ := key
   exact ⟨c, by rw [map_zpow₀, hγ, mul_zpow, hc]⟩
 
 variable {V : Type} [AddCommGroup V] [Module k⸨X⸩ V] [Module k⟦X⟧ V] [Module k V]

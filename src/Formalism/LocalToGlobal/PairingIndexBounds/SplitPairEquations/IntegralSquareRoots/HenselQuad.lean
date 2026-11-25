@@ -151,11 +151,10 @@ theorem rep_int (q d : ℕ) (hq : q.Prime) (hd : d.Prime) (hq8 : q % 8 = 3) (hqd
   obtain ⟨b, rfl⟩ := ZMod.intCast_surjective β
   obtain ⟨c, rfl⟩ := ZMod.intCast_surjective γ
   obtain ⟨e, rfl⟩ := ZMod.intCast_surjective δ
-  have hdvd : (m : ℤ) ∣ (a ^ 2 + q * b ^ 2) * (c ^ 2 + d * e ^ 2) + 1 := by
+  obtain ⟨s, hs⟩ : (m : ℤ) ∣ (a ^ 2 + q * b ^ 2) * (c ^ 2 + d * e ^ 2) + 1 := by
     rw [← CharP.intCast_eq_zero_iff (ZMod m) m]
     push_cast
     linear_combination h
-  obtain ⟨s, hs⟩ := hdvd
   exact ⟨a, b, c, e, s, by linear_combination hs⟩
 
 end Formalism.L2.PairingIndexBounds.Eq.J.Neg

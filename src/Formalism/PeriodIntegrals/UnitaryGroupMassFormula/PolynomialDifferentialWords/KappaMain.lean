@@ -84,8 +84,7 @@ lemma mono_val (g : Fin k →₀ ℕ) :
 
 lemma mem_antidiag_iff (g : Fin k →₀ ℕ) :
     g ∈ (Finset.univ : Finset (Fin k)).finsuppAntidiag d ↔ g.degree = d := by
-  rw [Finset.mem_finsuppAntidiag, Finsupp.degree_eq_sum]
-  simp
+  simp [Finset.mem_finsuppAntidiag, Finsupp.degree_eq_sum]
 
 lemma kappa_apply (A : Module.End K ↥(homogeneousSubmodule (Fin k) K d)) :
     kappa K k d A = ∑ g ∈ (Finset.univ : Finset (Fin k)).finsuppAntidiag d,
@@ -105,8 +104,7 @@ lemma coeff_kappa (A : Module.End K ↥(homogeneousSubmodule (Fin k) K d)) (m g 
     have h0 : mono K k d g = 0 := by
       unfold mono
       rw [dite_eq_right h]
-    rw [h0, map_zero]
-    simp
+    simp [h0, map_zero]
 
 lemma degree_of_coeff_ne (F : ↥(homogeneousSubmodule (Fin k) K d)) {m : Fin k →₀ ℕ}
     (h : AddMonoidAlgebra.coeff (F : MvPolynomial (Fin k) K) m ≠ 0) : m.degree = d := by
@@ -163,8 +161,7 @@ lemma degree_sub_add (g : Fin k →₀ ℕ) (a b : Fin k) (hb : g b ≠ 0) :
     rw [Finsupp.single_le_iff]
     omega
   have hs : ∀ c : Fin k, (single c 1 : Fin k →₀ ℕ).degree = 1 := fun c => by
-    rw [Finsupp.degree_eq_sum]
-    simp [Finsupp.single_apply]
+    simp [Finsupp.degree_eq_sum, Finsupp.single_apply]
   conv_rhs => rw [← tsub_add_cancel_of_le hle]
   rw [map_add (f := _), map_add (f := _), hs, hs]
 
@@ -241,8 +238,7 @@ theorem symbolMapBihomogeneous : KappaBihom := by
     have h0 : mono K k d g = 0 := by
       unfold mono
       rw [dite_eq_right hg]
-    rw [h0, map_zero] at h2
-    simp at h2
+    simp [h0, map_zero] at h2
   refine Submodule.mem_inf.2 ⟨?_, ?_⟩ <;> rw [mem_weightedHomogeneousSubmodule] <;> intro n hn <;>
     obtain ⟨m, g, rfl⟩ := exists_sumElim n
   · rw [weight_wx]

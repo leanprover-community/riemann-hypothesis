@@ -38,8 +38,7 @@ theorem chain_len_add (X Y Z : Submodule O M) (hXY : X ≤ Y) (hYZ : Y ≤ Z) :
     · intro hz
       obtain ⟨z, rfl⟩ := Submodule.Quotient.mk_surjective _ q
       rw [Submodule.mapQ_apply, LinearMap.id_apply, Submodule.Quotient.mk_eq_zero] at hz
-      have hz' : (z : M) ∈ Y := hz
-      exact ⟨Submodule.Quotient.mk ⟨z, hz'⟩, by rw [Submodule.mapQ_apply]; rfl⟩
+      exact ⟨Submodule.Quotient.mk ⟨z, hz⟩, by rw [Submodule.mapQ_apply]; rfl⟩
     · rintro ⟨q', rfl⟩
       obtain ⟨y, rfl⟩ := Submodule.Quotient.mk_surjective _ q'
       rw [Submodule.mapQ_apply, Submodule.mapQ_apply, LinearMap.id_apply,

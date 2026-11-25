@@ -145,8 +145,7 @@ theorem valComp : ValComp := by
   have hcoef : ∀ u, (homComp δ F).coeff u = if (∀ i, multideg u i = δ i) then F.coeff u else 0 := by
     intro u
     unfold homComp
-    rw [MvPolynomial.coeff_sum]
-    simp only [MvPolynomial.coeff_monomial]
+    simp only [MvPolynomial.coeff_sum, MvPolynomial.coeff_monomial]
     first
       | rw [Finset.sum_ite_eq']
     simp only [Finset.mem_filter, MvPolynomial.mem_support_iff]

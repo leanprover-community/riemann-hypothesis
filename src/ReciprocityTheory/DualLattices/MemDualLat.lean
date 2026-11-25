@@ -353,8 +353,7 @@ private theorem tensor_of_pair_lemma_7 {C R : Type} [Field C] [CommRing R] [Alge
     funext p
     obtain ⟨x, y⟩ := p
     have hxy : F (x, y) = (B * c * (Matrix.transpose B)) x y := (congrFun (congrFun hm x) y).symm
-    rw [hxy]
-    simp only [Finset.sum_apply, Pi.smul_apply]
+    simp only [hxy, Finset.sum_apply, Pi.smul_apply]
     simp only [Algebra.smul_def, hrc, Matrix.mul_apply, Matrix.transpose_apply, Finset.sum_mul]
     rw [Finset.sum_comm]
     exact Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => by ring

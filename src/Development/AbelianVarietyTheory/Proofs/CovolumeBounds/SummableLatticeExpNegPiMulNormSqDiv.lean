@@ -66,8 +66,7 @@ namespace GlobalTheory
 local notation "e[" t "]" => Complex.exp (2 * (π : ℂ) * Complex.I * ((t : ℝ) : ℂ))
 
 private theorem norm_latticeFourier_phase (t : ℝ) : ‖e[t]‖ = 1 := by
-  rw [Complex.norm_exp]
-  simp
+  simp [Complex.norm_exp]
 
 section Summable
 

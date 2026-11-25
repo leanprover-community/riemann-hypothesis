@@ -43,8 +43,7 @@ theorem decompose_real_imag_basis (v : Fin D → ℂ) :
     v = ∑ i, ((v i).re • (Pi.single i (1 : ℂ) : Fin D → ℂ) +
       (v i).im • (I • (Pi.single i (1 : ℂ) : Fin D → ℂ))) := by
   funext k
-  rw [Finset.sum_apply]
-  simp only [Pi.add_apply, Pi.smul_apply, Pi.single_apply, Finset.sum_add_distrib]
+  simp only [Finset.sum_apply, Pi.add_apply, Pi.smul_apply, Pi.single_apply, Finset.sum_add_distrib]
   apply Complex.ext <;> simp
 
 theorem leviForm_eq_complexHessian (φ : (Fin D → ℂ) → ℝ) (y w : Fin D → ℂ) :

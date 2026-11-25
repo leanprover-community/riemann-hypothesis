@@ -273,8 +273,7 @@ theorem _root_.GlobalTheory.BddAlg.bdd_alg : ∀ (K : Type) [NormedField K] [IsU
       intro c
       constructor
       · intro h n
-        have := h (Finsupp.single () n)
-        exact this
+        exact h (Finsupp.single () n)
       · intro h ν
         rw [← PowerSeries.coeff_def (s := ν) (n := ν ()) rfl]
         exact h _

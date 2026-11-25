@@ -74,8 +74,7 @@ theorem adjoint_injective_surjective_and_positive_scalar :
         rw [LinearMap.adjoint_inner_left, inner_zero_left]
         exact (Submodule.mem_orthogonal' _ _).mp hv (A e) ⟨e, rfl⟩
       exact hinj (h0.trans (map_zero _).symm)
-    have htop : LinearMap.range A = ⊤ := Submodule.orthogonal_eq_bot_iff.mp hbot
-    exact LinearMap.range_eq_top.mp htop
+    exact LinearMap.range_eq_top.mp (Submodule.orthogonal_eq_bot_iff.mp hbot)
   · intro U l hl h
     have key : ∀ l' : ℝ, 0 < l' → l = (l' : ℂ) →
         ∃ l' : ℝ, 0 < l' ∧

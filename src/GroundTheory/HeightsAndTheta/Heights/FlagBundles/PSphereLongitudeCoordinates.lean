@@ -26,16 +26,14 @@ noncomputable section
 
 lemma SphereLongitudeCoordinates.norm_vector_three_eq_sqrt (u v w : ℝ) :
     ‖(!₂[u, v, w] : E3)‖ = Real.sqrt (u ^ 2 + v ^ 2 + w ^ 2) := by
-  rw [EuclideanSpace.norm_eq, Fin.sum_univ_three]
-  simp [sq_abs, add_assoc]
+  simp [EuclideanSpace.norm_eq, Fin.sum_univ_three, sq_abs, add_assoc]
 
 lemma SphereLongitudeCoordinates.cyl_point {ρ : ℝ} (hρ : 0 < ρ) (φ z : ℝ) :
     ‖(!₂[ρ * Real.cos φ, ρ * Real.sin φ, z] : E3)‖ = Real.sqrt (ρ ^ 2 + z ^ 2) ∧
     (Real.sqrt (ρ ^ 2 + z ^ 2))⁻¹ • (!₂[ρ * Real.cos φ, ρ * Real.sin φ, z] : E3) =
       spherePoint (z / Real.sqrt (ρ ^ 2 + z ^ 2)) φ := by
   have hn : (ρ * Real.cos φ) ^ 2 + (ρ * Real.sin φ) ^ 2 + z ^ 2 = ρ ^ 2 + z ^ 2 := by
-    have := Real.cos_sq_add_sin_sq φ
-    linear_combination ρ ^ 2 * this
+    linear_combination ρ ^ 2 * (Real.cos_sq_add_sin_sq φ)
   refine ⟨by rw [SphereLongitudeCoordinates.norm_vector_three_eq_sqrt, hn], ?_⟩
   set r := Real.sqrt (ρ ^ 2 + z ^ 2) with hr
   have hr0 : 0 < r := Real.sqrt_pos.2 (by positivity)
@@ -205,14 +203,13 @@ lemma SphereLongitudeCoordinates.cone_volume {s : Set E3} (hs : MeasurableSet s)
     intro p hp z
     have hρ : 0 < p.1 := hp.1
     obtain ⟨hn, hd⟩ := SphereLongitudeCoordinates.cyl_point hρ p.2 z
-    have hr : 0 < Real.sqrt (p.1 ^ 2 + z ^ 2) := Real.sqrt_pos.2 (by positivity)
     have hlt : Real.sqrt (p.1 ^ 2 + z ^ 2) < 1 ↔ p.1 ^ 2 + z ^ 2 < 1 := by
       rw [Real.sqrt_lt' one_pos, one_pow]
     have hmem : (!₂[p.1 * Real.cos p.2, p.1 * Real.sin p.2, z] : E3) ∈ C ↔
         p.1 ^ 2 + z ^ 2 < 1 ∧ spherePoint (z / Real.sqrt (p.1 ^ 2 + z ^ 2)) p.2 ∈ s := by
       show 0 < ‖_‖ ∧ ‖_‖ < 1 ∧ ‖_‖⁻¹ • _ ∈ s ↔ _
       rw [hn, hd, hlt]
-      exact ⟨fun h => h.2, fun h => ⟨hr, h⟩⟩
+      exact ⟨fun h => h.2, fun h => ⟨(Real.sqrt_pos.2 (by positivity)), h⟩⟩
     change C.indicator 1 _ = if p.1 ^ 2 + z ^ 2 < 1 then
       s.indicator 1 (spherePoint (z / Real.sqrt (p.1 ^ 2 + z ^ 2)) p.2) else 0
     by_cases h1 : p.1 ^ 2 + z ^ 2 < 1 <;>

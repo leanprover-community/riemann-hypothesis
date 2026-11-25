@@ -76,8 +76,7 @@ private lemma linftyOp_norm_le_mul_of_entry_le {n : ℕ} (A : Matrix (Fin n) (Fi
     have := Finset.sum_le_card_nsmul Finset.univ (fun j => ‖A i j‖₊) δ
       (fun j _ => by exact_mod_cast h i j)
     simpa using this
-  have := (NNReal.coe_le_coe.2 key)
-  simpa [nsmul_eq_mul] using this
+  simpa [nsmul_eq_mul] using (NNReal.coe_le_coe.2 key)
 
 open Matrix Filter Topology in
 attribute [local instance] Matrix.linftyOpNormedRing Matrix.linftyOpNormedAlgebra in

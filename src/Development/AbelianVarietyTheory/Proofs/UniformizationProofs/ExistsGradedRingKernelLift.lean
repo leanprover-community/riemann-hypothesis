@@ -92,8 +92,7 @@ theorem exists_graded_ring_kernel_lift : ∀ (R : Type) [CommRing R] [IsNoetheri
   · intro e g' hg' a b c D₀ D₁ hD hex v' hv'
     have hg'x : ∀ x : R, g' (Ideal.Quotient.mk _ x) =
         Ideal.Quotient.mk (reesShiftIdeal I) (algebraMap R (reesAlgebra I) x) := fun x => by
-      have := RingHom.congr_fun hg' x
-      simpa only [RingHom.comp_apply] using this
+      simpa only [RingHom.comp_apply] using RingHom.congr_fun hg' x
 
     obtain ⟨d₀, rfl⟩ : ∃ d : Matrix (Fin b) (Fin a) R, D₀ = d.map (Ideal.Quotient.mk _) :=
       ⟨Matrix.of fun j k => (Ideal.Quotient.mk_surjective (D₀ j k)).choose, by
@@ -139,8 +138,7 @@ theorem exists_graded_ring_kernel_lift : ∀ (R : Type) [CommRing R] [IsNoetheri
       have hmem : (∑ j, algebraMap R (reesAlgebra I) (d₁ i j) * m j) ∈ reesShiftIdeal I := by
         rw [mem_reesShiftIdeal]
         intro n
-        rw [coeff_sum_algebraMap_mul_rees]
-        simp only [hm, Polynomial.coeff_monomial]
+        simp only [coeff_sum_algebraMap_mul_rees, hm, Polynomial.coeff_monomial]
         by_cases hn : e + 1 = n
         · subst hn
           simpa using hs2 i

@@ -151,7 +151,7 @@ private lemma chart_norm {l Q n : ℕ} {Y : Scheme.{0}} (T : Fin (n + 1) → Cor
 theorem UpperTheory.correspondence_norm_bound_of_affine_opens :
     ∀ (l : ℕ) [Fact l.Prime] {O : Type} [CommRing O] {Y : Scheme.{0}} (q : Y ⟶ Spec (CommRingCat.of O)) (ϖ : O) (Q n : ℕ)
         (T : Fin (n + 1) → Corr l Y) (κ : O →+* OC l) (D : WDat l T)
-        (A : Test l) (y : (PX (D.π ≫ q) κ).obj A.obj) {U V : Y.Opens} (_ : IsAffineOpen U) (hV : IsAffineOpen V)
+        (A : Test l) (y : (PX (D.π ≫ q) κ).obj A.obj) {U V : Y.Opens} (hU : IsAffineOpen U) (hV : IsAffineOpen V)
         (h : ∀ j, (T j).p ⁻¹ᵁ U ≤ (T j).r ⁻¹ᵁ V), ⊤ ≤ (y.1 ≫ D.π) ⁻¹ᵁ U →
         NormOn l Q n (fn q ϖ) T U V h → ∀ (ψ : A.obj.U →+* Qb A.obj), ψ (A.obj.oC (κ ϖ)) = 0 →
         ∃ α : ∀ j, Fin (T j).d → (Γ(Y, V) →+* A.obj.U),

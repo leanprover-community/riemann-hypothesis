@@ -151,8 +151,7 @@ private theorem ex_split {A S : Finset ℕ} (hA : A ⊆ S) (f g : Finset ℕ →
 
 private theorem ex_restrict {A S : Finset ℕ} (hA : A ⊆ S) (f : Finset ℕ → ℝ) :
     exP p S (fun T => f (T ∩ A)) = exP p A f := by
-  have := ex_split (p := p) hA f (fun _ => 1)
-  simpa [ex_const] using this
+  simpa [ex_const] using ex_split (p := p) hA f (fun _ => 1)
 
 private theorem ex_prod {ι : Type*} (J : Finset ι) (A : ι → Finset ℕ) (g : ι → Finset ℕ → ℝ)
     (hd : ∀ i ∈ J, ∀ j ∈ J, i ≠ j → Disjoint (A i) (A j)) (S : Finset ℕ)

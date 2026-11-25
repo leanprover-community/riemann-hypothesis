@@ -92,9 +92,8 @@ theorem exists_gen_eq (U : X.Opens) (f : X.functionField)
       ((gen_rs inf_le_left h _).trans ((gen_rs _ _ _).trans (ha _ _))).trans
         ((gen_rs inf_le_right h _).trans ((gen_rs _ _ _).trans (ha _ _))).symm)
   refine ⟨s, fun hU => ?_⟩
-  have h1 : rs X (inf_le_left : U ⊓ V _ hU ≤ U) s = rs X inf_le_right (a _ hU) := hs ⟨_, hU⟩
   exact (gen_rs (inf_le_left : U ⊓ V _ hU ≤ U) ⟨hU, hx _ hU⟩ s).symm.trans
-    ((congrArg _ h1).trans ((gen_rs _ _ _).trans (ha _ _)))
+    ((congrArg _ (hs ⟨_, hU⟩)).trans ((gen_rs _ _ _).trans (ha _ _)))
 
 def tr (N : LB X) (i j : N.ι) (hi : genericPoint X ∈ N.U i) (hj : genericPoint X ∈ N.U j) :
     X.functionField := gen (N.U i ⊓ N.U j) ⟨hi, hj⟩ (N.g i j).val

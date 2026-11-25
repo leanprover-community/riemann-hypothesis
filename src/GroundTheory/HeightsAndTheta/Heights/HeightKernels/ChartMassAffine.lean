@@ -141,8 +141,7 @@ theorem cxHessian_comp_affine (φ : (Fin D → ℂ) → ℝ) (c : Fin D → ℂ)
     simp only [L, realCLE_apply, Matrix.mulVec_smul]
   have hent : cxHessian (fun y => φ (c + P *ᵥ y) + κ) z i j = sesq H (L (Pi.single i 1)) (L (Pi.single j 1)) := by
     have hg : (fun y => φ (c + P *ᵥ y) + κ) = fun y => φ (c + L y) + κ := rfl
-    rw [cxHessian_eq_sesq, hg]
-    simp only [sesq, fderiv_fderiv_comp_affine, hI]
+    simp only [cxHessian_eq_sesq, hg, sesq, fderiv_fderiv_comp_affine, hI]
     rfl
   rw [hent, sesq_expand]
   simp only [L, realCLE_apply, Matrix.mul_apply, Matrix.transpose_apply, Matrix.map_apply, Finset.sum_mul,

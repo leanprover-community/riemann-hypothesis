@@ -34,8 +34,7 @@ theorem finsum_out_mul {M : Type} [AddCommMonoid M] (K : Subgroup G) (a : G) (F 
 
 theorem finite_supp {k : Type} [CommRing k] (K : Subgroup G) (hK : IsCommensurated K)
     (f : G → k) (hf : f ∈ Hecke k K) : {x : G ⧸ K | f x.out ≠ 0}.Finite := by
-  have hf' : IsBiInv K f ∧ FinDosetSupp K f := hf
-  obtain ⟨-, S, hS⟩ := hf'
+  obtain ⟨-, S, hS⟩ : IsBiInv K f ∧ FinDosetSupp K f := hf
   unfold IsCommensurated at hK
   have hfin : ∀ s : G, (Set.range fun k : K => ((↑k * s : G) : G ⧸ K)).Finite := by
     intro s
@@ -44,9 +43,8 @@ theorem finite_supp {k : Type} [CommRing k] (K : Subgroup G) (hK : IsCommensurat
     haveI : Finite (K ⧸ H) := inferInstance
     let φ : K ⧸ H → G ⧸ K := Quotient.lift (fun k : K => ((↑k * s : G) : G ⧸ K)) (by
       intro a b hab
-      have hab' : a⁻¹ * b ∈ H := QuotientGroup.leftRel_apply.1 hab
       have h2 : ((a⁻¹ * b : K) : G) ∈ Subgroup.map (MulAut.conj s).toMonoidHom K :=
-        Subgroup.mem_subgroupOf.1 hab'
+        Subgroup.mem_subgroupOf.1 (QuotientGroup.leftRel_apply.1 hab)
       obtain ⟨c, hc, hcab⟩ := Subgroup.mem_map.1 h2
       have e : (a : G)⁻¹ * b = s * c * s⁻¹ := by
         rw [← Subgroup.coe_inv, ← Subgroup.coe_mul, ← hcab]
@@ -74,13 +72,11 @@ theorem finite_supp {k : Type} [CommRing k] (K : Subgroup G) (hK : IsCommensurat
 theorem amf_right {k : Type} [CommRing k] {W : Type} [AddCommGroup W] [Module k W]
     {Γ K : Subgroup G} {ρ : Representation k Γ W} {φ : G → W} (hφ : φ ∈ AMF k Γ K ρ)
     (g : G) (c : K) : φ (g * c) = φ g := by
-  have h : ∀ (γ : Γ) (g : G) (κ : K), φ (↑γ * g * ↑κ) = ρ γ (φ g) := hφ
-  simpa using h 1 g c
+  simpa using hφ 1 g c
 
 theorem hecke_act_mem : Formalism.UG.HeckeActMem := by
   intro G _ Γ K k _ W _ _ ρ hK f hf φ hφ
   have hf' : IsBiInv K f ∧ FinDosetSupp K f := hf
-  have hbi : ∀ (a b : K) (g : G), f (↑a * g * ↑b) = f g := hf'.1
   have hφ' : ∀ (γ : Γ) (g : G) (κ : K), φ (↑γ * g * ↑κ) = ρ γ (φ g) := hφ
   have hfin := finite_supp K hK f hf
   show ∀ (γ : Γ) (g : G) (κ : K), hAct K f φ (↑γ * g * ↑κ) = ρ γ (hAct K f φ g)
@@ -93,8 +89,7 @@ theorem hecke_act_mem : Formalism.UG.HeckeActMem := by
     have h1 : x.out = (κ : G)⁻¹ * ((κ : G) • x).out * (κ' : G)⁻¹ := by rw [hκ']; group
     have e1 : f x.out = f ((κ : G) • x).out := by
       rw [h1]
-      have := hbi κ⁻¹ κ'⁻¹ ((κ : G) • x).out
-      simpa using this
+      simpa using hf'.1 κ⁻¹ κ'⁻¹ ((κ : G) • x).out
     have e2 : φ (↑γ * g * ↑κ * x.out) = ρ γ (φ (g * ((κ : G) • x).out)) := by
       have : (↑γ : G) * g * ↑κ * x.out = ↑γ * (g * ((κ : G) • x).out) * ↑(κ'⁻¹) := by
         rw [h1, Subgroup.coe_inv]

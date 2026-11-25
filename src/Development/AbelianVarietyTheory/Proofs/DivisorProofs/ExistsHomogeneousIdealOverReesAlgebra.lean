@@ -108,8 +108,7 @@ theorem piece_isHomogeneous (e : ℕ) {d : ℕ} {F : MvPolynomial σ (reesAlgebr
   apply hF
   intro h
   apply hm
-  rw [coeff_piece, h]
-  simp
+  simp [coeff_piece, h]
 
 theorem coeff_piece_mem (e : ℕ) (F : MvPolynomial σ (reesAlgebra I)) (m : σ →₀ ℕ) :
     AddMonoidAlgebra.coeff (piece I e F) m ∈ I ^ e := by

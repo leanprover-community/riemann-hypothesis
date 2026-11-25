@@ -321,8 +321,7 @@ theorem classNumber_le_sqrt_discr_mul_pow_pred :
       √|(discr K : ℝ)| * (1 + Real.log √|(discr K : ℝ)|) ^ (finrank ℚ K - 1) := by
   classical
   set X := √|(discr K : ℝ)| with hXdef
-  have hX : 1 ≤ X := one_le_sqrt_abs_discr K
-  refine le_trans ?_ (sum_zeta_pow_le (k := finrank ℚ K) finrank_pos hX)
+  refine le_trans ?_ (sum_zeta_pow_le (k := finrank ℚ K) finrank_pos (one_le_sqrt_abs_discr K))
   rw [Nat.cast_le]
   choose g hg hN using exists_ideal_in_class_of_norm_le_sqrt_discr K
   have hginj : Function.Injective fun C => (g C : Ideal (𝓞 K)) := by

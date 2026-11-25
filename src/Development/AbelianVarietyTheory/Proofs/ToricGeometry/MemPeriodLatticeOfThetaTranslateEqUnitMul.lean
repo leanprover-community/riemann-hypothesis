@@ -94,7 +94,6 @@ theorem entire_eq_exp_linear_of_multiplier [NormedSpace ℝ E] [FiniteDimensiona
     intro z
     exact (GlobalTheory.SCV.differentiableOn_fderiv isOpen_univ hd.differentiableOn).differentiableAt
       (isOpen_univ.mem_nhds (Set.mem_univ z))
-  have hF : Differentiable ℂ F := (hd.inv h0).smul hfd
   have hFper : ∀ x, ∀ s ∈ S, F (x + s) = F x := by
     intro x s hs
     obtain ⟨c, hc⟩ := hper s hs
@@ -109,7 +108,7 @@ theorem entire_eq_exp_linear_of_multiplier [NormedSpace ℝ E] [FiniteDimensiona
     simp only [hFdef]
     rw [hder, hc, smul_smul, _root_.mul_inv_rev, mul_assoc, inv_mul_cancel₀ hc0, mul_one]
   have hconst : ∀ z, F z = F 0 := fun z =>
-    GlobalTheory.entire_apply_eq_of_periodic_of_span_real hF hS hFper z 0
+    GlobalTheory.entire_apply_eq_of_periodic_of_span_real ((hd.inv h0).smul hfd) hS hFper z 0
   have hdh : ∀ z, fderiv ℂ h z = h z • F 0 := by
     intro z
     rw [← hconst z, hFdef]

@@ -35,8 +35,7 @@ lemma apld_tsum_residueClass_eq (ha : IsUnit a) {x : ℝ} (hx : 1 < x) :
   have hE := eqOn_LFunctionResidueClassAux ha hx'
   have hA : LFunctionResidueClassAux a x =
       (((∑' n, residueClass a n / (n : ℝ) ^ x) - (q.totient : ℝ)⁻¹ / (x - 1) : ℝ) : ℂ) := by
-    rw [hE]
-    simp only [hLS]
+    simp only [hE, hLS]
     push_cast
     rfl
   rw [hA, Complex.ofReal_re]

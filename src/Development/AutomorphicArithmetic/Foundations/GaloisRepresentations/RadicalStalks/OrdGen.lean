@@ -385,7 +385,7 @@ private theorem ks_core {k H C : Type*} [Field k] [AddCommGroup H] [Module k H] 
 
 theorem UpperTheory.Gal.Ord.ks :
     ∀ (p : ℕ) [Fact p.Prime] (D : Datum p) (R : Type) [CommRing R] (b : Base D R) (N : ℕ), 3 ≤ N → N.Coprime p → D.m = 1 →
-      ∀ (k : Type) [Field k] [IsAlgClosed k] (_ : (p : k) = 0) (β : R →+* k) (o : Obj b N (spMap β)) (i : Fin D.a) (w : Ideal (𝓞 D.F)) (f : ℕ),
+      ∀ (k : Type) [Field k] [IsAlgClosed k] (hk : (p : k) = 0) (β : R →+* k) (o : Obj b N (spMap β)) (i : Fin D.a) (w : Ideal (𝓞 D.F)) (f : ℕ),
       RingHom.ker (β.comp (b.t i)) = w → Ideal.absNorm w = p ^ f → 0 < f → ∀ π : Par p w f,
       ∀ φ : LinearMap.BilinForm k (HdR o.A), GlobalTheory.AbDual.IsCorrForm (dp0 k) (𝟙 _) o.A o.A o.P φ → ∀ x ∈ Fil o.A, hom o π.ε x = x →
       (∃ y, (∀ c, coh o c y = β (b.t i c) • y) ∧ x y ≠ 0) →
@@ -1361,7 +1361,7 @@ end UpperTheory.Gal.Ord
 
 theorem UpperTheory.Gal.Ord.desc :
     ∀ (p : ℕ) [Fact p.Prime] (D : Datum p) (R : Type) [CommRing R] (b : Base D R) (N : ℕ) (w : Ideal (𝓞 D.F)) (f : ℕ) (π : Par p w f)
-      (κ k T : Type) [Field κ] [Field k] [CommRing T] (_ : (p : κ) = 0) (hk : (p : k) = 0) (hT : (p : T) = 0) (σ : κ →+* k) (τ : κ →+* T)
+      (κ k T : Type) [Field κ] [Field k] [CommRing T] (hκ : (p : κ) = 0) (hk : (p : k) = 0) (hT : (p : T) = 0) (σ : κ →+* k) (τ : κ →+* T)
       (s : Sp κ ⟶ Sp R) (s₀ : Sp k ⟶ Sp R) (s' : Sp T ⟶ Sp R) (o : Obj b N s) (o₀ : Obj b N s₀) (o' : Obj b N s'),
       ObjMap o₀ o (spMap σ) → ObjMap o' o (spMap τ) → NOo hk o₀ π → NOo hT o' π := by
   intro p _ D R _ b N w f π κ k T _ _ _ hκ hk hT σ τ s s₀ s' o o₀ o' m₀ m' hN

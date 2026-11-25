@@ -79,8 +79,7 @@ theorem algOverHom_id : algOverHom (AlgHom.id k A) = 𝟙 _ := by
 
 theorem algOverHom_injective : Function.Injective (algOverHom : (A →ₐ[k] B) → _) := by
   intro a b h
-  have h1 : spMap (a : A →+* B) = spMap (b : A →+* B) := congrArg (fun x => x.left) h
-  have h2 := Spec.map_injective h1
+  have h2 := Spec.map_injective (congrArg (fun x => x.left) h)
   exact AlgHom.coe_ringHom_injective (congrArg CommRingCat.Hom.hom h2)
 
 theorem algOverHom_surjective : Function.Surjective (algOverHom : (A →ₐ[k] B) → _) := by

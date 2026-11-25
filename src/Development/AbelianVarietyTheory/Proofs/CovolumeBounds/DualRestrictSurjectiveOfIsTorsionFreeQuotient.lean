@@ -245,8 +245,7 @@ theorem exists_isSymplecticFamily_span_eq [Module.Free R M] [Module.Finite R M]
     · simp [← hB.neg_eq y f, ← hB.neg_eq e f, ha, hB.self_eq_zero, mul_comm]
   obtain ⟨g, e', f', d', hs, hd', hdvd, hspan⟩ := ih N' inf_le_left f hf (by
     intro c y hy hc
-    have := congrArg (B e) hc
-    simpa [((hmem y).1 hy).2.1, hd] using this) (by
+    simpa [((hmem y).1 hy).2.1, hd] using (congrArg (B e) hc)) (by
     intro x hx hx0
     refine hN x hx.1 fun y hy => ?_
     obtain ⟨a, b, y', hy', rfl⟩ := hdec y hy
@@ -372,8 +371,7 @@ theorem isUnit [Finite ι] (h : IsSymplecticBasisOfType B b d) (hp : Surjective 
     IsUnit (d k) := by
   obtain ⟨x, hx⟩ := hp (b.coord (Sum.inr k))
   have := h.apply_right x k
-  rw [hx] at this
-  simp only [Basis.coord_apply, Basis.repr_self, Finsupp.single_eq_same] at this
+  simp only [hx, Basis.coord_apply, Basis.repr_self, Finsupp.single_eq_same] at this
   exact IsUnit.of_mul_eq_one_right _ this.symm
 
 theorem finrank_eq [Fintype ι] [StrongRankCondition R] (b : Basis (ι ⊕ ι) R M) :

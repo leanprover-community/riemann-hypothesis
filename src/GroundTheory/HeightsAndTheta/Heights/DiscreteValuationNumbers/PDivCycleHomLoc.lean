@@ -101,8 +101,7 @@ theorem exists_frac [W.IsPrime] (hPW : P ≤ W) {a : FractionRing (MRing ι R �
     obtain ⟨b', f', g', hf', hg', hgW', rfl⟩ := hy
     refine ⟨b + b', f * f', g * g', isMultiHomog_mul hf hf', isMultiHomog_mul hg hg',
       fun h => (Ideal.IsPrime.mem_or_mem ‹_› h).elim hgW hgW', ?_⟩
-    rw [div_mul_div_comm]
-    simp only [map_mul]
+    simp only [div_mul_div_comm, map_mul]
 
 end Fractions
 
@@ -160,8 +159,7 @@ theorem chi_apply (d : K → ℤ) :
 
 theorem chi_nz (n : K → ℕ) :
     chi T hPW hT (Multiplicative.ofAdd (nz n)) = fr P (tpow T n : MRing ι R) := by
-  rw [chi_apply, tpow, map_prod]
-  simp [map_pow]
+  simp [chi_apply, tpow, map_prod, map_pow]
 
 abbrev Lau (P W : Ideal (MRing ι R)) [P.IsPrime] := AddMonoidAlgebra (homLocRing P W) (K → ℤ)
 

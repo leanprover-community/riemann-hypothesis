@@ -333,8 +333,8 @@ theorem fine_jacquet_length_two_segment (hA : GlobalTheory.Published.Irreducible
     · exact ⟨rfl, he⟩
 
 theorem fineJac_of_len_eq_two : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k]
-    [IsNonarchimedeanLocalField k] (_ : GlobalTheory.Published.IrreducibleAdmissibleGL) (_ : GlobalTheory.Published.SegmentRepresentation)
-    (Δ : Segment k) (_ : Δ.len = 2), FineJac Δ := by
+    [IsNonarchimedeanLocalField k] (hA : GlobalTheory.Published.IrreducibleAdmissibleGL) (hZ : GlobalTheory.Published.SegmentRepresentation)
+    (Δ : Segment k) (h : Δ.len = 2), FineJac Δ := by
   intro k _ _ _ _ hA hZ Δ h
   have e : seg2 Δ.first Δ.isCusp_first = Δ := Segment.ext_first rfl h.symm
   rw [← e]

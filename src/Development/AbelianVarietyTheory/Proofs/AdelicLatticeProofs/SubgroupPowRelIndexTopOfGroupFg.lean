@@ -86,8 +86,7 @@ private theorem card_quot_range_nsmul_eq_pow_finrank_mul_card_ker (M : Type) [Ad
       apply φ.injective
       have h := congrArg φ x.2
       rw [nsmulAddMonoidHom_apply, map_nsmul, map_zero] at h
-      have h1 : p • (φ x).1 = 0 := congrArg Prod.fst h
-      have h2 : (φ x).1 = 0 := (smul_eq_zero.mp h1).resolve_left hp.ne'
+      have h2 : (φ x).1 = 0 := (smul_eq_zero.mp (congrArg Prod.fst h)).resolve_left hp.ne'
       simp only [AddEquiv.apply_symm_apply]
       exact Prod.ext h2.symm rfl
     · intro y

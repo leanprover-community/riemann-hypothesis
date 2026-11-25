@@ -148,8 +148,7 @@ theorem monomial_mem (hA : algebraMap (MvPolynomial (Fin q) ℤ) (Polynomial Ω)
       ring
     rw [← heq]
     exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨l, rfl⟩)
-  have := hle hx
-  simpa [C_mul_X_pow_eq_monomial] using this
+  simpa [C_mul_X_pow_eq_monomial] using hle hx
 
 theorem coeff_shifted (hA : algebraMap (MvPolynomial (Fin q) ℤ) (Polynomial Ω) = act w) (u : Fin q) {y : (Polynomial Ω)}
     (hy : y ∈ shifted w d t u) (k : ℕ) : ∃ z ∈ gradedSpan w d t k, y.coeff (k + 1) = w u * z := by

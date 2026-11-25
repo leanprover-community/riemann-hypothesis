@@ -100,10 +100,9 @@ private lemma card_filter_le_orderEmbOfFin (J : Finset (Fin (a + b))) (h : J.car
     simp only [Finset.mem_map, Finset.mem_filter, Finset.mem_Iic]
     constructor
     · rintro ⟨hy, hyt⟩
-      have hr : y ∈ Set.range (J.orderEmbOfFin h) := by
+      obtain ⟨k, rfl⟩ : y ∈ Set.range (J.orderEmbOfFin h) := by
         rw [Finset.range_orderEmbOfFin]
         exact Finset.mem_coe.mpr hy
-      obtain ⟨k, rfl⟩ := hr
       exact ⟨k, (J.orderEmbOfFin h).le_iff_le.mp hyt, rfl⟩
     · rintro ⟨k, hk, rfl⟩
       exact ⟨Finset.orderEmbOfFin_mem _ _ _, (J.orderEmbOfFin h).le_iff_le.mpr hk⟩
@@ -152,10 +151,9 @@ private lemma card_filter_compl_orderEmbOfFin_le (J : Finset (Fin (a + b))) (hc 
   · rintro ⟨j, hj, rfl⟩
     exact ⟨Finset.orderEmbOfFin_mem _ _ _, hj⟩
   · rintro ⟨hy, hyt⟩
-    have hr : y ∈ Set.range (Jᶜ.orderEmbOfFin hc) := by
+    obtain ⟨j, rfl⟩ : y ∈ Set.range (Jᶜ.orderEmbOfFin hc) := by
       rw [Finset.range_orderEmbOfFin]
       exact Finset.mem_coe.mpr hy
-    obtain ⟨j, rfl⟩ := hr
     exact ⟨j, hyt, rfl⟩
 
 private lemma sum_val_eq_sum_orderEmbOfFin (J : Finset (Fin (a + b))) (h : J.card = a) :
@@ -165,10 +163,9 @@ private lemma sum_val_eq_sum_orderEmbOfFin (J : Finset (Fin (a + b))) (h : J.car
     simp only [Finset.mem_map, Finset.mem_univ, true_and]
     constructor
     · intro hy
-      have hr : y ∈ Set.range (J.orderEmbOfFin h) := by
+      obtain ⟨k, rfl⟩ : y ∈ Set.range (J.orderEmbOfFin h) := by
         rw [Finset.range_orderEmbOfFin]
         exact Finset.mem_coe.mpr hy
-      obtain ⟨k, rfl⟩ := hr
       exact ⟨k, rfl⟩
     · rintro ⟨k, rfl⟩
       exact Finset.orderEmbOfFin_mem _ _ _
@@ -251,10 +248,9 @@ theorem image_glue (x : Σ _ : {J : Finset (Fin (a + b)) // J.card = a},
   · rintro ⟨i, rfl⟩
     exact Finset.orderEmbOfFin_mem _ _ _
   · intro hy
-    have hr : y ∈ Set.range (x.1.1.orderEmbOfFin x.1.2) := by
+    obtain ⟨k, rfl⟩ : y ∈ Set.range (x.1.1.orderEmbOfFin x.1.2) := by
       rw [Finset.range_orderEmbOfFin]
       exact Finset.mem_coe.mpr hy
-    obtain ⟨k, rfl⟩ := hr
     exact ⟨x.2.1.symm k, by simp⟩
 
 theorem glue_injective : Function.Injective (glue (a := a) (b := b)) := by
@@ -299,8 +295,7 @@ theorem laplaceExpansionRows : LaplaceRows := by
   refine Finset.sum_congr rfl fun σ _ => ?_
   rw [Finset.mul_sum, Finset.mul_sum]
   refine Finset.sum_congr rfl fun τ _ => ?_
-  rw [sign_glue, Fin.prod_univ_add]
-  simp only [glue_castAdd, glue_natAdd, Matrix.submatrix_apply]
+  simp only [sign_glue, Fin.prod_univ_add, glue_castAdd, glue_natAdd, Matrix.submatrix_apply]
   push_cast
   ring
 

@@ -163,8 +163,7 @@ theorem _root_.GlobalTheory.quadratic_refinement :
     refine ⟨hadd, hneg, hsq, hpow, ?_, ?_⟩
     · intro ψ hψ heven
       have h0 : ψ 0 = 1 := by
-        have := hψ 0 0
-        simpa using this
+        simpa using hψ 0 0
       have hψsq : ∀ y, ψ y ^ 2 = (τ y y).toMul := by
         intro y
         have h := hψ y (-y)

@@ -106,8 +106,8 @@ theorem half_mem_int (v : Pl D) (h2 : (2 : 𝓞 D.host.F) ∉ v.asIdeal) :
 
 
 open GlobalTheory.SelfDualAt in
-theorem exists_trace_one_at_tame : ∀ (D : D7) (v : Pl D) (ε : AE D) (_ : ε * ε = ε) (_ : cA D ε = ε)
-    (_ : ε ∈ intAt D (· = v)) (_ : ∀ a, a ∈ idAt D (· = v) ↔ ε * a = a), Tame D v →
+theorem exists_trace_one_at_tame : ∀ (D : D7) (v : Pl D) (ε : AE D) (hεε : ε * ε = ε) (hεc : cA D ε = ε)
+    (hεI : ε ∈ intAt D (· = v)) (hε : ∀ a, a ∈ idAt D (· = v) ↔ ε * a = a), Tame D v →
     ∃ w ∈ intAt D (· = v), w + cA D w = ε := by
   intro D v ε _ _ hεI hε ht
   have hεη := eq_alg_cP hεI hε

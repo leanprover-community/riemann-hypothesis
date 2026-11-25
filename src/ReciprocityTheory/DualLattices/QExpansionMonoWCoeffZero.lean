@@ -160,8 +160,7 @@ theorem coe_mem_monoSpanF (w : ℕ) (f : ModularForm 𝒮ℒ (w : ℤ)) : (⇑f 
         rank_zero_iff_forall_zero.mp (CuspForm.rank_eq_zero_of_weight_lt_twelve (by omega)) _
       have : (⇑g : ℍ → ℂ) = 0 := by
         funext z
-        have := congrArg (fun F : CuspForm 𝒮ℒ (w : ℤ) => F z) h0
-        simpa using this
+        simpa using congrArg (fun F : CuspForm 𝒮ℒ (w : ℤ) => F z) h0
       rw [this]; exact Submodule.zero_mem _
     · replace h12 : 12 ≤ w := by omega
       set h := CuspForm.discriminantEquiv (ModularForm.toCuspForm g hgc) with hh

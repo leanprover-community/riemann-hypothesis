@@ -32,8 +32,7 @@ theorem height_span_prime {q : R} (hq : Prime q) : (Ideal.span {q}).height = 1 :
     have hPb : P = ⊥ := by
       by_contra hne
       obtain ⟨q', hq'P, hq'⟩ := hPp.exists_mem_prime_of_ne_bot hne
-      have hdvd : q ∣ q' := Ideal.mem_span_singleton.mp (hlt.le hq'P)
-      have hass := hq.associated_of_dvd hq' hdvd
+      have hass := hq.associated_of_dvd hq' (Ideal.mem_span_singleton.mp (hlt.le hq'P))
       have hle : Ideal.span {q} ≤ P :=
         (Ideal.span_singleton_le_iff_mem P).mpr (P.mem_of_dvd hass.symm.dvd hq'P)
       exact absurd hle (not_le_of_gt hlt)

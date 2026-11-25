@@ -63,8 +63,7 @@ theorem card_filter_le_succ_and_sq_sum_le_pow : ∀ (n kk : ℕ) (bv : ℝ), 1 �
       ext a
       simp only [mem_filter, mem_univ, true_and, Finset.mem_Ici, Fin.le_def]
       omega
-    rw [this, Fin.card_Ici]
-    simp only
+    simp only [this, Fin.card_Ici]
     omega
   · have e1 : n + 1 - kk = (n - kk) + 1 := by omega
     have hn2 : (2 : ℝ) ≤ n := by exact_mod_cast (by omega : 2 ≤ n)

@@ -41,7 +41,7 @@ theorem exists_rename_notMem {K : Type} [Field K] {σ : Type} (p : Ideal (MvPoly
       Ideal.height_strict_mono_of_isPrime_of_isPrime hbot
     rw [hPh] at h2
     exact absurd h2 not_lt_zero'
-  have hvars : g.vars.Nonempty := by
+  obtain ⟨e0, he0⟩ : g.vars.Nonempty := by
     by_contra hemp
     rw [Finset.not_nonempty_iff_eq_empty] at hemp
     have htd : g.totalDegree = 0 := by
@@ -53,8 +53,7 @@ theorem exists_rename_notMem {K : Type} [Field K] {σ : Type} (p : Ideal (MvPoly
         ext i
         by_contra hi
         have hiv : i ∈ g.vars := (MvPolynomial.mem_vars_iff_mem_support i).mpr ⟨d, hd, Finsupp.mem_support_iff.mpr hi⟩
-        rw [hemp] at hiv
-        simp at hiv
+        simp [hemp] at hiv
       simp [hd0]
     rw [MvPolynomial.totalDegree_eq_zero_iff_eq_C] at htd
     have ha : AddMonoidAlgebra.coeff g 0 ≠ 0 := by
@@ -64,7 +63,6 @@ theorem exists_rename_notMem {K : Type} [Field K] {σ : Type} (p : Ideal (MvPoly
     apply hgprime.not_unit
     rw [htd]
     exact (isUnit_iff_ne_zero.mpr ha).map MvPolynomial.C
-  obtain ⟨e0, he0⟩ := hvars
   refine ⟨e0, fun q hq hmem => ?_⟩
   rw [← hPeq, Ideal.mem_span_singleton] at hmem
   obtain ⟨h, hh2⟩ := hmem

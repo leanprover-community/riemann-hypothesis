@@ -493,8 +493,7 @@ theorem secondParameterSlackBounds_holds : ParamsII5 := by
       have e1 : (1 : ℝ) ≤ (r : ℝ) ^ 2 := one_le_pow₀ (by linarith)
       have e2 : (1 : ℝ) ≤ Q ^ 3 := one_le_pow₀ hQ1
       have e3 : (1 : ℝ) ≤ N := by linarith
-      have e4 : (1 : ℝ) ≤ (r : ℝ) ^ 2 * N := one_le_mul_of_one_le_of_one_le e1 e3
-      exact one_le_mul_of_one_le_of_one_le e4 e2
+      exact one_le_mul_of_one_le_of_one_le (one_le_mul_of_one_le_of_one_le e1 e3) e2
     have h2 : (0 : ℝ) ≤ 100 * k * c' * Q ^ 2 * (Y * (k : ℝ) ^ 2) := by positivity
     calc 100 * k * c' * Q ^ 2 * (Y * (k : ℝ) ^ 2)
         ≤ 100 * k * c' * Q ^ 2 * (Y * (k : ℝ) ^ 2) * ((r : ℝ) ^ 2 * N * Q ^ 3) :=

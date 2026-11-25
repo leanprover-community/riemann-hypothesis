@@ -96,7 +96,6 @@ theorem blk_mul_of_triangular : ∀ (ι : Type) [Fintype ι] [DecidableEq ι] (e
     simp
   change _ = (algebraMap ℚ R).mapMatrix (blk e γ)
   unfold blk
-  rw [hid]
-  simp only [map_add (f := _), map_mul, map_sub, map_one, RingHom.mapMatrix_apply]
+  simp only [hid, map_add (f := _), map_mul, map_sub, map_one, RingHom.mapMatrix_apply]
 
 end GlobalTheory.ClassFin

@@ -64,11 +64,10 @@ theorem summable_comp_of_bounded_fibres :
   classical
   have hcard : ∀ (u : Finset A) (b : B), (u.filter (fun a => π a = b)).card ≤ k := by
     intro u b
-    have hf : ({a | π a = b} : Set A).Finite := Set.finite_coe_iff.mp (h b).1
     calc (u.filter (fun a => π a = b)).card
         = ((u.filter (fun a => π a = b) : Finset A) : Set A).ncard := (Set.ncard_coe_finset _).symm
       _ ≤ ({a | π a = b} : Set A).ncard := by
-          apply Set.ncard_le_ncard _ hf
+          apply Set.ncard_le_ncard _ (Set.finite_coe_iff.mp (h b).1)
           intro a ha
           simp only [Finset.coe_filter, Set.mem_setOf_eq] at ha
           exact ha.2

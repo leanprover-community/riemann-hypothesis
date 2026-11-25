@@ -41,12 +41,11 @@ lemma exists_inK_exp_eq_of_mem_Kset {ε : Fin n → Bool} {k : Matrix (Fin n) (F
   have hcirc : ∀ z ∈ spectrum ℂ k, ‖z‖ = 1 := fun z hz => by
     simpa using spectrum.subset_circle_of_unitary (𝕜 := ℂ) hu hz
 
-  have hJ : Commute k (Jm ε) := hc
   have hJs : Commute (star k) (Jm ε) := by
     have h := congrArg star hc
     simp only [star_mul, Matrix.star_eq_conjTranspose, kExp_Jm_conjTranspose] at h
     exact h.symm
-  have hZJ : Commute (cfc Complex.log k) (Jm ε) := Commute.cfc hJ hJs _
+  have hZJ : Commute (cfc Complex.log k) (Jm ε) := Commute.cfc hc hJs _
   have hstar : star (cfc Complex.log k) = -cfc Complex.log k := by
     rw [← cfc_star, ← cfc_neg]
     refine cfc_congr fun z hz => ?_

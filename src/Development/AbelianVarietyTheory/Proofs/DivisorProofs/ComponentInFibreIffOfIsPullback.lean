@@ -57,9 +57,8 @@ theorem image_connectedComponent_of_isEmbedding {A B : Type} [TopologicalSpace A
   · exact (isPreconnected_connectedComponent.image q hq.continuous.continuousOn).subset_connectedComponentIn
       ⟨a, mem_connectedComponent, rfl⟩ (Set.image_subset_range _ _)
   · intro x hx
-    have hsub : connectedComponentIn (Set.range q) (q a) ⊆ Set.range q := connectedComponentIn_subset _ _
     have himg : q '' (q ⁻¹' connectedComponentIn (Set.range q) (q a)) = connectedComponentIn (Set.range q) (q a) :=
-      Set.image_preimage_eq_of_subset hsub
+      Set.image_preimage_eq_of_subset (connectedComponentIn_subset _ _)
     have hpc : IsPreconnected (q ⁻¹' connectedComponentIn (Set.range q) (q a)) := by
       rw [← hq.isInducing.isPreconnected_image, himg]
       exact isPreconnected_connectedComponentIn

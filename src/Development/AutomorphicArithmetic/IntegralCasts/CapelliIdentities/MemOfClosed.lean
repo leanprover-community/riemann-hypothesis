@@ -55,12 +55,12 @@ public import Mathlib.NumberTheory.Padics.PadicIntegers
 namespace UpperTheory.Reformulated.B.Qi13
 
 @[reducible] noncomputable def algRes : (K : Type) →
-  [Field K] →
-    [ValuativeRel K] →
-      [TopologicalSpace K] →
-        [IsNonarchimedeanLocalField K] →
+  [inst : Field K] →
+    [inst_1 : ValuativeRel K] →
+      [inst_2 : TopologicalSpace K] →
+        [inst_3 : IsNonarchimedeanLocalField K] →
           (l : ℕ) →
-            [Fact (Nat.Prime l)] →
+            [inst_4 : Fact (Nat.Prime l)] →
               [CharP (IsLocalRing.ResidueField ↥(ValuativeRel.valuation K).integer) l] →
                 Algebra (ZMod l) (IsLocalRing.ResidueField ↥(ValuativeRel.valuation K).integer) :=
   fun K [Field K] [ValuativeRel K] [TopologicalSpace K] [IsNonarchimedeanLocalField K] l [Fact (Nat.Prime l)]
@@ -70,27 +70,27 @@ namespace UpperTheory.Reformulated.B.Qi13
 attribute [local instance] algRes
 
 @[reducible] noncomputable def fdim : (K : Type) →
-  [Field K] →
-    [ValuativeRel K] →
-      [TopologicalSpace K] →
-        [IsNonarchimedeanLocalField K] →
+  [inst : Field K] →
+    [inst_1 : ValuativeRel K] →
+      [inst_2 : TopologicalSpace K] →
+        [inst_3 : IsNonarchimedeanLocalField K] →
           (l : ℕ) →
             [Fact (Nat.Prime l)] → [CharP (IsLocalRing.ResidueField ↥(ValuativeRel.valuation K).integer) l] → ℕ :=
   fun K [Field K] [ValuativeRel K] [TopologicalSpace K] [IsNonarchimedeanLocalField K] l [Fact (Nat.Prime l)]
       [CharP (IsLocalRing.ResidueField ↥(ValuativeRel.valuation K).integer) l] =>
     Module.finrank (ZMod l) (IsLocalRing.ResidueField ↥(ValuativeRel.valuation K).integer)
 
-theorem aux4 : ∀ (K : Type) [Field K] [ValuativeRel K]
-  [TopologicalSpace K] [IsNonarchimedeanLocalField K] (l : ℕ) [Fact (Nat.Prime l)]
-  [CharP (IsLocalRing.ResidueField ↥(ValuativeRel.valuation K).integer) l],
+theorem aux4 : ∀ (K : Type) [inst : Field K] [inst_1 : ValuativeRel K]
+  [inst_2 : TopologicalSpace K] [inst_3 : IsNonarchimedeanLocalField K] (l : ℕ) [inst_4 : Fact (Nat.Prime l)]
+  [inst_5 : CharP (IsLocalRing.ResidueField ↥(ValuativeRel.valuation K).integer) l],
   Module.Free (ZMod l) (IsLocalRing.ResidueField ↥(ValuativeRel.valuation K).integer) := by
   intro K _ _ _ _ l _ _
   letI := algRes K l
   exact Module.Free.of_divisionRing (ZMod l) _
 
-theorem aux6 : ∀ (K : Type) [Field K] [ValuativeRel K]
-  [TopologicalSpace K] [IsNonarchimedeanLocalField K] (l : ℕ) [Fact (Nat.Prime l)]
-  [CharP (IsLocalRing.ResidueField ↥(ValuativeRel.valuation K).integer) l],
+theorem aux6 : ∀ (K : Type) [inst : Field K] [inst_1 : ValuativeRel K]
+  [inst_2 : TopologicalSpace K] [inst_3 : IsNonarchimedeanLocalField K] (l : ℕ) [inst_4 : Fact (Nat.Prime l)]
+  [inst_5 : CharP (IsLocalRing.ResidueField ↥(ValuativeRel.valuation K).integer) l],
   Module.Finite (ZMod l) (IsLocalRing.ResidueField ↥(ValuativeRel.valuation K).integer) := by
   intro K _ _ _ _ l _ _
   letI := algRes K l
@@ -100,34 +100,34 @@ theorem aux6 : ∀ (K : Type) [Field K] [ValuativeRel K]
 attribute [local instance] aux4 aux6
 
 noncomputable def bb : (K : Type) →
-  [Field K] →
-    [ValuativeRel K] →
-      [TopologicalSpace K] →
-        [IsNonarchimedeanLocalField K] →
+  [inst : Field K] →
+    [inst_1 : ValuativeRel K] →
+      [inst_2 : TopologicalSpace K] →
+        [inst_3 : IsNonarchimedeanLocalField K] →
           (l : ℕ) →
-            [Fact (Nat.Prime l)] →
-              [CharP (IsLocalRing.ResidueField ↥(ValuativeRel.valuation K).integer) l] →
+            [inst_4 : Fact (Nat.Prime l)] →
+              [inst_5 : CharP (IsLocalRing.ResidueField ↥(ValuativeRel.valuation K).integer) l] →
                 Module.Basis (Fin (fdim K l)) (ZMod l)
                   (IsLocalRing.ResidueField ↥(ValuativeRel.valuation K).integer) :=
   fun K [Field K] [ValuativeRel K] [TopologicalSpace K] [IsNonarchimedeanLocalField K] l [Fact (Nat.Prime l)]
       [CharP (IsLocalRing.ResidueField ↥(ValuativeRel.valuation K).integer) l] =>
     Module.finBasis (ZMod l) (IsLocalRing.ResidueField ↥(ValuativeRel.valuation K).integer)
 
-theorem aux8 : ∀ (K : Type) [Field K] [ValuativeRel K]
-  [TopologicalSpace K] [IsNonarchimedeanLocalField K] (l : ℕ) [Fact (Nat.Prime l)]
-  [CharP (IsLocalRing.ResidueField ↥(ValuativeRel.valuation K).integer) l]
+theorem aux8 : ∀ (K : Type) [inst : Field K] [inst_1 : ValuativeRel K]
+  [inst_2 : TopologicalSpace K] [inst_3 : IsNonarchimedeanLocalField K] (l : ℕ) [inst_4 : Fact (Nat.Prime l)]
+  [inst_5 : CharP (IsLocalRing.ResidueField ↥(ValuativeRel.valuation K).integer) l]
   (i : Fin (fdim K l)),
   ∃ a, (IsLocalRing.residue ↥(ValuativeRel.valuation K).integer) a = (bb K l) i := by
   exact fun K _ _ _ _ l _ _ i => IsLocalRing.residue_surjective _
 
 noncomputable def blift : (K : Type) →
-  [Field K] →
-    [ValuativeRel K] →
-      [TopologicalSpace K] →
-        [IsNonarchimedeanLocalField K] →
+  [inst : Field K] →
+    [inst_1 : ValuativeRel K] →
+      [inst_2 : TopologicalSpace K] →
+        [inst_3 : IsNonarchimedeanLocalField K] →
           (l : ℕ) →
-            [Fact (Nat.Prime l)] →
-              [CharP (IsLocalRing.ResidueField ↥(ValuativeRel.valuation K).integer) l] →
+            [inst_4 : Fact (Nat.Prime l)] →
+              [inst_5 : CharP (IsLocalRing.ResidueField ↥(ValuativeRel.valuation K).integer) l] →
                 Fin (fdim K l) → ↥(ValuativeRel.valuation K).integer :=
   fun K [Field K] [ValuativeRel K] [TopologicalSpace K] [IsNonarchimedeanLocalField K] l [Fact (Nat.Prime l)]
       [CharP (IsLocalRing.ResidueField ↥(ValuativeRel.valuation K).integer) l] i =>
@@ -159,7 +159,6 @@ private theorem key {l : ℕ} [Fact l.Prime] {K : Type} [Field K] [Algebra ℚ_[
   obtain ⟨i₀, hi₀⟩ := not_forall.mp hne
   obtain ⟨m, -, hm⟩ := Finset.exists_max_image Finset.univ (fun i => ‖g i‖) ⟨i₀, Finset.mem_univ _⟩
   have hpos : 0 < ‖g m‖ := (norm_pos_iff.mpr hi₀).trans_le (hm i₀ (Finset.mem_univ _))
-  have hgm : g m ≠ 0 := norm_pos_iff.mp hpos
   let c : ι → ℤ_[l] := fun i => ⟨g i / g m, by
     rw [PadicInt.mem_subring_iff, norm_div]
     exact (div_le_one hpos).mpr (hm i (Finset.mem_univ _))⟩
@@ -169,8 +168,7 @@ private theorem key {l : ℕ} [Fact l.Prime] {K : Type} [Field K] [Algebra ℚ_[
       intro i
       change algebraMap ℚ_[l] K (g i / g m) * (x i : K) = _
       rw [smul_smul, Algebra.smul_def, div_eq_inv_mul]
-    rw [AddSubmonoidClass.coe_finsetSum]
-    simp only [h1]
+    simp only [AddSubmonoidClass.coe_finsetSum, h1]
     rw [← Finset.smul_sum, hg, smul_zero]
     rfl
   have hred : ∑ i, PadicInt.toZMod (c i) • r (x i) = 0 := by
@@ -181,7 +179,7 @@ private theorem key {l : ℕ} [Fact l.Prime] {K : Type} [Field K] [Algebra ℚ_[
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [map_mul, hφ, Algebra.smul_def]
   have h3 := h _ hred m
-  have h4 : c m = 1 := Subtype.ext (div_self hgm)
+  have h4 : c m = 1 := Subtype.ext (div_self (norm_pos_iff.mp hpos))
   rw [h4, map_one] at h3
   exact one_ne_zero h3
 
@@ -196,9 +194,9 @@ private theorem mem_of_closed {l : ℕ} [Fact l.Prime] {K : Type} [Field K]
     rw [PadicInt.coe_natCast, map_natCast]
     exact natCast_mem O n
 
-theorem linIndep : ∀ (K : Type) [Field K] [ValuativeRel K]
-  [TopologicalSpace K] [IsNonarchimedeanLocalField K] (l : ℕ) [Fact (Nat.Prime l)]
-  [Algebra ℚ_[l] K] [CharP (IsLocalRing.ResidueField ↥(ValuativeRel.valuation K).integer) l],
+theorem linIndep : ∀ (K : Type) [inst : Field K] [inst_1 : ValuativeRel K]
+  [inst_2 : TopologicalSpace K] [inst_3 : IsNonarchimedeanLocalField K] (l : ℕ) [inst_4 : Fact (Nat.Prime l)]
+  [inst_5 : Algebra ℚ_[l] K] [inst_6 : CharP (IsLocalRing.ResidueField ↥(ValuativeRel.valuation K).integer) l],
   Continuous ⇑(Algebra.algebraMap ℚ_[l] K) →
     LinearIndependent ℚ_[l] fun i => (blift K l i : K) := by
   intro K _ _ _ _ l _ _ _ hc

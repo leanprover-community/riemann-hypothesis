@@ -136,8 +136,7 @@ theorem keyClosedPts_of_keyOrigin : GlobalTheory.LocAcyc.KeyOrigin → GlobalThe
         have h1 : p - C (p.coeff 0) ∈ P' := by
           obtain ⟨u, hu⟩ := (X_dvd_sub_C : X ∣ p - C (p.coeff 0))
           rw [hu]; exact P'.mul_mem_right _ hXP'
-        have := P'.sub_mem hp h1
-        simpa using this
+        simpa using P'.sub_mem hp h1
       have hc0' : p.coeff 0 ∈ maximalIdeal T := by rw [← hP'C]; exact hc0
       have : p = C (p.coeff 0) + (p - C (p.coeff 0)) := by ring
       rw [this]

@@ -1255,8 +1255,8 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Qk67.pow_sub_mem :
-    ∀ {E : Type} [Field E]
-    [NumberField E] (w : IsDedekindDomain.HeightOneSpectrum (NumberField.RingOfIntegers E))
+    ∀ {E : Type} [inst : Field E]
+    [inst_1 : NumberField E] (w : IsDedekindDomain.HeightOneSpectrum (NumberField.RingOfIntegers E))
     (x : NumberField.RingOfIntegers E),
     x ^ (Ideal.absNorm : Ideal (NumberField.RingOfIntegers E) → ℕ) w.asIdeal - x ∈ w.asIdeal := by
   intro E _ _ w x

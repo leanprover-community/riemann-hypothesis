@@ -25,8 +25,7 @@ theorem regularTensorEquiv_single_tmul (g : Γ) (r : k) (n : N) :
     regularTensorEquiv (MonoidAlgebra.single g r ⊗ₜ[k] n) = Finsupp.single g (r • n) := by
   ext γ
   simp only [regularTensorEquiv, LinearEquiv.trans_apply, TensorProduct.congr_tmul]
-  rw [finsuppScalarLeft_apply_tmul_apply]
-  simp [Finsupp.single_apply]
+  simp [finsuppScalarLeft_apply_tmul_apply, Finsupp.single_apply]
 
 
 omit [Fintype Γ] in

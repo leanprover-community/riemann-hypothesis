@@ -80,8 +80,7 @@ theorem AdjoinIndepRelfinrank.proof : AdjoinIndepRelfinrank.Statement := by
   rw [hrel, relfinrank_eq_finrank_of_le hle]
   by_cases hfin : Module.Finite L₀ L'
   · have : Algebra.IsAlgebraic L₀ L' := Algebra.IsAlgebraic.of_finite L₀ L'
-    have := hdisj.adjoin_rank_eq_rank_right_of_isAlgebraic_right
-    exact congrArg Cardinal.toNat this
+    exact congrArg Cardinal.toNat hdisj.adjoin_rank_eq_rank_right_of_isAlgebraic_right
   · rw [finrank_of_not_finite hfin]
     have : Module.Free A (extendScalars hle') :=
       Module.Free.of_divisionRing (K := A) (V := extendScalars hle')

@@ -324,13 +324,11 @@ theorem aic_of_isCompl : ∀ (B : Type) [CommRing B] (T : Type) [CommRing T] (π
     induction n, hmn using Nat.le_induction with
     | base => simp
     | succ n hmn ih =>
-      have := Ideal.add_mem _ ih (hpow hmn (hg n))
-      simpa using this
+      simpa using Ideal.add_mem _ ih (hpow hmn (hg n))
   have hpre := hc.compl.toIsPrecomplete
   obtain ⟨x, hx⟩ := hpre.prec' a (fun {m n} hmn => by
     rw [SModEq.sub_mem, mem_pow_smul_top_iff]
-    have := Ideal.neg_mem_iff _ |>.2 (hcau hmn)
-    simpa using this)
+    simpa using (Ideal.neg_mem_iff _ |>.2 (hcau hmn)))
   refine ⟨x, ?_⟩
   have hz : ∀ n, P.eval x ∈ Ideal.span {t ^ n} := by
     intro n
@@ -341,8 +339,7 @@ theorem aic_of_isCompl : ∀ (B : Type) [CommRing B] (T : Type) [CommRing T] (π
       hpow (Nat.le_mul_of_pos_left n hd) (seq n).2
     have h3 : a n - x ∣ P.eval (a n) - P.eval x := Polynomial.sub_dvd_eval_sub _ _ _
     have h4 : P.eval (a n) - P.eval x ∈ Ideal.span {t ^ n} := Ideal.mem_of_dvd _ h3 h1
-    have := Ideal.sub_mem _ h2 h4
-    simpa using this
+    simpa using Ideal.sub_mem _ h2 h4
   have := hc.compl.toIsHausdorff.haus' (P.eval x) (fun n => by
     rw [SModEq.zero, mem_pow_smul_top_iff]
     exact hz n)

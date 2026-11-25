@@ -153,8 +153,7 @@ theorem mul_proj {T : Type} [CommRing T] (t : 𝓞 E →+* T) {R : Type} [Ring R
         refine Finset.sum_congr rfl fun k _ => ?_
         conv_lhs => rw [← ω.sum_repr (a * ω k)]
 
-        rw [map_sum, Finset.smul_sum]
-        simp only [map_zsmul, smul_comm (t (c k))]
+        simp only [map_sum, Finset.smul_sum, map_zsmul, smul_comm (t (c k))]
     _ = ∑ l, t (a * c l) • A (ω l) := by rw [Finset.sum_comm]; simp only [h1]
     _ = t a • ∑ k, t (c k) • A (ω k) := by rw [Finset.smul_sum]; simp only [map_mul, mul_smul]
 

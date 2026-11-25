@@ -153,7 +153,7 @@ noncomputable section
 
 namespace GlobalTheory.CuspRep.ParLawsT
 
-theorem eventually_unrT : ∀ (_ : GlobalTheory.Published.AutomorphicFormsFiniteGL) (hT : UpperTheory.Zero.LLC.RecTExists) (E Ω : Type) [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω] (a : ℕ) (π : CG E a), ∀ᶠ w : HeightOneSpectrum (𝓞 E) in Filter.cofinite, ∀ (A : ValuationSubring Ω) (h : IsPlaceOver A w), (locParT hT π h).unr := by
+theorem eventually_unrT : ∀ (hF : GlobalTheory.Published.AutomorphicFormsFiniteGL) (hT : UpperTheory.Zero.LLC.RecTExists) (E Ω : Type) [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω] (a : ℕ) (π : CG E a), ∀ᶠ w : HeightOneSpectrum (𝓞 E) in Filter.cofinite, ∀ (A : ValuationSubring Ω) (h : IsPlaceOver A w), (locParT hT π h).unr := by
   intro hF hT E Ω _ _ _ _ _ _ a π
   induction π using Quotient.inductionOn with | _ π =>
   filter_upwards [LocSph.locComp_spherical E a π] with w hw A h
@@ -239,7 +239,7 @@ namespace GlobalTheory.CuspRep.ParLawsT
 
 open GlobalTheory.CuspRep.ParLaws
 
-theorem csd_unrT : ∀ (hT : UpperTheory.Zero.LLC.RecTExists) (_ : GlobalTheory.Published.AutomorphicFormsFiniteGL) (L Ω : Type) [Field L] [NumberField L] [IsCMField L] [Field Ω] [Algebra L Ω] [IsAlgClosure L Ω] (a : ℕ) (π : CG L a), π.IsCsd → ∀ (w w' : HeightOneSpectrum (𝓞 L)), ConjPl (IsCMField.complexConj L).toRingEquiv w w' → ∀ (A A' : ValuationSubring Ω) (h : IsPlaceOver A w) (h' : IsPlaceOver A' w'), (locParT hT π h).unr → (locParT hT π h').unr ∧ (locParT hT π h').frobEig = (locParT hT π h).frobEig.map (·⁻¹) := by
+theorem csd_unrT : ∀ (hT : UpperTheory.Zero.LLC.RecTExists) (hF : GlobalTheory.Published.AutomorphicFormsFiniteGL) (L Ω : Type) [Field L] [NumberField L] [IsCMField L] [Field Ω] [Algebra L Ω] [IsAlgClosure L Ω] (a : ℕ) (π : CG L a), π.IsCsd → ∀ (w w' : HeightOneSpectrum (𝓞 L)), ConjPl (IsCMField.complexConj L).toRingEquiv w w' → ∀ (A A' : ValuationSubring Ω) (h : IsPlaceOver A w) (h' : IsPlaceOver A' w'), (locParT hT π h).unr → (locParT hT π h').unr ∧ (locParT hT π h').frobEig = (locParT hT π h).frobEig.map (·⁻¹) := by
   intro hT hF L Ω _ _ _ _ _ _ a π hπ w w' hc A A' h h' hu
   obtain rfl : w' = conjSrc (IsCMField.complexConj L).toRingEquiv w := eq_conjSrc fun x => by
     simpa using (hc (IsCMField.complexConj L x)).symm
@@ -307,7 +307,7 @@ noncomputable section
 
 namespace GlobalTheory.CuspRep.ParLawsT
 
-theorem lawsT : ∀ (hT : UpperTheory.Zero.LLC.RecTExists) (_ : GlobalTheory.Published.AutomorphicFormsFiniteGL) {R : Ranks}
+theorem lawsT : ∀ (hT : UpperTheory.Zero.LLC.RecTExists) (hF : GlobalTheory.Published.AutomorphicFormsFiniteGL) {R : Ranks}
     (H : Formalism.BasicNotions.Host R) (Ω : Type) [Field Ω] [Algebra H.E Ω] [IsAlgClosure H.E Ω] (pl : Formalism.GaloisCohomology.Places H.E Ω),
     haveI := host_isCMField H
     (∀ {a} (π : HostCGu H a) w, (locGT hT pl π w).lpDim = a) ∧

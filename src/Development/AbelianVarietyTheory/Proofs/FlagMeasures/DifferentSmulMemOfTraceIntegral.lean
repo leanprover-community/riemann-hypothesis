@@ -122,7 +122,6 @@ theorem mem_of_forall_rat_functional (E : Type) [Field E] [NumberField E] (a : �
   let f : A →ₗ[ℤ] (Fin a → E) := A.subtype.restrictScalars ℤ
   have hli : LinearIndependent ℤ (f ∘ b) :=
     b.linearIndependent.map' f (LinearMap.ker_eq_bot.2 Subtype.val_injective)
-  have hliQ : LinearIndependent ℚ (f ∘ b) := (LinearIndependent.iff_fractionRing ℤ ℚ).1 hli
   have hsp : ∀ x, x ∈ Submodule.span ℤ (Set.range (f ∘ b)) ↔ x ∈ A := by
     intro x
     rw [Set.range_comp, ← Submodule.map_span, b.span_eq, Submodule.map_top]
@@ -133,7 +132,7 @@ theorem mem_of_forall_rat_functional (E : Type) [Field E] [NumberField E] (a : �
     rw [← rat_span_eq_top E a A hA, Submodule.span_le]
     intro x hx
     exact Submodule.span_le_restrictScalars ℤ ℚ _ ((hsp x).2 hx)
-  let B := Module.Basis.mk hliQ htop
+  let B := Module.Basis.mk ((LinearIndependent.iff_fractionRing ℤ ℚ).1 hli) htop
   have hB : Set.range B = Set.range (f ∘ b) := by simp [B]
   rw [← hsp, ← hB, Module.Basis.mem_span_iff_repr_mem]
   intro i

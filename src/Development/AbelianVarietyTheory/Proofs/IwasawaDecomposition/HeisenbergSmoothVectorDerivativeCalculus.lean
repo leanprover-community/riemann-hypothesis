@@ -100,7 +100,6 @@ theorem heis_dH (h : IsHeis (fun x y => om x y) ρ) {f : B} (hf : Sm ρ f) (w y 
   exact h1.unique h2
 
 theorem sm_heis (h : IsHeis (fun x y => om x y) ρ) {f : B} (hf : Sm ρ f) (w : V) : Sm ρ (ρ w f) := by
-  have hf' : ContDiff ℝ ∞ (fun u => ρ u f) := hf
   have e : (fun u => ρ u (ρ w f)) = fun u => cexp (π * I * (om u w : ℂ)) • ρ (u + w) f := by
     funext u
     exact h.2.1 u w f
@@ -109,12 +108,11 @@ theorem sm_heis (h : IsHeis (fun x y => om x y) ρ) {f : B} (hf : Sm ρ f) (w : 
   apply ContDiff.smul
   · apply ContDiff.cexp
     exact contDiff_const.mul (Complex.ofRealCLM.contDiff.comp (om.contDiff.clm_apply contDiff_const))
-  · exact hf'.comp (contDiff_id.add contDiff_const)
+  · exact hf.comp (contDiff_id.add contDiff_const)
 
 theorem contDiff_fderiv {f : B} (hf : Sm ρ f) : ContDiff ℝ ∞ (fderiv ℝ fun u => ρ u f) := (contDiff_infty_iff_fderiv.1 (show ContDiff ℝ ∞ (fun u => ρ u f) from hf)).2
 
 theorem sm_dH (h : IsHeis (fun x y => om x y) ρ) {f : B} (hf : Sm ρ f) (v : V) : Sm ρ (dH ρ v f) := by
-  have hf' : ContDiff ℝ ∞ (fun u => ρ u f) := hf
   have e : (fun u => ρ u (dH ρ v f)) =
       fun u => fderiv ℝ (fun u => ρ u f) u v + (π * I * (om u v : ℂ)) • ρ u f := by
     funext u
@@ -123,7 +121,7 @@ theorem sm_dH (h : IsHeis (fun x y => om x y) ρ) {f : B} (hf : Sm ρ f) (v : V)
   rw [e]
   refine ((contDiff_fderiv hf).clm_apply contDiff_const).add ?_
   exact (contDiff_const.mul
-    (Complex.ofRealCLM.contDiff.comp (om.contDiff.clm_apply contDiff_const))).smul hf'
+    (Complex.ofRealCLM.contDiff.comp (om.contDiff.clm_apply contDiff_const))).smul hf
 
 theorem dH_heis (h0 : ∀ x, om x x = 0) (h : IsHeis (fun x y => om x y) ρ) {f : B} (hf : Sm ρ f) (v w : V) :
     dH ρ v (ρ w f) = ρ w (dH ρ v f) + (2 * π * I * (om v w : ℂ)) • ρ w f := by
@@ -164,8 +162,7 @@ theorem dH_dH (h : IsHeis (fun x y => om x y) ρ) {f : B} (hf : Sm ρ f) (u v : 
 
 theorem dH_commutator (h0 : ∀ x, om x x = 0) (h : IsHeis (fun x y => om x y) ρ) {f : B} (hf : Sm ρ f) (u v : V) :
     dH ρ u (dH ρ v f) - dH ρ v (dH ρ u f) = (2 * π * I * (om u v : ℂ)) • f := by
-  have hf' : ContDiff ℝ ∞ (fun u => ρ u f) := hf
-  have hs : IsSymmSndFDerivAt ℝ (fun u => ρ u f) 0 := hf'.contDiffAt.isSymmSndFDerivAt
+  have hs : IsSymmSndFDerivAt ℝ (fun u => ρ u f) 0 := hf.contDiffAt.isSymmSndFDerivAt
     (by simpa using (WithTop.coe_le_coe.2 (le_top : (2 : ℕ∞) ≤ ⊤)))
   rw [dH_dH h hf u v, dH_dH h hf v u, hs v u, skew h0 u v, add_sub_add_left_eq_sub, ← sub_smul]
   congr 1

@@ -123,12 +123,10 @@ theorem chartFlowNegation : FlowNegUW.{u} := by
   · unfold WEq
     linear_combination ((-1) * w * r + (1) * w * r^2) * hr + ((1) * r^3) * hW
   · show -D (u * r) = fwAt W (u * r) (w * r)
-    rw [h.map_mul, hDr, hDu]
-    simp only [fwAt, fuAt]
+    simp only [h.map_mul, hDr, hDu, fwAt, fuAt]
     linear_combination ((-1) * W.a₁ * u * r + (-1) * W.a₂ * u^2 * r + (-3) * W.a₃ * w * r + (-2) * W.a₄ * u * w * r + (-3) * W.a₆ * w^2 * r + (1) * 1) * hr + ((-3) * W.a₃ * r^2) * hW
   · show -D (w * r) = fuAt W (u * r) (w * r)
-    rw [h.map_mul, hDr, hDw]
-    simp only [fwAt, fuAt]
+    simp only [h.map_mul, hDr, hDw, fwAt, fuAt]
     linear_combination ((3) * u^2 * r + (2) * W.a₁ * w * r + (2) * W.a₂ * u * w * r + (1) * W.a₄ * w^2 * r) * hr + ((3) * W.a₁ * r^2) * hW
 
 theorem chordFormula : ChordRegular.{u} := by

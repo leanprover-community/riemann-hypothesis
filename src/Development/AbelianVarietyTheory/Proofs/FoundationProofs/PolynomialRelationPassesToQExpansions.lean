@@ -88,8 +88,7 @@ theorem polyRel_qSeries : ∀ (N n : ℕ) (f : ℍ → ℂ) (b : ℕ → ℂ) (p
     rw [e]
     simpa using h0
   have hc := HasQ.coeff_unique hN hsum hzero
-  rw [Polynomial.eval_finsetSum]
-  simp only [Polynomial.eval_monomial]
+  simp only [Polynomial.eval_finsetSum, Polynomial.eval_monomial]
   ext m
   have := congrFun hc m
 

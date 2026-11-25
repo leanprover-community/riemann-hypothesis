@@ -229,8 +229,7 @@ theorem hTrans_eq (σ : ℂ) (ν : ℝ) {y : ℝ} (hy : y ≠ 0) : hTrans σ ν 
   have hnu : ‖(t : ℂ) + (y : ℂ) * I‖ = Real.sqrt (t ^ 2 + y ^ 2) := by
     rw [← Complex.normSq_add_mul_I, Complex.norm_def]
   unfold term phi
-  rw [hnu]
-  simp only [Nat.cast_zero, sub_zero, pow_zero, mul_one]
+  simp only [hnu, Nat.cast_zero, sub_zero, pow_zero, mul_one]
   congr 2
   have hs : 0 < Real.sqrt (t ^ 2 + y ^ 2) := Real.sqrt_pos.2 hQ
   rw [Complex.cpow_def_of_ne_zero (by exact_mod_cast hs.ne'), Complex.cpow_def_of_ne_zero (by exact_mod_cast hQ.ne'),

@@ -72,8 +72,7 @@ theorem exists_ne_zero_norm_le_rank_div_of_dualMinimum (Q : Submodule ℤ E) [hQ
     refine ⟨fun i => b.repr ⟨x, hx⟩ i, ?_⟩
     have h1 := congrArg Subtype.val (b.sum_repr ⟨x, hx⟩)
     simp only [Submodule.coe_sum, Submodule.coe_smul] at h1
-    have h2 : ∑ i, (b.repr ⟨x, hx⟩ i) • (b i : E) = x := h1
-    calc x = ∑ i, (b.repr ⟨x, hx⟩ i) • (b i : E) := h2.symm
+    calc x = ∑ i, (b.repr ⟨x, hx⟩ i) • (b i : E) := h1.symm
       _ = _ := by
         simp only [Int.cast_smul_eq_zsmul, v]
         try rfl
@@ -138,8 +137,7 @@ theorem exists_ne_zero_norm_le_rank_div_of_dualMinimum (Q : Submodule ℤ E) [hQ
     have hw0 : w ⟨0, hkpos⟩ ∈ D := Submodule.subset_span ⟨_, rfl⟩
     rw [h, Submodule.mem_bot] at hw0
     have h2 := hbi ⟨0, hkpos⟩ ⟨0, hkpos⟩
-    rw [hw0, inner_zero_right] at h2
-    simp at h2
+    simp [hw0, inner_zero_right] at h2
   obtain ⟨q, hqQ, hq0, hqn⟩ := Formalism.F.shortVector_of Formalism.F.covol_eq_covolume' E Q hQd hQ
   obtain ⟨y, hyD, hy0, hyn⟩ := Formalism.F.shortVector_of Formalism.F.covol_eq_covolume' E D hDd hD0
   refine ⟨q, hqQ, hq0, ?_⟩

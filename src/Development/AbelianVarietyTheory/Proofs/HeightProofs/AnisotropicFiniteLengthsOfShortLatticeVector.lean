@@ -519,8 +519,7 @@ theorem anisoSmall_of_shortSmall (E : Type) [Field E] [NumberField E] [IsCMField
     have h1 : house (star ((M : E) / algebraMap (𝓞 E) E j)) ≤ U ^ 2 := by
       rw [house_star, div_eq_mul_inv]
       exact house_mul_le_pow hU2 ((hK (by simp)).trans hKU) hjU'
-    have h2 : house (N : E) ≤ U ^ 1 := (hK (by simp)).trans hKU
-    exact size_smul_le H hU2 h2 (size_smul_le H hU2 h1 hvU)
+    exact size_smul_le H hU2 ((hK (by simp)).trans hKU) (size_smul_le H hU2 h1 hvU)
   have h1 : h w v' = N * M := by
     simp only [hv', map_smulₛₗ, starRingEnd_apply, star_star, smul_eq_mul, hwj, star_intCast]
     field_simp

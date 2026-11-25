@@ -82,7 +82,7 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Yra1.main.{u_1} :
-    ∀ {F : Type u_1} [Field F] {r a : ℕ} (M : Matrix (Fin r) (Fin a) F),
+    ∀ {F : Type u_1} [inst : Field F] {r a : ℕ} (M : Matrix (Fin r) (Fin a) F),
       (∀ (z : Fin a → F), M.mulVec z = (0 : Fin r → F) → z = (0 : Fin a → F)) →
         ∃ (e : Fin a → Fin r), (M.submatrix e id).det ≠ (0 : F) := by
   intro F _ r a M hM

@@ -78,11 +78,10 @@ theorem contDiff_tsum_of_locally_summable_bounds {k : ℕ} {ι : Type} (f : ι �
   have hsupp : ∀ j x, x ∉ Metric.closedBall t₀ 1 → iteratedFDeriv ℝ j ρc x = 0 := by
     intro j x hx
     by_contra h
-    have hx1 : x ∈ tsupport ρc := support_iteratedFDeriv_subset j h
     have h2 : tsupport ρc ⊆ tsupport (ρ : (Fin k → ℝ) → ℝ) :=
       tsupport_comp_subset Complex.ofReal_zero _
     rw [ρ.tsupport_eq] at h2
-    exact hx (h2 hx1)
+    exact hx (h2 (support_iteratedFDeriv_subset j h))
   have hunonneg : ∀ m i, 0 ≤ u m R i := fun m i =>
     (norm_nonneg _).trans (hub m R i 0 (by rw [norm_zero, hR]; positivity))
   have hB0 : ∀ j, 0 ≤ B j := fun j => (norm_nonneg _).trans (hB j 0)

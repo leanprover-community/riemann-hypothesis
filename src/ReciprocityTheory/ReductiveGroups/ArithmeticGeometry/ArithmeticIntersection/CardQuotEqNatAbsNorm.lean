@@ -54,8 +54,7 @@ theorem card_quot_eq_natAbs_norm {S : Type*} [CommRing S] [IsDomain S] [Module.F
   have hbij : Function.Bijective g := by
     constructor
     · intro x y hxy
-      have h1 : f * x = f * y := congrArg Subtype.val hxy
-      exact mul_left_cancel₀ hf h1
+      exact mul_left_cancel₀ hf (congrArg Subtype.val hxy)
     · rintro ⟨y, hy⟩
       obtain ⟨a, rfl⟩ := Ideal.mem_span_singleton'.mp hy
       exact ⟨a, by ext; simp [g, mul_comm]⟩
@@ -95,8 +94,7 @@ theorem norm_int_eq_norm_rat {K : Type*} [Field K] [NumberField K] (O : Subring 
   have hx : (f : K) * b' j = ∑ k, ((b.repr (f * b j) k : ℤ) : ℚ) • b' k := by
     have e1 := congrArg (O.subtype.toIntAlgHom.toLinearMap) (b.sum_repr (f * b j))
 
-    rw [map_sum] at e1
-    simp only [map_zsmul] at e1
+    simp only [map_sum, map_zsmul] at e1
     simp only [hb', Int.cast_smul_eq_zsmul]
     exact e1.symm
   simp only [RingHom.mapMatrix_apply, Matrix.map_apply, Algebra.leftMulMatrix_eq_repr_mul, eq_intCast]

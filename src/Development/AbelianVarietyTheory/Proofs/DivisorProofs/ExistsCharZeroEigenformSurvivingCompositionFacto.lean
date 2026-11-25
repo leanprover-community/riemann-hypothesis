@@ -262,7 +262,7 @@ theorem norm_eigenvalue_le_one_of_entries {K : Type} [NormedField K] [IsUltramet
   exact le_of_mul_le_mul_right (by rwa [one_mul]) hpos
 
 theorem norm_eigenvalue_le_one :
-    ∀ (l : ℕ) [Fact (Nat.Prime l)] (O : Type) [CommRing O]
+    ∀ (l : ℕ) [inst : Fact (Nat.Prime l)] (O : Type) [inst_1 : CommRing O]
       (emb : O →+* PadicAlgCl l), (∀ (a : O), ‖(emb : O → PadicAlgCl l) a‖ ≤ (1 : ℝ)) →
       ∀ (n : ℕ) (N : Matrix (Fin n) (Fin n) O) (c : Fin n → PadicAlgCl l) (μ : PadicAlgCl l),
         c ≠ (0 : Fin n → PadicAlgCl l) →

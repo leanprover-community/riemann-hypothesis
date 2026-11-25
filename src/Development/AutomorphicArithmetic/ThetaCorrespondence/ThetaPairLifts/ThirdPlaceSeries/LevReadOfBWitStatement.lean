@@ -236,21 +236,21 @@ theorem q_inj {B : Base} {X : PreX B.toPre} (I : TC B X) (hOk : I.Ok) (a : I.ι)
 
 
 
-theorem levIs_reads_tw : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X) (_ : I.Ok) (_ : TC.Pins B X) (l : I.Laws)
-    (Z : TC.Later B (I.cols l)) (a : I.ι) (_ : a ≠ I.mu0) {bad : Set (HeightOneSpectrum (𝓞 (I.rec7 l Z).host.F))}
+theorem levIs_reads_tw : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X) (hOk : I.Ok) (hPins : TC.Pins B X) (l : I.Laws)
+    (Z : TC.Later B (I.cols l)) (a : I.ι) (ha : a ≠ I.mu0) {bad : Set (HeightOneSpectrum (𝓞 (I.rec7 l Z).host.F))}
     (S : StepLevel (I.rec7 l Z).host.F (I.rec7 l Z).host.E (sigD (I.rec7 l Z)) (gramP (I.rec7 l Z)) 1 (I.rec7 l Z).R.f bad)
     {y lat st}
-    (_ : letI := Formalism.BasicNotions.tensTopL (F := (I.rec7 l Z).host.F) (E := (I.rec7 l Z).host.E) (FiniteAdeleRing (𝓞 (I.rec7 l Z).host.F) (I.rec7 l Z).host.F);
+    (hO : letI := Formalism.BasicNotions.tensTopL (F := (I.rec7 l Z).host.F) (E := (I.rec7 l Z).host.E) (FiniteAdeleRing (𝓞 (I.rec7 l Z).host.F) (I.rec7 l Z).host.F);
       ∀ᶠ (u : GL (Fin ((I.rec7 l Z).R.N (I.rec7 l Z).R.m - 1)) (TensorProduct (I.rec7 l Z).host.F (I.rec7 l Z).host.E (FiniteAdeleRing (𝓞 (I.rec7 l Z).host.F) (I.rec7 l Z).host.F))) in nhds 1,
         ∀ κ : S.U, κ.1 = u → S.chi κ = 1)
-    (_ : I.ReadsP a S.Lb S.U S.chi y lat st)
-    (P' : LevelP (B.primes X).vGs B.R.r ℂ) (_ : ∀ g, g ∈ P'.H ↔ ∀ w, g w ∈ (I.Ps w).H)
-    (_ : ∀ (g : P'.H) (hg : ∀ w, g.1 w ∈ (I.Ps w).H),
+    (hK : I.ReadsP a S.Lb S.U S.chi y lat st)
+    (P' : LevelP (B.primes X).vGs B.R.r ℂ) (hH : ∀ g, g ∈ P'.H ↔ ∀ w, g w ∈ (I.Ps w).H)
+    (hchi : ∀ (g : P'.H) (hg : ∀ w, g.1 w ∈ (I.Ps w).H),
       ((P'.chi g : ℂˣ) : ℂ) = ∏ w, B.embLL (((I.Ps w).lam ⟨g.1 w, hg w⟩ : B.LLˣ) : B.LL))
     (cg : ℕ → ∀ PP : Pl (I.rec7 l Z).host.E, (kP PP)ˣ →* ℂˣ)
-    (_ : ∀ c (w : (B.primes X).vGs) x, ((cg (c + 1) w.1 x : ℂˣ) : ℂ) = B.embLL ((Formalism.L2.Col.chiAt I.Ch w c x : B.LLˣ) : B.LL))
+    (hcg : ∀ c (w : (B.primes X).vGs) x, ((cg (c + 1) w.1 x : ℂˣ) : ℂ) = B.embLL ((Formalism.L2.Col.chiAt I.Ch w c x : B.LLˣ) : B.LL))
     (ξ : ∀ PP : Pl (I.rec7 l Z).host.E, (kP PP)ˣ →* ℂˣ)
-    (_ : ∀ PP ∈ I.Q a, ∀ x, ((ξ PP x : ℂˣ) : ℂ) =
+    (hξ : ∀ PP ∈ I.Q a, ∀ x, ((ξ PP x : ℂˣ) : ℂ) =
       B.embLL ((Formalism.L2.DIV.resChar (I.tup a : Formalism.L2.DIV.Chr B.fields.F B.fields.E B.fields.K) PP x : B.LLˣ) : B.LL))
     (hr : B.R.r ≤ (I.rec7 l Z).sp.X'.rank),
     LevIs S (levS _ 1 (Lev.datY (I.rec7 l Z).sp.X'.rank B.R.r B.R.t B.R.m hr (B.primes X).vGs (I.Q a) P' cg ξ Lev.Frm.B))

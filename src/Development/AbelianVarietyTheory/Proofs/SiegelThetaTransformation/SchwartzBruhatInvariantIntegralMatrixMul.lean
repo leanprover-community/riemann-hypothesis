@@ -279,8 +279,7 @@ theorem haar_comp (T : Matrix κ ι K ≃ₗ[ℚ] Matrix κ ι K) (φ : Matrix �
   have hl : HasLevel (R * (N * M)) (fun x => φ (T x)) := by
     refine ⟨fun x hx => ?_, fun x y hy => ?_⟩
     · have := intM_nat_smul M (hT' _ (h.1 _ hx))
-      rw [map_nat_smul] at this
-      simp only [LinearEquiv.coe_coe, LinearEquiv.symm_apply_apply, smul_smul] at this
+      simp only [map_nat_smul, LinearEquiv.coe_coe, LinearEquiv.symm_apply_apply, smul_smul] at this
       convert this using 2
       push_cast; ring
     · have := h.2 (T x) _ (hT2 y hy)

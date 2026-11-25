@@ -50,7 +50,7 @@ open NumberField IsDedekindDomain Formalism Formalism.ConjugateSelfDual Reciproc
 
 namespace GlobalTheory.NLink
 
-theorem wAll_holds : ∀ (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (_ : CmpOf D.loc D.locA HW F), WAll D HW F :=
+theorem wAll_holds : ∀ (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F), WAll D HW F :=
   fun D HW F Cm =>
     _root_.GlobalTheory.WachHyp.hypW_crystalline D HW F Cm (_root_.GlobalTheory.NL.usedLocalConclusion_and_prvE D HW F Cm).1 (_root_.GlobalTheory.NL.usedLocalConclusion_and_prvE D HW F Cm).2 (GlobalTheory.crysOnCond_all D HW F)
 

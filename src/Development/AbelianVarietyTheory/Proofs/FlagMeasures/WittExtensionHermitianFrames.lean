@@ -70,8 +70,7 @@ theorem form_smul_right (c : E) (v w : Fin n → E) : form σ J v (c • w) = σ
   rw [show (fun i => σ c * σ (w i)) = σ c • (fun i => σ (w i)) from rfl, smul_dotProduct, smul_eq_mul]
 
 theorem herm_entry (hJ : cT σ J = J) (i j : Fin n) : σ (J j i) = J i j := by
-  have := congrFun (congrFun hJ i) j
-  simpa [cT] using this
+  simpa [cT] using congrFun (congrFun hJ i) j
 
 theorem form_conj (hσ : ∀ x, σ (σ x) = x) (hJ : cT σ J = J) (v w : Fin n → E) :
     form σ J w v = σ (form σ J v w) := by
@@ -210,8 +209,7 @@ theorem step (hσ : ∀ x, σ (σ x) = x) (hJ : cT σ J = J) {δ : E} (hδ : δ 
     (by rw [hz, qr_form hσ hJ u l hl, hxx])
     (by
       have hval : form σ J z (z - x') = l * form σ J x u * form σ J u x' := by
-        rw [hzx]
-        simp only [form_sub_left, form_sub_right, form_smul_left, form_smul_right, map_mul]
+        simp only [hzx, form_sub_left, form_sub_right, form_smul_left, form_smul_right, map_mul]
         rw [form_sub_right] at hc
         rw [form_conj hσ hJ x u]
         linear_combination hc + (form σ J x u * σ (form σ J x u)) * hl
@@ -291,5 +289,4 @@ theorem GlobalTheory.SgAlg.witt_free_field : ∀ {E : Type} [Field E] (σ : E �
     (fun i j => by rw [← WittField.pairM_entry X j i, ← WittField.pairM_entry X' j i, hG])
   refine ⟨g, hg, ?_⟩
   ext k j
-  have := congrFun (hgx j) k
-  simpa [Matrix.mul_apply, mulVec, dotProduct] using this
+  simpa [Matrix.mul_apply, mulVec, dotProduct] using congrFun (hgx j) k

@@ -94,8 +94,7 @@ theorem fourier_smooth (D : V → ℂ) (m : ℕ) (C : ℝ) (hD : Integrable D)
     refine (VectorFourier.norm_fourierIntegral_le_integral_norm _ _ _ _ _).trans ?_
     refine integral_mono_of_nonneg (Filter.Eventually.of_forall fun v => norm_nonneg _)
       ((hmom j hj).const_mul _) (Filter.Eventually.of_forall fun v => ?_)
-    have := VectorFourier.norm_fourierPowSMulRight_le (innerSL ℝ) h v j
-    simpa [mul_assoc] using this
+    simpa [mul_assoc] using VectorFourier.norm_fourierPowSMulRight_le (innerSL ℝ) h v j
   · rw [hinv]
     exact hD.fourierInv_fourier_eq hgi ht
 
@@ -149,8 +148,7 @@ theorem smooth_bounded_of_fourier_decay (D : ℂ → ℂ) (m : ℕ) (C : ℝ) (h
   set s : ℂ := -(I * π * conj w) with hs
   have hw : w = -(I * conj s) / (π : ℂ) := by
     have hπ : (π : ℂ) ≠ 0 := by exact_mod_cast Real.pi_ne_zero
-    rw [hs]
-    simp only [map_neg, map_mul, Complex.conj_I, Complex.conj_ofReal, Complex.conj_conj]
+    simp only [hs, map_neg, map_mul, Complex.conj_I, Complex.conj_ofReal, Complex.conj_conj]
     field_simp
     ring_nf
     simp [Complex.I_sq]
@@ -237,8 +235,7 @@ theorem norm_iteratedFDerivWithin_inv_one_le (i : ℕ) :
   rw [norm_iteratedFDerivWithin_eq_norm_iteratedDerivWithin,
     (iteratedDerivWithin_of_isOpen isOpen_Ioi) (show (1 : ℝ) ∈ Ioi 0 by norm_num), iteratedDeriv_eq_iterate]
   have e : (fun t : ℝ => t⁻¹) = Inv.inv := rfl
-  rw [e, iter_deriv_inv]
-  simp
+  simp [e, iter_deriv_inv]
 
 theorem norm_iteratedFDeriv_u_le (k : ℕ) (x₀ : V) :
     ‖iteratedFDeriv ℝ k (fun y : V => (1 + ‖y‖ ^ 2)⁻¹) x₀‖ ≤ (k ! * k ! * 4 ^ k) * (1 + ‖x₀‖ ^ 2)⁻¹ := by

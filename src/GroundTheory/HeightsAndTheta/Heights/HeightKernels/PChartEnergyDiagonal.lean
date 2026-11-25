@@ -52,8 +52,7 @@ theorem diagEnergy_mul (hI : ChartEnergyLinearInvariant.Statement) (hC : ChartEn
   have hsd : (Matrix.diagonal fun j => (s j : ℂ)).det ≠ 0 := by
     rw [det_diagonal]
     refine Finset.prod_ne_zero_iff.mpr fun j _ => ?_
-    have : (Real.sqrt (l' j)) ≠ 0 := (Real.sqrt_pos.mpr (hl' j)).ne'
-    simpa [hs] using this
+    simpa [hs] using ((Real.sqrt_pos.mpr (hl' j)).ne' : (Real.sqrt (l' j)) ≠ 0)
   have h1 : (Matrix.diagonal fun j => (s j : ℂ))ᴴ * Matrix.diagonal (fun j => ((l * l') j : ℂ)) *
       Matrix.diagonal (fun j => (s j : ℂ)) = Matrix.diagonal fun j => (l j : ℂ) := by
     rw [diag_congr]

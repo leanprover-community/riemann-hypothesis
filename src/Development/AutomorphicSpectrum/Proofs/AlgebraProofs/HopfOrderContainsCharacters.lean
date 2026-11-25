@@ -163,8 +163,7 @@ lemma range_psi [FaithfulSMul R K] {A : Subalgebra R (T → R)} {d : R} (hd0 : d
     funext t
     simp only [psi, LinearMap.coe_mk, AddHom.coe_mk]
     change algebraMap R K (L _) / _ = _
-    rw [hL]
-    simp [Pi.single_apply, div_eq_iff hdK, apply_ite (algebraMap R K)]
+    simp [hL, Pi.single_apply, div_eq_iff hdK, apply_ite (algebraMap R K)]
 
 def pairWith (c : T → K) : (T → K) →ₗ[R] K where
   toFun l := ∑ t, l t * c t
@@ -242,8 +241,7 @@ theorem GlobalTheory.CompanionTheory.Ar.BT.char_mem_hopfOrder : ∀ (R : Type) [
     ring
   choose r hr using hr
   have hx : p (g x) = x := by
-    have := LinearMap.congr_fun hpg x
-    simpa using this
+    simpa using LinearMap.congr_fun hpg x
   rw [LinearMap.pi_apply_eq_sum_univ p (g x)] at hx
   simp only [hr, mul_smul, ← Finset.smul_sum] at hx
   have hc : c = ((∑ i, r i • p (fun j => if i = j then 1 else 0) : A) : T → R) := by

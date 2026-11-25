@@ -125,11 +125,9 @@ theorem mono (h : ∀ r : R', ∃ (n : ℕ) (g : R), φ s ^ n * r - φ g ∈ P')
   intro r hr
   obtain ⟨n, g, hg⟩ := h r
   have h1 : φ g ∈ Q := by
-    have := Q.sub_mem (Q.mul_mem_left (φ s ^ n) hr) (hPQ hg)
-    simpa using this
-  have h2 : φ g ∈ W := hle h1
+    simpa using Q.sub_mem (Q.mul_mem_left (φ s ^ n) hr) (hPQ hg)
   have h3 : φ s ^ n * r ∈ W := by
-    simpa using W.add_mem (hPW hg) h2
+    simpa using W.add_mem (hPW hg) (hle h1)
   exact (hW.mem_or_mem h3).resolve_left fun h4 => hs (hW.mem_of_pow_mem _ h4)
 
 theorem exists_lift (h : ∀ r : R', ∃ (n : ℕ) (g : R), φ s ^ n * r - φ g ∈ P') {W : Ideal R} (hW : W.IsPrime)
@@ -230,8 +228,7 @@ theorem length_eq (h : ∀ r : R', ∃ (n : ℕ) (g : R), φ s ^ n * r - φ g �
     apply le_antisymm
     · rw [Ideal.map_le_iff_le_comap]
       intro x hx
-      rw [Ideal.mem_comap, RingHom.mem_ker]
-      simp only [g, RingHom.comp_apply, hψ]
+      simp only [Ideal.mem_comap, RingHom.mem_ker, g, RingHom.comp_apply, hψ]
       rw [Ideal.Quotient.eq_zero_iff_mem, hI']
       exact Ideal.mem_map_of_mem _ (Ideal.mem_sup_right (Ideal.mem_map_of_mem _ hx))
     · intro x hx
@@ -240,8 +237,7 @@ theorem length_eq (h : ∀ r : R', ∃ (n : ℕ) (g : R), φ s ^ n * r - φ g �
       have h1 : algebraMap R (Localization.AtPrime W) r ∈ RingHom.ker g := by
         rw [← hrt']
         exact Ideal.mul_mem_right _ _ hx
-      rw [RingHom.mem_ker] at h1
-      simp only [g, RingHom.comp_apply, hψ] at h1
+      simp only [RingHom.mem_ker, g, RingHom.comp_apply, hψ] at h1
       rw [Ideal.Quotient.eq_zero_iff_mem, hI',
         IsLocalization.algebraMap_mem_map_algebraMap_iff W'.primeCompl] at h1
       obtain ⟨t', ht', h2⟩ := h1
@@ -299,8 +295,7 @@ theorem pointConeMap_map_intCast (y : (Σ k, ι k) → Ω) (g : MRing ι ℤ) :
 theorem comap_pointIdeal_eq_mCoordIdeal (y : (Σ k, ι k) → Ω) :
     (pointIdeal A y).comap (MvPolynomial.map (Int.castRingHom A)) = mCoordIdeal y := by
   ext g
-  rw [Ideal.mem_comap]
-  simp only [pointIdeal, mCoordIdeal, RingHom.mem_ker, pointConeMap_map_intCast]
+  simp only [Ideal.mem_comap, pointIdeal, mCoordIdeal, RingHom.mem_ker, pointConeMap_map_intCast]
 
 theorem exists_pow_chartMonomial_mul_sub_map_mem {y : (Σ k, ι k) → Ω} (hA : HasConstants ℤ A y) (c : ∀ k, ι k)
     (r : MRing ι A) :

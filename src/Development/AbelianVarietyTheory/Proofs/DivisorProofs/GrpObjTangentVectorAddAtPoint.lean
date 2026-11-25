@@ -136,13 +136,11 @@ theorem epsScalePt_add_comp (a b : R') {w : epsPtR x ⟶ G}
       exact TrivSqZeroExt.ext h₃ (Prod.ext h₄ h₅)
     · refine congrArg Over.Hom.left
         (?_ : sqZeroMapPt x (LinearMap.fst R' R' R') ≫ _ = sqZeroMapPt x (LinearMap.fst R' R' R') ≫ _)
-      rw [comp_mul]
-      simp only [← Category.assoc, sqZeroMapPt_comp_eq]
+      simp only [comp_mul, ← Category.assoc, sqZeroMapPt_comp_eq]
       simp [i₁, i₂, epsScalePt_zero_comp x hw, epsScalePt_one]
     · refine congrArg Over.Hom.left
         (?_ : sqZeroMapPt x (LinearMap.snd R' R' R') ≫ _ = sqZeroMapPt x (LinearMap.snd R' R' R') ≫ _)
-      rw [comp_mul]
-      simp only [← Category.assoc, sqZeroMapPt_comp_eq]
+      simp only [comp_mul, ← Category.assoc, sqZeroMapPt_comp_eq]
       simp [i₁, i₂, epsScalePt_zero_comp x hw, epsScalePt_one]
   have := congrArg (sqZeroMapPt x (a • LinearMap.fst R' R' R' + b • LinearMap.snd R' R' R') ≫ ·) key
   simp only [comp_mul, ← Category.assoc, sqZeroMapPt_comp_eq] at this

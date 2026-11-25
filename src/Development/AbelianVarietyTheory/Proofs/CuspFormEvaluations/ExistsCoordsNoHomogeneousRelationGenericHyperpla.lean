@@ -221,8 +221,7 @@ theorem exists_coordinates_no_homogeneous_relation_of_generic_zero :
   have e := aeval_eq_pow_mul_aeval_dehomogenise (L := ℂ) hQ
     (fun a => ζ ((Fin.cons j0 J : Fin (m + 1) → Fin (N + 1)) a)) (by simpa using hj0')
   change MvPolynomial.aeval _ Q ≠ 0
-  rw [e]
-  simp only [Fin.cons_zero, Fin.cons_succ]
+  simp only [e, Fin.cons_zero, Fin.cons_succ]
   refine mul_ne_zero (pow_ne_zero _ hj0') ?_
   intro h
   exact dehomogenise_ne_zero_of_isHomogeneous hQ hQ0 ((algebraicIndependent_iff.mp hJ) _ h)

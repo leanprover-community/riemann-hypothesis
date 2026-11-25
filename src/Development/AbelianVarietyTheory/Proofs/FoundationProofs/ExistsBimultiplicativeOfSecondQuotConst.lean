@@ -204,9 +204,8 @@ theorem posDef_of_tendsto_intCast {ι : Type*} [Finite ι] (Q : QuadraticForm �
         linarith
       · refine Eventually.of_forall fun t => ?_
         obtain ⟨r, hr, e⟩ := hval t
-        have h₂ : Q r ≤ C := hC ⟨r, hr, rfl⟩
         rw [e, h₀, h₁]
-        simpa using h₂
+        simpa using hC ⟨r, hr, rfl⟩
     obtain ⟨t, h₁, h₂⟩ := (hev.and ((h.comp hn).eventually_gt_atTop C)).exists
     exact absurd h₁ (not_le.2 h₂)
   have hnn : ∀ v, 0 ≤ Q v := fun v => by

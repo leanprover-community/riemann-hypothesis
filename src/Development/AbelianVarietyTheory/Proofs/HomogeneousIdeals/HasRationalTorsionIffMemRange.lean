@@ -255,8 +255,7 @@ theorem HasRationalTorsion.exists_deuringCurve (h : HasRationalTorsion W L 3) :
   have hb : b ≠ 0 := by
     intro hb
     have := (deuringCurve a b).isUnit_Δ.ne_zero
-    rw [deuringCurve_Δ, hb] at this
-    simp at this
+    simp [deuringCurve_Δ, hb] at this
   obtain ⟨z, hz⟩ := exists_root_cubic (three_ne_zero : (3 : L) ≠ 0) (algebraMap K L a ^ 2)
     (3 * algebraMap K L a * algebraMap K L b) (3 * algebraMap K L b ^ 2)
   obtain ⟨z₀, -, rfl, -, -⟩ := h'.exists_point_of_root (x := z) (by
@@ -281,8 +280,7 @@ theorem HasRationalTorsion.mem_range_of_root (h : HasRationalTorsion W L 2) (h�
       + algebraMap K L W.a₆ = 0) : x ∈ (algebraMap K L).range := by
   classical
   have hy : (W.baseChange L).toAffine.Equation x 0 := by
-    rw [equation_iff]
-    simp only [WeierstrassCurve.baseChange, map_a₁, map_a₂, map_a₃, map_a₄, map_a₆]
+    simp only [equation_iff, WeierstrassCurve.baseChange, map_a₁, map_a₂, map_a₃, map_a₄, map_a₆]
     linear_combination -hx
   refine (hasRationalTorsion_iff.mp h x 0 (nonsingular_baseChange_iff.mpr hy) ?_).1
   rw [two_nsmul]
@@ -379,8 +377,7 @@ theorem HasRationalTorsion.exists_splitCurve_sq (h : HasRationalTorsion W L 4) :
   have e₁ : C • W = splitCurve B A := by
     rw [e, splitCurve, splitCurve, add_comm, mul_comm]
   have e₂ : ((⟨1, A, 0, 0⟩ : VariableChange K) * C) • W = splitCurve (-A) (B - A) := by
-    rw [mul_smul, e]
-    simp only [variableChange_def, splitCurve, inv_one, Units.val_one]
+    simp only [mul_smul, e, variableChange_def, splitCurve, inv_one, Units.val_one]
     ext <;> dsimp only <;> ring
   have e₃ : ((⟨1, A, 0, 0⟩ : VariableChange K) * C) • W = splitCurve (B - A) (-A) := by
     rw [e₂, splitCurve, splitCurve, add_comm, mul_comm (B - A)]
@@ -402,8 +399,7 @@ theorem HasRationalTorsion.exists_pow_twelve_eq_Δ (h : HasRationalTorsion W L 1
   obtain ⟨C', a, b, d, hu', e', hd⟩ := (h.of_dvd (by norm_num : 3 ∣ 12)).exists_deuringCurve
   have h4 : (2 * c) ^ 4 = W.Δ := by
     have := congrArg WeierstrassCurve.Δ e
-    rw [variableChange_Δ, hu, splitCurve_Δ] at this
-    simp only [inv_one, Units.val_one, one_pow, one_mul] at this
+    simp only [variableChange_Δ, hu, splitCurve_Δ, inv_one, Units.val_one, one_pow, one_mul] at this
     rw [this]
     linear_combination 16 * (c ^ 2 + A * B * (A - B)) * hc
   have h3 : (b * d) ^ 3 = W.Δ := by

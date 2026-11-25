@@ -293,7 +293,7 @@ theorem exists_pt_frames (p : ChPt (R := R) sel mu u j) (g : ∀ P : rowSG Pr se
 
 end Pt
 
-theorem exists_glint_inFrame : UnderTie (fun {D _ _ _ _ _ _ _ _ t _ μ St} A _ _ => ∀ (hj : t.m2 + 1 ≤ D.R.m) (β' : (St (t.m2 + 1) hj).Ch)
+theorem exists_glint_inFrame : UnderTie (fun {D L hT Gi Gl Kc Y cX ex t u μ St} A dtU a => ∀ (hj : t.m2 + 1 ≤ D.R.m) (β' : (St (t.m2 + 1) hj).Ch)
     (κ' : ((St (t.m2 + 1) hj).K β').lev.U) (P : SB t μ),
     ∃ g : GLint t.X.E (D.R.N (t.m2 + 1)) P.1, InFrame t.seam (A.fb (t.m2 + 1) hj β') (t.cst μ).D P κ'.1 g.1) := by
   intro D L hT Gi Gl Kc Y cX ex t u μ St A dtU a _ hTie hj β' κ' P
@@ -306,7 +306,7 @@ theorem exists_glint_inFrame : UnderTie (fun {D _ _ _ _ _ _ _ _ t _ μ St} A _ _
   have hpr := (exists_midLev_iff t.Ch t.sel (t.tup μ) (t.cst μ) (t.m2 + 1) P _ g).1 ⟨z, hmid⟩
   exact ⟨⟨g, (t.idx_ok μ).int (t.m2 + 1) _ P hpr⟩, hin⟩
 
-theorem ptAd_levCpl : UnderTie (fun {D _ _ _ _ _ _ _ _ t u μ St} A _ a => ∀ (hj : t.m2 + 1 ≤ D.R.m) (β' : (St (t.m2 + 1) hj).Ch)
+theorem ptAd_levCpl : UnderTie (fun {D L hT Gi Gl Kc Y cX ex t u μ St} A dtU a => ∀ (hj : t.m2 + 1 ≤ D.R.m) (β' : (St (t.m2 + 1) hj).Ch)
     (x' x₁' : UA D (t.m2 + 1) hj) (κ' : ((St (t.m2 + 1) hj).K β').lev.U) p', x₁'.1 = x'.1 * κ'.1 → IsPtAd A a (t.m2 + 1) hj β' x' p' →
     ∃ (q' : ChPt (R := D.R) t.sel (t.tup μ) (t.word u) (t.m2 + 1)) (κ'' : GLQ t.X.E (D.R.N (t.m2 + 1)) (SB t μ)),
       IsPtAd A a (t.m2 + 1) hj β' x₁' q' ∧

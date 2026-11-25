@@ -74,7 +74,6 @@ theorem flatL_mp (h : Fintype.card (ι × Fin p × Fin q) = n) :
   let E' : (Fin n → ℂ) ≃ᵐ ReciprocityTheory.L2DbarEstimates.V n :=
     (PiLp.continuousLinearEquiv 2 ℂ fun _ : Fin n => ℂ).symm.toHomeomorph.toMeasurableEquiv
   have h1 : MeasurePreserving E' volume volume := GlobalTheory.measurePreserving_toLp_complex
-  have h2 : MeasurePreserving E'.symm volume volume := h1.symm
-  exact (measurePreserving_comp_equiv (Fintype.equivFinOfCardEq h)).comp h2
+  exact (measurePreserving_comp_equiv (Fintype.equivFinOfCardEq h)).comp h1.symm
 
 end GlobalTheory.UnifDens

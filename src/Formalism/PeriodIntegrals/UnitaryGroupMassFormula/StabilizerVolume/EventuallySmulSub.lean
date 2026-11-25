@@ -231,8 +231,7 @@ theorem filt_abstract [ContinuousMul K] (π : K) (hπ0 : π ≠ 0) (hπ : Tendst
     exact isCompact_smulSub _ Q hQc
   · intro N' hN'
     have hst : Tendsto s atTop (𝓝 0) := by
-      have := hπ.mul_const c
-      simpa [hsdef] using this
+      simpa [hsdef] using hπ.mul_const c
     obtain ⟨k, hk⟩ := eventually_smul_sub (Q : Set X) hQc s hst N' hN'
     refine ⟨k, ?_⟩
     show (((Λ k).map (Dm y) : AddSubgroup X) : Set X) ⊆ N'

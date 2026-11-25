@@ -85,8 +85,7 @@ theorem JR_conj (σ : E →ₐ[F] E) {M : ℕ} (J : Matrix (Fin M) (Fin M) E) (g
         * JR R J * ((bc (inclR R) g : GL (Fin M) (R ⊗[F] E)) : Matrix (Fin M) (Fin M) (R ⊗[F] E)) := by
   have hG : ((bc (inclR R) g : GL (Fin M) (R ⊗[F] E)) : Matrix (Fin M) (Fin M) (R ⊗[F] E)) =
       (g : Matrix (Fin M) (Fin M) E).map (inclR R) := rfl
-  rw [hG, cT_inclR]
-  simp only [JR, Matrix.map_mul]
+  simp only [hG, cT_inclR, JR, Matrix.map_mul]
 
 end Base
 

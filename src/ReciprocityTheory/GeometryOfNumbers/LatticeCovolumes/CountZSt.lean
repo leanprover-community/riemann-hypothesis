@@ -99,8 +99,7 @@ theorem measure_div_le_ncard_inter_lattice (μ : Measure E) [μ.IsAddHaarMeasure
       _ = _ := setLIntegral_const _ _
   have hFfin : μ (ZSpan.fundamentalDomain ((Module.Free.chooseBasis ℤ L).ofZLatticeBasis ℝ L)) ≠ ⊤ := by
     intro h
-    rw [hcov, Measure.real, h] at hpos
-    simp at hpos
+    simp [hcov, Measure.real, h] at hpos
   have hreal := ENNReal.toReal_mono (ENNReal.mul_ne_top (ENNReal.natCast_ne_top _) hFfin) hle
   rw [Measure.addHaar_smul, ENNReal.toReal_mul, ENNReal.toReal_mul, ENNReal.toReal_ofReal (abs_nonneg _),
     abs_of_nonneg (by positivity), inv_pow, ENNReal.toReal_natCast] at hreal

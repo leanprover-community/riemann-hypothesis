@@ -68,8 +68,7 @@ theorem wSeriesNonsingularPoint_holds : WPoint := by
     rw [← PowerSeries.coe_substAlgHom hsub, he]
     simp [PowerSeries.substAlgHom_X]
   have hwc : MvPowerSeries.constantCoeff (w.subst s) = 0 := by
-    rw [hfac]
-    simp [hs0]
+    simp [hfac, hs0]
   have hws0 : w.subst s ≠ 0 := by
     rw [hfac]
     refine mul_ne_zero (pow_ne_zero 3 hs) (fun h0 => ?_)

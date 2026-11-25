@@ -71,8 +71,7 @@ theorem coeff_eq_zero_of_tri (w : Module.Basis (Fin N) Ω E) (bb : Fin N → E)
   have hTne : T.Nonempty := by
     obtain ⟨q, hq, hq'⟩ := hne
     exact ⟨q, by simp [hT, hq, hq']⟩
-  have hq0 : T.max' hTne ∈ T := T.max'_mem hTne
-  have hq0' := hq0
+  have hq0' := T.max'_mem hTne
   simp only [hT, Finset.mem_filter, Finset.mem_univ, true_and] at hq0'
   have hsum : w.repr (∑ q, a q • bb q) (T.max' hTne) =
       a (T.max' hTne) * w.repr (bb (T.max' hTne)) (T.max' hTne) := by

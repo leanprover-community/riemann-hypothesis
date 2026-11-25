@@ -76,11 +76,10 @@ theorem finsum_comp_eq_finsum_natCard_fiber_mul {X Y : Type} (π : X → Y) (h :
       (fun x hx => Finset.mem_image_of_mem π hx)]
     refine Finset.sum_congr rfl fun y hy => ?_
     obtain ⟨x₀, hx₀, rfl⟩ := Finset.mem_image.mp hy
-    have hne : h (π x₀) ≠ 0 := (hmemS x₀).1 hx₀
     have hfib : π ⁻¹' {π x₀} = ↑(S.filter (fun x => π x = π x₀)) := by
       ext x
       simp only [Set.mem_preimage, Set.mem_singleton_iff, Finset.coe_filter]
-      exact ⟨fun hx => ⟨by rw [hmemS, hx]; exact hne, hx⟩, fun hx => hx.2⟩
+      exact ⟨fun hx => ⟨by rw [hmemS, hx]; exact ((hmemS x₀).1 hx₀), hx⟩, fun hx => hx.2⟩
     rw [Finset.sum_eq_card_nsmul (fun x hx => by rw [(Finset.mem_filter.mp hx).2]), nsmul_eq_mul,
       hfib, Nat.card_coe_set_eq, Set.ncard_coe_finset]
   · rw [finsum_of_infinite_support (f := fun x => h (π x)) hfin]

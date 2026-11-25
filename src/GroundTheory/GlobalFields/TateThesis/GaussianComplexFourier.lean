@@ -22,8 +22,7 @@ theorem complexFourier_mul_self {f : ℂ → ℂ} (hf : Integrable f complexPlac
       complexPlaceMeasure := by
     refine ((hf'.const_mul (2 * π * ‖traceFormℂ‖))).mono' hf.1.fourierSMulRight ?_
     refine Filter.Eventually.of_forall fun z ↦ ?_
-    have := VectorFourier.norm_fourierSMulRight_le traceFormℂ f z
-    simpa [mul_assoc] using this
+    simpa [mul_assoc] using VectorFourier.norm_fourierSMulRight_le traceFormℂ f z
   rw [fourierIntegral_continuousLinearMap_apply' hint,
     fourierIntegral_continuousLinearMap_apply' hint]
   have hL : ∀ v : ℂ, traceFormℂ.toLinearMap₁₂ v w = 2 * (v * w).re :=
@@ -34,8 +33,7 @@ theorem complexFourier_mul_self {f : ℂ → ℂ} (hf : Integrable f complexPlac
       (-(2 * π * I) • (2 * (z * h).re) • f z)) complexPlaceMeasure := by
     intro h
     have : Integrable (fun z ↦ (-(2 * π * I) • (2 * (z * h).re) • f z)) complexPlaceMeasure := by
-      have := (hint.apply_continuousLinearMap h)
-      simpa [VectorFourier.fourierSMulRight_apply] using this
+      simpa [VectorFourier.fourierSMulRight_apply] using (hint.apply_continuousLinearMap h)
     have := (fourierIntegral_convergent_iff' (μ := complexPlaceMeasure) traceFormℂ w).2 this
     simpa using this
   rw [← integral_const_mul, ← integral_sub (i1 1) ((i1 I).const_mul I), complexFourier,
@@ -59,8 +57,7 @@ theorem exists_hasFDerivAt_conj_pow_mul_gaussian (n : ℕ) (w : ℂ) :
   simp only [cexp_neg_two_pi_norm_sq]
   have hc : HasFDerivAt (fun w : ℂ ↦ conj w) (conjCLE : ℂ →L[ℝ] ℂ) w :=
     (conjCLE : ℂ →L[ℝ] ℂ).hasFDerivAt
-  have hid : HasFDerivAt (fun w : ℂ ↦ w) (ContinuousLinearMap.id ℝ ℂ) w := hasFDerivAt_id w
-  have hq := (hid.fun_mul hc).const_mul (-2 * π : ℂ)
+  have hq := ((hasFDerivAt_id w).fun_mul hc).const_mul (-2 * π : ℂ)
   have hexp := hq.cexp
   have hp := hc.pow n
   refine ⟨_, hp.fun_mul hexp, ?_⟩
@@ -117,8 +114,7 @@ theorem complexFourier_pow_mul_gaussian (n : ℕ) :
     rw [e] at key
     apply mul_left_cancel₀ (a := (-4 * π * I : ℂ)) (by
       simp [ofReal_ne_zero.mpr Real.pi_ne_zero, I_ne_zero])
-    rw [key]
-    simp only [smul_apply, smul_eq_mul]
+    simp only [key, smul_apply, smul_eq_mul]
     have hD1' : (-I) ^ n * D 1 - I * ((-I) ^ n * D I) = (-I) ^ n * (D 1 - I * D I) := by ring
     rw [hD1', hD1]
     rw [pow_succ]

@@ -73,8 +73,7 @@ private lemma exists_isometry_extension_of_dense_of_norm_eq {K : Type} [NormedAd
     rwa [DenseRange, hr]
   have hi : IsUniformInducing V.subtypeL := isUniformEmbedding_subtype_val.isUniformInducing
   have heq : ∀ v : V, uc.extend V.subtypeL v = u v := fun v => by
-    have := ContinuousLinearMap.extend_eq uc hd hi v
-    simpa [uc] using this
+    simpa [uc] using ContinuousLinearMap.extend_eq uc hd hi v
   refine ⟨uc.extend V.subtypeL, heq, fun γ => ?_⟩
   have hfun := hd.equalizer (g := fun γ => ‖uc.extend V.subtypeL γ‖) (h := fun γ => ‖γ‖)
     (continuous_norm.comp (ContinuousLinearMap.continuous _)) continuous_norm

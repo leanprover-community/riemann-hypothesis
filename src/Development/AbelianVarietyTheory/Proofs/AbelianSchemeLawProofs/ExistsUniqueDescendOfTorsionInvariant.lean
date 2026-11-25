@@ -196,8 +196,7 @@ theorem existsUnique_descend_of_torsion_invariant {K : Type} [Field K] [IsAlgClo
     have h3 : (c p).left ≫ a = (c p).left ≫ b ≫ t.left.resLE V V e := by
       rw [← cancel_mono V.ι]
       simp only [Category.assoc, Scheme.Hom.resLE_comp_ι]
-      have := congr(($h1).left)
-      simpa [z₁, z₂] using this
+      simpa [z₁, z₂] using congr(($h1).left)
     have h4 : t.left.resLE V V e ≫ TLinPf.mOf f' = TLinPf.mOf f' := by
       rw [TLinPf.comp_mOf]
       congr 1

@@ -60,7 +60,7 @@ namespace GlobalTheory.DenominatorTheorem
 
 open NumberField
 
-theorem main_theorem : ∀ {E : Type} [Field E] [NumberField E] {n : ℕ}
+theorem main_theorem : ∀ {E : Type} [inst : Field E] [NumberField E] {n : ℕ}
     (G : Submodule (NumberField.RingOfIntegers E) (Fin n → E)),
     Submodule.span E (↑G : Set (Fin n → E)) = ⊤ → ∀ (y : Fin n → E),
     ∃ (c : NumberField.RingOfIntegers E), c ≠ (0 : NumberField.RingOfIntegers E) ∧ c • y ∈ G := by

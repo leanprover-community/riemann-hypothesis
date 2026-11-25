@@ -101,8 +101,7 @@ theorem cubeSign_singleton (i : ι) : cubeSign {i} i = 1 :=
 theorem cubeSign_erase_of_le (t : Finset ι) {i j : ι} (h : i ≤ j) :
     cubeSign (t.erase j) i = cubeSign t i := by
   unfold cubeSign
-  rw [Finset.filter_erase, Finset.erase_eq_of_notMem]
-  simp [h]
+  simp [Finset.filter_erase, Finset.erase_eq_of_notMem, h]
 
 theorem cubeSign_erase_of_lt {t : Finset ι} {i j : ι} (hj : j ∈ t) (h : j < i) :
     cubeSign (t.erase j) i = - cubeSign t i := by

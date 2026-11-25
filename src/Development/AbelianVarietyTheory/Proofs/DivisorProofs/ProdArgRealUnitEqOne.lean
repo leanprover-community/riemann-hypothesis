@@ -81,7 +81,7 @@ theorem prod_arg_real_unit_eq_one (E : Type) [Field E] [NumberField E] [IsCMFiel
   have hxy : x = 1 + ((y : 𝓞 E) : E) * (q : E) := by
     have : (u : 𝓞 E) = 1 + y * (q : 𝓞 E) := by rw [hy]; ring
     rw [hx, this]; push_cast; ring
-  have hcong : ∃ s ∈ integralClosure ℤ ℂ, P = 1 + s * (q : ℂ) := by
+  obtain ⟨s, hs, hPs⟩ : ∃ s ∈ integralClosure ℤ ℂ, P = 1 + s * (q : ℂ) := by
     rw [hP]
     refine Finset.prod_induction _ (fun z => ∃ s ∈ integralClosure ℤ ℂ, z = 1 + s * (q : ℂ))
       ?_ ⟨0, zero_mem _, by ring⟩ ?_
@@ -93,7 +93,6 @@ theorem prod_arg_real_unit_eq_one (E : Type) [Field E] [NumberField E] [IsCMFiel
       · rw [mem_integralClosure_iff]
         exact (RingOfIntegers.isIntegral_coe y).map w.embedding.toIntAlgHom
       · rw [hxy]; simp
-  obtain ⟨s, hs, hPs⟩ := hcong
   have hre : P = (P.re : ℂ) := ((Complex.conj_eq_iff_re).mp hPreal).symm
   have habs : |P.re| = 1 := by
     rw [← hPnorm, hre, Complex.norm_real, Real.norm_eq_abs, Complex.ofReal_re]

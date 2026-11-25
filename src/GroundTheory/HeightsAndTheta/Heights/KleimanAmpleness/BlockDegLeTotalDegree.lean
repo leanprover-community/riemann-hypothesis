@@ -81,8 +81,7 @@ theorem aeval_homog (w : (Σ k, ι k) → Ω) {c : ∀ k, ι k} (hw : ∀ k, w �
       (e.prod fun p n => w p ^ n) / ∏ k, w ⟨k, c k⟩ ^ blockDeg e k := by
     rw [← prod_block_pow e (fun k => w ⟨k, c k⟩)]
     simp only [Finsupp.prod, div_pow, Finset.prod_div_distrib]
-  rw [map_mul, aeval_monomial, aeval_monomial, hq, hP]
-  simp only [map_prod, map_pow, aeval_X]
+  simp only [map_mul, aeval_monomial, aeval_monomial, hq, hP, map_prod, map_pow, aeval_X]
   field_simp
 
 end ChartKernel

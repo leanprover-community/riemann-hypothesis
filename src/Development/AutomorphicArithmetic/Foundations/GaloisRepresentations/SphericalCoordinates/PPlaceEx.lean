@@ -401,7 +401,7 @@ private theorem sig_eq_finrank {n : ℕ} {H : Matrix (Fin n) (Fin n) ℂ} (hH : 
   omega
 
 theorem UpperTheory.hermitian_congruent_and_positive_eigenvector_of_signature :
-    ∀ (n δ : ℕ) (H K J : Matrix (Fin n) (Fin n) ℂ) (e : ℂ) (_ : H.IsHermitian) (hK : K.IsHermitian), (e = Complex.I ∨ e = -Complex.I) → J * J = -1 → ((-e) • (H * J)).PosDef → Matrix.trace J = e * (2 * (δ : ℂ) - (n : ℂ)) → K.det ≠ 0 → sigPosH hK = δ → (∃ Z : GL (Fin n) ℂ, H = (Z : Matrix (Fin n) (Fin n) ℂ)ᴴ * K * (Z : Matrix (Fin n) (Fin n) ℂ)) ∧ (0 < δ → ∃ z : Fin n → ℂ, J *ᵥ z = e • z ∧ 0 < (star z ⬝ᵥ (H *ᵥ z)).re) := by
+    ∀ (n δ : ℕ) (H K J : Matrix (Fin n) (Fin n) ℂ) (e : ℂ) (hH : H.IsHermitian) (hK : K.IsHermitian), (e = Complex.I ∨ e = -Complex.I) → J * J = -1 → ((-e) • (H * J)).PosDef → Matrix.trace J = e * (2 * (δ : ℂ) - (n : ℂ)) → K.det ≠ 0 → sigPosH hK = δ → (∃ Z : GL (Fin n) ℂ, H = (Z : Matrix (Fin n) (Fin n) ℂ)ᴴ * K * (Z : Matrix (Fin n) (Fin n) ℂ)) ∧ (0 < δ → ∃ z : Fin n → ℂ, J *ᵥ z = e • z ∧ 0 < (star z ⬝ᵥ (H *ᵥ z)).re) := by
   intro n δ H K J e hH hK he hJJ hM htr hKdet hKsig
   have he2 : e * e = -1 := by
     rcases he with rfl | rfl <;> simp
@@ -486,7 +486,7 @@ section -- clump:auto
 @[expose] public section
 
 noncomputable def UpperTheory.Reformulated.B.Qh60.Pz :
-    {R : Type} → [Ring R] → [Algebra ℝ R] → R → Prop :=
+    {R : Type} → [inst : Ring R] → [Algebra ℝ R] → R → Prop :=
     fun {R : Type} [Ring R] [Algebra ℝ R] (t : R) ↦
       ∃ (s : Finset ℝ),
         (∀ l ∈ s, (0 : ℝ) < l) ∧
@@ -543,7 +543,7 @@ private theorem UpperTheory.Reformulated.B.Qh60.aux {W : Type} [NormedAddCommGro
         Finset.prod_eq_zero (Finset.mem_image_of_mem μ (Finset.mem_univ i)) (sub_self _), zero_smul]
 
 theorem UpperTheory.Reformulated.B.Qh60.Pz_iff_pos :
-    ∀ {W : Type} [AddCommGroup W] [_root_.Module ℝ W] [FiniteDimensional ℝ W] (Q : W →ₗ[ℝ] W →ₗ[ℝ] ℝ),
+    ∀ {W : Type} [inst : AddCommGroup W] [inst_1 : _root_.Module ℝ W] [FiniteDimensional ℝ W] (Q : W →ₗ[ℝ] W →ₗ[ℝ] ℝ),
       (∀ (x y : W), ((Q : W → W →ₗ[ℝ] ℝ) x : W → ℝ) y = ((Q : W → W →ₗ[ℝ] ℝ) y : W → ℝ) x) →
         (∀ (x : W), x ≠ (0 : W) → (0 : ℝ) < ((Q : W → W →ₗ[ℝ] ℝ) x : W → ℝ) x) →
           ∀ (T : Module.End ℝ W),

@@ -80,8 +80,7 @@ theorem isFundamentalDomain_image_prod : ∀ (G : Type) [Group G] [TopologicalSp
     have hfst : ∀ g : N, (((e.symm (g * x)).1 : N') : G) =
         (g : G) * (s (π g))⁻¹ * (s (π g) * ((x : G) * (s (π x))⁻¹) * (s (π g))⁻¹) := by
       intro g
-      rw [efst, hπmul, hsadd]
-      simp only [Subgroup.coe_mul]
+      simp only [efst, hπmul, hsadd, Subgroup.coe_mul]
       group
     have hsnd : ∀ g : N, (e.symm (g * x)).2 = π g + π x := fun g => by rw [esnd, hπmul]
     let c : V → N' := fun w => ⟨s w * ((x : G) * (s (π x))⁻¹) * (s w)⁻¹,

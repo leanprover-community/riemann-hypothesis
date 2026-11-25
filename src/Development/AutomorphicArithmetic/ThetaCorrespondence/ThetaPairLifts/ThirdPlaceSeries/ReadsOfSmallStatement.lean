@@ -856,9 +856,9 @@ private theorem map_detPol {R S : Type} [CommRing R] [CommRing S] (φ : R →+* 
   simp
 
 theorem UpperTheory.Reformulated.B.Ga11.lift_nabStd_mem_latN :
-    ∀ (K : Type) [Field K] [NumberField K] (l : ℕ)
-    [Fact (Nat.Prime l)] (w : IsDedekindDomain.HeightOneSpectrum (NumberField.RingOfIntegers K))
-    (e0 : K →+* PadicAlgCl l) (ι : Type) [Fintype ι] [DecidableEq ι] (n : ℕ) (lam : ι → Formalism.BasicNotions.DomWeight n)
+    ∀ (K : Type) [inst : Field K] [inst_1 : NumberField K] (l : ℕ)
+    [inst_2 : Fact (Nat.Prime l)] (w : IsDedekindDomain.HeightOneSpectrum (NumberField.RingOfIntegers K))
+    (e0 : K →+* PadicAlgCl l) (ι : Type) [inst_3 : Fintype ι] [DecidableEq ι] (n : ℕ) (lam : ι → Formalism.BasicNotions.DomWeight n)
     (lamW : ι → ℕ → ℕ) (c : ι → ℤ) (F : GlobalTheory.ExpFrame.Frame l ι n)
     (Φ : ↥(Formalism.L2.DIV.VV K lam) →ₛₗ[e0] Formalism.CohomologicalDescent.DepthNonnegative.NablaT (PadicAlgCl l) n lamW),
     GlobalTheory.FrameRead.AtPlace w e0 →

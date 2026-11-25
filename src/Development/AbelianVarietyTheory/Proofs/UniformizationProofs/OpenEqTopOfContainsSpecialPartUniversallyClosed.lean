@@ -58,17 +58,15 @@ theorem eq_top_of_special_part : ∀ (R : Type) [CommRing R] (I : Ideal R), I �
   by_contra hne
   have hcl : IsClosed (Y.hom '' ((U : Set Y.left)ᶜ)) :=
     Y.hom.isClosedMap _ U.isOpen.isClosed_compl
-  have hne' : ((U : Set Y.left)ᶜ).Nonempty := by
+  obtain ⟨y, hy⟩ : ((U : Set Y.left)ᶜ).Nonempty := by
     rw [Set.nonempty_compl]
     intro h
     exact hne (TopologicalSpace.Opens.ext h)
-  obtain ⟨y, hy⟩ := hne'
   let p : PrimeSpectrum R := Y.hom y
   obtain ⟨m, hm, hpm⟩ := Ideal.exists_le_maximal p.asIdeal p.isPrime.ne_top
   let q : PrimeSpectrum R := ⟨m, hm.isPrime⟩
-  have hspec : p ⤳ q := (PrimeSpectrum.le_iff_specializes p q).1 hpm
   have hq : q ∈ Y.hom '' ((U : Set Y.left)ᶜ) :=
-    hspec.mem_closed hcl ⟨y, hy, rfl⟩
+    ((PrimeSpectrum.le_iff_specializes p q).1 hpm).mem_closed hcl ⟨y, hy, rfl⟩
   obtain ⟨y', hy', hyq⟩ := hq
   have hr : q ∈ Set.range (thick R I 0) := by
     have h1 : q ∈ Set.range (PrimeSpectrum.comap (Ideal.Quotient.mk (I ^ (0 + 1)))) := by
@@ -78,11 +76,10 @@ theorem eq_top_of_special_part : ∀ (R : Type) [CommRing R] (I : Ideal R), I �
       have hx' : x ∈ I := by simpa using hx
       exact (Ideal.mem_sInf.1 (hI hx')) ⟨bot_le, hm⟩
     exact h1
-  have h2 : y' ∈ Set.range (pullback.fst Y.hom (thick R I 0)) := by
+  obtain ⟨z, rfl⟩ : y' ∈ Set.range (pullback.fst Y.hom (thick R I 0)) := by
     rw [Scheme.Pullback.range_fst]
     show Y.hom y' ∈ Set.range (thick R I 0)
     rw [hyq]; exact hr
-  obtain ⟨z, rfl⟩ := h2
   exact hy' (hU z)
 
 end GlobalTheory.Unif

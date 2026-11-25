@@ -38,8 +38,7 @@ theorem map_mCoordIdeal (y : (Σ k, ι k) → Ω) :
   have hker : mCoordIdeal y =
       (RingHom.ker (coneQ y)).comap (MvPolynomial.map (Int.castRingHom ℚ)) := by
     ext f
-    rw [Ideal.mem_comap]
-    simp only [mCoordIdeal, RingHom.mem_ker]
+    simp only [Ideal.mem_comap, mCoordIdeal, RingHom.mem_ker]
     have h := RingHom.congr_fun hring f
     simp only [RingHom.coe_comp, Function.comp_apply, RingHom.coe_coe] at h
     rw [h]

@@ -66,8 +66,7 @@ theorem SepPairs_of (hE : EmbSep) (hI : InertiaRam) : SepPairs := by
       apply hρ
       have h1 : ∀ z, emb ρ z = emb τ (s (c z)) := by
         intro z
-        have := RingHom.congr_fun heq (c z)
-        simpa only [RingHom.comp_apply, RingHom.coe_coe, hcc] using this
+        simpa only [RingHom.comp_apply, RingHom.coe_coe, hcc] using RingHom.congr_fun heq (c z)
       obtain ⟨b, t⟩ := τ
       apply hinj
       ext z

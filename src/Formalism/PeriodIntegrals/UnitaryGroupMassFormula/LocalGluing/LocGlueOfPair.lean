@@ -40,12 +40,10 @@ theorem locGlue_of_pair (hP : Pair) : PI.LocHerm.LocGlue := by
   refine ⟨fun u hu => hP M hM V H abelian₂ hLam U (H.perp U) hU ?_ u hu,
     fun u hu => hP M hM V H abelian₂ hLam (H.perp U) U hU.symm ?_ u hu⟩
   · intro a ha b hb
-    have hb' : ∀ x ∈ U, H.h b x = 0 := hb
-    have h1 : H.h b a = 0 := hb' a ha
+    have h1 : H.h b a = 0 := hb a ha
     exact ⟨by rw [H.h_herm b a, h1, map_zero], h1⟩
   · intro a ha b hb
-    have ha' : ∀ x ∈ U, H.h a x = 0 := ha
-    have h1 : H.h a b = 0 := ha' b hb
+    have h1 : H.h a b = 0 := ha b hb
     exact ⟨h1, by rw [H.h_herm a b, h1, map_zero]⟩
 
 end PI.LocHerm.Glue

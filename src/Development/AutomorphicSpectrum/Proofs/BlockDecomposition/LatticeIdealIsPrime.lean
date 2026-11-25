@@ -103,8 +103,7 @@ theorem ι_mem_sub (x : Lat.A f ξ l M) : Lat.ι f ξ l M x ∈ Lat.sub f ξ l M
 theorem dvd_of_mem_IB {m : ℕ} (hyp : Lat.Hyp f ξ l m) {a : W} (ha : f a ∈ Lat.IB f ξ) : ξ ∣ a := by
   rw [Lat.IB, Ideal.mem_span_singleton] at ha
   obtain ⟨b, hb⟩ := ha
-  have hm : 0 < m := hyp.one_le
-  refine hyp.gr 0 hm a b ?_
+  refine hyp.gr 0 hyp.one_le a b ?_
   rwa [pow_zero, mul_one, zero_add, pow_one]
 
 end
@@ -124,8 +123,7 @@ theorem I_isPrime : ∀ {W B : Type} [CommRing W] [CommRing B] [Algebra ℚ B] (
     rw [Ideal.Quotient.eq_zero_iff_mem, Ideal.mem_span_singleton]
   refine ⟨?_, ?_⟩
   · intro htop
-    rw [Ideal.eq_top_iff_one] at htop
-    simp only [Lat.I, Ideal.mem_comap] at htop
+    simp only [Ideal.eq_top_iff_one, Lat.I, Ideal.mem_comap] at htop
     have h2 : f 1 ∈ Lat.IB f ξ := by rwa [map_one, ← map_one f] at htop
     have h3 := (hq 1).1 ((key 1).1 h2)
     rw [map_one] at h3
@@ -144,14 +142,12 @@ theorem I_isPrime : ∀ {W B : Type} [CommRing W] [CommRing B] [Algebra ℚ B] (
     rw [map_mul, mul_eq_zero] at h
     rcases h with h | h
     · left
-      have hfa : f a ∈ Lat.IB f ξ := (key a).2 ((hq a).2 h)
       have e : Lat.ι f ξ l M x = (Lat.ι f ξ l M x - f a) + f a := by ring
       rw [e]
-      exact add_mem ha hfa
+      exact add_mem ha ((key a).2 ((hq a).2 h))
     · right
-      have hfb : f b ∈ Lat.IB f ξ := (key b).2 ((hq b).2 h)
       have e : Lat.ι f ξ l M y = (Lat.ι f ξ l M y - f b) + f b := by ring
       rw [e]
-      exact add_mem hb hfb
+      exact add_mem hb ((key b).2 ((hq b).2 h))
 
 end GlobalTheory.CompanionTheory.LatPrime

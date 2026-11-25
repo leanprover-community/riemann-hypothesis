@@ -403,8 +403,7 @@ theorem hasSum_single_laurent (m : ℤ) (c v : ℂ) :
   (hasSum_single_laurent m c v).tsum_eq
 
 @[simp] theorem lsum_algebraMap (c v : ℂ) : lsum (algebraMap ℂ ℂ⸨X⸩ c) v = c := by
-  rw [LaurentSeries.algebraMap_apply, HahnSeries.C_apply, lsum_single]
-  simp
+  simp [LaurentSeries.algebraMap_apply, HahnSeries.C_apply, lsum_single]
 
 def puncturedRing (ε : ℝ) : Subalgebra ℂ ℂ⸨X⸩ where
   carrier := {f | ∀ v ∈ puncturedDisc ε, Summable fun n : ℤ => f.coeff n * v ^ n}

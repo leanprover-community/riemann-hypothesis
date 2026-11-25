@@ -84,8 +84,7 @@ theorem exists_algHom_powerSeries_apply_X_of_isAdicComplete {O : Type*} [CommRin
   let : WithIdeal O := ⟨I⟩
   have hI : IsAdic I := rfl
   obtain ⟨h1, h2⟩ := hI.isAdicComplete_iff.mp h
-  have ha : PowerSeries.HasEval π := WithIdeal.isTopologicallyNilpotent_of_mem hπ
-  refine ⟨PowerSeries.aeval ha, ?_⟩
+  refine ⟨PowerSeries.aeval (WithIdeal.isTopologicallyNilpotent_of_mem hπ), ?_⟩
   rw [← Polynomial.coe_X, PowerSeries.aeval_coe, Polynomial.aeval_X]
 
 variable {Z : Scheme.{u}} {η ξ : Z} [IsDomain (Z.presheaf.stalk η)]

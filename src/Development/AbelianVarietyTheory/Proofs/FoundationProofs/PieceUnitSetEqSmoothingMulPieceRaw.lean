@@ -139,8 +139,7 @@ theorem diagGL_mul_one {R : Type*} [CommRing R] (u v : Rˣ) (γ : GL (Fin 2) R) 
 theorem diagGL_mul_det {R : Type*} [CommRing R] (u v : Rˣ) (γ : GL (Fin 2) R) :
     ((diagGL u v * γ : GL (Fin 2) R) : Matrix (Fin 2) (Fin 2) R).det =
       (u : R) * v * (γ : Matrix (Fin 2) (Fin 2) R).det := by
-  rw [Matrix.det_fin_two, Matrix.det_fin_two]
-  simp only [diagGL_mul_zero, diagGL_mul_one]
+  simp only [Matrix.det_fin_two, Matrix.det_fin_two, diagGL_mul_zero, diagGL_mul_one]
   ring
 
 theorem diagGL_mul_mem {p n : ℕ} [Fact p.Prime] (hn : 0 < n) (u v : (ZMod (p ^ n))ˣ)

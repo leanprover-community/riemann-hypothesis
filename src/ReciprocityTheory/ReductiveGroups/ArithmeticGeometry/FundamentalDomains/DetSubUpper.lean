@@ -72,8 +72,7 @@ lemma gram_eq (τ : E →+* ℂ) (G : Matrix (Fin r) (Fin r) E) (M : Matrix (Fin
 
 lemma gram_mul (τ : E →+* ℂ) (G : Matrix (Fin r) (Fin r) E) (M N : Matrix (Fin r) (Fin r) ℂ) :
     gram τ G (M * N) = Nᵀ * gram τ G M * N.map (starRingEnd ℂ) := by
-  rw [gram_eq, gram_eq, Matrix.transpose_mul, Matrix.map_mul]
-  simp only [Matrix.mul_assoc]
+  simp only [gram_eq, gram_eq, Matrix.transpose_mul, Matrix.map_mul, Matrix.mul_assoc]
 
 end
 

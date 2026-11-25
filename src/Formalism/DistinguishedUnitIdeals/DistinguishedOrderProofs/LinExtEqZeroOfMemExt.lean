@@ -78,8 +78,7 @@ theorem isSat_one (ϖ : O) : IsSat ϖ 1 := by
 theorem isSat_mul (ϖ : O) (P Q : PowerSeries O) (hP : IsSat ϖ P) (hQ : IsSat ϖ Q) :
     IsSat ϖ (P * Q) := by
   intro N z h
-  have hPz : P ∣ z := hP N z (dvd_trans (dvd_mul_right P Q) h)
-  obtain ⟨z', rfl⟩ := hPz
+  obtain ⟨z', rfl⟩ : P ∣ z := hP N z (dvd_trans (dvd_mul_right P Q) h)
   by_cases hP0 : P = 0
   · subst hP0; simp
   · have hQ' : Q ∣ C (ϖ ^ N) * z' := by
@@ -157,10 +156,9 @@ theorem prod_dvd_of_coprimeRat (ϖ : O) (S : Finset ℕ) (P : ℕ → PowerSerie
   · intro _ _ _; simp
   · intro a S ha ih hs hc hY
     rw [Finset.prod_insert ha]
-    have hS : (∏ s ∈ S, P s) ∣ Y := ih (fun s hs' => hs s (Finset.mem_insert_of_mem hs'))
+    obtain ⟨w, hw⟩ : (∏ s ∈ S, P s) ∣ Y := ih (fun s hs' => hs s (Finset.mem_insert_of_mem hs'))
       (fun s hs' t ht' hst => hc s (Finset.mem_insert_of_mem hs') t (Finset.mem_insert_of_mem ht') hst)
       (fun s hs' => hY s (Finset.mem_insert_of_mem hs'))
-    obtain ⟨w, hw⟩ := hS
     have hcop : CoprimeRat ϖ (P a) (∏ s ∈ S, P s) :=
       coprimeRat₂_prod_right ϖ (P a) S P (fun t ht => hc a (Finset.mem_insert_self a S) t
         (Finset.mem_insert_of_mem ht) (fun hat => ha (by rw [hat]; exact ht)))
@@ -212,11 +210,10 @@ theorem isSat_pow_of_unitDist (ϖ : O) (hϖ : Irreducible ϖ) (d : ℕ) (p : Pow
   obtain ⟨u, E, hu, hE, -, rfl⟩ := hp
   have hnd : ¬ (C ϖ ∣ (u * (E : PowerSeries O)) ^ k) := by
     intro h
-    have h1 : C ϖ ∣ (E : PowerSeries O) := by
+    obtain ⟨g, hg⟩ : C ϖ ∣ (E : PowerSeries O) := by
       rcases hpr.dvd_or_dvd (hpr.dvd_of_dvd_pow h) with h2 | h2
       · exact absurd (isUnit_of_dvd_unit h2 hu) hpr.not_unit
       · exact h2
-    obtain ⟨g, hg⟩ := h1
     have h3 := congrArg (PowerSeries.coeff (R := O) E.natDegree) hg
     rw [Polynomial.coeff_coe, PowerSeries.coeff_C_mul, hE.monic.coeff_natDegree] at h3
     exact hϖ.not_isUnit (isUnit_of_dvd_one ⟨_, h3⟩)
@@ -518,8 +515,7 @@ theorem linExt_levelRel (g : (Fin r → O) →ₗ[O] O) (ϖ : O) (N k : ℕ) (y 
     (L : PowerSeries O) (d : Fin r → O) :
     linExt g (C (ϖ ^ N) • (C (ϖ ^ k) • y - L • cst d)) =
       C (ϖ ^ N) * (C (ϖ ^ k) * linExt g y - L * C (g d)) := by
-  rw [map_smul, map_sub, map_smul, map_smul, linExt_cst]
-  simp only [smul_eq_mul]
+  simp only [map_smul, map_sub, map_smul, map_smul, linExt_cst, smul_eq_mul]
 
 theorem linExt_eq_zero_of_mem_ext (g : (Fin r → O) →ₗ[O] O) (V : Submodule O (Fin r → O))
     (hg : ∀ v ∈ V, g v = 0) (u : Fin r → PowerSeries O) (hu : u ∈ ext V) : linExt g u = 0 := by

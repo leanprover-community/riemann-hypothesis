@@ -97,8 +97,7 @@ theorem hilbert_schur_selfAdjoint (H : Type) [NormedAddCommGroup H] [InnerProduc
         ext v
         have : cfc g A v ∈ LinearMap.ker (cfc f A : H →L[ℂ] H).toLinearMap := by
           show cfc f A (cfc g A v) = 0
-          have := congrArg (fun T : H →L[ℂ] H => T v) hfg
-          simpa using this
+          simpa using congrArg (fun T : H →L[ℂ] H => T v) hfg
         rw [h] at this
         simpa using this
       · apply hf0

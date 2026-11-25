@@ -64,8 +64,7 @@ theorem maj_chart (X : Data E r) {w : Frame X.Ψ r} {τ : X.Ψ} {Y : Matrix (Fin
     X.maj w τ v = Ms X.p0 X.p0_le N (Y⁻¹ *ᵥ v) := by
   have hS : ∀ u' n : Fin r → ℂ, hermC τ.1 X.Gm (Y *ᵥ u') (Y *ᵥ n) = sf X.p0 u' n := by
     intro u' n
-    rw [hermC_mulVec_eq_dotProduct_gram, hY]
-    simp only [sf, dotProduct, Matrix.mulVec_diagonal]
+    simp only [hermC_mulVec_eq_dotProduct_gram, hY, sf, dotProduct, Matrix.mulVec_diagonal]
     exact Finset.sum_congr rfl fun k _ => by ring
   have hdetY := det_ne_zero_of_gram_eq_diagonal_sgn τ.1 X.Gm X.p0 Y hY
   have hv : v = Y *ᵥ (Y⁻¹ *ᵥ v) := by
@@ -153,8 +152,7 @@ theorem maj_orth (X : Data E r) {u : Frame X.Ψ r} (hu : IsOrth X u) (τ : X.Ψ)
     refine Finset.sum_congr rfl fun k _ => ?_
     rw [mul_assoc, Complex.mul_conj, Complex.normSq_eq_norm_sq, ← Complex.ofReal_mul, Complex.ofReal_re]
   unfold Ms
-  rw [hAg, inv_one]
-  simp only [hinner]
+  simp only [hAg, inv_one, hinner]
   rw [← Complex.ofReal_sum, Complex.ofReal_re, hww]
   have hc := hcast (fun k => ‖w k‖ ^ 2)
   beta_reduce at hc

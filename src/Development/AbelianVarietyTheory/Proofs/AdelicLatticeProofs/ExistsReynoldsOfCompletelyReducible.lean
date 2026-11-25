@@ -153,9 +153,8 @@ theorem _root_.GlobalTheory.ClassFin.exists_reynolds_of_completelyReducible (V :
   obtain ⟨W', hW'S, hWW'⟩ := hS W hWS
   have hW'Fix : ∀ v ∈ W', v ∈ Fix := by
     intro v hv s hs
-    have h1 : (s : V → V) v - v ∈ W := hWgen s hs v
     have h2 : (s : V → V) v - v ∈ W' := W'.sub_mem (hW'S s hs v hv) hv
-    exact sub_eq_zero.mp (Submodule.disjoint_def.mp hWW'.disjoint _ h1 h2)
+    exact sub_eq_zero.mp (Submodule.disjoint_def.mp hWW'.disjoint _ (hWgen s hs v) h2)
   let P := W'.projection W hWW'.symm
   have hPfix : ∀ v ∈ Fix, P v = v := by
     intro v hv

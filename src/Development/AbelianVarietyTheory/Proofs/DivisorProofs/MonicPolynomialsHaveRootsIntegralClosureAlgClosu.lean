@@ -64,7 +64,6 @@ theorem aic_integralClosure_algebraicClosure :
   apply Subtype.val_injective
   have key := Polynomial.eval₂_at_apply (p := p) (algebraMap (integralClosure D (AlgebraicClosure (FractionRing D))) (AlgebraicClosure (FractionRing D))) ⟨r, hrD⟩
   rw [← Polynomial.eval_map] at key
-  have hr' : (p.map (algebraMap (integralClosure D (AlgebraicClosure (FractionRing D))) (AlgebraicClosure (FractionRing D)))).eval r = 0 := hr
-  exact key.symm.trans hr'
+  exact key.symm.trans hr
 
 end GlobalTheory

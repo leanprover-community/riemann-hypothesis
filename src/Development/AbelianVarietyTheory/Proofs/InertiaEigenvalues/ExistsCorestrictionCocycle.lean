@@ -60,8 +60,7 @@ theorem corCoc_mem {G : Type} [Group G] (H : Subgroup G) (g : G) (q : G ⧸ H) :
     rw [QuotientGroup.out_eq']
     conv_lhs => rw [← QuotientGroup.out_eq' q]
     rfl
-  have := QuotientGroup.eq.mp h
-  simpa [mul_assoc] using this
+  simpa [mul_assoc] using QuotientGroup.eq.mp h
 
 theorem exists_corestriction_cocycle : ∀ (R G X : Type) [CommRing R] [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [AddCommGroup X] [Module R X] [TopologicalSpace X] [IsTopologicalAddGroup X] (ρ : Representation R G X) (H : Subgroup G) [H.Normal] [H.FiniteIndex], IsOpen (H : Set G) → (∀ g, Continuous (ρ g)) → (∀ x, Continuous fun g => ρ g x) → ∀ f : G → X, ContinuousOn f H → (∀ g ∈ H, ∀ h ∈ H, f (g * h) = f g + ρ g (f h)) → ∃ F : G → X, Continuous F ∧ (∀ g h, F (g * h) = F g + ρ g (F h)) ∧ (∃ x, ∀ h ∈ H, F h = (∑ᶠ q : G ⧸ H, ρ q.out (f (q.out⁻¹ * h * q.out))) + (ρ h x - x)) ∧ ∀ (Y : Submodule R X), (∀ g, ∀ y ∈ Y, ρ g y ∈ Y) → ∀ (f₀ : G → X) (x : X), (∀ g h, f₀ (g * h) - (f₀ g + ρ g (f₀ h)) ∈ Y) → (∀ h ∈ H, f h - f₀ h - (ρ h x - x) ∈ Y) → ∃ x', ∀ g, F g - H.index • f₀ g - (ρ g x' - x') ∈ Y := by
   intro R G X _ _ _ _ _ _ _ _ ρ H _ _ hH hρ _ f hf hc
@@ -103,8 +102,7 @@ theorem exists_corestriction_cocycle : ∀ (R G X : Type) [CommRing R] [Group G]
     congr 3
     group
   · refine ⟨0, fun h hh => ?_⟩
-    rw [finsum_eq_sum_of_fintype]
-    simp only [map_zero, sub_zero, add_zero]
+    simp only [finsum_eq_sum_of_fintype, map_zero, sub_zero, add_zero]
     refine Finset.sum_congr rfl fun q _ => ?_
     have : h • q = q := by
       conv_rhs => rw [← QuotientGroup.out_eq' q]
@@ -112,8 +110,7 @@ theorem exists_corestriction_cocycle : ∀ (R G X : Type) [CommRing R] [Group G]
       symm
       change (QuotientGroup.mk q.out : G ⧸ H) = QuotientGroup.mk (h * q.out)
       refine QuotientGroup.eq.mpr ?_
-      have := Subgroup.Normal.conj_mem' ‹H.Normal› h hh q.out
-      simpa [mul_assoc] using this
+      simpa [mul_assoc] using Subgroup.Normal.conj_mem' ‹H.Normal› h hh q.out
     rw [this]
   · intro Y hY f₀ x h₀ hx
     refine ⟨∑ q : G ⧸ H, (f₀ q.out + ρ q.out x), fun g => ?_⟩

@@ -199,7 +199,7 @@ theorem v_coef {χ : D.toPre.X} (b : D.toPre.SecB 1 χ) (s : Fam D.toPre F 1) (a
     exact Eq.symm (by linear_combination (CoefBasic.cstH z a * CoefBasic.cstH z x₁ * CoefBasic.cstH z x₂) * q)
   rw [e, AddValuation.map_mul, AddValuation.map_mul, AddValuation.map_mul, hx₁, hx₂, hu₀, add_zero]
 
-theorem exact_term_after_torsion : LL → TwistBCSpanStatement → TWM.VRatioGtStatement → TWStatement → UUStatement → AllDV fun {V} _ _ _ {_} hϖ D Q {F} _ _ {v} hv => ∀ ϑ : Fam D.toPre F 1, Prim D Q v ϑ → ∀ (n : ℕ), 2 ≤ n → IsUnit (n : V) → ∀ (g : GtPtF D.toPre F) (χ : D.toPre.X), ∃ (h o g₂ : GtPtF D.toPre F), o.IsZero ∧ GtPtF.IsNsmul n h o ∧ g.IsAdd h g₂ ∧ ∀ (w : Frm D.toPre F 1 g₂.b) l ω, w.IsGen → GtV hϖ hv g₂ l → GenV hϖ hv w ω → v (coef ϑ g₂ w χ) = (((Q χ : ℚ) + l χ + ω : ℚ) : WithTop ℚ) := by
+theorem exact_term_after_torsion : LL → TwistBCSpanStatement → TWM.VRatioGtStatement → TWStatement → UUStatement → AllDV fun {V} _ _ _ {ϖ} hϖ D Q {F} _ _ {v} hv => ∀ ϑ : Fam D.toPre F 1, Prim D Q v ϑ → ∀ (n : ℕ), 2 ≤ n → IsUnit (n : V) → ∀ (g : GtPtF D.toPre F) (χ : D.toPre.X), ∃ (h o g₂ : GtPtF D.toPre F), o.IsZero ∧ GtPtF.IsNsmul n h o ∧ g.IsAdd h g₂ ∧ ∀ (w : Frm D.toPre F 1 g₂.b) l ω, w.IsGen → GtV hϖ hv g₂ l → GenV hϖ hv w ω → v (coef ϑ g₂ w χ) = (((Q χ : ℚ) + l χ + ω : ℚ) : WithTop ℚ) := by
   intro hL _ _ _ _ V _ _ _ _ _ ϖ hϖ D Q hQ F _ _ _ v hv ϑ hϑ n hn hnV g χ
   obtain ⟨b, hb, hb'⟩ := exists_secB_good hL.1 D.toPre χ
   obtain ⟨a, ha₁, ha₂, ha₃⟩ := vge_iff hϖ hv b hb (ϑ.s χ) (hϑ.1 χ)

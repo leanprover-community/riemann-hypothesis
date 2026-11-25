@@ -102,8 +102,7 @@ theorem exists_testRing_universal_partially_invertible (K : Type) [Field K] (σ 
         intro q
         induction q using MvPolynomial.induction_on with
         | C r =>
-          have := AlgHom.congr_fun h1 r
-          exact this.trans (MvPolynomial.aevalTower_algebraMap ψ t r).symm
+          exact (AlgHom.congr_fun h1 r).trans (MvPolynomial.aevalTower_algebraMap ψ t r).symm
         | add a b ha hb => simp only [map_add (f := _), ha, hb]
         | mul_X a i ha =>
           simp only [map_mul, ha, h2]
@@ -111,8 +110,7 @@ theorem exists_testRing_universal_partially_invertible (K : Type) [Field K] (σ 
       have h4 : (k.comp (e.symm : B →ₐ[K] A.R)).toRingHom = k₀.toRingHom :=
         IsLocalization.ringHom_ext (Submonoid.powers f) (RingHom.ext fun q => (h3 q).trans (hk₀ q).symm)
       refine AlgHom.ext fun a => ?_
-      have := RingHom.congr_fun h4 (e a)
-      simpa using this
+      simpa using RingHom.congr_fun h4 (e a)
 
 theorem exists_testRing_triRing :
     ∀ (K : Type) [Field K] (J : Type) [Fintype J] (m : J → ℕ) (p : TRing K), ∃ (A : TRing K) (π : p.R →ₐ[K] A.R) (X : ∀ τ, Matrix (Fin (m τ)) (Fin (m τ)) A.R) (s : (A.R)ˣ), TriRing m π X s := by

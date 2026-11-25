@@ -140,8 +140,8 @@ end Ring
 
 theorem chart_bc : ∀ {O R R' : Type} [CommRing O] [CommRing R] [CommRing R'] {I : Ideal R} {I' : Ideal R'}
     {γ : DividedPowers I} {γ' : DividedPowers I'} {p : ℕ} {X : Scheme.{0}} {q : X ⟶ Spec (CommRingCat.of O)}
-    {κ : O →+* R ⧸ I} {κ' : O →+* R' ⧸ I'} {σ : R →+* R'} (m : NMor γ q κ γ' q κ' σ) (_ : m.u = 𝟙 X) (_ : m.g = RingHom.id O)
-    (_ : p = 0 → IsNilpotent I') {V : X.Opens} {d : ℕ}
+    {κ : O →+* R ⧸ I} {κ' : O →+* R' ⧸ I'} {σ : R →+* R'} (m : NMor γ q κ γ' q κ' σ) (hu : m.u = 𝟙 X) (hg : m.g = RingHom.id O)
+    (hnil : p = 0 → IsNilpotent I') {V : X.Opens} {d : ℕ}
     (c : Chart γ p q κ V d),
     letI := σ.toAlgebra
     letI := c.D.i.toAlgebra
@@ -256,7 +256,7 @@ namespace GlobalTheory.CompanionTheory.ChartBc
 
 theorem chart_bc_of_ne : ∀ {O R R' : Type} [CommRing O] [CommRing R] [CommRing R'] {I : Ideal R} {I' : Ideal R'}
     {γ : DividedPowers I} {γ' : DividedPowers I'} {p : ℕ} {X : Scheme.{0}} {q : X ⟶ Spec (CommRingCat.of O)}
-    {κ : O →+* R ⧸ I} {κ' : O →+* R' ⧸ I'} {σ : R →+* R'} (m : NMor γ q κ γ' q κ' σ) (_ : p ≠ 0) (_ : m.u = 𝟙 X) (_ : m.g = RingHom.id O) {V : X.Opens} {d : ℕ}
+    {κ : O →+* R ⧸ I} {κ' : O →+* R' ⧸ I'} {σ : R →+* R'} (m : NMor γ q κ γ' q κ' σ) (hp : p ≠ 0) (hu : m.u = 𝟙 X) (hg : m.g = RingHom.id O) {V : X.Opens} {d : ℕ}
     (c : Chart γ p q κ V d),
     letI := σ.toAlgebra
     letI := c.D.i.toAlgebra
@@ -467,11 +467,11 @@ theorem leC_none (m : NMor γ q κ γ' q κ' σ) (Q : ObjectProperty (Thick (nlF
 end Main
 
 theorem local_bc : ∀ {O R R' : Type} [CommRing O] [CommRing R] [CommRing R'] [Algebra R R'] [Module.Flat R R'] {I : Ideal R}
-    {I' : Ideal R'} {γ : DividedPowers I} {γ' : DividedPowers I'} {p : ℕ} (_ : p ≠ 0) (_ : IsNilpotent (p : R))
+    {I' : Ideal R'} {γ : DividedPowers I} {γ' : DividedPowers I'} {p : ℕ} (hp : p ≠ 0) (hn : IsNilpotent (p : R))
     {X : Scheme.{0}} {q : X ⟶ Spec (CommRingCat.of O)} {κ : O →+* R ⧸ I} {κ' : O →+* R' ⧸ I'}
-    (m : NMor γ q κ γ' q κ' (algebraMap R R')) (_ : m.u = 𝟙 X) (_ : m.g = RingHom.id O) {V : X.Opens} {d : ℕ} (_ : Coord q V d)
+    (m : NMor γ q κ γ' q κ' (algebraMap R R')) (hu : m.u = 𝟙 X) (hg : m.g = RingHom.id O) {V : X.Opens} {d : ℕ} (c : Coord q V d)
     (Q : ObjectProperty (Thick (nlFun γ p X q κ))) (Q' : ObjectProperty (Thick (nlFun γ' p X q κ')))
-    (_ : Q = St ⊤ {V}) (_ : Q' = St ⊤ {V}) (h : ∀ T, Q' T → Q ((m.mor p).functor.obj T))
+    (hQ : Q = St ⊤ {V}) (hQ' : Q' = St ⊤ {V}) (h : ∀ T, Q' T → Q ((m.mor p).functor.obj T))
     (ha : ∀ a : R', (m.smor Q Q' h).LeC a (oT Q) (oT Q')) (hb : ∀ a : R', (m.smor Q Q' h).LeC a (oB Q) (oB Q')) (j : ℕ),
     Tens R (N := fun _ : Unit => R') (M := fun _ => CH.H (sq (oT Q) (oB Q)) j) (M' := CH.H (sq (oT Q') (oB Q')) j)
       fun _ a x => ((m.smor Q Q' h).sqC a (ha a) (hb a)).pull j x := by

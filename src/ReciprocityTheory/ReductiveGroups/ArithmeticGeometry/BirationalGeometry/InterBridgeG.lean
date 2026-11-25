@@ -88,8 +88,7 @@ theorem piece_change {D : Set (Fin e → ℂ)} (hD : MeasurableSet D) {Q : (Fin 
   have hint_on : IntegrableOn (fibSum D Q h) (Q '' D) := by
     rw [integrableOn_image_iff_integrableOn_abs_det_fderiv_smul volume hD hf' hinj]
     exact hh.congr_fun (fun u hu => (hkey hu).symm) hD
-  have hint : Integrable (fibSum D Q h) := hint_on.integrable_of_forall_notMem_eq_zero hzero
-  refine ⟨hint, ?_, ?_⟩
+  refine ⟨(hint_on.integrable_of_forall_notMem_eq_zero hzero), ?_, ?_⟩
   · rw [← setIntegral_eq_integral_of_forall_compl_eq_zero hzero,
       integral_image_eq_integral_abs_det_fderiv_smul volume hD hf' hinj]
     exact setIntegral_congr_fun hD hkey
@@ -133,9 +132,8 @@ theorem exists_inj_cover {O : Set (Fin e → ℂ)} {Q : (Fin e → ℂ) → (Fin
       rw [hCe]; exact hQa.hasStrictFDerivAt
     set F := hstrict.toOpenPartialHomeomorph Q
     have hFc : (F : (Fin e → ℂ) → (Fin e → ℂ)) = Q := hstrict.toOpenPartialHomeomorph_coe
-    have hus : u ∈ F.source := hstrict.mem_toOpenPartialHomeomorph_source
     obtain ⟨b, hbB, hub, hbsub⟩ := (TopologicalSpace.isBasis_countableBasis (Fin e → ℂ)).exists_subset_of_mem_open
-      (⟨hus, hu⟩ : u ∈ F.source ∩ O) (F.open_source.inter hO)
+      (⟨hstrict.mem_toOpenPartialHomeomorph_source, hu⟩ : u ∈ F.source ∩ O) (F.open_source.inter hO)
     have hbs : b ∈ s := Or.inr ⟨hbB, fun v hv => (hbsub hv).2, by
       rw [← hFc]; exact F.injOn.mono fun v hv => (hbsub hv).1⟩
     obtain ⟨n, hn⟩ := Set.subset_range_enumerate hs ∅ hbs

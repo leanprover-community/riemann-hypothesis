@@ -66,8 +66,7 @@ theorem core (hsemi : SeminormIneq) (hpol : Polarisation) : FormCoreC := by
     have h' : Tendsto (fun t => Real.sqrt (β (Φ t) (Φ t)).re - Real.sqrt (β x x).re) (𝓝 t₀)
         (𝓝 0) := by
       have h2 := hT1.sqrt
-      rw [Real.sqrt_zero] at h2
-      simp only [Real.sqrt_sq_eq_abs] at h2
+      simp only [Real.sqrt_zero, Real.sqrt_sq_eq_abs] at h2
       exact (tendsto_zero_iff_abs_tendsto_zero _).mpr h2
     simpa using h'.add_const (Real.sqrt (β x x).re)
   have e : ∀ t, Real.sqrt (β (Φ t) (Φ t)).re ^ 2 = (β (Φ t) (Φ t)).re :=
@@ -80,16 +79,14 @@ theorem core (hsemi : SeminormIneq) (hpol : Polarisation) : FormCoreC := by
     by_contra hemp
     rw [Set.not_nonempty_iff_eq_empty] at hemp
     have hO : t₀ ∈ interior (s₂ ∩ U) := mem_interior_iff_mem_nhds.mpr (Filter.inter_mem hs₂ hU)
-    have hpos : 0 < volume (interior (s₂ ∩ U)) := isOpen_interior.measure_pos volume ⟨t₀, hO⟩
     have hsub : interior (s₂ ∩ U) ⊆ s₁ᶜ := by
       intro t ht hts
       have hmem : t ∈ s₁ ∩ s₂ := ⟨hts, (interior_subset ht).1⟩
       rwa [hemp] at hmem
-    have h0' : volume.restrict U s₁ᶜ = 0 := mem_ae_iff.mp hs₁
     have hle2 : volume.restrict U (interior (s₂ ∩ U)) ≤ volume.restrict U s₁ᶜ := measure_mono hsub
-    rw [h0', Measure.restrict_apply isOpen_interior.measurableSet,
+    rw [(mem_ae_iff.mp hs₁), Measure.restrict_apply isOpen_interior.measurableSet,
       Set.inter_eq_left.mpr (interior_subset.trans Set.inter_subset_right)] at hle2
-    exact lt_irrefl _ (hpos.trans_le hle2)
+    exact lt_irrefl _ ((isOpen_interior.measure_pos volume ⟨t₀, hO⟩).trans_le hle2)
   have hcL : Tendsto c (ae (volume.restrict U) ⊓ 𝓝 t₀) (𝓝 (βi x x)) := by
     rw [← hc0]
     exact hcc.tendsto.mono_left inf_le_right
@@ -130,16 +127,14 @@ theorem fatou : FatouParam := by
     rw [Set.not_nonempty_iff_eq_empty] at hemp
     have hO : τ ∈ interior (s₂ ∩ U) :=
       mem_interior_iff_mem_nhds.mpr (Filter.inter_mem hs₂ (hU.mem_nhds hτ))
-    have hpos : 0 < volume (interior (s₂ ∩ U)) := isOpen_interior.measure_pos volume ⟨τ, hO⟩
     have hsub : interior (s₂ ∩ U) ⊆ s₁ᶜ := by
       intro t ht hts
       have hmem : t ∈ s₁ ∩ s₂ := ⟨hts, (interior_subset ht).1⟩
       rwa [hemp] at hmem
-    have h0' : volume.restrict U s₁ᶜ = 0 := mem_ae_iff.mp hs₁
     have hle2 : volume.restrict U (interior (s₂ ∩ U)) ≤ volume.restrict U s₁ᶜ := measure_mono hsub
-    rw [h0', Measure.restrict_apply isOpen_interior.measurableSet,
+    rw [(mem_ae_iff.mp hs₁), Measure.restrict_apply isOpen_interior.measurableSet,
       Set.inter_eq_left.mpr (interior_subset.trans Set.inter_subset_right)] at hle2
-    exact lt_irrefl _ (hpos.trans_le hle2)
+    exact lt_irrefl _ ((isOpen_interior.measure_pos volume ⟨τ, hO⟩).trans_le hle2)
   have hex : ∀ n : ℕ, ∃ σ, σ ∈ Metric.ball τ (1 / ((n : ℝ) + 1)) ∩ U ∧
       ∫⁻ q, ‖J σ q‖ₑ ^ 2 ∂μ = ENNReal.ofReal (c σ) := by
     intro n
@@ -177,11 +172,9 @@ theorem ibp : RegIBP := by
     intro t
     have h1 : HasDerivAt (fun t : ℝ => Complex.I * ((x * t : ℝ) : ℂ)) (Complex.I * x) t := by
       have h2 : HasDerivAt (fun t : ℝ => ((x * t : ℝ) : ℂ)) ((x : ℝ) : ℂ) t := by
-        have := ((hasDerivAt_id t).const_mul x).ofReal_comp
-        simpa using this
+        simpa using ((hasDerivAt_id t).const_mul x).ofReal_comp
       exact h2.const_mul _
-    have := h1.cexp
-    simpa [he, mul_comm, mul_left_comm, mul_assoc] using this
+    simpa [he, mul_comm, mul_left_comm, mul_assoc] using h1.cexp
   have hec : Continuous e := by
     rw [he]; fun_prop
   have hd1 : ContDiff ℝ 1 (deriv h) := by
@@ -237,8 +230,7 @@ theorem decay (hibp : RegIBP) : TestDecay := by
       first
       | (rw [iteratedDeriv_succ, iteratedDeriv_one]; exact hcs'.deriv.deriv))
   have hn : ∀ y : ℝ, ‖Complex.exp (Complex.I * (y : ℂ))‖ = 1 := fun y => by
-    rw [Complex.norm_exp]
-    simp
+    simp [Complex.norm_exp]
   refine ⟨2 * ∫ t, ‖(wh t : ℂ) - iteratedDeriv 2 (fun t : ℝ => (wh t : ℂ)) t‖, fun x => ?_⟩
   have key := hibp (fun t : ℝ => (wh t : ℂ)) hcd' hcs' x
   beta_reduce at key

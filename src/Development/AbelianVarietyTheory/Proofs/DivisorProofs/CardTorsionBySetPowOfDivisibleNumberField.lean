@@ -126,8 +126,7 @@ theorem torsion_pow_card_succ {R : Type} [CommRing R] [IsDedekindDomain R]
     constructor
     · intro hx
       have hx' : c0 • (x : M) = 0 := by
-        have := congrArg Subtype.val hx
-        simpa [φ] using this
+        simpa [φ] using congrArg Subtype.val hx
       rw [mem_torsionBySet_iff]
       rintro ⟨a, ha⟩
       have hw : w0 ≤ Ideal.span {c0} ⊔ w0 ^ (j + 1) := by

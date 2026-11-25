@@ -60,7 +60,6 @@ theorem UpperTheory.Reformulated.B.Yoa4.add_gap_le :
     have hm : (i : ℕ) + k < r := by omega
     have h1 := ih i ⟨(i : ℕ) + k, hm⟩ rfl
     have h2 : d j < d ⟨(i : ℕ) + k, hm⟩ := hd (by
-      rw [Fin.lt_def]
-      simp only
+      simp only [Fin.lt_def]
       omega)
     omega

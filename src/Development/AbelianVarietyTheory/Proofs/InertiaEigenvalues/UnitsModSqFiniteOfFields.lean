@@ -114,8 +114,7 @@ theorem units_modSq_finite_of_fields : ∀ (k : Type) [Field k] [CharZero k],
     have hloc : ∀ I : MaximalSpectrum A, ∃ w : (A ⧸ I.asIdeal)ˣ,
         (w : A ⧸ I.asIdeal) ^ 2 = Ideal.Quotient.mk I.asIdeal x := by
       intro I
-      have h1 := (key I x).1 (congrFun hx I)
-      obtain ⟨w, hw⟩ := h1
+      obtain ⟨w, hw⟩ := (key I x).1 (congrFun hx I)
       refine ⟨w, ?_⟩
       have := congrArg (fun u : (A ⧸ I.asIdeal)ˣ => (u : A ⧸ I.asIdeal)) hw
       simpa using this
@@ -141,8 +140,7 @@ theorem units_modSq_finite_of_fields : ∀ (k : Type) [Field k] [CharZero k],
       have : a ^ 2 = (x : A) + (-m) := by rw [hm]; ring
       rw [this]
       exact hnil.neg.isUnit_add_left_of_commute x.isUnit (Commute.all _ _)
-    have hau : IsUnit a := (isUnit_pow_iff (by norm_num)).1 ha2
-    obtain ⟨b, hb⟩ := hau
+    obtain ⟨b, hb⟩ : IsUnit a := (isUnit_pow_iff (by norm_num)).1 ha2
     have hn2 : IsNilpotent (((b⁻¹ : Aˣ) : A) ^ 2 * m) :=
       (Commute.all _ _).isNilpotent_mul_left hnil
     obtain ⟨z, hz⟩ := isSquare_one_add_of_isNilpotent _ hc hn2

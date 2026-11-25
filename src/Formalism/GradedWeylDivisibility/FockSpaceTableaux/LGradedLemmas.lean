@@ -105,8 +105,7 @@ theorem lgraded_sep {r n : ℕ} (M : Submodule ℚ (MvPolynomial (Fin r × Fin n
         have h0 : ∏ s ∈ V.erase t,
             (((Finsupp.weight (lgraded_wa a) m : ℕ) : ℚ) - (s : ℚ)) = 0 :=
           Finset.prod_eq_zero hmem (sub_self _)
-        rw [h0]
-        simp
+        simp [h0]
     · rw [mem_support_iff, not_not] at hm
       simp [hm]
   rw [key]
@@ -125,8 +124,7 @@ theorem lgraded_multi {r n : ℕ} (M : Submodule ℚ (MvPolynomial (Fin r × Fin
     refine ⟨weightedHomogeneousComponent (lgraded_wa b) (μ b) h,
       lgraded_sep M hM b (h.support.image (Finsupp.weight (lgraded_wa b))) h hh
         (fun m hm => Finset.mem_image_of_mem _ hm) (μ b), fun m => ?_⟩
-    rw [coeff_weightedHomogeneousComponent, hc]
-    simp only [Finset.mem_insert, forall_eq_or_imp]
+    simp only [coeff_weightedHomogeneousComponent, hc, Finset.mem_insert, forall_eq_or_imp]
     by_cases h1 : Finsupp.weight (lgraded_wa b) m = μ b <;> simp [h1]
 
 end Formalism.GradedWeylDivisibility

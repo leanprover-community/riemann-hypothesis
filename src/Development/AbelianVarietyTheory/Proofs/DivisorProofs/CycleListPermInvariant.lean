@@ -73,8 +73,7 @@ theorem exists_nat_integral {F : Type} [Field F] [NumberField F] (s : Finset F) 
   rcases Int.natAbs_eq y with e | e
   · rw [e] at h; simpa using h
   · rw [e] at h
-    have := h.neg
-    simpa [neg_mul] using this
+    simpa [neg_mul] using h.neg
 
 end GlobalTheory.SepModel
 

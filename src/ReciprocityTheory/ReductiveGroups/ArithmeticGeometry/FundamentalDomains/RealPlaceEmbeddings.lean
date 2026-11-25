@@ -38,9 +38,8 @@ theorem spanQ_eq_top {ι : Type} [Fintype ι] (g : Basis ι ℤ X.Λ) :
   set S := span ℚ (Set.range fun i => (g i : Fin r → E)) with hS
   have hΛ : ∀ l ∈ X.Λ, l ∈ S := by
     intro l hl
-    have h1 : (⟨l, hl⟩ : X.Λ) = ∑ i, g.repr ⟨l, hl⟩ i • g i := (g.sum_repr ⟨l, hl⟩).symm
     have h2 : l = ∑ i, ((g.repr ⟨l, hl⟩ i : ℤ) : ℚ) • (g i : Fin r → E) := by
-      refine (congrArg Subtype.val h1).trans ?_
+      refine (congrArg Subtype.val ((g.sum_repr ⟨l, hl⟩).symm)).trans ?_
       rw [Submodule.coe_sum]
       refine Finset.sum_congr rfl fun i _ => ?_
       rw [Int.cast_smul_eq_zsmul]

@@ -98,8 +98,7 @@ theorem SameFactorBound.proof (hF : SameFactorFormula.Statement) (hS : SchurSign
   have hcoef : |S.coeff e| ≤
       (∑ nu ∈ (partitionsOf r k).filter (fun nu => ∀ i : Fin r, (i : ℕ) ≠ 0 → nu i ≤ 1),
         |chi nu|) / k := by
-    rw [hSeq, coeff_sum]
-    simp only [coeff_C_mul]
+    simp only [hSeq, coeff_sum, coeff_C_mul]
     calc |∑ nu ∈ partitionsOf r k, chi nu * (Sν nu).coeff e|
         ≤ ∑ nu ∈ partitionsOf r k, |chi nu * (Sν nu).coeff e| := Finset.abs_sum_le_sum_abs _ _
       _ = ∑ nu ∈ partitionsOf r k,

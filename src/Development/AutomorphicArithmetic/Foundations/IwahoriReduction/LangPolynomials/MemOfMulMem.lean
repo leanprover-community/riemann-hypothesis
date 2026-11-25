@@ -371,7 +371,7 @@ private def unitBallSubring (K : Type) [NormedField K] [IsUltrametricDist K] : S
     simpa using ha
 
 theorem UpperTheory.Reformulated.B.Qh18.rootb :
-    ∀ {K : Type} [NormedField K] [IsUltrametricDist K] (l m : ℕ),
+    ∀ {K : Type} [inst : NormedField K] [IsUltrametricDist K] (l m : ℕ),
     Nat.Prime l → l ≠ (2 : ℕ) → ∀ (z : K), z ^ l ^ m = (1 : K) → ‖z - (1 : K)‖ ^ l ^ m ≤ ‖(↑l : K)‖ := by
   intro K _ _ l m hl _ z hz
   have hN : l ^ m ≠ 0 := pow_ne_zero _ hl.ne_zero

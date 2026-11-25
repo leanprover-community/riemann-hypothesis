@@ -65,7 +65,7 @@ theorem isFrame_pull (X : Scheme.{0}) (C : Type) [Category.{0} C] (V : C → X.O
     (hV : ∀ ⦃T T' : C⦄, (T ⟶ T') → V T' ≤ V T) (L : LB X) (u : ∀ (T T' : C) (_ : T ⟶ T'), Γ(X, V T')ˣ)
     (Z : Scheme.{0}) (φ : Z ⟶ X) (C' : Type) [Category.{0} C'] (V' : C' → Z.Opens)
     (hV' : ∀ ⦃T T' : C'⦄, (T ⟶ T') → V' T' ≤ V' T) (H : C' ⥤ C) (hH : ∀ T, V' T ≤ φ ⁻¹ᵁ V (H.obj T)) :
-    IsFrame L V hV u → IsFrame (L.pull φ) V' hV' fun _ T' a ↦ res (hH T') (pullU φ _ (u _ _ (H.map a))) := by
+    IsFrame L V hV u → IsFrame (L.pull φ) V' hV' fun T T' a ↦ res (hH T') (pullU φ _ (u _ _ (H.map a))) := by
   rintro ⟨τ, hgen, hcomp⟩
   have hle : ∀ (T : C') (j : PUnit → L.ι), V' T ⊓ (L.pull φ).U j ≤ φ ⁻¹ᵁ (V (H.obj T) ⊓ L.U (j PUnit.unit)) :=
     fun T j x hx ↦ ⟨hH T hx.1, LB.wchart_le L (fun _ ↦ φ) j PUnit.unit hx.2⟩

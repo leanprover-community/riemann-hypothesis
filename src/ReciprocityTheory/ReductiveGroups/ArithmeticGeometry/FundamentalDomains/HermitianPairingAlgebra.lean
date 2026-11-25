@@ -96,7 +96,7 @@ theorem hermitian_lattice_pairing_duality : PerpQuotientSelfDual (E := E) := by
     have h1 : (1 : E) ∈ (J : Submodule (𝓞 E) E) * ((J⁻¹ : FractionalIdeal (𝓞 E)⁰ E) : Submodule (𝓞 E) E) := by
       rw [← FractionalIdeal.coe_mul, mul_inv_cancel₀ hJ0]
       exact FractionalIdeal.one_mem_one _
-    have key := Submodule.mul_induction_on
+    obtain ⟨c, hc⟩ := Submodule.mul_induction_on
       (C := fun w => ∃ c : E, ∀ y ∈ X.L', IsIntegral ℤ (w * herm X.Gm y x - c * herm X.Gm y ξ)) h1
       (fun t ht u hu => by
         rw [hJc] at ht
@@ -130,7 +130,6 @@ theorem hermitian_lattice_pairing_duality : PerpQuotientSelfDual (E := E) := by
         show IsIntegral ℤ ((w1 + w2) * herm X.Gm y x - (c1 + c2) * herm X.Gm y ξ)
         rw [e]
         exact h3⟩)
-    obtain ⟨c, hc⟩ := key
     exact ⟨c, fun y hy => by simpa using hc y hy⟩
 
 end ReciprocityTheory.ChartRestriction.G.FD

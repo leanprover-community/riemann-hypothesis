@@ -405,7 +405,7 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Qk57.eval₂_scale.{u_1, u_2} :
-    ∀ {A : Type u_1} {S : Type u_2} [CommRing A] [CommRing S] {n : ℕ} (g : A →+* S) (x : Fin n → S)
+    ∀ {A : Type u_1} {S : Type u_2} [inst : CommRing A] [inst_1 : CommRing S] {n : ℕ} (g : A →+* S) (x : Fin n → S)
     (w : S) {m : ℕ} {a : MvPolynomial (Fin n) A},
     a.IsHomogeneous m → MvPolynomial.eval₂ g (fun (l : Fin n) ↦ w * x l) a = w ^ m * MvPolynomial.eval₂ g x a := by
   intro A S _ _ n g x w m a h

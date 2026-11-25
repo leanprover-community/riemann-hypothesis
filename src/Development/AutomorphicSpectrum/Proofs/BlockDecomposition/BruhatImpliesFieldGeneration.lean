@@ -90,7 +90,7 @@ end ComplementBasis
 
 open ComplementBasis in
 theorem UpperTheory.Reformulated.B.ComplementSubspace.main :
-    ∀ {K : Type} [Field K] {n : ℕ} (U : Submodule K (Fin n → K)),
+    ∀ {K : Type} [inst : Field K] {n : ℕ} (U : Submodule K (Fin n → K)),
       ∃ (c : Matrix (Fin (Module.finrank K ↥U)) (Fin n) K) (a : Matrix (Fin n) (Fin n) K),
         (LinearIndependent K c ∧ Submodule.span K (Set.range c) = U) ∧ UpperTheory.Reformulated.B.ComplementSubspace.IsCompl c a := by
   intro K _ n U

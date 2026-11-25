@@ -790,7 +790,7 @@ private theorem contY (hA : A2) (hB : B1) [QuasiCompact (pullback.snd p π)] [Is
     (hq : IsUnit (q : R)) (i n : ℤ) :
     ContP q i n (fun j => sch.obj (pullback p (s j))) (sch.obj (pullback p sL))
       (fun j => sch.map (mY p (Spec.map (c.ι.app j)) (h1 j)))
-      (fun {_ _} f => sch.map (mY p (Spec.map (D.map f)) (h2 f))) := by
+      (fun {j k} f => sch.map (mY p (Spec.map (D.map f)) (h2 f))) := by
   refine transfer (fun j => sch.mapIso (eY p π (Spec.map (u j)) (s j) (hs j)))
     (sch.mapIso (eY p π (Spec.map v) sL hsL)) (fun j => ?_) (fun {j k} f => ?_)
     (contOf hc hu hv hA hB (pullback.snd p π) hq i n)
@@ -809,7 +809,7 @@ private theorem contW (hA : A2) (hB : B1) [QuasiCompact (p2 p ι π)] [IsSeparat
     ContP q i n (fun j => sch.obj (pullback (pullback.snd p (s j) ≫ s j) ι))
       (sch.obj (pullback (pullback.snd p sL ≫ sL) ι))
       (fun j => sch.map (mW p ι (Spec.map (c.ι.app j)) (h1 j)))
-      (fun {_ _} f => sch.map (mW p ι (Spec.map (D.map f)) (h2 f))) := by
+      (fun {j k} f => sch.map (mW p ι (Spec.map (D.map f)) (h2 f))) := by
   refine transfer (fun j => sch.mapIso (eW p ι π (Spec.map (u j)) (s j) (hs j)))
     (sch.mapIso (eW p ι π (Spec.map v) sL hsL)) (fun j => ?_) (fun {j k} f => ?_)
     (contOf hc hu hv hA hB (p2 p ι π) hq i n)

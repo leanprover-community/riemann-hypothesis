@@ -45,11 +45,9 @@ lemma nodal_eq (m : ℕ) :
     (X ^ 2 - 1) * Chebyshev.U ℝ (m:ℤ) = C ((2:ℝ) ^ m) * Lagrange.nodal univ (nd (m + 1)) := by
   have h2 : ((2:ℝ) ^ m) ≠ 0 := by positivity
   have hmon : (X ^ 2 - 1 : ℝ[X]).Monic := by
-    have := monic_X_pow_sub_C (R := ℝ) (1:ℝ) (n := 2) (by norm_num)
-    simpa using this
+    simpa using monic_X_pow_sub_C (R := ℝ) (1:ℝ) (n := 2) (by norm_num)
   have hdX : (X ^ 2 - 1 : ℝ[X]).degree = 2 := by
-    have := degree_X_pow_sub_C (R := ℝ) (n := 2) (by norm_num) (1:ℝ)
-    simpa using this
+    simpa using degree_X_pow_sub_C (R := ℝ) (n := 2) (by norm_num) (1:ℝ)
   have hdL : ((X ^ 2 - 1) * Chebyshev.U ℝ (m:ℤ)).degree = ((m + 2 : ℕ) : WithBot ℕ) := by
     rw [degree_mul, hdX, Chebyshev.degree_U_natCast]
     norm_cast; ring_nf

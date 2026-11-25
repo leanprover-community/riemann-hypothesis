@@ -23,9 +23,8 @@ theorem exists_mul_sub_one_mem_pow {R : Type*} [CommRing R] {𝔭 : Ideal R} (h�
     (ht : t ∉ 𝔭) (k : ℕ) : ∃ u : R, u * t - 1 ∈ 𝔭 ^ k := by
   obtain ⟨y, i, hi, hyi⟩ := h𝔭.exists_inv ht
   refine ⟨(∑ j ∈ Finset.range k, i ^ j) * y, ?_⟩
-  have h1 : (∑ j ∈ Finset.range k, i ^ j) * (i - 1) = i ^ k - 1 := geom_sum_mul i k
   have h2 : (∑ j ∈ Finset.range k, i ^ j) * y * t - 1 = -(i ^ k) := by
-    linear_combination (∑ j ∈ Finset.range k, i ^ j) * hyi - h1
+    linear_combination (∑ j ∈ Finset.range k, i ^ j) * hyi - (geom_sum_mul i k)
   rw [h2]
   exact (𝔭 ^ k).neg_mem (Ideal.pow_mem_pow hi k)
 
@@ -79,8 +78,7 @@ theorem exists_local_basis (M : Submodule R V) (hfg : M.FG)
     hs (Submodule.smul_mem_pointwise_smul v s ⊤ trivial)
   have hs0 : algebraMap R F s ≠ 0 := by
     intro h0
-    have : s = 0 := (IsFractionRing.injective R F) (by rw [h0, map_zero])
-    exact hs𝔭 (this ▸ 𝔭.zero_mem)
+    exact hs𝔭 (((IsFractionRing.injective R F) (by rw [h0, map_zero]) : s = 0) ▸ 𝔭.zero_mem)
   have hsp : ⊤ ≤ Submodule.span F (Set.range (M.subtype ∘ x)) := by
     rw [← hspan, Submodule.span_le]
     intro v hv
@@ -95,8 +93,7 @@ theorem exists_local_basis (M : Submodule R V) (hfg : M.FG)
     rw [h4]
     exact Submodule.smul_mem _ _ h2
   have hcard : finrank (R ⧸ 𝔭) Q = finrank F V := by
-    have := finrank_eq_card_basis (Basis.mk hli hsp)
-    simpa using this.symm
+    simpa using (finrank_eq_card_basis (Basis.mk hli hsp)).symm
   have hliR : LinearIndependent R x := by
     have := hli.restrict_scalars (R := R) (by
       intro a b hab
@@ -130,8 +127,7 @@ theorem card_quot_pow_smul_top (M : Submodule R V) (hfg : M.FG)
       obtain ⟨d, hd, hd'⟩ := hv
       obtain ⟨d', hd2, hd2'⟩ := hw
       refine ⟨d + d', fun i => Ideal.add_mem _ (hd i) (hd2 i), ?_⟩
-      rw [smul_add, hd', hd2']
-      simp only [Pi.add_apply, add_smul, Finset.sum_add_distrib]
+      simp only [smul_add, hd', hd2', Pi.add_apply, add_smul, Finset.sum_add_distrib]
   have hsurj : Function.Surjective ψ := by
     intro y
     obtain ⟨m, rfl⟩ := Submodule.Quotient.mk_surjective _ y

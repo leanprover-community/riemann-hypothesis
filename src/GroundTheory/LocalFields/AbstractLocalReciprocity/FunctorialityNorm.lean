@@ -71,8 +71,7 @@ theorem coe_norm_eq_prod_norm_inf {K K' S : Subgroup G} (hK'K : K' ≤ K)
 
 theorem conj_mem_of_normal {K L : Subgroup G} [hN : (L.subgroupOf K).Normal] {τ k : G} (hτ : τ ∈ K)
     (hk : k ∈ K) (hkL : k ∈ L) : τ * k * τ⁻¹ ∈ L := by
-  have := hN.conj_mem ⟨k, hk⟩ (Subgroup.mem_subgroupOf.2 hkL) ⟨τ, hτ⟩
-  simpa [Subgroup.mem_subgroupOf] using this
+  simpa [Subgroup.mem_subgroupOf] using hN.conj_mem ⟨k, hk⟩ (Subgroup.mem_subgroupOf.2 hkL) ⟨τ, hτ⟩
 
 theorem conj_mem_iff_of_normal {K L : Subgroup G} [(L.subgroupOf K).Normal] {τ k : G} (hτ : τ ∈ K)
     (hk : k ∈ K) : τ * k * τ⁻¹ ∈ L ↔ k ∈ L := by
@@ -125,8 +124,7 @@ theorem norm_mem_range_norm_of_le {K K' L : OpenSubgroup G} (hLK' : L ≤ K') (h
       group)
     b ha
   refine ⟨∏ i, ⟨(τ i)⁻¹ • (b : A), ha i⟩, Subtype.ext ?_⟩
-  rw [map_prod]
-  simp only [SubmonoidClass.coe_finsetProd]
+  simp only [map_prod, SubmonoidClass.coe_finsetProd]
   exact key.symm
 
 noncomputable def tateZeroIncl {K K' L : OpenSubgroup G} (hLK' : L ≤ K') (hK'K : K' ≤ K)

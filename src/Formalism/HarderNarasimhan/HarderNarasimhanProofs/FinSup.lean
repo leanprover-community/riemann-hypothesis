@@ -36,15 +36,12 @@ theorem finite_supremum_slopes : FinSup := by
   let g : Set.Iic L → Submodule ℤ (zl ρ L) := fun N => (zl ρ N.1).comap (zl ρ L).subtype
   have hg : StrictMono g := by
     intro A B hAB
-    have hle : (A : Submodule R V) ≤ B := le_of_lt hAB
-    have hnle : ¬ (B : Submodule R V) ≤ A := not_le_of_gt hAB
-    refine lt_of_le_of_ne (Submodule.comap_mono (hmono _ _ hle)) ?_
+    refine lt_of_le_of_ne (Submodule.comap_mono (hmono _ _ (le_of_lt hAB))) ?_
     intro heq
-    apply hnle
+    apply (not_le_of_gt hAB)
     refine hrev A B B.2 ?_ A.2
     intro x hx
-    have hxL : x ∈ zl ρ L := hmono _ _ B.2 hx
-    have hm : (⟨x, hxL⟩ : zl ρ L) ∈ g B := hx
+    have hm : (⟨x, (hmono _ _ B.2 hx)⟩ : zl ρ L) ∈ g B := hx
     rwa [← heq] at hm
   haveI : WellFoundedGT (Set.Iic L) := hg.wellFoundedGT
   have hcompact : ∀ s : Set (Set.Iic L), ∃ t : Finset (Set.Iic L),

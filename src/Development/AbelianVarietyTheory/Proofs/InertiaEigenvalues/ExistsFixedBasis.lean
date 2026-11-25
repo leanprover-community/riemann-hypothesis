@@ -94,9 +94,8 @@ theorem exists_fixed_basis : ∀ (K : UQ) (B : InvAlg K) (M : Submodule K.O B.A)
 
   haveI : Module.Finite K.O M := Module.Finite.iff_fg.mpr hM.1
   haveI : Module.IsTorsionFree K.O M := ⟨fun r hr x y hxy => by
-    have hr0 : r ≠ 0 := hr.ne_zero
     have h0 : algebraMap K.O K.E r ≠ 0 := by
-      intro h; exact hr0 (IsFractionRing.injective K.O K.E (by rw [h, map_zero]))
+      intro h; exact hr.ne_zero (IsFractionRing.injective K.O K.E (by rw [h, map_zero]))
     change r • x = r • y at hxy
     apply Subtype.ext
     have := congrArg Subtype.val hxy

@@ -241,8 +241,7 @@ theorem spread_out : ∀ (T A : Type) [CommRing T] [CommRing A] [Algebra T A]
     have : e.symm (π q) = Ideal.Quotient.mk (RingHom.ker π) q := by
       rw [AlgEquiv.symm_apply_eq]; rfl
     show sq (e.symm (π q)) = ψ q
-    rw [this]
-    simp only [sq, Ideal.Quotient.liftₐ_apply]
+    simp only [this, sq, Ideal.Quotient.liftₐ_apply]
     rfl
   have huι : IsUnit ((Algebra.ofId T (Localization.AtPrime p)) f) :=
     IsLocalization.map_units (Localization.AtPrime p) (⟨f, hfp⟩ : p.primeCompl)
@@ -452,7 +451,6 @@ theorem etale_adjoin_baseChange_image (R S B : Type) [CommRing R] [CommRing S] [
     have : Function.Injective (LinearMap.rTensor B₀ ι.toLinearMap) :=
       Module.Flat.rTensor_preserves_injective_linearMap _ (fun a b hab => Subtype.ext hab)
     rwa [← hl] at this
-  have hΨ : Function.Injective Ψ := e.symm.injective.comp hΦ
   have htmul : ∀ (s : S') (b : B₀), Ψ (s ⊗ₜ b) = algebraMap S B s * e.symm (1 ⊗ₜ b) := by
     intro s b
     have : ((s : S) ⊗ₜ[A₀] b : S ⊗[A₀] B₀) = algebraMap S (S ⊗[A₀] B₀) s * (1 ⊗ₜ b) := by
@@ -491,7 +489,7 @@ theorem etale_adjoin_baseChange_image (R S B : Type) [CommRing R] [CommRing S] [
     exact hle hy'
   let f : S' ⊗[A₀] B₀ →+* C := Ψ.codRestrict C.toSubring hsub
   have hf : Function.Bijective f := by
-    refine ⟨fun x y hxy => hΨ (congrArg Subtype.val hxy), ?_⟩
+    refine ⟨fun x y hxy => (e.symm.injective.comp hΦ) (congrArg Subtype.val hxy), ?_⟩
     rintro ⟨y, hy⟩
     obtain ⟨x, rfl⟩ := hsurj hy
     exact ⟨x, rfl⟩
@@ -920,8 +918,7 @@ theorem indEtale_localPieces_trans : ∀ (R S T : Type) [CommRing R] [CommRing S
     · intro x hx; exact hVcov j x hx
     · intro m x hx y hy hxy; exact hVloc j m x hx y hy hxy
     · intro x hx
-      have := hVle j₁ m₁ hx
-      exact hmono hj this
+      exact hmono hj (hVle j₁ m₁ hx)
   refine ⟨{W : Subalgebra R T // P W}, inferInstance, ⟨?_⟩, ?_, Subtype.val, fun a b h => h, ?_, ?_⟩
   · rintro ⟨W₁, j₁, m₁, rfl⟩ ⟨W₂, j₂, m₂, rfl⟩
     obtain ⟨j, h₁, h₂⟩ := directed_of (· ≤ ·) j₁ j₂

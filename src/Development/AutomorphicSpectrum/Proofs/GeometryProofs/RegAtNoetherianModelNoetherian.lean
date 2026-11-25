@@ -130,8 +130,7 @@ lemma isNoetherianRing_chart {ξ : Spec (CommRingCat.of Ω) ⟶ X} {o : Type} [C
       obtain ⟨_, hc'⟩ := (hU q.1).1 hq
       exact H q hc'
     · rintro ⟨s, rfl⟩ p hp
-      have hpU : p.1 ∈ U := (hU p.1).2 ⟨p.2, hp⟩
-      exact ⟨_, genMap_germ ξ p U hpU h s⟩
+      exact ⟨_, genMap_germ ξ p U ((hU p.1).2 ⟨p.2, hp⟩) h s⟩
   let g : Γ(X, U) →+* Algebra.adjoin o (Set.range fun j => x j / x c) :=
     (secVal ξ U h).codRestrict _ fun s => (mem _).2 ⟨s, rfl⟩
   have hb : Function.Bijective g := by
@@ -174,8 +173,7 @@ theorem noetherian_of_coordTie (X : Scheme.{0}) (Ω : Type) [Field Ω] (ξ : Spe
     haveI : CompactSpace X := by
       refine ⟨?_⟩
       have e : (Set.univ : Set X) = ⋃ c, ((S c : X.Opens) : Set X) := by
-        have := congrArg (fun V : X.Opens => (V : Set X)) hcov
-        simpa using this.symm
+        simpa using (congrArg (fun V : X.Opens => (V : Set X)) hcov).symm
       rw [e]
       exact isCompact_iUnion fun c => (S c).2.isCompact
     have hcl : closure {genPt ξ} = (Set.univ : Set X) :=

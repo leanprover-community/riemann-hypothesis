@@ -126,8 +126,7 @@ theorem exists_admissible_superset_finite_places : ∀ (F : Type) [Field F] [Num
         exact Ideal.dvd_span_singleton.2 hyw
       rcases (Ideal.prime_of_isPrime w.ne_bot w.isPrime).dvd_or_dvd hdvd with h | h
       · apply hwv
-        have hle : v.asIdeal ≤ w.asIdeal := Ideal.le_of_dvd h
-        exact HeightOneSpectrum.ext (v.isMaximal.eq_of_le w.isPrime.ne_top hle).symm
+        exact HeightOneSpectrum.ext (v.isMaximal.eq_of_le w.isPrime.ne_top (Ideal.le_of_dvd h)).symm
       · exact houtJ w hw c h
 
 end GlobalTheory.QNorm

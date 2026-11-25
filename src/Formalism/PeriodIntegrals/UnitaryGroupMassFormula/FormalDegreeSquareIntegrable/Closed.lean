@@ -286,8 +286,7 @@ theorem stOrthOf : StOrthOf := by
     rw [ContinuousLinearMap.adjoint_inner_right, MeasureTheory.L2.inner_def]
     refine integral_congr_ae ?_
     filter_upwards [hT w v, hT w' v'] with g h1 h2
-    rw [h1, h2]
-    simp [cfL_apply, RCLike.inner_apply]
+    simp [h1, h2, cfL_apply, RCLike.inner_apply]
   have hpiadj : ∀ (h : G) (x y : H), ⟪π h⁻¹ x, y⟫_ℂ = ⟪x, π h y⟫_ℂ := by
     intro h x y
     rw [← inner_pi π hiso h (π h⁻¹ x) y, ← ContinuousLinearMap.mul_apply, ← map_mul, mul_inv_cancel, map_one,
@@ -336,8 +335,7 @@ theorem stOrthOf : StOrthOf := by
     rw [he]
     exact norm_smul_inv_norm hx0
   have hee : ⟪e, e⟫_ℂ = 1 := by
-    rw [inner_self_eq_norm_sq_to_K, hn]
-    simp
+    simp [inner_self_eq_norm_sq_to_K, hn]
   have hne : e ≠ 0 := by
     intro h0
     rw [h0, norm_zero] at hn

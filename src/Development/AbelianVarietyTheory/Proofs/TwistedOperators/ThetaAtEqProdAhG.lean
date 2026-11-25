@@ -72,7 +72,7 @@ private theorem UpperTheory.Reformulated.B.Uc15.exists_nsmul_integral {E : Type}
   rw [smul_smul, zsmul_eq_mul]
 
 theorem UpperTheory.Reformulated.B.Uc15.exists_nsmul_mem :
-    ∀ {E : Type} [Field E] [NumberField E] [NumberField.IsCMField E] {r : ℕ}
+    ∀ {E : Type} [inst : Field E] [inst_1 : NumberField E] [inst_2 : NumberField.IsCMField E] {r : ℕ}
       (X : ReciprocityTheory.ChartRestriction.G.FD.Data E r) (u : Fin r → E), ∃ (N : ℕ), N ≠ (0 : ℕ) ∧ N • u ∈ X.Λ := by
   intro E _ _ _ r X u
   have hu : u ∈ Submodule.span E (X.Λ : Set (Fin r → E)) := by

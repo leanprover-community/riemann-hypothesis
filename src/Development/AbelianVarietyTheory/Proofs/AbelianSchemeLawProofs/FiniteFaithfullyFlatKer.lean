@@ -141,8 +141,7 @@ theorem shear_surjective : Function.Surjective (shear R Λ) := by
     exact ⟨a + b, map_add _ _ _⟩
   | tmul a b =>
     refine ⟨a • (HopfAlgebra.antipode R).rTensor Λ (Coalgebra.comul b), ?_⟩
-    rw [map_smul, key, TensorProduct.smul_tmul']
-    simp
+    simp [map_smul, key, TensorProduct.smul_tmul']
 
 theorem shear_hit (f : Λ →ₗ[R] R) (z : Λ ⊗[R] Λ) :
     shear R Λ ((hit f).baseChange Λ z) = (hit f).baseChange Λ (shear R Λ z) := by

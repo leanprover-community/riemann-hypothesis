@@ -107,8 +107,7 @@ theorem exists_mem_span_pow_sup_pow_succ (F : Type) [Field F] [NumberField F] (w
 
 theorem natCard_quotient_pow_eq (F : Type) [Field F] [NumberField F] (w0 : Ideal (𝓞 F)) (r : ℕ) :
     Nat.card (𝓞 F ⧸ w0 ^ r) = Nat.card (𝓞 F ⧸ w0) ^ r := by
-  have := map_pow Ideal.absNorm w0 r
-  simpa [Ideal.absNorm_apply, Submodule.cardQuot_apply] using this
+  simpa [Ideal.absNorm_apply, Submodule.cardQuot_apply] using map_pow Ideal.absNorm w0 r
 
 theorem exists_span_torsionBySet_maximal (F : Type) [Field F] [NumberField F] (M : Type)
     [AddCommGroup M] [Module (𝓞 F) M] (w0 : Ideal (𝓞 F)) (h : ℕ) (hmax : w0.IsMaximal)
@@ -213,8 +212,7 @@ theorem torsionBySet_pow_free_of_natCard : ∀ (F : Type) [Field F] [NumberField
       intro y hy
       obtain ⟨⟨_, ⟨x, rfl⟩⟩, hx⟩ := hbij.2 ⟨y, hy⟩
       refine ⟨x, x.2, ?_⟩
-      have := congrArg Subtype.val hx
-      simpa [φ_apply] using this
+      simpa [φ_apply] using congrArg Subtype.val hx
     choose e he1 he2 using fun i => hlift (eb i) (hebT i)
     have hker_e : ∀ i, w0 ^ (n + 1) ≤ LinearMap.ker (LinearMap.toSpanSingleton (𝓞 F) M (e i)) := by
       intro i c hc

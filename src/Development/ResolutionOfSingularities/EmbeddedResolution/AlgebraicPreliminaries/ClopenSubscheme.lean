@@ -94,10 +94,9 @@ private theorem exists_iso_subscheme_vanishingIdeal_of_coe_eq {X : Scheme} [IsRe
   have hinj : Function.Injective ⇑C.ι := C.ι.isOpenEmbedding.injective
   have hsurj : Function.Surjective ⇑φ := by
     intro y
-    have hy : ⇑C.ι y ∈ Set.range ⇑(Scheme.IdealSheafData.vanishingIdeal Z).subschemeι := by
+    obtain ⟨x, hx⟩ : ⇑C.ι y ∈ Set.range ⇑(Scheme.IdealSheafData.vanishingIdeal Z).subschemeι := by
       rw [hrange, ← C.range_ι]
       exact Set.mem_range_self y
-    obtain ⟨x, hx⟩ := hy
     refine ⟨x, hinj ?_⟩
     rwa [hφbase x]
   have : IsPreimmersion (φ ≫ C.ι) := by rw [hφ]; infer_instance

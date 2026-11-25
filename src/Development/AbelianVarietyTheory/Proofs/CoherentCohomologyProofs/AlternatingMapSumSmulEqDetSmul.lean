@@ -125,8 +125,7 @@ theorem alternating_map_sum_smul_eq_det_smul {n : ℕ} (ω : M [⋀^Fin n]→ₗ
   have key : ω.compLinearMap φ
       = ((LinearMap.toSpanSingleton A N (ω w)).compAlternatingMap Matrix.detRowAlternating) := by
     refine Module.Basis.ext_alternating (Pi.basisFun A (Fin n)) fun v hv => ?_
-    have hb : Function.Bijective v := Finite.injective_iff_bijective.mp hv
-    let σ : Equiv.Perm (Fin n) := Equiv.ofBijective v hb
+    let σ : Equiv.Perm (Fin n) := Equiv.ofBijective v (Finite.injective_iff_bijective.mp hv)
     have e1 : (fun i => (Pi.basisFun A (Fin n)) (v i)) = (Pi.basisFun A (Fin n)) ∘ σ := rfl
     rw [e1, AlternatingMap.map_perm, AlternatingMap.map_perm]
     congr 1

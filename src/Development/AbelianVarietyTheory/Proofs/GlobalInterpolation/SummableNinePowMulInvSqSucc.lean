@@ -270,8 +270,7 @@ theorem LFunction_eq_of_neg_two_lt (q : ℕ) [NeZero q] (χ : DirichletCharacter
     · intro n _; rfl
   have hz' : ∑ n ∈ Finset.range q, χ ((n + 1 : ℕ) : ZMod q) = 0 := by
     have h1 := Finset.sum_range_succ' (fun n : ℕ => χ (n : ZMod q)) q
-    rw [Finset.sum_range_succ, hz] at h1
-    simp only [CharP.cast_eq_zero, Nat.cast_zero, zero_add] at h1
+    simp only [Finset.sum_range_succ, hz, CharP.cast_eq_zero, Nat.cast_zero, zero_add] at h1
     exact (add_eq_right.mp h1.symm)
   obtain ⟨b, μ₁, μ₂, μ₃, hb, m₁, m₂, m₃, he⟩ := abel_three q hq
     (fun n => χ ((n + 1 : ℕ) : ZMod q)) (fun n => by simp) hz' (fun n => χ.norm_le_one _)

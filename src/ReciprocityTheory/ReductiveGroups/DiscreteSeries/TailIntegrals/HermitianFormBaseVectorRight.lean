@@ -82,8 +82,7 @@ theorem last_basis_apply (p : Fin (2 * (1 + r') + k + 1)) :
   rw [Pi.single_apply]
   congr 1
   apply propext
-  rw [Fin.ext_iff]
-  simp [esI, a0]
+  simp [Fin.ext_iff, esI, a0]
 
 theorem liftVec_apply (z : Fin (2 * r' + k + 1) → ℂ) (p : Fin (2 * (1 + r') + k + 1)) :
     liftVec k 1 r' z p = if h : 1 ≤ p.val ∧ p.val < 2 * r' + k + 1 + 1 then z ⟨p.val - 1, by omega⟩ else 0 :=
@@ -100,8 +99,7 @@ theorem liftVec_out (z : Fin (2 * r' + k + 1) → ℂ) (p : Fin (2 * (1 + r') + 
 
 theorem bvec_lev (j : Fin (2 * r' + k + 1)) : bvec (levPos k 1 r' j) = liftVec k 1 r' (bvec j) := by
   ext p
-  rw [liftVec_apply]
-  simp only [bvec, Pi.single_apply, Fin.ext_iff, levPos]
+  simp only [liftVec_apply, bvec, Pi.single_apply, Fin.ext_iff, levPos]
   split_ifs <;> first | rfl | (exfalso; omega)
 
 theorem hermitian_form_base_vector_right (u : Fin (2 * (1 + r') + k + 1) → ℂ) :

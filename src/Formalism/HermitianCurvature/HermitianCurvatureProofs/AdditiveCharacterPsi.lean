@@ -186,8 +186,7 @@ theorem shape_of_matrix : Formalism.FourierDecayAlt.G.ShapeM := by
       rw [Fin.lt_def, Fin.val_rev]
       simp only [Fin.val_castSucc] at hij
       omega
-    rw [Mcoord, blk_cc, wMat_mul_apply]
-    simp [Matrix.one_apply, hlt.ne', hX _ _ hlt.le]
+    simp [Mcoord, blk_cc, wMat_mul_apply, Matrix.one_apply, hlt.ne', hX _ _ hlt.le]
   · obtain ⟨i', rfl⟩ : ∃ i' : Fin (m + 1), i = i'.castSucc :=
       ⟨⟨i, by omega⟩, Fin.ext rfl⟩
     obtain ⟨j', rfl⟩ : ∃ j' : Fin (m + 1), j = j'.castSucc :=
@@ -197,8 +196,7 @@ theorem shape_of_matrix : Formalism.FourierDecayAlt.G.ShapeM := by
       rw [Fin.val_rev]
       simp only [Fin.val_castSucc] at hij
       omega
-    rw [Mcoord, blk_cc, wMat_mul_apply, heq]
-    simp [hX _ _ le_rfl]
+    simp [Mcoord, blk_cc, wMat_mul_apply, heq, hX _ _ le_rfl]
   · rw [Mcoord, xOf]
     refine Fin.lastCases ?_ (fun k' => ?_) k
     · rw [Fin.succ_last, blk_cl, blk_cl, wMat_mulVec_apply, Fin.rev_rev]

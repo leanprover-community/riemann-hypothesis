@@ -94,8 +94,7 @@ theorem geoInj_comp {S T : Type} [CommRing S] [CommRing T] (x0 : Sp S ⟶ Xo.X) 
   intro k _ χ g hg i j hij
   let g' : ptO Xo (spMap (χ.comp ψ) ≫ x0) ⟶ ptO Xo x0 := Over.homMk (spMap (χ.comp ψ)) rfl
   have hc : spMap (χ.comp ψ) = g.left ≫ h.left := by
-    rw [hg, hh]
-    simp only [spMap, ← Spec.map_comp, ← CommRingCat.ofHom_comp]
+    simp only [hg, hh, spMap, ← Spec.map_comp, ← CommRingCat.ofHom_comp]
   refine hz k (χ.comp ψ) g' rfl (funext fun b => Over.OverMorphism.ext ?_)
   have h1 := congrArg (fun f => f.left) (congrFun hij b)
   change spMap (χ.comp ψ) ≫ (z i b).left = spMap (χ.comp ψ) ≫ (z j b).left
@@ -134,8 +133,7 @@ theorem inZh_of_killedBy (hΛ : Λ.TrivAt l.M) {T : Over Xo.X} (u : Fin n → (T
       have h1 : (l.M : 𝓞 E) ∈ l.Mb * l.Mb.map (H.bar : 𝓞 E →+* 𝓞 E) := by
         rw [l.prod]; exact Ideal.mem_span_singleton_self _
       exact (Ideal.mul_le_inf h1).1
-    have hcop : IsCoprime (k : 𝓞 E) ((l.M : 𝓞 E) ^ e) := (Nat.Coprime.cast hk).pow_right
-    obtain ⟨p, q, hpq⟩ := hcop
+    obtain ⟨p, q, hpq⟩ : IsCoprime (k : 𝓞 E) ((l.M : 𝓞 E) ^ e) := (Nat.Coprime.cast hk).pow_right
     have hsplit : cm i j = N * (m * p) + (cm i j * q) * (l.M : 𝓞 E) ^ e := by
       linear_combination (-cm i j) * hpq + p * hcmk
     have := Xo.univ.t.act.hom (m * p)

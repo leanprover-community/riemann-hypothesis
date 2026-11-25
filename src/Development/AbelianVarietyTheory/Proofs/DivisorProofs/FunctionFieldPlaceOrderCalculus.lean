@@ -151,8 +151,7 @@ theorem det_adj_int (v : Place k F) (n : ℕ) (u : Matrix (Fin n) (Fin n) F)
   · intro i j
     have e : u.adjugate i j = ((M.adjugate i j : v.O) : F) := by
       rw [← hM]
-      have := congrFun (congrFun (RingHom.map_adjugate v.O.subtype M) i) j
-      exact this.symm
+      exact (congrFun (congrFun (RingHom.map_adjugate v.O.subtype M) i) j).symm
     rw [e]
     exact (Valuation.mem_valuationSubring_iff _ _).1 (M.adjugate i j).2
 

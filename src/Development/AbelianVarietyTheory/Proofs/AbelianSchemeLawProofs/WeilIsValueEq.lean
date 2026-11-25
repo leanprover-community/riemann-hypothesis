@@ -138,7 +138,7 @@ theorem Rep.zpow (h : Rep L D f) (n : ℤ) : Rep L (n • D) (fun Z r z J => f Z
   | negSucc n => exact (h.pow (n + 1)).inv.congr (negSucc_zsmul _ _).symm (fun _ _ _ _ => (zpow_negSucc _ _).symm)
 
 theorem Rep.theta {k : ℤ} {T : Over S} (θ : ThetaGrp A L k T) (s : Y ⟶ T) (a : Y ⟶ A) :
-    Rep L (k • pt a - k • pt ((s ≫ θ.pt) * a)) (fun _ r z J => thetaVal θ (r ≫ s) (r ≫ a) z J) := by
+    Rep L (k • pt a - k • pt ((s ≫ θ.pt) * a)) (fun Z r z J => thetaVal θ (r ≫ s) (r ≫ a) z J) := by
   refine ⟨Fin 2, inferInstance, _, _, LB.pullGen L (K := Fin 2) ![(snd T A).left, (translPt A θ.pt).left] ![k, -k] θ.φ
     (lift s a).left, DVR.pullGen_isGen _ _ _ _ θ.isGen _, ?_, fun Z r z J hJ => ?_⟩
   · have := congrArg Multiplicative.toAdd
@@ -153,7 +153,7 @@ def cubeVal (t : LB.Gen (Theta A L)) {Z : Over S} (z : Z.left) (J : (Z.left ⟶ 
 
 theorem Rep.cube [IsCommMonObj A] {t : LB.Gen (Theta A L)} (ht : t.IsGen) (a b c : Y ⟶ A) :
     Rep L (pt (a * b * c) - pt (a * b) - pt (a * c) - pt (b * c) + pt a + pt b + pt c - pt (1 : Y ⟶ A))
-      (fun _ r z J => cubeVal t z J (r ≫ a) (r ≫ b) (r ≫ c)) := by
+      (fun Z r z J => cubeVal t z J (r ≫ a) (r ≫ b) (r ≫ c)) := by
   refine ⟨thK, inferInstance, _, _, LB.pullGen L (thφ A (x3 A)) thε t (lift a (lift b c)).left,
     DVR.pullGen_isGen _ _ _ _ ht _, ?_, fun Z r z J hJ => ?_⟩
   · have := congrArg Multiplicative.toAdd
@@ -165,7 +165,7 @@ theorem Rep.cube [IsCommMonObj A] {t : LB.Gen (Theta A L)} (ht : t.IsGen) (a b c
 
 theorem Rep.cubeProd [IsCommMonObj A] {t : LB.Gen (Theta A L)} (ht : t.IsGen) (x c : Y ⟶ A) (n : ℕ) :
     Rep L (pt (x ^ n * c) - pt c - pt (x ^ n) + pt (1 : Y ⟶ A) + n • (pt x + pt c - pt (x * c) - pt (1 : Y ⟶ A)))
-      (fun _ r z J => ∏ i ∈ Finset.range n, cubeVal t z J ((r ≫ x) ^ i) (r ≫ x) (r ≫ c)) := by
+      (fun Z r z J => ∏ i ∈ Finset.range n, cubeVal t z J ((r ≫ x) ^ i) (r ≫ x) (r ≫ c)) := by
   induction n with
   | zero => exact Rep.one.congr (by simp) (fun _ _ _ _ => by simp)
   | succ n ih =>

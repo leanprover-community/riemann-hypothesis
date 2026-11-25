@@ -185,14 +185,12 @@ theorem bdInt_inv {a b c d : ℝ} {p : ℂ} (h1 : a < p.re) (h2 : p.re < b) (h3 
   have hc2 := hc {s | -(s - p) ∈ slitPlane} fun s hs => neg_ne_zero.1 (slitPlane_ne_zero hs)
   have hd1 : ∀ s ∈ {s | s - p ∈ slitPlane},
       HasDerivAt (fun s => k * log (s - p)) (k / (s - p)) s := fun s hs => by
-    have := (((hasDerivAt_id s).sub_const p).clog hs).const_mul k
-    refine this.congr_deriv ?_
+    refine ((((hasDerivAt_id s).sub_const p).clog hs).const_mul k).congr_deriv ?_
     simp only [id]
     ring
   have hd2 : ∀ s ∈ {s | -(s - p) ∈ slitPlane},
       HasDerivAt (fun s => k * log (-(s - p))) (k / (s - p)) s := fun s hs => by
-    have := (((hasDerivAt_id s).sub_const p).neg.clog hs).const_mul k
-    refine this.congr_deriv ?_
+    refine ((((hasDerivAt_id s).sub_const p).neg.clog hs).const_mul k).congr_deriv ?_
     simp only [id, Pi.neg_apply, neg_div_neg_eq]
     ring
   simp only [bdInt]

@@ -405,8 +405,7 @@ theorem real_indep {ι : Type} {v : ι → Λ} (h : LinearIndependent ℤ v) :
     intro z hz
     rw [← bR.sum_repr z] at hz
 
-    rw [map_sum] at hz
-    simp only [map_smul, bR, Algebra.TensorProduct.basis_apply, hL, one_smul] at hz
+    simp only [map_sum, map_smul, bR, Algebra.TensorProduct.basis_apply, hL, one_smul] at hz
     have h0 := Fintype.linearIndependent_iff.mp hli _ hz
     rw [← bR.sum_repr z]
     simp [bR, h0]

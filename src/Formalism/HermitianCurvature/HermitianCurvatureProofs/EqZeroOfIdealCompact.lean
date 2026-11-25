@@ -272,8 +272,7 @@ theorem rootsSeparated : Formalism.FourierDecayAlt.A6.RootsSeparated := by
     intro h
     simp only [Set.mem_iUnion, Set.mem_image] at h
     obtain ⟨ζ, hζ, d, hd, h⟩ := h
-    have h1 : (1 - ζ) ^ s = 0 := (hQu d hd).mul_left_eq_zero.1 h
-    have h2 : 1 - ζ = 0 := IsNilpotent.eq_zero ⟨s, h1⟩
+    have h2 : 1 - ζ = 0 := IsNilpotent.eq_zero ⟨s, ((hQu d hd).mul_left_eq_zero.1 h)⟩
     exact hζ.2 (sub_eq_zero.1 h2).symm
   refine ⟨(fun w => w ^ s) ⁻¹'
     (⋃ ζ ∈ {ζ : K | ζ ^ s = 1 ∧ ζ ≠ 1}, (fun d => (1 - ζ) ^ s * d) '' Q)ᶜ, ?_, ?_⟩
@@ -289,8 +288,7 @@ theorem rootsSeparated : Formalism.FourierDecayAlt.A6.RootsSeparated := by
     · rw [← Units.val_pow_eq_pow_val, mul_pow, inv_pow, ← hzz, mul_inv_cancel, Units.val_one]
     · intro h
       apply hne
-      have h' : z' * z⁻¹ = 1 := Units.ext (by rw [h, Units.val_one])
-      exact (mul_inv_eq_one.1 h').symm
+      exact (mul_inv_eq_one.1 (Units.ext (by rw [h, Units.val_one]))).symm
     · rw [← mul_pow, sub_mul, one_mul, ← Units.val_mul, inv_mul_cancel_right]
 
 theorem smallModules : Formalism.FourierDecayAlt.A6.SmallModules := by

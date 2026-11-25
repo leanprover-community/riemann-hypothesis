@@ -745,19 +745,19 @@ section -- clump:auto
     fun (F : Type) [Field F] ↦ IsDedekindDomain.HeightOneSpectrum (NumberField.RingOfIntegers F)
 
 @[reducible] noncomputable def UpperTheory.Reformulated.B.Gr29.GLw :
-    {L : Type} → [Field L] → [NumberField L] → ℕ → UpperTheory.Reformulated.B.Gr29.Plc L → Type :=
+    {L : Type} → [inst : Field L] → [NumberField L] → ℕ → UpperTheory.Reformulated.B.Gr29.Plc L → Type :=
     fun {L : Type} [Field L] [NumberField L] (n : ℕ) (w : UpperTheory.Reformulated.B.Gr29.Plc L) ↦
       GL (Fin n) (IsDedekindDomain.HeightOneSpectrum.adicCompletion L w)
 
 @[reducible] noncomputable def UpperTheory.Reformulated.B.Gr29.GV :
-    {L : Type} → [Field L] → [NumberField L] → ℕ → {V : Type} → (V → UpperTheory.Reformulated.B.Gr29.Plc L) → Type :=
+    {L : Type} → [inst : Field L] → [NumberField L] → ℕ → {V : Type} → (V → UpperTheory.Reformulated.B.Gr29.Plc L) → Type :=
     fun {L : Type} [Field L] [NumberField L] (n : ℕ) {V : Type} (S : V → UpperTheory.Reformulated.B.Gr29.Plc L) ↦
       (v : V) → UpperTheory.Reformulated.B.Gr29.GLw n (S v)
 
 noncomputable def UpperTheory.Reformulated.B.Gr29.atJ :
     {L : Type} →
-      [Field L] →
-        [NumberField L] →
+      [inst : Field L] →
+        [inst_1 : NumberField L] →
           (n : ℕ) →
             {q : ℕ} →
               (w : Fin q → UpperTheory.Reformulated.B.Gr29.Plc L) → (j : Fin q) → UpperTheory.Reformulated.B.Gr29.GLw n (w j) →* UpperTheory.Reformulated.B.Gr29.GV n w :=
@@ -800,8 +800,8 @@ private theorem UpperTheory.Reformulated.B.Gr29.mem_fixed_pi_iff {q : ℕ} {G : 
     exact h k hk
 
 theorem UpperTheory.Reformulated.B.Gr29.mem_pi :
-    ∀ {L : Type} [Field L] [NumberField L] {n q : ℕ} {w : Fin q → UpperTheory.Reformulated.B.Gr29.Plc L} {A M : Type}
-      [CommRing A] [AddCommGroup M] [_root_.Module A M]
+    ∀ {L : Type} [inst : Field L] [inst_1 : NumberField L] {n q : ℕ} {w : Fin q → UpperTheory.Reformulated.B.Gr29.Plc L} {A M : Type}
+      [inst_2 : CommRing A] [inst_3 : AddCommGroup M] [inst_4 : _root_.Module A M]
       (ρ : Representation A (UpperTheory.Reformulated.B.Gr29.GV n w) M) (H : (j : Fin q) → Subgroup (UpperTheory.Reformulated.B.Gr29.GLw n (w j)))
       (m : M),
       m ∈ UpperTheory.Reformulated.B.SubgroupFixedSubmodule.fixd ρ (Subgroup.pi Set.univ H) ↔

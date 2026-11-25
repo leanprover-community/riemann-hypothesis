@@ -36,8 +36,7 @@ theorem countable_subgroupOf {Γ H : Subgroup G} [Countable Γ] :
     (f := fun x : (Γ ⊓ H).subgroupOf H =>
       (⟨((x : H) : G), (Subgroup.mem_inf.1 (Subgroup.mem_subgroupOf.1 x.2)).1⟩ : Γ)) ?_
   intro a b hab
-  have e : ((a : H) : G) = ((b : H) : G) := congrArg (fun z : Γ => (z : G)) hab
-  exact Subtype.ext (Subtype.ext e)
+  exact Subtype.ext (Subtype.ext (congrArg (fun z : Γ => (z : G)) hab))
 
 variable [MulAction G Y]
 
@@ -88,8 +87,7 @@ theorem sum_rep_eq {Γ H : Subgroup G} (y0 : Y) (hH : ∀ k : G, k ∈ H ↔ k �
           _ = x' := repO_smul Γ y0 x'
       have hxx : x = x' := Subtype.ext hx
       subst hxx
-      have e : ((δ : H) : G) = ((δ' : H) : G) := mul_left_cancel he'
-      exact Prod.ext rfl (Subtype.ext (Subtype.ext e))
+      exact Prod.ext rfl (Subtype.ext (Subtype.ext (mul_left_cancel he')))
     · intro γ
       have hd : (repO Γ y0 ⟨(γ : G) • y0, γ, γ.2, rfl⟩)⁻¹ * γ ∈ H := by
         rw [hH, mul_smul, inv_smul_eq_iff, repO_smul]

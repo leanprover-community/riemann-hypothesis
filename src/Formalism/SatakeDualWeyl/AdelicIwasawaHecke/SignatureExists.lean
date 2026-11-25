@@ -104,9 +104,8 @@ theorem signature_exists : Formalism.UG.SigExists := by
     refine IsUnit.mul (Matrix.isUnit_det_of_left_inverse hU) ?_
     rw [isUnit_iff_ne_zero, Finset.prod_ne_zero_iff]
     intro i _
-    have h1 : hH.eigenvalues i ≠ 0 := eig_ne_zero hH hdet i
     simp only [scal, ne_eq, Complex.ofReal_eq_zero, inv_eq_zero]
-    exact (Real.sqrt_pos.mpr (abs_pos.mpr h1)).ne'
+    exact (Real.sqrt_pos.mpr (abs_pos.mpr (eig_ne_zero hH hdet i))).ne'
   refine ⟨_, _, e, Matrix.nonsingInvUnit _ hdetQ, ?_⟩
   change Formalism.UG.cT (starRingEnd ℂ) (reindex e e Q) * reindex e e J * reindex e e Q = _
   rw [sigex_cT_conj_eq]

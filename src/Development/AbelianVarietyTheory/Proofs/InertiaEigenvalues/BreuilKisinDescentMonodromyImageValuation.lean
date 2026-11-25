@@ -90,7 +90,7 @@ theorem aeval_mem {O V : Type} [CommRing O] [AddCommGroup V] [Module O V] (T : M
     rw [Polynomial.aeval_monomial, Module.End.mul_apply, Module.algebraMap_end_apply]
     exact Z.smul_mem a (hpow n)
 
-theorem coeff_zero_smul_mem_map : ∀ {O V : Type} [CommRing O] [AddCommGroup V] [Module O V] (T : Module.End O V) (Rp : Polynomial O), (Polynomial.aeval T : Polynomial O → Module.End O V) Rp * T = (0 : Module.End O V) → ∀ (Z : Submodule O V), (∀ z ∈ Z, (T : V → V) z ∈ Z) → ∀ w ∈ Z, w ∈ LinearMap.range T → _root_.AddMonoidAlgebra.coeff (M := ℕ) Rp (0 : ℕ) • w ∈ Submodule.map T Z := by
+theorem coeff_zero_smul_mem_map : ∀ {O V : Type} [inst : CommRing O] [inst_1 : AddCommGroup V] [inst_2 : Module O V] (T : Module.End O V) (Rp : Polynomial O), (Polynomial.aeval T : Polynomial O → Module.End O V) Rp * T = (0 : Module.End O V) → ∀ (Z : Submodule O V), (∀ z ∈ Z, (T : V → V) z ∈ Z) → ∀ w ∈ Z, w ∈ LinearMap.range T → _root_.AddMonoidAlgebra.coeff (M := ℕ) Rp (0 : ℕ) • w ∈ Submodule.map T Z := by
   intro O V _ _ _ T Rp hR Z hZ w hw hwr
   obtain ⟨v, rfl⟩ := hwr
   have key : (Polynomial.aeval T Rp) (T v) =

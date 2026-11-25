@@ -228,8 +228,8 @@ theorem exists_signs_iff_even (K L : Type) [Field K] [NumberField K] [Field L] [
 theorem exists_signs_of_even (K L : Type) [Field K] [NumberField K] [Field L] [NumberField L]
     [Algebra K L] [Algebra.IsQuadraticExtension K L] (hK : IsTotallyReal K) (hL : IsTotallyComplex L)
     (S : Finset (InfinitePlace K)) (hS : Even S.card) :
-    ∃ h : Kˣ, (∀ w (_ : w ∈ S), InfinitePlace.embedding_of_isReal (hK.isReal w) (h : K) < 0) ∧
-      (∀ w (_ : w ∉ S), 0 < InfinitePlace.embedding_of_isReal (hK.isReal w) (h : K)) ∧
+    ∃ h : Kˣ, (∀ w (hw : w ∈ S), InfinitePlace.embedding_of_isReal (hK.isReal w) (h : K) < 0) ∧
+      (∀ w (hw : w ∉ S), 0 < InfinitePlace.embedding_of_isReal (hK.isReal w) (h : K)) ∧
       ∀ v : HeightOneSpectrum (𝓞 K), finDiag K h v ∈ normGroup K L (v.adicCompletion K) := by
   classical
   let S' : Finset {w : InfinitePlace K // w.IsReal} := S.subtype _

@@ -108,8 +108,7 @@ theorem span_matrix_comb {Ω : Type} [Field Ω] {E : Type} [AddCommGroup E] [Mod
         _ = ∑ a, (P * P.adjugate) a b • β a := by
             simp only [hm]
         _ = P.det • β b := by
-            rw [Matrix.mul_adjugate]
-            simp [Matrix.one_apply]
+            simp [Matrix.mul_adjugate, Matrix.one_apply]
     have key : β b = ∑ k, (P.det⁻¹ * P.adjugate k b) • ∑ a, P a k • β a := by
       simp only [← smul_smul, ← Finset.smul_sum]
       rw [hdet, smul_smul, inv_mul_cancel₀ hd, one_smul]

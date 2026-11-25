@@ -561,10 +561,10 @@ section -- clump:auto
 
 noncomputable def UpperTheory.Reformulated.B.IdempotentMatrixMonoidHom.prM :
     {R A : Type} →
-      [CommRing R] →
-        [CommRing A] →
+      [inst : CommRing R] →
+        [inst_1 : CommRing A] →
           [Algebra R A] →
-            (e : R) → e * e = e → (ι : Type) → [Fintype ι] → [DecidableEq ι] → Matrix ι ι A →* Matrix ι ι A :=
+            (e : R) → e * e = e → (ι : Type) → [inst : Fintype ι] → [inst_3 : DecidableEq ι] → Matrix ι ι A →* Matrix ι ι A :=
   fun {R A} _ _ _ e he ι _ _ =>
     { toFun := fun M => e • M + (1 - e) • (1 : Matrix ι ι A)
       map_one' := by rw [← add_smul, add_sub_cancel, one_smul]

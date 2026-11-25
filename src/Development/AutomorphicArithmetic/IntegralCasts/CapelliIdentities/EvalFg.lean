@@ -48,7 +48,7 @@ public import Mathlib.RingTheory.Finiteness.Subalgebra
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Qn15.eval_fg :
-    ∀ {R : Type} [CommRing R] [Algebra R ℂ] {σ : Type} {M₀ : Submodule R ℂ},
+    ∀ {R : Type} [inst : CommRing R] [inst_1 : Algebra R ℂ] {σ : Type} {M₀ : Submodule R ℂ},
     M₀.FG →
       ∀ (P : MvPolynomial σ ℂ),
         ∃ (M : Submodule R ℂ),

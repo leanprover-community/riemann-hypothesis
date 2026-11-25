@@ -101,8 +101,7 @@ theorem bicomm_mem_span {ι G : Type} [Fintype ι] [DecidableEq ι] [Group G] [F
     | smul c x _ hx => rw [Matrix.mul_smul]; exact B.smul_mem c hx
   obtain ⟨q, hq⟩ := LinearMap.exists_extend (LinearMap.id : B →ₗ[ℂ] B)
   have hq' : ∀ X ∈ B, (q X : Matrix ι ι ℂ) = X := fun X hX => by
-    have := LinearMap.congr_fun hq ⟨X, hX⟩
-    exact congrArg Subtype.val this
+    exact congrArg Subtype.val (LinearMap.congr_fun hq ⟨X, hX⟩)
   let p : Matrix ι ι ℂ →ₗ[ℂ] Matrix ι ι ℂ :=
     ∑ g : G, LinearMap.mulLeft ℂ (ρ g⁻¹) ∘ₗ B.subtype ∘ₗ q ∘ₗ LinearMap.mulLeft ℂ (ρ g)
   have hp : ∀ X, p X = ∑ g : G, ρ g⁻¹ * (q (ρ g * X) : Matrix ι ι ℂ) := fun X => by

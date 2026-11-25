@@ -262,8 +262,7 @@ theorem actFormWedge : FactX2wedge := by
     apply Finset.sum_congr rfl
     intro b _
     ring
-  rw [hR]
-  simp only [lap_row]
+  simp only [hR, lap_row]
   simp only [Finset.sum_mul]
   rw [Finset.sum_comm' (t' := Finset.univ) (s' := fun a => Finset.univ.filter (fun I => a ∈ I))
     (by intro I a; simp)]

@@ -70,8 +70,7 @@ theorem exists_linearIndependent_pow_apply_of_isAlgClosed (f : Module.End K W)
     simp only [Matrix.mulVec, dotProduct, Matrix.vandermonde_apply, Pi.zero_apply]
     rw [← hsum j]
     exact Finset.sum_congr rfl fun k _ => mul_comm _ _
-  have hdet : (Matrix.vandermonde μ).det ≠ 0 := Matrix.det_vandermonde_ne_zero_iff.2 hμ
-  exact congrFun (Matrix.eq_zero_of_mulVec_eq_zero hdet hV)
+  exact congrFun (Matrix.eq_zero_of_mulVec_eq_zero (Matrix.det_vandermonde_ne_zero_iff.2 hμ) hV)
 
 end AlgClosed
 

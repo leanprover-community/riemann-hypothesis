@@ -396,7 +396,7 @@ end UpperTheory.ConvolutionTheory.R2.G.similitudePositivity
 
 open UpperTheory.ConvolutionTheory.R2.G.similitudePositivity in
 theorem UpperTheory.ConvolutionTheory.R2.G.nuPos :
-    ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] [IsTotallyReal F] [_root_.NumberField.IsTotallyComplex E] (_ : Dat F E) (h : GL (Fin 2) (A E)), ∃ s : (A F)ˣ, ((nu F h * (s ^ 4)⁻¹ : (A F)ˣ) : A F).1 = 1 := by
+    ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] [IsTotallyReal F] [_root_.NumberField.IsTotallyComplex E] (D : Dat F E) (h : GL (Fin 2) (A E)), ∃ s : (A F)ˣ, ((nu F h * (s ^ 4)⁻¹ : (A F)ˣ) : A F).1 = 1 := by
   intro F E _ _ _ _ _ _ _ D h
   have hpos := nu_pos D h
   let r : TR.Rinf F := TR.pInf F (nu F h : A F)

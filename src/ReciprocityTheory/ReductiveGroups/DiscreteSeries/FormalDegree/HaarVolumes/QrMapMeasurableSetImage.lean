@@ -156,8 +156,7 @@ theorem qrMap_injOn : Set.InjOn (qrMap (N := N)) (Set.univ ×ˢ triPos N) := by
       ← Matrix.mul_assoc, qrA_unitary, Matrix.one_mul]
   have htt : t = t' := qrA_tri_unique ht ht' rfl rfl e1 e2
   subst htt
-  have hk : toM k = toM k' := qrA_upMat_cancel (qrA_upMat_det_ne t ht) h'
-  have hk' : k = k' := Subtype.ext (Units.ext hk)
+  have hk' : k = k' := Subtype.ext (Units.ext (qrA_upMat_cancel (qrA_upMat_det_ne t ht) h'))
   rw [hk']
 
 private theorem qrMap_measurableSet_image_lemma (N : ℕ) : PolishSpace (UNgrp N) := by

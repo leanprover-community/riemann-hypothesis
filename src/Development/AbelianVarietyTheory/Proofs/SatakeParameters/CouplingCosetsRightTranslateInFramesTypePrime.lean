@@ -189,7 +189,7 @@ theorem mem_prinCong_one_of_redGL {E : Type} [Field E] [NumberField E] [StarRing
     simp [div_eq_inv_mul]
   rwa [e]
 
-theorem cosetOf_frames_vG : UnderTie (fun {D _ _ _ _ _ _ _ _ t u μ St} A _ _ =>
+theorem cosetOf_frames_vG : UnderTie (fun {D L hT Gi Gl Kc Y cX ex t u μ St} A dtU a =>
   ∀ (hi : t.m2 + 1 ≤ D.R.m) (β : (St (t.m2 + 1) hi).Ch) (p p₁ : ChPt (R := D.R) t.sel (t.tup μ) (t.word u) (t.m2 + 1))
     (P : SB t μ), P.1 ∈ t.Pr.vGs → ∀ (Gg k : GLint t.X.E (D.R.N (t.m2 + 1)) P.1) z, A.cplRel β P Gg.1 z →
     redGL _ P.1 k = redGL _ P.1 Gg → frsF t.sel (t.tup μ) p₁ P = frsF t.sel (t.tup μ) p P * k.1 →

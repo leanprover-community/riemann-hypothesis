@@ -82,7 +82,7 @@ theorem H_zero_subsingleton {R : Type} [CommRing R] {C : Type 1} [Category.{0} C
   rfl
 
 theorem gr_zero : ∀ {R : Type} [CommRing R] {C : Type 1} [Category.{0} C] {Φ : PDF R C} {Fil : ℤ → IdF Φ.A}
-    (_ : IsFil Φ Fil) (E : Frame Φ 0) (σ : ∀ T : C, E.D ⟶ T) (r : ℤ) (j : ℕ),
+    (hF : IsFil Φ Fil) (E : Frame Φ 0) (σ : ∀ T : C, E.D ⟶ T) (r : ℤ) (j : ℕ),
     (r < j → Subsingleton (CH.H (gr Fil r) j)) ∧
     ∀ q : ℕ, r = j + q →
       (∀ c : CH.H (gr Fil r) j, ∃ x : Idx j 0 → Φ.A.obj E.D, (∀ I, x I ∈ (Fil q).S E.D) ∧

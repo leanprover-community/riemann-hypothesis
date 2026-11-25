@@ -22,8 +22,7 @@ theorem IrreducibleGermRegularDimGe.proof (hS : FiniteProjectionSheetsDense.Stat
   rw [not_le] at hlt
   obtain ⟨y, hyV, hyX, O₁, V₁, g₁, hO₁, hV₁, hyV₁, hg₁, hleft₁, hXV₁⟩ :=
     mem_closure_iff.1 (hsub hx) V hV hxV
-  have hy : y ∈ g₁ '' O₁ := hXV₁ ▸ ⟨hyX, hyV₁⟩
-  obtain ⟨t₀, ht₀, rfl⟩ := hy
+  obtain ⟨t₀, ht₀, rfl⟩ : y ∈ g₁ '' O₁ := hXV₁ ▸ ⟨hyX, hyV₁⟩
   set U : Set (Fin d → ℂ) := O₁ ∩ g₁ ⁻¹' V with hUdef
   have hU : IsOpen U := hg₁.continuousOn.isOpen_inter_preimage hO₁ hV
   have hUne : U.Nonempty := ⟨t₀, ht₀, hyV⟩

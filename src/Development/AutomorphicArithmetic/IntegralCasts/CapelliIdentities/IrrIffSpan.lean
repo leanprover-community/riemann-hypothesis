@@ -83,8 +83,8 @@ private theorem UpperTheory.Reformulated.B.Qe4.subalgebra_eq_top {K V : Type*} [
   exact r.2
 
 theorem UpperTheory.Reformulated.B.Qe4.irrIffSpan :
-    ∀ {K G ι : Type} [Field K] [IsAlgClosed K] [Group G]
-    [Fintype ι] [DecidableEq ι] (ρ : G →* Matrix ι ι K),
+    ∀ {K G ι : Type} [inst : Field K] [IsAlgClosed K] [inst_2 : Group G]
+    [inst_3 : Fintype ι] [inst_4 : DecidableEq ι] (ρ : G →* Matrix ι ι K),
     (∀ (N : Submodule K (ι → K)), (∀ (g : G), ∀ v ∈ N, ((ρ : G → Matrix ι ι K) g).mulVec v ∈ N) → N = ⊥ ∨ N = ⊤) ↔
       Submodule.span K (Set.range (⇑ρ : G → Matrix ι ι K)) = ⊤ := by
   intro K G ι _ _ _ _ _ ρ
@@ -108,9 +108,8 @@ theorem UpperTheory.Reformulated.B.Qe4.irrIffSpan :
       exact hN (e (ρ g)) ⟨ρ g, Submodule.subset_span ⟨g, rfl⟩, rfl⟩ v hv
     rw [eq_top_iff]
     intro M _
-    have hM : e M ∈ A.map (e : Matrix ι ι K →ₐ[K] Module.End K (ι → K)) := by
+    obtain ⟨x, hx, hxe⟩ : e M ∈ A.map (e : Matrix ι ι K →ₐ[K] Module.End K (ι → K)) := by
       rw [hS]; exact Algebra.mem_top
-    obtain ⟨x, hx, hxe⟩ := hM
     have : x = M := e.injective hxe
     rw [← this]
     exact hx

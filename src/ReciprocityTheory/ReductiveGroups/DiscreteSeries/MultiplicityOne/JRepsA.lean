@@ -272,8 +272,7 @@ theorem embWb_one : embWb k r (1 : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ) = 1 :
 
 theorem Hpk_mulVec_wbE (u : Fin (k + 1) → ℂ) : Hpk k r *ᵥ wbE k r u = wbE k r (Hb k *ᵥ u) := by
   funext i
-  rw [Hpk_mono]
-  simp only [mulVec, dotProduct, mono, of_apply, ite_mul, zero_mul]
+  simp only [Hpk_mono, mulVec, dotProduct, mono, of_apply, ite_mul, zero_mul]
   simp only [eq_sg_iff (i := i), Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   by_cases hi : r ≤ i.val ∧ i.val ≤ r + k
   · rw [sg_val_in hi]
@@ -286,8 +285,7 @@ theorem Hpk_mulVec_wbE (u : Fin (k + 1) → ℂ) : Hpk k r *ᵥ wbE k r u = wbE 
 
 theorem herm_wbE (u v : Fin (k + 1) → ℂ) : herm (Hpk k r) (wbE k r u) (wbE k r v) = herm (Hb k) u v := by
   unfold herm
-  rw [Hpk_mulVec_wbE]
-  simp only [dotProduct, Pi.star_apply]
+  simp only [Hpk_mulVec_wbE, dotProduct, Pi.star_apply]
   rw [sum_wb (f := fun l => star (wbE k r v l) * wbE k r (Hb k *ᵥ u) l) (by intro l hl; simp [wbE, hl])]
   simp only [wbE_wI]
 

@@ -30,11 +30,9 @@ theorem omegaK_lin {d : ℕ} (hd : 0 < d) {t n : ℤ} (h : (t : ℂ) * omegaK d 
     push_cast
     linear_combination h2
   have him : (t : ℝ) * Real.sqrt d = 0 := by
-    have := congrArg Complex.im h3
-    simpa using this
+    simpa using congrArg Complex.im h3
   have hre : (t : ℝ) + 2 * n = 0 := by
-    have := congrArg Complex.re h3
-    simpa using this
+    simpa using congrArg Complex.re h3
   have ht : (t : ℝ) = 0 := by
     rcases mul_eq_zero.mp him with h | h
     · exact h

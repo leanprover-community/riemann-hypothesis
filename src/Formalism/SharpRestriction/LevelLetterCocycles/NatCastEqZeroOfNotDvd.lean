@@ -174,8 +174,7 @@ theorem val_zpow_sub_one {p : ℕ} (hp : p.Prime) (hp2 : p ≠ 2) (hv : v (p : K
     have hvx : v x = 0 := v_x_zero v (lt_of_lt_of_le withTop_zero_lt_one hy)
     have hx0 : x ≠ 0 := by
       rintro rfl
-      rw [AddValuation.map_zero] at hvx
-      simp at hvx
+      simp [AddValuation.map_zero] at hvx
     have hxn : x ^ n ≠ 0 := pow_ne_zero n hx0
     have hvxn : v (x ^ n) = 0 := by
       rw [AddValuation.map_pow, hvx, smul_zero]

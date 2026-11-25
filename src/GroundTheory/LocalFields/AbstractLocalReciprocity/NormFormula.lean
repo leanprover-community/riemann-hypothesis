@@ -50,8 +50,7 @@ theorem coe_norm_eq_of_mul_eq {K S Q J : Subgroup G} (hQK : Q ≤ K)
   let f : Q ⧸ J.subgroupOf Q → K ⧸ S.subgroupOf K :=
     Quotient.map' (fun q : Q => (⟨q, hQK q.2⟩ : K)) fun q q' h => by
       rw [QuotientGroup.leftRel_apply, Subgroup.mem_subgroupOf] at h ⊢
-      have hq : ((q⁻¹ * q' : Q) : G) ∈ Q := (q⁻¹ * q').2
-      simpa using (hJ _ hq).2 h
+      simpa using (hJ _ ((q⁻¹ * q').2)).2 h
   have hf : Function.Bijective f := by
     constructor
     · intro x y hxy
@@ -62,8 +61,7 @@ theorem coe_norm_eq_of_mul_eq {K S Q J : Subgroup G} (hQK : Q ≤ K)
         have h' : ((⟨q, hQK q.2⟩ : K) : K ⧸ S.subgroupOf K) = ((⟨q', hQK q'.2⟩ : K) : K ⧸ _) := hxy
         rw [QuotientGroup.eq, Subgroup.mem_subgroupOf] at h'
         rw [QuotientGroup.eq, Subgroup.mem_subgroupOf]
-        have hq : ((q⁻¹ * q' : Q) : G) ∈ Q := (q⁻¹ * q').2
-        exact (hJ _ hq).1 (by simpa using h')
+        exact (hJ _ ((q⁻¹ * q').2)).1 (by simpa using h')
     · intro y
       induction y using QuotientGroup.induction_on with
       | H k =>

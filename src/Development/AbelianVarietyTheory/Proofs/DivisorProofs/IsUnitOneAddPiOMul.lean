@@ -151,11 +151,9 @@ theorem isUnit_one_add_piO_mul {ϖ : L} {σ : L →+* L} {q : ℕ} (h : IsUnramI
   letI : Module.Finite (intL L) (AdjoinRoot P.1) := .of_basis (AdjoinRoot.powerBasis' P.2.1).basis
   have hmax := Ideal.isMaximal_comap_of_isIntegral_of_isMaximal (algebraMap (intL L) (AdjoinRoot P.1))
     (RingHom.IsIntegral.of_finite (RingHom.finite_algebraMap.mpr inferInstance)) M
-  have hϖ : algebraMap (intL L) (AdjoinRoot P.1) (piO h) ∈ M := piO_mem_of_isMaximal h hmax
   have h1 : 1 + algebraMap (intL L) (AdjoinRoot P.1) (piO h) * a ∈ M := hxM (Ideal.mem_span_singleton_self _)
   have : (1 : AdjoinRoot P.1) ∈ M := by
-    have := M.sub_mem h1 (M.mul_mem_right a hϖ)
-    simpa using this
+    simpa using M.sub_mem h1 (M.mul_mem_right a (piO_mem_of_isMaximal h hmax))
   exact hM.ne_top ((Ideal.eq_top_iff_one M).2 this)
 
 theorem isUnit_of_sub_one_mem {ϖ : L} {σ : L →+* L} {q : ℕ} (h : IsUnramInv ϖ σ q)

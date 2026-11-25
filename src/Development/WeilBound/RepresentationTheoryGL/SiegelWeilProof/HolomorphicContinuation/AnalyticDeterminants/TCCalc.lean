@@ -243,8 +243,7 @@ theorem iterNested : IterNested := by
   have hg : ContDiffOn ℂ ∞ (fun x => iteratedFDeriv ℂ b F x (fun i => L2 (w i))) Ω :=
     eval_smooth hΩ hF b _
   have hU : ∀ᶠ t1 in 𝓝 (0 : W1), c + L1 t1 ∈ Ω := by
-    have hcont : Continuous (fun t1 : W1 => c + L1 t1) := continuous_const.add L1.continuous
-    apply hcont.continuousAt.preimage_mem_nhds
+    apply (continuous_const.add L1.continuous).continuousAt.preimage_mem_nhds
     simpa using hΩ.mem_nhds hc
   have he : (fun t1 => iteratedFDeriv ℂ b (fun t2 => F (c + L1 t1 + L2 t2)) 0 w) =ᶠ[𝓝 0]
       (fun t1 => iteratedFDeriv ℂ b F (c + L1 t1) (fun i => L2 (w i))) := by

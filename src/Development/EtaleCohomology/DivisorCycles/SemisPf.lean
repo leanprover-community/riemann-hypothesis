@@ -131,10 +131,8 @@ theorem Semis_of : Semis := by
   have hWA := hk W hWst
   have hkill : ∀ Z ∈ S, ∀ w ∈ W, Z *ᵥ w = 0 := by
     intro Z hZ w hw
-    have h1 : Z *ᵥ w ∈ U := Submodule.subset_span ⟨Z, hZ, w, rfl⟩
-    have h2 : Z *ᵥ w ∈ W := hWA Z hZ.1 w hw
     have := hcompl.inf_eq_bot
-    have h3 : Z *ᵥ w ∈ U ⊓ W := ⟨h1, h2⟩
+    have h3 : Z *ᵥ w ∈ U ⊓ W := ⟨(Submodule.subset_span ⟨Z, hZ, w, rfl⟩), (hWA Z hZ.1 w hw)⟩
     rw [this] at h3
     exact (Submodule.mem_bot C).1 h3
   have : IsArtinianRing A := IsArtinianRing.of_finite C A

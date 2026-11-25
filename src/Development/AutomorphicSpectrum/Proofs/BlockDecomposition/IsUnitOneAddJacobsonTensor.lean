@@ -80,8 +80,6 @@ theorem main (O O' R : Type) [CommRing O] [CommRing O'] [Algebra O O'] [Module.F
         exact Ideal.isMaximal_under_of_isIntegral_of_isMaximal m
     rw [← Ideal.mem_comap]
     exact (sInf_le (show _ ∈ {J : Ideal R | (⊥ : Ideal R) ≤ J ∧ J.IsMaximal} from ⟨bot_le, hc⟩) : (⊥ : Ideal R).jacobson ≤ _) hr
-  have hx' : x ∈ (⊥ : Ideal (O' ⊗[O] R)).jacobson := hle hx
-  have := Ideal.mem_jacobson_bot.1 hx' 1
-  simpa [mul_one, add_comm] using this
+  simpa [mul_one, add_comm] using Ideal.mem_jacobson_bot.1 (hle hx) 1
 
 end GlobalTheory.CompanionTheory.JacUnit

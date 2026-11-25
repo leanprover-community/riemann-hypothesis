@@ -143,12 +143,10 @@ theorem fctlCLM_kern {c z : Fin n → ℂ} {r : ℝ} (hr : 0 < r) {f : (Fin n �
     induction m with
     | zero =>
       intro g a _ w _
-      rw [torusIntegral_dim0]
-      simp [Subsingleton.elim w a]
+      simp [torusIntegral_dim0, Subsingleton.elim w a]
     | succ m ih =>
       intro g a hg w hw
       rw [torusIntegral_succ (torusIntegrable_kernel hr hg hw)]
-      have hw₀ : w 0 ∈ ball (a 0) r := (mem_ball_pi_iff hr).mp hw 0
       have hwTail : Fin.tail w ∈ ball (a ∘ Fin.succ) r :=
         (mem_ball_pi_iff hr).mpr fun i => (mem_ball_pi_iff hr).mp hw i.succ
       have hcons : ∀ x ∈ closedBall (a 0) r, ∀ y ∈ closedBall (a ∘ Fin.succ) r,
@@ -175,7 +173,7 @@ theorem fctlCLM_kern {c z : Fin n → ℂ} {r : ℝ} (hr : 0 < r) {f : (Fin n �
       have hd : DifferentiableOn ℂ (fun x => g (Fin.cons x (Fin.tail w))) (closedBall (a 0) r) :=
         fun x hx => ((hg _ (hcons x hx _ (ball_subset_closedBall hwTail))).comp x
           (differentiable_cons_left (Fin.tail w) x)).differentiableWithinAt
-      have hcircle := hd.circleIntegral_sub_inv_smul hw₀
+      have hcircle := hd.circleIntegral_sub_inv_smul ((mem_ball_pi_iff hr).mp hw 0)
       simp only [smul_eq_mul] at hcircle
       rw [hcircle, Fin.cons_self_tail, pow_succ]
       ring

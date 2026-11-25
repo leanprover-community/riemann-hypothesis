@@ -47,8 +47,8 @@ public import Mathlib.RingTheory.DedekindDomain.Factorization
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.ExistsValuationSubLeOne.exists_valuation_sub_le_one.{u_1, u_2} :
-    ∀ {R : Type u_1} [CommRing R] [IsDedekindDomain R] {K : Type u_2} [Field K]
-    [Algebra R K] [IsFractionRing R K] (S : Finset (IsDedekindDomain.HeightOneSpectrum R))
+    ∀ {R : Type u_1} [inst : CommRing R] [inst_1 : IsDedekindDomain R] {K : Type u_2} [inst_2 : Field K]
+    [inst_3 : Algebra R K] [inst_4 : IsFractionRing R K] (S : Finset (IsDedekindDomain.HeightOneSpectrum R))
     (x : IsDedekindDomain.HeightOneSpectrum R → K),
     ∃ (k : K),
       (∀ v ∈ S,

@@ -69,8 +69,7 @@ theorem distribHaarChar_det_eventually_eq_one :
     simp
   filter_upwards [hm] with g hg
   refine distribHaarChar_eq_one_of_valuation_eq_one k _ ?_
-  have hv : valuation k (((Matrix.GeneralLinearGroup.det g : kˣ) : k) - 1) < 1 := hg
-  have h1 := Valuation.map_one_add_of_lt (valuation k) hv
+  have h1 := Valuation.map_one_add_of_lt (valuation k) hg
   rwa [add_sub_cancel] at h1
 
 end GlobalTheory.CompanionTheory.LocalModule

@@ -115,8 +115,7 @@ theorem exists_takagi_family (T : E →ₗ⋆[ℂ] E) (hT : ∀ x y, ⟪T x, y�
         induction j using Fin.cases with
         | zero => simpa using hev i
         | succ j =>
-          have : i ≠ j := fun h => hij (by rw [h])
-          simpa using he.2 this
+          simpa using he.2 (fun h => hij (by rw [h]) : i ≠ j)
     · intro i
       refine Fin.cases ?_ (fun j => ?_) i
       · simpa using hvS
@@ -292,8 +291,7 @@ theorem gen (δ : ℝ) (γ : ℂ) (hδ : 0 < δ) :
     intro h; rw [h] at hu; simp at hu
   have h := integral_comp_mul u hu0 (fun w : ℂ => ((Real.exp (-δ * ‖w‖ ^ 2) : ℝ) : ℂ) *
     Complex.exp (Complex.I * (((γ * w ^ 2).re : ℝ) : ℂ)))
-  rw [hu] at h
-  simp only [one_pow, inv_one, one_smul] at h
+  simp only [hu, one_pow, inv_one, one_smul] at h
   rw [← h, ← core δ ‖γ‖ hδ]
   refine integral_congr_ae (Filter.Eventually.of_forall fun w => ?_)
   simp only
@@ -350,8 +348,7 @@ theorem unitary_mp (d : ℕ) (β : ℂ) (hβ : β ≠ 0) (W : Matrix (Fin d) (Fi
       Complex.normSq_eq_norm_sq, norm_det_unitary hW, one_pow]
   have h := Measure.map_linearMap_addHaar_eq_smul_addHaar (muPi β (Fin d))
     (f := (Matrix.toLin' W).restrictScalars ℝ) (by rw [hdet]; exact one_ne_zero)
-  rw [hdet] at h
-  simp only [inv_one, abs_one, ENNReal.ofReal_one, one_smul] at h
+  simp only [hdet, inv_one, abs_one, ENNReal.ofReal_one, one_smul] at h
   exact ⟨(Continuous.matrix_mulVec continuous_const continuous_id).measurable, h⟩
 
 theorem sum_normSq_unitary {d : ℕ} {U : Matrix (Fin d) (Fin d) ℂ}
@@ -370,8 +367,7 @@ theorem sum_normSq_unitary {d : ℕ} {U : Matrix (Fin d) (Fin d) ℂ}
 theorem transpose_unitary {d : ℕ} {W : Matrix (Fin d) (Fin d) ℂ}
     (hW : W ∈ Matrix.unitaryGroup (Fin d) ℂ) : Wᵀ ∈ Matrix.unitaryGroup (Fin d) ℂ := by
   rw [Matrix.mem_unitaryGroup_iff]
-  have h : star W * W = 1 := Matrix.mem_unitaryGroup_iff'.1 hW
-  have h2 := congrArg Matrix.transpose h
+  have h2 := congrArg Matrix.transpose (Matrix.mem_unitaryGroup_iff'.1 hW)
   rw [Matrix.transpose_mul, Matrix.transpose_one] at h2
   rw [← h2]
   rfl
@@ -392,8 +388,7 @@ theorem gaussInt_eq (d : ℕ) (β t : ℂ) (hβ : β ≠ 0) (W : Matrix (Fin d) 
   have hinj : Function.Injective (fun x : Fin d → ℂ => Wᵀ *ᵥ x) := by
     intro x y hxy
     have h1 : (Wᵀ)ᴴ * Wᵀ = 1 := Matrix.mem_unitaryGroup_iff'.1 hU
-    have := congrArg (fun v => (Wᵀ)ᴴ *ᵥ v) hxy
-    simpa [Matrix.mulVec_mulVec, h1] using this
+    simpa [Matrix.mulVec_mulVec, h1] using congrArg (fun v => (Wᵀ)ᴴ *ᵥ v) hxy
   have hemb : MeasurableEmbedding (fun x : Fin d → ℂ => Wᵀ *ᵥ x) :=
     (Continuous.matrix_mulVec continuous_const continuous_id).measurableEmbedding hinj
   have hsf : SigmaFinite (mu β) := by unfold mu; infer_instance
@@ -459,8 +454,7 @@ theorem gaussMulti_of (hT : Takagi) (hG : GaussOneDamped) : GaussMulti := by
       intro k
       rw [norm_div, Complex.norm_real, Real.norm_of_nonneg (hσ k), inv_div]
     simp_rw [this]
-    rw [Finset.prod_div_distrib]
-    simp
+    simp [Finset.prod_div_distrib]
   rw [hlim]
   refine tendsto_finsetProd _ fun k _ => ?_
   exact gaussOne_of_damped hG β _ hβ (div_ne_zero (by exact_mod_cast hσ0 k) ht)

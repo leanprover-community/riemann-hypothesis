@@ -545,8 +545,7 @@ theorem main : WalkSharp := by
     exact ⟨i, hi, Finset.mem_image_of_mem _ hx⟩
   have hCsub : (↑C : Set X) ⊆ L (fun _ => Slot.base) := by
     intro x hx
-    rw [Finset.mem_coe, hC] at hx
-    simp only [Finset.mem_biUnion, Finset.mem_image] at hx
+    simp only [Finset.mem_coe, hC, Finset.mem_biUnion, Finset.mem_image] at hx
     obtain ⟨B, hBm, i, _, g0, hg0, rfl⟩ := hx
     have hB' := (Finset.mem_powersetCard.mp hBm).2
     exact lp_mem y _ hyM _ _ g0 (L_sideAt_le L hdb B ((hG B hB').1 hg0))
@@ -591,8 +590,7 @@ theorem main : WalkSharp := by
       intro B i hB hi hn z hz
       obtain ⟨-, -, hdec⟩ := hG B hB
       have hi' : ∀ u ∈ B, i u < m := fun u hu => (mem_idx.mp hi u).1 hu
-      have hBne : B.Nonempty := Finset.card_pos.mp (by omega)
-      obtain ⟨t, ht⟩ := hBne
+      obtain ⟨t, ht⟩ : B.Nonempty := Finset.card_pos.mp (by omega)
       have hacc : acc a b c m c₀ B i + c₀ ≤ E := by
         have h1 : acc a b c m c₀ B i + c₀ =
             ∑ u, (accT a b c m c₀ B i u + if u = t then c₀ else 0) := by

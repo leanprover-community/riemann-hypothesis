@@ -26,8 +26,7 @@ theorem fderiv_conj' (n : ℕ) (g : V n → ℂ) (y : V n) (v : V n) :
   have h : (fun w => (starRingEnd ℂ) (g w)) = Complex.conjLIE ∘ g := by
     funext w
     simp [Complex.conjLIE_apply]
-  rw [h, LinearIsometryEquiv.comp_fderiv]
-  simp
+  simp [h, LinearIsometryEquiv.comp_fderiv]
 
 theorem wdb_conj' (n : ℕ) (j : Fin n) (g : V n → ℂ) (y : V n) :
     wdb n j (fun w => (starRingEnd ℂ) (g w)) y = (starRingEnd ℂ) (wd n j g y) := by

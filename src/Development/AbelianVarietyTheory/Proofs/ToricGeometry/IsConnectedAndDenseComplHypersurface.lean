@@ -86,8 +86,7 @@ theorem finite_zeros_on_line {d : ℕ} (q : MvPolynomial (Fin d) ℂ) (a b : Fin
   have hP : mvPolynomialOnLine q a b ≠ 0 := by
     intro h
     apply hb
-    have := eval_mvPolynomialOnLine q a b 1
-    simpa [h] using this.symm
+    simpa [h] using (eval_mvPolynomialOnLine q a b 1).symm
   convert Polynomial.finite_setOfPred_isRoot hP using 1
   ext t
   simp only [Set.mem_ofPred_eq, Polynomial.IsRoot, eval_mvPolynomialOnLine]

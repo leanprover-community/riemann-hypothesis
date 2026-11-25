@@ -43,8 +43,7 @@ theorem wirtBar_contDiffOn {f : (Fin m → ℂ) → E} (hf : ContDiffOn ℝ ∞ 
 
 theorem differentiableAt_of_mem {f : (Fin m → ℂ) → E} (hf : f ∈ WSm m E) {x : Fin m → ℂ}
     (hx : x ∈ OmX m) : DifferentiableAt ℝ f x := by
-  have h1 : ContDiffOn ℝ ∞ f (OmX m) := hf.1
-  exact (h1.differentiableOn (by simp)).differentiableAt ((isOpen_omX m).mem_nhds hx)
+  exact (hf.1.differentiableOn (by simp)).differentiableAt ((isOpen_omX m).mem_nhds hx)
 
 end WRPres
 
@@ -58,7 +57,6 @@ theorem preserved_operators_holds : PresOps := by
   have hconj : ContDiffOn ℝ ∞ (fun x : Fin m → ℂ => star (x l)) (OmX m) :=
     (conjCoord_contDiff l).contDiffOn
   have hne : ∀ x ∈ OmX m, x l ≠ 0 := fun x hx => hx l
-  have hinv : ContDiffOn ℝ ∞ (fun x : Fin m → ℂ => (x l)⁻¹) (OmX m) := hcoord.inv hne
   have hinvc : ContDiffOn ℝ ∞ (fun x : Fin m → ℂ => (star (x l))⁻¹) (OmX m) :=
     hconj.inv fun x hx => by simpa using hne x hx
   show ContDiffOn ℝ ∞ (opL l i f) (OmX m) ∧ ∀ x ∉ OmX m, opL l i f x = 0
@@ -67,7 +65,7 @@ theorem preserved_operators_holds : PresOps := by
       fun x hx => by simp [opL, pOp, hx]⟩
   · exact ⟨(hcoord.smul hc).congr fun x hx => by simp [opL, cOp],
       fun x hx => by simp [opL, cOp, hz x hx]⟩
-  · exact ⟨(hinv.smul hc).congr fun x hx => by simp [opL, ciOp],
+  · exact ⟨((hcoord.inv hne).smul hc).congr fun x hx => by simp [opL, ciOp],
       fun x hx => by simp [opL, ciOp, hz x hx]⟩
   · exact ⟨(hconj.smul (wirtBar_contDiffOn hc l)).congr fun x hx => by simp [opL, pbOp, hx],
       fun x hx => by simp [opL, pbOp, hx]⟩

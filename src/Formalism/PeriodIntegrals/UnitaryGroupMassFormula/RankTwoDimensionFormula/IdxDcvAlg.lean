@@ -84,8 +84,7 @@ theorem dual_fix (hσ : ∀ a, σ (σ a) = a) {k : ℕ} (b c : Fin k → n → A
     Formalism.UG.hform σ J (∑ l, σ (M i l) • c l) (b j) = if i = j then ε else 0 := by
   have h := congrFun (congrFun hM i) j
   simp only [Matrix.mul_apply, Matrix.of_apply, Matrix.smul_apply, Matrix.one_apply, smul_eq_mul] at h
-  rw [h_sum_left]
-  simp only [h_smul_left, hσ]
+  simp only [h_sum_left, h_smul_left, hσ]
   rw [h]
   split_ifs <;> simp
 

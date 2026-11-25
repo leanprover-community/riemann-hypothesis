@@ -86,7 +86,7 @@ private theorem UpperTheory.Reformulated.B.Ybf4.isIntegral_det_of_isIntegral {R 
 
 open Polynomial in
 theorem UpperTheory.Reformulated.B.Ybf4.isIntegral_det :
-    ∀ {E : Type} [Field E] [NumberField E] {N : ℕ} (L : Submodule (NumberField.RingOfIntegers E) (Fin N → E)),
+    ∀ {E : Type} [inst : Field E] [NumberField E] {N : ℕ} (L : Submodule (NumberField.RingOfIntegers E) (Fin N → E)),
       L.FG →
         Submodule.span E (↑L : Set (Fin N → E)) = ⊤ →
           ∀ (γ : Matrix (Fin N) (Fin N) E), (∀ v ∈ L, γ.mulVec v ∈ L) → IsIntegral ℤ γ.det := by

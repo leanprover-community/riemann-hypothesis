@@ -115,10 +115,9 @@ theorem _root_.GlobalTheory.genericPoints_subset_range_of_isDominant {X U : Sche
   have hpcl₁ : (p : PrimeSpectrum Γ(X, V)) ∈ closure (Set.range (PrimeSpectrum.comap φ.hom)) :=
     hpcl₀
   rw [PrimeSpectrum.closure_range_comap] at hpcl₁
-  have hpcl : RingHom.ker φ.hom ≤ p.asIdeal := (PrimeSpectrum.mem_zeroLocus _ _).1 hpcl₁
   have hmin : p.asIdeal ∈ (Ideal.comap φ.hom ⊥).minimalPrimes := by
     rw [← RingHom.ker_eq_comap_bot]
-    refine ⟨⟨p.2, hpcl⟩, fun q hq hqp => ?_⟩
+    refine ⟨⟨p.2, ((PrimeSpectrum.mem_zeroLocus _ _).1 hpcl₁)⟩, fun q hq hqp => ?_⟩
     have hspec : (⟨q, hq.1⟩ : PrimeSpectrum _) ⤳ p :=
       (PrimeSpectrum.le_iff_specializes _ _).1 hqp
     have heq := _root_.GlobalTheory.eq_of_specializes_of_mem_genericPoints (hp ▸ hξ)

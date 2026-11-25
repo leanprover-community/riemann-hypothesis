@@ -405,7 +405,7 @@ private theorem UpperTheory.Reformulated.B.Qh37.exists_anti (L : Type) [Field L]
   rw [map_sub, complexConj_apply_apply, neg_sub]
 
 theorem UpperTheory.Reformulated.B.Qh37.globEx :
-    ∀ (L : Type) [Field L] [NumberField L] [NumberField.IsCMField L],
+    ∀ (L : Type) [inst : Field L] [inst_1 : NumberField L] [inst_2 : NumberField.IsCMField L],
       ∃ (Δ : UpperTheory.Reformulated.B.Qh37.Lp L) (e : UpperTheory.Reformulated.B.Qh37.Lsq (UpperTheory.Reformulated.B.Qh37.Lp L) Δ ≃+* L),
         (∀ (x : UpperTheory.Reformulated.B.Qh37.Lsq (UpperTheory.Reformulated.B.Qh37.Lp L) Δ),
             (e : UpperTheory.Reformulated.B.Qh37.Lsq (UpperTheory.Reformulated.B.Qh37.Lp L) Δ → L) (Star.star x) =

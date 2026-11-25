@@ -68,12 +68,11 @@ theorem relation_descends_along_functional (K A B : Type) [Field K] [CommRing A]
   have hli : LinearIndependent K (fun j => (bW j : A)) :=
     bW.linearIndependent.map' W.subtype (Submodule.ker_subtype W)
   have hli' := hW n (fun j => (bW j : A)) (fun j => (bW j).2) hli
-  have hcoord : ∃ α : ι → Fin n → K, ∀ s, x s = ∑ j, α s j • (bW j : A) := by
+  obtain ⟨α, hα⟩ : ∃ α : ι → Fin n → K, ∀ s, x s = ∑ j, α s j • (bW j : A) := by
     refine ⟨fun s j => bW.repr ⟨x s, hx s⟩ j, fun s => ?_⟩
     have h1 := congrArg (fun v : W => (v : A)) (bW.sum_repr ⟨x s, hx s⟩)
     simp only [Submodule.coe_sum, Submodule.coe_smul] at h1
     exact h1.symm
-  obtain ⟨α, hα⟩ := hcoord
   have hrdx : ∀ s, rd (x s) = ∑ j, σ (α s j) • rd (bW j : A) := by
     intro s
 
@@ -119,8 +118,7 @@ theorem exists_rational_multiplier_of_complex :
       rd (∑ j, a j • v j) = ∑ j, σ (a j) • rd (v j) := by
     intro m a v
 
-    rw [map_sum]
-    simp only [hrd]
+    simp only [map_sum, hrd]
   have hexp : ∀ {U : Submodule K A} {m : ℕ} (b : Basis (Fin m) K U) (u : U),
       (u : A) = ∑ j, b.repr u j • (b j : A) := by
     intro U m b u
@@ -164,8 +162,7 @@ theorem exists_rational_multiplier_of_complex :
     ⟨bV.constr K (fun i => ∑ j, φ (C i j) • bV' j), fun i => bV.constr_basis K _ i⟩
   have hTA : ∀ i, ((T (bV i) : V') : A) = ∑ j, φ (C i j) • (bV' j : A) := by
     intro i
-    rw [hT]
-    simp only [Submodule.coe_sum, Submodule.coe_smul]
+    simp only [hT, Submodule.coe_sum, Submodule.coe_smul]
   have hbasis : ∀ i k, ((T (bV i) : V') : A) * (bV k : A) = (bV i : A) * ((T (bV k) : V') : A) := by
     intro i k
     have key := relation_descends_along_functional K A B σ rd hrd (V * V') hVV φ hφ

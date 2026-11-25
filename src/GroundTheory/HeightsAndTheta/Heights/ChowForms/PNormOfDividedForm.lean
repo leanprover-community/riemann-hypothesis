@@ -89,7 +89,6 @@ theorem NormOfDividedForm.proof (hEval : NormFormEval.Statement) (hDvd : NormFor
   have : FiniteDimensional K L := .of_isLocalization O B O⁰
   have : Algebra.IsSeparable K L := Algebra.IsAlgebraic.isSeparable_of_perfectField
   have hOB : Function.Injective (algebraMap O B) := FaithfulSMul.algebraMap_injective O B
-  have hOK : Function.Injective (algebraMap O K) := IsFractionRing.injective O K
   let ηL : Fin n → L := fun m => algebraMap B L (η m)
   let tK : Fin n → K := fun m => algebraMap O K (t m)
   have htL : ∑ m, tK m • ηL m = 1 := by
@@ -128,7 +127,7 @@ theorem NormOfDividedForm.proof (hEval : NormFormEval.Statement) (hDvd : NormFor
     have h := congrArg (eval tK) hc
     rw [map_mul, hNt, eval_C, one_mul] at h
     rw [← h, hev]
-  apply hOK
+  apply (IsFractionRing.injective O K)
   have h := congrArg (eval (fun m => algebraMap O K (u m))) hc
   rw [map_mul, eval_C, hct, hev] at h
   rw [map_mul, algebraMap_det_mulLeft (L := L) hEval η u, h, mul_comm]

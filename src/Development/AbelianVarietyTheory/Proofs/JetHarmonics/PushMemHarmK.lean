@@ -72,8 +72,7 @@ theorem pderiv_push_X (γ : Matrix (Fin n) (Fin n) E) (τ : E →+* ℂ) (a : Fi
       ∑ j, embF c τ (γ b j) • push c γ (pderiv (⟨τ, a, j⟩ : LtN Dw n) (X ℓ)) := by
   obtain ⟨σ, i, j⟩ := ℓ
 
-  rw [push_X, map_sum]
-  simp only [pderiv_C_mul, pderiv_X]
+  simp only [push_X, map_sum, pderiv_C_mul, pderiv_X]
   by_cases hσ : σ = τ
   · subst hσ
     by_cases hi : i = a

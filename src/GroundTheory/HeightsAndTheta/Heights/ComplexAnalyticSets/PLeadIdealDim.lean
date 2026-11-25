@@ -55,8 +55,7 @@ theorem aeval_mk_X (I : Ideal (MvPolynomial (Fin n) ℂ)) (u : Set (Fin n))
 theorem algebraicIndependent_mk_X_iff (I : Ideal (MvPolynomial (Fin n) ℂ)) (u : Set (Fin n)) :
     AlgebraicIndependent ℂ (fun i : u => Ideal.Quotient.mk I (X (i : Fin n))) ↔
       ∀ q : MvPolynomial u ℂ, rename Subtype.val q ∈ I → q = 0 := by
-  rw [algebraicIndependent_iff]
-  simp only [aeval_mk_X, Ideal.Quotient.eq_zero_iff_mem]
+  simp only [algebraicIndependent_iff, aeval_mk_X, Ideal.Quotient.eq_zero_iff_mem]
 
 theorem rename_mem_of_leadIdeal (J : Ideal (MvPolynomial (Fin n) ℂ)) (u : Set (Fin n))
     (h : ∀ q : MvPolynomial u ℂ, rename Subtype.val q ∈ leadIdeal J → q = 0)
@@ -84,13 +83,12 @@ theorem quotient_dim_le_of_minimalPrimes {R : Type*} [CommRing R] (I : Ideal R)
   have : Z.IsPrime := hZ.1.1
   let z : PrimeSpectrum.zeroLocus (R := R) (I : Set R) :=
     ⟨⟨Z, inferInstance⟩, (PrimeSpectrum.mem_zeroLocus _ _).mpr hZ.1.2⟩
-  have hza : z ≤ a := hZa
   let e : Set.Ici z ↪o PrimeSpectrum.zeroLocus (R := R) (Z : Set R) :=
     OrderEmbedding.ofMapLEIff
       (fun x => ⟨x.1.1, (PrimeSpectrum.mem_zeroLocus _ _).mpr (show Z ≤ x.1.1.asIdeal from x.2)⟩)
       fun _ _ => Iff.rfl
   calc ((Order.coheight a : ℕ∞) : WithBot ℕ∞) ≤ ((Order.coheight z : ℕ∞) : WithBot ℕ∞) :=
-        WithBot.coe_le_coe.mpr (Order.coheight_anti hza)
+        WithBot.coe_le_coe.mpr (Order.coheight_anti hZa)
     _ = Order.krullDim (Set.Ici z) := Order.coheight_eq_krullDim_Ici z
     _ ≤ Order.krullDim (PrimeSpectrum.zeroLocus (R := R) (Z : Set R)) :=
         Order.krullDim_le_of_orderEmbedding e

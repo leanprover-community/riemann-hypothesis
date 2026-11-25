@@ -187,13 +187,12 @@ theorem cint_relIndex_ne_zero (h : IsLoc O Δ) (hτ : τ ^ 2 - 4 ≠ 0) {m : O} 
   haveI := h.frac
   obtain ⟨c, hc, hcx⟩ := int_denom h hτ
   obtain ⟨p, q, hq, hpq⟩ := IsFractionRing.div_surjective (A := O) τ
-  have hq0 : q ≠ 0 := nonZeroDivisors.ne_zero hq
   have hQq : algebraMap O K q ≠ 0 := IsFractionRing.to_map_ne_zero_of_mem_nonZeroDivisors hq
   have hQc : algebraMap O K c ≠ 0 :=
     IsFractionRing.to_map_ne_zero_of_mem_nonZeroDivisors (mem_nonZeroDivisors_of_ne_zero hc)
   have eτ : τ * algebraMap O K q = algebraMap O K p := by
     rw [← hpq, div_mul_cancel₀ _ hQq]
-  have hM0 : c * m * q ≠ 0 := mul_ne_zero (mul_ne_zero hc hm) hq0
+  have hM0 : c * m * q ≠ 0 := mul_ne_zero (mul_ne_zero hc hm) (nonZeroDivisors.ne_zero hq)
   haveI : Finite (O ⧸ Ideal.span {c * m * q}) := finite_quot_span h hM0
   have hint : ∀ z : Cint O τ, IsIntegral O (quo z.1) ∧ IsIntegral O (quo z.1⁻¹) := fun z => z.2
   let A : Cint O τ → O := fun z => Classical.choose (hcx _ (hint z).1)

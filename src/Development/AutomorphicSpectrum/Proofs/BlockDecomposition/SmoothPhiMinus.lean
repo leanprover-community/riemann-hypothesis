@@ -57,19 +57,19 @@ section -- clump:auto
 
 noncomputable def UpperTheory.Reformulated.B.Gwa2.IsSmooth :
     {k G V : Type} →
-      [Field k] →
-        [Group G] →
-          [AddCommGroup V] → [_root_.Module k V] → [TopologicalSpace G] → Representation k G V → Prop :=
+      [inst : Field k] →
+        [inst_1 : Group G] →
+          [inst_2 : AddCommGroup V] → [inst_3 : _root_.Module k V] → [TopologicalSpace G] → Representation k G V → Prop :=
     fun {k G V : Type} [Field k] [Group G] [AddCommGroup V] [_root_.Module k V] [TopologicalSpace G]
         (ρ : Representation k G V) ↦
       ∀ (v : V), IsOpen {g : G | ((ρ : G → V →ₗ[k] V) g : V → V) v = v}
 
 noncomputable def UpperTheory.Reformulated.B.Gwa2.twKer :
     {k G V : Type} →
-      [Field k] →
-        [Group G] →
-          [AddCommGroup V] →
-            [_root_.Module k V] → Representation k G V → (N : Subgroup G) → (↥N →* kˣ) → Submodule k V :=
+      [inst : Field k] →
+        [inst_1 : Group G] →
+          [inst_2 : AddCommGroup V] →
+            [inst_3 : _root_.Module k V] → Representation k G V → (N : Subgroup G) → (↥N →* kˣ) → Submodule k V :=
     fun {k G V : Type} [Field k] [Group G] [AddCommGroup V] [_root_.Module k V] (ρ : Representation k G V) (N : Subgroup G)
         (ψ : ↥N →* kˣ) ↦
       Submodule.span k
@@ -77,17 +77,17 @@ noncomputable def UpperTheory.Reformulated.B.Gwa2.twKer :
 
 @[reducible] noncomputable def UpperTheory.Reformulated.B.Gwa2.TwJacquet :
     {k G V : Type} →
-      [Field k] →
-        [Group G] →
-          [AddCommGroup V] →
-            [_root_.Module k V] → Representation k G V → (N : Subgroup G) → (↥N →* kˣ) → Type :=
+      [inst : Field k] →
+        [inst_1 : Group G] →
+          [inst_2 : AddCommGroup V] →
+            [inst_3 : _root_.Module k V] → Representation k G V → (N : Subgroup G) → (↥N →* kˣ) → Type :=
     fun {k G V : Type} [Field k] [Group G] [AddCommGroup V] [_root_.Module k V] (ρ : Representation k G V) (N : Subgroup G)
         (ψ : ↥N →* kˣ) ↦
       V ⧸ UpperTheory.Reformulated.B.Gwa2.twKer ρ N ψ
 
 theorem UpperTheory.Reformulated.B.Gwa2.aux4 :
-    ∀ {G V : Type} [Group G] [AddCommGroup V] [_root_.Module ℂ V] (ρ : Representation ℂ G V)
-      (N : Subgroup G) (θ : ↥N →* ℂˣ) {M : Type} [Group M] (s : M →* G),
+    ∀ {G V : Type} [inst : Group G] [inst_1 : AddCommGroup V] [inst_2 : _root_.Module ℂ V] (ρ : Representation ℂ G V)
+      (N : Subgroup G) (θ : ↥N →* ℂˣ) {M : Type} [inst_3 : Group M] (s : M →* G),
       (∀ (m : M) (n : ↥N),
           ∃ (h : (s : M → G) m * (↑n : G) * ((s : M → G) m)⁻¹ ∈ N),
             (θ : ↥N → ℂˣ) (⟨(s : M → G) m * (↑n : G) * ((s : M → G) m)⁻¹, h⟩ : ↥N) = (θ : ↥N → ℂˣ) n) →
@@ -105,8 +105,8 @@ theorem UpperTheory.Reformulated.B.Gwa2.aux4 :
   rw [hθ, map_sub, map_smul, ← key]
 
 theorem UpperTheory.Reformulated.B.Gwa2.aux5 :
-    ∀ {G V : Type} [Group G] [AddCommGroup V] [_root_.Module ℂ V] (ρ : Representation ℂ G V)
-      (N : Subgroup G) (θ : ↥N →* ℂˣ) {M : Type} [Group M] (s : M →* G),
+    ∀ {G V : Type} [inst : Group G] [inst_1 : AddCommGroup V] [inst_2 : _root_.Module ℂ V] (ρ : Representation ℂ G V)
+      (N : Subgroup G) (θ : ↥N →* ℂˣ) {M : Type} [inst_3 : Group M] (s : M →* G),
       (∀ (m : M) (n : ↥N),
           ∃ (h : (s : M → G) m * (↑n : G) * ((s : M → G) m)⁻¹ ∈ N),
             (θ : ↥N → ℂˣ) (⟨(s : M → G) m * (↑n : G) * ((s : M → G) m)⁻¹, h⟩ : ↥N) = (θ : ↥N → ℂˣ) n) →
@@ -117,8 +117,8 @@ theorem UpperTheory.Reformulated.B.Gwa2.aux5 :
   exact UpperTheory.Reformulated.B.Gwa2.aux4 ρ N θ s hs 1
 
 theorem UpperTheory.Reformulated.B.Gwa2.aux6 :
-    ∀ {G V : Type} [Group G] [AddCommGroup V] [_root_.Module ℂ V] (ρ : Representation ℂ G V)
-      (N : Subgroup G) (θ : ↥N →* ℂˣ) {M : Type} [Group M] (s : M →* G)
+    ∀ {G V : Type} [inst : Group G] [inst_1 : AddCommGroup V] [inst_2 : _root_.Module ℂ V] (ρ : Representation ℂ G V)
+      (N : Subgroup G) (θ : ↥N →* ℂˣ) {M : Type} [inst_3 : Group M] (s : M →* G)
       (hs :
         ∀ (m : M) (n : ↥N),
           ∃ (h : (s : M → G) m * (↑n : G) * ((s : M → G) m)⁻¹ ∈ N),
@@ -133,8 +133,8 @@ theorem UpperTheory.Reformulated.B.Gwa2.aux6 :
   rw [map_one, map_one, Module.End.one_apply]
 
 theorem UpperTheory.Reformulated.B.Gwa2.aux7 :
-    ∀ {G V : Type} [Group G] [AddCommGroup V] [_root_.Module ℂ V] (ρ : Representation ℂ G V)
-      (N : Subgroup G) (θ : ↥N →* ℂˣ) {M : Type} [Group M] (s : M →* G),
+    ∀ {G V : Type} [inst : Group G] [inst_1 : AddCommGroup V] [inst_2 : _root_.Module ℂ V] (ρ : Representation ℂ G V)
+      (N : Subgroup G) (θ : ↥N →* ℂˣ) {M : Type} [inst_3 : Group M] (s : M →* G),
       (∀ (m : M) (n : ↥N),
           ∃ (h : (s : M → G) m * (↑n : G) * ((s : M → G) m)⁻¹ ∈ N),
             (θ : ↥N → ℂˣ) (⟨(s : M → G) m * (↑n : G) * ((s : M → G) m)⁻¹, h⟩ : ↥N) = (θ : ↥N → ℂˣ) n) →
@@ -146,8 +146,8 @@ theorem UpperTheory.Reformulated.B.Gwa2.aux7 :
   exact UpperTheory.Reformulated.B.Gwa2.aux4 ρ N θ s hs (a * b)
 
 theorem UpperTheory.Reformulated.B.Gwa2.aux8 :
-    ∀ {G V : Type} [Group G] [AddCommGroup V] [_root_.Module ℂ V] (ρ : Representation ℂ G V)
-      (N : Subgroup G) (θ : ↥N →* ℂˣ) {M : Type} [Group M] (s : M →* G)
+    ∀ {G V : Type} [inst : Group G] [inst_1 : AddCommGroup V] [inst_2 : _root_.Module ℂ V] (ρ : Representation ℂ G V)
+      (N : Subgroup G) (θ : ↥N →* ℂˣ) {M : Type} [inst_3 : Group M] (s : M →* G)
       (hs :
         ∀ (m : M) (n : ↥N),
           ∃ (h : (s : M → G) m * (↑n : G) * ((s : M → G) m)⁻¹ ∈ N),
@@ -167,14 +167,14 @@ theorem UpperTheory.Reformulated.B.Gwa2.aux8 :
 
 noncomputable def UpperTheory.Reformulated.B.Gwa2.twAct :
     {G V : Type} →
-      [Group G] →
-        [AddCommGroup V] →
-          [_root_.Module ℂ V] →
+      [inst : Group G] →
+        [inst_1 : AddCommGroup V] →
+          [inst_2 : _root_.Module ℂ V] →
             (ρ : Representation ℂ G V) →
               (N : Subgroup G) →
                 (θ : ↥N →* ℂˣ) →
                   {M : Type} →
-                    [Group M] →
+                    [inst_3 : Group M] →
                       (s : M →* G) →
                         (∀ (m : M) (n : ↥N),
                             ∃ (h : (s : M → G) m * (↑n : G) * ((s : M → G) m)⁻¹ ∈ N),
@@ -207,8 +207,8 @@ private theorem UpperTheory.Reformulated.B.Gwa2.isOpen_fixer {M W : Type} [Group
   exact H.isOpen_of_mem_nhds h
 
 theorem UpperTheory.Reformulated.B.Gwa2.isSmooth_twAct :
-    ∀ {G M V : Type} [Group G] [Group M] [AddCommGroup V] [_root_.Module ℂ V]
-      [TopologicalSpace G] [TopologicalSpace M] [IsTopologicalGroup M] (ρ : Representation ℂ G V)
+    ∀ {G M V : Type} [inst : Group G] [inst_1 : Group M] [inst_2 : AddCommGroup V] [inst_3 : _root_.Module ℂ V]
+      [inst_4 : TopologicalSpace G] [inst_5 : TopologicalSpace M] [IsTopologicalGroup M] (ρ : Representation ℂ G V)
       (N : Subgroup G) (θ : ↥N →* ℂˣ) (s : M →* G)
       (hs :
         ∀ (m : M) (n : ↥N),

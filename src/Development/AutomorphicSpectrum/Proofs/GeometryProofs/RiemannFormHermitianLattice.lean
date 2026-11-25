@@ -92,8 +92,7 @@ theorem mem_span_integer_kernel {g : ℕ} (Bs : Matrix (Fin g) (Fin g) ℤ)
   let Qr : Matrix (Fin g) (Fin g) ℝ := Q.map (fun x : ℤ => (x : ℝ))
   have hdet : IsUnit Qr.det := by
     have h : Qr.det = ((Q.det : ℤ) : ℝ) := by
-      have := (Int.castRingHom ℝ).map_det Q
-      simpa [RingHom.mapMatrix_apply] using this.symm
+      simpa [RingHom.mapMatrix_apply] using ((Int.castRingHom ℝ).map_det Q).symm
     rw [h]
     exact hQ.map (Int.castRingHom ℝ)
   let w := Qr⁻¹ *ᵥ n
@@ -235,8 +234,7 @@ theorem form_bounds : ∀ (g : ℕ) (Bs : Matrix (Fin g) (Fin g) ℤ) (τ G : Ma
     have e3 : (fun _ : Fin g => (0 : ℂ)) = 0 := rfl
     simp only [e3, mulVec_zero, add_zero, zero_add, single_one_dotProduct, zero_dotProduct,
       zero_sub] at h
-    rw [hGim, e2, mulVec_neg] at h
-    simp only [Pi.neg_apply, Int.cast_neg, neg_inj] at h
+    simp only [hGim, e2, mulVec_neg, Pi.neg_apply, Int.cast_neg, neg_inj] at h
     rw [h]
   have hSY : ∀ n, Br *ᵥ n = 0 → S *ᵥ (Y *ᵥ n) = n := by
     intro n hn

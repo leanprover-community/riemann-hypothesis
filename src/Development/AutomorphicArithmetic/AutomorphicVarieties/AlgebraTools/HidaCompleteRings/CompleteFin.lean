@@ -66,8 +66,7 @@ theorem UpperTheory.V.AlgebraTools.AnnihilatorQuotientFinite.completeFin :
       refine ⟨r • m, ?_⟩
       rw [AdicCompletion.ofTensorProduct_tmul, map_smul]
       ext n
-      rw [AdicCompletion.val_smul_apply]
-      simp
+      simp [AdicCompletion.val_smul_apply]
       try rfl
     | add a b ha hb =>
       obtain ⟨u, hu⟩ := ha

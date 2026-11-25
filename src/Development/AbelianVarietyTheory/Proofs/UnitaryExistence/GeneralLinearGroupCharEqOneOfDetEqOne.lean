@@ -188,8 +188,7 @@ theorem ddChar_diag_single (ψ : GL n R →* A) (i j : n) (u : Rˣ) :
   let P : Matrix n n R := σ.toPEquiv.toMatrix
   have hPP : P * P = 1 := by
     ext a b
-    rw [PEquiv.toMatrix_toPEquiv_mul]
-    simp [P, σ, PEquiv.toMatrix_apply, Matrix.one_apply]
+    simp [PEquiv.toMatrix_toPEquiv_mul, P, σ, PEquiv.toMatrix_apply, Matrix.one_apply]
   let Pg : GL n R := ⟨P, P, hPP, hPP⟩
   have hconj : Pg * ddCharDiag (Pi.mulSingle i u) * Pg = ddCharDiag (Pi.mulSingle j u) := by
     apply Units.ext
@@ -396,8 +395,7 @@ theorem ddChar_induction [Finite R] (ψ : GL n R →* A) (u : Rˣ) (hu : IsUnit 
       simp [Pi.single_apply, ite_mul]
     have hg2a : ∀ i, i ≠ a → (g2 : Matrix n n R) i a = 0 := by
       intro i hia
-      rw [e2]
-      simp only [x2, ite_eq_right hia]
+      simp only [e2, x2, ite_eq_right hia]
       change (g1 : Matrix n n R) i a + -((g1 : Matrix n n R) i a * ci) * C = 0
       rw [neg_mul, mul_assoc, hciC, mul_one, add_neg_cancel]
     have hg2aj : ∀ j, (g2 : Matrix n n R) a j = (g1 : Matrix n n R) a j := by

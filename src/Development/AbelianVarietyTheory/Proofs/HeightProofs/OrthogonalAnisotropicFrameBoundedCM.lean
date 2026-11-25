@@ -168,11 +168,10 @@ theorem exists_small_frame_mem (n : ℕ) : ∃ k : ℕ, ∀ (V : Type) [AddCommG
             (H.smul_le _ _).trans (mul_le_mul a1 hx3 (H.nonneg _) (by positivity))
           have a4 : ν ((-h x v) • v) ≤ B * B ^ 4 * B ^ 4 :=
             (H.smul_le _ _).trans (mul_le_mul a2 hv4 (H.nonneg _) (by positivity))
-          have a5 : 2 * B ^ 9 ≤ B * B ^ 9 := mul_le_mul_of_nonneg_right hB (by positivity)
           calc _ ≤ _ := H.add_le _ _
             _ ≤ _ := add_le_add a3 a4
             _ = 2 * B ^ 9 := by ring
-            _ ≤ B * B ^ 9 := a5
+            _ ≤ B * B ^ 9 := mul_le_mul_of_nonneg_right hB (by positivity)
             _ = B ^ 10 := by ring
       intro x hx
       obtain ⟨hx1, hx2⟩ := (hmem x).1 hx

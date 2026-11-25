@@ -63,8 +63,7 @@ theorem h_z_S {S : (n → A) →ₗ[A] (n → A)} (hS : D.FixEZ S) (hU : D.Uni S
 
 theorem isotropic_proj_image_complement {S : (n → A) →ₗ[A] (n → A)} (hS : D.FixEZ S) (hU : D.Uni S) {w : n → A}
     (hw : IsW D w) : D.pU (S w) = D.pX (S w) := by
-  rw [pU_apply, pXv_apply, pz_apply]
-  simp [h_e_S hS hU, h_z_S hS hU, hw.1, hw.2.2]
+  simp [pU_apply, pXv_apply, pz_apply, h_e_S hS hU, h_z_S hS hU, hw.1, hw.2.2]
 
 theorem complement_proj_image {S : (n → A) →ₗ[A] (n → A)} (hS : D.FixEZ S) (hU : D.Uni S) {w : n → A}
     (hw : IsW D w) : D.pW (S w) = S w - D.pX (S w) := by

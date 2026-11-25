@@ -58,8 +58,7 @@ theorem abv_p : abv p (p : KK p) = (p : ℝ)⁻¹ := by
   have h2 := intValuation_singleton (IsDiscreteValuationRing.maximalIdeal (WW p))
     (WittVector.p_nonzero p _) (maxIdeal_eq p)
   simp only [intAdicAbv, intAdicAbvDef, AbsoluteValue.coe_mk, MulHom.coe_mk, h2]
-  rw [toNNReal_exp]
-  simp
+  simp [toNNReal_exp]
 
 theorem abv_le_one_iff (x : KK p) : abv p x ≤ 1 ↔ ∃ w : WW p, algebraMap (WW p) (KK p) w = x := by
   constructor

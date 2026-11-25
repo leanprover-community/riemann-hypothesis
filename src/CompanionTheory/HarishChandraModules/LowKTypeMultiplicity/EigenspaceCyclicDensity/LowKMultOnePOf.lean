@@ -44,8 +44,7 @@ theorem cyc_stab {E : Fin n → Fin n → Module.End ℂ V} {v w : V} (c d : Fin
     E c d w ∈ Cyc E v := by
   obtain ⟨a, rfl⟩ := mem_cyc.1 h
   refine mem_cyc.2 ⟨FreeAlgebra.ι ℂ (c, d) * a, ?_⟩
-  rw [map_mul, Module.End.mul_apply]
-  simp only [CompanionTheory.D.LK.ev, FreeAlgebra.lift_ι_apply]
+  simp only [map_mul, Module.End.mul_apply, CompanionTheory.D.LK.ev, FreeAlgebra.lift_ι_apply]
 
 end
 
@@ -121,8 +120,7 @@ theorem multAlg_of (hL : LowSpan) (hH : HWMap) (hD : Dens) (hI : InvLift) (hC : 
       have hb0 : v ∈ (⊥ : Submodule ℂ V) := h0 ▸ hvL'
       exact hv0 ((Submodule.mem_bot ℂ).1 hb0)
     · intro s
-      have hs : (s : V) ∈ L' := by rw [h0]; exact s.2
-      obtain ⟨s', hs', hss'⟩ := hs
+      obtain ⟨s', hs', hss'⟩ : (s : V) ∈ L' := by rw [h0]; exact s.2
       have : s' = s := Subtype.ext hss'
       rw [← this]
       exact hs'
@@ -254,9 +252,8 @@ theorem lowKMultOneP_of (hM : MultAlg) (hE : KModExists) (hD : CycDense) (hO : O
   rw [hdense] at hcl
   have hum : (u : H) ∈ (ℂ ∙ (u : H))ᗮ := hcl Submodule.mem_top
   rw [Submodule.mem_orthogonal_singleton_iff_inner_left, inner_self_eq_zero] at hum
-  have hu0 : u = 0 := Subtype.ext hum
   have hvv : inner ℂ v v ≠ 0 := inner_self_ne_zero.2 hv0
-  have heq : inner ℂ v v • v' = inner ℂ v v' • v := sub_eq_zero.1 (hu_def ▸ hu0)
+  have heq : inner ℂ v v • v' = inner ℂ v v' • v := sub_eq_zero.1 (hu_def ▸ (Subtype.ext hum))
   have hv'S2 : (v' : H) ∈ S := by
     have e : v' = ((inner ℂ v v)⁻¹ * inner ℂ v v') • v := by
       rw [mul_smul, ← heq, smul_smul, inv_mul_cancel₀ hvv, one_smul]

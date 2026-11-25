@@ -75,16 +75,14 @@ theorem exists_smul_mem_span_invariants_sup :
 
   have hinv : ∀ j, (∑ g : Γ, g • (c j • x)) ∈ {y : N | ∀ g : Γ, g • y = y} := by
     intro j h
-    rw [Finset.smul_sum]
-    simp only [smul_smul]
+    simp only [Finset.smul_sum, smul_smul]
     exact Fintype.sum_bijective (h * ·) (Group.mulLeft_bijective h) _ _ (fun _ => rfl)
   obtain ⟨z, hzdef⟩ : ∃ z : N, z = ∑ j, d j • ∑ g : Γ, g • (c j • x) := ⟨_, rfl⟩
   have hz : z ∈ Submodule.span B {y : N | ∀ g : Γ, g • y = y} := by
     rw [hzdef]
     exact Submodule.sum_mem _ (fun j _ => Submodule.smul_mem _ _ (Submodule.subset_span (hinv j)))
   have hz' : z = ∑ g : Γ, (∑ j, d j * g • c j) • (g • x) := by
-    rw [hzdef]
-    simp only [Finset.smul_sum, hsemi, smul_smul, Finset.sum_smul]
+    simp only [hzdef, Finset.smul_sum, hsemi, smul_smul, Finset.sum_smul]
     exact Finset.sum_comm
   have hc : Nat.card (q.inertia Γ) = (Finset.univ.filter (fun g : Γ => g ∈ q.inertia Γ)).card := by
     rw [Nat.card_eq_fintype_card]

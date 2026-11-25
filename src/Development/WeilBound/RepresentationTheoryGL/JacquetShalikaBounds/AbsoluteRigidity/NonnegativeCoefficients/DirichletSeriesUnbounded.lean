@@ -209,8 +209,7 @@ theorem dirichlet_series_unbounded : LandauL → NewtonLow → EulerLog → Remo
   have ha2 : AnalyticOnNhd ℝ (fun t : ℝ => ((t : ℂ) - 1) ^ r * Complex.exp (SC t)) (Set.Ioi 1) := fun t ht => by
     have h : AnalyticAt ℂ (fun s => (s - 1) ^ r * Complex.exp (SC s)) (t : ℂ) :=
       ((analyticAt_id.sub analyticAt_const).pow r).mul (hSCa t (Set.mem_Ioi.1 ht)).cexp
-    have h1 : AnalyticAt ℝ (fun s => (s - 1) ^ r * Complex.exp (SC s)) (t : ℂ) := h.restrictScalars
-    exact h1.comp (Complex.ofRealCLM.analyticAt t)
+    exact h.restrictScalars.comp (Complex.ofRealCLM.analyticAt t)
   have hid : Set.EqOn (fun t : ℝ => G t) (fun t : ℝ => ((t : ℂ) - 1) ^ r * Complex.exp (SC t)) (Set.Ioi 1) :=
     ha1.eqOn_of_preconnected_of_eventuallyEq ha2 isPreconnected_Ioi (z₀ := B + 1)
       (Set.mem_Ioi.2 (by linarith)) (by

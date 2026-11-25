@@ -96,8 +96,7 @@ lemma Gy_apply (y : Matrix (Fin r) (Fin r) ℂ) (a b : Fin r) :
 lemma det_ne_of_ok {y : Matrix (Fin r) (Fin r) ℂ} (h : Ok p0 y) : y.det ≠ 0 := by
   intro h0
   have hpos := h.det_pos
-  rw [Gy, Matrix.det_mul, Matrix.det_mul, Matrix.det_mul, Matrix.det_transpose, h0] at hpos
-  simp at hpos
+  simp [Gy, Matrix.det_mul, Matrix.det_mul, Matrix.det_mul, Matrix.det_transpose, h0] at hpos
 
 lemma lead_pos {y : Matrix (Fin r) (Fin r) ℂ} (h : Ok p0 y) (i : ℕ) (hi : i ≤ r) :
     0 < (∏ a ∈ Finset.range i, (if a < p0 then (1 : ℝ) else -1)) *
@@ -245,7 +244,6 @@ theorem isPreconnected_ok {ι : Type*} [Fintype ι] :
     simp [Matrix.one_apply_ne hne]
   refine isPreconnected_of_forall 1 fun y hy => ?_
   let γ : ℝ → ι → Matrix (Fin r) (Fin r) ℂ := fun t i => mask p0 t (y i)
-  have hγc : Continuous γ := continuous_pi fun i => continuous_mask (y i)
   have hγ0 : γ 0 ∈ {x | x ∈ V ∧ ∀ i, (x i).det ≠ 0} :=
     ⟨fun i k a hka => mask_zero_blk (y i) hka, fun i => det_ne_of_ok (ok_mask (hy i) le_rfl zero_le_one)⟩
   refine ⟨γ '' Set.Icc 0 1 ∪ {x | x ∈ V ∧ ∀ i, (x i).det ≠ 0}, ?_, Or.inr (hsub h1 |> fun _ => h1),
@@ -254,7 +252,7 @@ theorem isPreconnected_ok {ι : Type*} [Fintype ι] :
     · exact fun i => ok_mask (hy i) ht0 ht1
     · exact hsub hx
   · exact IsPreconnected.union (γ 0) ⟨0, ⟨le_rfl, zero_le_one⟩, rfl⟩ hγ0
-      (isPreconnected_Icc.image γ hγc.continuousOn) hBD
+      (isPreconnected_Icc.image γ (continuous_pi fun i => continuous_mask (y i)).continuousOn) hBD
 
 theorem isPreconnected_upper {ι : Type*} [Fintype ι] :
     IsPreconnected {b : ι → Matrix (Fin r) (Fin r) ℂ |

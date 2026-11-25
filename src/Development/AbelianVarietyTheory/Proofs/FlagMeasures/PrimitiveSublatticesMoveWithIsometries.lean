@@ -92,8 +92,7 @@ theorem smul_mem_smul_iff (h : V →ₗ⋆[K] V →ₗ[K] K) (g : isom h) (L : S
     (g : V ≃ₗ[K] V) x ∈ g • L ↔ x ∈ L := by
   constructor
   · rintro ⟨w, hw, hwx⟩
-    have : w = x := (g : V ≃ₗ[K] V).injective hwx
-    exact this ▸ hw
+    exact ((g : V ≃ₗ[K] V).injective hwx : w = x) ▸ hw
   · exact fun hx => ⟨x, hx, rfl⟩
 
 theorem smul_mem_primSp (h : V →ₗ⋆[K] V →ₗ[K] K) (g : isom h) (L : Submodule R V)

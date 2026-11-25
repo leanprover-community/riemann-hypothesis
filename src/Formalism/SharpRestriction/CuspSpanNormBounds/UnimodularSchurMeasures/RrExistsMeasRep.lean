@@ -52,7 +52,6 @@ theorem rr_N_null [μ.IsMulLeftInvariant] [Countable Γ] (h : rr_FD μ Γ D) : �
   rw [rr_N_eq_iUnion_preimage_inter]
   refine measure_iUnion_null fun a => measure_iUnion_null fun b => measure_iUnion_null fun hab => ?_
   have hne : (a : G) * (b : G)⁻¹ ≠ 1 := fun e => hab (Subtype.ext (mul_inv_eq_one.mp e))
-  have hmem : (a : G) * (b : G)⁻¹ ∈ (Γ : Set G) := Γ.mul_mem a.2 (Γ.inv_mem b.2)
   have hsub : (fun y => (a : G) * y) ⁻¹' D ∩ (fun y => (b : G) * y) ⁻¹' D ⊆
       (fun y => (a : G) * y) ⁻¹' ((fun z => (a : G) * (b : G)⁻¹ * z) '' D ∩ D) := by
     rintro y ⟨h1, h2⟩
@@ -60,7 +59,7 @@ theorem rr_N_null [μ.IsMulLeftInvariant] [Countable Γ] (h : rr_FD μ Γ D) : �
     simp only [mul_assoc, inv_mul_cancel_left]
   refine measure_mono_null hsub ?_
   rw [measure_preimage_mul]
-  exact h.disj _ hmem hne
+  exact h.disj _ (Γ.mul_mem a.2 (Γ.inv_mem b.2)) hne
 
 theorem rr_rep_spec (h : rr_FD μ Γ D) (y : G) :
     ∃ γ ∈ Γ, rr_rep (Γ : Set G) D y = γ * y ∧ γ * y ∈ D := by
@@ -170,7 +169,6 @@ theorem rr_meas_pre [μ.IsMulLeftInvariant] [μ.IsMulRightInvariant] [Countable 
   obtain ⟨r₀, hr₀, hr₀rep⟩ := rr_exists_meas_rep h
   haveI : MeasurableConstSMul Γ G := ⟨fun c => measurable_const_mul (c : G)⟩
   haveI : SMulInvariantMeasure Γ G μ := ⟨fun c s _ => measure_preimage_mul μ (c : G) s⟩
-  have hMmeas : MeasurableSet (rr_N Γ D) := measurableSet_rr_N h.meas
   have hN0 : μ ((fun x => x * g) ⁻¹' rr_N Γ D) = 0 := by
     rw [measure_preimage_mul_right]; exact rr_N_null h
   have hN : ∀ᵐ x ∂μ, x * g ∉ rr_N Γ D := by
@@ -178,7 +176,7 @@ theorem rr_meas_pre [μ.IsMulLeftInvariant] [μ.IsMulRightInvariant] [Countable 
     simp only [Set.mem_setOf_eq, not_not] at hx
     exact hx
   have hSmeas : MeasurableSet ((fun x => x * g) ⁻¹' ((rr_N Γ D)ᶜ ∩ r₀ ⁻¹' A)) :=
-    measurable_mul_const g (hMmeas.compl.inter (hr₀ hA))
+    measurable_mul_const g ((measurableSet_rr_N h.meas).compl.inter (hr₀ hA))
   have hinv : ∀ c : Γ, (fun x => c • x) ⁻¹' ((fun x => x * g) ⁻¹' ((rr_N Γ D)ᶜ ∩ r₀ ⁻¹' A)) = ((fun x => x * g) ⁻¹' ((rr_N Γ D)ᶜ ∩ r₀ ⁻¹' A)) := by
     intro c
     ext x

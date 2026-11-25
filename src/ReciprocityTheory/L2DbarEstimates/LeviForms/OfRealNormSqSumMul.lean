@@ -70,8 +70,7 @@ theorem leviChain : LeviChainStatement := by
       wd_mul (f := fun y => ((deriv k (v y) : ℝ) : ℂ)) (g := wdb n kk (fun y => ((v y : ℝ) : ℂ)))
         hD1 (differentiableAt_wdb hv'),
       wd_ofReal_comp hk1 hv1, wdb_ofReal hv1]
-  rw [ofReal_normSq_sum_mul]
-  simp only [leviV, hterm, Finset.mul_sum, ← Finset.sum_add_distrib]
+  simp only [ofReal_normSq_sum_mul, leviV, hterm, Finset.mul_sum, ← Finset.sum_add_distrib]
   refine Finset.sum_congr rfl fun j _ => Finset.sum_congr rfl fun kk _ => ?_
   ring
 

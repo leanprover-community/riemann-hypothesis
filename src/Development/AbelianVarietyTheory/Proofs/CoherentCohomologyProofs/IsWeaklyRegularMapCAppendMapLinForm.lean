@@ -128,8 +128,7 @@ theorem comap_killVars_map_C (S : Set σ) (I : Ideal R) :
 
 theorem ker_killVars (S : Set σ) :
     RingHom.ker (killVars R S) = Ideal.span (X '' S) := by
-  have := comap_killVars_map_C (R := R) S ⊥
-  simpa [RingHom.ker_eq_comap_bot] using this
+  simpa [RingHom.ker_eq_comap_bot] using comap_killVars_map_C (R := R) S ⊥
 
 def quotientSpanXEquiv (R : Type*) [CommRing R] (S : Set σ) :
     (MvPolynomial σ R ⧸ Ideal.span (X '' S : Set (MvPolynomial σ R))) ≃ₐ[R]
@@ -283,8 +282,7 @@ theorem comap_linFormElim_map_C (S : Set ι) (I : Ideal R) :
 
 theorem ker_linFormElim (S : Set ι) :
     RingHom.ker (linFormElim u hu S) = Ideal.span (linForm u '' S) := by
-  have := comap_linFormElim_map_C u hu S ⊥
-  simpa [RingHom.ker_eq_comap_bot] using this
+  simpa [RingHom.ker_eq_comap_bot] using comap_linFormElim_map_C u hu S ⊥
 
 include hu
 

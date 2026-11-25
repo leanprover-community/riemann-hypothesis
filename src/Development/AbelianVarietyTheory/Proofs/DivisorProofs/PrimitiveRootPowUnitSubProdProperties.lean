@@ -77,8 +77,7 @@ lemma transfer2 {q : ℕ} [NeZero q] {A : Type} [CommRing A] (ζ : Prim q A) (F 
   ext k
   rw [coeff_map, coeff_zero]
   apply transfer ζ
-  have := congrArg (fun G : ℂ[X] => G.coeff k) hF
-  simpa [coeff_map] using this
+  simpa [coeff_map] using congrArg (fun G : ℂ[X] => G.coeff k) hF
 
 lemma nthRoots_eq (q : ℕ) [NeZero q] :
     nthRootsFinset q (1 : ℂ) = (Finset.range q).image (fun a => μc q ^ a) := by
@@ -123,8 +122,7 @@ lemma C_prod_erase (q : ℕ) [NeZero q] :
     ∏ a ∈ (Finset.range q).erase 0, (X - C (μc q ^ a)) = ∑ i ∈ Finset.range q, (X ^ i : ℂ[X]) := by
   have h0 : 0 ∈ Finset.range q := Finset.mem_range.2 (NeZero.pos q)
   have h := Finset.mul_prod_erase (Finset.range q) (fun a => (X - C (μc q ^ a) : ℂ[X])) h0
-  have hne : (X - C (1 : ℂ) : ℂ[X]) ≠ 0 := X_sub_C_ne_zero 1
-  apply mul_left_cancel₀ hne
+  apply mul_left_cancel₀ (X_sub_C_ne_zero 1)
   calc (X - C (1 : ℂ)) * ∏ a ∈ (Finset.range q).erase 0, (X - C (μc q ^ a))
       = ∏ a ∈ Finset.range q, (X - C (μc q ^ a)) := by simpa only [pow_zero] using h
     _ = X ^ q - 1 := C_prod_range q

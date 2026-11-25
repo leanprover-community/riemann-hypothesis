@@ -307,8 +307,7 @@ theorem fund_conj {S : Type} [Group S] [MeasurableSpace S] [MeasurableMul S] (μ
   have hmp : MeasurePreserving (fun x => q * x) μ μ := measurePreserving_mul_left μ q
   have hemb : MeasurableEmbedding (fun x => q * x) := (MeasurableEquiv.mulLeft q).measurableEmbedding
   have hmem : ∀ g : G₁, q⁻¹ * (g : S) * q ∈ G₂ := fun g => by
-    rw [hq]
-    simp [mul_assoc]
+    simp [hq, mul_assoc]
   let e : G₁ → G₂ := fun g => ⟨q⁻¹ * g * q, hmem g⟩
   have hbij : Function.Bijective e := by
     constructor

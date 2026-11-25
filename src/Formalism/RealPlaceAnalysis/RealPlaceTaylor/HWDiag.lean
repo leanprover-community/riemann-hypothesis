@@ -137,8 +137,7 @@ theorem generatorPowDiagRecursion_holds : HWDiag := by
     rw [← cast_nat_sub_one_sub_fin_eq_complex a]
     first
     | exact (Nat.cast_smul_eq_nsmul ℂ _ _).symm
-  rw [epow_succ_apply, module_end_finset_sum_apply]
-  simp only [module_end_mul_apply, hterm]
+  simp only [epow_succ_apply, module_end_finset_sum_apply, module_end_mul_apply, hterm]
   rw [Finset.sum_add_distrib, h1, h2, Finset.sum_sub_distrib, Finset.sum_const,
     card_filter_fin_lt_eq, hsmul]
   simp only [lsh, add_smul]
@@ -189,8 +188,7 @@ theorem diagChar_of (h : HWDiag) : DiagChar := by
       simp [epow_zero_apply, Matrix.one_apply]
     | succ k ih =>
       intro b
-      rw [hrec, pow_succ']
-      simp only [ih, Matrix.mul_apply, Finset.sum_smul, Finset.smul_sum, mul_smul]
+      simp only [hrec, pow_succ', ih, Matrix.mul_apply, Finset.sum_smul, Finset.smul_sum, mul_smul]
       exact Finset.sum_comm
   have hchar : (∏ s : Fin n, (Polynomial.X - Polynomial.C (lsh ν s))) = M.charpoly := by
     rw [hM, HWDiag_charpoly]
@@ -204,9 +202,7 @@ theorem diagChar_of (h : HWDiag) : DiagChar := by
     intro c
     have hac := congrArg (fun N : Matrix (Fin n) (Fin n) ℂ => N a c) hzero
     simpa [Matrix.sum_apply, Matrix.smul_apply, smul_eq_mul] using hac
-  rw [hchar]
-  simp only [hpow, Finset.smul_sum, smul_smul]
-  rw [Finset.sum_comm]
-  simp only [← Finset.sum_smul, hentry, zero_smul, Finset.sum_const_zero]
+  simp only [hchar, hpow, Finset.smul_sum, smul_smul]
+  simp only [Finset.sum_comm, ← Finset.sum_smul, hentry, zero_smul, Finset.sum_const_zero]
 
 end Formalism.REAL

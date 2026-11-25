@@ -34,8 +34,7 @@ theorem ext_of_fromSpecStalk {Y X : Scheme.{u}} (f g : Y ⟶ X)
     rw [Scheme.SpecMap_stalkMap_fromSpecStalk, Spec.map_comp, Category.assoc, specMap_stalkCongr (hb y),
       Scheme.SpecMap_stalkMap_fromSpecStalk, h y]
   refine Scheme.Hom.ext' (LocallyRingedSpace.Hom.ext' ?_)
-  have := SheafedSpace.hom_stalk_ext _ _ hbase hs
-  exact congrArg InducedCategory.Hom.hom this
+  exact congrArg InducedCategory.Hom.hom (SheafedSpace.hom_stalk_ext _ _ hbase hs)
 
 theorem comp_eq {A B C D : Scheme.{u}} (u : A ⟶ B) (v : B ⟶ C) (f g : C ⟶ D) (h : v ≫ f = v ≫ g) :
     (u ≫ v) ≫ f = (u ≫ v) ≫ g := by

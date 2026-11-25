@@ -85,8 +85,7 @@ theorem rq_inG_conj {ε : Fin n → Bool} {k : Matrix (Fin n) (Fin n) ℂ} (hk :
   show (k * X * kᴴ)ᴴ * Jm ε + Jm ε * (k * X * kᴴ) = 0
   simp only [Matrix.conjTranspose_mul, Matrix.conjTranspose_conjTranspose]
   calc _ = k * (Xᴴ * Jm ε + Jm ε * X) * kᴴ := by
-        rw [mul_add, add_mul]
-        simp only [mul_assoc]
+        simp only [mul_add, add_mul, mul_assoc]
         rw [hc', ← mul_assoc (Jm ε) k, ← hc, mul_assoc]
     _ = 0 := by rw [hX', mul_zero, zero_mul]
 

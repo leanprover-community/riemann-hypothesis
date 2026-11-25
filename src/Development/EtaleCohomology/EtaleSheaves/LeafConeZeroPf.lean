@@ -93,8 +93,7 @@ theorem tri_zero {D : Type u} [Category.{v} D] [Preadditive D] [HasZeroObject D]
   obtain ⟨k, rfl⟩ := (hb (n - 1)).2 h
   have : g = (CategoryTheory.shiftFunctor D (1 : ℤ)).map (T.mor₁ ≫ k) ≫ (e n).inv := by
     rw [hh, Category.assoc, Iso.hom_inv_id, Category.comp_id]
-  rw [this, Functor.map_comp]
-  simp only [← Category.assoc, comp_distTriang_mor_zero₃₁ T hT, zero_comp]
+  simp only [this, Functor.map_comp, ← Category.assoc, comp_distTriang_mor_zero₃₁ T hT, zero_comp]
 
 variable (R : Type) [CommRing R]
 

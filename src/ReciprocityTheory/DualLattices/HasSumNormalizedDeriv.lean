@@ -32,8 +32,7 @@ theorem hasSum_normalizedDeriv {F : ℍ → ℂ} {c : ℕ → ℂ}
   have hτ0im : (τ0 : ℂ).im = y0 := by simp [τ0]
   set r : ℝ := ‖𝕢 1 (τ0 : ℂ)‖ with hr
   have hsum : Summable (fun m : ℕ ↦ ‖c m‖ * r ^ m) := by
-    have := (hF τ0).summable.norm
-    refine this.congr fun m ↦ ?_
+    refine ((hF τ0).summable.norm).congr fun m ↦ ?_
     rw [norm_smul, norm_pow]
   set U : Set ℂ := {z : ℂ | y0 < z.im} with hU
   have hUo : IsOpen U := isOpen_lt continuous_const Complex.continuous_im

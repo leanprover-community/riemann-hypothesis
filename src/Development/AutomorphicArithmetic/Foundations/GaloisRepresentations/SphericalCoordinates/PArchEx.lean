@@ -206,7 +206,7 @@ open scoped Matrix TensorProduct Classical
 open UpperTheory.Gal.W2
 
 theorem UpperTheory.finrank_archimedean_eq_two_mul_dim :
-    ∀ (p : ℕ) [Fact p.Prime] (D : Datum p) (G : HTGroup p) (_ : Link D G), D.m = 1 → UpperTheory.Gal.W2.ArchSpan → Module.finrank ℝ (Arch G) = Module.finrank ℚ (VQ D) ∧ Module.finrank ℝ (Arch G) = 2 * D.g := by
+    ∀ (p : ℕ) [Fact p.Prime] (D : Datum p) (G : HTGroup p) (L : Link D G), D.m = 1 → UpperTheory.Gal.W2.ArchSpan → Module.finrank ℝ (Arch G) = Module.finrank ℚ (VQ D) ∧ Module.finrank ℝ (Arch G) = 2 * D.g := by
   intro p _ D G L hm hA
   have h1 : Module.finrank ℝ (Arch G) = Fintype.card (InfinitePlace G.F) * (G.n * 2) := by
     have hc : Module.finrank ℝ (Fin G.n → ℂ) = G.n * 2 := by

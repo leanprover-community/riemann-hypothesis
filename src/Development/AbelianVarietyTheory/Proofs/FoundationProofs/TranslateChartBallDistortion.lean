@@ -113,8 +113,7 @@ theorem translate_chart_ball_distortion
   refine ⟨min (η / 2) (min η2 (min (η3 / 2) (η4 / 2))),
     lt_min (by linarith) (lt_min hη20 (lt_min (by linarith) (by linarith))), ?_⟩
   intro x hx r hr
-  rw [mem_ball_zero_iff] at hx
-  simp only [lt_min_iff] at hx
+  simp only [mem_ball_zero_iff, lt_min_iff] at hx
   obtain ⟨b1, b2, b3, b4⟩ := hx
   obtain ⟨hr0, hrδ⟩ := hr
   simp only [lt_min_iff] at hrδ

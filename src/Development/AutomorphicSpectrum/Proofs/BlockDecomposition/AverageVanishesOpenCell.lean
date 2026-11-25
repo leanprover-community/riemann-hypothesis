@@ -785,8 +785,8 @@ theorem avgVanish_at {i t : ℕ} (ψ : AddChar k Circle) (hψ : Continuous ψ) (
     (fun b w => sigX_cEl τ σ _ w) (dEmb k i t) (Fib.dEmb_add i t) hce y _ hD0 hDs hDc hDo L hLU hLc hθ
     hL1 hL2 hL3 hU hfib f hsupp hs₁
 
-theorem main : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (i t : ℕ) (ψ : AddChar k Circle) (_ : Continuous ψ) (τ : MRep k (i + 1)) (σ : GRep k (t + 1)) (_ : IsSmooth τ.ρ) (_ : IsSmooth σ.ρ) (f : XS τ σ) (_ : eO ψ f = 0)
-    (p : Mir k ((i + 1) + t + 1)) (_ : p ∉ Cl k i t),
+theorem main : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (i t : ℕ) (ψ : AddChar k Circle) (hψ : Continuous ψ) (τ : MRep k (i + 1)) (σ : GRep k (t + 1)) (hτ : IsSmooth τ.ρ) (hσ : IsSmooth σ.ρ) (f : XS τ σ) (h0 : eO ψ f = 0)
+    (p : Mir k ((i + 1) + t + 1)) (hp : p ∉ Cl k i t),
   AvgVanish (HPG k (i + 1) (t + 1)) (sigX τ σ) (MirUin k ((i + 1) + t + 1)) (mirChar k ψ ((i + 1) + t)) f p := by
   intro k _ _ _ _ i t ψ hψ τ σ hτ _ f h0 p hp
   obtain ⟨h, hh, d, m, rfl⟩ := (_root_.GlobalTheory.CompanionTheory.BZPhiPG.Cells.cells k i t).2 p hp

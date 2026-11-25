@@ -138,8 +138,7 @@ theorem map_mem_arcSpan {L : Lat B n V} {L' : Lat B n V'} (h : LatHom L L') (c :
     rw [hom_phiIt]
     exact Submodule.subset_span ⟨h.f u, h.map_N _ u hu, rfl⟩
   intro v hv
-  have h1 : Λ • v ∈ L.pull (c - (ell : ZMod n)) ell := mem_dv.1 hv
-  have h2 := hp h1
+  have h2 := hp (mem_dv.1 hv)
   refine mem_dv.2 ?_
   rwa [← map_smul]
 
@@ -171,8 +170,7 @@ theorem step2 (g : ℕ) (PP : Polynomial O) (hGX : B.GamX) (hGN : L₂.GamN c)
     have hG : ∀ v, S₂.loc s (G v) = S₂.gE s (S₂.loc s v) := fun v => hEq s hs v.1 v.2 _
     rw [polyAct_map (S₂.loc s) G (S₂.gE s) hG PP x]
     refine hK3 s hs _ (InSum.mono (hRD s hs).2 (hK2 s hs x ?_))
-    have hm : ((G x - x : ↥(L₂.W c ell Λ)) : V₂) ∈ sm X (L₂.N c) := hwI
-    have := ((hP4b (G x - x)).1 hm).2 s hs
+    have := ((hP4b (G x - x)).1 hwI).2 s hs
     rwa [map_sub, hG] at this
 
 theorem step3 (m : LevelMap h S₁ S₂) (g sig rr a₀ : ℕ) (ϖ : O) (H b : ℕ → ℕ) (kind : ℕ → Kind)
@@ -308,8 +306,7 @@ theorem arc_lift_of_localization_data : ArcLiftOfLocalizationData := by
       rw [← map_mul, ← map_mul, mul_comm (PP'.eval 1), hε]
       congr 1
       ring
-    rw [hc]
-    simp only [smul_sub, smul_add, mul_smul]
+    simp only [hc, smul_sub, smul_add, mul_smul]
     abel
   rw [e]
   exact Submodule.smul_mem _ _ (Submodule.add_mem _ h1 (Submodule.smul_mem _ _ hx'c))

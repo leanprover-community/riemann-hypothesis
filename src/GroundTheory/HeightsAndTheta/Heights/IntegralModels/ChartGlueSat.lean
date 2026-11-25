@@ -35,8 +35,7 @@ theorem exists_sum_mul_pow_eq_one (A : S) {k : ℕ} (f c : Fin k → Ω) (hf : �
     rw [hpow]; exact Submodule.mem_top
   obtain ⟨d, hd⟩ := (Submodule.mem_span_range_iff_exists_fun A).1 h1'
   refine ⟨fun l => d l, fun l => (d l).2, ?_⟩
-  have := congrArg Subtype.val hd
-  simpa [f'] using this
+  simpa [f'] using congrArg Subtype.val hd
 
 end Sat
 

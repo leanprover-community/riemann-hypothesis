@@ -137,8 +137,7 @@ theorem vandermondeOf_succ {R : Type*} [CommRing R] {n : ℕ} (v : Fin (n + 1) �
   · rw [Fin.prod_univ_succ]
     simp [Fin.succ_pos]
   · refine Finset.prod_congr rfl fun i _ => ?_
-    rw [Fin.prod_univ_succ]
-    simp only [Fin.succ_lt_succ_iff, Fin.not_lt_zero, ite_false, one_mul]
+    simp only [Fin.prod_univ_succ, Fin.succ_lt_succ_iff, Fin.not_lt_zero, ite_false, one_mul]
     rw [← Finset.prod_filter, Finset.filter_lt_eq_Ioi]
 
 theorem numStandardTable_zero (m : ℕ) : numStandardTable (fun _ : Fin m => (0 : ℕ)) = 1 := by
@@ -203,8 +202,7 @@ theorem numStandardTable_hookShape_succ (h : FrobeniusDimensionFormula.Statement
     omega
   have hf := h (l + 1) (hookShape (l + 1) k l) hanti
   simp only [vandermondeOf_succ, Fin.prod_univ_succ] at hf
-  rw [e0, hsum] at hf
-  simp only [es] at hf
+  simp only [e0, hsum, es] at hf
   have hz := h l (fun _ => 0) antitone_const
   beta_reduce at hz
   rw [numStandardTable_zero] at hz

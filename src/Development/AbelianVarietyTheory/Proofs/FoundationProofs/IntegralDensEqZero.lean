@@ -397,11 +397,9 @@ theorem discrete_of_selfDual {A : AddSubgroup W} (hd : IsSelfDual H A) (hfg : A.
           exact_mod_cast Int.abs_lt_one_iff.1 this
         | add a b _ _ ha hb =>
           change ((H (x : W)) ((a : W) + (b : W))).im = 0
-          rw [map_add]
-          simp only [add_im]
+          simp only [map_add, add_im]
           change altE H (x : W) (a : W) + altE H (x : W) (b : W) = 0
-          rw [ha, hb]
-          simp
+          simp [ha, hb]
       have h0 : ∀ y ∈ A, altE H x y = 0 := fun y hy => h0' ⟨y, hy⟩
       by_contra hx
       have hx' : (x : W) ≠ 0 := fun h => hx (Subtype.ext h)

@@ -203,10 +203,9 @@ theorem _root_.GlobalTheory.HTLat.fg_inf (hv : v.Integers O) {La : Submodule O U
     obtain ⟨u, rfl⟩ := Submodule.mkQ_surjective _ q
     have hox' : o • (F.restrictScalars O).mkQ u = 0 := congrArg Subtype.val hox
     rw [← LinearMap.map_smul, Submodule.mkQ_apply, Submodule.Quotient.mk_eq_zero] at hox'
-    have hu : u ∈ F := key o u (nonZeroDivisors.ne_zero ho) hox'
     rw [Submodule.mem_bot]
     ext
-    simpa using hu
+    simpa using key o u (nonZeroDivisors.ne_zero ho) hox'
   haveI : Module.Flat O (LinearMap.range g) :=
     (Module.Flat.flat_iff_torsion_eq_bot_of_isBezout).2 htf
   haveI : Module.Free O (LinearMap.range g) := Module.free_of_flat_of_isLocalRing

@@ -184,8 +184,7 @@ theorem JoinVerticalDivisorLeft.proof : JoinVerticalDivisorLeft.Statement := by
     obtain ⟨u, v, ⟨γ, hu⟩, ⟨δ, hv⟩, huQ, hvQ, huv⟩ := hU _ (comap_isMultiProjPrime hQ) hle hO
     refine ⟨rename (assocVar ι₂) u, rename (assocVar ι₂) v, ⟨_, isMultiHomog_rename_assocVar hu⟩,
       ⟨_, isMultiHomog_rename_assocVar hv⟩, huQ, hvQ, ?_⟩
-    have := (rename_assocVar_mem_mcIdeal_iff O x z w _).mpr huv
-    simpa only [map_sub, map_mul] using this
+    simpa only [map_sub, map_mul] using (rename_assocVar_mem_mcIdeal_iff O x z w _).mpr huv
 
 end
 

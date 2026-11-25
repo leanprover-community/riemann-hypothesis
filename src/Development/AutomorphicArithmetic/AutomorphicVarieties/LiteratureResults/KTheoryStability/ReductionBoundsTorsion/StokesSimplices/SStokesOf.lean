@@ -336,8 +336,7 @@ def I {q : ℕ} (ω : V → V [⋀^Fin q]→L[ℝ] ℝ) (y : Fin (q + 1) → V) 
 lemma P_cons {q : ℕ} (y : Fin (q + 2) → V) (s : Fin q → ℝ) :
     y 0 + ∑ j, (Fin.cons (1 - ∑ k, s k) s : Fin (q + 1) → ℝ) j • (y j.succ - y 0) =
       y 1 + ∑ j, s j • (y j.succ.succ - y 1) := by
-  rw [Fin.sum_univ_succ]
-  simp only [Fin.cons_zero, Fin.cons_succ, Fin.succ_zero_eq_one]
+  simp only [Fin.sum_univ_succ, Fin.cons_zero, Fin.cons_succ, Fin.succ_zero_eq_one]
   have key : ∀ j : Fin q, s j • (y j.succ.succ - y 0) = s j • (y j.succ.succ - y 1) + s j • (y 1 - y 0) := by
     intro j
     rw [← smul_add]
@@ -378,8 +377,7 @@ theorem asm (hA : StokesSimplexSubdivision) (hH : SubHyp) (hS : SubSlice) (U : S
         linarith [ht.2]
       · simpa only [Fin.cons_succ] using ht.1 k
     have hw1 : ∑ j, (Fin.cons (1 - ∑ k, t k) t : Fin (m + 1) → ℝ) j = 1 := by
-      rw [Fin.sum_univ_succ]
-      simp
+      simp [Fin.sum_univ_succ]
     have hc := hUc.sum_mem hw0 hw1 (fun j _ => hz j)
     convert hc using 1
     rw [Fin.sum_univ_succ]
@@ -580,8 +578,7 @@ theorem subSlice : SubSlice := by
     apply intervalIntegral.integral_eq_sub_of_hasDerivAt (f := fun x => G (i.insertNth x s))
     · intro x hx
       rw [Set.uIcc_of_le ha] at hx
-      have := hderiv _ (hin x hx)
-      simpa [Fin.update_insertNth, Fin.insertNth_apply_same] using this
+      simpa [Fin.update_insertNth, Fin.insertNth_apply_same] using hderiv _ (hin x hx)
     · apply ContinuousOn.intervalIntegrable
       rw [Set.uIcc_of_le ha]
       exact hD.comp hcs.continuousOn hin

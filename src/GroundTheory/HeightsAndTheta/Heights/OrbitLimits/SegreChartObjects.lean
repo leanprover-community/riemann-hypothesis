@@ -46,12 +46,11 @@ omit [∀ k, Fintype (ι k)] in
 theorem chart_coord_eq_one {P : Ideal (MRing ι)} {m : ℕ} {σ : Fin m ≃ ((k : K) → ι k)}
     {i : (k : K) → ι k} {J : Ideal (MvPolynomial (Fin m) ℂ)} (hJ : J ∈ segreChartComponents P σ i)
     {x : Fin m → ℂ} (hx : x ∈ ComplexSets.zeroSet J) : x (σ.symm i) = 1 := by
-  have hle : segreChartIdeal P σ i ≤ J := (mem_segreChartComponents.1 hJ).1.2
   have hmem : (MvPolynomial.X (σ.symm i) - 1 : MvPolynomial (Fin m) ℂ) ∈ segreChartIdeal P σ i := by
     rw [segreChartIdeal, MvPolynomial.mem_vanishingIdeal_iff]
     rintro _ ⟨z, -, hzi, rfl⟩
     simp [hzi]
-  have h := hx _ (hle hmem)
+  have h := hx _ (((mem_segreChartComponents.1 hJ).1.2) hmem)
   simp only [map_sub, MvPolynomial.eval_X, map_one] at h
   exact sub_eq_zero.1 h
 

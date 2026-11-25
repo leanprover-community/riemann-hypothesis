@@ -26,8 +26,7 @@ theorem existsUnique_mul_I_of_re_eq_zero {P : ℂ → Prop} (h : ∃! s, P s)
   have hs' : s = (s.im : ℂ) * I := by
     apply Complex.ext <;> simp [hre s hs]
   refine ⟨s.im, by show P ((s.im : ℂ) * I); rw [← hs']; exact hs, fun τ hτ => ?_⟩
-  have := congrArg Complex.im (hu _ hτ)
-  simpa using this
+  simpa using congrArg Complex.im (hu _ hτ)
 
 theorem existsUnique_prod_mul_I_of_re_eq_zero {α : Type*} {P : α × ℂ → Prop}
     (h : ∃! p, P p) (hre : ∀ p, P p → p.2.re = 0) :

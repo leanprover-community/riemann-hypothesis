@@ -270,9 +270,9 @@ theorem ιMulti_cast {m n : ℕ} (h : n = m) (v : Fin m → H) :
 theorem exteriorPower_split :
     ∀ (R F L H : Type) [CommRing R] [AddCommGroup F] [Module R F] [AddCommGroup L] [Module R L]
       [AddCommGroup H] [Module R H] (i : F →ₗ[R] H) (s : L →ₗ[R] H) (r : H →ₗ[R] F)
-      (π : H →ₗ[R] L) (_ : ∀ x, r (i x) = x) (_ : ∀ y, r (s y) = 0)
-      (_ : ∀ x, π (i x) = 0) (_ : ∀ y, π (s y) = y)
-      (_ : LinearMap.range i ⊔ LinearMap.range s = ⊤) (c : ℕ),
+      (π : H →ₗ[R] L) (hri : ∀ x, r (i x) = x) (hrs : ∀ y, r (s y) = 0)
+      (hπi : ∀ x, π (i x) = 0) (hπs : ∀ y, π (s y) = y)
+      (hsup : LinearMap.range i ⊔ LinearMap.range s = ⊤) (c : ℕ),
       ∃ e : (∀ a : Fin (c + 1), (⋀[R]^(a : ℕ) F) ⊗[R] (⋀[R]^(c - a) L)) ≃ₗ[R] ⋀[R]^c H,
         ∀ (a : Fin (c + 1)) (f : Fin a → F) (h : Fin (c - a) → L),
           e (Pi.single a (exteriorPower.ιMulti R a f ⊗ₜ exteriorPower.ιMulti R (c - a) h)) =

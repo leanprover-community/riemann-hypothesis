@@ -166,8 +166,7 @@ theorem modNMap_mk (f : A →+ B) (x : A) :
 
 theorem modN_mk_eq_zero_iff (x : A) :
     (Submodule.Quotient.mk x : ModN A n) = 0 ↔ ∃ y : A, n • y = x := by
-  rw [Submodule.Quotient.mk_eq_zero]
-  simp
+  simp [Submodule.Quotient.mk_eq_zero]
 
 section Connecting
 

@@ -81,13 +81,11 @@ theorem UpperTheory.linearForm_eq_mul_trace_of_twisted_invariant :
       simp [smul_smul, mul_comm]
     rw [e1, e2, map_smul, map_smul] at h1
     simpa [smul_eq_mul] using h1
-  have hJ : ∃ x, J x ≠ 0 := by
+  obtain ⟨x₀, hx₀⟩ : ∃ x, J x ≠ 0 := by
     by_contra hne
     push Not at hne
     have hJ0 : J = 0 := LinearMap.ext hne
-    rw [hJ0] at hE
-    simp at hE
-  obtain ⟨x₀, hx₀⟩ := hJ
+    simp [hJ0] at hE
   have hφ : ∃ φ : Module.Dual ℂ P, φ (J x₀) ≠ 0 := by
     by_contra hne
     push Not at hne
@@ -100,8 +98,7 @@ theorem UpperTheory.linearForm_eq_mul_trace_of_twisted_invariant :
     intro η u
     have hk := key u x₀ η ξ₀
     rw [hξ₀, one_mul] at hk
-    rw [mul_left, LinearMap.trace_smulRight, hk]
-    simp [mul_comm]
+    simp [mul_left, LinearMap.trace_smulRight, hk, mul_comm]
   have all : ∀ b : Module.End ℂ P,
       l b = l (ξ₀.smulRight x₀) * LinearMap.trace ℂ P (b * J) := by
     intro b

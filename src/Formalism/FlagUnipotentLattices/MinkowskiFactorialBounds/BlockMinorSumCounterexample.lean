@@ -134,8 +134,7 @@ lemma integral_complex_radial_eq_two_pi_mul_integral_Ioi (f : ℝ → ℝ) :
   have h := integral_fun_norm_addHaar (E := ℂ) (volume : Measure ℂ) f
   have hv : (volume : Measure ℂ).real (Metric.ball 0 1) = π := by
     simp [Measure.real, Complex.volume_ball]
-  rw [h, hv]
-  simp [Complex.finrank_real_complex]
+  simp [h, hv, Complex.finrank_real_complex]
   ring
 
 lemma hasDerivAt_inv_one_add_sq (y : ℝ) :
@@ -759,8 +758,7 @@ theorem block_minor_sum_explicit_of_fibre_finite_of_prod_bound (hf : BlockEndMin
   rw [Finset.sum_const, nsmul_eq_mul]
   have hc : ((S.image Sigma.fst).card : ℝ) ≤ 2 ^ r := by
     have h1 : (S.image Sigma.fst).card ≤ Fintype.card (Composition (r + 1)) := Finset.card_le_univ _
-    rw [composition_card] at h1
-    simp only [Nat.add_sub_cancel] at h1
+    simp only [composition_card, Nat.add_sub_cancel] at h1
     exact_mod_cast h1
   calc ((S.image Sigma.fst).card : ℝ) * B ≤ 2 ^ r * B := mul_le_mul_of_nonneg_right hc hB0
     _ = _ := by rw [hB]; ring
@@ -896,8 +894,7 @@ theorem corollary_upper_estimate_holds : Formalism.HermitianLatticeCounting.Expa
 theorem corollary_product_estimate_holds : Formalism.HermitianLatticeCounting.ExpansionTerms.MomentProductBound := by
   intro Ω _ μ _ r q L l H1 hm hpos hH1 hL h
   have hcard : (univ.filter (fun a : Fin (r + 1) => a.val < L)).card = L := by
-    have := Fin.card_filter_val_lt (n := r + 1) (m := L)
-    simpa [hL] using this
+    simpa [hL] using Fin.card_filter_val_lt (n := r + 1) (m := L)
   have e : ∀ ω, ENNReal.ofReal ((∏ a ∈ univ.filter (fun a : Fin (r + 1) => a.val < L), l a ω) ^ (2 * q)) =
       ∏ a ∈ univ.filter (fun a : Fin (r + 1) => a.val < L), ENNReal.ofReal (l a ω ^ (2 * q)) := by
     intro ω

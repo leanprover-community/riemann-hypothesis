@@ -38,7 +38,7 @@ private lemma eq_sum_smul_gs {E : Type*} [NormedAddCommGroup E] [InnerProductSpa
   simp
 
 theorem det_gram_eq {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] {m : ℕ}
-    (v : Fin m → E) :
+    (v : Fin m → E) (hv : LinearIndependent ℝ v) :
     (Matrix.gram ℝ v).det = ∏ j, ‖gs v j‖ ^ 2 := by
   set C : Matrix (Fin m) (Fin m) ℝ := Matrix.of fun a b =>
     if b = a then (1 : ℝ) else if b < a then ⟪gs v b, v a⟫_ℝ / ‖gs v b‖ ^ 2 else 0 with hCdef
@@ -69,8 +69,7 @@ theorem det_gram_eq {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
     · intro i j hij
       have hlt : i < j := OrderDual.toDual_lt_toDual.1 hij
       simp [C, hlt.ne', not_lt.2 hlt.le]
-  rw [hG, Matrix.det_mul, Matrix.det_mul, Matrix.det_transpose, hC, Matrix.det_diagonal]
-  simp
+  simp [hG, Matrix.det_mul, Matrix.det_mul, Matrix.det_transpose, hC, Matrix.det_diagonal]
 
 variable {d : ℕ}
 
@@ -121,14 +120,12 @@ lemma TB_injective (A B : Matrix (Fin d) (Fin d) ℝ) (hA : A.PosDef) (hAB : A =
     have h1 := hA.det_pos
     rw [hAB, Matrix.det_mul, Matrix.det_conjTranspose] at h1
     refine isUnit_iff_ne_zero.2 fun h0 => ?_
-    rw [h0] at h1
-    simp at h1
+    simp [h0] at h1
   have hinj : Function.Injective B.mulVec :=
     Matrix.mulVec_injective_iff_isUnit.2 ((Matrix.isUnit_iff_isUnit_det B).2 hdet)
   intro u w h
   have h' : B *ᵥ WithLp.ofLp u = B *ᵥ WithLp.ofLp w := by
-    have := congrArg WithLp.ofLp h
-    simpa [TB] using this
+    simpa [TB] using congrArg WithLp.ofLp h
   simpa using congrArg (WithLp.toLp 2) (hinj h')
 
 lemma li_basis (A B : Matrix (Fin d) (Fin d) ℝ) (hA : A.PosDef) (hAB : A = Bᴴ * B)

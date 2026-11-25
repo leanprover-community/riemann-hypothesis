@@ -79,7 +79,7 @@ theorem entry_bound {L : Type} [Field L] [Valued L (WithZero (Multiplicative ℤ
       have := Int.self_le_toNat (WithZero.log (Valued.v x)); omega
     simp; omega
 
-theorem main : ∀ {L : Type} [Field L] [Valued L (WithZero (Multiplicative ℤ))] {n : ℕ} {ϖ : L}, (Valued.v : L → WithZero (Multiplicative ℤ)) ϖ = WithZero.exp (-1 : ℤ) → ∀ (M : Matrix (Fin n) (Fin n) L), ∃ (N : ℕ), ∀ (i j : Fin n), ϖ ^ N * M i j ∈ Formalism.UG.intL L := by
+theorem main : ∀ {L : Type} [inst : Field L] [inst_1 : Valued L (WithZero (Multiplicative ℤ))] {n : ℕ} {ϖ : L}, (Valued.v : L → WithZero (Multiplicative ℤ)) ϖ = WithZero.exp (-1 : ℤ) → ∀ (M : Matrix (Fin n) (Fin n) L), ∃ (N : ℕ), ∀ (i j : Fin n), ϖ ^ N * M i j ∈ Formalism.UG.intL L := by
   intro L _ _ n ϖ hϖ M
   choose f hf using fun p : Fin n × Fin n => entry_bound hϖ (M p.1 p.2)
   refine ⟨Finset.univ.sup f, fun i j => ?_⟩

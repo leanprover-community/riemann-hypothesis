@@ -71,8 +71,7 @@ private theorem res_pullU_val_eq_appLE {X Y : Scheme.{0}} (f : Y ⟶ X) {W : X.O
 private theorem pull_U_le_preimage_U {X Y : Scheme.{0}} (M : LB X) (f : Y ⟶ X) (j : PUnit → M.ι) (k : PUnit) :
     (M.pull f).U j ≤ f ⁻¹ᵁ M.U (j k) := by
   intro y hy
-  have hy' : y ∈ ⋂ k, f ⁻¹' (M.U (j k) : Set X) := hy
-  exact Set.mem_iInter.1 hy' k
+  exact Set.mem_iInter.1 hy k
 
 private theorem resG_app_eq_appLE {X Y : Scheme.{0}} (f : Y ⟶ X) {W : X.Opens} {V : Y.Opens} (h : V ≤ f ⁻¹ᵁ W)
     (u : Γ(X, W)) : resG Y h ((f.app W).hom u) = (f.appLE W V h).hom u := by

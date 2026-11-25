@@ -131,8 +131,7 @@ theorem sum_dif_le (hq : ∀ i, 2 ≤ q i) {R : ι → ℕ → ℝ}
     (hRb : ∀ i j, |R i (j + 1) - R i j| ≤ 8 * ((j : ℝ) + 2) ^ 2 / q i) (i : ι) (J : ℕ) :
     ∑ j ∈ range (J + 1), |dif R i j| / q i ^ j ≤ 1 + cGeom * (q i ^ 2)⁻¹ := by
   have hq0 : 0 < q i := by linarith [hq i]
-  rw [Finset.sum_range_succ']
-  simp only [dif, pow_zero, div_one, abs_one]
+  simp only [Finset.sum_range_succ', dif, pow_zero, div_one, abs_one]
   rw [add_comm]
   refine add_le_add le_rfl ?_
   have hterm : ∀ j ∈ range J, |R i (j + 1) - R i j| / q i ^ (j + 1) ≤

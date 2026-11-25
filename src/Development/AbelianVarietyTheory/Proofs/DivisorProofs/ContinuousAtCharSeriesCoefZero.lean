@@ -76,8 +76,7 @@ theorem avg_prod {Y ι : Type} [AddCommGroup Y] [Fintype ι] (w : ι → Y) (y :
     avg (fun ik : ι × Fin K => w ik.1 + (ik.2 : ℕ) • y) χ
       = avg w χ * ((K : ℂ)⁻¹ * ∑ k : Fin K, χ y ^ (k : ℕ)) := by
   unfold avg
-  rw [Fintype.sum_prod_type]
-  simp only [AddChar.map_add_eq_mul, AddChar.map_nsmul_eq_pow]
+  simp only [Fintype.sum_prod_type, AddChar.map_add_eq_mul, AddChar.map_nsmul_eq_pow]
   rw [← Finset.sum_mul_sum, Fintype.card_prod, Fintype.card_fin]
   push_cast
   rw [mul_inv]
@@ -207,8 +206,7 @@ theorem continuousAt_coef_zero {Y Ξ P : Type} [AddCommGroup Y] [Zero Ξ] [Topol
       by_cases has : a ∈ s
       · simp only [has, ite_true, sub_self, add_zero]
         rw [norm_mul]
-        have := hw a (Finset.mem_erase.mpr ⟨ha, has⟩)
-        exact mul_le_mul this (hp a) (norm_nonneg _) hδ.le
+        exact mul_le_mul (hw a (Finset.mem_erase.mpr ⟨ha, has⟩)) (hp a) (norm_nonneg _) hδ.le
       · simp only [has, ite_false, sub_zero]
         rw [norm_mul]
         have : ‖α a‖ * ‖c p a‖ ≤ 1 * M a := mul_le_mul (hα1 a) (hp a) (norm_nonneg _) zero_le_one

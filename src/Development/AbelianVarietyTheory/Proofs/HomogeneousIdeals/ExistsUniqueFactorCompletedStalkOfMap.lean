@@ -130,8 +130,7 @@ theorem adicCompletion_ringHom_ext {J : Ideal A} (hJ : J.FG) (I : Ideal R) [IsHa
     rw [Ideal.map_map, hχ] at h2
     exact Ideal.map_le_iff_le_comap.mpr (pow_mul_le_comap_pow _ hk n) h2
   rw [Ideal.Quotient.eq]
-  have := sub_mem (hmem ψ rfl) (hmem ψ' h.symm)
-  simpa using this
+  simpa using sub_mem (hmem ψ rfl) (hmem ψ' h.symm)
 
 theorem existsUnique_extend_adicCompletion (φ : A →+* R) {J : Ideal A} (hJ : J.FG) (I : Ideal R)
     [IsAdicComplete I R] (hk : ∃ k : ℕ, J.map φ ^ k ≤ I) :

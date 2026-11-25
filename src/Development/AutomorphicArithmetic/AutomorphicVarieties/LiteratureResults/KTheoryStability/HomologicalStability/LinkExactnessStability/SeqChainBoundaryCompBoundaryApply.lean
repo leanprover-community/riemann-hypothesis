@@ -75,8 +75,7 @@ theorem bd_consMap (V : Type) (x : V) :
   have h : Finsupp.single l r = r • Finsupp.single l (1 : ℤ) := by
     rw [Finsupp.smul_single, smul_eq_mul, mul_one]
   simp only [LinearMap.comp_apply, LinearMap.sub_apply, LinearMap.id_apply]
-  rw [h]
-  simp only [map_zsmul]
+  simp only [h, map_zsmul]
   rw [show consMap V x (Finsupp.single l 1) = Finsupp.single (x :: l) 1 by
     simp [consMap, Finsupp.mapDomain_single], bd_single_cons, smul_sub]
 

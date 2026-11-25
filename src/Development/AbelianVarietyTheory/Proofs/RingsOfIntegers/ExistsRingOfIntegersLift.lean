@@ -111,13 +111,12 @@ theorem _root_.GlobalTheory.PlaceInt.placeIdem : _root_.ReciprocityTheory.ChartR
   have hPmax : P.IsMaximal := hP.isMaximal hP0
 
   set N : ℕ := Ideal.absNorm P with hN
-  have hNP : (N : 𝓞 E) ∈ P := Ideal.absNorm_mem P
   have hN0 : (N : 𝓞 E) ≠ 0 := by
     rw [Nat.cast_ne_zero, hN]
     exact fun h => hP0 (Ideal.absNorm_eq_zero_iff.mp h)
   have hNQ : ∀ ψ, (N : 𝓞 E) ∈ Q ψ := by
     intro ψ
-    have h0 : (N : 𝓞 E) ∈ Q ψ0 := hψ0 ▸ hNP
+    have h0 : (N : 𝓞 E) ∈ Q ψ0 := hψ0 ▸ (Ideal.absNorm_mem P)
     rw [hQ, map_natCast] at h0 ⊢
     exact h0
   have hc : ∀ ψ, ∃ c : 𝓞 E, c ∉ P ∧ (Q ψ ≠ P → c ∈ Q ψ) := by
@@ -125,8 +124,7 @@ theorem _root_.GlobalTheory.PlaceInt.placeIdem : _root_.ReciprocityTheory.ChartR
     by_cases h : Q ψ = P
     · exact ⟨1, fun h1 => hPmax.ne_top ((Ideal.eq_top_iff_one _).2 h1), fun h' => (h' h).elim⟩
     · have hQ0 : Q ψ ≠ ⊥ := fun h0 => hN0 (by simpa [h0] using hNQ ψ)
-      have hQmax : (Q ψ).IsMaximal := (hQp ψ).isMaximal hQ0
-      have hnle : ¬ Q ψ ≤ P := fun hle => h (hQmax.eq_of_le hPmax.ne_top hle)
+      have hnle : ¬ Q ψ ≤ P := fun hle => h (((hQp ψ).isMaximal hQ0).eq_of_le hPmax.ne_top hle)
       obtain ⟨c, hcQ, hcP⟩ := SetLike.not_le_iff_exists.mp hnle
       exact ⟨c, hcP, fun _ => hcQ⟩
   choose c hcP hcQ using hc
@@ -153,7 +151,7 @@ theorem _root_.GlobalTheory.PlaceInt.placeIdem : _root_.ReciprocityTheory.ChartR
 
   set p0 : V[X] := ∏ ψ ∈ Finset.univ.filter (fun ψ => Q ψ ≠ P), (X - C (σ ψ b)) with hp0
   set p1 : V[X] := ∏ ψ ∈ Finset.univ.filter (fun ψ => Q ψ = P), (X - C (σ ψ b)) with hp1
-  have hcop : IsCoprime p0 p1 := by
+  obtain ⟨u, v, huv⟩ : IsCoprime p0 p1 := by
     rw [hp0, hp1]
     refine IsCoprime.prod_left fun ψ hψ => IsCoprime.prod_right fun φ hφ => ?_
     simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hψ hφ
@@ -164,10 +162,8 @@ theorem _root_.GlobalTheory.PlaceInt.placeIdem : _root_.ReciprocityTheory.ChartR
       intro h
       apply (maximalIdeal.isMaximal V).ne_top
       rw [Ideal.eq_top_iff_one]
-      have := sub_mem (sub_mem h0 h) h1
-      simpa using this
+      simpa using sub_mem (sub_mem h0 h) h1
     simpa [mem_maximalIdeal, mem_nonunits_iff] using hnot
-  obtain ⟨u, v, huv⟩ := hcop
   set g : V[X] := u * p0 with hg
   refine ⟨g.natDegree + 1, fun j => b ^ (j : ℕ), fun j => g.coeff j, fun ψ => ?_⟩
   have hsum : ∑ j : Fin (g.natDegree + 1), algebraMap V k (g.coeff j) * ψ ((b ^ (j : ℕ) : 𝓞 E) : E)

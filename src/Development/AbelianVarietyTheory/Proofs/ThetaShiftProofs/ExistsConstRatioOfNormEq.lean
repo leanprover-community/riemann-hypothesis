@@ -93,13 +93,12 @@ theorem exists_const_ratio_of_norm_eq :
       show ‖c w‖ ≤ ‖c w₀‖
       rw [hcn w hw, hcn w₀ hm])
   refine ⟨c w₀, hcn w₀ hm, fun i w hw => ?_⟩
-  have ha : AnalyticOnNhd ℂ (f i) {w : ℂ | T < w.im} := (hd i).1.analyticOnNhd hU
   have hb : AnalyticOnNhd ℂ (fun w => c w₀ * g i w) {w : ℂ | T < w.im} :=
     ((hd i).2.const_mul (c w₀)).analyticOnNhd hU
   have he : f i =ᶠ[nhds w₀] fun w => c w₀ * g i w := by
     filter_upwards [Metric.ball_mem_nhds w₀ hr] with z hz
     rw [(h i z (hB z hz).1).1, hconst hz]
     rfl
-  exact ha.eqOn_of_preconnected_of_eventuallyEq hb hUc hw₀ he hw
+  exact ((hd i).1.analyticOnNhd hU).eqOn_of_preconnected_of_eventuallyEq hb hUc hw₀ he hw
 
 end GlobalTheory

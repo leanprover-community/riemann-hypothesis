@@ -90,10 +90,8 @@ theorem exists_derivation_eq_one_of_pow_mem : ∀ (p : ℕ) [Fact p.Prime] (K : 
     intro b hb
     apply hfL
     have h1 : (b : K) ^ p = f ^ p := by
-      have := congrArg (fun x : L => (x : K)) hb
-      simpa [a] using this
-    have h2 : (b : K) = f := frobenius_inj K p h1
-    exact h2 ▸ b.2
+      simpa [a] using congrArg (fun x : L => (x : K)) hb
+    exact (frobenius_inj K p h1) ▸ b.2
   have hmon : q.Monic := monic_X_pow_sub_C a hpp.ne_zero
   have hmin : minpoly L f = q := (minpoly.eq_of_irreducible_of_monic hirr hqf hmon).symm
   have hdq : aeval f (derivative q) = 0 := by
@@ -158,8 +156,7 @@ theorem cfmax_finrank (p : ℕ) [hp : Fact p.Prime] (K : Type) [Field K] [CharP 
     intro b hb
     apply hz
     have hb' : (b : K) ^ p = z ^ p := by
-      have := congrArg (fun t : L => (t : K)) hb
-      simpa using this
+      simpa using congrArg (fun t : L => (t : K)) hb
     have h0 : ((b : K) - z) ^ p = 0 := by
       rw [sub_pow_char, hb', sub_self]
     have : (b : K) = z := sub_eq_zero.mp ((pow_eq_zero_iff hp.out.ne_zero).mp h0)
@@ -220,12 +217,11 @@ open TensorProduct
 
 namespace GlobalTheory
 
-theorem exists_pow_eq_of_kaehler_D_eq_zero : ∀ (p : ℕ) [Fact p.Prime] (k : Type) [Field k] [IsAlgClosed k] (_ : (p : k) = 0) (K : Type) [Field K] [Algebra k K] (f : K), KaehlerDifferential.D k K f = 0 → ∃ h : K, h ^ p = f := by
+theorem exists_pow_eq_of_kaehler_D_eq_zero : ∀ (p : ℕ) [Fact p.Prime] (k : Type) [Field k] [IsAlgClosed k] (hk : (p : k) = 0) (K : Type) [Field K] [Algebra k K] (f : K), KaehlerDifferential.D k K f = 0 → ∃ h : K, h ^ p = f := by
   intro p hp k _ _ hk K _ _ f hf
   by_contra hne
   have hK : (p : K) = 0 := by
-    have := congrArg (algebraMap k K) hk
-    simpa using this
+    simpa using congrArg (algebraMap k K) hk
   haveI : CharP K p := (CharP.charP_iff_prime_eq_zero hp.out).2 hK
   let F : Subfield K := (frobenius K p).fieldRange
   have hF : ∀ y : K, y ^ p ∈ F := fun y => ⟨y, by simp [frobenius_def]⟩
@@ -268,7 +264,7 @@ open TensorProduct
 namespace GlobalTheory
 
 theorem exists_pow_eq_of_kaehlerDifferential_eq_zero_of_smooth_domain :
-    ∀ (p : ℕ) [Fact p.Prime] (k : Type) [Field k] [IsAlgClosed k] (_ : (p : k) = 0) (S : Type)
+    ∀ (p : ℕ) [Fact p.Prime] (k : Type) [Field k] [IsAlgClosed k] (hk : (p : k) = 0) (S : Type)
       [CommRing S] [IsDomain S] [Algebra k S] [Algebra.Smooth k S] (f : S),
       KaehlerDifferential.D k S f = 0 → ∃ h : S, h ^ p = f := by
   intro p hp k _ _ hk S _ _ _ _ f hf

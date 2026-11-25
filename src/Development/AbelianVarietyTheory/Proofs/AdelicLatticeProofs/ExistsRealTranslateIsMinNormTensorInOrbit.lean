@@ -276,8 +276,7 @@ theorem _root_.GlobalTheory.ClassFin.exists_real_translate_isMinVec : ∀ (ι : 
           norm_num
   have hZpsd : (c * Qb 1 * cᴴ).PosSemidef := by
     have : c * Qb 1 * cᴴ = (c * Qb (1 / 2)) * (c * Qb (1 / 2))ᴴ := by
-      rw [conjTranspose_mul, hQbH]
-      simp only [Matrix.mul_assoc]
+      simp only [conjTranspose_mul, hQbH, Matrix.mul_assoc]
       rw [← Matrix.mul_assoc (Qb (1 / 2)) (Qb (1 / 2)), hQbmul]
       norm_num
     rw [this]
@@ -304,8 +303,7 @@ theorem _root_.GlobalTheory.ClassFin.exists_real_translate_isMinVec : ∀ (ι : 
     linear_combination hUd
   obtain ⟨h, hh⟩ : ∃ x : Matrix ι ι ℂ, x = g₀ * Q (1 / 2) := ⟨_, rfl⟩
   have hP_h : h * hᴴ = g₀ * Q 1 * g₀ᴴ := by
-    rw [hh, conjTranspose_mul, hQH]
-    simp only [Matrix.mul_assoc]
+    simp only [hh, conjTranspose_mul, hQH, Matrix.mul_assoc]
     rw [← Matrix.mul_assoc (Q (1 / 2)) (Q (1 / 2)), hQmul]
     norm_num
   have hhdet : h.det = 1 := by rw [hh, det_mul, hg₀, hdetQ, one_mul]

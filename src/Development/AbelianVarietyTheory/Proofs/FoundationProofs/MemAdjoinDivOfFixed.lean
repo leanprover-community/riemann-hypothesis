@@ -71,8 +71,7 @@ theorem mem_adjoin_div_of_fixed : ∀ (R Ω : Type) [CommRing R] [Nontrivial R] 
       have hφi : Function.Injective φ := by
         intro a b hab
         apply hinj
-        have := congrArg (algebraMap F Ω) hab
-        simpa [hφ] using this
+        simpa [hφ] using congrArg (algebraMap F Ω) hab
       exact (Polynomial.map_eq_zero_iff hφi).mp h
     · rw [Polynomial.aeval_def, Polynomial.eval₂_map]
       rw [Polynomial.aeval_def] at hp

@@ -75,21 +75,18 @@ theorem IsIrreducible.spectrum_subsingleton (hπ : IsIrreducible (π := π)) {A 
         LinearMap.ker ((cfc g A : H →L[ℂ] H) : H →ₗ[ℂ] H) := by
       rintro _ ⟨v, rfl⟩
       simp only [LinearMap.mem_ker, ContinuousLinearMap.coe_coe]
-      have := congrArg (fun T : H →L[ℂ] H => T v) hQP
-      simpa using this
+      simpa using congrArg (fun T : H →L[ℂ] H => T v) hQP
     have hcl := Submodule.topologicalClosure_minimal _ hle (cfc g A).isClosed_ker
     rw [← hV, htop] at hcl
     ext v
-    have : v ∈ LinearMap.ker ((cfc g A : H →L[ℂ] H) : H →ₗ[ℂ] H) := hcl Submodule.mem_top
-    simpa using this
+    simpa using (hcl Submodule.mem_top : v ∈ LinearMap.ker ((cfc g A : H →L[ℂ] H) : H →ₗ[ℂ] H))
 
 theorem IsIrreducible.exists_eq_algebraMap_of_isSelfAdjoint (hπ : IsIrreducible (π := π))
     {A : H →L[ℂ] H} (hA : A ∈ intertwiners (π := π) π) (hsa : IsSelfAdjoint A) :
     ∃ c : ℝ, A = algebraMap ℝ (H →L[ℂ] H) c := by
   have := hπ.1
   have := nontrivial_endomorphisms (H := H)
-  have hne : (spectrum ℝ A).Nonempty := ContinuousFunctionalCalculus.spectrum_nonempty A hsa
-  obtain ⟨c, hc⟩ := hne
+  obtain ⟨c, hc⟩ : (spectrum ℝ A).Nonempty := ContinuousFunctionalCalculus.spectrum_nonempty A hsa
   refine ⟨c, ?_⟩
   have hsub := hπ.spectrum_subsingleton hA hsa
   calc A = cfc (fun x : ℝ => x) A := (cfc_id' ℝ A hsa).symm
@@ -123,8 +120,7 @@ theorem IsIrreducible.isEquivalent_of_mem_intertwiners (hπ : IsIrreducible (π 
     intro v
     have h1 : ⟪v, (adjoint T ∘L T) v⟫_ℂ = ⟪T v, T v⟫_ℂ := by
       rw [comp_apply, adjoint_inner_right]
-    rw [hc] at h1
-    simp only [smul_apply, one_apply_eq_self, inner_smul_right] at h1
+    simp only [hc, smul_apply, one_apply_eq_self, inner_smul_right] at h1
     have e1 : ⟪v, v⟫_ℂ = (‖v‖ : ℂ) ^ 2 := by rw [inner_self_eq_norm_sq_to_K]; rfl
     have e2 : ⟪T v, T v⟫_ℂ = (‖T v‖ : ℂ) ^ 2 := by rw [inner_self_eq_norm_sq_to_K]; rfl
     rw [e1, e2] at h1

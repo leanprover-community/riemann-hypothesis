@@ -129,8 +129,7 @@ theorem mem_strip_of_exp (hc : c 0 = 0) {ρ : ℝ} (hρ0 : 0 < ρ) (hρ1 : ρ �
     Function.update t 0 (k * w) ∈ strip c ρ := by
   have ht0 : t 0 ≠ 0 := hw ▸ exp_ne_zero w
   have hnorm : ‖t 0‖ < ρ := by
-    have := (dist_le_pi_dist t c 0).trans_lt ht
-    simpa [hc] using this
+    simpa [hc] using (dist_le_pi_dist t c 0).trans_lt ht
   have hre : w.re = Real.log ‖t 0‖ := by rw [← hw, norm_exp, Real.log_exp]
   have hlog : Real.log ‖t 0‖ < Real.log ρ := Real.log_lt_log (norm_pos_iff.2 ht0) hnorm
   have hlogρ : Real.log ρ ≤ 0 := Real.log_nonpos hρ0.le hρ1

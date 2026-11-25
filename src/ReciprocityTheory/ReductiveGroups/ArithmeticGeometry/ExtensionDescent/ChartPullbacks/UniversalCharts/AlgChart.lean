@@ -120,11 +120,10 @@ theorem algChart [IsLocalRing R] (B : Type) [CommRing B] [Algebra R B] [Algebra.
     · rw [← AlgHom.comp_assoc, hψπ, hφ']
     · rintro ψ₂ ⟨_, h2⟩
       rw [← AlgHom.comp_assoc, ← hφ'] at h2
-      have h4 : ψ₂.comp (π m) = φ' := locExt _ _ h2
       apply jet_ext
       intro j
       rw [jetLift_zR]
-      have := AlgHom.congr_fun h4 (sX (R := R) j)
+      have := AlgHom.congr_fun (locExt _ _ h2) (sX (R := R) j)
       rw [AlgHom.comp_apply, hπX, map_add (f := _), AlgHom.commutes] at this
       rw [← this, add_sub_cancel_left]
 

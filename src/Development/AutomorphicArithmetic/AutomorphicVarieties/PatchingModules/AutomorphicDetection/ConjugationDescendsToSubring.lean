@@ -1485,9 +1485,9 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.SpanImageDenominators.exists_ne_zero_smul_mem_span_image :
-    ∀ {A F M N : Type} [CommRing A]
-    [IsDomain A] [Field F] [Algebra A F] [IsFractionRing A F] [AddCommGroup M]
-    [_root_.Module A M] [AddCommGroup N] [_root_.Module A N] [_root_.Module F N]
+    ∀ {A F M N : Type} [inst : CommRing A]
+    [IsDomain A] [inst_2 : Field F] [inst_3 : Algebra A F] [IsFractionRing A F] [inst_5 : AddCommGroup M]
+    [inst_6 : _root_.Module A M] [inst_7 : AddCommGroup N] [inst_8 : _root_.Module A N] [inst_9 : _root_.Module F N]
     [IsScalarTower A F N] (φ : M →ₗ[A] N) (T : Set M),
     ∀ y ∈ Submodule.span F ((⇑φ : M → N) '' T),
       ∃ (d : A), d ≠ (0 : A) ∧ ∃ w ∈ Submodule.span A T, d • y = (φ : M → N) w := by

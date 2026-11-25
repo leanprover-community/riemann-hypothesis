@@ -120,9 +120,8 @@ theorem exists_det_ne {m : ℕ} (M : Submodule (𝓞 K) (Fin m → K))
   let B := Module.Basis.mk hli (le_of_eq (by rw [Subtype.range_coe, hspan, hM]))
   let e := B.indexEquiv (Pi.basisFun K (Fin m))
   refine ⟨fun i => (e.symm i : Fin m → K), fun i => hs (e.symm i).2, ?_⟩
-  have hli' : LinearIndependent K (fun i => (e.symm i : Fin m → K)) := hli.comp _ e.symm.injective
   have : IsUnit (Matrix.of fun i => (e.symm i : Fin m → K)) :=
-    Matrix.linearIndependent_rows_iff_isUnit.1 hli'
+    Matrix.linearIndependent_rows_iff_isUnit.1 (hli.comp _ e.symm.injective)
   exact ((Matrix.isUnit_iff_isUnit_det _).1 this).ne_zero
 
 end A2

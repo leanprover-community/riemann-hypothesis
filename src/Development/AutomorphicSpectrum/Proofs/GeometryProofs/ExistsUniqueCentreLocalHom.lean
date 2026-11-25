@@ -74,8 +74,7 @@ theorem exists_unique_point_of_local (X : Scheme.{0}) (Ω : Type) [Field Ω] (ξ
     have h1 : IsUnit (e s) := hφ.map_nonunit _ (by rwa [hψ] at hs)
     obtain ⟨b, hb⟩ := h1.exists_right_inv
     obtain ⟨t, rfl⟩ := esurj b
-    have : s * t = 1 := einj (by rw [map_mul, hb, map_one])
-    exact IsUnit.of_mul_eq_one t this
+    exact IsUnit.of_mul_eq_one t (einj (by rw [map_mul, hb, map_one]) : s * t = 1)
   let w : Σ x, { f : X.presheaf.stalk x ⟶ CommRingCat.of R // IsLocalHom f.hom } := ⟨p.1, ψ, hloc⟩
   let E := SpecToEquivOfLocalRing X (CommRingCat.of R)
   have key : ∀ y : Spec (CommRingCat.of R) ⟶ X, ∀ hc : centre y = p.1,

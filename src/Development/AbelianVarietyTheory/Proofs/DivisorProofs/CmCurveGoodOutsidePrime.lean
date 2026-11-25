@@ -467,7 +467,7 @@ open NumberField IsDedekindDomain
 namespace GlobalTheory.CMModel
 
 theorem exists_prime_natCast_mem_pow_of_ringHom :
-    ∀ (F H : Type) [Field F] [NumberField F] [Field H] [NumberField H] (_ : F →+* H) (w : HeightOneSpectrum (𝓞 F)) (p n : ℕ), (p : 𝓞 F) ∈ w.asIdeal ^ n → ∃ P : Ideal (𝓞 H), P.IsPrime ∧ P ≠ ⊥ ∧ (p : 𝓞 H) ∈ P ^ n := by
+    ∀ (F H : Type) [Field F] [NumberField F] [Field H] [NumberField H] (f : F →+* H) (w : HeightOneSpectrum (𝓞 F)) (p n : ℕ), (p : 𝓞 F) ∈ w.asIdeal ^ n → ∃ P : Ideal (𝓞 H), P.IsPrime ∧ P ≠ ⊥ ∧ (p : 𝓞 H) ∈ P ^ n := by
   intro F H _ _ _ _ f w p n hp
   letI : Algebra F H := f.toAlgebra
   haveI := w.isMaximal

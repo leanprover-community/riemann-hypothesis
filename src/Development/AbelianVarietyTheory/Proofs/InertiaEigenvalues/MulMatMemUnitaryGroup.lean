@@ -97,8 +97,7 @@ theorem mulMat_mem_unitaryGroup {r : ℕ} {x : A.K} {j : A.L ≃ₗ[E] (Fin r �
   have hw : ∀ w, N *ᵥ w = w := by
     intro w
     funext i
-    have := key (Pi.single i 1) w
-    simpa [single_dotProduct] using this
+    simpa [single_dotProduct] using key (Pi.single i 1) w
   apply Matrix.toLin'.injective
   apply LinearMap.ext
   intro w

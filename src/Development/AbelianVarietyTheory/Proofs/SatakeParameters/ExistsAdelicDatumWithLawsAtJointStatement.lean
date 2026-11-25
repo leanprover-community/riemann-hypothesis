@@ -218,7 +218,7 @@ end GlobalTheory.TwV.AdInt
 
 namespace GlobalTheory.TwV
 
-theorem xiAd_intOff : UnderTie (fun {_ _ _ _ _ _ _ _ _ t u μ _} A _ a => PtEx A a → ∀ i hi β β' x x' z,
+theorem xiAd_intOff : UnderTie (fun {D L hT Gi Gl Kc Y cX ex t u μ St} A dtU a => PtEx A a → ∀ i hi β β' x x' z,
     IntOff (t.O u μ).S (xiAd A a i hi β β' x x' z)) := by
   intro D L hT Gi Gl Kc Y cX ex t u μ St A dtU a hP _ _ i hi β β' x x' z
   have hmu : ∀ j, ∃ e, Formalism.L2.Col.IsMu0 t.Ch t.seam.σ₀ e j (t.glob.mu0 j) := fun j => ⟨_, hP.mu0 j⟩
@@ -280,7 +280,7 @@ theorem chartBaseRepresentative_penultimate_step (A : AdData t u μ St) (hi : t.
 
 end
 
-theorem cosetOf_eq_yb : UnderTie (fun {_ _ _ _ _ _ _ _ _ t _ μ St} A _ _ => ∀ c, cosetOf A (t.m2 + 1) (cpl_lt t μ).le ((St _ (cpl_lt t μ).le).chOf c) (A.pt _ (cpl_lt t μ).le c) = A.yb c) := by
+theorem cosetOf_eq_yb : UnderTie (fun {D L hT Gi Gl Kc Y cX ex t u μ St} A dtU a => ∀ c, cosetOf A (t.m2 + 1) (cpl_lt t μ).le ((St _ (cpl_lt t μ).le).chOf c) (A.pt _ (cpl_lt t μ).le c) = A.yb c) := by
   intro D L hT Gi Gl Kc Y cX ex t u μ St A dtU a _ H c
   obtain ⟨w, -, hw⟩ := H.chain.2.1 c
   have hwm : w ∈ A.yb c := by
@@ -780,7 +780,7 @@ theorem psiAt_coset : ∀ (X : Fields) (Pr : Primes X) (R : Ranks) (Ch : Chars X
     SameCoset sel mu cst P (k.1.symm w₁) w →
     PsiAt Ch sel mu cst m2 P (L.h m2 al P) x₀ w₁ = PsiAt Ch sel mu cst m2 P (L.h m2 al P) x₀ w := _root_.GlobalTheory.PsiCosetInv.psiAt_coset
 
-theorem lat_away : UnderTie (fun {D _ _ _ _ _ _ _ _ t u μ _} A _ a => ∀ j (hj : j ≤ D.R.m) β x x₁ p p₁,
+theorem lat_away : UnderTie (fun {D L hT Gi Gl Kc Y cX ex t u μ St} A dtU a => ∀ j (hj : j ≤ D.R.m) β x x₁ p p₁,
     IsPtAd A a j hj β x p → IsPtAd A a j hj β x₁ p₁ →
     (∀ v ∈ plUnder D.host.F (ssRec t u μ), bc (prV (E := D.host.E) v) x₁.1 = bc (prV (E := D.host.E) v) x.1) →
     ∀ P : t.Pr.vT (t.word u), p₁.deco.1.at P.1 = p.deco.1.at P.1) := _root_.GlobalTheory.TwV.AwayLat.lat_eq
@@ -792,7 +792,7 @@ theorem intAt_sub {E : Type} [Field E] {P : HeightOneSpectrum (𝓞 E)} {a b : E
   rw [map_sub, map_mul, map_mul, map_mul, ← e₁, ← e₂]
   ring
 
-theorem phiT_data_away : UnderTie (fun {D _ _ _ _ _ _ _ _ t u μ _} A _ a => ∀ j (hj : j ≤ D.R.m) β x x₁ p p₁,
+theorem phiT_data_away : UnderTie (fun {D L hT Gi Gl Kc Y cX ex t u μ St} A dtU a => ∀ j (hj : j ≤ D.R.m) β x x₁ p p₁,
     IsPtAd A a j hj β x p → IsPtAd A a j hj β x₁ p₁ →
     (∀ v ∈ plUnder D.host.F (ssRec t u μ), bc (prV (E := D.host.E) v) x₁.1 = bc (prV (E := D.host.E) v) x.1) →
     ∀ P : t.Pr.vT (t.word u), p₁.deco.1.at P.1 = p.deco.1.at P.1 ∧ ∀ y ∈ p.deco.1.at P.1, p₁.deco.1.f P y = p.deco.1.f P y) := by
@@ -802,7 +802,7 @@ theorem phiT_data_away : UnderTie (fun {D _ _ _ _ _ _ _ _ t u μ _} A _ a => ∀
 
 
 open Classical in
-theorem ptAway_cpl : UnderTie (fun {_ _ _ _ _ _ _ _ _ t _ _ _} A _ a => ∀ i hi, i = t.m2 → PtAway A a i hi) := by
+theorem ptAway_cpl : UnderTie (fun {D L hT Gi Gl Kc Y cX ex t u μ St} A dtU a => ∀ i hi, i = t.m2 → PtAway A a i hi) := by
   intro D L hT Gi Gl Kc Y cX ex t u μ St A dtU a hP hTi i hi hi2
   subst hi2
   intro β β' x x' x₁ x₁' p p' p₁ p₁' h h' h₁ h₁' hag
@@ -1226,7 +1226,7 @@ theorem frames_cong : ∀ {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : G.
 theorem inFr_mul {E : Type} [Field E] {n n' : ℕ} (f k : Sp E n ≃ₗ[E] Sp E n) (f' k' : Sp E n' ≃ₗ[E] Sp E n') (z : HomE E n n') :
     inFr (f * k) (f' * k') z = inFr k k' (inFr f f' z) := LinearMap.ext fun _ => rfl
 
-theorem ptAway_mat : UnderTie (fun {_ _ _ _ _ _ _ _ _ t _ _ _} A _ a => ∀ i hi, i < t.m2 → PtAway A a i hi) := by
+theorem ptAway_mat : UnderTie (fun {D L hT Gi Gl Kc Y cX ex t u μ St} A dtU a => ∀ i hi, i < t.m2 → PtAway A a i hi) := by
   intro D L hT Gi Gl Kc Y cX ex t u μ St A dtU a H T i hi him
   intro β β' x x' x₁ x₁' p p' p₁ p₁' h1 h2 h3 h4 hag
   classical
@@ -1303,7 +1303,7 @@ variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : G.Inst D L} {Gl : G
 
 theorem exists_place {A : AdData t u μ St} {dtU : Formalism.L2.Herm.unitaryOneFiniteAdeles D.sp.cm →* D.Dt} {a : 𝓞 D.host.E} (H : AdTie A dtU a)
     (j : ℕ) (hj : j ≤ D.R.m) (P : t.Pr.vT (t.word u)) :
-    ∃ v : HeightOneSpectrum (𝓞 D.host.F), ∃ _ : (((St j hj).T : ℕ) : 𝓞 D.host.F) ∈ v.asIdeal,
+    ∃ v : HeightOneSpectrum (𝓞 D.host.F), ∃ h : (((St j hj).T : ℕ) : 𝓞 D.host.F) ∈ v.asIdeal,
       IsOver v (seamP t.seam P.1) ∧ v ∈ plUnder D.host.F (ssRec t u μ) := by
   classical
   obtain ⟨hSS, -⟩ := t.rd_chain u μ
@@ -1343,7 +1343,7 @@ theorem prV_pullV_congr {F E : Type} [Field F] [NumberField F] [Field E] [Number
     exact RingHom.map_mulVec (prV (E := E) v) _ _ l
   rw [key, key, map_mul, map_mul, h]
 
-theorem fnl_away : UnderTie (fun {D _ _ _ _ _ _ _ _ t u μ St} A _ a => ∀ (j : ℕ) (hj : j ≤ D.R.m) (β : (St j hj).Ch) (x x₁ : UA D j hj)
+theorem fnl_away : UnderTie (fun {D L hT Gi Gl Kc Y cX ex t u μ St} A dtU a => ∀ (j : ℕ) (hj : j ≤ D.R.m) (β : (St j hj).Ch) (x x₁ : UA D j hj)
   (p p₁ : ChPt (R := D.R) t.sel (t.tup μ) (t.word u) j), IsPtAd A a j hj β x p → IsPtAd A a j hj β x₁ p₁ →
   (∀ v ∈ plUnder D.host.F (ssRec t u μ), bc (prV (E := D.host.E) v) x₁.1 = bc (prV (E := D.host.E) v) x.1) →
   ∀ (P : t.Pr.vT (t.word u)) (w : Sp t.X.E (D.R.N j)), w ∈ p.deco.1.at P.1 → w ∈ p₁.deco.1.at P.1 → p₁.deco.1.f P w = p.deco.1.f P w) := by
@@ -1408,7 +1408,7 @@ open NumberField IsDedekindDomain Matrix Formalism.BasicNotions Formalism.UG For
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
-theorem _root_.GlobalTheory.T.lastStepDatum_twistPrime_invariant_congruentFrames : UnderTie (fun {D _ _ _ _ _ _ _ _ t _ μ _} _ _ _ => ∀ (P : SB t μ), P.1 ∉ t.Pr.vGs →
+theorem _root_.GlobalTheory.T.lastStepDatum_twistPrime_invariant_congruentFrames : UnderTie (fun {D L hT Gi Gl Kc Y cX ex t u μ St} A dtU a => ∀ (P : SB t μ), P.1 ∉ t.Pr.vGs →
   ∀ (κ : Sp t.X.E (D.R.N (t.m2 + 1)) ≃ₗ[t.X.E] Sp t.X.E (D.R.N (t.m2 + 1)))
     (κ' : Sp t.X.E (D.R.N (t.m2 + 1 + 1)) ≃ₗ[t.X.E] Sp t.X.E (D.R.N (t.m2 + 1 + 1))),
   κ ∈ GLint t.X.E _ P.1 → (∀ w ∈ stdAt t.X.E _ P.1, ((qOf P.1 : t.X.E) ^ (t.cst μ).D P)⁻¹ • (κ w - w) ∈ stdAt t.X.E _ P.1) →
@@ -1431,7 +1431,7 @@ open NumberField IsDedekindDomain Matrix Formalism.BasicNotions Formalism.UG For
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
-theorem _root_.GlobalTheory.T.lastStepDatum_typePrime_invariant_frames_congruent_one : UnderTie (fun {D _ _ _ _ _ _ _ _ t _ μ _} _ _ _ => ∀ (P : SB t μ), P.1 ∈ t.Pr.vGs →
+theorem _root_.GlobalTheory.T.lastStepDatum_typePrime_invariant_frames_congruent_one : UnderTie (fun {D L hT Gi Gl Kc Y cX ex t u μ St} A dtU a => ∀ (P : SB t μ), P.1 ∈ t.Pr.vGs →
   ∀ (κ : Sp t.X.E (D.R.N (t.m2 + 1)) ≃ₗ[t.X.E] Sp t.X.E (D.R.N (t.m2 + 1)))
     (κ' : Sp t.X.E (D.R.N (t.m2 + 1 + 1)) ≃ₗ[t.X.E] Sp t.X.E (D.R.N (t.m2 + 1 + 1))),
   κ ∈ GLint t.X.E _ P.1 → (∀ w ∈ stdAt t.X.E _ P.1, ((qOf P.1 : t.X.E) ^ (t.cst μ).D P)⁻¹ • (κ w - w) ∈ stdAt t.X.E _ P.1) →
@@ -1605,7 +1605,7 @@ theorem symm_trans_symm {E : Type} [Field E] {n : ℕ} (f f₁ : Sp E n ≃ₗ[E
     f₁.symm y = (f₁.trans f.symm).symm (f.symm y) := by
   simp [LinearEquiv.trans_symm]
 
-theorem ptAway_top : UnderTie (fun {_ _ _ _ _ _ _ _ _ t _ _ _} A _ a => ∀ i hi, i = t.m2 + 1 → PtAway A a i hi) := by
+theorem ptAway_top : UnderTie (fun {D L hT Gi Gl Kc Y cX ex t u μ St} A dtU a => ∀ i hi, i = t.m2 + 1 → PtAway A a i hi) := by
   intro D L hT Gi Gl Kc Y cX ex t u μ St A dtU a hP hTie i hi hi1
   subst hi1
   intro β β' x x' x₁ x₁' p p' p₁ p₁' h1 h2 h3 h4 hag
@@ -1718,7 +1718,7 @@ theorem exists_u1Af_det (k : ℕ) (hk : k ≤ D.R.m) {g : GL (Fin (D.R.N k)) (D.
 
 end Pt
 
-theorem adLawAt_xiAd : UnderTie (fun {_ _ _ _ _ _ _ _ _ t u μ _} A dtU a => AdLawAt A dtU a (xiAd A a) (muOf t u μ dtU)) := by
+theorem adLawAt_xiAd : UnderTie (fun {D L hT Gi Gl Kc Y cX ex t u μ St} A dtU a => AdLawAt A dtU a (xiAd A a) (muOf t u μ dtU)) := by
   intro D L hT Gi Gl Kc Y cX ex t u μ St A dtU a hPin hTie
   have hPt : PtEx A a ∧ ∀ i hi c, IsPtAd A a i hi ((St i hi).chOf c) ((St i hi).y c) (A.pt i hi c) := _root_.GlobalTheory.TwV.ptEx_isPtAd A dtU a hPin hTie
   have hE := hPt.1
@@ -1791,7 +1791,7 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 
-theorem GlobalTheory.TwV.exists_adLawAt_joint : ∀ {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : G.Inst D L} {Gl : G.LatInst D} {Kc : G.Consts} {Dx : DivX D} {cX : ExtraC} {ex : Extra D L hT Gi Gl Kc Dx cX} (t : KerEntTied ex) {u : D.what₂.Word} {μ : D.what₂.Tup} {w : D.what₂.places.Pl} {hg : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w)} {Lv : Levels (Gl.Fl u w hg)} {I : CmpJIn ex.tw u μ w hg Lv} {H : CmpJHyp ex.cmp I} {X : LabIn I} [Fact (D.what₂.places.resChar w).Prime] (_ : Lt.StdAtW D Gl u w hg) (J : Joint t H X), ∃ Xi muT, AdLawAt J.A J.dtU J.a Xi muT :=
+theorem GlobalTheory.TwV.exists_adLawAt_joint : ∀ {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : G.Inst D L} {Gl : G.LatInst D} {Kc : G.Consts} {Dx : DivX D} {cX : ExtraC} {ex : Extra D L hT Gi Gl Kc Dx cX} (t : KerEntTied ex) {u : D.what₂.Word} {μ : D.what₂.Tup} {w : D.what₂.places.Pl} {hg : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w)} {Lv : Levels (Gl.Fl u w hg)} {I : CmpJIn ex.tw u μ w hg Lv} {H : CmpJHyp ex.cmp I} {X : LabIn I} [Fact (D.what₂.places.resChar w).Prime] (std : Lt.StdAtW D Gl u w hg) (J : Joint t H X), ∃ Xi muT, AdLawAt J.A J.dtU J.a Xi muT :=
   by
   intro D L hT Gi Gl Kc Dx cX ex t u μ w hg Lv I H X _ _ J
   exact ⟨_, _, _root_.GlobalTheory.TwV.adLawAt_xiAd J.A J.dtU J.a J.pins J.tie⟩
@@ -1808,7 +1808,7 @@ open Formalism.BasicNotions NumberField IsDedekindDomain Formalism.MainNotions.G
 open scoped TensorProduct Matrix
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.exists_adelicDatum_with_laws_at_joint : ∀ {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : G.Inst D L} {Gl : G.LatInst D} {Kc : G.Consts} {Dx : DivX D} {cX : ExtraC} {ex : Extra D L hT Gi Gl Kc Dx cX} (t : KerEntTied ex) {u : D.what₂.Word} {μ : D.what₂.Tup} {w : D.what₂.places.Pl} {hg : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w)} {Lv : Levels (Gl.Fl u w hg)} {I : CmpJIn ex.tw u μ w hg Lv} {H : CmpJHyp ex.cmp I} {X : LabIn I} [Fact (D.what₂.places.resChar w).Prime] (_ : Lt.StdAtW D Gl u w hg) (J : Joint t H X), ∃ Xi muT, AdLawAt J.A J.dtU J.a Xi muT := by
+theorem _root_.GlobalTheory.T.exists_adelicDatum_with_laws_at_joint : ∀ {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : G.Inst D L} {Gl : G.LatInst D} {Kc : G.Consts} {Dx : DivX D} {cX : ExtraC} {ex : Extra D L hT Gi Gl Kc Dx cX} (t : KerEntTied ex) {u : D.what₂.Word} {μ : D.what₂.Tup} {w : D.what₂.places.Pl} {hg : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w)} {Lv : Levels (Gl.Fl u w hg)} {I : CmpJIn ex.tw u μ w hg Lv} {H : CmpJHyp ex.cmp I} {X : LabIn I} [Fact (D.what₂.places.resChar w).Prime] (std : Lt.StdAtW D Gl u w hg) (J : Joint t H X), ∃ Xi muT, AdLawAt J.A J.dtU J.a Xi muT := by
   first | exact @GlobalTheory.TwV.exists_adLawAt_joint
 end -- clump:auto
 end -- clump:auto

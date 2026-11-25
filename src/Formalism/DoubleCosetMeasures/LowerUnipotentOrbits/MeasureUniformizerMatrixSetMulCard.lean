@@ -100,7 +100,6 @@ theorem one_add_mem_cong (O : Subring F) (ϖ : F) (hϖ : ϖ ∈ O) (hϖ0 : ϖ �
     rw [inv_eq_of_mul_eq_one_right h1]
     exact O.sub_mem ho c.2
   have hd0 : (1 + ϖ • w).det ≠ 0 := fun h => hdnot 0 O.zero_mem (by rw [h, mul_zero])
-  have hdinv : ((1 + ϖ • w).det)⁻¹ ∈ O := hloc.2 _ hdO hdnot
   have hadj : (1 + ϖ • w).adjugate = O.subtype.mapMatrix A.adjugate := by
     rw [← hA, RingHom.map_adjugate]
   refine ⟨Matrix.GeneralLinearGroup.mkOfDetNeZero (1 + ϖ • w) hd0, ⟨⟨?_, ?_⟩, ?_⟩, rfl⟩
@@ -114,7 +113,7 @@ theorem one_add_mem_cong (O : Subring F) (ϖ : F) (hϖ : ϖ ∈ O) (hϖ0 : ϖ �
     show (1 + ϖ • w)⁻¹ i j ∈ O
     rw [Matrix.inv_def, hadj, Ring.inverse_eq_inv']
     simp only [Matrix.smul_apply, smul_eq_mul, RingHom.mapMatrix_apply, Matrix.map_apply]
-    exact O.mul_mem hdinv (A.adjugate i j).2
+    exact O.mul_mem (hloc.2 _ hdO hdnot) (A.adjugate i j).2
   · intro i j
     show (ϖ⁻¹ • ((1 + ϖ • w) - 1)) i j ∈ O
     rw [add_sub_cancel_left, smul_smul, inv_mul_cancel₀ hϖ0, one_smul]
@@ -162,7 +161,6 @@ variable {F : Type} [Field F] [TopologicalSpace F] [IsTopologicalRing F] [Measur
 theorem meas_ii (O : Subring F) (hO : IsOpen (O : Set F)) (ϖ : F) (hϖ0 : ϖ ≠ 0) (n a : ℕ) :
     MeasurableSet (IIset O ϖ : Set (Matrix (Fin n) (Fin a) F)) := by
   rw [iiset_eq O ϖ hϖ0]
-  have hOm : MeasurableSet (O : Set F) := hO.measurableSet
   have e : {y : Matrix (Fin n) (Fin a) F | ∀ i j, ϖ⁻¹ * y i j ∈ O} =
       ⋂ i, ⋂ j, (fun y : Matrix (Fin n) (Fin a) F => ϖ⁻¹ * y i j) ⁻¹' (O : Set F) := by
     ext y
@@ -170,7 +168,7 @@ theorem meas_ii (O : Subring F) (hO : IsOpen (O : Set F)) (ϖ : F) (hϖ0 : ϖ �
   rw [e]
   refine MeasurableSet.iInter fun i => MeasurableSet.iInter fun j => ?_
   exact ((continuous_const_mul ϖ⁻¹).measurable.comp
-    ((measurable_pi_apply j).comp (measurable_pi_apply i))) hOm
+    ((measurable_pi_apply j).comp (measurable_pi_apply i))) hO.measurableSet
 
 theorem meas_add (n a : ℕ) (x : Matrix (Fin n) (Fin a) F) :
     Measurable (fun y : Matrix (Fin n) (Fin a) F => x + y) := by

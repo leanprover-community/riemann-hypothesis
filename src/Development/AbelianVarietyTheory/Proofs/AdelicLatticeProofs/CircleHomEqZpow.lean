@@ -61,7 +61,7 @@ theorem circle_hom_eq_zpow :
     ⟨fun x => (f (toCircle x) : ℂ),
       continuous_subtype_val.comp (hf.comp continuous_toCircle)⟩
   have hg : ∀ x, g x = (f (toCircle x) : ℂ) := fun _ => rfl
-  have hex : ∃ n : ℤ, fourierCoeff g n ≠ 0 := by
+  obtain ⟨n, hn⟩ : ∃ n : ℤ, fourierCoeff g n ≠ 0 := by
     by_contra hcon
     push Not at hcon
     have h0 : fourierCoeff g = fun _ => 0 := funext hcon
@@ -71,7 +71,6 @@ theorem circle_hom_eq_zpow :
     have := hs.unique hasSum_zero
     rw [hg] at this
     exact Circle.coe_ne_zero _ this
-  obtain ⟨n, hn⟩ := hex
   refine ⟨n, fun z => ?_⟩
   obtain ⟨w, rfl⟩ : ∃ w : AddCircle (1 : ℝ), toCircle w = z := by
     obtain ⟨w, hw⟩ := (homeomorphCircle (T := 1) one_ne_zero).surjective z
@@ -86,8 +85,7 @@ theorem circle_hom_eq_zpow :
     simp only [hg, fourier_apply, zsmul_add, toCircle_add, map_mul, Circle.coe_mul, smul_eq_mul]
     ring
   have h1 : fourier (-n) w * g w = 1 := by
-    have := mul_right_cancel₀ hn (key.symm.trans (one_mul _).symm)
-    exact this
+    exact mul_right_cancel₀ hn (key.symm.trans (one_mul _).symm)
   rw [hg, fourier_apply, toCircle_zsmul, ← Circle.coe_mul, ← Circle.coe_one] at h1
   have h2 : toCircle w ^ (-n) * f (toCircle w) = (1 : Circle) := Circle.ext h1
   rw [zpow_neg, inv_mul_eq_one] at h2

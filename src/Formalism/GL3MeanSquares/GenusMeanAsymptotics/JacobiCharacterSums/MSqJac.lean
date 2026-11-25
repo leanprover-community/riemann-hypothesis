@@ -152,8 +152,7 @@ theorem jacobi_class_prod (m₀ N q : ℕ) (hN : 0 < N) :
         (if Odd (N.factorization p) ∧ ¬ p ∣ m₀ then jacobiSym (q : ℤ) p else 1)) := by
   have hNfac : (N : ℤ) = ∏ p ∈ N.primeFactors, (p : ℤ) ^ (N.factorization p) := by
     conv_lhs => rw [← Nat.prod_factorization_pow_eq_self hN.ne']
-    rw [Nat.prod_factorization_eq_prod_primeFactors, Nat.cast_prod]
-    simp only [Nat.cast_pow]
+    simp only [Nat.prod_factorization_eq_prod_primeFactors, Nat.cast_prod, Nat.cast_pow]
   rw [hNfac, jacobiSym_prod_left]
   unfold soutPart
   rw [jacobiSym_prod_right _ _ _ fun p hp => (Nat.prime_of_mem_primeFactors (Finset.mem_filter.mp hp).1).ne_zero,

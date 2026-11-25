@@ -557,15 +557,15 @@ private theorem one_gen {A B : Type} [CommRing A] [IsDomain A] [CommRing B] [IsD
 end UpperTheory.Reformulated.B.Ra5
 
 theorem UpperTheory.Reformulated.B.Ra5.main_fin :
-    ∀ (A : Type) [CommRing A] [IsDomain A]
-    (s : Finset A) (B : Type) [CommRing B] [IsDomain B] [Algebra B A],
+    ∀ (A : Type) [inst : CommRing A] [IsDomain A]
+    (s : Finset A) (B : Type) [inst_2 : CommRing B] [IsDomain B] [inst_4 : Algebra B A],
     Algebra.adjoin B (↑s : Set A) = ⊤ →
       Function.Injective (⇑(Algebra.algebraMap B A) : B → A) →
         ∀ (a : A),
           a ≠ (0 : A) →
             ∃ (b : B),
               b ≠ (0 : B) ∧
-                ∀ (K : Type) [Field K] [IsAlgClosed K] (y : B →+* K),
+                ∀ (K : Type) [inst_5 : Field K] [IsAlgClosed K] (y : B →+* K),
                   (y : B → K) b ≠ (0 : K) →
                     ∃ (ξ : A →+* K), ξ.comp (Algebra.algebraMap B A) = y ∧ (ξ : A → K) a ≠ (0 : K) := by
   intro A _ _ s

@@ -118,8 +118,7 @@ theorem binomSeries_gen (k' B : ℕ) (hk : 2 ≤ k') :
     rw [Finset.sum_congr rfl (fun i _ => hstep i), Finset.sum_range_sub']
   simp_rw [hps]
   rw [← hgzero]
-  have := (tendsto_const_nhds (x := g 0)).sub htend
-  simpa using this
+  simpa using (tendsto_const_nhds (x := g 0)).sub htend
 
 theorem tail_q_bound (k' be : ℕ) (b' : ℝ) (hk : 1 ≤ k') :
     ∀ J : ℕ, (be : ℝ) + J + k' ≤ 2 * b' →

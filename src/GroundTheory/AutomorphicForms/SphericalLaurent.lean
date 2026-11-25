@@ -113,8 +113,7 @@ theorem exists_eq_evalAt (ψ : LaurentRing n →ₐ[ℂ] ℂ) : ∃ w : Fin n �
     have h1 : M l = (U l : ℂ) := rfl
     rw [h1]
     conv_lhs => rw [hl l]
-    rw [map_prod, Units.coe_prod]
-    simp only [map_zpow]
+    simp only [map_prod, Units.coe_prod, map_zpow]
     rfl
   rw [evalAt, ← hM, Equiv.apply_symm_apply]
 
@@ -161,8 +160,7 @@ theorem isIntegral_of_forall (A : Subalgebra ℂ (LaurentRing n))
   have hmono : ∀ l : Fin n → ℤ, monomial l ∈ S := by
     intro l
     have hl : monomial l = ∏ i, monomial (Pi.single i (l i) : Fin n → ℤ) := by
-      rw [AddMonoidAlgebra.prod_single]
-      simp only [Finset.prod_const_one]
+      simp only [AddMonoidAlgebra.prod_single, Finset.prod_const_one]
       congr 1
       funext j
       simp [Finset.sum_apply, Pi.single_apply]

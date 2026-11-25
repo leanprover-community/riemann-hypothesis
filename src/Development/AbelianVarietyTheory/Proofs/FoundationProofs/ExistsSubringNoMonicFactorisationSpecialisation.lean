@@ -318,7 +318,7 @@ theorem exists_subring_no_monic_factorisation {F : Type} [Field F] [IsAlgClosed 
   set R := Subring.closure (s : Set F) with hR
   have hinj : Function.Injective (mapRingHom R.subtype) :=
     Polynomial.map_injective _ Subtype.val_injective
-  have hlift : Φ ∈ lifts (mapRingHom R.subtype) := by
+  obtain ⟨Ψ, hΨ⟩ : Φ ∈ lifts (mapRingHom R.subtype) := by
     rw [lifts_iff_coeff_lifts]
     intro i
     have : Φ.coeff i ∈ lifts R.subtype := by
@@ -331,7 +331,6 @@ theorem exists_subring_no_monic_factorisation {F : Type} [Field F] [IsAlgClosed 
         exact Finset.mem_coe.2 (Finset.mem_union_left _
           (Finset.mem_biUnion.2 ⟨i, hi, coeff_mem_coeffs h0⟩))
     exact this
-  obtain ⟨Ψ, hΨ⟩ := hlift
   replace hΨ : Ψ.map (mapRingHom R.subtype) = Φ := hΨ
   refine ⟨s, Ψ, hΨ, fun k _ φ A B hA hB hAB => ?_⟩
   by_contra hcon

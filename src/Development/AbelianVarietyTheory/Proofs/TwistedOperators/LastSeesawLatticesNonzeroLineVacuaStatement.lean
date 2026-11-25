@@ -160,7 +160,7 @@ theorem rat_mul_mem_latO_neg {V T T' : HSp D} {LS : Set (Fin V.rank → D.host.E
   | add x y _ _ hx hy => rw [Matrix.mul_add]; exact add_mem hx hy
   | neg x _ hx => rw [Matrix.mul_neg]; exact neg_mem hx
 
-theorem exists_vacG_lineLat_zero : OnStd fun {_} _ _ _ {_} W F => ∃ Φ₀, VacG W.ψ _ _ (lineLat F 0) Φ₀ ∧ Φ₀ ≠ 0 := by
+theorem exists_vacG_lineLat_zero : OnStd fun {D} _ _ _ {G} W F => ∃ Φ₀, VacG W.ψ _ _ (lineLat F 0) Φ₀ ∧ Φ₀ ≠ 0 := by
   intro D hq T L μ0 hL sc G W M hM F hF
   have hq0 : ∀ t ∈ (G.Λ (.core 0) : Set (Fin (G.V (.core 0)).rank → D.host.E)),
       F.oz.qB *ᵥ t ∈ Submodule.span (𝓞 D.host.E) {F.ζ 0} := by
@@ -241,7 +241,7 @@ open GlobalTheory.FinPl (Lat idAt idOff intAt grpAt grpOff MxAt latV latA InK Mo
 open scoped nonZeroDivisors ContDiff
 open GlobalTheory.AscFin
 
-theorem _root_.GlobalTheory.T.exists_ne_zero_vacuum_besselLineLattice_rankZero : OnStd fun {_} _ _ _ {_} W F => ∃ Φ₀, VacG W.ψ _ _ (lineLat F 0) Φ₀ ∧ Φ₀ ≠ 0 := by
+theorem _root_.GlobalTheory.T.exists_ne_zero_vacuum_besselLineLattice_rankZero : OnStd fun {D} _ _ _ {G} W F => ∃ Φ₀, VacG W.ψ _ _ (lineLat F 0) Φ₀ ∧ Φ₀ ≠ 0 := by
   first | exact @GlobalTheory.AscFin.LineZero.exists_vacG_lineLat_zero
 end -- clump:auto
 end -- clump:auto
@@ -293,7 +293,7 @@ theorem rat_mul_mem_hatMx {m n : ℕ} {ΛS : Submodule (𝓞 D.host.E) (Fin n �
   | add x y _ _ hx hy => rw [Matrix.mul_add]; exact add_mem hx hy
   | neg x _ hx => rw [Matrix.mul_neg]; exact neg_mem hx
 
-theorem proj_mem_latCore : OnStd fun {_} _ _ _ {G} _ F => ∀ u ∈ latCore G 0, F.oz.jA ⬝ (F.oz.pA ⬝ u) ∈ latCore G 0 := by
+theorem proj_mem_latCore : OnStd fun {D} _ _ _ {G} _ F => ∀ u ∈ latCore G 0, F.oz.jA ⬝ (F.oz.pA ⬝ u) ∈ latCore G 0 := by
   intro D hq T L μ0 hL sc G W M hM F hF u hu
   have hz := hF.zA
   have hqa : F.oz.qA * G.sp.dec0.a = 0 := by
@@ -338,7 +338,7 @@ open GlobalTheory.FinPl (Lat idAt idOff intAt grpAt grpOff MxAt latV latA InK Mo
 open scoped nonZeroDivisors ContDiff
 open GlobalTheory.AscFin
 
-theorem _root_.GlobalTheory.T.orthogonal_projection_preserves_depth_lattice : OnStd fun {_} _ _ _ {G} _ F => ∀ u ∈ latCore G 0, F.oz.jA ⬝ (F.oz.pA ⬝ u) ∈ latCore G 0 := by
+theorem _root_.GlobalTheory.T.orthogonal_projection_preserves_depth_lattice : OnStd fun {D} _ _ _ {G} _ F => ∀ u ∈ latCore G 0, F.oz.jA ⬝ (F.oz.pA ⬝ u) ∈ latCore G 0 := by
   first | exact @GlobalTheory.ProjCore.proj_mem_latCore
 end -- clump:auto
 end -- clump:auto

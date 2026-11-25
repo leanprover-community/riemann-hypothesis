@@ -52,10 +52,9 @@ theorem continuous_rk1A {α : Type*} [TopologicalSpace α] {f : α → V} {g : �
 theorem continuous_kG {σ : G → (HH →L[ℂ] HH)} (hσ : IsUnitRep σ) (d : ℝ) (w : HH) {W : G → V} {W' : G → V'}
     (hW : Continuous W) (hW' : Continuous W') (γ : G) : Continuous (kG σ d w W W' γ) := by
   obtain ⟨-, -, -, hc⟩ := hσ
-  have h1 : Continuous fun q : G × G => σ q.1 w := (hc w).comp continuous_fst
   have h2 : Continuous fun q : G × G => σ γ (σ q.2 w) :=
     (σ γ).continuous.comp ((hc w).comp continuous_snd)
-  exact (continuous_const.mul (Continuous.inner (𝕜 := ℂ) h1 h2)).smul
+  exact (continuous_const.mul (Continuous.inner (𝕜 := ℂ) ((hc w).comp continuous_fst) h2)).smul
     (continuous_rk1A (hW.comp continuous_fst) (hW'.comp continuous_snd))
 
 theorem integral_kG {μ : Measure G} [μ.IsMulLeftInvariant] [SFinite μ] {σ : G → (HH →L[ℂ] HH)}
@@ -184,9 +183,8 @@ theorem lintegral_four {ν μS ν' μS' : Measure G} [SFinite ν] [SFinite μS] 
     _ = ∫⁻ z, ∫⁻ z', ∫⁻ s, ∫⁻ s', f z z' s s' ∂μS' ∂μS ∂ν' ∂ν := by
         refine lintegral_congr fun z => ?_
         have hg : Measurable (fun p : (G × G) × G => (z, p.1.2, p.1.1, p.2)) := by fun_prop
-        have hk : Measurable (fun p : (G × G) × G => f z p.1.2 p.1.1 p.2) := hf.comp hg
         have hk' : Measurable (fun x : G × G => ∫⁻ s', f z x.2 x.1 s' ∂μS') :=
-          hk.lintegral_prod_right'
+          (hf.comp hg).lintegral_prod_right'
         exact lintegral_lintegral_swap (f := fun s z' => ∫⁻ s', f z z' s s' ∂μS') hk'.aemeasurable
 
 theorem measurable_bInt {σ : G → (HH →L[ℂ] HH)} (hσ : IsUnitRep σ) (w : HH) {W : G → V} {W' : G → V'}
@@ -205,12 +203,10 @@ theorem measurable_bInt {σ : G → (HH →L[ℂ] HH)} (hσ : IsUnitRep σ) (w :
 theorem ae_mem_four {ν μS ν' μS' : Measure G} [SFinite ν] [SFinite μS] [SFinite ν'] [SFinite μS'] {S S' : Set G}
     (h0 : μS Sᶜ = 0) (h0' : μS' S'ᶜ = 0) :
     ∀ᵐ p ∂((ν.prod μS).prod (ν'.prod μS')), p.1.2 ∈ S ∧ p.2.2 ∈ S' := by
-  have hS : ∀ᵐ s ∂μS, s ∈ S := ae_iff.mpr h0
-  have hS' : ∀ᵐ s ∂μS', s ∈ S' := ae_iff.mpr h0'
   have a1 : ∀ᵐ p ∂((ν.prod μS).prod (ν'.prod μS')), p.1.2 ∈ S :=
-    quasiMeasurePreserving_fst.ae (quasiMeasurePreserving_snd.ae hS)
+    quasiMeasurePreserving_fst.ae (quasiMeasurePreserving_snd.ae (ae_iff.mpr h0))
   have a2 : ∀ᵐ p ∂((ν.prod μS).prod (ν'.prod μS')), p.2.2 ∈ S' :=
-    quasiMeasurePreserving_snd.ae (quasiMeasurePreserving_snd.ae hS')
+    quasiMeasurePreserving_snd.ae (quasiMeasurePreserving_snd.ae (ae_iff.mpr h0'))
   exact a1.and a2
 
 theorem prod_map_φinv {μ ν μS ν' μS' : Measure G} [SFinite ν] [SFinite μS] [SFinite ν'] [SFinite μS']
@@ -301,10 +297,9 @@ theorem lintegral_kG_shift_lt_top {ν μS ν' μS' : Measure G} [SFinite ν] [SF
   have hle := ae_enorm_kG_le_bInt hσ hW hW' hinv hinv' h0 h0' γ
   have h2 := lintegral_const_mul_bInt_eq_iterated (ν := ν) (μS := μS) (ν' := ν') (μS' := μS') hσ w
     hW.2.2.2.2.1 hW'.2.2.2.2.1 γ ‖(d : ℂ)‖ₑ
-  have hd : ‖(d : ℂ)‖ₑ ≠ ⊤ := enorm_ne_top
   refine lt_of_le_of_lt (lintegral_mono_ae hle) ?_
   rw [h2]
-  exact (ENNReal.mul_ne_top hd hB.ne).lt_top
+  exact (ENNReal.mul_ne_top enorm_ne_top hB.ne).lt_top
 
 theorem integrable_kG {μ ν μS ν' μS' : Measure G} [SFinite ν] [SFinite μS] [SFinite ν'] [SFinite μS']
     {σ : G → (HH →L[ℂ] HH)} (hσ : IsUnitRep σ) {d : ℝ} {w : HH} {S S' : Set G} {τ : G → (V →L[ℂ] V)}

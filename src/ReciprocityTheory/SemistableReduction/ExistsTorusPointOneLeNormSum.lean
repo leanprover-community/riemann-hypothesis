@@ -161,8 +161,7 @@ theorem exists_torus_point_one_le_norm_sum {K : Type*} [NormedField K] [IsUltram
     refine Finset.sum_congr rfl fun χ hχ => ?_
     rw [hterm χ hχ, mul_assoc]
   have hnorm1 : ‖∏ i, (σ i : K) ^ N‖ = 1 := by
-    rw [norm_prod]
-    simp [norm_pow, hσ1]
+    simp [norm_prod, norm_pow, hσ1]
   rw [hsum, norm_mul, hnorm1, mul_one] at hge
   exact hge
 

@@ -255,7 +255,7 @@ theorem UpperTheory.mayerVietoris_stackProduct_of_injective_of_locally_covered :
     ∀ (R : Type) [CommRing R] (E : Spc) {a₁ a₂ a : Act} (φ₁ : Act.Hom a₁ a) (φ₂ : Act.Hom a₂ a),
         (∀ A, Function.Injective (fun x : a₁.D.obj A => φ₁.d.app A x)) → (∀ A, Function.Injective (fun x : a₂.D.obj A => φ₂.d.app A x)) →
         (∀ A, Function.Bijective (fun g : a₁.G.obj A => φ₁.g.app A g)) → (∀ A, Function.Bijective (fun g : a₂.G.obj A => φ₂.g.app A g)) →
-        (∀ (T : Scheme.{0}) (x : a.D.obj Γ(T, ⊤)), Loc T fun _ g =>
+        (∀ (T : Scheme.{0}) (x : a.D.obj Γ(T, ⊤)), Loc T fun V g =>
           (∃ y, φ₁.d.app _ y = a.D.map g.appTop x) ∨ (∃ y, φ₂.d.app _ y = a.D.map g.appTop x)) →
         Cover2 R (Sp.map E φ₁) (Sp.map E φ₂) := by
   intro R _ E a₁ a₂ a φ₁ φ₂ i₁ i₂ b₁ b₂ hl

@@ -90,8 +90,7 @@ theorem isPrecomplete_pi {ι : Type*} [Fintype ι] [DecidableEq ι] (I : Ideal R
   have key : ∀ k (x : ι → R), x ∈ I ^ k • (⊤ : Submodule R (ι → R)) ↔
       ∀ i, x i ∈ I ^ k • (⊤ : Submodule R R) := by
     intro k x
-    rw [mem_smul_top_pi]
-    simp only [smul_eq_mul, Ideal.mul_top]
+    simp only [mem_smul_top_pi, smul_eq_mul, Ideal.mul_top]
   refine ⟨fun f hf => ?_⟩
   have hc : ∀ i, ∃ l : R, ∀ n, f n i ≡ l [SMOD (I ^ n • ⊤ : Submodule R R)] := by
     intro i

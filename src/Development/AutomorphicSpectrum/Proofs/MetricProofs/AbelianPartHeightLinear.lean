@@ -62,8 +62,8 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.ClearDenominatorsLattice.exists_integer_smul_mem_of_span_top :
-    ∀ {K V : Type} [Field K] [NumberField K] [AddCommGroup V]
-    [_root_.Module K V] [_root_.Module (NumberField.RingOfIntegers K) V]
+    ∀ {K V : Type} [inst : Field K] [NumberField K] [inst_2 : AddCommGroup V]
+    [inst_3 : _root_.Module K V] [inst_4 : _root_.Module (NumberField.RingOfIntegers K) V]
     [IsScalarTower (NumberField.RingOfIntegers K) K V] (L : Submodule (NumberField.RingOfIntegers K) V),
     Submodule.span K (↑L : Set V) = ⊤ →
       ∀ (x : V), ∃ (r : NumberField.RingOfIntegers K), r ≠ (0 : NumberField.RingOfIntegers K) ∧ r • x ∈ L := by

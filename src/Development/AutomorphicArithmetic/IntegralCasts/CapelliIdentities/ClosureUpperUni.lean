@@ -46,7 +46,7 @@ public import Mathlib.LinearAlgebra.Matrix.Block
 @[expose] public section
 
 noncomputable def UpperTheory.Reformulated.B.Qe27.upperUni :
-    (k : ℕ) → (A : Type) → [CommRing A] → Set (GL (Fin k) A) :=
+    (k : ℕ) → (A : Type) → [inst : CommRing A] → Set (GL (Fin k) A) :=
     fun (k : ℕ) (A : Type) [CommRing A] ↦
       {x : GL (Fin k) A |
         ∀ (i j : Fin k),
@@ -69,7 +69,7 @@ private theorem UpperTheory.Reformulated.B.Qe27.mem_iff {k : ℕ} {A : Type} [Co
     fun h i _ => ⟨fun hij => h.1 hij, h.2 i⟩⟩
 
 theorem UpperTheory.Reformulated.B.Qe27.closure_upperUni :
-    ∀ {k : ℕ} (A : Type) [CommRing A],
+    ∀ {k : ℕ} (A : Type) [inst : CommRing A],
       ∀ x ∈ Subgroup.closure (UpperTheory.Reformulated.B.Qe27.upperUni k A), x ∈ UpperTheory.Reformulated.B.Qe27.upperUni k A := by
   intro k A _ x hx
   induction hx using Subgroup.closure_induction with

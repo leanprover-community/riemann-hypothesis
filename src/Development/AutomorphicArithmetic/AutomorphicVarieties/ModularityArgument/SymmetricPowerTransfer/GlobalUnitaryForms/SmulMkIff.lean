@@ -82,8 +82,7 @@ private theorem idx {H T : Type} [Group H] [CommGroup T] (φ : H →* T) (H₀ :
       obtain ⟨hx1, hx2⟩ := Subgroup.mem_inf.mp hx
       obtain ⟨r, hr, s, hs, rfl⟩ := Subgroup.mem_sup.mp hx1
       have hrC : r ∈ C := by
-        have := C.mul_mem hx2 (C.inv_mem (hS hs))
-        simpa using this
+        simpa using C.mul_mem hx2 (C.inv_mem (hS hs))
       rw [mul_comm]
       exact Subgroup.mem_sup.mpr ⟨s, hs, r, Subgroup.mem_inf.mpr ⟨hr, hrC⟩, rfl⟩
   have hF : S.relIndex (R ⊓ C) = S.relIndex ((R ⊔ S) ⊓ C) := by
@@ -636,8 +635,7 @@ theorem gqAbs {T H : Type} [CommGroup T] [Group H] {Tv : I → Type} [∀ v, Com
   have hbox : ∀ (g x : G), x • (g : G ⧸ P.box U) = g ↔
       ∀ v, (P.p v g)⁻¹ * P.p v x * P.p v g ∈ U v := by
     intro g x
-    rw [smul_mk_iff, mem_box]
-    simp only [map_mul, map_inv]
+    simp only [smul_mk_iff, mem_box, map_mul, map_inv]
   have hprod := Tf.orbProd I G T Gv Tv K U C₀ C P Q ι ιv θ θv f fv δ hι hθ hf hinv hc S hS hoff
   refine (Tf.gqMass H T G φ ι H₀ (Q.box C) θ (P.box U) f δ ?_ ?_ hprod.1 ?_ m1 m2 ?_ ?_).trans ?_
   · intro u hu x

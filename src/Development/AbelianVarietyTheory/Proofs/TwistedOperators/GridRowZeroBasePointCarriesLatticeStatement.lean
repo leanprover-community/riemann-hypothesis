@@ -505,7 +505,7 @@ theorem moves_of_forall {D : D7} (S : HSp D) (g : GA D S) (L M : GlobalTheory.Fi
     rw [Matrix.mulVec_smul]
     exact h2 v trivial e he
 
-theorem moves0_of_selfDual : Big fun {D} {_} _ _ {_ T} {_} {_} _ _ _ {_} ch => IsSelfDualC _ (GlobalTheory.RowShape.rowN ch.G 0) → ∀ (t : T) (b : Pts ch.G), IsBase t ch.S.B b → GlobalTheory.FinPl.Moves _ (b 0) (ch.G.Λ (.grid D.R.m 0)) (GlobalTheory.RowShape.rowN ch.G 0) fun _ => True := by
+theorem moves0_of_selfDual : Big fun {D} {Γ} _ _ {Pl0 T} {A} {Ks} _ _ _ {R} ch => IsSelfDualC _ (GlobalTheory.RowShape.rowN ch.G 0) → ∀ (t : T) (b : Pts ch.G), IsBase t ch.S.B b → GlobalTheory.FinPl.Moves _ (b 0) (ch.G.Λ (.grid D.R.m 0)) (GlobalTheory.RowShape.rowN ch.G 0) fun _ => True := by
   refine ⟨0, fun ε CF _ => ⟨0, fun D large₂ _ _ Γ _ _ Pl0 T A Ks _ _ _ R F s ch hch _ => ?_⟩⟩
   intro hN t b hb
   have hL : R.toLevCh.Is A.μ0 := s.core.lev
@@ -533,7 +533,7 @@ theorem moves0_of_selfDual : Big fun {D} {_} _ _ {_ T} {_} {_} _ _ _ {_} ch => I
     rw [GlobalTheory.T.gridBasePoint_trivial_offTensorPlaces ch.G t ch.S.B b hb v hv y hy]
     exact GlobalTheory.T.lattice_off_S0_last_level_iff ch.G v hv0 y hy
 
-theorem moves0 : Big fun {D} {_} _ _ {_ T} {_} {_} _ _ _ {_} ch => ∀ (t : T) (b : Pts ch.G), IsBase t ch.S.B b → GlobalTheory.FinPl.Moves _ (b 0) (ch.G.Λ (.grid D.R.m 0)) (GlobalTheory.RowShape.rowN ch.G 0) fun _ => True :=
+theorem moves0 : Big fun {D} {Γ} _ _ {Pl0 T} {A} {Ks} _ _ _ {R} ch => ∀ (t : T) (b : Pts ch.G), IsBase t ch.S.B b → GlobalTheory.FinPl.Moves _ (b 0) (ch.G.Λ (.grid D.R.m 0)) (GlobalTheory.RowShape.rowN ch.G 0) fun _ => True :=
   big_mono (fun _ h => h.1 (h.2 0 (Nat.zero_le _))) (Big.and moves0_of_selfDual GlobalTheory.T.isSelfDual_gridRowMovedLattice_largeDepth)
 
 end GlobalTheory.RowShape
@@ -551,7 +551,7 @@ open IsDedekindDomain NumberField MeasureTheory Matrix GlobalTheory.ChiGrid Glob
 open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Grow GlobalTheory.RowUnf GlobalTheory.RowChain GlobalTheory.SeeSaw GlobalTheory.RowVal GlobalTheory.RowReal GlobalTheory.FinPl
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.gridRow_zero_basePoint_carriesLattice : Big fun {D} {_} _ _ {_ T} {_} {_} _ _ _ {_} ch => ∀ (t : T) (b : Pts ch.G), IsBase t ch.S.B b → GlobalTheory.FinPl.Moves _ (b 0) (ch.G.Λ (.grid D.R.m 0)) (GlobalTheory.RowShape.rowN ch.G 0) fun _ => True := by
+theorem _root_.GlobalTheory.T.gridRow_zero_basePoint_carriesLattice : Big fun {D} {Γ} _ _ {Pl0 T} {A} {Ks} _ _ _ {R} ch => ∀ (t : T) (b : Pts ch.G), IsBase t ch.S.B b → GlobalTheory.FinPl.Moves _ (b 0) (ch.G.Λ (.grid D.R.m 0)) (GlobalTheory.RowShape.rowN ch.G 0) fun _ => True := by
   first | exact @GlobalTheory.RowShape.moves0
 end -- clump:auto
 end -- clump:auto

@@ -157,8 +157,7 @@ theorem fischer_self_eq_zero_iff (f : MvPolynomial σ ℂ) : fischer f f = 0 ↔
   ext m
   by_contra hm
   have hm' : m ∈ f.support := MvPolynomial.mem_support_iff.2 hm
-  have := hz m hm'
-  rcases mul_eq_zero.1 this with h1 | h1
+  rcases mul_eq_zero.1 (hz m hm') with h1 | h1
   · exact (Nat.cast_ne_zero.2 (mfact_pos m).ne') h1
   · exact hm (Complex.normSq_eq_zero.1 h1)
 

@@ -296,7 +296,7 @@ theorem compactSpace_points (u : HolUnif A L g) : CompactSpace (𝟙_ (Over (Sp 
   exact h.symm
 
 theorem eq_relativeDimension : ∀ (A : Over (Sp ℂ)) [GrpObj A] (L : LB A.left) (g d : ℕ)
-    (_ : HolUnif A L g), SmoothOfRelativeDimension d A.hom → g = d := by
+    (u : HolUnif A L g), SmoothOfRelativeDimension d A.hom → g = d := by
   intro A _ L g d u hd
   letI : CommGroup (𝟙_ (Over (Sp ℂ)) ⟶ A) :=
     { (inferInstance : Group (𝟙_ (Over (Sp ℂ)) ⟶ A)) with

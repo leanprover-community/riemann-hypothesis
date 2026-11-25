@@ -35,8 +35,7 @@ theorem typeOfHW (hL : LowSpan) (hS : StabLink) (hW : WtLink) : TypeOfHW := by
   have hrel : KRel ε E := fun a b c d _ _ => hM.gl a b c d
   have hun : KUnit ε E := by
     intro a b hab y z
-    have := hM.unit a b y z
-    simpa [Formalism.REAL.sgn, hab] using this
+    simpa [Formalism.REAL.sgn, hab] using hM.unit a b y z
   obtain ⟨L, hLU, hxL, hLst, hirr, hdom, -⟩ := hL n ε S E μ x _ hrel hun hx0 hhw hU hUst hxS
   have hLfd : FiniteDimensional ℂ L := Submodule.finiteDimensional_of_le hLU
   refine ⟨L.map S.subtype, inferInstance, (hS n ε H σ S E hσ hM L hLfd).1 hLst, ?_, ?_, ?_⟩

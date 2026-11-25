@@ -40,8 +40,7 @@ theorem trace_eq_sum (hT : IsTotallyReal F) (ρ : InfinitePlace F → (F →+* �
         exact DFunLike.congr_fun h x
       rw [← InfinitePlace.mk_embedding w, ← InfinitePlace.mk_embedding w', this]
     · intro σ
-      have hr : (InfinitePlace.mk (σ : F →+* ℂ)).IsReal := hT.isReal _
-      have hc : ComplexEmbedding.IsReal (σ : F →+* ℂ) := InfinitePlace.isReal_mk_iff.1 hr
+      have hc : ComplexEmbedding.IsReal (σ : F →+* ℂ) := InfinitePlace.isReal_mk_iff.1 (hT.isReal _)
       refine ⟨InfinitePlace.mk (σ : F →+* ℂ), ?_⟩
       ext x
       have := InfinitePlace.embedding_mk_eq_of_isReal hc
@@ -74,8 +73,7 @@ theorem gauss_sq (B : Matrix ι ι F) (ρ : InfinitePlace F → (F →+* ℝ)) (
     rw [← Complex.ofReal_pow, Complex.re_ofReal_mul]
   have him : (((c w : ℝ) : ℂ) ^ 2 * τ w).im = c w ^ 2 * (τ w).im := by
     rw [← Complex.ofReal_pow, Complex.im_ofReal_mul]
-  rw [hre, him]
-  simp only [Matrix.mulVec_smul, dotProduct_smul, smul_dotProduct, smul_eq_mul]
+  simp only [hre, him, Matrix.mulVec_smul, dotProduct_smul, smul_dotProduct, smul_eq_mul]
   push_cast
   ring
 
@@ -139,8 +137,7 @@ theorem term_D (B : Matrix ι ι F) (ρ : InfinitePlace F → (F →+* ℝ)) (P 
     rw [← Matrix.mulVec_smul]
     ext j
     simp [Matrix.mulVec, dotProduct, Pi.smul_apply, smul_eq_mul]
-  rw [h1, h2]
-  simp
+  simp [h1, h2]
 
 theorem main : ∀ (F : Type) [Field F] [NumberField F], ∀ ψ : AddChar (A F) ℂ, IsStdChar F ψ → ∀ (ι : Type) [Fintype ι] [DecidableEq ι] (M : ℕ) (B : Matrix ι ι F) (ρ : InfinitePlace F → (F →+* ℝ)) (P : InfinitePlace F → Matrix ι ι ℝ), QSetup M B ρ P → ∀ (gf : Matrix ι ι (A F)) (gi : InfinitePlace F → Matrix ι ι ℝ), IsOrth B ρ gf gi → ∀ (φ : (ι → A F) → ℂ) (τ : InfinitePlace F → ℂ), (∀ b : F, theta B ρ P gf gi (opU ψ (hf F) (Bf B) (algebraMap F (A F) b) φ) (fun w => τ w + (ρ w b : ℝ)) = theta B ρ P gf gi φ τ) ∧ (∀ a : F, a ≠ 0 → theta B ρ P gf gi (opD 1 (algebraMap F (A F) a) φ) (fun w => ((ρ w a : ℝ) : ℂ) ^ 2 * τ w) = theta B ρ P gf gi φ τ) ∧ ∀ c : ℂ, theta B ρ P gf gi (c • φ) τ = c * theta B ρ P gf gi φ τ := by
   intro F _ _ ψ hψ ι _ _ M B ρ P hQ gf gi hO φ τ

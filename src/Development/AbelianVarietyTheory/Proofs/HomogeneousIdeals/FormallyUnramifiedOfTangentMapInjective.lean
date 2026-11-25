@@ -470,13 +470,11 @@ theorem epsScale_add_comp (a b : R) {w : epsR R ⟶ G} (hw : IsTangent w) :
       exact TrivSqZeroExt.ext h₃ (Prod.ext h₄ h₅)
     · refine congrArg Over.Hom.left
         (?_ : sqZeroMap (LinearMap.fst R R R) ≫ _ = sqZeroMap (LinearMap.fst R R R) ≫ _)
-      rw [comp_mul]
-      simp only [← Category.assoc, sqZeroMap_comp_eq]
+      simp only [comp_mul, ← Category.assoc, sqZeroMap_comp_eq]
       simp [i₁, i₂, epsScale_zero_comp hw]
     · refine congrArg Over.Hom.left
         (?_ : sqZeroMap (LinearMap.snd R R R) ≫ _ = sqZeroMap (LinearMap.snd R R R) ≫ _)
-      rw [comp_mul]
-      simp only [← Category.assoc, sqZeroMap_comp_eq]
+      simp only [comp_mul, ← Category.assoc, sqZeroMap_comp_eq]
       simp [i₁, i₂, epsScale_zero_comp hw]
   have := congrArg (sqZeroMap (a • LinearMap.fst R R R + b • LinearMap.snd R R R) ≫ ·) key
   simp only [comp_mul, ← Category.assoc, sqZeroMap_comp_eq] at this
@@ -611,8 +609,7 @@ theorem formallyUnramified_of_tangentMap_injective (f : G ⟶ H) [IsMonHom f]
   refine formallyUnramified_of_tangent _ fun k _ _ w hw => ?_
   let p : Sp k ⟶ S := dualPt k ≫ w ≫ G.hom
   have hw' : w ≫ G.hom = dualBase k ≫ p := by
-    have := congrArg (· ≫ H.hom) hw
-    simpa [p] using this
+    simpa [p] using congrArg (· ≫ H.hom) hw
   let w₀ : Over.mk (dualBase k ≫ p) ⟶ G := Over.homMk w hw'
   exact congrArg Over.Hom.left (eq_of_tangentMap_injective p f (h k p) w₀
     (epsBaseAt p ≫ epsZeroAt p ≫ w₀) (by rw [epsZeroAt_epsBaseAt_assoc])

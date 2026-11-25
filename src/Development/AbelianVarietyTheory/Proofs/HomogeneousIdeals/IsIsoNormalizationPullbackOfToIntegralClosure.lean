@@ -582,8 +582,7 @@ theorem flat_of_isSchemeTheoreticallyDominant {R : Type u} [CommRing R] [IsDomai
   have hφ : φ ≫ j'.app W = CommRingCat.ofHom (algebraMap R K) ≫
       (Scheme.ΓSpecIso (.of K)).inv ≫ c.appLE ⊤ _ hcW := by
     have h1 : p.appLE ⊤ W hpW ≫ j'.app W = (c ≫ ι).appLE ⊤ _ hciW := by
-      rw [Scheme.Hom.app_eq_appLE, Scheme.Hom.appLE_comp_appLE]
-      simp only [hc]
+      simp only [Scheme.Hom.app_eq_appLE, Scheme.Hom.appLE_comp_appLE, hc]
     rw [Scheme.ΓSpecIso_inv_naturality_assoc, Category.assoc, h1, Scheme.Hom.comp_appLE]
     rfl
   have hu : IsUnit (j'.app W (φ r)) := by

@@ -86,8 +86,7 @@ theorem exists_invariant_nat_length_lattice (Y : Type*) [AddCommGroup Y] [Module
     rw [map_nsmul, h2]
   · intro y hy
     rw [Finset.sum_eq_zero_iff] at hy
-    have := hy 0 (Finset.mem_range.mpr hn)
-    exact h3 y (by simpa using this)
+    exact h3 y (by simpa using (hy 0 (Finset.mem_range.mpr hn)))
   · intro y
     have e1 := Finset.sum_range_succ (fun j => q ((σ ^ j) y)) n
     have e2 := Finset.sum_range_succ' (fun j => q ((σ ^ j) y)) n

@@ -28,13 +28,11 @@ lemma lift_cocycle {A B : Cx R} (φ : Hom A B) (hs : ∀ n, Function.Surjective 
   cases n with
   | zero =>
     refine ⟨z, rfl, ?_⟩
-    have h' : ((φ.Z 0 z - w : B.Z 0) : B.X 0) = 0 := h
-    exact sub_eq_zero.mp (Subtype.ext h')
+    exact sub_eq_zero.mp (Subtype.ext h)
   | succ k =>
     obtain ⟨c, hc⟩ := h
     obtain ⟨c', rfl⟩ := hs k c
-    have hdc : A.d (k+1) (A.d k c') = 0 := A.dd k c'
-    refine ⟨z - ⟨A.d k c', hdc⟩, ?_, ?_⟩
+    refine ⟨z - ⟨A.d k c', (A.dd k c')⟩, ?_, ?_⟩
     · rw [Submodule.Quotient.eq, Submodule.mem_comap]
       refine ⟨-c', ?_⟩
       show A.d k (-c') = (z : A.X (k+1)) - A.d k c' - z

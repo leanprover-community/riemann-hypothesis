@@ -65,8 +65,8 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.AevalIntertwining.aeval_intertwine :
-    ∀ {K : Type} [Field K] {M N : Type} [AddCommGroup M]
-    [_root_.Module K M] [AddCommGroup N] [_root_.Module K N] (φ : M →ₗ[K] N)
+    ∀ {K : Type} [inst : Field K] {M N : Type} [inst_1 : AddCommGroup M]
+    [inst_2 : _root_.Module K M] [inst_3 : AddCommGroup N] [inst_4 : _root_.Module K N] (φ : M →ₗ[K] N)
     (f : Module.End K M) (f' : Module.End K N),
     (∀ (x : M), (φ : M → N) ((f : M → M) x) = (f' : N → N) ((φ : M → N) x)) →
       ∀ (p : Polynomial K) (x : M),

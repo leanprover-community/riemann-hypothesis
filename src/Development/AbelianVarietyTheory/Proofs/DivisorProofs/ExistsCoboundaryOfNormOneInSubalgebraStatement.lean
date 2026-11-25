@@ -134,7 +134,6 @@ theorem galoisDescent_semilinear_bijective : ∀ (F F' : Type) [Field F] [Field 
     semilinear_pow_smul s T hT
   have hfix : ∀ (u : LinearMap.ker (T - 1)) (k : ℕ), (T ^ k) (u : V) = u :=
     fun u k => pow_apply_of_mem_ker_sub_one T u u.2 k
-  have hn0 : 0 < n := Module.finrank_pos
   have hcard : Fintype.card ι = n := (Module.finrank_eq_card_basis b).symm
   let e : ι ≃ Fin n := Fintype.equivFinOfCardEq hcard
   let A : Matrix (Fin n) ι F' := fun k j => (s ^ (k : ℕ)) (b j)
@@ -143,11 +142,10 @@ theorem galoisDescent_semilinear_bijective : ∀ (F F' : Type) [Field F] [Field 
     ext i j
     rw [Matrix.mul_apply, Matrix.one_apply]
     exact key1 i j
-  have hAB : A * B = 1 := (Matrix.mul_eq_one_comm_of_equiv e.symm).mpr hBA
-  let k0 : Fin n := ⟨0, hn0⟩
+  let k0 : Fin n := ⟨0, Module.finrank_pos⟩
   have key2 : ∀ l : Fin n, ∑ i, b i * (s ^ (l : ℕ)) (d i) = if k0 = l then 1 else 0 := by
     intro l
-    have h := congrFun (congrFun hAB k0) l
+    have h := congrFun (congrFun ((Matrix.mul_eq_one_comm_of_equiv e.symm).mpr hBA) k0) l
     rw [Matrix.mul_apply, Matrix.one_apply] at h
     simpa [A, B, k0] using h
   constructor
@@ -244,8 +242,7 @@ theorem coe_galAct (s : F' ≃ₐ[F] F') {n : ℕ} (x : GL (Fin n) F') :
 theorem nrmG_succ (s : F' ≃ₐ[F] F') {n : ℕ} (j : ℕ) (δ : GL (Fin n) F') :
     nrmG (galAct F F' n) s (j + 1) δ = nrmG (galAct F F' n) s j δ * galAct F F' n (s ^ j) δ := by
   unfold nrmG
-  rw [List.range_succ, List.map_append, List.prod_append]
-  simp
+  simp [List.range_succ, List.map_append, List.prod_append]
 
 def tw (s : F' ≃ₐ[F] F') {n : ℕ} (B : Subalgebra F' (Matrix (Fin n) (Fin n) F'))
     (hB : ∀ x ∈ B, x.map s ∈ B) (δ : GL (Fin n) F')
@@ -378,8 +375,7 @@ theorem sumMap_transfer (s : F' ≃ₐ[F] F') {n : ℕ} (B : Subalgebra F' (Matr
     simpa [toK] using this
   · obtain ⟨u, hu⟩ := hbij.2 ⟨y, hy⟩
     refine ⟨fun i => ⟨((u i : B) : Matrix (Fin n) (Fin n) F'), (u i : B).2, (hker _).1 (u i).2⟩, ?_⟩
-    have := congrArg (fun z : B => (z : Matrix (Fin n) (Fin n) F')) hu
-    simpa [sumMap] using this
+    simpa [sumMap] using congrArg (fun z : B => (z : Matrix (Fin n) (Fin n) F')) hu
 
 
 set_option synthInstance.maxHeartbeats 400000 in
@@ -430,8 +426,7 @@ theorem hilbert90_matrix_subalgebra_norm_one : ∀ (F F' : Type) [Field F] [Fiel
     intro m
     have hmem : ((ψ m : keyP s B 1) : Matrix (Fin n) (Fin n) F') ∈ fix s B := by
       refine ⟨(ψ m).2.1, ?_⟩
-      have := (ψ m).2.2
-      simpa using this
+      simpa using (ψ m).2.2
     let r0 : fix s B := ⟨_, hmem⟩
     refine ⟨r0, ?_⟩
     have hr : (ψ m : keyP s B 1) = r0 • (⟨1, h1N⟩ : keyP s B 1) := by
@@ -446,8 +441,7 @@ theorem hilbert90_matrix_subalgebra_norm_one : ∀ (F F' : Type) [Field F] [Fiel
   have hcx : c * x = 1 := by
     rw [← hv]
     simp only [c, sumMap, LinearMap.coe_mk, AddHom.coe_mk, Finset.sum_mul, smul_mul_assoc, hr]
-  have hxc : x * c = 1 := mul_eq_one_comm.1 hcx
-  let X : GL (Fin n) F' := ⟨x, c, hxc, hcx⟩
+  let X : GL (Fin n) F' := ⟨x, c, (mul_eq_one_comm.1 hcx), hcx⟩
   have hX : (X : Matrix (Fin n) (Fin n) F') = x := rfl
   refine ⟨X, hX ▸ hxM.1, ?_⟩
   have hsX : galAct F F' n s X = X * ε := by

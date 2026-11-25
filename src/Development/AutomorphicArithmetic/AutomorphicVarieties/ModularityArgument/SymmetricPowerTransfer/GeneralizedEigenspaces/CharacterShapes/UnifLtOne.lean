@@ -586,7 +586,7 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Qh30.artin :
-    ∀ {P : Type} [Mul P] (T : Finset (P → ℂ))
+    ∀ {P : Type} [inst : Mul P] (T : Finset (P → ℂ))
     (c : (P → ℂ) → ℂ),
     (∀ χ ∈ T, χ ≠ (0 : P → ℂ) ∧ ∀ (p q : P), χ (p * q) = χ p * χ q) →
       (∀ (p : P), ∑ χ ∈ T, c χ * χ p = (0 : ℂ)) → ∀ χ ∈ T, c χ = (0 : ℂ) := by

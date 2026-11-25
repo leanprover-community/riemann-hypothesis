@@ -37,8 +37,7 @@ theorem first_minimum_pos (X : PT E) (hne : ∃ x ∈ X.L, x ≠ 0) : 0 < X.la1 
     ⟨x0, (Set.Finite.mem_toFinset hfin).2 ⟨hx0, hx0ne, le_rfl⟩⟩
   rw [Set.Finite.mem_toFinset] at hm
   obtain ⟨-, hm0, hmle⟩ := hm
-  have hpos : 0 < ‖m‖ := norm_pos_iff.2 hm0
-  refine lt_of_lt_of_le hpos ?_
+  refine lt_of_lt_of_le (norm_pos_iff.2 hm0) ?_
   unfold PT.la1
   refine le_csInf ⟨‖x0‖, x0, hx0, hx0ne, rfl⟩ ?_
   rintro t ⟨y, hy, hy0, rfl⟩
@@ -59,12 +58,11 @@ theorem sat_of_IR {X : PT E} {I : Submodule ℤ (Vsp X.dim)} (hs : ∀ x ∈ X.L
     ∀ x ∈ X.L, ∀ k : ℤ, k ≠ 0 → k • x ∈ I → x ∈ I := by
   intro x hx k hk hkx
   apply hs x hx
-  have h1 : (k • x : Vsp X.dim) ∈ IR I := Submodule.subset_span hkx
   have hk' : (k : ℝ) ≠ 0 := Int.cast_ne_zero.mpr hk
   have h2 : x = (k : ℝ)⁻¹ • (k • x) := by
     rw [← Int.cast_smul_eq_zsmul ℝ, inv_smul_smul₀ hk']
   rw [h2]
-  exact Submodule.smul_mem _ _ h1
+  exact Submodule.smul_mem _ _ (Submodule.subset_span hkx)
 
 end
 

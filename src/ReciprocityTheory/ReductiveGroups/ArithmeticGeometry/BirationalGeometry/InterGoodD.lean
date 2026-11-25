@@ -88,10 +88,9 @@ theorem subst_coeff_totalDegree {r : ℕ} (lam : Fin r → k) (F : MvPolynomial 
   rw [homogeneousComponent_apply, map_sum, map_sum, Polynomial.finsetSum_coeff,
     Finset.sum_filter]
   refine Finset.sum_congr rfl fun m hm => ?_
-  have hle : Finsupp.degree m ≤ F.totalDegree := le_totalDegree hm
   split_ifs with hd
   · rw [← hd]; exact (subst_monomial lam m _).2
-  · have hlt : Finsupp.degree m < F.totalDegree := lt_of_le_of_ne hle hd
+  · have hlt : Finsupp.degree m < F.totalDegree := lt_of_le_of_ne (le_totalDegree hm) hd
     exact Polynomial.coeff_eq_zero_of_natDegree_lt ((subst_monomial lam m _).1.trans_lt hlt)
 
 theorem homogeneousComponent_totalDegree_ne_zero {σ : Type*} {F : MvPolynomial σ k} (hF : F ≠ 0) :

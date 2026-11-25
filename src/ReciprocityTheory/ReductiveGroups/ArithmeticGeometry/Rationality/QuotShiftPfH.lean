@@ -107,8 +107,7 @@ lemma eq_unit_mul_pow {π : F} (h0 : π ≠ 0) (h1 : ordAt v π = 1) (x : Rv F v
     rw [div_eq_mul_inv, ordAt_mul' v hx (inv_ne_zero hπn), ← zpow_neg_one, ordAt_zpow',
       ← zpow_natCast, ordAt_zpow', h1]
     omega
-  have hymem : (x : F) / π ^ n ∈ Rv F v := (mem_Rv_iff_ord v hy0).mpr hyord.ge
-  have hu := isUnit_of_ord_zero v ⟨_, hymem⟩ hy0 hyord
+  have hu := isUnit_of_ord_zero v ⟨_, ((mem_Rv_iff_ord v hy0).mpr hyord.ge)⟩ hy0 hyord
   refine ⟨hu.unit, Subtype.ext ?_⟩
   rw [IsUnit.unit_spec]
   show (x : F) = (x : F) / π ^ n * π ^ n

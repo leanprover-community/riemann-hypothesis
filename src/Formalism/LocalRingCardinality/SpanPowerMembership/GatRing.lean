@@ -33,8 +33,7 @@ theorem isUnit_of_re (hϖ : Irreducible ϖ) (z : QuadraticAlgebra W ϖ 0) (h : I
   exact h2 (h.mul h)
 
 theorem om_not_isUnit (hϖ : Irreducible ϖ) : ¬ IsUnit (ω : QuadraticAlgebra W ϖ 0) := by
-  rw [isUnit_iff_norm_isUnit, norm_def]
-  simp only [omega_re, omega_im]
+  simp only [isUnit_iff_norm_isUnit, norm_def, omega_re, omega_im]
   intro h
   have e : (0 : W) * 0 + 0 * 0 * 1 - ϖ * 1 * 1 = -ϖ := by ring
   rw [e, IsUnit.neg_iff] at h

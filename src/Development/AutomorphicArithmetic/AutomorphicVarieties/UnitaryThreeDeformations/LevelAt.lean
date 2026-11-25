@@ -64,7 +64,7 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.UpperTriangularThreeDiagonalOfMul.diag_mul :
-    ∀ {R : Type} [CommRing R]
+    ∀ {R : Type} [inst : CommRing R]
     (X Y : Matrix (Fin (3 : ℕ)) (Fin (3 : ℕ)) R),
     (∀ (i j : Fin (3 : ℕ)), j < i → X i j = (0 : R)) →
       (∀ (i j : Fin (3 : ℕ)), j < i → Y i j = (0 : R)) → ∀ (a : Fin (3 : ℕ)), (X * Y) a a = X a a * Y a a := by

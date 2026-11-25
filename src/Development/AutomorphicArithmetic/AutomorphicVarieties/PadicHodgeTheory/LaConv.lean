@@ -590,7 +590,7 @@ private theorem st_inertia (K : FinExt l) {d : ℕ} (R : ↥(GK K) → Matrix (F
 end UpperTheory.V.Loc
 
 theorem UpperTheory.V.Loc.drWt0 :
-    GlobalTheory.Published.DeRhamPotSemistable → ∀ {l : ℕ} [Fact l.Prime] {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] (φ : G →* GQ l) (_ : IsOpenEmbedding φ) {A : Type} [CommRing A] [Algebra ℚ_[l] A] {V : Type} [AddCommGroup V] [Module A V] [Module ℚ_[l] V] [IsScalarTower ℚ_[l] A V] [FiniteDimensional ℚ_[l] V] [TopologicalSpace V] [IsModuleTopology ℚ_[l] V] [IsTopologicalAddGroup V] [ContinuousConstSMul A V] (ρ : Representation A G V), ContAction ρ → IsDr φ ρ → FilD φ ρ 0 = Ddr φ ρ → FilD φ ρ 1 = ⊥ → ∃ U : Subgroup G, IsOpen (U : Set G) ∧ ∀ g ∈ U, φ g ∈ Iq l → ρ g = 1 := by
+    GlobalTheory.Published.DeRhamPotSemistable → ∀ {l : ℕ} [Fact l.Prime] {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] (φ : G →* GQ l) (hφ : IsOpenEmbedding φ) {A : Type} [CommRing A] [Algebra ℚ_[l] A] {V : Type} [AddCommGroup V] [Module A V] [Module ℚ_[l] V] [IsScalarTower ℚ_[l] A V] [FiniteDimensional ℚ_[l] V] [TopologicalSpace V] [IsModuleTopology ℚ_[l] V] [IsTopologicalAddGroup V] [ContinuousConstSMul A V] (ρ : Representation A G V), ContAction ρ → IsDr φ ρ → FilD φ ρ 0 = Ddr φ ρ → FilD φ ρ 1 = ⊥ → ∃ U : Subgroup G, IsOpen (U : Set G) ∧ ∀ g ∈ U, φ g ∈ Iq l → ρ g = 1 := by
   intro hP l _ G _ _ _ φ hφ A _ _ V _ _ _ _ _ _ _ _ _ ρ hcont hdr h0 h1
   obtain ⟨K, e, -, hec, he, -, hidx, -⟩ := openField φ hφ
   have he' : ∀ x, ((e x : ↥(GK K)) : GQ l) = φ x := fun x => DFunLike.congr_fun he x
@@ -871,7 +871,7 @@ end UpperTheory.V.Loc.LaConv
 
 open UpperTheory.V.Loc.LaConv in
 theorem UpperTheory.V.Loc.laConv :
-    GlobalArtinReciprocity → HeckeLAdicCharacter → HeckeLAdicCharacterDeRham → DeRhamPotSemistable → ∀ {F Ω : Type} [Field F] [NumberField F] [Field Ω] [Algebra F Ω] [IsAlgClosure F Ω] {l : ℕ} [Fact l.Prime] {A : ValuationSubring Ω} {w : Plc F} (h : IsPlaceOver A w) (κ : ↥(Dec (F := F) A) →* (Qbar l)ˣ), Continuous κ → ∀ (O : Type) [CommRing O] [Algebra ℤ_[l] O] [TopologicalSpace O] (Bw : LocBridge l F Ω (Dec (F := F) A) O) (_ : GlobalTheory.Pst.Induces Bw) (wt : Emb l w → ℤ), (∀ τ : Emb l w, GlobalTheory.Pst.IsJumpsAt (UpperTheory.V.Loc.PP l) Bw (GlobalTheory.TripleGal.rk1 κ) (τ.1.comp (algebraMap F (w.adicCompletion F))) {wt τ}) → IsLocAlg h κ wt := by
+    GlobalArtinReciprocity → HeckeLAdicCharacter → HeckeLAdicCharacterDeRham → DeRhamPotSemistable → ∀ {F Ω : Type} [Field F] [NumberField F] [Field Ω] [Algebra F Ω] [IsAlgClosure F Ω] {l : ℕ} [Fact l.Prime] {A : ValuationSubring Ω} {w : Plc F} (h : IsPlaceOver A w) (κ : ↥(Dec (F := F) A) →* (Qbar l)ˣ), Continuous κ → ∀ (O : Type) [CommRing O] [Algebra ℤ_[l] O] [TopologicalSpace O] (Bw : LocBridge l F Ω (Dec (F := F) A) O) (hj : GlobalTheory.Pst.Induces Bw) (wt : Emb l w → ℤ), (∀ τ : Emb l w, GlobalTheory.Pst.IsJumpsAt (UpperTheory.V.Loc.PP l) Bw (GlobalTheory.TripleGal.rk1 κ) (τ.1.comp (algebraMap F (w.adicCompletion F))) {wt τ}) → IsLocAlg h κ wt := by
   intro H1 H2 H3 H4 F Ω _ _ _ _ _ l _ A w h κ hκ O _ _ _ Bw hj wt hJ
   by_cases hex : ∃ a, IsLocalArtin h a
   swap

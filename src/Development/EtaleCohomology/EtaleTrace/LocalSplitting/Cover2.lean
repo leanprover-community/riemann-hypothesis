@@ -144,8 +144,7 @@ theorem epi (R : Type) [CommRing R] {X : Scheme.{0}} (O1 O2 : X.Opens) (hcov : O
       (freeP R).map (yoneda.map f) ≫ (toSheafify J _ ≫ φ') = 0 := by
     intro Y f hf
     have this : sheafifyMap J ((freeP R).map (yoneda.map f)) ≫ φ' = 0 := by
-      have := congrArg (fun ψ => ψ.hom) hf
-      exact this
+      exact congrArg (fun ψ => ψ.hom) hf
     rw [← Category.assoc, toSheafify_naturality, Category.assoc, this, comp_zero]
   have hψ := psi R O1 O2 hcov G _ (hv O1.ι h1) (hv O2.ι h2)
   apply Sheaf.hom_ext

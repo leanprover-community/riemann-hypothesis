@@ -304,9 +304,7 @@ lemma exists_unit_diff (hspl : ∀ a : (v.adicCompletion F), spl ((1 : E) ⊗ₜ
   rw [heq]
   apply IsLocalRing.isUnit_one_sub_self_of_mem_nonunits
   rw [← IsLocalRing.mem_maximalIdeal]
-  have ha' : phi spl (RingHom.fst (v.adicCompletion F) (v.adicCompletion F)) a ∈ IsLocalRing.maximalIdeal (v.adicCompletionIntegers F) := ha
-  have hb' : phi spl (RingHom.snd (v.adicCompletion F) (v.adicCompletion F)) b ∈ IsLocalRing.maximalIdeal (v.adicCompletionIntegers F) := hb
-  exact Ideal.add_mem _ ha' hb'
+  exact Ideal.add_mem _ ha hb
 
 theorem sup_dir (hspl : ∀ a : (v.adicCompletion F), spl ((1 : E) ⊗ₜ[F] a) = (a, a)) (x : E ⊗[F] (v.adicCompletion F))
     (h1 : (spl x).1 ∈ (v.adicCompletionIntegers F)) (h2 : (spl x).2 ∈ (v.adicCompletionIntegers F)) :

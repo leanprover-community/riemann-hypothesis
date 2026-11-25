@@ -98,8 +98,7 @@ theorem algHom_ext_of_sub_mem_jacobson {R A B : Type*} [CommRing R] [CommRing A]
   have hu : IsUnit (φ t) := by
     have h1 := key t
     rw [ht1, map_one] at h1
-    have := Ideal.mem_jacobson_bot.1 h1 (-1)
-    simpa using this
+    simpa using Ideal.mem_jacobson_bot.1 h1 (-1)
   ext a
   have := congr(φ $(ht a))
   simp only [map_mul, map_sub, map_zero, φ, Algebra.TensorProduct.lift_tmul, map_one, one_mul,
@@ -552,7 +551,6 @@ theorem bijective_algHom_comp_of_etale_of_henselian (R : Type*) {k A B C : Type*
   · let ε := Ideal.quotientKerAlgEquivOfSurjective hπ
     obtain ⟨ψ, hψ⟩ := exists_algHom_lift_of_etale_of_henselian R _ hker (ε.symm.toAlgHom.comp φ)
     refine ⟨ψ, AlgHom.ext fun a ↦ ?_⟩
-    have := congr(ε $(hψ a))
-    simpa [ε] using this
+    simpa [ε] using congr(ε $(hψ a))
 
 end GlobalTheory

@@ -1023,7 +1023,7 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.SpanOfVariable.span_X :
-    ∀ {O σ : Type} [CommRing O] (I : Ideal (MvPowerSeries σ O))
+    ∀ {O σ : Type} [inst : CommRing O] (I : Ideal (MvPowerSeries σ O))
     (s : Finset σ),
     (∀ i ∈ s, MvPowerSeries.X i ∈ I) →
       ∀ (f : MvPowerSeries σ O),

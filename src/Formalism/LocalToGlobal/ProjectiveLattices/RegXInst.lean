@@ -31,7 +31,7 @@ theorem ereal_lin (a c : ℝ) (v : EReal) (h0 : 0 ≤ v) (ht : v ≠ ⊤) :
 
 theorem regularity_R2_extended_points :
     RegularityR2 (recPJ h j hj) (extAll h j hj)
-      (fun {_} {_} gens => NoCommonZero (T.Q.Xo j) T.Q.c fun i => (gens i).1) := by
+      (fun {wL} {n} gens => NoCommonZero (T.Q.Xo j) T.Q.c fun i => (gens i).1) := by
   have hv : ∀ la (y : (recPJ h j hj).Pt la) w (F : (recB h.toLawsCore).Cusp j w),
       (recPJ h j hj).vAt la y ((recPJ h j hj).inc w F) = vAtV y F.1 :=
     fun la y w F => recPJ_vAt_inc h j hj la y w F

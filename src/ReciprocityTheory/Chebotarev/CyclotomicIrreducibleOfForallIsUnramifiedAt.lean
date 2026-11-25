@@ -28,10 +28,9 @@ private theorem setOf_prime_ramified_finite (K : Type*) [Field K] [NumberField K
     intro v p ⟨hp, hpv⟩ q ⟨hq, hqv⟩
     by_contra hne
     have hcop : Nat.Coprime p q := (Nat.coprime_primes hp hq).mpr hne
-    have hc : IsCoprime (p : 𝓞 K) (q : 𝓞 K) := by
+    obtain ⟨a, b, hab⟩ : IsCoprime (p : 𝓞 K) (q : 𝓞 K) := by
       have := (Nat.isCoprime_iff_coprime.mpr hcop).map (Int.castRingHom (𝓞 K))
       simpa using this
-    obtain ⟨a, b, hab⟩ := hc
     have h1 : (1 : 𝓞 K) ∈ v.asIdeal := hab ▸
       v.asIdeal.add_mem (v.asIdeal.mul_mem_left a hpv) (v.asIdeal.mul_mem_left b hqv)
     exact v.isPrime.ne_top ((Ideal.eq_top_iff_one _).mpr h1)
@@ -68,8 +67,7 @@ theorem natCast_notMem_sq_of_isUnramifiedAt {K : Type*} [Field K] [NumberField K
     hmax.eq_of_le (Ideal.IsPrime.under ℤ P).ne_top hle
   haveI : P.LiesOver (Ideal.span {(l : ℤ)}) := ⟨hunder⟩
   have hmap : Ideal.map (algebraMap ℤ (𝓞 K)) (Ideal.span {(l : ℤ)}) = Ideal.span {(l : 𝓞 K)} := by
-    rw [Ideal.map_span, Set.image_singleton]
-    simp
+    simp [Ideal.map_span, Set.image_singleton]
   have hmap0 : Ideal.map (algebraMap ℤ (𝓞 K)) (Ideal.span {(l : ℤ)}) ≠ ⊥ := by
     rwa [hmap, Ne, Ideal.span_singleton_eq_bot]
   have hcount := Ideal.IsDedekindDomain.ramificationIdx_eq_normalizedFactors_count
@@ -103,8 +101,7 @@ theorem cyclotomic_irreducible_of_isUnramifiedAt {K : Type*} [Field K] [NumberFi
   have hdeg : (((cyclotomic l ℤ).comp (X + 1)).map (Int.castRingHom (𝓞 K))).natDegree =
       ((cyclotomic l ℤ).comp (X + 1)).natDegree := hmon.natDegree_map _
   have hc0 : ((cyclotomic l ℤ).comp (X + 1)).coeff 0 = l := by
-    rw [coeff_zero_eq_eval_zero, eval_comp]
-    simp [eval_one_cyclotomic_prime]
+    simp [coeff_zero_eq_eval_zero, eval_comp, eval_one_cyclotomic_prime]
   have hE' : ((cyclotomic l (𝓞 K)).comp (X + 1)).IsEisensteinAt P := by
     rw [← hg]
     refine ⟨?_, ?_, ?_⟩

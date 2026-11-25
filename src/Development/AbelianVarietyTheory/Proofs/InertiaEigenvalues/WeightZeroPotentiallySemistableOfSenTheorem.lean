@@ -366,7 +366,7 @@ theorem coe_one_apply {l : ℕ} [Fact l.Prime] {n : Type} [DecidableEq n] (i j :
   rw [Matrix.one_apply, Matrix.one_apply]
   split_ifs <;> simp
 
-theorem exists_period_unramified : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l P) (_ : LocTied l P AI)
+theorem exists_period_unramified : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l P) (T : LocTied l P AI)
     (n : Type) [Fintype n] [DecidableEq n] (K : FinExt l) (r : ℕ) (ρ : ↥(GK K) →* GL n ↥(MaximalUnramifiedExtension l)),
     IsRat r ρ → (∀ g ∈ IK K, ρ g = 1) →
     (∀ g i j, ‖(((ρ g : Matrix n n ↥(MaximalUnramifiedExtension l)) i j : ↥(MaximalUnramifiedExtension l)) : Om l) - (1 : Matrix n n (Om l)) i j‖ < 1) →

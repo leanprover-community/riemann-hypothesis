@@ -173,8 +173,7 @@ theorem norm_le_of_aeval_eq_zero (M H : Type) [AddCommGroup M] [Module ℂ M] [N
     exact hT _ _
   let x' : N := ⟨x, hxN⟩
   have h1 : ((Polynomial.aeval R m x' : N) : M) = 0 := by
-    have := aeval_intertwine N.subtype R T (fun v => rfl) m x'
-    simpa [x', hx] using this
+    simpa [x', hx] using aeval_intertwine N.subtype R T (fun v => rfl) m x'
   have h2 : Polynomial.aeval R m x' = 0 := Subtype.ext h1
   have h3 : Polynomial.aeval S m (e x') = 0 := by
     have := aeval_intertwine e.toLinearMap R S (fun v => (hSe v).symm) m x'

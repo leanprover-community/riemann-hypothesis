@@ -300,8 +300,8 @@ private theorem unipB_spec (k : Type) [Field k] (n : ℕ) (g : GL (Fin n) k)
   simpa using h3
 
 theorem UpperTheory.Reformulated.B.BranchingSmooth.br_smooth :
-    ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k]
-      [IsNonarchimedeanLocalField k] {n : ℕ} {V : Type} [AddCommGroup V] [_root_.Module ℂ V]
+    ∀ {k : Type} [inst : Field k] [inst_1 : ValuativeRel k] [inst_2 : TopologicalSpace k]
+      [inst_3 : IsNonarchimedeanLocalField k] {n : ℕ} {V : Type} [inst_4 : AddCommGroup V] [inst_5 : _root_.Module ℂ V]
       (π : Representation ℂ (GL (Fin n) k) V), GlobalTheory.PRep.IsSmooth π → (UpperTheory.V.Hi.glIwa k n).Smooth π := by
   intro k _ _ _ _ n V _ _ π hπ v
   obtain ⟨c, hc⟩ := UpperTheory.congruence_subgroup_eventually (k := k) (n := n) {g | π g v = v} ((hπ v).mem_nhds (by simp))

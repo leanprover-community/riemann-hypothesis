@@ -77,7 +77,7 @@ theorem section_over_local : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLocalRi
       (s B' a' τ h).left = (z ≫ GlobalTheory.TorusPart.gtTorus (U.gt 0) ha hm₀).left ≫ m₀) →
     ∀ (X' : Type) [AddCommGroup X'] (ρ : D.toPre.X →+ X')
       (V : Type) [CommRing V] [IsLocalRing V] (ψ : R →+* V) (GV : Over (Sp V)) [GrpObj GV] [IsCommMonObj GV]
-      (mV : GV.left ⟶ G.left) (_ : IsGrpPullback GV G (spMap ψ) mV)
+      (mV : GV.left ⟶ G.left) (hmV : IsGrpPullback GV G (spMap ψ) mV)
       (j : splitTorus (Sp V) X' ⟶ GV) [IsMonHom j]
       (G₀ : Over (Sp (ResidueField V))) [GrpObj G₀] (m₀ : G₀.left ⟶ GV.left)
       (hm₀ : IsGrpPullback G₀ GV (spMap (residue V)) m₀)

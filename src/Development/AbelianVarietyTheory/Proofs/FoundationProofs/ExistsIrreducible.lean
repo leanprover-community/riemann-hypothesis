@@ -289,8 +289,7 @@ theorem exists_irreducible (g : F) (hg : p.valuation F g = WithZero.exp (-1 : �
     have h2 : valuation K (c : K) < 1 :=
       lt_of_le_of_ne c.2 fun h => hu (hI.isUnit_of_one' h)
     have h3 : p.valuation F y < 1 := by
-      have := (hlt y 1).1 (by simpa [hy] using h2)
-      simpa using this
+      simpa using (hlt y 1).1 (by simpa [hy] using h2)
     have h0 : p.valuation F y ≠ 0 := by simpa using hy0
     rw [← WithZero.exp_log h0] at h3 ⊢
     rw [← WithZero.exp_zero, WithZero.exp_lt_exp] at h3

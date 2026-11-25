@@ -45,7 +45,7 @@ import Mathlib.Topology.Sheaves.Init
 @[expose] public section
 
 noncomputable def UpperTheory.Reformulated.B.PadicComplexRingOfIntegers.intRing :
-    (p : ℕ) → [Fact (Nat.Prime p)] → Subring ℂ_[p] :=
+    (p : ℕ) → [inst : Fact (Nat.Prime p)] → Subring ℂ_[p] :=
   fun p _ =>
     { carrier := {x : ℂ_[p] | ‖x‖ ≤ 1}
       mul_mem' := fun {a b} ha hb => by

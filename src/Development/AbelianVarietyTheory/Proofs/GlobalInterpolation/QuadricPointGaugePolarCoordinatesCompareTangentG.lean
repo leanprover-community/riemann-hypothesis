@@ -78,8 +78,7 @@ theorem abs_qf_le {P Q : ℕ} (z : Sp P Q) : |qf z| ≤ (∑ i, ‖z i‖) ^ 2 :
 
 theorem norm_exp_eq (θ : ℝ) :
     ‖Complex.exp ((θ : ℂ) * Complex.I) - 1‖ = 2 * |Real.sin (θ / 2)| := by
-  rw [mul_comm, Complex.norm_exp_I_mul_ofReal_sub_one]
-  simp
+  simp [mul_comm, Complex.norm_exp_I_mul_ofReal_sub_one]
 
 theorem exp_bounds (θ : ℝ) (h : |θ| ≤ Real.pi) :
     ‖Complex.exp ((θ : ℂ) * Complex.I) - 1‖ ≤ |θ| ∧

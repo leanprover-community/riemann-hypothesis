@@ -65,7 +65,7 @@ theorem next_even_top_holds : NextEvenTop := by
   have hxn : x < n := mem_range.1 (hT hxT)
   have hjl : j * ℓ ≤ M₀ * ℓ := Nat.mul_le_mul_right _ hj
   have hG5 : (M₀ + 5) * ℓ = M₀ * ℓ + 5 * ℓ := by ring
-  have key : ∃ D, 1 ≤ D ∧ D ≤ G' ∧ (i + D) % n = x := by
+  obtain ⟨D, hD1, hD2, hDx⟩ : ∃ D, 1 ≤ D ∧ D ≤ G' ∧ (i + D) % n = x := by
     rcases hsc with hA | hB
     · have e : s * ℓ = si * ℓ + ℓ + j * ℓ := by rw [hA]; ring
       refine ⟨x - i, by omega, by omega, ?_⟩
@@ -78,7 +78,6 @@ theorem next_even_top_holds : NextEvenTop := by
         rw [show i + (x - i) = x by omega, Nat.mod_eq_of_lt hxn]
       · refine ⟨x + n - i, by omega, by omega, ?_⟩
         rw [show i + (x + n - i) = x + n by omega, Nat.add_mod_right, Nat.mod_eq_of_lt hxn]
-  obtain ⟨D, hD1, hD2, hDx⟩ := key
   exact ⟨D, mem_Icc.2 ⟨hD1, hD2⟩, by rw [hDx]; exact ⟨hxT, hxe⟩⟩
 
 theorem top_count_holds : TopCount := by

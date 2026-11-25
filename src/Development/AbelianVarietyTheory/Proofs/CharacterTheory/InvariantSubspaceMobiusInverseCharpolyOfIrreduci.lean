@@ -83,8 +83,7 @@ theorem finrank_eq_zero_of_irreducible_charpoly {F : Type} [Field F] {V : Type} 
   set f : Module.End F W := g.restrict hW with hf
   have hz : aeval f (LinearMap.charpoly g) = 0 := by
     ext x
-    rw [hf, coe_aeval_restrict_apply, LinearMap.aeval_self_charpoly]
-    simp
+    simp [hf, coe_aeval_restrict_apply, LinearMap.aeval_self_charpoly]
   have hd : minpoly F f ∣ LinearMap.charpoly g := minpoly.dvd F f hz
   have hnu : ¬ IsUnit (minpoly F f) := minpoly.not_isUnit F f
   have hd' : LinearMap.charpoly g ∣ minpoly F f := ((hg.dvd_iff.mp hd).resolve_left hnu).dvd

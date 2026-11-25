@@ -52,7 +52,7 @@ open GlobalTheory.UT GlobalTheory.ZH
 
 namespace GlobalTheory.ZH
 
-theorem exists_expandsF_and_nuGe_of_isComb : LL → AllUV fun {_} _ _ _ {_} _ {D} Q {F} _ _ {v} _ {A} {_} _ _ U => ∀ (w₀ : W0 U.toUnifPre), w₀.IsGen → ∀ (k : ℕ), 1 ≤ k → (∀ t : SecA A F k, ∃ σ, U.ExpandsF F k w₀ t σ) ∧ ∀ (I : Type) [Fintype I] (c : I → F) (s : I → SecA A F k) (t : SecA A F k) (q r : ℚ), IsComb s c t → (∀ i, (q : WithTop ℚ) ≤ v (c i)) → (∀ i σ, U.ExpandsF F k w₀ (s i) σ → NuGe D Q F v k σ r) → ∀ σ, U.ExpandsF F k w₀ t σ → NuGe D Q F v k σ (r + q) := by
+theorem exists_expandsF_and_nuGe_of_isComb : LL → AllUV fun {V} _ _ _ {ϖ} hϖ {D} Q {F} _ _ {v} hv {A} {G} _ _ U => ∀ (w₀ : W0 U.toUnifPre), w₀.IsGen → ∀ (k : ℕ), 1 ≤ k → (∀ t : SecA A F k, ∃ σ, U.ExpandsF F k w₀ t σ) ∧ ∀ (I : Type) [Fintype I] (c : I → F) (s : I → SecA A F k) (t : SecA A F k) (q r : ℚ), IsComb s c t → (∀ i, (q : WithTop ℚ) ≤ v (c i)) → (∀ i σ, U.ExpandsF F k w₀ (s i) σ → NuGe D Q F v k σ r) → ∀ σ, U.ExpandsF F k w₀ t σ → NuGe D Q F v k σ (r + q) := by
   intro hL V _ _ _ _ hc ϖ hϖ D Q hQ F _ _ _ v hv A G _ _ hG U w₀ hw k hk
   have hA : AdmBase V (maximalIdeal V) := ⟨inferInstance, inferInstance, inferInstance, hc⟩
   obtain ⟨h₁, -⟩ := (expBijF_and_expandsF_lin hL V _ hA D A G hG U).1 F k hk w₀ hw

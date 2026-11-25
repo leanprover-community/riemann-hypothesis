@@ -824,33 +824,33 @@ section -- clump:auto
     fun (q : ℕ) ↦ LaurentPolynomial (Localization.Away (↑q : ℤ))
 
 theorem UpperTheory.Reformulated.B.LaurentCharacterLambda.aux3 :
-    ∀ {S : Type} [CommRing S] (q : ℕ), IsUnit (↑q : S) → IsUnit ((Int.castRingHom S : ℤ → S) (↑q : ℤ)) := by
+    ∀ {S : Type} [inst : CommRing S] (q : ℕ), IsUnit (↑q : S) → IsUnit ((Int.castRingHom S : ℤ → S) (↑q : ℤ)) := by
   intro S _ q hq
   rwa [map_natCast]
 
 noncomputable def UpperTheory.Reformulated.B.LaurentCharacterLambda.lam :
-    {S : Type} → [CommRing S] → (q : ℕ) → IsUnit (↑q : S) → Localization.Away (↑q : ℤ) →+* S :=
+    {S : Type} → [inst : CommRing S] → (q : ℕ) → IsUnit (↑q : S) → Localization.Away (↑q : ℤ) →+* S :=
     fun {S : Type} [CommRing S] (q : ℕ) (hq : IsUnit (↑q : S)) ↦
       IsLocalization.Away.lift (↑q : ℤ) (UpperTheory.Reformulated.B.LaurentCharacterLambda.aux3 q hq)
 
 theorem UpperTheory.Reformulated.B.LaurentCharacterLambda.aux5 :
-    ∀ (S : Type) [CommRing S], LaurentPolynomial.T (1 : ℤ) * LaurentPolynomial.T (-1 : ℤ) = (1 : LaurentPolynomial S) := by
+    ∀ (S : Type) [inst : CommRing S], LaurentPolynomial.T (1 : ℤ) * LaurentPolynomial.T (-1 : ℤ) = (1 : LaurentPolynomial S) := by
   intro S _
   rw [← LaurentPolynomial.T_add, add_neg_cancel, LaurentPolynomial.T_zero]
 
 theorem UpperTheory.Reformulated.B.LaurentCharacterLambda.aux6 :
-    ∀ (S : Type) [CommRing S], LaurentPolynomial.T (-1 : ℤ) * LaurentPolynomial.T (1 : ℤ) = (1 : LaurentPolynomial S) := by
+    ∀ (S : Type) [inst : CommRing S], LaurentPolynomial.T (-1 : ℤ) * LaurentPolynomial.T (1 : ℤ) = (1 : LaurentPolynomial S) := by
   intro S _
   rw [← LaurentPolynomial.T_add, neg_add_cancel, LaurentPolynomial.T_zero]
 
 noncomputable def UpperTheory.Reformulated.B.LaurentCharacterLambda.tU :
-    (S : Type) → [CommRing S] → (LaurentPolynomial S)ˣ :=
+    (S : Type) → [inst : CommRing S] → (LaurentPolynomial S)ˣ :=
     fun (S : Type) [CommRing S] ↦
       { val := LaurentPolynomial.T (1 : ℤ), inv := LaurentPolynomial.T (-1 : ℤ), val_inv := UpperTheory.Reformulated.B.LaurentCharacterLambda.aux5 S,
         inv_val := UpperTheory.Reformulated.B.LaurentCharacterLambda.aux6 S : (LaurentPolynomial S)ˣ }
 
 noncomputable def UpperTheory.Reformulated.B.LaurentCharacterLambda.iot :
-    {S : Type} → [CommRing S] → (q : ℕ) → IsUnit (↑q : S) → UpperTheory.Reformulated.B.LaurentCharacterLambda.LqR q →+* LaurentPolynomial S :=
+    {S : Type} → [inst : CommRing S] → (q : ℕ) → IsUnit (↑q : S) → UpperTheory.Reformulated.B.LaurentCharacterLambda.LqR q →+* LaurentPolynomial S :=
     fun {S : Type} [CommRing S] (q : ℕ) (hq : IsUnit (↑q : S)) ↦
       LaurentPolynomial.eval₂ (LaurentPolynomial.C.comp (UpperTheory.Reformulated.B.LaurentCharacterLambda.lam q hq)) (UpperTheory.Reformulated.B.LaurentCharacterLambda.tU S)
 
@@ -870,9 +870,9 @@ noncomputable def UpperTheory.Reformulated.B.LaurentCharacterLambda.tR :
 
 noncomputable def UpperTheory.Reformulated.B.LaurentCharacterLambda.chi :
     {S : Type} →
-      [CommRing S] →
+      [inst : CommRing S] →
         (q : ℕ) →
-          {R : Type} → [CommRing R] → (UpperTheory.Reformulated.B.LaurentCharacterLambda.LqR q →+* R) → (S →+* R) → LaurentPolynomial S →+* R :=
+          {R : Type} → [inst_1 : CommRing R] → (UpperTheory.Reformulated.B.LaurentCharacterLambda.LqR q →+* R) → (S →+* R) → LaurentPolynomial S →+* R :=
     fun {S : Type} [CommRing S] (q : ℕ) {R : Type} [CommRing R] (φ : UpperTheory.Reformulated.B.LaurentCharacterLambda.LqR q →+* R) (ψ : S →+* R) ↦
       LaurentPolynomial.eval₂ ψ
         ((Units.map (↑φ : UpperTheory.Reformulated.B.LaurentCharacterLambda.LqR q →* R) : (UpperTheory.Reformulated.B.LaurentCharacterLambda.LqR q)ˣ → Rˣ) (UpperTheory.Reformulated.B.LaurentCharacterLambda.tR q))
@@ -888,7 +888,7 @@ private theorem UpperTheory.Reformulated.B.LaurentCharacterLambda.laurent_hom_ex
   · simpa [LaurentPolynomial.algebraMap_eq_toLaurent] using hT
 
 theorem UpperTheory.Reformulated.B.LaurentCharacterLambda.chi_uniq :
-    ∀ {S : Type} [CommRing S] (q : ℕ) (hq : IsUnit (↑q : S)) {R : Type} [CommRing R]
+    ∀ {S : Type} [inst : CommRing S] (q : ℕ) (hq : IsUnit (↑q : S)) {R : Type} [inst_1 : CommRing R]
       (φ : UpperTheory.Reformulated.B.LaurentCharacterLambda.LqR q →+* R) (ψ : S →+* R) (χ : LaurentPolynomial S →+* R),
       χ.comp (UpperTheory.Reformulated.B.LaurentCharacterLambda.iot q hq) = φ → χ.comp LaurentPolynomial.C = ψ → χ = UpperTheory.Reformulated.B.LaurentCharacterLambda.chi q φ ψ := by
   intro S _ q hq R _ φ ψ χ h1 h2
@@ -1180,7 +1180,7 @@ private theorem surj_part (q : ℕ) [NeZero q] (T : Scheme.{0}) (hq : IsUnit (q 
 
 private theorem inj_part (q : ℕ) [NeZero q] (T : Scheme.{0}) (hq : IsUnit (q : Γ(T, ⊤))) (m j : ℤ)
     (p : Ht q (sch.obj T) (m + 1) (j + 1) × Ht q (sch.obj T) m j) (hp : Phi q m j T p = 0) :
-    Loc T fun _ g => pull _ (sch.map g) _ _ p.1 = 0 ∧ pull _ (sch.map g) _ _ p.2 = 0 := by
+    Loc T fun V g => pull _ (sch.map g) _ _ p.1 = 0 ∧ pull _ (sch.map g) _ _ p.2 = 0 := by
   refine (_root_.GlobalTheory.EtC.loc_iff_etale_affine_points T _ ?_).2 ?_
   · rintro V W g k ⟨h1, h2⟩
     refine ⟨?_, ?_⟩
@@ -1226,7 +1226,7 @@ theorem UpperTheory.locally_surjective_multiplicativeGroupKunnethMap :
         (∀ p : Ht q (sch.obj T) (m + 1) (j + 1) × Ht q (sch.obj T) m j,
           pull _ (sch.map (prod.snd : Gq q ⨯ T ⟶ T)) _ _ p.1 +
               cup q (pull _ (sch.map (prod.snd : Gq q ⨯ T ⟶ T)) _ _ p.2) (pull _ (sch.map (prod.fst : Gq q ⨯ T ⟶ Gq q)) _ _ (kappa q)) = 0 →
-          Loc T fun _ g => pull _ (sch.map g) _ _ p.1 = 0 ∧ pull _ (sch.map g) _ _ p.2 = 0) :=
+          Loc T fun V g => pull _ (sch.map g) _ _ p.1 = 0 ∧ pull _ (sch.map g) _ _ p.2 = 0) :=
   fun q _ T hq m j => ⟨fun y => UpperTheory.KunRed.surj_part q T hq m j y, fun p hp => UpperTheory.KunRed.inj_part q T hq m j p hp⟩
 end -- clump:auto
 end -- clump:auto

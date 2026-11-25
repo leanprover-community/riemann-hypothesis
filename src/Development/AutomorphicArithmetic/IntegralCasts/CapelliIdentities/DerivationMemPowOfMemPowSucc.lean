@@ -46,7 +46,7 @@ public import Mathlib.RingTheory.Ideal.Operations
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Qn11.derivation_mem_pow_of_mem_pow_succ :
-    ∀ {R : Type} [CommRing R]
+    ∀ {R : Type} [inst : CommRing R]
     (I : Ideal R) (D : Derivation ℤ R R) {n : ℕ} {r : R}, r ∈ I ^ (n + (1 : ℕ)) → (D : R → R) r ∈ I ^ n := by
   intro R _ I D n
   induction n with

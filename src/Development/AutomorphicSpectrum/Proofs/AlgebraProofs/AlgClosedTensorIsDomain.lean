@@ -92,8 +92,7 @@ theorem linearDisjoint_algebraicClosure {K Ω L : Type} [Field K] [CharZero K] [
   obtain ⟨θ, hθ⟩ := Field.exists_primitive_element K M
   have hi : IsIntegral K (θ : L) := (Algebra.IsIntegral.isIntegral (R := K) θ).map M.val
   have e : K⟮(θ : L)⟯ = M := by
-    have := congrArg (IntermediateField.lift (F := M)) hθ
-    simpa using this
+    simpa using congrArg (IntermediateField.lift (F := M)) hθ
   rw [← e]
   refine IntermediateField.LinearDisjoint.of_basis_left
     (IntermediateField.adjoin.powerBasis hi).basis ?_
@@ -155,8 +154,7 @@ theorem isDomain_tensor_of_isAlgClosed (k A : Type) [Field k] [IsAlgClosed k] [C
       | add u v hu hv => simp only [map_add (f := _), Finsupp.add_apply, hu, hv]
       | tmul a f =>
         have h1 : Φ (a ⊗ₜ f) = φ a • f := by simp [Φ, Algebra.smul_def]
-        rw [h1, map_smul]
-        simp [B, Algebra.TensorProduct.basis_repr_tmul]
+        simp [h1, map_smul, B, Algebra.TensorProduct.basis_repr_tmul]
     have h0 : Φ x * Φ y = 0 := by rw [← map_mul, hxy, map_zero]
     apply hφ
     rw [map_mul, key, key]

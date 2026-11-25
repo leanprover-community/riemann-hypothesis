@@ -56,7 +56,7 @@ section -- clump:auto
 @[expose] public section
 
 @[reducible] noncomputable def UpperTheory.Reformulated.B.Qh61.VQ :
-    {p : ℕ} → [Fact (Nat.Prime p)] → GlobalTheory.UPel.HT.Datum p → Type :=
+    {p : ℕ} → [inst : Fact (Nat.Prime p)] → GlobalTheory.UPel.HT.Datum p → Type :=
     fun {p : ℕ} [Fact (Nat.Prime p)] (D : GlobalTheory.UPel.HT.Datum p) ↦ TensorProduct ℤ ℚ D.La
 
 private theorem UpperTheory.Reformulated.B.Qh61.exists_den {M : Type} [AddCommGroup M] (x : TensorProduct ℤ ℚ M) :
@@ -88,7 +88,7 @@ private theorem UpperTheory.Reformulated.B.Qh61.exists_denominator_rational_tens
   exact (map_nsmul (TensorProduct.mk ℤ ℚ M 1) c (a x)).symm
 
 theorem UpperTheory.Reformulated.B.Qh61.exists_den_finset :
-    ∀ {p : ℕ} [Fact (Nat.Prime p)] (D : GlobalTheory.UPel.HT.Datum p) (s : Finset (UpperTheory.Reformulated.B.Qh61.VQ D)),
+    ∀ {p : ℕ} [inst : Fact (Nat.Prime p)] (D : GlobalTheory.UPel.HT.Datum p) (s : Finset (UpperTheory.Reformulated.B.Qh61.VQ D)),
       ∃ (k : ℕ), (0 : ℕ) < k ∧ ∀ x ∈ s, ∃ (a : D.La), k • x = (1 : ℚ) ⊗ₜ[ℤ] a := by
   intro p _ D s
   exact UpperTheory.Reformulated.B.Qh61.exists_denominator_rational_tensor s

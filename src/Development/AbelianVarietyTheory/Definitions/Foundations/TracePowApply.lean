@@ -67,8 +67,7 @@ theorem _root_.GlobalTheory.Mem.GelfCheck.rowE_apply (R : Type) [CommRing R] (r 
 open MvPolynomial in
 theorem _root_.GlobalTheory.Mem.GelfCheck.rowE_X (R : Type) [CommRing R] (r n : ℕ) (a b c : Fin r) (t : Fin n) :
     _root_.GlobalTheory.Mem.Gelf.rowE R r n a b (X (c, t)) = if b = c then X (a, t) else 0 := by
-  rw [_root_.GlobalTheory.Mem.GelfCheck.rowE_apply]
-  simp only [pderiv_X, Pi.single_apply, Prod.ext_iff]
+  simp only [_root_.GlobalTheory.Mem.GelfCheck.rowE_apply, pderiv_X, Pi.single_apply, Prod.ext_iff]
   split_ifs with hbc
   · subst hbc
     simp

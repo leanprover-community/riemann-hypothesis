@@ -30,8 +30,7 @@ private theorem exists_sub_iota_mem_of_sub_involution_mem (hσ : ∀ x, σ (σ x
 
   set y := ((x * θ - σ x * σ θ) * (θ - σ θ)) * (u * σ u * ((θ - σ θ) * (θ - σ θ))) with hy_def
   have hy : σ y = y := by
-    rw [hy_def]
-    simp only [map_mul, map_sub, hσ]
+    simp only [hy_def, map_mul, map_sub, hσ]
     ring
   obtain ⟨a, ha⟩ := (hfix y).1 hy
   refine ⟨a, ?_⟩
@@ -146,8 +145,7 @@ theorem map_comap_of_inert (hσ : ∀ x, σ (σ x) = x) (hfix : ∀ x, σ x = x 
   set v := u * σ u * ((θ - σ θ) * (θ - σ θ)) with hv
   set j := 1 - v * ((θ - σ θ) * (θ - σ θ)) with hj
   have hjfix : σ j = j := by
-    rw [hj, hv]
-    simp only [map_sub, map_mul, map_one, hσ]
+    simp only [hj, hv, map_sub, map_mul, map_one, hσ]
     ring
   have hjP : j ∈ P := by
     have e : j = i + σ i - i * σ i := by

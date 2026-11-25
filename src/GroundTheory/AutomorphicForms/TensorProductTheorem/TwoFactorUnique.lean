@@ -68,8 +68,7 @@ theorem exists_contractLeft_ne_zero {z : V₁ ⊗[ℂ] V₂} (hz : z ≠ 0) :
     ∃ l : Dual ℂ V₁, contractLeft l z ≠ 0 := by
   obtain ⟨l, hl⟩ := exists_contractRight_ne_zero (V₁ := V₂) (V₂ := V₁)
     (z := TensorProduct.comm ℂ V₁ V₂ z) (fun h => hz (by
-      have := congrArg (TensorProduct.comm ℂ V₁ V₂).symm h
-      simpa using this))
+      simpa using (congrArg (TensorProduct.comm ℂ V₁ V₂).symm h)))
   refine ⟨l, ?_⟩
   have key : ∀ z' : V₁ ⊗[ℂ] V₂,
       contractLeft (V₂ := V₂) l z' = contractRight l (TensorProduct.comm ℂ V₁ V₂ z') := by

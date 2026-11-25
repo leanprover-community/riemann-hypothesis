@@ -79,8 +79,7 @@ theorem exists_unitary_diagonal_unitary {n : ℕ} (g : Matrix (Fin n) (Fin n) �
   set U : Matrix (Fin n) (Fin n) ℂ := (hH.eigenvectorUnitary : Matrix (Fin n) (Fin n) ℂ) with hU
   have hUm : U ∈ Matrix.unitaryGroup (Fin n) ℂ := hH.eigenvectorUnitary.2
   have h1 : star U * (gᴴ * g) * U = diagonal (fun i => ((hH.eigenvalues i : ℝ) : ℂ)) := by
-    have := hH.conjStarAlgAut_star_eigenvectorUnitary
-    simpa [hU, Function.comp_def] using this
+    simpa [hU, Function.comp_def] using hH.conjStarAlgAut_star_eigenvectorUnitary
   have hpos : ∀ i, 0 < hH.eigenvalues i := hP.eigenvalues_pos
   let a : Fin n → ℝ := fun i => Real.log (hH.eigenvalues i) / 2
   have ha : ∀ i, cexp (-(a i : ℂ)) * ((hH.eigenvalues i : ℝ) : ℂ) * cexp (-(a i : ℂ)) = 1 := by
@@ -103,12 +102,10 @@ theorem exists_unitary_diagonal_unitary {n : ℕ} (g : Matrix (Fin n) (Fin n) �
     calc _ = diagonal (fun i => cexp (-(a i : ℂ))) * (star U * (gᴴ * g) * U) * diagonal (fun i => cexp (-(a i : ℂ))) := by
             simp only [Matrix.mul_assoc, Matrix.star_eq_conjTranspose]
       _ = 1 := by
-            rw [h1, diagonal_mul_diagonal, diagonal_mul_diagonal]
-            simp only [ha, diagonal_one]
+            simp only [h1, diagonal_mul_diagonal, diagonal_mul_diagonal, ha, diagonal_one]
   · exact Unitary.star_mem hUm
   · have h2 : diagonal (fun i => cexp (-(a i : ℂ))) * diagonal (fun i => cexp (a i : ℂ)) = 1 := by
-      rw [diagonal_mul_diagonal]
-      simp [← Complex.exp_add]
+      simp [diagonal_mul_diagonal, ← Complex.exp_add]
     have h3 : U * star U = 1 := Matrix.mem_unitaryGroup_iff.1 hUm
     rw [Matrix.mul_assoc (g * U), h2, Matrix.mul_one, Matrix.mul_assoc, h3, Matrix.mul_one]
 
@@ -192,8 +189,7 @@ theorem eval_act_of_mul_eq_one (p : MvPolynomial (T × Bool × Fin n × Fin N) �
     apply (hg t).mul_left_cancel
     rw [hgh t, e t]
     have h2 : diagonal (fun i => cexp (a t i : ℂ)) * diagonal (fun i => cexp (-(a t i : ℂ))) = 1 := by
-      rw [diagonal_mul_diagonal]
-      simp [← Complex.exp_add]
+      simp [diagonal_mul_diagonal, ← Complex.exp_add]
     have k₁ : u₁ t * ((u₁ t).map conj)ᵀ = 1 := Matrix.mem_unitaryGroup_iff.1 (h₁ t)
     have k₂ : u₂ t * ((u₂ t).map conj)ᵀ = 1 := Matrix.mem_unitaryGroup_iff.1 (h₂ t)
     rw [transpose_mul, transpose_mul, diagonal_transpose, Matrix.mul_assoc _ (u₂ t), ← Matrix.mul_assoc (u₂ t), k₂, Matrix.one_mul, Matrix.mul_assoc, ← Matrix.mul_assoc (diagonal _), h2, Matrix.one_mul, k₁]

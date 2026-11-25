@@ -54,12 +54,11 @@ theorem divAt_conj {Q : Ideal (𝓞 E)} [hQ : Q.IsPrime] {N : ℕ} (ϖ d : 𝓞 
     apply hϖ
     first
       | exact (map_eq_zero_iff _ (FaithfulSMul.algebraMap_injective (𝓞 E) E)).mp h0
-  have hp : algebraMap (𝓞 E) E ϖ ^ (2 * k) ≠ 0 := pow_ne_zero _ hϖE
   have h3 : algebraMap (𝓞 E) E ϖ ^ (2 * k) *
       (algebraMap (𝓞 E) E s * algebraMap (𝓞 E) E d * X a b) =
       algebraMap (𝓞 E) E ϖ ^ (2 * k) * (algebraMap (𝓞 E) E ϖ ^ m * algebraMap (𝓞 E) E w) := by
     linear_combination h2
-  have h4 := mul_left_cancel₀ hp h3
+  have h4 := mul_left_cancel₀ (pow_ne_zero _ hϖE) h3
   show algebraMap (𝓞 E) E (s * d) * X a b = algebraMap (𝓞 E) E (ϖ ^ m) * algebraMap (𝓞 E) E w
   rwa [map_mul, map_pow]
 

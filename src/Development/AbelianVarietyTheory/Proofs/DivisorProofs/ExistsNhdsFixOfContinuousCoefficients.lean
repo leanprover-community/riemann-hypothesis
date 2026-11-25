@@ -155,18 +155,15 @@ theorem exists_nhds_fix : (∀ {V : Type} [AddCommGroup V] [Module ℂ V] (s : S
   have hvW : v ∈ W := Submodule.subset_span ⟨1, K₀.one_mem, by simp [h1]⟩
   refine ⟨O, hOo.mem_nhds hO1, fun x hxO hxH => ?_⟩
   have hxK : x ∈ K := hOK x hxO hxH
-  have hxK₀ : x ∈ K₀ := hO₀K x (hKU hxK).2 (hKH hxK)
-  let kk : K₀ := ⟨x, hxK₀⟩
+  let kk : K₀ := ⟨x, (hO₀K x (hKU hxK).2 (hKH hxK))⟩
   have hpow : ∀ m : ℕ, ‖(LinearMap.toMatrixAlgEquiv b (R kk)) ^ m - 1‖ ≤ 1 / 2 := by
     intro m
     rw [← map_pow, ← hRpow, hMR]
     have hm : x ^ m ∈ K := K.pow_mem hxK m
-    have := hsub ⟨(hKU hm).1, hKH hm⟩
-    exact le_of_lt (by simpa using this)
+    exact le_of_lt (by simpa using (hsub ⟨(hKU hm).1, hKH hm⟩))
   have hone := eq_one_of_pow_norm_sub_one_le_half hpow
   rw [← map_one (LinearMap.toMatrixAlgEquiv b)] at hone
   have hRk := (LinearMap.toMatrixAlgEquiv b).injective hone
-  have := congrArg Subtype.val (LinearMap.congr_fun hRk ⟨v, hvW⟩)
-  simpa [hRv] using this
+  simpa [hRv] using congrArg Subtype.val (LinearMap.congr_fun hRk ⟨v, hvW⟩)
 
 end GlobalTheory.SmoothFix

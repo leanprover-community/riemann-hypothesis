@@ -67,9 +67,7 @@ theorem poly_ne_zero (K : Type) [Field K] (B : Bk Dw n) : B.poly K ≠ 0 := by
     · rw [ite_eq_right hab, ite_eq_right]
       rintro ⟨d, hd⟩
       simp only [Sigma.mk.injEq, heq_eq_eq, true_and, Prod.mk.injEq] at hd
-      have h1 : a = d := Fin.castLE_injective _ hd.1
-      have h3 : b = d := B.col_inj hd.2
-      exact hab (h1.trans h3.symm)
+      exact hab ((Fin.castLE_injective _ hd.1).trans (B.col_inj hd.2).symm)
   rw [this, Matrix.det_one] at h2
   exact one_ne_zero h2
 

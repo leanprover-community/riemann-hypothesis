@@ -132,9 +132,8 @@ theorem eq_zero_of_cst_mul {W : Type} [CommRing W] [IsDomain W] {H : Scheme.{0}}
   obtain ⟨_, ⟨V', hV', rfl⟩, hxV, hVV : V' ≤ V⟩ :=
     H.isBasis_affineOpens.exists_subset_of_mem_open hx V.isOpen
   refine ⟨V', hVV, hxV, ?_⟩
-  have hf : (p.appLE ⊤ V' le_top).hom.Flat := p.flat_appLE (isAffineOpen_top _) hV' le_top
   letI := (p.appLE ⊤ V' le_top).hom.toAlgebra
-  have : Module.Flat Γ(Sp W, ⊤) Γ(H, V') := hf
+  have : Module.Flat Γ(Sp W, ⊤) Γ(H, V') := p.flat_appLE (isAffineOpen_top _) hV' le_top
   apply Module.Flat.isSMulRegular_of_nonZeroDivisors (M := Γ(H, V')) hr'
   have h' := congrArg (H.presheaf.map (homOfLE hVV).op) h
   rw [map_mul, map_zero, cst, RingHom.comp_apply, ← CommRingCat.comp_apply,

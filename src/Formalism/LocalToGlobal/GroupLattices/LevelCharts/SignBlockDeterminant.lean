@@ -26,8 +26,7 @@ variable {A R : Type} [CommRing A] [CommRing R] {n : Type} [Fintype n] [Decidabl
 theorem bc_injective (ι : R →+* A) (h : Function.Injective ι) : Function.Injective (bc (n := n) ι) := by
   intro x y hxy
   apply Units.ext
-  have h2 : (x : Matrix n n R).map ι = (y : Matrix n n R).map ι := congrArg Units.val hxy
-  exact Matrix.map_injective h h2
+  exact Matrix.map_injective h (congrArg Units.val hxy)
 
 def congChar {Z : Type} [Group Z] (ι : R →+* A) (hι : Function.Injective ι) (I : Ideal R) (H : Subgroup (GL n (R ⧸ I)))
     (lam : H →* Z) : congPre ι I H →* Z :=

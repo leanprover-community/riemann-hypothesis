@@ -65,7 +65,7 @@ namespace MeasureEqCardCosetsMul
 end MeasureEqCardCosetsMul
 
 theorem UpperTheory.Reformulated.B.Yla7.main :
-    ∀ {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [MeasurableSpace G]
+    ∀ {G : Type} [inst : Group G] [inst_1 : TopologicalSpace G] [IsTopologicalGroup G] [inst_3 : MeasurableSpace G]
       [BorelSpace G] (μ : MeasureTheory.Measure G) [μ.IsMulLeftInvariant] {I : Subgroup G},
       IsOpen (↑I : Set G) →
         ∀ {D : Set G},

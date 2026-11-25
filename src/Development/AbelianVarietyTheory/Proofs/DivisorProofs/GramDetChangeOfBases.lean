@@ -70,8 +70,7 @@ theorem gramChange_square {K : Type} [Field K] (σ : K →+* K) {n : ℕ} {ι : 
   have hV : ∀ i, v i = ∑ a, P i a • u a := by
     intro i
     have h := congrArg Subtype.val (b.sum_repr ⟨v i, hvu i⟩)
-    rw [Submodule.coe_sum] at h
-    simp only [Submodule.coe_smul, b, Module.Basis.span_apply] at h
+    simp only [Submodule.coe_sum, Submodule.coe_smul, b, Module.Basis.span_apply] at h
     exact h.symm
   have hVm : Matrix.of v = P * Matrix.of u := by
     ext i k

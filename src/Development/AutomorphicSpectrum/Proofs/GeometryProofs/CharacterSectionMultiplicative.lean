@@ -306,8 +306,7 @@ theorem one_univ (Γ : QFGroup R T) (χ : T →* Rˣ) (s : Γ(Γ.G.left, ⊤))
     (η[Γ.G]).left.appTop s = 1 := by
   let g : genPt R ⟶ 𝟙_ (Over (Spec (CommRingCat.of R))) := toUnit _
   have hg : g.left = Spec.map (CommRingCat.ofHom (algebraMap R (FractionRing R))) := by
-    have := Over.w g
-    simpa using this
+    simpa using Over.w g
   have h1 : g.left.appTop ((η[Γ.G]).left.appTop s) = 1 := by
     rw [pull]
     have : g ≫ η[Γ.G] = Γ.pt 1 := by

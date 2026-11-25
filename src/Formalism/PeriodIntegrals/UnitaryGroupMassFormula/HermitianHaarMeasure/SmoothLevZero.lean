@@ -74,8 +74,7 @@ theorem mk_rep (x : X hI) : Submodule.Quotient.mk (rep hI x) = x := (Submodule.Q
 
 private theorem pr_left_eq_of_sub_mem_N {f f' : 𝓕} (hf : f - f' ∈ N hI) (h : β → ℂ) (hh : h ∈ 𝓕) :
     pr μ ι f.1 h = pr μ ι f'.1 h := by
-  have hf' : ∀ k ∈ 𝓕, pr μ ι (f - f').1 k = 0 := hf
-  have := hf' h hh
+  have := hf h hh
   rw [Submodule.coe_sub, pr_sub_left hI f.2 f'.2 hh] at this
   exact sub_eq_zero.mp this
 

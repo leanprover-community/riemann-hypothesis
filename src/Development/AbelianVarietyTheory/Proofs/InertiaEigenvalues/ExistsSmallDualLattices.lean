@@ -188,8 +188,7 @@ theorem GlobalTheory.JR.exists_small_dual_lattices : ∀ (F : Type) [Nontriviall
       box_dual hψ e e' (fun x y => β x y) hB t ht, fun x => ?_⟩
     · rw [box_eq]
       intro x hx
-      have := hsub (Metric.closedBall_subset_closedBall htε.le hx)
-      simpa using this
+      simpa using hsub (Metric.closedBall_subset_closedBall htε.le hx)
     · have := box_dual hψ e' e (fun y x => β x y)
         (fun y x => by simp only [hB, mul_comm]) t⁻¹ (inv_ne_zero ht) x
       simpa only [inv_inv] using this

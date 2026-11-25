@@ -607,8 +607,8 @@ section -- clump:auto
 
 noncomputable def UpperTheory.Reformulated.B.EvaluationMap.coeffSpan :
     {K W : Type} →
-      [Group K] →
-        [AddCommGroup W] → [_root_.Module ℂ W] → Representation ℂ K W → Submodule ℂ (K → ℂ) :=
+      [inst : Group K] →
+        [inst_1 : AddCommGroup W] → [inst_2 : _root_.Module ℂ W] → Representation ℂ K W → Submodule ℂ (K → ℂ) :=
     fun {K W : Type} [Group K] [AddCommGroup W] [_root_.Module ℂ W] (ρ : Representation ℂ K W) ↦
       Submodule.span ℂ
         {f : K → ℂ | ∃ (ℓ : Module.Dual ℂ W) (w : W), f = fun (k : K) ↦ (ℓ : W → ℂ) (((ρ : K → W →ₗ[ℂ] W) k : W → W) w)}
@@ -631,7 +631,7 @@ end UpperTheory.Reformulated.B.EvaluationMap.Helpers
 
 open UpperTheory.Reformulated.B.EvaluationMap.Helpers in
 theorem UpperTheory.Reformulated.B.EvaluationMap.main :
-    ∀ {K W : Type} [Group K] [AddCommGroup W] [_root_.Module ℂ W] [FiniteDimensional ℂ W]
+    ∀ {K W : Type} [inst : Group K] [inst_1 : AddCommGroup W] [inst_2 : _root_.Module ℂ W] [FiniteDimensional ℂ W]
       (ρ : Representation ℂ K W), FiniteDimensional ℂ ↥(UpperTheory.Reformulated.B.EvaluationMap.coeffSpan ρ) := by
   intro K W _ _ _ _ ρ
   have hle : UpperTheory.Reformulated.B.EvaluationMap.coeffSpan ρ ≤ LinearMap.range (Φ ρ) := by

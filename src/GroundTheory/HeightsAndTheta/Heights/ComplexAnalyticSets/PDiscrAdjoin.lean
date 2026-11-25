@@ -45,13 +45,12 @@ theorem DiscrAdjoin.proof : DiscrAdjoin.Statement := by
         ((minpoly R ℓ).natDegree - 1) = 0 := by rw [hres, h0, mul_zero]
     have hRK := congrArg (algebraMap R K) hR
     rw [← resultant_map_map, map_zero, ← derivative_map, ← hFK, ← hdegK] at hRK
-    have hsep : (minpoly K ℓ).Separable := Algebra.IsSeparable.isSeparable K ℓ
     have hle : (derivative (minpoly K ℓ)).natDegree ≤ (minpoly K ℓ).natDegree - 1 :=
       natDegree_derivative_le _
     obtain ⟨k, hk⟩ := Nat.exists_eq_add_of_le hle
     rw [hk, resultant_add_right_deg _ _ _ _ k le_rfl, coeff_natDegree, (minpoly.monic hK).leadingCoeff,
       one_pow, one_mul] at hRK
-    exact resultant_ne_zero _ _ hsep hRK
+    exact resultant_ne_zero _ _ (Algebra.IsSeparable.isSeparable K ℓ) hRK
   · intro z hz
     obtain ⟨p, q, -, -, hpq⟩ := exists_mul_add_mul_eq_C_resultant (minpoly R ℓ)
       (derivative (minpoly R ℓ)) le_rfl hF'deg (Or.inl hpos.ne')
@@ -74,8 +73,6 @@ theorem DiscrAdjoin.proof : DiscrAdjoin.Statement := by
     have hd : aeval ℓ (derivative (minpoly K ℓ)) = aeval ℓ (derivative (minpoly R ℓ)) := by
       rw [hFK, derivative_map, aeval_map_algebraMap]
     rw [hd]
-    have hq : aeval ℓ q ∈ Algebra.adjoin R {ℓ} := aeval_mem_adjoin_singleton R ℓ
-    have hw' : w ∈ Algebra.adjoin R {ℓ} := hw
     have key : (minpoly R ℓ).discr • ((aeval ℓ (derivative (minpoly R ℓ)))⁻¹ • w) =
         ((-1 : L) ^ ((minpoly R ℓ).natDegree * ((minpoly R ℓ).natDegree - 1) / 2) * aeval ℓ q * w) *
           (aeval ℓ (derivative (minpoly R ℓ)) * (aeval ℓ (derivative (minpoly R ℓ)))⁻¹) := by
@@ -86,6 +83,6 @@ theorem DiscrAdjoin.proof : DiscrAdjoin.Statement := by
     · rw [hd0, zero_mul, mul_zero]
       exact zero_mem _
     · rw [mul_inv_cancel₀ hd0, mul_one]
-      exact mul_mem (mul_mem (pow_mem (neg_mem (one_mem _)) _) hq) hw'
+      exact mul_mem (mul_mem (pow_mem (neg_mem (one_mem _)) _) (aeval_mem_adjoin_singleton R ℓ)) hw
 
 end GroundTheory.Heights₂.Heights.ComplexSets

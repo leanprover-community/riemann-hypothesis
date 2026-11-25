@@ -107,8 +107,7 @@ theorem UpperTheory.V.Pr.T.unipTorsion :
     rw [← map_mul, ← sub_eq_zero, ← map_one (aeval (R := A) γ), ← map_sub, hq, map_mul, hγ, zero_mul]
   have h2 : (1 - γ) * aeval γ (∑ i ∈ Finset.range m, (X : A[X]) ^ i) = 0 := by
 
-    rw [map_sum]
-    simp only [map_pow, aeval_X]
+    simp only [map_sum, map_pow, aeval_X]
     rw [mul_neg_geom_sum, hγm, sub_self]
   have h3 : 1 - γ = 0 := by
     calc 1 - γ = (1 - γ) * (aeval γ (∑ i ∈ Finset.range m, (X : A[X]) ^ i) * aeval γ p) := by

@@ -601,8 +601,8 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.ComplexCommonEigenvectorOfFinrankEq.common_eig :
-    ∀ {ι M : Type} [AddCommGroup M]
-    [_root_.Module ℂ M] [FiniteDimensional ℂ M] (f : ι → Module.End ℂ M),
+    ∀ {ι M : Type} [inst : AddCommGroup M]
+    [inst_1 : _root_.Module ℂ M] [FiniteDimensional ℂ M] (f : ι → Module.End ℂ M),
     (∀ (i j : ι), Commute (f i) (f j)) →
       ∀ (n : ℕ) (W : Submodule ℂ M),
         Module.finrank ℂ ↥W = n →

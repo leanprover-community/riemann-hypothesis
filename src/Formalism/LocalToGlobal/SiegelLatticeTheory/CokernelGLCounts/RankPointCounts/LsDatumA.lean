@@ -90,10 +90,9 @@ theorem lemma0L_holds (M : Model F E) (r : ℕ) : Lemma0L M r := by
     have h2 : Finsupp.linearCombination E (Sum.elim t.f t.f') e2 = (x : V) - x' := by
       rw [← hl, he2, Finsupp.linearCombination_apply, Finsupp.sum_mapRange_index (by simp)]
       rfl
-    have he : e1 = e2 := hli (h1.trans h2.symm)
     have hcoef : ∀ a : Fin r, cp a = (l (Sum.inl a.castSucc) : E) := by
       intro a
-      have h := congrArg (fun e => e (Sum.inl a.castSucc)) he
+      have h := congrArg (fun e => e (Sum.inl a.castSucc)) (hli (h1.trans h2.symm))
       simp only [he1, he2, Finsupp.coe_sub, Pi.sub_apply, Finsupp.mapRange_apply] at h
       rw [Finsupp.mapDomain_apply_of_injective hinjl, Finsupp.mapDomain_notin_range _ _ (by
         rintro ⟨b, hb⟩

@@ -91,8 +91,7 @@ theorem isFrameAt_of_isFrameOver {W : ChartBundle ℤ (segreCoord y) N E} {c : (
           rw [hone, one_smul]
       _ = (segreCoord y c / segreCoord y c') ^ m • ∑ q, a q • b q := by rw [mul_smul, hae]
       _ = ∑ q, ((segreCoord y c / segreCoord y c') ^ m * a q) • b q := by
-          rw [Finset.smul_sum]
-          simp only [mul_smul]
+          simp only [Finset.smul_sum, mul_smul]
   refine ⟨fun q => ?_, fun e he => ?_⟩
   · have hex : ∃ n : ℕ, f ^ n • b q ∈ W.lat c := by
       refine (hiff (b q)).2 ⟨Pi.single q 1, fun q' => ⟨0, ?_⟩, ?_⟩

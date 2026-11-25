@@ -110,8 +110,7 @@ theorem _root_.GlobalTheory.ThickeningClosed.exists_mul_eq_zero_of_mem {X : Sche
     (U : X.affineOpens) (q : PrimeSpectrum Γ(X, U))
     (hq : U.2.fromSpec q ∈ _root_.GlobalTheory.ThickeningClosed.zeroLocusOpen K) {a : Γ(X, U)}
     (ha : a ∈ K.ideal U) : ∃ s ∉ q.asIdeal, s * a = 0 := by
-  have hq' : ∃ V : X.affineOpens, U.2.fromSpec q ∈ V.1 ∧ K.ideal V = ⊥ := hq
-  obtain ⟨V, hyV, hV⟩ := hq'
+  obtain ⟨V, hyV, hV⟩ : ∃ V : X.affineOpens, U.2.fromSpec q ∈ V.1 ∧ K.ideal V = ⊥ := hq
   have hyU : U.2.fromSpec q ∈ U.1 := by
     have : U.2.fromSpec q ∈ Set.range U.2.fromSpec := ⟨q, rfl⟩
     rwa [U.2.range_fromSpec] at this
@@ -174,8 +173,7 @@ theorem _root_.GlobalTheory.ThickeningClosed.mem_of_thickenings {R : Type} [Comm
       exact Ideal.pow_le_pow_right (Nat.le_succ n) (hK n ha)
     obtain ⟨g, hg1, hga⟩ := _root_.GlobalTheory.exists_smul_eq_zero_of_mem_iInf_pow_smul J hmem
     refine ⟨g, fun hg ↦ p.2.ne_top ((Ideal.eq_top_iff_one _).mpr ?_), hga⟩
-    have : g - (g - 1) ∈ p.asIdeal := Ideal.sub_mem _ hg (hJp hg1)
-    simpa using this
+    simpa using (Ideal.sub_mem _ hg (hJp hg1) : g - (g - 1) ∈ p.asIdeal)
   have hfin : ∀ t : Finset Γ(X, V), (↑t : Set Γ(X, V)) ⊆ ι.ker.ideal ⟨V, hV⟩ →
       ∃ g ∉ p.asIdeal, ∀ a ∈ t, g * a = 0 := by
     classical

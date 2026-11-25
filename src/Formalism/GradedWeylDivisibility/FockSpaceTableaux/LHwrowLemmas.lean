@@ -28,8 +28,7 @@ theorem hwrow_sum_single_castLE {r s : ℕ} (hr : s ≤ r) (σ : Equiv.Perm (Fin
     Equiv.sum_comp σ (fun q => (Pi.single (Fin.castLE hr q) 1 : Fin r → ℕ))
   rw [h1]
   funext a
-  rw [Finset.sum_apply]
-  simp only [Pi.single_apply]
+  simp only [Finset.sum_apply, Pi.single_apply]
   split_ifs with h
   · rw [Finset.sum_eq_single ⟨a.val, h⟩]
     · exact ite_eq_left (Fin.ext rfl)

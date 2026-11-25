@@ -310,8 +310,7 @@ theorem gauss_of (hI : IntegP) (hW : Wick) (hR : Rot) (hB : Base) : Gauss := by
   simp_rw [hA]
   rw [Finset.prod_mul_distrib, Finset.prod_const, Finset.card_univ, Fintype.card_fin]
   simp only [apply_ite Matrix.det]
-  rw [Finset.prod_ite]
-  simp only [Finset.prod_const]
+  simp only [Finset.prod_ite, Finset.prod_const]
   unfold cls
   simp only [neg_zero, Complex.cpow_zero, one_mul, evUV, map_mul, MvPolynomial.eval_C]
   rw [← pow_mul, mul_comm n m]

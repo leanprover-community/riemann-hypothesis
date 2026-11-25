@@ -59,8 +59,7 @@ theorem span_of_wedge_proportional (Ω V : Type) [Field Ω] [AddCommGroup V] [Mo
   have hv : LinearIndependent Ω (Fin.cons (b i) e : Fin (n + 1) → V) :=
     linearIndependent_finCons.2 ⟨he, hx⟩
   have hbe' : ExteriorAlgebra.ιMulti Ω n b = t • ExteriorAlgebra.ιMulti Ω n e := by
-    have := congrArg Subtype.val hbe
-    simpa using this
+    simpa using congrArg Subtype.val hbe
   have htb : Matrix.vecTail (Fin.cons (b i) b : Fin (n + 1) → V) = b :=
     by funext k; simp [Matrix.vecTail]
   have hte : Matrix.vecTail (Fin.cons (b i) e : Fin (n + 1) → V) = e :=

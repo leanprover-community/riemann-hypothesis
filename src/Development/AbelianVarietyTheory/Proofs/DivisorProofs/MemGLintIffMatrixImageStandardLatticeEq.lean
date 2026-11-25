@@ -80,8 +80,7 @@ theorem entries_of_matLat_le {n : ℕ} (g : Matrix (Fin n) (Fin n) K)
     · simp [h, V.zero_mem]
   have hm : g *ᵥ (Pi.single j (1 : K)) ∈ stdLat V n := hg ((mem_matLat _ _ _).2 ⟨_, hs, rfl⟩)
   rw [mem_stdLat] at hm
-  have := (mem_range_iff V _).1 (hm i)
-  simpa [Matrix.mulVec_single] using this
+  simpa [Matrix.mulVec_single] using (mem_range_iff V _).1 (hm i)
 
 theorem matLat_mono {n : ℕ} (g : Matrix (Fin n) (Fin n) K) {M N : Submodule V (Fin n → K)}
     (h : M ≤ N) : matLat V g M ≤ matLat V g N := Submodule.map_mono h

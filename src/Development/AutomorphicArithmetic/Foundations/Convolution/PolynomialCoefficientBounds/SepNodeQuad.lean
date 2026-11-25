@@ -108,8 +108,7 @@ theorem UpperTheory.ConvolutionTheory.FX.two_node :
   have h1 : c i = ∑ m ∈ (P i).support, (P i).coeff m * ∑ j, c j * x j ^ m 0 * z j ^ m 1 := by
     have : c i = ∑ j, c j * eval ![x j, z j] (P i) := by
       simp [hP]
-    rw [this]
-    simp only [Finset.mul_sum]
+    simp only [this, Finset.mul_sum]
     rw [Finset.sum_comm]
     refine Finset.sum_congr rfl fun j _ => ?_
     rw [eval_eq', Finset.mul_sum]

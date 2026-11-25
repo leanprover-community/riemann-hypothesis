@@ -144,8 +144,7 @@ theorem dual_pull : ∀ (Ω Ω' : Type) [Field Ω] [Field Ω'] (i : Ω →+* Ω'
       rw [hW', Submodule.span_le]
       rintro _ ⟨e, he, rfl⟩
       have h1 : e = ∑ k, b k ⟨e, he⟩ • (c k : V) := by
-        have := congrArg (Subtype.val) (hexp ⟨e, he⟩)
-        simpa using this
+        simpa using congrArg (Subtype.val) (hexp ⟨e, he⟩)
 
       rw [SetLike.mem_coe, h1, map_sum]
       refine sum_mem fun k _ => ?_

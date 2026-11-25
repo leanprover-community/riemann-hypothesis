@@ -153,13 +153,12 @@ theorem pow_dvd_of_const_mem_span : ConstDist := by
     obtain ⟨g, hg⟩ := Ideal.mem_span_singleton'.mp h3
     have h4 := congrArg PowerSeries.constantCoeff hg
     simp only [map_mul, map_sub, PowerSeries.constantCoeff_C] at h4
-    have hc' : ϖ ∣ c' := by
+    obtain ⟨c'', rfl⟩ : ϖ ∣ c' := by
       have e : c' = PowerSeries.constantCoeff g * PowerSeries.constantCoeff p +
           ϖ * PowerSeries.constantCoeff a := by
         linear_combination (-1 : O) * h4
       rw [e]
       exact dvd_add (dvd_mul_of_dvd_right hp0 _) (dvd_mul_right _ _)
-    obtain ⟨c'', rfl⟩ := hc'
     exact ⟨c'', by ring⟩
 
 end Formalism.ExponentWindows

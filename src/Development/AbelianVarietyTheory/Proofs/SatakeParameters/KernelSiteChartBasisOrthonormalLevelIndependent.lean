@@ -43,7 +43,7 @@ open Formalism.BasicNotions NumberField IsDedekindDomain Formalism.MainNotions.G
 
 namespace GlobalTheory.TwV.DelA
 
-theorem bAt_orth_lev : AllSites (fun {D _ _ _ _ _ _ _ _ _ _ w _ Lv _ _ _} [Fact (D.what₂.places.resChar w).Prime] {_ _ J} _ => ∀ j (hj : j ≤ D.R.m) (a : Lv.comp j), cT (sigD D : D.host.E →+* D.host.E) (bAt J j hj a).1 * gramN D j hj * (bAt J j hj a).1 = 1 ∧ ∀ a', bAt J j hj a' = bAt J j hj a) := by
+theorem bAt_orth_lev : AllSites (fun {D L hT Gi Gl Kc Dx cX ex u μ w hg Lv I H X} [Fact (D.what₂.places.resChar w).Prime] {std t J} S => ∀ j (hj : j ≤ D.R.m) (a : Lv.comp j), cT (sigD D : D.host.E →+* D.host.E) (bAt J j hj a).1 * gramN D j hj * (bAt J j hj a).1 = 1 ∧ ∀ a', bAt J j hj a' = bAt J j hj a) := by
   intro D L hT Gi Gl Kc Dx cX ex u μ w hg Lv I H X _ std t J S j hj a
   cases j with
   | zero =>

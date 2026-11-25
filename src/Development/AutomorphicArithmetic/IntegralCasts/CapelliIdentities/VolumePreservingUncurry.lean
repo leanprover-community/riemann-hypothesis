@@ -48,18 +48,18 @@ theorem UpperTheory.Reformulated.B.VolumePreservingUncurry.volume_preserving_unc
     ∀ (ι : Type u_1) (κ : Type u_2) [inst : Fintype ι] [inst_1 : Fintype κ],
       @MeasureTheory.MeasurePreserving (ι → κ → Real) (Prod ι κ → Real)
         (@MeasureTheory.MeasureSpace.toMeasurableSpace (ι → κ → Real)
-          (@MeasureTheory.MeasureSpace.pi ι inst (fun (_ : ι) ↦ κ → Real) fun (_ : ι) ↦
-            @MeasureTheory.MeasureSpace.pi κ inst_1 (fun (_ : κ) ↦ Real) fun (_ : κ) ↦ Real.measureSpace))
+          (@MeasureTheory.MeasureSpace.pi ι inst (fun (a : ι) ↦ κ → Real) fun (i : ι) ↦
+            @MeasureTheory.MeasureSpace.pi κ inst_1 (fun (a : κ) ↦ Real) fun (i : κ) ↦ Real.measureSpace))
         (@MeasureTheory.MeasureSpace.toMeasurableSpace (Prod ι κ → Real)
-          (@MeasureTheory.MeasureSpace.pi (Prod ι κ) (@instFintypeProd ι κ inst inst_1) (fun (_ : Prod ι κ) ↦ Real)
-            fun (_ : Prod ι κ) ↦ Real.measureSpace))
+          (@MeasureTheory.MeasureSpace.pi (Prod ι κ) (@instFintypeProd ι κ inst inst_1) (fun (a : Prod ι κ) ↦ Real)
+            fun (i : Prod ι κ) ↦ Real.measureSpace))
         (@Function.uncurry ι κ Real)
         (@MeasureTheory.MeasureSpace.volume (ι → κ → Real)
-          (@MeasureTheory.MeasureSpace.pi ι inst (fun (_ : ι) ↦ κ → Real) fun (_ : ι) ↦
-            @MeasureTheory.MeasureSpace.pi κ inst_1 (fun (_ : κ) ↦ Real) fun (_ : κ) ↦ Real.measureSpace))
+          (@MeasureTheory.MeasureSpace.pi ι inst (fun (a : ι) ↦ κ → Real) fun (i : ι) ↦
+            @MeasureTheory.MeasureSpace.pi κ inst_1 (fun (a : κ) ↦ Real) fun (i : κ) ↦ Real.measureSpace))
         (@MeasureTheory.MeasureSpace.volume (Prod ι κ → Real)
-          (@MeasureTheory.MeasureSpace.pi (Prod ι κ) (@instFintypeProd ι κ inst inst_1) (fun (_ : Prod ι κ) ↦ Real)
-            fun (_ : Prod ι κ) ↦ Real.measureSpace)) := by
+          (@MeasureTheory.MeasureSpace.pi (Prod ι κ) (@instFintypeProd ι κ inst inst_1) (fun (a : Prod ι κ) ↦ Real)
+            fun (i : Prod ι κ) ↦ Real.measureSpace)) := by
   intro ι κ _ _
   have hm : Measurable (@Function.uncurry ι κ ℝ) :=
     Measurable.of_eval fun p ↦ (measurable_pi_apply p.2).comp (measurable_pi_apply p.1)

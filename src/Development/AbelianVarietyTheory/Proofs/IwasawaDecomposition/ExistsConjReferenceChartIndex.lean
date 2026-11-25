@@ -366,7 +366,7 @@ namespace GlobalTheory.Mem.Col2.TC.ChTw.Match.IdxMatch
 
 
 open Classical in
-theorem idx_match : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok → ∀ (_ : I.Laws) (a : I.ι) (i : ℕ), 1 ≤ i → i < B.R.m →
+theorem idx_match : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok → ∀ (l : I.Laws) (a : I.ι) (i : ℕ), 1 ≤ i → i < B.R.m →
     ∀ b : Idx I.sel (I.tup a) (I.idx a) i, ∃ (b0 : Idx I.sel (I.tup I.mu0) (I.idx I.mu0) i)
       (x : ∀ w : (B.primes X).vGs, GL (Fin (B.R.N i)) (𝓞 B.fields.E ⧸ w.1.asIdeal)),
       (i + 1 = B.R.m → ∀ w, x w = 1) ∧

@@ -130,8 +130,7 @@ private theorem smd_exp_inUJ_lemma {ε : Fin n → Bool} {A : Matrix (Fin n) (Fi
     congr 1
     funext a
     split_ifs <;> norm_num
-  have h0 : Aᴴ * Jm ε + Jm ε * A = 0 := hA
-  have h2 : Aᴴ * Jm ε = -(Jm ε * A) := eq_neg_of_add_eq_zero_left h0
+  have h2 : Aᴴ * Jm ε = -(Jm ε * A) := eq_neg_of_add_eq_zero_left hA
   have hAh : Aᴴ = Jm ε * -A * Jm ε := by
     calc Aᴴ = Aᴴ * Jm ε * Jm ε := by rw [Matrix.mul_assoc, hJ, Matrix.mul_one]
       _ = Jm ε * -A * Jm ε := by rw [h2, Matrix.mul_neg]

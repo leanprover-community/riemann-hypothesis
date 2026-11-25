@@ -61,8 +61,7 @@ theorem abs_lowK_sub_le {n : ℕ} (ε : Fin n → Bool) (μ : Fin n → ℝ) (a 
   have e : lowK ε μ a - μ a = rhoN ε a - rhoC ε a := by
     simp only [lowK, Pi.add_apply, Pi.sub_apply]
     ring
-  rw [e]
-  simp only [rhoN, rhoC]
+  simp only [e, rhoN, rhoC]
   obtain ⟨h1, h2⟩ := card_filter_fin_bounds (fun b : Fin n => a < b ∧ ε b ≠ ε a)
   obtain ⟨h3, h4⟩ := card_filter_fin_bounds (fun b : Fin n => b < a ∧ ε b ≠ ε a)
   obtain ⟨h5, h6⟩ := card_filter_fin_bounds (fun b : Fin n => a < b ∧ ε b = ε a)

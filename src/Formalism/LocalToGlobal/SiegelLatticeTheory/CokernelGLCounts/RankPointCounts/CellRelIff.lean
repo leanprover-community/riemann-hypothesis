@@ -62,8 +62,7 @@ theorem cellRel_iff (hD : Data W S N' K π) (k₁ k₂ : K) :
   · rintro ⟨n, hn, h, hh, rfl⟩
     have hπn : π (n : G) = 1 := by
       rw [MonoidHom.mem_ker] at hn
-      have := congrArg (fun a : Ak S K => ((a : K) : G)) hn
-      simpa [πk] using this
+      simpa [πk] using congrArg (fun a : Ak S K => ((a : K) : G)) hn
     have hh' : (h : G) • g • W = g • W := by
       rw [Hk, Subgroup.mem_subgroupOf, Hs, Subgroup.mem_inf] at hh
       exact hh.2

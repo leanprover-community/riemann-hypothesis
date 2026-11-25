@@ -188,10 +188,9 @@ theorem isIntegralLat_adjoin_iff' (hs : h.IsSymm) (h1 : h S.x₀ S.x₀ = 1) (L'
   unfold Formalism.HermitianLatticesTheory.IsIntegralLat
   constructor
   · intro H b hb a ha
-    have hb' : S.ι b ∈ S.adjoin L' := (S.mem_adjoin_iff L' _).mpr ⟨0, b, hb, by simp⟩
     have ha' : S.ι a ∈ S.adjoin L' := (S.mem_adjoin_iff L' _).mpr ⟨0, a, ha, by simp⟩
     rw [← S.isom]
-    exact H _ hb' _ ha'
+    exact H _ ((S.mem_adjoin_iff L' _).mpr ⟨0, b, hb, by simp⟩) _ ha'
   · intro H x hx y hy
     obtain ⟨r, b, hb, rfl⟩ := (S.mem_adjoin_iff L' x).mp hx
     obtain ⟨r', a, ha, rfl⟩ := (S.mem_adjoin_iff L' y).mp hy

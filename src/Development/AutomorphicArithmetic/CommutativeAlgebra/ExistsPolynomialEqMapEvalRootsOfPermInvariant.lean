@@ -121,8 +121,7 @@ theorem UpperTheory.exists_polynomial_eq_map_eval_roots_of_perm_invariant :
   intro A _ N g Φ hΦ
   have hsym : ∀ n, (Φ.coeff n).IsSymmetric := by
     intro n σ
-    have := congrArg (fun q => q.coeff n) (hΦ σ)
-    simpa [Polynomial.coeff_map] using this
+    simpa [Polynomial.coeff_map] using congrArg (fun q => q.coeff n) (hΦ σ)
   choose a ha using fun n => UpperTheory.exists_eval_roots_symmetric_eq_algebraMap A N g (Φ.coeff n) (hsym n)
   refine ⟨∑ n ∈ Finset.range (Φ.natDegree + 1), monomial n (a n), ?_, ?_⟩
   · refine Polynomial.natDegree_sum_le_of_forall_le _ _ (fun n hn => ?_)

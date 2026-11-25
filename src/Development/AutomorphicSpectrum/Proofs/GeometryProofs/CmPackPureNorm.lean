@@ -98,8 +98,8 @@ section -- clump:auto
 open scoped IntermediateField Algebra TensorProduct Matrix Pointwise NumberField Topology ContDiff NNReal ENNReal Polynomial DirectSum BigOperators InnerProductSpace Manifold
 
 theorem UpperTheory.Reformulated.B.ExistsCoordinate.exists_coord :
-    ∀ {E : Type} [Field E] [NumberField E]
-    [NumberField.IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) {y : E},
+    ∀ {E : Type} [inst : Field E] [inst_1 : NumberField E]
+    [inst_2 : NumberField.IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) {y : E},
     y ∈ ℚ[(↑H.rt : E)] →
       ∃ (u : ℚ) (v : ℚ),
         y =

@@ -40,8 +40,7 @@ theorem existsUnique_circleExp_of_continuous (χ : ℝ → Circle) (hχ : Contin
     linarith
   have hlin : ∀ t, F t = F 1 * t := by
     intro t
-    have := map_real_smul (AddMonoidHom.mk' F hadd) F.continuous t 1
-    simpa [mul_comm] using this
+    simpa [mul_comm] using map_real_smul (AddMonoidHom.mk' F hadd) F.continuous t 1
   refine ⟨F 1, fun t => by rw [← hlin, hF'], ?_⟩
   intro τ hτ
   have key := cov.eq_of_comp_eq (g₁ := fun t : ℝ => τ * t) (g₂ := fun t => F 1 * t)
@@ -53,8 +52,7 @@ theorem eq_of_forall_exp_mul_eq {s s' : ℂ}
     (h : ∀ t : ℝ, Complex.exp (s * t) = Complex.exp (s' * t)) : s = s' := by
   have hd : ∀ u : ℂ, HasDerivAt (fun t : ℝ => Complex.exp (u * t)) u 0 := by
     intro u
-    have := ((hasDerivAt_id (0 : ℝ)).ofReal_comp.const_mul u).cexp
-    simpa using this
+    simpa using ((hasDerivAt_id (0 : ℝ)).ofReal_comp.const_mul u).cexp
   have e : (fun t : ℝ => Complex.exp (s * t)) = fun t : ℝ => Complex.exp (s' * t) := funext h
   have h' : HasDerivAt (fun t : ℝ => Complex.exp (s * t)) s' 0 := by rw [e]; exact hd s'
   exact (hd s).unique h'

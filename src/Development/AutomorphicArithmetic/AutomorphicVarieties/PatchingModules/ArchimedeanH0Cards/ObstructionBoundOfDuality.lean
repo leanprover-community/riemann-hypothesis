@@ -1206,9 +1206,9 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Qf12.lift_ex :
-    ∀ {A M Q Q' : Type} [CommRing A] [AddCommGroup M]
-    [AddCommGroup Q] [AddCommGroup Q'] [_root_.Module A M] [_root_.Module A Q]
-    [_root_.Module A Q'] (π : M →ₗ[A] Q),
+    ∀ {A M Q Q' : Type} [inst : CommRing A] [inst_1 : AddCommGroup M]
+    [inst_2 : AddCommGroup Q] [inst_3 : AddCommGroup Q'] [inst_4 : _root_.Module A M] [inst_5 : _root_.Module A Q]
+    [inst_6 : _root_.Module A Q'] (π : M →ₗ[A] Q),
     Function.Surjective (⇑π : M → Q) →
       ∀ (g : M →ₗ[A] Q'),
         (∀ (m : M), (π : M → Q) m = (0 : Q) → (g : M → Q') m = (0 : Q')) →

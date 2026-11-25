@@ -33,8 +33,7 @@ theorem unimodUnramUnique_lift (T N d s₀ t₀ : S)
   obtain ⟨s, hs, -⟩ := HenselianLocalRing.is_henselian f hf s₀ (he ▸ h0) (hd ▸ h1)
   refine ⟨s, t₀, ?_⟩
   have h2 : f.eval s = 0 := hs
-  rw [hfdef] at h2
-  simp at h2
+  simp [hfdef] at h2
   linear_combination h2
 
 theorem unimodUnramUnique_split (T N d r : S) (hr : r ^ 2 + T * r + N = 0)

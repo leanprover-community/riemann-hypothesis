@@ -112,7 +112,7 @@ theorem exists_split (hnf : ¬ IsField (K ⊗[F] E)) :
   have hnt : (1 : K ⊗[F] E) ≠ 0 := by
     rw [← hbR0]; exact bR.ne_zero 0
 
-  have hsq : ∃ c : K, c * c = bK := by
+  obtain ⟨c, hc⟩ : ∃ c : K, c * c = bK := by
     by_contra hno
     push Not at hno
     apply hnf
@@ -138,7 +138,6 @@ theorem exists_split (hnf : ¬ IsField (K ⊗[F] E)) :
       rw [← map_mul, ← map_mul, ← map_mul, ← map_sub, ← map_mul, ← hN, inv_mul_cancel₀ hN0, map_one]
     linear_combination (-(algebraMap K (K ⊗[F] E) N⁻¹ * algebraMap K (K ⊗[F] E) y *
       algebraMap K (K ⊗[F] E) y)) * hA + hNN
-  obtain ⟨c, hc⟩ := hsq
   have hc0 : c ≠ 0 := by
     rintro rfl; exact hbK0 (by simpa using hc.symm)
   set ac := algebraMap K (K ⊗[F] E) c
@@ -205,8 +204,7 @@ theorem exists_split (hnf : ¬ IsField (K ⊗[F] E)) :
     intro r
     obtain ⟨x, y, rfl⟩ := hdec r
     refine ⟨(x + y * c, x - y * c), ?_⟩
-    rw [hψ, he]
-    simp only [map_add (f := _), map_sub, map_mul]
+    simp only [hψ, he, map_add (f := _), map_sub, map_mul]
     linear_combination (algebraMap K (K ⊗[F] E) y * (ac - A) + 2 * algebraMap K (K ⊗[F] E) y * A) * h2i +
       (2 * algebraMap K (K ⊗[F] E) y * a2i * A) * hci
   let Ψ : K × K ≃+* K ⊗[F] E := RingEquiv.ofBijective ψ ⟨hinj, hsurj⟩

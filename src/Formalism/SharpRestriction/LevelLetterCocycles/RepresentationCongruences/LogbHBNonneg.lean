@@ -49,7 +49,7 @@ theorem ro_le_arc_len : ∀ {n : ℕ} (A : Formalism.MainNotions.ArcLiftingSetup
 
 open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.ArcLiftingSetup Formalism.MainNotions.N.Ln17 in
 theorem arc_len_le_one_of_no_thick : ∀ {n : ℕ} [NeZero n] (b w S η : ℕ) (up : ZMod n → Bool) (size : ZMod n → ℕ)
-    (_ : ¬ ∃ i, Formalism.MainNotions.TruncatedSeriesCountingBounds.Thick b η size i) (c : ZMod n),
+    (h : ¬ ∃ i, Formalism.MainNotions.TruncatedSeriesCountingBounds.Thick b η size i) (c : ZMod n),
     (arcOf b w S η up size).len c ≤ 1 := by
   intro n _ b w S η up size h c
   unfold arcOf
@@ -1065,7 +1065,7 @@ namespace Formalism.MainNotions.N.Ln17
 open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.ArcLiftingSetup Module
 
 open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.ArcLiftingSetup Formalism.MainNotions.N.Ln17 in
-theorem jumps_of_surjective_lattice_map : ∀ (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (_ : UsedJ D HW F) (l : ℕ) [Fact l.Prime] (K LL : FinExt l) (hG : Good K 1 LL),
+theorem jumps_of_surjective_lattice_map : ∀ (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (hJ : UsedJ D HW F) (l : ℕ) [Fact l.Prime] (K LL : FinExt l) (hG : Good K 1 LL),
     (∀ (T₁ T₂ : LocLat ↥(GK K) ℚ_[l] ↥LL.1 ↥(OL LL)) (f : LatHom T₁.L T₂.L),
       Formalism.MainNotions.LiftingTheory.Sur ((HW l).W K 1 LL hG) f →
       ∀ (τ : ↥K.1 →ₐ[ℚ_[l]] ↥LL.1) (a : ℤ), IsJumpV ((D.loc l).PD K) T₂.ρ τ a →
@@ -1378,22 +1378,22 @@ theorem kappa_bound_of_length {n : ℕ} [NeZero n] (l : ℕ) (hl : 11 ≤ l) (b 
     ((arcOf b w S η up size).JS c) hJS
 
 open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.ArcLiftingSetup Formalism.MainNotions.N.Ln17 in
-theorem kappa_le_of_alternating : ∀ {n : ℕ} [NeZero n] (l : ℕ) (_ : 11 ≤ l) (b w S η : ℕ) (up : ZMod n → Bool)
-    (size : ZMod n → ℕ) (_ : 20 * S ≤ b) (_ : 20 * w ≤ b)
-    (_ : ∀ i, ¬ Formalism.MainNotions.TruncatedSeriesCountingBounds.Thick b η size i → size i ≤ w) (_ : Alt b η up size)
-    (_ : ∀ i, η < size i) (c : ZMod n) (_ : c ∈ (arcOf b w S η up size).cuts)
-    (_ : (arcOf b w S η up size).len c ≤ 3),
+theorem kappa_le_of_alternating : ∀ {n : ℕ} [NeZero n] (l : ℕ) (hl : 11 ≤ l) (b w S η : ℕ) (up : ZMod n → Bool)
+    (size : ZMod n → ℕ) (h20 : 20 * S ≤ b) (h20w : 20 * w ≤ b)
+    (hnt : ∀ i, ¬ Formalism.MainNotions.TruncatedSeriesCountingBounds.Thick b η size i → size i ≤ w) (hAlt : Alt b η up size)
+    (hsz : ∀ i, η < size i) (c : ZMod n) (hc : c ∈ (arcOf b w S η up size).cuts)
+    (hlen : (arcOf b w S η up size).len c ≤ 3),
     (kapC l (arcOf b w S η up size) c : ℝ) ≤
       13 * S + 3 * Real.logb l (2 * (Formalism.MainNotions.TruncatedSeriesCountingBounds.hB b w S η size : ℝ)) + 3 := by
   intro n _ l hl b w S η up size h20 h20w hnt hAlt hsz c hc hlen
   exact (kappa_bound_of_length l hl b w S η up size h20w hnt hsz c).1 hlen
 
 open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.ArcLiftingSetup Formalism.MainNotions.N.Ln17 in
-theorem kappa_le_of_single_thick : ∀ {n : ℕ} [NeZero n] (l : ℕ) (_ : 11 ≤ l) (b w S η : ℕ) (up : ZMod n → Bool)
-    (size : ZMod n → ℕ) (_ : 20 * S ≤ b) (_ : 20 * w ≤ b)
-    (_ : ∀ i, ¬ Formalism.MainNotions.TruncatedSeriesCountingBounds.Thick b η size i → size i ≤ w) (R : ℕ) (_ : 1 ≤ R) (_ : One b η R up size)
-    (_ : ∀ i, η < size i) (c : ZMod n) (_ : c ∈ (arcOf b w S η up size).cuts)
-    (_ : (arcOf b w S η up size).len c ≤ R),
+theorem kappa_le_of_single_thick : ∀ {n : ℕ} [NeZero n] (l : ℕ) (hl : 11 ≤ l) (b w S η : ℕ) (up : ZMod n → Bool)
+    (size : ZMod n → ℕ) (h20 : 20 * S ≤ b) (h20w : 20 * w ≤ b)
+    (hnt : ∀ i, ¬ Formalism.MainNotions.TruncatedSeriesCountingBounds.Thick b η size i → size i ≤ w) (R : ℕ) (hR : 1 ≤ R) (hOne : One b η R up size)
+    (hsz : ∀ i, η < size i) (c : ZMod n) (hc : c ∈ (arcOf b w S η up size).cuts)
+    (hlen : (arcOf b w S η up size).len c ≤ R),
     (kapC l (arcOf b w S η up size) c : ℝ) ≤
       3 * (R : ℝ) ^ 2 * ((S : ℝ) + 1 + Real.logb l (2 * (Formalism.MainNotions.TruncatedSeriesCountingBounds.hB b w S η size : ℝ))) := by
   intro n _ l hl b w S η up size h20 h20w hnt R hR hOne hsz c hc hlen

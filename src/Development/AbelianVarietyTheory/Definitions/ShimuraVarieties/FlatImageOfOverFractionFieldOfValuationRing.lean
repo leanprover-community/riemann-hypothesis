@@ -119,9 +119,8 @@ theorem eq_zero_of_mul_eq_zero_of_flat {S : Scheme.{u}} [IsAffine S] (s : T ⟶ 
   obtain ⟨_, ⟨V', hV', rfl⟩, hxV, hVV : V' ≤ V⟩ :=
     T.isBasis_affineOpens.exists_subset_of_mem_open hx V.isOpen
   refine ⟨V', hVV, hxV, ?_⟩
-  have hf : (s.appLE ⊤ V' le_top).hom.Flat := s.flat_appLE (isAffineOpen_top S) hV' le_top
   let := (s.appLE ⊤ V' le_top).hom.toAlgebra
-  have : Module.Flat Γ(S, ⊤) Γ(T, V') := hf
+  have : Module.Flat Γ(S, ⊤) Γ(T, V') := s.flat_appLE (isAffineOpen_top S) hV' le_top
   apply Module.Flat.isSMulRegular_of_nonZeroDivisors (M := Γ(T, V')) hr
   have he : V ≤ s ⁻¹ᵁ ⊤ := by rw [s.preimage_top]; exact le_top
   have h' := congrArg (T.presheaf.map (homOfLE hVV).op)

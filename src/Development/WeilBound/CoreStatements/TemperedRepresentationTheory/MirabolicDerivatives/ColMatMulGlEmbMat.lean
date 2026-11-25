@@ -126,8 +126,7 @@ theorem mulVec_last_of_mem {n : ℕ} (m : GL (Fin (n + 1)) k) (hm : m ∈ Mir k 
   have h := (mem_Mir_iff k m).1 hm
   have : ((m : Matrix (Fin (n + 1)) (Fin (n + 1)) k).mulVec v) (Fin.last n) =
       (m : Matrix (Fin (n + 1)) (Fin (n + 1)) k) (Fin.last n) ⬝ᵥ v := rfl
-  rw [this, h]
-  simp [eLast, dotProduct, Pi.single_apply]
+  simp [this, h, eLast, dotProduct, Pi.single_apply]
 
 theorem mirChar_eq (ψ : AddChar k Circle) (n : ℕ) (x : MirUin k (n + 1)) (w : Multiplicative (Fin (n + 1) → k))
     (hx : ((x : Mir k (n + 1)) : GL (Fin (n + 2)) k) = unip k (n + 1) w) :
@@ -155,8 +154,7 @@ theorem qEntry_mul (n : ℕ) (a b : Mir k (n + 1)) (ha : mirabolicProjection k (
       (Fin.castSucc (Fin.last n)) (Fin.castSucc j) = eLast k n j := fun j =>
     congrFun ((mem_Mir_iff k _).1 ha) j
   have hb : ((b : GL (Fin (n + 2)) k) : Matrix (Fin (n + 2)) (Fin (n + 2)) k) (Fin.last (n + 1)) (Fin.last (n + 1)) = 1 := by
-    have := congrFun ((mem_Mir_iff k _).1 b.2) (Fin.last (n + 1))
-    simpa [eLast] using this
+    simpa [eLast] using congrFun ((mem_Mir_iff k _).1 b.2) (Fin.last (n + 1))
   simp only [qEntry, Units.val_mul, Matrix.mul_apply, Fin.sum_univ_castSucc (n := n + 1), ha', hb, mul_one]
   simp [eLast, Pi.single_apply, add_comm]
 

@@ -67,8 +67,7 @@ theorem norm_pow_prime_sub_one (l : ℕ) [Fact l.Prime] (u : ℤ_[l])
       exact (PadicInt.nonarchimedean _ _).trans (max_le ih (hpow m))
   have hsplit : ∑ i ∈ Finset.range l, u ^ i
       = ((l : ℕ) : ℤ_[l]) + ∑ i ∈ Finset.range l, (u ^ i - 1) := by
-    rw [Finset.sum_sub_distrib]
-    simp
+    simp [Finset.sum_sub_distrib]
   have hgeom : ‖∑ i ∈ Finset.range l, u ^ i‖ = ‖((l : ℕ) : ℤ_[l])‖ := by
     rw [hsplit, PadicInt.norm_add_eq_max_of_ne]
     · exact max_eq_left ((hsum l).trans h.le)

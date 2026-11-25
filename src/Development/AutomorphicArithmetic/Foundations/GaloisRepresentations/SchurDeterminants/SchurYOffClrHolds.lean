@@ -552,7 +552,7 @@ section -- clump:auto
 
 theorem UpperTheory.Reformulated.B.Qh65.aeval_mul_of_isHomogeneous :
     ∀ {σ R : Type} [Fintype σ]
-    [CommRing R] [Algebra ℚ R] {P : MvPolynomial σ ℚ} {d : ℕ},
+    [inst : CommRing R] [inst_1 : Algebra ℚ R] {P : MvPolynomial σ ℚ} {d : ℕ},
     P.IsHomogeneous d →
       ∀ (y : R) (g : σ → R),
         (MvPolynomial.aeval fun (k : σ) ↦ y * g k : MvPolynomial σ ℚ → R) P =

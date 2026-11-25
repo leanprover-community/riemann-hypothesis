@@ -113,11 +113,9 @@ theorem card_quotient_eq_absNorm : CardStep := by
     have hf' : (ValuativeRel.valuation K) (ι f - s) ≤ (ValuativeRel.valuation K) t := hf
     have hfK : (ValuativeRel.valuation K) (ι f) ≤ 1 := by
       have h1 : (ValuativeRel.valuation K) (ι f - s) ≤ 1 := hf'.trans ((Valuation.mem_integer_iff _ _).1 t.2)
-      have h2 : (ValuativeRel.valuation K) (s : K) ≤ 1 := (Valuation.mem_integer_iff _ _).1 s.2
-      simpa using (ValuativeRel.valuation K).map_add_le h1 h2
+      simpa using (ValuativeRel.valuation K).map_add_le h1 ((Valuation.mem_integer_iff _ _).1 s.2)
     have hf1 : p.valuation F f ≤ 1 := by
-      have := (hcomp f 1).1 (by simpa using hfK)
-      simpa using this
+      simpa using (hcomp f 1).1 (by simpa using hfK)
     obtain ⟨x, hx⟩ := exists_valuation_sub_algebraMap_le p hf1 ha
     refine ⟨x, ?_⟩
     show Ideal.Quotient.mk _ (ι₀ x) = Ideal.Quotient.mk _ s
@@ -186,11 +184,10 @@ theorem modF_iota (hI : IndexFormula) (hC : CardStep) (hd : DenseRange ι)
   by_cases hz : z = 0
   · simp [hz, modF_zero]
   obtain ⟨a, b, hb, rfl⟩ := IsFractionRing.div_surjective (A := 𝓞 F) z
-  have hb0 : b ≠ 0 := nonZeroDivisors.ne_zero hb
   have ha0 : a ≠ 0 := by rintro rfl; simp at hz
   rw [map_div₀, modF_div, map_div₀]
   have e1 := modF_iota_int p ι hI hC hd hv a ha0
-  have e2 := modF_iota_int p ι hI hC hd hv b hb0
+  have e2 := modF_iota_int p ι hI hC hd hv b (nonZeroDivisors.ne_zero hb)
   simp only [RingOfIntegers.coe_eq_algebraMap] at e1 e2 ⊢
   rw [e1, e2]
 
@@ -311,7 +308,6 @@ private theorem index_span_mul_distribHaarChar_eq_one {K : Type} [Field K] [Valu
     rwa [← hsmul] at h1
   have hrange : u • ((𝒪[K] : Subring K) : Set K) ⊆ Set.range (Subtype.val : 𝒪[K] → K) := by
     exact fun x hx => ⟨⟨x, hsub hx⟩, rfl⟩
-  have hR : Set.range (Subtype.val : 𝒪[K] → K) = ((𝒪[K] : Subring K) : Set K) := Subtype.range_coe
   have hmem : ∀ y : 𝒪[K], y ∈ Ideal.span {t} ↔ (y : K) ∈ u • ((𝒪[K] : Subring K) : Set K) := by
     intro y
     rw [Ideal.mem_span_singleton', Set.mem_smul_set]
@@ -345,7 +341,7 @@ private theorem index_span_mul_distribHaarChar_eq_one {K : Type} [Field K] [Valu
   have he : MeasurableEmbedding (Subtype.val : 𝒪[K] → K) := measurableEmbedding_coe_integers
   have key := AddSubgroup.index_mul_measure H hHm (μ.comap (Subtype.val : 𝒪[K] → K))
   rw [he.comap_apply, he.comap_apply, hH, Set.image_preimage_eq_inter_range,
-    Set.inter_eq_left.mpr hrange, Set.image_univ, hR,
+    Set.inter_eq_left.mpr hrange, Set.image_univ, Subtype.range_coe,
     ← distribHaarChar_mul μ u ((𝒪[K] : Subring K) : Set K), ← mul_assoc] at key
   have hpos : μ ((𝒪[K] : Subring K) : Set K) ≠ 0 :=
     (hSo.measure_pos μ ⟨0, (𝒪[K]).zero_mem⟩).ne'

@@ -121,7 +121,7 @@ private theorem UpperTheory.Reformulated.B.Qf19.exists_eigvec {R : Type} [CommRi
     simp [mulVec_diagonal, hM]
 
 theorem UpperTheory.Reformulated.B.Qf19.exists_canon :
-    ∀ {R : Type} [CommRing R] [IsLocalRing R] [IsAdicComplete (IsLocalRing.maximalIdeal R) R]
+    ∀ {R : Type} [inst : CommRing R] [inst_1 : IsLocalRing R] [IsAdicComplete (IsLocalRing.maximalIdeal R) R]
       (X : Matrix (Fin (3 : ℕ)) (Fin (3 : ℕ)) R),
       (∀ (a b : Fin (3 : ℕ)), a ≠ b → IsUnit (X a a - X b b)) →
         (∀ (a b : Fin (3 : ℕ)), a ≠ b → X a b ∈ IsLocalRing.maximalIdeal R) →

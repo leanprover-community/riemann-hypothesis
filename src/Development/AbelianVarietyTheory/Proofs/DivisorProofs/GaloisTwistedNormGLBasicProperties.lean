@@ -145,7 +145,6 @@ end Fields
 theorem main : ∀ (F F' : Type) [Field F] [Field F'] [Algebra F F'] [Finite F'] (s : F' ≃ₐ[F] F'), (∀ t : F' ≃ₐ[F] F', t ∈ Subgroup.zpowers s) → ∀ n : ℕ, (∀ x : GL (Fin n) F', galAct F F' n s x = x ↔ ∃ y, incl F F' n y = x) ∧ Function.Injective (incl F F' n) ∧ (∀ δ y : GL (Fin n) F', nrm s (y⁻¹ * δ * galAct F F' n s y) = y⁻¹ * nrm s δ * y) ∧ (∀ δ : GL (Fin n) F', δ * galAct F F' n s (nrm s δ) = nrm s δ * δ) ∧ ∀ δ ε : GL (Fin n) F', (∀ t u : F' ≃ₐ[F] F', Commute (galAct F F' n t δ) (galAct F F' n u ε)) → nrm s (δ * ε) = nrm s δ * nrm s ε := by
   intro F F' _ _ _ _ s hs n
   have hl := pow_finrank_eq_one s
-  have hinj : Function.Injective (algebraMap F F') := (algebraMap F F').injective
   refine ⟨?_, ?_, ?_, ?_, ?_⟩
   · intro x
     constructor
@@ -175,7 +174,7 @@ theorem main : ∀ (F F' : Type) [Field F] [Field F'] [Algebra F F'] [Finite F']
   · intro a b hab
     ext i j
     have := congrArg (fun z : GL (Fin n) F' => (z : Matrix (Fin n) (Fin n) F') i j) hab
-    exact hinj (by simpa [incl, gal] using this)
+    exact ((algebraMap F F').injective) (by simpa [incl, gal] using this)
   · intro δ y
     unfold nrm
     rw [nrmG_twConj, hl, map_one, MulAut.one_apply]

@@ -172,8 +172,7 @@ theorem injective_baseChange :
   obtain ⟨hp, ⟨x, hx0⟩, hx⟩ := hp
   have hann : ∀ a : R₀, a • x = 0 ↔ a ∈ p := by
     intro a
-    rw [hx]
-    simp [Submodule.mem_colon_singleton]
+    simp [hx, Submodule.mem_colon_singleton]
   let M := Submodule.torsionBySet R₀ R p
   obtain ⟨y, rfl⟩ : ∃ y, M.subtype.rTensor C₀ y = x :=
     exists_of_torsion p (IsNoetherian.noetherian p) x (fun a ha => (hann a).2 ha)
@@ -198,8 +197,7 @@ theorem injective_baseChange :
     have hle : p.map (algebraMap R₀ R) ≤ LinearMap.ker (LinearMap.toSpanSingleton R R m) := by
       rw [Ideal.map_le_iff_le_comap]
       intro b hb
-      have := (Submodule.mem_torsionBySet_iff _ _).1 m.2 ⟨b, hb⟩
-      simpa [Algebra.smul_def] using this
+      simpa [Algebra.smul_def] using (Submodule.mem_torsionBySet_iff _ _).1 m.2 ⟨b, hb⟩
     have := hle ha
     apply Subtype.ext
     simpa [Algebra.smul_def] using this

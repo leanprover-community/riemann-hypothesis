@@ -71,15 +71,15 @@ section -- clump:auto
 
 noncomputable def UpperTheory.Reformulated.B.AdmissibleSmoothRepresentations.IsSmooth :
     {k G V : Type} →
-      [Field k] →
-        [Group G] →
-          [AddCommGroup V] → [_root_.Module k V] → [TopologicalSpace G] → Representation k G V → Prop :=
+      [inst : Field k] →
+        [inst_1 : Group G] →
+          [inst_2 : AddCommGroup V] → [inst_3 : _root_.Module k V] → [TopologicalSpace G] → Representation k G V → Prop :=
     fun {k G V : Type} [Field k] [Group G] [AddCommGroup V] [_root_.Module k V] [TopologicalSpace G]
         (ρ : Representation k G V) ↦
       ∀ (v : V), IsOpen {g : G | ((ρ : G → V →ₗ[k] V) g : V → V) v = v}
 
 theorem UpperTheory.Reformulated.B.AdmissibleSmoothRepresentations.aux2 :
-    ∀ {k G V : Type} [Field k] [Group G] [AddCommGroup V] [_root_.Module k V]
+    ∀ {k G V : Type} [inst : Field k] [inst_1 : Group G] [inst_2 : AddCommGroup V] [inst_3 : _root_.Module k V]
       (ρ : Representation k G V) (H : Subgroup G) (χ : ↥H →* kˣ) {a b : V},
       a ∈ {v : V | ∀ (h : ↥H), ((ρ : G → V →ₗ[k] V) (↑h : G) : V → V) v = (↑((χ : ↥H → kˣ) h) : k) • v} →
         b ∈ {v : V | ∀ (h : ↥H), ((ρ : G → V →ₗ[k] V) (↑h : G) : V → V) v = (↑((χ : ↥H → kˣ) h) : k) • v} →
@@ -88,14 +88,14 @@ theorem UpperTheory.Reformulated.B.AdmissibleSmoothRepresentations.aux2 :
   rw [map_add (f := _), ha h, hb h, smul_add]
 
 theorem UpperTheory.Reformulated.B.AdmissibleSmoothRepresentations.aux3 :
-    ∀ {k G V : Type} [Field k] [Group G] [AddCommGroup V] [_root_.Module k V]
+    ∀ {k G V : Type} [inst : Field k] [inst_1 : Group G] [inst_2 : AddCommGroup V] [inst_3 : _root_.Module k V]
       (ρ : Representation k G V) (H : Subgroup G) (χ : ↥H →* kˣ) (h : ↥H),
       ((ρ : G → V →ₗ[k] V) (↑h : G) : V → V) (0 : V) = (↑((χ : ↥H → kˣ) h) : k) • (0 : V) := by
   intro k G V _ _ _ _ ρ H χ h
   rw [map_zero, smul_zero]
 
 theorem UpperTheory.Reformulated.B.AdmissibleSmoothRepresentations.aux4 :
-    ∀ {k G V : Type} [Field k] [Group G] [AddCommGroup V] [_root_.Module k V]
+    ∀ {k G V : Type} [inst : Field k] [inst_1 : Group G] [inst_2 : AddCommGroup V] [inst_3 : _root_.Module k V]
       (ρ : Representation k G V) (H : Subgroup G) (χ : ↥H →* kˣ) (c : k) {v : V},
       v ∈ {v : V | ∀ (h : ↥H), ((ρ : G → V →ₗ[k] V) (↑h : G) : V → V) v = (↑((χ : ↥H → kˣ) h) : k) • v} →
         ∀ (h : ↥H), ((ρ : G → V →ₗ[k] V) (↑h : G) : V → V) (c • v) = (↑((χ : ↥H → kˣ) h) : k) • c • v := by
@@ -104,10 +104,10 @@ theorem UpperTheory.Reformulated.B.AdmissibleSmoothRepresentations.aux4 :
 
 noncomputable def UpperTheory.Reformulated.B.AdmissibleSmoothRepresentations.eig :
     {k G V : Type} →
-      [Field k] →
-        [Group G] →
-          [AddCommGroup V] →
-            [_root_.Module k V] → Representation k G V → (H : Subgroup G) → (↥H →* kˣ) → Submodule k V :=
+      [inst : Field k] →
+        [inst_1 : Group G] →
+          [inst_2 : AddCommGroup V] →
+            [inst_3 : _root_.Module k V] → Representation k G V → (H : Subgroup G) → (↥H →* kˣ) → Submodule k V :=
     fun {k G V : Type} [inst : Field k] [inst_1 : Group G] [inst_2 : AddCommGroup V] [inst_3 : _root_.Module k V]
         (ρ : Representation k G V) (H : Subgroup G) (χ : ↥H →* kˣ) ↦
       { carrier := {v : V | ∀ (h : ↥H), ((ρ : G → V →ₗ[k] V) (↑h : G) : V → V) v = (↑((χ : ↥H → kˣ) h) : k) • v},
@@ -116,18 +116,18 @@ noncomputable def UpperTheory.Reformulated.B.AdmissibleSmoothRepresentations.eig
 
 noncomputable def UpperTheory.Reformulated.B.AdmissibleSmoothRepresentations.fixed :
     {k G V : Type} →
-      [Field k] →
-        [Group G] →
-          [AddCommGroup V] → [_root_.Module k V] → Representation k G V → Subgroup G → Submodule k V :=
+      [inst : Field k] →
+        [inst_1 : Group G] →
+          [inst_2 : AddCommGroup V] → [inst_3 : _root_.Module k V] → Representation k G V → Subgroup G → Submodule k V :=
     fun {k G V : Type} [Field k] [Group G] [AddCommGroup V] [_root_.Module k V] (ρ : Representation k G V)
         (H : Subgroup G) ↦
       UpperTheory.Reformulated.B.AdmissibleSmoothRepresentations.eig ρ H (1 : ↥H →* kˣ)
 
 noncomputable def UpperTheory.Reformulated.B.AdmissibleSmoothRepresentations.IsAdmissible :
     {k G V : Type} →
-      [Field k] →
-        [Group G] →
-          [AddCommGroup V] → [_root_.Module k V] → [TopologicalSpace G] → Representation k G V → Prop :=
+      [inst : Field k] →
+        [inst_1 : Group G] →
+          [inst_2 : AddCommGroup V] → [inst_3 : _root_.Module k V] → [TopologicalSpace G] → Representation k G V → Prop :=
     fun {k G V : Type} [Field k] [Group G] [AddCommGroup V] [_root_.Module k V] [TopologicalSpace G]
         (ρ : Representation k G V) ↦
       UpperTheory.Reformulated.B.AdmissibleSmoothRepresentations.IsSmooth ρ ∧
@@ -220,8 +220,8 @@ private theorem UpperTheory.Reformulated.B.AdmissibleSmoothRepresentations.inner
   exact (mul_eq_zero.mp hsum).resolve_left hcard
 
 theorem UpperTheory.Reformulated.B.AdmissibleSmoothRepresentations.isSemisimple :
-    ∀ {H : Type} [Group H] [TopologicalSpace H] [IsTopologicalGroup H] {V : Type}
-      [NormedAddCommGroup V] [InnerProductSpace ℂ V] {ρ : Representation ℂ H V},
+    ∀ {H : Type} [inst : Group H] [inst_1 : TopologicalSpace H] [IsTopologicalGroup H] {V : Type}
+      [inst_3 : NormedAddCommGroup V] [inst_4 : InnerProductSpace ℂ V] {ρ : Representation ℂ H V},
       UpperTheory.Reformulated.B.AdmissibleSmoothRepresentations.IsAdmissible ρ →
         (∀ (g : H) (x y : V),
             Inner.inner ℂ (((ρ : H → V →ₗ[ℂ] V) g : V → V) x) (((ρ : H → V →ₗ[ℂ] V) g : V → V) y) = Inner.inner ℂ x y) →

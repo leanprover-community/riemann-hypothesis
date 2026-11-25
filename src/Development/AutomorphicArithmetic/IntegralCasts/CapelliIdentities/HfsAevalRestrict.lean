@@ -44,8 +44,8 @@ import Mathlib.Topology.Sheaves.Init
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Qh20.hfs_aeval_restrict :
-    ∀ {L W : Type} [Field L] [AddCommGroup W]
-    [_root_.Module L W] (f : Module.End L W) {p : Submodule L W} (h : ∀ x ∈ p, (f : W → W) x ∈ p)
+    ∀ {L W : Type} [inst : Field L] [inst_1 : AddCommGroup W]
+    [inst_2 : _root_.Module L W] (f : Module.End L W) {p : Submodule L W} (h : ∀ x ∈ p, (f : W → W) x ∈ p)
     (q : Polynomial L) (x : ↥p),
     (↑(((Polynomial.aeval (LinearMap.restrict f h) : Polynomial L → ↥p →ₗ[L] ↥p) q : ↥p → ↥p) x) : W) =
       ((Polynomial.aeval f : Polynomial L → Module.End L W) q : W → W) (↑x : W) := by

@@ -190,10 +190,10 @@ open Formalism.NG (KO)
 namespace GlobalTheory
 
 theorem map_H2_subtype_injective_of_union : ∀ {O : Type} [CommRing O] [TopologicalSpace O] {G : Type} [Group G] [TopologicalSpace G] [CompactSpace G]
-    {ε : G →* Oˣ} (_ : NatInv ε (fun M _ _ _ => IsFGTop O M))
+    {ε : G →* Oˣ} (Θ : NatInv ε (fun M _ _ _ => IsFGTop O M))
     {M : Type} [AddCommGroup M] [Module O M] [TopologicalSpace M] [IsTopologicalAddGroup M]
     [ContinuousSMul O M] (N : ℕ → Submodule O M), Monotone N → (∀ n, IsOpen (N n : Set M)) → (∀ x, ∃ n, x ∈ N n) →
-    ∀ (_ : ∀ n, IsFGTop O (N n)) (n : ℕ),
+    ∀ (hfg : ∀ n, IsFGTop O (N n)) (n : ℕ),
       Function.Injective (mapH2 (twist ε (N n)) (twist ε M) (N n).subtype continuous_subtype_val (twist_map ε (N n).subtype)) := by
   intro O _ _ G _ _ _ ε Θ M _ _ _ _ _ N hmono hopen hcov hfg n
   rw [← LinearMap.ker_eq_bot, LinearMap.ker_eq_bot']

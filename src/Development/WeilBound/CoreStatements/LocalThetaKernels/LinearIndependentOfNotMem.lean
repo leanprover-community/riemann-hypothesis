@@ -95,7 +95,7 @@ private lemma key {R : Type} [NormedRing R] [NormedAlgebra ℂ R] {a : R}
 end EqOneOfPowersNearOne
 
 theorem UpperTheory.Reformulated.B.Yhd7.main :
-    ∀ {R : Type} [NormedRing R] [NormedAlgebra ℂ R] {a : R},
+    ∀ {R : Type} [inst : NormedRing R] [NormedAlgebra ℂ R] {a : R},
       (∀ (p : ℕ), ‖a ^ p - (1 : R)‖ < (1 / 2 : ℝ)) → a = (1 : R) := by
   intro R _ _ a h
   by_contra hne
@@ -229,10 +229,9 @@ theorem smooth_of_weak {G V : Type} [Group G] [TopologicalSpace G] [AddCommGroup
   obtain ⟨m, hm⟩ := hbasis _ hU
   refine ⟨max n m, fun k hk => ?_⟩
   have hkn : k ∈ K n := hanti (le_max_left n m) hk
-  have hkm : k ∈ K m := hanti (le_max_right n m) hk
   have hk1 : A k = 1 := _root_.UpperTheory.Reformulated.B.Yhd7.main fun p => by
     rw [← hAp k hkn]
-    exact hm ((K m).pow_mem hkm p)
+    exact hm ((K m).pow_mem (hanti (le_max_right n m) hk) p)
   have := hA k (π φ)
   rw [hk1, hjπ φ hφ₀, one_apply_eq_self] at this
   rw [← hjπ _ (hinv k hkn φ hφ₀), ← this, hjπ φ hφ₀]

@@ -81,8 +81,7 @@ theorem liftL_deg_reg : ∀ (q l : ℕ) (L : List (ℕ × ℕ)), 2 ≤ q → 0 <
     refine ⟨?_, ?_⟩
     · rw [hcons]
       simp only [deg, List.map_append, List.sum_append, List.map_map] at ihd ⊢
-      rw [ihd]
-      simp [Function.comp_def, List.sum_replicate, hc, Nat.mul_div_cancel_left c hl]
+      simp [ihd, Function.comp_def, List.sum_replicate, hc, Nat.mul_div_cancel_left c hl]
     · intro p' hp'
       rw [hcons, List.mem_append] at hp'
       rcases hp' with hp' | hp'

@@ -82,11 +82,9 @@ theorem hermitian_adjoint_exists_unique :
     intro x hx
     by_contra hne
     have h0 : ip x x = 0 := by
-      have := LinearMap.congr_fun hx x
-      simpa [g] using this
+      simpa [g] using LinearMap.congr_fun hx x
     have := hpos x hne
-    rw [h0] at this
-    simp at this
+    simp [h0] at this
   have hrank : Module.finrank ℝ C = Module.finrank ℝ (C →ₗ[ℂ] ℂ) := by
     rw [finrank_real_of_complex, finrank_real_of_complex, Module.finrank_linearMap, Module.finrank_self, mul_one]
   have hs : Function.Surjective g := (LinearMap.injective_iff_surjective_of_finrank_eq_finrank hrank).mp hg

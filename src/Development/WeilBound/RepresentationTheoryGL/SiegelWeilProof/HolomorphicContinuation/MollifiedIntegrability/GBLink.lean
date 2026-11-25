@@ -257,8 +257,7 @@ theorem deltaC_iter_word (hU : IsOpen U) (hF : ContDiffOn ℂ (⊤ : ℕ∞) F U
         (fun τ => ((∏ j, (Equiv.Perm.sign (τ j) : ℤ) : ℤ) : ℂ))
         (fun τ => word ((List.finRange N).flatMap fun j => blk (τ j)) F) (blk σ) hU
         (fun τ => word_contDiffOn _ hU hF) hb
-      rw [hw]
-      simp only [word_append]
+      simp only [hw, word_append]
     simp only [step, Finset.mul_sum]
     rw [← (Fin.consEquiv fun _ => Equiv.Perm (Fin n)).sum_comp, Fintype.sum_prod_type]
     refine Finset.sum_congr rfl fun σ _ => Finset.sum_congr rfl fun τ _ => ?_

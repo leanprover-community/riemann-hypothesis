@@ -88,8 +88,7 @@ theorem VerticalDivisorJoinPullback.proof : VerticalDivisorJoinPullback.Statemen
     obtain ⟨u, v, hu, hv, huv⟩ :=
       hD.unit_off_special (W.comap φ) (Ideal.comap_isPrime φ W) hle hrel' hϖ'
     refine ⟨joinForm u, joinForm v, hu, hv, ?_⟩
-    have := (joinForm_mem_pointIdeal_iff O y y' _).mpr huv
-    simpa [hφ, map_sub, map_mul] using this
+    simpa [hφ, map_sub, map_mul] using (joinForm_mem_pointIdeal_iff O y y' _).mpr huv
 
 end
 

@@ -120,7 +120,7 @@ theorem comm_of_isPowGrp {G' G : Over S} [GrpObj G'] [GrpObj G] {j : ℕ} (p : I
   show ((β_ G' G').hom ≫ μ) ≫ p.pr i = μ ≫ p.pr i
   rw [Category.assoc, IsMonHom.mul_hom, ← BraidedCategory.braiding_naturality_assoc, IsCommMonObj.mul_comm]
 
-theorem powers : ∀ (S : Scheme.{0}) (G' G : Over S) [GrpObj G'] [GrpObj G] (j : ℕ) (_ : IsPowGrp G' G j), (Smooth G.hom → Smooth G'.hom) ∧ (IsSeparated G.hom → IsSeparated G'.hom) ∧ (∀ g : ℕ, SmoothOfRelativeDimension g G.hom → SmoothOfRelativeDimension (j * g) G'.hom) ∧ (IsAbelianScheme G → IsAbelianScheme G') ∧ (IsSemiAbelian G → IsCommMonObj G') := by
+theorem powers : ∀ (S : Scheme.{0}) (G' G : Over S) [GrpObj G'] [GrpObj G] (j : ℕ) (p : IsPowGrp G' G j), (Smooth G.hom → Smooth G'.hom) ∧ (IsSeparated G.hom → IsSeparated G'.hom) ∧ (∀ g : ℕ, SmoothOfRelativeDimension g G.hom → SmoothOfRelativeDimension (j * g) G'.hom) ∧ (IsAbelianScheme G → IsAbelianScheme G') ∧ (IsSemiAbelian G → IsCommMonObj G') := by
   intro S G' G _ _ j p
   refine ⟨prop_of_isPowGrp @Smooth p, prop_of_isPowGrp @IsSeparated p, fun g hg => ?_, fun hG => ?_,
     fun hG => comm_of_isPowGrp p hG.comm⟩

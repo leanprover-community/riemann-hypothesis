@@ -29,8 +29,7 @@ theorem wtfA_tring (p : TRing K) {S : Type} [Field S] [Algebra K S] (φ : p.R �
   let f1 : Fin p.n → S := fun k => φ (Ideal.Quotient.mk p.I (MvPolynomial.X k))
   let vals : Fin (p.n + Fintype.card J) → S := fun i => Fin.addCases f1 (fun k => g (e.symm k)) i
   let Φ : MvPolynomial (Fin (p.n + Fintype.card J)) K →ₐ[K] S := MvPolynomial.aeval vals
-  have hrad : (RingHom.ker Φ).IsRadical := (RingHom.ker_isPrime Φ).isRadical
-  let r0 : TRing K := ⟨p.n + Fintype.card J, RingHom.ker Φ, hrad⟩
+  let r0 : TRing K := ⟨p.n + Fintype.card J, RingHom.ker Φ, ((RingHom.ker_isPrime Φ).isRadical)⟩
   have hφ : (MvPolynomial.aeval f1 : MvPolynomial (Fin p.n) K →ₐ[K] S) =
       φ.comp (Ideal.Quotient.mkₐ K p.I) :=
     MvPolynomial.algHom_ext fun k => by simp [f1]

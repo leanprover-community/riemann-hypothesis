@@ -84,8 +84,7 @@ theorem addValuation_natCast_eq_padicValNat :
       rw [hm] at this
       simpa using this
     have hC : (1 : C) = (m : C) * ((Nat.gcdA m p : ℤ) : C) + (p : C) * ((Nat.gcdB m p : ℤ) : C) := by
-      have := congrArg (fun z : ℤ => (z : C)) hbez
-      simpa using this
+      simpa using congrArg (fun z : ℤ => (z : C)) hbez
     have ha : 0 < v ((m : C) * ((Nat.gcdA m p : ℤ) : C)) := by
       rw [v.map_mul]
       exact lt_of_lt_of_le hpos (le_add_of_nonneg_right (hint _))

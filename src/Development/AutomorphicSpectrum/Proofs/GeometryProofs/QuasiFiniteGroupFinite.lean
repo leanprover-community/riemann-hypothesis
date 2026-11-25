@@ -54,7 +54,7 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 
 namespace GlobalTheory.CompanionTheory.Ar.BT
 
-theorem QFGroup.finite_of_qfGroup : ∀ (R : Type) [CommRing R] [IsDomain R] (T : Type) [CommGroup T] (_ : BT.QFGroup R T), Finite T := by
+theorem QFGroup.finite_of_qfGroup : ∀ (R : Type) [CommRing R] [IsDomain R] (T : Type) [CommGroup T] (Γ : BT.QFGroup R T), Finite T := by
   intro R _ _ T _ Γ
   have hqf : LocallyQuasiFinite Γ.G.hom := Γ.quasiFinite
   have hqc : QuasiCompact Γ.G.hom := Γ.quasiCompact

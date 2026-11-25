@@ -90,8 +90,7 @@ theorem ind_biInv (k : Type) [CommRing k] (K : Subgroup G) (T : Set G)
   · have h' : (a : G) * x * b ∉ T := by
       intro h
       apply hx
-      have := hT a⁻¹ b⁻¹ _ h
-      simpa [mul_assoc] using this
+      simpa [mul_assoc] using hT a⁻¹ b⁻¹ _ h
     simp [hx, h']
 
 theorem dc_stable (K : Subgroup G) (g : G) (a b : K) (x : G)

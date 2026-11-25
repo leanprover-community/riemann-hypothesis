@@ -46,7 +46,7 @@ open scoped TensorProduct
 
 namespace GlobalTheory.FormTies
 
-theorem exists_isLevAct : ∀ (D : D7) (T : Top D) (h : LawsP T) (j : ℕ) (_ : InR D j) (w : WeightFamilies.Wt D j) (P : Type) (ℓ : P → (LaMod (T.Q.Dw j) T.Q.l ≃ₗ[𝓞 D.host.E] LaMod (T.Q.Dw j) T.Q.l)), ∃ act, IsLevAct T h j w ℓ act := by
+theorem exists_isLevAct : ∀ (D : D7) (T : Top D) (h : LawsP T) (j : ℕ) (hj : InR D j) (w : WeightFamilies.Wt D j) (P : Type) (ℓ : P → (LaMod (T.Q.Dw j) T.Q.l ≃ₗ[𝓞 D.host.E] LaMod (T.Q.Dw j) T.Q.l)), ∃ act, IsLevAct T h j w ℓ act := by
   intro D T h j hj w P ℓ
   have e : cutR T.C j w = T.cuspA j (wtA w) w.n := cutR_eq T.C hj w
   refine ⟨fun g F => (⟨actLev (Xo := T.Q.Xo j) T.Q.c (levFull (T.Q.Dw j) T.Q.l) (ℓ g) F.1, ?_⟩ : cutR T.C j w), fun g F => rfl⟩

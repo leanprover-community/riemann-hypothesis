@@ -271,18 +271,18 @@ theorem actAt : ∀ {F E : Type} [Field F] [NumberField F] [Field E] [NumberFiel
 
 theorem combAt : ∀ {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
     {σ : E →ₐ[F] E} {a a' : ℕ} (B : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Base F E) (Γ : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Geo σ a a')
-    (_ : Γ.M'.IsGood B.ψ) (_ : a' < a)
+    (hM' : Γ.M'.IsGood B.ψ) (hlt : a' < a)
     (om' : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Rep σ Γ.V' Γ.W) {H : Type} (κ : H → GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.UA σ Γ.V'.J)
     (kf : GL (Fin a') (Fv F B.v₁) → H)
-    (ν α : (Fv F B.v₁)ˣ →* ℂˣ) (_ : ∀ x, ‖(ν x : ℂ)‖ = 1)
+    (ν α : (Fv F B.v₁)ˣ →* ℂˣ) (hν : ∀ x, ‖(ν x : ℂ)‖ = 1)
     (ι : ((Fin a' × Fin (a + a') → Fv F B.v₁) → ℂ) →ₗ[ℂ] (Matrix (Fin a') (Fin (a + a')) (Fv F B.v₁) → ℂ))
-    (_ : Γ.M'.IsLinBar B.ψ B.τ₁ 1 1 ι)
-    (_ : ∀ g : GL (Fin a') (Fv F B.v₁), ∀ φ ∈ GlobalTheory.WeilM.SB _, ∀ r, GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Rest (evFin F B.v₁) φ r →
+    (hι : Γ.M'.IsLinBar B.ψ B.τ₁ 1 1 ι)
+    (hact : ∀ g : GL (Fin a') (Fv F B.v₁), ∀ φ ∈ GlobalTheory.WeilM.SB _, ∀ r, GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Rest (evFin F B.v₁) φ r →
       ∃ φ₁ ∈ GlobalTheory.WeilM.SB _, om' (κ (kf g), 1) (GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.tens (evFin F B.v₁) φ r) =
         GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.tens (evFin F B.v₁) φ₁ r ∧ ι φ₁ = omB ν α g 1 (ι φ))
     (φ₀ : (Fin a' × Fin (a + a') → Fv F B.v₁) → ℂ)
     (P : GL (Fin a') (Fv F B.v₁)) (Λ : Submodule 𝒪[Fv F B.v₁] (Fin (a + a') → Fv F B.v₁)) (c : ℂ)
-    (_ : ∀ Y, ι φ₀ Y = c * (GlobalTheory.SplitFlip.matLat (Fin a') Λ : Set _).indicator 1 (P.val * Y)),
+    (hφ₀ : ∀ Y, ι φ₀ Y = c * (GlobalTheory.SplitFlip.matLat (Fin a') Λ : Set _).indicator 1 (P.val * Y)),
     ∃ z : H →₀ ℂ, (∀ k ∈ z.support, k ∈ Set.range kf) ∧ zdeg z ≠ 0 ∧
       ∀ {m : ℕ} (f : Fin m → GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.SInf F (Fin a' × Fin (a + a')))
         (φ : Fin m → ∀ v : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Pl (F := F), (Fin a' × Fin (a + a') → Fv F v) → ℂ),

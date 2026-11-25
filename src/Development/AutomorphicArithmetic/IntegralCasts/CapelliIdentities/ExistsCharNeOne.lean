@@ -195,7 +195,7 @@ private theorem hilbert_case {C H : Type*} [CommGroup C] [TopologicalSpace C]
 end UpperTheory.Reformulated.B.CharactersSeparatePoints
 
 theorem UpperTheory.Reformulated.B.CharactersSeparatePoints.exists_char_ne_one.{u_1} :
-    ∀ {C : Type u_1} [CommGroup C] [TopologicalSpace C] [IsTopologicalGroup C] [CompactSpace C] [T2Space C]
+    ∀ {C : Type u_1} [inst : CommGroup C] [inst_1 : TopologicalSpace C] [IsTopologicalGroup C] [CompactSpace C] [T2Space C]
       {g : C}, g ≠ (1 : C) → ∃ (χ : C →ₜ* Circle), (χ : C → Circle) g ≠ (1 : Circle) := by
   intro C _ _ _ _ _ g hg
   borelize C

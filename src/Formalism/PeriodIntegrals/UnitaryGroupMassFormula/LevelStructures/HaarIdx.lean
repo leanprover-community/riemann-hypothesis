@@ -20,8 +20,7 @@ theorem toReal_eq_relIndex_mul {G : Type} [Group G] [MeasurableSpace G] [Measura
   have hrel : H.relIndex K = (H.subgroupOf K).index := rfl
   have hAK : ∀ k : K, (fun x => ((k : G))⁻¹ * x) ⁻¹' (H : Set G) ⊆ K := by
     intro k y hy
-    have hy' : ((k : G))⁻¹ * y ∈ K := hle hy
-    simpa using K.mul_mem k.2 hy'
+    simpa using K.mul_mem k.2 (hle hy)
   have hAdisj : ∀ k k' : K, (QuotientGroup.mk k : K ⧸ H.subgroupOf K) ≠ QuotientGroup.mk k' →
       Disjoint ((fun x => ((k : G))⁻¹ * x) ⁻¹' (H : Set G))
         ((fun x => ((k' : G))⁻¹ * x) ⁻¹' (H : Set G)) := by
@@ -30,9 +29,7 @@ theorem toReal_eq_relIndex_mul {G : Type} [Group G] [MeasurableSpace G] [Measura
     intro y h1 h2
     apply hne
     rw [QuotientGroup.eq, Subgroup.mem_subgroupOf]
-    have h1' : ((k : G))⁻¹ * y ∈ H := h1
-    have h2' : ((k' : G))⁻¹ * y ∈ H := h2
-    simpa [mul_assoc] using H.mul_mem h1' (H.inv_mem h2')
+    simpa [mul_assoc] using H.mul_mem h1 (H.inv_mem h2)
   rcases Nat.eq_zero_or_pos (H.relIndex K) with h0 | hpos'
   · rw [h0, Nat.cast_zero, zero_mul]
     have hinf : Infinite (K ⧸ H.subgroupOf K) :=

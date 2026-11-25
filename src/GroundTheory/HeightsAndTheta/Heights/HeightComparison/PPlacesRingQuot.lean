@@ -52,10 +52,9 @@ theorem PlacesRingQuot.proof : PlacesRingQuot.Statement := by
     constructor
     · intro h w hwS
       obtain ⟨r, rfl⟩ := Ideal.mem_span_singleton'.1 h
-      have hr : w.maximalIdeal.valuation L r ≤ 1 := (hle1 w r).1 (r.2 w hwS)
       rw [Subring.coe_mul, map_mul]
       calc w.maximalIdeal.valuation L r * w.maximalIdeal.valuation L g
-          ≤ 1 * w.maximalIdeal.valuation L g := mul_le_mul_left hr _
+          ≤ 1 * w.maximalIdeal.valuation L g := mul_le_mul_left ((hle1 w r).1 (r.2 w hwS)) _
         _ = w.maximalIdeal.valuation L g := one_mul _
     · intro h
       refine Ideal.mem_span_singleton'.2 ⟨⟨z * (g : L)⁻¹, fun w hwS ↦ ?_⟩, Subtype.ext ?_⟩

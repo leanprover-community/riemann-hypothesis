@@ -86,7 +86,7 @@ theorem tC (ε : Fin m → Bool) {c : ℝ} {a b : Fin m} (ha : ε a = true) (hb 
   simp only [pE_apply, Bool.not_false, Bool.not_true] at h1 h2
   rw [mul_assoc (X (a, i, false)), h1, h2]; ring
 
-theorem tD (ε : Fin m → Bool) {c : ℝ} {a b : Fin m} (ha : ε a = false) (hb : ε b = true) (i : Fin n)
+theorem tD (ε : Fin m → Bool) {c : ℝ} (hc : 0 < c) {a b : Fin m} (ha : ε a = false) (hb : ε b = true) (i : Fin n)
     {h g : PX m n} (hh : h ∈ F1 ε) (hg : g ∈ F2 ε) :
     ((2 * c : ℝ) : ℂ) ^ 2 * contr c (pderiv (b, i, false) (pderiv (a, i, true) h) * g) =
       contr c (h * (X (a, i, false) * X (b, i, true) * g)) := by
@@ -118,7 +118,7 @@ theorem contraction_first_operator_adjoint (ε : Fin m → Bool) {c : ℝ} (hc :
       simp only [Bool.false_eq_true, ite_false]
       rw [smul_mul_assoc, contr_smul, Finset.sum_mul, contr_sum, mul_smul_comm, contr_smul, Finset.mul_sum _ _ h,
         contr_sum]
-      simp_rw [← tD ε ha hb _ hh hg]
+      simp_rw [← tD ε hc ha hb _ hh hg]
       rw [← Finset.mul_sum]
       push_cast at hc2 ⊢
       field_simp

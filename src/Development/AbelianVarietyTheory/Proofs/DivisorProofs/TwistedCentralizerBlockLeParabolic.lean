@@ -70,7 +70,7 @@ theorem intertwine {K : Type} [Field K] {a b : ℕ} (A : Matrix (Fin a) (Fin a) 
       map_mul (aeval A) (Polynomial.C c * X ^ n) X, aeval_X, aeval_X, Matrix.mul_assoc, ← h,
       ← Matrix.mul_assoc, ih, Matrix.mul_assoc]
 
-theorem main : ∀ {K : Type} [Field K] {a b : ℕ} (A : Matrix (Fin a) (Fin a) K)
+theorem main : ∀ {K : Type} [inst : Field K] {a b : ℕ} (A : Matrix (Fin a) (Fin a) K)
     (B : Matrix (Fin b) (Fin b) K) (C : Matrix (Fin b) (Fin a) K),
     IsCoprime (Matrix.charpoly A) (Matrix.charpoly B) → C * A = B * C →
       C = (0 : Matrix (Fin b) (Fin a) K) := by

@@ -69,7 +69,7 @@ theorem InvertibleProductRep.proof : InvertibleProductRep.Statement := by
       refine ⟨⟨b, hb⟩ * y, (I * J).mul_mem_left _ hy, ?_⟩
       push_cast at e ⊢
       linear_combination b * e
-    have key : x ∈ Y := by
+    obtain ⟨y, hy, e⟩ : x ∈ Y := by
       refine InvertibleProductRep.mem_of_local B Y hYst x fun m hm => ?_
       obtain ⟨i, ⟨⟨b₁, hb₁, hgM⟩, -⟩, ⟨⟨b₂, hb₂, hhN⟩, -⟩, ⟨-, hPz⟩⟩ := hloc m hm
       obtain ⟨b, c, hb, e⟩ := hPz x hx
@@ -80,7 +80,6 @@ theorem InvertibleProductRep.proof : InvertibleProductRep.Statement := by
       push_cast at e eu ev ⊢
       linear_combination ((β : Ω) * β' * b₁ * b₂) * e + ((c : Ω) * β' * b₂ * h i) * eu +
         ((c : Ω) * δ * u) * ev
-    obtain ⟨y, hy, e⟩ := key
     exact ⟨y, hy, by push_cast at e ⊢; linear_combination e⟩
   · rintro ⟨y, hy, e⟩
     have claim : ∀ r ∈ I * J, ((δ * δ' : B) : Ω) * (r : Ω) / ((β * β' : B) : Ω) ∈ P := by

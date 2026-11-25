@@ -257,7 +257,7 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.ExistsInjectiveCharacter.exists_injective_char :
-    ∀ (p : ℕ) [Fact (Nat.Prime p)],
+    ∀ (p : ℕ) [inst : Fact (Nat.Prime p)],
     ∃ (lam0 : (ZMod p)ˣ →* ℂˣ), Function.Injective (⇑lam0 : (ZMod p)ˣ → ℂˣ) := by
   intro p inst
   haveI : NeZero (Nat.card (ZMod p)ˣ) := ⟨Nat.card_pos.ne'⟩

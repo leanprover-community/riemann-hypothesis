@@ -1822,7 +1822,7 @@ namespace GlobalTheory.TheoremTBRecords
 
 theorem aux_of_blochKato_tateDuality_eulerChar :
     GlobalTheory.Published.BlochKatoLocal → Formalism.GaloisCohomology.LocalTateDualityK → Formalism.GaloisCohomology.LocalEulerCharK →
-      ∀ (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (_ : CmpOf D.loc D.locA HW F),
+      ∀ (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F),
         LocalSituation.Conclusion4 D HW F := by
   intro hBK hTD hEC D HW F _Cm
   obtain ⟨_J, hA⟩ := GlobalTheory.LocInputs.ties_and_inputs_of_duality_euler hTD hEC D HW F

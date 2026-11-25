@@ -197,9 +197,8 @@ theorem existsUnique_primitive_param {e : ι → σ} (he : Function.Injective e)
     ∃! f : MvPowerSeries σ A, (∀ α : σ →₀ ℕ, (∀ i, α (e i) = 0) → coeff α f = 0) ∧
       ∀ i, pderiv (R := A) (e i) f = a i := by
   classical
-  have huniq : HasUniqueDiv A := HasUniqueDiv.of_module_rat A
   haveI : IsAddTorsionFree A :=
-    ⟨fun {n} hn {a b} _ hh => huniq.nsmul_right_injective (n := n) hn hh⟩
+    ⟨fun {n} hn {a b} _ hh => (HasUniqueDiv.of_module_rat A).nsmul_right_injective (n := n) hn hh⟩
   have key : ∀ (α : σ →₀ ℕ) (i j : ι), α (e i) ≠ 0 → α (e j) ≠ 0 →
       (α (e j) : A) * coeff (α - single (e i) 1) (a i) =
         (α (e i) : A) * coeff (α - single (e j) 1) (a j) := by

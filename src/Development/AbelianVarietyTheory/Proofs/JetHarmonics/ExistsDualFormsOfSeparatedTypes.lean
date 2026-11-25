@@ -87,8 +87,7 @@ theorem exists_dual_forms_of_separated_types :
   by_cases h : t' = t
   · subst h
     rw [hP1 t' ⟨t', i'⟩ rfl]
-    have := hlam t' i i'
-    simpa [dotProduct] using this
+    simpa [dotProduct] using hlam t' i i'
   · rw [hP2 t ⟨t', i'⟩ (by simpa using h), dotProduct_zero, ite_eq_right]
     intro h'
     exact h (congrArg Sigma.fst h').symm

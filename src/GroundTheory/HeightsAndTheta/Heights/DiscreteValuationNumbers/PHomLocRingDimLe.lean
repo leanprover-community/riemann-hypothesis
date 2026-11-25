@@ -190,8 +190,7 @@ theorem primeAbove_isPrime [Fintype K] (hPW : P ≤ W) (hW : W.IsPrime) (hrel : 
     obtain ⟨a, ha, hav⟩ := valIn_of_form_mem (isWeightedHomogeneous_one R (blockWeight ι))
       (isWeightedHomogeneous_one R (blockWeight ι)) hW1 h1
     rw [frac_one, div_one] at hav
-    have : a = 1 := Subtype.ext hav
-    exact hq.ne_top ((Ideal.eq_top_iff_one q).2 (this ▸ ha))
+    exact hq.ne_top ((Ideal.eq_top_iff_one q).2 ((Subtype.ext hav : a = 1) ▸ ha))
   · intro a b sa sb ha hb hab
     obtain ⟨ga, hga, hgaW⟩ := homLocRing_form_not_mem hW hrel sa
     obtain ⟨gb, hgb, hgbW⟩ := homLocRing_form_not_mem hW hrel sb

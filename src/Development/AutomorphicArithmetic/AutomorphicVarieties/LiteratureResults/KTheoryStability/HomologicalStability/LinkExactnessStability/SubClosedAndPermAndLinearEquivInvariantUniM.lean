@@ -134,8 +134,7 @@ theorem main : ∀ (R M : Type) [CommRing R] [AddCommGroup M] [Module R M], SubC
   · intro ψ l
     constructor
     · intro h
-      have := key ψ.symm _ h
-      simpa [List.map_map, Function.comp_def] using this
+      simpa [List.map_map, Function.comp_def] using key ψ.symm _ h
     · exact key ψ l
 
 end GlobalTheory.UniSeqBasic

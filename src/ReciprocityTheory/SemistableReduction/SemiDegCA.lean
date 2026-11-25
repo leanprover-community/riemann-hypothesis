@@ -38,8 +38,7 @@ theorem relIndex_eq_map_mul_ker {G H : Type*} [AddCommGroup G] [AddCommGroup H]
     constructor
     · rintro ⟨⟨y, hy, z, hz, rfl⟩, hx⟩
       refine ⟨y, hy, z, ⟨?_, hz⟩, rfl⟩
-      have := B.sub_mem hx (hAB hy)
-      simpa using this
+      simpa using B.sub_mem hx (hAB hy)
     · rintro ⟨y, hy, z, ⟨hzB, hz⟩, rfl⟩
       exact ⟨⟨y, hy, z, hz, rfl⟩, B.add_mem (hAB hy) hzB⟩
   have h1 : (A.map f).relIndex (B.map f) = (A ⊔ (B ⊓ f.ker)).relIndex B := by

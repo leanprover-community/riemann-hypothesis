@@ -21,11 +21,10 @@ variable {S : Type*} [CommRing S] [Algebra ℚ S]
 
 theorem aeval_trunc_coe_of_pow_eq_zero {n : ℕ} {s : S} (hs : s ^ n = 0) (P : Polynomial ℚ) :
     Polynomial.aeval s (trunc n (P : ℚ⟦X⟧)) = Polynomial.aeval s P := by
-  have hdvd : Polynomial.X ^ n ∣ P - trunc n (P : ℚ⟦X⟧) := by
+  obtain ⟨Q, hQ⟩ : Polynomial.X ^ n ∣ P - trunc n (P : ℚ⟦X⟧) := by
     rw [Polynomial.X_pow_dvd_iff]
     intro d hd
     rw [Polynomial.coeff_sub, coeff_trunc, ite_eq_left hd, Polynomial.coeff_coe, sub_self]
-  obtain ⟨Q, hQ⟩ := hdvd
   have h := congrArg (Polynomial.aeval s) hQ
   rw [map_sub, map_mul, map_pow, Polynomial.aeval_X, hs, zero_mul, sub_eq_zero] at h
   exact h.symm

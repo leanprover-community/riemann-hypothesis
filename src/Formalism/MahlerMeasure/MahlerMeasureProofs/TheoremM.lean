@@ -92,8 +92,7 @@ theorem setTies_deg_eta (LL : Letters N) (T : TieData) (hT : StrictMono T.pos) (
   have hex : ∃ j, T.pos j + 1 = ((⟨T.pos i + 1, h⟩ : Fin N) : ℕ) := ⟨i, rfl⟩
   simp only [dite_eq_left hex]
   congr 1
-  have := Classical.choose_spec hex
-  exact hT.injective (by simpa using this)
+  exact hT.injective (by simpa using (Classical.choose_spec hex))
 
 theorem setTies_deg_mono (LL : Letters N) (T : TieData) (n n' : Fin T.t → ℕ) (hn : ∀ i, n i ≤ n' i) (a : Fin N) :
     (LL.setTies T n).deg a ≤ (LL.setTies T n').deg a := by
@@ -447,8 +446,7 @@ theorem adStep_succ (L : Submodule ℤ_[p] (MvPolynomial σ ℚ_[p])) (v : σ) (
     · left; exact ha
     · right
       have h' : a • Fe1.mkQ x = 0 := by
-        have := congrArg Subtype.val h
-        simpa using this
+        simpa using congrArg Subtype.val h
       rw [← map_smul, Submodule.mkQ_apply, Submodule.Quotient.mk_eq_zero] at h'
       have := filL_sat L v (e+1) a ha x (Submodule.mem_inf.mp hx).1 h'
       apply Subtype.ext

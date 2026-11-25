@@ -127,8 +127,7 @@ theorem finrank_eig_bc {n : ℕ} {O : Type} (L : O → (Fin n → V) →ₗ[V] (
   have hkerk : LinearMap.ker Bk =
       (⨅ a, LinearMap.ker (Lk a - algebraMap V k (χ a) • (LinearMap.id : (Fin n → k) →ₗ[k] (Fin n → k))) : Submodule k (Fin n → k)) := by
     ext c
-    rw [LinearMap.mem_ker, hmemk]
-    simp only [Submodule.mem_iInf, LinearMap.mem_ker]
+    simp only [LinearMap.mem_ker, hmemk, Submodule.mem_iInf, LinearMap.mem_ker]
     constructor
     · intro h b
       have hc : c ∈ ⨅ a ∈ F, LinearMap.ker (Lk a - algebraMap V k (χ a) • (LinearMap.id : (Fin n → k) →ₗ[k] (Fin n → k))) := by
@@ -146,8 +145,7 @@ theorem finrank_eig_bc {n : ℕ} {O : Type} (L : O → (Fin n → V) →ₗ[V] (
         ext p
         simp
       have h2 := (LinearMap.mem_ker.2 h1 : _ ∈ LinearMap.ker Bk)
-      rw [hkerk] at h2
-      simp only [Submodule.mem_iInf, LinearMap.mem_ker] at h2
+      simp only [hkerk, Submodule.mem_iInf, LinearMap.mem_ker] at h2
       have h3 := h2 b
       rw [sub_algebraMap_smul_id_apply_algebraMap_comp L Lk hL χ b] at h3
       ext j

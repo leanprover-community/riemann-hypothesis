@@ -69,8 +69,7 @@ variable (h : PosH φ)
 include h
 
 theorem zero_right (v : V) : φ v 0 = 0 := by
-  have := h.smul v 0 0
-  simpa using this
+  simpa using h.smul v 0 0
 
 theorem zero_left (v : V) : φ 0 v = 0 := by
   rw [h.herm v 0, h.zero_right, star_zero]
@@ -91,8 +90,7 @@ theorem sum_left {ι : Type*} (s : Finset ι) (c : ι → ℂ) (b : ι → V) (w
 theorem definite (v : V) (hv : φ v v = 0) : v = 0 := by
   by_contra hne
   have := h.pos v hne
-  rw [hv] at this
-  simp at this
+  simp [hv] at this
 
 theorem re_nonneg (v : V) : 0 ≤ (φ v v).re := by
   by_cases hv : v = 0

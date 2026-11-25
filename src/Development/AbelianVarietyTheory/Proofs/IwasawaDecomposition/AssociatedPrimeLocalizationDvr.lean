@@ -98,11 +98,9 @@ theorem exists_isDomain_isDiscreteValuationRing_of_maximalIdeal_eq_span {S : Typ
     obtain ⟨k, hk⟩ : ∃ k, Nat.find hex = k + 1 := by
       refine Nat.exists_eq_succ_of_ne_zero fun h0 ↦ ?_
       have := Nat.find_spec hex
-      rw [h0] at this
-      simp at this
+      simp [h0] at this
     have h1 : y ∈ maximalIdeal S ^ k := by
-      have := Nat.find_min hex (m := k) (by omega)
-      simpa using this
+      simpa using Nat.find_min hex (m := k) (by omega)
     have h2 : y ∉ maximalIdeal S ^ (k + 1) := hk ▸ Nat.find_spec hex
     rw [ht, Ideal.span_singleton_pow, Ideal.mem_span_singleton] at h1
     obtain ⟨u, rfl⟩ := h1
@@ -123,8 +121,7 @@ theorem exists_isDomain_isDiscreteValuationRing_of_maximalIdeal_eq_span {S : Typ
     have h0 : t ^ (m + n) • (u * v) = 0 := by
       rw [smul_eq_mul, pow_add]
       linear_combination hab
-    have h3 : u * v = 0 := (hreg.pow (m + n)).right_eq_zero_of_smul h0
-    exact (hu.mul hv).ne_zero h3
+    exact (hu.mul hv).ne_zero ((hreg.pow (m + n)).right_eq_zero_of_smul h0)
   have hdom : IsDomain S := NoZeroDivisors.to_isDomain S
   refine ⟨hdom, ?_⟩
   have ht0 : t ≠ 0 := fun h ↦ by
@@ -164,9 +161,8 @@ theorem exists_isDiscreteValuationRing_of_mem_associatedPrimes_quotient :
     rw [LinearEquiv.AssociatedPrimes.eq e] at h0
     obtain ⟨q', hq', hu⟩ := exists_under_eq_of_mem_associatedPrimes_of_surjective (A' := A ⧸ I)
       Ideal.Quotient.mk_surjective h0
-    have h2 : q' ∈ associatedPrimes (A ⧸ I) (A ⧸ I) := associatedPrimes_subset_of_flat hq'
     rw [← hu]
-    exact under_mem_associatedPrimes (A := A) h2
+    exact under_mem_associatedPrimes (A := A) (associatedPrimes_subset_of_flat hq')
   have hheight : q.height = 1 := height_eq_one_of_mem_associatedPrimes hx hqA
 
   have hPq : P ∈ associatedPrimes R (R ⧸ q.map (algebraMap A R)) := by

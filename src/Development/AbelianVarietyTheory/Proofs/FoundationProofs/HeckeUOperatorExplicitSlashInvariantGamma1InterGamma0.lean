@@ -133,11 +133,10 @@ theorem uOp_slash_lev : ∀ (N l q : ℕ) (k : ℤ) (f : ℍ → ℂ), 0 < N →
   obtain ⟨ha, hd, hcN⟩ := h1
   have hdet : γ 0 0 * γ 1 1 - γ 0 1 * γ 1 0 = 1 := by
     have := γ.2; rw [Matrix.det_fin_two] at this; exact this
-  have hqc : (q : ℤ) ∣ γ 1 0 := by
+  obtain ⟨t, ht⟩ : (q : ℤ) ∣ γ 1 0 := by
     rcases hq.dvd_mul.1 hqNl with h | h
     · exact (Int.natCast_dvd_natCast.2 h).trans ((ZMod.intCast_zmod_eq_zero_iff_dvd _ N).1 hcN)
     · exact (Int.natCast_dvd_natCast.2 h).trans ((ZMod.intCast_zmod_eq_zero_iff_dvd _ l).1 h0)
-  obtain ⟨t, ht⟩ := hqc
   funext τ
   rw [SL_slash_apply]
   have hden : denom (Matrix.SpecialLinearGroup.toGL

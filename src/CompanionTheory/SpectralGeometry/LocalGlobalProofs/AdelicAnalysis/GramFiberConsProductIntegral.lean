@@ -111,7 +111,6 @@ theorem coords : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberFie
       ext y; simp [IsUnit]
     rw [this]
     exact hopenU.isOpen_range
-  have := hdet.isOpen_inter_preimage hA hU
-  exact this
+  exact hdet.isOpen_inter_preimage hA hU
 
 end GlobalTheory.CompanionTheory.SW.PiLocalization₂.Coord

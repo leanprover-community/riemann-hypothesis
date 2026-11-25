@@ -48,8 +48,7 @@ theorem group_exponential_facts : ExpGFacts := by
     exact continuous_induced_rng.2 hcU
   refine ⟨?_, ?_, hcont, ?_⟩
   · apply toM_injective'
-    rw [hE]
-    simp
+    simp [hE]
     rfl
   · intro s t
     apply toM_injective'

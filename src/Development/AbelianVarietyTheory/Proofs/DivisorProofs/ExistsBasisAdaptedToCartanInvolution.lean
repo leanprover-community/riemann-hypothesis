@@ -63,8 +63,7 @@ theorem posDef_exists_invertible_conjTranspose_mul_self {n : ℕ} (P : Matrix (F
     rw [isUnit_iff_ne_zero]
     intro h
     have h1 := hP.det_pos
-    rw [hR, Matrix.det_mul, h] at h1
-    simp at h1
+    simp [hR, Matrix.det_mul, h] at h1
   exact ⟨R, R⁻¹, Matrix.mul_nonsing_inv R hd, Matrix.nonsing_inv_mul R hd, hR⟩
 
 theorem hermitian_involution_unitary_blocks {n : ℕ} (t : Matrix (Fin n) (Fin n) ℂ)
@@ -79,11 +78,9 @@ theorem hermitian_involution_unitary_blocks {n : ℕ} (t : Matrix (Fin n) (Fin n
     have := hH'.spectral_theorem
     simpa [Unitary.conjStarAlgAut_apply, star_eq_conjTranspose, Function.comp_def] using this
   have hUU : U * Uᴴ = 1 := by
-    have := hH'.eigenvectorUnitary.2.2
-    simpa [star_eq_conjTranspose] using this
+    simpa [star_eq_conjTranspose] using hH'.eigenvectorUnitary.2.2
   have hUU' : Uᴴ * U = 1 := by
-    have := hH'.eigenvectorUnitary.2.1
-    simpa [star_eq_conjTranspose] using this
+    simpa [star_eq_conjTranspose] using hH'.eigenvectorUnitary.2.1
   have hD : Uᴴ * t * U = diagonal d := by
     rw [hspec]
     calc Uᴴ * (U * diagonal d * Uᴴ) * U = (Uᴴ * U) * diagonal d * (Uᴴ * U) := by
@@ -96,8 +93,7 @@ theorem hermitian_involution_unitary_blocks {n : ℕ} (t : Matrix (Fin n) (Fin n
       _ = 1 := by rw [hUU, Matrix.mul_one, ht, Matrix.mul_one, hUU']
   have hsq : ∀ i, d i * d i = 1 := by
     intro i
-    have := congrFun (congrFun hDD i) i
-    simpa [diagonal_mul_diagonal] using this
+    simpa [diagonal_mul_diagonal] using congrFun (congrFun hDD i) i
   let e : Fin (Fintype.card {i // d i = 1}) ⊕ Fin (Fintype.card {i // ¬ d i = 1}) ≃ Fin n :=
     (Equiv.sumCongr (Fintype.equivFin _).symm (Fintype.equivFin _).symm).trans
       (Equiv.sumCompl (fun i => d i = 1))

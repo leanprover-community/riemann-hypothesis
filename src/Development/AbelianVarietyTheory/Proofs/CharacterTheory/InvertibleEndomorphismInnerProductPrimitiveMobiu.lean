@@ -69,8 +69,7 @@ theorem add_preserves {A : Submodule F V} {g h : Module.End F V} (hh : h ∈ nil
 theorem add_preserves_iff {A : Submodule F V} {g h : Module.End F V} (hh : h ∈ nilRad A) :
     (∀ x ∈ A, (g + h) x ∈ A) ↔ ∀ x ∈ A, g x ∈ A := by
   refine ⟨fun H => ?_, add_preserves hh⟩
-  have := add_preserves (neg_mem_nilRad hh) H
-  simpa using this
+  simpa using add_preserves (neg_mem_nilRad hh) H
 
 theorem isUnit_add [FiniteDimensional F V] {A : Submodule F V} {g h : Module.End F V} (hh : h ∈ nilRad A)
     (hg : ∀ x ∈ A, g x ∈ A) (hu : IsUnit g) : IsUnit (g + h) := by
@@ -86,16 +85,14 @@ theorem isUnit_add [FiniteDimensional F V] {A : Submodule F V} {g h : Module.End
     rw [eq_neg_of_add_eq_zero_left hx']
     exact A.neg_mem (hh.1 x)
   obtain ⟨w, hw⟩ := hsurj ⟨g x, hgx⟩
-  have hwx : (w : V) = x := hu (congrArg Subtype.val hw)
-  have hxA : x ∈ A := hwx ▸ w.2
+  have hxA : x ∈ A := (hu (congrArg Subtype.val hw)) ▸ w.2
   rw [hh.2 x hxA, add_zero] at hx'
   exact hu (by rw [hx', map_zero])
 
 theorem isUnit_add_iff [FiniteDimensional F V] {A : Submodule F V} {g h : Module.End F V} (hh : h ∈ nilRad A)
     (hg : ∀ x ∈ A, g x ∈ A) : IsUnit (g + h) ↔ IsUnit g := by
   refine ⟨fun H => ?_, isUnit_add hh hg⟩
-  have := isUnit_add (neg_mem_nilRad hh) (add_preserves hh hg) H
-  simpa using this
+  simpa using isUnit_add (neg_mem_nilRad hh) (add_preserves hh hg) H
 
 theorem sum_mul_eq_zero [Fintype (Module.End F V)] {φ : Module.End F V → ℂ} (hφ : IsPrimitive φ)
     {A : Submodule F V} (h0 : A ≠ ⊥) (h1 : A ≠ ⊤) (f : Module.End F V → ℂ)
@@ -129,8 +126,7 @@ theorem sum_mul_eq_zero [Fintype (Module.End F V)] {φ : Module.End F V → ℂ}
 theorem psi_bot {s : F[X] → ℂ} (hs : IsAdditive s) (U : Type) [AddCommGroup U] [Module F U]
     [FiniteDimensional F U] [Subsingleton U] (g : Module.End F U) : psi s U g = 0 := by
   have h1 : s 1 = 0 := by
-    have := hs 1 1 monic_one monic_one
-    simpa using this
+    simpa using hs 1 1 monic_one monic_one
   have hc : LinearMap.charpoly g = 1 := by
     have hm := LinearMap.charpoly_monic g
     rw [← hm.natDegree_eq_zero, LinearMap.charpoly_natDegree]

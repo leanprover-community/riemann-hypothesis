@@ -478,11 +478,11 @@ namespace UpperTheory.Reformulated.B.Qn18
 @[reducible] noncomputable def MP : (C : Type) → [Field C] → ℕ → Type :=
   fun C [Field C] N ↦ MvPolynomial (Fin N × Fin N) C
 
-noncomputable def ev : {C : Type} → [Field C] → {N : ℕ} → Mat C N → MP C N → C :=
+noncomputable def ev : {C : Type} → [inst : Field C] → {N : ℕ} → Mat C N → MP C N → C :=
   fun {C} [Field C] {_} x f ↦ MvPolynomial.eval (fun p ↦ x p.1 p.2) f
 
 noncomputable def dAt :
-    {C : Type} → [Field C] → {N : ℕ} → MP C N → Mat C N → Mat C N → C :=
+    {C : Type} → [inst : Field C] → {N : ℕ} → MP C N → Mat C N → Mat C N → C :=
   fun {C} [Field C] {N} f x Y ↦
     ∑ p : Fin N × Fin N, ev x (MvPolynomial.pderiv p f) * Y p.1 p.2
 

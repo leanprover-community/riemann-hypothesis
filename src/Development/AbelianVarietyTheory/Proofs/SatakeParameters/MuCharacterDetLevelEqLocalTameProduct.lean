@@ -530,7 +530,7 @@ end GlobalTheory.LevMuDet
 
 open GlobalTheory.LevMuDet GlobalTheory.Mem.Col2 GlobalTheory.Mem.ReadEx GlobalTheory.Mem.LocTriv Formalism.L2.Forms in
 
-theorem GlobalTheory.LevMuDet.muOf_det_lev : UnderTie (fun {D _ _ _ _ _ _ _ _ t u μ St} _ dtU _ =>
+theorem GlobalTheory.LevMuDet.muOf_det_lev : UnderTie (fun {D L hT Gi Gl Kc Y cX ex t u μ St} A dtU a =>
     MuLaw t u μ dtU → ∀ i, i < D.R.m → ∀ j (hj : j ≤ D.R.m) (β : (St j hj).Ch) (κ : ((St j hj).K β).lev.U) (e : SB t μ → t.X.E),
       (∀ P : SB t μ, IntAtA (F := D.host.F) (seamP t.seam P.1)
         (iA D.host.F D.host.E ((qOf (seamP t.seam P.1) : D.host.E))⁻¹ *

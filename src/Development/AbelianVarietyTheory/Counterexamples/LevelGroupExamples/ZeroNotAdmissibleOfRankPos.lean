@@ -164,8 +164,7 @@ theorem exists_eq_smul_of_dvd (x : Dw.La) (m : ℕ) (hm : m ≠ 0) (h : ∀ y, (
   obtain ⟨z, hz⟩ := Dw.unimod.2 f
   refine ⟨z, Dw.unimod.1 ?_⟩
   ext y
-  rw [map_zsmul, hz]
-  simp only [LinearMap.smul_apply, smul_eq_mul, f, LinearMap.coe_mk, AddHom.coe_mk]
+  simp only [map_zsmul, hz, LinearMap.smul_apply, smul_eq_mul, f, LinearMap.coe_mk, AddHom.coe_mk]
   exact (Int.mul_ediv_cancel' (h y)).symm
 
 theorem mem_of_dvd {x : Dw.La} (h : ∀ y, (l.M : ℤ) ∣ Dw.EF x (cSep l • y)) :
@@ -175,8 +174,7 @@ theorem mem_of_dvd {x : Dw.La} (h : ∀ y, (l.M : ℤ) ∣ Dw.EF x (cSep l • y
     rw [Dw.adj, bar_bar]; exact h y)
   have h1 : H.bar (cSep l - 1) ∈ Mfr l := Ideal.mem_map_of_mem (H.bar : 𝓞 E →+* 𝓞 E) (cSep_spec l).2
   have hMm : (l.M : 𝓞 E) ∈ Mfr l := by
-    have : Ideal.span {(l.M : 𝓞 E)} ≤ Mfr l := l.prod ▸ Ideal.mul_le_right
-    exact this (Ideal.subset_span rfl)
+    exact (l.prod ▸ Ideal.mul_le_right : Ideal.span {(l.M : 𝓞 E)} ≤ Mfr l) (Ideal.subset_span rfl)
   have : x = (l.M : 𝓞 E) • z - H.bar (cSep l - 1) • x := by
     rw [map_sub, map_one, sub_smul, one_smul, hz, ← Int.cast_smul_eq_zsmul (𝓞 E)]; simp
   rw [this]

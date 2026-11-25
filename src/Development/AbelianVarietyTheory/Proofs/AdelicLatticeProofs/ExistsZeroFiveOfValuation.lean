@@ -96,8 +96,7 @@ lemma qf_three (a p q r : n → K) (x : Fin 3 → K) (w : K) :
     qf a (x 0 • p + x 1 • q + x 2 • r) / w = ∑ i, ∑ j,
       (![![qf a p / w, bf a p q / w, bf a p r / w], ![0, qf a q / w, bf a q r / w],
         ![0, 0, qf a r / w]] : Fin 3 → Fin 3 → K) i j * x i * x j := by
-  rw [qf_add, qf_add, bf_add_left]
-  simp [Fin.sum_univ_three, qf_smul, bf_smul_left, bf_smul_right]
+  simp [qf_add, qf_add, bf_add_left, Fin.sum_univ_three, qf_smul, bf_smul_left, bf_smul_right]
   ring
 
 lemma val_bf_sq_le (h2 : (2 : K) ≠ 0) (v : Valuation K ℤᵐ⁰)
@@ -108,8 +107,7 @@ lemma val_bf_sq_le (h2 : (2 : K) ≠ 0) (v : Valuation K ℤᵐ⁰)
   rw [not_le] at hlt
   have hb : bf a x y ≠ 0 := by
     intro h
-    rw [h] at hlt
-    simp at hlt
+    simp [h] at hlt
   have hvb : v (bf a x y) ≠ 0 := by simpa using hb
   have h4 : (4 : K) ≠ 0 := by
     have : (4 : K) = 2 * 2 := by norm_num
@@ -196,8 +194,7 @@ lemma exists_basis (h2 : (2 : K) ≠ 0) (v : Valuation K ℤᵐ⁰)
     exact hP (Matrix.det_eq_zero_of_row_eq_zero j fun k => congrFun (han _ h) k)
   have ha : ∀ i, a i ≠ 0 := by
     intro i h
-    have := hrow 1 (by simp) i
-    apply this
+    apply (hrow 1 (by simp) i)
     unfold qf
     apply Finset.sum_eq_zero
     intro k _
@@ -254,10 +251,9 @@ lemma exists_scale (v : Valuation K ℤᵐ⁰) (hv : Function.Surjective v) {x y
     (hy : y ≠ 0)
     (h : decide (Even (WithZero.log (v y))) = decide (Even (WithZero.log (v x)))) :
     ∃ u : K, v u ^ 2 * v y = v x := by
-  have he : Even (WithZero.log (v x) - WithZero.log (v y)) := by
+  obtain ⟨m, hm⟩ : Even (WithZero.log (v x) - WithZero.log (v y)) := by
     rw [Int.even_sub]
     simpa [eq_comm] using h
-  obtain ⟨m, hm⟩ := he
   obtain ⟨u, hu⟩ := hv (WithZero.exp m)
   refine ⟨u, ?_⟩
   rw [hu, ← WithZero.exp_log ((Valuation.ne_zero_iff v).mpr hx),

@@ -182,13 +182,11 @@ theorem polyChart_smooth_fraction_lift : ∀ (K F₀ V : Type) [Field K] [Field 
         · ext a
           have hm : algebraMap F₀ (FractionRing (MvPolynomial V F₀)) a ∈
             (polyChartHom V R₀).range := ⟨C a, polyChartHom_C V R₀ a⟩
-          have := (congrArg χ (heC a hm)).symm.trans (hC a hm)
-          simpa [φ] using this
+          simpa [φ] using (congrArg χ (heC a hm)).symm.trans (hC a hm)
         · intro v
           have hm : algebraMap (MvPolynomial V F₀) (FractionRing (MvPolynomial V F₀))
             (X v) ∈ (polyChartHom V R₀).range := ⟨X v, polyChartHom_X V R₀ v⟩
-          have := (congrArg χ (heX v hm)).symm.trans (hX v hm)
-          simpa [φ] using this
+          simpa [φ] using (congrArg χ (heX v hm)).symm.trans (hX v hm)
       rw [← this]
       ext x
       simp

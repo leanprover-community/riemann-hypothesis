@@ -150,13 +150,12 @@ theorem eventually_forall_norm_le_of_lipschitz_of_decay {X V E : Type*} {l : Fil
           add_le_add (hxS s hs).le ((hxL v s).trans (mul_le_mul_of_nonneg_left hvs.le hC))
       _ ≤ ε := by linarith
   · replace hv := not_le.1 hv
-    have hvpos : 0 < ‖v‖ := lt_of_lt_of_le one_pos (hR1.trans hv.le)
     have hmul : ‖v‖ * ‖h x v‖ ≤ ‖v‖ * ε := by
       calc ‖v‖ * ‖h x v‖ ≤ D := hxD v
         _ ≤ ε * max 1 (D / ε) := hDR
         _ ≤ ε * ‖v‖ := mul_le_mul_of_nonneg_left hv.le hε.le
         _ = ‖v‖ * ε := mul_comm _ _
-    exact le_of_mul_le_mul_left hmul hvpos
+    exact le_of_mul_le_mul_left hmul (lt_of_lt_of_le one_pos (hR1.trans hv.le))
 
 theorem eventually_forall_norm_iteratedFDeriv_le {X V : Type*} {l : Filter X}
     [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V] {h : X → SchwartzMap V ℂ}

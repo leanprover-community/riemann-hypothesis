@@ -200,8 +200,7 @@ theorem isNilpotent_residue_toMatrix_mulLeft : ∀ (R S : Type) [CommRing R] [Is
     have h2 : t * aeval t q ∈ IsLocalRing.maximalIdeal S :=
       Ideal.mul_mem_right _ _ ht
     have h3 : algebraMap R S (h.coeff 0) ∈ IsLocalRing.maximalIdeal S := by
-      have := Ideal.sub_mem _ h1 h2
-      simpa using this
+      simpa using Ideal.sub_mem _ h1 h2
     exact (IsLocalRing.mem_maximalIdeal _).1 h3 (hu0.map (algebraMap R S))
   have huN : IsUnit (aeval N h) := by
     have := hut.map φ

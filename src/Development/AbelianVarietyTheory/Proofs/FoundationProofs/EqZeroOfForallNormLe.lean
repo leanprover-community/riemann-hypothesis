@@ -50,7 +50,7 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Rf3.norm_le_one_of_mem_coef :
-    ∀ {l : ℕ} [Fact (Nat.Prime l)] (c : UpperTheory.V.HV.Coef l)
+    ∀ {l : ℕ} [inst : Fact (Nat.Prime l)] (c : UpperTheory.V.HV.Coef l)
     {x : Formalism.ConjugateSelfDual.Qbar l},
     x ∈ c.O →
       ‖x‖ ≤

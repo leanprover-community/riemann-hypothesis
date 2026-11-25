@@ -73,8 +73,7 @@ theorem isDerivAt0_comp_linear {g : ℕ} {X : Scheme.{0}} (e : (Fin g → ℂ) �
     let L' := LinearMap.toContinuousLinearMap L
     have hd' : HasFDerivAt (fun z => valAt' (e z) U f) (fderiv ℂ (fun z => valAt' (e z) U f) 0) (L' 0) := by
       rw [map_zero]; exact hd.hasFDerivAt
-    have := (hd'.comp (0 : Fin g → ℂ) L'.hasFDerivAt).fderiv
-    exact DFunLike.congr_fun this w
+    exact DFunLike.congr_fun ((hd'.comp (0 : Fin g → ℂ) L'.hasFDerivAt).fderiv) w
   unfold IsDerivAt0
   simp only [map_zero]
   exact and_congr_right fun h0 => forall_congr' fun U => forall_congr' fun hU => forall_congr' fun f => by

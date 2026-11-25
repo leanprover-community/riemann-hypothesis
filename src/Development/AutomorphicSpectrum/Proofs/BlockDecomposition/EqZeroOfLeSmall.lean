@@ -58,9 +58,8 @@ namespace GlobalTheory.CompanionTheory.KerPoint
 theorem support_cv_adj_cv (hKB : KerBasic) (hCv : CvTest) (X : Ctx) (φ ψ : X.G → ℂ) (hφ : Tst φ) (hψ : Tst ψ)
     (N : Set X.G) (hNc : IsCompact N) (hN : tsupport ψ ⊆ N) :
     Function.support (cv X.μ (adj ψ) (cv X.μ φ ψ)) ⊆ N⁻¹ * (tsupport φ * N) := by
-  have hadj : Tst (adj ψ) := (hKB X ψ hψ).2.2.2.1
   have hc := hCv X φ ψ hφ hψ
-  have hcc := hCv X (adj ψ) (cv X.μ φ ψ) hadj hc.1
+  have hcc := hCv X (adj ψ) (cv X.μ φ ψ) ((hKB X ψ hψ).2.2.2.1) hc.1
   refine hcc.2.1.trans ?_
   have hs1 : tsupport (adj ψ) ⊆ N⁻¹ := by
     refine closure_minimal ?_ hNc.inv.isClosed
@@ -163,8 +162,7 @@ theorem ptEq_of : KerBasic → CvTest → OpAdj → ColOp → BumpEx → ApproxU
     refine (norm_sub_le _ _).trans ?_
     nlinarith [b3, b4, hle]
   have hC : 0 ≤ M + ‖U‖ * (‖k₂‖ + 1) + ‖k₁‖ * ‖U‖ := by positivity
-  have := eq_zero_of_le_small hC key
-  exact sub_eq_zero.1 (norm_le_zero_iff.1 this)
+  exact sub_eq_zero.1 (norm_le_zero_iff.1 (eq_zero_of_le_small hC key))
 
 end GlobalTheory.CompanionTheory.KerPoint
 

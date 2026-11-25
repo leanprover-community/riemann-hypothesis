@@ -63,10 +63,8 @@ lemma chart_le_target (p' : Y ⟶ X') (p : Y ⟶ X) (hp : p' ≫ F = p) (j : L.�
       LB.wchart L (fun _ : PUnit => p) (fun _ => j) := by
   intro y hy
   refine Set.mem_iInter.2 fun _ => ?_
-  have h1 : p'.base y ∈ LB.wchart L (fun _ : PUnit => F) (fun _ => j) := hy.1
-  have h2 : F.base (p'.base y) ∈ L.U j := Set.mem_iInter.1 h1 PUnit.unit
   subst hp
-  exact h2
+  exact Set.mem_iInter.1 hy.1 PUnit.unit
 
 lemma chart_le_source (p' : Y ⟶ X') (j : L.ι) (j' : L'.ι) :
     p' ⁻¹ᵁ (LB.div (L.pull F) L').U (fun _ => j, j') ≤

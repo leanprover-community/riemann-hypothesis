@@ -601,7 +601,7 @@ private theorem osc {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGrou
     linarith
 
 theorem UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.decayA :
-    ForAllC fun K _ _ μ _ _ _ _ _ _ d _ A _ => ∀ (a : CC K (2 + 2)) (β : ℝ → Eu d →L[ℂ] Eu d), IsLeftSmooth a → ActsBy μ A a β →
+    ForAllC fun K _ _ μ _ _ _ _ _ D d _ A _ => ∀ (a : CC K (2 + 2)) (β : ℝ → Eu d →L[ℂ] Eu d), IsLeftSmooth a → ActsBy μ A a β →
       ∃ C : ℝ, ∀ z : ℂ, |z.re| ≤ 1 → ‖symb β z‖ ≤ C / (1 + |z.im|) := by
   intro K _ _ _ μ _ μ₂ _ τ₁ τ₂ _ D d d' A _ a β ha hβ
   obtain ⟨hH, -, -, Hc, -⟩ := hpSpec (K := K)

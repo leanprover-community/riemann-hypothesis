@@ -71,7 +71,7 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.InterpolationPointsOfFinrankBound.pick :
-    ∀ {k D : Type} [Field k] (P : Set D) {p0 : D},
+    ∀ {k D : Type} [inst : Field k] (P : Set D) {p0 : D},
     p0 ∈ P →
       ∀ (W : Submodule k (D → k)),
         (∀ (f : D → k), f ∈ W ↔ ∀ p ∈ P, f p = (0 : k)) →

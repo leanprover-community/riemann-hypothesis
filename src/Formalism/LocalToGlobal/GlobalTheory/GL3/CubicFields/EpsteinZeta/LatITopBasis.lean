@@ -22,8 +22,7 @@ open NumberField Polynomial Matrix Classical
 open scoped Pointwise
 
 lemma squarefree_neg_natCast_prime (d : ℕ) [Fact d.Prime] : Squarefree (-(d : ℤ)) := by
-  have hp : Prime (d : ℤ) := Nat.prime_iff_prime_int.mp (Fact.out)
-  exact hp.neg.squarefree
+  exact (Nat.prime_iff_prime_int.mp (Fact.out)).neg.squarefree
 
 lemma covA_adjoin (K : Type) [Field K] [NumberField K] (d : ℕ) [Fact d.Prime]
     (x : K) (hx : x ^ 2 = -(d : K)) (hK : Module.finrank ℚ K = 2) :
@@ -117,8 +116,7 @@ lemma covA_span (K : Type) [Field K] [NumberField K] (d : ℕ) [Fact d.Prime] (h
     by_cases hb : b = 0
     · subst hb
       have h1 : (y : K) = algebraMap ℚ K a := by
-        rw [hab]
-        simp
+        simp [hab]
       have h2 : IsIntegral ℤ a := by
         rwa [← isIntegral_algebraMap_iff (B := K), ← h1]
       obtain ⟨z, hz⟩ := IsIntegrallyClosed.isIntegral_iff.mp h2

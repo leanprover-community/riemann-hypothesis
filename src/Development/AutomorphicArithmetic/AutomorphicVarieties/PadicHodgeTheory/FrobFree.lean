@@ -90,7 +90,7 @@ private lemma UpperTheory.Reformulated.B.Qe14.sum_close {K : Type*} [NormedField
       (max_lt ih (UpperTheory.Reformulated.B.Qe14.pow_close h n))
 
 theorem UpperTheory.Reformulated.B.Qe14.root_eq_one :
-    ∀ {v : ℕ} [Fact (Nat.Prime v)] {m : ℕ},
+    ∀ {v : ℕ} [inst : Fact (Nat.Prime v)] {m : ℕ},
       ¬v ∣ m →
         ∀ {η : UpperTheory.Reformulated.B.Qe14.Om v},
           η ^ m = (1 : UpperTheory.Reformulated.B.Qe14.Om v) →

@@ -74,8 +74,7 @@ theorem exists_pow_mul_le_one (v : HeightOneSpectrum (𝓞 F)) (a : Fv F v)
     intro s
     have h0 : Tendsto (fun m : ℕ => a ^ m * s) atTop (𝓝 0) := by
       simpa using h2.mul_const s
-    have hn : {y : Fv F v | Valued.v y < 1} ∈ 𝓝 (0 : Fv F v) := h1.mem_nhds (by simp)
-    exact (h0.eventually hn).exists
+    exact (h0.eventually (h1.mem_nhds (by simp))).exists
   have hmono : Monotone fun m : ℕ => {s : Fv F v | Valued.v (a ^ m * s) < 1} := by
     intro m m' hmm' s hs
     obtain ⟨d, rfl⟩ := Nat.exists_eq_add_of_le hmm'
@@ -94,10 +93,9 @@ theorem exists_pow_mul_le_one (v : HeightOneSpectrum (𝓞 F)) (a : Fv F v)
 theorem exists_nat_lt_one (v : HeightOneSpectrum (𝓞 F)) :
     ∃ p : ℕ, 0 < p ∧ v.valuation F (p : F) < 1 := by
   refine ⟨Ideal.absNorm v.asIdeal, Nat.pos_of_ne_zero fun h => v.ne_bot (Ideal.absNorm_eq_zero_iff.mp h), ?_⟩
-  have hm : ((Ideal.absNorm v.asIdeal : ℕ) : 𝓞 F) ∈ v.asIdeal := Ideal.absNorm_mem _
   have h : (((Ideal.absNorm v.asIdeal : ℕ) : 𝓞 F) : F) = ((Ideal.absNorm v.asIdeal : ℕ) : F) := by simp
   rw [← h]
-  exact (HeightOneSpectrum.valuation_lt_one_iff_mem v _).mpr hm
+  exact (HeightOneSpectrum.valuation_lt_one_iff_mem v _).mpr (Ideal.absNorm_mem _)
 
 theorem val_nat_le_one (v : HeightOneSpectrum (𝓞 F)) (n : ℕ) : v.valuation F (n : F) ≤ 1 := by
   have h : ((n : 𝓞 F) : F) = (n : F) := by simp

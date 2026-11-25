@@ -68,8 +68,7 @@ private theorem measurePreserving_piCurry_symm_fin_two (ι : Type) [Fintype ι] 
       Set.univ.pi fun i => Set.univ.pi fun k => s ⟨i, k⟩ := by
     ext x
     simp [Set.mem_pi, Sigma.forall, MeasurableEquiv.coe_piCurry_symm, Sigma.uncurry]
-  rw [hpre, volume_pi_pi]
-  simp only [volume_pi_pi]
+  simp only [hpre, volume_pi_pi, volume_pi_pi]
   rw [← Finset.univ_sigma_univ, Finset.prod_sigma]
 
 theorem measurePreserving_of_norm_sq_eq_sum_complex_coords

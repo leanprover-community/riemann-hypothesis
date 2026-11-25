@@ -52,10 +52,8 @@ theorem eq_of_le_ht {R : Type*} [CommRing R] [IsDomain R] {Q P : Ideal R} [Q.IsP
   have hlt : Q < P := lt_of_le_of_ne hle hne
   have hP1 : P.height ≤ ((1 : ℕ) : ℕ∞) := by rw [hP]; rfl
   have h1 : Q.height < ((1 : ℕ) : ℕ∞) := (Ideal.height_le_iff.mp hP1) Q inferInstance hlt
-  have h2 : Q.height = 0 := ENat.lt_one_iff_eq_zero.mp (by exact_mod_cast h1)
-  have hmin := Ideal.height_eq_zero_iff.mp h2
-  have hbot : Q ≤ ⊥ := hmin.2 ⟨Ideal.isPrime_bot, le_refl _⟩ bot_le
-  exact hQ (le_bot_iff.mp hbot)
+  have hmin := Ideal.height_eq_zero_iff.mp (ENat.lt_one_iff_eq_zero.mp (by exact_mod_cast h1))
+  exact hQ (le_bot_iff.mp (hmin.2 ⟨Ideal.isPrime_bot, le_refl _⟩ bot_le))
 
 theorem sac_same {α : Type*} {n : ℕ} (i : Fin (n + 1)) (x : α) (f : Fin n → α) :
     Fin.succAboveCases (α := fun _ => α) i x f i = x := Fin.insertNth_apply_same (α := fun _ => α) i x f

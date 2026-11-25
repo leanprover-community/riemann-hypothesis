@@ -77,7 +77,7 @@ private lemma per {N : Type} [AddCommGroup N] (g : ℕ → N) (P : ℕ)
 end PeriodicSumRangeMul
 
 theorem UpperTheory.Reformulated.B.Yra7.main :
-    ∀ {N : Type} [AddCommGroup N] (g : ℕ → N) (P : ℕ),
+    ∀ {N : Type} [inst : AddCommGroup N] (g : ℕ → N) (P : ℕ),
       (∀ (i : ℕ), g (i + P) = g i) → ∀ (k : ℕ), ∑ i ∈ Finset.range (k * P), g i = k • ∑ i ∈ Finset.range P, g i := by
   intro N _ g P h k
   induction k with

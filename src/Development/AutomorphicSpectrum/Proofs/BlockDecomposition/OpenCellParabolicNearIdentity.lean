@@ -153,7 +153,7 @@ end GlobalTheory.CompanionTheory.BZPhiPG.OntoO.Small
 namespace GlobalTheory.CompanionTheory.BZPhiPG.OntoO
 
 open Small in
-theorem h_small : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (i t : ℕ) (O : Set (Mir k ((i + 1) + t + 1))) (_ : O ∈ 𝓝 (1 : Mir k ((i + 1) + t + 1))),
+theorem h_small : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (i t : ℕ) (O : Set (Mir k ((i + 1) + t + 1))) (hO : O ∈ 𝓝 (1 : Mir k ((i + 1) + t + 1))),
     ∃ N ∈ 𝓝 (1 : Mir k ((i + 1) + t + 1)), ∀ (h : Mir k ((i + 1) + (t + 1))), h ∈ HPG k (i + 1) (t + 1) →
       ∀ (d : Fin (t + 1) → k) (x : Mir k ((i + 1) + t + 1)), x ∈ N →
         dEmb k i t d * wEl k i t = h * wEl k i t * x → h ∈ O := by

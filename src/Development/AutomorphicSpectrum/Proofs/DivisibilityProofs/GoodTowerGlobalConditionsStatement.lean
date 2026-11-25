@@ -965,12 +965,12 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.DYda8.main :
-    ∀ (E : Type) [Field E] [NumberField E] [IsGalois ℚ E],
+    ∀ (E : Type) [inst : Field E] [inst_1 : NumberField E] [IsGalois ℚ E],
       (∀ (a b : Gal(E/ℚ)), a * b = b * a) →
         ∀ (p : ℕ),
           Nat.Prime p →
             ∃ (φ : Gal(E/ℚ)),
-              ∀ (O : Type) [CommRing O] (n : Ideal O),
+              ∀ (O : Type) [inst_3 : CommRing O] (n : Ideal O),
                 n.IsPrime →
                   (↑p : O) ∈ n →
                     ∀ (τ : NumberField.RingOfIntegers E →+* O) (x : NumberField.RingOfIntegers E),

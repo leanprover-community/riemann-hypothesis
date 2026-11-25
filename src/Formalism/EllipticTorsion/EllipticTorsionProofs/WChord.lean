@@ -256,7 +256,6 @@ variable {W}
 lemma it_spec {w : PowerSeries K} (hw : WFixed W w) :
     ∀ k, X ^ k ∣ w - it W k ∧ X ∣ it W k := by
   have hfix : fw W w = w := hw.2.symm
-  have hXw : X ∣ w := PowerSeries.X_dvd_iff.mpr hw.1
   intro k
   induction k with
   | zero => exact ⟨by simp, by simp [it]⟩
@@ -267,7 +266,7 @@ lemma it_spec {w : PowerSeries K} (hw : WFixed W w) :
         rw [hfix]
         rfl
       rw [e]
-      exact fw_cong W h1 hXw h2
+      exact fw_cong W h1 (PowerSeries.X_dvd_iff.mpr hw.1) h2
     · exact fw_X_dvd W h2
 
 lemma it_mem (S : Subalgebra ℤ K) (hS : ({W.a₁, W.a₂, W.a₃, W.a₄, W.a₆} : Set K) ⊆ S) :
@@ -313,8 +312,7 @@ lemma w_low {w : PowerSeries K} (hw : WFixed W w) :
     have := fw_cong W (n := n) (v := w) (v' := 0) (by simpa using hn) hXw (dvd_zero _)
     rwa [hfix, h0] at this
   have lift : ∀ n ≤ 3, X ^ n ∣ w - X ^ 3 → X ^ n ∣ w := fun n hn h => by
-    have := dvd_add h (pow_dvd_pow (X : PowerSeries K) hn)
-    simpa using this
+    simpa using dvd_add h (pow_dvd_pow (X : PowerSeries K) hn)
   have h2 : X ^ 2 ∣ w := lift 2 (by norm_num) (step 1 (by simpa using hXw))
   have h3 : X ^ 3 ∣ w := lift 3 le_rfl (step 2 h2)
   have h4 := step 3 h3
@@ -364,15 +362,13 @@ lemma coeff_Wi (w : PowerSeries K) (i : Fin 2) (e : Fin 2 →₀ ℕ) :
       rw [ite_eq_right, smul_zero]
       intro h'
       apply hd
-      rw [h']
-      simp
+      simp [h']
   · have hz : ∀ d : ℕ, (coeff d w • if e = Finsupp.single i d then (1 : K) else 0) = 0 := by
       intro d
       rw [ite_eq_right, smul_zero]
       intro h'
       apply h
-      rw [h']
-      simp
+      simp [h']
     simp only [hz, finsum_zero]
 
 private theorem coeff_mul_X_fin_two (φ : MvPowerSeries (Fin 2) K) (j : Fin 2) (e : Fin 2 →₀ ℕ) :
@@ -612,10 +608,9 @@ lemma formalSum_mem_integralSeries (hw : WFixed W w) : F2 W w ∈ T W := by
     inv_mem_integralSeries hC3 (by rw [constantCoeff_chordCoeffCubic hw, inv_one]; exact Subalgebra.one_mem _)
   have hz3 : z3 W w ∈ T W :=
     (T W).sub_mem ((T W).sub_mem ((T W).neg_mem (X_mem_T 0)) (X_mem_T 1)) ((T W).mul_mem hC2 hC3i)
-  have hw3 : w3 W w ∈ T W := (T W).add_mem ((T W).mul_mem hl hz3) hn
   have hdd : dd W w ∈ T W :=
     (T W).add_mem ((T W).add_mem ((T W).neg_mem (T W).one_mem) ((T W).mul_mem h1 hz3))
-      ((T W).mul_mem h3 hw3)
+      ((T W).mul_mem h3 ((T W).add_mem ((T W).mul_mem hl hz3) hn))
   have hddi : (dd W w)⁻¹ ∈ T W :=
     inv_mem_integralSeries hdd
       (by rw [dd_cc hw, inv_neg, inv_one]; exact Subalgebra.neg_mem _ (Subalgebra.one_mem _))

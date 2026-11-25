@@ -103,8 +103,7 @@ theorem ConeAvoidsOpen.proof : ConeAvoidsOpen.Statement := by
   · rw [RingHom.map_det]
     have h1 : (eval fun ij : Fin d × Fin n => A₀ ij.1 ij.2).mapMatrix P = 1 := by
       ext m' m
-      rw [hP, Matrix.one_apply]
-      simp only [T, hah, coeff_monomial, Subtype.ext_iff, eq_comm]
+      simp only [hP, Matrix.one_apply, T, hah, coeff_monomial, Subtype.ext_iff, eq_comm]
     rw [h1, Matrix.det_one]
     exact one_ne_zero
   · rw [RingHom.map_det] at hA

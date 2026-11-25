@@ -276,7 +276,6 @@ theorem degreeWith_eq_of_linearIndependent {ι : Type*} [Fintype ι] [DecidableE
     (hcard : Fintype.card ι = Module.finrank (𝓞 K) E) : degreeWith h t = degreeWith h s := by
   have hfin := finite_quotient_span hs hcard
   set n := Nat.card (E ⧸ Submodule.span (𝓞 K) (Set.range s))
-  have hn : n ≠ 0 := Nat.card_pos.ne'
   have hmem : ∀ j, (n : 𝓞 K) • t j ∈ Submodule.span (𝓞 K) (Set.range s) := by
     intro j
     have := card_nsmul_eq_zero' (G := E ⧸ Submodule.span (𝓞 K) (Set.range s))
@@ -290,7 +289,7 @@ theorem degreeWith_eq_of_linearIndependent {ι : Type*} [Fintype ι] [DecidableE
   have hu2 : (fun j ↦ ∑ i, D i j • t i) = fun j ↦ (n : 𝓞 K) • t j := by
     funext j
     simp [D, Matrix.smul_apply, Matrix.one_apply, ite_smul, Finset.sum_ite_eq']
-  have hn' : (n : 𝓞 K) ≠ 0 := Nat.cast_ne_zero.mpr hn
+  have hn' : (n : 𝓞 K) ≠ 0 := Nat.cast_ne_zero.mpr Nat.card_pos.ne'
   have hD : D.det ≠ 0 := by
     simp only [D, det_smul, det_one, mul_one]
     exact pow_ne_zero _ hn'
@@ -358,8 +357,7 @@ theorem arithDegree_integers : arithDegree (HermitianMetric.integers K) = 0 := b
   have h2 : ∀ σ : K →+* ℂ, ‖fibreVec (HermitianMetric.integers K) σ 1‖ = 1 := by
     intro σ
     have := norm_fibreVec_sq (HermitianMetric.integers K) σ 1
-    rw [HermitianMetric.integers_inner] at this
-    simp only [map_one, one_mul] at this
+    simp only [HermitianMetric.integers_inner, map_one, one_mul] at this
     rw [Complex.one_re] at this
     have h4 := norm_nonneg (fibreVec (HermitianMetric.integers K) σ 1)
     nlinarith [sq_nonneg (‖fibreVec (HermitianMetric.integers K) σ 1‖ - 1)]

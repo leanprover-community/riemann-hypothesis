@@ -130,8 +130,7 @@ theorem surjective_residue_of_isAlgebraic {k V : Type*} [Field k] [IsAlgClosed k
     · refine Polynomial.not_isUnit_X (R := k) (p.isPrimitive_primPart X ?_)
       rw [C_dvd_iff_dvd_coeff]
       intro i
-      have := congrArg (fun q => q.coeff i) h
-      simpa [X_dvd_iff] using this
+      simpa [X_dvd_iff] using congrArg (fun q => q.coeff i) h
     · rw [aeval_def, eval₂_map, hc, ← hom_eval₂, ← aeval_def, h1, map_zero]⟩
   exact (IsAlgClosed.algebraMap_bijective_of_isIntegral (k := k) (K := ResidueField V)).2
 

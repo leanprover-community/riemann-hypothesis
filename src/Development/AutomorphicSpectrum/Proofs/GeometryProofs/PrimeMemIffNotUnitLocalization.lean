@@ -68,8 +68,7 @@ theorem mem_prime_iff_not_inv_mem :
     have hu' : (t : K) * (u : K) = 1 := by
       have := congrArg (fun x : (LocalSubring.ofPrime T P).toSubring => (x : K)) hu
       simpa only [Subring.coe_mul, hcoe, Subring.coe_one] using this
-    have h0 : (t : K) ≠ 0 := left_ne_zero_of_mul_eq_one hu'
-    refine h ⟨h0, ?_⟩
+    refine h ⟨(left_ne_zero_of_mul_eq_one hu'), ?_⟩
     rw [inv_eq_of_mul_eq_one_right hu']
     exact u.2
 

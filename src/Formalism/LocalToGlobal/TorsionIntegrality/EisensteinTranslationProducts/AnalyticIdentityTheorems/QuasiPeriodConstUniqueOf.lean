@@ -134,8 +134,7 @@ lemma altE_coord (L : PeriodPair) (m n m' n' : ℤ) :
   rw [altE, herm, Complex.div_ofReal_im, div_eq_iff hA]
   have h1 : (((m : ℂ) * L.ω₁ + (n : ℂ) * L.ω₂) * conj ((m' : ℂ) * L.ω₁ + (n' : ℂ) * L.ω₂)).im
       = -((m * n' - n * m' : ℝ) * det L) := by
-    rw [det_eq]
-    simp [Complex.mul_im, Complex.mul_re]
+    simp [det_eq, Complex.mul_im, Complex.mul_re]
     ring
   rw [h1, det_eq_sgn_mul]
   push_cast
@@ -162,8 +161,7 @@ lemma semiChar_coord (L : PeriodPair) (m n : ℤ) :
       refine PeriodPair.mem_lattice.mpr ⟨a, b, ?_⟩
       push_cast
       ring
-  rw [semiChar]
-  simp only [key]
+  simp only [semiChar, key]
 
 lemma exp_pi_int (k : ℤ) :
     Complex.exp ((Real.pi : ℂ) * Complex.I * ((k : ℝ) : ℂ)) = if Even k then 1 else -1 := by

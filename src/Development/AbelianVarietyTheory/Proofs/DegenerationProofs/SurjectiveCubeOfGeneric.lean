@@ -171,7 +171,7 @@ omit [GrpObj G] [IsCommMonObj G] in
 theorem rep_pull {K : Type} [Fintype K] {V : Over S} {φ : K → (V.left ⟶ G.left)} {ε : K → ℤ}
     {t : LB.Gen (LB.LinComb L φ ε)} (ht : t.IsGen) (p : Y ⟶ V) {D : FreeAddCommGroup (Y.left ⟶ G.left)}
     (hD : ∏ k, Multiplicative.ofAdd (FreeAddCommGroup.of (p.left ≫ φ k)) ^ ε k = Multiplicative.ofAdd D) :
-    Rep L D (fun _ r z J => val t (r ≫ p).left z J) := by
+    Rep L D (fun Z r z J => val t (r ≫ p).left z J) := by
   refine ⟨K, inferInstance, _, _, LB.pullGen L φ ε t p.left, DVR.pullGen_isGen _ _ _ _ ht _, ?_,
     fun Z r z J hJ => val_pull hJ _ _ _⟩
   have := congrArg Multiplicative.toAdd hD

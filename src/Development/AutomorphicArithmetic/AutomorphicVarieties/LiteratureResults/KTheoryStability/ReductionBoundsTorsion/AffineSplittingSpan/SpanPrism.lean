@@ -116,8 +116,7 @@ theorem comp_cons' {Z : Type} (φ : Y → Z) {n : ℕ} (a : Y) (w : Fin n → Y)
 theorem prism_cons (φ : Y → Y) {n : ℕ} (F : (Fin (n + 2) → Y) → ℝ) (a : Y) (w : Fin n → Y) :
     prism φ F (Fin.cons a w) = F (Fin.cons a (Fin.cons (φ a) (fun i => φ (w i)))) -
       prism φ (fun w' => F (Fin.cons a w')) w := by
-  rw [prism_succ]
-  simp only [Fin.cons_zero, Fin.tail_cons, comp_cons']
+  simp only [prism_succ, Fin.cons_zero, Fin.tail_cons, comp_cons']
 
 theorem dc_cons {m : ℕ} (F : (Fin (m + 2) → Y) → ℝ) (a : Y) (w : Fin (m + 2) → Y) :
     dc F (Fin.cons a w) = F w - dc (fun w' => F (Fin.cons a w')) w :=
@@ -213,8 +212,7 @@ theorem prism_mul {P : Type} [Group P] (φ : P → P) (h : P) : ∀ {n : ℕ} (F
     intro F y
     have hhead : (fun i => h * (Fin.cons (y 0) (fun j => h⁻¹ * φ (h * y j)) : Fin (n + 2) → P) i) =
         Fin.cons (h * y 0) (fun j => φ (h * y j)) := by
-      rw [mul_cons]
-      simp
+      simp [mul_cons]
     have htail : (fun w : Fin (n + 1) → P => F (fun i => h * (Fin.cons (y 0) w : Fin (n + 2) → P) i)) =
         (fun w => F (Fin.cons (h * y 0) (fun i => h * w i))) := by
       funext w

@@ -373,7 +373,7 @@ theorem cubF_differentiable (ν : NumOf D ℂ N) (d : AB N.toNumB g) (geo : Geo 
   exact ((hG z₀ hz₀).differentiableAt hn).congr_of_eventuallyEq
     (Filter.eventuallyEq_of_mem hn fun z hz => heq z hz)
 
-theorem cubF_entire : AllC fun {_} _ _ {_} _ {N} ν => ∀ (g : ℕ) (d : AB N.toNumB g), Nonempty (Geo ν d) → ∀ x y : Fin g → ℂ, Differentiable ℂ (cubF d x y) := by
+theorem cubF_entire : AllC fun {R} _ _ {D} _ {N} ν => ∀ (g : ℕ) (d : AB N.toNumB g), Nonempty (Geo ν d) → ∀ x y : Fin g → ℂ, Differentiable ℂ (cubF d x y) := by
   intro R _ _ _ _ D _ _ _ N ν g d ⟨geo⟩ x y
   exact cubF_differentiable ν d geo x y
 
@@ -396,7 +396,7 @@ open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.MBLow.Cl Matrix
 
-theorem _root_.GlobalTheory.T.cubeValueTimesThetaFrames_entire : AllC fun {_} _ _ {_} _ {N} ν => ∀ (g : ℕ) (d : AB N.toNumB g), Nonempty (Geo ν d) → ∀ x y : Fin g → ℂ, Differentiable ℂ (cubF d x y) := by
+theorem _root_.GlobalTheory.T.cubeValueTimesThetaFrames_entire : AllC fun {R} _ _ {D} _ {N} ν => ∀ (g : ℕ) (d : AB N.toNumB g), Nonempty (Geo ν d) → ∀ x y : Fin g → ℂ, Differentiable ℂ (cubF d x y) := by
   first | exact @GlobalTheory.MBLow.Cl.CubHol.cubF_entire
 end -- clump:auto
 end -- clump:auto
@@ -531,7 +531,7 @@ theorem cub_of_diff (d : AB B g) (h : ∀ x y : Fin g → ℂ, Differentiable �
 
 end Bound
 
-theorem cub_of_geo : AllC fun {_} _ _ {_} _ {N} ν => ∀ (g : ℕ) (d : AB N.toNumB g), Nonempty (Geo ν d) → d.Cub := by
+theorem cub_of_geo : AllC fun {R} _ _ {D} _ {N} ν => ∀ (g : ℕ) (d : AB N.toNumB g), Nonempty (Geo ν d) → d.Cub := by
   intro R _ _ _ _ D hψ hτ _ N ν g d hG
   exact cub_of_diff d (GlobalTheory.T.cubeValueTimesThetaFrames_entire R D hψ hτ N ν g d hG)
 

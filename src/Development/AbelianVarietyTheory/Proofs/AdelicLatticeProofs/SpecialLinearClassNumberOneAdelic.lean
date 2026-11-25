@@ -65,8 +65,7 @@ theorem exists_matrix_span_of_smul_mem {ι : Type} [Fintype ι] [DecidableEq ι]
     · let f : (ι → ℤ) →ₗ[ℤ] L := LinearMap.codRestrict L (N • LinearMap.id) hL
       have hf : Function.Injective f := by
         intro a b hab
-        have : N • a = N • b := congrArg Subtype.val hab
-        exact smul_right_injective _ hN this
+        exact smul_right_injective _ hN (congrArg Subtype.val hab : N • a = N • b)
       simpa using LinearMap.finrank_le_finrank_of_injective hf
   let b : Module.Basis ι ℤ L := (Module.finBasisOfFinrankEq ℤ L hr).reindex (Fintype.equivFin ι).symm
   refine ⟨Matrix.of fun i j => (b j : ι → ℤ) i, fun j => (b j).2, fun v hv => ⟨b.repr ⟨v, hv⟩, ?_⟩⟩
@@ -160,8 +159,7 @@ theorem sl_class_number_one : ∀ (ι : Type) [Fintype ι] [DecidableEq ι] (R :
     have e : (fun k => algebraMap ℚ R (v k)) = x *ᵥ (y *ᵥ fun k => algebraMap ℚ R (v k)) := by
       rw [Matrix.mulVec_mulVec, hxy, Matrix.one_mulVec]
     have e' := congrFun e i
-    rw [map_mul, map_natCast, e']
-    simp only [Matrix.mulVec, dotProduct]
+    simp only [map_mul, map_natCast, e', Matrix.mulVec, dotProduct]
     rw [Finset.mul_sum]
     refine R₀.sum_mem fun k _ => ?_
     rw [← mul_assoc]
@@ -225,8 +223,7 @@ theorem sl_class_number_one : ∀ (ι : Type) [Fintype ι] [DecidableEq ι] (R :
     simp
   rcases Int.eq_one_or_neg_one_of_mul_eq_one' hz with ⟨e1, e2⟩ | ⟨e1, e2⟩
   · refine ⟨h, _, by simp [hzh, e1], ?_, hk, hxe⟩
-    rw [Matrix.det_mul, hx, hmd, hzg, e2]
-    simp
+    simp [Matrix.det_mul, hx, hmd, hzg, e2]
   · rcases isEmpty_or_nonempty ι with hι | ⟨⟨i₀⟩⟩
     · rw [Matrix.det_isEmpty, e1] at hzh
       norm_num at hzh

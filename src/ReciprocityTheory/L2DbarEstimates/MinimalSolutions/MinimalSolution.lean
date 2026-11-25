@@ -50,8 +50,7 @@ theorem rieszOnRange (E H : Type*) [AddCommGroup E] [Module ℂ E]
   have hvin : ∀ e : E, ⟪v, θ e⟫_ℂ = ℓ e := by
     intro e
     rw [hv, InnerProductSpace.toDual_symm_apply]
-    have := hf ⟨θ e, LinearMap.mem_range_self θ e⟩
-    simpa [φc, hφ e] using this
+    simpa [φc, hφ e] using hf ⟨θ e, LinearMap.mem_range_self θ e⟩
   set K := R.topologicalClosure with hK
   haveI : CompleteSpace K := R.isClosed_topologicalClosure.completeSpace_coe
   refine ⟨K.starProjection v, K.starProjection_apply_mem v, ?_, ?_⟩

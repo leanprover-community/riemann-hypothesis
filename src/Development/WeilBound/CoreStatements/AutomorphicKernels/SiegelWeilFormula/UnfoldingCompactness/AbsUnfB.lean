@@ -72,8 +72,7 @@ theorem abs_integrable {V : Type} [AddCommGroup V] [TopologicalSpace V] [IsTopol
     let e : Q ≃ Q := ⟨fun q => act q ν, fun q => act q (-ν),
       fun q => show act (act q ν) (-ν) = q by rw [hact, add_neg_cancel, hact0],
       fun q => show act (act q (-ν)) ν = q by rw [hact, neg_add_cancel, hact0]⟩
-    rw [hS_def]
-    simp only [← hAact]
+    simp only [hS_def, ← hAact]
     exact e.tsum_eq (fun q => ‖A q β‖ₑ)
   obtain ⟨ν₀, hν₀⟩ := hcov 0
   have hu0 : ∀ q, 0 ≤ u q := fun q => (norm_nonneg _).trans (hAu q _ hν₀)

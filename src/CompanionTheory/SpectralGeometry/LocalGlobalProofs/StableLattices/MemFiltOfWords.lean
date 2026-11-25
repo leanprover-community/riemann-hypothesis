@@ -74,8 +74,7 @@ theorem euler_ring (A D : ι → R) (h2 : ∀ i j, Commute (D i) (D j))
     by_cases h : i = j
     · subst h; simp
     · simp [h]
-  rw [Finset.mul_sum, Finset.sum_mul]
-  simp only [key, Finset.sum_add_distrib]
+  simp only [Finset.mul_sum, Finset.sum_mul, key, Finset.sum_add_distrib]
   simp
 
 end Ring
@@ -109,8 +108,7 @@ theorem mem_filt_of_words (d : ι → Module.End ℂ Z) (m : ℕ) (z : Z)
     rw [mem_filt_succ]
     intro i
     refine ih _ fun l hl => ?_
-    have := h (l ++ [i]) (by simp [hl])
-    simpa using this
+    simpa using h (l ++ [i]) (by simp [hl])
 
 theorem euler_filt [Fintype ι] [DecidableEq ι] (a d : ι → Module.End ℂ Z) (h2 : ∀ i j, Commute (d i) (d j))
     (h3 : ∀ i j, d i * a j - a j * d i = if i = j then 1 else 0) (m : ℕ) (z : Z)
@@ -169,8 +167,7 @@ theorem cre_ann_apply (i : NC ε) (x : Ch ε Z) (A : Finset (NC ε)) :
 
 theorem number_apply (x : Ch ε Z) (A : Finset (NC ε)) :
     ((∑ i : NC ε, (cre i * ann i : Module.End ℂ (Ch ε Z))) x) A = (A.card : ℂ) • x A := by
-  rw [LinearMap.sum_apply, Finset.sum_apply]
-  simp only [Module.End.mul_apply, cre_ann_apply]
+  simp only [LinearMap.sum_apply, Finset.sum_apply, Module.End.mul_apply, cre_ann_apply]
   rw [← Finset.sum_filter]
   simp [Nat.cast_smul_eq_nsmul]
 

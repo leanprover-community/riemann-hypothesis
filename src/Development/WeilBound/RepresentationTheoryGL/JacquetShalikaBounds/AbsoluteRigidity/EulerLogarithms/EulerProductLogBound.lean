@@ -158,9 +158,8 @@ theorem euler_product_log_bound : EulerLog := by
     intro w
     simp only [lterm_eq]
     exact hasSum_sum fun a _ => hasSum_sum fun b _ => Complex.hasSum_taylorSeries_neg_log' (hlt w a b)
-  have hall : HasSum (lterm q α β s) (∑' p, lterm q α β s p) := (hsumn.of_norm).hasSum
   have hw : HasSum (fun w => ∑ a, ∑ b, -Complex.log (1 - zz q α β s w a b)) (∑' p, lterm q α β s p) :=
-    hall.prod_fiberwise hfib
+    ((hsumn.of_norm).hasSum).prod_fiberwise hfib
   have hprod := hw.cexp
   have e : ∀ w, (Complex.exp ∘ fun w => ∑ a, ∑ b, -Complex.log (1 - zz q α β s w a b)) w =
       ∏ a, ∏ b, (1 - α w a * conj (β w b) * (q w : ℂ) ^ (-s))⁻¹ := by

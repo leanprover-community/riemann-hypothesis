@@ -108,8 +108,7 @@ theorem exists_cut_into_bounded_groups_finset (S : Finset ℕ) (B : ℕ) :
     obtain ⟨pc, hpcs, hpcb, hpco⟩ := ih (fun k => e k - f k) (by omega)
     refine ⟨Fin.cons f pc, ?_, ?_, ?_⟩
     · intro k hk
-      rw [Fin.sum_univ_succ]
-      simp only [Fin.cons_zero, Fin.cons_succ]
+      simp only [Fin.sum_univ_succ, Fin.cons_zero, Fin.cons_succ]
       rw [hpcs k hk]
       exact Nat.add_sub_cancel' (hfe k)
     · intro u

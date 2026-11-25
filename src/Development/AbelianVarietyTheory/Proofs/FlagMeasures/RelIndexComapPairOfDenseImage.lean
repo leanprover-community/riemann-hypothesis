@@ -62,8 +62,7 @@ theorem relIndex_comap_of_dense_image {Γ G : Type} [Group Γ] [Group G] (φ : �
     rintro ⟨b, hb⟩
     obtain ⟨γ, hγK, hγU⟩ := h b hb
     have hγ : φ γ ∈ U := by
-      have := U.mul_mem hb (U.inv_mem hγU)
-      simpa using this
+      simpa using U.mul_mem hb (U.inv_mem hγU)
     refine ⟨⟨γ, hγ⟩, ?_⟩
     exact hγK)
   simp only [Subgroup.relIndex]

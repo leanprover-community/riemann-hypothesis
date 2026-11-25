@@ -70,7 +70,6 @@ theorem schur_proportional_of_range_le
     rw [hxA, hφe, hξe, hxA]
   obtain ⟨c, hc⟩ := Module.End.exists_eigenvalue A
   obtain ⟨v, hv⟩ := hc.exists_hasEigenvector
-  have hAv : A v = c • v := hv.apply_eq_smul
   let U : Submodule ℂ W := LinearMap.ker (A - c • LinearMap.id)
   have hmemU : ∀ u, u ∈ U ↔ A u = c • u := by
     intro u
@@ -82,13 +81,12 @@ theorem schur_proportional_of_range_le
     rw [hcomm, hu, map_smul]
   have hne : U ≠ ⊥ := by
     intro hU
-    have : v ∈ U := (hmemU v).mpr hAv
+    have : v ∈ U := (hmemU v).mpr hv.apply_eq_smul
     rw [hU, Submodule.mem_bot] at this
     exact hv.2 this
-  have htop : U = ⊤ := (hirr U hstab).resolve_left hne
   refine ⟨c, ?_⟩
   ext w
-  have hw : w ∈ U := htop ▸ Submodule.mem_top
+  have hw : w ∈ U := ((hirr U hstab).resolve_left hne) ▸ Submodule.mem_top
   rw [hmemU] at hw
   rw [LinearMap.smul_apply, ← hxA, hw, map_smul]
 

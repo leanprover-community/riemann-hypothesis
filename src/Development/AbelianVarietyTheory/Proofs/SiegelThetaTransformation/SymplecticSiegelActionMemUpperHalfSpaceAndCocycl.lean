@@ -67,8 +67,7 @@ omit [DecidableEq ι] in
 theorem posDef_ofReal {Y : Matrix ι ι ℝ} (h : Y.PosDef) :
     (Y.map (fun t => (t : ℂ))).PosDef := by
   have hs : ∀ i j, Y i j = Y j i := fun i j => by
-    have := congrFun (congrFun h.isHermitian j) i
-    simpa using this
+    simpa using congrFun (congrFun h.isHermitian j) i
   have hH : (Y.map (fun t => (t : ℂ))).IsHermitian := by
     ext i j
     simp [hs i j]
@@ -78,8 +77,7 @@ theorem posDef_ofReal {Y : Matrix ι ι ℝ} (h : Y.PosDef) :
       star (fun i => (v i).im) ⬝ᵥ Y *ᵥ (fun i => (v i).im) := by
     simp [dotProduct, mulVec, Finset.mul_sum, Finset.sum_add_distrib]
   have him : (star v ⬝ᵥ (Y.map (fun t => (t : ℂ))) *ᵥ v).im = 0 := by
-    have := hH.im_star_dotProduct_mulVec_self v
-    simpa using this
+    simpa using hH.im_star_dotProduct_mulVec_self v
   rw [Complex.pos_iff, hre, him]
   refine ⟨?_, rfl⟩
   by_cases h1 : (fun i => (v i).re) = 0
@@ -97,8 +95,7 @@ theorem posDef_of_ofReal {Y : Matrix ι ι ℝ} (h : (Y.map (fun t => (t : ℂ))
     Y.PosDef := by
   have hH : Y.IsHermitian := by
     ext i j
-    have := congrFun (congrFun h.isHermitian i) j
-    simpa using this
+    simpa using congrFun (congrFun h.isHermitian i) j
   refine PosDef.of_dotProduct_mulVec_pos hH fun x hx => ?_
   have hv : (fun i => (x i : ℂ)) ≠ 0 := fun h0 => hx (by
     ext i
@@ -188,8 +185,7 @@ theorem act_complex {A B C D τ : Matrix ι ι ℂ}
   refine ⟨hdet, ⟨hWs, posDef_of_ofReal ?_⟩, ?_, key⟩
   · have huc : IsUnit (Q.map conj) := by
       rw [isUnit_iff_isUnit_det]
-      have := RingHom.map_det (starRingEnd ℂ) Q
-      exact this ▸ hu.map (starRingEnd ℂ)
+      exact (RingHom.map_det (starRingEnd ℂ) Q) ▸ hu.map (starRingEnd ℂ)
     refine (Matrix.IsUnit.posDef_star_left_conjugate_iff huc).1 ?_
     rw [star_eq_conjTranspose, hQt]
     rwa [← key] at hY

@@ -77,8 +77,7 @@ theorem orthBasisPos_holds : OrthBasisPos := by
     intro x hx h0
     obtain ⟨φ⟩ : Nonempty (K →+* ℂ) := inferInstance
     have := hpos x hx φ
-    rw [h0, map_zero] at this
-    simp at this
+    simp [h0, map_zero] at this
   obtain ⟨v, ho, hne⟩ := GramDeterminantPositive.exists_ortho_family h hs (finrank K V) le_rfl
   obtain ⟨e, he⟩ := GramDeterminantPositive.exists_basis_of_ortho h v rfl ho (fun i => hne0 _ (hne i))
   refine ⟨e, fun i j hij => by rw [he, he]; exact ho i j hij, fun i => ⟨?_, ?_⟩⟩

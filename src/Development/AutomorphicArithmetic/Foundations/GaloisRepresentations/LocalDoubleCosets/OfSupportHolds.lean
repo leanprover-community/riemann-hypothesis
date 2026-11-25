@@ -396,7 +396,7 @@ private theorem common_eigenvector_commuting_family {T D : Type}
 
 theorem UpperTheory.Reformulated.B.CommonEigenvectorExistence.common_eigenvector :
     ∀ {T D : Type}
-    [AddCommGroup D] [_root_.Module ℂ D] [FiniteDimensional ℂ D] [Nontrivial D] (φ : T → Module.End ℂ D),
+    [inst : AddCommGroup D] [inst_1 : _root_.Module ℂ D] [FiniteDimensional ℂ D] [Nontrivial D] (φ : T → Module.End ℂ D),
     (∀ (s t : T), Commute (φ s) (φ t)) → ∃ (l : D) (a : T → ℂ), l ≠ (0 : D) ∧ ∀ (t : T), (φ t : D → D) l = a t • l := by
   intro T D _ _ _ _ φ hc
   exact common_eigenvector_commuting_family φ hc _ ⊤ rfl top_ne_bot (fun _ _ _ => Submodule.mem_top)

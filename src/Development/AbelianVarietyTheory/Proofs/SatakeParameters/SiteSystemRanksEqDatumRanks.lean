@@ -53,7 +53,7 @@ theorem fills_Pj_m_add_one {p : ℕ} {G : GAtP p} (Fl : Fills G) (j : ℕ) :
   | zero => simp [Fills.Pj, Formalism.MainNotions.FormalGroupSystem.NN]
   | succ j => simp only [Fills.Pj, Places.withWt, Formalism.MainNotions.FormalGroupSystem.NN]; ring
 
-theorem sysS_ranks : AllSites (fun {D _ _ _ _ _ _ _ _ _ _ w _ _ _ H X} [Fact (D.what₂.places.resChar w).Prime] {std _ _} _ => (sysS H X std).mm = D.R.m ∧ (sysS H X std).t = D.R.t ∧ (∀ j, ((sysS H X std).Pj j).m + 1 = D.R.N j) ∧ ∀ j, RankTie (sysS H X std) D j) := by
+theorem sysS_ranks : AllSites (fun {D L hT Gi Gl Kc Dx cX ex u μ w hg Lv I H X} [Fact (D.what₂.places.resChar w).Prime] {std t J} S => (sysS H X std).mm = D.R.m ∧ (sysS H X std).t = D.R.t ∧ (∀ j, ((sysS H X std).Pj j).m + 1 = D.R.N j) ∧ ∀ j, RankTie (sysS H X std) D j) := by
   intro D L hT Gi Gl Kc Dx cX ex u μ w hg Lv I H X _ std t J S
   have hk : (D.gat u w hg).P.m + 1 = D.R.N 0 := (lev0At J.Gd u w hg).A.rk
   have ht : (Gl.Fl u w hg).t = D.R.t := X.fl_t

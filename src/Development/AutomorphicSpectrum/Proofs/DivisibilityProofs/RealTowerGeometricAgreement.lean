@@ -119,7 +119,7 @@ def rootCoef (r p : Ψ × Fin N) : ℤ :=
 
 theorem sum_rootCoef_mul [Fintype Ψ] (r : Ψ × Fin N) (f : Ψ × Fin N → ℤ) :
     ∑ p, rootCoef r p * f p =
-      (if _ : 0 < (r.2 : ℕ) then f (r.1, ⟨(r.2 : ℕ) - 1, lt_of_le_of_lt (Nat.sub_le _ _) r.2.isLt⟩) else 0) - f r := by
+      (if h : 0 < (r.2 : ℕ) then f (r.1, ⟨(r.2 : ℕ) - 1, lt_of_le_of_lt (Nat.sub_le _ _) r.2.isLt⟩) else 0) - f r := by
   obtain ⟨τ, i⟩ := r
   simp only [rootCoef, sub_mul, Finset.sum_sub_distrib, ite_mul, one_mul, zero_mul]
   congr 1
@@ -415,7 +415,7 @@ end RealGeo
 
 theorem geoFun_linA_pow_of_realTie : PB.Inputs → ∀ II : IntersectionSystem, IsFullIntersectionSystem II →
     ∀ (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N : ℕ) (M : RootModel Ψ N)
-    (S : PB.AnSys (dimFl Ψ N) (Option (Ψ × Fin N))) (n : ℕ) (_ : RealTie M S n) (lam : Wt Ψ N) (s : ℝ),
+    (S : PB.AnSys (dimFl Ψ N) (Option (Ψ × Fin N))) (n : ℕ) (R : RealTie M S n) (lam : Wt Ψ N) (s : ℝ),
     (n : ℝ) * M.geoFun (linA lam s ^ dimFl Ψ N) =
       eval (PB.gapS (fun x => lam x.1 x.2) (s / M.kA)) S.degPoly := by
   intro hI _ _ Ψ _ _ N M S n R lam s

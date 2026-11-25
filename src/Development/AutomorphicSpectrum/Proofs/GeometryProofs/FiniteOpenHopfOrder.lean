@@ -88,9 +88,7 @@ theorem valHom_comp {B C : Type} [CommRing B] [CommRing C] {X : Scheme.{0}} (x :
   have : Spec.map (CommRingCat.ofHom (valHom (Spec.map (CommRingCat.ofHom φ) ≫ x) U h')) =
       Spec.map (CommRingCat.ofHom (φ.comp (valHom x U h))) := by
     rw [← cancel_mono hU.fromSpec, e1, CommRingCat.ofHom_comp, Spec.map_comp, Category.assoc, e2]
-  have := Spec.map_injective this
-  have := congrArg (fun f => f.hom s) this
-  simpa using this
+  simpa using congrArg (fun f => f.hom s) (Spec.map_injective this)
 
 variable {R : Type} [CommRing R] [IsDomain R] {T : Type} [CommGroup T]
 
@@ -156,8 +154,7 @@ theorem val_algebraMap (t : T) (h : ⊤ ≤ (Γ.pt t).left ⁻¹ᵁ U) (r : R) :
   have e2 : (Γ.pt t).left ≫ Γ.G.hom = Spec.map (CommRingCat.ofHom (algebraMap R (FractionRing R))) :=
     Over.w (Γ.pt t)
   rw [← e1, Category.assoc, hρ, ← Spec.map_comp] at e2
-  have := congrArg (fun f => f.hom r) (Spec.map_injective e2)
-  simpa using this
+  simpa using congrArg (fun f => f.hom r) (Spec.map_injective e2)
 
 noncomputable def valAlg (t : T) (h : ⊤ ≤ (Γ.pt t).left ⁻¹ᵁ U) : Γ(Γ.G.left, U) →ₐ[R] FractionRing R :=
   { valHom (Γ.pt t).left U h with commutes' := val_algebraMap hρ t h }
@@ -352,8 +349,7 @@ theorem exists_den [Finite T] (Γ : QFGroup R T) {U : Γ.G.left.Opens} (hc : IsC
     · have := regularAt_mul Γ d (h' g hg)
       simpa [mul_assoc, mul_comm, mul_left_comm] using this
   · intro g _
-    have hreg := RegDenom.exists_denom_regularAt R T Γ f g
-    obtain ⟨d, hd, V, hg, s, hs⟩ := hreg
+    obtain ⟨d, hd, V, hg, s, hs⟩ := RegDenom.exists_denom_regularAt R T Γ f g
     refine ⟨V, mem_nhdsWithin_of_mem_nhds (V.isOpen.mem_nhds hg), d, hd, fun g' hg' => ⟨V, hg', s, hs⟩⟩
 
 end GlobalTheory.CompanionTheory.Ar.BT.SubOrder

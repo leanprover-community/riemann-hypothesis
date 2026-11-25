@@ -22,8 +22,8 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Ra7.exists_span_mod_sq :
-    ∀ {O R K : Type} [CommRing O]
-    [CommRing R] [Algebra O R] [IsNoetherianRing R] [CommRing K] [Algebra O K]
+    ∀ {O R K : Type} [inst : CommRing O]
+    [inst_1 : CommRing R] [inst_2 : Algebra O R] [IsNoetherianRing R] [inst_4 : CommRing K] [inst_5 : Algebra O K]
     (y : R →ₐ[O] K),
     Module.Finite O ↥y.range →
       ∃ (s : Finset R), ∀ (a : R), ∃ b ∈ Submodule.span O (↑s : Set R), a - b ∈ RingHom.ker y ^ (2 : ℕ) := by

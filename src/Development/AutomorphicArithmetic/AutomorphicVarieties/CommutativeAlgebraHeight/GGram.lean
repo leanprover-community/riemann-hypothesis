@@ -77,7 +77,6 @@ theorem UpperTheory.V.CA.g_gram :
     let B := Module.Basis.mk hli htop
     let e := B.indexEquiv (Matrix.stdBasis K ι ι)
     let x : ι × ι → Matrix ι ι K := fun a => (e.symm a : Matrix ι ι K)
-    have hxli : LinearIndependent K x := hli.comp e.symm e.symm.injective
     have hxspan : Submodule.span K (Set.range x) = ⊤ := by
       have hr : Set.range x = Set.range (Subtype.val : b → Matrix ι ι K) := by
         ext m
@@ -109,7 +108,7 @@ theorem UpperTheory.V.CA.g_gram :
       simpa using h
     apply hv0
     funext a
-    exact Fintype.linearIndependent_iff.mp hxli v hy0 a
+    exact Fintype.linearIndependent_iff.mp (hli.comp e.symm e.symm.injective) v hy0 a
   · rintro ⟨x, hxs, hdet⟩
     rcases isEmpty_or_nonempty ι with hι | hι
     · exact Subsingleton.elim _ _

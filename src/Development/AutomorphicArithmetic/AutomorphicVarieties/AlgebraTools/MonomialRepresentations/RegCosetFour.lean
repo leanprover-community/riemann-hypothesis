@@ -1067,7 +1067,7 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Qh2.diagz :
-    ∀ {K : Type} [Field K]
+    ∀ {K : Type} [inst : Field K]
     (M : Matrix (Fin (4 : ℕ)) (Fin (4 : ℕ)) K) (a : Fin (4 : ℕ) → K),
     Function.Injective a →
       M.charpoly = ∏ i : Fin (4 : ℕ), (Polynomial.X - (Polynomial.C : K → Polynomial K) (a i)) →

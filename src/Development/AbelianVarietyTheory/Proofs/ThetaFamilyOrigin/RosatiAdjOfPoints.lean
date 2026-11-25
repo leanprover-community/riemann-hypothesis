@@ -61,7 +61,7 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor
 
 namespace GlobalTheory
 
-theorem rosatiAdj_mul : ∀ (S : Scheme.{0}) (A : Over S) [GrpObj A] [IsCommMonObj A] (L : RigLB A) (_ : CubicalStr A L) (f g f' g' : A ⟶ A), RosatiAdj A L.L f g → RosatiAdj A L.L f' g' → RosatiAdj A L.L (f * f') (g * g') := by
+theorem rosatiAdj_mul : ∀ (S : Scheme.{0}) (A : Over S) [GrpObj A] [IsCommMonObj A] (L : RigLB A) (c : CubicalStr A L) (f g f' g' : A ⟶ A), RosatiAdj A L.L f g → RosatiAdj A L.L f' g' → RosatiAdj A L.L (f * f') (g * g') := by
   intro S A _ _ L c f g f' g' h h' s
   obtain ⟨U, hs, t, ht⟩ := h s
   obtain ⟨U', hs', t', ht'⟩ := h' s

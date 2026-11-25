@@ -59,8 +59,7 @@ private theorem UpperTheory.V.AlgebraTools.card_finite_length_module {A : Type} 
   induction h with
   | @of_subsingleton M _ _ _ =>
     refine ⟨Finite.of_subsingleton, ?_⟩
-    rw [Module.length_eq_zero]
-    simp
+    simp [Module.length_eq_zero]
   | @of_simple_quotient M _ _ N _ hN ih =>
     obtain ⟨hfin, hcard⟩ := ih
     obtain ⟨e⟩ := UpperTheory.V.AlgebraTools.simple_module_equiv_residue_field (A := A) (X := M ⧸ N)
@@ -71,10 +70,9 @@ private theorem UpperTheory.V.AlgebraTools.card_finite_length_module {A : Type} 
         (LinearMap.exact_subtype_mkQ N), Module.length_eq_one A (M ⧸ N)]
     have hc : Nat.card M = Nat.card (M ⧸ N) * Nat.card N :=
       AddSubgroup.card_eq_card_quotient_mul_card_addSubgroup N.toAddSubgroup
-    have hq0 : Nat.card (ResidueField A) ≠ 0 := Nat.card_pos.ne'
     have hM : Nat.card M = Nat.card (ResidueField A) ^ ((Module.length A N).toNat + 1) := by
       rw [hc, hq, hcard, pow_succ, mul_comm]
-    refine ⟨Nat.finite_of_card_ne_zero (by rw [hM]; exact pow_ne_zero _ hq0), ?_⟩
+    refine ⟨Nat.finite_of_card_ne_zero (by rw [hM]; exact pow_ne_zero _ Nat.card_pos.ne'), ?_⟩
     rw [hM, hlen, ENat.toNat_add hNt ENat.one_ne_top]
     simp
 

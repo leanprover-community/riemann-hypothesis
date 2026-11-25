@@ -130,7 +130,7 @@ end GlobalTheory.LocEmbExist
 
 namespace GlobalTheory.LocDict
 
-theorem exists_isLocEmb : ∀ (E Ω : Type) [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω] (A : ValuationSubring Ω) (w : HeightOneSpectrum (𝓞 E)) (_ : IsPlaceOver A w), ∃ ι : Ω →ₐ[E] Kbar w, IsLocEmb A w ι := by
+theorem exists_isLocEmb : ∀ (E Ω : Type) [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω] (A : ValuationSubring Ω) (w : HeightOneSpectrum (𝓞 E)) (h : IsPlaceOver A w), ∃ ι : Ω →ₐ[E] Kbar w, IsLocEmb A w ι := by
   intro E Ω _ _ _ _ _ A w h
   have : Algebra.IsAlgebraic E Ω := IsAlgClosure.isAlgebraic
   let ι₀ : Ω →ₐ[E] Kbar w := (by

@@ -76,8 +76,7 @@ private theorem algebraMap_trace_eq_add_of_ne_id {F E : Type} [Field F] [Field E
     intro h
     apply hσ
     ext y
-    have := congrArg (fun f : E ≃ₐ[F] E => f y) h
-    simpa [τ] using this
+    simpa [τ] using congrArg (fun f : E ≃ₐ[F] E => f y) h
   have huniv : (Finset.univ : Finset (E ≃ₐ[F] E)) = {1, τ} := by
     symm
     apply Finset.eq_of_subset_of_card_le (Finset.subset_univ _)
@@ -144,16 +143,14 @@ theorem _root_.GlobalTheory.exists_integer_add_conj_eq_one_of_formallyUnramified
     apply hx1
     obtain ⟨r, hr⟩ := key x (by
       intro b
-      have ht : Algebra.intTrace (𝓞 F) (𝓞 E) b ∈ p := hIp ⟨b, rfl⟩
       have hmem := (FractionalIdeal.mem_inv_iff (FractionalIdeal.coeIdeal_ne_zero.mpr hp0)).1 hx
-        _ (FractionalIdeal.mem_coeIdeal_of_mem (𝓞 F)⁰ ht)
+        _ (FractionalIdeal.mem_coeIdeal_of_mem (𝓞 F)⁰ (hIp ⟨b, rfl⟩))
       obtain ⟨r, hr⟩ := (FractionalIdeal.mem_one_iff _).1 hmem
       refine ⟨r, ?_⟩
       rw [hr, Algebra.algebraMap_intTrace (K := F) (L := E)])
     rw [← hr]
     exact (FractionalIdeal.mem_one_iff _).2 ⟨r, rfl⟩
-  have h1 : (1 : 𝓞 F) ∈ I := hItop ▸ Submodule.mem_top
-  obtain ⟨θ, hθ⟩ := h1
+  obtain ⟨θ, hθ⟩ : (1 : 𝓞 F) ∈ I := hItop ▸ Submodule.mem_top
   refine ⟨θ, ?_⟩
   rw [← algebraMap_trace_eq_add_of_ne_id h2 σ (ne_id_of_embedding_conj hE σ hσ)]
   have := Algebra.algebraMap_intTrace (A := 𝓞 F) (K := F) (L := E) (B := 𝓞 E) θ

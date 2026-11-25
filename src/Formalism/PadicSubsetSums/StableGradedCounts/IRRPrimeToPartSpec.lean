@@ -28,14 +28,13 @@ theorem prime_to_part_spec : PrimeToPartSpec := by
   have hnpos : 0 < n := hx.orderOf_pos
   have hqd : q ∣ n := Nat.ordProj_dvd n l
   have hqpos : 0 < q := pow_pos hl.pos _
-  have hmpos : 0 < n / q := Nat.div_pos (Nat.le_of_dvd hnpos hqd) hqpos
   have hcop : Nat.Coprime q (n / q) :=
     Nat.Coprime.pow_left _ (Nat.coprime_ordCompl hl hnpos.ne')
   have hnqm : n = q * (n / q) := (Nat.mul_div_cancel' hqd).symm
   unfold primeToPart
   refine ⟨?_, ?_⟩
   · have hg : Nat.gcd n (q ^ Nat.totient (n / q)) = q := by
-      have h3 := gcd_mul_pow_totient hmpos hcop
+      have h3 := gcd_mul_pow_totient (Nat.div_pos (Nat.le_of_dvd hnpos hqd) hqpos) hcop
       rwa [← hnqm] at h3
     rw [orderOf_pow' x (pow_pos hqpos _).ne', ← hn, hg]
   · refine ⟨n.factorization l, ?_⟩

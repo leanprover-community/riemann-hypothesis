@@ -204,8 +204,7 @@ theorem finrank_eq_mul {R : Type*} [CommRing R] (hR : IsField R) {I A M B M' : T
   haveI : Module.Finite R (I → M) := Module.Finite.equiv e
   haveI : Finite I := finite_index (R := R) (M := M)
   letI := Fintype.ofFinite I
-  rw [e.finrank_eq, e'.finrank_eq, Module.finrank_pi_fintype, Module.finrank_pi_fintype]
-  simp [hM]
+  simp [e.finrank_eq, e'.finrank_eq, Module.finrank_pi_fintype, Module.finrank_pi_fintype, hM]
 
 theorem sec_ne_zero {X : Scheme.{0}} [IsIntegral X] {M : LB X} (s : LB.Sec M) {i₀ : M.ι}
     (h₀ : s.f i₀ ≠ 0) (i : M.ι) [hi : Nonempty (M.U i)] : s.f i ≠ 0 := by

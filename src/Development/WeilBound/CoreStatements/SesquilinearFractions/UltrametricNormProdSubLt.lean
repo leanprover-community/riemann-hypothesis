@@ -134,9 +134,8 @@ theorem negDef_block_of_posDef : ∀ (p q : ℕ) (A : Matrix (Fin p) (Fin p) ℂ
   have hinj : Function.Injective (C2ᴴ).mulVec := by
     intro x y hxy
     by_contra hne
-    have hz : x - y ≠ 0 := sub_ne_zero.mpr hne
     have h0 : (C2ᴴ) *ᵥ (x - y) = 0 := by rw [Matrix.mulVec_sub, hxy, sub_self]
-    have := hP.dotProduct_mulVec_pos hz
+    have := hP.dotProduct_mulVec_pos (sub_ne_zero.mpr hne)
     rw [← Matrix.mulVec_mulVec, h0, Matrix.mulVec_zero, dotProduct_zero] at this
     exact lt_irrefl _ this
   have hU : IsUnit (C2ᴴ) := Matrix.mulVec_injective_iff_isUnit.mp hinj

@@ -92,19 +92,16 @@ theorem exists_compactOpenSubgroup_normalized {K : Subgroup G} (hK : IsCompact (
     { carrier := {x | ∀ k ∈ K, k * x * k⁻¹ ∈ L}
       one_mem' := fun k _ => by simp
       mul_mem' := fun {a b} ha hb k hk => by
-        have := mul_mem (ha k hk) (hb k hk)
-        simpa [mul_assoc] using this
+        simpa [mul_assoc] using mul_mem (ha k hk) (hb k hk)
       inv_mem' := fun {a} ha k hk => by
-        have := inv_mem (ha k hk)
-        simpa [mul_assoc] using this }
+        simpa [mul_assoc] using (inv_mem (ha k hk)) }
   have hvN : v ⊆ (N₀ : Set G) := fun x hx k hk =>
     huv (show (k, x) ∈ u ×ˢ v from ⟨hKu hk, hx⟩)
   have hN₀n : (N₀ : Set G) ∈ 𝓝 (1 : G) := mem_of_superset (hv.mem_nhds (h1v rfl)) hvN
   have hN₀L : (N₀ : Set G) ⊆ L := fun x hx => by simpa using hx 1 K.one_mem
   let N : OpenSubgroup G := ⟨N₀, N₀.isOpen_of_mem_nhds hN₀n⟩
   refine ⟨N, hLc.of_isClosed_subset N.isClosed hN₀L, hN₀L.trans hLU, fun k hk n hn j hj => ?_⟩
-  have := hn (j * k) (mul_mem hj hk)
-  simpa [mul_assoc] using this
+  simpa [mul_assoc] using hn (j * k) (mul_mem hj hk)
 
 end VanDantzig
 

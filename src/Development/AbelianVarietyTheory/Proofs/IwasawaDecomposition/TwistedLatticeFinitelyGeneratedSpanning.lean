@@ -169,7 +169,7 @@ theorem bsupT_fg_span (In : RatIn D S) (i : T.Tw) (j : ℕ) (b : Bool) :
     exact Submodule.smul_mem _ k h1
   | add x y hx hy => exact Submodule.add_mem _ hx hy
 
-theorem bsupT_fg_span_all : ∀ (D : D7) (S : RatDat D.ntw) (_ : RatIn D S) (T : TwR D.LL0 D.nd) (i : T.Tw) (j : ℕ) (b : Bool),
+theorem bsupT_fg_span_all : ∀ (D : D7) (S : RatDat D.ntw) (In : RatIn D S) (T : TwR D.LL0 D.nd) (i : T.Tw) (j : ℕ) (b : Bool),
     (BsupT D T S i j b).FG ∧
       Submodule.span (FractionRing (T.O i)) (BsupT D T S i j b : Set (FmT D T S i j b)) = ⊤ :=
   fun D S In T i j b => bsupT_fg_span D T S In i j b

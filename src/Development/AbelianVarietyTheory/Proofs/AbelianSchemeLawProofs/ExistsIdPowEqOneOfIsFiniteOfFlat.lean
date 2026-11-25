@@ -103,8 +103,7 @@ theorem pow_card_eq_one {ι : Type*} [Fintype ι] (b : Module.Basis ι C F) (τ 
       map_add' := fun f g => by ext i c; simp
       map_smul' := fun g f => by
         ext i c
-        rw [hsmul]
-        simp only [RingHom.id_apply, Pi.smul_apply, smul_eq_mul]
+        simp only [hsmul, RingHom.id_apply, Pi.smul_apply, smul_eq_mul]
         rw [(ℛ R c).convMul_apply]
         simp only [LinearMap.comp_apply]
         rw [(ℛ R c).convMul_apply]

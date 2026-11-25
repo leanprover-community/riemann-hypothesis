@@ -79,8 +79,7 @@ theorem gramSt_fischer {A : Matrix m m ℂ} {B : Matrix m k ℂ} {C : Matrix k m
     have e : (fromBlocks A B C D).submatrix Sum.inl Sum.inl = A := by ext; simp
     rwa [e] at this
   have hC : C = Bᴴ := by
-    have := (isHermitian_fromBlocks_iff.mp h.1)
-    exact this.2.1.symm
+    exact (isHermitian_fromBlocks_iff.mp h.1).2.1.symm
   subst hC
   have : Invertible A := hA.isUnit.invertible
   have hS : (D - Bᴴ * A⁻¹ * B).PosSemidef :=
@@ -92,11 +91,10 @@ theorem gramSt_fischer {A : Matrix m m ℂ} {B : Matrix m k ℂ} {C : Matrix k m
     have := h.det_pos
     rw [hdet, h0, mul_zero] at this
     exact lt_irrefl _ this
-  have hSd : (D - Bᴴ * A⁻¹ * B).PosDef := hS.posDef_iff_det_ne_zero.mpr hSne
   have hdiff : (D - (D - Bᴴ * A⁻¹ * B)).PosSemidef := by
     rw [sub_sub_cancel]
     exact hA.inv.posSemidef.conjTranspose_mul_mul_same B
-  have hmono := gramSt_det_re_le_of_sub hSd hdiff
+  have hmono := gramSt_det_re_le_of_sub (hS.posDef_iff_det_ne_zero.mpr hSne) hdiff
   obtain ⟨hAre, hAim⟩ := Complex.pos_iff.mp hA.det_pos
   rw [hdet, Complex.mul_re, ← hAim, zero_mul, sub_zero]
   exact mul_le_mul_of_nonneg_left hmono hAre.le
@@ -128,10 +126,9 @@ theorem gramSt_hadamard {k : ℕ} {D : Matrix (Fin k) (Fin k) ℂ} (hD : D.PosDe
     have h3 : (D.submatrix (Fin.natAdd k) (Fin.natAdd k : Fin 1 → Fin (k + 1))).det =
         D (Fin.last k) (Fin.last k) := by
       rw [det_unique]; rfl
-    have h4 : 0 ≤ (D (Fin.last k) (Fin.last k)).re := (Complex.pos_iff.mp hD.diag_pos).1.le
     rw [h3] at h1
     rw [Fin.prod_univ_castSucc]
-    exact h1.trans (mul_le_mul_of_nonneg_right h2 h4)
+    exact h1.trans (mul_le_mul_of_nonneg_right h2 ((Complex.pos_iff.mp hD.diag_pos).1.le))
 
 theorem posDef_det_re_pos {n : ℕ} {G : Matrix (Fin n) (Fin n) ℂ} (hG : G.PosDef) :
     0 < G.det.re ∧ G.det.im = 0 := by

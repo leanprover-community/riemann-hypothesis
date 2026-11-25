@@ -80,10 +80,9 @@ theorem RootDivSuppEmpty.proof : RootDivSuppEmpty.Statement := by
       rw [← hp, Polynomial.eval₂_eq_sum_range]
       simp [n]
     rw [hsum, MvPolynomial.C_0, zero_mul]
-  have hGQ : G ∈ Q := hle (Ideal.mem_sup_left hG)
   have h0 : Ideal.Quotient.mk Q (X ⟨τ, plAnchor j m⟩) = 0 := Ideal.Quotient.eq_zero_iff_mem.2 hτ
   have hpow : Ideal.Quotient.mk Q (X ⟨τ, I⟩) ^ n = 0 := by
-    have h1 := Ideal.Quotient.eq_zero_iff_mem.2 hGQ
+    have h1 := Ideal.Quotient.eq_zero_iff_mem.2 (hle (Ideal.mem_sup_left hG))
 
     simp only [hGdef, map_sum, map_mul, map_pow, h0] at h1
     rw [Finset.sum_range_succ, Finset.sum_eq_zero, zero_add, Nat.sub_self, pow_zero, mul_one,

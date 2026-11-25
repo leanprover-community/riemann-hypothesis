@@ -118,8 +118,7 @@ theorem psi_sec (x : Fin m → Ω) (j₀ : Fin m) (hx₀ : x j₀ ≠ 0) (i : Fi
   have h1 : psi x j₀ (sec x i) = ∑ j, gs x j₀ (i.succ, j) * C (x j) := by
 
     simp only [sec, map_sum, map_mul, psi_X, psi_C]
-  rw [h1]
-  simp only [gs_succ, add_mul]
+  simp only [h1, gs_succ, add_mul]
   rw [Finset.sum_add_distrib, hI, neg_mul, hS]
   first
   | exact add_neg_cancel _

@@ -280,9 +280,7 @@ theorem coboundaries2_le_cocycles2 [ContinuousMul G] (h : ContAction rho) : B2 r
   refine ⟨?_, fun g k l => ?_⟩
   · have h1 : Continuous fun p : G × G => rho p.1 (c p.2) :=
       h.comp (continuous_fst.prodMk (hc.comp continuous_snd))
-    have h2 : Continuous fun p : G × G => c (p.1 * p.2) := hc.comp continuous_mul
-    have h3 : Continuous fun p : G × G => c p.1 := hc.comp continuous_fst
-    exact (h1.sub h2).add h3
+    exact (h1.sub (hc.comp continuous_mul)).add (hc.comp continuous_fst)
   · simp only [d1_apply, map_mul, Module.End.mul_apply, map_sub, map_add (f := _), mul_assoc]
     abel
 

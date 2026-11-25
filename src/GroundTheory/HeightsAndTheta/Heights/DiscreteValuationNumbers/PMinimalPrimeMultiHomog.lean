@@ -47,9 +47,8 @@ theorem lexRelabel_surjective (e : K ≃ Fin (Fintype.card K)) : Function.Surjec
 
 theorem lexRelabel_injective (e : K ≃ Fin (Fintype.card K)) : Function.Injective (lexRelabel e) := by
   intro a b h
-  have h' : (fun j => a (e.symm j)) = fun j => b (e.symm j) := toLex.injective h
   funext k
-  simpa using congrFun h' (e k)
+  simpa using congrFun (toLex.injective h) (e k)
 
 variable [DecidableEq K] [DecidableEq (Lex (Fin (Fintype.card K) → ℕ))]
 

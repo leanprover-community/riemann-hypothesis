@@ -33,12 +33,11 @@ theorem uh_mul {a b : Mx k r} (ha : a ∈ Formalism.QuantumDeterminants.UH (Form
 theorem uh_cancel {a x : Mx k r} (ha : a ∈ Formalism.QuantumDeterminants.UH (Formalism.QuantumDeterminants.Hpk k r))
     (hax : a * x ∈ Formalism.QuantumDeterminants.UH (Formalism.QuantumDeterminants.Hpk k r)) : x ∈ Formalism.QuantumDeterminants.UH (Formalism.QuantumDeterminants.Hpk k r) := by
   have ha' : aᴴ * Formalism.QuantumDeterminants.Hpk k r * a = Formalism.QuantumDeterminants.Hpk k r := ha
-  have hax' : (a * x)ᴴ * Formalism.QuantumDeterminants.Hpk k r * (a * x) = Formalism.QuantumDeterminants.Hpk k r := hax
   show xᴴ * Formalism.QuantumDeterminants.Hpk k r * x = Formalism.QuantumDeterminants.Hpk k r
   calc xᴴ * Formalism.QuantumDeterminants.Hpk k r * x = xᴴ * (aᴴ * Formalism.QuantumDeterminants.Hpk k r * a) * x := by rw [ha']
     _ = (a * x)ᴴ * Formalism.QuantumDeterminants.Hpk k r * (a * x) := by
         simp only [Matrix.conjTranspose_mul, Matrix.mul_assoc]
-    _ = Formalism.QuantumDeterminants.Hpk k r := hax'
+    _ = Formalism.QuantumDeterminants.Hpk k r := hax
 
 theorem uh_measurableSet :
     MeasurableSet {x : Formalism.QuantumDeterminants.Mt k r | Matrix.of x ∉ Formalism.QuantumDeterminants.UH (Formalism.QuantumDeterminants.Hpk k r)} := by

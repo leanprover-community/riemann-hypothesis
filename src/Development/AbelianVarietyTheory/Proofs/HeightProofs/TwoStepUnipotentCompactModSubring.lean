@@ -166,8 +166,7 @@ theorem elt_cond (hm : ∀ x y, st (x * y) = st y * st x) (hi : ∀ x, st (st x)
   · have e : (elt st h b w - 1) * e₁ = -(st b * e₁) + b * e₁ + (w * e₁ - h * (st b * (b * e₁))) := by
       simp only [elt, sub_mul, add_mul, one_mul, mul_assoc]
       abel
-    rw [e, f5, f3, f4]
-    simp
+    simp [e, f5, f3, f4]
   · have hX : (elt st h b w - 1) * (1 - e₃) = -st b := by
       have e : (elt st h b w - 1) * (1 - e₃) =
           -st b + b + (w - h * (st b * b)) - (-(st b * e₃) + b * e₃ + (w * e₃ - h * (st b * (b * e₃)))) := by
@@ -208,11 +207,9 @@ theorem exists_elt (hm : ∀ x y, st (x * y) = st y * st x) (hi : ∀ x, st (st 
     rw [← e, sub_mul, one_mul]
     abel
   have hb1 : e₁ * b = 0 := by
-    rw [hbdef]
-    simp only [← mul_assoc, mul_sub, mul_one, h11, sub_self, zero_mul]
+    simp only [hbdef, ← mul_assoc, mul_sub, mul_one, h11, sub_self, zero_mul]
   have hb3 : e₃ * b = 0 := by
-    rw [hbdef]
-    simp only [← mul_assoc, mul_sub, mul_one, h31, sub_zero, he3X, zero_mul]
+    simp only [hbdef, ← mul_assoc, mul_sub, mul_one, h31, sub_zero, he3X, zero_mul]
   have hb3' : b * e₃ = b := by rw [hbdef, mul_assoc, he33]
   have sb1 : e₁ * st b = st b := by rw [← he3, ← hm, hb3']
   have sb3 : st b * e₃ = 0 := by rw [← hs, ← hm, hb1, map_zero]

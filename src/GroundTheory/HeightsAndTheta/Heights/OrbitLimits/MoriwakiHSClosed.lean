@@ -366,8 +366,7 @@ theorem exists_chart_le (N : ℕ) (μ : (Σ k, ι k) → ℕ)
 
 open Classical in
 theorem sum_chart (c : ∀ k, ι k) (N : ℕ) (k : K) : ∑ i, (if c k = i then N else 0) = N := by
-  rw [Finset.sum_ite_eq]
-  simp
+  simp [Finset.sum_ite_eq]
 
 
 open Classical in
@@ -518,8 +517,7 @@ theorem proof : RelTorsionBound.Statement := by
     rw [← h1]
     conv_lhs => rw [← hA]
 
-    rw [map_sum]
-    simp only [smul_eq_mul]
+    simp only [map_sum, smul_eq_mul]
   suffices h : aeval y F ∈ (relSecM R y b).map (LinearMap.mulLeft R (y ⟨k0, c0 k0⟩)) by
     obtain ⟨g', hg', hgx⟩ := h
     exact ⟨g', hg', by simpa using hgx.symm⟩

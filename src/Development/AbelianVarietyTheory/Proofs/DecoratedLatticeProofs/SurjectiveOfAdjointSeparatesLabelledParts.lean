@@ -85,8 +85,7 @@ theorem exists_sum_pairwise_unrelated {A I : Type} [AddCommGroup A] [Module ℂ 
           by_cases hji : j = i
           · subst hji
             simp only [Function.update_self]
-            have := hmerge (v j) w j B 1 (hv j hj) hw hiB (by simpa using hz)
-            simpa using this
+            simpa using hmerge (v j) w j B 1 (hv j hj) hw hiB (by simpa using hz)
           · rw [Function.update_of_ne hji]; exact hv j hj
         · rw [← Finset.add_sum_erase s (Function.update v i (v i + w)) hi, ← Finset.add_sum_erase s v hi]
           simp only [Function.update_self]
@@ -154,11 +153,9 @@ theorem exists_ne_zero_orth {A : Type} [AddCommGroup A] [Module ℂ A] [FiniteDi
   refine ⟨u, hu0, fun s hs => ?_⟩
   have hzero : (ipA u).comp S.subtype = 0 := by
     refine b.ext fun i => ?_
-    have := congrFun (LinearMap.mem_ker.mp hu) i
-    simpa [f] using this
+    simpa [f] using congrFun (LinearMap.mem_ker.mp hu) i
   have : ipA u s = 0 := by
-    have := LinearMap.congr_fun hzero ⟨s, hs⟩
-    simpa using this
+    simpa using LinearMap.congr_fun hzero ⟨s, hs⟩
   rw [hsym, this, map_zero]
 
 theorem surjective_of_adjoint_separates : ∀ (A C I J : Type) [AddCommGroup A] [Module ℂ A] [AddCommGroup C] [Module ℂ C] [FiniteDimensional ℂ A] (ipA : A →ₗ[ℂ] A →ₗ⋆[ℂ] ℂ) (ip : C →ₗ[ℂ] C →ₗ⋆[ℂ] ℂ) (Θ : C →ₗ[ℂ] A) (pA : A → I → Prop) (pC : C → J → Prop) (RA : I → I → Prop) (RC : J → J → Prop) (T : I → J), (∀ x y, ipA x y = conj (ipA y x)) → (∀ x, x ≠ 0 → 0 < (ipA x x).re) → (∀ x, x ≠ 0 → 0 < (ip x x).re) → Equivalence RA → Submodule.span ℂ {u | ∃ B, pA u B} = ⊤ → (∀ u u' B B' (a : ℂ), pA u B → pA u' B' → RA B B' → u + a • u' ≠ 0 → pA (u + a • u') B) → (∀ u B (a : ℂ), pA u B → a ≠ 0 → pA (a • u) B) → (∀ B B', RC (T B) (T B') → RA B B') → (∀ (ι : Type) (x : ι → C) (B : ι → J), (∀ i, pC (x i) (B i)) → (∀ i i', i ≠ i' → ¬ RC (B i) (B i')) → LinearIndependent ℂ x) → (∀ u B, pA u B → ∃ x, (∀ y, ip y x = ipA (Θ y) u) ∧ pC x (T B)) → Function.Surjective Θ := by

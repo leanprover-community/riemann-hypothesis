@@ -19,8 +19,7 @@ open MvPolynomial Formalism.GradedWeylDivisibility
 private theorem cvd_adj {B : Type*} [CommRing B] {m : ℕ} (M : Matrix (Fin (m + 1)) (Fin (m + 1)) B)
     (i : Fin (m + 1)) :
     M.adjugate 0 i = (-1) ^ (i : ℕ) * Matrix.det (fun a b : Fin m => M (i.succAbove a) b.succ) := by
-  rw [Matrix.adjugate_fin_succ_eq_det_submatrix]
-  simp only [Fin.val_zero, add_zero, Fin.succAbove_zero]
+  simp only [Matrix.adjugate_fin_succ_eq_det_submatrix, Fin.val_zero, add_zero, Fin.succAbove_zero]
   rfl
 
 private def cvdM (K : Type) [Field K] (m : ℕ) :
@@ -29,8 +28,7 @@ private def cvdM (K : Type) [Field K] (m : ℕ) :
 
 private theorem cvd_covY (K : Type) [Field K] (m : ℕ) (i : Fin (m + 1)) :
     covY K m i = (cvdM K m).adjugate 0 i := by
-  rw [cvd_adj]
-  simp only [covY]
+  simp only [cvd_adj, covY]
   congr 2
 
 theorem signed_minors_cofactor_adjugate : CovL5adj := by
@@ -106,8 +104,7 @@ theorem signed_minors_alg_independent : SignedMinorsAlgIndependent := by
   funext i
   show f (covY K (k + 1) i) = z i
   have hzi : Q.adjugate 0 i = z i := by
-    rw [hQ]
-    simp [N, cvdN]
+    simp [hQ, N, cvdN]
   rw [← hzi, cvd_adj]
   simp only [covY, map_mul, map_pow, map_neg, map_one]
   congr 1

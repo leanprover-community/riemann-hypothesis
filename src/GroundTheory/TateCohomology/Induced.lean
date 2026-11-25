@@ -91,8 +91,7 @@ theorem isZero_tateCohomology_zero_of_forall (M : Rep.{u} k G)
         (cochainsIso₁ M).hom.hom (((inhomogeneousCochains M).d 0 1).hom x₂) := by
       rw [← LinearMap.comp_apply, ← ModuleCat.hom_comp, comp_d₀₁_eq]; rfl
     rw [show ((inhomogeneousCochains M).d 0 1).hom x₂ = 0 from hd, map_zero] at key
-    have := congr_fun key g
-    exact sub_eq_zero.mp this
+    exact sub_eq_zero.mp (congr_fun key g)
   obtain ⟨y, hy⟩ := h _ hinv
   refine ⟨(chainsIso₀ M).inv y, ?_⟩
   simp only [Rep.tateNorm, ConcreteCategory.comp_apply, Iso.inv_hom_id_apply]

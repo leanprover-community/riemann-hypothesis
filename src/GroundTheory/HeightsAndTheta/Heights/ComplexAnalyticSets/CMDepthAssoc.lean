@@ -56,8 +56,7 @@ theorem length_le_ringKrullDim_quotient_colon {R : Type*} [CommRing R] [IsLocalR
       exact Submodule.mem_top
     obtain ⟨k, hk⟩ := Nat.exists_eq_succ_of_ne_zero hn0
     have hyk : y ∈ (Ideal.span {x} ^ k • ⊤ : Submodule R M) := by
-      have := Nat.find_min hex (show k < n by omega)
-      simpa using this
+      simpa using Nat.find_min hex (show k < n by omega)
     rw [hpow] at hyk hn
     obtain ⟨y₁, -, rfl⟩ := (Submodule.mem_smul_pointwise_iff_exists _ _ _).mp hyk
     have hy₁ : y₁ ∉ (x • ⊤ : Submodule R M) := by

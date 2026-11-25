@@ -122,8 +122,7 @@ theorem deg_iff_not_li {F : Type} [Field F] {N n : ℕ} (x : Mat F N) :
         rw [Polynomial.aeval_monomial, Algebra.smul_def]
       rw [h2] at hqx
       funext p
-      have := congrArg (fun M : Mat F N => M p.1 p.2) hqx
-      simpa [Matrix.sum_apply, Finset.sum_apply] using this
+      simpa [Matrix.sum_apply, Finset.sum_apply] using congrArg (fun M : Mat F N => M p.1 p.2) hqx
     · by_contra hall
       push Not at hall
       apply hq0

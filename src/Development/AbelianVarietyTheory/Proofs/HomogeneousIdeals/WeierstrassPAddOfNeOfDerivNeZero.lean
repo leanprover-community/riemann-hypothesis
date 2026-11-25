@@ -218,8 +218,7 @@ theorem derivWeierstrassP_eq_zero_iff {z : ℂ} (hz : z ∉ L.lattice) :
     simpa using sub_mem_lattice_of_weierstrassP_eq L (w := -z) hz (by simpa using hz)
       (by simp) (by simp [h])
   · intro h
-    have := L.derivWeierstrassP_add_coe (-z) ⟨_, h⟩
-    simpa [CharZero.eq_neg_self_iff] using this
+    simpa [CharZero.eq_neg_self_iff] using L.derivWeierstrassP_add_coe (-z) ⟨_, h⟩
 
 theorem eq_of_differentiable_of_periodic {f : ℂ → ℂ} (hf : Differentiable ℂ f)
     (hp : ∀ z, ∀ l ∈ L.lattice, f (z + l) = f z) (z w : ℂ) : f z = f w :=
@@ -303,8 +302,7 @@ lemma weierstrassP_add_of_ne_of_deriv_ne_zero {z w : ℂ} (hz : z ∉ L.lattice)
     ring
   obtain ⟨u, hu, hu1, hu2⟩ := exists_weierstrassP_eq_and_derivWeierstrassP_eq L (x := F z) (y := G z) (by
     obtain ⟨-, e2, e3⟩ := alg z hz (sub_ne_zero.mpr hne)
-    rw [e3, e2]
-    simp only [G, F]
+    simp only [e3, e2, G, F]
     ring)
   obtain ⟨c, rfl⟩ : ∃ c, u = z + c := ⟨u - z, by ring⟩
   have loc := eventuallyEq_of_weierstrass_system (weierstrass_system_add_const L c hu) sys hu1 hu2
@@ -319,8 +317,7 @@ lemma weierstrassP_add_of_ne_of_deriv_ne_zero {z w : ℂ} (hz : z ∉ L.lattice)
     · have := L.analyticOnNhd_derivWeierstrassP t fun h ↦ ht (.inl h)
       fun_prop
     · filter_upwards [loc, hev] with t ht ⟨_, ht'⟩
-      rw [ht]
-      simp only [F, s]
+      simp only [ht, F, s]
       field_simp
       ring
   have hc : -w + c ∈ L.lattice := by

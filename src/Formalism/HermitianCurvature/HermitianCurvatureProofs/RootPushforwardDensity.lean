@@ -62,8 +62,7 @@ theorem A_disjoint (s : ℕ) (hs : s ≠ 0) :
   apply hjk
   simp only [Finset.coe_range, Set.mem_Iio] at hj hk
   have e : zeta s ^ j * (z ^ s) ^ ((s : ℂ)⁻¹) = zeta s ^ k * (z ^ s) ^ ((s : ℂ)⁻¹) := by
-    have := hzj.2.trans hzk.2.symm
-    simpa [R] using this
+    simpa [R] using hzj.2.trans hzk.2.symm
   have hα : (z ^ s) ^ ((s : ℂ)⁻¹) ≠ 0 := by
     intro h0
     have := hzj.2

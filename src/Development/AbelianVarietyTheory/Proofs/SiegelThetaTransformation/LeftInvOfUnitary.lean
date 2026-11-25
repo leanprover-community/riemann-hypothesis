@@ -98,8 +98,7 @@ theorem exists_haar_image {G : Type} [Group G] [TopologicalSpace G] [IsTopologic
   have hρ0 : ρ ≠ 0 := by
     intro h0
     have h1 := hρ Set.univ MeasurableSet.univ
-    rw [h0] at h1
-    simp only [Measure.coe_zero, Pi.zero_apply, Set.preimage_univ, Set.univ_inter] at h1
+    simp only [h0, Measure.coe_zero, Pi.zero_apply, Set.preimage_univ, Set.univ_inter] at h1
     exact (hH.measure_pos μ₀ ⟨1, H.one_mem⟩).ne' h1.symm
   have hc := Measure.isMulLeftInvariant_eq_smul ρ ν
   set c := Measure.haarScalarFactor ρ ν
@@ -136,8 +135,7 @@ theorem mat_injective : Function.Injective (UpqT.mat (P := P) (Q := Q)) := by
   intro a b h
   let a' : Formalism.UG.Upq P Q := a
   let b' : Formalism.UG.Upq P Q := b
-  have h' : a'.1 = b'.1 := Units.ext h
-  exact (Subtype.ext h' : a' = b')
+  exact (Subtype.ext (Units.ext h) : a' = b')
 
 theorem mat_mul (b c : UpqT P Q) : UpqT.mat (b * c) = UpqT.mat b * UpqT.mat c := rfl
 
@@ -176,8 +174,7 @@ theorem exists_frame (h : Formalism.UG.HasSignature G P Q) :
     calc Matrix.reindex e e G = (u * v)ᴴ * Matrix.reindex e e G * (u * v) := by
           rw [huv, Matrix.conjTranspose_one, Matrix.one_mul, Matrix.mul_one]
       _ = vᴴ * (uᴴ * Matrix.reindex e e G * u) * v := by
-          rw [Matrix.conjTranspose_mul]
-          simp only [Matrix.mul_assoc]
+          simp only [Matrix.conjTranspose_mul, Matrix.mul_assoc]
       _ = vᴴ * Formalism.UG.Jpq P Q * v := by rw [hg']
   refine ⟨((g⁻¹ : GL (Fin P ⊕ Fin Q) ℂ) : Matrix (Fin P ⊕ Fin Q) (Fin P ⊕ Fin Q) ℂ).submatrix id e,
     (g : Matrix (Fin P ⊕ Fin Q) (Fin P ⊕ Fin Q) ℂ).submatrix e id, ?_, ?_, ?_⟩
@@ -194,8 +191,7 @@ variable {A A' : Matrix (Fin P ⊕ Fin Q) (Fin n) ℂ} {L : Matrix (Fin n) (Fin 
 theorem conj_frame (hA : Aᴴ * Formalism.UG.Jpq P Q * A = G) (hr : A * L = 1) : Lᴴ * G * L = Formalism.UG.Jpq P Q := by
   rw [← hA]
   have h1 : Lᴴ * (Aᴴ * Formalism.UG.Jpq P Q * A) * L = (A * L)ᴴ * Formalism.UG.Jpq P Q * (A * L) := by
-    rw [Matrix.conjTranspose_mul]
-    simp only [Matrix.mul_assoc]
+    simp only [Matrix.conjTranspose_mul, Matrix.mul_assoc]
   rw [h1, hr, Matrix.conjTranspose_one, Matrix.one_mul, Matrix.mul_one]
 
 theorem change_unitary (hA : Aᴴ * Formalism.UG.Jpq P Q * A = G) (hr : A * L = 1) (hA' : A'ᴴ * Formalism.UG.Jpq P Q * A' = G) :
@@ -252,8 +248,7 @@ theorem read_iff (hl : L * A = 1) (hr : A * L = 1) (u : UpqT P Q) (hu : UpqT.mat
       have h3 := mat_injective h2
       rw [← mul_assoc, ← h3, mul_inv_cancel_right]
     · rintro rfl
-      rw [mat_mul, mat_mul, ht, hA']
-      simp only [Matrix.mul_assoc]
+      simp only [mat_mul, mat_mul, ht, hA', Matrix.mul_assoc]
       rw [← Matrix.mul_assoc (UpqT.mat u⁻¹), hinv, Matrix.one_mul, hl, Matrix.mul_one]
   simp only [Set.mem_preimage]
   constructor

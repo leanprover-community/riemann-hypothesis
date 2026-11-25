@@ -118,8 +118,7 @@ theorem ad_mul (A B : GL (Fin 2) K) : ad (A * B) = ad A * ad B := by
       = (A : Matrix (Fin 2) (Fin 2) K) * ((B : Matrix (Fin 2) (Fin 2) K) * ofCoord (Pi.single j 1) * ((B⁻¹ : GL (Fin 2) K) : Matrix (Fin 2) (Fin 2) K)) * ((A⁻¹ : GL (Fin 2) K) : Matrix (Fin 2) (Fin 2) K) := by
     simp only [mul_inv_rev, Units.val_mul, Matrix.mul_assoc]
   rw [this, h3, Matrix.mulVec_mulVec] at h1
-  have := congrFun h1 i
-  simpa [Matrix.mulVec_single, Matrix.mul_apply] using this.symm
+  simpa [Matrix.mulVec_single, Matrix.mul_apply] using (congrFun h1 i).symm
 
 theorem ad_one : ad (1 : GL (Fin 2) K) = 1 := by
   ext i j
@@ -138,8 +137,7 @@ theorem form_apply (v w : Fin 3 → K) : form v w = v 0 * w 1 + v 1 * w 0 + 2 * 
 theorem form_coord {X Y : Matrix (Fin 2) (Fin 2) K} (hX : X.trace = 0) (hY : Y.trace = 0) :
     form (coord X) (coord Y) = (X * Y).trace := by
   rw [Matrix.trace_fin_two] at hX hY
-  rw [form_apply]
-  simp [coord, Matrix.trace_fin_two, Matrix.mul_apply, Fin.sum_univ_two]
+  simp [form_apply, coord, Matrix.trace_fin_two, Matrix.mul_apply, Fin.sum_univ_two]
   linear_combination (X 0 0) * hY - (Y 1 1) * hX
 
 end GlobalTheory.Sl2Ad

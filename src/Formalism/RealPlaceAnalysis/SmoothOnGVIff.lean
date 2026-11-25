@@ -120,13 +120,12 @@ lemma range_toMK {n : ℕ} (ε : Fin n → Bool) :
   · rintro ⟨k, rfl⟩
     exact k.2
   · intro hM
-    have hu : M * star M = 1 := Unitary.mul_star_self_of_mem hM.1
     have hu' : star M * M = 1 := Unitary.star_mul_self_of_mem hM.1
     have hUJ : inUJ ε M := by
       show Mᴴ * Jm ε * M = Jm ε
       rw [Matrix.mul_assoc, ← hM.2, ← Matrix.mul_assoc, ← Matrix.star_eq_conjTranspose, hu',
         Matrix.one_mul]
-    exact ⟨⟨⟨⟨M, star M, hu, hu'⟩, hUJ⟩, hM⟩, rfl⟩
+    exact ⟨⟨⟨⟨M, star M, (Unitary.mul_star_self_of_mem hM.1), hu'⟩, hUJ⟩, hM⟩, rfl⟩
 
 instance instCompactKG (n : ℕ) (ε : Fin n → Bool) : CompactSpace (KG ε) := by
   have hemb : Topology.IsEmbedding (fun k : KG ε => toMK k) :=

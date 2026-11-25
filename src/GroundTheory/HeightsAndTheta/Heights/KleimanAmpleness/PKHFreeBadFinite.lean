@@ -27,8 +27,7 @@ theorem KHFreeBadFinite.full : KHFreeBadFinite.Statement := by
       by_contra hj
       have hj2 : a ⟨k, j⟩ < 0 := lt_of_not_ge hj
       have hj' : j ∈ negSet a k := by simp [negSet, hj2]
-      rw [h] at hj'
-      simp at hj'
+      simp [h] at hj'
     have h1 : a ⟨k, i⟩ ≤ ∑ j, a ⟨k, j⟩ :=
       Finset.single_le_sum (f := fun j => a ⟨k, j⟩) (fun j _ => hnn j) (Finset.mem_univ i)
     rw [abs_of_nonneg (hnn i)]

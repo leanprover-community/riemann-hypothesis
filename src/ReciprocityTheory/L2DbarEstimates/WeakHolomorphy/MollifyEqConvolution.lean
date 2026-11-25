@@ -41,10 +41,9 @@ private theorem integral_circleMap_smul_eq_two_pi_mul {n : ℕ} {a : ℝ} {h : V
       rw [mem_ball, dist_eq_norm, add_sub_cancel_left, norm_smul]
       calc ‖l‖ * ‖z‖ ≤ 1 * ‖z‖ := mul_le_mul_of_nonneg_right hl1 (norm_nonneg z)
         _ < a := by rw [one_mul]; exact hz
-    have h1 : DifferentiableAt ℂ h (x + l • z) := hh.differentiableAt (isOpen_ball.mem_nhds hmem)
     have h2 : DifferentiableAt ℂ (fun l : ℂ => x + l • z) l :=
       (differentiableAt_id.smul_const z).const_add x
-    exact (h1.comp l h2).differentiableWithinAt
+    exact ((hh.differentiableAt (isOpen_ball.mem_nhds hmem)).comp l h2).differentiableWithinAt
   have hdc : DiffContOnCl ℂ (fun l : ℂ => h (x + l • z)) (ball (0 : ℂ) 1) := by
     apply DifferentiableOn.diffContOnCl
     rwa [closure_ball (0 : ℂ) one_ne_zero]
@@ -64,8 +63,7 @@ private theorem integral_circleMap_smul_eq_two_pi_mul {n : ℕ} {a : ℝ} {h : V
       _ = ∮ l in C(0, 1), (l - 0)⁻¹ • h (x + l • z) := rfl
       _ = (2 * Real.pi * Complex.I : ℂ) • h (x + (0 : ℂ) • z) := hC
       _ = 2 * Real.pi * Complex.I * h x := by rw [e0, smul_eq_mul]
-  have hI : Complex.I ≠ 0 := Complex.I_ne_zero
-  apply mul_left_cancel₀ hI
+  apply mul_left_cancel₀ Complex.I_ne_zero
   rw [key]
   ring
 
@@ -195,8 +193,7 @@ open scoped ENNReal ContDiff Convolution
 theorem mollify_eq_convolution (n : ℕ) (t : ℝ) (u : V n → ℂ) :
     mollify n t u = (moll n t) ⋆[ContinuousLinearMap.lsmul ℝ ℝ, volume] u := by
   funext x
-  rw [convolution_eq_swap]
-  simp only [mollify, ContinuousLinearMap.lsmul_apply, Complex.real_smul]
+  simp only [convolution_eq_swap, mollify, ContinuousLinearMap.lsmul_apply, Complex.real_smul]
 
 theorem holoSmooth : HoloSmoothStatement := by
   intro n Ω f hΩ hf x₀ hx₀

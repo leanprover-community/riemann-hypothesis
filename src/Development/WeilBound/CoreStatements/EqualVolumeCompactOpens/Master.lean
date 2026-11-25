@@ -164,8 +164,7 @@ namespace GlobalTheory.CompanionTheory.Ar.Cmp
 theorem relIndex_ratio_cocycle : ∀ (G : Type) [Group G] (A B C : Subgroup G), A.relIndex B ≠ 0 → B.relIndex A ≠ 0 → B.relIndex C ≠ 0 → C.relIndex B ≠ 0 → A.relIndex C ≠ 0 ∧ C.relIndex A ≠ 0 ∧ B.relIndex A * C.relIndex B * A.relIndex C = A.relIndex B * B.relIndex C * C.relIndex A := by
   intro G _ A B C hAB hBA hBC hCB
   have hAC : A.relIndex C ≠ 0 := Subgroup.relIndex_ne_zero_trans hAB hBC
-  have hCA : C.relIndex A ≠ 0 := Subgroup.relIndex_ne_zero_trans hCB hBA
-  refine ⟨hAC, hCA, ?_⟩
+  refine ⟨hAC, (Subgroup.relIndex_ne_zero_trans hCB hBA), ?_⟩
   set T : Subgroup G := A ⊓ B ⊓ C with hT
   have hTAB : T ≤ A ⊓ B := inf_le_left
   have hTBC : T ≤ B ⊓ C := le_inf (inf_le_left.trans inf_le_right) inf_le_right

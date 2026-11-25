@@ -155,8 +155,7 @@ theorem phi_map_surjective : StatPhiOnto := by
   rw [hg z, ← smul_sub]
   congr 1
   have : ((g z - z : W.N) : D) = -n := by
-    have := congrArg (fun t : W.N => (t : D)) hz
-    simpa using this
+    simpa using congrArg (fun t : W.N => (t : D)) hz
   have h3 : ((g z : W.N) : D) - (z : D) = -n := by simpa using this
   rw [← neg_sub, h3, neg_neg]
 

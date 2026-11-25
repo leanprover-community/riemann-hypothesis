@@ -352,10 +352,9 @@ theorem isUnit_adjoinRoot_mk_of_aeval_ne_zero {θ : K} (hθ : IsIntegral (Residu
   have hM' : M.comap (algebraMap B (AdjoinRoot μ)) = maximalIdeal B :=
     eq_maximalIdeal (Ideal.isMaximal_comap_of_isIntegral_of_isMaximal
       (algebraMap B (AdjoinRoot μ)) (algebraMap_isIntegral_iff.mpr inferInstance) M)
-  have hco : IsCoprime (minpoly (ResidueField B) θ) (g.map (residue B)) := by
+  obtain ⟨a, b, hab⟩ : IsCoprime (minpoly (ResidueField B) θ) (g.map (residue B)) := by
     rw [(minpoly.irreducible hθ).coprime_iff_not_dvd, minpoly.dvd_iff]
     rwa [← aeval_map_algebraMap (ResidueField B)] at hg
-  obtain ⟨a, b, hab⟩ := hco
   obtain ⟨a, rfl⟩ := map_surjective (residue B) residue_surjective a
   obtain ⟨b, rfl⟩ := map_surjective (residue B) residue_surjective b
   have h₀ : (a * μ + b * g - 1).map (residue B) = 0 := by

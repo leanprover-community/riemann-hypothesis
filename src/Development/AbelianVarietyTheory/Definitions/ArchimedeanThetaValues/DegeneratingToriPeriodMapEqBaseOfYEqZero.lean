@@ -568,8 +568,7 @@ theorem finite_be_le (R : ℤ) : {μ : A.X | A.be μ μ ≤ R}.Finite := by
       simp [this]
     by_contra hne
     have := A.be_pos _ (sub_ne_zero.2 hne)
-    rw [h0] at this
-    simp at this
+    simp [h0] at this
   refine Set.Finite.of_finite_image ?_ hf.injOn
   refine (Set.finite_Icc (fun i => -(R + A.be (b i) (b i))) (fun i => R + A.be (b i) (b i))).subset ?_
   rintro _ ⟨μ, hμ, rfl⟩

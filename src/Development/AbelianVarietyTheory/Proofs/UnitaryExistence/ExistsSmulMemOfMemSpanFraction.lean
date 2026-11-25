@@ -85,10 +85,9 @@ theorem main {R K : Type} [CommRing R] [IsDedekindDomain R] [Field K] [Algebra R
   | smul c x _ hx =>
     obtain ⟨d, hd, h⟩ := hx
     obtain ⟨⟨a, b⟩, hab⟩ := IsLocalization.mk'_surjective (nonZeroDivisors R) c
-    have hb : (b : R) ≠ 0 := nonZeroDivisors.ne_zero b.2
     have key : (b : R) • (c • x) = a • x := by
       rw [← smul_assoc, Algebra.smul_def, ← hab, mul_comm, IsLocalization.mk'_spec, algebraMap_smul]
-    refine ⟨d * b, mul_ne_zero hd hb, ?_⟩
+    refine ⟨d * b, mul_ne_zero hd (nonZeroDivisors.ne_zero b.2), ?_⟩
     rw [mul_smul, key, smul_comm]
     exact Λ.smul_mem a h
 
@@ -237,14 +236,12 @@ theorem exists_pseudoCoords (n : ℕ) :
       · rw [hC1]; exact hc a
     have A3 : ∀ v, v ∈ Λ ↔ ∀ a, F a v ∈ C a := by
       intro v
-      rw [Fin.forall_fin_succ']
-      simp only [hF1, hF2, hC1, hC2]
+      simp only [Fin.forall_fin_succ', hF1, hF2, hC1, hC2]
       rw [← hfΛ, hΛ', hp]
       constructor
       · exact fun hv => ⟨Λ.sub_mem hv (hce _ (hΛc v hv)), hΛc v hv⟩
       · rintro ⟨h1, h2⟩
-        have := Λ.add_mem h1 (hce _ h2)
-        simpa using this
+        simpa using Λ.add_mem h1 (hce _ h2)
     rcases hI with hI | hI
     · refine ⟨n + 1, F, C, A1, A2, A3, ?_⟩
       intro v
@@ -252,8 +249,7 @@ theorem exists_pseudoCoords (n : ℕ) :
       rw [hI]; trivial
     · refine ⟨min s n, F, C, A1, A2, A3, ?_⟩
       intro v
-      rw [Fin.forall_fin_succ']
-      simp only [hF1, hF2]
+      simp only [Fin.forall_fin_succ', hF1, hF2]
       have hh : (∀ a : Fin n, min s n ≤ ((Fin.castSucc a : Fin (n + 1)) : ℕ) → f a (p v) = 0) ↔
           (p v : V) ∈ I := by
         rw [show ((p v : V) ∈ I) ↔ p v ∈ I.comap W.subtype from Iff.rfl, hfI]

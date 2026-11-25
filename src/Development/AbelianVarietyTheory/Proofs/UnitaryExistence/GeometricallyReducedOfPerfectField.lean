@@ -127,9 +127,8 @@ theorem vanishingIdeal_le_ker {T X : Scheme.{u}} [IsReduced T] (g : T ⟶ X)
   refine le_ofIdeals_iff.mpr fun U a ha => ?_
   rw [RingHom.mem_ker, ← basicOpen_eq_bot_iff, ← Scheme.preimage_basicOpen, eq_bot_iff]
   intro t ht
-  have h1 : g t ∈ (vanishingIdeal Z).support := h ⟨t, rfl⟩
   have h2 := ((coe_support_inter (vanishingIdeal Z) U).le
-    ⟨h1, X.basicOpen_le a ht⟩).1
+    ⟨(h ⟨t, rfl⟩), X.basicOpen_le a ht⟩).1
   exact ((Scheme.mem_zeroLocus_iff _ _ _).mp h2 a ha ht).elim
 
 theorem geometricallyReduced_of_perfectField {k : Type u} [Field k] [PerfectField k]

@@ -78,11 +78,10 @@ theorem exists_mul_eq_zero_of_smul_eq_zero (q : ℕ) [NeZero q] (M : Type 1) [Ad
   have hq : ((q : ℕ) : ULift.{1} (ZMod q)) = 0 := by
     ext; simp
   have hgq : Nat.gcd n q ∣ q := Nat.gcd_dvd_right n q
-  have hgn : Nat.gcd n q ∣ n := Nat.gcd_dvd_left n q
   refine ⟨q / Nat.gcd n q, ?_, ?_⟩
   · rw [ha, ← Nat.cast_mul]
     have : q ∣ q / Nat.gcd n q * n := by
-      have h := Nat.mul_dvd_mul (dvd_refl (q / Nat.gcd n q)) hgn
+      have h := Nat.mul_dvd_mul (dvd_refl (q / Nat.gcd n q)) (Nat.gcd_dvd_left n q)
       rwa [Nat.div_mul_cancel hgq] at h
     obtain ⟨m, hm⟩ := this
     rw [hm, Nat.cast_mul, hq, zero_mul]
@@ -194,8 +193,7 @@ namespace GlobalTheory.EtC.InjFlat
 
 theorem zmod_mul_eq_zero (q d e : ℕ) [NeZero q] (hde : d * e = q) (z : ZMod q) (hz : (e : ZMod q) * z = 0) :
     ∃ c : ZMod q, z = c * d := by
-  have hq : q ≠ 0 := NeZero.ne q
-  have he : e ≠ 0 := by rintro rfl; simp at hde; exact hq hde.symm
+  have he : e ≠ 0 := by rintro rfl; simp at hde; exact (NeZero.ne q) hde.symm
   have h1 : q ∣ e * z.val := by
     rw [← ZMod.natCast_eq_zero_iff, Nat.cast_mul, ZMod.natCast_zmod_val, hz]
   have h1' : e * d ∣ e * z.val := by rw [mul_comm e d, hde]; exact h1

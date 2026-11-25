@@ -188,8 +188,7 @@ theorem gram_det_cauchy_schwarz_of_det_mono :
       have hBe : B = A * C + (B - A * C) := by abel
       generalize B - A * C = D at *
       generalize A * C = E at *
-      rw [hBe, conjTranspose_add, Matrix.add_mul, Matrix.mul_add, Matrix.mul_add, horth, horth']
-      simp
+      simp [hBe, conjTranspose_add, Matrix.add_mul, Matrix.mul_add, Matrix.mul_add, horth, horth']
     have hP : ((A * C)ᴴ * (A * C)).det = ((g * ‖C.det‖ ^ 2 : ℝ) : ℂ) := by
       have : (A * C)ᴴ * (A * C) = Cᴴ * (Aᴴ * A) * C := by
         simp only [conjTranspose_mul, Matrix.mul_assoc]
@@ -324,8 +323,7 @@ private lemma gram_projection_residual_eq [DecidableEq m] (X : Matrix m α ℂ) 
       Matrix.mul_one]
   have hP : (1 - X * (Xᴴ * X)⁻¹ * Xᴴ) * (1 - X * (Xᴴ * X)⁻¹ * Xᴴ) =
       1 - X * (Xᴴ * X)⁻¹ * Xᴴ := by
-    rw [sub_mul, mul_sub, mul_sub, hQ]
-    simp only [Matrix.one_mul, Matrix.mul_one]
+    simp only [sub_mul, mul_sub, mul_sub, hQ, Matrix.one_mul, Matrix.mul_one]
     abel
   have hPh : (1 - X * (Xᴴ * X)⁻¹ * Xᴴ)ᴴ = 1 - X * (Xᴴ * X)⁻¹ * Xᴴ := by
     rw [conjTranspose_sub, conjTranspose_one, conjTranspose_mul, conjTranspose_mul,
@@ -522,8 +520,7 @@ theorem _root_.GlobalTheory.sum_log_gramDet_ratio_pos : (∀ (m n : Type) [Finty
         have h2 := congrArg (fun f => f (Pi.single l 1) x) (LinearMap.range_eq_bot.mp h)
         simpa [Matrix.mulVecLin_apply] using h2
       have hne : Nonempty (Fin i) := Fin.pos_iff_nonempty.mp hi0
-      rw [hM0] at hM
-      simp at hM
+      simp [hM0] at hM
     · have h1 := LinearMap.finrank_range_le (Matrix.mulVecLin M)
       rw [h, finrank_top, Module.finrank_fin_fun, Module.finrank_fin_fun] at h1
       omega
@@ -587,12 +584,11 @@ theorem offDiagonal_matrixUnits_irreducible :
     rcases lt_or_ge (k : ℕ) p with hkp | hkp
     · exact down k b v hkp hb hv hk'
     · exact down a b _ ha hb (up a k v ha hkp hv hk') (by simp)
-  have haW : (Pi.single a (1 : ℂ) : Fin r → ℂ) ∈ W := up a b _ ha hb hbW (by simp)
   have hall : ∀ i : Fin r, (Pi.single i (1 : ℂ) : Fin r → ℂ) ∈ W := by
     intro i
     rcases lt_or_ge (i : ℕ) p with hi | hi
     · exact up i b _ hi hb hbW (by simp)
-    · exact down a i _ ha hi haW (by simp)
+    · exact down a i _ ha hi (up a b _ ha hb hbW (by simp)) (by simp)
   rw [eq_top_iff]
   intro x _
   have hx : x = ∑ i, x i • (Pi.single i (1 : ℂ) : Fin r → ℂ) := by

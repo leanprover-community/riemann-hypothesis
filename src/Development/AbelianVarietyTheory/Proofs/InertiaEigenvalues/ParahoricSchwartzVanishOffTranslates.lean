@@ -317,8 +317,7 @@ theorem gl_factor_fromBlocks_mod_uniformizer : ∀ (O : Type) [CommRing O] [IsDo
   · intro i j
     show (q * D⁻¹) (Sum.inr i) (Sum.inl j) ∈ Ideal.span {ϖ}
     apply hmem
-    have := congrFun (congrFun e21 i) j
-    simpa [Matrix.toBlocks₂₁] using this
+    simpa [Matrix.toBlocks₂₁] using congrFun (congrFun e21 i) j
 
 end GlobalTheory
 end -- clump:auto
@@ -426,16 +425,14 @@ theorem GlobalTheory.gen_type_core : ∀ (O K : Type) [CommRing O] [IsDomain O] 
     · simp [Function.comp_def]
   have hPx : P * x = x := by
     ext i j
-    have := hP2 (fun i => x i j) (Submodule.subset_span ⟨j, rfl⟩)
-    exact congrFun this i
+    exact congrFun (hP2 (fun i => x i j) (Submodule.subset_span ⟨j, rfl⟩)) i
   set q := q₀ + (1 - q₀) * P with hq
   have hqx : q * x = x := by
     rw [hq, Matrix.add_mul, Matrix.mul_assoc, hPx, Matrix.sub_mul, Matrix.one_mul]; abel
   have hqq : ∀ i j, IsLocalRing.residue O (q i j) = IsLocalRing.residue O (q₀ i j) := by
     intro i j
     have hcol : (fun l => P l j) ∈ U := by
-      have := hP1 (Pi.single j 1)
-      rw [hU]; simpa [Matrix.mulVec_single] using this
+      rw [hU]; simpa [Matrix.mulVec_single] using hP1 (Pi.single j 1)
     have := key _ hcol i
     rw [hq, Matrix.add_apply, map_add (f := _)]
     have e : ((1 - q₀) * P) i j = Matrix.mulVec (1 - q₀) (fun l => P l j) i := rfl

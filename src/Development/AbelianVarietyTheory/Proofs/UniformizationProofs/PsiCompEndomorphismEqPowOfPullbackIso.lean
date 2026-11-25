@@ -359,7 +359,7 @@ theorem exists_gen_generic {U : UnifPre I D A G} (E : EndU U) (k' k : ℤ)
 
 end Unif
 
-theorem exists_pull_val : LL → AllUF fun {R} _ _ {_} {D} {_} {_} _ _ U F _ _ => ∀ (E : EndU U.toUnifPre),
+theorem exists_pull_val : LL → AllUF fun {R} _ _ {I} {D} {A} {G} _ _ U F _ _ => ∀ (E : EndU U.toUnifPre),
     Function.Injective E.h → ∀ ν : ℕ, 1 ≤ ν →
     (∃ β : LB.Gen (LB.LinComb U.LG.L (K := Fin 2) ![𝟙 _, E.aG.left] ![(ν : ℤ), -((1 : ℕ) : ℤ)]), β.IsGen) →
     ∀ κ : LB.Gen (kapLB D.toPre E.aB ν 1), Normd κ → ∀ s : Fam D.toPre F 1, ∃ s' : Fam D.toPre F ν,
@@ -419,7 +419,7 @@ theorem alg_units {M : Type} [CommRing M] {s p q p' : M} (hs : IsUnit s) {r u u�
   simp only [ofMul_mul, ofMul_pow, ofMul_one] at b₁ b₇ ⊢
   linear_combination (norm := module) b₇ - b₁
 
-theorem psi_pull : LL → TwistBCSpanStatement → TWM.VRatioGtStatement → TWStatement → UUStatement → AllUF fun {R} _ _ {_} {D} {_} {G} _ _ U _ _ _ => ∀ E E' : EndU U.toUnifPre, LBIso (cubeLB G ![fst G G ≫ E.aG, snd G G] U.LG.L) (cubeLB G ![fst G G, snd G G ≫ E'.aG] U.LG.L) → Function.Injective E.h → ∀ ν : ℕ, 1 ≤ ν → (∀ y, E.h (E'.h y) = ν • y) → (∃ β : LB.Gen (LB.LinComb U.LG.L (K := Fin 2) ![𝟙 _, E.aG.left] ![(ν : ℤ), -((1 : ℕ) : ℤ)]), β.IsGen) → ∀ κ : LB.Gen (kapLB D.toPre E.aB ν 1), Normd κ → ∀ y (z : (TK R).left) J, Good D.toPre.P.L z J → val (D.toPre.psi (E'.h y)) (𝟙 _) z J * rigV D.toPre (TK R).hom z J = val (D.toPre.psi y) (𝟙 _) z J ^ ν * val κ (D.toPre.xK y) z J * rigV D.toPre (TK R).hom z J ^ ν := by
+theorem psi_pull : LL → TwistBCSpanStatement → TWM.VRatioGtStatement → TWStatement → UUStatement → AllUF fun {R} _ _ {I} {D} {A} {G} _ _ U F _ _ => ∀ E E' : EndU U.toUnifPre, LBIso (cubeLB G ![fst G G ≫ E.aG, snd G G] U.LG.L) (cubeLB G ![fst G G, snd G G ≫ E'.aG] U.LG.L) → Function.Injective E.h → ∀ ν : ℕ, 1 ≤ ν → (∀ y, E.h (E'.h y) = ν • y) → (∃ β : LB.Gen (LB.LinComb U.LG.L (K := Fin 2) ![𝟙 _, E.aG.left] ![(ν : ℤ), -((1 : ℕ) : ℤ)]), β.IsGen) → ∀ κ : LB.Gen (kapLB D.toPre E.aB ν 1), Normd κ → ∀ y (z : (TK R).left) J, Good D.toPre.P.L z J → val (D.toPre.psi (E'.h y)) (𝟙 _) z J * rigV D.toPre (TK R).hom z J = val (D.toPre.psi y) (𝟙 _) z J ^ ν * val κ (D.toPre.xK y) z J * rigV D.toPre (TK R).hom z J ^ ν := by
   intro hL _ _ _ _ R _ _ _ I hI D A G _ _ hG U F _ _ _ E E' hR hE ν hν hh hβ κ hκ y z J hJ
   have hGF := hL.1.globalFns
   have := hI.1

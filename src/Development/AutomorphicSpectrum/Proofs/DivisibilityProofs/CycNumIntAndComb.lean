@@ -114,8 +114,7 @@ theorem cycNum_int_and_comb : ∀ (O : Type) [CommRing O] [IsDomain O] [IsDiscre
     rw [MvPolynomial.support_map_of_injective _ hinj, key]
     push_cast
     refine Finset.sum_congr rfl fun μ _ => ?_
-    rw [MvPolynomial.coeff_map]
-    simp
+    simp [MvPolynomial.coeff_map]
   · intro α s c Z hZ H
     unfold cycNum
     simp only [Finset.mul_sum]

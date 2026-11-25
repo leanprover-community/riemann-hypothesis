@@ -12,8 +12,7 @@ namespace Formalism.L2.Th1.H
 
 theorem InterClass_of (h : SemiHom) : InterClass := by
   intro V _ _ H hH Λ₁ Λ₂ α hα F hF x hx y hy hy1 z
-  have hF' : ∀ w ∈ Λ₁, ∀ v, α w * opU H w F v = F v := hF
-  have hfun : (fun v => α y * opU H y F v) = F := funext fun v => hF' y hy1 v
+  have hfun : (fun v => α y * opU H y F v) = F := funext fun v => hF y hy1 v
   exact (h V H hH Λ₂ α hα x hx y hy F z).symm.trans (congrArg (fun G => α x * opU H x G z) hfun)
 
 section Reps
@@ -63,8 +62,7 @@ theorem reps_translate {Λ₁ Λ₂ : AddSubgroup V} {S : Finset V} [DecidableEq
     obtain ⟨b, hb, rfl⟩ := Finset.mem_image.1 hx'
     have hab : a - b ∈ Λ₁ := by
       have e : (y + a) - (y + b) = a - b := by abel
-      have hxx' : (y + a) - (y + b) ∈ Λ₁ := hxx
-      rwa [e] at hxx'
+      rwa [e] at hxx
     exact congrArg (fun t => y + t) (hS.2.1 a ha b hb hab)
   · intro w hw
     obtain ⟨a, ha, hwa⟩ := hS.2.2 (w - y) (Λ₂.sub_mem hw hy)

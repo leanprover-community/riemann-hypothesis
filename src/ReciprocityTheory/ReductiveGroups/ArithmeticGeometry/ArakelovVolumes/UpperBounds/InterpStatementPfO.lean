@@ -91,12 +91,11 @@ theorem avoid_base (Xa : ArchInM X) (Fl : FlatM X Xa) (j j' : Fin Fl.δ) {γ : G
     have hT : Matrix.BlockTriangular (mat c τ) id := fun a e h => ht a e h
     rw [Matrix.det_of_upperTriangular hT] at hd
     exact (Finset.prod_ne_zero_iff.mp hd) i (Finset.mem_univ _)
-  have hzdom : cpt X x0 z ∈ X.dom := hball hz
   have hsz : ∀ k, Fl.s k (cpt X x0 z) = 0 := by
     intro k
     have hv := Fl.s_van k
     simp only [Data.SSgt, Data.SS, Data.IsBddSec, Data.IsSec, Set.mem_setOf_eq] at hv
-    have hsec := hv.1.1.1.2.1 (cpt X x0 z) hzdom b hb
+    have hsec := hv.1.1.1.2.1 (cpt X x0 z) (hball hz) b hb
     have h0 := hs1 k
     rw [h1, hsec] at h0
     exact (mul_eq_zero.mp h0).resolve_left (hbc b hb)
@@ -124,9 +123,8 @@ theorem avoid_base (Xa : ArchInM X) (Fl : FlatM X Xa) (j j' : Fin Fl.δ) {γ : G
   rw [lact_inv] at hj
   have hjj : j = j' := Fl.xs_inj j j' γ⁻¹ (X.Γ.inv_mem hγ) _ hcB hj
   subst hjj
-  have hγ1 : γ = 1 := X.Γ_free γ hγ (Fl.xs j) (Fl.xs_mem j) _ hcB hy'
   rcases hne with h | h
-  · exact h hγ1
+  · exact h (X.Γ_free γ hγ (Fl.xs j) (Fl.xs_mem j) _ hcB hy')
   · exact h rfl
 
 end

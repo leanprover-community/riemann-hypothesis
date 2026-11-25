@@ -53,11 +53,10 @@ theorem addCharKernel : PsiKer := by
       have hlp : l.Prime := Fact.out
       have hnum : ¬ (l : ℤ) ∣ a.num := by
         intro hdvd
-        have h1 : l ∣ a.num.natAbs := Int.natCast_dvd.mp hdvd
         have h2 : l ∣ a.den := by
           rw [hn]
           exact dvd_pow_self l hn0
-        have h3 := Nat.dvd_gcd h1 h2
+        have h3 := Nat.dvd_gcd (Int.natCast_dvd.mp hdvd) h2
         rw [a.reduced.gcd_eq_one] at h3
         exact hlp.one_lt.ne' (Nat.dvd_one.mp h3)
       have hnum1 : ‖(a.num : ℚ_[l])‖ = 1 :=

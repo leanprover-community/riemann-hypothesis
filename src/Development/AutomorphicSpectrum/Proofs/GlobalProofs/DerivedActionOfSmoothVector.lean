@@ -89,9 +89,9 @@ namespace GlobalTheory.CompanionTheory.Hypotheses₂.HCA
 open SmoothDeriv
 
 theorem hasDerivAt_dRep_and_isSmoothVec : ∀ {n : ℕ} {G : Set (Matrix (Fin n) (Fin n) ℂ)} {H : Type} [NormedAddCommGroup H]
-    [InnerProductSpace ℂ H] {π : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)} (_ : IsLinRed G)
-    (_ : Formalism.QuantumDeterminants.IsCRepOn G π) {v : H} (_ : IsSmoothVec G π v) {X : Matrix (Fin n) (Fin n) ℂ}
-    (_ : X ∈ HCSS.lieOf G),
+    [InnerProductSpace ℂ H] {π : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)} (hG : IsLinRed G)
+    (hrep : Formalism.QuantumDeterminants.IsCRepOn G π) {v : H} (hv : IsSmoothVec G π v) {X : Matrix (Fin n) (Fin n) ℂ}
+    (hX : X ∈ HCSS.lieOf G),
     HasDerivAt (fun t : ℝ => π (NormedSpace.exp (t • X)) v) (dRep π X v) 0 ∧
       IsSmoothVec G π (dRep π X v) := by
   intro n G H _ _ π hG hrep v hv X hX

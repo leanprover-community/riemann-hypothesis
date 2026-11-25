@@ -824,8 +824,8 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.FiniteModuleMaximalIdealAnnihilation.exists_pow_maximalIdeal_smul_finite_eq_zero :
-    ∀ (R Q : Type) [CommRing R] [IsLocalRing R]
-    [AddCommGroup Q] [_root_.Module R Q] [Finite Q],
+    ∀ (R Q : Type) [inst : CommRing R] [inst_1 : IsLocalRing R]
+    [inst_2 : AddCommGroup Q] [inst_3 : _root_.Module R Q] [Finite Q],
     ∃ (c : ℕ), ∀ a ∈ IsLocalRing.maximalIdeal R ^ c, ∀ (z : Q), a • z = (0 : Q) := by
   intro R Q _ _ _ _ _
   haveI : Finite (Submodule R Q) :=

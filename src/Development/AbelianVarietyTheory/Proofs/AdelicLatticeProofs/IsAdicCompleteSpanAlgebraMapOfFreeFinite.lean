@@ -74,8 +74,7 @@ theorem isAdicComplete_of_free_finite {R M : Type} [CommRing R] [AddCommGroup M]
     intro n x y
     rw [SModEq.sub_mem, mem_smul_top_iff_repr b]
     refine forall_congr' fun i => ?_
-    rw [SModEq.sub_mem]
-    simp
+    simp [SModEq.sub_mem]
   have hH : IsHausdorff I M := by
     refine ⟨fun x hx => ?_⟩
     refine b.repr.injective (Finsupp.ext fun i => ?_)

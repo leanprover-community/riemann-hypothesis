@@ -59,8 +59,8 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.PartialFiltrationCoeff.part_filt_coeff :
-    ∀ {O σ : Type} [CommRing O]
-    [IsLocalRing O] (M : ℕ),
+    ∀ {O σ : Type} [inst : CommRing O]
+    [inst_1 : IsLocalRing O] (M : ℕ),
     ∀ f ∈ IsLocalRing.maximalIdeal (MvPowerSeries σ O) ^ M,
       ∀ (n : σ →₀ ℕ),
         (MvPowerSeries.coeff n : MvPowerSeries σ O → O) f ∈

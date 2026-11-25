@@ -70,8 +70,7 @@ theorem NormalModelProper.proof : NormalModelProper.Statement := by
         ‖eval (firstCoords w) ((P i).coeff j)‖) (fun i _ => Finset.sum_nonneg fun _ _ => norm_nonneg _)
         (Finset.mem_univ i)
     have hfC : f (firstCoords w) ≤ C := by
-      have := hC _ (subset_closure hwK)
-      exact (le_abs_self _).trans (by simpa [Real.norm_eq_abs] using this)
+      exact (le_abs_self _).trans (by simpa [Real.norm_eq_abs] using (hC _ (subset_closure hwK)))
     exact (hlt.le.trans (by linarith)).trans (le_max_right _ _)
 
 end GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.ComplexSets

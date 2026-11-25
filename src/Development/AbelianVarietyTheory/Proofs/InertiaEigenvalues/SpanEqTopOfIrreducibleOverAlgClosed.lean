@@ -103,8 +103,7 @@ theorem span_matrix_eq_top_of_isAlgClosed {K : Type} [Field K] [IsAlgClosed K]
   have hirr : τ.IsIrreducible := by
     have hnt : Nontrivial (Subrepresentation τ) := by
       refine ⟨⊥, ⊤, fun hbt => ?_⟩
-      have h1 : (⊥ : Submodule K (ι → K)) = ⊤ := congrArg Subrepresentation.toSubmodule hbt
-      exact bot_ne_top h1
+      exact bot_ne_top (congrArg Subrepresentation.toSubmodule hbt)
     refine ⟨fun W => ?_⟩
     rcases h W.toSubmodule (fun g v hv => by
       have := W.apply_mem_toSubmodule g hv

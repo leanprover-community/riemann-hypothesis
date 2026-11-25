@@ -101,8 +101,7 @@ theorem exists_span_sup_range {k W : Type} [Field k] [AddCommGroup W] [Module k 
   have hq : (LinearMap.range π).mkQ
       (v - ∑ j, b.repr ((LinearMap.range π).mkQ v) j • g (b j)) = 0 := by
 
-    rw [map_sub, map_sum]
-    simp only [map_smul, hg]
+    simp only [map_sub, map_sum, map_smul, hg]
     rw [b.sum_repr, sub_self]
   rw [Submodule.mkQ_apply, Submodule.Quotient.mk_eq_zero] at hq
   obtain ⟨u, hu⟩ := LinearMap.mem_range.mp hq
@@ -337,8 +336,7 @@ theorem core {k A W ι : Type} [Field k] [CommRing A] [Algebra k A] [FiniteDimen
       rintro rfl
       obtain ⟨c, hc⟩ := h2 1
       have := congrArg (χ i) hc
-      rw [pow_one, map_mul, hu] at this
-      simp at this
+      simp [pow_one, map_mul, hu] at this
     set d := Module.finrank k (Module.End.maxGenEigenspace (Algebra.lsmul k k A t) (χ i t)) with hd
     have hdpos : 0 < d := by
       rw [hd, Module.finrank_pos_iff_exists_ne_zero]
@@ -443,8 +441,7 @@ theorem glue {A W : Type} [CommRing A] [IsArtinianRing A] [AddCommGroup W] [Modu
       ha2 (Submodule.smul_mem_pointwise_smul w a ⊤ Submodule.mem_top))
     apply hm.ne_top
     rw [Ideal.eq_top_iff_one]
-    have := m.sub_mem ham ha1
-    simpa using this
+    simpa using m.sub_mem ham ha1
   rw [eq_top_iff]
   intro w _
   have : (1 : A) ∈ N.colon (Set.univ : Set W) := by rw [hcol]; trivial
@@ -574,8 +571,7 @@ theorem arith_theta {E : Type} [Field E] [NumberField E] (p : ℕ) [hp : Fact p.
   · obtain ⟨m, hm⟩ := hg (Units.mk0 y hy)
     refine ⟨m, ?_⟩
     rw [hθ]
-    have := congrArg Units.val hm
-    simpa using this.symm
+    simpa using (congrArg Units.val hm).symm
 
 theorem locmax {E : Type} [Field E] [NumberField E] {k W : Type} [Field k] [IsAlgClosed k]
     (p : ℕ) [hp : Fact p.Prime] [CharP k p] [AddCommGroup W] [Module k W] [FiniteDimensional k W]
@@ -597,13 +593,12 @@ theorem locmax {E : Type} [Field E] [NumberField E] {k W : Type} [Field k] [IsAl
   have hinc : ∀ a, inc a = (1 : k) ⊗ₜ[ℤ] a := fun a => rfl
   let ψ : 𝓞 E →+* k := χ0.toRingHom.comp inc
   have hψ : ∀ a, ψ a = χ0 ((1 : k) ⊗ₜ[ℤ] a) := fun a => rfl
-  have hpne : (p : 𝓞 E) ≠ 0 := Nat.cast_ne_zero.2 hp.out.ne_zero
   have hw0 : RingHom.ker ψ ≠ ⊥ := by
     intro h
     have : (p : 𝓞 E) ∈ RingHom.ker ψ := by
       rw [RingHom.mem_ker, map_natCast, CharP.cast_eq_zero]
     rw [h, Ideal.mem_bot] at this
-    exact hpne this
+    exact (Nat.cast_ne_zero.2 hp.out.ne_zero) this
   haveI hw : (RingHom.ker ψ).IsMaximal := (RingHom.ker_isPrime ψ).isMaximal hw0
   obtain ⟨π, hπ0, hπw, hπ⟩ := arith_pi p _ hw0
   obtain ⟨θ, hθ1, hθ2, hθ3⟩ := arith_theta p _ hw0

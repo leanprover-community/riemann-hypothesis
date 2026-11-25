@@ -603,7 +603,7 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.StationaryPhaseModel.matIrr_conj :
-    ∀ {Γ k : Type} [Group Γ] [Field k] {n : ℕ} {U : Subgroup Γ} {a a' : Γ → Matrix (Fin n) (Fin n) k},
+    ∀ {Γ k : Type} [inst : Group Γ] [inst_1 : Field k] {n : ℕ} {U : Subgroup Γ} {a a' : Γ → Matrix (Fin n) (Fin n) k},
       UpperTheory.V.U3.MatIrr U a →
         ∀ (h : GL (Fin n) k),
           (∀ g ∈ U, a' g = (↑h : Matrix (Fin n) (Fin n) k) * a g * (↑h⁻¹ : Matrix (Fin n) (Fin n) k)) →

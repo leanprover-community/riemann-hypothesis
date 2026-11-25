@@ -104,8 +104,7 @@ theorem mem_per_of_frequently : ∀ (R : Type) [CommRing R] (G : Over (Sp R)) [G
   have hb' : ⊤ ≤ (e.ex b (s b)).left ⁻¹ᵁ V := hb
   rw [hper'] at hb'
   let p : Sp ℂ := (⊥ : PrimeSpectrum ℂ)
-  have hp : (1 : Over.mk (spMap (ψ b)) ⟶ G).left p ∉ Set.range η[G].left := hb' (show p ∈ ⊤ from trivial)
-  apply hp
+  apply (hb' (show p ∈ ⊤ from trivial))
   rw [one_left_eq]
   exact ⟨_, (Scheme.Hom.comp_apply _ _ _).symm⟩
 

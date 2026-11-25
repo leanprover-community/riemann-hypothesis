@@ -50,8 +50,7 @@ private lemma core {G V : Type} [Group G] [AddCommGroup V] [Module ℂ V] [Finit
     obtain ⟨w, hwv⟩ := hμ.exists_hasEigenvector
     have hw1 := hwv.apply_eq_smul
     have hw2 : (P * ρ h * P) (w : V) = μ • (w : V) := by
-      have := congrArg Subtype.val hw1
-      simpa [LinearMap.restrict_apply] using this
+      simpa [LinearMap.restrict_apply] using congrArg Subtype.val hw1
     have hw0 : (w : V) ≠ 0 := fun h0 => hwv.2 (Subtype.ext h0)
     have key := cyc ρ hirr (w : V) hw0 ((P * ρ h * P).eigenspace μ) P (by
       intro g
@@ -74,8 +73,8 @@ private lemma core {G V : Type} [Group G] [AddCommGroup V] [Module ℂ V] [Finit
     _ = 1 := finrank_span_singleton hw0
 
 theorem goal1 :
-  ∀ {G : Type} [Group.{0} G] [Fintype.{0} G] {V : Type} [AddCommGroup.{0} V]
-  [Module.{0, 0} Complex V] [FiniteDimensional.{0, 0} Complex V] (ρ : Representation.{0, 0, 0} Complex G V)
+  ∀ {G : Type} [inst : Group.{0} G] [inst_1 : Fintype.{0} G] {V : Type} [inst_2 : AddCommGroup.{0} V]
+  [inst_3 : Module.{0, 0} Complex V] [FiniteDimensional.{0, 0} Complex V] (ρ : Representation.{0, 0, 0} Complex G V)
   (J : Subgroup.{0} G) (χ : MonoidHom.{0, 0} (Subtype.{1} fun (x : G) ↦ Membership.mem.{0, 0} J x) (Units.{0} Complex)),
   (∀ (g g' : G),
       Eq.{1}
@@ -136,8 +135,7 @@ theorem goal1 :
     intro w hw
     rw [Formalism.IrreducibleCountingLemmas.GaloisIrreducibility.eqvSpace.eq_def] at hw
     have hw' : ∀ u : J, ρ ↑u w = (χ u : ℂ) • w := hw
-    rw [hP]
-    simp only [hw', smul_smul, mul_assoc, Units.inv_mul, mul_one]
+    simp only [hP, hw', smul_smul, mul_assoc, Units.inv_mul, mul_one]
     rw [Finset.sum_const, Finset.card_univ, ← Nat.card_eq_fintype_card, ← Nat.cast_smul_eq_nsmul ℂ,
       smul_smul, mul_inv_cancel₀, one_smul]
     exact Nat.cast_ne_zero.mpr Nat.card_pos.ne'

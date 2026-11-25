@@ -32,8 +32,7 @@ def pds (L : List (Fin N)) (f : (Fin N → ℝ) → H) : (Fin N → ℝ) → H :
     pds (i :: L) f = pd i (pds L f) := rfl
 
 lemma contDiff_pd (i : Fin N) {f : (Fin N → ℝ) → H} (hf : ContDiff ℝ ∞ f) : ContDiff ℝ ∞ (pd i f) := by
-  have hd : ContDiff ℝ ∞ (fderiv ℝ f) := hf.fderiv_right (m := ∞) (by simp)
-  exact hd.clm_apply contDiff_const
+  exact (hf.fderiv_right (m := ∞) (by simp)).clm_apply contDiff_const
 
 lemma contDiff_pds (L : List (Fin N)) {f : (Fin N → ℝ) → H} (hf : ContDiff ℝ ∞ f) :
     ContDiff ℝ ∞ (pds L f) := by

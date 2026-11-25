@@ -69,7 +69,7 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.ExistsLocalGenerator.exists_local_generator :
-    ∀ {B : Type} [CommRing B] [IsDedekindDomain B] (I p : Ideal B) [p.IsPrime],
+    ∀ {B : Type} [inst : CommRing B] [IsDedekindDomain B] (I p : Ideal B) [hp : p.IsPrime],
       ∃ π ∈ I, ∃ s ∉ p, ∀ x ∈ I, s * x ∈ Ideal.span {π} := by
   intro B _ _ I p hp
   by_cases hI : I = ⊥

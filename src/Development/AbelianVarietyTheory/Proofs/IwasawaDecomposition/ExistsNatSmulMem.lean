@@ -65,7 +65,7 @@ theorem exists_nat_mul_integral {E : Type} [Field E] [NumberField E] (a : E) :
     ∃ d : ℕ, 0 < d ∧ IsIntegral ℤ ((d : E) * a) := by
   exact GlobalTheory.AlgDirMom.exists_nat_mul_isIntegral a
 
-theorem main : ∀ {E : Type} [Field E] [NumberField E] {r : ℕ}
+theorem main : ∀ {E : Type} [inst : Field E] [NumberField E] {r : ℕ}
     (Λ : Submodule (NumberField.RingOfIntegers E) (Fin r → E)),
     Submodule.span E (↑Λ : Set (Fin r → E)) = ⊤ →
     ∀ (w : Fin r → E), ∃ (k : ℕ), (0 : ℕ) < k ∧ (↑k : E) • w ∈ Λ := by

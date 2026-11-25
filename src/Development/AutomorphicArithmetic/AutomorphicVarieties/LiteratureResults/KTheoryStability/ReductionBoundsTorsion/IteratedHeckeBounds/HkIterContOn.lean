@@ -89,23 +89,20 @@ theorem recon [FiniteDimensional ℝ V] {ι κ : Type} [Fintype ι] [DecidableEq
     intro A hA
     have hm : A.toMultilinearMap = (0 : V [⋀^ι]→L[ℝ] ℝ).toMultilinearMap := by
       refine Module.Basis.ext_multilinear (fun _ => b) fun v => ?_
-      have := congrFun hA v
-      simpa [L] using this
+      simpa [L] using congrFun hA v
     ext x
     simpa using congrFun (congrArg DFunLike.coe hm) x
   obtain ⟨g, hg⟩ := LinearMap.exists_leftInverse_of_injective L hL
   refine ⟨LinearMap.toContinuousLinearMap g, fun A => ?_⟩
-  have := congrArg (fun f => f A) hg
-  simpa [L] using this
+  simpa [L] using congrArg (fun f => f A) hg
 
 theorem norm_sq_le_sum {κ : Type} [Fintype κ] (u : κ → ℝ) : ‖u‖ ^ 2 ≤ ∑ v, u v ^ 2 := by
-  have hs : 0 ≤ ∑ v, u v ^ 2 := Finset.sum_nonneg fun v _ => sq_nonneg _
   have h : ‖u‖ ≤ Real.sqrt (∑ v, u v ^ 2) := by
     refine (pi_norm_le_iff_of_nonneg (Real.sqrt_nonneg _)).2 fun v => ?_
     rw [Real.norm_eq_abs, ← Real.sqrt_sq_eq_abs]
     exact Real.sqrt_le_sqrt (Finset.single_le_sum (f := fun w => u w ^ 2) (fun w _ => sq_nonneg (u w)) (Finset.mem_univ v))
   calc ‖u‖ ^ 2 ≤ Real.sqrt (∑ v, u v ^ 2) ^ 2 := pow_le_pow_left₀ (norm_nonneg _) h 2
-    _ = ∑ v, u v ^ 2 := Real.sq_sqrt hs
+    _ = ∑ v, u v ^ 2 := Real.sq_sqrt (Finset.sum_nonneg fun v _ => sq_nonneg _)
 
 end PositivityTheory.KB.JoinReconstruction
 
@@ -296,8 +293,7 @@ def Hk {k : ℕ} (q : GK L N) (ω : Form (HS L N) k) : Form (HS L N) k :=
 
 theorem fr_Hk {k : ℕ} (q : GK L N) (ω : Form (HS L N) k) (x : Gp L N) :
     fr (Hk q ω) x = hecke (toK L N) (toP L N) q (fr ω) x := by
-  rw [hecke_eq]
-  simp only [smul_eq_mul, ← fr_pb]
+  simp only [hecke_eq, smul_eq_mul, ← fr_pb]
   exact mn_map (Sg q)
     ({ toFun := fun a : HS L N [⋀^Fin k]→L[ℝ] ℝ => a.compContinuousLinearMap (actL x)
        map_add' := fun a b => by ext; simp

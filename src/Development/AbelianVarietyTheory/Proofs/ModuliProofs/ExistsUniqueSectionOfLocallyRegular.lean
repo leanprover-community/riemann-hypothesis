@@ -109,8 +109,7 @@ private lemma not_mem_basicOpen_of_valAt'_eq_zero {X : Scheme} (q : _root_.Recip
   rw [dite_eq_left hU] at hf
   unfold _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.valAt at hf
   have h0 : q.appLE U ⊤ hU f = 0 := by
-    have := congrArg (Scheme.ΓSpecIso (CommRingCat.of ℂ)).inv.hom hf
-    simpa using this
+    simpa using congrArg (Scheme.ΓSpecIso (CommRingCat.of ℂ)).inv.hom hf
   have hmem : s ∈ q ⁻¹ᵁ X.basicOpen f := hs
   rw [Scheme.Hom.preimage_basicOpen] at hmem
   have hres : (Spec (CommRingCat.of ℂ)).basicOpen (q.appLE U ⊤ hU f) =

@@ -127,8 +127,7 @@ theorem adapted_of_saturated [IsDiscreteValuationRing O] (ϖ : O) (hϖ : Irreduc
     exfalso
     set a' : O := (w : O) * ϖ ^ m with ha'
     have haa : a = ϖ * a' := by rw [hw, ha', pow_succ]; ring
-    have h1 : a' • b j ∈ V := hV _ (by rw [smul_smul, ← haa]; exact hab)
-    have h2 := ha _ h1
+    have h2 := ha _ (hV _ (by rw [smul_smul, ← haa]; exact hab))
     rw [map_smul, Module.Basis.repr_self, Finsupp.smul_apply, Finsupp.single_eq_same,
       smul_eq_mul, mul_one, Ideal.mem_span_singleton, haa] at h2
     obtain ⟨t, ht⟩ := h2

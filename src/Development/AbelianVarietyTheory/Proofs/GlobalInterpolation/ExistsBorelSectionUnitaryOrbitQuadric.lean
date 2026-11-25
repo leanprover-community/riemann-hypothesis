@@ -146,8 +146,7 @@ open GlobalTheory.IndefiniteRowSideFullHecke.PerpendicularEmbedding
 open MeasureTheory Matrix in
 theorem _root_.GlobalTheory.QuadricSection.jpq_conjTranspose (P Q : ℕ) : (_root_.Formalism.UG.Jpq P Q)ᴴ = _root_.Formalism.UG.Jpq P Q := by
   unfold _root_.Formalism.UG.Jpq
-  rw [fromBlocks_conjTranspose]
-  simp
+  simp [fromBlocks_conjTranspose]
 
 open MeasureTheory Matrix in
 theorem _root_.GlobalTheory.QuadricSection.form_self {P Q : ℕ} (x : _root_.GlobalTheory.IndefiniteRowSideFullHecke.PerpendicularEmbedding.Sp P Q) :

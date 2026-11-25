@@ -92,8 +92,7 @@ theorem irreducible_dvd_of_dvd_charpoly_of_aeval_matrix {K : Type} [Field K] {h 
     by_contra hn
     rw [not_nontrivial_iff_subsingleton] at hn
     exact (spectrum.mem_iff.1 hs) (isUnit_of_subsingleton _)
-  rw [spectrum.zero_eq, Set.mem_singleton_iff] at h2
-  simp only [eval_map, ← aeval_def] at h2
+  simp only [spectrum.zero_eq, Set.mem_singleton_iff, eval_map, ← aeval_def] at h2
   rw [AdjoinRoot.aeval_eq, AdjoinRoot.mk_eq_zero] at h2
   exact h2
 
@@ -342,8 +341,7 @@ theorem _root_.GlobalTheory.UPel.HT.LieType.finrank_eigSp_add_conj_eq (p : ℕ) 
     have h3 := GlobalTheory.T.trace_ringOfIntegers_action_sum_embeddings_eigenspace D.F D.g φ c
     have hconj : (starRingEnd ℂ) (φ c).trace = ∑ σ : D.F →+* ℂ, (d (cj σ) : ℂ) * σ (c : D.F) := by
 
-      rw [h3, map_sum]
-      simp only [map_mul, Complex.conj_natCast]
+      simp only [h3, map_sum, map_mul, Complex.conj_natCast]
       exact (Fintype.sum_equiv cj _ _ (fun σ => by
         show (d σ : ℂ) * (starRingEnd ℂ) (σ (c : D.F)) = (d (cj (cj σ)) : ℂ) * (cj σ) (c : D.F)
         have : cj (cj σ) = σ := cj.left_inv σ

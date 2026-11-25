@@ -38,15 +38,13 @@ theorem lift_to_subgroup_exists : StatLiftSub := by
     rw [hm]
     push_cast
     ring
-  have hum : (↑hu.unit⁻¹ : ℤ_[ℓ]) * (m : ℤ_[ℓ]) = 1 := hu.val_inv_mul
   rw [hg', pow_add]
-  linear_combination (ℓ : ℤ_[ℓ]) ^ E * (ℓ : ℤ_[ℓ]) ^ v * hum
+  linear_combination (ℓ : ℤ_[ℓ]) ^ E * (ℓ : ℤ_[ℓ]) ^ v * hu.val_inv_mul
 
 theorem regulator_bound_for_x : StatRegX := by
   unfold StatRegX
   intro ℓ _ A _ _ B M D _ _ _ _ W hreg y hy hX
   unfold RegXQ at hreg
-  have hy' : B.Q ^ M • y ∈ W.N := hy
   have key : ∀ z : D, B.Q • z ∈ W.N → B.X • z ∈ W.N → z ∈ W.N := by
     intro z hQ hXz
     obtain ⟨m', hm', he⟩ := hreg (B.X • z) hXz ⟨B.Q • z, hQ, by rw [smul_smul, smul_smul, mul_comm]⟩
@@ -54,7 +52,7 @@ theorem regulator_bound_for_x : StatRegX := by
     have hz : z - m' = 0 := W.X_inj _ h0
     rw [sub_eq_zero] at hz
     rwa [hz]
-  suffices h : ∀ j : ℕ, B.Q ^ j • y ∈ W.N → y ∈ W.N from h M hy'
+  suffices h : ∀ j : ℕ, B.Q ^ j • y ∈ W.N → y ∈ W.N from h M hy
   intro j
   induction j with
   | zero => intro h; simpa using h
@@ -71,7 +69,6 @@ theorem regulator_bound_for_l : StatRegL := by
   intro ℓ _ A _ _ B M D _ _ _ _ W hreg htor y hy hX
   unfold RegLQ at hreg
   unfold NoTors at htor
-  have hy' : B.Q ^ M • y ∈ W.N := hy
   have key : ∀ z : D, B.Q • z ∈ W.N → (ℓ : ℤ_[ℓ]) • z ∈ W.N → z ∈ W.N := by
     intro z hQ hXz
     obtain ⟨m', hm', he⟩ := hreg ((ℓ : ℤ_[ℓ]) • z) hXz ⟨B.Q • z, hQ, smul_comm _ _ _⟩
@@ -79,7 +76,7 @@ theorem regulator_bound_for_l : StatRegL := by
     have hz : z - m' = 0 := htor _ h0
     rw [sub_eq_zero] at hz
     rwa [hz]
-  suffices h : ∀ j : ℕ, B.Q ^ j • y ∈ W.N → y ∈ W.N from h M hy'
+  suffices h : ∀ j : ℕ, B.Q ^ j • y ∈ W.N → y ∈ W.N from h M hy
   intro j
   induction j with
   | zero => intro h; simpa using h
@@ -151,22 +148,19 @@ theorem rational_points_map_surjective : StatRatSurj := by
   unfold WachMod.Cocycle WachMod.C1 WachMod.QInv WachMod.XN WachMod.d1 at hc₁
   obtain ⟨⟨hQ₁', n₁, hn₁, hz₁'⟩, hd₁'r⟩ := hc₁
   have hz₁ : z₁ = B.X • n₁ := hz₁'
-  have hd₁ : W₁.γ y₁ - y₁ - (W₁.φ z₁ - z₁) = 0 := hd₁'r
-  have hQ₁ : B.Q ^ M • y₁ ∈ W₁.N := hQ₁'
   have hd₁' : W₂.γ (S.π.f y₁) - S.π.f y₁ - (W₂.φ (S.π.f z₁) - S.π.f z₁) = 0 := by
-    simpa [map_sub, S.π.γ_comm, S.π.φ_comm] using congrArg S.π.f hd₁
+    simpa [map_sub, S.π.γ_comm, S.π.φ_comm] using congrArg S.π.f hd₁'r
   obtain ⟨c, hc⟩ : ∃ c : ℤ_[ℓ], c = (ℓ : ℤ_[ℓ]) ^ (e₁ + k) := ⟨_, rfl⟩
   have hcP : W₂.Cocycle (S.π.f y₁ - c • y) (S.π.f z₁ - c • z) := by
     unfold WachMod.Cocycle WachMod.C1 WachMod.QInv WachMod.XN WachMod.d1
     refine ⟨⟨?_, S.π.f n₁ - c • n₂, W₂.N.sub_mem (S.π.N_le _ hn₁) (W₂.N.smul_of_tower_mem c hn₂), ?_⟩, ?_⟩
     · rw [smul_sub, ← map_smul, smul_comm (B.Q ^ M) c y]
-      exact W₂.N.sub_mem (S.π.N_le _ hQ₁) (W₂.N.smul_of_tower_mem c hQ₂)
+      exact W₂.N.sub_mem (S.π.N_le _ hQ₁') (W₂.N.smul_of_tower_mem c hQ₂)
     · rw [hz₁, hz₂, map_smul, smul_sub, smul_comm c B.X n₂]
     · calc W₂.γ (S.π.f y₁ - c • y) - (S.π.f y₁ - c • y) - (W₂.φ (S.π.f z₁ - c • z) - (S.π.f z₁ - c • z))
           = (W₂.γ (S.π.f y₁) - S.π.f y₁ - (W₂.φ (S.π.f z₁) - S.π.f z₁)) -
               c • (W₂.γ y - y - (W₂.φ z - z)) := by
-            rw [map_sub, map_sub, map_smul, map_smul]
-            simp only [smul_sub]
+            simp only [map_sub, map_sub, map_smul, map_smul, smul_sub]
             abel
         _ = 0 := by rw [hd₁', hd₂, smul_zero, sub_zero]
   have hcl : cl₂ (⟨(S.π.f y₁, S.π.f z₁), memZ _ _ hd₁'⟩ - c • ⟨(y, z), memZ y z hd₂⟩) = 0 := by

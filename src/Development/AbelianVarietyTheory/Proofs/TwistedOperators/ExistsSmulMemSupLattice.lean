@@ -123,9 +123,8 @@ theorem exists_smul_mem_supLattice (LL Ks WL G : Type) [Field LL] [NumberField L
     rw [h1, Φ.nrm_smul, abs_eq_one q s hs, one_mul]
     exact hf y
   · obtain ⟨t, ht, u, htu⟩ := hq q h
-    have hmem : t • s • (f : WL) ∈ Φ.MK := by
+    obtain ⟨hw, hb⟩ : t • s • (f : WL) ∈ Φ.MK := by
       rw [smul_smul, htu, mul_smul]; exact Φ.MK.smul_mem _ hdf
-    obtain ⟨hw, hb⟩ := hmem
     have h1 : (⟨t • s • (f : WL), hw⟩ : Φ.WK) = (t : Ks) • ⟨s • (f : WL), hm⟩ := Subtype.ext (hsm t _)
     have h2 := hb q y
     rwa [h1, Φ.nrm_smul, abs_eq_one q t ht, one_mul] at h2

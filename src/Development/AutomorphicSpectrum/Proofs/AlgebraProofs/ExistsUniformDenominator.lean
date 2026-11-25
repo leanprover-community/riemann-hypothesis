@@ -74,13 +74,12 @@ theorem mem_of_locally_mem (R : Subalgebra o Ω) (L : AddSubgroup E)
   have hrad : ∀ l, (⟨f l, hf l⟩ : R) ∈ I.radical := fun l => by
     obtain ⟨n, hn⟩ := hv l
     exact ⟨n, by simpa [I] using hn⟩
-  have hone : (1 : R) ∈ I.radical := by
+  obtain ⟨n, hn⟩ : (1 : R) ∈ I.radical := by
     have : (1 : R) = ∑ l, (⟨c l, hc l⟩ : R) * ⟨f l, hf l⟩ := by
       apply Subtype.ext
       simp [h1]
     rw [this]
     exact Ideal.sum_mem _ fun l _ => Ideal.mul_mem_left _ _ (hrad l)
-  obtain ⟨n, hn⟩ := hone
   simpa [I] using hn
 
 theorem exists_uniform_pow (R : Subalgebra o Ω) (L : AddSubgroup E)

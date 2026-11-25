@@ -410,8 +410,7 @@ theorem harProj_har {A B : ℕ} {f : PolXY K k} (hf : f ∈ HarAB K k A B) : har
   obtain ⟨_, h2⟩ := mem_HarAB_iff_mem_PolAB_and_ctrF_eq_zero.1 hf
   have hz : ∀ l : ℕ, cP K (A + B + k - 2) (l + 1) • (hXY K k ^ (l + 1) * (ctrF K k ^ (l + 1)) f) = 0 :=
     fun l => by rw [pow_succ (ctrF K k), Module.End.mul_apply, h2, map_zero, mul_zero, smul_zero]
-  rw [harProj_apply, Finset.sum_range_succ']
-  simp [hz, cPoint_zero]
+  simp [harProj_apply, Finset.sum_range_succ', hz, cPoint_zero]
 
 theorem har_of_left {B : ℕ} {f : PolXY K k} (hf : f ∈ PolAB K k 0 B) : f ∈ HarAB K k 0 B := by
   exact mem_HarAB_iff_mem_PolAB_and_ctrF_eq_zero.2 ⟨hf, ctrF_zero_left hf⟩

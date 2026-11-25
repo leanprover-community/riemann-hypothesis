@@ -111,13 +111,12 @@ theorem moll_le (n : ℕ) :
     rw [measureReal_def, measureReal_def, Measure.addHaar_ball_of_pos volume (0 : V n) ht, finrank_V,
       ENNReal.toReal_mul, ENNReal.toReal_ofReal (pow_pos ht _).le]
   rw [hball, mul_div_mul_right _ _ hv.ne']
-  have htp : 0 < t ^ (2 * n) := pow_pos ht _
   have hb : bumpProf t ‖z‖ ≤ 1 := Real.smoothTransition.le_one _
   have hc := mollConst_nonneg n
   simp only [moll, mollProf]
   calc mollConst n * (t ^ (2 * n))⁻¹ * bumpProf t ‖z‖
       ≤ mollConst n * (t ^ (2 * n))⁻¹ * 1 :=
-        mul_le_mul_of_nonneg_left hb (mul_nonneg hc (inv_nonneg.mpr htp.le))
+        mul_le_mul_of_nonneg_left hb (mul_nonneg hc (inv_nonneg.mpr (pow_pos ht _).le))
     _ = mollConst n / t ^ (2 * n) := by ring
 
 end ReciprocityTheory.L2DbarEstimates.C

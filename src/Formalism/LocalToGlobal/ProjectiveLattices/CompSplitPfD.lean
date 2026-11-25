@@ -49,9 +49,8 @@ theorem cspD_disj {X : Type} [TopologicalSpace X] [QuasiSober X] [T0Space X]
   have maxb : ∀ b', b' ⤳ b → b' = b := fun b' h => hg.injective (by
     have h' : g b' ⤳ g b := h.map hg.continuous
     rw [hb] at h' ⊢; exact cspD_max hZ' hη' _ h')
-  have ya : a ⤳ y := hind.specializes_iff.mp (by rw [ha]; exact s1)
   have yb : b ⤳ y := hind.specializes_iff.mp (by rw [hb]; exact s2)
-  have hab := hY a b y maxa maxb ya yb
+  have hab := hY a b y maxa maxb (hind.specializes_iff.mp (by rw [ha]; exact s1)) yb
   apply hne
   calc Z = closure {η} := hη.def.symm
     _ = closure {η'} := by rw [← ha, ← hb, hab]

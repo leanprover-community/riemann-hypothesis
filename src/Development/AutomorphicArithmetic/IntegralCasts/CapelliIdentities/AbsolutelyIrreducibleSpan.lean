@@ -123,8 +123,7 @@ private theorem UpperTheory.Reformulated.B.AbsolutelyIrreducibleSpan.adjoin_top 
     have h3 : ψ = Matrix.toLin' (c • (1 : Matrix n n k)) := by
       rw [← hc, Matrix.toLin'_toMatrix']
     have h4 : φ v = ψ v := rfl
-    rw [h4, h3]
-    simp
+    simp [h4, h3]
   rw [eq_top_iff]
   intro M _
   let f : Module.End (Module.End A (n → k)) (n → k) :=

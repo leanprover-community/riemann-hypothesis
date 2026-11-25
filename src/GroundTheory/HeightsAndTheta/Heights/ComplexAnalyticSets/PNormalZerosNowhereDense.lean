@@ -151,8 +151,7 @@ theorem NormalZerosNowhereDense.proof (hic : NormalGermIntegrallyClosed.Statemen
 
   have hloc : ∀ x ∈ R, ∃ M : Set (σ → ℂ), IsOpen M ∧ x ∈ M ∧ ((∃ p ∈ X ∩ M, T ∈ 𝓝 p) → M ⊆ T) := by
     intro x hx
-    have hx' : IsRegularPointOf (X ∩ B) x := hx
-    obtain ⟨hxXB, d, A, O, W, g, hO, hW, hxW, hg, hAg, hYW⟩ := hx'
+    obtain ⟨hxXB, d, A, O, W, g, hO, hW, hxW, hg, hAg, hYW⟩ : IsRegularPointOf (X ∩ B) x := hx
     obtain ⟨y₀, hy₀O, hgy₀⟩ : x ∈ g '' O := by rw [← hYW]; exact ⟨hxXB, hxW⟩
     obtain ⟨r, hr, hrO⟩ := Metric.isOpen_iff.mp hO y₀ hy₀O
     have hgO : ∀ y ∈ O, g y ∈ X ∩ B := by

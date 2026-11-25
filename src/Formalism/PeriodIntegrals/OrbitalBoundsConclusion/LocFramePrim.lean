@@ -580,7 +580,6 @@ theorem Dual_retract (Lb : Submodule (𝓞 E) (Fin n → E)) (hfg : Lb.FG) (z : 
     (hprim : ∀ c : E, c • z ∈ Lb → ∃ o : 𝓞 E, (o : E) = c) :
     ∃ ψ : Lb →ₗ[𝓞 E] 𝓞 E, ψ ⟨z, hz⟩ = 1 := by
   classical
-  have hz0 : z ≠ 0 := Dual_ne_zero Lb z hprim
   have : Module.IsTorsionFree (𝓞 E) Lb := by
     refine Module.IsTorsionFree.of_smul_eq_zero fun r l hrl => ?_
     have h := congrArg Subtype.val hrl
@@ -590,7 +589,7 @@ theorem Dual_retract (Lb : Submodule (𝓞 E) (Fin n → E)) (hfg : Lb.FG) (z : 
       exact Dual_coe_injective (by rw [h]; rfl)
     · right
       exact Subtype.ext h
-  have hz0' : (⟨z, hz⟩ : Lb) ≠ 0 := fun h => hz0 (congrArg Subtype.val h)
+  have hz0' : (⟨z, hz⟩ : Lb) ≠ 0 := fun h => (Dual_ne_zero Lb z hprim) (congrArg Subtype.val h)
   set N : Submodule (𝓞 E) Lb := Submodule.span (𝓞 E) {⟨z, hz⟩} with hN
   have : Module.IsTorsionFree (𝓞 E) (Lb ⧸ N) := by
     refine Module.IsTorsionFree.of_smul_eq_zero fun r q hrq => ?_

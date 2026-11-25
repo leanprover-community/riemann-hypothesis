@@ -81,8 +81,8 @@ section -- clump:auto
 
 open MeasureTheory in
 theorem UpperTheory.Reformulated.B.Qo7.eq_zero_of_orth :
-    ∀ {K : Type} [TopologicalSpace K] [CompactSpace K]
-    [MeasurableSpace K] [BorelSpace K] (μ : MeasureTheory.Measure K) [MeasureTheory.IsFiniteMeasure μ]
+    ∀ {K : Type} [inst : TopologicalSpace K] [CompactSpace K]
+    [inst_2 : MeasurableSpace K] [BorelSpace K] (μ : MeasureTheory.Measure K) [MeasureTheory.IsFiniteMeasure μ]
     [μ.IsOpenPosMeasure] (S : Set C(K, ℂ)),
     (1 : C(K, ℂ)) ∈ S →
       (∀ a ∈ S, ∀ b ∈ S, a * b ∈ S) →

@@ -145,10 +145,10 @@ end GlobalTheory.SmallRoute
 
 namespace GlobalTheory.SmallRoute
 
-theorem zdeg_mul_liftT : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} {μ₀ : T} (_ : L.Is μ₀)
+theorem zdeg_mul_liftT : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} {μ₀ : T} (hL : L.Is μ₀)
     (W : G.Weil) (B : Frames G) (ρ : RealMatch W) (t : T) (i j : Fin D.R.m)
-    (M : Vol G) (_ : M.Is t) (Θ : TotT G (routeBig t i j)) (Θ' : TotT G (routeSmall t i j)) (_ : IsMatched B t ρ i j Θ Θ')
-    (F : Fn G (.grid i (j + 1))) (_ : IsAutFunSm W.θ _ F) (_ : TotConv W M _ Θ' F) (g₁ : GA D (G.V (.grid (i + 1) j)))
+    (M : Vol G) (hM : M.Is t) (Θ : TotT G (routeBig t i j)) (Θ' : TotT G (routeSmall t i j)) (hΘ : IsMatched B t ρ i j Θ Θ')
+    (F : Fn G (.grid i (j + 1))) (hF : IsAutFunSm W.θ _ F) (hB : TotConv W M _ Θ' F) (g₁ : GA D (G.V (.grid (i + 1) j)))
     (z : GA D (G.V (.grid i j)) →₀ ℂ),
     (∀ d ∈ Θ'.support, ∀ k, IntegrableOn (fun u => GlobalTheory.SmallRoute.outer W M d F g₁ (u * k)) (M.fd (.grid i j)) (M.ν (.grid i j))) ∧
     zdeg z * liftT W M (routeSmall t i j) Θ' F g₁ =

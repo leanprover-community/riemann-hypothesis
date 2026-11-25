@@ -151,8 +151,7 @@ theorem sum_fin_val (n : ℕ) : (∑ i : Fin n, ((i : ℕ) : ℝ)) * 2 = n * (n 
   induction n with
   | zero => simp
   | succ k ih =>
-    rw [Fin.sum_univ_castSucc, add_mul]
-    simp only [Fin.coe_castSucc, Fin.val_last]
+    simp only [Fin.sum_univ_castSucc, add_mul, Fin.coe_castSucc, Fin.val_last]
     rw [ih]
     push_cast
     ring

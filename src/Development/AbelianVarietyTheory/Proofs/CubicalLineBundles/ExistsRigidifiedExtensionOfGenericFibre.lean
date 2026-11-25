@@ -220,8 +220,7 @@ theorem exists_lineBundle_extension_of_generalizing (X Y : Scheme.{0}) [IsIntegr
   have hV' : ∀ i y, j y ∈ V i ↔ y ∈ L.U i := fun i y => Set.ext_iff.1 (hV i) y
   obtain ⟨ι, hι⟩ := (NoetherianSpace.isCompact (Set.univ : Set Y)).elim_finite_subcover
     (fun i => (L.U i : Set Y)) (fun i => (L.U i).isOpen) (fun y _ => by
-      have : y ∈ ⨆ i, L.U i := hL.cover ▸ trivial
-      exact Set.mem_iUnion.2 (Opens.mem_iSup.1 this))
+      exact Set.mem_iUnion.2 (Opens.mem_iSup.1 (hL.cover ▸ trivial : y ∈ ⨆ i, L.U i)))
   let Z : ι × ι → Set X := fun p => (V p.1 ∩ V p.2) ∩ {x : X | f p.1 / f p.2 ∈ localUnits x}ᶜ
   let W : Set X := ⋂ p, (closure (Z p))ᶜ
   have hWo : IsOpen W := isOpen_iInter_of_finite fun p => isClosed_closure.isOpen_compl

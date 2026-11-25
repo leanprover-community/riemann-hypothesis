@@ -52,8 +52,7 @@ theorem DerivationMinorOfDetection.proof : DerivationMinorOfDetection.Statement 
       have hl : ∀ i, D (b i * f i) = b i * D (f i) + f i * D (b i) := fun i => by
         rw [Derivation.leibniz, smul_eq_mul, smul_eq_mul]
 
-      rw [map_sum]
-      simp only [hl, Finset.sum_add_distrib]
+      simp only [map_sum, hl, Finset.sum_add_distrib]
       exact P.add_mem h1 (Ideal.sum_mem _ fun i _ => P.mul_mem_right _ (hfP i))
     have hbP : ∀ i, b i ∈ P := fun i => (IsLocalization.AtPrime.to_map_mem_maximal_iff A P _).1
       (hind (fun i => algebraMap T A (b i)) (by simpa only [map_sum, map_mul] using hsq) i)

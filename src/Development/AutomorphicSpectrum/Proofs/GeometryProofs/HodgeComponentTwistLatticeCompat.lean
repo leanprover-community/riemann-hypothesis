@@ -337,7 +337,7 @@ theorem htOm_eq_of_dvr : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] 
     (l : Level H) (B : Type) [CommRing B] (b : Base l B) (S₀ : Scheme.{0}) (s₀ : S₀ ⟶ Sp B) (o₀ : Obj D l b s₀)
     (g : HostAut H) (X : Scheme.{0}) (Ω : Type) [Field Ω] [CharZero Ω] (ξ : Sp Ω ⟶ X) (x : Sp Ω ⟶ S₀)
     (t t' : SAB H X) (tΩ : SAB H (Sp Ω)) (m : SABMap tΩ t ξ) (m' : SABMap (twistSAB tΩ g) t' ξ)
-    (_ : SABMap tΩ o₀.t x) (V : Type) [AddCommGroup V] [Module Ω V] (M : LieModel t.G ξ V)
+    (u : SABMap tΩ o₀.t x) (V : Type) [AddCommGroup V] [Module Ω V] (M : LieModel t.G ξ V)
     (M' : LieModel t'.G ξ V) (n : ℕ) (q : Cpt ξ), IsCptGen ξ → 0 < n → FullTorsion t.G ξ n →
     (∀ e, ∃ v : epsAt (𝟙 (Sp Ω)) ⟶ tΩ.G, v.left ≫ m.φ = (M.pt e).left ∧ v.left ≫ m'.φ = (M'.pt e).left) →
     (∃ _ : IsDomain (X.presheaf.stalk q.1), IsDiscreteValuationRing (X.presheaf.stalk q.1)) →

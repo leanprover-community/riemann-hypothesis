@@ -589,7 +589,7 @@ theorem exists_zmod_cast_eq_of_pow_sub_self {p : ℕ} [hp : Fact p.Prime] {Ω : 
       (Polynomial.natDegree_X_pow_sub_X (R := Ω) hp.out.one_lt).le)
   omega
 
-theorem exists_pow_sub_self_eq {p : ℕ} [Fact p.Prime] {Ω : Type} [Field Ω] [CharP Ω p]
+theorem exists_pow_sub_self_eq {p : ℕ} [hp : Fact p.Prime] {Ω : Type} [Field Ω] [CharP Ω p]
     [IsSepClosed Ω] (a : Ω) : ∃ x : Ω, x ^ p - x = a := by
   have hd : derivative (X ^ p - X - C a : Polynomial Ω) = -1 := by
     simp [derivative_X_pow, CharP.cast_eq_zero]

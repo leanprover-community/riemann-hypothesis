@@ -238,7 +238,7 @@ theorem exists_natCast_of_pow_eq (k : Type) [Field k] (p : ℕ) [hp : Fact p.Pri
   obtain ⟨i, hi, rfl⟩ := Finset.mem_image.1 hμ
   exact ⟨i, Finset.mem_range.1 hi, rfl⟩
 
-theorem iSup_eigenspace_eq_top (k : Type) [Field k] [IsAlgClosed k] (p : ℕ) [Fact p.Prime]
+theorem iSup_eigenspace_eq_top (k : Type) [Field k] [IsAlgClosed k] (p : ℕ) [hp : Fact p.Prime]
     [CharP k p] (R : Type) [AddCommGroup R] [Module k R] [Module.Finite k R]
     (T : Module.End k R) (h : ∀ a : R, (⇑T)^[p] a = T a) :
     ⨆ μ : k, T.eigenspace μ = ⊤ := by

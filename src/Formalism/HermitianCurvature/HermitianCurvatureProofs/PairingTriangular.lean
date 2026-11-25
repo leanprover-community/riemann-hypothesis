@@ -193,8 +193,7 @@ lemma integral_cube_ee (τ : Fin d → ℤ) :
   simp_rw [h1]
   rw [integral_fintype_prod_volume_eq_prod]
   simp_rw [integral_indicator measurableSet_Icc, integral_one_dim]
-  rw [Finset.prod_ite_zero]
-  simp [funext_iff]
+  simp [Finset.prod_ite_zero, funext_iff]
 
 lemma isCompact_cube : IsCompact (cube d) := isCompact_Icc
 
@@ -231,8 +230,7 @@ lemma exists_tp (n : ℕ) : ∃ (B : Finset (Fin d → ℤ)) (c : (Fin d → ℤ
   have hinj : Function.Injective (fun (p : Fin d → ℕ) (j : Fin d) => (p j : ℤ)) := by
     intro p q h
     funext j
-    have := congrFun h j
-    simpa using this
+    simpa using congrFun h j
   refine ⟨(Fintype.piFinset fun _ : Fin d => Finset.range (n + 1)).map ⟨_, hinj⟩,
     fun σ => ∏ j, (n.choose (σ j).toNat : ℂ), fun y => ?_⟩
   unfold tp
@@ -657,8 +655,7 @@ lemma ψd_sub (m m' : Fin (finrank ℤ La) → ℤ) : ψd La (m - m') = ψd La m
 
 lemma pair_ψd_Tl (m : Fin (finrank ℤ La) → ℤ) (y : Fin (finrank ℤ La) → ℝ) :
     pair (ψd La m) (Tl La y) = ∑ j, y j * (m j : ℝ) := by
-  rw [pair_Tl]
-  simp [pair_ψd]
+  simp [pair_Tl, pair_ψd]
 
 lemma psi_ψd_Tl (m : Fin (finrank ℤ La) → ℤ) (y : Fin (finrank ℤ La) → ℝ) :
     psi (ψd La m * Tl La y) =
@@ -727,8 +724,7 @@ lemma map_fd :
       Set.univ.pi (fun _ => Set.Ico (0 : ℝ) 1) := by
     ext y
     simp [ZSpan.mem_fundamentalDomain, repr_Tl]
-  rw [hpre, MeasureTheory.volume_pi_pi]
-  simp [Real.volume_Ico]
+  simp [hpre, MeasureTheory.volume_pi_pi, Real.volume_Ico]
 
 lemma covol_eq (c : NNReal)
     (hc : (volume : Measure (V f)) = c • Measure.map (Tl La) (volume : Measure (Fin (finrank ℤ La) → ℝ))) :

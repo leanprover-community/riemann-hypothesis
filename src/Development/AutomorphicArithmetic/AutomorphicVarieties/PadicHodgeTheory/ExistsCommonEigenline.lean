@@ -67,7 +67,7 @@ section -- clump:auto
 @[expose] public section
 
 noncomputable def UpperTheory.Reformulated.B.BlockConjugation.HasFlag :
-    {H k : Type} → [Group H] → [CommRing k] → {n : ℕ} → (H →* GL (Fin n) k) → (Fin n → H →* kˣ) → Prop :=
+    {H k : Type} → [inst : Group H] → [inst_1 : CommRing k] → {n : ℕ} → (H →* GL (Fin n) k) → (Fin n → H →* kˣ) → Prop :=
     fun {H k : Type} [Group H] [CommRing k] {n : ℕ} (r : H →* GL (Fin n) k) (κ : Fin n → H →* kˣ) ↦
       ∃ (g : GL (Fin n) k),
         ∀ (s : H),
@@ -112,7 +112,7 @@ private theorem UpperTheory.Reformulated.B.BlockConjugation.conj_blk {k : Type} 
     simp [UpperTheory.Reformulated.B.BlockConjugation.blk, Matrix.mul_apply, Fin.sum_univ_succ, hM]
 
 theorem UpperTheory.Reformulated.B.BlockConjugation.exists_common_eigenline :
-    ∀ {H k : Type} [Group H] [TopologicalSpace H] [Field k] [TopologicalSpace k]
+    ∀ {H k : Type} [inst : Group H] [inst_1 : TopologicalSpace H] [inst_2 : Field k] [inst_3 : TopologicalSpace k]
       [IsTopologicalRing k] {n : ℕ} (r : H →* GL (Fin (n + (1 : ℕ))) k) (κ : Fin (n + (1 : ℕ)) → H →* kˣ)
       (v : Fin (n + (1 : ℕ)) → k),
       Continuous (⇑r : H → GL (Fin (n + (1 : ℕ))) k) →

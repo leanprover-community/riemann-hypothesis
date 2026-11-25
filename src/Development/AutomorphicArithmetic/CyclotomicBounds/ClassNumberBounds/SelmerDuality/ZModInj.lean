@@ -79,8 +79,7 @@ private theorem zmod_dbl_ann (d y : ZMod N) (h : ∀ r : ZMod N, r * d = 0 → r
   have h3 : a.gcd N * m ∣ b * m := by rw [← hm, mul_comm]; exact h2
   obtain ⟨k, hk⟩ := Nat.dvd_of_mul_dvd_mul_right hm0 h3
   have h4 : ((a.gcd N : ℕ) : ZMod N) = (a : ZMod N) * ((Nat.gcdA a N : ℤ) : ZMod N) := by
-    have := congrArg (fun t : ℤ => (t : ZMod N)) (Nat.gcd_eq_gcd_ab a N)
-    simpa using this
+    simpa using congrArg (fun t : ℤ => (t : ZMod N)) (Nat.gcd_eq_gcd_ab a N)
   refine ⟨((Nat.gcdA a N : ℤ) : ZMod N) * k, ?_⟩
   rw [hk, Nat.cast_mul, h4]
   ring

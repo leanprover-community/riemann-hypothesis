@@ -169,8 +169,7 @@ private theorem unit_lemma' (i j : ι) (hij : i ≠ j) (x y a' b' : R) (key : x 
       else if p = j then Pi.single i (-b') + Pi.single j a' else Pi.single p 1 : Matrix ι ι R) * (Matrix.of fun p => if p = i then Pi.single i a' + Pi.single j (-y)
       else if p = j then Pi.single i b' + Pi.single j x else Pi.single p 1 : Matrix ι ι R) = 1 := by
     ext p q
-    rw [Matrix.mul_apply]
-    simp only [Matrix.of_apply]
+    simp only [Matrix.mul_apply, Matrix.of_apply]
     rw [sum_pairSingle_mul_eq_ite i j hij x y (-b') a' p, Matrix.one_apply]
     by_cases hpi : p = i <;> by_cases hpj : p = j <;> by_cases hqi : q = i <;> by_cases hqj : q = j <;>
       simp_all [Pi.single_apply, Ne.symm hij] <;>

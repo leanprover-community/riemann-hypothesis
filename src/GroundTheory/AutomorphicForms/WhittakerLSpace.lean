@@ -257,8 +257,7 @@ theorem mem_of_forall_fiber {Y : Type*} [TopologicalSpace Y] [T2Space Y] [Locall
     · have hx : x ∈ p ⁻¹' ⋃ y ∈ s, V y := hs ⟨x, ⟨hxC, hgx⟩, rfl⟩
       simp only [Pi.sub_apply]
       rw [Set.indicator_of_mem hx, Pi.one_apply, one_mul, sub_self]
-  have := W.add_mem hrest hgood
-  simpa using this
+  simpa using W.add_mem hrest hgood
 
 theorem supportedIn_le_of_local {V : Set X} {M : Submodule ℂ (X → ℂ)}
     (hloc : ∀ x ∈ V, ∃ V' : Set X, IsOpen V' ∧ x ∈ V' ∧ supportedIn V' ≤ M) :

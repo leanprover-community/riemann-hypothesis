@@ -126,8 +126,7 @@ theorem suppT_isSheaf (F : Shv R) : Presieve.IsSheaf Scheme.etaleTopology (suppT
   intro U s hs
   change sv Z hZ (F := F) (U := U.unop) s ∈ Scheme.etaleTopology U.unop
   refine Scheme.etaleTopology.transitive hs _ (fun V f hf => ?_)
-  have hf' : sv Z hZ (Sec.res f s) ∈ Scheme.etaleTopology V := hf
-  refine Scheme.etaleTopology.superset_covering (fun W h hh => ?_) hf'
+  refine Scheme.etaleTopology.superset_covering (fun W h hh => ?_) hf
   change Z W ∨ Sec.res (h ≫ f) s = 0
   rwa [res_comp]
 

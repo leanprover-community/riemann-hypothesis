@@ -37,10 +37,8 @@ theorem exists_rat_intertwiner {ι J : Type*} [Fintype ι] [DecidableEq ι]
   have hP_eq : P = ∑ k, (c k : ℝ) • (Bm k).map (Rat.cast : ℚ → ℝ) := by
     ext a b
     have h1 := congrArg (Subtype.val : V → ℝ) (c.sum_repr ⟨P a b, hmem a b⟩)
-    rw [Submodule.coe_sum] at h1
-    simp only [Submodule.coe_smul, hcast] at h1
-    rw [Matrix.sum_apply]
-    simp only [Matrix.smul_apply, Matrix.map_apply, smul_eq_mul]
+    simp only [Submodule.coe_sum, Submodule.coe_smul, hcast] at h1
+    simp only [Matrix.sum_apply, Matrix.smul_apply, Matrix.map_apply, smul_eq_mul]
     rw [← h1]
     exact Finset.sum_congr rfl fun k _ => mul_comm _ _
   have hli : LinearIndependent ℚ (fun k => (c k : ℝ)) :=

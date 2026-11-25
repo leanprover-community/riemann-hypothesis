@@ -481,7 +481,7 @@ open scoped TensorProduct
 noncomputable section
 namespace GlobalTheory.CompanionTheory.BZPhiPG.OntoO
 
-theorem muD_toReal_ne_zero : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (t : ℕ) (E C : Set (Fin t → k)) (_ : IsOpen E) (_ : E.Nonempty) (_ : IsCompact C) (_ : E ⊆ C),
+theorem muD_toReal_ne_zero : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (t : ℕ) (E C : Set (Fin t → k)) (hE : IsOpen E) (hn : E.Nonempty) (hC : IsCompact C) (hEC : E ⊆ C),
     (muD (k := k) t E).toReal ≠ 0 := by
   intro k _ _ _ _ t E C hE hn hC hEC
   unfold muD
@@ -764,7 +764,7 @@ open scoped TensorProduct
 
 namespace GlobalTheory.CompanionTheory.BZPhiPG.OntoO
 
-theorem sigX_fix_nhds : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (i t : ℕ) (τ : MRep k (i + 1)) (σ : GRep k (t + 1)) (_ : IsSmooth τ.ρ) (_ : IsSmooth σ.ρ)
+theorem sigX_fix_nhds : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (i t : ℕ) (τ : MRep k (i + 1)) (σ : GRep k (t + 1)) (hτ : IsSmooth τ.ρ) (hσ : IsSmooth σ.ρ)
     (v : τ.V ⊗[ℂ] σ.V), ∃ O ∈ 𝓝 (1 : Mir k ((i + 1) + t + 1)), ∀ a : HPG k (i + 1) (t + 1),
       (a : Mir k ((i + 1) + (t + 1))) ∈ O → sigX τ σ a v = v :=
   GlobalTheory.CompanionTheory.BZPhiPG.Onto.sigX_fix

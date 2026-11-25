@@ -38,8 +38,7 @@ theorem blocks_mul {g : ℕ} (M N : Matrix (Fin g ⊕ Fin g) (Fin g ⊕ Fin g) �
   have h := fromBlocks_multiply M.toBlocks₁₁ M.toBlocks₁₂ M.toBlocks₂₁ M.toBlocks₂₂
     N.toBlocks₁₁ N.toBlocks₁₂ N.toBlocks₂₁ N.toBlocks₂₂
   rw [fromBlocks_toBlocks, fromBlocks_toBlocks] at h
-  rw [h]
-  simp
+  simp [h]
 
 theorem jAut_mul {g : ℕ} (γ δ : Matrix (Fin g ⊕ Fin g) (Fin g ⊕ Fin g) ℤ)
     (τ : Matrix (Fin g) (Fin g) ℂ) (h : IsUnit (jAut δ τ).det) :

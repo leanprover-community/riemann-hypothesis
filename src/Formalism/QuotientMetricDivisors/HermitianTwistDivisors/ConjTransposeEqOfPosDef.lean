@@ -41,9 +41,8 @@ theorem conjTranspose_map (σ : K →+* ℂ) (hσ : ∀ a : K, σ (star a) = sta
 theorem conjTranspose_eq_of_posDef [NumberField K] (v0 : InfinitePlace K) (hv0 : IsConjAt v0)
     {n : ℕ} (H : Matrix (Fin n) (Fin n) K) (hH : (H.map v0.embedding).PosDef) : Hᴴ = H := by
   have h1 := conjTranspose_map v0.embedding hv0 H
-  have h2 : (H.map v0.embedding)ᴴ = H.map v0.embedding := hH.isHermitian
   ext i j
-  have h3 := congrFun (congrFun (h1.trans h2) i) j
+  have h3 := congrFun (congrFun (h1.trans hH.isHermitian) i) j
   simp only [Matrix.map_apply] at h3
   exact v0.embedding.injective h3
 

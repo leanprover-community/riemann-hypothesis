@@ -102,9 +102,8 @@ theorem exists_fg_le_range_subset {k : Type} [Field k] [Algebra k ℂ] (R : Suba
       Set.range (spMap (Subalgebra.inclusion h).toRingHom ≫ y) ⊆ (U : Set X) := by
   classical
   let p : PrimeSpectrum R := PrimeSpectrum.comap R.val.toRingHom (IsLocalRing.closedPoint ℂ)
-  have hp : p ∈ ((y ⁻¹ᵁ U : (Sp R).Opens) : Set (Sp R)) := hU
   obtain ⟨_, ⟨r, rfl⟩, hr, hsub⟩ := PrimeSpectrum.isTopologicalBasis_basic_opens.exists_subset_of_mem_open
-    (a := p) (u := ((y ⁻¹ᵁ U : (Sp R).Opens) : Set (Sp R))) hp (y ⁻¹ᵁ U).2
+    (a := p) (u := ((y ⁻¹ᵁ U : (Sp R).Opens) : Set (Sp R))) hU (y ⁻¹ᵁ U).2
   have hr0 : (r : ℂ) ≠ 0 := by
     intro h
     have : r = 0 := Subtype.ext h
@@ -118,11 +117,10 @@ theorem exists_fg_le_range_subset {k : Type} [Field k] [Algebra k ℂ] (R : Suba
   rintro _ ⟨q, rfl⟩
   have hq : PrimeSpectrum.comap (Subalgebra.inclusion hle).toRingHom q ∈ (PrimeSpectrum.basicOpen r : Set (PrimeSpectrum R)) := by
     intro h
-    have h' : Subalgebra.inclusion hle r ∈ q.asIdeal := h
     have hu : (r : ℂ)⁻¹ ∈ Algebra.adjoin k (↑(insert (r : ℂ)⁻¹ t) : Set ℂ) :=
       Algebra.subset_adjoin (by simp)
     have h1 : Subalgebra.inclusion hle r * ⟨_, hu⟩ = 1 := Subtype.ext (mul_inv_cancel₀ hr0)
-    exact q.isPrime.ne_top ((Ideal.eq_top_iff_one _).2 (h1 ▸ Ideal.mul_mem_right _ _ h'))
+    exact q.isPrime.ne_top ((Ideal.eq_top_iff_one _).2 (h1 ▸ Ideal.mul_mem_right _ _ h))
   exact hsub hq
 
 theorem exists_numberField_point_of_countable :

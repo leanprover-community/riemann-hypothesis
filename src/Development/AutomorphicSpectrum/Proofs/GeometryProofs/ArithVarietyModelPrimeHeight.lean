@@ -361,13 +361,13 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.DualIntegralLattice.aux2 :
-    ∀ (E : Type) [Field E] [NumberField E], (Algebra.traceForm ℚ E).Nondegenerate := by
+    ∀ (E : Type) [inst : Field E] [inst_1 : NumberField E], (Algebra.traceForm ℚ E).Nondegenerate := by
   intro E _ _
   exact traceForm_nondegenerate ℚ E
 
 noncomputable def UpperTheory.Reformulated.B.DualIntegralLattice.dualInt :
     (E : Type) →
-      [Field E] → [NumberField E] → Module.Free.ChooseBasisIndex ℤ (NumberField.RingOfIntegers E) → E :=
+      [inst : Field E] → [inst_1 : NumberField E] → Module.Free.ChooseBasisIndex ℤ (NumberField.RingOfIntegers E) → E :=
     fun (E : Type) [Field E] [NumberField E] (k : Module.Free.ChooseBasisIndex ℤ (NumberField.RingOfIntegers E)) ↦
       ((Algebra.traceForm ℚ E).dualBasis (UpperTheory.Reformulated.B.DualIntegralLattice.aux2 E) (NumberField.integralBasis E) :
           Module.Free.ChooseBasisIndex ℤ (NumberField.RingOfIntegers E) → E)
@@ -589,7 +589,7 @@ private theorem key4 (E : Type) [Field E] [NumberField E] :
     exact Finset.sum_congr rfl fun k _ => by rw [smul_smul, mul_comm]
 
 theorem UpperTheory.Reformulated.B.DualIntegralLattice.main :
-    ∀ (E : Type) [Field E] [NumberField E] (cc : E ≃+* E) (p R N : ℕ) [Fact (Nat.Prime p)],
+    ∀ (E : Type) [inst : Field E] [inst_1 : NumberField E] (cc : E ≃+* E) (p R N : ℕ) [Fact (Nat.Prime p)],
       (1 : ℕ) ≤ R →
         ¬(↑p : ℤ) ∣ NumberField.discr E →
           ∀ (e : (Fin N → NumberField.RingOfIntegers E) →+ (Fin N → NumberField.RingOfIntegers E) →+ ZMod (p ^ R)),
@@ -608,7 +608,7 @@ theorem UpperTheory.Reformulated.B.DualIntegralLattice.main :
                   (e : (Fin N → NumberField.RingOfIntegers E) → (Fin N → NumberField.RingOfIntegers E) →+ ZMod (p ^ R)) x =
                       (0 : (Fin N → NumberField.RingOfIntegers E) →+ ZMod (p ^ R)) →
                     ∃ (x' : Fin N → NumberField.RingOfIntegers E), x = p ^ R • x') →
-                ∀ (O Ω : Type) [CommRing O] [IsDomain O] [IsLocalRing O] [Field Ω] [Algebra O Ω],
+                ∀ (O Ω : Type) [inst_3 : CommRing O] [IsDomain O] [IsLocalRing O] [inst_6 : Field Ω] [inst_7 : Algebra O Ω],
                   Function.Injective (⇑(Algebra.algebraMap O Ω) : O → Ω) →
                     ¬IsUnit (↑p : O) →
                       ∀ (σ : E →+* Ω),
@@ -946,7 +946,7 @@ end GlobalTheory.CompanionTheory.Ar.Num.FamEx.SeqFam
 
 namespace GlobalTheory.CompanionTheory.Ar.Num.FamEx.SeqFam
 
-theorem seqfam_holds : GlobalTheory.CompanionTheory.Ar.HT.FarguesHodgeTate → ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Level H) (Xo : Moduli D l) (c : Coeff l) (O₀ : Type) [CommRing O₀] (β : O₀ →+* c.F) (Y : Model Xo c β) (S : Finset ℕ) (Ω : Type) [Field Ω] (K : Type) [Fintype K] [DecidableEq K] (J : K → Type) [∀ k, Fintype (J k)] (y : (Σ k, J k) → Ω) (𝔐 : HodgeCpt Y S y) (d : ℕ), IsArithVar (mCoordIdeal y) (d + 1) → 0 < D.p + D.q → ∀ (p : ℕ) [Fact p.Prime], p ∈ S → HT.HTFree 𝔐 p → p ≠ 2 → ¬ (p : ℤ) ∣ NumberField.discr E → ∀ (b : ∀ t, Fin (labelRk D t) → 𝔐.Li), (∀ t, LinearIndependent Ω (b t) ∧ Submodule.span Ω (Set.range (b t)) = 𝔐.Vgen t) → ∀ φ : Equiv.Perm (CMType H ⊕ CMType H), IsFrobLabels c p φ → ∀ (A : Type) [CommRing A] [Algebra A Ω] [IsIntegralClosure A ℤ Ω] (m : Ideal A) [m.IsPrime], (p : A) ∈ m → ∀ (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Algebra A O] [IsLocalization.AtPrime O m] [Algebra O Ω] [IsScalarTower A O Ω], ∀ (t₀ : CMType H ⊕ CMType H) (Sg : Type) [Fintype Sg] (e : Sg → CMType H ⊕ CMType H) (φ' : Equiv.Perm Sg) (F : Type) [Field F] [Fintype F] [CharP F p] (pq : (𝓞 E ⧸ Ideal.span {(p : 𝓞 E)}) →+* F) (sc : F →+ (𝓞 E ⧸ Ideal.span {(p : 𝓞 E)})) (w : O) (σ : Sg → F →+* IsLocalRing.ResidueField O), IsOrbit O 𝔐 p φ t₀ e φ' pq w σ → IsSec pq sc → ∀ (G : GenTors 𝔐 p) (P : ∀ c' : ∀ k, J k, mseg y c' ≠ 0 → ChartPack G O c') (i : ∀ (_ : ∀ k, J k) (τ), (Fin (labelRk D (e τ)) → Ω) →ₗ[Ω] (Fin (D.p + D.q) → Ω)), (∀ (c' : ∀ k, J k) (h : mseg y c' ≠ 0) (τ : Sg), SeqHyp (CR O y c') (algebraMap O Ω w) (coordLat O y (𝔐.HT p (e τ)) (b (e τ)) c') (dotDual (CR O y c') (coordLat O y (𝔐.HT p (e τ).swap) (b (e τ).swap) c')) (i c' τ) (qMap (P c' h) (b (e τ).swap)) ∧ ∀ σE : E →+* Ω, (∀ a : 𝓞 E, σE (a : E) = 𝔐.emb (e τ) a) → DualSeq (P c' h) σE (𝔐.R p - 2) (coordLat O y (𝔐.HT p (e τ)) (b (e τ)) c') (b (e τ)) (i c' τ)) → ∀ τ : Sg, IsLatFamily O y (fun c' => (famD e b pq sc w P i c').Gam τ) ∧ IsLatFamily O y (fun c' => (famD e b pq sc w P i c').Del τ) := by
+theorem seqfam_holds : GlobalTheory.CompanionTheory.Ar.HT.FarguesHodgeTate → ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Level H) (Xo : Moduli D l) (c : Coeff l) (O₀ : Type) [CommRing O₀] (β : O₀ →+* c.F) (Y : Model Xo c β) (S : Finset ℕ) (Ω : Type) [Field Ω] (K : Type) [Fintype K] [DecidableEq K] (J : K → Type) [∀ k, Fintype (J k)] (y : (Σ k, J k) → Ω) (𝔐 : HodgeCpt Y S y) (d : ℕ), IsArithVar (mCoordIdeal y) (d + 1) → 0 < D.p + D.q → ∀ (p : ℕ) [Fact p.Prime], p ∈ S → HT.HTFree 𝔐 p → p ≠ 2 → ¬ (p : ℤ) ∣ NumberField.discr E → ∀ (b : ∀ t, Fin (labelRk D t) → 𝔐.Li), (∀ t, LinearIndependent Ω (b t) ∧ Submodule.span Ω (Set.range (b t)) = 𝔐.Vgen t) → ∀ φ : Equiv.Perm (CMType H ⊕ CMType H), IsFrobLabels c p φ → ∀ (A : Type) [CommRing A] [Algebra A Ω] [IsIntegralClosure A ℤ Ω] (m : Ideal A) [m.IsPrime], (p : A) ∈ m → ∀ (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Algebra A O] [IsLocalization.AtPrime O m] [Algebra O Ω] [IsScalarTower A O Ω], ∀ (t₀ : CMType H ⊕ CMType H) (Sg : Type) [Fintype Sg] (e : Sg → CMType H ⊕ CMType H) (φ' : Equiv.Perm Sg) (F : Type) [Field F] [Fintype F] [CharP F p] (pq : (𝓞 E ⧸ Ideal.span {(p : 𝓞 E)}) →+* F) (sc : F →+ (𝓞 E ⧸ Ideal.span {(p : 𝓞 E)})) (w : O) (σ : Sg → F →+* IsLocalRing.ResidueField O), IsOrbit O 𝔐 p φ t₀ e φ' pq w σ → IsSec pq sc → ∀ (G : GenTors 𝔐 p) (P : ∀ c' : ∀ k, J k, mseg y c' ≠ 0 → ChartPack G O c') (i : ∀ (c' : ∀ k, J k) (τ), (Fin (labelRk D (e τ)) → Ω) →ₗ[Ω] (Fin (D.p + D.q) → Ω)), (∀ (c' : ∀ k, J k) (h : mseg y c' ≠ 0) (τ : Sg), SeqHyp (CR O y c') (algebraMap O Ω w) (coordLat O y (𝔐.HT p (e τ)) (b (e τ)) c') (dotDual (CR O y c') (coordLat O y (𝔐.HT p (e τ).swap) (b (e τ).swap) c')) (i c' τ) (qMap (P c' h) (b (e τ).swap)) ∧ ∀ σE : E →+* Ω, (∀ a : 𝓞 E, σE (a : E) = 𝔐.emb (e τ) a) → DualSeq (P c' h) σE (𝔐.R p - 2) (coordLat O y (𝔐.HT p (e τ)) (b (e τ)) c') (b (e τ)) (i c' τ)) → ∀ τ : Sg, IsLatFamily O y (fun c' => (famD e b pq sc w P i c').Gam τ) ∧ IsLatFamily O y (fun c' => (famD e b pq sc w P i c').Del τ) := by
   intro hFH E _ _ _ H D l Xo c O₀ _ β Y S Ω _ K _ _ J _ y 𝔐 d hvar hpq p _ hpS hfree hp2 hdisc b hb φ hφ
     A _ _ _ m _ hpm O _ _ _ _ _ _ _ t₀ Sg _ e φ' F _ _ _ pq sc w σ hOrb hSec G P i hseq τ
   have hp : p.Prime := Fact.out

@@ -116,8 +116,7 @@ theorem GlobalTheory.EtC.prim_filtered_colimit : ∀ (q : ℕ) (J : Type) [Small
     have hu1 : (q : D.obj k1) * (D.map f1).hom y' = 1 := by
       simpa only [map_mul, map_natCast, map_one] using hf1
     have hu2 : (q : D.obj k2) * (D.map f2).hom ((D.map f1).hom y') = 1 := by
-      have := congrArg (D.map f2).hom hu1
-      simpa only [map_mul, map_natCast, map_one] using this
+      simpa only [map_mul, map_natCast, map_one] using congrArg (D.map f2).hom hu1
     have hr : Polynomial.aeval ((D.map f2).hom x1) (Polynomial.cyclotomic q ℤ) = 0 := by
       rw [aeval_ringHom, hf2, map_zero]
     refine ⟨k2, ⟨(D.map f2).hom x1, IsUnit.of_mul_eq_one _ hu2, hr⟩, ?_⟩
@@ -199,8 +198,7 @@ theorem finsupp_mapDomain_eq_zero_at_stage (Λ : Type 1) [AddCommGroup Λ] (J : 
     exact hf (a, b) (Finset.mem_filter.mpr ⟨Finset.mem_product.mpr ⟨ha, hb⟩, hab⟩)
   apply Finsupp.mapDomain_injOn _ hInj
   · intro b hb
-    have := Finsupp.mapDomain_support (f := P.map f) (s := x) hb
-    simpa using this
+    simpa using Finsupp.mapDomain_support (f := P.map f) (s := x) hb
   · simp
   · rw [hcomp, hx, Finsupp.mapDomain_zero]
 

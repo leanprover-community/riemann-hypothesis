@@ -1303,7 +1303,7 @@ end
 theorem strictlyHenselian_isColimit : ∀ (q : ℕ) (A : Type) [CommRing A] [IsLocalRing A], SH A → IsUnit (q : A) →
   ∃ (J : Type) (_ : SmallCategory J) (_ : IsFiltered J) (D : J ⥤ CommRingCat.{0})
     (ι : D ⟶ (Functor.const J).obj (CommRingCat.of A)) (_ : IsColimit (Cocone.mk _ ι))
-    (_ : ∀ j, IsLocalRing (D.obj j)),
+    (hl : ∀ j, IsLocalRing (D.obj j)),
     (∀ j, ∃ (B : Type) (_ : CommRing B) (_ : Algebra.FiniteType ℤ B)
       (s : Spec (CommRingCat.of (D.obj j)) ⟶ Spec (CommRingCat.of B)), IsStalk (D.obj j) s) ∧
     (∀ j, IsUnit (q : D.obj j)) ∧ (∀ {j k : J} (f : j ⟶ k), IsLocalHom (D.map f).hom) ∧

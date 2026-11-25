@@ -59,8 +59,7 @@ theorem cls_eq_zero_of_acyclic {A I : CochainComplex C ℤ} (hA : A.Acyclic) [I.
   let H := IsKInjective.homotopyZero g hA
   have h1 : δ (-1) 0 (Cochain.ofHomotopy H) = (z.1.rightShift n 0 (zero_add n)) := by
     rw [δ_ofHomotopy, Cochain.ofHom_zero, sub_zero]
-    have := Cocycle.ofHom_homOf_eq_self (z.rightShift n 0 (zero_add n))
-    exact congrArg Subtype.val this
+    exact congrArg Subtype.val (Cocycle.ofHom_homOf_eq_self (z.rightShift n 0 (zero_add n)))
   rw [CohomologyClass.mk_eq_zero_iff, mem_coboundaries_iff _ (n - 1) (by omega)]
   refine ⟨n.negOnePow • (Cochain.ofHomotopy H).rightUnshift (n - 1) (by omega), ?_⟩
   rw [δ_units_smul, Cochain.δ_rightUnshift _ (n - 1) (by omega) n 0 (by omega), h1]

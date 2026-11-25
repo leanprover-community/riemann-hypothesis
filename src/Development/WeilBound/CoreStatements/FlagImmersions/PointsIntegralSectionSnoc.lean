@@ -100,8 +100,7 @@ theorem ptsIntegral_eq_zero (P : Ideal (MRing ι)) {e : ℕ} (φ : Fin e → ((�
 
 theorem geoNum_last_zero (n : ℕ) (V : Ideal (MRing ι)) (a : Fin (n + 1) → K → ℤ)
     (ha : a (Fin.last n) = 0) : geoNum (n + 1) V a = 0 := by
-  rw [geoNum.eq_2]
-  simp [ha]
+  simp [geoNum.eq_2, ha]
 
 theorem snoc_snoc_swap {α : Type*} {e : ℕ} (L : Fin e → α) (A B : α) :
     (Fin.snoc (Fin.snoc L A : Fin (e + 1) → α) B : Fin (e + 2) → α) =

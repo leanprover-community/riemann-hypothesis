@@ -33,9 +33,8 @@ theorem fundamentalDomainExists : FundDomain := by
   have hFD : IsAddFundamentalDomain L D μ := ZSpan.isAddFundamentalDomain b μ
   have hbdd : Bornology.IsBounded D := ZSpan.fundamentalDomain_isBounded b
   have hmeas : MeasurableSet D := ZSpan.fundamentalDomain_measurableSet b
-  have hne : μ D ≠ 0 := ZSpan.measure_fundamentalDomain_ne_zero b
   have htop : μ D ≠ ⊤ := hbdd.measure_lt_top.ne
-  refine ⟨D, hFD, hbdd, ENNReal.toReal_pos hne htop, ?_⟩
+  refine ⟨D, hFD, hbdd, ENNReal.toReal_pos (ZSpan.measure_fundamentalDomain_ne_zero b) htop, ?_⟩
   intro Λ' hle hidx
   have hmem : ∀ v : V, v ∈ L → ∀ x : V, (v + x ∈ D ↔ v = -(ZSpan.floor b x : V)) := by
     intro v hv x
@@ -91,8 +90,7 @@ theorem fundamentalDomainExists : FundDomain := by
         have h3 : -rep q + -l0 = -(g : V) := by
           rw [← e1]
           abel
-        have h4 : -(g : V) ∈ Λ' := Λ'.neg_mem g.2
-        simpa [rep, h3] using h4
+        simpa [rep, h3] using Λ'.neg_mem g.2
       apply Subtype.ext
       show (g : V) = rep q0 + l0
       rw [← hqq, ← e1]
@@ -144,11 +142,10 @@ theorem characterIntegral : CharIntegral := by
   have htr : ∀ w : V, ∫ z in D', f z ∂μ = f w * ∫ z in D', f z ∂μ := by
     intro w
     have hD2 : IsAddFundamentalDomain Λ' (w +ᵥ D') μ := hD.vadd_of_comm w
-    have e1 : ∫ z in w +ᵥ D', f z ∂μ = ∫ z in D', f z ∂μ := hD2.setIntegral_eq hD hper
     have e2 : ∫ z in w +ᵥ D', f z ∂μ = ∫ z in D', f (w + z) ∂μ := by
       rw [← Set.image_vadd]
       exact (measurePreserving_add_left μ w).setIntegral_image_emb (measurableEmbedding_addLeft w) f D'
-    calc ∫ z in D', f z ∂μ = ∫ z in w +ᵥ D', f z ∂μ := e1.symm
+    calc ∫ z in D', f z ∂μ = ∫ z in w +ᵥ D', f z ∂μ := (hD2.setIntegral_eq hD hper).symm
       _ = ∫ z in D', f (w + z) ∂μ := e2
       _ = f w * ∫ z in D', f z ∂μ := by
         simp only [hmul]

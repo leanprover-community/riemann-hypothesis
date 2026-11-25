@@ -78,8 +78,7 @@ theorem dc_dc : ∀ (m : ℕ) (F : (Fin (m + 1) → Y) → ℝ), dc (dc F) = 0 :
     rw [← Fin.cons_self_tail y, dc_cons]
     have e : (fun w' => dc F (Fin.cons (y 0) w')) = F - dc (fun w' => F (Fin.cons (y 0) w')) := by
       funext w'; rw [dc_cons]; rfl
-    rw [e, dc_sub, ih]
-    simp
+    simp [e, dc_sub, ih]
 
 theorem dc_neg {m : ℕ} (F : (Fin (m + 1) → Y) → ℝ) : dc (-F) = -dc F := by
   funext y; simp [dc, Finset.sum_neg_distrib]

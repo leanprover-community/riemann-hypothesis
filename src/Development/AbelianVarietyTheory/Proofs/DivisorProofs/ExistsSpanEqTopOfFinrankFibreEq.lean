@@ -163,8 +163,7 @@ theorem _root_.GlobalTheory.nonempty_basis_of_basis_baseChange {B A M : Type*} [
     rw [eq_top_iff]
     intro m _
     have h1 : (1 : B) ∈ Module.annihilator B (M ⧸ N) := hann ▸ Submodule.mem_top
-    have := Module.mem_annihilator.mp h1 (N.mkQ m)
-    simpa [Submodule.Quotient.mk_eq_zero] using this
+    simpa [Submodule.Quotient.mk_eq_zero] using Module.mem_annihilator.mp h1 (N.mkQ m)
   let f := Fintype.linearCombination B x
   have hfs : Function.Surjective f := by
     rwa [← LinearMap.range_eq_top, Fintype.range_linearCombination]

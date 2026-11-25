@@ -53,27 +53,27 @@ public import Mathlib.LinearAlgebra.Eigenspace.Basic
 
 noncomputable def UpperTheory.Reformulated.B.H13.IsInv :
     {Γ : Type} →
-      [Group Γ] → {k : Type} → [Field k] → {a : ℕ} → (Γ →* GL (Fin a) k) → Submodule k (Fin a → k) → Prop :=
+      [inst : Group Γ] → {k : Type} → [inst_1 : Field k] → {a : ℕ} → (Γ →* GL (Fin a) k) → Submodule k (Fin a → k) → Prop :=
     fun {Γ : Type} [Group Γ] {k : Type} [Field k] {a : ℕ} (ρ : Γ →* GL (Fin a) k) (W : Submodule k (Fin a → k)) ↦
       ∀ (g : Γ), ∀ v ∈ W, (↑((ρ : Γ → GL (Fin a) k) g) : Matrix (Fin a) (Fin a) k).mulVec v ∈ W
 
 noncomputable def UpperTheory.Reformulated.B.H13.IsIrrSub :
     {Γ : Type} →
-      [Group Γ] → {k : Type} → [Field k] → {a : ℕ} → (Γ →* GL (Fin a) k) → Submodule k (Fin a → k) → Prop :=
+      [inst : Group Γ] → {k : Type} → [inst_1 : Field k] → {a : ℕ} → (Γ →* GL (Fin a) k) → Submodule k (Fin a → k) → Prop :=
     fun {Γ : Type} [Group Γ] {k : Type} [Field k] {a : ℕ} (ρ : Γ →* GL (Fin a) k) (W : Submodule k (Fin a → k)) ↦
       W ≠ ⊥ ∧ UpperTheory.Reformulated.B.H13.IsInv ρ W ∧ ∀ W' ≤ W, UpperTheory.Reformulated.B.H13.IsInv ρ W' → W' = ⊥ ∨ W' = W
 
 noncomputable def UpperTheory.Reformulated.B.H13.IsIrr :
-    {Γ k : Type} → [Group Γ] → [Field k] → {n : ℕ} → (Γ →* GL (Fin n) k) → Prop :=
+    {Γ k : Type} → [inst : Group Γ] → [inst_1 : Field k] → {n : ℕ} → (Γ →* GL (Fin n) k) → Prop :=
     fun {Γ k : Type} [Group Γ] [Field k] {n : ℕ} (r : Γ →* GL (Fin n) k) ↦ UpperTheory.Reformulated.B.H13.IsIrrSub r ⊤
 
 noncomputable def UpperTheory.Reformulated.B.H13.RepIso :
-    {Γ k : Type} → [Group Γ] → [Field k] → {n : ℕ} → (Γ →* GL (Fin n) k) → (Γ →* GL (Fin n) k) → Prop :=
+    {Γ k : Type} → [inst : Group Γ] → [inst_1 : Field k] → {n : ℕ} → (Γ →* GL (Fin n) k) → (Γ →* GL (Fin n) k) → Prop :=
     fun {Γ k : Type} [Group Γ] [Field k] {n : ℕ} (r r' : Γ →* GL (Fin n) k) ↦
       ∃ (g : GL (Fin n) k), ∀ (s : Γ), (r' : Γ → GL (Fin n) k) s = g * (r : Γ → GL (Fin n) k) s * g⁻¹
 
 theorem UpperTheory.Reformulated.B.H13.aux5 :
-    ∀ {Γ k : Type} [Group Γ] [Field k] {n : ℕ} (r : Γ →* GL (Fin n) k) (χ : Γ →* kˣ),
+    ∀ {Γ k : Type} [inst : Group Γ] [inst_1 : Field k] {n : ℕ} (r : Γ →* GL (Fin n) k) (χ : Γ →* kˣ),
       (Matrix.GeneralLinearGroup.scalar (Fin n) : kˣ → GL (Fin n) k) ((χ : Γ → kˣ) (1 : Γ)) *
           (r : Γ → GL (Fin n) k) (1 : Γ) =
         (1 : GL (Fin n) k) := by
@@ -81,7 +81,7 @@ theorem UpperTheory.Reformulated.B.H13.aux5 :
   simp
 
 theorem UpperTheory.Reformulated.B.H13.aux6 :
-    ∀ {Γ k : Type} [Group Γ] [Field k] {n : ℕ} (r : Γ →* GL (Fin n) k) (χ : Γ →* kˣ) (s t : Γ),
+    ∀ {Γ k : Type} [inst : Group Γ] [inst_1 : Field k] {n : ℕ} (r : Γ →* GL (Fin n) k) (χ : Γ →* kˣ) (s t : Γ),
       (Matrix.GeneralLinearGroup.scalar (Fin n) : kˣ → GL (Fin n) k) ((χ : Γ → kˣ) (s * t)) *
           (r : Γ → GL (Fin n) k) (s * t) =
         (Matrix.GeneralLinearGroup.scalar (Fin n) : kˣ → GL (Fin n) k) ((χ : Γ → kˣ) s) * (r : Γ → GL (Fin n) k) s *
@@ -93,12 +93,11 @@ theorem UpperTheory.Reformulated.B.H13.aux6 :
     apply Units.ext
     simp only [Units.val_mul]
     exact (Matrix.scalar_commute (c : k) (fun x => Commute.all _ _) (A : Matrix (Fin n) (Fin n) k)).eq.symm
-  rw [map_mul, map_mul, map_mul]
-  simp only [mul_assoc]
+  simp only [map_mul, map_mul, map_mul, mul_assoc]
   rw [← mul_assoc (r s), hc, mul_assoc]
 
 noncomputable def UpperTheory.Reformulated.B.H13.tw :
-    {Γ k : Type} → [Group Γ] → [Field k] → {n : ℕ} → (Γ →* GL (Fin n) k) → (Γ →* kˣ) → Γ →* GL (Fin n) k :=
+    {Γ k : Type} → [inst : Group Γ] → [inst_1 : Field k] → {n : ℕ} → (Γ →* GL (Fin n) k) → (Γ →* kˣ) → Γ →* GL (Fin n) k :=
     fun {Γ k : Type} [Group Γ] [Field k] {n : ℕ} (r : Γ →* GL (Fin n) k) (χ : Γ →* kˣ) ↦
       {
         toFun := fun (s : Γ) ↦
@@ -157,11 +156,10 @@ theorem UpperTheory.Reformulated.B.H13.schur_twist_holds :
     refine LinearMap.ext fun v => ?_
     rw [Units.val_mul, Units.val_mul, Matrix.toLin'_apply, Matrix.toLin'_apply,
       ← Matrix.mulVec_mulVec, ← Matrix.mulVec_mulVec, hgv, hgv, Matrix.mulVec_smul]
-  have hn : Nonempty (Fin n) := by
+  obtain ⟨i⟩ : Nonempty (Fin n) := by
     by_contra h
     rw [not_nonempty_iff] at h
     exact not_subsingleton (Fin n → k) inferInstance
-  obtain ⟨i⟩ := hn
   refine MonoidHom.ext fun s => ?_
   have h := hg' s
   rw [hcent, mul_left_inj, mul_eq_right] at h

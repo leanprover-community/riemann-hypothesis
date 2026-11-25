@@ -461,8 +461,7 @@ lemma pm_of_sq (K : ℕ) (y : ℤ) (hy : Odd y)
     have h' := (mul_dvd_mul_iff_left (by norm_num : (4:ℤ) ≠ 0)).mp h
     rcases Int.even_or_odd b with hb | hb
     · left
-      have hb1 : Odd (b + 1) := hb.add_one
-      have : (2:ℤ) ^ k ∣ b := (coprime_two_pow_of_odd k _ hb1).dvd_of_dvd_mul_right h'
+      have : (2:ℤ) ^ k ∣ b := (coprime_two_pow_of_odd k _ hb.add_one).dvd_of_dvd_mul_right h'
       have e2 : 2 * b + 1 - 1 = 2 * b := by ring
       rw [e2, pow_succ, mul_comm _ (2:ℤ)]
       exact mul_dvd_mul_left 2 this

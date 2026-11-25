@@ -271,15 +271,13 @@ theorem zj_mul {p s : ℕ} (a : Fin s → Fin p → ℂ) (b : Fin p → Fin s �
   have hD : blk2 H 0 0 (Z * q) = blk2 H 0 0 Z * blk2 1 0 0 q := by
     rw [symmetricScalarBlockMatrix_mul]; simp
   unfold Zj
-  rw [hD]
-  simp only [Matrix.mul_assoc]
+  simp only [hD, Matrix.mul_assoc]
   rw [← Matrix.mul_assoc (blk2 1 (Matrix.of b) 0 1) (blk2 1 (Matrix.of b) 0 1)⁻¹, hU, Matrix.one_mul]
 
 theorem ux_zjAffine : ZjAffine := by
   intro p s a b H CC
   unfold Zj
-  rw [symmetricScalarBlockMatrix_mul, symmetricScalarBlockMatrix_mul]
-  simp
+  simp [symmetricScalarBlockMatrix_mul, symmetricScalarBlockMatrix_mul]
 
 end Formalism.FourierDecayAlt.P.Ux4
 
@@ -351,8 +349,7 @@ theorem conj_lie {N : ℕ} (n M H : Matrix (Fin N) (Fin N) ℂ) (hu : nᴴ * H *
     calc H * n⁻¹ = nᴴ * H * n * n⁻¹ := by rw [hu]
       _ = nᴴ * H := by rw [Matrix.mul_assoc (nᴴ * H), hn, Matrix.mul_one]
   have h2 : (n⁻¹)ᴴ * H = H * n := by
-    have := congrArg Matrix.conjTranspose h1
-    simpa [Matrix.conjTranspose_mul, hH] using this
+    simpa [Matrix.conjTranspose_mul, hH] using congrArg Matrix.conjTranspose h1
   calc (n⁻¹ * M * n)ᴴ * H + H * (n⁻¹ * M * n) = nᴴ * Mᴴ * ((n⁻¹)ᴴ * H) + (H * n⁻¹) * M * n := by
         simp only [Matrix.conjTranspose_mul, Matrix.mul_assoc]
     _ = nᴴ * (Mᴴ * H + H * M) * n := by

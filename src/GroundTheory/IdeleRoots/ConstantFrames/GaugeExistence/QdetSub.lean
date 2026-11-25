@@ -176,8 +176,7 @@ theorem sum_fin_cast (n : ℕ) : ∑ k : Fin n, ((k : ℕ) : ℂ) = (n : ℂ) * 
   induction n with
   | zero => simp
   | succ m ih =>
-    rw [Fin.sum_univ_castSucc]
-    simp only [Fin.val_castSucc, Fin.val_last]
+    simp only [Fin.sum_univ_castSucc, Fin.val_castSucc, Fin.val_last]
     rw [ih]
     push_cast
     ring

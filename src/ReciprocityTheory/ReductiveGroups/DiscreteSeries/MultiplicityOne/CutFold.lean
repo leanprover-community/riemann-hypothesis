@@ -25,9 +25,8 @@ theorem cutFold {α β E : Type*} [MeasurableSpace α] [MeasurableSpace β] [Nor
       ∫ x, φ x ∂μ = ∫ x, b x • ∫ s, φ (F s x) ∂ν ∂μ := by
   have hΦ : MeasurePreserving (fun p : β × α => (p.1, F p.1 p.2)) (ν.prod μ) (ν.prod μ) :=
     (MeasurePreserving.id ν).skew_product hF hmp
-  have hbG : Measurable fun q : β × α => b (G q.1 q.2) := hb.comp hG
   have hHm : AEStronglyMeasurable (fun q : β × α => b (G q.1 q.2) • φ q.2) (ν.prod μ) :=
-    hbG.aestronglyMeasurable.smul hφ.1.comp_snd
+    (hb.comp hG).aestronglyMeasurable.smul hφ.1.comp_snd
   have hHi : Integrable (fun q : β × α => b (G q.1 q.2) • φ q.2) (ν.prod μ) := by
     rw [integrable_prod_iff' hHm]
     constructor

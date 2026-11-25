@@ -111,8 +111,7 @@ theorem unitary_stabiliser_orthogonal_summand :
     rw [hMb, hblk, Matrix.fromBlocks_inj] at hU
     obtain ⟨ha, -, hc, -⟩ := hU
     have hc0 : M.toBlocks₂₁ = 0 := by
-      have := congrArg (G'⁻¹ * ·) hc
-      simpa [← Matrix.mul_assoc, Matrix.nonsing_inv_mul _ hG'] using this
+      simpa [← Matrix.mul_assoc, Matrix.nonsing_inv_mul _ hG'] using congrArg (G'⁻¹ * ·) hc
     rw [hc0] at ha hMb
     refine ⟨M.toBlocks₁₁, by simpa using ha, ?_⟩
     rw [← hMb]

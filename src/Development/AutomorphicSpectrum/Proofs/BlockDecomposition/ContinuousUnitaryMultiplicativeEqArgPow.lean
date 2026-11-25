@@ -60,8 +60,7 @@ theorem cstar_char_eq_zpow : ∀ φ : ℂ → ℂ, (∀ z w : ℂ, z ≠ 0 → w
     exact Continuous.subtype_mk (hc.comp_continuous Units.continuous_val fun z => z.ne_zero) _
   have hf1 : f 1 = 1 := by
     apply Circle.ext
-    have := h1 1 one_pos
-    simpa [f] using this
+    simpa [f] using h1 1 one_pos
   have hfm : ∀ a b : ℂˣ, f (a * b) = f a * f b := fun a b => by
     apply Circle.ext
     rw [Circle.coe_mul]

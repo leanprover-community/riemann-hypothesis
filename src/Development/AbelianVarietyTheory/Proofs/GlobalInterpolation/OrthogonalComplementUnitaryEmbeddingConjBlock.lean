@@ -97,7 +97,7 @@ theorem perp_conj : ∀ (P Q P' Q' : ℕ) (e : Option (Fin P' ⊕ Fin Q') ≃ (F
   have cn : (fun a => u a (e none)) = x₀ := funext un
   have cs : ∀ b, (fun a => u a (e (some b))) = A *ᵥ Pi.single b 1 := fun b => by
     funext a; simp [us]
-  have hu : u ∈ Set.range (UpqT.mat (P := P) (Q := Q)) := by
+  obtain ⟨g₀, hg₀⟩ : u ∈ Set.range (UpqT.mat (P := P) (Q := Q)) := by
     rw [GlobalTheory.UpqTopology.range_mat]
     ext i l
     obtain ⟨i, rfl⟩ := e.surjective i
@@ -109,7 +109,6 @@ theorem perp_conj : ∀ (P Q P' Q' : ℕ) (e : Option (Fin P' ⊕ Fin Q') ≃ (F
     · rw [cn, cs, herm_swap, (h2 _).2 ⟨_, rfl⟩, ite_eq_right (by simp), star_zero]
     · rw [cs, cs, h1, herm_single, he i]
       simp
-  obtain ⟨g₀, hg₀⟩ := hu
   refine ⟨g₀, ?_, fun g => ?_⟩
   · funext a
     simp [act, baseVec, hg₀, un]

@@ -106,11 +106,10 @@ theorem exists_decomp {σ : A →+* A} (hσ : ∀ x, σ (σ x) = x) {U : GL n A}
       leviMat e p.1 = (cti σ β * U).1 ∧
       blkGL e (1, U) * cayley e * p = uni e S * blkGL e (cti σ β * U, β) * cayley e := by
   have hc : ∀ X : Matrix n n A, cT σ (cT σ X) = X := fun X => by ext i j; exact hσ _
-  have hu : IsUnit (quotMat e p.1) := by
+  obtain ⟨b₀, hb₀⟩ : IsUnit (quotMat e p.1) := by
     have := (isUnit_iff_isUnit_det _).1 p.isUnit
     rw [hk.det_eq] at this
     exact (isUnit_iff_isUnit_det _).2 (isUnit_of_mul_isUnit_right this)
-  obtain ⟨b₀, hb₀⟩ := hu
   have h0 := quot_levi e hp hk
   have hl : leviMat e p.1 = (cti σ (U * b₀) * U).1 := by
     have h0' : cT σ (U * b₀).1 * leviMat e p.1 = U.1 := by rw [Units.val_mul, cT_mul, hU, hb₀]; exact h0

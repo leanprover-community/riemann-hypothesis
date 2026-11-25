@@ -177,8 +177,7 @@ theorem exists_valuationSubring_of_height_le_one {O K : Type*} {B : Type u} [Com
   let L := Localization.AtPrime m
   let g : L →ₐ[B] K' := IsLocalization.liftAlgHom (M := m.primeCompl) (f := Algebra.ofId B K')
     (fun y => by
-      have : (y : B) ≠ 0 := fun e => y.2 (e ▸ m.zero_mem)
-      exact IsUnit.mk0 _ (by simpa [K'] using this))
+      exact IsUnit.mk0 _ (by simpa [K'] using (fun e => y.2 (e ▸ m.zero_mem) : (y : B) ≠ 0)))
   have hqK : Algebra.QuasiFinite O K' := by
     refine .of_forall_exists_mul_mem_range (g.restrictScalars O) fun x => ?_
     obtain ⟨a, b, hb, rfl⟩ := IsFractionRing.div_surjective (A := B) x
@@ -239,8 +238,7 @@ theorem exists_mem_height_map_le_one {A : Type*} [CommRing A] [IsNoetherianRing 
   rw [eq_bot_iff]
   intro x hx
   obtain ⟨x, rfl⟩ := hsurj x
-  have : x ∈ q.asIdeal := e ▸ hx
-  simpa using Ideal.Quotient.eq_zero_iff_mem.mpr this
+  simpa using Ideal.Quotient.eq_zero_iff_mem.mpr (e ▸ hx : x ∈ q.asIdeal)
 
 end Algebra
 

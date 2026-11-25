@@ -29,8 +29,7 @@ theorem sum_antidiagonalTuple_succ {A : Type*} [AddCommMonoid A] (i c : ℕ)
   have hsum : ∀ (α : Fin (i + 1) → ℕ) (v : ℕ),
       ∑ j, Function.update α (Fin.last i) v j = ∑ j : Fin i, α (Fin.castSucc j) + v := by
     intro α v
-    rw [Fin.sum_univ_castSucc]
-    simp
+    simp [Fin.sum_univ_castSucc]
   have hsum' : ∀ α : Fin (i + 1) → ℕ,
       ∑ j, α j = ∑ j : Fin i, α (Fin.castSucc j) + α (Fin.last i) := fun α =>
     Fin.sum_univ_castSucc α
@@ -93,14 +92,12 @@ theorem rootList_succ {i : ℕ} (x : Fin (i + 1) → K → ℤ) (α : Fin (i + 1
     rootList x α = rootList (fun j => x (Fin.castSucc j)) (Fin.init α) ++
       List.replicate (α (Fin.last i)) (x (Fin.last i)) := by
   unfold rootList
-  rw [List.finRange_succ_last]
-  simp [List.flatMap_append, Fin.init, List.flatMap_map]
+  simp [List.finRange_succ_last, List.flatMap_append, Fin.init, List.flatMap_map]
 
 omit [DecidableEq K] in
 theorem rootList_snoc_zero {i : ℕ} (x : Fin (i + 1) → K → ℤ) (α : Fin i → ℕ) :
     rootList x (Fin.snoc α 0) = rootList (fun j => x (Fin.castSucc j)) α := by
-  rw [rootList_succ, Fin.init_snoc, Fin.snoc_last]
-  simp
+  simp [rootList_succ, Fin.init_snoc, Fin.snoc_last]
 
 omit [DecidableEq K] in
 theorem rootList_update_last {i : ℕ} (x : Fin (i + 1) → K → ℤ) (β : Fin (i + 1) → ℕ) :

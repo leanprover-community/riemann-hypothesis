@@ -54,8 +54,7 @@ theorem exists_algebraMap_sub_mem_maximalIdeal (x : v.adicCompletionIntegers K) 
   have : ((x - algebraMap R (v.adicCompletionIntegers K) r : v.adicCompletionIntegers K) :
       v.adicCompletion K) = ((x : v.adicCompletion K) - (k : v.adicCompletion K)) +
         algebraMap K (v.adicCompletion K) (k - algebraMap R K r) := by
-    rw [map_sub]
-    simp [algebraMap_adicCompletion]
+    simp [map_sub, algebraMap_adicCompletion]
   rw [this]
   exact Valuation.map_add_lt _ hk' hr'
 

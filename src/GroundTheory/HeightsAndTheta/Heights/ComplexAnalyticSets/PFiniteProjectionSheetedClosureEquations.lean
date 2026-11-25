@@ -117,10 +117,9 @@ theorem FiniteProjectionSheetedClosureEquations.proof
     ext z
     constructor
     · rintro ⟨⟨⟨hzX, hzb⟩, hzD⟩, ⟨⟨hzV, -⟩, -⟩⟩
-      have hzg : z ∈ g '' O := by
+      obtain ⟨t, ht, rfl⟩ : z ∈ g '' O := by
         rw [← hXV]
         exact ⟨hzX, hzV⟩
-      obtain ⟨t, ht, rfl⟩ := hzg
       refine ⟨t, ⟨⟨ht, hzb⟩, ?_⟩, rfl⟩
       rwa [hAg t ht] at hzD
     · rintro ⟨t, ⟨⟨ht, htb⟩, htD⟩, rfl⟩
@@ -167,9 +166,7 @@ theorem FiniteProjectionSheetedClosureEquations.proof
     refine Finset.analyticAt_fun_sum (𝕜 := ℂ)
       (f := fun j z => (-1 : ℂ) ^ j * F u j (A z) * l u z ^ (N - j)) _ fun j _ => ?_
     have h1 : AnalyticAt ℂ (F u j ∘ A) z := (hFan u j (A z) hzD).comp (ContinuousLinearMap.analyticAt A z)
-    have h2 : AnalyticAt ℂ (fun z => l u z ^ (N - j)) z := ((l u).analyticAt z).pow _
-    have h0 : AnalyticAt ℂ (fun _ : σ → ℂ => ((-1 : ℂ) ^ j)) z := analyticAt_const
-    exact (h0.mul h1).mul h2
+    exact (analyticAt_const.mul h1).mul (((l u).analyticAt z).pow _)
   let e := (Fintype.equivFin (σ → Fin (N + 1))).symm
   have hBw : Metric.ball w ρ ∩ A ⁻¹' D ∈ 𝓝 w :=
     (Metric.isOpen_ball.inter (hDo.preimage A.continuous)).mem_nhds ⟨Metric.mem_ball_self hρ, hwD⟩
@@ -192,8 +189,7 @@ theorem FiniteProjectionSheetedClosureEquations.proof
       rw [Filter.eventually_all]
       intro u
       have h0 : c u z₀ = 0 := by
-        have := hall (e.symm u)
-        simpa only [Equiv.apply_symm_apply] using this
+        simpa only [Equiv.apply_symm_apply] using hall (e.symm u)
       have hcont : Tendsto (fun x => ‖c u x‖) (𝓝 z₀) (𝓝 ‖c u z₀‖) :=
         (hcan u z₀ hz₀.2).continuousAt.norm.tendsto
       rw [h0, norm_zero] at hcont

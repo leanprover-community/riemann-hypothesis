@@ -63,8 +63,7 @@ theorem unfold {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] 
     {f : G → ℂ} (hf : Integrable f μ) : ∫ x in D, ∑' γ : Γ, f (γ * x) ∂μ = ∫ x, f x ∂μ := by
   rw [hD.integral_eq_tsum'' f hf]
   refine integral_tsum (fun γ => ((hf.comp_mul_left (γ : G)).aestronglyMeasurable).restrict) ?_
-  have := hD.lintegral_eq_tsum'' fun x => ‖f x‖ₑ
-  exact (this ▸ hf.2.ne :)
+  exact ((hD.lintegral_eq_tsum'' fun x => ‖f x‖ₑ) ▸ hf.2.ne :)
 
 theorem diffOn_integral {X : Type} [MeasurableSpace X] {μ : Measure X} [IsFiniteMeasure μ] {U : Set ℂ} (hU : IsOpen U)
     {k : ℂ → X → ℂ} (hm : ∀ s ∈ U, AEStronglyMeasurable (k s) μ) (hd : ∀ x, DifferentiableOn ℂ (k · x) U)

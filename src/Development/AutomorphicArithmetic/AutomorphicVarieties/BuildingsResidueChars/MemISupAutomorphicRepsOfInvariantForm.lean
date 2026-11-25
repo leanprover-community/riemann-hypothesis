@@ -202,13 +202,13 @@ private theorem UpperTheory.Reformulated.B.Gr38.stab_open {E : Type} [Field E] [
 
 noncomputable def UpperTheory.Reformulated.B.Gr38.eqForms :
     {E : Type} →
-      [Field E] →
-        [NumberField E] →
-          [NumberField.IsCMField E] →
+      [inst : Field E] →
+        [inst_1 : NumberField E] →
+          [inst_2 : NumberField.IsCMField E] →
             {n : ℕ} →
               {S : Type} →
-                [AddCommGroup S] →
-                  [_root_.Module ℂ S] →
+                [inst_3 : AddCommGroup S] →
+                  [inst_4 : _root_.Module ℂ S] →
                     Representation ℂ (↥(GlobalTheory.UnitaryBC.infU E n)) S → Submodule ℂ (S →ₗ[ℂ] ↥(GlobalTheory.UnitaryBC.UA E n) → ℂ) :=
     fun {E : Type} [Field E] [NumberField E] [NumberField.IsCMField E] {n : ℕ} {S : Type} [AddCommGroup S]
         [_root_.Module ℂ S] (ρ : Representation ℂ (↥(GlobalTheory.UnitaryBC.infU E n)) S) ↦
@@ -237,13 +237,13 @@ noncomputable def UpperTheory.Reformulated.B.Gr38.eqForms :
 
 noncomputable def UpperTheory.Reformulated.B.Gr38.eqRep :
     {E : Type} →
-      [Field E] →
-        [NumberField E] →
-          [NumberField.IsCMField E] →
+      [inst : Field E] →
+        [inst_1 : NumberField E] →
+          [inst_2 : NumberField.IsCMField E] →
             {n : ℕ} →
               {S : Type} →
-                [AddCommGroup S] →
-                  [_root_.Module ℂ S] →
+                [inst_3 : AddCommGroup S] →
+                  [inst_4 : _root_.Module ℂ S] →
                     (ρ : Representation ℂ (↥(GlobalTheory.UnitaryBC.infU E n)) S) →
                       Representation ℂ ↥(GlobalTheory.UnitaryBC.finU (E := E) (n := n)) ↥(UpperTheory.Reformulated.B.Gr38.eqForms ρ) :=
     fun {E : Type} [Field E] [NumberField E] [NumberField.IsCMField E] {n : ℕ} {S : Type} [AddCommGroup S]
@@ -285,8 +285,8 @@ noncomputable def UpperTheory.Reformulated.B.Gr38.eqRep :
         ↥(GlobalTheory.UnitaryBC.finU (E := E) (n := n)) →* ↥(UpperTheory.Reformulated.B.Gr38.eqForms ρ) →ₗ[ℂ] ↥(UpperTheory.Reformulated.B.Gr38.eqForms ρ) }
 
 theorem UpperTheory.Reformulated.B.Gr38.eqRep_adm :
-    ∀ {E : Type} [Field E] [NumberField E] [NumberField.IsCMField E] {n : ℕ} {S : Type}
-      [AddCommGroup S] [_root_.Module ℂ S] [FiniteDimensional ℂ S]
+    ∀ {E : Type} [inst : Field E] [inst_1 : NumberField E] [inst_2 : NumberField.IsCMField E] {n : ℕ} {S : Type}
+      [inst_3 : AddCommGroup S] [inst_4 : _root_.Module ℂ S] [FiniteDimensional ℂ S]
       (ρ : Representation ℂ (↥(GlobalTheory.UnitaryBC.infU E n)) S) (f : ↥(UpperTheory.Reformulated.B.Gr38.eqForms ρ)),
       ∃ (K : Subgroup ↥(GlobalTheory.UnitaryBC.finU (E := E) (n := n))),
         (∀ k ∈ K,

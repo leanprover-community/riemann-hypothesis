@@ -67,8 +67,7 @@ namespace LateralTheory.EtaleFoundations.TensUnivPf
 
 theorem sec_eq_zero_of_isZero {R : Type} [CommRing R] {F : Shv R} (hF : IsZero F) {U : Scheme.{0}} (x : Sec F U) : x = 0 := by
   have h1 : (𝟙 F : F ⟶ F) = 0 := hF.eq_of_src _ _
-  have := congrArg (fun φ : F ⟶ F => (φ.hom.app (op U)).hom x) h1
-  simpa using this
+  simpa using congrArg (fun φ : F ⟶ F => (φ.hom.app (op U)).hom x) h1
 
 theorem secMap_comp {R : Type} [CommRing R] {F G H : Shv R} (φ : F ⟶ G) (ψ : G ⟶ H) {U : Scheme.{0}} (x : Sec F U) :
     Sec.map (φ ≫ ψ) x = Sec.map ψ (Sec.map φ x) := rfl

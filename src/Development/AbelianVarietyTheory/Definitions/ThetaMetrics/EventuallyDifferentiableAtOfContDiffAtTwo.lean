@@ -148,8 +148,7 @@ theorem norm_antilinPart_le (L : E →L[ℝ] F) : ‖antilinPart L‖ ≤ ‖L�
   have h1 := L.le_opNorm v
   have h2 := L.le_opNorm (I • v)
   have h3 := norm_add_le (L v) (I • L (I • v))
-  rw [norm_smul] at h2 h3
-  simp only [norm_I, one_mul] at h2 h3
+  simp only [norm_smul, norm_I, one_mul] at h2 h3
   have : ‖(1 / 2 : ℂ)‖ = 1 / 2 := by simp
   rw [this]; linarith
 
@@ -159,8 +158,7 @@ theorem norm_linPart_le (L : E →L[ℝ] F) : ‖linPart L‖ ≤ ‖L‖ := by
   have h1 := L.le_opNorm v
   have h2 := L.le_opNorm (I • v)
   have h3 := norm_sub_le (L v) (I • L (I • v))
-  rw [norm_smul] at h2 h3
-  simp only [norm_I, one_mul] at h2 h3
+  simp only [norm_smul, norm_I, one_mul] at h2 h3
   have : ‖(1 / 2 : ℂ)‖ = 1 / 2 := by simp
   rw [this]; linarith
 
@@ -333,8 +331,7 @@ theorem dbar_comp_holo {u : F → G} {φ : E → F} (hu : DifferentiableAt ℝ u
 theorem fderiv_ofReal_apply {u : E → ℝ} (hu : DifferentiableAt ℝ u z) (v : E) :
     fderiv ℝ (fun x => (u x : ℂ)) z v = (fderiv ℝ u z v : ℂ) := by
   have h : HasFDerivAt (fun x => (u x : ℂ)) _ z := ofRealCLM.hasFDerivAt.comp z hu.hasFDerivAt
-  rw [h.fderiv]
-  simp
+  simp [h.fderiv]
 
 theorem del_ofReal_comp {t : E → ℝ} {h : ℝ → ℝ} {h' : ℝ} (hh : HasDerivAt h h' (t z))
     (ht : DifferentiableAt ℝ t z) (v : E) :

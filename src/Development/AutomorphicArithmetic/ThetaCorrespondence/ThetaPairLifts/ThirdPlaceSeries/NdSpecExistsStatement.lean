@@ -1273,7 +1273,7 @@ theorem sub_mem_of_ker_eq {O A : Type} [CommRing O] [IsLocalRing O] [Ring A] [Al
 
 
 
-theorem main : ∀ {R : Ranks} {H : Host R} {what₂ : Rows.Data R} (B : LocBase0 H what₂) (_ : HeckeStd0 B) (_ : FinDimV B)
+theorem main : ∀ {R : Ranks} {H : Host R} {what₂ : Rows.Data R} (B : LocBase0 H what₂) (hs : HeckeStd0 B) (hd : FinDimV B)
     (i : LocT B), IsLocalRing (TOf B i) := by
   intro R H what₂ B hs hd i
   have := xFin_of hs hd i
@@ -1783,7 +1783,7 @@ theorem under_eq_of_conj {R : Ranks} (H : Host R) {v v' : HeightOneSpectrum (�
   rw [Formalism.HC.HostAx.conjE_apply, ← IsCMField.complexEmbedding_complexConj]
   exact congrArg H.φ₀ (IsCMField.complexConj_apply_eq_self H.E (a : H.F)).symm
 
-theorem cond_over_conj : ∀ (D : D7) (cf : CharFrame D) (C : NChoice D) (_ : TupTied D cf C), (∀ w, ¬ TwistedAt D w → C.Q w = ∅) → QOver C ∧ QConj C := by
+theorem cond_over_conj : ∀ (D : D7) (cf : CharFrame D) (C : NChoice D) (tp : TupTied D cf C), (∀ w, ¬ TwistedAt D w → C.Q w = ∅) → QOver C ∧ QConj C := by
   intro D cf C tp h0
   have key : ∀ w (v v' : PlE D.host), v.under (𝓞 D.host.F) = v'.under (𝓞 D.host.F) → v ∈ C.Q w → v' ∈ C.Q w := by
     intro w v v' hv hQ

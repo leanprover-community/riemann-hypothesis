@@ -311,8 +311,7 @@ theorem semiBC_self {A B : Type} [CommRing A] [CommRing B] (f : A →+* B) : Sem
     simp at this
     simp [this]
   · ext
-    have := hw 1
-    simpa using this
+    simpa using hw 1
 
 def FCrys.unit (l : ℕ) (R : Type) [CommRing R] : FCrys l R where
   M P := P.A

@@ -122,11 +122,10 @@ theorem tTi_mem_UH (k r : ℕ) : tTi k r ∈ UH (Hpk k r) := by
 theorem UH_mul {k r : ℕ} {g h : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ} (hg : g ∈ UH (Hpk k r))
     (hh : h ∈ UH (Hpk k r)) : g * h ∈ UH (Hpk k r) := by
   have hg' : gᴴ * Hpk k r * g = Hpk k r := hg
-  have hh' : hᴴ * Hpk k r * h = Hpk k r := hh
   show (g * h)ᴴ * Hpk k r * (g * h) = Hpk k r
   calc (g * h)ᴴ * Hpk k r * (g * h) = hᴴ * (gᴴ * Hpk k r * g) * h := by
         simp only [Matrix.conjTranspose_mul, Matrix.mul_assoc]
-    _ = Hpk k r := by rw [hg']; exact hh'
+    _ = Hpk k r := by rw [hg']; exact hh
 
 theorem tT_unitary (k r : ℕ) : tT k r ∈ Matrix.unitaryGroup (Fin (2 * r + k + 1)) ℂ := by
   rw [Matrix.mem_unitaryGroup_iff, Matrix.star_eq_conjTranspose, conjT_tT, tT_mul_tTi]

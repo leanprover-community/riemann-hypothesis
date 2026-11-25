@@ -348,8 +348,7 @@ theorem exists_chart (M : Mdl q) (h : M.Ok) : ∃ ℓ, M.Chart ℓ ∧ hat M.ι 
     rw [← coeff_zero_eq_constantCoeff_apply, hP, coeff_map, tay, coeff_mk]
     simp [Mdl.u]
   have h1 : IsUnit (coeff 1 P) := by
-    rw [hP, coeff_map, tay, coeff_mk]
-    simp [(hasDerivAt_u M h.1).deriv, h.1]
+    simp [hP, coeff_map, tay, coeff_mk, (hasDerivAt_u M h.1).deriv, h.1]
   have e : hat M.ι (P.substInvOfIsUnit h1) M.u = X := subst_substInvOfIsUnit_right P h0 h1
   refine ⟨P.substInvOfIsUnit h1, ⟨h, constantCoeff_substInvOfIsUnit _ _, ?_, ?_⟩, e⟩
   · intro n; rw [e, coeff_X]; split_ifs <;> simp

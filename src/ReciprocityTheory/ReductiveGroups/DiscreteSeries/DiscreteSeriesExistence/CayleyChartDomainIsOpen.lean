@@ -283,10 +283,9 @@ theorem slm_ret_inUJ {g0 : Matrix (Fin n) (Fin n) ℂ} (hg0 : Formalism.REAL.inU
 theorem slm_ret_self {g0 : Matrix (Fin n) (Fin n) ℂ} (hg0 : Formalism.REAL.inUJ ε g0) :
     ∀ g ∈ slmV ε g0, Formalism.REAL.inUJ ε g → slmRet ε g0 g = g := by
   intro g hg hgU
-  have hh : Formalism.REAL.inUJ ε (slmJi ε g0 * g) := slm_inUJ_mul (slm_Ji_inUJ hg0) hgU
   have hd : (slmJi ε g0 * g + 1).det ≠ 0 := hg.1
   have hXY : slmX ε g0 g = (slmJi ε g0 * g - 1) * (slmJi ε g0 * g + 1)⁻¹ :=
-    skewAdjointPart_eq_self_of_isSkewAdjoint (slm_Y_inG hh hd)
+    skewAdjointPart_eq_self_of_isSkewAdjoint (slm_Y_inG (slm_inUJ_mul (slm_Ji_inUJ hg0) hgU) hd)
   have hd2 : (1 - slmX ε g0 g).det ≠ 0 := hg.2
   rw [hXY] at hd2
   show g0 * ((1 + slmX ε g0 g) * (1 - slmX ε g0 g)⁻¹) = g
@@ -300,12 +299,10 @@ theorem slm_mem_V {g0 : Matrix (Fin n) (Fin n) ℂ} (hg0 : Formalism.REAL.inUJ �
     simp
   have hX0 : slmX ε g0 g0 = 0 := by
     unfold slmX slmP
-    rw [h1]
-    simp
+    simp [h1]
   show g0 ∈ cayleyChartDomain ε g0 ∧ (1 - slmX ε g0 g0).det ≠ 0
   refine ⟨hW, ?_⟩
-  rw [hX0]
-  simp
+  simp [hX0]
 
 theorem slm_exists_ret (ε : Fin n → Bool) {g0 : Matrix (Fin n) (Fin n) ℂ} (hg0 : Formalism.REAL.inUJ ε g0) :
     ∃ (V : Set (Matrix (Fin n) (Fin n) ℂ)) (γ : Matrix (Fin n) (Fin n) ℂ → Matrix (Fin n) (Fin n) ℂ),

@@ -172,7 +172,7 @@ theorem rigExtMap_natCast_smul_id (hp : (p : R) = 0) : rigExtMap ((p : ℤ_[p]) 
   exact h
 
 theorem rigExtMap_add_and_natCast_smul_id : ∀ (p : ℕ) [Fact p.Prime] (R : Type) [CommRing R]
-    (_ : (p : R) = 0) (G H : PDivGroup p R),
+    (h : (p : R) = 0) (G H : PDivGroup p R),
     (∀ f g : G ⟶ H, rigExtMap (f + g) = rigExtMap f + rigExtMap g) ∧
       rigExtMap ((p : ℤ_[p]) • 𝟙 G) = 0 :=
   fun _ _ _ _ h G _ => ⟨rigExtMap_add, G.rigExtMap_natCast_smul_id h⟩

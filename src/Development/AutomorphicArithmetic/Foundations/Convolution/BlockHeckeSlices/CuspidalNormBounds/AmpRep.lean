@@ -95,8 +95,8 @@ private lemma UpperTheory.Reformulated.B.ShiftMap.shift_apply {G H : Type} [Grou
     (g : G) (φ : H → ℂ) (z : H) : UpperTheory.Reformulated.B.ShiftMap.shift p g φ z = φ ((p g)⁻¹ * z) := rfl
 
 theorem UpperTheory.Reformulated.B.ShiftMap.finite_translates_matrix_coefficient :
-    ∀ (G H : Type) [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
-    [Group H] [TopologicalSpace H] [IsTopologicalGroup H] (p : G →* H),
+    ∀ (G H : Type) [inst : Group G] [inst_1 : TopologicalSpace G] [IsTopologicalGroup G]
+    [inst_3 : Group H] [inst_4 : TopologicalSpace H] [IsTopologicalGroup H] (p : G →* H),
     Continuous (⇑p : G → H) →
       ∀ (f : H → ℂ),
         Continuous f →

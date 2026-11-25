@@ -126,8 +126,7 @@ variable {R : Type} [CommRing R] (I J : Cx R)
 
 theorem dd0 {K : Cx R} {U : Scheme.{0}} (s : ℤ) (a : Sec (K.X s) U) :
     Sec.map (K.d (s + 1) (s + 1 + 1)) (Sec.map (K.d s (s + 1)) a) = 0 := by
-  rw [LateralTheory.E.LeafTwPairExistsPf.map_map, HomologicalComplex.d_comp_d]
-  simp [Sec.map]
+  simp [LateralTheory.E.LeafTwPairExistsPf.map_map, HomologicalComplex.d_comp_d, Sec.map]
 
 theorem dT_nat {V U : Scheme.{0}} (g : V ⟶ U) (w : ℤ) :
     dT I J V w ∘ₗ Tens.res g w = Tens.res g (w + 1) ∘ₗ dT I J U w := by

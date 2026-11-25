@@ -79,20 +79,18 @@ theorem pullA : PullTranslates := by
   have hDr : ∀ p ∈ Y, ∀ h, fderiv ℝ (fun x => l x • x) p h = fderiv ℝ l p h • p + l p • h := by
     intro p hp h
     have hd : HasFDerivAt (fun x => l x • x) _ p := (hld p hp).hasFDerivAt.smul (hasFDerivAt_id p)
-    rw [hd.fderiv]
-    simp [add_comm]
+    simp [hd.fderiv, add_comm]
   have heul : ∀ p ∈ Y, fderiv ℝ l p p = -l p := by
     intro p hp
     have hc : HasDerivAt (fun t : ℝ => t • p) p 1 := by
       simpa using (hasDerivAt_id (1 : ℝ)).smul_const p
     have h' : HasFDerivAt l (fderiv ℝ l p) ((1 : ℝ) • p) := by
       simpa using (hld p hp).hasFDerivAt
-    have h1 : HasDerivAt (fun t : ℝ => l (t • p)) (fderiv ℝ l p p) 1 := h'.comp_hasDerivAt 1 hc
     have h2 : HasDerivAt (fun t : ℝ => t⁻¹ * l p) (-l p) 1 := by
       simpa using (hasDerivAt_inv (one_ne_zero (α := ℝ))).mul_const (l p)
     have heq : (fun t : ℝ => l (t • p)) =ᶠ[𝓝 1] fun t => t⁻¹ * l p := by
       filter_upwards [lt_mem_nhds one_pos] with t ht using hlh t ht p hp
-    exact h1.unique (h2.congr_of_eventuallyEq heq)
+    exact (h'.comp_hasDerivAt 1 hc).unique (h2.congr_of_eventuallyEq heq)
   have hDrp : ∀ p ∈ Y, fderiv ℝ (fun x => l x • x) p p = 0 := by
     intro p hp
     rw [hDr p hp, heul p hp, neg_smul, neg_add_cancel]

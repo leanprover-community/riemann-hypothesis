@@ -59,9 +59,8 @@ theorem continuous_bilD_left (Ψ : 𝓢(V, ℂ)) (B : V →L[ℝ] X →L[ℝ] V)
 
 theorem continuous_fderiv_bil_left (Ψ : 𝓢(V, ℂ)) (B : V →L[ℝ] X →L[ℝ] V) (x : X) :
     Continuous fun v => fderiv ℝ (fun x => Ψ (B v x)) x := by
-  have h1 : Continuous fun v => B v x := B.continuous.clm_apply continuous_const
   have h2 : Continuous fun v => fderiv ℝ Ψ (B v x) :=
-    ((Ψ.smooth ⊤).continuous_fderiv infty_ne_zero).comp h1
+    ((Ψ.smooth ⊤).continuous_fderiv infty_ne_zero).comp (B.continuous.clm_apply continuous_const)
   have h := h2.clm_comp B.continuous
   refine h.congr fun v => ?_
   have hd : HasFDerivAt (fun x => Ψ (B v x)) ((fderiv ℝ Ψ (B v x)).comp (B v)) x :=

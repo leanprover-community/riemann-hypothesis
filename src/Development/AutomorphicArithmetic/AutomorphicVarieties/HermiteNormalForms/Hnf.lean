@@ -142,7 +142,6 @@ theorem UpperTheory.V.KT.hnfone :
   · intro A hdet hnrm
     have hA : A.det ≠ 0 ∧ nrmDet A = I := ⟨hdet, hnrm⟩
     have hex : ∃ A', (A'.det ≠ 0 ∧ nrmDet A' = I) ∧ key A' = key A := ⟨A, hA, rfl⟩
-    have hrep : rep (key A) = Classical.choose hex := dite_eq_left hex
     obtain ⟨hA'P, hA'k⟩ := Classical.choose_spec hex
     obtain ⟨h1, h2⟩ := Classical.choose_spec (hB A hA)
     obtain ⟨h1', h2'⟩ := Classical.choose_spec (hB _ hA'P)
@@ -164,7 +163,7 @@ theorem UpperTheory.V.KT.hnfone :
       h1 h2 h1' h2' (by ext i j; simp [hX])
     refine ⟨g, ?_⟩
     rw [hg, Finset.mem_image]
-    exact ⟨key A, Finset.mem_univ _, hrep⟩
+    exact ⟨key A, Finset.mem_univ _, (dite_eq_left hex)⟩
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.AutomorphicVarieties.HermiteNormalForms.Hnfone =====
@@ -202,8 +201,7 @@ theorem UpperTheory.V.KT.hnf :
         apply Finset.sum_le_sum
         exact fun I hI => (hScard I).trans (Nat.pow_le_pow_left (Finset.mem_Icc.mp hI).2 _)
       _ = J ^ (1 + dd L N * N) := by
-        rw [Finset.sum_const, Nat.card_Icc, smul_eq_mul, pow_add, pow_one]
-        simp
+        simp [Finset.sum_const, Nat.card_Icc, smul_eq_mul, pow_add, pow_one]
   · intro A hA hJ
     obtain ⟨g, hg⟩ := hS (nrmDet A) A hA rfl
     exact ⟨g, Finset.mem_biUnion.mpr ⟨nrmDet A, (Finset.mem_Icc.mpr ⟨hpos A hA, hJ⟩), hg⟩⟩

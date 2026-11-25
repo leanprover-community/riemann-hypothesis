@@ -166,11 +166,10 @@ theorem weierstrassZetaExcept_add {l₀ : ℂ} (h : l₀ ∈ L.lattice) (z : ℂ
 
 theorem hasDerivAt_zetaTerm {l z : ℂ} (h : z ≠ l) :
     HasDerivAt (zetaTerm l) (-(1 / (z - l) ^ 2 - 1 / l ^ 2)) z := by
-  have h0 : z - l ≠ 0 := sub_ne_zero.2 h
   have e : zetaTerm l = fun z => (z - l)⁻¹ + 1 / l + z / l ^ 2 := by
     ext; simp [zetaTerm_eq]
   rw [e]
-  exact (((((hasDerivAt_id' z).sub_const l).fun_inv h0).add_const (1 / l)).fun_add
+  exact (((((hasDerivAt_id' z).sub_const l).fun_inv (sub_ne_zero.2 h)).add_const (1 / l)).fun_add
     ((hasDerivAt_id' z).div_const (l ^ 2))).congr_deriv (by ring)
 
 theorem hasDerivAt_weierstrassZetaExcept (l₀ : ℂ) {z : ℂ} (hz : z ∈ ((L.lattice : Set ℂ) \ {l₀})ᶜ) :
@@ -499,8 +498,7 @@ theorem latticeArea_eq : latticeArea L = |(conj L.ω₁ * L.ω₂).im| := by
     Complex.orthonormalBasisOneI.volume_parallelepiped]
   simp only [ENNReal.toReal_one, mul_one]
   congr 1
-  rw [Module.Basis.det_apply, Matrix.det_fin_two]
-  simp [Module.Basis.toMatrix_apply]
+  simp [Module.Basis.det_apply, Matrix.det_fin_two, Module.Basis.toMatrix_apply]
   ring
 
 theorem latticeArea_congr {L L' : PeriodPair} (h : L'.lattice = L.lattice) :

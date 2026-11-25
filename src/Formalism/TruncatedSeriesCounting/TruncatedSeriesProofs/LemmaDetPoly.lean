@@ -196,8 +196,7 @@ lemma stepD (ρ : G →* Matrix n n R) (hS : ∀ g k, (Matrix.charpolyRev (ρ g)
     refine ⟨(hl L hL).1, ?_⟩
     have h1 := (hl L hL).2
     have h2 : ¬ (L.2.1 = D) := by
-      have := List.countP_eq_zero.1 hc L hL
-      simpa using this
+      simpa using List.countP_eq_zero.1 hc L hL
     omega
   | succ c ihc =>
     intro l hl hc

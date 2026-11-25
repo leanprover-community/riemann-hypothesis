@@ -289,9 +289,8 @@ theorem descMod_mul_inv [Module.FaithfullyFlat A B] {u : (B ⊗[A] B)ˣ} (hu : U
     calc (⊤ : Submodule A B) = ⊤ * (descMod A B u * descMod A B u⁻¹) := htop.symm
       _ ≤ J • (⊤ : Submodule A B) := Submodule.mul_le.2 fun b _ p hp => ?_
     obtain ⟨a, rfl⟩ := Submodule.mem_one.1 (hle hp)
-    have ha : a ∈ J := hp
     rw [mul_comm, ← Algebra.smul_def]
-    exact Submodule.smul_mem_smul ha Submodule.mem_top
+    exact Submodule.smul_mem_smul hp Submodule.mem_top
   have hJ1 : J = ⊤ := ((Module.FaithfullyFlat.iff_flat_and_ideal_smul_eq_top A B).1 inferInstance).2 J hJtop
   have h1 : (1 : A) ∈ J := hJ1 ▸ Submodule.mem_top
   rw [Submodule.one_le]
@@ -384,8 +383,7 @@ theorem descMod_map_le {B' : Type} [CommRing B'] [Algebra A B'] (φ : B →ₐ[A
   rintro _ ⟨b, hb, rfl⟩
   simp only [descMod, LinearMap.mem_eqLocus, LinearMap.comp_apply, LinearMap.mulLeft_apply,
     AlgHom.toLinearMap_apply, Units.coe_map] at hb ⊢
-  have := congrArg (Algebra.TensorProduct.map φ φ) hb
-  simpa using this
+  simpa using congrArg (Algebra.TensorProduct.map φ φ) hb
 
 theorem nonempty_descMod_equiv [Module.FaithfullyFlat A B] {B' : Type} [CommRing B'] [Algebra A B']
     [Module.FaithfullyFlat A B'] (φ : B →ₐ[A] B') {u : (B ⊗[A] B)ˣ} (hu : UCoc A B u) :

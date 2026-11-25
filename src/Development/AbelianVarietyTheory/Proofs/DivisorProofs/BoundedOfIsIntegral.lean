@@ -215,8 +215,7 @@ theorem bounded_of_isIntegral_general {K Γ O : Type} [Field K] [LinearOrderedCo
       Matrix.one_mulVec]
   have hcv : ∀ k, v (c k) ≤ Finset.univ.sup fun p : Fin n × Fin n => v (T⁻¹ p.1 p.2) := by
     intro k
-    rw [hc]
-    simp only [Matrix.mulVec, dotProduct]
+    simp only [hc, Matrix.mulVec, dotProduct]
     refine Valuation.map_sum_le _ fun l _ => ?_
     rw [map_mul, ← mul_one (Finset.univ.sup _)]
     exact mul_le_mul' (Finset.le_sup (f := fun p : Fin n × Fin n => v (T⁻¹ p.1 p.2))

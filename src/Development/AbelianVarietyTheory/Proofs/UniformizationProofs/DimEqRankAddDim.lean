@@ -51,7 +51,7 @@ open GlobalTheory.UT
 namespace GlobalTheory.UT
 
 theorem dim_eq_rank_add_dim :
-    LL → AllU fun {_} _ _ {_} {D} {A} {_} _ _ _ => A.g = D.toPre.rank + D.toPre.P.g := by
+    LL → AllU fun {R} _ _ {I} {D} {A} {G} _ _ U => A.g = D.toPre.rank + D.toPre.P.g := by
   rintro ⟨hL, hL₂, -, -, -⟩ R _ _ _ I hadm D A G _ _ hG U
   haveI := hG.geomConnected
   have h₁ := GlobalTheory.finrank_fam_of_expBij hL.secBaseChange R I hadm D A G U.toUnifPre 2 (by norm_num)

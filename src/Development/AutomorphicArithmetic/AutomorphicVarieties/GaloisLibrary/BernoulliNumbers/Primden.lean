@@ -61,8 +61,7 @@ theorem UpperTheory.V.Bern.b_primden :
     have hB : bernoulli (2 * m) = (z0 : ℚ) - ∑ p ∈ range (2 * m + 2) with Nat.Prime p ∧ p - 1 ∣ 2 * m, (1 : ℚ) / p := by
       rw [hz0]; ring
     refine ⟨(primorial (k + 1) : ℤ) * z0 - ∑ p ∈ range (2 * m + 2) with Nat.Prime p ∧ p - 1 ∣ 2 * m, ((primorial (k + 1) / p : ℕ) : ℤ), ?_⟩
-    rw [Int.cast_sub, Int.cast_mul, Int.cast_sum]
-    simp only [Int.cast_natCast]
+    simp only [Int.cast_sub, Int.cast_mul, Int.cast_sum, Int.cast_natCast]
     rw [hB, mul_sub, Finset.mul_sum]
     congr 1
     refine Finset.sum_congr rfl fun p hp => ?_
