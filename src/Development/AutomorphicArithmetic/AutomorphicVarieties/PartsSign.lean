@@ -106,12 +106,6 @@ theorem exists_isConjOm : ∃ σ : Ω ≃+* Ω, IsConjOm σ := by
   let c : ℂ ≃ₐ[ℚ] ℂ := Complex.conjAe.restrictScalars ℚ
   exact ⟨(c.restrictNormal Ω).toRingEquiv, j.toRingHom, fun x => c.restrictNormal_commutes Ω x⟩
 
-omit [IsCMField E] in
-include E in
-theorem twScal_conj {σ : Ω ≃+* Ω} (h : IsConjOm σ) (e : ℕ) : twScal l σ (e : ℤ) = (-1) ^ e := by
-  rw [twScal, h.cyc (E := E), zpow_neg, zpow_natCast, ← inv_pow, inv_neg, inv_one]
-  simp
-
 end UpperTheory.V
 
 end

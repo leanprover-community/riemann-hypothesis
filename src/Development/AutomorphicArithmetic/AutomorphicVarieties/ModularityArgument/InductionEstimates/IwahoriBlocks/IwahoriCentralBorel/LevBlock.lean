@@ -53,9 +53,6 @@ section SlopeTestRemainingChoices
 
 variable {R S : Type} [CommRing R] [CommRing S] {a b : ℕ}
 
-private theorem bval (x : GL (Fin a) R) (y : GL (Fin b) R) :
-    (PositivityTheory.Rg.Tf.Adel.blk x y).val = Matrix.reindex finSumFinEquiv finSumFinEquiv (Matrix.fromBlocks x.val 0 0 y.val) := rfl
-
 private def bHom : GL (Fin a) R × GL (Fin b) R →* GL (Fin (a + b)) R where
   toFun p := PositivityTheory.Rg.Tf.Adel.blk p.1 p.2
   map_one' := by

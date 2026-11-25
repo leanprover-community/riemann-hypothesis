@@ -854,35 +854,6 @@ section -- clump:auto
 
 open IsLocalRing UpperTheory.V.AlgebraTools
 
-private theorem mult_operator_shifts_twist {Λ R B M : Type} [CommRing Λ] [CommRing R] [Algebra Λ R]
-    [AddCommGroup B] [Module R B] [Module Λ B] [IsScalarTower Λ R B]
-    [AddCommGroup M] [Module R M] [Module Λ M] [IsScalarTower Λ R M]
-    [Module.Flat R B] [Module.Flat Λ M] : Module.Flat Λ (TensorProduct R B M) := by
-  rw [Module.Flat.iff_lTensor_preserves_injective_linearMap]
-  intro N N' _ _ _ _ f hf
-  have h1 : Function.Injective (TensorProduct.AlgebraTensorModule.lTensor R M f) :=
-    Module.Flat.lTensor_preserves_injective_linearMap f hf
-  have h2 : Function.Injective
-      (LinearMap.lTensor B (TensorProduct.AlgebraTensorModule.lTensor R M f)) :=
-    Module.Flat.lTensor_preserves_injective_linearMap _ h1
-  have h3 : ∀ x, TensorProduct.AlgebraTensorModule.assoc Λ R R B M N'
-        (LinearMap.lTensor (TensorProduct R B M) f x)
-      = LinearMap.lTensor B (TensorProduct.AlgebraTensorModule.lTensor R M f)
-        (TensorProduct.AlgebraTensorModule.assoc Λ R R B M N x) := by
-    intro x
-    induction x using TensorProduct.induction_on with
-    | zero => simp
-    | add x y hx hy => simp only [map_add (f := _), hx, hy]
-    | tmul y n =>
-      induction y using TensorProduct.induction_on with
-      | zero => simp
-      | add x y hx hy => simp only [TensorProduct.add_tmul, map_add (f := _), hx, hy]
-      | tmul b m => simp
-  intro x y hxy
-  apply (TensorProduct.AlgebraTensorModule.assoc Λ R R B M N).injective
-  apply h2
-  rw [← h3, ← h3, hxy]
-
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.CaCplModfree =====

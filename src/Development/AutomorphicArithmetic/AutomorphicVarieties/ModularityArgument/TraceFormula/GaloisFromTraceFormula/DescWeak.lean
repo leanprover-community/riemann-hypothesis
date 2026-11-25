@@ -137,16 +137,6 @@ section -- clump:auto
 open NumberField IsDedekindDomain
 open GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.DiscSpec PositivityTheory.Rg.Rs PositivityTheory.Rg.BcB PositivityTheory.Rg.BcB.F UpperTheory.V.Z.Tf.GOne
 
-theorem UpperTheory.V.Z.Tf.GOne.csdDisc :
-    CsdDisc := by
-  intro E _ _ _ n _ π h
-  have hc : π.IsCsd := GlobalTheory.CsdBack.isCsd_of_paired PositivityTheory.Rg.HF.GL.automorphicFormsFiniteGL E n π
-    (PositivityTheory.JMult1.gelfandKazhdanDual_of_rigidity PositivityTheory.AdelicQuotientData.jacquetShalikaRigidity
-      GlobalTheory.CompanionTheory.CuspFinGL.cuspFormsBoundedGL E n π) h
-  have hn : IsNormalised π := GlobalTheory.BcSpehCompare.isNormalised_of_isCsd hc
-  refine isDiscrete_of_cuspSub π fun φ hφ => ?_
-  obtain ⟨C, hC⟩ := GlobalTheory.CompanionTheory.CuspFinGL.cuspFormsBoundedGL.of_invariant (π.cusp φ hφ) (hn φ hφ)
-  exact GlobalTheory.DiscChar.isSqInt_of_bounded (hn φ hφ) (C := C) fun g => by simpa using hC g
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.TraceFormula.GL1SpectralBounds.CsdDisc =====
@@ -159,7 +149,6 @@ section -- clump:auto
 open NumberField IsDedekindDomain MeasureTheory Polynomial Formalism.L2.Host
 open GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.SmGL GlobalTheory.DiscSpec GlobalTheory.CompanionTheory.CTFin
 open PositivityTheory.Rg.Rs PositivityTheory.Rg.BcB PositivityTheory.Rg.BcB.F UpperTheory.V.Z.Tf.GOne
-
 
 open PositivityTheory.Rg.Rs.PExpFin in
 private theorem cusp_or_exp {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] {N : ℕ}
@@ -199,70 +188,6 @@ private theorem cusp_or_exp {E : Type} [Field E] [NumberField E] [_root_.NumberF
       simpa [PositivityTheory.Affgl.CT.ct] using this⟩
     exact ⟨⟨V, hcusp, hV.stable, hV.ne_bot, hV.irred⟩, rfl⟩
 
-private theorem pos_of_ascEmb {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] {r a d : ℕ}
-    {V : Submodule ℂ (Sm E r)} {π : CuspSub E a} (hr : 0 < r) (h : AscEmb V π d) : 0 < a ∧ 0 < d := by
-  obtain ⟨hs, -⟩ := h
-  simp only [Finset.sum_const, Finset.card_univ, Fintype.card_fin, smul_eq_mul] at hs
-  subst hs
-  exact ⟨Nat.pos_of_mul_pos_left hr, Nat.pos_of_mul_pos_right hr⟩
-
-private theorem two_of_exp {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] {N : ℕ}
-    (V : Submodule ℂ (Sm E N)) (hV : IsDiscrete V) (τ : E →+* ℂ) (hτ : RegInt V τ)
-    (hne : ∃ r, 0 < r ∧ r < N ∧ (ExpV r V).Nonempty) :
-    ∃ (a d : ℕ) (P : CuspSub E a), 1 ≤ a ∧ 2 ≤ d ∧ P.IsUnitary ∧ IsNormalised P ∧ AscEmb V P d := by
-  obtain ⟨r, c, lam, hr0, hrN, hc, hlam, hpc, hbd⟩ :=
-    PAscAll.exists_extremal (expFin_of dict_holds finTr_holds) expNeg_holds V hV hne
-  obtain ⟨s, rfl⟩ : ∃ s, N = r + s := ⟨N - r, by omega⟩
-  have hs0 : 0 < s := by omega
-  have hd : (0 : ℝ) < (Module.finrank ℚ E : ℝ) := by exact_mod_cast Module.finrank_pos
-  have hdC : (Module.finrank ℚ E : ℂ) ≠ 0 := by exact_mod_cast Module.finrank_pos.ne'
-  have hpc' : pE E (r + s) r c = -lam * (r * s) := by rw [hpc]; push_cast; ring
-  obtain ⟨T, hT⟩ := slice_of dict_holds finTr_holds E r s hr0 hs0 V hV c hc
-  have hL2 := chord_of expTw_holds sqIntCrit_holds E r s hr0 hs0 V c T lam hlam hT hpc' hbd
-  obtain ⟨V₁, V₂, hV₁, hV₂, hemb⟩ :=
-    proj_of pr_holds sliceTens_holds indMap_holds E r s hr0 hs0 V hV c _ _ T hT hL2
-  obtain ⟨m, hm, hnd, hint⟩ := hτ
-  obtain ⟨m₁, m₂, hm₁, hm₂, he⟩ := infInd2_holds E r s V V₁ V₂ _ _ hV hV₁ hV₂ hemb τ m hm
-  have hτ₁ : RegInt V₁ τ := PAscAll.regInt_of_le hnd hint (he ▸ Multiset.le_add_right _ _) hm₁
-  have hτ₂ : RegInt V₂ τ := PAscAll.regInt_of_le hnd hint (he ▸ Multiset.le_add_left _ _) hm₂
-  obtain ⟨a₁, d₁, π₁, hu₁, hn₁, h₁⟩ := ascAll_holds E r hr0 V₁ hV₁ τ hτ₁
-  obtain ⟨a₂, d₂, π₂, hu₂, hn₂, h₂⟩ := ascAll_holds E s hs0 V₂ hV₂ τ hτ₂
-  have hr' : (r : ℂ) ≠ 0 := by exact_mod_cast hr0.ne'
-  have hs' : (s : ℂ) ≠ 0 := by exact_mod_cast hs0.ne'
-  have hsum : (r : ℂ) * (c / (r * (Module.finrank ℚ E : ℂ))) + s * (-c / (s * (Module.finrank ℚ E : ℂ))) = 0 := by
-    field_simp; ring
-  have hre : (c / (r * (Module.finrank ℚ E : ℂ))).re < (s : ℝ) / 2 := by
-    have e : (r : ℂ) * (Module.finrank ℚ E : ℂ) = (((r : ℝ) * (Module.finrank ℚ E : ℝ) : ℝ) : ℂ) := by push_cast; ring
-    have hrR : (0 : ℝ) < r := by exact_mod_cast hr0
-    rw [e, Complex.div_ofReal_re, div_lt_iff₀ (mul_pos hrR hd)]
-    have h3 : c.re / (Module.finrank ℚ E : ℝ) < (r : ℝ) * s / 2 := by
-      have h4 := hpc'
-      unfold pE at h4
-      push_cast at h4
-      nlinarith [mul_pos hlam (mul_pos hrR (show (0 : ℝ) < s by exact_mod_cast hs0))]
-    rw [div_lt_iff₀ hd] at h3
-    nlinarith
-  have hsS : StringStep := stringStep_of PositivityTheory.AdelicQuotientData.jacquetShalika.1 PositivityTheory.AdelicQuotientData.jacquetShalika.2 infInd2_holds
-    infAsc_holds satInd2_holds satAsc_holds satHerm_holds gap_holds
-  have e₁ := h₁ π₁ (Setoid.refl π₁)
-  have e₂ := h₂ π₂ (Setoid.refl π₂)
-  obtain ⟨ha₁, hd₁⟩ := pos_of_ascEmb hr0 e₁
-  obtain ⟨-, hd₂⟩ := pos_of_ascEmb hs0 e₂
-  obtain ⟨hsig, hz₁, hz₂⟩ := hsS E r s hr0 hs0 V V₁ V₂ _ _ hV hV₁ hV₂ hemb τ ⟨m, hm, hnd, hint⟩ hsum hre
-    a₁ d₁ a₂ d₂ π₁ π₂ hu₁ hn₁ e₁ hu₂ hn₂ e₂
-  obtain ⟨rfl, hq⟩ := Sigma.mk.inj_iff.mp hsig
-  have hiso : π₁.Iso π₂ := Quotient.exact (eq_of_heq hq)
-  rw [hz₁, hz₂] at hemb
-  refine ⟨a₁, d₁ + d₂, π₁, ha₁, by omega, hu₁, hn₁, ?_⟩
-  exact stages_of indMap_holds E r s a₁ d₁ d₂ V V₁ V₂ π₁ hV hV₁ hV₂ hemb e₁
-    (h₂ π₁ ((CuspSub.setoid E a₁).iseqv.symm hiso))
-
-theorem UpperTheory.V.Z.Tf.GOne.cuspOrTwo :
-    CuspOrTwo := by
-  intro E _ _ _ N _ V hV τ hτ
-  rcases cusp_or_exp V hV with h | hne
-  · exact Or.inl h
-  · exact Or.inr (two_of_exp V hV τ hτ hne)
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.TraceFormula.GL1SpectralBounds.CuspOrTwo =====
@@ -275,57 +200,6 @@ section -- clump:auto
 open NumberField IsDedekindDomain
 open GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.DiscSpec PositivityTheory.Rg.Rs PositivityTheory.Rg.BcB PositivityTheory.Rg.BcB.F UpperTheory.V.Z.Tf.GOne
 
-private theorem satV_of_locComp {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] {N : ℕ}
-    {V : Submodule ℂ (Sm E N)} (hV : IsDiscrete V) {w : HeightOneSpectrum (𝓞 E)}
-    {σ : SmIrr (Matrix.GeneralLinearGroup (Fin N) (w.adicCompletion E))} (hσ : IsLocCompGL V w σ) {B : Multiset ℂˣ}
-    (hB : GlobalTheory.LFun.HasSatGL w σ.ρ B) {φ : Sm E N} (hφ : φ ∈ V) (h0 : φ ≠ 0)
-    (hfix : ∀ k ∈ GlobalTheory.LFun.KGL w (n := N), finRep E N (locGL E N w k) φ = φ) : SatV V w B := by
-  have hmem : ∀ ψ ∈ V, ψ ∈ ⨆ f : SatakeVectors.SatakeVectorEventually.MapsD V w σ, LinearMap.range f.1 := fun ψ hψ => by
-    rw [SatakeVectors.SatakeVectorEventually.iSup_range_eq hV w σ hσ]; exact hψ
-  have key : ∀ ψ ∈ V, (∀ k ∈ GlobalTheory.LFun.KGL w (n := N), finRep E N (locGL E N w k) ψ = ψ) → ψ ≠ 0 →
-      GlobalTheory.LFun.IsSatVecGL w ((finRep E N).comp (locGL E N w)) ψ B := fun ψ hψ hψK hψ0 =>
-    GlobalTheory.HeightCounting.Blocks.isSatVecGL_of_mem_iSup σ.irred hB (fun f : SatakeVectors.SatakeVectorEventually.MapsD V w σ => f.1) (fun f => f.2.2)
-      (hmem ψ hψ) (GlobalTheory.LGrp.mem_fixed.2 hψK) hψ0
-  exact ⟨⟨φ, hφ, key φ hφ hfix h0⟩, key⟩
-
-theorem UpperTheory.V.Z.Tf.GOne.notTwo :
-    NotTwo := by
-  intro E _ _ _ N a d V P π ha hd hV hA h
-  have hNa : d * a = N := by
-    obtain ⟨e, -⟩ := hA
-    simpa using e
-  have hN : 1 ≤ N := by
-    rw [← hNa]
-    exact Nat.mul_pos (by omega) ha
-  obtain ⟨φ, hφ, h0⟩ := (Submodule.ne_bot_iff _).1 hV.ne_bot
-  have hlev := GlobalTheory.CuspRep.LocSph.eventually_mem (E := E) ((hV.aut φ hφ).level.mem_nhds (by simp))
-  have key : ∀ᶠ w : HeightOneSpectrum (𝓞 E) in Filter.cofinite,
-      ∃ (B : Fin d → Multiset ℂˣ) (B' : Unit → Multiset ℂˣ),
-        (∀ i, ((CG.mk P).twist (GlobalTheory.CuspRep.Model.absC E (spehExp d i : ℂ))).HasSat w (B i)) ∧
-        (∀ _j : Unit, (CG.mk π).HasSat w (B' ())) ∧ ∑ i, B i = ∑ j, B' j := by
-    filter_upwards [h, satAsc_holds E N a d V P hV hA, hlev] with w hw hs hl
-    obtain ⟨σ, B, hσ, hB, hπ⟩ := hw
-    obtain ⟨B₀, hB₀, hall⟩ := hs
-    have hfix : ∀ k ∈ GlobalTheory.LFun.KGL w (n := N), finRep E N (locGL E N w k) φ = φ := fun k hk => by
-      obtain ⟨g, rfl⟩ := hk
-      exact hl g
-    have e := hall B (satV_of_locComp hV hσ hB hφ h0 hfix)
-    refine ⟨fun i => B₀.map (· * (GlobalTheory.CuspRep.Model.absC E (spehExp d i : ℂ)).val w), fun _ => B,
-      fun i => StrStepB.hasSat_twist_absC P hB₀ _, fun _ => hπ, ?_⟩
-    apply Multiset.map_injective (f := fun b : ℂˣ => (b : ℂ)) Units.val_injective
-    simp only [Finset.univ_unique, Finset.sum_singleton]
-    rw [e, StrStepC.map_fsum]
-    refine Finset.sum_congr rfl fun i _ => ?_
-    rw [SatakeVectors.satTw_eq]
-    simp only [Multiset.map_map]
-    refine Multiset.map_congr rfl fun b _ => ?_
-    simp [StrStepB.absC_val]
-  obtain ⟨s, -⟩ := PositivityTheory.AdelicQuotientData.jacquetShalikaRigidity E (Fin d) Unit (fun _ => a) (fun _ => N)
-    (fun i => (CG.mk P).twist (GlobalTheory.CuspRep.Model.absC E (spehExp d i : ℂ))) (fun _ => CG.mk π)
-    (fun _ => ha) (fun _ => hN) key
-  have hc := Fintype.card_congr s
-  simp at hc
-  omega
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.TraceFormula.GL1SpectralBounds.NotTwo =====
@@ -338,68 +212,6 @@ section -- clump:auto
 open NumberField IsDedekindDomain
 open GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.DiscSpec PositivityTheory.Rg.Rs PositivityTheory.Rg.BcB PositivityTheory.Rg.BcB.F UpperTheory.V.Z.Tf.GOne
 
-private theorem add_le_of_strictAnti {n : ℕ} {t : Fin n → ℤ} (ht : StrictAnti t) (d : ℕ) :
-    ∀ a b : Fin n, (b : ℕ) = a + d → t b + d ≤ t a := by
-  induction d with
-  | zero =>
-    intro a b h
-    have : b = a := Fin.ext (by simpa using h)
-    simp [this]
-  | succ d ih =>
-    intro a b h
-    have hb := b.2
-    have h1 := ih a ⟨a + d, by omega⟩ rfl
-    have h2 : t b < t ⟨a + d, by omega⟩ := ht (Fin.lt_def.2 (by simp; omega))
-    push_cast
-    omega
-
-private theorem exists_weight {n : ℕ} (m : Multiset ℂ) (hc : Multiset.card m = n) (hn : m.Nodup)
-    (hz : ∀ z ∈ m, ∃ k : ℤ, z = (k : ℂ) + ((n : ℂ) - 1) / 2) : ∃ lam : Formalism.BasicNotions.DomWeight n, m = infOfWeight lam := by
-  classical
-  choose! f hf using hz
-  let s : Finset ℤ := m.toFinset.image f
-  have hinj : Set.InjOn f m.toFinset := fun a ha b hb e => by
-    rw [hf a (by simpa using ha), hf b (by simpa using hb), e]
-  have hcs : s.card = n := by
-    rw [Finset.card_image_of_injOn hinj, Multiset.toFinset_card_of_nodup hn, hc]
-  let e := s.orderEmbOfFin hcs
-  let t : Fin n → ℤ := fun k => e k.rev
-  have ht : StrictAnti t := fun a b h => e.strictMono (Fin.rev_lt_rev.2 h)
-  refine ⟨⟨fun k => t k + (k : ℕ), fun a b hab => ?_⟩, ?_⟩
-  · have hab' : (a : ℕ) ≤ b := hab
-    have := add_le_of_strictAnti ht ((b : ℕ) - a) a b (by omega)
-    have e1 : (((b : ℕ) - (a : ℕ) : ℕ) : ℤ) = (b : ℕ) - (a : ℕ) := by omega
-    simp only
-    omega
-  · have h1 : (Finset.univ.val.map fun k : Fin n => e k) = s.val :=
-      congrArg Finset.val (Finset.map_orderEmbOfFin_univ s hcs)
-    have h2 : s.val = m.map f := by
-      rw [Finset.image_val_of_injOn hinj, Multiset.toFinset_val, Multiset.dedup_eq_self.2 hn]
-    have h3 : m = (m.map f).map fun k : ℤ => (k : ℂ) + ((n : ℂ) - 1) / 2 := by
-      rw [Multiset.map_map]
-      conv_lhs => rw [← Multiset.map_id m]
-      exact Multiset.map_congr rfl fun z hz => hf z hz
-    refine h3.trans ?_
-    rw [← h2, ← h1, Multiset.map_map, infOfWeight]
-    conv_lhs => rw [← Finset.map_univ_equiv Fin.revPerm, Finset.map_val, Multiset.map_map]
-    refine Multiset.map_congr rfl fun k _ => ?_
-    simp only [Function.comp, Function.Embedding.coeFn_mk, Fin.revPerm_apply]
-    push_cast
-    ring
-
-theorem UpperTheory.V.Z.Tf.GOne.onePre :
-    OnePre := by
-  intro E _ _ _ n hn π hr hd
-  have hl : ∀ w, ∃ σ, IsLocCompGL π.V w σ := fun w =>
-    (GlobalTheory.CuspRep.LocEx.exists_isLocComp UpperTheory.V.Af.formsFiniteGL E n π w).imp fun σ h =>
-      ((cuspSub_iff π).2.1 w σ).2 h.1
-  choose σ hσ using hl
-  refine ⟨⟨1, fun _ => n, by simp, fun _ => π.V, fun _ w => σ w, fun _ τ => (CG.mk π).infChar τ,
-    fun _ => hn, fun _ => hd, fun _ w => hσ w, fun _ τ => ?_⟩, ⟨rfl, fun _ => ⟨rfl, (by exact eq_of_heq (eqRec_heq_iff.mpr HEq.rfl))⟩⟩, fun τ => ?_⟩
-  · exact ((cuspSub_iff π).2.2 τ _).2 (GlobalTheory.CuspRep.ParLaws.hasInfChar_infChar (CG.mk π) τ)
-  · obtain ⟨h1, h2⟩ := hr τ
-    obtain ⟨lam, hlam⟩ := exists_weight _ ((CG.mk π).card_infChar τ) h1 h2
-    exact ⟨lam, by simpa using hlam⟩
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.TraceFormula.GL1SpectralBounds.OnePre =====
@@ -412,84 +224,6 @@ section -- clump:auto
 open NumberField IsDedekindDomain
 open GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.DiscSpec PositivityTheory.Rg.Rs PositivityTheory.Rg.BcB PositivityTheory.Rg.BcB.F UpperTheory.V.Z.Tf.GOne
 
-namespace UpperTheory.V.Z.Tf.GOne.saturation_regularity_aux
-
-variable {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] {n : ℕ}
-
-private theorem hasSat_of_comp {P : CuspSub E n} (hV : IsDiscrete P.V) {w : HeightOneSpectrum (𝓞 E)}
-    {σ : SmIrr (GL (Fin n) (w.adicCompletion E))} (hσ : IsLocCompGL P.V w σ) {B : Multiset ℂˣ}
-    (hB : GlobalTheory.LFun.HasSatGL w σ.ρ B) : GlobalTheory.LFun.HasSatGL w (P.locRep w) B := by
-  have hmem : ∀ ψ ∈ P.V, ψ ∈ ⨆ f : SatakeVectors.SatakeVectorEventually.MapsD P.V w σ, LinearMap.range f.1 := fun ψ hψ => by
-    rw [SatakeVectors.SatakeVectorEventually.iSup_range_eq hV w σ hσ]; exact hψ
-  constructor
-  · obtain ⟨f, h0, hfV, hf⟩ := hσ
-    obtain ⟨x, hx⟩ := hB.exists_vec
-    have hi : LinearMap.ker f = ⊥ := ((_root_.GlobalTheory.UnimodularLatticeExistence.main σ.ρ).1 σ.irred).2 _ (fun g v hv => by
-      rw [LinearMap.mem_ker] at hv ⊢
-      rw [hf, hv, map_zero]) |>.resolve_right fun e => h0 (LinearMap.ker_eq_top.1 e)
-    have h1 := hx.map (ρ' := (finRep E n).comp (locGL E n w)) f hf
-      ((map_ne_zero_iff f (LinearMap.ker_eq_bot.1 hi)).2 hx.1)
-    refine (Submodule.ne_bot_iff _).2 ⟨⟨f x, hfV x⟩, GlobalTheory.LGrp.mem_fixed.2 fun k hk => Subtype.ext ?_,
-      fun e => h1.1 (congrArg Subtype.val e)⟩
-    exact GlobalTheory.LGrp.mem_fixed.1 h1.2.1 k hk
-  · intro y hy h0
-    have h2 := GlobalTheory.HeightCounting.Blocks.isSatVecGL_of_mem_iSup (ρ := (finRep E n).comp (locGL E n w)) σ.irred hB
-      (fun f : SatakeVectors.SatakeVectorEventually.MapsD P.V w σ => f.1) (fun f => f.2.2) (hmem y.1 y.2)
-      (GlobalTheory.LGrp.mem_fixed.2 fun k hk => congrArg Subtype.val (GlobalTheory.LGrp.mem_fixed.1 hy k hk))
-      (fun e => h0 (Subtype.ext e))
-    exact GlobalTheory.LFun.IsSatVecGL.of_map (ρ' := (finRep E n).comp (locGL E n w)) P.V.subtype (fun _ _ => rfl)
-      Subtype.val_injective h2
-
-private theorem regInt_of_weight {V : Submodule ℂ (Sm E n)} {τ : E →+* ℂ} {m : Multiset ℂ}
-    (h : HasInfCharGL V τ m) (lam : Formalism.BasicNotions.DomWeight n) (e : m = infOfWeight lam) : RegInt V τ := by
-  subst e
-  refine ⟨_, h, GlobalTheory.DefiniteBC.nodup_infOfWeight lam, fun x hx y hy => ?_⟩
-  obtain ⟨k, -, rfl⟩ := Multiset.mem_map.1 hx
-  obtain ⟨l, -, rfl⟩ := Multiset.mem_map.1 hy
-  exact ⟨lam.w k - lam.w l - (k : ℕ) + (l : ℕ), by push_cast; ring⟩
-
-private theorem key (hC : CuspOrTwo) (hT : NotTwo) {m : ℕ} (hn : 1 ≤ n) (π : CuspSub E n) (hm : m = n)
-    {V : Submodule ℂ (Sm E m)} (σ : ∀ w : HeightOneSpectrum (𝓞 E), SmIrr (GL (Fin m) (w.adicCompletion E)))
-    (mu : (E →+* ℂ) → Multiset ℂ) (hV : IsDiscrete V) (hl : ∀ w, IsLocCompGL V w (σ w))
-    (hi : ∀ τ, HasInfCharGL V τ (mu τ)) (hr : ∀ τ, ∃ lam : Formalism.BasicNotions.DomWeight n, mu τ = infOfWeight lam)
-    (hs : ∀ᶠ w : HeightOneSpectrum (𝓞 E) in Filter.cofinite,
-      ∃ B, GlobalTheory.LFun.HasSatGL w (σ w).ρ B ∧ (CG.mk π).HasSat w B) :
-    ∃ e : m = n, e ▸ V = π.V := by
-  subst hm
-  refine ⟨rfl, ?_⟩
-  obtain ⟨τ⟩ : Nonempty (E →+* ℂ) := inferInstance
-  obtain ⟨lam, hlam⟩ := hr τ
-  rcases hC E m hn V hV τ (regInt_of_weight (hi τ) lam hlam) with ⟨P, rfl⟩ | ⟨a, d, P, ha, hd, -, -, hA⟩
-  · exact UpperTheory.V.Af.strongMultOneC E m P π
-      (hs.mono fun w ⟨B, h1, h2⟩ => ⟨B, hasSat_of_comp hV (hl w) h1, h2⟩)
-  · exact absurd (hs.mono fun w ⟨B, h1, h2⟩ => ⟨σ w, B, hl w, h1, h2⟩) (hT E m a d V P π ha hd hV hA)
-
-end UpperTheory.V.Z.Tf.GOne.saturation_regularity_aux
-
-theorem UpperTheory.V.Z.Tf.GOne.onlyOne :
-    CuspOrTwo → NotTwo → OneSat → OnlyOne := by
-  intro hC hT hS E _ _ _ n hn π D D' e hR h1 hcls
-  have hc : D.c = 1 := by
-    have h := Fintype.card_congr e
-    simp only [Fintype.card_fin] at h
-    rw [h]
-    exact h1.1
-  refine ⟨hc, fun i => ?_⟩
-  have hsum : ∀ {M : Type} [AddCommMonoid M] (f : Fin D.c → M), ∑ j, f j = f i := fun {M} _ f => by
-    have hsub : Subsingleton (Fin D.c) := by rw [hc]; infer_instance
-    exact Fintype.sum_subsingleton f i
-  have hN : D.N i = n := (hsum D.N).symm.trans D.h
-  have hsat : ∀ᶠ w : HeightOneSpectrum (𝓞 E) in Filter.cofinite,
-      ∃ B, GlobalTheory.LFun.HasSatGL w (D.σ i w).ρ B ∧ (CG.mk π).HasSat w B := by
-    filter_upwards [Rig.eventually_sat D] with w hw
-    obtain ⟨S, hS1, -⟩ := hw
-    have hB : D.Sat w (∑ j, S j) := ⟨S, fun j => hS1 j, rfl⟩
-    refine ⟨S i, (hS1 i).2, ?_⟩
-    rw [← hsum S]
-    exact (hS E n hn π D' h1 w _).2 (Rig.permSat E n D D' e w (fun j => hcls j w) _ hB)
-  have hreg : ∀ τ, ∃ lam : Formalism.BasicNotions.DomWeight n, D.m i τ = infOfWeight lam := fun τ =>
-    (hR τ).imp fun lam h => (hsum (D.m · τ)).symm.trans h
-  exact saturation_regularity_aux.key hC hT hn π hN (D.σ i) (D.m i) (D.discrete i) (D.loc i) (D.inf i) hreg hsat
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.TraceFormula.GL1SpectralBounds.OnlyOne =====
@@ -505,98 +239,6 @@ open PositivityTheory.Rg.BcB.G8
 open UpperTheory.V.Af.Bc (cPl)
 open UpperTheory.V.Z.Tf.GlobalTraceComparison UpperTheory.V.Z.Tf.GlobalTraceComparison.Cusp UpperTheory.V.Z.Tf.GlobalTraceComparison.Asm UpperTheory.V.Z.Tf.GaloisFromTraceFormula
 
-private theorem sigma_eq {E : Type} [Field E] [NumberField E] [IsCMField E] {a n : ℕ} (e : a = n) (Q : CuspSub E a)
-    (π : CuspSub E n) (h : e ▸ Q.V = π.V) : (⟨a, CG.mk Q⟩ : Σ k, CG E k) = ⟨n, CG.mk π⟩ := by
-  subst e
-  have : Q = π := CuspSub.ext h
-  rw [this]
-
-theorem UpperTheory.V.Z.Tf.GaloisFromTraceFormula.preOf :
-    PartNorm → GOne.CsdSat → Places → PreOf := by
-  intro hN hC hPl E _ _ _ n hn π hd D hHas hReg hIn hSp
-  have hcc := fun w : Pl E => ((hPl E).2.1 w).1
-  have hsp := fun w : Pl E => ((hPl E).2.1 w).2
-  choose P hP hnorm hunit using hN E n hn π hd D hReg hSp
-  have hl : ∀ i w, ∃ σ, IsLocCompGL (P i).V w σ := fun i w =>
-    (GlobalTheory.CuspRep.LocEx.exists_isLocComp UpperTheory.V.Af.formsFiniteGL E (D.N i) (P i) w).imp fun σ h =>
-      ((cuspSub_iff (P i)).2.1 w σ).2 h.1
-  choose σ hσ using hl
-  have hdisc (i : Fin D.c) : IsDiscrete (P i).V :=
-    isDiscrete_of_cuspSub (P i) fun φ hφ => by
-      obtain ⟨C, hC⟩ := GlobalTheory.CompanionTheory.CuspFinGL.cuspFormsBoundedGL.of_invariant
-        ((P i).cusp φ hφ) (hnorm i φ hφ)
-      exact GlobalTheory.DiscChar.isSqInt_of_bounded (hnorm i φ hφ) (C := C) fun g => by
-        simpa using hC g
-  have hinf (i : Fin D.c) (τ : E →+* ℂ) :
-      HasInfCharGL (P i).V τ ((CG.mk (P i)).infChar τ) :=
-    ((cuspSub_iff (P i)).2.2 τ _).2 (GlobalTheory.CuspRep.ParLaws.hasInfChar_infChar (CG.mk (P i)) τ)
-  let D' : PositivityTheory.Rg.BcB.F.Pre E n := ⟨D.c, D.N, D.sum, fun i => (P i).V, σ, fun i τ => (CG.mk (P i)).infChar τ,
-    D.pos, hdisc, hσ, hinf⟩
-  have hsat : ∀ w B, D.Sat w B → D'.Sat w B := by
-    rintro w B ⟨b, hb, rfl⟩
-    refine ⟨b, fun i => ?_, rfl⟩
-    let part : PositivityTheory.Rg.BcB.F.Pre E (D.N i) :=
-      ⟨1, fun _ => D.N i, by simp, fun _ => (P i).V, fun _ => σ i,
-        fun _ => (CG.mk (P i)).infChar, fun _ => D.pos i, fun _ => hdisc i,
-        fun _ => hσ i, fun _ => hinf i⟩
-    have hone : GOne.One part (P i) := ⟨rfl, fun _ => ⟨rfl, rfl⟩⟩
-    have hpart := (GOne.oneSat E (D.N i) (D.pos i) (P i) part hone w (b i)).1
-      (by rw [hP i]; exact hb i)
-    obtain ⟨b', hb', hsum⟩ := hpart
-    have heq : b' 0 = b i := by simpa using hsum
-    exact heq ▸ hb' 0
-  have hconj {w u : Pl E} (h : PositivityTheory.Rg.BcB.F.ConjPl w u) : cPl u = w := by
-    obtain ⟨hunder, hsplit⟩ := h
-    by_cases e : u = w
-    · subst e
-      exact (GlobalTheory.ConjAtPlace.conjSrc_eq_iff u).2 (hsplit.resolve_left fun h => h rfl)
-    · rcases (GlobalTheory.Mem.Chr.under_eq_iff_conjPl (IsCMField.complexConj E)
-        (Algebra.IsQuadraticExtension.finrank_eq_two _ _) (IsCMField.complexConj_ne_one E) u w).1 hunder.symm with h | h
-      · exact absurd h.symm e
-      · refine (eq_conjSrc ?_).symm
-        rw [GlobalTheory.Mem.Chr.conjPl_iff_mem] at h ⊢
-        intro x y hxy
-        refine (h y x ?_).symm
-        rw [hxy]
-        exact (IsCMField.complexConj_apply_apply E _).symm
-  have hcof : Tendsto (cPl : Pl E → Pl E) cofinite cofinite :=
-    Function.Injective.tendsto_cofinite fun x y e => by rw [← hcc x, ← hcc y, e]
-  refine ⟨D', fun τ => ?_, ?_, hSp.mono fun w hw hs => (hw hs).imp fun B hB => ⟨hsat w B hB.1, hB.2⟩, ?_⟩
-  · obtain ⟨lam, hlam⟩ := hReg τ
-    refine ⟨lam, ?_⟩
-    rw [← hlam]
-    exact Finset.sum_congr rfl fun i _ => by simp only [D', hP i]
-  · filter_upwards [hIn, hSp, hcof.eventually hSp, hC E n hn π hd] with w h1 h2 h3 h4
-    by_cases hw : IsSplitAt w
-    · obtain ⟨B, hB, hπ⟩ := h2 hw
-      obtain ⟨B', hπ', hu⟩ := h4
-      obtain rfl := CG.HasSat.unique hπ hπ'
-      refine ⟨B, hsat w B hB, fun u hu' => ?_⟩
-      have e : u = cPl w := by rw [← hconj hu', hcc]
-      have hs : IsSplitAt u := by
-        rw [e]
-        refine (hsp _).2 ?_
-        rw [hcc]
-        exact ((hsp w).1 hw).symm
-      obtain ⟨B₂, hB₂, hπ₂⟩ := e ▸ h3 (e ▸ hs)
-      obtain rfl := CG.HasSat.unique hπ₂ (hu u hu')
-      exact hsat _ _ hB₂
-    · obtain ⟨B, hB, hinv⟩ := h1 hw
-      refine ⟨B, hsat w B hB, fun u hu' => ?_⟩
-      have e : u = w := by
-        rw [← hcc u, hconj hu']
-        by_contra h
-        exact hw ((hsp w).2 h)
-      subst e
-      have : B.map (·⁻¹) = B := hinv
-      rw [this]
-      exact hsat _ _ hB
-  · rintro ⟨hc, h⟩
-    have i : Fin D.c := ⟨0, by have : D.c = 1 := hc; omega⟩
-    obtain ⟨e, he⟩ := h i
-    refine hHas ⟨i, ?_⟩
-    rw [← hP i]
-    exact sigma_eq e (P i) π he
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.TraceFormula.GaloisFromTraceFormula.SigmaEq =====
@@ -609,22 +251,6 @@ section -- clump:auto
 open NumberField IsDedekindDomain
 open GlobalTheory.CuspRep GlobalTheory.UnitaryBC PositivityTheory.Rg.BcB PositivityTheory.Rg.BcB.F PositivityTheory.Rg.BcB.G UpperTheory.V.Z.Tf.GOne UpperTheory.V.Z.Tf.GlobalTraceComparison
 
-namespace UpperTheory.V.Z.Tf.GaloisFromTraceFormula
-
-theorem descWeak_of_galWeak (hW : GalWeak 4) (hRun : RunTh) : UpperTheory.V.Z.Desc.DescWeak := by
-  intro E _ _ _ hunr p _ S _ hsp _ n hn hn4 π hreg hd hsat
-  have hn1 : 1 ≤ n := le_trans one_le_two hn
-  rcases hRun E hunr n hn1 π hreg hd (fun w hw => hsat w fun h => hw (hsp w h)) with h | ⟨D₁, h1, h2, h3, h4⟩
-  · exact h
-  obtain ⟨D, r, t, s, hno⟩ := preOf (partNorm absInf) csdSat Asm.places E n hn1 π hd D₁ h1 h2 h3 h4
-  obtain ⟨D₀, hone, hr⟩ := onePre E n hn1 π hreg (csdDisc E n hn1 π hd)
-  have hs := oneSat E n hn1 π D₀ hone
-  have ht : D₀.ThetaStable := (csdSat E n hn1 π hd).mono fun w ⟨B, a, b⟩ => ⟨B, (hs w B).1 a, fun u hu => (hs u _).1 (b u hu)⟩
-  obtain ⟨e, he⟩ := Rig.locRigid_holds E n D D₀ r hr (galStep_le hW E hunr n hn4 D D₀ r hr t ht
-    (s.mono fun w hw hx => (hw hx).imp fun B hB => ⟨hB.1, (hs w B).1 hB.2⟩))
-  exact absurd (onlyOne cuspOrTwo notTwo oneSat E n hn1 π D D₀ e r hone he) hno
-
-end UpperTheory.V.Z.Tf.GaloisFromTraceFormula
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.TraceFormula.GaloisFromTraceFormula.DescWeakOfGalWeak =====
@@ -713,8 +339,6 @@ open UpperTheory.V.Z.Tf.GlobalTraceComparison
 namespace UpperTheory.V.Z.Tf.GaloisFromTraceFormula
 
 theorem runTh : RunTh := runTh_of_pi Pi.piTerm_holds Pi.piFin_holds Pi.piAdm_pf Pi.twTrSum_pf Pi.growthPiJ_holds
-
-theorem descWeak (hW : GalWeak 4) : UpperTheory.V.Z.Desc.DescWeak := descWeak_of_galWeak hW runTh
 
 end UpperTheory.V.Z.Tf.GaloisFromTraceFormula
 end -- clump:auto

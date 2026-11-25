@@ -81,30 +81,6 @@ section Comp
 
 variable {X : Type} [CommRing X] {e n : ℕ}
 
-private theorem dd_a_add (x y : DD X e) : (x + y).a = x.a + y.a := rfl
-
-private theorem ep_component_add (x y : DD X e) : (x + y).ep = x.ep + y.ep := rfl
-
-private theorem dd_ep'_add (x y : DD X e) : (x + y).ep' = x.ep' + y.ep' := rfl
-
-private theorem dd_eta_add (x y : DD X e) : (x + y).eta = x.eta + y.eta := rfl
-
-private theorem dd_a_zero : (0 : DD X e).a = 0 := rfl
-
-private theorem dd_ep_zero : (0 : DD X e).ep = 0 := rfl
-
-private theorem dd_ep'_zero : (0 : DD X e).ep' = 0 := rfl
-
-private theorem dd_eta_zero : (0 : DD X e).eta = 0 := rfl
-
-private theorem dd_a_one : (1 : DD X e).a = 1 := rfl
-
-private theorem dd_ep_one : (1 : DD X e).ep = 0 := rfl
-
-private theorem dd_ep'_one : (1 : DD X e).ep' = 0 := rfl
-
-private theorem dd_eta_one : (1 : DD X e).eta = 0 := rfl
-
 private theorem sum_a {ι : Type} (s : Finset ι) (f : ι → DD X e) : (∑ i ∈ s, f i).a = ∑ i ∈ s, (f i).a := by
   classical
   refine Finset.induction_on s rfl ?_

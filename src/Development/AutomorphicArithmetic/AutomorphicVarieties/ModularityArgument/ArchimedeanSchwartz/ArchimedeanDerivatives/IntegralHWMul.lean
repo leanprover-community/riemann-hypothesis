@@ -75,11 +75,9 @@ section Inf
 
 variable {K : Type} [Field K] [NumberField K] {n : ℕ}
 
-
 open Classical in
 def pdL (v : InfinitePlace K) (i j : Fin n) (F : Lie K n → ℂ) (x : Lie K n) : ℂ :=
   fderiv ℝ F x (toL (Matrix.single i j (Pi.single v 1)))
-
 
 def detD (v : InfinitePlace K) (F : Lie K n → ℂ) (x : Lie K n) : ℂ :=
   ∑ p : Equiv.Perm (Fin n), (((Equiv.Perm.sign p : ℤˣ) : ℤ) : ℂ) * (List.finRange n).foldr (fun j G => pdL v (p j) j G) F x
@@ -170,25 +168,9 @@ section Specific
 
 variable {K : Type} [Field K] [NumberField K] {n : ℕ}
 
-
 open Classical in
 def wordOf (v : InfinitePlace K) (p : Equiv.Perm (Fin n)) (l : List (Fin n)) : List (Lie K n) :=
   l.map fun j => toL (Matrix.single (p j) j (Pi.single v 1))
-
-theorem foldr_pdL_eq (v : InfinitePlace K) (p : Equiv.Perm (Fin n)) (F : Lie K n → ℂ) (l : List (Fin n)) :
-    l.foldr (fun j G => pdL v (p j) j G) F = wD (wordOf v p l) F := by
-  induction l with
-  | nil => rfl
-  | cons a l ih =>
-    simp only [List.foldr_cons, wordOf, List.map_cons]
-    rw [ih]
-    rfl
-
-theorem detD_eq (v : InfinitePlace K) (G : Lie K n → ℂ) :
-    detD v G = fun x => ∑ p : Equiv.Perm (Fin n),
-      (((Equiv.Perm.sign p : ℤˣ) : ℤ) : ℂ) * wD (wordOf v p (List.finRange n)) G x := by
-  funext x
-  simp only [detD, foldr_pdL_eq]
 
 end Specific
 

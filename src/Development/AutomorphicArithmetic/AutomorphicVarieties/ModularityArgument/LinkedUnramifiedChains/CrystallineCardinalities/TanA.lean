@@ -498,9 +498,6 @@ private def two (α κ : G →* Eˣ) (b : G → E) (hb : ∀ g h, b (g * h) = α
     refine LinearMap.ext fun x => ?_
     ext <;> simp [hb] <;> ring
 
-private theorem two_apply (α κ : G →* Eˣ) (b : G → E) (hb : ∀ g h, b (g * h) = α g * b h + b g * κ h)
-    (g : G) (x : E × E) : two α κ b hb g x = (α g * x.1 + b g * x.2, κ g * x.2) := rfl
-
 end Alg
 
 section Cr

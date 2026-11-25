@@ -914,17 +914,6 @@ private theorem lv_zero {K : Type} [Field K] [NumberField K] (m₁ m₂ : G1 K 2
       blk (m₁ : AdelicGLn.AdelicGL K 2) (m₂ : AdelicGLn.AdelicGL K 2) := by
   rw [(blkLaws (K := K)).1, neg_zero, zt_zero', mul_one, mul_one]
 
-private theorem un_cont {K : Type} [Field K] [NumberField K] {ι : Type} [Fintype ι] (C : Co K ι) (i : ι) :
-    Continuous (C.un i) := by
-  have h : Continuous (fun m : U2 => (Pi.mulSingle i m : ι → U2)) := by
-    refine continuous_pi fun j => ?_
-    by_cases hj : j = i
-    · subst hj
-      simp only [Pi.mulSingle_eq_same]
-      exact continuous_id
-    · simpa [Pi.mulSingle_eq_of_ne hj] using continuous_const
-  exact continuous_archP.comp (continuous_subtype_val.comp ((C.Φ 2).symm.continuous.comp h))
-
 theorem UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.EA.lineInj :
     ∀ (K : Type) [Field K] [NumberField K] [_root_.NumberField.IsTotallyComplex K] (ι : Type) [Fintype ι] (C : Co K ι) (μ₂ : Measure (G1 K 2)) [μ₂.IsHaarMeasure] (τ₁ τ₂ : Submodule ℂ (L2 μ₂)), Pair μ₂ τ₁ τ₂ →
       ∀ (μ : Measure U4) (e : ι → U4 → ℂ) n q n' q' (x : ι → U4), Haar4 μ → ExtP μ e n q n' q' x →

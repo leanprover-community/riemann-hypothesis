@@ -270,53 +270,6 @@ private theorem exists_pow_mul_norm_le {l : ℕ} [Fact l.Prime] (C : ℝ) :
   rw [norm_mul, norm_pow, Padic.norm_p, inv_pow, inv_mul_le_iff₀ hp, mul_one]
   exact ha.trans hm.le
 
-private theorem exists_lattice {l : ℕ} [Fact l.Prime] {G : Type} [Group G] [TopologicalSpace G] [CompactSpace G]
-    {V : Type} [AddCommGroup V] [Module ℚ_[l] V] [Module ℤ_[l] V] [IsScalarTower ℤ_[l] ℚ_[l] V]
-    [FiniteDimensional ℚ_[l] V] [TopologicalSpace V] [IsModuleTopology ℚ_[l] V]
-    (ρ : Representation ℚ_[l] G V) (h : ContAction ρ) :
-    ∃ L : Submodule ℤ_[l] V, Submodule.IsLattice ℚ_[l] L ∧ ∀ g, ∀ x ∈ L, ρ g x ∈ L := by
-  classical
-  let b := Module.finBasis ℚ_[l] V
-  let S : Set V := Set.range fun p : G × Fin (finrank ℚ_[l] V) => ρ p.1 (b p.2)
-  have hc : Continuous fun g : G => fun i => b.equivFun (ρ g (b i)) := by
-    refine continuous_pi fun i => ?_
-    exact (IsModuleTopology.continuous_of_linearMap b.equivFun.toLinearMap).comp
-      (h.comp (continuous_id.prodMk continuous_const))
-  obtain ⟨C, hC⟩ := (isCompact_range hc).isBounded.exists_norm_le
-  obtain ⟨m, hm⟩ := exists_pow_mul_norm_le (l := l) C
-  have hl : ((l : ℚ_[l]) ^ m) ≠ 0 := pow_ne_zero _ (by exact_mod_cast (Fact.out : l.Prime).ne_zero)
-  refine ⟨Submodule.span ℤ_[l] S, ⟨?_, ?_⟩, ?_⟩
-  · let N : Submodule ℤ_[l] V := Submodule.span ℤ_[l] (Set.range fun i => ((l : ℚ_[l]) ^ m)⁻¹ • b i)
-    have hN : N.FG := Submodule.fg_span (Set.finite_range _)
-    refine hN.of_le ?_
-    rw [Submodule.span_le]
-    rintro _ ⟨⟨g, i⟩, rfl⟩
-    have e := b.sum_repr (ρ g (b i))
-    simp only [SetLike.mem_coe]
-    rw [← e]
-    refine Submodule.sum_mem _ fun k _ => ?_
-    have hk : ‖b.repr (ρ g (b i)) k‖ ≤ C :=
-      ((norm_le_pi_norm (b.equivFun (ρ g (b i))) k).trans
-        (norm_le_pi_norm (fun i => b.equivFun (ρ g (b i))) i)).trans (hC _ ⟨g, rfl⟩)
-    let z : ℤ_[l] := ⟨_, hm _ hk⟩
-    have : b.repr (ρ g (b i)) k • b k = z • (((l : ℚ_[l]) ^ m)⁻¹ • b k) := by
-      rw [← algebraMap_smul ℚ_[l] z, smul_smul]
-      congr 1
-      change _ = ((l : ℚ_[l]) ^ m * b.repr (ρ g (b i)) k) * _
-      field_simp
-    rw [this]
-    exact N.smul_mem z (Submodule.subset_span ⟨k, rfl⟩)
-  · intro s hs hli
-    exact (LinearIndependent.iff_fractionRing ℤ_[l] ℚ_[l]).mp hli
-  · intro g x hx
-    induction hx using Submodule.span_induction with
-    | mem x hx =>
-      obtain ⟨⟨g', i⟩, rfl⟩ := hx
-      exact Submodule.subset_span ⟨(g * g', i), by simp⟩
-    | zero => simp
-    | add x y _ _ hx hy => rw [map_add]; exact add_mem hx hy
-    | smul a x _ hx => rw [LinearMap.map_smul_of_tower]; exact Submodule.smul_mem _ a hx
-
 theorem UpperTheory.exists_invariant_lattice_openEmbedding :
     ∀ {l : ℕ} [Fact l.Prime] {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [CompactSpace G] {V : Type} [AddCommGroup V] [Module ℚ_[l] V] [Module ℤ_[l] V] [IsScalarTower ℤ_[l] ℚ_[l] V] [FiniteDimensional ℚ_[l] V] [TopologicalSpace V] [IsModuleTopology ℚ_[l] V] [IsTopologicalAddGroup V] [ContinuousConstSMul ℚ_[l] V] (ρ : Representation ℚ_[l] G V), ContAction ρ → ∃ (ρT : Representation ℤ_[l] G (Fin (finrank ℚ_[l] V) → ℤ_[l])) (j : (Fin (finrank ℚ_[l] V) → ℤ_[l]) →ₗ[ℤ_[l]] V), ContAction ρT ∧ IsOpenEmbedding j ∧ (∀ g x, j (ρT g x) = ρ g (j x)) ∧ ∀ y : V, ∃ m : ℕ, (l : ℤ_[l]) ^ m • y ∈ LinearMap.range j := by
   intro l _ G _ _ _ _ V _ _ _ _ _ _ _ _ _ ρ h

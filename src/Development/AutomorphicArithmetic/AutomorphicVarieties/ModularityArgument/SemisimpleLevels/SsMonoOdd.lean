@@ -59,12 +59,6 @@ def CsdMonoOdd : Prop :=
           IsPstAt P Bw (R.comp (Dec (F := E) A).subtype) ∧ ∀ σ, π.IsLocComp w σ → ∀ rc, IsRec h rc →
             (wdAt P ι Bw h hj (R.comp (Dec (F := E) A).subtype)).mono0 → (rc (algNorm σ)).mono0
 
-theorem csdMonoOdd_of_full (H : GlobalTheory.Published.CaraianiLocalGlobalDual) : CsdMonoOdd := by
-  intro E Ω _ _ _ _ _ _ l _ ι a ha _ π hd hc
-  obtain ⟨R, h1, h2, h3, h4⟩ := H E Ω l ι a ha π hd hc
-  refine ⟨R, h1, h2, h3, fun P AI hT w A h O _ _ _ Bw hj => ?_⟩
-  exact ⟨(h4 P AI hT w A h O Bw hj).1, fun σ hσ rc hrc hm => (h4 P AI hT w A h O Bw hj).2 σ hσ rc hrc ▸ hm⟩
-
 end UpperTheory.V.Lev
 
 end

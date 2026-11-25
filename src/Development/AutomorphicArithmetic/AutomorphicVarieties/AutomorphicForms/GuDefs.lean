@@ -51,7 +51,6 @@ section Defs
 
 variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω] {l : ℕ} [Fact l.Prime]
 
-
 variable (Ω) in
 abbrev Par (w : HeightOneSpectrum (𝓞 E)) : Type 1 :=
   ∀ (A : ValuationSubring Ω) (h : IsPlaceOver A w), (IrrGL (k := w.adicCompletion E) → WD h) → WD h
@@ -65,10 +64,6 @@ def ParAt {n : ℕ} (ι : Qbar l ≃+* ℂ) (r : G E Ω →* GL (Fin n) (Qbar l)
     ∀ (O : Type) [CommRing O] [Algebra ℤ_[l] O] [TopologicalSpace O] (Bw : LocBridge l E Ω (Dec (F := E) A) O) (hj : Induces Bw),
       IsPstAt (Loc.PP l) Bw (r.comp (Dec (F := E) A).subtype) ∧
         Lev.SsCmp (wdAt (Loc.PP l) ι Bw h hj (r.comp (Dec (F := E) A).subtype)) (p A h rc)
-
-theorem ParAt.congr {n : ℕ} {ι : Qbar l ≃+* ℂ} {r : G E Ω →* GL (Fin n) (Qbar l)} {w : HeightOneSpectrum (𝓞 E)} {p p' : Par Ω w}
-    (H : ParAt ι r w p) (e : ∀ A h rc, IsRec h rc → p A h rc = p' A h rc) : ParAt ι r w p' :=
-  fun A h rc hrc => e A h rc hrc ▸ H A h rc hrc
 
 structure Compat {n : ℕ} (ι : Qbar l ≃+* ℂ) (r : G E Ω →* GL (Fin n) (Qbar l)) (p : ∀ w : HeightOneSpectrum (𝓞 E), Par Ω w)
     (HT : (E →+* Qbar l) → Multiset ℤ) : Prop where

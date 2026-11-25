@@ -381,19 +381,6 @@ section -- clump:auto
 
 noncomputable section
 
-namespace UpperTheory.V.Z.Sym.Glob
-
-open Matrix Polynomial Loc
-
-private theorem charpoly_three {R : Type} [CommRing R] (N : Matrix (Fin 3) (Fin 3) R) :
-    N.charpoly = X ^ 3 - C N.trace * X ^ 2 + C N.adjugate.trace * X - C N.det := by
-  simp only [Matrix.charpoly, Matrix.det_fin_three, Matrix.charmatrix_apply, Matrix.adjugate_fin_three,
-    Matrix.trace_fin_three]
-  simp
-  ring
-
-end UpperTheory.V.Z.Sym.Glob
-
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -1544,7 +1531,6 @@ private theorem sum_GI (hD : D.Ok) (t : Dat.Par F) (ht : D.Cone t) (ch : F → �
   rw [finsum_congr kS, finsum_congr kK, ← const_sum, ← finsum_add_distrib (sup _) (sup' _)]
   exact finsum_congr (fun τ => by ring)
 
-
 private theorem term_eq (hD : D.Ok) {V : Type} [AddCommGroup V] [Module ℂ V] {ch : F → ℂ} {B : Base (U3 Δ) (GA Δ) V} {s : B.Tw}
     (hB : D.IsBG ch B s) {t : Dat.Par F} (ht : D.Cone t) {τ c : F} {d m : EL Δ τ} {δ i P} (hτ : D.Good t τ) (hd : IsDat c d m)
     (h : Models c d m δ i P) :
@@ -1601,7 +1587,6 @@ private theorem cls_eq {K : Type} [Field K] {τ : K} {x y : (Kˣ ⧸ (powMonoidH
     exact ⟨r, by rw [powMonoidHom_apply, pow_two, ← hr, div_eq_inv_mul]⟩
   · rw [← QuotientGroup.out_eq' x2, ← QuotientGroup.out_eq' y2, QuotientGroup.eq, ← div_eq_inv_mul]
     exact h2
-
 
 theorem sideG : SideG := by
   intro F _ _ Δ D hD

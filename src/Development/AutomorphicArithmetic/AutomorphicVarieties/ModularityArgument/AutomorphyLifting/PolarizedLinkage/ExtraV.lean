@@ -231,7 +231,6 @@ def wdOfRep (ρ : Representation ℂ (Weil h) V) (hρ : IsSmooth ρ)
   nilpotent := IsNilpotent.zero
   comm σ := by simp
 
-
 variable (h) in
 abbrev IrrW : Type := {x : WD h // IsIrrWD x}
 
@@ -264,22 +263,10 @@ theorem IrrW.lpDim_pos (z : IrrW h) : 0 < z.1.lpDim := by
   rw [WD.lpDim_mk]
   exact finrank_pos
 
-
 variable (h) in
 def frobCoset (r : ℕ) : Set (Weil h) := {τ | deg τ = -(r : ℤ)}
 
-@[simp] theorem mem_frobCoset {r : ℕ} {τ : Weil h} : τ ∈ frobCoset h r ↔ deg τ = -(r : ℤ) := Iff.rfl
-
-
-
-
-
 namespace VR
-
-
-
-
-
 
 end VR
 

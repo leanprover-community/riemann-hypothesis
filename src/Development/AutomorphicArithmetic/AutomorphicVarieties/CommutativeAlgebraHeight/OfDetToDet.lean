@@ -58,9 +58,6 @@ section -- clump:auto
 
 namespace UpperTheory.Reformulated.B.Qk3
 
-theorem aux1 {A : Type} [CommRing A] : RingHomInvPair (RingHom.id A) (RingHom.id A) :=
-  RingHomInvPair.ids
-
 noncomputable def unopS (A E S : Type) [CommRing A] [Ring E] [Algebra A E]
     [CommRing S] [Algebra A S] : TensorProduct A S Eᵐᵒᵖ →ₗ[S] TensorProduct A S E :=
   LinearMap.baseChange S (MulOpposite.opLinearEquiv A).symm.toLinearMap

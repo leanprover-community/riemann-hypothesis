@@ -60,10 +60,6 @@ instance {Γ J : Type} [Group Γ] : MulAction Γ (Idx Γ J) where
   one_smul i := Idx.ext (one_mul i.g) rfl
   mul_smul γ δ i := Idx.ext (mul_assoc γ δ i.g) rfl
 
-@[simp] theorem Idx.smul_g {Γ J : Type} [Group Γ] (γ : Γ) (i : Idx Γ J) : (γ • i).g = γ * i.g := rfl
-
-@[simp] theorem Idx.smul_j {Γ J : Type} [Group Γ] (γ : Γ) (i : Idx Γ J) : (γ • i).j = i.j := rfl
-
 section
 
 variable {Γ V S : Type} [Group Γ] [NormedAddCommGroup V] [NormedSpace ℝ V] {d : ℕ}
