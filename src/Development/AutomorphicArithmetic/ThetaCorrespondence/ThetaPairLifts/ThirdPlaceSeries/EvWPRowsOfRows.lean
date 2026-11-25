@@ -498,9 +498,9 @@ theorem exists_ext_alt (hc : NChTie D ex.nch) (Q : _root_.Formalism.IndefR.Indef
               ((1 : KB Q.Sx (ex.nch.twI w) (ex.nch.sd w)) ⊗ₜ[Q.Sx.Ks] f k)) ∧
       (∀ (ι : Type) (v : ι → Q.Sx.WL j), LinearIndependent D.what₂.LL v →
         LinearIndependent (FractionRing (ex.nch.Oe w)) (fun a => e (v a))) := by
-  letI aK : Algebra Q.Sx.Ks (FractionRing (D.ntw.O (ex.nch.twI w))) := (ιK Q.Sx (ex.nch.twI w) (ex.nch.sd w)).toAlgebra
-  letI aE : Algebra (FractionRing (D.ntw.O (ex.nch.twI w))) (FractionRing (ex.nch.Oe w)) := (fracExt ex.nch w).toAlgebra
-  haveI : IsScalarTower (D.ntw.O (ex.nch.twI w)) (FractionRing (D.ntw.O (ex.nch.twI w))) (FractionRing (ex.nch.Oe w)) :=
+  let aK : Algebra Q.Sx.Ks (FractionRing (D.ntw.O (ex.nch.twI w))) := (ιK Q.Sx (ex.nch.twI w) (ex.nch.sd w)).toAlgebra
+  let aE : Algebra (FractionRing (D.ntw.O (ex.nch.twI w))) (FractionRing (ex.nch.Oe w)) := (fracExt ex.nch w).toAlgebra
+  have : IsScalarTower (D.ntw.O (ex.nch.twI w)) (FractionRing (D.ntw.O (ex.nch.twI w))) (FractionRing (ex.nch.Oe w)) :=
     IsScalarTower.of_algebraMap_eq fun x => by
       change _ = fracExt ex.nch w (algebraMap _ (FractionRing (D.ntw.O (ex.nch.twI w))) x)
       rw [IsScalarTower.algebraMap_apply (D.ntw.O (ex.nch.twI w)) (ex.nch.Oe w) (FractionRing (ex.nch.Oe w))]
@@ -517,8 +517,8 @@ theorem embW_Ks_alt (hc : NChTie D ex.nch) (Q : _root_.Formalism.IndefR.Indefini
         FractionRing (ex.nch.Oe w) ⊗[D.ntw.O (ex.nch.twI w)] D.nexp.Fm (ex.nch.twI w) j (ex.nch.sd w)) =
       (1 : FractionRing (ex.nch.Oe w)) ⊗ₜ[D.ntw.O (ex.nch.twI w)]
         ((show FractionRing (D.ntw.O (ex.nch.twI w)) from ιK Q.Sx (ex.nch.twI w) (ex.nch.sd w) a) • m) := by
-  letI aE : Algebra (FractionRing (D.ntw.O (ex.nch.twI w))) (FractionRing (ex.nch.Oe w)) := (fracExt ex.nch w).toAlgebra
-  haveI : IsScalarTower (D.ntw.O (ex.nch.twI w)) (FractionRing (D.ntw.O (ex.nch.twI w))) (FractionRing (ex.nch.Oe w)) :=
+  let aE : Algebra (FractionRing (D.ntw.O (ex.nch.twI w))) (FractionRing (ex.nch.Oe w)) := (fracExt ex.nch w).toAlgebra
+  have : IsScalarTower (D.ntw.O (ex.nch.twI w)) (FractionRing (D.ntw.O (ex.nch.twI w))) (FractionRing (ex.nch.Oe w)) :=
     IsScalarTower.of_algebraMap_eq fun x => by
       change _ = fracExt ex.nch w (algebraMap _ (FractionRing (D.ntw.O (ex.nch.twI w))) x)
       rw [IsScalarTower.algebraMap_apply (D.ntw.O (ex.nch.twI w)) (ex.nch.Oe w) (FractionRing (ex.nch.Oe w))]

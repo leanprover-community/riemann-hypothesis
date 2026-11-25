@@ -616,7 +616,7 @@ namespace GlobalTheory.LevelChars
 theorem relIndex_levSub_ne_zero (L : Type) [Field L] [NumberField L] (S : Set (HeightOneSpectrum (𝓞 L))) (N : ℕ)
     (hS : S.Finite) : (levSub L S N).relIndex (levSub L ∅ 0) ≠ 0 := by
   classical
-  haveI : Finite S := hS.to_subtype
+  have : Finite S := hS.to_subtype
   choose F hF using fun v : S => exists_finset_close L v.1 N
   have hint : ∀ a : levSub L ∅ 0, ∀ v, Valued.v (compAt L v (a : (AdeleRing (𝓞 L) L)ˣ)) ≤ 1 :=
     fun a v => le_of_eq (a.2 v).1
@@ -643,7 +643,7 @@ theorem relIndex_levSub_ne_zero (L : Type) [Field L] [NumberField L] (S : Set (H
       linear_combination hc
     rw [e2, map_mul, hinv, one_mul]
     exact (Valuation.map_sub _ _ _).trans (max_le h2 h1)
-  haveI : Finite (levSub L ∅ 0 ⧸ (levSub L S N).subgroupOf (levSub L ∅ 0)) := Finite.of_injective φ hφ
+  have : Finite (levSub L ∅ 0 ⧸ (levSub L S N).subgroupOf (levSub L ∅ 0)) := Finite.of_injective φ hφ
   exact Subgroup.index_ne_zero_of_finite
 
 end GlobalTheory.LevelChars
@@ -656,8 +656,8 @@ theorem levSub_le_levSub_empty (L : Type) [Field L] [NumberField L] (S : Set (He
 theorem finiteIndex_range_sup_levSub_empty (L : Type) [Field L] [NumberField L] :
     ((Units.map (algebraMap L (AdeleRing (𝓞 L) L)).toMonoidHom).range ⊔ levSub L ∅ 0).FiniteIndex := by
   classical
-  haveI : Finite (ReciprocityTheory.Neutral.Bridge.HCFR.classOf L).range := inferInstance
-  haveI := Subgroup.finiteIndex_ker (ReciprocityTheory.Neutral.Bridge.HCFR.classOf L)
+  have : Finite (ReciprocityTheory.Neutral.Bridge.HCFR.classOf L).range := inferInstance
+  have := Subgroup.finiteIndex_ker (ReciprocityTheory.Neutral.Bridge.HCFR.classOf L)
   refine Subgroup.finiteIndex_of_le (H := (ReciprocityTheory.Neutral.Bridge.HCFR.classOf L).ker) ?_
   intro a ha
   obtain ⟨k, u, hu, rfl⟩ := (ReciprocityTheory.Neutral.Bridge.HCFR.classOf_eq_one_iff L a).1 ha
@@ -669,7 +669,7 @@ theorem finiteIndex_range_sup_levSub (L : Type) [Field L] [NumberField L] (S : S
     ((Units.map (algebraMap L (AdeleRing (𝓞 L) L)).toMonoidHom).range ⊔ levSub L S N).FiniteIndex := by
   set R := (Units.map (algebraMap L (AdeleRing (𝓞 L) L)).toMonoidHom).range
   have hle := levSub_le_levSub_empty L S N
-  haveI := finiteIndex_range_sup_levSub_empty L
+  have := finiteIndex_range_sup_levSub_empty L
   have hT : R ⊔ levSub L S N ≤ R ⊔ levSub L ∅ 0 := sup_le_sup_left hle _
   have h1 : (R ⊔ levSub L S N).relIndex (levSub L ∅ 0) ≠ 0 := by
     intro h0
@@ -799,7 +799,7 @@ theorem isAlgebraic_norm {D : D7} {δ t0 : ℂ} {Q N : ℕ} {B : ℝ} {del : ℕ
     (P : GlobalTheory.NormSum.Pair D ⊤ δ t0 Q) (hP : P.Small N B) : IsAlgebraic ℚ ((P.norm : ℝ) : ℂ) := by
   have hco : ∀ h T, P.coord h T ∈ Formalism.MainNotions.TaylorLogMetric.Qbar := fun h T => by
     obtain ⟨p, hp, hi⟩ := _root_.GlobalTheory.NormSum.exists_prime_integralOver D P.d h
-    haveI : Fact p.Prime := ⟨hp⟩
+    have : Fact p.Prime := ⟨hp⟩
     exact ((hC δ t0 p Q le_rfl P hP).2.2 h hi T).1
   have hsq : ∀ g, ((P.sq g : ℝ) : ℂ) ∈ Formalism.MainNotions.TaylorLogMetric.Qbar := fun g => by
     unfold GlobalTheory.NormSum.Pair.sq
@@ -881,7 +881,7 @@ theorem sqIn_of {D : D7} {T : Type} {Lc : LevCh D T} {sc : Consts} (G : GridData
     rw [hx.2.unique hx0.2, hy.2.unique hx1.2]
     exact isAlgebraic_div_of_beta hd h1 _ Λ hx00 (ha Λ hΛ) (hb Λ hΛ)
   let S : Set ℂ := Sn ∪ St
-  haveI : Finite S := (hSn.union hSt).to_subtype
+  have : Finite S := (hSn.union hSt).to_subtype
   have hmem : ∀ z ∈ S, z ∈ Set.range (algebraMap (IntermediateField.adjoin ℚ S) ℂ) := fun z hz =>
     ⟨⟨z, IntermediateField.subset_adjoin ℚ S hz⟩, rfl⟩
   refine ⟨IntermediateField.adjoin ℚ S, IntermediateField.finiteDimensional_adjoin fun z hz =>
@@ -1045,7 +1045,7 @@ theorem exists_weilDeligne_of_localInputs (hP : _root_.GlobalTheory.FunPr.ThetaL
   refine ⟨0, fun ε CF _ => ⟨0, fun D large₂ _ _ Γ _ _ Pl0 T A Ks _ _ _ R F hS G => ?_⟩⟩
   obtain ⟨W, hW⟩ := GlobalTheory.ChiGrid.WeilOver.exists_weil_over_of_clauses hP.weilRepresentationUnitaryPair R hS.core.lev
     hS.core.chain hS.core.models _ G
-  haveI := hS.fin
+  have := hS.fin
   exact ⟨W, hW, GlobalTheory.FunObj.gridChoice_nonempty_of W hS.core.lev Set.finite_univ (GlobalTheory.RowClaim.Test.pde_ne_q hS)
     fun t _ P hP => GlobalTheory.RowClaim.Test.guard hS t P hP⟩
 end GlobalTheory.Mem.LiteralAutomorphy
@@ -1528,8 +1528,8 @@ theorem zscale_f0_of_witness_alt {hL : _root_.UpperTheory.Zero.LLC.RecTExists} {
   obtain ⟨x, a, ax, y, _⟩ := w
   cases ax
   have hX := y.eq ▸ hB
-  letI := a.x.grp
-  letI := a.x.fin
+  let := a.x.grp
+  let := a.x.fin
   have hX' : ∀ Zs : DefSub a.x.A3.fam3.amb3, HEq (a.x.F.Zsc Zs).F0 (F0K K.s (q.w.D q.Z)) := hX
   let P : (Σ' (G : Type) (_ : Group G) (_ : Fintype G) (Pl0 I0 T0 : Type)
       (A3 : FamIn3 (q.w.st q.Z).toD7.what₂.LL G Pl0 I0 (List ℕ) T0 (q.w.st q.Z).toD7.R.m)
@@ -1552,9 +1552,9 @@ theorem weight_one_places_finite_of_witness : ∀ (hL : _root_.UpperTheory.Zero.
   have hZ := _root_.GlobalTheory.Mem.Top.Bl.zscale_f0_of_witness_alt q b w hsc
   obtain ⟨x, a, ax, y, _⟩ := w
   cases ax
-  letI := a.x.grp
-  letI := a.x.fin
-  letI : Algebra (↥a.x.core.Q.c.F) (q.w.D q.Z).what₂.LL := a.x.alg
+  let := a.x.grp
+  let := a.x.fin
+  let : Algebra (↥a.x.core.Q.c.F) (q.w.D q.Z).what₂.LL := a.x.alg
   have h3 : _root_.Formalism.IndefR.IndefiniteRealisationNormalisationDegreeThree (_root_.GlobalTheory.Mem.R3.realisationOfInput y.y) :=
     _root_.GlobalTheory.Mem.R3.realPins3_realTOf_alt K q.B q.f q.T q.w q.Z q.x.Wt _ _ _ _ _ _ _ q.O.ex q.x.what₂ a b.R b.S y.y hZ
   have hP : (fun r : _root_.GlobalTheory.Mem.Top.Bl.RealPackage b.R b.S => _root_.Formalism.IndefR.IndefiniteRealisationNormalisationDegreeThree r.B.Q ∧ r.B.Q.Rl.toRealDat.ExAt ∧ Finite r.P.T) (_root_.GlobalTheory.Mem.Top.Bl.realPackageOfRealInput y.y) :=

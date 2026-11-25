@@ -138,10 +138,10 @@ theorem containsRayField_comp {K L L' : Type} [Field K] [NumberField K] [Field L
     (φ : K →+* L) (τ : L →+* L') (n : ℕ) (h : GlobalTheory.IndefiniteRowSideFullHecke.RayFieldTheta.ContainsRayField φ n) :
     GlobalTheory.IndefiniteRowSideFullHecke.RayFieldTheta.ContainsRayField (τ.comp φ) n := by
   intro P hP
-  letI : Algebra L L' := τ.toAlgebra
+  let : Algebra L L' := τ.toAlgebra
   let Q : HeightOneSpectrum (𝓞 L) := P.under (𝓞 L)
   have hQ : Q.asIdeal = P.asIdeal.comap (RingOfIntegers.mapRingHom τ) := rfl
-  haveI hPo : P.asIdeal.LiesOver Q.asIdeal := ⟨rfl⟩
+  have hPo : P.asIdeal.LiesOver Q.asIdeal := ⟨rfl⟩
   have hn : ((n : ℕ) : 𝓞 L) ∉ Q.asIdeal := fun h' => hP (by
     rw [hQ, Ideal.mem_comap, map_natCast] at h'
     exact h')
@@ -163,7 +163,7 @@ theorem exists_finset_containsRayField : GlobalTheory.NT.RayField → ∀ (P : P
   intro hR P M hM
   let φK : P.host.K →+* ℂ := P.host.φ₀.comp (algebraMap P.host.K P.host.E)
   obtain ⟨Rf, hRf⟩ := GlobalTheory.Mem.Fld.exists_isRayFieldIn φK hR (GlobalTheory.Mem.Fld.natIdeal_ne_bot (E := P.host.K) hM)
-  haveI : NumberField Rf := hRf.numberField
+  have : NumberField Rf := hRf.numberField
   let b := Module.finBasis ℚ Rf
   refine ⟨Finset.univ.image (fun i => (b i : ℂ)), ?_, ?_⟩
   · intro z hz
@@ -172,9 +172,9 @@ theorem exists_finset_containsRayField : GlobalTheory.NT.RayField → ∀ (P : P
     exact h.algHom Rf.val
   · intro L _ _ σ φ hσφ hS
     obtain ⟨hm, hNF, hray⟩ := hRf
-    letI := GlobalTheory.Mem.Fld.algOf φK Rf hm
+    let := GlobalTheory.Mem.Fld.algOf φK Rf hm
     obtain ⟨hab, hun, -, hart⟩ := hray
-    haveI : IsGalois P.host.K Rf := hab.toIsGalois
+    have : IsGalois P.host.K Rf := hab.toIsGalois
     have hc : GlobalTheory.IndefiniteRowSideFullHecke.RayFieldTheta.ContainsRayField (algebraMap P.host.K Rf) M :=
       GlobalTheory.FieldSize.RayNorm.containsRayField_of_ray (K := P.host.K) (L := Rf) M hun
         (fun I hI hc hχ => (hart I hI hc).1 hχ)

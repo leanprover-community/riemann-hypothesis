@@ -323,7 +323,7 @@ private theorem dvd_QS {M : ℕ} [NeZero M] (χ : DirichletCharacter ℂ M) (hχ
     M ∣ EvenGrp.QS (Subgroup.zpowers χ) e := by
   obtain ⟨hQL, h2Q, hgood⟩ := EvenGrp.good_QS (Subgroup.zpowers χ) e
   set Q := EvenGrp.QS (Subgroup.zpowers χ) e with hQ
-  haveI : NeZero ((2 ^ (e + 2)).lcm M) := ⟨Nat.lcm_ne_zero (by positivity) (NeZero.ne M)⟩
+  have : NeZero ((2 ^ (e + 2)).lcm M) := ⟨Nat.lcm_ne_zero (by positivity) (NeZero.ne M)⟩
   have hf : χ.FactorsThrough (Q.gcd M) := by
     refine (DirichletCharacter.factorsThrough_iff_ker_unitsMap (Nat.gcd_dvd_right Q M)).mpr ?_
     intro x hx
@@ -399,7 +399,7 @@ theorem UpperTheory.Top.kerChiAny :
       (hs : ∀ l : ℕ, l.Prime → l ≠ 2 → l ∣ ψ.N → jacobiSym (-(d : ℤ)) l = 1),
       KerChi ψ (AnyGrp.host (Subgroup.zpowers ψ.χ) e hH hc he hs) := by
   intro ψ e q d hH hc he hs
-  haveI := ψ.ne
+  have := ψ.ne
   set D := AnyGrp.data (Subgroup.zpowers ψ.χ) e with hD
   have hM : ψ.N ∣ D.m := dvd_QS ψ.χ ψ.prim e
   refine ⟨hM, fun a h => ?_⟩
@@ -495,7 +495,7 @@ private theorem step {M : ℕ} [NeZero M] (Ξ : Subgroup (DirichletCharacter ℂ
   obtain ⟨u, hu, rfl⟩ := hb
   have hL : (2 ^ (e + 2)).lcm M ∣ (2 ^ (e + 1 + 2)).lcm M :=
     Nat.lcm_dvd (dvd_trans (pow_dvd_pow 2 (by omega)) (Nat.dvd_lcm_left _ _)) (Nat.dvd_lcm_right _ _)
-  haveI : NeZero ((2 ^ (e + 1 + 2)).lcm M) := ⟨Nat.lcm_ne_zero (by positivity) (NeZero.ne M)⟩
+  have : NeZero ((2 ^ (e + 1 + 2)).lcm M) := ⟨Nat.lcm_ne_zero (by positivity) (NeZero.ne M)⟩
   obtain ⟨w, rfl⟩ := ZMod.unitsMap_surjective (EvenGrp.QS_dvd Ξ (e + 1)) u
   have h23 : 2 ^ (e + 2) ∣ 2 ^ (e + 1 + 2) := pow_dvd_pow 2 (by omega)
   have t0 : 2 ^ (e + 2) ∣ EvenGrp.QS Ξ e := (AnyGrp.data Ξ e).tower
@@ -527,9 +527,9 @@ theorem UpperTheory.Top.ordAny :
     ∀ (M : ℕ) [NeZero M] (Ξ : Subgroup (DirichletCharacter ℂ M)), ∃ c e0 : ℕ, 1 ≤ c ∧ c ≤ Nat.card Ξ ∧
       ∀ e ≥ e0, (AnyGrp.frame Ξ e).ord = c * 2 ^ e := by
   intro M _ Ξ
-  haveI hB : Finite (EvenGrp.B Ξ) :=
+  have hB : Finite (EvenGrp.B Ξ) :=
     Nat.finite_of_card_ne_zero (by rw [EvenGrp.card_B]; exact Nat.card_pos.ne')
-  haveI : ∀ e, Finite (AnyGrp.data Ξ e).B := fun _ => hB
+  have : ∀ e, Finite (AnyGrp.data Ξ e).B := fun _ => hB
   let n : ℕ → ℕ := fun e => Nat.card ((AnyGrp.data Ξ e).cl.ker.map (AnyGrp.data Ξ e).ξ)
   have hanti : Antitone n :=
     antitone_nat_of_succ_le (fun e => Subgroup.card_le_of_le (fun b hb => step Ξ e b hb))
@@ -636,7 +636,7 @@ private theorem dvd_lemma_3 {M : ℕ} [NeZero M] (χ : DirichletCharacter ℂ M)
     M ∣ EvenGrp.QS (Subgroup.zpowers χ) e := by
   obtain ⟨hQL, h2Q, hgood⟩ := EvenGrp.good_QS (Subgroup.zpowers χ) e
   set Q := EvenGrp.QS (Subgroup.zpowers χ) e with hQ
-  haveI : NeZero ((2 ^ (e + 2)).lcm M) := ⟨Nat.lcm_ne_zero (by positivity) (NeZero.ne M)⟩
+  have : NeZero ((2 ^ (e + 2)).lcm M) := ⟨Nat.lcm_ne_zero (by positivity) (NeZero.ne M)⟩
   have hf : χ.FactorsThrough (Q.gcd M) := by
     refine (DirichletCharacter.factorsThrough_iff_ker_unitsMap (Nat.gcd_dvd_right Q M)).mpr ?_
     intro x hx
@@ -670,7 +670,7 @@ theorem UpperTheory.Top.twistAny :
       (hs : ∀ l : ℕ, l.Prime → l ≠ 2 → l ∣ ψ.N → jacobiSym (-(d : ℤ)) l = 1),
       TwistForm ψ (AnyGrp.host (Subgroup.zpowers ψ.χ) e hH hc he hs) := by
   intro ψ e q d hH hc he hs θ hθ
-  haveI := ψ.ne
+  have := ψ.ne
   set D := AnyGrp.data (Subgroup.zpowers ψ.χ) e with hD
   obtain ⟨χ, hχ, hχθ⟩ := exA (Subgroup.zpowers ψ.χ) e θ hθ
   let f1 : ℤˣ →* ℂˣ := θ.comp (MonoidHom.prod (MonoidHom.inl ℤˣ ℤˣ) D.w)
@@ -801,7 +801,7 @@ theorem UpperTheory.Top.isChiField :
   have hd := hyp.2.1.pos
   have hQS := H.QS_pos
   have hNpos : 0 < H.QS * H.q * H.d := Nat.mul_pos (Nat.mul_pos hQS hq) hd
-  haveI : NeZero (H.QS * H.q * H.d) := ⟨hNpos.ne'⟩
+  have : NeZero (H.QS * H.q * H.d) := ⟨hNpos.ne'⟩
   have hζ := H.cycZeta_prim
   refine ⟨H.QS * H.q * H.d, inferInstance, H.cycEmb, H.cycZeta, ?_, ?_, ?_, ?_, hζ, ?_⟩
   · exact dvd_trans H.tower_dvd (dvd_trans (dvd_mul_right _ _) (dvd_mul_right _ _))
@@ -991,7 +991,7 @@ theorem UpperTheory.T3.supplyOfAdmOf :
         ∃ (R : Ranks) (h : R.toFrame = φ), RankVal s R ∧ admitted R (h ▸ H0)) →
       HostExW (3 / 2) (fun _ s R H _ => EAtH (Level.cyc ψ) H.toHostRaw H.TT s.x s.eps 4 ∧ VVle H.E R.t (Real.sqrt s.b)) := by
   intro hSup ψ hV hAdm eps heps heps'
-  haveI := ψ.ne
+  have := ψ.ne
   have hN0 : 0 < ψ.N := Nat.pos_of_ne_zero (NeZero.ne _)
   have heps0 : eps ≠ 0 := heps.ne'
   obtain ⟨c, e0, hc, hF⟩ := UpperTheory.Top.fieldChi ψ
