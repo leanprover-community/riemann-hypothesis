@@ -1569,7 +1569,7 @@ theorem arc_length_three_le_valuation_constant_term [NeZero n] [Fintype (K →�
   classical
   have : Fact PD.p.Prime := ⟨PD.hp⟩
   obtain ⟨hcr, -⟩ := hW₁
-  obtain ⟨Br⟩ := exists_phiBridge W hcase hP9 T₁ hcr hO
+  obtain ⟨Br⟩ := exists_phiBridge W hcase hP9 T₁ hcr hO hinj
   obtain ⟨hl11, hSet, -, hη20, hS20, -⟩ := hB
   obtain ⟨-, -, hsz, -⟩ := hSet
 

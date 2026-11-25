@@ -818,12 +818,12 @@ section Radical
 
 variable {n : ℕ} {W₁ W₂ : Submodule ℂ (Fin n → ℂ)}
 
-theorem uOf_val' (hW : W₁ ≤ W₂) (X : nilrad W₁ W₂) : (uOf X).val = 1 + X.1 := rfl
+theorem uOf_val' (hW : W₁ ≤ W₂) (X : nilrad W₁ W₂) : (uOf hW X).val = 1 + X.1 := rfl
 
-theorem uOf_eq (hW : W₁ ≤ W₂) (X : nilrad W₁ W₂) : uOf X = GlobalTheory.CompanionTheory.LocVan.uOf X := Units.ext rfl
+theorem uOf_eq (hW : W₁ ≤ W₂) (X : nilrad W₁ W₂) : uOf hW X = GlobalTheory.CompanionTheory.LocVan.uOf X := Units.ext rfl
 
 theorem uOf_inv_val (hW : W₁ ≤ W₂) (X : nilrad W₁ W₂) :
-    ((uOf X)⁻¹ : GL (Fin n) ℂ).val = 1 - X.1 + X.1 * X.1 := rfl
+    ((uOf hW X)⁻¹ : GL (Fin n) ℂ).val = 1 - X.1 + X.1 * X.1 := rfl
 
 def uniRad (hW : W₁ ≤ W₂) : Subgroup (GL (Fin n) ℂ) where
   carrier := {g | g.val - 1 ∈ nilrad W₁ W₂}
@@ -835,7 +835,7 @@ def uniRad (hW : W₁ ≤ W₂) : Subgroup (GL (Fin n) ℂ) where
     rw [e]
     exact (nilrad W₁ W₂).add_mem ((nilrad W₁ W₂).add_mem ha hb) (GlobalTheory.CompanionTheory.LocVan.nil_mul_mem hW ha hb)
   inv_mem' := fun {a} ha => by
-    have e : a = uOf ⟨a.val - 1, ha⟩ := Units.ext (by rw [uOf_val']; simp)
+    have e : a = uOf hW ⟨a.val - 1, ha⟩ := Units.ext (by rw [uOf_val']; simp)
     change (a⁻¹ : GL (Fin n) ℂ).val - 1 ∈ nilrad W₁ W₂
     rw [e, uOf_inv_val]
     simp only
@@ -845,7 +845,7 @@ def uniRad (hW : W₁ ≤ W₂) : Subgroup (GL (Fin n) ℂ) where
 
 theorem mem_uniRad (hW : W₁ ≤ W₂) (g : GL (Fin n) ℂ) : g ∈ uniRad hW ↔ g.val - 1 ∈ nilrad W₁ W₂ := Iff.rfl
 
-theorem uOf_mem (hW : W₁ ≤ W₂) (X : nilrad W₁ W₂) : uOf X ∈ uniRad hW := by
+theorem uOf_mem (hW : W₁ ≤ W₂) (X : nilrad W₁ W₂) : uOf hW X ∈ uniRad hW := by
   rw [mem_uniRad, uOf_val']
   simpa using X.2
 
@@ -898,20 +898,20 @@ theorem isClosed_radQ (hW : W₁ ≤ W₂) :
   exact (GlobalTheory.CompanionTheory.LocVan.isClosed_nilrad W₁ W₂).preimage h
 
 def radHomeo (hW : W₁ ≤ W₂) : nilrad W₁ W₂ ≃ₜ (uniRad hW).subgroupOf (flagStab W₁ W₂) where
-  toFun X := ⟨⟨uOf X, uniRad_le hW (uOf_mem hW X)⟩, Subgroup.mem_subgroupOf.2 (uOf_mem hW X)⟩
+  toFun X := ⟨⟨uOf hW X, uniRad_le hW (uOf_mem hW X)⟩, Subgroup.mem_subgroupOf.2 (uOf_mem hW X)⟩
   invFun u := ⟨(u : flagStab W₁ W₂).1.val - 1, Subgroup.mem_subgroupOf.1 u.2⟩
   left_inv X := Subtype.ext (by simp [uOf_val'])
   right_inv u := Subtype.ext (Subtype.ext (Units.ext (by simp [uOf_val'])))
   continuous_toFun := by
-    have h : Continuous (uOf) := by
-      have : uOf = GlobalTheory.CompanionTheory.LocVan.uOf := funext (uOf_eq hW)
+    have h : Continuous (uOf hW) := by
+      have : uOf hW = GlobalTheory.CompanionTheory.LocVan.uOf := funext (uOf_eq hW)
       rw [this]; exact GlobalTheory.CompanionTheory.LocVan.continuous_uOf
     exact (h.subtype_mk _).subtype_mk _
   continuous_invFun := Continuous.subtype_mk
     ((Units.continuous_val.comp (continuous_subtype_val.comp continuous_subtype_val)).sub continuous_const) _
 
 theorem radHomeo_coe (hW : W₁ ≤ W₂) (X : nilrad W₁ W₂) :
-    (((radHomeo hW X : (uniRad hW).subgroupOf (flagStab W₁ W₂)) : flagStab W₁ W₂) : GL (Fin n) ℂ) = uOf X := rfl
+    (((radHomeo hW X : (uniRad hW).subgroupOf (flagStab W₁ W₂)) : flagStab W₁ W₂) : GL (Fin n) ℂ) = uOf hW X := rfl
 
 theorem map_nmul [MeasurableSpace (nilrad W₁ W₂)] [BorelSpace (nilrad W₁ W₂)]
     (hW : W₁ ≤ W₂) (ν : Measure (nilrad W₁ W₂)) [ν.IsAddHaarMeasure] (A : nilrad W₁ W₂) :
@@ -1025,7 +1025,7 @@ theorem quotVanish : QuotVanish := by
     obtain ⟨q, hq, k, hk, rfl⟩ := GlobalTheory.CompanionTheory.IwaDecomp.iwaFlag n W₁ W₂ hW x
     rw [(radHomeo hW).measurableEmbedding.integral_map]
     have e : ∀ X, F ((((radHomeo hW X : (uniRad hW).subgroupOf (flagStab W₁ W₂)) : flagStab W₁ W₂) :
-        GL (Fin n) ℂ) * (q * k)) = F (uOf X * q) := fun X => by
+        GL (Fin n) ℂ) * (q * k)) = F (uOf hW X * q) := fun X => by
       rw [radHomeo_coe, ← mul_assoc, hFK _ k hk]
     simpa only [e] using h0 q hq
 

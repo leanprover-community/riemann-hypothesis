@@ -1162,7 +1162,7 @@ theorem main : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (hU : Unr 
   obtain ⟨b, B, hB⟩ := GlobalTheory.TraceClasses.exists_bases Q h0 hθ
   have hcm : ∀ a : maximalRealSubfield E, GlobalTheory.LFun.complMap hv (algebraMap _ (v.adicCompletion (maximalRealSubfield E)) a) =
       algebraMap E (w.adicCompletion E) (algebraMap _ E a) := GlobalTheory.LFun.complMap_algebraMap hv
-  have hj : ∀ a e, (locJ w hw v hv).symm (a ⊗ₜ e) = GlobalTheory.LFun.complMap hv a * algebraMap E (w.adicCompletion E) e :=
+  have hj : ∀ a e, (locJ hU w hw v hv).symm (a ⊗ₜ e) = GlobalTheory.LFun.complMap hv a * algebraMap E (w.adicCompletion E) e :=
     fun a e => GlobalTheory.LFun.toCompl_tmul hv a e
   have hval := aeval_map_mat w γ₀.val Q.1
   unfold sgnOn
@@ -1181,7 +1181,7 @@ theorem main : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (hU : Unr 
     refine det_restr_eq Q (algebraMap E (w.adicCompletion E)) (GlobalTheory.LFun.complMap hv) hcm ψ b B hB V cB hcB
       (aeval A m) hM _ fun t => ?_
     rw [hx]
-    exact vecT_eval Q (algebraMap E (w.adicCompletion E)) (GlobalTheory.LFun.complMap hv) hcm ψ (locJ w hw v hv) hj
+    exact vecT_eval Q (algebraMap E (w.adicCompletion E)) (GlobalTheory.LFun.complMap hv) hcm ψ (locJ hU w hw v hv) hj
       γ₀.val hαψ m t
   have hφ : ∀ y : E, cj w (algebraMap E (w.adicCompletion E) y) =
       algebraMap E (w.adicCompletion E) ((IsCMField.complexConj E).toRingEquiv.toRingHom y) :=
@@ -1328,13 +1328,13 @@ theorem involBase_locPhi (hU : Unr E) (w : Pl E) (hw : ¬ IsSplitAt w)
       locPhi hU w hw v hv Q ((f.map (cj w)).comp (atPl w r₀)) := by
   set k := v.adicCompletion (maximalRealSubfield E)
   let ι : w.adicCompletion E →+* k ⊗[maximalRealSubfield E] Fld Q :=
-    (inclBase Q k).toRingHom.comp (locJ w hw v hv).toRingHom
+    (inclBase Q k).toRingHom.comp (locJ hU w hw v hv).toRingHom
   have hιc : ∀ y, involBase Q k (ι y) = ι (cj w y) := by
     intro y
-    change involBase Q k (inclBase Q k (locJ w hw v hv y)) =
-      inclBase Q k (locJ w hw v hv (cj w y))
+    change involBase Q k (inclBase Q k (locJ hU w hw v hv y)) =
+      inclBase Q k (locJ hU w hw v hv (cj w y))
     rw [locJ_cj]
-    generalize locJ w hw v hv y = t
+    generalize locJ hU w hw v hv y = t
     induction t using TensorProduct.induction_on with
     | zero => simp
     | tmul a e => simp [inclBase, involBase, invol_algebraMap]
@@ -1623,7 +1623,7 @@ namespace GlobalTheory.CompanionTheory.NormCongr
 
 theorem mem_norms_locPhi : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (hU : Unr E) (w : Pl E) (hw : ¬ IsSplitAt w) (v : HeightOneSpectrum (𝓞 (maximalRealSubfield E))) (hv : w.under (𝓞 (maximalRealSubfield E)) = v), ∀ (n : ℕ) (γ₀ : GL (Fin n) E), γ₀.val.charpoly ∈ Ell E n → ∀ H₀ : Matrix (Fin n) (Fin n) E, IsHerm (IsCMField.complexConj E).toRingEquiv.toRingHom H₀ → H₀.det ≠ 0 → cT (IsCMField.complexConj E).toRingEquiv.toRingHom γ₀.val * H₀ * γ₀.val = H₀ → ∀ (m : (w.adicCompletion E)[X]) (c : GL (Fin n) (w.adicCompletion E)), c.val * (γ₀.val.map (algebraMap E (w.adicCompletion E))) = (γ₀.val.map (algebraMap E (w.adicCompletion E))) * c.val → (H₀.map (algebraMap E (w.adicCompletion E))) * aeval (γ₀.val.map (algebraMap E (w.adicCompletion E))) m = cT (cj w) c.val * (H₀.map (algebraMap E (w.adicCompletion E))) * c.val → ∀ (r : ℕ) (Q : SelfRecip E r), Q.1 ∣ γ₀.val.charpoly → ∀ x : ((v.adicCompletion (maximalRealSubfield E)) ⊗[(maximalRealSubfield E)] plus Q)ˣ, inclPlus Q (v.adicCompletion (maximalRealSubfield E)) (x : (v.adicCompletion (maximalRealSubfield E)) ⊗[(maximalRealSubfield E)] plus Q) = locPhi hU w hw v hv Q m → x ∈ norms Q (v.adicCompletion (maximalRealSubfield E)) := by
   intro E _ _ _ hU w hw v hv n γ₀ hell H₀ _ hdet hinv m c hc1 hc2 r Q hQ x hx
-  exact mem_norms_of_congr_equiv hU w hw (v.adicCompletion (maximalRealSubfield E)) (locJ w hw v hv)
+  exact mem_norms_of_congr_equiv hU w hw (v.adicCompletion (maximalRealSubfield E)) (locJ hU w hw v hv)
     (locJ_algebraMap hU w hw v hv) (locJ_cj hU w hw v hv) n γ₀ hell H₀ hdet hinv m c hc1 hc2 r Q hQ x hx
 
 end GlobalTheory.CompanionTheory.NormCongr
@@ -1972,7 +1972,7 @@ theorem finite_ref_sign : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E]
 
 theorem local_assembly : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (hU : Unr E) (w : Pl E) (hw : ¬ IsSplitAt w) (v : HeightOneSpectrum (𝓞 (maximalRealSubfield E))) (hv : w.under (𝓞 (maximalRealSubfield E)) = v), ∀ (n : ℕ) (γ₀ : GL (Fin n) E), γ₀.val.charpoly ∈ Ell E n → ∀ H₀ : Matrix (Fin n) (Fin n) E, IsHerm (IsCMField.complexConj E).toRingEquiv.toRingHom H₀ → H₀.det ≠ 0 → cT (IsCMField.complexConj E).toRingEquiv.toRingHom γ₀.val * H₀ * γ₀.val = H₀ → ∀ (m : (w.adicCompletion E)[X]) (t : E[X]), (∀ (r : ℕ) (Q : SelfRecip E r), Q.1 ∣ γ₀.val.charpoly → ∃ z : ((v.adicCompletion (maximalRealSubfield E)) ⊗[(maximalRealSubfield E)] Fld Q)ˣ, locPhi hU w hw v hv Q m * ((z : (v.adicCompletion (maximalRealSubfield E)) ⊗[(maximalRealSubfield E)] Fld Q) * involBase Q (v.adicCompletion (maximalRealSubfield E)) (z : (v.adicCompletion (maximalRealSubfield E)) ⊗[(maximalRealSubfield E)] Fld Q)) = locPhi hU w hw v hv Q (atPl w t)) → ∃ c : GL (Fin n) (w.adicCompletion E), c.val * (γ₀.val.map (algebraMap E (w.adicCompletion E))) = (γ₀.val.map (algebraMap E (w.adicCompletion E))) * c.val ∧ (H₀ * aeval γ₀.val t).map (algebraMap E (w.adicCompletion E)) = cT (cj w) c.val * ((H₀.map (algebraMap E (w.adicCompletion E))) * aeval (γ₀.val.map (algebraMap E (w.adicCompletion E))) m) * c.val := by
   intro E _ _ _ hU w hw v hv n γ₀ hP H₀ _ _ h3 m t hz
-  exact GlobalTheory.CompanionTheory.LocAssembly.assembly (locJ w hw v hv) (locJ_algebraMap hU w hw v hv) (cj w)
+  exact GlobalTheory.CompanionTheory.LocAssembly.assembly (locJ hU w hw v hv) (locJ_algebraMap hU w hw v hv) (cj w)
     (locJ_cj hU w hw v hv) γ₀ hP H₀ h3 m t hz
 
 end PositivityTheory.BCUSide.HermitianLocalForms.Lem

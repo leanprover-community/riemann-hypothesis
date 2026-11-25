@@ -413,7 +413,7 @@ theorem arc_length_four_denominator [NeZero n] [Fintype (K →ₐ[Qp] LL)] [IsDo
     (by unfold Formalism.MainNotions.N.Ln17.Sg; rw [hh]) hsm h20w h20η
     (by have := hη (c - 2); omega) (hsz (c - 2) hT2) hT1.1 hT0.2
   refine ⟨s₁, hs1le, ?_⟩
-  obtain ⟨Br⟩ := exists_phiBridge W hcase hP9 T₂ hW₂.1 hO
+  obtain ⟨Br⟩ := exists_phiBridge W hcase hP9 T₂ hW₂.1 hO hinj
   obtain ⟨ϖ, hϖ⟩ := IsDiscreteValuationRing.exists_irreducible O
   have hps : ∀ s, ps W s = (fun _ => Br.ι (Br.P.p s) : LetA O n) := by
     intro s

@@ -93,7 +93,7 @@ theorem torBd_sum {B : Base F E} {M : Model σ X W} {χX χW : Chr F E} {om : Re
 
 theorem torBd_pure (hC : LatCpt) {B : Base F E} {M : Model σ X W} {om : Rep σ X W} (hB : B.IsGood σ) (hX : EpsHerm σ X.J)
     (hW : EpsHerm σ W.J) {fr : Frame σ X.J} {fr' : Frame σ W.J} {𝓕 : Set ((Fin n × Fin d → Af F) → ℂ)}
-    {S : Set (Matrix (Fin n) (Fin d) E)} (hS : SqBound B om 𝓕 S) {e e₂ : (Fin fr.r → ℝ) → (Fin fr'.r → ℝ) → ℝ} {N : ℕ}
+    {S : Set (Matrix (Fin n) (Fin d) E)} (hS : SqBound B M om 𝓕 S) {e e₂ : (Fin fr.r → ℝ) → (Fin fr'.r → ℝ) → ℝ} {N : ℕ}
     (hT : ∀ C, IsCompact C → ∃ K : ℝ≥0, ∀ s ∈ Cone fr.r, ∀ t ∈ Cone fr'.r,
       latSum B.emb C N S (fr.a s) (fr'.a t) ≤ K * ENNReal.ofReal (Real.exp (e₂ s t)))
     (he : ∀ s ∈ Cone fr.r, ∀ t ∈ Cone fr'.r, e₂ s t ≤ 2 * e s t) (f : SInf F (Fin n × Fin d))

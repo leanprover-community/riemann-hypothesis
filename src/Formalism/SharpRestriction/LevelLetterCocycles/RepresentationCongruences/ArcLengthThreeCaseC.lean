@@ -890,7 +890,7 @@ theorem arc_length_three_case_c [NeZero n] [Fintype (K →ₐ[Qp] LL)] [IsDomain
   have h2l : 2 ≤ (arcOf b w S η up size).len c := by rw [hlen]; norm_num
   have hT₁ : IsCrys PD T₁.ρ := hW₁.1
   have hT₂ : IsCrys PD T₂.ρ := hW₂.1
-  obtain ⟨Br⟩ := exists_phiBridge W hcase hP9 T₁ hT₁ hO
+  obtain ⟨Br⟩ := exists_phiBridge W hcase hP9 T₁ hT₁ hO hinj
   obtain ⟨-, hqu, hΔu⟩ := lemG_units W hcase hP9 hT₁ hO hOv hinj
   have hpu : IsUnit (algebraMap (LetA O n) W.EE (ps W 1)) := by
     have e : algebraMap (LetA O n) W.EE (ps W 1) = W.φE (algebraMap (LetA O n) W.EE (qA W)) := by

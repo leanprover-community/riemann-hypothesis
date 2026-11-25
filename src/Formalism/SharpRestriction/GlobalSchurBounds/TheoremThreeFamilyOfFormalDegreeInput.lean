@@ -64,14 +64,14 @@ theorem levels_pro_g_on_columns (D : D7) (Lv : LevelData D) : Conclusion4p D Lv 
 theorem column_stabilisers_trivial (D : D7) (Lv : LevelData D) : SmallOrderPrimeLogSumBound D :=
   levelDimension_of_admissible D Lv (content_bound_clause D Lv) (levels_pro_g_on_columns D Lv)
 
-theorem rankFormula_of_classNumber (D : D7) (Lv : LevelData D) (hn : ClassNumberFormula₂ D) : Conclusion4f D :=
+theorem rankFormula_of_classNumber (D : D7) (Lv : LevelData D) (hn : ClassNumberFormula₂ D Lv) : Conclusion4f D :=
   level_rank_of_trivial_stabilisers D Lv (column_stabilisers_trivial D Lv) hn
 
 section Fam
 
 variable {eps : ℝ} (Fm : FamP eps)
 
-theorem familyRankFormula_of_classNumber (hn : ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x), ClassNumberFormula₂ (Fm.D x i).lev) :
+theorem familyRankFormula_of_classNumber (hn : ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x), ClassNumberFormula₂ (Fm.D x i) (Fm.ex x hx i).lev) :
     ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x), Conclusion4f (Fm.D x i).lev :=
   fun x hx i => rankFormula_of_classNumber _ _ (hn x hx i)
 
@@ -88,7 +88,7 @@ theorem chosenProviso_4f (C0 : ℝ) (hC0 : Real.exp 1 ≤ C0)
       (StandardLattice.factDuStar_fam Fm x e1 i) (StandardLattice.factDstar_fam Fm x e1 i))
 
 theorem chosenProviso_min (C0 : ℝ) (hC0 : Real.exp 1 ≤ C0)
-    (hn : ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x), ClassNumberFormula₂ (Fm.D x i).lev)
+    (hn : ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x), ClassNumberFormula₂ (Fm.D x i) (Fm.ex x hx i).lev)
     (hR : RankTiesF Fm) : ChosenProviso Fm C0 :=
   chosenProviso_4f Fm C0 hC0 (familyRankFormula_of_classNumber Fm hn) hR
 

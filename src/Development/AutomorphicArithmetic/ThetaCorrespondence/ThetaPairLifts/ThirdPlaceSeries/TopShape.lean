@@ -933,7 +933,7 @@ theorem GlobalTheory.Top.designExists_of_tuSize_aux4n_litThin : ∀ (𝒜 : FamC
     (_ : ∀ {eps : ℝ} (Fm : FamP eps), 𝒜 Fm → Duty Fm)
     (_ : Closed (WithTw (WithSm (WithChN 𝒜))) fun {eps} Fm _ => cT eps Fm.CYL ≤ Fm.CTu → TuSize Fm)
     (_ : Closed (WithTw (WithSm (WithChN 𝒜))) fun Fm _ => ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x),
-      StandardLattice.ClassNumberFormula₂ (Fm.D x i).lev)
+      StandardLattice.ClassNumberFormula₂ (Fm.D x i) (Fm.ex x hx i).lev)
     (_ : LitThin), DesignExists (WithTw (WithSm (WithChN 𝒜))) 3 := by
   intro 𝒜 cT hEx sel hduty hTu hn4 hLit
   have hC0 : (3 : ℝ) ≤ 3 := le_refl _

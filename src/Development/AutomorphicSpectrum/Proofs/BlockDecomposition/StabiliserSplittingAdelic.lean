@@ -338,7 +338,7 @@ theorem nM_unitary (hs : ∀ x, s (s x) = x) (hJ : ∀ i j, s (J j i) = J i j) (
     rw [gram_entry]
     simp [nM, hv, rowv, hypOne_rest_rest, Matrix.one_apply]
 
-def nGL (w : Fin M → A) (z : A) (hz : z + s z + hv s J w w = 0) :
+def nGL (hs : ∀ x, s (s x) = x) (w : Fin M → A) (z : A) (hz : z + s z + hv s J w w = 0) :
     GL (Fin M.succ.succ) A where
   val := nM s J w z
   inv := nM s J (-w) (s z)
@@ -352,10 +352,10 @@ def nGL (w : Fin M → A) (z : A) (hz : z + s z + hv s J w w = 0) :
     rw [← hz]; ring
 
 theorem nGL_val (hs : ∀ x, s (s x) = x) (w : Fin M → A) (z : A) (hz : z + s z + hv s J w w = 0) :
-    ((nGL w z hz : GL (Fin (M + 2)) A) : Matrix (Fin (M + 2)) (Fin (M + 2)) A) = nM s J w z := rfl
+    ((nGL hs w z hz : GL (Fin (M + 2)) A) : Matrix (Fin (M + 2)) (Fin (M + 2)) A) = nM s J w z := rfl
 
 theorem nGL_mem (hs : ∀ x, s (s x) = x) (hJ : ∀ i j, s (J j i) = J i j) (w : Fin M → A) (z : A)
-    (hz : z + s z + hv s J w w = 0) : nGL w z hz ∈ stabG s J := by
+    (hz : z + s z + hv s J w w = 0) : nGL hs w z hz ∈ stabG s J := by
   refine ⟨nM_unitary hs hJ w z hz, fun i => ?_⟩
   rw [nGL_val]
   refine finset_fin_two_eq_cases (p := fun i => nM s J w z i 0 = (1 : Matrix _ _ A) i 0) ?_ ?_ (fun i => ?_) i <;>
@@ -726,7 +726,7 @@ variable {R σ J}
 
 def nP (hσ : ∀ x, σ (σ x) = x) (hJ : ∀ i j, σ (J j i) = J i j) (w : Fin M → R ⊗[F] E) (z : R ⊗[F] E)
     (hz : z + sigR R σ z + hv (sigR R σ) (JR R J) w w = 0) : stabilizer₂ R σ J :=
-  ⟨mkH R σ (hypOne J) (nGL w z hz) (by
+  ⟨mkH R σ (hypOne J) (nGL (HaarCoord.sigR_sigR R hσ) w z hz) (by
       have h := (nGL_mem (J := JR R J) (HaarCoord.sigR_sigR R hσ) (JR_herm R σ J hJ) w z hz).1
       rw [← JR_hypOne] at h
       exact h),
@@ -763,7 +763,7 @@ theorem nP_mem_ratP (hσ : ∀ x, σ (σ x) = x) (hJ : ∀ i j, σ (J j i) = J i
       hv (sigR R σ) (JR R J) (fun i => inclR R (w i)) (fun i => inclR R (w i)) = 0) :
     nP hσ hJ (fun i => inclR R (w i)) (inclR R z) hz' ∈ ratP R σ J := by
   refine (mem_HFinIn_iff R σ (hypOne J) _).2
-    ⟨nGL (s := (σ : E →+* E)) w z hz,
+    ⟨nGL (s := (σ : E →+* E)) hσ w z hz,
       (nGL_mem (s := (σ : E →+* E)) hσ hJ w z hz).1, Units.ext ?_⟩
   exact nM_map (inclR R) (fun x => (sigR_incl R σ x).symm) w z
 

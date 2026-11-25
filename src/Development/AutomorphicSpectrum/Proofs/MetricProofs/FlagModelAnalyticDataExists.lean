@@ -414,7 +414,7 @@ theorem star_dot_self {N : ℕ} (v : Fin N → ℂ) : star v ⬝ᵥ v = ((∑ i,
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [Complex.star_def, Complex.conj_mul']
 
-theorem invlow (N : ℕ) (A T : Matrix (Fin N) (Fin N) ℂ) (b : ℝ) (hTA : T * A = 1)
+theorem invlow (N : ℕ) (A T : Matrix (Fin N) (Fin N) ℂ) (b : ℝ) (hb : 0 ≤ b) (hTA : T * A = 1)
     (hT : ∀ p q, ‖T p q‖ ≤ b) :
     (Aᴴ * A - ((((N : ℝ) ^ 2 * b ^ 2 + 1)⁻¹ : ℝ) : ℂ) • (1 : Matrix (Fin N) (Fin N) ℂ)).PosSemidef := by
   obtain ⟨a, ha⟩ : ∃ a : ℝ, a = ((N : ℝ) ^ 2 * b ^ 2 + 1)⁻¹ := ⟨_, rfl⟩
@@ -503,7 +503,7 @@ theorem frame : ∀ (N e : ℕ) (A : (Fin e → ℂ) → Matrix (Fin N) (Fin N) 
   refine ⟨b, ((N : ℝ) ^ 2 * b ^ 2 + 1)⁻¹, hb1, by positivity, inv_le_one_of_one_le₀ hD, ?_⟩
   filter_upwards [hall, hdn] with u h1 h2
   refine ⟨fun p q => ⟨(h1 p q).1, (h1 p q).2.1, (h1 p q).2.2.1⟩, ?_⟩
-  exact invlow N (A u) (A u)⁻¹ (by linarith) (Matrix.nonsing_inv_mul _ h2.isUnit) fun p q => (h1 p q).2.2.2
+  exact invlow N (A u) (A u)⁻¹ b (by linarith) (Matrix.nonsing_inv_mul _ h2.isUnit) fun p q => (h1 p q).2.2.2
 
 theorem gramterm : ∀ (N : ℕ) (S : Finset (Fin N)) (E : Type) [NormedAddCommGroup E] [NormedSpace ℝ E] (G A : E → Matrix (Fin N) (Fin N) ℂ) (u : E) (b a₀ Cst r : ℝ), 1 ≤ b → 0 < a₀ → 1 ≤ r → (∀ p q, DifferentiableAt ℝ (fun y => G y p q) u) → (∀ p q, DifferentiableAt ℝ (fun y => A y p q) u) → (∀ᶠ y in nhds u, (G y).PosDef ∧ (A y).det ≠ 0) → (((r ^ Cst : ℝ) : ℂ) • (1 : Matrix (Fin N) (Fin N) ℂ) - G u).PosSemidef → (((r ^ Cst : ℝ) : ℂ) • G u - 1).PosSemidef → (∀ p q, ‖fderiv ℝ (fun y => G y p q) u‖ ≤ b * r ^ |Cst| * Real.exp (r / 2)) → (∀ p q, ‖A u p q‖ ≤ b ∧ ‖fderiv ℝ (fun y => A y p q) u‖ ≤ b) → ((A u)ᴴ * A u - (a₀ : ℂ) • (1 : Matrix (Fin N) (Fin N) ℂ)).PosSemidef → DifferentiableAt ℝ (fun y => Real.log ((A y * selM S)ᴴ * G y * (A y * selM S)).det.re) u ∧ ‖fderiv ℝ (fun y => Real.log ((A y * selM S)ᴴ * G y * (A y * selM S)).det.re) u‖ ≤ 3 * (N : ℝ) ^ 4 * b ^ 3 * r ^ (4 * |Cst|) * Real.exp (r / 2) / a₀ := by
   intro N S E _ _ G A u b a₀ Cst r hb ha hr hGd hAd hev hs1 hs2 hGb hAb hAa
@@ -1151,7 +1151,7 @@ theorem stepGap_eq {M : FlagModel y Ψ N j} [Fintype Ψ] [DecidableEq Ψ] {BM : 
     show z ⟨k, m⟩ = c k * z' ⟨k, m⟩
     rw [this, ha k hk]
 
-theorem main : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (Φ : Type) [Field Φ] (y : (Σ k, ι k) → Φ) (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N j : ℕ) (M : FlagModel y Ψ N j) (n : ℕ) (BM : BaseMetric M n) (p : Ψ × Fin N) (Kk : Type) [Fintype Kk] (ιk : Kk → Type) [∀ k, Fintype (ιk k)] (κ : Kk → K) (v : (Σ k, ιk k) → (Σ k, ι k)) (e : ℕ) (R : AnLogRes (mCoordIdeal (y ∘ v)) ⊤ e) (pr : R.X → BM.Rb.X), IsStepHyp M BM p κ v R pr → ∀ x x', pr x = pr x' → (∀ k (_ : ιk k), M.blk p = some (κ k) → ∃ a : ℂ, ∀ m' : ιk k, R.lift x x ⟨k, m'⟩ = a * R.lift x' x' ⟨k, m'⟩) → stepPh M BM p v R pr x = stepPh M BM p v R pr x' := by
+theorem main : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (Φ : Type) [Field Φ] (y : (Σ k, ι k) → Φ) (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N j : ℕ) (M : FlagModel y Ψ N j) (n : ℕ) (BM : BaseMetric M n) (p : Ψ × Fin N) (Kk : Type) [Fintype Kk] (ιk : Kk → Type) [∀ k, Fintype (ιk k)] (κ : Kk → K) (v : (Σ k, ιk k) → (Σ k, ι k)) (e : ℕ) (R : AnLogRes (mCoordIdeal (y ∘ v)) ⊤ e) (pr : R.X → BM.Rb.X), IsStepHyp M BM p κ v R pr → ∀ x x', pr x = pr x' → (∀ k (m : ιk k), M.blk p = some (κ k) → ∃ a : ℂ, ∀ m' : ιk k, R.lift x x ⟨k, m'⟩ = a * R.lift x' x' ⟨k, m'⟩) → stepPh M BM p v R pr x = stepPh M BM p v R pr x' := by
   intro K _ ι _ Φ _ y Ψ _ _ N j M n BM p Kk _ ιk _ κ v e R pr hS x x' hpr hblk
   by_cases hb : pr x ∈ bdry BM.s
   · have hb' : pr x' ∈ bdry BM.s := hpr ▸ hb
@@ -1180,7 +1180,7 @@ open scoped ComplexOrder Classical
 
 namespace GlobalTheory.CompanionTheory.Ar.PB
 
-theorem stepWeight_exists : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (Φ : Type) [Field Φ] (y : (Σ k, ι k) → Φ) (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N j : ℕ) (M : FlagModel y Ψ N j) (n _ : ℕ) (BM : BaseMetric M n) (p : Ψ × Fin N) (Kk : Type) [Fintype Kk] (ιk : Kk → Type) [∀ k, Fintype (ιk k)] (κ : Kk → K) (v : (Σ k, ιk k) → (Σ k, ι k)), IsBlockMap κ v → (∀ k, ((∀ p', M.blk p' ≠ some k) ∨ M.blk p = some k) → k ∈ Set.range κ) → ∀ (e : ℕ) (R : AnLogRes (mCoordIdeal (y ∘ v)) ⊤ e) (pr : R.X → BM.Rb.X) (hp : HoloMap R.A BM.Rb.A pr) (B : FinHolAtlas e R.X), (∀ x, ∃ z ∈ mcPts (mCoordIdeal y), z ∘ v = R.lift x x ∧ SameOrbit (basePart M.blk z) (BM.Rb.lift (pr x) (pr x))) → IsPotential R.A (BM.L.pullback pr hp.1) → IsSection R.A (BM.L.pullback pr hp.1) (fun x y => BM.s (pr x) (pr y)) → IsSNC R.A (BM.L.pullback pr hp.1) (fun x y => BM.s (pr x) (pr y)) BM.m (fun k => pr ⁻¹' BM.W k) → IsAdaptedAtlas R.A B (BM.L.pullback pr hp.1) (fun x y => BM.s (pr x) (pr y)) → ∃ (ph : R.X → ℝ) (C₅ : ℝ), (∀ x, pr x ∉ bdry BM.s → ∀ z ∈ mcPts (mCoordIdeal y), z ∘ v = R.lift x x → Real.log ((BM.hom p).h z) = Real.log ((fsHerm ι (M.dy p)).h z) + ph x) ∧ (∀ x x', pr x = pr x' → (∀ k (_ : ιk k), M.blk p = some (κ k) → ∃ a : ℂ, ∀ m' : ιk k, R.lift x x ⟨k, m'⟩ = a * R.lift x' x' ⟨k, m'⟩) → ph x = ph x') ∧ IsSingWeight R.A (BM.L.pullback pr hp.1) (fun x y => BM.s (pr x) (pr y)) (potOf R (fsHerm ιk fun k => M.dy p (κ k))) ph C₅ ∧ IsGradBound B (BM.L.pullback pr hp.1) (fun x y => BM.s (pr x) (pr y)) ph C₅ := by
+theorem stepWeight_exists : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (Φ : Type) [Field Φ] (y : (Σ k, ι k) → Φ) (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N j : ℕ) (M : FlagModel y Ψ N j) (n d : ℕ) (BM : BaseMetric M n) (p : Ψ × Fin N) (Kk : Type) [Fintype Kk] (ιk : Kk → Type) [∀ k, Fintype (ιk k)] (κ : Kk → K) (v : (Σ k, ιk k) → (Σ k, ι k)), IsBlockMap κ v → (∀ k, ((∀ p', M.blk p' ≠ some k) ∨ M.blk p = some k) → k ∈ Set.range κ) → ∀ (e : ℕ) (R : AnLogRes (mCoordIdeal (y ∘ v)) ⊤ e) (pr : R.X → BM.Rb.X) (hp : HoloMap R.A BM.Rb.A pr) (B : FinHolAtlas e R.X), (∀ x, ∃ z ∈ mcPts (mCoordIdeal y), z ∘ v = R.lift x x ∧ SameOrbit (basePart M.blk z) (BM.Rb.lift (pr x) (pr x))) → IsPotential R.A (BM.L.pullback pr hp.1) → IsSection R.A (BM.L.pullback pr hp.1) (fun x y => BM.s (pr x) (pr y)) → IsSNC R.A (BM.L.pullback pr hp.1) (fun x y => BM.s (pr x) (pr y)) BM.m (fun k => pr ⁻¹' BM.W k) → IsAdaptedAtlas R.A B (BM.L.pullback pr hp.1) (fun x y => BM.s (pr x) (pr y)) → ∃ (ph : R.X → ℝ) (C₅ : ℝ), (∀ x, pr x ∉ bdry BM.s → ∀ z ∈ mcPts (mCoordIdeal y), z ∘ v = R.lift x x → Real.log ((BM.hom p).h z) = Real.log ((fsHerm ι (M.dy p)).h z) + ph x) ∧ (∀ x x', pr x = pr x' → (∀ k (m : ιk k), M.blk p = some (κ k) → ∃ a : ℂ, ∀ m' : ιk k, R.lift x x ⟨k, m'⟩ = a * R.lift x' x' ⟨k, m'⟩) → ph x = ph x') ∧ IsSingWeight R.A (BM.L.pullback pr hp.1) (fun x y => BM.s (pr x) (pr y)) (potOf R (fsHerm ιk fun k => M.dy p (κ k))) ph C₅ ∧ IsGradBound B (BM.L.pullback pr hp.1) (fun x y => BM.s (pr x) (pr y)) ph C₅ := by
   intro K _ ι _ Φ _ y Ψ _ _ N j M n d BM p Kk _ ιk _ κ v hb hr e R pr hp B h1 hpot hsec hsnc had
   have hyp : IsStepHyp M BM p κ v R pr := ⟨hb, hr, hp, h1⟩
   have hc := _root_.GlobalTheory.CompanionTheory.Ar.PB.StepW.ChartEx.hasStepCharts K ι Φ y Ψ N j M n BM p Kk ιk κ v e R pr hyp

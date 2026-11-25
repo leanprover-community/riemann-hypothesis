@@ -228,7 +228,7 @@ theorem lift2a [NeZero n] [Fintype (K →ₐ[Qp] LL)] [IsDomain O] [IsDiscreteVa
   have hT₁ : IsCrys PD T₁.ρ := hW₁.1
   have hT₂ : IsCrys PD T₂.ρ := hW₂.1
   obtain ⟨-, hqu, hΔu⟩ := lemG_units W hcase hP9 hT₁ hO hOv hinj
-  obtain ⟨Br⟩ := exists_phiBridge W hcase hP9 T₁ hT₁ hO
+  obtain ⟨Br⟩ := exists_phiBridge W hcase hP9 T₁ hT₁ hO hinj
   have hqA : qA W ∈ W.AΔ := by
     have := TypesA.ps_mem W 0
     simpa [ps] using this

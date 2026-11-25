@@ -114,7 +114,7 @@ theorem pderiv_lt (p : Polynomial ℂ) (s₀ : ℂ) (j : ℕ) (hj : j < p.rootMu
     (Eventually.of_forall hq)).1 j hj
 
 theorem ordVal (U : Set ℂ) (p : Polynomial ℂ) (e h : ℂ → ℂ) (t : ℝ) (s₀ c : ℂ) (hU : IsOpen U) (hR : IsRightDomain U)
-    (hs : s₀ ∈ U) (he : DifferentiableOn ℂ e U) (heq : ∀ z : ℂ, t < z.re → e z = p.eval z * h z)
+    (hs : s₀ ∈ U) (hp : p ≠ 0) (he : DifferentiableOn ℂ e U) (heq : ∀ z : ℂ, t < z.re → e z = p.eval z * h z)
     (hv : HolValueAt h s₀ c) : ∀ j ≤ p.rootMultiplicity s₀, iteratedDeriv j e s₀ = iteratedDeriv j (fun z => p.eval z) s₀ * c := by
   obtain ⟨H, hH, hHa, hHc⟩ := hv
   obtain ⟨q, hq, -⟩ := polyFac p s₀
@@ -181,7 +181,7 @@ theorem valLaw (h h' : ℂ → ℂ) (t : ℝ) (α β s₀ v v' : ℂ) (hl : ∀ 
   exact hv'.unique h2
 
 theorem lawSep (U : Set ℂ) (p : Polynomial ℂ) (t : ℝ) (s₀ : ℂ) (j : ℕ) (a a' c₁ c₁' c₂ c₂' : ℂ → ℂ) (v v' α β : ℂ)
-    (hU : IsOpen U) (hR : IsRightDomain U) (hs : s₀ ∈ U) (hj : j ≤ p.rootMultiplicity s₀)
+    (hU : IsOpen U) (hR : IsRightDomain U) (hs : s₀ ∈ U) (hp : p ≠ 0) (hj : j ≤ p.rootMultiplicity s₀)
     (ha : DifferentiableOn ℂ a U) (ha' : DifferentiableOn ℂ a' U)
     (hlo : ∀ i < j, iteratedDeriv i a s₀ = 0) (hlo' : ∀ i < j, iteratedDeriv i a' s₀ = 0)
     (he : ∀ z : ℂ, t < z.re → a z = p.eval z * (c₁ z + c₂ z)) (he' : ∀ z : ℂ, t < z.re → a' z = p.eval z * (c₁' z + c₂' z))

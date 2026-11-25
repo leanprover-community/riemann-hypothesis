@@ -376,7 +376,7 @@ variable (D : D7)
 
 def extAt (k : Fin 2) (z : ∀ v : D.nd.PlG k, GL (Fin D.R.r) (ZMod (D.host.g k))) : G0g D.nd :=
   fun kv => if h : kv.1 = k then
-    (Eq.rec (motive := fun k' _ => ∀ _ : D.nd.PlG k', GL (Fin D.R.r) (ZMod (D.host.g k'))) z h.symm) kv.2 else 1
+    (Eq.rec (motive := fun k' _ => ∀ v : D.nd.PlG k', GL (Fin D.R.r) (ZMod (D.host.g k'))) z h.symm) kv.2 else 1
 
 theorem extAt_apply (k : Fin 2) (z : ∀ v : D.nd.PlG k, GL (Fin D.R.r) (ZMod (D.host.g k))) (v : D.nd.PlG k) :
     extAt D k z ⟨k, v⟩ = z v := by
@@ -396,7 +396,7 @@ theorem extAt_restr (k : Fin 2) (y : G0g D.nd) (hy : ∀ kv : (Σ k : Fin 2, D.n
 
 
 open Classical in
-theorem sum_trivOff [Fintype (G0g D.nd)] (k : Fin 2) [Fintype (∀ D.nd.PlG k, GL (Fin D.R.r) (ZMod (D.host.g k)))]
+theorem sum_trivOff [Fintype (G0g D.nd)] (k : Fin 2) [Fintype (∀ v : D.nd.PlG k, GL (Fin D.R.r) (ZMod (D.host.g k)))]
     (F : (∀ v : D.nd.PlG k, GL (Fin D.R.r) (ZMod (D.host.g k))) → ℂ) :
     ∑ y : G0g D.nd, (if ∀ kv : (Σ k : Fin 2, D.nd.PlG k), kv.1 ≠ k → y kv = 1 then F (fun v => y ⟨k, v⟩) else 0) =
       ∑ z, F z := by

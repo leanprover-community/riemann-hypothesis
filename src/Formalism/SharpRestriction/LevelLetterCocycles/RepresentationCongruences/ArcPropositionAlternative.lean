@@ -681,7 +681,7 @@ theorem arc_length_two_case_down [NeZero n] [Fintype (K →ₐ[Qp] LL)] [IsDomai
     simp only [arcOf]
     split <;> rfl
   obtain ⟨κ, x, hx⟩ := hf.2 0 (by rw [hlen]; norm_num) (size c) (by simpa using hty0)
-  obtain ⟨Br⟩ := exists_phiBridge W hcase hP9 T₁ hW₁.1 hO
+  obtain ⟨Br⟩ := exists_phiBridge W hcase hP9 T₁ hW₁.1 hO hinj
   have hy1 : 1 ≤ size (c - 1) := by have := hηs (c - 1); omega
   obtain ⟨de, x', hde, hde0, hg1, hg2⟩ := ArcLengthTwo.den_step W Br c (size (c - 1)) (size c + S) κ hy1
     (by have := hηs c; omega) f x (by rw [← hnn]; exact hf.1) (by rw [← hnn]; exact hx)

@@ -416,7 +416,7 @@ lemma sum_Th (A0 : AddSubgroup H) [Fintype A0] (D : ArithData H) (ell : AddChar 
   field_simp
 
 lemma th_le (D : ArithData H) (ell : AddChar (E0 × H) ℂ → ℂ) (T2 : Finset H) (x b b' η X' θ A : ℝ) (u0 t : H) (w : E0 × H → ℝ)
-    (hx : 3 ≤ x) (hb : 0 < b) (hη : 0 ≤ η) (hX' : 0 < X') (hbX : b' * X' ≤ x * b) (hθ : 0 ≤ θ)
+    (hx : 3 ≤ x) (hb : 0 < b) (hη : 0 ≤ η) (hX' : 0 < X') (_hb' : 0 < b') (hbX : b' * X' ≤ x * b) (hθ : 0 ≤ θ)
     (hA : |A / b - x| ≤ 1) (hwpos : ∀ ρ, InPhi ρ → 0 < w ρ)
     (hwthick : ∀ ρ, IsThickAt T2 u0 ρ → b ≤ w ρ ∧ w ρ ≤ b + η + 1)
     (hwthin : ∀ ρ, InPhi ρ → ¬ IsThickAt T2 u0 ρ → w ρ ≤ 2 * b')
@@ -545,7 +545,7 @@ lemma sum_vv (A0 : AddSubgroup H) (Kp : Finset (AddChar (E0 × H) ℂ)) (hKp : �
 lemma one_char (A0 : AddSubgroup H) (Kp : Finset (AddChar (E0 × H) ℂ)) (D : ArithData H) (ell : AddChar (E0 × H) ℂ → ℂ)
     (TT : Finset H) (y : H → ℝ)
     {x Cd c ρ Ko L R : ℝ} (hx : 3 ≤ x) (hCd : 0 ≤ Cd) (hy : ∀ t ∈ TT, |y t - x| ≤ 1) (hDer : DerivInt D ell Cd)
-    (hρ : 0 ≤ ρ) (h0K : 0 ∈ Kp) (hsg : ∀ ψ ∈ Kp, ψ sgc0 = 1)
+    (hρ : 0 ≤ ρ) (hKo : 0 ≤ Ko) (h0K : 0 ∈ Kp) (hsg : ∀ ψ ∈ Kp, ψ sgc0 = 1)
     (h2 : ∀ ψ ∈ Kp, (¬ ∀ h : H, ψ (0, h) = 1) → ‖(∑ t ∈ TT, ψ (0, t)) - (c : ℂ) * (TT.card : ℂ)‖ ≤ ρ * (TT.card : ℝ))
     (hK : ∀ ψ ∈ Kp, ψ ≠ 0 → ‖ell ψ‖ ≤ Ko)
     (h3 : ∀ ψ ∈ PsiA A0, ψ ∉ Kp → ‖ell ψ‖ ≤ L)
@@ -647,7 +647,7 @@ lemma core (A0 : AddSubgroup H) (D : ArithData H) (S : Finset ℕ) (hD : HostFac
     have h1 : ∑ t ∈ TT, ∑ _j : Fin m, (Th D ell T2 b (a t / b) u0 t).re
         ≤ ∑ t ∈ TT, ∑ j : Fin m, (ASK D N (a t) t (w u0 j) - (MAIN ell (a t) (w u0 j)).re + 2 * b / x) := by
       refine Finset.sum_le_sum fun t ht => Finset.sum_le_sum fun j _ => ?_
-      have k1 := th_le D ell T2 x b b' η X' θ (a t) u0 t (w u0 j) hx hb hη hX' hbX hθ (ha t ht) (hwpos u0 hu0 j)
+      have k1 := th_le D ell T2 x b b' η X' θ (a t) u0 t (w u0 j) hx hb hη hX' hb' hbX hθ (ha t ht) (hwpos u0 hu0 j)
         (hwthick u0 hu0 j) (hwthin u0 hu0 j) hThin (lipschitz_weight_all H D ell)
       have k2 := congrArg Complex.re (ch_balance D S hD ell (a t) t (w u0 j) (hapos t ht) (hwpos u0 hu0 j) N
         (fun ρ hρ => hN u0 hu0 j t ρ ht hρ))
@@ -683,7 +683,7 @@ lemma core (A0 : AddSubgroup H) (D : ArithData H) (S : Finset ℕ) (hD : HostFac
 end CharacterBalanceMoves
 
 
-theorem ch_core (C ε CE Ko c M : ℝ) (hC : 0 ≤ C) (hε : 0 < ε) : ∃ x1 : ℝ, ∀ x ≥ x1,
+theorem ch_core (C ε CE Ko c M : ℝ) (hC : 0 ≤ C) (hε : 0 < ε) (hc : |c| ≤ 1) : ∃ x1 : ℝ, ∀ x ≥ x1,
     ∀ (H : Type) [AddCommGroup H] [Fintype H] [DecidableEq H] (m : ℕ) (D : ArithData H) (S : Finset ℕ)
       (ell : AddChar (E0 × H) ℂ → ℂ) (N : ℕ) (TT T2 : Finset H) (a : H → ℝ) (w : H → Fin m → E0 × H → ℝ)
       (b b' k aE η X' θ : ℝ) (A0 : AddSubgroup H) (Kp : Finset (AddChar (E0 × H) ℂ)),
@@ -753,7 +753,7 @@ theorem ch_core (C ε CE Ko c M : ℝ) (hC : 0 ≤ C) (hε : 0 < ε) : ∃ x1 : 
     have e1 : |CE| * Real.log x ≤ |CE| * (4 * (s * e)) := mul_le_mul_of_nonneg_left (by linarith) (abs_nonneg CE)
     linarith [up Cd hCd]
   have hone := CharacterBalanceMoves.one_char A0 Kp D ell TT (fun t => a t / b) (c := c) (ρ := |M| * x ^ (-1 + ε)) (Ko := |Ko|)
-    (L := |CE| * Real.log x) hx3 hCd hS.2.2.2.2.2.1 (hDer H D ell) (by positivity) h0K
+    (L := |CE| * Real.log x) hx3 hCd hS.2.2.2.2.2.1 (hDer H D ell) (by positivity) (abs_nonneg _) h0K
     (fun ψ h => (hKp ψ h).2)
     (fun ψ h h' => (hE2 ψ h h').trans (by gcongr; exact le_abs_self M))
     (fun ψ h h' => (hKo ψ h h').trans (le_abs_self Ko))
@@ -892,8 +892,8 @@ theorem ch_top {H : Type} [AddCommGroup H] [Fintype H] [DecidableEq H] {U0 : Typ
       (et := (Dd.etaBar + 4 * Real.sqrt Dd.eBar) * (Dd.x ^ C.cHH * Dd.b)) (Xpp := Xpp)
       (y := Dd.x ^ Dd.ε) (yD := Dd.x ^ (C.eDiv * Dd.ε)) (yL := Dd.x ^ (C.eLoss * Dd.ε)) (K := K)
       (h := 1 + C.cHH) (g := 1 + eK)
-      hy hyD hyL hnT ha1 hb0 hba hM hk hMk hMb hL0 hL hLa0 hLa hb' hkb' hX0 hXa hsA hB0 hNc hlWk
-      hlk0 hlk hlH0 hlH hdI0 hdI het c1 c1' c2' c3' c4 c4' c5' c6' c7 c7'
+      hy hyD hyL hnT ha1 hb0 hba hM hk hMk hMb hL0 hL hLa0 hLa hb' hkb' hX0 hXa hsA0 hsA hB0 hNc hlWk
+      hlk0 hlk hlH0 hlH hdI0 hdI het c1 c1' c2 c2' c3 c3' c4 c4' c5 c5' c6 c6' c7 c7'
       (by linarith only [hHH]) (by linarith only [heK]) hbig
     unfold ErrX5at UBar5 MLo5 Data.Vvar Data.LoP ErrText
     exact this
@@ -1344,7 +1344,7 @@ theorem UpperTheory.Comparison₂.core_gm :
     rw [abs_of_nonneg (by positivity)]
     exact inv_le_one_of_one_le₀ (by linarith)
   obtain ⟨x₁, hx₁⟩ := Deduction.ch_core (max (eD + eL) 0 + 3) eps C (koOf Λ) (3 * (Λ.o : ℝ) + 1)⁻¹ (4 * (Λ.o : ℝ))
-    (by positivity) hc
+    (by positivity) heps hc
   obtain ⟨x₂, hx₂⟩ := large_x_eventually eps K cHH eK heps
   obtain ⟨x₃, hx₃⟩ := Filter.eventually_atTop.1
     ((tendsto_rpow_atTop heps).eventually_ge_atTop (1 + 4 * (Λ.o : ℝ)))

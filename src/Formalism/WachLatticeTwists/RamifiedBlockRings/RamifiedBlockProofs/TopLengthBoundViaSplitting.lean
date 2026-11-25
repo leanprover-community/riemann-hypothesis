@@ -861,6 +861,7 @@ theorem length_bound_via_splitting :
     ∀ (sE : Finset G) (tE : G → Tc) (δO : O) (ℓ cB : ℕ) (what₂ qs : Finset ℕ) (lenRow : ℕ → ℕ∞)
       (deg : ℕ → ℕ) (vζ : ℕ → ℕ∞) (s vhE H0 : ℕ∞) (Sha : ℕ → ℕ∞),
       E = ∑ g ∈ sE, tE g • r g → (∀ l g, ∃ a : R', k0 l g = a * E) →
+    let NNc := ColNNJ r χ E e₁ δ (fun l => D (colIdx l)) (fun l => j (colIdx l)) Kc k0
     let cols : Finset ℕ := univ.image colIdx
     let eO : ℕ∞ := Module.length O (O ⧸ Ideal.span {(ℓ : O)})
     let vδ : ℕ∞ := IsDiscreteValuationRing.addVal O δO
@@ -1031,6 +1032,7 @@ theorem top_length_bound_via_splitting :
     ∀ (sE : Finset G) (tE : G → Tc) (δO : O) (ℓ cB : ℕ) (what₂ qs : Finset ℕ)
       (deg : ℕ → ℕ) (s vhE H0 : ℕ∞) (Sha : ℕ → ℕ∞),
       E = ∑ g ∈ sE, tE g • r g → (∀ l g, ∃ a : R', k0 l g = a * E) →
+    let NNc := ColNNJ r χ E e₁ δ (fun l => D (colIdx l)) (fun l => j (colIdx l)) Kc k0
     let cols : Finset ℕ := univ.image colIdx
     let eO : ℕ∞ := Module.length O (O ⧸ Ideal.span {(ℓ : O)})
     let vδ : ℕ∞ := IsDiscreteValuationRing.addVal O δO

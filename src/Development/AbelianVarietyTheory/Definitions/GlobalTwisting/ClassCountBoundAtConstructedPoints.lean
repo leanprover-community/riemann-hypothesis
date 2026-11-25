@@ -44,7 +44,7 @@ open Formalism.BasicNotions Formalism.MainNotions GlobalTheory.Mem.Top GlobalThe
 
 def ClassCountBoundAllPoints (𝒜 : FamClass) : Prop :=
   Closed (W1 𝒜) fun Fm _ => ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x),
-    StandardLattice.ClassNumberFormula₂ (Fm.D x i).lev
+    StandardLattice.ClassNumberFormula₂ (Fm.D x i) (Fm.ex x hx i).lev
 
 def ClassCountBoundAtConstructedPoints {Bd : BdT} (Q : V4.Slot) (Lk : LkT Bd) : Prop := Row Q Lk fun 𝒜 _ => ClassCountBoundAllPoints 𝒜
 

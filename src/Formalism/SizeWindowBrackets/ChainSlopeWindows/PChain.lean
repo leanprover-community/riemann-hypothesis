@@ -135,8 +135,8 @@ lemma errX5at_le {U0 : Type} [Fintype U0] {W : U0 → Type} [∀ u0, Fintype (W 
     (et := (D.etaBar + 4 * Real.sqrt D.eBar) * (D.x ^ C.cHH * D.b)) (Xpp := Xpp)
     (y := D.x ^ D.ε) (yD := D.x ^ (C.eDiv * D.ε)) (yL := D.x ^ (C.eLoss * D.ε)) (K := K)
     (h := 1 + C.cHH) (g := 1 + eK)
-    hy hyD hyL hnT ha1 hb0 hba hM hk hMk hMb hL0 hL hLa0 hLa hb' hkb' hX0 hXa hsA hB0 hNc hlWk
-    hlk0 hlk hlH0 hlH hdI0 hdI het c1 c1' c2' c3' c4 c4' c5' c6' c7 c7'
+    hy hyD hyL hnT ha1 hb0 hba hM hk hMk hMb hL0 hL hLa0 hLa hb' hkb' hX0 hXa hsA0 hsA hB0 hNc hlWk
+    hlk0 hlk hlH0 hlH hdI0 hdI het c1 c1' c2 c2' c3 c3' c4 c4' c5 c5' c6 c6' c7 c7'
     (by linarith only [hHH]) (by linarith only [heK]) hbig
   unfold ErrX5at UBar5 MLo5 Data.Vvar Data.LoP ErrText
   exact this

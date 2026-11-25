@@ -602,7 +602,7 @@ theorem map_phi (p : ℕ) (hp : 0 < p) (f : R →+* R) (h : PowerSeries R) :
     PowerSeries.map f (phi (R := R) p hp h) = phi (R := R) p hp (PowerSeries.map f h) := by
   unfold phi
   rw [PowerSeries.coe_substAlgHom]
-  have key := PowerSeries.map_subst (hasSubst_om (R := R) p) (h := f) h
+  have key := PowerSeries.map_subst (hasSubst_om (R := R) p hp) (h := f) h
   have e : (MvPowerSeries.map f) (((1 + PowerSeries.X : PowerSeries R) ^ p) - 1)
       = ((1 + PowerSeries.X : PowerSeries R) ^ p) - 1 := by
     change PowerSeries.map f _ = _

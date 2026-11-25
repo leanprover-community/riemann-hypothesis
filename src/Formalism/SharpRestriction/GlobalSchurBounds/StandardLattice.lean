@@ -353,7 +353,7 @@ def Conclusion4p (D : D7) (Lv : LevelData D) : Prop :=
 def SmallOrderPrimeLogSumBound (D : D7) : Prop :=
   GBig D → ∀ u : D.what₂.Word, (D.mem u).C.StabZero
 
-def ClassNumberFormula₂ (D : D7) : Prop :=
+def ClassNumberFormula₂ (D : D7) (_Lv : LevelData D) : Prop :=
   GBig D → (∀ i, SplitsF D (D.host.g i)) → ∀ u : D.what₂.Word, SplitsF D (D.mem u).A.T →
     (Nat.card ((D.mem u).C.cls 0) : ℝ) =
       massI D D.R.k * idxPi D (D.host.g 0) (D.host.g 1) * (((D.mem u).A.T : ℝ) ^ D.R.k - 1) ^ D.R.f
@@ -368,7 +368,7 @@ def Conclusion4f (D : D7) : Prop :=
     ((haveI := (D.mem u).A.Mu0_fd; Module.finrank ℂ (D.mem u).A.Mu0 : ℕ) : ℝ) =
       duStarU D u * (((D.mem u).A.T : ℝ) ^ D.R.k - 1) ^ D.R.f
 
-theorem level_rank_of_trivial_stabilisers (D : D7) (Lv : LevelData D) (hd : SmallOrderPrimeLogSumBound D) (hn : ClassNumberFormula₂ D) : Conclusion4f D := by
+theorem level_rank_of_trivial_stabilisers (D : D7) (Lv : LevelData D) (hd : SmallOrderPrimeLogSumBound D) (hn : ClassNumberFormula₂ D Lv) : Conclusion4f D := by
   intro hg hs u hT hM
   rw [hM (hd hg u), hn hg hs u hT]
   unfold duStarU duStarP

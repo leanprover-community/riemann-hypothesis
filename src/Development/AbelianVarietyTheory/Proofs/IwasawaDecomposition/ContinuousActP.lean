@@ -194,8 +194,8 @@ theorem inner_HV (x y : HV lam B) : inner ℂ x y = pairK lam (gramOf B) x y := 
 
 instance : Nontrivial (HV lam B) :=
   ⟨⟨_, (0 : VV ℂ lam), fun h => GlobalTheory.Proof.TensorMapDescent.ten_ne_zero (fun τ => extremal ℂ n (lam τ))
-    (fun _ => Formalism.GradedWeylDivisibility.hwNe ℂ n n le_rfl _) (congrArg Subtype.val (h : (⟨_, GlobalTheory.Proof.TensorMapDescent.ten_mem lam _
-      fun _ => Formalism.GradedWeylDivisibility.hwMem ℂ n n le_rfl _ (natW_antitone _)⟩ : VV ℂ lam) = 0))⟩⟩
+    (fun τ => Formalism.GradedWeylDivisibility.hwNe ℂ n n le_rfl _) (congrArg Subtype.val (h : (⟨_, GlobalTheory.Proof.TensorMapDescent.ten_mem lam _
+      fun τ => Formalism.GradedWeylDivisibility.hwMem ℂ n n le_rfl _ (natW_antitone _)⟩ : VV ℂ lam) = 0))⟩⟩
 
 theorem continuous_HV {X : Type} [TopologicalSpace X] (g : X → ι → GL (Fin n) ℂ)
     (hg : ∀ τ, Continuous fun x => (g x τ : Matrix (Fin n) (Fin n) ℂ)) (v : HV lam B) :

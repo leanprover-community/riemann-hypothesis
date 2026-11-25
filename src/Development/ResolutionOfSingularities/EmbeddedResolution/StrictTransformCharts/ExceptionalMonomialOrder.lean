@@ -120,7 +120,7 @@ theorem quotientMk_comp_appLE_eq_zero_of_mem (hU : IsAffineOpen U) (Z : X.IdealS
   exact Ideal.mem_comap.mp (key ha)
 
 def exceptionalQuotientBaseHom (hU : IsAffineOpen U) (Z : X.IdealSheafData)
-    (hZ : restrictIdeal Z U = c.coordIdeal S) (B : BlowupChart π c S s) :
+    (hZ : restrictIdeal Z U = c.coordIdeal S) (B : BlowupChart π c S s) (_hs : s ∈ S) :
     (Γ(X, U) ⧸ Z.ideal ⟨U, hU⟩) →+* (Γ(X₁, B.domain) ⧸ Ideal.span {B.chart.coord s}) :=
   Ideal.Quotient.lift (Z.ideal ⟨U, hU⟩)
     ((Ideal.Quotient.mk (Ideal.span {B.chart.coord s})).comp
@@ -130,7 +130,7 @@ def exceptionalQuotientBaseHom (hU : IsAffineOpen U) (Z : X.IdealSheafData)
 theorem exceptionalQuotientBaseHom_mk (hU : IsAffineOpen U) (Z : X.IdealSheafData)
     (hZ : restrictIdeal Z U = c.coordIdeal S) (B : BlowupChart π c S s) (hs : s ∈ S)
     (a : Γ(X, U)) :
-    exceptionalQuotientBaseHom hU Z hZ B ((Ideal.Quotient.mk (Z.ideal ⟨U, hU⟩)) a) =
+    exceptionalQuotientBaseHom hU Z hZ B hs ((Ideal.Quotient.mk (Z.ideal ⟨U, hU⟩)) a) =
       (Ideal.Quotient.mk (Ideal.span {B.chart.coord s}))
         ((π.appLE U B.domain B.domain_le).hom a) :=
   rfl
@@ -139,13 +139,13 @@ def mvPolynomialToExceptionalQuotient (hU : IsAffineOpen U) (Z : X.IdealSheafDat
     (hZ : restrictIdeal Z U = c.coordIdeal S) (B : BlowupChart π c S s) (hs : s ∈ S) :
     MvPolynomial ↥(S.erase s) (Γ(X, U) ⧸ Z.ideal ⟨U, hU⟩) →+*
       (Γ(X₁, B.domain) ⧸ Ideal.span {B.chart.coord s}) :=
-  MvPolynomial.eval₂Hom (exceptionalQuotientBaseHom hU Z hZ B)
+  MvPolynomial.eval₂Hom (exceptionalQuotientBaseHom hU Z hZ B hs)
     (fun t => (Ideal.Quotient.mk (Ideal.span {B.chart.coord s})) (B.chart.coord t.1))
 
 theorem mvPolynomialToExceptionalQuotient_C (hU : IsAffineOpen U) (Z : X.IdealSheafData)
     (hZ : restrictIdeal Z U = c.coordIdeal S) (B : BlowupChart π c S s) (hs : s ∈ S)
     (r : Γ(X, U) ⧸ Z.ideal ⟨U, hU⟩) :
-    mvPolynomialToExceptionalQuotient hU Z hZ B hs (MvPolynomial.C r) = exceptionalQuotientBaseHom hU Z hZ B r :=
+    mvPolynomialToExceptionalQuotient hU Z hZ B hs (MvPolynomial.C r) = exceptionalQuotientBaseHom hU Z hZ B hs r :=
   MvPolynomial.eval₂Hom_C _ _ r
 
 theorem mvPolynomialToExceptionalQuotient_X (hU : IsAffineOpen U) (Z : X.IdealSheafData)
@@ -453,6 +453,7 @@ theorem exists_closure_singleton_eq_of_maximal_irreducible {X : Scheme.{u}} {C S
   exact ⟨ξ, hξ⟩
 
 theorem eq_of_mem_closure_singleton_of_maximal_irreducible {X : Scheme.{u}} {C S : Set X}
+    (_hC : IsIrreducible C) (_hCS : C ⊆ S)
     (hmax : ∀ T : Set X, IsIrreducible T → T ⊆ S → C ⊆ T → T = C)
     (hS : IsClosed S) {ξ ξ' : X} (hξ : closure ({ξ} : Set X) = C) (hξ' : ξ' ∈ S)
     (hspec : ξ ∈ closure ({ξ'} : Set X)) : ξ' = ξ := by
@@ -1007,7 +1008,7 @@ theorem controlledTransform_not_subset_support {k : Type u} [Field k] [CharZero 
       have h3 : hV.fromSpec.base (hV.primeIdealOf ⟨ξ, hξV⟩)
           ∈ closure ({(pt : X₁)} : Set X₁) := hmem2
       rwa [hfξ] at h3
-    have hxx := eq_of_mem_closure_singleton_of_maximal_irreducible hCmax hclosed
+    have hxx := eq_of_mem_closure_singleton_of_maximal_irreducible hCirr hCsub hCmax hclosed
       hξ hptE h2
     have hpteq : pt = (⟨ξ, hξV⟩ : ↥(B.domain)) := Subtype.ext hxx
     rw [hpteq] at hpt

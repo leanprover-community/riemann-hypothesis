@@ -104,7 +104,7 @@ private lemma map_quotient_phi_eq_map_expand (f : R⟦X⟧) :
       PowerSeries.map (Ideal.Quotient.mk (Ideal.span {(p : R)})) (expand p hp.out.ne_zero f) := by
   unfold _root_.GlobalTheory.Col.phi
   rw [PowerSeries.coe_substAlgHom, expand_apply]
-  have h1 := map_subst (_root_.GlobalTheory.Col.hasSubst_om (R := R) p)
+  have h1 := map_subst (_root_.GlobalTheory.Col.hasSubst_om (R := R) p hp.out.pos)
     (h := Ideal.Quotient.mk (Ideal.span {(p : R)})) f
   have h2 := map_subst (HasSubst.X_pow (R := R) hp.out.ne_zero)
     (h := Ideal.Quotient.mk (Ideal.span {(p : R)})) f

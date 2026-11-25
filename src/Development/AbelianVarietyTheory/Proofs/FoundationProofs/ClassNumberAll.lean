@@ -597,7 +597,7 @@ theorem mass_selfDualLattice_firstSpace_eq (D : D7) : letI := D.host.cmStar
 
 theorem classNumber (hover : SplittingProjection.SelfDualOverBase) (hindex : SelfDualLatticeIndex.StabiliserLevelIndexFormula)
     (hcos : ClassesDoubleCosets.ClassesAsDoubleCosets) (hstab : ColumnStabiliser.ColStabTrivial)
-    (D : D7) (Lv : LevelData D) : ClassNumberFormula₂ D := by
+    (D : D7) (Lv : LevelData D) : ClassNumberFormula₂ D Lv := by
   letI := D.host.cmStar
   intro hg hs u hT
   obtain ⟨-, N, ⟨hfin, hspan, hdual, -⟩, -, -, hUK⟩ := hover D Lv u hT
@@ -626,7 +626,7 @@ theorem classNumber (hover : SplittingProjection.SelfDualOverBase) (hindex : Sel
   exact congrArg (· * massI D D.R.k) ((congrArg (fun n : ℕ => (n : ℝ)) hrel).trans hidx)
 
 theorem classNumber_of_index (hover : SplittingProjection.SelfDualOverBase) (hindex : SelfDualLatticeIndex.StabiliserLevelIndexFormula)
-    (D : D7) (Lv : LevelData D) : ClassNumberFormula₂ D :=
+    (D : D7) (Lv : LevelData D) : ClassNumberFormula₂ D Lv :=
   classNumber hover hindex (GlobalTheory.Proof.CosetGroupEquiv.massAsCosetSum_iff.1 GlobalTheory.Proof.TotallyDefiniteMass.massAsCosetSum)
     (GlobalTheory.Proof.StabilizerGroupMap.columnStabilisersTrivial_iff.1 GlobalTheory.Proof.EqOneOfMembership.columnStabilisersTrivial) D Lv
 
@@ -1696,7 +1696,7 @@ namespace GlobalTheory.ColClassNumber
 
 open Formalism.BasicNotions Formalism.MainNotions.StandardLattice
 
-theorem classNumber_all (D : D7) (Lv : LevelData D) : ClassNumberFormula₂ D :=
+theorem classNumber_all (D : D7) (Lv : LevelData D) : ClassNumberFormula₂ D Lv :=
   classNumber_of_index _root_.GlobalTheory.OverObj.selfDualOverBase _root_.GlobalTheory.LevelIndex.selfDualLatticeIndex_stabiliserLevelIndexFormula D Lv
 
 end GlobalTheory.ColClassNumber

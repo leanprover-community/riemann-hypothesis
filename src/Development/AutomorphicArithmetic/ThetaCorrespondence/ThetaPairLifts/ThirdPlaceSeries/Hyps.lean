@@ -71,7 +71,7 @@ structure HypsAlt (N : FamClass → Prop) (DR : _root_.GlobalTheory.Fc.R1.Defini
       DcPtG ((_root_.GlobalTheory.Fc.baseLevelChoiceOfRawSelection σ) Fm hc x hx h i).1
   hTu : Closed (WithTw (WithSm (WithChN 𝒜))) fun {eps} Fm _ => cT eps Fm.CYL ≤ Fm.CTu → TuSize Fm
   hn4 : Closed (WithTw (WithSm (WithChN 𝒜))) fun Fm _ => ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x),
-      StandardLattice.ClassNumberFormula₂ (Fm.D x i).lev
+      StandardLattice.ClassNumberFormula₂ (Fm.D x i) (Fm.ex x hx i).lev
   hLit : LitThin
   hWu : Formalism.L2.SG.Pf.WuDecayOfGap
   hRF : Formalism.L2.SG.RowsDef.RowsFinDim

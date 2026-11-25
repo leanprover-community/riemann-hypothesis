@@ -174,7 +174,7 @@ section -- clump:auto
 
 open UpperTheory.V UpperTheory.V.PropA
 
-private theorem padic_units_distance_le_max (l : ℕ) [Fact l.Prime] (a b : ℤ_[l]) (ha : ‖a‖ = 1)
+private theorem padic_units_distance_le_max (l : ℕ) [Fact l.Prime] (a b : ℤ_[l]) (ha : ‖a‖ = 1) (hb : ‖b‖ = 1)
     (z : PadicAlgCl l) :
     ‖a - b‖ ≤ max ‖algebraMap ℚ_[l] (PadicAlgCl l) (a : ℚ_[l]) * z - 1‖
       ‖algebraMap ℚ_[l] (PadicAlgCl l) (b : ℚ_[l]) * z - 1‖ := by
@@ -218,7 +218,7 @@ theorem UpperTheory.V.PropA.ball :
     rw [← pow_mul, norm_pow, hu, one_pow]
   obtain ⟨s, hs⟩ := helly l (fun e : ℕ => (e : ℤ_[l])) r (by
     intro a b
-    have key := padic_units_distance_le_max l _ _ (hunit a) z
+    have key := padic_units_distance_le_max l _ _ (hunit a) (hunit b) z
     have h := hdist j a b
     have : ‖(a : ℤ_[l]) - b‖ = (l : ℝ) ^ (j + c) * ‖(u ^ l ^ j) ^ a - (u ^ l ^ j) ^ b‖ := by
       rw [h, ← mul_assoc, mul_inv_cancel₀ hK.ne', one_mul]

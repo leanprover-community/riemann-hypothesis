@@ -131,7 +131,7 @@ theorem exists_fraction_in_frame [IsDomain O] [IsDiscreteValuationRing O] [IsAdi
         (lE W s * fa - lE W (s - si) * (algebraMap (LetA O n) W.EE (letE c) * algebraMap O W.EE x₀)) ∧
       (wa : ℝ) - (Bn : ℝ) / PD.p - (η : ℝ) / (PD.p : ℝ) ^ 2 - 1 ≤ si := by
   haveI : Fact PD.p.Prime := ⟨PD.hp⟩
-  obtain ⟨Br⟩ := exists_phiBridge W hcase hP9 T hT hO
+  obtain ⟨Br⟩ := exists_phiBridge W hcase hP9 T hT hO hinj
   obtain ⟨ϖ, hϖ⟩ := IsDiscreteValuationRing.exists_irreducible O
   have hR := GS.ringData_of_caseA_of_p9 W hcase hP9
   set y : ℝ := (wa : ℝ) - (Bn : ℝ) / PD.p - (η : ℝ) / (PD.p : ℝ) ^ 2 with hy
@@ -395,7 +395,7 @@ theorem exists_horizontal_lift_of_len_three_of_up [NeZero n] [Fintype (K →ₐ[
   have hsur : Formalism.MainNotions.LiftingTheory.Sur W F := hSet.2.1
   have hJL : Formalism.MainNotions.LiftingTheory.JumpsLet W T₁ Mi hi := hSet.2.2.2.2.2.2
   have hnt : ∀ i, ¬ Formalism.MainNotions.TruncatedSeriesCountingBounds.Thick b η size i → size i ≤ w := hSet.2.2.2.2.2.1
-  obtain ⟨Br⟩ := exists_phiBridge W hcase hP9 T₁ hW₁.1 hO
+  obtain ⟨Br⟩ := exists_phiBridge W hcase hP9 T₁ hW₁.1 hO hinj
   have hR := GS.ringData_of_caseA_of_p9 W hcase hP9
   have hqu : IsUnit (algebraMap (LetA O n) W.EE (qA W)) := GS.isUnit_qA hR
   have hqmem : qA W ∈ W.AΔ := GS.qA_mem W

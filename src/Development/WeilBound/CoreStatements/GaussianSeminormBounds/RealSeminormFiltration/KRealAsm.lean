@@ -789,8 +789,8 @@ theorem kReal_of_lie (hsec : GlobalTheory.RealLift.LieSecond) (hfst : GlobalTheo
   have hfe := _root_.PositivityTheory.RL.fockEx _root_.PositivityTheory.RL.derEx
   obtain ⟨Φ, hΦ⟩ := hfe F E σ _ _ _ _ _ _ _ B.ψ B.emb _ _ G.M.co 1 Complex.I A C hb.cm hb.std fr
   obtain ⟨Φ', hΦ'⟩ := hfe F E σ _ _ _ _ _ _ _ B.ψ B.emb _ _ G.M'.co 1 Complex.I A' C hb.cm hb.std fr'
-  have hr := _root_.PositivityTheory.ThKEnd.Comp.PR.polRange_of i_actslaws hvl F E σ _ _ _ _ _ _ G.V G.W G.M B.ψ B.emb A C Φ hb.cm hb.std fr hAθ hCθ hΦ
-  have hr' := _root_.PositivityTheory.ThKEnd.Comp.PR.polRange_of i_actslaws hvl F E σ _ _ _ _ _ _ G.V' G.W G.M' B.ψ B.emb A' C Φ' hb.cm hb.std fr' hAθ' hCθ hΦ'
+  have hr := _root_.PositivityTheory.ThKEnd.Comp.PR.polRange_of i_actslaws _root_.PositivityTheory.RL.derEx hvl F E σ _ _ _ _ _ _ G.V G.W G.M B.ψ B.emb A C Φ hb.cm hb.std fr hAθ hCθ hΦ
+  have hr' := _root_.PositivityTheory.ThKEnd.Comp.PR.polRange_of i_actslaws _root_.PositivityTheory.RL.derEx hvl F E σ _ _ _ _ _ _ G.V' G.W G.M' B.ψ B.emb A' C Φ' hb.cm hb.std fr' hAθ' hCθ hΦ'
   have hwp : IsUWeilPair (cA σ) (adeleClass F) B.ψ (-1) (incM F G.V.J) (incM F G.W.J) G.M.co X.β (X.β / X.α) om := hw
   have hwp' : IsUWeilPair (cA σ) (adeleClass F) B.ψ (-1) (incM F G.V'.J) (incM F G.W.J) G.M'.co X.α (X.α / X.β) om' := hw'
   have hW2 := hsec F E σ _ _ _ _ _ _ _ B.ψ B.emb _ _ G.M.co 1 Complex.I A C Φ _ X.β B.mβ hb.cm hb.std fr hΦ hwp.1 hc.expβ
