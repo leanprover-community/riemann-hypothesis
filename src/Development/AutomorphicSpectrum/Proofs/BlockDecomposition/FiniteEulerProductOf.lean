@@ -2,7 +2,7 @@ module
 
 public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.ThetaNormCommutation.LocalComparisonSplitting.EulerFactorLevels.LocCompareSplit
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.T2SpaceFiniteAdeleRing
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TwistedOrbitalIntegralRestrictedProductFinprodStatement
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TwistedOrbitalIntegralRestrictedProductFinprod
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -68,7 +68,7 @@ theorem eulerFinOf' : EulerFinOf' := by
     exact hKm x
   obtain ⟨H1, H2, H3, H4, H5⟩ := hH hC E hU a b S hS φ₁ φ₂ h1 h2 δ₁ δ₂ e1 e2
   set_option synthInstance.maxHeartbeats 200000 in
-  have main := GlobalTheory.T.twistedOrbitalIntegral_restrictedProduct_finprod (pv (E := E) a b) (Kv a b) hr (thP E a b) (thv a b) hth hK
+  have main := GlobalTheory.EulerAbs.twOrb_restr_eq_finprod (pv (E := E) a b) (Kv a b) hr (thP E a b) (thv a b) hth hK
     (ratF E a δ₁, ratF E b δ₂) (finFn S φ₁ φ₂) (fv S φ₁ φ₂) (hG E a b S hS φ₁ φ₂ h1 h2) H1 H2 H3 H4 H5
   rw [hKeq, main, hI E S hS]
   refine finprod_congr fun v => ?_
