@@ -22,8 +22,8 @@ private theorem alg_core {D : ℕ} (u : Fin D → B)
       ∀ x : B ⊗[R] B, Algebra.TensorProduct.lmul' R x = 0 →
         t * x ∈ Ideal.span (Set.range fun k => (1 : B) ⊗ₜ[R] u k - u k ⊗ₜ[R] (1 : B)) := by
   let P := MvPolynomial (Fin D) R
-  letI : Algebra P B := (MvPolynomial.aeval u : P →ₐ[R] B).toRingHom.toAlgebra
-  haveI : Algebra.Etale P B := h
+  let : Algebra P B := (MvPolynomial.aeval u : P →ₐ[R] B).toRingHom.toAlgebra
+  have : Algebra.Etale P B := h
   have hP : ∀ p : P, algebraMap P B p = MvPolynomial.aeval u p := fun _ => rfl
   let J : Ideal (B ⊗[R] B) := Ideal.span (Set.range fun k => (1 : B) ⊗ₜ[R] u k - u k ⊗ₜ[R] (1 : B))
   have hJ : ∀ k, (1 : B) ⊗ₜ[R] u k - u k ⊗ₜ[R] (1 : B) ∈ J := fun k => Ideal.subset_span ⟨k, rfl⟩
@@ -40,7 +40,7 @@ private theorem alg_core {D : ℕ} (u : Fin D → B)
     · have e : algebraMap P B (MvPolynomial.X k) = u k := by simp [hP]
       simp only [RingHom.comp_apply, e]
       exact Ideal.Quotient.eq.2 (hJ k)
-  letI : Algebra P ((B ⊗[R] B) ⧸ J) := (iL.comp (algebraMap P B)).toAlgebra
+  let : Algebra P ((B ⊗[R] B) ⧸ J) := (iL.comp (algebraMap P B)).toAlgebra
   let aL : B →ₐ[P] (B ⊗[R] B) ⧸ J := { iL with commutes' := fun _ => rfl }
   let aR : B →ₐ[P] (B ⊗[R] B) ⧸ J :=
     { iR with commutes' := fun p => congrArg (fun f : P →+* _ => f p) hLR }
@@ -163,7 +163,7 @@ private theorem ker_res (Z : Sch R) [IsSeparated Z.hom] {N N' : (XX Z).left.Open
     (hN' : IsAffineOpen N') (h : N' ≤ N) :
     RingHom.ker (secMap (dg Z) (le_refl ((dg Z).left ⁻¹ᵁ N'))).toRingHom =
       (RingHom.ker (secMap (dg Z) (le_refl ((dg Z).left ⁻¹ᵁ N))).toRingHom).map (secRes (XX Z) h).toRingHom := by
-  haveI : IsClosedImmersion (dg Z).left := inferInstanceAs (IsClosedImmersion (pullback.diagonal Z.hom))
+  have : IsClosedImmersion (dg Z).left := inferInstanceAs (IsClosedImmersion (pullback.diagonal Z.hom))
   have e := (dg Z).left.ker.map_ideal (U := ⟨N', hN'⟩) (V := ⟨N, hN⟩) h
   rw [Scheme.Hom.ker_apply, Scheme.Hom.ker_apply] at e
   have r : (secRes (XX Z) h).toRingHom = ((XX Z).left.presheaf.map (homOfLE h).op).hom :=
@@ -198,16 +198,16 @@ private theorem sq_main (Z : Sch R) (U : Z.left.Opens) (hU : IsAffineOpen U) :
   have hW2 : W ≤ (p2 Z).left ⁻¹ᵁ U := inf_le_right
   let B := Sec Z U
   let j : Spec (CommRingCat.of B) ⟶ Z.left := hU.fromSpec
-  haveI : IsOpenImmersion j := inferInstanceAs (IsOpenImmersion hU.fromSpec)
+  have : IsOpenImmersion j := inferInstanceAs (IsOpenImmersion hU.fromSpec)
   have hj : Spec.map (CommRingCat.ofHom (algebraMap R B)) = j ≫ Z.hom := by
     have := IsAffineOpen.SpecMap_appLE_fromSpec Z.hom (isAffineOpen_top _) hU (le_top : U ≤ Z.hom ⁻¹ᵁ ⊤)
     rw [IsAffineOpen.fromSpec_top, Scheme.isoSpec_Spec_inv, ← Spec.map_comp] at this
     exact this
   let ψ₀ := pullback.map (Spec.map (CommRingCat.ofHom (algebraMap R B))) (Spec.map (CommRingCat.ofHom (algebraMap R B)))
     Z.hom Z.hom j j (𝟙 _) (by rw [Category.comp_id, hj]) (by rw [Category.comp_id, hj])
-  haveI : IsOpenImmersion ψ₀ := MorphismProperty.pullbackMap (P := IsOpenImmersion) inferInstance inferInstance hj hj
+  have : IsOpenImmersion ψ₀ := MorphismProperty.pullbackMap (P := IsOpenImmersion) inferInstance inferInstance hj hj
   let ψ : Spec (CommRingCat.of (B ⊗[R] B)) ⟶ (XX Z).left := (pullbackSpecIso R B B).inv ≫ ψ₀
-  haveI : IsOpenImmersion ψ := inferInstanceAs (IsOpenImmersion ((pullbackSpecIso R B B).inv ≫ ψ₀))
+  have : IsOpenImmersion ψ := inferInstanceAs (IsOpenImmersion ((pullbackSpecIso R B B).inv ≫ ψ₀))
   have hr : Set.range ψ = (W : Set (XX Z).left) := by
     have h1 : Set.range ψ = Set.range ψ₀ := by
       show Set.range ((pullbackSpecIso R B B).inv ≫ ψ₀) = _

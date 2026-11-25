@@ -21,11 +21,11 @@ private theorem exists_closed_prod {R : Type} [CommRing R] {X Y : Scheme.{0}} (N
       IsClosedImmersion h ∧
         h ≫ toSpecBase R (N * M + N + M) =
           pullback.fst (i ≫ toSpecBase R N) (j ≫ toSpecBase R M) ≫ i ≫ toSpecBase R N := by
-  haveI : MorphismProperty.IsStableUnderComposition
+  have : MorphismProperty.IsStableUnderComposition
       (@IsClosedImmersion : MorphismProperty Scheme.{0}) :=
     ⟨fun f g hf hg => by
-      haveI := hf
-      haveI := hg
+      have := hf
+      have := hg
       exact IsClosedImmersion.comp f g⟩
   have hmap : IsClosedImmersion (pullback.map (i ≫ toSpecBase R N) (j ≫ toSpecBase R M)
       (toSpecBase R N) (toSpecBase R M) i j (𝟙 _)

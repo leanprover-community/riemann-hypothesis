@@ -404,10 +404,10 @@ theorem UpperTheory.surjective_eval_coordBlowupSubst_pushout_of_flat :
     rw [MvPolynomial.rename_rename]
     exact congrArg (fun f => f p) (MvPolynomial.rename_id (R := A) (σ := Fin D))
   let σ' : MvPolynomial (Fin D) A →+* P' := up.toRingHom.comp (coordBlowupSubst A Finset.univ j).toRingHom
-  letI iB : Algebra (MvPolynomial (Fin D) A) B := φ.toAlgebra
-  letI iP : Algebra (MvPolynomial (Fin D) A) P' := σ'.toAlgebra
-  haveI : Module.Flat (MvPolynomial (Fin D) A) B := hφ
-  letI iC : Algebra (MvPolynomial (Fin D) A) C := (β.comp φ).toAlgebra
+  let iB : Algebra (MvPolynomial (Fin D) A) B := φ.toAlgebra
+  let iP : Algebra (MvPolynomial (Fin D) A) P' := σ'.toAlgebra
+  have : Module.Flat (MvPolynomial (Fin D) A) B := hφ
+  let iC : Algebra (MvPolynomial (Fin D) A) C := (β.comp φ).toAlgebra
   let uL : CommRingCat.of B ⟶ CommRingCat.of (B ⊗[MvPolynomial (Fin D) A] P') :=
     CommRingCat.ofHom Algebra.TensorProduct.includeLeftRingHom
   let uR : CommRingCat.of (MvPolynomial (Fin D) A) ⟶ CommRingCat.of (B ⊗[MvPolynomial (Fin D) A] P') :=
@@ -502,7 +502,7 @@ theorem UpperTheory.Gal.KunnethLefschetz.G.bChartEx :
       Set.image_univ, ← Set.range_comp]
     rfl
   have hcomap := UpperTheory.idealSheaf_comap_eq_specIdealSheaf_of_eq_map I N J φ hIJ
-  haveI hfl : Flat ((IsAffineOpen.isoSpec N.2).hom ≫ Spec.map (CommRingCat.ofHom φ)) := by
+  have hfl : Flat ((IsAffineOpen.isoSpec N.2).hom ≫ Spec.map (CommRingCat.ofHom φ)) := by
     have h2 : Flat (Spec.map (CommRingCat.ofHom φ)) := Flat.SpecMap_iff.2 hφ
     exact MorphismProperty.comp_mem @Flat _ _ inferInstance h2
   have hres := hπ.restrict N.1
@@ -510,7 +510,7 @@ theorem UpperTheory.Gal.KunnethLefschetz.G.bChartEx :
   obtain ⟨q, -, hpb⟩ :=
     (isBlowupAlongIdealSheaf_affineBlowup_toSpec J).exists_isPullback_of_flat _ hres
   obtain ⟨c, hc, hcomp, hcov, hint⟩ := UpperTheory.exists_affineBlowup_coordinate_chart_cover A D
-  haveI := hc
+  have := hc
   have key := fun j => UpperTheory.isAffineOpen_image_pullback_openImmersion_chart (Over.Hom.left π) N.1 N.2 φ (AffineBlowup.toSpec J) q hpb
       (coordBlowupSubst A Finset.univ j).toRingHom (c j) (hcomp j)
   choose haff hle ρ hpush hbo using key
@@ -564,7 +564,7 @@ theorem blChart : BlowUpChart₂ := by
     have he := dCoord R Z D c
     algebraize [φ]
     exact Algebra.Smooth.flat _ _
-  haveI : QuasiCompact (Over.Hom.left (dg Z)) := by
+  have : QuasiCompact (Over.Hom.left (dg Z)) := by
     change QuasiCompact (pullback.diagonal (Over.hom Z))
     infer_instance
   have hI : (Scheme.Hom.ker (Over.Hom.left (dg Z))).ideal ⟨c.N, c.aff⟩

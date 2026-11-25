@@ -73,14 +73,14 @@ namespace UpperTheory.Gal.KunnethLefschetz.G
 
 theorem blSmooth : BlowUpSmooth := by
   intro R _ _ Z W D _ _ π hπ
-  haveI : IsZariskiLocalAtSource (@SmoothOfRelativeDimension D) :=
+  have : IsZariskiLocalAtSource (@SmoothOfRelativeDimension D) :=
     HasRingHomProperty.instIsZariskiLocalAtSource
-  haveI : Smooth (Over.hom Z) := SmoothOfRelativeDimension.smooth (n := D) (f := Over.hom Z)
-  haveI : LocallyOfFiniteType (Over.hom Z) := inferInstance
+  have : Smooth (Over.hom Z) := SmoothOfRelativeDimension.smooth (n := D) (f := Over.hom Z)
+  have : LocallyOfFiniteType (Over.hom Z) := inferInstance
   obtain ⟨-, -, hoff⟩ := blOff R π hπ
   have hp1 : SmoothOfRelativeDimension D (Over.Hom.left (p1 Z)) := by
     change SmoothOfRelativeDimension D (pullback.fst (Over.hom Z) (Over.hom Z))
-    haveI := smoothOfRelativeDimension_isStableUnderBaseChange (n := D)
+    have := smoothOfRelativeDimension_isStableUnderBaseChange (n := D)
     exact MorphismProperty.of_isPullback (IsPullback.of_hasPullback _ _).flip ‹_›
   have h1 : SmoothOfRelativeDimension D (Over.Hom.left (π ≫ p1 Z)) := by
     apply ofPts
@@ -104,7 +104,7 @@ theorem blSmooth : BlowUpSmooth := by
       have hcomp := hg.comp (stdC _ D)
       rw [MvPolynomial.eval₂Hom_comp_C, zero_add] at hcomp
       exact hcomp
-    · haveI : IsClosedImmersion (Over.Hom.left (dg Z)) := by
+    · have : IsClosedImmersion (Over.Hom.left (dg Z)) := by
         change IsClosedImmersion (pullback.diagonal (Over.hom Z))
         infer_instance
       let O0 : (Over.left (XX Z)).Opens :=
@@ -511,7 +511,7 @@ private theorem exists_open_emb {Z W : Scheme.{0}} (I : Z.IdealSheafData) (π : 
     ∃ (j : affineBlowup (I.ideal U) ⟶ W) (_ : IsOpenImmersion j),
       j ≫ π = AffineBlowup.toSpec (I.ideal U) ≫ U.2.fromSpec ∧ j ''ᵁ ⊤ = π ⁻¹ᵁ U.1 := by
   have hU : IsAffineOpen U.1 := U.2
-  haveI : IsOpenImmersion (IsAffineOpen.fromSpec U.2) := inferInstanceAs (IsOpenImmersion hU.fromSpec)
+  have : IsOpenImmersion (IsAffineOpen.fromSpec U.2) := inferInstanceAs (IsOpenImmersion hU.fromSpec)
   have hI : I.comap U.2.fromSpec = specIdealSheaf (I.ideal U) := by
     refine Scheme.IdealSheafData.ext_of_isAffine ?_
     have e : (⊤ : (Spec Γ(Z, U.1)).Opens) ≤ U.2.fromSpec ⁻¹ᵁ U.1 := by
@@ -831,7 +831,7 @@ theorem UpperTheory.exists_homogeneous_generators_idealSheaf_closedImmersion :
   intro R _ _ N Z i _ I
   have hfg : ∀ a : Fin (N + 1), (I.ideal ⟨_, isAffineOpen_U i a⟩).FG := by
     intro a
-    haveI : IsNoetherianRing Γ(Z, i ⁻¹ᵁ Proj.basicOpen (grading R N) (X a)) :=
+    have : IsNoetherianRing Γ(Z, i ⁻¹ᵁ Proj.basicOpen (grading R N) (X a)) :=
       isNoetherianRing_of_surjective _ _ (phi i a) (phi_surjective i a)
     exact IsNoetherian.noetherian _
   choose gens hgens using hfg
@@ -991,8 +991,8 @@ theorem UpperTheory.sections_generated_over_affine_product_cover :
     exact TopologicalSpace.Opens.mem_iSup.mpr ⟨(a, b), ⟨ha, hb⟩⟩
   have hWt : ∀ i, IsAffineOpen (Wt i) := by
     intro i
-    haveI : IsAffine (U i.1) := hU i.1
-    haveI : IsAffine (D i.2) := hD i.2
+    have : IsAffine (U i.1) := hU i.1
+    have : IsAffine (D i.2) := hD i.2
     let m := pullback.map ((U i.1).ι ≫ p) ((D i.2).ι ≫ q) p q (U i.1).ι (D i.2).ι (𝟙 S)
       (by simp) (by simp)
     have hm : m.opensRange = Wt i := by
@@ -1030,9 +1030,9 @@ theorem UpperTheory.sections_generated_over_affine_product_cover :
         rw [Scheme.Hom.app_eq_appLE, ← CommRingCat.comp_apply, Scheme.Hom.appLE_comp_appLE]
         simp only [hL, pullback.lift_snd]
     exact (Subring.closure_le.mpr hle) hy
-  haveI : IsAffine (Wt (a, b)) := hWt (a, b)
+  have : IsAffine (Wt (a, b)) := hWt (a, b)
   have hA : IsAffineOpen (L ⁻¹ᵁ Wt (a, b)) := by rw [hpre (a, b)]; exact hV a b
-  haveI : IsAffine (L ⁻¹ᵁ Wt (a, b)) := hA
+  have : IsAffine (L ⁻¹ᵁ Wt (a, b)) := hA
   apply IsClosedImmersion.of_surjective_of_isAffine
   rw [morphismRestrict_appTop]
   have hs2 : Function.Surjective (L.app ((Wt (a, b)).ι ''ᵁ ⊤)) := by
@@ -1238,7 +1238,7 @@ private theorem exists_chart {R : Type} [CommRing R] {Z W : Sch R} (d : ℕ) [Is
 
 theorem exSmooth : ExSmooth := by
   intro R _ _ Z W d _ _ π hπ
-  haveI : Smooth Z.hom := SmoothOfRelativeDimension.smooth (d + 1) Z.hom
+  have : Smooth Z.hom := SmoothOfRelativeDimension.smooth (d + 1) Z.hom
   refine ⟨⟨fun x => ?_⟩, ?_, ⟨fun z => ?_⟩⟩
   · obtain ⟨c, b, hN⟩ := exists_chart d π hπ ((exG π).left x)
     have e : (exI π).left ≫ π.left = (exG π).left ≫ (dg Z).left := pullback.condition
@@ -1274,8 +1274,8 @@ theorem UpperTheory.Gal.KunnethLefschetz.G.blTop :
     UpperTheory.Gal.KunnethLefschetz.G.BlowUpTop := by
   intro R _ _ Z d _ hZ
   have hprop := (UpperTheory.Gal.KunnethLefschetz.G.projProd R (Over.hom Z) (Over.hom Z) hZ).2.2
-  haveI : IsSeparated (Over.hom Z) := inferInstance
-  haveI : LocallyOfFiniteType (Over.hom Z) := inferInstance
+  have : IsSeparated (Over.hom Z) := inferInstance
+  have : LocallyOfFiniteType (Over.hom Z) := inferInstance
   have hXX : IsProjOver (Over.hom (UpperTheory.Gal.KunnethLefschetz.G.XX Z)) :=
     (UpperTheory.Gal.KunnethLefschetz.G.projProd R (Over.hom Z) (Over.hom Z) hZ).1 hZ
   obtain ⟨Y, πl, hπ⟩ := exists_isBlowupAlongIdealSheaf (UpperTheory.Gal.KunnethLefschetz.G.XX Z).left
@@ -1300,14 +1300,14 @@ theorem UpperTheory.Gal.KunnethLefschetz.G.blTop :
   have hsm := UpperTheory.Gal.KunnethLefschetz.G.blSmooth R (d + 1) π hBl
   have hex := UpperTheory.Gal.KunnethLefschetz.G.exSmooth R d π hBl
   refine ⟨W, π, hBl, hXX, hW, hEx, ?_, hsm.2, ?_⟩
-  · haveI : SmoothOfRelativeDimension (d + 1) (pullback.fst (Over.hom Z) (Over.hom Z)) :=
+  · have : SmoothOfRelativeDimension (d + 1) (pullback.fst (Over.hom Z) (Over.hom Z)) :=
       MorphismProperty.of_isPullback (P := @SmoothOfRelativeDimension (d + 1))
         (self := smoothOfRelativeDimension_isStableUnderBaseChange (d + 1))
         (IsPullback.of_hasPullback (Over.hom Z) (Over.hom Z)).flip inferInstance
     show SmoothOfRelativeDimension (d + 1 + (d + 1))
       (pullback.fst (Over.hom Z) (Over.hom Z) ≫ Over.hom Z)
     infer_instance
-  · haveI := hex.1
+  · have := hex.1
     rw [← Over.w (UpperTheory.Gal.KunnethLefschetz.G.exG π)]
     infer_instance
 end -- clump:auto
@@ -1353,7 +1353,7 @@ private theorem etale_map {A B : Type} [CommRing A] [CommRing B] (φ : A →+* B
   algebraize [φ]
   let := MvPolynomial.algebraMvPolynomial (σ := σ) (R := A) (S := B)
   have h : Algebra.IsPushout A (MvPolynomial σ A) B (MvPolynomial σ B) := inferInstance
-  haveI := h.symm
+  have := h.symm
   exact RingHom.Etale.isStableUnderBaseChange A B (MvPolynomial σ A) (MvPolynomial σ B) hφ
 
 private theorem etale_open {R : Type} [CommRing R] (U : (Spec (CommRingCat.of R)).Opens)
@@ -1459,18 +1459,18 @@ open CategoryTheory Limits AlgebraicGeometry UpperTheory.Gal.DifferentialFormSec
 theorem UpperTheory.Gal.KunnethLefschetz.G.sqCore (l : ℕ) [Fact l.Prime] (K : IntermediateField ℚ_[l] (PadicAlgCl l)) [FiniteDimensional ℚ_[l] K]
     (M : Model l K) (d : ℕ) (hM : M.Sm) (hd : SmoothOfRelativeDimension (d + 1) M.p) : ∃ S : Sq M (d + 1), Etale S.D.f := by
   obtain ⟨⟨hproj, ϖ, hϖ, -⟩, -⟩ := hM
-  haveI : IsNoetherianRing (OK l K) := oKDvr l K
+  have : IsNoetherianRing (OK l K) := oKDvr l K
   let Z : Sch (OK l K) := Over.mk M.p
-  haveI : SmoothOfRelativeDimension (d + 1) Z.hom := hd
+  have : SmoothOfRelativeDimension (d + 1) Z.hom := hd
   obtain ⟨W, π, hbl, hXp, hWp, -, hXs, hWs, -⟩ := blTop (OK l K) Z d hproj
-  haveI : IsProper Z.hom := ((projProd (OK l K) Z.hom Z.hom hproj).2.2)
+  have : IsProper Z.hom := ((projProd (OK l K) Z.hom Z.hom hproj).2.2)
   obtain ⟨D, het, ⟨B⟩⟩ := blowOfBl (OK l K) (d + 1) π hbl
   let P : Model l K := ⟨(XX Z).left, (XX Z).hom⟩
   let Y : Model l K := ⟨W.left, W.hom⟩
   have hΔ : (dg Z).left ≫ P.p = M.p := Over.w (dg Z)
   have hπ : π.left ≫ P.p = Y.p := Over.w π
-  haveI : Smooth P.p := SmoothOfRelativeDimension.smooth (d + 1 + (d + 1)) P.p
-  haveI : Smooth Y.p := SmoothOfRelativeDimension.smooth (d + 1 + (d + 1)) Y.p
+  have : Smooth P.p := SmoothOfRelativeDimension.smooth (d + 1 + (d + 1)) P.p
+  have : Smooth Y.p := SmoothOfRelativeDimension.smooth (d + 1 + (d + 1)) Y.p
   have hP : P.Sm := ⟨⟨hXp, ϖ, hϖ, smSst _ ϖ P.p⟩, inferInstance⟩
   have hY : Y.Sm := ⟨⟨hWp, ϖ, hϖ, smSst _ ϖ Y.p⟩, inferInstance⟩
   have sq₀ : IsPullback (pullback.fst P.p (Spec.map (CommRingCat.ofHom (OK l K).subtype))) P.q P.p
