@@ -476,8 +476,9 @@ jobs:
       cancel-in-progress: false
     # `contents: write` to remove the branch of a batch the sync started once its pull request is
     # merged or closed, and, with `ASSEMBLE` on, to create batch branches and merge into them.
-    # `actions: write` to start the conflict-labels workflow when a batch assembled by hand is
-    # first labelled `building`.
+    # `actions: write` to start the conflict-labels workflow once, at the end of a run in which a
+    # batch assembled by hand was first labelled `building` or `latest batch` moved, after it has
+    # moved.
     permissions:
       actions: write
       contents: write
