@@ -66,7 +66,7 @@ theorem uMat_inv_mul (g : Formalism.REAL.UJ ε) : uMat g⁻¹ * uMat g = 1 := by
   rw [← uMat_mul, inv_mul_cancel, uMat_one]
 
 theorem continuous_uMat : Continuous (fun g : Formalism.REAL.UJ ε => uMat g) :=
-  Units.continuous_val.comp continuous_subtype_val
+  Formalism.REAL.continuous_coeMatrix ε
 
 theorem inv_keeps {A B : Matrix (Fin n) (Fin n) ℂ} (hBA : B * A = 1) (V : Submodule ℂ (Fin n → ℂ))
     (hA : ∀ y ∈ V, A *ᵥ y ∈ V) : ∀ y ∈ V, B *ᵥ y ∈ V := by

@@ -1219,8 +1219,7 @@ private theorem lu_up {R : Type} [CommRing R] (U k T : Matrix (Fin 3) (Fin 3) R)
   fin_cases a <;> fin_cases b <;> first | assumption | exact absurd hab (by decide)
 
 private theorem lu_J {R : Type} [CommRing R] (X : Matrix (Fin 3) (Fin 3) R) (a b : Fin 3) :
-    (Jmat R 3 * Xᵀ * Jmat R 3) a b = X b.rev a.rev := by
-  fin_cases a <;> fin_cases b <;> simp [Matrix.mul_apply, Fin.sum_univ_three, Jmat, Fin.rev]
+    (Jmat R 3 * Xᵀ * Jmat R 3) a b = X b.rev a.rev := UpperTheory.V.UnitaryThreeInertia.Jc X a b
 
 end UpperTheory.V.UnitaryThreeInertia
 

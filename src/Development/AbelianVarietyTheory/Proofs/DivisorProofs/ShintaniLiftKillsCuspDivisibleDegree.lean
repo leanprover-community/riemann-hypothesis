@@ -587,9 +587,7 @@ theorem detOne {m : ℕ} (u v : Fin m → F) : (1 + vecMulVec u v).det = 1 + v �
   rw [vecMulVec_eq Unit, det_one_add_replicateCol_mul_replicateRow]
 
 theorem toG_val {m : ℕ} (u : GL (Fin m) F) : toG (u : Matrix (Fin m) (Fin m) F) = u := by
-  unfold toG
-  rw [dite_eq_left u.isUnit]
-  exact Units.ext (IsUnit.unit_spec _)
+  exact GlobalTheory.Shin.HcUnit.toG_val u
 
 theorem toG_coe {m : ℕ} (M : Matrix (Fin m) (Fin m) F) (h : IsUnit M) : ((toG M : GL (Fin m) F) : Matrix (Fin m) (Fin m) F) = M := by
   unfold toG
@@ -835,7 +833,7 @@ noncomputable section
 namespace GlobalTheory.Shin.Mass
 
 theorem gal_id (F : Type) [Field F] (n : ℕ) (y : GL (Fin n) F) : gal (RingHom.id F) n y = y := by
-  ext i j; simp [gal]
+  exact GlobalTheory.Shin.gal_id_eq n y
 
 theorem sum_comp_surj {G M : Type} [Group G] [Group M] [Fintype G] [Fintype M]
     (π : G →* M) (hs : Function.Surjective π) (g : M → ℂ) :

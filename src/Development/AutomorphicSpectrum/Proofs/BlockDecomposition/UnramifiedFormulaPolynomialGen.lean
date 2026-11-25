@@ -556,9 +556,7 @@ namespace GlobalTheory.CompanionTheory.SiegLoc.LevelId
 variable {R : Type} [CommRing R]
 
 theorem cT_mul (σ : R →+* R) {a b c : ℕ} (x : Matrix (Fin a) (Fin b) R) (y : Matrix (Fin b) (Fin c) R) :
-    cT σ (x * y) = cT σ y * cT σ x := by
-  unfold cT
-  rw [Matrix.map_mul, Matrix.transpose_mul]
+    cT σ (x * y) = cT σ y * cT σ x := GlobalTheory.CompanionTheory.SiegCov.cT_mul σ x y
 
 theorem cT_sub (σ : R →+* R) {a b : ℕ} (x y : Matrix (Fin a) (Fin b) R) :
     cT σ (x - y) = cT σ x - cT σ y := by

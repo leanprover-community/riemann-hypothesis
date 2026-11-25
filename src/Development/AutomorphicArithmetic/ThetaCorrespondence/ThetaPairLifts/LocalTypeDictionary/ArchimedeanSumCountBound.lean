@@ -149,7 +149,7 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formali
 variable {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} (G : GridData L sc)
 
 theorem sig_nonneg : 0 ≤ sig G :=
-  Finset.sum_nonneg fun _ _ => mul_nonneg (Nat.cast_nonneg _) (Real.log_natCast_nonneg _)
+  ResidueCardinalityNilpotence.GlobalTheory.CompanionTheory.VolVal.sig_nonneg G
 
 theorem absNorm_modul_le : (Ideal.absNorm G.modul : ℝ) ≤ Real.exp (2 * sig G) := by
   unfold sig

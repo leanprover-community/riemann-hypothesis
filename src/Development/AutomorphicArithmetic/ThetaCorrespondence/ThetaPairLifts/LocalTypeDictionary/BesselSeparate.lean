@@ -670,8 +670,7 @@ namespace GlobalTheory.FlagRealUnip
 variable {D : D7}
 
 theorem tauE_sig (τ : D.what₂.Tau) (a : D.host.E) :
-    tauE D τ (D.sp.cm.sig a) = starRingEnd ℂ (tauE D τ a) :=
-  D.sp.cm.cmUnram.2.1 _ a
+    tauE D τ (D.sp.cm.sig a) = starRingEnd ℂ (tauE D τ a) := Formalism.IndefR.Eqv.tauE_star D τ a
 
 def single (σ : (D.what₂.Tau → ℂ) →+ AE D) (τ : D.what₂.Tau) : ℂ →+ AE D :=
   σ.comp (AddMonoidHom.single (fun _ : D.what₂.Tau => ℂ) τ)

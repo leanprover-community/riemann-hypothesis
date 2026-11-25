@@ -131,11 +131,7 @@ theorem lminor_zero (M : Matrix (Fin r) (Fin r) ℂ) : lminor M 0 = 1 := by
   exact Matrix.det_eq_one_of_card_eq_zero (by simp; exact Fintype.card_eq_zero)
 
 theorem gram_eq (τ : E →+* ℂ) (G : Matrix (Fin r) (Fin r) E) (x : Matrix (Fin r) (Fin r) ℂ) :
-    gram τ G x = x.transpose * G.map τ * x.map (starRingEnd ℂ) := by
-  ext a b
-  simp only [gram, hermC, col, Matrix.of_apply, Matrix.mul_apply, Matrix.transpose_apply, Matrix.map_apply,
-    Finset.sum_mul]
-  exact Finset.sum_comm
+    gram τ G x = x.transpose * G.map τ * x.map (starRingEnd ℂ) := Formalism.L2.Pj.gram_eq τ G x
 
 theorem det_gram (τ : E →+* ℂ) (G : Matrix (Fin r) (Fin r) E) (x : Matrix (Fin r) (Fin r) ℂ) :
     (gram τ G x).det = x.det * (G.map τ).det * starRingEnd ℂ x.det := by

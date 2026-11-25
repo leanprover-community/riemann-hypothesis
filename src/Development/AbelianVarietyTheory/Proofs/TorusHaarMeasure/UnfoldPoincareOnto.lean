@@ -838,11 +838,7 @@ namespace GlobalTheory.PoincareAssembly
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 
 theorem norm_chi {r : ℕ} (X : Data E r) (la : Wt X.Ψ r) {γ : GL (Fin r) E} (hγ : γ ∈ X.Γ) :
-    ‖X.χ la γ‖ = 1 := by
-  obtain ⟨n, hn, hpow⟩ := X.χ_fin la
-  have h := congrArg norm (hpow γ hγ)
-  rw [norm_pow, norm_one] at h
-  exact (pow_eq_one_iff_of_nonneg (norm_nonneg _) hn.ne').1 h
+    ‖X.χ la γ‖ = 1 := ReciprocityTheory.ChartRestriction.G.AR.Up.OntoE.chi_norm X la hγ
 
 theorem cpt_lact {r : ℕ} (X : Data E r) (γ : GL (Fin r) E) (x : Frame X.Ψ r) (z : V (nd X)) :
     cpt X (lact γ x) z = lact γ (cpt X x z) := by

@@ -194,8 +194,7 @@ variable {X Y : Scheme.{0}}
 alias res_res := _root_.ReciprocityTheory.ChartRestriction.G.DVR.res_res'
 
 theorem pw_pw (H : LB X) (a b : ℤ) : AbLaw.pw (AbLaw.pw H a) b = AbLaw.pw H (a * b) := by
-  exact congrArg (fun g => (⟨H.ι, H.U, g⟩ : LB X))
-    (funext fun i => funext fun j => (zpow_mul (H.g i j) a b).symm)
+  exact GlobalTheory.Algebraise.pw_pw H a b
 
 theorem pw_pull (H : LB X) (f : Y ⟶ X) (a : ℤ) :
     (AbLaw.pw H a).pull f = AbLaw.pw (H.pull f) a :=

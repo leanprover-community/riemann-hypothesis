@@ -266,8 +266,7 @@ theorem ge_zero_of_sub_mul (V : VF C) {N : ℕ} (hN : V.v (N : C) = 0) {a b z : 
 variable {Y : RawChart C d I κ} {V : VF C}
 
 theorem RLaw.constantCoeff_lg (h : RLaw Y V) (i : κ) : constantCoeff (Y.lg i) = 0 := by
-  rw [← coeff_zero_eq_constantCoeff_apply, h.lin i 0 (by simp), coeff_zero_eq_constantCoeff_apply,
-    constantCoeff_X]
+  exact GlobalTheory.RowLaw.AddCurve.lg_const h i
 
 theorem RLaw.coeff_single_lg (h : RLaw Y V) (i s : κ) :
     coeff (Finsupp.single s 1) (Y.lg i) = if s = i then 1 else 0 := by

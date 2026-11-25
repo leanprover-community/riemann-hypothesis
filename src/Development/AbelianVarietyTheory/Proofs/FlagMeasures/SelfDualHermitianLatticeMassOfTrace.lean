@@ -257,8 +257,7 @@ theorem span_rmul_inv (x : Fin m → Fin n → E) {A : Matrix (Fin m) (Fin m) E}
   rwa [rmul_mul, Matrix.nonsing_inv_mul _ hA, rmul_one] at this
 
 theorem cT_mul (A B : Matrix (Fin m) (Fin m) E) : cT L (A * B) = cT L B * cT L A := by
-  ext i j
-  simp [cT, Matrix.mul_apply, mul_comm]
+  exact GlobalTheory.CongTrans.cT_mul L A B
 
 theorem cT_one : cT L (1 : Matrix (Fin m) (Fin m) E) = 1 := by
   ext i j

@@ -338,8 +338,7 @@ theorem szc_Kset_UJ {ε : Fin n → Bool} {g : Matrix (Fin n) (Fin n) ℂ} (hg :
 
 theorem szc_Kset_mul {ε : Fin n → Bool} {g h : Matrix (Fin n) (Fin n) ℂ} (hg : g ∈ Formalism.REAL.Kset ε)
     (hh : h ∈ Formalism.REAL.Kset ε) : g * h ∈ Formalism.REAL.Kset ε := by
-  refine ⟨Submonoid.mul_mem _ hg.1 hh.1, ?_⟩
-  rw [Matrix.mul_assoc, hh.2, ← Matrix.mul_assoc, hg.2, Matrix.mul_assoc]
+  exact Formalism.REAL.Kset_mul ε hg hh
 
 variable {ε : Fin n → Bool} {σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)}
   {U V : Matrix (Fin n) (Fin n) ℂ}

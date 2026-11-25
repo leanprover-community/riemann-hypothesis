@@ -63,7 +63,7 @@ open Formalism.L2.Host
 variable {L : Type} [Field L] [NumberField L]
 
 theorem exp_neg_one_lt_one : (WithZero.exp (-1 : ℤ) : WithZero (Multiplicative ℤ)) < 1 := by
-  rw [← WithZero.exp_zero, WithZero.exp_lt_exp]; norm_num
+  exact GlobalTheory.GalToHecke.exp_neg_one_lt_one
 
 theorem locK_eq_of_tame (χ : HChar L) {v : HeightOneSpectrum (𝓞 L)} (h : χ.TameAt v) (x y : Lˣ)
     (hxy : v.valuation L ((y : L) - x) ≤ WithZero.exp (-1 : ℤ) * v.valuation L (x : L)) :

@@ -38,10 +38,7 @@ namespace Formalism.FourierDecayAlt.P.CutMP.JA.SA
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
-theorem gv_isClosed (k r : ℕ) : IsClosed (B.GV k r) := by
-  show IsClosed {g : B.Mat k r | Matrix.conjTranspose g * Hpk k r * g = Hpk k r}
-  exact isClosed_eq ((continuous_id.matrix_conjTranspose.matrix_mul continuous_const).matrix_mul continuous_id)
-    continuous_const
+theorem gv_isClosed (k r : ℕ) : IsClosed (B.GV k r) := Formalism.FourierDecayAlt.P.B5.GV_closed
 
 theorem sgs_continuousAt_oneP {k r : ℕ} (g : B.Mat k r) :
     ContinuousAt (fun p : B.SS k r => B.sgs p g) oneP := by

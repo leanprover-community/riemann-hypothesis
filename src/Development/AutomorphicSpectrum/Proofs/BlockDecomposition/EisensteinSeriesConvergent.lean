@@ -922,7 +922,7 @@ theorem incM_diagCols : incM F (diagCols (Fin n) : Matrix (Ix n) (Fin n) E) = di
   rcases i with i | i <;> simp [incM, diagCols, Matrix.one_apply, apply_ite]
 
 theorem incM_mul {l m o : Type} [Fintype m] (A : Matrix l m E) (B : Matrix m o E) : incM F (A * B) = incM F A * incM F B :=
-  Matrix.map_mul
+  by apply GlobalTheory.ThK.Dbl.incM_mul
 
 theorem incM_one {m : Type} [Fintype m] [DecidableEq m] : incM F (1 : Matrix m m E) = 1 :=
   Matrix.map_one _ (map_zero _) (map_one _)

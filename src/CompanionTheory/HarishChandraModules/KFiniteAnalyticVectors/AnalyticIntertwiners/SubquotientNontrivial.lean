@@ -25,10 +25,7 @@ theorem mem_smD_of_isKFin [CompleteSpace H] (hσ : Formalism.MainNotions.S.IsURe
   exact (mem_smD_iff ε σ v).mpr (CompanionTheory.D.gk.admitted.kFin_smooth n ε H σ hσ hirr v hv)
 
 theorem Jm_conjTranspose_self : (Jm ε)ᴴ = Jm ε := by
-  rw [Jm, Matrix.diagonal_conjTranspose]
-  congr 1
-  funext a
-  by_cases h : ε a = true <;> simp [h]
+  exact ReciprocityTheory.ChartRestriction.DS.S7.Jm_conjTranspose ε
 
 theorem UJset_mul_mem {a b : Matrix (Fin n) (Fin n) ℂ} (ha : a ∈ Formalism.MainNotions.S.UJset ε) (hb : b ∈ Formalism.MainNotions.S.UJset ε) :
     a * b ∈ Formalism.MainNotions.S.UJset ε := by

@@ -268,7 +268,7 @@ theorem uMat_injective (ε : Fin n → Bool) : Function.Injective (uMat : UJ ε 
   fun _ _ h => Subtype.ext (Units.ext h)
 
 theorem continuous_uMat (ε : Fin n → Bool) : Continuous (uMat : UJ ε → _) :=
-  Units.continuous_val.comp continuous_subtype_val
+  Formalism.REAL.continuous_coeMatrix ε
 
 theorem continuous_expJ (ε : Fin n → Bool) : Continuous (expJ ε) := by
   refine Continuous.subtype_mk (Units.continuous_iff.2 ⟨?_, ?_⟩) _

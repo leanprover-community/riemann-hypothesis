@@ -66,7 +66,7 @@ theorem sθ_single (V : Submodule ℂ M) (EM : Fin n → Fin n → Module.End �
 
 theorem tensorAction_apply_dual (E : Fin n → Fin n → Module.End ℂ MM) (f : Fin n → MM) (d : Fin n) :
     eeV E f d = ∑ c, E c d (f c) := by
-  simp [eeV, prj, LinearMap.sum_apply]
+  exact ReciprocityTheory.ChartRestriction.DS.Lap.LemK.vk_eeV_apply E f d
 
 theorem wordAction_cons (E : Fin n → Fin n → Module.End ℂ M) (p : Fin n × Fin n) (w : List (Fin n × Fin n))
     (x : M) : wordE E (p :: w) x = E p.1 p.2 (wordE E w x) := by

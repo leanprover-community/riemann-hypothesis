@@ -76,10 +76,7 @@ theorem form_one : IsMultiHomog (1 : MRing ι) (0 : K → ℕ) := by
 
 theorem form_mul {f g : MRing ι} {a b : K → ℕ} (hf : IsMultiHomog f a) (hg : IsMultiHomog g b) :
     IsMultiHomog (f * g) (a + b) := by
-  classical
-  intro m hm k
-  obtain ⟨m1, hm1, m2, hm2, rfl⟩ := Finset.mem_add.1 (MvPolynomial.support_mul f g hm)
-  simp only [Finsupp.add_apply, Finset.sum_add_distrib, Pi.add_apply, hf m1 hm1 k, hg m2 hm2 k]
+  exact GroundTheory.Heights₂.Heights.HilbertSamuel.SectionBounded.homog_mul hf hg
 
 theorem form_add {f g : MRing ι} {a : K → ℕ} (hf : IsMultiHomog f a) (hg : IsMultiHomog g a) :
     IsMultiHomog (f + g) a := by

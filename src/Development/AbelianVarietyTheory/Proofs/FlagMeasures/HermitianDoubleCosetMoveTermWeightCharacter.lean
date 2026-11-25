@@ -67,9 +67,7 @@ variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E]
 variable {L : LocE F E} {r k : ℕ} (S : Frames L r k)
 
-theorem cj_mem_O {c : E} (hc : c ∈ L.O) : L.cj c ∈ L.O := by
-  rw [L.O_def] at hc ⊢
-  exact hc.map (L.cj.toAlgHom.restrictScalars 𝒪[F])
+theorem cj_mem_O {c : E} (hc : c ∈ L.O) : L.cj c ∈ L.O := GlobalTheory.UnramOrder.cj_mem L hc
 
 theorem top_coord (g : Fin (r + 1) → S.V) (gs : Fin r → S.V)
     (hd : ∀ a j, hf L S.Hm (g a) (gs j) = if a = j.castSucc then 1 else 0)

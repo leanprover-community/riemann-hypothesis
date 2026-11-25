@@ -125,7 +125,7 @@ theorem mem_perpE (D : D7) (P : LatW D) (v : (D.sp.X 0).V) :
 
 theorem mem_orth {E : Type} [Field E] [NumberField E] [StarRing E] (S : Formalism.BasicNotions.HSpace E)
     (U : Submodule E S.V) (v : S.V) : v ∈ orth S U ↔ ∀ p ∈ U, S.hT p v = 0 := by
-  simp [orth, Submodule.mem_iInf]
+  exact Formalism.MainNotions.mem_orth_iff U v
 
 theorem hT_symm {E : Type} [Field E] [NumberField E] [StarRing E] (S : Formalism.BasicNotions.HSpace E)
     (x y : S.V) : S.hT y x = star (S.hT x y) := by

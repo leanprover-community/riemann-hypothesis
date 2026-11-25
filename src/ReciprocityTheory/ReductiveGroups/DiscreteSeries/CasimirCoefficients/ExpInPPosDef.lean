@@ -34,11 +34,7 @@ variable {ε : Fin n → Bool}
 open PolarDecomposition
 
 private lemma Jm_mul_self_eq_one' : Jm ε * Jm ε = 1 := by
-  unfold Jm
-  rw [Matrix.diagonal_mul_diagonal, ← Matrix.diagonal_one]
-  congr 1
-  funext a
-  split_ifs <;> norm_num
+  exact ReciprocityTheory.ChartRestriction.DS.S7.Jm_mul_self ε
 
 private lemma Jm_conjTranspose_eq_self' : (Jm ε)ᴴ = Jm ε := by
   unfold Jm

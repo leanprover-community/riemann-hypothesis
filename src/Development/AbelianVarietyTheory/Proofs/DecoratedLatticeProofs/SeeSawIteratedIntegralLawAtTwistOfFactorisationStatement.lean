@@ -261,7 +261,7 @@ def combL (c : WO S T →₀ ℂ) : (WO S T → ℂ) →ₗ[ℂ] (WO S T → ℂ
     exact Finset.sum_congr rfl fun _ _ => by ring
 
 theorem comb_single (y : WO S T) (f : WO S T → ℂ) : comb ψ S T (Finsupp.single y 1) f = heisO ψ S T y f := by
-  rw [GlobalTheory.HeisComb.comb_eq_sum, Finsupp.sum_single_index (zero_smul ℂ (heisO ψ S T y f)), one_smul]
+  exact GlobalTheory.QVal.Inv.comb_single_one y f
 
 theorem model_comb (hψ : IsStdChar D ψ (-1)) {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k]
     [IsNonarchimedeanLocalField k] (p : Place D k) {Y Y' : Type} [Fintype Y] [DecidableEq Y] [Fintype Y'] [DecidableEq Y']

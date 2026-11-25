@@ -579,16 +579,16 @@ section General
 variable {m : ℕ} {H : Matrix (Fin m) (Fin m) ℂ}
 
 theorem herm_add_l (u v w : Fin m → ℂ) : herm H (u + v) w = herm H u w + herm H v w := by
-  simp [herm, Matrix.mulVec_add, dotProduct_add]
+  exact Formalism.FourierDecayAlt.P.B2x4.herm_add_left H u v w
 
 theorem herm_add_r (u v w : Fin m → ℂ) : herm H u (v + w) = herm H u v + herm H u w := by
-  simp [herm, add_dotProduct]
+  exact Formalism.FourierDecayAlt.P.B2x4.herm_add_right H u v w
 
 theorem herm_smul_l (c : ℂ) (v w : Fin m → ℂ) : herm H (c • v) w = c * herm H v w := by
-  simp [herm, Matrix.mulVec_smul, dotProduct_smul]
+  exact Formalism.FourierDecayAlt.P.B2x4.herm_smul_left H c v w
 
 theorem herm_smul_r (c : ℂ) (v w : Fin m → ℂ) : herm H v (c • w) = star c * herm H v w := by
-  simp [herm, smul_dotProduct]
+  exact Formalism.FourierDecayAlt.P.B2x6.herm_smul_right H c v w
 
 theorem herm_sum_l {ι : Type*} (s : Finset ι) (v : ι → Fin m → ℂ) (w : Fin m → ℂ) :
     herm H (∑ i ∈ s, v i) w = ∑ i ∈ s, herm H (v i) w := by
@@ -599,8 +599,7 @@ theorem herm_sum_r {ι : Type*} (s : Finset ι) (v : ι → Fin m → ℂ) (w : 
   simp [herm, star_sum, sum_dotProduct]
 
 theorem herm_conj (hH : Hᴴ = H) (v w : Fin m → ℂ) : star (herm H v w) = herm H w v := by
-  unfold herm
-  rw [← star_dotProduct_star, star_star, star_mulVec, hH, ← Matrix.dotProduct_mulVec]
+  exact Formalism.FourierDecayAlt.P.B2x4.herm_symm H hH v w
 
 theorem herm_isom {g : Matrix (Fin m) (Fin m) ℂ} (hg : g ∈ UH H) (v w : Fin m → ℂ) :
     herm H (g *ᵥ v) (g *ᵥ w) = herm H v w := by
@@ -647,8 +646,7 @@ variable {k r : ℕ}
 
 theorem hpk_herm : (Hpk k r)ᴴ = Hpk k r := (Formalism.QuantumDeterminants.hpkFacts k r).1
 
-theorem hpk_unit : IsUnit (Hpk k r).det :=
-  Matrix.isUnit_det_of_left_inverse (Formalism.QuantumDeterminants.hpkFacts k r).2.1
+theorem hpk_unit : IsUnit (Hpk k r).det := GlobalTheory.Amp.FibreVolume.hpk_unit
 
 theorem hpk_mulVec_e (v : Fin (2 * r + k + 1) → ℂ) (a : Fin r) : (Hpk k r *ᵥ v) (eI k r a) = v (esI k r a) := by
   exact GlobalTheory.Amp.NCoord.H_e v a
@@ -741,7 +739,7 @@ theorem decomp {z z' : Fin (2 * r + k + 1) → ℂ} {γ x : Mat k r} (p : Ppos k
     exact ⟨w, hw, c, e.symm⟩
 
 theorem fvec_cast (z : Fin (2 * r + k + 1) → ℂ) (a : Fin r) : fvec k r z a.castSucc = bvec (eI k r a) := by
-  simp [fvec]
+  exact GlobalTheory.Amp.NormGram.fvec_cast z a
 
 theorem alg (Z : Matrix (Fin r) (Fin r) ℂ) (hZ : IsUnit Z.det) (c d : Fin r → ℂ) :
     ∑ a, ∑ b, (Z *ᵥ c) a * (d ᵥ* Z) b * Z⁻¹ᵀ a b = d ⬝ᵥ (Z *ᵥ c) := by

@@ -66,10 +66,9 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 variable {D : D7}
 
 theorem mt_mul (S : HSp D) (g g' : GA D S) : mt S (g * g') = mt S g * mt S g' := by
-  simp [Formalism.L2.Theta.mt]
+  exact GlobalTheory.BesselCompare.mt_mul S g g'
 
-theorem mt_one (S : HSp D) : mt S 1 = 1 := by
-  simp [Formalism.L2.Theta.mt]
+theorem mt_one (S : HSp D) : mt S 1 = 1 := GlobalTheory.BesselCompare.mt_one S
 
 theorem eq_of_parts {A : Type*} [CommRing A] {e f m m' o : A} (k1 : (e + f) * (m - o) = m - o)
     (k2 : (e + f) * (m' - o) = m' - o) (k3 : e * m = e * m') (k4 : f * m' = f * m) : m = m' := by
@@ -173,10 +172,9 @@ variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchim
   {p : SplitPt D k} {S : HSp D} {n : Type} [Fintype n] [DecidableEq n]
 
 theorem mt_mul (g h : GA D S) : Formalism.L2.Theta.mt S (g * h) = Formalism.L2.Theta.mt S g * Formalism.L2.Theta.mt S h := by
-  simp [Formalism.L2.Theta.mt, map_mul]
+  exact GlobalTheory.BesselCompare.mt_mul S g h
 
-theorem mt_one : Formalism.L2.Theta.mt S (1 : GA D S) = 1 := by
-  simp [Formalism.L2.Theta.mt, map_one]
+theorem mt_one : Formalism.L2.Theta.mt S (1 : GA D S) = 1 := GlobalTheory.BesselCompare.mt_one S
 
 theorem pr_e (p : SplitPt D k) : p.pr p.e = 1 := by
   have h1 := p.pr_sec (p.pr 1)

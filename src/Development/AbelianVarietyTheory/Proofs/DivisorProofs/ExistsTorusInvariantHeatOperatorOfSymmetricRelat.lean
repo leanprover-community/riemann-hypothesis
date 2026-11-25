@@ -313,7 +313,8 @@ theorem constFn_add {Z : Scheme.{0}} (p : Z ⟶ Sp R) (O : Z.Opens) (a b : R) :
     constFn p O (a + b) = constFn p O a + constFn p O b := by simp [constFn]
 
 theorem constFn_mul {Z : Scheme.{0}} (p : Z ⟶ Sp R) (O : Z.Opens) (a b : R) :
-    constFn p O (a * b) = constFn p O a * constFn p O b := by simp [constFn]
+    constFn p O (a * b) = constFn p O a * constFn p O b :=
+  GlobalTheory.KS.InvField.constFn_mul p O a b
 
 theorem constFn_neg {Z : Scheme.{0}} (p : Z ⟶ Sp R) (O : Z.Opens) (a : R) :
     constFn p O (-a) = -constFn p O a := by simp [constFn]

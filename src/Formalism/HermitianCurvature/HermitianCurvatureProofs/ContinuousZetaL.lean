@@ -61,7 +61,7 @@ theorem zeta_levM (z z' : Fin (2 * ρ + k + 1) → ℂ) (x : Mt k ρ) :
   rw [hf, hf, hf, hf, Formalism.FourierDecayAlt.P.B2x5.lev_lift, Formalism.FourierDecayAlt.P.B2x4.herm_lift]
 
 theorem measurable_levM : Measurable (B2.levM k ρ) := by
-  exact (Formalism.FourierDecayAlt.P.LongWeylElement.levM_cont k ρ).measurable
+  exact Formalism.FourierDecayAlt.P.LongWeylElement.levM_meas
 
 theorem continuous_zetaL (r : ℕ) (z z' : Fin (2 * r + k + 1) → ℂ) :
     Continuous fun x : Mt k r => zetaL k r z z' (Fin.last r) (Matrix.of x) := by

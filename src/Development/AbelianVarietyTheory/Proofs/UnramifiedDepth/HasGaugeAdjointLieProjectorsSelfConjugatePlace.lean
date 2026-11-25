@@ -566,10 +566,7 @@ theorem mm_pow_sub {a b : C} (h : V.MM (a - b)) (ha : V.Ge 0 a) (hb : V.Ge 0 b) 
 theorem exists_lower (a : C) : ∃ b : ℕ, V.Ge (-(b : ℝ)) a := by
   exact GlobalTheory.ActionLimit.exists_nat_ge_neg V a
 
-theorem ge_l_pow (n : ℕ) : V.Ge n ((V.l : C) ^ n) := by
-  induction n with
-  | zero => simpa using VF.Ge.one (V := V)
-  | succ n ih => rw [pow_succ]; push_cast; exact ih.mul VF.ge_l
+theorem ge_l_pow (n : ℕ) : V.Ge n ((V.l : C) ^ n) := GlobalTheory.TeichSeq.ge_l_pow V n
 
 theorem ge_of_unit_mul {c a : C} {w : ℝ} (hc : V.MM c) (h : V.Ge w ((1 - c) * a)) : V.Ge w a := by
   have h1 : V.v (1 - c) ≤ 0 := by
@@ -1004,9 +1001,7 @@ variable {C : Type} [Field C] {d : ℕ} {I : Fin 2 → Type} {κ : Type} [Fintyp
 theorem pair_cc {τ : Type} {a b : κ → MvPowerSeries τ C} (ha : ∀ s, constantCoeff (a s) = 0)
     (hb : ∀ s, constantCoeff (b s) = 0) (p : Fin 2 × κ) :
     constantCoeff (if p.1 = 0 then a p.2 else b p.2) = 0 := by
-  split_ifs
-  · exact ha _
-  · exact hb _
+  exact GlobalTheory.RowLaw.EndBlock.cc_pair ha hb p
 
 theorem gp_cc {n : ℕ} (j : Fin n) (x : κ) : constantCoeff (gp C κ j x) = 0 := constantCoeff_X _
 

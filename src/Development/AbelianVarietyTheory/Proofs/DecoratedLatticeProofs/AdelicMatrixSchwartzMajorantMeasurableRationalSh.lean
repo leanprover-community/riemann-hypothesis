@@ -165,8 +165,7 @@ theorem exists_leftInv {m n : ℕ} (x : Matrix (Fin m) (Fin n) D.host.E)
   rwa [← Matrix.toLin'_apply', LinearMap.toMatrix'_toLin'] at this
 
 theorem compAt_mul (θ : InfFam D) (τ : D.what₂.Tau) {m n k : ℕ} (A : Mx D m n) (B : Mx D n k) :
-    compAt θ τ (A * B) = compAt θ τ A * compAt θ τ B :=
-  Matrix.map_mul (f := (θ τ).comp (infPart D))
+    compAt θ τ (A * B) = compAt θ τ A * compAt θ τ B := GlobalTheory.OrientedHeis.compAt_mul τ A B
 
 theorem realSize_mul_le (θ : InfFam D) {m n k : ℕ} (Y : Mx D m n) :
     ∃ c : ℝ, 0 ≤ c ∧ ∀ a : Mx D n k, realSize θ (Y * a) ≤ c * realSize θ a := by

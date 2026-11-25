@@ -106,10 +106,7 @@ theorem mulG_rat {D : D7} (S : HSp D) {n : ℕ} (x : Matrix (Fin n) (Fin S.rank)
 
 theorem infPart_cA {D : D7} (x : AE D) :
     infPart D (cA D x) = sigR (Ainf D.host.F) D.sp.cm.sig (infPart D x) := by
-  induction x using TensorProduct.induction_on with
-  | zero => simp only [RingHom.map_zero]
-  | add x y hx hy => simp only [RingHom.map_add (f := _), hx, hy]
-  | tmul a x => rfl
+  exact GlobalTheory.PlaceIdem.infPart_cA D x
 
 variable {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} {i j : ℕ}
 

@@ -355,8 +355,7 @@ theorem frame_mem (Λ : Submodule (𝓞 E) S.V) (F : LFlag S r T) (h : IsLift Λ
 end Gen
 
 theorem mem_perpE_iff (D : D7) (P : LatW D) (w : (D.sp.X 0).V) :
-    w ∈ perpE D P ↔ ∀ p ∈ P, (D.sp.X 0).hT p w = 0 := by
-  simp [perpE, Submodule.mem_iInf]
+    w ∈ perpE D P ↔ ∀ p ∈ P, (D.sp.X 0).hT p w = 0 := GlobalTheory.LoopC.WMem.mem_perpE D P w
 
 theorem frame_diff : ∀ (D : D7) (u u' : D.what₂.Word) (F0 : Fb D u) (Λ : LatV D), Stand D u u' → IsBase D u F0 → IsRowLat D F0 Λ → ∀ (P : LatW D) (φ : P →ₗ[𝓞 D.host.E] (hS D).V) (Z : GramM D), (∀ p, φ p ∈ XLam Λ (lf D F0)) → ∀ F₁ ∈ FixSet D Λ (lf D F0) ((Tu D u' : ℕ) : D.host.E) Z P φ, ∀ F₂ ∈ FixSet D Λ (lf D F0) ((Tu D u' : ℕ) : D.host.E) Z P φ, (∀ b, ∃ w, IsWcomp D P (frame F₁ b) w ∧ IsWcomp D P (frame F₂ b) w) → ∃ x : Matrix (Fin D.R.rS) (Fin (D.R.rS + 1)) D.host.E, (∀ b, frame F₂ b = frame F₁ b + ∑ a, x a b • F0.e a) ∧ (∀ a b, x a b ∈ (ddS D ^ (-(D.R.rS : ℤ)) : FractionalIdeal (nonZeroDivisors (𝓞 D.host.E)) D.host.E)) ∧ xᴴ * Z.submatrix Fin.castSucc id + (Z.submatrix Fin.castSucc id)ᴴ * x = 0 := by
   intro D u u' F0 Λ hst hb hrow P φ Z hφ F₁ h₁ F₂ h₂ hw
@@ -1111,7 +1110,7 @@ lemma Xflag_mono (j : ℕ) : Xflag F j ≤ Xflag F (j + 1) :=
   Submodule.span_mono (Set.image_mono fun i (hi : i.1 < j) => Nat.lt_succ_of_lt hi)
 
 lemma mem_orth {U : Submodule E S.V} {y : S.V} : y ∈ orth S U ↔ ∀ x ∈ U, S.hT x y = 0 := by
-  simp [orth, Submodule.mem_iInf]
+  exact Formalism.MainNotions.mem_orth_iff U y
 
 lemma X_iso {x y : S.V} (hx : x ∈ Xsp F) (hy : y ∈ Xsp F) : S.hT x y = 0 := by
   exact GlobalTheory.EichlerUnip.iso_X S F hx hy
@@ -1377,7 +1376,7 @@ lemma iXY_isom (x y : (D.sp.X 0).V) :
   D.sp.iXY_isom 0 (by rw [(GlobalTheory.real_places_facts D).2.2.2.1]; omega) x y
 
 lemma mem_perpE {P : LatW D} {v : (D.sp.X 0).V} : v ∈ perpE D P ↔ ∀ p ∈ P, (D.sp.X 0).hT p v = 0 := by
-  simp [perpE, Submodule.mem_iInf]
+  exact GlobalTheory.LoopC.WMem.mem_perpE D P v
 
 def Shifts {T : D.host.E} (F : Fg D T) (n : (hS D).V ≃ₗ[D.host.E] (hS D).V)
     (v : Fin D.R.rS → (D.sp.X 0).V) : Prop :=

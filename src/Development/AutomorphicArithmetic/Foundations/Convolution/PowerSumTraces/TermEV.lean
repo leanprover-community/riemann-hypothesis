@@ -608,17 +608,7 @@ private theorem rhoL_comm {w w' : Pl K} (h : w ≠ w') (g : Gw n w) (g' : Gw n w
 
 private theorem oloc_comm {w : Pl K} [MeasurableSpace (Gw n w)] {m : Measure (Gw n w)} {ψ : Gw n w → ℂ}
     {Bo : LL μ →L[ℂ] LL μ} (h : IsOloc μ w m ψ Bo) (R : LL μ →L[ℂ] LL μ) (hR : ∀ g, Commute R (rhoL μ w g)) :
-    Commute R Bo := by
-  refine ContinuousLinearMap.ext fun v => ext_inner_left ℂ fun u => ?_
-  show ⟪u, R (Bo v)⟫_ℂ = ⟪u, Bo (R v)⟫_ℂ
-  rw [← ContinuousLinearMap.adjoint_inner_left R, h, h]
-  refine integral_congr_ae (Filter.Eventually.of_forall fun g => ?_)
-  show ψ g * _ = ψ g * _
-  congr 1
-  rw [ContinuousLinearMap.adjoint_inner_left]
-  have := congrArg (fun S : LL μ →L[ℂ] LL μ => S v) (hR g).eq
-  simp only [ContinuousLinearMap.mul_apply] at this
-  rw [this]
+    Commute R Bo := UpperTheory.EigenLatticeOffDiagonal.oloc_comm μ h R hR
 
 private theorem oloc_fix {w : Pl K} [MeasurableSpace (Gw n w)] [BorelSpace (Gw n w)] {m : Measure (Gw n w)}
     [m.IsHaarMeasure] {ψ : Gw n w → ℂ} {Bo : LL μ →L[ℂ] LL μ} (h : IsOloc μ w m ψ Bo) (J : Subgroup (Gw n w))
@@ -1203,17 +1193,7 @@ variable {K : Type} [Field K] [NumberField K] {n : ℕ} (μ : Measure (normOneGL
 
 private theorem oloc_comm {w : Pl K} [MeasurableSpace (Gw n w)] {m : Measure (Gw n w)} {ψ : Gw n w → ℂ}
     {Bo : LL μ →L[ℂ] LL μ} (h : IsOloc μ w m ψ Bo) (R : LL μ →L[ℂ] LL μ) (hR : ∀ g, Commute R (rhoL μ w g)) :
-    Commute R Bo := by
-  refine ContinuousLinearMap.ext fun v => ext_inner_left ℂ fun u => ?_
-  show ⟪u, R (Bo v)⟫_ℂ = ⟪u, Bo (R v)⟫_ℂ
-  rw [← ContinuousLinearMap.adjoint_inner_left R, h, h]
-  refine integral_congr_ae (Filter.Eventually.of_forall fun g => ?_)
-  show ψ g * _ = ψ g * _
-  congr 1
-  rw [ContinuousLinearMap.adjoint_inner_left]
-  have := congrArg (fun S : LL μ →L[ℂ] LL μ => S v) (hR g).eq
-  simp only [ContinuousLinearMap.mul_apply] at this
-  rw [this]
+    Commute R Bo := UpperTheory.EigenLatticeOffDiagonal.oloc_comm μ h R hR
 
 private theorem mem_fixL' {w : Pl K} {J : Subgroup (Gw n w)} {v : LL μ} :
     v ∈ fixL μ w J ↔ ∀ x ∈ J, rhoL μ w x v = v := by

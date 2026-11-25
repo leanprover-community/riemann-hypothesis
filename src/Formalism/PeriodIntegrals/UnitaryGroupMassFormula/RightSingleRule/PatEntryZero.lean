@@ -191,8 +191,7 @@ lemma dag_dag (A : Mx k r) : dag k r (dag k r A) = A := by
   simp only [Matrix.conjTranspose_mul, Matrix.conjTranspose_conjTranspose, hH, Matrix.mul_assoc, h2', h2,
     Matrix.mul_one]
 
-lemma star_half : star (1 / 2 : ℂ) = 1 / 2 := by
-  first | simp
+lemma star_half : star (1 / 2 : ℂ) = 1 / 2 := Formalism.REAL.star_one_half
 
 lemma star_inv2I : star (1 / (2 * Complex.I) : ℂ) = -(1 / (2 * Complex.I)) := by
   rw [Complex.star_def, map_div₀, map_one, map_mul, Complex.conj_I, map_ofNat]

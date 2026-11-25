@@ -388,7 +388,7 @@ private theorem coeffL1Norm_nonneg {ι : Type} (p : MvPolynomial ι ℂ) : 0 ≤
   Finset.sum_nonneg fun _ _ => norm_nonneg _
 
 private theorem coeffL1Norm_mul {ι : Type} (p q : MvPolynomial ι ℂ) :
-    coeffL1Norm (p * q) ≤ coeffL1Norm p * coeffL1Norm q := (UpperTheory.ConvolutionTheory.FX.coeffL1_submultiplicative_facts ι p q).2.1
+    coeffL1Norm (p * q) ≤ coeffL1Norm p * coeffL1Norm q := nrm_mul p q
 
 private theorem coeffL1Norm_C_mul {ι : Type} (c : ℂ) (p : MvPolynomial ι ℂ) :
     coeffL1Norm (C c * p) = ‖c‖ * coeffL1Norm p := (UpperTheory.ConvolutionTheory.FX.coeffL1_submultiplicative_facts ι p p).2.2.1 c

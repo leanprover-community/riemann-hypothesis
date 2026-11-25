@@ -23,7 +23,7 @@ theorem uh_isUnit {g : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ} (
     IsUnit g.det := Formalism.QuantumDeterminants.WeylGroupFacts.isUnit_of_uh hg
 
 theorem n_sub {g : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ} (hg : g ∈ Nset k r) :
-    g ∈ UH (Hpk k r) := hg.1
+    g ∈ UH (Hpk k r) := PI.AmpOrbQuot.nset_uh hg
 
 def Good (L : LocBessel k r) (x : PairSp k r) : Prop :=
   Matrix.of x.1.2 ∈ Nset k r ∧ Matrix.of x.2.2 ∈ Nset k r ∧ Matrix.of x.1.1 ∈ UWset k r L.z ∧

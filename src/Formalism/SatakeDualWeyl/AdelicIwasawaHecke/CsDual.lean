@@ -23,11 +23,11 @@ section CsDual
 
 theorem csDual_hform_add_left {A : Type} [CommRing A] {n : Type} [Fintype n] (τ : A →+* A)
     (J : Matrix n n A) (u v y : n → A) : hform τ J (u + v) y = hform τ J u y + hform τ J v y := by
-  simp only [hform, Pi.add_apply, map_add (f := _), add_mul, Finset.sum_add_distrib]
+  exact Formalism.UG.P.csScale_hform_add_left τ J u v y
 
 theorem csDual_hform_zero_left {A : Type} [CommRing A] {n : Type} [Fintype n] (τ : A →+* A)
     (J : Matrix n n A) (y : n → A) : hform τ J 0 y = 0 := by
-  simp [hform]
+  exact Formalism.UG.P.csScale_hform_zero_left τ J y
 
 theorem csDual_hform_smul_left {A : Type} [CommRing A] {n : Type} [Fintype n] (τ : A →+* A)
     (J : Matrix n n A) (a : A) (u y : n → A) : hform τ J (a • u) y = τ a * hform τ J u y := by

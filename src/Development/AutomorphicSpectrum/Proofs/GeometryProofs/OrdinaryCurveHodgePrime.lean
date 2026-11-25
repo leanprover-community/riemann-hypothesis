@@ -98,7 +98,7 @@ namespace PositivityTheory.Xgn.A_pt_seq_lin
 variable {o C : Type} [CommRing o] [Field C] [Algebra o C]
 
 theorem mem_std (R : Subalgebra o C) {ι : Type} (v : ι → C) : v ∈ stdLat R ι ↔ ∀ i, v i ∈ R := by
-  simp [stdLat, AddSubgroup.mem_pi]
+  exact GlobalTheory.CompanionTheory.Ar.Num.LatticeGoodness.mem_stdLat R
 
 theorem std_le_dual (R : Subalgebra o C) {m : ℕ} (L : AddSubgroup (Fin m → C))
     (h : L ≤ stdLat R _) : stdLat R _ ≤ dotDual R L := by
@@ -254,7 +254,7 @@ theorem mem_annSub (i : ℕ) (l : Fin n → C) :
 
 theorem linMap_apply (χ : F → C) (l : Fin n → C) (x : Fin n → F) :
     linMap n χ l x = ∑ j, l j * χ (x j) := by
-  simp [linMap, Fintype.linearCombination_apply]
+  apply PositivityTheory.Xgn.GoodLatticeBaseChange.linMap_apply
 
 variable {Sg : Type} {r s : Sg → ℕ}
 
@@ -916,7 +916,7 @@ variable {o C : Type} [CommRing o] [Field C] [Algebra o C] {RC : Subalgebra o C}
   {v : Valuation C NNReal}
 
 theorem mem_std {κ : Type} (x : κ → C) : x ∈ stdLat RC κ ↔ ∀ i, x i ∈ RC := by
-  simp [stdLat, AddSubgroup.mem_pi]
+  exact GlobalTheory.CompanionTheory.Ar.Num.LatticeGoodness.mem_stdLat RC
 
 theorem std_smul {κ : Type} {c : C} (hc : c ∈ RC) {x : κ → C} (hx : x ∈ stdLat RC κ) :
     c • x ∈ stdLat RC κ :=

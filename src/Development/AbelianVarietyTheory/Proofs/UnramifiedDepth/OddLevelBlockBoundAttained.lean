@@ -118,15 +118,10 @@ theorem exists_int_inv {V : VF K} {n : ℕ} (M : Matrix (Fin n) (Fin n) K) (h : 
 def IntCoeff (V : VF K) {σ : Type} (F : MvPowerSeries σ K) : Prop := ∀ μ, V.Ge 0 (coeff μ F)
 
 theorem IntCoeff.mul {V : VF K} {σ : Type} {F G : MvPowerSeries σ K} (hF : IntCoeff V F) (hG : IntCoeff V G) :
-    IntCoeff V (F * G) := by
-  intro μ
-  rw [coeff_mul]
-  exact VF.Ge.sum fun p _ => (hF _).mul_int (hG _)
+    IntCoeff V (F * G) := GlobalTheory.RowLaw.AddCurve.intS_mul hF hG
 
 theorem intCoeff_one (V : VF K) {σ : Type} : IntCoeff V (1 : MvPowerSeries σ K) := by
-  intro μ
-  rw [coeff_one]; split_ifs
-  exacts [VF.Ge.one, VF.Ge.zero _]
+  exact GlobalTheory.RowLaw.AddCurve.intS_one
 
 theorem IntCoeff.pow {V : VF K} {σ : Type} {F : MvPowerSeries σ K} (hF : IntCoeff V F) (n : ℕ) :
     IntCoeff V (F ^ n) := by

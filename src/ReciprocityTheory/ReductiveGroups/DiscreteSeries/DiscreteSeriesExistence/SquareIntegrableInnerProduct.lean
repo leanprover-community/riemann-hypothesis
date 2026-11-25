@@ -47,7 +47,8 @@ theorem unitary_matrix_injective (ε : Fin n → Bool) {x y : Formalism.REAL.UJ 
 theorem unitary_matrix_mem_set (ε : Fin n → Bool) (y : Formalism.REAL.UJ ε) : Formalism.MainNotions.S.umat y ∈ UJset ε := y.2
 
 theorem continuous_unitary_matrix (ε : Fin n → Bool) :
-    Continuous (fun y : Formalism.REAL.UJ ε => Formalism.MainNotions.S.umat y) := Units.continuous_val.comp continuous_subtype_val
+    Continuous (fun y : Formalism.REAL.UJ ε => Formalism.MainNotions.S.umat y) :=
+  Formalism.REAL.continuous_coeMatrix ε
 
 theorem rightRegular_unitary_eq (ε : Fin n → Bool) (y : Formalism.REAL.UJ ε) :
     rreg ε (Formalism.MainNotions.S.umat y) = rregG ε y := by

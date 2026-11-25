@@ -416,10 +416,7 @@ namespace GlobalTheory.ConjUnder
 theorem complexConj_algebraMap {K M : Type} [Field K] [NumberField K] [IsCMField K] [Field M] [NumberField M] [IsCMField M]
     [Algebra K M] (x : K) :
     IsCMField.complexConj M (algebraMap K M x) = algebraMap K M (IsCMField.complexConj K x) := by
-  obtain ⟨j⟩ : Nonempty (M →+* ℂ) := inferInstance
-  apply j.injective
-  rw [IsCMField.complexEmbedding_complexConj M j]
-  exact (IsCMField.complexEmbedding_complexConj K (j.comp (algebraMap K M)) x).symm
+  exact GlobalTheory.RealNormChar.conj_algebraMap x
 
 theorem cPl_asIdeal {E : Type} [Field E] [NumberField E] [IsCMField E] (w : HeightOneSpectrum (𝓞 E)) :
     (UpperTheory.V.Af.Bc.cPl w).asIdeal =

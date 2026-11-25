@@ -219,10 +219,7 @@ open MvPowerSeries
 variable {K : Type} [NormedField K] [IsUltrametricDist K]
 
 theorem integral_X {τ : Type} (x : τ) : Integral (X x : MvPowerSeries τ K) := by
-  classical
-  intro n
-  rw [coeff_X]
-  split_ifs <;> simp
+  exact Formalism.InvariantFactorPaths.G7.FrobeniusSubstitution.integral_X x
 
 theorem integral_zero {τ : Type} : Integral (0 : MvPowerSeries τ K) := by
   intro n

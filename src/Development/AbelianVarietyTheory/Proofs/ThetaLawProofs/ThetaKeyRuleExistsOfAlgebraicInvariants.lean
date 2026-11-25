@@ -412,8 +412,7 @@ theorem appLE_constFn {X Y : Scheme.{0}} (q : X ⟶ Sp R) (q' : Y ⟶ Sp R) (f :
 
 theorem res_constFn {X : Scheme.{0}} (q : X ⟶ Sp R) {U V : X.Opens} (h : V ≤ U) (a : R) :
     (X.presheaf.map (homOfLE h).op).hom (constFn q U a) = constFn q V a :=
-  congrArg (fun φ => φ.hom ((Scheme.ΓSpecIso (CommRingCat.of R)).inv.hom a))
-    (Scheme.Hom.appLE_map q (U := ⊤) (V := U) (fun _ _ => trivial) (homOfLE h).op)
+  GlobalTheory.KeyPow.res_constFn q h a
 
 theorem constFn_pow {X : Scheme.{0}} (q : X ⟶ Sp R) (U : X.Opens) (a : R) (n : ℕ) :
     constFn q U (a ^ n) = constFn q U a ^ n := by

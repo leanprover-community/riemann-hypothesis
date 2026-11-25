@@ -65,13 +65,13 @@ theorem form_add_right (u v w : Fin m → ℂ) : herm H w (u + v) = herm H w u +
   simp only [herm, star_add, add_dotProduct]
 
 theorem form_sub_left (u v w : Fin m → ℂ) : herm H (u - v) w = herm H u w - herm H v w := by
-  simp only [herm, mulVec_sub, dotProduct_sub]
+  exact Formalism.FourierDecayAlt.P.B2x4.herm_sub_left H u v w
 
 theorem form_sub_right (u v w : Fin m → ℂ) : herm H w (u - v) = herm H w u - herm H w v := by
   simp only [herm, star_sub, sub_dotProduct]
 
 theorem form_smul_left (c : ℂ) (u w : Fin m → ℂ) : herm H (c • u) w = c * herm H u w := by
-  simp only [herm, mulVec_smul, dotProduct_smul, smul_eq_mul]
+  exact Formalism.FourierDecayAlt.P.B2x4.herm_smul_left H c u w
 
 theorem form_smul_right (c : ℂ) (u w : Fin m → ℂ) : herm H w (c • u) = star c * herm H w u := by
   simp only [herm, star_smul, smul_dotProduct, smul_eq_mul]

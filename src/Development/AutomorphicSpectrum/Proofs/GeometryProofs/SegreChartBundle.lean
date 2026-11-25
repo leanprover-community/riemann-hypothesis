@@ -100,7 +100,7 @@ theorem unitAt_or_of_add (hg : IsCptGen ξ) (p : Cpt ξ) {s t : Ω} (hs : s ∈ 
   · exact Or.inr ((isUnit_iff_unitAt (hg.inj p) _).1 h)
 
 theorem unitAt_mul {p : Cpt ξ} {s t : Ω} (hs : unitAt ξ p s) (ht : unitAt ξ p t) : unitAt ξ p (s * t) :=
-  ⟨mul_ne_zero hs.1 ht.1, mul_mem hs.2.1 ht.2.1, by rw [mul_inv]; exact mul_mem hs.2.2 ht.2.2⟩
+  GlobalTheory.CompanionTheory.Ar.TieVB.unitAt_mul hs ht
 
 theorem unitAt_pow {p : Cpt ξ} {s : Ω} (hs : unitAt ξ p s) (n : ℕ) : unitAt ξ p (s ^ n) :=
   ⟨pow_ne_zero _ hs.1, pow_mem hs.2.1 _, by rw [← inv_pow]; exact pow_mem hs.2.2 _⟩

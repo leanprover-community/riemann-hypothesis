@@ -55,7 +55,7 @@ theorem cj_mul {n : ℕ} (a b : G1 k n) (x : Mx k n) : cj (a * b) x = cj a (cj b
   simp only [cj, gm, _root_.mul_inv_rev, val_mul, Matrix.mul_assoc]
 
 theorem vecMul_eLast {n : ℕ} (M : Mx k n) : eLast k n ᵥ* M = fun j => M (last n) j := by
-  funext j; simp [vecMul, dotProduct, eLast, Pi.single_apply]
+  exact GlobalTheory.BZMir.vecMul_eLast k n M
 
 theorem exists_last_row {n : ℕ} (w : Vc k n) (hw : w ≠ 0) : ∃ s : G1 k n, ∀ j, gm s (last n) j = w j := by
   obtain ⟨m, hm⟩ := Function.ne_iff.mp hw

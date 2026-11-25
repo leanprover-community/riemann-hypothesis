@@ -271,7 +271,7 @@ theorem mat_mul_inv (g : GAd σ J) : (matHom _ σ J g).1 * (matHom _ σ J g⁻¹
   rw [← Units.val_mul, ← map_mul, mul_inv_cancel, map_one, Units.val_one]
 
 theorem mat_inv_mul (g : GAd σ J) : (matHom _ σ J g⁻¹).1 * (matHom _ σ J g).1 = 1 := by
-  rw [← Units.val_mul, ← map_mul, inv_mul_cancel, map_one, Units.val_one]
+  exact GlobalTheory.CompanionTheory.Hypotheses₂.LeviPart.USplit.matHom_inv_mul g
 
 theorem mat_unitary (g : GAd σ J) :
     cT (sigR (AF F) σ) (matHom _ σ J g).1 * adMat F J * (matHom _ σ J g).1 = adMat F J := g.2

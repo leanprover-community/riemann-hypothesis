@@ -392,8 +392,7 @@ def untwist {N : ℕ} {X Y : Type} [AddCommGroup X] [Module ℂ X] [AddCommGroup
 
 theorem prodIrr_congr {h N : ℕ} {x y : Fin h → IrrGL (k := k)} (e : x = y) (hx : ∑ a, (x a).1 = N)
     (hy : ∑ a, (y a).1 = N) : Nonempty ((prodIrr x hx).Equiv (prodIrr y hy)) := by
-  subst e
-  exact ⟨Representation.Equiv.refl _⟩
+  exact GlobalTheory.CompanionTheory.LSocle.prodIrr_congr e hx hy
 
 
 

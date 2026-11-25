@@ -397,10 +397,7 @@ lemma bd_C {a : ℂ_[q]} {B : ℝ} (ha : ‖a‖ ≤ B) : Bd B (C a : ℂ_[q]⟦
 lemma bd_one : Bd 1 (1 : ℂ_[q]⟦X⟧) := by
   simpa using (bd_C (a := (1 : ℂ_[q])) (B := 1) (by simp))
 
-lemma bd_X : Bd 1 (X : ℂ_[q]⟦X⟧) := by
-  intro n
-  rw [coeff_X]
-  split_ifs <;> simp
+lemma bd_X : Bd 1 (X : ℂ_[q]⟦X⟧) := GlobalTheory.MomOne.Transl.X_mem
 
 alias bd_pow := _root_.GlobalTheory.MomOne.Triang.bd_one_pow
 

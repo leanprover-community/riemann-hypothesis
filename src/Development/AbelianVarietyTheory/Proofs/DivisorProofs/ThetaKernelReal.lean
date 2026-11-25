@@ -144,10 +144,10 @@ theorem atPl_eq (w : ι) (L : Module.End ℂ (V w)) :
     atPl w L = PiTensorProduct.mapMultilinear ℂ V V (Function.update (fun i => (LinearMap.id : V i →ₗ[ℂ] V i)) w L) := rfl
 
 theorem atPl_add (w : ι) (L L' : Module.End ℂ (V w)) : atPl w (L + L') = atPl w L + atPl w L' := by
-  simp only [atPl_eq, MultilinearMap.map_update_add]
+  exact GlobalTheory.RealLift.PolRangePf.atPl_add' w L L'
 
 theorem atPl_smul (w : ι) (c : ℂ) (L : Module.End ℂ (V w)) : atPl w (c • L) = c • atPl w L := by
-  simp only [atPl_eq, MultilinearMap.map_update_smul, RingHom.id_apply]
+  exact GlobalTheory.RealLift.PolRangePf.atPl_smul' w c L
 
 theorem atPl_one (w : ι) : atPl w (1 : Module.End ℂ (V w)) = 1 := by
   rw [atPl_eq, show Function.update (fun i => (LinearMap.id : V i →ₗ[ℂ] V i)) w 1 = fun i => LinearMap.id by
@@ -157,7 +157,7 @@ theorem atPl_one (w : ι) : atPl w (1 : Module.End ℂ (V w)) = 1 := by
   exact PiTensorProduct.map_id
 
 theorem atPl_zero (w : ι) : atPl w (0 : Module.End ℂ (V w)) = 0 := by
-  simp only [atPl_eq, MultilinearMap.map_update_zero]
+  exact GlobalTheory.RealLift.PolRangePf.atPl_zero' w
 
 end Helpers
 

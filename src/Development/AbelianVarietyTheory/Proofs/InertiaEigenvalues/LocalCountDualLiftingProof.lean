@@ -1504,7 +1504,7 @@ def vecLS (a : ℕ) :
     rfl
 
 theorem eO_surj : RingHomSurjective (D.nbr i w hw).eO.toRingHom :=
-  ⟨(D.nbr i w hw).eO.surjective⟩
+  GlobalTheory.Pass.LocDual.OneX.PushEq.eOsurjOneX i w hw
 
 theorem latY_map {a : ℕ} (Y : Submodule (D.nd.O i) (Fin a → Fin D.R.nV → KK D.nd i)) :
     (latY i w hw Y).map ((spanL i w hw Y).subtype.restrictScalars (Br.OLL D.nbr i w hw)) =

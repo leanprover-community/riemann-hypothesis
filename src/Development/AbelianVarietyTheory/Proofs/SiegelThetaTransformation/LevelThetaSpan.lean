@@ -628,9 +628,7 @@ theorem pnorm_le_iff (la : Wt X.Ψ r) (P : Frame X.Ψ r → ℂ) {x : Frame X.Ψ
 
 omit [IsCMField E] in
 theorem mapL_mul (γ δ : GL (Fin r) E) (L : Lt E r) : mapL (γ * δ) L = mapL γ (mapL δ L) := by
-  unfold mapL
-  rw [← Submodule.map_comp, Units.val_mul, Matrix.toLin'_mul]
-  rfl
+  exact GlobalTheory.SW.LatFrame.mapL_mul γ δ L
 
 omit [IsCMField E] in
 theorem mapL_one (L : Lt E r) : mapL (1 : GL (Fin r) E) L = L := by

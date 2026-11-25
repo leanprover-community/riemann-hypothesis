@@ -296,9 +296,7 @@ open scoped Matrix ComplexOrder
 namespace GlobalTheory.NormRatio
 
 theorem gramAt_eq_one_of_gram {D : D7} (V : HSp D) (h : V.gram = 1) (τ : D.what₂.Tau) : gramAt D V τ = 1 := by
-  unfold Formalism.BasicNotions.TH.gramAt
-  rw [h]
-  exact Matrix.map_one _ (map_zero _) (map_one _)
+  exact GlobalTheory.AdForm.RatMove.gramAt_one h τ
 
 theorem sig_snd_eq_zero_of_gram {D : D7} {V : HSp D} (hg : V.gram = 1) (hV : V.SigOK) (τ : D.host.E →+* ℂ) :
     (V.sig τ).2 = 0 := by

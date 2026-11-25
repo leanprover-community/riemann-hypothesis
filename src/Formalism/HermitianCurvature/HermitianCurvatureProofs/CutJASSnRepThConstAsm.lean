@@ -35,9 +35,7 @@ theorem tc_hsVec_eq_zero {A : Wq →L[ℂ] Wp} (h : B.hsVec A = 0) : A = 0 := by
 end hs
 
 theorem tc_up_unique {P : M.Par} {l : ℕ} {π ρ ρ' : M.Ty P} (h : M.Up P l π ρ) (h' : M.Up P l π ρ') : ρ = ρ' := by
-  funext i
-  apply Fin.ext
-  rw [h i, h' i]
+  exact Formalism.FourierDecayAlt.P.Mx4.up_fun P l π ρ ρ' h h'
 
 theorem theta_constancy_assembly : ThConstOfCut := by
   intro hPR hMC hLN hPF

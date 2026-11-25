@@ -258,9 +258,7 @@ theorem continuous_sig {σ : E →ₐ[F] E} (hcm : IsCMExt F E σ) : Continuous 
   (_root_.GlobalTheory.CompanionTheory.SW.TopK.topTens_props F E σ hcm (AF F)).2.2.2.2.1
 
 theorem sigma_sigma {σ : E →ₐ[F] E} (hcm : IsCMExt F E σ) (x : E) : σ (σ x) = x := by
-  obtain ⟨τ⟩ : Nonempty (E →+* ℂ) := inferInstance
-  apply τ.injective
-  rw [hcm.2.2.2, hcm.2.2.2, star_star]
+  exact GlobalTheory.CompanionTheory.SW.HermTop.sigma_sigma hcm x
 
 def conjE {σ : E →ₐ[F] E} (hcm : IsCMExt F E σ) : 𝔸[E] ≃ₜ+ 𝔸[E] where
   toFun := conjA σ

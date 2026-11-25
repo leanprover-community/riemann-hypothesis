@@ -443,8 +443,7 @@ theorem comb_sub (b : Fin N → LB.Sec (pw L t)) (p₁ : Y ⟶ T) (p₂ : Y ⟶ 
 
 theorem exists_affine_le (W : T.Opens) (x : T) (hx : x ∈ W) :
     ∃ V : T.Opens, IsAffineOpen V ∧ x ∈ V ∧ V ≤ W := by
-  obtain ⟨V, hV, hxV, hle⟩ := (TopologicalSpace.Opens.isBasis_iff_nbhd.1 T.isBasis_affineOpens) hx
-  exact ⟨V, hV, hxV, hle⟩
+  exact GlobalTheory.SectionsProduct.exists_affine_le hx
 
 theorem indepOn_of_affine (b : Fin N → LB.Sec (pw L t)) (p₁ : Y ⟶ T) (p₂ : Y ⟶ X)
     (H : ∀ W : T.Opens, IsAffineOpen W → IndepOn b p₁ p₂ W) (W : T.Opens) : IndepOn b p₁ p₂ W := by

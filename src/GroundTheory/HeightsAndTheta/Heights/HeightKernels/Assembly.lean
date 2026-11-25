@@ -1785,7 +1785,7 @@ theorem homog_eval (z : (Σ k, ι k) → ℂ) (p a : Σ k, ι k) (hza : z a ≠ 
   field_simp
 
 theorem isIntegral_of_pow_eq_one {x : ℂ} {k : ℕ} (hk : 0 < k) (hx : x ^ k = 1) : IsIntegral ℤ x :=
-  ⟨Polynomial.X ^ k - Polynomial.C 1, Polynomial.monic_X_pow_sub_C 1 hk.ne', by simp [hx]⟩
+  GroundTheory.Heights₂.Heights.RootArithmeticVariety.isIntegral_of_pow_eq_one hk hx
 
 theorem rootCoord_isIntegral {f j m : ℕ} (ζ : Fin f → Matrix (Fin j) (Fin m) ℂ) (hζ : IsRootMatrix ζ)
     (p : Σ _ : Fin f, PlIdx j m) : IsIntegral ℤ (rootCoord ζ p) := by

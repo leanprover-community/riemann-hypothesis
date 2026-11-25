@@ -593,8 +593,7 @@ variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchim
 
 theorem prodIrr_congr {h N : ℕ} {x y : Fin h → IrrGL (k := k)} (e : x = y) (hx : ∑ a, (x a).1 = N)
     (hy : ∑ a, (y a).1 = N) : Nonempty ((prodIrr x hx).Equiv (prodIrr y hy)) := by
-  subst e
-  exact ⟨Representation.Equiv.refl _⟩
+  exact GlobalTheory.CompanionTheory.LSocle.prodIrr_congr e hx hy
 
 theorem prodIrr_cast {h h' N : ℕ} (e : h = h') (x : Fin h' → IrrGL (k := k)) (hx : ∑ a, (x (Fin.cast e a)).1 = N)
     (hy : ∑ a, (x a).1 = N) : Nonempty ((prodIrr (fun a => x (Fin.cast e a)) hx).Equiv (prodIrr x hy)) := by

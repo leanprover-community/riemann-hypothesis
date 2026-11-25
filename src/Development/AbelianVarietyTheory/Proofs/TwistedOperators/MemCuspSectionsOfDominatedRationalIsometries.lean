@@ -194,7 +194,7 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ}
 theorem mulVec_mul (g h : GL (Fin r) E) (v : Fin r → E) :
     ((g * h : GL (Fin r) E) : Matrix (Fin r) (Fin r) E) *ᵥ v =
       (g : Matrix (Fin r) (Fin r) E) *ᵥ ((h : Matrix (Fin r) (Fin r) E) *ᵥ v) := by
-  rw [Units.val_mul, Matrix.mulVec_mulVec]
+  apply GlobalTheory.CongruenceIndex.mul_mulVec
 
 theorem mulVec_inv_mulVec (g : GL (Fin r) E) (v : Fin r → E) :
     ((g⁻¹ : GL (Fin r) E) : Matrix (Fin r) (Fin r) E) *ᵥ ((g : Matrix (Fin r) (Fin r) E) *ᵥ v) = v := by

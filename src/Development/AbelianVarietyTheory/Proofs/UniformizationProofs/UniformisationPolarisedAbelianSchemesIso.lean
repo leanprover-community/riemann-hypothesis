@@ -116,7 +116,7 @@ variable {R : Type} [CommRing R] [IsDomain R] {I : Ideal R}
 omit [IsDomain R] in
 theorem trans_comp_proj (e : ℕ) (G : Over (Spec (CommRingCat.of R))) :
     thickMap R I e G ≫ (fstG I (e + 1) G).left = (fstG I e G).left :=
-  (pullback.lift_fst _ _ _).trans (Category.comp_id _)
+  GlobalTheory.Algebraise.thickMap_fstG I e G
 
 variable {D : DegData R I} {A : PolAV (Spec (CommRingCat.of (FractionRing R)))}
   {G : Over (Spec (CommRingCat.of R))} [GrpObj G] [IsCommMonObj G] (U : UnifPre I D A G)

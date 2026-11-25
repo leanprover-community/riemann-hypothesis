@@ -503,7 +503,7 @@ namespace GlobalTheory.BSP.RelEx
 
 theorem map_smul_ring {R S : Type} [CommRing R] [CommRing S] (φ : R →+* S) {m n : Type} (a : R)
     (M : Matrix m n R) : (a • M).map φ = φ a • M.map φ := by
-  ext i j; simp
+  exact GlobalTheory.BSP.LocalizedLatticeBasis.matMapSmul φ a M
 
 theorem alg {R : Type} [CommRing R] {n : Type} [Fintype n] [DecidableEq n] (N : ℕ)
     (A Zf Zfi G Y Zg : Matrix n n R) (gE fE wi c lam : R) (hZ : Zf * Zfi = 1) (hAG : A * G = lam • Y)

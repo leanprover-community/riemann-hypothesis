@@ -62,7 +62,7 @@ theorem evalV_sv_ne {v w : Pl D} (h : w ≠ v) : evalV D.host.F w (singleV D.hos
   GlobalTheory.SplitIdem.evalV_singleV_ne _ _ _ h
 
 theorem intAf_mul {a b : Af D.host.F} (ha : a ∈ intAf D.host.F) (hb : b ∈ intAf D.host.F) :
-    a * b ∈ intAf D.host.F := fun w => by rw [map_mul]; exact mul_mem (ha w) (hb w)
+    a * b ∈ intAf D.host.F := Formalism.IndefR.Fin.intAf_mul ha hb
 
 theorem sv_int (v : Pl D) : singleV D.host.F v 1 ∈ intAf D.host.F := fun w => by
   by_cases h : w = v

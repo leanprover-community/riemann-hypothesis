@@ -80,25 +80,22 @@ namespace GlobalTheory.BotFac
 open GlobalTheory.SquareComm in
 theorem finRel_le_ker {D : D7} {M X : HSp D} {ω : GlobalTheory.Grid.WRep M X} {S : Submodule ℂ (WO M X → ℂ)} {Pi : Type} [AddCommGroup Pi]
     [Module ℂ Pi] (p : (WO M X → ℂ) →ₗ[ℂ] Pi) (h : ∀ g ∈ GfC M, ∀ Φ ∈ S, p (ω (g, 1) Φ) = p Φ) : finRel ω S ≤ LinearMap.ker p := by
-  refine Submodule.span_le.2 ?_
-  rintro _ ⟨u, hu, Ψ, hΨ, rfl⟩
-  simp [map_sub, h u hu Ψ hΨ]
+  exact GlobalTheory.BottomFactor.finRel_le_ker p h
 
 theorem thetaKO_smul {D : D7} {S T : HSp D} (om : GA D S × GA D T →* Module.End ℂ (WO S T → ℂ)) (g : GA D S) (h : GA D T)
     (c : ℂ) (f : WO S T → ℂ) : thetaKO om g h (c • f) = c * thetaKO om g h f := by
-  simp [thetaKO, map_smul]
+  exact GlobalTheory.BottomFactor.thetaKO_smul om g h c f
 
 theorem thetaKO_sub {D : D7} {S T : HSp D} (om : GA D S × GA D T →* Module.End ℂ (WO S T → ℂ)) (g : GA D S) (h : GA D T)
     (f f' : WO S T → ℂ) : thetaKO om g h (f - f') = thetaKO om g h f - thetaKO om g h f' := by
-  simp [thetaKO, map_sub]
+  exact GlobalTheory.BottomFactor.thetaKO_sub om g h f f'
 
 theorem thetaKO_add {D : D7} {S T : HSp D} (om : GA D S × GA D T →* Module.End ℂ (WO S T → ℂ)) (g : GA D S) (h : GA D T)
     (f f' : WO S T → ℂ) : thetaKO om g h (f + f') = thetaKO om g h f + thetaKO om g h f' := by
-  simp [thetaKO, map_add (f := _)]
+  exact GlobalTheory.BottomFactor.thetaKO_add om g h f f'
 
 theorem thetaKO_zero {D : D7} {S T : HSp D} (om : GA D S × GA D T →* Module.End ℂ (WO S T → ℂ)) (g : GA D S) (h : GA D T) :
-    thetaKO om g h 0 = 0 := by
-  simp [thetaKO]
+    thetaKO om g h 0 = 0 := GlobalTheory.BottomFactor.thetaKO_zero om g h
 
 
 end GlobalTheory.BotFac

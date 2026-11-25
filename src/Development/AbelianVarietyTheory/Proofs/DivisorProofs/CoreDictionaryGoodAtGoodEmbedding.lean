@@ -198,8 +198,8 @@ theorem conj_cmHostRoot_ne_self : (starRingEnd ℂ) H.rt0 ≠ H.rt0 := by
 
 end
 
-theorem tauE_inj (D : D7) : Function.Injective (tauE D) := fun _ _ h =>
-  D.eTau.injective (Subtype.ext ((factEmb D.R D.host).1.1 h))
+theorem tauE_inj (D : D7) : Function.Injective (tauE D) :=
+  GlobalTheory.SmoothForms.RealPts.tauE_injective D
 
 theorem conjEmb_inj {E : Type} [Field E] : Function.Injective (conjEmb (E := E)) := fun a b h => by
   ext x

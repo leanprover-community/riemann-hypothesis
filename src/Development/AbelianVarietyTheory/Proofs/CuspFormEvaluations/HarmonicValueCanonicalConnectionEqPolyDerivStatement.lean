@@ -113,9 +113,7 @@ attribute [local instance] Over.cartesianMonoidalCategory
 
 theorem chart_isHolFam_comp_clm {Y : Scheme.{0}} {g N : ℕ} (e : (Fin g → ℂ) → (Sp ℂ ⟶ Y)) (hol : IsHolFam e)
     (A : (Fin N → ℂ) →L[ℂ] (Fin g → ℂ)) : IsHolFam fun v => e (A v) := by
-  intro U f
-  obtain ⟨h1, h2⟩ := hol U f
-  exact ⟨h1.preimage A.continuous, h2.comp A.differentiable.differentiableOn fun _ hv => hv⟩
+  exact GlobalTheory.AnVal.isHolFam_precomp_clm e hol A
 
 theorem chart_holTo_of_isHolFam {Y : Scheme.{0}} {N : ℕ} {e : (Fin N → ℂ) → (Sp ℂ ⟶ Y)} (h : IsHolFam e) :
     IsHolTo Set.univ e := by

@@ -206,8 +206,7 @@ theorem jointSpan_comm (F G : FlagD H r) : V0 F G = V0 G F := by
   unfold V0
   rw [sup_comm F.X, Set.pair_comm]
 
-theorem herm_zero {x y : V} (h : H.B x y = 0) : H.B y x = 0 := by
-  rw [← H.herm, h, star_zero]
+theorem herm_zero {x y : V} (h : H.B x y = 0) : H.B y x = 0 := GlobalTheory.DegCnt.PosJ.B_symm0 H h
 
 theorem commonIsotropic_le_flagPairDefinitePartLattice {F G : FlagD H r} (hI : ∀ x ∈ II F G, ∀ w ∈ V0 F G, H.B w x = 0) (Λ : Submodule R V)
     {x : V} (hx : x ∈ II F G) : x ∈ flagPairDefinitePartLattice F G Λ := by
@@ -839,8 +838,7 @@ theorem minor_add (t : Kˣ) (s : ℕ+) (bs : List (Kˣ × ℕ+)) (l : ℕ) :
     Matrix.det_permute', Matrix.det_diagonal]
   simp [minor]
 
-theorem sign_ne (u : ℤˣ) : ((u : ℤ) : K) ≠ 0 := by
-  rcases Int.units_eq_one_or u with e | e <;> simp [e]
+theorem sign_ne (u : ℤˣ) : ((u : ℤ) : K) ≠ 0 := GlobalTheory.DegCnt.Kill.unit_ne u
 
 theorem minor_self (t : Kˣ) (s : ℕ+) (bs : List (Kˣ × ℕ+)) :
     minor ((t, s) :: bs) s =

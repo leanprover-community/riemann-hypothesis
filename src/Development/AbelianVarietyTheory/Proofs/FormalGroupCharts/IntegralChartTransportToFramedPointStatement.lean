@@ -246,16 +246,11 @@ variable {S : Type} [CommRing S] (d : ℕ)
 theorem subst_copy (m : ℕ) {n : ℕ} (φ : Fin 2 → Fin d → MvPolynomial (Fin n × Fin d) S) (i : Fin 2) :
     (jetSubstP m (fun p : Fin 2 × Fin d => φ p.1 p.2)).comp (jetCopy d m i) =
       jetSubstP m (fun p : Fin 1 × Fin d => φ i p.2) := by
-  apply GermD.jet_hom_ext
-  intro p
-  simp only [AlgHom.comp_apply, jetSubstP, jetCopy, GermD.jetMap_mk, MvPolynomial.aeval_X]
+  exact GlobalTheory.FrameAdjSeries.subst_copy d m φ i
 
 theorem substX (m : ℕ) {n : ℕ} (k : Fin n) :
     jetSubstP m (fun p : Fin 1 × Fin d => (MvPolynomial.X (k, p.2) : MvPolynomial (Fin n × Fin d) S)) =
-      jetCopy d m k := by
-  apply GermD.jet_hom_ext
-  intro p
-  simp [jetSubstP, jetCopy, GermD.jetMap_mk]
+      jetCopy d m k := GlobalTheory.FrameAdjSeries.substX d m k
 
 def jetRen (m : ℕ) {n n' : ℕ} (r : Fin n → Fin n') : Jet S (Fin n × Fin d) m →ₐ[S] Jet S (Fin n' × Fin d) m :=
   jetMap (fun q : Fin n × Fin d => MvPolynomial.X (r q.1, q.2)) fun _ => X_mem_orig _
@@ -296,10 +291,7 @@ theorem pt_X (m : ℕ) {n : ℕ} (k : Fin n) :
 theorem pe_pt (m : ℕ) {n : ℕ} (σ : Jet S (Fin 2 × Fin d) m →ₐ[S] Jet S (Fin n × Fin d) m) (I : ULift.{0} (Finset (Fin 2))) :
     (Formalism.L2.Pj.homAt x0 σ).left ≫ cφG t ![jptG t x0 d x m (0 : Fin 2), jptG t x0 d x m (1 : Fin 2)] I =
       (psum t.G ![Formalism.L2.Pj.homAt x0 σ ≫ jptG t x0 d x m (0 : Fin 2), Formalism.L2.Pj.homAt x0 σ ≫ jptG t x0 d x m (1 : Fin 2)] I.down).left := by
-  simp only [cφG, ← Over.comp_left]
-  refine congrArg Over.Hom.left ((psum_hom (preHom _) _ I.down).trans ?_)
-  refine congrArg (fun f => psum t.G f I.down) (funext fun i => ?_)
-  fin_cases i <;> rfl
+  exact GlobalTheory.FrameAdjSeries.pe_pt m σ I
 
 theorem wl_pt {T : Over X0} (a b : T ⟶ t.G) (c : 𝓞 E) (I : ULift.{0} (Finset (Fin 2))) :
     (lift a b).left ≫ cφG t ![fst t.G t.G, snd t.G t.G ≫ t.act.act c] I =

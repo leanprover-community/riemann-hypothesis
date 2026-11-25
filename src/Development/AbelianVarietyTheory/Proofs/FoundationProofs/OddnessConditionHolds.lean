@@ -292,7 +292,7 @@ section Theta
 variable {D : D7} {T : Tor D} {N N' : ℕ}
 
 theorem Hf_add_left (x y z : VC D N N') : Hf D T (x + y) z = Hf D T x z + Hf D T y z := by
-  simp only [Hf, Pi.add_apply, add_mul, Finset.sum_add_distrib, add_div]
+  exact GlobalTheory.InertSign.Hf_add_left D T x y z
 
 theorem Hf_add_right (x y z : VC D N N') : Hf D T z (x + y) = Hf D T z x + Hf D T z y := by
   simp only [Hf, Pi.add_apply, map_add (f := _), mul_add, Finset.sum_add_distrib, add_div]
@@ -335,9 +335,7 @@ theorem Wl_add {A : AddSubgroup (VC D N N')} {G : VC D N N' → ℂ} (hG : G ≠
   rw [hκ, this, one_smul]
 
 theorem Wd_differentiable (x : VC D N N') {F : VC D N N' → ℂ} (hF : Differentiable ℂ F) :
-    Differentiable ℂ (Wd D T x F) := by
-  unfold Wd U Hf
-  fun_prop
+    Differentiable ℂ (Wd D T x F) := GlobalTheory.ThetaLevels.wd_entire D T x hF
 
 theorem Iop_zero (A B : AddSubgroup (VC D N N')) : Iop D T A B 0 = 0 := by
   funext z; simp [Iop, U]

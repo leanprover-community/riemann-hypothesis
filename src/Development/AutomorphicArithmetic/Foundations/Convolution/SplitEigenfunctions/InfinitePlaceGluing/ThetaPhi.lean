@@ -1203,8 +1203,7 @@ private theorem Yv_swap (q : ℚ) (hq : q ≠ 0) (b : A ℚ) (a a' : (A ℚ)ˣ) 
         = ((rt q * rt q * rt q⁻¹) * rt (ξ.1 0) * b + rt q⁻¹ * rt (ξ.1 1)) * ((a⁻¹ : (A ℚ)ˣ) : A ℚ) := by rw [← e]
       _ = _ := by ring
 
-private theorem re_mul (x y : A ℚ) : re (x * y) = re x * re y := by
-  simp [re, map_mul]
+private theorem re_mul (x y : A ℚ) : re (x * y) = re x * re y := re_mul' x y
 private theorem re_add (x y : A ℚ) : re (x + y) = re x + re y := by
   simp [re, map_add (f := _)]
 private theorem re_rat (q : ℚ) : re (rt q) = (q : ℝ) := by

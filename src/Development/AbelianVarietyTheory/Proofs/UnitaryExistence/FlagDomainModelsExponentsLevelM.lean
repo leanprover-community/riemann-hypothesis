@@ -90,8 +90,7 @@ open scoped Matrix nonZeroDivisors
 namespace GlobalTheory.DiagDifferent
 
 theorem trace_conj {E : Type} [Field E] [NumberField E] [IsCMField E] (a : E) :
-    Algebra.trace ℚ E (cc a) = Algebra.trace ℚ E a :=
-  Algebra.trace_eq_of_algEquiv ((IsCMField.complexConj E).restrictScalars ℚ) a
+    Algebra.trace ℚ E (cc a) = Algebra.trace ℚ E a := GlobalTheory.trace_cc a
 
 theorem conj_rt {E : Type} [Field E] [NumberField E] [IsCMField E]
     (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) : cc (H.rt : E) = -(H.rt : E) := by

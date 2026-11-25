@@ -1088,8 +1088,7 @@ namespace GlobalTheory.KerJ.ColSideHyp
 
 theorem plc_dvd_iff' {F : Type} [Field F] [NumberField F] (v : HeightOneSpectrum (𝓞 F)) (n : ℕ) :
     Formalism.EigenvalueLevelCeiling.plc v ∣ n ↔ (n : 𝓞 F) ∈ v.asIdeal := by
-  unfold Formalism.EigenvalueLevelCeiling.plc
-  rw [← ringChar.spec, ← map_natCast (Ideal.Quotient.mk v.asIdeal), Ideal.Quotient.eq_zero_iff_mem]
+  exact GlobalTheory.Mem.ReadTwist.plc_dvd_iff v n
 
 variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : G.Inst D L} {Gl : G.LatInst D} {K : G.Consts} {Y : DivX D} {cX : ExtraC}
   {ex : Extra D L hT Gi Gl K Y cX}

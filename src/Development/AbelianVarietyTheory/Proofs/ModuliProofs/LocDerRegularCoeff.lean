@@ -170,10 +170,7 @@ variable {R : Type} [CommRing R] {Y X : Scheme.{0}} {q : Y ⟶ Sp ℂ} {p : X �
   {W₀ : X.Opens} {d : ∀ W : X.Opens, Γ(X, W) → Γ(Y, m ⁻¹ᵁ W)}
 
 theorem resG_resG {U V W : X.Opens} (h : V ≤ U) (h' : W ≤ V) (f : Γ(X, U)) :
-    resG X h' (resG X h f) = resG X (h'.trans h) f := by
-  show (X.presheaf.map (homOfLE h).op ≫ X.presheaf.map (homOfLE h').op).hom f = _
-  rw [← Functor.map_comp]
-  rfl
+    resG X h' (resG X h f) = resG X (h'.trans h) f := GlobalTheory.KS.VertReg.rmul_rmul' h h' f
 
 theorem resG_constFn {U V : X.Opens} (h : V ≤ U) (r : R) : resG X h (constFn p U r) = constFn p V r := by
   unfold constFn

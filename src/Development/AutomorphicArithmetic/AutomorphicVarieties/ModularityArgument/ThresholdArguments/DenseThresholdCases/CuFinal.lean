@@ -355,7 +355,7 @@ section Inj
 variable {R R' R'' : Type} [CommRing R] [CommRing R'] [CommRing R'']
 
 private theorem adj_mp (f : R →+* R') (X : M4 R) : (adj X).map f = adj (X.map f) := by
-  ext i j; simp [adj_apply]
+  exact UpperTheory.V.Loc.SpFlag.adj_map f X
 
 private theorem conj_mp (f : R →+* R') (n m : M4 R) (i j : Fin 4) :
     (adj (n.map f) * m.map f * n.map f) i j = f ((adj n * m * n) i j) := by

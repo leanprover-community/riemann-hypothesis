@@ -152,10 +152,9 @@ theorem mx_facts (D : D7) (a b : ℕ) : LocallyCompactSpace (Mx D a b) ∧ Secon
     inferInstanceAs (IsTopologicalAddGroup (Fin a → Fin b → AE D)), ⟨rfl⟩⟩
 
 theorem mt_mul (V : HSp D) (g h : GA D V) : Formalism.L2.Theta.mt V (g * h) = Formalism.L2.Theta.mt V g * Formalism.L2.Theta.mt V h := by
-  simp [Formalism.L2.Theta.mt, map_mul]
+  exact GlobalTheory.BesselCompare.mt_mul V g h
 
-theorem mt_one (V : HSp D) : Formalism.L2.Theta.mt V 1 = 1 := by
-  simp [Formalism.L2.Theta.mt, map_one]
+theorem mt_one (V : HSp D) : Formalism.L2.Theta.mt V 1 = 1 := GlobalTheory.BesselCompare.mt_one V
 
 theorem smul_sub_one_mul {R : Type*} [CommRing R] {n : ℕ} (e : R) (A B : Matrix (Fin n) (Fin n) R)
     (hA : e • (A - 1) = A - 1) (hB : e • (B - 1) = B - 1) : e • (A * B - 1) = A * B - 1 := by

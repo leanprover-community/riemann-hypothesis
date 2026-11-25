@@ -236,8 +236,7 @@ private lemma cw_add' {F : Type} [Field F] [NumberField F] [IsTotallyReal F] (w 
   simp [cw, map_add (f := _)]
 
 private lemma cw_mul' {F : Type} [Field F] [NumberField F] [IsTotallyReal F] (w : InfinitePlace F) (a b : A F) :
-    cw w (a * b) = cw w a * cw w b := by
-  simp [cw, map_mul]
+    cw w (a * b) = cw w a * cw w b := cw_mul w a b
 
 private lemma cw_one' {F : Type} [Field F] [NumberField F] [IsTotallyReal F] (w : InfinitePlace F) :
     cw w (1 : A F) = 1 := by
@@ -248,8 +247,7 @@ private lemma cw_zero' {F : Type} [Field F] [NumberField F] [IsTotallyReal F] (w
   simp [cw, map_zero]
 
 private lemma cw_neg' {F : Type} [Field F] [NumberField F] [IsTotallyReal F] (w : InfinitePlace F) (a : A F) :
-    cw w (-a) = -cw w a := by
-  simp [cw, map_neg]
+    cw w (-a) = -cw w a := cw_neg w a
 
 private lemma step_mul {M : Type} [AddCommGroup M] [Module ℂ M] (d p X Y : Module.End ℂ M)
     (a b c e a' b' c' e' : ℂ)

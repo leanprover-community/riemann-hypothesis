@@ -478,7 +478,7 @@ theorem sigV_inclV (c : E ≃ₐ[F] E) (v : HeightOneSpectrum (𝓞 F)) (x : E) 
   simp [sigV, inclV]
 
 theorem sigA_inclA (c : E ≃ₐ[F] E) (x : E) : sigA c (inclA F E x) = inclA F E (c x) := by
-  simp [sigA, inclA]
+  exact GroundTheory.Heights₂.Heights.StrongApprox.sigA_inclA_gen c x
 
 theorem hf_single_incl (c : E ≃ₐ[F] E) (v : HeightOneSpectrum (𝓞 F))
     (hsi : ∀ (x : Kv E v) (y : E), singleV E v (x * inclV E v y) = singleV E v x * inclA F E y)
@@ -682,7 +682,7 @@ theorem c_invol (c : E ≃ₐ[F] E) (h2 : Module.finrank F E = 2) (hc : c ≠ 1)
 
 omit [NumberField E] in
 theorem sigA_inclA' (c : E ≃ₐ[F] E) (x : E) : sigA c (inclA F E x) = inclA F E (c x) := by
-  simp [sigA, inclA, Algebra.TensorProduct.map_tmul]
+  exact GroundTheory.Heights₂.Heights.StrongApprox.sigA_inclA_gen c x
 
 omit [NumberField E] in
 theorem sigA_invol' (c : E ≃ₐ[F] E) (hc2 : ∀ x, c (c x) = x) (a : AE F E) :
@@ -968,7 +968,7 @@ open Matrix NumberField IsDedekindDomain TensorProduct Topology ReciprocityTheor
 
 theorem sigA_inclA_apply {F E : Type} [Field F] [NumberField F] [Field E] [Algebra F E] (c : E ≃ₐ[F] E)
     (x : E) : sigA c (inclA F E x) = inclA F E (c x) := by
-  simp [sigA, inclA, Algebra.TensorProduct.map_tmul]
+  exact GroundTheory.Heights₂.Heights.StrongApprox.sigA_inclA_gen c x
 
 theorem OrthProjection.proof (hT : AETopologicalRing.Statement) : OrthProjection.Statement := by
   refine ⟨?_, ?_⟩

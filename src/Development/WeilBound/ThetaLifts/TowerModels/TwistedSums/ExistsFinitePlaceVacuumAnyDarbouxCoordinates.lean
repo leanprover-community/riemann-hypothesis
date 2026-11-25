@@ -74,8 +74,8 @@ private theorem at_sum {F : Type} [Field F] [NumberField F]
 private theorem at_mul_right {F : Type} [Field F] [NumberField F]
     {v : HeightOneSpectrum (𝓞 F)} {a : AF F}
     (ha : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.At (AdelicU.evFin F v) a) (b : AF F) :
-    GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.At (AdelicU.evFin F v) (a * b) := fun u hu => by
-  rw [smul_eq_mul, ← mul_assoc, show u * a = 0 from ha u hu, zero_mul]
+    GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.At (AdelicU.evFin F v) (a * b) :=
+  GlobalTheory.VacAny.at_mul_right ha b
 
 private theorem at_mul_left {F : Type} [Field F] [NumberField F]
     {v : HeightOneSpectrum (𝓞 F)} (a : AF F) {b : AF F}
@@ -85,14 +85,13 @@ private theorem at_mul_left {F : Type} [Field F] [NumberField F]
 
 private theorem at_neg {F : Type} [Field F] [NumberField F]
     {v : HeightOneSpectrum (𝓞 F)} {a : AF F} (ha : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.At (AdelicU.evFin F v) a) :
-    GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.At (AdelicU.evFin F v) (-a) := fun u hu => by
-  rw [smul_neg, ha u hu, neg_zero]
+    GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.At (AdelicU.evFin F v) (-a) :=
+  GlobalTheory.VacAny.at_neg ha
 
 private theorem at_atPlace {F : Type} [Field F] [NumberField F]
     {v : HeightOneSpectrum (𝓞 F)} (t : Fv F v) :
     GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.At (AdelicU.evFin F v)
-      (GlobalTheory.EmbChart.atPlace v t) := fun u hu => by
-  rw [smul_eq_mul, mul_comm, GlobalTheory.EmbChart.atPlace_mul_right, hu, mul_zero, map_zero]
+      (GlobalTheory.EmbChart.atPlace v t) := GlobalTheory.VacAny.at_atPlace t
 
 private theorem at_sub {F : Type} [Field F] [NumberField F]
     {v : HeightOneSpectrum (𝓞 F)} {a b : AF F}
@@ -103,10 +102,7 @@ private theorem at_sub {F : Type} [Field F] [NumberField F]
 
 private theorem evFin_invOf_two {F : Type} [Field F] [NumberField F]
     {v : HeightOneSpectrum (𝓞 F)} :
-    AdelicU.evFin F v (⅟(2 : AF F)) = ⅟(2 : Fv F v) := by
-  refine (invOf_eq_right_inv ?_).symm
-  have h : AdelicU.evFin F v (2 * ⅟(2 : AF F)) = 1 := by rw [mul_invOf_self, map_one]
-  rwa [map_mul, map_ofNat] at h
+    AdelicU.evFin F v (⅟(2 : AF F)) = ⅟(2 : Fv F v) := GlobalTheory.VacAny.evFin_invOf_two
 
 theorem exists_isVac_any_darboux : ∀ {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}
     (B : Base F E), B.IsGood σ → ∀ {n d : ℕ} (X : Spc F E n) (Y : Spc F E d) (r s r' s' : ℕ),

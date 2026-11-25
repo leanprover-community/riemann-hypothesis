@@ -19,8 +19,7 @@ section Sobolev₂
 variable {n : ℕ} {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
   {Lie : Set (Matrix (Fin n) (Fin n) ℂ)} {σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)}
 
-theorem sobCont_zero : Sobolev₂ Lie σ 0 :=
-  ⟨[], 0, by simp, fun w _ => by simp⟩
+theorem sobCont_zero : Sobolev₂ Lie σ 0 := Formalism.IndefR.SchurOrthogonalityAlt.sobCont_zero
 
 theorem sobCont_add {ℓ₁ ℓ₂ : H →ₗ[ℂ] ℂ} (h₁ : Sobolev₂ Lie σ ℓ₁) (h₂ : Sobolev₂ Lie σ ℓ₂) :
     Sobolev₂ Lie σ (ℓ₁ + ℓ₂) := by

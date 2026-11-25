@@ -72,7 +72,7 @@ theorem topDens_contOn {k r : ℕ} {z z' : Fin (2 * r + k + 1) → ℂ} {π : Mx
 end cont
 
 theorem one_mem_UWset {k r : ℕ} (z : Fin (2 * r + k + 1) → ℂ) : (1 : Mx k r) ∈ UWset k r z := by
-  simp [UWset, UH]
+  exact Formalism.FourierDecayAlt.Q.LieAlgebraWeightVectors.sv_one_uw z
 
 theorem topContOn_of (hP : P5.ThmPActualCpt) (hHT : KB.HeadTop) : TopContOn := by
   intro Wp Wq _ _ _ _ _ _ P p F w h h' hh hh' Cb hθ hF hw

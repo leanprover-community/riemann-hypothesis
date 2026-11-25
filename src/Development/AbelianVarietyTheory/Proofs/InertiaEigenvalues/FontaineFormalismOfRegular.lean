@@ -753,7 +753,7 @@ section Tied
 variable {l : ℕ} [Fact l.Prime] {P : LocPrime l} {AI : LocAinf l P} {T : LocTied l P AI} {C : GlobalTheory.Per.Core l}
 
 theorem isField_of_tied (T : LocTied l P AI) : IsField P.R.BdR :=
-  T.eD.toMulEquiv.isField (GlobalTheory.MemLoc.BdRField.bdR_isField l).2.2.1
+  GlobalTheory.Per.FontaineBound.isField_of_tied T
 
 theorem isDomain_of_tied (T : LocTied l P AI) (K : FinExt l) : IsDomain P.R.B :=
   letI : Field P.R.BdR := (isField_of_tied T).toField

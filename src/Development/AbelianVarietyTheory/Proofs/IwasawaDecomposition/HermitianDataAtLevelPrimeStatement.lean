@@ -890,8 +890,7 @@ variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [StarR
 open scoped TensorProduct
 
 theorem reGL_rfl_apply {n : ℕ} (R : Type) [CommRing R] (g : GL (Fin n) R) : reGL rfl R g = g := by
-  ext a b
-  simp [reGL]
+  exact GlobalTheory.Mem.Col2.HAt.reGL_rfl n R g
 
 theorem reGL_rfl_hom {n : ℕ} (R : Type) [CommRing R] :
     (reGL (rfl : n = n) R).toMonoidHom = MonoidHom.id _ := by

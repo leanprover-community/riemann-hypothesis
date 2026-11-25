@@ -621,7 +621,7 @@ theorem map_inv_gram {D : D7} (V : HSp D) :
 
 theorem unitary_of {D : D7} (V : HSp D) (g : GA D V) :
     cT (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.sigR (AF D.host.F) D.sp.cm.sig) (matHom V g).1 * V.gram.map (incA D) * (matHom V g).1 =
-      V.gram.map (incA D) := g.2
+      V.gram.map (incA D) := GlobalTheory.DualPairCheck.mt_unit V g
 
 theorem exists_GA {D : D7} (V : HSp D) (M Mi : Matrix (Fin V.rank) (Fin V.rank) (AE D)) (h₁ : M * Mi = 1)
     (h₂ : Mi * M = 1)

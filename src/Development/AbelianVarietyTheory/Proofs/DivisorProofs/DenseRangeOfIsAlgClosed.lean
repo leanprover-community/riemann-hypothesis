@@ -85,9 +85,7 @@ theorem denseRange_of_isAlgClosed {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClo
 theorem continuous_aut (σ : PadicAlgCl l ≃ₐ[ℚ_[l]] PadicAlgCl l) : Continuous σ :=
   (AddMonoidHomClass.isometry_of_norm σ (_root_.GlobalTheory.PlaceBridge.norm_algEquiv σ)).continuous
 
-theorem norm_l : ‖(l : PadicAlgCl l)‖ < 1 := by
-  rw [← map_natCast (algebraMap ℚ_[l] (PadicAlgCl l)), norm_algebraMap']
-  exact Padic.norm_p_lt_one
+theorem norm_l : ‖(l : PadicAlgCl l)‖ < 1 := GlobalTheory.PlaceBridge.norm_l_lt_one
 
 theorem norm_eq_of_ball {Ω : Type} [Field Ω] (i j : Ω →+* PadicAlgCl l) (h : ∀ x, ‖i x‖ ≤ 1 ↔ ‖j x‖ ≤ 1) (x : Ω) :
     ‖i x‖ = ‖j x‖ := (GlobalTheory.PlaceBridge.norm_eq_of_le_one_iff i j h x).symm

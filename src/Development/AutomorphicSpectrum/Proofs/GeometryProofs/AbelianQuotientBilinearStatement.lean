@@ -196,9 +196,7 @@ theorem tanPt_prod (h0 : homAt x0 (jetAug : Jet S (Fin 1 × Fin d) 1 →ₐ[S] S
     rw [List.ofFn_succ, List.prod_cons, ih (fun i => c i.succ), Fin.sum_univ_succ, tanPt_add F hlaw]
 
 theorem sum_single (cf : Fin d → S) : (∑ i, cf i • (Pi.single i 1 : Fin d → S)) = cf := by
-  classical
-  ext j
-  simp [Finset.sum_apply, Pi.single_apply]
+  exact ReciprocityTheory.ChartRestriction.G.Chart.sum_single cf
 
 theorem comb_eq (h0 : homAt x0 (jetAug : Jet S (Fin 1 × Fin d) 1 →ₐ[S] S) ≫ x 1 = 1)
     (F : Germ.FGLaw S d)

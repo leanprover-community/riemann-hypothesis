@@ -75,8 +75,8 @@ variable {σ : E →ₐ[F] E} {B : Base F E} {nS nT : ℕ} {JS : Matrix (Fin nS)
   {Λ : Submodule (𝓞 E) (Matrix (Fin nT) (Fin nS) E)} {hc : HeisClosedF σ JS JT ξ₀ B.ψ} {w : 𝓞 E} {lam : ℕ →* ℂ}
   {Om : GAF σ JS × GAF σ JT →* Module.End ℂ (thetaSubF σ JS JT ξ₀ B.ψ)}
 
-theorem one_int : (1 : Af F) ∈ Formalism.MainNotions.StandardLattice.intAf F := fun v => by
-  rw [map_one]; exact one_mem _
+theorem one_int : (1 : Af F) ∈ Formalism.MainNotions.StandardLattice.intAf F :=
+  GlobalTheory.LatVac.one_mem_intAf F
 
 theorem finRatF_mem_of {y : Matrix (Fin nT) (Fin nS) E} (hy : y ∈ Λ) : finRatF F y ∈ latF F E nS nT Λ :=
   AddSubgroup.subset_closure ⟨1, one_int, y, hy, rfl⟩

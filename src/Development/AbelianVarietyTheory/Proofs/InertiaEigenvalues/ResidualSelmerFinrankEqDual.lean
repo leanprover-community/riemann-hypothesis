@@ -744,8 +744,7 @@ variable {D : Formalism.BasicNotions.D7} {N : NData D.R D.host D.what₂} {X : N
 theorem red_apply (i : X.Tw) (K : Type) [Field K] [Algebra (X.O0 i) K] (ρ : GE N →* GL (Fin D.R.r) (X.O0 i)) (g : GE N)
     (m : Fin D.R.r → K) :
     red i K ρ g m = (((ρ g : GL (Fin D.R.r) (X.O0 i)) : Matrix _ _ (X.O0 i)).map (algebraMap (X.O0 i) K)).mulVec m := by
-  funext a
-  simp [repOn, matAct, Matrix.mulVec, dotProduct]
+  exact GlobalTheory.ResOrth.red_apply ρ g m
 
 theorem dot_equiv {i : X.Tw} {s : X.Sig i} (K : Type) [Field K] [Algebra (X.O0 i) K] {ρ : GE N →* GL (Fin D.R.r) (X.O0 i)}
     (hρ : IsDual i s ρ) (g : GE N) (x y : Fin D.R.r → K) :

@@ -1025,12 +1025,9 @@ variable {A K : Type} [CommRing A] [Field K] [Algebra A K] {E : Type} [Field E] 
   (D : HTChart A K c p R N V)
 
 theorem pow_mem {x : V} (hx : x ∈ D.om) : ((p : A) ^ R) • x ∈ D.om' :=
-  Submodule.mem_sup_right ⟨x, hx, rfl⟩
+  PositivityTheory.HtPt.Famproj.smul_mem_om' D hx
 
-theorem om'_le : D.om' ≤ D.om := by
-  refine sup_le (Submodule.span_le.2 ?_) ?_
-  · rintro _ ⟨x, rfl⟩; exact D.h_mem x
-  · rintro _ ⟨x, hx, rfl⟩; exact D.om.smul_mem _ hx
+theorem om'_le : D.om' ≤ D.om := PositivityTheory.HtPt.Famproj.om'_le D
 
 theorem om'_stable (a : 𝓞 E) {x : V} (hx : x ∈ D.om') : D.ρΩ a x ∈ D.om' := by
   have : D.om' ≤ D.om'.comap ((D.ρΩ a).restrictScalars A) := by

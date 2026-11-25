@@ -1099,9 +1099,7 @@ attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 variable {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
   [InnerProductSpace ℂ Wq]
 
-theorem one_GV : (1 : Mat k r) ∈ GV k r := by
-  show (1 : Mat k r)ᴴ * Hpk k r * 1 = Hpk k r
-  simp
+theorem one_GV : (1 : Mat k r) ∈ GV k r := Formalism.FourierDecayAlt.P.B2x8.al_one_mem k r
 
 theorem left_GV (D : RealPlaceData k r Wp Wq) {p : SS k r} (hp : D.inSS p) :
     (Matrix.of p.1.1 : Mat k r)⁻¹ * (Matrix.of p.1.2)⁻¹ ∈ GV k r := by

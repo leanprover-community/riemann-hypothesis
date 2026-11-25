@@ -70,9 +70,7 @@ end Translates
 
 variable {D : D7} {cc : Ideal (𝓞 D.host.K)} {δ t0 : ℂ} {Q : ℕ}
 
-theorem sd_std (D : D7) (N : ℕ) : SD D (stdL D N) := by
-  obtain ⟨Lt, h1, h2, -⟩ := _root_.GlobalTheory.NormSum.exists_lattice_of_adelic_point D N
-  exact h2 ▸ (h1 1).2
+theorem sd_std (D : D7) (N : ℕ) : SD D (stdL D N) := GlobalTheory.FinWeil.RatTransl.sd_std D N
 
 theorem test_mem (hg : admG1 D) (hc : Crv D cc δ) (P : Pair D cc δ t0 Q) (hQ : 0 < Q) :
     P.F ∈ TT D (tor0 D cc δ) P.a P.d := by

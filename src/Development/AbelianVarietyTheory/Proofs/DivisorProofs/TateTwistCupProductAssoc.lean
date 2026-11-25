@@ -260,7 +260,7 @@ theorem res_res' {F : Shv R} {W V U : Scheme.{0}} (k : W ⟶ V) (g : V ⟶ U) (a
   simp [Sec.res]
 
 theorem res_add' {F : Shv R} {V U : Scheme.{0}} (g : V ⟶ U) (a a' : Sec F U) :
-    Sec.res g (a + a') = Sec.res g a + Sec.res g a' := map_add _ _ _
+    Sec.res g (a + a') = Sec.res g a + Sec.res g a' := GlobalTheory.EtC.DescLoc.res_add g a a'
 
 theorem res_smul' {F : Shv R} {V U : Scheme.{0}} (g : V ⟶ U) (r : ULift.{1} R) (a : Sec F U) :
     Sec.res g (r • a) = r • Sec.res g a := map_smul _ _ _

@@ -267,8 +267,7 @@ namespace GlobalTheory.Sloc.AdaptExpand
 variable {D : D7}
 
 theorem frame_castSucc {T : D.host.E} (F : LFlag (D.sp.Y 0) D.R.rS T) (i : Fin D.R.rS) :
-    frame F (Fin.castSucc i) = F.fl.e i := by
-  simp [frame, Formalism.MainNotions.S.FlagG.fvec]
+    frame F (Fin.castSucc i) = F.fl.e i := GlobalTheory.LocExt.frame_castSucc F i
 
 theorem exists_coeff {T : D.host.E} (F : LFlag (D.sp.Y 0) D.R.rS T) (b : Fin (D.R.rS + 1)) (x : (VS D).V)
     (hx : x ∈ Xflag F b.val) :

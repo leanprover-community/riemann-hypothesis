@@ -77,7 +77,7 @@ def den (z : ℂ) : ℂ := α ^ 2 * sgStar L z ^ 2 * ∏ P ∈ S, fac L P z
 def mlt (ω z : ℂ) : ℂ := Complex.exp ((Real.pi : ℂ) * herm L z ω + (Real.pi : ℂ) * herm L ω ω / 2)
 
 lemma semiChar_sq (ω : ℂ) : semiChar L ω ^ 2 = 1 := by
-  unfold semiChar; split_ifs <;> norm_num
+  exact Formalism.L2.Th1.F.PeriodLatticeBasisLemmas.semiChar_sq L ω
 
 lemma sg_sq_add (hq : SgStarQuasi) (ω z : ℂ) (hω : ω ∈ L.lattice) :
     sgStar L (z + ω) ^ 2 = mlt L ω z ^ 2 * sgStar L z ^ 2 := by

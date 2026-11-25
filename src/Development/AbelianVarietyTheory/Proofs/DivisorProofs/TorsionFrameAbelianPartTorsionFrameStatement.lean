@@ -163,8 +163,8 @@ noncomputable section
 
 namespace GlobalTheory.Poinc.Tors.FrameTors
 
-theorem oneGen_isGen' {X Y : Scheme.{0}} (L : LB X) : (LB.oneGen L (Y := Y)).IsGen := fun _ _ =>
-  (map_one _).trans ((congrArg₂ (· * ·) (Fintype.prod_empty _) (map_one _)).trans (_root_.mul_one _)).symm
+theorem oneGen_isGen' {X Y : Scheme.{0}} (L : LB X) : (LB.oneGen L (Y := Y)).IsGen :=
+  GlobalTheory.TorusExt.oneGen_isGen
 
 theorem formEq_of_eq {X Y : Scheme.{0}} {K : Type} [Fintype K] {φ : K → (Y ⟶ X)} {ε ε' : K → ℤ}
     (h : ∀ i, ε i = ε' i) : FormEq φ ε φ ε' := fun _ _ _ =>

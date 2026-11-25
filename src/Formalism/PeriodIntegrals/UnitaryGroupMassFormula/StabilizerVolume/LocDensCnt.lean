@@ -43,10 +43,7 @@ abbrev iO (a : 𝓞 F) : Fv F v := algebraMap F (Fv F v) (algebraMap (𝓞 F) F 
 export PI.VolStabSW (vcoe)
 
 theorem lt_one_iff_le_expm1 (g : WithZero (Multiplicative ℤ)) : g < 1 ↔ g ≤ WithZero.exp (-1 : ℤ) := by
-  rcases eq_or_ne g 0 with rfl | hg
-  · simp
-  · rw [← WithZero.exp_log hg, ← WithZero.exp_zero, WithZero.exp_lt_exp, WithZero.exp_le_exp]
-    omega
+  exact GlobalTheory.HaarLatticeScale.lt_one_iff_le_exp g
 
 export PI.VolStabSW (v_iO_le v_iO_lt_iff exists_appr)
 

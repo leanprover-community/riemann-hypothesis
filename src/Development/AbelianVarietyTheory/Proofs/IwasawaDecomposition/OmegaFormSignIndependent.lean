@@ -87,8 +87,7 @@ section Hat
 
 variable {D : D7} {k : ℕ}
 
-theorem one_mem_intAf : (1 : Af D.host.F) ∈ intAf D.host.F := fun v => by
-  rw [map_one]; exact one_mem _
+theorem one_mem_intAf : (1 : Af D.host.F) ∈ intAf D.host.F := GlobalTheory.TensLatMove.intAf_one
 
 theorem tmul_mem_hatV {L : Lt D.host.E k} {a : Af D.host.F} (ha : a ∈ intAf D.host.F) {x : Fin k → D.host.E}
     (hx : x ∈ L) : (fun i => a ⊗ₜ[D.host.F] x i) ∈ hatV L :=

@@ -874,8 +874,7 @@ namespace GlobalTheory.TgtCoreSplit
 
 variable {D : D7}
 
-theorem one_mem_intAf : (1 : Af D.host.F) ∈ intAf D.host.F := fun v => by
-  rw [map_one]; exact one_mem _
+theorem one_mem_intAf : (1 : Af D.host.F) ∈ intAf D.host.F := GlobalTheory.TensLatMove.intAf_one
 
 theorem toEAf_pure (e : D.host.E) :
     toEAf D ((pairA D.host.F 0 1) ⊗ₜ[D.host.F] e) =

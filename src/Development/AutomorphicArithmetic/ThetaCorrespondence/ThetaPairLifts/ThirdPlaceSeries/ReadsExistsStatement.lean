@@ -108,8 +108,7 @@ theorem corner_mul (g h : GL (n ⊕ Fin 0) k) : (g * h).val.toBlocks₁₁ = g.v
   rw [Units.val_mul]
   simp [Matrix.toBlocks₁₁, Matrix.mul_apply]
 
-theorem corner_one : (1 : GL (n ⊕ Fin 0) k).val.toBlocks₁₁ = 1 := by
-  ext i j; simp [Matrix.toBlocks₁₁, Matrix.one_apply]
+theorem corner_one : (1 : GL (n ⊕ Fin 0) k).val.toBlocks₁₁ = 1 := GlobalTheory.QExtEx.corner_one
 
 theorem sameOrb_equiv {J : Subgroup (GL (n ⊕ Fin 0) k)} (hJ : J ≤ KO k _) (c : kˣ) : Equivalence (SameOrb J (box n c)) := by
   refine ⟨fun yb => ?_, fun {yb yb'} H => ?_, fun {yb yb' yb''} H H' => ?_⟩
