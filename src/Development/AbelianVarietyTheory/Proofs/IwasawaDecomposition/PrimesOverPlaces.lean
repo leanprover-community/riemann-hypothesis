@@ -122,7 +122,7 @@ theorem vG_disjoint (hPr : Pr.Ok) : Disjoint (Pr.vG 0) (Pr.vG 1) := by
   rw [← hxy]
   exact add_mem (Ideal.mul_mem_left _ _ (_root_.Formalism.L2.Col.Primes.Ok.g_mem hPr h0)) (Ideal.mul_mem_left _ _ (_root_.Formalism.L2.Col.Primes.Ok.g_mem hPr h1))
 
-theorem primes_over_places : ∀ (X : Fields) (Pr : Primes X) (hc : Formalism.BasicNotions.CMData X.F X.E), Pr.Ok →
+theorem primes_over_places : ∀ (X : Fields) (Pr : Primes X) (_ : Formalism.BasicNotions.CMData X.F X.E), Pr.Ok →
     ∃ wOf : ∀ (a : Fin 2) (v : HeightOneSpectrum (𝓞 X.F)), (Pr.g a : 𝓞 X.F) ∈ v.asIdeal → {w // w ∈ Pr.vGs},
       (∀ a v h (w : {w // w ∈ Pr.vGs}), IsOver v w.1 ↔ w = wOf a v h) ∧
       (∀ a v h, (∀ P : HeightOneSpectrum (𝓞 X.E), P.under (𝓞 X.F) = v → X.conjO (Pr.piG a) ∈ P.asIdeal →

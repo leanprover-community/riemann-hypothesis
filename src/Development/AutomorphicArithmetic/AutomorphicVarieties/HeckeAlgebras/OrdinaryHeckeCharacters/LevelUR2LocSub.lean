@@ -75,9 +75,9 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Qi4.extendPt :
-    ∀ (O Λ T K : Type) [inst : CommRing O] [inst_1 : CommRing Λ] [inst_2 : CommRing T]
-    [inst_3 : Field K] [IsAlgClosed K] [inst_5 : Algebra O Λ] [inst_6 : Algebra O T] [inst_7 : Algebra Λ T]
-    [IsScalarTower O Λ T] [inst_9 : Algebra O K] [Algebra.IsIntegral Λ T] (P : Ideal T) (y : Λ →ₐ[O] K),
+    ∀ (O Λ T K : Type) [CommRing O] [CommRing Λ] [CommRing T]
+    [Field K] [IsAlgClosed K] [Algebra O Λ] [Algebra O T] [Algebra Λ T]
+    [IsScalarTower O Λ T] [Algebra O K] [Algebra.IsIntegral Λ T] (P : Ideal T) (y : Λ →ₐ[O] K),
     Ideal.comap (Algebra.algebraMap Λ T) P ≤ RingHom.ker y →
       ∃ (x : T →ₐ[O] K),
         P ≤ RingHom.ker x ∧ ∀ (a : Λ), (x : T → K) ((Algebra.algebraMap Λ T : Λ → T) a) = (y : Λ → K) a := by

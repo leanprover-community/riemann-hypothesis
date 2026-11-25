@@ -681,8 +681,8 @@ end UpperTheory.Reformulated.B.SphericalZetaCosets
 
 open UpperTheory.Reformulated.B.SphericalZetaCosets in
 theorem UpperTheory.Reformulated.B.SphericalZetaCosets.zeta_spherical :
-    ∀ {F : Type} [inst : Field F] [inst_1 : ValuativeRel F] [inst_2 : TopologicalSpace F]
-      [inst_3 : IsNonarchimedeanLocalField F] {O : Subring F} {ϖ : F} {nrm : AbsoluteValue F ℝ} {q : ℕ},
+    ∀ {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
+      [IsNonarchimedeanLocalField F] {O : Subring F} {ϖ : F} {nrm : AbsoluteValue F ℝ} {q : ℕ},
       GlobalTheory.CompanionTheory.QL.LF O ϖ nrm q →
         ∀ {c : ℕ} (χ : Fin c → F → ℂ) (α : Fin c → ℂ),
           GlobalTheory.CompanionTheory.QL.UnrChar nrm q χ α →

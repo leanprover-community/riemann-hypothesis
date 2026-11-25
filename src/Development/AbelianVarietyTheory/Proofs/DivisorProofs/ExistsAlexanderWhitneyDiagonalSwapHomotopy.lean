@@ -225,7 +225,7 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.AlternatingSumZero.alt_sum_zero.{u_1} :
-    ∀ {A : Type u_1} [inst : AddCommGroup A] {n : ℕ}
+    ∀ {A : Type u_1} [AddCommGroup A] {n : ℕ}
       (G : ({ len := n : SimplexCategory } ⟶ { len := n + (2 : ℕ) : SimplexCategory }) → A),
       ∑ i : Fin (n + (3 : ℕ)),
           ∑ j : Fin (n + (2 : ℕ)),

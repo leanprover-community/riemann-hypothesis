@@ -1155,8 +1155,8 @@ section -- clump:auto
 
 open TensorProduct in
 theorem UpperTheory.Reformulated.B.Qf1.lam0 :
-    ∀ (O B M : Type) [inst : CommRing O] [IsDomain O] [inst_2 : CommRing B] [inst_3 : Algebra O B]
-    [inst_4 : AddCommGroup M] [inst_5 : _root_.Module B M] [Module.Finite B M] (x : B →ₐ[O] O),
+    ∀ (O B M : Type) [CommRing O] [IsDomain O] [CommRing B] [Algebra O B]
+    [AddCommGroup M] [_root_.Module B M] [Module.Finite B M] (x : B →ₐ[O] O),
     Module.annihilator B M ≤ RingHom.ker x →
       ∃ (lam : M →+ O) (m₀ : M),
         (∀ (a : B) (m : M), (lam : M → O) (a • m) = (x : B → O) a * (lam : M → O) m) ∧ (lam : M → O) m₀ ≠ (0 : O) := by

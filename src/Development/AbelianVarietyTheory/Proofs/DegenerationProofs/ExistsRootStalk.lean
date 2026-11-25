@@ -253,7 +253,7 @@ theorem val_eq_of_pow_eq {F : Type} [Field F] (v : AddValuation F (WithTop ℚ))
 open GlobalTheory.TorusExt in
 attribute [local instance] gtGroup in
 theorem val_theta : LL → TwistBCSpanStatement → TWM.VRatioGtStatement → TWStatement → UUStatement →
-    AllUV fun {V} _ _ _ {ϖ} hϖ {D} Q {F} _ _ {v} hv {A} {G} _ _ U => ∀ w₀ rig, NormW U.toUnifPre w₀ rig →
+    AllUV fun {V} _ _ _ {_} _ {D} Q {F} _ _ {v} _ {A} {_} _ _ U => ∀ w₀ rig, NormW U.toUnifPre w₀ rig →
       ∀ (th : SecA A F 1) (ϑ : Fam D.toPre F 1), U.ExpandsF F 1 w₀ th ϑ → Prim D Q v ϑ →
       ∀ (m : ℕ), Odd m → IsUnit (m : V) → ∀ (p : QkPt D.toPre F m) x, QkToAkU U.toUnifPre F m p x →
         (∀ e (c : F), IsTorsFrame A rig m x e → (∀ z J, Good A.L z J → sA th (ptSecT A.A x).left z J = @id ((TFK (R := V) F).left.presheaf.stalk z) (cst (R := V) F z c) * (val (powFrame A.A A.L x e ((1 : ℕ) : ℤ)) (𝟙 _) z J).val) →

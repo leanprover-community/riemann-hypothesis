@@ -243,7 +243,7 @@ open Formalism.MainNotions.G
 
 def RestKapNum : Prop := TransportedAlt fun C0 CYb Cde Ck CD Cb CE1 CE2 _ Cc => KapNumAt C0 CYb Cde Ck CD Cb CE1 CE2 Cc
 
-theorem restBlockForm_of {D : Formalism.BasicNotions.D7} (h52 : Formalism.MainNotions.CovariantDegrees.FactorialUnitDecomposition) (hK : RestKapNum) : RestBlockForm := by
+theorem restBlockForm_of {D : Formalism.BasicNotions.D7} (h52 : Formalism.MainNotions.CovariantDegrees.FactorialUnitDecomposition D) (hK : RestKapNum) : RestBlockForm := by
   have h17 : TransportedAlt fun _ _ _ _ _ _ _ _ Cm _ => (17 : ℝ) ≤ Cm :=
     TransportedAlt.of_explicit (fun _ => 1) (fun _ _ => 17) (fun _ _ _ _ _ => 1)
       fun _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ h _ _ _ _ _ _ _ _ _ _ => h
@@ -776,10 +776,10 @@ noncomputable section
 
 namespace Formalism.MainNotions.ColumnSystems.Pf
 
-theorem symbol_form_of_block_parts {D : Formalism.BasicNotions.D7} (h52 : Formalism.MainNotions.CovariantDegrees.FactorialUnitDecomposition) (hK : RestKapNum) (hO : RestOPlus) : RestForm :=
+theorem symbol_form_of_block_parts {D : Formalism.BasicNotions.D7} (h52 : Formalism.MainNotions.CovariantDegrees.FactorialUnitDecomposition D) (hK : RestKapNum) (hO : RestOPlus) : RestForm :=
   symbol_form_of_orthogonality (restBlockForm_of h52 hK) orthAt hO
 
-theorem restKapNum_of {D : Formalism.BasicNotions.D7} (h52 : Formalism.MainNotions.CovariantDegrees.FactorialUnitDecomposition) (hO : RestOPlus) : RestKapNum := by
+theorem restKapNum_of {D : Formalism.BasicNotions.D7} (h52 : Formalism.MainNotions.CovariantDegrees.FactorialUnitDecomposition D) (hO : RestOPlus) : RestKapNum := by
   unfold RestKapNum TransportedAlt
   unfold RestOPlus TransportedAlt at hO
   intro Cc hCc
@@ -792,7 +792,7 @@ theorem restKapNum_of {D : Formalism.BasicNotions.D7} (h52 : Formalism.MainNotio
   have hOP := h2 CYb Cde Ck CD Cb ha hb hc hd he
   exact kapNumAt_of h52 (trueDegAt_of hOP) (coarseMultAt_of hOP)
 
-theorem restForm_of_oplus {D : Formalism.BasicNotions.D7} (h52 : Formalism.MainNotions.CovariantDegrees.FactorialUnitDecomposition) (hO : RestOPlus) : RestForm :=
+theorem restForm_of_oplus {D : Formalism.BasicNotions.D7} (h52 : Formalism.MainNotions.CovariantDegrees.FactorialUnitDecomposition D) (hO : RestOPlus) : RestForm :=
   symbol_form_of_block_parts h52 (restKapNum_of h52 hO) hO
 
 end Formalism.MainNotions.ColumnSystems.Pf

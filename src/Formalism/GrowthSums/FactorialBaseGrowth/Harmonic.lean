@@ -37,7 +37,7 @@ theorem le_padicValRat_sum_of_pos {p : ℕ} [Fact p.Prime] (s : ℤ) {F : ℕ �
     rw [Finset.sum_cons]
     exact le_trans (le_min h1 h2) (padicValRat.min_le_padicValRat_add hne)
 
-theorem padicValNat_le_of_lt_pow {p t y : ℕ} [hp : Fact p.Prime] (hy : 1 ≤ y)
+theorem padicValNat_le_of_lt_pow {p t y : ℕ} [Fact p.Prime] (hy : 1 ≤ y)
     (hyP : y < p ^ (t + 1)) : padicValNat p y ≤ t := by
   by_contra! h
   have hdvd : p ^ (t + 1) ∣ y :=

@@ -1207,8 +1207,8 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.CommonEigenvectorInInvariantComplexSubspace.exists_common_eigenvector :
-    ∀ {ι M : Type} [inst : AddCommGroup M]
-    [inst_1 : _root_.Module ℂ M] [FiniteDimensional ℂ M] (f : ι → Module.End ℂ M),
+    ∀ {ι M : Type} [AddCommGroup M]
+    [_root_.Module ℂ M] [FiniteDimensional ℂ M] (f : ι → Module.End ℂ M),
     (∀ (i j : ι), f i * f j = f j * f i) →
       ∀ (W : Submodule ℂ M),
         W ≠ ⊥ →
@@ -1546,8 +1546,8 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.R4.lift_eigen :
-    ∀ {T V : Type} [inst : CommGroup T]
-    [inst_1 : AddCommGroup V] [inst_2 : _root_.Module ℂ V] (ρ : Representation ℂ T V) {ψ μ : T →* ℂˣ} {v y : V},
+    ∀ {T V : Type} [CommGroup T]
+    [AddCommGroup V] [_root_.Module ℂ V] (ρ : Representation ℂ T V) {ψ μ : T →* ℂˣ} {v y : V},
     (∀ (t : T), ((ρ : T → V →ₗ[ℂ] V) t : V → V) v = (↑((ψ : T → ℂˣ) t) : ℂ) • v) →
       μ ≠ ψ →
         y ∉ ℂ ∙ v →

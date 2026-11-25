@@ -148,7 +148,7 @@ end GlobalTheory.TypeAsm.GLinkPf
 
 namespace GlobalTheory.TypeAsm
 
-theorem realPts_Gam_eq_trI_image_NOinf : ∀ (D : D7) (large₂ : SizeData₂ D) (X : HidaSetting D) (Y : Full X) (u : D.what₂.Word) (C : Choice X 1), Std D large₂ →
+theorem realPts_Gam_eq_trI_image_NOinf : ∀ (D : D7) (large₂ : SizeData₂ D) (X : HidaSetting D) (_ : Full X) (u : D.what₂.Word) (C : Choice X 1), Std D large₂ →
     ∀ N : GlobalTheory.DegCnt.NF (HV D) D.R.rS, N.F = F0 X u → N.F' = F0 X u →
       GlobalTheory.DegVol.realPts (fun τ => phiV C τ) (N.Gam (VS D).L0 : Set ((VS D).V ≃ₗ[D.host.E] (VS D).V)) =
         trI C '' Formalism.L2.SG.PoincareInHH.PoincareSetting.NOinf X u := by

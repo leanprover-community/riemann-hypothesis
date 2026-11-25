@@ -374,7 +374,7 @@ open scoped ComplexConjugate Classical InnerProductSpace
 theorem UpperTheory.galoisTwist_commute_archOperator_and_offProjection :
     ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] [IsGalois F E] (σ : E ≃ₐ[F] E), (∀ τ, τ ∈ Subgroup.zpowers σ) → ∀ k n : ℕ,
         ∀ (μ : Measure (normOneGL (K := E) (n := n))) [μ.IsHaarMeasure] (θ : Twist μ), IsGalTwist σ θ →
-        ∀ (D : InfD σ k) (s : Fin (k + 1) → archGroup F n →* archGroup E n) (hs : ∀ i, Continuous (s i)), IsBlockElement D n s →
+        ∀ (D : InfD σ k) (s : Fin (k + 1) → archGroup F n →* archGroup E n) (_ : ∀ i, Continuous (s i)), IsBlockElement D n s →
         ∀ (νE : Measure (archGroup E n)) [νE.IsHaarMeasure] (νF : Measure (archGroup F n)) [νF.IsHaarMeasure] (b a : TI F n)
           (aE : TI E n) (aF : TI F n), ArchSlot D νE νF b a aE aF →
         ∀ (q : Pl F) (w₀ : PlacesOver E q) (T : Ty σ n q w₀),

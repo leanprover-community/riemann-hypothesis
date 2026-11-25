@@ -621,7 +621,7 @@ theorem CrystallineSemistableComparison.P.pull_comp : ∀ {R R' R'' : Type} [Com
 theorem CrystallineSemistableComparison.P.prism : ∀ {R R' : Type} [CommRing R] [CommRing R'] {σ : R →+* R'} {C : Type u} [Category.{v} C] {C' : Type u'} [Category.{v'} C'] {F : C ⥤ ModuleCat.{w} R} {F' : C' ⥤ ModuleCat.{w'} R'} (m m' : Mor F F' σ) (η : m.G ⟶ m'.G), (∀ T x, m'.τ T ((F.map (η.app T)).hom x) = m.τ T x) → ∀ n x, m.pull n x = m'.pull n x :=
   fun m m' η hτ n x => CrystallineSemistableComparison.Auxfc.prism_main m m' η hτ n x
 
-theorem CrystallineSemistableComparison.P.adj : ∀ {R : Type} [CommRing R] {C : Type u} [Category.{v} C] {C' : Type u'} [Category.{v'} C'] (F : C ⥤ ModuleCat.{w} R) (L : C' ⥤ C) (U : C ⥤ C') (a : L ⊣ U) (n : ℕ), Function.Bijective ((Mor.restrict F L).pull n) := by
+theorem CrystallineSemistableComparison.P.adj : ∀ {R : Type} [CommRing R] {C : Type u} [Category.{v} C] {C' : Type u'} [Category.{v'} C'] (F : C ⥤ ModuleCat.{w} R) (L : C' ⥤ C) (U : C ⥤ C') (_ : L ⊣ U) (n : ℕ), Function.Bijective ((Mor.restrict F L).pull n) := by
   intro R _ C _ C' _ F L U a n
   let m : Mor (L ⋙ F) F (RingHom.id R) := ⟨U, fun T => (F.map (a.counit.app T)).hom, fun {T T'} φ x => by
     change (F.map (L.map (U.map φ)) ≫ F.map (a.counit.app T')).hom x = (F.map (a.counit.app T) ≫ F.map φ).hom x

@@ -79,7 +79,7 @@ theorem cm_generator_sq_quadratic_eq {E : Type} [Field E] [NumberField E] [Numbe
   · exact absurd h (by norm_num)
   · exact sub_eq_zero.mp h
 
-theorem main : ∀ {E : Type} [inst : Field E] [inst_1 : NumberField E] [inst_2 : NumberField.IsCMField E]
+theorem main : ∀ {E : Type} [Field E] [NumberField E] [NumberField.IsCMField E]
     (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) {a : NumberField.RingOfIntegers E},
     a ∈ Algebra.adjoin ℤ ({ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host.w0 H} : Set (NumberField.RingOfIntegers E)) →
     ∃ u v : ℤ, a = (u : NumberField.RingOfIntegers E) + (v : NumberField.RingOfIntegers E) * ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host.w0 H := by

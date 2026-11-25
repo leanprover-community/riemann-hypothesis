@@ -609,8 +609,8 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Qe20.irrCases :
-    ∀ {G V : Type} [inst : Group G]
-    [inst_1 : AddCommGroup V] [inst_2 : _root_.Module ℂ V] (ρ : Representation ℂ G V),
+    ∀ {G V : Type} [Group G]
+    [AddCommGroup V] [_root_.Module ℂ V] (ρ : Representation ℂ G V),
     ρ.IsIrreducible →
       ∀ (W : Submodule ℂ V), (∀ (g : G), ∀ v ∈ W, ((ρ : G → V →ₗ[ℂ] V) g : V → V) v ∈ W) → W = ⊥ ∨ W = ⊤ := by
   intro G V _ _ _ ρ hρ W hW

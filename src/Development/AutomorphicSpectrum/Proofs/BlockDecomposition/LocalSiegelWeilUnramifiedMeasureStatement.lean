@@ -462,7 +462,7 @@ section -- clump:auto
 namespace UpperTheory.Reformulated.B.P6.r08a
 
 theorem GlobalTheory.CompanionTheory.AvgFree.Cov.exists_sep :
-    ∀ {K : Type} [inst : AddCommGroup K] (H : AddSubgroup K) (T : Finset K), ∃ Rep ⊆ T, (∀ x ∈ T, ∃ r ∈ Rep, x - r ∈ H) ∧ ∀ r ∈ Rep, ∀ r' ∈ Rep, r - r' ∈ H → r = r' := by
+    ∀ {K : Type} [AddCommGroup K] (H : AddSubgroup K) (T : Finset K), ∃ Rep ⊆ T, (∀ x ∈ T, ∃ r ∈ Rep, x - r ∈ H) ∧ ∀ r ∈ Rep, ∀ r' ∈ Rep, r - r' ∈ H → r = r' := by
   intro K inst H T
   classical
   refine Finset.induction_on T ?_ ?_
@@ -1364,8 +1364,8 @@ section -- clump:auto
 
 open MeasureTheory in
 theorem UpperTheory.Reformulated.B.MapPiScale.map_pi_scale :
-    ∀ {ι : Type} [inst : Fintype ι] {α : ι → Type}
-    [inst_1 : (i : ι) → MeasurableSpace (α i)] (μ : (i : ι) → MeasureTheory.Measure (α i))
+    ∀ {ι : Type} [Fintype ι] {α : ι → Type}
+    [(i : ι) → MeasurableSpace (α i)] (μ : (i : ι) → MeasureTheory.Measure (α i))
     [∀ (i : ι), MeasureTheory.SigmaFinite (μ i)] (g : (i : ι) → α i → α i),
     (∀ (i : ι), Measurable (g i)) →
       ∀ (c : ι → ENNReal),

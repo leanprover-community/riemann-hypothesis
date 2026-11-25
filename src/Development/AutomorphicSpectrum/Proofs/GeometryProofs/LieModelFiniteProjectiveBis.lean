@@ -758,7 +758,7 @@ end GlobalTheory.CompanionTheory.Ar.LieFin
 theorem GlobalTheory.CompanionTheory.Ar.LieFin.lieModel_finite_projective :
     ∀ (S : Scheme.{0}) (G : Over S) [GrpObj G] (R : Type) [CommRing R] (x : Sp R ⟶ S) (J : Type) [Finite J] (f : J → R),
       Ideal.span (Set.range f) = ⊤ → (∀ i, LieChart G x (f i)) →
-      ∀ (E : Type) [AddCommGroup E] [Module R E] (M : LieModel G x E), Module.Finite R E ∧ Module.Projective R E := by
+      ∀ (E : Type) [AddCommGroup E] [Module R E] (_ : LieModel G x E), Module.Finite R E ∧ Module.Projective R E := by
   intro S G _ R _ x J _ f hf hch E _ _ M
   choose P iA iM iL ist ifin iproj m nat using hch
   exact @GlobalTheory.CompanionTheory.Ar.LieFin.fin_of_charts S G _ R _ x J _ f hf E _ _ P iA iM iL ist ifin iproj m nat M

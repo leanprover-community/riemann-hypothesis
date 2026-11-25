@@ -395,7 +395,7 @@ section -- clump:auto
 @[expose] public section
 
 noncomputable def UpperTheory.Reformulated.B.AntidiagonalWeylElement.cT :
-    {A : Type} → [inst : CommRing A] → (A →+* A) → {m p : Type} → Matrix m p A → Matrix p m A :=
+    {A : Type} → [CommRing A] → (A →+* A) → {m p : Type} → Matrix m p A → Matrix p m A :=
     fun {A : Type} [CommRing A] (σ : A →+* A) {m p : Type} (M : Matrix m p A) ↦ (M.map (⇑σ : A → A)).transpose
 
 namespace UpperTheory.Reformulated.B.AntidiagonalWeylElement
@@ -427,7 +427,7 @@ private theorem cT_cT {A : Type} [CommRing A] (σ : A →+* A) (hσ : ∀ x : A,
 end UpperTheory.Reformulated.B.AntidiagonalWeylElement
 
 theorem UpperTheory.Reformulated.B.AntidiagonalWeylElement.aux2 :
-    ∀ {A : Type} [inst : CommRing A] {n : Type} [inst_1 : Fintype n] [inst_2 : DecidableEq n] (σ : A →+* A)
+    ∀ {A : Type} [CommRing A] {n : Type} [Fintype n] [DecidableEq n] (σ : A →+* A)
       (J : Matrix n n A) {a b : GL n A},
       a ∈ {g : GL n A | UpperTheory.Reformulated.B.AntidiagonalWeylElement.cT σ (↑g : Matrix n n A) * J * (↑g : Matrix n n A) = J} →
         b ∈ {g : GL n A | UpperTheory.Reformulated.B.AntidiagonalWeylElement.cT σ (↑g : Matrix n n A) * J * (↑g : Matrix n n A) = J} →
@@ -442,13 +442,13 @@ theorem UpperTheory.Reformulated.B.AntidiagonalWeylElement.aux2 :
     _ = J := by rw [ha', hb']
 
 theorem UpperTheory.Reformulated.B.AntidiagonalWeylElement.aux3 :
-    ∀ {A : Type} [inst : CommRing A] {n : Type} [inst_1 : Fintype n] [inst_2 : DecidableEq n] (σ : A →+* A)
+    ∀ {A : Type} [CommRing A] {n : Type} [Fintype n] [DecidableEq n] (σ : A →+* A)
       (J : Matrix n n A), UpperTheory.Reformulated.B.AntidiagonalWeylElement.cT σ (↑(1 : GL n A) : Matrix n n A) * J * (↑(1 : GL n A) : Matrix n n A) = J := by
   intro A _ n _ _ σ J
   rw [Units.val_one, cT_one, Matrix.one_mul, Matrix.mul_one]
 
 theorem UpperTheory.Reformulated.B.AntidiagonalWeylElement.aux4 :
-    ∀ {A : Type} [inst : CommRing A] {n : Type} [inst_1 : Fintype n] [inst_2 : DecidableEq n] (σ : A →+* A)
+    ∀ {A : Type} [CommRing A] {n : Type} [Fintype n] [DecidableEq n] (σ : A →+* A)
       (J : Matrix n n A) {g : GL n A},
       g ∈ {g : GL n A | UpperTheory.Reformulated.B.AntidiagonalWeylElement.cT σ (↑g : Matrix n n A) * J * (↑g : Matrix n n A) = J} →
         g⁻¹ ∈ {g : GL n A | UpperTheory.Reformulated.B.AntidiagonalWeylElement.cT σ (↑g : Matrix n n A) * J * (↑g : Matrix n n A) = J} := by
@@ -467,8 +467,8 @@ theorem UpperTheory.Reformulated.B.AntidiagonalWeylElement.aux4 :
 
 noncomputable def UpperTheory.Reformulated.B.AntidiagonalWeylElement.UJ :
     {A : Type} →
-      [inst : CommRing A] →
-        {n : Type} → [inst_1 : Fintype n] → [inst_2 : DecidableEq n] → (A →+* A) → Matrix n n A → Subgroup (GL n A) :=
+      [CommRing A] →
+        {n : Type} → [Fintype n] → [DecidableEq n] → (A →+* A) → Matrix n n A → Subgroup (GL n A) :=
     fun {A : Type} [inst : CommRing A] {n : Type} [inst_1 : Fintype n] [inst_2 : DecidableEq n] (σ : A →+* A)
         (J : Matrix n n A) ↦
       { carrier := {g : GL n A | UpperTheory.Reformulated.B.AntidiagonalWeylElement.cT σ (↑g : Matrix n n A) * J * (↑g : Matrix n n A) = J},
@@ -480,16 +480,16 @@ noncomputable def UpperTheory.Reformulated.B.AntidiagonalWeylElement.antiJ :
     fun (L : Type) [Field L] (n : ℕ) (i j : Fin n) ↦ if (↑i : ℕ) + (↑j : ℕ) + (1 : ℕ) = n then (1 : L) else (0 : L)
 
 @[reducible] noncomputable def UpperTheory.Reformulated.B.AntidiagonalWeylElement.GU :
-    {L : Type} → [inst : Field L] → (L →+* L) → (n : ℕ) → Subgroup (GL (Fin n) L) :=
+    {L : Type} → [Field L] → (L →+* L) → (n : ℕ) → Subgroup (GL (Fin n) L) :=
     fun {L : Type} [Field L] (σ : L →+* L) (n : ℕ) ↦ UpperTheory.Reformulated.B.AntidiagonalWeylElement.UJ σ (UpperTheory.Reformulated.B.AntidiagonalWeylElement.antiJ L n)
 
 noncomputable def UpperTheory.Reformulated.B.AntidiagonalWeylElement.IsBorelU :
-    {L : Type} → [inst : Field L] → {σ : L →+* L} → {n : ℕ} → ↥(UpperTheory.Reformulated.B.AntidiagonalWeylElement.GU σ n) → Prop :=
+    {L : Type} → [Field L] → {σ : L →+* L} → {n : ℕ} → ↥(UpperTheory.Reformulated.B.AntidiagonalWeylElement.GU σ n) → Prop :=
     fun {L : Type} [Field L] {σ : L →+* L} {n : ℕ} (b : ↥(UpperTheory.Reformulated.B.AntidiagonalWeylElement.GU σ n)) ↦
       ∀ (i j : Fin n), j < i → (↑(↑b : GL (Fin n) L) : Matrix (Fin n) (Fin n) L) i j = (0 : L)
 
 noncomputable def UpperTheory.Reformulated.B.AntidiagonalWeylElement.IsUnipU :
-    {L : Type} → [inst : Field L] → {σ : L →+* L} → {n : ℕ} → ↥(UpperTheory.Reformulated.B.AntidiagonalWeylElement.GU σ n) → Prop :=
+    {L : Type} → [Field L] → {σ : L →+* L} → {n : ℕ} → ↥(UpperTheory.Reformulated.B.AntidiagonalWeylElement.GU σ n) → Prop :=
     fun {L : Type} [Field L] {σ : L →+* L} {n : ℕ} (u : ↥(UpperTheory.Reformulated.B.AntidiagonalWeylElement.GU σ n)) ↦
       UpperTheory.Reformulated.B.AntidiagonalWeylElement.IsBorelU u ∧ ∀ (i : Fin n), (↑(↑u : GL (Fin n) L) : Matrix (Fin n) (Fin n) L) i i = (1 : L)
 
@@ -540,7 +540,7 @@ noncomputable def UpperTheory.Reformulated.B.AntidiagonalWeylElement.w2 :
     fun (L : Type) [Field L] ↦ !![(0 : L), (1 : L); (1 : L), (0 : L)]
 
 noncomputable def UpperTheory.Reformulated.B.AntidiagonalWeylElement.partner :
-    {L : Type} → [inst : Field L] → (L →+* L) → GL (Fin (2 : ℕ)) L → Matrix (Fin (2 : ℕ)) (Fin (2 : ℕ)) L :=
+    {L : Type} → [Field L] → (L →+* L) → GL (Fin (2 : ℕ)) L → Matrix (Fin (2 : ℕ)) (Fin (2 : ℕ)) L :=
     fun {L : Type} [Field L] (σ : L →+* L) (h : GL (Fin (2 : ℕ)) L) ↦
       UpperTheory.Reformulated.B.AntidiagonalWeylElement.w2 L * UpperTheory.Reformulated.B.AntidiagonalWeylElement.cT σ (↑h⁻¹ : Matrix (Fin (2 : ℕ)) (Fin (2 : ℕ)) L) * UpperTheory.Reformulated.B.AntidiagonalWeylElement.w2 L
 
@@ -635,7 +635,7 @@ private theorem blk_mul {m r : Type} [Fintype m] [DecidableEq m] [Fintype r] [De
 end UpperTheory.Reformulated.B.AntidiagonalWeylElement
 
 theorem UpperTheory.Reformulated.B.AntidiagonalWeylElement.blockM_one_partner_eq_one :
-    ∀ {L : Type} [inst : Field L] {n : ℕ} (σ : L →+* L) (a : ℕ) (h : (2 : ℕ) * (a + (2 : ℕ)) ≤ n),
+    ∀ {L : Type} [Field L] {n : ℕ} (σ : L →+* L) (a : ℕ) (h : (2 : ℕ) * (a + (2 : ℕ)) ≤ n),
       UpperTheory.Reformulated.B.AntidiagonalWeylElement.blockM a h (↑(1 : GL (Fin (2 : ℕ)) L) : Matrix (Fin (2 : ℕ)) (Fin (2 : ℕ)) L)
           (UpperTheory.Reformulated.B.AntidiagonalWeylElement.partner σ (1 : GL (Fin (2 : ℕ)) L)) =
         (1 : Matrix (Fin n) (Fin n) L) := by
@@ -644,7 +644,7 @@ theorem UpperTheory.Reformulated.B.AntidiagonalWeylElement.blockM_one_partner_eq
   simp [blockM]
 
 theorem UpperTheory.Reformulated.B.AntidiagonalWeylElement.blockM_mul_alt :
-    ∀ {L : Type} [inst : Field L] {n : ℕ} (σ : L →+* L) (a : ℕ) (h : (2 : ℕ) * (a + (2 : ℕ)) ≤ n)
+    ∀ {L : Type} [Field L] {n : ℕ} (σ : L →+* L) (a : ℕ) (h : (2 : ℕ) * (a + (2 : ℕ)) ≤ n)
       (g g' : GL (Fin (2 : ℕ)) L),
       UpperTheory.Reformulated.B.AntidiagonalWeylElement.blockM a h (↑(g * g') : Matrix (Fin (2 : ℕ)) (Fin (2 : ℕ)) L) (UpperTheory.Reformulated.B.AntidiagonalWeylElement.partner σ (g * g')) =
         UpperTheory.Reformulated.B.AntidiagonalWeylElement.blockM a h (↑g : Matrix (Fin (2 : ℕ)) (Fin (2 : ℕ)) L) (UpperTheory.Reformulated.B.AntidiagonalWeylElement.partner σ g) *
@@ -655,7 +655,7 @@ theorem UpperTheory.Reformulated.B.AntidiagonalWeylElement.blockM_mul_alt :
 
 noncomputable def UpperTheory.Reformulated.B.AntidiagonalWeylElement.rootGL :
     {L : Type} →
-      [inst : Field L] → {n : ℕ} → (L →+* L) → (a : ℕ) → (2 : ℕ) * (a + (2 : ℕ)) ≤ n → GL (Fin (2 : ℕ)) L →* GL (Fin n) L :=
+      [Field L] → {n : ℕ} → (L →+* L) → (a : ℕ) → (2 : ℕ) * (a + (2 : ℕ)) ≤ n → GL (Fin (2 : ℕ)) L →* GL (Fin n) L :=
     fun {L : Type} [Field L] {n : ℕ} (σ : L →+* L) (a : ℕ) (h : (2 : ℕ) * (a + (2 : ℕ)) ≤ n) ↦
       {
           toFun := fun (g : GL (Fin (2 : ℕ)) L) ↦
@@ -782,7 +782,7 @@ private theorem cT_blockM {L : Type} [Field L] {n a : ℕ} (σ : L →+* L) (h :
 end UpperTheory.Reformulated.B.AntidiagonalWeylElement
 
 theorem UpperTheory.Reformulated.B.AntidiagonalWeylElement.rootGL_mem_unitary :
-    ∀ {L : Type} [inst : Field L] {n : ℕ} (σ : L →+* L),
+    ∀ {L : Type} [Field L] {n : ℕ} (σ : L →+* L),
       (∀ (x : L), (σ : L → L) ((σ : L → L) x) = x) →
         ∀ (a : ℕ) (h : (2 : ℕ) * (a + (2 : ℕ)) ≤ n) (g : GL (Fin (2 : ℕ)) L),
           (UpperTheory.Reformulated.B.AntidiagonalWeylElement.rootGL σ a h : GL (Fin (2 : ℕ)) L → GL (Fin n) L) g ∈ UpperTheory.Reformulated.B.AntidiagonalWeylElement.GU σ n := by
@@ -821,7 +821,7 @@ theorem UpperTheory.Reformulated.B.AntidiagonalWeylElement.rootGL_mem_unitary :
 
 noncomputable def UpperTheory.Reformulated.B.AntidiagonalWeylElement.rootHom :
     {L : Type} →
-      [inst : Field L] →
+      [Field L] →
         {n : ℕ} →
           (σ : L →+* L) →
             (∀ (x : L), (σ : L → L) ((σ : L → L) x) = x) →
@@ -831,20 +831,20 @@ noncomputable def UpperTheory.Reformulated.B.AntidiagonalWeylElement.rootHom :
       (UpperTheory.Reformulated.B.AntidiagonalWeylElement.rootGL σ a h).codRestrict (UpperTheory.Reformulated.B.AntidiagonalWeylElement.GU σ n) (UpperTheory.Reformulated.B.AntidiagonalWeylElement.rootGL_mem_unitary σ hσ a h)
 
 theorem UpperTheory.Reformulated.B.AntidiagonalWeylElement.span_sub_smul_le_comap_mul_twKer :
-    ∀ {L : Type} [inst : Field L],
+    ∀ {L : Type} [Field L],
       UpperTheory.Reformulated.B.AntidiagonalWeylElement.w2 L * UpperTheory.Reformulated.B.AntidiagonalWeylElement.w2 L = (1 : Matrix (Fin (2 : ℕ)) (Fin (2 : ℕ)) L) := by
   intro L _
   exact weyl_mul_weyl L
 
 noncomputable def UpperTheory.Reformulated.B.AntidiagonalWeylElement.wU :
-    (L : Type) → [inst : Field L] → GL (Fin (2 : ℕ)) L :=
+    (L : Type) → [Field L] → GL (Fin (2 : ℕ)) L :=
     fun (L : Type) [Field L] ↦
       { val := UpperTheory.Reformulated.B.AntidiagonalWeylElement.w2 L, inv := UpperTheory.Reformulated.B.AntidiagonalWeylElement.w2 L, val_inv := UpperTheory.Reformulated.B.AntidiagonalWeylElement.span_sub_smul_le_comap_mul_twKer,
         inv_val := UpperTheory.Reformulated.B.AntidiagonalWeylElement.span_sub_smul_le_comap_mul_twKer : (Matrix (Fin (2 : ℕ)) (Fin (2 : ℕ)) L)ˣ }
 
 noncomputable def UpperTheory.Reformulated.B.AntidiagonalWeylElement.sR :
     {L : Type} →
-      [inst : Field L] →
+      [Field L] →
         {n : ℕ} →
           (σ : L →+* L) →
             (∀ (x : L), (σ : L → L) ((σ : L → L) x) = x) →
@@ -854,28 +854,28 @@ noncomputable def UpperTheory.Reformulated.B.AntidiagonalWeylElement.sR :
       (UpperTheory.Reformulated.B.AntidiagonalWeylElement.rootHom σ hσ a h : GL (Fin (2 : ℕ)) L → ↥(UpperTheory.Reformulated.B.AntidiagonalWeylElement.GU σ n)) (UpperTheory.Reformulated.B.AntidiagonalWeylElement.wU L)
 
 theorem UpperTheory.Reformulated.B.AntidiagonalWeylElement.unipotent_mul_neg :
-    ∀ {L : Type} [inst : Field L] (x : L),
+    ∀ {L : Type} [Field L] (x : L),
       !![(1 : L), x; (0 : L), (1 : L)] * !![(1 : L), -x; (0 : L), (1 : L)] = (1 : Matrix (Fin (2 : ℕ)) (Fin (2 : ℕ)) L) := by
   intro L _ x
   ext i j
   fin_cases i <;> fin_cases j <;> simp [Matrix.mul_apply, Fin.sum_univ_two]
 
 theorem UpperTheory.Reformulated.B.AntidiagonalWeylElement.neg_unipotent_mul :
-    ∀ {L : Type} [inst : Field L] (x : L),
+    ∀ {L : Type} [Field L] (x : L),
       !![(1 : L), -x; (0 : L), (1 : L)] * !![(1 : L), x; (0 : L), (1 : L)] = (1 : Matrix (Fin (2 : ℕ)) (Fin (2 : ℕ)) L) := by
   intro L _ x
   ext i j
   fin_cases i <;> fin_cases j <;> simp [Matrix.mul_apply, Fin.sum_univ_two]
 
 noncomputable def UpperTheory.Reformulated.B.AntidiagonalWeylElement.nU :
-    {L : Type} → [inst : Field L] → L → GL (Fin (2 : ℕ)) L :=
+    {L : Type} → [Field L] → L → GL (Fin (2 : ℕ)) L :=
     fun {L : Type} [Field L] (x : L) ↦
       { val := !![(1 : L), x; (0 : L), (1 : L)], inv := !![(1 : L), -x; (0 : L), (1 : L)],
         val_inv := UpperTheory.Reformulated.B.AntidiagonalWeylElement.unipotent_mul_neg x, inv_val := UpperTheory.Reformulated.B.AntidiagonalWeylElement.neg_unipotent_mul x : (Matrix (Fin (2 : ℕ)) (Fin (2 : ℕ)) L)ˣ }
 
 noncomputable def UpperTheory.Reformulated.B.AntidiagonalWeylElement.uR :
     {L : Type} →
-      [inst : Field L] →
+      [Field L] →
         {n : ℕ} →
           (σ : L →+* L) →
             (∀ (x : L), (σ : L → L) ((σ : L → L) x) = x) →
@@ -1218,7 +1218,7 @@ private theorem uR_neg {L : Type} [Field L] {n a : ℕ} (σ : L →+* L)
 end UpperTheory.Reformulated.B.AntidiagonalWeylElement
 
 theorem UpperTheory.Reformulated.B.AntidiagonalWeylElement.sR_uR_mul_unip :
-    ∀ (L : Type) [inst : Field L] [Valued L (WithZero (Multiplicative ℤ))] (σ : L →+* L) (n : ℕ)
+    ∀ (L : Type) [Field L] [Valued L (WithZero (Multiplicative ℤ))] (σ : L →+* L) (n : ℕ)
       (hσ : ∀ (x : L), (σ : L → L) ((σ : L → L) x) = x) (a : ℕ) (h : (2 : ℕ) * (a + (2 : ℕ)) ≤ n)
       (v : ↥(UpperTheory.Reformulated.B.AntidiagonalWeylElement.GU σ n)),
       UpperTheory.Reformulated.B.AntidiagonalWeylElement.IsUnipU v →

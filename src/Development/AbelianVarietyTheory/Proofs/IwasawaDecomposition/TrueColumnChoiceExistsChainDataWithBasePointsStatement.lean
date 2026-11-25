@@ -971,6 +971,10 @@ theorem reL_inj {a b : ℕ} (h : a = b) {E : Type} [Field E] [NumberField E] {L 
   Submodule.map_injective_of_injective (f := (reV h E : (Fin a → E) →ₗ[E] (Fin b → E)).restrictScalars (𝓞 E)) (reV h E).injective e
 
 def stab0Equiv (u : B.Word) (a : I.ι) (c : (I.stp u I.mu0 0).Cl) (c' : (I.stp u a 0).Cl) : (I.stp u I.mu0 0).Stab c ≃* (I.stp u a 0).Stab c' :=
+  have h0 : Subsingleton ((I.stp u I.mu0 0).Stab c) := ⟨fun x y => Subtype.ext
+    (((l.lev u I.mu0).free0 c.1 x.1 _ x.2).trans ((l.lev u I.mu0).free0 c.1 y.1 _ y.2).symm)⟩
+  have h1 : Subsingleton ((I.stp u a 0).Stab c') := ⟨fun x y => Subtype.ext
+    (((l.lev u a).free0 c'.1 x.1 _ x.2).trans ((l.lev u a).free0 c'.1 y.1 _ y.2).symm)⟩
   { toFun := fun _ => 1
     invFun := fun _ => 1
     left_inv := fun _ => Subsingleton.elim _ _

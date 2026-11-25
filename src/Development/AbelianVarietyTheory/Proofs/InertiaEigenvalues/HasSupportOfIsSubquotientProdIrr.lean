@@ -320,7 +320,7 @@ theorem nonempty_equiv_unit {d : Fin 0 → ℕ} (e : (Σ i, Fin (d i)) ≃ Fin 0
 
 theorem multiProd_cls (hΨ : IsProductIso k Ψ) {h : ℕ} : ∀ {d : Fin h → ℕ} {X : Fin h → Type}
     [∀ i, AddCommGroup (X i)] [∀ i, Module ℂ (X i)] {N : ℕ} (hd : ∑ i, d i = N)
-    (σ : ∀ i, Representation ℂ (GL (Fin (d i)) k) (X i)) (hs : ∀ i, IsSmooth (σ i))
+    (σ : ∀ i, Representation ℂ (GL (Fin (d i)) k) (X i)) (_ : ∀ i, IsSmooth (σ i))
     (hf : ∀ i, HasFiniteLength (σ i)),
     ∃ hp : HasFiniteLength (multiProd (stdBlocks d hd) σ),
       Ψ (clsGL (multiProd (stdBlocks d hd) σ) hp) = ∏ i, Ψ (clsGL (σ i) (hf i)) := by

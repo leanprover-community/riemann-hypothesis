@@ -1126,13 +1126,13 @@ theorem res_smul {q : ℕ} (i : ℤ) {W V : Scheme.{0}} (k : W ⟶ V) (c : ULift
 theorem res_zero {q : ℕ} (i : ℤ) {W V : Scheme.{0}} (k : W ⟶ V) : Sec.res k (0 : Sec (tw q i) V) = 0 := map_zero _
 
 theorem single_loc (q : ℕ) [NeZero q] (i : ℤ) {V : Scheme.{0}} (ζ ξ : Prim q Γ(V, ⊤)) :
-    Loc V fun W k => ∃ c : ULift.{1} (ZMod q), Sec.res k (S q i V (Finsupp.single ξ 1)) = c • twGen i (ζ.map k.appTop.hom) := by
+    Loc V fun _ k => ∃ c : ULift.{1} (ZMod q), Sec.res k (S q i V (Finsupp.single ξ 1)) = c • twGen i (ζ.map k.appTop.hom) := by
   refine LateralTheory.E.L_prim_locPf.loc_mono' (LateralTheory.E.L_prim_locPf.c2 LateralTheory.E.L_prim_locPf.algPow q V ζ ξ)
     fun W k ⟨e, he⟩ => ⟨ULift.up ((e ^ i : (ZMod q)ˣ) : ZMod q), ?_⟩
   rw [S_res_single, S_rel q i W (ζ.map k.appTop.hom) (ξ.map k.appTop.hom) e he, S_single]
 
 theorem elt_loc (q : ℕ) [NeZero q] (i : ℤ) {V : Scheme.{0}} (ζ : Prim q Γ(V, ⊤)) (f : Prim q Γ(V, ⊤) →₀ ULift.{1} (ZMod q)) :
-    Loc V fun W k => ∃ c : ULift.{1} (ZMod q), Sec.res k (S q i V f) = c • twGen i (ζ.map k.appTop.hom) := by
+    Loc V fun _ k => ∃ c : ULift.{1} (ZMod q), Sec.res k (S q i V f) = c • twGen i (ζ.map k.appTop.hom) := by
   induction f using Finsupp.induction_linear with
   | zero => exact loc_top fun W k => ⟨0, by rw [S_zero, res_zero, zero_smul]⟩
   | add f g hf hg =>

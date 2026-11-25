@@ -73,11 +73,11 @@ end MulEquivHaarCharEqOfProjection
 
 open MeasureTheory MeasureTheory.Measure in
 theorem UpperTheory.Reformulated.B.Yhb4.main :
-    ∀ {H N : Type} [inst : Group H] [inst_1 : TopologicalSpace H] [inst_2 : IsTopologicalGroup H]
-      [inst_3 : LocallyCompactSpace H] [SecondCountableTopology H] [T2Space H] [inst_6 : MeasurableSpace H]
-      [inst_7 : BorelSpace H] [inst_8 : Group N] [inst_9 : TopologicalSpace N] [inst_10 : IsTopologicalGroup N]
-      [inst_11 : LocallyCompactSpace N] [SecondCountableTopology N] [T2Space N] [inst_14 : MeasurableSpace N]
-      [inst_15 : BorelSpace N] (ι : N →* H),
+    ∀ {H N : Type} [Group H] [TopologicalSpace H] [IsTopologicalGroup H]
+      [LocallyCompactSpace H] [SecondCountableTopology H] [T2Space H] [MeasurableSpace H]
+      [BorelSpace H] [Group N] [TopologicalSpace N] [IsTopologicalGroup N]
+      [LocallyCompactSpace N] [SecondCountableTopology N] [T2Space N] [MeasurableSpace N]
+      [BorelSpace N] (ι : N →* H),
       Continuous (⇑ι : N → H) →
         ∀ (π : H → N),
           Continuous π →

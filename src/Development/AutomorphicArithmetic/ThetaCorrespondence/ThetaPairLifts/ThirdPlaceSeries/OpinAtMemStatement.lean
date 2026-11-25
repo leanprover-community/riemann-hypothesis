@@ -107,7 +107,7 @@ theorem labTie_nt_of_labTie {hL : _root_.UpperTheory.Zero.LLC.RecTExists} {D : D
   exact key D a.nt.eq h
 end GlobalTheory.HeightCounting.Up.OPinAt
 open GlobalTheory.HeightCounting.Up.OPinAt in
-theorem GlobalTheory.HeightCounting.Up.oPin_at_mem : ∀ hL : _root_.UpperTheory.Zero.LLC.RecTExists, _root_.GlobalTheory.HeightCounting.Up.MemberAtLayerPoint hL fun _ _ _ _ w Z _ _ t nch n c => _root_.GlobalTheory.CoefDuty.OPinAlt c.a := by
+theorem GlobalTheory.HeightCounting.Up.oPin_at_mem : ∀ hL : _root_.UpperTheory.Zero.LLC.RecTExists, _root_.GlobalTheory.HeightCounting.Up.MemberAtLayerPoint hL fun _ _ _ _ _ _ _ _ _ _ _ c => _root_.GlobalTheory.CoefDuty.OPinAlt c.a := by
   intro hL
   refine EvG.imp _root_.GlobalTheory.FormInner.sumTw_rows fun K _ _ _ _ hK => large₂.imp hK fun B f T _ H kp w Z Wt p0 t nch n xd c hne _ hcp => ?_
   obtain ⟨m⟩ := hne

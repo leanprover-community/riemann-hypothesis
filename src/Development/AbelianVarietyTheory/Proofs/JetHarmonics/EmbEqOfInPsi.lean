@@ -167,7 +167,7 @@ theorem map_nnW {D : D7} (B : WeightFamilies.Prov D) (hinj : Function.Injective 
   unfold nnW
   simp only [RingOfIntegers.coe_eq_algebraMap, map_prod, map_mul, map_pow]
 
-theorem nrm_eq_nnW : ∀ (D : D7) (T : Top D) (h : LawsP T) (j : ℕ) (hj : InR D j) (hinj : Function.Injective D.what₂.OtoLL) (EX : ErrX D) (w : WeightFamilies.Wt D j), nrm (T.Q.Dw j) T.Q.c (wtA w) (EX.piG 0 * EX.piG 1) = ((nnW (recB h.toLawsCore) hinj EX w : 𝓞 T.Q.c.F) : T.Q.c.F) := by
+theorem nrm_eq_nnW : ∀ (D : D7) (T : Top D) (h : LawsP T) (j : ℕ) (_ : InR D j) (hinj : Function.Injective D.what₂.OtoLL) (EX : ErrX D) (w : WeightFamilies.Wt D j), nrm (T.Q.Dw j) T.Q.c (wtA w) (EX.piG 0 * EX.piG 1) = ((nnW (recB h.toLawsCore) hinj EX w : 𝓞 T.Q.c.F) : T.Q.c.F) := by
   intro D T h j hj hinj EX w
   obtain ⟨τ, hτ, hE⟩ := exists_inPsi_iE_eq_embK D T h hinj
   rw [nrm_eq_prod h.pins hj EX w hτ]

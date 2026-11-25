@@ -145,7 +145,7 @@ theorem germ_injective {X : Scheme.{0}} {A : X.Opens} (hA : IsAffineOpen A) [IsD
     (M := (hA.primeIdealOf x).asIdeal.primeCompl)
     ((hA.primeIdealOf x).asIdeal.primeCompl_le_nonZeroDivisors)
 
-theorem genPt_specializes_of_isDomain : ∀ (X : Scheme.{0}) (Ω : Type) [Field Ω] (ξ : Sp Ω ⟶ X) (A : X.Opens) (hA : IsAffineOpen A) (p : Cpt ξ), IsCptGen ξ → IsDomain Γ(X, A) → p.1 ∈ A → ∀ z ∈ A, genPt ξ ⤳ z := by
+theorem genPt_specializes_of_isDomain : ∀ (X : Scheme.{0}) (Ω : Type) [Field Ω] (ξ : Sp Ω ⟶ X) (A : X.Opens) (_ : IsAffineOpen A) (p : Cpt ξ), IsCptGen ξ → IsDomain Γ(X, A) → p.1 ∈ A → ∀ z ∈ A, genPt ξ ⤳ z := by
   intro X Ω _ ξ A hA p hgen hdom hp z hz
   have hx : genPt ξ ∈ A := p.2.mem_open A.2 hp
   let x : A := ⟨genPt ξ, hx⟩

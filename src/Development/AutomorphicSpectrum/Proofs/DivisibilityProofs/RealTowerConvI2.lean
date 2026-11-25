@@ -127,7 +127,7 @@ namespace GlobalTheory.CompanionTheory.Ar.Top
 
 
 open ConvergenceI2 in
-theorem real_tower_convergence_I2 : PB.AgreementPos → PB.Inputs → ∀ II : IntersectionSystem, IsFullIntersectionSystem II → ∀ (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N : ℕ) (T : RootTower Ψ N) (R : RealTower T), T.Conv II ∧ T.I2 II := by
+theorem real_tower_convergence_I2 : PB.AgreementPos → PB.Inputs → ∀ II : IntersectionSystem, IsFullIntersectionSystem II → ∀ (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N : ℕ) (T : RootTower Ψ N) (_ : RealTower T), T.Conv II ∧ T.I2 II := by
   intro hAg hIn II hII Ψ _ _ N T R
   have hpos : ∀ c, 0 < (R.Sys c).t₀ := fun c => ((R.Sys c).reg none).1
   refine ⟨fun B c => ?_, fun abelian₂ => ?_⟩

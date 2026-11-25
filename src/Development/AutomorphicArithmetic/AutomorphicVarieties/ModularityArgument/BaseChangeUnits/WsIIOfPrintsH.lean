@@ -335,8 +335,8 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Qe21.emb_two :
-    ∀ {K M : Type} [inst : Field K] [NumberField K]
-    [inst_2 : Field M] [NumberField M] [inst_4 : Algebra K M] [IsGalois K M],
+    ∀ {K M : Type} [Field K] [NumberField K]
+    [Field M] [NumberField M] [Algebra K M] [IsGalois K M],
     Module.finrank K M = (2 : ℕ) →
       ∀ (σ : Gal(M/K)),
         σ ≠ (1 : Gal(M/K)) →

@@ -169,8 +169,8 @@ private theorem maximal_of_scalar {Λ T : Type} [CommRing Λ] [IsLocalRing Λ] [
     exact hxJ (by simpa using (J.add_mem hc (hm (Ideal.mem_map_of_mem _ hu))))
 
 theorem UpperTheory.Reformulated.B.Qe2.locAbs :
-    ∀ (Λ T : Type) [inst : CommRing Λ] [inst_1 : IsLocalRing Λ] [IsNoetherianRing Λ]
-    [IsAdicComplete (IsLocalRing.maximalIdeal Λ) Λ] [inst_4 : CommRing T] [inst_5 : Algebra Λ T] [Module.Finite Λ T]
+    ∀ (Λ T : Type) [CommRing Λ] [IsLocalRing Λ] [IsNoetherianRing Λ]
+    [IsAdicComplete (IsLocalRing.maximalIdeal Λ) Λ] [CommRing T] [Algebra Λ T] [Module.Finite Λ T]
     (ι : Type) (t : ι → T) (a : ι → Λ),
     Algebra.adjoin Λ (Set.range t) = ⊤ →
       ∃ (e : T),

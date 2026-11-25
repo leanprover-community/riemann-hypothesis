@@ -64,7 +64,7 @@ private theorem unit_cover (T : Scheme.{0}) {M : ℕ} (v : Fin M → Γ(T, ⊤))
 
 theorem UpperTheory.locally_exists_isUnit_of_span_range_eq_top :
     ∀ (T : Scheme.{0}) {M : ℕ} (v : Fin M → Γ(T, ⊤)), Ideal.span (Set.range v) = ⊤ →
-        Loc T fun V g => ∃ i, IsUnit (g.appTop.hom (v i)) := by
+        Loc T fun _ g => ∃ i, IsUnit (g.appTop.hom (v i)) := by
   intro T M v hv
   let S : Sieve T :=
     { arrows := fun V g => ∃ i, IsUnit (g.appTop.hom (v i))

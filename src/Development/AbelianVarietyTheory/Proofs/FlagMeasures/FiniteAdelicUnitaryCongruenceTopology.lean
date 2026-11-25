@@ -307,7 +307,7 @@ theorem exists_nat_mem_nhds (W : Set (Af F)) (hW : W ∈ 𝓝 (0 : Af F)) : ∃ 
       rwa [this])
   exact ⟨k.factorial, k.factorial_pos, hVW (hk ⟨1, one_mem (intAd F), by simp⟩)⟩
 
-theorem exists_topology (σ : E →ₐ[F] E) : ∃ t : TopologicalSpace (E ⊗[F] Af F),
+theorem exists_topology (σ : E →ₐ[F] E) : ∃ _ : TopologicalSpace (E ⊗[F] Af F),
     IsTopologicalRing (E ⊗[F] Af F) ∧ T2Space (E ⊗[F] Af F) ∧ SecondCountableTopology (E ⊗[F] Af F) ∧
     IsOpen (IntAf F E : Set (E ⊗[F] Af F)) ∧ IsCompact (IntAf F E : Set (E ⊗[F] Af F)) ∧
     Continuous (sigR σ (Af F)) ∧

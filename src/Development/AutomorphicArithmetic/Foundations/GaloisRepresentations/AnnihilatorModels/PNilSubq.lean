@@ -54,8 +54,8 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Qi58.aeval_inter :
-    ∀ {L M N : Type} [inst : Field L]
-    [inst_1 : AddCommGroup M] [inst_2 : _root_.Module L M] [inst_3 : AddCommGroup N] [inst_4 : _root_.Module L N]
+    ∀ {L M N : Type} [Field L]
+    [AddCommGroup M] [_root_.Module L M] [AddCommGroup N] [_root_.Module L N]
     (c : M →ₗ[L] N) (f : Module.End L M) (g : Module.End L N),
     (∀ (x : M), (c : M → N) ((f : M → M) x) = (g : N → N) ((c : M → N) x)) →
       ∀ (Q : Polynomial L) (x : M),

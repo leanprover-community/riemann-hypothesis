@@ -191,7 +191,7 @@ lemma grow_good {A B : Subalgebra ℂ (Module.End ℂ M)} {W : Submodule ℂ M} 
       exact Submodule.mem_map_of_mem (mem_orb hb))
     exact mem_good.mpr (Submodule.finiteDimensional_of_le hle))
 
-theorem main : ∀ (M : Type) [inst : AddCommGroup M] [inst_1 : Module ℂ M] (ι : Type) [Finite ι]
+theorem main : ∀ (M : Type) [AddCommGroup M] [Module ℂ M] (ι : Type) [Finite ι]
     (A : ι → Subalgebra ℂ (Module.End ℂ M)),
     (∀ (i j : ι), i ≠ j → ∀ a ∈ A i, ∀ b ∈ A j, a * b = b * a) → ∀ (m : M),
     (∀ (i : ι), FiniteDimensional ℂ ↥(Submodule.span ℂ {x : M | ∃ a ∈ A i, x = (a : M → M) m})) →

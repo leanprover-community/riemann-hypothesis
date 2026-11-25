@@ -559,7 +559,7 @@ def volE (v : X.Pl) (j : ℕ) (L : (X.Pj j).Tup) (L' : (X.Pj (j + 1)).Tup) : ℤ
 
 end Pend
 
-def adm1 : Prop := ∀ (p : ℕ) [Fact p.Prime], DworkLemma p
+def adm1 (_D : Formalism.BasicNotions.D7) : Prop := ∀ (p : ℕ) [Fact p.Prime], DworkLemma p
 
 def adm2 (_D : Formalism.BasicNotions.D7) {p : ℕ} [Fact p.Prime] (X : Sys p) (Y : Pend X) : Prop :=
   ∀ v, ∀ j < X.mm, ∀ (La : X.Lt j) (La' : X.Lt (j + 1)), (X.Pj j).IsLatTup La.2 → (X.Pj (j + 1)).IsLatTup La'.2 →
@@ -616,7 +616,7 @@ def MinkowskiCounting {p : ℕ} [Fact p.Prime] (X : Sys p) (Y : Pend X) : Prop :
       Y.ker j (c, (X.Lv.lev j c).smul γ L) La' ((((X.Lv.lev j c).χ γ : X.G.Oˣ) : X.G.O) • (X.Lv.lev j c).actX γ G) =
         Y.ker j (c, L) La' G
 
-def adm6 {p : ℕ} [Fact p.Prime] (X : Sys p) (Y : Pend X) : Prop :=
+def adm6 (_D : Formalism.BasicNotions.D7) {p : ℕ} [Fact p.Prime] (X : Sys p) (Y : Pend X) : Prop :=
   ∀ j ≤ X.mm, ∀ (v' : Fin (X.Pj j).nV) (i : ℕ) (φ : X.Lv.comp j → (X.Pj j).Tup → (X.Pj j).Tup → Y.Kc),
     (∀ c (γ : (X.Lv.lev j c).Γ) L L1, φ c ((X.Lv.lev j c).smul γ L) ((X.Lv.lev j c).smul γ L1) = φ c L L1) →
     ∑ La ∈ Y.Rep j, ((X.stab j La : Y.Kc))⁻¹ *
@@ -744,7 +744,7 @@ def NumericalComparisonUniform : Prop :=
   ∃ C₀ : ℝ, ∀ (D : Formalism.BasicNotions.D7) (L : SizeData₂ D) (X : Inst D L) (Y : LatInst D), NumericalComparisonAt D L X Y C₀
 
 def admitted (D : Formalism.BasicNotions.D7) {p : ℕ} [Fact p.Prime] (X : Sys p) (Y : Pend X) : Prop :=
-  adm1 ∧ adm2 D X Y ∧ adm2b D X Y ∧ adm2c X Y ∧ adm3 D X Y ∧ adm3b X ∧ ArchimedeanSignatureMatching D X Y ∧ adm5 X Y ∧ MinkowskiCounting X Y ∧ adm6 X Y ∧
+  adm1 D ∧ adm2 D X Y ∧ adm2b D X Y ∧ adm2c X Y ∧ adm3 D X Y ∧ adm3b X ∧ ArchimedeanSignatureMatching D X Y ∧ adm5 X Y ∧ MinkowskiCounting X Y ∧ adm6 D X Y ∧
     adm7 X Y ∧ adm8 D X ∧ adm11 X Y
 
 def Conclusion₂ (D : Formalism.BasicNotions.D7) {p : ℕ} [Fact p.Prime] (X : Sys p) (Y : Pend X) : Prop :=

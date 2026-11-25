@@ -148,9 +148,9 @@ theorem sum_strictMono_eq {M : Type} [AddCommMonoid M] {d m : ℕ} (f : (Fin d �
 
 theorem sum_sMin_mul_cMin : ∀ {Ψ : Type} {p q : ℕ} {Ω : Type} [Field Ω] {n : Ψ ⊕ Ψ → ℕ}
     (C : ∀ s, Matrix (Fin (n s)) (Fin (rk Ψ p q s)) Ω) (B : ∀ s, Matrix (Fin (rk Ψ p q s)) (Fin (n s)) Ω)
-    (hBC : ∀ s, B s * C s = 1) (t : StepIx Ψ p q) (I I' : Finset (Fin (p + q)))
-    (hI : I.card = (t.2 : ℕ) + 1) (hI' : I'.card = (t.2 : ℕ) + 1)
-    (hp : ∀ a ∈ I, ∃ l, posOf p q t.1 l = a) (hp' : ∀ a ∈ I', ∃ l, posOf p q t.1 l = a),
+    (_ : ∀ s, B s * C s = 1) (t : StepIx Ψ p q) (I I' : Finset (Fin (p + q)))
+    (_ : I.card = (t.2 : ℕ) + 1) (_ : I'.card = (t.2 : ℕ) + 1)
+    (_ : ∀ a ∈ I, ∃ l, posOf p q t.1 l = a) (_ : ∀ a ∈ I', ∃ l, posOf p q t.1 l = a),
     ∑ J : Fin ((t.2 : ℕ) + 1) → Fin (n t.1), sMin B t I J * cMin C t J I' = if I = I' then 1 else 0 := by
   intro Ψ p q Ω _ n C B hBC t I I' hI hI' hp _
   classical
@@ -211,9 +211,9 @@ open GlobalTheory.CompanionTheory.Ar.TiePrimes (dh mem_coord_iff homog_X eval₂
   mem_Wp_iff regAt_iff)
 
 theorem exists_point_of_prime : ∀ {X : Scheme.{0}} {Ω : Type} [Field Ω] {ξ : Spec (CommRingCat.of Ω) ⟶ X} {K : Type} [Fintype K]
-    {J : K → Type} [∀ k, Fintype (J k)] (y : (Σ k, J k) → Ω) (tie : CoordTie ℤ ξ (seg y)) (Q : Ideal (MRing J))
-    (hQ : Q.IsPrime) (hle : mCoordIdeal y ≤ Q) (c : ∀ k, J k)
-    (hc : ∀ k, (MvPolynomial.X ⟨k, c k⟩ : MRing J) ∉ Q),
+    {J : K → Type} [∀ k, Fintype (J k)] (y : (Σ k, J k) → Ω) (_ : CoordTie ℤ ξ (seg y)) (Q : Ideal (MRing J))
+    (_ : Q.IsPrime) (_ : mCoordIdeal y ≤ Q) (c : ∀ k, J k)
+    (_ : ∀ k, (MvPolynomial.X ⟨k, c k⟩ : MRing J) ∉ Q),
     ∃ P : Cpt ξ, InChart ξ (seg y) c P ∧ ∀ a ∈ regAt ξ P, RegAt y Q a := by
   intro Sc Ω _ ξ K _ J _ y tie W hWp hPW c hcX
   classical
@@ -306,9 +306,9 @@ namespace GlobalTheory.CompanionTheory.Ar.PB.FMX.Frm
 
 theorem frames_at_point : ∀ {X : Scheme.{0}} {Ω : Type} [Field Ω] (ξ : Spec (CommRingCat.of Ω) ⟶ X) {E : Type} [AddCommGroup E]
     [Module Ω E] {κ : Type} (x : κ → Ω) (L : GlobalTheory.CompanionTheory.Ar.Lat ξ E) (m n r : ℕ) (V : Submodule Ω E)
-    (φ : Fin n → Module.Dual Ω E) (cc : Fin r → E) (hV : L.IsVB r V) (hli : LinearIndependent Ω cc)
-    (hsp : Submodule.span Ω (Set.range cc) = V) (hG : IsTwistGen ξ x L m φ) (P : Cpt ξ) (c₁ : κ)
-    (hc : InChart ξ x c₁ P),
+    (φ : Fin n → Module.Dual Ω E) (cc : Fin r → E) (_ : L.IsVB r V) (_ : LinearIndependent Ω cc)
+    (_ : Submodule.span Ω (Set.range cc) = V) (_ : IsTwistGen ξ x L m φ) (P : Cpt ξ) (c₁ : κ)
+    (_ : InChart ξ x c₁ P),
     ∃ (T : Matrix (Fin r) (Fin r) Ω) (C : Matrix (Fin n) (Fin r) Ω) (B : Matrix (Fin r) (Fin n) Ω),
       T.det ≠ 0 ∧ Matrix.of (fun j a => φ j (cc a)) * T = (x c₁ ^ m) • C ∧ B * C = 1 ∧
         (∀ j a, C j a ∈ regAt ξ P) ∧ ∀ a j, B a j ∈ regAt ξ P := by
@@ -516,10 +516,10 @@ private theorem det_submatrix_mul_det_eq_pow_mul {Ω : Type} [Field Ω] {n r : �
   rw [← Matrix.det_mul, h1, Matrix.det_smul, Fintype.card_fin]
 
 theorem minor_isUnit_of_leftInverse : ∀ {Ω : Type} [Field Ω] {n r : ℕ} (R : Subring Ω) (A C : Matrix (Fin n) (Fin r) Ω)
-    (B : Matrix (Fin r) (Fin n) Ω) (T : Matrix (Fin r) (Fin r) Ω) (a : Ω) (hAT : A * T = a • C) (ha : a ≠ 0)
-    (hT : T.det ≠ 0) (hBC : B * C = 1) (hC : ∀ j l, C j l ∈ R) (hB : ∀ l j, B l j ∈ R) (J₀ : Fin r → Fin n)
-    (hz : (A.submatrix J₀ id).det ≠ 0)
-    (hr : ∀ J : Fin r → Fin n, (A.submatrix J id).det / (A.submatrix J₀ id).det ∈ R),
+    (B : Matrix (Fin r) (Fin n) Ω) (T : Matrix (Fin r) (Fin r) Ω) (a : Ω) (_ : A * T = a • C) (_ : a ≠ 0)
+    (_ : T.det ≠ 0) (_ : B * C = 1) (_ : ∀ j l, C j l ∈ R) (_ : ∀ l j, B l j ∈ R) (J₀ : Fin r → Fin n)
+    (_ : (A.submatrix J₀ id).det ≠ 0)
+    (_ : ∀ J : Fin r → Fin n, (A.submatrix J id).det / (A.submatrix J₀ id).det ∈ R),
     (C.submatrix J₀ id).det ≠ 0 ∧ (C.submatrix J₀ id).det ∈ R ∧ (C.submatrix J₀ id).det⁻¹ ∈ R ∧
       (A.submatrix J₀ id).det * T.det = a ^ r * (C.submatrix J₀ id).det := by
   intro Ω _ n r R A C B T a hAT ha hT hBC hC hB J₀ hz hr

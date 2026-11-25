@@ -89,7 +89,7 @@ theorem gks_eq (P : LocPrime l) (H : LocHW l P) (K : FinExt l) (s : ℕ) (LL : F
   rfl
 
 theorem base_setup (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (K : FinExt l) (s : ℕ) (LL : FinExt l)
-    (h : Good K s LL) : ∃ (K' : FinExt l) (h' : Good K' s LL) (hle : K.1 ≤ K'.1), K0 K' = K0 K ∧
+    (h : Good K s LL) : ∃ (K' : FinExt l) (h' : Good K' s LL) (_ : K.1 ≤ K'.1), K0 K' = K0 K ∧
       ((HW l).W K' s LL h').GKs = ⊤ ∧
       ∀ g : ↥(GK K), g ∈ ((HW l).W K s LL h).GKs ↔ (g : GQ l) ∈ GK K' := by
   haveI hfin : FiniteDimensional ℚ_[l] ↥(Ks K s) := GlobalTheory.InvariantLift.finKs K s

@@ -55,7 +55,7 @@ theorem mapPrime_conjugate {D : D7} {X : Fields} (s : Seam D X) (hs : s.Ok) (P :
   rw [mem_conjP, hc, mem_seamP, mem_seamP, mem_conjP]
 
 theorem lev_pos_and_noConj :
-    UnderTie (fun {D L hT Gi Gl Kc Y cX ex t u μ St} A dtU a => 0 < (t.rd u μ).lev ∧ ∀ Q ∈ ssRec t u μ, conjPrime₂ Q ∉ ssRec t u μ) := by
+    UnderTie (fun {_ _ _ _ _ _ _ _ _ t u μ _} _ _ _ => 0 < (t.rd u μ).lev ∧ ∀ Q ∈ ssRec t u μ, conjPrime₂ Q ∉ ssRec t u μ) := by
   intro D L hT Gi Gl Kc Y cX ex t u μ St A dtU a hP hTie
   obtain ⟨hSS, hlev, -⟩ := (isChainTop_iff _ _ _ _ _ _ _ _ _).1 hTie.isChainTop
   refine ⟨?_, ?_⟩

@@ -429,7 +429,7 @@ end SlopeTestRemainingChoices
 theorem UpperTheory.V.GC.H2_galois_quotient_eq :
     Hypotheses₂ → ∀ (F Ω : Type) [Field F] [NumberField F] [Field Ω] [Algebra F Ω] [IsAlgClosure F Ω] (l : ℕ) [Fact l.Prime], IsTotallyReal F → ∀ (S : Finset (HeightOneSpectrum (𝓞 F))) (K : Subgroup (G F Ω)) (Γ : Type) [Group Γ] [TopologicalSpace Γ] [IsTopologicalGroup Γ] [CompactSpace Γ] [T2Space Γ] [TotallyDisconnectedSpace Γ] (π : G F Ω →* Γ) (h : GLink l S K π) (k : Type) [Field k] [Finite k] [CharP k l] (M : Type) [AddCommGroup M] [Module k M] [Module.Finite k M] [TopologicalSpace M] [DiscreteTopology M] (ρ : Representation k Γ M), ContAction ρ →
     ∀ c : InfinitePlace F → G F Ω, (∀ w, IsCCAt w (c w)) → ∀ (A : S → ValuationSubring Ω), (∀ v, IsPlaceOver (A v) v.1) → Module.Finite k (H1 ρ) ∧ Module.Finite k (H2 ρ) ∧
-    finrank k (Sha2 ρ (fun v => π.comp (Dec (F := F) (A v)).subtype) fun v => h.cont.comp continuous_subtype_val) + ∑ v, finrank k (H2 (ρ.comp (π.comp (Dec (F := F) (A v)).subtype))) + finrank k (H0 ρ) + finrank ℚ F * finrank k M ≤
+    finrank k (Sha2 ρ (fun v => π.comp (Dec (F := F) (A v)).subtype) fun _ => h.cont.comp continuous_subtype_val) + ∑ v, finrank k (H2 (ρ.comp (π.comp (Dec (F := F) (A v)).subtype))) + finrank k (H0 ρ) + finrank ℚ F * finrank k M ≤
       finrank k (H1 ρ) + ∑ w, finrank k (LinearMap.ker (ρ (π (c w)) - 1)) + finrank k (Loc.H0dual (cycF F Ω l k) (ρ.comp π)) := by
   intro P F Ω _ _ _ _ _ l _ hF S K Γ _ _ _ _ _ _ π h k _ _ _ M _ _ _ _ _ ρ hρ c hc A hA
   classical

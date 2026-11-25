@@ -59,7 +59,7 @@ theorem frInv_fdOfCharts {p : ℕ} [Fact p.Prime] {X : Sys p} {D : D7} (cp : Cha
   rw [Matrix.det_mul, LinearMap.det_toMatrix']
   exact IsUnit.mul (LinearEquiv.isUnit_det' _) (Matrix.isUnits_det_units _)
 
-theorem frames_invertible : AllSites (fun {D L hT Gi Gl Kc Dx cX ex u μ w hg Lv I H X} [Fact (D.what₂.places.resChar w).Prime] {std t J} S =>
+theorem frames_invertible : AllSites (fun {D _ _ _ _ _ _ _ _ _ _ w _ _ _ _ _} [Fact (D.what₂.places.resChar w).Prime] {std _ J} _ =>
     FrInv (J.fd std) ∧ ∀ d : Dec J std, FrInv d.fd2) := by
   intro D L hT Gi Gl Kc Dx cX ex u μ w hg Lv I H X _ std t J S
   have h1 : FrInv (J.fd std) := frInv_fdOfCharts _ _ _

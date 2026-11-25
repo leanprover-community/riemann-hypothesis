@@ -720,7 +720,7 @@ section -- clump:auto
 @[expose] public section
 
 noncomputable def UpperTheory.Reformulated.B.SesquilinearFlipConj.HasSesq :
-    {G V : Type} → [inst : Group G] → [inst_1 : AddCommGroup V] → [inst_2 : _root_.Module ℂ V] → Representation ℂ G V → Prop :=
+    {G V : Type} → [Group G] → [AddCommGroup V] → [_root_.Module ℂ V] → Representation ℂ G V → Prop :=
     fun {G V : Type} [Group G] [AddCommGroup V] [_root_.Module ℂ V] (π : Representation ℂ G V) ↦
       ∃ (B : V →ₗ[ℂ] V →ₗ⋆[ℂ] ℂ),
         B ≠ (0 : V →ₗ[ℂ] V →ₗ⋆[ℂ] ℂ) ∧
@@ -746,7 +746,7 @@ end UpperTheory.Reformulated.B.SesquilinearFlipConj.Helpers
 
 open UpperTheory.Reformulated.B.SesquilinearFlipConj.Helpers in
 theorem UpperTheory.Reformulated.B.SesquilinearFlipConj.main :
-    ∀ {G V : Type} [inst : Group G] [inst_1 : AddCommGroup V] [inst_2 : _root_.Module ℂ V] {ρ : Representation ℂ G V},
+    ∀ {G V : Type} [Group G] [AddCommGroup V] [_root_.Module ℂ V] {ρ : Representation ℂ G V},
       UpperTheory.Reformulated.B.SesquilinearFlipConj.HasSesq ρ →
         ∃ (B : V →ₗ[ℂ] V →ₗ⋆[ℂ] ℂ),
           B ≠ (0 : V →ₗ[ℂ] V →ₗ⋆[ℂ] ℂ) ∧

@@ -973,7 +973,7 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Ylb7.main :
-    ∀ {G : Type} [inst : Group G] [inst_1 : TopologicalSpace G] {C : Set G},
+    ∀ {G : Type} [Group G] [TopologicalSpace G] {C : Set G},
       IsCompact C →
         ∀ {n : Set (G × G)}, IsOpen n → (∀ c ∈ C, (c, (1 : G)) ∈ n) → ∃ O ∈ nhds (1 : G), ∀ c ∈ C, ∀ u ∈ O, (c, u) ∈ n := by
   intro G _ _ C hC n hn h

@@ -49,7 +49,7 @@ public import Mathlib.RingTheory.Ideal.BigOperators
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.MemSpanVariable.mem_span_X :
-    ∀ {O σ : Type} [inst : CommRing O] [Fintype σ]
+    ∀ {O σ : Type} [CommRing O] [Fintype σ]
     (f : MvPowerSeries σ O),
     (MvPowerSeries.constantCoeff : MvPowerSeries σ O → O) f = (0 : O) → f ∈ Ideal.span (Set.range MvPowerSeries.X) := by
   intro O σ _ _ f hf

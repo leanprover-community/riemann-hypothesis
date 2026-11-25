@@ -853,7 +853,7 @@ theorem isLocS_unique {n : ℕ} (π π' : NG.AutRep L n) (s : SplitPlace L)
   exact GlobalTheory.SmGL.IrrRep.cl_eq_iff.2 ⟨E2.symm⟩
 
 theorem main : ∀ (L : Type) [Field L] [NumberField L] [IsCMField L] (n : ℕ) (π : NG.AutRep L n) (s : SplitPlace L),
-    ∃ σ, IsLocS π.S s σ ∧ ∀ (π' : NG.AutRep L n) (s' : SplitPlace L) (h : s'.w = s.w) σ', π.Iso π' →
+    ∃ σ, IsLocS π.S s σ ∧ ∀ (π' : NG.AutRep L n) (s' : SplitPlace L) (_ : s'.w = s.w) σ', π.Iso π' →
       IsLocS π'.S s' σ' → HEq σ'.cl σ.cl := by
   intro L _ _ _ n π s
   obtain ⟨σ, hσ⟩ := exists_isLocS π s

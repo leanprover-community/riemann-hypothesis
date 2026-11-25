@@ -58,7 +58,7 @@ theorem theoremS_rec2P
     ∃ CA C : ℝ, Cthr ≤ CA ∧ 1 ≤ CA ∧ 0 ≤ C ∧ C ≤ CA ∧
     ∀ (C0 CG CDel cT Cb : ℝ), 1 ≤ C0 → 0 ≤ CG → 4 < CDel → 0 < cT → 0 < Cb → 1 < cT * Cb →
     ∃ k0 : ℕ, ∀ Cg cb Cw cTf CT C0f : ℝ, 0 < cb → 0 < cTf → ∃ Cn C'₀ Cl₀ : ℝ, 0 ≤ Cn ∧ ∀ C' Cl : ℝ, C'₀ ≤ C' → Cl₀ ≤ Cl →
-    ∀ (D : D7) (L : SizeData₂ D) (T : STies D) (hF : FinX T.Y) (u u' : D.what₂.Word)
+    ∀ (D : D7) (L : SizeData₂ D) (T : STies D) (_ : FinX T.Y) (u u' : D.what₂.Word)
       (G0 : Sz.Glob (InfinitePlace D.host.E)) (de de' : ℕ → ℝ) (l : ℕ)
       (i0 i0' : ∀ _ : InfinitePlace T.X.B.I.F, Fin D.R.k) (νq : T.X.B.I.Ginf → Measure T.X.B.I.Ginf)
       (X0 : Fin (2 * D.R.rS + 2) → Fin T.X.B.I.n → T.X.B.I.E)
@@ -143,7 +143,7 @@ theorem theoremS_rec3P
     ∃ C₄ CA C : ℝ, 1 ≤ C₄ ∧ Cthr ≤ CA ∧ 1 ≤ CA ∧ 0 ≤ C ∧ C ≤ CA ∧
     ∀ (C0 CG CDel cT Cb : ℝ), 1 ≤ C0 → 0 ≤ CG → 4 < CDel → 0 < cT → 0 < Cb → 1 < cT * Cb →
     ∃ k0 : ℕ, ∀ Cg cb Cw cTf CT C0f : ℝ, 0 < cb → 0 < cTf → ∃ Cn C'₀ Cl₀ : ℝ, 0 ≤ Cn ∧ ∀ C' Cl : ℝ, C'₀ ≤ C' → Cl₀ ≤ Cl →
-    ∀ (D : D7) (L : SizeData₂ D) (T : STies D) (hF : FinX T.Y) (u u' : D.what₂.Word)
+    ∀ (D : D7) (L : SizeData₂ D) (T : STies D) (_ : FinX T.Y) (u u' : D.what₂.Word)
       (e : InfinitePlace D.host.E ≃ D.what₂.Tau) (τ : D.what₂.Tau)
       (i0 i0' : ∀ _ : InfinitePlace T.X.B.I.F, Fin D.R.k) (νq : T.X.B.I.Ginf → Measure T.X.B.I.Ginf)
       (X0 : Fin (2 * D.R.rS + 2) → Fin T.X.B.I.n → T.X.B.I.E)

@@ -118,7 +118,7 @@ lemma sum_inv_mul (χ : MulChar F R) :
   simp [Finset.sum_sub_distrib]
 
 omit [DecidableEq F] in
-lemma v_card_sub_one (p : ℕ) [hp : Fact p.Prime] (hv : v.Integers R) (hpv : v (p : C) < 1)
+lemma v_card_sub_one (p : ℕ) [Fact p.Prime] (hv : v.Integers R) (hpv : v (p : C) < 1)
     [CharP F p] : v ((Fintype.card F : C) - 1) = 1 := by
   obtain ⟨n, -, hn⟩ := FiniteField.card F p
   have hlt : v ((Fintype.card F : C)) < 1 := by

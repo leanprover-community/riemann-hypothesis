@@ -224,7 +224,7 @@ def UnitFunctionExpansion : Prop :=
         ∀ x : Fin N → ℕ, PadicGe p ((∏ i, unitFn p (us i) (x (var i))) -
           ∑ j ∈ T, q j * ∏ k, ((x k).choose (j k) : ℚ)) c
 
-def FactorialUnitDecomposition : Prop :=
+def FactorialUnitDecomposition (_D : Formalism.BasicNotions.D7) : Prop :=
   ∀ p : ℕ, p.Prime → 5 ≤ p →
     (∀ t rho e' : ℕ, rho < p ^ (t + 1) →
       (((rho + p ^ (t + 1) * e').factorial : ℕ) : ℚ) =
@@ -258,7 +258,7 @@ def DegreeTruncationLemma (_D : Formalism.BasicNotions.D7) : Prop :=
       valS LL S F ≤ valS LL S (∑ m ∈ T, q m • (monomial m 1 * divDer m F)) + (((4 * c : ℕ) : ℤ) : WithTop ℤ) ∧
       lam1S LL S (∑ m ∈ T, q m • (monomial m 1 * divDer m F)) ≤ lam1S LL S F + (((4 * c : ℕ) : ℤ) : WithBot ℤ)
 
-def UnitProductSecondLemma (D : Formalism.BasicNotions.D7) : Prop := FactorialUnitDecomposition ∧ DegreeTruncationLemma D
+def UnitProductSecondLemma (D : Formalism.BasicNotions.D7) : Prop := FactorialUnitDecomposition D ∧ DegreeTruncationLemma D
 
 def UnitProductLemmas (D : Formalism.BasicNotions.D7) : Prop := UnitFunctionExpansion ∧ UnitProductSecondLemma D
 

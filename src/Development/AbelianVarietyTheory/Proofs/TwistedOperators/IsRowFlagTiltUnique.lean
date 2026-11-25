@@ -46,7 +46,7 @@ noncomputable section
 
 namespace GlobalTheory.TiltUnique
 
-theorem tilt_unique : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} (G : GridData L sc) {j : ℕ} (hj : j < D.R.m)
+theorem tilt_unique : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} (G : GridData L sc) {j : ℕ} (_ : j < D.R.m)
     (δ δ' : GA D (G.V (.grid D.R.m j))), IsTilt G j δ → IsTilt G j δ' → δ = δ' := by
   intro D T L sc G j hj δ δ' h h'
   rcases Nat.even_or_odd j with he | ho

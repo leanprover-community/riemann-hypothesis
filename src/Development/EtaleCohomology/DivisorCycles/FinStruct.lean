@@ -656,7 +656,7 @@ section -- clump:auto
     fun (C : Type) (N : ℕ) ↦ Matrix (Fin N) (Fin N) C
 
 theorem UpperTheory.Reformulated.B.Qp10.aeval_eig :
-    ∀ {C : Type} [inst : Field C] {N : ℕ} (y : UpperTheory.Reformulated.B.Qp10.Mat C N) (μ : C) (v : Fin N → C),
+    ∀ {C : Type} [Field C] {N : ℕ} (y : UpperTheory.Reformulated.B.Qp10.Mat C N) (μ : C) (v : Fin N → C),
       Matrix.mulVec y v = μ • v →
         ∀ (Q : Polynomial C),
           Matrix.mulVec ((Polynomial.aeval y : Polynomial C → UpperTheory.Reformulated.B.Qp10.Mat C N) Q) v = Polynomial.eval μ Q • v := by

@@ -412,7 +412,7 @@ theorem length_addMonoidHom_le_of_card_eq (l : ℕ) [Fact l.Prime] [Algebra ℤ_
 
 theorem length_addMonoidHom_le : ∀ (l : ℕ) [Fact l.Prime] (O : Type) [CommRing O] [IsDomain O]
     [IsDiscreteValuationRing O]
-    [Algebra ℤ_[l] O] (M : Type) [AddCommGroup M] [Module O M] (eM : M ≃ₗ[O] KO O)
+    [Algebra ℤ_[l] O] (M : Type) [AddCommGroup M] [Module O M] (_ : M ≃ₗ[O] KO O)
     (A : Type) [AddCommGroup A] [Finite A],
     Module.length O (A →+ M) ≤
       Module.length O (O ⧸ Ideal.span {(l : O)}) * (padicValNat l (Nat.card A) : ℕ∞) := by

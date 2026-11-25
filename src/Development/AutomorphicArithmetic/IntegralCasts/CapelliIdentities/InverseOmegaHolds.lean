@@ -55,11 +55,11 @@ public import Mathlib.RingTheory.Derivation.Basic
 @[expose] public section
 
 noncomputable def UpperTheory.Reformulated.B.Gwa1.IsIntP :
-    {p : ℕ} → [inst : Fact (Nat.Prime p)] → ℂ_[p] → Prop :=
+    {p : ℕ} → [Fact (Nat.Prime p)] → ℂ_[p] → Prop :=
     fun {p : ℕ} [Fact (Nat.Prime p)] (x : ℂ_[p]) ↦ ‖x‖ ≤ (1 : ℝ)
 
 noncomputable def UpperTheory.Reformulated.B.Gwa1.IsWq :
-    {p : ℕ} → [inst : Fact (Nat.Prime p)] → WeierstrassCurve ℂ_[p] → PowerSeries ℂ_[p] → Prop :=
+    {p : ℕ} → [Fact (Nat.Prime p)] → WeierstrassCurve ℂ_[p] → PowerSeries ℂ_[p] → Prop :=
     fun {p : ℕ} [Fact (Nat.Prime p)] (W : WeierstrassCurve ℂ_[p]) (wq : PowerSeries ℂ_[p]) ↦
       have c : ℂ_[p] →+* PowerSeries ℂ_[p] := Algebra.algebraMap ℂ_[p] (PowerSeries ℂ_[p]);
       have X : PowerSeries ℂ_[p] := PowerSeries.X;
@@ -76,7 +76,7 @@ noncomputable def UpperTheory.Reformulated.B.Gwa1.dX.{u_1} :
       PowerSeries.mk fun (n : ℕ) ↦ ((↑n : A) + (1 : A)) * (PowerSeries.coeff (n + (1 : ℕ)) : PowerSeries A → A) f
 
 noncomputable def UpperTheory.Reformulated.B.Gwa1.omegaW :
-    {p : ℕ} → [inst : Fact (Nat.Prime p)] → WeierstrassCurve ℂ_[p] → PowerSeries ℂ_[p] → PowerSeries ℂ_[p] :=
+    {p : ℕ} → [Fact (Nat.Prime p)] → WeierstrassCurve ℂ_[p] → PowerSeries ℂ_[p] → PowerSeries ℂ_[p] :=
     fun {p : ℕ} [Fact (Nat.Prime p)] (W : WeierstrassCurve ℂ_[p]) (wq : PowerSeries ℂ_[p]) ↦
       have c : ℂ_[p] →+* PowerSeries ℂ_[p] := Algebra.algebraMap ℂ_[p] (PowerSeries ℂ_[p]);
       have X : PowerSeries ℂ_[p] := PowerSeries.X;
@@ -86,7 +86,7 @@ noncomputable def UpperTheory.Reformulated.B.Gwa1.omegaW :
               (2 : PowerSeries ℂ_[p])))⁻¹
 
 noncomputable def UpperTheory.Reformulated.B.Gwa1.flog :
-    {p : ℕ} → [inst : Fact (Nat.Prime p)] → WeierstrassCurve ℂ_[p] → PowerSeries ℂ_[p] → PowerSeries ℂ_[p] :=
+    {p : ℕ} → [Fact (Nat.Prime p)] → WeierstrassCurve ℂ_[p] → PowerSeries ℂ_[p] → PowerSeries ℂ_[p] :=
     fun {p : ℕ} [Fact (Nat.Prime p)] (W : WeierstrassCurve ℂ_[p]) (wq : PowerSeries ℂ_[p]) ↦
       PowerSeries.mk fun (n : ℕ) ↦
         if n = (0 : ℕ) then (0 : ℂ_[p])

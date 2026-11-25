@@ -470,7 +470,7 @@ noncomputable def UpperTheory.Reformulated.B.Qe40.IsUp :
     fun {R : Type} [CommRing R] (X : UpperTheory.Reformulated.B.Qe40.M4 R) ↦ ∀ (i j : Fin (4 : ℕ)), j < i → X i j = (0 : R)
 
 theorem UpperTheory.Reformulated.B.Qe40.up_diag_mul :
-    ∀ {R : Type} [inst : CommRing R] {X Y : UpperTheory.Reformulated.B.Qe40.M4 R},
+    ∀ {R : Type} [CommRing R] {X Y : UpperTheory.Reformulated.B.Qe40.M4 R},
       UpperTheory.Reformulated.B.Qe40.IsUp X → UpperTheory.Reformulated.B.Qe40.IsUp Y → ∀ (i : Fin (4 : ℕ)), (X * Y) i i = X i i * Y i i := by
   intro R _ X Y hX hY i
   rw [Matrix.mul_apply]

@@ -114,6 +114,6 @@ theorem sx_dwork : DworkLemma p := by
   unfold Formalism.InvariantFactorPaths.G7.frobVar
   rw [MvPowerSeries.smul_eq_C_mul]
 
-theorem positivity_condition_holds (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.FormalGroupSystem.adm1 := fun p _ => sx_dwork p
+theorem positivity_condition_holds (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.FormalGroupSystem.adm1 D := fun p _ => sx_dwork p
 
 end Formalism.MainNotions.FormalGroupSystem.Pf

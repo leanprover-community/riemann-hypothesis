@@ -235,7 +235,7 @@ theorem preimage_open_eq_top_of_closed_point {Y : Scheme.{0}} (F : Spec (CommRin
   fun p _ => (IsLocalRing.specializes_closedPoint p).mem_open (F ⁻¹ᵁ U).isOpen hc
 
 theorem epsPart_comp {Y : Scheme.{0}} (χ : D2 →+* DualNumber ℂ) (F : Spec (CommRingCat.of D2) ⟶ Y) (U : Y.Opens)
-    (hF : ⊤ ≤ F ⁻¹ᵁ U) (f : Γ(Y, U)) : ∀ (φ : Sp (DualNumber ℂ) ⟶ Y) (hφ : φ = spMap χ ≫ F) (h : ⊤ ≤ φ ⁻¹ᵁ U),
+    (hF : ⊤ ≤ F ⁻¹ᵁ U) (f : Γ(Y, U)) : ∀ (φ : Sp (DualNumber ℂ) ⟶ Y) (_ : φ = spMap χ ≫ F) (h : ⊤ ≤ φ ⁻¹ᵁ U),
       epsPart φ U h f = (χ ((Scheme.ΓSpecIso (CommRingCat.of D2)).hom.hom ((F.appLE U ⊤ hF).hom f))).snd := by
   intro φ hφ h
   subst hφ
@@ -290,7 +290,7 @@ end PositivityTheory.Xgf.TwoTangentVectors
 namespace PositivityTheory.Xgf
 
 open TwoTangentVectors in
-theorem lie_model_with_cm_action : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Level H) (Xo : Moduli D l) (c : Coeff l) (g : ℕ) (ty : Fin g → (E →+* ℂ)) (FU : FamilyUnif Xo (algebraMap (KA l) ℂ) ty) (i : Fin FU.n) (P : (FU.Di i).La →+ (Fin g → ℂ)), IsPeriod (FU.Di i) ty P → ∃ (M : LieModel Xo.univ.t.G (FU.u i P) (Fin g → ℂ)) (ρ : 𝓞 E →+* Module.End ℂ (Fin g → ℂ)), M.IsActOf Xo.univ.t.act.act ρ ∧ (∀ a w, ρ a w = fun k => ty k (a : E) * w k) ∧ (∀ w, IsDerivAt0 (fun z => (FU.ex i P z).left) w (M.pt w).left) ∧ ∀ τ w, HT.eigProj ρ τ w = tyPart ty τ w := by
+theorem lie_model_with_cm_action : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Level H) (Xo : Moduli D l) (_ : Coeff l) (g : ℕ) (ty : Fin g → (E →+* ℂ)) (FU : FamilyUnif Xo (algebraMap (KA l) ℂ) ty) (i : Fin FU.n) (P : (FU.Di i).La →+ (Fin g → ℂ)), IsPeriod (FU.Di i) ty P → ∃ (M : LieModel Xo.univ.t.G (FU.u i P) (Fin g → ℂ)) (ρ : 𝓞 E →+* Module.End ℂ (Fin g → ℂ)), M.IsActOf Xo.univ.t.act.act ρ ∧ (∀ a w, ρ a w = fun k => ty k (a : E) * w k) ∧ (∀ w, IsDerivAt0 (fun z => (FU.ex i P z).left) w (M.pt w).left) ∧ ∀ τ w, HT.eigProj ρ τ w = tyPart ty τ w := by
   intro E _ _ _ H D l Xo c g ty FU i P hP
   classical
   have hd := FU.ex_diff i P hP
@@ -387,7 +387,7 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open Matrix GlobalTheory GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Fl
 open scoped ComplexOrder
 
-theorem _root_.GlobalTheory.CompanionTheory.Relay.lie_model_with_cm_action : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Level H) (Xo : Moduli D l) (c : Coeff l) (g : ℕ) (ty : Fin g → (E →+* ℂ)) (FU : FamilyUnif Xo (algebraMap (KA l) ℂ) ty) (i : Fin FU.n) (P : (FU.Di i).La →+ (Fin g → ℂ)), IsPeriod (FU.Di i) ty P → ∃ (M : LieModel Xo.univ.t.G (FU.u i P) (Fin g → ℂ)) (ρ : 𝓞 E →+* Module.End ℂ (Fin g → ℂ)), M.IsActOf Xo.univ.t.act.act ρ ∧ (∀ a w, ρ a w = fun k => ty k (a : E) * w k) ∧ (∀ w, IsDerivAt0 (fun z => (FU.ex i P z).left) w (M.pt w).left) ∧ ∀ τ w, HT.eigProj ρ τ w = tyPart ty τ w := by
+theorem _root_.GlobalTheory.CompanionTheory.Relay.lie_model_with_cm_action : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Level H) (Xo : Moduli D l) (_ : Coeff l) (g : ℕ) (ty : Fin g → (E →+* ℂ)) (FU : FamilyUnif Xo (algebraMap (KA l) ℂ) ty) (i : Fin FU.n) (P : (FU.Di i).La →+ (Fin g → ℂ)), IsPeriod (FU.Di i) ty P → ∃ (M : LieModel Xo.univ.t.G (FU.u i P) (Fin g → ℂ)) (ρ : 𝓞 E →+* Module.End ℂ (Fin g → ℂ)), M.IsActOf Xo.univ.t.act.act ρ ∧ (∀ a w, ρ a w = fun k => ty k (a : E) * w k) ∧ (∀ w, IsDerivAt0 (fun z => (FU.ex i P z).left) w (M.pt w).left) ∧ ∀ τ w, HT.eigProj ρ τ w = tyPart ty τ w := by
   first | exact @PositivityTheory.Xgf.lie_model_with_cm_action
 end -- clump:auto
 end -- clump:auto

@@ -68,7 +68,7 @@ noncomputable section
 
 namespace CompanionTheory.PlacePermOperatorBicommutantSpan
 
-theorem theta_measure_locally_finite : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (M : ℕ) (J : Matrix (Fin M) (Fin M) E), IsHermND σ J → 3 ≤ M → ∀ (μ : Measure (HA (AF F) σ J)) (𝓕 : Set (HA (AF F) σ J)), IsHaarH F E σ M J μ → IsFDH F E σ M J μ 𝓕 → ∀ (T : Matrix (Fin 1) (Fin 1) E) (hT : ∀ a b, σ (T b a) = T a b), T.det ≠ 0 → IsLocallyFiniteMeasure (thetaMeas σ J μ 𝓕 {X | gramE σ J X = T}) := by
+theorem theta_measure_locally_finite : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (M : ℕ) (J : Matrix (Fin M) (Fin M) E), IsHermND σ J → 3 ≤ M → ∀ (μ : Measure (HA (AF F) σ J)) (𝓕 : Set (HA (AF F) σ J)), IsHaarH F E σ M J μ → IsFDH F E σ M J μ 𝓕 → ∀ (T : Matrix (Fin 1) (Fin 1) E) (_ : ∀ a b, σ (T b a) = T a b), T.det ≠ 0 → IsLocallyFiniteMeasure (thetaMeas σ J μ 𝓕 {X | gramE σ J X = T}) := by
   intro F E _ _ _ _ _ σ hcm M J hJ hM μ 𝓕 hμ h𝓕 T hT hd
   obtain ⟨⟨_, _, _⟩, -⟩ := _root_.GlobalTheory.CompanionTheory.AdeleTop.adele_top F
   obtain ⟨_, _, _, _, -, -, -, hB, -⟩ := _root_.GlobalTheory.CompanionTheory.SW.TopK.topTens_props F E σ hcm (AF F)

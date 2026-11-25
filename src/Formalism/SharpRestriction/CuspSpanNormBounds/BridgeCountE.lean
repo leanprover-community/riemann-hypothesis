@@ -101,7 +101,7 @@ def CountAllPointsClass {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) (n₀ 
 def CountRowsClassFamily {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) (n₀ : ℕ) (A C c cb : ℝ) : Prop :=
   0 < c ∧ 0 < cb ∧ ∀ x (i : Fm.Ix x), CountRowsClass P (Fm.D x i) n₀ A C c cb
 
-theorem count_class_of_count {D : Formalism.BasicNotions.D7} {n₀ : ℕ} {A C c cb : ℝ} (h : PointsLemma n₀ A C c cb) : CountIdempotentsClass P D n₀ A C c cb := by
+theorem count_class_of_count {D : Formalism.BasicNotions.D7} {n₀ : ℕ} {A C c cb : ℝ} (h : PointsLemma D n₀ A C c cb) : CountIdempotentsClass P D n₀ A C c cb := by
   intro I b lam g g₀ e H _ _ _ σ w Hs _ _ _ σs tens μf _ fund R Re h' hS _ hc hg h1 h2 h3
   exact h I b lam g g₀ e H σ w Hs σs tens μf fund R Re h' hS hc hg h1 h2 h3
 

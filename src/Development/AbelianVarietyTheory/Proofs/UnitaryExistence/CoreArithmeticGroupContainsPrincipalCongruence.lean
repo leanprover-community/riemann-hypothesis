@@ -515,7 +515,7 @@ theorem root_eq_one {D : D7} (V : HSp D) {r : ℕ} (hr : V.rank = r) (hr0 : 0 < 
     unfold archM
     rw [e]
 
-theorem hasPrinc_core : ∀ (D : D7) (T : Core D) (h : LawsCore T) (j : ℕ) (hj : InR D j), ∀ σ, GoodEmb T.Q.c σ → GlobalTheory.FrameNorm.HasPrinc (Formalism.L2.PjFree.Unf.ofPj (T.U j σ)) T.Q.l.M := by
+theorem hasPrinc_core : ∀ (D : D7) (T : Core D) (_ : LawsCore T) (j : ℕ) (_ : InR D j), ∀ σ, GoodEmb T.Q.c σ → GlobalTheory.FrameNorm.HasPrinc (Formalism.L2.PjFree.Unf.ofPj (T.U j σ)) T.Q.l.M := by
   intro D T h j hj σ hσ k γ hγ hc
   obtain ⟨hgood, hA, -, -, -, -, hnum⟩ := GlobalTheory.PinNum.numerics_of_pins D T.Q h.pins
   have hr : 0 < D.R.r := (hnum j hj).2.1

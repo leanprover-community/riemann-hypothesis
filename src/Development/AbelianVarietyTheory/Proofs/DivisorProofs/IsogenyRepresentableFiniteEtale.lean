@@ -154,7 +154,7 @@ private theorem clopen_forall {S : Scheme.{0}} (X F : Over S) [IsFinite F.hom] [
 
 private theorem clopen_pre {S : Scheme.{0}} {X Y : Over S} (e : X ⟶ Y) (U : Y.left.Opens)
     (hU : IsClosed (U : Set Y.left)) :
-    GlobalTheory.LevCover.ClopenCond X (fun T h => Set.range (h ≫ e).left ⊆ U) := by
+    GlobalTheory.LevCover.ClopenCond X (fun _ h => Set.range (h ≫ e).left ⊆ U) := by
   refine ⟨e.left ⁻¹ᵁ U, hU.preimage e.left.continuous, ?_⟩
   intro T h
   simp only [Over.comp_left, Set.range_subset_iff, Scheme.Hom.comp_apply, Scheme.Hom.mem_preimage, SetLike.mem_coe]

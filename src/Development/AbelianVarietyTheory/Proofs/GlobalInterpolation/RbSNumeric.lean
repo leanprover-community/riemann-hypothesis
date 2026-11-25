@@ -78,7 +78,7 @@ theorem rbS_numeric {x E P X b k r m de Del lg : ℝ} (hx : 8 ≤ x) (hE0 : 0 < 
     _ = x⁻¹ * 2 * b := by field_simp; ring
     _ ≤ de * m * b := by gcongr
 
-theorem szRow_rbS : SzRow (fun C D L => ((D.R.r : ℝ) * (L.sc.b' + L.Sc) * Real.log L.sc.x * lA L ≤
+theorem szRow_rbS : SzRow (fun _ D L => ((D.R.r : ℝ) * (L.sc.b' + L.Sc) * Real.log L.sc.x * lA L ≤
     L.de2 * D.R.m * L.sc.b)) := by
   intro eps he0 he1 C _
   refine ⟨0, fun cD hcD => ⟨0, fun ch _ => ?_⟩⟩

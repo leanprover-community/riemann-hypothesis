@@ -81,8 +81,8 @@ theorem exists_coatom_ge_of_hasFiniteLength {G V : Type} [Group G] [AddCommGroup
 
 theorem cosocle_quotient_of_quotient : ∀ {G V W X : Type} [Group G] [AddCommGroup V] [Module ℂ V] [AddCommGroup W]
     [Module ℂ W] [AddCommGroup X] [Module ℂ X] (σ : Representation ℂ G W) (P : Representation ℂ G V)
-    (Q : Representation ℂ G X) (hc : IsCosocle σ P) (hfl : HasFiniteLength P) (f : P.IntertwiningMap Q)
-    (hf : Function.Surjective f) (hQ : Nontrivial X), ∃ g : Q.IntertwiningMap σ, Function.Surjective g := by
+    (Q : Representation ℂ G X) (_ : IsCosocle σ P) (_ : HasFiniteLength P) (f : P.IntertwiningMap Q)
+    (_ : Function.Surjective f) (_ : Nontrivial X), ∃ g : Q.IntertwiningMap σ, Function.Surjective g := by
   intro G V W X _ _ _ _ _ _ _ σ P Q hc hfl f hf hQ
   obtain ⟨-, f0, hf0, hco⟩ := hc
   have hne : Representation.IntertwiningMap.ker P Q f ≠ ⊤ := by
@@ -254,9 +254,9 @@ theorem quotient_of_quotient {G V W X : Type} [Group G] [AddCommGroup V] [Module
   exact _root_.GlobalTheory.CompanionTheory.Segments.cosocle_quotient_of_quotient σ P Q hc hfl f hf hQ
 
 theorem quottwo : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
-    (hA : GlobalTheory.Published.IrreducibleAdmissibleGL) (Δ : Segment k) {N : ℕ} {V : Type} [AddCommGroup V] [Module ℂ V]
-    (π : Representation ℂ (GL (Fin N) k) V) (hπ : IsLSeg Δ π) (a : ℕ) (h0 : 0 < a) (h1 : a < Δ.len) (u v : IrrGL (k := k))
-    (hu : IsLSeg (segLow Δ a h0) u.rep) (hv : IsLSeg (segHigh Δ a h1) v.rep) (hd : ∑ i, (![u, v] i).1 = N),
+    (_ : GlobalTheory.Published.IrreducibleAdmissibleGL) (Δ : Segment k) {N : ℕ} {V : Type} [AddCommGroup V] [Module ℂ V]
+    (π : Representation ℂ (GL (Fin N) k) V) (_ : IsLSeg Δ π) (a : ℕ) (h0 : 0 < a) (h1 : a < Δ.len) (u v : IrrGL (k := k))
+    (_ : IsLSeg (segLow Δ a h0) u.rep) (_ : IsLSeg (segHigh Δ a h1) v.rep) (hd : ∑ i, (![u, v] i).1 = N),
     ∃ f : (prodIrr ![u, v] hd).IntertwiningMap π, Function.Surjective f := by
   intro k _ _ _ _ hA Δ N V _ _ π hπ a h0 h1 u v hu hv hd
   have hN : u.1 + v.1 = N := hd.symm ▸ (Fin.sum_univ_two (fun i => (![u, v] i).1)).symm

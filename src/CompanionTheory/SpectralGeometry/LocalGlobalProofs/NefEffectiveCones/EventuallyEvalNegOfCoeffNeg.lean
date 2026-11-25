@@ -32,8 +32,8 @@ theorem eventually_eval_neg_of_coeff_neg (q : Polynomial ℝ) (D : ℕ) (hdeg : 
     exact ht.eventually (eventually_lt_atBot 0)
 
 theorem interNum_top_pos_of_isAmpleLB : ∀ (k : Type) [Field k] (X : Scheme.{0}) [IsIntegral X]
-    [Algebra k Γ(X, ⊤)] (hp : IsProjOver (strHom k (X := X))) (n : ℕ)
-    (hd : topologicalKrullDim X = (n : WithBot ℕ∞)) (A : LB X) (hA : IsAmpleLB A),
+    [Algebra k Γ(X, ⊤)] (_ : IsProjOver (strHom k (X := X))) (n : ℕ)
+    (_ : topologicalKrullDim X = (n : WithBot ℕ∞)) (A : LB X) (_ : IsAmpleLB A),
     0 < interNum k (GlobalTheory.structureModule X) (fun _ : Fin n => A) := by
   intro k _ X _ _ hp n hd A hA
   have hv := diffVanish_chiPic_of_isProjOver (d := n) (algebraMap_eq_strHom k X)

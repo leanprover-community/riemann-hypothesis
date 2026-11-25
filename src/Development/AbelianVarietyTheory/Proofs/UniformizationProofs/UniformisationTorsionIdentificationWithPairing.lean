@@ -62,7 +62,7 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.UT
-theorem _root_.GlobalTheory.T.card_quotient_kTorsion_pairs : LL → AllD fun {R} _ _ {I} D F _ _ => ∀ (k : ℕ), 1 ≤ k → Nat.card (Quot (QkPt.Equiv D.toPre F (k := k))) = k ^ (2 * (D.toPre.rank + D.toPre.P.g)) := by
+theorem _root_.GlobalTheory.T.card_quotient_kTorsion_pairs : LL → AllD fun {_} _ _ {_} D F _ _ => ∀ (k : ℕ), 1 ≤ k → Nat.card (Quot (QkPt.Equiv D.toPre F (k := k))) = k ^ (2 * (D.toPre.rank + D.toPre.P.g)) := by
   first | exact @GlobalTheory.UT.card_qk
 end -- clump:auto
 end -- clump:auto
@@ -78,7 +78,7 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.UT
-theorem _root_.GlobalTheory.T.unif_g_eq_rank_add_g : LL → AllU fun {R} _ _ {I} {D} {A} {G} _ _ U => A.g = D.toPre.rank + D.toPre.P.g := by
+theorem _root_.GlobalTheory.T.unif_g_eq_rank_add_g : LL → AllU fun {_} _ _ {_} {D} {A} {_} _ _ _ => A.g = D.toPre.rank + D.toPre.P.g := by
   first | exact @GlobalTheory.UT.dim_eq_rank_add_dim
 end -- clump:auto
 end -- clump:auto
@@ -108,7 +108,7 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.UT
-theorem _root_.GlobalTheory.T.weilQkIs_iff_commutatorPairing_torsion : LL → AllUF fun {R} _ _ {I} {D} {A} {G} _ _ U F _ _ => ∀ (k : ℕ), 1 ≤ k → ∀ (p p' : QkPt D.toPre F k) x x', QkToAkU U.toUnifPre F k p x → QkToAkU U.toUnifPre F k p' x' → ∀ ζ : Fˣ, WeilQkIs D.toPre F k p p' ζ ↔ WeilIs A.A A.L k x x' (unitOn ζ) := by
+theorem _root_.GlobalTheory.T.weilQkIs_iff_commutatorPairing_torsion : LL → AllUF fun {_} _ _ {_} {D} {A} {_} _ _ U F _ _ => ∀ (k : ℕ), 1 ≤ k → ∀ (p p' : QkPt D.toPre F k) x x', QkToAkU U.toUnifPre F k p x → QkToAkU U.toUnifPre F k p' x' → ∀ ζ : Fˣ, WeilQkIs D.toPre F k p p' ζ ↔ WeilIs A.A A.L k x x' (unitOn ζ) := by
   first | exact @GlobalTheory.UT.weilQkIs_iff_weilIs
 end -- clump:auto
 end -- clump:auto
@@ -135,7 +135,7 @@ theorem translT_comp {S : Scheme.{0}} (A : Over S) [GrpObj A] [IsCommMonObj A] {
   · simp [translT]
   · simp only [translT, Category.assoc, lift_snd, h, MonObj.comp_mul, lift_fst_assoc, _root_.mul_assoc]
 
-theorem torsion_eq : LL → AllUF fun {R} _ _ {I} {D} {A} {G} _ _ U F _ _ => ∀ (k : ℕ), 1 ≤ k → ∃ f, Tors U.toUnifPre F k f := by
+theorem torsion_eq : LL → AllUF fun {_} _ _ {_} {_} {_} {_} _ _ U F _ _ => ∀ (k : ℕ), 1 ≤ k → ∃ f, Tors U.toUnifPre F k f := by
   intro hL R _ _ _ I hI D A G _ _ hG U F _ _ _ k hk
   have hqk := _root_.GlobalTheory.UT.indAt_translT_iff hL R I hI D A G hG U F k hk
   have hcomp := _root_.GlobalTheory.UT.IndComp.indAt_comp_unique hL R I hI D A G hG U F k hk

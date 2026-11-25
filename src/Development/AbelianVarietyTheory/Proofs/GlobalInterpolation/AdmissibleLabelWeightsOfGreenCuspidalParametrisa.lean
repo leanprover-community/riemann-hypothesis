@@ -298,7 +298,7 @@ end Dict
 
 
 open Formalism.BasicNotions Formalism.MainNotions.ArithmeticCylinders in
-theorem admissibleLabelWeights_of_greenCuspidalParametrisation : Green → ∀ (D : D7) (jE : D.host.E →+* Formalism.L2.Host.Qb) (T : Formalism.L2.NormalizedTypesCompatibility D jE), admLq D := by
+theorem admissibleLabelWeights_of_greenCuspidalParametrisation : Green → ∀ (D : D7) (jE : D.host.E →+* Formalism.L2.Host.Qb) (_ : Formalism.L2.NormalizedTypesCompatibility D jE), admLq D := by
   intro hG D jE T k ψ hψ
   haveI : Fact (D.host.g k).Prime := ⟨D.host.g_prime k⟩
   let L : LabelDatum (D.host.g k) :=

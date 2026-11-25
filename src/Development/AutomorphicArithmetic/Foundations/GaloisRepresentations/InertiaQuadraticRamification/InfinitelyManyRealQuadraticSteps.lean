@@ -226,7 +226,7 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Qh55.mem_real_of_sq :
-    ∀ {Y : Type} [inst : Field Y] {δ : Y}
+    ∀ {Y : Type} [Field Y] {δ : Y}
     {q : ℕ}, (0 : ℕ) < q → δ ^ (2 : ℕ) = (↑q : Y) → δ ∈ NumberField.maximalRealSubfield Y := by
   intro Y _ δ q hq h
   rw [NumberField.mem_maximalRealSubfield_iff]

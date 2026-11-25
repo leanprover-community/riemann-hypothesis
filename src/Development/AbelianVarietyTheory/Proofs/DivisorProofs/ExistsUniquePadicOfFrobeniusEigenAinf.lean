@@ -316,7 +316,7 @@ namespace GlobalTheory.PDivLat
 theorem existsUnique_padic_of_eigen : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C]
     (v : Valuation C NNReal) (O : Type) [CommRing O] [Algebra O C] [Fact ¬IsUnit (p : O)]
     [IsAdicComplete (Ideal.span {(p : O)}) O] [IsDomain O], v.Integers O →
-    ∀ (ε : PreTilt O p) (hε : IsPrimitiveSystem ε), ∀ a : Ainf p O,
+    ∀ (ε : PreTilt O p) (_ : IsPrimitiveSystem ε), ∀ a : Ainf p O,
       WittVector.frobenius a = WittVector.frobenius (xi ε) * a →
         ∃! c : ℤ_[p], ofPadic p O c * Sandwich.mu ε = a := by
   intro p _ C _ _ _ v O _ _ _ _ _ hv ε hε a ha

@@ -1826,7 +1826,7 @@ namespace GlobalTheory.CountBridge
 
 theorem count_typed_of_volumeStep :
     GlobalTheory.FlagMeas.VolumeStep → ∀ A : ℝ, ∃ (n₀ : ℕ) (C₀ : ℝ), 0 ≤ C₀ ∧ ∀ n₁ ≥ n₀, ∀ C ≥ C₀,
-      ∀ D : Formalism.BasicNotions.D7, Formalism.MainNotions.PlaceDegreeData.PointsLemma n₁ A C (1 / 16) (1 / 16) := by
+      ∀ D : Formalism.BasicNotions.D7, Formalism.MainNotions.PlaceDegreeData.PointsLemma D n₁ A C (1 / 16) (1 / 16) := by
   intro hV A
   obtain ⟨n₀, C₀, hC₀, hcount⟩ := _root_.GlobalTheory.CountBridge.count_unbundled (_root_.GlobalTheory.CountFinal.countingTheorem_of_volumeStep hV) A
   refine ⟨n₀, C₀, hC₀, fun n₁ hn₁ C hC _D => ?_⟩

@@ -1646,7 +1646,7 @@ end Generic
 
 
 theorem defect_torsion : ∀ (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW)
-    (Cm : CmpOf D.loc D.locA HW F), Pr2d D HW F := by
+    (_ : CmpOf D.loc D.locA HW F), Pr2d D HW F := by
   intro D HW F Cm l _ K s LL h T₀ T₁ T₂ ι π M hh c₀ c₁ c₂ hJ hses
   have : NeZero (Module.finrank ℚ_[l] ↥(K0 K)) := ⟨Module.finrank_pos.ne'⟩
   have hp : ((D.loc l).PD K).p = l := (D.loc l).PD_p K

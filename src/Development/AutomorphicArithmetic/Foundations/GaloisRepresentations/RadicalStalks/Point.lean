@@ -833,8 +833,8 @@ end UpperTheory.Gal.Ord.CntPt
 
 theorem UpperTheory.Gal.Ord.cnt :
     ∀ (p : ℕ) [Fact p.Prime] (D : Datum p) (R : Type) [CommRing R] (b : Base D R) (N : ℕ), 3 ≤ N → N.Coprime p → D.m = 1 →
-      ∀ (k : Type) [Field k] [IsAlgClosed k] (hk : (p : k) = 0) (β : R →+* k) (o : Obj b N (spMap β)) (i : Fin D.a) (w : Ideal (𝓞 D.F)) (f : ℕ),
-      RingHom.ker (β.comp (b.t i)) = w → Ideal.absNorm w = p ^ f → 0 < f → ∀ π : Par p w f,
+      ∀ (k : Type) [Field k] [IsAlgClosed k] (_ : (p : k) = 0) (β : R →+* k) (o : Obj b N (spMap β)) (i : Fin D.a) (w : Ideal (𝓞 D.F)) (f : ℕ),
+      RingHom.ker (β.comp (b.t i)) = w → Ideal.absNorm w = p ^ f → 0 < f → ∀ _ : Par p w f,
       IsWOrd o w (𝟙 (Sp k)) ∨ ∃ v : epsR k ⟶ o.A, IsTangent v ∧ v ≠ 1 ∧ IsDeep o w (p ^ f) v := by
   intro p _ D R _ b N hN hNp hm k _ _ hk β o i₀ w f hw hq hf π
   haveI : CharP k p := (CharP.charP_iff_prime_eq_zero (Fact.out : p.Prime)).mpr hk

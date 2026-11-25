@@ -92,7 +92,7 @@ theorem mem_map_conj {G : Type} [Group G] (K : Subgroup G) (g y : G) :
     refine ⟨g⁻¹ * y * g, h, ?_⟩
     simp [mul_assoc]
 
-theorem exists_finset_reps : ∀ {G : Type} [inst : Group G] {K : Subgroup G},
+theorem exists_finset_reps : ∀ {G : Type} [Group G] {K : Subgroup G},
     Formalism.UG.IsCommensurated K → ∀ (g : G), ∃ (R : Finset G),
       (∀ γ ∈ R, ∃ k₁ ∈ K, ∃ k₂ ∈ K, γ = k₁ * g * k₂) ∧
       ∀ (x : G), (∃ k₁ ∈ K, ∃ k₂ ∈ K, x = k₁ * g * k₂) → ∃! γ : G, γ ∈ R ∧ γ⁻¹ * x ∈ K := by

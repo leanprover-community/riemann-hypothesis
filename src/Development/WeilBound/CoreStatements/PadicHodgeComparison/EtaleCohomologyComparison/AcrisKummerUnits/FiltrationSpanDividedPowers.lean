@@ -107,7 +107,7 @@ private lemma tele {R : Type*} [CommRing R] (π : R) (f : ℕ → R)
 end PrecompleteLimitOfPowDvd
 
 theorem UpperTheory.Reformulated.B.Yra6.main.{u_1} :
-    ∀ {R : Type u_1} [inst : CommRing R] {π : R},
+    ∀ {R : Type u_1} [CommRing R] {π : R},
       IsPrecomplete (Ideal.span {π}) R →
         ∀ (f : ℕ → R), (∀ (n : ℕ), π ^ n ∣ f (n + (1 : ℕ)) - f n) → ∃ (L : R), ∀ (n : ℕ), π ^ n ∣ f n - L := by
   intro R _ π hP f h

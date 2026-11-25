@@ -78,7 +78,7 @@ private theorem coeff_mem_of_mem_maximalIdeal {O σ : Type} [CommRing O] [IsLoca
     exact Submodule.mem_top
 
 theorem UpperTheory.Reformulated.B.PreservedCoefficient.pres_new_coeff :
-    ∀ {O σ : Type} [inst : CommRing O] [inst_1 : IsLocalRing O]
+    ∀ {O σ : Type} [CommRing O] [IsLocalRing O]
     (N : ℕ),
     ∀ h ∈ IsLocalRing.maximalIdeal (MvPowerSeries σ O) ^ N,
       ∀ (a : σ →₀ ℕ),

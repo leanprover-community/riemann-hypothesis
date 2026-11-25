@@ -360,7 +360,7 @@ theorem str_YY (hσ : IsURepOn (UJset ε) σ) (hD : IsDerivedOn ε σ D E) (hVs 
       gradT y = ((-1 : ℂ) ^ sDeg ε) • y)
     {k : Matrix (Fin n) (Fin n) ℂ} (hk : k ∈ Kset ε) :
     LinearMap.trace ℂ (YY ε E V J) ((gradT ∘ₗ wK hD hk).restrict
-        (fun y hy => YY_gradT J (YY_wK hσ hD hVs hVK J hk hy))) =
+        (fun _ hy => YY_gradT J (YY_wK hσ hD hVs hVK J hk hy))) =
       ((-1 : ℂ) ^ sDeg ε) * LinearMap.trace ℂ
         (LinearMap.ker (dOp ε (eT E) cpT + dOp' ε (eT E) cmT) ⊓ tensFock (genSub E V) ⊓ physicalSubspace ε :
           Submodule ℂ (TensorProduct ℂ D (Fock n))) ((wK hD hk).restrict (wK_KK hσ hD hVK k hk)) := by

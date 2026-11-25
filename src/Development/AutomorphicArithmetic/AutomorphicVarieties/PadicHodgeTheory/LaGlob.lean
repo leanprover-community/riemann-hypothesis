@@ -333,7 +333,7 @@ section -- clump:auto
 open NumberField
 
 theorem UpperTheory.Reformulated.B.Qh9.isCM_of_conj :
-    ∀ (K : Type) [inst : Field K] [inst_1 : NumberField K]
+    ∀ (K : Type) [Field K] [NumberField K]
     [NumberField.IsTotallyComplex K],
     (∀ (x : K), ∃ (y : K), ∀ (φ : K →+* ℂ), (φ : K → ℂ) y = (starRingEnd ℂ : ℂ → ℂ) ((φ : K → ℂ) x)) →
       NumberField.IsCMField K := by

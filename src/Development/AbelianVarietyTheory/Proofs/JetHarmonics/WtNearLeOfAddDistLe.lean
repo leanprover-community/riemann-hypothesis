@@ -48,7 +48,7 @@ open scoped InnerProductSpace
 namespace GlobalTheory
 
 theorem wtNear_le_of_add_dist_le :
-    ∀ (M : Type) [NormedAddCommGroup M] [InnerProductSpace ℂ M] (n : ℕ) (ε : Fin n → Bool)
+    ∀ (M : Type) [NormedAddCommGroup M] [InnerProductSpace ℂ M] (n : ℕ) (_ : Fin n → Bool)
       (E : Fin n → Fin n → Module.End ℂ M) (Λ Λ' : Fin n → ℝ) (t t' : ℝ),
       t + ∑ a, |Λ a - Λ' a| ≤ t' → WtNear E Λ t ≤ WtNear E Λ' t' := by
   intro M _ _ n _ E Λ Λ' t t' h

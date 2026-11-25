@@ -590,7 +590,7 @@ theorem exists_nat_dvd {E : Type} [Field E] [NumberField E] (d : 𝓞 E) (hd : d
     exact hd
   · exact Ideal.mem_span_singleton.mp (Ideal.absNorm_mem _)
 
-theorem full_of_span_eq_top : ∀ {E : Type} [inst : Field E] [NumberField E] {n : ℕ}
+theorem full_of_span_eq_top : ∀ {E : Type} [Field E] [NumberField E] {n : ℕ}
     (N : Submodule (NumberField.RingOfIntegers E) (Formalism.L2.Col.Sp E n)),
     Submodule.span E (↑N : Set (Formalism.L2.Col.Sp E n)) = ⊤ → GlobalTheory.ThetaMove.Full N := by
   intro E _ _ n N hN x

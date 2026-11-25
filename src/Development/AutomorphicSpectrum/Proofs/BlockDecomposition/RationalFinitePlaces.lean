@@ -412,7 +412,7 @@ section -- clump:auto
 namespace Bl.FirstLemmaC
 
 theorem goal1 :
-  ∀ {G : Type} [inst : Group.{0} G] [inst_1 : TopologicalSpace.{0} G] [IsTopologicalGroup.{0} G] (L : Subgroup.{0} G),
+  ∀ {G : Type} [Group.{0} G] [TopologicalSpace.{0} G] [IsTopologicalGroup.{0} G] (L : Subgroup.{0} G),
   IsOpen.{0} (SetLike.coe.{0, 0} L) →
     ∀ (t : G),
       IsCompact.{0} (closure.{0} (SetLike.coe.{0, 0} (Subgroup.zpowers.{0} t))) →

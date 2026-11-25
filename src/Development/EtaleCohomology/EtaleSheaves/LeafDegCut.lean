@@ -146,7 +146,7 @@ theorem loc_zero_map {B : Scheme.{0}} {q : ℕ} {K K' : DerivedCategory (SShv B 
     (hf : ∀ U y, e' U (φ U y) = e U y ≫ (shiftFunctor _ m).map f)
     (hv : ∀ U y, Cov U (fun U' a => res' U U' a (φ U y) = 0)) (U : B.Etale)
     (x : (OU B q).obj U ⟶ (shiftFunctor _ m).obj K) :
-    Cov U (fun U' a => (OU B q).map a ≫ x ≫ (shiftFunctor _ m).map f = 0) := by
+    Cov U (fun _ a => (OU B q).map a ≫ x ≫ (shiftFunctor _ m).map f = 0) := by
   obtain ⟨y, rfl⟩ := hb U x
   obtain ⟨y0, hy0⟩ := hb U 0
   refine (Cov.and (hv U y) (hv U y0)).mono fun U' a ⟨h1, h2⟩ => ?_
@@ -159,7 +159,7 @@ theorem loc_zero {B : Scheme.{0}} {q : ℕ} {K : DerivedCategory (SShv B q)} {m 
     (hnat : ∀ U U' (a : U' ⟶ U) y, e U' (res U U' a y) = (OU B q).map a ≫ e U y)
     (hv : ∀ U y, Cov U (fun U' a => res U U' a y = 0)) (U : B.Etale)
     (x : (OU B q).obj U ⟶ (shiftFunctor _ m).obj K) :
-    Cov U (fun U' a => (OU B q).map a ≫ x ≫ (shiftFunctor _ m).map (𝟙 K) = 0) :=
+    Cov U (fun _ a => (OU B q).map a ≫ x ≫ (shiftFunctor _ m).map (𝟙 K) = 0) :=
   loc_zero_map (𝟙 K) X X e e hb res (fun _ y => y) hnat (fun U y => by simp) hv U x
 
 theorem isZero_of (hZ : LeafShMapZero) {B : Scheme.{0}} {q : ℕ} (K : DerivedCategory (SShv B q)) (m : ℤ)

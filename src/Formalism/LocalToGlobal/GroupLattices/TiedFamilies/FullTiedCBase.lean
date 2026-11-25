@@ -57,7 +57,7 @@ variable (D : D7) (sc : Scale) (Ce : ℝ)
   (ψ : ∀ u (w : D.what₂.places.Pl), GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w) →
     Formalism.L2.Herm.awayFrom₂ (Lc u) (D.what₂.places.resChar w) →* (ORec D w (nFr D (D.what₂.places.resChar w)))ˣ)
 
-def packC : ∀ u (w : D.what₂.places.Pl) (h : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w)),
+def packC : ∀ u (w : D.what₂.places.Pl) (_ : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w)),
     LocPack D u (Lc u) (D.what₂.places.resChar w) :=
   fun u w h => locPackC D u (Lc u) w h.2.1 (nFr_spec D h).1 (nFr_spec D h).2 (I u w h) (ψ u w h)
 

@@ -69,7 +69,7 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Qk5.dz_exists_prime :
-    ∀ {F : Type} [inst : Field F] [NumberField F]
+    ∀ {F : Type} [Field F] [NumberField F]
     (v : IsDedekindDomain.HeightOneSpectrum (NumberField.RingOfIntegers F)) (n : ℕ),
     n ≠ (0 : ℕ) →
       (↑n : NumberField.RingOfIntegers F) ∈ v.asIdeal →

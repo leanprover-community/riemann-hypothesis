@@ -75,8 +75,8 @@ noncomputable instance divisibleUnits (F : Type) [Field F] [IsAlgClosed F] :
     obtain ⟨y, hy⟩ := units_zpow_surjective (F := F) hn (Additive.toMul x)
     exact ⟨Additive.ofMul y, by simpa [ofMul_zpow] using congrArg Additive.ofMul hy⟩
 
-theorem exists_extension_character : ∀ {H M F : Type} [inst : CommGroup H] [inst_1 : CommGroup M]
-    [inst_2 : Field F] [IsAlgClosed F] (Φ : H →* M), Function.Injective (⇑Φ : H → M) →
+theorem exists_extension_character : ∀ {H M F : Type} [CommGroup H] [CommGroup M]
+    [Field F] [IsAlgClosed F] (Φ : H →* M), Function.Injective (⇑Φ : H → M) →
     ∀ (χ : H →* Fˣ), ∃ (κ : M →* Fˣ), ∀ (x : H), (κ : M → Fˣ) ((Φ : H → M) x) = (χ : H → Fˣ) x := by
   intro H M F _ _ _ _ Φ hΦ χ
   obtain ⟨h, hh⟩ := (Module.Baer.of_divisible (Additive Fˣ)).extension_property_addMonoidHom

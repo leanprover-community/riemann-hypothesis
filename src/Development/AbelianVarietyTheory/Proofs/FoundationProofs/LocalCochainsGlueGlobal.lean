@@ -87,7 +87,7 @@ theorem exists_bound (O : Subalgebra ℤ_[l] (PadicAlgCl l)) [Module.Finite ℤ_
     rw [e]
     exact (norm_smul_le_self a _).trans hx
 
-theorem norm_le_one : ∀ {l : ℕ} [inst : Fact (Nat.Prime l)] (c : UpperTheory.V.HV.Coef l) (x : ↥(UpperTheory.V.HV.Coef.O c)), ‖(↑x : PadicAlgCl l)‖ ≤ (1 : ℝ) := by
+theorem norm_le_one : ∀ {l : ℕ} [Fact (Nat.Prime l)] (c : UpperTheory.V.HV.Coef l) (x : ↥(UpperTheory.V.HV.Coef.O c)), ‖(↑x : PadicAlgCl l)‖ ≤ (1 : ℝ) := by
   intro l _ c x
   obtain ⟨C, hC⟩ := exists_bound (UpperTheory.V.HV.Coef.O c)
   by_contra h

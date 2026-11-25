@@ -480,7 +480,7 @@ theorem bc_Hten (hinj : Function.Injective (algebraMap O Kf)) (hinj' : Function.
       base_change_H0 φ φK hφ hinj hinj' m (lamAt lam0 s) (kp_lamAt_antitone lam0 hd s)
         (Λ s) (Λ' s) (hΛ s) (hb s)
 
-theorem Hten_le_V {n' m : ℕ} (lam0 : Fin n' → Fin (m + 1) → ℤ)
+theorem Hten_le_V {n' m : ℕ} (lam0 : Fin n' → Fin (m + 1) → ℤ) (hd : IsDominant lam0)
     (Λ : Fin n' → Submodule O (Fin (m + 1) → Kf)) (hΛ : ∀ s, IsLattice O (Λ s)) :
     ∀ z ∈ Hten O lam0 Λ, z ∈ Vsp Kf lam0 := by
   apply Formalism.MainNotions.flipOneThree.Pf.tn_Hten_le <;> assumption
@@ -568,11 +568,11 @@ theorem lpAt_dom (hφ : ∀ x : O, φK (algebraMap O Kf x) = algebraMap O' Kf' (
     fun s e he => je_LeAt_lat (mkG hS m r lam0 hd) (0 : Fin 1) s e he
   have hHL : ∀ A : Submodule W (Fin (m + 1) → Qq), IsLattice W A →
       BC ν (HL (O := O) ι σ lam0 A) (HL (O := O') (φK.comp ι) σ lam0 A) := fun A hA =>
-    bc_comap μ _ _ hV _ _ (Hten_le_V lam0 _ fun s => hlatE s.val A hA)
+    bc_comap μ _ _ hV _ _ (Hten_le_V lam0 hd _ fun s => hlatE s.val A hA)
       (bc_Hten φ φK hφ hinj hinj' lam0 hd _ _ (fun s => hlatE s.val A hA) fun s => bc_extO ι σ φ φK hφ s.val A)
   have hHLe : ∀ e : Edge W Qq (m + 1), IsEdge p n' r e →
       BC ν (HLe (O := O) p ι σ w lam0 e) (HLe (O := O') p (φK.comp ι) σ (φ w) lam0 e) := fun e he =>
-    bc_comap μ _ _ hV _ _ (Hten_le_V lam0 _ fun s => hlatL s.val e he)
+    bc_comap μ _ _ hV _ _ (Hten_le_V lam0 hd _ fun s => hlatL s.val e he)
       (bc_Hten φ φK hφ hinj hinj' lam0 hd _ _ (fun s => hlatL s.val e he)
         fun s => bc_LeAt ι σ φ φK hφ p w s.val e)
   obtain ⟨I0, hI0, b0, -⟩ := jm_HL_basis (mkG hS m r lam0 hd) (0 : Fin 1) L hL
@@ -1264,7 +1264,7 @@ structure Loc : Prop where
 
   p14R : ∀ D : D7, SecondTheoremReduced D
 
-theorem extremal_projector_tools_of_loc : ExtremalProjectorTools where
+theorem extremal_projector_tools_of_loc (h : Loc) : ExtremalProjectorTools where
   extremalProjectorAlt := ExtremalProjector.extremal_projector_statement
 
 theorem local_model_results (h : Loc) : Loc6 := {
@@ -1286,7 +1286,7 @@ theorem local_model_results (h : Loc) : Loc6 := {
   criterionClauseThirtyFive := Model.fewBadOrbits
   criterionClauseThirtySix := Model.products_sections_integral }
 
-theorem local_flatness_results : Loc8 := {
+theorem local_flatness_results (h : Loc) : Loc8 := {
   p13B := flipOneThree.Pf.theorem_I_closed_form_holds
   p13A := GramWindowAlt.theorem_A_closed_form_holds
   p15 := ColumnSystems.Pf.extendedClosedForm
@@ -1306,7 +1306,7 @@ def LocalDataSystem {D : D7} {L : SizeData₂ D} (X : Inst D L) (Y : LatInst D) 
     ∃ (_ : Fact (D.what₂.places.resChar w).Prime) (std : _) (vp : _) (unif : _) (eO : _) (eO_spec : _) (dG : _)
       (dG_spec : _) (om : _) (Y5 : FormalGroupSystem.Pend (FormalGroupSystem.Sys.mk (D.gat u w hg) (Y.Fl u w hg) (Y.Lv u w hg)
         (Y.Ch u w hg) std vp unif eO eO_spec dG dG_spec om)),
-      (FormalGroupSystem.adm1 → FormalGroupSystem.adm6 _ Y5 → FormalGroupSystem.admitted D _ Y5) ∧
+      (FormalGroupSystem.adm1 D → FormalGroupSystem.adm6 D _ Y5 → FormalGroupSystem.admitted D _ Y5) ∧
       ∃ Fn : Fin (D.gat u w hg).P.nV → ℕ → ℝ,
         (∀ v, v ∉ (reps X (D.what₂.places.resChar w)).image (Y.vOf u w hg) → ∀ j < D.R.m, Y5.LowAt j v (Fn v (j + 1))) ∧
         low u w ≤ (∑ j ∈ Finset.Icc 1 D.R.m,
@@ -1380,7 +1380,7 @@ theorem admissible_family_no_kernel {eps : ℝ} (Fm : FamP eps)
     (hE : Ev Fm fun x i => TrivialStabiliserFiniteClasses (Fm.D x i)) (hY : Ev Fm fun x i => OperatorsPreserveLattices (Fm.D x i))
     (hLP : Ev Fm fun x i => CornerGLContinuity.OrbitLatticeBounds (Fm.D x i) (Fm.L x i) (Fm.Gx x i) (Fm.Gy x i) Fm.GK)
     (hEp : Ev Fm fun x i => CornerGLContinuity.LatticeSandwich (Fm.D x i) (Fm.L x i) (Fm.Gx x i))
-    : AuxBlock8.AdmF Fm Fm.GK Fm.Gx (fun x i => zeroCh (Fm.Gy x i)) ∧
+    (hd : NPDescF Fm) : AuxBlock8.AdmF Fm Fm.GK Fm.Gx (fun x i => zeroCh (Fm.Gy x i)) ∧
     Ev Fm fun x i => AuxBlock8.unitBoundAtTwistedPlaces (Fm.D x i) (Fm.L x i) (Fm.Gx x i) (zeroCh (Fm.Gy x i)) Fm.GK ∧
       AuxBlock8.admG1 (Fm.D x i) (Fm.L x i) (Fm.Gx x i) (zeroCh (Fm.Gy x i)) Fm.GK := by
   have hG1 : Ev Fm fun x i => AuxBlock8.unitBoundAtTwistedPlaces (Fm.D x i) (Fm.L x i) (Fm.Gx x i) (zeroCh (Fm.Gy x i)) Fm.GK ∧
@@ -1417,7 +1417,7 @@ theorem linkG_without_kernels {eps : ℝ} (Fm : FamP eps)
     (hLP : Ev Fm fun x i => CornerGLContinuity.OrbitLatticeBounds (Fm.D x i) (Fm.L x i) (Fm.Gx x i) (Fm.Gy x i) Fm.GK)
     (hEp : Ev Fm fun x i => CornerGLContinuity.LatticeSandwich (Fm.D x i) (Fm.L x i) (Fm.Gx x i))
     (hd : NPDescF Fm) : LinkG Fm := by
-  obtain ⟨hA, hG1⟩ := admissible_family_no_kernel Fm h1 h4 h5 h6 h7 h8 h9 hE hY hLP hEp
+  obtain ⟨hA, hG1⟩ := admissible_family_no_kernel Fm h1 h4 h5 h6 h7 h8 h9 hE hY hLP hEp hd
   obtain ⟨C, δ, hδ, hP'⟩ := AuxBlock8.Pf.stmtF Fm Fm.GK Fm.GK_nonneg Fm.Gx _ hA
   have hP'' : Ev Fm fun x i => AuxBlock8.Conclusion₂ (Fm.D x i) (Fm.L x i) (Fm.Gx x i) Fm.GK C ((Fm.L x i).sc.b ^ δ x) := hP'
   obtain ⟨x0, h⟩ := (((((hP''.and hG1).and (servedGIdx_ev Fm)).and (svBound_ev Fm)).and (nuServed_ev Fm)).and
@@ -1461,9 +1461,9 @@ theorem link_of_local_closed (𝒞 : FamClass) (h : Loc)
     (hS : Closed 𝒞 fun Fm _ => Ev Fm fun x i => Joints.StdSubAt (Fm.D x i))
     (hd : Closed 𝒞 fun Fm _ => NPDescF Fm) :
     Closed 𝒞 fun Fm _ => LinkG Fm :=
-  (((((((((second_theorem_closed_form 𝒞 (second_theorem_absolute_constant (extremal_projector_tools_of_loc) (local_model_results h))).and
-    (first_theorem_closed_form 𝒞 (first_theorem_threshold_functions (extremal_projector_tools_of_loc)
-      (loc8All_of (extremal_projector_tools_of_loc) (local_model_results h) (local_flatness_results))))).and (signs_closed 𝒞)).and
+  (((((((((second_theorem_closed_form 𝒞 (second_theorem_absolute_constant (extremal_projector_tools_of_loc h) (local_model_results h))).and
+    (first_theorem_closed_form 𝒞 (first_theorem_threshold_functions (extremal_projector_tools_of_loc h)
+      (loc8All_of (extremal_projector_tools_of_loc h) (local_model_results h) (local_flatness_results h))))).and (signs_closed 𝒞)).and
     (ones_closed 𝒞)).and (cb_closed 𝒞)).and hE).and hS).and hd).and (TopChoiceBounds.family_log_bound_closed 𝒞)).imp
     fun Fm _ _ h => linkG_fam_noKer Fm h.1.1.1.1.1.1.1.1 h.1.1.1.1.1.1.1.2 h.1.1.1.1.1.1.2.1
       h.1.1.1.1.1.2.2.2 h.1.1.1.1.2 h.1.1.1.2 h.1.1.2 h.1.2 h.2

@@ -624,7 +624,7 @@ theorem mv (q : ℕ) (i : ℤ) : ∃ d : ∀ {X : Scheme.{0}} {U V W P : X.Opens
       Function.Exact (rDiff q i n c) (d c n) ∧ Function.Exact (d c n) (rPair q i (n + 1) c) ∧
       Function.Exact (rPair q i n c) (rDiff q i n c)) ∧
     ∀ {X' X : Scheme.{0}} (f : X' ⟶ X) {U' V' W' P' : X'.Opens} {U V W P : X.Opens} (c' : Sq U' V' W' P')
-      (c : Sq U V W P) (hU : U' ≤ f ⁻¹ᵁ U) (hV : V' ≤ f ⁻¹ᵁ V) (hW : W' ≤ f ⁻¹ᵁ W) (hP : P' ≤ f ⁻¹ᵁ P) (n : ℤ)
+      (c : Sq U V W P) (_ : U' ≤ f ⁻¹ᵁ U) (_ : V' ≤ f ⁻¹ᵁ V) (hW : W' ≤ f ⁻¹ᵁ W) (hP : P' ≤ f ⁻¹ᵁ P) (n : ℤ)
       (x : Ht q (sch.obj P) n i),
       pull _ (sch.map (f.resLE W W' hW)) (tw q i) (n + 1) (d c n x) =
         d c' n (pull _ (sch.map (f.resLE P P' hP)) (tw q i) n x) := by

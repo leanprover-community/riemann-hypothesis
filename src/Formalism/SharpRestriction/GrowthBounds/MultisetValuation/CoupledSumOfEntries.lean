@@ -69,7 +69,7 @@ theorem ker_dn_sum (hC : CountLoc) (hp : (p : X.G.Kf) ≠ 0) {a a' : X.G.Kf} (ha
     (X.ind v j (Function.update La.2 (X.vJ j v) A1) L') G
   rw [this, smul_smul, inv_mul_cancel₀ (cC_ne hp ha v j (i - l)), one_smul]
 
-theorem hk_adj (D : Formalism.BasicNotions.D7) (h5b : MinkowskiCounting X Y) (h6 : adm6 X Y) (v : X.Pl) (j : ℕ) (hj : j < X.mm) (k : ℕ)
+theorem hk_adj (D : Formalism.BasicNotions.D7) (h5b : MinkowskiCounting X Y) (h6 : adm6 D X Y) (v : X.Pl) (j : ℕ) (hj : j < X.mm) (k : ℕ)
     (F : X.Fm j) (hF : F ∈ X.FQ j) (La' : X.Lt (j + 1)) (hLa' : (X.Pj (j + 1)).IsLatTup La'.2) :
     ∑ La ∈ Y.Rep j, ((X.stab j La : X.G.Kf))⁻¹ •
         ∑ A1 ∈ UP (X.Pj j) (X.vJ j v) k (La.2 (X.vJ j v)),
@@ -129,7 +129,7 @@ theorem up_finsum (j : ℕ) (v : X.Pl) (k : ℕ) (La : X.Lt j) (La' : X.Lt (j + 
         Y.ker j (La.1, Function.update La.2 (X.vJ j v) A1) La' G :=
   finsum_mem_eq_finite_toFinset_sum _ (up_fin (X.Pj j) (X.vJ j v) k (La.2 (X.vJ j v)))
 
-theorem kadj_entry (D : Formalism.BasicNotions.D7) (h5b : MinkowskiCounting X Y) (h6 : adm6 X Y) (j : ℕ) (hj : j < X.mm) :
+theorem kadj_entry (D : Formalism.BasicNotions.D7) (h5b : MinkowskiCounting X Y) (h6 : adm6 D X Y) (j : ℕ) (hj : j < X.mm) :
     KAdj Y j {La // La ∈ Y.Rep j} Unit (fun x => X.stab j x.1) (fun x _ => x.1) := by
   intro v k F hF La' hLa'
   have h := hk_adj D h5b h6 v j hj k F hF La' hLa'
@@ -144,7 +144,7 @@ theorem kadj_entry (D : Formalism.BasicNotions.D7) (h5b : MinkowskiCounting X Y)
     (Finset.sum_coe_sort (Y.Rep j) (fun La => ((X.stab j La : Y.Kc))⁻¹ •
       Y.ker j La La' (X.Tm v k j F La.1 La.2))).symm
 
-theorem ksa_of_adm (D : Formalism.BasicNotions.D7) (h4 : ArchimedeanSignatureMatching D X Y) (h5b : MinkowskiCounting X Y) (h6 : adm6 X Y) {j : ℕ} (hj : j < X.mm) :
+theorem ksa_of_adm (D : Formalism.BasicNotions.D7) (h4 : ArchimedeanSignatureMatching D X Y) (h5b : MinkowskiCounting X Y) (h6 : adm6 D X Y) {j : ℕ} (hj : j < X.mm) :
     ∃ (cK : Y.Kc) (Cl Yb : Type) (_ : Fintype Cl) (_ : Fintype Yb) (wt : Cl → ℕ) (La : Cl → Yb → X.Lt j),
       KSum Y j cK Cl Yb wt La ∧ KAdj Y j Cl Yb wt La := by
   rcases Nat.lt_or_ge (j + 1) X.mm with h | h

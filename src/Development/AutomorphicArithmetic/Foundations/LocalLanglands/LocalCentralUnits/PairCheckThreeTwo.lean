@@ -73,7 +73,7 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Qe46.sum_char :
-    ∀ {G : Type} [inst : CommGroup G] [inst_1 : Fintype G] (χ : G →* ℂˣ),
+    ∀ {G : Type} [CommGroup G] [Fintype G] (χ : G →* ℂˣ),
     χ ≠ (1 : G →* ℂˣ) → ∑ z : G, (↑((χ : G → ℂˣ) z) : ℂ) = (0 : ℂ) := by
   intro G _ _ χ hχ
   have hne : (Units.coeHom ℂ).comp χ ≠ 1 := by

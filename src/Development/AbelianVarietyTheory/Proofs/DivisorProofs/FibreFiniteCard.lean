@@ -66,7 +66,7 @@ noncomputable def fibreEquiv {H : Type} [Group H] (D C : Subgroup H) (h : D ≤ 
         ((Subgroup.quotientEquivProdOfLE h).symm (z, b))).2 = b
       rw [Equiv.apply_symm_apply] }
 
-theorem fibre_finite_card : ∀ {H : Type} [inst : Group H] (D C : Subgroup H) (h : D ≤ C), Subgroup.relIndex D C ≠ (0 : ℕ) → ∀ (z : H ⧸ C), Finite { y : H ⧸ D // Subgroup.quotientMapOfLE h y = z } ∧ Nat.card { y : H ⧸ D // Subgroup.quotientMapOfLE h y = z } = Subgroup.relIndex D C := by
+theorem fibre_finite_card : ∀ {H : Type} [Group H] (D C : Subgroup H) (h : D ≤ C), Subgroup.relIndex D C ≠ (0 : ℕ) → ∀ (z : H ⧸ C), Finite { y : H ⧸ D // Subgroup.quotientMapOfLE h y = z } ∧ Nat.card { y : H ⧸ D // Subgroup.quotientMapOfLE h y = z } = Subgroup.relIndex D C := by
   intro H _ D C h hD z
   have hcard : Nat.card { y : H ⧸ D // Subgroup.quotientMapOfLE h y = z } = Subgroup.relIndex D C := by
     rw [Nat.card_congr (fibreEquiv D C h z)]

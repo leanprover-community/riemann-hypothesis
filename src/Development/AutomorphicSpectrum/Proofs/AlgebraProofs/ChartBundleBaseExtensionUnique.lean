@@ -54,8 +54,8 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Ydb6.main :
-    ∀ {O Ω V : Type} [inst : CommRing O] [inst_1 : Field Ω] [inst_2 : Algebra O Ω] [inst_3 : AddCommGroup V]
-      [inst_4 : _root_.Module Ω V] (R : Subalgebra O Ω) (A B : AddSubgroup V) (c : Ω),
+    ∀ {O Ω V : Type} [CommRing O] [Field Ω] [Algebra O Ω] [AddCommGroup V]
+      [_root_.Module Ω V] (R : Subalgebra O Ω) (A B : AddSubgroup V) (c : Ω),
       (∀ (v : V), v ∈ B ↔ ∃ e ∈ A, v = c • e) →
         ∀ (v : V),
           v ∈ AddSubgroup.closure {v : V | ∃ a ∈ R, ∃ e ∈ B, v = a • e} ↔

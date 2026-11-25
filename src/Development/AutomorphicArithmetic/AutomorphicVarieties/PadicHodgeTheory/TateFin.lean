@@ -308,7 +308,7 @@ private theorem exists_closure (K : Type) [Field K] :
   ⟨AlgebraicClosure K, inferInstance, inferInstance, inferInstance⟩
 
 theorem UpperTheory.V.Loc.tateFin :
-    LocalPublishedTheorems → ∀ {v l : ℕ} [Fact v.Prime] [Fact l.Prime] {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] (φ : G →* GQ v) (hφ : IsOpenEmbedding φ) (k : Type) [Field k] [Finite k] [CharP k l] [Algebra ℤ_[l] k] (M : Type) [AddCommGroup M] [Module k M] [Module.Finite k M] [TopologicalSpace M] [DiscreteTopology M] (ρ : Representation k G M), ContAction ρ → Module.Finite k (H1 ρ) ∧ Module.Finite k (H2 ρ) ∧ finrank k (H1 ρ) = finrank k ↥(H0 ρ) + finrank k (H2 ρ) + (if v = l then φ.range.index * finrank k M else 0) ∧ finrank k (H2 ρ) = finrank k ↥(H0dual ((cycA v l k).comp φ) ρ) := by
+    LocalPublishedTheorems → ∀ {v l : ℕ} [Fact v.Prime] [Fact l.Prime] {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] (φ : G →* GQ v) (_ : IsOpenEmbedding φ) (k : Type) [Field k] [Finite k] [CharP k l] [Algebra ℤ_[l] k] (M : Type) [AddCommGroup M] [Module k M] [Module.Finite k M] [TopologicalSpace M] [DiscreteTopology M] (ρ : Representation k G M), ContAction ρ → Module.Finite k (H1 ρ) ∧ Module.Finite k (H2 ρ) ∧ finrank k (H1 ρ) = finrank k ↥(H0 ρ) + finrank k (H2 ρ) + (if v = l then φ.range.index * finrank k M else 0) ∧ finrank k (H2 ρ) = finrank k ↥(H0dual ((cycA v l k).comp φ) ρ) := by
   intro hP v l _ _ G _ _ _ φ hφ k _ _ _ _ M _ _ _ _ _ ρ hρ
   obtain ⟨Ω, _, _, _⟩ := exists_closure ℚ
   haveI : IsAlgClosed Ω := IsAlgClosure.isAlgClosed ℚ

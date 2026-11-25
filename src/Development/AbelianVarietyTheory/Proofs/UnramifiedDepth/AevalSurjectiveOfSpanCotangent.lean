@@ -105,8 +105,8 @@ theorem pow_approx {R : Type u_1} {A : Type u_2} [CommRing R] [CommRing A] [Alge
       exact Ideal.add_mem _ hsu htv
 
 theorem aeval_surjective_of_isNilpotent_ker :
-    ∀ {R : Type u_1} {A : Type u_2} [inst : CommRing R] [inst_1 : CommRing A]
-      [inst_2 : Algebra R A] (ε : A →ₐ[R] R), IsNilpotent (RingHom.ker ε) →
+    ∀ {R : Type u_1} {A : Type u_2} [CommRing R] [CommRing A]
+      [Algebra R A] (ε : A →ₐ[R] R), IsNilpotent (RingHom.ker ε) →
       ∀ {d : ℕ} (x : Fin d → A), (∀ (i : Fin d), x i ∈ RingHom.ker ε) →
       (∀ y ∈ RingHom.ker ε, ∃ (l : Fin d → R),
         y - ∑ i : Fin d, l i • x i ∈ RingHom.ker ε ^ (2 : ℕ)) →

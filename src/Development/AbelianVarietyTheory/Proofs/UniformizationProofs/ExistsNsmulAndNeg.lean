@@ -289,7 +289,7 @@ theorem intEnd_act (hG : GlobalFnsSt) (U : UnifPre I D A G) (n : ℤ) (g g' : Gt
   · rintro rfl
     exact ⟨b, fun χ y J hJ => charVal_zsmul (exists_isCmp D.toPre n χ).choose_spec g hJ⟩
 
-theorem exists_nsmul_and_neg : LL → AllU fun {R} _ _ {I} {D} {A} {G} _ _ U => (∀ m : ℕ, ∃ E : EndU U.toUnifPre, E.aG = 𝟙 G ^ m ∧ E.aA = 𝟙 A.A ^ m ∧ E.aB = 𝟙 D.toPre.P.A ^ m ∧ (∀ χ, E.h χ = m • χ) ∧ ∀ (F : Type) [Field F] [Algebra (FractionRing R) F] (g g' : GtPtF D.toPre F), E.Act g g' ↔ GtPtF.IsNsmul m g g') ∧ ∃ E : EndU U.toUnifPre, E.aG = (𝟙 G)⁻¹ ∧ E.aA = (𝟙 A.A)⁻¹ ∧ E.aB = (𝟙 D.toPre.P.A)⁻¹ ∧ (∀ χ, E.h χ = -χ) ∧ ∀ (F : Type) [Field F] [Algebra (FractionRing R) F] (g g' : GtPtF D.toPre F), E.Act g g' ↔ ∃ z : GtPtF D.toPre F, z.IsZero ∧ g.IsAdd g' z := by
+theorem exists_nsmul_and_neg : LL → AllU fun {R} _ _ {_} {D} {A} {G} _ _ U => (∀ m : ℕ, ∃ E : EndU U.toUnifPre, E.aG = 𝟙 G ^ m ∧ E.aA = 𝟙 A.A ^ m ∧ E.aB = 𝟙 D.toPre.P.A ^ m ∧ (∀ χ, E.h χ = m • χ) ∧ ∀ (F : Type) [Field F] [Algebra (FractionRing R) F] (g g' : GtPtF D.toPre F), E.Act g g' ↔ GtPtF.IsNsmul m g g') ∧ ∃ E : EndU U.toUnifPre, E.aG = (𝟙 G)⁻¹ ∧ E.aA = (𝟙 A.A)⁻¹ ∧ E.aB = (𝟙 D.toPre.P.A)⁻¹ ∧ (∀ χ, E.h χ = -χ) ∧ ∀ (F : Type) [Field F] [Algebra (FractionRing R) F] (g g' : GtPtF D.toPre F), E.Act g g' ↔ ∃ z : GtPtF D.toPre F, z.IsZero ∧ g.IsAdd g' z := by
   intro hL R _ _ _ I _ D A G _ _ _ U
   refine ⟨fun m => ⟨intEnd hL.1.globalFns U.toUnifPre m, zpow_natCast _ _, zpow_natCast _ _, zpow_natCast _ _,
     fun χ => natCast_zsmul χ m, fun F _ _ g g' => ?_⟩, intEnd hL.1.globalFns U.toUnifPre (-1), zpow_neg_one _,

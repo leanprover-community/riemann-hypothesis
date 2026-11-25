@@ -68,8 +68,8 @@ noncomputable def UpperTheory.Reformulated.B.CuspidalIrreducibleSubrep.ev :
     {I : Type} →
       [Fintype I] →
         {W : I → Type} →
-          [inst : (i : I) → AddCommGroup (W i)] →
-            [inst_1 : (i : I) → _root_.Module ℂ (W i)] →
+          [(i : I) → AddCommGroup (W i)] →
+            [(i : I) → _root_.Module ℂ (W i)] →
               ((i : I) → Module.Dual ℂ (W i)) → (PiTensorProduct ℂ fun (i : I) ↦ W i) →ₗ[ℂ] ℂ :=
     fun {I : Type} [Fintype I] {W : I → Type} [(i : I) → AddCommGroup (W i)] [(i : I) → _root_.Module ℂ (W i)]
         (f : (i : I) → Module.Dual ℂ (W i)) ↦
@@ -77,8 +77,8 @@ noncomputable def UpperTheory.Reformulated.B.CuspidalIrreducibleSubrep.ev :
         ((MultilinearMap.mkPiAlgebra ℂ I ℂ).compLinearMap f)
 
 theorem UpperTheory.Reformulated.B.CuspidalIrreducibleSubrep.ev_tprod :
-    ∀ {I : Type} [inst : Fintype I] [dI : DecidableEq I] {W : I → Type} [inst_1 : (i : I) → AddCommGroup (W i)]
-      [inst_2 : (i : I) → _root_.Module ℂ (W i)] (f : (i : I) → Module.Dual ℂ (W i)) (m : (i : I) → W i),
+    ∀ {I : Type} [Fintype I] [DecidableEq I] {W : I → Type} [(i : I) → AddCommGroup (W i)]
+      [(i : I) → _root_.Module ℂ (W i)] (f : (i : I) → Module.Dual ℂ (W i)) (m : (i : I) → W i),
       (UpperTheory.Reformulated.B.CuspidalIrreducibleSubrep.ev f : (PiTensorProduct ℂ fun (i : I) ↦ W i) → ℂ)
           ((PiTensorProduct.tprod ℂ : ((i : I) → W i) → PiTensorProduct ℂ fun (i : I) ↦ W i) m) =
         ∏ i : I, (f i : W i → ℂ) (m i) := by
@@ -115,10 +115,10 @@ private theorem UpperTheory.Reformulated.B.SpecialLinearMap.prod_update_ne {I : 
 noncomputable def UpperTheory.Reformulated.B.SpecialLinearMap.slM :
     {I : Type} →
       [Fintype I] →
-        [dI : DecidableEq I] →
+        [DecidableEq I] →
           {W : I → Type} →
-            [inst : (i : I) → AddCommGroup (W i)] →
-              [inst_1 : (i : I) → _root_.Module ℂ (W i)] →
+            [(i : I) → AddCommGroup (W i)] →
+              [(i : I) → _root_.Module ℂ (W i)] →
                 (v : I) → ((i : I) → Module.Dual ℂ (W i)) → MultilinearMap (RingHom.id ℂ) W (W v) :=
   fun {I} _ dI {_} _ _ v a =>
     { toFun := fun x => (∏ j ∈ Finset.univ.erase v, a j (x j)) • x v
@@ -150,10 +150,10 @@ section -- clump:auto
 noncomputable def UpperTheory.Reformulated.B.SpecialLinearTensor.sl :
     {I : Type} →
       [Fintype I] →
-        [dI : DecidableEq I] →
+        [DecidableEq I] →
           {W : I → Type} →
-            [inst : (i : I) → AddCommGroup (W i)] →
-              [inst_1 : (i : I) → _root_.Module ℂ (W i)] →
+            [(i : I) → AddCommGroup (W i)] →
+              [(i : I) → _root_.Module ℂ (W i)] →
                 (v : I) → ((i : I) → Module.Dual ℂ (W i)) → (PiTensorProduct ℂ fun (i : I) ↦ W i) →ₗ[ℂ] W v :=
   fun {I} _ dI {W} _ _ v f => by
     have prod_update_self (m : (i : I) → W i) (x : W v) :
@@ -190,8 +190,8 @@ noncomputable def UpperTheory.Reformulated.B.SpecialLinearTensor.sl :
               RingHom.id_apply, map_smul, smul_eq_mul, mul_assoc, mul_smul] }
 
 theorem UpperTheory.Reformulated.B.SpecialLinearTensor.sl_tprod :
-    ∀ {I : Type} [inst : Fintype I] [dI : DecidableEq I] {W : I → Type} [inst_1 : (i : I) → AddCommGroup (W i)]
-      [inst_2 : (i : I) → _root_.Module ℂ (W i)] (v : I) (f : (i : I) → Module.Dual ℂ (W i)) (m : (i : I) → W i),
+    ∀ {I : Type} [Fintype I] [DecidableEq I] {W : I → Type} [(i : I) → AddCommGroup (W i)]
+      [(i : I) → _root_.Module ℂ (W i)] (v : I) (f : (i : I) → Module.Dual ℂ (W i)) (m : (i : I) → W i),
       (UpperTheory.Reformulated.B.SpecialLinearTensor.sl v f : (PiTensorProduct ℂ fun (i : I) ↦ W i) → W v)
           ((PiTensorProduct.tprod ℂ : ((i : I) → W i) → PiTensorProduct ℂ fun (i : I) ↦ W i) m) =
         (∏ i ∈ Finset.univ.erase v, (f i : W i → ℂ) (m i)) • m v := by

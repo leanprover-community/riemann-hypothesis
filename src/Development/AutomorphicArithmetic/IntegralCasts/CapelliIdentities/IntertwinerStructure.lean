@@ -46,10 +46,10 @@ import Mathlib.Topology.Sheaves.Init
 
 noncomputable def UpperTheory.Reformulated.B.IntertwinerStructure.Intw :
     {Wp Wq : Type} →
-      [inst : NormedAddCommGroup Wp] →
-        [inst_1 : InnerProductSpace ℂ Wp] →
-          [inst_2 : NormedAddCommGroup Wq] →
-            [inst_3 : InnerProductSpace ℂ Wq] →
+      [NormedAddCommGroup Wp] →
+        [InnerProductSpace ℂ Wp] →
+          [NormedAddCommGroup Wq] →
+            [InnerProductSpace ℂ Wq] →
               [FiniteDimensional ℂ Wq] →
                 (P : Formalism.FourierDecayAlt.M.Par) →
                   (Bs : Formalism.FourierDecayAlt.B.RealPlaceData P.k P.r Wp Wq) →
@@ -67,8 +67,8 @@ noncomputable def UpperTheory.Reformulated.B.IntertwinerStructure.Intw :
           Formalism.FourierDecayAlt.MA.actA P A' (Formalism.FourierDecayAlt.P.CutMP.Gauge.GC.trR P Bs e Φ)
 
 theorem UpperTheory.Reformulated.B.IntertwinerStructure.intw_sum :
-    ∀ {Wp Wq : Type} [inst : NormedAddCommGroup Wp] [inst_1 : InnerProductSpace ℂ Wp] [inst_2 : NormedAddCommGroup Wq]
-      [inst_3 : InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wp] [inst_5 : FiniteDimensional ℂ Wq] {P : Formalism.FourierDecayAlt.M.Par}
+    ∀ {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
+      [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wp] [FiniteDimensional ℂ Wq] {P : Formalism.FourierDecayAlt.M.Par}
       {Bs : Formalism.FourierDecayAlt.B.RealPlaceData P.k P.r Wp Wq} {e : Formalism.FourierDecayAlt.M.Ty P → ℂ → Wq →L[ℂ] Wp},
       (∀ (Φ : ↥(Formalism.FourierDecayAlt.Q.RadSp P.k P.r Bs.z Bs.z' Bs.π Bs.π')) (ρ : Formalism.FourierDecayAlt.M.Ty P),
           Formalism.FourierDecayAlt.P.CutMP.Gauge.rawR P Bs.μsec e (↑Φ : Formalism.FourierDecayAlt.Q.Fn P.k P.r (Wq →L[ℂ] Wp)) ρ ∈

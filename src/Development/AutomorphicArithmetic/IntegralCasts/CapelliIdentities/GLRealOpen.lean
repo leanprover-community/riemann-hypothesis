@@ -45,7 +45,7 @@ import Mathlib.Topology.Sheaves.Init
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.GLRealOpen.glR_open :
-    ∀ {K : Type} [inst : CommRing K] [inst_1 : TopologicalSpace K] [IsTopologicalRing K] (R : Subring K),
+    ∀ {K : Type} [CommRing K] [TopologicalSpace K] [IsTopologicalRing K] (R : Subring K),
       IsOpen (↑R : Set K) → ∀ (n : ℕ), IsOpen (↑(UpperTheory.Reformulated.B.GeneralLinearGroupOverSubring.glR R n) : Set (GL (Fin n) K)) := by
   intro K _ _ _ R hR n
   have hM : IsOpen {M : Matrix (Fin n) (Fin n) K | ∀ i j, M i j ∈ R} := by

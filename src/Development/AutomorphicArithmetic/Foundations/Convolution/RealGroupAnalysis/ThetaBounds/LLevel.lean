@@ -105,8 +105,8 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Qi19.tube.{u_1, u_2} :
-    ∀ {G : Type u_1} {X : Type u_2} [inst : Group G] [inst_1 : TopologicalSpace G] [ContinuousInv G]
-    [inst_3 : TopologicalSpace X] (T : G → X → X),
+    ∀ {G : Type u_1} {X : Type u_2} [Group G] [TopologicalSpace G] [ContinuousInv G]
+    [TopologicalSpace X] (T : G → X → X),
     (Continuous fun (p : G × X) ↦ T p.1 p.2) →
       (∀ (w : X), T (1 : G) w = w) →
         (∀ (k : G) (w : X), T k⁻¹ (T k w) = w) →

@@ -65,7 +65,7 @@ open GlobalTheory.Mem.R3.LiftBrg
 
 namespace GlobalTheory.SplitEtaIdem
 
-theorem exists_isIdemAt_conjP : ∀ {D : D7} (Pb : Formalism.L2.DIV.Pl D.host.E) (Ut : Formalism.L2.Col.MhlUnif Pb),
+theorem exists_isIdemAt_conjP : ∀ {D : D7} (Pb : Formalism.L2.DIV.Pl D.host.E) (_ : Formalism.L2.Col.MhlUnif Pb),
     ∃ e : Formalism.L2.Theta.AE D, Formalism.L2.NTheta.IsIdemAt e (Formalism.L2.Col.conjPrime₂ Pb) := by
   intro D Pb Ut
   apply GlobalTheory.MovedIdem.exists_isIdemAt
@@ -89,7 +89,7 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open Formalism.IndefR.RecTie Formalism.IndefR.Lev Formalism.L2.Rows GlobalTheory.Mem GlobalTheory.Mem.R3 GlobalTheory.Mem.Col2
 open GlobalTheory.Mem.R3.LiftBrg
 
-theorem _root_.GlobalTheory.T.exists_splitIdempotent_at_conjugatePrime : ∀ {D : D7} (Pb : Formalism.L2.DIV.Pl D.host.E) (Ut : Formalism.L2.Col.MhlUnif Pb), ∃ e : Formalism.L2.Theta.AE D, Formalism.L2.NTheta.IsIdemAt e (Formalism.L2.Col.conjPrime₂ Pb) := by
+theorem _root_.GlobalTheory.T.exists_splitIdempotent_at_conjugatePrime : ∀ {D : D7} (Pb : Formalism.L2.DIV.Pl D.host.E) (_ : Formalism.L2.Col.MhlUnif Pb), ∃ e : Formalism.L2.Theta.AE D, Formalism.L2.NTheta.IsIdemAt e (Formalism.L2.Col.conjPrime₂ Pb) := by
   first | exact @GlobalTheory.SplitEtaIdem.exists_isIdemAt_conjP
 end -- clump:auto
 end -- clump:auto

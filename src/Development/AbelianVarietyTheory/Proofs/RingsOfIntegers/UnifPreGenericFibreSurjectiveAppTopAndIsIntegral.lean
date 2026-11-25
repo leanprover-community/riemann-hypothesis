@@ -64,7 +64,7 @@ theorem isIntegral_left_of_isAbelianScheme_field {K : Type} [Field K]
   exact isIntegral_of_smooth_field_of_connectedSpace A.hom
 
 theorem unifPre_genericFibre_surjective_appTop_and_isIntegral :
-    GlobalFnsSt → ∀ (R : Type) [CommRing R] [IsDomain R] (I : Ideal R) (D : DegData R I) (A : PolAV (Spec (CommRingCat.of (FractionRing R)))) (G : Over (Spec (CommRingCat.of R))) [GrpObj G] [IsCommMonObj G] (U : UnifPre I D A G), Function.Surjective (pullback.snd G.hom (jK R)).appTop.hom ∧ IsIntegral (pullback G.hom (jK R)) := by
+    GlobalFnsSt → ∀ (R : Type) [CommRing R] [IsDomain R] (I : Ideal R) (D : DegData R I) (A : PolAV (Spec (CommRingCat.of (FractionRing R)))) (G : Over (Spec (CommRingCat.of R))) [GrpObj G] [IsCommMonObj G] (_ : UnifPre I D A G), Function.Surjective (pullback.snd G.hom (jK R)).appTop.hom ∧ IsIntegral (pullback G.hom (jK R)) := by
   intro hGF R _ _ I D A G _ _ U
   have hAi : IsIntegral A.A.left := isIntegral_left_of_isAbelianScheme_field A.A A.isAb
   have hw : U.gen.hom.left ≫ A.A.hom = pullback.snd G.hom (jK R) := Over.w U.gen.hom

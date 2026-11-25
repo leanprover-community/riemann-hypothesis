@@ -1250,10 +1250,10 @@ section -- clump:auto
 
 noncomputable def UpperTheory.Reformulated.B.DaGva8.prodE :
     {G₁ G₂ : Type} →
-      [inst : Group G₁] →
-        [inst_1 : TopologicalSpace G₁] →
-          [inst_2 : Group G₂] →
-            [inst_3 : TopologicalSpace G₂] → (T₁ : Subgroup G₁) → (T₂ : Subgroup G₂) → ↥T₁ × ↥T₂ ≃ₜ* ↥(T₁.prod T₂) :=
+      [Group G₁] →
+        [TopologicalSpace G₁] →
+          [Group G₂] →
+            [TopologicalSpace G₂] → (T₁ : Subgroup G₁) → (T₂ : Subgroup G₂) → ↥T₁ × ↥T₂ ≃ₜ* ↥(T₁.prod T₂) :=
   fun {_ _} _ _ _ _ _ _ =>
     { toFun := fun x => ⟨(x.1.1, x.2.1), x.1.2, x.2.2⟩
       invFun := fun y => (⟨y.1.1, y.2.1⟩, ⟨y.1.2, y.2.2⟩)

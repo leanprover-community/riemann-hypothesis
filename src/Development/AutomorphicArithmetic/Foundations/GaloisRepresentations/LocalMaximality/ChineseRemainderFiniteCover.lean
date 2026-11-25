@@ -64,8 +64,8 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Qe54.exists_of_li :
-    ∀ {Q ι : Type} [inst : AddCommGroup Q]
-    [inst_1 : _root_.Module ℂ Q] [Finite ι] (f : ι → Q →ₗ[ℂ] ℂ),
+    ∀ {Q ι : Type} [AddCommGroup Q]
+    [_root_.Module ℂ Q] [Finite ι] (f : ι → Q →ₗ[ℂ] ℂ),
     LinearIndependent ℂ f → ∀ (v : ι → ℂ), ∃ (q : Q), ∀ (i : ι), (f i : Q → ℂ) q = v i := by
   intro Q ι _ _ _ f hf v
   classical

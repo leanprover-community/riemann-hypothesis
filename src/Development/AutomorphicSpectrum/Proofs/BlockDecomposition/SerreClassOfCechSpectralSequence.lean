@@ -520,7 +520,7 @@ theorem colCmp_bij (U : ι → ObjectProperty C) (hU : ∀ α, Cosieve (U α)) (
 end Main
 
 theorem serre_cech : ∀ {R : Type} [CommRing R] {C : Type 1} [Category.{0} C] (F : C ⥤ ModuleCat.{0} R) {ι : Type}
-    (U : ι → ObjectProperty C) (hU : ∀ α, Cosieve (U α)) (hc : ∀ T, ∃ α, U α T) (𝒮 : Serre.{1} R) (n : ℕ),
+    (U : ι → ObjectProperty C) (_ : ∀ α, Cosieve (U α)) (_ : ∀ T, ∃ α, U α T) (𝒮 : Serre.{1} R) (n : ℕ),
     (∀ p q, p + q = n → 𝒮.P ((cechH F U q).cx.H p)) → 𝒮.P (CH.H F n) := by
   intro R _ C _ F ι U hU hc 𝒮 n h
   have hs : ∀ T, Function.Surjective ((idxπ U hU).app T) := by

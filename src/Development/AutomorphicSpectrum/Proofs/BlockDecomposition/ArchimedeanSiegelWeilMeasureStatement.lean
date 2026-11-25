@@ -101,14 +101,14 @@ section -- clump:auto
 
 noncomputable def UpperTheory.Reformulated.B.Yhb9.DenLE :
     {V H : Type} →
-      [inst : MeasurableSpace V] →
-        [inst_1 : MeasurableSpace H] → MeasureTheory.Measure V → MeasureTheory.Measure H → (V → H) → Set V → ENNReal → Prop :=
+      [MeasurableSpace V] →
+        [MeasurableSpace H] → MeasureTheory.Measure V → MeasureTheory.Measure H → (V → H) → Set V → ENNReal → Prop :=
     fun {V H : Type} [MeasurableSpace V] [MeasurableSpace H] (μ : MeasureTheory.Measure V) (ν : MeasureTheory.Measure H)
         (q : V → H) (S : Set V) (C : ENNReal) ↦
       ∀ (Y : Set H), MeasurableSet Y → (μ : Set V → ENNReal) (S ∩ q ⁻¹' Y) ≤ C * (ν : Set H → ENNReal) Y
 
 theorem UpperTheory.Reformulated.B.Yhb9.main :
-    ∀ {V H : Type} [inst : MeasurableSpace V] [inst_1 : MeasurableSpace H] {μ : MeasureTheory.Measure V}
+    ∀ {V H : Type} [MeasurableSpace V] [MeasurableSpace H] {μ : MeasureTheory.Measure V}
       {ν : MeasureTheory.Measure H} {q : V → H} {T : V → V} {τ : H → H},
       MeasurableEmbedding T →
         Measurable τ →

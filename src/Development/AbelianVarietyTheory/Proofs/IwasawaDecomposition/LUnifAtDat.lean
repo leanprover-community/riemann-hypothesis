@@ -52,7 +52,7 @@ open Formalism.IndefR.FWT Formalism.L2.Pj Formalism.IndefR.Mult
 
 
 theorem lUnif_atDat : GlobalTheory.Published.HarishChandraFinite → GlobalTheory.Published.CuspRapidDecay → GlobalTheory.Hk3.HoweUnram →
-    GlobalTheory.Mem.Top.Bl.AtDat fun _ B f T w Z hX Wt z => z.R.toRealDat.LUnif := by
+    GlobalTheory.Mem.Top.Bl.AtDat fun _ _ _ _ _ _ _ _ z => z.R.toRealDat.LUnif := by
   intro _ _ _
   refine StepW.of_all fun K B f T w _ _ _ Z hX Wt z _ _ hEx hIn => ?_
   have hch := z.pins.char

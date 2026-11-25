@@ -70,8 +70,8 @@ open NumberField
 
 namespace GlobalTheory.IntMulIntegral
 
-theorem main : ∀ {K V : Type} [inst : Field K] [NumberField K] [inst_2 : AddCommGroup V] [inst_3 : Module K V]
-    [inst_4 : Module (NumberField.RingOfIntegers K) V] [IsScalarTower (NumberField.RingOfIntegers K) K V]
+theorem main : ∀ {K V : Type} [Field K] [NumberField K] [AddCommGroup V] [Module K V]
+    [Module (NumberField.RingOfIntegers K) V] [IsScalarTower (NumberField.RingOfIntegers K) K V]
     {A : Submodule (NumberField.RingOfIntegers K) V}, Submodule.span K (↑A : Set V) = ⊤ →
     ∀ (x : V), ∃ (N : ℤ), N ≠ (0 : ℤ) ∧ N • x ∈ A := by
   apply GlobalTheory.IntegerMultipleIntegral.exists_int_smul_mem

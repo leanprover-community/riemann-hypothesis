@@ -7,11 +7,11 @@ public import Mathlib.MeasureTheory.Constructions.Pi
 namespace Bl.general_b_fact_third_bis_form
 
 theorem goal1 :
-  ∀ {ι P β : Type} [inst : Fintype.{0} ι] [inst_1 : Fintype.{0} P] [inst_2 : MeasurableSpace.{0} β]
+  ∀ {ι P β : Type} [Fintype.{0} ι] [Fintype.{0} P] [MeasurableSpace.{0} β]
   (μ0 : MeasureTheory.Measure.{0} β) [MeasureTheory.SigmaFinite.{0} μ0],
   MeasureTheory.MeasurePreserving.{0, 0} (fun (x : ι → P → β) (p : P) (v : ι) ↦ x v p)
-    (MeasureTheory.Measure.pi.{0, 0} fun (x : ι) ↦ MeasureTheory.Measure.pi.{0, 0} fun (x : P) ↦ μ0)
-    (MeasureTheory.Measure.pi.{0, 0} fun (x : P) ↦ MeasureTheory.Measure.pi.{0, 0} fun (x : ι) ↦ μ0) := by
+    (MeasureTheory.Measure.pi.{0, 0} fun (_ : ι) ↦ MeasureTheory.Measure.pi.{0, 0} fun (_ : P) ↦ μ0)
+    (MeasureTheory.Measure.pi.{0, 0} fun (_ : P) ↦ MeasureTheory.Measure.pi.{0, 0} fun (_ : ι) ↦ μ0) := by
   intro ι P β _ _ _ μ0 _
   have hf : Measurable (fun (x : ι → P → β) (p : P) (v : ι) ↦ x v p) := by
     refine measurable_pi_iff.mpr fun p => measurable_pi_iff.mpr fun v => ?_

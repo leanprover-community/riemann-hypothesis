@@ -72,8 +72,8 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Yhd2.main :
-    ∀ {G M : Type} [inst : Group G] [inst_1 : TopologicalSpace G] [IsTopologicalGroup G] [SecondCountableTopology G]
-      [inst_4 : AddCommGroup M] [inst_5 : _root_.Module ℂ M] (ρ : Representation ℂ G M) (x : M),
+    ∀ {G M : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [SecondCountableTopology G]
+      [AddCommGroup M] [_root_.Module ℂ M] (ρ : Representation ℂ G M) (x : M),
       IsOpen {g : G | ((ρ : G → M →ₗ[ℂ] M) g : M → M) x = x} →
         (Set.range fun (g : G) ↦ ((ρ : G → M →ₗ[ℂ] M) g : M → M) x).Countable := by
   intro G M _ _ _ _ _ _ ρ x hS

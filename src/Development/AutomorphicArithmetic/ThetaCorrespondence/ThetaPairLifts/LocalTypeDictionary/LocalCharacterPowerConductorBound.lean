@@ -561,8 +561,8 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.SumRightInverse.sum_rightInv :
-    ∀ {G : Type} [inst : Group G] [inst_1 : TopologicalSpace G]
-    [IsTopologicalGroup G] [inst_3 : MeasurableSpace G] [BorelSpace G] (μ : MeasureTheory.Measure G)
+    ∀ {G : Type} [Group G] [TopologicalSpace G]
+    [IsTopologicalGroup G] [MeasurableSpace G] [BorelSpace G] (μ : MeasureTheory.Measure G)
     [μ.IsMulLeftInvariant] (K : Subgroup G),
     IsOpen (↑K : Set G) →
       (μ : Set G → ENNReal) (↑K : Set G) ≠ ⊤ →

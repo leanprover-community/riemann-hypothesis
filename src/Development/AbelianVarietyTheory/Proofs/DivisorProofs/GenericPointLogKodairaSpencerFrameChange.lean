@@ -538,7 +538,7 @@ theorem chart_res {X : Scheme.{0}} (U W : X.affineOpens) (h : W.1 ≤ U.1) :
   simpa [spMap, GlobalTheory.LogKS.chart] using U.2.map_fromSpec W.2 (homOfLE h).op
 
 theorem common_basic {X : Scheme.{0}} (U U' : X.affineOpens) (x : X) (hx : x ∈ U.1) (hx' : x ∈ U'.1) :
-    ∃ (W : X.affineOpens) (hW : W.1 ≤ U.1) (hW' : W.1 ≤ U'.1) (f : Γ(X, U.1)) (f' : Γ(X, U'.1)),
+    ∃ (W : X.affineOpens) (_ : W.1 ≤ U.1) (_ : W.1 ≤ U'.1) (f : Γ(X, U.1)) (f' : Γ(X, U'.1)),
       W.1 = X.basicOpen f ∧ W.1 = X.basicOpen f' ∧ x ∈ W.1 := by
   obtain ⟨f, g, hfg, hxf⟩ := exists_basicOpen_le_affine_inter U.2 U'.2 x ⟨hx, hx'⟩
   exact ⟨X.affineBasicOpen f, X.basicOpen_le f, (show X.basicOpen f ≤ U'.1 from hfg ▸ X.basicOpen_le g), f, g, rfl,

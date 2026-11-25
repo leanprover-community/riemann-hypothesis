@@ -1580,7 +1580,7 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Rb6.norm_le_one_of_mem :
-    ∀ {l : ℕ} [inst : Fact (Nat.Prime l)] (c : UpperTheory.V.HV.Coef l)
+    ∀ {l : ℕ} [Fact (Nat.Prime l)] (c : UpperTheory.V.HV.Coef l)
     {x : Formalism.ConjugateSelfDual.Qbar l},
     x ∈ c.O →
       ‖x‖ ≤

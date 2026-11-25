@@ -135,7 +135,7 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.LatticePowerSmul.exists_pow_smul_mem_lattice_alt :
-    ∀ {l : ℕ} [inst : Fact (Nat.Prime l)] (LL : Formalism.BasicNotions.Loc.FinExt l) (T : GlobalTheory.BKGal.QLat LL) (v : T.V),
+    ∀ {l : ℕ} [Fact (Nat.Prime l)] (LL : Formalism.BasicNotions.Loc.FinExt l) (T : GlobalTheory.BKGal.QLat LL) (v : T.V),
       ∃ (n : ℕ), (↑l : ↥(↑LL : IntermediateField ℚ_[l] (Formalism.BasicNotions.Loc.Om l))) ^ n • v ∈ T.L.T := by
   intro l inst LL T v
   haveI : FiniteDimensional ℚ_[l] ↥LL.1 := LL.2
@@ -346,9 +346,9 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Qj2.exists_sum_tmul :
-    ∀ {R O B σ : Type} [inst : CommRing R]
-    [inst_1 : AddCommGroup O] [inst_2 : _root_.Module R O] [inst_3 : AddCommGroup B] [inst_4 : _root_.Module R B]
-    [inst_5 : Fintype σ] (ω : Module.Basis σ R O) (x : TensorProduct R O B),
+    ∀ {R O B σ : Type} [CommRing R]
+    [AddCommGroup O] [_root_.Module R O] [AddCommGroup B] [_root_.Module R B]
+    [Fintype σ] (ω : Module.Basis σ R O) (x : TensorProduct R O B),
     ∃ (y : σ → B), x = ∑ s : σ, (ω : σ → O) s ⊗ₜ[R] y s := by
   intro R O B σ _ _ _ _ _ _ ω x
   induction x using TensorProduct.induction_on with

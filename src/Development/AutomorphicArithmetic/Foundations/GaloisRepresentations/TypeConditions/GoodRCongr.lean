@@ -219,7 +219,7 @@ open NumberField IsDedekindDomain Formalism Formalism.BasicNotions Formalism.Bas
 
 namespace GlobalTheory
 
-theorem weight_localisation_regular_algebraic : ∀ (D : D7) (i : D.nd.Loc) (P : D.naut.AV i) (τ : D.host.E →+* ℂ),
+theorem weight_localisation_regular_algebraic : ∀ (D : D7) (i : D.nd.Loc) (_ : D.naut.AV i) (τ : D.host.E →+* ℂ),
     (D.naut.infWt i τ).Nodup ∧ ∀ z ∈ D.naut.infWt i τ, ∃ k : ℤ, z = (k : ℂ) + ((D.R.nV : ℂ) - 1) / 2 := by
   intro D i P τ
   rw [D.nbc.embAV_inf i P]

@@ -92,7 +92,7 @@ theorem sum_concat {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [I
         Fintype.sum_equiv finSigmaFinEquiv.symm _ _ fun _ => rfl
     _ = ∑ a, ∑ i, (x a i).1 := Fintype.sum_sigma _
 
-theorem exists_one_le_jm_coarse : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (hA : GlobalTheory.Published.IrreducibleAdmissibleGL) {s N : ℕ} (c : Fin s → ℕ) (x : ∀ a, Fin (c a) → IrrGL (k := k)) (hpos : ∀ a, 0 < ∑ i, (x a i).1) (hcat : ∑ i, (concat c x i).1 = N) {V : Type} [AddCommGroup V] [Module ℂ V] (π : Representation ℂ (GL (Fin N) k) V) (hs : IsSmooth π) (hfl : HasFiniteLength π), 1 ≤ jm (concat c x) hcat π → ∃ (σ : Fin s → IrrGL (k := k)) (hσ : ∑ a, (σ a).1 = N), (∀ a, (σ a).1 = ∑ i, (x a i).1) ∧ 1 ≤ jm σ hσ π := by
+theorem exists_one_le_jm_coarse : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (_ : GlobalTheory.Published.IrreducibleAdmissibleGL) {s N : ℕ} (c : Fin s → ℕ) (x : ∀ a, Fin (c a) → IrrGL (k := k)) (_ : ∀ a, 0 < ∑ i, (x a i).1) (hcat : ∑ i, (concat c x i).1 = N) {V : Type} [AddCommGroup V] [Module ℂ V] (π : Representation ℂ (GL (Fin N) k) V) (_ : IsSmooth π) (_ : HasFiniteLength π), 1 ≤ jm (concat c x) hcat π → ∃ (σ : Fin s → IrrGL (k := k)) (hσ : ∑ a, (σ a).1 = N), (∀ a, (σ a).1 = ∑ i, (x a i).1) ∧ 1 ≤ jm σ hσ π := by
   intro k _ _ _ _ hA s N c x _ hcat V _ _ π hs _ h1
   let d : Fin s → ℕ := fun a => ∑ i, (x a i).1
   have hd : ∑ a, d a = N := (sum_concat c x).symm.trans hcat
@@ -172,7 +172,7 @@ theorem occurs_topCut (hA : GlobalTheory.Published.IrreducibleAdmissibleGL) (hZ 
   exact _root_.GlobalTheory.CompanionTheory.SegUniq.isLSeg_of_dec hA hZ (topCut Δ c hc a) (hx a) (y a).rep (y a).2.rep.smooth (y a).2.rep.irr φ hφ
 
 theorem lSegJacquet : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
-    (hA : GlobalTheory.Published.IrreducibleAdmissibleGL) (hZ : GlobalTheory.Published.SegmentRepresentation), LSegJacquet k := by
+    (_ : GlobalTheory.Published.IrreducibleAdmissibleGL) (_ : GlobalTheory.Published.SegmentRepresentation), LSegJacquet k := by
   intro k _ _ _ _ hA hZ Δ N V _ _ π hπ s y hd hpos
   have hdΔ : ∑ a, (dec Δ a).1 = N := (sum_dec Δ).trans hπ.deg_eq
   have hone := (_root_.GlobalTheory.CompanionTheory.SegUniq.fineJac_all hA hZ Δ π hπ).1 hdΔ

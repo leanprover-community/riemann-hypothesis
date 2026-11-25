@@ -184,7 +184,7 @@ theorem eq_zero_of_iota {I : Ideal R} (hI : I ≠ ⊤) (D : DegData R I) (z : D.
     rw [map_sub, map_sub, map_one, map_one, t', sub_self])
   exact not_isUnit_germ hp hIm hr ((IsUnit.of_mul_eq_one _ (sub_eq_zero.1 one)).map _)
 
-theorem main : LL → AllD fun {R} _ _ {I} D F _ _ => ∀ (y y' : D.toPre.X) (g : GtPtF D.toPre F), GtPtF.IsIota y g → GtPtF.IsIota y' g → y = y' := by
+theorem main : LL → AllD fun {_} _ _ {_} D F _ _ => ∀ (y y' : D.toPre.X) (g : GtPtF D.toPre F), GtPtF.IsIota y g → GtPtF.IsIota y' g → y = y' := by
   intro _ R _ _ _ I hA D F _ _ _ y y' g h h'
   have hI : I ≠ ⊤ := by
     rintro rfl

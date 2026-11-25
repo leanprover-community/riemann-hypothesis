@@ -714,7 +714,7 @@ lemma chart_compat {c d : κ} (hc : x c ≠ 0) (hd : x d ≠ 0) :
     specMap_chartVal_awayι (coord_mem d) one_pos (coord_mem c) (mul_comm _ _) (unit_coord hd) hv]
 
 lemma exists_chart_point (q : Proj (grading o x)) :
-    ∃ (c : κ) (hc : x c ≠ 0) (p : Spec (.of (Away (grading o x) (coord (o := o) (x := x) c)))),
+    ∃ (c : κ) (_ : x c ≠ 0) (p : Spec (.of (Away (grading o x) (coord (o := o) (x := x) c)))),
       Proj.awayι (grading o x) (coord c) (coord_mem c) one_pos p = q := by
   have h1 := Proj.iSup_basicOpen_eq_top' (grading o x) (fun c => coord (o := o) (x := x) c)
     (fun c => ⟨1, coord_mem c⟩) adjoin_coord_eq_top

@@ -1056,7 +1056,7 @@ theorem pow_le {A : Type} [CommRing A] (a d : A) (n : ℕ) :
           · rw [← pow_succ']
             exact le_sup_right
 
-theorem main : ∀ {A : Type} [inst : CommRing A] (a d : A) (n : ℕ) {x : A},
+theorem main : ∀ {A : Type} [CommRing A] (a d : A) (n : ℕ) {x : A},
     x ∈ (Ideal.span {a} ⊔ Ideal.span {d}) ^ (n + (1 : ℕ)) →
       ∃ (u : A), ∃ w ∈ (Ideal.span {a} ⊔ Ideal.span {d}) ^ n, x = a ^ (n + (1 : ℕ)) * u + d * w := by
   intro A _ a d n x hx

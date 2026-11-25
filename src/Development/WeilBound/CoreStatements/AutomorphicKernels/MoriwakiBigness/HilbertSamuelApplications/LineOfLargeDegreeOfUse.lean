@@ -782,8 +782,8 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.SpanDenominator.den_of_span :
-    ∀ {K : Type} [inst : Field K] [inst_1 : NumberField K] {i : ℕ} (P : Ideal (NumberField.RingOfIntegers K))
-      [inst_2 : P.IsPrime] (M : Submodule (NumberField.RingOfIntegers K) (Fin i → K)),
+    ∀ {K : Type} [Field K] [NumberField K] {i : ℕ} (P : Ideal (NumberField.RingOfIntegers K))
+      [P.IsPrime] (M : Submodule (NumberField.RingOfIntegers K) (Fin i → K)),
       ∀
         x ∈
           Submodule.span ↥(Localization.subalgebra.ofField K P.primeCompl (Ideal.primeCompl_le_nonZeroDivisors P))
@@ -808,7 +808,7 @@ namespace DedekindLocalUniformizer
 end DedekindLocalUniformizer
 
 theorem UpperTheory.Reformulated.B.Yde5.main :
-    ∀ {R : Type} [inst : CommRing R] [IsDedekindDomain R] (P : Ideal R),
+    ∀ {R : Type} [CommRing R] [IsDedekindDomain R] (P : Ideal R),
       P.IsMaximal → P ≠ ⊥ → ∃ (π : R), π ≠ (0 : R) ∧ π ∈ P ∧ ∃ s ∉ P, ∀ y ∈ P, ∃ (c : R), s * y = π * c := by
   intro R _ _ P hmax hbot
   haveI : P.IsPrime := hmax.isPrime

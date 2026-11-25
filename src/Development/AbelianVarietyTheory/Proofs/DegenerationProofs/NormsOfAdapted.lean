@@ -157,7 +157,7 @@ theorem vge_comb_iff (hT : TwistBaseChangeStatement) (hϖ : Irreducible ϖ) (hv 
 
 end
 
-theorem norms_of_adapted : LL → TwistBCSpanStatement → TWM.VRatioGtStatement → TWStatement → UUStatement → AllDV fun {V} _ _ _ {ϖ} hϖ D Q {F} _ _ {v} hv => ∀ k : ℕ, 1 ≤ k → ∀ (r : ℕ) (cls : Fin r → D.toPre.X) (mu : ℕ) (f : Fin r → ∀ α, D.toPre.SecB k α) (s : Fin r → Fam D.toPre F k), AdFam D Q k cls mu f → (∀ i, GlobalTheory.ZH.FamOf D.toPre F (f i) (s i)) → Norms D Q v k cls s := by
+theorem norms_of_adapted : LL → TwistBCSpanStatement → TWM.VRatioGtStatement → TWStatement → UUStatement → AllDV fun {_} _ _ _ {_} _ D Q {F} _ _ {v} _ => ∀ k : ℕ, 1 ≤ k → ∀ (r : ℕ) (cls : Fin r → D.toPre.X) (mu : ℕ) (f : Fin r → ∀ α, D.toPre.SecB k α) (s : Fin r → Fam D.toPre F k), AdFam D Q k cls mu f → (∀ i, GlobalTheory.ZH.FamOf D.toPre F (f i) (s i)) → Norms D Q v k cls s := by
   intro hLL _ _ _ _ V _ _ _ _ _ ϖ hϖ D Q hQ F _ _ _ v hv k hk r cls mu f s hA hs
   classical
   obtain ⟨⟨hshort, hcls, hcov, -⟩, -, hzero, hbas⟩ := hA

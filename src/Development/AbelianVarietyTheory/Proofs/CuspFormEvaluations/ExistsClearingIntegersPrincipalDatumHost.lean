@@ -76,7 +76,7 @@ namespace GlobalTheory.CuspFormEvaluationSupplement
 
 universe u_1
 
-theorem main : ∀ {R : Type u_1} [inst : CommRing R] {P : Ideal R}, Ideal.IsPrime P → ∀ (N : ℕ), N ≠ (0 : ℕ) → (↑N : R) ∈ P → ∃ (p : ℕ), Nat.Prime p ∧ p ∣ N ∧ (↑p : R) ∈ P := by
+theorem main : ∀ {R : Type u_1} [CommRing R] {P : Ideal R}, Ideal.IsPrime P → ∀ (N : ℕ), N ≠ (0 : ℕ) → (↑N : R) ∈ P → ∃ (p : ℕ), Nat.Prime p ∧ p ∣ N ∧ (↑p : R) ∈ P := by
   intro R _ P hP N
   induction N using induction_on_primes with
   | zero => intro h; exact absurd rfl h

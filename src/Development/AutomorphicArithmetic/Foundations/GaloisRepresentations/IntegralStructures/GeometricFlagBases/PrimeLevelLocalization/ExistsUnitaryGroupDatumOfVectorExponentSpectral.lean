@@ -666,7 +666,7 @@ section -- clump:auto
     fun (E : Type) [Field E] ↦ IsDedekindDomain.HeightOneSpectrum (NumberField.RingOfIntegers E)
 
 theorem UpperTheory.Reformulated.B.Qe49.exists_prime_mem :
-    ∀ {E : Type} [inst : Field E] [NumberField E] (w : UpperTheory.Reformulated.B.Qe49.Plc E),
+    ∀ {E : Type} [Field E] [NumberField E] (w : UpperTheory.Reformulated.B.Qe49.Plc E),
       ∃ (q : ℕ), Nat.Prime q ∧ (↑q : NumberField.RingOfIntegers E) ∈ w.asIdeal := by
   intro E _ _ w
   haveI : w.asIdeal.IsPrime := w.isPrime

@@ -149,7 +149,7 @@ end K
 end UpperTheory.V.Pa
 
 theorem UpperTheory.V.Pa.rho1Tri :
-    ∀ (l : ℕ) [Fact l.Prime] (L : Loc) (G G0 : Glob l L) (h : G.Hom G0) (n : ℕ) (x : NP G0.frame n), ∀ (k : Kap x), ∀ (R : Type) [CommRing R] [Algebra x.A R], (∀ g g', k.ρ1 R (g * g') = k.ρ1 R g * k.ρ1 R g') ∧ k.ρ1 R 1 = 1 ∧ (∀ g, (k.ρ1 R g)ᵀ * k.ρ1 R (G0.frame.conj g) = algebraMap x.A (DD R k.g) ((G0.frame.eps ℤ_[l] x.A g ^ (1 - (n : ℤ)) : x.Aˣ) : x.A) • (1 : Matrix (Fin n) (Fin n) (DD R k.g))) ∧ (∀ w, ∀ g ∈ G0.frame.Iu w, k.ρ1 R g = 1) ∧ (∀ g, k.ρ1 R g ∈ W1 n x.A R k.g x.a) ∧ ∀ v, k.w1 R v * k.wi1 R v = 1 ∧ k.wi1 R v * k.w1 R v = 1 ∧ ∀ g, (∀ i j, j < i → (k.wi1 R v * k.ρ1 R (G0.φ v g) * k.w1 R v) i j = 0) ∧ ∀ i, (k.wi1 R v * k.ρ1 R (G0.φ v g) * k.w1 R v) i i = algebraMap x.A (DD R k.g) (x.ψ v i g) := by
+    ∀ (l : ℕ) [Fact l.Prime] (L : Loc) (G G0 : Glob l L) (_ : G.Hom G0) (n : ℕ) (x : NP G0.frame n), ∀ (k : Kap x), ∀ (R : Type) [CommRing R] [Algebra x.A R], (∀ g g', k.ρ1 R (g * g') = k.ρ1 R g * k.ρ1 R g') ∧ k.ρ1 R 1 = 1 ∧ (∀ g, (k.ρ1 R g)ᵀ * k.ρ1 R (G0.frame.conj g) = algebraMap x.A (DD R k.g) ((G0.frame.eps ℤ_[l] x.A g ^ (1 - (n : ℤ)) : x.Aˣ) : x.A) • (1 : Matrix (Fin n) (Fin n) (DD R k.g))) ∧ (∀ w, ∀ g ∈ G0.frame.Iu w, k.ρ1 R g = 1) ∧ (∀ g, k.ρ1 R g ∈ W1 n x.A R k.g x.a) ∧ ∀ v, k.w1 R v * k.wi1 R v = 1 ∧ k.wi1 R v * k.w1 R v = 1 ∧ ∀ g, (∀ i j, j < i → (k.wi1 R v * k.ρ1 R (G0.φ v g) * k.w1 R v) i j = 0) ∧ ∀ i, (k.wi1 R v * k.ρ1 R (G0.φ v g) * k.w1 R v) i i = algebraMap x.A (DD R k.g) (x.ψ v i g) := by
   intro l _ L G G0 h n x k R _ _
   have hρ : ∀ g, x.ρX x.A g = mat x.ρ g := fun g => rfl
   have hmul : ∀ g g', x.ρX x.A (g * g') = x.ρX x.A g * x.ρX x.A g' := by

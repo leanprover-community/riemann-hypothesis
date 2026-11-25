@@ -1058,7 +1058,7 @@ theorem isAdmissible_levi (hA : GlobalTheory.Published.IrreducibleAdmissibleGL) 
     hA k _ W σ (hq.isSmooth hs) hi)
 
 theorem nonempty_equiv_piTensor : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k]
-    [IsNonarchimedeanLocalField k] (hA : GlobalTheory.Published.IrreducibleAdmissibleGL) {s : ℕ} (d : Fin s → ℕ)
+    [IsNonarchimedeanLocalField k] (_ : GlobalTheory.Published.IrreducibleAdmissibleGL) {s : ℕ} (d : Fin s → ℕ)
     (τ : IrrRep (Levi k fun a => Fin (d a))), ∃ σ : ∀ a, IrrCl (GL (Fin (d a)) k),
       Nonempty (τ.ρ.Equiv (piTensor fun a => (σ a).rep.ρ)) := by
   intro k _ _ _ _ hA s d τ

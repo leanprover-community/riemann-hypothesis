@@ -8,8 +8,8 @@ public import Mathlib.NumberTheory.NumberField.Basic
 namespace Bl.general_b_fact_third'''''
 
 theorem goal1 :
-  ∀ {E : Type} [inst : Field.{0} E] [NumberField.{0} E] {V : Type} [inst_2 : AddCommGroup.{0} V]
-  [inst_3 : Module.{0, 0} E V] [inst_4 : Module.{0, 0} (NumberField.RingOfIntegers.{0} E) V]
+  ∀ {E : Type} [Field.{0} E] [NumberField.{0} E] {V : Type} [AddCommGroup.{0} V]
+  [Module.{0, 0} E V] [Module.{0, 0} (NumberField.RingOfIntegers.{0} E) V]
   [IsScalarTower.{0, 0, 0} (NumberField.RingOfIntegers.{0} E) E V]
   (Λ : Submodule.{0, 0} (NumberField.RingOfIntegers.{0} E) V),
   Eq.{1} (Submodule.span.{0, 0} E (SetLike.coe.{0, 0} Λ)) Top.top.{0} →

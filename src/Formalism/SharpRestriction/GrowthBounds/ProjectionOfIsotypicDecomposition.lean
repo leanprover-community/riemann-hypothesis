@@ -288,7 +288,7 @@ theorem gamDig_one_zero {r : ℕ} (be : Fin r → ℕ) : Formalism.MainNotions.P
   have : ((be a).factorial : ℚ) ≠ 0 := by exact_mod_cast (Nat.factorial_ne_zero _)
   simp [this]
 
-theorem digit_identity_of_decomposition (D : Formalism.BasicNotions.D7) (h : Formalism.MainNotions.CovariantDegrees.FactorialUnitDecomposition) : Formalism.MainNotions.PlaneGramData.adm5 := by
+theorem digit_identity_of_decomposition (D : Formalism.BasicNotions.D7) (h : Formalism.MainNotions.CovariantDegrees.FactorialUnitDecomposition D) : Formalism.MainNotions.PlaneGramData.adm5 := by
   intro p O _ _ _ _ hset g r rho hrho
   obtain ⟨⟨S⟩, n', hG⟩ := hset
   have hp := hG.prime

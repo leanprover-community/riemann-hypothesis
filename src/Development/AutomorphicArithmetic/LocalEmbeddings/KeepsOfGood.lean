@@ -147,7 +147,7 @@ theorem fractionField_smul_inf_restrictScalars {s : K} (hs : s ≠ 0) (Θ : Subm
 variable [IsPrincipalIdealRing R]
 
 theorem isLattice_comap_subtype {M : Submodule R V} (hM : M.FG) {W : Submodule K V}
-    :
+    (h : W ≤ Submodule.span K (M : Set V)) :
     Submodule.IsLattice K (M.comap (W.subtype.restrictScalars R)) := by
   apply Submodule.IsLattice.of_fg K
   apply Submodule.fg_of_fg_map_injective (W.subtype.restrictScalars R) W.injective_subtype
@@ -157,7 +157,7 @@ theorem finrank_inf_restrictScalars_of_le_span {M : Submodule R V} (hM : M.FG)
     {W : Submodule K V} (h : W ≤ Submodule.span K (M : Set V)) :
     Module.finrank R ↥(M ⊓ W.restrictScalars R) = Module.finrank K W := by
   have : Submodule.IsFullLattice K (M.comap (W.subtype.restrictScalars R)) := by
-    have := isLattice_comap_subtype hM
+    have := isLattice_comap_subtype hM h
     refine { span_eq_top := ?_ }
     refine eq_top_iff.mpr fun x _ => ?_
     obtain ⟨a, ha, hax⟩ := exists_ne_zero_smul_mem_of_mem_span_fractionField K (h x.2)

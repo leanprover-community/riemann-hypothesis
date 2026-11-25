@@ -93,7 +93,7 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.ZariskiNoetherianInduction.noetherian_induction_zariski :
-    ∀ (k : Type) [inst : Field k] (n : ℕ) (Q : Set (Fin n → k) → Prop),
+    ∀ (k : Type) [Field k] (n : ℕ) (Q : Set (Fin n → k) → Prop),
     Q ∅ →
       (∀ (s t : Set (Fin n → k)), s ⊆ t → Q t → Q s) →
         (∀ (s t : Set (Fin n → k)), Q s → Q t → Q (s ∪ t)) →
@@ -274,8 +274,8 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Qi48.exists_psi :
-    ∀ (L T : Type) [inst : Field L] [IsAlgClosed L] [inst_2 : CommRing T]
-    [inst_3 : Algebra L T] [Algebra.FiniteType L T] (m : Ideal T),
+    ∀ (L T : Type) [Field L] [IsAlgClosed L] [CommRing T]
+    [Algebra L T] [Algebra.FiniteType L T] (m : Ideal T),
     m.IsMaximal → ∃ (ψ : T →ₐ[L] L), ∀ (x : T), (ψ : T → L) x = (0 : L) ↔ x ∈ m := by
   intro L T _ _ _ _ _ m hm
   letI : Field (T ⧸ m) := Ideal.Quotient.field m

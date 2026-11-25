@@ -740,7 +740,7 @@ theorem lftMap [Fintype ι] [DecidableEq ι] (eY : PiTensorProduct ℂ (fun _ : 
 
 theorem mvZMap [Fintype ι] [DecidableEq ι] (hab : a ≤ b) (eZ : PiTensorProduct ℂ (fun _ : ι => FP Unit a b) ≃ₗ[ℂ] FP ι a b)
     (hZ1 : ∀ f, eZ (PiTensorProduct.tprod ℂ f) = ∏ τ, jZ a b τ (f τ)) (τ : ι) (k : Matrix (Fin a) (Fin a) ℂ) :
-    eZ.toLinearMap ∘ₗ PiTensorProduct.map (Function.update (fun σ => (LinearMap.id : FP Unit a b →ₗ[ℂ] FP Unit a b)) τ
+    eZ.toLinearMap ∘ₗ PiTensorProduct.map (Function.update (fun _ => (LinearMap.id : FP Unit a b →ₗ[ℂ] FP Unit a b)) τ
         (mvZ (fun _ : Unit => k) (fun _ => 1)).toLinearMap) =
     (mvZ (Function.update 1 τ k) (fun _ => 1)).toLinearMap ∘ₗ eZ.toLinearMap := by
   apply PiTensorProduct.ext; apply MultilinearMap.ext; intro f

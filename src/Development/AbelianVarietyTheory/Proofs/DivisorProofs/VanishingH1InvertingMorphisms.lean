@@ -437,7 +437,7 @@ theorem cech1 (c : ι → ι → ∀ S, (T ⟶ S) → F.obj S)
     (hs : ∀ i j, IsSec F (fun S u ↦ IsUnit (mp F u (b i)) ∧ IsUnit (mp F u (b j))) (c i j))
     (hc : ∀ i j k S u, IsUnit (mp F u (b i)) → IsUnit (mp F u (b j)) → IsUnit (mp F u (b k)) →
       c j k S u - c i k S u + c i j S u = 0) :
-    ∃ e : ι → ∀ S, (T ⟶ S) → F.obj S, (∀ i, IsSec F (fun S u ↦ IsUnit (mp F u (b i))) (e i)) ∧
+    ∃ e : ι → ∀ S, (T ⟶ S) → F.obj S, (∀ i, IsSec F (fun _ u ↦ IsUnit (mp F u (b i))) (e i)) ∧
       ∀ i j S u, IsUnit (mp F u (b i)) → IsUnit (mp F u (b j)) → c i j S u = e j S u - e i S u := by
   obtain ⟨N, hN⟩ := (eventually_all.2 fun l ↦ eventually_all.2 fun i ↦
     IsSec.extend H (P := fun S u ↦ IsUnit (mp F u (b i))) (b := b i) (fun _ _ ↦ Iff.rfl) (b l)
@@ -471,7 +471,7 @@ theorem cech2 (c : ι → ι → ι → ∀ S, (T ⟶ S) → F.obj S)
     (hc : ∀ l i j k S u, IsUnit (mp F u (b l)) → IsUnit (mp F u (b i)) → IsUnit (mp F u (b j)) →
       IsUnit (mp F u (b k)) → c i j k S u - c l j k S u + c l i k S u - c l i j S u = 0) :
     ∃ e : ι → ι → ∀ S, (T ⟶ S) → F.obj S,
-      (∀ i j, IsSec F (fun S u ↦ IsUnit (mp F u (b i)) ∧ IsUnit (mp F u (b j))) (e i j)) ∧
+      (∀ i j, IsSec F (fun _ u ↦ IsUnit (mp F u (b i)) ∧ IsUnit (mp F u (b j))) (e i j)) ∧
       ∀ i j k S u, IsUnit (mp F u (b i)) → IsUnit (mp F u (b j)) → IsUnit (mp F u (b k)) →
         c i j k S u = e j k S u - e i k S u + e i j S u := by
   obtain ⟨N, hN⟩ := (eventually_all.2 fun l ↦ eventually_all.2 fun i ↦ eventually_all.2 fun j ↦

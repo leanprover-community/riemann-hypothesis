@@ -1187,7 +1187,8 @@ theorem gapOK_mono {k r : ℕ} {h h' : ℝ} (hg : Formalism.FourierDecayAlt.Thre
 
 def XLeafAt {D : D7} (X : Formalism.L2.SG.HidaSetting.HidaSetting D) {θ : ℝ} (C : Choice X θ) (u u' : D.what₂.Word)
     (e : InfinitePlace D.host.E ≃ D.what₂.Tau) (he : PlaceTie X e) (hv : D.host.v = Formalism.FourierDecayAlt.S6.rd D.host.E / 2) (CA : ℝ)
-    (de de' : ℕ → ℝ) (l : ℕ) (i0' : ∀ _ : InfinitePlace X.B.I.F, Fin D.R.k)
+    (de de' : ℕ → ℝ) (l : ℕ) (i0 i0' : ∀ _ : InfinitePlace X.B.I.F, Fin D.R.k) (sc : ℝ) (FdN FdN' : Set X.B.I.Ginf)
+    (νq : X.B.I.Ginf → Measure X.B.I.Ginf) (jn : ℝ)
     (a b : ∀ j : Fin (nfE D), X.B.H (tauE X e j)) (ξ : ∀ j : Fin (nfE D), X.Vloc u (tauE X e j))
     (ξ' : ∀ j : Fin (nfE D), X.Vloc u' (tauE X e j)) (cc : Fin (nfE D) → ℂ) : Prop :=
   (∀ j, PI.UpqRep.IsKFinHpk (k := D.R.k) (r := D.R.rS)
@@ -1289,7 +1290,7 @@ theorem carrierDataBuilt_of_hyp (Cb : ℝ) (hLift : LiftAt3 Cb) (hCap : CapFromH
     (νq : X.B.I.Ginf → Measure X.B.I.Ginf) (jn : ℝ)
     (a b : ∀ j : Fin (nfE D), X.B.H (tauE X e j)) (ξ : ∀ j : Fin (nfE D), X.Vloc u (tauE X e j))
     (ξ' : ∀ j : Fin (nfE D), X.Vloc u' (tauE X e j)) (cc : Fin (nfE D) → ℂ)
-    (hleaf : XLeafAt X C u u' e he (host_v D) CA de de' l i0' a b ξ ξ' cc)
+    (hleaf : XLeafAt X C u u' e he (host_v D) CA de de' l i0 i0' sc FdN FdN' νq jn a b ξ ξ' cc)
     (h5 : ∀ (w : D.what₂.Word) τ, ¬ IsTop D τ → uOne D w τ D.R.k = vOne D τ (D.R.k - 1) - 1 / 2)
     (hde : de = Formalism.MainNotions.BridgeLemma.deOf D u) (hde' : de' = Formalism.MainNotions.BridgeLemma.deOf D u')
     (hOk : ∀ w, ((Formalism.L2.SG.SpectralTiesReal.gOf D e).place w).Ok)

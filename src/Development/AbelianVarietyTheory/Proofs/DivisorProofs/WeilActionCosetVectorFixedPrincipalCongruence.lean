@@ -53,7 +53,7 @@ open GlobalTheory.FunObj.StdDatum
 
 namespace GlobalTheory.BotPairSmall.CvFix
 
-theorem om_cvec_of_congOne : ∀ (D : D7) (δ t0 : ℂ) (hc : Crv D ⊤ δ) (ht : GL3Theta.IsTwoTorsionPointUnkilled D (lamOf D ⊤ δ) t0) (a d : ℕ) (hd : Even d) (e0 : VC D a d → ℂ) (hv : oddE0 D ⊤ δ t0 a d e0) (W : WeilO D ⊤ δ a d e0) (hep : W.ep = 1) (hep' : W.ep' = 1) (𝔪 : Ideal (𝓞 D.host.E)) (hm : 𝔪 ≠ ⊥) (hcop : 𝔪 ⊔ D.host.conj • 𝔪 = ⊤) (hcond : ∀ u : (AE D)ˣ, IntU D u → (u : AE D) - 1 ∈ hatId D (𝔪 * D.host.conj • 𝔪) → W.chV'.f u = 1) (o : ℕ) (ho : o + a = d), ∀ k ∈ intG D a, CongOne D (D.host.conj • 𝔪) k → W.Om k 1 (GlobalTheory.BotPairSmall.cvec D δ (D.host.conj • 𝔪) o a d e0) = GlobalTheory.BotPairSmall.cvec D δ (D.host.conj • 𝔪) o a d e0 := by
+theorem om_cvec_of_congOne : ∀ (D : D7) (δ t0 : ℂ) (_ : Crv D ⊤ δ) (_ : GL3Theta.IsTwoTorsionPointUnkilled D (lamOf D ⊤ δ) t0) (a d : ℕ) (_ : Even d) (e0 : VC D a d → ℂ) (_ : oddE0 D ⊤ δ t0 a d e0) (W : WeilO D ⊤ δ a d e0) (_ : W.ep = 1) (_ : W.ep' = 1) (𝔪 : Ideal (𝓞 D.host.E)) (_ : 𝔪 ≠ ⊥) (_ : 𝔪 ⊔ D.host.conj • 𝔪 = ⊤) (_ : ∀ u : (AE D)ˣ, IntU D u → (u : AE D) - 1 ∈ hatId D (𝔪 * D.host.conj • 𝔪) → W.chV'.f u = 1) (o : ℕ) (_ : o + a = d), ∀ k ∈ intG D a, CongOne D (D.host.conj • 𝔪) k → W.Om k 1 (GlobalTheory.BotPairSmall.cvec D δ (D.host.conj • 𝔪) o a d e0) = GlobalTheory.BotPairSmall.cvec D δ (D.host.conj • 𝔪) o a d e0 := by
   intro D δ t0 hc ht a d hd e0 hv W hep hep' 𝔪 hm hcop hcond o ho k hk hkc
   have hcc : D.host.conj • D.host.conj • 𝔪 = 𝔪 := by
     rw [smul_smul, GlobalTheory.GaloisTwist.conj_mul_conj, one_smul]

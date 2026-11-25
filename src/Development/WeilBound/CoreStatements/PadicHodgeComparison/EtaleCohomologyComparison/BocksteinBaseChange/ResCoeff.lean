@@ -57,7 +57,7 @@ section -- clump:auto
 @[expose] public section
 
 noncomputable def UpperTheory.Reformulated.B.FrobeniusElement.frb :
-    {l : ℕ} → [Fact (Nat.Prime l)] → {B₀ : Type} → [inst : CommRing B₀] → (↑l : B₀) = (0 : B₀) → B₀ →+* B₀ :=
+    {l : ℕ} → [Fact (Nat.Prime l)] → {B₀ : Type} → [CommRing B₀] → (↑l : B₀) = (0 : B₀) → B₀ →+* B₀ :=
   fun {l} [hl : Fact (Nat.Prime l)] {B₀} [CommRing B₀] h =>
     { toFun := fun x => x ^ l
       map_one' := one_pow l

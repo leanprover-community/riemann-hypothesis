@@ -493,7 +493,7 @@ private theorem mem_basicOpen_or (T : Scheme.{0}) (a b : Γ(T, ⊤)) (h : Ideal.
     exact isUnit_of_mul_isUnit_right hy
 
 theorem UpperTheory.locally_isUnit_or_isUnit_of_span_pair_eq_top :
-    ∀ (T : Scheme.{0}) (a b : Γ(T, ⊤)), Ideal.span {a, b} = ⊤ → Loc T fun V g => IsUnit (g.appTop.hom a) ∨ IsUnit (g.appTop.hom b) := by
+    ∀ (T : Scheme.{0}) (a b : Γ(T, ⊤)), Ideal.span {a, b} = ⊤ → Loc T fun _ g => IsUnit (g.appTop.hom a) ∨ IsUnit (g.appTop.hom b) := by
   intro T a b h
   let U : Bool → T.Opens := fun i => bif i then T.basicOpen a else T.basicOpen b
   have hU : TopologicalSpace.IsOpenCover U := by
@@ -528,7 +528,7 @@ section -- clump:auto
     fun (q : ℕ) ↦ LaurentPolynomial (Localization.Away (↑q : ℤ))
 
 theorem UpperTheory.Reformulated.B.LocalQuotientHomExt.hom_ext :
-    ∀ (q : ℕ) {R : Type} [inst : CommRing R] {f g : UpperTheory.Reformulated.B.LocalQuotientHomExt.LqR q →+* R},
+    ∀ (q : ℕ) {R : Type} [CommRing R] {f g : UpperTheory.Reformulated.B.LocalQuotientHomExt.LqR q →+* R},
       (f : UpperTheory.Reformulated.B.LocalQuotientHomExt.LqR q → R) (LaurentPolynomial.T (1 : ℤ)) =
           (g : UpperTheory.Reformulated.B.LocalQuotientHomExt.LqR q → R) (LaurentPolynomial.T (1 : ℤ)) →
         f = g := by

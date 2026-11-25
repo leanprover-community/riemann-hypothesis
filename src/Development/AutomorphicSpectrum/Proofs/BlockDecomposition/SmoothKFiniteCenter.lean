@@ -467,7 +467,7 @@ section -- clump:auto
 
 open NumberField in
 theorem UpperTheory.Reformulated.B.FiniteAndNcardBound.finite_and_ncard_le :
-    ∀ (E : Type) [inst : Field E] [NumberField E],
+    ∀ (E : Type) [Field E] [NumberField E],
     ∃ (C : ℝ) (N : ℕ),
       ∀ (R : ℝ),
         (1 : ℝ) ≤ R →

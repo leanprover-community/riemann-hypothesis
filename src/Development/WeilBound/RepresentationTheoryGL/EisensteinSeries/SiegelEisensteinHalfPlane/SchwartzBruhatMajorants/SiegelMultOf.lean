@@ -443,11 +443,11 @@ section -- clump:auto
 @[expose] public section
 
 noncomputable def UpperTheory.Reformulated.B.DYhc7.Iwa :
-    {G : Type} → [inst : Group G] → Subgroup G → Subgroup G → Prop :=
+    {G : Type} → [Group G] → Subgroup G → Subgroup G → Prop :=
     fun {G : Type} [Group G] (P K : Subgroup G) ↦ ∀ (g : G), ∃ p ∈ P, ∃ k ∈ K, g = p * k
 
 theorem UpperTheory.Reformulated.B.DYhc7.main :
-    ∀ {G : Type} [inst : Group G] [inst_1 : TopologicalSpace G] [IsTopologicalGroup G] {K P : Subgroup G},
+    ∀ {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] {K P : Subgroup G},
       IsCompact (↑K : Set G) →
         IsClosed (↑P : Set G) →
           UpperTheory.Reformulated.B.DYhc7.Iwa P K → Topology.IsQuotientMap fun (x : ↥P × ↥K) ↦ (↑x.1 : G) * (↑x.2 : G) := by

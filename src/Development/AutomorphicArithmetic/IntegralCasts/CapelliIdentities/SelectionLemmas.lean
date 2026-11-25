@@ -57,29 +57,29 @@ import Mathlib.Topology.Sheaves.Init
 
 namespace UpperTheory.Reformulated.B.SelectionLemmas
 
-theorem aux1.{u_1} : ∀ {K : Type u_1} [inst : Field K],
+theorem aux1.{u_1} : ∀ {K : Type u_1} [Field K],
   SMulCommClass K K K := by
   intros; infer_instance
 
-theorem aux2.{u_1} : ∀ {K : Type u_1} [inst : Field K],
+theorem aux2.{u_1} : ∀ {K : Type u_1} [Field K],
   SMulCommClass K K K := by
   intros; infer_instance
 
 theorem aux3.{u_1, u_2, u_3} : ∀ {S : Type u_3} {K : Type u_2} {V : Type u_1}
-  [inst : CommRing S] [inst_1 : Field K] [inst_2 : Algebra S K] [inst_3 : AddCommGroup V] [inst_4 : Module K V]
-  [inst_5 : Module S V] [IsScalarTower S K V], LinearMap.CompatibleSMul V K S K := by
+  [CommRing S] [Field K] [Algebra S K] [AddCommGroup V] [Module K V]
+  [Module S V] [IsScalarTower S K V], LinearMap.CompatibleSMul V K S K := by
   intros; infer_instance
 
 noncomputable def hdual.{u_1, u_2, u_3} : {S : Type u_1} →
   {K : Type u_2} →
     {V : Type u_3} →
-      [inst : CommRing S] →
-        [inst_1 : Field K] →
-          [inst_2 : StarRing K] →
-            [inst_3 : Algebra S K] →
-              [inst_4 : AddCommGroup V] →
-                [inst_5 : Module K V] →
-                  [inst_6 : Module S V] →
+      [CommRing S] →
+        [Field K] →
+          [StarRing K] →
+            [Algebra S K] →
+              [AddCommGroup V] →
+                [Module K V] →
+                  [Module S V] →
                     [IsScalarTower S K V] → (V →ₗ⋆[K] V →ₗ[K] K) → Submodule S V → Submodule S V :=
   fun {S} {K} {V} [CommRing S] [Field K] [StarRing K] [Algebra S K] [AddCommGroup V] [Module K V] [Module S V]
       [IsScalarTower S K V] B L =>
@@ -88,32 +88,32 @@ noncomputable def hdual.{u_1, u_2, u_3} : {S : Type u_1} →
 noncomputable def dual.{u_1, u_2, u_3} : {R : Type u_1} →
   {K : Type u_2} →
     {V : Type u_3} →
-      [inst : CommRing R] →
-        [inst_1 : Field K] →
-          [inst_2 : StarRing K] →
-            [inst_3 : Algebra R K] →
-              [inst_4 : AddCommGroup V] →
-                [inst_5 : Module K V] →
-                  [inst_6 : Module R V] →
+      [CommRing R] →
+        [Field K] →
+          [StarRing K] →
+            [Algebra R K] →
+              [AddCommGroup V] →
+                [Module K V] →
+                  [Module R V] →
                     [IsScalarTower R K V] → (V →ₗ⋆[K] V →ₗ[K] K) → Submodule R V → Submodule R V :=
   fun {R} {K} {V} [CommRing R] [Field K] [StarRing K] [Algebra R K] [AddCommGroup V] [Module K V] [Module R V]
       [IsScalarTower R K V] h L =>
     hdual h L
 
-theorem aux6 : ∀ {K : Type} [inst : Field K],
+theorem aux6 : ∀ {K : Type} [Field K],
   RingHomInvPair (RingHom.id K) (RingHom.id K) := by
   intros; infer_instance
 
-theorem aux7 : ∀ {K : Type} [inst : Field K], SMulCommClass K K K := by
+theorem aux7 : ∀ {K : Type} [Field K], SMulCommClass K K K := by
   intros; infer_instance
 
-theorem aux8 : ∀ {K : Type} [inst : Field K] {n : ℕ},
+theorem aux8 : ∀ {K : Type} [Field K] {n : ℕ},
   SMulCommClass K K ((Fin n → K) →ₗ[K] K) := by
   intros; infer_instance
 
 noncomputable def hform : {K : Type} →
-  [inst : Field K] →
-    [inst_1 : StarRing K] → {n : ℕ} → Matrix (Fin n) (Fin n) K → (Fin n → K) →ₗ⋆[K] (Fin n → K) →ₗ[K] K :=
+  [Field K] →
+    [StarRing K] → {n : ℕ} → Matrix (Fin n) (Fin n) K → (Fin n → K) →ₗ⋆[K] (Fin n → K) →ₗ[K] K :=
   fun {K} [Field K] [StarRing K] {_} H => (Matrix.toLinearMapₛₗ₂' K (starRingEnd K) (RingHom.id K)) H
 
 noncomputable def locS.{u_1, u_4} {R : Type u_1} [CommRing R] {W : Type u_4} [AddCommGroup W]
@@ -121,23 +121,23 @@ noncomputable def locS.{u_1, u_4} {R : Type u_1} [CommRing R] {W : Type u_4} [Ad
   Formalism.HermitianLatticesTheory.locS S L
 
 noncomputable def hcompl.{u_1, u_2} : {R : Type u_1} →
-  {K : Type u_2} → [inst : CommRing R] → [inst_1 : Field K] → [StarRing K] → [Algebra R K] → Ideal R → Submonoid R :=
+  {K : Type u_2} → [CommRing R] → [Field K] → [StarRing K] → [Algebra R K] → Ideal R → Submonoid R :=
   fun {R} {K} [CommRing R] [Field K] [StarRing K] [Algebra R K] p =>
     Submonoid.closure {s | s ∉ p ∧ ∀ (t : R), (Algebra.algebraMap R K) t = Star.star ((Algebra.algebraMap R K) s) → t ∉ p}
 
 noncomputable def loc.{u_1, u_2, u_4} : {R : Type u_1} →
   {K : Type u_2} →
-    [inst : CommRing R] →
-      [inst_1 : Field K] →
+    [CommRing R] →
+      [Field K] →
         [StarRing K] →
           [Algebra R K] →
             {W : Type u_4} →
-              [inst_4 : AddCommGroup W] → [inst_5 : Module R W] → Ideal R → Submodule R W → Submodule R W :=
+              [AddCommGroup W] → [Module R W] → Ideal R → Submodule R W → Submodule R W :=
   fun {R} {K} [CommRing R] [Field K] [StarRing K] [Algebra R K] {W} [AddCommGroup W] [Module R W] p L =>
     locS (hcompl (K := K) p) L
 
 noncomputable def IsLocBasis : {K : Type} →
-  [inst : Field K] →
+  [Field K] →
     [StarRing K] →
       {D : ℕ} →
         Submodule (NumberField.RingOfIntegers K) (Fin D → K) →
@@ -148,32 +148,32 @@ noncomputable def IsLocBasis : {K : Type} →
           (Submodule.span (NumberField.RingOfIntegers K) (Set.range e)) =
         loc (K := K) w.asIdeal L
 
-theorem complex_normed_instance_compat : ∀ {K : Type} [inst : Field K],
+theorem complex_normed_instance_compat : ∀ {K : Type} [Field K],
   RingHomSurjective (RingHom.id (NumberField.RingOfIntegers K)) := by
   intros; infer_instance
 
-theorem padic_embedding_algebra_compat : ∀ {K : Type} [inst : Field K]
+theorem padic_embedding_algebra_compat : ∀ {K : Type} [Field K]
   {d d' : ℕ}, LinearMap.CompatibleSMul (Fin d → K) (Fin d' → K) (NumberField.RingOfIntegers K) K := by
   intros; infer_instance
 
 noncomputable def matLat : {K : Type} →
-  [inst : Field K] →
+  [Field K] →
     {d d' : ℕ} →
       Matrix (Fin d') (Fin d) K →
         Submodule (NumberField.RingOfIntegers K) (Fin d → K) → Submodule (NumberField.RingOfIntegers K) (Fin d' → K) :=
   fun {K} [Field K] {_ _} φ L => Submodule.map (φ.mulVecLin.restrictScalars (NumberField.RingOfIntegers K)) L
 
 noncomputable def vw : {K : Type} →
-  [inst : Field K] → [NumberField K] → IsDedekindDomain.HeightOneSpectrum (NumberField.RingOfIntegers K) → K → ℤ :=
+  [Field K] → [NumberField K] → IsDedekindDomain.HeightOneSpectrum (NumberField.RingOfIntegers K) → K → ℤ :=
   fun {K} [Field K] [NumberField K] w a =>
     FractionalIdeal.count K w ((FractionalIdeal.spanSingleton (nonZeroDivisors (NumberField.RingOfIntegers K))) a)
 
 noncomputable def gramR : {K : Type} →
-  [inst : Field K] → [StarRing K] → {D m : ℕ} → Matrix (Fin D) (Fin D) K → (Fin m → Fin D → K) → K :=
+  [Field K] → [StarRing K] → {D m : ℕ} → Matrix (Fin D) (Fin D) K → (Fin m → Fin D → K) → K :=
   fun {K} [Field K] [StarRing K] {_ _} Γ e => (Matrix.of fun a b => Star.star (e a) ⬝ᵥ Γ.mulVec (e b)).det
 
 noncomputable def quotGram : {K : Type} →
-  [inst : Field K] →
+  [Field K] →
     [StarRing K] → {n D : ℕ} → Matrix (Fin D) (Fin n) K → Matrix (Fin n) (Fin n) K → Matrix (Fin D) (Fin D) K :=
   fun {K} [Field K] [StarRing K] {_ _} P H => (P * H⁻¹ * P.conjTranspose)⁻¹
 
@@ -294,8 +294,8 @@ private theorem core {K : Type} [Field K] [StarRing K] {n D : ℕ}
 
 end Helpers
 
-theorem main : ∀ {K : Type} [inst : Field K] [inst_1 : NumberField K]
-  [inst_2 : StarRing K] {n D : ℕ} (H : Matrix (Fin n) (Fin n) K) (P : Matrix (Fin D) (Fin n) K)
+theorem main : ∀ {K : Type} [Field K] [NumberField K]
+  [StarRing K] {n D : ℕ} (H : Matrix (Fin n) (Fin n) K) (P : Matrix (Fin D) (Fin n) K)
   (M : Submodule (NumberField.RingOfIntegers K) (Fin n → K)),
   M.FG →
     ∀ (l g : ℕ),

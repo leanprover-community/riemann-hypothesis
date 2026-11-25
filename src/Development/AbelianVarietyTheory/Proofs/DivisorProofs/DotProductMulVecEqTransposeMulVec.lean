@@ -322,7 +322,7 @@ end
 
 namespace GlobalTheory.MBLow.Cl
 
-theorem exp_onto_torusExt : AllCD fun {N} {g'} {r} {g} {bX} d σ => (∀ Z, ∃! h, d.IsPt σ Z h) ∧ (∀ h, ∃ Z, d.IsPt σ Z h) ∧ (∀ Z Z' h h', d.IsPt σ Z h → d.IsPt σ Z' h' → d.IsPt σ (Z + Z') (h * h')) ∧ (∀ Z, d.IsPt σ Z 1 ↔ ∃ M Nn, tP σ Nn = 0 ∧ Z = perV (d.full σ 0) M Nn) ∧ ∀ M Nn, d.IsPt σ (perV (d.full σ 0) M Nn) (N.io (∑ l, tP σ Nn l • bX l)) :=
+theorem exp_onto_torusExt : AllCD fun {N} {_} {_} {_} {bX} d σ => (∀ Z, ∃! h, d.IsPt σ Z h) ∧ (∀ h, ∃ Z, d.IsPt σ Z h) ∧ (∀ Z Z' h h', d.IsPt σ Z h → d.IsPt σ Z' h' → d.IsPt σ (Z + Z') (h * h')) ∧ (∀ Z, d.IsPt σ Z 1 ↔ ∃ M Nn, tP σ Nn = 0 ∧ Z = perV (d.full σ 0) M Nn) ∧ ∀ M Nn, d.IsPt σ (perV (d.full σ 0) M Nn) (N.io (∑ l, tP σ Nn l • bX l)) :=
   fun _ _ _ _ _ d σ => ⟨Exp.existsUnique_isPt d σ, Exp.exists_isPt d σ, fun _ _ _ _ h h' => Exp.IsPt.add d σ h h',
     Exp.isPt_one_iff d σ, Exp.isPt_perV d σ⟩
 

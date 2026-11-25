@@ -293,7 +293,7 @@ theorem main [IsDomain R] (e : tateModule p R) {m : BcrisPlus p R} (hm : m ∈ B
 
 end Bridge.CrisLoc.PowMulEqZeroLemmas
 
-theorem Bridge.CrisLoc.exists_pow_mul_eq_zero : ∀ (l : ℕ) [Fact l.Prime] (e : (Reformulated.AutPerF.Tilt l ↥(PadicComplexInt l))) (he : e.untilt = 1) (hne : e ≠ 1) {x : (Reformulated.AutPerF.Acris l ↥(PadicComplexInt l))} (hx : algebraMap ((Reformulated.AutPerF.Acris l ↥(PadicComplexInt l))) ((Reformulated.AutPerF.Bcris l ↥(PadicComplexInt l))) x = 0), ∃ n : ℕ, algebraMap ((Reformulated.AutPerF.Ainf l ↥(PadicComplexInt l))) ((Reformulated.AutPerF.Acris l ↥(PadicComplexInt l))) (WittVector.teichmuller l e - 1) ^ n * x = 0 := by
+theorem Bridge.CrisLoc.exists_pow_mul_eq_zero : ∀ (l : ℕ) [Fact l.Prime] (e : (Reformulated.AutPerF.Tilt l ↥(PadicComplexInt l))) (_ : e.untilt = 1) (_ : e ≠ 1) {x : (Reformulated.AutPerF.Acris l ↥(PadicComplexInt l))} (_ : algebraMap ((Reformulated.AutPerF.Acris l ↥(PadicComplexInt l))) ((Reformulated.AutPerF.Bcris l ↥(PadicComplexInt l))) x = 0), ∃ n : ℕ, algebraMap ((Reformulated.AutPerF.Ainf l ↥(PadicComplexInt l))) ((Reformulated.AutPerF.Acris l ↥(PadicComplexInt l))) (WittVector.teichmuller l e - 1) ^ n * x = 0 := by
   intro l _ e he _ x hx
   rw [IsScalarTower.algebraMap_apply _ (BcrisPlus l ↥(PadicComplexInt l)),
     IsLocalization.map_eq_zero_iff (BcrisPlus.periods l ↥(PadicComplexInt l))] at hx
@@ -562,7 +562,7 @@ theorem away [ValuationRing R] [IsAlgClosed (FractionRing R)] (η : tateModule p
 
 end Bridge.CrisLoc.CrisAwayLemmas
 
-theorem Bridge.CrisLoc.bcris_away : ∀ (l : ℕ) [Fact l.Prime] (e : (Reformulated.AutPerF.Tilt l ↥(PadicComplexInt l))) (he : e.untilt = 1) (hne : e ≠ 1), IsLocalization.Away (algebraMap ((Reformulated.AutPerF.Ainf l ↥(PadicComplexInt l))) ((Reformulated.AutPerF.Acris l ↥(PadicComplexInt l))) (WittVector.teichmuller l e - 1)) ((Reformulated.AutPerF.Bcris l ↥(PadicComplexInt l))) := by
+theorem Bridge.CrisLoc.bcris_away : ∀ (l : ℕ) [Fact l.Prime] (e : (Reformulated.AutPerF.Tilt l ↥(PadicComplexInt l))) (_ : e.untilt = 1) (_ : e ≠ 1), IsLocalization.Away (algebraMap ((Reformulated.AutPerF.Ainf l ↥(PadicComplexInt l))) ((Reformulated.AutPerF.Acris l ↥(PadicComplexInt l))) (WittVector.teichmuller l e - 1)) ((Reformulated.AutPerF.Bcris l ↥(PadicComplexInt l))) := by
   intro l _ e he hne
   exact Bridge.CrisLoc.CrisAwayLemmas.away (p := l) (R := PadicComplexInt l) ⟨e, he⟩
     fun h => hne (congrArg Subtype.val h)
@@ -840,7 +840,7 @@ theorem main [IsDomain R] (η : tateModule p R) (hη : η ≠ 1) (b : Bcris p R)
 
 end Bridge.CrisLoc.MulPowEqLemmas
 
-theorem Bridge.CrisLoc.exists_mul_pow_eq : ∀ (l : ℕ) [Fact l.Prime] (e : (Reformulated.AutPerF.Tilt l ↥(PadicComplexInt l))) (he : e.untilt = 1) (hne : e ≠ 1) (b : (Reformulated.AutPerF.Bcris l ↥(PadicComplexInt l))), ∃ (n : ℕ) (x : (Reformulated.AutPerF.Acris l ↥(PadicComplexInt l))), b * algebraMap ((Reformulated.AutPerF.Acris l ↥(PadicComplexInt l))) ((Reformulated.AutPerF.Bcris l ↥(PadicComplexInt l))) (algebraMap ((Reformulated.AutPerF.Ainf l ↥(PadicComplexInt l))) ((Reformulated.AutPerF.Acris l ↥(PadicComplexInt l))) (WittVector.teichmuller l e - 1)) ^ n = algebraMap ((Reformulated.AutPerF.Acris l ↥(PadicComplexInt l))) ((Reformulated.AutPerF.Bcris l ↥(PadicComplexInt l))) x := by
+theorem Bridge.CrisLoc.exists_mul_pow_eq : ∀ (l : ℕ) [Fact l.Prime] (e : (Reformulated.AutPerF.Tilt l ↥(PadicComplexInt l))) (_ : e.untilt = 1) (_ : e ≠ 1) (b : (Reformulated.AutPerF.Bcris l ↥(PadicComplexInt l))), ∃ (n : ℕ) (x : (Reformulated.AutPerF.Acris l ↥(PadicComplexInt l))), b * algebraMap ((Reformulated.AutPerF.Acris l ↥(PadicComplexInt l))) ((Reformulated.AutPerF.Bcris l ↥(PadicComplexInt l))) (algebraMap ((Reformulated.AutPerF.Ainf l ↥(PadicComplexInt l))) ((Reformulated.AutPerF.Acris l ↥(PadicComplexInt l))) (WittVector.teichmuller l e - 1)) ^ n = algebraMap ((Reformulated.AutPerF.Acris l ↥(PadicComplexInt l))) ((Reformulated.AutPerF.Bcris l ↥(PadicComplexInt l))) x := by
   intro l _ e he hne b
   exact Bridge.CrisLoc.MulPowEqLemmas.main ⟨e, he⟩ (fun h => hne (congrArg Subtype.val h)) b
 
@@ -988,7 +988,7 @@ theorem isUnit_logTeich [IsDomain R] [ValuationRing R] [IsAlgClosed (FractionRin
 
 end Bridge.CrisLoc.unitOfRootSeries
 
-theorem Bridge.CrisLoc.unit_of_root : ∀ (l : ℕ) [Fact l.Prime] (e : (Reformulated.AutPerF.Tilt l ↥(PadicComplexInt l))) (he : e.untilt = 1) (hne : e ≠ 1), IsUnit (algebraMap ((Reformulated.AutPerF.Acris l ↥(PadicComplexInt l))) ((Reformulated.AutPerF.Bcris l ↥(PadicComplexInt l))) (algebraMap ((Reformulated.AutPerF.Ainf l ↥(PadicComplexInt l))) ((Reformulated.AutPerF.Acris l ↥(PadicComplexInt l))) (WittVector.teichmuller l e - 1))) := by
+theorem Bridge.CrisLoc.unit_of_root : ∀ (l : ℕ) [Fact l.Prime] (e : (Reformulated.AutPerF.Tilt l ↥(PadicComplexInt l))) (_ : e.untilt = 1) (_ : e ≠ 1), IsUnit (algebraMap ((Reformulated.AutPerF.Acris l ↥(PadicComplexInt l))) ((Reformulated.AutPerF.Bcris l ↥(PadicComplexInt l))) (algebraMap ((Reformulated.AutPerF.Ainf l ↥(PadicComplexInt l))) ((Reformulated.AutPerF.Acris l ↥(PadicComplexInt l))) (WittVector.teichmuller l e - 1))) := by
   intro l _ e he hne
   have h := Bridge.CrisLoc.unitOfRootSeries.isUnit_logTeich
     (⟨e, he⟩ : tateModule l ↥(PadicComplexInt l)) (fun h => hne (congrArg Subtype.val h))

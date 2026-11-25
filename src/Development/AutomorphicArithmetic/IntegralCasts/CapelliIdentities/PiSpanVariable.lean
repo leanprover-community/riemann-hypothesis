@@ -47,7 +47,7 @@ import Std.Tactic.BVDecide.Normalize.Prop
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.PowerSeriesMemSpanAllVariables.pi_span_X :
-    ∀ {O σ : Type} [inst : CommRing O] (s : Finset σ)
+    ∀ {O σ : Type} [CommRing O] (s : Finset σ)
     (f : MvPowerSeries σ O),
     (∀ (n : σ →₀ ℕ), (∀ i ∈ s, (n : σ → ℕ) i = (0 : ℕ)) → (MvPowerSeries.coeff n : MvPowerSeries σ O → O) f = (0 : O)) →
       f ∈ Ideal.span (Set.range MvPowerSeries.X) := by

@@ -491,7 +491,7 @@ namespace CrystallineSemistableComparison.Pb
 
 theorem yQ_unit : ∀ {K : Type} [Field K] {X : Scheme.{0}} {N m e : ℕ} (i : X ⟶ PSpace K N)
     (y : Fin m → MvPolynomial (Fin (N + 1)) K) (hy : ∀ k, (y k).IsHomogeneous e) (k k' : Fin m) (W : X.Opens)
-    (h1 : W ≤ uy i y k) (h2 : W ≤ uy i y k'), IsUnit ((i.appLE _ W h2).hom (yQ y hy k k')) := _root_.GlobalTheory.CompanionTheory.ConeUnit.yQ_appLE_isUnit
+    (_ : W ≤ uy i y k) (h2 : W ≤ uy i y k'), IsUnit ((i.appLE _ W h2).hom (yQ y hy k k')) := _root_.GlobalTheory.CompanionTheory.ConeUnit.yQ_appLE_isUnit
 
 theorem yQ_mul : ∀ {K : Type} [Field K] {X : Scheme.{0}} {N m e : ℕ} (i : X ⟶ PSpace K N)
     (y : Fin m → MvPolynomial (Fin (N + 1)) K) (hy : ∀ k, (y k).IsHomogeneous e) (a b c : Fin m) (W : X.Opens)
@@ -942,7 +942,7 @@ theorem wU_le : ∀ {K : Type} [Field K] {X : Scheme.{0}} (q : X ⟶ Spec (CommR
     (i : X ⟶ PSpace K N) (y : Fin m → MvPolynomial (Fin (N + 1)) K) (s : ℕ), IsTautologicalLineAt D N i → wU q i y s ≤ KS q s (𝒱D D) := _root_.GlobalTheory.CompanionTheory.ConeSite.wU_le_KS
 
 theorem zar_capS : ∀ {K : Type} [Field K] {X : Scheme.{0}} (q : X ⟶ Spec (CommRingCat.of K)) {N m : ℕ}
-    (i : X ⟶ PSpace K N) (y : Fin m → MvPolynomial (Fin (N + 1)) K) (s : ℕ) (S : Finset (Fin m)) (hS : S.Nonempty)
+    (i : X ⟶ PSpace K N) (y : Fin m → MvPolynomial (Fin (N + 1)) K) (s : ℕ) (S : Finset (Fin m)) (_ : S.Nonempty)
     (r r' : ℤ) (j : ℕ),
     ∃ h : capS (wK q i y s) S ≤ KS q s {⨅ k ∈ S, uy i y k},
       Function.Bijective ((resU (sq (thFil (smFun X q) r) (thFil (smFun X q) r')) h).pull j) := _root_.GlobalTheory.CompanionTheory.ConeZarCap.main
@@ -988,7 +988,7 @@ theorem g_rel {K : Type} [Field K] {X : Scheme.{0}} {N n e : ℕ} (i : X ⟶ PSp
     (hW : ∀ b, W ≤ uy i y b) (t : Fin (n + 1) → Γ(X, V)ˣ)
     (ht : ∀ k, (t k : Γ(X, V)) = (i.appLE _ V (hVW.trans (hW 0))).hom (yQ y hy k.succ 0)) (k : Fin (n + 1)) :
     rs hVW ((i.appLE _ W (hW k.succ)).hom (yQ y hy k.castSucc k.succ)) =
-      if h : (k : ℕ) = 0 then (((t 0)⁻¹ : Γ(X, V)ˣ) : Γ(X, V)) else
+      if _ : (k : ℕ) = 0 then (((t 0)⁻¹ : Γ(X, V)ˣ) : Γ(X, V)) else
         (t ⟨k - 1, by omega⟩ : Γ(X, V)) * (((t k)⁻¹ : Γ(X, V)ˣ) : Γ(X, V)) := by
   have hVb : ∀ b : Fin (n + 2), V ≤ uy i y b := fun b => hVW.trans (hW b)
   set A : Fin (n + 2) → Fin (n + 2) → Γ(X, V) := fun a b =>

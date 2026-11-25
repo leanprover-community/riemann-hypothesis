@@ -66,7 +66,7 @@ private theorem UpperTheory.Reformulated.B.Yt3.mem_conj {G : Type} [Group G] {K 
   simp
 
 theorem UpperTheory.Reformulated.B.Yt3.exists_reps :
-    ∀ {G : Type} [inst : Group G] {K : Subgroup G} {g : G},
+    ∀ {G : Type} [Group G] {K : Subgroup G} {g : G},
       (Subgroup.map (MulEquiv.toMonoidHom ((MulAut.conj : G → MulAut G) g)) K).relIndex K ≠ (0 : ℕ) →
         ∃ (R : Finset G),
           (∀ γ ∈ R, ∃ k₁ ∈ K, ∃ k₂ ∈ K, γ = k₁ * g * k₂) ∧

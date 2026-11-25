@@ -913,7 +913,7 @@ theorem cechPt_map (k : ℕ) {U V : Scheme.{0}} (g : V ⟶ U) (x : U ⟶ X) (y :
 theorem cechPt_δ (m : ℕ) (i : Fin (m + 2)) {U : Scheme.{0}} (x : U ⟶ X) (y : Fin (m + 2) → (U ⟶ Y))
     (h : ∀ j, y j ≫ f = x) :
     ((cech f).δ i).app (op U) (cechPt f (m + 1) x y h) =
-      cechPt f m x (fun j => y (i.succAbove j)) (fun j => h _) := by
+      cechPt f m x (fun j => y (i.succAbove j)) (fun _ => h _) := by
   intros
   apply _root_.GlobalTheory.CechOne.cechPt_face <;> assumption
 end Cech

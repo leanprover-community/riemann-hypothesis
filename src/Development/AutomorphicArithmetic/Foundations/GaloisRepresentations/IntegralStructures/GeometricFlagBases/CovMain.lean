@@ -172,7 +172,7 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Qi54.card_pow :
-    ∀ {E : Type} [inst : Field E] [NumberField E]
+    ∀ {E : Type} [Field E] [NumberField E]
     (w : IsDedekindDomain.HeightOneSpectrum (NumberField.RingOfIntegers E)) (q : ℕ),
     Nat.Prime q →
       (↑q : NumberField.RingOfIntegers E) ∈ w.asIdeal →
@@ -340,11 +340,11 @@ section -- clump:auto
 @[expose] public section
 
 @[reducible] noncomputable def UpperTheory.Reformulated.B.Qk61.VQ :
-    {p : ℕ} → [inst : Fact (Nat.Prime p)] → GlobalTheory.UPel.HT.Datum p → Type :=
+    {p : ℕ} → [Fact (Nat.Prime p)] → GlobalTheory.UPel.HT.Datum p → Type :=
     fun {p : ℕ} [Fact (Nat.Prime p)] (D : GlobalTheory.UPel.HT.Datum p) ↦ TensorProduct ℤ ℚ D.La
 
 theorem UpperTheory.Reformulated.B.Qk61.vq_induction :
-    ∀ {p : ℕ} [inst : Fact (Nat.Prime p)] {D : GlobalTheory.UPel.HT.Datum p}
+    ∀ {p : ℕ} [Fact (Nat.Prime p)] {D : GlobalTheory.UPel.HT.Datum p}
       {P : TensorProduct ℚ (GlobalTheory.LKTrip.AfP p) (UpperTheory.Reformulated.B.Qk61.VQ D) → Prop},
       P (0 : TensorProduct ℚ (GlobalTheory.LKTrip.AfP p) (UpperTheory.Reformulated.B.Qk61.VQ D)) →
         (∀ (x y : TensorProduct ℚ (GlobalTheory.LKTrip.AfP p) (UpperTheory.Reformulated.B.Qk61.VQ D)), P x → P y → P (x + y)) →

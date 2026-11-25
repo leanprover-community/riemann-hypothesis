@@ -238,7 +238,7 @@ section Final
 
 variable {p : ℕ} [Fact p.Prime]
 
-theorem up_down_adjoint (D : Formalism.BasicNotions.D7) (X : Sys p) (Y : Pend X) : Formalism.MainNotions.FormalGroupSystem.adm6 X Y := by
+theorem up_down_adjoint (D : Formalism.BasicNotions.D7) (X : Sys p) (Y : Pend X) : Formalism.MainNotions.FormalGroupSystem.adm6 D X Y := by
   intro j hj v' i φ hφ
   have : CharZero Y.Kc := Formalism.MainNotions.FormalGroupSystem.Pf.charZero_K' p Y.Kc
 

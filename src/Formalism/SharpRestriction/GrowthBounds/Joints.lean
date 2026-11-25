@@ -669,7 +669,7 @@ theorem residue_bound_of_extension (D : Formalism.BasicNotions.D7) (C0 CYb Cde C
   exact h (X.LA aT') X.W X.Qq X.O X.Kf X.ι X.σ X.jO X.w X.std (extended_hypothesis_of_window hHI hw) hHI.2.1 X.j m hm0 hm rz ry hd
 
 theorem fourth_extension_gives_ratio_bound (D : Formalism.BasicNotions.D7) (C0 CYb Cde Ck CD Cb CE1 CE2 Cc : ℝ) (X : Formalism.MainNotions.flipOneThree.Inst)
-    (h : Formalism.MainNotions.ColumnSystems.ExtendedDigitRankBound C0 CYb Cde Ck CD Cb CE1 CE2 Cc) : Formalism.MainNotions.flipOneThree.adm10 D C0 CYb Cde Ck CD Cb CE1 CE2 Cc X := by
+    (h : Formalism.MainNotions.ColumnSystems.ExtendedDigitRankBound D C0 CYb Cde Ck CD Cb CE1 CE2 Cc) : Formalism.MainNotions.flipOneThree.adm10 D C0 CYb Cde Ck CD Cb CE1 CE2 Cc X := by
   intro hHI aT' hw j rz ry hd
   haveI : NeZero (X.LA aT').m := ⟨X.hm⟩
   letI := X.ringW
@@ -1386,7 +1386,7 @@ theorem padicGe_sum {p : ℕ} [Fact p.Prime] {ι : Type*} (s : Finset ι) (f : �
   rw [Finset.sum_insert ha]
   exact padicGe_add (h a (Finset.mem_insert_self a s)) (ih fun i hi => h i (Finset.mem_insert_of_mem hi))
 
-theorem padicValNat_lt_of_lt_pow {p : ℕ} [hp : Fact p.Prime] {y t : ℕ} (hy : 1 ≤ y) (hlt : y < p ^ (t + 1)) :
+theorem padicValNat_lt_of_lt_pow {p : ℕ} [Fact p.Prime] {y t : ℕ} (hy : 1 ≤ y) (hlt : y < p ^ (t + 1)) :
     padicValNat p y ≤ t := by
   by_contra hc
   push Not at hc

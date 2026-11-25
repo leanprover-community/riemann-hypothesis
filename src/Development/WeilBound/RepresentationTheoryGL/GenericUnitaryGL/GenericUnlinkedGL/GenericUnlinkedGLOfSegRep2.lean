@@ -167,7 +167,7 @@ namespace GlobalTheory.CompanionTheory.SegGenNu
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
 theorem card_after {n : ℕ} (a : Fin n) :
-    ∑ b ∈ Finset.univ.filter (fun b => a < b), 1 = (Fin.rev a : ℕ) := by
+    ∑ _ ∈ Finset.univ.filter (fun b => a < b), 1 = (Fin.rev a : ℕ) := by
   have h : Finset.univ.filter (fun b : Fin n => a < b) = Finset.Ioi a := by
     ext b; simp
   rw [h]

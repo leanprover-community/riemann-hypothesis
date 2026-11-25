@@ -54,8 +54,8 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.SimultaneousEigenvectorInvariantSubspace.simEig :
-    ∀ {K M : Type} [inst : Field K] [IsAlgClosed K] [inst_2 : AddCommGroup M]
-    [inst_3 : _root_.Module K M] [FiniteDimensional K M] {J : Type} (T : J → Module.End K M),
+    ∀ {K M : Type} [Field K] [IsAlgClosed K] [AddCommGroup M]
+    [_root_.Module K M] [FiniteDimensional K M] {J : Type} (T : J → Module.End K M),
     (∀ (i j : J), T i * T j = T j * T i) →
       ∀ (d : ℕ) (U : Submodule K M),
         Module.finrank K ↥U = d →

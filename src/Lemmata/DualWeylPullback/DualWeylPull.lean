@@ -97,8 +97,8 @@ private lemma clear_den {O K : Type} [CommRing O] [IsDomain O] [IsDiscreteValuat
     MvPolynomial.smul_eq_C_mul, mul_comm] using h.symm
 
 theorem goal1 :
-  ∀ {O K : Type} [inst : CommRing.{0} O] [inst_1 : IsDomain.{0} O] [IsDiscreteValuationRing.{0} O] [inst_3 : Field.{0} K]
-  [inst_4 : Algebra.{0, 0} O K] [IsFractionRing.{0, 0} O K] (w : O),
+  ∀ {O K : Type} [CommRing.{0} O] [IsDomain.{0} O] [IsDiscreteValuationRing.{0} O] [Field.{0} K]
+  [Algebra.{0, 0} O K] [IsFractionRing.{0, 0} O K] (w : O),
   Irreducible.{0} w →
     ∀ (m : Nat) (mu : Fin (HAdd.hAdd.{0, 0, 0} m 1) → Int),
       Antitone.{0, 0} mu →

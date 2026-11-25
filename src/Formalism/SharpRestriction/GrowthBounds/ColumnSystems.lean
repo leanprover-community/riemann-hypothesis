@@ -308,7 +308,7 @@ def ExtendedKappaBound (_D : Formalism.BasicNotions.D7) (C0 CYb Cde Ck CD Cb CE1
   ∀ X : Loc, D1num X → HIext C0 CYb Cde Ck CD Cb X → CBound Cc X →
     X.kapP C0 CE1 CE2 Cm Ckap ≤ Cs * X.N * X.N1 / X.Y
 
-def ExtendedDigitRankBound (C0 CYb Cde Ck CD Cb CE1 CE2 Cc : ℝ) : Prop :=
+def ExtendedDigitRankBound (_D : Formalism.BasicNotions.D7) (C0 CYb Cde Ck CD Cb CE1 CE2 Cc : ℝ) : Prop :=
   ∀ (X : Loc) [NeZero X.m] (W Qq O Kf : Type) [CommRing W] [IsDomain W] [IsDiscreteValuationRing W] [Field Qq]
     [Algebra W Qq] [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Field Kf] [Algebra O Kf]
     (ι : Qq →+* Kf) (σ : Qq ≃+* Qq) (jO : W →+* O) (w : O),
@@ -379,7 +379,7 @@ def FreeTopRankBound (_D : Formalism.BasicNotions.D7) (C0 CYb Cde Ck CD Cb CE1 C
         Kept X.p X.m (X.seg C0 CE1 CE2 j) (segATop X.TT aT' j) b)
 
 theorem RootMultiplicityTwo.toExtendedDigitRankBound {D : Formalism.BasicNotions.D7} {C0 CYb Cde Ck CD Cb CE1 CE2 Cc : ℝ}
-    (h : RootMultiplicityTwo D C0 CYb Cde Ck CD Cb CE1 CE2 Cc) : ExtendedDigitRankBound C0 CYb Cde Ck CD Cb CE1 CE2 Cc := by
+    (h : RootMultiplicityTwo D C0 CYb Cde Ck CD Cb CE1 CE2 Cc) : ExtendedDigitRankBound D C0 CYb Cde Ck CD Cb CE1 CE2 Cc := by
   intro X _ W Qq O Kf _ _ _ _ _ _ _ _ _ _ ι σ jO w hS hE hC j rz ry hD
   have hM : 0 ≤ X.b' / (X.k * X.Q * X.Y) := by
     obtain ⟨⟨g1, -, -, -, -, -, -, -, g10, -⟩, -⟩ := hE
@@ -391,11 +391,11 @@ def ExtendedAllConclusions (D : Formalism.BasicNotions.D7) (C0 CYb Cde Ck CD Cb 
   HerrExtensionClass D C0 CYb Cde Ck CD Cb CE1 CE2 Cm Ckap Ct Cc ∧ ExtendedKappaBound D C0 CYb Cde Ck CD Cb CE1 CE2 Cm Ckap Cc Cs ∧
     PointsLemma D C0 CE1 CE2 ∧ Conclusion4 C0 CYb Cde Ck CD Cb CE1 CE2 Cc ∧ ExtendedDichotomy D C0 CYb Cde Ck CD Cb CE1 CE2 Cc ∧
     ExtendedModelRank D C0 CYb Cde Ck CD Cb CE1 CE2 Ckap Cc ∧ ExtendedOrderBound D C0 CYb Cde Ck CD Cb CE1 CE2 Ct Cc ∧
-    ExtendedDigitRankBound C0 CYb Cde Ck CD Cb CE1 CE2 Cc ∧ RootMultiplicityTwo D C0 CYb Cde Ck CD Cb CE1 CE2 Cc ∧
+    ExtendedDigitRankBound D C0 CYb Cde Ck CD Cb CE1 CE2 Cc ∧ RootMultiplicityTwo D C0 CYb Cde Ck CD Cb CE1 CE2 Cc ∧
     FreeTopRankBound D C0 CYb Cde Ck CD Cb CE1 CE2 Cc
 
 theorem ExtendedDigitRankBound.toDigitRankBound {D : Formalism.BasicNotions.D7} {C0 CYb Cde Ck CD Cb CE1 CE2 Cc : ℝ}
-    (h : ExtendedDigitRankBound C0 CYb Cde Ck CD Cb CE1 CE2 Cc) : Conclusion4 C0 CYb Cde Ck CD Cb CE1 CE2 Cc := by
+    (h : ExtendedDigitRankBound D C0 CYb Cde Ck CD Cb CE1 CE2 Cc) : Conclusion4 C0 CYb Cde Ck CD Cb CE1 CE2 Cc := by
   intro X _ W Qq O Kf _ _ _ _ _ _ _ _ _ _ ι σ jO w hS hHI hC
   exact h X W Qq O Kf ι σ jO w hS hHI.toExt hC
 

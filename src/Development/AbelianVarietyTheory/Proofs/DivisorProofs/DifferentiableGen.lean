@@ -178,7 +178,7 @@ end GlobalTheory.MBLow.Cl.SymFrame
 namespace GlobalTheory.MBLow.Cl
 open SymFrame
 
-theorem sym_of_geo : AllC fun {R} _ _ {D} _ {N} ν => ∀ (g : ℕ) (d : AB N.toNumB g), Nonempty (Geo ν d) → d.Sym := by
+theorem sym_of_geo : AllC fun {_} _ _ {_} _ {N} ν => ∀ (g : ℕ) (d : AB N.toNumB g), Nonempty (Geo ν d) → d.Sym := by
   rintro R _ _ _ _ D - - _ N ν g d ⟨G⟩
   have hr := rg_ne ν
   have h0 : d.ex 0 = 1 := by simpa using d.ex_add 0 0

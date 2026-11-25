@@ -1270,12 +1270,12 @@ theorem true_derivative_digit_class (D : Formalism.BasicNotions.D7) : TrueDeriva
 
 theorem unit_function_expansion (D : Formalism.BasicNotions.D7) : UnitFunctionExpansion := mahler_decay_products_of D (fun _ hp => hDec_of hp (hdU_proved hp)) (fun _ hp => hMul_proved hp)
 
-theorem lemma_five_two_first_holds (D : Formalism.BasicNotions.D7) : FactorialUnitDecomposition := unit_function_mahler_decay_of D (fun _ hp => hDec_of hp (hdU_proved hp)) (fun _ hp => hMul_proved hp)
+theorem lemma_five_two_first_holds (D : Formalism.BasicNotions.D7) : FactorialUnitDecomposition D := unit_function_mahler_decay_of D (fun _ hp => hDec_of hp (hdU_proved hp)) (fun _ hp => hMul_proved hp)
     (fun _ hp => hUnit_of hp (hdU_proved hp))
 
 theorem support_coprimality_lemma_holds (D : Formalism.BasicNotions.D7) : ConclusionE := prvE_of_gl_operators_form_representation D (height_bound_of_weights hSupp_proved hCop_proved)
 
-theorem section_five_lemmas_hold (D : Formalism.BasicNotions.D7) : UnitProductLemmas D := ⟨unit_function_expansion D, show FactorialUnitDecomposition ∧ DegreeTruncationLemma D from ⟨lemma_five_two_first_holds D, degree_truncation D⟩⟩
+theorem section_five_lemmas_hold (D : Formalism.BasicNotions.D7) : UnitProductLemmas D := ⟨unit_function_expansion D, show FactorialUnitDecomposition D ∧ DegreeTruncationLemma D from ⟨lemma_five_two_first_holds D, degree_truncation D⟩⟩
 
 theorem lattice_index_lemma_holds (D : Formalism.BasicNotions.D7) : DerivativeLemmaField D := show DerivativeValuationBound D ∧ DerivativeDigitExpansion ∧ TrueDerivativeDigitClass from ⟨derivative_valuation_bound D, derivative_digit_expansion D, true_derivative_digit_class D⟩
 

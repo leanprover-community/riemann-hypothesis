@@ -302,7 +302,7 @@ theorem asm_ratio (p : ℕ) {σ : Type*} [Fintype σ] (t rho : σ → ℕ)
   ring
 
 theorem unit_function_mahler_decay_of (D : Formalism.BasicNotions.D7) (h1 : ∀ p, p.Prime → HDec p) (h2 : ∀ p, p.Prime → HMul p)
-    (h3 : ∀ p, p.Prime → HUnit p) : FactorialUnitDecomposition := by
+    (h3 : ∀ p, p.Prime → HUnit p) : FactorialUnitDecomposition D := by
   intro p hp _
   haveI := Fact.mk hp
   refine ⟨fun t rho e' _ => fact_lemma_2 _ _ _, fun σ _ t rho hr =>
