@@ -83,17 +83,6 @@ def herm {A B : HSp D} (x x' : WA A B) : AE D := Matrix.trace (HMul.hMul (colMat
 
 def symp {A B : HSp D} (x x' : WA A B) : AF D.host.F := trA D (incA D D.host.xi0 * herm x x')
 
-theorem herm_add_left {A B : HSp D} (x y z : WA A B) : herm (x + y) z = herm x z + herm y z := by
-  simp [herm, colMat, Matrix.transpose_add, Matrix.mul_add, Matrix.trace_add]
-
-theorem symp_add_left {A B : HSp D} (x y z : WA A B) : symp (x + y) z = symp x z + symp y z := by
-  simp only [symp, herm_add_left, mul_add, map_add (f := _)]
-
-theorem symp_zero_left {A B : HSp D} (x : WA A B) : symp 0 x = 0 := by
-  have := symp_add_left (0 : WA A B) 0 x
-  rw [add_zero] at this
-  exact left_eq_add.mp this
-
 def gMat {V : HSp D} (g : GA D V) : Matrix (Fin V.rank) (Fin V.rank) (AE D) := (matHom V g).1
 
 def act {A B : HSp D} (p : GA D A × GA D B) (x : WA A B) : WA A B :=
@@ -163,7 +152,6 @@ def Implements {A B : HSp D} {ψ : AddChar (AF D.host.F) ℂ} (M : Module.End �
 
 def idemFin (D : D7) (v : HeightOneSpectrum (𝓞 D.host.F)) : AE D :=
   algebraMap (AF D.host.F) (AE D) (pairA D.host.F 0 (singleV D.host.F v 1))
-
 
 open Classical in
 def idemInf (D : D7) (v : InfinitePlace D.host.F) : AE D :=

@@ -63,7 +63,6 @@ section Model
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {l : Level H}
 
-
 variable (l) in
 def splitArc : letI := H.starRing; AnArc (𝓞 E) :=
   letI := H.starRing
@@ -192,7 +191,6 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} [StarRi
   [Algebra (FractionRing ℂ) ℂ] {b : O →+* ℂ} {a : ArcIn D l β ℂ b} (Λ : GtAn a)
 
 open FrameValue
-
 
 include Λ in
 theorem isScalarTower : IsScalarTower ℂ (FractionRing ℂ) ℂ := by
@@ -468,13 +466,6 @@ theorem analyticTorusPoint_surjective : Function.Surjective Λ.ex0 := by
   obtain ⟨x, rfl⟩ := Λ.ε.surjective x
   exact corr_of_genVal (u := Λ.u) a.D₀.P.isLB ((Λ.ex0 _).isGen _) (g.isGen _) (isLift_gt Λ (w, z) x) (hl x)
     (fun _ => rfl) ((Λ.arcDict_expZero_section _ x).trans (congrArg Units.val (DFunLike.congr_fun hw (Multiplicative.ofAdd x))))
-
-theorem rep_iff (k : ℕ) (p : Out.QkPt a.D₀ (FractionRing ℂ) k) (la : Λ.A.La) :
-    Λ.Rep k p la ↔ ∃ q : Out.QkPt a.D₀ ℂ k, QkExt (algebraMap _ ℂ) p q ∧ q.y = Λ.ε la.y ∧
-      q.g = Λ.ex0 ((k : ℂ)⁻¹ • Λ.A.P0 la) := by
-  obtain ⟨q, hq, hu⟩ := TorusExt.existsUnique_qkExt a.bimult (algebraMap (FractionRing ℂ) ℂ)
-    (RingHom.ext fun _ => rfl) p
-  exact ⟨fun h => ⟨q, hq, h q hq⟩, fun ⟨q', hq', h⟩ q'' hq'' => (hu _ hq'').trans (hu _ hq').symm ▸ h⟩
 
 end General
 

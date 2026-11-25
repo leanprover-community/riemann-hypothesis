@@ -29,8 +29,6 @@ theorem prodIrr_equiv_of_eq {h N : ℕ} {y y' : Fin h → IrrGL (k := k)} (e : y
   subst e
   exact ⟨Representation.Equiv.refl _⟩
 
-theorem cut_e {h j : ℕ} (hj : j + 1 < h) : j + (2 + (h - (j + 2))) = h := by omega
-
 theorem cutC_lt {h j b : ℕ} (hb : b < h - (j + 2)) : j + 2 + b < h := by omega
 
 def cutA {α : Type*} {h : ℕ} (x : Fin h → α) (j : ℕ) (hj : j + 1 < h) : Fin j → α :=
@@ -38,11 +36,6 @@ def cutA {α : Type*} {h : ℕ} (x : Fin h → α) (j : ℕ) (hj : j + 1 < h) : 
 
 def cutC {α : Type*} {h : ℕ} (x : Fin h → α) (j : ℕ) : Fin (h - (j + 2)) → α :=
   fun b => x ⟨j + 2 + b.1, cutC_lt b.2⟩
-
-omit [ValuativeRel k] [IsNonarchimedeanLocalField k] in
-theorem sum_append {q c : ℕ} (Q : Fin q → IrrGL (k := k)) (C : Fin c → IrrGL (k := k)) :
-    ∑ a, (Fin.append Q C a).1 = ∑ a, (Q a).1 + ∑ a, (C a).1 := by
-  simp only [Fin.sum_univ_add, Fin.append_left, Fin.append_right]
 
 omit [ValuativeRel k] [IsNonarchimedeanLocalField k] in
 theorem sum_split2 {p q n : ℕ} (A : Fin p → IrrGL (k := k)) (R : Fin q → IrrGL (k := k)) (w : Fin n → IrrGL (k := k)) (e : p + q = n)
@@ -72,59 +65,6 @@ theorem head_swap {c rQ rC : ℕ} (Q Q' : Fin 2 → IrrGL (k := k)) (C : Fin c �
   obtain ⟨o2⟩ := _root_.GlobalTheory.CompanionTheory.ProdStage.prod₂_prodIrr_append k 2 c rQ rC Q' C hQ' hC hR'
   exact ⟨o1.symm.trans ((prod₂Equiv E (Representation.Equiv.refl _)).trans o2)⟩
 
-omit [ValuativeRel k] [IsNonarchimedeanLocalField k] in
-theorem split_alt_alt {h j : ℕ} (hj : j + 1 < h) (e : j + (2 + (h - (j + 2))) = h) (x : Fin h → IrrGL (k := k))
-    (m : Fin (j + (2 + (h - (j + 2))))) :
-    x (Fin.cast e m) = Fin.append (cutA x j hj)
-      (Fin.append ![x ⟨j, Nat.lt_of_succ_lt hj⟩, x ⟨j + 1, hj⟩]
-        (cutC x j)) m := by
-  refine Fin.addCases (fun a => ?_) (fun b => ?_) m
-  · rw [Fin.append_left]
-    exact congrArg x (Fin.ext (by simp))
-  · rw [Fin.append_right]
-    refine Fin.addCases (fun b => ?_) (fun b => ?_) b
-    · rw [Fin.append_left]
-      fin_cases b
-      · exact congrArg x (Fin.ext (by simp))
-      · exact congrArg x (Fin.ext (by simp))
-    · rw [Fin.append_right]
-      exact congrArg x (Fin.ext (by simp; omega))
-
-omit [ValuativeRel k] [IsNonarchimedeanLocalField k] in
-theorem split_swap {h j : ℕ} (hj : j + 1 < h) (e : j + (2 + (h - (j + 2))) = h) (x : Fin h → IrrGL (k := k))
-    (m : Fin (j + (2 + (h - (j + 2))))) :
-    x (Equiv.swap (⟨j, Nat.lt_of_succ_lt hj⟩ : Fin h) ⟨j + 1, hj⟩ (Fin.cast e m)) =
-      Fin.append (cutA x j hj)
-      (Fin.append ![x ⟨j + 1, hj⟩, x ⟨j, Nat.lt_of_succ_lt hj⟩]
-        (cutC x j)) m := by
-  refine Fin.addCases (fun a => ?_) (fun b => ?_) m
-  · rw [Fin.append_left]
-    have h0 : (Fin.cast e (Fin.castAdd (2 + (h - (j + 2))) a) : Fin h) = ⟨a.1, by have := a.2; omega⟩ :=
-      Fin.ext (by simp)
-    rw [h0, Equiv.swap_apply_of_ne_of_ne (fun H => by have := a.2; simp [Fin.ext_iff] at H; omega)
-      (fun H => by have := a.2; simp [Fin.ext_iff] at H; omega)]
-    rfl
-  · rw [Fin.append_right]
-    refine Fin.addCases (fun b => ?_) (fun b => ?_) b
-    · rw [Fin.append_left]
-      fin_cases b
-      · have h0 : (Fin.cast e (Fin.natAdd j (Fin.castAdd (h - (j + 2)) (0 : Fin 2))) : Fin h) = ⟨j, Nat.lt_of_succ_lt hj⟩ :=
-          Fin.ext (by simp)
-        simp only [Fin.zero_eta, Fin.isValue] at h0 ⊢
-        rw [h0, Equiv.swap_apply_left]
-        rfl
-      · have h0 : (Fin.cast e (Fin.natAdd j (Fin.castAdd (h - (j + 2)) (1 : Fin 2))) : Fin h) = ⟨j + 1, hj⟩ :=
-          Fin.ext (by simp)
-        simp only [Fin.mk_one, Fin.isValue] at h0 ⊢
-        rw [h0, Equiv.swap_apply_right]
-        rfl
-    · rw [Fin.append_right]
-      have h0 : (Fin.cast e (Fin.natAdd j (Fin.natAdd 2 b)) : Fin h) = ⟨j + 2 + b.1, by have := b.2; omega⟩ :=
-        Fin.ext (by simp; omega)
-      rw [h0, Equiv.swap_apply_of_ne_of_ne (fun H => by simp [Fin.ext_iff] at H; omega)
-        (fun H => by simp [Fin.ext_iff] at H; omega)]
-      rfl
-
 theorem swap_adj {h N : ℕ} (x : Fin h → IrrGL (k := k)) (hd : ∑ a, (x a).1 = N) (j : ℕ) (hj : j + 1 < h) (M : ℕ)
     (hd2 : ∑ a, (![x ⟨j, Nat.lt_of_succ_lt hj⟩, x ⟨j + 1, hj⟩] a).1 = M)
     (hd2' : ∑ a, (![x ⟨j + 1, hj⟩, x ⟨j, Nat.lt_of_succ_lt hj⟩] a).1 = M)
@@ -152,22 +92,6 @@ theorem swap_adj {h N : ℕ} (x : Fin h → IrrGL (k := k)) (hd : ∑ a, (x a).1
 
 def Reach {h N : ℕ} (x : Fin h → IrrGL (k := k)) (hd : ∑ a, (x a).1 = N) (σ : Equiv.Perm (Fin h)) : Prop :=
   ∀ hd' : ∑ a, (x (σ a)).1 = N, Nonempty ((prodIrr x hd).Equiv (prodIrr (x ∘ σ) hd'))
-
-theorem reach_step (hcomm : LUnlinkedComm k) {h N : ℕ} {Δ : Fin h → Segment k} {x : Fin h → IrrGL (k := k)}
-    (hd : ∑ a, (x a).1 = N) (hL : ∀ i, IsLSeg (Δ i) (x i).rep) (σ : Equiv.Perm (Fin h)) (hσ : Reach x hd σ)
-    (j : ℕ) (hj : j + 1 < h) (hu : ¬ (Δ (σ ⟨j, Nat.lt_of_succ_lt hj⟩)).Linked (Δ (σ ⟨j + 1, hj⟩))) :
-    Reach x hd (σ * Equiv.swap (⟨j, Nat.lt_of_succ_lt hj⟩ : Fin h) ⟨j + 1, hj⟩) := by
-  intro hd'
-  have h1 : ∑ a, (x (σ a)).1 = N := (Equiv.sum_comp σ (fun a => (x a).1)).trans hd
-  have h2 : ∑ a, (x (σ (Equiv.swap (⟨j, Nat.lt_of_succ_lt hj⟩ : Fin h) ⟨j + 1, hj⟩ a))).1 = N :=
-    (Equiv.sum_comp (Equiv.swap (⟨j, Nat.lt_of_succ_lt hj⟩ : Fin h) ⟨j + 1, hj⟩) (fun a => (x (σ a)).1)).trans h1
-  have F := swap_adj (fun a => x (σ a)) h1 j hj _ rfl (by simp [Fin.sum_univ_two, add_comm]) h2
-    (hcomm _ _ _ _ _ _ _ hu (hL _) (hL _))
-  have E1 := prodIrr_equiv_of_eq (N := N) (y := x ∘ σ) (y' := fun a => x (σ a)) rfl h1 h1
-  have E2 := prodIrr_equiv_of_eq (N := N)
-    (y := fun a => x (σ (Equiv.swap (⟨j, Nat.lt_of_succ_lt hj⟩ : Fin h) ⟨j + 1, hj⟩ a)))
-    (y' := x ∘ ⇑(σ * Equiv.swap (⟨j, Nat.lt_of_succ_lt hj⟩ : Fin h) ⟨j + 1, hj⟩)) rfl h2 hd'
-  exact ntrans (ntrans (ntrans (hσ h1) E1) F) E2
 
 theorem strictMono_of_adj {h : ℕ} (f : Fin h → Fin h)
     (H : ∀ (j : ℕ) (hj : j + 1 < h), f ⟨j, Nat.lt_of_succ_lt hj⟩ < f ⟨j + 1, hj⟩) : StrictMono f := by

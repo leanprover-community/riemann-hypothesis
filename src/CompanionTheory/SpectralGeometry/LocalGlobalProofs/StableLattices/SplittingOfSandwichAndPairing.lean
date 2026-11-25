@@ -21,10 +21,6 @@ def hlin (hh : IsHerm s h) (x : V) : V →ₗ[L] L where
   map_add' := hh.1 x
   map_smul' a y := by simpa using hh.2.1 a x y
 
-@[simp] theorem hlin_apply (hh : IsHerm s h) (x y : V) : hlin hh x y = h x y := rfl
-
-variable {δ : L} {e f : V}
-
 end Form
 
 end GlobalTheory.CompanionTheory.RgSplit

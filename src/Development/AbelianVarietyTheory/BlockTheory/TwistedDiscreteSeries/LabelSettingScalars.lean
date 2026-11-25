@@ -53,7 +53,6 @@ variable {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T : Type} {A : FamIn D.w
 
 abbrev EigSys (D : D7) : Type := HeightOneSpectrum (𝓞 D.host.E) → List ℤ → ℂ
 
-
 open Classical in
 def badPl (t : T) : Finset (HeightOneSpectrum (𝓞 D.host.F)) :=
   (R.Pg ∪ R.Q t).image fun PP => (_root_.IsDedekindDomain.HeightOneSpectrum.under (𝓞 D.host.F) PP)
@@ -82,11 +81,6 @@ def IsUpTop (t : T) (u : MMap (R.MY (D.R.m - 1))) (x : (R.HX t).H) : Prop :=
 def reached (t : T) (c : EigSys D) (k : ℕ) : Set (MMap (R.MY k)) :=
   Nat.rec (motive := fun k => Set (MMap (R.MY k))) (rowPart R (badPl R t) c : Set (MMap (R.MY 0)))
     (fun k P => {x | ∃ u ∈ P, IsUp R t k u x}) k
-
-theorem reached_zero (t : T) (c : EigSys D) : reached R t c 0 = (rowPart R (badPl R t) c : Set (MMap (R.MY 0))) := rfl
-
-theorem reached_succ (t : T) (c : EigSys D) (k : ℕ) :
-    reached R t c (k + 1) = {x | ∃ u ∈ reached R t c k, IsUp R t k u x} := rfl
 
 def StepScalar (t : T) (c : EigSys D) (k : ℕ) (Λ : ℝ) : Prop :=
   (∀ u ∈ reached R t c k, ∃ x, IsUp R t k u x) ∧

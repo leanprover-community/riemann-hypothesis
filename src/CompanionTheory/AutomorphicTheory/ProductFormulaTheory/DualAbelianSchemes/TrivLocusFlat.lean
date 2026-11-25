@@ -656,8 +656,6 @@ open scoped CategoryTheory.Obj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.AbLaw GlobalTheory.CechPic GlobalTheory.AbDual CompanionTheory.ObstructionTrivialLocus
 attribute [local instance] Over.cartesianMonoidalCategory
 
-theorem _root_.GlobalTheory.T.CechFlatComplex : CIFlat := by
-  first | exact @GlobalTheory.CompanionTheory.CIFlatPf.ciFlat
 end -- clump:auto
 end -- clump:auto
 
@@ -1535,8 +1533,6 @@ attribute [local instance] Over.cartesianMonoidalCategory
 namespace CompanionTheory.PfDual
 
 theorem fewEquations : FewEquations := fewEquations_pf _root_.MainStatements.Hodge.Free.h1Le
-
-theorem ciFlat : CIFlat := GlobalTheory.T.CechFlatComplex
 
 theorem trivLocusFlat : TrivLocusFlat := @GlobalTheory.CompanionTheory.TrivFlat.trivLocusFlat fewEquations _root_.GlobalTheory.CompanionTheory.CIFlatPf.ciFlat
 

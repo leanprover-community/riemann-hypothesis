@@ -1383,24 +1383,7 @@ theorem key_inj {i j : NC ε} (h : key i = key j) : i = j := by
 
 def tw (i j : NC ε) : ℂ := if key j < key i then -1 else 1
 
-theorem sg_mul_self (i : NC ε) (A : Finset (NC ε)) : sg i A * sg i A = 1 :=
-  _root_.CompanionTheory.FinsetCAR.sg_mul_self key i A
-
-theorem sg_insert (i : NC ε) {j : NC ε} {A : Finset (NC ε)} (h : j ∉ A) :
-    sg i (insert j A) = tw i j * sg i A :=
-  _root_.CompanionTheory.FinsetCAR.sg_insert key i h
-
-theorem sg_erase (i : NC ε) {j : NC ε} {A : Finset (NC ε)} (h : j ∈ A) :
-    sg i (A.erase j) = tw i j * sg i A :=
-  _root_.CompanionTheory.FinsetCAR.sg_erase key i h
-
 variable {V : Type} [AddCommGroup V] [Module ℂ V]
-
-theorem ann_apply (i : NC ε) (x : Ch ε V) (A : Finset (NC ε)) :
-    ann i x A = if i ∈ A then 0 else sg i A • x (insert i A) := rfl
-
-theorem cre_apply (i : NC ε) (x : Ch ε V) (A : Finset (NC ε)) :
-    cre i x A = if i ∈ A then sg i A • x (A.erase i) else 0 := rfl
 
 theorem ann_ann (i j : NC ε) : (ann i * ann j + ann j * ann i : Module.End ℂ (Ch ε V)) = 0 :=
   _root_.CompanionTheory.FinsetCAR.ann_ann key (fun _ _ h => key_inj h) i j

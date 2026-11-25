@@ -147,7 +147,6 @@ def IsStrictAt (γ : Fin m → LinearMap.BilinForm ℤ X) : Prop :=
     ∀ β ∈ levelForms H 1 X, (∀ y, 0 ≤ β y y) → N * φ.evalZ β = ℓ β →
       ∃ (k : ℕ) (c : Fin m → ℕ), 0 < k ∧ k • β = ∑ i, c i • γ i
 
-
 end Inv
 
 section Ord
@@ -166,8 +165,6 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheo
 
 instance finite_pelUnif {R : Type} [CommRing R] [IsDomain R] {I : Ideal R} {t : SAB H (Sp R)} (P : PELUnif I t) :
     Module.Finite (𝓞 E) P.D.toPre.X := Module.Finite.of_restrictScalars_finite ℤ _ _
-
-theorem Mdl.isOpen_opn (Z : Mdl Y i₀) : IsOpen Z.opn := Z.cover ▸ isOpen_iUnion fun a => (Z.U a).1.isOpen
 
 def Mdl.bd (Z : Mdl Y i₀) : Closeds Z.X := ⟨Z.opnᶜ, Z.isOpen_opn.isClosed_compl⟩
 

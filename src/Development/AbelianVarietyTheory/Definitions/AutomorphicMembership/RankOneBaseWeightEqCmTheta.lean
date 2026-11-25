@@ -111,9 +111,6 @@ def CoordAt (D : DegPre R) (χ : D.X) (i : D.P.L.ι) (r : R) : Prop :=
     ((jK R).app ⊤).hom (DegPre.toOpen (R := R) ⊤ r) =
       ((TK R).left.presheaf.map (homOfLE h).op).hom ((D.psi χ).s fun _ => i).val
 
-theorem psiCoord_iff (χ : D.X) (r : R) : PsiCoord D χ r ↔ ∃ i, CoordAt D χ i r :=
-  ⟨fun ⟨j, h⟩ => ⟨j PUnit.unit, h⟩, fun ⟨i, h⟩ => ⟨fun _ => i, h⟩⟩
-
 def rigAt (D : DegPre R) (i : D.P.L.ι) : R := valR (𝟙 (Sp R)) _ (D.rig.s fun _ => i).val
 
 variable {C : Type} [NormedField C] [IsUltrametricDist C]
@@ -131,47 +128,10 @@ variable {R V : Type} [CommRing R] [IsDomain R] [CommRing V] [IsDomain V]
 
 def gen (V : Type) [CommRing V] [IsDomain V] : Sp V := (⟨⊥, Ideal.isPrime_bot⟩ : PrimeSpectrum V)
 
-theorem jK_mem {U : (Sp R).Opens} {y : Sp R} (h : y ∈ U) : jK R (gen (FractionRing R)) ∈ U := by
-  refine ((PrimeSpectrum.le_iff_specializes _ y).1 fun r hr => ?_).mem_open U.isOpen h
-  have : algebraMap R (FractionRing R) r = 0 := hr
-  rw [(IsFractionRing.to_map_eq_zero_iff).1 this]
-  exact zero_mem _
-
-theorem gmK_inj {U : (Sp R).Opens} (h : jK R (gen (FractionRing R)) ∈ U) {a b : Γ(Sp R, U)ˣ}
-    (e : gm (jK R) (gen _) U a = gm (jK R) (gen _) U b) : a = b := by
-  have := congrArg Units.val e
-  rw [gm_val _ _ U h, gm_val _ _ U h] at this
-  have : IsDominant (jK R) := DVR.isDominant_jK
-  have : IsSchemeTheoreticallyDominant (jK R) := .of_isDominant _
-  exact Units.ext ((jK R).app_injective U
-    (germ_injective_of_isIntegral (Sp (FractionRing R)) (U := jK R ⁻¹ᵁ U) (gen _) h ‹_›))
-
 def Rel (g : R →+* V) (x : ((Sp (FractionRing R)).presheaf.stalk (gen _))ˣ) (y : ((Sp V).presheaf.stalk (gen V))ˣ) : Prop :=
   ∃ (U : (Sp R).Opens) (a : Γ(Sp R, U)ˣ), spMap g (gen V) ∈ U ∧ x = gm (jK R) (gen _) U a ∧ y = gm (spMap g) (gen V) U a
 
 variable {g : R →+* V}
-
-theorem Rel.mul {x x' y y'} (h : Rel g x y) (h' : Rel g x' y') : Rel g (x * x') (y * y') := by
-  obtain ⟨U, a, hU, rfl, rfl⟩ := h
-  obtain ⟨U', a', hU', rfl, rfl⟩ := h'
-  have hm : spMap g (gen V) ∈ U ⊓ U' := ⟨hU, hU'⟩
-  refine ⟨U ⊓ U', res inf_le_left a * res inf_le_right a', hm, ?_, ?_⟩
-  · rw [map_mul, gm_res _ _ _ (jK_mem hm), gm_res _ _ _ (jK_mem hm)]
-  · rw [map_mul, gm_res _ _ _ hm, gm_res _ _ _ hm]
-
-theorem Rel.inv {x y} (h : Rel g x y) : Rel g x⁻¹ y⁻¹ := by
-  obtain ⟨U, a, hU, rfl, rfl⟩ := h
-  exact ⟨U, a⁻¹, hU, (map_inv _ _).symm, (map_inv _ _).symm⟩
-
-theorem Rel.congr {x x' y} (h : Rel g x y) (e : x = x') : Rel g x' y := e ▸ h
-
-theorem Rel.unique {x y y'} (h : Rel g x y) (h' : Rel g x y') : y = y' := by
-  obtain ⟨U, a, hU, rfl, rfl⟩ := h
-  obtain ⟨U', a', hU', e, rfl⟩ := h'
-  have hm : spMap g (gen V) ∈ U ⊓ U' := ⟨hU, hU'⟩
-  have : res (inf_le_left : U ⊓ U' ≤ U) a = res inf_le_right a' := gmK_inj (jK_mem hm) (by
-    rw [gm_res _ _ _ (jK_mem hm), gm_res _ _ _ (jK_mem hm), e])
-  rw [← gm_res _ _ (inf_le_left : U ⊓ U' ≤ U) hm, this, gm_res _ _ _ hm]
 
 end Rel
 
@@ -180,27 +140,6 @@ section Main
 variable {R V : Type} [CommRing R] [IsDomain R] [CommRing V] [IsDomain V] {D : DegPre R} {g : R →+* V}
 
 end Main
-
-section Exist
-
-variable {R : Type} [CommRing R] [IsDomain R] [IsLocalRing R] {D : DegPre R}
-  {C : Type} [NormedField C] [IsUltrametricDist C]
-
-
-theorem IsTauVal.unique {g : R →+* intO C} (hex : ∀ χ, ∃ r, PsiCoord D χ r) (hne : ∀ χ r, PsiCoord D χ r → g r ≠ 0)
-    {a b : D.X} {e : BiGen D (Over.mk (spMap g)) a b} {t t' : C} (h : IsTauVal g e t) (h' : IsTauVal g e t') : t = t' := by
-  choose r₀ hr₀ using hex
-  choose i₀ hi₀ using fun χ => (psiCoord_iff χ _).1 (hr₀ χ)
-  obtain ⟨i, hi⟩ := exists_chart D.P.isLB (eSec D.P.A (closedPoint R))
-  have hi : ⊤ ≤ eSec D.P.A ⁻¹ᵁ D.P.L.U i := (DVR.eq_top_of_closedPoint_mem _ hi).ge
-  have e₁ := h ![i₀ (a + b), i₀ a, i₀ b, i] _ _ _ (hi₀ _) (hi₀ _) (hi₀ _) hi
-  have e₂ := h' ![i₀ (a + b), i₀ a, i₀ b, i] _ _ _ (hi₀ _) (hi₀ _) (hi₀ _) hi
-  have h0 : (g (r₀ (a + b)) : C) ≠ 0 := fun e => hne _ _ (hr₀ _) (Subtype.ext e)
-  simp only [_root_.mul_assoc] at e₁ e₂
-  exact mul_right_cancel₀ (right_ne_zero_of_mul (e₁ ▸ h0)) (e₁.symm.trans e₂)
-
-
-end Exist
 
 section Point
 
@@ -232,8 +171,6 @@ end -- clump:auto
 -- clump-header: {"m": "Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.RankOneBaseWeightEqCmTheta", "h": "module\n\npublic import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.MultiplicationLatticeSecond\npublic import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ExistsUnitOfNorm\npublic import Formalism.LocalToGlobal.ProjectiveLattices.BetaAddRight\nimport Development.AbelianVarietyTheory.Proofs.UnitaryExistence.BetaAtAddLeftAndDiagEqTwoOrder\nimport Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsGoodIntegral\nimport Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IsProperOfSubsingleton\npublic import Development.AbelianVarietyTheory.Counterexamples.LevelGroupExamples.SubsingletonOfLeOne\nimport Development.AbelianVarietyTheory.Proofs.ModuliProofs.ObjIsAbelianSchemeDimRigidifiedSym\nimport Development.AbelianVarietyTheory.Proofs.UniformizationProofs.AllUniformizationLawsHold\nimport Development.AbelianVarietyTheory.Proofs.UniformizationProofs.DimEqRankAddDim\nimport Development.AbelianVarietyTheory.Proofs.UniformizationProofs.SmoothOfRelativeDimensionOfGeneric\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FirstCohomology.DimSplitPf\nimport Formalism.SharpRestriction.Divisibility.AbelianOpenPart.AbelianAt\n\n"}
 section -- clump:auto
 @[expose] public section
-
-
 
 noncomputable section
 

@@ -931,18 +931,6 @@ theorem Bridge.RingBasics.mem_span_pow_OC : ∀ (l : ℕ) [Fact l.Prime] (n : �
 
 end
 end SpanPowerIntegral
-namespace CrisHomExt
-section
-
-theorem Bridge.CrisLoc.bcris_hom_ext : ∀ (l : ℕ) [Fact l.Prime] {R : Type} [CommRing R] {f g : (Reformulated.AutPerF.Bcris l ↥(PadicComplexInt l)) →+* R} (h : ∀ x : (Reformulated.AutPerF.Acris l ↥(PadicComplexInt l)), f (algebraMap _ _ x) = g (algebraMap _ _ x)), f = g := by
-  intro l _ R _ f g h
-  refine IsLocalization.ringHom_ext (Reformulated.AutPerF.BcrisPlus.periods l ↥(PadicComplexInt l)) ?_
-  refine IsLocalization.ringHom_ext
-    (Submonoid.powers (l : Reformulated.AutPerF.Acris l ↥(PadicComplexInt l))) ?_
-  exact RingHom.ext fun x => h x
-
-end
-end CrisHomExt
 namespace UnitOfGenerator
 section
 

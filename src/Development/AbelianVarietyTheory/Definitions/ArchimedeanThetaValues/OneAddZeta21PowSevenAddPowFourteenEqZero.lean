@@ -60,14 +60,12 @@ section General
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 
-
 open NumberField in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
 omit [NumberField E] [IsCMField E] in
 theorem _root_.GlobalTheory.HostModel.coe_sq_eq_neg {x : 𝓞 E} {n : ℕ} (hx : x ^ 2 = -(n : 𝓞 E)) : (x : E) ^ 2 = -(n : E) := by
   have h := congrArg (fun y : 𝓞 E => (y : E)) hx
   simpa using h
-
 
 open NumberField in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
@@ -123,7 +121,6 @@ private theorem isPrimitiveRoot_hostModel_primitiveRoot21 :
     IsPrimitiveRoot _root_.GlobalTheory.HostModel.primitiveRootCyclotomicField21 21 :=
   (IsCyclotomicExtension.zeta_spec 21 ℚ _root_.GlobalTheory.HostModel.E21).toInteger_isPrimitiveRoot
 
-
 open NumberField in
 theorem _root_.GlobalTheory.HostModel.sqrtNegSeven_sq : _root_.GlobalTheory.HostModel.sqrtNegSeven ^ 2 = -((7 : ℕ) : 𝓞 _root_.GlobalTheory.HostModel.E21) := by
   have hz := isPrimitiveRoot_hostModel_primitiveRoot21
@@ -176,7 +173,6 @@ private theorem isUnit_one_sub_of_isPrimitiveRoot_twentyOne {R : Type*} [CommRin
   rw [Polynomial.eval_mul, Polynomial.eval_one_cyclotomic_not_prime_pow hnpp] at h1
   simp only [Polynomial.eval_sub, Polynomial.eval_X, Polynomial.eval_C] at h1
   exact IsUnit.of_mul_eq_one _ h1
-
 
 open NumberField in
 theorem _root_.GlobalTheory.HostModel.unramified_E21_over_maximalRealSubfield : Algebra.Unramified (𝓞 (maximalRealSubfield _root_.GlobalTheory.HostModel.E21)) (𝓞 _root_.GlobalTheory.HostModel.E21) := by
@@ -254,7 +250,5 @@ def host : Host E21 where
     rw [mul_pow, Complex.I_sq, ← Complex.ofReal_pow, Real.sq_sqrt (by norm_num)]
     push_cast
     ring
-
-@[simp] theorem host_d : host.d = 7 := rfl
 
 end GlobalTheory.HostModel

@@ -52,8 +52,6 @@ theorem nset_congr (ε : Fin n → Bool) {V : Type} [AddCommGroup V] [Module ℂ
     obtain ⟨k, hk⟩ := h1 i
     rw [hk]; exact hu k
 
-
-
 theorem along (hT : Transport) (hSC : StepChar) (hTD : TensDecomp) (hFF : FamFilt) (hSF : StepFam)
     (ε : Fin n → Bool) (A : Matrix (Fin n) (Fin n) ℂ) (μ : MeasureTheory.Measure (ReciprocityTheory.ChartRestriction.DS.S7.UJ ε))
     (hA : IsGrad ε A) (hμ : IsParHaar ε A μ) (B : GradBasis A) :
@@ -370,13 +368,6 @@ theorem line_cont (hc : IsCoefFam ε X c) (i : ι) (u : X.V) {Y g : Matrix (Fin 
   continuous_iff_continuousAt.2 fun s => (line_hasDeriv hc i u hY hg s).continuousAt
 
 def incl (X : GMod n) (z : ℂ) : (step X z).V →ₗ[ℂ] (Fin n → X.V) := (stepSub X z).subtype
-
-theorem stepCoef_apply (X : GMod n) (z : ℂ) (c : X.V →ₗ[ℂ] (Matrix (Fin n) (Fin n) ℂ → ℂ)) (j : Fin n)
-    (u : (step X z).V) (g : Matrix (Fin n) (Fin n) ℂ) :
-    stepCoef X z c j u g = ∑ k, g j k * c (incl X z u k) g := rfl
-
-theorem incl_E (X : GMod n) (z : ℂ) (a b : Fin n) (u : (step X z).V) :
-    incl X z ((step X z).E a b u) = tensE X a b (incl X z u) := rfl
 
 theorem incl_actM (X : GMod n) (z : ℂ) (Y : Matrix (Fin n) (Fin n) ℂ) (u : (step X z).V) :
     incl X z (actM (step X z).E Y u) = actM (tensE X) Y (incl X z u) := by

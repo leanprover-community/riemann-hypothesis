@@ -87,23 +87,6 @@ variable (A B)
 
 def InRange : Prop := 1 ≤ A.rank ∧ A.rank < B.rank ∧ (Cusp.wittIndex B = 0 ∨ A.rank + Cusp.wittIndex B < B.rank)
 
-theorem half_add_half : half D + half D = 1 := by
-  rw [half, ← map_add (f := _), add_halves, map_one]
-
-theorem fstCols_cols (x y : WO A B) : fstCols A B (cols A B x y) = x := by
-  ext i j; simp [fstCols, cols]
-
-theorem sndCols_cols (x y : WO A B) : sndCols A B (cols A B x y) = y := by
-  ext i j; simp only [sndCols, cols, Matrix.submatrix_apply, Equiv.symm_apply_apply]; rfl
-
-theorem coords (x y : WO A B) : xOf A B (onX A B x) = x ∧ yOf A B (onX A B x) = 0 ∧
-    xOf A B (onY A B y) = 0 ∧ yOf A B (onY A B y) = y := by
-  refine ⟨?_, ?_, ?_, ?_⟩ <;> simp only [xOf, yOf, onX, onY, fstCols_cols, sndCols_cols]
-  · rw [← add_smul, half_add_half, one_smul]
-  · simp
-  · simp
-  · rw [sub_neg_eq_add, smul_add, ← add_smul, half_add_half, one_smul]
-
 end GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz
 
 end

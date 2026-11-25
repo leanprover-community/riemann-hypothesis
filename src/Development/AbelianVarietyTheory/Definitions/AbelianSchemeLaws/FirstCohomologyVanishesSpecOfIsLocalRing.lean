@@ -153,9 +153,6 @@ theorem isLB_pw {H : LB X} (hH : H.IsLB) (t : ℤ) : (pw H t).IsLB := {
 theorem isLB_tw {M H : LB X} (hM : M.IsLB) (hH : H.IsLB) (t : ℤ) : (tw M H t).IsLB :=
   LB.isLB_div hM (isLB_pw hH (-t))
 
-theorem pw_one (H : LB X) : pw H 1 = H := by
-  simp only [pw, zpow_one]
-
 theorem tw_g (M H : LB X) (t : ℤ) (p q : M.ι × H.ι) :
     (tw M H t).g p q =
       res (le_inf (inf_le_left.trans inf_le_left) (inf_le_right.trans inf_le_left) :

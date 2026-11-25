@@ -64,7 +64,6 @@ section Roots
 
 variable {K G : Type} [Field K] [NumberField K] [Group G] [Finite G]
 
-
 omit [NumberField K] in
 theorem isIntegral_char (χ : G →* Kˣ) (g : G) : IsIntegral ℤ ((χ g : Kˣ) : K) := by
   refine IsIntegral.of_pow (n := orderOf g) (orderOf_pos g) ?_
@@ -85,10 +84,6 @@ def twRep : Representation LL G (Fin n → LL) where
   map_mul' g h := by
     rw [map_mul, map_mul, mul_inv, Units.val_mul, smul_mul_smul_comm]
 
-omit [Fintype G] in
-theorem twRep_apply (g : G) (x : Fin n → LL) : twRep A g x = (((A.chi g)⁻¹ : LLˣ) : LL) • A.ρ g x := rfl
-
-
 theorem eOp_eq (a : MonoidAlgebra LL G) : A.eOp (fun g => a.coeff g) = (twRep A).asAlgebraHom a := by
   classical
   have ha : a = ∑ g : G, MonoidAlgebra.single g (a.coeff g) := by
@@ -102,9 +97,7 @@ theorem eOp_eq (a : MonoidAlgebra LL G) : A.eOp (fun g => a.coeff g) = (twRep A)
   rw [Representation.asAlgebraHom_single, mul_smul]
   rfl
 
-
 def supLat : Submodule (𝓞 LL) (Fin n → LL) := Submodule.span (𝓞 LL) (A.MK : Set (Fin n → LL))
-
 
 end Twisted
 
@@ -179,7 +172,6 @@ section Product
 
 variable {K : Type} [Field K] [NumberField K] {ι : Type} [Fintype ι] [DecidableEq ι] {kf : ι → Type}
   [∀ v, Field (kf v)] [∀ v, Fintype (kf v)] {n : ℕ}
-
 
 omit [NumberField K] in
 theorem exists_psiU_eq (hn : 0 < n) (v : ι) (a : kf v) :
@@ -338,7 +330,6 @@ theorem exists_isLevelChar (h : R.grp_levels F) : ∃ χ, IsLevelChar R F χ := 
     exact hz v _
 
 variable (R F)
-
 
 open Classical in
 def levelChar : ∀ v : R.Pg, AddChar (Res R v) (𝓞 D.what₂.LL) :=
@@ -642,7 +633,6 @@ theorem j_coordMap (j : Fin D.R.m) (z : Fin (finrank D.what₂.LL (R.WL F false 
   rw [smul_smul _ _ ((R.FW j).j _ _), hsq, one_smul, map_smulₛₗ, emb_eq D.what₂.embLL A.v0, cj_cj]
 
 variable (c : OnConst) (a : ChainArgs D.what₂.LL (Fin D.R.m) R.nW)
-
 
 variable (R) in
 def supArgs : ChainArgs D.what₂.LL (Fin D.R.m) R.nW where

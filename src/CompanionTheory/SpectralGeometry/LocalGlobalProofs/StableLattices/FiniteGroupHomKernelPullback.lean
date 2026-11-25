@@ -72,42 +72,6 @@ def grpObjOfIsKernel (hp : IsPullback i (toUnit H) q η[A']) : GrpObj H :=
       rw [← Hom.one_def]
       exact mul_inv_cancel i }
 
-theorem isMonHom_of_isKernel (hp : IsPullback i (toUnit H) q η[A']) :
-    letI := grpObjOfIsKernel hp
-    IsMonHom i := by
-  letI := grpObjOfIsKernel hp
-  refine { one_hom := kerLift_comp hp _ _, mul_hom := ?_ }
-  refine (kerLift_comp hp _ _).trans ?_
-  rw [Hom.mul_def]
-  simp
-
-theorem isCommMonObj_of_isKernel [BraidedCategory C] [IsCommMonObj A]
-    (hp : IsPullback i (toUnit H) q η[A']) :
-    letI := grpObjOfIsKernel hp
-    IsCommMonObj H := by
-  letI := grpObjOfIsKernel hp
-  have := mono_of_isKernel hp
-  have := isMonHom_of_isKernel hp
-  refine (isCommMonObj_iff_isMulCommutative _).mpr fun T => ⟨⟨fun x y => ?_⟩⟩
-  rw [← cancel_mono i, MonObj.mul_comp, MonObj.mul_comp, mul_comm]
-
 end General
 
-theorem exists_finite_kernel : ∀ (k : Type) [Field k] (A A' : Over (Sp k)) [GrpObj A] [GrpObj A'], IsAbelianScheme A → ∀ (q : A ⟶ A'), IsMonHom q → IsFinite q.left →
-    ∃ (H : Over (Sp k)) (_ : GrpObj H) (_ : IsCommMonObj H) (i : H ⟶ A), IsMonHom i ∧ IsFinite H.hom ∧
-      IsPullback i (toUnit _) q η[A'] := by
-  intro k _ A A' _ _ hA q hq hf
-  have := hA.comm
-  have hp : IsPullback (pullback.fst q η[A']) (toUnit (pullback q η[A'])) q η[A'] := by
-    rw [toUnit_unique (toUnit _) (pullback.snd q η[A'])]
-    exact IsPullback.of_hasPullback _ _
-  refine ⟨pullback q η[A'], grpObjOfIsKernel hp, isCommMonObj_of_isKernel hp, pullback.fst _ _,
-    isMonHom_of_isKernel hp, ?_, hp⟩
-  have hl := hp.map (Over.forget _)
-  have h1 : IsFinite (toUnit (pullback q η[A'])).left :=
-    MorphismProperty.of_isPullback (P := @IsFinite) hl hf
-  have h2 : (pullback q η[A']).hom = (toUnit (pullback q η[A'])).left ≫ (𝟙_ (Over (Sp k))).hom :=
-    (Over.w _).symm
-  rw [h2]
-  exact inferInstanceAs (IsFinite (_ ≫ 𝟙 _))
 end GlobalTheory.CompanionTheory.KerPull.Kernel

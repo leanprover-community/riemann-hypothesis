@@ -156,19 +156,6 @@ def polar [AddCommMonoid A] (top : A → ℝ) (M : Multiset A) : ℝ :=
 def numL (num : Multiset A → ℝ) (d : ℕ) : MvPolynomial A ℝ →ₗ[ℝ] ℝ :=
   (MvPolynomial.basisMonomials A ℝ).constr ℝ fun m => if m.degree = d then num (Finsupp.toMultiset m) else 0
 
-theorem numL_homog (num : Multiset A → ℝ) (d e : ℕ) (he : e ≠ d) (P : MvPolynomial A ℝ) (hP : P.IsHomogeneous e) :
-    numL num d P = 0 := by
-  classical
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [P.as_sum, map_sum]
-  refine Finset.sum_eq_zero fun m hm => ?_
-  have h1 : m.degree = e := by
-    have := hP (MvPolynomial.mem_support_iff.1 hm)
-    rw [Finsupp.degree_eq_weight_one]; exact this
-  have h2 : MvPolynomial.monomial m (P.coeff m) = P.coeff m • MvPolynomial.basisMonomials A ℝ m := by
-    simp [MvPolynomial.smul_monomial]
-  rw [h2, map_smul, numL, Module.Basis.constr_basis, if_neg (h1 ▸ he), smul_zero]
-
 end Degrees
 
 structure ArIn (Tau : Type) (N g : ℕ) (Comp : Type) : Type 1 where
@@ -195,31 +182,6 @@ def mixEv (S : Finset ℕ) (R : ℝ) (p : ℕ) (c : Comp) : MvPolynomial (DV.Vm 
 def arMix (S : Finset ℕ) (R : ℝ) (p : ℕ) : MvPolynomial (DV.Vm Tau N) ℝ →ₗ[ℝ] ℝ :=
   ∑ c, numL (I.num c) (Formalism.DegreeFormula.dimFl Tau N + 1) ∘ₗ (I.mixEv S R p c).toLinearMap
 
-theorem arDeg_homog (S : Finset ℕ) (R : ℝ) (P : MvPolynomial (DV.Rt Tau N) ℝ) (d : ℕ)
-    (hd : d ≠ Formalism.DegreeFormula.dimFl Tau N + 1) (hP : P.IsHomogeneous d) : I.arDeg S R P = 0 := by
-  rw [arDeg, LinearMap.sum_apply]
-  exact Finset.sum_eq_zero fun c _ => numL_homog _ _ _ hd _ hP.rename_isHomogeneous
-
-theorem arMix_HT (S : Finset ℕ) (R : ℝ) (p : ℕ) (P : MvPolynomial (DV.Rt Tau N) ℝ) :
-    I.arMix S R p (DV.tagHT Tau N P) = I.arDeg (insert p S) R P := by
-  have e : Function.update (ind S) p true = ind (insert p S) := by
-    funext q; by_cases h : q = p <;> simp [ind, h]
-  rw [arMix, arDeg, LinearMap.sum_apply, LinearMap.sum_apply]
-  refine Finset.sum_congr rfl fun c _ => congrArg (numL _ _) ?_
-  have : (I.mixEv S R p c).comp (DV.tagHT Tau N) = MvPolynomial.rename fun x => I.root (ind (insert p S)) R x c := by
-    ext x : 1; simp [mixEv, DV.tagHT, e]
-  exact congrArg (fun f => f P) this
-
-theorem arMix_DR (S : Finset ℕ) (R : ℝ) (p : ℕ) (P : MvPolynomial (DV.Rt Tau N) ℝ) :
-    I.arMix S R p (DV.tagDR Tau N P) = I.arDeg (S.erase p) R P := by
-  have e : Function.update (ind S) p false = ind (S.erase p) := by
-    funext q; by_cases h : q = p <;> simp [ind, h]
-  rw [arMix, arDeg, LinearMap.sum_apply, LinearMap.sum_apply]
-  refine Finset.sum_congr rfl fun c _ => congrArg (numL _ _) ?_
-  have : (I.mixEv S R p c).comp (DV.tagDR Tau N) = MvPolynomial.rename fun x => I.root (ind (S.erase p)) R x c := by
-    ext x : 1; simp [mixEv, DV.tagDR, e]
-  exact congrArg (fun f => f P) this
-
 end ArIn
 
 variable {D : D7} {A : Amb D} {N j : ℕ} {S : Sig A N j} {κ : Lv A} (s : FinalTheorems S κ)
@@ -234,13 +196,11 @@ def OnComp (k : s.Comp) (z : gen s.T.Z) : Prop :=
 
 def compPt (y : Pt s) : s.Comp := Classical.epsilon fun k => ∀ pt, OnComp s k (y.y pt)
 
-
 open Classical in
 def lnAt (p : ℕ) (b : Bool) (y : Pt s) (x : DV.Rt D.what₂.Tau N) : ℝ :=
   if h : p.Prime then (haveI := Fact.mk h; y.lnRoot (iotaP p) p b (DV.tauEmb D x.1) x.2) else 0
 
 def phi (p : ℕ) (y : Pt s) (x : DV.Rt D.what₂.Tau N) : ℝ := lnAt s p false y x - lnAt s p true y x
-
 
 open Classical in
 def normDet (p : ℕ) (b : Bool) (τ : D.what₂.Tau) (y : Pt s) (a : Qb) : ℝ :=
@@ -284,7 +244,6 @@ section OfPkg
 
 variable {Comp : Type} {jC : ∀ (p : ℕ) [Fact p.Prime], PlL D p → (DV.KW p →+* ℂ)} {ng : NgPkg}
   (P : PadPkg D N j Comp jC ng)
-
 
 end OfPkg
 

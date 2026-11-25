@@ -184,14 +184,6 @@ theorem map (he : IsFrame e) (h : V ≤ U) : IsFrame (F.presheaf.map (homOfLE h)
     rw [QCoh.res_res]
     exact he W _
 
-theorem app (he : IsFrame e) (φ : F ≅ G) : IsFrame (φ.hom.app U e) := fun V h => by
-  have : (fun a : Γ(X, V) => a • G.presheaf.map (homOfLE h).op (φ.hom.app U e)) =
-      appLinearEquiv φ V ∘ fun a : Γ(X, V) => a • F.presheaf.map (homOfLE h).op e := by
-    ext a
-    rw [Function.comp_apply, map_smul, appLinearEquiv_apply, app_map]
-  rw [this]
-  exact (appLinearEquiv φ V).bijective.comp (he V h)
-
 def repr (he : IsFrame e) (h : V ≤ U) : Γ(F, V) ≃ₗ[Γ(X, V)] Γ(X, V) :=
   (LinearEquiv.ofBijective (LinearMap.toSpanSingleton Γ(X, V) Γ(F, V)
     (F.presheaf.map (homOfLE h).op e)) (he V h)).symm
@@ -404,14 +396,12 @@ section Spectrum
 
 variable {R : Type} [CommRing R] {L M : LB (Sp R)}
 
-
 variable (R) in
 def globalRingEquiv : R ≃+* Γ(Sp R, ⊤) :=
   (Scheme.ΓSpecIso (CommRingCat.of R)).symm.commRingCatIsoToRingEquiv
 
 instance secModuleSp : Module R (LB.Sec L) :=
   Module.compHom (LB.Sec L) (Scheme.ΓSpecIso (CommRingCat.of R)).inv.hom
-
 
 theorem invertible_sec (hL : L.IsLB) : Module.Invertible R (LB.Sec L) :=
   have := invertible_sec_top hL
@@ -431,12 +421,10 @@ theorem exists_isGen_iff_free (hL : L.IsLB) :
   simp only [free_iff_exists_bijective_smul, ← exists_genSec_eq_iff_bijective_sp hL]
   exact ⟨fun ⟨t, ht⟩ => ⟨_, t, ht, rfl⟩, fun ⟨_, t, ht, _⟩ => ⟨t, ht⟩⟩
 
-
 theorem exists_isGen_of_subsingleton_pic [Subsingleton (CommRing.Pic R)] (hL : L.IsLB) :
     ∃ t : LB.Gen L, t.IsGen :=
   haveI := invertible_sec hL
   (exists_isGen_iff_free hL).2 inferInstance
-
 
 theorem exists_isGen_of_isLocalRing [IsLocalRing R] (hL : L.IsLB) : ∃ t : LB.Gen L, t.IsGen :=
   exists_isGen_of_subsingleton_pic hL
@@ -444,6 +432,5 @@ theorem exists_isGen_of_isLocalRing [IsLocalRing R] (hL : L.IsLB) : ∃ t : LB.G
 end Spectrum
 
 end LB
-
 
 end GlobalTheory

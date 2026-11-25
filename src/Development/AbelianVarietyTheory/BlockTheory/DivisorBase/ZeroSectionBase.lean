@@ -97,23 +97,6 @@ def IsPrincipalPol (c : Pic (A ⊗ A).left) : Prop :=
         Out.RelAmple ((Over.pullback s).obj A) L ∧ Out.KTriv ((Over.pullback s).obj A) L ∧
           pull (sqToBase A s) c = lam (cls L hL) (fst _ _) (snd _ _)
 
-theorem isPrincipalPol_of_polAV (P : Out.PolAV S) :
-    IsPrincipalPol P.A (lam (cls P.L P.isLB) (fst P.A P.A) (snd P.A P.A)) := by
-  have := P.isAb.comm
-  refine ⟨?_, ?_, fun Ω _ _ s => ?_⟩
-  · rw [pull_lam, lift_fst, lam_one_left]
-  · rw [pull_lam, lift_snd, lam_one_right]
-  · have h := isGrpPullback_pullback P.A s
-    have hL := pull_isLB P.isLB (pullback.fst P.A.hom s)
-    obtain ⟨w, hw⟩ := (cls_eq_iff hL hL).1 rfl
-    obtain ⟨U, hU, hx, -⟩ := exists_isAffineOpen_mem_and_subset (X := S)
-      (x := s (IsLocalRing.closedPoint Ω)) (U := ⊤) trivial
-    refine ⟨_, hL, relAmple_pull h.1 P.isLB hL ((isGen_iff w).1 hw) U hU
-      (fun y => by rwa [Subsingleton.elim y (IsLocalRing.closedPoint Ω)]) P.ample,
-      kTriv_pull h P.isLB hL ((isGen_iff w).1 hw) P.ktriv, ?_⟩
-    rw [sqToBase, pull_lam, lift_fst, lift_snd, cls_pull P.isLB, lam_pull_of_isGrpPullback h]
-    rfl
-
 end Abelian
 
 open Formalism.BasicNotions

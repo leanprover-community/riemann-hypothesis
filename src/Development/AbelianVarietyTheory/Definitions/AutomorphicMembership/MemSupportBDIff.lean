@@ -60,14 +60,6 @@ def pullEqn (i : B.ι) {y : X} (hy : f y ∈ B.U i) : X.functionFieldˣ :=
     rw [← Scheme.preimage_basicOpen]
     exact not_not.1 (mt (B.mem_support_iff i hg).2 h))))
 
-theorem germOf_pullEqn {i i' : B.ι} {y : X} (hi : f y ∈ B.U i) (hi' : f y ∈ B.U i') :
-    germOf y (pullEqn B f h i hi) = germOf y (pullEqn B f h i' hi') := by
-  obtain ⟨u, hu⟩ := ((B.associated_germ i i' _ hi hi').map (f.stalkMap y).hom)
-  rw [Scheme.Hom.germ_stalkMap_apply, Scheme.Hom.germ_stalkMap_apply] at hu
-  have e := congrArg (algebraMap _ X.functionField) hu
-  rw [map_mul, algebraMap_germ (U := f ⁻¹ᵁ B.U i) hi, algebraMap_germ (U := f ⁻¹ᵁ B.U i') hi'] at e
-  exact germOf_eq_iff.2 ⟨u, u.isUnit, (eq_div_iff (Units.ne_zero _)).2 ((mul_comm _ _).trans e)⟩
-
 def pullDiv : CartierDiv X :=
   show cartierGroup X from ⟨fun y => germOf y (pullEqn B f h _ (B.exists_mem (f y)).choose_spec), fun y =>
     ⟨f ⁻¹ᵁ B.U _, (B.exists_mem (f y)).choose_spec, pullEqn B f h _ (B.exists_mem (f y)).choose_spec,
@@ -81,8 +73,6 @@ variable {F : Type} [Field F] [NumberField F] {Y : Var F}
 
 def qDiv {C : CxSt F} (A : Adl C Y) : ℚ ⊗[ℤ] Y.Dv := ((A.n : ℕ) : ℚ)⁻¹ ⊗ₜ A.D
 
-
-
 omit [NumberField F] in
 def curvMet {σ : F →+* ℂ} {Δ : Y.Dv} (m : Var.Met Y σ Δ) : ChartForm Y.str σ Y.dim :=
   fun c y => ddcForm (m.wt (Var.eqn Δ y)) c y
@@ -92,12 +82,6 @@ variable {ι : Type} [Fintype ι] (ρ : ι → Adl (cxSt F) Y) (t : ι → ℚ) 
 def combDen : ℕ+ := ⟨∏ i, (t i / ((ρ i).n : ℕ)).den, Finset.prod_pos fun _ _ => Rat.den_pos _⟩
 
 def combNum (i : ι) : ℤ := ((combDen ρ t : ℕ) * (t i / ((ρ i).n : ℕ))).num
-
-theorem combNum_mul (i : ι) : (combNum ρ t i : ℚ) * ((ρ i).n : ℕ) = (combDen ρ t : ℕ) * t i := by
-  obtain ⟨c, hc⟩ : (t i / ((ρ i).n : ℕ)).den ∣ (combDen ρ t : ℕ) := Finset.dvd_prod_of_mem _ (Finset.mem_univ i)
-  have e : ((combDen ρ t : ℕ) : ℚ) * (t i / ((ρ i).n : ℕ)) = ((c * (t i / ((ρ i).n : ℕ)).num : ℤ) : ℚ) := by
-    rw [hc, Nat.cast_mul, mul_right_comm, Rat.den_mul_eq_num, mul_comm, Int.cast_mul, Int.cast_natCast]
-  rw [combNum, e, Rat.num_intCast, ← e, mul_assoc, div_mul_cancel₀ _ (Nat.cast_ne_zero.2 (ρ i).n.ne_zero)]
 
 def combEqn (x : Y.X) : Y.Fnˣ := ∏ i, eqn (ρ i).D x ^ combNum ρ t i
 
@@ -113,15 +97,6 @@ def comb : Adl (cxSt F) Y where
   lg v e y := Real.log (e.w (valAt y.1 (combEqn ρ t (below y.1) /
     eqn (∑ i, combNum ρ t i • (ρ i).D) (below y.1) : Y.Fn))) + ∑ i, combNum ρ t i * (ρ i).lg v e y
 
-theorem qDiv_comb : qDiv (comb ρ t g) = ∑ i, t i • qDiv (ρ i) := by
-  simp only [qDiv, comb, TensorProduct.tmul_sum, ← TensorProduct.smul_tmul, TensorProduct.smul_tmul', zsmul_eq_mul,
-    smul_eq_mul]
-  refine Finset.sum_congr rfl fun i _ => congrArg (· ⊗ₜ _) ?_
-  have h₁ : ((combDen ρ t : ℕ) : ℚ) ≠ 0 := Nat.cast_ne_zero.2 (combDen ρ t).ne_zero
-  have h₂ : (((ρ i).n : ℕ) : ℚ) ≠ 0 := Nat.cast_ne_zero.2 (ρ i).n.ne_zero
-  field_simp
-  rw [combNum_mul]
-
 end Comb
 
 section Weights
@@ -129,7 +104,6 @@ section Weights
 variable {T : Type} {N : ℕ}
 
 def varpi (j : ℕ) (i : Fin N) : ℚ := if (i : ℕ) < j then 0 else -1
-
 
 open Classical in
 def fund (τ : T) (i : Fin N) : T → Fin N → ℝ := fun τ' a => if τ' = τ ∧ a ≤ i then 1 else 0
@@ -155,7 +129,6 @@ def bdPull (k : s.Comp) : (Φ.C k).Y.Dv :=
   pullDiv s.T.BD ((Φ.C k).π ≫ genι s.T.Z) fun h => CartierDiv.genericPoint_notMem_supp (Φ.C k).bd
     (((Φ.C k).bd_supp _).2 (mem_genBd_of_mem_support_BD Φ k _ h))
 
-
 variable (S) in
 abbrev rootExp (x : DV.Rt D.what₂.Tau N) : Letter S.Dw → ℤ := rootEx S.Dw (DV.tauEmb D x.1) x.2
 
@@ -166,7 +139,6 @@ abbrev RefMets : Type :=
   ∀ k σ (n : Letter S.Dw → ℤ), (cxSt D.what₂.LL).Met (Φ.C k).Y σ (divOf (Φ.C k) n)
 
 def offBd (k : s.Comp) (σ : D.what₂.LL →+* ℂ) : Set (Pts (Φ.C k).Y σ) := {y | (Φ.C k).π (under y) ∉ genBd s.T.Z}
-
 
 open Classical in
 def extBd {k : s.Comp} {σ : D.what₂.LL →+* ℂ} (f : Pts (Φ.C k).Y σ → ℝ) (y : Pts (Φ.C k).Y σ) : ℝ :=
@@ -185,11 +157,9 @@ def CommonConst (om : ∀ k σ, ChartForm (Φ.C k).Y.str σ (Φ.C k).Y.dim) (E :
   0 ≤ a ∧ 0 ≤ K ∧ 0 < δ ∧ ∀ k σ τ (i : Fin N), (i : ℕ) + 1 < N →
     IsRegConst (om k σ) (thW h0 k σ (fund τ i)) (rho (om k σ) (E k σ) (phW hm h0 k σ (fund τ i))) a K δ
 
-
 variable (s) in
 def dirOf (b : ℕ) (η : ℚ) (μ : Fin N → ℤ) : D.what₂.Tau → Fin N → ℚ :=
   fun _ i => (2 * b * s.T.m0 : ℕ) * varpi j i + η * μ i
-
 
 variable (s Φ) in
 structure PolDat : Type where
@@ -261,7 +231,6 @@ def mbarQ (B : ℝ) (u : D.what₂.Tau → Fin N → ℚ) (r : ℚ) : Adl (cxSt 
 end PolDat
 
 variable {hm h0}
-
 
 open Classical in
 def mbarOf (P : PolDat s Φ hm h0) (B : ℝ) (u : D.what₂.Tau → Fin N → ℝ) (r : ℚ) (k : s.Comp) :

@@ -13,32 +13,6 @@ section -- clump:auto
 
 open CompanionTheory.Rg.FlB
 
-namespace GlobalTheory.CompanionTheory.Iwahori.Unitary
-
-variable {E ι : Type} [Ring E] [Fintype ι]
-
-theorem piece_mul_mul {P : ι → E} (hP : IsPieces P) (x y : E) (i j : ι) :
-    P i * (x * y) * P j = ∑ k, (P i * x * P k) * (P k * y * P j) := by
-  have h : x * y = ∑ k, x * P k * y := by
-    rw [← Finset.sum_mul, ← Finset.mul_sum, hP.sum, mul_one]
-  rw [h, Finset.mul_sum, Finset.sum_mul]
-  refine Finset.sum_congr rfl fun k _ => ?_
-  have hk := hP.idem k
-  calc P i * (x * P k * y) * P j = P i * x * P k * y * P j := by simp only [mul_assoc]
-    _ = P i * x * (P k * P k) * y * P j := by rw [hk]
-    _ = _ := by simp only [mul_assoc]
-
-theorem diag_mul {wt : ι → ℕ} {P : ι → E} (hP : IsPieces P) (hw : Function.Injective wt)
-    {x y : E} (hx : IsLower wt P x) (hy : IsLower wt P y) (i : ι) :
-    P i * (x * y) * P i = (P i * x * P i) * (P i * y * P i) := by
-  rw [piece_mul_mul hP]
-  refine Finset.sum_eq_single i (fun k _ hk => ?_) (fun h => absurd (Finset.mem_univ i) h)
-  rcases lt_trichotomy (wt i) (wt k) with h | h | h
-  · rw [hx i k h, zero_mul]
-  · exact absurd (hw h).symm hk
-  · rw [hy k i h, mul_zero]
-
-end GlobalTheory.CompanionTheory.Iwahori.Unitary
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.AntiInvolutionSwapsUpperLower =====

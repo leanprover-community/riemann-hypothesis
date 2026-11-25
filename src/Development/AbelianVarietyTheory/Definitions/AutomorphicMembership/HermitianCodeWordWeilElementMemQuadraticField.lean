@@ -88,33 +88,6 @@ open Formalism.BasicNotions Formalism.L2.DIV GlobalTheory.IndefiniteRowSideFullH
 
 variable {ι : Type} [Fintype ι] {n n' : ℕ}
 
-theorem fockS_re_nonneg {σ : Type} (f : MvPolynomial σ ℂ) : 0 ≤ (fockS f f).re := by
-  obtain ⟨r, hr, h⟩ := TensorPlaceNorm.fockS_self_nonneg f
-  rw [h, Complex.ofReal_re]; exact hr
-
-theorem fockS_re_pos' {σ : Type} {f : MvPolynomial σ ℂ} (hf : f ≠ 0) : 0 < (fockS f f).re := by
-  have : (fockS f f).re = ∑ m ∈ f.support, ‖f.coeff m‖ ^ 2 * (mfact m : ℝ) := by
-    have e : fockS f f = ((∑ m ∈ f.support, ‖f.coeff m‖ ^ 2 * (mfact m : ℝ) : ℝ) : ℂ) := by
-      unfold fockS
-      push_cast
-      refine Finset.sum_congr rfl fun m _ => ?_
-      rw [← Complex.conj_mul']
-      rfl
-    rw [e, Complex.ofReal_re]
-  rw [this]
-  refine Finset.sum_pos (fun m hm => mul_pos (pow_pos (norm_pos_iff.mpr (mem_support_iff.mp hm)) 2) ?_)
-    (support_nonempty.mpr hf)
-  exact_mod_cast Finset.prod_pos fun k _ => Nat.factorial_pos _
-
-theorem fockS_conj_symm {σ : Type} (f g : MvPolynomial σ ℂ) : (starRingEnd ℂ) (fockS g f) = fockS f g := by
-  classical
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [fockS_eq_sum g f (f.support ∪ g.support) Finset.subset_union_right,
-    fockS_eq_sum f g (f.support ∪ g.support) Finset.subset_union_left, map_sum]
-  refine Finset.sum_congr rfl fun m _ => ?_
-  simp only [map_mul, map_natCast, Complex.star_def, Complex.conj_conj]
-  ring
-
 def fockCore (σ : Type) : InnerProductSpace.Core ℂ (MvPolynomial σ ℂ) where
   inner f g := fockS f g
   conj_inner_symm f g := fockS_conj_symm f g
@@ -261,12 +234,10 @@ section Seen
 
 variable {X : Fields} {Pr : Primes X} (hPr : Pr.Ok) (u : Pr.Word)
 
-
 open Classical in
 def tauAt (w : HeightOneSpectrum (𝓞 X.K)) : Pr.vT u ≃ X.Tau :=
   if h : ∃ e : Pr.vT u ≃ X.Tau, ∀ P, SeesP w (e P) P.1 ∨ SeesPbar w (e P) P.1 then h.choose
   else Fintype.equivOfCardEq (by rw [Fintype.card_coe, hPr.vT_card u]; rfl)
-
 
 include hPr in
 theorem eq_of_sees {w : HeightOneSpectrum (𝓞 X.K)} {τ : X.Tau} {P P' : Pr.vT u} (h : SeesP w τ P.1 ∨ SeesPbar w τ P.1)
@@ -283,7 +254,6 @@ theorem eq_of_sees {w : HeightOneSpectrum (𝓞 X.K)} {τ : X.Tau} {P P' : Pr.vT
   · refine Subtype.ext ?_
     rw [← GlobalTheory.CharVal.conjP_conjP' P.1, ← GlobalTheory.CharVal.conjP_conjP' P'.1]
     exact congrArg conjPrime₂ (h.symm.trans h')
-
 
 include hPr in
 alias T_mem_vT := _root_.Formalism.L2.Col.T_mem
@@ -364,7 +334,6 @@ theorem exists_embQbar : ∃ ρ : TaylorLogMetric.Qbar →ₐ[ℚ] ℂ, ∀ x : 
   rw [← h _ (_root_.GlobalTheory.ThetaAlgebraic.hom_mem σ₀ x) ⟨x, rfl⟩, GlobalTheory.ThetaConj.cj_of_mem (GlobalTheory.Glob.imM σ₀) _ (x := σ₀ x) ⟨x, rfl⟩]
   exact GlobalTheory.Glob.rhoOf_imEquiv σ₀ s x
 
-
 open Classical in
 def embQbar : TaylorLogMetric.Qbar →ₐ[ℚ] ℂ := if s = σ₀ then TaylorLogMetric.Qbar.val else (exists_embQbar σ₀ s).choose
 
@@ -423,7 +392,6 @@ variable {X : Fields} {Pr : Primes X} {R : Ranks}
   (xi0 : X.E) (du : ℕ) (Ds Gp : ℝ)
 
 variable (hPr : Pr.Ok) (W : Wts X Pr.Word R) (A : Amb X) {Pl : Rows.Places X.K} (plEq : Pl.Pl ≃ HeightOneSpectrum (𝓞 X.K))
-
 
 section Val
 

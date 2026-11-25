@@ -193,7 +193,6 @@ structure Sh : Type where
 
 def Sh.toMod {Z : Mdl Y i₀} (F : Z.Sh) : Z.X.Modules := cokernel F.φ
 
-
 open Classical in
 def ofMod (F : Z.X.Modules) : Z.Sh :=
   if h : ∃ S : Z.Sh, Nonempty (S.toMod ≅ F) then h.choose else ⟨0, 0, 0, 0, 0⟩
@@ -219,9 +218,6 @@ def Corr (Z₁ Z₂ : Mdl Y i₀) : Prop := Z₂.i.l.Dvd Z₁.i.l ∧ Z₂.i.c.F
 
 def IsMap (Z₁ Z₂ : Mdl Y i₀) (f : Z₁.X ⟶ Z₂.X) : Prop :=
   Corr Z₁ Z₂ ∧ ∀ (k : Type) [Field k] (w : Sp k ⟶ Z₁.X), Set.range w ⊆ Z₁.opn → NatImg Z₁ Z₂ w (w ≫ f)
-
-
-theorem NatCorr.refl (Z : Mdl Y i₀) : NatCorr Z Z := ⟨⟨dvd_rfl, le_rfl, dvd_rfl⟩, le_rfl, fun _ _ hk _ _ => hk⟩
 
 def IsLvl (i₀ i : Idx H p) : Option ℕ → Prop
   | none => i = i₀

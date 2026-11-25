@@ -805,9 +805,6 @@ def coordB (p : Fin n) : (step X z).V →ₗ[ℂ] X.V := ∑ a, B.Ui p a • com
 theorem coordB_apply (p : Fin n) (u : (step X z).V) : coordB X B z p u = ∑ a, B.Ui p a • comp0 X z a u := by
   simp [coordB, LinearMap.sum_apply]
 
-theorem component_zero_matrix_unit (i a b : Fin n) (u : (step X z).V) :
-    comp0 X z i ((step X z).E a b u) = X.E a b (comp0 X z i u) + if i = a then comp0 X z b u else 0 := rfl
-
 theorem component_zero_matrix_action (i : Fin n) (Y : Matrix (Fin n) (Fin n) ℂ) (u : (step X z).V) :
     comp0 X z i (actM (step X z).E Y u) = actM X.E Y (comp0 X z i u) + ∑ b, Y i b • comp0 X z b u := by
 

@@ -165,10 +165,6 @@ def level (H : Host E) (A : ℕ) (hA : 0 < A) : Level H where
   A := A
   A_pos := hA
 
-@[simp] theorem level_M (H : Host E) (A : ℕ) (hA : 0 < A) : (level H A hA).M = H.d + 4 := rfl
-
-@[simp] theorem level_A (H : Host E) (A : ℕ) (hA : 0 < A) : (level H A hA).A = A := rfl
-
 instance instNonemptyLevel (H : Host E) : Nonempty (Level H) := ⟨level H 1 one_pos⟩
 
 end GlobalTheory.HostModel

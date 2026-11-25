@@ -274,9 +274,6 @@ def twForm (σ : O ≃+* O) (n : ℕ) :
     simp only [RingEquiv.symm_apply_apply]
   map_add' _ _ := LinearMap.ext₂ fun a b => by simp
 
-@[simp] theorem twForm_apply (σ : O ≃+* O) (n : ℕ) (β : LinearMap.BilinForm ℤ (Fin n → O)) (a b : Fin n → O) :
-    twForm σ n β a b = β (fun j => σ (a j)) (fun j => σ (b j)) := rfl
-
 theorem twForm_mem_balForms {bar : O → O} (hb : CMOrd O bar) (σ : O ≃+* O) {n : ℕ}
     {β : LinearMap.BilinForm ℤ (Fin n → O)}
     (h : β ∈ balForms bar (Fin n → O)) : twForm σ n β ∈ balForms bar (Fin n → O) := by
@@ -565,12 +562,6 @@ private theorem finrank_int_eq_mul_finrank (O : Type) [CommRing O] [IsDomain O] 
       (LocalizedModule.mkLinearMap (nonZeroDivisors O) X) le_rfl
   rw [← e1, ← e2, ← e3, e4, e5, e6]
 
-theorem finrank_int_eq_fraction_mul (O : Type) [CommRing O] [IsDomain O] [CharZero O] [Module.Finite ℤ O]
-    (K : Type) [Field K] [CharZero K] [Algebra O K] [IsFractionRing O K]
-    (X : Type) [AddCommGroup X] [Module O X] :
-    Module.finrank ℤ X = Module.finrank ℚ K * Module.finrank O X := by
-  rw [finrank_int_eq_mul_finrank O X, IsFractionRing.finrank_eq ℤ ℚ O K]
-
 private theorem isTorsionFree_int_of_isTorsionFree (O : Type) [CommRing O] [IsDomain O] [CharZero O]
     (Y : Type) [AddCommGroup Y] [Module O Y] [Module.IsTorsionFree O Y] :
     Module.IsTorsionFree ℤ Y :=
@@ -731,7 +722,6 @@ namespace GlobalTheory.CompanionTheory.Ar.Fan.CellFaces
 
 variable {O : Type} [CommRing O] {bar : O → O} {ψ : InvFun O}
   {X : Type} [AddCommGroup X] [Module O X] [Module.Finite O X]
-
 
 theorem est_at {m : ℕ} {γ : Fin m → LinearMap.BilinForm ℤ X} {N : ℕ} {ℓ h : LinearMap.BilinForm ℤ X →ₗ[ℤ] ℤ}
     (hstr : ∀ β ∈ balForms bar X, (∀ y, 0 ≤ β y y) → N * ψ.evalZ β = ℓ β →

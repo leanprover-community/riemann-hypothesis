@@ -56,14 +56,6 @@ theorem cE_cE (x : D.host.E) : cE D (cE D x) = x := star_star x
 theorem cA_inc (x : D.host.E) : cA D (incA D x) = incA D (cE D x) := by
   simp [cA, incA, sigR, inclR]
 
-theorem cA_cA (x : AE D) : cA D (cA D x) = x := by
-  induction x using TensorProduct.induction_on with
-  | zero => simp
-  | tmul a e =>
-    have : D.sp.cm.sig (D.sp.cm.sig e) = e := star_star e
-    simp [cA, sigR, this]
-  | add x y hx hy => rw [map_add (f := _), map_add (f := _), hx, hy]
-
 theorem conj_map_mem_unitaryGroup {R : Type} [CommRing R] {n : ℕ} (c : R →+* R) (J : Matrix (Fin n) (Fin n) R) (P g : GL (Fin n) R)
     (hP : Formalism.UG.cT c P.val * J * P.val = J.map c) (hg : g ∈ Formalism.UG.UJ c J) :
     (MulAut.conj P).toMonoidHom.comp (Matrix.GeneralLinearGroup.map c) g ∈ Formalism.UG.UJ c J := by

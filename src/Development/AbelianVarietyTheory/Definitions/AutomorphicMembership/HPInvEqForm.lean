@@ -273,25 +273,7 @@ def tanAct (g : GL (Fin p ⊕ Fin q) ℂ) (z ξ : Matrix (Fin p) (Fin q) ℂ) : 
 def blkMet (A : Matrix (Fin p) (Fin p) ℂ) (B : Matrix (Fin q) (Fin q) ℂ) :
     Matrix (Fin p ⊕ Fin q) (Fin p ⊕ Fin q) ℂ := fromBlocks A 0 0 B
 
-theorem blkMet_posDef {A : Matrix (Fin p) (Fin p) ℂ} {B : Matrix (Fin q) (Fin q) ℂ} (hA : A.PosDef)
-    (hB : B.PosDef) : (blkMet A B).PosDef := by
-  unfold blkMet
-  have hpsd : (fromBlocks A 0 0 B).PosSemidef := by
-    let _ := Matrix.invertibleOfIsUnitDet A (isUnit_iff_ne_zero.mpr hA.det_pos.ne')
-    have h0 : (0 : Matrix (Fin q) (Fin p) ℂ) = (0 : Matrix (Fin p) (Fin q) ℂ)ᴴ := by simp
-    rw [h0]
-    exact (Matrix.PosDef.fromBlocks₁₁ _ _ hA).2 (by simpa using hB.posSemidef)
-  refine hpsd.posDef_iff_isUnit.2 ?_
-  rw [Matrix.isUnit_iff_isUnit_det, det_fromBlocks_zero₁₂]
-  exact (isUnit_iff_ne_zero.mpr hA.det_pos.ne').mul (isUnit_iff_ne_zero.mpr hB.det_pos.ne')
-
 def hodge (c : ℝ) (z : Matrix (Fin p) (Fin q) ℂ) : Matrix (Fin p ⊕ Fin q) (Fin p ⊕ Fin q) ℂ :=
   blkMet ((c : ℂ) • (hP z)⁻¹) ((c : ℂ) • hQ z)
-
-theorem hodge_posDef {c : ℝ} (hc : 0 < c) {z : Matrix (Fin p) (Fin q) ℂ} (hz : z ∈ hcDom p q) :
-    (hodge c z).PosDef := by
-  unfold hodge
-  have hc' : (0 : ℂ) < (c : ℂ) := Complex.zero_lt_real.mpr hc
-  exact blkMet_posDef ((hP_inv_posDef hz).smul hc') ((show (hQ z).PosDef from hz).smul hc')
 
 end GlobalTheory.HodgeDomain

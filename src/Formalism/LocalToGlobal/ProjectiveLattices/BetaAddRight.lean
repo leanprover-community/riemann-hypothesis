@@ -47,8 +47,6 @@ def beLin (hA : BetaAdd Y p) (A : DatAt Y P) : A.Ylat →ₗ[ℤ] A.Ylat →ₗ[
       ext b
       simp [hA C P A a a' b])).toIntLinearMap
 
-theorem beLin_apply (hA : BetaAdd Y p) (A : DatAt Y P) (a b : A.Ylat) : A.beLin hA a b = A.beta a b := rfl
-
 end DatAt
 
 end Formalism.L2.Pj
