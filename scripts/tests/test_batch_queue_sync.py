@@ -42,6 +42,19 @@ def short(name):
 MAIN = sha("main")
 
 
+
+def setUpModule():
+    # These tests are written for the conflict labels switched on, as they are once the
+    # description check can say what a batch includes. `ConflictLabelsOff` covers them off.
+    global _conflicts_were
+    _conflicts_were = batch._labels.CONFLICT_LABELS_ON
+    batch._labels.CONFLICT_LABELS_ON = True
+
+
+def tearDownModule():
+    batch._labels.CONFLICT_LABELS_ON = _conflicts_were
+
+
 class Fake(batch.GitHub):
     """Just enough of the REST API. `inside` says which commits each commit contains."""
 
@@ -1862,6 +1875,29 @@ class DescriptionCheck(unittest.TestCase):
         self.assertIn("#13", self.checks(gh)[0])
         sync(gh)
         self.assertIn("Nothing to report", self.checks(gh)[0])
+
+class ConflictLabelsOff(unittest.TestCase):
+    """While the conflict labels are switched off, the sync neither starts their workflow nor
+    leaves anything to it: entries under a heading about conflicts are told like any other."""
+
+    def setUp(self):
+        batch._labels.CONFLICT_LABELS_ON = False
+
+    def tearDown(self):
+        batch._labels.CONFLICT_LABELS_ON = True
+
+    def test_nothing_is_started_and_conflict_entries_are_told(self):
+        gh = Fake()
+        gh.add_pull(11, "head11")
+        gh.add_pull(21, "head21")
+        by_hand(gh, 11)
+        gh.pulls[1018]["body"] = "Left out because they conflict with a PR earlier in the batch:\n\n- #21 a (@x): conflicts with #11.\n"
+        log = sync(gh)
+        self.assertEqual(gh.dispatched, [])
+        self.assertNotIn("started conflict-labels.yml", log)
+        self.assertEqual(len([b for b in gh.said(21) if b.startswith("<!-- batch-queue-left-out")]), 1)
+
+
 class ConflictWorkflow(unittest.TestCase):
     def test_a_batch_first_labelled_building_starts_the_conflict_labels(self):
         gh = Fake()

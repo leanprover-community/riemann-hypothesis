@@ -32,6 +32,12 @@ WAITING = "awaiting-author"
 MAIN_CONFLICT = "main-conflict"
 # Conflicts with a batch that is being built. `conflict-labels.py` keeps it up to date.
 BATCH_CONFLICT = "batch-conflict"
+# Whether `conflict-labels.py` keeps those two labels up to date, and so whether the batch queue
+# leaves to it the pull requests a batch's description lists under a heading about conflicts.
+# It is off until the description check can tell it which pull requests a batch says it
+# includes: without that, it would tell the author of a pull request whose changes a batch
+# carries, merged with `main`, to merge that batch's branch.
+CONFLICT_LABELS_ON = False
 
 # What a pull request in a batch assembled by hand carries, `building` from before the batch's
 # pull request and its members were labelled differently included.

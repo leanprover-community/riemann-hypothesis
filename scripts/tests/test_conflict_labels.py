@@ -9,7 +9,9 @@ from pathlib import Path
 import re
 import subprocess
 import tempfile
+import sys
 import unittest
+from unittest import mock
 from unittest.mock import patch
 from urllib.parse import unquote
 
@@ -325,6 +327,19 @@ class Included(unittest.TestCase):
     def test_included_gets_neither_label(self):
         found = labels.decide(dict(pr(1, mergeable="CONFLICTING"), included={900}), "main", {900: batch(900)}, {900: CONFLICT})
         self.assertEqual((found["main"], found["batch"]), (False, False))
+
+class SwitchedOff(unittest.TestCase):
+    def test_a_real_run_does_nothing_while_the_labels_are_off(self):
+        was = labels._labels.CONFLICT_LABELS_ON
+        labels._labels.CONFLICT_LABELS_ON = False
+        try:
+            with mock.patch.object(sys, "argv", ["conflict-labels.py", "--repo", REPO]), \
+                    mock.patch.object(labels, "sync", side_effect=AssertionError("ran")), \
+                    contextlib.redirect_stdout(io.StringIO()) as out:
+                labels.main()
+        finally:
+            labels._labels.CONFLICT_LABELS_ON = was
+        self.assertIn("switched off", out.getvalue())
 
 
 class Runs(unittest.TestCase):

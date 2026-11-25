@@ -618,6 +618,11 @@ def main():
 
     gh = GitHub(args.repo, args.dry_run)
     started, failure = time.monotonic(), None
+    if not _labels.CONFLICT_LABELS_ON and not args.dry_run:
+        # Switched off in `batch-labels.py`; a dry run still shows what it would do.
+        sys.stdout.write("- the conflict labels are switched off (`CONFLICT_LABELS_ON` in `batch-labels.py`): "
+                         "nothing to do\n")
+        return
     try:
         log = sync(gh, args.pr)
         failure = 1 if gh.failed else None

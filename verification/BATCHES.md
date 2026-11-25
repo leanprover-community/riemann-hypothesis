@@ -21,8 +21,8 @@ The sections below give the details.
 | `batch queue` | a pull request wanted in a batch | a maintainer or reviewer comments `batch` or `p` | `-batch`; it joins a batch assembled by hand (in exchange for `batch-building`); its queued commit lands; it is closed |
 | `priority` | a queued pull request that goes first | `p` | by hand |
 | `awaiting-author` | a pull request handed back to its author | `aa`; it is pushed to while in a batch; the description leaves it out; a batch lands an older commit of it; `batch-conflict` is first put on it | `ready`, by the author or a maintainer |
-| `main-conflict` | a pull request that conflicts with `main` | GitHub says so, unless it declares `depends on:` an open batch | the conflict is gone, or it declares that dependency |
-| `batch-conflict` | a pull request that conflicts with a batch being built, the outermost of its stack | git cannot merge it with the batch's head | the conflict is gone; the batch lands or is closed; it joins the batch |
+| `main-conflict` *(switched on by #1707)* | a pull request that conflicts with `main` | GitHub says so, unless it declares `depends on:` an open batch | the conflict is gone, or it declares that dependency |
+| `batch-conflict` *(switched on by #1707)* | a pull request that conflicts with a batch being built, the outermost of its stack | git cannot merge it with the batch's head | the conflict is gone; the batch lands or is closed; it joins the batch |
 
 `batch queue`, `building`, `batch-building`, `frozen`, `awaiting-author` and `batch-conflict`
 keep a pull request out of the inbox (`inbox`, see `.github/workflows/inbox.yml`). The names are in `scripts/batch-labels.py`.
@@ -175,6 +175,11 @@ of the sync job in `.github/workflows/batch-queue.yml` and of `.github/workflows
 name some of them as well.
 
 ## Conflicts with main and with the batch
+
+*Switched off until #1707 lands:* `CONFLICT_LABELS_ON` in `scripts/batch-labels.py` is `False`, so
+the workflow below does nothing outside a dry run, and the batch queue tells pull requests listed
+under a heading about conflicts what the description says, as it does for any other heading.
+#1707 lets the workflow skip the pull requests a batch says it includes, and switches it on.
 
 Another workflow (`.github/workflows/conflict-labels.yml`, which runs
 `scripts/conflict-labels.py`) labels the open pull requests into `main` that are not drafts and
