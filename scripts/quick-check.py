@@ -169,7 +169,7 @@ def run(args):
     if warm:subprocess.run(command+['/opt/lean/bin/leantar','--jobs',str(host['jobs']),'-f','-x','-j','-'],input=json.dumps(warm),text=True,env=ci.trusted_env(),check=True)
     env=ci.trusted_env()
     with(output/'build.log').open('wb')as log:
-        code=ci.supervised_build(command+['/opt/lean/bin/lake','--packages',overrides,'--rehash','build',*['+'+m for m in selected['targets']]],env,log,[work],10,timeout_seconds=host['seconds'])
+        code=ci.supervised_build(command+['/opt/lean/bin/lake','--packages',overrides,'build',*['+'+m for m in selected['targets']]],env,log,[work],10,timeout_seconds=host['seconds'])
     status='changed_roots_pass'if code==0 else'deferred_budget'if code in(124,137,143)else'changed_roots_fail'
     write(output/'result.json',{'status':status,'scope':'changed-modules-only','full_build':False,'exit_code':code,
                                'candidate_head':selected['candidate_head'],'targets':selected['targets'],'ancestor_modules':len(selected['closure']),

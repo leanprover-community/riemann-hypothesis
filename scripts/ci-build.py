@@ -959,7 +959,7 @@ def main():
             with (work / "build.log").open("wb") as log:
                 build_log_link(work / "build.log", output / "build.log")
                 build_exit_code = supervised_build(
-                    resource_prefix + command + ["/opt/lean/bin/lake", "--packages", overrides, "--rehash", "build", "-o", "/work/result/outputs.jsonl"],
+                    resource_prefix + command + ["/opt/lean/bin/lake", "--packages", overrides, "build", "-o", "/work/result/outputs.jsonl"],
                     build_environment, log, (work, output), args.reserve_disk_gib, output / "build.log")
         mapping_file = result / "outputs.jsonl"
         if build_exit_code:

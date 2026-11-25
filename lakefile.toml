@@ -10,7 +10,7 @@ moreLeanArgs = ["--tstack=400000"]
 autoImplicit = false
 relaxedAutoImplicit = false
 maxSynthPendingDepth = 3
-pp.unicode.fun = true
+pp.unicode.fun = false
 maxHeartbeats = 4000000
 
 [[require]]

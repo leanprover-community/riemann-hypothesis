@@ -14,7 +14,7 @@ import tomllib
 SPEC = importlib.util.spec_from_file_location("complete_build_ci", Path(__file__).with_name("ci-build.py"))
 ci = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(ci)
-COMMAND = ["lake", "--rehash", "build", "-o", "<outputs>"]
+COMMAND = ["lake", "build", "-o", "<outputs>"]
 INPUT_ATTESTATION = "git-blobs-and-locked-dependencies-v1"
 
 
@@ -92,7 +92,7 @@ def main():
         soft = hard if target is None else (target if hard == resource.RLIM_INFINITY else min(target, hard))
         resource.setrlimit(kind, (soft, hard))
     with log.open("wb") as stream:
-        code = subprocess.run([str(toolchain / "bin/lake"), "--rehash", "build", "-o", str(mapping)],
+        code = subprocess.run([str(toolchain / "bin/lake"), "build", "-o", str(mapping)],
                               cwd=project, env=env, stdout=stream, stderr=subprocess.STDOUT).returncode
     if code:
         return ci.normalized_exit_code(code)
