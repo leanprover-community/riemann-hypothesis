@@ -2617,6 +2617,24 @@ class StackedBatches(unittest.TestCase):
         self.assertEqual([len([body for body in gh.said(number) if body.startswith("<!-- batch-queue-unfrozen 1050")])
                           for number in (11, 12, 13)], [1, 1, 1])
 
+    def test_when_the_upper_batch_cannot_be_looked_through_the_closed_lower_one_waits(self):
+        gh = self.stacked()
+        sync(gh)
+        gh.close(1018)
+        gh.writes = []
+        gh.left = batch.RESERVE - 1
+        log = sync(gh)
+        self.assertIn("batch #1018 was closed without merging, and a batch stacked on it could not be looked "
+                      "through: its pull requests keep their labels, and the next run settles them", log)
+        self.assertEqual(self.labels(gh, 11, 12, 1018), [IN, IN, {BUILDING}])
+        self.assertFalse([path for method, path, _ in gh.writes if "/labels" in path])
+        # The next run, with requests to spare, settles it as if nothing had stood in the way.
+        gh.left = 900
+        sync(gh)
+        self.assertEqual(self.labels(gh, 11, 12, 13, 1018, 1050), [IN, IN, IN, set(), {BUILDING, LATEST}])
+        self.assertFalse([path for method, path, _ in gh.writes
+                          if path.startswith(("issues/11/labels", "issues/12/labels"))])
+
     def test_a_claim_on_a_batch_whose_branch_it_shares_nothing_with_is_warned_about(self):
         gh = Fake()
         queue(gh, 11, 13)

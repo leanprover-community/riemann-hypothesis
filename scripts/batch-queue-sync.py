@@ -1522,6 +1522,18 @@ def stranded(gh, done, hand, pulls, log):
                            "without merging")
 
 
+def unsettled(gh, done, hand, pulls):
+    """The batches among `done` closed without being merged that an open batch says it is stacked
+    on, when that open batch could not be looked through in this run (see `look_through`). What
+    such a batch contained may be held by the one stacked on it, which is not known yet: taking
+    `building` off its members now would only see the next run put it back. They are left as
+    they are, the closed batch keeping `building` itself, and the next run settles them."""
+    open_ = {batch["number"] for batch in hand}
+    return {gone["number"] for gone in done if gone["fate"] == "closed"
+            for batch in hand
+            if "old" not in batch and gone["number"] in stacked_on(gh, pulls[batch["number"]], open_ | {gone["number"]})[0]}
+
+
 def mark_latest(gh, hand, pulls, log):
     """Label `latest batch` the outermost batch of each stack, and take the label off every
     other open pull request. A batch that was merged or closed loses it in `finish`. Returns
@@ -1999,7 +2011,14 @@ def assemble(gh, now):
     requeued = False
     for batch in hand:
         requeued |= keep_in_step(gh, batch, pulls, held, main, log)
-    more, cleared = finish(gh, pulls, held, leftover, main, main_sha, done, closed_labels, log)
+    unsure = unsettled(gh, done, hand, pulls)
+    for number in sorted(unsure):
+        log.append(f"batch #{number} was closed without merging, and a batch stacked on it could not be looked "
+                   "through: its pull requests keep their labels, and the next run settles them")
+    more, cleared = finish(gh, pulls, held, leftover, main, main_sha,
+                           [batch for batch in done if batch["number"] not in unsure], closed_labels, log)
+    # `unlabel_closed` leaves these alone too.
+    cleared |= unsure
     requeued |= more
     unlabel_closed(gh, closed, cleared, log)
     stranded(gh, done, hand, pulls, log)
