@@ -362,23 +362,12 @@ section Exponents
 variable {n : ℕ}
 
 theorem cone_anti {m : ℕ} {l : Fin m → ℤ} (hl : Cone l) : Antitone l := by
-  have key : ∀ d : ℕ, ∀ i j : Fin m, j.val = i.val + d → l j ≤ l i := by
-    intro d
-    induction d with
-    | zero =>
-      intro i j h
-      rw [show j = i from Fin.ext (by simpa using h)]
-    | succ d ih =>
-      intro i j h
-      have hlt : i.val + d < m := by
-        have := j.2
-        omega
-      have h1 := ih i ⟨i.val + d, hlt⟩ rfl
-      have h2 := hl.1 ⟨i.val + d, hlt⟩ j (by simp only; omega)
+  cases m with
+  | zero => exact fun i => Fin.elim0 i
+  | succ m =>
+    exact Fin.antitone_iff_succ_le.mpr fun i => by
+      have := hl.1 i.castSucc i.succ (by simp)
       omega
-  intro i j hij
-  have h : i.val ≤ j.val := hij
-  exact key (j.val - i.val) i j (by omega)
 
 theorem wexp_add (l l' : Fin (n / 2) → ℤ) : wexp n (l + l') = wexp n l + wexp n l' := by
   funext i
