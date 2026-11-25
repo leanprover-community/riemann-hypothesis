@@ -69,20 +69,6 @@ namespace GlobalTheory.SplitCharacter
 
 open GlobalTheory.NormSum.VacMove
 
-theorem mem_of_local {G : Type} [AddCommGroup G] (T : AddSubgroup G) (x : G)
-    (h : ∀ q : ℕ, q.Prime → ∃ m : ℕ, Nat.Coprime m q ∧ m • x ∈ T) : x ∈ T := by
-  by_contra hx
-  have h1 : addOrderOf (QuotientAddGroup.mk x : G ⧸ T) ≠ 1 := by
-    intro h1
-    rw [AddMonoid.addOrderOf_eq_one_iff, QuotientAddGroup.eq_zero_iff] at h1
-    exact hx h1
-  obtain ⟨q, hq, hd⟩ := Nat.exists_prime_and_dvd h1
-  obtain ⟨m, hm, hT⟩ := h q hq
-  have : addOrderOf (QuotientAddGroup.mk x : G ⧸ T) ∣ m := by
-    rw [addOrderOf_dvd_iff_nsmul_eq_zero, ← QuotientAddGroup.mk_nsmul, QuotientAddGroup.eq_zero_iff]
-    exact hT
-  exact (Nat.Prime.coprime_iff_not_dvd hq).1 hm.symm (hd.trans this)
-
 variable {D : D7}
 
 def vanish (D : D7) (q : ℕ) (hq : q.Prime) : Ideal (AE D) where
@@ -189,8 +175,6 @@ open NumberField Classical Formalism.BasicNotions Formalism.MainNotions Formalis
 open scoped BigOperators
 
 namespace GlobalTheory.FinWeil
-
-
 
 theorem exists_weil_of_vacuum (D : D7) (cc : Ideal (𝓞 D.host.K)) (δ : ℂ) (hc : Crv D cc δ) (N N' : ℕ)
     (e0 : VC D N N' → ℂ) (he : e0 ∈ Th D (tor0 D cc δ) (stdL D N) (stdL D N')) (h0 : e0 ≠ 0) (χ : HeckeU D N) (χ' : HeckeU D N') :

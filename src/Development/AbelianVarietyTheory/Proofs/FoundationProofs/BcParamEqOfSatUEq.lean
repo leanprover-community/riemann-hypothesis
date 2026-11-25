@@ -143,10 +143,6 @@ theorem IsParamVec.unique (hx : IsParamVec σ J L h ρ x B) (hx' : IsParamVec σ
   obtain rfl := he.1.unique he'.1
   exact bcParam_of_weylConj (((hα.of_chart he he').of_unif hU hU').unique hU' hβ)
 
-theorem HasParam.unique (hρ : HasParam σ J L h ρ B) (hρ' : HasParam σ J L h ρ B') : B = B' := by
-  obtain ⟨x, hx⟩ := hρ.exists_vec
-  exact hx.unique (hρ'.isParamVec hx.mem_fixed hx.ne_zero)
-
 theorem IsSysParam.unique {c : List ℤ → ℂ} (hc : IsSysParam σ n h c B) (hc' : IsSysParam σ n h c B') : B = B' := by
   rcases hc with ⟨hv, hB, hc⟩ | ⟨hw, τ, ϖ, α, hU, hτ, rfl, hc⟩ <;>
     rcases hc' with ⟨hv', hB', hc'⟩ | ⟨hw', τ', ϖ', β, hU', hτ', rfl, hc'⟩

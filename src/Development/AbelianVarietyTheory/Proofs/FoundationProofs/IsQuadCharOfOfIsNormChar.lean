@@ -61,31 +61,4 @@ theorem tendsto_under {K K' : Type} [Field K] [NumberField K] [Field K'] [Number
   rw [Ideal.dvd_iff_le, Ideal.map_le_iff_le_comap, ← e]
   exact le_rfl
 
-theorem fixes_or {F E Ω : Type} [Field F] [Field E] [Field Ω] [Algebra F E] [Algebra F Ω] [Algebra E Ω]
-    [IsScalarTower F E Ω] [IsAlgClosed Ω] [CharZero F] (h2 : Module.finrank F E = 2) (σ : G F Ω)
-    (hσ : ∃ e : E, σ (algebraMap E Ω e) ≠ algebraMap E Ω e) (τ : G F Ω) :
-    τ ∈ (res F Ω E).range ∨ σ⁻¹ * τ ∈ (res F Ω E).range := by
-  haveI : Module.Finite F E := Module.finite_of_finrank_pos (by omega)
-  have hfix : ∀ ρ : G F Ω, (∀ e : E, ρ (algebraMap E Ω e) = algebraMap E Ω e) → ρ ∈ (res F Ω E).range :=
-    fun ρ hρ => ⟨AlgEquiv.ofRingEquiv (f := ρ.toRingEquiv) hρ, AlgEquiv.ext fun _ => rfl⟩
-  let f : G F Ω → (E →ₐ[F] Ω) := fun ρ => (ρ : Ω →ₐ[F] Ω).comp (IsScalarTower.toAlgHom F E Ω)
-  have hf : ∀ ρ e, f ρ e = ρ (algebraMap E Ω e) := fun _ _ => rfl
-  have hcard : Fintype.card (E →ₐ[F] Ω) = 2 := by rw [AlgHom.card, h2]
-  obtain ⟨e₀, he₀⟩ := hσ
-  have h01 : f 1 ≠ f σ := fun h => he₀ (by have := DFunLike.congr_fun h e₀; rw [hf, hf] at this; exact this.symm)
-  by_cases h1 : f τ = f 1
-  · left
-    exact hfix τ fun e => by have := DFunLike.congr_fun h1 e; rw [hf, hf] at this; exact this
-  · by_cases h2' : f τ = f σ
-    · right
-      refine hfix _ fun e => ?_
-      have := DFunLike.congr_fun h2' e
-      rw [hf, hf] at this
-      rw [AlgEquiv.mul_apply, this]
-      exact σ.symm_apply_apply _
-    · exfalso
-      have : 2 < Fintype.card (E →ₐ[F] Ω) :=
-        Fintype.two_lt_card_iff.2 ⟨f 1, f σ, f τ, h01, Ne.symm h1, Ne.symm h2'⟩
-      omega
-
 end GlobalTheory.QuadNormChar

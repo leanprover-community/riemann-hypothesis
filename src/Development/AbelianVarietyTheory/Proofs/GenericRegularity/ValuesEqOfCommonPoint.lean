@@ -135,15 +135,6 @@ theorem comp_eq {h : GenFrEx Xo c} (C C' : FChart h) (ψ : C'.R →ₐ[c.F] Om C
     exact closure_minimal (Set.singleton_subset_iff.2 h1) (isClosed_of_mem_irreducibleComponents _ C'.Z.2)
   exact Subtype.ext (Set.Subset.antisymm h2 (C.Z.2.2 C'.Z.2.1 h2))
 
-theorem wchar_mul {J S : Type} [Fintype J] [CommRing S] (e : J → ℕ) (t t' : J → Sˣ) :
-    wchar e (t * t') = wchar e t * wchar e t' := by
-  simp [wchar, mul_pow, Finset.prod_mul_distrib]
-
-theorem wchar_map {J K S T : Type} [Fintype J] [Field K] [CommRing S] [CommRing T] [Algebra K S] [Algebra K T]
-    (φ : S →ₐ[K] T) (e : J → ℕ) (t : J → Sˣ) :
-    wchar e (fun i => Units.map (φ : S →* T) (t i)) = φ (wchar e t) := by
-  simp [wchar]
-
 theorem away_lift {K R T : Type} [Field K] [CommRing R] [Algebra K R] [Field T] [Algebra K T] (g : R)
     (φ : R →ₐ[K] T) (hφ : φ g ≠ 0) :
     ∃ m : Localization.Away g →ₐ[K] T, m.comp (IsScalarTower.toAlgHom K R (Localization.Away g)) = φ := by
@@ -168,72 +159,3 @@ theorem away_inj {K R T : Type} [Field K] [CommRing R] [Algebra K R] [CommRing T
   exact (IsLocalization.map_units _ n).mul_left_eq_zero.1 hm
 
 end GlobalTheory.Reg.ChartCompat
-
-namespace GlobalTheory.Reg
-open ChartCompat
-
-
-attribute [local instance 1100] Subalgebra.algebra OreLocalization.instAlgebra in
-attribute [local instance 100] IntermediateField.instAlgebraSubtypeMem in
-theorem FChart.compat : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l), EvLaws Xo c → ∀ h : GenFrEx Xo c, ∀ (C C' : FChart h) (L : Type) [Field L] [Algebra c.F L] (ψ : C.R →ₐ[c.F] L) (ψ' : C'.R →ₐ[c.F] L) (z z' : FrPt Xo c L) (t : Ix Dw → Lˣ), FrMap ψ C.y z → FrMap ψ' C'.y z' → FrBor t z z' → C.Z = C'.Z ∧ ∀ (e : Ix Dw → ℕ) (b : ∀ Z : Comp Xo c, Om Z) (hb : wchar e C.t * b C.Z ∈ C.R) (hb' : wchar e C'.t * b C'.Z ∈ C'.R), ψ' ⟨_, hb'⟩ = wchar e t * ψ ⟨_, hb⟩ := by
-  intro E _ _ _ H Dw l Xo c hev h C C' L _ _ ψ ψ' z z' t hz hz' hbor
-  have G := GlobalTheory.Reg.BorelGroupoid.frBor_groupoid E H Dw l Xo c
-  have U := GlobalTheory.Frames.frMap_unique_refl_iff E H Dw l Xo c
-  obtain ⟨g, hg, hopn⟩ := C'.opn C.R L ψ C.y z hz ⟨ψ', z', t⁻¹, hz', (G L).2.2.1 t z z' hbor⟩
-  have hg0 : g ≠ 0 := fun e => hg (by rw [e, map_zero])
-  have hg1 : C.R.val g ≠ 0 := fun e => hg0 (Subtype.ext e)
-  have hZ : C.Z = C'.Z := by
-    obtain ⟨ψ0, z0, t0, h1, h2⟩ := hopn (Om C.Z) C.R.val (Ne.isUnit hg1) C.yg C.gen
-    exact comp_eq C C' ψ0 z0 t0 h1 h2
-  refine ⟨hZ, ?_⟩
-  obtain ⟨Z, R, sm, frac, y, yg, tC, gen, bor, mono, opn⟩ := C
-  obtain ⟨Z', R', sm', frac', y', yg', tC', gen', bor', mono', opn'⟩ := C'
-  dsimp only at *
-  subst hZ
-  intro e b hb hb'
-  let S := Localization.Away g
-  let lam : R →ₐ[c.F] S := IsScalarTower.toAlgHom c.F R S
-  have hlam : IsUnit (lam g) := IsLocalization.Away.algebraMap_isUnit g
-  obtain ⟨mu, hmu⟩ : ∃ m : S →ₐ[c.F] Om Z, m.comp lam = R.val := away_lift g R.val hg1
-  obtain ⟨nu, hnu⟩ : ∃ m : S →ₐ[c.F] L, m.comp lam = ψ := away_lift g ψ hg
-  have hinj : Function.Injective mu := away_inj g mu (by rw [hmu]; exact Subtype.val_injective)
-  obtain ⟨w, hw⟩ := hev.bc R S lam y
-  obtain ⟨φ, v, s, hv, hs⟩ := hopn S lam hlam w hw
-
-  obtain ⟨vmu, hvmu⟩ := hev.bc S (Om Z) mu v
-  have m1 : FrMap mu w yg := frMap_cancel _ _ _ lam mu y w yg hw (by rw [hmu]; exact gen)
-  have b1 := frBorBC _ _ mu s v w vmu yg hs hvmu m1
-  have m2 : FrMap (mu.comp φ) y' vmu := frMap_trans _ _ _ φ mu y' v vmu hv hvmu
-  have b2 := (G _).2.1 _ _ _ _ _ b1 ((G _).2.1 _ _ _ _ _ ((G _).2.2.1 _ _ _ bor) bor')
-  have e1 : mu.comp φ = R'.val := mono' _ _ _ _ _ _ m2 gen' b2
-  have e2 : vmu = yg' := (U _ _ R'.val y').1 _ _ (e1 ▸ m2) gen'
-  subst e2
-  have e3 : tC = tC' * fun i => Units.map (mu : S →* Om Z) (s i) :=
-    (G _).2.2.2 _ _ _ _ bor ((G _).2.1 _ _ _ _ _ bor' b1)
-
-  obtain ⟨vnu, hvnu⟩ := hev.bc S L nu v
-  have m3 : FrMap nu w z := frMap_cancel _ _ _ lam nu y w z hw (by rw [hnu]; exact hz)
-  have b3 := frBorBC _ _ nu s v w vnu z hs hvnu m3
-  have m4 : FrMap (nu.comp φ) y' vnu := frMap_trans _ _ _ φ nu y' v vnu hv hvnu
-  have b4 := (G _).2.1 _ _ _ _ _ b3 hbor
-  have e4 : nu.comp φ = ψ' := mono' _ _ _ _ _ _ m4 hz' b4
-  have e5 : vnu = z' := (U _ _ ψ' y').1 _ _ (e4 ▸ m4) hz'
-  subst e5
-  have e6 : (fun i => Units.map (nu : S →* L) (s i)) * t = 1 :=
-    (G _).2.2.2 _ _ _ _ b4 ((G _).1 _)
-  have e7 : lam ⟨_, hb⟩ = wchar e s * φ ⟨_, hb'⟩ := by
-    apply hinj
-    have a1 : mu (lam ⟨_, hb⟩) = wchar e tC * b Z := DFunLike.congr_fun hmu ⟨_, hb⟩
-    have a2 : mu (φ ⟨_, hb'⟩) = wchar e tC' * b Z := DFunLike.congr_fun e1 ⟨_, hb'⟩
-    have a0 : wchar e tC = wchar e tC' * mu (wchar e s) :=
-      (congrArg (wchar e) e3).trans ((wchar_mul _ _ _).trans (congrArg _ (wchar_map mu e s)))
-    rw [map_mul, a1, a2]
-    linear_combination (b Z) * a0
-  have a3 : ψ ⟨_, hb⟩ = nu (wchar e s) * ψ' ⟨_, hb'⟩ := by
-    rw [← hnu, ← e4, AlgHom.comp_apply, AlgHom.comp_apply, e7, map_mul]
-  have a4 : nu (wchar e s) * wchar e t = 1 := by
-    rw [← wchar_map, ← wchar_mul, e6]
-    simp [wchar]
-  linear_combination (-(wchar e t)) * a3 - (ψ' ⟨_, hb'⟩) * a4
-
-end GlobalTheory.Reg

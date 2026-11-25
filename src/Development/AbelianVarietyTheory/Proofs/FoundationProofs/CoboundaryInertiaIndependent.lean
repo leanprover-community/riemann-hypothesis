@@ -61,12 +61,6 @@ namespace GlobalTheory.PadicIntegralNormLeOne
 
 open Polynomial
 
-theorem norm_algebraMap_padicInt_le_one {l : ℕ} [Fact (Nat.Prime l)] (a : ℤ_[l]) :
-    ‖algebraMap ℤ_[l] (PadicAlgCl l) a‖ ≤ 1 := by
-  rw [IsScalarTower.algebraMap_apply ℤ_[l] ℚ_[l] (PadicAlgCl l),
-    PadicAlgCl.norm_extends]
-  exact PadicInt.norm_le_one a
-
 theorem norm_le_one_of_isIntegral {l : ℕ} [Fact (Nat.Prime l)] (x : PadicAlgCl l)
     (hx : IsIntegral ℤ_[l] x) : ‖x‖ ≤ (1 : ℝ) := by
   apply GlobalTheory.PadicNormCastBounds.norm_le_one_of_isIntegral <;> assumption

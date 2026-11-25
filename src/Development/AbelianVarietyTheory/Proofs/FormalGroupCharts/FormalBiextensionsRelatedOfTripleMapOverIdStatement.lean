@@ -402,19 +402,6 @@ section ChartTransition
 variable {V : Type} [CommRing V] {G : Over (Sp V)} {d : ℕ}
   {x y z : ∀ m, jOG (𝟙 (Sp V)) d m 1 ⟶ G}
 
-/-- Successive coordinate relations compose by substitution of the second series into the first. -/
-theorem coordRel_comp {φ ψ : Pt V 1 d}
-    (hφ0 : ∀ i, MvPowerSeries.constantCoeff (φ i) = 0)
-    (hψ0 : ∀ i, MvPowerSeries.constantCoeff (ψ i) = 0)
-    (hφ : CoordRel x y φ) (hψ : CoordRel y z ψ) : CoordRel x z (comp1 φ ψ) := by
-  intro m
-  change z m = CoordLaw.sub1 m (comp1 φ ψ) ≫ x m
-  calc
-    z m = CoordLaw.sub1 m ψ ≫ y m := hψ m
-    _ = (CoordLaw.sub1 m ψ ≫ CoordLaw.sub1 m φ) ≫ x m := by
-      rw [show y m = CoordLaw.sub1 m φ ≫ x m from hφ m, Category.assoc]
-    _ = _ := by rw [CoordLaw.jetSchemeMap_singlePoint_comp_singlePoint m ψ φ hψ0 hφ0]
-
 variable [GrpObj G]
 
 /-- A universal chart determines a coordinate substitution from its effect on all jets. -/
@@ -440,16 +427,6 @@ theorem chartTransition_coordRel (hx : GlobalTheory.PowGerm.IsUnivJ G (Fin 1 × 
     CoordRel x y (chartTransition hx hy) :=
   (exists_coordRel_of_isUnivJ V G d x y hx hy).choose_spec.choose_spec.2.1
 
-theorem chartTransition_comp (hx : GlobalTheory.PowGerm.IsUnivJ G (Fin 1 × Fin d) x)
-    (hy : GlobalTheory.PowGerm.IsUnivJ G (Fin 1 × Fin d) y)
-    (hz : GlobalTheory.PowGerm.IsUnivJ G (Fin 1 × Fin d) z) :
-    comp1 (chartTransition hx hy) (chartTransition hy hz) = chartTransition hx hz := by
-  have hxy := chartTransition_const hx hy
-  have hyz := chartTransition_const hy hz
-  exact coordRel_unique hx (CoordLaw.cc_comp1 hxy hyz) (chartTransition_const hx hz)
-    (coordRel_comp hxy hyz (chartTransition_coordRel hx hy) (chartTransition_coordRel hy hz))
-    (chartTransition_coordRel hx hz)
-
 theorem chartTransition_inv (hx : GlobalTheory.PowGerm.IsUnivJ G (Fin 1 × Fin d) x)
     (hy : GlobalTheory.PowGerm.IsUnivJ G (Fin 1 × Fin d) y) :
     IsInvPair (chartTransition hx hy) (chartTransition hy hx) := by
@@ -460,10 +437,6 @@ theorem chartTransition_inv (hx : GlobalTheory.PowGerm.IsUnivJ G (Fin 1 × Fin d
     hψ (chartTransition_coordRel hy hx)
   rw [← eφ, ← eψ]
   exact hinv
-
-@[simp] theorem chartTransition_refl (hx : GlobalTheory.PowGerm.IsUnivJ G (Fin 1 × Fin d) x) :
-    chartTransition hx hx = pt V (n := 1) d 0 :=
-  (chartTransition_comp hx hx hx).symm.trans (chartTransition_inv hx hx).2.2.2
 
 end ChartTransition
 
@@ -1128,7 +1101,6 @@ theorem val_scaleG {X0 : Scheme.{0}} (t : SAB H X0) {Y Z : Scheme.{0}} {K : Type
     val (scaleGenG t φ ε c g) r z J = gm r z ⊤ c * val g r z J :=
   (map_mul _ _ _).trans (congrArg₂ (· * ·) (gm_res r z le_top (hJ.mem φ r) c) rfl)
 
-
 open GlobalTheory.SecondPartialLaw in
 theorem formal_sum {X0 : Scheme.{0}} {t : SAB H X0} {S : Type} [CommRing S] {x0 : Sp S ⟶ X0} {d : ℕ}
     {x : ∀ m, jOG x0 d m 1 ⟶ t.G} {F : Fin d → MvPowerSeries (Fin 2 × Fin d) S}
@@ -1263,8 +1235,6 @@ theorem val_scaleGenG {X0 : Scheme.{0}} (t : SAB H X0) {Y Z : Scheme.{0}} {K : T
     (c : Γ(Y, ⊤)ˣ) (g : LB.Gen (LB.LinComb t.PP.L φ ε)) (r : Z ⟶ Y) :
     val (scaleGenG t φ ε c g) r z J = gm r z ⊤ c * val g r z J :=
   (map_mul _ _ _).trans (congrArg₂ (· * ·) (gm_res r z le_top (hJ.mem φ r) c) rfl)
-
-
 
 theorem prod_second_law {X0 : Scheme.{0}} {t : SAB H X0} {S : Type} [CommRing S] {x0 : Sp S ⟶ X0} {d : ℕ}
     {x : ∀ m, jOG x0 d m 1 ⟶ t.G} {F : Fin d → MvPowerSeries (Fin 2 × Fin d) S}

@@ -64,14 +64,12 @@ section Lift
 
 variable {X S : Scheme.{u}} (f : X ⟶ S)
 
-
 open CategoryTheory CategoryTheory.Limits AlgebraicGeometry IsLocalRing in
 variable {X S : Scheme.{u}} (f : X ⟶ S) in
 theorem _root_.GlobalTheory.range_subset_opens_of_isLocalRing {B : CommRingCat.{u}} [IsLocalRing B] (s : Spec B ⟶ S)
     {U : S.Opens} (h : s (closedPoint B) ∈ U) : Set.range s ⊆ U := by
   rintro _ ⟨y, rfl⟩
   exact ((specializes_closedPoint y).map s.base.hom.continuous).mem_open U.isOpen h
-
 
 open CategoryTheory CategoryTheory.Limits AlgebraicGeometry IsLocalRing in
 variable {X S : Scheme.{u}} (f : X ⟶ S) in
@@ -84,7 +82,6 @@ theorem _root_.GlobalTheory.exists_isAffineOpen_pair (x : X) {O : X.Opens} (hx :
     X.isBasis_affineOpens.exists_subset_of_mem_open
       (show x ∈ ((O ⊓ f ⁻¹ᵁ U : X.Opens) : Set X) from ⟨hx, hxU⟩) (O ⊓ f ⁻¹ᵁ U).isOpen
   exact ⟨U, V, hU, hV, fun y hy => (hVle hy).2, fun y hy => (hVle hy).1, hxV⟩
-
 
 open CategoryTheory CategoryTheory.Limits AlgebraicGeometry IsLocalRing in
 variable {X S : Scheme.{u}} (f : X ⟶ S) in
@@ -127,7 +124,6 @@ theorem _root_.GlobalTheory.exists_lift_of_smooth_of_isAffineOpen [Smooth f] {U 
     congr 2
     ext r
     exact ψ.commutes r
-
 
 open CategoryTheory CategoryTheory.Limits AlgebraicGeometry IsLocalRing in
 variable {X S : Scheme.{u}} (f : X ⟶ S) in
@@ -174,7 +170,6 @@ section Quotient
 variable (B : Type u) [CommRing B] [IsLocalRing B] (I : Ideal B) [HenselianRing B I]
   (s : Spec (.of B) ⟶ S)
 
-
 open CategoryTheory CategoryTheory.Limits AlgebraicGeometry IsLocalRing in
 variable {X S : Scheme.{u}} (f : X ⟶ S) in
 variable (B : Type u) [CommRing B] [IsLocalRing B] (I : Ideal B) [HenselianRing B I]
@@ -216,7 +211,6 @@ section Residue
 
 variable (B : Type u) [CommRing B] [HenselianLocalRing B] (s : Spec (.of B) ⟶ S)
 
-
 open CategoryTheory CategoryTheory.Limits AlgebraicGeometry IsLocalRing in
 variable {X S : Scheme.{u}} (f : X ⟶ S) in
 variable (B : Type u) [CommRing B] [HenselianLocalRing B] (s : Spec (.of B) ⟶ S) in
@@ -231,7 +225,6 @@ end Lift
 section QuasiSection
 
 variable {X S : Scheme.{u}} (f : X ⟶ S) [Smooth f]
-
 
 open CategoryTheory CategoryTheory.Limits AlgebraicGeometry IsLocalRing in
 variable {X S : Scheme.{u}} (f : X ⟶ S) [Smooth f] in
@@ -284,7 +277,6 @@ theorem _root_.GlobalTheory.exists_etale_point_of_smooth (B : Type u) [CommRing 
     rw [← SetLike.mem_coe, ← hV.range_fromSpec]
     exact ⟨(Spec.map (CommRingCat.ofHom ψ)).base z, rfl⟩
 
-
 open CategoryTheory CategoryTheory.Limits AlgebraicGeometry IsLocalRing in
 variable {X S : Scheme.{u}} (f : X ⟶ S) [Smooth f] in
 theorem _root_.GlobalTheory.range_fst_residue {B : Type u} [CommRing B] [IsLocalRing B] (g : X ⟶ Spec (.of B)) :
@@ -309,39 +301,6 @@ end QuasiSection
 section Field
 
 end Field
-
-section DiscreteValuation
-
-
-open CategoryTheory CategoryTheory.Limits AlgebraicGeometry IsLocalRing in
-theorem _root_.GlobalTheory.isDiscreteValuationRing_of_etale_of_isLocalHom (V V' : Type*) [CommRing V] [IsDomain V]
-    [IsDiscreteValuationRing V] [CommRing V'] [IsLocalRing V'] [Algebra V V']
-    [IsLocalHom (algebraMap V V')] [Algebra.Etale V V'] :
-    ∃ (_ : IsDomain V') (_ : IsDiscreteValuationRing V'),
-      (maximalIdeal V).map (algebraMap V V') = maximalIdeal V' ∧
-      Module.FaithfullyFlat V V' ∧
-      Module.Finite (ResidueField V) (ResidueField V') ∧
-      Algebra.IsSeparable (ResidueField V) (ResidueField V') ∧
-      ∃ (_ : Algebra (FractionRing V) (FractionRing V'))
-        (_ : IsScalarTower V (FractionRing V) (FractionRing V')),
-        Module.Finite (FractionRing V) (FractionRing V') ∧
-        Algebra.IsSeparable (FractionRing V) (FractionRing V') := by
-  obtain ⟨hD, hR⟩ := _root_.GlobalTheory.exists_isDiscreteValuationRing_of_unramified V V'
-  have hF : Module.FaithfullyFlat V V' := Module.FaithfullyFlat.of_flat_of_isLocalHom
-  have hinj : Function.Injective (algebraMap V V') := FaithfulSMul.algebraMap_injective V V'
-  haveI : FaithfulSMul V (FractionRing V') := by
-    rw [faithfulSMul_iff_algebraMap_injective, IsScalarTower.algebraMap_eq V V' (FractionRing V')]
-    exact (IsFractionRing.injective V' (FractionRing V')).comp hinj
-  letI := FractionRing.liftAlgebra V (FractionRing V')
-  haveI := FractionRing.isScalarTower_liftAlgebra V (FractionRing V')
-  obtain ⟨hfin, hsep⟩ :=
-    _root_.GlobalTheory.finite_and_isSeparable_fractionRing_of_unramified V V' (FractionRing V) (FractionRing V')
-  exact ⟨hD, hR, Algebra.FormallyUnramified.map_maximalIdeal, hF, inferInstance, inferInstance,
-    _, inferInstance, hfin, hsep⟩
-
-variable {X S : Scheme.{u}} (f : X ⟶ S) [Smooth f]
-
-end DiscreteValuation
 
 section SpecialFibre
 

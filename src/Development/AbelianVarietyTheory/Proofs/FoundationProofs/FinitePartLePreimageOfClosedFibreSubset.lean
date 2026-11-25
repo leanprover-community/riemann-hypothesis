@@ -266,17 +266,6 @@ def finitePartLift (f : X ⟶ Spec R) [LocallyOfFiniteType f] [LocallyQuasiFinit
     rw [Scheme.Opens.range_ι]
     exact (preimage_finitePart_eq_top f h).ge (Set.mem_univ y))
 
-theorem finitePartLift_ι (f : X ⟶ Spec R) [LocallyOfFiniteType f] [LocallyQuasiFinite f]
-    (h : Y ⟶ X) [IsFinite (h ≫ f)] : finitePartLift f h ≫ (finitePart f).ι = h :=
-  IsOpenImmersion.lift_fac _ _ _
-
-theorem existsUnique_lift_finitePart (f : X ⟶ Spec R) [LocallyOfFiniteType f]
-    [LocallyQuasiFinite f] (g : Y ⟶ Spec R) [IsFinite g] (h : Y ⟶ X) (w : h ≫ f = g) :
-    ∃! l : Y ⟶ finitePart f, l ≫ (finitePart f).ι = h := by
-  subst w
-  exact ⟨finitePartLift f h, finitePartLift_ι f h, fun l hl ↦ by
-    rw [← cancel_mono (finitePart f).ι, hl, finitePartLift_ι]⟩
-
 end Lift
 
 section Pullback

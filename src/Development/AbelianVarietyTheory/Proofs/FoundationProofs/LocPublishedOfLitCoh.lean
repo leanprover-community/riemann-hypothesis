@@ -202,7 +202,6 @@ private theorem fd_adjoin_range (l : ℕ) [Fact l.Prime] {ι : Type} [Finite ι]
   exact IntermediateField.finiteDimensional_adjoin fun z _ =>
       (Algebra.IsAlgebraic.isAlgebraic z).isIntegral
 
-
 open TensorProduct in
 private theorem desc {l : ℕ} [Fact l.Prime] {H : Type} [Group H] [TopologicalSpace H] (φ : H →* GQ l)
     (κ : H →* (PadicAlgCl l)ˣ) (E₀ : IntermediateField ℚ_[l] (PadicAlgCl l)) [FiniteDimensional ℚ_[l] E₀]
@@ -279,7 +278,6 @@ private theorem coef_finext {l : ℕ} [Fact l.Prime] (c : Coef l) :
   exact hle hmem
 
 end GlobalTheory.NegVan
-
 
 open GlobalTheory.NegVan in
 theorem GlobalTheory.NegVan.crys_cocycle_coboundary_of_neg_weight :
@@ -466,8 +464,6 @@ def mulR (c : Coef l) (n : ℕ) (a : c.O) : Red c n →+ Red c n :=
     rw [MulMemClass.coe_mul, norm_mul]
     calc _ ≤ 1 * ‖(x : Qbar l)‖ := mul_le_mul_of_nonneg_right (norm_le_one c a) (norm_nonneg _)
       _ ≤ _ := by rw [one_mul]; exact hx)
-
-theorem mulR_red (c : Coef l) (n : ℕ) (a x : c.O) : mulR c n a (red c n x) = red c n (a * x) := rfl
 
 def redV (c : Coef l) (n : ℕ) (x : Fin 2 → c.O) : Fin 2 → Red c n := fun i => red c n (x i)
 
@@ -1461,7 +1457,6 @@ end GlobalTheory.Ord2.PairSpan
 
 namespace GlobalTheory.Ord2
 
-
 open PairSpan in
 theorem exists_om_ne_swap_on_N0g : ∀ (l : ℕ) [Fact l.Prime] (Ω : Type) [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (e : ℕ)
     (S : Finset Pl) (A : ValuationSubring Ω) (W : R2 Ω l), Nf e S A W → ∀ y ∈ Z1 (Loc.colRep W),
@@ -1546,37 +1541,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-namespace GlobalTheory.IdealComapPreimage
-
-open IsDedekindDomain
-
-theorem ideal_eq_comap {p : ℕ} (hp : Nat.Prime p)
-    (v : HeightOneSpectrum (NumberField.RingOfIntegers ℚ))
-    (hv : (p : NumberField.RingOfIntegers ℚ) ∈ v.asIdeal) :
-    v.asIdeal = Ideal.comap (Rat.ringOfIntegersEquiv : NumberField.RingOfIntegers ℚ →+* ℤ)
-      (Ideal.span {(p : ℤ)}) := by
-  set e := Rat.ringOfIntegersEquiv
-  haveI hmax : (Ideal.span {(p : ℤ)}).IsMaximal :=
-    PrincipalIdealRing.isMaximal_of_irreducible (Nat.prime_iff_prime_int.mp hp).irreducible
-  haveI : (Ideal.comap (e : NumberField.RingOfIntegers ℚ →+* ℤ) (Ideal.span {(p : ℤ)})).IsMaximal :=
-    Ideal.comap_isMaximal_of_surjective _ e.surjective
-  symm
-  refine Ideal.IsMaximal.eq_of_le this v.isPrime.ne_top ?_
-  intro x hx
-  rw [Ideal.mem_comap, Ideal.mem_span_singleton] at hx
-  obtain ⟨k, hk⟩ := hx
-  have : x = (p : NumberField.RingOfIntegers ℚ) * e.symm k := by
-    apply e.injective
-    simpa using hk
-  rw [this]
-  exact v.asIdeal.mul_mem_right _ hv
-
-theorem main : ∀ {p : ℕ}, Nat.Prime p → ∀ {v v' : IsDedekindDomain.HeightOneSpectrum (NumberField.RingOfIntegers ℚ)}, (↑p : NumberField.RingOfIntegers ℚ) ∈ IsDedekindDomain.HeightOneSpectrum.asIdeal v → (↑p : NumberField.RingOfIntegers ℚ) ∈ IsDedekindDomain.HeightOneSpectrum.asIdeal v' → v = v' := by
-  intro p hp v v' hv hv'
-  apply HeightOneSpectrum.ext
-  rw [ideal_eq_comap hp v hv, ideal_eq_comap hp v' hv']
-
-end GlobalTheory.IdealComapPreimage
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.FoundationProofs.IdealEqComap =====

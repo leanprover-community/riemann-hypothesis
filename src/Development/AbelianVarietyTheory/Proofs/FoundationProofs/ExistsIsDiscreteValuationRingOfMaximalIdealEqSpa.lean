@@ -341,7 +341,6 @@ theorem algebraMap_eq_zero_iff_mem_maximalIdeal (b : B) :
   rw [IsScalarTower.algebraMap_apply B (ResidueField B) K, map_eq_zero]
   exact residue_eq_zero_iff b
 
-
 omit [Algebra B W] [CommRing W] in
 theorem isUnit_adjoinRoot_mk_of_aeval_ne_zero {θ : K} (hθ : IsIntegral (ResidueField B) θ)
     {μ : B[X]} (hμm : μ.Monic) (hμ : μ.map (residue B) = minpoly (ResidueField B) θ) {g : B[X]}
@@ -449,19 +448,6 @@ theorem exists_isDiscreteValuationRing_of_unramified (B : Type*) [CommRing B] [I
   have : IsNoetherianRing B := Algebra.EssFiniteType.isNoetherianRing V B
   exact exists_isDiscreteValuationRing_of_flat V B Algebra.FormallyUnramified.map_maximalIdeal
     (Ideal.iInf_pow_eq_bot_of_isLocalRing _ (maximalIdeal.isMaximal B).ne_top)
-
-theorem finite_and_isSeparable_fractionRing_of_unramified (R B K L : Type*) [CommRing R]
-    [CommRing B] [Algebra R B] [Algebra.EssFiniteType R B] [Algebra.FormallyUnramified R B]
-    [Field K] [Field L] [Algebra R K] [Algebra B L] [IsFractionRing B L] [Algebra K L]
-    [Algebra R L] [IsScalarTower R K L] [IsScalarTower R B L] :
-    Module.Finite K L ∧ Algebra.IsSeparable K L := by
-  have : Algebra.EssFiniteType B L := .of_isLocalization L (nonZeroDivisors B)
-  have : Algebra.FormallyUnramified B L := .of_isLocalization (nonZeroDivisors B)
-  have : Algebra.EssFiniteType R L := .comp R B L
-  have : Algebra.FormallyUnramified R L := .comp R B L
-  have : Algebra.EssFiniteType K L := .of_comp R K L
-  have : Algebra.FormallyUnramified K L := .of_restrictScalars R K L
-  exact ⟨Algebra.FormallyUnramified.finite_of_free K L, Algebra.FormallyUnramified.isSeparable K L⟩
 
 end DiscreteValuation
 

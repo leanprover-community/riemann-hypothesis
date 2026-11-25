@@ -246,10 +246,6 @@ def symplecticGroupMap (l : Type*) [Fintype l] [DecidableEq l] (f : S →+* R) :
   map_one' := Subtype.ext (by simp)
   map_mul' _ _ := Subtype.ext Matrix.map_mul
 
-@[simp]
-theorem coe_symplecticGroupMap (A : symplecticGroup l S) :
-    (symplecticGroupMap l f A).1 = A.1.map f := rfl
-
 def LiftsToSymplectic (f : S →+* R) (A : Matrix (l ⊕ l) (l ⊕ l) R) : Prop :=
   ∃ B ∈ symplecticGroup l S, B.map f = A
 
@@ -708,7 +704,6 @@ open TensorProduct
 
 variable {S R Λ l : Type*} [CommRing S] [CommRing R] [AddCommGroup Λ] [Module S Λ] [Fintype l]
   {B : LinearMap.BilinForm S Λ}
-
 
 theorem IsSymplecticBasis.exists_adapted_mod [Finite (MaximalSpectrum R)] {f : S →+* R}
     (hf : Surjective f) (hB : B.IsAlt) {b : Basis (l ⊕ l) S Λ} (hb : IsSymplecticBasis B b)

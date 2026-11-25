@@ -774,19 +774,6 @@ theorem vBar_mem_iff {T : Tor D} {Y : Set (Matrix (Fin N') (Fin N) D.host.E)} {x
   · intro h; have := vBar_mem h; rwa [vBar_invol] at this
   · intro h; have := vBar_mem h; rwa [torBar_torBar] at this
 
-theorem area_bar (T : Tor D) : area (torBar D T).abelian₂ = area T.abelian₂ := by
-  unfold area
-  congr 1
-  ext a
-  simp only [Set.mem_setOf_eq]
-  refine and_congr_right fun _ => ⟨?_, ?_⟩
-  · rintro ⟨_, ⟨w₁, h1, rfl⟩, _, ⟨w₂, h2, rfl⟩, rfl⟩
-    refine ⟨w₁, h1, w₂, h2, ?_⟩
-    rw [← abs_neg]; congr 1; simp; ring
-  · rintro ⟨w₁, h1, w₂, h2, rfl⟩
-    refine ⟨_, ⟨w₁, h1, rfl⟩, _, ⟨w₂, h2, rfl⟩, ?_⟩
-    rw [← abs_neg]; congr 1; simp; ring
-
 theorem cBar_aU (T : Tor D) (x : VC D N N') (F : VC D N N' → ℂ) :
     cBar D (aU D T (vBar D x) F) = aU D (torBar D T) x (cBar D F) := by
   funext z

@@ -173,10 +173,6 @@ theorem bdInt_pole_pow_eq_zero {a b c d : ℝ} {p : ℂ}
     push_cast
     field_simp [hs', hn, pow_succ] <;> ring
 
-theorem bdInt_sq {a b c d : ℝ} {p : ℂ} (h1 : a < p.re) (h2 : p.re < b) (h3 : c < p.im)
-    (h4 : p.im < d) (k : ℂ) : bdInt a b c d (fun s => k / (s - p) ^ 2) = 0 := by
-  exact bdInt_pole_pow_eq_zero (sidesIn_compl h1 h2 h3 h4) k 0
-
 theorem bdInt_inv {a b c d : ℝ} {p : ℂ} (h1 : a < p.re) (h2 : p.re < b) (h3 : c < p.im)
     (h4 : p.im < d) (k : ℂ) : bdInt a b c d (fun s => k / (s - p)) = 2 * Real.pi * I * k := by
   have hc : ∀ B : Set ℂ, (∀ s ∈ B, s - p ≠ 0) → ContinuousOn (fun s => k / (s - p)) B :=

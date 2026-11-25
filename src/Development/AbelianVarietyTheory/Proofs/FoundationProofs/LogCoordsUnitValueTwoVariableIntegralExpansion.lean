@@ -370,49 +370,6 @@ theorem rep {T : GlobalTheory.K5.Tower p Ω} {L : ℕ} {ψ : O0 p →+* Ω} (hψ
     rw [ha]
     ring
 
-theorem cong_sum {L : ℕ} (S : Finset ℤ) (v : ℤ → ℤ) (e : ℤ → Ω) (he : ∀ k, IsInt (p := p) (e k)) (hv : ∀ k, (p : ℤ) ^ L ∣ v k) :
-    Cong (p := p) L (∑ k ∈ S, (v k : Ω) * e k) 0 := by
-  choose c hc using hv
-  refine ⟨∑ k ∈ S, (c k : Ω) * e k, IsIntegral.sum _ fun k _ => IsIntegral.mul (Basic.isInt_intCast _) (he k), ?_⟩
-  rw [sub_zero, Finset.mul_sum]
-  refine Finset.sum_congr rfl fun k _ => ?_
-  rw [hc k]
-  push_cast
-  ring
-
-theorem cong_val (hc : IsClo p Ω) {T : GlobalTheory.K5.Tower p Ω} {L : ℕ} {ψ : O0 p →+* Ω} (hψ : IsReb T L ψ) (g A : ℤ)
-    (θ v : ℤ → ℤ → ℤ) (S : ℤ → Finset ℤ) (cU cE : ℤ → Ω) (x x' z z' y y' : Ω)
-    (hv : ∀ k r, θ k r ≠ 0 → (p : ℤ) ^ L ∣ v k r - A * k)
-    (hE : ∀ r, ∑ k ∈ S r, ((k * θ k r : ℤ) : Ω) * T.ζ L ^ (g * k) = -∑ᶠ i : ℤ, cE i * cU (r - i))
-    (hx : Ev ψ cU x x') (hz : Ev ψ cE z z')
-    (hy : Ev ψ (fun r => ∑ k ∈ S r, (v k r : Ω) * (θ k r : Ω) * T.ζ L ^ (g * k)) y y') :
-    Cong (p := p) L (y + A * (z * x)) 0 := by
-  have hN : 0 < p ^ L := pow_pos hp.out.pos L
-  have hζ : T.ζ L ^ p ^ L = 1 := (T.prim L).pow_eq_one
-  obtain ⟨R1, R2⟩ := EvRing.ev_ring p Ω hc T L ψ hψ
-  obtain ⟨U, rfl⟩ := (R2 _ _ _ hx).2.2.1
-  obtain ⟨E, rfl⟩ := (R2 _ _ _ hz).2.2.1
-  obtain ⟨Y, hY⟩ := (R2 _ _ _ hy).2.2.1
-  have h1 := (R2 _ _ _ (R1 E U _ _ _ _ hz hx).1).2.2.2.2.1 (A : Ω) (Basic.isInt_intCast _) (isAlgZp_int _)
-  obtain ⟨V, hV⟩ := (R2 _ _ _ h1).2.2.1
-  rw [← hV] at h1
-  rw [← hY] at hy
-  refine ((_root_.GlobalTheory.Glue.ev_cong_iff_and_unit p Ω hc T L ψ hψ L _ _ _ (R1 Y V _ _ _ _ hy h1).2.1).1).2 fun r => ?_
-  have e : (Y + V).coeff r = ∑ k ∈ S r, (((v k r - A * k) * θ k r : ℤ) : Ω) * T.ζ L ^ (g * k) := by
-    rw [HahnSeries.coeff_add, hY, hV]
-    simp only
-    rw [coeff_mul_finsum, ← neg_eq_iff_eq_neg.2 (hE r), mul_neg, Finset.mul_sum, ← sub_eq_add_neg, ← Finset.sum_sub_distrib]
-    refine Finset.sum_congr rfl fun k _ => ?_
-    push_cast
-    ring
-  rw [e]
-  refine cong_sum _ (fun k => (v k r - A * k) * θ k r) _ (fun k => ?_) fun k => ?_
-  · rw [zpow_emod hN hζ]
-    exact IsIntegral.pow (EvTwist.isInt_of_pow hN hζ) _
-  · by_cases h : θ k r = 0
-    · simp [h]
-    · exact Dvd.dvd.mul_right (hv k r h) _
-
 theorem local_coords : ∀ (p : ℕ) [Fact p.Prime] (Ωl : Type) [Field Ωl] [Algebra (O0 p) Ωl], IsClo p Ωl → ∀ (T : GlobalTheory.K5.Tower p Ωl) (L : ℕ) (ψ : O0 p →+* Ωl) (ι : On p L →ₐ[O0 p] Ωl), 1 ≤ L → IsReb T L ψ → IsEmb T L ι →
   ∀ (A₁ g : ℤ) (θ : ℤ → ℤ → ℤ) (cU cE : ℤ → Ωl) (x x' : Ωl),
   (∀ r : ℤ, ∃ B : ℕ, ∀ k : ℤ, (B : ℤ) < |k| → θ k r = 0) →

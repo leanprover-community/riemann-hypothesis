@@ -102,8 +102,6 @@ def formalGroup : FormalGroup R where
     rw [← hF]
     exact F.assoc
 
-@[simp] theorem formalGroup_toPowerSeries : (formalGroup W).toPowerSeries = fgl W := rfl
-
 variable {σ : Type*}
 
 theorem map_zsmul (φ : R →+* S) (n : ℤ) : PowerSeries.map φ (zSer W n) = zSer (W.map φ) n :=

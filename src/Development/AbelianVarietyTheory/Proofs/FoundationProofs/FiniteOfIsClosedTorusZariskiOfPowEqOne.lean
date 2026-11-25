@@ -193,9 +193,6 @@ def torusChar (x : X) : (Multiplicative X →* Rˣ) →* R where
   map_one' := by simp
   map_mul' s t := by simp
 
-@[simp] theorem torusChar_apply (x : X) (t : Multiplicative X →* Rˣ) :
-    torusChar x t = t (Multiplicative.ofAdd x) := rfl
-
 variable [IsDomain R]
 
 noncomputable def torusPrime (t : Multiplicative X →* Rˣ) : PrimeSpectrum (AddMonoidAlgebra R X) :=
@@ -204,7 +201,6 @@ noncomputable def torusPrime (t : Multiplicative X →* Rˣ) : PrimeSpectrum (Ad
 @[simp] theorem mem_torusPrime (t : Multiplicative X →* Rˣ) (f : AddMonoidAlgebra R X) :
     f ∈ (torusPrime t).asIdeal ↔ torusEval t f = 0 := by
   simp [torusPrime]
-
 
 variable (R X) in
 @[reducible] noncomputable def torusZariski : TopologicalSpace (Multiplicative X →* Rˣ) :=
@@ -327,7 +323,6 @@ theorem finite_of_isClosed_torusZariski_of_pow_eq_one [Module.Finite ℤ X] {n :
   rw [h3, orderOf_one] at hs
   exact hp.one_lt.ne hs
 
-
 end Torus
 
 section Coordinates
@@ -335,7 +330,6 @@ section Coordinates
 open AddMonoidAlgebra
 
 variable {R : Type*} [CommRing R] {X : Type*} [AddCommGroup X] {ι : Type*}
-
 
 end Coordinates
 

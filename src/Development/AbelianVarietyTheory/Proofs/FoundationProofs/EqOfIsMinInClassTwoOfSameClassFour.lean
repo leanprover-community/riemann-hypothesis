@@ -307,7 +307,6 @@ section Exists
 variable {X : Type*} [AddCommGroup X] [Module.Free ℤ X] [Module.Finite ℤ X]
   {Q : QuadraticMap ℤ X ℝ}
 
-
 omit [Module.Free ℤ X] [Module.Finite ℤ X] in
 theorem exists_mul_sum_sq_le {ι : Type*} [Fintype ι] (hQ : (realExtension Q).PosDef)
     (e : Module.Basis ι ℤ X) : ∃ c > 0, ∀ a, c * ∑ i, (e.repr a i : ℝ) ^ 2 ≤ Q a := by
@@ -390,11 +389,6 @@ def ofMatrix (A : Matrix (Fin d) (Fin d) ℝ) : QuadraticMap ℤ (Fin d → ℤ)
       simp [ReciprocityTheory.ReducedBases.polar, toReal, dotProduct, mulVec, mul_add, Finset.sum_add_distrib])
     (fun n x y => by
       simp [ReciprocityTheory.ReducedBases.polar, toReal, dotProduct, mulVec, Finset.mul_sum, mul_left_comm]))
-
-@[simp] theorem ofMatrix_apply (A : Matrix (Fin d) (Fin d) ℝ) (x : Fin d → ℤ) :
-    ofMatrix A x = ReciprocityTheory.ReducedBases.Q A x := by
-  change (1 / 2 : ℝ) * ReciprocityTheory.ReducedBases.polar A x x = ReciprocityTheory.ReducedBases.polar A x x / 2
-  ring
 
 end Matrix
 

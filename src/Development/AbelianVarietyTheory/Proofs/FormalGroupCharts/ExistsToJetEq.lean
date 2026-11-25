@@ -227,17 +227,6 @@ private def seriesOfJetsAlgHom (R κ : Type) [CommRing R] :
 def finiteDegreeSeriesSubalgebra (R κ : Type) [CommRing R] : Subalgebra R (MvPowerSeries κ R) :=
   (seriesOfJetsAlgHom R κ).range
 
-@[simp]
-theorem mem_finiteDegreeSeriesSubalgebra_iff (g : MvPowerSeries κ R) :
-    g ∈ finiteDegreeSeriesSubalgebra R κ ↔ HasFiniteDegreeSupport g := by
-  change (∃ p : compatibleJetSubalgebra R κ, seriesOfJets p = g) ↔ _
-  constructor
-  · rintro ⟨p, rfl⟩
-    exact (compatibleJetsEquiv R κ p).property
-  · intro hg
-    obtain ⟨p, hp⟩ := (compatibleJetsEquiv R κ).surjective ⟨g, hg⟩
-    exact ⟨p, congrArg Subtype.val hp⟩
-
 /-- The algebra of compatible jets is isomorphic to the power series of finite
 support in each bounded degree. -/
 @[no_expose]
@@ -274,7 +263,6 @@ theorem toJet_eq_iff (m : ℕ) (g g' : MvPowerSeries κ R) :
 theorem toJet_coe (m : ℕ) (Q : MvPolynomial κ R) :
     toJet m (Q : MvPowerSeries κ R) = Ideal.Quotient.mk _ Q :=
   (toJet_eq_mk_iff m _ Q).2 fun e _ => MvPolynomial.coeff_coe Q e
-
 
 variable (R κ) in
 def toJetHom (m : ℕ) : MvPowerSeries κ R →ₐ[R] JetR R κ m :=

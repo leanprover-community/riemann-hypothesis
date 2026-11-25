@@ -120,9 +120,6 @@ theorem eOm_inv_mem [IsAlgClosed Ω] (ε : Ω →+* ℂ) (A : ValuationSubring �
     exact inv_eq_of_mul_eq_one_right (by rw [← eOm_add, add_neg_cancel, eOm_zero])
   rw [this]; exact eOm_mem ε A _
 
-theorem eOm_ne_zero [IsAlgClosed Ω] (ε : Ω →+* ℂ) (x : ℚ) : eOm ε x ≠ 0 := by
-  intro h; have := eOm_pow_den ε x; rw [h, zero_pow x.den_pos.ne'] at this; exact zero_ne_one this
-
 theorem cm_mul_of_char {R : Type*} [CommRing R] (c : ℚ → R) (hc : ∀ x y, c (x + y) = c x * c y)
     (φ ψ : HahnSeries ℚ R) : cm c (φ * ψ) = cm c φ * cm c ψ := by
   ext r
@@ -173,42 +170,6 @@ variable {Ω : Type} [Field Ω]
 end GlobalTheory.UlCusp
 
 noncomputable section
-namespace GlobalTheory.UlCusp
-
-variable {Ω : Type} [Field Ω]
-
-theorem prim_one (A : ValuationSubring Ω) : Prim A (1 : HahnSeries ℚ Ω) := by
-  refine ⟨fun r => ?_, 0, ?_, ?_⟩
-  · rw [HahnSeries.coeff_one]; split_ifs <;> simp
-  · simp
-  · simp
-
-theorem prim_prod (A : ValuationSubring Ω) (S : Finset ℕ) (F : ℕ → HahnSeries ℚ Ω) (h : ∀ j, Prim A (F j)) :
-    Prim A (∏ j ∈ S, F j) := by
-  induction S using Finset.induction_on with
-  | empty => rw [Finset.prod_empty]; exact prim_one A
-  | insert j S hj ih => rw [Finset.prod_insert hj]; exact GlobalTheory.Glue.Prim.mul A _ _ (h j) ih
-
-theorem isAlgClosure_of_tower [Algebra ℚ Ω] [IsAlgClosed Ω] {ε : Ω →+* ℂ} (X : Tower Ω ε) : IsAlgClosure ℚ Ω := by
-  refine ⟨inferInstance, ⟨fun c => ?_⟩⟩
-  obtain ⟨D, hD, hk⟩ := X.bdd (algebraMap Ω X.K c)
-  obtain ⟨k, hint⟩ := hk 0
-  have hc : (X.exp (algebraMap Ω X.K c)).coeff 0 = c := by
-    rw [X.exp.commutes, HahnSeries.algebraMap_apply', PowerSeries.algebraMap_apply, Algebra.algebraMap_self,
-      RingHom.id_apply, HahnSeries.ofPowerSeries_C]
-    simp [HahnSeries.C_apply]
-  rw [hc] at hint
-  have h1 : IsIntegral ℚ ((D : Ω) ^ k * c) := hint.tower_top
-  have h2 : IsIntegral ℚ (algebraMap ℚ Ω (((D : ℚ) ^ k)⁻¹)) := isIntegral_algebraMap
-  have hD' : (D : Ω) ^ k ≠ 0 := pow_ne_zero _ (by
-    rw [← map_natCast (algebraMap ℚ Ω) D]
-    exact (map_ne_zero_iff _ (algebraMap ℚ Ω).injective).2 (by exact_mod_cast hD.ne'))
-  have : c = algebraMap ℚ Ω (((D : ℚ) ^ k)⁻¹) * ((D : Ω) ^ k * c) := by
-    rw [map_inv₀, map_pow, map_natCast, ← mul_assoc, inv_mul_cancel₀ hD', one_mul]
-  rw [this]
-  exact (h2.mul h1).isAlgebraic
-
-end GlobalTheory.UlCusp
 
 namespace GlobalTheory.UlCusp
 

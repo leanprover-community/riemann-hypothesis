@@ -211,24 +211,6 @@ theorem isIntegral_fourthPower_left [IsIntegral S] : IsIntegral (G4 G).left :=
 
 end Products
 
-section Powers
-
-attribute [local instance] Over.cartesianMonoidalCategory
-
-open ReciprocityTheory.ChartRestriction.G.Out
-
-variable {S : Scheme.{0}} (G : Over S) [Smooth G.hom]
-
-theorem smooth_powObj_hom : ∀ n : ℕ, Smooth (powObj G n).hom
-  | 0 => inferInstanceAs (Smooth (𝟙 S))
-  | n + 1 => by
-    have := smooth_powObj_hom n
-    exact smooth_tensorObj_hom G (powObj G n)
-
-variable [GeometricallyConnected G.hom]
-
-end Powers
-
 section Local
 
 variable {X : Scheme.{u}} {V : Type u} [CommRing V]

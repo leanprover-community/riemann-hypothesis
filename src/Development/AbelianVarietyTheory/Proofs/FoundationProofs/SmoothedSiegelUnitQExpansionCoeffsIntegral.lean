@@ -177,39 +177,6 @@ def Good (R : Subring ℂ) (F : ℂ → ℂ) : Prop :=
 
 variable {R : Subring ℂ}
 
-theorem Good.mul {F G : ℂ → ℂ} (hF : Good R F) (hG : Good R G) : Good R fun z => F z * G z :=
-  ⟨hF.1.mul hG.1, fun n => by
-    rw [tc_mul hF.1 hG.1]
-    exact R.sum_mem fun p _ => R.mul_mem (hF.2 _) (hG.2 _)⟩
-
-theorem Good.inv {F : ℂ → ℂ} (hF : Good R F) (h0 : ∀ z : ℂ, ‖z‖ < 1 → F z ≠ 0) (hi : (F 0)⁻¹ ∈ R) :
-    Good R fun z => (F z)⁻¹ := by
-  have hd : DifferentiableOn ℂ (fun z => (F z)⁻¹) (Metric.ball 0 1) :=
-    hF.1.inv fun z hz => h0 z (by simpa using hz)
-  refine ⟨hd, fun n => ?_⟩
-  have hc : conv (tc F) (tc fun z => (F z)⁻¹) = fun n => if n = 0 then 1 else 0 := by
-    rw [← tc_mul hF.1 hd, ← tc_const]
-    exact tc_congr fun z hz => mul_inv_cancel₀ (h0 z hz)
-  induction n using Nat.strong_induction_on with
-  | _ n ih =>
-    rcases n with _ | n
-    · simpa [tc_zero] using hi
-    · have h := congrFun hc (n + 1)
-      simp only [conv, Finset.Nat.antidiagonal_succ, Finset.sum_cons, Finset.sum_map, tc_zero,
-        Nat.succ_ne_zero, if_false] at h
-      have h1 := h0 0 (by simp)
-      have : tc (fun z => (F z)⁻¹) (n + 1) = -(F 0)⁻¹ * ∑ p ∈ Finset.HasAntidiagonal.antidiagonal n,
-          tc F (p.1 + 1) * tc (fun z => (F z)⁻¹) p.2 := by
-        have h' : F 0 * tc (fun z => (F z)⁻¹) (n + 1) + ∑ p ∈ Finset.HasAntidiagonal.antidiagonal n,
-          tc F (p.1 + 1) * tc (fun z => (F z)⁻¹) p.2 = 0 := by simpa using h
-        apply mul_left_cancel₀ h1
-        rw [← mul_assoc, mul_neg, mul_inv_cancel₀ h1]
-        linear_combination h'
-      rw [this]
-      refine R.mul_mem (R.neg_mem hi) (R.sum_mem fun p hp => R.mul_mem (hF.2 _) (ih _ ?_))
-      have := Finset.HasAntidiagonal.mem_antidiagonal.mp hp
-      omega
-
 open scoped UpperHalfPlane MatrixGroups Manifold Topology in
 open Filter in
 variable {R : Subring ℂ} in
@@ -705,7 +672,6 @@ theorem _root_.GlobalTheory.SiegQ.unitPart_zero_ne {c M a : ℕ} (hc : 0 < c) (h
       exact ⟨m + 1, by rw [heq, mul_comm]⟩
     · rw [zero_pow h0.ne']
       simp
-
 
 open scoped UpperHalfPlane MatrixGroups Manifold Topology in
 open Filter in

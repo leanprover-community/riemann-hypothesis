@@ -200,27 +200,6 @@ theorem exists_lau_approx (p : ℕ) [Fact p.Prime] (K : ℕ) (x : O0 p) :
   obtain ⟨c, hc⟩ := hmem
   exact ⟨a, c, by rw [mul_comm, hc]; ring⟩
 
-theorem exists_cong_lau :
-    ∀ (p : ℕ) [Fact p.Prime] (Ω : Type) [Field Ω] [Algebra (O0 p) Ω]
-      (T : Tower p Ω) (n : ℕ) (ψ : O0 p →+* Ω), IsReb T n ψ →
-      ∀ (d : ℕ) (e : Fin d → Ω) (b : Fin d → O0 p), (∀ t, IsInt (p := p) (e t)) →
-      ∀ K : ℕ, ∃ a : Fin d → Lau p,
-        Cong (p := p) K (∑ t, e t * ψ (b t))
-          (∑ t, e t * ψ (algebraMap (Lau p) (O0 p) (a t))) := by
-  intro p hp Ω _ _ T n ψ h d e b he K
-  choose a c hac using fun t => exists_lau_approx p K (b t)
-  have hq : IsIntegral (O0 p) (T.qq n) :=
-    IsIntegral.of_pow (pow_pos hp.out.pos n) (by rw [Basic.qq_pow]; exact isIntegral_algebraMap)
-  have hψ (x : O0 p) : IsIntegral (O0 p) (ψ x) := by
-    have hx : ψ x ∈ ψ.range := ⟨x, rfl⟩
-    rw [h.rng] at hx
-    exact adjoin_le_integralClosure hq hx
-  refine ⟨a, ∑ t, e t * ψ (c t), IsIntegral.sum _ fun t _ => IsIntegral.mul (he t) (hψ (c t)), ?_⟩
-  rw [← Finset.sum_sub_distrib, Finset.mul_sum]
-  refine Finset.sum_congr rfl fun t _ => ?_
-  rw [hac t, map_add (f := _), map_mul, map_pow, map_natCast]
-  ring
-
 end GlobalTheory.GeoFix
 end -- clump:auto
 end -- clump:auto
@@ -679,21 +658,6 @@ theorem algZp_root {κ ρ : Ω} (hκ : IsAlgZp p κ) {m : ℕ} (hm : 0 < m) (h :
   obtain ⟨P, hP, e⟩ := hκ
   refine ⟨Polynomial.expand ℤ_[p] m P, (Polynomial.expand_ne_zero hm).2 hP, ?_⟩
   rw [Polynomial.map_expand, Polynomial.expand_aeval, h, e]
-
-theorem kum_rel (T : Tower p Ω) {n : ℕ} {H : Subgroup (Gal p Ω)} {θ ρ ra rb : Ω}
-    {e ka kb : Gal p Ω → ZMod (p ^ n)}
-    (hθ : IsKum T n H θ e) (ha : IsKum T n H ra ka) (hb : IsKum T n H rb kb)
-    (hρ : ∀ g ∈ H, g ρ = ρ) (hrel : θ * rb = ρ * ra) (hne : θ * rb ≠ 0) {g : Gal p Ω} (hg : g ∈ H) :
-    Cong (p := p) n (((e g).val : Ω) + ((kb g).val : Ω)) ((ka g).val : Ω) := by
-  have h1 := congrArg g hrel
-  rw [map_mul, map_mul, hθ g hg, hb g hg, hρ g hg, ha g hg] at h1
-  have h2 : T.ζ n ^ ((e g).val + (kb g).val) * (θ * rb) = T.ζ n ^ (ka g).val * (θ * rb) := by
-    rw [pow_add]; linear_combination h1 - T.ζ n ^ (ka g).val * hrel
-  have h3 := mul_right_cancel₀ hne h2
-  rw [Basic.zeta_pow_eq_iff] at h3
-  have := Basic.cong_natCast (Ω := Ω) h3
-  push_cast at this
-  exact this
 
 end GlobalTheory.EdgeLoc
 
@@ -1408,7 +1372,6 @@ theorem coef_bridge {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω
 
 end Loc
 
-
 open GlobalTheory.DlEx in
 theorem dl_pres {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (ε : Ω →+* ℂ) (X : GlobalTheory.KZ.Tower Ω ε)
     (hj : ∃ φ : ℂ → ℂ, DifferentiableOn ℂ φ Hs ∧ X.an X.jK = (φ : Mero)) (l : ℕ) [Fact l.Prime] (A : ValuationSubring Ω)
@@ -1447,7 +1410,6 @@ theorem dl_pres {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (�
   rw [e, HahnSeries.coeff_mul, Finset.mul_sum]
   refine Finset.sum_congr rfl (fun ij _ => ?_)
   rw [HahnSeries.coeff_sub, hz ij.2]; ring
-
 
 open GlobalTheory.K4 GlobalTheory.KEdge GlobalTheory.NeedB in
 theorem galois_side {p : ℕ} [hp : Fact p.Prime] {Ωl : Type} [Field Ωl] [Algebra (O0 p) Ωl] (T : GlobalTheory.K5.Tower p Ωl) (L n : ℕ)
@@ -1571,7 +1533,6 @@ theorem coefQ_supp {Ω : Type} [Field Ω] (p L : ℕ) (hp : 0 < p) (f : ℕ → 
   rw [(Rat.den_eq_one_iff _).1 h1.2, GlobalTheory.IoEx.castM, mul_div_cancel_right₀ _ hp0.ne']
 
 end GlobalTheory.PairTop
-
 
 open GlobalTheory.PairTop in
 theorem GlobalTheory.pair_edge_dlog : ∀ (p : ℕ) [Fact p.Prime], p ≠ 2 → ∃ cc : ℕ, ∀ {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (ε : Ω →+* ℂ) (X : GlobalTheory.KZ.Tower Ω ε), (∃ φ : ℂ → ℂ, DifferentiableOn ℂ φ Hs ∧ X.an X.jK = (φ : Mero)) →

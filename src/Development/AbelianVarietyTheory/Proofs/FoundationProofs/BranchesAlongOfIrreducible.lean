@@ -493,11 +493,6 @@ theorem intertwining_id_eq_zero (n : ℕ) (mu nu : DomWeight n) (hne : mu ≠ nu
   have e' := congrArg Representation.IntertwiningMap.toLinearMap this
   exact Representation.IntertwiningMap.ext e'
 
-theorem branchesAlong_all (n N : ℕ) (h : n + 1 = N) (lam : DomWeight N) :
-    BranchesAlong (MonoidHom.id (GL (Fin n) ℂ)) h lam ∧ BranchesAlong (unitaryIncl n) h lam :=
-  ⟨branchesAlong_of_irreducible _ h lam (isIrreducible_smallRep_id n) (intertwining_id_eq_zero n),
-    branchesAlong_of_irreducible _ h lam (isIrreducible_smallRep_unitary n) (intertwining_unitary_eq_zero n)⟩
-
 theorem comult_of_irreducible {H : Type} [Group H] {n N : ℕ} (ι : H →* GL (Fin n) ℂ) (h : n + 1 = N)
     (lam : DomWeight N) (hirr : ∀ mu : DomWeight n, (smallRep ι mu).IsIrreducible)
     (hz : ∀ mu nu : DomWeight n, mu ≠ nu → ∀ φ : (smallRep ι mu).IntertwiningMap (smallRep ι nu), φ = 0)
@@ -540,11 +535,6 @@ theorem comult_unitary (n N : ℕ) (h : n + 1 = N) (lam : DomWeight N) (mu : Dom
 
 end GlobalTheory.Branching
 
-namespace GlobalTheory.Published
-
-theorem weylBranching_holds : WeylBranching := fun n N h _ lam => GlobalTheory.Branching.branchesAlong_all n N h lam
-
-end GlobalTheory.Published
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.FoundationProofs.BranchesAlongOfIrreducible =====

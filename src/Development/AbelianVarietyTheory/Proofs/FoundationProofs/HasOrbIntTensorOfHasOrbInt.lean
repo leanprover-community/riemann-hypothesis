@@ -125,28 +125,6 @@ variable {H H₁ H₂ : Type} [Group H] [MeasurableSpace H] [TopologicalSpace H]
   [dt₂.IsMulRightInvariant] [SFinite dh₁] [dh₁.IsMulLeftInvariant] [SFinite dh₂] [dh₂.IsMulLeftInvariant]
   {φ₁ : H₁ → ℂ} {φ₂ : H₂ → ℂ} {c₁ c₂ : ℂ}
 
-theorem HasQuotInt.mul_of_measurePreserving (hT : IsClosed (T : Set H)) (hT₁ : IsClosed (T₁ : Set H₁))
-    (hT₂ : IsClosed (T₂ : Set H₂)) {dt : Measure T} {dh : Measure H} [dt.IsHaarMeasure] [dt.IsMulRightInvariant]
-    [SFinite dh] [dh.IsMulLeftInvariant] {p : H →* H₁ × H₂} {q : T → T₁ × T₂}
-    (hq : ∀ t : T, p t = (((q t).1 : H₁), ((q t).2 : H₂))) (mp : MeasurePreserving p dh (dh₁.prod dh₂))
-    (mq : MeasurePreserving q dt (dt₁.prod dt₂)) (i₁ : LeftInv T₁ φ₁) (i₂ : LeftInv T₂ φ₂)
-    (h₁ : HasQuotInt T₁ dt₁ dh₁ φ₁ c₁) (h₂ : HasQuotInt T₂ dt₂ dh₂ φ₂ c₂) :
-    HasQuotInt T dt dh (fun x => φ₁ (p x).1 * φ₂ (p x).2) (c₁ * c₂) := by
-  haveI : LocallyCompactSpace T₁ := hT₁.locallyCompactSpace
-  haveI : LocallyCompactSpace T₂ := hT₂.locallyCompactSpace
-  obtain ⟨f₁, a₁, rfl, b₁⟩ := h₁.exists_lift hT₁ i₁
-  obtain ⟨f₂, a₂, rfl, b₂⟩ := h₂.exists_lift hT₂ i₂
-  have hi := a₁.mul_prod a₂
-  convert (weil_integral (dt := dt) hT (mp.integrable_comp_of_integrable hi)).2 using 1
-  · funext x
-    have hj := (b₁ (p x).1).1.mul_prod (b₂ (p x).2).1
-    rw [← (b₁ _).2, ← (b₂ _).2, ← integral_prod_mul, ← mq.map_eq,
-      integral_map mq.aemeasurable (mq.map_eq ▸ hj.aestronglyMeasurable)]
-    simp [hq]
-  · rw [← integral_prod_mul, ← mp.map_eq, integral_map mp.aemeasurable (mp.map_eq ▸ hi.aestronglyMeasurable)]
-    rfl
-
-
 omit [MeasurableSpace H₁] [IsTopologicalGroup H₁] [SecondCountableTopology H₁] [BorelSpace H₁] [LocallyCompactSpace H₁]
   [T2Space H₁] [MeasurableSpace H₂] [IsTopologicalGroup H₂] [SecondCountableTopology H₂] [BorelSpace H₂]
   [LocallyCompactSpace H₂] [T2Space H₂] in
@@ -158,33 +136,6 @@ def prodSub {U : Subgroup (H₁ × H₂)} (h : ∀ x, x ∈ U ↔ x.1 ∈ T₁ �
   map_mul' _ _ := rfl
   continuous_toFun := Continuous.subtype_mk (by fun_prop) _
   continuous_invFun := (Continuous.subtype_mk (by fun_prop) _).prodMk (Continuous.subtype_mk (by fun_prop) _)
-
-theorem HasQuotInt.prod (hT₁ : IsClosed (T₁ : Set H₁)) (hT₂ : IsClosed (T₂ : Set H₂)) {U : Subgroup (H₁ × H₂)}
-    (h : ∀ x, x ∈ U ↔ x.1 ∈ T₁ ∧ x.2 ∈ T₂) (i₁ : LeftInv T₁ φ₁) (i₂ : LeftInv T₂ φ₂)
-    (h₁ : HasQuotInt T₁ dt₁ dh₁ φ₁ c₁) (h₂ : HasQuotInt T₂ dt₂ dh₂ φ₂ c₂) :
-    HasQuotInt U ((dt₁.prod dt₂).map (prodSub h)) (dh₁.prod dh₂) (fun x => φ₁ x.1 * φ₂ x.2) (c₁ * c₂) := by
-  haveI : LocallyCompactSpace T₁ := hT₁.locallyCompactSpace
-  haveI : LocallyCompactSpace T₂ := hT₂.locallyCompactSpace
-  have hU : IsClosed (U : Set (H₁ × H₂)) := by
-    rw [show (U : Set (H₁ × H₂)) = (T₁ : Set H₁) ×ˢ (T₂ : Set H₂) from Set.ext h]
-    exact hT₁.prod hT₂
-  exact HasQuotInt.mul_of_measurePreserving hU hT₁ hT₂ (p := MonoidHom.id _) (q := (prodSub h).symm) (fun _ => rfl)
-    (MeasurePreserving.id _)
-    ⟨(map_continuous _).measurable, (prodSub h).toHomeomorph.toMeasurableEquiv.map_symm_map⟩ i₁ i₂ h₁ h₂
-
-
-omit [MeasurableSpace H₁] [IsTopologicalGroup H₁] [SecondCountableTopology H₁] [BorelSpace H₁] [LocallyCompactSpace H₁]
-  [T2Space H₁] [MeasurableSpace H₂] [IsTopologicalGroup H₂] [SecondCountableTopology H₂] [BorelSpace H₂]
-  [LocallyCompactSpace H₂] [T2Space H₂] [TopologicalSpace H₁] [TopologicalSpace H₂] in
-theorem mem_cent_prod (γ₁ : H₁) (γ₂ : H₂) (x : H₁ × H₂) : x ∈ cent (γ₁, γ₂) ↔ x.1 ∈ cent γ₁ ∧ x.2 ∈ cent γ₂ := by
-  simp only [mem_cent, Prod.ext_iff, Prod.fst_mul, Prod.snd_mul]
-
-theorem HasOrbInt.prod {γ₁ : H₁} {γ₂ : H₂} {m₁ : Measure (cent γ₁)} {m₂ : Measure (cent γ₂)} [m₁.IsHaarMeasure]
-    [m₁.IsMulRightInvariant] [m₂.IsHaarMeasure] [m₂.IsMulRightInvariant] {f₁ : H₁ → ℂ} {f₂ : H₂ → ℂ}
-    (h₁ : HasOrbInt dh₁ γ₁ m₁ f₁ c₁) (h₂ : HasOrbInt dh₂ γ₂ m₂ f₂ c₂) :
-    HasOrbInt (dh₁.prod dh₂) (γ₁, γ₂) ((m₁.prod m₂).map (prodSub (mem_cent_prod γ₁ γ₂)))
-      (fun x => f₁ x.1 * f₂ x.2) (c₁ * c₂) :=
-  HasQuotInt.prod (isClosed_cent _) (isClosed_cent _) _ (leftInv_conjFn le_rfl _) (leftInv_conjFn le_rfl _) h₁ h₂
 
 end Two
 
@@ -334,7 +285,6 @@ theorem hasOrbInt_tensor (hμ : IsRestrictedProd σ J L μa μf μ) (hdt : IsCen
     (fun h => h.hasOrbInt (dh := μf v) (dt := dtf v) (hff.1 v).1.continuous (hff.1 v).2) fun ⟨_, h⟩ => ⟨h.1, rfl⟩
   exact ⟨IsHaarProd.isMulRightInvariant hdt (restrGroup_cent L γ), ha', hf',
     hasOrbInt_tensor_of_hasOrbInt hμ hdt hff.2 hK ha' hf'⟩
-
 
 end Adelic
 
