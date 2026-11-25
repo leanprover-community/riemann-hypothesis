@@ -928,8 +928,7 @@ private theorem pos_of_vanish_lemma_2 (ε : Fin n → Bool) {r : ℕ} (σ : Fin 
     (hw : w ≠ 0) : 0 < (hJ ε w w).re := by
   rw [hJ_self_re]
   obtain ⟨i, hi⟩ : ∃ i, w i ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hw (funext h)
   have hεi : ε i = true := by
     cases hj : ε i

@@ -31,26 +31,10 @@ theorem toHA_inf_one (hS : SplitIso) (x : X.B.I.Gf) :
 
 theorem split_toHA (hS : SplitIso) (p : X.B.I.GA) :
     splitA X.B.I.cm.sig X.B.I.J (toHA X.B.I hb p) = (X.toInf hb p.1, finHA X hb p.2) := by
-  have e : p = (p.1, 1) * (1, p.2) := by simp
-  conv_lhs => rw [e, map_mul, map_mul]
-  refine Prod.ext ?_ ?_
-  · show X.toInf hb p.1 * (splitA X.B.I.cm.sig X.B.I.J (toHA X.B.I hb (1, p.2))).1 = _
-    rw [toHA_inf_one X hb hS, mul_one]
-  · show (splitA X.B.I.cm.sig X.B.I.J (toHA X.B.I hb (p.1, 1))).2 * finHA X hb p.2 = _
-    rw [toHA_fin_one X hb, one_mul]
+  apply _root_.PI.AprimeInfU.split_toHA <;> assumption
 
 theorem toInf_surjective (hS : SplitIso) : Function.Surjective (X.toInf hb) := by
-  intro y
-  obtain ⟨e, he⟩ := hS X.B.I.cm.sig X.B.I.J
-  set p := (toHA X.B.I hb).symm (e.symm (y, 1))
-  have hp : splitA X.B.I.cm.sig X.B.I.J (toHA X.B.I hb p) = (y, 1) := by
-    rw [← he]
-    simp [p]
-  have h2 : p.2 = 1 := eq_one_of_toHA_fin X hb p (by rw [hp])
-  refine ⟨p.1, ?_⟩
-  have := congrArg Prod.fst hp
-  rw [split_toHA X hb hS] at this
-  exact this
+  apply _root_.PI.AprimeInfU.toInf_surjective <;> assumption
 
 end Bridge
 

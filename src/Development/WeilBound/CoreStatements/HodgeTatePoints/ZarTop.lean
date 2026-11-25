@@ -83,8 +83,6 @@ open scoped CategoryTheory.Obj CategoryTheory.MonObj
 open GlobalTheory.CechPic GlobalTheory.AbDual
 open GlobalTheory.IndefiniteRowSideFullHecke.ZeroSectionBase (IsPrincipalPol sqToBase toBase)
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace PositivityTheory.PrwZar.XB
 
 variable {S : Scheme.{0}}
@@ -143,8 +141,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped CategoryTheory.Obj CategoryTheory.MonObj
 open GlobalTheory.CechPic GlobalTheory.AbDual
 open GlobalTheory.IndefiniteRowSideFullHecke.ZeroSectionBase (IsPrincipalPol sqToBase toBase)
-
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace PositivityTheory.PrwZar
 
@@ -255,8 +251,6 @@ open scoped CategoryTheory.Obj CategoryTheory.MonObj
 open GlobalTheory.CechPic GlobalTheory.AbDual
 open GlobalTheory.IndefiniteRowSideFullHecke.ZeroSectionBase (IsPrincipalPol sqToBase toBase)
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace PositivityTheory.PrwZar
 
 variable {Ω : Type} [Field Ω] [IsAlgClosed Ω]
@@ -285,8 +279,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped CategoryTheory.Obj CategoryTheory.MonObj
 open GlobalTheory.CechPic GlobalTheory.AbDual
 open GlobalTheory.IndefiniteRowSideFullHecke.ZeroSectionBase (IsPrincipalPol sqToBase toBase)
-
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace PositivityTheory.PrwZar.Z2
 
@@ -359,8 +351,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped CategoryTheory.Obj CategoryTheory.MonObj
 open GlobalTheory.CechPic GlobalTheory.AbDual
 open GlobalTheory.IndefiniteRowSideFullHecke.ZeroSectionBase (IsPrincipalPol sqToBase toBase)
-
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace PositivityTheory.PrwZar.Z2
 
@@ -893,8 +883,6 @@ open scoped CategoryTheory.Obj CategoryTheory.MonObj
 open GlobalTheory.CechPic GlobalTheory.AbDual
 open GlobalTheory.IndefiniteRowSideFullHecke.ZeroSectionBase (IsPrincipalPol sqToBase toBase)
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace PositivityTheory.PrwZar
 
 variable {S : Scheme.{0}} {A B : Over S} [GrpObj A] [GrpObj B]
@@ -984,8 +972,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped CategoryTheory.Obj CategoryTheory.MonObj
 open GlobalTheory.CechPic GlobalTheory.AbDual
 open GlobalTheory.IndefiniteRowSideFullHecke.ZeroSectionBase (IsPrincipalPol sqToBase toBase)
-
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace PositivityTheory.PrwZar
 
@@ -1321,8 +1307,6 @@ open scoped CategoryTheory.Obj CategoryTheory.MonObj
 open GlobalTheory.CechPic GlobalTheory.AbDual
 open GlobalTheory.IndefiniteRowSideFullHecke.ZeroSectionBase (IsPrincipalPol sqToBase toBase)
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace PositivityTheory.PrwZar
 
 variable {S : Scheme.{0}} {A B : Over S} [GrpObj A] [GrpObj B]
@@ -1519,8 +1503,6 @@ open scoped CategoryTheory.Obj CategoryTheory.MonObj
 open GlobalTheory.CechPic GlobalTheory.AbDual
 open GlobalTheory.IndefiniteRowSideFullHecke.ZeroSectionBase (IsPrincipalPol sqToBase toBase)
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace PositivityTheory.PrwZar
 
 variable {S : Scheme.{0}} {A B : Over S} [GrpObj A] [GrpObj B]
@@ -1567,8 +1549,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped CategoryTheory.Obj CategoryTheory.MonObj
 open GlobalTheory.CechPic GlobalTheory.AbDual
 open GlobalTheory.IndefiniteRowSideFullHecke.ZeroSectionBase (IsPrincipalPol sqToBase toBase)
-
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace PositivityTheory.PrwZar
 

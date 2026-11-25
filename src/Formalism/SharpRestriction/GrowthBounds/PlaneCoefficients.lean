@@ -382,7 +382,6 @@ theorem geoTouch : GeoTouch := by
     rw [← posU_ll (Fr := Fr) (segZ j) l.val hl']
     exact (posU_le_iff hV (segZ j) _ _ (by omega) hu').2 (by omega)
   · subst hm
-    have hm' := m.isLt
     refine ⟨Fr.fr (segZ j) (r - 1 - m.val), fr_mem_letters hV hr _ _ (by omega), rfl, ?_⟩
     rw [← posU_fr (Fr := Fr) (segZ j) (r - 1 - m.val)]
     refine (posU_le_iff hV (segZ j) _ _ (by omega) hu').2 ?_
@@ -911,8 +910,7 @@ theorem le_pred_iff (hV : Fr.Valid L₁ N₁) (hr : 1 ≤ r) (j : ℤ) (u : ℕ)
   · intro hle
     exact lt_of_le_of_lt hle key.1
   · intro hlt
-    by_contra hgt
-    push_neg at hgt
+    by_contra! hgt
     exact key.2 y hy hgt hlt
 
 theorem oldest_pred (hV : Fr.Valid L₁ N₁) (hr : 1 ≤ r) (j : ℤ) (u : ℕ) (h1 : 1 ≤ u) (hu : u < (Fr.LLset j).card + r)
@@ -1383,7 +1381,6 @@ theorem linkL : LinkL := by
   intro p _ n' r _ _ O _ _ _ Fr L₁ N₁ hV hn J _ Dt hT hJ2 j mm hmm F hF dw hdeg th hth
   obtain ⟨hJ, hnL, hsgn, -, -, -⟩ := hT
   have hr : 1 ≤ r := NeZero.one_le
-  have hmm' := mm.isLt
   set u := Dt.nL j + (r - 1 - mm.val) with hu
   have hul : u < Dt.nL j + r := by omega
   set w := wSet Fr (segZ j) with hwdef
@@ -1574,7 +1571,6 @@ theorem PhiJ_X_mon (hV : Fr.Valid L₁ N₁) (hnL : ∀ j, Dt.nL j = (Fr.LLset (
       ∀ m' : Fin r, multideg e ⟨j - 1, Sum.inr m'⟩ =
         Dt.P (j - 1) m' * (if v.1 = Fr.fr (segZ j - 1) (r - 1 - m'.val) then 1 else 0) := by
   have hne := ne_pred hJ j
-  have hr : 1 ≤ r := NeZero.one_le
   rw [PhiJ_X Dt j v hv]
   have hord := hV.2.2.2.1 (segZ j - 1)
   rw [sub_add_cancel] at hord

@@ -1,5 +1,7 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.IdeleGenerators.HolomorphicIrreducibility.HolCap
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.IdeleGenerators.HolomorphicIrreducibility.ExpUnique
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.IdeleGenerators.IsCondAt
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.IdeleGenerators.WeightChange
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.TemperedLocalComponents.GlobFixed
@@ -358,29 +360,7 @@ private theorem casimir {V : Type} [AddCommGroup V] [Module ℂ V] (E : Fin 2 �
     (hE : Formalism.REAL.GlRel E) (k : ℂ) (φ : V) (h0 : E 0 0 φ + E 1 1 φ = 0)
     (h1 : E 0 1 φ - E 1 0 φ = (Complex.I * k) • φ) (h2 : E 0 0 φ - E 1 1 φ = Complex.I • (E 0 1 φ + E 1 0 φ)) (u : ℂ) :
     Formalism.REAL.qdet E (u + 1 / 2) φ = ((u + (k - 1) / 2) * (u - (k - 1) / 2)) • φ := by
-  have hI := Complex.I_mul_I
-  have hc : E 1 0 φ = E 0 1 φ - (Complex.I * k) • φ := by rw [← h1]; abel
-  have ha : E 0 0 φ = Complex.I • E 0 1 φ + (k / 2) • φ := by
-    rw [hc] at h2
-    linear_combination (norm := skip) (1 / 2 : ℂ) • h0 + (1 / 2 : ℂ) • h2
-    match_scalars <;> first | ring1 | linear_combination (k / 2) * hI | linear_combination (-k / 2) * hI
-  have hd : E 1 1 φ = -E 0 0 φ := eq_neg_of_add_eq_zero_right h0
-  have r1 : E 0 0 (E 0 1 φ) = E 0 1 (E 0 0 φ) + E 0 1 φ := by
-    have := LinearMap.congr_fun (hE 0 0 0 1) φ
-    simp at this
-    exact sub_eq_iff_eq_add'.1 this
-  have r2 : E 1 0 (E 0 1 φ) = E 0 1 (E 1 0 φ) + (E 1 1 φ - E 0 0 φ) := by
-    have := LinearMap.congr_fun (hE 1 0 0 1) φ
-    simp at this
-    rw [← this]; abel
-  have r3 : E 0 0 (E 0 0 φ) = Complex.I • E 0 0 (E 0 1 φ) + (k / 2) • E 0 0 φ := by
-    conv_lhs => rw [ha]
-    simp
-  rw [qdet2]
-  simp only [LinearMap.sub_apply, Module.End.mul_apply, LinearMap.add_apply, Module.algebraMap_end_apply, map_add (f := _),
-    map_smul, hd, map_neg, r2, r3, r1]
-  simp only [hc, ha, map_add (f := _), map_smul, map_sub]
-  match_scalars <;> ring_nf <;> simp [Complex.I_sq]
+  apply _root_.casimir <;> assumption
 
 theorem UpperTheory.V.Sd.Hm.zfinof :
     ∀ (F : Type) [Field F] [NumberField F] [IsTotallyReal F] (k : ℕ) (φ : TR.Sm F 2),
@@ -464,19 +444,7 @@ private theorem ordI_fin {I : Ideal (𝓞 F)} (hI : I ≠ ⊥) : ∀ᶠ w : Heig
   exact_mod_cast hw
 
 private theorem exists_genD {𝔪 : Ideal (𝓞 F)} (h : 𝔪 ≠ ⊥) : ∃ y : (Af F)ˣ, GenD (y : Af F) 𝔪 := by
-  choose t ht using fun w : HeightOneSpectrum (𝓞 F) => w.valuedAdicCompletion_surjective F
-    (WithZero.exp ((ordI w (differentIdeal ℤ (𝓞 F)) : ℤ) - (ordI w 𝔪 : ℤ)))
-  have hf : ∀ᶠ w in Filter.cofinite, Valued.v (t w) = 1 := by
-    filter_upwards [ordI_fin h, ordI_fin (I := differentIdeal ℤ (𝓞 F)) differentIdeal_ne_bot] with w h1 h2
-    rw [ht, h1, h2]; simp
-  let a : FiniteAdeleRing (𝓞 F) F := ⟨t, by
-    filter_upwards [hf] with w hw
-    exact (HeightOneSpectrum.mem_adicCompletionIntegers _ _ _).2 hw.le⟩
-  have hu : IsUnit a := FiniteAdeleRing.isUnit_iff.2 ⟨fun w hw => by
-    have := ht w
-    rw [show t w = 0 from hw, map_zero] at this
-    exact WithZero.exp_ne_zero this.symm, hf⟩
-  exact ⟨hu.unit, h, fun w => ht w⟩
+  apply _root_.UpperTheory.V.Sd.exists_genD <;> assumption
 
 private theorem exists_ideal (n : Pl F → ℕ) (hn : ∀ᶠ w in Filter.cofinite, n w = 0) :
     ∃ 𝔪 : Ideal (𝓞 F), 𝔪 ≠ ⊥ ∧ ∀ w, ordI w 𝔪 = n w := by

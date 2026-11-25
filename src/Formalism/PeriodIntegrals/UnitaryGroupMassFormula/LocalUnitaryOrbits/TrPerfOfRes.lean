@@ -28,8 +28,7 @@ private theorem sc_of_isUnif_of_mem_integers {ϖ r : Fv F v} (hϖ : IsUnif v ϖ)
   refine ⟨hr0, ?_⟩
   have hv0 : Valued.v r ≠ 0 := (Valuation.ne_zero_iff _).mpr hr0
   rw [HeightOneSpectrum.mem_adicCompletionIntegers, map_inv₀, inv_le_one₀ (zero_lt_iff.mpr hv0)]
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   apply hn
   have hle : Valued.v r ≤ ↑(Multiplicative.ofAdd (-1 : ℤ)) := by
     rw [WithZero.le_ofAdd_iff hv0]

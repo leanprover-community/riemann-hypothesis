@@ -94,9 +94,6 @@ theorem nuRow_le (D : D7) (L : SizeData₂ D) (u : D.what₂.Word) (j : ℕ) (τ
   have hN2 : r + 1 ≤ D.R.N j := le_trans (by omega : r + 1 ≤ D.R.k) (Nat.le_add_right _ _)
   have hN1' : (r : ℝ) + 1 ≤ (D.R.N (j - 1) : ℝ) := by exact_mod_cast hN1
   have hN2' : (r : ℝ) + 1 ≤ (D.R.N j : ℝ) := by exact_mod_cast hN2
-  have hs : 0 ≤ ((D.R.N (j - 1) : ℝ) + D.R.N j - 1 - 2 * (r : ℝ)) / 2 := by
-    apply div_nonneg _ (by norm_num)
-    linarith
   linarith [h1.2]
 
 theorem abs_kerPlace_sub_le (D : D7) (L : SizeData₂ D) (u u' : D.what₂.Word) (i : ℕ) (hi : i < D.R.m)
@@ -306,7 +303,6 @@ theorem sc_add_wj_le (D : D7) (L : SizeData₂ D) (S : SizesAt L) (i : ℕ) (hi 
         _ = 2 * L.sc.x ^ 5 := by ring
     have hq : szNst L * L.sc.x ^ L.sc.eps * L.LaG * L.sc.b' / D.R.k ≤ 2 * L.sc.x ^ 5 * (L.sc.x * L.sc.b) := by
       rw [div_le_iff₀ (by linarith)]
-      have h0 : 0 ≤ szNst L * L.sc.x ^ L.sc.eps * L.LaG := by positivity
       calc szNst L * L.sc.x ^ L.sc.eps * L.LaG * L.sc.b' ≤ 2 * L.sc.x ^ 5 * (L.sc.x * L.sc.b) :=
             mul_le_mul hP hb' hb'0 (by positivity)
         _ ≤ 2 * L.sc.x ^ 5 * (L.sc.x * L.sc.b) * D.R.k := le_mul_of_one_le_right (by positivity) hk1
@@ -392,7 +388,6 @@ theorem compl3_record (D : D7) (L : SizeData₂ D) (Z : DivX D) (Csz : ℝ) (P :
   unfold Formalism.L2.DIV.Compl3
   intro u u'
   have hx1 : 1 < L.sc.x := L.sc.one_lt_alt
-  have hx0 : 0 < L.sc.x := by linarith
   have heps : 0 < L.sc.eps := L.sc.eps_pos
   have hL1 : 1 ≤ L.sc.L := Real.one_le_rpow hx1.le heps.le
   have hb1 : 1 ≤ L.sc.b := Real.one_le_exp (by linarith)
@@ -408,10 +403,8 @@ theorem compl3_record (D : D7) (L : SizeData₂ D) (Z : DivX D) (Csz : ℝ) (P :
   have hkSc := kSc_le_b D L S
   have hQ0 : 0 ≤ Real.log (6 * L.sc.x ^ 6 * L.sc.b) + |L.logOm| :=
     add_nonneg (Real.log_nonneg hM1) (abs_nonneg _)
-  have hK0 : 0 ≤ 14 + 6 / L.sc.eps := by positivity
   have hQ : Real.log (6 * L.sc.x ^ 6 * L.sc.b) + |L.logOm| ≤ (14 + 6 / L.sc.eps) * L.sc.L := by
     have e1 : 6 * (L.sc.L / L.sc.eps) = 6 / L.sc.eps * L.sc.L := by ring
-    have e2 : (14 + 6 / L.sc.eps) * L.sc.L = 14 * L.sc.L + 6 / L.sc.eps * L.sc.L := by ring
     linarith
   have hm1 : (1 : ℝ) ≤ D.R.m := by
     have := D.R.two_le_m
@@ -419,7 +412,6 @@ theorem compl3_record (D : D7) (L : SizeData₂ D) (Z : DivX D) (Csz : ℝ) (P :
   have hf0 : (0 : ℝ) ≤ D.R.f := Nat.cast_nonneg _
   have hm0 : (0 : ℝ) ≤ D.R.m := Nat.cast_nonneg _
   have hb0 : 0 ≤ L.sc.b := by linarith
-  have hL0 : 0 ≤ L.sc.L := by linarith
   have h1 : (D.R.k : ℝ) * (L.Sc * (Real.log (6 * L.sc.x ^ 6 * L.sc.b) + |L.logOm|)) ≤
       L.sc.b * ((14 + 6 / L.sc.eps) * L.sc.L) := by
     rw [← mul_assoc]

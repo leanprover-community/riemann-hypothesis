@@ -136,8 +136,7 @@ theorem exists_coeff_le_of_linearIndependent : ∀ (k : Type) [CommRing k] (X : 
     rw [hw]
     exact mul_le_mul_of_nonneg_right hb (Real.exp_pos _).le
   have hR0 : 0 ≤ R := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     have := mul_neg_of_neg_of_pos h (Real.exp_pos _ : (0 : ℝ) < w l)
     linarith [key l, norm_nonneg (v l)]
   have hinv : (fun l => (cc l : ℂ)) = Matrix.mulVec M⁻¹ v := by

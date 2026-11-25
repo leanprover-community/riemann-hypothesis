@@ -48,8 +48,7 @@ theorem minorIJ_one_ne {N : ℕ} {I J : Finset (Fin N)} (h : I ≠ J) :
   unfold minorIJ
   split_ifs with e
   · obtain ⟨a, ha, hb⟩ : ∃ a ∈ I, a ∉ J := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       exact h (Finset.eq_of_subset_of_card_le hc e.ge)
     obtain ⟨r, hr⟩ : ∃ r, I.orderEmbOfFin e r = a := by
       have h2 : a ∈ Set.range (I.orderEmbOfFin e) := by

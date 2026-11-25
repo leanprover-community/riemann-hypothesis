@@ -191,7 +191,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Matrix Polynomial Filter GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT
 open scoped Classical TensorProduct
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 noncomputable section
 namespace GlobalTheory.IntUnitaryPoly
@@ -292,18 +291,7 @@ theorem mem_GLint {L : Type} [Field L] {O : Subring L} {n : ℕ} (g : GL (Fin n)
     (h1 : ∀ i j, (g : Matrix (Fin n) (Fin n) L) i j ∈ O)
     (h2 : ∀ i j, ((g⁻¹ : GL (Fin n) L) : Matrix (Fin n) (Fin n) L) i j ∈ O) :
     g ∈ GLint (Fin n) O := by
-  let A : Matrix (Fin n) (Fin n) O := fun i j => ⟨_, h1 i j⟩
-  let B : Matrix (Fin n) (Fin n) O := fun i j => ⟨_, h2 i j⟩
-  have hA : A.map O.subtype = (g : Matrix (Fin n) (Fin n) L) := by ext i j; rfl
-  have hB : B.map O.subtype = ((g⁻¹ : GL (Fin n) L) : Matrix (Fin n) (Fin n) L) := by ext i j; rfl
-  have inj : ∀ M N : Matrix (Fin n) (Fin n) O, M.map O.subtype = N.map O.subtype → M = N := fun M N h => by
-    ext i j; exact congrFun (congrFun h i) j
-  have hAB : A * B = 1 := inj _ _ (by
-    rw [Matrix.map_mul, hA, hB, Units.mul_inv, Matrix.map_one _ (map_zero _) (map_one _)])
-  have hBA : B * A = 1 := inj _ _ (by
-    rw [Matrix.map_mul, hA, hB, Units.inv_mul, Matrix.map_one _ (map_zero _) (map_one _)])
-  refine ⟨⟨A, B, hAB, hBA⟩, ?_⟩
-  ext i j; rfl
+  apply _root_.Formalism.UG.P.satake_mem_glint <;> assumption
 
 theorem Ov_eq {E : Type} [Field E] [NumberField E] (w : Pl E) :
     (w.adicCompletionIntegers E).toSubring = intL (w.adicCompletion E) := by

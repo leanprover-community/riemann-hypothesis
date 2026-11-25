@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.GrowthBounds.ProjectionOfIsotypicDecomposition
 public import Formalism.SharpRestriction.GrowthBounds.ObjPol
 public import Mathlib.NumberTheory.Padics.PadicVal.Basic
 public import Formalism.SharpRestriction.GrowthBounds.CovariantDegrees
@@ -700,14 +701,7 @@ def fockLattice {p : ℕ} (hV : ValuationProperties p O) (σ : Type) : Submodule
 
 theorem multidegree_monomials_finite {ι : Type} [Fintype ι] {n : ℕ} (d : ι → ℕ) :
     {m : ι × Fin n →₀ ℕ | ∀ i, multideg m i = d i}.Finite := by
-  classical
-  refine (Set.finite_Iic (Finsupp.equivFunOnFinite.symm (fun x : ι × Fin n => d x.1))).subset ?_
-  intro m hm
-  rw [Set.mem_Iic, Finsupp.le_def]
-  rintro ⟨i, c⟩
-  simp only [Finsupp.coe_equivFunOnFinite_symm]
-  rw [← hm i]
-  exact Finset.single_le_sum (f := fun c' => m (i, c')) (fun _ _ => Nat.zero_le _) (Finset.mem_univ c)
+  apply _root_.Formalism.MainNotions.G.Joints.isoPol_finite_set <;> assumption
 
 theorem multidegree_part_finitely_generated {p : ℕ} (hp0 : (p : KK O) ≠ 0) {ι : Type} [Fintype ι] {n : ℕ}
     (L : Submodule O (MvPolynomial (ι × Fin n) (KK O))) (d : ι → ℕ) (N : ℕ)
@@ -832,7 +826,6 @@ theorem fock_lattice_finite_spanning_holds {p : ℕ} (hp : p.Prime) (S0 : Unifor
     have hle' : (padicValNat p (expFact m) : ℚ) ≤
         ((∑ m ∈ (multidegree_monomials_finite (ι := ι) (n := n) d).toFinset, padicValNat p (expFact m) : ℕ) : ℚ) := by
       exact_mod_cast hle
-    have hnn : (0 : ℚ) ≤ padicValNat p (expFact m) := by positivity
     linarith
   · exact multidegree_part_spans _ d hmono
 

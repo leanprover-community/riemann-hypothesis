@@ -96,8 +96,7 @@ theorem pCrd_basic : (∀ (o R R' : Type) [CommRing o] [CommRing R] [CommRing R'
   · exact GlobalTheory.ZM.FieldPoint.exists_secCoord o n K x
   · obtain ⟨c, hc⟩ := RepUniq.exists_spMap (x ≫ PSpace.str o n)
     obtain ⟨hv, -⟩ := GlobalTheory.ZM.ProjExt.eq_pt_of_secCoord c x hc v h
-    by_contra h0
-    push_neg at h0
+    by_contra! h0
     have : Ideal.span (Set.range v) = ⊥ := by
       rw [Ideal.span_eq_bot]
       rintro _ ⟨j, rfl⟩

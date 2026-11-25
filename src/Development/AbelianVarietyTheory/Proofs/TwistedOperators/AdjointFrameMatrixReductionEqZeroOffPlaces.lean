@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FirstStandardPairMemberHasThetaFunction
 public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.RealLowestKTypeCoeffSquareIntegrable
 public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.HalfLinearCocycle
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.DefiniteThetaLiftLocalVector
@@ -55,19 +56,7 @@ namespace GlobalTheory.AdjRedOff
 theorem resS_idemSum_eq_zero {D : D7} {e : AE D} {P : Finset (Pl D.host.E)} (he : IsIdemSum e P)
     (hI : toEAf D e ∈ Formalism.L2.Herm.intAf D.host.F D.host.E) {PP : Pl D.host.E} (hPP : PP ∉ P) :
     Formalism.L2.DIV.resS D.host.F PP ⟨toEAf D e, hI⟩ = 0 := by
-  obtain ⟨⟨es, hes, rfl⟩, -⟩ := he
-  choose hi _ using fun Q : P => GlobalTheory.IdemRes.resS_idem_eq_one D (es Q) Q (hes Q Q.2)
-  let t : P → Formalism.L2.Herm.intAf D.host.F D.host.E := fun Q => ⟨toEAf D (es Q), hi Q⟩
-  have e1 : (⟨toEAf D (∑ Q ∈ P, es Q), hI⟩ : Formalism.L2.Herm.intAf D.host.F D.host.E) = ∑ Q, t Q := by
-    apply Subtype.ext
-    change toEAf D (∑ Q ∈ P, es Q) = _
-    rw [← Finset.sum_coe_sort P]
-    refine (GlobalTheory.TameProd.map_sum_ringHom (toEAf D) _ _).trans ?_
-    exact (map_sum (Formalism.L2.Herm.intAf D.host.F D.host.E).subtype t Finset.univ).symm
-
-  rw [e1, map_sum]
-  refine Finset.sum_eq_zero fun Q _ => ?_
-  exact GlobalTheory.TameProd.resS_idem_eq_zero (hes Q Q.2) (fun h => hPP (by rw [← h]; exact Q.2)) _
+  first | exact _root_.StandardFirstTheta.GlobalTheory.CompanionTheory.StdFstTheta.res_off | exact @_root_.StandardFirstTheta.GlobalTheory.CompanionTheory.StdFstTheta.res_off | apply _root_.StandardFirstTheta.GlobalTheory.CompanionTheory.StdFstTheta.res_off <;> assumption
 
 end GlobalTheory.AdjRedOff
 

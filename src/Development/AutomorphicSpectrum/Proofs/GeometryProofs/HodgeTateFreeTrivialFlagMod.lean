@@ -31,6 +31,7 @@ import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.WeilBound.CoreStatements.HodgeTatePoints.GaSurj
 import Development.WeilBound.CoreStatements.HodgeTatePoints.Hcptgen
+import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ImaginaryRootConj
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.GeometryProofs.ChartRingMemAfterMonomialScaling, Development.AutomorphicSpectrum.Proofs.GeometryProofs.CpElementDividesPrimeSq, Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeChartTransitionIntegral, Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeComponentIntegralAtPrimeInS, Development.AutomorphicSpectrum.Proofs.GeometryProofs.NumberFieldIntegersInIntegrallyClosed, Development.WeilBound.CoreStatements.HodgeTatePoints.FlagbAlg, Development.WeilBound.CoreStatements.HodgeTatePoints.FlagbGeo, Development.WeilBound.CoreStatements.HodgeTatePoints.FlagbLoc, Development.WeilBound.CoreStatements.HodgeTatePoints.ChartMonNeZero, Development.WeilBound.CoreStatements.HodgeTatePoints.FrameExpandLoc, Development.WeilBound.CoreStatements.HodgeTatePoints.GeTriv, Development.WeilBound.CoreStatements.HodgeTatePoints.TrivFlagModOfHodgeTateFreeOfRootLines, Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeTateFreeTrivialFlagMod
@@ -200,8 +201,7 @@ theorem pow_smul_mem_om_of_overlap : ∀ (E : Type) [Field E] [NumberField E] [I
     obtain ⟨r, hr⟩ := (ho ((b : Ω))⁻¹).2 ⟨1, b, hb, by simp⟩
     rw [← hr]
     exact Subalgebra.algebraMap_mem _ r
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   let I : Ideal (chartRing ℤ (mseg y) t.1) :=
     { carrier := {a | (a : Ω) • w ∈ (Dc t).om}
       add_mem' := fun {u v} hu hv => by
@@ -887,15 +887,7 @@ theorem eigProj_eq_comp (ρΩ : 𝓞 E →+* Module.End Ω (Module.Dual Ω 𝔐.
 
 theorem span_flag (Fl : 𝔐.Flag) (s : CMType H ⊕ CMType H) :
     Submodule.span Ω (Set.range (Fl.b s)) = 𝔐.Vgen s := by
-  let q : Cpt 𝔐.ξ := ⟨genPt 𝔐.ξ, specializes_rfl⟩
-  obtain ⟨U, hU, b, hF, hb⟩ := Fl.sub s q trivial
-  obtain ⟨U', hU', b', hV, hb'⟩ := 𝔐.vb s q trivial
-  have h1 := (hb q trivial hU).2
-  have h2 : 𝔐.V s q = _ := (hb' q trivial hU').2
-  have h3 := congrArg (fun N : Submodule (regAt 𝔐.ξ q) 𝔐.Li => Submodule.span Ω (N : Set 𝔐.Li)) (h1.symm.trans h2)
-  simp only [Submodule.span_span_of_tower] at h3
-  rw [← flagStep_top, ← hF, flagStep_top, h3]
-  exact hV
+  apply _root_.GlobalTheory.CompanionTheory.Ar.HodgeCptTest.flag_span <;> assumption
 
 theorem li_flag (Fl : 𝔐.Flag) (s : CMType H ⊕ CMType H) : LinearIndependent Ω (Fl.b s) := by
   obtain ⟨_, _, -, -, -, h, -⟩ := Fl.generic

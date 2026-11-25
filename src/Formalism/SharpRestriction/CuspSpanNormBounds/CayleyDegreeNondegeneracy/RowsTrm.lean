@@ -55,8 +55,7 @@ private theorem rows_leadMinor_aux_lemma {E : Type*} [CommRing E] {n l : ℕ} (h
       (Q.submatrix (Fin.castLE hl) (Fin.castLE hl)).det := by
   have hrange : ∀ q : Fin n, q ∉ Set.range (Fin.castLE hl) → l ≤ q.val := by
     intro q hq
-    by_contra hlt
-    push_neg at hlt
+    by_contra! hlt
     exact hq ⟨⟨q.val, hlt⟩, Fin.ext rfl⟩
   have hval : ∀ i : Fin l, ((Fin.castLE hl i : Fin n) : ℕ) = (i : ℕ) := fun i => rfl
   have key : (P * Q * R).submatrix (Fin.castLE hl) (Fin.castLE hl) =

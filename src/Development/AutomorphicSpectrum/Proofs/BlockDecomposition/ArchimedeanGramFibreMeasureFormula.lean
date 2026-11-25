@@ -61,8 +61,7 @@ theorem exists_integral_ne_zero_of_carried_by_isOpen
   have hσ : IsSigmaCompact U := isSigmaCompact_iff_sigmaCompactSpace.2 inferInstance
   obtain ⟨K, hK, hKU⟩ := hσ
   have hex : ∃ n, m (K n) ≠ 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     apply hmU
     rw [← hKU]
     exact measure_iUnion_null hcon
@@ -588,8 +587,7 @@ theorem exists_fin_point {V P : Type} [MeasurableSpace V] [MeasurableSpace P]
     (μ : Measure V) (ν : Measure P) (U : Set V) (fib : P → Measure V) (f : V → ℝ≥0∞)
     (h : ∫⁻ v in U, f v ∂μ = ∫⁻ b, ∫⁻ v, f v ∂(fib b) ∂ν) (hfin : ∫⁻ v, f v ∂μ ≠ ⊤)
     (O : Set P) (hO : MeasurableSet O) (hpos : ν O ≠ 0) : ∃ s ∈ O, ∫⁻ v, f v ∂(fib s) ≠ ⊤ := by
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   have hle : (⊤ : ℝ≥0∞) * ν O ≤ ∫⁻ b, ∫⁻ v, f v ∂(fib b) ∂ν := by
     rw [← lintegral_indicator_const hO]
     refine lintegral_mono fun S => ?_

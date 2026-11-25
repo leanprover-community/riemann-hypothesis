@@ -1569,8 +1569,7 @@ theorem exists_moved (hU : IsUnramifiedLoc k E) (τ : E ≃ₐ[k] E) (hτ : τ �
     (hval : ∀ x : E, valuation E (τ x) = valuation E x) :
     ∃ x : E, x ∈ intO E ∧ valuation E (τ x - x) = 1 := by
   classical
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   obtain ⟨π, -, hπE⟩ := uniformiser_of_unramified hU
   obtain ⟨hπ1, hπ0, hπmax⟩ := hπE
   haveI := GroundTheory.LocalField.isDiscreteValuationRing E

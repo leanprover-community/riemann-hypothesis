@@ -580,8 +580,7 @@ theorem UpperTheory.V.AlgebraTools.IsCplAt.dvr :
     intro x hx
     classical
     have hex : ∃ n : ℕ, x ∉ maximalIdeal B ^ n := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       apply hx
       have hin : x ∈ ⨅ i : ℕ, maximalIdeal B ^ i := Submodule.mem_iInf _ |>.mpr hc
       rw [hK] at hin
@@ -609,8 +608,7 @@ theorem UpperTheory.V.AlgebraTools.IsCplAt.dvr :
     exact ⟨c, by ring⟩
   haveI : IsDomain B := by
     have hnzd : NoZeroDivisors B := ⟨fun {a b} hab => by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       obtain ⟨i, u, hu, rfl⟩ := hfac a hc.1
       obtain ⟨j, v, hv, rfl⟩ := hfac b hc.2
       apply hnil (i + j)
@@ -1118,20 +1116,7 @@ private theorem map_first_order_lift_residue_field {l : ℕ} [Fact l.Prime] {F :
 
 private theorem map_mem_dual_numbers_part {A Y : Type} [CommRing A] [CommRing Y] [Algebra A Y] {g : ℕ} {b1 b2 b3 b4 : Bool} {u : DD A g}
     (hu : u ∈ ddPart A A g b1 b2 b3 b4) : DD.map (algebraMap A Y) u ∈ ddPart A Y g b1 b2 b3 b4 := by
-  obtain ⟨h1, h2, h3, h4⟩ := hu
-  refine ⟨fun hb => ?_, fun hb => ?_, fun hb => ?_, fun hb => ?_⟩
-  · show algebraMap A Y u.a = 0
-    rw [h1 hb, map_zero]
-  · show (fun j => algebraMap A Y (u.ep j)) = 0
-    rw [h2 hb]
-    funext j
-    simp
-  · show (fun j => algebraMap A Y (u.ep' j)) = 0
-    rw [h3 hb]
-    funext j
-    simp
-  · show algebraMap A Y u.eta = 0
-    rw [h4 hb, map_zero]
+  apply _root_.ddMap_algebraMap_mem_ddPart <;> assumption
 
 theorem UpperTheory.V.Pa.k1F :
     ∀ (l : ℕ) [Fact l.Prime] (L : Loc) (G G0 : Glob l L) (h : G.Hom G0) (n : ℕ) (x : NP G0.frame n), ∀ (k : Kap x), ∀ D0, K1 h k D0 → SelmerRankBoundLaurent h k D0 := by

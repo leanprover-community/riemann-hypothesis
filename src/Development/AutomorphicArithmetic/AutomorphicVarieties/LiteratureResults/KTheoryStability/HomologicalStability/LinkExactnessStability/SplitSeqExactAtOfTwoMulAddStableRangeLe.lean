@@ -790,14 +790,7 @@ lemma sum_apply_pair {V W : Type} (T : Finset (List V)) (g : List V → List W �
 
 lemma vbd_mapDomain {V W : Type} (l : List V) (c : List W →₀ ℤ) :
     vbd V W (Finsupp.mapDomain (fun w => (l, w)) c) = Finsupp.mapDomain (fun w => (l, w)) (bd W c) := by
-  induction c using Finsupp.induction_linear with
-  | zero => simp
-  | add f g hf hg =>
-    rw [Finsupp.mapDomain_add, map_add (f := _), hf, hg, map_add (f := _), Finsupp.mapDomain_add]
-  | single w k =>
-    rw [Finsupp.mapDomain_single]
-    simp only [vbd, bd, Finsupp.linearCombination_single]
-    rw [one_smul, Finsupp.mapDomain_smul]
+  apply _root_.GlobalTheory.SeqCx.DblBd.vbd_mapDomain <;> assumption
 
 end GlobalTheory.SeqCx.ColDecomp
 

@@ -30,20 +30,10 @@ private theorem constantCoeff_logF_eq_zero : PowerSeries.constantCoeff (logF p) 
   first
   | (rw [← PowerSeries.coeff_zero_eq_constantCoeff_apply]; unfold logF; simp)
 
-private theorem cc_subst_lemma_2 {τ S : Type} [CommRing S] {a : MvPowerSeries τ S}
-    (ha : MvPowerSeries.constantCoeff a = 0) {f : PowerSeries S} (hf : PowerSeries.constantCoeff f = 0) :
-    MvPowerSeries.constantCoeff (PowerSeries.subst a f) = 0 := by
-  have hs : PowerSeries.HasSubst a := by
-    first
-    | exact PowerSeries.HasSubst.of_constantCoeff_zero ha
-  obtain ⟨g, rfl⟩ := PowerSeries.X_dvd_iff.mpr hf
-  first
-  | rw [PowerSeries.subst_mul hs, PowerSeries.subst_X hs, map_mul, ha, zero_mul]
-
 theorem th_lX_const (K1 : Type) [Field K1] [Algebra (K0 p) K1] {σ : Type} (i : σ) :
     MvPowerSeries.constantCoeff (PowerSeries.subst (MvPowerSeries.X i : MvPowerSeries σ K1)
       (PowerSeries.map (algebraMap (K0 p) K1) (logF p))) = 0 := by
-  refine cc_subst_lemma_2 (MvPowerSeries.constantCoeff_X i) ?_
+  refine PowerSeries.constantCoeff_subst_eq_zero (MvPowerSeries.constantCoeff_X i) _ ?_
   rw [← PowerSeries.coeff_zero_eq_constantCoeff_apply, PowerSeries.coeff_map,
     PowerSeries.coeff_zero_eq_constantCoeff_apply, constantCoeff_logF_eq_zero, map_zero]
 
@@ -74,13 +64,14 @@ theorem th_tOf_const {K' σ τ : Type} [Field K'] (vp : K') (μ : PowerSeries K'
     (L : σ → MvPowerSeries τ K') (hL0 : ∀ i, MvPowerSeries.constantCoeff (L i) = 0) (i : σ) :
     MvPowerSeries.constantCoeff (tOf vp μ L i) = 0 := by
   unfold tOf
-  refine cc_subst_lemma_2 (hL0 i) ?_
+  refine PowerSeries.constantCoeff_subst_eq_zero (hL0 i) _ ?_
   rw [map_mul, h0, mul_zero]
 
 theorem th_hasSubst_lX {σ : Type} [Finite σ] : MvPowerSeries.HasSubst
     (fun i : σ => PowerSeries.subst (MvPowerSeries.X i : MvPowerSeries σ (K0 p)) (logF p)) := by
   refine MvPowerSeries.hasSubst_of_constantCoeff_zero fun i => ?_
-  exact cc_subst_lemma_2 (MvPowerSeries.constantCoeff_X i) (constantCoeff_logF_eq_zero p)
+  exact PowerSeries.constantCoeff_subst_eq_zero (MvPowerSeries.constantCoeff_X i) _
+    (constantCoeff_logF_eq_zero p)
 
 private theorem constantCoeff_subst_eq_zero' {κ τ S : Type} [CommRing S] [Finite κ] {a : κ → MvPowerSeries τ S}
     (h : ∀ s, MvPowerSeries.constantCoeff (a s) = 0) {f : MvPowerSeries κ S}
@@ -94,8 +85,7 @@ private theorem constantCoeff_subst_eq_zero' {κ τ S : Type} [CommRing S] [Fini
       rw [← MvPowerSeries.coeff_zero_eq_constantCoeff_apply] at hf
       rw [hf, zero_smul]
     · obtain ⟨s, hs⟩ : ∃ s, d s ≠ 0 := by
-        by_contra hcon
-        push_neg at hcon
+        by_contra! hcon
         exact hd (Finsupp.ext hcon)
       have h0 : MvPowerSeries.constantCoeff (d.prod fun s e => a s ^ e) = 0 := by
         rw [Finsupp.prod, map_prod]
@@ -107,7 +97,8 @@ private theorem constantCoeff_subst_eq_zero' {κ τ S : Type} [CommRing S] [Fini
 theorem th_inParam_const {σ : Type} [Finite σ] {f : MvPowerSeries σ (K0 p)}
     (hf : MvPowerSeries.constantCoeff f = 0) : MvPowerSeries.constantCoeff (inParam p f) = 0 := by
   unfold inParam
-  exact constantCoeff_subst_eq_zero' (fun i => cc_subst_lemma_2 (MvPowerSeries.constantCoeff_X i) (constantCoeff_logF_eq_zero p)) hf
+  exact constantCoeff_subst_eq_zero' (fun i => PowerSeries.constantCoeff_subst_eq_zero
+    (MvPowerSeries.constantCoeff_X i) _ (constantCoeff_logF_eq_zero p)) hf
 
 theorem th_inParam_sub {σ : Type} [Finite σ] (f g : MvPowerSeries σ (K0 p)) :
     inParam p (f - g) = inParam p f - inParam p g := by

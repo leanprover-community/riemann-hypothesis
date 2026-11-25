@@ -3,6 +3,7 @@ module
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.HeckeAlgebras.ContinuousTorusCharacter
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.HeckeAlgebras.OrdinaryHeckeCharacters.IwMemMul
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.HeckeAlgebras.OrdinaryHeckeCharacters.UOpMul
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.HeckeAlgebras.OrdinaryHeckeCharacters.UOpMul
 import Development.AutomorphicArithmetic.AutomorphicVarieties.HeckeAlgebras.OrdinaryHeckeCharacters.UOpSum
 import Mathlib.Tactic.Linter.Style
 
@@ -12,16 +13,7 @@ open IsLocalRing Matrix UpperTheory.V.Hi
 
 private theorem uOpLevel_mem {G : Type} [Group G] (I : Iwa G) (a x : G) :
     x ∈ I.Nconj a ↔ a⁻¹ * x * a ∈ I.N := by
-  constructor
-  · intro h
-    obtain ⟨n, hn, e⟩ := Subgroup.mem_map.1 h
-    have e2 : a * n * a⁻¹ = x := e
-    have : a⁻¹ * x * a = n := by rw [← e2]; group
-    rwa [this]
-  · intro h
-    refine Subgroup.mem_map.2 ⟨_, h, ?_⟩
-    show a * (a⁻¹ * x * a) * a⁻¹ = x
-    group
+  apply _root_.UpperTheory.V.Hi.uOpMul_mem <;> assumption
 
 private theorem uOpLevel_core {G : Type} [Group G] (I : Iwa G) {A M : Type} [CommRing A] [AddCommGroup M]
     [Module A M] (π : Representation A G M) (c : ℕ) {a : G} (ha : a ∈ I.P) {v : M} (hN : v ∈ fixd π I.N)

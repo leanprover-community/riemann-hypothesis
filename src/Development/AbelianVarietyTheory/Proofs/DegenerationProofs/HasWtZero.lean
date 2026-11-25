@@ -48,7 +48,6 @@ open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj Alg
 open scoped CategoryTheory.Obj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open ReciprocityTheory.ChartRestriction.G.Out GlobalTheory.ZH
-attribute [local instance] SplitExt.free SplitExt.finite
 
 noncomputable section
 namespace GlobalTheory.ZH.UFib

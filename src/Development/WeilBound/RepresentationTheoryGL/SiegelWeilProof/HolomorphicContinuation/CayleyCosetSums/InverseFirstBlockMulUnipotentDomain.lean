@@ -15,8 +15,6 @@ open Matrix Filter Topology Set
 
 namespace PositivityTheory.Rg.Sw.HSt
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 open PositivityTheory.Rg.Sw PositivityTheory.Rg.Sw.LVs
 
 variable {n : ℕ}

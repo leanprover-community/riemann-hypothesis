@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.GrowthBounds.ValuationLowestDegreeMapFractionField
 public import Formalism.SharpRestriction.GrowthBounds.StatementOfDegreeAndBound
 public import Formalism.SharpRestriction.GrowthBounds.FrobeniusPaths.AntitoneOfAppend
 public import Formalism.SharpRestriction.GrowthBounds.RootWeights.DvrFractionFieldCharZeroPrime
@@ -223,18 +224,7 @@ lemma sat_of_subbasis {O M ι : Type*} [CommRing O] [IsDomain O] [AddCommGroup M
     (hv : LinearIndependent O v) (s : Set ι) (f : M) (a : O) (ha : a ≠ 0)
     (hf : f ∈ Submodule.span O (Set.range v)) (haf : a • f ∈ Submodule.span O (v '' s)) :
     f ∈ Submodule.span O (v '' s) := by
-  rw [← Finsupp.range_linearCombination] at hf
-  obtain ⟨l, rfl⟩ := hf
-  rw [Finsupp.mem_span_image_iff_linearCombination] at haf ⊢
-  obtain ⟨l', hl', h⟩ := haf
-  have h2 : l' = a • l := hv (by rw [h, map_smul])
-  refine ⟨l, ?_, rfl⟩
-  rw [Finsupp.mem_supported] at hl' ⊢
-  intro i hi
-  apply hl'
-  rw [h2]
-  simp only [Finset.mem_coe, Finsupp.mem_support_iff, Finsupp.smul_apply, smul_eq_mul] at hi ⊢
-  exact mul_ne_zero ha hi
+  apply _root_.Formalism.MainNotions.G.Joints.StandardMonomialSpace.sat_li <;> assumption
 
 lemma pol_of_smul {O : Type*} [CommRing O] [IsDomain O] {ι : Type*} {n : ℕ} (d : ι → ℕ)
     (f : MvPolynomial (ι × Fin n) O) (a : O) (ha : a ≠ 0) (h : a • f ∈ Pol O n d) : f ∈ Pol O n d := by

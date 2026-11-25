@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.TriDefs
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.IsInertiaInfiniteCyclotomic
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.DeformCr
 import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.Z1fDescAvg
@@ -14,17 +15,7 @@ open Formalism.BasicNotions Formalism.BasicNotions.Loc ReciprocityTheory.Gal Mod
 private theorem crOn_top {l : ℕ} [Fact l.Prime] {G A V : Type} [Group G] [CommRing A] [Algebra ℚ_[l] A]
     [AddCommGroup V] [Module A V] [Module ℚ_[l] V] [IsScalarTower ℚ_[l] A V] (φ : G →* GQ l)
     (ρ : Representation A G V) : CrOn φ ρ ⊤ ↔ IsCr φ ρ := by
-  have he : Function.Surjective (fun g : (⊤ : Subgroup G) => (g : G)) := fun g => ⟨⟨g, trivial⟩, rfl⟩
-  have hr : (φ.comp (⊤ : Subgroup G).subtype).range = φ.range := by
-    ext σ
-    exact ⟨fun ⟨g, hg⟩ => ⟨g, hg⟩, fun ⟨g, hg⟩ => ⟨⟨g, trivial⟩, hg⟩⟩
-  have hc : Dcr (φ.comp (⊤ : Subgroup G).subtype)
-      (resCoef ℚ_[l] (ρ.comp (⊤ : Subgroup G).subtype : Representation A (⊤ : Subgroup G) V)) =
-      Dcr φ (resCoef ℚ_[l] ρ) := by
-    unfold Dcr
-    exact he.iInf_comp (fun g => LinearMap.ker (actC φ (resCoef ℚ_[l] ρ) g - LinearMap.id))
-  unfold CrOn IsCr
-  rw [hr, hc]
+  apply _root_.UpperTheory.V.Loc.crOn_top <;> assumption
 
 private def glOn {G R : Type} [Group G] [CommRing R] {m : ℕ} (H : Subgroup G)
     (r : G →* GG (m := m) (R := R))

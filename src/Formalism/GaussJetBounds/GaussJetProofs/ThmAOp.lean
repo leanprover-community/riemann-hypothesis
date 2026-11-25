@@ -5,8 +5,6 @@ public import Mathlib.RingTheory.MvPolynomial.Basic
 public import Formalism.GaussJetBounds.StatementI
 public import Formalism.GaussJetBounds.MonoShapeTop
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.Tactic.Lemma
-import Mathlib.Tactic.TypeStar
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.GaussJetBounds.GaussJetProofs.MinorProductSupportTop, Formalism.GaussJetBounds.GaussJetProofs.ThmAOp
@@ -122,8 +120,7 @@ lemma shape_minor {R : Type u} [CommRing R] {J : Type} [Fintype J] [DecidableEq 
     · exact Or.inr hd
     · left
       refine ⟨τ, hinj, ?_, rfl⟩
-      by_contra hno
-      push_neg at hno
+      by_contra! hno
       apply hd
       rw [Matrix.det_apply]
       refine Finset.sum_eq_zero fun π _ => ?_

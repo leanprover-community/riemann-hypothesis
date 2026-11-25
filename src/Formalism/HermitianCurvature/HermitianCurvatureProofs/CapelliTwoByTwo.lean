@@ -18,8 +18,6 @@ namespace Formalism.FourierDecayAlt.P
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Q Formalism.FourierDecayAlt.Qr
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 namespace CapelliTwoByTwo
 
 theorem capelli_two_general_frame (t n : ℕ) (h : t = n + 2) (A : Type) [Ring A] [Algebra ℂ A] (Eop : Fin t → Fin t → A)

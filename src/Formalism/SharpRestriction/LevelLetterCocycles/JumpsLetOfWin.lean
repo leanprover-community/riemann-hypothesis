@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.LevelLetterCocycles.FrobeniusPowUniformizerFactorisation
 public import Formalism.SharpRestriction.LevelLetterCocycles.ArcLiftingSetup
 public import Formalism.SharpRestriction.LevelLetterCocycles.CoordHomMapTrace
 
@@ -136,13 +137,7 @@ theorem mw_le (A : Formalism.MainNotions.ArcLiftingSetup.ArcP n) (hA : A.OK) (c 
       omega
 
 theorem φA_mem_AΔ {a : LetA O n} (ha : a ∈ W.AΔ) : W.φA a ∈ W.AΔ := by
-  have ha' : ∀ δ ∈ W.DelF, W.γA δ a = a := ha
-  show ∀ δ ∈ W.DelF, W.γA δ (W.φA a) = W.φA a
-  intro δ hδ
-  have h1 : W.γA δ (W.φA a) = W.φA (W.γA δ a) := by
-    funext i
-    exact (W.γ₀_comm δ (a (i - 1))).symm
-  rw [h1, ha' δ hδ]
+  apply _root_.Formalism.MainNotions.LiftingTheory.tr_φA_mem <;> assumption
 
 theorem φA_pow_mem_AΔ {a : LetA O n} (ha : a ∈ W.AΔ) (s : ℕ) : (W.φA ^ s) a ∈ W.AΔ := by
   induction s with

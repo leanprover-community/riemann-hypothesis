@@ -77,8 +77,7 @@ theorem fourier_uniq {κ : Type} [Fintype κ] {ψ : AddChar (AF F) ℂ} (h : IsS
     obtain ⟨i, hi⟩ := Function.ne_iff.mp hy
     have hi' : y i ≠ 0 := hi
     obtain ⟨s, hs'⟩ : ∃ s, ψ s ≠ 1 := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       exact std_ne_one h (AddChar.ext ψ 1 fun s => by simpa using hc s)
     refine ⟨Pi.single i (algebraMap F (AF F) (y i)⁻¹ * s), ?_⟩
     simp only [e, dotProduct_single]

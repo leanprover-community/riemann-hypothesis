@@ -345,9 +345,6 @@ theorem ordinary_idempotent_third_component_alt : OrdinaryIdempotentThirdCompone
 
 end GlobalTheory.HeightCounting.Up.ThirdTied
 
-theorem _root_.GlobalTheory.T.ordinary_idempotent_third_component_of_cmDatum_alt :
-    GlobalTheory.HeightCounting.Up.ThirdTied.OrdinaryIdempotentThirdComponent :=
-  GlobalTheory.HeightCounting.Up.ThirdTied.ordinary_idempotent_third_component_alt
 
 end
 end -- clump:auto
@@ -762,7 +759,7 @@ theorem third_place_linked_data_exists : ∀ hL : _root_.UpperTheory.Zero.LLC.Re
   intro hL hP hX
   have agreement := StepW.and
     (ThirdAgree.third_components_agree_alt hL hP hX)
-    (GlobalTheory.T.ordinary_idempotent_third_component_of_cmDatum_alt hL hP hX)
+    (_root_.GlobalTheory.HeightCounting.Up.ThirdTied.ordinary_idempotent_third_component_alt hL hP hX)
   have readingInputs := StepW.and
     (ThirdTied.third_component_hecke_character_tuple_alt hL hP hX)
     (StepW.and (GlobalTheory.HeightCounting.Fin.finite_types_with_local_conditions_alt hL hP hX)

@@ -179,8 +179,7 @@ theorem cJoint_iff (X : ProvA) (μ : Ix p q → ℚ) (μ' : Ix r s → ℚ) (Φ 
     exact ⟨⟨minusPart_eq_zero_of_raise _ hd h1, minusPart_eq_zero_of_raise _ hd h2⟩, h3⟩
   · rintro ⟨hJ, h1, h2⟩
     obtain ⟨d, hd⟩ : ∃ d, homogeneousComponent d Φ ≠ 0 := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       apply h1.1
       rw [← sum_homogeneousComponent Φ]
       exact Finset.sum_eq_zero fun d _ => hc d
@@ -236,7 +235,6 @@ open GlobalTheory.Chain (signed)
 open GlobalTheory.Chain.RealIt (LPol locS locT IsPolyIso)
 open MeasureTheory Matrix
 open scoped TensorProduct InnerProductSpace ComplexConjugate
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.ArchRec
 
 end -- clump:auto

@@ -1144,7 +1144,6 @@ open MeasureTheory IsDedekindDomain NumberField GlobalTheory.AdelicU GlobalTheor
 open GlobalTheory.AutomorphicL2Unitary (starFn)
 open GlobalTheory.IndefiniteRowSideFullHecke.RadicalNoFixedVectors (HypH)
 open GlobalTheory.IndefiniteRowSideFullHecke.ConstantTermVanishing
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 namespace GlobalTheory.Proof.parabolic_and_constant_term
 theorem testFnConstTermVanishX : TestFnConstTermVanishX := by
   intro D V hodd S M T hH U μa _ μf _ f hf 𝔉 hP
@@ -1186,7 +1185,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.NonFieldTypeVanishingAlt
 open scoped TensorProduct ENNReal
 noncomputable section
 namespace GlobalTheory.NonFieldType
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 variable {D : D7} {V : HSp D}
 
 theorem productClauseX {S : D.what₂.Tau → SPar} {M : DSModel V S} {T : TypeDataG V} {U : AuxiliaryPlaceHermitianSpace V}

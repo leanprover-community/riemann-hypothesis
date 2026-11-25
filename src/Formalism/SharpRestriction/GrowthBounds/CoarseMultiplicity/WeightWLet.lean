@@ -38,7 +38,7 @@ def TD (b : SegBlock (segS X.TT j) X.m) (ω : (X.TT × Bool) × Fin (X.m + 1) �
   (segAPlus X.TT X.aT j - b.oPlus) * ω ((topEnd X j, true), 0) + b.oPlus * ω ((topEnd X j, true), Fin.succ 0) +
     (X.seg C0 CE1 CE2 j).bPlus * ω ((topEnd X j, false), Fin.succ 0)
 
-theorem ioBlock_wh (O : Type) [CommRing O] [IsDomain O] (mm : ℝ) (b : SegBlock (segS X.TT j) X.m)
+theorem ioBlock_wh (O : Type) [CommRing O] [IsDomain O] (b : SegBlock (segS X.TT j) X.m)
     (ω : (X.TT × Bool) × Fin (X.m + 1) → ℕ) (hc : ∀ x (c c' : Fin X.m), ω (x, c.succ) = ω (x, c'.succ))
     (hU : ∀ l : Fin (X.seg C0 CE1 CE2 j).t,
       ω ((topOdd X j (uTop (X.seg C0 CE1 CE2 j) l), true), 0) + ω ((topOdd X j (uTop (X.seg C0 CE1 CE2 j) l), false), 0) =
@@ -47,7 +47,16 @@ theorem ioBlock_wh (O : Type) [CommRing O] [IsDomain O] (mm : ℝ) (b : SegBlock
     (hP : ω ((topEnd X j, true), 0) + ω ((topEnd X j, false), 0) =
       ω ((topEnd X j, true), Fin.succ 0) + ω ((topEnd X j, false), Fin.succ 0))
     (s : MvPolynomial (BVar (2 * segS X.TT j + 1) X.m (X.seg C0 CE1 CE2 j).t) (KK O))
-    (hs : s ∈ (blockData X.p (X.seg C0 CE1 CE2 j) (segATop X.TT X.aT j) (segAPlus X.TT X.aT j) mm b).SSZ O (r := X.m)) :
+    (hs : ∀ (ω' : BVar (2 * segS X.TT j + 1) X.m (X.seg C0 CE1 CE2 j).t → ℕ)
+      (ωL : Fin (2 * segS X.TT j + 1 + 1) → ℕ),
+      (∀ a c, ω' (Sum.inl (a, c)) = ωL a) →
+      (∀ l : Fin (X.seg C0 CE1 CE2 j).t, ω' (Sum.inr (Fin.castSucc l, false)) + ω' (Sum.inr (Fin.castSucc l, true)) =
+        ωL (finPos (2 * segS X.TT j + 1) (2 * (uTop (X.seg C0 CE1 CE2 j) l : ℕ))) +
+          ωL (finPos (2 * segS X.TT j + 1) (2 * (uTop (X.seg C0 CE1 CE2 j) l : ℕ) + 1))) →
+      ω' (Sum.inr (Fin.last (X.seg C0 CE1 CE2 j).t, false)) + ω' (Sum.inr (Fin.last (X.seg C0 CE1 CE2 j).t, true)) =
+        ωL (Fin.castSucc ⟨2 * segS X.TT j, by lia⟩) + ωL (Fin.last _) →
+      IsWeightedHomogeneous ω' s
+        (OmB X.p (X.seg C0 CE1 CE2 j) (segATop X.TT X.aT j) (segAPlus X.TT X.aT j) b ω' ωL)) :
     IsWeightedHomogeneous ω (ioBlock (KK O) X.p C0 CE1 CE2 X j b s) (TD C0 CE1 CE2 X j b ω) := by
   let ω' : BVar (2 * segS X.TT j + 1) X.m (X.seg C0 CE1 CE2 j).t → ℕ := fun v => symLev X.p C0 CE1 CE2 X j v * ω (symVar C0 CE1 CE2 X j v)
   let ωL : Fin (2 * segS X.TT j + 1 + 1) → ℕ := fun a => ω' (Sum.inl (a, 0))
@@ -105,7 +114,7 @@ theorem ioBlock_wh (O : Type) [CommRing O] [IsDomain O] (mm : ℝ) (b : SegBlock
       ωL (Fin.castSucc ⟨2 * segS X.TT j, by omega⟩) + ωL (Fin.last _) := by
     rw [hx, hx, hUU, hXi]
     exact hP
-  have hS := ssz_wh O X.p (X.seg C0 CE1 CE2 j) (segATop X.TT X.aT j) (segAPlus X.TT X.aT j) mm b ω' ωL h1 h2 h3 s hs
+  have hS := hs ω' ωL h1 h2 h3
   have hA := wh_aeval ω (symVar C0 CE1 CE2 X j) (symLev X.p C0 CE1 CE2 X j) s _ hS
   have hDg : IsWeightedHomogeneous ω (digitMon (KK O) C0 CE1 CE2 X j b)
       (∑ i : Fin (segS X.TT j), ∑ c : Fin (X.m + 1),

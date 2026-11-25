@@ -75,8 +75,7 @@ theorem key {r : ℕ} (Z : Matrix (Fin (r + 1)) (Fin (r + 1)) E) (T T' : E) (c c
       linear_combination (star (det Z)) * e1 + (d * T) * e2
     exact (mul_eq_zero.mp h5).resolve_left hG
   have hnd : det Z ≠ 0 ∨ d ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     apply hG
     rw [hc.1, hc.2]
     simp

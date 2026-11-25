@@ -110,8 +110,6 @@ end Abstract
 
 section Completion
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 open GlobalTheory.WeylGL
 
 variable {E : Type} [Field E] [NumberField E] {w : HeightOneSpectrum (𝓞 E)} {n : ℕ}
@@ -241,8 +239,6 @@ theorem piTensor_twist (ρ : ∀ a, Representation ℂ (Γ a) (X a)) (χ : ∀ a
 end Tensor
 
 section Completion
-
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 variable {E : Type} [Field E] [NumberField E] {w : HeightOneSpectrum (𝓞 E)} {n : ℕ}
   {c : ℕ} {N : Fin c → ℕ} (h : ∑ i, N i = n)
@@ -750,8 +746,7 @@ theorem isSatVecGL_of_ind {c N : ℕ} {n : Fin c → ℕ} (h : ∑ i, n i = N) {
     show φ (g₁ * g * x) = φ (g₁ * (g * x))
     rw [mul_assoc]
   obtain ⟨y, hy⟩ : ∃ y, F.1 y ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact h0 (Subtype.ext (funext hc))
   obtain ⟨y₀, g₁, hy₀, rfl⟩ := exists_split_at w y
   have hne : locFn w F y₀ ≠ 0 := fun e => hy (congrFun e g₁)

@@ -100,8 +100,7 @@ private theorem le_compact {Γ : Type} [Group Γ] [TopologicalSpace Γ] [IsTopol
     {l : ℕ} [Fact l.Prime] (χ : Γ →* ℤ_[l]ˣ) (hχ : Continuous χ) (H U : Subgroup Γ) (hH : IsClosed (H : Set Γ))
     (hU : IsOpen (U : Set Γ)) (h : ∀ g ∈ H, χ g = 1 → g ∈ U) :
     ∃ m, ∀ g ∈ H, χ g ∈ KStar.TotallyRealRoots.princ l m → g ∈ U := by
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   let t : ℕ → Set Γ := fun m =>
     ((H : Set Γ) ∩ (U : Set Γ)ᶜ) ∩ χ ⁻¹' (KStar.TotallyRealRoots.princ l m : Set ℤ_[l]ˣ)
   have hcl : ∀ m, IsClosed (t m) := fun m =>
@@ -188,8 +187,7 @@ theorem UpperTheory.V.Ws.layerEx :
   have hfar : ∀ t, ∃ M, 0 < t → χ' (s ^ t) ∉ KStar.TotallyRealRoots.princ l M := by
     intro t
     by_cases ht : 0 < t
-    · by_contra hall
-      push_neg at hall
+    · by_contra! hall
       exact hnt t ht (le_one _ fun M => (hall M).2)
     · exact ⟨0, fun h => absurd h ht⟩
   choose f hf using hfar

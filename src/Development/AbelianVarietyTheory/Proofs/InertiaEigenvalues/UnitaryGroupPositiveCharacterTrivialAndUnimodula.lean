@@ -248,8 +248,7 @@ theorem real_eq_one {x y C : ℝ} (hx : 0 < x) (hy : 0 < y) (hxy : x * y = 1) (h
     (hyn : ∀ n : ℕ, y ^ n ≤ C) : x = 1 := by
   have le1 : ∀ z : ℝ, (∀ n : ℕ, z ^ n ≤ C) → z ≤ 1 := by
     intro z h
-    by_contra hlt
-    push_neg at hlt
+    by_contra! hlt
     obtain ⟨n, hn⟩ := ((tendsto_pow_atTop_atTop_of_one_lt hlt).eventually_gt_atTop C).exists
     exact absurd (h n) (not_le.2 hn)
   have hx1 := le1 x hxn

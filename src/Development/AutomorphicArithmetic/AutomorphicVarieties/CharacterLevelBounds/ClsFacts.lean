@@ -60,17 +60,7 @@ private theorem exists_primitiveRoot_of_isAlgClosure' (k Ω : Type) [Field k] [N
 private theorem cls_apply_root_of_unity_eq_pow (k Ω : Type) [Field k] [NumberField k] [Field Ω] [Algebra k Ω]
     [IsAlgClosure k Ω] (N : ℕ) [NeZero N] (σ : G k Ω) (ζ : Ω) (hζ : ζ ^ N = 1) :
     σ ζ = ζ ^ ((cls k Ω N σ : (ZMod N)ˣ) : ZMod N).val := by
-  have h0 : ζ ≠ 0 := by
-    rintro rfl
-    simp [NeZero.ne N] at hζ
-  have ht : Units.mk0 ζ h0 ∈ rootsOfUnity N Ω := by
-    rw [mem_rootsOfUnity]
-    ext
-    simpa using hζ
-  obtain ⟨ξ, hξ⟩ := exists_primitiveRoot_of_isAlgClosure' k Ω N
-  have := modularCyclotomicCharacter.spec Ω hξ.card_rootsOfUnity
-    (MulSemiringAction.toRingAut (G k Ω) Ω σ) ht
-  exact this
+  apply _root_.UpperTheory.V.Chr.cls_spec <;> assumption
 
 private theorem cls_eq_of_forall_root_of_unity_apply_eq_pow (k Ω : Type) [Field k] [NumberField k] [Field Ω] [Algebra k Ω]
     [IsAlgClosure k Ω] (N : ℕ) [NeZero N] (σ : G k Ω) (u : (ZMod N)ˣ)

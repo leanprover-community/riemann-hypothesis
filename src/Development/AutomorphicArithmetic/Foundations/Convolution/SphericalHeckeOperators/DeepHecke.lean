@@ -475,8 +475,7 @@ theorem UpperTheory.ConvolutionTheory.H.nonVan :
       ∃ a : Fin n → ℤ, Gap m a ∧ (∀ i, 0 ≤ a i) ∧ evalAt z (symSum (monomial a * dPol n t)) ≠ 0 := by
   classical
   intro n t ht z m
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   let s : Fin n → ℤ := fun i => (m : ℤ) * ((n : ℤ) - ((i : ℕ) : ℤ))
   have hs0 : ∀ i, 0 ≤ s i := fun i => by
     have : ((i : ℕ) : ℤ) ≤ n := by exact_mod_cast i.2.le

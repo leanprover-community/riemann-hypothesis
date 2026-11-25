@@ -37,7 +37,6 @@ theorem midI_mono (r : ℕ) : Monotone (midI r) := by
 
 theorem midOf_midI (r : ℕ) (j : Fin r) : midOf (midI r j) = some j := by
   have hv := midI_val r j
-  have h2 := j.isLt
   unfold midOf
   split_ifs with h
   · exact Option.some_inj.mpr (Fin.ext (by show (midI r j).val - 1 = j.val; omega))
@@ -95,7 +94,6 @@ variable (mm ccl P Q : ℕ) (lam : Fin (mm + 1 + 1) → ℤ) (h0 : lam 0 = (P : 
 include hmid in
 theorem lam_mid_bd (j : Fin mm) : -(ccl : ℤ) ≤ lam (midI mm j) ∧ lam (midI mm j) ≤ ccl := by
   have hv := midI_val mm j
-  have h2 := j.isLt
   exact abs_le.mp (hmid _ (by omega) (by omega))
 
 include h0 hl in

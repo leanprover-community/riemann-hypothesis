@@ -1,5 +1,6 @@
 module
 
+import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.RowFormAllOf
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.MainEqSteps
 import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedVolumeStatements.GenericRatioOfBoundHolds
 public import Formalism.SharpRestriction.InertJacobiLevels.TwoPrimeFieldMemLevelOfCoprime
@@ -56,18 +57,7 @@ theorem isPair_quot' {T T' : E} (Λ Λ' : Submodule (𝓞 E) S.V) (g : ℕ) (F :
     (hl₁ : Formalism.HermitianLatticesTheory.gmap γ₁ Λ' = Λ) (hl₂ : Formalism.HermitianLatticesTheory.gmap γ₂ Λ' = Λ)
     (hι : IotaCompat Λ F (mapLF γ₁ F') (mapLF γ₂ F') (γ₂ * γ₁⁻¹) g) :
     IsPair Λ F (mapLF γ₁ F') (mapLF γ₂ F') (γ₂ * γ₁⁻¹) g := by
-  unfold IsPair
-  refine ⟨?_, ?_, ?_, hι⟩
-  · unfold IsAutLam
-    refine ⟨(Formalism.HermitianLatticesTheory.isom S.hT).mul_mem h₂ ((Formalism.HermitianLatticesTheory.isom S.hT).inv_mem h₁), ?_⟩
-    rw [_root_.PI.DCRelEquiv.UnitaryGroupMassFormula.gmap_mul', _root_.Formalism.L2.SG.Pf.gmap_inv hl₁, hl₂]
-  · intro j
-    rw [xflag_mapLF' γ₁ h₁, xflag_mapLF' γ₂ h₂, ← Submodule.map_comp]
-    congr 1
-    ext x
-    simp
-  · rw [z_mapLF' γ₁ h₁, z_mapLF' γ₂ h₂]
-    simp
+  apply +allowSynthFailures _root_.Formalism.L2.SG.Pf.RowForm.ScalT.isPair_quot <;> assumption
 
 end Gen
 

@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.NormPowSubPowLe
 public import Formalism.PadicSubsetSums.CentralIdempotents.PrimitiveRootFifteenSubOneUnit
 public import Formalism.SharpRestriction.LevelLetterCocycles.SumRepresentations
 public import Formalism.PadicSubsetSums.StableGradedCounts.CardLtAddCardGtAddCardEq
@@ -1049,26 +1050,8 @@ section Cont
 
 theorem norm_le_one_of_root {K : Type} [NormedField K] [IsUltrametricDist K] (y : K) (p : K[X])
     (hp : p.Monic) (hc : ∀ k, ‖p.coeff k‖ ≤ 1) (hy : p.eval y = 0) : ‖y‖ ≤ 1 := by
-  by_contra hcon
-  push Not at hcon
-  rw [eval_eq_sum_range, Finset.sum_range_succ, hp.coeff_natDegree, one_mul] at hy
-  rcases Nat.eq_zero_or_pos p.natDegree with h0 | hpos
-  · rw [h0] at hy
-    simp at hy
-  have h1 : y ^ p.natDegree = - ∑ k ∈ Finset.range p.natDegree, p.coeff k * y ^ k := by
-    linear_combination hy
-  have h2 : ‖∑ k ∈ Finset.range p.natDegree, p.coeff k * y ^ k‖ ≤ ‖y‖ ^ (p.natDegree - 1) := by
-    refine IsUltrametricDist.norm_sum_le_of_forall_le_of_nonneg (by positivity) fun k hk => ?_
-    rw [Finset.mem_range] at hk
-    rw [norm_mul, norm_pow]
-    calc ‖p.coeff k‖ * ‖y‖ ^ k ≤ 1 * ‖y‖ ^ k := by gcongr; exact hc k
-      _ = ‖y‖ ^ k := one_mul _
-      _ ≤ ‖y‖ ^ (p.natDegree - 1) := pow_le_pow_right₀ hcon.le (by omega)
-  have h3 : ‖y‖ ^ p.natDegree ≤ ‖y‖ ^ (p.natDegree - 1) := by
-    rw [← norm_pow, h1, norm_neg]
-    exact h2
-  have h4 : ‖y‖ ^ (p.natDegree - 1) < ‖y‖ ^ p.natDegree := pow_lt_pow_right₀ hcon (by omega)
-  exact absurd h3 (not_le.2 h4)
+  intros
+  apply _root_.GlobalTheory.NormEvalSubBound.norm_le_one_of_root <;> assumption
 
 variable {R : Ranks} {H : Host R} {what₂ : Rows.Data R} (N : NData R H what₂) (A : NAut N) (i : N.Loc)
 

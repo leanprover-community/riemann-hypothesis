@@ -39,6 +39,7 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.InertiaCyclic
 
 @[expose] public section
 
@@ -94,15 +95,7 @@ end Tensor
 variable {l : ℕ} [Fact l.Prime]
 
 theorem apply_mem_Kur (g : GQ l) {x : Om l} (hx : x ∈ MaximalUnramifiedExtension l) : g x ∈ MaximalUnramifiedExtension l := by
-  unfold MaximalUnramifiedExtension at hx ⊢
-  induction hx using IntermediateField.adjoin_induction with
-  | mem y hy =>
-    obtain ⟨m, h0, hm, hy⟩ := hy
-    exact IntermediateField.subset_adjoin _ _ ⟨m, h0, hm, by rw [← map_pow, hy, map_one]⟩
-  | algebraMap y => rw [g.commutes]; exact IntermediateField.algebraMap_mem _ y
-  | add a b _ _ ha hb => rw [map_add]; exact add_mem ha hb
-  | inv a _ ha => rw [map_inv₀]; exact inv_mem ha
-  | mul a b _ _ ha hb => rw [map_mul]; exact mul_mem ha hb
+  apply _root_.GlobalTheory.TameInertiaCyclic.map_mem_Kur <;> assumption
 
 def conjField (g : GQ l) {K₁ K₂ : IntermediateField ℚ_[l] (Om l)} (hK : ∀ x, x ∈ K₁ ↔ g x ∈ K₂) :
     ↥K₁ ≃ₐ[ℚ_[l]] ↥K₂ where

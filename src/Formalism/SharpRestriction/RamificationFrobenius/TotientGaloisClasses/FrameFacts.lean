@@ -630,8 +630,7 @@ open Classical in
 theorem thick_part_one {L : ℕ} (T : Finset ℕ) (hT : ∀ s ∈ T, 4 * L * s < φ.n0) (hR : NoRel T L)
     (u₀ t x : φ.A) (hord : 4 * L < addOrderOf x) (i₀ : ℤ) :
     ((Finset.Ico i₀ (i₀ + L)).filter (fun i : ℤ => φ.InTranslate T u₀ (t + i • x))).card ≤ 2 := by
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   obtain ⟨p, hp, q, hq, r, hr, hpq, hpr, hqr⟩ := Finset.two_lt_card.1 hcon
   rw [Finset.mem_filter] at hp hq hr
   have K : ∀ a b c : ℤ, a ∈ Finset.Ico i₀ (i₀ + L) → b ∈ Finset.Ico i₀ (i₀ + L) →

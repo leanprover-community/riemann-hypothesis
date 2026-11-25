@@ -3,6 +3,7 @@ module
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SizeAbsorption.Development
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SizeAbsorption.BDivXNonneg
 import Mathlib.Algebra.Order.Star.Real
+import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.NcSize
 
 @[expose] public section
 
@@ -135,13 +136,7 @@ theorem Sc_le_b (hSz : Formalism.MainNotions.SizesAt L) (hbb : L.sc.b' ≤ L.sc.
   linarith
 
 theorem one_le_a : 1 ≤ L.sc.a := by
-  unfold Formalism.BasicNotions.Scale.a Formalism.BasicNotions.Scale.b
-  have hx := L.sc.one_lt_alt
-  have he : 1 ≤ Real.exp L.sc.L := by
-    apply Real.one_le_exp
-    unfold Formalism.BasicNotions.Scale.L
-    exact Real.rpow_nonneg (by linarith) _
-  nlinarith
+  apply _root_.Formalism.MainNotions.FormalGroupSystem.Pf.nc_a_ge <;> assumption
 
 end sizes
 

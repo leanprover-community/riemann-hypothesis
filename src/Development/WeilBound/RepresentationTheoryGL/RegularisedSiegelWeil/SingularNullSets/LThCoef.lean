@@ -16,6 +16,8 @@ import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.LengthPosOf
 import Formalism.LocalToGlobal.IndefiniteReal.LocalNewformFunction
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AdelicUnitaryTopology
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SchwartzBoundFiniteInfinite
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ConstantTermLiftIsotropicSubspaceStatement
+import Development.WeilBound.RepresentationTheoryGL.RegularisedSiegelWeil.SingularNullSets.LThBddC
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.WeilBound.RepresentationTheoryGL.RegularisedSiegelWeil.SingularNullSets.LThCoefB, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.RallisConvIffInnerProduct, Development.WeilBound.RepresentationTheoryGL.RegularisedSiegelWeil.SingularNullSets.LThCoefA, Development.WeilBound.RepresentationTheoryGL.RegularisedSiegelWeil.SingularNullSets.LThCoef
@@ -33,7 +35,6 @@ open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doublin
 open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
 open GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctions.BC PositivityTheory.PfSWUS
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open IsDedekindDomain NumberField
 open GlobalTheory.RegSch (ikS projS Lvl)
 
@@ -51,21 +52,8 @@ instance countable_sp (W : HSp D) (n : ℕ) : Countable (Sp W n) := by
 
 theorem ip_inv (W : HSp D) {n : ℕ} (h : GA D W) (y : Matrix (Fin W.rank) (Fin n) D.host.E) :
     ip W (mm (mt W h⁻¹) (rat y)) (mm (mt W h⁻¹) (rat y)) = rat (gramQ W y) := by
-  have hu := GlobalTheory.RatAut.mt_unitary W h⁻¹
-  have hr := GlobalTheory.CompanionTheory.ThetaCoefND.rat_gramQ W y
-  show ((Formalism.L2.Theta.mt W h⁻¹ * y.map (Formalism.L2.Theta.incA D)).map (Formalism.L2.Theta.cA D)).transpose *
-      ((Formalism.BasicNotions.HSpace.gram W).map (Formalism.L2.Theta.incA D) *
-        (Formalism.L2.Theta.mt W h⁻¹ * y.map (Formalism.L2.Theta.incA D))) =
-    (gramQ W y).map (Formalism.L2.Theta.incA D)
-  rw [hr]
-  show _ = ((y.map (Formalism.L2.Theta.incA D)).map (Formalism.L2.Theta.cA D)).transpose *
-      ((Formalism.BasicNotions.HSpace.gram W).map (Formalism.L2.Theta.incA D) * y.map (Formalism.L2.Theta.incA D))
-  rw [Matrix.map_mul, Matrix.transpose_mul]
-  calc _ = ((y.map (Formalism.L2.Theta.incA D)).map (Formalism.L2.Theta.cA D)).transpose *
-        ((((Formalism.L2.Theta.mt W h⁻¹).map (Formalism.L2.Theta.cA D)).transpose *
-          (Formalism.BasicNotions.HSpace.gram W).map (Formalism.L2.Theta.incA D) * Formalism.L2.Theta.mt W h⁻¹) *
-          y.map (Formalism.L2.Theta.incA D)) := by simp only [Matrix.mul_assoc]
-    _ = _ := by rw [hu]
+  intros
+  apply _root_.PositivityTheory.Rg.Rsw.L.LThBdd.ip_mt_rat <;> assumption
 
 theorem pch_rat (ψ : AddChar (AF D.host.F) ℂ) {n : ℕ} (x : hermA D n) (T : HermE D n) :
     pch ψ x.1 (rat T.1) = GlobalTheory.CompanionTheory.SiegelND.pairH ψ (GlobalTheory.CompanionTheory.HermPoisson.ofHermE T).1 x := by
@@ -146,8 +134,6 @@ noncomputable section
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR.Datum MeasureTheory
 open GlobalTheory.RawLift
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 namespace GlobalTheory.Cmp.RallisRange
 
 variable {D : D7} {V W : HSp D}
@@ -176,7 +162,6 @@ open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doublin
 open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
 open GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctions.BC PositivityTheory.PfSWUS
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open IsDedekindDomain NumberField
 open GlobalTheory.RegSch (ikS projS Lvl)
 
@@ -184,16 +169,7 @@ namespace PositivityTheory.Rg.Rsw.L.LThCoef
 
 theorem rinv_of_rank {K : Type*} [Field K] {m n : ℕ} (x : Matrix (Fin m) (Fin n) K) (h : x.rank = m) :
     ∃ x' : Matrix (Fin n) (Fin m) K, x * x' = 1 := by
-  have hr : LinearMap.range x.mulVecLin = ⊤ := by
-    apply Submodule.eq_top_of_finrank_eq
-    rw [Matrix.finrank_range_mulVecLin, h]
-    simp
-  obtain ⟨g, hg⟩ := x.mulVecLin.exists_rightInverse_of_surjective hr
-  refine ⟨LinearMap.toMatrix' g, ?_⟩
-  have e : LinearMap.toMatrix' (x.mulVecLin ∘ₗ g) = x * LinearMap.toMatrix' g := by
-    show LinearMap.toMatrix' (Matrix.toLin' x ∘ₗ g) = _
-    rw [LinearMap.toMatrix'_comp, LinearMap.toMatrix'_toLin']
-  rw [← e, hg, LinearMap.toMatrix'_id]
+  apply _root_.GlobalTheory.UnipMean.exists_right_inv <;> assumption
 
 theorem orbit_mat {K : Type*} [Field K] [StarRing K] {m n : ℕ} (J : Matrix (Fin m) (Fin m) K) (hJ : IsUnit J.det)
     (x y : Matrix (Fin m) (Fin n) K) (x' y' : Matrix (Fin n) (Fin m) K) (hx : x * x' = 1) (hy : y * y' = 1)
@@ -305,7 +281,6 @@ open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doublin
 open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
 open GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctions.BC PositivityTheory.PfSWUS
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open IsDedekindDomain NumberField
 open GlobalTheory.RegSch (ikS projS Lvl)
 

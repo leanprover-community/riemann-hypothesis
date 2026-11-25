@@ -8,6 +8,7 @@ import Mathlib.Tactic.Linter.Style
 public import Mathlib.Analysis.Calculus.Deriv.Add
 public import Mathlib.Analysis.Calculus.Deriv.Mul
 public import Mathlib.Analysis.SpecialFunctions.Exponential
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PolynomialProperness.ZhatNormLinearBound
 
 @[expose] public section
 
@@ -104,18 +105,7 @@ theorem gN_eq_frob (g : B.Mat k r) : B.gN g = ‖g‖ := by
   simp only [Complex.normSq_eq_norm_sq, Real.rpow_two]
 
 theorem one_le_gN {g : B.Mat k r} (hg : g ∈ B.GV k r) : 1 ≤ B.gN g := by
-  rw [gN_eq_frob]
-  have hH : (0 : ℝ) < ‖Hpk k r‖ := norm_pos_iff.mpr hpk_ne_zero
-  have h1 : gᴴ * Hpk k r * g = Hpk k r := hg
-  have h2 : ‖Hpk k r‖ ≤ ‖g‖ * ‖Hpk k r‖ * ‖g‖ := by
-    calc ‖Hpk k r‖ = ‖gᴴ * Hpk k r * g‖ := by rw [h1]
-      _ ≤ ‖gᴴ * Hpk k r‖ * ‖g‖ := Matrix.frobenius_norm_mul _ _
-      _ ≤ ‖gᴴ‖ * ‖Hpk k r‖ * ‖g‖ := by
-          gcongr
-          exact Matrix.frobenius_norm_mul _ _
-      _ = ‖g‖ * ‖Hpk k r‖ * ‖g‖ := by rw [Matrix.frobenius_norm_conjTranspose]
-  have h3 : 1 ≤ ‖g‖ * ‖g‖ := by nlinarith
-  nlinarith [norm_nonneg g]
+  apply _root_.PI.PolynomialProperness.GN.gN_ge_one <;> assumption
 
 end gN
 

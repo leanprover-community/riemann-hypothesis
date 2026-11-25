@@ -1,5 +1,6 @@
 module
 
+import Formalism.FormalGroupWitt.FormalGroupWittProofs.WittTeichmullerRoot
 public import Formalism.SharpRestriction.GrowthBounds.FormalGroupSystem
 public import Formalism.LocalToGlobal.GroupLattices.PerfectRings.CharZeroWittQuadratic
 import Formalism.LocalToGlobal.GroupLattices.PerfectRings.IsLocalRingOfComplete
@@ -17,18 +18,7 @@ open Formalism.MainNotions.FormalGroupSystem IsLocalRing IntermediateField Polyn
 variable (p : ℕ) [hp : Fact p.Prime]
 
 instance instCharZeroWW : CharZero (WW p) := by
-  obtain ⟨q, hq⟩ := CharP.exists (WW p)
-  rcases CharP.char_is_prime_or_zero (WW p) q with h | h
-  · exfalso
-    have h0 : ((q : ℕ) : WW p) = 0 := CharP.cast_eq_zero _ q
-    have h1 : ((q : ℕ) : kb p) = 0 := by
-      have := congrArg (WittVector.constantCoeff (p := p) (R := kb p)) h0
-      rwa [map_natCast, map_zero] at this
-    have h2 : p ∣ q := (CharP.cast_eq_zero_iff (kb p) p q).1 h1
-    have h3 : p = q := (Nat.prime_dvd_prime_iff_eq hp.out h).1 h2
-    exact (WittVector.irreducible p (k := kb p)).ne_zero (h3 ▸ h0)
-  · subst h
-    exact CharP.charP_to_charZero _
+  apply _root_.Formalism.FG.witt_char_zero <;> assumption
 
 instance charZero_witt_fraction : CharZero (K0 p) :=
   charZero_of_injective_algebraMap (IsFractionRing.injective (WW p) (K0 p))

@@ -15,8 +15,6 @@ namespace Formalism.FourierDecayAlt.P.JFxG
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.JF Formalism.FourierDecayAlt.P.B4
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 variable {k r : ℕ}
 
 section gen
@@ -59,11 +57,3 @@ theorem ckOn_Rw_top {f : Mat k r → E} (h : CkOn ⊤ (GV k r) f) :
 end gen
 
 end Formalism.FourierDecayAlt.P.JFxG
-
-namespace Formalism.FourierDecayAlt.P
-
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.JF Formalism.FourierDecayAlt.P.B4 Formalism.FourierDecayAlt.P.JFxG
-
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
-end Formalism.FourierDecayAlt.P

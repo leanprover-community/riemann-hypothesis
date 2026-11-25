@@ -104,8 +104,7 @@ private lemma exists_eq_one_and_eq_zero_of_ne_algHom {C V : Type} [Field C] [Com
     ∃ w : V, z w = 1 ∧ ∀ z' : V →ₐ[C] C, z' ≠ z → z' w = 0 := by
   have hsep : ∀ z' : V →ₐ[C] C, z' ≠ z → ∃ a : V, z a ≠ z' a := by
     intro z' hz'
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hz' (AlgHom.ext fun a => (h a).symm)
   classical
   let u : (V →ₐ[C] C) → V := fun z' =>
@@ -268,7 +267,6 @@ section -- clump:auto
 open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
 open scoped CategoryTheory.Obj CategoryTheory.MonObj TensorProduct
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Pdiv
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.TorsionCharacterExt
 

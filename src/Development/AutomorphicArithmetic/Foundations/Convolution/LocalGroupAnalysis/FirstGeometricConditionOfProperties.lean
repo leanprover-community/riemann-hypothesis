@@ -373,8 +373,7 @@ private lemma norm_root_charpoly_le {n : ℕ} (M : Matrix (Fin n) (Fin n) ℂ) (
     rw [← Matrix.eval_charpoly]; exact hz
   obtain ⟨v, hv, hMv⟩ := Matrix.exists_mulVec_eq_zero_iff.mpr hdet
   obtain ⟨i0, hi0⟩ : ∃ i, v i ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hv (funext h)
   obtain ⟨i, -, hi⟩ := Finset.exists_max_image Finset.univ (fun j => ‖v j‖) ⟨i0, Finset.mem_univ _⟩
   have hvi : 0 < ‖v i‖ := lt_of_lt_of_le (norm_pos_iff.mpr hi0) (hi i0 (Finset.mem_univ _))

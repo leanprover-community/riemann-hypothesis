@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.GrowthBounds.RootWeights.V2repResIsGLRep
 public import Formalism.SharpRestriction.GrowthBounds.RootWeights.StableSubspaceCompleteReducibility
 public import Formalism.SharpRestriction.GrowthBounds.CovariantDegrees
 import Mathlib.Tactic.TypeStar
@@ -88,13 +89,7 @@ variable {E}
 
 theorem envelopingMonoid_preserves_stable {T : Submodule K V} (hT : IsStableUnderOperators E T) {u : Module.End K V} (hu : u ∈ Umon E) {x : V}
     (hx : x ∈ T) : u x ∈ T := by
-  unfold Umon at hu
-  induction hu using Submonoid.closure_induction generalizing x with
-  | mem u hu =>
-    obtain ⟨⟨a, b⟩, rfl⟩ := hu
-    exact hT a b x hx
-  | one => exact hx
-  | mul u w _ _ ihu ihw => exact ihu (ihw hx)
+  apply _root_.Formalism.MainNotions.G.GLWeightTheory.v2rep_Umon_stable <;> assumption
 
 theorem generatedSubmodule_le_of_stable {T : Submodule K V} (hT : IsStableUnderOperators E T) {x : V} (hx : x ∈ T) : generatedSubmodule E x ≤ T := by
   rw [generatedSubmodule, Submodule.span_le]

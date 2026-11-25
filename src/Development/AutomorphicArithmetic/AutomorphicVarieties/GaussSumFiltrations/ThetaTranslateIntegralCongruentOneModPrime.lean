@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.BadPrimeNormPrimeNeLevelPrime
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaussSumFiltrations.EvenPos
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.ImportsFurtherMore
 public import Mathlib.Algebra.AffineMonoid.Basic
@@ -440,18 +441,8 @@ namespace GlobalTheory.HilbertThetaSeries.GoodInv
 
 theorem exists_place (F : Type) [Field F] [NumberField F] (p : ℕ) (hp : p.Prime) :
     ∃ w : HeightOneSpectrum (𝓞 F), ((p : ℕ) : 𝓞 F) ∈ w.asIdeal := by
-  have hu : ¬ IsUnit ((p : ℕ) : 𝓞 F) := by
-    intro h
-    have h1 : IsUnit (algebraMap ℤ (𝓞 F) (p : ℤ)) := by simpa using h
-    have h2 : IsUnit (p : ℤ) := isUnit_of_map_unit _ _ h1
-    exact (Nat.prime_iff_prime_int.mp hp).not_unit h2
-  obtain ⟨M, hM, hle⟩ := Ideal.exists_le_maximal (Ideal.span {((p : ℕ) : 𝓞 F)}) (by
-    rwa [Ne, Ideal.span_singleton_eq_top])
-  have hmem : ((p : ℕ) : 𝓞 F) ∈ M := hle (Ideal.subset_span rfl)
-  refine ⟨⟨M, hM.isPrime, ?_⟩, hmem⟩
-  rintro rfl
-  have : ((p : ℕ) : 𝓞 F) = 0 := by simpa using hmem
-  exact hp.ne_zero (by exact_mod_cast this)
+ intros
+ apply @_root_.GlobalTheory.LvT.Built.IsTerm.exists_place <;> assumption
 
 theorem val_nat {F : Type} [Field F] [NumberField F] {p n : ℕ} (h : n.Coprime p)
     (w : HeightOneSpectrum (𝓞 F)) (hw : ((p : ℕ) : 𝓞 F) ∈ w.asIdeal) : w.valuation F (n : F) = 1 := by

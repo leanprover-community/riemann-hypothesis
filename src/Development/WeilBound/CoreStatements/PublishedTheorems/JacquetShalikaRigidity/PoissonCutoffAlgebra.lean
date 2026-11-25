@@ -83,8 +83,7 @@ theorem B_inj {ψ : AddChar (Ad E) ℂ} (hψ : StdPsi ψ) (γ : Fin k → Ad E) 
   subst hξ'
   by_contra hne
   have : ∃ i, ξ i ≠ 0 := by
-    by_contra h0
-    push_neg at h0
+    by_contra! h0
     exact hne (funext fun i => by simp [h0 i])
   obtain ⟨i, hi⟩ := this
   obtain ⟨a, ha⟩ := psi_nontriv hψ

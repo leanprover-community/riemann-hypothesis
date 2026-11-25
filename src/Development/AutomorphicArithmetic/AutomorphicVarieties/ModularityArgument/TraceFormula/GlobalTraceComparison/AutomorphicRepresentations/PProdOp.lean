@@ -293,8 +293,7 @@ private theorem prod_list (hS : SlotBasic) (hT : LevTop) (hA : AbsStep) (hH : Pf
       exact tm_unit hF g w (Finset.mem_filter.1 hw).2 (by simp) fun b hs => mem_lev.1 hg (w, b) hs
     · rw [if_neg hg]
       obtain ⟨i, hi, hn⟩ : ∃ i, Sl S i ∧ qw n i.1 i.2 g ∉ N i.1 := by
-        by_contra hc
-        push_neg at hc
+        by_contra! hc
         exact hg (mem_lev.2 hc)
       refine pf_zero hP hi ?_
       rw [hF.2 i hi (by simp)]

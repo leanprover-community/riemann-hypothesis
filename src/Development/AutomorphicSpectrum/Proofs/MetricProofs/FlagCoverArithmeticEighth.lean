@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverFramesAtPoint
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.IsImg
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.AevalNeZeroOfNotMem
 public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.GenericBlockMatrixIsBlockDiag
@@ -44,15 +45,8 @@ theorem analyticAt_eval {σ : Type} [Fintype σ] (P : MvPolynomial σ ℂ) (t : 
 
 theorem notMem_of_eval_ne_zero {t : (Σ k, ι k) → ℂ} {h : MRing ι} {d : K → ℕ}
     (hh : IsMultiHomog h d) (h0 : eval t (map (Int.castRingHom ℂ) h) ≠ 0) : h ∉ mCoordIdeal t := by
-  intro hm
-  have h' : mConeMap t h = 0 := hm
-  rw [mConeMap_of_isMultiHomog t hh] at h'
-  rcases mul_eq_zero.1 h' with h1 | h1
-  · refine h0 ?_
-    have h2 := MvPolynomial.C_eq_zero.1 h1
-    rw [MvPolynomial.aeval_def, MvPolynomial.eval₂_eq_eval_map] at h2
-    simpa using h2
-  · exact absurd h1 (Finset.prod_ne_zero_iff.2 fun k _ => pow_ne_zero _ (MvPolynomial.X_ne_zero _))
+  intros
+  apply _root_.GlobalTheory.CompanionTheory.Ar.PB.CovMap.LocImg.An.notMem_of_eval_ne_zero <;> assumption
 
 theorem exists_value_family {A : Type} [Finite A] {x : (Σ k, ι k) → Ω} {b : (Σ k, ι k) → ℂ}
     (hb : b ∈ mcPts (mCoordIdeal x)) (e : A → Ω) (he : ∀ a, RegAt x (mCoordIdeal b) (e a)) :

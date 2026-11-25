@@ -13,16 +13,11 @@ public import Formalism.SharpRestriction.CuspSpanNormBounds.RelevantZeroGramTerm
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.DenseKFiniteVectorsUnitaryGroupRep
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.HarishChandraModulesIndefiniteUnitaryGroup
 public import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.AnalyticIntertwiners.Clause1
-public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.LogDerOne
-public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.LogDerivLFunctionStrip
 public import Mathlib.NumberTheory.LSeries.Nonvanishing
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.DenseInterior
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsInvariantSmoothProjFanNoSelfIntersectionsStatement
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ToroidalCompactificationBis
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ToroidalCompactificationFanLogKodairaSpencerIso
-public import Development.AbelianVarietyTheory.PublishedTheorems.PublishedFoundations.PrimesInProgressionNonempty
-public import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.ZerosDisc
-public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.PrimesInProgressionsRelativeError
 public import Development.AutomorphicArithmetic.Foundations.LocalLanglands.IsRecTOfIsRec
 public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.DeRhamPotSemistable
 public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.HeckeLAdicCharacterCrystalline
@@ -277,7 +272,7 @@ import Development.WeilBound.RepresentationTheoryGL.GenericUnitaryGL.GenericUnli
 -- clump-header: {"m": "Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.EveryCharacterOfLiteratureOfVWin", "h": "module\n\npublic import Development.AutomorphicArithmetic.CharacterBoxes.EveryCharacter\npublic import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ToroidalCompactificationBis\npublic import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.InterNumDetNonposSplitTorus\npublic import Development.AutomorphicSpectrum.PublishedTheorems.Algebra₂.FarguesExact\npublic import Development.AutomorphicSpectrum.PublishedTheorems.Algebra₂.ZarhinStatement\npublic import Development.AutomorphicSpectrum.PublishedTheorems.Geometry₂.NefRR\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.HodgeBundleWeights.ToKnownTheoremsOf\npublic import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.AbelianLifting\npublic import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.IrreducibleAdmissibleGL\npublic import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.StandardFunctorsFiniteLength\npublic import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.WeilThetaConvergence\npublic import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.SegmentRepresentation\npublic import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.GrothendieckRingPolynomial\npublic import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.CuspidalMultiplicityOne\npublic import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.HeckeLAdicCharacterDeRham\npublic import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.HeckeLAdicCharacterCrystalline\npublic import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.PointSeparationPair\npublic import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.ArBirational\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.BernsteinUnitaryProductIrreducible\npublic import Development.AutomorphicArithmetic.CharacterBoxes.ExistsPageN\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.BernsteinUnitaryProductIrreducible\npublic import Development.AutomorphicSpectrum.PublishedTheorems.Geometry₂.ConclusionOfSmooth\npublic import Development.AutomorphicSpectrum.PublishedTheorems.Geometry₂.NotSubsetOfDenseCompl\npublic import Development.AutomorphicSpectrum.PublishedTheorems.Metrics₂.PoincareLelongInv\npublic import Development.WeilBound.ThetaLifts.LatticeBasics.HypothesesS\npublic import CompanionTheory.AutomorphicTheory.PadicCyclotomicFields.GcohTop\npublic import CompanionTheory.AutomorphicTheory.PadicCyclotomicFields.GcohTopEuler\npublic import CompanionTheory.RealGroups.DiscreteSeries.DiscreteSeriesClassification.DiscreteSeriesExhaustion.DsExhaust\npublic import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.Imports\npublic import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.PrincipalPolarisationUniqueSection\npublic import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.LandherrAndLandherrSt\npublic import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.CuspFormsRapidDecay\npublic import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ImportsBis\npublic import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.IsCommensuratedKO\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AbelianSchemeHomLiftingNilpotentDividedPowers\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ArithHilbertSamuelOfPrincipalisation\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ChowFormIntExistsAndChowFormExists\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CmCurveGoodOutsidePrime\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DixmierMalliavinFactorisationFromLibrary\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsMulEquiv\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GeometricLemmaFiltrationHolds\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GoodChernWeil\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GrothendieckDeformationOfLifting\npublic import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.HeckeTateFunctionalEquationCM\npublic import Development.AutomorphicSpectrum.Proofs.GlobalProofs.HeckeTateFunctionalEquation\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HoweDualityRealHolds\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ImportsTailTer\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.JoinOutOfFive\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.KFiniteVectorsIrreducibleUnitaryUnitaryGroupPQ\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.KawamataViehwegOfNadelVanishingPair\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.KudlaSplittingSplitUnitary\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.L2ExtensionLogCanonical\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LoceulerHolds\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LocfinHolds\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LogDerOneHolds\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SemiAbelianHomExtensionHolds\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SemiAbelianLieSeminegativeBis\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SerreHolomorphicSectionsHolds\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ToroidalCompactificationFanLogKodairaSpencerIso\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ToroidalCompactificationHolds\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.VolGeOfHilbertSamuel\npublic import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.WeylModuleSimpleClosedLowestAlcove\npublic import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.BhattScholzeCoefficientsOfPadicIntLattices\npublic import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.BhattScholzeIntegral\npublic import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.BrauerDegreeZero\npublic import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ChebotarevDegreeOne\npublic import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ChevalleyUnits\npublic import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DeRhamPotentiallySemistable\npublic import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FixedNeBotOfIsSubquotient\npublic import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.HeckeLAdicCharacterAboveOfPublished\npublic import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.UnramifiedOrthogonalityHolds\npublic import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.ExistsUniqueHcharOfFiniteOrder\npublic import CompanionTheory.AutomorphicTheory.PlaceSeparation.IsOpenQuotientMapArt0\npublic import Development.AbelianVarietyTheory.Proofs.SatakeParameters.AbsPowValEqZpow\npublic import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ApplyMemTwKerOfNormalizer\npublic import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsCount\npublic import Development.AbelianVarietyTheory.Proofs.SatakeParameters.RegularAlgebraicPurityOfClozel\npublic import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.CuspDiscreteDecompositionGL\npublic import Development.WeilBound.CoreStatements.RegularisedThetaMirabolic.KFiniteCuspForms.CuspSp\npublic import Development.AutomorphicArithmetic.Foundations.BaseChangeIdentities.DefiniteNHolds\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.AlgebraicCharacters.AlgebraicCharacterWD\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.FockModels.FockAnisoFree\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.FockModels.GlnTemp\npublic import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.RationalDualityOfAllCoefficients\npublic import Development.AutomorphicSpectrum.Proofs.GlobalProofs.BlochKatoLocal\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.GaloisRepresentations.GreenbergWiles\npublic import Development.WeilBound.CoreStatements.PublishedTheorems.HeckeLAdicCharacters.Outright\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.Linnik\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.PrismaticDieudonne.PrismaticDieudonneHodge\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.HeckeLAdicParameterAboveOfAlgebraicCharacterWDAl\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.LitCharCrys\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.LlOf\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.SOfStar\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.SOneRow\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.SiegelEisensteinSecondTermHypotheses\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.TopCovolSlim2Use\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.WeilRepresentation.WeilEx\npublic import Development.AutomorphicSpectrum.Proofs.GlobalProofs.AdmissibleOfIwasawaDecomposition\npublic import Development.DiscreteGroups.GlobalIrreducibility.LConvFinal\npublic import Development.WeilBound.CoreStatements.AbelianHeightsDuality.PublishedTheoremStatements.BridgesAut\npublic import Development.WeilBound.CoreStatements.AbelianHeightsDuality.PublishedTheoremStatements.BridgesRep\npublic import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.SiegelKlingenDeligneRibet\npublic import Development.WeilBound.CoreStatements.AutomorphicKernels.DeligneRibet.NotDvdAbsNorm\npublic import Development.WeilBound.CoreStatements.AutomorphicKernels.DualAbelianScheme.AbelianDeRhamDuality.AbelianDeRhamDuality\npublic import Development.WeilBound.CoreStatements.AutomorphicKernels.LanglandsExhaustion.EssSquareIntegrableSegmentsOfSeg\npublic import Development.WeilBound.CoreStatements.AutomorphicKernels.MoriwakiBigness.MoriwakiBigTheorem.Outright\npublic import Development.WeilBound.CoreStatements.AutomorphicKernels.NadelVanishing.TopNSI\npublic import Development.WeilBound.CoreStatements.AutomorphicKernels.NadelVanishing.TopPointSep\npublic import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.SiegelWeilStandard.SiegelWeilStd\npublic import Development.WeilBound.CoreStatements.HodgeTatePoints.ZarTop\npublic import Development.WeilBound.CoreStatements.PublishedTheorems.CasselmanWallach.FinalB\npublic import Development.WeilBound.CoreStatements.PublishedTheorems.ClozelPurity.Bridge\npublic import Development.WeilBound.CoreStatements.PublishedTheorems.GlobalEulerCharacteristic.GlobalEulerCharOfLemmaX\npublic import Development.WeilBound.CoreStatements.PublishedTheorems.GlobalFiniteness.GlobalFiniteness\npublic import Development.WeilBound.CoreStatements.PublishedTheorems.PoitouTateDuality.PoitouTateNineTerm.PoitouTateNormalisedHolds\npublic import Development.WeilBound.CoreStatements.PublishedTheorems.SmoothVectorEstimates.CuspidalMultiplicityOne\npublic import Development.WeilBound.CoreStatements.ResolutionCharZero.PrincipalisationCharZeroClosed\npublic import Development.WeilBound.CoreStatements.ResolutionCharZero.ResolutionCharZero\npublic import Development.WeilBound.CoreStatements.StandardPublishedResults.StandardTheoremStatements.CuspDecaySobolev\npublic import Development.WeilBound.CoreStatements.StandardPublishedResults.StandardTheoremStatements.HarishChandraModules\npublic import Development.WeilBound.CoreStatements.StandardPublishedResults.StandardTheoremStatements.HeckeLEntireAndNonzeroAtOne\npublic import Development.WeilBound.CoreStatements.StandardPublishedResults.StandardTheoremStatements.HermitianHassePrinciple\npublic import Development.WeilBound.CoreStatements.StandardPublishedResults.StandardTheoremStatements.RealMetaplecticRepresentation\npublic import Development.WeilBound.CoreStatements.StandardPublishedResults.StandardTheoremStatements.SchurOrthogonalitySquareIntegrable\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ArCalcOfPrincipalisation\npublic import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.FormalAlgebraisation.Development\npublic import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.MultiplicityOneRigidity.GelfandKazhdanDualOfRigidity\npublic import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.NefDivisors.NefRR\npublic import Development.AbelianVarietyTheory.PublishedTheorems.GaloisGeometry₂.TotallyDisjointProductIrreducible\npublic import Development.AutomorphicSpectrum.Proofs.GlobalProofs.TotallyDisjointProductIrreducibleOfPolynomialRin\npublic import Development.WeilBound.RepresentationTheoryGL.CasimirAlgebra.KugaCoordinates.ClozelCohomological\npublic import Development.WeilBound.RepresentationTheoryGL.ConstantTermFiniteness.CuspidalConstantTerms.FiniteOfCuspOfConstTerm\npublic import Development.WeilBound.RepresentationTheoryGL.DiscreteSeries.DiscreteSeriesCovers.FdTopB\npublic import Development.WeilBound.RepresentationTheoryGL.EisensteinSeries.SiegelEisensteinContinuation.EisensteinChartSplitting.SiegelEisensteinContinuation\npublic import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.BernsteinExponentBounds.BernAll\npublic import Development.WeilBound.ThetaLifts.Reductions.FiniteClosure.TheoremKOfMod\npublic import Development.WeilBound.CoreStatements.AbelianHeightsDuality.GelfandKazhdanDuality.GelfandKazhdanDualOfHyp\nimport CompanionTheory.RealGroups.DiscreteSeries.DiscreteSeriesClassification.KTypesAbove\nimport Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.HasseNormTheoremQuadraticExtension\nimport Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.AbelianVarietyTorsionCardEqPowProof\nimport Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.CuspidalModerateGrowthRapidDecay\nimport Development.AbelianVarietyTheory.Proofs.DegenerationProofs.SemistableReductionPpavPadicField\nimport Development.AbelianVarietyTheory.Proofs.DivisorProofs.DualAbelianSchemeExistsBiduality\nimport Development.AbelianVarietyTheory.Proofs.DivisorProofs.HcfjHolds\nimport Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsContractNeZero\nimport Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FontaineBcrisBasicTheoremsProof\nimport Development.AbelianVarietyTheory.Proofs.TwistedOperators.GeometricLemmaOfFiltration\nimport Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.SPairs\nimport Development.AutomorphicArithmetic.ThetaCorrespondence.WeilRepresentation.WeilTheta\nimport Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CuspRapidDecaySiegelGL\nimport Development.AutomorphicSpectrum.Proofs.GlobalProofs.ComplexMultiplicationJacquetShalika\nimport Development.AutomorphicSpectrum.Proofs.GlobalProofs.GeometricLemma\nimport Development.WeilBound.CoreStatements.AbelianHeightsDuality.PublishedTheoremStatements.BridgesMore\nimport Development.WeilBound.CoreStatements.AbelianHeightsDuality.PublishedTheoremStatements.ProvedMore\nimport Development.WeilBound.CoreStatements.AutomorphicKernels.GrothendieckRingPolynomial.GrothendieckRingPolynomialOfSeg\nimport Development.WeilBound.CoreStatements.AutomorphicKernels.LanglandsExhaustion.LanglandsMultisegmentsOfSeg\nimport Development.WeilBound.CoreStatements.AutomorphicKernels.UnitaryDualGL.GenericUnitaryDual.GenericUnitaryDualGLHolds\nimport Development.WeilBound.RepresentationTheoryGL.ConstantTermFiniteness.LieInvariants.InvariantOfLieOneLEqZero\nimport Development.WeilBound.CoreStatements.PublishedTheorems.JacquetShalikaRigidity.JacquetShalikaRigidity\nimport Development.WeilBound.CoreStatements.PublishedTheorems.NefNumerics.NefRiemannRoch.NefLineBundleNumericalTheoremsProof\nimport Development.WeilBound.CoreStatements.ResolutionCharZero.PlugResK\nimport Development.WeilBound.CoreStatements.ResolutionCharZero.PrincipalisationClosed\nimport Development.WeilBound.CoreStatements.StandardPublishedResults.StandardTheoremStatements.GlobalArtinReciprocity\nimport Development.WeilBound.CoreStatements.StandardPublishedResults.StandardTheoremStatements.GreenRegularCharacters\nimport Development.WeilBound.CoreStatements.TemperedRepresentationTheory.BernsteinZelevinskyGL.TopAdm\nimport Development.WeilBound.CoreStatements.TemperedRepresentationTheory.BernsteinZelevinskyGL.TopStd\nimport Development.WeilBound.CoreStatements.TemperedRepresentationTheory.GeometricSplitting.Imports\nimport Development.WeilBound.CoreStatements.TemperedRepresentationTheory.PoincareLelong.PoincareLelongInv\nimport Development.WeilBound.RepresentationTheoryGL.EisensteinSeries.SiegelEisensteinHalfPlane.IntegralUnitCoefficients.CoefND\nimport Development.WeilBound.RepresentationTheoryGL.EisensteinSeries.SiegelEisensteinHalfPlane.SchwartzBruhatMajorants.SiegelMultOf\nimport Development.WeilBound.RepresentationTheoryGL.GenericUnitaryGL.ComplementarySeries.SegmentJacquetSubquotients.SegmentRepresentation\nimport Development.WeilBound.RepresentationTheoryGL.GenericUnitaryGL.GenericUnlinkedGL.GenericUnlinkedGLOfSegRep2\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\npublic import CompanionTheory.RealGroups.UnitaryAdmissibility.ArchimedeanUnitaryDual.StSandwich\npublic import CompanionTheory.RealGroups.UnitaryAdmissibility.ArchimedeanUnitaryDual.ArchimedeanDenseStabilizers.DenseRangeOfNotIsReal\npublic import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SignFrameUnitaryIso\npublic import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.DecompositionOfFrameWittTorus\npublic import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.IwahoriStatement\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemOfIrreducible\npublic import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.SplittingOfSandwichAndPairing\n\n"}
 
 -- This file was produced by scripts/clump.py from the modules listed below.
--- Members: Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.PrincipalPolarisationUniqueSection, Development.AbelianVarietyTheory.Proofs.DivisorProofs.DixmierMalliavinFactorisationFromLibrary, Development.AbelianVarietyTheory.Proofs.DivisorProofs.KFiniteVectorsIrreducibleUnitaryUnitaryGroupPQ, Development.AbelianVarietyTheory.Proofs.DivisorProofs.LogDerOneHolds, Development.AbelianVarietyTheory.Proofs.DivisorProofs.ToroidalCompactificationHolds, Development.AutomorphicArithmetic.ThetaCorrespondence.Linnik, Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.ModularityOfHyps, Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.LitCharCrys, Development.AutomorphicArithmetic.ThetaCorrespondence.WeilRepresentation.WeilEx, Development.WeilBound.CoreStatements.AbelianHeightsDuality.PublishedTheoremStatements.BridgesRep, Development.WeilBound.CoreStatements.ResolutionCharZero.ResolutionCharZeroOfTop, Development.WeilBound.CoreStatements.ResolutionCharZero.ResolutionCharZero, Development.WeilBound.CoreStatements.StandardPublishedResults.StandardTheoremStatements.CuspDecaySobolev, Development.WeilBound.CoreStatements.StandardPublishedResults.StandardTheoremStatements.HarishChandraModules, Development.WeilBound.CoreStatements.StandardPublishedResults.StandardTheoremStatements.HeckeLEntireAndNonzeroAtOne, Development.WeilBound.CoreStatements.StandardPublishedResults.StandardTheoremStatements.HermitianHassePrinciple, Development.WeilBound.CoreStatements.StandardPublishedResults.StandardTheoremStatements.RealMetaplecticRepresentation, Development.WeilBound.CoreStatements.StandardPublishedResults.StandardTheoremStatements.SchurOrthogonalitySquareIntegrable, Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ExistsPresents, Development.WeilBound.CoreStatements.TemperedRepresentationTheory.FormalAlgebraisation.Development, Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.EveryCharacterOfLiteratureOfVWin
+-- Members: Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.PrincipalPolarisationUniqueSection, Development.AbelianVarietyTheory.Proofs.DivisorProofs.DixmierMalliavinFactorisationFromLibrary, Development.AbelianVarietyTheory.Proofs.DivisorProofs.KFiniteVectorsIrreducibleUnitaryUnitaryGroupPQ, Development.AbelianVarietyTheory.Proofs.DivisorProofs.ToroidalCompactificationHolds, Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.ModularityOfHyps, Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.LitCharCrys, Development.AutomorphicArithmetic.ThetaCorrespondence.WeilRepresentation.WeilEx, Development.WeilBound.CoreStatements.AbelianHeightsDuality.PublishedTheoremStatements.BridgesRep, Development.WeilBound.CoreStatements.ResolutionCharZero.ResolutionCharZeroOfTop, Development.WeilBound.CoreStatements.ResolutionCharZero.ResolutionCharZero, Development.WeilBound.CoreStatements.StandardPublishedResults.StandardTheoremStatements.CuspDecaySobolev, Development.WeilBound.CoreStatements.StandardPublishedResults.StandardTheoremStatements.HarishChandraModules, Development.WeilBound.CoreStatements.StandardPublishedResults.StandardTheoremStatements.HeckeLEntireAndNonzeroAtOne, Development.WeilBound.CoreStatements.StandardPublishedResults.StandardTheoremStatements.HermitianHassePrinciple, Development.WeilBound.CoreStatements.StandardPublishedResults.StandardTheoremStatements.RealMetaplecticRepresentation, Development.WeilBound.CoreStatements.StandardPublishedResults.StandardTheoremStatements.SchurOrthogonalitySquareIntegrable, Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ExistsPresents, Development.WeilBound.CoreStatements.TemperedRepresentationTheory.FormalAlgebraisation.Development, Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.EveryCharacterOfLiteratureOfVWin
 
 -- ===== clump member: Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.PrincipalPolarisationUniqueSection =====
 -- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.PrincipalPolarisationUniqueSection", "h": "module\n\npublic import Development.AbelianVarietyTheory.PublishedTheorems.AbelianLaws.PrincipalPolarisationOneSection\npublic import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.FinrankSectionsPrincipalPolarisationEqOne\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\n\n"}
@@ -367,92 +362,6 @@ end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.KFiniteVectorsIrreducibleUnitaryUnitaryGroupPQ =====
 
--- ===== clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.LogDerOneHolds =====
--- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.DivisorProofs.LogDerOneHolds", "h": "module\n\npublic import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.LogDerOne\npublic import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.LogDerivLFunctionStrip\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\npublic import Mathlib.NumberTheory.LSeries.Nonvanishing\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.RingTheory.WittVector.IsPoly\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\n\n"}
-section -- clump:auto
-@[expose] public section
-
-noncomputable section
-
-open Complex DirichletCharacter
-
-namespace GlobalTheory.LogDerOneProof
-
-theorem logDerOne_holds : GlobalTheory.Mem.An.LogDerOne := by
-  classical
-  obtain ⟨C, hC, H⟩ := GlobalTheory.LWide.logDeriv_LFunction_strip
-  refine ⟨2 * C, fun q _ χ hq hp => ?_⟩
-  have hne : χ ≠ 1 := by
-    intro h
-    have h1 : χ.conductor = q := hp
-    rw [h, DirichletCharacter.conductor_one] at h1
-    omega
-  have hL : LFunction χ 1 ≠ 0 := LFunction_ne_zero_of_one_le_re χ (Or.inl hne) (by simp)
-  obtain ⟨hfin, hcount, hmain⟩ := H q χ hne 1 (by norm_num) (by norm_num) hL
-  simp only [Complex.one_im, abs_zero, zero_add, Complex.ofReal_zero, zero_mul, add_zero] at hfin hcount hmain
-  set D : Set ℂ := {w : ℂ | ‖w - 2‖ ≤ 7 / 2 ∧ LFunction χ w = 0} with hD
-  set Z : Set ℂ := GlobalTheory.Mem.An.zerosIn χ 0 1 with hZ
-  have hsub : Z ⊆ D := by
-    rintro w ⟨h0, h1, h2, h3⟩
-    refine ⟨?_, h3⟩
-    have h4 := Complex.norm_le_abs_re_add_abs_im (w - 2)
-    simp only [Complex.sub_re, Complex.sub_im, Complex.re_ofNat, Complex.im_ofNat, sub_zero] at h4 h2
-    have h5 : |w.re - 2| ≤ 2 := abs_le.2 ⟨by linarith, by linarith⟩
-    linarith
-  have hZfin : Z.Finite := hfin.subset hsub
-  have hsub' : hZfin.toFinset ⊆ hfin.toFinset := by
-    intro w hw
-    simp only [Set.Finite.mem_toFinset] at hw ⊢
-    exact hsub hw
-  rw [finsum_mem_eq_finite_toFinset_sum _ hfin] at hcount hmain
-  have hz : GlobalTheory.Mem.An.zsum χ 0 1 (fun ρ => 1 / (1 - ρ)) =
-      ∑ w ∈ hZfin.toFinset, (analyticOrderNatAt (LFunction χ) w : ℂ) / (1 - w) := by
-    unfold GlobalTheory.Mem.An.zsum
-    rw [← hZ, finsum_mem_eq_finite_toFinset_sum _ hZfin]
-    refine Finset.sum_congr rfl fun w _ => ?_
-    simp only [GlobalTheory.Mem.An.zmult]
-    ring
-  rw [hz]
-  rw [← Finset.sum_sdiff hsub'] at hmain
-  have hrest : ‖∑ w ∈ hfin.toFinset \ hZfin.toFinset, (analyticOrderNatAt (LFunction χ) w : ℂ) / (1 - w)‖ ≤
-      ∑ w ∈ hfin.toFinset, (analyticOrderNatAt (LFunction χ) w : ℝ) := by
-    refine (norm_sum_le _ _).trans (le_trans (Finset.sum_le_sum fun w hw => ?_)
-      (Finset.sum_le_sum_of_subset_of_nonneg Finset.sdiff_subset fun _ _ _ => Nat.cast_nonneg _))
-    simp only [Finset.mem_sdiff, Set.Finite.mem_toFinset] at hw
-    obtain ⟨⟨_, hw0⟩, hwn⟩ := hw
-    have hre : w.re < 1 := by
-      by_contra h
-      exact LFunction_ne_zero_of_one_le_re χ (Or.inl hne) (not_lt.1 h) hw0
-    have h1 : 1 ≤ ‖1 - w‖ := by
-      by_cases h0 : 0 < w.re
-      · have him : 1 < |w.im| := by
-          by_contra h
-          exact hwn ⟨h0, hre, by simpa using not_lt.1 h, hw0⟩
-        have h4 := Complex.abs_im_le_norm (1 - w)
-        simp only [Complex.sub_im, Complex.one_im, zero_sub, abs_neg] at h4
-        linarith
-      · have h4 := Complex.re_le_norm (1 - w)
-        simp only [Complex.sub_re, Complex.one_re] at h4
-        linarith [not_lt.1 h0]
-    rw [norm_div, Complex.norm_natCast]
-    exact div_le_self (Nat.cast_nonneg _) h1
-  have hq' : (1 : ℝ) < q := by exact_mod_cast hq
-  have hlog : Real.log (q * 2) ≤ Real.log (3 * q) := Real.log_le_log (by linarith) (by linarith)
-  have hl2 : C * Real.log (q * 2) ≤ C * Real.log (3 * q) := mul_le_mul_of_nonneg_left hlog hC.le
-  set A := deriv (LFunction χ) 1 / LFunction χ 1
-  set R := ∑ w ∈ hfin.toFinset \ hZfin.toFinset, (analyticOrderNatAt (LFunction χ) w : ℂ) / (1 - w)
-  set S := ∑ w ∈ hZfin.toFinset, (analyticOrderNatAt (LFunction χ) w : ℂ) / (1 - w)
-  have e : A - S = (A - (R + S)) + R := by ring
-  rw [e]
-  refine (norm_add_le _ _).trans ?_
-  linarith
-
-end GlobalTheory.LogDerOneProof
-end -- clump:auto
-end -- clump:auto
-end -- clump:auto
--- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.LogDerOneHolds =====
-
 -- ===== clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.ToroidalCompactificationHolds =====
 -- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.DivisorProofs.ToroidalCompactificationHolds", "h": "module\n\npublic import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.DenseInterior\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsInvariantSmoothProjFanNoSelfIntersectionsStatement\npublic import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ToroidalCompactificationBis\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ToroidalCompactificationFanLogKodairaSpencerIso\nimport Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsFineInvariantFan\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Std.Tactic.BVDecide.Normalize.Prop\n\n"}
 section -- clump:auto
@@ -473,166 +382,6 @@ end GlobalTheory
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.ToroidalCompactificationHolds =====
-
--- ===== clump member: Development.AutomorphicArithmetic.ThetaCorrespondence.Linnik =====
--- clump-header: {"m": "Development.AutomorphicArithmetic.ThetaCorrespondence.Linnik", "h": "module\n\npublic import Development.AbelianVarietyTheory.PublishedTheorems.PublishedFoundations.PrimesInProgressionNonempty\npublic import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.ZerosDisc\npublic import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.PrimesInProgressionsRelativeError\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Algebra.Order.Star.Real\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.DirichletCharacter.Orthogonality\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.RingTheory.SimpleRing.Principal\nimport Mathlib.RingTheory.WittVector.IsPoly\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.HaveILetI\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\n\n"}
-section -- clump:auto
-@[expose] public section
-
-namespace UpperTheory.Lit
-
-private theorem intervalIntegrable_inv_log_theta_correspondence (a b : ℝ) (ha : 2 ≤ a) (hb : 2 ≤ b) :
-    IntervalIntegrable (fun t : ℝ => 1 / Real.log t) MeasureTheory.volume a b := by
-  apply ContinuousOn.intervalIntegrable
-  have key : ∀ t ∈ Set.uIcc a b, 2 ≤ t := fun t ht => le_trans (le_inf ha hb) ht.1
-  apply ContinuousOn.div continuousOn_const
-  · exact Real.continuousOn_log.mono (fun t ht =>
-      Set.mem_compl_singleton_iff.mpr (by linarith [key t ht] : (0:ℝ) < t).ne')
-  · intro t ht
-    exact (Real.log_pos (by linarith [key t ht])).ne'
-
-private theorem li_sub_li_pos_of_lt (Y X : ℝ) (hY : 2 ≤ Y) (h : Y < X) :
-    0 < Formalism.HermitianLattices.GL2PrimeSums.Li X - Formalism.HermitianLattices.GL2PrimeSums.Li Y := by
-  unfold Formalism.HermitianLattices.GL2PrimeSums.Li
-  rw [intervalIntegral.integral_interval_sub_left (intervalIntegrable_inv_log_theta_correspondence 2 X le_rfl (by linarith))
-    (intervalIntegrable_inv_log_theta_correspondence 2 Y le_rfl hY)]
-  apply intervalIntegral.intervalIntegral_pos_of_pos_on (intervalIntegrable_inv_log_theta_correspondence Y X hY (by linarith))
-  · intro t ht
-    exact one_div_pos.mpr (Real.log_pos (by linarith [ht.1]))
-  · exact h
-
-private theorem li_nonneg_of_two_le (X : ℝ) (hX : 2 ≤ X) : 0 ≤ Formalism.HermitianLattices.GL2PrimeSums.Li X := by
-  unfold Formalism.HermitianLattices.GL2PrimeSums.Li
-  exact intervalIntegral.integral_nonneg hX
-    (fun t ht => one_div_nonneg.mpr (Real.log_nonneg (by linarith [ht.1])))
-
-private theorem li_pos_of_two_lt (X : ℝ) (hX : 2 < X) : 0 < Formalism.HermitianLattices.GL2PrimeSums.Li X := by
-  have h := li_sub_li_pos_of_lt 2 X le_rfl hX
-  have h2 : Formalism.HermitianLattices.GL2PrimeSums.Li 2 = 0 := by
-    unfold Formalism.HermitianLattices.GL2PrimeSums.Li
-    exact intervalIntegral.integral_same
-  linarith
-
-theorem exists_prime_modEq_le_rpow_of_primesRel : GlobalTheory.Lin.PrimesRel → ∃ A : ℝ, 1 ≤ A ∧ ∀ a M : ℕ, 2 < M → a.Coprime M →
-    ∃ p : ℕ, p.Prime ∧ p ≡ a [MOD M] ∧ (p : ℝ) ≤ (M : ℝ) ^ A := by
-  rintro ⟨c₁, c₂, c₃, CA, cS, hc₁, hc₁', hc₂, hc₃, hCA, hcS, H⟩
-  set L : ℝ := |Real.log (4 * CA)| + 1 with hL
-  have hL1 : 1 ≤ L := by
-    have := abs_nonneg (Real.log (4 * CA))
-    linarith
-  obtain ⟨A, hA1, hAc₂, hAL⟩ : ∃ A : ℝ, 1 ≤ A ∧ c₂ ≤ A ∧ L ^ 2 ≤ c₃ * A := by
-    refine ⟨max (max 1 c₂) (L ^ 2 / c₃), le_trans (le_max_left _ _) (le_max_left _ _),
-      le_trans (le_max_right _ _) (le_max_left _ _), ?_⟩
-    have : L ^ 2 / c₃ ≤ max (max 1 c₂) (L ^ 2 / c₃) := le_max_right _ _
-    rwa [div_le_iff₀ hc₃, mul_comm] at this
-  refine ⟨A, hA1, ?_⟩
-  intro a M hM hcop
-  haveI : NeZero M := ⟨by omega⟩
-  obtain ⟨-, -, H3⟩ := H M (by omega)
-  have hM3 : (3:ℝ) ≤ M := by exact_mod_cast (show 3 ≤ M by omega)
-  have hMpos : (0:ℝ) < M := by linarith
-  have hlogM : 1 ≤ Real.log M := by
-    rw [← Real.log_exp 1]
-    exact Real.log_le_log (Real.exp_pos 1) (by linarith [Real.exp_one_lt_d9])
-  set X : ℝ := (M : ℝ) ^ A with hXdef
-  have hlogX : Real.log X = A * Real.log M := by
-    rw [hXdef]
-    exact Real.log_rpow hMpos A
-  have hX3 : 3 ≤ X := by
-    have := Real.rpow_le_rpow_of_exponent_le (by linarith : (1:ℝ) ≤ M) hA1
-    rw [Real.rpow_one] at this
-    linarith
-  have hXc₂ : (M : ℝ) ^ c₂ ≤ X := Real.rpow_le_rpow_of_exponent_le (by linarith) hAc₂
-  have herr : CA * (Real.exp (-c₃ * Real.log X / Real.log M) +
-      Real.exp (-√(c₃ * Real.log X))) < 1 := by
-    rw [hlogX]
-    have hlM : Real.log (M : ℝ) ≠ 0 := (by linarith : (0:ℝ) < Real.log M).ne'
-    have e1 : -c₃ * (A * Real.log M) / Real.log M = -(c₃ * A) := by
-      field_simp
-    rw [e1]
-    have hLL : L ≤ L ^ 2 := by nlinarith
-    have i1 : Real.exp (-(c₃ * A)) ≤ Real.exp (-L) := Real.exp_le_exp.mpr (by linarith)
-    have i2 : Real.exp (-√(c₃ * (A * Real.log M))) ≤ Real.exp (-L) := by
-      apply Real.exp_le_exp.mpr
-      have s1 : √(L ^ 2) ≤ √(c₃ * (A * Real.log M)) := Real.sqrt_le_sqrt (by
-        nlinarith [mul_nonneg (mul_nonneg hc₃.le (by linarith : (0:ℝ) ≤ A))
-          (by linarith : (0:ℝ) ≤ Real.log M - 1)])
-      rw [Real.sqrt_sq (by linarith)] at s1
-      linarith
-    have hE : Real.exp (-L) * (4 * CA) < 1 := by
-      rw [← Real.exp_log (by positivity : (0:ℝ) < 4 * CA), ← Real.exp_add, ← Real.exp_zero]
-      exact Real.exp_lt_exp.mpr (by linarith [le_abs_self (Real.log (4 * CA))])
-    nlinarith [mul_le_mul_of_nonneg_left (add_le_add i1 i2) hCA.le]
-  have key : ∃ (θ : ℤ) (β : ℝ), GlobalTheory.Lin.ExcData c₁ M a θ β ∧
-      0 < Formalism.HermitianLattices.GL2PrimeSums.Emain θ β X := by
-    by_cases hex : ∃ (χ : DirichletCharacter ℂ M) (β : ℝ), GlobalTheory.Lin.IsExc c₁ χ β
-    · obtain ⟨χ, β, hχ⟩ := hex
-      have hunit : IsUnit (a : ZMod M) := (ZMod.isUnit_iff_coprime a M).mpr hcop
-      have h2 : χ (a : ZMod M) ^ 2 = 1 := by
-        rw [← MulChar.pow_apply' χ (by norm_num : (2:ℕ) ≠ 0), hχ.1, MulChar.one_apply hunit]
-      have hlpos : 0 < Real.log M := by linarith
-      have hβlog : Real.log M - c₁ < β * Real.log M := by
-        have := mul_lt_mul_of_pos_right hχ.2.1 hlpos
-        rwa [sub_mul, one_mul, div_mul_cancel₀ _ hlpos.ne'] at this
-      have hXβ : 2 ≤ X ^ β := by
-        rw [Real.rpow_def_of_pos (by linarith), hlogX]
-        have hpos : 0 < β * Real.log M := by linarith
-        have : Real.log 2 ≤ A * Real.log M * β := by
-          have h7 : Real.log 2 < 7 / 8 := by linarith [Real.log_two_lt_d9]
-          nlinarith [mul_nonneg (sub_nonneg.mpr hA1) hpos.le]
-        calc (2:ℝ) = Real.exp (Real.log 2) := (Real.exp_log (by norm_num)).symm
-          _ ≤ _ := Real.exp_le_exp.mpr this
-      have hXβX : X ^ β < X := by
-        have := Real.rpow_lt_rpow_of_exponent_lt (by linarith : 1 < X) hχ.2.2.1
-        rwa [Real.rpow_one] at this
-      rcases mul_self_eq_one_iff.mp
-          (show χ (a : ZMod M) * χ (a : ZMod M) = 1 by rw [← sq]; exact h2) with h | h
-      · refine ⟨1, β, Or.inr ⟨χ, hχ, by rw [h]; simp⟩, ?_⟩
-        unfold Formalism.HermitianLattices.GL2PrimeSums.Emain
-        have := li_sub_li_pos_of_lt _ _ hXβ hXβX
-        push_cast
-        linarith
-      · refine ⟨-1, β, Or.inr ⟨χ, hχ, by rw [h]; simp⟩, ?_⟩
-        unfold Formalism.HermitianLattices.GL2PrimeSums.Emain
-        have := li_nonneg_of_two_le _ hXβ
-        have := li_pos_of_two_lt X (by linarith)
-        push_cast
-        linarith
-    · refine ⟨0, 0, Or.inl ⟨rfl, fun χ β h => hex ⟨χ, β, h⟩⟩, ?_⟩
-      unfold Formalism.HermitianLattices.GL2PrimeSums.Emain
-      simp only [Int.cast_zero, zero_mul, sub_zero]
-      exact li_pos_of_two_lt X (by linarith)
-  obtain ⟨θ, β, hexc, hpos⟩ := key
-  have hb := H3 a θ β hcop hexc X hXc₂
-  have hcard : 0 < ({p ∈ Finset.Icc 1 ⌊X⌋₊ | Nat.Prime p ∧ p ≡ a [MOD M]}).card := by
-    rw [Nat.pos_iff_ne_zero]
-    intro h0
-    rw [h0] at hb
-    simp only [Nat.cast_zero, mul_zero, zero_sub, abs_neg] at hb
-    rw [abs_of_pos hpos] at hb
-    linarith [mul_lt_of_lt_one_left hpos herr]
-  obtain ⟨p, hp⟩ := Finset.card_pos.mp hcard
-  rw [Finset.mem_filter, Finset.mem_Icc] at hp
-  exact ⟨p, hp.2.1, hp.2.2, (Nat.le_floor_iff (by linarith)).mp hp.1.2⟩
-
-theorem linnik : GlobalTheory.Published.Linnik := by
-  obtain ⟨A, hA, h⟩ := exists_prime_modEq_le_rpow_of_primesRel _root_.GlobalTheory.Lin.primesRel_holds
-  refine GlobalTheory.Published.linnik_iff_exists_prime.2 ⟨3, A, by norm_num, by linarith, fun a q _ hq hc => ?_⟩
-  have hq1 : (1 : ℝ) ≤ (q : ℝ) ^ A := Real.one_le_rpow (by exact_mod_cast hq) (by linarith)
-  by_cases h2 : 2 < q
-  · obtain ⟨p, h1, h3, h4⟩ := h a q h2 hc
-    exact ⟨p, h1, h3, by linarith⟩
-  · refine ⟨3, Nat.prime_three, ?_, by push_cast; linarith⟩
-    have : q = 1 ∨ q = 2 := by omega
-    rcases this with rfl | rfl
-    · exact Nat.modEq_one
-    · have : a % 2 = 1 := Nat.odd_iff.1 (Nat.coprime_two_right.1 hc)
-      unfold Nat.ModEq; omega
-
-end UpperTheory.Lit
-end -- clump:auto
-end -- clump:auto
--- ===== end clump member: Development.AutomorphicArithmetic.ThetaCorrespondence.Linnik =====
 
 -- ===== clump member: Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.ModularityOfHyps =====
 -- clump-header: {"m": "Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.ModularityOfHyps", "h": "module\n\npublic import Development.AutomorphicArithmetic.Foundations.LocalLanglands.IsRecTOfIsRec\npublic import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.DeRhamPotSemistable\npublic import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.HeckeLAdicCharacterCrystalline\npublic import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.HeckeLAdicCharacterDeRham\npublic import Development.AbelianVarietyTheory.PublishedTheorems.GaloisGeometry₂.AlgebraicCharacterWD\npublic import Development.AutomorphicArithmetic.Foundations.UnitarySphericalFixing.SatakeParameters.PotentialCrystallinity.ModularityOfHyps\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.TripleAtt\n\n"}
@@ -780,13 +529,7 @@ section -- clump:auto
 
 namespace PositivityTheory.Stage1.PM
 
-alias gLHoweDuality := _root_.GlobalTheory.Published.glHoweDuality_holds
-
-alias borelCasselman := _root_.GlobalTheory.Published.BorelCasselman_holds
-
 alias quadraticClassFieldTheory := _root_.GlobalTheory.Published.quadraticClassFieldTheory_holds
-
-alias heckeLEntireAndNonzeroAtOne := _root_.GlobalTheory.Published.HeckeLEntireAndNonzeroAtOne_holds
 
 alias weylBranching := _root_.GlobalTheory.Published.weylBranching_holds
 
@@ -801,8 +544,6 @@ section -- clump:auto
 @[expose] public section
 
 namespace PositivityTheory.Stage1.PM
-
-alias hermitianHassePrinciple := _root_.GlobalTheory.Published.hermitianHassePrinciple_holds
 
 end PositivityTheory.Stage1.PM
 end -- clump:auto
@@ -836,8 +577,6 @@ alias schurOrthogonalitySquareIntegrable := _root_.GlobalTheory.Published.schurO
 alias heckeLPartialContinuation := _root_.GlobalTheory.Published.HeckeLPartialContinuation_holds
 
 alias hermitianLocalGlobal := _root_.GlobalTheory.Published.hermitianLocalGlobal_holds
-
-alias radfordShufflePolynomial := _root_.GlobalTheory.Published.radfordShufflePolynomial_holds
 
 end PositivityTheory.Stage1.PM
 end -- clump:auto
@@ -901,8 +640,6 @@ section
    The former polarized-pair and local-global fields had the same formal type `M.Row`.
    Sharing this input does not identify the corresponding literature theorems:
    `M.Row` is the project-specific interface, not a claim of their full textbook strength. -/
-theorem UpperTheory.LiteratureTheorems.logDerivOne : GlobalTheory.Mem.An.LogDerOne :=
-  GlobalTheory.LogDerOneProof.logDerOne_holds
 theorem UpperTheory.LiteratureTheorems.ellipticMainTheoremCM' : GlobalTheory.Published.EllipticMainTheoremCM :=
   _root_.GlobalTheory.CompanionTheory.Hypotheses₂.ellipticMainTheoremCM
 theorem UpperTheory.LiteratureTheorems.heckeTateFunctionalEquation' : GlobalTheory.Published.HeckeTateFunctionalEquation :=
@@ -953,8 +690,6 @@ theorem UpperTheory.LiteratureTheorems.bhatt_scholze_crystalline_lattices_of_lit
   (GlobalTheory.bhattScholze_coeff (_root_.UpperTheory.LiteratureTheorems.bhatt_scholze_integral_of_literature))
 theorem UpperTheory.LiteratureTheorems.bloch_kato_local_of_literature : GlobalTheory.Published.BlochKatoLocal :=
   _root_.GlobalTheory.CompanionTheory.Hypotheses₂.BK.blochKatoLocal
-theorem UpperTheory.LiteratureTheorems.borel_casselman_of_literature : GlobalTheory.Published.BorelCasselman :=
-  PositivityTheory.Stage1.PM.borelCasselman
 theorem UpperTheory.LiteratureTheorems.cm_curve_good_outside_prime_st_of_literature : GlobalTheory.Published.CMCurveGoodOutsidePrimeSt :=
   GlobalTheory.Published.cmCurveGoodOutsidePrime
 theorem UpperTheory.LiteratureTheorems.segment_representation_of_literature : GlobalTheory.Published.SegmentRepresentation :=
@@ -986,8 +721,6 @@ theorem UpperTheory.LiteratureTheorems.clozel_cohomological_of_literature : Glob
   PositivityTheory.Rg.Cz.clozelCohomological
 theorem UpperTheory.LiteratureTheorems.clozel_purity_of_literature : GlobalTheory.Published.ClozelPurity :=
   PositivityTheory.Lit1.ClozelPurity.clozelPurity
-theorem UpperTheory.LiteratureTheorems.complex_multiplication_j_st_of_literature : GlobalTheory.Published.ComplexMultiplicationJSt :=
-  GlobalTheory.CompanionTheory.Published.complexMultiplicationJ
 theorem UpperTheory.LiteratureTheorems.cusp_bounded_of_literature : GlobalTheory.Published.CuspBounded :=
   PositivityTheory.Stage1.PM.cuspBounded
 theorem UpperTheory.LiteratureTheorems.cusp_decay_bound_of_literature : GlobalTheory.Published.CuspDecayBound :=
@@ -1012,8 +745,6 @@ theorem UpperTheory.LiteratureTheorems.discrete_series_exists_of_literature : Gl
   CompanionTheory.RgDs.B.discreteSeriesExists
 theorem UpperTheory.LiteratureTheorems.discrete_series_hermitian_unique_of_literature : GlobalTheory.Published.DiscreteSeriesHermitianUnique :=
   _root_.GlobalTheory.CompanionTheory.Front.discreteSeriesHermitianUnique
-theorem UpperTheory.LiteratureTheorems.discrete_series_lowest_k_type_of_literature : GlobalTheory.Published.DiscreteSeriesLowestKType :=
-  _root_.GlobalTheory.CompanionTheory.Glob.discreteSeriesLowestKType
 theorem UpperTheory.LiteratureTheorems.discrete_series_upq_exists_of_literature : GlobalTheory.Published.DiscreteSeriesUpqExists :=
   CompanionTheory.RgDs.B.discreteSeriesUpqExists
 theorem UpperTheory.LiteratureTheorems.dixmier_malliavin_factorisation_of_literature : GlobalTheory.Published.DixmierMalliavinFactorisation :=
@@ -1028,8 +759,6 @@ theorem UpperTheory.LiteratureTheorems.formal_algebraisation_of_literature : Glo
   PositivityTheory.FormalThickening.formalAlgebraisation
 theorem UpperTheory.LiteratureTheorems.formal_degree_compact_dual_of_literature : GlobalTheory.Published.FormalDegreeCompactDual :=
   PositivityTheory.RgFd.B.formalDegreeCompactDual
-theorem UpperTheory.LiteratureTheorems.gl_howe_duality_of_literature : GlobalTheory.Published.GLHoweDuality :=
-  PositivityTheory.Stage1.PM.gLHoweDuality
 theorem UpperTheory.LiteratureTheorems.cusp_u_of_literature (hLiteratureRow : _root_.UpperTheory.One.M.Row) : _root_.UpperTheory.GalS.CuspUAlt :=
   (_root_.UpperTheory.GalS.bridgeStar_alt (_root_.UpperTheory.LiteratureTheorems.gelfand_kazhdan_dual_of_literature)).2 (_root_.UpperTheory.LiteratureTheorems.pair_u_of_literature hLiteratureRow)
 theorem UpperTheory.LiteratureTheorems.generic_unitary_dual_gl_of_literature : GlobalTheory.Published.GenericUnitaryDualGL :=
@@ -1062,12 +791,8 @@ theorem UpperTheory.LiteratureTheorems.hecke_l_adic_character_above_of_literatur
   GlobalTheory.HeckeAboveBridge.heckeLAdicCharacterAbove_of_potSemistable (_root_.UpperTheory.LiteratureTheorems.hecke_l_adic_character_de_rham_of_literature) (_root_.UpperTheory.LiteratureTheorems.hecke_l_adic_character_crystalline_of_literature) (_root_.UpperTheory.LiteratureTheorems.de_rham_pot_semistable_of_literature)
 theorem UpperTheory.LiteratureTheorems.hecke_l_adic_parameter_above_of_literature : _root_.GlobalTheory.Published.HeckeLAdicParameterAboveAlt :=
   (_root_.GlobalTheory.heckeLAdicParameterAbove_of_algebraicCharacterWD_alt (_root_.UpperTheory.LiteratureTheorems.algebraic_character_wd_of_literature))
-theorem UpperTheory.LiteratureTheorems.hecke_l_entire_and_nonzero_at_one_of_literature : GlobalTheory.Published.HeckeLEntireAndNonzeroAtOne :=
-  PositivityTheory.Stage1.PM.heckeLEntireAndNonzeroAtOne
 theorem UpperTheory.LiteratureTheorems.hecke_l_partial_continuation_of_literature : GlobalTheory.Published.HeckeLPartialContinuation :=
   PositivityTheory.Stage1.PM.heckeLPartialContinuation
-theorem UpperTheory.LiteratureTheorems.hermitian_hasse_principle_of_literature : GlobalTheory.Published.HermitianHassePrinciple :=
-  PositivityTheory.Stage1.PM.hermitianHassePrinciple
 theorem UpperTheory.LiteratureTheorems.howe_duality_real_of_literature : GlobalTheory.Published.HoweDualityReal :=
   GlobalTheory.howeDualityReal_holds
 theorem UpperTheory.LiteratureTheorems.jacquet_shalika_of_literature : GlobalTheory.Published.JacquetShalika :=
@@ -1076,8 +801,6 @@ theorem UpperTheory.LiteratureTheorems.k_finite_vectors_unitary_of_literature : 
   _root_.GlobalTheory.CompanionTheory.Published.kFiniteVectors_irreducibleUnitary_unitaryGroupPQ
 theorem UpperTheory.LiteratureTheorems.kawamata_viehweg_of_literature : GlobalTheory.Published.KawamataViehweg :=
   GlobalTheory.KVFromPair.kawamataViehweg_of_nadelVanishingPair (GlobalTheory.nefNumerics_outright) (And.left (NadelVanishingSeparation.NSI.nadelVanishingAndNonKltDivisor))
-theorem UpperTheory.LiteratureTheorems.linnik_of_literature : GlobalTheory.Published.Linnik :=
-  UpperTheory.Lit.linnik
 theorem UpperTheory.LiteratureTheorems.cuspidal_multiplicity_one_of_literature : GlobalTheory.Published.CuspidalMultiplicityOne :=
   PositivityTheory.jumpWindows.cuspidalMultiplicityOne
 theorem UpperTheory.LiteratureTheorems.carU_local_global_of_literature (hLiteratureRow : _root_.UpperTheory.One.M.Row) : _root_.UpperTheory.GalS.CarUAlt :=
@@ -1094,8 +817,6 @@ theorem UpperTheory.LiteratureTheorems.poitou_tate_normalised_of_literature : Gl
   PositivityTheory.Lit1.PTN.poitouTateNormalised_holds
 theorem UpperTheory.LiteratureTheorems.prismatic_dieudonne_hodge_of_literature : GlobalTheory.Published.PrismaticDieudonneHodge :=
   UpperTheory.Lit.prismaticDieudonneHodge
-theorem UpperTheory.LiteratureTheorems.radford_shuffle_polynomial_of_literature : GlobalTheory.Published.RadfordShufflePolynomial :=
-  PositivityTheory.Stage1.PM.radfordShufflePolynomial
 theorem UpperTheory.LiteratureTheorems.siegel_weil_unitary_convergent_of_literature : GlobalTheory.Published.SiegelWeilUnitaryConvergent :=
   UpperTheory.Lit.Sw47.convergent
 theorem UpperTheory.LiteratureTheorems.weil_theta_convergence_of_literature : GlobalTheory.Published.WeilThetaConvergence :=
@@ -1321,41 +1042,21 @@ theorem UpperTheory.LiteratureTheorems.published_results_eigen (hLiteratureRow :
   }
 theorem UpperTheory.LiteratureTheorems.published_results_first : GlobalTheory.FunPr.ThetaLocalInputs :=
   {
-    greenSeriesSt := (_root_.UpperTheory.LiteratureTheorems.green_series_st_of_literature),
-    linnik := (_root_.UpperTheory.LiteratureTheorems.linnik_of_literature),
-    complexMultiplicationJSt := (_root_.UpperTheory.LiteratureTheorems.complex_multiplication_j_st_of_literature),
-    bernsteinUnitaryProductIrreducible := (_root_.UpperTheory.LiteratureTheorems.bernstein_unitary_product_irreducible_of_literature),
-    zelevinskyPolynomialRing := (_root_.UpperTheory.LiteratureTheorems.zelevinsky_polynomial_ring_of_literature),
-    bernsteinZelevinskyFiniteness := (_root_.UpperTheory.LiteratureTheorems.bernstein_zelevinsky_finiteness_of_literature),
-    cuspTraceClass := (_root_.UpperTheory.LiteratureTheorems.cusp_trace_class_of_literature),
     weilSiegelFormulaUnitary := (_root_.UpperTheory.LiteratureTheorems.weil_siegel_formula_unitary_of_literature),
     doublingMethod := (_root_.UpperTheory.LiteratureTheorems.doubling_method),
     unramifiedDoublingGL := (_root_.UpperTheory.LiteratureTheorems.unramified_doubling_gl_of_literature),
-    borelCasselman := (_root_.UpperTheory.LiteratureTheorems.borel_casselman_of_literature),
-    radfordShufflePolynomial := (_root_.UpperTheory.LiteratureTheorems.radford_shuffle_polynomial_of_literature),
-    dixmierMalliavinFactorisation := (_root_.UpperTheory.LiteratureTheorems.dixmier_malliavin_factorisation_of_literature),
-    schurOrthogonalitySquareIntegrable := (_root_.UpperTheory.LiteratureTheorems.schur_orthogonality_square_integrable_of_literature),
-    heckeLPartialContinuation := (_root_.UpperTheory.LiteratureTheorems.hecke_l_partial_continuation_of_literature),
-    logDerOne := (_root_.UpperTheory.LiteratureTheorems.logDerivOne),
     kFiniteVectorsUnitary := (_root_.UpperTheory.LiteratureTheorems.k_finite_vectors_unitary_of_literature),
-    discreteSeriesLowestKType := (_root_.UpperTheory.LiteratureTheorems.discrete_series_lowest_k_type_of_literature),
     cuspBounded := (_root_.UpperTheory.LiteratureTheorems.cusp_bounded_of_literature),
     strongApproxSU := (_root_.UpperTheory.LiteratureTheorems.strong_approx_su_of_literature),
-    heckeLEntireAndNonzeroAtOne := (_root_.UpperTheory.LiteratureTheorems.hecke_l_entire_and_nonzero_at_one_of_literature),
     realMetaplecticRepresentation := (_root_.UpperTheory.LiteratureTheorems.real_metaplectic_representation_of_literature),
     cuspDecayBound := (_root_.UpperTheory.LiteratureTheorems.cusp_decay_bound_of_literature),
-    gLHoweDuality := (_root_.UpperTheory.LiteratureTheorems.gl_howe_duality_of_literature),
     harishChandraModules := (_root_.UpperTheory.LiteratureTheorems.harish_chandra_modules_of_literature),
     discreteSeriesCover := (_root_.UpperTheory.LiteratureTheorems.discrete_series_cover_of_literature),
-    hermitianHassePrinciple := (_root_.UpperTheory.LiteratureTheorems.hermitian_hasse_principle_of_literature),
     discreteSeriesUpqExists := (_root_.UpperTheory.LiteratureTheorems.discrete_series_upq_exists_of_literature),
-    formalDegreeCompactDual := (_root_.UpperTheory.LiteratureTheorems.formal_degree_compact_dual_of_literature),
     discreteSeriesHermitianUnique := (_root_.UpperTheory.LiteratureTheorems.discrete_series_hermitian_unique_of_literature),
-    discreteSeriesExists := (_root_.UpperTheory.LiteratureTheorems.discrete_series_exists_of_literature),
     harishChandraFinite := (_root_.UpperTheory.LiteratureTheorems.harish_chandra_finite_of_literature),
     cuspRapidDecay := (_root_.UpperTheory.LiteratureTheorems.cusp_rapid_decay_of_literature),
     weilRepresentationUnitaryPair := (_root_.UpperTheory.LiteratureTheorems.weil_representation_unitary_pair_of_literature),
-    discreteSeriesCoverExists := (_root_.UpperTheory.LiteratureTheorems.discrete_series_cover_exists_of_literature),
     cuspDecaySobolev := (_root_.UpperTheory.LiteratureTheorems.cusp_decay_sobolev_of_literature),
     casselmanWallach := (_root_.UpperTheory.LiteratureTheorems.casselman_wallach_of_literature),
     howeDualityReal := (_root_.UpperTheory.LiteratureTheorems.howe_duality_real_of_literature),

@@ -18,8 +18,7 @@ open Formalism.IncomingBounds
 
 theorem asmOne_one_le_norm_two {K : Type u} [NormedField K] [IsUltrametricDist K] {l : ℕ}
     (hodd : Odd l) (hpi : ‖(l : K)‖ < 1) : 1 ≤ ‖(2 : K)‖ := by
-  by_contra h
-  push_neg at h
+  by_contra! h
   obtain ⟨m, rfl⟩ := hodd
   have hnat : ∀ k : ℕ, ‖(k : K)‖ ≤ 1 := by
     intro k
@@ -156,8 +155,7 @@ theorem oneLetterR_of (hS : LemmaS.{u}) (hG : GenLogWeight.{u, 0}) (hB : LogBrid
     · subst hd
       rw [MvPowerSeries.coeff_zero_eq_constantCoeff_apply, hf, zero_smul]
     · obtain ⟨s, hs'⟩ : ∃ s, d s ≠ 0 := by
-        by_contra h
-        push_neg at h
+        by_contra! h
         exact hd (Finsupp.ext h)
       have h0 : MvPowerSeries.constantCoeff (d.prod fun s e => a s ^ e) = 0 := by
         rw [Finsupp.prod, map_prod]

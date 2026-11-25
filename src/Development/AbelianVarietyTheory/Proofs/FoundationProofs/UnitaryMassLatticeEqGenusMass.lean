@@ -131,8 +131,7 @@ theorem exists_approx (v : HeightOneSpectrum (𝓞 F)) (d : 𝓞 F) (hd : d ≠ 
   obtain ⟨t, htJ, htP⟩ := SetLike.not_le_iff_exists.1 hJP
   have hb : ∀ w : HeightOneSpectrum (𝓞 F), w ≠ v → ∃ b ∈ v.asIdeal ^ k, b ∉ w.asIdeal := by
     intro w hw
-    by_contra h
-    push_neg at h
+    by_contra! h
     have hle : v.asIdeal ≤ w.asIdeal := Ideal.IsPrime.le_of_pow_le (fun b hb' => h b hb')
     exact hw (HeightOneSpectrum.ext (v.isMaximal.eq_of_le w.isPrime.ne_top hle).symm)
   have hval : ∀ w : HeightOneSpectrum (𝓞 F), w ≠ v → w.intValuation t ≤ w.intValuation d := by

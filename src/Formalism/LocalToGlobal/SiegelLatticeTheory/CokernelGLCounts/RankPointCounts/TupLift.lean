@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.FrameTermCountSublatticeBoundStatement
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.TupGlob
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.RepAtTup
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.RatIota
@@ -25,21 +26,7 @@ section Gen
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {S : HSpace E} {r : ℕ}
 
 theorem frame_li {T : E} (F : LFlag S r T) (hT : T ≠ 0) : LinearIndependent E (frame F) := by
-  show LinearIndependent E (Fin.snoc (α := fun _ => S.V) F.fl.e F.fl.z)
-  rw [linearIndependent_finSnoc]
-  refine ⟨F.fl.e_indep, fun hz => ?_⟩
-  have h0 : ∀ x ∈ Submodule.span E (Set.range F.fl.e), S.hT x F.fl.z = 0 := by
-    intro x hx
-    induction hx using Submodule.span_induction with
-    | mem y hy =>
-      obtain ⟨a, rfl⟩ := hy
-      exact F.fl.z_orth a
-    | zero => simp
-    | add x y _ _ hx hy => simp [map_add (f := _), hx, hy]
-    | smul c x _ hx => simp [hx]
-  have := h0 _ hz
-  rw [F.fl.z_norm] at this
-  exact hT (neg_eq_zero.1 this)
+  apply +allowSynthFailures _root_.GlobalTheory.LoopC.FrameMove.frame_indep <;> assumption
 
 theorem nlam_frame_locP {g : ℕ} {Λ : Submodule (𝓞 E) S.V} {T' : E} {F₁ : LFlag S r T'}
     (hL : IsLift Λ F₁) (hC : IsFixedConv Λ g F₁) {m : S.V ≃ₗ[E] S.V} (hm : m ∈ NLam Λ F₁)

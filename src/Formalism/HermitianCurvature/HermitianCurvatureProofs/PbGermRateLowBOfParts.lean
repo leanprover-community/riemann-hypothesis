@@ -149,8 +149,7 @@ theorem cutN_supp {k r : ℕ} {E : Type} [NormedAddCommGroup E] [NormedSpace ℂ
   have hc : PBASM.cutN n g ≠ 0 := by intro h0; apply hne; simp [h0]
   unfold PBASM.cutN at hc
   have hpos : 0 < (4 - ∑ i, ∑ j, Complex.normSq ((((n : ℝ) + 1)⁻¹ • g) i j)) / 3 := by
-    by_contra hle
-    push_neg at hle
+    by_contra! hle
     apply hc
     rw [Real.smoothTransition.zero_of_nonpos hle]
     simp

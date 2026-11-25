@@ -306,15 +306,8 @@ private theorem kgl_eq (w : Pl E) :
 
 private theorem loc_comm (w : Pl E) (g : GL (Fin a) (w.adicCompletion E)) {u : GL (Fin a) (Af E)}
     (hu : GeneralLinearGroup.map (pLoc E w) u = 1) : u * locGL E a w g = locGL E a w g * u := by
-  have H : ∀ v, GeneralLinearGroup.map (pLoc E v) (u * locGL E a w g) =
-      GeneralLinearGroup.map (pLoc E v) (locGL E a w g * u) := fun v => by
-    rw [map_mul, map_mul]
-    by_cases hv : v = w
-    · subst hv
-      rw [hu, mul_one, one_mul]
-    · rw [pLoc_locGL_of_ne hv, mul_one, one_mul]
-  ext i j : 2
-  exact FiniteAdeleRing.ext _ fun v => congrArg (fun x : GL (Fin a) (v.adicCompletion E) => x i j) (H v)
+  intros
+  apply _root_.GlobalTheory.CuspRep.LocSph.comm_locGL <;> assumption
 
 end SlopeTestRemainingChoices
 

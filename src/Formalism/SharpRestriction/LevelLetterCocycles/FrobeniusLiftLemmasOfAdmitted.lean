@@ -650,24 +650,13 @@ theorem lemGAx_pull1N (W : LocWach PD LL O v n) (T : LocLat G Qp LL O) (c : ZMod
     (hgen : ∀ x, x ∈ W.N T → Formalism.MainNotions.CrystallineLiftingInputs.DL W T c x →
       Formalism.MainNotions.LiftingTheory.qp W ^ k • W.φD T x ∈ W.N T) :
     ∀ p ∈ Formalism.MainNotions.CrystallineLiftingInputs.pullJ W T c 1, Formalism.MainNotions.LiftingTheory.qp W ^ k • p ∈ W.N T := by
-  intro p hp
-  induction hp using Submodule.span_induction with
-  | mem g hg =>
-    obtain ⟨x, ⟨hxN, hxD⟩, rfl⟩ := hg
-    simpa using hgen x hxN hxD
-  | zero => simp
-  | add x y _ _ hx hy => rw [smul_add]; exact Submodule.add_mem _ hx hy
-  | smul a x _ hx => rw [smul_comm]; exact Submodule.smul_mem _ a hx
+  apply _root_.Formalism.MainNotions.RamifiedCoefficientChains.S9.lemGAla_pull1N <;> assumption
 
 theorem q_pow_smul_frobenius_mem (W : LocWach PD LL O v n) (T : LocLat G Qp LL O) (hR : Formalism.MainNotions.LiftingTheory.lifta_Ring W)
     (hs : W.s = 1) {M h : ZMod n → ℕ} (h5 : Formalism.MainNotions.DeltaInvariantLattices.p5 W T M h) (c : ZMod n) :
     ∀ x, x ∈ W.N T → Formalism.MainNotions.CrystallineLiftingInputs.DL W T c x →
       Formalism.MainNotions.LiftingTheory.qp W ^ M (c + 1) • W.φD T x ∈ W.N T := by
-  intro x hxN hxD
-  have hxl : x ∈ W.Nl T (c + 1 - 1) := by
-    rw [add_sub_cancel_right]
-    exact ⟨x, hxN, by rw [LinearMap.smul_apply, LinearMap.id_apply, hxD.1]⟩
-  exact (Formalism.MainNotions.LiftingTheory.lifta_Qq W hR hs T _ _).1 (h5.1 (c + 1) x hxl)
+  apply _root_.Formalism.MainNotions.RamifiedCoefficientChains.S9.q_pow_smul_frobenius_mem' <;> assumption
 
 theorem lemGAx_parity {n : ℕ} [NeZero n] (hn : Even n) (d : ℕ) (i : ZMod n) (hi : (i.val + d) % 2 = 1) :
     ((i - 1).val + d) % 2 = 0 := by

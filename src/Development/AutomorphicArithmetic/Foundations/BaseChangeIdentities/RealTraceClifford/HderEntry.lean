@@ -25,8 +25,6 @@ private theorem hder_entry {n : ℕ} (X : Mat n) (t : ℝ) (i j : Fin n) :
   have hL := ((Matrix.entryLinearMap ℝ ℂ i j).toContinuousLinearMap).hasFDerivAt (x := NormedSpace.exp (t • X))
   exact hL.comp_hasDerivAt t h
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 theorem UpperTheory.RealTr.basic :
     ∀ n : ℕ, IsOpen (GLs n) ∧ (∀ g : Mat n, g ∈ GLs n ↔ IsUnit g) ∧ (∀ X : Mat n, NormedSpace.exp X ∈ GLs n) ∧
       (∀ (X g : Mat n) (t : ℝ), HasDerivAt (fun s : ℝ => g * NormedSpace.exp (s • X)) (g * NormedSpace.exp (t • X) * X) t) ∧

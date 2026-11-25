@@ -74,9 +74,9 @@ theorem finsum_orbits_stabilizer_mass {K Z : Type} [Group K] [Finite K] [MulActi
       (∑ᶠ a : {a // ρ a = o}, f a.1) = (Nat.card (orbit K (Quotient.out o)) : ℂ) * f (Quotient.out o) := by
     intro o
     let e : {a // ρ a = o} ≃ orbit K (Quotient.out o) := Equiv.subtypeEquivRight (hmem o)
-    haveI : Finite (orbit K (Quotient.out o)) := (Set.finite_range fun k : K => k • Quotient.out o).to_subtype
-    haveI : Finite {a // ρ a = o} := Finite.of_equiv _ e.symm
-    letI : Fintype {a // ρ a = o} := Fintype.ofFinite _
+    have : Finite (orbit K (Quotient.out o)) := (Set.finite_range fun k : K => k • Quotient.out o).to_subtype
+    have : Finite {a // ρ a = o} := Finite.of_equiv _ e.symm
+    let : Fintype {a // ρ a = o} := Fintype.ofFinite _
     have hc : ∀ a : {a // ρ a = o}, f a.1 = f (Quotient.out o) := by
       intro a
       obtain ⟨k, hk⟩ := (hmem o a.1).1 a.2
@@ -85,7 +85,7 @@ theorem finsum_orbits_stabilizer_mass {K Z : Type} [Group K] [Finite K] [MulActi
       Finset.card_univ, nsmul_eq_mul, ← Nat.card_eq_fintype_card, Nat.card_congr e]
   have hcard : ∀ z : Z, Nat.card (orbit K z) * Nat.card (stabilizer K z) = Nat.card K := by
     intro z
-    letI : Fintype K := Fintype.ofFinite K
+    let : Fintype K := Fintype.ofFinite K
     rw [← (stabilizer K z).index_mul_card, MulAction.index_stabilizer, Nat.card_coe_set_eq]
   rw [finsum_fiberwise_of_finite_support ρ f hs]
   simp_rw [hfib]
@@ -93,8 +93,8 @@ theorem finsum_orbits_stabilizer_mass {K Z : Type} [Group K] [Finite K] [MulActi
   apply finsum_congr
   intro o
   have h := hcard (Quotient.out o)
-  haveI : Finite (orbit K (Quotient.out o)) := (Set.finite_range fun k : K => k • Quotient.out o).to_subtype
-  haveI : Nonempty (orbit K (Quotient.out o)) := ⟨⟨_, mem_orbit_self _⟩⟩
+  have : Finite (orbit K (Quotient.out o)) := (Set.finite_range fun k : K => k • Quotient.out o).to_subtype
+  have : Nonempty (orbit K (Quotient.out o)) := ⟨⟨_, mem_orbit_self _⟩⟩
   have h1 : (Nat.card (orbit K (Quotient.out o)) : ℂ) ≠ 0 := by
     exact_mod_cast (Nat.card_pos (α := orbit K (Quotient.out o))).ne'
   have h2 : (Nat.card (stabilizer K (Quotient.out o)) : ℂ) ≠ 0 := by

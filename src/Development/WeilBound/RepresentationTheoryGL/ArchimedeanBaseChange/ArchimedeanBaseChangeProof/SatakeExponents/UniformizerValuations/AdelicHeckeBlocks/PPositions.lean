@@ -27,8 +27,6 @@ open scoped Classical
 
 namespace PositivityTheory.Rg.BcB.F
 
-attribute [local instance] borelG borelF borelH
-
 namespace Slots
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]

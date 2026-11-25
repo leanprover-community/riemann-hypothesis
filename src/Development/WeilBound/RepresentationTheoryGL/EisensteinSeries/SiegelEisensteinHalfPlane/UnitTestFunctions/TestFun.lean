@@ -619,8 +619,7 @@ theorem finiteModule_lt_one {b : (FiniteAdeleRing (𝓞 k) k)ˣ}
     finiteModule (ofFinite b) < 1 := by
   classical
   obtain ⟨v, hv⟩ : ∃ v : HeightOneSpectrum (𝓞 k), ‖(b : FiniteAdeleRing (𝓞 k) k) v‖ < 1 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     refine hu ((mem_finiteIntegralUnits k).2 fun v ↦ ⟨mem_integralFiniteAdeles.1 hb v, ?_⟩)
     have hv1 : ‖(b : FiniteAdeleRing (𝓞 k) k) v‖ = 1 :=
       le_antisymm (norm_le_one_of_mem_OH hb v) (hcon v)
@@ -1116,8 +1115,7 @@ theorem supp : ColLaw → InMTop → Supp := by
       linarith
     linarith
   have hex : ∃ n, C n ⊆ O := by
-    by_contra hno
-    push_neg at hno
+    by_contra! hno
     obtain ⟨κ, hκ⟩ := IsCompact.nonempty_iInter_of_sequence_nonempty_isCompact_isClosed
       (fun n => C n \ O) (fun n => Set.diff_subset_diff_left (hanti n))
       (fun n => Set.nonempty_of_not_subset (hno n)) ((hCcl 0).sdiff hO).isCompact

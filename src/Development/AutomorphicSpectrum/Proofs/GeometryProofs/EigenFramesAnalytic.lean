@@ -1,5 +1,7 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FlagCmTypeLatticeComparison
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.WedgeEqSpanOfIsFrameAt
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsCptGen
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ExistsGenOfIsVBOne
@@ -775,52 +777,8 @@ variable {X : Scheme.{0}} {Ω : Type} [Field Ω] {E : Type} [AddCommGroup E] [Mo
 private theorem iota_multi_mem_span_of_mem_span {R : Subring Ω} {r : ℕ} {e : Fin r → E} (b : Fin r → E)
     (hb : ∀ i, b i ∈ Submodule.span R (Set.range e)) :
     exteriorPower.ιMulti Ω r b ∈ Submodule.span R {exteriorPower.ιMulti Ω r e} := by
-  suffices H : ∀ s : Finset (Fin r), ∀ b : Fin r → E, (∀ i, b i ∈ Submodule.span R (Set.range e)) →
-      (∀ i, i ∉ s → b i ∈ Set.range e) →
-      exteriorPower.ιMulti Ω r b ∈ Submodule.span R {exteriorPower.ιMulti Ω r e} from
-    H Finset.univ b hb (fun i hi => absurd (Finset.mem_univ i) hi)
-  intro s
-  refine Finset.induction_on s ?_ ?_
-  · intro b _ hb'
-    choose g hg using fun i => hb' i (Finset.notMem_empty i)
-    have hbg : b = e ∘ g := funext fun i => (hg i).symm
-    subst hbg
-    by_cases hinj : Function.Injective g
-    · have hσ := Finite.injective_iff_bijective.1 hinj
-      have he : e ∘ g = e ∘ ⇑(Equiv.ofBijective g hσ) := rfl
-      rw [he, AlternatingMap.map_perm, Units.smul_def]
-      exact zsmul_mem (Submodule.mem_span_singleton_self _) _
-    · rw [AlternatingMap.map_eq_zero_of_not_injective _ _ (fun h => hinj h.of_comp)]
-      exact Submodule.zero_mem _
-  · intro a s ha ih b hb hb'
-    have key : ∀ y ∈ Submodule.span R (Set.range e),
-        exteriorPower.ιMulti Ω r (Function.update b a y) ∈
-          Submodule.span R {exteriorPower.ιMulti Ω r e} := by
-      intro y hy
-      induction hy using Submodule.span_induction with
-      | mem y hy =>
-        apply ih
-        · intro i
-          rcases eq_or_ne i a with rfl | hi
-          · simpa using Submodule.subset_span hy
-          · rw [Function.update_of_ne hi]
-            exact hb i
-        · intro i hi
-          rcases eq_or_ne i a with rfl | hia
-          · simpa using hy
-          · rw [Function.update_of_ne hia]
-            exact hb' i (by simp [hia, hi])
-      | zero =>
-        rw [AlternatingMap.map_update_zero]
-        exact Submodule.zero_mem _
-      | add x y _ _ hx hy =>
-        rw [AlternatingMap.map_update_add]
-        exact Submodule.add_mem _ hx hy
-      | smul c x _ hx =>
-        rw [Subring.smul_def, AlternatingMap.map_update_smul, ← Subring.smul_def]
-        exact Submodule.smul_mem _ c hx
-    have hk := key (b a) (hb a)
-    rwa [Function.update_eq_self] at hk
+  intros
+  apply _root_.GlobalTheory.CompanionTheory.Ar.Flat.WedgeFrame.ιMulti_mem_span <;> assumption
 
 theorem ιMulti_ne_zero {r : ℕ} {e : Fin r → E} (h : LinearIndependent Ω e) :
     exteriorPower.ιMulti Ω r e ≠ 0 := by
@@ -853,37 +811,8 @@ namespace GlobalTheory.CompanionTheory.Ar.Flat.LineGenerator
 theorem exists_ιMulti_eq_smul {Ω : Type} [Field Ω] {E : Type} [AddCommGroup E] [Module Ω E] {r : ℕ}
     {v b : Fin r → E} (h : ∀ i, v i ∈ Submodule.span Ω (Set.range b)) :
     ∃ α : Ω, exteriorPower.ιMulti Ω r v = α • exteriorPower.ιMulti Ω r b := by
-  classical
-  have hc : ∀ i, ∃ c : Fin r → Ω, ∑ j, c j • b j = v i := fun i =>
-    (Submodule.mem_span_range_iff_exists_fun Ω).1 (h i)
-  choose c hc using hc
-  have hv : v = fun i => ∑ j, c i j • b j := funext fun i => (hc i).symm
-  have hsum : exteriorPower.ιMulti Ω r v =
-      ∑ f : Fin r → Fin r, (∏ i, c i (f i)) • exteriorPower.ιMulti Ω r (fun i => b (f i)) := by
-    rw [hv]
-    refine ((exteriorPower.ιMulti Ω r (M := E)).toMultilinearMap.map_sum
-      (fun i j => c i j • b j)).trans (Finset.sum_congr rfl fun f _ => ?_)
-    exact (exteriorPower.ιMulti Ω r (M := E)).toMultilinearMap.map_smul_univ
-      (fun i => c i (f i)) (fun i => b (f i))
-  have hmem : exteriorPower.ιMulti Ω r v ∈ Submodule.span Ω {exteriorPower.ιMulti Ω r b} := by
-    rw [hsum]
-    refine Submodule.sum_mem _ fun f _ => Submodule.smul_mem _ _ ?_
-    by_cases hf : Function.Injective f
-    · let σ : Equiv.Perm (Fin r) := Equiv.ofBijective f (Finite.injective_iff_bijective.1 hf)
-      have h5 : (fun i => b (f i)) = b ∘ σ := rfl
-      rw [h5, (exteriorPower.ιMulti Ω r (M := E)).map_perm b σ]
-      have hm := Submodule.mem_span_singleton_self (R := Ω) (exteriorPower.ιMulti Ω r b)
-      rcases Int.units_eq_one_or (Equiv.Perm.sign σ) with hs | hs
-      · rw [hs, one_smul]
-        exact hm
-      · rw [hs, Units.neg_smul, one_smul]
-        exact neg_mem hm
-    · have h6 : ¬ Function.Injective (fun i => b (f i)) := fun hh =>
-        hf (Function.Injective.of_comp (f := b) hh)
-      rw [(exteriorPower.ιMulti Ω r (M := E)).map_eq_zero_of_not_injective _ h6]
-      exact zero_mem _
-  obtain ⟨α, hα⟩ := Submodule.mem_span_singleton.1 hmem
-  exact ⟨α, hα.symm⟩
+  intros
+  apply _root_.GlobalTheory.CompanionTheory.Ar.Flat.CptWedge.exists_wedge_eq_smul <;> assumption
 
 theorem frame_mem_of_isVBOn {X : Scheme.{0}} {Ω : Type} [Field Ω] {ξ : Spec (CommRingCat.of Ω) ⟶ X}
     {E : Type} [AddCommGroup E] [Module Ω E] {L : Lat ξ E} {T : Set (Cpt ξ)} {r : ℕ}

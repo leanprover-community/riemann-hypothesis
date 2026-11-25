@@ -270,7 +270,6 @@ theorem cr_Pos_zero_or {β : Fin n → ℤ} (h : β ∈ cr_Pos n) : β = 0 ∨ 0
     have e : (∑ i : Fin n, ((i : ℕ) : ℤ) * rootW a b i) = ((a : ℕ) : ℤ) - ((b : ℕ) : ℤ) := by
       simp [rootW, mul_sub, Finset.sum_sub_distrib, Pi.single_apply]
     rw [e]
-    have hab' : (a : ℕ) < (b : ℕ) := hab
     omega
   | zero => left; rfl
   | add x y _ _ hx hy =>

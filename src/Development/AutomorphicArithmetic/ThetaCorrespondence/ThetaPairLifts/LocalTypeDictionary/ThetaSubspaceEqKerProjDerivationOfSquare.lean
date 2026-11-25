@@ -233,8 +233,7 @@ theorem exists_finset_sep (S : Submodule ℂ (SchwartzMap Y ℂ)) [FiniteDimensi
   refine ⟨P, fun s hs h0 => ?_⟩
   by_contra hne
   obtain ⟨y, hy⟩ : ∃ y, s y ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hne (SchwartzMap.ext h)
   have hlt : zeroOn S (insert y P) < zeroOn S P := by
     refine lt_of_le_of_ne (fun a ha z hz => ha z (Finset.mem_insert_of_mem hz)) fun heq => ?_
@@ -470,7 +469,7 @@ theorem isGaussian_of_fock_vacuum_stabilizer_acts : _root_.GlobalTheory.FunPr.Th
     (r s r' s' : ℕ), GlobalTheory.ThK.IsPair B M χX χW om r s r' s' → ∀ k ∈ KInf σ X B.emb, ∀ f₀ : SInf F (Fin n × Fin d),
     M.IsGauss B.ψ B.emb f₀ → ∀ f₁ : SInf F (Fin n × Fin d), Acts (evI F) (om (k, 1)) f₀ f₁ → M.IsGauss B.ψ B.emb f₁ := by
   intro hPr F E _ _ _ _ _ σ B n d X W M χX χW om r s r' s' hP k hk f₀ hG f₁ hact
-  have hPA := _root_.GlobalTheory.T.dualPair_preserves_polarization hPr F E σ B n d X W M χX χW om r s r' s' hP
+  have hPA := _root_.GlobalTheory.PolActsPf.polarization_acts_of_isDualPair hPr F E σ B n d X W M χX χW om r s r' s' hP
   obtain ⟨m, L, hD⟩ := _root_.GlobalTheory.HeisDerivSpan.heisLine_deriv_finite_span F E σ n d X W M B.ψ hP.base.std
   choose! Dfun hDiff _ using hD
   obtain ⟨Dk, _, hDk⟩ := hPA.2.1 k hk
@@ -546,7 +545,7 @@ theorem fock_space_kFinite : _root_.GlobalTheory.FunPr.ThetaLocalInputs → ∀ 
       ∀ k ∈ GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.KInf σ X B.emb, ∀ f₁ : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.SInf F (Fin n × Fin d),
         GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Acts (GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.evI F) (om (k, 1)) f f₁ → f₁ ∈ S := by
   intro hPr F E _ _ _ _ _ σ B n d X W M χX χW om r s r' s' hP f hf
-  have hPA := _root_.GlobalTheory.T.dualPair_preserves_polarization hPr F E σ B n d X W M χX χW om r s r' s' hP
+  have hPA := _root_.GlobalTheory.PolActsPf.polarization_acts_of_isDualPair hPr F E σ B n d X W M χX χW om r s r' s' hP
   obtain ⟨m, L, hD⟩ := _root_.GlobalTheory.HeisDerivSpan.heisLine_deriv_finite_span F E σ n d X W M B.ψ hP.base.std
   choose! Dfun hDiff hDspan using hD
   have hK := hPA.2.1
@@ -580,19 +579,6 @@ theorem fock_space_kFinite : _root_.GlobalTheory.FunPr.ThetaLocalInputs → ∀ 
   exact ⟨S, hS, fun k hk f₁ hact => by rw [(hTacts k hk f hf f₁).1 hact]; exact hSk ⟨k, hk⟩⟩
 end GlobalTheory.FockKFin
 end
-
-section
-open NumberField IsDedekindDomain
-
-theorem _root_.GlobalTheory.T.fock_vectors_kFinite : _root_.GlobalTheory.FunPr.ThetaLocalInputs → ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
-    (σ : E →ₐ[F] E) (B : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Base F E) (n d : ℕ) (X : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Spc F E n)
-    (W : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Spc F E d) (M : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Model σ X W) (χX χW : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Chr F E)
-    (om : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Rep σ X W) (r s r' s' : ℕ), GlobalTheory.ThK.IsPair B M χX χW om r s r' s' →
-    ∀ f ∈ M.Pol B.ψ B.emb, ∃ S : Submodule ℂ (GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.SInf F (Fin n × Fin d)), FiniteDimensional ℂ S ∧
-      ∀ k ∈ GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.KInf σ X B.emb, ∀ f₁ : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.SInf F (Fin n × Fin d),
-        GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Acts (GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.evI F) (om (k, 1)) f f₁ → f₁ ∈ S := by
-  first | exact @_root_.GlobalTheory.FockKFin.fock_space_kFinite
-end
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.FockVectorsKFinite =====
@@ -620,9 +606,9 @@ theorem sub_mem_span_kInfty_exp_derivatives : _root_.GlobalTheory.FunPr.ThetaLoc
       f₁ - f ∈ Submodule.span ℂ {g₁ | g₁ ∈ M.Pol B.ψ B.emb ∧ ∃ γ ∈ GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Lines σ X, ∃ g ∈ M.Pol B.ψ B.emb,
         GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.ActsD (GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.evI F) (fun t => om (γ (Multiplicative.ofAdd t), 1)) g g₁} := by
   intro hPr F E _ _ _ _ _ σ B n d X W M χX χW om r s r' s' hP k hk f hf f₁ hact
-  obtain ⟨hDer, hOp, -, -⟩ := _root_.GlobalTheory.T.dualPair_preserves_polarization hPr F E σ B n d X W M χX χW om r s r' s' hP
+  obtain ⟨hDer, hOp, -, -⟩ := _root_.GlobalTheory.PolActsPf.polarization_acts_of_isDualPair hPr F E σ B n d X W M χX χW om r s r' s' hP
   obtain ⟨γ, hγL, hγ1, hγK⟩ := _root_.GlobalTheory.CompactLine.exists_line_in_kInf F E σ B n X r s hP.base hP.herm k hk
-  obtain ⟨S, hSfin, hS⟩ := _root_.GlobalTheory.T.fock_vectors_kFinite hPr F E σ B n d X W M χX χW om r s r' s' hP f hf
+  obtain ⟨S, hSfin, hS⟩ := _root_.GlobalTheory.FockKFin.fock_space_kFinite hPr F E σ B n d X W M χX χW om r s r' s' hP f hf
   haveI := hSfin
   obtain ⟨Dg, hDgP, hDg⟩ := hDer γ hγL
   choose D hDP hD using fun t : ℝ => hOp (γ (Multiplicative.ofAdd t)) (hγK _)
@@ -1271,8 +1257,7 @@ theorem exists_finset_sep (C : Submodule ℂ (α → ℂ)) [FiniteDimensional �
   refine ⟨P, fun s hs h0 => ?_⟩
   by_contra hne
   obtain ⟨y, hy⟩ : ∃ y, s y ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hne (funext h)
   have hlt : zeroOnF C (insert y P) < zeroOnF C P := by
     refine lt_of_le_of_ne (fun a ha z hz => ha z (Finset.mem_insert_of_mem hz)) fun heq => ?_

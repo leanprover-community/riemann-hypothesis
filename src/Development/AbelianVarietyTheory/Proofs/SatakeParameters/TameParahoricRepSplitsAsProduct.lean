@@ -395,8 +395,7 @@ theorem val_mul_of_smul {f : IndSp (part r t) ((extTensor σ₁ σ₂).comp (lev
 
 theorem exists_perm_ne_zero : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (r t : ℕ) (χ : kˣ →* ℂˣ) (V : Type) [AddCommGroup V] [Module ℂ V] (W : Type) [AddCommGroup W] [Module ℂ W] (σ₁ : Representation ℂ (GL (Fin r) k) V) (σ₂ : Representation ℂ (GL (Fin t) k) W) (f : _), f ≠ 0 → IsParahoricVec χ (prod₂ σ₁ σ₂) f → ∃ w : Equiv.Perm (Fin (r + t)), f.1.1 (GlobalTheory.Parabolic.permGL k w) ≠ 0 := by
   intro k _ _ _ _ r t χ V _ _ W _ _ σ₁ σ₂ f hf0 hf
-  by_contra hall
-  push_neg at hall
+  by_contra! hall
   apply hf0
   have hg : ∀ g, f.1.1 g = 0 := by
     intro g
@@ -1031,8 +1030,7 @@ theorem exists_isIwVec_fst : ∀ (k : Type) [Field k] [ValuativeRel k] [Topologi
 
   let b := Module.Basis.ofVectorSpace ℂ W
   obtain ⟨i₀, hi₀⟩ : ∃ i, TensorProduct.equivFinsuppOfBasisRight b (f.1.1 (GlobalTheory.Parabolic.permGL k w)) i ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hx ((TensorProduct.equivFinsuppOfBasisRight b).map_eq_zero_iff.1 (Finsupp.ext h))
   set y₀ := TensorProduct.equivFinsuppOfBasisRight b (f.1.1 (GlobalTheory.Parabolic.permGL k w)) i₀ with hy₀
   have fix0 : ∀ g ∈ KO k (Fin r), (∀ i j, j < i → valuation k ((g : Matrix (Fin r) (Fin r) k) i j) < 1) →

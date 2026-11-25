@@ -778,8 +778,7 @@ private theorem exists_grid_of_layout_lemma {P : _root_.Formalism.FourierDecayAl
       have hnum : 0 < nn y * nn (y + 1) := mul_pos (hnn _) (hnn _)
       have hqy := hq y hy
       have hqpos : 0 < (_root_.Formalism.FourierDecayAlt.M.qC P (y : ℂ)).re := by
-        by_contra hle
-        push_neg at hle
+        by_contra! hle
         nlinarith [sq_nonneg Λ₀]
       rw [hre]
       have hden : 0 < (_root_.Formalism.FourierDecayAlt.M.qC P (y : ℂ)).re * ρ := mul_pos hqpos hρ

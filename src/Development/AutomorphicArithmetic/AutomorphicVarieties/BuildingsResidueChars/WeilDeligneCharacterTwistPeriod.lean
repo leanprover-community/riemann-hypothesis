@@ -1,5 +1,6 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.ExistsAlgebraicElementOfAlgebraicVectorSubspace
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.WdDefs
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NormSubLtOneOfFix
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.IqBasic
@@ -71,20 +72,7 @@ open scoped Formalism.Per in
 private theorem tf_lift (y : OCb l) {m : ℕ} (hm : 0 < m) (hy : y ^ l ^ m = y) :
     ∃ (z : OC l) (x : Om l), (z : ℂ_[l]) = (x : ℂ_[l]) ∧ x ^ l ^ m = x ∧
       PreTilt.coeff 0 y = Ideal.Quotient.mk (Ideal.span {((l : ℕ) : OC l)}) z := by
-  have h1 : 1 < l ^ m := Nat.one_lt_pow hm.ne' hl.out.one_lt
-  have hz : y.untilt ^ l ^ m = y.untilt := by rw [← map_pow, hy]
-  have hz' : ((y.untilt : OC l) : ℂ_[l]) ^ l ^ m = (y.untilt : OC l) := by
-    have := congrArg (fun t : OC l => (t : ℂ_[l])) hz
-    simpa using this
-  have hint : IsIntegral (Om l) ((y.untilt : OC l) : ℂ_[l]) := by
-    refine ⟨X ^ l ^ m - X, monic_X_pow_sub (by rw [degree_X]; exact_mod_cast h1), ?_⟩
-    simp [hz']
-  obtain ⟨x, hx⟩ := minpoly.mem_range_of_degree_eq_one (Om l) _
-    (IsAlgClosed.degree_eq_one_of_irreducible (Om l) (minpoly.irreducible hint))
-  refine ⟨y.untilt, x, hx.symm, ?_, (PreTilt.mk_untilt_eq_coeff_zero y).symm⟩
-  apply (algebraMap (Om l) ℂ_[l]).injective
-  have hx' : algebraMap (Om l) ℂ_[l] x = (y.untilt : OC l) := hx
-  rw [map_pow, hx', hz']
+  apply _root_.UpperTheory.V.Loc.tf_lift <;> assumption
 
 private theorem tf_act {P : LocPrime l} (AI : LocAinf l P) (y : OCb l) {m : ℕ} (hm : 0 < m) (hy : y ^ l ^ m = y)
     {z : OC l} {x : Om l} (hzx : (z : ℂ_[l]) = (x : ℂ_[l]))

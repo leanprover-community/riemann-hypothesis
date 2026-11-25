@@ -14,8 +14,6 @@ open GlobalTheory.CuspRep GlobalTheory.UnitaryBC PositivityTheory.Rg.BcB.E
 
 namespace PositivityTheory.Rg.BcB.E1
 
-attribute [local instance] borelH
-
 theorem sBound_of (h : SB) : F.SBound := h
 
 theorem bridge_of (h : ProdDom) : F.Bridge := by

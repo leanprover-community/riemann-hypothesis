@@ -41,6 +41,9 @@ import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCou
 import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.LatDictFinal
 import Formalism.SharpRestriction.CuspSpanNormBounds.LocalModelPeriodLattices
 import Mathlib.Algebra.AffineMonoid.Basic
+import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.RatIota
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.LiftPhaseAgreement
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.TupOnto
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.LemmaVLift, Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.RowFrameCoherence.GmapInvOf, Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.LiftAtSome, Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.PointRegroupPf, Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.RowFrameCoherence.LiftRowCohF, Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.RowFrameCoherence.LiftRowCohD, Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.RowFrameCoherence.Regroup, Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.LiftMassCHolds, Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.RowFormAllOf
@@ -212,14 +215,7 @@ open Formalism.BasicNotions Formalism.L2.SG.HidaSetting Formalism.L2.SG.Pf.RowFo
 
 theorem liftAtSomeC_holds {D : D7} (X : HidaSetting D) (Y : Formalism.L2.SG.Full.Full X) (u u' : D.what₂.Word)
     (κ : Formalism.L2.SG.TermDef.Term D u u' (X.Fu u) (Y.what₂ u) → ℕ) : LiftAtSomeC X Y u u' κ := by
-  intro R ρ s hrel
-  have hG : s.1.toTerm.G ≠ 0 := by
-    intro h0
-    apply s.2.1
-    show Formalism.L2.SG.TermOp.Gt s.1 = 0
-    unfold Formalism.L2.SG.TermOp.Gt
-    exact if_pos h0
-  exact Formalism.L2.SG.LeadingMinorsNonvanishing.atSomeAll_holds D X Y u u' s.1.toTerm hG hrel
+  apply _root_.Formalism.L2.SG.Pf.LiftedPhaseAgreement.liftAtSomeC_holds <;> assumption
 
 theorem atPtRelevantC_holds {D : D7} (X : HidaSetting D) (Y : Formalism.L2.SG.Full.Full X) (u u' : D.what₂.Word) :
     AtPtRelevantC X Y u u' := fun t w h =>
@@ -418,18 +414,7 @@ theorem ff_swap {x y : S.V} (h : S.hT x y = 0) : S.hT y x = 0 := by
 
 theorem ff_iso_span {p : Fin r → S.V} (hp : ∀ a b, S.hT (p a) (p b) = 0) {x y : S.V}
     (hx : x ∈ Submodule.span E (Set.range p)) (hy : y ∈ Submodule.span E (Set.range p)) : S.hT x y = 0 := by
-  have h1 : ∀ a, ∀ z ∈ Submodule.span E (Set.range p), S.hT (p a) z = 0 := by
-    intro a z hz
-    have hle : Submodule.span E (Set.range p) ≤ LinearMap.ker (S.hT (p a)) := by
-      rw [Submodule.span_le]
-      rintro _ ⟨b, rfl⟩
-      exact LinearMap.mem_ker.2 (hp a b)
-    exact LinearMap.mem_ker.1 (hle hz)
-  have hle : Submodule.span E (Set.range p) ≤ LinearMap.ker (S.hT.flip y) := by
-    rw [Submodule.span_le]
-    rintro _ ⟨a, rfl⟩
-    exact LinearMap.mem_ker.2 (by simpa using h1 a y hy)
-  simpa using LinearMap.mem_ker.1 (hle hx)
+  apply _root_.Formalism.L2.SG.Pf.TupOnto.hT_span_span <;> assumption
 
 theorem ff_repr {e f : Fin r → S.V} (hfe : ∀ a b, S.hT (f a) (e b) = if a = b then 1 else 0) {x : S.V}
     (hx : x ∈ Submodule.span E (Set.range e)) : x = ∑ a, S.hT (f a) x • e a := by
@@ -574,16 +559,7 @@ theorem ff_det {x : Fin r → S.V} (hx : LinearIndependent E x) (hxe : ∀ b, x 
 
 theorem ff_gmap_latSpan (ν : S.V ≃ₗ[E] S.V) (aa : Fin r → FractionalIdeal (nonZeroDivisors (𝓞 E)) E)
     (v : Fin r → S.V) : Formalism.HermitianLatticesTheory.gmap ν (latSpan aa v) = latSpan aa (fun a => ν (v a)) := by
-  unfold Formalism.HermitianLatticesTheory.gmap Formalism.L2.SG.Saturated.latSpan
-  rw [Submodule.map_span]
-  congr 1
-  ext y
-  simp only [Set.mem_image, Set.mem_setOf_eq]
-  constructor
-  · rintro ⟨z, ⟨a, c, hc, rfl⟩, rfl⟩
-    exact ⟨a, c, hc, by simp⟩
-  · rintro ⟨a, c, hc, rfl⟩
-    exact ⟨c • v a, ⟨a, c, hc, rfl⟩, by simp⟩
+  apply _root_.Formalism.L2.SG.Pf.Act.latSpan_gmap <;> assumption
 
 theorem ff_gmap_inf (ν : S.V ≃ₗ[E] S.V) (A : Submodule (𝓞 E) S.V) (U : Submodule E S.V) :
     Formalism.HermitianLatticesTheory.gmap ν (A ⊓ toO S U) = Formalism.HermitianLatticesTheory.gmap ν A ⊓ toO S (U.map (ν : S.V →ₗ[E] S.V)) := by

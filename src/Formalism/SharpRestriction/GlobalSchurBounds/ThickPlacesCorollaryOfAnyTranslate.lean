@@ -147,9 +147,6 @@ theorem global_arithmetic_identity : GlobalArithmeticIdentity := by
     (((M - 1).factorial : ℝ) * (v / Real.pi) ^ M) ^ f / Real.sqrt ((2 * v) ^ f) * Lv)
   have hd : (0 : ℝ) < (2 * v) ^ f := by positivity
   rw [Real.rpow_sub hd, Real.rpow_natCast, ← Real.sqrt_eq_rpow]
-  have hs : 0 < Real.sqrt ((2 * v) ^ f) := Real.sqrt_pos.2 hd
-  have hfac : (0 : ℝ) < ((M - 1).factorial : ℝ) := by exact_mod_cast Nat.factorial_pos _
-  have hpi := Real.pi_pos
   have key : ((2 * v) ^ f) ^ M = ((2 * Real.pi) ^ M / ((M - 1).factorial : ℝ)) ^ f *
       (((M - 1).factorial : ℝ) * (v / Real.pi) ^ M) ^ f := by
     rw [← pow_mul, mul_comm f M, pow_mul, ← mul_pow]
@@ -162,8 +159,6 @@ theorem global_arithmetic_identity : GlobalArithmeticIdentity := by
   have hB : (0 : ℝ) < ((M - 1).factorial : ℝ) * (v / Real.pi) ^ M := by positivity
   generalize (2 * Real.pi) ^ M / ((M - 1).factorial : ℝ) = A at hA ⊢
   generalize ((M - 1).factorial : ℝ) * (v / Real.pi) ^ M = B at hB ⊢
-  have hAf : 0 < A ^ f := pow_pos hA f
-  have hBf : 0 < B ^ f := pow_pos hB f
   field_simp
 
 end Formalism.HermitianLattices.GenusMassVolumes
@@ -187,7 +182,6 @@ theorem finrank_host (D : D7) : Module.finrank ℚ D.host.E = 2 * D.R.f := by
   have h1 : Nat.card (D.R.GG) = Nat.card (D.host.E →+* ℂ) := Nat.card_congr (Equiv.ofBijective _ hb)
   have h2 : Nat.card (D.host.E →+* ℂ) = Module.finrank ℚ D.host.E := by
     rw [Nat.card_eq_fintype_card]; exact NumberField.Embeddings.card D.host.E ℂ
-  have h3 := (factCardPsi D.R D.host).1
   have h4 : Nat.card (D.R.GG) = 4 * D.R.ord := D.R.natCard_GG
   rw [← h2, ← h1, h4]
   show 4 * D.R.ord = 2 * (2 * D.R.ord)
@@ -567,7 +561,6 @@ theorem gap_bound_mono (D : D7) (C C' ep0 : ℝ) (h : C ≤ C') : gap3 D C ep0 �
   have hr : (1 : ℝ) ≤ D.R.r := by
     have := D.R.k_ge; have := D.R.r_eq; have := D.R.two_le_m
     exact_mod_cast (by omega : 1 ≤ D.R.r)
-  have hl : 0 ≤ Real.log (D.R.r : ℝ) := Real.log_nonneg hr
   gcongr
 
 theorem exponent_pos_of_rank_le_pow (D : D7) (sc : Scale) (C0 : ℝ) (h5 : (D.R.k : ℝ) ≤ sc.x ^ C0) : 0 < C0 := by
@@ -584,7 +577,6 @@ theorem gap_bound_at_one_third (D : D7) (C : ℝ) (hC : 0 ≤ C) : gap3 D C (1 /
   have ep : pY D ≤ D.R.r := by unfold pY; simp only [Ranks.sigY0]; omega
   have eq : qY D ≤ D.R.r := by unfold qY; simp only [Ranks.sigY0]; omega
   have hr : (1 : ℝ) ≤ D.R.r := by exact_mod_cast (by omega : 1 ≤ D.R.r)
-  have hl0 : 0 ≤ Real.log (D.R.r : ℝ) := Real.log_nonneg hr
   have hl : Real.log (D.R.r : ℝ) ≤ D.R.r := by
     have := Real.log_le_sub_one_of_pos (show (0 : ℝ) < (D.R.r : ℝ) by linarith)
     linarith
@@ -761,7 +753,6 @@ theorem line_param_harish_chandra (D : D7) (ρ : D.what₂.Tau) : Formalism.Quan
   refine ⟨strictAnti_comp_finCast _ _ (line_param_strictAnti D ρ), fun a => ?_⟩
   obtain ⟨c, hc⟩ := D.R.m_even
   obtain ⟨c', hc'⟩ := D.R.k_even
-  have hrS := D.R.rS_two
   have hN : (((2 * D.R.rS + D.R.k + 1 : ℕ) : ℝ) - 1) / 2 = ((D.R.rS + c' : ℕ) : ℝ) := by
     rw [hc']; push_cast; ring
   rw [hN]
@@ -1513,8 +1504,6 @@ theorem formalDegreeFactor_pos_of_strictAnti {N : ℕ} (s : Fin N → Bool) (lam
     rw [Finset.mem_filter] at hb
     have h1 := rho_sub_eq_card_opposite s a b hb.2.1 hb.2.2
     have h2 : lam b < lam a := h hb.2.1
-    have h3 : (0 : ℝ) ≤ ((univ.filter (fun c : Fin N => a < c ∧ c < b ∧ s c ≠ s a)).card : ℝ) :=
-      Nat.cast_nonneg _
     linarith
   · exact mul_pos (factorial_product_pos _) (factorial_product_pos _)
 

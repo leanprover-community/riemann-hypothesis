@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsFdegFdegOfLowest
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.SettingBlocks
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RowDict
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.RowDictCore
@@ -384,15 +385,7 @@ def DSSchurOrth : Prop :=
 
 theorem fdeg_of_schur (hS : DSSchurOrth) (v : InfinitePlace X.B.I.F) :
     IsFdeg (Formalism.REAL.muG (X.B.I.ε v)) (X.B.σ v) (fdegOf (Formalism.REAL.muG (X.B.I.ε v)) (X.B.σ v) (X.B.w v)) := by
-  obtain ⟨hC, hN, hU, hIrr, hSq, -⟩ := X.ds v
-  obtain ⟨d, hd⟩ := hS _ _ (X.B.H v) (X.B.σ v) hN hU hIrr hSq
-  have hw : X.B.w v ≠ 0 := by
-    intro h0
-    have := (X.low v).1
-    rw [h0, norm_zero] at this
-    exact zero_ne_one this
-  rw [_root_.Formalism.MainNotions.LowestKTypeMultiplicity.fdegOf_of_isFdeg hd hw]
-  exact hd
+  apply _root_.GlobalTheory.LowestVectorDegree.isFdeg_fdegOf_lowest <;> assumption
 
 theorem finiteDimensional_HHX_of_hypotheses (hHC : Formalism.L2.SG.RowsDef.RowsFinDim) (hS : DSSchurOrth)
     (hint : ∀ v, Integrable (Formalism.L2.SG.ProjRows.phLoc (ε := X.B.I.ε v) (X.B.σ v) (X.B.w v)

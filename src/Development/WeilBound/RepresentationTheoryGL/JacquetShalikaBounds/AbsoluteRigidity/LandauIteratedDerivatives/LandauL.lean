@@ -64,8 +64,7 @@ theorem propagate (f g : ℂ → ℂ) (a b : ℝ) (hf : ∀ σ : ℝ, a < σ →
   set B := {τ : ℝ | a < τ ∧ ¬ (f =ᶠ[𝓝 (τ : ℂ)] g)} with hB
   have hBne : σ ∈ B := ⟨hσ, hne⟩
   have hBbdd : BddAbove B := ⟨max a b, fun τ hτ => by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hτ.2 (good τ h)⟩
   set γ := sSup B with hγdef
   have hγσ : σ ≤ γ := le_csSup hBbdd hBne
@@ -100,8 +99,7 @@ theorem linL (I : Type) (c l : I → ℝ) (σ₀ σ₁ : ℝ) (F : ℂ → ℂ) 
   have hAbdd : BddBelow A := ⟨σ₀, fun τ hτ => hτ.1.le⟩
   set β := sInf A with hβdef
   have hβσ : σ ≤ β := le_csInf ⟨_, hAne⟩ fun τ hτ => by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hns (mono τ σ h.le hτ.2)
   have hβ0 : σ₀ < β := lt_of_lt_of_le hσ hβσ
   obtain ⟨r, hr, hFr⟩ := (hF β hβ0).exists_ball_analyticOnNhd

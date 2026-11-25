@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.Divisibility.GeneratorPowers.EvalSinglePointId
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.CIndFrFix
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.CalcAdd
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.FBIdJet
@@ -81,16 +82,7 @@ private theorem cc_ev_lemma {m n : ℕ} (a : Fin m → Pt S n d) (ha : ∀ j i, 
   MvPowerSeries.constantCoeff_subst_eq_zero (hasSubst_pts a ha) (fun p => ha p.1 p.2) hf
 
 theorem cc_bilL (G : FGLaw S d) (cc : Fin d → Fin d → S) : MvPowerSeries.constantCoeff (bilL G cc) = 0 := by
-  have h1 : ∀ (j : Fin 2) (l : Fin d), MvPowerSeries.constantCoeff (lg G j l) = 0 := fun j l =>
-    cc_ev_lemma (![pt S d j] : Fin 1 → Pt S 2 d) (fun j' k => by fin_cases j' <;> simp [pt]) _ (cc_logOf G l)
-  simp only [bilL]
-
-  rw [map_sum]
-  refine Finset.sum_eq_zero fun i _ => ?_
-
-  rw [map_sum]
-  refine Finset.sum_eq_zero fun l _ => ?_
-  rw [← smul_mul_assoc, map_mul, h1, mul_zero]
+  apply _root_.Formalism.MainNotions.ModuliIntegralCharts.H1.CIndFrFix3.const_bilL <;> assumption
 
 theorem constantCoeff_add_second_third (G : FGLaw S d) (i : Fin d) : MvPowerSeries.constantCoeff (G.add (pt S (n := 3) d 1) (pt S d 2) i) = 0 := by
   exact cc_ev_lemma (![pt S (n := 3) d 1, pt S d 2] : Fin 2 → Pt S 3 d) (fun j k => by fin_cases j <;> simp [pt]) (G.F i) (G.const i)

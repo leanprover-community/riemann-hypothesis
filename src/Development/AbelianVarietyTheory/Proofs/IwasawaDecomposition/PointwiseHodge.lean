@@ -421,18 +421,10 @@ theorem mContDiffAt_linear {k : WithTop ℕ∞} (x : ReciprocityTheory.L2DbarEst
   exact ((entryCLM Z a b).contDiff.restrict_scalars ℝ).contDiffAt
 
 theorem mdel_linear (x ξ : ReciprocityTheory.L2DbarEstimates.V n) : mdel (fun u => Z u) x ξ = Z ξ := by
-  ext a b
-  rw [mdel_apply]
-  have : (fun u => Z u a b) = ⇑(entryCLM Z a b) := rfl
-  rw [this, del_eq_fderiv (entryCLM Z a b).differentiableAt, (entryCLM Z a b).fderiv]
-  rfl
+  apply _root_.GlobalTheory.PointChern.mdel_linMat <;> assumption
 
 theorem mdbar_linear (x η : ReciprocityTheory.L2DbarEstimates.V n) : mdbar (fun u => Z u) x η = 0 := by
-  ext a b
-  rw [mdbar_apply]
-  have : (fun u => Z u a b) = ⇑(entryCLM Z a b) := rfl
-  rw [this, dbar_eq_zero (entryCLM Z a b).differentiableAt]
-  rfl
+  apply _root_.GlobalTheory.PointChern.mdbar_linMat <;> assumption
 
 theorem mdel_one_sub_gram (x ξ : ReciprocityTheory.L2DbarEstimates.V n) :
     mdel (fun u => 1 - (Z u)ᴴ * Z u) x ξ = -((Z x)ᴴ * Z ξ) := by
@@ -1322,10 +1314,7 @@ theorem coeff_neg_charpolyRev {R : Type} [CommRing R] {m : ℕ} (M : Matrix (Fin
 
 theorem charpolyRev_map' {R S : Type} [CommRing R] [CommRing S] (f : R →+* S) {m : ℕ} (M : Matrix (Fin m) (Fin m) R) :
     M.charpolyRev.map f = (M.map f).charpolyRev := by
-  rw [Matrix.charpolyRev, Matrix.charpolyRev, ← Polynomial.coe_mapRingHom, RingHom.map_det]
-  congr 1
-  ext a b : 2
-  by_cases h : a = b <;> simp [h]
+  apply _root_.GlobalTheory.ChernConj.charpolyRev_map_hom <;> assumption
 
 theorem relation_top_zero : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H) {n : ℕ} (ix : Fin n ≃ GlobalTheory.AllWt.Psi H × Fin Dw.p × Fin Dw.q) (τ : GlobalTheory.AllWt.Psi H) (k : ℕ), 1 ≤ k → ∀ P : MvPolynomial ((E →+* ℂ) × ℕ) ℝ, chernTop (relPoly τ k * P) (fun u => modelGram H Dw (coordOf ix u)) 0 = 0 := by
   intro E _ _ _ H Dw n ix τ k hk P

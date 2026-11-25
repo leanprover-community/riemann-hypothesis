@@ -443,8 +443,7 @@ theorem quo_gaps {PP A M : ℝ} (hN : HostNum D L PP A M) (hw : WtNum p i PP) (h
   · have g := (g2 hbp).2
     have hT0 : (0 : ℤ) < 4 * (lenT p i PP : ℤ) := by nlinarith
     have hle : (lenT p i PP : ℤ) ≤ u1 τ a - u1 τ b - 3 * (((dat p i).p + (dat p i).q : ℕ) : ℤ) := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       have := mul_lt_mul_of_pos_left hc hT0
       nlinarith
     push_cast at hle

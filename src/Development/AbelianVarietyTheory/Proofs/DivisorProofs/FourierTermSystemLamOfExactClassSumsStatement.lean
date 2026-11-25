@@ -178,8 +178,7 @@ theorem lam_of_exact : ∀ (O : Type) [CommRing O] (bar : O → O) (q s : ℕ) (
     rw [hsingle] at hle
     have hdx := hδpos x hx
     have hW : 0 < W ⟨0, hs⟩ ⟨0, hs⟩ := by
-      by_contra hW
-      push_neg at hW
+      by_contra! hW
       have : W ⟨0, hs⟩ ⟨0, hs⟩ * Φ.δ y i x x ≤ 0 := Int.mul_nonpos_of_nonpos_of_nonneg hW hdx.le
       omega
     zify

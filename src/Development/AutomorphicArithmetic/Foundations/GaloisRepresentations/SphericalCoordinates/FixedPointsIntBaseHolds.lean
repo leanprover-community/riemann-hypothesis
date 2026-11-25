@@ -909,8 +909,7 @@ theorem UpperTheory.Gal.W2.lineBasis_of :
     UpperTheory.Gal.W2.LineBasis := by
   intro n M z _ hpos
   have hz : ∃ i, z i ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     have : z = 0 := funext h
     subst this
     simp [hv] at hpos

@@ -1,5 +1,6 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.DeterminantRepresentations.RepApi
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.WeilGroupCharacters.ArithmeticPointClassicality
 import Mathlib.Tactic.Linter.HaveILetI
 import Development.AutomorphicArithmetic.AutomorphicVarieties.SymplecticGSp4.MapRepApply
@@ -11,13 +12,7 @@ open NumberField IsDedekindDomain Formalism.ConjugateSelfDual Formalism.HC Forma
 
 private theorem chi_ofRep' {n : ℕ} {A Γ : Type} [CommRing A] [Group Γ] (ρ : Γ →* Matrix (Fin n) (Fin n) A) (g : Γ) :
     (W.GDet.ofRep ρ).chi (MonoidAlgebra.single g 1) = (ρ g).charpoly := by
-  simp only [W.GDet.chi, W.GDet.ofRep, W.GDet.repAlg, MonoidHom.coe_comp, Function.comp_apply,
-    MonoidAlgebra.mapRingHom_single, AlgHom.toRingHom_eq_coe,
-    Matrix.coe_detMonoidHom, map_one]
-  rw [Matrix.charpoly, Matrix.charmatrix]
-  congr 1
-  ext i j
-  simp [Matrix.one_apply, Matrix.diagonal_apply, Matrix.scalar_apply, Matrix.sub_apply]
+  apply _root_.UpperTheory.V.AlgebraTools.Det.chi_single <;> assumption
 
 private theorem chi_comap' {n : ℕ} {A Γ H : Type} [CommRing A] [Group Γ] [Group H] (D : W.GDet n A Γ) (φ : H →* Γ) (g : H) :
     (D.comap φ).chi (MonoidAlgebra.single g 1) = D.chi (MonoidAlgebra.single (φ g) 1) := by

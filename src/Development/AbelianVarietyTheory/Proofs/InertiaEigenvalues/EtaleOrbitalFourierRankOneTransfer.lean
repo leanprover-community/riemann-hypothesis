@@ -442,8 +442,7 @@ theorem dual_cinvOK_small : ∀ (F E : Type) [NontriviallyNormedField F] [Nontri
 
   have key : ∀ t : F, (∀ l : F, ‖l‖ < ε → ψ (l * t) = 1) → ‖t‖ ≤ ‖x₀‖ / ε := by
     intro t ht
-    by_contra hlt
-    push_neg at hlt
+    by_contra! hlt
     have ht0 : t ≠ 0 := by
       rintro rfl; simp at hlt; linarith [div_pos (norm_pos_iff.2 hx₀0) hε]
     have hn : ‖x₀ / t‖ < ε := by

@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.GrowthBounds.RootWeights.MahPadicGeOfDvd
 public import Formalism.SharpRestriction.GrowthBounds.RootWeights.PadicGeMulNat
 import Mathlib.Algebra.Order.Star.Rat
 import Mathlib.Algebra.Ring.IsFormallyReal
@@ -17,11 +18,7 @@ open Formalism.MainNotions.G Formalism.MainNotions.CovariantDegrees
 
 theorem asm_newton (f : ℕ → ℚ) (m : ℕ) :
     f m = ∑ j ∈ range (m + 1), mah f j * (m.choose j : ℚ) := by
-  have h := shift_eq_sum_fwdDiff_iter (1 : ℕ) f m 0
-  simp only [zero_add, smul_eq_mul, mul_one, nsmul_eq_mul] at h
-  rw [h]
-  refine Finset.sum_congr rfl fun j _ => ?_
-  rw [mah, mul_comm]
+  apply _root_.Formalism.MainNotions.G.GLWeightTheory.mah_newton <;> assumption
 
 private theorem ext_lemma (a : ℕ → ℚ) (m N : ℕ) (h : m < N) :
     ∑ j ∈ range (m + 1), a j * (m.choose j : ℚ) = ∑ j ∈ range N, a j * (m.choose j : ℚ) := by

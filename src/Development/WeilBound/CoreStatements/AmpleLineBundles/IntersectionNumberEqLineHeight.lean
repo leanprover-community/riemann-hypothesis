@@ -137,8 +137,7 @@ theorem CoverDenseAlt.intersection_number_eq_line_height : ∀ (K : Type) [Finty
     ⟨fun k => (Fintype.equivFin (ι k)).trans (finCongr (hn k))⟩
   obtain ⟨x, hx, hWx⟩ := GroundTheory.Heights₂.Heights.CurveIsOrbit.full K n (Ideal.map (ren e) W) (arithVar_map e hW)
   have hxc : ∀ k, ∃ i, x k i ≠ 0 := fun k => by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hx k (funext h)
   choose c hc using hxc
   have hdeg : degC W = degC (orbitIdeal x) := by rw [← hWx, degC_map]

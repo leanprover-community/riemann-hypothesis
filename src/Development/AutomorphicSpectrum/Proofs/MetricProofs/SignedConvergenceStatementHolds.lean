@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.GlobalRegularizationStatementHolds
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.IsPotentialOfFun
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.LocalDensityInclusionExclusion
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.PotentialContDiffAt
@@ -133,18 +134,7 @@ namespace GlobalTheory.CompanionTheory.Ar.Giv.EvPsh
 
 theorem tendsto_epsT_zero (C : ℝ) :
     Tendsto (fun t => epsT C t) (nhdsWithin (0 : ℝ) (Set.Ioi 0)) (𝓝 0) := by
-  have hℓ : Tendsto (fun t : ℝ => Real.log (1 / t)) (nhdsWithin (0 : ℝ) (Set.Ioi 0)) atTop := by
-    have h := Real.tendsto_log_atTop.comp tendsto_inv_nhdsGT_zero
-    refine h.congr (fun t => ?_)
-    simp [one_div]
-  have hq : Tendsto (fun x : ℝ => Real.log x / x) atTop (𝓝 0) := by
-    have := Real.tendsto_pow_log_div_mul_add_atTop 1 0 1 one_ne_zero
-    simpa using this
-  have h2 := (hq.comp hℓ).const_mul C
-  rw [mul_zero] at h2
-  refine h2.congr (fun t => ?_)
-  simp only [Function.comp_apply, epsT]
-  ring
+  apply _root_.GlobalTheory.CompanionTheory.Ar.Num.epsT_tendsto <;> assumption
 
 theorem isPsh_of_isPosPot {e : ℕ} {X : Type} [TopologicalSpace X] (A : FinHolAtlas e X)
     (Θ : LocPot X) (h : IsPosPot A Θ) : IsPsh A Θ := by

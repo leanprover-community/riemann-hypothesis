@@ -5,6 +5,7 @@ public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeil
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
+import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.SingularHermitian.BddOfPer
 
 @[expose] public section
 
@@ -75,17 +76,7 @@ theorem nU_mul_neg (H : Matrix (Fin n) (Fin n) ℂ) : nU H * nU (-H) = 1 := by
   simp [nU, Matrix.fromBlocks_multiply, Matrix.fromBlocks_one]
 
 theorem continuous_nr (nr : (Fin n → Fin n → ℝ) → GR n) (hnr : ∀ x, mR (nr x) = nU (herm x)) : Continuous nr := by
-  have hH : Continuous fun x : Fin n → Fin n → ℝ => nU (herm x) :=
-    Continuous.matrix_fromBlocks continuous_const continuous_herm' continuous_const continuous_const
-  have hHn : Continuous fun x : Fin n → Fin n → ℝ => nU (-herm x) :=
-    Continuous.matrix_fromBlocks continuous_const continuous_herm'.neg continuous_const continuous_const
-  refine continuous_induced_rng.2 (Units.continuous_iff.2 ⟨?_, ?_⟩)
-  · exact (hH.congr fun x => (hnr x).symm : Continuous fun x => mR (nr x))
-  · refine hHn.congr fun x => ?_
-    refine (Units.inv_eq_of_mul_eq_one_right ?_).symm
-    have e : ((nr x : GL (Fin n ⊕ Fin n) ℂ) : M2 n) = nU (herm x) := hnr x
-    show ((nr x : GL (Fin n ⊕ Fin n) ℂ) : M2 n) * nU (-herm x) = 1
-    rw [e]; exact nU_mul_neg _
+  apply _root_.PositivityTheory.SiegelWeilFormula.KSing.cont_nr <;> assumption
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}
 

@@ -1,5 +1,6 @@
 module
 
+import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.AlternatingFormStandardHermitian
 public import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.GaussDegenerate
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.RepsProd
 public import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.CayleyGaussianIntegrals.DifferentialRepresentation
@@ -21,26 +22,7 @@ variable {V : Type} [AddCommGroup V] [Module ℂ V]
 theorem sum_reps_eq {M Λ : AddSubgroup V} {S S' : Finset V} (hS : IsReps M Λ S) (hS' : IsReps M Λ S')
     (f : V → ℂ) (hf : ∀ x ∈ Λ, ∀ u ∈ Λ, u ∈ M → f (x + u) = f x) :
     ∑ x ∈ S, f x = ∑ x ∈ S', f x := by
-  obtain ⟨h1, h2, h3⟩ := hS
-  obtain ⟨h1', h2', h3'⟩ := hS'
-  have hg : ∀ x ∈ S, ∃ x' ∈ S', x - x' ∈ M := fun x hx => h3' x (h1 x hx)
-  choose! g hgS hgM using hg
-  refine Finset.sum_bij (fun x _ => g x) (fun x hx => hgS x hx) ?_ ?_ ?_
-  · intro a ha b hb hab
-    refine h2 a ha b hb ?_
-    have e : a - b = (a - g a) - (b - g b) := by rw [hab]; abel
-    rw [e]; exact M.sub_mem (hgM a ha) (hgM b hb)
-  · intro b hb
-    obtain ⟨a, ha, hba⟩ := h3 b (h1' b hb)
-    refine ⟨a, ha, h2' _ (hgS a ha) b hb ?_⟩
-    have e : g a - b = -(a - g a) - (b - a) := by abel
-    rw [e]; exact M.sub_mem (M.neg_mem (hgM a ha)) hba
-  · intro a ha
-    have hu : g a - a ∈ M := by
-      have := M.neg_mem (hgM a ha); rwa [neg_sub] at this
-    have := hf a (h1 a ha) (g a - a) (Λ.sub_mem (h1' _ (hgS a ha)) (h1 a ha)) hu
-    rw [show a + (g a - a) = g a by abel] at this
-    exact this.symm
+  apply _root_.Formalism.L2.Ker.sum_reps_eq <;> assumption
 
 def tf (H : Sesq V) (α : V → ℂ) (Λ₁ : AddSubgroup V) (z y : V) : ℂ :=
   if z + y ∈ Λ₁ then psiT H α z y else 0

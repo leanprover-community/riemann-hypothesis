@@ -55,8 +55,7 @@ private theorem eq_or_eq_of_comp_eq_of_finrank_two {F E : Type} [Field F] [Numbe
       commutes' := fun a => (congrArg (fun f : F →+* ℂ => f a) hγ : _) }
   have hcoe : ∀ (γ : E →+* ℂ) (hγ : γ.comp (algebraMap F E) = ψ), ((mk γ hγ : E →ₐ[F] ℂ) : E →+* ℂ) = γ :=
     fun γ hγ => rfl
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   have hcard := AlgHom.card F E ℂ
   rw [h2] at hcard
   have hfa : mk ρ hρ ≠ mk α hα := fun e => hne.1 (by rw [← hcoe ρ hρ, ← hcoe α hα, e])

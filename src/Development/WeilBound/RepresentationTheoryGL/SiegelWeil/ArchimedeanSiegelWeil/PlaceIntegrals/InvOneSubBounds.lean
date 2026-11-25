@@ -716,8 +716,7 @@ theorem quad_ring : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [Number
     apply τ.injective
     rw [h.2.2.2, h.2.2.2, star_star]
   have hne : ∃ x, σ x ≠ x := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     obtain ⟨w⟩ := (inferInstance : Nonempty (NumberField.InfinitePlace E))
     have hreal : w.IsReal := by
       rw [← NumberField.InfinitePlace.mk_embedding w, NumberField.InfinitePlace.isReal_mk_iff,

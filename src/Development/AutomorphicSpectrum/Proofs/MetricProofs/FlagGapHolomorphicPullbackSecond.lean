@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.LocalHolomorphicSectionOfPotential
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.HasStepCharts
 public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.GenericBlockMatrixIsBlockDiag
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.BlockDiagonalMinorVanishing
@@ -25,18 +26,7 @@ variable {e : ℕ} {X : Type} [TopologicalSpace X] {A : FinHolAtlas e X}
 
 theorem continuousOn_of_holoOn {V : Set X} (hV : IsOpen V) {g : X → ℂ} (h : A.HoloOn V g) :
     ContinuousOn g V := by
-  intro y hy
-  obtain ⟨k, hk⟩ := A.cover y
-  have hz : A.chart k y ∈ (A.chart k).target ∩ (A.chart k).symm ⁻¹' V :=
-    ⟨(A.chart k).map_source hk, by
-      show (A.chart k).symm (A.chart k y) ∈ V
-      rw [(A.chart k).left_inv hk]; exact hy⟩
-  have h1 : ContinuousAt (g ∘ (A.chart k).symm) (A.chart k y) := (h k _ hz).continuousAt
-  have h2 : ContinuousAt (A.chart k) y := (A.chart k).continuousAt hk
-  have h3 : ContinuousAt ((g ∘ (A.chart k).symm) ∘ (A.chart k)) y := ContinuousAt.comp h1 h2
-  refine (h3.congr ?_).continuousWithinAt
-  filter_upwards [(A.chart k).open_source.mem_nhds hk] with u hu
-  simp [(A.chart k).left_inv hu]
+  apply _root_.GlobalTheory.CompanionTheory.Ar.Giv.SecPot.holoOn_continuousOn' <;> assumption
 
 theorem holoOn_comp {e' : ℕ} {Y : Type} [TopologicalSpace Y] {B : FinHolAtlas e' Y} {h : Y → X}
     (hh : HoloMap B A h) {V : Set X} {g : X → ℂ} (hg : A.HoloOn V g) :

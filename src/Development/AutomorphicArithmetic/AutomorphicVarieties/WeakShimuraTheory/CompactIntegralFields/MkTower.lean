@@ -75,8 +75,7 @@ private theorem mt_cm {Ω : Type} [Field Ω] [CharZero Ω] (K F : IntermediateFi
   haveI : Algebra.IsQuadraticExtension F ↥(F ⊔ K) := ⟨by
     rw [hK] at hle
     have : Module.finrank F ↥(F ⊔ K) ≤ 2 := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       have := Nat.mul_lt_mul_of_pos_left hc hpos
       omega
     omega⟩
@@ -84,8 +83,7 @@ private theorem mt_cm {Ω : Type} [Field Ω] [CharZero Ω] (K F : IntermediateFi
 
 private theorem mt_out {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] (K F : IntermediateField ℚ Ω) [NumberField K]
     [NumberField F] [IsCMField K] [IsTotallyReal F] : ∃ h ∈ F.fixingSubgroup, h ∉ K.fixingSubgroup := by
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   have hle : F.fixingSubgroup ≤ K.fixingSubgroup := hcon
   have hKF : K ≤ F := by
     have h := IntermediateField.fixedField_le hle

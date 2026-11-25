@@ -1,5 +1,6 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.ClosureConjugation.OBLt
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.DeterminantPadicFree.FrameWith
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.DeterminantPadicFree.SubMulAddEpM
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.DeterminantPadicFree.W1sMem
@@ -754,13 +755,7 @@ private theorem move_one {F G : Type} [Field F] [Group G] {n : ℕ} (D : DetFr F
 
 private theorem single_mem {F : Type} [Field F] {n a : ℕ} (i i' : Fin n) (h : (i : ℕ) < a ↔ (i' : ℕ) < a) :
     Matrix.single i i' (1 : F) ∈ Ev F F n a := by
-  intro p q
-  refine ⟨fun _ => Submodule.mem_top, fun hpq => ?_⟩
-  rw [Submodule.mem_bot, Matrix.single_apply]
-  split_ifs with hh
-  · obtain ⟨rfl, rfl⟩ := hh
-    exact absurd h hpq
-  · rfl
+  apply _root_.single_mem <;> assumption
 
 theorem relMove {F G : Type} [Field F] [Group G] {n : ℕ} (D : DetFr F G n)
     (z : G → Matrix (Fin n) (Fin n) F) (i j : Fin n) :

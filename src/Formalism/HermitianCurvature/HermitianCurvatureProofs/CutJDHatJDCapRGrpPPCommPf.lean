@@ -15,8 +15,6 @@ namespace Formalism.FourierDecayAlt.P.CutMP
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 namespace PCommPf
 
 variable {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [NormedSpace ℂ Wp] [NormedAddCommGroup Wq]

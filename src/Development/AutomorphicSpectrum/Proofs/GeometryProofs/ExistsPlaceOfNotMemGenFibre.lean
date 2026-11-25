@@ -60,8 +60,7 @@ theorem exists_place_of_notMem_genFibre (hN : NormalCpt ξ) (φ : F →+* Ω) {p
     intro a
     rw [Ideal.mem_comap, IsLocalRing.mem_maximalIdeal, mem_nonunits_iff, _root_.GlobalTheory.CompanionTheory.Ar.Centre.isUnit_regAt_iff, hf]
   obtain ⟨o, ho, hu⟩ : ∃ o : ℤ, o ≠ 0 ∧ ¬ unitAt ξ p (algebraMap ℤ Ω o) := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hp h
   have hne : (IsLocalRing.maximalIdeal (regAt ξ p)).comap f ≠ ⊥ := by
     intro hbot

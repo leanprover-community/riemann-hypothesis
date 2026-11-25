@@ -1,5 +1,6 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.TactVanish
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.Graded
 public import Mathlib.FieldTheory.IsAlgClosed.Basic
 public import Mathlib.RingTheory.DiscreteValuationRing.Basic
@@ -173,32 +174,12 @@ private theorem pf_prod {X σ S : Type} [AddCommGroup X] [CommRing S] (wt : σ �
     (t : Multiplicative X →* Sˣ) (x : σ → S) (d : σ →₀ ℕ) :
     (d.prod fun i k => ((t (Multiplicative.ofAdd (wt i)) : S) * x i) ^ k) =
       (t (Multiplicative.ofAdd (Finsupp.weight wt d)) : S) * d.prod fun i k => x i ^ k := by
-  induction d using Finsupp.induction_linear with
-  | zero => simp
-  | add f g hf hg =>
-    rw [Finsupp.prod_add_index' (by simp) (fun _ _ _ => pow_add _ _ _),
-      Finsupp.prod_add_index' (by simp) (fun _ _ _ => pow_add _ _ _), hf, hg, map_add (f := _), ofAdd_add,
-      map_mul, Units.val_mul]
-    ring
-  | single i k =>
-    rw [Finsupp.prod_single_index (by simp), Finsupp.prod_single_index (by simp),
-      Finsupp.weight_single, ofAdd_nsmul, map_pow, Units.val_pow_eq_pow_val, mul_pow]
+  apply _root_.tact_prod <;> assumption
 
 private theorem pf_approx {O X σ : Type} [CommRing O] [AddCommGroup X] [Finite σ] (wt : σ → X)
     (F : MvPowerSeries σ O) (n : ℕ) :
     ∃ s : Finset X, (n : ℕ∞) ≤ (F - ∑ j ∈ s, wcomp O wt j F).order := by
-  classical
-  refine ⟨(truncTotal n F).support.image (Finsupp.weight wt), nat_le_order fun d hd => ?_⟩
-
-  rw [map_sub, map_sum]
-  simp only [coeff_wcomp]
-  rw [Finset.sum_ite_eq]
-  split_ifs with h
-  · exact sub_self _
-  · rw [sub_zero]
-    by_contra h0
-    refine h (Finset.mem_image_of_mem _ (MvPolynomial.mem_support_iff.2 ?_))
-    rwa [coeff_truncTotal _ hd]
+  apply _root_.tact_approx <;> assumption
 
 private theorem pf_vanish {O X σ S : Type} [CommRing O] [AddCommGroup X] [Finite σ] [CommRing S]
     [Algebra O S] (wt : σ → X) (J : Ideal S) [IsHausdorff J S] (φ : MvPowerSeries σ O →ₐ[O] S)

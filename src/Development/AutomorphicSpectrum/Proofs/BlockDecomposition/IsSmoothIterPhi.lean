@@ -337,8 +337,7 @@ theorem exists_evVal_ne_zero : ∀ {k : Type} [Field k] [ValuativeRel k] [Topolo
   obtain ⟨t₀, ht₀⟩ := _root_.GlobalTheory.CompanionTheory.MirPair.AvgBox.exists_JJ_ne_zero ν ψ T B hψ hT hnd v hv
   obtain ⟨t, htt₀, htc⟩ := exists_large_unit c r t₀
   obtain ⟨v', hv'⟩ := ht₀ t htt₀
-  by_contra hno
-  push_neg at hno
+  by_contra! hno
   have hev : ∀ w : V', ∃ τ : kˣ, ∀ u : kˣ, valuation k (τ : k) ≤ valuation k (u : k) →
       JJ ν ψ T B (box (n + 1) u : Set (Fin (n + 1) → k)) v w = 0 := by
     intro w

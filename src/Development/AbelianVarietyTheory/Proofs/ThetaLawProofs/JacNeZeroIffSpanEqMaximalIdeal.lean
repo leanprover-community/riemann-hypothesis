@@ -126,8 +126,6 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor (Sp epsR IsTangent IsLieComb I
 open TrivSqZeroExt (inl inr)
 open GlobalTheory.SqZero GlobalTheory.LieComb IsLocalRing
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 variable {K : Type} [Field K] {G : Over (Spec (CommRingCat.of K))}
 
 theorem isLocalRing_trivSqZeroExt (n : ℕ) : IsLocalRing (TrivSqZeroExt K (Fin n → K)) :=
@@ -285,7 +283,6 @@ end GlobalTheory.JacGen
 section
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj MeasureTheory
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.AbLaw
 open GlobalTheory.KeyKa
 

@@ -7,6 +7,7 @@ public import Mathlib.Data.Nat.Prime.Basic
 public import Formalism.SharpRestriction.LevelLetterCocycles.LevelKernelDetection.CvZeroTerm
 public import Formalism.SharpRestriction.LevelLetterCocycles.MapEvalPsPi
 import Mathlib.Tactic.Linter.Style
+import Formalism.SharpRestriction.GrowthBounds.MonomialOrderSegments.CgeZeroIffIntegral
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.SharpRestriction.LevelLetterCocycles.LevelKernelDetection.VSumPowNonneg, Formalism.SharpRestriction.LevelLetterCocycles.LevelKernelDetection.CrystallineToDeRhamInjective
@@ -25,18 +26,10 @@ open Finset
 variable {LL : Type} [Field LL] (v : AddValuation LL (WithTop ℚ))
 
 theorem v_nat_nonneg (k : ℕ) : (0 : WithTop ℚ) ≤ v (k : LL) := by
-  induction k with
-  | zero => simp
-  | succ n ih =>
-    push_cast
-    exact le_trans (le_min ih (by simp)) (AddValuation.map_add v (n : LL) 1)
+  apply _root_.Formalism.MainNotions.PlaneGram.v_natCast_nonneg <;> assumption
 
 theorem v_int_nonneg (a : ℤ) : (0 : WithTop ℚ) ≤ v (a : LL) := by
-  cases a with
-  | ofNat n => simpa using v_nat_nonneg v n
-  | negSucc n =>
-    first
-    | (rw [Int.cast_negSucc, AddValuation.map_neg]; exact v_nat_nonneg v (n + 1))
+  apply _root_.Formalism.MainNotions.PlaneGram.v_intCast_nonneg <;> assumption
 
 private theorem withTop_rat_add_pos_of_nonneg_of_pos {a b : WithTop ℚ} (ha : 0 ≤ a) (hb : 0 < b) : 0 < a + b :=
   lt_of_lt_of_le hb (le_add_of_nonneg_left ha)
@@ -51,8 +44,7 @@ theorem v_nat_eq_zero (p : ℕ) (hp : p.Prime) (hvp : 0 < v (p : LL)) (m : ℕ) 
     first
     | exact_mod_cast congrArg (Int.cast : ℤ → LL) hab
   refine le_antisymm ?_ (v_nat_nonneg v m)
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   have hA : 0 < v ((a : LL) * (p : LL)) := by
     rw [AddValuation.map_mul]; exact withTop_rat_add_pos_of_nonneg_of_pos (v_int_nonneg v a) hvp
   have hB : 0 < v ((b : LL) * (m : LL)) := by
@@ -134,10 +126,6 @@ private theorem withTop_rat_zero_lt_one : (0 : WithTop ℚ) < 1 := by
   first
   | exact WithTop.coe_lt_coe.mpr zero_lt_one
 
-private theorem withTop_rat_one_lt_one_add_one : (1 : WithTop ℚ) < 1 + 1 := by
-  first
-  | exact WithTop.coe_lt_coe.mpr (by norm_num : (1 : ℚ) < 1 + 1)
-
 private theorem exists_eq_two_mul_add_one_of_prime_ne_two (p : ℕ) (hp : p.Prime) (hodd : p ≠ 2) : ∃ k, p = 2 * k + 1 := by
   rcases hp.eq_two_or_odd with h | h
   · exact absurd h hodd
@@ -181,7 +169,7 @@ theorem v_pow_prime (p : ℕ) (hp : p.Prime) (hodd : p ≠ 2) (hvp : v (p : LL) 
     le_trans (le_min hvA (le_trans hw hvE)) (AddValuation.map_add v _ _)
   have hlt : v (p : LL) < v ((∑ j ∈ Finset.range p, w ^ j) - (p : LL)) := by
     rw [geom_sum_sub_card_eq_sub_one_mul w p, AddValuation.map_mul, hvp]
-    exact lt_of_lt_of_le withTop_rat_one_lt_one_add_one (add_le_add hw hvAE)
+    exact lt_of_lt_of_le (by norm_num : (1 : WithTop ℚ) < 1 + 1) (add_le_add hw hvAE)
   have hS : v (∑ j ∈ Finset.range p, w ^ j) = 1 := (val_eq_of_val_lt_val_sub v _ _ hlt).trans hvp
   rw [pow_sub_one_eq_sub_one_mul_geom_sum w p, AddValuation.map_mul, hS]
 

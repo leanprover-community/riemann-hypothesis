@@ -117,8 +117,7 @@ theorem gauss_level_one : ∀ (R : Type) [CommRing R] (σ : R →+* R) (ϖ : R) 
       (ε : ℂ) * q := by
   intro R _ σ ϖ q ε hR _ ψ hψ a ha hna
   have hex : ∃ b, σ b = b ∧ ψ 1 (Ideal.Quotient.mk _ (a * b)) ≠ 1 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     exact hna (hψ.prim a ha hcon)
   obtain ⟨b, hb, hχ⟩ := hex
   refine GaussOne.gauss_core (_root_.GlobalTheory.CompanionTheory.UnrDens.resAlg_of_isUnrQuad R σ ϖ q ε hR) (ψ 1) _ (Ideal.Quotient.mk _ b) ?_ ?_

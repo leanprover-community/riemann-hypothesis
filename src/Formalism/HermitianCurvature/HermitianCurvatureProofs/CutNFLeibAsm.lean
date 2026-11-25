@@ -16,8 +16,6 @@ open Formalism.FourierDecayAlt Formalism.QuantumDeterminants Filter Topology Mea
 
 noncomputable section
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 theorem nfLeib_thChain_rpow (s : ℝ) : ThChain (fun n x => s ^ n * x ^ s) := by
   intro n x hx
   have h := (Real.hasDerivAt_rpow_const (p := s) (Or.inl hx.ne')).const_mul (s ^ n)

@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.SmoothContinuous
 public import Mathlib.Algebra.BigOperators.Group.Finset.Defs
 public import Mathlib.Basic.Real.Basic
 public import Mathlib.Order.Interval.Finset.Fin
@@ -391,18 +392,7 @@ theorem eq_of_mem_connectedComponent {X : Type} [TopologicalSpace X] [CompactSpa
 
 theorem continuous_of_smooth {e : ℕ} {X : Type} [TopologicalSpace X] {A : FinHolAtlas e X}
     {f : X → ℝ} (h : A.Smooth f) : Continuous f := by
-  rw [continuous_iff_continuousAt]
-  intro x
-  obtain ⟨j, hj⟩ := A.cover x
-  have hmem : (A.chart j).target ∩ (A.chart j).symm ⁻¹' Set.univ ∈ 𝓝 (A.chart j x) := by
-    simpa using (A.chart j).open_target.mem_nhds ((A.chart j).map_source hj)
-  have h1 : ContinuousAt (f ∘ (A.chart j).symm) (A.chart j x) :=
-    (h j).continuousOn.continuousAt hmem
-  have h2 : ContinuousAt ((f ∘ (A.chart j).symm) ∘ (A.chart j)) x :=
-    ContinuousAt.comp (f := A.chart j) h1 ((A.chart j).continuousAt hj)
-  refine h2.congr ?_
-  filter_upwards [(A.chart j).open_source.mem_nhds hj] with y hy
-  simp [(A.chart j).left_inv hy]
+  apply _root_.GlobalTheory.CompanionTheory.Ar.PB.Cj.smooth_continuous <;> assumption
 
 section System
 

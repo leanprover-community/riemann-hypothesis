@@ -83,7 +83,6 @@ section -- clump:auto
 @[expose] public section
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut Formalism.AUTREP Formalism.L2 Formalism.L2.Host Formalism.L2.NT NumberField IsDedekindDomain Polynomial GlobalTheory.HeightCounting GlobalTheory.RowTie GlobalTheory.SplitRead GlobalTheory.NPin
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 open Formalism.BasicNotions.Loc GlobalTheory.Pst GlobalTheory.WeilDeligne
 open scoped TensorProduct
 open GlobalTheory.Pst.TwistLetters
@@ -208,8 +207,7 @@ theorem exists_field_combination_norm_ne_zero {k B A : Type} [Field k] [Infinite
     ext j l
 
     simp [M, map_sum, Matrix.sum_apply]
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   have hinf : ∀ _ : Fin d, (Set.range (algebraMap k B)).Infinite := fun _ =>
     Set.infinite_range_of_injective (algebraMap k B).injective
   have hQ : M.det = 0 := by
@@ -270,7 +268,6 @@ section -- clump:auto
 @[expose] public section
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut Formalism.AUTREP Formalism.L2 Formalism.L2.Host Formalism.L2.NT NumberField IsDedekindDomain Polynomial GlobalTheory.HeightCounting GlobalTheory.RowTie GlobalTheory.SplitRead GlobalTheory.NPin
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 open Formalism.BasicNotions.Loc GlobalTheory.Pst GlobalTheory.WeilDeligne
 open scoped TensorProduct
 open GlobalTheory.Pst.TwistLetters

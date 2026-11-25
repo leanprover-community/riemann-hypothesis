@@ -1,5 +1,6 @@
 module
 
+import Formalism.LocalToGlobal.ProjectiveLattices.RosatiLatticeNorms.LinkNum
 public import Mathlib.NumberTheory.NumberField.InfinitePlace.Embeddings
 public import Mathlib.RingTheory.DedekindDomain.AdicValuation.Valuation
 public import GroundTheory.PAdicHodge.SlopeCauchyBinet
@@ -1281,8 +1282,7 @@ theorem exists_pair {θ : (Fin g → ℂ) → ℂ} (hθ : a.IsTheta 1 θ) (h0 : 
     exact mul_ne_zero (mul_ne_zero hp hq1) hq2
   set s₀ := tri θ p q with hs₀def
   obtain ⟨p', q', hpq⟩ : ∃ p' q', (-(fderiv ℂ s₀ 0 v) / s₀ 0) * tri θ p' q' 0 + fderiv ℂ (tri θ p' q') 0 v ≠ 0 := by
-    by_contra hall
-    push_neg at hall
+    by_contra! hall
     exact hv (separates a hθ h0 _ v hall)
   have hs := isTheta_tri a hθ p' q'
   refine ⟨s₀, fun w => s₀ 0 * tri θ p' q' w - tri θ p' q' 0 * s₀ w, hs₀, IsTheta.lin a hs hs₀ _ _, hne, by ring, ?_⟩
@@ -1407,15 +1407,7 @@ theorem slope_sum {K : Type} [Field K] [NumberField K] (n' : ℕ) (hn' : 1 ≤ n
 
 theorem mean_comp {K K' : Type} [Field K] [NumberField K] [Field K'] [NumberField K'] [Algebra K K']
     (f : (K →+* ℂ) → ℝ) : mean K' (fun σ => f (σ.comp (algebraMap K K'))) = mean K f := by
-  have hd : (Module.finrank ℚ K : ℝ) ≠ 0 := by
-    exact_mod_cast (Module.finrank_pos (R := ℚ) (M := K)).ne'
-  have hd' : (Module.finrank K K' : ℝ) ≠ 0 := by
-    exact_mod_cast (Module.finrank_pos (R := K) (M := K')).ne'
-  have hm : (Module.finrank ℚ K' : ℝ) = Module.finrank ℚ K * Module.finrank K K' := by
-    exact_mod_cast (Module.finrank_mul_finrank ℚ K K').symm
-  simp only [mean]
-  rw [GroundTheory.Heights₂.Heights.LatticeLemmas.sum_comp_algebraMap, hm]
-  field_simp
+  apply _root_.Formalism.L2.Pj.abelian₂.mean_restrict <;> assumption
 
 section Frame
 

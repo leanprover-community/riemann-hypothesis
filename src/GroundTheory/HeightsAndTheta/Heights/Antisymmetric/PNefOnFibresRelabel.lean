@@ -174,13 +174,4 @@ end LocLength
 
 end RingEquivTransport
 
-section Relabel
-
-set_option linter.unusedSectionVars false
-
-variable {K K' : Type} [Fintype K] [Fintype K'] {ι : K → Type} {ι' : K' → Type}
-  [∀ k, Fintype (ι k)] [∀ k, Fintype (ι' k)] (ε : K ≃ K') (h : ∀ k, ι k = ι' (ε k))
-
-end Relabel
-
 end GroundTheory.Heights₂.Heights

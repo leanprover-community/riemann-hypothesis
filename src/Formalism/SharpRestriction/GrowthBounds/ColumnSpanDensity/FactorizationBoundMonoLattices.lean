@@ -4,6 +4,7 @@ public import Formalism.SharpRestriction.GrowthBounds.ColumnSpanDensity.MeanDefs
 public import Formalism.PolynomialDimension.DigitClassCount
 public import Formalism.SharpRestriction.GrowthBounds.ColumnSpanDensity.SgSegUnique
 import Mathlib.Tactic.TypeStar
+import Formalism.SharpRestriction.GrowthBounds.ScaleEdges.ScaleNegMono
 
 @[expose] public section
 
@@ -61,14 +62,7 @@ theorem scaled_submodule_mono_exponent {O Kf X : Type*} [CommRing O] [Field Kf] 
     [Module O X] [IsScalarTower O Kf X] (w : O) (hw : algebraMap O Kf w ≠ 0) (M : Submodule O X) {t t' : ℕ}
     (h : t ≤ t') :
     scale (algebraMap O Kf w ^ (-(t : ℤ))) M ≤ scale (algebraMap O Kf w ^ (-(t' : ℤ))) M := by
-  rintro _ ⟨y, hy, rfl⟩
-  refine ⟨w ^ (t' - t) • y, M.smul_mem _ hy, ?_⟩
-  simp only [LinearMap.coe_restrictScalars, LinearMap.lsmul_apply]
-  rw [← algebraMap_smul Kf (w ^ (t' - t)) y, smul_smul, map_pow]
-  congr 1
-  rw [← zpow_natCast, ← zpow_add₀ hw]
-  congr 1
-  omega
+  apply _root_.Formalism.MainNotions.Pf14.scale_neg_mono <;> assumption
 
 theorem uniformizer_image_ne_zero {p n' : ℕ} (R : RS p n') : algebraMap R.O R.Kf R.w ≠ 0 := by
   have hf : IsFractionRing R.O R.Kf := R.std.1.frac_O

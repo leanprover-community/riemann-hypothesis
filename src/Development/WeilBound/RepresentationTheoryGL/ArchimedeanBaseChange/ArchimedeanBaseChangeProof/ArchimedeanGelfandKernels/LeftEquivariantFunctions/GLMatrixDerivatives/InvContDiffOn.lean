@@ -1,6 +1,7 @@
 module
 
 public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.ArchimedeanGelfandKernels.LeftEquivariantFunctions.GLMatrixDerivatives.KchainSt
+import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.ArchimedeanGelfandKernels.LeftEquivariantFunctions.ComplexMatrixCalculus.ConjugateTransposeDerivatives.HasDerivAtConjTranspose
 
 @[expose] public section
 
@@ -49,20 +50,8 @@ theorem mul_contDiffOn {F H : E → Mat n} (hF : ContDiffOn ℝ ∞ F s) (hH : C
   simp only [Matrix.mul_apply]
   exact ContDiffOn.sum fun c _ => (entry_of hF a c).mul (entry_of hH c b)
 
-theorem inv_contDiffOn : ContDiffOn ℝ ∞ (fun y : Mat n => y⁻¹) (GLs n) := by
-  refine mat_contDiffOn fun a b => ?_
-  have hd : ContDiffOn ℝ ∞ (fun y : Mat n => y.det) (GLs n) := det_contDiff.contDiffOn
-  have hadj : ContDiffOn ℝ ∞ (fun y : Mat n => y.adjugate a b) (GLs n) := by
-    simp only [Matrix.adjugate_apply]
-    refine det_contDiffOn fun i j => ?_
-    simp only [Matrix.updateRow_apply]
-    split_ifs
-    · exact contDiffOn_const
-    · exact (entry_contDiff _ _).contDiffOn
-  have : ContDiffOn ℝ ∞ (fun y : Mat n => (y.det)⁻¹ * y.adjugate a b) (GLs n) :=
-    (hd.inv fun y hy => hy).mul hadj
-  refine this.congr fun y _ => ?_
-  simp [Matrix.inv_def, Ring.inverse_eq_inv]
+theorem inv_contDiffOn : ContDiffOn ℝ ∞ (fun y : Mat n => y⁻¹) (GLs n) :=
+  _root_.GlobalTheory.CompanionTheory.WaveCp.Rep.Mol.HfSmooth.contDiffOn_inv
 
 theorem star_contDiff : ContDiff ℝ ∞ (fun y : Mat n => yᴴ) :=
   mat_contDiff fun a b => by

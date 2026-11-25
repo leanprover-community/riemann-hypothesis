@@ -40,6 +40,7 @@ import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.VLtOneOfOrdLEqO
 import GroundTheory.AutomorphicForms.GLnLocal
 import GroundTheory.LocalFields.LocalFourierHaar
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.FiniteDiscreteFamilies.PeakCone
+import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.FrameReading.LeOfAddNegOne
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsJointEigenvectorNonzero, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FiniteSupportConvolutionTriple, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FiniteSupportProductQuotient, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FinsumCosetSmulLinear, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HeckeSumInvariant, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IwahoriHeckeSumAdditive, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IwahoriHeckeSumAdditiveStatement, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MultiplicativeCharacterOnCone, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ProdRelIndexNeZero, Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.FrameReading.PairDoubleCosetFiniteSupport
@@ -110,8 +111,7 @@ theorem exists_common_eigenvector_in_submodule {W : Type} [AddCommGroup W] [Modu
 theorem exists_hasEigenvalue_ne_zero {W : Type} [AddCommGroup W] [Module ℂ W]
     [FiniteDimensional ℂ W] (T : End ℂ W) (v : W) (m : ℕ) (hm : finrank ℂ W ≤ m)
     (hv : (T ^ m) v ≠ 0) : ∃ μ : ℂ, μ ≠ 0 ∧ T.HasEigenvalue μ := by
-  by_contra hno
-  push_neg at hno
+  by_contra! hno
   have hbot : ∀ μ : ℂ, μ ≠ 0 → T.maxGenEigenspace μ = ⊥ := by
     intro μ hμ
     by_contra hne
@@ -537,8 +537,6 @@ open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions 
 open GlobalTheory.CompanionTheory.DcosProduct (dc mem_dc_mul inv_mul_mem_of_dc tdiag_add conj_entry)
 open PositivityTheory.Rg.BcN.F2 (hconv hk IsHk)
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace GlobalTheory.CompanionTheory.IwHeckeMul
 
 section Abstract
@@ -607,19 +605,7 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 theorem val_unif {w : Pl E} {ϖ : (w.adicCompletion E)ˣ} (hϖ : ordL (ϖ : w.adicCompletion E) = 1) :
     ValuativeRel.valuation (w.adicCompletion E) (ϖ : w.adicCompletion E) =
       ValuativeRel.uniformizer (w.adicCompletion E) := by
-  haveI : (Valued.v : Valuation (w.adicCompletion E) (WithZero (Multiplicative ℤ))).Compatible :=
-    Valuation.Compatible.ofValuation _
-  have e := ValuativeRel.isEquiv (ValuativeRel.valuation (w.adicCompletion E))
-    (Valued.v : Valuation (w.adicCompletion E) (WithZero (Multiplicative ℤ)))
-  have h1 : Valued.v (ϖ : w.adicCompletion E) < 1 :=
-    GlobalTheory.CompanionTheory.IwahoriContraction.v_lt_one_of_ordL_eq_one w ϖ.ne_zero hϖ
-  obtain ⟨y, hy⟩ := ValuativeRel.valuation_surjective (ValuativeRel.uniformizer (w.adicCompletion E))
-  apply le_antisymm
-  · rw [ValuativeRel.le_uniformizer_iff]
-    exact e.lt_one_iff_lt_one.2 h1
-  · rw [← hy]
-    have h2 : Valued.v y < 1 := e.lt_one_iff_lt_one.1 (hy ▸ ValuativeRel.uniformizer_lt_one)
-    exact (e _ _).2 (GlobalTheory.CompanionTheory.IwahoriContraction.v_le_of_ordL_eq_one w ϖ.ne_zero hϖ h2)
+  apply _root_.PositivityTheory.Rg.BcB.F.Tail.PExp.DlB.unif_of_ordL <;> assumption
 
 theorem iw_fact {w : Pl E} {ϖ : (w.adicCompletion E)ˣ} (hϖ : ordL (ϖ : w.adicCompletion E) = 1) {n : ℕ}
     {x x' : Fin n → ℤ} (hx : Antitone x) (hx' : Antitone x') :

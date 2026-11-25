@@ -136,11 +136,9 @@ theorem det_eq_one_of_key {ι R : Type} [Fintype ι] [DecidableEq ι] [CommRing 
   · simp [hd]
   · intro s _ hs
     obtain ⟨i, hi, hk⟩ : ∃ i, s i ≠ i ∧ k (s i) ≤ k i := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       obtain ⟨i₀, hi₀⟩ : ∃ i, s i ≠ i := by
-        by_contra h0
-        push_neg at h0
+        by_contra! h0
         exact hs (Equiv.ext h0)
       have hlt : ∑ i, k i < ∑ i, k (s i) := by
         refine Finset.sum_lt_sum (fun i _ => ?_) ⟨i₀, Finset.mem_univ _, hc i₀ hi₀⟩

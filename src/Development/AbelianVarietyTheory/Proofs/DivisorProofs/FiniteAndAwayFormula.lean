@@ -203,8 +203,6 @@ open Formalism.IndefR.Datum Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 
 namespace GlobalTheory.CompanionTheory.LeafFixedPointPlaceNorm
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem mem_localization_of_smul_mem₂ {K : Type} [Field K] [NumberField K] [StarRing K] {n : ℕ} (w : HeightOneSpectrum (𝓞 K))
     (M : Submodule (𝓞 K) (Fin n → K)) (y : Fin n → K) (s : K) (hs : s ≠ 0) (δ : ℤ) (hv : vw w s ≤ δ) (h : s • y ∈ M) :
     y ∈ Formalism.HermitianLatticesTheory.localization₂ w.asIdeal (Formalism.HermitianLatticesTheory.idealSmul

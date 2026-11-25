@@ -41,8 +41,7 @@ private theorem pc_lemma_9 {σ τ : Type*} {a : σ → MvPowerSeries τ C}
     (ha : ∀ s, constantCoeff (a s) = 0) {m : σ →₀ ℕ} (hm : m ≠ 0) :
     constantCoeff (m.prod fun s n => a s ^ n) = 0 := by
   obtain ⟨s, hs⟩ : ∃ s, m s ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact hm (Finsupp.ext hc)
   unfold Finsupp.prod
   rw [map_prod]
@@ -230,8 +229,7 @@ private theorem ag_lemma_15 {σ τ : Type*} [Finite σ] {x y : σ → MvPowerSer
   by_cases h0 : m = 0
   · rw [h0, MvPowerSeries.coeff_zero_eq_constantCoeff_apply, hr0, zero_smul, zero_smul]
   · obtain ⟨s, hs⟩ : ∃ s, m s ≠ 0 := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       exact h0 (Finsupp.ext hc)
     have hle : Finsupp.single s 1 ≤ m :=
       Finsupp.single_le_iff.mpr (Nat.one_le_iff_ne_zero.mpr hs)

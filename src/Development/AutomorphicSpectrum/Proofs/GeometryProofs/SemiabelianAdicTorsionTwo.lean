@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.BtOrderEmbeddingOpenCover
 public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.DualOrder
 public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.TranslateMemIndOrder
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FiniteOpenHopfOrder
@@ -105,26 +106,7 @@ variable [Finite T'] {H : Subgroup T} {H' : Subgroup T'} {B : Subalgebra R (T �
 
 private theorem translate_mem_of_isHopfOrder' {U : Type} [CommGroup U] {A : Subalgebra R (U → R)} (hA : IsHopfOrder A)
     {f : U → R} (hf : f ∈ A) (u : U) : (fun x => f (u * x)) ∈ A := by
-  let L : (U × U → R) →ₗ[R] (U → R) :=
-    { toFun := fun g x => g (u, x)
-      map_add' := fun _ _ => rfl
-      map_smul' := fun _ _ => rfl }
-  have hmem : ∀ g ∈ prodSpan A, L g ∈ A := by
-    intro g hg
-    induction hg using Submodule.span_induction with
-    | mem x hx =>
-      obtain ⟨a, ha, b, hb, rfl⟩ := hx
-      convert A.smul_mem hb (a u) using 1
-    | zero =>
-      rw [map_zero]
-      exact A.zero_mem
-    | add x y _ _ hx hy =>
-      rw [map_add (f := _)]
-      exact A.add_mem hx hy
-    | smul r x _ hx =>
-      rw [map_smul]
-      exact A.smul_mem hx r
-  exact hmem _ (hA.comul f hf)
+  apply _root_.GlobalTheory.CompanionTheory.Ar.BT.HopfTranslate.translate_mem_of_isHopfOrder <;> assumption
 
 theorem res_iff_abs (hB : IsHopfOrder B) (hB' : IsHopfOrder B') (hl : IsLoc H B) (hl' : IsLoc H' B')
     (hH : ∀ t, ι t ∈ H' → t ∈ H)

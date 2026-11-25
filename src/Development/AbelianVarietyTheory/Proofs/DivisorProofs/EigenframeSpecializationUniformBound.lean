@@ -914,8 +914,7 @@ theorem _root_.GlobalTheory.T.exists_continuous_period_basis_along_arc : ∀ (E 
     intro w hw
     have h1 := hexp2 w hw
     rw [Complex.norm_exp] at h1
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     have := Real.one_le_exp hc
     linarith
   have hub : ∀ w : ℂ, T₀ < w.im → eTwoPi w ∈ Metric.closedBall (0 : ℂ) (ρ₀ / 2) := fun w hw =>

@@ -42,8 +42,7 @@ theorem differentIdeal_principal_in_localSubring :
 
   have hex : ∃ x ∈ I, ∃ y ∈ J⁻¹, ∃ u : 𝓞 F, algebraMap (𝓞 F) F u = algebraMap (𝓞 F) F x * y ∧
       u ∉ P := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     have hle : J * J⁻¹ ≤ (P : FractionalIdeal (𝓞 F)⁰ F) := by
       rw [FractionalIdeal.mul_le]
       intro a ha b hb

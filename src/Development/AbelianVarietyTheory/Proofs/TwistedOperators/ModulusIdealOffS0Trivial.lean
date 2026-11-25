@@ -59,8 +59,7 @@ theorem exists_int_mem_modul {D : D7} {T : Type} {L : LevCh D T} (P : Places L) 
     (hv : v ∉ P.S0) : ∃ t : 𝓞 D.host.F, t ∉ v.asIdeal ∧ algebraMap (𝓞 D.host.F) (𝓞 D.host.E) t ∈ P.modul sc := by
   have hne : ∀ v' ∈ P.S0, ∃ t : 𝓞 D.host.F, t ∈ v'.asIdeal ∧ t ∉ v.asIdeal := by
     intro v' hv'
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     have hle : v'.asIdeal ≤ v.asIdeal := fun t ht => hc t ht
     have heq : v'.asIdeal = v.asIdeal := v'.isMaximal.eq_of_le v.isPrime.ne_top hle
     have : v' = v := HeightOneSpectrum.ext heq

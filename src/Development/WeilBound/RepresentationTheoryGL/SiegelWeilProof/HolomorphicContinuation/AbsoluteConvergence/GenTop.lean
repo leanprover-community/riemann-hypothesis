@@ -800,8 +800,7 @@ theorem genCore_of (hP : ProjOp) (hT : TSGenC) (hB : Basis) (hFar : FarRightC) (
   obtain ⟨r, Fv, hr, hFvc, hFvd, hFv0, hFvh⟩ := hV
   have hdd : Differentiable ℂ fun z => d.eval z := Polynomial.differentiable d
   obtain ⟨a, ha⟩ : ∃ a, d.eval a ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact hd0 (Polynomial.funext fun x => by simpa using hc x)
   have hMdiff : ∀ i j, Differentiable ℂ fun z => M (z - s₀) i j :=
     fun i j => (hMd i j).comp (differentiable_id.sub_const s₀)
@@ -1169,8 +1168,7 @@ theorem absThm_gen (hV : VacOut) (hP : ProjOp) (hT : TSGenC) (hB : Basis) (hFar 
   obtain ⟨σd, hσd⟩ := poly_ev_lemma_5 hd
   obtain ⟨σU, hσU⟩ := hUr.1
   have hdne : ∃ a, d.eval a ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hd (Polynomial.funext fun a => by simp [h a])
   have hTS : ∀ i x, ∫ k, κ k * I 1 (x * ι (↑k * yy i)) ∂ν = I (QQ i) x := fun i x =>
     hT m n ε c t p q e sL ρ hL G Pp Γ ι s₀ Ht sec I { hD with } W hWfd hWst ν κ hν hκ hproj hlift x (yy i)

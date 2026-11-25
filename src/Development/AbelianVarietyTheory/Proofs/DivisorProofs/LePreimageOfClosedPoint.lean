@@ -51,8 +51,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 
 noncomputable section
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.VertSpanZero
 
 theorem le_preimage_of_closedPoint {Z : Scheme.{0}} {R : Type} [CommRing R] [IsLocalRing R] (y : Sp R ⟶ Z)

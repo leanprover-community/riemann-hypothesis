@@ -21,8 +21,6 @@ open scoped InnerProductSpace ENNReal NNReal
 
 namespace Formalism.FourierDecayAlt.P.S3dx4
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.ThreeDimData
 
 theorem ae_mem_UWset_and_mem_Nset {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]

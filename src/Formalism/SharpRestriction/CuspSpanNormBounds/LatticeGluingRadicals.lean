@@ -1279,10 +1279,6 @@ theorem lemma_one_det_index_le_gram (D : D7) (Λ : VanishingOnXAndXPlusGluing.La
   · have hi' : 0 < (iIdx Λ g F F' : ℝ) := by exact_mod_cast hi
     have hle : (iIdx Λ g F F' : ℝ) ≤
         (Nat.card (BQ Λ F F') : ℝ) / NE (E := D.host.E) g ^ (D.R.rS + 1) := h1.trans h2
-    have hNpos : 0 < NE (E := D.host.E) g ^ (D.R.rS + 1) := by
-      rcases hN.lt_or_eq with h | h
-      · exact h
-      · rw [← h, div_zero] at hle; linarith
     have e1 : NG Λ F F' / ((Nat.card (BQ Λ F F') : ℝ) * (iIdx Λ g F F' : ℝ)) * (iIdx Λ g F F' : ℝ) ^ 2 =
         NG Λ F F' * ((iIdx Λ g F F' : ℝ) / (Nat.card (BQ Λ F F') : ℝ)) := by
       field_simp
@@ -5234,8 +5230,7 @@ theorem g_simple_len_ne {A B : Submodule (𝓞 E) W} {P₀ : Ideal (𝓞 E)} (hP
     (e : (A ⧸ B.comap A.subtype) ≃ₗ[𝓞 E] (𝓞 E ⧸ P₀)) (p : Ideal (𝓞 E)) [hp : p.IsPrime] (hne : p ≠ P₀) :
     locLen p A B = 0 := by
   have : ∃ s ∈ P₀, s ∉ p := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     exact hne (hP.eq_of_le hp.ne_top hcon).symm
   obtain ⟨s, hs, hsp⟩ := this
   exact g_locLen_zero p hsp (fun x hx => g_simple_kill e hs hx)

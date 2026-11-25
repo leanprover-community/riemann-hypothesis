@@ -1,5 +1,6 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.SwapOneAlt
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.HkDefs
 public import Mathlib.RingTheory.Localization.FractionRing
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.EqOneOfStrictMono
@@ -29,13 +30,7 @@ private theorem invN_le {n : ℕ} {a c : Fin n} (h : a.val + 1 = c.val) (u : Per
 
 private theorem swap_one {R : Type} [CommRing R] {n : ℕ} {q : R} {H : Type} [Ring H] [Algebra R H] (b : Bern n q H)
     {a c : Fin n} (h : a.val + 1 = c.val) : b.T (swap a c) * b.one = q • b.one := by
-  obtain ⟨hA, -, h1, -⟩ := UpperTheory.V.AlgebraTools.hkInv n
-  have hlt : (1 : Perm (Fin n))⁻¹ a < (1 : Perm (Fin n))⁻¹ c := by
-    simp only [inv_one, Perm.one_apply, Fin.lt_def]
-    omega
-  have e := (hA a c h 1 hlt).2.2
-  rw [mul_one, show invN (1 : Perm (Fin n)) = 0 by rw [invN, h1, Finset.card_empty], zero_add] at e
-  rw [(UpperTheory.V.AlgebraTools.hkOne R n q H b).1 (swap a c), e, pow_one]
+  apply _root_.swap_one <;> assumption
 
 private theorem step {R : Type} [CommRing R] [IsDomain R] {n : ℕ} {q : R} {H : Type} [Ring H] [Algebra R H]
     (b : Bern n q H) (K : Type) [Field K] [Algebra (MvPolynomial (Fin n) R) K]

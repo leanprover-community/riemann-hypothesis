@@ -187,8 +187,7 @@ theorem diagonalIntegral : DiagIntegral := by
 
 theorem KerPNonzero_of (hD : DiagIntegral) : KerPNonzero := by
   intro V _ _ _ H Λ α hH hPos hL hS hC
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   letI : MeasurableSpace V := borel V
   haveI : BorelSpace V := ⟨rfl⟩
   obtain ⟨D, hD1, hD2, hD3, -⟩ :=

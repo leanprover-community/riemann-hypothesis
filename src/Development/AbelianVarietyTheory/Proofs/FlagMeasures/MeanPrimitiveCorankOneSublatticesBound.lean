@@ -120,8 +120,6 @@ open scoped ENNReal Classical
 
 namespace GlobalTheory.MassRatioInvBound
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 private lemma sqrt_pow_eq_pow_sqrt (a : ℝ) (ha : 0 ≤ a) (f : ℕ) : Real.sqrt (a ^ f) = Real.sqrt a ^ f := by
   rw [← Real.sqrt_sq (pow_nonneg (Real.sqrt_nonneg a) f), ← pow_mul, mul_comm, pow_mul,
     Real.sq_sqrt ha]

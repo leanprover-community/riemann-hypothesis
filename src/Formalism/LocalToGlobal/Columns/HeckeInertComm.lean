@@ -357,8 +357,7 @@ theorem hi_sup_inert_inert {P Q : HeightOneSpectrum (𝓞 E)} (h : P ≠ Q) (k l
 
 theorem hi_exists_not_mem {I : Ideal (𝓞 E)} {R : HeightOneSpectrum (𝓞 E)} (h : ¬ I ≤ R.asIdeal) :
     ∃ b ∈ I, b ∉ R.asIdeal := by
-  by_contra hc
-  push_neg at hc
+  by_contra! hc
   exact h fun b hb => hc b hb
 
 theorem hi_sameAt_inert {P R : HeightOneSpectrum (𝓞 E)} (hRP : R ≠ P) {s : List ℕ}

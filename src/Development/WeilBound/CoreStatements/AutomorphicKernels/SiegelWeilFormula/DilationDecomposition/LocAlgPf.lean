@@ -19,6 +19,7 @@ public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeil
 public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.LocalWeilOperators.GoodAwayEx
 public import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.GlobalGaussLaws.GaussLaw
 import Mathlib.Tactic.Linter.Style
+import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.AbsoluteConvergence.InGBlocks
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.BruhatCellParabolicUnipotentFactorization, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FourierInjectiveMatrixSpace, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HolomorphicParameterIntegralGaussianBound, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IteratedDerivEqOfEqOnRealSegment, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IteratedDerivGaussianExponentialAtZero, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IteratedDerivIntegralGaussianExponential, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ParabolicDecompositionUpperHalfSpace, Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.DilationDecomposition.LocAlgPf
@@ -43,18 +44,7 @@ theorem JJ_mul_self : JJ n * JJ n = -1 := by
   simp
 
 theorem rows_rel (g : M2 n) (h : InG g) : g * JJ n * gᴴ = JJ n := by
-  have hinv : (-(JJ n) * gᴴ * JJ n) * g = 1 := by
-    have h' : gᴴ * JJ n * g = JJ n := h
-    calc (-(JJ n) * gᴴ * JJ n) * g = -(JJ n * (gᴴ * JJ n * g)) := by
-          simp only [Matrix.mul_assoc, Matrix.neg_mul]
-      _ = 1 := by rw [h', JJ_mul_self, neg_neg]
-  have h2 : g * (-(JJ n) * gᴴ * JJ n) = 1 := mul_eq_one_comm.mp hinv
-  calc g * JJ n * gᴴ = g * JJ n * gᴴ * (-(JJ n * JJ n)) := by
-        rw [JJ_mul_self, neg_neg, Matrix.mul_one]
-    _ = -((g * (-(JJ n) * gᴴ * JJ n)) * JJ n) * (-1) * (-1) * (-1) := by
-        simp only [Matrix.mul_assoc, Matrix.neg_mul, Matrix.mul_neg, Matrix.mul_one, neg_neg]
-    _ = JJ n := by
-        rw [h2]; simp
+  apply _root_.PositivityTheory.Rg.Sw.AbsSt.IwaPf.inG_rows <;> assumption
 
 theorem block_rel (g : M2 n) (h : InG g) :
     g.toBlocks₂₁ * g.toBlocks₂₂ᴴ = g.toBlocks₂₂ * g.toBlocks₂₁ᴴ := by

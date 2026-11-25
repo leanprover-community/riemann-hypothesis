@@ -292,13 +292,6 @@ private theorem natCast_withBot_enat_eq_iff {a b : ℕ} :
     ((a : ℕ) : WithBot ℕ∞) = ((b : ℕ) : WithBot ℕ∞) ↔ a = b := by
   exact Nat.cast_inj
 
-private theorem isDomain_of_isPrime_bot {R : Type*} [CommRing R] [Nontrivial R]
-    (h : (⊥ : Ideal R).IsPrime) : IsDomain R := by
-  have : NoZeroDivisors R := ⟨fun {a b} hab => by
-    have := h.mem_or_mem (show a * b ∈ (⊥ : Ideal R) from (Ideal.mem_bot).mpr hab)
-    simpa only [Ideal.mem_bot] using this⟩
-  exact NoZeroDivisors.to_isDomain _
-
 private theorem ringKrullDim_le_zero_of_maximalIdeal_minimal {R : Type*} [CommRing R] [IsLocalRing R]
     (h : maximalIdeal R ∈ minimalPrimes R) : ringKrullDim R ≤ 0 := by
   show Order.krullDim (PrimeSpectrum R) ≤ 0
@@ -364,7 +357,7 @@ theorem isDomain_of_forall_spanFinrank_lt (R : Type u) [CommRing R]
   have hbot : p = ⊥ :=
     Submodule.eq_bot_of_le_smul_of_le_jacobson_bot _ _ (IsNoetherian.noetherian p) hle hjac
   rw [hbot] at hpP
-  exact isDomain_of_isPrime_bot hpP
+  exact @IsDomain.of_bot_isPrime R _ hpP
 
 theorem isDomain_of_spanFinrank_le :
     ∀ (n : ℕ) (R : Type u) [CommRing R] [IsRegularLocalRing R],

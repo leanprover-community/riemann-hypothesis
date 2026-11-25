@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsStarProjectionOfIsOrthProjOnto
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.HermitianFormUnitaryOneOne
 public import Formalism.LocalToGlobal.IndefiniteReal.LinksLemmas
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.HidaSetting
@@ -67,7 +68,6 @@ section -- clump:auto
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.S Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR.Links Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.AutomorphicEvaluation Formalism.L2.SG.RowDict Formalism.L2.SG.RowsJoinPinned Formalism.L2.SG.RowLevelMatch Formalism.L2.SG.PoincareInHH.PoincareSetting MeasureTheory NumberField IsDedekindDomain
 open scoped InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
@@ -118,19 +118,7 @@ theorem big_bound (n q : ℕ) (hq : 2 * q ≤ n) :
 theorem gap_numeric' {n : ℕ} (ε : Fin n → Bool) (h : ℝ)
     (hh : 120 * (n : ℝ) * ((GlobalTheory.Count.rkR ε : ℕ) : ℝ) ^ ((3 : ℝ) / 2) ≤ h) :
     GlobalTheory.Count.rkR ε = 0 ∨ 8 * Real.sqrt (GlobalTheory.Count.rkR ε) * (0 + 4 * n * GlobalTheory.Count.rkR ε) < h := by
-  rcases Nat.eq_zero_or_pos (GlobalTheory.Count.rkR ε) with h0 | h0
-  · exact Or.inl h0
-  right
-  have hq : (0 : ℝ) < GlobalTheory.Count.rkR ε := by exact_mod_cast h0
-  have hn : (0 : ℝ) < n := by
-    have := two_mul_rkR_le ε
-    exact_mod_cast (show 0 < n by omega)
-  have e : ((GlobalTheory.Count.rkR ε : ℕ) : ℝ) ^ ((3 : ℝ) / 2) = Real.sqrt (GlobalTheory.Count.rkR ε) * GlobalTheory.Count.rkR ε := by
-    rw [Real.sqrt_eq_rpow, ← Real.rpow_add_one hq.ne']
-    norm_num
-  rw [e] at hh
-  have hp : 0 < (n : ℝ) * (Real.sqrt (GlobalTheory.Count.rkR ε) * GlobalTheory.Count.rkR ε) := by positivity
-  nlinarith
+  first | exact _root_.GlobalTheory.Dec.ProjCuspGap.gap_numeric | exact @_root_.GlobalTheory.Dec.ProjCuspGap.gap_numeric | apply _root_.GlobalTheory.Dec.ProjCuspGap.gap_numeric <;> assumption
 
 theorem lamAt_gap {D : D7} (hH : HostHyp D) (τ : D.what₂.Tau) (i : ℕ) :
     ∀ j, i < j → j < D.R.r →
@@ -226,7 +214,6 @@ section -- clump:auto
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.S Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR.Links Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.AutomorphicEvaluation Formalism.L2.SG.RowDict Formalism.L2.SG.RowsJoinPinned Formalism.L2.SG.RowLevelMatch Formalism.L2.SG.PoincareInHH.PoincareSetting MeasureTheory NumberField IsDedekindDomain
 open scoped InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 end -- clump:auto
 end -- clump:auto

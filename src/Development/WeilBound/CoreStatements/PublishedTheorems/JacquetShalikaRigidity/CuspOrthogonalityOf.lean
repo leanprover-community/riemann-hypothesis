@@ -138,8 +138,6 @@ open GroundTheory.Automorphic GroundTheory.Automorphic.FourierWhittaker GroundTh
 open scoped ENNReal ComplexConjugate InnerProductSpace
 open GlobalTheory.AutomorphicL2Unitary GlobalTheory.CuspRep.CuspidalL2GL
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace PositivityTheory.AdelicQuotientData
 
 namespace QORT

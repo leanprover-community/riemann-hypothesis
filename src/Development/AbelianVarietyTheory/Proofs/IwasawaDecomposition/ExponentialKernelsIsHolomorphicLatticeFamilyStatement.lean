@@ -75,8 +75,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory.RelExp GlobalTheory.VerticalDeriv GlobalTheory.FibreDeriv
 open scoped Matrix CategoryTheory.Obj Topology
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.ShFam.Hor.LogCh.KerFam
 
 variable {X : Scheme.{0}} {G : Over X} [GrpObj G]
@@ -371,7 +369,6 @@ section -- clump:auto
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj GlobalTheory GlobalTheory.Toroidal GlobalTheory.ShFam GlobalTheory.ShFam.Pad GlobalTheory.ShFam.Hor GlobalTheory.ShFam.Hor.LogCh
 open scoped Matrix CategoryTheory.Obj Topology
-attribute [local instance] Over.cartesianMonoidalCategory
 
 end -- clump:auto
 end -- clump:auto

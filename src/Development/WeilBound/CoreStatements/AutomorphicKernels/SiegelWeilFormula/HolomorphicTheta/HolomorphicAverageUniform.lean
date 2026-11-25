@@ -16,6 +16,7 @@ public import Mathlib.Analysis.Calculus.Deriv.Mul
 public import Mathlib.Analysis.Calculus.Deriv.Slope
 public import Mathlib.Analysis.Calculus.ParametricIntegral
 import Mathlib.Tactic.Linter.Style
+import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.GlobalGaussLaws.LocVacB
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.HolomorphicTheta.ContinuousWeightFactor, Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.HolomorphicTheta.IntHol, Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.CayleyCosetSums.HolomorphicTranslationLevi, Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.HolomorphicTheta.HolomorphicAverageUniform
@@ -108,26 +109,12 @@ theorem continuous_toBlocks₂₂ : Continuous fun M : M2 n => M.toBlocks₂₂ 
   continuous_pi fun i => continuous_pi fun j => (continuous_apply (Sum.inr j)).comp (continuous_apply (Sum.inr i))
 
 theorem zpow_cond {a : ℂ} {k : ℤ} (h : a ^ k ≠ 0) : a ≠ 0 ∨ 0 ≤ k := by
-  by_contra hc
-  push_neg at hc
+  by_contra! hc
   obtain ⟨rfl, hk⟩ := hc
   exact h (zero_zpow k (ne_of_lt hk))
 
-theorem continuous_weight_factor (p q : ℕ) (e : ℤ) : Continuous (F0 p q e : GR n → ℂ) := by
-  have hd : Continuous fun y : GR n => (mR y).det := continuous_mR.matrix_det
-  have hb1 : Continuous fun y : GR n => toBlocks₂₁ (mR y) := continuous_toBlocks₂₁.comp continuous_mR
-  have hb2 : Continuous fun y : GR n => toBlocks₂₂ (mR y) := continuous_toBlocks₂₂.comp continuous_mR
-  have h1 : Continuous fun y : GR n => (u1 (mR y)).det := by
-    unfold u1
-    exact (((continuous_const (y := Complex.I)).smul hb1).add hb2).matrix_det
-  have h2 : Continuous fun y : GR n => (u2 (mR y)).det := by
-    unfold u2
-    exact ((((continuous_const (y := Complex.I)).smul hb1).neg).add hb2).matrix_det
-  have hne := spherical_section_ne_zero_group (n := n) p q e
-  simp only [F0, f0] at hne ⊢
-  exact (hd.zpow₀ e fun y => zpow_cond (left_ne_zero_of_mul (hne y))).mul
-    ((h1.zpow₀ _ fun y => zpow_cond (left_ne_zero_of_mul (right_ne_zero_of_mul (hne y)))).mul
-      (h2.zpow₀ _ fun y => zpow_cond (right_ne_zero_of_mul (right_ne_zero_of_mul (hne y)))))
+theorem continuous_weight_factor (p q : ℕ) (e : ℤ) : Continuous (F0 p q e : GR n → ℂ) :=
+  _root_.PositivityTheory.Rg.Sw.Glob.Vac.continuous_vacuum_section p q e
 
 end PositivityTheory.SiegelWeilFormula.Holtb
 end -- clump:auto

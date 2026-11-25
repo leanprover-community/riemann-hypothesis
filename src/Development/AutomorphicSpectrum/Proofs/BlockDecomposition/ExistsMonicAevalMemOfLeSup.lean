@@ -29,8 +29,7 @@ theorem exists_monic_aeval_mem_of_le_sup {R : Type*} [Ring R] [Algebra ℂ R] (A
   have hnot : ¬ Function.Injective g := fun hinj =>
     Polynomial.not_finite (R := ℂ) (Module.Finite.of_injective g hinj)
   obtain ⟨p, hgp, hp⟩ : ∃ p, g p = 0 ∧ p ≠ 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     exact hnot ((injective_iff_map_eq_zero g).2 fun p hp => hcon p hp)
   have hI : Polynomial.aeval z p ∈ I := by
     have : f p = 0 := congrArg Subtype.val hgp

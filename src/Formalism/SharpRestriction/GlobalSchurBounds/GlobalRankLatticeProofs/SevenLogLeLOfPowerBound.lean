@@ -1,5 +1,7 @@
 module
 
+import Development.AutomorphicArithmetic.CyclotomicBounds.RamifiedDiscriminants.FourMulQLeCondN
+import Formalism.LocalRingCardinality.ColumnWeightSpreadOffTop
 public import Formalism.SharpRestriction.GlobalSchurBounds.FlipTwoThree
 public import Formalism.SharpRestriction.ParamsHeightRankConstant
 public import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
@@ -149,32 +151,7 @@ theorem wJ_real (D : D7) (u : D.what₂.Word) (τ : D.what₂.Tau) (j : ℕ) (hj
 
 theorem bT_le_five_quarters_alt {D : D7} {L : SizeData₂ D} (P : ParameterChoice' D L) (t : D.host.TT) :
     (L.bT t : ℝ) ≤ 5 / 4 * L.sc.b' := by
-  obtain ⟨-, -, -, -, -, -, s7⟩ := base_sizes P
-  have hx := L.sc.one_lt_alt
-  have hk5 : (5 : ℝ) ≤ D.R.k := by exact_mod_cast five_le_k D.R
-  have hS0 := L.Sc_pos
-  have h1 := P.bT_le t
-  have h2 := P.rho_le
-  unfold LevelStarExponents.rhoP at h2
-  have hΛ : 0 < L.LaG := by
-    have h3 := P.S_le
-    by_contra hh
-    have hh := not_lt.mp hh
-    have : L.LaG * L.sc.b' / D.R.k ≤ 0 :=
-      div_nonpos_of_nonpos_of_nonneg (mul_nonpos_of_nonpos_of_nonneg hh s7.le) (by linarith)
-    linarith
-  have h4 : 0 ≤ P.Crho * Real.log L.sc.x * L.LaG / D.R.k := by
-    have := Real.log_nonneg hx.le
-    have := P.Crho_pos
-    positivity
-  have h5 : L.sc.x ^ (-2 : ℝ) ≤ 1 := Real.rpow_le_one_of_one_le_of_nonpos hx.le (by norm_num)
-  have h6 : LevelStarExponents.Nstar L * L.sc.x ^ L.sc.eps * L.LaG * L.sc.b' / D.R.k =
-      (LevelStarExponents.Nstar L * L.sc.x ^ L.sc.eps * L.LaG / D.R.k) * L.sc.b' := by ring
-  have h7 : 4 * LevelStarExponents.Nstar L * L.sc.x ^ L.sc.eps * L.LaG / D.R.k =
-      4 * (LevelStarExponents.Nstar L * L.sc.x ^ L.sc.eps * L.LaG / D.R.k) := by ring
-  rw [h6] at h1
-  rw [h7] at h2
-  nlinarith
+  apply _root_.Formalism.BasicNotions.ParameterChoice'.bT_le' <;> assumption
 
 theorem lam_top {D : D7} (L : SizeData₂ D) (u : D.what₂.Word) (τ : D.what₂.Tau) (t : D.host.TT)
     (ht : (D.eTau τ : D.R.GG) = D.R.tau1 t) :
@@ -436,19 +413,7 @@ theorem nums_alg (N m l b' cL Cc Cn T G : ℝ) (hN : 1 ≤ N) (hm : 1 ≤ m) (hl
   exact ⟨ga, gb, gc, gd⟩
 
 theorem two_le_rdE {R : Ranks} (H : Host R) : 2 ≤ H.rdE := by
-  refine le_trans ?_ (factRd R H).1
-  have hd : 7 ≤ H.d := by have := H.hyp.2.2.2.1; omega
-  have hd' : (7 : ℝ) ≤ H.d := by exact_mod_cast hd
-  have h1 : (2 : ℝ) ≤ Real.sqrt (H.d : ℝ) := by
-    apply Real.le_sqrt_of_sq_le
-    linarith
-  have h2 : (1 : ℝ) ≤ (2 : ℝ) ^ ((R.e : ℝ) + 1 - (2 : ℝ) ^ (-(R.e : ℝ))) := by
-    apply Real.one_le_rpow (by norm_num)
-    have : (2 : ℝ) ^ (-(R.e : ℝ)) ≤ 1 :=
-      Real.rpow_le_one_of_one_le_of_nonpos (by norm_num) (by simp)
-    have : (0 : ℝ) ≤ R.e := Nat.cast_nonneg _
-    linarith
-  nlinarith
+  apply _root_.UpperTheory.Ram.Rd.two_le_rdE <;> assumption
 
 theorem log_g_le {D : D7} {L : SizeData₂ D} (P : ParameterChoice' D L) (i : Fin 2) :
     0 < (D.host.g i : ℝ) ∧ Real.log (D.host.g i : ℝ) ≤ (P.CYL + 1) * L.sc.L := by

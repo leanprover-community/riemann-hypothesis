@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CmInverseHalfDifferentMulRelativeDifferent
 public import Formalism.LocalRingCardinality.DataHost
 public import Formalism.DirichletDensity.DirichletDensityProofs.QuadDiscr
 public import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.EqOfLeOfAbsNormEq
@@ -30,21 +31,7 @@ theorem exists_gen_K : ∃ x : H.K, x ^ 2 = ((-(H.d : ℤ) : ℤ) : H.K) ∧ Int
   rfl
 
 theorem finrank_K : Module.finrank ℚ H.K = 2 := by
-  obtain ⟨x, hx, hadj⟩ := exists_gen_K H
-  have hd := H.hyp.2.1
-  have hsf : Squarefree (-(H.d : ℤ)) := by
-    rw [← Int.squarefree_natAbs, Int.natAbs_neg, Int.natAbs_natCast]
-    exact hd.squarefree
-  have h1 : (-(H.d : ℤ)) ≠ 1 := by omega
-  have hirr : Irreducible (X ^ 2 - C ((-(H.d : ℤ) : ℤ) : ℚ)) :=
-    X_pow_sub_C_irreducible_of_prime Nat.prime_two (Formalism.HF.P.quad_not_sq_rat _ hsf h1)
-  have hmon : (X ^ 2 - C ((-(H.d : ℤ) : ℤ) : ℚ)).Monic := monic_X_pow_sub_C _ two_ne_zero
-  have hev : aeval x (X ^ 2 - C ((-(H.d : ℤ) : ℤ) : ℚ)) = 0 := by simp [hx]
-  have hmin : minpoly ℚ x = X ^ 2 - C ((-(H.d : ℤ) : ℤ) : ℚ) :=
-    (minpoly.eq_of_irreducible_of_monic hirr hev hmon).symm
-  have := IntermediateField.adjoin.finrank (K := ℚ) (x := x) (.of_finite ℚ x)
-  rw [hmin, natDegree_X_pow_sub_C _, hadj, IntermediateField.finrank_top'] at this
-  exact this
+  apply _root_.GlobalTheory.Mem.PerField.finrank_K <;> assumption
 
 theorem no_real_K : IsEmpty (H.K →+* ℝ) := by
   refine ⟨fun σ => ?_⟩

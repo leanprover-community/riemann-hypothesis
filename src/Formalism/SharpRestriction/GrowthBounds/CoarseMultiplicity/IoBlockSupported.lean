@@ -215,8 +215,7 @@ theorem segVars_disj (X : Loc) (j j' : Fin (numSeg X.TT)) (h : j ≠ j') : Disjo
   classical
   have hnodup : (evenTops X.TT).Nodup := Finset.sort_nodup _ _
   have hN : 2 ≤ numSeg X.TT := by
-    by_contra hlt
-    push_neg at hlt
+    by_contra! hlt
     have := j.isLt
     have := j'.isLt
     exact h (Fin.ext (by omega))

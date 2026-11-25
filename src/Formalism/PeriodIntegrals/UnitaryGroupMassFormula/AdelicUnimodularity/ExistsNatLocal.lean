@@ -6,6 +6,7 @@ import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
 public import Mathlib.RingTheory.Ideal.Norm.AbsNorm
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdicCompactDensity.ExistsNatLocal
 
 @[expose] public section
 
@@ -22,20 +23,7 @@ theorem natCast_mul_apply (n : ℕ) (a : FiniteAdeleRing (𝓞 F) F) (v : Height
 
 theorem exists_nat_local (v : HeightOneSpectrum (𝓞 F)) (x : v.adicCompletion F) :
     ∃ n : ℕ, 0 < n ∧ (n : v.adicCompletion F) * x ∈ v.adicCompletionIntegers F := by
-  obtain ⟨b, hb, hxb⟩ := adicCompletion.mul_nonZeroDivisor_mem_adicCompletionIntegers v x
-  have hb0 : b ≠ 0 := nonZeroDivisors.ne_zero hb
-  obtain ⟨c, hc⟩ := Ideal.mem_span_singleton'.1 (Ideal.absNorm_mem (Ideal.span {b}))
-  have hN : Ideal.absNorm (Ideal.span {b}) ≠ 0 := by
-    rw [Ne, Ideal.absNorm_eq_zero_iff, Ideal.span_singleton_eq_bot]
-    exact hb0
-  refine ⟨Ideal.absNorm (Ideal.span {b}), Nat.pos_of_ne_zero hN, ?_⟩
-  have key : ((Ideal.absNorm (Ideal.span {b}) : ℕ) : v.adicCompletion F) =
-      (c : v.adicCompletion F) * (b : v.adicCompletion F) := by
-    have h3 := congrArg (algebraMap (𝓞 F) (v.adicCompletion F)) hc.symm
-    rw [map_natCast, map_mul] at h3
-    exact h3
-  rw [key, mul_assoc, mul_comm (b : v.adicCompletion F) x]
-  exact mul_mem (coe_mem_adicCompletionIntegers v c) hxb
+  apply _root_.PI.AdCpctDenWork.exists_nat_local <;> assumption
 
 theorem exists_nat_adele (a : FiniteAdeleRing (𝓞 F) F) :
     ∃ n : ℕ, 0 < n ∧ ∀ v, ((n : FiniteAdeleRing (𝓞 F) F) * a) v ∈ v.adicCompletionIntegers F := by

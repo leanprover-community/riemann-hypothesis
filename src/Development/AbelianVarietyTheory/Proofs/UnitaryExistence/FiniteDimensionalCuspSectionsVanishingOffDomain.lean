@@ -164,8 +164,7 @@ private lemma exists_finite_determining_set_SS
   unfold _root_.ReciprocityTheory.ChartRestriction.G.FD.Data.SS at hP'
   obtain ⟨⟨hSec, C, hC⟩, -⟩ := hP'
   have hpz : ∀ x ∈ X.dom, X.pnorm la P x = 0 := by
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     obtain ⟨x0, hx0, hx0ne⟩ := hne
     have hx0pos : 0 < X.pnorm la P x0 := lt_of_le_of_ne (_root_.ReciprocityTheory.ChartRestriction.G.FD.BoundedSectionAlgebra.pnorm_nonneg X la P x0) (Ne.symm hx0ne)
     set T : Set ℝ := (fun x => X.pnorm la P x) '' X.dom with hT

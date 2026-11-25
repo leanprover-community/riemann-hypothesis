@@ -89,8 +89,8 @@ theorem dblConv_of_growth {D : D7} {V : HSp D} {μ : (AE D)ˣ →* Circle} (hμ 
     rw [e']
     exact ((continuous_dblIntegrand hμ hc h₁.continuous h₂.continuous).measurable.comp
       (measurableEmbedding_sec.measurable.prodMap measurableEmbedding_sec.measurable)).aestronglyMeasurable
-  have i₁ := GlobalTheory.T.integrable_unitaryQuotientHeight_pow_mul_rapidlyDecreasing D V m hm f₁ h₁ N
-  have i₂ := GlobalTheory.T.integrable_unitaryQuotientHeight_pow_mul_rapidlyDecreasing D V m hm f₂ h₂ N
+  have i₁ := _root_.GlobalTheory.Core.Rk.IP.integrable_quotHeight_pow_mul_norm_of_rapidDec D V m hm f₁ h₁ N
+  have i₂ := _root_.GlobalTheory.Core.Rk.IP.integrable_quotHeight_pow_mul_norm_of_rapidDec D V m hm f₂ h₂ N
   set K : ℝ := max C 0 * 4 ^ N with hK
   have hK0 : 0 ≤ K := mul_nonneg (le_max_right _ _) (by positivity)
   refine ⟨hli, ((i₁.mul_prod i₂).const_mul K).mono' hmeas (Eventually.of_forall fun q => ?_)⟩

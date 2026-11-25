@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NontrivialIsomClassInt
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.EqOfIsometricTrivShift
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -150,22 +151,8 @@ theorem Refines.logNorm (h : Refines N L π 0) (hr : IsRatSec L.B r) {σ : k →
   rw [logNorm_eq (L.φ σ) hr hy (ptsIn_mono (h.le _) hi), Cartier.logNorm, h.φ σ _ y hi, Pi.zero_apply, add_zero]
 
 theorem under_eq_genericPoint (hX : IsArithVar p 0) {σ : k →+* ℂ} (y : CxPts p σ) : under y = genericPoint X := by
-  by_contra hne
-  have hd : Order.krullDim (IrreducibleCloseds X) ≤ 1 := hX.dim_eq.le
-  have hcl : IsClosed {under y} := by
-    rcases Order.krullDim_le_one_iff.1 hd ⟨closure {under y}, isIrreducible_singleton.closure, isClosed_closure⟩
-      with h | h
-    · rw [← closure_subset_iff_isClosed]
-      intro w hw
-      have := @h ⟨closure {w}, isIrreducible_singleton.closure, isClosed_closure⟩
-        (closure_minimal (singleton_subset_iff.2 hw) isClosed_closure)
-      exact ((specializes_iff_mem_closure.2 (this (subset_closure rfl))).antisymm
-        (specializes_iff_mem_closure.2 hw)).eq
-    · exact absurd (IsGenericPoint.eq (eq_univ_of_univ_subset (@h
-        ⟨univ, IrreducibleSpace.isIrreducible_univ X, isClosed_univ⟩ (subset_univ _))) (genericPoint_spec X)) hne
-  have := hX.finite_residueField hcl
-  have := (Scheme.descResidueField (Scheme.stalkClosedPointTo y.1)).hom.charZero
-  exact not_finite (X.residueField (under y))
+  intros
+  apply _root_.GlobalTheory.IsArithVar.under_eq_genericPoint <;> assumption
 
 end Rat
 

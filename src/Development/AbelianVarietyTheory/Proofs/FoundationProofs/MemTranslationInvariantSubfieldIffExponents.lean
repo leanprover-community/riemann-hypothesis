@@ -73,12 +73,8 @@ theorem map_eOm {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (�
   obtain ⟨ζ, hζ⟩ := exists_prim_root_of_isAlgClosed Ω x.den x.den_pos
   have hζ' : IsPrimitiveRoot (ε ζ) x.den := hζ.map_of_injective hε
   haveI : NeZero x.den := ⟨x.den_nz⟩
-  have hpow : (Complex.exp (2 * Real.pi * Complex.I * (x : ℂ))) ^ x.den = 1 := by
-    rw [← Complex.exp_nat_mul, Complex.exp_eq_one_iff]
-    refine ⟨x.num, ?_⟩
-    have hx : (x : ℂ) * x.den = x.num := by exact_mod_cast Rat.mul_den_eq_num x
-    calc (x.den : ℂ) * (2 * Real.pi * Complex.I * (x : ℂ)) = ((x : ℂ) * x.den) * (2 * Real.pi * Complex.I) := by ring
-      _ = _ := by rw [hx]
+  have hpow : (Complex.exp (2 * Real.pi * Complex.I * (x : ℂ))) ^ x.den = 1 :=
+    (Complex.isPrimitiveRoot_exp_rat x).pow_eq_one
   obtain ⟨i, -, hi⟩ := hζ'.eq_pow_of_pow_eq_one hpow
   exact ⟨ζ ^ i, by rw [map_pow, hi]⟩
 

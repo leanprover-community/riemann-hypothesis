@@ -11,6 +11,7 @@ import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ArchimedeanOrbitMeasure
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.MassComputations.ProdFirstProjectionSmul
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ArchimedeanOrbitMeasures.PushSupp
 import Mathlib.RingTheory.PiTensorProduct
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerVolume.SdUniq
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ArchimedeanOrbitMeasures.SdCoord, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ArchimedeanOrbitMeasures.SdTestC
@@ -130,11 +131,7 @@ theorem tupCoord_add {D : D7} (X : HidaSetting D) (x y : TupI X) :
 
 theorem psiInf_addP {F : Type} [Field F] [NumberField F] (ψ : AddChar (AF F) ℂ) (a b : Ainf F) :
     psiInf F ψ (a + b) = psiInf F ψ a * psiInf F ψ b := by
-  have h : (pairA F (a + b) 0 : AF F) = pairA F a 0 + pairA F b 0 := by
-    show ((a + b, 0) : Ainf F × Af F) = ((a, 0) : Ainf F × Af F) + ((b, 0) : Ainf F × Af F)
-    rw [Prod.mk_add_mk, add_zero]
-  simp only [Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.psiInf]
-  rw [h, AddChar.map_add_eq_mul]
+  apply _root_.PI.VolStabS.SdUniqW.psiInf_add <;> assumption
 
 theorem psiInf_eq {F : Type} [Field F] [NumberField F] (ψ : AddChar (AF F) ℂ) (hS : Formalism.L2.SG.LocVol.IsStdChar ψ) :
     psiInf F ψ = fun x => Complex.exp (2 * Real.pi * Complex.I *

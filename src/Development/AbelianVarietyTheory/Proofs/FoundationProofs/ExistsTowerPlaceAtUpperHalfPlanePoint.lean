@@ -69,8 +69,7 @@ theorem exists_analyticAt_of_order_nonneg {Ω : Type} [Field Ω] [Algebra ℚ Ω
   have hA : AnalyticOnNhd ℂ a Hs := ha.analyticOnNhd isOpen_Hs_place
   have hB : AnalyticOnNhd ℂ b Hs := hb.analyticOnNhd isOpen_Hs_place
   have hx : ∃ x ∈ Hs, b x ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     apply hb0
     rw [← Filter.Germ.coe_zero]
     refine Filter.Germ.coe_eq.2 ?_

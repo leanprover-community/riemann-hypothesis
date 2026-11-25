@@ -13,6 +13,7 @@ import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
 import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.MemGoodPrimesOfNoExceptional
+import Formalism.LocalToGlobal.Columns.StdLatUnimodular
 
 @[expose] public section
 
@@ -29,24 +30,10 @@ section Red
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {P : HeightOneSpectrum (𝓞 E)}
 
 private theorem intAt_mul_columns {a b : E} (ha : IntAt P a) (hb : IntAt P b) : IntAt P (a * b) := by
-  obtain ⟨r, s, hs, h⟩ := ha
-  obtain ⟨r', s', hs', h'⟩ := hb
-  refine ⟨r * r', s * s', fun hm => ?_, ?_⟩
-  · rcases P.isPrime.mem_or_mem hm with h1 | h1
-    · exact hs h1
-    · exact hs' h1
-  · simp only [map_mul]
-    linear_combination (algebraMap (𝓞 E) E s' * b) * h + (algebraMap (𝓞 E) E r) * h'
+  apply _root_.Formalism.L2.Col.IntAt.mul <;> assumption
 
 private theorem intAt_add_columns {a b : E} (ha : IntAt P a) (hb : IntAt P b) : IntAt P (a + b) := by
-  obtain ⟨r, s, hs, h⟩ := ha
-  obtain ⟨r', s', hs', h'⟩ := hb
-  refine ⟨r * s' + s * r', s * s', fun hm => ?_, ?_⟩
-  · rcases P.isPrime.mem_or_mem hm with h1 | h1
-    · exact hs h1
-    · exact hs' h1
-  · simp only [map_add (f := _), map_mul]
-    linear_combination (algebraMap (𝓞 E) E s') * h + (algebraMap (𝓞 E) E s) * h'
+  apply _root_.Formalism.L2.Col.IntAt.add <;> assumption
 
 private theorem intAt_zero_columns : IntAt P (0 : E) :=
   ⟨0, 1, fun h => P.isPrime.ne_top ((Ideal.eq_top_iff_one _).mpr h), by simp⟩

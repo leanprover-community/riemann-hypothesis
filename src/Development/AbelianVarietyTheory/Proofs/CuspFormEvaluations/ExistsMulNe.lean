@@ -110,8 +110,7 @@ theorem zero_mem_OmF {X : Data E r} {x : Frame X.Ψ r} (hx : x ∈ X.dom) : (0 :
 
 theorem exists_s_ne {X : Data E r} {Xa : ArchInM X} (Fl : FlatM X Xa) :
     ∃ k, ∃ x ∈ X.dom, Fl.s k x ≠ 0 := by
-  by_contra h
-  push_neg at h
+  by_contra! h
   obtain ⟨x, hx, -⟩ := Xa.et_ne
   obtain ⟨j, -⟩ := (Fl.S_eq x hx).1 fun k => h k x hx
   apply Fl.coord j
@@ -173,8 +172,7 @@ theorem exists_comb {X : Data E r} {Xa : ArchInM X} (Fl : FlatM X Xa) (e m : ℕ
 theorem exists_mul_ne {X : Data E r} {f g : Frame X.Ψ r → ℂ} (hf : DifferentiableOn ℂ f X.dom)
     (hg : DifferentiableOn ℂ g X.dom) (hf0 : ∃ x ∈ X.dom, f x ≠ 0) (hg0 : ∃ x ∈ X.dom, g x ≠ 0) :
     ∃ x ∈ X.dom, f x * g x ≠ 0 := by
-  by_contra h
-  push_neg at h
+  by_contra! h
   obtain ⟨x, hx, hfx⟩ := hf0
   obtain ⟨y, hy, hgy⟩ := hg0
   exact hgy (ReciprocityTheory.ChartRestriction.G.PullbackSections.Pf.eq_zero_of_mul_eq_zero (FourierCoefficientDomain.isOpen_dom X)
@@ -187,8 +185,7 @@ theorem upper : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ)
     rw [show Xa.T + nd X + 6 + nd X = Xa.T + 2 * nd X + 6 by ring]; omega)
   have hg := isBddSec_sum X hf u
   have hg0 : ∃ x ∈ X.dom, ∑ q, u q * f q x ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hu (hind u h)
   obtain ⟨k, hk⟩ := exists_s_ne Fl
   have d1 := hg.1.1

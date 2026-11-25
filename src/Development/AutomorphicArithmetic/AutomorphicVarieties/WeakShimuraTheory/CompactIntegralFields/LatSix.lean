@@ -9,6 +9,7 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.WeakShimura
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.WeakShimuraTheory.NearSplit
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.SymplecticGSp4.LMemMax
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.SymplecticGSp4.XvanExt
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.SymplecticGSp4.XvanExt
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.WeakShimuraTheory.CompactIntegralFields.SmallExt
 public import Mathlib.RingTheory.Valuation.ValuationSubring
 public import Mathlib.FieldTheory.IsAlgClosed.Basic
@@ -323,21 +324,7 @@ open NumberField IsDedekindDomain Formalism.ConjugateSelfDual Formalism.HC Recip
 private theorem lvk_coord {H k₀ k : Type} [Field k₀] [Field k] [Algebra k₀ k] (a : H → k₀) (z : H → k)
     (h : ∀ φ : k →ₗ[k₀] k₀, ∃ m, ∀ g, φ (z g) = a g * m - m) :
     ∃ m, ∀ g, z g = algebraMap k₀ k (a g) * m - m := by
-  by_cases h1 : ∀ g, a g = 1
-  · refine ⟨0, fun g => ?_⟩
-    rw [mul_zero, sub_zero, ← Module.forall_dual_apply_eq_zero_iff k₀]
-    intro φ
-    obtain ⟨m, hm⟩ := h φ
-    rw [hm, h1, one_mul, sub_self]
-  · obtain ⟨g₀, hg₀⟩ := not_forall.mp h1
-    have hne : a g₀ - 1 ≠ 0 := sub_ne_zero.mpr hg₀
-    refine ⟨(a g₀ - 1)⁻¹ • z g₀, fun g => ?_⟩
-    rw [← Algebra.smul_def, ← sub_eq_zero, ← Module.forall_dual_apply_eq_zero_iff k₀]
-    intro φ
-    obtain ⟨m, hm⟩ := h φ
-    simp only [map_sub, map_smul, hm, smul_eq_mul]
-    field_simp
-    ring
+  apply _root_.cob_of_coord <;> assumption
 
 theorem UpperTheory.V.Ws.Lat.locVanK :
     ∀ {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] {l : ℕ} [Fact l.Prime] {c : Coef l} (D : Raw Ω c), D.Good → UpperTheory.V.Loc.LocalPublishedTheorems → ∀ (k : Type) [Field k] (red : c.O →+* k), (∀ a ∈ maximalIdeal c.O, red a = 0) →

@@ -3,6 +3,7 @@ module
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerVolume.SdUniq
 import Aesop.Main
 import Mathlib.Algebra.Order.Star.Real
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerVolume.LocDensIdxA
 
 @[expose] public section
 
@@ -92,13 +93,7 @@ theorem ann_eq {V : Type} (ψ0 : Fv F v → ℂ) (B : V → V → Fv F v) (L : S
 
 theorem ev_int (f : F) :
     ∀ᶠ v in cofinite, algebraMap F (Fv F v) f ∈ (v.adicCompletionIntegers F) := by
-  have hfin := HeightOneSpectrum.Support.finite (𝓞 F) f
-  refine hfin.eventually_cofinite_notMem.mono fun v hv => ?_
-  simp only [HeightOneSpectrum.Support, Set.mem_setOf_eq, not_lt] at hv
-  rw [HeightOneSpectrum.mem_adicCompletionIntegers]
-  have : Valued.v ((f : v.adicCompletion F)) = v.valuation F f :=
-    HeightOneSpectrum.valuedAdicCompletion_eq_valuation' v f
-  exact (this ▸ hv : Valued.v ((f : v.adicCompletion F)) ≤ 1)
+  apply _root_.PI.VolStabS.IdxHW.eventually_int <;> assumption
 
 theorem ev_int_all {ι : Type} [Finite ι] (f : ι → F) :
     ∀ᶠ v in cofinite, ∀ i, algebraMap F (Fv F v) (f i) ∈ (v.adicCompletionIntegers F) :=

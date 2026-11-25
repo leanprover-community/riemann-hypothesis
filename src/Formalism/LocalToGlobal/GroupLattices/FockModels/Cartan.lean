@@ -5,6 +5,7 @@ public import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
 public import Formalism.GradedWeylDivisibility.FinalD
 public import Formalism.LocalToGlobal.GroupLattices.FockModels.MulMemRiemannRochSpaceAdd
 public import Formalism.SharpRestriction.GrowthBounds.LatticeSystems
+import Formalism.SharpRestriction.GrowthBounds.HermitianTensor.DerivativeRepresentation
 
 @[expose] public section
 
@@ -107,15 +108,7 @@ theorem shapeDeg_antitone {n K : ℕ} (sz : Fin K → ℕ) : Antitone (shapeDeg 
 
 theorem initMinor_mem (R : Type) [CommRing R] {r n s : ℕ} (I : Fin s → Fin r) (hs : s ≤ n) :
     initMinor R I hs ∈ dualWeyl R r n (om n s) := by
-  have h := bidetMem R r n 1 (fun _ => s) (fun _ => hs) (fun _ => I)
-  have h1 : bideterminant R (fun _ : Fin 1 => s) (fun _ => hs) (fun _ => I) = initMinor R I hs := by
-    simp [bideterminant]
-  have h2 : (shapeDeg (fun _ : Fin 1 => s) : Fin n → ℕ) = om n s := by
-    funext t
-    simp only [shapeDeg, om, Finset.card_filter]
-    simp
-  rw [h1, h2] at h
-  exact h
+  apply _root_.Formalism.MainNotions.flipOneThree.Pf.qc_initMinor_mem <;> assumption
 
 def ProdSpan (R : Type) [CommRing R] (r n : ℕ) (ν ν' : Fin n → ℕ) : Submodule R (MvPolynomial (Fin r × Fin n) R) :=
   Submodule.span R {X | ∃ f ∈ dualWeyl R r n ν, ∃ f' ∈ dualWeyl R r n ν', X = f * f'}

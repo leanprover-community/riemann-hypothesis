@@ -837,8 +837,7 @@ theorem readExt_eq_smul_of_read
       rw [h1, sub_self]
     exact sub_eq_zero.1 (Fintype.linearIndependent_iff.1 (hF _ v v.linearIndependent) _ e1 k)
   obtain ⟨k, hk⟩ : ∃ k, c k ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     apply h0
     have h2 : eL (algebraMap O L d) • R s = 0 := by
       rw [← hsm, es, hsum]

@@ -142,12 +142,6 @@ theorem admissibleSmallRatio : AdmissibleSmallRatio := by
   have hP0 : (0:ℝ) < p := by linarith
   have hk' : (1:ℝ) ≤ k := by exact_mod_cast hk
   have hNs' : (1:ℝ) ≤ Ns := by exact_mod_cast hNs
-  have hY0 : (0:ℝ) < Y := by linarith
-  have hk0 : (0:ℝ) < k := by linarith
-  have hNs0 : (0:ℝ) < Ns := by linarith
-  have hR : (0:ℝ) < (p:ℝ)^R := pow_pos hP0 _
-  have hR' : (0:ℝ) < (p:ℝ)^R' := pow_pos hP0 _
-  have hD1 : (0:ℝ) < (p:ℝ)^D1 := pow_pos hP0 _
   have hL : (0:ℝ) < (p:ℝ)^L1 := pow_pos hP0 _
   have hT : (0:ℝ) < Qn * (p:ℝ)^R' / (p:ℝ)^R := by positivity
   have sA : be / (Qn * (p:ℝ)^R' / (p:ℝ)^R) ≤
@@ -256,8 +250,6 @@ theorem beta_ratio_bound : BetaRatioBound 1088 := by
       have b2 := (TE.c_bounds hX h41 j x hx1).2.2
       refine le_trans b1 ?_
       rw [pow_add]
-      have hq1 : (0 : ℝ) < (p : ℝ) ^ X.F.dist j x := by positivity
-      have hq2 : (0 : ℝ) < (p : ℝ) ^ X.Rj p K j := by positivity
       rw [div_mul_div_comm, mul_one, mul_comm ((p : ℝ) ^ X.Rj p K j)]
       exact div_le_div_of_nonneg_right b2 (by positivity)
     refine le_trans (Finset.sum_le_sum h1) ?_
@@ -938,7 +930,6 @@ theorem lamd_Bw_pos {p n' r K : ℕ} [NeZero n'] [NeZero r] [NeZero K] {X : Dat 
     unfold Dat.k
     push_cast
     have hr' : (2 : ℝ) ≤ r := by exact_mod_cast hr
-    have hK' : (0 : ℝ) ≤ K := Nat.cast_nonneg _
     nlinarith
   have hPr : (0 : ℝ) < ((p ^ (X.F.dist j y + X.Rj p K j) : ℕ) : ℝ) := by exact_mod_cast hPpos
   have hreal : ((r + K + r + 2 : ℕ) : ℝ) * ((p ^ (X.F.dist j y + X.Rj p K j) : ℕ) : ℝ) ≤
@@ -946,7 +937,6 @@ theorem lamd_Bw_pos {p n' r K : ℕ} [NeZero n'] [NeZero r] [NeZero K] {X : Dat 
     have e1 : ((p ^ (X.F.dist j y + X.Rj p K j) : ℕ) : ℝ) = (p : ℝ) ^ (X.F.dist j y + X.Rj p K j) := by
       push_cast; rfl
     rw [e1] at hPr ⊢
-    have hk0 : (0 : ℝ) ≤ (Dat.k (r := r) K) ^ 2 := sq_nonneg _
     calc ((r + K + r + 2 : ℕ) : ℝ) * (p : ℝ) ^ (X.F.dist j y + X.Rj p K j)
         ≤ 36 / 5 * (Dat.k (r := r) K) ^ 2 * (p : ℝ) ^ (X.F.dist j y + X.Rj p K j) :=
           mul_le_mul_of_nonneg_right hk2 hPr.le

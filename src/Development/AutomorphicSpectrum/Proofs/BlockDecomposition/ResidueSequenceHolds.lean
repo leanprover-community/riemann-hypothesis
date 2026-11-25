@@ -232,8 +232,7 @@ theorem mem_dcos_iff : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpa
       rw [e] at this
       exact this
     obtain ⟨a₀, ha₀⟩ : ∃ c, y c ≠ 0 := by
-      by_contra hcon
-      push_neg at hcon
+      by_contra! hcon
       have h0 : y = 0 := funext hcon
       rw [h0, zero_vecMul] at hyg
       have := congrFun hyg (Fin.last (i + t))
@@ -861,8 +860,7 @@ theorem exists_ne_of_mem {i t : ℕ} (h : (i + 1) + t = i + t + 1) (q p : GL (Fi
     (hq : q ∈ parab k (two (stdSum h))) (hp : p ∈ Mir k (i + t)) :
     ∃ a : Fin (i + 1), (((q * wGL k h * p)⁻¹ : GL (Fin (i + t + 1)) k) :
       Matrix (Fin (i + t + 1)) (Fin (i + t + 1)) k) (Fin.last (i + t)) (stdSum h (Sum.inl a)) ≠ 0 := by
-  by_contra hc
-  push_neg at hc
+  by_contra! hc
   let r : parab k (two (stdSum h)) := ⟨q⁻¹, inv_mem hq⟩
   let M : GL (Fin (i + 1)) k := leviProj k (two (stdSum h)) r false
   have hrow : ∀ a, (M : Matrix (Fin (i + 1)) (Fin (i + 1)) k) (Fin.last i) a = 0 := fun a => by

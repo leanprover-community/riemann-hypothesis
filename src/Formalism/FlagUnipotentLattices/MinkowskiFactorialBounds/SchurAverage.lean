@@ -132,8 +132,7 @@ theorem box_count_big_O : BoxCountO := by
     have := card_separated_set_le_prod S (fun _ => 1 / 2) B (fun _ => by norm_num) (fun v => (hB v).le)
       (fun c hc => (hS hc).2) (by
         intro c hc d hd hcd
-        by_contra hcon
-        push_neg at hcon
+        by_contra! hcon
         have hne : c - d ≠ 0 := sub_ne_zero.mpr hcd
         obtain ⟨v₀, -⟩ : ∃ v, c v ≠ d v := Function.ne_iff.mp hcd
         have h1 := hΛ (c - d) (Λ.sub_mem (hS hc).1 (hS hd).1) hne
@@ -188,8 +187,7 @@ theorem box_count_alt : BoxCount := by
     have := card_separated_set_le_prod S (fun v => B v / (2 * τ)) B (fun v => by have := hB v; positivity)
       (fun v => (hB v).le) (fun c hc => (hS hc).2) (by
         intro c hc d hd hcd
-        by_contra hcon
-        push_neg at hcon
+        by_contra! hcon
         have hne : c - d ≠ 0 := sub_ne_zero.mpr hcd
         have h1 := hΛ (c - d) (Λ.sub_mem (hS hc).1 (hS hd).1) hne
         have hpos : ∀ v ∈ Finset.univ, 0 < ‖(c - d) v‖ ^ 2 := by

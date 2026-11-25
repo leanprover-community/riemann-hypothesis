@@ -278,8 +278,7 @@ theorem den_of_rel (P : PhiData O l) {ϖ : O} (hϖ : Irreducible ϖ) {D U₁ U�
   rw [he]
 
   have hlt : e * s₁ + m < e * κ := by
-    by_contra hle
-    push_neg at hle
+    by_contra! hle
     apply hnd
     refine ⟨(u : O) ^ s₁ * v * ((u⁻¹ : Oˣ) : O) ^ κ * ϖ ^ (e * s₁ + m - e * κ), ?_⟩
     have h1 : ((u : O) * ((u⁻¹ : Oˣ) : O)) ^ κ = 1 := by rw [Units.mul_inv, one_pow]

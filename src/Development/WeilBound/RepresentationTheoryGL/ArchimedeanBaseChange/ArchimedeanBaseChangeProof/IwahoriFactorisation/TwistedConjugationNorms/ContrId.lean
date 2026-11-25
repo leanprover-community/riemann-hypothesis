@@ -94,8 +94,6 @@ open NumberField IsDedekindDomain Polynomial Matrix
 open GlobalTheory.BCT GlobalTheory.UnitaryBC Formalism.UG GlobalTheory.PRep GlobalTheory.SmGL
 open scoped Classical
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace PositivityTheory.Rg.Bc.ArchbcB.B.M4
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
@@ -296,8 +294,6 @@ section Completion
 
 open NumberField IsDedekindDomain GlobalTheory.BCT GlobalTheory.UnitaryBC Formalism.UG
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 
 theorem tl_tdiag_mul {w : Pl E} {n : ℕ} (ϖ : (w.adicCompletion E)ˣ) (a b : Fin n → ℤ) :
@@ -385,8 +381,6 @@ open NumberField IsDedekindDomain Polynomial Matrix
 open GlobalTheory.BCT GlobalTheory.UnitaryBC Formalism.UG
 open scoped Classical
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace PositivityTheory.Rg.Bc.ArchbcB.B.M4
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
@@ -417,8 +411,6 @@ noncomputable section
 open NumberField IsDedekindDomain Polynomial Matrix
 open GlobalTheory.BCT GlobalTheory.UnitaryBC Formalism.UG
 open scoped Classical
-
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 end -- clump:auto
 end -- clump:auto

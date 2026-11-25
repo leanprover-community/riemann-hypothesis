@@ -192,8 +192,7 @@ end GlobalTheory.St.G.PsiLoc
 open GlobalTheory.St.G.PsiLoc in
 theorem GlobalTheory.St.G.psi_local_ne_one : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [StarRing E] [Algebra F E] (cm : CMData F E) (psi : E ⊗[F] Ad F → ℂ), (∀ x y, psi (x + y) = psi x * psi y) → (∀ x ∈ OAd F E, psi x = 1) → (∀ x : E, psi (inclE (F := F) (Ad F) x) * Complex.exp (2 * Real.pi * Complex.I * ((Algebra.trace ℚ E x : ℚ) : ℂ)) = 1) → ∀ (p : ℕ), p.Prime → SplitsIn E p → ∀ (v : HeightOneSpectrum (𝓞 F)), (p : 𝓞 F) ∈ v.asIdeal → ∀ e ∈ intV E v, e * e = e → e ≠ 0 → ∃ a ∈ intV E v, psi (Formalism.UG.P.afsplitIE v (algebraMap F (E ⊗[F] v.adicCompletion F) ((p : F)⁻¹) * (e * a))) ≠ 1 := by
   intro F E _ _ _ _ _ _ cm psi hadd hint hrat p hp hsp v hv e he hee hne
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   apply hne
   have hprops := GlobalTheory.St.G.IntAd.integral_adeles_properties F E
   have hp0 : (p : E) ≠ 0 := by exact_mod_cast hp.ne_zero

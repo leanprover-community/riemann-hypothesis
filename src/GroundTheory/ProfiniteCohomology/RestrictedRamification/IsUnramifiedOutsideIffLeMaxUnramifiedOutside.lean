@@ -119,10 +119,11 @@ section Relative
 
 variable [NumberField F] (S : Set (HeightOneSpectrum (𝓞 F)))
 
-theorem isUnramifiedOutside_restrictScalars_iff {L : IntermediateField F Ω} [FiniteDimensional F L]
-    (hL : IsUnramifiedOutside S L) (M : IntermediateField L Ω) [FiniteDimensional L M] :
+theorem isUnramifiedOutside_restrictScalars_iff_of_isUnramifiedIn {L : Type*} [Field L]
+    [NumberField L] [Algebra F L] [Algebra L Ω] [IsScalarTower F L Ω]
+    (hL : ∀ v ∉ S, Algebra.IsUnramifiedIn (𝓞 L) v.asIdeal) (M : IntermediateField L Ω)
+    [FiniteDimensional L M] :
     IsUnramifiedOutside S (M.restrictScalars F) ↔ IsUnramifiedOutside (placesOver S) M := by
-  have := NumberField.of_module_finite F L
   have : FiniteDimensional F M := FiniteDimensional.trans F L M
   have := NumberField.of_module_finite L M
   change (∀ v ∉ S, Algebra.IsUnramifiedIn (𝓞 M) v.asIdeal) ↔ _
@@ -150,6 +151,12 @@ theorem isUnramifiedOutside_restrictScalars_iff {L : IntermediateField F Ω} [Fi
     have h1 := hM w hw Q hQ ⟨rfl⟩
     have h2 := hL v hv (Q.under (𝓞 L)) inferInstance hwv
     exact (isUnramifiedAt_tower_iff (F := F) (L := L) Q).2 ⟨h2, h1⟩
+
+theorem isUnramifiedOutside_restrictScalars_iff {L : IntermediateField F Ω} [FiniteDimensional F L]
+    (hL : IsUnramifiedOutside S L) (M : IntermediateField L Ω) [FiniteDimensional L M] :
+    IsUnramifiedOutside S (M.restrictScalars F) ↔ IsUnramifiedOutside (placesOver S) M := by
+  have := NumberField.of_module_finite F L
+  exact isUnramifiedOutside_restrictScalars_iff_of_isUnramifiedIn S hL M
 
 variable [IsGalois F Ω]
 

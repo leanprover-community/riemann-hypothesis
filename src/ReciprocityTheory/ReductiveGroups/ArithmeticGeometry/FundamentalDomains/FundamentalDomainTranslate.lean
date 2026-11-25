@@ -34,8 +34,7 @@ theorem orth (L : AddSubgroup (ι → ℝ)) [Countable L] (D : Set (ι → ℝ))
   · subst h0
     simp [Measure.real]
   · obtain ⟨j, hj⟩ : ∃ j, μ j ≠ 0 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact h0 (funext h)
     classical
     set e : (ι → ℝ) → ℂ := fun s => cexp (4 * Real.pi * I * ∑ i, (μ i : ℂ) * s i) with he

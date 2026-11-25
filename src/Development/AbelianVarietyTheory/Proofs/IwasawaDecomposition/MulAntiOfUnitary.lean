@@ -291,8 +291,6 @@ section Adelic
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta GlobalTheory.Mem.Th GlobalTheory.IndefiniteRowSideFullHecke.LieAlgebraExponentialFamilies Matrix
 open scoped TensorProduct
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} {θ : InfF D} {V : HSp D}
 
 theorem frame_at (hs : V.SigOK) (hd : V.IsDefinite) (τ : D.what₂.Tau) :

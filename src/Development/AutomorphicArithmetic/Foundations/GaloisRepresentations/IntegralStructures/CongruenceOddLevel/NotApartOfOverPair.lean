@@ -29,6 +29,7 @@ public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.Exist
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsAlgebraicFormWeightLevelSmoothAtPlaceStatement
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsAlgebraicWeightDefiniteUnitaryAutRepStatement
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.IntegralStructures.CongruenceOddLevel.LacunaryBaseWeightAntitone
+public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SphericalOperatorsExist
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -62,13 +63,11 @@ import Mathlib.Tactic.NormNum.Ordinal
 import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SphericalOperatorsExist
 import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
-import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ContinuousMapPFin
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsUniqueIdeleOfLinearEquivQuotientLocal
@@ -79,7 +78,7 @@ import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsOpenSubgro
 import GroundTheory.LocalFields.PadicLogSeries
 
 -- This file was produced by scripts/clump.py from the modules listed below.
--- Members: Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.IntegralStructures.CongruenceOddLevel.ApartOfNotMem, Development.AutomorphicArithmetic.Foundations.EtaleClopenDescent.SphericalOperatorsExist, Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.IntegralStructures.CongruenceOddLevel.ExistsTestOp, Development.AbelianVarietyTheory.Proofs.SatakeParameters.AutFormFixedByIntegralPointsAlmostAllPlaces, Development.AbelianVarietyTheory.Proofs.SatakeParameters.AutFormFixedByIntegralPointsAlmostAllPlacesStatement, Development.AbelianVarietyTheory.Proofs.SatakeParameters.DefiniteUnitaryIntegralBelowPlaceCompactOpenStatement, Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsVectorFixedByProductLocalLevels, Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsVectorFixedByProductLocalLevelsStatement, Development.AbelianVarietyTheory.Proofs.SatakeParameters.FixedOfFixedByLocalLevels, Development.AbelianVarietyTheory.Proofs.SatakeParameters.FixedOfFixedByLocalLevelsStatement, Development.AbelianVarietyTheory.Proofs.SatakeParameters.IsLevelAwayDefiniteUnitaryLevelFromLocalLevels, Development.AbelianVarietyTheory.Proofs.SatakeParameters.IsLevelAwayDefiniteUnitaryLevelFromLocalLevelsStatement, Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.IntegralStructures.CongruenceOddLevel.OpenCompactMap, Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.SeparatingAlgebras.OpOfSmul, Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.IntegralStructures.CongruenceOddLevel.NotApartOfOverPair
+-- Members: Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.IntegralStructures.CongruenceOddLevel.ApartOfNotMem, Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.IntegralStructures.CongruenceOddLevel.ExistsTestOp, Development.AbelianVarietyTheory.Proofs.SatakeParameters.AutFormFixedByIntegralPointsAlmostAllPlaces, Development.AbelianVarietyTheory.Proofs.SatakeParameters.AutFormFixedByIntegralPointsAlmostAllPlacesStatement, Development.AbelianVarietyTheory.Proofs.SatakeParameters.DefiniteUnitaryIntegralBelowPlaceCompactOpenStatement, Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsVectorFixedByProductLocalLevels, Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsVectorFixedByProductLocalLevelsStatement, Development.AbelianVarietyTheory.Proofs.SatakeParameters.FixedOfFixedByLocalLevels, Development.AbelianVarietyTheory.Proofs.SatakeParameters.FixedOfFixedByLocalLevelsStatement, Development.AbelianVarietyTheory.Proofs.SatakeParameters.IsLevelAwayDefiniteUnitaryLevelFromLocalLevels, Development.AbelianVarietyTheory.Proofs.SatakeParameters.IsLevelAwayDefiniteUnitaryLevelFromLocalLevelsStatement, Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.IntegralStructures.CongruenceOddLevel.OpenCompactMap, Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.SeparatingAlgebras.OpOfSmul, Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.IntegralStructures.CongruenceOddLevel.NotApartOfOverPair
 
 -- ===== clump member: Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.IntegralStructures.CongruenceOddLevel.ApartOfNotMem =====
 -- clump-header: {"m": "Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.IntegralStructures.CongruenceOddLevel.ApartOfNotMem", "h": "module\n\npublic import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.LimWPhi\npublic import Development.AbelianVarietyTheory.Definitions.Divisors.GenOf\npublic import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.HasLevelOffOf\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Development.AbelianVarietyTheory.Definitions.Divisors.IsIntegralOpW\n\n"}
@@ -134,28 +133,8 @@ end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.IntegralStructures.CongruenceOddLevel.ApartOfNotMem =====
 
--- ===== clump member: Development.AutomorphicArithmetic.Foundations.EtaleClopenDescent.SphericalOperatorsExist =====
--- clump-header: {"m": "Development.AutomorphicArithmetic.Foundations.EtaleClopenDescent.SphericalOperatorsExist", "h": "module\n\nimport Development.AbelianVarietyTheory.Proofs.SatakeParameters.SphericalOperatorsExist\npublic import Development.AbelianVarietyTheory.Statements.EllipticCurveLevels.HasLevel\npublic import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SatakeParameterSphericalProductSpehQuotients\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ContinuousMapPFin\n\n"}
-section -- clump:auto
-@[expose] public section
-
-open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N
-open GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.Pst GlobalTheory.LocLanglands GlobalTheory.HeckeGal GlobalTheory.LocGL GlobalTheory.GalOfCusp
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-open GlobalTheory.GalCut GlobalTheory.UnitaryBC GlobalTheory.Cong GlobalTheory.DefU GlobalTheory.CuspRep GlobalTheory.PRep
-
-noncomputable section
-
-theorem UpperTheory.Cb.spherical_operators_exist :
-    SphOps :=
-  GlobalTheory.Cong.SphOpsProof.sphOps
-end -- clump:auto
-end -- clump:auto
-end -- clump:auto
--- ===== end clump member: Development.AutomorphicArithmetic.Foundations.EtaleClopenDescent.SphericalOperatorsExist =====
-
 -- ===== clump member: Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.IntegralStructures.CongruenceOddLevel.ExistsTestOp =====
--- clump-header: {"m": "Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.IntegralStructures.CongruenceOddLevel.ExistsTestOp", "h": "module\n\npublic import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.SeparatingAlgebras.CAllFin\npublic import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.HasLevelOffOf\npublic import Development.AbelianVarietyTheory.Proofs.FoundationProofs.HasSatakeGLOfIsSatVecGL\npublic import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SplitPlaceUnitaryLocalPointsEquivGL\npublic import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsLevelAwayAdapted\npublic import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsUniqueSplitPlaceComponentDefiniteUnitaryStatement\npublic import Development.AbelianVarietyTheory.Proofs.SatakeParameters.LocalOperatorActsByLocalComponentScalarStatement\npublic import Development.AutomorphicArithmetic.Foundations.EtaleClopenDescent.SphericalOperatorsExist\npublic import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.SeparatingAlgebras.BlockBoundTheorem\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Etale.Weakly\nimport Mathlib.RingTheory.Finiteness.ModuleFinitePresentation\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\n\n"}
+-- clump-header: {"m": "Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.IntegralStructures.CongruenceOddLevel.ExistsTestOp", "h": "module\n\npublic import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.SeparatingAlgebras.CAllFin\npublic import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.HasLevelOffOf\npublic import Development.AbelianVarietyTheory.Proofs.FoundationProofs.HasSatakeGLOfIsSatVecGL\npublic import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SplitPlaceUnitaryLocalPointsEquivGL\npublic import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsLevelAwayAdapted\npublic import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsUniqueSplitPlaceComponentDefiniteUnitaryStatement\npublic import Development.AbelianVarietyTheory.Proofs.SatakeParameters.LocalOperatorActsByLocalComponentScalarStatement\npublic import Development.AbelianVarietyTheory.Statements.EllipticCurveLevels.HasLevel\npublic import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SatakeParameterSphericalProductSpehQuotients\npublic import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SphericalOperatorsExist\npublic import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.SeparatingAlgebras.BlockBoundTheorem\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Etale.Weakly\nimport Mathlib.RingTheory.Finiteness.ModuleFinitePresentation\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\n\n"}
 section -- clump:auto
 @[expose] public section
 
@@ -211,14 +190,14 @@ theorem fixed_ne_bot {U : Submodule ℂ (UA E a → ℂ)} (hU : IsAutRepU U) {w 
 theorem exists_satU {U : Submodule ℂ (UA E a → ℂ)} (hU : IsAutRepU U) {w : HeightOneSpectrum (𝓞 E)} (hw : IsSplitAt w)
     (h : ∃ φ ∈ U, φ ≠ 0 ∧ ∀ x ∈ locU a w, cLoc w x ∈ GlobalTheory.LFun.KGL w (n := a) → RU E a x φ = φ) : ∃ B, SatU U w B := by
   obtain ⟨σ, hσ⟩ := (_root_.GlobalTheory.SplitComp.exists_comp_and_unique E a U hU w hw).1
-  obtain ⟨B, hB⟩ := (UpperTheory.Cb.spherical_operators_exist E w a).1 σ (fixed_ne_bot hU hw h σ hσ)
+  obtain ⟨B, hB⟩ := (_root_.GlobalTheory.Cong.SphOpsProof.sphOps E w a).1 σ (fixed_ne_bot hU hw h σ hσ)
   exact ⟨B, σ, hσ, hB⟩
 
 theorem exists_powOp {w : HeightOneSpectrum (𝓞 E)} (hw : IsSplitAt w) (n : ℤ) :
     ∃ t : UA E a →₀ ℂ, (∀ g ∈ t.support, g ∈ locU a w) ∧ ∀ U, IsAutRepU U → ∀ φ ∈ U,
       (∀ x ∈ locU a w, cLoc w x ∈ GlobalTheory.LFun.KGL w (n := a) → RU E a x φ = φ) → opOf (RU E a) t φ = PowSatU U w n • φ := by
   classical
-  obtain ⟨h1, h2⟩ := UpperTheory.Cb.spherical_operators_exist E w a
+  obtain ⟨h1, h2⟩ := _root_.GlobalTheory.Cong.SphOpsProof.sphOps E w a
   obtain ⟨f, -, hf⟩ := h2 n
   obtain ⟨ho, hc⟩ := GlobalTheory.LFun.SatCompare.isOpen_isCompact_KGL w a
   let z : SmIrr (GL (Fin a) (w.adicCompletion E)) → ℂ := fun σ =>
@@ -248,8 +227,8 @@ theorem exists_testOp (K : Subgroup (UA E a)) {w : HeightOneSpectrum (𝓞 E)} (
       (∀ g ∈ f.support, g ∈ locU a w) ∧ ∀ U, IsAutRepU U →
         (∀ φ ∈ U, (∀ x ∈ K, RU E a x φ = φ) → opOf (RU E a) f φ = η U • φ) ∧
         ((∃ φ ∈ U, φ ≠ 0 ∧ ∀ x ∈ K, RU E a x φ = φ) → (η U ≠ 0 ↔ UpperTheory.Gal.Gen.GenAt w Φ U)) := by
-  have hX := satEx_holds
-  obtain ⟨p, hp, hpe, -⟩ := symEx_holds a Φ
+  have hX := _root_.UpperTheory.Gal.Gen.satEx_pf
+  obtain ⟨p, hp, hpe, -⟩ := _root_.UpperTheory.Gal.Gen.symEx_pf a Φ
   obtain ⟨C, hC⟩ := globOp_holds E a K w hw hK
   obtain ⟨f, hloc, -, -, hact⟩ := hC p hp
   classical
@@ -785,8 +764,7 @@ theorem exists_finite_fix {φ : UA E a → ℂ} (hφ : IsAutFormU φ) :
       ⋃ u, {k : finU (E := E) (n := a) | cLoc u k.1 ≠ 1} := by
     rintro k ⟨-, hk⟩
     simp only [Set.mem_iUnion, Set.mem_setOf_eq]
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     apply hk
     show RU E a k.1 φ = φ
     rw [eq_one_of_forall_cLoc k.2 hne, map_one]
@@ -1378,7 +1356,7 @@ theorem stepSt_of_ex (hEll : EllSt) (H : WtLacEx) : StepSt := by
   have hl1 : ‖((l : ℕ) : Qbar l)‖ < 1 := PlaceEmb.norm_p_lt_one
   have hD : Dense ι (Wt.ofFam mu) K fun U' => TyEll E l a w₀ U' := by
     intro f hf ε hε
-    obtain ⟨N, hN, hfN⟩ := smoothAt_holds E a w₀ hs₀ _ f
+    obtain ⟨N, hN, hfN⟩ := _root_.UpperTheory.Gal.Gen.smoothAt_pf E a w₀ hs₀ _ f
     obtain ⟨m₀, hm₀⟩ := exists_pow_lt_of_lt_one hε hl1
     obtain ⟨m, J, θ, hm, hJN, hJo, hJc, hJt, hθ, hsc⟩ := hEll E l a ha w₀ hw₀ N hN m₀
     have hfJ : f ∈ fixedBy (Wt.ofFam mu) (lev K w₀ J) := by
@@ -1391,7 +1369,7 @@ theorem stepSt_of_ex (hEll : EllSt) (H : WtLacEx) : StepSt := by
     rintro U' ⟨χ, hχ, φ, hφ, hφ0, -, hφJ⟩
     exact ⟨m, J, θ, χ, hJo, hJc, hJt, hθ, hχ, hsc χ hχ, φ, hφ, hφ0, hφJ⟩
   refine (toPolyX_holds E l ι a w₀ K hK.fin mu _ hD Jx t η
-    (Loc.frame denomBdd_holds rhoBound_holds latFacts_holds levelEx_holds ι _ _ fun j => Or.inr (by
+    (Loc.frame denomBdd_holds rhoBound_holds latFacts_holds _root_.UpperTheory.Gal.Gen.levelEx_pf ι _ _ fun j => Or.inr (by
       rw [hmu]
       exact intL_congr ι g1 (fun g hg => (htv j g hg).2) (ht j).2))
     (fun V hV φ hφ hx j => hη V hV φ hφ (fun x h => hx x h.1) j) U₁ g3).mono ?_
@@ -1510,7 +1488,7 @@ theorem congUWG_of (H : StepSt) (hFin : FinU) (D : ∀ a : ℕ, MvPolynomial (Fi
       (fun j g hg => by
         obtain ⟨w, k1, k2, k3⟩ := hsupp j
         exact ⟨hone k1 g (k3 g hg), hone k2 g (k3 g hg)⟩) hact τ₀ hτ₀ U₁ g1⟩)
-  have h3 := restrict_holds (Qbar l) _ _ Sum.inl _ _ h2
+  have h3 := _root_.UpperTheory.Gal.Gen.restrict_pf (Qbar l) _ _ Sum.inl _ _ h2
   have hval : ∀ U' : Submodule ℂ (UA E a → ℂ), (fun j => ι.symm (η U' j)) ∘ Sum.inl = Sum.elim (fun j => ι.symm (ej j U'))
       fun p : W × ℤ => ι.symm ((if h : p.1.1 ∈ W then cp (⟨p.1.1, h⟩, p.2) else 1) * PowSatU U' p.1 p.2) := fun U' => by
     funext j

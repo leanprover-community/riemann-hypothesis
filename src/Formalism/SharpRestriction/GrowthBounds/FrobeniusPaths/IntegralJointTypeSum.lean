@@ -5,6 +5,7 @@ import Formalism.SharpRestriction.GrowthBounds.FrobeniusPaths.AntitoneOfAppend
 import Formalism.SharpRestriction.GrowthBounds.RootWeights.DvrFractionFieldCharZeroPrime
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
+import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.ExistsEqMulProdMinors
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.SharpRestriction.GrowthBounds.FrobeniusPaths.IntegralJointTypeSumOfParts, Formalism.SharpRestriction.GrowthBounds.FrobeniusPaths.IntegralJointTypeSum
@@ -348,18 +349,7 @@ lemma coeff_XD {σ : Type*} (i j : σ) (f : MvPolynomial σ F) (mm : σ →₀ �
 
 lemma coeff_XDii {σ : Type*} (i : σ) (f : MvPolynomial σ F) (mm : σ →₀ ℕ) :
     AddMonoidAlgebra.coeff (X i * pderiv i f) mm = (mm i : F) * AddMonoidAlgebra.coeff f mm := by
-  rw [coeff_XD]
-  by_cases h : mm i = 0
-  · rw [if_pos h, h]; simp
-  · rw [if_neg h]
-    have h1 : Finsupp.single i 1 ≤ mm := Finsupp.single_le_iff.2 (Nat.one_le_iff_ne_zero.2 h)
-    rw [tsub_add_cancel_of_le h1]
-    have h2 : ((mm - Finsupp.single i 1 : σ →₀ ℕ) i : ℕ) + 1 = mm i := by
-      simp only [Finsupp.coe_tsub, Pi.sub_apply, Finsupp.single_eq_same]
-      omega
-    have h3 : (((mm - Finsupp.single i 1 : σ →₀ ℕ) i : ℕ) + 1 : F) = (mm i : F) := by
-      rw [← h2, Nat.cast_add, Nat.cast_one]
-    rw [h3, mul_comm]
+  apply _root_.GlobalTheory.Harm.HighestUnique.coeff_X_mul_pderiv <;> assumption
 
 
 open Classical in
@@ -601,8 +591,7 @@ lemma eval_Tev (hd2 : ∀ c a, dcd c = some a → c = e a) (z : Fin N × Fin k �
 
 lemma exists_Tev_ne [Infinite F] (hd2 : ∀ c a, dcd c = some a → c = e a) (x : MvPolynomial (Fin N × Fin k) F)
     (hx : x ≠ 0) : ∃ y, Tev dcd y x ≠ 0 := by
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   apply hx
   apply MvPolynomial.funext
   intro z

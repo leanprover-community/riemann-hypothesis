@@ -1,5 +1,6 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebraHeight.DGmap
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.PatchingBaseChange.AlgebraMapEq
 public import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.RingTheory.AdicCompletion.Noetherian
@@ -26,23 +27,7 @@ private theorem gdet_ofRep_diagRep_map_eq_ofRep_pushCh {n : ℕ} {A A' G : Type}
 private theorem gdet_map_chi_mapRingHom_eq_map_chi {n : ℕ} {A G : Type} [CommRing A] [Group G] (D : GDet n A G)
     {A' : Type} [CommRing A'] (f : A →+* A') (x : MonoidAlgebra A G) :
     (D.map f).chi (MonoidAlgebra.mapRingHom G f x) = (D.chi x).map f := by
-  letI : Algebra A (Polynomial A') := ((algebraMap A' (Polynomial A')).comp f).toAlgebra
-  let φ : Polynomial A →ₐ[A] Polynomial A' :=
-    { Polynomial.mapRingHom f with
-      commutes' := fun a => by simp [RingHom.algebraMap_toAlgebra] }
-  have key := D.nat (Polynomial A) (Polynomial A') φ
-    (MonoidAlgebra.single 1 Polynomial.X - (MonoidAlgebra.mapRingHom G Polynomial.C) x)
-  have e : (MonoidAlgebra.mapRingHom G (φ : Polynomial A →+* Polynomial A'))
-        (MonoidAlgebra.single 1 Polynomial.X - (MonoidAlgebra.mapRingHom G Polynomial.C) x)
-      = MonoidAlgebra.single 1 Polynomial.X
-          - (MonoidAlgebra.mapRingHom G Polynomial.C) (MonoidAlgebra.mapRingHom G f x) := by
-    rw [map_sub, MonoidAlgebra.mapRingHom_single]
-    congr 1
-    · simp [φ, Polynomial.mapRingHom]
-    · ext g
-      simp [φ, Polynomial.mapRingHom, MonoidAlgebra.mapRingHom]
-  rw [e] at key
-  exact key
+  apply _root_.gdet_chi <;> assumption
 
 private theorem gdet_map_lam_mapRingHom_eq_lam {n : ℕ} {A G : Type} [CommRing A] [Group G] (D : GDet n A G)
     {A' : Type} [CommRing A'] (f : A →+* A') (i : ℕ) (x : MonoidAlgebra A G) :

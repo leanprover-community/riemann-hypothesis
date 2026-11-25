@@ -552,17 +552,9 @@ variable {N : Type*} [AddCommGroup N] [Module ℂ N]
 
 theorem casimir_scalar_on_generated {E : Fin n → Fin n → Module.End ℂ N} (hE : IsGlRep E) {V : Submodule ℂ N} {c : ℂ}
     (hc : ∀ v ∈ V, casimir E v = c • v) : ∀ v ∈ genSub E V, casimir E v = c • v := by
-  let T : Submodule ℂ N := LinearMap.ker (casimir E - c • (1 : Module.End ℂ N))
-  have hmem : ∀ v, v ∈ T ↔ casimir E v = c • v := by
-    intro v
-    simp only [T, LinearMap.mem_ker, LinearMap.sub_apply, LinearMap.smul_apply, Module.End.one_apply, sub_eq_zero]
-  have hT : genSub E V ≤ T := by
-    refine sInf_le ⟨fun v hv => (hmem v).2 (hc v hv), fun a b v hv => ?_⟩
-    rw [hmem] at hv ⊢
-    have := LinearMap.congr_fun (casimir_comm hE a b) v
-    simp only [Module.End.mul_apply] at this
-    rw [this, hv, map_smul]
-  exact fun v hv => (hmem v).1 (hT hv)
+  first
+    | exact _root_.ReciprocityTheory.ChartRestriction.DS.casimir_genSub
+    | apply _root_.ReciprocityTheory.ChartRestriction.DS.casimir_genSub <;> first | assumption | rfl | infer_instance
 
 end SlopeTestRemainingChoices
 

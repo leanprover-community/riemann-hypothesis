@@ -162,8 +162,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.MixModel GlobalTheory.Core.Rk.SW GlobalTheory.StdUnn
 open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 namespace PositivityTheory.Rg.Sw.Glob.GCommH
 
 variable {D : D7} {n : ℕ}
@@ -217,8 +215,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.MixModel
 open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
 open GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctions.BC
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace PositivityTheory.Rg.Sw.Glob.LieCPfH
 
@@ -423,7 +419,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero (swSec sZero IsKFinVe
 open GlobalTheory.Core.Rk.SW (sch)
 open GlobalTheory.Mem.AutSpace (SmFun)
 open GlobalTheory.Size (sobO thetaLevel)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.ThetaDens
 
 namespace GlobalTheory.ThetaDens
@@ -450,7 +445,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero (swSec sZero IsKFinVe
 open GlobalTheory.Core.Rk.SW (sch)
 open GlobalTheory.Mem.AutSpace (SmFun)
 open GlobalTheory.Size (sobO thetaLevel)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.ThetaDens
 
 
@@ -469,7 +463,6 @@ noncomputable section
 open scoped Matrix NNReal ENNReal ComplexConjugate TensorProduct
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj Formalism.IndefR.Datum MeasureTheory
 open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.MixModel
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 open Topology Filter GlobalTheory.Size
 
@@ -1107,7 +1100,6 @@ noncomputable section
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont
 open PositivityTheory.RgEis ResidueKilled.Tr PositivityTheory.Rg.SwEis
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.CompanionTheory.SwEisIwa
 
@@ -1145,7 +1137,6 @@ section -- clump:auto
 open scoped NNReal Matrix TensorProduct
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont
 open PositivityTheory.RgEis ResidueKilled.Tr PositivityTheory.Rg.SwEis
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.CompanionTheory.SwEisTop
 

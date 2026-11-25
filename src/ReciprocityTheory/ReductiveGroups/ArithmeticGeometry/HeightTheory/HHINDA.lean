@@ -211,8 +211,7 @@ theorem op_irreducible (ϖ : 𝓞 K) (hϖ : ϖ ∈ la.asIdeal) (hϖ2 : ϖ ∉ la
   have hxnu : ¬ IsUnit x := (IsLocalRing.mem_maximalIdeal x).mp hxm
   refine ⟨hxnu, ?_⟩
   intro a b hab
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   have ha : a ∈ IsLocalRing.maximalIdeal (Op D N la) := (IsLocalRing.mem_maximalIdeal a).mpr hcon.1
   have hb : b ∈ IsLocalRing.maximalIdeal (Op D N la) := (IsLocalRing.mem_maximalIdeal b).mpr hcon.2
   rw [hm, Ideal.mem_span_singleton] at ha hb

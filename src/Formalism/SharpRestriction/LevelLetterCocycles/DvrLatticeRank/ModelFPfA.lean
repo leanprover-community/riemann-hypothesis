@@ -30,8 +30,7 @@ theorem serMul_eq_sum (g : PowerSeries LL) (f : ℤ → V) (m : ℤ) (hf : ∀ k
   apply finsum_eq_sum_of_support_subset
   intro j hj
   simp only [Function.mem_support, Finset.coe_range, Set.mem_Iio] at hj ⊢
-  by_contra hjN
-  push_neg at hjN
+  by_contra! hjN
   apply hj
   rw [hf (i - j) (by omega), smul_zero]
 

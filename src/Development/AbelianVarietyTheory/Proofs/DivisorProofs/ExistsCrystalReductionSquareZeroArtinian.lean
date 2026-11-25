@@ -62,7 +62,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory.UPel.Sm GlobalTheory.Cris GlobalTheory.DeRham
 open scoped TensorProduct
 open GlobalTheory.ZM GlobalTheory.SiegelTor
-attribute [local instance] Over.cartesianMonoidalCategory
 
 noncomputable section
 open IsLocalRing

@@ -314,8 +314,7 @@ where
         · rw [if_neg he]
           have hnle : ¬ γ ≤ δ' := fun hle => hlt (lt_of_le_of_ne hle (Ne.symm he))
           obtain ⟨k, hk⟩ : ∃ k, δ' k < γ k := by
-            by_contra hcon
-            push_neg at hcon
+            by_contra! hcon
             exact hnle (fun k => hcon k)
           have hD : D δ' = 0 := by
             simp only [D]

@@ -153,8 +153,7 @@ theorem totalPull_totalD (y : ∀ s : Finset ι, A.obj s) :
     exact Cube.res_congr A y (PD.PullMap.image_erase_of_injOn h hi) _ _
   · rw [totalPull, if_neg h]
     obtain ⟨a, ha, b, hb, he, hab⟩ : ∃ a ∈ t, ∃ b ∈ t, τ a = τ b ∧ a ≠ b := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       exact h (fun x hx y hy hxy => hc x hx y hy hxy)
     have zero_of : ∀ s : Finset κ, a ∈ s → b ∈ s → totalPull ψ y s = 0 := fun s has hbs => by
       rw [totalPull, if_neg]

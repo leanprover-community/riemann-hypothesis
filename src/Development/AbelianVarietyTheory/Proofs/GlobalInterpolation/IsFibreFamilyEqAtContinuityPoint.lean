@@ -200,8 +200,7 @@ private lemma le_of_setLIntegral_eq_near {g g' : ℝ → ℝ} {β : ℝ} {W : Se
     (h : ∀ S ⊆ W, MeasurableSet S →
       ∫⁻ b in S, ENNReal.ofReal (g b) = ∫⁻ b in S, ENNReal.ofReal (g' b)) :
     g β ≤ g' β := by
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   obtain ⟨c₁, h₁, h₂⟩ := exists_between hlt
   obtain ⟨c₂, h₃, h₄⟩ := exists_between h₂
   have e₁ : ∀ᶠ b in 𝓝 β, g' b < c₁ := hg'.eventually (gt_mem_nhds h₁)

@@ -1,5 +1,6 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.LiteratureResults.LieGeometryGrowth.PerKer
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.LiteratureResults.LieGeometryGrowth.PairFactsAlt
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.LiteratureResults.DifferentialTranslates.ConeConvex
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.LiteratureResults.DifferentialTranslates.CorrFwd
@@ -40,14 +41,7 @@ private theorem hd_sub (c c' : List Γ → M) (x : List Γ) : hd (fun s => c s -
 
 omit [Module ℂ M] in
 private theorem hd_hd (x : List Γ) : ∀ c : List Γ → M, hd (hd c) x = 0 := by
-  induction x with
-  | nil => intro c; simp [hd]
-  | cons g t ih =>
-    intro c
-    rw [hd_cons]
-    simp only [hd_cons]
-    rw [hd_sub, ih]
-    simp
+  apply _root_.UpperTheory.V.Lit.Geo.hd_hd <;> assumption
 
 private theorem hd_lin (c c' : List Γ → M) (s t : ℂ) : hd (s • c + t • c') = s • hd c + t • hd c' := by
   funext x

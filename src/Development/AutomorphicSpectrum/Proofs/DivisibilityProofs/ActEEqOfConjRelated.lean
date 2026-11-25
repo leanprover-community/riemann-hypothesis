@@ -5,6 +5,7 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsGivenStageEqO
 public import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.AdlEqZeroOfMemNbhd
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.ExistsMatchOver
+import Development.WeilBound.ThetaLifts.FrameEstimates.ContinuousMixedSymm
 
 @[expose] public section
 
@@ -30,44 +31,7 @@ open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (AE cA incM UA Spc
 
 theorem isCharAF_of_isStd {F : Type} [Field F] [NumberField F] {ψ : AddChar (AF F) ℂ}
     (h : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.IsStd ψ) : IsCharAF F ψ := by
-  obtain ⟨K, hK, hx⟩ := Formalism.IndefR.Eqv.G5.adl_cocompact (F := F)
-  obtain ⟨C, hC⟩ := hK.exists_bound_of_continuousOn h.1.continuousOn
-  have bd : ∀ x, ‖ψ x‖ ≤ C := fun x => by
-    obtain ⟨a, ha⟩ := hx x
-    have e : ψ x = ψ (x - algebraMap F _ a) := by
-      have : x = (x - algebraMap F _ a) + algebraMap F _ a := by ring
-      conv_lhs => rw [this, AddChar.map_add_eq_mul, h.2.1 a, mul_one]
-    rw [e]
-    exact hC _ ha
-  have le1 : ∀ x, ‖ψ x‖ ≤ 1 := fun x => by
-    by_contra hlt
-    obtain ⟨m, hm⟩ := pow_unbounded_of_one_lt C (not_le.1 hlt)
-    have := bd (m • x)
-    rw [AddChar.map_nsmul_eq_pow, norm_pow] at this
-    linarith
-  have hn : ∀ x, ‖ψ x‖ = 1 := fun x => by
-    have e : ‖ψ x‖ * ‖ψ (-x)‖ = 1 := by
-      rw [← norm_mul, ← AddChar.map_add_eq_mul, add_neg_cancel, AddChar.map_zero_eq_one, norm_one]
-    nlinarith [le1 x, le1 (-x), norm_nonneg (ψ x), norm_nonneg (ψ (-x))]
-  refine ⟨h.1, hn, h.2.1, ?_⟩
-  have hN : ((Module.finrank ℚ F : ℕ) : ℝ) ≠ 0 := by
-    exact_mod_cast (Module.finrank_pos (R := ℚ) (M := F)).ne'
-  have tr1 : Algebra.trace ℝ (mixedEmbedding.mixedSpace F) 1 = (Module.finrank ℚ F : ℝ) := by
-    have := trace_emb (F := F) 1
-    have e1 : Algebra.trace ℚ F 1 = (Module.finrank ℚ F : ℚ) := by
-      have := Algebra.trace_algebraMap (S := F) (1 : ℚ)
-      simpa using this
-    rw [map_one, e1] at this
-    simpa using this
-  refine ⟨re F (((2 * (Module.finrank ℚ F : ℝ))⁻¹ : ℝ) • (1 : mixedEmbedding.mixedSpace F)), ?_⟩
-  rw [psi_re h, map_smul, tr1, smul_eq_mul]
-  have : ((2 * (Module.finrank ℚ F : ℝ))⁻¹ * (Module.finrank ℚ F : ℝ)) = (2⁻¹ : ℝ) := by
-    field_simp
-  rw [this]
-  push_cast
-  have e : -(2 * (Real.pi : ℂ) * Complex.I) * 2⁻¹ = -(Real.pi * Complex.I) := by ring
-  rw [e, Complex.exp_neg, Complex.exp_pi_mul_I]
-  norm_num
+  apply _root_.PositivityTheory.ThKEst.W.isCharAF <;> assumption
 
 section Inverse
 

@@ -1,5 +1,7 @@
 module
 
+
+import Formalism.LocalToGlobal.GlobalTheory.GL6.PBwLocGlob
 public import Formalism.SharpRestriction.GrowthBounds.IntegralWeylLatticeSpan.WeylLatticeDescent
 public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.CmpCMemMIff
 public import Formalism.SharpRestriction.GrowthBounds.IntegralWeylLatticeSpan.RestGramW
@@ -10,7 +12,6 @@ public import Formalism.LocalToGlobal.GlobalTheory.GL6.PKerAtP
 import Formalism.LocalToGlobal.GlobalTheory.GL6.PSplitT
 import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.RecAct
 import Mathlib.RingTheory.PiTensorProduct
-
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.SharpRestriction.GrowthBounds.IntegralWeylLatticeSpan.IntSpanGSmul, Formalism.SharpRestriction.GrowthBounds.IntegralWeylLatticeSpan.ColSpanMulUnit
 
@@ -355,28 +356,7 @@ theorem restLatO_of {T : ∀ u : D.what₂.Word, Forms0 D u} {Gt : GatTies D} {I
 theorem span_dualSet {K : Type} [Field K] [NumberField K] {n : ℕ} (σ : K →+* K) (J : Matrix (Fin n) (Fin n) K)
     (L : Submodule (𝓞 K) (Fin n → K)) :
     ((Submodule.span (𝓞 K) (dualSet σ J L) : Submodule (𝓞 K) (Fin n → K)) : Set (Fin n → K)) = dualSet σ J L := by
-  apply le_antisymm
-  · intro y hy
-    induction hy using Submodule.span_induction with
-    | mem y hy => exact hy
-    | zero =>
-      intro x _
-      refine ⟨0, ?_⟩
-      simp [Formalism.UG.hform]
-    | add y y' _ _ hy hy' =>
-      intro x hx
-      have e : Formalism.UG.hform σ J x (y + y') = Formalism.UG.hform σ J x y + Formalism.UG.hform σ J x y' := by
-        simp only [Formalism.UG.hform, Pi.add_apply, mul_add, Finset.sum_add_distrib]
-      rw [e]
-      exact add_mem (hy x hx) (hy' x hx)
-    | smul r y _ hy =>
-      intro x hx
-      have e : Formalism.UG.hform σ J x (r • y) = algebraMap (𝓞 K) K r * Formalism.UG.hform σ J x y := by
-        simp only [Formalism.UG.hform, Pi.smul_apply, Algebra.smul_def, Finset.mul_sum]
-        refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => by ring
-      rw [e]
-      exact mul_mem ⟨r, rfl⟩ (hy x hx)
-  · exact Submodule.subset_span
+  apply +allowSynthFailures _root_.Formalism.L2.GlobalTheoryTheory.LocalLatticeBases.bwG_span_dualSet <;> assumption
 
 open Formalism.L2.GlobalTheoryTheory.LocalLatticeBases Formalism.L2.GlobalTheoryTheory.LocalLatticeBases.LocB in
 theorem restExB (D : D7) : RestExB D := by

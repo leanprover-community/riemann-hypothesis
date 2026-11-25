@@ -608,8 +608,7 @@ theorem exists_separable_specialization {D : ℕ} (P : (MvPolynomial (Fin D) ℚ
     linear_combination (C (algebraMap R F da) * C (algebraMap R F db)) * hab
   have hδ : da * db ≠ 0 := mul_ne_zero (nonZeroDivisors.ne_zero hda) (nonZeroDivisors.ne_zero hdb)
   obtain ⟨c, hc⟩ : ∃ c : Fin D → ℚ, MvPolynomial.eval c (da * db) ≠ 0 := by
-    by_contra hno
-    push_neg at hno
+    by_contra! hno
     exact hδ (MvPolynomial.funext fun c => by simpa using hno c)
   refine ⟨c, ?_⟩
   have key' := congrArg (Polynomial.map (MvPolynomial.eval c)) key
@@ -997,8 +996,7 @@ variable {φ}
 
 theorem exists_evalAt_ne_zero (hinj : ∀ u : A, (∀ j, φ j u = 0) → u = 0) {u : A} (hu : u ≠ 0) :
     ∃ k, evalAt φ k u ≠ 0 := by
-  by_contra h
-  push_neg at h
+  by_contra! h
   exact hu (hinj u fun j => by simpa [evalAt_of_lt φ j.2] using h j)
 
 theorem val_smul (c : ℂ) (u : A) (hc : c ≠ 0) : val φ (c • u) = val φ u := by

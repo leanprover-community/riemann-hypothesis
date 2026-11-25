@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.WedgeEqSpanOfIsFrameAt
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.LevelSectionsExactKernelLocusOpen
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsGenericFlag
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ExistsGenOfIsVBOne
@@ -50,22 +51,8 @@ variable {X : Scheme.{0}} {Ω : Type} [Field Ω] {E : Type} [AddCommGroup E] [Mo
 
 theorem wedge_frame {A : Lat ξ E} {p : ℕ} {v : Fin p → E} {x : Cpt ξ} (h : A.IsFrameAt v x) :
     A.wedge p x = Submodule.span (regAt ξ x) {exteriorPower.ιMulti Ω p v} := by
-  apply le_antisymm
-  · refine Submodule.span_le.2 ?_
-    rintro w ⟨b, hb, rfl⟩
-    have : ∀ i, ∃ c : Fin p → regAt ξ x, ∑ j, c j • v j = b i := fun i =>
-      (Submodule.mem_span_range_iff_exists_fun _).1 (h.2 ▸ hb i)
-    choose c hc using this
-    refine Submodule.mem_span_singleton.2 ⟨(Matrix.of c).det, ?_⟩
-    have e := alt_det (exteriorPower.ιMulti Ω p) v ((regAt ξ x).subtype.mapMatrix (Matrix.of c))
-    rw [← RingHom.map_det] at e
-    refine e.symm.trans ?_
-    congr 1
-    funext i
-    exact hc i
-  · refine Submodule.span_mono ?_
-    rintro w rfl
-    exact ⟨v, fun i => h.2 ▸ Submodule.subset_span ⟨i, rfl⟩, rfl⟩
+  intros
+  apply _root_.GlobalTheory.CompanionTheory.Ar.Lat.wedge_eq_span_of_isFrameAt <;> assumption
 
 theorem span_unit {x : Cpt ξ} {u : Ω} (hu : unitAt ξ x u) (e : E) :
     Submodule.span (regAt ξ x) {u • e} = Submodule.span (regAt ξ x) {e} := by

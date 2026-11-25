@@ -1,5 +1,6 @@
 module
 
+import Formalism.LocalToGlobal.CharacterGerms.RowTiePLogSt
 public import Formalism.LocalToGlobal.CharacterGerms.RowTiePCEqOf
 public import Formalism.LocalToGlobal.CharacterGerms.RowTieCartAdd
 public import Formalism.LocalToGlobal.CharacterGerms.RowTiePCEqSum2
@@ -362,14 +363,7 @@ theorem pderiv_eval_single {n : ℕ} {a : Fin 1 → Pt C n dd} (ha : Z0 a) (f : 
     Fintype.sum_prod_type, Fin.sum_univ_one]
 
 theorem germEval_oneStandardPoint_self (f : PS C 1 dd) : ev (n := 1) ![pt C dd 0] f = f := by
-  unfold ev
-  have : (fun p : Fin 1 × Fin dd => (![pt C dd 0] : Fin 1 → Pt C 1 dd) p.1 p.2) = X := by
-    funext p
-    obtain ⟨k, j⟩ := p
-    fin_cases k
-    rfl
-  rw [this, subst_self]
-  rfl
+  apply _root_.Formalism.L2.FormalSeriesBounds.LogEx.ev_self1 <;> assumption
 
 theorem constantCoeff_pderiv {σ : Type} (q : σ) (f : MvPowerSeries σ C) :
     constantCoeff (pderiv (R := C) q f) = coeff (Finsupp.single q 1) f := by

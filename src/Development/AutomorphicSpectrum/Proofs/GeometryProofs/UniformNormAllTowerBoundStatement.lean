@@ -1,5 +1,6 @@
 module
 
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PLocalRep
 public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.HasMultiplier
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LabelSigBijective
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsHomogeneousCompIdeal
@@ -215,24 +216,7 @@ variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] {Ω : 
 
 theorem isMultiHomog_X_single [DecidableEq K] (k : K) (i : ι k) :
     IsMultiHomog (X ⟨k, i⟩ : MRing ι) (Pi.single k 1) := by
-  classical
-  intro m hm b
-  rw [support_X, Finset.mem_singleton] at hm
-  subst hm
-  by_cases hb : b = k
-  · subst hb
-    rw [Finset.sum_eq_single i]
-    · simp
-    · intro j _ hj
-      rw [Finsupp.single_apply, if_neg]
-      intro h
-      exact hj (by simpa using h.symm)
-    · simp
-  · rw [Pi.single_eq_of_ne hb]
-    refine Finset.sum_eq_zero fun j _ => ?_
-    rw [Finsupp.single_apply, if_neg]
-    intro h
-    exact hb (congrArg Sigma.fst h).symm
+  apply _root_.GroundTheory.Heights₂.Heights.HilbertSamuel.LocalRep.isMultiHomog_X <;> assumption
 
 theorem hasVal_coord [DecidableEq K] (k : K) (i : ι k) :
     Small.HasVal y (Pi.single k 1) (y ⟨k, i⟩) z (z ⟨k, i⟩) := by
@@ -345,8 +329,7 @@ private theorem norm_le_one_of_isIntegral_int' {q : ℕ} [Fact q.Prime]
     have h := congrArg (fun w => (K₀.val : K₀ →+* PadicAlgCl q) w) hg
     simp only [Polynomial.hom_eval₂, map_zero] at h
     exact h
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   rw [Polynomial.eval₂_eq_sum_range, Finset.sum_range_succ, hmo.coeff_natDegree, map_one,
     one_mul] at hg'
   have hn : g.natDegree ≠ 0 := by
@@ -469,8 +452,7 @@ theorem exists_isometric_embedding : ∀ (E : Type) [Field E] [NumberField E] [I
       have hk : (1 : ℝ) ≤ (vV T.V x⁻¹ : ℝ) := by
         have h := hAy
         simp only [GlobalTheory.CompanionTheory.Ar.Rec.FinRd.absT, if_neg hy0] at h
-        by_contra hlt
-        push_neg at hlt
+        by_contra! hlt
         have hk0 : vV T.V x⁻¹ ≤ 0 := by
           have : vV T.V x⁻¹ < 1 := by exact_mod_cast hlt
           omega

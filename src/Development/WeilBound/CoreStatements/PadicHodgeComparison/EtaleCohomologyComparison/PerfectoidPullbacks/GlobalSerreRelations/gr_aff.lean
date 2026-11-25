@@ -749,8 +749,7 @@ theorem dividedPowerFiltration_bot {K : Type} [CommRing K] {s : ℕ} (hs : 0 < s
   refine le_bot_iff.1 (Ideal.span_le.2 ?_)
   rintro _ ⟨l, hl, hr, rfl⟩
   have : ∃ p ∈ l, p.1 ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     have : (l.map Prod.fst).sum = 0 := List.sum_eq_zero (by
       intro x hx
       obtain ⟨p, hp, rfl⟩ := List.mem_map.1 hx

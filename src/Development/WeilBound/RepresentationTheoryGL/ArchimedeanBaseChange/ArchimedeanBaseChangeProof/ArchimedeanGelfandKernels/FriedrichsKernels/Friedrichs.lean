@@ -49,10 +49,6 @@ def Friedrichs : Prop :=
         (∀ x : D, ∃ y : D, (y : H) = ContinuousLinearMap.adjoint U x ∧ A y = ContinuousLinearMap.adjoint U (A x)) →
         U * R = R * U
 
-def OneParam : Prop :=
-  ∀ (V : Type) [NormedAddCommGroup V] [NormedSpace ℂ V] [FiniteDimensional ℂ V] (φ : ℝ → (V →L[ℂ] V)),
-    Continuous φ → φ 0 = 1 → (∀ s t, φ (s + t) = φ s * φ t) → ∃ A : V →L[ℂ] V, ∀ t, HasDerivAt φ (A * φ t) t
-
 def toC0 (f : ℝ → ℂ) : C₀(ℝ, ℂ) :=
   @dite _ (Continuous f ∧ Tendsto f (cocompact ℝ) (𝓝 0)) (Classical.dec _) (fun h => ⟨⟨f, h.1⟩, h.2⟩) (fun _ => 0)
 

@@ -481,8 +481,7 @@ theorem exists_colength_one (k A : Type) [Field k] [CommRing A] [Algebra k A] [F
     rw [Ne, Submodule.mkQ_apply, Submodule.Quotient.mk_eq_zero]
     exact htW
   obtain ⟨φ, hφ⟩ : ∃ φ : Module.Dual k (A ⧸ W), φ (W.mkQ t) ≠ 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     exact hq ((Module.forall_dual_apply_eq_zero_iff k _).mp hcon)
   set l : A →ₗ[k] k := (φ (W.mkQ t))⁻¹ • (φ ∘ₗ W.mkQ) with hl
   have hlt : l t = 1 := by

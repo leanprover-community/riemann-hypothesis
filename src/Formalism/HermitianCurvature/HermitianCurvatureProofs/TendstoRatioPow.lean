@@ -72,8 +72,7 @@ theorem isCompact_preimage_pow {s : ℕ} (hs : s ≠ 0) {ε : ℂ} (hε : ‖ε�
     have := hM _ hz
     rwa [norm_mul, norm_inv, hε, inv_one, one_mul, norm_pow] at this
   rw [Metric.mem_closedBall, dist_zero_right]
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   have h2 : 1 < ‖z‖ := lt_of_le_of_lt (le_max_left _ _) hcon
   have h3 : ‖z‖ ≤ ‖z‖ ^ s := le_self_pow₀ h2.le hs
   linarith [le_max_right 1 M]

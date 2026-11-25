@@ -148,8 +148,7 @@ theorem xiMon_mem (b : ℕ) (β : Fin r → ℕ) (hβ : ∑ c, β c = b) : xiMon
     have hm' : m = xiExp N r D.T.t β := Finset.mem_singleton.mp (MvPolynomial.support_monomial_subset hm)
     subst hm'
     refine ⟨fun v hv => ?_, ?_⟩
-    · by_contra hne
-      push_neg at hne
+    · by_contra! hne
       exact (Finsupp.mem_support_iff.mp hv) (xiExp_other N r D.T.t β v hne)
     · simp only [xiExp_xi, hβ]
   · rw [GLWeightTheory.mem_integral_poly_iff_coeff]

@@ -1384,7 +1384,7 @@ theorem real_maps_unique : _root_.GlobalTheory.FunPr.ThetaLocalInputs → ∀ (F
       _ = R.p (D i g) := hρ i g hg
     rw [Module.End.mul_apply, Module.End.mul_apply, lhs, rhs]
   have hrank : Module.rank ℂ R.Pi ≤ Cardinal.aleph0 :=
-    (LinearMap.rank_le_of_surjective π hπ).trans (_root_.GlobalTheory.T.polarization_rank_le_dim hKP _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ hPV)
+    (LinearMap.rank_le_of_surjective π hπ).trans (_root_.GlobalTheory.ThK.PolRank.polarization_rank_le hKP _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ hPV)
   obtain ⟨c, hc⟩ := _root_.GlobalTheory.dixmier_schur_of_rank_le_aleph0 R.Pi ι ρ T hR.nontriv hrank irrρ comm
   have hT : ∀ x, T x = c • x := fun x => by rw [hc]; rfl
   refine ⟨ψ, c, ?_, hψ, fun f hf => ?_⟩

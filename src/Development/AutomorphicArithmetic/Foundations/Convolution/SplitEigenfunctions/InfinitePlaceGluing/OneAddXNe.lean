@@ -318,8 +318,7 @@ theorem UpperTheory.good_prime_split_or_inert_of_quadratic :
   · subst hw
     by_cases hn : normV w = normV (w.under (𝓞 ℚ))
     · refine Or.inl ⟨hn, ?_⟩
-      by_contra hu
-      push_neg at hu
+      by_contra! hu
       exact no_ram D w hG (fun w' h => by_contra fun hne => hu w' hne h) hn
     · exact Or.inr (norm_sq h2 hn)
 end -- clump:auto

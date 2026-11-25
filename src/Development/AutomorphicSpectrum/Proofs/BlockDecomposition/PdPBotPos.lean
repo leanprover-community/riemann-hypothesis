@@ -442,8 +442,7 @@ theorem dividedPowerFiltration_dividedPowersBot' (O : Type) [CommRing O] {r : �
   refine Ideal.span_le.2 ?_
   rintro _ ⟨l, hl, hs, rfl⟩
   have hq : ∃ q ∈ l, q.1 ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     have : (l.map Prod.fst).sum = 0 := List.sum_eq_zero (by
       intro x hx
       obtain ⟨q, hq, rfl⟩ := List.mem_map.1 hx

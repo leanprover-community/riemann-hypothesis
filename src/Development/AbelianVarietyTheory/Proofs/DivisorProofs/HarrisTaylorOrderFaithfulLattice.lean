@@ -118,8 +118,7 @@ lemma saturate (p : ℕ) [Fact p.Prime] (M : Type) [AddCommGroup M] [Module.Free
   have hp1 : 1 < p := (Fact.out : p.Prime).one_lt
   have hNpos : ∀ u : M, u ≠ 0 → 0 < N u := by
     intro u hu
-    by_contra h
-    push_neg at h
+    by_contra! h
     apply hu
     have h0 : ∀ i, b.repr u i = 0 := fun i =>
       Int.natAbs_eq_zero.1 (Nat.eq_zero_of_le_zero ((Finset.single_le_sum (fun j _ => Nat.zero_le _)

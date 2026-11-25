@@ -46,6 +46,7 @@ import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ContinuousExptPY
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SinhcAdjointApplyMatrixUpperRightBlockElementP
 
 @[expose] public section
 
@@ -57,16 +58,7 @@ namespace GlobalTheory.PolarU
 open scoped Matrix.Norms.Operator in
 theorem summable_sinhc_series_mat {n : Type} [Fintype n] [DecidableEq n] (A : Matrix n n ℂ) :
     Summable fun k : ℕ => (((2 * k + 1).factorial : ℂ)⁻¹) • A ^ (2 * k) := by
-  have h0 : Summable fun m : ℕ => ‖((m.factorial : ℂ)⁻¹) • A ^ m‖ :=
-    NormedSpace.norm_expSeries_summable' A
-  have h1 : Summable fun k : ℕ => ‖(((2 * k).factorial : ℂ)⁻¹) • A ^ (2 * k)‖ :=
-    h0.comp_injective (i := fun k : ℕ => 2 * k) (fun a b h => by simpa using h)
-  refine Summable.of_norm_bounded h1 fun k => ?_
-  rw [norm_smul, norm_smul]
-  refine mul_le_mul_of_nonneg_right ?_ (norm_nonneg _)
-  rw [norm_inv, norm_inv, Complex.norm_natCast, Complex.norm_natCast]
-  refine inv_anti₀ (by exact_mod_cast Nat.factorial_pos _) ?_
-  exact_mod_cast Nat.factorial_le (Nat.le_succ _)
+  apply _root_.GlobalTheory.PolarU.SinhcPres.summable_sinhc <;> assumption
 
 theorem hasSum_shc_series (x : ℝ) :
     HasSum (fun k : ℕ => (((2 * k + 1).factorial : ℝ)⁻¹) * x ^ (2 * k)) (shc x) := by

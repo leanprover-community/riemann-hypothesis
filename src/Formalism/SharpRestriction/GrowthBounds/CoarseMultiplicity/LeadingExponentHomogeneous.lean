@@ -189,7 +189,6 @@ def KapAt (C0 CYb Cde Ck CD Cb CE1 CE2 Cc : ℝ) : Prop :=
 theorem lev_pow (C0 CE1 CE2 : ℝ) (X : Loc) (j : Fin (numSeg X.TT)) (i : Fin (segS X.TT j)) :
     ∃ t, (X.seg C0 CE1 CE2 j).P X.p i = X.p ^ (t + 1) := by
   obtain ⟨s, ⟨-, -, -, h4⟩, h5⟩ := get_spec X.TT j i
-  have hlt : (segDists X.TT j).get i < segG X.TT j := h5 ▸ h4
   refine ⟨segG X.TT j - (segDists X.TT j).get i - 1, ?_⟩
   show X.p ^ (segG X.TT j - (segDists X.TT j).get i) = _
   congr 1

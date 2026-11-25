@@ -523,27 +523,7 @@ theorem restr_periodic (ρ : Representation ℂ (LH k n) E) (f : cIndSpace (LH k
   exact congrFun (congrArg Subtype.val h1) (uv n v)
 
 theorem continuous_mvec (n : ℕ) : Continuous (mvec (k := k) (n := n)) := by
-  have hval : Continuous fun g : Mir k n =>
-      ((g : GL (Fin (n + 1)) k) : Matrix (Fin (n + 1)) (Fin (n + 1)) k) :=
-    Units.continuous_val.comp continuous_subtype_val
-  have hblock : Continuous fun g : Mir k n =>
-      ((mirabolicProjection k n g : GL (Fin n) k) : Matrix (Fin n) (Fin n) k) := by
-    refine continuous_pi fun i => continuous_pi fun j => ?_
-    exact (continuous_apply (Fin.castSucc j)).comp ((continuous_apply (Fin.castSucc i)).comp hval)
-  have h1 : Continuous fun g : Mir k n =>
-      (((mirabolicProjection k n g)⁻¹ : GL (Fin n) k) : Matrix (Fin n) (Fin n) k) := by
-    have hinv : Continuous fun g : Mir k n => g⁻¹ := continuous_inv
-    have heq : (fun g : Mir k n =>
-        (((mirabolicProjection k n g)⁻¹ : GL (Fin n) k) : Matrix (Fin n) (Fin n) k)) =
-        fun g => ((mirabolicProjection k n g⁻¹ : GL (Fin n) k) : Matrix (Fin n) (Fin n) k) := by
-      funext g
-      rw [map_inv]
-    rw [heq]
-    exact hblock.comp hinv
-  have h2 : Continuous (colv (k := k) (n := n)) := by
-    refine continuous_pi fun i => ?_
-    exact hval.matrix_elem _ _
-  exact h1.matrix_mulVec h2
+  apply _root_.GlobalTheory.CompanionTheory.MirLevi.Bump.continuous_mvec <;> assumption
 
 theorem support_abs (F : Mir k n → E) (C : Set (Mir k n))
     (hF : ∀ g, F g ≠ 0 → ∃ h ∈ LH k n, ∃ c ∈ C, g = h * c) (v : Fin n → k) (hv : F (uv n v) ≠ 0) :

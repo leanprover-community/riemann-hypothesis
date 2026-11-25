@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.RootOriginDegreeCount
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsHodgeLine
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsPolAVGenericFibre
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.CoordsAtSmul
@@ -20,6 +21,7 @@ import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.T
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.SabPull
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ChartPullbacks.CubePullbacks.CubePull
 import Std.Tactic.BVDecide.Normalize.Prop
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.EtaleSpaceCohomologyEqZeroOfSimplicialRowExact
 
 @[expose] public section
 
@@ -340,17 +342,8 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {D : Da
 theorem not_inFibre {X : Scheme.{0}} {ξ : Spec (CommRingCat.of Ω) ⟶ X} (hξ : IsCptGen ξ)
     {z : Spec (CommRingCat.of ℂ) ⟶ X} (hz : genPt ξ ⤳ centre z) {p : ℕ} (hp : p.Prime) :
     ¬ InFibre ξ p ⟨centre z, hz⟩ := by
-  have hp0 : (p : ℂ) ≠ 0 := Nat.cast_ne_zero.2 hp.ne_zero
-  have h1 := RootHt.ArchB.val_nat (ξ := ξ) (z := z) hz p
-  have h2 := RootHt.ArchB.val_inv₀ hp0 h1
-  intro h
-  refine h ⟨fun e => hp0 ?_, ?_, ?_⟩
-  · rw [e] at h1
-    exact RootHt.ArchB.val_unique hξ h1 (RootHt.ArchB.val_zero hz)
-  · obtain ⟨s, e, -⟩ := h1.choose_spec
-    exact ⟨s, e⟩
-  · obtain ⟨s, e, -⟩ := h2.choose_spec
-    exact ⟨s, e⟩
+  intros
+  apply _root_.GlobalTheory.CompanionTheory.Ar.Small.RepAt.not_inFibre <;> assumption
 
 theorem exists_dual (𝔐 : HodgeCpt Y S y) (hind : iSupIndep 𝔐.Vgen) (q : Cpt 𝔐.ξ)
     (hlat : 𝔐.M.lat q = ⨆ s, 𝔐.dR s q) (s : CMType H ⊕ CMType H) {r : ℕ} (b : Fin r → 𝔐.Li)
@@ -492,18 +485,7 @@ theorem tan_of_valAt {X : Scheme.{0}} {Ω' : Type} [Field Ω'] {ξ : Sp Ω' ⟶ 
 theorem exists_sub_mem_flagStep {Ω' : Type} [Field Ω'] {E' : Type} [AddCommGroup E'] [Module Ω' E'] {r : ℕ}
     {b : Fin r → E'} (i : Fin r) {x : E'} (hx : x ∈ flagStep Ω' b (i + 1)) :
     ∃ a : Ω', x - a • b i ∈ flagStep Ω' b i := by
-  classical
-  obtain ⟨d, hd, rfl⟩ := exists_coeff_of_mem_flagStep hx
-  refine ⟨d i, ?_⟩
-  have e : ∑ l, d l • b l - d i • b i = ∑ l ∈ Finset.univ.erase i, d l • b l := by
-    rw [← Finset.add_sum_erase _ _ (Finset.mem_univ i)]
-    abel
-  rw [e]
-  refine Submodule.sum_mem _ fun l hl => ?_
-  rcases lt_or_gt_of_ne (Finset.ne_of_mem_erase hl) with hli | hli
-  · exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨l, hli, rfl⟩)
-  · rw [hd l hli]
-    simp
+  apply _root_.GlobalTheory.CompanionTheory.Ar.FlagGr.exists_diag <;> assumption
 
 end Concrete
 

@@ -294,8 +294,7 @@ theorem exists_basicOpen_of_isSncModel : ∀ (K : Type) [Fintype K] (ι : K → 
 
   simp only [map_sub, map_sum, map_mul, map_one] at h1
   obtain ⟨l, hl⟩ : ∃ l, eval t (map (algebraMap ℚ ℂ) (F l)) ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     simp [hc] at h1
   have hfl : aeval (fun q : Σ k, ι k => y q / y ⟨q.1, p q.1⟩) (F l) ≠ 0 := fun h0 => hl (ht _ h0)
   obtain ⟨-, z, n, -, -, hspan, hq⟩ := hcl l hfl _ rfl

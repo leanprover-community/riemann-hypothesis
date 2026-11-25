@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicArithmetic.AutomorphicVarieties.GaussSumFiltrations.HilbertSlashUnnormalizedConstMul
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaussSumFiltrations.EvenPos
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaussSumFiltrations.DualLatticeIndexEqDiscrPowMulDetPow
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaussSumFiltrations.EvenPosGramFormIntegralLatticeProperties
@@ -459,8 +460,7 @@ theorem gaussSum_dual_shift : ∀ (F : Type) [Field F] [NumberField F] (κ : Typ
   · have h0 : oneL y = 0 := by simp [oneL, hyL]
     rw [h0, zero_mul]
     obtain ⟨w, hw, hnot⟩ : ∃ w ∈ dualL F G, et (BF G y w) ≠ 1 := by
-      by_contra hcon
-      push_neg at hcon
+      by_contra! hcon
       exact hyL (hdd y (fun ν hν => (etiff _).1 (hcon ν hν)))
     have hs : c • w ∈ aL κ (1 : F) := (hB1 _).2 (hcw w hw)
     have hf : ∀ x ∈ aL κ (1 : F), ∀ m ∈ aL κ c,
@@ -1106,26 +1106,7 @@ theorem decomp (γ : GL (Fin 2) F) (hdet : γ.val.det = 1) (hc : γ.val 1 0 ≠ 
 
 private theorem sl0_mul_of_pos (k : ℕ) (g h : GL (Fin 2) (InfinitePlace F → ℝ)) (hh : Pos h)
     (f : Hn F → ℂ) : sl0 k (g * h) f = sl0 k h (sl0 k g f) := by
-  funext z
-  simp only [sl0]
-  have hact : act (g * h) z = act g (act h z) := by
-    funext v
-    simp only [act, map_mul, mul_smul]
-  have hden : ∀ v, UpperHalfPlane.denom (cmp v (g * h)) (z v) =
-      UpperHalfPlane.denom (cmp v g) (act h z v) * UpperHalfPlane.denom (cmp v h) (z v) := by
-    intro v
-    have hpos : 0 < ((cmp v h).det : ℝ) := by
-      have e : ((cmp v h).det : ℝ) =
-          (h : Matrix (Fin 2) (Fin 2) (InfinitePlace F → ℝ)).det v := by
-        rw [Matrix.GeneralLinearGroup.val_det_apply, Matrix.det_fin_two, Matrix.det_fin_two]
-        simp [cmp]
-      rw [e]
-      exact hh v
-    rw [map_mul, UpperHalfPlane.denom_cocycle_σ]
-    simp only [UpperHalfPlane.σ, if_pos hpos, ContinuousAlgEquiv.refl_apply]
-    rfl
-  rw [hact, Finset.prod_congr rfl (fun v _ => hden v), Finset.prod_mul_distrib, mul_inv, mul_pow]
-  ring
+  apply _root_.GlobalTheory.HilbertThetaSeries.SlashCocycle.hilbertSlashUnnormalized_mul <;> assumption
 
 private theorem sl0_smul (k : ℕ) (h : GL (Fin 2) (InfinitePlace F → ℝ)) (ζ : ℂ)
     (f : Hn F → ℂ) : sl0 k h (ζ • f) = ζ • sl0 k h f := by

@@ -237,18 +237,7 @@ open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.Conjuga
 open GlobalTheory.WeilDeligne GlobalTheory.LocLanglands GlobalTheory.LocGL GlobalTheory.GalOfCusp
 
 private theorem UpperTheory.nonempty_qbar_ringEquiv_complex (p : ℕ) [Fact p.Prime] : Nonempty (Qbar p ≃+* ℂ) := by
-  have hc := _root_.GlobalTheory.cardinalMk_padicAlgCl_eq_continuum p
-  obtain ⟨s, hs⟩ := exists_isTranscendenceBasis ℚ (PadicAlgCl p)
-  obtain ⟨t, ht⟩ := exists_isTranscendenceBasis ℚ ℂ
-  have hQ : Cardinal.mk ℚ ≤ Cardinal.aleph0 := Cardinal.mk_le_aleph0
-  have h1 := IsAlgClosed.cardinal_eq_cardinal_transcendence_basis_of_aleph0_lt _ hs hQ
-    (by rw [hc]; exact Cardinal.aleph0_lt_continuum)
-  have h2 := IsAlgClosed.cardinal_eq_cardinal_transcendence_basis_of_aleph0_lt _ ht hQ
-    (by rw [Cardinal.mk_complex]; exact Cardinal.aleph0_lt_continuum)
-  simp only [Cardinal.lift_id] at h1 h2
-  have hst : Cardinal.mk s = Cardinal.mk t := by rw [← h1, ← h2, hc, Cardinal.mk_complex]
-  obtain ⟨e⟩ := Cardinal.eq.mp hst
-  exact ⟨IsAlgClosed.equivOfTranscendenceBasis _ _ e hs ht⟩
+  apply _root_.GlobalTheory.nonempty_padicAlgCl_ringEquiv_complex <;> assumption
 
 private theorem UpperTheory.algEquiv_fixes_root_of_fixes_prime_power_roots {F K : Type} [Field F] [Field K] [Algebra F K] (g : K ≃ₐ[F] K) :
     ∀ d : ℕ, d ≠ 0 → (∀ p b : ℕ, p.Prime → p ^ b ∣ d → ∀ ζ : K, ζ ^ (p ^ b) = 1 → g ζ = ζ) →

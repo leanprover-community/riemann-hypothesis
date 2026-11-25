@@ -1,5 +1,6 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.FrobeniusSmoothVectors.PrSetlift
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.ResMapBijective
 public import Mathlib.RingTheory.PowerSeries.Basic
 public import Mathlib.Topology.Algebra.Group.Defs
@@ -236,17 +237,7 @@ private theorem ac_const {G R : Type} [TopologicalSpace G] [CommRing R] {I : Ide
 
 private theorem ac_sum {G R ι : Type} [TopologicalSpace G] [CommRing R] {I : Ideal R} (s : Finset ι)
     {f : ι → G → R} (hf : ∀ i, AdicCont I (f i)) : AdicCont I fun g => ∑ i ∈ s, f i g := by
-  classical
-  intro N
-
-  simp only [map_sum]
-  induction s using Finset.induction_on with
-  | empty =>
-    simp only [Finset.sum_empty]
-    exact IsLocallyConstant.const 0
-  | insert a s ha ih =>
-    simp only [Finset.sum_insert ha]
-    exact (hf a N).add ih
+  apply _root_.ac_sum <;> assumption
 
 private theorem mat_lc {G A R : Type} [TopologicalSpace G] [CommRing A] [CommRing R] [Algebra A R]
     {n : ℕ} (t : A) (f : G → Matrix (Fin n) (Fin n) R)

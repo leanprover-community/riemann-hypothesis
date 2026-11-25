@@ -79,8 +79,7 @@ theorem valued_lt_one_of_map {F E : Type} [Field F] [NumberField F] [Field E] [N
     refine tendsto_pow_atTop_nhds_zero_iff_norm_lt_one.1 ?_
     simpa [Function.comp_def, map_pow] using h2
   obtain ⟨ϖ, hϖ0, hϖ1⟩ := exists_ne_zero_norm_lt_one v
-  by_contra h
-  push_neg at h
+  by_contra! h
   have hz0 : z ≠ 0 := by
     rintro rfl
     rw [norm_zero] at h

@@ -187,8 +187,7 @@ theorem mem_of_sum_mul_pow_mem_of_valuation_zpow (Ω : Type) [Field Ω] (A : Val
   have h1 : t i ^ N ≤ 1 := pow_le_one₀ zero_le' (hle i (Finset.mem_range.2 hi))
   rw [hpow i k hk, zpow_le_one_iff_right_of_lt_one₀ hb0 hℓ1] at h1
   have hk0 : 0 ≤ k := by
-    by_contra hneg
-    push_neg at hneg
+    by_contra! hneg
     have : (N : ℤ) * k ≤ -(N : ℤ) := by nlinarith
     omega
   rw [← A.valuation_le_one_iff, hk]

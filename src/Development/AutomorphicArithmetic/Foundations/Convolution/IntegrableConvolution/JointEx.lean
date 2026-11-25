@@ -323,8 +323,7 @@ private lemma list_ne (h : Slots π V m ι E A U) (hall : ∀ j, ∃ v ∈ eigIn
     obtain ⟨u, hu, hQ⟩ := ih (List.nodup_cons.1 hL).2
     have hk : k ∉ L := (List.nodup_cons.1 hL).1
     obtain ⟨hcl, hinv, hirr⟩ := cutIrr Γ G H π V m ι E A U h
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     simp only [List.map_cons, List.prod_cons, ContinuousLinearMap.mul_apply] at hcon
     let M : Submodule ℂ H :=
       { carrier := {w | w ∈ eigIn V E 1 ∧ ∀ g, A k (π (ι k g) w) = 0}
@@ -485,8 +484,7 @@ theorem UpperTheory.ConvolutionTheory.L1.jointEx :
         | exact RCLike.re_ofReal_mul _ _
     rw [hw1] at h3
     have h6 : 0 ≤ r * ‖(w : H)‖ ^ 2 := h5 ▸ h3
-    by_contra hneg
-    push_neg at hneg
+    by_contra! hneg
     nlinarith
   have hrne : r ≠ 0 := by
     rintro rfl

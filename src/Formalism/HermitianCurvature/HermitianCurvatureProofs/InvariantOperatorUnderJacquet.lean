@@ -497,8 +497,6 @@ namespace Formalism.FourierDecayAlt.P
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Q
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 namespace QrD
 
 section Left
@@ -676,8 +674,6 @@ namespace Formalism.FourierDecayAlt.P.Qx7
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Q
 open scoped ContDiff
-
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 local macro "distrib_module" : tactic =>
   `(tactic| (simp only [mul_sub, sub_mul, mul_add, add_mul, smul_mul_assoc, mul_smul_comm,

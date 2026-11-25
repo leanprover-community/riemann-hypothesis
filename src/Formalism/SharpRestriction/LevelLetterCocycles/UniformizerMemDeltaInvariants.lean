@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.LevelLetterCocycles.RepresentationCongruences.Pi0MemADelta
 public import Formalism.SharpRestriction.LevelLetterCocycles.LatticeBoundsOfThreeParts
 import Mathlib.Tactic.Lemma
 
@@ -42,25 +43,7 @@ private lemma exists_pow_eq_one_inv {Γ : Type} [CommGroup Γ] {a : Γ} (ha : �
   exact ⟨k, hk, by rw [inv_pow, hak, inv_one]⟩
 
 theorem uniformizer_mem_delta_invariants : W.π₀ ∈ W.AΔ := by
-  show ∀ δ ∈ W.DelF, W.γA δ W.π₀ = W.π₀
-  intro δ hδ
-  have hδt := (W.DelF_def δ).1 hδ
-  funext i
-  show W.γ₀ δ W.π₀₁ = W.π₀₁
-
-  simp only [Formalism.BasicNotions.LocWach.π₀₁, map_add (f := _), map_sub, map_one, map_natCast, map_sum]
-  congr 1
-  refine Finset.sum_equiv (Equiv.mulLeft δ) ?_ ?_
-  · intro g
-    simp only [Equiv.coe_mulLeft]
-    rw [W.DelF_def g, W.DelF_def (δ * g)]
-    constructor
-    · exact fun hg => exists_pow_eq_one_mul hδt hg
-    · intro hg
-      have h2 := exists_pow_eq_one_mul (exists_pow_eq_one_inv hδt) hg
-      rwa [inv_mul_cancel_left] at h2
-  · intro g _
-    simp only [Equiv.coe_mulLeft, map_mul, AlgHom.mul_apply]
+  apply _root_.Formalism.MainNotions.N.FrobeniusPowerSeries.TypesA.pi0_mem_ADelta <;> assumption
 
 end Setup
 

@@ -340,8 +340,6 @@ namespace PositivityTheory.Rg.Sw.HSt.FarP
 
 open PositivityTheory.Rg.Sw PositivityTheory.Rg.Sw.LVs PositivityTheory.Rg.Sw.AbsSt PositivityTheory.Rg.Sw.HSt
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 variable {m n : ℕ} {e : ℤ} {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
   {Pp Γ : Subgroup G} {ι : GR n →* G} {s₀ : ℂ} {Ht : G → ℝ≥0} {f : G → ℂ} {U : Set ℂ} {d : Polynomial ℂ}
   {Ê : ℂ → G → ℂ} {t : ℝ}
@@ -862,8 +860,6 @@ namespace PositivityTheory.Rg.Sw.HSt.FL
 open PositivityTheory.Rg.Sw PositivityTheory.Rg.Sw.LVs PositivityTheory.Rg.Sw.AbsSt PositivityTheory.Rg.Sw.HSt
 open PositivityTheory.Rg.Sw.LVs.II (cE cE_hasDerivAt0 cE_add cE_zero cE_continuous mulL mulL_apply)
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 variable {n : ℕ}
 
 theorem fz_curve {X x : M2 n} (hX : IsLie X) (hx : InG x) (m : ℕ) (e : ℤ) (w : ℂ) (s : ℝ) :
@@ -983,8 +979,6 @@ namespace PositivityTheory.Rg.Sw.HSt
 open PositivityTheory.Rg.Sw PositivityTheory.Rg.Sw.LVs PositivityTheory.Rg.Sw.AbsSt PositivityTheory.Rg.Sw.HSt.FL
 open PositivityTheory.Rg.Sw.LVs.II (cE)
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 theorem fzDer : FzDer := by
   intro n m e w Z b
   have hX : IsLie (if b = true then dir1 Z else dir2 Z) := lie_dir Z b
@@ -1051,8 +1045,6 @@ namespace PositivityTheory.Rg.Sw.HSt
 open PositivityTheory.Rg.Sw PositivityTheory.Rg.Sw.LVs PositivityTheory.SiegelWeilFormula PositivityTheory.Rg.Sw.AbsSt
 
 variable {n : ℕ}
-
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 theorem lift_mR (φ : GR n → ℂ) (w : GR n) : lift φ (mR w) = φ w := by
   have h : IsUnit (mR w) ∧ InG (mR w) := ⟨⟨w.1, rfl⟩, w.2⟩

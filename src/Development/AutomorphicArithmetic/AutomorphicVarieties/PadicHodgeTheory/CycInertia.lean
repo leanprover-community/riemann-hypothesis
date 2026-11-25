@@ -1,5 +1,6 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.SelmerTransport.DecInf
 public import Mathlib.NumberTheory.NumberField.Basic
 public import Mathlib.NumberTheory.Padics.Complex
 public import Development.AutomorphicArithmetic.FrobeniusLocalisation.LocStab
@@ -65,8 +66,7 @@ theorem UpperTheory.HF.loc_onto :
       have hab' : ‖J (a : L)‖ * ‖J (b : L)‖ < 1 := by
         rw [← norm_mul, ← map_mul]
         exact hab
-      by_contra h
-      push_neg at h
+      by_contra! h
       nlinarith [h.1, h.2]
   have hlI : ((l : ℤ) : 𝓞 L) ∈ I := by
     rw [hmem]
@@ -338,17 +338,7 @@ private theorem UpperTheory.V.Loc.ci_surj (l : ℕ) [Fact l.Prime] (a : ℤ_[l]�
     exact ZMod.val_injective _ (hη.pow_inj (ZMod.val_lt _) (ZMod.val_lt _) h3)
 
 private theorem UpperTheory.V.Loc.ci_inf (l : ℕ) [Fact l.Prime] : ∃ u : ℤ_[l]ˣ, ¬ IsOfFinOrder u := by
-  have hp : l.Prime := Fact.out
-  have hu : IsUnit (((l + 1 : ℕ)) : ℤ_[l]) := by
-    rw [PadicInt.isUnit_iff]
-    exact PadicInt.norm_natCast_eq_one_iff.2 (by simp)
-  refine ⟨hu.unit, fun h => ?_⟩
-  obtain ⟨n, hn, h⟩ := isOfFinOrder_iff_pow_eq_one.1 h
-  have h2 := congrArg Units.val h
-  rw [Units.val_pow_eq_pow_val, hu.unit_spec, Units.val_one, ← Nat.cast_pow, Nat.cast_eq_one,
-    Nat.pow_eq_one] at h2
-  have := hp.one_lt
-  omega
+  apply _root_.exists_unit <;> assumption
 
 theorem UpperTheory.V.Loc.cycInertia :
     ∀ (l : ℕ) [Fact l.Prime], (∀ u : ℤ_[l]ˣ, ∃ g ∈ Iq l, cyc l l g = u) ∧ ∀ U : Subgroup (GQ l), IsOpen (U : Set (GQ l)) → IsOpen (((U ⊓ Iq l).map (cyc l l) : Subgroup ℤ_[l]ˣ) : Set ℤ_[l]ˣ) ∧ ∃ s ∈ U ⊓ Iq l, ¬ IsOfFinOrder (cyc l l s) := by

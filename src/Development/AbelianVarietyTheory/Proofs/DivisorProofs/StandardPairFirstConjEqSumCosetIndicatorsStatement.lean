@@ -79,7 +79,6 @@ open GlobalTheory.FunObj.SqNum (hatId CongOne skewLat unitBlock cosetVec)
 open GlobalTheory.NormExact (Reads Setup IsFinIdl HasFinPart finPt)
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (InId IsUnitDet unitChar stdFst)
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.StdRead
 
 noncomputable section
@@ -168,7 +167,6 @@ open GlobalTheory.FunObj.SqNum (hatId CongOne skewLat unitBlock cosetVec)
 open GlobalTheory.NormExact (Reads Setup IsFinIdl HasFinPart finPt)
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (InId IsUnitDet unitChar stdFst)
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.StdRead
 
 noncomputable section
@@ -258,7 +256,6 @@ open GlobalTheory.FunObj.SqNum (hatId CongOne skewLat unitBlock cosetVec)
 open GlobalTheory.NormExact (Reads Setup IsFinIdl HasFinPart finPt)
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (InId IsUnitDet unitChar stdFst)
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.StdRead
 
 
@@ -283,7 +280,6 @@ open GlobalTheory.FunObj.SqNum (hatId CongOne skewLat unitBlock cosetVec)
 open GlobalTheory.NormExact (Reads Setup IsFinIdl HasFinPart finPt)
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (InId IsUnitDet unitChar stdFst)
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.StdRead
 
 namespace GlobalTheory.StdReadFrame
@@ -371,7 +367,6 @@ open GlobalTheory.FunObj.SqNum (hatId CongOne skewLat unitBlock cosetVec)
 open GlobalTheory.NormExact (Reads Setup IsFinIdl HasFinPart finPt)
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (InId IsUnitDet unitChar stdFst)
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.StdRead
 
 namespace GlobalTheory.StdRead.CongOneChar
@@ -497,7 +492,6 @@ open GlobalTheory.FunObj.SqNum (hatId CongOne skewLat unitBlock cosetVec)
 open GlobalTheory.NormExact (Reads Setup IsFinIdl HasFinPart finPt)
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (InId IsUnitDet unitChar stdFst)
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.StdRead
 
 noncomputable section
@@ -612,7 +606,6 @@ open GlobalTheory.FunObj.SqNum (hatId CongOne skewLat unitBlock cosetVec)
 open GlobalTheory.NormExact (Reads Setup IsFinIdl HasFinPart finPt)
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (InId IsUnitDet unitChar stdFst)
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.StdRead
 
 noncomputable section
@@ -832,7 +825,6 @@ open GlobalTheory.FunObj.SqNum (hatId CongOne skewLat unitBlock cosetVec)
 open GlobalTheory.NormExact (Reads Setup IsFinIdl HasFinPart finPt)
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (InId IsUnitDet unitChar stdFst)
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.StdRead
 
 

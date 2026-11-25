@@ -270,8 +270,7 @@ theorem isRatio_of_genRatios (K V Ω : Type) [Field K] [AddCommGroup V] [Module 
     (ev : V →ₗ[K] Ω) : GenRatios ev → ∀ (τ : ℕ) (t : Ω), IsRatio ev τ t := by
   rintro ⟨hev, htop⟩ τ t
   obtain ⟨w, hw⟩ : ∃ w, ev w ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hev (LinearMap.ext h)
   have hmem : t / ev w ^ τ ∈ sameDegQuot ev := by
     apply ratioField_le_sameDegQuot ev

@@ -46,8 +46,6 @@ noncomputable section
 open CategoryTheory AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.CatCoh GlobalTheory.Cris GlobalTheory.DeRham
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.ConjSeq
 
 variable (p : ℕ) [Fact p.Prime]

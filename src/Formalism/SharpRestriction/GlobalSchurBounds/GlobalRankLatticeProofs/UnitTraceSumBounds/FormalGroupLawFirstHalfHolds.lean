@@ -1,5 +1,6 @@
 module
 
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PowerSeriesNormUnits.ConstantCoeffFormalSMul
 public import Formalism.PeriodIntegrals.AddIntG
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdditiveIntegralGroups.FormalGroupLawExists
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdditiveIntegralGroups.GlueHoldsVar
@@ -43,13 +44,7 @@ variable {p : ℕ} [Fact p.Prime]
 theorem constantCoeff_log_eq_zero {l ex : PowerSeries ℂ_[p]}
     (hex : PowerSeries.constantCoeff ex = 0) (h : PowerSeries.subst ex l = PowerSeries.X) :
     PowerSeries.constantCoeff l = 0 := by
-  have hex' : MvPowerSeries.constantCoeff ex = 0 := hex
-  have hs := PowerSeries.HasSubst.of_constantCoeff_zero hex'
-  have h1 := PowerSeries.constantCoeff_subst (R := ℂ_[p]) hs l
-  rw [h, finsum_eq_single _ 0 (fun d hd => by rw [map_pow, hex', zero_pow hd, smul_zero]),
-    pow_zero, map_one, smul_eq_mul, mul_one] at h1
-  rw [← PowerSeries.coeff_zero_eq_constantCoeff_apply, ← h1]
-  exact PowerSeries.constantCoeff_X
+  apply _root_.PI.PhNormUnits.UnitaryGroupMassFormula.l_const <;> assumption
 
 variable {σ : Type*}
 

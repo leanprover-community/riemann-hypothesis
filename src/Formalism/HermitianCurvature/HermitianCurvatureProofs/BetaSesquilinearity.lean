@@ -255,8 +255,7 @@ lemma gN_ge_one {k r : ℕ} {g : Mat k r} (hg : g ∈ GV k r) : 1 ≤ gN g := by
       _ ≤ ‖gᴴ‖ * ‖Hpk k r‖ * ‖g‖ := by gcongr; exact norm_mul_le _ _
       _ = ‖g‖ * ‖Hpk k r‖ * ‖g‖ := by rw [Matrix.frobenius_norm_conjTranspose]
   rw [gN_eq_frob]
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   have h3 : ‖g‖ * ‖g‖ < 1 := by nlinarith only [hlt, norm_nonneg g]
   linarith only [hn, h2, h3, mul_pos (sub_pos.mpr h3) hn]
 

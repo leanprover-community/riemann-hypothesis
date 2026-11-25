@@ -716,8 +716,7 @@ theorem clause_two {Ψ : (ι → 𝔸[K]) → ℂ} (hΨ : Ψ ∈ GJMatrix.schwar
   obtain ⟨c, hc, hθ⟩ := theta_bound L hAd
   have hsum := summable_lineInt (ι := ι) hx1 hc (h₁ L A hA₁) (h₂ L A hA₂) hθ
   have hex : ∀ l : Projectivization K (ι → K), ∃ i, l.rep i ≠ 0 := fun l ↦ by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact l.rep_nonzero (funext h)
   choose ix hix using hex
   set ν : Projectivization K (ι → K) → ι → K := fun l j ↦ (l.rep (ix l))⁻¹ * l.rep j

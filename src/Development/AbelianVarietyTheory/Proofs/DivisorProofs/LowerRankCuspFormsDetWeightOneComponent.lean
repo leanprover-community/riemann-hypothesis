@@ -622,8 +622,7 @@ theorem prod_mem_SS {r : ℕ} (X : Data E r) (Xa : ArchInM X) (Fl : FlatM X Xa) 
     ring
   · have hsum : ∑ q, α q = Xa.T := by omega
     obtain ⟨k, hk⟩ : ∃ k, α k ≠ 0 := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       simp [hc] at hsum
       omega
     have hB := GlobalTheory.UpTie.LeadCount.bdd_mul_prod X (GlobalTheory.UpTie.LeadCount.bdd_mul_pow X hQ (hsb k) (α k - 1))

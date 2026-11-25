@@ -393,8 +393,7 @@ theorem exists_homog_of_cone {n : ℕ} {c : MvPolynomial (Fin n) ℂ} (hc : c �
         (by omega : m < c.totalDegree + 1)] using h1
     · rw [homogeneousComponent_eq_zero m c (by omega), map_zero]
   obtain ⟨m, -, hm⟩ : ∃ m ∈ Finset.range (c.totalDegree + 1), homogeneousComponent m c ≠ 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     apply hc
     rw [← sum_homogeneousComponent c]
     exact Finset.sum_eq_zero hcon

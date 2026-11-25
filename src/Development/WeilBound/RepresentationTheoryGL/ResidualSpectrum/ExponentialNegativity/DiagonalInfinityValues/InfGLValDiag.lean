@@ -4,6 +4,7 @@ public import Development.WeilBound.RepresentationTheoryGL.ResidualSpectrum.Expo
 public import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.AffineGLForms.GenSpace
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsIsLocCompAndIsLocLoc
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConstantTermFiniteOfSmaller
+import Development.WeilBound.RepresentationTheoryGL.ResidualSpectrum.SliceTensors.PSliceA
 public import Development.WeilBound.RepresentationTheoryGL.ConstantTermFiniteness.LieInvariants.InvariantOfLieOneLEqZero
 
 @[expose] public section
@@ -77,25 +78,7 @@ theorem diag_mul_unip {a r : ℕ} {R : Type} [CommRing R] (g : GL (Fin a) R) (d 
 
 theorem aT_comm_lev {r s : ℕ} (t : ℝ) (p : GA E r × GA E s) :
     aT E (r + s) r t * lev (Ad E) r s p = lev (Ad E) r s p * aT E (r + s) r t := by
-  apply Units.ext
-  have hlev : ((lev (Ad E) r s p : GL (Fin (r + s)) (Ad E)) : Matrix _ _ (Ad E)) =
-      Matrix.reindex (GlobalTheory.SmGL.stdSum (rfl : r + s = r + s))
-        (GlobalTheory.SmGL.stdSum (rfl : r + s = r + s))
-        (Matrix.fromBlocks p.1.val 0 0 p.2.val) := by
-    ext i j
-    obtain ⟨i, rfl⟩ := (GlobalTheory.SmGL.stdSum (rfl : r + s = r + s)).surjective i
-    obtain ⟨j, rfl⟩ := (GlobalTheory.SmGL.stdSum (rfl : r + s = r + s)).surjective j
-    simp only [Matrix.reindex_apply, Matrix.submatrix_apply, Equiv.symm_apply_apply]
-    rcases i with i | i <;> rcases j with j | j <;>
-      simp [GlobalTheory.SmGL.emb₂, GlobalTheory.SmGL.leviEmb,
-        GlobalTheory.SmGL.leviTwo, GlobalTheory.SmGL.two, Matrix.blockDiagonal']
-  rw [Units.val_mul, Units.val_mul, aT_val, hlev]
-  ext i j
-  rw [Matrix.diagonal_mul, Matrix.mul_diagonal]
-  obtain ⟨i, rfl⟩ := (GlobalTheory.SmGL.stdSum (rfl : r + s = r + s)).surjective i
-  obtain ⟨j, rfl⟩ := (GlobalTheory.SmGL.stdSum (rfl : r + s = r + s)).surjective j
-  simp only [Matrix.reindex_apply, Matrix.submatrix_apply, Equiv.symm_apply_apply]
-  rcases i with i | i <;> rcases j with j | j <;> simp [GlobalTheory.SmGL.stdSum_inl, GlobalTheory.SmGL.stdSum_inr, mul_comm]
+  apply _root_.PositivityTheory.Rg.Rs.SliceClasses.aT_comm_lev <;> assumption
 
 theorem ltr_mem_goodCT {r s : ℕ} {L : Subgroup (GL (Fin (r + s)) (Af E))} {W : Type} [AddCommGroup W] [Module ℂ W]
     {ρ : Representation ℂ (Kinf E (r + s)) W} {J : Set (Module.End ℂ (Sm E (r + s)))} (hJ : J ⊆ Zalg E (r + s))

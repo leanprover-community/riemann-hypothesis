@@ -129,8 +129,7 @@ theorem eq_zero_right (g : ℕ → ℝ → E) (C ρ : ℝ) (hρ : 0 < ρ)
       intro k t ht h
       have : t = 0 := by
         have : t ≤ 0 := by
-          by_contra hc
-          push_neg at hc
+          by_contra! hc
           have := mul_pos hρ hc
           simp at h
           nlinarith

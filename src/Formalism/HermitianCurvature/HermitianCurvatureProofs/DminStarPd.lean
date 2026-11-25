@@ -18,8 +18,6 @@ namespace Formalism.FourierDecayAlt.P.AdmissibleLieWords
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.P.BetaSesquilinearity PI.UnitaryCorollaryDerivatives.CRH
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 variable {k r : ℕ}
 
 lemma gf_pd (k r : ℕ) (z z' : Fin (2 * r + k + 1) → ℂ) :

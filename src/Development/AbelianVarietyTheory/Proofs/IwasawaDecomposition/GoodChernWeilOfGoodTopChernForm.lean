@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ContDiffAtHolomorphicComplexChartOfSmoothAt
 public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.InterPolyProdSum
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsGradedLineDivisorsFullFlag
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SmoothOfAlgClosedUnif
@@ -1506,17 +1507,8 @@ variable {F : Type} [Field F] {X : Var F} {σ : F →+* ℂ}
 theorem CInfAt.contDiffAt_holoChart {f : CxPts X.str σ → ℝ} {y : CxPts X.str σ} (h : CInfAt f y)
     {e : OpenPartialHomeomorph (CxPts X.str σ) (V X.dim)} (he : IsHoloChart e) (hy : y ∈ e.source) :
     ContDiffAt ℝ ∞ (fun v => f (e.symm v)) (e y) := by
-  obtain ⟨W, κ, _, g, G, O, h₁, h₂, h₃, h₄, h₅⟩ := h
-  have ho := isOpen_over e (isOpen_ptsIn (p := X.str) (σ := σ) W)
-  have hl := e.left_inv hy
-  have hg : ContDiffAt ℝ ∞ (fun w a => ev X.str σ W (g a) (e.symm w)) (e y) :=
-    contDiffAt_pi.2 fun a => (contDiffOn_real ho (he W (g a))).contDiffAt (ho.mem_nhds (mem_over e hy h₁))
-  have h₆ : ContDiffAt ℝ ∞ G (fun a => ev X.str σ W (g a) (e.symm (e y))) := by
-    rw [hl]; exact h₄.contDiffAt (h₂.mem_nhds h₃)
-  refine (h₆.comp (e y) hg).congr_of_eventuallyEq ?_
-  have := e.continuousAt_symm (e.map_source hy)
-  rw [ContinuousAt, hl] at this
-  exact this.eventually h₅
+  intros
+  apply _root_.GlobalTheory.GoodTop.contDiffAt_holoChart <;> assumption
 
 theorem IsMetricOn.mContDiffAt_two {ι : Type} {m : ι → ℕ} {E : Fr (ratOf X) m 0} {O : X.X.Opens}
     {H : Mat m X.Fn → CxPts X.str σ → Mat m ℂ} (hH : IsMetricOn E O H) {y : CxPts X.str σ}

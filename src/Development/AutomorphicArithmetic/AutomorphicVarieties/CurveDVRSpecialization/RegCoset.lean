@@ -215,15 +215,13 @@ private lemma regCoset_diag (G κ : Type) [Group G] [Field κ] (n : ℕ) (hn : n
     simpa using h
   have hrow : ∀ i, ∃ j, (y : Matrix (Fin n) (Fin n) κ) i j ≠ 0 := by
     intro i
-    by_contra h
-    push_neg at h
+    by_contra! h
     have := congrFun (congrFun y.mul_inv i) i
     simp only [Matrix.mul_apply, h, zero_mul, Finset.sum_const_zero, Matrix.one_apply_eq] at this
     exact zero_ne_one this
   have hcol : ∀ i, ∃ j, ((y⁻¹ : GL (Fin n) κ) : Matrix (Fin n) (Fin n) κ) j i ≠ 0 := by
     intro i
-    by_contra h
-    push_neg at h
+    by_contra! h
     have := congrFun (congrFun y.mul_inv i) i
     simp only [Matrix.mul_apply, h, mul_zero, Finset.sum_const_zero, Matrix.one_apply_eq] at this
     exact zero_ne_one this

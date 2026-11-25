@@ -1,5 +1,6 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.ConjugateRepresentations.CobordismLinearRelations.RelOnto
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.LiteratureResults.LieGeometryGrowth.DegreeHermitianFormula
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.LiteratureResults.DifferentialTranslates.LevelVal
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.LiteratureResults.LieGeometryGrowth.BdBasis
@@ -282,20 +283,7 @@ private theorem cone_open (E : Type) [Field E] [NumberField E] (a : ℕ) : IsOpe
 
 private theorem homOm_zero {Γ V S : Type} [Group Γ] [NormedAddCommGroup V] [NormedSpace ℝ V] {d : ℕ}
     (G : UpperTheory.V.Lit.Dr.Geo Γ V S d) (W : S → V → V) (q : ℕ) : homOm G W (0 : G.Om (q + 1)) = 0 := by
-  have e : (fun s => hom (W s) ((0 : G.Om (q + 1)).1 s)) = fun _ _ => 0 := by
-    funext s p
-    have : (fun t => hk (W s) t ((0 : G.Om (q + 1)).1 s) p) = fun _ => 0 := by
-      funext t
-      ext v
-      simp [hk_apply]
-    rw [hom, this, intervalIntegral.integral_zero]
-  rw [homOm, e]
-  refine Subtype.ext (funext fun s => funext fun p => ?_)
-  by_cases hp : p ∈ G.Y
-  · rw [toOm_apply G (fun _ => contDiffOn_const) s hp]
-    rfl
-  · rw [((toOm G _).2 s).2 p hp]
-    rfl
+  apply _root_.homOm_zero <;> assumption
 
 private theorem d_step {Γ V S : Type} [Group Γ] [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V] {d : ℕ}
     (G : UpperTheory.V.Lit.Dr.Geo Γ V S d) (W : S → V → V) (hF : IsFlow G W) (q : ℕ) (w : G.Om q) :

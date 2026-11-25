@@ -167,9 +167,9 @@ end GlobalTheory
 
 namespace GlobalTheory.PD
 
-theorem isArtinianRing_fib_quot : ∀ (k K : Type) [Field k] [Field K] [Algebra k K] (F : Type) [Field F] [Algebra k F] [Algebra F K]
+theorem moduleFinite_fib_quot : ∀ (k K : Type) [Field k] [Field K] [Algebra k K] (F : Type) [Field F] [Algebra k F] [Algebra F K]
     [IsScalarTower k F K] (d : ℕ) (x : Fin (d + 1) → F), IsFinCover k K x →
-    IsArtinianRing (rB k K x {0} ⧸ Ideal.span (Set.range fun j : Fin d => (⟨_, tco_mem k K x j⟩ : rB k K x {0}))) := by
+    Module.Finite k (rB k K x {0} ⧸ Ideal.span (Set.range fun j : Fin d => (⟨_, tco_mem k K x j⟩ : rB k K x {0}))) := by
   intro k K _ _ _ F _ _ _ _ d x h
   haveI := h.smooth 0
   set I := Ideal.span (Set.range fun j : Fin d => (⟨_, tco_mem k K x j⟩ : rB k K x {0})) with hI
@@ -223,8 +223,7 @@ theorem isArtinianRing_fib_quot : ∀ (k K : Type) [Field k] [Field K] [Algebra 
       rw [this, map_mul]
       convert add_mem (I.mul_mem_right (f ⟨b, hb⟩) h₁) (I.mul_mem_left (algebraMap k _ c₁) h₂) using 1
       ring
-  haveI := GlobalTheory.finite_quotient_of_integral f hi I hc
-  exact IsArtinianRing.of_finite k _
+  exact GlobalTheory.finite_quotient_of_integral f hi I hc
 
 end GlobalTheory.PD
 end -- clump:auto
@@ -995,8 +994,8 @@ theorem exists_finCover_fibre_reduced : ∀ (X : Scheme.{0}) [IsIntegral X] (p :
     simpa [hU0] using hAC.affine {0} (Finset.singleton_nonempty 0)
   haveI : Smooth p := SmoothOfRelativeDimension.smooth d p
   haveI hart : IsArtinianRing (Γ(X, U0) ⧸ Ideal.span (Set.range t)) := by
-    haveI := _root_.GlobalTheory.PD.isArtinianRing_fib_quot ℂ X.functionField F d x hFC
-    exact RingEquiv.isArtinianRing E.symm
+    haveI := _root_.GlobalTheory.PD.moduleFinite_fib_quot ℂ X.functionField F d x hFC
+    exact @RingEquiv.isArtinianRing _ _ _ _ E.symm (IsArtinianRing.of_finite ℂ _)
   have hred : IsReduced (Γ(X, U0) ⧸ Ideal.span (Set.range t)) := by
     refine _root_.GlobalTheory.isReduced_quotient_of_artinian_of_maximal_le _ _ hart fun m hm hIm => ?_
     obtain ⟨y, hy, rfl⟩ := _root_.GlobalTheory.MaxPt.exists_cxPts_ker_eq X p U0 hU0aff m hm

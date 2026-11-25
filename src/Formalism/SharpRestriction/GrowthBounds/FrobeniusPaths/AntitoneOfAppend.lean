@@ -17,7 +17,6 @@ lemma app_lt {r K : ℕ} (u : Fin r → ℤ) (v : Fin K → ℤ) (x : Fin (r + K
 
 lemma app_ge {r K : ℕ} (u : Fin r → ℤ) (v : Fin K → ℤ) (x : Fin (r + K)) (h : r ≤ x.val) :
     Fin.append u v x = v ⟨x.val - r, by omega⟩ := by
-  have hlt := x.isLt
   have hx : x = Fin.natAdd r ⟨x.val - r, by omega⟩ := Fin.ext (show x.val = r + (x.val - r) by omega)
   calc Fin.append u v x = Fin.append u v (Fin.natAdd r ⟨x.val - r, by omega⟩) := congrArg (Fin.append u v) hx
     _ = v ⟨x.val - r, by omega⟩ := Fin.append_right u v _
@@ -109,7 +108,6 @@ lemma antitone_append {r K : ℕ} [NeZero r] [NeZero K] (n1 : Fin r → ℤ) (k1
       exact h1 (show (⟨a.val, ha⟩ : Fin r) ≤ ⟨b.val, hb⟩ from hab')
     · have hb' : r ≤ b.val := by omega
       rw [app_ge n1 k1 b hb']
-      have hlt := b.isLt
       calc _ ≤ k1 0 := h2 (by rw [Fin.le_def]; simp)
         _ ≤ n1 (lastIdx r) := hm
         _ ≤ n1 ⟨a.val, ha⟩ := h1 (show (⟨a.val, ha⟩ : Fin r) ≤ lastIdx r from show a.val ≤ r - 1 by omega)

@@ -791,7 +791,6 @@ theorem sizeStep (C : ℝ) (hC : 2 ≤ C) : SizeStep C 4 := by
       have hbT : (bT s : ℝ) ≤ c0 := by
         have : bT s ≤ c0 := by omega
         exact_mod_cast this
-      have hcp : (0 : ℝ) ≤ cpp := Nat.cast_nonneg _
       rw [e1]
       push_cast
       push_cast at h8

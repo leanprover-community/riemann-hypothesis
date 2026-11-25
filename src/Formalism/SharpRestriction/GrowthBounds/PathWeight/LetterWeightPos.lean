@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.GrowthBounds.FrobeniusPaths.JointTypeLatticeSaturated
 public import Formalism.SharpRestriction.GrowthBounds.PathWeight.GeneratorImageIsSymbol
 import Mathlib.Tactic.TypeStar
 import Std.Tactic.BVDecide.Normalize.BitVec
@@ -59,16 +60,7 @@ theorem weighted_component_prod_lowest {ι : Type*} (s : Finset ι) (f : ι → 
     (∀ m ∈ (∏ c ∈ s, f c).support, ∑ c ∈ s, o c ≤ Finsupp.weight wt m) ∧
     weightedHomogeneousComponent wt (∑ c ∈ s, o c) (∏ c ∈ s, f c) =
       ∏ c ∈ s, weightedHomogeneousComponent wt (o c) (f c) := by
-  induction s using Finset.induction_on with
-  | empty =>
-    refine ⟨fun m _ => by simp, ?_⟩
-    simp only [Finset.sum_empty, Finset.prod_empty]
-    exact (isWeightedHomogeneous_one R wt).weightedHomogeneousComponent_same
-  | insert c s hc ih =>
-    obtain ⟨ih1, ih2⟩ := ih fun c' hc' => hf c' (Finset.mem_insert_of_mem hc')
-    have h0 := hf c (Finset.mem_insert_self c s)
-    rw [Finset.sum_insert hc, Finset.prod_insert hc, Finset.prod_insert hc]
-    exact ⟨support_weight_mul_lower wt h0 ih1, by rw [weighted_component_mul_lowest wt h0 ih1, ih2]⟩
+  apply _root_.Formalism.MainNotions.LemmaBAlt.low_prod <;> assumption
 
 end Low
 

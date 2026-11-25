@@ -131,8 +131,7 @@ theorem card_quot_range_toLin_clean {ι : Type*} [Fintype ι] [DecidableEq ι] (
     obtain ⟨vb, hvb0, hCvb⟩ := Matrix.exists_mulVec_eq_zero_iff.mpr hdetb
     choose vlift hvlift using fun i => IsLocalRing.residue_surjective (vb i)
     obtain ⟨i0, hi0⟩ : ∃ i0, vb i0 ≠ 0 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact hvb0 (funext h)
     have hunit : IsUnit (vlift i0) := by
       rw [← IsLocalRing.residue_ne_zero_iff_isUnit, hvlift]

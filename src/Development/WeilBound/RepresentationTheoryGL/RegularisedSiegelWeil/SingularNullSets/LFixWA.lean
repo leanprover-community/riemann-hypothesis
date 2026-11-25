@@ -25,8 +25,6 @@ open scoped Matrix TensorProduct
 open IsDedekindDomain NumberField Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR.Datum GlobalTheory.AdelicU
   GlobalTheory.MixModel GlobalTheory.StdUnn Filter
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 namespace PositivityTheory.Rg.Rsw.L.LFixW
 
 variable {D : D7}
@@ -189,8 +187,6 @@ set_option synthInstance.maxHeartbeats 200000
 open scoped Matrix TensorProduct
 open IsDedekindDomain NumberField Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR.Datum GlobalTheory.AdelicU
   GlobalTheory.MixModel GlobalTheory.StdUnn Filter MeasureTheory
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace PositivityTheory.Rg.Rsw.L.LFixW
 

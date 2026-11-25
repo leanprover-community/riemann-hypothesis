@@ -1,5 +1,7 @@
 module
 
+import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.FamilyFormalDegreeLowerBound
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.MomentPieriNumericsOfSizeHyps
 public import Formalism.SharpRestriction.CuspSpanNormBounds.PExtra
 public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.OwnEvIntro
 public import Mathlib.Analysis.Real.Pi.Bounds
@@ -41,24 +43,11 @@ theorem std_two_rS (D : D7) : 2 * D.R.rS + 2 = D.R.m := by
 
 theorem std_lamD_cloud (D : D7) (τ : D.what₂.Tau) (s : Fin (2 * D.R.rS + D.R.k + 1)) (h : s.val < D.R.k - 1) :
     lamD D τ s = vOne D τ (s.val + 1) := by
-  have h2 : 1 ≤ s.val + 1 ∧ s.val + 1 ≤ D.R.k - 1 := ⟨by omega, by omega⟩
-  unfold lamD lamSH lamS vOne
-  rw [dite_eq_left h2]
-  simp only [Fin.val_cast]
-  rw [dite_eq_left h]
-  rfl
+  apply _root_.GlobalTheory.SizeNum.lam_v <;> assumption
 
 theorem std_lamD_node (D : D7) (τ : D.what₂.Tau) (s : Fin (2 * D.R.rS + D.R.k + 1)) (h : ¬ s.val < D.R.k - 1) :
     lamD D τ s = -bOne D τ (s.val - (D.R.k - 1) + 1) := by
-  have hm := std_two_rS D
-  have hk := D.R.m_add_three_le_k
-  have h3 : s.val - (D.R.k - 1) < D.R.m := by have := s.isLt; omega
-  have h2 : 1 ≤ s.val - (D.R.k - 1) + 1 ∧ s.val - (D.R.k - 1) + 1 ≤ D.R.m := ⟨by omega, by omega⟩
-  unfold lamD lamSH lamS bOne
-  rw [dite_eq_left h2]
-  simp only [Fin.val_cast]
-  rw [dite_eq_right h, dite_eq_left h3]
-  rfl
+  apply _root_.Formalism.MainNotions.BridgeLemma.szh_lam_node <;> assumption
 
 theorem std_uS (D : D7) (w : D.what₂.Word) (τ : D.what₂.Tau) (i : Fin D.R.k) :
     uS D w τ i = uOne D w τ (i.val + 1) := by

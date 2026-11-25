@@ -22,8 +22,6 @@ open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj Formalism.MainNotions.ModuliIntegralCharts.H1.GermD
 open Formalism.MainNotions.ModuliIntegralCharts.H1 Formalism.MainNotions.ModuliIntegralCharts.H1.GermFun Formalism.MainNotions.ModuliIntegralCharts.H1.GermB
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 theorem pre_topA {S Idx : Type} [CommRing S] (m : ℕ) {X : Scheme.{0}} (U : X.Opens) (ψ : Sp (Jet S Idx m) ⟶ X)
     (e : Sp S ⟶ X) (he : spMap ((jetAug : Jet S Idx m →ₐ[S] S) : Jet S Idx m →+* S) ≫ ψ = e) (hU : e ⁻¹ᵁ U = ⊤) :
     ψ ⁻¹ᵁ U = ⊤ := by
@@ -471,7 +469,6 @@ end SlopeTestRemainingChoices
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj Formalism.MainNotions.ModuliIntegralCharts.H1 GlobalTheory.CompanionTheory.Ar.Crv GlobalTheory.CompanionTheory.Ar.Conj
 open scoped CategoryTheory.Obj
-attribute [local instance] Over.cartesianMonoidalCategory
 
 theorem frame_affine : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (X0 : Scheme.{0}) (t : SAB H X0) (S : Type) [CommRing S] (x0 : Sp S ⟶ X0) (d : ℕ) (G : Germ.FGLaw S d) (A : Germ.OAct (𝓞 E) G) (tg : Fin d → (Sp (DualNumber S) ⟶ t.G.left)) (uvec : Fin d → Fin d → S) (x : ∀ m, jOG x0 d m 1 ⟶ t.G) (c : t.PP.L.ι), IsChartG t x0 d G.F A.act tg uvec x → Set.range (x0 ≫ eSec t.G) ⊆ (t.PP.L.U c : Set t.G.left) → ∃ (e : ∀ m, FrTyG t x0 d x m) (ph1 ph2 : Germ.PS S 3 d) (sy : Germ.PS S 2 d) (ad : 𝓞 E → Germ.PS S 2 d), IsFrameG t x0 d x G.F A.act ph1 ph2 sy ad e ∧ FrTrunc t x0 d x e ∧ FrAxes t x0 d x e ∧ ∀ a, MvPowerSeries.constantCoeff (ad a) = 1 := by
   intro E _ _ _ H X0 t S _ x0 d G A tg uvec x i0 hch hc

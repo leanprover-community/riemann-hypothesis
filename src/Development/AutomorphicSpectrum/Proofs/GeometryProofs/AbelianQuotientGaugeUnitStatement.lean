@@ -34,8 +34,6 @@ open Formalism.MainNotions.ModuliIntegralCharts.H1 Formalism.MainNotions.ModuliI
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ (PS Pt ev pt comp1)
 open scoped CategoryTheory.Obj
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 section Alg
 
 variable {S : Type} [CommRing S] {d : ℕ}
@@ -275,7 +273,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory.CompanionTheory.Ar.Flat.FrGauge.AdTr
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ (PS Pt ev pt comp1)
 open scoped CategoryTheory.Obj
-attribute [local instance] Over.cartesianMonoidalCategory
 
 section Prod
 

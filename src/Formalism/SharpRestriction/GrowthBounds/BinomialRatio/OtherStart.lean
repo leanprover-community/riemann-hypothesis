@@ -28,7 +28,6 @@ theorem rot_val (n : ℕ) (j : Fin n) :
 
 theorem rot_inj (n : ℕ) : Function.Injective (rot n) := by
   intro j j' h
-  have h' := congrArg Fin.val h
   have a := rot_val n j
   have b := rot_val n j'
   apply Fin.ext
@@ -70,8 +69,6 @@ theorem sum_segG (TT : Finset (Fin n')) (h2 : 2 ≤ numSeg TT) : ∑ j, segG TT 
     obtain ⟨g, g0⟩ := segG_eq TT h2 j
     rw [g, next_eq] at *
     have c := cd_cases (segStart TT j) (segStart TT (rot _ j))
-    have l1 := (segStart TT j).isLt
-    have l2 := (segStart TT (rot _ j)).isLt
     rcases rot_val _ j with ⟨r1, r2⟩ | ⟨r1, r2⟩
     · have hlt : (segStart TT j).val < (segStart TT (rot _ j)).val :=
         ev_mono TT (Fin.lt_def.mpr (by omega))
@@ -165,9 +162,7 @@ theorem odd_covered (TT : Finset (Fin n')) (h2 : 2 ≤ numSeg TT) (s : Fin n') (
     have c1 := cd_cases x s
     have c2 := cd_cases x (segNext TT j)
     have c3 := cd_cases (segNext TT j) s
-    have l1 := x.isLt
     have l2 := s.isLt
-    have l3 := (segNext TT j).isLt
     omega
 
 theorem biUnion_odd (TT : Finset (Fin n')) (h2 : 2 ≤ numSeg TT) :

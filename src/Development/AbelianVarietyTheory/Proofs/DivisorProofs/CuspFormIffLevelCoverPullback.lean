@@ -395,8 +395,7 @@ theorem cusp_iff_pull : ∀ (D : D7) (j : ℕ) (H : ReciprocityTheory.ChartRestr
     obtain ⟨π, δ, N, hN, hcomp, hsum, t, ht, hrd⟩ :=
       _root_.GlobalTheory.LevModel.levCover_model D j H Dw l Xo c U dict d U₂ dict₂ hL hL₂ hlev σ₂ hσ₂
     refine ⟨π, fun k => ?_, fun k₂ => ?_⟩
-    · by_contra hne
-      push_neg at hne
+    · by_contra! hne
       haveI : IsEmpty {k₂ // π k₂ = k} := ⟨fun x => hne x.1 x.2⟩
       have h0 := hsum k
       rw [finsum_of_isEmpty] at h0

@@ -1,5 +1,6 @@
 module
 
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.NormRepresentationChange.CoefXFinsetSum
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.DualFamilyCounting.SecondFlagXsLeBigBlock
 public import Formalism.SharpRestriction.CuspSpanNormBounds.LocSplitType
 public import Formalism.SharpRestriction.CuspSpanNormBounds.RowsOneGenusOfLocalDiscriminant
@@ -292,12 +293,7 @@ section General
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {S : Formalism.BasicNotions.HSpace E} {r : ℕ}
 
 theorem frameAct_one (f : Fin (r + 1) → S.V) (b : Fin (r + 1)) : frameAct f 1 b = f b := by
-  unfold frameAct
-  rw [Finset.sum_eq_single b]
-  · simp
-  · intro a _ hab
-    simp [Matrix.one_apply_ne hab]
-  · simp
+  apply _root_.PI.NRCW.frameAct_one <;> assumption
 
 end General
 

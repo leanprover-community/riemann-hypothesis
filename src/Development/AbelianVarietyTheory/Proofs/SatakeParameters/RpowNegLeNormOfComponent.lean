@@ -555,8 +555,7 @@ namespace GlobalTheory
 
 theorem norm_le_of_recurrence_growth : ∀ (β : Multiset ℂ) (a : ℕ → ℂ) (C B : ℝ) (m : ℕ), 0 < B → a 0 = 1 → (∀ n, 1 ≤ n → ∑ k ∈ Finset.range (n + 1), (-1 : ℂ) ^ k * β.esymm k * a (n - k) = 0) → (∀ n, ‖a n‖ ≤ C * ((n : ℝ) + 1) ^ m * B ^ n) → ∀ b ∈ β, ‖b‖ ≤ B := by
   intro β a C B m hB ha0 hrec hgrow b hb
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   have hb0 : b ≠ 0 := by
     intro h; rw [h, norm_zero] at hlt; linarith
   set X : ℂ := b⁻¹ with hX

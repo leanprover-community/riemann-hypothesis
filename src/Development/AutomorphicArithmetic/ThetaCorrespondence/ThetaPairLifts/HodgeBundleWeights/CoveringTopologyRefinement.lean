@@ -1253,8 +1253,7 @@ theorem goodBound_changeFrame : ∀ (n : ℕ) (K : Type) [Fintype K] [DecidableE
   have hcpos : 0 < c := by
     have h1 := hgb.det
     have h2 : 0 < ‖(G₀ v).det‖⁻¹ := inv_pos.2 (norm_pos_iff.2 hdet)
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     nlinarith [mul_nonpos_of_nonpos_of_nonneg hc hs0]
   have hc0 := hcpos.le
 

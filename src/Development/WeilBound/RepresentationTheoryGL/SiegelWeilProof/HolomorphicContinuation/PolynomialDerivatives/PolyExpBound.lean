@@ -5,6 +5,7 @@ public import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.Holom
 public import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.PolynomialDerivatives.HasFDerivAtEvX
 public import Mathlib.Analysis.SpecialFunctions.JapaneseBracket
 import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.AbsoluteConvergence.ContinuousEvX
+import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.GaussianPlaneIntegrals.CycAvg
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.SquareNormBound, Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.PolynomialDerivatives.PolyExpBound
@@ -16,23 +17,7 @@ section -- clump:auto
 
 theorem UpperTheory.Reformulated.B.SquareNormBound.sq_norm_le :
     ∀ {m n : ℕ} (x : Fin m → Fin n → ℂ),
-    ‖x‖ ^ (2 : ℕ) ≤ ∑ a : Fin m, ∑ i : Fin n, ‖x a i‖ ^ (2 : ℕ) := by
-  intro m n x
-  have hS0 : 0 ≤ ∑ a : Fin m, ∑ i : Fin n, ‖x a i‖ ^ (2 : ℕ) :=
-    Finset.sum_nonneg fun a _ => Finset.sum_nonneg fun i _ => by positivity
-  have h : ‖x‖ ≤ Real.sqrt (∑ a : Fin m, ∑ i : Fin n, ‖x a i‖ ^ (2 : ℕ)) := by
-    refine (pi_norm_le_iff_of_nonneg (Real.sqrt_nonneg _)).2 fun a =>
-      (pi_norm_le_iff_of_nonneg (Real.sqrt_nonneg _)).2 fun i => ?_
-    apply Real.le_sqrt_of_sq_le
-    calc ‖x a i‖ ^ (2 : ℕ) ≤ ∑ j : Fin n, ‖x a j‖ ^ (2 : ℕ) :=
-          Finset.single_le_sum (f := fun j => ‖x a j‖ ^ (2 : ℕ))
-            (fun _ _ => by positivity) (Finset.mem_univ i)
-      _ ≤ ∑ b : Fin m, ∑ j : Fin n, ‖x b j‖ ^ (2 : ℕ) :=
-          Finset.single_le_sum (f := fun b => ∑ j : Fin n, ‖x b j‖ ^ (2 : ℕ))
-            (fun _ _ => Finset.sum_nonneg fun _ _ => by positivity) (Finset.mem_univ a)
-  calc ‖x‖ ^ (2 : ℕ)
-      ≤ (Real.sqrt (∑ a : Fin m, ∑ i : Fin n, ‖x a i‖ ^ (2 : ℕ))) ^ (2 : ℕ) := by gcongr
-    _ = ∑ a : Fin m, ∑ i : Fin n, ‖x a i‖ ^ (2 : ℕ) := Real.sq_sqrt hS0
+    ‖x‖ ^ (2 : ℕ) ≤ ∑ a : Fin m, ∑ i : Fin n, ‖x a i‖ ^ (2 : ℕ) := @_root_.UpperTheory.Reformulated.B.Yhb3.main
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.SquareNormBound =====
@@ -104,24 +89,7 @@ theorem continuous_gs (c : ℝ) : Continuous fun x : Fin m → Fin n → ℂ => 
 
 theorem integrable_pg (c : ℝ) (hc : 0 < c) (P : PX m n) :
     Integrable (fun x : Fin m → Fin n → ℂ => evX P x * gs c x) := by
-  obtain ⟨K, d, hK, hb⟩ := evX_bound P
-  set R : ℕ := Module.finrank ℝ (Fin m → Fin n → ℂ) + 1 with hR
-  set M := Real.exp (3 * c) * (((d + R).factorial : ℝ) / (2 * c) ^ (d + R)) with hM
-  have hcont : Continuous (fun x : Fin m → Fin n → ℂ => evX P x * gs c x) := (continuous_evX P).mul (continuous_gs c)
-  refine ((integrable_one_add_norm (E := Fin m → Fin n → ℂ) (μ := volume) (r := (R : ℝ)) (by simp [hR])).const_mul
-    (K * M)).mono' hcont.aestronglyMeasurable (Filter.Eventually.of_forall fun x => ?_)
-  have ht : 0 ≤ ‖x‖ := norm_nonneg x
-  have hpos : 0 < (1 + ‖x‖) ^ R := by positivity
-  have key := poly_exp_bound c hc (d + R) ‖x‖ ht
-  rw [norm_mul, Real.rpow_neg (by positivity), Real.rpow_natCast]
-  calc ‖evX P x‖ * ‖gs c x‖ ≤ (K * (1 + ‖x‖) ^ d) * Real.exp (-(c * ‖x‖ ^ 2)) :=
-        mul_le_mul (hb x) (norm_gs_le c hc x) (norm_nonneg _) (by positivity)
-    _ = K * ((1 + ‖x‖) ^ (d + R) * Real.exp (-(c * ‖x‖ ^ 2))) / (1 + ‖x‖) ^ R := by
-        rw [pow_add]; field_simp
-    _ ≤ K * M / (1 + ‖x‖) ^ R := by
-        apply div_le_div_of_nonneg_right _ hpos.le
-        exact mul_le_mul_of_nonneg_left key hK
-    _ = K * M * ((1 + ‖x‖) ^ R)⁻¹ := by rw [div_eq_mul_inv]
+  apply _root_.PositivityTheory.Rg.Sw.FFTSteps.CA.integrable_evX_gs <;> assumption
 
 end PositivityTheory.Rg.Sw.LC.NullS
 end -- clump:auto

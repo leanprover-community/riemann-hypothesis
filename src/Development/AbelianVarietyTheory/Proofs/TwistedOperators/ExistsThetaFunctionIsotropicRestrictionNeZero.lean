@@ -131,8 +131,7 @@ theorem exists_res_ne_zero : ∀ (D : D7) (V V' W : HSp D) (r : ℕ) (C : Matrix
   intro D V V' W r C B hs hF ψ hψ μ 𝓨 h
   obtain ⟨f₀, hf₀, hne₀⟩ := GlobalTheory.Mem.ThetaNonzero.exists_thetaO_ne_zero hψ V W
   obtain ⟨x₀, hx₀⟩ : ∃ x, f₀ x ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact hne₀ (funext hc)
   have hf₁ : IsThetaFunO ψ V W (heisO ψ V W x₀ f₀) := GlobalTheory.ThetaClosed.isThetaFunO_heisO_all hψ hf₀ x₀
   have h0 : heisO ψ V W x₀ f₀ 0 ≠ 0 := by

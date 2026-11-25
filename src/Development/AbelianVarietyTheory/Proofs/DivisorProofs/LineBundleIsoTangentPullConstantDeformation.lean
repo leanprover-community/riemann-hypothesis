@@ -51,7 +51,6 @@ import Formalism.LocalToGlobal.ProjectiveLattices.ErealAddIInf
 
 open NumberField ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
 open AlgebraicGeometry CategoryTheory MonObj MonoidalCategory
-attribute [local instance] Over.cartesianMonoidalCategory
 open ReciprocityTheory.ChartRestriction.G.Semi
 
 namespace GlobalTheory.TangentConstLB

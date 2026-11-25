@@ -1,5 +1,6 @@
 module
 
+import Development.WeilBound.CoreStatements.AbelianHeightsDuality.PublishedTheoremStatements.BridgesAut
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FactTypePrime
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ColLieApply
 public import Mathlib.NumberTheory.NumberField.Basic
@@ -204,7 +205,6 @@ open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Cx Formalism.In
 open Formalism.IndefR.Datum (InfFam)
 open GlobalTheory.DefFree GlobalTheory.DefLift Polynomial
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 end -- clump:auto
 end -- clump:auto
@@ -295,7 +295,6 @@ open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Cx Formalism.In
 open Formalism.IndefR.Datum (InfFam)
 open GlobalTheory.DefFree GlobalTheory.DefLift Polynomial
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.UnipRed
 
@@ -385,7 +384,6 @@ open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Cx Formalism.In
 open Formalism.IndefR.Datum (InfFam)
 open GlobalTheory.DefFree GlobalTheory.DefLift Polynomial
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem _root_.GlobalTheory.T.eq_one_of_finiteOrder_unipotentReduction_largePrime : ∀ (E R k : Type) [Field E] [NumberField E] [CommRing R] [CommRing k] (S : Subring R) (ι : E →+* R) (φ : S →+* k) (p n : ℕ), p.Prime → CharP k p → Module.finrank ℚ E * n + 1 < p → ∀ (u : GL (Fin n) E) (x : GL (Fin n) R) (y : GL (Fin n) S), IsOfFinOrder u → Formalism.UG.bc S.subtype y = x⁻¹ * Formalism.UG.bc ι u * x → IsNilpotent ((Formalism.UG.bc φ y : GL (Fin n) k).val - 1) → u = 1 := by
   first | exact @GlobalTheory.UnipRed.eq_one_of_unipotent_reduction
@@ -411,16 +409,7 @@ theorem isClass_of_isChar {G : Type} [Group G] {χ : G → ℂ} (h : IsChar χ) 
   rw [← hV, ← hV, FDRep.char_conj]
 
 theorem wh_one_zero (ψ : AddChar (ZMod g) ℂ) : wh ψ (fun _ : Gn g 0 => (1 : ℂ)) = 1 := by
-  haveI : Subsingleton (Gn g 0) := ⟨fun a b => Units.ext (Subsingleton.elim _ _)⟩
-  unfold wh tr
-  rw [Fintype.sum_subsingleton _ 1, eU, coeff_eDat, mul_one]
-  have hU : ∀ u : Gn g 0, IsUniUp u.val := fun u a => a.elim0
-  have hc : Nat.card {u : GG g 0 // IsUniUp u.val} = 1 := by
-    haveI : Nonempty {u : GG g 0 // IsUniUp u.val} := ⟨⟨1, hU 1⟩⟩
-    exact Nat.card_unique
-  unfold eps
-  rw [if_pos (hU 1), hc]
-  simp
+  first | exact _root_.GlobalTheory.GreenSeries.wh_zero_one | exact @_root_.GlobalTheory.GreenSeries.wh_zero_one | apply _root_.GlobalTheory.GreenSeries.wh_zero_one <;> assumption
 
 theorem wh_const_mul (ψ : AddChar (ZMod g) ℂ) {n : ℕ} (c : ℂ) (χ : Gn g n → ℂ) :
     wh ψ (fun x => c * χ x) = c * wh ψ χ := by
@@ -462,8 +451,7 @@ theorem isGeneric_of_wh (ψ : AddChar (ZMod g) ℂ) (hψ : ψ ≠ 1) {n : ℕ} (
     rw [coeff_eU ψ hψ 0 0 hk, map_smul, smul_eq_mul]
     rfl
   obtain ⟨y, hy⟩ : ∃ y, op V.ρ (levOfChar ψ hψ n false 0 0 hk).e y ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact h1 (LinearMap.ext hc)
   refine ⟨_, hy, fun u hu => ?_⟩
   exact (GlobalTheory.BadShare.EpsProj.mem_range_iff V.ρ (mem_one _) (fun _ _ => mem_mul _) (chi_one _) (fun _ _ => chi_mul _) _).1
@@ -649,8 +637,6 @@ open scoped TensorProduct
 
 namespace GlobalTheory.GoodProjProd
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem monicOf_injective {g N : ℕ} [Fact g.Prime] :
     Function.Injective fun c : Fin N → ZMod g => (Formalism.CyclotomicNorms.monicOf c : (ZMod g)[X]) := by
   intro c c' h
@@ -761,7 +747,6 @@ open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Cx Formalism.In
 open Formalism.IndefR.Datum (InfFam)
 open GlobalTheory.DefFree GlobalTheory.DefLift Polynomial
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.BaseFrameUnimod
 
@@ -833,7 +818,6 @@ open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Cx Formalism.In
 open Formalism.IndefR.Datum (InfFam)
 open GlobalTheory.DefFree GlobalTheory.DefLift Polynomial
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.DefFree
 
@@ -919,7 +903,6 @@ open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Cx Formalism.In
 open Formalism.IndefR.Datum (InfFam)
 open GlobalTheory.DefFree GlobalTheory.DefLift Polynomial
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.LevRange
 
@@ -1053,7 +1036,6 @@ open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Cx Formalism.In
 open Formalism.IndefR.Datum (InfFam)
 open GlobalTheory.DefFree GlobalTheory.DefLift Polynomial
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 end -- clump:auto
 end -- clump:auto
@@ -1070,7 +1052,6 @@ open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Cx Formalism.In
 open Formalism.IndefR.Datum (InfFam)
 open GlobalTheory.DefFree GlobalTheory.DefLift Polynomial
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
@@ -1193,7 +1174,6 @@ open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Cx Formalism.In
 open Formalism.IndefR.Datum (InfFam)
 open GlobalTheory.DefFree GlobalTheory.DefLift Polynomial
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.TypePrimeSize
 

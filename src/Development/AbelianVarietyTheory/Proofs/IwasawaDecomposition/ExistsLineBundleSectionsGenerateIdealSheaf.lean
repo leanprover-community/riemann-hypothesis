@@ -47,8 +47,6 @@ noncomputable section
 open AlgebraicGeometry CategoryTheory Limits MvPolynomial
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.AnForm.R GlobalTheory.ProjSpace
 
-attribute [local instance] MvPolynomial.gradedAlgebra
-
 namespace GlobalTheory.ProjBlowup
 
 variable {R : Type} [CommRing R] {N : ℕ} {X : Scheme.{0}}

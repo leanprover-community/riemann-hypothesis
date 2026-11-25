@@ -305,15 +305,7 @@ theorem zhat_famSc {n r : ℕ} (ε : Fin n → Bool) (sc : ℝ) (e e' : Fin r �
 
 theorem dl_dzd {r : ℕ} (d : Fin (r + 1) → ℂ) (Z : Matrix (Fin (r + 1)) (Fin (r + 1)) ℂ) (l : ℕ) (hl : l ≤ r + 1) :
     Dl (Matrix.diagonal d * Z * Matrix.diagonal d) l = (∏ i : Fin l, d (Fin.castLE hl i)) ^ 2 * Dl Z l := by
-  unfold Formalism.L2.SG.RealObj.Dl
-  rw [dite_eq_left hl, dite_eq_left hl]
-  have hs : (Matrix.diagonal d * Z * Matrix.diagonal d).submatrix (Fin.castLE hl) (Fin.castLE hl) =
-      Matrix.diagonal (fun i => d (Fin.castLE hl i)) * Z.submatrix (Fin.castLE hl) (Fin.castLE hl) *
-        Matrix.diagonal (fun i => d (Fin.castLE hl i)) := by
-    ext i j
-    simp [Matrix.mul_diagonal, Matrix.diagonal_mul]
-  rw [hs, Matrix.det_mul, Matrix.det_mul, Matrix.det_diagonal]
-  ring
+  apply _root_.Formalism.L2.SG.Pf.Carrier.DFrameAtPf.dl_scale <;> assumption
 
 theorem gv_dzd {r : ℕ} (T T' : ℝ) (d : Fin (r + 1) → ℂ) (hd : d (Fin.last r) = 1)
     (Z : Matrix (Fin (r + 1)) (Fin (r + 1)) ℂ) :

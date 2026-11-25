@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.DefiniteSourcePairCentredBlockParametersStatement
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.L2UnitaryRepresentationData
 public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.WeilSignShift
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ChainParOfNodeGap
@@ -63,19 +64,8 @@ namespace GlobalTheory.ArchRec.ParChain
 
 theorem num_bound_two {n q m N : ℕ} (hq : q ≤ m) (hn : n ≤ N) (hm : 1 ≤ m) (hN : 8 * m ≤ N) :
     120 * (n : ℝ) * (q : ℝ) ^ ((3 : ℝ) / 2) ≤ 2 * (N : ℝ) ^ 3 := by
-  have hq' : (q : ℝ) ≤ m := by exact_mod_cast hq
-  have hn' : (n : ℝ) ≤ N := by exact_mod_cast hn
-  have hm' : (1 : ℝ) ≤ m := by exact_mod_cast hm
-  have hN' : 8 * (m : ℝ) ≤ N := by exact_mod_cast hN
-  have h1 : (q : ℝ) ^ ((3 : ℝ) / 2) ≤ (m : ℝ) ^ 2 := by
-    calc (q : ℝ) ^ ((3 : ℝ) / 2) ≤ (m : ℝ) ^ ((3 : ℝ) / 2) := by gcongr
-      _ ≤ (m : ℝ) ^ ((2 : ℕ) : ℝ) := Real.rpow_le_rpow_of_exponent_le hm' (by norm_num)
-      _ = (m : ℝ) ^ 2 := Real.rpow_natCast _ _
-  have h2 : 60 * (m : ℝ) ^ 2 ≤ (N : ℝ) ^ 2 := by nlinarith
-  calc 120 * (n : ℝ) * (q : ℝ) ^ ((3 : ℝ) / 2) ≤ 120 * (N : ℝ) * (m : ℝ) ^ 2 := by gcongr
-    _ = 2 * (N : ℝ) * (60 * (m : ℝ) ^ 2) := by ring
-    _ ≤ 2 * (N : ℝ) * (N : ℝ) ^ 2 := by gcongr
-    _ = 2 * (N : ℝ) ^ 3 := by ring
+  intros
+  apply _root_.GlobalTheory.ArchRec.ParPair.num_bound <;> assumption
 
 theorem stepGap_of_gap {D : D7} (h : NodeGap D) (k : Fin D.R.m) : StepGap D k := by
   intro τ

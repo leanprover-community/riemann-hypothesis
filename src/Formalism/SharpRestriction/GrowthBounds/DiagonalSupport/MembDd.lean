@@ -79,7 +79,6 @@ theorem real_le {p : ℕ} (hp : 0 < p) (D a b : ℕ) (h : p ^ D * a ≤ b) :
   have h1 : (a : ℝ) ≤ (b : ℝ) / (p : ℝ) ^ D := by
     rw [le_div_iff₀ hpD, mul_comm]
     exact_mod_cast h
-  have h2 : (0 : ℝ) ≤ (b : ℝ) / (p : ℝ) ^ D / 100 := by positivity
   linarith
 
 section Fr

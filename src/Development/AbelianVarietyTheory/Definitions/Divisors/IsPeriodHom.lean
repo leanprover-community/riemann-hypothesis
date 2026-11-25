@@ -48,8 +48,6 @@ open TopologicalSpace Filter Topology
 open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.Cris GlobalTheory.DeRham GlobalTheory.CatCoh
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.AnPer
 
 @[reducible] def Charts.std {I : Type} [Fintype I] {g : ℕ} {Λ : Type} [AddCommGroup Λ] (F : Fam I g Λ)

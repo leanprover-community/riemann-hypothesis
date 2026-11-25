@@ -1103,10 +1103,7 @@ theorem length_toNat_ne_zero {S : Type} [CommRing S] [IsNoetherianRing S] {J W :
 theorem facts_of_divCycle_ne_zero {K : Type} {ι : K → Type} {R : Type} [CommRing R]
     {P W : Ideal (MRing ι R)} {f : MRing ι R} (h : divCycle P f W ≠ 0) :
     W ∈ (P ⊔ Ideal.span {f}).minimalPrimes ∧ IsRelevant W := by
-  by_contra hc
-  apply h
-  unfold divCycle
-  rw [dite_eq_right hc]
+  apply _root_.GlobalTheory.CompanionTheory.Ar.Num.Places.mem_of_divCycle_ne_zero <;> assumption
 
 theorem fibre_comp : ∀ (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] (ϖ : O), Irreducible ϖ → ∀ (K : Type) [Fintype K] [DecidableEq K] (ι : K → Type) [∀ k, Fintype (ι k)] (P : Ideal (MRing ι O)) (d : ℕ), IsModelOver P d → (∀ W, IsFibreComp P W ↔ divCycle P (C ϖ) W ≠ 0) ∧ (∀ (a : K → ℕ) (f : MRing ι O), IsMultiHomog f a → f ∉ P → ∀ W, divCycle P f W ≠ 0 → (C ϖ : MRing ι O) ∈ W → IsFibreComp P W) ∧ ∀ (b : K → ℤ) (f g : MRing ι O), IsVerticalDivisor P ϖ b f g → ∀ W, ratDiv P f g W ≠ 0 → IsFibreComp P W := by
   intro O _ _ _ ϖ hϖ K _ _ ι _ P d hP
@@ -1577,8 +1574,7 @@ theorem exists_monomial_mixExpansion {σ : Type} [Fintype σ] (d : ℕ) :
   | succ d ih =>
     intro s hs
     obtain ⟨i, hi⟩ : ∃ i, s i ≠ 0 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       have h0 : s = 0 := Finsupp.ext h
       simp [h0] at hs
     have hle : Finsupp.single i 1 ≤ s := by

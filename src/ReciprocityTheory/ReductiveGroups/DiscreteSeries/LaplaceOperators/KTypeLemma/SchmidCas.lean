@@ -7,6 +7,7 @@ public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.BochIneq
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.CasimirGapAtNoncompactWeight
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.InnerCrossOpEigEqZero
+import all ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.InnerCrossOpEigEqZero
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.LayerOrth
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.LayerWeight
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.NcVOneDecomp
@@ -235,40 +236,6 @@ private theorem sum_pairs_eq_casValK (μ : Fin n → ℝ) :
   refine Finset.sum_congr rfl (fun a _ => ?_)
   ring
 
-private theorem casimirK_apply_isKHWVec_of_isGlRep {X : Type*} [AddCommGroup X] [Module ℂ X]
-    {A : Fin n → Fin n → Module.End ℂ X} (hA : IsGlRep A) {μ : Fin n → ℝ} {w : X}
-    (hw : IsKHWVec ε A μ w) : casimirK ε A w = (casValK ε μ : ℂ) • w := by
-  have hterm : ∀ a b, (if ε b = ε a then A a b (A b a w) else 0) =
-      (((if a = b then μ a ^ 2 else 0) + (if a < b ∧ ε b = ε a then μ a - μ b else 0) : ℝ) : ℂ) • w := by
-    intro a b
-    rcases lt_trichotomy a b with h | rfl | h
-    · by_cases hab : ε b = ε a
-      · have hc := congrArg (fun T : Module.End ℂ X => T w) (hA a b b a)
-        simp only [LinearMap.sub_apply, Module.End.mul_apply, if_true] at hc
-        rw [hw.2 a b h hab.symm, map_zero, sub_zero, hw.1 a, hw.1 b] at hc
-        rw [if_pos hab, hc, if_neg (ne_of_lt h), if_pos ⟨h, hab⟩]
-        simp [sub_smul]
-      · rw [if_neg hab, if_neg (ne_of_lt h), if_neg (fun h' => hab h'.2)]
-        simp
-    · rw [if_pos rfl, hw.1 a, map_smul, hw.1 a, smul_smul]
-      simp [sq]
-    · by_cases hab : ε b = ε a
-      · rw [if_pos hab, hw.2 b a h hab, map_zero, if_neg (ne_of_gt h),
-          if_neg (fun h' => (lt_asymm h) h'.1)]
-        simp
-      · rw [if_neg hab, if_neg (ne_of_gt h), if_neg (fun h' => hab h'.2)]
-        simp
-  have hsum : casimirK ε A w = ∑ a, ∑ b, (if ε b = ε a then A a b (A b a w) else 0) := by
-    simp only [casimirK, LinearMap.sum_apply, Finset.sum_filter]
-    refine Finset.sum_congr rfl (fun a _ => Finset.sum_congr rfl (fun b _ => ?_))
-    split_ifs <;> simp
-  rw [hsum]
-  simp only [hterm, ← Finset.sum_smul]
-  congr 1
-  rw [← sum_pairs_eq_casValK μ]
-  push_cast
-  rfl
-
 theorem khw_layer_succ_bound_of_sch (hE : IsGlRep E) (hU : IsInfUnitary ε E)
     (hV : IsKIrrHW ε E (lowK ε lam) V) (hSch : ∀ x ∈ Wm ε E V, phi E 1 x = 0)
     (hmono : StrictAnti lam) {h : ℝ} (hh : GapAtLeast ε lam h)
@@ -286,7 +253,7 @@ theorem khw_layer_succ_bound_of_sch (hE : IsGlRep E) (hU : IsInfUnitary ε E)
   have hre : RCLike.re (inner ℂ ((casValK ε μ : ℂ) • P) P) = casValK ε μ * ‖P‖ ^ 2 := by
     rw [inner_smul_left, inner_self_eq_norm_sq_to_K]
     simp [← Complex.ofReal_pow]
-  rw [casimirK_apply_isKHWVec_of_isGlRep (bAct_isGlRep hE (k + 1)) hPk, hre] at hB
+  rw [_root_.ReciprocityTheory.ChartRestriction.DS.casimirK_eq_casValK_smul_of_isKHWVec (bAct_isGlRep hE (k + 1)) hPk, hre] at hB
   have hpos : 0 < ‖P‖ ^ 2 := pow_pos (norm_pos_iff.mpr hP0) 2
   refine ⟨khw_big_weight hE hV hPm hP0 hPk, ?_⟩
   have h2 := le_of_mul_le_mul_right hB hpos

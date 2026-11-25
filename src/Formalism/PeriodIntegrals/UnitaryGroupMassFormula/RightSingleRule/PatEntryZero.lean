@@ -12,6 +12,7 @@ import Mathlib.Tactic.TypeStar
 public import Mathlib.Analysis.Calculus.Deriv.Mul
 public import Mathlib.Analysis.Complex.RealDeriv
 public import Mathlib.Analysis.SpecialFunctions.ExpDeriv
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LeftPhaseRule.MulApplyS
 
 @[expose] public section
 
@@ -288,19 +289,7 @@ lemma ell_rsmul (z : Fin (2 * r + k + 1) → ℂ) (c : ℝ) (A : Mx k r) :
   rw [← ell_smul, Complex.coe_smul]
 
 lemma ell_one (z : Fin (2 * r + k + 1) → ℂ) (hz : inWb k r z) : ell k r z 1 = 0 := by
-  unfold ell
-  apply Finset.sum_eq_zero
-  intro a _
-  split_ifs with h
-  · apply Matrix.one_apply_ne
-    intro he
-    have := congrArg Fin.val he
-    have e1 : (eI k r a).val = a.val := rfl
-    have e2 : (eI k r ⟨a.val + 1, h⟩).val = a.val + 1 := rfl
-    rw [e1, e2] at this
-    omega
-  · rw [Matrix.one_mulVec]
-    exact hz _ (Or.inl a.isLt)
+  apply _root_.Formalism.FourierDecayAlt.Q.LeftMultiplicationRule.ell_one <;> assumption
 
 def ellL (k r : ℕ) (z : Fin (2 * r + k + 1) → ℂ) : Mx k r →ₗ[ℝ] ℂ where
   toFun := ell k r z

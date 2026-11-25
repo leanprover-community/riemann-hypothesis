@@ -464,8 +464,6 @@ open Matrix NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism
 
 namespace PI.UnitaryDimensionFormula
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem mat_idem_mul {Rg : Type} [Ring Rg] (E a b : Rg) (hE : E * E = E) (hc : ∀ x : Rg, E * x = x * E) :
     (E * a + (1 - E)) * (E * b + (1 - E)) = E * (a * b) + (1 - E) := by
   have h1 : E * (1 - E) = 0 := by rw [mul_sub, mul_one, hE, sub_self]
@@ -752,8 +750,6 @@ open Matrix NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism
 
 namespace PI.UnitaryDimensionFormula.FrameX
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} (X : HidaSetting D)
 
 def E1 (e : Af X.B.I.F) : X.B.I.E ⊗[X.B.I.F] Af X.B.I.F := (1 : X.B.I.E) ⊗ₜ[X.B.I.F] e
@@ -876,8 +872,6 @@ theorem rel_fz (u : D.what₂.Word) (a : Fin D.R.rS) : hA X.B.I (incl X.B.I (X.f
 end PI.UnitaryDimensionFormula.FrameX
 
 namespace PI.UnitaryDimensionFormula.FrameX
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7} (X : HidaSetting D)
 
@@ -1040,8 +1034,6 @@ end PI.UnitaryDimensionFormula.FrameX
 
 namespace PI.UnitaryDimensionFormula.FrameX
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 open PI.UnitaryDimensionFormula
 
 variable {D : D7} {X : HidaSetting D}
@@ -1183,8 +1175,6 @@ open Matrix NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism
 
 namespace PI.UnitaryDimensionFormula
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem idxDFrame_of (hS : IdxDSig) (hJ : IdxDJacE) (hG : FrGram) : IdxDFrame := by
   intro D X u e hE
   set eps := epsX X e with heps
@@ -1273,8 +1263,6 @@ open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.L2.SG.
 
 namespace PI.UnitaryDimensionFormula
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem cj_good {D : D7} {X : HidaSetting D} (u : D.what₂.Word) (s : Hfin X u) (hs : cj X u s ∈ X.B.I.Kset) :
     NormCutK.Good X (cj X u s) := by
   have hk1 : (((1 : Hfin X u) : X.B.I.Gf) * X.xu u)⁻¹ * ((s : X.B.I.Gf) * X.xu u) ∈ X.B.I.Kset := by
@@ -1324,8 +1312,6 @@ open scoped Classical
 open Matrix NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.L2.SG.HidaSetting Formalism.L2.SG.PoincareInHH.PoincareSetting Formalism.L2.SG.TermOp
 
 namespace PI.UnitaryDimensionFormula.StabB
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7} (X : HidaSetting D)
 
@@ -1574,8 +1560,6 @@ theorem eq_of_ind (u : D.what₂.Word) (g1 g2 : (VS D).V ≃ₗ[D.host.E] (VS D)
 end PI.UnitaryDimensionFormula.StabB
 
 namespace PI.UnitaryDimensionFormula
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 open StabB
 

@@ -72,12 +72,8 @@ theorem exp_mem_range_of_isAlgClosed (x : ℚ) :
   haveI : NeZero x.den := ⟨x.den_nz⟩
   obtain ⟨ζ, hζ⟩ := HasEnoughRootsOfUnity.exists_primitiveRoot Ω x.den
   have hζ' := hζ.map_of_injective ε.injective
-  have hw : Complex.exp (2 * Real.pi * Complex.I * (x : ℂ)) ^ x.den = 1 := by
-    rw [← Complex.exp_nat_mul]
-    have hx : (x : ℂ) * (x.den : ℂ) = (x.num : ℂ) := by exact_mod_cast Rat.mul_den_eq_num x
-    have : (x.den : ℂ) * (2 * Real.pi * Complex.I * (x : ℂ)) = (x.num : ℂ) * (2 * Real.pi * Complex.I) := by
-      rw [← hx]; ring
-    rw [this]; exact Complex.exp_int_mul_two_pi_mul_I _
+  have hw : Complex.exp (2 * Real.pi * Complex.I * (x : ℂ)) ^ x.den = 1 :=
+    (Complex.isPrimitiveRoot_exp_rat x).pow_eq_one
   obtain ⟨i, -, hi⟩ := hζ'.eq_pow_of_pow_eq_one hw
   exact ⟨ζ ^ i, by rw [map_pow]; exact hi⟩
 

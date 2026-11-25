@@ -593,8 +593,7 @@ lemma final_real1 (D R w e ε η t X tW : ℝ) (hD : 0 < D) (hR : 0 < R) (he0 : 
     have h2 : 0 ≤ η * t ^ 2 := by
       have := mul_nonneg h1 hD.le
       rwa [div_mul_cancel₀ _ hD.ne'] at this
-    by_contra hneg
-    push_neg at hneg
+    by_contra! hneg
     have : η * t ^ 2 < 0 := mul_neg_of_neg_of_pos hneg (by positivity)
     linarith
   by_cases hε4 : 1 / 4 ≤ ε
@@ -652,8 +651,7 @@ theorem frame_linear_algebra_first : FrameLA1 := by
   have hKnn : 0 ≤ ∑ i, ((finrank ℂ (V i) : ℝ) - finrank ℂ (Nτ i)) :=
     Finset.sum_nonneg (fun i _ => sub_nonneg.mpr (hnk i))
   have hε : 0 ≤ ε := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     have : ε * ∑ i, (finrank ℂ (V i) : ℝ) < 0 := mul_neg_of_neg_of_pos h hR
     linarith
 

@@ -553,8 +553,7 @@ theorem mem_range_of_fixed : ∀ (F E : Type) [Field F] [NumberField F] [Field E
   obtain ⟨-, htc, h2, hconj⟩ := hcm
   haveI : Module.Finite F E := Module.Finite.of_restrictScalars_finite ℚ _ _
   obtain ⟨x, hx⟩ : ∃ x : E, σ x ≠ x := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     obtain ⟨w⟩ : Nonempty (InfinitePlace E) := inferInstance
     refine (InfinitePlace.not_isReal_iff_isComplex.2 (htc.isComplex w)) ?_
     rw [InfinitePlace.isReal_iff, ComplexEmbedding.isReal_iff]

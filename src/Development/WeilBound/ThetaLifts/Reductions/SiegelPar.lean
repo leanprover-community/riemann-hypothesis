@@ -182,8 +182,7 @@ theorem colK_of_minPar {k : ℕ} (hk : k ≤ r) {R : Type} [CommRing R] {M : Mat
     rw [hz, mul_zero]
 
 theorem exists_omega (h : IsCMExt F E σ) : ∃ ω : E, ω ≠ 0 ∧ σ ω = -ω := by
-  by_contra hno
-  push_neg at hno
+  by_contra! hno
   have hσ := GlobalTheory.SiegelSet.sigma_sigma h
   have hfix : ∀ y, σ y = y := fun y => by
     by_contra hne

@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.BtOrderBaseChangeGeneric
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsLatFamilyCongr
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ArithmeticHilbertSamuelLowerBound
 public import Development.WeilBound.CoreStatements.TorusUniformisation.ChowMahlerFamilies.ExistsFunctionAtPoint
@@ -300,16 +301,8 @@ variable {R : Type} [CommRing R] {T : Type} [CommGroup T]
 
 theorem translate_mem {A : Subalgebra R (T → R)} (hA : IsHopfOrder A) {f : T → R} (hf : f ∈ A) (t : T) :
     (fun x => f (t * x)) ∈ A := by
-  have key : ∀ g ∈ prodSpan A, (fun x => g (t, x)) ∈ A := by
-    intro g hg
-    induction hg using Submodule.span_induction with
-    | mem g h =>
-      obtain ⟨a, ha, b, hb, rfl⟩ := h
-      exact A.smul_mem hb (a t)
-    | zero => exact A.zero_mem
-    | add g g' _ _ h h' => exact A.add_mem h h'
-    | smul c g _ h => exact A.smul_mem h c
-  exact key _ (hA.comul f hf)
+  intros
+  apply _root_.GlobalTheory.CompanionTheory.Ar.BT.BaseChangeOrder.translate_mem <;> assumption
 
 theorem augIdeal_fg {A : Subalgebra R (T → R)} (hA : IsHopfOrder A) : (augIdeal A).FG := by
   classical

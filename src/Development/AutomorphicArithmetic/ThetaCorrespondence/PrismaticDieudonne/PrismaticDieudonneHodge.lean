@@ -1392,25 +1392,11 @@ theorem GlobalTheory.PDivLat.iota_natural : ∀ (p : ℕ) [Fact p.Prime] (C : Ty
       rw [epsPairing, epsPairing, pairing_tateMap]
     rw [h1, hu, ← h2, dlog_tateMap]
   obtain ⟨c, hc, hcw⟩ := _root_.GlobalTheory.PDivLat.exists_smul_mem_span_dlog p C v O hv ε hε H hH
-  have hspan : ∀ x ∈ Submodule.span O (Set.range (dlog H)),
-      u (ι' x) = ι (omegaMap G H f x) := by
-    intro x hx
-    induction hx using Submodule.span_induction with
-    | mem x hx => obtain ⟨χ, rfl⟩ := hx; exact key χ
-    | zero => simp
-    | add x y _ _ hx hy => simp [hx, hy]
-    | smul a x _ hx => simp [hx]
-  have h := hspan _ (hcw w)
-  simp only [map_smul] at h
-  have h' : c • (u (ι' w) - ι (omegaMap G H f w)) = 0 := by rw [smul_sub, h, sub_self]
-  have tf : ∀ x : M, c • x = 0 → x = 0 := by
-    intro x hx
-    let b := Module.Free.chooseBasis O M
-    refine b.repr.injective (Finsupp.ext fun i => ?_)
-    have h3 := congrArg (fun y => b.repr y i) hx
-    simp only [map_smul, Finsupp.smul_apply, smul_eq_mul, map_zero, Finsupp.coe_zero, Pi.zero_apply] at h3
-    simpa using (mul_eq_zero.1 h3).resolve_left hc
-  exact sub_eq_zero.1 (tf _ h')
+  have h := LinearMap.eqOn_span (f := u.comp ι') (g := ι.comp (omegaMap G H f))
+    (s := Set.range (dlog H)) (by
+      rintro _ ⟨χ, rfl⟩
+      exact key χ) (hcw w)
+  exact smul_right_injective M hc (by simpa only [LinearMap.comp_apply, map_smul] using h)
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.PDivGroupHodgeTateFirstMapNatural =====
@@ -1428,28 +1414,16 @@ theorem mem_smul_of_tmul_eq_zero {A Q N : Type} [CommRing A] [AddCommGroup Q] [M
     [AddCommGroup N] [Module A N] (g : A →ₗ[A] Q) (hg : Function.Surjective g) (ξ : A)
     (hk : ∀ a, g a = 0 ↔ ∃ b, a = ξ * b) (m : N) (h : g 1 ⊗ₜ[A] m = 0) :
     ∃ n : N, m = ξ • n := by
-  have hex : Function.Exact (LinearMap.mulLeft A ξ) g := by
-    intro a
-    rw [hk a]
-    constructor
-    · rintro ⟨b, rfl⟩
-      exact ⟨b, rfl⟩
-    · rintro ⟨b, rfl⟩
-      exact ⟨b, rfl⟩
+  have hex : Function.Exact (LinearMap.mulLeft A ξ) g := fun a =>
+    (hk a).trans (exists_congr fun _ => eq_comm)
   have hex' := rTensor_exact N hex hg
   have h1 : (LinearMap.rTensor N g) ((1 : A) ⊗ₜ[A] m) = 0 := by
     simpa using h
   obtain ⟨t, ht⟩ := (hex' _).1 h1
-  have key : ∀ t : A ⊗[A] N, TensorProduct.lid A N (LinearMap.rTensor N (LinearMap.mulLeft A ξ) t)
-      = ξ • TensorProduct.lid A N t := by
-    intro t
-    induction t using TensorProduct.induction_on with
-    | zero => simp
-    | tmul a n => simp [mul_smul]
-    | add x y hx hy => simp only [map_add (f := _), hx, hy, smul_add]
-  refine ⟨TensorProduct.lid A N t, ?_⟩
-  rw [← key, ht]
-  simp
+  have key : (TensorProduct.lid A N).toLinearMap.comp (LinearMap.rTensor N (LinearMap.mulLeft A ξ)) =
+      ξ • (TensorProduct.lid A N).toLinearMap :=
+    TensorProduct.ext' fun a n => mul_smul ξ a n
+  exact ⟨TensorProduct.lid A N t, by simpa [ht] using LinearMap.congr_fun key t⟩
 
 theorem exists_reduction (A O : Type) [CommRing A] [CommRing O] (θ : A →+* O)
     (hθ : Function.Surjective θ) (ξ : A) (hker : RingHom.ker θ = Ideal.span {ξ})

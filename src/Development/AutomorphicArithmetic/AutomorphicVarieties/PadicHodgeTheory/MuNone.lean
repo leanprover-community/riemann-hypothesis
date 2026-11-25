@@ -1,5 +1,6 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.WeilGroupCharacters.LamLocal
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.FiniteCohomology
 public import Mathlib.Topology.Algebra.Group.TopologicalAbelianization
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FixingSubgroupEquivBicontinuous
@@ -25,21 +26,7 @@ open Formalism.BasicNotions Formalism.BasicNotions.Loc UpperTheory.V.Loc Topolog
 private theorem mn_sep {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [CompactSpace G]
     [TotallyDisconnectedSpace G] (h : TopologicalAbelianization G) (hh : h ≠ 1) :
     ∃ V : Subgroup (TopologicalAbelianization G), IsOpen (V : Set (TopologicalAbelianization G)) ∧ h ∉ V := by
-  obtain ⟨g, rfl⟩ := QuotientGroup.mk_surjective h
-  have hg : g ∉ (commutator G).topologicalClosure := fun hm => hh ((QuotientGroup.eq_one_iff g).2 hm)
-  have hS : IsOpen {x : G | x * g ∉ ((commutator G).topologicalClosure : Set G)} :=
-    (Subgroup.isClosed_topologicalClosure _).isOpen_compl.preimage (continuous_mul_const g)
-  have h1 : (1 : G) ∈ {x : G | x * g ∉ ((commutator G).topologicalClosure : Set G)} := by
-    show 1 * g ∉ ((commutator G).topologicalClosure : Set G)
-    rw [one_mul]
-    exact hg
-  obtain ⟨W, hW⟩ := ProfiniteGrp.exist_openNormalSubgroup_sub_open_nhds_of_one hS h1
-  refine ⟨(W : Subgroup G).map (QuotientGroup.mk' _), ?_, ?_⟩
-  · rw [Subgroup.coe_map]
-    exact QuotientGroup.isOpenMap_coe _ W.isOpen
-  · rintro ⟨w, hw, he⟩
-    rw [QuotientGroup.mk'_apply, QuotientGroup.eq] at he
-    exact hW (inv_mem hw) he
+  apply _root_.sep_open <;> assumption
 
 private theorem mn_core {A M : Type} [CommGroup A] [TopologicalSpace A] [IsTopologicalGroup A]
     [CompactSpace A] [T2Space A] [CommGroup M] (r : M →* A) (hr : DenseRange r) {q : ℕ} (hq : q ≠ 0)

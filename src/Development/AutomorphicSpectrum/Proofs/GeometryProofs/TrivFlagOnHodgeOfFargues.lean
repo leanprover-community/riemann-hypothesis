@@ -61,8 +61,7 @@ theorem vanish_above (w u : Module.Basis (Fin N) Ω V) (hup : ∀ i j, i < j →
     (hd : ∀ i, w.repr (u i) i ≠ 0) (v : V) (i : Fin N) (hv : ∀ j, i < j → w.repr v j = 0) :
     ∀ j, i < j → u.repr v j = 0 := by
   classical
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   have hne : (Finset.univ.filter (fun j => i < j ∧ u.repr v j ≠ 0)).Nonempty := by
     obtain ⟨j, hj, hj'⟩ := hcon
     exact ⟨j, Finset.mem_filter.mpr ⟨Finset.mem_univ _, hj, hj'⟩⟩
@@ -87,8 +86,7 @@ theorem exists_basis (w : Module.Basis (Fin N) Ω V) (f : Fin N → V)
   · have hli : LinearIndependent Ω f := by
       rw [Fintype.linearIndependent_iff]
       intro g hg
-      by_contra hcon
-      push_neg at hcon
+      by_contra! hcon
       have hne : (Finset.univ.filter (fun j => g j ≠ 0)).Nonempty := by
         obtain ⟨j, hj⟩ := hcon
         exact ⟨j, Finset.mem_filter.mpr ⟨Finset.mem_univ _, hj⟩⟩

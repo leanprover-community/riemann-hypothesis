@@ -56,8 +56,7 @@ theorem exists_vec_ann (γ : Matrix (Fin n) (Fin n) K) (hs : γ.charpoly.Separab
           _ = g := hc.symm
       exact hp.not_unit (IsUnit.of_mul_eq_one _ (mul_left_cancel₀ hgne h1))
     obtain ⟨u, hu⟩ : ∃ u, (aeval γ g).mulVec u ≠ 0 := by
-      by_contra hcon
-      push_neg at hcon
+      by_contra! hcon
       exact hg0 (Matrix.mulVec_injective (funext fun u => by simpa using hcon u))
     set w := (aeval γ g).mulVec u with hw
     have hpw : (aeval γ p).mulVec w = 0 := by

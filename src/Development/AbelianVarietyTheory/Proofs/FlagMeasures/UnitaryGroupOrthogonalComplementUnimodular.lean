@@ -131,8 +131,7 @@ theorem exists_qrefl (L : LocE F E) {n : ℕ} {Hm : Matrix (Fin n) (Fin n) E} (h
 theorem exists_skew (L : LocE F E) :
     ∃ (δ : E) (D : F), D ≠ 0 ∧ L.cj δ = -δ ∧ δ * δ = algebraMap F E D := by
   have h1 : ∃ z : E, L.cj z ≠ z := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     have hs : Function.Surjective (Algebra.linearMap F E) := fun z => (L.cj_fix z).1 (h z)
     have := LinearMap.finrank_le_finrank_of_surjective hs
     rw [L.rank, Module.finrank_self] at this

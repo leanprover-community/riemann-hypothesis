@@ -110,8 +110,7 @@ namespace GlobalTheory.BotFinRef
 theorem exists_dual_eq_one {M : Type} [AddCommGroup M] [Module ℂ M] {a : M} (ha : a ≠ 0) :
     ∃ φ : M →ₗ[ℂ] ℂ, φ a = 1 := by
   obtain ⟨φ, hφ⟩ : ∃ φ : Module.Dual ℂ M, φ a ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact ha ((Module.forall_dual_apply_eq_zero_iff ℂ a).1 h)
   exact ⟨(φ a)⁻¹ • φ, by rw [LinearMap.smul_apply, smul_eq_mul, inv_mul_cancel₀ hφ]⟩
 

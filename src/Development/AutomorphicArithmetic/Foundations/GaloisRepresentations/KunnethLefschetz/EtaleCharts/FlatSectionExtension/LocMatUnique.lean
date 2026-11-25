@@ -37,8 +37,7 @@ private lemma mem_span_X_of_sum_eq_zero {A : Type} [CommRing A] {d : ℕ} (p : F
     ext x; simp
   rw [hs, MvPolynomial.mem_ideal_span_X_image]
   intro m hm
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   have : m = 0 := by
     ext i
     simpa using hne i (Set.mem_univ i)

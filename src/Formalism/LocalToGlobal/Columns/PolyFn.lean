@@ -11,6 +11,7 @@ public import Mathlib.Analysis.Matrix.PosDef
 import Mathlib.RingTheory.SimpleRing.Principal
 public import Mathlib.Algebra.MvPolynomial.Funext
 public import Mathlib.Algebra.Star.UnitaryStarAlgAut
+import Formalism.LocalToGlobal.HermitianForms.TiedBrInj
 
 @[expose] public section
 
@@ -257,22 +258,7 @@ variable {K : Type} [Field K] {ι : Type} [Fintype ι] {n : ℕ}
 
 theorem fnOf_injective (G : ι → Matrix (Fin n) (Fin n) ℂ) (sh : ι → ℤ) (M : ι → Matrix (Fin n) (Fin n) ℂ)
     (hM : ∀ τ, IsUnit (M τ).det) (o : Frames G) : Function.Injective (fnOf G sh M) := by
-  rw [← LinearMap.ker_eq_bot, LinearMap.ker_eq_bot']
-  intro P hP
-  apply eq_zero_of_forall_isUnit
-  intro z hz
-  have hy : ∀ τ, IsUnit ((M τ)⁻¹ * z τ).det := fun τ => by
-    rw [det_mul]; exact (isUnit_nonsing_inv_det _ (hM τ)).mul (hz τ)
-  have h1 := congrFun hP ⟨fun τ => (M τ)⁻¹ * z τ, hy⟩
-  have hMz : ∀ τ, M τ * ((M τ)⁻¹ * z τ) = z τ := fun τ => by
-    rw [← Matrix.mul_assoc, mul_nonsing_inv _ (hM τ), Matrix.one_mul]
-  simp only [fnOf, LinearMap.coe_mk, AddHom.coe_mk, hMz] at h1
-  rcases mul_eq_zero.mp h1 with h2 | h2
-  · exfalso
-    rw [Finset.prod_eq_zero_iff] at h2
-    obtain ⟨τ, -, hτ⟩ := h2
-    exact (zpow_ne_zero _ (hz τ).ne_zero) hτ
-  · exact h2
+  apply _root_.Formalism.L2.Forms.fnOf_injective <;> assumption
 
 theorem evFr_injective (G : ι → Matrix (Fin n) (Fin n) ℂ) (sh : ι → ℤ) (s : K →+* ℂ) (o : Frames G) :
     Function.Injective (evFr (K := K) G sh s) := by

@@ -71,8 +71,7 @@ theorem irreducible_of_galois_conditions : IrredOf := by
     rw [finrank_top] at hJeq
     rw [hJeq]
     exact isSubSum_of_subset _ _ _ hJ
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   obtain ⟨h0, h1⟩ := hne
   have hd0 : 0 < Module.finrank K W :=
     Nat.pos_of_ne_zero fun h => h0 (Submodule.finrank_eq_zero.mp h)
@@ -764,12 +763,10 @@ theorem primitive_of_p_cycle : PrimitiveOfPCycle := by
   rw [not_or] at hcon
   obtain ⟨hns, hnt⟩ := hcon
   obtain ⟨b, hb, c, hc, hbc⟩ : ∃ b ∈ B, ∃ c ∈ B, b ≠ c := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hns (fun u hu v hv => h u hu v hv)
   obtain ⟨z, hz⟩ : ∃ z, z ∉ B := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hnt (Set.eq_univ_of_forall h)
   have hσp : σ ^ p = 1 := by
     rw [← hsupp, ← hcyc.orderOf]; exact pow_orderOf_eq_one σ

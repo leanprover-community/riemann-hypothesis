@@ -48,8 +48,7 @@ theorem qdetNext : ∀ (A : Type) [Ring A] [Algebra ℂ A] (m : ℕ) (E : Fin (m
       simp
     · intro σ _ hσ
       obtain ⟨k, hk⟩ : ∃ k, σ k ≠ k := by
-        by_contra hne
-        push_neg at hne
+        by_contra! hne
         exact hσ (Equiv.ext hne)
       rw [hc1 σ, Finset.prod_eq_zero (mem_univ k) (if_neg hk), zero_smul, mul_zero]
     · intro h1
@@ -64,8 +63,7 @@ theorem qdetNext : ∀ (A : Type) [Ring A] [Algebra ℂ A] (m : ℕ) (E : Fin (m
       simp only [Algebra.algebraMap_eq_smul_one, ← sum_smul]
     · intro σ _ hσ
       obtain ⟨k₀, hk₀⟩ : ∃ k, σ k ≠ k := by
-        by_contra hne
-        push_neg at hne
+        by_contra! hne
         exact hσ (Equiv.ext hne)
       rw [hc0 σ]
       have hz : ∀ k, (∏ j, (if j = k then (1 : ℂ) else (if σ j = j then (1 : ℂ) else 0))) = 0 := by

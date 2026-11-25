@@ -114,8 +114,7 @@ theorem val_intCast_eq_one (s : SplitPlace L) {p : ℕ} [Fact p.Prime]
     rw [e]
     exact Valuation.map_one_add_of_lt _ h2
   apply le_antisymm (val_intCast_le_one s m)
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   have h4 := mul_lt_one_of_lt_of_le hlt (val_intCast_le_one s u)
   rw [← map_mul, h3] at h4
   exact lt_irrefl _ h4

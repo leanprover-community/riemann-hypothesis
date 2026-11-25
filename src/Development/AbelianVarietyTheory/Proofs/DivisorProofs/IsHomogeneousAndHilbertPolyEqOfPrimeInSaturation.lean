@@ -150,8 +150,7 @@ private lemma exists_homogeneous_mem_of_X_pow_mul_mem_of_homogeneous {K : Type} 
     intro g hgG e he a
     have hgQ : g ∈ Q := hG ▸ Submodule.subset_span hgG
     have hj : ∃ j, M ≤ e j := by
-      by_contra hne
-      push_neg at hne
+      by_contra! hne
       have hsum : (e.sum fun _ k => k) ≤ N * M := by
         rw [Finsupp.sum_fintype _ _ (fun _ => rfl)]
         calc ∑ j, e j ≤ ∑ _j : Fin N, M := Finset.sum_le_sum fun j _ => (hne j).le

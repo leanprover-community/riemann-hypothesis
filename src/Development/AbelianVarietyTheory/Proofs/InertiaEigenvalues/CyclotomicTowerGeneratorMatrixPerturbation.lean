@@ -305,8 +305,7 @@ theorem exists_factor {F : IntermediateField ℚ_[l] (Om l)} {r : ℕ}
   by_cases hz : B = 0
   · exact ⟨0, 0, h0, by simp, fun a b => h0, by simp [hz]⟩
   obtain ⟨a₀, b₀, hne⟩ : ∃ a b, B a b ≠ 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     exact hz (Matrix.ext hcon)
   haveI : Nonempty (Fin r × Fin r) := ⟨(a₀, b₀)⟩
   obtain ⟨q, hq⟩ := Finite.exists_max fun q : Fin r × Fin r => ‖B q.1 q.2‖

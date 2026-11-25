@@ -70,7 +70,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formali
 open GlobalTheory.IndefiniteRowSideFullHecke.PlusPolynomialRoots (IsTestData PPol Tor Phi PhiOK PhiReal ellKernel Gap NoFixed IsLatticeConj GeomExpansion EllipticPart TraceEq)
 open GlobalTheory.PRep (IsAdmissible)
 open GlobalTheory.TrMult
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Chamber GlobalTheory.TruncKer GlobalTheory.Cusp
 open Polynomial
 
@@ -97,14 +96,12 @@ theorem exists_pow_projArch_not_mem_of_eigen_two : ∀ (D : D7) (V : HSp D) (g :
       rw [pow_succ, Subgroup.coe_mul, Units.val_mul, ← Matrix.mulVec_mulVec, hM, Matrix.mulVec_smul, ih, smul_smul,
         pow_succ, mul_comm]
   obtain ⟨j, hj⟩ : ∃ j, c j ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     apply hx
     have : V.frame.repr x = 0 := Finsupp.ext h
     simpa using this
   obtain ⟨φ, hφ⟩ : ∃ φ : Module.Dual D.host.F D.host.E, φ (c j) ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hj ((Module.forall_dual_apply_eq_zero_iff _ _).1 h)
 
   let ι : D.host.E →+* w.Completion ⊗[D.host.F] D.host.E := inclR (F := D.host.F) w.Completion
@@ -170,7 +167,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formali
 open GlobalTheory.IndefiniteRowSideFullHecke.PlusPolynomialRoots (IsTestData PPol Tor Phi PhiOK PhiReal ellKernel Gap NoFixed IsLatticeConj GeomExpansion EllipticPart TraceEq)
 open GlobalTheory.PRep (IsAdmissible)
 open GlobalTheory.TrMult
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Chamber GlobalTheory.TruncKer GlobalTheory.Cusp
 open Polynomial
 open Matrix
@@ -290,7 +286,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formali
 open GlobalTheory.IndefiniteRowSideFullHecke.PlusPolynomialRoots (IsTestData PPol Tor Phi PhiOK PhiReal ellKernel Gap NoFixed IsLatticeConj GeomExpansion EllipticPart TraceEq)
 open GlobalTheory.PRep (IsAdmissible)
 open GlobalTheory.TrMult
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Chamber GlobalTheory.TruncKer GlobalTheory.Cusp
 open Polynomial
 
@@ -353,8 +348,7 @@ theorem mem_parab_of_mem_cent {D : D7} {V : HSp D} {γ : GF V} (hγ : IsRegSS γ
 theorem exists_ne_zero_mem_sub {D : D7} {V : HSp D} (Φ : WittFrame V) {u : SV (wittIndex V)} (hu : u ≠ 0) :
     ∃ x ∈ Φ.sub u, x ≠ 0 := by
   obtain ⟨i, hi⟩ : ∃ i, u i ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hu (funext h)
   have h1 := Φ.ef i i
   rw [if_pos rfl] at h1
@@ -413,7 +407,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formali
 open GlobalTheory.IndefiniteRowSideFullHecke.PlusPolynomialRoots (IsTestData PPol Tor Phi PhiOK PhiReal ellKernel Gap NoFixed IsLatticeConj GeomExpansion EllipticPart TraceEq)
 open GlobalTheory.PRep (IsAdmissible)
 open GlobalTheory.TrMult
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Chamber GlobalTheory.TruncKer GlobalTheory.Cusp
 
 end -- clump:auto

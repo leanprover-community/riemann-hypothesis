@@ -9,10 +9,7 @@ public import Formalism.HermitianLattices.HermitianLatticesProofs.ShortVectors
 public import Formalism.HermitianLattices.HermitianLatticesProofs.TraceReal
 public import Formalism.HermitianLattices.GenusCovolBound
 public import Formalism.HermitianLattices.HermitianLatticesProofs.IsomAct
-import Formalism.HermitianLattices.HermitianLatticesProofs.GenusScale
 import Formalism.HermitianLattices.HermitianLatticesProofs.AutFinite
-import Formalism.HermitianLattices.HermitianLatticesProofs.GenusBasic
-import Formalism.HermitianLattices.HermitianLatticesProofs.GenusCovol
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.HermitianLattices.HermitianLatticesProofs.ClassSetFinite, Formalism.HermitianLattices.FinalNeighbourConstruct

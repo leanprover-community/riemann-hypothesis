@@ -1,5 +1,7 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.FirstCoupledKernelEquivariantCosets
+import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.XiEntryInvariant
 public import Formalism.LocalToGlobal.Columns.FiniteSumNonzeroLargeDepth
 public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ColInst
 public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.TopLawQ
@@ -172,15 +174,8 @@ theorem xiEntry_invA (hPr : Pr.Ok) {G : ChGlob X R.m} {m2 : ℕ} (hL : L.Ok Ch s
     (x z : HomE X.E (R.N i) (R.N (i + 1)))
     (hz : z ∈ mulLat (cBof sel mu cst u) (homAt (Sall sel mu u) p.deco.1.N p'.deco.1.N)) :
     XiEntry Ch sel mu cst L i al be p p' (x + z) = XiEntry Ch sel mu cst L i al be p p' x := by
-  obtain ⟨w, hw, rfl⟩ := (mem_mulLat _ _ _).1 hz
-  have hxi : ∀ P : rowSG Pr sel mu, XiAt Ch sel mu cst i P (L.h i al P) (L.h (i + 1) be P)
-      (inFr (frsF sel mu p P) (frsF sel mu p' P) (x + ((cBof sel mu cst u : ℕ) : 𝓞 X.E) • w)) =
-      XiAt Ch sel mu cst i P (L.h i al P) (L.h (i + 1) be P) (inFr (frsF sel mu p P) (frsF sel mu p' P) x) := by
-    intro P
-    rw [inFr_add]
-    exact hL.xiInv i hi al be P _ _ fun s l => inFr_cB_int sel mu cst p p' P w hw s l
-  unfold XiEntry
-  rw [phiT_cB sel mu cst hPr p p' x w hw, Finset.prod_congr rfl fun P _ => hxi P]
+  intros
+  apply _root_.GlobalTheory.MatLaw.xiEntry_invariant <;> assumption
 
 
 open Classical in
@@ -189,15 +184,8 @@ theorem xiCpl1_invA (hPr : Pr.Ok) {G : ChGlob X R.m} {m2 : ℕ} (hL : L.Ok Ch se
     (x z : HomE X.E (R.N m2) (R.N (m2 + 1)))
     (hz : z ∈ mulLat (cBof sel mu cst u) (homAt (Sall sel mu u) p₀.deco.1.N p.deco.1.N)) :
     XiCpl1 Ch sel mu cst L m2 al p₀ p Y (x + z) = XiCpl1 Ch sel mu cst L m2 al p₀ p Y x := by
-  obtain ⟨w, hw, rfl⟩ := (mem_mulLat _ _ _).1 hz
-  have hpsi : ∀ P : rowSG Pr sel mu, PsiAt Ch sel mu cst m2 P (L.h m2 al P)
-      (inFr (frsF sel mu p₀ P) (frsF sel mu p P) (x + ((cBof sel mu cst u : ℕ) : 𝓞 X.E) • w)) ((frsF sel mu p P).symm (repY Y)) =
-      PsiAt Ch sel mu cst m2 P (L.h m2 al P) (inFr (frsF sel mu p₀ P) (frsF sel mu p P) x) ((frsF sel mu p P).symm (repY Y)) := by
-    intro P
-    rw [inFr_add]
-    exact hL.psiInvX al P _ _ _ fun s l => inFr_cB_int sel mu cst p₀ p P w hw s l
-  unfold XiCpl1
-  rw [phiT_cB sel mu cst hPr p₀ p x w hw, Finset.prod_congr rfl fun P _ => hpsi P]
+  intros
+  apply _root_.GlobalTheory.CoupledLaw.xiCpl1_invariant <;> assumption
 
 
 end InvA

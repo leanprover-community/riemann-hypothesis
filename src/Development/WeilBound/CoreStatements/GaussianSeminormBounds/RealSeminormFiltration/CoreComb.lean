@@ -508,13 +508,11 @@ theorem comb_pos {p q r s n m : ℕ} (hp : p ≤ r) (hq : q ≤ s) (hn : 0 < n) 
       show (if (k : ℕ) < p then (n : ℚ) else 0) + cPair p q - cPair p q = _
       ring
     have hk : p ≤ (k : ℕ) := by
-      by_contra hk
-      push_neg at hk
+      by_contra! hk
       rw [sa, if_pos hk, abs_pos_down hn] at hBeq
       norm_num at hBeq
     have hl : (l' : ℕ) < q := by
-      by_contra hl
-      push_neg at hl
+      by_contra! hl
       have h5 : ν (Sum.inr l') + cPair p q ≤ 0 := hS.2.1 l' hl
       have e : ν (Sum.inr l') = (if (l' : ℕ) < q then (m : ℚ) else 0) - cPair p q + 1 := eb
       rw [if_neg (not_lt.mpr hl)] at e
@@ -539,13 +537,11 @@ theorem comb_pos {p q r s n m : ℕ} (hp : p ≤ r) (hq : q ≤ s) (hn : 0 < n) 
       show (if (l : ℕ) < q then (m : ℚ) else 0) - cPair p q + cPair p q = _
       ring
     have hl : q ≤ (l : ℕ) := by
-      by_contra hl
-      push_neg at hl
+      by_contra! hl
       rw [sa, if_pos hl, abs_pos_down hm] at hBeq
       norm_num at hBeq
     have hk : (k' : ℕ) < p := by
-      by_contra hk
-      push_neg at hk
+      by_contra! hk
       have h5 : ν (Sum.inl k') - cPair p q ≤ 0 := hS.1 k' hk
       have e : ν (Sum.inl k') = (if (k' : ℕ) < p then (n : ℚ) else 0) + cPair p q + 1 := eb
       rw [if_neg (not_lt.mpr hk)] at e
@@ -602,8 +598,7 @@ theorem comb_neg {p q r s n m : ℕ} (hq : q ≤ r) (hp : p ≤ s) (hn : 0 < n) 
       rw [sb, if_pos hl, abs_neg_up hm] at hAeq
       norm_num at hAeq
     have hk : r ≤ (k : ℕ) + q := by
-      by_contra hk
-      push_neg at hk
+      by_contra! hk
       have h5 : 0 ≤ ν (Sum.inl k) - cPair p q := hS.2.2.1 k hk
       have e : ν (Sum.inl k) = (if r ≤ (k : ℕ) + q then -(n : ℚ) else 0) + cPair p q - 1 := ea
       rw [if_neg (not_le.mpr hk)] at e
@@ -636,8 +631,7 @@ theorem comb_neg {p q r s n m : ℕ} (hq : q ≤ r) (hp : p ≤ s) (hn : 0 < n) 
       rw [sb, if_pos hk, abs_neg_up hn] at hAeq
       norm_num at hAeq
     have hl : s ≤ (l : ℕ) + p := by
-      by_contra hl
-      push_neg at hl
+      by_contra! hl
       have h5 : 0 ≤ ν (Sum.inr l) + cPair p q := hS.2.2.2 l hl
       have e : ν (Sum.inr l) = (if s ≤ (l : ℕ) + p then -(m : ℚ) else 0) - cPair p q - 1 := ea
       rw [if_neg (not_le.mpr hl)] at e

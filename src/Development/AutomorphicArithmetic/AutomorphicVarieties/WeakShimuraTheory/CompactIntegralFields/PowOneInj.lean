@@ -1,5 +1,6 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.WeakShimuraTheory.CompactIntegralFields.OverFacts
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.WeakShimuraTheory.NearSplit
 import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.SelmerTransport.DvrFacts
 import Mathlib.Tactic.Linter.HaveILetI
@@ -49,12 +50,7 @@ private theorem ine_resLe {F F' : IntermediateField ℚ Ω} [NumberField F] [Num
 variable {T T' : Tower D}
 
 private theorem up (h : T.Le T') : ∃ j : ℕ, ∀ g : G T.F Ω, ∃ g' : G T'.F Ω, resLe h.le g' = g ^ l ^ j := by
-  obtain ⟨j, hj⟩ := h.pow
-  refine ⟨j, fun g => ?_⟩
-  have hm := hj _ (resQ_mem T.F g)
-  refine ⟨IntermediateField.fixingSubgroupEquiv T'.F ⟨_, hm⟩, ?_⟩
-  ext x
-  simp [resLe, IntermediateField.fixingSubgroupEquiv]
+  apply _root_.exists_pow_res_surj_of_tower_le <;> assumption
 
 private theorem rb_resLe (h : T.Le T') (w : ℤ × ℤ) (g : G T'.F Ω) : T'.rb w g = T.rb w (resLe h.le g) := by
   simp only [Tower.rb, Tower.fr, Fr.rt, h.pr]

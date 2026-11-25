@@ -33,6 +33,7 @@ import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelPullbackCor
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
+import Development.WeilBound.CoreStatements.TorusUniformisation.ChowMahlerFamilies.HodgeComponentFlagDegree
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelLocalSubringPoint, Development.AutomorphicSpectrum.Proofs.GeometryProofs.LocalSubringChartPoint, Development.AutomorphicSpectrum.Proofs.GeometryProofs.MemPtsOverOfMemMcPts, Development.AutomorphicSpectrum.Proofs.GeometryProofs.OneMemChartLatNm, Development.AutomorphicSpectrum.Proofs.GeometryProofs.LocalSubringCoordRatioValue, Development.AutomorphicSpectrum.Proofs.GeometryProofs.ValueScalingByMonomial, Development.AutomorphicSpectrum.Proofs.GeometryProofs.RootModelFlagCompare
@@ -679,25 +680,7 @@ theorem coeff_mem {F : Type} [Field F] (A : Subring F) (hfrac : ∀ a : F, ∃ d
 
 theorem exists_gen {Ω V : Type} [Field Ω] [AddCommGroup V] [Module Ω V] {r : ℕ} {b c : Fin r → V}
     (hF : ∀ i : ℕ, flagStep Ω b i = flagStep Ω c i) (j : Fin r) : ∃ t : Ω, b j - t • c j ∈ flagStep Ω c j := by
-  classical
-  have h1 : b j ∈ flagStep Ω c (j + 1) := by
-    rw [← hF]
-    exact Submodule.subset_span ⟨j, by simp, rfl⟩
-  obtain ⟨f, hf0, hfe⟩ := Rec.FinRd.Roots.RootUnit.exists_coeff_of_mem h1
-  refine ⟨f j, ?_⟩
-  have e : b j - f j • c j = ∑ l ∈ Finset.univ.erase j, f l • c l := by
-    rw [hfe, ← Finset.add_sum_erase _ _ (Finset.mem_univ j)]
-    abel
-  rw [e]
-  refine Submodule.sum_mem _ fun l hl => ?_
-  by_cases hlt : (l : ℕ) < j
-  · exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨l, hlt, rfl⟩)
-  · have hne : l ≠ j := Finset.ne_of_mem_erase hl
-    have : l ∉ {k : Fin r | (k : ℕ) < j + 1} := fun h => by
-      have h2 : (l : ℕ) < j + 1 := h
-      exact hne (Fin.ext (by omega))
-    rw [hf0 l this, zero_smul]
-    exact Submodule.zero_mem _
+  apply _root_.GlobalTheory.CompanionTheory.Ar.FlagDet.exists_diag <;> assumption
 
 theorem semilin_mem {Ω₀ Ω V₀ V : Type} [Field Ω₀] [Field Ω] [AddCommGroup V₀] [Module Ω₀ V₀] [AddCommGroup V]
     [Module Ω V] (i : Ω₀ →+* Ω) (L : V₀ →+ V) (hs : ∀ (a : Ω₀) (e : V₀), L (a • e) = i a • L e) {r : ℕ}

@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.LevelLetterCocycles.IdempotentMemInvariantsLetter
 public import Formalism.SharpRestriction.LevelLetterCocycles.GCoordProp
 public import Formalism.SharpRestriction.LevelLetterCocycles.EvaluationAtUniformizerPower
 public import Formalism.SharpRestriction.LevelLetterCocycles.UniformizerUnitAndQFactor
@@ -686,15 +687,7 @@ theorem isBas_change (hR : Formalism.MainNotions.RamifiedCoefficientChains.Sh.BT
 theorem cmpD_sumO (T : LocLat G Qp LL O) {r : ℕ} (z : Fin r → O) (e : Fin r → W.DD T)
     (he : ∀ k, e k ∈ W.N T) :
     Formalism.MainNotions.ArcLiftingSetup.cmpD W T (∑ k, z k • e k) = ∑ k, algebraMap O LL (z k) • Formalism.MainNotions.ArcLiftingSetup.cmpD W T (e k) := by
-  have hmem : ∑ k, z k • e k ∈ W.N T := Submodule.sum_mem _ fun k _ => Submodule.smul_of_tower_mem _ _ (he k)
-  rw [Formalism.MainNotions.UnusedSlot80.ArcF.cmpD_of_mem W T hmem]
-  have e1 : (⟨∑ k, z k • e k, hmem⟩ : W.N T) = ∑ k, z k • (⟨e k, he k⟩ : W.N T) := by
-    apply Subtype.ext
-    simp
-
-  rw [e1, map_sum]
-  refine Finset.sum_congr rfl fun k _ => ?_
-  rw [W.cmp_smul, Formalism.MainNotions.UnusedSlot80.ArcF.cmpD_of_mem W T (he k)]
+  apply _root_.Formalism.MainNotions.N.Pv.LocalLengthBound.comparison_linear_sum <;> assumption
 
 end Formalism.MainNotions.RamifiedCoefficientChains.S9.AdL
 
@@ -732,13 +725,7 @@ theorem filLev_zero_high (hbij : Function.Bijective (algebraMap K₀ K)) (T : Lo
 
 theorem ring_clauses_at_uniformizer (h9 : Formalism.MainNotions.DeltaInvariantLattices.P9W W) (hA : Formalism.MainNotions.LiftingTheory.CaseA W) (T : LocLat G Qp LL O)
     (hT : IsCrys PD T.ρ) : Formalism.MainNotions.RamifiedCoefficientChains.Sh.BT.Ring9 W := by
-  have hfin1 : finrank K₀ K = 1 := by
-    have := (LinearEquiv.ofBijective (Algebra.linearMap K₀ K) hA.1).finrank_eq
-    rw [Module.finrank_self] at this
-    exact this.symm
-  obtain ⟨-, -, h9'⟩ := h9 T hT hA.2.1 hA.2.2
-  obtain ⟨hring, -⟩ := h9' hfin1
-  exact hring
+  apply _root_.Formalism.MainNotions.RamifiedCoefficientChains.S9.GM.ring_clauses_at_uniformizer <;> assumption
 
 theorem adaptBas_of (hE : Formalism.MainNotions.RamifiedCoefficientChains.DcrisExactStrict PD LL) (hC : Formalism.MainNotions.RamifiedCoefficientChains.CrysSubQuot PD LL)
     (hQ : Formalism.MainNotions.RamifiedCoefficientChains.DdREqDcris PD LL) (h3 : Formalism.MainNotions.DeltaInvariantLattices.P3W W) (h5 : Formalism.MainNotions.DeltaInvariantLattices.P5W W)

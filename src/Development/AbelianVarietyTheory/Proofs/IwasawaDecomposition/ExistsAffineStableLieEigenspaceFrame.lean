@@ -58,8 +58,6 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestric
 open scoped CategoryTheory.Obj Matrix
 open ReciprocityTheory.ChartRestriction.G.Chart (tvec tmap eigLat IsUnivChart scaleD sp)
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 theorem spread_basis {R L : Type} [CommRing R] [CommRing L] [Algebra R L] (M : Submonoid R) [IsLocalization M L]
     {n m : ℕ} (P : Matrix (Fin n) (Fin n) R) (B : Fin m → Fin n → L)
     (hB : ∀ j, P.map (algebraMap R L) *ᵥ B j = B j)

@@ -4,6 +4,7 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.NormRepresentati
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.PairValPf
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedVolumeStatements.GenericRatioOfBoundHolds
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.TermCarrierStability.TermStableHolds
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.IdentityCellTrace.TraceOneHolds
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.PeriodIntegrals.UnitaryGroupMassFormula.NormRepresentationLift.StarSqrtMinusD, Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.NormRepX
@@ -32,19 +33,7 @@ theorem star_sqrtMinusD (D : D7) : star D.host.sqrtMinusD = -D.host.sqrtMinusD :
   ring
 
 theorem traceOne (D : D7) : TraceOne D := by
-  have hd : D.host.d % 16 = 7 := D.host.hyp.2.2.2.1
-  obtain ⟨k, hk⟩ : ∃ k : ℕ, D.host.d + 1 = 4 * k := ⟨(D.host.d + 1) / 4, by omega⟩
-  have hs : D.host.sqrtMinusD ^ 2 = -(D.host.d : D.host.E) := D.host.sqd_sq
-  have hk' : (D.host.d : D.host.E) + 1 = 4 * (k : D.host.E) := by exact_mod_cast hk
-  have hω : ((1 + D.host.sqrtMinusD) / 2) ^ 2 - (1 + D.host.sqrtMinusD) / 2 + (k : D.host.E) = 0 := by
-    linear_combination (1 / 4 : D.host.E) * hs - (1 / 4 : D.host.E) * hk'
-  have hint : IsIntegral ℤ ((1 + D.host.sqrtMinusD) / 2) := by
-    refine ⟨Polynomial.X ^ 2 - Polynomial.X + Polynomial.C (k : ℤ), by monicity!, ?_⟩
-    simpa using hω
-  refine ⟨⟨(1 + D.host.sqrtMinusD) / 2, hint⟩, ?_⟩
-  show (1 + D.host.sqrtMinusD) / 2 + star ((1 + D.host.sqrtMinusD) / 2) = 1
-  rw [star_div₀, star_add, star_one, star_sqrtMinusD, star_ofNat]
-  ring
+  apply _root_.PI.UnitaryGroupMassFormula.IdCellInSW.traceOne_holds <;> assumption
 
 end PI.NRL
 end -- clump:auto

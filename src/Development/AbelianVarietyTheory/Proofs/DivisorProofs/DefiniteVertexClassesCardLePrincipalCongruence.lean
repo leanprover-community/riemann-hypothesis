@@ -213,8 +213,6 @@ noncomputable section
 
 namespace GlobalTheory.FrameTransport
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem toAfE_inc (D : D7) (x : D.host.E) :
     GlobalTheory.BotFormula.toAfE D (StandardLatticesGL3.inc D x) = (1 : Af D.host.F) ⊗ₜ[D.host.F] x := by
   have h1 : GlobalTheory.LFun.finAdEquiv D.host.F D.host.E ((1 : Af D.host.F) ⊗ₜ[D.host.F] x) =

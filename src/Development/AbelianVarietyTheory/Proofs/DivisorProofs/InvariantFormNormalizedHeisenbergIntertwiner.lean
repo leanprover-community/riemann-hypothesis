@@ -120,8 +120,7 @@ private lemma invariantForm_translate_vacuum_eq_zero
     (hB : ∀ x u v, B (W x u) (W x v) = B u v) {e e' : M} (he : _root_.GlobalTheory.FinWeil.Fixes W A e)
     (he' : _root_.GlobalTheory.FinWeil.Fixes W A e') {z : X} (hz : z ∉ A) : B (W z e) e' = 0 := by
   obtain ⟨a, ha, hza⟩ : ∃ a ∈ A, γ z a ≠ 1 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hz ((hA z).2 h)
   have haz : γ a z ≠ 1 := fun h => hza (hW.swap_eq_one h)
   have key := hB a (W z e) e'

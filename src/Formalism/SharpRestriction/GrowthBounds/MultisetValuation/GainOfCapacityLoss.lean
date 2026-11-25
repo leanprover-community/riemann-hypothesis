@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.CuspSpanNormBounds.NonemptyParameterModels.NumericSettingWithGapSatisfiable
 public import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.EaGeCOfNorm
 public import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.EaNuTwoLeOne
 import Mathlib.Order.Interval.Finset.Box
@@ -37,15 +38,7 @@ end Idx
 
 theorem ea_card_fin (N : ℕ) (P : ℕ → Prop) [DecidablePred P] :
     (univ.filter fun c : Fin N => P c.val).card = ((range N).filter P).card := by
-  rw [← Finset.card_map Fin.valEmbedding]
-  congr 1
-  ext x
-  simp only [mem_map, mem_filter, mem_univ, true_and, Fin.valEmbedding_apply, mem_range]
-  constructor
-  · rintro ⟨c, hc, rfl⟩
-    exact ⟨c.isLt, hc⟩
-  · rintro ⟨hx, hP⟩
-    exact ⟨⟨x, hx⟩, hP, rfl⟩
+  apply _root_.Formalism.MainNotions.S.Inh.obj_card_fin <;> assumption
 
 theorem ea_lg (p x : ℕ) : Formalism.InvariantFactorPaths.G7.lgN p x = lgp p (x : ℤ) := by
   unfold Formalism.InvariantFactorPaths.G7.lgN lgp

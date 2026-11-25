@@ -3,6 +3,7 @@ module
 public import Development.WeilBound.RepresentationTheoryGL.HolomorphicDiscreteSeries.HarishChandraDescent.Commutant
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.AnalyticVectors.Unitary
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirAlgebra.MulMulSubMulMulEqAdd
+import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.GlRelOfBracket
 
 @[expose] public section
 
@@ -118,20 +119,8 @@ theorem det_unit {g : Matrix (Fin n) (Fin n) ℂ} (hg : g ∈ UJset ε) : IsUnit
 theorem inv_eq {g : Matrix (Fin n) (Fin n) ℂ} (hg : g ∈ UJset ε) : g⁻¹ = Jm ε * gᴴ * Jm ε :=
   Matrix.inv_eq_left_inv (left_inv hg)
 
-theorem inv_mem' {g : Matrix (Fin n) (Fin n) ℂ} (hg : g ∈ UJset ε) : g⁻¹ ∈ UJset ε := by
-  have hr : g * g⁻¹ = 1 := Matrix.mul_nonsing_inv g (det_unit hg)
-  rw [inv_eq hg] at hr ⊢
-  have h2 : g * Jm ε * gᴴ = Jm ε := by
-    calc g * Jm ε * gᴴ = g * (Jm ε * gᴴ * Jm ε) * Jm ε := by
-          simp only [Matrix.mul_assoc, Jm_mul_Jm, Matrix.mul_one]
-      _ = Jm ε := by rw [hr, Matrix.one_mul]
-  show (Jm ε * gᴴ * Jm ε)ᴴ * Jm ε * (Jm ε * gᴴ * Jm ε) = Jm ε
-  have hc : (Jm ε * gᴴ * Jm ε)ᴴ = Jm ε * g * Jm ε := by
-    simp only [Matrix.conjTranspose_mul, Jm_conjTranspose, Matrix.conjTranspose_conjTranspose, Matrix.mul_assoc]
-  rw [hc]
-  calc Jm ε * g * Jm ε * Jm ε * (Jm ε * gᴴ * Jm ε) = Jm ε * (g * Jm ε * gᴴ) * Jm ε := by
-        simp only [Matrix.mul_assoc, Jm_mul_Jm_mul]
-    _ = Jm ε := by rw [h2, Matrix.mul_assoc, Jm_mul_Jm, Matrix.mul_one]
+theorem inv_mem' {g : Matrix (Fin n) (Fin n) ℂ} (hg : g ∈ UJset ε) : g⁻¹ ∈ UJset ε :=
+  _root_.GlobalTheory.CompanionTheory.SmoothModule.UJ_inv_mem hg
 
 variable {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
   {ρ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)}

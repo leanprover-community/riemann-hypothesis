@@ -603,8 +603,7 @@ theorem log_X_lower_arithmetic (F K Mm Lr lv l2v G SL SG SP SW X lo : ℝ)
   have hpos : 0 ≤ F * K * (X - lo) := by
     rw [key]
     nlinarith
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   have : F * K * (X - lo) < 0 := mul_neg_of_pos_of_neg hFK (by linarith)
   linarith
 

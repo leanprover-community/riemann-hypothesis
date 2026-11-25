@@ -176,8 +176,7 @@ theorem exists_dir {n : ℕ} (s : Fin n → V n → ℂ) (k0 : Fin n) (z0 : V n)
     simp at h1
   have hni : ¬ Function.Injective L := fun h => hns (LinearMap.injective_iff_surjective.mp h)
   obtain ⟨a, b, hab, hne⟩ : ∃ a b, L a = L b ∧ a ≠ b := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     exact hni fun a b h => hcon a b h
   refine ⟨a - b, sub_ne_zero.mpr hne, fun k => ?_⟩
   have h2 := congrFun (show L (a - b) = 0 by rw [map_sub, hab, sub_self]) k

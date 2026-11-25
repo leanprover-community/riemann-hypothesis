@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsDiscreteSpaceCocycleVanishingPos
 public import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.MemSplitSeqIff
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.TensorHomCubes.StabDirectedSystem
 public import Mathlib.Combinatorics.Quiver.ReflQuiver
@@ -1099,19 +1100,7 @@ open CategoryTheory CategoryTheory.Limits GlobalTheory.HomStab GlobalTheory.SeqC
 namespace GlobalTheory.HomStab
 
 theorem altSum_neg_one (p : ℕ) : (∑ i : Fin (p + 1), (-1 : ℤ) ^ (i : ℕ)) = if Even p then 1 else 0 := by
-  induction p with
-  | zero => simp
-  | succ p ih =>
-    rw [Fin.sum_univ_castSucc]
-    simp only [Fin.coe_castSucc, Fin.val_last]
-    rw [ih]
-    rcases Nat.even_or_odd p with hp | hp
-    · have h2 : ¬ Even (p + 1) := by rw [Nat.even_add_one]; exact not_not.mpr hp
-      rw [if_pos hp, if_neg h2, pow_succ, hp.neg_one_pow]
-      norm_num
-    · have h2 : Even (p + 1) := by rw [Nat.even_add_one]; exact Nat.not_even_iff_odd.mpr hp
-      rw [if_neg (Nat.not_even_iff_odd.mpr hp), if_pos h2, pow_succ, hp.neg_one_pow]
-      norm_num
+  apply _root_.GlobalTheory.EtC.DiscRep.asum_even <;> assumption
 
 theorem stab_comp_stab (R : Type) [CommRing R] (a b c : ℕ) (hab : a ≤ b) (hbc : b ≤ c) (hac : a ≤ c) :
     (stab R b c hbc).comp (stab R a b hab) = stab R a c hac := by

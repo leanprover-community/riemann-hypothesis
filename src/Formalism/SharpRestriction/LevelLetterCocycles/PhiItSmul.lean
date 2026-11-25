@@ -1,5 +1,6 @@
 module
 
+import Formalism.DistinguishedUnitIdeals.DistinguishedOrderProofs.SplittingOfPositiveLevel
 public import Formalism.SharpRestriction.LevelLetterCocycles.CoordHomMapTrace
 public import Formalism.DistinguishedUnitIdeals.FrobeniusCoboundedArc
 
@@ -46,11 +47,7 @@ variable (L : Formalism.ExponentWindows.E.Lat Bs n V)
 
 theorem phiIt_smul' (i : ZMod n) (k : ℕ) (a : PowerSeries O) (x : V) :
     L.phiIt i k (a • x) = (⇑Bs.φ)^[k] a • L.phiIt i k x := by
-  induction k with
-  | zero => rfl
-  | succ k ih =>
-    rw [Formalism.ExponentWindows.E.Lat.phiIt, ih, L.φ_semi, Function.iterate_succ_apply']
-    rfl
+  apply _root_.Formalism.ExponentWindows.E.S1.phiIt_smul <;> assumption
 
 theorem phiIt_N (hh : ℕ) (h5 : ∀ i, L.P5M i hh) (k : ℕ) :
     ∃ Pr ∈ PsM Bs, ∀ i, ∀ x ∈ L.N i, Pr • L.phiIt i k x ∈ L.N (i + (k : ZMod n)) := by

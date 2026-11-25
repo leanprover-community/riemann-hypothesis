@@ -201,8 +201,6 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor (Sp spMap PSpace valR)
 open ReciprocityTheory.ChartRestriction.G.Geo.ResK
 open GlobalTheory.ProjSpace GlobalTheory.Points GlobalTheory.TuplePoint GlobalTheory.CompanionTheory.Ar.SncRes
 
-attribute [local instance] MvPolynomial.gradedAlgebra
-
 namespace GlobalTheory.CompanionTheory.Ar.SncRes.ProdChart
 
 theorem isAffineOpen_fst_inf_snd {S X Y : Scheme.{0}} [IsAffine S] (f : X ⟶ S) (g : Y ⟶ S) {U : X.Opens}

@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsCoprimeProjectionAdelicLatticeIntoColumnsStatement
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.HermitianModuleBetaCongruence
 import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.DualCoords
 
@@ -26,16 +27,7 @@ theorem smul_mem_mL_int {s : X.B.I.E ⊗[X.B.I.F] Af X.B.I.F} (hs : s ∈ IntAf 
 
 theorem InAt_add {a b : VA X.B.I} (ha : InAt X.B.I X.B.g X.B.g a) (hb : InAt X.B.I X.B.g X.B.g b) :
     InAt X.B.I X.B.g X.B.g (a + b) := by
-  obtain ⟨c, hc, hca⟩ := ha
-  obtain ⟨d, hd, hdb⟩ := hb
-  refine ⟨c * d, Nat.Coprime.mul_left hc hd, ?_⟩
-  have e : ((c * d : ℕ) : X.B.I.E ⊗[X.B.I.F] Af X.B.I.F) • (a + b) =
-      ((d : ℕ) : X.B.I.E ⊗[X.B.I.F] Af X.B.I.F) • (((c : ℕ) : X.B.I.E ⊗[X.B.I.F] Af X.B.I.F) • a) +
-        ((c : ℕ) : X.B.I.E ⊗[X.B.I.F] Af X.B.I.F) • (((d : ℕ) : X.B.I.E ⊗[X.B.I.F] Af X.B.I.F) • b) := by
-    rw [Nat.cast_mul, smul_add, ← mul_smul, ← mul_smul, mul_comm ((d : ℕ) : X.B.I.E ⊗[X.B.I.F] Af X.B.I.F)]
-  rw [e]
-  exact (mL X.B.I X.B.g).add_mem (smul_mem_mL_int X (natCast_mem_Int X d) hca)
-    (smul_mem_mL_int X (natCast_mem_Int X c) hdb)
+  apply _root_.GlobalTheory.St.G.Proj.inAt_add <;> assumption
 
 theorem InAt_neg {a : VA X.B.I} (ha : InAt X.B.I X.B.g X.B.g a) : InAt X.B.I X.B.g X.B.g (-a) := by
   obtain ⟨c, hc, hca⟩ := ha

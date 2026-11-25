@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FockPolynomialVectorBasisChangeEqSubstitution
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsHolRepOfIsTau
 public import Formalism.LocalToGlobal.IndefiniteReal.DatumVec
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.APlusComm
@@ -61,23 +62,7 @@ variable {m n : ℕ}
 theorem unitMap_mul (B u : Matrix (Fin n) (Fin n) ℂ) (B' k : Matrix (Fin m) (Fin m) ℂ) (i : Fin m) (j : Fin n) :
     Formalism.IndefR.Datum.unitMap (B * u) (B' * k) i j =
       ∑ a, ∑ b, (k a i * u⁻¹ j b) • Formalism.IndefR.Datum.unitMap B B' a b := by
-  have e : k * Matrix.single i j (1 : ℂ) * u⁻¹ = ∑ a, ∑ b, (k a i * u⁻¹ j b) • Matrix.single a b (1 : ℂ) := by
-    rw [Matrix.matrix_eq_sum_single (k * Matrix.single i j (1 : ℂ) * u⁻¹)]
-    refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => ?_
-    rw [Matrix.smul_single, smul_eq_mul, mul_one]
-    congr 1
-    rw [Matrix.mul_apply, Finset.sum_eq_single j]
-    · simp
-    · intro c _ hc
-      simp [Matrix.mul_single_apply_of_ne _ _ _ _ _ hc]
-    · simp
-  unfold Formalism.IndefR.Datum.unitMap
-  rw [Matrix.mul_inv_rev]
-  calc B' * k * Matrix.single i j (1 : ℂ) * (u⁻¹ * B⁻¹) = B' * (k * Matrix.single i j (1 : ℂ) * u⁻¹) * B⁻¹ := by
-        simp only [Matrix.mul_assoc]
-    _ = _ := by
-        rw [e]
-        simp only [Matrix.mul_sum, Matrix.sum_mul, Matrix.mul_smul, Matrix.smul_mul]
+  first | exact _root_.GlobalTheory.FockBaseChange.unitMap_mul | exact @_root_.GlobalTheory.FockBaseChange.unitMap_mul | apply _root_.GlobalTheory.FockBaseChange.unitMap_mul <;> assumption
 
 
 open scoped ComplexOrder in

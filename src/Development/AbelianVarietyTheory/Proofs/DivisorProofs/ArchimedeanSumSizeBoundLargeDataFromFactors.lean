@@ -309,8 +309,7 @@ theorem denseRange_embedding {K : Type} [Field K] [NumberField K] [_root_.Number
   have hc : p.IsComplex := IsTotallyComplex.isComplex p
   have hr : ¬ ComplexEmbedding.IsReal p.embedding := InfinitePlace.isComplex_iff.1 hc
   obtain ⟨a, ha⟩ : ∃ a, (starRingEnd ℂ) (p.embedding a) ≠ p.embedding a := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hr (RingHom.ext fun x => h x)
   set α := p.embedding a with hα
   have him : α.im ≠ 0 := fun h0 => ha (Complex.conj_eq_iff_im.2 h0)

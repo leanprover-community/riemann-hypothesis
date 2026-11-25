@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.HeightProofs.RhoCompactTwiceEqOfSignBlockOrdered
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.L2UnitaryRepresentationData
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.TorusWeightVectorIffCartanWeightVector
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExtremalLowestKtypeKilledByCompactRoots
@@ -66,7 +67,6 @@ open GlobalTheory.Chain (signed)
 open GlobalTheory.Chain.RealIt (LPol locS locT IsPolyIso)
 open MeasureTheory Matrix
 open scoped TensorProduct InnerProductSpace ComplexConjugate
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.ArchRec
 
 noncomputable section
@@ -172,15 +172,7 @@ theorem phi_mem_Kset {ε : Fin n → Bool} {e : Ix p q ≃ Fin n} (h : SignCompa
 
 theorem Eab_bracket (x a b : Ix p q) : Eab x x * Eab a b - Eab a b * Eab x x =
     (((if x = a then 1 else 0) - (if x = b then 1 else 0) : ℝ) : ℂ) • Eab a b := by
-  unfold Eab
-  rw [Complex.ofReal_sub, sub_smul]
-  congr 1
-  · split_ifs with h
-    · subst h; simp
-    · simp [Matrix.single_mul_single_of_ne _ _ _ _ h]
-  · split_ifs with h
-    · subst h; simp
-    · simp [Matrix.single_mul_single_of_ne _ _ _ _ (Ne.symm h)]
+  apply _root_.GlobalTheory.RealPar.Eab_bracket <;> assumption
 
 variable {D : D7} {V : HSp D} {S : D.what₂.Tau → SPar} {M : DSModel V S} {τ : D.what₂.Tau} {R : DSRep T}
   {br cj : Bool} {e : Ix p q ≃ Fin V.rank} {m : ℤ} {U : M.H τ → R.U.H}
@@ -348,7 +340,6 @@ open GlobalTheory.Chain (signed)
 open GlobalTheory.Chain.RealIt (LPol locS locT IsPolyIso)
 open MeasureTheory Matrix
 open scoped TensorProduct InnerProductSpace ComplexConjugate
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.ArchRec
 
 end -- clump:auto

@@ -37,8 +37,7 @@ private theorem spectralValue_le_one_iff_norm_coeff_le_one (P : ℚ_[l][X]) (hP 
       have hexp : (0 : ℝ) < 1 / ((P.natDegree : ℝ) - n) := by
         have : (n : ℝ) < P.natDegree := by exact_mod_cast hn
         apply div_pos one_pos; linarith
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       exact absurd ht (not_le.mpr (Real.one_lt_rpow hc hexp))
     · rcases eq_or_lt_of_le (not_lt.mp hn) with h' | h'
       · rw [← h', hP.coeff_natDegree, norm_one]

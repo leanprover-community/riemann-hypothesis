@@ -44,8 +44,7 @@ theorem exists_smooth_weight_const_near_embeddings :
           exact ⟨⟨h1, h2⟩, h3⟩
         · rintro ⟨⟨h1, h2⟩, h3⟩
           refine ⟨⟨⟨fun k => ?_, h1⟩, h2⟩, h3⟩
-          by_contra hcon
-          push_neg at hcon
+          by_contra! hcon
           have := h3 k
           simp [blockNormSq, hcon] at this
       rw [this]

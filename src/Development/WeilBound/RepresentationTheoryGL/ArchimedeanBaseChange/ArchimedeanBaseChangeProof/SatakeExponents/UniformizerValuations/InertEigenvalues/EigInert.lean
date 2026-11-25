@@ -30,8 +30,6 @@ open NumberField IsDedekindDomain Matrix
 open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC GlobalTheory.BCT
 open scoped Classical
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace PositivityTheory.Rg.BcB.F.Eig.GluingInclusion
 
 section Transport
@@ -688,17 +686,7 @@ theorem wexp_anti {n : ℕ} {l : Fin (n / 2) → ℤ} (hl : Cone l) {i j : Fin n
     | exact neg_nonpos.2 (hP' _).le
 
 theorem wexp_rev {n : ℕ} (l : Fin (n / 2) → ℤ) (i : Fin n) : wexp n l i.rev = -wexp n l i := by
-  have hr : (i.rev : ℕ) = n - (i + 1) := Fin.val_rev i
-  have hl' : ∀ a b : ℕ, ∀ (ha : a < n / 2) (hb : b < n / 2), a = b → l ⟨a, ha⟩ = l ⟨b, hb⟩ := by
-    rintro a b ha hb rfl
-    rfl
-  delta wexp
-  split_ifs
-  all_goals first
-    | omega
-    | exact hl' _ _ _ _ (by omega)
-    | exact congrArg Neg.neg (hl' _ _ _ _ (by omega))
-    | (rw [neg_neg]; exact hl' _ _ _ _ (by omega))
+  apply _root_.PositivityTheory.Rg.BcB.F.Eig.GluingInclusion.wexp_rev <;> assumption
 
 theorem wexp_castLE {n : ℕ} (l : Fin (n / 2) → ℤ) (i : Fin (n / 2)) :
     wexp n l (Fin.castLE (Nat.div_le_self n 2) i) = l i := by

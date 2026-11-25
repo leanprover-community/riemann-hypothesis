@@ -84,7 +84,6 @@ theorem below_abs (N wa wb c : ℕ) (Y : ℝ) (hY : 1 ≤ Y) (ha : 2 * Y * N * c
   · subst hN
     simp only [pow_zero, mul_one, sub_self]
     positivity
-  have hY0 : 0 < Y := by linarith
   have hA : (0 : ℝ) < wa := by exact_mod_cast hwa
   have hB : (0 : ℝ) < wb := by exact_mod_cast hwb
   have hN1 : (1 : ℝ) ≤ N := by exact_mod_cast hN

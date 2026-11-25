@@ -12,8 +12,6 @@ public import Mathlib.Analysis.SpecialFunctions.Exponential
 
 open Matrix Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.Q
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 noncomputable section
 
 namespace PI.QnRT
@@ -21,49 +19,22 @@ namespace PI.QnRT
 variable {k r : ℕ}
 
 lemma e_ne_es (l : Fin r) : eI k r l ≠ esI k r l := by
-  intro h
-  have hl := l.isLt
-  have h' := congrArg Fin.val h
-  simp only [eI, esI] at h'
-  omega
+  apply _root_.Formalism.FourierDecayAlt.Q.LeftMultiplicationRule.e_ne_es <;> assumption
 
 private lemma tau_val_lemma (i : Fin (2 * r + k + 1)) :
     (WeylGroupFacts.tau k r i).val = if i.val < r ∨ r + k < i.val then 2 * r + k - i.val else i.val := rfl
 
 lemma tau_e (l : Fin r) : WeylGroupFacts.tau k r (eI k r l) = esI k r l := by
-  have hl := l.isLt
-  apply Fin.ext
-  rw [tau_val_lemma]
-  split_ifs with h
-  · rfl
-  · exact absurd (Or.inl hl) h
+  apply _root_.Formalism.FourierDecayAlt.Q.LeftMultiplicationRule.tau_e <;> assumption
 
 lemma tau_es (l : Fin r) : WeylGroupFacts.tau k r (esI k r l) = eI k r l := by
-  have hl := l.isLt
-  apply Fin.ext
-  rw [tau_val_lemma]
-  split_ifs with h
-  · show 2 * r + k - (2 * r + k - l.val) = l.val
-    omega
-  · exfalso
-    apply h
-    right
-    show r + k < 2 * r + k - l.val
-    omega
+  apply _root_.Formalism.FourierDecayAlt.Q.LeftMultiplicationRule.tau_es <;> assumption
 
 lemma sgn_e (l : Fin r) : WeylGroupFacts.sgn k r (eI k r l) = 1 := by
-  have hl := l.isLt
-  unfold WeylGroupFacts.sgn
-  rw [if_neg]
-  simp only [eI]
-  omega
+  apply _root_.Formalism.FourierDecayAlt.Q.LeftMultiplicationRule.sgn_e <;> assumption
 
 lemma sgn_es (l : Fin r) : WeylGroupFacts.sgn k r (esI k r l) = 1 := by
-  have hl := l.isLt
-  unfold WeylGroupFacts.sgn
-  rw [if_neg]
-  simp only [esI]
-  omega
+  apply _root_.Formalism.FourierDecayAlt.Q.LeftMultiplicationRule.sgn_es <;> assumption
 
 lemma w_col_e (l : Fin r) (a : ℂ) (s : Fin (2 * r + k + 1)) :
     w1 k r l a s (eI k r l) = if s = esI k r l then a else 0 := by
@@ -85,11 +56,7 @@ lemma w_col_es (l : Fin r) (a : ℂ) (s : Fin (2 * r + k + 1)) :
 
 lemma w_col_other (l : Fin r) (a : ℂ) (s p : Fin (2 * r + k + 1)) (hp1 : p ≠ eI k r l)
     (hp2 : p ≠ esI k r l) : w1 k r l a s p = if s = p then 1 else 0 := by
-  unfold w1
-  by_cases h : s = p
-  · subst h
-    simp [hp1, hp2]
-  · simp [h, hp1, hp2]
+  apply _root_.Formalism.FourierDecayAlt.Q.LeftMultiplicationRule.reflection_off_support <;> assumption
 
 lemma w_row_e (l : Fin r) (a : ℂ) (q : Fin (2 * r + k + 1)) :
     w1 k r l a (eI k r l) q = if q = esI k r l then (star a)⁻¹ else 0 := by
@@ -111,11 +78,7 @@ lemma w_row_es (l : Fin r) (a : ℂ) (q : Fin (2 * r + k + 1)) :
 
 lemma w_row_other (l : Fin r) (a : ℂ) (s q : Fin (2 * r + k + 1)) (hs1 : s ≠ eI k r l)
     (hs2 : s ≠ esI k r l) : w1 k r l a s q = if s = q then 1 else 0 := by
-  unfold w1
-  by_cases h : s = q
-  · subst h
-    simp [hs1, hs2]
-  · simp [h, hs1, hs2]
+  apply _root_.Formalism.FourierDecayAlt.Q.LeftMultiplicationRule.reflection_off_support_row <;> assumption
 
 private lemma tau_tau_lemma (i : Fin (2 * r + k + 1)) : WeylGroupFacts.tau k r (WeylGroupFacts.tau k r i) = i := by
   have hi := i.isLt

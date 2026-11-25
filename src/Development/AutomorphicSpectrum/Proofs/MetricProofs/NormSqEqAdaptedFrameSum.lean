@@ -4,6 +4,7 @@ public import Development.AutomorphicSpectrum.Proofs.MetricProofs.IntEmbInjectiv
 public import GroundTheory.AutomorphicForms.HermitianOrthogonal
 import Mathlib.Tactic.Linter.Style
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsTranslatedRiemannLattice
 
 @[expose] public section
 
@@ -101,16 +102,7 @@ theorem emb_bij {Ψ : Type} {σ : Ψ → (𝓞 E →+* ℂ)} (h : IsCMFam σ) :
 
 theorem trace_eq {Ψ : Type} [Fintype Ψ] {σ : Ψ → (𝓞 E →+* ℂ)} (h : IsCMFam σ) (x : E) :
     ((Algebra.trace ℚ E x : ℚ) : ℝ) = ∑ τ, 2 * (embOf (σ τ) x).re := by
-  classical
-  have h1 := trace_eq_sum_embeddings ℂ (K := ℚ) (L := E) (x := x)
-  rw [← (RingHom.equivRatAlgHom (R := E) (S := ℂ)).sum_comp, ← (Equiv.ofBijective _ (emb_bij h)).sum_comp,
-    Fintype.sum_prod_type] at h1
-  have h2 := congrArg Complex.re h1
-  rw [eq_ratCast, Complex.ratCast_re, Complex.re_sum] at h2
-  rw [h2]
-  refine Finset.sum_congr rfl fun v _ => ?_
-  rw [Fintype.sum_bool]
-  simp [two_mul]
+  apply _root_.GlobalTheory.CompanionTheory.Ar.Cusp.Dict.Rotate.trace_eq_sum_re <;> assumption
 
 end Field
 

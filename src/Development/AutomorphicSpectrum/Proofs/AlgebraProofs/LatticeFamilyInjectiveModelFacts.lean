@@ -5,6 +5,7 @@ public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.IsL
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.LocallyFreeFiniteProjectiveBaseChange
 import Development.WeilBound.CoreStatements.TorusUniformisation.ChowMahlerFamilies.XFamConstr
 import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.Objects
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.SmulMemSpanOver
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.AffineGenerators, Development.AutomorphicSpectrum.Proofs.AlgebraProofs.LatticeFamilyInjectiveModelFacts
@@ -47,18 +48,8 @@ theorem up {Γ : (∀ k, ι k) → AddSubgroup V} (h : IsLatFamily o x Γ) {s t 
 
 theorem sup {A B : (∀ k, ι k) → AddSubgroup V} (hA : IsLatFamily o x A) (hB : IsLatFamily o x B) :
     IsLatFamily o x fun c => A c ⊔ B c := by
-  refine ⟨fun c hc a ha v hv => ?_, fun c t hc ht v hv => ?_⟩
-  · obtain ⟨y, hy, z, hz, rfl⟩ := AddSubgroup.mem_sup.1 hv
-    rw [smul_add]
-    exact add_mem (AddSubgroup.mem_sup_left (hA.1 c hc a ha y hy))
-      (AddSubgroup.mem_sup_right (hB.1 c hc a ha z hz))
-  · obtain ⟨y, hy, z, hz, rfl⟩ := AddSubgroup.mem_sup.1 hv
-    obtain ⟨m₁, h₁⟩ := hA.2 c t hc ht y hy
-    obtain ⟨m₂, h₂⟩ := hB.2 c t hc ht z hz
-    refine ⟨m₁ + m₂, ?_⟩
-    rw [smul_add]
-    exact add_mem (AddSubgroup.mem_sup_left (up hA ht (Nat.le_add_right _ _) h₁))
-      (AddSubgroup.mem_sup_right (up hB ht (Nat.le_add_left _ _) h₂))
+  intros
+  apply _root_.PositivityTheory.Xgn.A_fam_constr.fam_sup <;> assumption
 
 theorem inf {A B : (∀ k, ι k) → AddSubgroup V} (hA : IsLatFamily o x A) (hB : IsLatFamily o x B) :
     IsLatFamily o x fun c => A c ⊓ B c := by
@@ -119,15 +110,8 @@ theorem mem_std (R : Subalgebra o Ω) {κ : Type} (v : κ → Ω) :
   simp [stdLat, AddSubgroup.mem_pi]
 
 theorem std (κ : Type) [Fintype κ] : IsLatFamily o x fun c => stdLat (chartRing o (mseg x) c) κ := by
-  refine ⟨fun c hc a ha v hv => ?_, fun c t hc ht v hv => ?_⟩
-  · exact (mem_std o _ _).2 fun i => by simpa using mul_mem ha ((mem_std o _ _).1 hv i)
-  · choose m hm using fun i =>
-      ReciprocityTheory.ChartRestriction.G.Geo.exists_pow_mul_mem_chartRing (o := o) (mseg x) c t hc ((mem_std o _ _).1 hv i)
-    refine ⟨∑ i, m i, (mem_std o _ _).2 fun i => ?_⟩
-    have hle : m i ≤ ∑ i, m i :=
-      Finset.single_le_sum (fun _ _ => Nat.zero_le _) (Finset.mem_univ i)
-    rw [← Nat.sub_add_cancel hle, pow_add, Pi.smul_apply, smul_eq_mul, mul_assoc]
-    exact mul_mem (pow_mem (ReciprocityTheory.ChartRestriction.G.Geo.div_mem_chartRing (o := o) (mseg x) t c) _) (hm i)
+  intros
+  apply _root_.PositivityTheory.Xgn.A_fam_constr.fam_std <;> assumption
 
 theorem mem_dual (R : Subalgebra o Ω) {m : ℕ} (L : AddSubgroup (Fin m → Ω)) (v : Fin m → Ω) :
     v ∈ dotDual R L ↔ ∀ l ∈ L, l ⬝ᵥ v ∈ R := by
@@ -192,20 +176,7 @@ variable {o Ω : Type} [CommRing o] [Field Ω] [Algebra o Ω] {E : Type} [AddCom
 
 theorem smul_mem_span (R : Subalgebra o Ω) (S : Set E) {a : Ω} (ha : a ∈ R) {v : E}
     (hv : v ∈ spanOver R S) : a • v ∈ spanOver R S := by
-  unfold spanOver at hv ⊢
-  induction hv using AddSubgroup.closure_induction with
-  | mem y hy =>
-    obtain ⟨b, hb, e, he, rfl⟩ := hy
-    exact AddSubgroup.subset_closure ⟨a * b, mul_mem ha hb, e, he, by rw [smul_smul]⟩
-  | zero =>
-    rw [smul_zero]
-    exact zero_mem _
-  | add y z _ _ hy hz =>
-    rw [smul_add]
-    exact add_mem hy hz
-  | neg y _ hy =>
-    rw [smul_neg]
-    exact neg_mem hy
+  apply _root_.GlobalTheory.CompanionTheory.Ar.Num.SpanExact.smul_mem_spanOver <;> assumption
 
 variable {F : Type} [Zero F] [One F] {n : ℕ} {Sg : Type} {r s : Sg → ℕ}
 

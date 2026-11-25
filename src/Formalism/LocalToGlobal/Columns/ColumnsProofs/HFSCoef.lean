@@ -1,5 +1,6 @@
 module
 
+import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.PeriodLatticeFinitelyGenerated
 public import Formalism.LocalToGlobal.Columns.ColumnsProofs.HFSLin
 public import Formalism.LocalToGlobal.Divisibility.CoefMod
 import Mathlib.RingTheory.Henselian
@@ -53,23 +54,7 @@ private lemma map_mem_dualWeyl' {r m : ℕ} {ν : Fin m → ℕ} {f : MvPolynomi
     split_ifs <;> simp
 
 theorem hfs_map_mem_VV {F : Pol K σ n} (hF : F ∈ VV K lam) : MvPolynomial.map ι F ∈ VV L lam := by
-  unfold VV Formalism.GradedWeylDivisibility.tensorLat at hF ⊢
-  induction hF using Submodule.span_induction with
-  | mem x hx =>
-    obtain ⟨G, hG, rfl⟩ := hx
-    apply Submodule.subset_span
-    refine ⟨fun s => MvPolynomial.map ι (G s), fun s => ?_, ?_⟩
-    · have h1 : G s ∈ Formalism.GradedWeylDivisibility.dualWeyl K n n (lam s).natW := hG s
-      exact map_mem_dualWeyl' ι h1
-    · rw [map_prod]
-      exact Finset.prod_congr rfl fun s _ => hfs_map_blockEmb ι s (G s)
-  | zero => simp
-  | add x y _ _ hx hy =>
-    rw [map_add (f := _)]
-    exact Submodule.add_mem _ hx hy
-  | smul a x _ hx =>
-    rw [MvPolynomial.smul_eq_C_mul, map_mul, MvPolynomial.map_C, ← MvPolynomial.smul_eq_C_mul]
-    exact Submodule.smul_mem _ _ hx
+  apply _root_.Formalism.L2.Ker.map_mem_VV <;> assumption
 
 def hfsJ : VV K lam →+ VV L lam where
   toFun v := ⟨MvPolynomial.map ι (v : Pol K σ n), hfs_map_mem_VV ι lam v.2⟩
@@ -180,14 +165,15 @@ theorem hfs_invTrK (g : σ → GL (Fin n) K) : invTrK (fun τ => Formalism.UG.bc
 
 theorem hfs_rhoV (emb : σ → E →+* K) (γ : GL (Fin n) E) (v : VV K lam) :
     rhoV (fun τ => ι.comp (emb τ)) lam γ (hfsJ ι lam v) = hfsJ ι lam (rhoV emb lam γ v) := by
-  show rhoK lam (embGL (fun τ => ι.comp (emb τ)) γ) (hfsJ ι lam v) = hfsJ ι lam (rhoK lam (embGL emb γ) v)
+  show DIV.rhoK lam (embGL (fun τ => ι.comp (emb τ)) γ) (hfsJ ι lam v) =
+    hfsJ ι lam (DIV.rhoK lam (embGL emb γ) v)
   rw [hfs_embGL]
   exact hfs_rhoK ι lam _ v
 
 theorem hfs_rhoVr (emb : σ → E →+* K) (γ : GL (Fin n) E) (v : VV K lam) :
     rhoVr (fun τ => ι.comp (emb τ)) lam γ (hfsJ ι lam v) = hfsJ ι lam (rhoVr emb lam γ v) := by
-  show rhoK lam (invTrK (embGL (fun τ => ι.comp (emb τ)) γ)) (hfsJ ι lam v) =
-    hfsJ ι lam (rhoK lam (invTrK (embGL emb γ)) v)
+  show DIV.rhoK lam (invTrK (embGL (fun τ => ι.comp (emb τ)) γ)) (hfsJ ι lam v) =
+    hfsJ ι lam (DIV.rhoK lam (invTrK (embGL emb γ)) v)
   rw [hfs_embGL, hfs_invTrK]
   exact hfs_rhoK ι lam _ v
 

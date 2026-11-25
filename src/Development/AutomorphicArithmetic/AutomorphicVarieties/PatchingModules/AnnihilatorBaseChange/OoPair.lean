@@ -1,5 +1,8 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.ClosureConjugation.PhiFg
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebraHeight.PairMap
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.WeilGroupCharacters.ExistsDeterminantPairPullback
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.AnnihilatorBaseChange.SpecializationMapCompUniversalSection
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.PatchedSupportCompletions
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.SubgroupQuot
@@ -31,30 +34,7 @@ open UpperTheory.V.CA
 
 private theorem oo_finite_hom (G : Type) [Group G] [TopologicalSpace G] [IsTopologicalGroup G] (h : TopFG G)
     (Z : Type) [Group Z] [Finite Z] : Finite {φ : G →* Z // IsOpen (φ.ker : Set G)} := by
-  obtain ⟨s, hs, hgen⟩ := h
-  haveI : Finite s := hs.to_subtype
-  rw [topGen_iff] at hgen
-  refine Finite.of_injective (fun φ : {φ : G →* Z // IsOpen (φ.ker : Set G)} => fun x : s => φ.1 x) ?_
-  intro φ ψ hφψ
-  apply Subtype.ext
-  have hE : Subgroup.closure s ≤ φ.1.eqLocus ψ.1 := by
-    rw [Subgroup.closure_le]
-    intro x hx
-    exact congrFun hφψ ⟨x, hx⟩
-  have hopen : IsOpen (φ.1.eqLocus ψ.1 : Set G) := by
-    apply Subgroup.isOpen_mono (H₁ := φ.1.ker ⊓ ψ.1.ker)
-    · intro x hx
-      rw [Subgroup.mem_inf, MonoidHom.mem_ker, MonoidHom.mem_ker] at hx
-      show φ.1 x = ψ.1 x
-      rw [hx.1, hx.2]
-    · rw [Subgroup.coe_inf]
-      exact φ.2.inter ψ.2
-  have hclosed : IsClosed (φ.1.eqLocus ψ.1 : Set G) := Subgroup.isClosed_of_isOpen _ hopen
-  have htop : (Subgroup.closure s).topologicalClosure ≤ φ.1.eqLocus ψ.1 :=
-    Subgroup.topologicalClosure_minimal _ hE hclosed
-  rw [hgen] at htop
-  ext x
-  exact htop (Subgroup.mem_top x)
+  apply _root_.finite_open_homs_to_finite_group <;> assumption
 
 private theorem oo_phi (G : Type) [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [CompactSpace G]
     (l : ℕ) [Fact l.Prime] (h : TopFG G) : PhiCond G l := by
@@ -131,18 +111,7 @@ variable {O : Type} [CommRing O] [IsLocalRing O] {R R' : Type} [CommRing R] [Alg
 
 private theorem oo_adic_map {Γ : Type} [TopologicalSpace Γ] {u : Γ → R} (hu : AdicCont (maximalIdeal R) u) :
     AdicCont (maximalIdeal R') fun g => f (u g) := by
-  intro N
-  have hm : maximalIdeal R ≤ (maximalIdeal R').comap (f : R →+* R') := by
-    intro x hx
-    rw [Ideal.mem_comap, ← res_eq_zero_iff O, RingHom.coe_coe, res_map, res_eq_zero_iff]
-    exact hx
-  have hN : maximalIdeal R ^ N ≤ (maximalIdeal R' ^ N).comap (f : R →+* R') := by
-    rw [← Ideal.map_le_iff_le_comap, Ideal.map_pow]
-    exact Ideal.pow_right_mono (Ideal.map_le_iff_le_comap.mpr hm) N
-  have h1 := (hu N).comp (Ideal.quotientMap (maximalIdeal R' ^ N) (f : R →+* R') hN)
-  convert h1 using 1
-  funext g
-  simp [Ideal.quotientMap_mk]
+  apply _root_.adic_map <;> assumption
 
 private theorem oo_def_map {n : ℕ} {G : Type} [Group G] [TopologicalSpace G] {Dbar : GDet n (ResidueField O) G}
     {D : GDet n R G} (h : IsDef O Dbar D) : IsDef O Dbar (D.map (f : R →+* R')) := by
@@ -236,17 +205,7 @@ private theorem adic_map {O : Type} [CommRing O] [IsLocalRing O] {R R' : Type} [
 
 private theorem lam_comap {n : ℕ} {A G H : Type} [CommRing A] [Group G] [Group H] (D : GDet n A G) (φ : H →* G)
     (i : ℕ) (y : MonoidAlgebra A H) : (D.comap φ).lam i y = D.lam i (MonoidAlgebra.mapDomainRingHom A φ y) := by
-  have : (D.comap φ).chi y = D.chi (MonoidAlgebra.mapDomainRingHom A φ y) := by
-    change D.D _ (MonoidAlgebra.mapDomainRingHom _ φ _) = D.D _ _
-    congr 1
-    rw [map_sub]
-    congr 1
-    · simp
-    · induction y using MonoidAlgebra.induction_linear with
-      | zero => simp
-      | add a b ha hb => simp only [map_add (f := _), ha, hb]
-      | single g r => simp
-  rw [GDet.lam, GDet.lam, this]
+  apply _root_.UpperTheory.V.W.FramePullback.lam_comap <;> assumption
 
 private theorem comap_inj {n : ℕ} {A G H : Type} [CommRing A] [Group G] [Group H] (φ : H →* G)
     (hφ : Function.Surjective φ) {D D' : GDet n A G} (h : D.comap φ = D'.comap φ) : D = D' := by

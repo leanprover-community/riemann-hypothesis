@@ -29,8 +29,6 @@ namespace Formalism.FourierDecayAlt.P5.Kfp
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Q Formalism.FourierDecayAlt.Qr Formalism.FourierDecayAlt.P Formalism.FourierDecayAlt.P.QrD
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 section Skew
 
 variable {k r : ℕ} {W : Type} [NormedAddCommGroup W] [InnerProductSpace ℂ W] [FiniteDimensional ℂ W]

@@ -93,8 +93,7 @@ theorem height_le_of_comp_eq {G H : PDivGroup p k} (q : G ⟶ H) (g : H ⟶ G) (
     rw [finrank_level] at h2
     rw [hL]
     exact Nat.mul_le_mul_left _ (h1.trans h2)
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   have h3 := key (m * G.height + m + 1) (by nlinarith)
   rw [← pow_add] at h3
   have h4 := (Nat.pow_le_pow_iff_right (Fact.out : p.Prime).one_lt).1 h3

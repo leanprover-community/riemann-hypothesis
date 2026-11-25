@@ -52,7 +52,6 @@ import Mathlib.CategoryTheory.Monoidal.Opposite.Mon
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.Cris GlobalTheory.DeRham
 open scoped CategoryTheory.Obj CategoryTheory.MonObj TensorProduct
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.CharpolyLattice
 

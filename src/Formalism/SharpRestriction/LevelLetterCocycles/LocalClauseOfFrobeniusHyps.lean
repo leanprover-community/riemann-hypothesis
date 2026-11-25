@@ -10,6 +10,7 @@ public import Formalism.SharpRestriction.LevelLetterCocycles.QuotientImageDivisi
 public import Mathlib.RingTheory.PowerSeries.Inverse
 import Mathlib.Tactic.Linter.Style
 import Formalism.SharpRestriction.LevelLetterCocycles.QuotientImageDivisibility.RkMultVOfNotJump
+import Formalism.SharpRestriction.LevelLetterCocycles.KillerLevCoreOf
 
 @[expose] public section
 
@@ -223,17 +224,7 @@ theorem UPi_γA (g : W.Gam) {a : LetA O n} (ha : UPi PD.p a) : UPi PD.p (W.γA g
   ring
 
 theorem φpow_AΔ {a : LetA O n} (ha : a ∈ W.AΔ) (j : ℕ) : (W.φA ^ j) a ∈ W.AΔ := by
-  have step : ∀ b : LetA O n, b ∈ W.AΔ → W.φA b ∈ W.AΔ := by
-    intro b hb
-    show ∀ δ ∈ W.DelF, W.γA δ (W.φA b) = W.φA b
-    intro δ hδ
-    have hb' : W.γA δ b = b := hb δ hδ
-    rw [← W.φA_γA, hb']
-  induction j with
-  | zero => exact ha
-  | succ j ih =>
-    rw [pow_succ']
-    exact step _ ih
+  apply _root_.Formalism.MainNotions.UnusedSlot80.KL.φA_mem <;> assumption
 
 theorem γA_AΔ {a : LetA O n} (ha : a ∈ W.AΔ) (g : W.Gam) : W.γA g a ∈ W.AΔ := by
   intro δ hδ

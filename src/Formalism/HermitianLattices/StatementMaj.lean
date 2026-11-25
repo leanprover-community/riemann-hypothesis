@@ -1,7 +1,6 @@
 module
 
 public import Mathlib.NumberTheory.NumberField.InfinitePlace.Basic
-import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

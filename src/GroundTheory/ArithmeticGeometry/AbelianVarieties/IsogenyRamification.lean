@@ -194,8 +194,7 @@ omit [IsAlgClosed F] [DecidableEq F] in
 theorem valuation_le_one_of_isIntegral {K : Type*} [Field K] [Algebra F K]
     (M : IntermediateField F K) (v : Valuation K ℤᵐ⁰) (hM : ∀ m : M, v (m : K) ≤ 1) {z : K}
     (hz : IsIntegral M z) : v z ≤ 1 := by
-  by_contra hgt
-  push_neg at hgt
+  by_contra! hgt
   have hz0 : z ≠ 0 := by rintro rfl; simp at hgt
   have hvz : v z ≠ 0 := (Valuation.ne_zero_iff _).mpr hz0
   set k := log (v z)
@@ -239,8 +238,7 @@ theorem exists_point_valuation_comap (φ : Isogeny E E') :
     intro c hc
     rw [hw, AlgHom.commutes, valuationPoint_zero_eq, valuationInfty_algebraMap_const_eq_one E hc]
   have hnt : ∃ f, f ≠ 0 ∧ w f ≠ 1 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     have hM : ∀ m : φ.comap.fieldRange, valuationPoint E 0 (m : E.toAffine.FunctionField) ≤ 1 := by
       rintro ⟨m, f, rfl⟩
       by_cases hf : f = 0

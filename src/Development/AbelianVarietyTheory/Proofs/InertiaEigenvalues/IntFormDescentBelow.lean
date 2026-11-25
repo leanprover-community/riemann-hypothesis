@@ -200,8 +200,7 @@ theorem natCast_pow_mul_valuation_le_one_of_not_pow_succ_dvd_differentIdeal :
         la.valuation L ((l : L) ^ c * y) ≤ 1 := by
   intro l c K L _ _ _ _ _ la hl hD y hy
   obtain ⟨d₀, hd₀D, hd₀⟩ : ∃ d₀ ∈ differentIdeal (𝓞 K) (𝓞 L), d₀ ∉ la.asIdeal ^ (c + 1) := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hD (Ideal.dvd_iff_le.mpr h)
   have h1 : la.intValuation ((l : 𝓞 L) ^ c) ≤ WithZero.exp (-(c : ℤ)) :=
     (la.intValuation_le_pow_iff_mem _ c).mpr (Ideal.pow_mem_pow hl c)

@@ -67,6 +67,7 @@ import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Topology.Homotopy.Lifting
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.FinTensMemLatO
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.IntegralCompContinuousLinearEquiv, Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsUniqueSelfDualHaarMeasureInfiniteAdeles
@@ -435,14 +436,7 @@ variable {F E : Type} [Field F] [Field E] [Algebra F E] [FiniteDimensional F E]
 
 theorem trace_tmul (c : R) (e : E) :
     Algebra.trace R (R ⊗[F] E) (c ⊗ₜ[F] e) = c * algebraMap F R (Algebra.trace F E e) := by
-  have h1 : (c ⊗ₜ[F] e : R ⊗[F] E) = c • ((1 : R) ⊗ₜ[F] e) := by
-    rw [TensorProduct.smul_tmul', smul_eq_mul, mul_one]
-  rw [h1, map_smul, smul_eq_mul]
-  congr 1
-  rw [Algebra.trace_apply, Algebra.trace_apply, ← LinearMap.trace_baseChange]
-  congr 1
-  ext x
-  simp
+  apply _root_.GlobalTheory.LatVac.trace_tmul <;> assumption
 
 theorem trace_nondeg [Algebra.IsSeparable F E] (z : R ⊗[F] E)
     (h : ∀ w, Algebra.trace R (R ⊗[F] E) (z * w) = 0) : z = 0 := by

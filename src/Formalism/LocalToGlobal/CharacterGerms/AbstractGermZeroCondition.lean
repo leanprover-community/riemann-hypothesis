@@ -326,8 +326,7 @@ private theorem cc_subst_lemma {σ τ A : Type} [Finite σ] [CommRing A] (a : σ
   · simp
   · intro e he
     obtain ⟨s, hs⟩ : ∃ s, e s ≠ 0 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact he (Finsupp.ext h)
     rw [map_finsuppProd]
     simp only [map_pow, ha, Finsupp.prod]

@@ -48,6 +48,7 @@ import Formalism.LocalToGlobal.NormalizedHeckeFactors.TypesDefs
 import ReciprocityTheory.Automorphisms.PlaceA
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ContinuousOfIsOpenStab
 import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.ClozelPurity.EopV
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.IsAlgebraicHeckeCharOfWeightOfIntegerExpo
 
 section -- clump:auto
 @[expose] public section
@@ -1227,7 +1228,6 @@ section -- clump:auto
 
 noncomputable section
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut Formalism.AUTREP Formalism.L2 Formalism.L2.Host Formalism.L2.NT NumberField IsDedekindDomain Polynomial GlobalTheory.HeightCounting GlobalTheory.RowTie GlobalTheory.SplitRead GlobalTheory.NPin
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 namespace GlobalTheory.CompanionTheory.HeckeAlg
 
@@ -1246,24 +1246,7 @@ theorem dchi_atEmb (χ : HChar E) (τ : E →+* ℂ) (z : ℂ) :
   linear_combination (z.im * dchi χ (atEmb τ Complex.I)) * Complex.I_mul_I
 
 theorem dchi_eq_sum (χ : HChar E) (z : Cinf E) : dchi χ z = ∑ φ : E →+* ℂ, expo χ φ * coord φ z := by
-  classical
-  have hz : z = ∑ w : InfinitePlace E, atEmb w.embedding (z w) := by
-    funext v
-    rw [Finset.sum_apply, Finset.sum_eq_single v]
-    · simp [atEmb, InfinitePlace.mk_embedding]
-    · intro b _ hb
-      simp [atEmb, InfinitePlace.mk_embedding, Pi.single_eq_of_ne hb.symm]
-    · simp
-  conv_lhs => rw [hz]
-  conv_rhs => rw [hz]
-
-  rw [map_sum]
-
-  simp only [map_sum, Finset.mul_sum]
-  rw [Finset.sum_comm]
-  refine Finset.sum_congr rfl fun w _ => ?_
-  rw [dchi_atEmb]
-  simp only [coord_atEmb', mul_add, Finset.sum_add_distrib, mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+  apply _root_.GlobalTheory.CuspRep.AlgExpo.dchi_eq_sum <;> assumption
 
 end GlobalTheory.CompanionTheory.HeckeAlg
 

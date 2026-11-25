@@ -86,8 +86,7 @@ theorem rows_num_pair {P σ₁ σ₂ h₁ h₂ cr Γ a2 dq E1 F6 XiH XiP ck e l�
           norm_num
   have hSck : 0 < (σ₁ * σ₂) ^ (4 * ck) := Real.rpow_pos_of_pos hS0 _
   have hXiP : 0 ≤ XiP := by
-    by_contra hneg
-    push_neg at hneg
+    by_contra! hneg
     have := mul_neg_of_neg_of_pos hneg hSck
     linarith
   have hC : 0 ≤ XiP * ((P ^ E1) ^ 2 * (P ^ cr) ^ 2 * F6 * Γ) :=

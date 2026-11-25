@@ -1,5 +1,6 @@
 module
 
+import Formalism.LocalToGlobal.SiegelLatticeTheory.FundamentalEquivalence.FundamentalContinuity.AdelicIsomorphismStatement
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CasimirReductionTheory.OneParameterDerivatives.TauReduction.LatticeVectorsBoundedBelow
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.RingTheory.PiTensorProduct
@@ -289,27 +290,7 @@ theorem Lf_upper : ∃ d : ℕ, 1 ≤ d ∧ ∀ y ∈ I.Lf, ∀ i,
     exact mul_mem a.2 (hv i)
 
 theorem exists_nat_smul_mem_L (v : Fin I.n → I.E) : ∃ d : ℕ, 1 ≤ d ∧ (d : I.E) • v ∈ I.L := by
-  have hv : v ∈ Submodule.span I.E (I.L : Set (Fin I.n → I.E)) := by rw [I.L_span]; trivial
-  induction hv using Submodule.span_induction with
-  | mem w hw => exact ⟨1, le_rfl, by rw [Nat.cast_one, one_smul]; exact hw⟩
-  | zero => exact ⟨1, le_rfl, by rw [smul_zero]; exact zero_mem _⟩
-  | add w w' _ _ hw hw' =>
-    obtain ⟨d₁, hd₁, h₁⟩ := hw
-    obtain ⟨d₂, hd₂, h₂⟩ := hw'
-    refine ⟨d₂ * d₁, Nat.one_le_iff_ne_zero.2 (Nat.mul_ne_zero (by omega) (by omega)), ?_⟩
-    rw [smul_add, Nat.cast_mul, mul_smul, mul_comm, mul_smul]
-    exact add_mem (natCast_smul_mem I _ h₁) (natCast_smul_mem I _ h₂)
-  | smul c w _ hw =>
-    obtain ⟨d, hd, h⟩ := hw
-    obtain ⟨d', hd', a, ha⟩ := exists_nat_mul_mem c
-    refine ⟨d' * d, Nat.one_le_iff_ne_zero.2 (Nat.mul_ne_zero (by omega) (by omega)), ?_⟩
-    have : ((d' * d : ℕ) : I.E) • (c • w) = (algebraMap (𝓞 I.E) I.E a) • ((d : I.E) • w) := by
-      rw [ha, smul_smul, smul_smul]
-      congr 1
-      push_cast
-      ring
-    rw [this, algebraMap_smul]
-    exact I.L.smul_mem a h
+  apply +allowSynthFailures _root_.Formalism.L2.SG.Pf.lat_mult_mem <;> assumption
 
 theorem Lf_lower : ∃ d : ℕ, 1 ≤ d ∧ ∀ y : Fin I.n → I.E ⊗[I.F] Formalism.MainNotions.S.Af I.F,
     (∀ i, y i ∈ Formalism.MainNotions.S.IntAf I.F I.E) → (d : I.E ⊗[I.F] Formalism.MainNotions.S.Af I.F) • y ∈ I.Lf := by

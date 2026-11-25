@@ -281,18 +281,8 @@ theorem hform_eq_dot {A : Type} [CommRing A] (s : A →+* A) (G : Matrix (Fin M)
 private theorem hform_mulVec_mulVec_of_cT_mul_mul_eq {A : Type} [CommRing A] (s : A →+* A)
     (G g : Matrix (Fin M) (Fin M) A) (hg : Formalism.UG.cT s g * G * g = G) (x y : Fin M → A) :
     Formalism.UG.hform s G (g *ᵥ x) (g *ᵥ y) = Formalism.UG.hform s G x y := by
-  have hc : Formalism.UG.cT s g = (g.map s)ᵀ := by
-    unfold Formalism.UG.cT
-    first
-      | rfl
-  rw [hc] at hg
-  have hs : (fun i => s ((g *ᵥ x) i)) = (g.map s) *ᵥ (fun i => s (x i)) := by
-    funext i
-    exact RingHom.map_mulVec s g x i
-  rw [hform_eq_dot, hform_eq_dot, hs, Matrix.mulVec_mulVec,
-    ← Matrix.vecMul_transpose (g.map s) (fun i => s (x i)),
-    ← Matrix.dotProduct_mulVec (fun i => s (x i)) (g.map s)ᵀ ((G * g) *ᵥ y),
-    Matrix.mulVec_mulVec, ← Matrix.mul_assoc, hg]
+  intros
+  apply _root_.GlobalTheory.GaugeEx.FibProp.form_mulVec <;> assumption
 
 theorem hR_act (k : HA R σ J) (x y : Fin M → R ⊗[F] E) :
     hR R σ J ((HA.mat R σ J k).1 *ᵥ x) ((HA.mat R σ J k).1 *ᵥ y) = hR R σ J x y := by

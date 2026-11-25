@@ -286,8 +286,7 @@ theorem linear_coeff_subst_chain_rule {σ : Type} [Fintype σ] {A : σ → MvPow
     · rw [ha, MvPowerSeries.coeff_zero_eq_constantCoeff_apply, hP, zero_mul]
     · have hb : ab.2 = 0 := by
         obtain ⟨i, hi⟩ : ∃ i, ab.1 i ≠ 0 := by
-          by_contra h
-          push_neg at h
+          by_contra! h
           exact ha (Finsupp.ext h)
         have hij : i = j := by
           by_contra hne
@@ -341,8 +340,7 @@ theorem linear_coeff_subst_chain_rule {σ : Type} [Fintype σ] {A : σ → MvPow
     intro d hd
     rw [Function.mem_support] at hd
     simp only [Finset.coe_image, Finset.coe_univ, Set.image_univ, Set.mem_range]
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     apply hd
     by_cases h0 : d = 0
     · subst h0

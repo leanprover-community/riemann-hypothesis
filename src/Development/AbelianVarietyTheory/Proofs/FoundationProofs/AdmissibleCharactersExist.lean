@@ -273,8 +273,7 @@ theorem proj_translate (H : (∀ x y f, W x (W y f) = c x y • W (x + y) f) ∧
       simp only [χ]
       rw [div_mul_cancel₀ _ (H.2.2.2 _ _)]
     obtain ⟨x₀, hx₀, hne⟩ : ∃ x ∈ A, c x v ≠ c v x := by
-      by_contra hh
-      push_neg at hh
+      by_contra! hh
       exact h (hsd v hh)
     have hp : ∀ x l, l ∈ A₀ → χ (x + l) = χ x := by
       intro x l hl

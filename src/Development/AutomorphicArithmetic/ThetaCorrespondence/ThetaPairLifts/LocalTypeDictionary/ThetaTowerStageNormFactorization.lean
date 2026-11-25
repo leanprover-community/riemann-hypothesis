@@ -195,8 +195,7 @@ theorem m_le_of_size {D : D7} {large₂ : SizeData₂ D} (h : GlobalTheory.Indef
   have h4 : D.R.m ^ 4 ≤ D.R.f := h.2.2.1
   have hm : 44 ≤ D.R.m := h.2.2.2.1
   have hfm : D.R.f * D.R.m ≤ (D.R.r + 1) ^ 3 := h.2.2.2.2.2.2.1
-  by_contra hc
-  push_neg at hc
+  by_contra! hc
   have h1 : (D.R.r + 1) ^ 3 < D.R.m ^ 3 := Nat.pow_lt_pow_left hc (by norm_num)
   have h2 : D.R.m ^ 3 ≤ D.R.m ^ 4 * D.R.m := by
     calc D.R.m ^ 3 ≤ D.R.m ^ 5 := Nat.pow_le_pow_right (by omega) (by norm_num)

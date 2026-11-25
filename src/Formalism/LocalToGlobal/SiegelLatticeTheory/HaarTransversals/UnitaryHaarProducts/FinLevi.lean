@@ -58,9 +58,6 @@ theorem hA_z_e (a : Fin D.R.rS) : hA X.B.I (zA X u) (eA X a) = 0 := by
 theorem hA_z_f (a : Fin D.R.rS) : hA X.B.I (zA X u) (fA X a) = 0 := by
   have h := Level.hE_z_f X u a; unfold Level.hE at h; rw [unitaryCongruence.hA_incl, h, map_zero]
 
-theorem hA_sub_right (x y y' : VA X.B.I) : hA X.B.I x (y - y') = hA X.B.I x y - hA X.B.I x y' :=
-  unitaryCongruence.hA_sub_right X.B.I x y y'
-
 theorem hA_zero_left (y : VA X.B.I) : hA X.B.I 0 y = 0 := by
   simp [hA, Formalism.UG.hform]
 

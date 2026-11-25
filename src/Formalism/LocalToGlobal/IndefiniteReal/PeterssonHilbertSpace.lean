@@ -182,8 +182,7 @@ theorem isHermPos_mult (hθ : IsInfFam θ) (hfin : HCFinite θ M J χ)
     rw [hval _ _ _ hc]
     have hx' : (x : MMap M) ≠ 0 := fun h0 => hx (Subtype.ext h0)
     obtain ⟨v, hv⟩ : ∃ v, (x : MMap M) v ≠ 0 := by
-      by_contra hcon
-      push_neg at hcon
+      by_contra! hcon
       exact hx' (MultilinearMap.ext hcon)
     obtain ⟨hi, he⟩ := hc v v
     have hcl := mult_cont_left M θ J χ x.2 v

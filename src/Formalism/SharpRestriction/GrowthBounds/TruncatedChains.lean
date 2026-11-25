@@ -805,28 +805,7 @@ theorem projector_factor_lowering_commute {E : GLOps n K V} (hE : IsGLRep E) {a 
 
 theorem projector_factor_mem_weight_space {E : GLOps n K V} (hs : OperatorsShiftWeightsByRoots E) (ν : Fin n → ℤ) (a b : Fin n) (c T : ℕ) (x : V)
     (hx : x ∈ weightSp E ν) : pf E a b c T x ∈ weightSp E ν := by
-  have hpow : ∀ (a' b' : Fin n) (k : ℕ) (μ : Fin n → ℤ) (y : V), y ∈ weightSp E μ →
-      ((E a' b') ^ k) y ∈ weightSp E (μ + k • rootW a' b') := by
-    intro a' b' k
-    induction k with
-    | zero =>
-      intro μ y hy
-      simpa using hy
-    | succ k ih =>
-      intro μ y hy
-      rw [pow_succ', Module.End.mul_apply, succ_nsmul, ← add_assoc]
-      exact hs a' b' _ _ (ih μ y hy)
-  rw [pf_eq, LinearMap.sum_apply]
-  refine Submodule.sum_mem _ fun k _ => ?_
-  rw [LinearMap.smul_apply]
-  refine Submodule.smul_mem _ _ ?_
-  rw [Module.End.mul_apply]
-  have h1 := hpow b a k _ _ (hpow a b k ν x hx)
-  have e : ν + k • rootW a b + k • rootW b a = ν := by
-    ext i
-    simp only [Pi.add_apply, Pi.smul_apply, rootW, Pi.sub_apply]
-    ring
-  rwa [e] at h1
+  apply _root_.Formalism.MainNotions.G.ExtremalProjector.pf_wt <;> assumption
 
 end
 

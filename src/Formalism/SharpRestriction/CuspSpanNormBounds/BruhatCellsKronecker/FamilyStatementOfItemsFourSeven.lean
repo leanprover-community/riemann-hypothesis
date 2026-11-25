@@ -997,10 +997,6 @@ theorem heightStatement_of_bounds (C' Cl Cg cb Cu cT CT C0 A C C2 Ch : ℝ) (hC 
       (D.R.m : ℝ) ^ 4 * D.R.f * large₂.sc.L * (large₂.CGam * D.R.m) := mul_le_mul_of_nonneg_left hm (by positivity)
   have a3 : (D.R.m : ℝ) ^ 2 * Real.log S * (6 * C) ≤ (D.R.m : ℝ) ^ 2 * Real.log S * C2 :=
     mul_le_mul_of_nonneg_left h62 (by positivity)
-  have a4 : (D.R.f : ℝ) * (large₂.sc.L * (C * (D.R.m : ℝ) ^ 4)) + 4 * ξ * (C * (D.R.m : ℝ) ^ 2) +
-      (D.R.m : ℝ) * (2 * ξ * (C * (D.R.m : ℝ))) =
-      (D.R.m : ℝ) ^ 4 * D.R.f * large₂.sc.L * (C + 6 * C * Ch) + (D.R.m : ℝ) ^ 2 * Real.log S * (6 * C) := by
-    rw [hξ]; ring
   have a5 : large₂.CGam * (D.R.m : ℝ) ^ 5 * D.R.f * large₂.sc.L + Real.log S * (C2 * (D.R.m : ℝ) ^ 2) =
       (D.R.m : ℝ) ^ 4 * D.R.f * large₂.sc.L * (large₂.CGam * D.R.m) + (D.R.m : ℝ) ^ 2 * Real.log S * C2 := by ring
   linarith
@@ -1067,10 +1063,6 @@ theorem product_clause_at_record (C' Cl Cg cb Cu cT CT C0 A C C2 Ch : ℝ) (hC :
     mul_le_mul_of_nonneg_left h22 (by positivity)
   have b7 : (D.R.m : ℝ) ^ 4 * Real.log S * C ≤ (D.R.m : ℝ) ^ 4 * Real.log S * C2 :=
     mul_le_mul_of_nonneg_left h12 (by positivity)
-  have b8 : ((D.R.f : ℝ) * (large₂.sc.L * (C * (D.R.m : ℝ))) + (D.R.m : ℝ) * ξ) * (C * (D.R.m : ℝ) ^ 3) =
-      C ^ 2 * (D.R.f * large₂.sc.L) * (D.R.m : ℝ) ^ 4 + (D.R.m : ℝ) ^ 6 * (D.R.f * large₂.sc.L) * (C * Ch) +
-        (D.R.m : ℝ) ^ 4 * Real.log S * C := by
-    rw [hξ]; ring
   have b9 : C2 * (D.R.m : ℝ) ^ 6 * D.R.f * large₂.sc.L + Real.log S * (C2 * (D.R.m : ℝ) ^ 4) =
       (D.R.m : ℝ) ^ 6 * (D.R.f * large₂.sc.L) * C2 + (D.R.m : ℝ) ^ 4 * Real.log S * C2 := by ring
   have b10 : (D.R.m : ℝ) ^ 6 * (D.R.f * large₂.sc.L) * (C ^ 2 + C * Ch) =

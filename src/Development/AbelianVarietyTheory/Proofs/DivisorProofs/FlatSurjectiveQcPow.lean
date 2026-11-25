@@ -54,7 +54,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 namespace GlobalTheory.UPel.HT.SiegUniqBase
 
 section FlatPow
-attribute [local instance] Over.cartesianMonoidalCategory
 open ReciprocityTheory.ChartRestriction.G.Out
 open scoped CategoryTheory.Obj CategoryTheory.MonObj
 

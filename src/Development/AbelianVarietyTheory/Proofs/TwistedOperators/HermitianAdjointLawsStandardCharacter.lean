@@ -62,7 +62,6 @@ open Formalism.MainNotions.KudlaSiegelWeil (Pl FinF FinE FF Over Split LocW Rest
 open GlobalTheory.IndefiniteRowSideFullHecke.SymplecticTensorMeasures (ConjIsom omTens toHom)
 open Formalism.IndefR.Datum (IsHalf IsLatVac)
 open scoped TensorProduct Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.HeckeConj
 

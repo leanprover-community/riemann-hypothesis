@@ -1089,8 +1089,7 @@ private lemma subst_zero_fin_eq_C_constantCoeff {Q : Type} [CommRing Q] {d : ℕ
     simp [coeff_one]
   · intro n hn
     obtain ⟨s, hs⟩ : ∃ s, n s ≠ 0 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact hn (Finsupp.ext h)
     rw [Finsupp.prod, Finset.prod_eq_zero (i := s) (by simpa using hs) (by simp [hs])]
     simp

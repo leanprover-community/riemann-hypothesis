@@ -50,7 +50,6 @@ theorem nu_odd {n' m : ℕ} (hm : 1 ≤ m) (TT : Finset (Fin n')) (lam0 : Fin n'
     (s : Fin n') (hs : s ∈ TT) (hv : vecE n' s = false) (t : Fin (m + 1)) (ht : m ≤ t.val + 1) :
     nuOf (lamAt (restW TT lam0) s) t = 0 := by
   have hodd : ¬ Even (s : ℕ) := by simpa [vecE] using hv
-  have htl := t.isLt
   have hr : restW TT lam0 s t.rev = restW TT lam0 s 0 := by
     have hv' : t.rev.val ≤ 1 := by
       rw [Fin.val_rev]

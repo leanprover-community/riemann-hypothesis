@@ -11,14 +11,6 @@ namespace Formalism.HermitianLattices.GenusMassVolumes
 open Finset
 open Formalism.LogVandermondeBounds.StandardLattice
 
-private lemma one_add_inv_pow_le_exp_one (N : ℕ) (hN : 1 ≤ N) :
-    (1 + 1 / (N : ℝ)) ^ N ≤ Real.exp 1 := by
-  have hN' : (N : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr (by omega)
-  calc (1 + 1 / (N : ℝ)) ^ N ≤ (Real.exp (1 / N)) ^ N := by
-        gcongr
-        linarith [Real.add_one_le_exp (1 / (N : ℝ))]
-    _ = Real.exp 1 := by rw [← Real.exp_nat_mul, mul_one_div_cancel hN']
-
 theorem mass_corollary : PowerProductTwoSidedBounds := by
   intro f k T X Γ Dstar dstar dM lo hi hf hk hfk2 hT hX hΓ hD hd hXD hlow hup hdM hlo hhi
   have hf' : (0:ℝ) < f := Nat.cast_pos.mpr hf
@@ -44,7 +36,9 @@ theorem mass_corollary : PowerProductTwoSidedBounds := by
       _ ≤ (Y * (1 + 1 / ((f:ℝ) * k))) ^ (f * k) := by gcongr
       _ = Y ^ (f * k) * (1 + 1 / ((f * k : ℕ) : ℝ)) ^ (f * k) := by rw [mul_pow, Nat.cast_mul]
       _ ≤ Y ^ (f * k) * Real.exp 1 :=
-          mul_le_mul_of_nonneg_left (one_add_inv_pow_le_exp_one _ hN1) (pow_nonneg hYpos.le _)
+          mul_le_mul_of_nonneg_left
+            (Real.one_add_div_pow_le_exp ((neg_nonpos.2 (Nat.cast_nonneg _)).trans zero_le_one))
+            (pow_nonneg hYpos.le _)
   have hq : (f:ℝ) * (1 / T ^ k) ≤ 1 / 2 := by
     have h2k : (2:ℝ) ^ k ≤ T ^ k := by gcongr
     have h2f : (2 * f : ℝ) ≤ 2 ^ k := by exact_mod_cast hfk2

@@ -1602,8 +1602,7 @@ theorem trace_bound : ∀ (n : ℕ) (ε : Fin n → Bool) (H : Type) [NormedAddC
     rw [eQ, Complex.norm_real, Real.norm_eq_abs, sq_abs] at hH
     have hQ0 : 0 ≤ ∑ j, ‖x j‖ ^ 2 := Finset.sum_nonneg fun _ _ => by positivity
     have hQ : ∑ j, ‖x j‖ ^ 2 ≤ C0 * C' := by
-      by_contra hne
-      push_neg at hne
+      by_contra! hne
       have hK0 : 0 ≤ C0 * C' := mul_nonneg hC0 hC'0
       nlinarith
     refine le_of_eq_of_le (Finset.sum_congr rfl fun j _ => ?_) hQ

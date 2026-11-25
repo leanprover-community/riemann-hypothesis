@@ -5,6 +5,7 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeo
 import Mathlib.Tactic.Linter.Style
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsThetaMeanSquareNorm
 import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FrameDefinitions.PermFinTwoUniv
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IsCombAtIffIsDerivAt0
 
 @[expose] public section
 
@@ -152,23 +153,7 @@ theorem tr_fst (v : epsAt (𝟙 (Sp R)) ⟶ G) (hv : IsTanAt G (𝟙 (Sp R)) v) 
 
 theorem surj_fst {C : Type} [CommRing C] (q : Sp (DualNumber C)) :
     ∃ p : Sp C, spMap (TrivSqZeroExt.fstHom C C C).toRingHom p = q := by
-  refine ⟨PrimeSpectrum.comap (algebraMap C (DualNumber C)) q, ?_⟩
-  show PrimeSpectrum.comap (TrivSqZeroExt.fstHom C C C).toRingHom (PrimeSpectrum.comap (algebraMap C (DualNumber C)) q) = q
-  apply PrimeSpectrum.ext
-  ext x
-  have hn : TrivSqZeroExt.inr x.snd ∈ q.asIdeal := by
-    have h2 : (TrivSqZeroExt.inr x.snd : DualNumber C) * TrivSqZeroExt.inr x.snd = 0 := by simp
-    have : (TrivSqZeroExt.inr x.snd : DualNumber C) * TrivSqZeroExt.inr x.snd ∈ q.asIdeal := by
-      rw [h2]; exact zero_mem _
-    exact (q.isPrime.mem_or_mem this).elim id id
-  have hx : x = algebraMap C (DualNumber C) x.fst + TrivSqZeroExt.inr x.snd := by
-    ext <;> simp [TrivSqZeroExt.algebraMap_eq_inl]
-  show algebraMap C (DualNumber C) x.fst ∈ q.asIdeal ↔ x ∈ q.asIdeal
-  constructor
-  · intro h; rw [hx]; exact add_mem h hn
-  · intro h
-    have : algebraMap C (DualNumber C) x.fst = x - TrivSqZeroExt.inr x.snd := eq_sub_of_add_eq hx.symm
-    rw [this]; exact sub_mem h hn
+  apply _root_.GlobalTheory.DerLin.surj_fst <;> assumption
 
 theorem tr_top (v : epsAt (𝟙 (Sp R)) ⟶ G) (hv : IsTanAt G (𝟙 (Sp R)) v) {C : Type} [CommRing C] (y : Sp C ⟶ G.left)
     (V : G.left.Opens) (h : ⊤ ≤ y ⁻¹ᵁ V) : ⊤ ≤ (tr v y) ⁻¹ᵁ V := by

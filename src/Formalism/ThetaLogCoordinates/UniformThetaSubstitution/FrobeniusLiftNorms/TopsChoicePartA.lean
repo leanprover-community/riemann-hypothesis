@@ -161,8 +161,7 @@ theorem coeff_lgF_ne_zero {K : Type} [Field K] {p n : ℕ}
     (h : PowerSeries.coeff n (lgF K p) ≠ 0) : ∃ j, n = (p ^ 2) ^ j := by
   unfold lgF at h
   rw [PowerSeries.coeff_mk] at h
-  by_contra hc
-  push_neg at hc
+  by_contra! hc
   apply h
   apply Finset.sum_eq_zero
   intro i _
@@ -179,8 +178,7 @@ theorem coeff_g0F_ne_zero {K : Type} [Field K] {p n : ℕ}
     (h : PowerSeries.coeff n (g0F K p) ≠ 0) : ∃ j, n = p * (p ^ 2) ^ j := by
   unfold g0F at h
   rw [PowerSeries.coeff_mk] at h
-  by_contra hc
-  push_neg at hc
+  by_contra! hc
   apply h
   apply Finset.sum_eq_zero
   intro i _
@@ -222,8 +220,7 @@ theorem coeff_AA_ne_zero {K : Type} [Field K] {p : ℕ} {x y : Fin 2} {n : Fin 2
     ∃ i j, i ≤ j ∧ n x = (p ^ 2) ^ i ∧ n y = p * (p ^ 2) ^ j := by
   change AA K p x y n ≠ 0 at h
   simp only [AA] at h
-  by_contra hc
-  push_neg at hc
+  by_contra! hc
   apply h
   apply Finset.sum_eq_zero
   intro i _

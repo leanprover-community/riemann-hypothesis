@@ -48,8 +48,7 @@ theorem add_one_le_of_precedes (Δ Δ' : Segment k) (hΔ : IsCentred Δ) (hΔ' :
     rw [e1] at hA'
     linear_combination hA' - hA
   have hlen : Δ.len < j + Δ'.len := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     apply hnsub
     intro w hw
     obtain ⟨a, ha, rfl⟩ := Segment.mem_carrier.1 hw

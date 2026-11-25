@@ -130,15 +130,23 @@ theorem length_quotient_eq_one {O R : Type*} [CommRing O] [CommRing R] [Algebra 
     Module.length_eq_one_iff, isSimpleModule_iff_isCoatom, ← Ideal.isMaximal_def, hkerf]
   exact hmax
 
-end ChartResidueDegree
-
-
-open ChartResidueDegree in
-theorem ChartResidueDegree.proof (h₁ : ChowFormBirational.Statement) (h₂ : ChartFinite.Statement)
-    (h₃ : ChartKernel.Statement) (h₄ : ConeDimOfChowForm.Statement) (h₅ : ConeDimComponent.Statement)
-    (h₆ : ChowFormExists.Statement) (h₇ : IncidenceGeneric.Statement) (h₈ : ChartLocalOrder.Statement) :
-    ChartResidueDegree.Statement := by
-  intro F _ _ n e I W f t u q p _ hI hf hu hq hp hqt hW hqW htW
+theorem length_eq_one {F : Type} [Field F] {n e : ℕ} {I W : Ideal (MvPolynomial (Fin n) F)}
+    {f : MvPolynomial (Fin (e + 1) × Fin n) F} {t u : Fin n → F}
+    {q : MvPolynomial (Fin e × Fin n) F} {p : Ideal (MvPolynomial (Fin e × Fin n) F)} [p.IsPrime]
+    (h₁ : ∀ (k : ℕ) (P : Ideal (MvPolynomial (Fin n) F)) (g : MvPolynomial (Fin (k + 1) × Fin n) F)
+      (c : Fin n → FractionRing (MvPolynomial (Fin n) F ⧸ P)),
+      IsProjPrime P → IsChowForm P (k + 1) g → ∑ j, c j * genPt P j = 1 →
+        ∃ t' : Fin n → F, (∑ l, C (t' l) * pderiv (0, l) g) ∉ incIdeal P (k + 1) ∧
+          ∀ m, aeval (genSubst (genPt P) c) (pderiv (0, m) g) *
+                C (∑ l, algebraMap F (FractionRing (MvPolynomial (Fin n) F ⧸ P)) (t' l) * genPt P l) =
+              aeval (genSubst (genPt P) c) (∑ l, C (t' l) * pderiv (0, l) g) * C (genPt P m))
+    (h₂ : ChartFinite.Statement) (h₃ : ChartKernel.Statement) (h₄ : ConeDimOfChowForm.Statement)
+    (h₅ : ConeDimComponent.Statement) (h₆ : ChowFormExists.Statement) (h₇ : IncidenceGeneric.Statement)
+    (h₈ : ChartLocalOrder.Statement)
+    (hI : IsProjPrime I) (hf : IsChowForm I (e + 1) f) (hu : linForm u ∉ I) (hq : Prime q)
+    (hp : p = Ideal.span {q}) (hqt : ¬ q ∣ specFirst f t)
+    (hW : W ∈ relComps (I ⊔ Ideal.span {linForm u})) (hqW : q ∈ incIdeal W e) (htW : linForm t ∉ W) :
+    Module.length (Localization.AtPrime p) (ChartLoc I t e p ⧸ chartIdeal I t e p W) = 1 := by
   obtain ⟨k, rfl⟩ : ∃ k, e = k + 1 := by
     cases e with
     | zero =>
@@ -259,7 +267,7 @@ theorem ChartResidueDegree.proof (h₁ : ChowFormBirational.Statement) (h₂ : C
     rw [Ideal.mem_comap, Ideal.mem_comap, RingHom.mem_ker, hψ, hΦIX, hdeh h hh, C_0, map_zero]
   have hker : RingHom.ker ψ = 𝔓 := (h𝔓max.eq_of_le (RingHom.ker_ne_top ψ) h𝔓ker).symm
 
-  obtain ⟨t', hD', hrel⟩ := h₁ F n k W g c hWp hg hc'
+  obtain ⟨t', hD', hrel⟩ := h₁ k W g c hWp hg hc'
   rw [← hξdef] at hrel
   set Dt : MvPolynomial (Fin (k + 1) × Fin n) F := ∑ l, C (t l) * pderiv (0, l) g with hDtdef
   have hωC : ∀ a : F, aeval (genSubst ξ c) (C a : MvPolynomial (Fin (k + 1) × Fin n) F) =
@@ -366,6 +374,16 @@ theorem ChartResidueDegree.proof (h₁ : ChowFormBirational.Statement) (h₂ : C
   refine length_quotient_eq_one 𝔓 hcomap fun x => ?_
   obtain ⟨o, ho⟩ := hgood x
   exact ⟨o, by rw [← hker, RingHom.mem_ker, map_sub, ho, sub_self]⟩
+
+end ChartResidueDegree
+
+
+theorem ChartResidueDegree.proof (h₁ : ChowFormBirational.Statement) (h₂ : ChartFinite.Statement)
+    (h₃ : ChartKernel.Statement) (h₄ : ConeDimOfChowForm.Statement) (h₅ : ConeDimComponent.Statement)
+    (h₆ : ChowFormExists.Statement) (h₇ : IncidenceGeneric.Statement) (h₈ : ChartLocalOrder.Statement) :
+    ChartResidueDegree.Statement :=
+  fun F _ _ n _ _ _ _ _ _ _ _ _ hI hf hu hq hp hqt hW hqW htW =>
+    ChartResidueDegree.length_eq_one (h₁ F n) h₂ h₃ h₄ h₅ h₆ h₇ h₈ hI hf hu hq hp hqt hW hqW htW
 
 end
 

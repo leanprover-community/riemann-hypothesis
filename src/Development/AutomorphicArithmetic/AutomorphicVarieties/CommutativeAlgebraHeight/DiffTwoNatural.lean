@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ZarhinBundleKernelFirstCoordEquations
 public import Mathlib.RingTheory.MvPolynomial.Homogeneous
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.WeilGroupCharacters.RepAlg
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebraHeight.FinDefs
@@ -71,16 +72,8 @@ theorem UpperTheory.Reformulated.B.Qk4.aeval_mul_homog :
       ∀ (b : S) (x : G → S),
         (MvPolynomial.aeval fun (g : G) ↦ b * x g : MvPolynomial G A → S) P =
           b ^ n * (MvPolynomial.aeval x : MvPolynomial G A → S) P := by
-  intro n A G S _ _ _ P hP b x
-  rw [MvPolynomial.aeval_def, MvPolynomial.aeval_def, MvPolynomial.eval₂_eq,
-    MvPolynomial.eval₂_eq, Finset.mul_sum]
-  refine Finset.sum_congr rfl fun d hd ↦ ?_
-  have hdeg : ∑ i ∈ d.support, d i = n := by
-    have h := hP (MvPolynomial.mem_support_iff.mp hd)
-    simpa [Finsupp.weight_apply, Finsupp.sum] using h
-  simp only [mul_pow]
-  rw [Finset.prod_mul_distrib, Finset.prod_pow_eq_pow_sum, hdeg]
-  ring
+  intros
+  apply _root_.GlobalTheory.CompanionTheory.Ar.ProjCoord.aeval_mul_of_isHomogeneous <;> assumption
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.AevalMulHomog =====

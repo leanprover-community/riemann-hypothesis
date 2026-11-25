@@ -702,8 +702,6 @@ namespace PositivityTheory.RgBcC.LfSt.Kchain.KcDual
 open PositivityTheory.RgBcC PositivityTheory.RgBcC.LfSt PositivityTheory.RgBcC.LfSt.Kchain
 open PositivityTheory.RgTw (Mat hb)
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 variable {n : ℕ}
 
 theorem trace_hOf_mul (hH : HbFacts) (u u' : Fin n × Fin n → ℝ) :
@@ -790,8 +788,6 @@ namespace PositivityTheory.RgBcC.LfSt.Kchain
 
 open PositivityTheory.RgBcC PositivityTheory.RgBcC.LfSt
 open PositivityTheory.RgTw (Mat hb)
-
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 variable {n : ℕ}
 

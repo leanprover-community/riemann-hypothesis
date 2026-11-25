@@ -250,8 +250,7 @@ theorem polyMaxOff_le_of_rLoc_le :
     have h4 : 4 / ‖z i‖ ^ 2 ≤ 1 / t ^ 2 :=
       ((Real.log_le_iff_le_exp (by positivity)).1 hterm).trans hE
     rw [div_le_div_iff₀ (by positivity) (by positivity)] at h4
-    by_contra hlt
-    push_neg at hlt
+    by_contra! hlt
     nlinarith
   set y := Real.log (1 / t) + K' with hy
   have hfar : ∀ x ∈ closedBall z t, ∀ i ∈ S, ‖z i‖ / 2 ≤ ‖x i‖ ∧ 0 < ‖x i‖ := by

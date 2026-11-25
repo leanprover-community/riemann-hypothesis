@@ -86,8 +86,7 @@ theorem pure_ne_zero {F : Type} [Field F] [NumberField F] {κ : Type} [Fintype �
     GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.pure f φ ≠ 0 := by
   classical
   obtain ⟨yi, hyi⟩ : ∃ y, f y ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hf (SchwartzMap.ext h)
   have hS : Set.Finite {v | ¬ (φ v = Set.indicator {x | ∀ i, x i ∈ v.adicCompletionIntegers F} 1)} :=
     Filter.eventually_cofinite.mp hstd

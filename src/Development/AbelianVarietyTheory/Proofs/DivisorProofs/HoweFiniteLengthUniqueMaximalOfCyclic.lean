@@ -416,8 +416,7 @@ theorem real_root_quad_le {x : ℝ} {α β : ℂ} (h : (x : ℂ) ^ 2 - α * x - 
   rw [hx] at h2
   have ha := norm_nonneg α
   have hb := norm_nonneg β
-  by_contra hc
-  push_neg at hc
+  by_contra! hc
   have ht : ‖α‖ + ‖β‖ + 1 < |x| := lt_of_lt_of_le hc (le_abs_self x)
   nlinarith [mul_nonneg hb (by linarith : (0:ℝ) ≤ |x| - 1),
     mul_pos (by linarith : (0:ℝ) < |x| - (‖α‖ + ‖β‖ + 1)) (by linarith : (0:ℝ) < |x|)]
@@ -429,8 +428,7 @@ theorem diag_eig_le_of_cas_min : ∀ (ι : Type) [Fintype ι] [DecidableEq ι] (
   by_cases hz : ∀ j, s j = false → ∑ b, F j b (y b) = 0
   · have hbc := _root_.GlobalTheory.HoweR.qop_quadratic_on_eigenvector ι M s F α β x y hq hfalse htrue hz
     obtain ⟨a, ha⟩ : ∃ a, y a ≠ 0 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact hy (funext h)
     have h0 : (x : ℂ) ^ 2 - α * x - β = 0 := by
       by_contra hne

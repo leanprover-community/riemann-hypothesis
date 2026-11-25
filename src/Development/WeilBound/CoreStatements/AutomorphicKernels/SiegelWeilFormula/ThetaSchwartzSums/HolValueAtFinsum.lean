@@ -30,9 +30,6 @@ theorem cosetSum_finsum {G : Type} [Group G] (Pp Γ : Subgroup G) {ι : Type} (T
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}
 
-theorem isSw_fP {m n : ℕ} (P : PX m n) : IsSw (fP P) :=
-  schwartz_polyGauss (2 * Real.pi) (by positivity) P
-
 end PositivityTheory.SiegelWeilFormula.KMain
 
 end

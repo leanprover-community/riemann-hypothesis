@@ -48,6 +48,7 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.T2SpaceGeneralLinea
 import Development.AbelianVarietyTheory.Definitions.Divisors.SimpleTwistedTraceFormulaStable
 import GroundTheory.LocalFields.LocalFourierHaar
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.VLtOneOfOrdLEqOne
+import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.IwahoriFactorisation.TwistedConjugationNorms.Development
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MultiplicityInert, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConstantTermStar, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MatchLMWordSOf, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MatchLeviWordsOf, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsCompactClosureZpowersMap, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocalizationQuotientSeparatedDvd, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PowersDiagonalAtTBlock, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IwahoriContraction, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ThetaGLMemIwGL, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RegularPowerTorus, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CharpolyConjDiagonal, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SeparablePowerTorus, Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.LeviMatchingWords.GeneratorPowSplitPlacesOfIdempotent
@@ -95,7 +96,6 @@ noncomputable section
 open NumberField IsDedekindDomain Matrix Filter
 open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT
 open scoped Classical Kronecker
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 namespace GlobalTheory.CompanionTheory.CtAdj
 
@@ -287,7 +287,6 @@ open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions 
 open PositivityTheory.Rg.BcB.F.U (lpow lone)
 open PositivityTheory.Rg.BcB.F.MLM (wordLS wordUS CtStar)
 open scoped Classical
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 namespace GlobalTheory.CompanionTheory.MatchWordS
 
@@ -459,8 +458,6 @@ open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.BasicNotions GlobalTheory.
 open PositivityTheory.Rg.Bc.ArchbcB.B.M4 PositivityTheory.Rg.Bc.ArchbcB.B.M4.Tw
 open scoped Classical
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace GlobalTheory.CompanionTheory.TwSide
 
 section Generic
@@ -488,27 +485,7 @@ theorem thetaGL_diagT (c : L →+* L) {n : ℕ} (u : Fin n → Lˣ) :
 
 theorem exists_diagT {n : ℕ} (g : GL (Fin n) L) (h : ∀ i j : Fin n, i ≠ j → g.val i j = 0) :
     ∃ s : Fin n → Lˣ, g = GlobalTheory.SmGL.diagT L (Fin n) s := by
-  have hne : ∀ i, g.val i i ≠ 0 := by
-    intro i h0
-    have h1 : (g.val * (g⁻¹).val) i i = 1 := by
-      rw [← Units.val_mul, mul_inv_cancel]
-      simp
-    rw [Matrix.mul_apply, Finset.sum_eq_zero] at h1
-    · exact zero_ne_one h1
-    · intro k _
-      by_cases hk : i = k
-      · subst hk
-        rw [h0, zero_mul]
-      · rw [h i k hk, zero_mul]
-  refine ⟨fun i => Units.mk0 _ (hne i), ?_⟩
-  apply Units.ext
-  rw [GlobalTheory.SmGL.val_diagT]
-  ext i j
-  by_cases hij : i = j
-  · subst hij
-    rw [Matrix.diagonal_apply_eq]
-    rfl
-  · rw [Matrix.diagonal_apply_ne _ hij, h i j hij]
+  apply _root_.PositivityTheory.Rg.Bc.ArchbcB.B.M4.Rig.exists_diagT <;> assumption
 
 end Diag
 
@@ -564,8 +541,6 @@ open NumberField IsDedekindDomain Polynomial Matrix
 open GlobalTheory.BCT GlobalTheory.UnitaryBC Formalism.UG
 open PositivityTheory.Rg.Bc.ArchbcB.B PositivityTheory.Rg.Bc.ArchbcB.B.M4 PositivityTheory.Rg.Bc.ArchbcB.B.M4.Tw
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace GlobalTheory.CompanionTheory.SymmetricIndexRegularity
 
 theorem orderEmb_rev {n m : ℕ} (S : Finset (Fin n)) (h : S.card = m) (hS : ∀ i ∈ S, i.rev ∈ S) (j : Fin m) :
@@ -604,23 +579,7 @@ theorem mem_symIdx {n : ℕ} {mid : Prop} [Decidable mid] {s : Finset (Fin (n / 
 
 theorem symIdx_rev (n : ℕ) (mid : Prop) [Decidable mid] (s : Finset (Fin (n / 2))) :
     ∀ i ∈ symIdx n mid s, i.rev ∈ symIdx n mid s := by
-  intro i hi
-  have hv : i.rev.val = n - 1 - i.val := by
-    have := i.isLt
-    rw [Fin.val_rev]; omega
-  have hv' : n - 1 - i.rev.val = i.val := by
-    have := i.isLt
-    omega
-  rw [mem_symIdx] at hi ⊢
-  rcases hi with ⟨h, hs⟩ | ⟨h, hs⟩ | ⟨hm, ho, he⟩
-  · right; left
-    refine ⟨by omega, ?_⟩
-    simpa only [hv'] using hs
-  · left
-    refine ⟨by omega, ?_⟩
-    simpa only [hv] using hs
-  · right; right
-    exact ⟨hm, ho, by omega⟩
+  apply _root_.PositivityTheory.Rg.Bc.ArchbcB.B.M4.SymmetricIndexCases.symIdx_rev <;> assumption
 
 theorem symIdx_disj (n : ℕ) (m₁ m₂ : Prop) [Decidable m₁] [Decidable m₂] (s : Finset (Fin (n / 2)))
     (hm : n % 2 = 1 → ¬ (m₁ ∧ m₂)) (i : Fin n) (h₁ : i ∈ symIdx n m₁ s) (h₂ : i ∈ symIdx n m₂ sᶜ) : False := by
@@ -688,7 +647,6 @@ open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions 
 open PositivityTheory.Rg.BcB.F.U (lpow lone)
 open PositivityTheory.Rg.BcB.F.MLM (muAt MOk MatchLMB2)
 open scoped Classical
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 namespace GlobalTheory.CompanionTheory.MatchLMB2
 
@@ -1224,8 +1182,6 @@ section Local
 open NumberField IsDedekindDomain GlobalTheory.BCT GlobalTheory.UnitaryBC Formalism.UG
 open scoped Classical
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 
 theorem thetaGL_mem_iwGL {w : Pl E} (c : w.adicCompletion E →+* w.adicCompletion E)
@@ -1337,8 +1293,6 @@ open PositivityTheory.Rg.BcB.F PositivityTheory.Rg.BcB.F.MT PositivityTheory.Rg.
 open PositivityTheory.Rg.BcN.F2 (mconv)
 open scoped Classical
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace GlobalTheory.CompanionTheory.RegPow
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
@@ -1440,8 +1394,6 @@ theorem charpoly_conj_diagonal {K : Type} [Field K] {n : ℕ} (c D g : GL (Fin n
 
 open scoped Classical
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 
 end GlobalTheory.CompanionTheory.UnitarySide
@@ -1459,8 +1411,6 @@ noncomputable section
 open NumberField IsDedekindDomain Polynomial Matrix
 open GlobalTheory.BCT GlobalTheory.UnitaryBC PositivityTheory.Rg.Bc.ArchbcB.B PositivityTheory.Rg.BcB.F PositivityTheory.Rg.BcB.F.MLM Formalism.UG
 open scoped Classical
-
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 namespace GlobalTheory.CompanionTheory.SepPow
 

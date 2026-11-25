@@ -104,8 +104,6 @@ end SpecOver
 
 namespace WeierstrassCurve
 
-attribute [local instance] MvPolynomial.gradedAlgebra
-
 variable {R : Type u} [CommRing R] (W : WeierstrassCurve R)
 
 theorem specOverMap_ptOver {A B : Type u} [CommRing A] [CommRing B] [Algebra R A] [Algebra R B]

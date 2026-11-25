@@ -5,6 +5,7 @@ public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.MemAbLocusIf
 public import Mathlib.Analysis.SpecialFunctions.Complex.Analytic
 import Mathlib.Tactic.Linter.Style
 import GroundTheory.HeightsAndTheta.Heights.Intersections.IsSmoothHermFubiniStudyO1
+import Development.WeilBound.CoreStatements.HomogeneousNonvanishing.IsOpenHoloPreimage
 
 @[expose] public section
 
@@ -36,16 +37,7 @@ theorem continuousAt_holo (A : FinHolAtlas e X) {W : Set X} {g : X → ℂ} (hg 
 
 theorem holoOn_comp {A : FinHolAtlas e X} {B : FinHolAtlas e' Y} {h : Y → X} (hh : HoloMap B A h) {U : Set X}
     {g : X → ℂ} (hg : A.HoloOn U g) : B.HoloOn (h ⁻¹' U) (fun y => g (h y)) := by
-  rintro j y ⟨hy, hyU⟩
-  obtain ⟨k, hk⟩ := A.cover (h ((B.chart j).symm y))
-  have a1 : AnalyticAt ℂ (A.chart k ∘ h ∘ (B.chart j).symm) y := hh.2 j k y ⟨hy, hk⟩
-  have a2 : AnalyticAt ℂ (g ∘ (A.chart k).symm) ((A.chart k ∘ h ∘ (B.chart j).symm) y) :=
-    hg k _ ⟨(A.chart k).map_source hk, by
-      simpa [Function.comp, (A.chart k).left_inv hk] using hyU⟩
-  refine (a2.comp a1).congr ?_
-  filter_upwards [((B.chart j).isOpen_inter_preimage_symm
-    ((A.chart k).open_source.preimage hh.1)).mem_nhds ⟨hy, hk⟩] with y' hy'
-  simp [Function.comp, (A.chart k).left_inv hy'.2]
+  apply _root_.PositivityTheory.UnitarySelfGeneration.HolomorphicMinorCharts.holo_comp_map <;> assumption
 
 theorem exists_log (A : FinHolAtlas e X) {W : Set X} (hW : IsOpen W) {c : X → ℂ} (hc : A.HoloOn W c) {x : X}
     (hx : x ∈ W) (h0 : c x ≠ 0) :

@@ -64,8 +64,7 @@ theorem val_lt_one_of_norm_lt_one (e : ℚ_[g] ≃+* F) (he : Continuous e) {z :
   have h3 : {x : F | valuation F x < 1} ∈ nhds (0 : F) :=
     (IsValuativeTopology.mem_nhds_zero_iff _).2 ⟨1, fun x hx => by simpa using hx⟩
   obtain ⟨n, hn⟩ := (h2.eventually h3).exists
-  by_contra hc
-  push_neg at hc
+  by_contra! hc
   have : 1 ≤ valuation F (e z ^ n) := by rw [map_pow]; exact one_le_pow₀ hc
   exact absurd hn (not_lt.2 this)
 
@@ -92,8 +91,7 @@ theorem val_le_one_of_norm_le_one (e : ℚ_[g] ≃+* F) (he : Continuous e) {z :
 
 theorem norm_lt_one_of_val_lt_one (e : ℚ_[g] ≃+* F) (he : Continuous e) {y : ℚ_[g]}
     (hy : valuation F (e y) < 1) : ‖y‖ < 1 := by
-  by_contra hc
-  push_neg at hc
+  by_contra! hc
   have hy0 : y ≠ 0 := by rintro rfl; simp at hc; exact absurd hc (by norm_num)
   have h1 : ‖y⁻¹‖ ≤ 1 := by rw [norm_inv]; exact inv_le_one_of_one_le₀ hc
   have h2 := val_le_one_of_norm_le_one e he h1

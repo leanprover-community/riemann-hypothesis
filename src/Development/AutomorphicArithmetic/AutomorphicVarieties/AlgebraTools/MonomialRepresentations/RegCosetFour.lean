@@ -811,8 +811,7 @@ theorem UpperTheory.V.AlgebraTools.relWeight :
     refine ha i j hij (isOfFinOrder_iff_zpow_eq_one.mpr ⟨k, hk, ?_⟩)
     simpa only [hPsmul, hPsub, hPe] using hk1
   have hex : ∃ f : Module.Dual ℤ ((ι → ℤ) ⧸ L), ∀ i j, i ≠ j → f (q i) ≠ f (q j) := by
-    by_contra hno
-    push_neg at hno
+    by_contra! hno
     let s : Finset (ι × ι) := Finset.univ.filter fun x => x.1 ≠ x.2
     let p : ι × ι → Submodule ℤ (Module.Dual ℤ ((ι → ℤ) ⧸ L)) :=
       fun x => LinearMap.ker (Module.Dual.eval ℤ _ (q x.1 - q x.2))
@@ -883,8 +882,7 @@ private lemma torusTransfer_sep_iff {L : Type*} [Field L] (p : L[X]) (hp : p.Mon
     rw [Multiset.nodup_iff_count_le_one]
     intro α
     rw [count_roots]
-    by_contra hlt
-    push_neg at hlt
+    by_contra! hlt
     obtain ⟨hr, hr'⟩ := (one_lt_rootMultiplicity_iff_isRoot hq0).1 hlt
     exact hne (Multiset.mem_map.2 ⟨α, (mem_roots hq0).2 hr, hr'⟩)
 
@@ -1006,8 +1004,7 @@ theorem UpperTheory.V.AlgebraTools.torusTransfer :
   intro K _ ι _ _ x a w hw hsep
   have hne := (torusTransfer_spec x (algebraMap K (RatFunc K))
     (fun i => (RatFunc.X : RatFunc K) ^ w i)).1 hsep
-  by_contra hall
-  push_neg at hall
+  by_contra! hall
   apply hne
   apply torusTransfer_key a w hw
   intro m

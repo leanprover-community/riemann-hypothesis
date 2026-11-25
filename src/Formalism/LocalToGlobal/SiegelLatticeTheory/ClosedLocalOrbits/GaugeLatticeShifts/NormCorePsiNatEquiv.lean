@@ -1,5 +1,6 @@
 module
 
+import Formalism.PadicSubsetSums.StableGradedCounts.MemBesselSetZeroIffUpperTriangular
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.NormCore
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
@@ -25,22 +26,7 @@ def IsUTm (A : Matrix (Fin k) (Fin k) F) : Prop :=
   (∀ i, A i i = 1) ∧ ∀ i j, j < i → A i j = 0
 
 theorem IsUTm.mul {A B : Matrix (Fin k) (Fin k) F} (hA : IsUTm A) (hB : IsUTm B) : IsUTm (A * B) := by
-  obtain ⟨hA1, hA0⟩ := hA
-  obtain ⟨hB1, hB0⟩ := hB
-  refine ⟨fun i => ?_, fun i j hij => ?_⟩
-  · rw [Matrix.mul_apply, Finset.sum_eq_single i]
-    · rw [hA1, hB1, one_mul]
-    · intro l _ hl
-      rcases lt_or_gt_of_ne hl with h | h
-      · rw [hA0 i l h, zero_mul]
-      · rw [hB0 l i h, mul_zero]
-    · intro h
-      exact absurd (Finset.mem_univ i) h
-  · rw [Matrix.mul_apply]
-    refine Finset.sum_eq_zero fun l _ => ?_
-    rcases lt_or_ge l i with h | h
-    · rw [hA0 i l h, zero_mul]
-    · rw [hB0 l j (lt_of_lt_of_le hij h), mul_zero]
+  apply _root_.Formalism.IrreducibleCountingLemmas.GaloisIrreducibility.IsUT.mul <;> assumption
 
 theorem superdiag_mul {A B : Matrix (Fin k) (Fin k) F} (hA : IsUTm A) (hB : IsUTm B) :
     superdiag k (A * B) = superdiag k A + superdiag k B := by
@@ -78,26 +64,7 @@ theorem superdiag_mul {A B : Matrix (Fin k) (Fin k) F} (hA : IsUTm A) (hB : IsUT
 
 theorem IsUTm.inv_val (u : GL (Fin k) F) (h : IsUTm (u : Matrix (Fin k) (Fin k) F)) :
     IsUTm ((u⁻¹ : GL (Fin k) F) : Matrix (Fin k) (Fin k) F) := by
-  have htri : ∀ i j : Fin k, j < i → ((u⁻¹ : GL (Fin k) F) : Matrix (Fin k) (Fin k) F) i j = 0 := by
-    intro i j hij
-    letI : Invertible (u : Matrix (Fin k) (Fin k) F) := u.invertible
-    have hb : (u : Matrix (Fin k) (Fin k) F).BlockTriangular id := by
-      intro a b hab
-      exact h.2 a b hab
-    rw [Matrix.coe_units_inv u]
-    exact Matrix.blockTriangular_inv_of_blockTriangular hb hij
-  refine ⟨fun i => ?_, htri⟩
-
-  have hmul : ((u : Matrix (Fin k) (Fin k) F) * ((u⁻¹ : GL (Fin k) F) : Matrix (Fin k) (Fin k) F)) i i = 1 := by
-    rw [Units.mul_inv, Matrix.one_apply_eq]
-  rw [Matrix.mul_apply, Finset.sum_eq_single i, h.1 i, one_mul] at hmul
-  · exact hmul
-  · intro l _ hl
-    rcases lt_or_gt_of_ne hl with hl' | hl'
-    · rw [h.2 i l hl', zero_mul]
-    · rw [htri l i hl', mul_zero]
-  · intro hi
-    exact absurd (Finset.mem_univ i) hi
+  apply _root_.Formalism.IrreducibleCountingLemmas.GaloisIrreducibility.IsUT.inv_val <;> assumption
 
 theorem isUni_mul {x y : GL (Fin k) F} (hx : IsUni k x) (hy : IsUni k y) : IsUni k (x * y) := by
   have h := IsUTm.mul (A := (x : Matrix (Fin k) (Fin k) F)) (B := (y : Matrix (Fin k) (Fin k) F)) hx hy

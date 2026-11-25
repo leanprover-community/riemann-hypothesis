@@ -783,8 +783,7 @@ theorem dvd_of_not_isUnit (P : LocPrime l) (LL : FinExt l) {lam y : ↥(OL LL)} 
   have hy0' : (y : ↥LL.1) ≠ 0 := fun e => hy0 (Subtype.ext e)
   have hu0 : (y : ↥LL.1) / lam ≠ 0 := div_ne_zero hy0' hl0
   have key : 0 ≤ P.v LL ((y : ↥LL.1) / lam) ∨ 0 ≤ P.v LL ((y : ↥LL.1) / lam)⁻¹ := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     obtain ⟨h1, h2⟩ := hc
     have hs : P.v LL ((y : ↥LL.1) / lam) + P.v LL ((y : ↥LL.1) / lam)⁻¹ = 0 := by
       rw [← AddValuation.map_mul, mul_inv_cancel₀ hu0, AddValuation.map_one]

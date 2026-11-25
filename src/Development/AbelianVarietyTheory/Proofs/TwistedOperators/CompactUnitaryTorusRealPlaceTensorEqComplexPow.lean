@@ -93,8 +93,7 @@ theorem PsiAll_surjective {F E : Type} [Field F] [NumberField F] [Field E] [Numb
   intro x
   have hτ : ¬ ComplexEmbedding.IsReal τ.1 := IsTotallyComplex.complexEmbedding_not_isReal τ.1
   have : ∃ e : E, (τ.1 e).im ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     apply hτ
     rw [ComplexEmbedding.isReal_iff]
     ext e

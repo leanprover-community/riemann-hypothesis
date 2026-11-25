@@ -575,8 +575,7 @@ theorem exists_carried_agree : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl
   classical
   obtain ⟨hCore, -, -, -⟩ := GlobalTheory.CoreOfWeak.core_of_weak R F hP.char hH.aux.ex
   have hinj := (hCore.models.HW i (sg0 D A3.A)).1
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   set J := levS _ (R.βW i) (R.datWp i R.triv) with hJ
   set χ := levChi _ (R.βW i) (R.datWp i R.triv) with hχ
   let κ := {t : Pl D.host.E × List ℤ × Finset (GA D (Wc D i)) // Hecke₂ (Wc D i) J χ R.SF t.1 t.2.1 t.2.2}
@@ -1330,7 +1329,6 @@ section -- clump:auto
 section
 section
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.RT GlobalTheory.EX GlobalTheory.EX.OB GlobalTheory.Mem GlobalTheory.Mem.Top GlobalTheory.Mem.Top.Bl GlobalTheory.Fc
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 noncomputable section
 namespace GlobalTheory.Fc.KapLinked
 theorem row_kap_of_row_lam_alt_alt : GlobalTheory.Published.HarishChandraFinite → GlobalTheory.Published.CuspRapidDecay → GlobalTheory.Published.DiscreteSeriesCover → GlobalTheory.Published.HarishChandraModules → GlobalTheory.Published.CasselmanWallach → GlobalTheory.Published.DiscreteSeriesClassification → GlobalTheory.Published.CuspTraceClass → GlobalTheory.Published.DixmierMalliavinFactorisation → GlobalTheory.Published.ZelevinskyPolynomialRing → GlobalTheory.Published.GeometricLemma → GlobalTheory.Published.GreenCuspidal → ∀ (hL : _root_.UpperTheory.Zero.LLC.RecTExists) (N : _root_.GlobalTheory.Mem.Top.Bl.NormChoiceExtension hL) (S : SExt), _root_.GlobalTheory.Fc.RL.LinkedAt (_root_.GlobalTheory.Mem.Top.Bl.parametersOfExtension N S) _root_.GlobalTheory.Fc.R1.SlotLambdaPrimeCondition → _root_.GlobalTheory.Fc.RL.LinkedAt (_root_.GlobalTheory.Mem.Top.Bl.parametersOfExtension N S) _root_.GlobalTheory.Fc.RL.RowKappaCondition := by

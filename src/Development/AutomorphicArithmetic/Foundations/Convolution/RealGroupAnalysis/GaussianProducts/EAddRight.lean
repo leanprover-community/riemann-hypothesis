@@ -55,8 +55,7 @@ private theorem E_per (κ : Fin 2 → F) : ∀ ξ ∈ vecLattice F (Fin 2), ∀ 
 
 private theorem exists_ne (κ : Fin 2 → F) (hκ : κ ≠ 0) : ∃ a, E κ a ≠ 1 := by
   obtain ⟨x, hx⟩ : ∃ x, adelicChar F x ≠ 1 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact adelicChar_ne_one (K := F) (DFunLike.ext _ _ fun x => by simpa using h x)
   have hx' : ψ x ≠ 1 := fun h => hx (Circle.ext (by simpa [ψ] using h))
   obtain ⟨i, hi⟩ := Function.ne_iff.1 hκ

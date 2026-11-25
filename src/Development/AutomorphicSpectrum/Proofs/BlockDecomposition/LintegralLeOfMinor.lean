@@ -403,8 +403,7 @@ theorem nu_support (σ ν : Measure X) [IsFiniteMeasureOnCompacts σ] [IsFiniteM
       by_contra hne
       exact hzC ⟨subset_tsupport _ hne, hzY⟩
     refine le_antisymm ?_ hν0
-    by_contra hpos
-    push_neg at hpos
+    by_contra! hpos
     set a := ∫ z, c z ∂ν with ha
     have hε : 0 < a / (2 * (I + 1)) := by positivity
     have h1 := hle _ hε

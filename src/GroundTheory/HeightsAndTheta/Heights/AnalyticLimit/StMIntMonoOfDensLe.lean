@@ -21,10 +21,4 @@ def MIntMonoOfDensLe.Statement : Prop :=
     ∀ g : X → ℝ, (∀ x, 0 ≤ g x) → (∀ x, x ∉ V → g x = 0) → MIntegrable A Ψ g →
       mInt A Φ g ≤ mInt A Ψ g
 
-section Inhabitants
-
-open ReciprocityTheory.AnForm.M (locDensCont locDens_nonneg_of_psh)
-
-end Inhabitants
-
 end GroundTheory.Heights₂.Heights.AnalyticLimit

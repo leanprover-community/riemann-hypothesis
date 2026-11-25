@@ -4,6 +4,7 @@ public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.Measu
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerVolume.PosNear
 import Mathlib.Tactic.Linter.Style
 import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeColumns.IdxCount
 
 @[expose] public section
 
@@ -23,20 +24,7 @@ variable {F E : Type} [Field F] [NumberField F] [Field E] [Algebra F E] (σ : E 
 theorem haMap_stabT {R R' : Type} [CommRing R] [Algebra F R] [CommRing R'] [Algebra F R']
     (φ : R →ₐ[F] R') {a : ℕ} (X0 : Fin a → Fin n → E) (g : HA R σ J) (hg : g ∈ stabT R σ J X0) :
     haMap σ J φ g ∈ stabT R' σ J X0 := by
-  rw [mem_stabT] at hg ⊢
-  intro b
-  have h := hg b
-  have e1 : ratV (F := F) R' (X0 b) = (tensMap (E := E) φ) ∘ ratV (F := F) R (X0 b) := by
-    funext i
-    simp [ratV, tensMap_inclR]
-  rw [e1]
-  show (((HA.mat R σ J g : GL (Fin n) (R ⊗[F] E)) : Matrix (Fin n) (Fin n) (R ⊗[F] E)).map (tensMap (E := E) φ)) *ᵥ
-    ((tensMap (E := E) φ) ∘ ratV (F := F) R (X0 b)) = _
-  funext i
-  rw [← RingHom.map_mulVec]
-  simp only [Function.comp_apply]
-  congr 1
-  exact congrFun h i
+  apply _root_.PIW.MassDataColumns.haMap_mem_stabT <;> assumption
 
 theorem continuous_haMap [FiniteDimensional F E] {R S : Type} [CommRing R] [Algebra F R] [TopologicalSpace R]
     [IsTopologicalRing R] [CommRing S] [Algebra F S] [TopologicalSpace S] [IsTopologicalRing S]

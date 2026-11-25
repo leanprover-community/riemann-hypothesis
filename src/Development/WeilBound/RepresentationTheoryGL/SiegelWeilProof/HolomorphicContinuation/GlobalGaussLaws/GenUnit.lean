@@ -21,7 +21,6 @@ section -- clump:auto
 noncomputable section
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum MeasureTheory Matrix ValuativeRel IsLocalRing GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Unf GlobalTheory.LatPair GlobalTheory.SplitWeil GlobalTheory.SeeSaw GlobalTheory.FinPl
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 set_option maxHeartbeats 1000000
 set_option synthInstance.maxHeartbeats 200000
@@ -133,11 +132,6 @@ noncomputable section
 open scoped Matrix TensorProduct
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta
 open GlobalTheory.AdelicU GlobalTheory.StdUnn IsDedekindDomain
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
-
-
 
 namespace PositivityTheory.Rg.Sw.Glob.GenUnitH
 

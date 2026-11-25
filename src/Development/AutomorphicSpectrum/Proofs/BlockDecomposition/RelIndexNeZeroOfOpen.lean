@@ -833,8 +833,7 @@ theorem hint_prod_eq_foldr : ∀ {ι Γ : Type} [Group Γ] {Hl : ι → Type} [�
     · have h2 : (K : Set Γ).indicator (1 : Γ → ℂ) x = 0 := Set.indicator_of_notMem hx _
       rw [h2]
       have h3 : ∃ j, p j x ∉ KH j := by
-        by_contra hc
-        push_neg at hc
+        by_contra! hc
         exact hx ((hK x).2 hc)
       obtain ⟨j, hj⟩ := h3
       refine finprod_eq_zero _ j (Set.indicator_of_notMem hj _) ?_

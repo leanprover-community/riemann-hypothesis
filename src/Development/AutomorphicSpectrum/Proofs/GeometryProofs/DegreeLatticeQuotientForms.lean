@@ -1,5 +1,7 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.AlgebraicSquareBaseIntersection
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.StrictWeightGrowthBoundStatement
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ConjugateHermitianLineIsometries
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.EtaleLocalizationAtPrimeTensorOfLowHeight
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ArithmeticHilbertSamuelLowerBound
@@ -65,17 +67,8 @@ theorem ll_sub {f g : MRing ι} {a : K → ℕ} (hf : IsMultiHomog f a)
 
 theorem ll_Xpow [DecidableEq K] (k : K) (i : ι k) (n : ℕ) :
     IsMultiHomog ((X ⟨k, i⟩ : MRing ι) ^ n) (Pi.single k n) := by
-  classical
-  intro m hm k'
-  rw [X_pow_eq_monomial] at hm
-  have hm' := support_monomial_subset hm
-  rw [Finset.mem_singleton] at hm'
-  subst hm'
-  by_cases h : k' = k
-  · subst h
-    simp [Finsupp.single_apply]
-  · have : ∀ j : ι k', (⟨k, i⟩ : Σ k, ι k) ≠ ⟨k', j⟩ := fun j e => h (congrArg Sigma.fst e).symm
-    simp [h]
+  intros
+  apply _root_.PositivityTheory.Xgp.sq_diag.isMultiHomog_X_pow' <;> assumption
 
 noncomputable def llMon (c : ∀ k, ι k) (d : K → ℕ) : MRing ι := ∏ k, (X ⟨k, c k⟩ : MRing ι) ^ d k
 
@@ -106,21 +99,8 @@ theorem ll_mon_add (c : ∀ k, ι k) (d d' : K → ℕ) : llMon c (d + d') = llM
   simp [llMon, pow_add, Finset.prod_mul_distrib]
 
 theorem ll_mem_of_zero (y : (Σ k, ι k) → Ω) {F : MRing ι} {α : K → ℕ} (hF : IsMultiHomog F α)
-    (h0 : aeval y F = 0) : F ∈ mCoordIdeal y := by
-  classical
-  have key : mConeMap y F = C (aeval y F) * ∏ k, (X k : MvPolynomial K Ω) ^ α k := by
-
-    rw [mConeMap, aeval_def, aeval_def, eval₂_eq', eval₂_eq', map_sum, Finset.sum_mul]
-    refine Finset.sum_congr rfl fun m hm => ?_
-    have h1 : ∏ p : (Σ k, ι k), (X p.1 : MvPolynomial K Ω) ^ m p = ∏ k, (X k : MvPolynomial K Ω) ^ α k := by
-      rw [Fintype.prod_sigma]
-      refine Finset.prod_congr rfl fun k _ => ?_
-      rw [← hF m hm k]
-      exact Finset.prod_pow_eq_pow_sum Finset.univ (fun i => m ⟨k, i⟩) (X k : MvPolynomial K Ω)
-    simp only [mul_pow, Finset.prod_mul_distrib, h1, map_mul, map_prod, map_pow, eq_intCast, map_intCast,
-      mul_assoc]
-  show mConeMap y F = 0
-  rw [key, h0, map_zero, zero_mul]
+    (h0 : aeval y F = 0) : F ∈ mCoordIdeal y :=
+  _root_.MultiProjectiveCoordinates.Val.mem_of_form y hF h0
 
 theorem ll_zero_of_mem (y : (Σ k, ι k) → Ω) {F : MRing ι} (hF : F ∈ mCoordIdeal y) : aeval y F = 0 := by
   have h : mConeMap y F = 0 := hF

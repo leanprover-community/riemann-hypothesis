@@ -688,8 +688,6 @@ section True
 
 open GlobalTheory.Mem GlobalTheory.Mem.Chr Formalism.MainNotions
 
-attribute [local instance] GlobalTheory.Mem.Col2.starE
-
 variable {B : GlobalTheory.Mem.Base} {X : PreX B.toPre} (I : TC B X)
 
 def reps (u : B.Word) (a : I.ι) : Reps (Pr := B.primes X) I.sel (I.tup a) (I.cst a) (I.idx a) u (I.Tp a) :=

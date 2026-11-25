@@ -81,7 +81,6 @@ open GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.FunObj.SqNum GlobalTh
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
 open GlobalTheory.NormSum (Pair Tup)
 open Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.BotSmallDict GlobalTheory.NormExact
 open scoped Pointwise
 open scoped nonZeroDivisors
@@ -300,7 +299,6 @@ open GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.FunObj.SqNum GlobalTh
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
 open GlobalTheory.NormSum (Pair Tup)
 open Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.BotSmallDict GlobalTheory.NormExact
 open scoped Pointwise
 
@@ -434,8 +432,7 @@ theorem reads_level : ∀ {D : D7} (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam
           Finset.sum_const, Finset.card_univ, hcard, nsmul_eq_mul, mul_one, inv_mul_cancel₀ hn]
       · rw [if_neg fun h => h2 h.2]
         obtain ⟨w, hw, hw1⟩ : ∃ w ∈ Y, ψ (symplO S T t (GlobalTheory.VacUnique.finRat S T w)) ≠ 1 := by
-          by_contra h
-          push_neg at h
+          by_contra! h
           exact h2 (hkI t h1.2 h1.1 h)
         have h3 := sum_section π (fun q => ⟨2 • z q, nsmul_mem (hzY q) 2⟩) hπ
           (fun w => ψ (symplO S T t (GlobalTheory.VacUnique.finRat S T (-w.1))))
@@ -509,7 +506,6 @@ open GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.FunObj.SqNum GlobalTh
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
 open GlobalTheory.NormSum (Pair Tup)
 open Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.BotSmallDict GlobalTheory.NormExact
 open scoped Pointwise
 

@@ -119,8 +119,7 @@ theorem _root_.GlobalTheory.LeastExponentCompare.conj_iff (E : Type) [Field E] [
     exact φ₀.injective (by rw [h, complexEmbedding_complexConj, RCLike.star_def])
   · rintro ⟨_, rfl⟩
     refine ⟨fun φ z => by rw [complexEmbedding_complexConj, RCLike.star_def], ?_⟩
-    by_contra hall
-    push_neg at hall
+    by_contra! hall
     exact complexConj_ne_one E (AlgEquiv.ext hall)
 
 section Comparison₂

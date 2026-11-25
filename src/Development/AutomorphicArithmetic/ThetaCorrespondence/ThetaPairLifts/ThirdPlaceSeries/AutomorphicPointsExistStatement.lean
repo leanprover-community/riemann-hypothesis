@@ -870,8 +870,7 @@ theorem automorphic_points_exist : ∀ (D : D7) (cf : CharFrame D) (jE : D.host.
         rw [hφalg, ← Sp.iotaC_coh] at e
         exact e
   refine ⟨fun x => ?_, hdim⟩
-  by_contra hno
-  push_neg at hno
+  by_contra! hno
   have hbot : (⨆ P ∈ {P | ptV P = some x}, (NG.isoTyp (mlX M X i).wt.ρ (F P)).comap (mlX M X i).real) = ⊥ :=
     eq_bot_iff.2 (iSup₂_le fun P hP => absurd hP (hno P))
   have h0 := hdim x

@@ -1,5 +1,6 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.IwLeviMul
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.HeckePairTop
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.IwFactTorus
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.IwHeckePairIwC
@@ -17,17 +18,7 @@ open ValuativeRel Matrix GlobalTheory.SmGL GlobalTheory.SplitWeil UpperTheory.V.
 
 private theorem leviSum_split {G : Type} [Group G] {I : Subgroup G} (F : LeviFact I) {x y : G}
     (hx : x ∈ F.Uf) (hy : y ∈ F.Mf) (h : x * y ∈ I) : x ∈ I ∧ y ∈ I := by
-  obtain ⟨u, hu, k, hk, l, hl, he⟩ := F.fact _ h
-  rw [Subgroup.mem_inf] at hu hk hl
-  have hyl : y * l * y⁻¹ ∈ F.Lf := F.M_L y hy l hl.1
-  have key : (x⁻¹ * u) * (k * y⁻¹) * (y * l * y⁻¹) = 1 := by
-    calc (x⁻¹ * u) * (k * y⁻¹) * (y * l * y⁻¹) = x⁻¹ * (u * k * l) * y⁻¹ := by group
-      _ = 1 := by rw [← he]; group
-  obtain ⟨h1, h2⟩ := F.uniq _ (F.Uf.mul_mem (F.Uf.inv_mem hx) hu.1) _
-    (F.Mf.mul_mem hk.1 (F.Mf.inv_mem hy)) _ hyl key
-  have hxu : x = u := inv_mul_eq_one.mp h1
-  have hyk : y = k := (mul_inv_eq_one.mp h2).symm
-  exact ⟨hxu ▸ hu.2, hyk ▸ hk.2⟩
+  apply _root_.split_mem <;> assumption
 
 theorem UpperTheory.V.AlgebraTools.leviSum :
     ∀ (G : Type) [Group G] (I : Subgroup G) (F : LeviFact I) (m : G), HeckePair I → F.Pos m → ∀ (s : Finset G), (∀ a ∈ s, ∃ j ∈ F.Mf ⊓ I, ∃ j' ∈ F.Mf ⊓ I, a = j * m * j') → (∀ j ∈ F.Mf ⊓ I, ∃! a, a ∈ s ∧ a⁻¹ * (j * m) ∈ I) → ∀ (r : G → Finset G), (∀ a ∈ s, (∀ u ∈ r a, u ∈ F.Uf ⊓ I) ∧ ∀ x ∈ F.Uf ⊓ I, ∃! u, u ∈ r a ∧ a⁻¹ * (u⁻¹ * x) * a ∈ I) → ∀ q : G ⧸ I, q ∈ MulAction.orbit I (m : G ⧸ I) ↔ ∃ p : G × G, (p.1 ∈ s ∧ p.2 ∈ r p.1 ∧ ((p.2 * p.1 : G) : G ⧸ I) = q) ∧ ∀ p' : G × G, p'.1 ∈ s → p'.2 ∈ r p'.1 → ((p'.2 * p'.1 : G) : G ⧸ I) = q → p' = p := by

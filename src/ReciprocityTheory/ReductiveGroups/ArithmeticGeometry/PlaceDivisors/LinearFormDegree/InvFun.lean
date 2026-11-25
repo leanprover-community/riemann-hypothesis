@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FormalGroupLawLinearCoeffAdditive
 public import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
 public import Mathlib.RingTheory.MvPowerSeries.Substitution
 import Mathlib.Order.CompletePartialOrder
@@ -111,19 +112,7 @@ theorem subst_sub_subst_order [Finite σ] (a b : σ → MvPowerSeries σ R)
   rw [hz, smul_zero]
 
 theorem eq_single_of_degree_eq_one {e : σ →₀ ℕ} (h : e.degree = 1) : ∃ j, e = Finsupp.single j 1 := by
-  classical
-  have hne : e ≠ 0 := by rintro rfl; simp at h
-  obtain ⟨j, hj⟩ := Finsupp.support_nonempty_iff.mpr hne
-  have hle : Finsupp.single j 1 ≤ e := by
-    rw [Finsupp.single_le_iff]; exact Nat.one_le_iff_ne_zero.mpr (Finsupp.mem_support_iff.mp hj)
-  refine ⟨j, ?_⟩
-  have hsum : e = (e - Finsupp.single j 1) + Finsupp.single j 1 := (tsub_add_cancel_of_le hle).symm
-  have hd : (e - Finsupp.single j 1).degree = 0 := by
-    have h2 := congrArg Finsupp.degree hsum
-    rw [map_add (f := _), Finsupp.degree_single, h] at h2
-    omega
-  rw [Finsupp.degree_eq_zero_iff] at hd
-  rw [hsum, hd, zero_add]
+  apply GlobalTheory.Katz.LowLaw.eq_single_of_degree_eq_one <;> assumption
 
 section Inv
 

@@ -147,8 +147,7 @@ theorem psTrunc_mem_orig {τ : Type} [Fintype τ] [DecidableEq τ] (m : ℕ) (g 
     first
     | simp [hg]
   · obtain ⟨i, hi⟩ : ∃ i, e i ≠ 0 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact he (Finsupp.ext fun j => by simp [h j])
     have key : MvPolynomial.monomial e (MvPowerSeries.coeff e g) =
         MvPolynomial.monomial (e - Finsupp.single i 1) (MvPowerSeries.coeff e g) *

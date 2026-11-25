@@ -18,9 +18,4 @@ def RegSection.Statement : Prop :=
       ContinuousOn R.r R.Yo ∧ ContinuousOn (rSec L s) R.Yo ∧
       ∃ B : ℝ, ∀ y ∈ R.Yo, |R.r y - rSec L s y| ≤ B
 
-section Inhabitants
-
-
-end Inhabitants
-
 end GroundTheory.Heights₂.Heights.AnalyticLimit

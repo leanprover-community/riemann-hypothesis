@@ -1,5 +1,6 @@
 module
 
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.HermitianCombinationZ
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.RealObj
 public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.StepPinExistsOfPlace
@@ -37,11 +38,7 @@ theorem hJ_zero (x : Fin n → ℂ) : hJ ε x 0 = 0 := by
 
 theorem hJ_sum {ι : Type*} (s : Finset ι) (x : Fin n → ℂ) (g : ι → Fin n → ℂ) :
     hJ ε x (∑ i ∈ s, g i) = ∑ i ∈ s, hJ ε x (g i) := by
-  classical
-  refine Finset.induction_on s ?_ ?_
-  · rw [Finset.sum_empty, Finset.sum_empty, hJ_zero]
-  · intro i t hi ih
-    rw [Finset.sum_insert hi, Finset.sum_insert hi, hJ_add, ih]
+  apply _root_.PI.SchurPlaces.LeviLA.hJ_sum_right <;> assumption
 
 variable (e f : Fin r → Fin n → ℂ) (z : Fin n → ℂ)
   (hdual : ∀ a b, hJ ε (f a) (e b) = if a = b then 1 else 0) (hfz : ∀ a, hJ ε (f a) z = 0)

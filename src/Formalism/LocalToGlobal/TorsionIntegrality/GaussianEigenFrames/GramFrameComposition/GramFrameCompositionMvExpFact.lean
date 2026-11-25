@@ -322,8 +322,7 @@ theorem ShapeLin_proof : ShapeLin := by
     · intro c hc
       rw [hmem] at hc ⊢
       rw [norm_pow] at hc
-      by_contra hlt
-      push_neg at hlt
+      by_contra! hlt
       have : 1 < ‖c‖ ^ 4 := one_lt_pow₀ hlt (by norm_num)
       linarith
     · rw [← jetsInNorm, tensor_four_mul, htens, gramFrameComposition_mvExp_fact (hccs _ _ hccβ), hsm]

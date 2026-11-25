@@ -15,8 +15,6 @@ open scoped Classical
 
 namespace PositivityTheory.Rg.BcB.Desc
 
-attribute [local instance] borelH
-
 def GrowthPiJ : Prop := ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] [Nontrivial (InfinitePlace E)] (n : ℕ), 1 ≤ n →
   ∀ [MeasurableSpace (GA E n)] [BorelSpace (GA E n)] [MeasurableSpace (GA E 0)] [BorelSpace (GA E 0)]
   (μ₁ : Measure (GA E n)) [μ₁.IsHaarMeasure] (μ₂ : Measure (GA E 0)) [μ₂.IsHaarMeasure],

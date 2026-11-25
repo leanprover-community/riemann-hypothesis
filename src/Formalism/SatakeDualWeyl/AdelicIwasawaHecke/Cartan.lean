@@ -138,8 +138,7 @@ variable {L : Type} [Field L] (O : Subring L) {Γ : Type} [LinearOrderedCommGrou
 
 theorem cartan_pigeon {m : ℕ} (σ : Equiv.Perm (Fin m)) (i : Fin m) :
     ∃ j, j ≤ i ∧ i ≤ σ j := by
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   have hmaps : Set.MapsTo σ (Finset.Iic i : Set (Fin m)) (Finset.Iio i : Set (Fin m)) := by
     intro j hj
     simp only [Finset.coe_Iic, Finset.coe_Iio, Set.mem_Iic, Set.mem_Iio] at hj ⊢

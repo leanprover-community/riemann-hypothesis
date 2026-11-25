@@ -783,15 +783,6 @@ theorem conjugate_row_mem_kernel : _root_.GlobalTheory.FunPr.ThetaLocalInputs �
 end GlobalTheory.KerConjRow
 end
 end
-
-section
-open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.L2.DIV
-open IsDedekindDomain NumberField Matrix GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.RowTest GlobalTheory.RowClaim GlobalTheory.TestLat
-open Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLatticesGL3 GlobalTheory.SumSize GlobalTheory.KerConjMean
-
-theorem _root_.GlobalTheory.T.conjRowAt_of_dict_depth : _root_.GlobalTheory.FunPr.ThetaLocalInputs → (∀ D, GlobalTheory.NormSum.Inp D) → DictK → DepthK → ∀ C1 : ℝ, 0 < C1 → BigC fun _ ch C b => ConjRowAt ch C b C1 := by
-  first | exact @_root_.GlobalTheory.KerConjRow.conjugate_row_mem_kernel
-end
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.ConjugateRowBoundOfDictionary =====
@@ -810,9 +801,9 @@ namespace GlobalTheory.KerConjMean
 theorem kernel_conj_mean_pairing_standard_KType : _root_.GlobalTheory.FunPr.ThetaLocalInputs → (∀ D, GlobalTheory.NormSum.Inp D) → DictK → DepthK → PairStdK := by
   intro hP hI hD hDp
   obtain ⟨C1, hC1, hmean⟩ := GlobalTheory.T.exists_const_mean_logArea_logThetaNorm_le
-  obtain ⟨F1, k1⟩ := _root_.GlobalTheory.T.kernel_conjugation_average hP hI hD hDp C1 hC1
+  obtain ⟨F1, k1⟩ := _root_.GlobalTheory.KerConjMean.conj_top_degree_in_kernel_mean hP hI hD hDp C1 hC1
   obtain ⟨F2, k2⟩ := _root_.GlobalTheory.KerConjMean.ratTopAt_big
-  obtain ⟨F3, k3⟩ := _root_.GlobalTheory.T.conjRowAt_of_dict_depth hP hI hD hDp C1 hC1
+  obtain ⟨F3, k3⟩ := _root_.GlobalTheory.KerConjRow.conjugate_row_mem_kernel hP hI hD hDp C1 hC1
   obtain ⟨F4, k4⟩ := _root_.GlobalTheory.KerConjMean.ratRowAt_big
   refine ⟨max (max F1 F2) (max F3 F4), fun CF hCF => ?_⟩
   obtain ⟨C01, l1⟩ := k1 CF (by simp only [max_le_iff] at hCF; exact hCF.1.1)

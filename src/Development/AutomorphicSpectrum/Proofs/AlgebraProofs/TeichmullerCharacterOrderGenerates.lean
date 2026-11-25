@@ -29,14 +29,8 @@ theorem ringHom_eq_frob_pow (p : ℕ) [Fact p.Prime] (F : Type) [Field F] [Finty
     have h1 := Module.card_eq_pow_finrank (K := ZMod p) (V := F)
     rw [ZMod.card, hc] at h1
     exact (Nat.pow_right_injective (Fact.out : p.Prime).two_le h1).symm
-  have key : ∀ k : ℕ, ∀ x : F, (FiniteField.frobeniusAlgHom (ZMod p) F ^ k) x = x ^ p ^ k := by
-    intro k
-    induction k with
-    | zero => intro x; simp
-    | succ k ih =>
-      intro x
-      rw [pow_succ (FiniteField.frobeniusAlgHom (ZMod p) F) k, AlgHom.mul_apply, ih,
-        FiniteField.frobeniusAlgHom_apply, ZMod.card, ← pow_mul, pow_succ' p k]
+  have key : ∀ k : ℕ, ∀ x : F, (FiniteField.frobeniusAlgHom (ZMod p) F ^ k) x = x ^ p ^ k := fun k x => by
+    rw [AlgHom.coe_pow, FiniteField.coe_frobeniusAlgHom, pow_iterate, ZMod.card]
   refine ⟨(n : ℕ), lt_of_lt_of_eq n.isLt hrank, fun a => ?_⟩
   have h2 : (FiniteField.frobeniusAlgHom (ZMod p) F ^ (n : ℕ)) a = β a := DFunLike.congr_fun hn a
   rw [key] at h2

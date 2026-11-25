@@ -567,8 +567,6 @@ open GlobalTheory GlobalTheory.Cartier GlobalTheory.Toroidal GlobalTheory.LocM G
 open scoped CategoryTheory.Obj
 open GlobalTheory.Desc
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.Desc.CommonChart
 
 theorem spc {A B C : Type} [CommRing A] [CommRing B] [CommRing C] (f : A →+* B) (g : B →+* C) :

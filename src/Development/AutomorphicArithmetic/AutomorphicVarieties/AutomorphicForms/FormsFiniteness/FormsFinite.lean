@@ -1,5 +1,6 @@
 module
 
+import Development.WeilBound.ThetaLifts.LocalTheory.ToralCohomology.SumPlSingle
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.FormsFiniteness.FormsFiniteAlt
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.CuspidalFiniteness.TypePoly
 public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.GKStructure
@@ -255,24 +256,7 @@ open scoped TensorProduct
 private theorem aeval_preserves_invariant_submodule {M : Type} [AddCommGroup M] [Module ℂ M] (T : Module.End ℂ M)
     (N : Submodule ℂ M) (hN : ∀ x ∈ N, T x ∈ N) (p : Polynomial ℂ) :
     ∀ x ∈ N, Polynomial.aeval T p x ∈ N := by
-  intro x hx
-  have hpow : ∀ n : ℕ, ∀ y ∈ N, (T ^ n) y ∈ N := by
-    intro n
-    induction n with
-    | zero =>
-      intro y hy
-      simpa using hy
-    | succ n ih =>
-      intro y hy
-      rw [pow_succ', Module.End.mul_apply]
-      exact hN _ (ih y hy)
-  induction p using Polynomial.induction_on' with
-  | add p q hp hq =>
-    rw [map_add (f := _), LinearMap.add_apply]
-    exact N.add_mem hp hq
-  | monomial n a =>
-    rw [Polynomial.aeval_monomial, Module.End.mul_apply, Module.algebraMap_end_apply]
-    exact N.smul_mem a (hpow n x hx)
+  apply _root_.PositivityTheory.ThKG.CayleyTransformDarboux.aeval_mem <;> assumption
 
 theorem UpperTheory.finiteDimensional_inf_ker_aeval_monic :
     ∀ (M : Type) [AddCommGroup M] [Module ℂ M] (T : Module.End ℂ M) (N : Submodule ℂ M), (∀ x ∈ N, T x ∈ N) → (∀ c : ℂ, FiniteDimensional ℂ ↥(N ⊓ T.eigenspace c)) → ∀ p : Polynomial ℂ, p.Monic → FiniteDimensional ℂ ↥(N ⊓ LinearMap.ker (Polynomial.aeval T p)) := by

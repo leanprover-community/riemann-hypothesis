@@ -35,6 +35,7 @@ import Development.WeilBound.CoreStatements.HodgeTatePoints.HtatLieBc
 import Mathlib.Tactic.Linter.Style
 import Development.AutomorphicSpectrum.Definitions.MetricPeriods.PairRelationOfScaledRatio
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.CompRightEqZero
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsTriangularRegularFrameChange
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.WeilBound.CoreStatements.PluriharmonicCharts.XCFmExistsFlagsChgbasis, Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsGenericTriangularFactorization, Development.WeilBound.CoreStatements.PluriharmonicCharts.XCFmExistsFlagsTie, Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoordinateTieTransfer, Development.WeilBound.CoreStatements.PluriharmonicCharts.ExistsFlagsLieCompactDominated, Development.AutomorphicSpectrum.Proofs.MetricProofs.HodgeCptDescentGenericPoint, Development.WeilBound.CoreStatements.PluriharmonicCharts.XCFmExistsFlagsDualflag, Development.AutomorphicSpectrum.Proofs.MetricProofs.HodgeCptLatticeBaseChange, Development.WeilBound.CoreStatements.PluriharmonicCharts.XCFmExistsFlagsField, Development.WeilBound.CoreStatements.PluriharmonicCharts.XCFmExistsFlagsCharts, Development.WeilBound.CoreStatements.PluriharmonicCharts.XCFmExistsFlagsDegree, Development.AutomorphicSpectrum.Proofs.MetricProofs.IsGenFamAlgebraicIndependentFinrank, Development.WeilBound.CoreStatements.PluriharmonicCharts.XCFmExistsFlagsRevgen, Development.AutomorphicSpectrum.Proofs.MetricProofs.IsGenFamRevInvSubfamily, Development.WeilBound.CoreStatements.PluriharmonicCharts.XCFmExistsFlagsPullmap, Development.AutomorphicSpectrum.Proofs.MetricProofs.LatticePullSplitInjection, Development.AutomorphicSpectrum.Proofs.MetricProofs.HodgeCptFrameDivisorFormula
@@ -1125,20 +1126,7 @@ theorem flagStep_colFrame {G M : Type} [Field G] [AddCommGroup M] [Module G M] {
 theorem linearIndependent_colFrame {G M : Type} [Field G] [AddCommGroup M] [Module G M] {r : ℕ} {e : Fin r → M}
     (he : LinearIndependent G e) (B : Matrix (Fin r) (Fin r) G) (hu : IsUnit B.det) :
     LinearIndependent G (colFrame e B) := by
-  rw [Fintype.linearIndependent_iff] at he ⊢
-  intro g hg
-  have h0 : B.mulVec g = 0 := by
-    funext l
-    refine he (fun l => B.mulVec g l) ?_ l
-    rw [← hg]
-    simp only [colFrame, Matrix.mulVec, dotProduct, Finset.sum_smul, Finset.smul_sum, smul_smul]
-    rw [Finset.sum_comm]
-    refine Finset.sum_congr rfl fun k _ => Finset.sum_congr rfl fun l _ => ?_
-    rw [mul_comm]
-  have := Matrix.eq_zero_of_mulVec_eq_zero (hu.ne_zero) h0
-  intro k
-  rw [this]
-  rfl
+  apply _root_.GlobalTheory.CompanionTheory.Ar.PB.FrameTrans.linearIndependent_colFrame <;> assumption
 
 theorem exists_mat {Ω M : Type} [Field Ω] [AddCommGroup M] [Module Ω M] (W : Submodule Ω M) {r : ℕ} (C e : Fin r → M)
     (hC : LinearIndependent Ω C) (he : LinearIndependent Ω e) (hCm : ∀ k, C k ∈ W) (hem : ∀ k, e k ∈ W)

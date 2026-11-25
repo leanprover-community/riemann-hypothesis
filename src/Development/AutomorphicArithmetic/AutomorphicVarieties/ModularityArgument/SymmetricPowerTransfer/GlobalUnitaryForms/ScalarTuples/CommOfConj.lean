@@ -155,8 +155,7 @@ private theorem exists_nat_mul_mem_principal_of_rightIdeal_index_ne_zero {B : Ty
   have hm1 : m ^ k ≤ D := Nat.findGreatest_spec (P := fun m => m ^ k ≤ D) (Nat.zero_le D)
     (by rw [zero_pow hk.ne']; exact Nat.zero_le _)
   have hm2 : D < (m + 1) ^ k := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     have hle : m + 1 ≤ D := le_trans (Nat.le_self_pow hk.ne' _) hcon
     exact Nat.findGreatest_is_greatest (P := fun m => m ^ k ≤ D) (Nat.lt_succ_self m) hle hcon
   haveI : I.FiniteIndex := ⟨hD⟩
@@ -240,8 +239,7 @@ theorem cls_abs {A M Γ G : Type} [Ring A] [CharZero A] [Ring M] [Group Γ] [Gro
     calc z = σ γ⁻¹ * (σ γ * z) := by rw [← mul_assoc, (hunit γ).2, one_mul]
       _ = z' := by rw [h, ← mul_assoc, (hunit γ).2, one_mul]
   haveI : NoZeroSMulDivisors ℤ (R.comap j) := ⟨fun {c x} h => by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     obtain ⟨hc0, hx0⟩ := hc
     have hx0' : (x : A) ≠ 0 := fun h' => hx0 (Subtype.ext h')
     have h1 : (c : A) * (x : A) = 0 := by

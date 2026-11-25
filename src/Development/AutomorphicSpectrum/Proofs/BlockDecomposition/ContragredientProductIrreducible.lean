@@ -142,8 +142,7 @@ theorem nonempty_equiv_piTensor_contra [∀ a, T2Space (Γ a)]
     GlobalTheory.ContraRefl.contra_isIrreducible (pi_compactOpen_basis hG) (isAdmissible_piTensor hG hρ) hI
   have hB0 : pairForm ρ ≠ 0 := by
     have hne : ∀ a, ∃ v : X a, v ≠ 0 := fun a => by
-      by_contra h
-      push_neg at h
+      by_contra! h
       apply (bot_ne_top : (⊥ : Subrepresentation (ρ a)) ≠ ⊤)
       apply Subrepresentation.ext
       ext x

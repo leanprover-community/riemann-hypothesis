@@ -10,8 +10,6 @@ open scoped ContDiff
 
 namespace Formalism.FourierDecayAlt.P.CutMP
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 noncomputable section
 
 theorem class_lower_decay_holds : JDCCLower := by

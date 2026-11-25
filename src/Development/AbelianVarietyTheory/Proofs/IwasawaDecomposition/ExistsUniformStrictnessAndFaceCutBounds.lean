@@ -322,8 +322,7 @@ theorem faceCut_data (hP : IsPolyFanOn bar φ X) [Module.Finite ℤ X] {m m' : �
     have hsum : (0 : ℝ) < ∑ i, c i * h (γ i) := by
       rw [← apply_eq_sum_of_inRCone hβc h]; exact_mod_cast hpos
     obtain ⟨i, -, hi⟩ : ∃ i ∈ Finset.univ, 0 < c i * h (γ i) := by
-      by_contra hcon
-      push_neg at hcon
+      by_contra! hcon
       exact absurd hsum (not_lt.2 (Finset.sum_nonpos hcon))
     have hci : 0 < c i := by
       rcases (hc i).lt_or_eq with hz | hz

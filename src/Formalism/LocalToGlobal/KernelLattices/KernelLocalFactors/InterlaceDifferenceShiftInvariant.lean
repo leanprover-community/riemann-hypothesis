@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.SplitLastBlockActX
 public import Formalism.LocalToGlobal.KernelLattices.InterlaceAll
 public import Formalism.BranchSandwichDivisors.BranchIsometryProofs.BranchMap
 public import Formalism.BranchSandwichDivisors.BranchIsometryProofs.BranchScale
@@ -113,16 +114,8 @@ theorem fockB_projVV_basis [CharZero K] (p : Pol K ι n) (k : VVIdx sg) :
 
 theorem fockB_projVV [CharZero K] (p : Pol K ι n) (v : Pol K ι n) (hv : v ∈ VV K sg) :
     fockB (projVV sg p : Pol K ι n) v = fockB p v := by
-  classical
-  have hv' : v = ∑ k, ((bVV K sg).repr ⟨v, hv⟩ k) • bVVfun K sg k := by
-    have h1 := congrArg Subtype.val ((bVV K sg).sum_repr ⟨v, hv⟩)
-    rw [Submodule.coe_sum] at h1
-    simp only [Submodule.coe_smul, bVV_coe] at h1
-    exact h1.symm
-  rw [hv']
-
-  simp only [← fockBL_apply, map_sum, map_smul]
-  simp only [fockBL_apply, fockB_projVV_basis]
+  intros
+  apply _root_.GlobalTheory.BranchFormula.fockB_projVV <;> assumption
 
 theorem projVV_of_mem [CharZero K] (v : Pol K ι n) (hv : v ∈ VV K sg) : (projVV sg v : Pol K ι n) = v := by
   set d : VV K sg := projVV sg v - ⟨v, hv⟩ with hd
@@ -422,43 +415,8 @@ theorem lb_gram_det_ne : (gramB (K := K) lam).det ≠ 0 := by
 
 open Classical in
 theorem lb_proj_spec (p : Pol K ι n) : ∀ v ∈ VV K lam, fockB ((projVV lam p : VV K lam) : Pol K ι n) v = fockB p v := by
-  have hG : IsUnit (gramB (K := K) lam).det := isUnit_iff_ne_zero.mpr (lb_gram_det_ne lam)
-  have hsym : (gramB (K := K) lam)ᵀ = gramB (K := K) lam := by
-    ext i j; simp [gramB, _root_.Formalism.L2.Ker.fockB_comm]
-  have hinv : ∀ j k, ∑ i, (gramB (K := K) lam)⁻¹ i j * fockB (bVVfun K lam i) (bVVfun K lam k) = if j = k then 1 else 0 := by
-    intro j k
-    have e := congrFun (congrFun (Matrix.nonsing_inv_mul _ hG) j) k
-    rw [Matrix.mul_apply, Matrix.one_apply] at e
-    rw [← e]
-    refine Finset.sum_congr rfl fun i _ => ?_
-    have h1 : (gramB (K := K) lam)⁻¹ i j = (gramB (K := K) lam)⁻¹ j i := by
-      have := congrFun (congrFun (Matrix.transpose_nonsing_inv (gramB (K := K) lam)) j) i
-      rw [Matrix.transpose_apply, hsym] at this
-      exact this
-    rw [h1]; rfl
-  have hp : ((projVV lam p : VV K lam) : Pol K ι n) =
-      ∑ i, ∑ j, ((gramB (K := K) lam)⁻¹ i j * fockB (bVVfun K lam j) p) • bVVfun K lam i := by
-    rw [projVV]
-    simp only [LinearMap.sum_apply, LinearMap.smul_apply, LinearMap.smulRight_apply,
-      fockBL_apply, Submodule.coe_sum, Submodule.coe_smul, bVV_coe, smul_smul]
-  apply lb_orth_of_basis lam
-  |> fun H => by
-    intro v hv
-    have := H (((projVV lam p : VV K lam) : Pol K ι n) - p) ?_ v hv
-    · rwa [lb_fockB_sub_left, sub_eq_zero] at this
-    · intro k
-      rw [lb_fockB_sub_left, hp, sub_eq_zero]
-
-      rw [_root_.Formalism.L2.Ker.fockB_comm, ← fockBL_apply, map_sum]
-
-      simp only [map_sum, map_smul, fockBL_apply, smul_eq_mul]
-      have e : ∀ i j, (gramB (K := K) lam)⁻¹ i j * fockB (bVVfun K lam j) p * fockB (bVVfun K lam k) (bVVfun K lam i) =
-          fockB (bVVfun K lam j) p * ((gramB (K := K) lam)⁻¹ i j * fockB (bVVfun K lam i) (bVVfun K lam k)) := by
-        intro i j; rw [_root_.Formalism.L2.Ker.fockB_comm (bVVfun K lam k)]; ring
-      simp only [e]
-      rw [Finset.sum_comm]
-      simp only [← Finset.mul_sum, hinv, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
-      exact _root_.Formalism.L2.Ker.fockB_comm _ _
+  intros
+  apply _root_.GlobalTheory.BranchFormula.fockB_projVV <;> assumption
 
 theorem lb_proj_unique (p y : Pol K ι n) (hy : y ∈ VV K lam) (h : ∀ v ∈ VV K lam, fockB y v = fockB p v) :
     ((projVV lam p : VV K lam) : Pol K ι n) = y := by
@@ -2081,28 +2039,7 @@ theorem hwB_minor_raise {r n s : ℕ} (a a' : Fin r) (hne : a ≠ a') (I : Fin s
 
 theorem hwB_rE_sum (r n : ℕ) (a a' : Fin r) (f : MvPolynomial (Fin r × Fin n) K) :
     rE K r n a a' f = ∑ s : Fin n, X (a, s) * pderiv (a', s) f := by
-  induction f using MvPolynomial.induction_on with
-  | C c => simp
-  | add p q hp hq => simp only [map_add (f := _), hp, hq, mul_add, Finset.sum_add_distrib]
-  | mul_X p i hp =>
-    simp only [Derivation.leibniz, smul_eq_mul, hp, hwB_rE_X, pderiv_X, mul_add, Finset.sum_add_distrib]
-    congr 1
-    · by_cases hi : i.1 = a'
-      · rw [if_pos hi, Finset.sum_eq_single i.2]
-        · have : ((a', i.2) : Fin r × Fin n) = i := Prod.ext hi.symm rfl
-          rw [this, Pi.single_eq_same]
-          ring
-        · intro s _ hs
-          rw [Pi.single_eq_of_ne (fun h => hs (by rw [h])), mul_zero, mul_zero]
-        · intro h
-          exact absurd (Finset.mem_univ _) h
-      · rw [if_neg hi, mul_zero]
-        symm
-        refine Finset.sum_eq_zero fun s _ => ?_
-        rw [Pi.single_eq_of_ne (fun h => hi (by rw [h])), mul_zero, mul_zero]
-    · rw [Finset.mul_sum]
-      refine Finset.sum_congr rfl fun s _ => ?_
-      ring
+  apply +allowSynthFailures _root_.Formalism.L2.Ker.hwA_rE_sum <;> assumption
 
 theorem hwB_coeff_X_pderiv {σ : Type} (i : σ) (f : MvPolynomial σ K) (m : σ →₀ ℕ) :
     AddMonoidAlgebra.coeff (X i * pderiv i f) m = (m i : K) * AddMonoidAlgebra.coeff f m := by

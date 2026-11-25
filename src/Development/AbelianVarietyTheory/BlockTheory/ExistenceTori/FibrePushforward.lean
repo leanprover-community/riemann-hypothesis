@@ -12,8 +12,6 @@ namespace GlobalTheory.IndefiniteRowSideFullHecke.FibrePushforwardExistenceTori
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H}
 
 def IsSplitOff (l : Level H) (𝔓 : Ideal (𝓞 E)) (p : ℕ) : Prop :=

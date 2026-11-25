@@ -1239,8 +1239,7 @@ theorem secondJetIntegralGeneral_holds : TwoG := by
   have hl1 : 1 ≤ ‖PowerSeries.coeff 1 l‖ := by
     have h := congrArg norm hle
     rw [norm_mul, norm_one] at h
-    by_contra hlt
-    push_neg at hlt
+    by_contra! hlt
     nlinarith [norm_nonneg (PowerSeries.coeff 1 ex), norm_nonneg (PowerSeries.coeff 1 l)]
   rw [hval, norm_mul, norm_pow] at hint
   unfold IsIntP

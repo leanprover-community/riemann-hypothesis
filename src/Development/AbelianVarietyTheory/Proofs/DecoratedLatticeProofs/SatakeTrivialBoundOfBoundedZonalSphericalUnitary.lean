@@ -167,16 +167,14 @@ theorem trivialBound_of_ne_zero {q n : ℕ} (hq : 1 ≤ q) (β : Fin (n / 2) →
   have hp : 0 < ‖(β i : ℂ)‖ := norm_pos_iff.2 (β i).ne_zero
   have hb0 : (β i : ℂ) ≠ 0 := (β i).ne_zero
   constructor
-  · by_contra hlt
-    push_neg at hlt
+  · by_contra! hlt
     have hX : ‖((q : ℂ) ^ (n - 1) * (β i : ℂ))⁻¹‖ < ((q : ℝ) ^ (2 * (n - 1)))⁻¹ := by
       rw [norm_inv, norm_mul, hcC, hcc]
       exact inv_strictAnti₀ (by positivity) (mul_lt_mul_of_pos_left hlt hc0)
     apply (h i _ hX).1
     field_simp
     ring
-  · by_contra hlt
-    push_neg at hlt
+  · by_contra! hlt
     have hX : ‖(β i : ℂ) / (q : ℂ) ^ (n - 1)‖ < ((q : ℝ) ^ (2 * (n - 1)))⁻¹ := by
       rw [norm_div, hcC, hcc, div_lt_iff₀ hc0, mul_inv, mul_assoc, inv_mul_cancel₀ hc0.ne', mul_one]
       exact (lt_inv_comm₀ hp hc0).2 hlt

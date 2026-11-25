@@ -1,5 +1,6 @@
 module
 
+import Formalism.DropLevelBounds.ConstantCoeffVanishing.UbintConstantCoeffEqZero
 public import Formalism.LocalToGlobal.CharacterGerms.RowTieValL
 public import Formalism.LocalToGlobal.CharacterGerms.GeneralGermZero
 public import Formalism.LocalToGlobal.CharacterGerms.UncurryLogConstantCoeff
@@ -351,23 +352,7 @@ variable {C : Type} [Field C] [CharZero C] {V : VF C} {O : Type} [CommRing O] [S
 
 theorem exp_sum {σ ι : Type} (s : Finset ι) {f : ι → MvPowerSeries σ C}
     (h : ∀ i ∈ s, MvPowerSeries.constantCoeff (f i) = 0) : mvExp (∑ i ∈ s, f i) = ∏ i ∈ s, mvExp (f i) := by
-  classical
-  revert h
-  refine Finset.induction_on s ?_ ?_
-  · intro _
-    simp only [Finset.sum_empty, Finset.prod_empty]
-    ext m
-    rw [MvPowerSeries.coeff_one]
-    change ∑ k ∈ Finset.range (m.degree + 1),
-      MvPowerSeries.coeff m ((0 : MvPowerSeries σ C) ^ k) / (k.factorial : C) = _
-    rw [Finset.sum_range_succ']
-    simp [MvPowerSeries.coeff_one]
-  · intro a t ha ih h
-    have ht : ∀ i ∈ t, MvPowerSeries.constantCoeff (f i) = 0 := fun i hi => h i (Finset.mem_insert_of_mem hi)
-    rw [Finset.sum_insert ha, Finset.prod_insert ha, VP.exp_add (h a (Finset.mem_insert_self a t)), ih ht]
-
-    rw [map_sum]
-    exact Finset.sum_eq_zero ht
+  apply _root_.Formalism.UnitaryBoundIntegral.ubint_mvExp_sum <;> assumption
 
 variable (Y : FBChart C V O dd) (p : ∀ o, SelfData Y d (I0 o))
 

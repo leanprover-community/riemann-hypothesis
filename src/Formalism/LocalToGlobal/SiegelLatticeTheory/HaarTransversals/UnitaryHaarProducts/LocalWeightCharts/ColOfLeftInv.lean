@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.CuspSpanNormBounds.FrobeniusCoefficientMemLp.FramesTor
 public import Formalism.SharpRestriction.CuspSpanNormBounds.RelevantZeroGramTerms
 public import Formalism.SharedLemmas.HpkSq
 
@@ -132,13 +133,7 @@ theorem isUnit_of_uh {g : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ
 
 theorem uh_mul {g h : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ}
     (hg : g ∈ UH (Hpk k r)) (hh : h ∈ UH (Hpk k r)) : g * h ∈ UH (Hpk k r) := by
-  have hg' : gᴴ * Hpk k r * g = Hpk k r := hg
-  have hh' : hᴴ * Hpk k r * h = Hpk k r := hh
-  show (g * h)ᴴ * Hpk k r * (g * h) = Hpk k r
-  rw [conjTranspose_mul]
-  calc hᴴ * gᴴ * Hpk k r * (g * h) = hᴴ * (gᴴ * Hpk k r * g) * h := by
-        simp only [Matrix.mul_assoc]
-    _ = Hpk k r := by rw [hg', hh']
+  apply _root_.Formalism.MainNotions.S.Pv.Frames.UH_mul <;> assumption
 
 theorem uh_inv {g : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ}
     (hg : g ∈ UH (Hpk k r)) : g⁻¹ ∈ UH (Hpk k r) := by

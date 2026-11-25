@@ -10,6 +10,7 @@ import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Topology.Algebra.Module.Compact
 import ReciprocityTheory.GeneralLinearIntegers.AlgebraMapIntMemOint
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalMassType.UnitaryLocalMassIdentity
 
 @[expose] public section
 
@@ -66,48 +67,7 @@ theorem isCompact_oEv : IsCompact (OEv (E := E) v) := by
   exact isCompact_span_range v _
 
 theorem isOpen_oEv : IsOpen (OEv (E := E) v) := by
-  classical
-  have : FiniteDimensional F E := Module.Finite.of_restrictScalars_finite ℚ F E
-  set b := Module.finBasis F E with hb
-  obtain ⟨y, hy0, hy⟩ := exists_integral_multiples ℤ ℚ (Finset.univ.image b)
-  have hyb : ∀ k, IsIntegral ℤ (y • b k) := fun k =>
-    hy _ (Finset.mem_image_of_mem _ (Finset.mem_univ k))
-  set c : Fv F v := algebraMap F (Fv F v) (y : F) with hcdef
-  have hc : c ≠ 0 := by
-    rw [hcdef, ne_eq, map_eq_zero_iff _ (algebraMap F (Fv F v)).injective]
-    exact_mod_cast hy0
-  set W : Set (Fv F v ⊗[F] E) := ⋂ k, (fun z => PI.VolStabS.PositiveNearLattice.crd b (Fv F v) z k * c⁻¹) ⁻¹'
-    (v.adicCompletionIntegers F : Set (Fv F v)) with hWdef
-  have hWo : IsOpen W := isOpen_iInter_of_finite fun k =>
-    (ReciprocityTheory.GeneralLinearIntegers.GeneralLinearIntegersOpenCompact.isOpen_integers v).preimage
-      ((PI.VolStabS.PositiveNearLattice.continuous_crd b (Fv F v) k).mul continuous_const)
-  have hW0 : (0 : Fv F v ⊗[F] E) ∈ W := by
-    simp only [hWdef, Set.mem_iInter, Set.mem_preimage]
-    intro k
-    simp [PI.VolStabS.PositiveNearLattice.crd]
-  have hWsub : W ⊆ OEv (E := E) v := by
-    intro z hz
-    simp only [hWdef, Set.mem_iInter, Set.mem_preimage] at hz
-    rw [PI.VolStabS.PositiveNearLattice.eq_sum_crd b (Fv F v) z]
-    unfold OEv
-    refine Submodule.sum_mem _ fun k _ => ?_
-    have e1 : PI.VolStabS.PositiveNearLattice.crd b (Fv F v) z k • ((1 : Fv F v) ⊗ₜ[F] b k) =
-        (PI.VolStabS.PositiveNearLattice.crd b (Fv F v) z k * c⁻¹) • inclR (F := F) (Fv F v) (y • b k) := by
-      have e2 : inclR (F := F) (Fv F v) (y • b k) = c • ((1 : Fv F v) ⊗ₜ[F] b k) := by
-        show (1 : Fv F v) ⊗ₜ[F] (y • b k) = c • ((1 : Fv F v) ⊗ₜ[F] b k)
-        rw [TensorProduct.smul_tmul', smul_eq_mul, mul_one, hcdef, Algebra.algebraMap_eq_smul_one,
-          TensorProduct.smul_tmul, Int.cast_smul_eq_zsmul]
-      rw [e2, smul_smul, mul_assoc, inv_mul_cancel₀ hc, mul_one]
-    rw [e1]
-    have hgen : inclR (F := F) (Fv F v) (y • b k) ∈ Submodule.span (v.adicCompletionIntegers F)
-        ((fun x : 𝓞 E => inclR (F := F) (Fv F v) (x : E)) '' Set.univ) :=
-      Submodule.subset_span ⟨(⟨y • b k, hyb k⟩ : 𝓞 E), Set.mem_univ _, rfl⟩
-    exact Submodule.smul_mem _ (⟨_, hz k⟩ : v.adicCompletionIntegers F) hgen
-  have hP : ((Submodule.span (v.adicCompletionIntegers F)
-      ((fun x : 𝓞 E => inclR (F := F) (Fv F v) (x : E)) '' Set.univ)).toAddSubgroup :
-        Set (Fv F v ⊗[F] E)) ∈ 𝓝 (0 : Fv F v ⊗[F] E) :=
-    Filter.mem_of_superset (hWo.mem_nhds hW0) hWsub
-  exact AddSubgroup.isOpen_of_mem_nhds _ hP
+  apply _root_.PI.LocMassTypU.isOpen_oev <;> assumption
 
 theorem hermOC_holds (σ : E →ₐ[F] E) (a : ℕ) : HermOC σ v a := by
   have := PI.VolStabSW.locallyCompact_Fv F v

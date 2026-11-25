@@ -78,7 +78,6 @@ open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.DivisionVa
 open Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.Cx
 open scoped TensorProduct InnerProductSpace
 open GlobalTheory.LiftRows
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.IndefiniteRowSideFullHecke.TwistedLevelValues GlobalTheory.AdelicScalar
 open Classical
 
@@ -284,8 +283,7 @@ theorem exists_edge {F : Type} [Field F] [NumberField F] (v : HeightOneSpectrum 
     rw [hvt, WithZero.exp_le_exp]
     omega
   obtain ⟨s, hs1, hs⟩ : ∃ s : v.adicCompletion F, Valued.v s ≤ 1 ∧ χ (t₀ * s) ≠ 1 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hnot ((hn t₀).1 h)
   refine ⟨t₀ * s, hs, fun m hm => ?_⟩
   have hm' := _root_.GlobalTheory.Proof.IntegralPowerExpansion.le_exp_neg_one_of_lt_one hm
@@ -367,7 +365,6 @@ open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.DivisionVa
 open Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.Cx
 open scoped TensorProduct InnerProductSpace
 open GlobalTheory.LiftRows
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.IndefiniteRowSideFullHecke.TwistedLevelValues GlobalTheory.AdelicScalar
 open Classical
 
@@ -386,7 +383,6 @@ open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.DivisionVa
 open Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.Cx
 open scoped TensorProduct InnerProductSpace
 open GlobalTheory.LiftRows
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.IndefiniteRowSideFullHecke.TwistedLevelValues GlobalTheory.AdelicScalar
 open Classical
 
@@ -405,7 +401,6 @@ open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.DivisionVa
 open Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.Cx
 open scoped TensorProduct InnerProductSpace
 open GlobalTheory.LiftRows
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.IndefiniteRowSideFullHecke.TwistedLevelValues GlobalTheory.AdelicScalar
 open Classical
 
@@ -508,8 +503,7 @@ theorem GlobalTheory.HalfDuality.exists_dual_half : ∀ {D : D7} {G : Type} [Gro
   have hee : e * e = e := GlobalTheory.PlaceDatum.idemSum_mul_self he
   obtain ⟨⟨es, hes, -⟩, -⟩ := he
   obtain ⟨a, b, hab⟩ : ∃ a b, redM PP (frMapAdj (Vc D i) (Wc D i) (R.βV i) (R.βW i) x) a b ≠ 0 := by
-    by_contra hn
-    push_neg at hn
+    by_contra! hn
     exact hred (Matrix.ext hn)
   have hu : resS D.host.F PP ⟨_, hint a b⟩ ≠ 0 := by
     rw [← GlobalTheory.HalfDuality.redM_apply_of_mem]

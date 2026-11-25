@@ -17,8 +17,6 @@ open scoped Classical
 
 namespace PositivityTheory.Rg.BcB.F
 
-attribute [local instance] borelG borelF borelH
-
 namespace Growth
 
 theorem pow_words {A Γ J : Type} [Ring A] [Algebra ℂ A] [Fintype J] (g : Γ → A) (c : J → ℂ)

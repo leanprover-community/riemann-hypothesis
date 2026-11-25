@@ -102,8 +102,7 @@ theorem irred_of_charpoly_eq [IsAlgClosed k] (ρ ρ' : Γ →* GL (Fin a) k)
     (W : Submodule k (Fin a → k)) (hW : ∀ g, ∀ x ∈ W, (ρ g : Matrix (Fin a) (Fin a) k) *ᵥ x ∈ W) :
     W = ⊥ ∨ W = ⊤ := by
   classical
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   obtain ⟨hb, ht⟩ := hne
   have hcp : ∀ α, (liftRep ρ α).charpoly = (liftRep ρ' α).charpoly :=
     GlobalTheory.charpoly_lift_eq_of_charpoly_eq a (matHom ρ) (matHom ρ') hc

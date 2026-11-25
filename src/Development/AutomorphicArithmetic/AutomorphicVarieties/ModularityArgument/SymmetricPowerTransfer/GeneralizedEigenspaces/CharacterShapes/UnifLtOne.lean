@@ -471,8 +471,7 @@ private theorem fs_eq (A : SD Δ) (hA : A.Ok) (t : Dat.Par F) (g : DA Δ) (hg : 
       exact (hoff v h).trans (indicator_eq_one_of_true h2)
   · rw [one_f hy]
     have hex : ∃ v, A.dat.fSv t v (y.1 v) = 0 := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       refine hy (hbox.2 ⟨fun v h => ?_, fun v h => ?_⟩)
       · by_contra c
         exact hc v ((hloc v h).trans (one_f c))

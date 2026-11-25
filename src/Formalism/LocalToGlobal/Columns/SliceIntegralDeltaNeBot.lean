@@ -752,8 +752,7 @@ theorem szVec_pt (b c : SzIdx G) : szVec G b c.pt = if b = c then 1 else 0 := by
     simp
   · rw [if_neg hbc]
     obtain ⟨i, hi⟩ : ∃ i, b i ≠ c i := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact hbc (funext h)
     apply Finset.prod_eq_zero (Finset.mem_univ i)
     split_ifs with h

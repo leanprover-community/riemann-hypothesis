@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.ElementaryFactorProperties
 public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.IsPeriodOn
 public import Mathlib.FieldTheory.RatFunc.AsPolynomial
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.BasePartFlagPt
@@ -534,17 +535,7 @@ theorem orbit_fstPt {k₀ : K} {z z' : (Σ o : Option K, ι (o.getD k₀)) → �
 
 theorem orbit_sndPt {k₀ : K} {z z' : (Σ o : Option K, ι (o.getD k₀)) → ℂ} (h : SameOrbit z z') :
     SameOrbit (sndPt k₀ z) (sndPt k₀ z') := by
-  obtain ⟨c, hc, rfl⟩ := h
-  refine ⟨fun k => if k = k₀ then c none else c (some k), fun k => ?_, ?_⟩
-  · dsimp only
-    split_ifs
-    exacts [hc _, hc _]
-  · funext p
-    obtain ⟨k, m⟩ := p
-    by_cases hk : k = k₀
-    · subst hk
-      simp only [sndPt, Function.comp, v₁_self, if_true]
-    · simp only [sndPt, Function.comp, v₁_ne (p := ⟨k, m⟩) hk, if_neg hk]
+  apply _root_.GlobalTheory.CompanionTheory.Ar.PB.WSq.FamCh.snd_orbit <;> assumption
 
 end Orbits
 
@@ -625,18 +616,7 @@ theorem vector_of_chart : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, F
       exact hrs hs.symm
     rw [Matrix.add_apply, e1, e2, add_zero]
   have hEdet : (1 + Matrix.single cb ca t : Matrix (Fin N) (Fin N) ℂ).det = 1 := by
-    refine (Matrix.det_of_lowerTriangular _ fun r s hrs => ?_).trans (Finset.prod_eq_one fun r _ => ?_)
-    · have e1 : (1 : Matrix (Fin N) (Fin N) ℂ) r s = 0 := Matrix.one_apply_ne (ne_of_lt (show r < s from hrs))
-      have e2 : (Matrix.single cb ca t : Matrix (Fin N) (Fin N) ℂ) r s = 0 := by
-        rw [Matrix.single_apply, if_neg]
-        rintro ⟨rfl, rfl⟩
-        exact lt_asymm hlt hrs
-      rw [Matrix.add_apply, e1, e2, add_zero]
-    · have e2 : (Matrix.single cb ca t : Matrix (Fin N) (Fin N) ℂ) r r = 0 := by
-        rw [Matrix.single_apply, if_neg]
-        rintro ⟨rfl, h'⟩
-        exact hlt.ne h'
-      rw [Matrix.add_apply, e2, add_zero, Matrix.one_apply_eq]
+    apply _root_.GlobalTheory.CompanionTheory.Ar.PB.WSq.Fib.Shear.det_shear <;> assumption
   have hbd₁ : IsBlockDiag j (h τ * (1 + Matrix.single cb ca t)) :=
     ((MinorCalc.minors_main ℂ N j a M.j_le).2.2.2 _ _ (hh τ).1 hE).1
   have hdet₁ : (h τ * (1 + Matrix.single cb ca t)).det ≠ 0 := by
@@ -694,13 +674,7 @@ theorem fst_orbit {k₀ : K} {z z' : (Σ o : Option K, ι (o.getD k₀)) → ℂ
 
 theorem snd_orbit {k₀ : K} {z z' : (Σ o : Option K, ι (o.getD k₀)) → ℂ} (h : SameOrbit z z') :
     SameOrbit (sndPt k₀ z) (sndPt k₀ z') := by
-  obtain ⟨c, hc, rfl⟩ := h
-  refine ⟨fun k => if k = k₀ then c none else c (some k), fun k => by dsimp only; split_ifs <;> exact hc _, ?_⟩
-  funext ⟨k, m⟩
-  by_cases e : k = k₀
-  · subst e
-    simp [sndPt, v₁_self]
-  · simp [sndPt, v₁_ne (p := ⟨k, m⟩) e, e]
+  apply _root_.GlobalTheory.CompanionTheory.Ar.PB.WSq.FamCh.snd_orbit <;> assumption
 
 theorem same_block {N j : ℕ} {a b ca cb : Fin N} (hj : j ≤ N) (hb : (b : ℕ) = a + 1)
     (hab : (b : ℕ) < j ∨ j ≤ (a : ℕ)) (hca : (ca : ℕ) = lastCol N j a) (hcb : (cb : ℕ) = ca + 1) :
@@ -712,13 +686,7 @@ theorem same_block {N j : ℕ} {a b ca cb : Fin N} (hj : j ≤ N) (hb : (b : ℕ
 
 theorem blockDiag_transv {N j : ℕ} {ca cb : Fin N} (h : (cb : ℕ) < N - j ↔ (ca : ℕ) < N - j) (t : ℂ) :
     IsBlockDiag j (1 + Matrix.single cb ca t) := by
-  intro r s hrs
-  have hne : r ≠ s := fun e => hrs (by rw [e])
-  rw [Matrix.add_apply, Matrix.one_apply_ne hne, zero_add, Matrix.single_apply]
-  split_ifs with e
-  · obtain ⟨rfl, rfl⟩ := e
-    exact absurd h hrs
-  · rfl
+  apply _root_.GlobalTheory.CompanionTheory.Ar.PB.WSq.FamCh.blockDiag_transvection <;> assumption
 
 theorem lowerUni_transv {N : ℕ} {ca cb : Fin N} (h : ca < cb) (t : ℂ) :
     IsLowerUni (1 + Matrix.single cb ca t) := by
@@ -878,29 +846,12 @@ namespace GlobalTheory.CompanionTheory.Ar.PB.WSq.FC
 theorem sameOrbit_fstPt {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] (k₀ : K)
     {z z' : (Σ o : Option K, ι (o.getD k₀)) → ℂ} (h : SameOrbit z z') :
     SameOrbit (fstPt k₀ z) (fstPt k₀ z') := by
-  obtain ⟨c, hc, e⟩ := h
-  refine ⟨fun k => c (some k), fun k => hc _, ?_⟩
-  funext p
-  show z (v₀ k₀ p) = c (some p.1) * z' (v₀ k₀ p)
-  rw [e]
-  rfl
+  apply _root_.GlobalTheory.CompanionTheory.Ar.PB.WSq.FC.Cell.orbit_fstPt <;> assumption
 
 theorem sameOrbit_sndPt {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] (k₀ : K)
     {z z' : (Σ o : Option K, ι (o.getD k₀)) → ℂ} (h : SameOrbit z z') :
     SameOrbit (sndPt k₀ z) (sndPt k₀ z') := by
-  obtain ⟨c, hc, e⟩ := h
-  refine ⟨fun k => if k = k₀ then c none else c (some k), fun k => ?_, ?_⟩
-  · by_cases hk : k = k₀
-    · simpa [hk] using hc none
-    · simpa [hk] using hc (some k)
-  · funext p
-    show z (v₁ k₀ p) = (if p.1 = k₀ then c none else c (some p.1)) * z' (v₁ k₀ p)
-    rw [e]
-    by_cases hk : p.1 = k₀
-    · obtain ⟨k, m⟩ := p
-      obtain rfl : k = k₀ := hk
-      simp [v₁_self]
-    · rw [if_neg hk, v₁_ne hk]
+  apply _root_.GlobalTheory.CompanionTheory.Ar.PB.WSq.FamCh.snd_orbit <;> assumption
 
 theorem null_w : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (Φ : Type) [Field Φ] (y : (Σ k, ι k) → Φ) (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N j : ℕ) (M : FlagModel y Ψ N j) (n d : ℕ) (BM : BaseMetric M n) (FA : FlagAn BM d) (τ : Ψ) (a b : Fin N) (k₀ : K) (ca cb : Fin N), (b : ℕ) = a + 1 → ((b : ℕ) < j ∨ j ≤ (a : ℕ)) → M.blk (τ, a) = some k₀ → (ca : ℕ) = lastCol N j a → (cb : ℕ) = ca + 1 → ∀ (RW : AnLogRes (mCoordIdeal (M.wCo (τ, a) k₀ ca cb RatFunc.X)) ⊤ (d + 2)) (q : Fin 2 → RW.X → FA.S.X), (∀ i, HoloMap RW.A FA.S.A (q i)) → (∀ x x₀, FA.Re.π x₀ = q 0 x → SameOrbit (FA.Re.R.lift x₀ x₀) (fstPt k₀ (RW.lift x x))) → (∀ x x₀, FA.Re.π x₀ = q 1 x → SameOrbit (FA.Re.R.lift x₀ x₀) (sndPt k₀ (RW.lift x x))) → (Function.Injective fun w => (q 0 w, q 1 w)) → ∀ l : Fin BM.q, IsNull RW.A {x | FA.pr (q 0 x) ∈ BM.O l ∧ (FA.pr (q 0 x) ∈ bdry BM.s ∨ ∃ p, FC.plk M (BM.F l) (FC.bvec BM l (FA.pr (q 0 x))) (fstPt k₀ (RW.lift x x)) p = 0 ∨ FC.plk M (BM.F l) (FC.bvec BM l (FA.pr (q 0 x))) (sndPt k₀ (RW.lift x x)) p = 0)} := by
   intro K _ ι _ Φ _ y Ψ _ _ N j M n d BM FA τ a b k₀ ca cb hab hj hblk hca hcb RW q hq h0 h1 hinj l
@@ -1409,8 +1360,7 @@ theorem fibre_charts : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fint
     obtain ⟨x₀, rfl⟩ := hpi.2 x
     obtain ⟨m, hm⟩ := hpc_cov (FA.pr (FA.Re.π x₀))
     refine ⟨x₀, Set.mem_iUnion.2 ⟨(tm m).2, hm.1.2, ?_⟩, rfl⟩
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     obtain ⟨c, a', ho⟩ := _root_.GlobalTheory.CompanionTheory.Ar.PB.WSq.FC.exists_Lca_of_plk_ne K ι Φ y Ψ N j M n d BM FA τ ca cb hlt hblk (tm m).2 x₀ hm.1.2 hcon.2
     have hbs := hm.1.1
     let w := mk ((BM.Rb.A.chart (tm m).1) (FA.pr (FA.Re.π x₀))) c
@@ -1479,8 +1429,7 @@ theorem fibre_charts : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fint
     intro x hx
     obtain ⟨m, hm⟩ := hpc_cov (FA.pr (q 0 x))
     refine Set.mem_iUnion.2 ⟨(tm m).2, hm.1.2, ?_⟩
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     obtain ⟨c, a₀, a₁, ho⟩ := _root_.GlobalTheory.CompanionTheory.Ar.PB.WSq.FC.Cell.vector_of_chart K ι Φ y Ψ N j M n d BM FA τ a b k₀ ca cb hb hs hk hca hcb RW q hq h0 h1 hinj
       (tm m).2 x hm.1.2 (fun p => (hcon.2 p).1) (fun p => (hcon.2 p).2)
     have hbs := hm.1.1

@@ -3,6 +3,7 @@ module
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.HidaSetting
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.HermitianZZEqNeg
 import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.JacobianCoordinates
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.DualFamilyCounting.NcRealXSig
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.SurjOfIndep, Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.GramEqOfHyp
@@ -26,15 +27,7 @@ variable {n : ℕ} (ε : Fin n → Bool)
 abbrev dl (i : Fin n) : Fin n → ℂ := Pi.single i 1
 
 theorem hJ_dl (i j : Fin n) : hJ ε (dl i) (dl j) = if i = j then (if ε i then 1 else -1) else 0 := by
-  unfold hJ
-  simp only [dl, Formalism.REAL.Jm, mulVec_diagonal, dotProduct, Pi.star_apply, Pi.single_apply]
-  by_cases h : i = j
-  · subst h; simp
-  · rw [if_neg h]
-    refine Finset.sum_eq_zero fun l _ => ?_
-    by_cases hl : l = i
-    · subst hl; simp [h]
-    · simp [hl]
+  apply _root_.Formalism.L2.SG.Pf.NcReal.JX.hJ_bvec <;> assumption
 
 end Formalism.L2.SG.RealObj.InfCut.UnitaryIsometries.RI
 end -- clump:auto

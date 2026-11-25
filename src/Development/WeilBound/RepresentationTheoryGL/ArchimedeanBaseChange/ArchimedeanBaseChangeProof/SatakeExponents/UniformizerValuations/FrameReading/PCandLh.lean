@@ -37,9 +37,6 @@ open NumberField IsDedekindDomain Matrix Filter
 open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT PositivityTheory.Rg.BcN.F2
 open scoped Classical TensorProduct
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
-
 namespace PositivityTheory.Rg.BcB.F.Tail.B
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
@@ -84,8 +81,6 @@ noncomputable section
 open NumberField IsDedekindDomain
 open GlobalTheory.PRep
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace PositivityTheory.Rg.BcB.F.Tail
 
 theorem satSph : SatSph := by
@@ -119,7 +114,7 @@ open scoped Classical
 
 namespace PositivityTheory.Rg.BcB.F.PCandLh
 
-attribute [local instance] borelG borelF borelA GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+attribute [local instance] borelG borelF borelA
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 

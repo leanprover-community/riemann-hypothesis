@@ -85,8 +85,7 @@ theorem exists_loc_of_thetaT {D : D7} {M : MtFam D} (T : NormalizedLocalCompatib
 
 theorem thetaT_ne_of_lamTr {D : D7} {μ : D.what₂.Tup} {j : ℕ} {σ : D.what₂.FT} (hpos : 0 < DV.lamTr D μ j σ) :
     ∃ f ∈ D.what₂.isot j σ, D.what₂.thetaT μ j f ≠ 0 := by
-  by_contra h
-  push_neg at h
+  by_contra! h
   have hT : D.what₂.thetaP μ j ∘ₗ D.what₂.thetaT μ j ∘ₗ ((D.what₂.isot j σ).starProjection : D.what₂.Mj j →ₗ[ℂ] D.what₂.Mj j) = 0 := by
     ext y
     simp [h _ ((D.what₂.isot j σ).starProjection_apply_mem y)]

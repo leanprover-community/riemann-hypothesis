@@ -17,62 +17,10 @@ public import GroundTheory.AutomorphicForms.Iwasawa
 public import Mathlib.LinearAlgebra.Eigenspace.Zero
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.LocalDoubleCosets.JacSemi
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.LocalDoubleCosets.LocDescOf
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Algebra.Module.StablyFree.Basic
-import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Tactic.Polynomial.Basic
 import Development.AbelianVarietyTheory.Definitions.Divisors.LineOppositeParabolicUnitaryLeviSectionEq
-import Mathlib.RingTheory.PiTensorProduct
 import GroundTheory.AutomorphicForms.LocallyProfinite
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.LocalDoubleCosets.CellStep, Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.LocalDoubleCosets.DistInv, Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.LocalDoubleCosets.DistZero, Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.CommonEigenvectorExistence, Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.LocalDoubleCosets.EigZero, Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.LocalDoubleCosets.EtaEx, Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.LocalDoubleCosets.ExistsStab, Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.LocalDoubleCosets.FunInv, Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.LocalDoubleCosets.GLCells, Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.LocalDoubleCosets.GLFacts, Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.LocalDoubleCosets.Imports, Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.LocalDoubleCosets.MemCcMulRight, Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.LocalDoubleCosets.PrAuto, Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.LocalDoubleCosets.PrLeft, Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.LocalDoubleCosets.PrMem, Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.LocalDoubleCosets.PrSurj, Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.LocalDoubleCosets.StabSub, Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.LocalDoubleCosets.ToBorel, Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.LocalDoubleCosets.TracePowAlt, Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.LocalDoubleCosets.OfSupportHolds
@@ -429,8 +377,7 @@ theorem eigZero : EigZero := by
   haveI : Nontrivial (Module.Dual ℂ J) := by
     obtain ⟨y, hy⟩ := exists_ne (0 : J)
     have hex : ∃ g : Module.Dual ℂ J, g y ≠ 0 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact hy ((Module.forall_dual_apply_eq_zero_iff ℂ y).1 h)
     obtain ⟨g, hg⟩ := hex
     exact ⟨g, 0, fun h => hg (by simp [h])⟩
@@ -444,8 +391,7 @@ theorem eigZero : EigZero := by
     have := congrArg (fun g : Module.Dual ℂ J => g y) (hl t)
     simpa [LinearMap.dualMap_apply] using this
   obtain ⟨y₀, hy₀⟩ : ∃ y, l y ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hl0 (LinearMap.ext h)
   let am : T →* ℂ :=
     { toFun := a
@@ -467,8 +413,7 @@ theorem eigZero : EigZero := by
       (fun t => Module.End.iSup_maxGenEigenspace_eq_top (ρ t))
     obtain ⟨χ, y, hy, hly⟩ : ∃ (χ : T → ℂ) (y : J),
         y ∈ (⨅ t, Module.End.maxGenEigenspace (ρ t) (χ t) : Submodule ℂ J) ∧ l y ≠ 0 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       have : (⊤ : Submodule ℂ J) ≤ LinearMap.ker l := by
         rw [← htop]
         exact iSup_le fun χ y hy => LinearMap.mem_ker.2 (h χ y hy)
@@ -618,8 +563,7 @@ private theorem ker_isOpen {B : Subgroup G} {χ : B →* ℂˣ} {π : Representa
     {l : V →ₗ[ℂ] ℂ} (hl : l ≠ 0) (hb : ∀ (b : B) (v : V), l (π b v) = (χ b : ℂ) * l v) :
     IsOpen (χ.ker : Set B) := by
   obtain ⟨v₀, hv₀⟩ : ∃ v, l v ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hl (LinearMap.ext h)
   refine Subgroup.isOpen_of_mem_nhds _ (g := 1) ?_
   have h1 : IsOpen ((↑) ⁻¹' {g : G | π g v₀ = v₀} : Set B) := (hπ v₀).preimage continuous_subtype_val
@@ -1551,8 +1495,7 @@ namespace UpperTheory.Gal.LocD
 
 theorem tracePow : TracePow := by
   intro J _ _ _ _ φ hφ k₀
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   set p := φ.charpoly with hp
   have hc : p.coeff 0 ≠ 0 := by
     intro h0

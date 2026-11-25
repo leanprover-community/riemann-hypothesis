@@ -580,7 +580,6 @@ theorem Ord_main (p : ℕ) (hp0 : p ≠ 0) {O : Type} [CommRing O] [IsDomain O] 
         · have hs1 : ∀ i : Fin N, i.val < j → IsUsed mu c i → LL.pos i ≤ s0 - 1 := fun i hi hui => by
             have := hposc i ⟨j, h⟩ (Fin.lt_def.mpr (by simpa using hi)) hui hc
             omega
-          have e1 : (s0 - (s0 - 1)).toNat = 1 := by omega
           have hpw := ts.pw (s0 - 1) s0 (ZZ p ζ LL.pos mu c j (s0 - 1)) (oS p LL.pos mu c j (s0 - 1)) (by omega)
             (fun J => (ih' (s0 - 1) hs1 J).1)
           rw [← ZZ_pow p hp0 _ _ mu c j (by omega) (s0 - 1) s0 (by omega) hs1,

@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsNonvanishingFiniteDatumDefiniteLift
 public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.IsStepWeil
 public import Development.AbelianVarietyTheory.Definitions.Foundations.RootOfUnityEightQMemCoeffGaloisSubfield
 public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.ExistsStdIsVacVec
@@ -115,23 +116,7 @@ theorem sum_mul_idem {R ι : Type} [CommRing R] (p : ι → R) (s : Finset ι) (
 
 theorem resS_idemSum {e : AE D} {P : Finset (Pl D.host.E)} (h : IsIdemSum e P) :
     ∃ hi : toEAf D e ∈ Formalism.L2.Herm.intAf D.host.F D.host.E, ∀ PP ∈ P, resS D.host.F PP ⟨toEAf D e, hi⟩ = 1 := by
-  have he := GlobalTheory.PlaceDatum.idemSum_mul_self h
-  have hint : toEAf D e ∈ Formalism.L2.Herm.intAf D.host.F D.host.E :=
-    GlobalTheory.IdemRes.toEAf_mem_of_finPart (GlobalTheory.AdIdem.idempotent_mem_intAE D _ (by rw [← RingHom.map_mul, he]))
-  refine ⟨hint, fun PP hP => ?_⟩
-  obtain ⟨⟨es, hes, hsum⟩, hc⟩ := h
-  have h1 : ∀ i ∈ P, es i * es i = es i := fun i hi => (hes i hi).1.1
-  have hcross : ∀ i ∈ P, ∀ j ∈ P, es i * cA D (es j) = 0 :=
-    GlobalTheory.PlaceDatum.cross_eq_zero (R := AE D) GlobalTheory.PlaceDatum.isUnit_natCast (cA D) es P h1 (hsum ▸ hc)
-  have h2 : ∀ i ∈ P, ∀ j ∈ P, j ≠ i → es i * es j = 0 := fun i hi j hj hji =>
-    GlobalTheory.PlaceDatum.idemAt_mul (hes i hi) (hes j hj) (hcross i hi j hj) (hcross j hj i hi) hji
-  have h3 : es PP * e = es PP := by
-    rw [hsum]; exact sum_mul_idem (R := AE D) es P h1 h2 hP
-  obtain ⟨h4, h5⟩ := GlobalTheory.IdemRes.resS_idem_eq_one D (es PP) PP (hes PP hP)
-  have h6 : (⟨_, h4⟩ * ⟨_, hint⟩ : Formalism.L2.Herm.intAf D.host.F D.host.E) = ⟨_, h4⟩ :=
-    Subtype.ext (by change toEAf D _ * toEAf D _ = toEAf D _; rw [← RingHom.map_mul, h3])
-  have h7 := congrArg (resS D.host.F PP) h6
-  rwa [map_mul, h5, one_mul] at h7
+  first | exact _root_.GlobalTheory.AdjDatumNe.idemSum_res | exact @_root_.GlobalTheory.AdjDatumNe.idemSum_res | apply _root_.GlobalTheory.AdjDatumNe.idemSum_res <;> assumption
 
 def rect (κ : Type) [Zero κ] [One κ] (b a : ℕ) : Matrix (Fin b) (Fin a) κ := fun i j => if i.val = j.val then 1 else 0
 

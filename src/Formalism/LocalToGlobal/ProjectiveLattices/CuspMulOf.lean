@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Definitions.Foundations.IsProbabilityMeasureMuPart
 public import Formalism.LocalToGlobal.ProjectiveLattices.MulCMemSec
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.HolSubMul
 import Mathlib.Tactic.Linter.Style
@@ -18,13 +19,7 @@ variable {Xo : Moduli Dw l} {c : Coeff l} {r : ℕ}
 
 open Classical in
 theorem rdU_mul {σ : c.F →+* ℂ} (U : Unf Xo c σ r) (f g : Rul Xo c) : rdU U (f * g) = rdU U f * rdU U g := by
-  funext k x
-  show (if h : x ∈ (U.X k).dom then toC (evR Xo c (f * g) (U.un k ⟨x, h⟩)) else 0) =
-    (if h : x ∈ (U.X k).dom then toC (evR Xo c f (U.un k ⟨x, h⟩)) else 0) *
-      (if h : x ∈ (U.X k).dom then toC (evR Xo c g (U.un k ⟨x, h⟩)) else 0)
-  split_ifs with h
-  · exact evalAt_mul (K := c.F) (fun S _ _ => FrPt Xo c S) (fun φ y z => FrMap φ y z) f g (U.un k ⟨x, h⟩)
-  · simp
+  apply _root_.GlobalTheory.AllWt.rdU_mul <;> assumption
 
 theorem laU_add {σ : c.F →+* ℂ} (U : Unf Xo c σ r) (a a' : (E →+* ℂ) × ℕ → ℕ) (n n' : ℕ) (hn : Even n)
     (hn' : Even n') (k : U.Comp) : laU U (a + a') (n + n') k = laU U a n k + laU U a' n' k := by

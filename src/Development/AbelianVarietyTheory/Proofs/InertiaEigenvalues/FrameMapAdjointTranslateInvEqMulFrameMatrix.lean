@@ -39,7 +39,6 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.LengthPosOfPosDef
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DatP
 import Formalism.LocalToGlobal.IndefiniteForms.IndefSide
 import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
 import Formalism.LocalToGlobal.IndefiniteReal.PartsOrth
@@ -52,7 +51,6 @@ open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef
 open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.Cx Formalism.IndefR.Links
 open scoped TensorProduct InnerProductSpace
 open GlobalTheory.RawLift
-open GlobalTheory.BadPlace
 open Classical
 
 namespace GlobalTheory.TranslateAdj

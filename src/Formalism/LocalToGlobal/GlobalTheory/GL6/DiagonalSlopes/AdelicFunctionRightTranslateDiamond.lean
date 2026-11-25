@@ -36,9 +36,6 @@ def DiamondElementsExist (Tf : Forms0 D u) : Prop :=
   ∀ i (hi : i ≤ D.R.m) (h0 : i = 0) (v : (D.mem u).A.vT) (a : ((D.mem u).A.Fv v)ˣ), ∃ k : ℤ, (k : (D.mem u).A.Fv v) = a ∧
     ∃ δ, IsDia (Tf.cls i hi h0).lev (Tf.atT.eV v).1 (Tf.atT.eV v).2 k δ
 
-theorem level_prime_ne_type_prime (A : AtTTied u) (j : Fin 2) : (D.mem u).A.T ≠ D.host.g j := by
-  apply Formalism.L2.GlobalTheoryTheory.LocalLatticeBases.level_prime_ne_type_prime <;> assumption
-
 theorem level_places_not_bad (A : AtTTied u) (v : (D.mem u).A.vT) : (A.eV v).1 ∉ badG D := by
   apply Formalism.L2.GlobalTheoryTheory.LocalLatticeBases.level_places_not_bad
 

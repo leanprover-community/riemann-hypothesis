@@ -379,8 +379,7 @@ theorem exists_equation_not_vanishing {Y Z : Set (σ → ℂ)} {w : σ → ℂ} 
     ∃ φ : (σ → ℂ) → ℂ, AnalyticAt ℂ φ w ∧ (∀ᶠ z in 𝓝 w, z ∈ Z → φ z = 0) ∧
       ¬ ∀ᶠ z in 𝓝 w, z ∈ Y → φ z = 0 := by
   obtain ⟨N, k, f, hN, hwN, hf, hZN⟩ := hZ
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   apply hYZ
   have hall : ∀ i, ∀ᶠ z in 𝓝 w, z ∈ Y → f i z = 0 := by
     intro i
@@ -827,8 +826,7 @@ theorem irreducibleGermMeetOverHypersurface_of_finiteFibreGermIntegral
   intro σ _ Y Z w d A hY hirr hfib hZ hnot
   obtain ⟨N₀, k, f, hN₀, hwN₀, hf, hZN⟩ := hZ
   have hex : ∃ m, ¬ ∀ᶠ z in 𝓝 w, z ∈ Y → f m z = 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     apply hnot
     filter_upwards [eventually_all.2 hcon, hN₀.mem_nhds hwN₀] with z hz hzN hzY
     have hmem : z ∈ {z | z ∈ N₀ ∧ ∀ i, f i z = 0} := ⟨hzN, fun i => hz i hzY⟩

@@ -689,8 +689,7 @@ private theorem char_integral_ne (μ : Measure G) [μ.IsHaarMeasure] (N : Subgro
     (b : G → ℂ) (hb : Continuous b) (hi : ∀ k ∈ N, ∀ x, b (x * k) = b x) (x₀ : G) (h0 : b x₀ ≠ 0) :
     ∃ χ : G →ₜ* Circle, (∀ k ∈ N, χ k = 1) ∧ ∫ x in F, (χ x : ℂ) * b x ∂μ ≠ 0 := by
   classical
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   haveI hcl : IsClosed (N : Set G) := Subgroup.isClosed_of_discrete
   haveI : CompactSpace (G ⧸ N) := ⟨by
     have : (Set.univ : Set (G ⧸ N)) = QuotientGroup.mk '' closure F := by
@@ -1186,8 +1185,7 @@ theorem UpperTheory.ConvolutionTheory.RankTwoDescent.downN :
   obtain ⟨ω, hω⟩ := cenEx_of E hfr P hC
   have hnv := asaiNV E D M U P ω W.η hC hω (unit_of_normalised hfr hN hω) W.quad
   have hper : ∃ φ ∈ P.V, ∃ h : G1 E, (UPer D M fun x => φ.1 (x * gl h)) ≠ 0 := by
-    by_contra hno
-    push_neg at hno
+    by_contra! hno
     exact hnv (perU_of E D W M N P U ω hN hω hno)
   obtain ⟨π, hπ, hJ⟩ := rev_holds E D W M N P hper
   obtain ⟨π', hπ', hI⟩ := toII E D W M N P hN π hπ hJ

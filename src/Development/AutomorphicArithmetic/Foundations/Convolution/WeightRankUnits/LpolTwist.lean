@@ -184,8 +184,7 @@ private theorem exists_scalar (E : Type) [Field E] [NumberField E] [IsCMField E]
   rcases Nat.even_or_odd (n - 1) with h | h
   · exact ⟨1, one_ne_zero, by simp [h.neg_one_pow]⟩
   · have hx : ∃ x : E, IsCMField.complexConj E x ≠ x := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       exact IsCMField.complexConj_ne_one E (AlgEquiv.ext hc)
     obtain ⟨x, hx⟩ := hx
     refine ⟨x - IsCMField.complexConj E x, sub_ne_zero.mpr hx.symm, ?_⟩

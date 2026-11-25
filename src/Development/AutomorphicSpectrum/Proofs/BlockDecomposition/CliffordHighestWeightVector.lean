@@ -857,8 +857,7 @@ theorem dirac_ineq : ∀ {n : ℕ} (lam : Fin n → ℤ) (V : Type) [NormedAddCo
   have hEq' : (∑ i, ‖D x i‖ ^ 2) = -((4 * (S - R) + 3 * R - T) * ∑ i, ‖x i‖ ^ 2) := by
     exact_mod_cast hEq
   have hle : 4 * (S - R) + 3 * R - T ≤ 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     have := mul_pos hcon hN
     linarith
   have hT' : T = ∑ a, (τ a + rhoV n a) ^ 2 - R := by

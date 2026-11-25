@@ -4,6 +4,7 @@ public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange
 public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
+import Development.WeilBound.CoreStatements.PublishedTheorems.CasselmanWallach.SecondDerivativeHolds
 
 @[expose] public section
 
@@ -27,22 +28,7 @@ theorem sq_nonneg' (A : Mat n) : 0 ≤ sq A := by
   unfold sq; positivity
 
 theorem sq_mul_le (A B : Mat n) : sq (A * B) ≤ sq A * sq B := by
-  unfold sq
-  have h1 : ∀ a b, ‖(A * B) a b‖ ^ 2 ≤ (∑ c, ‖A a c‖ ^ 2) * ∑ c, ‖B c b‖ ^ 2 := by
-    intro a b
-    rw [Matrix.mul_apply]
-    calc ‖∑ c, A a c * B c b‖ ^ 2 ≤ (∑ c, ‖A a c‖ * ‖B c b‖) ^ 2 := by
-          gcongr
-          refine (norm_sum_le _ _).trans ?_
-          simp only [norm_mul, le_refl]
-      _ ≤ _ := Finset.sum_mul_sq_le_sq_mul_sq _ _ _
-  calc ∑ a, ∑ b, ‖(A * B) a b‖ ^ 2 ≤ ∑ a, ∑ b, (∑ c, ‖A a c‖ ^ 2) * ∑ c, ‖B c b‖ ^ 2 := by
-        gcongr with a _ b _
-        exact h1 a b
-    _ = (∑ a, ∑ c, ‖A a c‖ ^ 2) * ∑ c, ∑ b, ‖B c b‖ ^ 2 := by
-        rw [Finset.sum_mul]
-        refine Finset.sum_congr rfl (fun a _ => ?_)
-        rw [← Finset.mul_sum, Finset.sum_comm]
+  apply _root_.PositivityTheory.CW.HilbertSchmidtNorm.hilbert_schmidt_mul_le <;> assumption
 
 theorem lg_eq (y : Mat n) : lg y = Real.log (1 + sq y + sq y⁻¹) := by
   simp only [lg, sq, Finset.sum_add_distrib, add_assoc]

@@ -91,8 +91,7 @@ theorem isSelfDualC_latPi {S : HSp D} (hg : S.gram = -1) {I : FractionalIdeal (�
     · simp
   have hIeq : I = J⁻¹ := eq_inv_of_mul_eq_one_left hII
   obtain ⟨a0, ha0, ha00⟩ : ∃ a ∈ I, a ≠ 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     exact hI (by
       ext x
       rw [FractionalIdeal.mem_zero_iff]

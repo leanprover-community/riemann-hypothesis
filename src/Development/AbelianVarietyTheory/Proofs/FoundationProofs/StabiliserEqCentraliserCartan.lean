@@ -65,14 +65,6 @@ theorem diagonal_sign_mul_self (ε : Fin n → Bool) :
   funext i
   split_ifs <;> simp
 
-theorem diagonal_sign_conjTranspose (ε : Fin n → Bool) :
-    (Matrix.diagonal fun i => if ε i then (1 : ℂ) else -1)ᴴ = Matrix.diagonal fun i => if ε i then 1 else -1 := by
-  rw [Matrix.diagonal_conjTranspose]
-  congr 1
-  funext i
-  change star (if ε i then (1 : ℂ) else -1) = _
-  split_ifs <;> simp
-
 theorem mul_conjTranspose_mul_eq (hbc : b * c = 1) (h : bᴴ * G * b = d) : b * bᴴ * G = b * d * c := by
   rw [← h]
   calc b * bᴴ * G = b * bᴴ * G * (b * c) := by rw [hbc, mul_one]
@@ -250,11 +242,6 @@ theorem isMaj_iff (hθ : IsInfFam θ) : IsMaj V a ↔ ∀ τ, ∃ ε : Fin V.ran
   refine (placeOf_bijective D).2.forall.trans (forall_congr' fun τ => exists_congr fun ε => ?_)
   rw [compAt_eq_map hθ]
   exact frame_local_iff (isCMExt_host D) (embOverOf D τ) V.gram _ ε
-
-theorem IsMaj.isCartanInv (h : IsMaj V a) (hθ : IsInfFam θ) (τ : D.what₂.Tau) :
-    IsCartanInv (gramAt D V τ) (frameInv θ V a τ) := by
-  obtain ⟨ε, hε⟩ := (isMaj_iff hθ).1 h τ
-  exact isCartanInv_of_frame (compAt_mul_inv τ a) hε (diagonal_sign_mul_self ε) (diagonal_sign_conjTranspose ε)
 
 theorem infMat_isometry (hθ : IsInfFam θ) (τ : D.what₂.Tau) (g : GA D V) :
     (infMat D.sp.cm.sig V.gram (θ τ) g)ᴴ * gramAt D V τ * infMat D.sp.cm.sig V.gram (θ τ) g = gramAt D V τ := by

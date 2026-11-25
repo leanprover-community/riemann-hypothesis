@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsFinsetCosetRepsBoundedHalfPoints
 public import Mathlib.NumberTheory.LocalField.Basic
 import Mathlib.Tactic.Linter.Style
 
@@ -12,17 +13,7 @@ namespace GlobalTheory.CompanionTheory.LatticePoint
 theorem isOpen_valBall {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k]
     [IsNonarchimedeanLocalField k] (γ : ValueGroupWithZero k) (hγ : γ ≠ 0) :
     IsOpen {x : k | valuation k x ≤ γ} := by
-  rw [isOpen_iff_mem_nhds]
-  intro x hx
-  change valuation k x ≤ γ at hx
-  rw [IsValuativeTopology.mem_nhds_iff']
-  refine ⟨Units.mk0 γ hγ, fun y hy => ?_⟩
-  change valuation k (y - x) < ((Units.mk0 γ hγ : (ValueGroupWithZero k)ˣ) : ValueGroupWithZero k) at hy
-  rw [Units.val_mk0] at hy
-  show valuation k y ≤ γ
-  calc valuation k y = valuation k ((y - x) + x) := by rw [sub_add_cancel]
-    _ ≤ max (valuation k (y - x)) (valuation k x) := Valuation.map_add _ _ _
-    _ ≤ γ := max_le hy.le hx
+  apply _root_.GlobalTheory.FunObj.isOpen_valBall_reps <;> assumption
 
 theorem exists_compact_open_addSubgroup_mem :
     ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]

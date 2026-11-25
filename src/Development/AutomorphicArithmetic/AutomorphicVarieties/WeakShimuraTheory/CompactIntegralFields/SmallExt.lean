@@ -34,8 +34,7 @@ private theorem fin_quot (A B : Type) [CommRing A] [IsDomain A] [IsDiscreteValua
     have hli : LinearIndependent A b := by
       rw [Fintype.linearIndependent_iff]
       intro c hc
-      by_contra hne
-      push_neg at hne
+      by_contra! hne
       obtain ⟨i0, hi0⟩ := hne
       obtain ⟨j, hj, hjmin⟩ := (Finset.univ.filter (fun i => c i ≠ 0)).exists_min_image
         (fun i => IsDiscreteValuationRing.addVal A (c i)) ⟨i0, by simpa using hi0⟩

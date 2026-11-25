@@ -3,6 +3,7 @@ module
 public import Formalism.PeriodIntegrals.PhNormUnits
 public import Mathlib.Analysis.Normed.Field.Instances
 import Mathlib.Tactic.TypeStar
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.FormalGroupCommon.CoeffSingleLg
 
 @[expose] public section
 
@@ -22,17 +23,7 @@ variable {l ex : PowerSeries ℂ_[p]}
 
 theorem l_const (hex0 : PowerSeries.constantCoeff ex = 0)
     (hinv : PowerSeries.subst ex l = PowerSeries.X) : PowerSeries.constantCoeff l = 0 := by
-  have h1 := congrArg (MvPowerSeries.constantCoeff (σ := Unit) (R := ℂ_[p])) hinv
-  rw [PowerSeries.constantCoeff_subst (PowerSeries.HasSubst.of_constantCoeff_zero' hex0)] at h1
-  rw [finsum_eq_single _ 0] at h1
-  · have h2 : PowerSeries.constantCoeff l =
-        MvPowerSeries.constantCoeff (PowerSeries.X : PowerSeries ℂ_[p]) := by
-      simpa using h1
-    exact h2.trans PowerSeries.constantCoeff_X
-  · intro d hd
-    rw [map_pow]
-    change PowerSeries.coeff d l • (PowerSeries.constantCoeff ex) ^ d = 0
-    rw [hex0, zero_pow hd, smul_zero]
+  apply _root_.PI.FglShared.l_constantCoeff <;> assumption
 
 theorem coeff_one_l_ne (hex0 : PowerSeries.constantCoeff ex = 0)
     (hinv : PowerSeries.subst ex l = PowerSeries.X) : PowerSeries.coeff 1 l ≠ 0 := by

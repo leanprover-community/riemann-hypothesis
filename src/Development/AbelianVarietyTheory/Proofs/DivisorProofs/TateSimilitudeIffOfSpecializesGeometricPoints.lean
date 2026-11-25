@@ -108,8 +108,6 @@ open scoped CategoryTheory.Obj TensorProduct
 
 noncomputable section
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.WeilRootLocal
 
 theorem exists_weilIs_root_local : ∀ (S : Scheme.{0}) (A : Over S) [GrpObj A] [IsCommMonObj A],

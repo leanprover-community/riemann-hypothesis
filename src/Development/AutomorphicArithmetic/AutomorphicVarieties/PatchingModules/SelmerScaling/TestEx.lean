@@ -1,5 +1,6 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.EpsilonEtaMatrices.FixBdQZero
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.SelmerScaling.EpC
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.SelmerScaling.PrAdd
 import Mathlib.Tactic.NormNum.LegendreSymbol
@@ -9,18 +10,7 @@ import Mathlib.Tactic.NormNum.LegendreSymbol
 open IsLocalRing Matrix UpperTheory.V.Alg UpperTheory.V.W UpperTheory.V.AlgebraTools UpperTheory.V.Pa
 
 private theorem dd_fin (X : Type) [CommRing X] (g : ℕ) : Module.Finite X (DD X g) := by
-  let f : (X × (Fin g → X) × (Fin g → X) × X) →ₗ[X] DD X g :=
-    { toFun := fun p => ⟨p.1, p.2.1, p.2.2.1, p.2.2.2⟩
-      map_add' := fun p q => DD.ext (by simp) (by ext j; simp) (by ext j; simp) (by simp)
-      map_smul' := fun c p => by
-        have hC : (DD.C c : DD X g) = ⟨c, 0, 0, 0⟩ := rfl
-        simp only [RingHom.id_apply]
-        change _ = DD.C c * _
-        rw [hC]
-        apply DD.ext <;> (try funext j) <;> simp }
-  refine Module.Finite.of_surjective f ?_
-  intro y
-  exact ⟨(y.a, y.ep, y.ep', y.eta), rfl⟩
+  apply _root_.fixBd_fin <;> assumption
 
 private theorem dd_nil (X : Type) [CommRing X] (g : ℕ) : RingHom.ker (DD.aug X g) ^ 3 = ⊥ := by
   set I := RingHom.ker (DD.aug X g) with hIdef

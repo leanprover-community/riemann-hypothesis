@@ -1,5 +1,6 @@
 module
 
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ThetaModuleTransport.HeadColumnCoordinates.FormPairAlgebra.BRawHeadColsRight
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ThetaModuleTransport.HeadColumnCoordinates.FormInverseCounting.DetSmulMk
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ThetaModuleTransport.HeadColumnCoordinates.FormInverseCounting.AlgDefs
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ThetaModuleTransport.HeadColumnCoordinates.FormInverseCounting.AlgInj
@@ -64,39 +65,7 @@ theorem lamS_mulVec (Z : Matrix (Fin (r + 1)) (Fin (r + 1)) O) (hO : ∀ x ∈ O
 theorem lamS_K (Z : Matrix (Fin (r + 1)) (Fin (r + 1)) O) (hO : ∀ x ∈ O, cj x ∈ O)
     (hu : IsUnit (Z.map O.subtype).det) (k : Fin (r + 1) → O)
     (hk : k ∈ headCols (cjT O cj hO Z)) : lamS O cj Z k = 0 := by
-  unfold headCols at hk
-  have hinv : (Z.map O.subtype) * (Z.map O.subtype)⁻¹ = 1 := Matrix.mul_nonsing_inv _ hu
-  induction hk using Submodule.span_induction with
-  | mem x hx =>
-    obtain ⟨a, rfl⟩ := hx
-    unfold lamS lamStarC
-    have h1 := congrFun (congrFun hinv a.castSucc) (Fin.last r)
-    rw [Matrix.mul_apply, Matrix.one_apply_ne (Fin.castSucc_lt_last a).ne] at h1
-    have key : ∑ b, cj ((Z.map O.subtype)⁻¹ b (Fin.last r)) * ((cjT O cj hO Z b a.castSucc : O) : E) =
-        cj (∑ b, (Z.map O.subtype) a.castSucc b * (Z.map O.subtype)⁻¹ b (Fin.last r)) := by
-
-      rw [map_sum]
-      apply Finset.sum_congr rfl
-      intro b _
-      rw [map_mul, mul_comm]
-      rfl
-    rw [key, h1, map_zero]
-  | zero =>
-    unfold lamS lamStarC
-    simp
-  | add x y _ _ hx hy =>
-    unfold lamS lamStarC at hx hy ⊢
-    simp only [Pi.add_apply, Subring.coe_add, mul_add, Finset.sum_add_distrib, hx, hy, add_zero]
-  | smul c x _ hx =>
-    unfold lamS lamStarC at hx ⊢
-    calc ∑ b, cj ((Z.map O.subtype)⁻¹ b (Fin.last r)) * (((c • x) b : O) : E) =
-          (c : E) * ∑ b, cj ((Z.map O.subtype)⁻¹ b (Fin.last r)) * ((x b : O) : E) := by
-          rw [Finset.mul_sum]
-          apply Finset.sum_congr rfl
-          intro b _
-          simp only [Pi.smul_apply, smul_eq_mul, Subring.coe_mul]
-          ring
-      _ = 0 := by rw [hx, mul_zero]
+  apply _root_.Formalism.L2.SG.LocalCountModules.UnramifiedPairingLinear.lamS_headCols <;> assumption
 
 theorem lamS_b (Z : Matrix (Fin (r + 1)) (Fin (r + 1)) O) (hO : ∀ x ∈ O, cj x ∈ O)
     (hu : IsUnit (Z.map O.subtype).det) :

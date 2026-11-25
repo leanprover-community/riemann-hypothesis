@@ -574,8 +574,7 @@ theorem GlobalTheory.Glue.ev_cong_iff_and_unit :
   refine ⟨?_, ?_⟩
   · obtain ⟨E, F, π, κ, lam, hE, -, hπE, hκ, hκu, hesp⟩ := _root_.GlobalTheory.K5.OkBasis.okbasis p Ω hC v hv hp0 hp1 d e he
     have hπ1 : v π < 1 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       have h2 : 1 ≤ v π ^ E := one_le_pow₀ h
       rw [hπE] at h2
       exact absurd hp1 (not_lt.2 h2)

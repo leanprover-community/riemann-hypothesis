@@ -765,8 +765,7 @@ theorem sum_chi_mul_chi {K : UQ} (B : InvAlg K) {ι : Type} [Fintype ι] [Decida
     have : ∀ k : B.Cl, chi B e I k.rep * chi B e I k.rep = 1 := fun k => eta_sq _
     simp [this]
   · obtain ⟨j, hjS, hj⟩ : ∃ j ∈ S, ¬ (j ∈ I ↔ j ∈ I₀) := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       apply hII
       ext j
       constructor

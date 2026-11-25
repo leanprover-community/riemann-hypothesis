@@ -88,8 +88,7 @@ private lemma setIntegral_exp_linear_fundamentalDomain_eq_zero {V : Type}
       rw [← Complex.exp_int_mul_two_pi_mul_I z]; ring_nf
     rw [this, one_mul]
   obtain ⟨u, hu⟩ : ∃ u, φ u ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hφ (LinearMap.ext h)
   set w : V := (1 / (2 * φ u)) • u with hw
   have hφw : φ w = 1 / 2 := by

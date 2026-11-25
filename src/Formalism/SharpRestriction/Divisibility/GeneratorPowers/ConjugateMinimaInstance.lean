@@ -41,8 +41,7 @@ theorem scalar_frame_w_zero_exists (D : D7) : ∃ w₀ : 𝓞 D.host.E, (w₀ : 
   ring
 
 theorem conj_ne (D : D7) : ∃ z : D.host.E, D.host.conj z ≠ z := by
-  by_contra h
-  push_neg at h
+  by_contra! h
   have h1 : D.host.conj = 1 := AlgEquiv.ext h
   have h2 : Formalism.HC.Frame.cc D.R.toFrame = 1 := by
     have := congrArg D.host.gal h1

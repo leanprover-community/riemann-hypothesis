@@ -404,8 +404,7 @@ theorem exists_compl (hs : ∀ x, s (s x) = x) {n : ℕ} {J : Matrix (Fin (n + 1
     ∃ (P : Matrix (Fin (n + 1)) (Fin (n + 1)) E) (J' : Matrix (Fin n) (Fin n) E),
       P.det ≠ 0 ∧ (∀ i, P i 0 = x i) ∧ cT s P * J * P = blk (hform s J x x) J' := by
   obtain ⟨k, hk⟩ : ∃ k, x k ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     simp [hform, h] at hx
   let P₀ : Matrix (Fin (n + 1)) (Fin (n + 1)) E :=
     ((1 : Matrix _ _ E).updateCol k x).submatrix id (Equiv.swap 0 k)
@@ -457,8 +456,7 @@ variable {E : Type} [Field E] [CharZero E] {s : E →+* E}
 
 theorem exists_aniso (hs : ∀ x, s (s x) = x) {n : ℕ} {J : Matrix (Fin (n + 1)) (Fin (n + 1)) E}
     (hJ : HN s J) : ∃ x, hform s J x x ≠ 0 := by
-  by_contra h
-  push_neg at h
+  by_contra! h
   have hd : ∀ i, J i i = 0 := fun i => by
     simpa [hform, Pi.single_apply, apply_ite s] using h (Pi.single i 1)
   have h0 : J = 0 := by
@@ -1658,8 +1656,6 @@ namespace GlobalTheory.Mem.Top.Bl.CoreAsm
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.Inhab Formalism.L2.Host GlobalTheory.EX GlobalTheory.EX.OB GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl
   NumberField IsDedekindDomain
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {K : Ctx} {B : Base} {f : Fr B.toPre} {T : TwDat B} {𝒮 : Slots} {w : ColW B f T} {Z : w.Lt}
 
 theorem fval_off (l : Lv4 𝒮 K w Z) (L : SizeData₂ (w.D Z)) (hL : L.sc = K.s) (v : B.places.Pl) (hv : v ∉ l.Wt)
@@ -1776,7 +1772,6 @@ section -- clump:auto
 @[expose] public section
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.Inhab Formalism.L2.Host GlobalTheory.EX GlobalTheory.EX.OB GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl NumberField IsDedekindDomain
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 end -- clump:auto
 end -- clump:auto

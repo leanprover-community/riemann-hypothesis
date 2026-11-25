@@ -22,39 +22,7 @@ theorem ChartNormAlgClosed.proof (h₁ : IncIdealBelow.Statement) (h₂ : SpecFi
     (h₈ : NormOfDividedFormSep.Statement) (h₉ : ChartFracSeparable.Statement) :
     ChartNormAlgClosed.Statement := by
   intro F _ _ n e I f t p _ hI hf hp hft u
-  have htI : linForm t ∉ I := by
-    intro h
-    have hmem := h₂ F n e I I f t hf le_rfl h
-    rw [h₁ F n e I f hI hf, Ideal.mem_bot] at hmem
-    exact hft (hmem ▸ p.zero_mem)
-  obtain ⟨hdom, hinj, -⟩ := h₅ F n e I f t p hI hf htI
-  have : Module.Finite (Localization.AtPrime p) (ChartLoc I t e p) := h₄ F n e I f t p hI hf hft
-  have : IsPrincipalIdealRing (Localization.AtPrime p) := by
-    rcases hp with rfl | ⟨q, hq, rfl⟩
-    · have hfield : IsField (Localization.AtPrime (⊥ : Ideal (MvPolynomial (Fin e × Fin n) F))) := by
-        rw [IsLocalRing.isField_iff_maximalIdeal_eq, ← Localization.AtPrime.map_eq_maximalIdeal,
-          Ideal.map_bot]
-      let := hfield.toField
-      infer_instance
-    · have := h₃ _ q _ hq rfl
-      infer_instance
-  have : Module.IsTorsionFree (Localization.AtPrime p) (ChartLoc I t e p) := by
-    rw [Module.isTorsionFree_iff_algebraMap_injective]
-    exact hinj
-  have : Module.Free (Localization.AtPrime p) (ChartLoc I t e p) := Module.free_of_finite_type_torsion_free'
-  have hsum : ∑ m, algebraMap F (Localization.AtPrime p) (t m) •
-      algebraMap (ChartInc I t e) (ChartLoc I t e p) (chartX I t e (X m)) = 1 := by
-    rw [← chartLin_eq_sum, chartLin_self, map_one]
-  have hcomp : (algebraMap (ChartInc I t e) (ChartLoc I t e p)).comp
-      (algebraMap (MvPolynomial (Fin e × Fin n) F) (ChartInc I t e)) =
-      (algebraMap (Localization.AtPrime p) (ChartLoc I t e p)).comp
-        (algebraMap (MvPolynomial (Fin e × Fin n) F) (Localization.AtPrime p)) :=
-    RingHom.ext fun x => (GroundTheory.Heights₂.Heights.chartLoc_algebraMap_tower I t p x).symm
-  have hdvd := map_dvd (MvPolynomial.map (algebraMap (ChartInc I t e) (ChartLoc I t e p)))
-    (h₇ F n e I f t hI hf htI)
-
-  simp only [map_sum, map_mul, map_X, map_C, map_map, hcomp] at hdvd
-  rw [← map_map] at hdvd
+  obtain ⟨htI, _, _, _, hsum, hdvd⟩ := chartNorm_setup h₁ h₂ h₃ h₄ h₅ h₇ hI hf hp hft
   have : Infinite F := IsAlgClosed.instInfinite
   have : Infinite (Localization.AtPrime p) :=
     Infinite.of_injective _ (algebraMap F (Localization.AtPrime p)).injective

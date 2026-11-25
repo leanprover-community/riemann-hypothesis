@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.CoordsAtSmul
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsHodgeGram
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsExcisionNbhdAway
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsValFam
@@ -93,17 +94,7 @@ theorem comb_base {F' : Type} [Field F'] (f : F →+* F') {x' : Sp F' ⟶ S} (hx
     {w' : epsAt x' ⟶ G} (hv : ∀ i, (v' i).left = spMap (GlobalTheory.CompanionTheory.Ar.dualMap f) ≫ (v i).left)
     (hw : w'.left = spMap (GlobalTheory.CompanionTheory.Ar.dualMap f) ≫ w.left) (h : IsComb cf v w) :
     IsComb (fun i => f (cf i)) v' w' := by
-  obtain ⟨u, hu, e⟩ := h
-  let g := LieCarrier.epsHom f x x' hx
-  have hw' : w' = g ≫ w := Over.OverMorphism.ext hw
-  refine ⟨fun i => g ≫ u i, fun i => ?_, ?_⟩
-  · have hscale : spMap (GlobalTheory.CompanionTheory.Ar.dualMap f) ≫ spMap (epsMul (cf i)) =
-        spMap (epsMul (f (cf i))) ≫ spMap (GlobalTheory.CompanionTheory.Ar.dualMap f) := by
-      simp only [spMap, ← Spec.map_comp, ← CommRingCat.ofHom_comp, LieCarrier.dualMap_epsMul]
-    change spMap (GlobalTheory.CompanionTheory.Ar.dualMap f) ≫ (u i).left = _
-    rw [hu i, ← Category.assoc, hscale, Category.assoc, hv i]
-  · rw [hw', e, CombBase.comp_list_prod, List.map_ofFn]
-    rfl
+  apply _root_.GlobalTheory.CompanionTheory.Ar.CombBase.isComb_base <;> assumption
 
 theorem eigFrame_base [Smooth G.hom] {P : Type} [CommRing P] (act : OAct P G) (σ : P →+* F) {F' : Type} [Field F']
     (f : F →+* F') {x' : Sp F' ⟶ S} (hx : spMap f ≫ x = x') {n : ℕ} {v : Fin n → (epsAt x ⟶ G)}
@@ -179,21 +170,8 @@ section Val
 variable {X : Scheme.{0}} {Ω : Type} [Field Ω] {ξ : Sp Ω ⟶ X} {F : Type} [Field F] {z : Sp F ⟶ X}
 
 theorem val_inv {a : Ω} {r : F} (h : ValAt ξ z a r) (hr : r ≠ 0) : ValAt ξ z a⁻¹ r⁻¹ := by
-  obtain ⟨hs, s, e1, e2⟩ := h
-  have hu : IsUnit s := by
-    haveI := RootHt.Pick.isLocalHom_valMap z
-    refine isUnit_of_map_unit (RootHt.Pick.valMap z) s ?_
-    have : RootHt.Pick.valMap z s = r := e2
-    rw [this]
-    exact hr.isUnit
-  obtain ⟨u, rfl⟩ := hu
-  refine ⟨hs, ((u⁻¹ : (X.presheaf.stalk (centre z))ˣ) : X.presheaf.stalk (centre z)), ?_, ?_⟩
-  · rw [← e1]
-    exact eq_inv_of_mul_eq_one_left (by rw [← map_mul]; simp)
-  · have f2 : RootHt.Pick.valMap z (u : X.presheaf.stalk (centre z)) = r := e2
-    show RootHt.Pick.valMap z _ = r⁻¹
-    rw [← f2]
-    exact eq_inv_of_mul_eq_one_left (by rw [← map_mul]; simp)
+  intros
+  apply _root_.GlobalTheory.CompanionTheory.Ar.RootHt.ArchB.val_inv₀ <;> assumption
 
 theorem val_det (h : genPt ξ ⤳ centre z) {n : ℕ} {P : Matrix (Fin n) (Fin n) Ω} {A : Matrix (Fin n) (Fin n) F}
     (hP : ∀ i j, ValAt ξ z (P i j) (A i j)) : ValAt ξ z P.det A.det := by

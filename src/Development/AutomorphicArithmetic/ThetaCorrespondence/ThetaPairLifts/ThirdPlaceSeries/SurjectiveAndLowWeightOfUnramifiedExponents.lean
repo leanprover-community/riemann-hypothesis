@@ -196,8 +196,6 @@ end GlobalTheory.BadOnRec
 
 namespace GlobalTheory.BadOnRec
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 local instance runAlgBad {D : D7} {J : CoreJ D} [inst : Algebra J.Q.c.F D.what₂.LL] (r : RealIndexBound.RunData J) :
     Algebra r.full.J.Q.c.F D.what₂.LL := inst
 

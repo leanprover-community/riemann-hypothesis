@@ -168,7 +168,7 @@ theorem GlobalTheory.PoinAut.poin_aut : ∀ (D : D7) (θ : InfFam D), IsInfFam �
   haveI := Formalism.L2.GlobalTheoryTheory.GenusMassVolumes.Unfold.topGroupHA D.sp.cm.sig V.gram
   set K := congLev D.sp.cm V.gram Λ 𝔪 with hKdef
   set N := 2 * V.rank ^ 2 + 1 with hN
-  obtain ⟨C₀, A₀, hI⟩ := GlobalTheory.T.poincareSeries_unitary_absolutelyConvergent_moderateGrowth D θ hθ V Λ hΛ c
+  obtain ⟨C₀, A₀, hI⟩ := _root_.GlobalTheory.PoinCount.poincare_count D θ hθ V Λ hΛ c
   have hopen : IsOpen ((K.comap (Lev.finE V) : Subgroup (GA D V)) : Set (GA D V)) :=
     (congLev_open_compact V (Formalism.IndefR.Fin.PDA.selfDual_isFullLattice V Λ hΛ) h𝔪).1
   have hKtop : ∀ y, y ∈ K → y ∈ congLev D.sp.cm V.gram Λ ⊤ := fun y hy => by

@@ -175,8 +175,7 @@ variable {σ : R →+* R} {ϖ : R} {q : ℕ} {ε : ℤ}
 
 theorem exists_trace (hR : IsUnrQuad R σ ϖ q ε) {y : R} (hy : y ∉ lev ϖ 1) :
     ∃ s, s * y + σ (s * y) ∉ lev ϖ 1 := by
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   obtain ⟨u, hu, -⟩ := hR.basis
   apply hy
   have h3 : (u - σ u) * y ∈ lev ϖ 1 := by
@@ -249,8 +248,7 @@ theorem exists_prim (hR : IsUnrQuad R σ ϖ q ε) {h : Matrix ι ι R} (hh : Hm 
     ∃ (a : ℕ) (h' : Matrix ι ι R), Hm σ h' ∧ h = (ϖ ^ a) • h' ∧ ∃ i j, h' i j ∉ lev ϖ 1 := by
   classical
   have hex : ∃ k, ∃ i j, h i j ∉ lev ϖ k := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     apply h0
     ext i j
     exact hR.sep _ (fun k => hcon k i j)

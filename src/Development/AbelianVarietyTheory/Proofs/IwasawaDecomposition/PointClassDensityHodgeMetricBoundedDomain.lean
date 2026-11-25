@@ -921,8 +921,7 @@ theorem tc_monomial_glue (D : ι → (γ × γ →₀ ℕ)) :
     exact Finset.prod_eq_one fun τ _ => if_pos (congrFun hD τ)
   · rw [if_neg hD]
     obtain ⟨τ, hτ⟩ : ∃ τ, D τ ≠ graph (σ τ) := by
-      by_contra hall
-      push_neg at hall
+      by_contra! hall
       exact hD (funext hall)
     symm
     exact Finset.prod_eq_zero (Finset.mem_univ τ) (if_neg hτ)
@@ -1111,21 +1110,7 @@ theorem contDiff_hP_entry (ι : Type) [Fintype ι] (p q n : ℕ)
   exact (hz (τ, a, k)).mul hs
 
 theorem invT_contDiffAt_and_isUnit : ∀ (ι : Type) [Fintype ι] (p q n : ℕ) (h : Fintype.card (ι × Fin p × Fin q) = n) (v : ReciprocityTheory.L2DbarEstimates.V n), GlobalTheory.UnifDens.flatL h v ∈ DomFlat ι p q → ∀ τ : ι, MContDiffAt 2 (fun w => ((hP (unflat (GlobalTheory.UnifDens.flatL h w) τ))⁻¹)ᵀ) v ∧ IsUnit (((hP (unflat (GlobalTheory.UnifDens.flatL h v) τ))⁻¹)ᵀ).det := by
-  intro ι _ p q n h v hv τ
-  have hpos : (1 - (unflat (GlobalTheory.UnifDens.flatL h v) τ)ᴴ * unflat (GlobalTheory.UnifDens.flatL h v) τ).PosDef :=
-    hv τ
-  have hne : (hP (unflat (GlobalTheory.UnifDens.flatL h v) τ)).det ≠ 0 :=
-    det_one_sub_mul_conjTranspose_ne_zero _ hpos
-  refine ⟨fun a b => ?_, ?_⟩
-  · have hE := contDiff_hP_entry ι p q n h τ
-    have hdet := contDiff_det (F := fun w : ReciprocityTheory.L2DbarEstimates.V n => hP (unflat (GlobalTheory.UnifDens.flatL h w) τ)) hE
-    have hadj := contDiff_adjugate_apply (F := fun w : ReciprocityTheory.L2DbarEstimates.V n => hP (unflat (GlobalTheory.UnifDens.flatL h w) τ)) hE b a
-    simp only [Matrix.transpose_apply, Matrix.inv_def, Matrix.smul_apply, smul_eq_mul,
-      Ring.inverse_eq_inv']
-    exact (hdet.contDiffAt.inv hne).mul hadj.contDiffAt
-  · rw [Matrix.det_transpose, Matrix.det_nonsing_inv]
-    rw [Ring.inverse_eq_inv']
-    exact (inv_ne_zero hne).isUnit
+  apply _root_.GlobalTheory.DomDensInv.model_smooth <;> assumption
 
 end GlobalTheory.ModelMetricReg
 end -- clump:auto

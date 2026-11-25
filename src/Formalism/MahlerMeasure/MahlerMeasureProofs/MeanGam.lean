@@ -83,8 +83,7 @@ theorem determinant_block_leading_term : DetBlockLead := by
       simp [hM, Matrix.of_apply, hall i]
     · push_neg at hall
       have hex : ∃ j, e j < e (σ j) := by
-        by_contra hno
-        push_neg at hno
+        by_contra! hno
         have hsum : ∑ j, e (σ j) = ∑ j, e j := Equiv.sum_comp σ e
         have hall' := (Finset.sum_eq_sum_iff_of_le (fun j _ => hno j)).1 hsum
         obtain ⟨i, hi⟩ := hall

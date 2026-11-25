@@ -2,6 +2,8 @@ module
 
 public import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.GlobalGaussLaws.LocOpSt
 public import Mathlib.Analysis.Calculus.ContDiff.Bounds
+import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.FockSpaces.EvXTemperate
+import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.ThetaSchwartzSums.SchwartzPolyGauss
 
 @[expose] public section
 
@@ -134,73 +136,7 @@ private theorem exists_bound_one_add_pow_mul_exp_neg_sq (c : ℝ) (hc : 0 < c) (
 
 theorem gs_sch {m n : ℕ} (c : ℝ) (hc : 0 < c) :
     ∃ S : SchwartzMap (Fin m → Fin n → ℂ) ℂ, ∀ u, S u = gs c u := by
-  have hqT := hasTemperateGrowth_const_mul_sum_norm_sq (m := m) (n := n) c
-  have hhC : ContDiff ℝ (⊤ : ℕ∞) (fun s : ℝ => Complex.exp (-(s : ℂ))) :=
-    Complex.contDiff_exp.comp (Complex.ofRealCLM.contDiff.neg)
-  have hgs : (gs c : (Fin m → Fin n → ℂ) → ℂ) =
-      (fun s : ℝ => Complex.exp (-(s : ℂ))) ∘
-        (fun u : Fin m → Fin n → ℂ => c * ∑ a : Fin m, ∑ i : Fin n, ‖u a i‖ ^ 2) := by
-    funext u
-    simp [gs]
-  have hlow : ∀ u : Fin m → Fin n → ℂ, ‖u‖ ^ 2 ≤ ∑ a : Fin m, ∑ i : Fin n, ‖u a i‖ ^ 2 := by
-    intro u
-    have hS0 : 0 ≤ ∑ a : Fin m, ∑ i : Fin n, ‖u a i‖ ^ 2 := by positivity
-    have hb : ‖u‖ ≤ Real.sqrt (∑ a : Fin m, ∑ i : Fin n, ‖u a i‖ ^ 2) := by
-      refine (pi_norm_le_iff_of_nonneg (Real.sqrt_nonneg _)).2 fun a => ?_
-      refine (pi_norm_le_iff_of_nonneg (Real.sqrt_nonneg _)).2 fun i => ?_
-      have h1 : ‖u a i‖ ^ 2 ≤ ∑ a : Fin m, ∑ i : Fin n, ‖u a i‖ ^ 2 :=
-        calc ‖u a i‖ ^ 2 ≤ ∑ i' : Fin n, ‖u a i'‖ ^ 2 :=
-              Finset.single_le_sum (f := fun i' => ‖u a i'‖ ^ 2)
-                (fun _ _ => by positivity) (Finset.mem_univ i)
-          _ ≤ ∑ a : Fin m, ∑ i : Fin n, ‖u a i‖ ^ 2 :=
-              Finset.single_le_sum (f := fun a' => ∑ i' : Fin n, ‖u a' i'‖ ^ 2)
-                (fun _ _ => by positivity) (Finset.mem_univ a)
-      have h2 := Real.abs_le_sqrt h1
-      rwa [abs_of_nonneg (norm_nonneg _)] at h2
-    calc ‖u‖ ^ 2 ≤ (Real.sqrt (∑ a : Fin m, ∑ i : Fin n, ‖u a i‖ ^ 2)) ^ 2 :=
-          pow_le_pow_left₀ (norm_nonneg _) hb 2
-      _ = _ := Real.sq_sqrt hS0
-  refine ⟨⟨gs c, ?_, ?_⟩, fun u => rfl⟩
-  · rw [hgs]
-    exact hhC.comp hqT.1
-  · intro k N
-    obtain ⟨K, C, hC0, hC⟩ := hqT.norm_iteratedFDeriv_le_uniform N
-    obtain ⟨M, hM⟩ := exists_bound_one_add_pow_mul_exp_neg_sq c hc (k + K * N)
-    refine ⟨N.factorial * (C + 1) ^ N * M, fun u => ?_⟩
-    have hu0 := norm_nonneg u
-    have hD1 : 1 ≤ (C + 1) * (1 + ‖u‖) ^ K :=
-      one_le_mul_of_one_le_of_one_le (by linarith) (one_le_pow₀ (by linarith))
-    have hD : ∀ i : ℕ, 1 ≤ i → i ≤ N →
-        ‖iteratedFDeriv ℝ i
-          (fun u : Fin m → Fin n → ℂ => c * ∑ a : Fin m, ∑ i : Fin n, ‖u a i‖ ^ 2) u‖ ≤
-          ((C + 1) * (1 + ‖u‖) ^ K) ^ i := by
-      intro i hi1 hiN
-      calc _ ≤ C * (1 + ‖u‖) ^ K := hC i hiN u
-        _ ≤ (C + 1) * (1 + ‖u‖) ^ K := by gcongr; linarith
-        _ ≤ _ := le_self_pow₀ hD1 (by omega)
-    have key := norm_iteratedFDeriv_comp_le (𝕜 := ℝ) (n := N) hhC hqT.1
-      (by exact_mod_cast le_top) u
-      (C := Real.exp (-(c * ∑ a : Fin m, ∑ i : Fin n, ‖u a i‖ ^ 2)))
-      (fun i _ => (norm_iteratedFDeriv_cexp_neg_eq_exp_neg i _).le) hD
-    have hexp_le : Real.exp (-(c * ∑ a : Fin m, ∑ i : Fin n, ‖u a i‖ ^ 2)) ≤
-        Real.exp (-(c * ‖u‖ ^ 2)) := by
-      apply Real.exp_le_exp.2
-      have := mul_le_mul_of_nonneg_left (hlow u) hc.le
-      linarith
-    have hpow : ‖u‖ ^ k ≤ (1 + ‖u‖) ^ k := pow_le_pow_left₀ hu0 (by linarith) k
-    rw [hgs]
-    calc ‖u‖ ^ k * ‖iteratedFDeriv ℝ N _ u‖
-        ≤ (1 + ‖u‖) ^ k * (N.factorial * Real.exp (-(c * ‖u‖ ^ 2)) *
-            ((C + 1) * (1 + ‖u‖) ^ K) ^ N) := by
-          refine mul_le_mul hpow (key.trans ?_) (norm_nonneg _) (by positivity)
-          gcongr
-      _ = N.factorial * (C + 1) ^ N *
-            ((1 + ‖u‖) ^ (k + K * N) * Real.exp (-(c * ‖u‖ ^ 2))) := by
-          rw [mul_pow, ← pow_mul, pow_add]
-          ring
-      _ ≤ N.factorial * (C + 1) ^ N * M := by
-          gcongr
-          exact hM _ hu0
+  apply _root_.PositivityTheory.SiegelWeilFormula.KFock.gsSch <;> assumption
 
 theorem schFP : SchFP := by
   intro m n c hc P

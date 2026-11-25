@@ -175,8 +175,7 @@ theorem fundSetMeasStatement_of_isCMField {E : Type} [Field E] [NumberField E] [
     refine lintegral_mono_ae (hcov.mono fun z hz => ?_)
     by_cases hS0 : cpt X x0 z ∈ KU.Sset X x0 FF
     · have : ∃ γ : X.Γ, cpt X x0 z ∈ lact γ.1⁻¹ ⁻¹' KU.Sset X x1 CechHodgeFiltration := by
-        by_contra hn
-        push_neg at hn
+        by_contra! hn
         exact hz (Set.mem_iInter.mpr fun γ => hn γ)
       obtain ⟨γ, hγ⟩ := this
       refine le_trans (le_of_eq ?_) (ENNReal.le_tsum γ)

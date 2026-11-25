@@ -20,6 +20,7 @@ import Mathlib.GroupTheory.FiniteAbelian.Basic
 import Mathlib.LinearAlgebra.FreeModule.IdealQuotient
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.HopfAlgebra.Basic
+import Formalism.LocalToGlobal.Columns.MtIsoVal
 
 @[expose] public section
 
@@ -1417,19 +1418,7 @@ theorem chain_char_eval : ChainCEv := by
 
 theorem map_mem_VV {K L : Type} [Field K] [Field L] {ι : Type} [Fintype ι] {n : ℕ} (σ : K →+* L) (lam : ι → DomWeight n) (F : DIV.Pol K ι n)
     (hF : F ∈ DIV.VV K lam) : MvPolynomial.map σ F ∈ DIV.VV L lam := by
-  unfold DIV.VV Formalism.GradedWeylDivisibility.tensorLat at hF ⊢
-  induction hF using Submodule.span_induction with
-  | mem x hx =>
-    obtain ⟨f, hf, rfl⟩ := hx
-    refine Submodule.subset_span ⟨fun τ => MvPolynomial.map σ (f τ), fun τ => Formalism.GradedWeylDivisibility.dualWeylMap K L σ n n _ _ (hf τ), ?_⟩
-    rw [map_prod]
-    refine Finset.prod_congr rfl fun τ _ => ?_
-    rw [Formalism.GradedWeylDivisibility.blockEmb, Formalism.GradedWeylDivisibility.blockEmb, MvPolynomial.map_rename]
-  | zero => rw [map_zero]; exact zero_mem _
-  | add x y _ _ hx hy => rw [map_add]; exact add_mem hx hy
-  | smul c x _ hx =>
-    rw [MvPolynomial.smul_eq_C_mul, map_mul, MvPolynomial.map_C, ← MvPolynomial.smul_eq_C_mul]
-    exact Submodule.smul_mem _ _ hx
+  apply _root_.Formalism.L2.Col.mti_map_mem_VV <;> assumption
 
 theorem tied_on_models : TiedOnModels := by
   intro D u C O i hi ν h K _ σ lam n hw c c' J z hJ sh hn P hP

@@ -264,8 +264,7 @@ private theorem stab (I : ℕ → Ideal B) (hI : Antitone I) (j : ℕ) :
 
 private theorem cofinal [IsAdicComplete (maximalIdeal B) B] (I : ℕ → Ideal B) (hI : Antitone I)
     (h0 : ⨅ N, I N = ⊥) (k : ℕ) : ∃ N, I N ≤ maximalIdeal B ^ k := by
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   choose e he using fun j => stab I hI (k + j)
 
   let E : ℕ → ℕ := fun j => (Finset.range (j + 1)).sup e + j

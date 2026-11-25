@@ -8,51 +8,9 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.HeightAndVa
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.HeightAndVanishing.ExistsStrictHenselianAbsolutelyClosedLocalRing
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.HeightAndVanishing.PsiBar
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.IneLeFixingSubgroup
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
 import Mathlib.RingTheory.Valuation.LocalSubring
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 
 @[expose] public section
 
@@ -224,8 +182,7 @@ theorem UpperTheory.V.HV.gdLoc :
   refine ⟨?_, ?_, ?_⟩
   · intro A hA
     refine ⟨ine_le Ω K hp hdisc A hA, ?_⟩
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     apply hG.gen
     apply hOm.2.2.2.2.2.2.1 A hA (2 * (e + a))
     intro σ hσ
@@ -246,8 +203,7 @@ theorem UpperTheory.V.HV.gdLoc :
     · have := Ideal.add_mem _ hm1 hm2
       rw [sub_add_sub_cancel] at this
       simpa using this
-  · by_contra hcon
-    push_neg at hcon
+  · by_contra! hcon
     have hθ := key (e + 1) (fun σ hσ => by
         have h1 := hcon σ hσ
         have h2 : (((w ^ (e + 1) * D) σ : (c.O)ˣ) : c.O) - ((w σ * Chr.Psi l e D σ : (c.O)ˣ) : c.O)
@@ -267,8 +223,7 @@ theorem UpperTheory.V.HV.gdLoc :
       rw [pow_one, pow_add w (e + 1) a, mul_comm D, ← mul_assoc, mul_inv_cancel_right]
     rw [hθ, hg]
     exact hCF.1.refl _
-  · by_contra hcon
-    push_neg at hcon
+  · by_contra! hcon
     obtain ⟨e', he⟩ : ∃ e', e = e' + 1 := ⟨e - 1, by have := hG.e_pos; omega⟩
     have hθ := key e' (fun σ hσ => by
         have h1 := hcon σ hσ

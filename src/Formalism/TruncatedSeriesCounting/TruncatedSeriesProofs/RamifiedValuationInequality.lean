@@ -24,8 +24,7 @@ theorem mem_span_iff_of_distinct_exponents : DistinctTerms := by
   classical
   constructor
   · intro hmem
-    by_contra hbad
-    push_neg at hbad
+    by_contra! hbad
     obtain ⟨i₁, hi₁, hb₁, hs₁⟩ := hbad
     have hJne : (I.filter fun i => e i < B ∧ m i < s).Nonempty :=
       ⟨i₁, Finset.mem_filter.mpr ⟨hi₁, hb₁, hs₁⟩⟩
@@ -50,8 +49,7 @@ theorem mem_span_iff_of_distinct_exponents : DistinctTerms := by
       · rw [if_pos hle]
         have hlt : e i < e i₀ := lt_of_le_of_ne hle fun h => hne (he hiI hi₀ h)
         have hms : s ≤ m i := by
-          by_contra hms
-          push_neg at hms
+          by_contra! hms
           have := hmin i (Finset.mem_filter.mpr ⟨hiI, by omega, hms⟩)
           omega
         exact Dvd.dvd.mul_left (pow_dvd_pow ϖ hms) _

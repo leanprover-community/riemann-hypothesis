@@ -1025,20 +1025,8 @@ theorem frame_transport {k : Type} [Field k] {n : ℕ} {c : k →+* k} {δ : GL 
 theorem decomp (E : Type) [Field E] [NumberField E] [IsCMField E] (s : E) (hs0 : s ≠ 0)
     (hsc : IsCMField.complexConj E s = -s) (z : E) :
     ∃ a b : (maximalRealSubfield E),
-      z = algebraMap (maximalRealSubfield E) E a + s * algebraMap (maximalRealSubfield E) E b := by
-  have h2 : (2 : E) ≠ 0 := two_ne_zero
-  have ha : (z + IsCMField.complexConj E z) / 2 ∈ maximalRealSubfield E := by
-    rw [← IsCMField.complexConj_eq_self_iff, map_div₀, map_add (f := _), IsCMField.complexConj_apply_apply, map_ofNat,
-      add_comm]
-  have hb : (z - IsCMField.complexConj E z) / (2 * s) ∈ maximalRealSubfield E := by
-    rw [← IsCMField.complexConj_eq_self_iff, map_div₀, map_sub, map_mul, IsCMField.complexConj_apply_apply, map_ofNat,
-      hsc]
-    field_simp
-    ring
-  refine ⟨⟨_, ha⟩, ⟨_, hb⟩, ?_⟩
-  change z = (z + IsCMField.complexConj E z) / 2 + s * ((z - IsCMField.complexConj E z) / (2 * s))
-  field_simp
-  ring
+      z = algebraMap (maximalRealSubfield E) E a + s * algebraMap (maximalRealSubfield E) E b :=
+  _root_.PositivityTheory.Rg.BcB.G3.InertBaseP.decomp E s hs0 hsc z
 
 end PositivityTheory.Rg.BcB.G3.LocDictP
 

@@ -28,6 +28,7 @@ import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Tactic.Linter.HaveILetI
 import Aesop.Main
+import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.LocalCharacterIntegrals.MeasurePreservingOfAddEquiv
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CharacterLevelFormula, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ClassLevelFormula, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CosetIntegralUnramified, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CosetIntegralUnramifiedStatement, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CosetMeasureFormula, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IntegralHermitianInvariance, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IntegralHermitianVolumeOne, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelExhaustion, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MultiplicityBoundUnramified, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MultiplicityPowerFormula, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TsumExhaustionUnramified, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HermitianMatricesCard, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CardFibreGramDifferential, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnimodularHermitianRepsCountSucc, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnramifiedLocalFormula, Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.UnramifiedWhittaker.LocCAsm, Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.UnramifiedWhittaker.LocCMain, Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.UnramifiedWhittaker.CFinal
@@ -461,8 +462,7 @@ theorem measure_eq_one_of_selfDual {V : Type} [AddCommGroup V] [TopologicalSpace
       · simp [Φ, show x ∉ (L : Set V) from hx]
     · rw [Set.indicator_of_notMem (show y ∉ (L : Set V) from hy)]
       have hex : ∃ x₀ ∈ L, χ x₀ y ≠ 1 := by
-        by_contra hcon
-        push_neg at hcon
+        by_contra! hcon
         exact hy ((hann y).1 hcon)
       obtain ⟨x₀, hx₀, hne⟩ := hex
       have htr : ∫ x, Φ (x₀ + x) * χ (x₀ + x) y ∂μ = ∫ x, Φ x * χ x y ∂μ :=
@@ -568,25 +568,10 @@ theorem t2_tensor_product (bs : Module.Basis (Fin d) F E) (v : HeightOneSpectrum
 
 theorem isClosed_herm (bs : Module.Basis (Fin d) F E) (σ : E →ₐ[F] E) (v : HeightOneSpectrum (𝓞 F)) (n : ℕ) :
     IsClosed (HermR (Fv F v) σ n : Set (Matrix (Fin n) (Fin n) (Fv F v ⊗[F] E))) := by
-  haveI := t2_tensor_product bs v
-  have : (HermR (Fv F v) σ n : Set (Matrix (Fin n) (Fin n) (Fv F v ⊗[F] E))) =
-      ⋂ a, ⋂ b, {X | sigR (Fv F v) σ (X b a) = X a b} := by
-    ext X
-    simp only [Set.mem_iInter, Set.mem_setOf_eq, SetLike.mem_coe]
-    exact Iff.rfl
-  rw [this]
-  exact isClosed_iInter fun a => isClosed_iInter fun b =>
-    isClosed_eq ((continuous_sigR_Fv bs σ v).comp ((continuous_apply a).comp (continuous_apply b)))
-      ((continuous_apply b).comp (continuous_apply a))
+  apply _root_.PositivityTheory.SiegelWeilFormula.SwLocFin.isClosed_hermSet <;> assumption
 
 theorem isOpen_Rv (bs : Module.Basis (Fin d) F E) (v : HeightOneSpectrum (𝓞 F)) : IsOpen (Rv bs v) := by
-  obtain ⟨e, he⟩ := exists_coord_homeo bs v
-  have hO : IsOpen ((v.adicCompletionIntegers F : Set (Fv F v))) := Valued.isOpen_integer _
-  have h : Rv bs v = e ⁻¹' (Set.pi Set.univ fun _ : Fin d => (v.adicCompletionIntegers F : Set (Fv F v))) := by
-    ext x
-    simp only [Rv, Set.mem_setOf_eq, Set.mem_preimage, Set.mem_pi, Set.mem_univ, true_imp_iff, he, SetLike.mem_coe]
-  rw [h]
-  exact (isOpen_set_pi Set.finite_univ fun _ _ => hO).preimage e.continuous
+  apply _root_.GlobalTheory.CompanionTheory.GunrCoset.isOpen_Rv <;> assumption
 
 theorem isCompact_Rv (bs : Module.Basis (Fin d) F E) (v : HeightOneSpectrum (𝓞 F)) : IsCompact (Rv bs v) := by
   obtain ⟨e, he⟩ := exists_coord_homeo bs v
@@ -836,8 +821,7 @@ theorem not_mem_lev_one {ϖ a : R} (h : ¬ ϖ ∣ a) : a ∉ lev ϖ 1 := by
 
 theorem exists_trace_not_dvd {σ : R →+* R} {ϖ : R} {q : ℕ} {ε : ℤ} (h : IsUnrQuad R σ ϖ q ε) {c : R}
     (hc : ¬ ϖ ∣ c) : ∃ t : R, ¬ ϖ ∣ (t * c + σ (t * c)) := by
-  by_contra hall
-  push_neg at hall
+  by_contra! hall
   obtain ⟨u, ⟨d, hd⟩, -⟩ := h.basis
   have h1 : ϖ ∣ 1 * c + σ (1 * c) := hall 1
   have h2 : ϖ ∣ u * c + σ (u * c) := hall u

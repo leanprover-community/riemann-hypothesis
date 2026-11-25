@@ -836,8 +836,7 @@ theorem support_compact : ∀ {F : Type} [Field F] [NumberField F] (v : Pl (F :=
       exact sub_eq_zero.1 ((mul_eq_zero.1 h0).resolve_right hne)
     refine ⟨?_, ?_⟩
     · have hex : ∃ y, schr ψ₀ (a, b) φ y * (starRingEnd ℂ) (g y) ≠ 0 := by
-        by_contra h
-        push_neg at h
+        by_contra! h
         exact hne (by simp [h])
       obtain ⟨y, hy⟩ := hex
       have h1 : φ (y + a) ≠ 0 := fun h => hy (by simp [schr, h])
@@ -865,7 +864,6 @@ open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.Genus
 open scoped TensorProduct Matrix GlobalTheory.VacAny
 
 open MeasureTheory ComplexConjugate
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 noncomputable section
 namespace GlobalTheory.LagLocForm

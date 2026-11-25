@@ -4,6 +4,7 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BetaSesquili
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.TypeStar
 import Formalism.HermitianCurvature.StatementU
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnipotentCorrectionU1.CompCA
 
 @[expose] public section
 
@@ -32,11 +33,7 @@ lemma hd_Dx (x : Bool × Mat k r) {f : Mat k r → ℂ} (hf : Differentiable ℝ
 
 lemma Dx_fd (x : Bool × Mat k r) {f : Mat k r → ℂ} (hf : Differentiable ℝ f) :
     Dx x f = fun g => fderiv ℝ f g (dirL x g) := by
-  funext g
-  have h := (hf (crv x g 0)).hasFDerivAt.comp_hasDerivAt (0 : ℝ) (crv_hasDerivAt x g)
-  rw [crv_zero] at h
-  rw [dirL_apply]
-  exact (hd_Dx x hf g).unique h
+  apply _root_.PI.UnitaryCorollaryDerivatives.CCA.Dx_fd <;> assumption
 
 lemma cd_Dx (x : Bool × Mat k r) {f : Mat k r → ℂ} (hf : ContDiff ℝ ∞ f) : ContDiff ℝ ∞ (Dx x f) := by
   rw [Dx_fd x (dif hf)]
@@ -56,20 +53,11 @@ lemma Dx_add' (x : Bool × Mat k r) {a b : Mat k r → ℂ} (ha : Differentiable
 
 lemma Dw_add' (w : List (Bool × Mat k r)) {a b : Mat k r → ℂ} (ha : ContDiff ℝ ∞ a) (hb : ContDiff ℝ ∞ b) :
     Dw w (fun g => a g + b g) = fun g => Dw w a g + Dw w b g := by
-  induction w with
-  | nil => rfl
-  | cons x w ih =>
-    show Dx x (Dw w fun g => a g + b g) = _
-    rw [ih]
-    exact Dx_add' x (dif (cd_Dw w ha)) (dif (cd_Dw w hb))
+  apply _root_.PI.UnitaryCorollaryDerivatives.CCA.Dw_add' <;> assumption
 
 lemma Dx_mul' (x : Bool × Mat k r) {a b : Mat k r → ℂ} (ha : Differentiable ℝ a) (hb : Differentiable ℝ b) :
     Dx x (fun g => a g * b g) = fun g => Dx x a g * b g + a g * Dx x b g := by
-  funext g
-  have h0 : crv x g 0 = g := by simp [crv]
-  have h := (hd_Dx x ha g).mul (hd_Dx x hb g)
-  rw [h0] at h
-  exact (hd_Dx x (ha.mul hb) g).unique h
+  apply _root_.PI.UnitaryCorollaryDerivatives.CCA.Dx_mul' <;> assumption
 
 def Spl (w w₁ w₂ : List (Bool × Mat k r)) : Prop := w₁.Sublist w ∧ w₂.Sublist w ∧ (w₁ ++ w₂).Perm w
 

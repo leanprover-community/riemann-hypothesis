@@ -333,8 +333,7 @@ lemma paired_sum_exp_bound {ι κ : Type} [DecidableEq ι] [DecidableEq κ] (I I
 lemma half_integer_neg_le_neg_half (y : ℝ) (z : ℤ) (h : y = (z : ℝ) + 1 / 2) (hy : y < 0) : y ≤ -(1 / 2) := by
   subst h
   have hz : z ≤ -1 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     have h0 : (0:ℤ) ≤ z := by omega
     have : (0:ℝ) ≤ z := by exact_mod_cast h0
     linarith

@@ -152,16 +152,6 @@ theorem Compat.ratio {N : LB Z} (hN : N.IsLB) {f : Y ⟶ Z} {a b} (ha : Compat N
   refine ⟨c, fun W k w i hi => ?_⟩
   rw [← gm_res' k w (le_top : f ⁻¹ᵁ N.U i ≤ ⊤) c hi, hc i, map_mul, map_inv, inv_mul_cancel_right]
 
-private theorem units_eq_of_gm_id_eq {Y : Scheme.{0}} {V : Y.Opens} (u v : Γ(Y, V)ˣ)
-    (h : ∀ y, y ∈ V → gm (𝟙 Y) y V u = gm (𝟙 Y) y V v) : u = v := by
-  apply Units.ext
-  apply TopCat.Presheaf.section_ext Y.sheaf V
-  intro y hy
-  have e := congrArg Units.val (h y hy)
-  have hy' : (𝟙 Y) y ∈ V := hy
-  simp only [gm, dif_pos hy', pullU, MonoidHom.comp_apply, Units.coe_map] at e
-  exact e
-
 theorem exists_gen_of_range {N : LB Z} {f : Y ⟶ Z} {a} (ha : Compat N f a)
     (hinj : ∀ V, Function.Injective (f.app V).hom)
     (h₁ : ∀ i, (a i).val ∈ Set.range (f.app (N.U i)).hom)
@@ -175,7 +165,7 @@ theorem exists_gen_of_range {N : LB Z} {f : Y ⟶ Z} {a} (ha : Compat N f a)
   intro i j
   have key : res (f.preimage_mono (inf_le_left : N.U i ⊓ N.U j ≤ N.U i)) (a i) =
       pullU f _ (N.g i j) * res (f.preimage_mono (inf_le_right : N.U i ⊓ N.U j ≤ N.U j)) (a j) := by
-    refine units_eq_of_gm_id_eq _ _ fun y hy => ?_
+    refine unit_ext fun y hy => ?_
     rw [map_mul, gm_res' _ _ _ _ hy, gm_res' _ _ _ _ hy, gm_pullU_eq_gm_comp]
     exact ha Y (𝟙 Y) y i j hy.1 hy.2
   apply Units.ext

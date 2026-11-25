@@ -58,8 +58,6 @@ open MvPolynomial
 
 namespace GlobalTheory.ExportSeries.Onto
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} {n : ℕ}
 
 def coefLin (lam : D.what₂.Tau → DomWeight n) : Pol ℂ D.what₂.Tau n →ₗ[ℂ] (GLR D n → ℂ) where

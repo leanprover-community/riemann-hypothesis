@@ -471,8 +471,7 @@ theorem kills_linear_mul {V : Type} [NormedAddCommGroup V] [NormedSpace ℝ V] [
       _ ≤ (C : ℝ) * (t * ∑ m ∈ s, B m) := by gcongr
       _ = t * ((C : ℝ) * ∑ m ∈ s, B m) := by ring
   have h0 : ‖T g‖ ≤ 0 := by
-    by_contra hpos
-    push_neg at hpos
+    by_contra! hpos
     have hD : 0 < 2 * ((C : ℝ) * ∑ m ∈ s, B m + 1) := by positivity
     have ht := key (min 1 (‖T g‖ / (2 * ((C : ℝ) * ∑ m ∈ s, B m + 1))))
       (lt_min one_pos (div_pos hpos hD)) (min_le_left _ _)

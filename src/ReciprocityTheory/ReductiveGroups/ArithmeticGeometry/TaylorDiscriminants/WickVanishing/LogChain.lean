@@ -164,8 +164,7 @@ theorem eq_C_of_pderiv_zero [Algebra ℚ k] {g : MvPowerSeries τ k} (h : ∀ v,
   · subst hn
     simp
   · obtain ⟨v, hv⟩ : ∃ v, n v ≠ 0 := by
-      by_contra hcon
-      push_neg at hcon
+      by_contra! hcon
       exact hn (Finsupp.ext fun i => by simpa using hcon i)
     set m := n - Finsupp.single v 1 with hm
     have hnm : n = m + Finsupp.single v 1 :=

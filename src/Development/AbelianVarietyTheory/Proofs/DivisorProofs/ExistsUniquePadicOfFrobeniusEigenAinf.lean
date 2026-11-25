@@ -77,8 +77,7 @@ private theorem exists_zmod_mul_of_pow_eq_pow_pred_mul {R : Type*} [CommRing R] 
     {p : ℕ} [Fact p.Prime] [CharP R p] {t x : R} (ht : t ≠ 0)
     (hx : x ^ p = t ^ (p - 1) * x) : ∃ k : ZMod p, x = ZMod.castHom (dvd_refl p) R k * t := by
   classical
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   have hp : p.Prime := Fact.out
   set Q : Polynomial R := Polynomial.X ^ p - Polynomial.C (t ^ (p - 1)) * Polynomial.X with hQ
   have hdeg : Q.natDegree = p := by

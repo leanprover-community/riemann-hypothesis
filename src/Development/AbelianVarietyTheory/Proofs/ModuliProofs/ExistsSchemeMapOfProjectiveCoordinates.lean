@@ -145,8 +145,7 @@ theorem lbIso_of_coord (A B : LB X) (a : σ → A.Sec) (b : σ → B.Sec)
     ((Sp R).presheaf.germ ⊤ p trivial).hom.comp (Scheme.ΓSpecIso (CommRingCat.of R)).inv.hom
   constructor
   · have : ∃ i, IsUnit (ψ (v i)) := by
-      by_contra hn
-      push_neg at hn
+      by_contra! hn
       have : Ideal.span (Set.range v) ≤ (IsLocalRing.maximalIdeal _).comap ψ := by
         rw [Ideal.span_le]
         rintro _ ⟨i, rfl⟩

@@ -448,8 +448,7 @@ theorem UpperTheory.finprod_local_eq_indicator_mul_prod :
     rw [hoff v h1, if_pos (hx v h1)]
   · rw [Set.indicator_of_notMem hx, zero_mul]
     have hx' : ∃ v, v ∉ Set.range w ∧ finAt v (finEmb K n x) ∉ GLnLocal.integralGL (v.adicCompletion K) n := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       exact hx hc
     obtain ⟨v, h1, h2⟩ := hx'
     refine Finset.prod_eq_zero (i := v) ?_ ?_

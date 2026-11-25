@@ -73,36 +73,11 @@ theorem γA_lA_pow (g : W.Gam) (k : ℕ) : W.γA g (lA W ^ k) = lA W ^ k := by
 
 theorem Pp_letter (T : LocLat G Qp LL O) (c : ZMod n) (e : ℕ) (y : W.DD T)
     (hy : y ∈ Pp W T c e) : (letE (c + (e : ZMod n)) : LetA O n) • y = y := by
-  let S : AddSubgroup (W.DD T) :=
-    { carrier := {y | (letE (c + (e : ZMod n)) : LetA O n) • y = y}
-      add_mem' := fun {a b} ha hb => by
-        simp only [Set.mem_ofPred_eq] at ha hb ⊢; rw [smul_add, ha, hb]
-      zero_mem' := by simp only [Set.mem_ofPred_eq, smul_zero]
-      neg_mem' := fun {a} ha => by simp only [Set.mem_ofPred_eq] at ha ⊢; rw [smul_neg, ha] }
-  have hgen : {z | ∃ a ∈ W.AΔ, ∃ x, Formalism.MainNotions.LiftingTheory.InNΔi W T c x ∧ z = a • ((W.φD T) ^ e) x} ⊆
-      (S : Set (W.DD T)) := by
-    rintro _ ⟨a, -, x, ⟨-, ⟨y', -, hyx⟩⟩, rfl⟩
-    have hxc : (letE c : LetA O n) • x = x := by
-      rw [← hyx, LinearMap.smul_apply, LinearMap.id_apply, smul_smul, letE_mul_self]
-    show (letE (c + (e : ZMod n)) : LetA O n) • (a • ((W.φD T) ^ e) x) = a • ((W.φD T) ^ e) x
-    rw [smul_comm, PhiPowers.φD_pow_letter W T c x hxc e]
-  exact (AddSubgroup.closure_le S).2 hgen hy
+  apply _root_.Formalism.MainNotions.UnusedSlot80.Relay2.Pp_letter <;> assumption
 
 theorem Pp_Δ (T : LocLat G Qp LL O) (c : ZMod n) (e : ℕ) {y : W.DD T}
     (hy : y ∈ Pp W T c e) : ∀ δ ∈ W.DelF, W.γD T δ y = y := by
-  intro δ hδ
-  let S : AddSubgroup (W.DD T) :=
-    { carrier := {y | W.γD T δ y = y}
-      add_mem' := fun {a b} ha hb => by
-        simp only [Set.mem_ofPred_eq] at ha hb ⊢; rw [map_add (f := _), ha, hb]
-      zero_mem' := by simp only [Set.mem_ofPred_eq, map_zero]
-      neg_mem' := fun {a} ha => by simp only [Set.mem_ofPred_eq] at ha ⊢; rw [map_neg, ha] }
-  have hgen : {z | ∃ a ∈ W.AΔ, ∃ x, Formalism.MainNotions.LiftingTheory.InNΔi W T c x ∧ z = a • ((W.φD T) ^ e) x} ⊆
-      (S : Set (W.DD T)) := by
-    rintro _ ⟨a, ha, x, ⟨hxN, -⟩, rfl⟩
-    show W.γD T δ (a • ((W.φD T) ^ e) x) = a • ((W.φD T) ^ e) x
-    rw [Formalism.MainNotions.WachCoordinates.Br.γD_smulA, ha δ hδ, PhiPowers.φD_pow_Δ W T hxN.2 e δ hδ]
-  exact (AddSubgroup.closure_le S).2 hgen hy
+  apply _root_.Formalism.MainNotions.UnusedSlot80.Relay2.Pp_Δ <;> assumption
 
 theorem InFN_add {T : LocLat G Qp LL O} {f : LetA O n} {a b : W.DD T} (ha : InFN W T f a)
     (hb : InFN W T f b) : InFN W T f (a + b) := by
@@ -392,8 +367,7 @@ theorem arc_surj [NeZero n] (A : ArcP n) (hA : A.OK) (i : ZMod n) :
   have hdc := (Nat.find_spec hex).2
   obtain ⟨hl1, -, hprev, -⟩ := hA.2.2.1 _ hdc
   have hdl : Nat.find hex ≤ A.len (i + (Nat.find hex : ZMod n)) := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     apply Nat.find_min hex (m := Nat.find hex - A.len (i + (Nat.find hex : ZMod n))) (by omega)
     refine ⟨by omega, ?_⟩
     have e : i + ((Nat.find hex - A.len (i + (Nat.find hex : ZMod n)) : ℕ) : ZMod n) =

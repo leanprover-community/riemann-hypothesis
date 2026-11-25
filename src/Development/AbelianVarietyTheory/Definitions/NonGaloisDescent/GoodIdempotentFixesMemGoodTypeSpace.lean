@@ -75,8 +75,7 @@ open Polynomial in
 private lemma norm_le_one_of_monic_root_lemma {K : Type*} [NormedField K] [IsUltrametricDist K]
     {p : K[X]} (hp : p.Monic) (hc : ∀ i, ‖p.coeff i‖ ≤ 1) {x : K} (hx : p.eval x = 0) :
     ‖x‖ ≤ 1 := by
-  by_contra h
-  push_neg at h
+  by_contra! h
   rw [hp.as_sum] at hx
   simp only [eval_add, eval_pow, eval_X, Polynomial.eval_finsetSum, eval_mul, eval_C] at hx
   set n := p.natDegree

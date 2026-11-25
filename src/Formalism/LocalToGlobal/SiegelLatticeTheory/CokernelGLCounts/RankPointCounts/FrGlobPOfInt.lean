@@ -1,5 +1,6 @@
 module
 
+import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.LatDict
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.FStarIsomG
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.FStarOmPart
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.FStarBwdBetaS
@@ -1082,16 +1083,7 @@ theorem LprExistA_iso_span {s : Set (VS D).V} (h : ∀ x ∈ s, ∀ y ∈ s, (VS
 
 theorem LprExistA_orth_span {s : Set (VS D).V} {x : (VS D).V} (h : ∀ v ∈ s, (VS D).hT v x = 0) :
     ∀ v ∈ Submodule.span D.host.E s, (VS D).hT v x = 0 := by
-  intro v hv
-  have hle : Submodule.span D.host.E s ≤ LinearMap.ker ((VS D).hT.flip x) := by
-    rw [Submodule.span_le]
-    intro v' hv'
-    show (VS D).hT.flip x v' = 0
-    rw [LinearMap.flip_apply]
-    exact h v' hv'
-  have := hle hv
-  rw [LinearMap.mem_ker, LinearMap.flip_apply] at this
-  exact this
+  apply _root_.Formalism.L2.SG.Pf.LatDict.hT_left_span <;> assumption
 
 theorem gfacts_move {Λ : Submodule (𝓞 D.host.E) (VS D).V} {f g1 g2 g2' : Fin (D.R.rS + 1) → (VS D).V}
     {β : (VS D).V ≃ₗ[D.host.E] (VS D).V} (hG : GFacts Λ f g1 g2' β)

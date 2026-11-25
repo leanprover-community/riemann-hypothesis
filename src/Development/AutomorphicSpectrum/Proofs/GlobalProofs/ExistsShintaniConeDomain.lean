@@ -288,8 +288,7 @@ theorem embedding_unit_le_abs {F : Type} [Field F] [NumberField F] [IsTotallyRea
     rw [prod_real_embeddings_eq_absNorm (u : 𝓞 F) hu, Ideal.span_singleton_eq_top.2 u.isUnit, Ideal.absNorm_top]
     simp
   obtain ⟨τ, hτ⟩ : ∃ τ : F →+* ℝ, τ ((u : 𝓞 F) : F) ≤ 1 := by
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     have hlt : ∏ _τ : F →+* ℝ, (1 : ℝ) < ∏ τ : F →+* ℝ, τ ((u : 𝓞 F) : F) :=
       Finset.prod_lt_prod_of_nonempty₀ (fun _ _ => one_pos) (fun τ _ => hne τ) ⟨σ, Finset.mem_univ σ⟩
     rw [hprod] at hlt

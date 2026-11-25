@@ -14,8 +14,6 @@ open scoped CategoryTheory.Obj CategoryTheory.MonObj
 open GlobalTheory.CechPic GlobalTheory.AbDual
 open GlobalTheory.IndefiniteRowSideFullHecke.ZeroSectionBase (IsPrincipalPol sqToBase toBase)
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace PositivityTheory.PrwZar
 
 variable {S : Scheme.{0}} {A B : Over S} [GrpObj A] [GrpObj B] {Ω : Type} [Field Ω] (s : Sp Ω ⟶ S)

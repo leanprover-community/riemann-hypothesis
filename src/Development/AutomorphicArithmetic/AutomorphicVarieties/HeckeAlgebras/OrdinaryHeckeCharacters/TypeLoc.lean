@@ -299,8 +299,7 @@ theorem UpperTheory.le_span_integralValued_of_galoisStable :
       · rw [h0]
         exact Submodule.zero_mem _
       obtain ⟨g0, hg0⟩ : ∃ g, y g ≠ 0 := by
-        by_contra h
-        push_neg at h
+        by_contra! h
         exact h0 (funext h)
       obtain ⟨x, hx⟩ : ∃ x : X → ℂ, x = (y g0)⁻¹ • y := ⟨_, rfl⟩
       have hxI : x ∈ I := by
@@ -328,8 +327,7 @@ theorem UpperTheory.le_span_integralValued_of_galoisStable :
           rw [hd]
           exact sub_ne_zero.2 hγ
         obtain ⟨g1, hg1⟩ : ∃ g, d g ≠ 0 := by
-          by_contra h
-          push_neg at h
+          by_contra! h
           exact hd0 (funext h)
         have hdsupp : ∀ g, y g = 0 → d g = 0 := by
           intro g hg

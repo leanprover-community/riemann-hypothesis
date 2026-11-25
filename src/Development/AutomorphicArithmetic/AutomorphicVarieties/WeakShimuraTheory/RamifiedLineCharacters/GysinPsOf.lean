@@ -579,8 +579,7 @@ theorem UpperTheory.V.Ws.Gys.locNe :
       ext x
       simp [ReciprocityTheory.Gal.H0, hρ]
     rw [htop, Nat.card_congr Submodule.topEquiv.toEquiv, Nat.card_zmod, pow_one]
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   haveI hz : Subsingleton ↥(ReciprocityTheory.Gal.Z1 ρ) :=
     ⟨fun a b => Subtype.ext ((hne a a.2).trans (hne b b.2).symm)⟩
   haveI hs : Subsingleton (ReciprocityTheory.Gal.H1 ρ) :=

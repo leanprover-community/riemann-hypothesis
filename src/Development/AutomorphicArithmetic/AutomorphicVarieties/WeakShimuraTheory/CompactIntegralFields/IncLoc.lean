@@ -1,5 +1,7 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.IsSplitAtOfDegOne
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.WeakShimuraTheory.CompactIntegralFields.HomOfDer
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.WeakShimuraTheory.AdjointMemSp4
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.CoRes
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.WeakShimuraTheory.CompactIntegralFields.CmplEx
@@ -331,16 +333,8 @@ private theorem contAct {k G M : Type} [CommRing k] [Group G] [TopologicalSpace 
 
 private theorem ex_above (l : ℕ) [Fact l.Prime] (F : Type) [Field F] [NumberField F] :
     ∃ w : HeightOneSpectrum (𝓞 F), ((l : ℕ) : 𝓞 F) ∈ w.asIdeal := by
-  have hl : l.Prime := Fact.out
-  haveI : (Ideal.span {(l : ℤ)}).IsMaximal :=
-    PrincipalIdealRing.isMaximal_of_irreducible (Nat.prime_iff_prime_int.1 hl).irreducible
-  obtain ⟨P, hP, hov⟩ := Ideal.exists_maximal_ideal_liesOver_of_isIntegral (S := 𝓞 F) (Ideal.span {(l : ℤ)})
-  have hm : ((l : ℕ) : 𝓞 F) ∈ P := by
-    have : (l : ℤ) ∈ P.under ℤ := by rw [← hov.over]; exact Ideal.mem_span_singleton_self _
-    simpa [Ideal.mem_comap] using this
-  refine ⟨⟨P, hP.isPrime, fun h => ?_⟩, hm⟩
-  rw [h, Ideal.mem_bot] at hm
-  exact hl.ne_zero (by exact_mod_cast hm)
+  intros
+  apply _root_.GlobalTheory.CongEx.exists_place_over <;> assumption
 
 theorem UpperTheory.V.Ws.X1.ecG :
     GC.Hypotheses₂ → ∀ (F Ω : Type) [Field F] [NumberField F] [Field Ω] [Algebra F Ω] [IsAlgClosure F Ω] (l : ℕ) [Fact l.Prime], IsTotallyReal F → ∀ (S : Finset (HeightOneSpectrum (𝓞 F))) (K : Subgroup (G F Ω)) (Γ : Type) [Group Γ] [TopologicalSpace Γ] [IsTopologicalGroup Γ] [CompactSpace Γ] [T2Space Γ] [TotallyDisconnectedSpace Γ] (π : G F Ω →* Γ), GC.GLink l S K π → (∀ w ∈ S, ((l : ℕ) : 𝓞 F) ∈ w.asIdeal) → ∀ (V : Type) (ι : V ≃ S) (A : V → ValuationSubring Ω), (∀ v, IsPlaceOver (A v) (ι v).1) → ∀ (k W : Type) [Field k] [Finite k] [CharP k l] [AddCommGroup W] [Module k W] [Module.Finite k W] (ρ : Representation k Γ W) (b : V → Submodule k W) (m e : ℕ), IsOpen (ρ.ker : Set Γ) → (∀ v, ∀ s ∈ Dec (F := F) (A v), ∀ X ∈ b v, ρ (π s) X ∈ b v) → (∀ f : W →ₗ[k] k, (∀ g X, f (ρ (π g) X) = (GC.cycF F Ω l k g : k) * f X) → f = 0) → (∀ v, Module.finrank k (b v) = m) → (∀ g : G F Ω, IsCC g → Module.finrank k (LinearMap.ker (ρ (π g) - 1)) ≤ e) → Module.Finite k (Fr.coneH2 (fun v => π.comp (Dec (F := F) (A v)).subtype) ρ b) ∧ Module.finrank k (Fr.coneH2 (fun v => π.comp (Dec (F := F) (A v)).subtype) ρ b) + Module.finrank k (Fr.coneH0 ρ b) + Module.finrank ℚ F * m ≤ Module.finrank k (Fr.H1C (fun v => π.comp (Dec (F := F) (A v)).subtype) ρ b) + Module.finrank ℚ F * e := by
@@ -951,14 +945,7 @@ private theorem lifts_map {O Γ : Type} [CommRing O] [Group Γ] [TopologicalSpac
     [IsLocalRing Λ] {a : O →+* Λ} {c : PD Φ.ι Γ (ResidueField Λ)} {R R' : Type} [CommRing R] [Algebra Λ R] [IsCO Λ R]
     [CommRing R'] [Algebra Λ R'] [IsCO Λ R'] {P : PD Φ.ι Γ R} (h : Φ.Lifts a c P) (f : R →ₐ[Λ] R') :
     Φ.Lifts a c (P.map (f : R →+* R')) := by
-  refine ⟨?_, ?_, ?_⟩
-  · have hp := h.pair.map (f : R →+* R')
-    rwa [← RingHom.comp_assoc, AlgHom.comp_algebraMap] at hp
-  · exact h.cont.map _ (fun x hx =>
-      (res_eq_zero_iff Λ R' _).mp ((res_map f x).trans ((res_eq_zero_iff Λ R x).mpr hx)))
-  · rw [PD.map_map]
-    convert h.red using 2
-    exact RingHom.ext fun x => res_map f x
+  apply _root_.lifts_map <;> assumption
 
 private theorem lifts_noMu {O Γ : Type} [CommRing O] [Group Γ] [TopologicalSpace Γ] {Φ : Fr O Γ} {Λ : Type} [CommRing Λ]
     [IsLocalRing Λ] {a : O →+* Λ} {c : PD Φ.ι Γ (ResidueField Λ)} {R : Type} [CommRing R] [Algebra Λ R] [IsCO Λ R]

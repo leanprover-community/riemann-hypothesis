@@ -4,6 +4,7 @@ public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeil
 import Development.WeilBound.CoreStatements.AutomorphicKernels.EisensteinSeriesG2.BlockTriangularFrames.SiegelParabolicEqStabiliserCols
 public import Development.WeilBound.ThetaLifts.LatticeBasics.IsCompactIntV
 import Mathlib.Tactic.Linter.Style
+import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.UnfoldingCompactness.MatrixOfUnipotentFrame
 
 @[expose] public section
 
@@ -119,24 +120,7 @@ theorem incM_one' {p : Type} [DecidableEq p] : incM F (1 : Matrix p p E) = 1 := 
 
 theorem rat_of {b : GL (Fin n ⊕ Fin n) E} (g : G2 σ Y) (M M' : Matrix (Fin n ⊕ Fin n) (Fin n ⊕ Fin n) E)
     (hM : inFrame b g = incM F M) (hM' : inFrame b g⁻¹ = incM F M') : g ∈ rat2 σ Y := by
-  have hMM : M * M' = 1 := by
-    apply kfour.incM_injective (F := F)
-    rw [kfour.incM_mul' (F := F), ← hM, ← hM', ← inFrame_mul, mul_inv_cancel,
-      inFrame_one, incM_one']
-  have hMM' : M' * M = 1 := mul_eq_one_comm.1 hMM
-  let gE : GL (Fin n ⊕ Fin n) E :=
-    ⟨b.1 * M * (b⁻¹).1, b.1 * M' * (b⁻¹).1, by
-      simp only [Matrix.mul_assoc]
-      rw [← Matrix.mul_assoc (b⁻¹).1 b.1, Units.inv_mul, Matrix.one_mul, ← Matrix.mul_assoc M, hMM, Matrix.one_mul,
-        Units.mul_inv], by
-      simp only [Matrix.mul_assoc]
-      rw [← Matrix.mul_assoc (b⁻¹).1 b.1, Units.inv_mul, Matrix.one_mul, ← Matrix.mul_assoc M', hMM', Matrix.one_mul,
-        Units.mul_inv]⟩
-  refine Subgroup.mem_subgroupOf.2 ⟨gE, Units.ext ?_⟩
-  show (b.1 * M * (b⁻¹).1).map (inclR (F := F) (AF F)) = mat2 g
-  rw [matrix_eq_frame_conjugate b, hM]
-  show incM F (b.1 * M * (b⁻¹).1) = _
-  rw [kfour.incM_mul', kfour.incM_mul']
+  apply _root_.PositivityTheory.SiegelWeilFormula.kunf.rat_of_inFrame <;> assumption
 
 theorem mapσ_mul {p : Type} [Fintype p] (X Z : Matrix p p E) : (X * Z).map σ = X.map σ * Z.map σ :=
   Matrix.map_mul (f := (σ : E →+* E))

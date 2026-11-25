@@ -1,5 +1,6 @@
 module
 
+import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.LengthLocalizedModuleQuotient
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.LocalLengthAdditivityTorsionFree
 public import Mathlib.RingTheory.KrullDimension.NonZeroDivisors
 public import Mathlib.RingTheory.Length
@@ -61,16 +62,7 @@ theorem ord_ringEquiv (e : R ≃+* S) (x : R) : Ring.ord R x = Ring.ord S (e x) 
     | simp only [h]
 
 theorem length_self_ringEquiv (e : R ≃+* S) : Module.length R R = Module.length S S := by
-  haveI : RingHomInvPair (e : R →+* S) (e.symm : S →+* R) := RingHomInvPair.of_ringEquiv e
-  haveI : RingHomInvPair (e.symm : S →+* R) (e : R →+* S) := RingHomInvPair.symm _ _
-  have iso : Submodule R R ≃o Submodule S S := Submodule.orderIsoMapComap e.toSemilinearEquiv
-  have h : Order.krullDim (Submodule R R) = Order.krullDim (Submodule S S) := by
-    first
-      | exact le_antisymm (Order.krullDim_le_of_strictMono iso iso.strictMono)
-          (Order.krullDim_le_of_strictMono iso.symm iso.symm.strictMono)
-  unfold Module.length
-  first
-    | simp only [h]
+  apply GroundTheory.Heights₂.Heights.ObjectsChow.VerticalPartMultiplicity.length_self_eq_of_ringEquiv <;> assumption
 
 end general
 

@@ -646,8 +646,7 @@ private theorem cross_ne_zero_of_linearIndependent (a b : Fin 2 → ℤ) (h : Li
 private theorem card_le_one_of_linearIndependent_cross_zero (I : Submodule ℤ (Fin 2 → ℤ))
     (hI : ∀ v ∈ I, ∀ w ∈ I, v 0 * w 1 - v 1 * w 0 = 0) (ρ : ℕ) (v : Fin ρ → (Fin 2 → ℤ))
     (hv : ∀ a, v a ∈ I) (hli : LinearIndependent ℤ v) : ρ ≤ 1 := by
-  by_contra h
-  push_neg at h
+  by_contra! h
   have hli2 : LinearIndependent ℤ ![v ⟨0, by omega⟩, v ⟨1, h⟩] := by
     have h3 := hli.comp (fun i : Fin 2 => (⟨i.1, Nat.lt_of_lt_of_le i.2 h⟩ : Fin ρ))
       (fun i j hij => Fin.ext (by simpa using congrArg Fin.val hij))

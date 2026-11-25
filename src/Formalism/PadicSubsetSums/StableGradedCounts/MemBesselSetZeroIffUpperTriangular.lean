@@ -369,8 +369,7 @@ theorem desc_invol (τ : Equiv.Perm (Fin N))
       rw [h2, hj0]
     · exfalso
       have hp : ∃ p, p < i ∧ i < τ p := by
-        by_contra hcon
-        push_neg at hcon
+        by_contra! hcon
         have hmaps : ∀ p ∈ Finset.Iio i, τ p ∈ (Finset.Iio i).erase (τ i) := by
           intro p hp
           have hp' : p < i := Finset.mem_Iio.mp hp
@@ -399,8 +398,7 @@ theorem desc_invol (τ : Equiv.Perm (Fin N))
     rcases lt_or_gt_of_ne hne with h1 | h1
     · exfalso
       have hp : ∃ p, i < p ∧ τ p < i := by
-        by_contra hcon
-        push_neg at hcon
+        by_contra! hcon
         have hmaps : ∀ p ∈ Finset.Ioi i, τ p ∈ (Finset.Ioi i).erase (τ i) := by
           intro p hp
           have hp' : i < p := Finset.mem_Ioi.mp hp

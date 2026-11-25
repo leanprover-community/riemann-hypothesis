@@ -476,8 +476,7 @@ theorem peak {A : Type} [CommRing A] [StarRing A] [Algebra ℂ A] [StarModule �
     intro s
     apply finite_cover (S s) (hSc s) (fun g => R s (d g)) (fun g => hR s (d g)) _ (hB s) ε0
     intro ψ hψ
-    by_contra hno
-    push_neg at hno
+    by_contra! hno
     obtain ⟨χ, hχb, hχ⟩ := restr (S s) (hSc s) ψ
     have hz : ∀ g, θ s χ (d g) = 0 := by
       intro g
@@ -590,8 +589,7 @@ theorem peak {A : Type} [CommRing A] [StarRing A] [Algebra ℂ A] [StarModule �
       rw [star_mul, map_star, hBdef]; noncomm_ring
     rw [sq, ← CStarRing.norm_star_mul_self, e1]
     exact hkey
-  by_contra hc
-  push_neg at hc
+  by_contra! hc
   nlinarith [norm_nonneg (β s ^ m * R s g)]
 
 end PositivityTheory.Rg.BcB.F.ExponentialIntegralMeasures
@@ -600,8 +598,7 @@ open PositivityTheory.Rg.BcB.F.ExponentialIntegralMeasures in
 theorem PositivityTheory.Rg.BcB.F.peak_trace_bound_holds : PositivityTheory.Rg.BcB.F.PeakTraceBound := by
   intro A _ _ _ _ ι _ _ H _ _ _ R β m V _ _ _ ρ u p a₀ hβ hu ha₀ hbound hv
   obtain ⟨v, hv0, huv, hρv⟩ := hv
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   have hμpos : 0 < ‖p a₀‖ := norm_pos_iff.2 ha₀
   set K : ℝ := 1 + ∑ s, ‖R s a₀‖ with hK
   have hKs : ∀ s, ‖R s a₀‖ ≤ K := by

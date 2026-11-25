@@ -489,8 +489,7 @@ variable [NumberField F] [NumberField E]
 
 theorem exists_gram2E_ne (h : IsCMExt F E σ) (hM : 2 ≤ M) (hJ : IsHermND σ J)
     (z : Fin M → E) (hz : hE σ J z z ≠ 0) : ∃ w, gram2E σ J z w ≠ 0 := by
-  by_contra hc
-  push_neg at hc
+  by_contra! hc
   obtain ⟨d, hd⟩ := GlobalTheory.HermLineZeros.exists_conj_ne h
   set a : Fin M → E := fun i => hE σ J (Pi.single i 1) z
   set b : Fin M → E := fun j => hE σ J z (Pi.single j 1)
@@ -1783,8 +1782,7 @@ theorem exists_isotropic_places : ∀ (F E : Type) [Field F] [NumberField F] [Fi
   classical
   have key : (∃ w ∈ S₁, ∃ u : Fin M → w.Completion ⊗[F] E, u ≠ 0 ∧ hR w.Completion σ J u u = 0) ∨
       (∃ v ∈ S₂, ∃ u : Fin M → Fv F v ⊗[F] E, u ≠ 0 ∧ hR (Fv F v) σ J u u = 0) := by
-    by_contra hno
-    push_neg at hno
+    by_contra! hno
     apply hnc
     apply _root_.GlobalTheory.SUSuppCompact.isCompact_SUSupp_of_bounded F E σ hσ M J hJ S₁ S₂ ε hε
     · intro w hw

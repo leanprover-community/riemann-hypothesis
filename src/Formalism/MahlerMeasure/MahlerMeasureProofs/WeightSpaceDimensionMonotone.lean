@@ -95,8 +95,7 @@ theorem weight_component_mem_submodule [CharZero K] (U : Submodule K V) (hU : �
   by_cases hsub : ∃ ν ∈ S, ∃ ν' ∈ S, ν ≠ ν'
   · obtain ⟨ν, hν, ν', hν', hne⟩ := hsub
     obtain ⟨c, hc⟩ : ∃ c, ν c ≠ ν' c := by
-      by_contra hcon
-      push_neg at hcon
+      by_contra! hcon
       exact hne (funext hcon)
     have key : ∀ κ ∈ S, μ c ≠ κ c → G.comp μ x ∈ U := by
       intro κ hκ hμκ
@@ -524,8 +523,7 @@ theorem dom_of_hwmod {U W : Submodule K V} (hU : G.Stable U) (hW : G.Stable W) (
     {μ : Fin r → ℤ} {v : V} (hvW : v ∈ W) (hvU : v ∉ U) (hv : G.IsWt μ v)
     (hr : ∀ a b, a < b → G.E a b v ∈ U) : DomW μ := by
   intro a b hab
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   have hne : a ≠ b := hab.ne
   have key : ∀ k : ℕ, (G.E b a ^ k) v ∉ U := by
     intro k
@@ -754,8 +752,7 @@ theorem exists_hwmod {W U : Submodule K V} (hWg : G.Graded W) (hWr : G.Raising W
   obtain ⟨S, hS⟩ := hWf
   obtain ⟨x, hxW, hxU⟩ := SetLike.not_le_iff_exists.mp h
   have hex : ∃ μ, G.comp μ x ∉ U := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     apply hxU
     rw [G.sum_comp_eq x (fun μ hμ => hS x hxW μ hμ)]
     exact Submodule.sum_mem _ fun μ _ => hcon μ

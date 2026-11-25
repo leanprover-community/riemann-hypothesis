@@ -376,7 +376,6 @@ theorem tau_degree_on_path_bound : TauDegreeOnPathBound := by
   have h4 := dminus_le_beS X p K hX j b μ dd hP i.val
   have h5 : μ i.castSucc = μ ⟨i.val, by omega⟩ := rfl
   rw [h2, h5] at h1
-  have h4' : (T.dminus (segLL X.F j) dd i.val : ℤ) ≤ (X.beS p K j b : ℤ) := by exact_mod_cast h4
   have : (dd i : ℤ) ≤ 2 * (X.beS p K j b : ℤ) := by linarith
   exact_mod_cast this
 

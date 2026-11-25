@@ -151,8 +151,7 @@ theorem UpperTheory.V.AlgebraTools.AnnihilatorQuotientFinite.eigOfQuot :
     intro i y
     rw [hT, map_sub, map_smul, hφ, sub_self]
   have hu : ∃ u ∈ (⊤ : Submodule K Y), φ u ≠ 0 := by
-    by_contra hno
-    push_neg at hno
+    by_contra! hno
     exact hφ0 (LinearMap.ext fun y => by simpa using hno y Submodule.mem_top)
   obtain ⟨y, hy0, hy⟩ := UpperTheory.V.AlgebraTools.AnnihilatorQuotientFinite.common_ker_of_quot T hc φ hφT ⊤ hu
     (fun _ _ _ => Submodule.mem_top)

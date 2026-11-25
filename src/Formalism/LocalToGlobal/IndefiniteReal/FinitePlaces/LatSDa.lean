@@ -273,8 +273,7 @@ def lsdE (i : Fin T.rank) (j : Fin S.rank) (β : Af D.host.F) (e : D.host.E) : W
   Matrix.of fun i' j' => if i' = i ∧ j' = j then pairA D.host.F 0 β ⊗ₜ[D.host.F] e else 0
 
 theorem lsd_AA_ne : ∃ c : D.host.E, c ∈ D.host.AA ∧ c ≠ 0 := by
-  by_contra h
-  push_neg at h
+  by_contra! h
   have h0 : D.host.AA = 0 := by
     ext x
     rw [FractionalIdeal.mem_zero_iff]

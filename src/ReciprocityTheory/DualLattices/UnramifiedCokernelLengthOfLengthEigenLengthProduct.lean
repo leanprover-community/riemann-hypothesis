@@ -284,8 +284,7 @@ theorem unramifiedCokernelLength_of_length_eigenLengthProduct (hLen : LenIdState
     have h3 := Real.log_le_log (pow_pos (hXpos j) p) h2
     rw [Real.log_pow, Real.log_mul (hXpos _).ne' (pow_pos ha0 _).ne', Real.log_pow, hlogX,
       hlogX] at h3
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     have h4 := mul_lt_mul_of_neg_right hc hL0
     linarith
   have hr : ∑ j, (U.r j : ℝ) = g := by exact_mod_cast sum_r hS H U

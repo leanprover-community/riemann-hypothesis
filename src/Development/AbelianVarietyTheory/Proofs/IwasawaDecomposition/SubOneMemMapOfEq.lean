@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.InertAtLeCongN
 public import Formalism.LocalToGlobal.Columns.RowForms
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsFiniteAdeleBaseChangeEquiv
 import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Levelaf
@@ -89,33 +90,7 @@ end
 
 theorem inertAt_le_congN {v : HeightOneSpectrum (𝓞 F)} {N : ℕ} (hN : (N : 𝓞 F) ∉ v.asIdeal) :
     inertAt E v ≤ congN F E N := by
-  obtain ⟨ι, hι⟩ := exists_toAd F E
-  rintro x ⟨h1, h2⟩
-  obtain ⟨u, rfl⟩ := exists_toId_eq h1
-  have hN0 : (N : E) ≠ 0 := by
-    rintro h
-    obtain rfl : N = 0 := by exact_mod_cast h
-    exact hN (by simp)
-  refine ⟨u, (mem_kerRed _ u).2 (Ideal.mem_span_singleton'.2
-    ⟨⟨((N : E)⁻¹ ⊗ₜ[F] 1 : AfE F E) * (((u : RInt F E) - 1 : RInt F E) : AfE F E), mem_int_of_map hι fun P => ?_⟩, Subtype.ext ?_⟩), rfl⟩
-  · rw [map_mul, map_tmul_one hι, afsplit_mul_apply, HeightOneSpectrum.mem_adicCompletionIntegers]
-    by_cases hP : P.under (𝓞 F) = v
-    · have hNP : (N : 𝓞 E) ∉ P.asIdeal := fun h => hN (by
-        rw [← hP]
-        change algebraMap (𝓞 F) (𝓞 E) N ∈ P.asIdeal
-        rwa [map_natCast])
-      have h3 : Valued.v ((algebraMap E (FiniteAdeleRing (𝓞 E) E) (N : E)⁻¹) P) = 1 := by
-        change Valued.v (algebraMap E (P.adicCompletion E) (N : E)⁻¹) = 1
-        rw [map_inv₀, map_inv₀, ← map_natCast (algebraMap (𝓞 E) E), valued_int, intValuation_eq_one P hNP, inv_one]
-      rw [map_mul, h3, one_mul]
-      exact map_mem_int hι ((u : RInt F E) - 1).2 P
-    · have h3 : ι ((u : RInt F E) : AfE F E) P = 1 := (mem_suppAt hι v _).1 h2 P hP
-      rw [AddSubgroupClass.coe_sub, map_sub, afsplit_sub_apply, h3, OneMemClass.coe_one, map_one, afsplit_one_apply, sub_self,
-        mul_zero, map_zero]
-      exact zero_le_one
-  · apply map_injective hι
-    rw [Subring.coe_mul, SubringClass.coe_natCast, map_mul, map_mul, map_natCast, map_tmul_one hι, mul_right_comm,
-      ← map_natCast (algebraMap E (FiniteAdeleRing (𝓞 E) E)), ← map_mul, inv_mul_cancel₀ hN0, map_one, one_mul]
+  first | exact _root_.GlobalTheory.OpenChrRam.inertAt_le_congN | exact @_root_.GlobalTheory.OpenChrRam.inertAt_le_congN | apply _root_.GlobalTheory.OpenChrRam.inertAt_le_congN <;> assumption
 
 variable {L : Type} [Field L]
 

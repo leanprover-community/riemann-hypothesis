@@ -720,8 +720,7 @@ theorem charSum_detects_multiple : ∀ {D : D7} (ψ : AddChar (AF D.host.F) ℂ)
     rw [Finset.sum_congr rfl h1]; simp
   · intro hnot
     have hex : ∃ r₀ ∈ R, ψ (symplO S T t r₀) ≠ 1 := by
-      by_contra hall
-      push_neg at hall
+      by_contra! hall
       apply hnot
       set a : AE D := algebraMap D.host.F (AE D) ((k : D.host.F)⁻¹) with ha
       have hka : k • a = 1 := by
@@ -1243,7 +1242,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Form
 open IsDedekindDomain NumberField GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.RowTest GlobalTheory.RowClaim
 open Formalism.L2.Host (HChar)
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.RowEx
 open Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLatticesGL3
 

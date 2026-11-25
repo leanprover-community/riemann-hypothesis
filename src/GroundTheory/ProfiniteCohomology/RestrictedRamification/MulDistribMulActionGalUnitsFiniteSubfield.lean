@@ -206,7 +206,8 @@ def compField : IntermediateField (v.adicCompletion K.1) (AlgebraicClosure (v.ad
 
 omit [Normal K.1 F.1] in
 theorem compField_def : compField ι F = (completionEmbedding ι F).fieldRange := by
-  with_unfolding_all rfl
+  unfold compField
+  rfl
 
 def compEquiv : (placeOfEmbedding ι F).1.adicCompletion F.1 ≃ₐ[v.adicCompletion K.1] compField ι F :=
   (AlgEquiv.ofInjectiveField (completionEmbedding ι F)).trans

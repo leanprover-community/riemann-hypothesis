@@ -153,8 +153,7 @@ theorem exists_section_of_point : ∀ (R : Type) [CommRing R] [HenselianLocalRin
     have := congrArg ω hx
     rwa [map_mul, map_mul, hωi, _root_.mul_one, _root_.mul_one] at this
   obtain ⟨i, hi⟩ : ∃ i, χ (ε i) ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     have := congrArg χ hεsum
 
     simp [map_sum, h] at this

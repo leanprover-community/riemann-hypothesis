@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicArithmetic.CyclotomicBounds.ClassNumberBounds.IdealValuations.LocRootsY
 public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.ClosedBallValuationSubringToSubring
 public import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsMemWpNormSubLtOne
@@ -165,18 +166,7 @@ theorem res_inj {a b : OO l} {m : ℕ} (hm : 0 < m) (hlm : ¬ l ∣ m) (ha : a ^
 
 theorem gal_root (h : GQ l) {m : ℕ} (hm : 0 < m) (hlm : ¬ l ∣ m) :
     ∃ n : ℕ, ∀ ζ : Om l, ζ ^ m = 1 → h ζ = ζ ^ (l ^ n) := by
-  haveI : NeZero m := ⟨hm.ne'⟩
-  obtain ⟨ξ, hξ⟩ := HasEnoughRootsOfUnity.exists_primitiveRoot (Om l) m
-  let a : OO l := ⟨ξ, (norm_root hm hξ.pow_eq_one).le⟩
-  have ha : a ^ m = 1 := Subtype.ext hξ.pow_eq_one
-  obtain ⟨n, hn⟩ := endo_root l (galK h) (a := res a) hm hlm (by rw [← map_pow, ha, map_one])
-  rw [galK_res, ← map_pow] at hn
-  have h1 := res_inj hm hlm (by rw [← map_pow, ha, map_one])
-    (by rw [← pow_mul, mul_comm, pow_mul, ha, one_pow]) hn
-  have h2 : h ξ = ξ ^ (l ^ n) := congrArg Subtype.val h1
-  refine ⟨n, fun ζ hζ => ?_⟩
-  obtain ⟨i, -, rfl⟩ := hξ.eq_pow_of_pow_eq_one hζ
-  rw [map_pow, h2, ← pow_mul, ← pow_mul, mul_comm]
+  apply _root_.KStar.IdealValuations.exists_pow_of_aut <;> assumption
 
 theorem exists_root (x : Om l) (hx : ‖x‖ = 1) :
     ∃ (ζ : Om l) (m : ℕ), 0 < m ∧ ¬ l ∣ m ∧ ζ ^ m = 1 ∧ ‖x - ζ‖ < 1 := by

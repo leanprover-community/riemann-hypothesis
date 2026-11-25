@@ -25,8 +25,7 @@ lemma perron_Sz_eq_zero_of_le_one {x : ℝ} (hx : x ≤ 1) : Formalism.Sz x = 0 
   intro n hn
   rw [Finset.mem_Icc] at hn
   have hx0 : 0 ≤ x := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     have h1 := Nat.floor_of_nonpos h.le
     omega
   have hnx : (n : ℝ) ≤ x := (Nat.le_floor_iff hx0).1 hn.2

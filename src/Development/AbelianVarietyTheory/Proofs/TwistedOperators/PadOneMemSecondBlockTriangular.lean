@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.HeisOAdd
 public import Formalism.LocalToGlobal.IndefiniteReal.SubgroupCharExtensionOneApply
 public import Formalism.LocalToGlobal.IndefiniteReal.DatumVec
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.IsSelfDualCLatFrame
@@ -516,17 +517,8 @@ private theorem isThetaFunO_zero_twisted_operators : IsThetaFunO ψ S T (0 : WO 
 
 private theorem isThetaFunO_add_twisted_operators {f g : WO S T → ℂ} (hf : IsThetaFunO ψ S T f) (hg : IsThetaFunO ψ S T g) :
     IsThetaFunO ψ S T (f + g) := by
-  obtain ⟨U, hU, hUf⟩ := hf.level
-  obtain ⟨V, hV, hVg⟩ := hg.level
-  constructor
-  case quasi => intro γ w; simp only [Pi.add_apply, hf.quasi γ w, hg.quasi γ w, mul_add]
-  case level =>
-    refine ⟨U ⊓ V, ?_, fun u hu h0 => ?_⟩
-    · rw [AddSubgroup.coe_inf]; exact hU.inter hV
-    · rw [← GlobalTheory.SplitScalar.heisL_apply, map_add (f := _), GlobalTheory.SplitScalar.heisL_apply, GlobalTheory.SplitScalar.heisL_apply,
-        hUf u hu.1 h0, hVg u hu.2 h0]
-  case cont => exact hf.cont.add hg.cont
-  case smooth => intro k L hL hL0 w; exact (hf.smooth k L hL hL0 w).add (hg.smooth k L hL hL0 w)
+  intros
+  apply _root_.GlobalTheory.DownLift.GenFinite.theta_add <;> assumption
 
 private theorem isThetaFunO_smul_twisted_operators (c : ℂ) {f : WO S T → ℂ} (hf : IsThetaFunO ψ S T f) :
     IsThetaFunO ψ S T (c • f) := by

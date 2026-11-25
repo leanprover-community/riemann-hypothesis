@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.LevelLetterCocycles.LatticeMembershipPolynomialGamma
 public import Formalism.SharpRestriction.LevelLetterCocycles.ArcLiftingSetup
 public import Formalism.SharpRestriction.LevelLetterCocycles.CoordHomMapTrace
 public import Formalism.SharpRestriction.LevelLetterCocycles.CoprimeFrobeniusUniformizerPowers
@@ -33,14 +34,7 @@ theorem secIn_zero {a : ZMod n} {e d : ℕ} (cond : (ℕ → ℤ) → (Fin d →
 
 theorem secIn_add {a : ZMod n} {e d : ℕ} {cond : (ℕ → ℤ) → (Fin d → O) → Prop} {F F' : Fin d → W.EE}
     (h : SecIn W a e cond F) (h' : SecIn W a e cond F') : SecIn W a e cond (F + F') := by
-  obtain ⟨I, g, c₀, α, hg, hF⟩ := h
-  obtain ⟨I', g', c₀', α', hg', hF'⟩ := h'
-  refine ⟨I + I', Fin.append g g', Fin.append c₀ c₀', Fin.append α α', fun i => ?_, fun k => ?_⟩
-  · refine Fin.addCases (fun i => ?_) (fun i => ?_) i
-    · simp only [Fin.append_left]; exact hg i
-    · simp only [Fin.append_right]; exact hg' i
-  · rw [Pi.add_apply, hF k, hF' k, Fin.sum_univ_add]
-    simp only [Fin.append_left, Fin.append_right]
+  apply _root_.Formalism.MainNotions.UnusedSlot80.UnivC.secIn_add <;> assumption
 
 theorem inFr_mulA {a : ZMod n} {num den : LetA O n} {f : W.EE} (h : InFr W a num den f) {c : LetA O n}
     (hc : c ∈ W.AΔ) : InFr W a num den (algebraMap (LetA O n) W.EE c * f) := by

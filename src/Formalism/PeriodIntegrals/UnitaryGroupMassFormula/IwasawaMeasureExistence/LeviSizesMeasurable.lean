@@ -95,19 +95,7 @@ instance compactSpace_Ov' (v : HeightOneSpectrum (𝓞 F)) :
   isCompact_iff_compactSpace.mp (isCompact_Ov v)
 
 theorem isCompact_Ohat : IsCompact (Ohat F) := by
-  have hc : Continuous (RestrictedProduct.structureMap (fun v : HeightOneSpectrum (𝓞 F) => v.adicCompletion F)
-      (fun v => (v.adicCompletionIntegers F : Set (v.adicCompletion F))) Filter.cofinite) :=
-    RestrictedProduct.isEmbedding_structureMap.continuous
-  have : Ohat F = Set.range (RestrictedProduct.structureMap (fun v : HeightOneSpectrum (𝓞 F) => v.adicCompletion F)
-      (fun v => (v.adicCompletionIntegers F : Set (v.adicCompletion F))) Filter.cofinite) := by
-    ext a
-    constructor
-    · intro ha
-      exact ⟨fun v => ⟨a v, ha v⟩, rfl⟩
-    · rintro ⟨x, rfl⟩ v
-      exact (x v).2
-  rw [this]
-  exact isCompact_range hc
+  apply _root_.PI.WAU.isCompact_Ohat <;> assumption
 
 end PI.IwaMeasEx.Wau
 

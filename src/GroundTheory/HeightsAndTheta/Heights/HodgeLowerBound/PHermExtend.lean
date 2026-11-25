@@ -151,8 +151,7 @@ theorem isCompact_unitPts (P : Ideal (MRing ι)) : IsCompact (unitPts P) := by
     · rintro ⟨⟨_, h⟩, h1⟩; exact ⟨h1, h⟩
     · rintro ⟨h1, h⟩
       refine ⟨⟨fun k => ?_, h⟩, h1⟩
-      by_contra hk
-      push_neg at hk
+      by_contra! hk
       have h0 : blkSq z k = 0 := by simp [blkSq, hk]
       rw [h1 k] at h0
       exact one_ne_zero h0

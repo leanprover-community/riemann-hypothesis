@@ -23,8 +23,7 @@ theorem weight_zero {E : Type} [Field E] [NumberField E] [IsCMField E] (π : Sub
   obtain ⟨φ, hφ, hφ0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hπ.ne_bot
   obtain ⟨v, hv⟩ := exists_ne (0 : nablaSq ℂ 0 lam)
   obtain ⟨c, hc⟩ : ∃ c : Module.Dual ℂ (nablaSq ℂ 0 lam), c v ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hv ((Module.forall_dual_apply_eq_zero_iff ℂ v).1 h)
   have hg : ∀ g : GL (Fin 0) ℂ, g = 1 := fun g => Units.ext (funext fun i => i.elim0)
   have hu : ∀ y : UA E 0, y = 1 := fun y => Subtype.ext (Units.ext (funext fun i => i.elim0))

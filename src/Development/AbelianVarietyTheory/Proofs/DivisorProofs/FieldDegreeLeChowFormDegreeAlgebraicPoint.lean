@@ -135,8 +135,7 @@ theorem _root_.GlobalTheory.CompHt.PointLow.finrank_le_of_isChowFormInt : ∀ (K
       Finset.sum_ite_eq', Finset.mem_univ, if_true] at this
     exact hk (sub_eq_zero.mp this)
   obtain ⟨a, ha⟩ : ∃ a, eval a Q ≠ 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     exact hQ0 (MvPolynomial.funext fun x => by rw [hcon x, map_zero])
   have hfa : eval a fΩ ≠ 0 := fun h => ha (by rw [hQ, eval_mul, h, zero_mul])
   let c : (E →ₐ[K] AlgebraicClosure K) → AlgebraicClosure K := fun σ => ∑ k, a (0, k) * pt σ k

@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.ValPrimeOfLt
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PrimitiveFrobeniusFixed.IsAdmissiblePrimeListNil
 public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.ExistsPrimitiveRootPow
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SumInvEqZeroOfUnramifiedCocycle
@@ -479,20 +480,7 @@ private theorem primRam_unit (l : ℕ) [Fact l.Prime] (c : HV.Coef l) (n : ℕ) 
 private theorem exists_prime_dvd_over_of_over_mul_iff (Ω : Type) [Field Ω] (A : ValuationSubring Ω)
     (hmul : ∀ m n : ℕ, Over A (m * n) ↔ Over A m ∨ Over A n) (n : ℕ) (hn : n ≠ 0) (h : Over A n) :
     ∃ r, r.Prime ∧ r ∣ n ∧ Over A r := by
-  refine Nat.recOnMul (motive := fun n => n ≠ 0 → Over A n → ∃ r, r.Prime ∧ r ∣ n ∧ Over A r)
-    ?_ ?_ ?_ ?_ n hn h
-  · intro h0
-    exact absurd rfl h0
-  · intro _ h1
-    simp [Over] at h1
-  · intro p hp _ hpA
-    exact ⟨p, hp, dvd_rfl, hpA⟩
-  · intro a b iha ihb hab hAab
-    rcases (hmul a b).1 hAab with ha | hb
-    · obtain ⟨r, hr, hra, hrA⟩ := iha (left_ne_zero_of_mul hab) ha
-      exact ⟨r, hr, hra.mul_right b, hrA⟩
-    · obtain ⟨r, hr, hrb, hrA⟩ := ihb (right_ne_zero_of_mul hab) hb
-      exact ⟨r, hr, hrb.mul_left a, hrA⟩
+  apply _root_.UpperTheory.Reformulated.B.Qi55.val_prime_of_lt <;> assumption
 
 theorem UpperTheory.V.ML.primRam :
     ∀ (Ω : Type) [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (l : ℕ) [Fact l.Prime] (c : HV.Coef l) (f : ℕ) [NeZero f] (ψ : DirichletCharacter c.O f), ψ.IsPrimitive → ¬ l ∣ orderOf ψ →
@@ -1183,8 +1171,7 @@ private theorem over_mul {Ω : Type} [Field Ω] (A : ValuationSubring Ω) (m n :
   simp only [Over, Nat.cast_mul, map_mul]
   constructor
   · intro h
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     have h1 : A.valuation (m : Ω) = 1 := le_antisymm hm hc.1
     have h2 : A.valuation (n : Ω) = 1 := le_antisymm hn hc.2
     rw [h1, h2, one_mul] at h

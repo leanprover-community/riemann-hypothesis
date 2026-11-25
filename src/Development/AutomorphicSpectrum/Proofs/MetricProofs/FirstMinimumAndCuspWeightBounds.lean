@@ -150,8 +150,7 @@ theorem exists_pos_le_sqrt_normSq : ∃ c : ℝ, 0 < c ∧ ∀ v : Λ, v ≠ 0 �
     linarith
   refine ⟨1 / S, by positivity, fun v hv => ?_⟩
   obtain ⟨i, hi⟩ : ∃ i, R.form v (e i) ≠ 0 := by
-    by_contra hall
-    push_neg at hall
+    by_contra! hall
     apply hv
     apply R.unimod.1
     rw [map_zero]

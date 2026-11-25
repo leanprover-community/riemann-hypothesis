@@ -308,8 +308,7 @@ theorem HasRes.excl {Sg Sg' : Pl0 → K[X]} (hne : ∃ P : B.Pl, Sg (B.pl P) ≠
 
 theorem exists_of_partF_ne_bot {Sg : Pl0 → K[X]} (h : B.partF Sg ≠ ⊥) :
     ∃ x, B.HasRes Sg x ∧ Col.Occurs B.op x := by
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   apply h
   unfold partF Col.eigSum
   refine le_antisymm (iSup₂_le fun x hx => ?_) bot_le
@@ -603,8 +602,7 @@ theorem sep_of_mem_ixFin {X : Finset (G → K)} {Sg Sg' : Pl0 → K[X]} (h : Sg 
   split_ifs at h h' with hf
   · rw [Set.Finite.mem_toFinset] at h h'
     simp only [resSet, Set.mem_setOf_eq] at h h'
-    by_contra hall
-    push_neg at hall
+    by_contra! hall
     apply hne
     funext P0
     by_cases hP : P0 ∈ Set.range B.pl

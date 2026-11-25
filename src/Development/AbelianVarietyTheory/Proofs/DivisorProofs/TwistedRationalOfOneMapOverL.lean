@@ -75,8 +75,6 @@ open Formalism Formalism.IndefR Formalism.IndefR.FWT Formalism.BasicNotions Form
   Formalism.IndefR.Mult Formalism.L2.Pj ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD
 open GlobalTheory.OneMapTuples GlobalTheory.OnTies GlobalTheory.TwistField GlobalTheory.RealIndexBound GlobalTheory.AdTh
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T0 : Type} {A : FamIn D.what₂.LL G Pl0 T0 D.R.m}
 
 theorem exists_linear {K X X' Y M : Type} [Field K] [AddCommGroup X] [Module K X] [AddCommGroup X'] [Module K X']

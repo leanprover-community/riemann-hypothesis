@@ -910,8 +910,7 @@ theorem trueE_of_trueD {D : D7} (h : TrueD D) : TrueE D :=
 
 theorem puNZ_at (D : D7) (u : D.what₂.Word) (e δ : ℝ) (hS : DiagS D u e) (hR : RamBig D u δ) (hlt : e < 1 - δ)
     (hd : 0 < d0 D u) : ∃ φ : (D.mem u).A.Mram, D.s.Pu u ((D.s_Cu u).symm ⟨φ.1, φ.2.1⟩) ≠ 0 := by
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   let FF : (D.mem u).A.Mram →ₗ[ℂ] D.s.Cu u :=
     (D.s_Cu u).symm.toLinearMap ∘ₗ Submodule.inclusion (inf_le_left : (D.mem u).A.Mram ≤ (D.mem u).A.Mu0)
   have hFF : Function.Injective FF := (D.s_Cu u).symm.injective.comp (Submodule.inclusion_injective _)

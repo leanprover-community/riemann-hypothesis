@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.FramePfPt
 public import Mathlib.LinearAlgebra.LinearIndependent.Defs
 public import Mathlib.RingTheory.PowerSeries.Basic
 public import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
@@ -459,47 +460,8 @@ variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp]
 theorem lev_q_X_mul (i : ZMod n) (ζ : LL) (hζ : IsPrimitiveRoot ζ PD.p) (hp2 : 2 ≤ PD.p)
     (hp0 : ((PD.p : ℕ) : LL) ≠ 0) :
     ∃ u : PowerSeries LL, W.lev i ζ W.q = PowerSeries.X * u ∧ PowerSeries.constantCoeff u ≠ 0 := by
-  have hpi : (letπ : LetA O n) * W.q = (1 + letπ) ^ PD.p - 1 := by
-    unfold letπ LocWach.q
-    funext j
-    simp only [Pi.mul_apply, Pi.sub_apply, Pi.pow_apply, Pi.add_apply, Pi.one_apply]
-    exact W.q₀_def
-  have hL := congrArg (W.lev i ζ) hpi
-  rw [map_mul, map_sub, map_pow, map_add (f := _), map_one] at hL
-  obtain ⟨E, hE0, hED, hEπ⟩ := W.lev_π i ζ ⟨1, by rwa [pow_one]⟩
-  have hζp : (PowerSeries.C ζ : PowerSeries LL) ^ PD.p = 1 := by
-    rw [← map_pow, hζ.pow_eq_one, map_one]
-  rw [hEπ, mul_pow, hζp, one_mul] at hL
-  have hζ1 : ζ ≠ 1 := hζ.ne_one (by omega)
-  have ht0 : PowerSeries.constantCoeff (W.lev i ζ letπ) = ζ - 1 := by
-    have h := congrArg PowerSeries.constantCoeff hEπ
-    rw [map_add (f := _), map_one, map_mul, PowerSeries.constantCoeff_C, hE0, mul_one] at h
-    linear_combination h
-  have hq0 : PowerSeries.constantCoeff (W.lev i ζ W.q) = 0 := by
-    have h := congrArg PowerSeries.constantCoeff hL
-    rw [map_mul, map_sub, map_pow, hE0, one_pow, map_one, sub_self, ht0] at h
-    exact (mul_eq_zero.mp h).resolve_left (sub_ne_zero.mpr hζ1)
-  obtain ⟨u, hu⟩ := PowerSeries.X_dvd_iff.mpr hq0
-  refine ⟨u, hu, ?_⟩
-  intro hu0
-  have hX1 : ∀ g : PowerSeries LL, PowerSeries.coeff 1 (PowerSeries.X * g) = PowerSeries.constantCoeff g := by
-    intro g
-    first
-      | simpa using PowerSeries.coeff_succ_X_mul (n := 0) (φ := g)
-  have hd : ∀ f : PowerSeries LL, PowerSeries.constantCoeff (PowerSeries.derivative (R := LL) f) = PowerSeries.coeff 1 f := by
-    intro f
-    rw [← PowerSeries.coeff_zero_eq_constantCoeff_apply]
-    first
-      | (rw [PowerSeries.coeff_derivative]; simp)
-  have hD : PowerSeries.derivative (R := LL) (E ^ PD.p) = (PD.p : PowerSeries LL) * E ^ PD.p := by
-    rw [Derivation.leibniz_pow, hED, smul_eq_mul, ← pow_succ, Nat.sub_add_cancel (by omega : 1 ≤ PD.p), nsmul_eq_mul]
-  have h1 : PowerSeries.coeff 1 (E ^ PD.p) = 0 := by
-    have h := congrArg (PowerSeries.coeff 1) hL
-    rw [hu, mul_left_comm, hX1, map_mul, ht0, hu0, mul_zero, map_sub, PowerSeries.coeff_one] at h
-    simpa using h.symm
-  have h2 := congrArg PowerSeries.constantCoeff hD
-  rw [hd, h1, map_mul, map_natCast, map_pow, hE0, one_pow, mul_one] at h2
-  exact hp0 h2.symm
+  intros
+  apply _root_.Formalism.MainNotions.N.Ln34.framepf_lev_q_simple <;> assumption
 
 end Lq
 

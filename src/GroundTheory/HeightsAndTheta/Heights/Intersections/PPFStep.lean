@@ -8,6 +8,7 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticInt
 import Mathlib.Order.CompletePartialOrder
 public import Mathlib.RingTheory.KrullDimension.NonZeroDivisors
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterDivSupp
+import GroundTheory.HeightsAndTheta.Heights.Intersections.IsFieldIntersectionNoBlockFam
 
 @[expose] public section
 
@@ -26,21 +27,8 @@ variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
 
 theorem isSmoothHerm_of_isPullHerm' {κ : K → K'} {v : (Σ k, ι k) → (Σ k', ι' k')} (hv : IsBlockMap κ v)
     {A : HermLine ι} {A' : HermLine ι'} (hA : IsSmoothHerm A) (h : IsPullHerm κ v A A') :
-    IsSmoothHerm A' := by
-  have e : A'.h = A.h ∘ fun z' p => z' (v p) := funext h.2
-  unfold IsSmoothHerm
-  rw [e]
-  refine hA.comp (contDiff_pi.2 fun p => contDiff_apply ℝ (fun _ => ℂ) (v p)).contDiffOn ?_
-  intro z' hz'
-  simp only [Set.mem_ofPred_eq] at hz' ⊢
-  intro k
-  obtain ⟨i', hi'⟩ := hz' (κ k)
-  obtain ⟨p, hp⟩ := hv.2.2.2 ⟨κ k, i'⟩ ⟨k, rfl⟩
-  have h2 : p.1 = k := hv.1 (by rw [← hv.2.2.1 p, hp])
-  obtain ⟨pk, pi⟩ := p
-  simp only at h2
-  subst h2
-  exact ⟨pi, by rw [hp]; exact hi'⟩
+    IsSmoothHerm A' :=
+  IsPullHerm.isSmoothHerm hv h hA
 
 theorem arithDim_lt_of_lt {P Q : Ideal (MRing ι)} {d d₀ : ℕ} (hP : IsArithVar P d) (hQ : IsArithVar Q d₀)
     (hle : P ≤ Q) (hne : P ≠ Q) : d₀ < d := by

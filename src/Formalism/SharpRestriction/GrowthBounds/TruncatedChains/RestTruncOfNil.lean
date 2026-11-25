@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.GrowthBounds.RootWeights.IntegralEnvelopingPreservesStable
 public import Formalism.SharpRestriction.GrowthBounds.TruncatedChains.RestPair
 public import Formalism.SharpRestriction.GrowthBounds.RootWeights.NontrivialIsotypicWeightZeroKilled
 import Mathlib.RingTheory.Henselian
@@ -33,11 +34,7 @@ theorem pf_apply (E : GLOps n K V) (a b : Fin n) (c T : ℕ) (x : V) :
 
 theorem pow_mem_stable (f : Module.End K W) (S : Submodule K W) (h : ∀ w ∈ S, f w ∈ S) (k : ℕ) (w : W)
     (hw : w ∈ S) : (f ^ k) w ∈ S := by
-  induction k with
-  | zero => simpa using hw
-  | succ k ih =>
-    rw [pow_succ', Module.End.mul_apply]
-    exact h _ ih
+  apply _root_.Formalism.MainNotions.G.GLWeightTheory.pow_preserves_stable <;> assumption
 
 theorem pf_mem (A : GLOps n K W) (S : Submodule K W) (x y : Fin n) (h1 : ∀ w ∈ S, A x y w ∈ S)
     (h2 : ∀ w ∈ S, A y x w ∈ S) (c T : ℕ) (w : W) (hw : w ∈ S) : pf A x y c T w ∈ S := by

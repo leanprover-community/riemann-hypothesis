@@ -483,8 +483,6 @@ open NumberField IsDedekindDomain Topology GlobalTheory.WeilM GlobalTheory.Adeli
 open GlobalTheory.LatVac (liftV psiAt locCo evFin_liftV at_liftV)
 open PositivityTheory.ThK
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 theorem psiAt_good {F : Type} [Field F] [NumberField F] {ψ : AddChar (AF F) ℂ} (h : IsStd ψ) (v : Pl F) :
     Continuous (psiAt ψ v) ∧ (∀ x, ‖psiAt ψ v x‖ = 1) ∧ psiAt ψ v ≠ 1 :=
   ⟨GlobalTheory.VacAny.continuous_psiV h.1 v, fun _ => GlobalTheory.StdCharFromIsStd.norm_psi h _, GlobalTheory.PsiNontriv.psiAt_ne_one ψ h v⟩
@@ -1165,8 +1163,6 @@ open GlobalTheory.LFun.InertChart (under_eq_iff)
 
 namespace EvInv
 
-attribute [local instance] GlobalTheory.LocalData.complRel
-
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
 theorem locChar_one {v : Pl F} {w : HeightOneSpectrum (𝓞 E)} (hw : IsInertAt F E v w) {χ : Chr F E}
@@ -1299,8 +1295,6 @@ open NumberField IsDedekindDomain Topology GlobalTheory.WeilM GlobalTheory.Adeli
   PositivityTheory.ThK.PT
 
 namespace FunSieg
-
-attribute [local instance] GlobalTheory.LocalData.complRel
 
 local instance locField {F : Type} [Field F] [NumberField F] (v : Pl F) : IsNonarchimedeanLocalField (Fv F v) :=
   GlobalTheory.LocalData.isLocalField v

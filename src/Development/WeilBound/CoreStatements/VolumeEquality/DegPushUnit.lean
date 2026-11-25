@@ -109,8 +109,7 @@ theorem divCycle_le (P : Ideal (MRing ι k)) (hP : P.IsPrime) (f g : MRing ι k)
     rw [congrFun (DivCycleMul.proof k K ι P x y hP hx hy) W, Pi.add_apply]
   have hpow : ∀ (x : MRing ι k) (n : ℕ), x ∉ P → x ^ n ∉ P := fun x n hx hxn =>
     hx (hP.mem_of_pow_mem _ hxn)
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   set M : ℕ := (N * divCycle P g W).toNat + 1 with hM
   obtain ⟨s, r, hs, hm⟩ := h M
   have hsP : s ∉ P := fun hsp => hs (hPW hsp)

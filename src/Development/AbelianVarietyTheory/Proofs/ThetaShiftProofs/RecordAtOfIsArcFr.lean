@@ -97,8 +97,7 @@ theorem tsum_mem_range_of_norm_cut (T : CDVR) {K : Type} [NormedField K] [Comple
   have hπ0 : algebraMap T.V T.Fr π ≠ 0 := by
     simpa using hπ.ne_zero
   have hπn : ‖φ π‖ < 1 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     have h1 : ‖i' (algebraMap T.V T.Fr π)⁻¹‖ ≤ 1 := by
       rw [map_inv₀, norm_inv]
       exact inv_le_one_of_one_le₀ hc

@@ -113,8 +113,7 @@ private theorem map_mem (S : Submodule ℂ (⨂[ℂ] i, V i))
 
 private theorem exists_dual_ne (x : ⨂[ℂ] i, V i) (hx : x ≠ 0) :
     ∃ f : ∀ i, Module.Dual ℂ (V i), PiTensorProduct.dualDistrib (PiTensorProduct.tprod ℂ f) x ≠ 0 := by
-  by_contra hc
-  push_neg at hc
+  by_contra! hc
   refine hx ((Module.forall_dual_apply_eq_zero_iff ℂ x).1 fun ℓ => ?_)
   obtain ⟨t, rfl⟩ := (PiTensorProduct.dualDistribEquiv (R := ℂ) (M := V)).surjective ℓ
   change PiTensorProduct.dualDistrib t x = 0

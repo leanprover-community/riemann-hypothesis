@@ -12,6 +12,7 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.StandardAdelicChara
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SplitPrimeAdditiveCharacterUnramified
 import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.OneVectorCcOfSiegelWeil
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.WeilBound.ThetaLifts.LocalTheory.ConeShifts.IdealA, Development.WeilBound.ThetaLifts.LocalTheory.ConeShifts.IdealB, Development.WeilBound.ThetaLifts.LocalTheory.ConeShifts.IdealId0
@@ -364,27 +365,8 @@ open FractionalIdeal (count)
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}
 open GlobalTheory.StdDual (codiff codiff_ne_zero)
 
-theorem add_sigma (h : IsCMExt F E σ) (x : E) : x + σ x = algebraMap F E (Algebra.trace F E x) := by
-  classical
-  have hc := h.2.1
-  haveI : Algebra.IsQuadraticExtension F E := ⟨h.2.2.1⟩
-  let s : E ≃ₐ[F] E := AlgEquiv.ofAlgHom σ σ (by ext y; simp [PositivityTheory.ThK.Vac.sigma_sigma h]) (by ext y; simp [PositivityTheory.ThK.Vac.sigma_sigma h])
-  have hs : (1 : E ≃ₐ[F] E) ≠ s := by
-    intro h1
-    obtain ⟨τ⟩ : Nonempty (E →+* ℂ) := inferInstance
-    refine IsTotallyComplex.complexEmbedding_not_isReal τ ?_
-    rw [ComplexEmbedding.isReal_iff]
-    ext y
-    have h2 : σ y = y := (DFunLike.congr_fun h1 y).symm
-    have := h.2.2.2 τ y
-    rw [h2] at this
-    simpa using this.symm
-  have hu : (Finset.univ : Finset (E ≃ₐ[F] E)) = {1, s} := by
-    symm
-    apply Finset.eq_univ_of_card
-    rw [Finset.card_pair hs, ← Nat.card_eq_fintype_card, IsGalois.card_aut_eq_finrank, h.2.2.1]
-  rw [trace_eq_sum_automorphisms, hu, Finset.sum_pair hs]
-  rfl
+theorem add_sigma (h : IsCMExt F E σ) (x : E) : x + σ x = algebraMap F E (Algebra.trace F E x) :=
+  _root_.GlobalTheory.GaussMean.OneVec.add_sigma h x
 
 theorem add_cA (h : IsCMExt F E σ) (z : AE F E) : ∃ a : AF F, z + cA σ z = algebraMap (AF F) (AE F E) a := by
   induction z using TensorProduct.induction_on with

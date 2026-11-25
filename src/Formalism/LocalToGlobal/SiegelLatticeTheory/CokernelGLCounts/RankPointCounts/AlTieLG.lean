@@ -578,8 +578,7 @@ theorem nsub_le {K : Type*} [NormedField K] [IsUltrametricDist K] (a b : K) : �
 
 theorem root_norm_le {K : Type*} [NormedField K] [IsUltrametricDist K] {tr nm β : K} (htr : ‖tr‖ ≤ 1)
     (hnm : ‖nm‖ ≤ 1) (h : β ^ 2 - tr * β + nm = 0) : ‖β‖ ≤ 1 := by
-  by_contra hb
-  push_neg at hb
+  by_contra! hb
   have h1 : β ^ 2 = tr * β - nm := by linear_combination h
   have hn : ‖β‖ ^ 2 ≤ max (‖tr‖ * ‖β‖) ‖nm‖ := by
     rw [← norm_pow, h1, ← norm_mul]

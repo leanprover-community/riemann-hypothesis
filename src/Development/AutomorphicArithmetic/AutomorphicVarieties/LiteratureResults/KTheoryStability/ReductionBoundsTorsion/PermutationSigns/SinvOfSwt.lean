@@ -81,18 +81,7 @@ private theorem sum_smul_AT_comp_eq_of_intertwine {n m q : ℕ} (c : Pat L q →
   rw [this, smul_eq_mul, smul_eq_mul, smul_eq_mul, mul_assoc]
 
 private theorem fInv_ext_of_uInv {N q : ℕ} (β : HS L N [⋀^Fin q]→L[ℝ] ℝ) (hβ : UInv β) (g : Gp L N) : FInv (ext β) g := by
-  intro h hh
-  unfold ext
-  have h1 : actL (sec h)⁻¹ (one L N : HS L N) = h := by
-    rw [← actL_sec hh, ← actL_mul, inv_mul_cancel, actL_one]
-  have hu : actL (sec (actL g h) * g * (sec h)⁻¹) (one L N : HS L N) = (one L N : HS L N) := by
-    rw [actL_mul, h1, actL_mul, actL_sec (actL_pos g hh)]
-  conv_rhs => rw [← hβ _ hu]
-  ext v
-  simp only [ContinuousAlternatingMap.compContinuousLinearMap_apply, Function.comp_def]
-  congr 1
-  funext i
-  rw [← actL_mul, ← actL_mul, inv_mul_cancel_right]
+  apply _root_.PositivityTheory.KB.BlockInvariants.fInv_ext <;> assumption
 
 private theorem apply_eq_ext_apply_one_of_fInv_of_mem_Pos {N q : ℕ} (ω : Form (HS L N) q) (hω : ∀ g : Gp L N, FInv ω g) (h : HS L N)
     (hh : h ∈ Pos L N) : ω h = ext (ω (one L N)) h := by

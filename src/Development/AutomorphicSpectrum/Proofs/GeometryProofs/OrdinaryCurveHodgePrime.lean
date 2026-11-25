@@ -581,7 +581,6 @@ end Abstract
 section Geom
 
 open scoped CategoryTheory.Obj CategoryTheory.MonObj
-attribute [local instance] Over.cartesianMonoidalCategory
 
 variable {R : Type} [CommRing R] {G G' : Over (Spec (CommRingCat.of R))} [GrpObj G] [GrpObj G'] {p : ℕ}
   {N N' : Type} [AddCommGroup N] [AddCommGroup N']

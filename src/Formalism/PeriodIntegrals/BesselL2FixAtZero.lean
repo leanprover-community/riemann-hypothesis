@@ -16,8 +16,6 @@ open MeasureTheory Matrix Finset
 open scoped InnerProductSpace ContDiff ENNReal
 open PI.UpqRep
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 section Defs
 
 variable {k r : ℕ} {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]

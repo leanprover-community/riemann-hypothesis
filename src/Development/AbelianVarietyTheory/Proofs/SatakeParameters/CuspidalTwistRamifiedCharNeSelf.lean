@@ -223,8 +223,7 @@ theorem no_eigvec (p : CuspSub E a) (ha : 1 ≤ a) (η : HChar E) (v : HeightOne
 
   have hPx : ∀ g : GL (Fin a) (Af E), P (p.finPart g x) = 0 := fun g => by
     obtain ⟨u, hu, hu1⟩ : ∃ u, IsUnitAt v u ∧ η.loc v u ≠ 1 := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       exact hη hc
     obtain ⟨h, hh, hgh, hdet⟩ := exists_conj_mem ha v (GeneralLinearGroup.map (pLoc E v) g) u hu
     refine hPzero _ h hh (by rw [hχdef, CuspSub.locDet, MonoidHom.comp_apply, hdet]; exact hu1) ?_

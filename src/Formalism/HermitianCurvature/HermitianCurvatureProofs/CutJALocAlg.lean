@@ -16,8 +16,6 @@ namespace Formalism.FourierDecayAlt.P.CutMP.JA
 
 open NumberField Formalism.FourierDecayAlt.P.CutMP
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 theorem inCC_antiA {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
     [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] {A A' : ℝ} {m : ℕ}
     {F : B.Mat k r → (Wq →L[ℂ] Wp)} (h : A' ≤ A) (hF : B.InCC A m F) : B.InCC A' m F := by

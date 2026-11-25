@@ -165,8 +165,7 @@ theorem GlobalTheory.Alc.exists_dominant_highest_vector_of_lt : ∀ (k : Type) [
   refine ⟨μ, v, ?_, hv', hvM, hvh, ?_⟩
   · intro a b hab
     rcases hab.lt_or_eq with hab | rfl
-    · by_contra hba
-      push_neg at hba
+    · by_contra! hba
       have h1 : rename (fun x : Fin N × Fin N => (Equiv.swap a b x.1, x.2)) v ∈ M' :=
         hM'.2.2 (Equiv.swap a b) v hv'
       have h2 : rename (fun x : Fin N × Fin N => (Equiv.swap a b x.1, x.2)) v ∉ M := by

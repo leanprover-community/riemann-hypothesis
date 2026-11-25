@@ -88,8 +88,6 @@ open GlobalTheory.FormTies GlobalTheory.OnTies
 open Formalism.HermitianLatticesTheory (localization₂)
 open scoped TensorProduct Matrix
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Lat
 
 theorem fg_of_graph {R P X : Type} [CommRing R] [IsNoetherianRing R] [AddCommGroup P] [Module R P] [AddCommGroup X]

@@ -439,8 +439,6 @@ namespace GlobalTheory.TypeAsm.NFEx
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.HidaSetting Formalism.L2.SG.TermOp Formalism.L2.SG.Full Formalism.MainNotions.S.Cnt
   Formalism.L2.SG.KappaOffDiagonal Formalism.MainNotions.KappaEndpoints Formalism.MainNotions.BridgeLemma Formalism.MainNotions.LatticeGluingRadicals
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem zhat_eq {D : D7} {X : HidaSetting D} {Y : Full X} {u : D.what₂.Word} (t : GTu Y u)
     (j : ℕ) (hj : j ≤ D.R.rS + 1) :
     (Formalism.HermitianLatticeCounting.S6.Zhat (F0 X u) (Ft t)).submatrix (Fin.castLE hj) (Fin.castLE hj) =
@@ -453,8 +451,6 @@ end GlobalTheory.TypeAsm.NFEx
 namespace GlobalTheory.TypeAsm.NFEx
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.HidaSetting Formalism.L2.SG.TermOp Formalism.L2.SG.Full Formalism.MainNotions.S.Cnt
   Formalism.L2.SG.KappaOffDiagonal Formalism.MainNotions.KappaEndpoints Formalism.MainNotions.BridgeLemma Formalism.MainNotions.LatticeGluingRadicals
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem nfExC (hHost : HostC) : NFExC := by
   intro D large₂ X Y u hStd t ht

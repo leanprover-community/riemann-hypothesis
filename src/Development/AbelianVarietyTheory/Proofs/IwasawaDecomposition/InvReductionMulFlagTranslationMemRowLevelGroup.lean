@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsFiniteGroupActionLiftFormsRightTranslationStatement
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ReadsDeco
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.StepZeroTwistReferenceTupleEqId
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.RTupQEqOneIff
@@ -62,18 +63,7 @@ theorem reindex_finCongr_rfl {κ : Type} [CommRing κ] {a : ℕ} (y : GL (Fin a)
 
 theorem coarse_eq_blkOf {a r t m : ℕ} (hn : a = r + m * t) (i : Fin a) :
     Formalism.L2.Col.coarse r (List.replicate m t) i.val = Formalism.L2.DIV.blkOf r t i := by
-  unfold Formalism.L2.DIV.blkOf
-  split_ifs with hi
-  · exact Formalism.L2.Col.coarse_of_lt hi
-  · rw [Formalism.L2.Col.coarse_of_le (Nat.not_lt.mp hi)]
-    have hi2 := i.2
-    have ht : 0 < t := by
-      rcases Nat.eq_zero_or_pos t with h0 | h0
-      · subst h0
-        simp at hn
-        omega
-      · exact h0
-    rw [Formalism.L2.Col.blkIdx_replicate ht m _ (by omega)]
+  apply _root_.GlobalTheory.Mem.R3.LiftBrg.ActQ.coarse_eq_blkOf' <;> assumption
 
 theorem coarseBlockIndex_eq_twoBlock {a r b : ℕ} (hn : a = r + b) (i : Fin a) :
     Formalism.L2.Col.coarse r [b] i.val = Formalism.L2.DIV.blk2 r i := by

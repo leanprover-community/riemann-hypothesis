@@ -87,8 +87,6 @@ open CategoryTheory AlgebraicGeometry Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open scoped CategoryTheory.Obj CategoryTheory.MonObj
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 open ReciprocityTheory.ChartRestriction.G.Chart (sp)
 
 namespace GlobalTheory.CompanionTheory.FlatFactor
@@ -149,8 +147,6 @@ noncomputable section
 
 open CategoryTheory AlgebraicGeometry Limits MonoidalCategory CartesianMonoidalCategory MonObj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi
-
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.CompanionTheory.AbFibre
 
@@ -254,8 +250,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped CategoryTheory.Obj CategoryTheory.MonObj
 open ReciprocityTheory.ChartRestriction.G.Chart (sp spMap)
 open GlobalTheory.CompanionTheory.Ar.GR
-
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.CompanionTheory.Ar.KerFF
 
@@ -379,8 +373,6 @@ open CategoryTheory AlgebraicGeometry Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi
 open scoped CategoryTheory.Obj CategoryTheory.MonObj
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 open ReciprocityTheory.ChartRestriction.G.Chart (sp spMap)
 open GlobalTheory.CompanionTheory.Ar.GR
 
@@ -472,8 +464,6 @@ open CategoryTheory AlgebraicGeometry Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open scoped CategoryTheory.Obj CategoryTheory.MonObj
 open GlobalTheory.CechPic GlobalTheory.AbDual
-
-attribute [local instance] Over.cartesianMonoidalCategory
 
 open ReciprocityTheory.ChartRestriction.G.Chart (sp spMap)
 
@@ -649,8 +639,6 @@ open scoped CategoryTheory.Obj CategoryTheory.MonObj
 open GlobalTheory.CechPic GlobalTheory.AbDual
 open GlobalTheory.IndefiniteRowSideFullHecke.ZeroSectionBase (IsPrincipalPol sqToBase toBase)
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 open ReciprocityTheory.ChartRestriction.G.Chart (sp spMap)
 
 namespace PositivityTheory.PrwZar.Z2
@@ -697,8 +685,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped CategoryTheory.Obj CategoryTheory.MonObj
 open GlobalTheory.CechPic GlobalTheory.AbDual
 open GlobalTheory.IndefiniteRowSideFullHecke.ZeroSectionBase (IsPrincipalPol sqToBase toBase)
-
-attribute [local instance] Over.cartesianMonoidalCategory
 
 open ReciprocityTheory.ChartRestriction.G.Chart (sp spMap)
 
@@ -816,8 +802,6 @@ open scoped CategoryTheory.Obj CategoryTheory.MonObj
 open GlobalTheory.CechPic GlobalTheory.AbDual
 open GlobalTheory.IndefiniteRowSideFullHecke.ZeroSectionBase (IsPrincipalPol sqToBase toBase)
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 open ReciprocityTheory.ChartRestriction.G.Chart (sp spMap)
 
 namespace PositivityTheory.PrwZar.Z2
@@ -910,8 +894,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped CategoryTheory.Obj CategoryTheory.MonObj
 open GlobalTheory.CechPic GlobalTheory.AbDual
 open GlobalTheory.IndefiniteRowSideFullHecke.ZeroSectionBase (IsPrincipalPol sqToBase toBase)
-
-attribute [local instance] Over.cartesianMonoidalCategory
 
 open ReciprocityTheory.ChartRestriction.G.Chart (sp spMap)
 
@@ -1414,8 +1396,6 @@ open CategoryTheory AlgebraicGeometry Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open scoped CategoryTheory.Obj CategoryTheory.MonObj
 open GlobalTheory.CechPic GlobalTheory.AbDual
-
-attribute [local instance] Over.cartesianMonoidalCategory
 
 open ReciprocityTheory.ChartRestriction.G.Chart (sp spMap)
 

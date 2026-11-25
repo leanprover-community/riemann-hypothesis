@@ -13,6 +13,7 @@ import Formalism.SharpRestriction.CuspSpanNormBounds.NonemptyParameterModels.Num
 public import Formalism.SharpRestriction.CuspSpanNormBounds.NonemptyParameterModels.TopsChoicePartA
 import Mathlib.Tactic.TypeStar
 import Formalism.FormalDegreeBessel.FormalDegreeRatio.IOCentral
+import Development.AbelianVarietyTheory.Proofs.JetHarmonics.BesselCharacterUnipotentRadicalProperties
 
 @[expose] public section
 
@@ -57,25 +58,7 @@ theorem uw_inv_eq {z : Fin (2 * r + k + 1) → ℂ} {h : Matrix (Fin (2 * r + k 
 
 theorem uw_inv_mem {z : Fin (2 * r + k + 1) → ℂ} {h : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ}
     (hh : h ∈ UWset k r z) : h⁻¹ ∈ UWset k r z := by
-  have hH : hᴴ * Hpk k r * h = Hpk k r := by
-    obtain ⟨hU, -, -⟩ := hh
-    exact hU
-  have hi : h⁻¹ * h = 1 := by
-    rw [uw_inv_eq hh]
-    calc Hpk k r * hᴴ * Hpk k r * h = Hpk k r * (hᴴ * Hpk k r * h) := by simp only [Matrix.mul_assoc]
-      _ = 1 := by rw [hH, Formalism.QuantumDeterminants.GBasic.Hpk_sq]
-  have hi' : h * h⁻¹ = 1 := Matrix.mul_nonsing_inv h (Matrix.isUnit_det_of_left_inverse hi)
-  obtain ⟨hU, hfix, hz⟩ := hh
-  have fix : ∀ v, h *ᵥ v = v → h⁻¹ *ᵥ v = v := by
-    intro v hv
-    calc h⁻¹ *ᵥ v = h⁻¹ *ᵥ (h *ᵥ v) := by rw [hv]
-      _ = v := by rw [Matrix.mulVec_mulVec, hi, Matrix.one_mulVec]
-  unfold Formalism.QuantumDeterminants.UWset
-  refine ⟨?_, fun a => ⟨fix _ (hfix a).1, fix _ (hfix a).2⟩, fix _ hz⟩
-  show (h⁻¹)ᴴ * Hpk k r * h⁻¹ = Hpk k r
-  calc (h⁻¹)ᴴ * Hpk k r * h⁻¹ = (h⁻¹)ᴴ * (hᴴ * Hpk k r * h) * h⁻¹ := by rw [hH]
-    _ = (h * h⁻¹)ᴴ * Hpk k r * (h * h⁻¹) := by simp only [Matrix.conjTranspose_mul, Matrix.mul_assoc]
-    _ = Hpk k r := by rw [hi']; simp
+  apply _root_.GlobalTheory.BesselPsi.uw_inv <;> assumption
 
 theorem uw_inv_mul {z : Fin (2 * r + k + 1) → ℂ} {h : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ}
     (hh : h ∈ UWset k r z) : h⁻¹ * h = 1 := by

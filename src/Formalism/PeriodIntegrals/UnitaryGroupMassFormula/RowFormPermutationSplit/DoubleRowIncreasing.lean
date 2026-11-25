@@ -3,6 +3,7 @@ module
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.RowFormPermutationSplit.Development
 public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.ShiftedGeneratorEqIteSmulAdd
 import Mathlib.Tactic.Linter.Style
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.OrderedFormsMutualShuffleEq
 
 @[expose] public section
 
@@ -34,13 +35,7 @@ theorem Tm_opE {A : Type*} [Ring A] [Algebra ℂ A] {n : ℕ} (E : Fin n → Fin
 
 theorem reverse_ofFn' {α : Type*} {t : ℕ} (f : Fin t → α) :
     (List.ofFn f).reverse = List.ofFn (fun k => f (Fin.rev k)) := by
-  apply List.ext_getElem (by simp)
-  intro i h1 h2
-  rw [List.getElem_reverse, List.getElem_ofFn, List.getElem_ofFn]
-  congr 1
-  apply Fin.ext
-  simp only [Fin.val_rev, List.length_ofFn]
-  omega
+  apply _root_.GlobalTheory.CompanionTheory.ZcWords.reverse_ofFn <;> assumption
 
 def revConj (t : ℕ) : Equiv.Perm (Fin t) ≃ Equiv.Perm (Fin t) where
   toFun τ := Fin.revPerm * τ * Fin.revPerm

@@ -148,8 +148,7 @@ theorem vecB_ne : vecB B.o B.ζ ≠ 0 := by
 
 theorem exists_form : ∃ r₀ : Fin B.V₀.rank → D.host.E, ratV r₀ ⬝ᵥ ratV (vecB B.o B.ζ) = 1 := by
   obtain ⟨k, hk⟩ : ∃ k, vecB B.o B.ζ k ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact vecB_ne B (funext hc)
   refine ⟨Pi.single k (vecB B.o B.ζ k)⁻¹, ?_⟩
   rw [dotProduct, Finset.sum_eq_single k]

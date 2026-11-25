@@ -4,6 +4,7 @@ public import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.Holom
 import Std.Tactic.BVDecide.Normalize.Bool
 import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.GlobalGaussLaws.DetNeOfInG
 import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.GlobalGaussLaws.DRConjTranspose
+import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.GlobalGaussLaws.GaussD
 
 @[expose] public section
 
@@ -23,17 +24,7 @@ open PositivityTheory.Rg.Sw PositivityTheory.Rg.Sw.Glob PositivityTheory.Rg.Sw.G
 def rhoT {m : ℕ} (t : ℝ) (ε : Fin m → Bool) (a : Fin m) : ℝ := if epsT t ε a then 1 else -1
 
 theorem isSiegel_I (n : ℕ) : IsSiegel (Complex.I • (1 : Matrix (Fin n) (Fin n) ℂ)) := by
-  unfold IsSiegel
-  have h : -(Complex.I / 2) • (Complex.I • (1 : Matrix (Fin n) (Fin n) ℂ)
-      - (Complex.I • (1 : Matrix (Fin n) (Fin n) ℂ))ᴴ) = 1 := by
-    rw [Matrix.conjTranspose_smul, Matrix.conjTranspose_one, ← sub_smul, smul_smul]
-    have hc : -(Complex.I / 2) * (Complex.I - star Complex.I) = 1 := by
-      rw [Complex.star_def, Complex.conj_I]
-      ring_nf
-      rw [Complex.I_sq]; ring
-    rw [hc, one_smul]
-  rw [h]
-  exact Matrix.PosDef.one
+  apply _root_.PositivityTheory.Rg.Sw.Glob.GaussH.isSiegel_I <;> assumption
 
 theorem isSch_smul {m n : ℕ} {f : (Fin m → Fin n → ℂ) → ℂ} (hf : IsSch f) (K : ℂ) : IsSch (fun u => K * f u) := by
   obtain ⟨S, hS⟩ := hf

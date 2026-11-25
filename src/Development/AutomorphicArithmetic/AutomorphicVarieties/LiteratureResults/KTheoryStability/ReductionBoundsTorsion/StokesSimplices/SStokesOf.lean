@@ -275,12 +275,7 @@ open MeasureTheory
 namespace PositivityTheory.KB.StokesSlices
 
 lemma isClosed_Δ (m : ℕ) : IsClosed (Δ m) := by
-  have h1 : IsClosed {t : Fin m → ℝ | ∀ j, 0 ≤ t j} := by
-    simp only [Set.ofPred_forall]
-    exact isClosed_iInter fun j => isClosed_le continuous_const (continuous_apply j)
-  have h2 : IsClosed {t : Fin m → ℝ | ∑ j, t j ≤ 1} :=
-    isClosed_le (by fun_prop) continuous_const
-  exact h1.inter h2
+  apply _root_.PositivityTheory.KB.StokesSlices.Hyp.isClosed_Δ <;> assumption
 
 lemma isCompact_Δ (m : ℕ) : IsCompact (Δ m) := by
   refine (isCompact_Icc : IsCompact (Set.Icc (0 : Fin m → ℝ) 1)).of_isClosed_subset (isClosed_Δ m) ?_

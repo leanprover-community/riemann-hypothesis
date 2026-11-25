@@ -1,5 +1,8 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.M2ModelOfCurveBound
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ModelOnHodgeFromFamily
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeTateWeilEndomorphism
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ExistsGenOfIsVBOne
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsLatFlagPair
 public import Mathlib.NumberTheory.NumberField.Discriminant.Defs
@@ -417,15 +420,7 @@ open GlobalTheory.CompanionTheory.Ar.ChartPrimes in
 theorem basic_nbhd (x : κ → Ω) (T : CoordTie ℤ ξ x) (c : κ) (hc : x c ≠ 0) (q : Cpt ξ) (hq : InChart ξ x c q)
     (U : X.Opens) (hU : q.1 ∈ U) : ∃ g ∈ Algebra.adjoin ℤ (Set.range fun j => x j / x c), unitAt ξ q g ∧
       ∀ q' : Cpt ξ, InChart ξ x c q' → unitAt ξ q' g → q'.1 ∈ U := by
-  obtain ⟨V, hV, hmem⟩ := T.affine c hc
-  have hqV : q.1 ∈ V := (hmem _).2 ⟨q.2, hq⟩
-  have hg : genPt ξ ∈ V := q.2.mem_open V.2 hqV
-  obtain ⟨f, hfU, hqf⟩ := hV.exists_basicOpen_le ⟨q.1, hU⟩ hqV
-  have key : ∀ (p : Cpt ξ), p.1 ∈ V → (p.1 ∈ X.basicOpen f ↔ unitAt ξ p (secVal ξ V hg f)) := fun p hp => by
-    rw [X.mem_basicOpen f _ hp, ← genMap_germ_eq V hg p hp f]
-    exact isUnit_iff_unitAt p (T.gen.inj _) _
-  refine ⟨secVal ξ V hg f, (T.ring c hc _).2 fun p hp => ⟨_, genMap_germ_eq V hg p ((hmem _).2 ⟨p.2, hp⟩) f⟩,
-    (key q hqV).1 hqf, fun q' hq' hu => hfU ((key q' ((hmem _).2 ⟨q'.2, hq'⟩)).2 hu)⟩
+  apply _root_.PositivityTheory.HtPt.Ci.exists_chart_fun <;> assumption
 
 end PositivityTheory.Xgn.LatticeChartPoints
 
@@ -529,24 +524,8 @@ theorem integers_regular {F : Type} [Field F] [NumberField F] (hN : Flat.NormalC
   exact h2.tower_top
 
 theorem unitAt_nat {q : Cpt ξ} [CharZero Ω] (n : ℕ) (hn : n ≠ 0)
-    (h : ∀ p : ℕ, p.Prime → p ∣ n → unitAt ξ q (p : Ω)) : unitAt ξ q (n : Ω) := by
-  induction n using Nat.recOnMul with
-  | zero => exact absurd rfl hn
-  | one => exact ⟨by simp, by simp, by simp⟩
-  | prime p hp => exact h p hp dvd_rfl
-  | mul a b iha ihb =>
-    have ha0 : a ≠ 0 := by rintro rfl; simp at hn
-    have hb0 : b ≠ 0 := by rintro rfl; simp at hn
-    obtain ⟨a1, a2, a3⟩ := iha ha0 (fun p hp hpa => h p hp (dvd_mul_of_dvd_left hpa b))
-    obtain ⟨b1, b2, b3⟩ := ihb hb0 (fun p hp hpb => h p hp (dvd_mul_of_dvd_right hpb a))
-    refine ⟨?_, ?_, ?_⟩
-    · push_cast
-      exact mul_ne_zero a1 b1
-    · push_cast
-      exact Subring.mul_mem _ a2 b2
-    · push_cast
-      rw [mul_inv]
-      exact Subring.mul_mem _ a3 b3
+    (h : ∀ p : ℕ, p.Prime → p ∣ n → unitAt ξ q (p : Ω)) : unitAt ξ q (n : Ω) :=
+  _root_.GlobalTheory.CompanionTheory.Ar.Num.FamEx.SandPt.unitAt_nat n hn h
 
 theorem unitAt_natAbs_discr {F : Type} [Field F] [NumberField F] {q : Cpt ξ} [CharZero Ω]
     (h : ∀ p : ℕ, p.Prime → (p : ℤ) ∣ discr F → unitAt ξ q (p : Ω)) :
@@ -583,77 +562,8 @@ end PositivityTheory.Xgn.LatticeHeightUnit
 
 open PositivityTheory.Xgn.LatticeHeightUnit in
 theorem PositivityTheory.Xgn.lattice_height_unit : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Level H) (Xo : Moduli D l) (c : Coeff l) (O₀ : Type) [CommRing O₀] (β : O₀ →+* c.F) (Y : Model Xo c β) (S : Finset ℕ) (Ω : Type) [Field Ω] (K : Type) [Fintype K] (J : K → Type) [∀ k, Fintype (J k)] (y : (Σ k, J k) → Ω) (𝔐 : HodgeCpt Y S y) (p : ℕ) [Fact p.Prime], p ∈ S → Nonempty (GenTors 𝔐 p) → ¬ (p : ℤ) ∣ NumberField.discr E → ∀ (t : CMType H ⊕ CMType H) (q : Cpt 𝔐.ξ), (∀ r : ℕ, r.Prime → ¬ InFibre 𝔐.ξ r q) → 𝔐.HT p t q = 𝔐.dR t q := by
-  intro E _ _ _ H D l Xo c O₀ _ β Y S Ω _ K _ J _ y 𝔐 p _ hpS hgt hpd t q hq
-  obtain ⟨gt⟩ := hgt
-  have hp : p.Prime := Fact.out
-  have hgen : IsCptGen 𝔐.ξ := 𝔐.tie.gen
-  obtain ⟨_, hsm, -, -, -, -⟩ := 𝔐.t.semi
-  have hvb : 𝔐.M.lat.IsVBOn {q} (Module.finrank Ω 𝔐.Li) ⊤ :=
-    isVBOn_of_isVB (lieLat_isVB_of_smooth 𝔐.X Ω 𝔐.ξ 𝔐.t.G 𝔐.Li 𝔐.M hgen hsm).1 {q}
-  have hunit : ∀ r : ℕ, r.Prime → unitAt 𝔐.ξ q (r : Ω) := fun r hr => not_not.1 (hq r hr)
-  have hchar : CharZero Ω := by
-    rcases CharP.char_is_prime_or_zero Ω (ringChar Ω) with h | h
-    · exact absurd ringChar.Nat.cast_ringChar (hunit _ h).1
-    · have := ringChar.of_eq h
-      exact CharP.charP_to_charZero Ω
-  have hun : unitAt 𝔐.ξ q ((p ^ 𝔐.R p : ℕ) : Ω) := by
-    obtain ⟨a1, a2, a3⟩ := hunit p hp
-    refine ⟨?_, ?_, ?_⟩
-    · push_cast
-      exact pow_ne_zero _ a1
-    · push_cast
-      exact Subring.pow_mem _ a2 _
-    · push_cast
-      rw [← inv_pow]
-      exact Subring.pow_mem _ a3 _
-  have h1 : ∀ (k : Type) [Field k] [IsAlgClosed k] (i : Ω →+* k) (xk g : Over.mk (spMap i ≫ 𝔐.ξ) ⟶ 𝔐.t.G)
-      (c : kˣ), xk.left = spMap i ≫ (1 : Over.mk 𝔐.ξ ⟶ 𝔐.t.G).left → g ^ (p ^ 𝔐.R p) = 1 →
-        Out.WeilIs 𝔐.t.G 𝔐.t.PP.L ((p ^ 𝔐.R p : ℕ) : ℤ) xk g (unitOn c) → (c : k) = 1 := by
-    intro k _ _ i xk g c hxk hgn hW
-    obtain ⟨x, hx⟩ := 𝔐.tors p hpS k i g hgn
-    have hxn : x ^ (p ^ 𝔐.R p) = 1 := pow_descend i hx hgn
-    obtain ⟨τ, hτ⟩ := (gt.t₂.onto x).1 hxn
-    obtain ⟨x', hx'⟩ : ∃ x' : Fin (D.p + D.q) → 𝓞 E, qmk (p ^ 𝔐.R p) x' = τ := by
-      refine ⟨fun j => (Ideal.Quotient.mk_surjective (Multiplicative.toAdd τ j)).choose, ?_⟩
-      rw [← ofAdd_toAdd τ]
-      unfold qmk
-      congr 1
-      funext j
-      exact (Ideal.Quotient.mk_surjective (Multiplicative.toAdd τ j)).choose_spec
-    have h0 : gt.t₂.pt (qmk (p ^ 𝔐.R p) (0 : Fin (D.p + D.q) → 𝓞 E)) = 1 := by
-      have : qmk (p ^ 𝔐.R p) (0 : Fin (D.p + D.q) → 𝓞 E) = 1 := by
-        unfold qmk
-        simp
-        rfl
-      rw [this, map_one]
-    have hx0 : xk.left = spMap i ≫ (gt.t₂.pt (qmk (p ^ 𝔐.R p) 0)).left := by
-      rw [h0]
-      exact hxk
-    have hg1 : g.left = spMap i ≫ (gt.t₂.pt (qmk (p ^ 𝔐.R p) x')).left := by
-      rw [hx', hτ]
-      exact hx
-    have hW' : Out.WeilIs 𝔐.t.G 𝔐.t.PP.L ((p : ℤ) ^ 𝔐.R p) xk g (unitOn c) := by
-      rw [← Nat.cast_pow]
-      exact hW
-    have hw := (gt.weil 0 x' k i xk g c hx0 hg1).1 hW'
-    rw [map_zero, AddMonoidHom.zero_apply, ZMod.val_zero, pow_zero, map_one] at hw
-    exact hw
-  have hom : 𝔐.M.htOm 𝔐.t.PP.L (p ^ 𝔐.R p) q = 𝔐.M.omLat q :=
-    htOm_eq_omLat 𝔐.M 𝔐.t.PP.L (p ^ 𝔐.R p) q hun h1
-  rcases t with τ | τ
-  · have key := LieModel.htDual_htW_eq_eigLat_of_htOm_eq_omLat 𝔐.X Ω 𝔐.ξ 𝔐.t.G 𝔐.Li 𝔐.M 𝔐.t.PP.L
-      (p ^ 𝔐.R p) (Module.finrank Ω 𝔐.Li) (𝓞 E) 𝔐.ρ (𝔐.emb (Sum.inl τ)) q hvb hom
-    show 𝔐.M.htW 𝔐.t.PP.L (p ^ 𝔐.R p) 𝔐.ρ (𝔐.emb (Sum.inl τ)) (differentIdeal ℤ (𝓞 E)) q =
-      𝔐.M.eigLat 𝔐.ρ (𝔐.emb (Sum.inl τ)) q
-    apply key.2
-    · intro a
-      exact integers_regular (normalCpt_of_isCptGen hgen 𝔐.normal) (𝔐.emb (Sum.inl τ)) q a
-    · refine ⟨((discr E).natAbs : 𝓞 E), natAbs_discr_mem_different E, ?_⟩
-      rw [map_natCast]
-      exact unitAt_natAbs_discr (fun r hr _ => hunit r hr)
-  · have key := LieModel.htDual_htW_eq_eigLat_of_htOm_eq_omLat 𝔐.X Ω 𝔐.ξ 𝔐.t.G 𝔐.Li 𝔐.M 𝔐.t.PP.L
-      (p ^ 𝔐.R p) (Module.finrank Ω 𝔐.Li) (𝓞 E) 𝔐.ρ (𝔐.emb (Sum.inr τ)) q hvb hom
-    exact key.1
+  intros
+  apply _root_.GlobalTheory.CompanionTheory.Ar.Top.HodgeModel.HtDr0.ht_eq_dR_of_not_inFibre <;> assumption
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.WeilBound.CoreStatements.TorusUniformisation.ChowMahlerFamilies.NatAbsDiscrMemDifferent =====

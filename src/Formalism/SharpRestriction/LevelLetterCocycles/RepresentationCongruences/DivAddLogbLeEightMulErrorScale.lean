@@ -50,8 +50,6 @@ private theorem real_bounds_logb_and_nonneg_inv_mul_of_eleven_le (l : ℕ) (hl :
     ((b + η + S : ℕ) : ℝ) = (b:ℝ) + η + S := by
   have hHc : ((b + η + S : ℕ) : ℝ) = (b:ℝ) + η + S := by push_cast; ring
   have hb1 : (1:ℝ) ≤ b := by exact_mod_cast hb
-  have hη0 : (0:ℝ) ≤ η := by positivity
-  have hS0 : (0:ℝ) ≤ S := by positivity
   refine ⟨?_, by positivity, by positivity, by positivity, by positivity,
     logb_natCast_nonneg_of_one_le_of_eleven_le l hl (by rw [hHc]; linarith), hHc⟩
   unfold Sg
@@ -69,9 +67,6 @@ theorem case1c (l : ℕ) (hl : 11 ≤ l) (b wm w S η b₀ : ℕ) (hb : 1 ≤ b)
   have hL : (11:ℝ) ≤ l := by exact_mod_cast hl
   have hl0 : (0:ℝ) < l := by linarith
   have hb1 : (1:ℝ) ≤ b := by exact_mod_cast hb
-  have hη0 : (0:ℝ) ≤ η := by positivity
-  have hS0 : (0:ℝ) ≤ S := by positivity
-  have hw0 : (0:ℝ) ≤ w := by positivity
   have hbb0 : (b:ℝ) ≤ b₀ := by exact_mod_cast hb₀
   have hb0b : (b₀:ℝ) ≤ b + η := by exact_mod_cast hb₀'
   have h1r : (l:ℝ) * w + l * S ≤ b₀ := by
@@ -147,8 +142,7 @@ theorem case2b (l : ℕ) (hl : 11 ≤ l) (b wm w S η b₀ : ℕ) (hb : 1 ≤ b)
       linear_combination ((b₀:ℝ) + S + η) * e0
     have hSl : (S:ℝ) ≤ l * S := by nlinarith
     have key : (l:ℝ) * η - 2 * η < 2 * ((l:ℝ) * Sg l (b + η + S) wm S η) := by linarith
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     linarith [mul_le_mul_of_nonneg_left hc (show (0:ℝ) ≤ (l:ℝ) - 2 by linarith),
       mul_nonneg (show (0:ℝ) ≤ (l:ℝ) - 4 by linarith)
         (show (0:ℝ) ≤ Sg l (b + η + S) wm S η by linarith)]
@@ -162,9 +156,6 @@ theorem floor_succ_le_ten_mul_errorScale (l : ℕ) (hl : 11 ≤ l) (b wm S η : 
   obtain ⟨hES, n1, n2, n3, n4, hlg, hHc⟩ := real_bounds_logb_and_nonneg_inv_mul_of_eleven_le l hl b wm S η hb
   have hL : (11:ℝ) ≤ l := by exact_mod_cast hl
   have hl0 : (0:ℝ) < l := by linarith
-  have hb1 : (1:ℝ) ≤ b := by exact_mod_cast hb
-  have hη0 : (0:ℝ) ≤ η := by positivity
-  have hS0 : (0:ℝ) ≤ S := by positivity
   have hηA : 0 ≤ ((η : ℝ) + A) / l := div_nonneg (by linarith) hl0.le
   have hx0 : 0 ≤ (11 / 10 : ℝ) * (2 * σ + ((η : ℝ) + A) / l + 2 +
       Real.logb l (2 * ((b + η + S : ℕ) : ℝ))) := by linarith
@@ -185,10 +176,6 @@ theorem one_le_sub_sub_sub (l : ℕ) (hl : 11 ≤ l) (b wm S η b₁ : ℕ) (hb 
   obtain ⟨e0, e1, p0, q0, p11, q10, hqp, e2⟩ := natCast_inv_and_sub_one_inv_bounds_of_eleven_le l hl
   obtain ⟨hES, n1, n2, n3, n4, hlg, hHc⟩ := real_bounds_logb_and_nonneg_inv_mul_of_eleven_le l hl b wm S η hb
   have hL : (11:ℝ) ≤ l := by exact_mod_cast hl
-  have hl0 : (0:ℝ) < l := by linarith
-  have hb1 : (1:ℝ) ≤ b := by exact_mod_cast hb
-  have hη0 : (0:ℝ) ≤ η := by positivity
-  have hS0 : (0:ℝ) ≤ S := by positivity
   have hηr : 20 * (η:ℝ) ≤ b := by exact_mod_cast hη
   have hSr : 20 * (S:ℝ) ≤ b := by exact_mod_cast hS
   have hb₁r : (b:ℝ) ≤ b₁ := by exact_mod_cast hb₁
@@ -221,10 +208,7 @@ theorem div_add_logb_le_eight_mul_errorScale (l : ℕ) (hl : 11 ≤ l) (b wm S �
   obtain ⟨e0, e1, p0, q0, p11, q10, hqp, e2⟩ := natCast_inv_and_sub_one_inv_bounds_of_eleven_le l hl
   obtain ⟨hES, n1, n2, n3, n4, hlg, hHc⟩ := real_bounds_logb_and_nonneg_inv_mul_of_eleven_le l hl b wm S η hb
   have hL : (11:ℝ) ≤ l := by exact_mod_cast hl
-  have hl0 : (0:ℝ) < l := by linarith
   have hb1 : (1:ℝ) ≤ b := by exact_mod_cast hb
-  have hη0 : (0:ℝ) ≤ η := by positivity
-  have hS0 : (0:ℝ) ≤ S := by positivity
   have hH0 : (0:ℝ) ≤ H := by positivity
   have hHr : (H:ℝ) ≤ b + 2 * η + S := by exact_mod_cast hH
   have hb₁r : (b:ℝ) ≤ b₁ := by exact_mod_cast hb₁
@@ -312,8 +296,7 @@ theorem le_band_add_errorScale (l : ℕ) (hl : 11 ≤ l) (b wm w S η b₁ : ℕ
       have key : (l:ℝ) * η - 2 * η < 21 / 2 * ((l:ℝ) * Sg l (b + η + S) wm S η) := by
         linarith
       have hηb : (η:ℝ) ≤ 77 / 6 * Sg l (b + η + S) wm S η := by
-        by_contra hcc
-        push_neg at hcc
+        by_contra! hcc
         linarith [mul_le_mul_of_nonneg_left hcc.le (show (0:ℝ) ≤ (l:ℝ) - 2 by linarith),
           mul_nonneg (show (0:ℝ) ≤ (l:ℝ) - 11 by linarith)
             (show (0:ℝ) ≤ Sg l (b + η + S) wm S η by linarith)]

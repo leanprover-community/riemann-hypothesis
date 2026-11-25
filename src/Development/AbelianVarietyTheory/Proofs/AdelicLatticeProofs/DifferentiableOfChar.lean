@@ -68,8 +68,7 @@ open intervalIntegral
 
 theorem exists_integral_ne_zero (χ : ℝ → ℂ) (hc : Continuous χ) (h0 : χ 0 = 1) :
     ∃ δ : ℝ, (∫ x in (0:ℝ)..δ, χ x) ≠ 0 := by
-  by_contra h
-  push_neg at h
+  by_contra! h
   have h1 : HasDerivAt (fun u => ∫ x in (0:ℝ)..u, χ x) (χ 0) 0 :=
     (hc.integral_hasStrictDerivAt 0 0).hasDerivAt
   have hfun : (fun u => ∫ x in (0:ℝ)..u, χ x) = fun _ => (0:ℂ) := funext h

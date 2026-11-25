@@ -153,8 +153,7 @@ theorem exists_dotProduct_eq {K : Type} [NormedField K] [IsUltrametricDist K] {�
   obtain ⟨δ, hδ, hψδ⟩ := exists_ball_ker ψ₀ hc
   obtain ⟨r, hr, hrL'⟩ := Metric.isOpen_iff.1 hL' 0 L'.zero_mem
   obtain ⟨t₁, ht₁⟩ : ∃ t, ψ₀ t ≠ 1 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hne (DFunLike.ext _ _ fun t => by rw [h t, AddChar.one_apply])
   have ht0 : 0 < ‖t₁‖ := norm_pos_iff.2 fun h => ht₁ (by rw [h, AddChar.map_zero_eq_one])
   set ρ := ‖t₁‖ / r with hρ
@@ -195,8 +194,7 @@ theorem exists_dotProduct_eq {K : Type} [NormedField K] [IsUltrametricDist K] {�
     refine hrL' (mem_ball_zero_iff.2 ?_)
     rw [pi_norm_lt_iff hr]
     intro k
-    by_contra hk
-    push_neg at hk
+    by_contra! hk
     have hyk : 0 < ‖y k‖ := hr.trans_le hk
     refine ht₁ ?_
     have hnorm : ‖(Pi.single k (t₁ / y k) : κ → K)‖ ≤ ρ := by

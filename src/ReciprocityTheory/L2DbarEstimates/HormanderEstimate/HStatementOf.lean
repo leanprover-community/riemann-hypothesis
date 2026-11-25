@@ -1756,8 +1756,7 @@ theorem ti_hasCompactSupport {M : Type*} [TopologicalSpace M] (n : ℕ) (z : M �
   have hsub : Function.support f ⊆ ⋃ j, Function.support (fun x => f x j) := by
     intro x hx
     rw [Set.mem_iUnion]
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     apply hx
     ext j
     simpa [Function.mem_support] using hne j

@@ -16,8 +16,6 @@ namespace Formalism.L2.SG.Pf.admitted
 
 open Formalism.MainNotions.S Formalism.REAL Formalism.MainNotions.BridgeCPX
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 theorem casScalar_of (h1 : CalculusOnSmoothVectors) (h2 : CasimirProperties) (h3 : SchurSymmetricDense) : CasScalarStatement := by
   intro n ε H _ _ _ σ hσ hirr w hw
   have hstb : ∀ (g : UJ ε), ∀ v ∈ Vsub ε hσ w, σ (umat g) v ∈ Vsub ε hσ w := fun g v hv => Vsub_stable hσ w g hv

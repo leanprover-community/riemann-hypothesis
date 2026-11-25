@@ -444,8 +444,7 @@ theorem scalar_integrality_relation [IsDiscreteValuationRing O] [IsFractionRing 
       algebraMap O LL (ϖ ^ m) * algebraMap O LL (uz : O) := by
     rw [← huz, ← hux, map_mul, map_mul, ← hθz]; ring
   have hmk : m < k := by
-    by_contra hle
-    push_neg at hle
+    by_contra! hle
     apply hθ
     refine ⟨ϖ ^ (m - k) * (uz : O) * ((ux⁻¹ : Oˣ) : O), ?_⟩
     have hk : algebraMap O LL (ϖ ^ k) * algebraMap O LL (ux : O) ≠ 0 := by

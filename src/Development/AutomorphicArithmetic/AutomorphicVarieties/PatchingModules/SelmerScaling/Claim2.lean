@@ -1,5 +1,6 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.DeterminantPadicFree.SubMulAddEpM
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.SelmerScaling.EpC
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.SelmerScaling.BndOps
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.SelmerScaling.BndRho
@@ -105,16 +106,7 @@ private theorem P_ep' (Y : Fin e → Matrix (Fin n) (Fin n) X) (k : Fin e) :
   · simp [DD.epM, hij]
 
 private theorem epM_mul (Y Z : Fin e → Matrix (Fin n) (Fin n) X) : DD.epM Y * DD.epM Z = 0 := by
-  refine Matrix.ext fun i j => ?_
-  simp only [Matrix.mul_apply, Matrix.zero_apply]
-  refine Finset.sum_eq_zero fun k _ => ?_
-  apply DD.ext
-  · simp [DD.mul_a, DD.epM]
-  · funext m
-    simp [DD.mul_ep, DD.epM]
-  · funext m
-    simp [DD.mul_ep', DD.epM]
-  · simp [DD.mul_eta, DD.epM]
+  apply _root_.UpperTheory.V.Pa.Det.epM_mul_epM <;> assumption
 
 private theorem epM_add (Y Z : Fin e → Matrix (Fin n) (Fin n) X) : DD.epM Y + DD.epM Z = DD.epM (Y + Z) := by
   ext i j <;> simp [DD.epM]

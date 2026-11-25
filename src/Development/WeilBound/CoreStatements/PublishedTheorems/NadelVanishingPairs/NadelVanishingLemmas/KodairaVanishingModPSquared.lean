@@ -1498,8 +1498,7 @@ private theorem dlog_prod_lemma_4 {K : Type} [Field K] {n : ℕ} (u : Kˣ) (x : 
 
 private theorem unit_or_succ_lemma_5 {X : Scheme} [IsIntegral X] {y : X} {f : X.functionField}
     (hf : RegAt y f) : UnitAt y f ∨ UnitAt y (f + 1) := by
-  by_contra h
-  push_neg at h
+  by_contra! h
   have h1 : ZeroAt y f := zeroAt_iff.2 ⟨hf, h.1⟩
   have hr1 : RegAt y (1 : X.functionField) := (unitAt_one y).regAt
   have h2 : ZeroAt y (f + 1) := zeroAt_iff.2 ⟨hf.add hr1, h.2⟩

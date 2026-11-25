@@ -5,6 +5,7 @@ import GroundTheory.AutomorphicForms.ReductionMeasure
 import GroundTheory.GlobalFields.Adele.Topology
 import GroundTheory.GlobalFields.TateThesis.IdeleMeasure
 import Mathlib.Tactic.Linter.Style
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LengthFunctionFactsHold
 
 @[expose] public section
 
@@ -15,8 +16,6 @@ open GlobalTheory.CuspRep GlobalTheory.UnitaryBC PositivityTheory.Rg.BcB.E Posit
 open PositivityTheory.RgTw (Mat G)
 open PositivityTheory.Rg.BcB.SpectralAccumulation (Hf finH)
 open scoped Classical
-
-attribute [local instance] PositivityTheory.Rg.BcB.E.borelH
 
 namespace PositivityTheory.Rg.BcB.CG
 
@@ -48,26 +47,8 @@ theorem entry_le_of_lg {y : G n} {R : ℝ} (h : lg y.val ≤ R) (p q : Fin n) :
   have a2 := norm_nonneg ((y.val)⁻¹ p q)
   constructor <;> nlinarith [sq_nonneg (‖y.val p q‖ - 1), sq_nonneg (‖(y.val)⁻¹ p q‖ - 1)]
 
-theorem isCompact_lg (R : ℝ) : IsCompact {y : G n | lg y.val ≤ R} := by
-  set B : Set (Mat n) := Set.pi Set.univ fun _ => Set.pi Set.univ fun _ => Metric.closedBall (0 : ℂ) (Real.exp R)
-  have hB : IsCompact B := isCompact_univ_pi fun _ => isCompact_univ_pi fun _ => isCompact_closedBall _ _
-  have hK : IsCompact (Units.embedProduct (Mat n) ⁻¹' (B ×ˢ (MulOpposite.op '' B))) :=
-    Units.isClosedEmbedding_embedProduct.isCompact_preimage (hB.prod (hB.image MulOpposite.continuous_op))
-  have hcl : IsClosed {y : G n | lg y.val ≤ R} := by
-    refine isClosed_le ?_ continuous_const
-    have hc : Continuous fun y : G n => (1 : ℝ) + ∑ a, ∑ b, (‖y.val a b‖ ^ 2 + ‖(y.val)⁻¹ a b‖ ^ 2) := by
-      have hinv : (fun y : G n => (y.val)⁻¹) = fun y : G n => (y⁻¹ : G n).val := funext fun y => (Matrix.coe_units_inv y).symm
-      have c1 : Continuous fun y : G n => (y.val)⁻¹ := by rw [hinv]; exact Units.continuous_val.comp continuous_inv
-      have c0 : Continuous fun y : G n => y.val := Units.continuous_val
-      refine continuous_const.add (continuous_finsetSum _ fun p _ => continuous_finsetSum _ fun q _ => ?_)
-      exact (((continuous_apply q).comp ((continuous_apply p).comp c0)).norm.pow 2).add
-        (((continuous_apply q).comp ((continuous_apply p).comp c1)).norm.pow 2)
-    exact hc.log fun y => by positivity
-  refine hK.of_isClosed_subset hcl fun y hy => ?_
-  have h := fun p q => entry_le_of_lg (y := y) hy p q
-  refine ⟨fun p _ q _ => ?_, ⟨(y⁻¹ : G n).val, fun p _ q _ => ?_, rfl⟩⟩
-  · simpa [Metric.mem_closedBall, dist_zero_right] using (h p q).1
-  · simpa [Metric.mem_closedBall, dist_zero_right] using (h p q).2
+theorem isCompact_lg (R : ℝ) : IsCompact {y : G n | lg y.val ≤ R} :=
+  _root_.GlobalTheory.CompanionTheory.LengthGL.isCompact_G R
 
 section Nrm
 

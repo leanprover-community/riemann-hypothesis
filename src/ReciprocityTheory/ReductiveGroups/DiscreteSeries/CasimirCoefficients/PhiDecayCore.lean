@@ -54,17 +54,9 @@ lemma inP_entry_zero {ε : Fin n → Bool} {Y : Matrix (Fin n) (Fin n) ℂ} (hY 
     first | exact h | linear_combination h / 2 | linear_combination -h / 2
 
 lemma conjTranspose_eq_self_of_mem_noncompactPart {ε : Fin n → Bool} {Y : Matrix (Fin n) (Fin n) ℂ} (hY : inP ε Y) : Yᴴ = Y := by
-  have hJ : Jm ε * Jm ε = 1 := by
-    rw [Jm, Matrix.diagonal_mul_diagonal, ← Matrix.diagonal_one]
-    congr 1
-    ext a
-    split_ifs <;> norm_num
-  have h1 : Yᴴ * Jm ε = Y * Jm ε := by
-    rw [hY.2]
-    exact eq_neg_of_add_eq_zero_left hY.1
-  calc Yᴴ = Yᴴ * Jm ε * Jm ε := by rw [Matrix.mul_assoc, hJ, Matrix.mul_one]
-    _ = Y * Jm ε * Jm ε := by rw [h1]
-    _ = Y := by rw [Matrix.mul_assoc, hJ, Matrix.mul_one]
+  first
+    | exact _root_.ReciprocityTheory.ChartRestriction.DS.S7.isHermitian_of_mem_noncompactPart'
+    | apply _root_.ReciprocityTheory.ChartRestriction.DS.S7.isHermitian_of_mem_noncompactPart' <;> first | assumption | rfl | infer_instance
 
 lemma inP_norm_symm {ε : Fin n → Bool} {Y : Matrix (Fin n) (Fin n) ℂ} (hY : inP ε Y) (a b : Fin n) :
     ‖Y b a‖ = ‖Y a b‖ := by

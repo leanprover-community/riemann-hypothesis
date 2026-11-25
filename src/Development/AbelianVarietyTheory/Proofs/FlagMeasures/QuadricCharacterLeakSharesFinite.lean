@@ -1355,8 +1355,7 @@ private lemma ideal_le_pi_or_le_cj_pi_of_proper (L : _root_.Formalism.MainNotion
     (hPID : IsPrincipalIdealRing L.O) {π : E} (hπ : π ∈ L.O)
     (hN : π * L.cj π = algebraMap F E (ϖ : F)) (I : Ideal L.O) (hI : I ≠ ⊤) :
     (∀ x ∈ I, ∃ c ∈ L.O, (x : E) = π * c) ∨ ∀ x ∈ I, ∃ c ∈ L.O, (x : E) = L.cj π * c := by
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   obtain ⟨⟨x₁, hx₁I, hx₁⟩, ⟨x₂, hx₂I, hx₂⟩⟩ := hcon
   have hN' : L.cj π * L.cj (L.cj π) = algebraMap F E (ϖ : F) := by rw [L.cj_cj, mul_comm, hN]
   obtain ⟨u₁, hu₁, w₁, hw₁, h₁⟩ := exists_mul_eq_one_add_pi_mul_of_not_dvd L hϖ hPID hπ hN x₁.2

@@ -78,8 +78,7 @@ theorem exists_sep (s : ReciprocityTheory.Aut.SplitPlace L) :
     ∃ e : 𝓞 L, Valued.v (s.i (e : L)) = 1 ∧
       Valued.v (s.i (IsCMField.complexConj L (e : L))) < 1 := by
   obtain ⟨θ, hθ⟩ : ∃ θ : L, cc θ ≠ θ := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact IsCMField.complexConj_ne_one L (AlgEquiv.ext h)
   obtain ⟨δ, hδ⟩ : ∃ δ : L, δ = θ - cc θ := ⟨_, rfl⟩
   have hcδ : cc δ = -δ := by rw [hδ, map_sub, IsCMField.complexConj_apply_apply, neg_sub]

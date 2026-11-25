@@ -449,8 +449,7 @@ theorem arc_length_one_or_two_case_b [NeZero n] [Fintype (K →ₐ[Qp] LL)] [IsD
     intro i hi
     have hc := (hgi i).2
     constructor
-    · by_contra hlt
-      push_neg at hlt
+    · by_contra! hlt
       have hm := hc 0 hL0
       rw [filS_top W hcase A T₁ hW₁ c 0 _ ?_, Submodule.mem_bot] at hm
       · exact hi (hdvO0 _ hm)
@@ -459,8 +458,7 @@ theorem arc_length_one_or_two_case_b [NeZero n] [Fintype (K →ₐ[Qp] LL)] [IsD
         simp only [Formalism.MainNotions.LocalTheoryWindows.LT.win, hAS, hAη, Set.mem_union, Set.mem_Icc] at hx
         push_cast at hlt
         omega
-    · by_contra hlt
-      push_neg at hlt
+    · by_contra! hlt
       have hm := hc 1 hL1
       rw [filS_top W hcase A T₁ hW₁ c 1 _ ?_, Submodule.mem_bot] at hm
       · exact hi (hdvO0 _ hm)

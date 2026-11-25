@@ -827,8 +827,7 @@ theorem slice_summands_orthogonal (hS : Formalism.MainNotions.product_first_zero
     exact group_rep_majorant_isometry hI Tf hE g v _ _
   · apply hO
     intro c
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     obtain ⟨hx, hy⟩ := hc
     have key : ∀ (k : ∀ w, t2sG D u w) (z : t2sW Tf hE),
         (D.fm u).emb 0 (t2sRho Tf hE k (z : ((D.fm u).lat 0).V)) c ≠ 0 →

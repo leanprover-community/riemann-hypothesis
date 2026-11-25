@@ -166,8 +166,6 @@ open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
 open GlobalTheory.IndefiniteRowSideFullHecke.FibrePushforwardExistenceTori GlobalTheory.HeckeFrCompare
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 theorem existsUnique_dual_lift {X Y : Scheme.{0}} (f : X ⟶ Y) [Etale f] {T : Type} [CommRing T]
     (s : Sp (DualNumber T) ⟶ Y) (x₀ : Sp T ⟶ X)
     (h : x₀ ≫ f = spMap (TrivSqZeroExt.fstHom T T T).toRingHom ≫ s) :
@@ -589,8 +587,7 @@ theorem algHom_eq_eval : ∀ {K : Type} [inst : Field K] {P : Type} [Fintype P] 
     set_option synthInstance.maxHeartbeats 100000 in
       rw [← map_sum, hsum, map_one]
   obtain ⟨p, -, hp⟩ : ∃ p ∈ Finset.univ, θ (Pi.single p 1) ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     rw [Finset.sum_eq_zero h] at h1
     exact zero_ne_one h1
   refine ⟨p, fun z => ?_⟩
@@ -820,7 +817,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.FibrePushforwardExistenceTori (IsLi
 
 noncomputable section
 namespace GlobalTheory.HeckeWeight
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.HeckePointLaw (scaleAt tanMap tanMap_scale scaleAt_comm isCombAt_iff tanMap_left)
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H}
@@ -927,8 +923,6 @@ open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
 open GlobalTheory.ThetaTrace GlobalTheory.HkFam GlobalTheory.Frames GlobalTheory.HeckeEx
 open GlobalTheory.IndefiniteRowSideFullHecke.FibrePushforwardExistenceTori (IsLieImg IsLinHom IsThGen IsHeckeIsog)
-
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.HeckeLieBC
 

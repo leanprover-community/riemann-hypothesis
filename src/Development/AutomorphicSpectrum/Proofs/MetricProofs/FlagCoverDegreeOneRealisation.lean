@@ -1,5 +1,7 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagAdjacentTwoFramesOrbit
+
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.MinorIJMap
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.BlockDiagonalMinorVanishing
 public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.GenericBlockMatrixIsBlockDiag
@@ -85,16 +87,7 @@ theorem val_prod {α : Type} (t : Finset α) (f : α → Ω) (v : α → ℂ) (h
 theorem reg_detFac (hz : z ∈ mcPts (mCoordIdeal x)) {N : ℕ} (j : ℕ) (i : Fin N) {A : Matrix (Fin N) (Fin N) Ω}
     (hA : ∀ a b, RegAt x (mCoordIdeal z) (A a b)) :
     RegAt x (mCoordIdeal z) (detFac j i A) ∧ valAt x (detFac j i A) z = detFac j i (valMat x z A) := by
-  have h1 := reg_minor hz hA (wIdx N j) (wIdx N j)
-  have h2 := reg_minor hz hA (omIdx N j) (omIdx N j)
-  have h0 := FV.valAt_one' hz
-  have r0 := ValRing.regAt_one x z
-  unfold detFac
-  split_ifs
-  · exact ⟨(reg_mul hz h1.1 h2.1).1, by rw [(reg_mul hz h1.1 h2.1).2, h1.2, h2.2]⟩
-  · simp only [mul_one]; exact h1
-  · simp only [one_mul]; exact h2
-  · simp only [mul_one]; exact ⟨r0, h0⟩
+  apply _root_.GlobalTheory.CompanionTheory.Ar.PB.WSq.Sec.Scal.reg_detFac <;> assumption
 
 end Val
 

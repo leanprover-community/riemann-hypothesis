@@ -89,8 +89,7 @@ theorem exists_generator_valuation_prime_dvd_pow_sub_of_finite_padicInt :
     · intro x y hxy
       rw [hP, hP]; rw [hP] at hxy
       simp only [Subalgebra.coe_mul, map_mul] at hxy
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       have hx1 : v x = 1 := le_antisymm (hle x) hc.1
       have hy1 : v y = 1 := le_antisymm (hle y) hc.2
       rw [hx1, hy1, one_mul] at hxy

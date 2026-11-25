@@ -693,8 +693,7 @@ theorem UpperTheory.Zero.ConvolutionTheory.EB.readOne :
   obtain ⟨-, hPl, -, hSec⟩ := UpperTheory.V.Z.Tf.GlobalTraceComparison.Asm.places E
 
   obtain ⟨i, x, hx⟩ : ∃ i x, f i x ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hE.ne (funext fun i => funext fun x => h i x)
   obtain ⟨φ₁, hφ₁⟩ := hSm.1 i x.2
   obtain ⟨φ₂, hφ₂⟩ := hSm.2 i x.1

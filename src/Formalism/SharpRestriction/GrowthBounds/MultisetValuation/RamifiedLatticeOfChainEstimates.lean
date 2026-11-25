@@ -69,7 +69,6 @@ theorem ent_strict (hE : EntCondition X Y) (j : ℕ) (hj : j < X.mm) (i0 : X.Pl 
 theorem formB_lim (hF : FormB X Y) (j : ℕ) (hj : j < X.mm) (i0 : X.Pl → ℕ) (vs : List X.Pl) (g : ℝ) (hnd : vs.Nodup)
     (hr : ∀ v, i0 v ≤ X.G.P.r) (h0 : ∀ v, v ∉ vs → i0 v = 0) (hB : ∀ g' < g, EntB X Y j i0 g')
     (G : X.Fm j) (hG : G ∈ X.Int j) : X.vGe (j + 1) (TtL X (j + 1) i0 vs (X.Kz j G)) (g - X.dG j) := by
-  have he0 : (0 : ℝ) ≤ (X.eO : ℝ) := Nat.cast_nonneg _
   obtain ⟨x, hx⟩ : ∃ x : ℝ, x = (g - X.dG j) * (X.eO : ℝ) := ⟨_, rfl⟩
   have hc1 : (⌈x⌉ : ℝ) < x + 1 := Int.ceil_lt_add_one x
   have hc2 : x ≤ (⌈x⌉ : ℝ) := Int.le_ceil x

@@ -84,8 +84,7 @@ theorem cc_ev' {K : Type} [CommRing K] {m n d : ℕ} {a : Fin m → Pt K n d} (h
   · simp
   · intro e he
     obtain ⟨s, hs'⟩ : ∃ s, e s ≠ 0 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact he (Finsupp.ext h)
     rw [Finsupp.prod, map_prod, Finset.prod_eq_zero (i := s) (Finsupp.mem_support_iff.mpr hs'),
       smul_zero]

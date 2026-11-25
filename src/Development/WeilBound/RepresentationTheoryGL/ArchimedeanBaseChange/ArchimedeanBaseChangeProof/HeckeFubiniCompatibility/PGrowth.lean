@@ -74,8 +74,7 @@ theorem adicAbv_absNorm_le (w : HeightOneSpectrum (𝓞 E)) :
   rw [hz] at hlt ⊢
   have hN : (1 : ℝ) < N := by exact_mod_cast hN1
   have hz0 : z < 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact absurd hlt (not_lt.2 (one_le_zpow₀ hN.le h))
   calc (N : ℝ) ^ z ≤ (N : ℝ) ^ (-1 : ℤ) := zpow_le_zpow_right₀ hN.le (by omega)
     _ = _ := zpow_neg_one _
@@ -551,8 +550,7 @@ theorem growth_main (hS : SizeBasic) (a b : ℕ) (D : Dom E a b) (ι : Type) [Fi
         wt y ≤ 1 + Lx + w0 := by
       intro y hy
       obtain ⟨γ0, hγ0⟩ : ∃ γ0 : ratH E a b, x⁻¹ * ((γ0 : H E a b) * y) ∈ S := by
-        by_contra hne
-        push_neg at hne
+        by_contra! hne
         exact hy (ENNReal.tsum_eq_zero.2 fun γ => Set.indicator_of_notMem (hne γ) _)
       constructor
       · rw [← (Equiv.mulRight γ0⁻¹).tsum_eq (fun δ : ratH E a b => Q.indicator (1 : H E a b → ℝ≥0∞)

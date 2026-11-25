@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.ThetaKernelOrthonormalFrameInDomainPeriodLinear
 public import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IsWeakOfDatum
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SmoothReal
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.AdelicUnitaryRealPointsStructureRealPlaces
@@ -56,15 +57,7 @@ variable {D : D7} {S T : HSp D}
 theorem gram_conj_emb (C : Ctx S T) (hH : ∀ τ, (gramAt D T τ)ᴴ = gramAt D T τ) (ρ : D.what₂.Tau)
     (M : Matrix (Fin T.rank) (Fin T.rank) ℂ) :
     FD.gram (C.m.e ρ).1 C.X.Gm (M.map (starRingEnd ℂ)) = Mᴴ * gramAt D T ρ * M := by
-  ext a b
-  have hh : ∀ i k, conj (gramAt D T ρ k i) = gramAt D T ρ i k := fun i k => by
-    have := congrFun (congrFun (hH ρ) i) k
-    rwa [Matrix.conjTranspose_apply] at this
-  simp only [FD.gram, FD.hermC, FD.col, Matrix.of_apply, Matrix.map_apply, C.m.e_emb, C.m.gT, Matrix.transpose_apply,
-    NumberField.ComplexEmbedding.conjugate_coe_eq, Matrix.mul_apply, Matrix.conjTranspose_apply]
-  simp only [gramAt, Matrix.map_apply] at hh ⊢
-  simp only [Complex.conj_conj, hh, Finset.sum_mul, RCLike.star_def]
-  rw [Finset.sum_comm]
+  apply _root_.GlobalTheory.Ker.ONBasis.gram_conj <;> assumption
 
 end GlobalTheory.AdSpan.ConjHol
 

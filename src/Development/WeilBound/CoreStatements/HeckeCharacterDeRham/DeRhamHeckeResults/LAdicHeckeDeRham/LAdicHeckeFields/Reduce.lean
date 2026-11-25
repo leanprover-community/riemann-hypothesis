@@ -101,8 +101,6 @@ open NumberField IsDedekindDomain Neutral.B1 Formalism.ConjugateSelfDual Recipro
 open GlobalTheory.HeckeGal GlobalTheory.Pst GlobalTheory.TripleGal
 open scoped Classical
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace GlobalTheory.CompanionTheory.HeckeSmooth
 
 theorem exists_open_unit_subgroup_ker : ∀ {E : Type} [Field E] [NumberField E] (χ : HChar E)
@@ -910,8 +908,7 @@ theorem multV_inv [IsDomain BdR] (κ : K →ₐ[Qp] Om)
   have hinv : ∀ σ, σ.comp τ = κ → ∃ y ∈ PD.Fil (-J), f σ * y = 1 := fun σ hσ => hval J _ (hJ σ) (hJ1 σ hσ)
   choose! yv hyv hyv1 using hinv
   obtain ⟨σ₀, hσ₀⟩ : ∃ σ : LL →ₐ[Qp] Om, σ.comp τ = κ := by
-    by_contra hno
-    push_neg at hno
+    by_contra! hno
     exact hz2 ((mem_filV_coord PD hOm (J + 1) z).2 fun σ' => by
       change f σ' ∈ _
       rw [hzero σ' (hno σ')]

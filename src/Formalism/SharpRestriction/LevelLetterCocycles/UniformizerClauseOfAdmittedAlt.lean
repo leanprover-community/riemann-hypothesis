@@ -1,5 +1,8 @@
 module
 
+
+import Formalism.SharpRestriction.LevelLetterCocycles.InvariantLetterIdempotentOfFixed
+import Formalism.SharpRestriction.LevelLetterCocycles.UniformizerClauseOfAdmitted
 public import Formalism.SharpRestriction.LevelLetterCocycles.CrystallineLiftingInputs
 public import Formalism.SharpRestriction.LevelLetterCocycles.BaseChangePreservesUnitaryOf
 public import Formalism.SharpRestriction.LevelLetterCocycles.ElementDenominator
@@ -40,7 +43,6 @@ import Formalism.SharpRestriction.LevelLetterCocycles.QuotientImageDivisibility.
 import Mathlib.Algebra.Order.Star.Real
 import Formalism.SharpRestriction.LevelLetterCocycles.WachFrobeniusLatticeUnramifiedFunctor
 import Formalism.SharpRestriction.LevelLetterCocycles.QuotientImageDivisibility.SmulSDivMem
-
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.SharpRestriction.LevelLetterCocycles.FrobeniusMemPullbackOfInvariant, Formalism.SharpRestriction.LevelLetterCocycles.ExtDataOneMapSmulO, Formalism.SharpRestriction.LevelLetterCocycles.ExtDataExtTool, Formalism.SharpRestriction.LevelLetterCocycles.Step1KillXList, Formalism.SharpRestriction.LevelLetterCocycles.InvariantLetterIdempotentSmul, Formalism.SharpRestriction.LevelLetterCocycles.MultVNonneg, Formalism.SharpRestriction.LevelLetterCocycles.PadicValNatFactorialSucc, Formalism.SharpRestriction.LevelLetterCocycles.FirstLiftOfHypotheses, Formalism.SharpRestriction.LevelLetterCocycles.FirstLiftOfUniformizerClause, Formalism.SharpRestriction.LevelLetterCocycles.QuotientImageDivisibility.LemKD, Formalism.SharpRestriction.LevelLetterCocycles.UniformizerClauseOfAdmittedAlt
 
@@ -915,13 +917,7 @@ theorem delta_fixes_cocycle_second (x : ↥(W.wachCocyclesDelta T)) (δ : W.Gam)
 theorem mem_of_natCast_pow_smul_mem [NeZero n] (hB : Sh.BasTool W) (hA : Formalism.MainNotions.LiftingTheory.CaseA W) (hT : IsCrys PD T.ρ)
     (c : ZMod n) {w : W.DD T} (k : ℕ) (hw : Formalism.MainNotions.CrystallineLiftingInputs.DL W T c w)
     (hN : ((PD.p : ℕ) : O) ^ k • w ∈ W.N T) : w ∈ W.N T := by
-  obtain ⟨e, he⟩ := (hB hA T hT c).1
-  have hmem : ((PD.p : ℕ) : O) ^ k • w ∈ Formalism.MainNotions.CrystallineLiftingInputs.pullJ W T c 0 :=
-    Submodule.subset_span ⟨_, ⟨hN, dl_smul W T _ hw⟩, by simp⟩
-  have h := ((hB hA T hT c).2 _ e he 0).2 w k hmem
-  refine Submodule.span_le.2 ?_ h
-  rintro _ ⟨x, ⟨hx, -⟩, rfl⟩
-  simpa using hx
+  apply _root_.Formalism.MainNotions.RamifiedCoefficientChains.S9.ExtensionLemmaAlt.Step2L.mem_of_natCast_pow_smul_mem' <;> assumption
 
 theorem exists_embedding_over_letter [NeZero n] (hA : Formalism.MainNotions.LiftingTheory.CaseA W) (c : ZMod n) :
     ∃ τ : K →ₐ[Qp] LL, Formalism.MainNotions.LiftingTheory.Over W τ c := by
@@ -1671,13 +1667,7 @@ variable {CR CA CB CK : ℝ}
 
 theorem caseA_loc' {l : ℕ} [Fact l.Prime] {K LL : Loc.FinExt l} (hg : Loc.Good K 1 LL)
     (hCA : Formalism.MainNotions.LiftingTheory.CaseA ((HW l).W K 1 LL hg)) : Loc.CaseA K LL := by
-  have hpl : ((D.loc l).PD K).p = l := (D.loc l).PD_p K
-  refine ⟨fun x hx => ?_, by rw [← hpl]; exact hCA.2.2, hg⟩
-  obtain ⟨y, hy⟩ := hCA.1.2 ⟨x, hx⟩
-  have h2 := y.2.2
-  have : ((y : ↥(K0 K)) : Om l) = x := congrArg Subtype.val hy
-  rw [this] at h2
-  exact h2
+  apply _root_.Formalism.MainNotions.RamifiedCoefficientChains.S9.bigCellDetWeightedEnergyIntegral.caseA_loc' <;> assumption
 
 theorem laurent_clause_of_admitted' (hA : admitted D HW F Cm CR CA CB CK) : Formalism.MainNotions.DeltaInvariantLattices.P4 D HW F Cm :=
   fun l _ K s LL h => (hA.1 l K s LL h).2.2.2.1

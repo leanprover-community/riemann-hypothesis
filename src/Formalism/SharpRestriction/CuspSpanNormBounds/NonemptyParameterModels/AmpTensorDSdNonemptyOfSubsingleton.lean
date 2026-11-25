@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.RowHCParameterIsHCParamAndFormalDegreePos
 public import Formalism.SharpRestriction.CuspSpanNormBounds.NormalizedLocalScale
 import Mathlib.Algebra.Order.Star.Rat
 import Formalism.SharpRestriction.CuspSpanNormBounds.LeadMinorK
@@ -88,21 +89,7 @@ theorem amp_lamSH_strictAnti (R : Ranks) (P : HCParam R) : StrictAnti (lamSH R P
   exact strictAnti_lamS R P (show Fin.cast (dimS_eq R) a < Fin.cast (dimS_eq R) b from hab)
 
 theorem amp_isHCParam_lamSH (R : Ranks) (P : HCParam R) : IsHCParam (lamSH R P) := by
-  refine ⟨amp_lamSH_strictAnti R P, fun a => ?_⟩
-  have hval : ∃ z : ℤ, lamSH R P a = z := by
-    simp only [lamSH, lamS]
-    split_ifs with h1 h2
-    · obtain ⟨z, hz⟩ := P.v_int ⟨_, h1⟩
-      exact ⟨z, by have h3 := congrArg (fun x : ℚ => (x : ℝ)) hz; simpa using h3⟩
-    · obtain ⟨z, hz⟩ := P.b_int ⟨_, h2⟩
-      exact ⟨-z, by have h3 := congrArg (fun x : ℚ => -(x : ℝ)) hz; simpa using h3⟩
-    · exact ⟨0, by simp⟩
-  obtain ⟨z, hz⟩ := hval
-  obtain ⟨q, hq⟩ := R.k_even
-  refine ⟨z - (R.rS : ℤ) - (q : ℤ), ?_⟩
-  have hk : (R.k : ℝ) = (q : ℝ) + q := by exact_mod_cast hq
-  push_cast
-  linarith [hz, hk]
+  apply _root_.GlobalTheory.Mem.Vol.lamSH_isHCParam <;> assumption
 
 theorem amp_isHCParam_lamD (D : D7) (τ : D.what₂.Tau) : IsHCParam (lamD D τ) := amp_isHCParam_lamSH D.R (D.hc τ)
 

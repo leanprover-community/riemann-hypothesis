@@ -11,8 +11,6 @@ open GlobalTheory.CuspRep GlobalTheory.UnitaryBC PositivityTheory.Rg.Rs Positivi
 
 namespace PositivityTheory.Rg.BcB.SpectralAccumulation
 
-attribute [local instance] borelH
-
 def MClose (ε : ℝ) (m m' : Multiset ℂ) : Prop := Multiset.Rel (fun x y => ‖x - y‖ ≤ ε) m m'
 
 def RealSym {E : Type} [Field E] [NumberField E] (m : (E →+* ℂ) → Multiset ℂ) : Prop :=

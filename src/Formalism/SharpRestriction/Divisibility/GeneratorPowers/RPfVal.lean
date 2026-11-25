@@ -5,6 +5,7 @@ public import Formalism.LocalToGlobal.ProjectiveLattices.PlaceBelow
 public import Formalism.LocalToGlobal.ProjectiveLattices.CrudeVal
 public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.HostFacts
 import Formalism.LocalToGlobal.ProjectiveLattices.ErealAddIInf
+import Formalism.SharpRestriction.Divisibility.GeneratorPowers.SpanResCharNeBot
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.SharpRestriction.Divisibility.GeneratorPowers.RStatement, Formalism.SharpRestriction.Divisibility.GeneratorPowers.RPfVal
@@ -59,16 +60,7 @@ theorem vLa_int_not_mem {a : 𝓞 K} (ha : a ∉ la.asIdeal) : vLa la (a : K) = 
   simp
 
 theorem prime_mem_iff {p : ℕ} (hp : p.Prime) : ((p : ℕ) : 𝓞 K) ∈ la.asIdeal ↔ resCharOf la = p := by
-  constructor
-  · intro hm
-    by_contra hne
-    have hl := resCharOf_prime la
-    have hnd : ¬ resCharOf la ∣ p := fun hd =>
-      hne ((Nat.prime_dvd_prime_iff_eq hl hp).1 hd)
-    exact crv_not_mem la hnd hm
-  · intro h
-    rw [← h]
-    exact crv_char_mem la
+  apply _root_.Formalism.MainNotions.ModuliIntegralCharts.H1.H1algLink.prime_mem_iff <;> assumption
 
 theorem padic_prime (l : ℕ) [Fact l.Prime] {p : ℕ} (hp : p.Prime) :
     padicValNat l p = if l = p then 1 else 0 := by

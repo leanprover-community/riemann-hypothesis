@@ -52,8 +52,7 @@ theorem constantCoeff_subst_of_zero {σ τ : Type*} [Finite σ] [Finite τ]
   · simp
   · intro d hd
     obtain ⟨i, hi⟩ : ∃ i, d i ≠ 0 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact hd (Finsupp.ext h)
     have h0 : constantCoeff (d.prod fun s e => b s ^ e) = 0 := by
       rw [Finsupp.prod, map_prod]

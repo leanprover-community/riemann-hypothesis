@@ -754,8 +754,7 @@ theorem sphSpan_le (π : CuspSub E a) (w : HeightOneSpectrum (𝓞 E)) : sphSpan
 
 theorem exists_translate_ne_zero : G2 := by
   intro E _ _ _ a π w B hB l hl
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   obtain ⟨x, hx⟩ := hB.exists_vec
   have hfix : ∀ v : π.V, IsFix π w v → v ≠ 0 → IsSatVecGL w (π.locRep w) v B := fun v hv h0 =>
     hB.2 v (GlobalTheory.LGrp.mem_fixed.2 hv) h0
@@ -792,8 +791,6 @@ section -- clump:auto
 noncomputable section
 
 open NumberField IsDedekindDomain Matrix Formalism.L2.Host GlobalTheory.CuspRep GlobalTheory.LFun PositivityTheory.JacquetShalikaLocal
-
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 namespace GlobalTheory.CompanionTheory.JSUnit
 
@@ -961,8 +958,6 @@ noncomputable section
 
 open NumberField IsDedekindDomain MeasureTheory GlobalTheory.CuspRep GlobalTheory.LFun PositivityTheory.JacquetShalikaLocal
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace GlobalTheory.CompanionTheory.SatakeBound
 
 theorem jacquetShalikaBound_of_steps : ParameterUpperBound → liftZP_unit → ParameterAbsoluteValues → lift_levelP_alt₂ → G1 → G2 → G3 → G4 → GlobalTheory.Published.JacquetShalikaBound := by
@@ -1027,8 +1022,6 @@ noncomputable section
 open NumberField IsDedekindDomain GlobalTheory.CuspRep GroundTheory.Automorphic GroundTheory.Automorphic.GLnLocal
   PositivityTheory.JacquetShalikaLocal
 open scoped ValuativeRel Topology MatrixGroups
-
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 namespace GlobalTheory.CompanionTheory.JSSmooth
 

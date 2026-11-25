@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverArithmeticSeventh
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.PtsOverPt
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverArithmeticFourth
 public import Mathlib.Analysis.CStarAlgebra.Classes
@@ -115,46 +116,8 @@ alias isMultiHomog_mul' := _root_.ReciprocityTheory.ChartRestriction.G.ArakelovG
 
 theorem isMultiHomog_rename' {κ : K₀ → K} {v : (Σ k, J₀ k) → (Σ k, J k)} (hv : IsBlockMap κ v) {f : MRing J₀}
     {a : K₀ → ℕ} (hf : IsMultiHomog f a) : IsMultiHomog (rename v f : MRing J) (Function.extend κ a 0) := by
-  intro m hm k'
-  rw [support_rename_of_injective hv.2.1] at hm
-  obtain ⟨m0, hm0, rfl⟩ := Finset.mem_image.mp hm
-  by_cases hk : k' ∈ Set.range κ
-  · obtain ⟨k, rfl⟩ := hk
-    rw [hv.1.extend_apply, ← hf m0 hm0 k]
-    have hex : ∀ i' : J (κ k), ∃ i : J₀ k, v ⟨k, i⟩ = ⟨κ k, i'⟩ := by
-      intro i'
-      obtain ⟨p, hp⟩ := hv.2.2.2 ⟨κ k, i'⟩ ⟨k, rfl⟩
-      have h1 : κ p.1 = κ k := by rw [← hv.2.2.1 p, hp]
-      obtain ⟨k₁, i⟩ := p
-      obtain rfl : k₁ = k := hv.1 h1
-      exact ⟨i, hp⟩
-    choose g hg using hex
-    have hb : Function.Bijective g := by
-      constructor
-      · intro a b hab
-        have : (⟨κ k, a⟩ : Σ k, J k) = ⟨κ k, b⟩ := by rw [← hg a, ← hg b, hab]
-        exact eq_of_heq (Sigma.mk.inj this).2
-      · intro i
-        have hq : ∃ i', v ⟨k, i⟩ = ⟨κ k, i'⟩ := by
-          have h1 := hv.2.2.1 ⟨k, i⟩
-          generalize v ⟨k, i⟩ = q at h1
-          obtain ⟨q1, q2⟩ := q
-          simp only at h1
-          subst h1
-          exact ⟨q2, rfl⟩
-        obtain ⟨i', hi'⟩ := hq
-        refine ⟨i', ?_⟩
-        have h2 : v ⟨k, g i'⟩ = v ⟨k, i⟩ := by rw [hg i', hi']
-        exact eq_of_heq (Sigma.mk.inj (hv.2.1 h2)).2
-    calc ∑ i', (Finsupp.mapDomain v m0) ⟨κ k, i'⟩ = ∑ i', m0 ⟨k, g i'⟩ := by
-          refine Finset.sum_congr rfl fun i' _ => ?_
-          rw [← hg i', Finsupp.mapDomain_apply_of_injective hv.2.1]
-      _ = ∑ i, m0 ⟨k, i⟩ := hb.sum_comp fun i => m0 ⟨k, i⟩
-  · rw [Function.extend_apply' _ _ _ (by simpa using hk)]
-    refine Finset.sum_eq_zero fun i' _ => ?_
-    refine Finsupp.mapDomain_notin_range _ _ ?_
-    rintro ⟨p, hp⟩
-    exact hk ⟨p.1, by rw [← hv.2.2.1 p, hp]⟩
+  intros
+  apply _root_.GlobalTheory.CompanionTheory.Ar.PB.BaseEtale.isMultiHomog_rename_block <;> assumption
 
 theorem eval_map_rename' (zt : (Σ k, J k) → ℂ) (v : (Σ k, J₀ k) → (Σ k, J k)) (s : MRing J₀) :
     eval zt (map (Int.castRingHom ℂ) (rename v s : MRing J)) = eval (fun p => zt (v p)) (map (Int.castRingHom ℂ) s) := by

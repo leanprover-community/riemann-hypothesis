@@ -25,8 +25,7 @@ private lemma sq_in_Zq (q : ℕ) [Fact q.Prime] (d g d0 : ℕ) (hg : 0 < g) (hd 
       rw [← norm_pow, hx, norm_neg]
       have : ‖((d0 : ℤ_[q]) : ℚ_[q])‖ ≤ 1 := PadicInt.norm_le_one _
       simpa using this
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     nlinarith
   let z : ℤ_[q] := ⟨y / g, hxn⟩
   have hzc : (z : ℚ_[q]) = y / g := rfl
@@ -46,8 +45,7 @@ private lemma not_dvd (q : ℕ) [hq : Fact q.Prime] (d0 : ℕ) (hsq : Squarefree
   have hd1 : ‖((d0 : ℤ) : ℤ_[q])‖ < 1 :=
     (PadicInt.norm_int_lt_one_iff_dvd _).mpr (by exact_mod_cast hdvd)
   have hz1 : ‖z‖ < 1 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     nlinarith [norm_nonneg z]
   obtain ⟨w, rfl⟩ := (PadicInt.norm_lt_one_iff_dvd z).mp hz1
   have hle : ‖((d0 : ℤ) : ℤ_[q])‖ ≤ (q : ℝ) ^ (-(2 : ℕ) : ℤ) := by

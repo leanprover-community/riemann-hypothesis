@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.GrowthBounds.ScaleEdges.EdgePlane
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.OddDualWeylJacobian.JacRev
 public import Lemmata.GeneralBFactRightAlt.Imports
 public import Formalism.PeriodIntegrals.OddDualWeyl
@@ -66,17 +67,7 @@ theorem exists_eq_mul_of_columnSpan_le {n : ℕ} (g g' : Matrix (Fin n) (Fin n) 
 
 theorem colSpan_mul_le {n : ℕ} (h' : Matrix (Fin n) (Fin n) K) (v : Matrix (Fin n) (Fin n) O) :
     colSpan O (h' * v.map (algebraMap O K)) ≤ colSpan O h' := by
-  unfold PI.OddDualWeyl.colSpan
-  rw [Submodule.span_le]
-  rintro x ⟨c, rfl⟩
-  have hv : (fun i => (h' * v.map (algebraMap O K)) i c) = ∑ j, v j c • fun i => h' i j := by
-    ext i
-    rw [Finset.sum_apply]
-    simp only [Pi.smul_apply, Algebra.smul_def, Matrix.mul_apply, Matrix.map_apply]
-    exact Finset.sum_congr rfl fun j _ => mul_comm _ _
-  dsimp only
-  rw [hv]
-  exact Submodule.sum_mem _ fun j _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨j, rfl⟩)
+  apply _root_.Formalism.MainNotions.Pf14.colSpan_mul_le <;> assumption
 
 theorem invT_eq {n : ℕ} {g g' : Matrix (Fin n) (Fin n) K} (hg : IsUnit g.det) (hg' : IsUnit g'.det)
     (u : Matrix (Fin n) (Fin n) O) (hu : g' = g * u.map (algebraMap O K)) :

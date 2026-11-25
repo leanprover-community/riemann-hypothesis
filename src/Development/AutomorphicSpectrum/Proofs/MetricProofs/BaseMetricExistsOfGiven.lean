@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.HodgePotentialSmoothOffBoundary
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.OmHeightslockG
 public import Development.WeilBound.CoreStatements.PluriharmonicCharts.XCBmExistsBlockpos
 public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.GenericBlockMatrixIsBlockDiag
@@ -141,68 +142,8 @@ theorem psd_blocks {X : Matrix m m ℂ} {Y : Matrix m' m' ℂ} (hX : X.PosSemide
 
 theorem norm_entry_le {b : ℝ} {X : Matrix m m ℂ} (hX : X.PosSemidef)
     (h : ((b : ℂ) • (1 : Matrix m m ℂ) - X).PosSemidef) (i j : m) : ‖X i j‖ ≤ b := by
-  have dX : ∀ k, 0 ≤ (X k k).re ∧ (X k k).im = 0 := by
-    intro k
-    have := hX.diag_nonneg (i := k)
-    rw [Complex.nonneg_iff] at this
-    exact ⟨this.1, this.2.symm⟩
-  have dN : ∀ k, (X k k).re ≤ b := by
-    intro k
-    have := h.diag_nonneg (i := k)
-    simp [Matrix.sub_apply, Matrix.smul_apply] at this
-    simpa using (Complex.le_def.mp this).1
-  by_cases hij : i = j
-  · subst hij
-    have e : X i i = ((X i i).re : ℂ) := Complex.ext (by simp) (by simp [(dX i).2])
-    rw [e, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (dX i).1]
-    exact dN i
-  · obtain ⟨s, hs⟩ : ∃ s, s = X i j := ⟨_, rfl⟩
-    rw [← hs]
-    by_cases h0 : s = 0
-    · rw [h0, norm_zero]
-      exact (dX i).1.trans (dN i)
-    have hr : 0 < ‖s‖ := norm_pos_iff.mpr h0
-    have hrc : (‖s‖ : ℂ) ≠ 0 := by exact_mod_cast hr.ne'
-    have hss : s * star s = ((‖s‖ : ℂ)) ^ 2 := by
-      show s * (starRingEnd ℂ) s = _
-      rw [Complex.mul_conj']
-    obtain ⟨w, hw⟩ : ∃ w : ℂ, w = star s / (‖s‖ : ℂ) := ⟨_, rfl⟩
-    have hsw : s * w = (‖s‖ : ℂ) := by
-      rw [hw, mul_div_assoc', hss]
-      field_simp
-    have hji : X j i = star s := by
-      rw [hs]
-      exact (hX.1.apply j i).symm
-    have hws : star w = s / (‖s‖ : ℂ) := by
-      rw [hw, star_div₀, star_star]
-      congr 1
-      simp
-    have hww : star w * w = 1 := by
-      rw [hws, hw, div_mul_div_comm, hss]
-      field_simp
-    have e2 : star w * star s = (‖s‖ : ℂ) := by
-      rw [← star_mul, hsw]
-      simp
-    have key : ∀ (N : Matrix m m ℂ), star (Pi.single i 1 + Pi.single j w : m → ℂ) ⬝ᵥ (N *ᵥ (Pi.single i 1 + Pi.single j w)) =
-        N i i + N i j * w + star w * N j i + star w * N j j * w := by
-      intro N
-      simp [Matrix.mulVec_add, dotProduct_add, add_dotProduct, Matrix.mulVec_single, Pi.star_single, single_dotProduct]
-      ring
-    have Q := h.dotProduct_mulVec_nonneg (Pi.single i 1 + Pi.single j w)
-    rw [key] at Q
-    have n1 : ((b : ℂ) • (1 : Matrix m m ℂ) - X) i i = b - X i i := by simp [Matrix.sub_apply]
-    have n2 : ((b : ℂ) • (1 : Matrix m m ℂ) - X) j j = b - X j j := by simp [Matrix.sub_apply]
-    have n3 : ((b : ℂ) • (1 : Matrix m m ℂ) - X) i j = - s := by simp [Matrix.sub_apply, hij, hs]
-    have n4 : ((b : ℂ) • (1 : Matrix m m ℂ) - X) j i = - star s := by
-      simp [Matrix.sub_apply, Ne.symm hij, hji]
-    rw [n1, n2, n3, n4] at Q
-    have eQ : (b : ℂ) - X i i + -s * w + star w * -star s + star w * ((b : ℂ) - X j j) * w =
-        2 * (b : ℂ) - X i i - X j j - 2 * (‖s‖ : ℂ) := by
-      linear_combination ((b : ℂ) - X j j) * hww - hsw - e2
-    rw [eQ, Complex.nonneg_iff] at Q
-    have := Q.1
-    simp at this
-    linarith [(dX i).1, (dX j).1]
+  intros
+  apply _root_.LevelTowerAlt.MuBd.norm_entry_le <;> assumption
 
 end LA
 

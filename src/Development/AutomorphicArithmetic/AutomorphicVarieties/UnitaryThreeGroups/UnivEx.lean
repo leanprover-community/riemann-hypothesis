@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicArithmetic.AutomorphicVarieties.UnitaryThreeGroups.BoxDefs
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.UnitaryThreeGroups.GRepresents
 public import Mathlib.RingTheory.DiscreteValuationRing.Basic
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.CoQuot
@@ -168,21 +169,8 @@ omit [IsTopologicalGroup Γ] in
 private theorem lc_mod (hη : IsLocallyConstant η) {R : Type} [CommRing R] [Algebra O R] [IsCO O R]
     (s : GLift O η Ψ R) (n : ℕ) :
     IsLocallyConstant fun g => GG.map (Ideal.Quotient.mk (maximalIdeal R ^ n)) (s.hom g) := by
-  apply lc_gg
-  · have hfun : (fun g => (GG.map (Ideal.Quotient.mk (maximalIdeal R ^ n)) (s.hom g)).right) = fun g => η g := by
-      funext g
-      rw [GG.map_right]
-      exact s.hasMult g
-    rw [hfun]
-    exact hη
-  · intro a b
-    have hfun : (fun g => (GG.map (Ideal.Quotient.mk (maximalIdeal R ^ n)) (s.hom g)).mat a b) =
-        fun g => Ideal.Quotient.mk (maximalIdeal R ^ n) ((s.hom g).mat a b) := by
-      funext g
-      rw [GG.map_mat]
-      rfl
-    rw [hfun]
-    exact s.cont a b n
+  intros
+  apply _root_.UpperTheory.V.U3.GLift.locConst <;> assumption
 
 omit [IsTopologicalGroup Γ] in
 private theorem ker_closed {G : Type*} [Group G] (φ : Γ →* G) (h : IsLocallyConstant φ) :

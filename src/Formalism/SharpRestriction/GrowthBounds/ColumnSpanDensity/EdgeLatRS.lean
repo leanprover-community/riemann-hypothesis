@@ -105,11 +105,6 @@ theorem edgeLat_RS (e : Edge R.W R.Qq (m + 1)) (he : IsEdge p n' 1 e) :
   have hw : c ≠ 0 := R.w_ne
   have hpK : (p : R.Kf) = c ^ 2 := R.p_eq
   have hpK0 : (p : R.Kf) ≠ 0 := by rw [hpK]; exact pow_ne_zero _ hw
-  have hpQ0 : (p : R.Qq) ≠ 0 := by
-    intro h0
-    apply hpK0
-    have := congrArg R.ι h0
-    simpa using this
   set dK : Fin (m + 1) → R.Kf := fun a => if a.val < 1 then c⁻¹ else 1 with hdK
   set dQ : Fin (m + 1) → R.Qq := fun a => if a.val < 1 then ((p : R.Qq))⁻¹ else 1 with hdQ
   have hDD : ∀ s, la_tw R.ι R.σ s (g * Matrix.diagonal dQ) =

@@ -123,8 +123,6 @@ theorem wq_level (h : IsCub θ) (N M : ℕ) {x : A} (hx : x ^ N = 1) (y : A) :
 
 end Alg
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 variable {S : Scheme.{0}} {G : Over S} [GrpObj G] [IsCommMonObj G] {L : RigLB G}
 
 theorem weilUnit_level (c : CubicalStr G L) (N M n : ℕ) (hn : n = N * M) {T : Over S} {x y x' y' : T ⟶ G}

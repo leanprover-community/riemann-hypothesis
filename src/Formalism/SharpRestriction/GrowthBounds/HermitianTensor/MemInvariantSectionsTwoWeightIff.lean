@@ -15,22 +15,17 @@ open Formalism.MainNotions.G Formalism.MainNotions.flipOneThree Formalism.Counti
 
 theorem wtPQ_eq (m a b : ℕ) (hm : 1 ≤ m) : wtPQ m a b = letterWt m a true + letterWt m b false := by
   funext i
-  have hi := i.isLt
   simp only [wtPQ, letterWt, Pi.add_apply, Fin.ext_iff, Fin.val_zero, Fin.val_last, if_true, Bool.false_eq_true, if_false]
   split_ifs <;> omega
 
 theorem wtPQ_anti (m a b : ℕ) (hm : 1 ≤ m) : Antitone (wtPQ m a b) := by
   intro i j hij
-  have hij' : i.val ≤ j.val := hij
-  have hi := i.isLt
-  have hj := j.isLt
   simp only [wtPQ, Fin.ext_iff, Fin.val_zero, Fin.val_last]
   split_ifs <;> omega
 
 theorem nuOf_wtPQ (m a b : ℕ) (hm : 1 ≤ m) :
     nuOf (wtPQ m a b) = nuOf (letterWt m a true) + nuOf (letterWt m b false) := by
   funext t
-  have ht := t.isLt
   simp only [nuOf, wtPQ_eq m a b hm, Pi.add_apply, letterWt, Fin.ext_iff, Fin.val_zero, Fin.val_last, if_true, Bool.false_eq_true, if_false]
   split_ifs <;> omega
 
@@ -55,8 +50,6 @@ theorem mem_invariant_sections_two_weight_iff (hCO : CartanOnto) {O Kf : Type} [
   have hB : Antitone (letterWt m b false) := by
     intro i j hij
     have hij' : i.val ≤ j.val := hij
-    have hi := i.isLt
-    have hj := j.isLt
     simp only [letterWt, Bool.false_eq_true, if_false, Fin.ext_iff, Fin.val_last]
     split_ifs <;> omega
   have key : H0 O m (wtPQ m a b) Λ =

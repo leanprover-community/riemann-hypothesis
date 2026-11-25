@@ -2,6 +2,7 @@ module
 
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdjointInverseTranslate.HkConjTranspose
 import Mathlib.Tactic.Linter.Style
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdjointInverseTranslate.OperatorsCommuteTranslationsOfLeftRight
 
 @[expose] public section
 
@@ -61,12 +62,7 @@ theorem lf_bvec_apply {n : ℕ} (j t : Fin n) : bvec j t = if t = j then 1 else 
 
 theorem lf_inUH_mul {n : ℕ} {H a b : Matrix (Fin n) (Fin n) ℂ} (ha : inUH H a) (hb : inUH H b) :
     inUH H (a * b) := by
-  have ha' : aᴴ * H * a = H := ha
-  have hb' : bᴴ * H * b = H := hb
-  show (a * b)ᴴ * H * (a * b) = H
-  rw [Matrix.conjTranspose_mul]
-  calc bᴴ * aᴴ * H * (a * b) = bᴴ * (aᴴ * H * a) * b := by simp only [Matrix.mul_assoc]
-    _ = H := by rw [ha', hb']
+  apply _root_.AAInvW.inUH_mul <;> assumption
 
 theorem lf_det_ne_zero (k r : ℕ) {g : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ}
     (hg : inUH (Hpk k r) g) : g.det ≠ 0 := by
@@ -151,8 +147,7 @@ theorem subset_row_star : SsetRowStar := by
   have ha := a.isLt
   have hjl := j.isLt
   apply lf_S_rowStar k r z s hs a j
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   have hb : 2 * r + k - j.val < a.val := by omega
   apply hj ⟨2 * r + k - j.val, by omega⟩ hb
   apply Fin.ext
@@ -227,8 +222,7 @@ theorem subset_inverse_column : SsetInvCol := by
   unfold SsetInvCol
   intro k r z s hs a i hi
   apply lf_S_invCol k r z s hs a i
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   have ha := a.isLt
   exact hi ⟨i.val, by omega⟩ hlt (Fin.ext (lf_eI_val k r ⟨i.val, by omega⟩).symm)
 

@@ -134,8 +134,7 @@ theorem exists_nsmul_cls_eq_add_toPic_of_isBig : ∀ (k : Type) [Field k] [Infin
         lineBundleGlobalSectionsDim_congr_picardClass (LB.isLB_pull (isLB_lbPow hM.isLB m) ι) (isLB_lbPow hMι m)
           ((cls_eq_iff _ _).2 (lbIso_lbPow_pull hM.isLB ι m)).symm
       rw [e₂]
-      by_contra hle
-      push_neg at hle
+      by_contra! hle
       have hb : (lbH0 k (lbPow (M.pull ι) m) : ℝ) ≤ C * ((m : ℝ) + 1) ^ d := by exact_mod_cast hC m
       have hm1 : (1 : ℝ) ≤ m := by exact_mod_cast h₃
       have hm2 : ((m : ℝ) + 1) ^ d ≤ 2 ^ d * (m : ℝ) ^ d := by

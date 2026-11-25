@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WachModuleDescentToTameSubextension
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.WeakShimuraTheory.NearSplit
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisCochains.GLinkQuot
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CharacterLevelBounds.ClsFacts
@@ -17,30 +18,7 @@ import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual Formalism.HC ReciprocityTheory.Gal IsLocalRing UpperTheory.V UpperTheory.V.Base UpperTheory.V.Alg UpperTheory.V.HV UpperTheory.V.GradeZeroInterpolatingElement UpperTheory.V.Ws
 
 private theorem no_tors1 {l : ℕ} [hl : Fact l.Prime] (h2 : l ≠ 2) {u : ℤ_[l]} (h : u ^ l = 1) : u = 1 := by
-  have hpr : l.Prime := Fact.out
-  have hp : Prime (l : ℤ_[l]) := PadicInt.prime_p
-  have hodd : Odd l := hpr.odd_of_ne_two h2
-  have hx : ¬ (l : ℤ_[l]) ∣ u := by
-    intro hd
-    have h1 : (l : ℤ_[l]) ∣ u ^ l := dvd_pow hd hpr.ne_zero
-    rw [h] at h1
-    exact hp.not_dvd_one h1
-  have hxy : (l : ℤ_[l]) ∣ u - 1 := by
-    have hk : u - 1 ∈ RingHom.ker (PadicInt.toZMod : ℤ_[l] →+* ZMod l) := by
-      rw [RingHom.mem_ker, RingHom.map_sub, map_one]
-      have h3 := congrArg (PadicInt.toZMod : ℤ_[l] →+* ZMod l) h
-      rw [map_pow, map_one, ZMod.pow_card] at h3
-      rw [h3, sub_self]
-    rw [PadicInt.ker_toZMod, PadicInt.maximalIdeal_eq_span_p, Ideal.mem_span_singleton] at hk
-    exact hk
-  have hg := emultiplicity_geom_sum₂_eq_one hp hodd hxy hx
-  have hne : (∑ i ∈ Finset.range l, u ^ i * 1 ^ (l - 1 - i)) ≠ 0 := by
-    intro h0
-    rw [h0, emultiplicity_zero] at hg
-    simp at hg
-  have hmul := geom_sum₂_mul u 1 l
-  rw [h, one_pow, sub_self] at hmul
-  exact sub_eq_zero.mp ((mul_eq_zero.mp hmul).resolve_left hne)
+  apply _root_.GlobalTheory.NL.InvBasis.padic_root_one <;> assumption
 
 private theorem no_tors {l : ℕ} [Fact l.Prime] (h2 : l ≠ 2) {u : ℤ_[l]ˣ} {a : ℕ} (h : u ^ l ^ a = 1) : u = 1 := by
   induction a generalizing u with

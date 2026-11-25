@@ -57,17 +57,7 @@ theorem coord_inclR (x : E) (k : Fin (Module.finrank F E)) :
   simp
 
 theorem exists_nhds_inclR : ∃ V ∈ 𝓝 (0 : AE F E), ∀ x : E, inclR (F := F) (AF F) x ∈ V → x = 0 := by
-  obtain ⟨U, hU, hU0⟩ := GlobalTheory.AdeleDiscrete.exists_nhds_zero_principal_eq_zero F
-  refine ⟨⋂ k, (fun z : AE F E => (bsA F E).repr z k) ⁻¹' U, ?_, ?_⟩
-  · refine Filter.iInter_mem.2 fun k => ?_
-    exact (continuous_coord k).continuousAt.preimage_mem_nhds (by simpa using hU)
-  · intro x hx
-    have h : ∀ k, (bsE F E).repr x k = 0 := by
-      intro k
-      apply hU0
-      rw [← coord_inclR]
-      exact Set.mem_iInter.1 hx k
-    exact (bsE F E).forall_coord_eq_zero_iff.1 h
+  apply _root_.GlobalTheory.RationalDiscrete.exists_nhds_zero_inclR <;> assumption
 
 theorem exists_compact_AE : ∃ C : Set (AE F E), IsCompact C ∧ ∀ z : AE F E, ∃ x : E, inclR (F := F) (AF F) x + z ∈ C := by
   obtain ⟨K, hK, hKa⟩ := GlobalTheory.AdeleCocompact.exists_compact_adele F

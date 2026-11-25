@@ -713,8 +713,7 @@ namespace Formalism.L2.SG.Pf.IdBlocks2.Geo
 
 theorem uS_ne {D : D7} {u u' : D.what₂.Word} (hu : u ≠ u') (τ : D.what₂.Tau) : uS D u τ ≠ uS D u' τ := by
   obtain ⟨l, hl⟩ : ∃ l, D.s.letter u l ≠ D.s.letter u' l := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hu (D.s.letter_inj (funext h))
   intro heq
   have he := congrFun heq ⟨l.1 + 1, by omega⟩

@@ -88,12 +88,10 @@ theorem finsum_char (χ : AddChar 𝓀[k] ℂ) (hχ : χ ≠ 1) (L : Submodule �
     push_cast
     rfl
   · obtain ⟨f₁, hf₁⟩ : ∃ f₁ : Module.Dual 𝓀[k] (Red L), f₁ z ≠ 0 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact hz ((Module.forall_dual_apply_eq_zero_iff 𝓀[k] z).1 h)
     obtain ⟨a, ha⟩ : ∃ a, χ a ≠ 1 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact hχ (by ext a; rw [h a, AddChar.one_apply])
     set g : Module.Dual 𝓀[k] (Red L) := (-(a * (f₁ z)⁻¹)) • f₁
     have hg : g z = -a := by simp [g, hf₁]

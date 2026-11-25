@@ -136,8 +136,7 @@ theorem Formalism.FourierDecayAlt.P.point_bound_of_corollary_s : TBB.PtBoundOfCo
       rw [Formalism.FourierDecayAlt.P.TBBx2.Ew_nil p nn F (P.r + 1) γ] at hle
       exact hle
   have hfreq : ∃ w ∈ ({w | TBB.AdmW P p.l0 Y w ∧ w.length ≤ N} : Set (List C.Letter)), ∃ᶠ ε in 𝓝[>] (0 : ℝ), TBB.Ew p (fun _ => 1) F (P.r + 1) [] γ ≤ (C₂ * Λ ^ 2) ^ (P.r + 1) * TBB.Ew p nn (D.cutF p.T.base χ F ε) 0 w [] := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     have hall := (Filter.eventually_all_finite hSfin).mpr hcon
     obtain ⟨ε, ⟨w, hw, hle⟩, hall'⟩ := (hclaim.and hall).exists
     first

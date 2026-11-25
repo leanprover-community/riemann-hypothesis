@@ -6,6 +6,7 @@ public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeil
 import Development.WeilBound.CoreStatements.AutomorphicKernels.EisensteinSeriesG2.G2HaarMeasure.ContinuousInFrame
 import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.SiegelWeilActions.MemStabiliserIffFrameLowerBlock
 import Std.Tactic.BVDecide.Normalize.Prop
+import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.HermitianFormFiniteZerosOnLineCmExt
 
 @[expose] public section
 
@@ -24,33 +25,8 @@ variable {d : SD σ} {L : LD d}
 variable {nb : nA σ d.Y d.b → d.G} {uM : (Fin L.n → AE F E) → d.G} {nb' : nA σ L.Y L.b → G2 σ L.Y} {w₁ : d.G}
   {cM : (Fin L.n → AE F E) × AF F → d.G} {δ : E}
 
-theorem fixed_in_F (hcm : IsCMExt F E σ) (z : E) (hz : σ z = z) : ∃ f : F, algebraMap F E f = z := by
-  obtain ⟨_, htc, hdeg, hconj⟩ := hcm
-  classical
-  have hz' : z ∈ AlgHom.equalizer σ (AlgHom.id F E) := (AlgHom.mem_equalizer _ _ _).2 hz
-  have hS : AlgHom.equalizer σ (AlgHom.id F E) = ⊥ := by
-    have hp : (Module.finrank F E).Prime := by
-      rw [hdeg]
-      exact Nat.prime_two
-    have := Subalgebra.isSimpleOrder_of_finrank_prime F E hp
-    rcases eq_bot_or_eq_top (AlgHom.equalizer σ (AlgHom.id F E)) with h | h
-    · exact h
-    · exfalso
-      have hid : ∀ x, σ x = x := fun x => by
-        have hx : x ∈ AlgHom.equalizer σ (AlgHom.id F E) := h ▸ Algebra.mem_top
-        exact (AlgHom.mem_equalizer _ _ _).1 hx
-      obtain ⟨w⟩ : Nonempty (NumberField.InfinitePlace E) := inferInstance
-      have hreal : NumberField.ComplexEmbedding.IsReal w.embedding := by
-        rw [NumberField.ComplexEmbedding.isReal_iff]
-        ext x
-        rw [NumberField.ComplexEmbedding.conjugate_coe_eq]
-        have hx := hconj w.embedding x
-        rw [hid x] at hx
-        exact hx.symm
-      exact (NumberField.InfinitePlace.not_isReal_iff_isComplex.2 (htc.isComplex w))
-        (NumberField.InfinitePlace.isReal_iff.2 hreal)
-  rw [hS] at hz'
-  exact Algebra.mem_bot.1 hz'
+theorem fixed_in_F (hcm : IsCMExt F E σ) (z : E) (hz : σ z = z) : ∃ f : F, algebraMap F E f = z :=
+  _root_.GlobalTheory.HermLineZeros.exists_of_fixed hcm z hz
 
 end PositivityTheory.SiegelWeilFormula.Act.C6
 

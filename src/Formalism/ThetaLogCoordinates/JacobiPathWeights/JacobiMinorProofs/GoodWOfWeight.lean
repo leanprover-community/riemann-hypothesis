@@ -23,8 +23,7 @@ theorem domLe_trans {n : ℕ} {a b c : Fin n → ℤ} (h1 : DomLe a b) (h2 : Dom
 theorem vars_of_polB {R : Type*} [CommRing R] {n N : ℕ} {B : ℕ → ℕ} {G : MvPolynomial (ℕ × Fin n) R}
     (hG : G ∈ polB R n N B) : ∀ x ∈ G.vars, x.1 < N := by
   intro x hx
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   have hGi := (Submodule.mem_iInf _).mp hG x.1
   rw [if_neg (not_lt.mpr hlt), mem_weightedHomogeneousSubmodule] at hGi
   obtain ⟨e, he, hex⟩ := (MvPolynomial.mem_vars_iff_mem_support x).mp hx

@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsAlgHomValuationSubring
 public import Mathlib.NumberTheory.NumberField.Basic
 public import Mathlib.Algebra.Category.Grp.Injective
 public import Mathlib.RingTheory.FractionalIdeal.Basic
@@ -39,31 +40,8 @@ open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.
 
 private theorem UpperTheory.V.Ws.Tw.extIdeal_inj {H G : Type} [CommGroup H] [CommGroup G] {k : Type} [Field k] [IsAlgClosed k]
     (i : H →* G) (hi : Function.Injective i) (g : H →* kˣ) : ∃ F : G →* kˣ, ∀ x, F (i x) = g x := by
-  have hdiv : ∀ {n : ℤ}, n ≠ 0 → Function.Surjective (fun a : Additive kˣ => n • a) := by
-    intro n hn y
-    have hpos : 0 < n.natAbs := Int.natAbs_pos.mpr hn
-    obtain ⟨x, hx⟩ := IsAlgClosed.exists_pow_nat_eq ((Additive.toMul y : kˣ) : k) hpos
-    have hx0 : x ≠ 0 := by
-      rintro rfl
-      rw [zero_pow hpos.ne'] at hx
-      exact (Additive.toMul y).ne_zero hx.symm
-    have hu : Units.mk0 x hx0 ^ n.natAbs = Additive.toMul y := by
-      ext
-      simp [hx]
-    rcases Int.natAbs_eq n with h | h
-    · refine ⟨Additive.ofMul (Units.mk0 x hx0), ?_⟩
-      apply Additive.toMul.injective
-      simp only [toMul_zsmul, toMul_ofMul]
-      rw [h, zpow_natCast, hu]
-    · refine ⟨Additive.ofMul (Units.mk0 x hx0)⁻¹, ?_⟩
-      apply Additive.toMul.injective
-      simp only [toMul_zsmul, toMul_ofMul]
-      rw [h, zpow_neg, zpow_natCast, inv_pow, inv_inv, hu]
-  letI : DivisibleBy (Additive kˣ) ℤ := divisibleByOfSMulRightSurj _ _ hdiv
-  obtain ⟨F, hF⟩ := (Module.Baer.of_divisible (Additive kˣ)).extension_property_addMonoidHom
-    (MonoidHom.toAdditive i) hi (MonoidHom.toAdditive g)
-  refine ⟨MonoidHom.toAdditive.symm F, fun x => ?_⟩
-  exact congrArg Additive.toMul (DFunLike.congr_fun hF (Additive.ofMul x))
+  intros
+  apply _root_.GlobalTheory.DivisibleUnits.exists_extension <;> assumption
 
 private theorem UpperTheory.V.Ws.Tw.extIdeal_mon {S G : Type} [CommMonoid S] [CommGroup G] {k : Type} [Field k] [IsAlgClosed k]
     (φ : S →* G) (g : S →* kˣ) (h : ∀ a b, φ a = φ b → g a = g b) : ∃ F : G →* kˣ, ∀ x, F (φ x) = g x := by

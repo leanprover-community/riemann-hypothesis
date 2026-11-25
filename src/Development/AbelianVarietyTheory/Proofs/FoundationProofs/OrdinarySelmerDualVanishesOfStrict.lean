@@ -376,8 +376,7 @@ theorem approx_candidate {K : Type} [NormedField K] {Γ : Type} (k a : Γ → K)
 
 theorem exists_depth_of_not_coboundary : ∀ (l : ℕ) [Fact l.Prime] {Γ : Type} (H : Set Γ) (k a : Γ → Qbar l), (∃ s ∈ H, k s ≠ 1) → (¬ ∃ X : Qbar l, ∀ s ∈ H, a s = k s * X - X) → ∃ r : ℕ, ∀ (n : ℕ) (x y : Qbar l), ‖x‖ ≤ 1 → (∀ s ∈ H, ‖x * a s - (k s * y - y)‖ ≤ ‖((l : ℕ) : Qbar l) ^ n‖) → ‖x‖ ≤ ‖((l : ℕ) : Qbar l) ^ (n - r)‖ := by
   intro l _ Γ H k a ⟨s₀, hs₀, hk⟩ hna
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   set q : ℝ := ‖((l : ℕ) : Qbar l)‖ with hq
   have hq1 : q < 1 := GlobalTheory.CoefEmbed.norm_prime_lt_one
   have hq0 : 0 ≤ q := norm_nonneg _
@@ -399,8 +398,7 @@ theorem exists_depth_of_not_coboundary : ∀ (l : ℕ) [Fact l.Prime] {Γ : Type
     have hsplit : q ^ n = q ^ (n - r) * q ^ r := by
       rw [← pow_add, Nat.sub_add_cancel hnr]
     rw [hsplit] at h1
-    by_contra hlt
-    push_neg at hlt
+    by_contra! hlt
     have : q ^ (n - r) * q ^ r < ‖x‖ * ‖a t - (k t * (y / x) - y / x)‖ :=
       mul_lt_mul'' hx hlt (pow_nonneg hq0 _) (pow_nonneg hq0 _)
     linarith

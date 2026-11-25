@@ -1,5 +1,6 @@
 module
 
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.MinkSat
 public import Formalism.HermitianLattices.NeighbourConstruct
 public import Formalism.LocalToGlobal.Columns.AbelianHostFieldConditions
 import Mathlib.RingTheory.PiTensorProduct
@@ -493,18 +494,7 @@ theorem single_mem_stdLat (i : Fin n) (r : 𝓞 E) : (Pi.single i (algebraMap (�
 
 theorem stdLat_eq_span :
     stdLat E n = Submodule.span (𝓞 E) (Set.range fun i : Fin n => (Pi.single i (1 : E) : Sp E n)) := by
-  apply le_antisymm
-  · intro x hx
-    rw [mem_stdLat] at hx
-    choose r hr using hx
-    have : x = ∑ i, r i • (Pi.single i (1 : E) : Sp E n) := by
-      funext j
-      simp [Finset.sum_apply, Pi.single_apply, Algebra.smul_def, hr]
-    rw [this]
-    exact Submodule.sum_mem _ fun i _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨i, rfl⟩)
-  · rw [Submodule.span_le]
-    rintro _ ⟨i, rfl⟩
-    simpa using single_mem_stdLat (E := E) i 1
+  apply _root_.ReciprocityTheory.ChartRestriction.G.T0.hStd_eq_span_pi_single <;> assumption
 
 theorem stdLat_lattice : Submodule.IsLattice E (stdLat E n) := by
   constructor

@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.ExistsIsUUOver
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ThetaPt
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FirstCohomology.ThetaMove
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.VtPull
@@ -54,16 +55,8 @@ theorem negT_snd' : (negT A T).left ≫ (snd T A).left = (snd T A ≫ (GrpObj.in
 
 theorem negT_translPt (x : T ⟶ A) :
     (negT A T).left ≫ (translPt A x).left = (translT A x⁻¹).left ≫ (snd T A ≫ (GrpObj.inv : A ⟶ A)).left := by
-  rw [← Over.comp_left, ← Over.comp_left]
-  congr 1
-  have e1 : negT A T ≫ translPt A x = (fst T A ≫ x) * (snd T A)⁻¹ := by
-    rw [translPt_eq, MonObj.comp_mul, negT, lift_fst_assoc, lift_snd]
-    rfl
-  have e2 : translT A x⁻¹ ≫ snd T A ≫ (GrpObj.inv : A ⟶ A) = (fst T A ≫ x) * (snd T A)⁻¹ := by
-    rw [← Category.assoc, translT, lift_snd, translPt_eq]
-    show ((fst T A ≫ x⁻¹) * snd T A)⁻¹ = _
-    rw [mul_inv, GrpObj.comp_inv, inv_inv]
-  rw [e1, e2]
+  intros
+  apply _root_.GlobalTheory.TranslMove.neg_transl <;> assumption
 
 end Transl
 

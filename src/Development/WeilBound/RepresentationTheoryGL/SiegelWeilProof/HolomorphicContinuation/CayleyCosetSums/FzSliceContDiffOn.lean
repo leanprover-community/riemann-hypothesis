@@ -534,8 +534,6 @@ namespace PositivityTheory.Rg.Sw.HSt
 
 open PositivityTheory.Rg.Sw PositivityTheory.Rg.Sw.LVs
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 variable {V : Type} [NormedAddCommGroup V] [NormedSpace ℂ V] [CompleteSpace V]
 
 theorem deriv_eq_fderiv_pair (U : ℂ × V → ℂ) (z0 : ℂ) (w : V) (hU : DifferentiableAt ℂ U (z0, w)) :

@@ -148,8 +148,7 @@ theorem expIndep : ExpIndep := by
   classical
   rintro p q U V ⟨T, a, hU⟩ ⟨T', b, hV⟩ hU0 h
   obtain ⟨t, htT, hat⟩ : ∃ t ∈ T, a t ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact hU0 (funext fun s => by
       rw [hU, Pi.zero_apply]
       exact Finset.sum_eq_zero fun t ht => by rw [hc t ht, zero_mul])

@@ -119,8 +119,6 @@ open GlobalTheory.Dict (castFr)
 open GlobalTheory.DictMove (Carries)
 open scoped TensorProduct Matrix
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 def realFr (V : HSp D) {r : ℕ} (hr : V.rank = r)

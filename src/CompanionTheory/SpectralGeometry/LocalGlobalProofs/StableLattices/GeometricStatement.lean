@@ -1002,8 +1002,7 @@ theorem gap (g : S7.UJ ε) (hn : (n : ℝ) < hs (S7.toM g)) :
   set h := hs (S7.toM g) with hh
   have hq : 1 < h / n := (one_lt_div hnR).2 hn
   obtain ⟨i₁, hi₁⟩ : ∃ i, h / n ≤ lam i := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     have := Finset.sum_lt_sum_of_nonempty Finset.univ_nonempty fun i (_ : i ∈ Finset.univ) => hc i
     rw [hsum] at this
     simp only [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul] at this

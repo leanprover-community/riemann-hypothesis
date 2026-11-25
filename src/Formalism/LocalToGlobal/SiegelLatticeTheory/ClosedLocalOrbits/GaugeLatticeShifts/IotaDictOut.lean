@@ -203,17 +203,7 @@ theorem hat_NgX (A : X.B.I.Gf) {u : D.what₂.Word} {Λ : Submodule (𝓞 D.host
 
 theorem orth_of_eX {x : (VS D).V} {u : D.what₂.Word} (h : ∀ a, (VS D).hT (X.eX a) x = 0) :
     x ∈ orth (VS D) (Xsp (lf D (X.Fu u))) := by
-  have e : Xsp (lf D (X.Fu u)) = Submodule.span D.host.E (Set.range X.eX) := by
-    show Submodule.span D.host.E (Set.range (X.Fu u).e) = _
-    rw [X.Fu_e u]
-  rw [e]
-  refine (Submodule.mem_iInf _).2 fun v => (Submodule.mem_iInf _).2 fun hv => ?_
-  show (VS D).hT v x = 0
-  induction hv using Submodule.span_induction with
-  | mem v hv => obtain ⟨a, rfl⟩ := hv; exact h a
-  | zero => simp
-  | add v w _ _ hv hw => simp [hv, hw]
-  | smul c v _ hv => simp [hv]
+  apply _root_.Formalism.L2.SG.Pf.Vanish2.orth_of_e <;> assumption
 
 end Formalism.L2.SG.Pf.BridgeRA
 

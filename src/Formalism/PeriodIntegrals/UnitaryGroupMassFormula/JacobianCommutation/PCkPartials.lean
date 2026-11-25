@@ -23,8 +23,6 @@ section -- clump:auto
 
 open MeasureTheory Filter Topology Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 noncomputable section
 
 namespace PI.UnitaryGroupMassFormula.JCC.Ck

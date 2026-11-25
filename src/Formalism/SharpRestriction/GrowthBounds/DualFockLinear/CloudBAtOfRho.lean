@@ -148,8 +148,7 @@ theorem cloudBAt_of_rho {p n' : ℕ} {W Qq O Kf : Type} [CommRing W] [IsDomain W
   set xx := ∑ x, c x • S x with hxx
   have hxre : xx ∈ Re p ι σ w r lam0 e := Submodule.sum_mem _ (fun x _ => Submodule.smul_mem _ _ (hSre x))
   obtain ⟨β, hβ⟩ : ∃ β, ρ β xx ∉ scale ((algebraMap O Kf w) ^ ((2 * κ + 1 : ℕ) : ℤ)) (Re p ι σ w r (flW (m := m) (dT TT lam0)) e) := by
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     exact hc (by simpa using h5 xx hxre hne)
   have desc : ∀ N : ℕ, ∀ v, v ∈ Re p ι σ w r (flW (m := m) (dT TT lam0)) e →
       v ∉ scale ((algebraMap O Kf w) ^ (N : ℤ)) (Re p ι σ w r (flW (m := m) (dT TT lam0)) e) →

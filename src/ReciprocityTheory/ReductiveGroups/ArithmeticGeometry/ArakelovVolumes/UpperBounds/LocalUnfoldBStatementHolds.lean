@@ -53,6 +53,7 @@ import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.TypeStar
 import ReciprocityTheory.L2DbarEstimates.LeviForms.OfRealNormSqSumMul
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.BoundedSectionAlgebra
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.LocalUnfoldStatementPf, ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.OntoWeightStatementPfC, ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.OntoWeightStatementPf, ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.UpDivStatementPfB, ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.UpDivStatementPfC, ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.UpDivStatementPfE, ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.UpDivStatementPfF, ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.UpDivStatementPf, ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.LocalUnfoldBStatementHolds
@@ -256,8 +257,7 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} {X : Data 
 
 theorem exists_s_ne {Xa : ArchInM X} (Fl : FlatM X Xa) (x0 : Frame X.Ψ r) (hx0 : IsOrth X x0) :
     ∃ k0 : Fin (nd X), ∃ z ∈ OmF X x0, Fl.s k0 (cpt X x0 z) ≠ 0 := by
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   have hall : ∀ k, ∀ x ∈ X.dom, Fl.s k x = 0 := fun k =>
     bigCell_of lu_holds r X x0 hx0 Xa.L (Fl.s k) ⟨(Fl.s_van k).1.1.1.1, (Fl.s_van k).1.1.1.2.1⟩ (hcon k)
   have hx0d := IW.orth_mem_dom X x0 hx0
@@ -330,14 +330,9 @@ theorem Gf_lact (Xa : ArchInM X) (Fl : FlatM X Xa) {g : Frame X.Ψ r → ℂ}
   rw [(WSk_metric Xa Fl).2.2 γ hγ x hx, hg.2.2 γ hγ x hx, norm_mul, OntoE.chi_norm X _ hγ, one_mul]
 
 private lemma nfac_pos_of_mem_dom {x : Frame X.Ψ r} (hx : x ∈ X.dom) (la : Wt X.Ψ r) : 0 < X.nfac la x := by
-  have hd : ∀ τ j, dmin X.Gm x τ j ≠ 0 := by
-    intro τ j h
-    have h' := (hx τ).2 j
-    rw [h] at h'
-    simp at h'
-  unfold Data.nfac
-  exact Finset.prod_pos fun τ _ => Finset.prod_pos fun i _ =>
-    Real.rpow_pos_of_pos (norm_pos_iff.mpr (div_ne_zero (hd τ _) (hd τ _))) _
+  first
+    | exact _root_.ReciprocityTheory.ChartRestriction.G.FD.BoundedSectionAlgebra.nfac_pos
+    | apply _root_.ReciprocityTheory.ChartRestriction.G.FD.BoundedSectionAlgebra.nfac_pos <;> first | assumption | rfl | infer_instance
 
 private lemma nfac_add_nsmul {x : Frame X.Ψ r} (hx : x ∈ X.dom) (la L : Wt X.Ψ r) (T : ℕ) :
     X.nfac (la + T • L) x = X.nfac la x * X.nfac L x ^ T := by
@@ -436,8 +431,7 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} {X : Data 
 
 theorem s_not_ev_zero {Xa : ArchInM X} (Fl : FlatM X Xa) (j : Fin Fl.δ) :
     ∃ k, ¬ (fun z => Fl.s k (cpt X (Fl.xs j) z)) =ᶠ[𝓝 (0 : V (nd X))] 0 := by
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   have hc := Fl.coord j
   have hev : (fun z : V (nd X) => (WithLp.toLp 2 fun k =>
       Fl.s k (cpt X (Fl.xs j) z) / Fl.w0 (cpt X (Fl.xs j) z) : V (nd X))) =ᶠ[𝓝 0] fun _ => 0 := by
@@ -1266,8 +1260,7 @@ theorem zero_null {U : Set (V n)} (hU : IsOpen U) (hUc : IsPreconnected U) {g : 
     obtain ⟨r, hr, hrU⟩ := Metric.isOpen_iff.mp hU z hz
     by_contra hne
     have hex : ∃ z0 ∈ ball z (r / 4), g z0 ≠ 0 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact hne (Metric.eventually_nhds_iff_ball.mpr ⟨r / 4, by linarith, h⟩)
     obtain ⟨z0, hz0, hgz0⟩ := hex
     rw [Metric.mem_ball] at hz0
@@ -1306,8 +1299,7 @@ theorem zero_null {U : Set (V n)} (hU : IsOpen U) (hUc : IsPreconnected U) {g : 
   obtain ⟨hzU, hgz⟩ := hz
   obtain ⟨r, hr, hrU⟩ := Metric.isOpen_iff.mp hU z hzU
   have hex : ∃ z0 ∈ ball z (r / 4), g z0 ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hWempty z hzU (Metric.eventually_nhds_iff_ball.mpr ⟨r / 4, by linarith, h⟩)
   obtain ⟨z0, hz0, hgz0⟩ := hex
   rw [Metric.mem_ball] at hz0

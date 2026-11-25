@@ -542,9 +542,6 @@ theorem arc_length_three_hyp_second (W : LocWach PD LL O v n) (hcase : Formalism
       rw [hE]; exact (W.N T₂).smul_mem _ h2
     have hlet2 := TypesD.φDpow_letter W hxlet 2
     rw [e3] at hlet2
-    have hEl : (letE (c - 1) : LetA O n) • ((qA W ^ A.η * ps W 1 ^ (w' + A.S)) • ((W.φD T₂) ^ 2) x) =
-        (qA W ^ A.η * ps W 1 ^ (w' + A.S)) • ((W.φD T₂) ^ 2) x := by
-      rw [smul_comm, hlet2]
     have hamem : qA W ^ A.η * ps W 1 ^ (w' + A.S) ∈ W.AΔ :=
       W.AΔ.mul_mem (W.AΔ.pow_mem hqmem _) (W.AΔ.pow_mem hp1mem _)
     have hΔ : ∀ δ ∈ W.DelF, W.γD T₂ δ (((W.φD T₂) ^ 2) x) = ((W.φD T₂) ^ 2) x := by
@@ -1265,8 +1262,6 @@ theorem numeric_bound_two_a_le_b1 (l : ℕ) (hl : 11 ≤ l) (b wm S η b₁ H : 
     have h3 : (2 * (l : ℝ) - 1) ≤ 21 / 100 * ((l : ℝ) - 1) ^ 2 := by
       nlinarith [mul_nonneg (sub_nonneg.2 hl') (by linarith : (0 : ℝ) ≤ l - 1)]
     nlinarith [Nat.cast_nonneg (α := ℝ) H]
-  have hη0 := Nat.cast_nonneg (α := ℝ) η
-  have hS0 := Nat.cast_nonneg (α := ℝ) S
   linarith
 
 theorem numeric_bound_exponent_eg (l : ℕ) (hl : 11 ≤ l) (b wm S η b₁ H : ℕ) (hb : 1 ≤ b) (hη : 20 * η ≤ b) (hS : 20 * S ≤ b)
@@ -1275,7 +1270,6 @@ theorem numeric_bound_exponent_eg (l : ℕ) (hl : 11 ≤ l) (b wm S η b₁ H : 
     (EG l A S η b₁ : ℝ) ≤ 8 * Formalism.MainNotions.N.FrobeniusPowerSeries.Sg l (b + η + S) wm S η := by
   have hl1 : (1 : ℝ) < l := by exact_mod_cast (by omega : 1 < l)
   have hl0 : (0 : ℝ) < l - 1 := by linarith
-  have hcW : (0 : ℝ) ≤ (cW l H : ℝ) := Nat.cast_nonneg _
   have hHl : (0 : ℝ) ≤ (H : ℝ) * (2 * l - 1) / ((l : ℝ) - 1) ^ 2 := by
     apply div_nonneg _ (sq_nonneg _)
     exact mul_nonneg (Nat.cast_nonneg _) (by linarith)
@@ -1370,11 +1364,6 @@ theorem arc_length_three_first_level [NeZero n] [Fintype (K →ₐ[Qp] LL)] [IsD
   have hl5 : 5 ≤ PD.p := by omega
 
   have hlen' : sInf {d : ℕ | 1 ≤ d ∧ ¬ Formalism.MainNotions.TruncatedSeriesCountingBounds.Thick b η size (c - (d : ZMod n) + 1)} = 3 := hlen
-  have hne : {d : ℕ | 1 ≤ d ∧ ¬ Formalism.MainNotions.TruncatedSeriesCountingBounds.Thick b η size (c - (d : ZMod n) + 1)}.Nonempty := by
-    by_contra hcon
-    rw [Set.not_nonempty_iff_eq_empty] at hcon
-    rw [hcon, Nat.sInf_empty] at hlen'
-    omega
   have hm2 := Nat.notMem_of_lt_sInf (s := {d : ℕ | 1 ≤ d ∧ ¬ Formalism.MainNotions.TruncatedSeriesCountingBounds.Thick b η size (c - (d : ZMod n) + 1)})
     (m := 2) (by rw [hlen']; norm_num)
   have e2 : c - ((2 : ℕ) : ZMod n) + 1 = c - 1 := by push_cast; ring

@@ -5,6 +5,7 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalUnitaryOrbi
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalUnitaryOrbits.OmAtComplZero
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerVolume.LocDensHI
 import Mathlib.Tactic.Linter.Style
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ValuationLocalVolumes.VolTUnit
 
 @[expose] public section
 
@@ -64,15 +65,7 @@ theorem unif_int {ϖ : Fv F v} (hϖ : IsUnif v ϖ) : ϖ ∈ v.adicCompletionInte
 
 theorem sc_mul_mem {x : Fv F v} (hx : x ∈ v.adicCompletionIntegers F) {c : Fv F v ⊗[F] E}
     (hc : c ∈ OEv (E := E) v) : sc (E := E) v x * c ∈ OEv (E := E) v := by
-  have h := (Submodule.span (v.adicCompletionIntegers F)
-    ((fun x : 𝓞 E => inclR (F := F) (Fv F v) (x : E)) '' Set.univ)).smul_mem
-    (⟨x, hx⟩ : v.adicCompletionIntegers F) hc
-  have e : (⟨x, hx⟩ : v.adicCompletionIntegers F) • c = sc (E := E) v x * c := by
-    show x • c = sc (E := E) v x * c
-    rw [Algebra.smul_def, Algebra.TensorProduct.algebraMap_apply]
-    rfl
-  rw [e] at h
-  exact h
+  apply _root_.Formalism.L2.SG.Pf.NcVal.VolTU.sc_mul_mem <;> assumption
 
 theorem oev_add {c d : Fv F v ⊗[F] E} (hc : c ∈ OEv (E := E) v) (hd : d ∈ OEv (E := E) v) :
     c + d ∈ OEv (E := E) v :=

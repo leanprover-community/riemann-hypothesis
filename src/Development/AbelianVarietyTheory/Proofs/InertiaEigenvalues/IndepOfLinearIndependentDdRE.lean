@@ -77,8 +77,7 @@ private theorem eq_zero_of_sum_smul_invariant_eq_zero_of_card_support_le {G E M 
     omega
   | succ n ih =>
     intro c hcard hsum
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     obtain ⟨i₀, hi₀⟩ := hne
     obtain ⟨b, hb⟩ := hE.mul_inv_cancel hi₀
 

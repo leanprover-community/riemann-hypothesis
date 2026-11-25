@@ -1,5 +1,7 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.ArchimedeanH0Cards.ImgCard
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.ArchimedeanH0Cards.OdKill
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.PairedDualFirstOrderDualMatrixSpace
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.DegreeCountCohomology.TyCard
 public import Mathlib.RingTheory.PowerSeries.Inverse
@@ -165,16 +167,7 @@ theorem cmm_mem (v : F.Vl) {P : Fin k.g → Matrix (Fin n) (Fin n) X} (hP : ∀ 
 
 theorem od_diag (v : F.Vl) {Z : Matrix (Fin n) (Fin n) X} (hZ : Z ∈ Od x.A X n x.a) (i : Fin n) :
     (x.wiX X v * Z * x.wX X v) i i = 0 := by
-  rw [Matrix.mul_apply]
-  refine Finset.sum_eq_zero fun b _ => ?_
-  by_cases hb : decide ((b : ℕ) < x.a) = x.ty v i
-  · rw [Matrix.mul_apply, Finset.sum_eq_zero, zero_mul]
-    intro a _
-    by_cases ha : x.ty v i = decide ((a : ℕ) < x.a)
-    · rw [(Submodule.mem_bot x.A).1 ((hZ a b).1 (by simpa using (hb.trans ha).symm)), mul_zero]
-    · have := (tyCard l F n x v 0).2.2.2 i a ha
-      simp only [NP.wiX, Matrix.map_apply, this, map_zero, zero_mul]
-  · simp only [NP.wX, Matrix.map_apply, x.w_blk v b i hb, map_zero, mul_zero]
+  apply _root_.selCard_diag <;> assumption
 
 theorem isLocallyConstant_rho1_of_algebraMap_pow_eq_zero (m : ℕ) (hm : algebraMap x.A X (x.t ^ m) = 0) : IsLocallyConstant (k.ρ1 X) := by
   have aux : ∀ f : F.G₀ → Matrix (Fin n) (Fin n) x.A,
@@ -341,14 +334,7 @@ section SlopeTestRemainingChoices
 variable {l : ℕ} [Fact l.Prime] {L : Loc} {G G0 : Glob l L}
 
 private theorem char_K (l : ℕ) [Fact l.Prime] (K : Type) [Field K] [Finite K] [Algebra ℤ_[l] K] : (l : K) = 0 := by
-  obtain ⟨p, hp⟩ := CharP.exists K
-  have hpp : p.Prime := CharP.char_is_prime K p
-  by_cases e : p = l
-  · subst e; exact CharP.cast_eq_zero K p
-  · have hc : l.Coprime p := (Nat.coprime_primes Fact.out hpp).2 (Ne.symm e)
-    have := (PadicInt.isUnit_iff.2 (PadicInt.norm_natCast_eq_one_iff.2 hc)).map (algebraMap ℤ_[l] K)
-    rw [map_natCast, CharP.cast_eq_zero] at this
-    exact absurd this not_isUnit_zero
+  apply _root_.UpperTheory.V.Pa.B2.odKill_char <;> assumption
 
 private theorem two_unit {A : Type} [CommRing A] (hl : l ≠ 2) (h : (l : A) = 0) : IsUnit (2 : A) := by
   obtain ⟨s, hs⟩ := (Fact.out : l.Prime).odd_of_ne_two hl

@@ -3,6 +3,7 @@ module
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.OppositeWeylSubgroupClosed
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeightedLimitGauge.VolumeLieE
 import Mathlib.Tactic.Linter.Style
+import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.LocalWeightCharts.NotMidCases
 
 @[expose] public section
 
@@ -154,14 +155,7 @@ lemma sand_inj {a b : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ} (h : Em k r * a * 
 
 lemma emb_mem (a : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ) :
     embWb k r a ∈ UH (Hpk k r) ↔ aᴴ * Hb k * a = Hb k := by
-  show (embWb k r a)ᴴ * Hpk k r * embWb k r a = Hpk k r ↔ _
-  rw [emb_form]
-  constructor
-  · intro h
-    exact sand_inj (add_right_cancel (h.trans (Hpk_eq (k := k) (r := r))))
-  · intro h
-    rw [h]
-    exact Hpk_eq.symm
+  apply _root_.WlocSk.HM.emb_mem <;> assumption
 
 lemma mulVec_bvec {n : ℕ} (A : Matrix (Fin n) (Fin n) ℂ) (j l : Fin n) : (A *ᵥ bvec j) l = A l j := by
   simp [bvec, Matrix.mulVec, dotProduct, Pi.single_apply]

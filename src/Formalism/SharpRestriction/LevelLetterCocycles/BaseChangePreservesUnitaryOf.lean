@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DvdSubOfDvdSubX
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.HodgeFontaineExactness.OneNotMemFilOne
 public import Formalism.SharpRestriction.LevelLetterCocycles.FrobeniusPowUniformizerFactorisation
 import Formalism.CoboundaryTransfers.GammaStableTransfers.MemCoboundariesOfIsOneCoboundary
@@ -2963,36 +2964,7 @@ variable {O : Type} [CommRing O]
 
 theorem hstra_algHom_ext (F G : PowerSeries O →ₐ[O] PowerSeries O)
     (hX : F PowerSeries.X = G PowerSeries.X) (hd : PowerSeries.X ∣ F PowerSeries.X) : F = G := by
-  have hpoly : ∀ P : Polynomial O, F (P : PowerSeries O) = G (P : PowerSeries O) := by
-    intro P
-    have h : F.comp (Polynomial.coeToPowerSeries.algHom O) =
-        G.comp (Polynomial.coeToPowerSeries.algHom O) := by
-      apply Polynomial.algHom_ext
-      simp [Polynomial.coeToPowerSeries.algHom_apply, hX]
-    have h2 := DFunLike.congr_fun h P
-    simpa [Polynomial.coeToPowerSeries.algHom_apply] using h2
-  apply AlgHom.ext
-  intro f
-  rw [← sub_eq_zero]
-  ext k
-  have hdiv : (PowerSeries.X : PowerSeries O) ^ (k + 1) ∣ F f - G f := by
-    have hf := PowerSeries.eq_shift_mul_X_pow_add_trunc (k + 1) f
-    set g : PowerSeries O := PowerSeries.mk fun i => PowerSeries.coeff (i + (k + 1)) f with hg
-    have e1 : F f = F g * (F PowerSeries.X) ^ (k + 1) +
-        F ((f.trunc (k + 1) : Polynomial O) : PowerSeries O) := by
-      conv_lhs => rw [hf]
-      rw [map_add (f := _), map_mul, map_pow]
-    have e2 : G f = G g * (G PowerSeries.X) ^ (k + 1) +
-        G ((f.trunc (k + 1) : Polynomial O) : PowerSeries O) := by
-      conv_lhs => rw [hf]
-      rw [map_add (f := _), map_mul, map_pow]
-    have e3 : F f - G f = (F g - G g) * (F PowerSeries.X) ^ (k + 1) := by
-      rw [e1, e2, hpoly, ← hX]
-      ring
-    rw [e3]
-    exact Dvd.dvd.mul_left (pow_dvd_pow_of_dvd hd _) _
-  rw [map_zero]
-  exact (PowerSeries.X_pow_dvd_iff.1 hdiv) k (Nat.lt_succ_self k)
+  apply _root_.GlobalTheory.NB.LT.algHom_ext_X <;> assumption
 
 end HStrA0
 

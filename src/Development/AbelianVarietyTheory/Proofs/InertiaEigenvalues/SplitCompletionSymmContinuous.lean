@@ -66,8 +66,7 @@ private theorem ringEquiv_symm_continuous_of_continuous {K₁ K₂ : Type*} [Nor
 
   have key : ∀ y : K₁, ‖i y‖ < 1 → ‖y‖ < 1 := by
     intro y hy
-    by_contra hge
-    push_neg at hge
+    by_contra! hge
     have hy0 : y ≠ 0 := by
       rintro rfl
       norm_num at hge

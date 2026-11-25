@@ -6,6 +6,7 @@ public import Development.WeilBound.CoreStatements.CompactAveragingSplitting.Eig
 public import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.KdMulRight
 public import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.PfDictSec
 import GroundTheory.LocalFields.PadicLogSeries
+import Development.WeilBound.CoreStatements.CompactAveragingSplitting.EigenvectorLifting.PfDict
 
 @[expose] public section
 
@@ -83,29 +84,7 @@ theorem comp_comp (hσ : IsCMExt F E σ) (t : E →ₐ[F] Fv F v) : (t.comp σ).
 
 theorem chrW_conj (hσ : IsCMExt F E σ) (t : E →ₐ[F] Fv F v) {χ : Chr F E} {K : Subgroup (AF F)ˣ} {m : ℕ} (hχ : ResEtaPow K χ m)
     (x : (Fv F v)ˣ) : chrW χ (t.comp σ) x = (chrW χ t x)⁻¹ := by
-  obtain ⟨⟨sec, h⟩, -⟩ := section_statement F E σ hσ v t
-  obtain ⟨⟨sec', h'⟩, -⟩ := section_statement F E σ hσ v (t.comp σ)
-  obtain ⟨g, ha, h1, h2⟩ := h.exists_gl (β := Unit) (GeneralLinearGroup.scalar _ x) 1
-  let z : (AE F E)ˣ := GeneralLinearGroup.det g
-  have hz : (z : AE F E) = g.1 () () := det_unique _
-  have za : At (evFin F v) ((z : AE F E) - 1) := by
-    rw [hz]
-    simpa using kd_at_matrix.1 ha () ()
-  have z1 : piW t z = x := by
-    rw [hz]
-    simpa using congrFun (congrFun h1 ()) ()
-  have z2 : piW (t.comp σ) z = 1 := by
-    rw [hz]
-    simpa using congrFun (congrFun h2 ()) ()
-  let z' : (AE F E)ˣ := Units.map (cA σ : AE F E →* AE F E) z
-  have a1 := (h.idele z x za z1 z2).1 χ
-  have a2 := (h'.idele z' x (by simpa [z'] using h.atConj _ za) ((h.conj _).2.trans z1)
-    (by rw [comp_comp hσ]; exact (h.conj _).1.trans z2)).1 χ
-  have a3 := hχ (Units.map (Algebra.norm (AF F) : AE F E →* AF F) z)
-  rw [if_pos (Subgroup.mem_sup_right (MonoidHom.mem_range.2 ⟨z, rfl⟩)), show Units.map (algebraMap (AF F) (AE F E) : AF F →* AE F E)
-    (Units.map (Algebra.norm (AF F) : AE F E →* AF F) z) = z * z' from Units.ext (GlobalTheory.Doubling.algebraMap_norm_eq hσ _),
-    map_mul, Circle.coe_mul, a1, a2] at a3
-  exact eq_inv_of_mul_eq_one_right (Units.ext a3)
+  apply _root_.PositivityTheory.ThK.SplitDict.chrW_conj <;> assumption
 
 theorem chrW_div (χ χ' : Chr F E) (t : E →ₐ[F] Fv F v) (x : (Fv F v)ˣ) : chrW (χ / χ') t x = chrW χ t x / chrW χ' t x :=
   map_div Circle.toUnits _ _

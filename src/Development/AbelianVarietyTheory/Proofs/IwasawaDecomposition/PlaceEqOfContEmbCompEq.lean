@@ -70,8 +70,7 @@ theorem _root_.GlobalTheory.HeckeGal.norm_lt_one_of_contEmb {E : Type} [Field E]
   have hlim : Filter.Tendsto (fun n : ℕ => j x ^ n) Filter.atTop (nhds 0) := by
     have h0 := (hj.tendsto 0).comp (tendsto_pow_atTop_nhds_zero_of_norm_lt_one hx1)
     simpa [Function.comp_def, map_pow] using h0
-  by_contra hge
-  push_neg at hge
+  by_contra! hge
   have hball : ∀ᶠ n : ℕ in Filter.atTop, ‖j x ^ n‖ < 1 :=
     (tendsto_norm_zero.comp hlim).eventually (gt_mem_nhds zero_lt_one)
   obtain ⟨n, hn⟩ := hball.exists

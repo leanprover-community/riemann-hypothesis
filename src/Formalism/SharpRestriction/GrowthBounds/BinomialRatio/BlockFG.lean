@@ -386,8 +386,6 @@ theorem fg_inter {p : ℕ} (S : UniformizedDVR p O) (h2 : S.w ^ 2 = (p : O)) {σ
       map_smul' := fun o F => by funext μ; simp }
   have hΦN : ∀ F ∈ Λ, Φ F ∈ N := by
     intro F hF
-    have hw0 : algebraMap O (KK O) (S.w ^ 1) ≠ 0 := by
-      rw [map_ne_zero_iff _ (IsFractionRing.injective O (KK O))]; exact pow_ne_zero _ S.w_irr.ne_zero
     choose a ha using fun μ => bb_coeff S h2 sp F hF.2 μ
     have : Φ F = ∑ μ : Sμ, a μ • gen μ := by
       funext μ

@@ -441,8 +441,7 @@ theorem equiv_of_intertwiner (h : SqRep μ ρ) (h' : SqRep μ ρ')
     push_cast
     exact e1.symm
   obtain ⟨w₀, hw₀⟩ : ∃ w, B w ≠ 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     exact hB (ContinuousLinearMap.ext hcon)
   have hw₀' : w₀ ≠ 0 := fun h0 => hw₀ (by rw [h0, map_zero])
   obtain ⟨r, hr, hBr⟩ : ∃ r : ℝ, 0 < r ∧ ∀ w, ‖B w‖ = r * ‖w‖ := by

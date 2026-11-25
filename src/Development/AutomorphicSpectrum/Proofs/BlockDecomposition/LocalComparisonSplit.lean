@@ -554,8 +554,7 @@ theorem conv_isHecke : ∀ (H : Type) [Group H] [TopologicalSpace H] [IsTopologi
   have hnz : ∀ y, (hint K fun z => f₁ z * f₂ (z⁻¹ * y)) ≠ 0 →
       ∃ z, f₁ z ≠ 0 ∧ f₂ (z⁻¹ * y) ≠ 0 := by
     intro y hy
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     apply hy
     rw [hlev y]
     have hz : ∀ p : H ⧸ L, f₁ p.out * f₂ ((p.out)⁻¹ * y) = 0 := by

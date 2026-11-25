@@ -1073,8 +1073,7 @@ theorem PhiH_supp (ψ : AddChar K ℂ) (h : Point K) {n' : ℕ}
     (Z' : Matrix (Fin n') (Fin n') K) (s : ℕ) (Z : Matrix (Fin s) (Fin s) K)
     (hne : PhiH R ψ h Z' s Z ≠ 0) (i j : Fin s) :
     ∃ r ∈ R, Z i j = Ring.inverse (pt h.1 h.2).det * r := by
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   apply hne
   unfold PhiH
   apply finsum_eq_zero_of_forall_eq_zero

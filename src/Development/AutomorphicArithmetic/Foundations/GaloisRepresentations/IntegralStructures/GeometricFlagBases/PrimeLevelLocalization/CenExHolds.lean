@@ -54,8 +54,7 @@ private theorem exS (w : HeightOneSpectrum (𝓞 E)) (c : 𝓞 E) (hc : c ≠ 0)
   have := w.isMaximal
   obtain ⟨Q, hQ, hIQ⟩ := Ideal.eq_prime_pow_mul_coprime hI w.asIdeal
   have hex : ∃ s ∈ Q, s ∉ w.asIdeal := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     have : Q ≤ w.asIdeal := hcon
     rw [sup_eq_left.2 this] at hQ
     exact w.isPrime.ne_top hQ
@@ -1031,8 +1030,7 @@ theorem UpperTheory.Gal.Int.Geo.Pl.Tj.tCong :
     rcases tri u with h | ⟨h, rfl | h'⟩
     · exact Or.inl h
     · refine Or.inr ⟨h, ?_⟩
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       have h1 : 𝔞 ≤ u.asIdeal := hc
       rw [sup_eq_right.2 h1] at h𝔞
       exact u.isPrime.ne_top h𝔞

@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.CubicalSymmetryTransport
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FirstCohomology.ThetaMove
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ThetaVV
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FirstCohomology.GenMove
@@ -30,18 +31,8 @@ theorem val_pmaps' (w : LB.Iso L' (L.pull F)) {K : Type} [Fintype K] {φ' : K �
     (J₀ : (Z ⟶ X) → L.ι) (J : (Z ⟶ X') → L'.ι) (hJ₀ : Good L z J₀) (hJ : Good L' z J) :
     val t (r ≫ h) z J₀ =
       (∏ k, gw w (r ≫ φ' k) z (J₀ ((r ≫ φ' k) ≫ F)) (J (r ≫ φ' k)) ^ ε k) * val a r z J := by
-  have hp : ∀ k, (r ≫ h) ≫ φ k = (r ≫ φ' k) ≫ F := fun k => by
-    rw [Category.assoc, Category.assoc, hc]
-  have h1 : ∀ k, F (φ' k (r z)) ∈ L.U (J₀ ((r ≫ h) ≫ φ k)) := by
-    intro k
-    convert hJ₀ ((r ≫ h) ≫ φ k) using 2
-    rw [hp]
-    first | rfl
-  have h2 : ∀ k, φ' k (r z) ∈ L'.U (J (r ≫ φ' k)) := fun k => hJ (r ≫ φ' k)
-  have key := hm Z r z (fun k => J₀ ((r ≫ h) ≫ φ k)) (fun k => J (r ≫ φ' k)) h1 h2
-  unfold val
-  refine key.trans ?_
-  simp only [hp]
+  intros
+  apply _root_.GlobalTheory.CubTransport.val_pmaps <;> assumption
 
 end Pmaps
 

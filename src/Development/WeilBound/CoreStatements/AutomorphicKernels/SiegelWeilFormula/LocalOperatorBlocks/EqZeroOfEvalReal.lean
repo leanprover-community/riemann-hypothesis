@@ -3,6 +3,7 @@ module
 public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.LocalOperatorBlocks.LongWeylFunctional
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsSchwartzPolyMulGauss
 import Mathlib.Tactic.Linter.HaveILetI
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnitaryGroupFamilyZariskiDense
 
 @[expose] public section
 
@@ -67,20 +68,8 @@ theorem eq_map_re_add_im (p : MvPolynomial σ ℂ) :
   apply Complex.ext <;> simp
 
 theorem eq_zero_of_eval_real (p : MvPolynomial σ ℂ) (h : ∀ y : σ → ℝ, MvPolynomial.eval (fun i => (y i : ℂ)) p = 0) :
-    p = 0 := by
-  have hre : ∀ y : σ → ℝ, MvPolynomial.eval y (reP p) = 0 ∧ MvPolynomial.eval y (imaginary p) = 0 := by
-    intro y
-    have h1 := h y
-    rw [eq_map_re_add_im p, MvPolynomial.eval_add, MvPolynomial.eval_mul, MvPolynomial.eval_C] at h1
-    rw [eval_map_real, eval_map_real] at h1
-    have hr := congrArg Complex.re h1
-    have hi := congrArg Complex.im h1
-    simp at hr hi
-    exact ⟨hr, hi⟩
-  have a1 : reP p = 0 := MvPolynomial.funext fun y => by simpa using (hre y).1
-  have a2 : imaginary p = 0 := MvPolynomial.funext fun y => by simpa using (hre y).2
-  rw [eq_map_re_add_im p, a1, a2]
-  simp
+    p = 0 :=
+  _root_.GlobalTheory.UnitaryZariskiDense.eq_zero_of_eval_real p h
 
 end Real
 

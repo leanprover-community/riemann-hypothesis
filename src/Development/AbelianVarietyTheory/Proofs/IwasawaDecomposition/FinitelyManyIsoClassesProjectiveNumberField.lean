@@ -110,8 +110,7 @@ theorem exists_split (X : Type) [AddCommGroup X] [Module R X] [Module.Projective
     simp only [LinearMap.comp_apply, h, map_zero, LinearMap.id_apply] at this
     exact this.symm
   obtain ⟨a, ha⟩ : ∃ a, s x a ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hsx (Finsupp.ext h)
   let f : X →ₗ[R] R := Finsupp.lapply a ∘ₗ s
   have hI : LinearMap.range f ≠ ⊥ := by

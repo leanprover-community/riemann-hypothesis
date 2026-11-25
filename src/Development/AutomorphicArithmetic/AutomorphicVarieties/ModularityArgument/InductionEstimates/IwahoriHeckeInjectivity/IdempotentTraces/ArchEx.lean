@@ -460,8 +460,7 @@ theorem UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.EA.minEx :
     eig_abs (rightRegularRep (Gam K 2) μ) (C.un i) (un_mul C i) (un_cont C i) n q t v
   have hex : ∃ n : ℕ, ∃ (q : ℤ) (v : LL μ), v ∈ τ ∧ C.Pi μ i n q v ≠ 0 := by
     obtain ⟨v, hv, hv0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hτ.ne
-    by_contra hno
-    push_neg at hno
+    by_contra! hno
     exact hv0 (hall i v fun n q g => hno n q _ (hτ.inv g v hv))
   obtain ⟨q, v, hv, hne⟩ := Nat.find_spec hex
   refine ⟨Nat.find hex, q, ⟨v, hv, hne⟩, fun n' q' hab w hw => ?_⟩
@@ -737,8 +736,7 @@ theorem UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.EA.vecEx :
   have hvF := (mem_fixF' μ _ _).1 hvZ.2
   have hforms := Dp.formsIrr K 2 μ τ hSum
   obtain ⟨Φ, hΦ, hne⟩ : ∃ Φ ∈ Dp.formsIn μ τ, ⟪Dp.clsL μ Φ, v⟫_ℂ ≠ 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     have hcl : IsClosed {x : LL μ | ⟪x, v⟫_ℂ = 0} := isClosed_eq (by fun_prop) continuous_const
     have hsub : (((Dp.formsIn μ τ).map (Dp.clsL μ) : Submodule ℂ (LL μ)) : Set (LL μ)) ⊆ {x : LL μ | ⟪x, v⟫_ℂ = 0} := by
       rintro _ ⟨φ, h, rfl⟩

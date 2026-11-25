@@ -107,8 +107,7 @@ namespace GlobalTheory.PlaneSkew
 theorem exists_re_pos_of_congr_diagonal {n : ℕ} (H Q : Matrix (Fin n) (Fin n) ℂ) (δ : Fin n → ℂ)
     (hQ : Q.det ≠ 0) (hd : Qᵀ * H * Q.map star = Matrix.diagonal δ)
     (u : Fin n → ℂ) (hu : 0 < (u ⬝ᵥ H *ᵥ star u).re) : ∃ i, 0 < (δ i).re := by
-  by_contra hneg
-  push_neg at hneg
+  by_contra! hneg
   obtain ⟨v, rfl⟩ : ∃ v, Q *ᵥ v = u :=
     Matrix.mulVec_surjective_iff_isUnit.mpr
       ((Matrix.isUnit_iff_isUnit_det Q).mpr (isUnit_iff_ne_zero.mpr hQ)) u
@@ -188,8 +187,7 @@ theorem exists_isotropic_skew : ∀ (F E : Type) [Field F] [NumberField F] [Fiel
   have hcc : ∀ a, σ a = IsCMField.complexConj E a := fun a =>
     τ₀.injective (by rw [hconj, IsCMField.complexEmbedding_complexConj]; rfl)
   obtain ⟨x₀, hx₀⟩ : ∃ x, σ x ≠ x := by
-    by_contra hno
-    push_neg at hno
+    by_contra! hno
     apply IsCMField.complexConj_ne_one E
     ext x
     rw [← hcc, hno]
@@ -563,8 +561,7 @@ theorem form_skew [NumberField F] [NumberField E] {σ : E →ₐ[F] E} (h : IsCM
 theorem fg_no_line : ∀ (E : Type) [Field E] [NumberField E] (n : ℕ) (L : Submodule (𝓞 E) (Fin n → E)), L.FG →
     ∀ x : Fin n → E, x ≠ 0 → ∃ s : E, s • x ∉ L := by
   intro E _ _ n L hL x hx
-  by_contra h
-  push_neg at h
+  by_contra! h
   obtain ⟨i, hi⟩ : ∃ i, x i ≠ 0 := by
     by_contra h'
     push_neg at h'
@@ -697,8 +694,7 @@ theorem split_global : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [Num
   have hφ : ∀ z, φ z = form σ J z x := fun _ => rfl
 
   have hnd : ∃ z ∈ L, φ z ≠ 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     obtain ⟨s, hs⟩ := fg_no_line E _ L hL.fg x hx
     apply hs
     rw [hSD]

@@ -107,12 +107,10 @@ theorem seg_num {k Q a b' Y E0 N1 La m cm A0 mN e1 e2 : ℝ} (hk5 : 5 ≤ k) (hQ
   have hE' : k * E0 < 1 / 6 * a := (div_lt_iff₀ ha).mp hEa
   have hX5 : k * Q * m + 5 * (k * Q) ≤ k * Q * (m + N1 * k) := by
     linarith [mul_nonneg hkQ.le (sub_nonneg.2 hNk)]
-  have hkQm : k * Q * m + 5 * (k * Q) < 1 / 6 * a := by linarith
   have hkQm0 : 0 ≤ k * Q * m := mul_nonneg hkQ.le hm
   have hA0a : a ≤ A0 * (2 * Q) := (div_le_iff₀ (by linarith)).mp hA0lo
   have hA0 : 0 < A0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     have := mul_le_mul_of_nonneg_right hc (by linarith : (0 : ℝ) ≤ 2 * Q)
     linarith
   have hkm1 : k * (m + 1) < A0 := by
@@ -152,7 +150,6 @@ theorem seg_num {k Q a b' Y E0 N1 La m cm A0 mN e1 e2 : ℝ} (hk5 : 5 ≤ k) (hQ
     rw [hS]; field_simp
   have hmr : mN * ((2 * a / (k * Y) + E0 + Q) / a) ≤ k * ((2 * a / (k * Y) + E0 + Q) / a) :=
     mul_le_mul_of_nonneg_right hmNk hr0
-  have hSm : 0 ≤ S * m := mul_nonneg hS0 hm
   refine ⟨?_, ?_, ?_, ?_, hr1, hr0, ?_⟩
   · rw [le_div_iff₀ hk]
     have c1 : cm * k ≤ (m + 1) * k := mul_le_mul_of_nonneg_right hcm.le hk.le
@@ -170,7 +167,6 @@ theorem ratio_num {a x t δ Qj A0 E0 Q D : ℝ} (ha : 0 < a) (hδ : δ = D + E0 
     (1 + -(δ / a)) * (x + t) ≤ Qj * (A0 + t) := by
   have ha' : a ≠ 0 := ha.ne'
   have hua : δ / a * a = δ := by field_simp
-  have hD : 0 ≤ D := by linarith
   have hR : a - E0 + (t - 1) < Qj * (A0 + t) := by
     nlinarith [mul_nonneg (sub_nonneg.2 hQj1) (sub_nonneg.2 ht)]
   have hL : (1 + -(δ / a)) * (x + t) ≤ a - E0 - Q + t := by
@@ -336,7 +332,6 @@ theorem rank_alternative_lower (h : Std C0 Cde CE1 CE2 1 X) {Ckap : ℝ} (hCk : 
       mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right hCk (by linarith)) hB0
     have hB : brk C0 CE1 CE2 X m < 1 / 6 := by
       have h1 : 2 * brk C0 CE1 CE2 X m ≤ X.N * brk C0 CE1 CE2 X m := mul_le_mul_of_nonneg_right hN2 hB0
-      have e : 3 * X.N * brk C0 CE1 CE2 X m = 3 * (X.N * brk C0 CE1 CE2 X m) := by ring
       linarith
     have hprod := Finset.prod_le_prod₀ (s := Finset.univ)
       (f := fun j : Fin (numSeg X.TT) => (1 - 3 * brk C0 CE1 CE2 X m) * ((sd X.m (X.aT (segStart X.TT j)) : ℝ) *
@@ -366,7 +361,6 @@ theorem rank_alternative_lower (h : Std C0 Cde CE1 CE2 1 X) {Ckap : ℝ} (hCk : 
     have h2 : 1 - Ckap * X.N * brk C0 CE1 CE2 X m ≤ (1 - 3 * brk C0 CE1 CE2 X m) ^ numSeg X.TT := by
       have e : (1 + -(3 * brk C0 CE1 CE2 X m)) = 1 - 3 * brk C0 CE1 CE2 X m := by ring
       rw [e] at hbern
-      have e2 : 3 * X.N * brk C0 CE1 CE2 X m = 3 * (X.N * brk C0 CE1 CE2 X m) := by ring
       linarith
     calc (1 - Ckap * X.N * brk C0 CE1 CE2 X m) * dim
         ≤ (1 - 3 * brk C0 CE1 CE2 X m) ^ numSeg X.TT * dim := mul_le_mul_of_nonneg_right h2 hdim0

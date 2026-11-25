@@ -422,8 +422,7 @@ private theorem exists_fixed {K : Type} [Field K] [NumberField K] {n : ℕ} (μ 
   haveI : BorelSpace (Gw n w) := ⟨rfl⟩
   obtain ⟨⟨σ, f, hf0, hfV, hfe⟩, -, -⟩ := _root_.PositivityTheory.TfC.OccursBasics_holds K n μ V w (Measure.haar) hV
   obtain ⟨x, hx⟩ : ∃ x, f x ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact hf0 (LinearMap.ext hc)
   refine ⟨{ carrier := {g | σ.ρ g x = x}
             mul_mem' := fun {a b} ha hb => by

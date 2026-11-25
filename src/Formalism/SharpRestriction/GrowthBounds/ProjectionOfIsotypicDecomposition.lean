@@ -1,5 +1,8 @@
 module
 
+import Formalism.SharpRestriction.GrowthBounds.RootWeights.WeightComponentsMemInvariant
+import Formalism.SharpRestriction.GrowthBounds.RootWeights.V2repExistsHwv
+import Formalism.SharpRestriction.GrowthBounds.RootWeights.ValuationNonnegIffIntegral
 public import Formalism.SharpRestriction.GrowthBounds.Lemma5aAt
 public import Formalism.SharpRestriction.GrowthBounds.CovariantDegrees
 public import Mathlib.RingTheory.Derivation.Lie
@@ -59,19 +62,7 @@ theorem ordW_eq (x : KK O) (a b : O) (ha : a ≠ 0) (hb : b ≠ 0)
   omega
 
 theorem ramE_ne_zero {p : ℕ} (S : UniformizedDVR p O) : ramE p O ≠ 0 := by
-  have h1 : IsDiscreteValuationRing.addVal O (p : O) ≠ 0 := by
-    intro h0
-    have : IsUnit (p : O) := by
-      rcases IsDiscreteValuationRing.exists_irreducible O with ⟨w, hw⟩
-      obtain ⟨n, u, hu⟩ := IsDiscreteValuationRing.eq_unit_mul_pow_irreducible S.p_ne hw
-      rw [hu, IsDiscreteValuationRing.addVal_def' u hw n] at h0
-      have hn : n = 0 := by exact_mod_cast h0
-      rw [hu, hn]; simp
-    exact (IsLocalRing.mem_maximalIdeal _).1 S.p_mem this
-  have h2 : IsDiscreteValuationRing.addVal O (p : O) ≠ ⊤ := by
-    simpa [IsDiscreteValuationRing.addVal_eq_top_iff] using S.p_ne
-  unfold ramE
-  simp [ENat.toNat_eq_zero, h1, h2]
+  apply _root_.Formalism.MainNotions.G.GLWeightTheory.ramification_index_ne_zero <;> assumption
 
 theorem vK_zero (p : ℕ) : vK p (0 : KK O) = ⊤ := by
   simp [vK, ordW]
@@ -131,18 +122,7 @@ theorem geQ_vK_pow_mul {p : ℕ} (S : UniformizedDVR p O) (c : ℕ) (o : O) :
 
 theorem isUnit_natCast_of_not_dvd {p : ℕ} (hp : p.Prime) (S : UniformizedDVR p O) (n : ℕ) (hn : ¬ p ∣ n) :
     IsUnit (n : O) := by
-  by_contra hu
-  have hm : (n : O) ∈ IsLocalRing.maximalIdeal O := (IsLocalRing.mem_maximalIdeal _).2 hu
-  have hco : Nat.Coprime p n := (Nat.Prime.coprime_iff_not_dvd hp).2 hn
-  have hb := Nat.gcd_eq_gcd_ab p n
-  rw [hco] at hb
-  have h1 : (1 : O) = (p : O) * ((Nat.gcdA p n : ℤ) : O) + (n : O) * ((Nat.gcdB p n : ℤ) : O) := by
-    have := congrArg (fun z : ℤ => (z : O)) hb
-    simpa using this
-  have : (1 : O) ∈ IsLocalRing.maximalIdeal O := by
-    rw [h1]
-    exact Ideal.add_mem _ (Ideal.mul_mem_right _ _ S.p_mem) (Ideal.mul_mem_right _ _ hm)
-  exact (Ideal.ne_top_iff_one _).1 (IsLocalRing.maximalIdeal.isMaximal O).ne_top this
+  apply _root_.Formalism.MainNotions.G.GLWeightTheory.natCast_isUnit_of_coprime <;> assumption
 
 theorem rat_padicGe_cast {p : ℕ} (hp : p.Prime) (S : UniformizedDVR p O) [CharZero O] (x : ℚ) (c : ℕ)
     (h : Formalism.MainNotions.CovariantDegrees.PadicGe p x c) :
@@ -463,7 +443,6 @@ namespace Formalism.MainNotions.G.Joints
 
 theorem strip_lt {n : ℕ} {nu mu : Fin n → ℤ} {b : ℕ} (hs : HStrip nu mu b) (hd : Dominant mu) {a a' : Fin n}
     (h : a < a') : mu a' ≤ nu a := by
-  have h0 : a.1 < a'.1 := h
   have h1 : a.1 + 1 < n := by have := a'.2; omega
   have h2 : (⟨a.1 + 1, h1⟩ : Fin n) ≤ a' := by
     show a.1 + 1 ≤ a'.1
@@ -1817,53 +1796,12 @@ variable {n : ℕ} {K V : Type*} [Field K] [AddCommGroup V] [Module K V]
 theorem wt_comp_mem (E : GLOps n K V) [CharZero K] (W : Submodule K V) (hW : ∀ a, ∀ x ∈ W, E a a x ∈ W) :
     ∀ (T : Finset (Fin n → ℤ)) (f : (Fin n → ℤ) → V), (∀ mu ∈ T, f mu ∈ weightSp E mu) →
       ∑ mu ∈ T, f mu ∈ W → ∀ mu ∈ T, f mu ∈ W := by
-  classical
-  intro T
-  induction T using Finset.strongInduction with
-  | H T ih =>
-    intro f hf hs mu hmu
-    by_cases hT : ∃ nu ∈ T, nu ≠ mu
-    · obtain ⟨nu, hnu, hne⟩ := hT
-      obtain ⟨a, ha⟩ : ∃ a, nu a ≠ mu a := by
-        by_contra h
-        push Not at h
-        exact hne (funext h)
-      have hy : ∑ k ∈ T.erase nu, ((k a : K) - (nu a : K)) • f k ∈ W := by
-        have h1 : E a a (∑ k ∈ T, f k) - (nu a : K) • ∑ k ∈ T, f k ∈ W :=
-          W.sub_mem (hW a _ hs) (W.smul_mem _ hs)
-        have h2 : E a a (∑ k ∈ T, f k) - (nu a : K) • ∑ k ∈ T, f k = ∑ k ∈ T, ((k a : K) - (nu a : K)) • f k := by
-
-          rw [map_sum, Finset.smul_sum, ← Finset.sum_sub_distrib]
-          refine Finset.sum_congr rfl fun k hk => ?_
-          rw [(isoW_mem_weightSp E k (f k)).1 (hf k hk) a, sub_smul]
-        rw [h2, ← Finset.add_sum_erase T _ hnu, sub_self, zero_smul, zero_add] at h1
-        exact h1
-      have h3 := ih (T.erase nu) (Finset.erase_ssubset hnu) (fun k => ((k a : K) - (nu a : K)) • f k)
-        (fun k hk => Submodule.smul_mem _ _ (hf k (Finset.mem_of_mem_erase hk))) hy mu
-        (Finset.mem_erase.2 ⟨Ne.symm hne, hmu⟩)
-      have hc : ((mu a : K) - (nu a : K)) ≠ 0 := by
-        rw [sub_ne_zero]
-        exact_mod_cast (Ne.symm ha)
-      have h4 := W.smul_mem ((mu a : K) - (nu a : K))⁻¹ h3
-      rwa [smul_smul, inv_mul_cancel₀ hc, one_smul] at h4
-    · push Not at hT
-      have h5 : T = {mu} := Finset.eq_singleton_iff_unique_mem.2 ⟨hmu, hT⟩
-      rw [h5, Finset.sum_singleton] at hs
-      exact hs
+  intros
+  apply _root_.Formalism.MainNotions.G.GLWeightTheory.v2rep_comp_mem <;> assumption
 
 theorem weightSp_indep (E : GLOps n K V) [CharZero K] : iSupIndep (weightSp E) := by
-  classical
-  apply iSupIndep_of_dfinsupp_lsum_injective
-  rw [← LinearMap.ker_eq_bot, LinearMap.ker_eq_bot']
-  intro v hv
-  rw [DFinsupp.lsum_apply_apply, DFinsupp.sumAddHom_apply] at hv
-  ext mu
-  by_cases hmu : mu ∈ v.support
-  · have h1 := wt_comp_mem E ⊥ (fun a x hx => by
-      rw [(Submodule.mem_bot K).1 hx, map_zero]; exact Submodule.zero_mem _) v.support (fun i => (v i : V))
-      (fun i _ => (v i).2) (by rw [Submodule.mem_bot]; exact hv) mu hmu
-    simpa using h1
-  · simpa using hmu
+  intros
+  apply _root_.Formalism.MainNotions.G.GLWeightTheory.weightSpace_independent <;> assumption
 
 theorem stab_wt_decomp (E : GLOps n K V) [CharZero K] (hwt : (⨆ mu : Fin n → ℤ, weightSp E mu) = ⊤)
     (W : Submodule K V) (hW : ∀ a, ∀ x ∈ W, E a a x ∈ W) (x : V) (hx : x ∈ W) :

@@ -492,8 +492,7 @@ theorem irr_of_surj (τ : Representation K G W) (hs : Function.Surjective τ.asA
   right
   obtain ⟨w, hw, hw0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot h
   obtain ⟨φ, hφ⟩ : ∃ φ : Module.Dual K W, φ w ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact hw0 ((Module.forall_dual_apply_eq_zero_iff K w).1 hc)
   rw [eq_top_iff]
   intro v _

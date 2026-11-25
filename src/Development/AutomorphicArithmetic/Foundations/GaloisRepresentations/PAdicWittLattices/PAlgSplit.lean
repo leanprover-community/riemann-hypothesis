@@ -28,8 +28,7 @@ theorem UpperTheory.Reformulated.B.ExistsEvaluation.exists_eval :
       simpa using Finset.univ_sum_single (1 : J → C)
     rw [h, map_one]
   obtain ⟨j, hj⟩ : ∃ j : J, f (Pi.single j 1) ≠ 0 := by
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     rw [Finset.sum_eq_zero (fun j _ => hne j)] at hsum
     exact zero_ne_one hsum
   have hidem : f (Pi.single j 1) * f (Pi.single j 1) = f (Pi.single j 1) := by

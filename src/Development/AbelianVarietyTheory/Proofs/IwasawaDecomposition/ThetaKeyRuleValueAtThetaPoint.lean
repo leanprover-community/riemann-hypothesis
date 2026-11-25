@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.ThetaL2OfAnalyticGenerator
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.KchMul
 public import Development.AbelianVarietyTheory.Definitions.ExistenceOfLattices.NormConst
 public import Development.AbelianVarietyTheory.Definitions.KeyFormula.KeyRootOfKeyFormula
@@ -134,15 +135,7 @@ theorem mulVec_period {g : ℕ} {La : Type} [AddCommGroup La] (P : La →+ (Fin 
     (hn : ∀ i, h *ᵥ P (bas (Pi.single (Sum.inl i) 1)) = Pi.single i 1 ∧
       h *ᵥ P (bas (Pi.single (Sum.inr i) 1)) = τ *ᵥ Pi.single i 1) (a : Fin g ⊕ Fin g → ℤ) :
     h *ᵥ P (bas a) = (fun i => (a (Sum.inl i) : ℂ)) + τ *ᵥ (fun i => (a (Sum.inr i) : ℂ)) := by
-  have h1 : ∀ m : Fin g → ℤ, (fun i => (m i : ℂ)) = ∑ i, m i • (Pi.single i 1 : Fin g → ℂ) := by
-    intro m; ext k; simp [Finset.sum_apply, Pi.single_apply]
-  have h2 : a = ∑ s, a s • (Pi.single s 1 : Fin g ⊕ Fin g → ℤ) := by
-    ext k; simp [Finset.sum_apply, Pi.single_apply]
-  rw [h1 (fun i => a (Sum.inl i)), h1 (fun i => a (Sum.inr i))]
-  conv_lhs => rw [h2]
-
-  simp only [map_sum, map_zsmul, Fintype.sum_sum_type, map_add (f := _), Matrix.mulVec_add, Matrix.mulVec_sum,
-  Matrix.mulVec_smul, (hn _).1, (hn _).2]
+  apply _root_.GlobalTheory.ThetaSquareIntegrable.mulVec_period <;> assumption
 
 theorem normalAt_of_coord (x : KeyIn ℂ) (u : HolUnif x.P.A x.P.L x.P.g) {La : Type} [AddCommGroup La]
     (P : La →+ (Fin x.P.g → ℂ)) (bas : (Fin x.P.g ⊕ Fin x.P.g → ℤ) ≃ₗ[ℤ] La)

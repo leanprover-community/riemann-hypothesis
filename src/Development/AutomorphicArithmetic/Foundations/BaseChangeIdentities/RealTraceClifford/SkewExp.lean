@@ -16,8 +16,6 @@ open scoped InnerProductSpace ComplexConjugate ContDiff
 open PositivityTheory.RgTw (Mat G th IsThetaOp)
 open PositivityTheory.RgBcC PositivityTheory.RgBcC.Real PositivityTheory.RgBcC.RealD UpperTheory.RealTr
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 theorem UpperTheory.RealTr.skewExp :
     ∀ n : ℕ, (∀ X : Mat n, Xᴴ = -X → NormedSpace.exp X ∈ Matrix.unitaryGroup (Fin n) ℂ) ∧
       ∀ k : UK n, ∃ X : Mat n, Xᴴ = -X ∧ NormedSpace.exp X = k.1 := by

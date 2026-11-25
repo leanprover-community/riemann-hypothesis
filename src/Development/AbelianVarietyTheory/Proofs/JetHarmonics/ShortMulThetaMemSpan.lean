@@ -463,7 +463,6 @@ namespace GlobalTheory.ShortBlock
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj Formalism.MainNotions.ModuliIntegralCharts.H1
 open MvPolynomial GlobalTheory.IndefiniteRowSideFullHecke
-attribute [local instance] Over.cartesianMonoidalCategory
 
 section Poly
 
@@ -1162,7 +1161,6 @@ noncomputable section
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj Formalism.MainNotions.ModuliIntegralCharts.H1
 open GlobalTheory.PtTie GlobalTheory.PlaceInt
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.StdCover
 

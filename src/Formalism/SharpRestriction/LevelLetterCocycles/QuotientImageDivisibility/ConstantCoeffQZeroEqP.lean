@@ -53,21 +53,7 @@ theorem cc_lev_q_one (c : ZMod n) : PowerSeries.constantCoeff (W.lev c 1 W.q) = 
 
 theorem qroot_prim (hs : W.s = 1) (hp : (PD.p : LL) ≠ 0) {c : ZMod n} {ζ : LL}
     (h : Formalism.MainNotions.DeltaInvariantLattices.QRoot W c ζ) : IsPrimitiveRoot ζ PD.p := by
-  obtain ⟨-, ⟨m, hm⟩, hcc⟩ := h
-  rw [Q_eq_q W hs] at hcc
-  have hpr : PD.p.Prime := PD.hp
-  obtain ⟨j, -, hord⟩ := (Nat.dvd_prime_pow hpr).1 (orderOf_dvd_of_pow_eq_one hm)
-  have hprim : IsPrimitiveRoot ζ (PD.p ^ j) := hord ▸ IsPrimitiveRoot.orderOf ζ
-  have hp1 : ζ ^ PD.p = 1 := by
-    by_contra hne
-    exact Formalism.MainNotions.UnusedSlot80.LevR.cc_lev_q W c ζ ⟨j, hprim⟩ hne hcc
-  have hdvd : PD.p ^ j ∣ PD.p ^ 1 := by rw [pow_one]; exact hprim.dvd_of_pow_eq_one _ hp1
-  have hj1 : j ≤ 1 := (Nat.pow_dvd_pow_iff_le_right hpr.one_lt).1 hdvd
-  rcases Nat.le_one_iff_eq_zero_or_eq_one.1 hj1 with rfl | rfl
-  · rw [pow_zero] at hprim
-    obtain rfl := IsPrimitiveRoot.one_right_iff.1 hprim
-    exact absurd (cc_lev_q_one W c ▸ hcc) hp
-  · rwa [pow_one] at hprim
+  apply +allowSynthFailures _root_.Formalism.MainNotions.N.Ln34.CrystallineExponents.qroot_prim <;> assumption
 
 theorem lev_q_eq (c : ZMod n) {ζ : LL} (hζ : IsPrimitiveRoot ζ PD.p) (hp : (PD.p : LL) ≠ 0) :
     ∃ u : PowerSeries LL, PowerSeries.constantCoeff u ≠ 0 ∧

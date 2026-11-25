@@ -220,8 +220,7 @@ theorem scale_bounds {Ch b ka T : ℝ} (r : ℕ) (hb : 1 ≤ b) (hka : 0 < ka) (
   have hk2 := hpow (1 / ka) (by positivity) (by rwa [one_div])
   have hq : 0 < (1 / ka) ^ (2 * r) := by positivity
   have hT : 0 < T := by
-    by_contra hneg
-    push_neg at hneg
+    by_contra! hneg
     have := mul_nonpos_of_nonpos_of_nonneg hneg hq.le
     linarith
   have hTe : T = T * (1 / ka) ^ (2 * r) * ka ^ (2 * r) := by

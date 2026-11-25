@@ -172,7 +172,6 @@ structure Coord where
   co_range : LinearMap.range co = CSpan (X.fm.lam i)
   j : D.what₂.places.Pl → ∀ v, (M.Lc v).K →+* D.what₂.LL
   j_int : ∀ w, OverT X w → ∀ v x, j w v x ∈ Ow D w ↔ x ∈ (M.Lc v).O
-  Woff : D.what₂.places.Pl → M.Z → AddSubgroup M.Val
 
 variable {M} (Co : M.Coord)
 
@@ -198,11 +197,6 @@ structure Coord.Ok : Prop where
     ∀ y, Co.co (M.act g y) = D.what₂.embLL ζ • Co.mov w (fun v => M.loc v g) (Co.co y)
   S_on : ∀ w, OverT X w → ∀ φ ∈ X.fm.Fi i,
     (∃ x ∈ X.fm.S i w, X.fm.emb i x = φ) ↔ M.ValIn (Co.valB w ∅) φ
-  B_on : ∀ w, OverT X w → X.fm.seenP w = true → ∀ v, ∀ φ ∈ X.fm.Fi i,
-    (∃ x ∈ X.fm.Bw i w v, X.fm.emb i x = φ) ↔ M.ValIn (Co.valB w {v}) φ
-  off_act : ∀ w, ¬ OverT X w → ∀ (g : M.G) (p : M.Pt) y, M.act g y ∈ Co.Woff w (g • p).1 ↔ y ∈ Co.Woff w p.1
-  S_off : ∀ w, ¬ OverT X w → ∀ φ ∈ X.fm.Fi i,
-    (∃ x ∈ X.fm.S i w, X.fm.emb i x = φ) ↔ M.ValIn (fun p => (Co.Woff w p.1 : Set M.Val)) φ
 
 end PtModel
 

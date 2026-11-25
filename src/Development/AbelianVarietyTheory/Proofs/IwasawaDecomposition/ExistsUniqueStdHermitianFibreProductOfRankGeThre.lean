@@ -1,5 +1,6 @@
 module
 
+import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.TprodComplementSplitFinset
 public import Mathlib.Probability.ProductMeasure
 public import Mathlib.Analysis.SpecialFunctions.Log.Summable
 public import Mathlib.MeasureTheory.Measure.WithDensityFinite
@@ -93,26 +94,8 @@ theorem lintegral_prod_infinitePi {ι : Type} {V : ι → Type} [∀ i, Measurab
 theorem tail_split {ι : Type} [DecidableEq ι] (c : ι → ℝ) (hs : Summable fun i => |c i - 1|)
     {T S : Finset ι} (h : T ⊆ S) :
     ∏' i : {i : ι // i ∉ T}, c i.1 = (∏ i ∈ S \ T, c i) * ∏' i : {i : ι // i ∉ S}, c i.1 := by
-  have key : ∀ U : Finset ι, ∏' i : {i : ι // i ∉ U}, c i.1 = ∏' i, (if i ∈ U then 1 else c i) := by
-    intro U
-    have := tprod_subtype {i | i ∉ U} c
-    refine this.trans (tprod_congr fun i => ?_)
-    by_cases hi : i ∈ U <;> simp [Set.mulIndicator, hi]
-  have hm : Multipliable fun i => (if i ∈ S then 1 else c i) := by
-    have h1 : Summable fun i => (if i ∈ S then (0 : ℝ) else c i - 1) := by
-      refine Summable.of_norm_bounded hs fun i => ?_
-      by_cases hi : i ∈ S <;> simp [hi]
-    refine (Real.multipliable_one_add_of_summable h1).congr fun i => ?_
-    by_cases hi : i ∈ S <;> simp [hi]
-  have hf : HasProd (fun i => if i ∈ S \ T then c i else 1) (∏ i ∈ S \ T, c i) := by
-    have := hasProd_prod_of_ne_finset_one (f := fun i => if i ∈ S \ T then c i else 1)
-      (s := S \ T) (L := SummationFilter.unconditional ι) (fun b hb => if_neg hb)
-    rwa [Finset.prod_congr rfl (fun i hi => if_pos hi)] at this
-  rw [key, key, ← hf.tprod_eq, ← hf.multipliable.tprod_mul hm]
-  refine tprod_congr fun i => ?_
-  by_cases hT : i ∈ T
-  · simp [hT, h hT]
-  · by_cases hS : i ∈ S <;> simp [hT, hS]
+  intros
+  apply _root_.GlobalTheory.CompanionTheory.SW.TailCut.tprod_tail_cut <;> assumption
 
 theorem exists_piece {ι : Type} {V : ι → Type} [∀ i, MeasurableSpace (V i)]
     (a : ∀ i, Measure (V i)) (hσ : ∀ i, SigmaFinite (a i)) (T : Finset ι) (c : ι → ℝ)

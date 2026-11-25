@@ -6,6 +6,7 @@ import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
+import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.TraceGramDetNeZero
 
 @[expose] public section
 
@@ -19,11 +20,7 @@ open scoped TensorProduct
 theorem trace_one_tmul {F E : Type} [Field F] [Field E] [Algebra F E] [FiniteDimensional F E]
     (R : Type) [CommRing R] [Algebra F R] (z : E) :
     Algebra.trace R (R ⊗[F] E) ((1 : R) ⊗ₜ[F] z) = algebraMap F R (Algebra.trace F E z) := by
-  have h : Algebra.lmul R (R ⊗[F] E) ((1 : R) ⊗ₜ[F] z) = (Algebra.lmul F E z).baseChange R := by
-    apply TensorProduct.AlgebraTensorModule.ext
-    intro r e
-    simp [Algebra.TensorProduct.tmul_mul_tmul]
-  rw [Algebra.trace_apply, h, LinearMap.trace_baseChange, Algebra.trace_apply]
+  apply _root_.GlobalTheory.CompanionTheory.SW.CoordMat.trace_one_tmul <;> assumption
 
 theorem trace_basis_holds : TraceBase := by
   intro F E _ _ _ _ R _ _ σ M J x y

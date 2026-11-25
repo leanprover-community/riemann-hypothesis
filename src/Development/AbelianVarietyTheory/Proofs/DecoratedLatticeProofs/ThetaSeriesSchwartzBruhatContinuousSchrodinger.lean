@@ -80,8 +80,7 @@ theorem exists_symplO_eq (d : HypDec S S₀ ρ) (T : HSp D) {ξ : Matrix (Fin T.
   have hv : T.gram * ξ ≠ 0 := fun h => hξ (by
     rw [← Matrix.nonsing_inv_mul_cancel_left T.gram ξ (gram_isUnit_det T), h, Matrix.mul_zero])
   obtain ⟨i, j, hij⟩ : ∃ i j, (T.gram * ξ) i j ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hv (Matrix.ext h)
   let c : AE D := t ⊗ₜ[D.host.F] ((2 * D.host.xi0 * (T.gram * ξ) i j)⁻¹)
   refine ⟨adj (Matrix.single j i c), ?_⟩

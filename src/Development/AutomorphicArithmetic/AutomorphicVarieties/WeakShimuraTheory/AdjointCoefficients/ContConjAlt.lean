@@ -1,5 +1,6 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.ObsClass
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.ResMapBijective
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.WeakShimuraTheory.RedIdeal
 public import Mathlib.RingTheory.Filtration
@@ -269,22 +270,7 @@ private theorem cont_conj {S R : Type} [TopologicalSpace S] [CommRing R] (I : Id
 private theorem cont_push {Λ S A A' : Type} [CommRing Λ] [IsLocalRing Λ] [TopologicalSpace S] [CommRing A] [Algebra Λ A]
     [IsCO Λ A] [CommRing A'] [Algebra Λ A'] [IsCO Λ A'] (p : A →ₐ[Λ] A') (x : S → A)
     (h : AdicCont (maximalIdeal A) x) : AdicCont (maximalIdeal A') fun s => p (x s) := by
-  intro N
-  have hm : Ideal.map p (maximalIdeal A) ≤ maximalIdeal A' := by
-    rw [Ideal.map_le_iff_le_comap]
-    intro y hy
-    rw [Ideal.mem_comap, ← res_eq_zero_iff Λ A', res_map, res_eq_zero_iff]
-    exact hy
-  have hle : maximalIdeal A ^ N ≤ Ideal.comap p (maximalIdeal A' ^ N) := by
-    rw [← Ideal.map_le_iff_le_comap, Ideal.map_pow]
-    exact pow_le_pow_left' hm N
-  have e : (fun s => Ideal.Quotient.mk (maximalIdeal A' ^ N) (p (x s))) =
-      fun s => Ideal.quotientMap (maximalIdeal A' ^ N) (p : A →+* A') hle (Ideal.Quotient.mk (maximalIdeal A ^ N) (x s)) := by
-    funext s
-    rfl
-  show IsLocallyConstant (fun s => Ideal.Quotient.mk (maximalIdeal A' ^ N) (p (x s)))
-  rw [e]
-  exact (h N).comp _
+  apply _root_.ac_map <;> assumption
 
 private theorem gsp_conj {R : Type} [CommRing R] {c : R} {x n : M4 R} (hx : IsGSp c x) (hn : IsGSp 1 n) :
     IsGSp c (adj n * x * n) := by

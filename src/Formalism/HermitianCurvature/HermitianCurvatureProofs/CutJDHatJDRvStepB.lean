@@ -41,8 +41,6 @@ namespace Formalism.FourierDecayAlt.P.CutMP.StepB
 
 open Formalism.FourierDecayAlt Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.Q Formalism.FourierDecayAlt.P.Qx3 Formalism.FourierDecayAlt.P.WeylCellAction
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 variable {k r : ℕ}
 
 theorem exists_wCell_eq_wCell_succ_mul_tail_factor (c : Fin r → ℂ) (hc : ∀ a, c a ≠ 0) (b : Fin r) : ∀ n : ℕ, ∀ i : Fin (r + 1), i.val = b.val + 1 + n →
@@ -361,8 +359,6 @@ namespace Formalism.FourierDecayAlt.P.CutMP.StepB
 
 open Formalism.FourierDecayAlt Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.Q Formalism.FourierDecayAlt.P.Qx5 Formalism.FourierDecayAlt.P.Qx2 Formalism.FourierDecayAlt.P.PBN Formalism.FourierDecayAlt.P.PBN.MC
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 section pt
 
 variable {k r : ℕ} {E : Type} [NormedAddCommGroup E] [NormedSpace ℂ E]
@@ -588,8 +584,6 @@ end Formalism.FourierDecayAlt.P.CutMP.StepB
 namespace Formalism.FourierDecayAlt.P.CutMP
 
 open Formalism.FourierDecayAlt Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.Q Formalism.FourierDecayAlt.P.PBN.MC Formalism.FourierDecayAlt.P.CutMP.StepB
-
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 theorem mirror_residue_second_move : JDRvStepB := by
   intro Wp Wq _ _ _ _ k r z z' π π' D Y hz hz' hD J hJ l hl c hc g hg hcg

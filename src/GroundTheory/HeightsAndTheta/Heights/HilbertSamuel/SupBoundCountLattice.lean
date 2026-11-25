@@ -54,8 +54,7 @@ theorem coeff_eq_zero {y : (Σ k, ι k) → Ω} {r : ℕ} {f : Fin r → MRing �
 
   have hblk : ∀ k, ∃ i, y ⟨k, i⟩ ≠ 0 := by
     intro k
-    by_contra hk
-    push_neg at hk
+    by_contra! hk
     obtain ⟨i, hi⟩ := hz₀.1 k
     apply hi
     have hmem : (X ⟨k, i⟩ : MRing ι) ∈ mCoordIdeal y := by
@@ -186,8 +185,7 @@ theorem gram_posDef (d : HSMBlockDatum D K ι Ω) (n : ℕ) {r : ℕ} (f : Fin r
     rw [star_trivial, blockGram_eq d n f hf, blockGram_eq d n f hf]
     simp only [pairRe_comm d.A n (f l) (f k)]
   · rw [star_trivial]
-    by_contra hle
-    push_neg at hle
+    by_contra! hle
     apply ha
     have hz : ∀ z ∈ mcPts (mCoordIdeal d.y),
         ∑ k, ((a k : ℝ) : ℂ) * eval z (map (Int.castRingHom ℂ) (f k)) = 0 := by

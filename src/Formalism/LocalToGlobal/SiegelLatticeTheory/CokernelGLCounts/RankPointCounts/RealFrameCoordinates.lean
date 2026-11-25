@@ -1,5 +1,6 @@
 module
 
+import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.CarrierBase
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.StepPinExistsOfPlace
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.LocWSOf
 
@@ -138,21 +139,7 @@ theorem rho_eq (D : D7) (b : Fin (D.R.rS + 1)) :
 
 theorem hpk_esI (k r : ℕ) (a : Fin r) (v : Fin (2 * r + k + 1) → ℂ) :
     (Formalism.QuantumDeterminants.Hpk k r *ᵥ v) (Formalism.QuantumDeterminants.esI k r a) = v (Formalism.QuantumDeterminants.eI k r a) := by
-  have ha := a.isLt
-  simp only [Matrix.mulVec, dotProduct]
-  rw [Finset.sum_eq_single (Formalism.QuantumDeterminants.eI k r a)]
-  · have h1 : Formalism.QuantumDeterminants.Hpk k r (Formalism.QuantumDeterminants.esI k r a) (Formalism.QuantumDeterminants.eI k r a) = 1 := by
-      simp only [Formalism.QuantumDeterminants.Hpk, Formalism.QuantumDeterminants.esI, Formalism.QuantumDeterminants.eI, Fin.ext_iff, Fin.val_mk]
-      split_ifs <;> first | rfl | (exfalso; omega)
-    rw [h1, one_mul]
-  · intro j _ hj
-    have hj' : j.val ≠ a.val := fun h => hj (Fin.ext (by simp [Formalism.QuantumDeterminants.eI, h]))
-    have h0 : Formalism.QuantumDeterminants.Hpk k r (Formalism.QuantumDeterminants.esI k r a) j = 0 := by
-      simp only [Formalism.QuantumDeterminants.Hpk, Formalism.QuantumDeterminants.esI, Fin.ext_iff, Fin.val_mk]
-      split_ifs <;> first | rfl | (exfalso; omega)
-    rw [h0, zero_mul]
-  · intro h
-    exact absurd (Finset.mem_univ _) h
+  apply _root_.Formalism.L2.SG.Pf.CarrierBase.hpk_mulVec_esI <;> assumption
 
 def cMg (γ : X.B.I.Ginf) (τ : D.what₂.Tau) (y : Formalism.REAL.UJ (X.B.I.ε (vOf X τ))) :
     Matrix (Fin (2 * D.R.rS + D.R.k + 1)) (Fin (2 * D.R.rS + D.R.k + 1)) ℂ :=

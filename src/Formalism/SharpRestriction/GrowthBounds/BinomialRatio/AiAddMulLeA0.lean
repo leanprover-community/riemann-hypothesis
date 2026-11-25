@@ -31,13 +31,10 @@ theorem Ai_add_mul_le_A0 {Ai A0 de ε k p N1 La s : ℝ} (hAi : 0 ≤ Ai) (hA : 
   have hp0 : 0 < p := lt_of_lt_of_le (by positivity) hp
   have hA0 : 0 < A0 := by linarith
   have hε0 : 0 ≤ ε := by rw [hε]; positivity
-  have hde0 : 0 ≤ de := by linarith
   have hAiA : Ai ≤ A0 := by nlinarith
 
-  have h1 : A0 * de < (A0 - Ai) * (1 + de) := by nlinarith
   have h2 : (A0 - Ai) * (1 + de) ≤ (A0 - Ai) * (7 / 6) := mul_le_mul_of_nonneg_left (by linarith) (by linarith)
   have h3 : A0 * (40 * ε) ≤ A0 * de := mul_le_mul_of_nonneg_left hde hA0.le
-  have h4 : 34 * (ε * A0) ≤ A0 - Ai := by nlinarith
 
   have c1 : 2 * (Ai + k) / p ≤ 4 * A0 / k ^ 2 := by
     rw [div_le_div_iff₀ hp0 (by positivity)]
@@ -53,11 +50,9 @@ theorem Ai_add_mul_le_A0 {Ai A0 de ε k p N1 La s : ℝ} (hAi : 0 ≤ Ai) (hA : 
   have c3 : 2 * (Ai + k) / p + 2 * La * A0 / k ≤ 3 * (La * A0 / k) := by
     have : 2 * La * A0 / k = 2 * (La * A0 / k) := by ring
     linarith
-  have c30 : 0 ≤ La * A0 / k := by positivity
   have c4 : s * (2 * (Ai + k) / p + 2 * La * A0 / k) ≤ N1 * (3 * (La * A0 / k)) :=
     mul_le_mul hs c3 (by positivity) (by linarith)
   have c5 : N1 * (3 * (La * A0 / k)) = 3 * (ε * A0) := by rw [hε]; ring
-  have c6 : 0 ≤ ε * A0 := by positivity
   linarith
 
 variable {C0 Cde CE1 CE2 H : ℝ} {X : Loc}
@@ -172,7 +167,6 @@ theorem partial_width_le_cap [NeZero X.m] (hH : 1 ≤ H) (h : Std C0 Cde CE1 CE2
     by_cases hl : l.val < i.val + 1
     · have hlσ : l.val < S.sigma := by omega
       have hw : (b.w l : ℤ) ≤ (coarseA X.p S b l : ℤ) := by exact_mod_cast (hSt l hlσ).2.1
-      have hsg0 : (0 : ℤ) ≤ (b.sg l : ℤ) := Int.natCast_nonneg _
       have ho : (oEff S b l : ℤ) = (b.w l : ℤ) + (b.sg l : ℤ) := by
         unfold oEff
         rw [if_pos hlσ]

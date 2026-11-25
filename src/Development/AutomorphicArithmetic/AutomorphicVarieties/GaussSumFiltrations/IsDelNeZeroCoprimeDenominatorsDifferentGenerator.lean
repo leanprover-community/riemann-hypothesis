@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.BadPrimeNormPrimeNeLevelPrime
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaussSumFiltrations.EvenPos
 public import Mathlib.Algebra.AffineMonoid.Basic
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsUniqueIdeleOfLinearEquivQuotientLocal
@@ -62,18 +63,8 @@ theorem exists_away {p : ℕ} (hp : p.Prime) (x : F) : ∃ N : ℕ, 0 < N ∧ N.
   exact (isIntegral_iff_val _).1 hD w
 
 theorem exists_place {p : ℕ} (hp : p.Prime) : ∃ w : HeightOneSpectrum (𝓞 F), ((p : ℕ) : 𝓞 F) ∈ w.asIdeal := by
-  have hne : Ideal.span {((p : ℕ) : 𝓞 F)} ≠ ⊤ := by
-    rw [Ne, Ideal.span_singleton_eq_top]
-    intro hu
-    have h1 := hu.map (Algebra.norm ℤ (S := 𝓞 F))
-    rw [← map_natCast (algebraMap ℤ (𝓞 F)) p, Algebra.norm_algebraMap,
-      isUnit_pow_iff (Module.finrank_pos (R := ℤ) (M := 𝓞 F)).ne'] at h1
-    exact (Nat.prime_iff_prime_int.1 hp).not_unit h1
-  obtain ⟨M, hM, hle⟩ := Ideal.exists_le_maximal _ hne
-  have hmem : ((p : ℕ) : 𝓞 F) ∈ M := hle (Ideal.mem_span_singleton_self _)
-  refine ⟨⟨M, hM.isPrime, ?_⟩, hmem⟩
-  rintro rfl
-  exact hp.ne_zero (by simpa using hmem)
+ intros
+ apply @_root_.GlobalTheory.LvT.Built.IsTerm.exists_place <;> assumption
 
 theorem diff_ne : differentIdeal ℤ (𝓞 F) ≠ ⊥ := differentIdeal_ne_bot
 

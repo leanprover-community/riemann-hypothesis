@@ -13,8 +13,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped CategoryTheory.Obj CategoryTheory.MonObj
 open GlobalTheory.CechPic GlobalTheory.AbDual
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 open ReciprocityTheory.ChartRestriction.G.Chart (sp spMap)
 
 namespace PositivityTheory.PrwZar

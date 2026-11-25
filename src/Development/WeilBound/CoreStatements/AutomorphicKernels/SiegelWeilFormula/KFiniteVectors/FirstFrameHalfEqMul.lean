@@ -20,9 +20,6 @@ variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algeb
 
 variable {d : SD σ}
 
-theorem incM_one {ι : Type} [DecidableEq ι] : incM F (1 : Matrix ι ι E) = 1 :=
-  Matrix.map_one _ (map_zero _) (map_one _)
-
 theorem at_mul {α β γ : Type} [Fintype β] {u : Matrix α β (AE F E)} (hu : At (evI F) u) (M : Matrix β γ (AE F E)) :
     At (evI F) (u * M) := fun c hc => by rw [← Matrix.smul_mul, hu c hc, Matrix.zero_mul]
 

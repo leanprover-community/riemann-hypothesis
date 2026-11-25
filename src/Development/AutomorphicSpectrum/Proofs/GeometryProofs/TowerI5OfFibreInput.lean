@@ -120,8 +120,7 @@ lemma exists_bound (B : HermLine ι) (hB : IsSmoothHerm B) :
   have hcpt : IsCompact S := (isCompact_closedBall 0 1).of_isClosed_subset hcl hsub
   have hmc : ∀ z ∈ S, ∀ k, ∃ i, z ⟨k, i⟩ ≠ 0 := by
     intro z hz k
-    by_contra hn
-    push_neg at hn
+    by_contra! hn
     have := hz k
     simp [bnorm, hn] at this
   have hcont : ContinuousOn (fun z => Real.log (B.h z)) S :=
@@ -1203,14 +1202,7 @@ variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
 
 theorem ptsOver_map {F E : Type} [Field F] [Field E] (f : F →+* E) {P : Ideal (MRing ι)}
     {z : (Σ k, ι k) → F} (hz : z ∈ ptsOver F P) : (fun p => f (z p)) ∈ ptsOver E P := by
-  obtain ⟨h1, h2⟩ := hz
-  refine ⟨fun k => ?_, fun p hp => ?_⟩
-  · obtain ⟨i, hi⟩ := h1 k
-    exact ⟨i, (map_ne_zero f).mpr hi⟩
-  · have e := congrArg f (h2 p hp)
-    rw [map_zero, MvPolynomial.aeval_def, MvPolynomial.eval₂_comp_left] at e
-    rw [MvPolynomial.aeval_def]
-    rwa [show f.comp (algebraMap _ F) = algebraMap _ E from Subsingleton.elim _ _] at e
+  apply _root_.GlobalTheory.CompanionTheory.Ar.Ht.FlatLine.ptsOver_embed <;> assumption
 
 theorem ptsOver_of_map {F E : Type} [Field F] [Field E] (f : F →+* E) {P : Ideal (MRing ι)}
     {z : (Σ k, ι k) → F} (hz : (fun p => f (z p)) ∈ ptsOver E P) : z ∈ ptsOver F P := by

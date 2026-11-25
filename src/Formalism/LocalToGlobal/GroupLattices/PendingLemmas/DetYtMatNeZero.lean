@@ -1,5 +1,6 @@
 module
 
+import Formalism.LocalToGlobal.GroupLattices.PendingLemmas.SubstZOfXCoordZA
 public import Formalism.SharpRestriction.GrowthBounds.FormalGroupSystem
 import Mathlib.Algebra.AffineMonoid.UniqueSums
 import Mathlib.RingTheory.PiTensorProduct
@@ -15,12 +16,7 @@ namespace Formalism.L2.G.Pend
 variable {p : ℕ} [Fact p.Prime] (X : Sys p)
 
 theorem rankJ (j : ℕ) : (X.Fl.Pj j).m + 1 = NN X.G.P.m X.Fl.t j := by
-  cases j with
-  | zero => simp [Fills.Pj, NN]
-  | succ j =>
-    show X.G.P.m + (j + 1) * (X.Fl.t + 1) + 1 = NN X.G.P.m X.Fl.t (j + 1)
-    unfold NN
-    ring
+  apply _root_.Formalism.L2.G.Pend.rank_eq <;> assumption
 
 theorem NN_le (j : ℕ) : NN X.G.P.m X.t j ≤ NN X.G.P.m X.t (j + 1) := by
   unfold NN

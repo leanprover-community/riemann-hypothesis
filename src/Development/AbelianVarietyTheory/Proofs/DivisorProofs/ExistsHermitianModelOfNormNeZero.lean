@@ -101,8 +101,7 @@ theorem exists_unit_vector [FiniteDimensional K.E V] (h : V → V → K.E)
   have hinj : Function.Injective (algebraMap K.O K.E) := IsFractionRing.injective _ _
   set ι := algebraMap K.O K.E with hι
   set m := IsLocalRing.maximalIdeal K.O with hm
-  by_contra hno
-  push_neg at hno
+  by_contra! hno
   have c1 : ∀ v ∈ L, ∃ a ∈ m, h v v = ι a := by
     intro v hv
     obtain ⟨a, ha⟩ := (hdual v).1 hv v hv
@@ -263,8 +262,7 @@ theorem exists_orthonormal (n : ℕ) : ∀ (V : Type) [AddCommGroup V] [Module K
 end Induction
 
 theorem exists_mem_X_of_N_ne_zero {K : UQ} (B : InvAlg K) (x : B.A) (hN : B.N x ≠ 0) : ∃ L, L ∈ B.X x := by
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   apply hN
   haveI : IsEmpty (Orb K.O B.T (B.X x)) := ⟨fun o => by
     induction o using Quot.ind with

@@ -1,5 +1,7 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PeriodLatticeOnPuncturedDisc
+
 public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.ClopenCondOnto
 public import Mathlib.LinearAlgebra.BilinearMap
 public import Mathlib.LinearAlgebra.Dimension.Finrank
@@ -147,26 +149,11 @@ theorem single_re (c k : Fin n) :
 
 theorem shift_mem (h : a ≤ n) (i : Fin a) {w : Fin n → ℂ} (hw : w ∈ logCover h) :
     w + Pi.single (Fin.castLE h i) (2 * Real.pi * Complex.I) ∈ logCover h := by
-  refine ⟨fun j => ?_, fun k hk => ?_⟩
-  · rw [Pi.add_apply, Complex.add_re, single_re, add_zero]
-    exact hw.1 j
-  · have hne : k ≠ Fin.castLE h i := by
-      intro e
-      have : k.val = i.val := by rw [e]; rfl
-      omega
-    rw [Pi.add_apply, Pi.single_eq_of_ne hne, add_zero]
-    exact hw.2 k hk
+  apply _root_.GlobalTheory.CompanionTheory.Ar.Flat.QuotLoc.add_single_mem_logCover <;> assumption
 
 theorem expCover_shift (h : a ≤ n) (i : Fin a) (w : Fin n → ℂ) :
     expCover a (w + Pi.single (Fin.castLE h i) (2 * Real.pi * Complex.I)) = expCover a w := by
-  funext k
-  unfold expCover
-  by_cases hk : k = Fin.castLE h i
-  · have : k.val < a := by rw [hk]; exact i.2
-    subst hk
-    simp only [this, if_true, Pi.add_apply, Pi.single_eq_same]
-    rw [Complex.exp_add, Complex.exp_two_pi_mul_I, mul_one]
-  · simp [Pi.single_eq_of_ne hk]
+  apply _root_.GlobalTheory.CompanionTheory.Ar.Flat.QuotLoc.expCover_add_single <;> assumption
 
 theorem exists_seq (h : a ≤ n) : ∃ u : ℕ → Fin n → ℂ, (∀ m, u m ∈ logCover h) ∧
     Tendsto (fun m => expCover a (u m)) atTop (𝓝 0) := by

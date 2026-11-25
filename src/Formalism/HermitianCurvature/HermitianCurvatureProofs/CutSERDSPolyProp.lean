@@ -14,8 +14,6 @@ noncomputable section
 
 namespace Formalism.FourierDecayAlt.P.CutSE
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 section
 
 variable {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]

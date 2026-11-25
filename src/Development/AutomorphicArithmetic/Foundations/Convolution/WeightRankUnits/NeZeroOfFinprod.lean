@@ -488,8 +488,7 @@ theorem UpperTheory.ConvolutionTheory.G2.regroup :
   have hne : ∀ w, G w ≠ 1 → ∃ u ∈ hg.toFinset,
       u.under (𝓞 (maximalRealSubfield E)) = w.under (𝓞 (maximalRealSubfield E)) := by
     intro w hw
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     apply hw
     rw [hG w, Finset.filter_false_of_mem hcon, Finset.prod_empty]
   refine ⟨?_, ?_⟩

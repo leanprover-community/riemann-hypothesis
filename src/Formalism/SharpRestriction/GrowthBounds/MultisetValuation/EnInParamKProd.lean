@@ -218,7 +218,6 @@ def en_L : PowerSeries K1 := PowerSeries.map (algebraMap (K0 p) K1) (logF p)
 
 theorem en_logF_zero : PowerSeries.constantCoeff (logF p) = 0 := by
   rw [← PowerSeries.coeff_zero_eq_constantCoeff_apply, logF, PowerSeries.coeff_mk]
-  have hp : 0 < p := (Fact.out : p.Prime).pos
   simp
 
 theorem en_logF_one : PowerSeries.coeff 1 (logF p) = 1 := by

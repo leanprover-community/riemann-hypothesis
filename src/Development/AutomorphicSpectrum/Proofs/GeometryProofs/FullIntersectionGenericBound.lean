@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RootOriginGenericFrameRelayStatement
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsHodgeLine
 public import Mathlib.RingTheory.RegularLocalRing.Defs
 public import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.GoodOrigin
@@ -77,21 +78,8 @@ theorem germ_top_stalk {X : Scheme.{0}} {Ω : Type} [Field Ω] (ξ : Spec (CommR
 theorem ringHom_mem_regAt {X : Scheme.{0}} {Ω : Type} [Field Ω] (ξ : Spec (CommRingCat.of Ω) ⟶ X)
     {O : Type} [CommRing O] (φ : O →+* Ω) (s : X ⟶ Spec (CommRingCat.of O))
     (h : ξ ≫ s = Spec.map (CommRingCat.ofHom φ)) (p : Cpt ξ) (o : O) : φ o ∈ regAt ξ p := by
-  obtain ⟨q, hq⟩ := p
-  refine ⟨X.presheaf.germ ⊤ q (show q ∈ (⊤ : X.Opens) from trivial)
-    (s.appTop.hom ((Scheme.ΓSpecIso (CommRingCat.of O)).inv.hom o)), ?_⟩
-  have h1 := germ_top_stalk ξ hq
-  have h2 : (Scheme.ΓSpecIso (CommRingCat.of O)).inv ≫ s.appTop ≫ ξ.appTop ≫
-      (Scheme.ΓSpecIso (CommRingCat.of Ω)).hom = CommRingCat.ofHom φ := by
-    have : s.appTop ≫ ξ.appTop = (ξ ≫ s).appTop := by simp
-    rw [reassoc_of% this, h]
-    simp
-  have h3 := congrArg (fun f => f.hom o) h2
-  have h4 := congrArg (fun f => f.hom (s.appTop.hom ((Scheme.ΓSpecIso (CommRingCat.of O)).inv.hom o))) h1
-  simp only [CommRingCat.hom_comp, RingHom.comp_apply] at h3 h4
-  rw [CommRingCat.hom_ofHom] at h3
-  refine Eq.trans ?_ (h4.trans h3)
-  rfl
+  intros
+  apply _root_.ModelDimension.mem_regAt_of_over <;> assumption
 
 theorem segre_adjoin_le {Ω : Type} [Field Ω] [CharZero Ω] {K : Type} [Fintype K] {J : K → Type}
     (y : (Σ k, J k) → Ω) (cc : (k : K) → J k) :

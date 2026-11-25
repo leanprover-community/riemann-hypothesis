@@ -122,8 +122,7 @@ private lemma ratio_zero_left {F0 V0 : Type*} [Field F0] [AddCommGroup V0] [Modu
   · rfl
 
 theorem thp_ne (hd : d.AxH 𝒜) (c : ι) : ∃ k, d.thp k c ≠ 0 := by
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   obtain ⟨e, he, -, hy⟩ := hd.a4
   obtain ⟨q, hq, p, hp⟩ := hy 1
   have key := hp c

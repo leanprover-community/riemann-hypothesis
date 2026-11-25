@@ -668,8 +668,6 @@ namespace GlobalTheory.WeilOpenLocus
 
 open GlobalTheory.CechPic GlobalTheory.DiagPairing GlobalTheory.LevCover
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 theorem biadd_noeth {S : Scheme.{0}} [IsLocallyNoetherian S] {A : Over S} [GrpObj A] (hG : Out.GlobalFnsSt)
     (hA : IsAbelianScheme A) (P : LB (G2 A).left) (hP : P.IsLB)
     (h₁ : ∃ t : (P.pull (lift (1 : A ⟶ A) (𝟙 A)).left).Gen, t.IsGen)

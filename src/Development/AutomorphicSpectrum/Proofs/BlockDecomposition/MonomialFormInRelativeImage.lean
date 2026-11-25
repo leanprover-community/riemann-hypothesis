@@ -56,8 +56,7 @@ theorem monomial_mem_exceptional_ideal {K : Type} [Field K] {n d : ℕ} (S : Fin
     (hg : g ∈ (cone S : AddSubmonoid (Gam n d))) (ht : 1 ≤ tdeg g) : mon K g hg ∈ I0 n K S := by
   have hex : ∃ k, (S = ∅ ∨ k ∈ S) ∧ (k ∈ S ∨ 1 ≤ g (Sum.inr k)) := by
     by_cases hS : S = ∅
-    · by_contra hno
-      push_neg at hno
+    · by_contra! hno
       have hsum : ∑ j, g (Sum.inr j) ≤ 0 := Finset.sum_nonpos fun j _ => by
         have := (hno j (Or.inl hS)).2
         omega

@@ -89,8 +89,7 @@ theorem detPerturbNumeric : DetPerturbNumeric := by
   have h2 : Real.exp ((ρ:ℝ) * ((ρ : ℝ) ^ (-(3 : ℝ) / 2) / 10)) ≤ Real.exp (1/10) :=
     Real.exp_le_exp.2 hρx
   have h3 : Real.exp (1/10) ≤ 3/2 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     have h4 : (3/2:ℝ)^10 < Real.exp (1/10) ^ 10 := pow_lt_pow_left₀ hc (by norm_num) (by norm_num)
     rw [← Real.exp_nat_mul] at h4
     norm_num at h4
@@ -221,8 +220,7 @@ theorem cauchyBinetMax : CauchyBinetMax := by
   have h3 : (1 : ℝ) = ∑ S ∈ (Finset.univ : Finset (Fin N)).powersetCard i, g S := by
     have := h1.trans (Finset.sum_congr rfl h2)
     exact_mod_cast this
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   have hlt : ∀ S ∈ (Finset.univ : Finset (Fin N)).powersetCard i, g S < (2 : ℝ) ^ (-(r : ℝ)) := by
     intro S hS
     have hc := (Finset.mem_powersetCard.1 hS).2

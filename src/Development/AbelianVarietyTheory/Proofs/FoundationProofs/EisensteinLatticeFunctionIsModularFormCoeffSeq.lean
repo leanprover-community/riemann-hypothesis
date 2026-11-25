@@ -546,13 +546,11 @@ theorem block (L : ℕ) (f : ℤ → ℂ) (N : ℕ) :
     have h2 := Int.emod_lt_of_pos d hL'
     have h3 := Int.emod_add_mul_ediv d L
     refine ⟨by omega, ?_, ?_⟩
-    · by_contra h
-      push_neg at h
+    · by_contra! h
       have : (L:ℤ) * (d / L) ≤ L * (-(N:ℤ) - 1) := by
         apply mul_le_mul_of_nonneg_left (by omega) hL'.le
       nlinarith
-    · by_contra h
-      push_neg at h
+    · by_contra! h
       have : (L:ℤ) * (N + 1) ≤ L * (d / L) := by
         apply mul_le_mul_of_nonneg_left (by omega) hL'.le
       nlinarith

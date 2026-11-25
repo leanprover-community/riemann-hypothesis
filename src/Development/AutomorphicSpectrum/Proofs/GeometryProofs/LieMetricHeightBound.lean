@@ -1,5 +1,6 @@
 module
 
+import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PSheetLift
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.AbBound
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.SlopeBoundSt
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.AbelianPartBaseChange
@@ -528,19 +529,8 @@ theorem mem_ptsOver_iff (P : Ideal (MRing J)) (z : (Σ k, J k) → ℂ) : z ∈ 
 
 theorem torus_mem {P : Ideal (MRing J)} (hP : IsMultiHomogIdeal P) {z : (Σ k, J k) → ℂ} (hz : z ∈ mcPts P)
     (b : K → ℂ) (hb : ∀ k, b k ≠ 0) : GroundTheory.Heights₂.Heights.LowerBoundFree.torusSmul b z ∈ mcPts P := by
-  rw [← mem_ptsOver_iff] at hz ⊢
-  refine ⟨fun k => ?_, ?_⟩
-  · obtain ⟨i, hi⟩ := hz.1 k
-    exact ⟨i, mul_ne_zero (hb k) hi⟩
-  · obtain ⟨S, hS, rfl⟩ := hP
-    have hle : Ideal.span S ≤ RingHom.ker
-        (aeval (GroundTheory.Heights₂.Heights.LowerBoundFree.torusSmul b z) : MRing J →ₐ[ℤ] ℂ).toRingHom := by
-      rw [Ideal.span_le]
-      intro g hg
-      obtain ⟨d, hd⟩ := hS g hg
-      show aeval (fun p : Σ k, J k => b p.1 * z p) g = 0
-      rw [GlobalTheory.CompanionTheory.Ar.LocVal.aeval_scale hd, hz.2 g (Ideal.subset_span hg), mul_zero]
-    exact fun f hf => hle hf
+  intros
+  apply _root_.GroundTheory.Heights₂.Heights.SheetLift.bsmul_mem <;> assumption
 
 theorem exists_charts (hR : Geo.ResK.ResKStatement) [CharZero Ω] (y : (Σ k, J k) → Ω) (c : ∀ k, J k)
     (hc : ∀ k, y ⟨k, c k⟩ ≠ 0) (β : MRing J) (b : K → ℕ) (hβ : IsMultiHomog β b) (hβ0 : β ∉ mCoordIdeal y) :
@@ -1070,8 +1060,7 @@ theorem local_bound (𝔐 : HodgeCpt Y S y) (h : LieMetric 𝔐.M y) (hpq : 1 �
       rw [← hx, Category.assoc, ← hmK, hvv])
     have h3 : 0 ≤ ∑ i, ‖x i‖ ^ 2 := Finset.sum_nonneg fun i _ => by positivity
     have h4 : 0 ≤ (h.ip _ v₀ v₀).re := by
-      by_contra hn
-      push_neg at hn
+      by_contra! hn
       nlinarith
     calc c'.re ≤ K₂ * ∑ i, ‖x i‖ ^ 2 := h1
       _ ≤ |K₂| * ∑ i, ‖x i‖ ^ 2 := mul_le_mul_of_nonneg_right (le_abs_self _) h3

@@ -88,14 +88,8 @@ theorem alg_mem_range (Ω : Type) [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ 
   exact ⟨w, hw⟩
 
 theorem exp_isAlgebraic (x : ℚ) : IsAlgebraic ℚ (Complex.exp (2 * Real.pi * Complex.I * (x : ℂ))) := by
-  have hpow : Complex.exp (2 * Real.pi * Complex.I * (x : ℂ)) ^ x.den = 1 := by
-    rw [← Complex.exp_nat_mul]
-    have : (x.den : ℂ) * (2 * Real.pi * Complex.I * (x : ℂ)) = (x.num : ℂ) * (2 * Real.pi * Complex.I) := by
-      have hx : (x : ℂ) = (x.num : ℂ) / (x.den : ℂ) := by
-        exact_mod_cast (Rat.num_div_den x).symm
-      have hd : (x.den : ℂ) ≠ 0 := by exact_mod_cast x.den_nz
-      rw [hx]; field_simp
-    rw [this, Complex.exp_int_mul_two_pi_mul_I]
+  have hpow : Complex.exp (2 * Real.pi * Complex.I * (x : ℂ)) ^ x.den = 1 :=
+    (Complex.isPrimitiveRoot_exp_rat x).pow_eq_one
   refine ⟨Polynomial.X ^ x.den - Polynomial.C 1, Polynomial.X_pow_sub_C_ne_zero x.pos 1, ?_⟩
   simp [hpow]
 

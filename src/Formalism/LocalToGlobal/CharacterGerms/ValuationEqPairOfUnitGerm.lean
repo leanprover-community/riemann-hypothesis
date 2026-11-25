@@ -29,8 +29,7 @@ theorem subst_zeroPt {σ τ : Type} [Finite σ] (f : MvPowerSeries σ C) :
   · by_cases he : e = 0 <;> simp [he, MvPowerSeries.coeff_C, MvPowerSeries.coeff_one]
   · intro d hd
     obtain ⟨s, hs'⟩ : ∃ s, d s ≠ 0 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact hd (Finsupp.ext h)
     have h0 : (d.prod fun _ n => (0 : MvPowerSeries τ C) ^ n) = 0 :=
       Finset.prod_eq_zero (Finsupp.mem_support_iff.mpr hs') (zero_pow hs')

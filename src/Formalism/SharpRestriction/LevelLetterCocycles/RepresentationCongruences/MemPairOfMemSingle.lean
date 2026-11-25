@@ -47,8 +47,7 @@ theorem Cont.mem_iff_le (ϖ : O) (g f : O⟦X⟧) (k : ℕ) :
       apply iSup₂_le
       intro j hj
       have hj' : j ≤ k - 1 := by
-        by_contra hjk
-        push_neg at hjk
+        by_contra! hjk
         exact hnot (Cont.mem_pair_mono ϖ g f (by omega) hj)
       exact_mod_cast hj'
     have h3 := le_trans hk hbound

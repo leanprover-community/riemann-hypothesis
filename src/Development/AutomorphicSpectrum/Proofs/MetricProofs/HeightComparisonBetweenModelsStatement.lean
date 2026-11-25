@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagGapPullbackThird
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FrameDefinitions.Weights
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.VerticalFactorSmoothHermitianMetric
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.PositionPot
@@ -59,16 +60,7 @@ variable {K : Type} [Fintype K] {J : K → Type} [∀ k, Fintype (J k)]
 
 theorem holoOn_continuousOn {e : ℕ} {X : Type} [TopologicalSpace X] {A : FinHolAtlas e X} {U : Set X}
     {f : X → ℂ} (hU : IsOpen U) (h : A.HoloOn U f) : ContinuousOn f U := by
-  intro t ht
-  obtain ⟨j, hj⟩ := A.cover t
-  have h1 : AnalyticAt ℂ (f ∘ (A.chart j).symm) (A.chart j t) :=
-    h j _ ⟨(A.chart j).map_source hj, by simpa [(A.chart j).left_inv hj] using ht⟩
-  have h2 : ContinuousAt ((f ∘ (A.chart j).symm) ∘ A.chart j) t :=
-    ContinuousAt.comp h1.continuousAt ((A.chart j).continuousAt hj)
-  have h3 : ((f ∘ (A.chart j).symm) ∘ A.chart j) =ᶠ[𝓝 t] f := by
-    filter_upwards [(A.chart j).open_source.mem_nhds hj] with u hu
-    simp [(A.chart j).left_inv hu]
-  exact (h2.congr h3).continuousWithinAt
+  apply _root_.GlobalTheory.CompanionTheory.Ar.PB.StepW.ChartEx.holo_continuousOn <;> assumption
 
 theorem exists_continuous_descent {P : Ideal (MRing J)} {d : ℕ} (M : CxModel P d)
     (F : ((Σ k, J k) → ℂ) → ℝ) (hF : ContinuousOn F {z | ∀ k, ∃ i, z ⟨k, i⟩ ≠ 0})

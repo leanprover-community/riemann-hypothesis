@@ -630,8 +630,7 @@ theorem q_not_pow : ∀ (p : ℕ) [Fact p.Prime] (Ω : Type) [Field Ω] [Algebra
     linear_combination -(φ g * φ g) * hEb
   have hc' := (Fintype.linearIndependent_iff.1 hli) c hc
   have : ∃ i, f i ≠ 0 := by
-    by_contra hall
-    push_neg at hall
+    by_contra! hall
     apply hb0
     have : φ g * b = 0 := by rw [hrep]; simp [hall]
     rcases mul_eq_zero.1 this with h0 | h0

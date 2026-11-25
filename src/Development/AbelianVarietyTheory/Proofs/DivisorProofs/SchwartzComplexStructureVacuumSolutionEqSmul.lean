@@ -188,8 +188,7 @@ theorem schwartz_vacuum_eq_smul : ∀ {V : Type} [NormedAddCommGroup V] [NormedS
       simpa [Real.pi_ne_zero] using h4
     have hy2 : y.2 = 0 := by
       apply hB
-      by_contra hne
-      push_neg at hne
+      by_contra! hne
       obtain ⟨x₀, hx₀⟩ := hne
       apply hg0
       ext x

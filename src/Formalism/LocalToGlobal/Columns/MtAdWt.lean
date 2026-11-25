@@ -11,6 +11,7 @@ import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.PicardGroup
 import Mathlib.RingTheory.RegularLocalRing.Defs
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.GelfandTsetlinLowering.IoExistsOfCap
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeightDualUniqueness.Imports, Formalism.LocalToGlobal.Columns.MtAdWt
@@ -423,25 +424,7 @@ theorem mtw_rowAct_one (f : MvPolynomial (Fin n × Fin n) ℂ) : Formalism.Grade
 
 theorem mtw_sqAct_mul (mu : DomWeight n) (g h : GL (Fin n) ℂ) (f : MvPolynomial (Fin n × Fin n) ℂ) :
     sqAct ℂ n mu (g * h) f = sqAct ℂ n mu g (sqAct ℂ n mu h f) := by
-  have hrow : ∀ (A B : Matrix (Fin n) (Fin n) ℂ) (p : MvPolynomial (Fin n × Fin n) ℂ),
-      Formalism.GradedWeylDivisibility.rowAct ℂ A (Formalism.GradedWeylDivisibility.rowAct ℂ B p) = Formalism.GradedWeylDivisibility.rowAct ℂ (B * A) p := by
-    intro A B p
-    have hc : (Formalism.GradedWeylDivisibility.rowAct ℂ (n := n) A).comp (Formalism.GradedWeylDivisibility.rowAct ℂ (n := n) B) =
-        Formalism.GradedWeylDivisibility.rowAct ℂ (n := n) (B * A) := by
-      apply MvPolynomial.algHom_ext
-      intro v
-
-      simp only [AlgHom.comp_apply, Formalism.GradedWeylDivisibility.rowAct, MvPolynomial.aeval_X, map_sum, map_mul,
-      MvPolynomial.aeval_C, MvPolynomial.algebraMap_eq, Matrix.mul_apply, Finset.mul_sum,
-      Finset.sum_mul]
-      rw [Finset.sum_comm]
-      refine Finset.sum_congr rfl fun b _ => Finset.sum_congr rfl fun c _ => ?_
-      ring
-    exact DFunLike.congr_fun hc p
-  have hdet : ∀ (a b : GL (Fin n) ℂ) (c : ℤ), detPow ℂ n (a * b) c = detPow ℂ n a c * detPow ℂ n b c := by
-    intro a b c
-    simp only [detPow, map_mul, mul_zpow, Units.val_mul]
-  simp only [sqAct, hdet, map_smul, smul_smul, hrow, Units.val_mul, Matrix.transpose_mul]
+  apply _root_.PI.WGL.io_sqAct_mul <;> assumption
 
 theorem mtw_sqAct_upper (mu : DomWeight n) (B : GL (Fin n) ℂ) (hB : (B : Matrix (Fin n) (Fin n) ℂ).BlockTriangular id) :
     sqAct ℂ n mu B (extremal ℂ n mu) = (∏ i, (B : Matrix (Fin n) (Fin n) ℂ) i i ^ mu.w i) • extremal ℂ n mu := by

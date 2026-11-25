@@ -57,19 +57,14 @@ theorem le_and_half_le_prod_one_sub_exp_neg_of_bounds {a b' k Q Y La N1 A0 m M :
     have e3 : (M * k) * Q ≤ (A0 * N1 * La) * Q := by
       have hAQ : A0 * 24 * Q ≤ (A0 * N1 * La) * Q := by
         simpa [mul_assoc] using mul_le_mul_of_nonneg_right e2 hQ0.le
-      have hAQ0 : 0 ≤ A0 * Q := mul_nonneg hA0pos.le hQ0.le
-      have hMkQ : (M * k) * Q = M * (k * Q) := mul_assoc M k Q
       have h6' : a ≤ 2 * (A0 * Q) := by linarith [show A0 * (2 * Q) = 2 * (A0 * Q) by ring]
-      have hAQ24 : A0 * 24 * Q = 24 * (A0 * Q) := by ring
       linarith
     exact le_of_mul_le_mul_right e3 hQ0
   · have hx : (k - 1) * M / A0 ≤ 1 / 30 := by
       rw [div_le_iff₀ hA0pos]
       have e1 : (k - 1) * M ≤ k * M := mul_le_mul_of_nonneg_right (by linarith) hM0
       have e3 : (k * M) * Q ≤ (1 / 30 * A0) * Q := by
-        have hkm : (k * M) * Q = M * (k * Q) := by ring
         have h6' : a ≤ 2 * (A0 * Q) := by linarith [show A0 * (2 * Q) = 2 * (A0 * Q) by ring]
-        have hrhs : (1 / 30 * A0) * Q = 1 / 30 * (A0 * Q) := by ring
         linarith
       have := le_of_mul_le_mul_right e3 hQ0
       linarith
@@ -109,7 +104,6 @@ theorem Std.half_ratio_le_segment_base_of_std (h : Std C0 Cde CE1 CE2 H X) (j : 
   have hp1 := h.p1
   have ha := h.apos
   have hQ1 := h.Q1
-  have hQ0 : 0 < X.Q := by linarith
   have hQj1 : (1 : ℝ) ≤ ((X.p ^ segG X.TT j : ℕ) : ℝ) := by
     push_cast
     exact one_le_pow₀ hp1

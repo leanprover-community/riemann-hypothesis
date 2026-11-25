@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsHalfOfBasePins
 public import Formalism.SharpRestriction.CuspSpanNormBounds.LatticeGluingRadicals
 
 @[expose] public section
@@ -46,17 +47,7 @@ def UnitriangularFrameLift (D : D7) : Prop :=
 
 theorem id_coprime_notMem {R : Type} [CommRing R] (P : Ideal R) (hP : P ≠ ⊤) (a b : ℕ) (h : Nat.Coprime a b)
     (ha : (a : R) ∈ P) : (b : R) ∉ P := by
-  intro hb
-  apply hP
-  rw [Ideal.eq_top_iff_one]
-  have h' : ((Nat.gcd a b : ℕ) : ℤ) = (a : ℤ) * Nat.gcdA a b + (b : ℤ) * Nat.gcdB a b := Nat.gcd_eq_gcd_ab a b
-  rw [Nat.Coprime.gcd_eq_one h] at h'
-  have h'' : (1 : R) = (a : R) * (Nat.gcdA a b : R) + (b : R) * (Nat.gcdB a b : R) := by
-    have := congrArg (fun z : ℤ => (z : R)) h'
-    push_cast at this
-    exact this
-  rw [h'']
-  exact P.add_mem (P.mul_mem_right _ ha) (P.mul_mem_right _ hb)
+  apply _root_.GlobalTheory.CoverHalf.not_mem_of_coprime <;> assumption
 
 end Formalism.MainNotions.BridgeLemma
 

@@ -1,5 +1,7 @@
 module
 
+
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeightedMeasureSplitting.ContinuousMeasureSplitting
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.SettingBlocks
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.MeasCore
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.MeasInfCut
@@ -13,7 +15,6 @@ import Mathlib.Topology.Algebra.Group.Units
 import Mathlib.Topology.Baire.LocallyCompactRegular
 import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
-
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.MExistsCut, Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.MultiplicityGExists
 
@@ -294,19 +295,7 @@ variable (σ : E →ₐ[F] E) {M : ℕ} (J : Matrix (Fin M) (Fin M) E)
 theorem haMap_cont {R R' : Type} [CommRing R] [Algebra F R] [TopologicalSpace R]
     [CommRing R'] [Algebra F R'] [TopologicalSpace R'] (φ : R →ₐ[F] R') (hf : Continuous (tensMap (E := E) φ)) :
     Continuous (haMap σ J φ) := by
-  have hs : Continuous (fun g : ↥(HR R σ J) => (g : GL (Fin M) (R ⊗[F] E))) := continuous_subtype_val
-  have hv : Continuous (fun g : ↥(HR R σ J) =>
-      ((g : GL (Fin M) (R ⊗[F] E)) : Matrix (Fin M) (Fin M) (R ⊗[F] E))) :=
-    Units.continuous_val.comp hs
-  have hi : Continuous (fun g : ↥(HR R σ J) =>
-      (((g : GL (Fin M) (R ⊗[F] E))⁻¹ : GL (Fin M) (R ⊗[F] E)) : Matrix (Fin M) (Fin M) (R ⊗[F] E))) :=
-    Units.continuous_coe_inv.comp hs
-  have hb : Continuous (fun g : ↥(HR R σ J) => Formalism.UG.bc (tensMap (E := E) φ) (g : GL (Fin M) (R ⊗[F] E))) := by
-    rw [Units.continuous_iff]
-    exact ⟨hv.matrix_map hf, hi.matrix_map hf⟩
-  show Continuous (fun g : ↥(HR R σ J) =>
-    (⟨Formalism.UG.bc (tensMap (E := E) φ) (g : GL (Fin M) (R ⊗[F] E)), (haMap σ J φ g).2⟩ : ↥(HR R' σ J)))
-  exact hb.subtype_mk _
+  apply _root_.PI.UnitaryGroupMassFormula.MeasWCore.continuous_haMap <;> assumption
 
 end Top
 

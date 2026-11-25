@@ -190,8 +190,7 @@ theorem GlobalTheory.orbit_unipotent_short : ∀ (E : Type) [Field E] [NumberFie
   intro E _ _ _ N X T M γ x ⟨hM, hγ, hd, hdom, hsh⟩ hsq hne
   have hst := X.Γ_stab γ hγ
   obtain ⟨b, hbΛ, hb⟩ : ∃ b ∈ X.Λ, Matrix.mulVec ((γ : Matrix (Fin N) (Fin N) E) - 1) b ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     apply hne
     have hz : Matrix.toLin' ((γ : Matrix (Fin N) (Fin N) E) - 1) = 0 := by
       refine LinearMap.ext_on X.Λ_span fun v hv => ?_

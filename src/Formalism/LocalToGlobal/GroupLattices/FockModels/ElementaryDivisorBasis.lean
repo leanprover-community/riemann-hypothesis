@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.GrowthBounds.ScaleEdges.ScaleNegMono
 public import Formalism.SharpRestriction.GrowthBounds.LatticeSystems
 public import Formalism.SharpRestriction.GrowthBounds.ObjBridge
 import Formalism.GradedWeylDivisibility.FinalD
@@ -236,14 +237,7 @@ variable {p n' : ℕ} {W Qq O Kf : Type} [CommRing W] [IsDomain W] [IsDiscreteVa
   {ι : Qq →+* Kf} {σ : Qq ≃+* Qq} {j : W →+* O} {w : O}
 
 theorem w_ne (h : HidaSetting p n' W Qq O Kf ι σ j w) : algebraMap O Kf w ≠ 0 := by
-  intro h0
-  have hpK : (p : Kf) = algebraMap O Kf w ^ 2 := by rw [← map_pow, h.w_sq, map_natCast]
-  have hpW : (p : W) ≠ 0 := h.p_unif.ne_zero
-  haveI := h.frac_alt
-  have hpK' : (p : Kf) ≠ 0 := by
-    rw [← map_natCast ι, ← map_natCast (algebraMap W Qq)]
-    exact (map_ne_zero ι).2 ((map_ne_zero_iff _ (IsFractionRing.injective W Qq)).2 hpW)
-  exact hpK' (by rw [hpK, h0]; simp)
+  apply +allowSynthFailures _root_.Formalism.MainNotions.Pf14.w_ne_zero <;> assumption
 
 theorem p_eq (h : HidaSetting p n' W Qq O Kf ι σ j w) : (p : Kf) = algebraMap O Kf w ^ 2 := by
   rw [← map_pow, h.w_sq, map_natCast]

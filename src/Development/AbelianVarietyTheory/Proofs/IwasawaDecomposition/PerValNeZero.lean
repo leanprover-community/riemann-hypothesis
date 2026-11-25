@@ -46,8 +46,6 @@ open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj GlobalTheory.Toroidal GlobalTheory.ShFam.Pad
 open scoped Matrix CategoryTheory.Obj Topology
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.ShFam.Hor
 
 section Lin

@@ -6,14 +6,8 @@ public import Formalism.GaussJetBounds.GaussJetProofs.ConstantCoeffAevalLinP
 public import Formalism.GaussJetBounds.GaussJetProofs.FJEval
 public import Formalism.GaussJetBounds.GaussJetProofs.GField
 public import Formalism.GaussJetBounds.GaussJetProofs.Labels
-import Formalism.GaussJetBounds.GaussJetProofs.ThmAOp
 public import Formalism.GaussJetBounds.GaussJetProofs.Transfer
-import Formalism.GaussJetBounds.OneLetterRadius
 import Mathlib.Algebra.Order.Star.Real
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.Tactic.Lemma
 
 @[expose] public section
 

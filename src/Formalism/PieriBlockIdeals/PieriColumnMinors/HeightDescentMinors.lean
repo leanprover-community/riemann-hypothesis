@@ -1706,8 +1706,7 @@ theorem exists_largest_moved_point {N : ℕ} (σ : Equiv.Perm (Fin N)) (hσ : σ
     ∃ j0, σ j0 < j0 ∧ ∀ j, j0 < j → σ j = j := by
   classical
   obtain ⟨j1, hj1⟩ : ∃ j, σ j ≠ j := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hσ (Equiv.ext fun x => by simpa using h x)
   set S := Finset.univ.filter fun j => σ j ≠ j with hSdef
   have hS : S.Nonempty := ⟨j1, by simp [S, hj1]⟩

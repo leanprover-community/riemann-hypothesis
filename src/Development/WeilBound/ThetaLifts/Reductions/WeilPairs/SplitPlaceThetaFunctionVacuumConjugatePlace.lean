@@ -57,8 +57,7 @@ theorem exists_eigen_of_sep {Y V : Type} [AddCommGroup Y] [AddCommGroup V] [Modu
           exact Fintype.sum_equiv (Equiv.addLeft (y : Y ⧸ Q)) _ _ (fun _ => rfl)
 
   have hne : ∃ χ ∈ X, wf χ ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     let Φ : (Y → ℂ) →ₗ[ℂ] V := ∑ a : Y ⧸ Q, (LinearMap.proj (Quotient.out a) : (Y → ℂ) →ₗ[ℂ] ℂ).smulRight (ρ (Quotient.out a) v)
     have hΦ : ∀ h, Φ h = wf h := fun h => by simp [Φ, wf]
     let M := Submodule.span ℂ X

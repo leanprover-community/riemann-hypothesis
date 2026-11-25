@@ -17,6 +17,7 @@ import Mathlib.Tactic.Linter.Style
 import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FrameDefinitions.PermFinTwoUniv
 import Std.Tactic.BVDecide.Normalize.Prop
 import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsFibreLocal
+import GroundTheory.HeightsAndTheta.Heights.Intersections.IsFieldIntersectionNoBlockFam
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.MetricProofs.AlgebraicSquareIntersectionPullback, Development.WeilBound.CoreStatements.PluriharmonicCharts.XSqDiag, Development.WeilBound.CoreStatements.PluriharmonicCharts.XSqR, Development.AutomorphicSpectrum.Proofs.MetricProofs.AlgebraicSquareBaseIntersection
@@ -345,7 +346,7 @@ end -- clump:auto
 -- ===== end clump member: Development.WeilBound.CoreStatements.PluriharmonicCharts.XSqDiag =====
 
 -- ===== clump member: Development.WeilBound.CoreStatements.PluriharmonicCharts.XSqR =====
--- clump-header: {"m": "Development.WeilBound.CoreStatements.PluriharmonicCharts.XSqR", "h": "module\n\npublic import GroundTheory.HeightsAndTheta.Heights.Intersections.PRFormula\npublic import Development.AutomorphicSpectrum.Definitions.MetricPeriods.GeometricAbelianConnected\npublic import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterNamed\npublic import Development.AutomorphicSpectrum.Definitions.MetricPeriods.MetricsProjectionFormulaNef\npublic import Development.AutomorphicSpectrum.Proofs.MetricProofs.IntersectionVerticalPerturbationBound\npublic import Development.WeilBound.CoreStatements.PluriharmonicCharts.XSqDiag\npublic import GroundTheory.HeightsAndTheta.Heights.Intersections.PZeroSetNull\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Algebra.Order.Star.Int\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Topology.Sheaves.Init\nimport Std.Tactic.BVDecide.Normalize.Prop\nimport GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FrameDefinitions.PermFinTwoUniv\nimport GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsFibreLocal\n\n"}
+-- clump-header: {"m": "Development.WeilBound.CoreStatements.PluriharmonicCharts.XSqR", "h": "module\n\npublic import GroundTheory.HeightsAndTheta.Heights.Intersections.PRFormula\npublic import Development.AutomorphicSpectrum.Definitions.MetricPeriods.GeometricAbelianConnected\npublic import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterNamed\npublic import Development.AutomorphicSpectrum.Definitions.MetricPeriods.MetricsProjectionFormulaNef\npublic import Development.AutomorphicSpectrum.Proofs.MetricProofs.IntersectionVerticalPerturbationBound\npublic import Development.WeilBound.CoreStatements.PluriharmonicCharts.XSqDiag\npublic import GroundTheory.HeightsAndTheta.Heights.Intersections.PZeroSetNull\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Algebra.Order.Star.Int\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Topology.Sheaves.Init\nimport Std.Tactic.BVDecide.Normalize.Prop\nimport GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FrameDefinitions.PermFinTwoUniv\nimport GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsFibreLocal\nimport GroundTheory.HeightsAndTheta.Heights.Intersections.IsFieldIntersectionNoBlockFam\n\n"}
 section -- clump:auto
 @[expose] public section
 
@@ -357,23 +358,8 @@ open GroundTheory.Heights₂.Heights.Inter GroundTheory.Heights₂.Heights.Inter
 
 theorem smooth_pull {K K' : Type} [Fintype K] [Fintype K'] {ι : K → Type} {ι' : K' → Type} [∀ k, Fintype (ι k)]
     [∀ k, Fintype (ι' k)] {κ : K → K'} {v : (Σ k, ι k) → (Σ k, ι' k)} (hb : IsBlockMap κ v)
-    {A : HermLine ι} {A' : HermLine ι'} (hA : IsSmoothHerm A) (hp : IsPullHerm κ v A A') : IsSmoothHerm A' := by
-  have hfun : A'.h = fun z => A.h (fun p => z (v p)) := funext hp.2
-  unfold IsSmoothHerm
-  rw [hfun]
-  have hlin : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞)
-      (fun z : (Σ k, ι' k) → ℂ => fun p => z (v p)) :=
-    contDiff_pi.2 fun p => contDiff_apply ℝ (fun _ => ℂ) (v p)
-  refine hA.comp hlin.contDiffOn ?_
-  intro z hz k
-  obtain ⟨i, hi⟩ := hz (κ k)
-  obtain ⟨⟨k1, i1⟩, hp1⟩ := hb.2.2.2 ⟨κ k, i⟩ ⟨k, rfl⟩
-  have h1 : κ k1 = κ k := by
-    have := hb.2.2.1 ⟨k1, i1⟩
-    rw [hp1] at this
-    exact this.symm
-  obtain rfl := hb.1 h1
-  exact ⟨i1, by show z (v ⟨k1, i1⟩) ≠ 0; rw [hp1]; exact hi⟩
+    {A : HermLine ι} {A' : HermLine ι'} (hA : IsSmoothHerm A) (hp : IsPullHerm κ v A A') : IsSmoothHerm A' :=
+  GroundTheory.Heights₂.Heights.Inter.IsPullHerm.isSmoothHerm hb hp hA
 
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
 
@@ -518,21 +504,8 @@ namespace GlobalTheory.CompanionTheory.Ar.PB.SqFirst
 theorem isSmoothHerm_of_pull {K K' : Type} [Fintype K] [Fintype K'] {ι : K → Type} {ι' : K' → Type}
     [∀ k, Fintype (ι k)] [∀ k, Fintype (ι' k)] {κ : K → K'} {v : (Σ k, ι k) → (Σ k', ι' k')}
     {A : HermLine ι} {A' : HermLine ι'} (hb : IsBlockMap κ v) (hA : IsSmoothHerm A)
-    (hp : IsPullHerm κ v A A') : IsSmoothHerm A' := by
-  have hh : A'.h = A.h ∘ (fun (z' : (Σ k', ι' k') → ℂ) (p : Σ k, ι k) => z' (v p)) := funext hp.2
-  unfold IsSmoothHerm
-  rw [hh]
-  refine ContDiffOn.comp hA ?_ ?_
-  · exact (contDiff_pi.2 fun p => contDiff_apply ℝ (fun _ => ℂ) (v p)).contDiffOn
-  · intro z hz k
-    obtain ⟨i', hi'⟩ := hz (κ k)
-    obtain ⟨⟨k₁, i⟩, hp'⟩ := hb.2.2.2 ⟨κ k, i'⟩ ⟨k, rfl⟩
-    have e : κ k₁ = κ k := by
-      have := hb.2.2.1 ⟨k₁, i⟩
-      rw [hp'] at this
-      exact this.symm
-    obtain rfl := hb.1 e
-    exact ⟨i, by simpa [hp'] using hi'⟩
+    (hp : IsPullHerm κ v A A') : IsSmoothHerm A' :=
+  PositivityTheory.Xgp.sq_R.smooth_pull hb hA hp
 
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
 

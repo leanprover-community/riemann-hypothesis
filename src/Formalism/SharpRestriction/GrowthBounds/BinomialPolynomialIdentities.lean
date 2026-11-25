@@ -200,7 +200,6 @@ theorem reflectedWeight_half_eq_lowestWeight (mu : Fin n → ℤ) : reflectedWei
   split_ifs with h
   · rfl
   · have h1 := Fin.val_rev c
-    have h2 := c.2
     have : Fin.rev c = c := by
       apply Fin.ext
       omega

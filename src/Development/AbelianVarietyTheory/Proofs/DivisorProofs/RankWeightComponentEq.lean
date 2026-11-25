@@ -59,7 +59,6 @@ section -- clump:auto
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S IsDedekindDomain NumberField Formalism.L2.Theta Formalism.L2.NTheta Formalism.IndefR.Mult
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory
 
@@ -84,8 +83,6 @@ open Formalism.IndefR.Bridge (IsDC SplitOff)
 open scoped TensorProduct
 
 namespace GlobalTheory.HeckeParts
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 section Group
 

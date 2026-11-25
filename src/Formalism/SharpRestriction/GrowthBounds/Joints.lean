@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.GrowthBounds.CountingStatementReduction
 public import Formalism.SharpRestriction.GrowthBounds.TableLineDegreeFive
 public import Formalism.SharpRestriction.GrowthBounds.SourceCleaning
 public import Formalism.SharpRestriction.GrowthBounds.Lemma5aAt
@@ -255,27 +256,7 @@ theorem mq_top_of_irr {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationR
 
 theorem weight_condition_of_integral_form (D : Formalism.BasicNotions.D7) (X : Formalism.MainNotions.flipOneThree.Inst) (h : Formalism.MainNotions.CovariantDegrees.NablaDeltaComparisonField D) :
     Formalism.MainNotions.flipOneThree.adm2 D X := by
-  intro n V _ _ _ _ E lam v hn _ hirr hl
-  obtain ⟨hA, hB⟩ := h X.p X.L.n' X.O X.setting X.instance_ring_standard (n + 1) lam V E v hirr
-  refine ⟨fun x hx => ?_, fun M hM hv hwt => ?_⟩
-  · have hx' := hA x hx
-    have hle := integral_form_exponent_le_ceil X.p X.L.a X.r n hn (ellWt lam) hl
-    obtain ⟨k, hk⟩ := Nat.exists_eq_add_of_le hle
-    have : ((X.p : KK X.O) ^ ⌈Formalism.MainNotions.flipOneThree.kappaOneExponent X.p X.L.a X.r⌉₊) • x =
-        ((X.p : X.O) ^ k) • (((X.p : X.O) ^ (N0 (n + 1) * deF X.p (n + 1) (ellWt lam))) • x) := by
-      rw [hk, smul_smul, ← pow_add, add_comm, ← algebraMap_smul (KK X.O) (((X.p : X.O)) ^ _ )]
-      simp
-    rw [this]
-    exact Submodule.smul_mem _ _ hx'
-  · apply hB M hM (mq_top_of_irr E lam v hirr M hM hv)
-    intro x
-    constructor
-    · rintro ⟨hxM, hxw⟩
-      exact hwt x hxM hxw
-    · rintro ⟨c, rfl⟩
-      refine ⟨M.smul_mem c hv, ?_⟩
-      rw [← algebraMap_smul (KK X.O) c v]
-      exact Submodule.smul_mem _ _ hirr.2.2.1.2.1
+  apply _root_.Formalism.MainNotions.G.CountingStatementReduction.weight_condition_from_integral_form <;> assumption
 
 theorem isotypic_multiplicity_of_reducibility (D : Formalism.BasicNotions.D7) (hV : Formalism.MainNotions.CovariantDegrees.ValuationLemmaField D) (hdec : _root_.Formalism.MainNotions.G.Joints.PolIsoDecompB) :
     Formalism.MainNotions.PlaneGramData.adm1 D := by
@@ -1349,8 +1330,7 @@ theorem padicGe_sum {p : ℕ} [Fact p.Prime] {ι : Type*} (s : Finset ι) (f : �
 
 theorem padicValNat_lt_of_lt_pow {p : ℕ} [hp : Fact p.Prime] {y t : ℕ} (hy : 1 ≤ y) (hlt : y < p ^ (t + 1)) :
     padicValNat p y ≤ t := by
-  by_contra hc
-  push_neg at hc
+  by_contra! hc
   have h1 : p ^ (t + 1) ∣ y := (pow_dvd_pow p (Nat.succ_le_of_lt hc)).trans (_root_.Dvd.intro_left _ (_root_.Nat.divMaxPow_mul_pow_padicValNat _ _))
   have h2 := Nat.le_of_dvd hy h1
   omega
@@ -1373,7 +1353,6 @@ theorem logVal_clause1 (p : ℕ) (hp : p.Prime) (t s : ℕ) :
     exact_mod_cast padicValNat_lt_of_lt_pow hy.1 hy.2
   push_cast
   have hmul := mul_le_mul_of_nonneg_left hv (Nat.cast_nonneg s : (0 : ℝ) ≤ s)
-  have hcomm : (s : ℝ) * ((padicValRat p (y : ℚ) : ℤ) : ℝ) = ((padicValRat p (y : ℚ) : ℤ) : ℝ) * s := mul_comm _ _
   linarith
 
 theorem logVal_holds : Formalism.MainNotions.ColumnSystems.logVal := by
@@ -1408,7 +1387,6 @@ theorem logVal_holds : Formalism.MainNotions.ColumnSystems.logVal := by
   have hp4 : 1 / ((p : ℝ) - 1) ≤ 1 / 4 := by
     have : (5 : ℝ) ≤ p := by exact_mod_cast hp5
     apply one_div_le_one_div_of_le (by norm_num); linarith
-  have hs1 : (1 : ℝ) ≤ s := by exact_mod_cast hs
   push_cast
   rw [hps]
   linarith
@@ -1638,7 +1616,6 @@ theorem expBound_of (D : D7) (L : SizeData₂ D) (X : Inst D L) (Ce : ℝ) (hCe 
     have hprime : (D.what₂.places.resChar w).Prime := ((D.gat u w hg).P.setting v).prime
     have hp1 : (1 : ℝ) < (D.what₂.places.resChar w : ℝ) := by exact_mod_cast hprime.one_lt
     have hl := gat_ellWt_lamAt_le P T u w hg v s
-    have hloga : 0 ≤ Real.logb (D.what₂.places.resChar w) L.sc.a := Real.logb_nonneg hp1 (by linarith)
     unfold wExp deF N0
     set kk := (D.gat u w hg).P.m + 1 with hkk_def
     have hkk : (kk : ℝ) = D.R.k := by exact_mod_cast hk

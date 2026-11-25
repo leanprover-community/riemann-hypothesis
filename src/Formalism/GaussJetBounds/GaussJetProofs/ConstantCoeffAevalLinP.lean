@@ -5,8 +5,6 @@ public import Formalism.GaussJetBounds.GaussJetProofs.ThmAOp
 import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.Tactic.Lemma
-import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

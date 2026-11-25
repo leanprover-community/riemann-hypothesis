@@ -191,8 +191,7 @@ theorem typeClosure_of_intertwine : ∀ (E : Type) [Field E] [NumberField E] [_r
     haveI : Module.Projective ℂ ((U →ₗ[ℂ] ℂ) ⧸ Submodule.span ℂ (Set.range ev)) :=
       @Module.Projective.of_free _ _ _ _ _ hfr
     refine Submodule.span_eq_top_of_ne_zero fun z hz => ?_
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact hz (Subtype.ext (Subtype.ext (Subtype.ext (funext fun h => hc _ ⟨h, rfl⟩))))
   let L : U →ₗ[ℂ] ℂ :=
     (LinearMap.proj g).comp ((Sm E a).subtype.comp (π.V.subtype.comp (f.comp U.subtype)))
@@ -355,8 +354,7 @@ theorem exists_typeComplement : ∀ (K V : Type) [Group K] [AddCommGroup V] [Mod
     refine iSup₂_le fun S ⟨hA, hn⟩ => ?_
     by_contra hc
     have hne : ∃ s ∈ S.toSubmodule, p s ≠ 0 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact hc fun s hs => (Submodule.projection_apply_eq_zero_iff hXY₀).mp (h s hs)
     obtain ⟨_, ⟨e⟩⟩ := imRep_atom p hp hA hne
     have hle : imRep p hp S ≤ X := by
@@ -574,8 +572,7 @@ lemma exists_atom_pair
     (B : V →ₗ[ℂ] V →ₗ[ℂ] ℂ) (Y : Subrepresentation ρ) (ψ : V)
     (h : ∃ y ∈ Y.toSubmodule, B y ψ ≠ 0) :
     ∃ S₁ : Subrepresentation ρ, IsAtom S₁ ∧ S₁ ≤ Y ∧ ∃ x ∈ S₁.toSubmodule, B x ψ ≠ 0 := by
-  by_contra hc
-  push_neg at hc
+  by_contra! hc
   obtain ⟨y, hy, hne⟩ := h
   apply hne
   have hle : Y.toSubmodule ≤ LinearMap.ker (B.flip ψ) := by
@@ -643,8 +640,7 @@ theorem exists_isAtom_le : ∀ (n : ℕ) (Y : Subrepresentation ρ),
     by_cases hA : IsAtom Y
     · exact ⟨Y, hA, le_rfl⟩
     · have : ∃ Z, Z < Y ∧ Z ≠ ⊥ := by
-        by_contra hc
-        push_neg at hc
+        by_contra! hc
         exact hA ⟨hne, hc⟩
       obtain ⟨Z, hZY, hZ⟩ := this
       have hlt : Z.toSubmodule < Y.toSubmodule :=
@@ -1131,12 +1127,10 @@ theorem isCsd_of_paired : GlobalTheory.Published.AutomorphicFormsFiniteGL → �
   obtain ⟨P₁, e1⟩ := hadj invTOp (Or.inl rfl) B₁ l1 r1 f1 c1 x1
   obtain ⟨P₂, e2⟩ := hadj conjOp (Or.inr rfl) B₂ l2 r2 f2 c2 x2
   obtain ⟨v, hv⟩ : ∃ v, P v ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hP0 (LinearMap.ext h)
   obtain ⟨g, hg⟩ : ∃ g : Module.Dual ℂ π.V, g (P v) ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hv ((Module.forall_dual_apply_eq_zero_iff ℂ (P v)).1 h)
   have hf : (g ∘ₗ P) ∘ₗ P = g ∘ₗ P := by rw [LinearMap.comp_assoc, hPP]
   obtain ⟨ψ₁, hψ₁⟩ := _root_.GlobalTheory.functional_fixed_by_idempotent_represented B₁ l1 P P₁ hfin e1 (g ∘ₗ P) hf

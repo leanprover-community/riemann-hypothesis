@@ -356,8 +356,6 @@ theorem exists_class (m r : ℕ) (hr : 2 ≤ r) (s : SplitPlace L) {p : ℕ} (hp
     rfl
   · rw [hσ0 i j (by rwa [hid]), Matrix.one_apply_ne (Ne.symm hij), TensorProduct.zero_tmul]
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem exists_trivial_stabiliser : ∀ (D : D7) (k : Fin 2) (s : SplitPlace D.host.E), s.w ∈ placesOver D.host.E (D.host.g k) → ∃ g : GAf D.host.E D.R.nV, ∀ γ ∈ GQ D.host.E D.R.nV, g⁻¹ * γ * g ∈ Umax D.host.E D.R.nV → NG.UniRT s D.R.r (s.loc _ (g⁻¹ * γ * g)) → γ = 1 := by
   intro D k s hs
   have hp := D.host.g_prime k
@@ -408,7 +406,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formal
 open Formalism.AUTREP (GAf)
 open Neutral.B1 (Ideles)
 open GlobalTheory.HeckeGal (Gab IsGlobalArtin)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 open GlobalTheory.LevCmp
@@ -502,7 +499,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formal
 open Formalism.AUTREP (GAf)
 open Neutral.B1 (Ideles)
 open GlobalTheory.HeckeGal (Gab IsGlobalArtin)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 open GlobalTheory.LevCmp
@@ -596,7 +592,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formal
 open Formalism.AUTREP (GAf)
 open Neutral.B1 (Ideles)
 open GlobalTheory.HeckeGal (Gab IsGlobalArtin)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 open GlobalTheory.LevCmp
@@ -779,7 +774,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formal
 open Formalism.AUTREP (GAf)
 open Neutral.B1 (Ideles)
 open GlobalTheory.HeckeGal (Gab IsGlobalArtin)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 open GlobalTheory.LevCmp
@@ -844,7 +838,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formal
 open Formalism.AUTREP (GAf)
 open Neutral.B1 (Ideles)
 open GlobalTheory.HeckeGal (Gab IsGlobalArtin)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 open GlobalTheory.LevCmp
@@ -945,8 +938,7 @@ theorem mem_para_of_eig : ∀ (L : Type) [Field L] [NumberField L] [IsCMField L]
     rw [hO, ValuationSubring.mem_toSubring, IsDedekindDomain.HeightOneSpectrum.mem_adicCompletionIntegers]
   have hint := (GlobalTheory.HeckeScalarSph.loc_mem_GLint_iff s hκT).2 hκU
   refine ⟨hint, ?_⟩
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   obtain ⟨i0, j0, hi0, hj0, hv⟩ := hcon
   set h := s.loc n κ with hh
   have hent : ∀ i j, Valued.v (h.val i j) ≤ 1 := fun i j =>
@@ -1055,7 +1047,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formal
 open Formalism.AUTREP (GAf)
 open Neutral.B1 (Ideles)
 open GlobalTheory.HeckeGal (Gab IsGlobalArtin)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 open GlobalTheory.LevCmp
@@ -1195,7 +1186,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formal
 open Formalism.AUTREP (GAf)
 open Neutral.B1 (Ideles)
 open GlobalTheory.HeckeGal (Gab IsGlobalArtin)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 open GlobalTheory.LevCmp
@@ -1268,7 +1258,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formal
 open Formalism.AUTREP (GAf)
 open Neutral.B1 (Ideles)
 open GlobalTheory.HeckeGal (Gab IsGlobalArtin)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 open GlobalTheory.LevCmp
@@ -1308,7 +1297,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formal
 open Formalism.AUTREP (GAf)
 open Neutral.B1 (Ideles)
 open GlobalTheory.HeckeGal (Gab IsGlobalArtin)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 open GlobalTheory.LevCmp
@@ -1395,7 +1383,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formal
 open Formalism.AUTREP (GAf)
 open Neutral.B1 (Ideles)
 open GlobalTheory.HeckeGal (Gab IsGlobalArtin)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 open GlobalTheory.LevCmp

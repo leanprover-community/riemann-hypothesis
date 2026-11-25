@@ -255,7 +255,6 @@ theorem δ_yc (w : Z2 F) : δ F 2 (yc w.1) = 0 := by
 
 end CechPosetH2Surjective
 
-
 open CechPosetH2Surjective in
 theorem posetTwoCocycle_eq_cechImage_add_coboundary : ∀ {κ : Type} [LinearOrder κ] {R : Type} [CommRing R] (F : (NE κ)ᵒᵖ ⥤ CommAlgCat.{0} R) (w : Z2 F), ∃ y : CC F 2, δ F 2 y = 0 ∧ ∃ f : C1 F, w.1 - e2 F y = d1 F f := by
   intro κ _ R _ F w
@@ -280,9 +279,6 @@ open CategoryTheory CategoryTheory.Limits AlgebraicGeometry KaehlerDifferential 
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CatCoh GlobalTheory.Cris GlobalTheory.CechDR GlobalTheory.AbCoh
 open GlobalTheory.CechPoset
 
-
-theorem _root_.GlobalTheory.T.exists_cocycle_sub_e2_eq_d1 : ∀ {κ : Type} [LinearOrder κ] {R : Type} [CommRing R] (F : (NE κ)ᵒᵖ ⥤ CommAlgCat.{0} R) (w : Z2 F), ∃ y : CC F 2, δ F 2 y = 0 ∧ ∃ f : C1 F, w.1 - e2 F y = d1 F f := by
-  first | exact @GlobalTheory.CechPoset.posetTwoCocycle_eq_cechImage_add_coboundary
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.PosetTwoCocycleEqCechImageAddCoboundaryStatement =====

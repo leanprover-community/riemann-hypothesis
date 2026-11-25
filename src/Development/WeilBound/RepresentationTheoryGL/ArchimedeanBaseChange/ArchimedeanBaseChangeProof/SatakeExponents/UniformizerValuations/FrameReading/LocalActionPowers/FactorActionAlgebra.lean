@@ -39,8 +39,6 @@ open GlobalTheory.CuspRep GlobalTheory.PRep GlobalTheory.UnitaryBC GlobalTheory.
 open PositivityTheory.Rg.BcB.F PositivityTheory.Rg.BcB.F.RS PositivityTheory.Rg.BcB.F.Tail PositivityTheory.Rg.BcB.F.FA GlobalTheory.CompanionTheory.ActTr
 open scoped Classical
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace GlobalTheory.CompanionTheory.FactorAction
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {a b : ℕ}
@@ -194,8 +192,6 @@ open PositivityTheory.Rg.BcB.F.RS PositivityTheory.Rg.BcB.F.Tail
 open scoped Classical
 
 namespace PositivityTheory.Rg.BcB.F.FA
-
-attribute [local instance] borelG borelF borelH
 
 section
 
@@ -565,7 +561,6 @@ section -- clump:auto
 open NumberField IsDedekindDomain Matrix Polynomial GlobalTheory.BCT GlobalTheory.UnitaryBC Formalism.UG
 open PositivityTheory.Rg.Bc.ArchbcB.B.M4 PositivityTheory.Rg.Bc.ArchbcB.B.M4.Tw
 open scoped Classical
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 noncomputable section
 

@@ -432,8 +432,7 @@ theorem exists_norm (E : Type) [Field E] [NumberField E] [IsCMField E] {n : ℕ}
     ext i j
     exact IsCMField.complexEmbedding_complexConj E τ _
   obtain ⟨z, hz⟩ : ∃ z : E, star z ≠ z := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact IsCMField.complexConj_ne_one E (AlgEquiv.ext h)
   obtain ⟨δ, hδ⟩ := exists_nrm_eq (infinite_quot z hz) N (by rw [hN]; exact hs) hd h3
   refine ⟨δ, ?_⟩

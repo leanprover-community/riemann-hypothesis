@@ -76,8 +76,7 @@ theorem continuous_infPt : Continuous (infPt (E := E) (n := n)) :=
 theorem mem_closure_rat_fin (x : UA E n) (hx : x ∈ infU E n) :
     x ∈ closure ((ratU E n : Set (UA E n)) * (finU (E := E) (n := n) : Set (UA E n))) := by
   have hne : ∃ z, (IsCMField.complexConj E : E →+* E) z ≠ z := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact IsCMField.complexConj_ne_one E (AlgEquiv.ext h)
   have hd := GlobalTheory.RealApprox.dense_unitary (GlobalTheory.CuspRep.InfType.diagInf E) (IsCMField.complexConj E : E →+* E)
     (starRingEnd (Cinf E)) (fun z => (pInf_complexConj z).symm) (fun z => IsCMField.complexConj_apply_apply E z) hne

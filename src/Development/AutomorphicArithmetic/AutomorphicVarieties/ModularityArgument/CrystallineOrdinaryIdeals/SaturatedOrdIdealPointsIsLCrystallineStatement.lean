@@ -610,8 +610,7 @@ theorem exists_GL_conj_eq_diagonal_of_charpoly_eq_prod :
     exact key (P a) b
   have hex : ∀ a, ∃ i j, IsUnit (aeval A (P a) i j) := by
     intro a
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     obtain ⟨u, hu⟩ := hq a
     set E := ((u⁻¹ : Cˣ) : C) • aeval A (P a) with hE
     have hEn : ∀ i j, ¬ IsUnit (E i j) := by
@@ -1891,8 +1890,6 @@ section -- clump:auto
 
 open Formalism.BasicNotions Formalism.BasicNotions.Loc ReciprocityTheory.Gal Module UpperTheory.V.Loc UpperTheory.V.U3 UpperTheory.V.Alg IsLocalRing Polynomial Topology
 
-theorem _root_.GlobalTheory.T.saturatedOrdIdeal_points_isLCrystalline : LocalPublishedTheorems → ∀ {l : ℕ} [Fact l.Prime] {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [CharZero O] [Algebra ℤ_[l] O] [Module.Finite ℤ_[l] O] [IsAdicComplete (maximalIdeal O) O] (D : Dat3 l O) (U : _root_.UpperTheory.V.U3.Univ (_root_.UpperTheory.V.U3.GCond.noCondition O D.η D.Ψ)), GlobalTheory.OrdLoc.PtsCr D U (GlobalTheory.OrdLoc.IY D U) := by
-  first | exact @GlobalTheory.OrdLoc.ptsCr_IY
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.CrystallineOrdinaryIdeals.SaturatedOrdIdealPointsIsLCrystallineStatement =====

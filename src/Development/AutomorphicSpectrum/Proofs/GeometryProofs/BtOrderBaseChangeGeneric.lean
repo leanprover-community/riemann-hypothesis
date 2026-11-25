@@ -1,5 +1,7 @@
 module
 
+import Development.WeilBound.CoreStatements.HodgeTatePoints.TwhopfInd
+
 public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.TranslateMemIndOrder
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ExistsUnitFormLocalizationEtaleNbhd
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.ExistsDenOfOpen
@@ -81,16 +83,7 @@ variable {R : Type} [CommRing R] {T : Type} [CommGroup T]
 
 theorem translate_mem {A : Subalgebra R (T → R)} (hA : IsHopfOrder A) (t : T) {f : T → R} (hf : f ∈ A) :
     (fun h => f (t * h)) ∈ A := by
-  have key : ∀ g ∈ prodSpan A, (fun h => g (t, h)) ∈ A := by
-    intro g hg
-    induction hg using Submodule.span_induction with
-    | mem g hg =>
-      obtain ⟨a, ha, b, hb, rfl⟩ := hg
-      exact A.smul_mem hb (a t)
-    | zero => exact A.zero_mem
-    | add x y _ _ hx hy => exact A.add_mem hx hy
-    | smul r x _ hx => exact A.smul_mem hx r
-  exact key _ (hA.comul f hf)
+  apply _root_.PositivityTheory.HtPt.Twhopf.translate_mem <;> assumption
 
 def transl {A : Subalgebra R (T → R)} (hA : IsHopfOrder A) (s : T) : A →+* A where
   toFun f := ⟨fun h => (f : T → R) (s * h), translate_mem hA s f.2⟩
@@ -132,8 +125,7 @@ theorem separates {Γ : QFGroup R T} {Γ' : QFGroup R' T} {F : Γ'.G.left ⟶ Γ
     (hbc : Γ'.IsBaseChange Γ (algebraMap R R') F) {A : Subalgebra R (T → R)}
     {j : Γ.G.left ⟶ Spec (CommRingCat.of A)} (hj : Γ.IsEmb A j) [Mono j] (s t : T) (hst : s ≠ t) :
     ∃ a ∈ A, algebraMap R R' (a s) ≠ algebraMap R R' (a t) := by
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   apply hst
   have e : (Γ'.pt s).left ≫ F ≫ j = (Γ'.pt t).left ≫ F ≫ j := by
     rw [pt_comp_emb hbc hj, pt_comp_emb hbc hj]

@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsPadicAlgClRingEquivComplexCompEqOfCountabl
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.WeakShimuraTheory.NearSplit
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.HeightAndVanishing.CoefSup
 public import Mathlib.FieldTheory.IsAlgClosed.Classification
@@ -12,15 +13,7 @@ open NumberField IsDedekindDomain Formalism.ConjugateSelfDual Formalism.HC Recip
 
 open Cardinal in
 private theorem az_card (l : ℕ) [Fact l.Prime] : #(PadicAlgCl l) = 𝔠 := by
-  have h1 : #ℚ_[l] ≤ #(CauSeq ℚ (padicNorm l)) :=
-    mk_le_of_surjective (f := (Quotient.mk'' : CauSeq ℚ (padicNorm l) → ℚ_[l])) Quotient.mk''_surjective
-  have h2 : #(CauSeq ℚ (padicNorm l)) ≤ #(ℕ → ℚ) := mk_subtype_le _
-  have h3 : #(ℕ → ℚ) = 𝔠 := by simp
-  apply le_antisymm
-  · refine (Algebra.IsAlgebraic.cardinalMk_le_max ℚ_[l] (PadicAlgCl l)).trans ?_
-    exact max_le (h1.trans (h2.trans h3.le)) aleph0_le_continuum
-  · have h : 𝔠 ≤ #ℚ_[l] := continuum_le_cardinal_of_nontriviallyNormedField ℚ_[l]
-    exact h.trans (mk_le_of_injective (algebraMap ℚ_[l] (PadicAlgCl l)).injective)
+  apply _root_.GlobalTheory.cardinalMk_padicAlgCl_eq_continuum <;> assumption
 
 private noncomputable def azV (l : ℕ) [Fact l.Prime] : ValuationSubring (PadicAlgCl l) :=
   (NormedField.valuation : Valuation (PadicAlgCl l) NNReal).valuationSubring

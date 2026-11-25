@@ -39,7 +39,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Matrix Polynomial GlobalTheory.BCT GlobalTheory.UnitaryBC Formalism.UG
 open scoped Classical
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 end -- clump:auto
 end -- clump:auto
@@ -52,7 +51,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Matrix Polynomial GlobalTheory.BCT GlobalTheory.UnitaryBC Formalism.UG
 open scoped Classical
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 namespace GlobalTheory.CompanionTheory.RootsDistinctVal
 
@@ -82,7 +80,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Matrix Polynomial GlobalTheory.BCT GlobalTheory.UnitaryBC Formalism.UG
 open scoped Classical
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 theorem _root_.GlobalTheory.T.roots_eq_of_distinct_valuations : ∀ (L : Type) [Field L] [Valued L (WithZero (Multiplicative ℤ))] (n : ℕ) (y : Fin n → ℤ), Function.Injective y → ∀ u u' : Fin n → L, (∀ i, ordL (u i) = y i) → (∀ i, ordL (u' i) = y i) → ∏ i, (X - C (u i)) = ∏ i, (X - C (u' i)) → u = u' := by
   first | exact @GlobalTheory.CompanionTheory.RootsDistinctVal.roots_eq_of_distinct_ord
@@ -100,8 +97,6 @@ noncomputable section
 open NumberField IsDedekindDomain Polynomial Matrix
 open GlobalTheory.BCT GlobalTheory.UnitaryBC Formalism.UG GlobalTheory.CuspRep
 open scoped Classical
-
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 namespace PositivityTheory.Rg.Bc.ArchbcB.B.M4
 
@@ -340,8 +335,6 @@ open NumberField IsDedekindDomain Polynomial Matrix
 open GlobalTheory.BCT GlobalTheory.UnitaryBC Formalism.UG
 open scoped Classical
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace PositivityTheory.Rg.Bc.ArchbcB.B.M4
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
@@ -376,8 +369,6 @@ noncomputable section
 open NumberField IsDedekindDomain Polynomial Matrix
 open GlobalTheory.BCT GlobalTheory.UnitaryBC Formalism.UG
 open scoped Classical
-
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 namespace PositivityTheory.Rg.Bc.ArchbcB.B.M4
 
@@ -524,7 +515,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Matrix Polynomial GlobalTheory.BCT GlobalTheory.UnitaryBC Formalism.UG
 open scoped Classical
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 noncomputable section
 
@@ -599,8 +589,6 @@ open NumberField IsDedekindDomain Polynomial Matrix
 open GlobalTheory.BCT GlobalTheory.UnitaryBC Formalism.UG
 open scoped Classical
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace PositivityTheory.Rg.Bc.ArchbcB.B.M4
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
@@ -636,8 +624,6 @@ noncomputable section
 open NumberField IsDedekindDomain Polynomial Matrix
 open GlobalTheory.BCT GlobalTheory.UnitaryBC Formalism.UG
 open scoped Classical
-
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 namespace PositivityTheory.Rg.Bc.ArchbcB.B.M4
 
@@ -1306,8 +1292,7 @@ theorem asmL_A (hU : Unr E) (w : Pl E) (hw : ¬ IsSplitAt w) (n a : ℕ) (ha : a
   · intro δ hδ hne
     rw [Pi.one_apply, one_mul] at hne
     obtain ⟨p, hp⟩ : ∃ p, phiX n w b ϖ x a (p⁻¹ * δ * θ p) ≠ 0 := by
-      by_contra hcon
-      push_neg at hcon
+      by_contra! hcon
       exact hne (_root_.PositivityTheory.Rg.Bc.ArchbcB.B.M4.twisted_orbital_integral_eq_zero_of_vanish θ _ δ _ hcon)
     have hyS := hinv δ hδ p
     rw [hval _ hyS] at hp
@@ -1359,8 +1344,7 @@ variable {G : Type} [Group G] [TopologicalSpace G]
 
 theorem meets_of_ne (K : Subgroup G) (δ : G) (f : G → ℂ) (h : twOrb (MonoidHom.id G) K δ f ≠ 0) :
     ∃ p : G, f (p⁻¹ * δ * p) ≠ 0 := by
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   exact h (_root_.PositivityTheory.Rg.Bc.ArchbcB.B.M4.twisted_orbital_integral_eq_zero_of_vanish (MonoidHom.id G) K δ f (fun p => by simpa using hcon p))
 
 end

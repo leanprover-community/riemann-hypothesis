@@ -61,8 +61,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory.UPel.Sm GlobalTheory.Cris GlobalTheory.DeRham
 open scoped TensorProduct
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.HTLagr
 
 

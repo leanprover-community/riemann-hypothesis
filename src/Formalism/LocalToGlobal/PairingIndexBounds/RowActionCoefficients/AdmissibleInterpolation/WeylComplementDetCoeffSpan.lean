@@ -1,5 +1,6 @@
 module
 
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.OddDualWeylJacobian.TransvectionMulApply
 public import Formalism.LocalToGlobal.PairingIndexBounds.RowActionCoefficients.WeylComplementInDetCoeffSpan
 public import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
 import Mathlib.RingTheory.PiTensorProduct
@@ -572,17 +573,7 @@ variable {S : Type*} [CommRing S] {n : ℕ}
 
 theorem tv_mul_apply (i j : Fin n) (c : S) (M : Matrix (Fin n) (Fin n) S) (a t : Fin n) :
     (Matrix.transvection i j c * M) a t = M a t + if a = i then c * M j t else 0 := by
-  rw [Matrix.transvection, Matrix.add_mul, Matrix.one_mul, Matrix.add_apply, Matrix.mul_apply]
-  congr 1
-  by_cases h : a = i
-  · subst h
-    rw [if_pos rfl, Finset.sum_eq_single j]
-    · simp
-    · intro b _ hb; simp [Ne.symm hb]
-    · simp
-  · rw [if_neg h]
-    refine Finset.sum_eq_zero fun b _ => ?_
-    simp [Ne.symm h]
+  apply _root_.PI.OddDualWeyl.Intw.transvection_mul_apply <;> assumption
 
 theorem mulC_tv_apply (i j : Fin n) (c : S) (x : Fin n → ℕ → S) (a : Fin n) (k : ℕ) :
     mulC (Matrix.transvection i j c) x a k = x a k + if a = i then c * x j k else 0 := by

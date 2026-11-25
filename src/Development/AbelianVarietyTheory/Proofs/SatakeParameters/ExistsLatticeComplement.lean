@@ -132,8 +132,7 @@ private theorem exists_smul_primitive_vector_of_dvr {O : Type} [CommRing O] [IsD
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [← hy i]; ring
   refine ⟨d, hd0, y, funext fun i => by simp [← hy i, mul_comm], ?_⟩
-  by_contra hno
-  push_neg at hno
+  by_contra! hno
   have hmax : ∑ i, c i * y i ∈ IsLocalRing.maximalIdeal O :=
     Ideal.sum_mem _ fun i _ => Ideal.mul_mem_left _ _
       ((IsLocalRing.mem_maximalIdeal _).mpr (mem_nonunits_iff.mpr (hno i)))

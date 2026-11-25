@@ -257,7 +257,7 @@ variable {p : ℕ} [Fact p.Prime] in
 private theorem mem_span_range_psi {p : ℕ} [Fact p.Prime] (G : _root_.GlobalTheory.LKTrip.HTGroup p)
     (v : InfinitePlace G.F) (M : Matrix (Fin G.n) (Fin G.n) ℂ) :
     M ∈ Submodule.span ℂ (Set.range (G.psi v)) := by
-  letI : Algebra G.F ℂ := v.embedding.toAlgebra
+  let : Algebra G.F ℂ := v.embedding.toAlgebra
   have hsc : ∀ f : G.F, algebraMap G.F (Matrix (Fin G.n) (Fin G.n) ℂ) f =
       Matrix.scalar (Fin G.n) (v.embedding f) := by
     intro f; ext i j
@@ -512,9 +512,9 @@ theorem isTest_indicator_comm (G : HTGroup p) (K' : Subgroup (Gr G 1))
         rw [e]; exact K'.mul_mem (K'.mul_mem hk h) (K'.inv_mem hk))
       simp [hg, h']
   · set K₀ := KHT p G.m G.n 1 G.Fw
-    haveI : (K₀.subgroupOf K').FiniteIndex := Subgroup.isFiniteRelIndex_iff_finiteIndex.mp hK.2
-    haveI : Finite (K' ⧸ K₀.subgroupOf K') := Subgroup.finite_quotient_of_finiteIndex
-    haveI : Fintype (K' ⧸ K₀.subgroupOf K') := Fintype.ofFinite _
+    have : (K₀.subgroupOf K').FiniteIndex := Subgroup.isFiniteRelIndex_iff_finiteIndex.mp hK.2
+    have : Finite (K' ⧸ K₀.subgroupOf K') := Subgroup.finite_quotient_of_finiteIndex
+    have : Fintype (K' ⧸ K₀.subgroupOf K') := Fintype.ofFinite _
     refine ⟨Finset.univ.image fun q : K' ⧸ K₀.subgroupOf K' => ((Quotient.out q : K') : Gr G 1), fun g hg => ?_⟩
     have hgK : g ∈ K' := by
       by_contra hn; exact hg (by simp [Set.indicator_apply, hn])

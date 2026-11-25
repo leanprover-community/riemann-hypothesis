@@ -22,8 +22,7 @@ theorem nontrivial_piTensorProduct {ι : Type} [Fintype ι] {X : ι → Type} [�
   classical
   choose v hv using fun a => exists_ne (0 : X a)
   have hex : ∀ a, ∃ φ : Module.Dual ℂ (X a), φ (v a) ≠ 0 := fun a => by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact hv a ((Module.forall_dual_apply_eq_zero_iff ℂ (v a)).1 hc)
   choose φ hφ using hex
   let L := PiTensorProduct.lift ((MultilinearMap.mkPiAlgebra ℂ ι ℂ).compLinearMap φ)

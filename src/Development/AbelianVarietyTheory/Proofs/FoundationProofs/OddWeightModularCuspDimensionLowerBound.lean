@@ -435,8 +435,7 @@ namespace GlobalTheory.OddFrame
 theorem weights_nonneg_of_det {Γ : Subgroup SL(2, ℤ)} [Γ.FiniteIndex] {r : ℕ} {s : Fin r → SL(2, ℤ)}
     {w : Fin r → ℤ} {F : Fin r → ℍ → ℂ} (hF : ∀ j, IsMF Γ (w j) (F j))
     (hdet : ∃ τ, (evM s w F τ).det ≠ 0) (j : Fin r) : 0 ≤ w j := by
-  by_contra hneg
-  push_neg at hneg
+  by_contra! hneg
   have h0 : F j = 0 := (hF j).eq_zero_of_neg hneg
   obtain ⟨τ, hτ⟩ := hdet
   apply hτ
@@ -491,8 +490,7 @@ theorem oddFrame_descent_of_weight_sum (Γ : Subgroup SL(2, ℤ)) [Γ.FiniteInde
       rw [Ne, UpperHalfPlane.mul_eq_zero_iff (he j₀) hmd]
       push_neg; exact ⟨hne, hd0⟩
     obtain ⟨τ, hτ⟩ : ∃ τ, e j₀ τ * (evM s w F τ).det ≠ 0 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact hprod (funext fun τ => by simpa using h τ)
     refine ⟨τ, fun h0 => hτ ?_⟩
     rw [← mul_det_evM_update s w F j₀ w₀ G E e hrel τ]

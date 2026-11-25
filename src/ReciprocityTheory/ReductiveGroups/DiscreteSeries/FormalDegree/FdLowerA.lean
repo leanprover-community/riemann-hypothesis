@@ -1,5 +1,6 @@
 module
 
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.FdUpperA
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.PmatIsHermitian
 import Mathlib.Algebra.Order.Star.Real
 public import Mathlib.Analysis.SpecialFunctions.Gaussian.FourierTransform
@@ -93,17 +94,6 @@ theorem fdl_wab_zero_pos {ε : Fin n → Bool} (ab : PCoord ε) : 0 < wab (0 : F
 
 theorem fdl_gauss (ε : Fin n → Bool) :
     ∫⁻ y : PCoord ε → ℂ, ENNReal.ofReal (Real.exp (-Qf (0 : Fin n → ℝ) y)) = ENNReal.ofReal (PiW ε 0) := by
-  have hw : ∀ ab : PCoord ε, 0 < wab (0 : Fin n → ℝ) ab.1.1 ab.1.2 := fdl_wab_zero_pos
-  have h1 : ∀ y : PCoord ε → ℂ, Real.exp (-Qf (0 : Fin n → ℝ) y) =
-      ∏ ab, Real.exp (-(wab (0 : Fin n → ℝ) ab.1.1 ab.1.2 * ‖y ab‖ ^ 2)) := by
-    intro y
-    rw [Qf, ← Finset.sum_neg_distrib, Real.exp_sum]
-  simp_rw [h1]
-  rw [MeasureTheory.volume_pi]
-  rw [fdl_lint_pi_ofReal (E := fun _ : PCoord ε => ℂ) (μ := fun _ => volume)
-    (fun (ab : PCoord ε) (x : ℂ) => Real.exp (-(wab (0 : Fin n → ℝ) ab.1.1 ab.1.2 * ‖x‖ ^ 2)))
-    (fun ab => fdl_cgauss_int (hw ab)) (fun _ _ => (Real.exp_pos _).le)]
-  rw [PiW, ENNReal.ofReal_prod_of_nonneg (fun ab _ => (div_pos Real.pi_pos (hw ab)).le)]
-  exact Finset.prod_congr rfl fun ab _ => by rw [fdl_cgauss (hw ab)]
+  apply ReciprocityTheory.ChartRestriction.DS.fdU_lintegral_gauss <;> assumption
 
 end ReciprocityTheory.ChartRestriction.DS

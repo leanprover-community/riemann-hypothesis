@@ -289,8 +289,7 @@ theorem param_down (hH : GlobalTheory.Hk3.HoweUnram) {ψ : AddChar (AF D.host.F)
     (frameLat S) hH' hL.fg hspan (GlobalTheory.AdelicU.SelfDual.isSelfDualAt_frameLat D S v)
 
   obtain ⟨j0, hj0⟩ : ∃ j, b (f j) (x j) ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact hz0 (Finset.sum_eq_zero fun j _ => hc j)
   have hx0 : x j0 ≠ 0 := fun e => hj0 (by rw [e, map_zero])
   have hf0 : (f j0 : WO S T → ℂ) ≠ 0 := fun e => hj0 (by rw [show f j0 = 0 from Subtype.ext e, map_zero, LinearMap.zero_apply])
@@ -570,8 +569,7 @@ theorem unrCorr_inert : GlobalTheory.Hk3.HoweUnram → ∀ (D : D7) (G : Type) [
     unrAt_of_unrPl hw (GlobalTheory.VacFixInert.unrPl_mul_inv' u1 hU.1)
 
   obtain ⟨v0, hv0⟩ : ∃ v0 : ∀ ρ, lowT (R.MW i (sg0 D A)) ρ, R.thF i t y (fun ρ => v0 ρ) ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact hth (GlobalTheory.LowTypeDetermined.eq_zero_of_lowT D _ _ _ R.θ hC.models.inf (GlobalTheory.LowTypeRestriction.lowT_ne_bot _) _ _ _
       (hC.thP.thF_mem i t y) hc)
 

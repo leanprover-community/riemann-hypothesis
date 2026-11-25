@@ -6,6 +6,7 @@ import Mathlib.Analysis.CStarAlgebra.Classes
 import Mathlib.Combinatorics.Quiver.ReflQuiver
 import Mathlib.NumberTheory.Height.NumberField
 import Mathlib.RingTheory.SimpleRing.Principal
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.GreenLabelSurjective.Simple
 
 @[expose] public section
 
@@ -39,17 +40,7 @@ theorem comm_of_class (W : FDRep ℂ G) (f : G → ℂ) (hf : ∀ g h : G, f (h 
     inv_mul_cancel_right]
 
 private theorem nontrivial_of_simple_fdRep (W : FDRep ℂ G) [Simple W] : Nontrivial W := by
-  by_contra hW
-  rw [not_nontrivial_iff_subsingleton] at hW
-  have : Invertible ((Nat.card G : ℂ)) := invertibleOfNonzero
-    (Nat.cast_ne_zero.mpr (by rw [Nat.card_eq_fintype_card]; exact Fintype.card_ne_zero))
-  have horth := FDRep.char_orthonormal W W
-  have h0 : ∀ g : G, W.character g = 0 := fun g => by
-    have hz : W.ρ g = 0 := LinearMap.ext fun x => Subsingleton.elim _ _
-    show LinearMap.trace ℂ W (W.ρ g) = 0
-    rw [hz, map_zero]
-  have hne : Nonempty (W ≅ W) := ⟨Iso.refl W⟩
-  simp [h0, hne] at horth
+  apply _root_.PI.GreenLabelSurjWork.nontrivial_of_simple <;> assumption
 
 theorem end_one_ne_zero (W : FDRep ℂ G) [Simple W] : (1 : Module.End ℂ W) ≠ 0 := by
   have := nontrivial_of_simple_fdRep W

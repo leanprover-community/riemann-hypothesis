@@ -375,8 +375,7 @@ theorem clos_eq_zero_of_mul_mem {R : Type} [CommRing R] [IsDomain R] (p : ℕ) (
   by_contra ha0
   classical
   have hex : ∃ n : ℕ, ¬ π ^ n ∣ a := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact ha0 (hsep a h)
   have hn0 : Nat.find hex ≠ 0 := by
     intro h0

@@ -2,6 +2,7 @@ module
 
 public import Formalism.FormalDegreeBessel.StatementRP
 import Mathlib.Tactic.TypeStar
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LevelImageArithmetic.GlevImageOf
 
 @[expose] public section
 
@@ -75,19 +76,7 @@ theorem sum_lev {M : Type*} [AddCommMonoid M] (f : Fin (2 * (i + r') + k + 1) �
 
 theorem hpk_lev (p q : Fin (2 * r' + k + 1)) :
     Hpk k (i + r') (levPos k i r' p) (levPos k i r' q) = Hpk k r' p q := by
-  have hp := p.isLt
-  have hq := q.isLt
-  simp only [Hpk, Fin.ext_iff, lev_val]
-  have e1 : (↑p + i < i + r' ∧ ↑p + i + (↑q + i) = 2 * (i + r') + k) ↔ (↑p < r' ∧ ↑p + ↑q = 2 * r' + k) := by
-    constructor <;> intro h <;> omega
-  have e2 : (↑q + i < i + r' ∧ ↑p + i + (↑q + i) = 2 * (i + r') + k) ↔ (↑q < r' ∧ ↑p + ↑q = 2 * r' + k) := by
-    constructor <;> intro h <;> omega
-  have e3 : (i + r' ≤ p.val + i ∧ p.val + i ≤ i + r' + k ∧ p.val + i = q.val + i) ↔
-      (r' ≤ p.val ∧ p.val ≤ r' + k ∧ p.val = q.val) := by
-    constructor <;> intro h <;> omega
-  have e4 : (↑p + i = i + r' + k) ↔ (↑p = r' + k) := by
-    constructor <;> intro h <;> omega
-  simp only [e1, e2, e3, e4]
+  apply _root_.QnGlevImageW.hpk_shift <;> assumption
 
 theorem hpk_in_out (p q : Fin (2 * (i + r') + k + 1))
     (hp : i ≤ p.val ∧ p.val < 2 * r' + k + 1 + i) (hq : ¬ (i ≤ q.val ∧ q.val < 2 * r' + k + 1 + i)) :

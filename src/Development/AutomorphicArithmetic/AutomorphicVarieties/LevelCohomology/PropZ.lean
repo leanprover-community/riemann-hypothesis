@@ -1374,11 +1374,9 @@ private theorem zq_field (Ω : Type) [Field Ω] [CharZero Ω] [IsAlgClosure ℚ 
       (Int.squarefree_natCast.2 hp.squarefree) (by omega)
     exact lift_injective _ ((lift_adjoin_simple ℚ ℚ⟮s⟯ (AdjoinSimple.gen ℚ s)).trans (lift_top ℚ ℚ⟮s⟯).symm)
   · exact h (AdjoinSimple.gen ℚ s)
-  · have : ℚ⟮s⟯ ≤ fixedField (Subgroup.zpowers g) := by
-      rw [adjoin_simple_le_iff, mem_fixedField_iff]
-      intro f hf
-      exact (Subgroup.zpowers_le.2 (show g ∈ MulAction.stabilizer (G ℚ Ω) s from h)) hf
-    exact (mem_fixedField_iff _ _).1 (this x.2) g (Subgroup.mem_zpowers g)
+  · have hfix : g.toAlgHom.comp (ℚ⟮s⟯).val = (ℚ⟮s⟯).val :=
+      adjoin_algHom_ext ℚ fun y hy => (Set.mem_singleton_iff.mp hy).symm ▸ h
+    exact DFunLike.congr_fun hfix x
 
 private theorem zq_main (Ω : Type) [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] (l : ℕ) [hp : Fact l.Prime] (O : Type) [CommRing O]
     [IsDomain O] [IsDiscreteValuationRing O] [Algebra ℤ_[l] O] [Module.Finite ℤ_[l] O] (hl : 5 ≤ l) (e : ℕ) (he : Even e)

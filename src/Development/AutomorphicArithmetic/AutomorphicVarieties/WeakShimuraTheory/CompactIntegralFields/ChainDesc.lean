@@ -1,5 +1,6 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.WeakShimuraTheory.CompactIntegralFields.ChainMap
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.WeakShimuraTheory.NearSplit
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.HeightAndVanishing.CoefSup
 import Development.AutomorphicArithmetic.AutomorphicVarieties.WeakShimuraTheory.SpaceMap
@@ -54,12 +55,12 @@ variable {R R' R'' : Type} [CommRing R] [CommRing R'] [CommRing R'']
 
 private theorem conj_mp (f : R →+* R') (n m : M4 R) (i j : Fin 4) :
     (adj (n.map f) * m.map f * n.map f) i j = f ((adj n * m * n) i j) := by
-  rw [adj_map, ← Matrix.map_mul, ← Matrix.map_mul, Matrix.map_apply]
+  rw [UpperTheory.V.Ws.adj_map, ← Matrix.map_mul, ← Matrix.map_mul, Matrix.map_apply]
 
 private theorem gsp_of (f : R →+* R') (hf : Function.Injective f) (ν : R) (X : M4 R) (h : IsGSp (f ν) (X.map f)) :
     IsGSp ν X := by
   unfold IsGSp at h ⊢
-  rw [adj_map, ← Matrix.map_mul] at h
+  rw [UpperTheory.V.Ws.adj_map, ← Matrix.map_mul] at h
   ext i j
   apply hf
   have hij := congrFun (congrFun h i) j
@@ -75,14 +76,7 @@ theorem supp_of (f : R →+* R') (hf : Function.Injective f) (S : Finset (ℤ ×
   exact h i j hij hw
 
 private theorem cont_iff {Γ : Type} [TopologicalSpace Γ] (z : Γ → R) : AdicCont ⊥ z ↔ IsLocallyConstant z := by
-  constructor
-  · intro h
-    refine IsLocallyConstant.desc z (Ideal.Quotient.mk ((⊥ : Ideal R) ^ 1)) (h 1) ?_
-    intro x y hxy
-    rw [Ideal.Quotient.eq, pow_one, Ideal.mem_bot, sub_eq_zero] at hxy
-    exact hxy
-  · intro h N
-    exact h.comp _
+  apply _root_.adic_bot <;> assumption
 
 variable {ι Γ : Type} [Group Γ]
 

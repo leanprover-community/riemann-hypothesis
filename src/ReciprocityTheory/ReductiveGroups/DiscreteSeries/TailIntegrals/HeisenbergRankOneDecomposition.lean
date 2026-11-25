@@ -1,5 +1,6 @@
 module
 
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TailIntegrals.ProdIicCastLE
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TailIntegrals.Phi2
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TailIntegrals.GoodRowsProjectorApplyEqSum
 public import Mathlib.Analysis.Matrix.PosDef
@@ -407,29 +408,7 @@ private theorem star_inv_sqrt_two_mul_sum_ite_eq_sub (k r : ℕ) (hk : 1 ≤ k) 
 
 theorem ea_phiV'_herm {k r : ℕ} (hk : 1 ≤ k) (a b : Fin (r + 1)) :
     herm (Hpk k r) (phiV' k r a) (phiV' k r b) = 0 := by
-  have e : Hpk k r *ᵥ phiV' k r a = phiV k r a := by
-    rw [phiV', Matrix.mulVec_mulVec, hpk_sq_lemma, Matrix.one_mulVec]
-  rw [herm, e]
-  show ∑ i, star (phiV' k r b i) * phiV k r a i = 0
-  simp only [ea_phiV'_app hk, ea_phiV_app]
-  have ha := a.isLt
-  have hb := b.isLt
-  by_cases h1 : a.val < r <;> by_cases h2 : b.val < r
-  · simp only [if_pos h1, if_pos h2]
-    apply Finset.sum_eq_zero
-    intro i _
-    split_ifs <;> first | (exfalso; omega) | simp
-  · simp only [if_pos h1, if_neg h2]
-    apply Finset.sum_eq_zero
-    intro i _
-    split_ifs <;> first | (exfalso; omega) | simp
-  · simp only [if_neg h1, if_pos h2]
-    apply Finset.sum_eq_zero
-    intro i _
-    split_ifs <;> first | (exfalso; omega) | simp
-  · simp only [if_neg h1, if_neg h2, star_inv_sqrt_two_mul_sum_ite_eq_sub k r hk]
-    rw [Finset.sum_sub_distrib, ← Finset.mul_sum, ← Finset.mul_sum,
-      ea_sum_ind (n := 2 * r + k + 1) r (by omega), ea_sum_ind (n := 2 * r + k + 1) (r + k) (by omega), sub_self]
+  apply ReciprocityTheory.ChartRestriction.DS.Xi.GS.phiV'_iso' <;> assumption
 
 theorem ea_phiV'_li {k r : ℕ} (hk : 1 ≤ k) : LinearIndependent ℂ (phiV' k r) := by
   rw [Fintype.linearIndependent_iff]

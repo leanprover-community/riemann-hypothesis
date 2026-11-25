@@ -641,8 +641,7 @@ theorem wu_pos (ι : X.B.I.F →+* ℝ) (x : Fin X.B.I.n → X.B.I.E) (hx0 : x �
     rw [← phi_hform, ← ha, X.B.I.φ_over v a, hemb]; rfl
   have hre : ι a = (hJ (X.B.I.ε v) (rv X.B.I v x) (rv X.B.I v x)).re := by rw [← hval]; simp
   rw [hre]
-  by_contra hle
-  push_neg at hle
+  by_contra! hle
 
   let nv : Fin (D.R.rS + 1) → Fin X.B.I.n → ℂ := fun j =>
     if h : j.1 < D.R.rS then rv X.B.I v (X.eR ⟨j.1, h⟩) - rv X.B.I v (X.fR ⟨j.1, h⟩) else rv X.B.I v (X.zR u)

@@ -16,8 +16,6 @@ open scoped Classical
 
 namespace PositivityTheory.Rg.BcB.F.Rd
 
-attribute [local instance] PositivityTheory.Rg.BcB.F.borelF
-
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 
 theorem levCof {n : ℕ} (d : LocData E n) (a : ℕ) :

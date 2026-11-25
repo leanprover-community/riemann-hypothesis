@@ -706,11 +706,7 @@ open GroundTheory.Heights₂.Heights.Regular
 
 theorem continuousAt_of_holoOn {n : ℕ} {X : Type} [TopologicalSpace X] {A : FinHolAtlas n X} {U : Set X}
     {g : X → ℂ} (hg : A.HoloOn U g) {x : X} (hx : x ∈ U) : ContinuousAt g x := by
-  obtain ⟨i, hi⟩ := A.cover x
-  have h1 := (hg i (A.chart i x) ⟨(A.chart i).map_source hi, by simp [(A.chart i).left_inv hi, hx]⟩).continuousAt
-  refine (h1.comp ((A.chart i).continuousAt hi)).congr ?_
-  filter_upwards [(A.chart i).open_source.mem_nhds hi] with y hy
-  simp [(A.chart i).left_inv hy]
+  apply _root_.LevelTowerAlt.continuousAt_of_holoOn <;> assumption
 
 theorem limsup_invol {X : Type} [TopologicalSpace X] {σ : X → X} (hσ : Continuous σ) (hi : ∀ x, σ (σ x) = x)
     {Y : Set X} (hY : ∀ x ∈ Y, σ x ∈ Y) {g : X → ℝ} (hg : ∀ x ∈ Y, g (σ x) = g x) (x : X) :

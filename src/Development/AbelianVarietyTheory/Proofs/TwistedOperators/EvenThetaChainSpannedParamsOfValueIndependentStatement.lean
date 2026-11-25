@@ -154,7 +154,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum
 open scoped TensorProduct InnerProductSpace ComplexConjugate
 open GlobalTheory.EvenOnto
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.EvenOntoDecomp
 
@@ -267,7 +266,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum
 open scoped TensorProduct InnerProductSpace ComplexConjugate
 open GlobalTheory.EvenOnto
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.EvenOnto
 
@@ -319,8 +317,7 @@ theorem partPar : GlobalTheory.Published.CuspRapidDecay → ∀ D : D7, ForStage
   refine ⟨fun hu0 => ?_, second⟩
   have hu1 : (u : SmT s.M →ₗ[ℂ] (GA D s.V → ℂ)) ≠ 0 := fun h => hu0 (Subtype.ext h)
   obtain ⟨v, hv⟩ : ∃ v, PiLocalization₂.val u v ≠ 0 := by
-    by_contra hh
-    push_neg at hh
+    by_contra! hh
     exact hu1 (LinearMap.ext hh)
   obtain ⟨C, hC⟩ := (hval u v).2.1
   have hbdd : (fun g => conj (PiLocalization₂.val u v g)) ∈ GlobalTheory.FinZeta.bddAut s.V := by
@@ -346,7 +343,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum
 open scoped TensorProduct InnerProductSpace ComplexConjugate
 open GlobalTheory.EvenOnto
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.EvenOnto
 
@@ -357,8 +353,7 @@ theorem parIndep_even : ∀ D : D7, ParIndep D := by
   intro t a hsum i₀ hi₀
   obtain ⟨hne0, _⟩ := hpar i₀
   obtain ⟨v, hv⟩ : ∃ v, PiLocalization₂.val (x i₀) v ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     apply hne0
     apply Subtype.ext
     apply LinearMap.ext
@@ -426,7 +421,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum
 open scoped TensorProduct InnerProductSpace ComplexConjugate
 open GlobalTheory.EvenOnto
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem _root_.GlobalTheory.T.even_theta_chain_spanned_params_of_value_independent : GlobalTheory.Published.CuspRapidDecay → ∀ D : D7, FinDim D → MetEx D → EigSpan D ∧ ParOfVal D ∧ ParIndep D := by
   first | exact @GlobalTheory.EvenOnto.eig_parOfVal_indep

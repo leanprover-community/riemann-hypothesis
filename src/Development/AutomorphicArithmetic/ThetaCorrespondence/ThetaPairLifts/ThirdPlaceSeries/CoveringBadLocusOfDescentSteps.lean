@@ -935,11 +935,11 @@ theorem regular_embeddings_cover_bad_embedding_locus_alt : GlobalTheory.CovTop.H
   first
     | have ua0 := _root_.GlobalTheory.T.orbits_separated_by_regular_cusp hP hGD hQ hT hSA
   first
-    | have sg := _root_.GlobalTheory.T.covering_shift_preserves_goodAt hP
+    | have sg := _root_.GlobalTheory.CovTop.ShiftGood.covering_goodAt_shift hP
   have h3 := _root_.GlobalTheory.T.size_bounds_for_family_alt hSz
   unfold _root_.GlobalTheory.CovTop.DeepGoodness _root_.GlobalTheory.CovTop.CoversCondition at hDG
   unfold _root_.GlobalTheory.CovTop.CoversCondition at h3 h4 ⊢
-  refine _root_.GlobalTheory.BadEmb.lifts_of_four_quantitative_conditions hDG _root_.GlobalTheory.T.weight_conditions_at_index' h3 h4 ?_
+  refine _root_.GlobalTheory.BadEmb.lifts_of_four_quantitative_conditions hDG _root_.GlobalTheory.CovTop.HodgeGapBounds.reading_alt h3 h4 ?_
   clear hDG h3 h4
   intro eps Fm x hx ι p i PP _ _ _ _ b1 b2 b3 b4 hi Y hY fr π ρ χ Pb lamb H hPb hH hρ k
   have g0 := (b1 hi Y hY).1

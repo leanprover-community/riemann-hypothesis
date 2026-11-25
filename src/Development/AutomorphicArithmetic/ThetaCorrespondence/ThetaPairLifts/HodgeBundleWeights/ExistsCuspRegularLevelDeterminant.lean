@@ -819,8 +819,7 @@ theorem exists_vec_det_ne_zero (F : Type) [Field F] [CharZero F] [Algebra F ℂ]
   have hQ : (∏ i, P i) ≠ 0 := Finset.prod_ne_zero_iff.2 fun i _ => hPi i
   obtain ⟨x, hx, hQx⟩ : ∃ x ∈ Set.pi Set.univ (fun _ : (Σ i, Fin (n i)) => Set.range (algebraMap F ℂ)),
       MvPolynomial.eval x (∏ i, P i) ≠ 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     exact hQ (MvPolynomial.funext_set (fun _ => Set.range (algebraMap F ℂ))
       (fun _ => Set.infinite_range_of_injective (algebraMap F ℂ).injective)
       fun x hx => by rw [hcon x hx, map_zero])
@@ -1687,7 +1686,7 @@ theorem separate_orbits_by_cusp (hP2 : _root_.GlobalTheory.CovTop.PublishedHodge
   obtain ⟨Γ, ρ, hΓ, hρ, hmem⟩ := _root_.GlobalTheory.CompLevelStab.stab_acts _ _ _ _ _ _ TF.Y Z hpq hA S
   obtain ⟨X', W, φ, ℓ, ρ', q, sW, hint', n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11⟩ :=
     GlobalTheory.EqModel.exists_equivariant_model Y.d.c₂.F _ _ (s₀ TF.Y Z) (j₀ TF.Y Z) Γ ρ hpr ⟨v₁ (IsLocalRing.closedPoint ℂ)⟩ hnorm hρ.1
-  obtain ⟨δ, hδ, eδ, hlin⟩ := _root_.GlobalTheory.T.hodgeLineBundle_rational_linear_equiv_class hP2 _ _ _ _ _ _ TF Z hpq hA hF
+  obtain ⟨δ, hδ, eδ, hlin⟩ := _root_.GlobalTheory.HodgeLin.hodgeLineBundle_rationally_linear hP2 _ _ _ _ _ _ TF Z hpq hA hF
   obtain ⟨N, hN, eN⟩ := _root_.GlobalTheory.QuotDescent.descent Y.d.c₂.F X' W q sW Γ ρ' _ _ (n7 ▸ n2) n6
     (hlin I g hI hM Γ Γ.subtype ρ (fun γ => hS _ (hΓ γ.2)) hρ X' φ ℓ ρ' n1 n2 n3 n4 n5)
   let K := CanonLB.all (s₀ TF.Y Z) (T.Q.Dw j).dim

@@ -1,5 +1,6 @@
 module
 
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.LeviTens
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.RowFrameCoherence.ClassFrameOO3FrameValTrans
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.StepPtRepPfB
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.SpanPreservation
@@ -452,21 +453,7 @@ variable {D : Formalism.BasicNotions.D7} (X : HidaSetting D)
 theorem frameLoc (w : D.what₂.Word) (v : NumberField.InfinitePlace X.B.I.F) :
     PI.SchurPlaces.LeviLA.Frame (X.B.I.ε v) (fun a => rv X.B.I v (X.eR a)) (fun a => rv X.B.I v (X.fR a))
       (rv X.B.I v (X.zR w)) (X.wfr w v) := by
-  let fr := Formalism.L2.SG.RealObj.InfCut.PtRepPf.frU X w v
-  exact
-    { ee := fr.ee
-      ef := fr.ef
-      ff := fr.ff
-      ez := fr.ez
-      fz := fr.fz
-      ew := fr.ew
-      fw := fr.fw
-      zw := fr.zw
-      ww := fr.ww
-      zz := fun h0 => fr.T_ne (neg_eq_zero.1 (fr.zz.symm.trans h0))
-      card := by
-        have h := fr.card
-        omega }
+  apply +allowSynthFailures _root_.PI.SchurPlaces.frameAt <;> assumption
 
 end LocalFrameDecomposition
 

@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsDefiniteOfAllPlus
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ColLieApply
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsArchimedeanLiftUnitaryGroupProduct
 import Development.AbelianVarietyTheory.Proofs.HeightProofs.AdelicUnitaryRealPointsStructureRealPlaces
@@ -58,74 +59,21 @@ open Matrix
 
 theorem sig_of_posDef {n : ℕ} {G : Matrix (Fin n) (Fin n) ℂ} (hG : G.PosDef) {p q : ℕ}
     (h : Formalism.UG.HasSignature G p q) : (p, q) = (n, 0) := by
-  obtain ⟨hn, Q, hQ⟩ := Formalism.UG.P.sig_data G p q h
-  have hq : q = 0 := by
-    by_contra hq
-    have j : Fin q := ⟨0, Nat.pos_of_ne_zero hq⟩
-    have h1 := (hG.posSemidef.conjTranspose_mul_mul_same Q).diag_nonneg (i := Sum.inr j)
-    rw [hQ] at h1
-    simp [Formalism.UG.Jpq] at h1
-    exact absurd h1 (by norm_num)
-  subst hq
-  simp at hn
-  rw [hn]
+  first | exact _root_.GlobalTheory.DefiniteMult.sig_eq_of_posDef | exact @_root_.GlobalTheory.DefiniteMult.sig_eq_of_posDef | apply _root_.GlobalTheory.DefiniteMult.sig_eq_of_posDef <;> assumption
 
 theorem exists_tauE (D : D7) (σ : D.host.E →+* ℂ) :
     ∃ τ, σ = tauE D τ ∨ σ = (starRingEnd ℂ).comp (tauE D τ) := by
-  obtain ⟨g, rfl⟩ := (factEmb D.R D.host).1.2 σ
-  have key : ∀ (t : D.R.GG) (ht : t ∈ D.R.Psi),
-      tauE D (D.eTau.symm ⟨t, ht⟩) = D.host.emb t := fun t ht => by
-    unfold tauE
-    rw [Equiv.apply_symm_apply]
-  by_cases h : g ∈ D.R.Psi
-  · exact ⟨D.eTau.symm ⟨_, h⟩, Or.inl (key g h).symm⟩
-  · have h' : g * D.R.cc ∈ D.R.Psi := by
-      by_contra h2
-      exact h ((Formalism.L2.Geo.mem_Psi_iff_mul_cc_notMem _).2 h2)
-    refine ⟨D.eTau.symm ⟨_, h'⟩, Or.inr ?_⟩
-    rw [key, Formalism.L2.Geo.emb_mul_cc_comp]
-    refine RingHom.ext fun x => ?_
-    have := D.host.conjE_apply (D.host.emb g) x
-    exact ((starRingEnd_self_apply _).symm.trans (congrArg (starRingEnd ℂ) this.symm))
+  first | exact _root_.GlobalTheory.DefiniteMult.exists_tauE_or_conj | exact @_root_.GlobalTheory.DefiniteMult.exists_tauE_or_conj | apply _root_.GlobalTheory.DefiniteMult.exists_tauE_or_conj <;> assumption
 
 variable {D : D7} {V : HSp D} {S : D.what₂.Tau → SPar} {M : DSModel V S}
 
 theorem isDefinite (hs : V.SigOK) (h : AllPlus M) : V.IsDefinite := by
-  intro σ
-  refine Or.inl (sig_of_posDef ?_ (hs σ))
-  obtain ⟨τ, rfl | rfl⟩ := exists_tauE D σ
-  · exact h.posDef τ
-  · have e : V.gram.map ((starRingEnd ℂ).comp (tauE D τ)) = (gramAt D V τ)ᴴᵀ := by
-      ext i j
-      rfl
-    rw [e]
-    exact (h.posDef τ).conjTranspose.transpose
+  first | exact _root_.GlobalTheory.DefiniteMult.isDefinite_of_allPlus | exact @_root_.GlobalTheory.DefiniteMult.isDefinite_of_allPlus | apply _root_.GlobalTheory.DefiniteMult.isDefinite_of_allPlus <;> assumption
 
 theorem rTr_mem {θ : InfFam D} (hθ : IsInfFam θ) (U : Set (GA D V → ℂ))
     (hU : ∀ τ, ∀ g ∈ Formalism.QuantumDeterminants.UH (gramAt D V τ), ∀ f ∈ U, rTr V (atTau θ V τ g) f ∈ U) {k : GA D V}
     (hk : k ∈ GinfC V) : ∀ f ∈ U, rTr V k f ∈ U := by
-  classical
-  obtain ⟨-, -, r3, -⟩ := (GlobalTheory.SmoothForms.RealPts.realPoints D).2 θ hθ V
-  have hu := GlobalTheory.RealLift.archM_mem hθ V k
-  have e : GlobalTheory.RealLift.prodAt θ V Finset.univ.toList (fun τ => Formalism.L2.Pj.archM V (θ τ) k) = k :=
-    r3 _ (GlobalTheory.RealLift.prodAt_mem θ V _ _) _ hk fun τ => by
-      rw [GlobalTheory.RealLift.infMat_prodAt hθ V hu τ _ (Finset.nodup_toList _),
-        if_pos (Finset.mem_toList.2 (Finset.mem_univ _))]
-      rfl
-  rw [← e]
-  clear e
-  generalize (Finset.univ.toList : List D.what₂.Tau) = l
-  induction l with
-  | nil =>
-    intro f hf
-    convert hf using 1
-    funext g
-    exact congrArg f (mul_one g)
-  | cons τ l ih =>
-    intro f hf
-    convert hU τ _ (hu τ) _ (ih f hf) using 1
-    funext g
-    exact congrArg f (mul_assoc _ _ _).symm
+  first | exact _root_.GlobalTheory.DefiniteMult.rTr_mem_of_places | exact @_root_.GlobalTheory.DefiniteMult.rTr_mem_of_places | apply _root_.GlobalTheory.DefiniteMult.rTr_mem_of_places <;> assumption
 
 open Classical in
 theorem actT_tprod (τ : D.what₂.Tau) (g : Matrix (Fin V.rank) (Fin V.rank) ℂ) (v : M.Vec) (w : M.sm τ)

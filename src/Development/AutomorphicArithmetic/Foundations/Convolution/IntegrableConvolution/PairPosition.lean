@@ -341,8 +341,6 @@ open GroundTheory.Automorphic GroundTheory.Automorphic.Reduction GroundTheory.Au
 open GroundTheory.Automorphic.AutomorphicForm GroundTheory.Automorphic.CuspidalSpectrum UpperTheory.ConvolutionTheory UpperTheory.ConvolutionTheory.L1 UpperTheory.ConvolutionTheory.C PositivityTheory.Rg.Tf.Geo PositivityTheory.Rg.Fx
 open scoped TensorProduct
 
-attribute [local instance 100] LieRing.ofAssociativeRing
-
 namespace UpperTheory.ConvolutionTheory.L1
 
 section

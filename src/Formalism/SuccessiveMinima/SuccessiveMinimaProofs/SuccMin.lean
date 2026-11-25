@@ -84,8 +84,7 @@ theorem succMin_mem (hKc : IsCompact K) (hKv : Convex ℝ K) (hK0 : (0 : E) ∈ 
   rintro u ⟨huL, hut⟩
   have hgt : gauge K u ≤ t := (mem_smul_iff_gauge hKc hKv hK0 htS.1 u).mp hut
   refine ⟨huL, (mem_smul_iff_gauge hKc hKv hK0 hs0 u).mpr ?_⟩
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   have huT : u ∈ T • K :=
     (mem_smul_iff_gauge hKc hKv hK0 (hs0.trans hsT.le) u).mpr (by linarith)
   have := hmB u ⟨⟨huL, huT⟩, hlt⟩
@@ -147,8 +146,7 @@ theorem Formalism.FN.existsSuccessiveMinimaVectors : Formalism.FN.SuccMinFacts :
   have hpos : ∀ j, 1 ≤ j → j ≤ finrank ℝ E → 0 < succMin L K j := by
     intro j hj1 hjn
     obtain ⟨h0, hj⟩ := hmem j hjn
-    by_contra hneg
-    push_neg at hneg
+    by_contra! hneg
     rw [hmbot _ h0 (lt_of_le_of_lt hneg hm0), finrank_bot] at hj
     omega
 
@@ -163,8 +161,7 @@ theorem Formalism.FN.existsSuccessiveMinimaVectors : Formalism.FN.SuccMinFacts :
       obtain ⟨_, hdim⟩ := hmem (k + 1) hk
       have hex : ∃ x ∈ (L : Set E) ∩ succMin L K (k + 1) • K,
           x ∉ Submodule.span ℝ (Set.range w) := by
-        by_contra hno
-        push_neg at hno
+        by_contra! hno
         have h1 := Submodule.finrank_mono (Submodule.span_le.mpr hno)
         rw [finrank_span_eq_card hw, Fintype.card_fin] at h1
         omega
@@ -194,8 +191,7 @@ theorem Formalism.FN.existsSuccessiveMinimaVectors : Formalism.FN.SuccMinFacts :
     have huW : u ∈ W := Submodule.subset_span ⟨huL, (hmemK hg0 u).mpr le_rfl⟩
     have hdn : finrank ℝ W ≤ finrank ℝ E := Submodule.finrank_le W
     have hdi : finrank ℝ W ≤ (i : ℕ) := by
-      by_contra hcon
-      push_neg at hcon
+      by_contra! hcon
       have := hle hg0 (show (i : ℕ) + 1 ≤ finrank ℝ W by omega)
       linarith
 

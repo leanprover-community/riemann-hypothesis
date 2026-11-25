@@ -58,12 +58,8 @@ namespace GlobalTheory.CrysPrism.ShMem
 
 theorem coeff_iterate_derivative' {R : Type} [CommRing R] (f : R⟦X⟧) (i n : ℕ) :
     coeff n ((PowerSeries.derivative (R := R))^[i] f) = ((n + i).descFactorial i : R) * coeff (n + i) f := by
-  induction i generalizing f with
-  | zero => simp
-  | succ i ih =>
-    rw [Function.iterate_succ_apply, ih, PowerSeries.coeff_derivative, ← add_assoc,
-      Nat.succ_descFactorial_succ]
-    push_cast; ring
+  rw [Nat.add_descFactorial_eq_ascFactorial]
+  exact PowerSeries.coeff_iterate_derivative f i n
 
 theorem charZero_of_ql {l : ℕ} [Fact l.Prime] {K : Type} [NormedField K] [NormedAlgebra ℚ_[l] K] : CharZero K :=
   charZero_of_injective_algebraMap (algebraMap ℚ_[l] K).injective

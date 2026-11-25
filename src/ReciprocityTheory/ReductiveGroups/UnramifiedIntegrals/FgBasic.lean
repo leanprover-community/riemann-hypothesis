@@ -431,8 +431,7 @@ theorem norm_natCast_of_coprime (hl : l.Prime) (hl1 : ‖(l : K)‖ < 1) (m : �
     push_cast at this
     exact this
   refine le_antisymm (norm_natCast_le_one_unramified_integrals m) ?_
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   have h1 := IsUltrametricDist.norm_add_le_max ((m : K) * (Nat.gcdA m l : K))
     ((l : K) * (Nat.gcdB m l : K))
   rw [← hbK, norm_one] at h1

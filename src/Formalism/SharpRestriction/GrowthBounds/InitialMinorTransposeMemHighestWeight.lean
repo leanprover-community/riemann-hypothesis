@@ -81,7 +81,6 @@ theorem c8 (p n' : ℕ) (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuatio
               N0 n * deF p n (ellOf (glOps (KK O) n LL (Ss i)) (Pol (KK O) n d) + ellWt (t i)) : ℕ) : ℝ) ≤
             (N0 n : ℝ) * Real.logb p (2 * (degIn d (Ss i) : ℝ) + n) := by
   intro T d i hT
-  have hp1 : 1 < p := hG.prime.one_lt
   have hn : 1 ≤ n := Nat.one_le_iff_ne_zero.2 (NeZero.ne n)
   have h3 := c3 p n' O S0 hG n ι LL N Ss d i
   have hle : (T.sup fun t =>
@@ -723,13 +722,7 @@ theorem dec_of_binomDecay {p : ℕ} {f : ℕ → ℚ} (h : BinomDecay p f) : Dec
     rw [e]; exact h1
 
 theorem binomDecay_of_dec {p : ℕ} {f : ℕ → ℚ} (h : Dec p (1 / 4) 0 f) : BinomDecay p f := by
-  intro j
-  rw [mahlerCoef_eq_mah]
-  rcases h j with h0 | h1
-  · exact Or.inl h0
-  · refine Or.inr ?_
-    have e : (1 / 4 : ℝ) * (j : ℝ) + 0 = (j : ℝ) / 4 := by ring
-    rw [← e]; exact h1
+  apply _root_.Formalism.MainNotions.G.Joints.F4.binomDecay_of_dec <;> assumption
 
 theorem binomial_basis_approximation (p : ℕ) [Fact p.Prime] :
     (∀ (K : ℕ) (f : Fin K → ℕ → ℚ), (∀ k, BinomDecay p (f k)) → ∀ c : ℕ,

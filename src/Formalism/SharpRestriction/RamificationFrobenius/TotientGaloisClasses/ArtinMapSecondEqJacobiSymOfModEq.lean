@@ -1,5 +1,6 @@
 module
 
+import Formalism.SizeWindowBrackets.ChainSlopeWindows.GaloisMapComplexConjugation
 public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.ArtinMapSecondEqJacobiSym
 import Mathlib.Algebra.Order.Star.Int
 
@@ -86,12 +87,7 @@ theorem jac_2q : jacobiSym ((2 : ℕ) : ℤ) q = -1 := by
   simp [h2, h8]
 
 theorem jac_2d : jacobiSym ((2 : ℕ) : ℤ) d = 1 := by
-  have h16 := hH.2.2.2.1
-  have hd : Odd d := Nat.odd_iff.mpr (by omega)
-  rw [show ((2 : ℕ) : ℤ) = 2 by norm_num, jacobiSym.at_two hd, ZMod.χ₈_nat_eq_if_mod_eight]
-  have h2 : d % 2 ≠ 0 := by omega
-  have h8 : d % 8 = 7 := by omega
-  simp [h2, h8]
+  apply _root_.Formalism.LFunctionChainParameters.LHost.jac_two_d <;> assumption
 
 theorem ordCompl_two : ordCompl[2] (2 ^ (e + 2) * q * d) = q * d := by
   rw [mul_assoc]

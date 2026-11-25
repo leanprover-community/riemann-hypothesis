@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.LevelLetterCocycles.ExistsInertiaCharpolyFactorOfTameType
 public import Formalism.SharpRestriction.LevelLetterCocycles.JointConditionsZpowers.ResidualIrreducibleRankR
 public import Formalism.SharpRestriction.LevelLetterCocycles.JointConditionsZpowers.IrreducibilityOfTheoremThree
 public import Formalism.SharpRestriction.LevelLetterCocycles.ArithmeticCylinders
@@ -60,14 +61,7 @@ def GlobalDatumDepthZeroCondition (D : D7) : Prop :=
 
 theorem placesOver_finite_joint_conditions_zpowers (E : Type) [Field E] [NumberField E] (p : ℕ) (hp : p ≠ 0) :
     (placesOver E p).Finite := by
-  have hx : ((p : ℕ) : 𝓞 E) ≠ 0 := Nat.cast_ne_zero.mpr hp
-  have hI : Ideal.span {((p : ℕ) : 𝓞 E)} ≠ ⊥ := by
-    rwa [Ne, Ideal.span_singleton_eq_bot]
-  refine (Ideal.finite_factors hI).subset ?_
-  intro v hv
-  simp only [Set.mem_setOf_eq]
-  rw [Ideal.dvd_iff_le, Ideal.span_singleton_le_iff_mem]
-  exact hv
+  apply _root_.Formalism.MainNotions.SumRepresentations.placesOver_finite <;> assumption
 
 private theorem charpoly_eq_of_frob_on_split_places (D : D7) {k : Type} [Field k] {n : ℕ}
     (hC : ∀ Sg : Set (PlE D.host), Sg.Finite →

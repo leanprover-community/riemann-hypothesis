@@ -1,5 +1,6 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.WeakShimuraTheory.CompactIntegralFields.BlockDet
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.WeakShimuraTheory.RedIdeal
 import Mathlib.Tactic.Linter.HaveILetI
 
@@ -29,14 +30,7 @@ theorem IsUp_inv {b : (M4 R)ˣ} (hb : IsUp (b : M4 R)) : IsUp ((b⁻¹ : (M4 R)�
   exact Matrix.blockTriangular_inv_of_blockTriangular hb
 
 theorem IsUp_diag {X Y : M4 R} (hX : IsUp X) (hY : IsUp Y) (i : Fin 4) : (X * Y) i i = X i i * Y i i := by
-  rw [isUp_iff] at hX hY
-  rw [Matrix.mul_apply, Finset.sum_eq_single i]
-  · intro k _ hk
-    rcases lt_or_gt_of_ne hk with h | h
-    · rw [hX h, zero_mul]
-    · rw [hY h, mul_zero]
-  · intro h
-    exact absurd (Finset.mem_univ i) h
+  apply _root_.bd_up_diag <;> assumption
 
 theorem upConj {a b X : M4 R} (hab : a * b = 1) (ha : IsUp a) (hb : IsUp b) (hX : IsUp X) :
     IsUp (a * X * b) ∧ ∀ i, (a * X * b) i i = X i i := by

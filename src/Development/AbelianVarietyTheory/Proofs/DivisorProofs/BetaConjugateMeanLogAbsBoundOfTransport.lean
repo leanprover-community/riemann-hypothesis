@@ -929,8 +929,7 @@ theorem sum_log_emb (L : IntermediateField ℚ ℂ) [FiniteDimensional ℚ L] [N
 theorem emb_two {K : Type} [Field K] [NumberField K] (φK : K →+* ℂ) (hK2 : Module.finrank ℚ K = 2)
     (hc : (starRingEnd ℂ).comp φK ≠ φK) (g : K →+* ℂ) : g = φK ∨ g = (starRingEnd ℂ).comp φK := by
   classical
-  by_contra h
-  push_neg at h
+  by_contra! h
   have h3 : ({g, φK, (starRingEnd ℂ).comp φK} : Finset (K →+* ℂ)).card = 3 :=
     Finset.card_eq_three.2 ⟨g, φK, _, h.1, h.2, hc.symm, rfl⟩
   have := Finset.card_le_univ ({g, φK, (starRingEnd ℂ).comp φK} : Finset (K →+* ℂ))

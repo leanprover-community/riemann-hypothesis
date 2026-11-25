@@ -18,8 +18,6 @@ namespace PI.UnitaryGroupMassFormula.UsCompose
 
 open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.U Formalism.REAL Formalism.FourierDecayAlt.P.BetaSesquilinearity
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 theorem hasDerivAt_eval {σ : Type*} [Fintype σ] (v : ℝ → σ → ℂ) (v' : σ → ℂ)
     (hv : ∀ i, HasDerivAt (fun t => v t i) (v' i) 0) (q : MvPolynomial σ ℂ) :
     HasDerivAt (fun t => eval (v t) q) (∑ i, eval (v 0) (pderiv i q) * v' i) 0 := by

@@ -85,8 +85,7 @@ theorem exists_unit_of_sum_eq_one {F : Type} [Field F] (O : Subring F) [IsLocalR
     (s : Finset ι) (a : ι → F) (ha : ∀ i ∈ s, a i ∈ O) (h1 : ∑ i ∈ s, a i = 1) :
     ∃ i ∈ s, a i ≠ 0 ∧ (a i)⁻¹ ∈ O := by
   classical
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   have key : ∀ t : Finset ι, t ⊆ s → ∃ h : ∑ i ∈ t, a i ∈ O, (⟨_, h⟩ : O) ∈ IsLocalRing.maximalIdeal O := by
     intro t
     induction t using Finset.cons_induction with

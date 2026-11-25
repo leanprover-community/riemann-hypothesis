@@ -1,5 +1,6 @@
 module
 
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.DualFamilyCounting.MemInvCoeIdeal
 public import Formalism.SharpRestriction.CuspSpanNormBounds.FlagEEqHyperbolic
 public import Mathlib.Algebra.AffineMonoid.Basic
 import Mathlib.Tactic.TypeStar
@@ -37,12 +38,7 @@ theorem different_ideal_map_ne_bot : (Ideal.map (algebraMap (𝓞 D.host.F) (�
   exact differentIdeal_ne_bot
 
 theorem basis_vector_mem_span {T : D.host.E} (F0 : FlagG (VS D) D.R.rS T) (a : Fin D.R.rS) : F0.e a ∈ XS D F0 := by
-  refine Submodule.subset_span ⟨a, 1, ?_, by simp⟩
-  have h : -((D.R.rS : ℤ) - ((a : ℕ) : ℤ)) = -(((D.R.rS - (a : ℕ) : ℕ)) : ℤ) := by
-    have := a.2
-    omega
-  rw [h]
-  exact one_mem_ideal_zpow_neg _ (different_ideal_map_ne_bot D) _
+  apply _root_.Formalism.L2.SG.Pf.Cnt.R3.e_mem_XS <;> assumption
 
 end Fr
 

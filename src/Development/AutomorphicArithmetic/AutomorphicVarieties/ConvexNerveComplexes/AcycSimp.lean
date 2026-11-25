@@ -136,8 +136,7 @@ theorem UpperTheory.V.ConeExtensionAcyclic.cone_finite :
   rintro v ⟨z, hzs, hzv⟩
   refine ⟨?_, v.2⟩
   simp only [K, Set.mem_iUnion]
-  by_contra hno
-  push_neg at hno
+  by_contra! hno
   have hconv : Convex ℝ {f : E →L[ℝ] ℝ | 0 < f (v.1 - h0)} := by
     refine convex_halfSpace_gt ?_ 0
     exact ⟨fun f g => rfl, fun c f => rfl⟩
@@ -480,8 +479,7 @@ theorem UpperTheory.V.ConeExtensionAcyclic.nerve_sep :
   simp only [cands, Finset.mem_filter, Finset.mem_powerset] at hσ hmax
   obtain ⟨hσS, x0, hx0X, hx0σ⟩ := hσ
   have hex : ∃ i, (X ∩ A i).Nonempty ∧ x0 ∉ A i := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact hno ⟨x0, hx0X, hc⟩
   obtain ⟨i, hiX, hix0⟩ := hex
   have hiσ : i ∉ σ := fun h => hix0 (hx0σ i h)

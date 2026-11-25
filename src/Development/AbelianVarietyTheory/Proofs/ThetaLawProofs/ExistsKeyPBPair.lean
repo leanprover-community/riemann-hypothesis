@@ -62,7 +62,6 @@ namespace GlobalTheory.KeyGalDesc
 
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj MeasureTheory
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.KeyPow GlobalTheory.KeyKa
 
 theorem g_eq {R S : Type} [CommRing R] [CommRing S] {y : KeyIn S} {x : KeyIn R} {f : R →+* S} (h : KeyPB y x f) :

@@ -396,7 +396,6 @@ theorem rho_lower_bound_of_edge_count (hcnt : RestEdgeCount) : RhoLowerBoundLarg
       simpa [hT, nsmul_eq_mul, Nat.cast_sum] using h
     have hN0 := gaussianNumber_prime_pow_pos R (m + 1) (by omega)
     have hdim : (0 : ℝ) ≤ dimV R.Kf lam0 := Nat.cast_nonneg _
-    have hT0 : (0 : ℝ) ≤ T := Nat.cast_nonneg _
     by_cases hκ : 1 - κ ≤ 0
     · nlinarith
     · have hκ' : 0 < 1 - κ := lt_of_not_ge hκ

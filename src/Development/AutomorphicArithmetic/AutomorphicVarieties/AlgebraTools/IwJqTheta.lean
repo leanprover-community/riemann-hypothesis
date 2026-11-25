@@ -1,5 +1,6 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.IwDomMul
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.HeckePairTop
 public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.IsSubquotientDetRepParInd
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PadicIsNonarchimedeanLocalField
@@ -143,27 +144,7 @@ private theorem unif_lt {x : kˣ} (hx : IsUnif x) : valuation k (x : k) < 1 := b
 
 private theorem unif_dec {x : kˣ} (hx : IsUnif x) (y : kˣ) :
     ∃ a : ℤ, valuation k (y : k) = valuation k (x : k) ^ a := by
-  obtain ⟨p, hp, hpx⟩ := hx
-  have hO := Valuation.integer.integers (valuation k)
-  have hint : ∀ z : 𝒪[k], z ≠ 0 → ∃ m : ℕ, valuation k (algebraMap 𝒪[k] k z) = valuation k (x : k) ^ m := by
-    intro z hz
-    obtain ⟨m, u, rfl⟩ := IsDiscreteValuationRing.eq_unit_mul_pow_irreducible hz hp
-    refine ⟨m, ?_⟩
-    rw [map_mul, map_pow, map_mul, map_pow, hO.valuation_unit, one_mul, hpx]
-  rcases le_total (valuation k (y : k)) 1 with h | h
-  · have hy : (y : k) ∈ 𝒪[k] := (Valuation.mem_integer_iff _ _).mpr h
-    obtain ⟨m, hm⟩ := hint ⟨y, hy⟩ (fun h0 => y.ne_zero (congrArg Subtype.val h0))
-    have hm' : valuation k (y : k) = valuation k (x : k) ^ m := hm
-    exact ⟨m, by rw [zpow_natCast]; exact hm'⟩
-  · have h' : valuation k ((y⁻¹ : kˣ) : k) ≤ 1 := by
-      rw [Units.val_inv_eq_inv_val, map_inv₀]
-      exact inv_le_one_of_one_le₀ h
-    have hy : ((y⁻¹ : kˣ) : k) ∈ 𝒪[k] := (Valuation.mem_integer_iff _ _).mpr h'
-    obtain ⟨m, hm⟩ := hint ⟨_, hy⟩ (fun h0 => (y⁻¹).ne_zero (congrArg Subtype.val h0))
-    refine ⟨-(m : ℤ), ?_⟩
-    have hm' : valuation k ((y⁻¹ : kˣ) : k) = valuation k (x : k) ^ m := hm
-    rw [Units.val_inv_eq_inv_val, map_inv₀] at hm'
-    rw [_root_.zpow_neg, zpow_natCast, ← hm', inv_inv]
+  apply _root_.unif_dec <;> assumption
 
 private theorem dom_zpow {x : kˣ} (hx : IsUnif x) {a : Fin n → ℤ} (ha : Antitone a) : Dom fun i => x ^ a i := by
   intro i j hij
@@ -173,20 +154,7 @@ private theorem dom_zpow {x : kˣ} (hx : IsUnif x) {a : Fin n → ℤ} (ha : Ant
 
 private theorem unit_norm (C : Subgroup 𝓀[k]ˣ) (u : Fin n → kˣ) (hu : ∀ i, valuation k (u i : k) = 1) :
     diagT k (Fin n) u ∈ Subgroup.normalizer (iwC k n C : Set (GL (Fin n) k)) := by
-  obtain ⟨_, htop, hconj, hunit⟩ := memIwC k n C
-  have hI : diagT k (Fin n) u ∈ iwahori k (Fin n) := by
-    rw [← htop]
-    unfold UpperTheory.V.AlgebraTools.iwC
-    apply Subgroup.mem_sup_right
-    exact Subgroup.mem_map_of_mem _ ((Subgroup.mem_pi _).mpr (fun i _ => (hunit (u i)).mpr (hu i)))
-  rw [Subgroup.mem_normalizer_iff]
-  intro h
-  constructor
-  · intro hh
-    exact hconj _ hI _ hh
-  · intro hh
-    have h2 := hconj _ (inv_mem hI) _ hh
-    simpa [mul_assoc] using h2
+  apply _root_.unit_norm <;> assumption
 
 private theorem anti_diff (a : Fin n → ℤ) : ∃ b : Fin n → ℤ, Antitone b ∧ Antitone (a + b) := by
   set M : ℤ := ∑ k, |a k| with hM

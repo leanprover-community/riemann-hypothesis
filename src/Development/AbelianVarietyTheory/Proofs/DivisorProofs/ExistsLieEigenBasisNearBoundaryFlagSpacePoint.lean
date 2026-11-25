@@ -63,7 +63,6 @@ open scoped Classical
 
 noncomputable section
 open scoped Matrix
-attribute [local instance] Over.cartesianMonoidalCategory
 open MonoidalCategory CartesianMonoidalCategory MonObj
 open scoped CategoryTheory.Obj
 

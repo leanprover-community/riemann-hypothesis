@@ -5,6 +5,7 @@ import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicLocalCompactness.
 import Mathlib.Tactic.Linter.Style
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicLocalCompactness.AdeleLC
 import Formalism.PeriodIntegrals.VolFromSW
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ContinuousSingleV
 
 @[expose] public section
 
@@ -123,29 +124,7 @@ theorem psiV_add (ψ : AddChar (AF F) ℂ) (v : HeightOneSpectrum (𝓞 F)) (r s
   rw [e, AddChar.map_add_eq_mul]
 
 theorem continuous_singleV (v : HeightOneSpectrum (𝓞 F)) : Continuous (singleV F v) := by
-  classical
-  have hS : Filter.cofinite ≤ Filter.principal ({v}ᶜ : Set (HeightOneSpectrum (𝓞 F))) :=
-    Filter.le_principal_iff.2 (Set.finite_singleton v).compl_mem_cofinite
-  let s0 : Fv F v → RestrictedProduct (fun w : HeightOneSpectrum (𝓞 F) => w.adicCompletion F)
-      (fun w => (w.adicCompletionIntegers F : Set (w.adicCompletion F)))
-      (Filter.principal ({v}ᶜ : Set (HeightOneSpectrum (𝓞 F)))) := fun y =>
-    ⟨Pi.single v y, Filter.eventually_principal.2 fun w hw => by
-      rw [Pi.single_eq_of_ne (by simpa using hw)]
-      exact zero_mem _⟩
-  have hc : Continuous s0 := by
-    rw [RestrictedProduct.continuous_rng_of_principal_iff_forall]
-    intro w
-    by_cases hw : w = v
-    · subst hw
-      exact continuous_id.congr fun y => (Pi.single_eq_same _ _).symm
-    · exact (continuous_const (y := (0 : Fv F w))).congr fun y => (Pi.single_eq_of_ne hw y).symm
-  have e : singleV F v = fun y => RestrictedProduct.inclusion _ _ hS (s0 y) := by
-    funext y
-    apply RestrictedProduct.ext
-    intro j
-    rfl
-  rw [e]
-  exact (RestrictedProduct.continuous_inclusion hS).comp hc
+  apply _root_.GlobalTheory.CompanionTheory.SaGen.continuous_singleV' <;> assumption
 
 theorem continuous_psiV (ψ : AddChar (AF F) ℂ) (hψ : Continuous ψ) (v : HeightOneSpectrum (𝓞 F)) :
     Continuous (psiV F ψ v) := by

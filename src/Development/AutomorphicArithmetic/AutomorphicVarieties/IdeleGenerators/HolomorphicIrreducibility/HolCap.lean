@@ -1,5 +1,6 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.IdeleGenerators.ScalarStabilizers.Trzero
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.IdeleGenerators.WeightChange
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsUniqueIdeleOfLinearEquivQuotientLocal
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.RTwist
@@ -51,33 +52,11 @@ open NumberField Neutral.B1 Formalism.L2.Host GlobalTheory.CuspRep UpperTheory.V
 
 private theorem infGL_scalar {F : Type} [Field F] [NumberField F] [IsTotallyReal F] (u : (Rinf F)ˣ) :
     infGL F 2 (GeneralLinearGroup.scalar (Fin 2) u) = GeneralLinearGroup.scalar (Fin 2) (infId F u) := by
-  have h : ∀ x, pInf F (sInf F x) = x := fun x => (infEq F).symm_apply_apply x
-  have h1 : pInf F (infId F u : Ideles F) = u := by
-    change pInf F (1 - sInf F 1 + sInf F _) = _
-    simp [h]
-  have h2 : pFin F (infId F u : Ideles F) = 1 := by
-    change (1 : Af F) - 0 + 0 = 1
-    simp
-  refine ga_ext ?_ ?_
-  · rw [TR.pInf_infGL]
-    ext i j
-    by_cases e : i = j <;> simp [e, h1]
-  · rw [TR.pFin_infGL]
-    ext i j
-    by_cases e : i = j <;> simp [e, h2]
+  apply _root_.infGL_scalar <;> assumption
 
 private theorem fin_expU {F : Type} [Field F] [NumberField F] [IsTotallyReal F] {ω : HChar F} (h : IsOfFinOrder ω)
     (z : Rinf F) : ω.1 (infId F (expU z)) = 1 := by
-  obtain ⟨n, hn, e⟩ := isOfFinOrder_iff_pow_eq_one.1 h
-  have e1 : expU z = expU ((n : ℝ)⁻¹ • z) ^ n := by
-    refine Units.ext (funext fun i => ?_)
-    have : (n : ℝ) ≠ 0 := by positivity
-    simp only [Units.val_pow_eq_pow_val, Pi.pow_apply, expU_val, ← Real.exp_nat_mul, Pi.smul_apply, smul_eq_mul]
-    congr 1
-    field_simp
-  rw [e1, map_pow, map_pow]
-  have e2 : ω.1 ^ n = 1 := congrArg Subtype.val e
-  exact DFunLike.congr_fun e2 _
+  apply _root_.fin_expU <;> assumption
 
 private theorem lie_scalar {F : Type} [Field F] [NumberField F] [IsTotallyReal F] {k c} {ω : HChar F} (h : IsOfFinOrder ω)
     {φ : Sm F 2} (hφ : Sd.IsHol k c ω φ) (z : Rinf F) : lie F 2 (toL (Matrix.scalar (Fin 2) z)) φ = 0 := by

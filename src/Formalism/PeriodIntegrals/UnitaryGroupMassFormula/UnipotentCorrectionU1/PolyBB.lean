@@ -8,6 +8,7 @@ import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.TypeStar
 import Mathlib.Algebra.Order.Archimedean.Real.Hom
 import Mathlib.RingTheory.SimpleRing.Principal
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TailIntegrals.XiExistsOfIn
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnipotentCorrectionU1.PolyBA, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnipotentCorrectionU1.PolyBB
@@ -183,17 +184,7 @@ section pb2
 variable {k r : ℕ}
 
 lemma pb_entry_le_gN (M : B.Mat k r) (i j : Fin (2 * r + k + 1)) : ‖M i j‖ ≤ B.gN M := by
-  unfold B.gN
-  have h1 : ‖M i j‖ ^ 2 ≤ ∑ a, ∑ b, Complex.normSq (M a b) := by
-    rw [← Complex.normSq_eq_norm_sq]
-    calc Complex.normSq (M i j) ≤ ∑ b, Complex.normSq (M i b) :=
-          Finset.single_le_sum (f := fun b => Complex.normSq (M i b))
-            (fun b _ => Complex.normSq_nonneg _) (Finset.mem_univ j)
-      _ ≤ ∑ a, ∑ b, Complex.normSq (M a b) :=
-          Finset.single_le_sum (f := fun a => ∑ b, Complex.normSq (M a b))
-            (fun a _ => Finset.sum_nonneg fun b _ => Complex.normSq_nonneg _) (Finset.mem_univ i)
-  calc ‖M i j‖ = Real.sqrt (‖M i j‖ ^ 2) := (Real.sqrt_sq (norm_nonneg _)).symm
-    _ ≤ _ := Real.sqrt_le_sqrt h1
+  apply _root_.ReciprocityTheory.ChartRestriction.DS.Xi.DetB.entry_le_gN <;> assumption
 
 lemma pb_sup_le_gN (g : B.Mat k r) : ‖g‖ ≤ B.gN g := by
   have h0 : 0 ≤ B.gN g := by unfold B.gN; positivity

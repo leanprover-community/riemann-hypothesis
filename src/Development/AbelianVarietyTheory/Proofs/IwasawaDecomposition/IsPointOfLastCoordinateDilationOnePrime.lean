@@ -43,6 +43,7 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ResidueEqZeroIff
 
 @[expose] public section
 
@@ -73,14 +74,7 @@ theorem hasRes_mk_iff {P : HeightOneSpectrum (𝓞 E)} {z : P.adicCompletion E} 
 
 theorem hasRes_le_one {P : HeightOneSpectrum (𝓞 E)} {z : P.adicCompletion E} {c : 𝓞 E ⧸ P.asIdeal}
     (h : HasRes P z c) : Valued.v z ≤ 1 := by
-  obtain ⟨r, -, hr⟩ := h
-  have h1 : Valued.v (algebraMap E (P.adicCompletion E) (algebraMap (𝓞 E) E r)) ≤ 1 := by
-    rw [valued_algebraMap]
-    exact HeightOneSpectrum.valuation_le_one _ _
-  have e : z = (z - algebraMap E _ (algebraMap (𝓞 E) E r)) + algebraMap E (P.adicCompletion E) (algebraMap (𝓞 E) E r) := by
-    ring
-  rw [e]
-  exact Valuation.map_add_le _ hr.le h1
+  apply _root_.GlobalTheory.Mem.Col2.LevRead.hasRes_le <;> assumption
 
 theorem hasRes_lt_one {P : HeightOneSpectrum (𝓞 E)} {z : P.adicCompletion E} (h : HasRes P z 0) : Valued.v z < 1 := by
   have := (hasRes_mk_iff (P := P) (z := z) 0).1 (by simpa using h)

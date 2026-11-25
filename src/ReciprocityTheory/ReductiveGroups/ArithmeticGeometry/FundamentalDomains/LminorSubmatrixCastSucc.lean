@@ -298,8 +298,7 @@ private theorem hermC_sum_smul_col_negative_block {p0 : ℕ} (τ : E →+* ℂ) 
 theorem neg_of_perp {x : Frame X.Ψ r} (hx : x ∈ X.dom) (τ : X.Ψ) {e : Fin r → ℂ} (he : e ≠ 0)
     (hperp : ∀ b, hermC τ.1 X.Gm e (X.colP x τ b) = 0) : (hermC τ.1 X.Gm e e).re < 0 := by
   classical
-  by_contra hneg
-  push_neg at hneg
+  by_contra! hneg
   obtain ⟨P, -, hP⟩ := X.signature τ
   have hpd := X.gramPos_posDef hx τ
   have hle := X.p0_le

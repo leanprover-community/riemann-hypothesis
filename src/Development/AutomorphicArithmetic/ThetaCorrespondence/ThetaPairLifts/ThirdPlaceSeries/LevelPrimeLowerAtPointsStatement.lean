@@ -662,8 +662,7 @@ theorem tcrit_le_pow : Formalism.L2.SG.Pf.SzHypFD.DsigHC → ∀ (D : D7) (large
   have hg1ge : 1 ≤ (D.host.g 0 : ℝ) :=
     le_trans (one_le_pow₀ (one_le_mul_of_one_le_of_one_le hk1 hb1.le)) hkg1
   have hCg : 0 ≤ Cg := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     have := Real.rpow_lt_one_of_one_lt_of_neg hb1 hc
     linarith
   have hgg : gg D ≤ large₂.sc.b ^ (2 * Cg) := by

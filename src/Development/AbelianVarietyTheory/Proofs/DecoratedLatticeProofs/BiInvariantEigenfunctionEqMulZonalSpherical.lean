@@ -428,8 +428,7 @@ theorem pos_iff_lt {N : ℕ} {e : Fin N → ℤ} (ha : Antitone e) (i : Fin N) :
 
 theorem nonneg_of_dom {N : ℕ} {ν e : Fin N → ℤ} (hν : Antitone ν) (he : ∀ i, 0 ≤ e i)
     (hle : ∀ j, psum ν j ≤ psum e j) (hsum : ∑ i, ν i = ∑ i, e i) (i : Fin N) : 0 ≤ ν i := by
-  by_contra hneg
-  push_neg at hneg
+  by_contra! hneg
   have sν := Finset.sum_filter_add_sum_filter_not Finset.univ (fun j : Fin N => (j : ℕ) < i) ν
   have se := Finset.sum_filter_add_sum_filter_not Finset.univ (fun j : Fin N => (j : ℕ) < i) e
   have tν : ∑ j ∈ Finset.univ.filter (fun j : Fin N => ¬ (j : ℕ) < i), ν j < 0 := by
@@ -985,8 +984,7 @@ private theorem irreducible_of_valuation_eq_uniformizer {ϖ : kˣ}
       exact congrArg (fun x : 𝒪[k] => valuation k (x : k)) hab.symm
     have ha : valuation k (a : k) ≤ 1 := a.2
     have hb : valuation k (b : k) ≤ 1 := b.2
-    by_contra h
-    push_neg at h
+    by_contra! h
     have ha' := le_uniformizer_iff.mpr (lt_of_le_of_ne ha h.1)
     have hb' := le_uniformizer_iff.mpr (lt_of_le_of_ne hb h.2)
     have h1 : uniformizer k ≤ uniformizer k * uniformizer k := hv.symm.le.trans (mul_le_mul' ha' hb')

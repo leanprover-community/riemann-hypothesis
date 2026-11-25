@@ -30,7 +30,6 @@ theorem midI_lt (r : ℕ) {i j : Fin r} (h : i < j) : midI r i < midI r j := by
 
 theorem midOf_midI (r : ℕ) (j : Fin r) : midOf (midI r j) = some j := by
   have hv := midI_val r j
-  have hj := j.isLt
   unfold midOf
   rw [dite_eq_left (by rw [hv]; exact ⟨Nat.succ_pos _, by omega⟩)]
   congr 1

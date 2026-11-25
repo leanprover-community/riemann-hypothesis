@@ -1,5 +1,6 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.HeckeAlgebras.UpOperatorEigenvalues.EigChar
 public import Mathlib.FieldTheory.IsAlgClosed.Basic
 public import Mathlib.RingTheory.Ideal.GoingUp
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.HeckeAlgebras.HeckeCommRing
@@ -92,14 +93,12 @@ open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.
 open UpperTheory.V.W (Plc Lp HidaSetting Vl Resid LamObj UniversalOrdinaryDeterminantRing Pair)
 open UpperTheory.V.HV (Coef)
 open scoped TensorProduct
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 set_option synthInstance.maxHeartbeats 200000
 
 private theorem ls_le {A T K : Type} [CommRing A] [CommRing T] [Algebra A T] [Algebra.IsIntegral A T] [NormedField K]
     [IsUltrametricDist K] (z : T →+* K) (h1 : ∀ b, ‖z (algebraMap A T b)‖ ≤ 1) (s : T) : ‖z s‖ ≤ 1 := by
   obtain ⟨p, hpm, hp⟩ := Algebra.IsIntegral.isIntegral (R := A) s
-  by_contra hgt
-  push_neg at hgt
+  by_contra! hgt
   have hev := congrArg z hp
   rw [Polynomial.hom_eval₂, map_zero, Polynomial.eval₂_eq_sum_range, Finset.sum_range_succ,
     ← Polynomial.leadingCoeff, hpm.leadingCoeff, map_one, one_mul] at hev
@@ -286,53 +285,7 @@ private theorem ls_mem {A M ι : Type} [CommRing A] [IsLocalRing A] [AddCommGrou
     (hu : ∀ i, Restr (u i) (op i - algebraMap A _ (a i))) (y : Y) :
     (y : M) ∈ locPart Y op a ↔
       ∀ (i : ι) (k : ℕ), ∃ n : ℕ, (u i ^ n) y ∈ maximalIdeal A ^ k • (⊤ : Submodule A Y) := by
-  have hY : ∀ i, ∀ x ∈ Y, (op i - algebraMap A (Module.End A M) (a i)) x ∈ Y := fun i x hx => by
-    rw [← hu i ⟨x, hx⟩]
-    exact (u i ⟨x, hx⟩).2
-  have hP : ∀ i k, ∀ z ∈ maximalIdeal A ^ k • Y,
-      (op i - algebraMap A (Module.End A M) (a i)) z ∈ maximalIdeal A ^ k • Y := by
-    intro i k z hz
-    have hle : maximalIdeal A ^ k • Y ≤
-        (maximalIdeal A ^ k • Y).comap (op i - algebraMap A (Module.End A M) (a i)) := by
-      rw [Submodule.smul_le]
-      intro r hr x hx
-      rw [Submodule.mem_comap, map_smul]
-      exact Submodule.smul_mem_smul hr (hY i x hx)
-    exact hle hz
-  have hdir : ∀ i k, Directed (· ≤ ·) (fun n : ℕ =>
-      (maximalIdeal A ^ k • Y).comap ((op i - algebraMap A (Module.End A M) (a i)) ^ n)) := by
-    intro i k
-    apply Monotone.directed_le
-    apply monotone_nat_of_le_succ
-    intro n x hx
-    rw [Submodule.mem_comap] at hx ⊢
-    rw [pow_succ', Module.End.mul_apply]
-    exact hP i k _ hx
-  have hsm : ∀ k (z : Y), z ∈ maximalIdeal A ^ k • (⊤ : Submodule A Y) ↔ (z : M) ∈ maximalIdeal A ^ k • Y := by
-    intro k z
-    have hmap : (maximalIdeal A ^ k • (⊤ : Submodule A Y)).map Y.subtype = maximalIdeal A ^ k • Y := by
-      rw [Submodule.map_smul'', Submodule.map_subtype_top]
-    rw [← hmap]
-    constructor
-    · intro hz
-      exact Submodule.mem_map_of_mem hz
-    · rintro ⟨w, hw, hwz⟩
-      have hwz' : w = z := Subtype.ext hwz
-      rwa [← hwz']
-  rw [locPart, Submodule.mem_inf]
-  simp only [Submodule.mem_iInf]
-  constructor
-  · rintro ⟨-, h⟩ i k
-    obtain ⟨n, hn⟩ := (Submodule.mem_iSup_of_directed _ (hdir i k)).1 (h i k)
-    refine ⟨n, (hsm k _).2 ?_⟩
-    rw [ls_restr_pow (hu i) n y]
-    exact hn
-  · intro h
-    refine ⟨y.2, fun i k => ?_⟩
-    obtain ⟨n, hn⟩ := h i k
-    refine (Submodule.mem_iSup_of_directed _ (hdir i k)).2 ⟨n, ?_⟩
-    rw [Submodule.mem_comap, ← ls_restr_pow (hu i) n y]
-    exact (hsm k _).1 hn
+  apply _root_.mem_locPart_iff <;> assumption
 
 theorem UpperTheory.V.Hi.levelUR2LocSub :
     ∀ (l : ℕ) [Fact l.Prime] (c : Coef l) (A M ι ι' : Type) [CommRing A] [Algebra c.O A] [Alg.IsCO c.O A] [IsDomain A] [AddCommGroup M] [Module A M] (Y : Submodule A M) [Module.Finite A Y] [Module.Free A Y] (op : ι → Module.End A M) [Fact (CommOn Y op)] (j : ι' → ι) (a : ι → c.O) (x : A →ₐ[c.O] Qbar l), (∀ z : heckeAlg Y op →+* Qbar l, z.comp (algebraMap A _) = x.toRingHom → (∀ i, ‖z (heckeGen Y op (j i)) - algebraMap c.O (Qbar l) (a (j i))‖ < 1) → ∀ i, ‖z (heckeGen Y op i) - algebraMap c.O (Qbar l) (a i)‖ < 1) → locPart Y (fun i => op (j i)) (fun i => algebraMap c.O A (a (j i))) = locPart Y op fun i => algebraMap c.O A (a i) := by

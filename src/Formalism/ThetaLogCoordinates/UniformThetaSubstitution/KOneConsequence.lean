@@ -543,8 +543,7 @@ theorem entryExcessBound_of (hS : EntryStar) (hC : HitsCapPos) (hA : ExcessGainB
     exact ValuationParity.level_le p e α β hτ c hc s e'
   have hcapN : ∀ s e', iN s e' ≤ capN sf (s + ((2 * e' + 1 : ℕ) : ZMod (2 * ν))) := by
     intro s e'
-    by_contra hlt
-    push_neg at hlt
+    by_contra! hlt
     apply hhasse
     refine hC K (ZMod (2 * ν)) (KapI ν r1 E) r0 r1 C l sf T I
       (fun k => k.1 + ((2 * k.2.1.val + 1 : ℕ) : ZMod (2 * ν)))
@@ -778,8 +777,7 @@ lemma iN_le_cap (hC : HitsCapPos) {K : Type} [Field K] [NeZero ν] {C : ℕ} (p 
     iN β s e' ≤ capN sf (s + ((2 * e' + 1 : ℕ) : ZMod (2 * ν))) := by
   unfold iN
   split_ifs with h
-  · by_contra hlt
-    push_neg at hlt
+  · by_contra! hlt
     apply h4
     exact hC K (ZMod (2 * ν)) (KapI ν r1 E) r0 r1 C l sf T I
       (fun k => k.1 + ((2 * k.2.1.val + 1 : ℕ) : ZMod (2 * ν)))
@@ -852,8 +850,7 @@ lemma low_pay (hJ : HitsColumnsPos) {K : Type} [Field K] [NeZero ν] {C : ℕ} (
       exact ⟨by rw [h]; exact hy.2, h⟩
   rw [hR]
   refine Finset.sum_le_sum (fun y _ => ?_)
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   apply h4
   exact hJ K (ZMod (2 * ν)) (KapI ν r1 E) r0 r1 C l sf T I pos
     (fun k a => ξ k.1 a ^ (p ^ (2 * k.2.1.val + 1))) (fun k => k.2.2)

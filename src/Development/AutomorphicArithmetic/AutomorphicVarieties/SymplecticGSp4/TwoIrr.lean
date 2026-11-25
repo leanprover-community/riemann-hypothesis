@@ -197,8 +197,7 @@ private theorem vanish_mono {O S K H : Type} [CommRing O] [CommRing S] [Algebra 
     by_contra hne
     have hall : ∀ a ∈ L, 0 ≤ p (wt a.2.1 a.2.2) := by
       intro a ha
-      by_contra hlt
-      push_neg at hlt
+      by_contra! hlt
       exact hne (List.mem_map.mpr ⟨a, ha, h a.1 a.2.1 a.2.2 hlt⟩)
     have hnn : 0 ≤ p w := by
       rw [← hL, map_list_sum, List.map_map]

@@ -1489,8 +1489,7 @@ theorem truncMono_eq_zero {p : ℕ} [Fact p.Prime] {k A : Type} [Field k] [CommR
     apply hconst F _ hF
     intro m hm
     obtain ⟨i, hi⟩ : ∃ i, m i ≠ 0 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact hm (Finsupp.ext h)
     by_contra hc
     have hlt := (hs m (mem_support_iff.mpr hc)).1 i

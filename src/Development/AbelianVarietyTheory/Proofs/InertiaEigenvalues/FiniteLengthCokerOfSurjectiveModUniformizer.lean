@@ -15,49 +15,9 @@ public import Mathlib.RingTheory.AdicCompletion.Basic
 public import Mathlib.Topology.Algebra.Valued.NormedValued
 public import Mathlib.RingTheory.PowerSeries.WeierstrassPreparation
 public import Mathlib.RingTheory.PowerSeries.Order
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.NumberTheory.Padics.LocalField
 import Mathlib.Tactic.Linter.HaveILetI
@@ -70,7 +30,6 @@ import Mathlib.Tactic
 import Mathlib.RingTheory.PowerSeries.NoZeroDivisors
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Topology.Sheaves.Presheaf
-import Mathlib.Data.Nat.Choose.Multinomial
 import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Order.CompletePartialOrder
@@ -402,8 +361,7 @@ theorem norm_coeff_le_one_of_mul {x g : K⟦X⟧} (hx : ∃ B : ℝ, ∀ n, ‖c
     exact (hgx _).trans (le_max_left _ _)
   have hSM : S ≤ Mx := ciSup_le key
   have hS1 : S ≤ 1 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     have h2 : S ≤ θ * S := by
       rcases le_total 1 ((θ : ℝ) * S) with h3 | h3
       · rwa [hMx, max_eq_right h3] at hSM
@@ -1162,8 +1120,7 @@ theorem exists_primitive_generator : ∀ (K : Type) [NormedField K] [IsUltrametr
   · exact ⟨q, hq1, by rw [hqr, hr, add_zero, mul_comm]⟩
   exfalso
   have hex : ∃ n, coeff n r ≠ 0 := by
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     exact hr (PowerSeries.ext fun n => by simpa using hne n)
   obtain ⟨n0, hn0⟩ := hex
   have hn0d : n0 < Nat.find hS := by

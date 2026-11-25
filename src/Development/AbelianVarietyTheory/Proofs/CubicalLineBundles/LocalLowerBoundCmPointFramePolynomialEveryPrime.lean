@@ -100,8 +100,6 @@ open ReciprocityTheory.ChartRestriction.G.Chart (tvec tmap tvec_inj isTan_tvec u
 open Formalism.L2.Pj.LieRel
 open scoped CategoryTheory.Obj
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 theorem flat_of_inj {A B : Type} [CommRing A] [IsDomain A] [IsBezout A] [CommRing B] [IsDomain B] [Algebra A B]
     (hi : Function.Injective (algebraMap A B)) : Module.Flat A B := by
   rw [Module.Flat.flat_iff_torsion_eq_bot_of_isBezout, eq_bot_iff]

@@ -183,8 +183,6 @@ open GlobalTheory.FlagTan (dimFlag)
 open GlobalTheory.HSApp
 open IsLocalRing Formalism.MainNotions.ModuliIntegralCharts.H1 ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 noncomputable section
 
 namespace GlobalTheory.ExtScaleZero
@@ -280,7 +278,6 @@ open GlobalTheory.FlagTan (dimFlag)
 open GlobalTheory.HSApp
 open IsLocalRing Formalism.MainNotions.ModuliIntegralCharts.H1 ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ
 open ReciprocityTheory.ChartRestriction.G.DVR ReciprocityTheory.ChartRestriction.G.DVR.QForm
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.FactorDepth GlobalTheory.CharDepth GlobalTheory.FGDepth
 
 namespace GlobalTheory.ResZeroDepth
@@ -347,7 +344,6 @@ open GlobalTheory.FlagTan (dimFlag)
 open GlobalTheory.HSApp
 open IsLocalRing Formalism.MainNotions.ModuliIntegralCharts.H1 ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ
 open ReciprocityTheory.ChartRestriction.G.DVR ReciprocityTheory.ChartRestriction.G.DVR.QForm
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.FactorDepth GlobalTheory.CharDepth GlobalTheory.FGDepth
 
 
@@ -367,7 +363,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ GlobalTheory.PtTie
 open ReciprocityTheory.ChartRestriction.G.TB (dAct dLin)
 open ReciprocityTheory.ChartRestriction.G.TB.WickVanishing
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.PlaceInt
 
 namespace GlobalTheory.FramePower
@@ -498,7 +493,6 @@ open GlobalTheory.FlagTan (dimFlag)
 open GlobalTheory.HSApp
 open IsLocalRing Formalism.MainNotions.ModuliIntegralCharts.H1 ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ
 open ReciprocityTheory.ChartRestriction.G.DVR ReciprocityTheory.ChartRestriction.G.DVR.QForm
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.FactorDepth GlobalTheory.CharDepth GlobalTheory.FGDepth
 open ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ Formalism.MainNotions.ModuliIntegralCharts.H1.ExpBijectiveUniformisation Formalism.MainNotions.ModuliIntegralCharts.H1.GSt
 open MonoidalCategory CartesianMonoidalCategory MonObj
@@ -758,7 +752,7 @@ theorem translate_eq_box : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E
     (ζ₁ i • Φ₁ i θα₁)).exists
   obtain ⟨bx₁, hbx₁⟩ := exists_boxFam_multilinear hG T.V n P.D.toPre D'.toPre pD F 1
   obtain ⟨bx, hbx⟩ := exists_boxFam_multilinear hG T.V n P.D.toPre D'.toPre pD F (1 * N)
-  obtain ⟨u₀, hu₀, hθu⟩ := GlobalTheory.T.thetaFrameFamilies_differ_by_valuationZero_unit T.V ϖ hϖ D' F v hv _ θ
+  obtain ⟨u₀, hu₀, hθu⟩ := _root_.GlobalTheory.ThetaFrameLine.main T.V ϖ hϖ D' F v hv _ θ
     (BoxFrame.main T.V ϖ hϖ n P.D D' pD F θ₁ _ hθ₁ ((hbx₁ _ _).2 rfl)) hθ
   have hw0 : TraceFormTwistIso D'.toPre oD' H.w0 := GlobalTheory.PsiWZeroProd.main T.V n P.D.toPre D'.toPre pD (𝓞 E)
     (fun a x => funext fun i => hx a x i) P.oD oD' hact H.w0 P.w0
@@ -769,7 +763,7 @@ theorem translate_eq_box : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E
     rw [(hpl _ _).1 hθα, (hpl _ _).1 hpull, (isSmul_iff _ _ _).1 hθu, map_smul]
   obtain ⟨w', hw', hΦ⟩ := BoxPhi.phiRel_box hG T.V n P.D.toPre D'.toPre pD F (1 * N) p p₁ hp w₁ hw₁
   have hfin' := finOrd_box hL hL2 hL4 hT T.V n P.D D' pD F (1 * N) hk p p₁ hp w₁ w' hw₁ hw' hΦ ζ₁ hζ₁
-  obtain ⟨u₁, ⟨m, hm, hum⟩, hu₁⟩ := GlobalTheory.T.finiteOrder_thetaOperators_ratio_rootOfUnity T.V ϖ hϖ D' F (1 * N) hk p w' w (∏ i, ζ₁ i) ζ hw' hw hfin' hfin
+  obtain ⟨u₁, ⟨m, hm, hum⟩, hu₁⟩ := _root_.GlobalTheory.finOrd_ratio_rootOfUnity T.V ϖ hϖ D' F (1 * N) hk p w' w (∏ i, ζ₁ i) ζ hw' hw hfin' hfin
   obtain ⟨Φ', hΦ'⟩ := phiFun_of hL T.V _ D' F (1 * N) hk p w' hw'
   have hbΦ : bx (fun i => Φ₁ i θα₁) = Φ' (bx fun _ => θα₁) :=
     (hΦ' _ _).1 (hΦ _ _ _ _ (fun i => (hΦ₁ i _ _).2 rfl) ((hbx _ _).2 rfl) ((hbx _ _).2 rfl))
@@ -1111,7 +1105,6 @@ open GlobalTheory.FlagTan (dimFlag)
 open GlobalTheory.HSApp
 open IsLocalRing Formalism.MainNotions.ModuliIntegralCharts.H1 ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ
 open ReciprocityTheory.ChartRestriction.G.DVR ReciprocityTheory.ChartRestriction.G.DVR.QForm
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.FactorDepth GlobalTheory.CharDepth GlobalTheory.FGDepth
 open ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ Formalism.MainNotions.ModuliIntegralCharts.H1.ExpBijectiveUniformisation Formalism.MainNotions.ModuliIntegralCharts.H1.GSt
 open MonoidalCategory CartesianMonoidalCategory MonObj
@@ -1390,7 +1383,6 @@ open GlobalTheory.FlagTan (dimFlag)
 open GlobalTheory.HSApp
 open IsLocalRing Formalism.MainNotions.ModuliIntegralCharts.H1 ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ
 open ReciprocityTheory.ChartRestriction.G.DVR ReciprocityTheory.ChartRestriction.G.DVR.QForm
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.FactorDepth GlobalTheory.CharDepth GlobalTheory.FGDepth
 
 
@@ -1412,7 +1404,6 @@ open GlobalTheory.FlagTan (dimFlag)
 open GlobalTheory.HSApp
 open IsLocalRing Formalism.MainNotions.ModuliIntegralCharts.H1 ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ
 open ReciprocityTheory.ChartRestriction.G.DVR ReciprocityTheory.ChartRestriction.G.DVR.QForm
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.FactorDepth GlobalTheory.CharDepth GlobalTheory.FGDepth
 
 set_option autoImplicit false
@@ -1463,8 +1454,7 @@ theorem exists_thRule_value_le : ∀ (E : Type) [Field E] [NumberField E] [IsCMF
     refine hup.trans ?_
     calc _ ≤ (0 : EReal) + ((B : ℝ) : EReal) := add_le_add hloc le_rfl
       _ = _ := zero_add _
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   have hlow : (((⌊B⌋ + 1 : ℤ) : ℝ) : EReal) ≤
       ⨅ (f : Rul Xo c) (_ : ∃ x : Fin n → Dw.La, IsThRule Xo c nab x P₁ f), nval T.V 1 (evI y f) := by
     refine le_iInf₂ fun f ⟨x, hx⟩ => ?_
@@ -1505,7 +1495,6 @@ open GlobalTheory.FlagTan (dimFlag)
 open GlobalTheory.HSApp
 open IsLocalRing Formalism.MainNotions.ModuliIntegralCharts.H1 ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ
 open ReciprocityTheory.ChartRestriction.G.DVR ReciprocityTheory.ChartRestriction.G.DVR.QForm
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.FactorDepth GlobalTheory.CharDepth GlobalTheory.FGDepth
 set_option autoImplicit false
 noncomputable section
@@ -1557,7 +1546,6 @@ open GlobalTheory.HSApp
 open IsLocalRing Formalism.MainNotions.ModuliIntegralCharts.H1 ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ
 open ReciprocityTheory.ChartRestriction.G.DVR ReciprocityTheory.ChartRestriction.G.DVR.QForm
 open scoped GlobalTheory.CompHt
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.FactorDepth GlobalTheory.CharDepth GlobalTheory.FGDepth
 set_option autoImplicit false
 noncomputable section

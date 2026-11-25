@@ -65,7 +65,6 @@ theorem gB_blockOK (aTop : Fin X.s → ℕ) (aPlus : ℕ) (b : SegBlock X.s X.r)
     (gB C0 CE1 CE2 X aTop aPlus b).BlockOK := by
   refine ⟨⟨?_, ?_, ?_⟩, ?_, ?_, ?_⟩
   · intro i i' h
-    have h' : (i : ℕ) < (i' : ℕ) := h
     show 2 * ((X.S C0 CE1 CE2).sigma + (i : ℕ)) < 2 * ((X.S C0 CE1 CE2).sigma + (i' : ℕ))
     omega
   · intro i

@@ -42,6 +42,7 @@ import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.Archim
 import Aesop.Main
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WaveKernelUniqueness
 import GroundTheory.GlobalFields.Adele.Approximation
+import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.ArchimedeanGelfandKernels.ReproOf
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.HeckeFubiniCompatibility.PActEq, Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.HeckeFubiniCompatibility.PActPi, Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.HeckeFubiniCompatibility.ActHcsSlice, Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.HeckeFubiniCompatibility.PFinInvMulInfGL, Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.HeckeFubiniCompatibility.PInfEx, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ContDiffOnInvReal, Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.HeckeFubiniCompatibility.PSmoothA, Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.HeckeFubiniCompatibility.PSmoothB, Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.HeckeFubiniCompatibility.PSmooth, Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.HeckeFubiniCompatibility.SmoothOfHolds
@@ -58,8 +59,6 @@ open GlobalTheory.CuspRep GlobalTheory.UnitaryBC PositivityTheory.Rg.BcB.E Posit
 open PositivityTheory.RgTw (Mat G)
 open PositivityTheory.Rg.BcB.SpectralAccumulation (Hf finH)
 open scoped Classical
-
-attribute [local instance] PositivityTheory.Rg.BcB.E.borelH
 
 namespace PositivityTheory.Rg.BcB.CG
 
@@ -1236,20 +1235,8 @@ theorem eq_of_defect (m : ℕ) (t t' : ℕ → ℂ) (Q : ℂ[X]) (hQ : Q.natDegr
   exact mul_left_cancel₀ hu e
 
 theorem exists_enum (s : Multiset ℂ) : ∀ n, Multiset.card s = n → ∃ r : Fin n → ℂ, Multiset.map r univ.val = s := by
-  induction s using Multiset.induction_on with
-  | empty =>
-    intro n hn
-    simp only [Multiset.card_zero] at hn
-    subst hn
-    exact ⟨Fin.elim0, by simp⟩
-  | cons a s ih =>
-    intro n hn
-    rw [Multiset.card_cons] at hn
-    subst hn
-    obtain ⟨r, hr⟩ := ih _ rfl
-    refine ⟨Fin.cons a r, ?_⟩
-    conv_rhs => rw [← hr]
-    simp [Fin.univ_succ, Function.comp_def]
+  intros
+  apply _root_.PositivityTheory.Rg.BcB.CG.ReproL.exists_enum <;> assumption
 
 theorem exists_gelf (V : Type) [AddCommGroup V] [Module ℂ V] (m : ℕ) (M : Fin (m + 1) → Fin (m + 1) → Module.End ℂ V)
     (hM : Formalism.REAL.GlRel M) (v : V) (hv : v ≠ 0) (t : ℕ → ℂ) (ht : ∀ k, Formalism.REAL.etr M k v = t k • v) :

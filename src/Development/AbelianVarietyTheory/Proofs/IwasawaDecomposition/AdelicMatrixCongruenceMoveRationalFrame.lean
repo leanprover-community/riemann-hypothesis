@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.TwistEmptyOfChartsEx
 public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.ExistsMidLevIff
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.LatAtLattice
 import Mathlib.Algebra.Order.Floor.Extended
@@ -58,16 +59,7 @@ variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algeb
 
 theorem intAtA_add {a b : E ⊗[F] FiniteAdeleRing (𝓞 F) F} (ha : IntAtA (F := F) P a) (hb : IntAtA (F := F) P b) :
     IntAtA (F := F) P (a + b) := by
-  obtain ⟨s, hs, h1⟩ := ha
-  obtain ⟨r, hr, h2⟩ := hb
-  have hi : ∀ x : 𝓞 E, iA F E (algebraMap (𝓞 E) E x) ∈ Formalism.L2.Herm.intAf F E := fun x => (toRInt F E x).2
-  refine ⟨s * r, fun h => (P.isPrime.mem_or_mem h).elim hs hr, ?_⟩
-  have e : iA F E (algebraMap (𝓞 E) E (s * r)) * (a + b) =
-      iA F E (algebraMap (𝓞 E) E r) * (iA F E (algebraMap (𝓞 E) E s) * a) +
-        iA F E (algebraMap (𝓞 E) E s) * (iA F E (algebraMap (𝓞 E) E r) * b) := by
-    rw [map_mul, map_mul]; ring
-  rw [e]
-  exact add_mem (mul_mem (hi r) h1) (mul_mem (hi s) h2)
+  first | exact _root_.GlobalTheory.TwU.Model.intAtA_add | exact @_root_.GlobalTheory.TwU.Model.intAtA_add | apply _root_.GlobalTheory.TwU.Model.intAtA_add <;> assumption
 
 theorem intAtA_mul {a b : E ⊗[F] FiniteAdeleRing (𝓞 F) F} (ha : IntAtA (F := F) P a) (hb : IntAtA (F := F) P b) :
     IntAtA (F := F) P (a * b) := by

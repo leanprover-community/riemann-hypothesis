@@ -105,8 +105,7 @@ theorem UpperTheory.V.AlgebraTools.hkInv :
     simp only [hff] at this
     exact this
   · intro w hw
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     apply hw
     have hadj : ∀ a c : Fin n, a.val + 1 = c.val → w⁻¹ a < w⁻¹ c := by
       intro a c h

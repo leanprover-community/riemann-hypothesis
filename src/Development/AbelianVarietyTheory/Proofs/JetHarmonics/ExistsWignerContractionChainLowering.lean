@@ -367,8 +367,7 @@ namespace GlobalTheory
 theorem hw_component_tensor_dual_standard (V : Type) [NormedAddCommGroup V] [InnerProductSpace ℂ V] [FiniteDimensional ℂ V] (n : ℕ) (E : Fin (n + 1) → Fin (n + 1) → Module.End ℂ V) (Et : Fin (n + 1) → Fin (n + 1) → Module.End ℂ (PiLp 2 (fun _ : Fin (n + 1) => V))) (Om : Module.End ℂ (PiLp 2 (fun _ : Fin (n + 1) => V))) (θ : Fin (n + 1) → ℂ) (lam : ℂ) (y : (PiLp 2 (fun _ : Fin (n + 1) => V))) (hEt : ∀ a b y c, Et a b y c = E a b (y c) - if c = b then y a else 0) (hOm : ∀ y a, Om y a = ∑ c, E a c (y c)) (hy : y ≠ 0) (hw : IsHW Et θ y) (hl : Om y = lam • y) : ∃ c, y c ≠ 0 ∧ IsHW E (fun a => θ a + if a = c then 1 else 0) (y c) ∧ lam = θ c + 1 - ((c : ℕ) : ℂ) + (n : ℂ) := by
   classical
   have hex : ∃ c, y c ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hy (by ext c; simpa using h c)
   obtain ⟨c, hc, hmin⟩ := (wellFounded_lt (α := Fin (n + 1))).has_min {c | y c ≠ 0} hex
   have hlt : ∀ d, d < c → y d = 0 := fun d hd => by
@@ -505,8 +504,7 @@ theorem casimir_eigenspace_irred_dual_standard : ∀ (V : Type) [NormedAddCommGr
   have hirr : ∀ S' : Submodule ℂ (PiLp 2 (fun _ : Fin (n + 1) => V)), S' ≤ S → Stab Et S' →
       S' = ⊥ ∨ S' = S := by
     intro S' hle hst
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     obtain ⟨h0, h1⟩ := hcon
     have hT : S'ᗮ ⊓ S ≠ ⊥ := by
       intro h

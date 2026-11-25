@@ -56,8 +56,6 @@ open NumberField ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRes
 open AlgebraicGeometry CategoryTheory GlobalTheory.DeRham GlobalTheory.Cris
 open scoped Classical
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.KSExist
 
 theorem conj_embK {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {l : Level H} (c : Coeff l)

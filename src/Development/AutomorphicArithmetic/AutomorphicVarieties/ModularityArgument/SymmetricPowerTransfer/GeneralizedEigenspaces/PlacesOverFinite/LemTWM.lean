@@ -952,8 +952,7 @@ theorem UpperTheory.V.Af.Tw.verGroup :
   have hnorm : R.Normal := Subgroup.normal_of_index_eq_two hidx
   have hsq : ∀ g, g ∉ R → g * g ∈ R := fun g _ => (hmem g g).mpr Iff.rfl
   obtain ⟨g0, hg0⟩ : ∃ g0 : Γ, g0 ∉ R := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     have htop : R = ⊤ := eq_top_iff.mpr fun x _ => hcon x
     rw [htop, Subgroup.index_top] at hidx
     exact absurd hidx (by norm_num)

@@ -64,8 +64,7 @@ theorem norm_embedding_integer_le_one {E : Type} [Field E] [NumberField E] {l : 
     have := (RingOfIntegers.isIntegral_coe a).map τ.toIntAlgHom
     simpa using this
   obtain ⟨p, hp, hp0⟩ := h
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   set y := τ (a : E)
   rw [Polynomial.eval₂_eq_sum_range, Finset.sum_range_succ, hp.coeff_natDegree, map_one,
     one_mul] at hp0

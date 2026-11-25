@@ -2,6 +2,7 @@ module
 
 public import Development.WeilBound.ThetaLifts.LatticeBasics.PairsStable
 public import Development.WeilBound.ThetaLifts.LatticeBasics.LeviEx
+import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.ThetaKernels.Prelims.AbsEDetUnitary
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
@@ -119,15 +120,7 @@ theorem absE_det (hJ : Aniso σ Y.J) (h : UA σ Y.J) : absE F E (Matrix.GeneralL
   have d0 : Y.J.det ≠ 0 := fun h0 => by
     obtain ⟨v, hv, e⟩ := Matrix.exists_vecMul_eq_zero_iff.2 h0
     exact hv (hJ v (by rw [form, Matrix.dotProduct_mulVec, e, zero_dotProduct]))
-  have u : IsUnit (incM F Y.J).det := by
-    rw [incM, ← RingHom.mapMatrix_apply, ← RingHom.map_det]; exact d0.isUnit.map _
-  have e := congrArg Matrix.det (show (mat h)ᵀ * incM F Y.J * (mat h).map (cA σ) = incM F Y.J from h.2)
-  rw [Matrix.det_mul, Matrix.det_mul, Matrix.det_transpose, mul_right_comm, u.mul_eq_right,
-    show ((mat h).map (cA σ)).det = sigR (AF F) σ (mat h).det from (RingHom.map_det (sigR (AF F) σ) _).symm] at e
-  have e2 : Matrix.GeneralLinearGroup.det h.1 * GlobalTheory.Doubling.conjUnit σ (Matrix.GeneralLinearGroup.det h.1) = 1 := Units.ext e
-  have e3 := congrArg (absE F E) e2
-  rw [map_mul, GlobalTheory.Doubling.absE_conjUnit, map_one] at e3
-  exact (pow_eq_one_iff_of_nonneg zero_le two_ne_zero).1 (by rw [sq, e3])
+  exact GlobalTheory.WeilEx.Jac.absE_det_unitary d0 h
 
 theorem IsEmb.par {h : UA σ Y.J} {x : G2 σ Y} (e : IsEmb h h x) : IsPar x h.1 := by
   rw [isPar_iff, e]; simp [diagCols, Matrix.fromBlocks_mul_fromRows, Matrix.fromRows_mul, mat]

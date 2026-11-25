@@ -1,5 +1,6 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.WeakShimuraTheory.CompactIntegralFields.BlockDet
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.WeakShimuraTheory.RedIdeal
 public import Mathlib.Algebra.DualNumber
 import Mathlib.RingTheory.AdicCompletion.Noetherian
@@ -31,12 +32,7 @@ private theorem rd_sp {n n' m : M4 R} (h1 : n * m = 1) (h : adj n' * n + adj n *
   rw [rd_adj_mul, e, mul_neg, ← mul_assoc, ← rd_adj_mul, h1, rd_adj_one, one_mul]
 
 private theorem rd_up_mul {X Y : M4 R} (hX : IsUp X) (hY : IsUp Y) : IsUp (X * Y) := by
-  intro i j hij
-  rw [Matrix.mul_apply]
-  refine Finset.sum_eq_zero fun l _ => ?_
-  by_cases hl : l < i
-  · rw [hX i l hl, zero_mul]
-  · rw [hY l j (lt_of_lt_of_le hij (not_lt.1 hl)), mul_zero]
+  apply _root_.bd_up_mul <;> assumption
 
 end
 

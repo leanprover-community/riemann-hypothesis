@@ -16,6 +16,7 @@ public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeil
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsUniqueSelfDualHaarMeasureInfiniteAdeles
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.HermitianForms.IndicatorInSchrodingerSpan, Development.AutomorphicSpectrum.Proofs.HermitianForms.ExistsSdWSdHerm, Development.AutomorphicSpectrum.Proofs.HermitianForms.BijectiveLinearCombinationOfRankAtStalk, Development.AutomorphicSpectrum.Proofs.HermitianForms.HasCoordOfFiniteDimensional, Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.WhittakerLowRank.AnalyticAtUpdateZero, Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.WhittakerLowRank.WhitGenLowOf
@@ -355,20 +356,7 @@ theorem trace_tmul [FiniteDimensional F E] (c : R) (e : E) :
 
 theorem trace_nondeg [FiniteDimensional F E] [Algebra.IsSeparable F E] (z : R ⊗[F] E)
     (h : ∀ w, Algebra.trace R (R ⊗[F] E) (z * w) = 0) : z = 0 := by
-  classical
-  let b := Module.finBasis F E
-  let b' := (Algebra.traceForm F E).dualBasis (traceForm_nondegenerate F E) b
-  have key : ∀ (k) (z : R ⊗[F] E), (Algebra.TensorProduct.basis R b').repr z k =
-      Algebra.trace R (R ⊗[F] E) (z * (1 : R) ⊗ₜ[F] b k) := by
-    intro k z
-    induction z using TensorProduct.induction_on with
-    | zero => simp
-    | add x y hx hy => simp only [map_add (f := _), Finsupp.add_apply, hx, hy, add_mul]
-    | tmul a e =>
-      rw [Algebra.TensorProduct.tmul_mul_tmul, trace_tmul, Algebra.TensorProduct.basis_repr_tmul]
-      simp [b', LinearMap.BilinForm.dualBasis_repr_apply, Algebra.traceForm_apply]
-  refine (Algebra.TensorProduct.basis R b').ext_elem fun k => ?_
-  rw [key, h]; simp
+  apply _root_.GlobalTheory.GaugeEx.SdInf.trace_nondeg <;> assumption
 
 theorem trace_sigR [FiniteDimensional F E] (z : R ⊗[F] E) :
     Algebra.trace R (R ⊗[F] E) (sigR R σ z) = Algebra.trace R (R ⊗[F] E) z := by
@@ -841,36 +829,7 @@ theorem trace_sigR (hσ : ∀ x, σ (σ x) = x) (z : R ⊗[F] E) :
 
 theorem trace_nondeg [Algebra.IsSeparable F E] (z : R ⊗[F] E)
     (h : ∀ u, Algebra.trace R (R ⊗[F] E) (z * u) = 0) : z = 0 := by
-  classical
-  let b := Module.finBasis F E
-  let B := Algebra.traceForm F E
-  have hB : B.Nondegenerate := traceForm_nondegenerate F E
-  let b' := B.dualBasis hB b
-  let c := Algebra.TensorProduct.basis R b
-  have hz : z = ∑ i, c.repr z i ⊗ₜ[F] b i := by
-    conv_lhs => rw [← c.sum_repr z]
-    refine Finset.sum_congr rfl fun i _ => ?_
-    simp [c, TensorProduct.smul_tmul']
-  have hc : ∀ j, c.repr z j = 0 := by
-    intro j
-    have h1 := h ((1 : R) ⊗ₜ[F] b' j)
-
-    rw [hz, Finset.sum_mul, map_sum] at h1
-    simp only [Algebra.TensorProduct.tmul_mul_tmul, mul_one, trace_tmul] at h1
-    rw [Finset.sum_eq_single j] at h1
-    · have h2 : Algebra.trace F E (b j * b' j) = 1 := by
-        have := LinearMap.BilinForm.apply_dualBasis_right hB (Algebra.traceForm_isSymm F) b j j
-        simpa [B, b', Algebra.traceForm_apply] using this
-      rw [h2, map_one, mul_one] at h1
-      exact h1
-    · intro i _ hij
-      have h2 : Algebra.trace F E (b i * b' j) = 0 := by
-        have := LinearMap.BilinForm.apply_dualBasis_right hB (Algebra.traceForm_isSymm F) b i j
-        simpa [B, b', Algebra.traceForm_apply, hij] using this
-      rw [h2, map_zero, mul_zero]
-    · simp
-  rw [← c.sum_repr z]
-  simp [hc]
+  apply _root_.GlobalTheory.GaugeEx.SdInf.trace_nondeg <;> assumption
 
 end Alg
 

@@ -3,6 +3,7 @@ module
 public import Mathlib.RingTheory.DiscreteValuationRing.Basic
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.ThetaCoefficientMapEq
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.DeterminantPadicFree.AcConst
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.DeterminantPadicFree.AcConst
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.DeterminantPadicFree.PhiSub
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.DeterminantPadicFree.SubMulAddEpM
 public import Mathlib.RingTheory.PowerSeries.Inverse
@@ -80,12 +81,7 @@ private theorem ac_const {G R : Type} [TopologicalSpace G] [CommRing R] {I : Ide
 
 private theorem ac_sum {G R ι : Type} [TopologicalSpace G] [CommRing R] {I : Ideal R} (s : Finset ι)
     {f : ι → G → R} (hf : ∀ i, AdicCont I (f i)) : AdicCont I fun g => ∑ i ∈ s, f i g := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => simpa using ac_const (G := G) (I := I) 0
-  | insert a s ha ih =>
-    simp only [Finset.sum_insert ha]
-    exact ac_add (hf a) ih
+  apply _root_.ac_sum <;> assumption
 
 private theorem ac_map {G A R : Type} [TopologicalSpace G] [CommRing A] [CommRing R] (φ : A →+* R) (t : A)
     {f : G → A} (hf : AdicCont (Ideal.span {t}) f) : AdicCont (Ideal.span {φ t}) fun g => φ (f g) := by

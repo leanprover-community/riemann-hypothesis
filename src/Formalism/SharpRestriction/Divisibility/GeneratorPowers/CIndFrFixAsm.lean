@@ -1,5 +1,7 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.JetHarmonics.IntegralChartDirectionsAreEigenvectors
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.LogChain
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.FormalGroupLinearSecond
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.CIndFrFix
 public import Formalism.FormalGroupWitt.FormalGroupWittProofs.SolveV
@@ -112,26 +114,8 @@ theorem low_sum {τ ι : Type} {N : ℕ} (s : Finset ι) {p : ι → MvPowerSeri
 
 theorem low_subst' {ι τ : Type} [Finite ι] {N : ℕ} {k : ι → MvPowerSeries τ S} (hk : ∀ i, Low 1 (k i))
     {g : MvPowerSeries ι S} (hg : Low N g) : Low N (subst k g) := by
-  classical
-  have hk0 : ∀ i, constantCoeff (k i) = 0 := fun i => (low_one_iff _).1 (hk i)
-  have ha : HasSubst k := ⟨fun s => by rw [hk0 s]; exact IsNilpotent.zero, fun _ => Set.toFinite _⟩
-  have key : ∀ (m : ι →₀ ℕ) (t : Finset ι), Low (∑ s ∈ t, m s) (∏ s ∈ t, k s ^ m s) := by
-    intro m t
-    refine Finset.induction_on t ?_ ?_
-    · rw [Finset.sum_empty]
-      exact low_zero _
-    · intro a t hat ih
-      rw [Finset.sum_insert hat, Finset.prod_insert hat]
-      exact low_mul (low_pow (hk a) (m a)) ih
-  intro e he
-  have hz : ∀ m : ι →₀ ℕ, coeff m g • coeff e (m.prod fun s n => k s ^ n) = 0 := by
-    intro m
-    by_cases hm : m.degree < N
-    · rw [hg m hm, zero_smul]
-    · have hprod : Low m.degree (m.prod fun s n => k s ^ n) := key m m.support
-      rw [hprod e (lt_of_lt_of_le he (not_lt.mp hm)), smul_zero]
-  rw [coeff_subst ha]
-  simp only [hz, finsum_zero]
+  intros
+  apply _root_.ReciprocityTheory.ChartRestriction.G.TB.LogPf.low_subst_of_low <;> assumption
 
 variable [Algebra ℚ S] {d : ℕ}
 
@@ -189,27 +173,8 @@ private lemma lin_subst_lemma_3 {σ τ : Type} [Fintype σ] {a : σ → MvPowerS
     (ha0 : ∀ s, constantCoeff (a s) = 0) {f : MvPowerSeries σ S} (hf0 : constantCoeff f = 0) (w : τ) :
     coeff (Finsupp.single w 1) (subst a f) =
       ∑ s, coeff (Finsupp.single s 1) f * coeff (Finsupp.single w 1) (a s) := by
-  classical
-  have ha : HasSubst a := ⟨fun s => by rw [ha0 s]; exact IsNilpotent.zero, fun _ => Set.toFinite _⟩
-  have hR : Low 2 (f - ∑ s, coeff (Finsupp.single s 1) f • X s) := by
-    apply low_two_of_lemma
-    · set_option synthInstance.maxHeartbeats 100000 in
-        rw [← coeff_zero_eq_constantCoeff_apply, map_sub, map_sum]
-      simp only [map_smul, coeff_zero_X, smul_zero, Finset.sum_const_zero, sub_zero]
-      rw [coeff_zero_eq_constantCoeff_apply]
-      exact hf0
-    · intro v
-      simp [coeff_X, Finsupp.single_left_inj Nat.one_ne_zero]
-  have hS := low_subst' (fun s => (low_one_iff _).2 (ha0 s)) hR
-  have hsplit : subst a f = subst a (f - ∑ s, coeff (Finsupp.single s 1) f • X s) +
-      ∑ s, coeff (Finsupp.single s 1) f • a s := by
-
-    rw [← coe_substAlgHom ha, map_sub, map_sum]
-    simp only [map_smul]
-    simp only [coe_substAlgHom, subst_X ha, sub_add_cancel]
-
-  rw [hsplit, map_add (f := _), hS (Finsupp.single w 1) (by simp), zero_add, map_sum]
-  simp only [map_smul, smul_eq_mul]
+  intros
+  apply _root_.GlobalTheory.EigDir.coeff_single_subst' <;> assumption
 
 theorem dLin_logOf (G : FGLaw S d) : ReciprocityTheory.ChartRestriction.G.TB.dLin (fun i => ReciprocityTheory.ChartRestriction.G.TB.LogPf.logOf G i) = 1 := by
   have hlin : ∀ i b : Fin d, coeff (Finsupp.single ((1 : Fin 2), b) 1) (G.F i) = if b = i then 1 else 0 := by
@@ -551,8 +516,7 @@ theorem const_one' {P : MvPolynomial (Fin 2 × Fin d) S} {m : ℕ} (fF : Fin d �
     rw [MvPolynomial.mem_support_iff, MvPolynomial.coeff_sub, MvPolynomial.coeff_zero_one, hc', sub_self] at he
     exact he rfl
   obtain ⟨i, hi⟩ : ∃ i, e i ≠ 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     exact hne (Finsupp.ext hcon)
   exact ⟨i, Set.mem_univ _, hi⟩
 

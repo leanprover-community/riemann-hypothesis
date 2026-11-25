@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsFrameFixingIsometrySplitRowLatticeStatement
 public import Formalism.SharpRestriction.CuspSpanNormBounds.IsPrimitiveSub
 public import Formalism.HermitianLattices.HermitianLatticesProofs.DualLattice
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.BetaUniqueness.Lemmas
@@ -47,22 +48,7 @@ theorem sd_int {Λ : Submodule (𝓞 E) S.V} (h : SD S Λ) {x y : S.V} (hx : x �
 variable (S)
 
 theorem riesz (F : S.V →ₗ[E] E) : ∃ w, ∀ v, S.hT w v = F v := by
-  classical
-  let b := S.frame
-  obtain ⟨bs, hbs⟩ := Formalism.HermitianLatticesTheory.dualLattice_dualBasis S.hT S.nondeg b
-  refine ⟨∑ j, star (F (b j)) • bs j, fun v => ?_⟩
-  have key : S.hT (∑ j, star (F (b j)) • bs j) = F := by
-    apply b.ext
-    intro i
-
-    rw [map_sum, LinearMap.sum_apply]
-    simp only [LinearMap.map_smulₛₗ, LinearMap.smul_apply, starRingEnd_apply, star_star, smul_eq_mul]
-    rw [Finset.sum_eq_single i]
-    · rw [hsw S (b i) (bs i), hbs i i]; simp
-    · intro j _ hj
-      rw [hsw S (b i) (bs j), hbs i j, if_neg (Ne.symm hj)]; simp
-    · simp
-  rw [key]
+  apply _root_.GlobalTheory.LoopC.RowSplit.exists_rep <;> assumption
 
 theorem mem_of_orth_orth (X : Submodule E S.V) {w : S.V} (hw : ∀ u ∈ orth S X, S.hT w u = 0) : w ∈ X := by
   have hle : X ≤ orth S (orth S X) := fun x hx => (PI.UnitaryGroupMassFormula.BetaLUniq.mem_orth S).2 fun u hu => by

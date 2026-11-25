@@ -1,5 +1,7 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.LambdaCharSymMulInvEqOne
+import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.StandardRankOneLatticeOfLocal
 public import Formalism.LocalToGlobal.KernelLattices.ThDistC
 public import Formalism.LocalToGlobal.Columns.AdjointFrobeniusPreservesRamified
 public import Formalism.LocalToGlobal.Columns.ChainInst
@@ -305,15 +307,7 @@ def IsFrAt (P : HeightOneSpectrum (𝓞 E)) {n : ℕ} (N : Submodule (𝓞 E) (S
   ∀ x, f x ∈ localization₂ P.asIdeal N ↔ x ∈ stdAt E n P
 
 theorem single_mem_stdAt {n : ℕ} (P : HeightOneSpectrum (𝓞 E)) (s : Fin n) : (Pi.single s (1 : E) : Sp E n) ∈ stdAt E n P := by
-  unfold stdAt
-  rw [mem_localization_standardLattice]
-  intro i
-  by_cases h : i = s
-  · subst h
-    rw [Pi.single_eq_same]
-    simpa using IntAt.coe P (1 : 𝓞 E)
-  · rw [Pi.single_eq_of_ne h]
-    simpa using IntAt.coe P (0 : 𝓞 E)
+  apply _root_.GlobalTheory.CharValCompare.single_mem_stdAt <;> assumption
 
 omit [NumberField E] [StarRing E] in
 theorem inFr_add (f : Sp E a ≃ₗ[E] Sp E a) (f' : Sp E b ≃ₗ[E] Sp E b) (x y : HomE E a b) : inFr f f' (x + y) = inFr f f' x + inFr f f' y := by
@@ -574,17 +568,7 @@ def redHomB : intSubB P →+* (𝓞 E ⧸ P.asIdeal) where
 
 theorem reduction_det_eq_det_reduction₂ {m : ℕ} (A : Matrix (Fin m) (Fin m) E) (hA : ∀ i j, IntAt P (A i j)) :
     redP P A.det = (Matrix.of fun i j => redP P (A i j)).det := by
-  let A' : Matrix (Fin m) (Fin m) (intSubB P) := Matrix.of fun i j => ⟨A i j, hA i j⟩
-  have e1 : A = (intSubB P).subtype.mapMatrix A' := by
-    ext i j
-    rfl
-  have e2 : A.det = ((A'.det : intSubB P) : E) := by
-    rw [e1, ← RingHom.map_det]
-    rfl
-  rw [e2]
-  show redHomB P A'.det = _
-  rw [RingHom.map_det]
-  rfl
+  apply _root_.GlobalTheory.SymLevelInv.reduction_det <;> assumption
 
 theorem reduction_det_congr {m : ℕ} (A B : Matrix (Fin m) (Fin m) E) (hA : ∀ i j, IntAt P (A i j)) (hB : ∀ i j, IntAt P (B i j))
     (h : ∀ i j, redP P (A i j) = redP P (B i j)) : redP P A.det = redP P B.det := by
@@ -849,15 +833,7 @@ variable {E : Type} [Field E] [NumberField E] [StarRing E] {n : ℕ}
 
 theorem intAt_smul_locPD (Q : HeightOneSpectrum (𝓞 E)) {N : Submodule (𝓞 E) (Sp E n)} {c : E} (hc : IntAt Q c) {z : Sp E n}
     (hz : z ∈ localization₂ Q.asIdeal N) : c • z ∈ localization₂ Q.asIdeal N := by
-  obtain ⟨r, s, hs, hrs⟩ := hc
-  obtain ⟨s', hs', hz'⟩ := (mem_locP Q N z).1 hz
-  refine (mem_locP Q N _).2 ⟨s * s', fun h => (Q.isPrime.mem_or_mem h).elim hs hs', ?_⟩
-  have e : (s * s') • (c • z) = r • (s' • z) := by
-    rw [← algebraMap_smul E (s * s'), ← algebraMap_smul E r, ← algebraMap_smul E s' z, smul_smul, smul_smul, map_mul, ← hrs]
-    congr 1
-    ring
-  rw [e]
-  exact N.smul_mem r hz'
+  apply _root_.Formalism.L2.Col.yInt_smul_mem <;> assumption
 
 theorem exists_frameD (Q : HeightOneSpectrum (𝓞 E)) {N : Submodule (𝓞 E) (Sp E n)} (hN : Submodule.IsFullLattice E N) :
     ∃ f : Sp E n ≃ₗ[E] Sp E n, IsFrAt Q N f := by

@@ -973,8 +973,7 @@ theorem UpperTheory.weilDeligne_monodromy_upperTriangular :
     apply (LinearMap.toMatrix b b).injective
     rw [← hBdef, h, map_zero]
   have hex : ∃ i j, B i j ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hB0 (Matrix.ext h)
   classical
   have hJ : (Finset.univ.filter fun j => ∃ i, B i j ≠ 0).Nonempty := by

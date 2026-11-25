@@ -2,6 +2,7 @@ module
 
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnimodularLocalStandard.RepArith
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnimodularLocalStandard.RepBasic
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnitDeterminantRoot.NsmulRelIdxMem
 
 @[expose] public section
 
@@ -16,18 +17,7 @@ section Int
 variable (a : ℕ) (b c : ℤ) (d : ℕ) (ha : 0 < a) (hd : 0 < d) (lam : ℂ) (hlam : lam ≠ 0)
 
 theorem rep_area_eq : area (cmL a b d ha hd lam hlam) = Complex.normSq lam * a * (Real.sqrt d / 2) := by
-  rw [area, rep_omega1, rep_omega2]
-  have hθ : (cmTheta b d).im = Real.sqrt d / 2 := by
-    simp [cmTheta]
-  have e : conj (lam * (a : ℂ)) * (lam * cmTheta b d) =
-      ((Complex.normSq lam * a : ℝ) : ℂ) * cmTheta b d := by
-    rw [map_mul, Complex.conj_natCast]
-    push_cast
-    rw [Complex.normSq_eq_conj_mul_self]
-    ring
-  rw [e, Complex.im_ofReal_mul, hθ, abs_of_nonneg]
-  exact mul_nonneg (mul_nonneg (Complex.normSq_nonneg _) (Nat.cast_nonneg _))
-    (div_nonneg (Real.sqrt_nonneg _) zero_le_two)
+  apply _root_.PI.UnitaryGroupMassFormula.UnitDetRoot.area_cmL <;> assumption
 
 theorem rep_kappa_eq : repKappa a b d ha hd lam hlam = 2 / ((Real.sqrt d : ℝ) : ℂ) := by
   have hs : (0 : ℝ) < Real.sqrt d := Real.sqrt_pos.mpr (by exact_mod_cast hd)

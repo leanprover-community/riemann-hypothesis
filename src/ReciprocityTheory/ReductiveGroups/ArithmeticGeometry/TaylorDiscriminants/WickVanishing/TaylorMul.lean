@@ -151,8 +151,7 @@ theorem taylor_mul_coeff_low_degree (N : ℕ) : ∀ (f h : (Fin g → ℂ) → �
       show mD (f * h) 0 (dirs 0 + 0) / fct 0 = (mD f 0 (dirs 0 + 0) / fct 0) * (mD h 0 (dirs 0 + 0) / fct 0)
       simp [dirs, fct, mD_zero]
     · obtain ⟨x, hx⟩ : ∃ x, n x ≠ 0 := by
-        by_contra hc
-        push_neg at hc
+        by_contra! hc
         exact h0 (Finsupp.ext hc)
       obtain ⟨i, j⟩ := x
       have hi : i = 0 := Subsingleton.elim _ _

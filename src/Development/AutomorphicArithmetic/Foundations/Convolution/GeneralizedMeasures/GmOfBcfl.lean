@@ -1052,8 +1052,7 @@ theorem UpperTheory.ConvolutionTheory.L1.unitSplit :
       exact Set.indicator_of_mem (hg u) _
     · rw [Set.indicator_of_notMem hg]
       obtain ⟨u, hu⟩ : ∃ u : PlacesOver E v, GM.cmp u g ∉ GLnLocal.integralGL (u.1.adicCompletion E) n := by
-        by_contra h
-        push_neg at h
+        by_contra! h
         exact hg h
       exact Finset.prod_eq_zero (Finset.mem_univ u) (Set.indicator_of_notMem hu _)
   have e2 : cvAll mF m (fun i g => (GLnLocal.integralGL ((w i).1.adicCompletion E) n : Set (GL (Fin n) ((w i).1.adicCompletion E))).indicator (1 : GL (Fin n) ((w i).1.adicCompletion E) → ℂ)

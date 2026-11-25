@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.MemAbLocusIff
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsHodgeLine
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeCptAwayFromPrimes
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsExcisionNbhdAway
@@ -20,18 +21,7 @@ open GroundTheory.Heights₂.Heights.LowerBoundFree GlobalTheory.CompanionTheory
 theorem not_inFibre_centre {X : Scheme.{0}} {Ω : Type} [Field Ω] [CharZero Ω]
     (ξ : Spec (CommRingCat.of Ω) ⟶ X) (z : Spec (CommRingCat.of ℂ) ⟶ X) (h : genPt ξ ⤳ centre z)
     (r : ℕ) (hr : r.Prime) : ¬ InFibre ξ r ⟨centre z, h⟩ := by
-  have hr0 : (r : ℂ) ≠ 0 := Nat.cast_ne_zero.2 hr.ne_zero
-  have hu : IsUnit ((r : X.presheaf.stalk (centre z))) := by
-    have h1 : IsUnit ((Scheme.stalkClosedPointTo z).hom (r : X.presheaf.stalk (centre z))) := by
-      have e : (Scheme.stalkClosedPointTo z).hom (r : X.presheaf.stalk (centre z)) = (r : ℂ) := map_natCast _ r
-      exact e ▸ hr0.isUnit
-    exact isUnit_of_map_unit (Scheme.stalkClosedPointTo z).hom _ h1
-  obtain ⟨u, hu⟩ := hu
-  have hg : genMap ξ ⟨centre z, h⟩ (u : X.presheaf.stalk (centre z)) = (r : Ω) := by
-    rw [hu, map_natCast]
-  refine not_not.2 ⟨Nat.cast_ne_zero.2 hr.ne_zero, ⟨_, hg⟩, ⟨((u⁻¹ : (X.presheaf.stalk (centre z))ˣ) : X.presheaf.stalk (centre z)), ?_⟩⟩
-  rw [← hg]
-  exact eq_inv_of_mul_eq_one_left (by rw [← map_mul, Units.inv_mul, map_one])
+  apply _root_.GlobalTheory.CompanionTheory.Ar.Chg.not_inFibre <;> assumption
 
 theorem frame_valAt : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Tor.Level H) (Xo : Moduli D l) (c : Coeff l) (Y : Model Xo c (algebraMap (𝓞 c.F) c.F)) (S : Finset ℕ) (Ω : Type) [Field Ω] [CharZero Ω] (K : Type) [Fintype K] (J : K → Type) [∀ k, Fintype (J k)] (y : (Σ k, J k) → Ω) (𝔐 : HodgeCpt Y S y) (z : Sp ℂ ⟶ 𝔐.X) (lab : CMType H ⊕ CMType H) (r : ℕ) (s : Fin r → 𝔐.Li) (h : genPt 𝔐.ξ ⤳ centre z), (𝔐.V lab).IsFrameAt s ⟨centre z, h⟩ → ∀ i, ∃ v : epsAt z ⟶ 𝔐.t.G, 𝔐.M.ValAt z (s i) v := by
   intro E _ _ _ H D l Xo c Y S Ω _ _ K _ J _ y 𝔐 z lab r s h hs i

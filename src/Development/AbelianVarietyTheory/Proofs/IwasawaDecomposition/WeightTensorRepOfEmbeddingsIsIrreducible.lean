@@ -1,5 +1,6 @@
 module
 
+import Formalism.LocalToGlobal.Columns.CoefColLemmas
 public import Formalism.LocalToGlobal.Divisibility.CoefMod
 public import Development.AbelianVarietyTheory.PublishedTheorems.PublishedFoundations.FiniteIntertwining
 public import Formalism.LocalToGlobal.Divisibility.CoefModLemmas
@@ -205,8 +206,7 @@ theorem eq_bot_or_eq_top : ∀ (K : Type) [Field K] (ι : Type) [Fintype ι] (n 
   right
   obtain ⟨w, hw, hw0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hW0
   obtain ⟨i, hi⟩ : ∃ i, (bVV K lam).repr w i ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hw0 ((bVV K lam).ext_elem fun k => by simp [h k])
   have hproj : ∀ S : Finset ι, (∑ k ∈ Finset.univ.filter (fun k : VVIdx lam => ∀ τ ∈ S, k τ = i τ),
       (bVV K lam).repr w k • bVV K lam k) ∈ W := by
@@ -656,18 +656,7 @@ noncomputable section
 namespace GlobalTheory.CoeffSpace
 
 theorem nontrivial_VV : ∀ (K : Type) [Field K] (ι : Type) [Fintype ι] (n : ℕ) (lam : ι → DomWeight n), Nontrivial (Formalism.L2.DIV.VV K lam) := by
-  intro K _ ι _ n lam
-  have hanti : ∀ τ, Antitone (lam τ).natW := fun τ i j hij =>
-    Int.toNat_le_toNat (by have := (lam τ).anti hij; omega)
-  have hmem : (∏ τ, Formalism.GradedWeylDivisibility.blockEmb K τ (Formalism.BasicNotions.extremal K n (lam τ))) ∈ Formalism.L2.DIV.VV K lam :=
-    Submodule.subset_span ⟨fun τ => Formalism.BasicNotions.extremal K n (lam τ),
-      fun τ => Formalism.GradedWeylDivisibility.hwMem K n n le_rfl _ (hanti τ), rfl⟩
-  refine ⟨⟨⟨_, hmem⟩, 0, fun h => ?_⟩⟩
-  have h0 : (∏ τ, Formalism.GradedWeylDivisibility.blockEmb K τ (Formalism.BasicNotions.extremal K n (lam τ))) = 0 := congrArg Subtype.val h
-  rw [Finset.prod_eq_zero_iff] at h0
-  obtain ⟨τ, _, h⟩ := h0
-  have hinj : Function.Injective (fun v : Fin n × Fin n => (τ, v)) := fun a b hab => (Prod.mk.inj hab).2
-  exact Formalism.GradedWeylDivisibility.hwNe K n n le_rfl _ (MvPolynomial.rename_injective _ hinj (h.trans (map_zero _).symm))
+  first | exact _root_.Formalism.L2.Col.VV_nontrivial | exact @_root_.Formalism.L2.Col.VV_nontrivial | apply _root_.Formalism.L2.Col.VV_nontrivial <;> assumption
 
 end GlobalTheory.CoeffSpace
 end -- clump:auto

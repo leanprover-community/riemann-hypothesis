@@ -1,5 +1,7 @@
 module
 
+import all ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.BoundedSectionAlgebra
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.LminorSubmatrixCastSucc
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.FlowMatMulVec
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.RingTheory.SimpleRing.Principal
@@ -74,16 +76,7 @@ lemma positive_part_add (x : Frame X.Ψ r) (τ : X.Ψ) (u v : Fin r → ℂ) :
 
 private lemma hermC_Gm_eq_conj_swap (τ : X.Ψ) (u w : Fin r → ℂ) :
     hermC τ.1 X.Gm u w = conj (hermC τ.1 X.Gm w u) := by
-  have hG : ∀ a b, τ.1 (X.Gm a b) = conj (τ.1 (X.Gm b a)) := fun a b => by
-    rw [← X.Gm_herm b a, cc]
-    first
-      | exact NumberField.IsCMField.complexEmbedding_complexConj E _ _
-
-  simp only [hermC, map_sum, map_mul, Complex.conj_conj]
-  conv_rhs => rw [Finset.sum_comm]
-  refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => ?_
-  rw [hG a b]
-  ring
+  apply _root_.ReciprocityTheory.ChartRestriction.G.FD.BoundedSectionAlgebra.hermC_eq_conj_hermC_swap' <;> assumption
 
 private lemma hermC_finset_sum_left (τ : E →+* ℂ) (G : Matrix (Fin r) (Fin r) E) {ι : Type*}
     (s : Finset ι) (f : ι → Fin r → ℂ) (w : Fin r → ℂ) :
@@ -100,26 +93,7 @@ private lemma sum_mul_mul_eq_of_mul_eq_one {n : ℕ} (k : Fin n → ℂ) (A B : 
 
 lemma ppos_idem {x : Frame X.Ψ r} (hx : x ∈ X.dom) (τ : X.Ψ) (v : Fin r → ℂ) :
     X.ppos x τ (X.ppos x τ v) = X.ppos x τ v := by
-  have hdet : (X.gramPos x τ).det ≠ 0 := by
-    have h := (hx τ).2 ⟨X.p0, Nat.lt_succ_of_le X.p0_le⟩
-    intro h0
-    have h1 : dmin X.Gm x τ ⟨X.p0, Nat.lt_succ_of_le X.p0_le⟩ = 0 := h0
-    rw [h1] at h
-    simp at h
-  have hinv : X.gramPos x τ * (X.gramPos x τ)⁻¹ = 1 :=
-    Matrix.mul_nonsing_inv _ (isUnit_iff_ne_zero.mpr hdet)
-  have hP : ∀ b, hermC τ.1 X.Gm (X.ppos x τ v) (col (mat x τ) (Fin.castLE X.p0_le b)) =
-      ∑ a', (∑ b', hermC τ.1 X.Gm v (col (mat x τ) (Fin.castLE X.p0_le b')) * (X.gramPos x τ)⁻¹ b' a') *
-        X.gramPos x τ a' b := by
-    intro b
-    simp only [ppos, hermC_finset_sum_left, hC_smul_left]
-    rfl
-  show ∑ a : Fin X.p0, (∑ b : Fin X.p0, hermC τ.1 X.Gm (X.ppos x τ v) (col (mat x τ) (Fin.castLE X.p0_le b)) *
-    (X.gramPos x τ)⁻¹ b a) • col (mat x τ) (Fin.castLE X.p0_le a) = X.ppos x τ v
-  simp only [hP]
-  simp only [sum_mul_mul_eq_of_mul_eq_one (fun a' => ∑ b', hermC τ.1 X.Gm v (col (mat x τ) (Fin.castLE X.p0_le b')) * (X.gramPos x τ)⁻¹ b' a')
-    _ _ hinv]
-  rfl
+  apply ReciprocityTheory.ChartRestriction.G.FD.Data.ppos_ppos <;> assumption
 
 def Jp (x : Frame X.Ψ r) (τ : X.Ψ) (v : Fin r → ℂ) : Fin r → ℂ := (2 : ℂ) • X.ppos x τ v - v
 
@@ -203,16 +177,7 @@ lemma unipotent_mulVec_formula (v : Fin r → ℂ) :
 variable {x τ e}
 
 lemma hsym (u w : Fin r → ℂ) : hermC τ.1 X.Gm u w = conj (hermC τ.1 X.Gm w u) := by
-  have hG : ∀ a b, τ.1 (X.Gm a b) = conj (τ.1 (X.Gm b a)) := fun a b => by
-    rw [← X.Gm_herm b a, cc]
-    first
-      | exact NumberField.IsCMField.complexEmbedding_complexConj E _ _
-
-  simp only [hermC, map_sum, map_mul, Complex.conj_conj]
-  conv_rhs => rw [Finset.sum_comm]
-  refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => ?_
-  rw [hG a b]
-  ring
+  apply _root_.ReciprocityTheory.ChartRestriction.G.FD.BoundedSectionAlgebra.hermC_eq_conj_hermC_swap' <;> assumption
 
 lemma hermitian_pairing_Je_e : hermC τ.1 X.Gm (X.Jp x τ e) e = X.d2q x τ e := rfl
 

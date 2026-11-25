@@ -35,8 +35,7 @@ theorem exists_GL_row (N m : ℕ) (r : Fin (N + 1) → k) (hr0 : ∀ l : Fin (N 
       ∀ i l : Fin (N + 1), m ≤ i.val → l.val < m → (A : Matrix (Fin (N + 1)) (Fin (N + 1)) k) i l = 0 := by
   classical
   obtain ⟨l0, hl0⟩ : ∃ l, r l ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hr (funext h)
   have hml : m ≤ l0.val := by
     by_contra h

@@ -251,8 +251,7 @@ theorem UpperTheory.finprod_local_factors_with_iwahori_at_place :
       · exact (hκ w hw).2 h1
     · have hex : ∃ w, w ∉ κ ∧ w.under (𝓞 F) ∉ S ∧ w.under (𝓞 F) ≠ q ∧
           cf w x ∉ GLnLocal.integralGL (w.adicCompletion E) n := by
-        by_contra hc
-        push_neg at hc
+        by_contra! hc
         exact hx fun w h1 h2 h3 => hc w h1 h2 h3
       obtain ⟨w, hwκ, hwS, hwq, hnot⟩ := hex
       have hwT : w ∉ T := by
@@ -443,8 +442,7 @@ private theorem unit_prod (v : Pl F) :
     exact (Set.indicator_of_mem hm _).trans rfl
   · rw [Set.indicator_of_notMem hg]
     have : ∃ w : PlacesOver E v, cmp w g ∉ (GLnLocal.integralGL (w.1.adicCompletion E) n : Set _) := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       exact hg hc
     obtain ⟨w, hw⟩ := this
     exact finprod_eq_zero _ w (Set.indicator_of_notMem hw _) (Set.toFinite _)

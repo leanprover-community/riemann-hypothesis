@@ -1,5 +1,8 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebraHeight.PairMap
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.AnnihilatorBaseChange.PiSurj
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.WeilGroupCharacters.ExistsDeterminantPairPullback
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.AnnihilatorBaseChange.SpecializationMapCompUniversalSection
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.PatchedSupportCompletions
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.CoMvps
@@ -32,17 +35,7 @@ private theorem mem_map {O : Type} [CommRing O] [IsLocalRing O] {R R' : Type} [C
 private theorem adic_map {O : Type} [CommRing O] [IsLocalRing O] {R R' : Type} [CommRing R] [Algebra O R] [IsCO O R]
     [CommRing R'] [Algebra O R'] [IsCO O R'] (f : R →ₐ[O] R') {Γ : Type} [TopologicalSpace Γ] {a : Γ → R}
     (ha : AdicCont (maximalIdeal R) a) : AdicCont (maximalIdeal R') fun g => f (a g) := by
-  intro N
-  have hle : ∀ x ∈ maximalIdeal R ^ N, Ideal.Quotient.mk (maximalIdeal R' ^ N) (f x) = 0 := by
-    intro x hx
-    rw [Ideal.Quotient.eq_zero_iff_mem]
-    have hm : maximalIdeal R ≤ Ideal.comap f (maximalIdeal R') := fun y hy => mem_map f hy
-    exact Ideal.le_comap_pow f N (Ideal.pow_right_mono hm N hx)
-  have hc := (ha N).comp (Ideal.Quotient.lift (maximalIdeal R ^ N)
-    ((Ideal.Quotient.mk (maximalIdeal R' ^ N)).comp (f : R →+* R')) hle)
-  convert hc using 1
-  funext g
-  rfl
+  apply _root_.adic_map <;> assumption
 
 private theorem map_X_mem {O : Type} [CommRing O] [IsLocalRing O] {R R' : Type} [CommRing R] [Algebra O R] [IsCO O R]
     [CommRing R'] [Algebra O R'] [IsCO O R'] {σ : Type} [Finite σ] (f : MvPowerSeries σ R →ₐ[O] R') (a : σ) :
@@ -54,13 +47,7 @@ private theorem map_X_mem {O : Type} [CommRing O] [IsLocalRing O] {R R' : Type} 
 
 private theorem lam_comap {n : ℕ} {A G H : Type} [CommRing A] [Group G] [Group H] (D : GDet n A G) (φ : H →* G)
     (i : ℕ) (g : H) : (D.comap φ).lam i (MonoidAlgebra.single g 1) = D.lam i (MonoidAlgebra.single (φ g) 1) := by
-  simp only [GDet.lam, GDet.chi, GDet.comap, MonoidHom.coe_comp, Function.comp_apply,
-    MonoidAlgebra.mapRingHom_single, Polynomial.C_1]
-  congr 4
-  change MonoidAlgebra.mapDomainRingHom (Polynomial A) φ
-    (MonoidAlgebra.single 1 Polynomial.X - MonoidAlgebra.single g 1) = _
-  rw [map_sub]
-  simp [MonoidAlgebra.mapDomainRingHom_apply, MonoidAlgebra.mapDomain_single]
+  apply _root_.lam_comap <;> assumption
 
 theorem UpperTheory.V.Pa.Core.tupPi :
     ∀ (l : ℕ) [Fact l.Prime] (L : Loc) (G0 : Glob l L) (T : TWGrp G0) (Λ : Lim T) (n : ℕ) (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [IsCoef l O] [Algebra ℤ_[l] O] (r : Resid G0.frame O n) (B : Type) [CommRing B] [Algebra O B] [IsCO O B] (u : Pair r B) (J : Ideal B) (D : ℕ) (A : TWAut u J Unit D T) [IsCO O (Spo A)], ∃ t : Tup Λ A (Spo A), t.D = (u.D.comap (Λ.h.p₀.comp (πo0 Λ))).map (algebraMap B (Spo A)) ∧ (t.ψ = fun v i => pushCh (algebraMap B (Spo A)) (u.ψ v i)) ∧ t.s = algebraMap B (Spo A) (A.b.lam (MvPowerSeries.X (.inl ()))) ∧ (t.U = fun j i => Sp.u _ _ j i) ∧ t.y = fun _ _ => 0 := by
@@ -174,13 +161,7 @@ private theorem tupN_lam {n : ℕ} {A G H : Type} [CommRing A] [Group G] [Group 
 
 private theorem tupN_ofRep {n : ℕ} {A G H : Type} [CommRing A] [Group G] [Group H]
     (ρ : G →* Matrix (Fin n) (Fin n) A) (φ : H →* G) : (GDet.ofRep ρ).comap φ = GDet.ofRep (ρ.comp φ) := by
-  refine GDet.ext fun B _ _ x => ?_
-  change (GDet.repAlg ρ B (MonoidAlgebra.mapDomainRingHom B φ x)).det = (GDet.repAlg (ρ.comp φ) B x).det
-  congr 1
-  induction x using MonoidAlgebra.induction_linear with
-  | zero => simp
-  | add a b ha hb => simp only [map_add (f := _), ha, hb]
-  | single g r => simp [GDet.repAlg]
+  apply _root_.UpperTheory.V.W.FramePullback.ofRep_comap <;> assumption
 
 private theorem tupN_X {R σ : Type} [CommRing R] [IsLocalRing R] (a : σ) :
     (MvPowerSeries.X a : MvPowerSeries σ R) ∈ maximalIdeal (MvPowerSeries σ R) := by

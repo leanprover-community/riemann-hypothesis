@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.MemOfAevalEqZero
 public import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.BundleChernComparison
 public import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.CoSeriesThreeStep
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.BundleObjects
@@ -830,18 +831,7 @@ theorem isMultiHomog_blocks {f : MvPolynomial (Σ k, ι k) ℤ} {b : K → ℕ}
 
 theorem mConeMap_form (y : (Σ k, ι k) → Ω) {h : MRing ι} {d : K → ℕ} (hh : IsMultiHomog h d) :
     mConeMap y h = MvPolynomial.C (aeval y h) * ∏ k, (X k : MvPolynomial K Ω) ^ d k := by
-  classical
-  unfold mConeMap
-
-  rw [aeval_def, aeval_def, eval₂_eq', eval₂_eq', map_sum, Finset.sum_mul]
-  refine Finset.sum_congr rfl fun m hm => ?_
-  have hX : ∏ p : Σ k, ι k, (X p.1 : MvPolynomial K Ω) ^ m p = ∏ k, X k ^ d k := by
-    rw [Fintype.prod_sigma]
-    refine Finset.prod_congr rfl fun k _ => ?_
-    change ∏ i, (X k : MvPolynomial K Ω) ^ m ⟨k, i⟩ = _
-    rw [Finset.prod_pow_eq_pow_sum, hh m hm k]
-  simp only [mul_pow, Finset.prod_mul_distrib, hX, map_mul, map_prod, map_pow, eq_intCast, map_intCast]
-  simp [mul_assoc]
+  apply _root_.GlobalTheory.CompanionTheory.Ar.Flat.UnitChart.mConeMap_homog <;> assumption
 
 theorem aeval_ne_zero_of_notMem (y : (Σ k, ι k) → Ω) {f : MvPolynomial (Σ k, ι k) ℤ} {b : K → ℕ}
     (hf : GroundTheory.Heights₂.Heights.NumbersDVR.IsMultiHomog f b) (hP : f ∉ mCoordIdeal y) : aeval y f ≠ 0 := by
@@ -1397,30 +1387,8 @@ theorem map_mem_chartRing (y : (Σ k, J k) → Ω) (c : ∀ k, J k) {a : Ω} (ha
 
 theorem chart_shift {ι : Type} (x : ι → Ω') {s t : ι} (hs : x s ≠ 0) (ht : x t ≠ 0) {a : Ω'}
     (ha : a ∈ chartRing O' x s) : ∃ m : ℕ, (x s / x t) ^ m * a ∈ chartRing O' x t := by
-  have hu : x s / x t ∈ chartRing O' x t := Algebra.subset_adjoin ⟨s, rfl⟩
-  induction ha using Algebra.adjoin_induction with
-  | mem b hb =>
-    obtain ⟨j, rfl⟩ := hb
-    refine ⟨1, ?_⟩
-    have : (x s / x t) ^ 1 * (x j / x s) = x j / x t := by field_simp
-    rw [this]
-    exact Algebra.subset_adjoin ⟨j, rfl⟩
-  | algebraMap o => exact ⟨0, by simpa using Subalgebra.algebraMap_mem _ o⟩
-  | add a b _ _ ha hb =>
-    obtain ⟨m, hm⟩ := ha
-    obtain ⟨l, hl⟩ := hb
-    refine ⟨m + l, ?_⟩
-    have : (x s / x t) ^ (m + l) * (a + b) =
-        (x s / x t) ^ l * ((x s / x t) ^ m * a) + (x s / x t) ^ m * ((x s / x t) ^ l * b) := by ring
-    rw [this]
-    exact add_mem (mul_mem (pow_mem hu _) hm) (mul_mem (pow_mem hu _) hl)
-  | mul a b _ _ ha hb =>
-    obtain ⟨m, hm⟩ := ha
-    obtain ⟨l, hl⟩ := hb
-    refine ⟨m + l, ?_⟩
-    have : (x s / x t) ^ (m + l) * (a * b) = ((x s / x t) ^ m * a) * ((x s / x t) ^ l * b) := by ring
-    rw [this]
-    exact mul_mem hm hl
+  intros
+  apply _root_.GlobalTheory.CompanionTheory.Ar.Num.FlagPairExt.exists_ratio_pow_mul_mem <;> assumption
 
 theorem isLatFamily_span {V V' : Type} [AddCommGroup V] [Module Ω V] [AddCommGroup V'] [Module Ω' V']
     (y : (Σ k, J k) → Ω) (h : V → V') (hh : ∀ (a : Ω) (v : V), h (a • v) = algebraMap Ω Ω' a • h v)

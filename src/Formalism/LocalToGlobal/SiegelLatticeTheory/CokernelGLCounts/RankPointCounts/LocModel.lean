@@ -10,6 +10,7 @@ public import Formalism.SharpRestriction.CuspSpanNormBounds.LocalOrbitGerms
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountingFormula.GoodRDeltaC
 
 @[expose] public section
 
@@ -87,58 +88,7 @@ variable {R K A : Type} [CommRing R] [Field K] [CommRing A] [Algebra R K] [Algeb
 
 theorem trace_isIntegral_rank2 (b : Module.Basis (Fin 2) K A) {y : A} (hy : IsIntegral R y) :
     IsIntegral R (Algebra.trace K A y) := by
-  classical
-  have : Module.Finite K A := Module.Finite.of_basis b
-  have : Nontrivial A := nontrivial_of_ne (b 0) 0 (b.linearIndependent.ne_zero 0)
-  by_cases hr : y ∈ (algebraMap K A).range
-  · obtain ⟨c, rfl⟩ := hr
-    have hc : IsIntegral R c :=
-      (isIntegral_algHom_iff (IsScalarTower.toAlgHom R K A) (algebraMap K A).injective).mp hy
-    rw [Algebra.trace_algebraMap, Module.finrank_eq_card_basis b]
-    simpa [two_smul] using hc.add hc
-  · set χ := (Algebra.leftMulMatrix b y).charpoly with hχdef
-    have hχy : aeval y χ = 0 := by
-      apply Algebra.leftMulMatrix_injective b
-      rw [← Polynomial.aeval_algHom_apply, map_zero]
-      exact Matrix.aeval_self_charpoly _
-    have hmon : χ.Monic := Matrix.charpoly_monic _
-    have hdeg : χ.natDegree = 2 := by simp [χ, Matrix.charpoly_natDegree_eq_dim]
-    have hyK : IsIntegral K y := Algebra.IsIntegral.isIntegral y
-    have hmin : χ = minpoly K y := by
-      refine eq_of_monic_of_dvd_of_natDegree_le (minpoly.monic hyK) hmon (minpoly.dvd K y hχy) ?_
-      rw [hdeg]
-      have h1 := minpoly.natDegree_pos hyK
-      have h2 : (minpoly K y).natDegree ≠ 1 := fun h => hr (minpoly.natDegree_eq_one_iff.mp h)
-      omega
-    obtain ⟨f, hfm, hf⟩ := hy
-    have hdvd : χ ∣ f.map (algebraMap R K) := by
-      rw [hmin]
-      refine minpoly.dvd K y ?_
-      rw [aeval_map_algebraMap, aeval_def]
-      exact hf
-    let Kb := AlgebraicClosure K
-    set χ' := χ.map (algebraMap K Kb) with hχ'
-    have hs : χ'.Splits := IsAlgClosed.splits _
-    have hroots : ∀ r ∈ χ'.roots, IsIntegral R r := by
-      intro r hr'
-      refine ⟨f, hfm, ?_⟩
-      have h1 : χ'.IsRoot r := (mem_roots (hmon.map _).ne_zero).mp hr'
-      obtain ⟨g, hg⟩ := hdvd
-      have h2 : (f.map (algebraMap R Kb)).eval r = 0 := by
-        rw [IsScalarTower.algebraMap_eq R K Kb, ← Polynomial.map_map, hg, Polynomial.map_mul, eval_mul]
-        rw [show (χ.map (algebraMap K Kb)).eval r = 0 from h1, zero_mul]
-      rwa [eval_map] at h2
-    have hsum : IsIntegral R χ'.roots.sum := by
-      have : χ'.roots.sum ∈ integralClosure R Kb :=
-        multiset_sum_mem _ fun r hr' => (mem_integralClosure_iff R Kb).mpr (hroots r hr')
-      exact (mem_integralClosure_iff R Kb).mp this
-    have htr : algebraMap K Kb (Algebra.trace K A y) = χ'.roots.sum := by
-      rw [Algebra.trace_eq_matrix_trace b, Matrix.trace_eq_neg_charpoly_nextCoeff, map_neg,
-        ← Polynomial.nextCoeff_map (algebraMap K Kb).injective, ← hχdef,
-        hs.nextCoeff_eq_neg_sum_roots_of_monic (hmon.map _), neg_neg]
-    refine (isIntegral_algHom_iff (IsScalarTower.toAlgHom R K Kb) (algebraMap K Kb).injective).mp ?_
-    rw [IsScalarTower.coe_toAlgHom', htr]
-    exact hsum
+  apply _root_.PI.UnitaryGroupMassFormula.CntFormula.DeltaB.trace_isIntegral_rank2 <;> assumption
 
 end Formalism.L2.SG.Pf.LocModel.LM.DeltaB
 

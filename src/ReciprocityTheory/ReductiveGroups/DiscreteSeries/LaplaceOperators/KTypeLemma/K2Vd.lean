@@ -129,15 +129,7 @@ theorem qOf_tw (ε : Fin n → Bool) : qOf (ε ∘ Fin.rev) = qOf ε := by
 
 theorem gapLap_tw {ε : Fin n → Bool} {lam : Fin n → ℝ} {h : ℝ} (hg : GapLap ε lam h) :
     GapLap (ε ∘ Fin.rev) (fun a => -lam (Fin.rev a)) h := by
-  obtain ⟨h1, h2, h3⟩ := hg
-  refine ⟨fun a b hab => ?_, fun a b hab => ?_, ?_⟩
-  · have := h1 (Fin.rev_lt_rev.2 hab)
-    simp only; linarith
-  · have := h2 (Fin.rev a) (Fin.rev b) hab
-    rw [abs_sub_comm] at this
-    simp only; rwa [neg_sub_neg]
-  · have e : hNeed (ε ∘ Fin.rev) = hNeed ε := by unfold hNeed; rw [pOf_tw, qOf_tw]
-    rw [e]; exact h3
+  apply _root_.ReciprocityTheory.ChartRestriction.DS.Lap.LemK.DualRepresentationReversal.gapLap_rev <;> assumption
 
 theorem root_rev (a b x : Fin n) : root (Fin.rev b) (Fin.rev a) x = -root a b (Fin.rev x) := by
   have e : ∀ i j : Fin n, (j = Fin.rev i ↔ Fin.rev j = i) := fun i j => by

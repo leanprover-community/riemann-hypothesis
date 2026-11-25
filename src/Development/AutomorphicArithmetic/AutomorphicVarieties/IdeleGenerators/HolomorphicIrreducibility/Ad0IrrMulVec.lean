@@ -263,8 +263,7 @@ theorem UpperTheory.V.Sd.ad0Irr :
   intro l _ Γ _ _ _ ρ hρ hi H hH
   refine ⟨top_ne_bot, fun _ _ _ => Submodule.mem_top, ?_⟩
   intro W _ hW
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   obtain ⟨hb, ht⟩ := hne
   have hWg : ∀ g ∈ H, ∀ v ∈ W, (ad0 ρ g : Matrix (Fin 3) (Fin 3) (Formalism.ConjugateSelfDual.Qbar l)) *ᵥ v ∈ W :=
     fun g hg v hv => hW ⟨g, hg⟩ v hv
@@ -318,8 +317,7 @@ theorem UpperTheory.V.Sd.ad0Irr :
       simpa using hm
     have hrange : LinearMap.range f = ⊤ := by
       obtain ⟨u, hu⟩ : ∃ u, f u ≠ 0 := by
-        by_contra hcon
-        push_neg at hcon
+        by_contra! hcon
         exact hf0 (LinearMap.ext hcon)
       refine LinearMap.range_eq_top.mpr fun t => ⟨(t / f u) • u, ?_⟩
       simp [hu]

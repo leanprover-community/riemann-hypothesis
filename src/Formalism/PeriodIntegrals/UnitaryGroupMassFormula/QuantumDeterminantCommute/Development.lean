@@ -6,8 +6,6 @@ public import Formalism.HermitianCurvature.StatementQ
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.Q
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 noncomputable section
 
 namespace QmCapCommW

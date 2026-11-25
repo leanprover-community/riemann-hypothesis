@@ -102,8 +102,7 @@ theorem norm_le_one_of_extension {p : ℕ} [Fact p.Prime] {A B : Type} [CommRing
     Polynomial.eval₂_X_pow, Polynomial.eval₂_finsetSum] at hq'
   simp only [Polynomial.eval₂_mul, Polynomial.eval₂_C, Polynomial.eval₂_X_pow] at hq'
   set y := ev' b
-  by_contra hy
-  push_neg at hy
+  by_contra! hy
   have hxn : y ^ q.natDegree = -∑ i ∈ Finset.range q.natDegree, ev (q.coeff i) * y ^ i :=
     eq_neg_of_add_eq_zero_left hq'
   rcases Nat.eq_zero_or_pos q.natDegree with h0 | hn

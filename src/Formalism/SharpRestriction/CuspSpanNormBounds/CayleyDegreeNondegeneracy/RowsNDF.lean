@@ -20,7 +20,6 @@ theorem rows_q_bound {m k r c cf a2 : ℝ} (hm : m = 2 * r + 2) (hr : 0 ≤ r) (
       (9 * c + 3) * k * m ^ 2 := by
   subst hm
   have hs0 : 0 ≤ r + 1 := by linarith
-  have hs1 : 1 ≤ r + 1 := by linarith
   have hk2 : 2 * (r + 1) ≤ k := by linarith
   have hk5 : 5 ≤ k := by linarith
   have hk0 : 0 ≤ k := by linarith
@@ -61,8 +60,6 @@ theorem rows_one_le_HHZ' (D : D7) (large₂ : SizeData₂ D) (c : ℝ) (Z : Gram
   unfold Cnt.HHZ
   rw [← Real.rpow_mul (by linarith)]
   refine one_le_mul_of_one_le_of_one_le (Real.one_le_rpow hb ?_) (one_le_pow₀ hsz)
-  have hm : (0 : ℝ) ≤ D.R.m := Nat.cast_nonneg _
-  have hf : (0 : ℝ) ≤ D.R.f := Nat.cast_nonneg _
   have : c * (D.R.m : ℝ) ^ 2 * D.R.f * (c * D.R.m) = c ^ 2 * (D.R.m : ℝ) ^ 3 * D.R.f := by ring
   rw [this]
   positivity
@@ -81,16 +78,8 @@ theorem rows_HHZ_mono (large₂ : SizeData₂ D) (hrd : 0 < D.host.rdE) {c' c : 
   have hm : (D.R.m : ℝ) = 2 * D.R.rS + 2 := by
     exact_mod_cast Formalism.MainNotions.BridgeLemma.d_m_eq (D := D)
   rw [hm]
-  have hf : (0 : ℝ) ≤ D.R.f := Nat.cast_nonneg _
-  have hr : (0 : ℝ) ≤ D.R.rS := Nat.cast_nonneg _
   have key : 0 ≤ (2 * (D.R.rS : ℝ) + 2) ^ 2 * D.R.f * (c - c') * (2 * (D.R.rS : ℝ) + 2) * (c + c' - 2) := by
-    have a1 : 0 ≤ c - c' := by linarith
-    have a2 : 0 ≤ c + c' - 2 := by linarith
     positivity
-  have e : c * (2 * (D.R.rS : ℝ) + 2) ^ 2 * D.R.f * (c * (2 * (D.R.rS : ℝ) + 2)) -
-      (c' ^ 2 * (2 * (D.R.rS : ℝ) + 2) ^ 3 * D.R.f +
-        4 * ((c - c') * (2 * (D.R.rS : ℝ) + 2) ^ 2 * D.R.f * ((D.R.rS : ℝ) + 1))) =
-      (2 * (D.R.rS : ℝ) + 2) ^ 2 * D.R.f * (c - c') * (2 * (D.R.rS : ℝ) + 2) * (c + c' - 2) := by ring
   linarith
 
 theorem rows_stHH_mono {C' Cl Cg cb Cu cT CT C0 A c' c : ℝ} (h1 : c' ≤ c) (h2 : 2 ≤ c + c')

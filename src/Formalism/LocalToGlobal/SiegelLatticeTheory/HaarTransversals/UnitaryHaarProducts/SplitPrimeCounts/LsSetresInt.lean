@@ -1,5 +1,6 @@
 module
 
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SesquilinearRowSplitting.AdjointActionReduction
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.NotDvdAbsNormDifferent
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.SettingBlocks
 public import Mathlib.Algebra.AffineMonoid.Basic
@@ -38,14 +39,7 @@ theorem natNorm_mem (m : ℕ) :
     (Ideal.absNorm_mem (differentIdeal ℤ (𝓞 D.host.F)))
 
 theorem ddS_ne_zero : ddS D ≠ 0 := by
-  intro h
-  have hm := natNorm_mem (D := D) 1
-  simp only [pow_one] at hm
-  rw [h, FractionalIdeal.mem_zero_iff] at hm
-  have hne : Ideal.absNorm (differentIdeal ℤ (𝓞 D.host.F)) ≠ 0 := by
-    rw [Ne, Ideal.absNorm_eq_zero_iff]
-    exact differentIdeal_ne_bot
-  exact hne (by exact_mod_cast hm)
+  apply _root_.PI.SRW.ddS_ne <;> assumption
 
 theorem aaD_eq (a : Fin D.R.rS) : aaD D a = (ddS D ^ (D.R.rS - (a : ℕ)))⁻¹ := by
   have ha : ((D.R.rS : ℤ) - ((a : ℕ) : ℤ)) = ((D.R.rS - (a : ℕ) : ℕ) : ℤ) := by

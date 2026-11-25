@@ -1,6 +1,5 @@
 module
 
-public import Development.AbelianVarietyTheory.Definitions.Divisors.LamRange
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsIntegralClosureFractionFiniteNormalCover
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntegralClosureStalkFibre
 import Mathlib.Algebra.Order.Floor.Extended

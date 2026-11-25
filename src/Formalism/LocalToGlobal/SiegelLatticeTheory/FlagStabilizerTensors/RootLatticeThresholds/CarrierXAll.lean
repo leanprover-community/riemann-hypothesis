@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.ExistsPlaceWithVectors
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.CarPinVt
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.LocWSOf
 public import Formalism.FormalDegreeBessel.FinalG
@@ -54,6 +55,7 @@ import Formalism.SharpRestriction.CuspSpanNormBounds.Point
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.RestrictionIrrelevantDoubleLevelOperator
 import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.CoefDecay
 import Formalism.SharpRestriction.CuspSpanNormBounds.NonemptyParameterModels.AmpTensorDSdNonemptyOfSubsingleton
+import Formalism.LocalToGlobal.HermitianForms.Interlace
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.CarPinVtLZero, Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.CarPinVtPtSome, Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.CarPinVtRZero, Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.CarrierDataBuiltOfCompactTest, Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.CarrierPropGram, Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.CarrierTParNums, Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.CarrierXAll
@@ -305,8 +307,7 @@ theorem rZero_carrierInT (u u' : D.what₂.Word) (e : InfinitePlace D.host.E ≃
         (Formalism.L2.SG.Pf.CarrierTop.cS D.R.rS D.host.rdE) (Formalism.L2.SG.Pf.CarrierTop.cS D.R.rS D.host.rdE)
         (Tw (D := D) u * Tw (D := D) u') (by rw [hcl]; simp)
       rw [Formalism.L2.SG.Pf.CarrierTop.zx_sc, hGd, hZ1] at hv1
-      by_contra hpos
-      push_neg at hpos
+      by_contra! hpos
       have hrd := Formalism.MainNotions.LocalModelPeriodLattices.rdE_pos D
       have hne : (∏ i : Fin D.R.rS, Formalism.L2.SG.Pf.CarrierTop.cS D.R.rS D.host.rdE (Fin.castLE (Nat.le_succ D.R.rS) i)) ≠ 0 :=
         Finset.prod_ne_zero_iff.mpr fun i _ => by
@@ -316,8 +317,7 @@ theorem rZero_carrierInT (u u' : D.what₂.Word) (e : InfinitePlace D.host.E ≃
         pow_pos (mul_pos (norm_pos_iff.mpr hne) (norm_pos_iff.mpr hne)) 2
       have := mul_pos hc hpos
       linarith
-    · by_contra hall
-      push_neg at hall
+    · by_contra! hall
       obtain ⟨γ, hγ, -⟩ := hPRE w (fun v => by have := hall v; unfold Gv; exact this)
       exact hrep ⟨γ, hγ⟩
   refine ⟨(tauE X e).symm v, Or.inr ?_⟩
@@ -641,14 +641,7 @@ theorem half_lt_int {a b : ℚ} (ha : ∃ z : ℤ, a = z + 1 / 2) (hb : ∃ z : 
   linarith
 
 theorem int_lt_half {a b : ℚ} (ha : ∃ z : ℤ, a = z + 1 / 2) (hb : ∃ z : ℤ, b = z) (h : b < a) : b + 1 / 2 ≤ a := by
-  obtain ⟨z, rfl⟩ := ha
-  obtain ⟨n, rfl⟩ := hb
-  have : n ≤ z := by
-    have : (n : ℚ) < z + 1 := by linarith
-    have : n < z + 1 := by exact_mod_cast this
-    omega
-  have : (n : ℚ) ≤ z := by exact_mod_cast this
-  linarith
+  apply _root_.Formalism.L2.Forms.half_gap <;> assumption
 
 variable {D : D7} (X : Formalism.L2.SG.HidaSetting.HidaSetting D) {θ : ℝ} (C : Formalism.L2.SG.LocWSOf.Choice X θ)
 
@@ -774,21 +767,8 @@ theorem frameVec_facts {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [Inner
     [InnerProductSpace ℂ Wq] (Bs : B.RealPlaceData k r Wp Wq) (ν' : Fin (2 * r + k + 1) → ℂ) (m₀ : B.Mat k r)
     (hF : D.IsBaseFrame Bs ν' m₀) (hT : 0 < Tz k r Bs.z) (hT' : 0 < Tz k r Bs.z') :
     inWb k r (m₀ *ᵥ ν') ∧ herm (Hpk k r) (m₀ *ᵥ ν') Bs.z = 0 ∧ herm (Hpk k r) (m₀ *ᵥ ν') (m₀ *ᵥ ν') = 1 := by
-  obtain ⟨hw, hz, hn, hm, hmz⟩ := hF
-  have hU : m₀ᴴ * Hpk k r * m₀ = Hpk k r := hm.1
-  refine ⟨Formalism.FourierDecayAlt.P.Qx8.inWb_mulVec hm hw, ?_, by rw [_root_.PI.StabSplit.UnipW.herm_inv hU]; exact hn⟩
-  have h0 : herm (Hpk k r) (m₀ *ᵥ ν') (m₀ *ᵥ Bs.z') = 0 := by rw [_root_.PI.StabSplit.UnipW.herm_inv hU]; exact hz
-  rw [hmz] at h0
-  set c : ℂ := ((√(Tz k r Bs.z' / Tz k r Bs.z) : ℝ) : ℂ) with hc
-  have hc0 : c ≠ 0 := by
-    rw [hc]; exact_mod_cast (Real.sqrt_pos.mpr (div_pos hT' hT)).ne'
-  have e : herm (Hpk k r) (m₀ *ᵥ ν') (c • Bs.z) = star c * herm (Hpk k r) (m₀ *ᵥ ν') Bs.z := by
-    unfold herm
-    rw [star_smul, smul_dotProduct, smul_eq_mul]
-  rw [e] at h0
-  rcases mul_eq_zero.mp h0 with h | h
-  · exact absurd (star_eq_zero.mp h) hc0
-  · exact h
+  intros
+  apply _root_.Formalism.FourierDecayAlt.P.HaarMassHermitianCurvature.frameVec_facts <;> assumption
 
 theorem typeProj_nonempty (hTP : Top.TypeProjExists) {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
     [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wp] [FiniteDimensional ℂ Wq] (P : M.Par)

@@ -149,8 +149,7 @@ variable {p : ℕ} [Fact p.Prime]
 
 theorem norm_le_one_of_quad {a c m : ℂ_[p]} (ha : ‖a‖ ≤ 1) (hc : ‖c‖ ≤ 1)
     (h : ‖m ^ 2 + a * m - c‖ ≤ 1) : ‖m‖ ≤ 1 := by
-  by_contra hm
-  push_neg at hm
+  by_contra! hm
   have e : m ^ 2 = (m ^ 2 + a * m - c) + (-(a * m) + c) := by ring
   have hb : ‖m ^ 2‖ ≤ ‖m‖ := by
     rw [e]
@@ -249,8 +248,7 @@ theorem unit_of_double_integral {p : ℕ} [Fact p.Prime] (W : WeierstrassCurve �
   have n2 : ‖(2 : ℂ_[p])‖ ≤ 1 := by simpa using norm_natCast_le (p := p) 2
 
   have hy : ‖y‖ ≤ 1 := by
-    by_contra hy
-    push_neg at hy
+    by_contra! hy
     have hR : ‖x ^ 3 + W.a₂ * x ^ 2 + W.a₄ * x + W.a₆‖ ≤ 1 := by
       refine it_add (it_add (it_add ?_ (it_mul h2 ?_)) (it_mul h4 hx)) h6
       · rw [show x ^ 3 = x * x * x by ring]; exact it_mul (it_mul hx hx) hx
@@ -276,8 +274,7 @@ theorem unit_of_double_integral {p : ℕ} [Fact p.Prime] (W : WeierstrassCurve �
   refine le_antisymm hηle (not_lt.mp fun hlt => ?_)
 
   have hmi : ‖m‖ ≤ 1 := by
-    by_contra hmg
-    push_neg at hmg
+    by_contra! hmg
     have hT : ‖W.a₁ * m - W.a₂ - 2 * x‖ ≤ ‖m‖ := by
       have hm1 : (1 : ℝ) ≤ ‖m‖ := hmg.le
       refine le_trans (unit_of_double_integral_sub _ _) (max_le ?_ ?_)

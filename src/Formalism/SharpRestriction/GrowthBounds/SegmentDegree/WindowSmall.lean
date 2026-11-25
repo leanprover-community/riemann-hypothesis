@@ -105,7 +105,6 @@ theorem path_count_finite : PathCountFinite := by
       fun h => mu_nonpos P s.val s.2 m (by have := s.2; omega), path_le_beA H P hP s.val s.2 m, ?_⟩
     refine le_trans ?_ (neg_dminus_le_mu P s.val s.2 m)
     have := dminus_le_beA H hP.degs s.val
-    have h' : (dminus LL dd s.val : ℤ) ≤ (M : ℤ) := by exact_mod_cast this
     linarith
   have hmaps : ∀ μ ∈ SP (r := r) (K := K) LL n0 B, code N r K μ ∈ (t : Set (Fin N × Fin (2 * N) → ℕ)) := by
     intro μ hμ
@@ -168,7 +167,6 @@ theorem path_count_finite : PathCountFinite := by
   rw [hcard] at hle
   have hA : (0 : ℝ) < 1 + 2 * a * (N : ℝ) := by
     have := H.a3
-    have hN : (0 : ℝ) ≤ (N : ℝ) := Nat.cast_nonneg _
     nlinarith
   have hM1 : ((M + 1 : ℕ) : ℝ) ≤ 1 + 2 * a * (N : ℝ) := by
     have := beA_le H

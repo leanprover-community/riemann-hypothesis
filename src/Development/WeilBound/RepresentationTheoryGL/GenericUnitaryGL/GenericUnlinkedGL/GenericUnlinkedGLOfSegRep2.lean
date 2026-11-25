@@ -56,6 +56,7 @@ import Std.Tactic.BVDecide.Normalize.Prop
 import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.MirabolicDerivatives.UnipotentDerivatives.DerUnipLeUnipB
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CuspidalTwistedKernelTop
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DerivativeZeroWhittakerKernel
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ContragredientPreservesSubquotient
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsNontrivialDerivative
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RestrictionMirabolicTwistedKernel
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NonemptyEquivOfRangeEq
@@ -940,31 +941,8 @@ theorem contra_isSubquotient : ∀ {G V W : Type} [Group G] [TopologicalSpace G]
     (∀ U ∈ nhds (1 : G), ∃ K : Subgroup G, IsOpen (K : Set G) ∧ IsCompact (K : Set G) ∧ (K : Set G) ⊆ U) →
     ∀ (ρ : Representation ℂ G V) (τ : Representation ℂ G W),
       IsSmooth ρ → IsSubquotient τ ρ → IsSubquotient (contra τ) (contra ρ) := by
-  intro G V W _ _ _ _ _ _ _ hG ρ τ hρ ⟨S, f, hf⟩
-  obtain ⟨g, hg⟩ := LinearMap.exists_rightInverse_of_surjective f.toLinearMap
-    (LinearMap.range_eq_top.2 hf)
-  have hg' : ∀ w, f (g w) = w := fun w => LinearMap.congr_fun hg w
-  refine ⟨annih S f, restr hf hg', fun m => ?_⟩
-  obtain ⟨K, ho, hc, hKs⟩ := hG _ ((isSmooth_contra τ m).mem_nhds (by simp))
-  have hfix : ∀ h ∈ K, ∀ s, (m : Module.Dual ℂ W) (f (S.toRepresentation h s)) =
-      (m : Module.Dual ℂ W) (f s) := by
-    intro h hh s
-    have h1 : contra τ h⁻¹ m = m := hKs (inv_mem hh)
-    have h2 := congrArg (fun x : smoothPart τ.dual => (x : Module.Dual ℂ W) (f s)) h1
-    simp only [contra_apply, inv_inv] at h2
-    rw [f.isIntertwining]
-    exact h2
-  obtain ⟨l, -, hl⟩ := exists_smooth_extension hρ S ho hc
-    ((m : Module.Dual ℂ W) ∘ₗ f.toLinearMap) hfix
-  have hmem : l ∈ (annih S f).toSubmodule := fun s hs => by
-    have h1 := hl s
-    have h2 : ((m : Module.Dual ℂ W) ∘ₗ f.toLinearMap) s = (m : Module.Dual ℂ W) (f s) := rfl
-    rw [h1, h2, hs, map_zero]
-  refine ⟨⟨l, hmem⟩, Subtype.ext (LinearMap.ext fun w => ?_)⟩
-  obtain ⟨s, rfl⟩ := hf w
-  show pull S g (l : Module.Dual ℂ V) (f s) = _
-  rw [pull_apply_map hg' hmem]
-  exact hl s
+  intros
+  apply _root_.GlobalTheory.CompanionTheory.ContraSub.isSubquotient_contra <;> assumption
 
 end GlobalTheory.CompanionTheory.ContraSq
 

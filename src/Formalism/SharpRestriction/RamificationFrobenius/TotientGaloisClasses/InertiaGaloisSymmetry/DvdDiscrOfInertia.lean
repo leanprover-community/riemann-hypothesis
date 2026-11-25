@@ -1,5 +1,7 @@
 module
 
+
+import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.HostFacts
 public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.InertiaGaloisSymmetry.RdArith
 public import Mathlib.LinearAlgebra.Lagrange
 public import Mathlib.NumberTheory.ArithmeticFunction.VonMangoldt
@@ -19,7 +21,6 @@ import Mathlib.RingTheory.PicardGroup
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Order.CompletePartialOrder
-
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.InertiaGaloisSymmetry.RdBound, Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.InertiaGaloisSymmetry.RdDiff, Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.InertiaGaloisSymmetry.DvdDiscrOfInertia
 
@@ -121,8 +122,7 @@ theorem log_index_le : Real.log U.index ≤ 2 * SS U := by
           rw [Finset.mem_filter, Nat.mem_divisors] at hm
           have hmN : N / m ∣ N := Nat.div_dvd_of_dvd hm.1.1
           have hex' : ∃ u ∈ KK N (N / m), u ∉ U := by
-            by_contra hcon
-            push_neg at hcon
+            by_contra! hcon
             exact hm.2 (hcdvd _ hmN hcon)
           have h12 := half_le_rho U hmN hex'
           have hΛ : 0 ≤ vonMangoldt m := vonMangoldt_nonneg
@@ -864,11 +864,7 @@ theorem div_q : H.condN / H.q = H.QS * H.d := by
   exact Nat.mul_div_cancel _ (Nat.pos_of_ne_zero (left_ne_zero_of_mul (q_mul_d_ne_zero H)))
 
 theorem q_ne_d : H.q ≠ H.d := by
-  intro h
-  have h1 := H.hyp.2.2.1
-  have h2 := H.hyp.2.2.2.1
-  rw [h] at h1
-  omega
+  apply _root_.Formalism.HC.HostRaw.q_ne_d <;> assumption
 
 theorem exists_d (C : HostCore H) : ∃ u ∈ KK H.condN (H.QS * H.q), u ∉ H.art.ker := by
   by_contra h

@@ -1,6 +1,7 @@
 module
 
 public import Formalism.SatakeDualWeyl.Statement
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.DualFamilyCounting.NcSIntWittAlg
 
 @[expose] public section
 
@@ -37,16 +38,7 @@ theorem hform_smul_right (a : S) (x y : Fin n → S) :
 
 theorem hform_conj (hs : ∀ z, s (s z) = z) (hJ : IsHerm s J) (x y : Fin n → S) :
     s (hform s J x y) = hform s J y x := by
-  have hJ' : ∀ i j, s (J i j) = J j i := fun i j => by
-    have h1 := congrFun (congrFun hJ j) i
-    unfold cT at h1
-    simpa [Matrix.transpose_apply, Matrix.map_apply] using h1
-  unfold hform
-
-  simp only [map_sum, map_mul, hs, hJ']
-  rw [Finset.sum_comm]
-  refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
-  ring
+  apply _root_.Formalism.L2.SG.Pf.NcS.IntWittAlg.hform_conj <;> assumption
 
 end Refl
 

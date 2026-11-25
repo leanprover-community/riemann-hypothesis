@@ -75,8 +75,7 @@ lemma contDiff_frobenius {n : ℕ} : ContDiff ℝ ∞ (hs : Matrix (Fin n) (Fin 
 
 lemma frobenius_pos_of_indefinite_unitary {n : ℕ} {ε : Fin n → Bool} {g : Matrix (Fin n) (Fin n) ℂ} (hg : inUJ ε g)
     [Nonempty (Fin n)] : 0 < hs g := by
-  by_contra hle
-  push_neg at hle
+  by_contra! hle
   have h0 : hs g = 0 := le_antisymm hle (frobenius_nonneg g)
   have hg0 : g = 0 := by
     unfold hs at h0

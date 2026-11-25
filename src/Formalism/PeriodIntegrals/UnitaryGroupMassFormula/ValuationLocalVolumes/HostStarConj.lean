@@ -58,13 +58,6 @@ theorem alp_last {F : Type} [Field F] [NumberField F] (v : HeightOneSpectrum (�
 
 variable {D : D7} (X : HidaSetting D) (u' : D.what₂.Word)
 
-theorem host_star_conj : Formalism.BasicNotions.bridge_star := by
-  intro R H x
-  have := H.isCMField_hostE
-  apply H.φ₀.injective
-  change H.φ₀ (NumberField.IsCMField.complexConj H.E x) = H.φ₀ (H.conj x)
-  rw [NumberField.IsCMField.complexEmbedding_complexConj, Formalism.HC.HostAx.conjE_apply]
-
 theorem sig_apply (a : X.B.I.E) : X.B.I.cm.sig a = star a := rfl
 
 theorem hE_crdOf (x y : (VS D).V) :

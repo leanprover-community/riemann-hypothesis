@@ -1102,8 +1102,6 @@ theorem CrystallineSemistableComparison.RL.split_pt : ∀ {S : Type} [CommRing S
 
 theorem CrystallineSemistableComparison.RL.sec_add : ∀ {S : Type} [CommRing S] (Y : Scheme.{0}) (f : Y ⟶ Spec (CommRingCat.of S)) (e e' : S), IsIdempotentElem e → IsIdempotentElem e' → e * e' = 0 → SecOn f e → SecOn f e' → SecOn f (e + e') := _root_.GlobalTheory.CompanionTheory.SecAdd.secOn_add
 
-alias CrystallineSemistableComparison.RL.pd_quot := _root_.GlobalTheory.CompanionTheory.PdTF.exists_dividedPowers_map_quotient
-
 theorem CrystallineSemistableComparison.RL.pd_mor : ∀ {S : Type} [CommRing S] {S' E E' : Type} [CommRing S'] [CommRing E] [CommRing E'] (π : S →+* E) (π' : S' →+* E') (I : Ideal S) (I' : Ideal S') {J : Ideal E} {J' : Ideal E'} (δ : DividedPowers J) (δ' : DividedPowers J') (F₀ : S →+* S') (F : E →+* E'), Function.Surjective π → PdI I → IsPd π I δ → IsPd π' I' δ' → (∀ x ∈ I, F₀ x ∈ I') → (∀ x, F (π x) = π' (F₀ x)) → DividedPowers.IsDPMorphism δ δ' F := _root_.GlobalTheory.CompanionTheory.PdMor.isDPMorphism_of_isPd
 end -- clump:auto
 end -- clump:auto

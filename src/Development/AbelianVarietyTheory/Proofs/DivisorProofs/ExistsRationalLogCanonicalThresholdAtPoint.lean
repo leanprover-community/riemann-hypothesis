@@ -89,8 +89,7 @@ theorem exists_threshold_lcAt_not_kltAt : GlobalTheory.Published.Principalisatio
     rw [ha]; exact (hL.kltAt_iff hn hη hm₁).1 hk E hE
 
   obtain ⟨E₀, hE₀S, hE₀x, hE₀⟩ : ∃ E ∈ S, E.Through x ∧ a E - 1 * t E ≤ -1 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     obtain ⟨m₁', g₁, hm₁', hL₁, hd₁⟩ := step 1
     rw [one_smul] at hL₁
     refine hnk ((hL₁.kltAt_iff hn hη hm₁').2 fun E hE => ?_)

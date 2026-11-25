@@ -6,6 +6,7 @@ public import Mathlib.MeasureTheory.Integral.Pi
 public import Mathlib.RingTheory.Complex
 import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.IsSingTest
 import Std.Tactic.BVDecide.Normalize.Prop
+import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.MollifiedIntegrability.HermTranspose
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.LocalOperatorBlocks.GaussSec, Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.LocalOperatorBlocks.VacUnique
@@ -55,39 +56,6 @@ private theorem star_mulVec_dotProduct_mulVec_conj (U M : Matrix (Fin n) (Fin n)
   simp [Matrix.star_mulVec, Matrix.dotProduct_mulVec, Matrix.vecMul_vecMul, Matrix.mulVec_mulVec,
     Matrix.star_eq_conjTranspose, Matrix.mul_assoc]
 
-private theorem integral_comp_unitary_mulVec (U : Matrix (Fin n) (Fin n) ℂ) (hU : U ∈ Matrix.unitaryGroup (Fin n) ℂ)
-    (f : (Fin n → ℂ) → ℂ) : ∫ y, f (U *ᵥ y) = ∫ v, f v := by
-  have hn : Complex.normSq U.det = 1 := by
-    have h := Matrix.det_of_mem_unitary hU
-    have h2 : star U.det * U.det = 1 := Unitary.star_mul_self_of_mem h
-    have h3 : ((Complex.normSq U.det : ℝ) : ℂ) = 1 := by
-      rw [Complex.normSq_eq_conj_mul_self]
-      exact h2
-    exact_mod_cast h3
-  have hsU : star U * U = 1 := Matrix.mem_unitaryGroup_iff'.mp hU
-  have hUs : U * star U = 1 := Matrix.mem_unitaryGroup_iff.mp hU
-  let e : (Fin n → ℂ) ≃ᵐ (Fin n → ℂ) :=
-    { toFun := fun y => U *ᵥ y
-      invFun := fun v => star U *ᵥ v
-      left_inv := fun y => by simp [Matrix.mulVec_mulVec, hsU]
-      right_inv := fun v => by simp [Matrix.mulVec_mulVec, hUs]
-      measurable_toFun := (Continuous.matrix_mulVec continuous_const continuous_id).measurable
-      measurable_invFun := (Continuous.matrix_mulVec continuous_const continuous_id).measurable }
-  let L : (Fin n → ℂ) →ₗ[ℝ] (Fin n → ℂ) := (Matrix.toLin' U).restrictScalars ℝ
-  have hdet : LinearMap.det L = 1 := by
-    simp only [L]
-    rw [LinearMap.det_restrictScalars, LinearMap.det_toLin', Algebra.norm_complex_apply, hn]
-  have hmap : MeasureTheory.Measure.map (⇑e) MeasureTheory.volume = MeasureTheory.volume := by
-    have he : (⇑e) = ⇑L := by
-      funext y
-      rfl
-    rw [he, MeasureTheory.Measure.map_linearMap_addHaar_eq_smul_addHaar _
-      (by rw [hdet]; exact one_ne_zero), hdet]
-    simp
-  have h := MeasureTheory.integral_map_equiv (μ := MeasureTheory.volume) e f
-  rw [hmap] at h
-  exact h.symm
-
 private theorem star_dotProduct_diagonal_mulVec_eq_sum (d y : Fin n → ℂ) :
     star y ⬝ᵥ (Matrix.diagonal d *ᵥ y) = ∑ k, d k * ((‖y k‖ ^ 2 : ℝ) : ℂ) := by
   simp only [Matrix.mulVec_diagonal, dotProduct, Pi.star_apply]
@@ -113,7 +81,7 @@ private theorem integral_cexp_diagonal_eq_prod_pi_div (d : Fin n → ℂ) (hd : 
 private theorem integral_cexp_quadratic_mul_det_neg_eq_pi_pow (M U : Matrix (Fin n) (Fin n) ℂ) (hU : U ∈ Matrix.unitaryGroup (Fin n) ℂ)
     (d : Fin n → ℂ) (hd : ∀ k, 0 < (-d k).re) (hM : star U * M * U = Matrix.diagonal d) :
     (∫ v : Fin n → ℂ, Complex.exp (star v ⬝ᵥ (M *ᵥ v))) * (-M).det = (Real.pi : ℂ) ^ n := by
-  rw [← integral_comp_unitary_mulVec U hU]
+  rw [← _root_.PositivityTheory.Rg.Sw.WR.G.GB.integral_unitary U hU]
   simp only [star_mulVec_dotProduct_mulVec_conj, hM, star_dotProduct_diagonal_mulVec_eq_sum]
   rw [integral_cexp_diagonal_eq_prod_pi_div d hd]
   have hsU : star U * U = 1 := Matrix.mem_unitaryGroup_iff'.mp hU

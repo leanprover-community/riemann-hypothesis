@@ -1,5 +1,6 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.IwDomMul
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.HeckePairTop
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.IwBernDom
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.HkDefs
@@ -131,12 +132,7 @@ private theorem anti_fund' (n m : ℕ) : Antitone (fund n m) := by
 
 private theorem dom_pw' {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] {n : ℕ}
     {x : kˣ} (hx : IsUnif x) {c : Fin n → ℤ} (hc : Antitone c) : Dom fun i => x ^ c i := by
-  obtain ⟨p, -, hp⟩ := hx
-  intro i j hij
-  have h1 : valuation k (x : k) ≤ 1 := by rw [← hp]; exact p.2
-  have h0 : 0 < valuation k (x : k) := by simp [zero_lt_iff]
-  simp only [Units.val_zpow_eq_zpow_val, map_zpow₀]
-  exact zpow_le_zpow_right_of_le_one₀ h0 h1 (hc hij)
+  apply _root_.dom_zpow <;> assumption
 
 private theorem single_mul_fund {G : Type} [CommGroup G] {n : ℕ} (x : G) (i : Fin n) :
     (Pi.mulSingle i x * fun l => x ^ fund n i l : Fin n → G) = fun l => x ^ fund n ((i : ℕ) + 1) l := by

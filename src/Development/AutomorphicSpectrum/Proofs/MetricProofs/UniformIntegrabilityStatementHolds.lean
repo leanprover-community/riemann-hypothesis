@@ -1,5 +1,7 @@
 module
 
+import Development.WeilBound.CoreStatements.HomogeneousNonvanishing.RCombine
+import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.PLogNormHolo
 public import ReciprocityTheory.AnalyticForms.LeviForms.IsRegFamilyInhabitStatement
 public import ReciprocityTheory.AnalyticForms.LeviForms.TailCutA
 public import ReciprocityTheory.AnalyticForms.LeviForms.UnifInt
@@ -82,16 +84,8 @@ variable {X : Type} [TopologicalSpace X]
 
 theorem holoOn_continuousOn {e : ℕ} (A : FinHolAtlas e X) {U : Set X} {g : X → ℂ}
     (hg : A.HoloOn U g) (hU : IsOpen U) : ContinuousOn g U := by
-  intro x hx
-  obtain ⟨j, hj⟩ := A.cover x
-  have hy : A.chart j x ∈ (A.chart j).target ∩ (A.chart j).symm ⁻¹' U :=
-    ⟨(A.chart j).map_source hj, by simpa [(A.chart j).left_inv hj] using hx⟩
-  have h1 : ContinuousAt (g ∘ (A.chart j).symm) (A.chart j x) := (hg j _ hy).continuousAt
-  have h2 : ContinuousAt ((g ∘ (A.chart j).symm) ∘ (A.chart j)) x :=
-    ContinuousAt.comp h1 ((A.chart j).continuousAt hj)
-  refine (h2.congr ?_).continuousWithinAt
-  filter_upwards [(A.chart j).open_source.mem_nhds hj] with y hy
-  simp [(A.chart j).left_inv hy]
+  intros
+  apply _root_.GroundTheory.Heights₂.Heights.AnalyticLimit.continuousOn_of_holoOn <;> assumption
 
 theorem holoOn_comp {e e' : ℕ} {Y : Type} [TopologicalSpace Y] (B : FinHolAtlas e' Y)
     (A : FinHolAtlas e X) {h : Y → X} (hh : HoloMap B A h) {U : Set X} {g : X → ℂ}
@@ -539,18 +533,8 @@ theorem isSection_pull {e' : ℕ} {X' : Type} [TopologicalSpace X'] {A : FinHolA
     {A' : FinHolAtlas e' X'} {h : X' → X} (hh : HoloMap A' A h) {L : LocPot X} {s : X → X → ℂ}
     (hs : IsSection A L s) :
     IsSection A' (L.pullback h hh.1) (fun x y => s (h x) (h y)) := by
-  refine ⟨fun x j t ht => ?_, fun x x' y hy => hs.2 _ _ _ hy⟩
-  obtain ⟨k, hk⟩ := A.cover (h ((A'.chart j).symm t))
-  obtain ⟨hz, hs'⟩ := chart_image_mem (A := A) (A' := A') (h := h) j k hk
-  have hzU : (A.chart k).symm ((A.chart k ∘ h ∘ (A'.chart j).symm) t) ∈ L.U (h x) := by
-    rw [hs']; exact ht.2
-  have h1 : AnalyticAt ℂ (s (h x) ∘ (A.chart k).symm) ((A.chart k ∘ h ∘ (A'.chart j).symm) t) :=
-    hs.1 (h x) k _ ⟨hz, hzU⟩
-  have h2 := hh.2 j k t ⟨ht.1, hk⟩
-  have h3 := h1.comp h2
-  refine h3.congr ?_
-  filter_upwards [holoMap_preimage_mem_nhds hh j k ht.1 hk] with t' ht'
-  simp only [Function.comp_apply, (A.chart k).left_inv ht'.2]
+  intros
+  apply _root_.PositivityTheory.UnitarySelfGeneration.RC.section_pull <;> assumption
 
 theorem hessC_sub_const {D : ℕ} (F : (Fin D → ℂ) → ℝ) (c : ℝ) (z : Fin D → ℂ) :
     hessC (fun y => F y - c) z = hessC F z := by

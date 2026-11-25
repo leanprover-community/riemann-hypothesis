@@ -1012,8 +1012,7 @@ theorem c5 : C5 := by
   classical
   obtain ⟨I0, hI0, hne⟩ := block_diag_minor_ne_zero M.j_le p.2 h hb hd
   set J := stepCols N j p.2 with hJ
-  by_contra hall
-  push_neg at hall
+  by_contra! hall
   have hreg : ∀ (q : (k : K) × ι k) (I : Finset (Fin N)),
       F.u q I ∈ regRing M.x wb ∧ F.u' I q ∈ regRing M.x wb :=
     fun q I => ⟨mem_regRing_of_regAt hw (hG.2.1 q I).1, mem_regRing_of_regAt hw (hG.2.1 q I).2⟩

@@ -1650,7 +1650,7 @@ theorem linkN_of_twGood_galoisPreconditions (hP : Hypotheses₂) (hG : _root_.Up
   have hFF : _root_.GlobalTheory.NLink.FactsFAlt (gd Fm c) C CT := fun x hx i =>
     ⟨(hc x i hx).2.1, hEx _ _ (hc x i hx).2.1 (hc x i hx).2.2⟩
   refine linkN_of_gd Fm c (fun x hx i => ⟨(hc x i hx).1, ?_, (hF x hx i).1.what₂.rank _⟩)
-    (_root_.GlobalTheory.LinkFam.main _ (_root_.GlobalTheory.T.conclF_of_family_facts_and_bound_at_two_three hP _ C CT hC (twGood_gd Fm c hTw) hFF (_root_.UpperTheory.N.at23_family_alt hP _)))
+    (_root_.GlobalTheory.LinkFam.main _ (_root_.GlobalTheory.NLinkClose.main_alt_alt hP _ C CT hC (twGood_gd Fm c hTw) hFF (_root_.UpperTheory.N.at23_family_alt hP _)))
   have p := (hF x hx i).1
   exact _root_.GlobalTheory.NLink.multLe_of_rank _ _ p.Conclusion1.2.2 p.z p.adm.2.2 p.c2
 theorem linkN_of_boundAtTwoThree_slot (hP : Hypotheses₂) (hG : _root_.UpperTheory.GalC.CutGivesAlt) (Q : GlobalTheory.Mem.Top.V4.Slot) (Lk : GlobalTheory.Fc.LkT _root_.GlobalTheory.Fc.BundleCondition)
@@ -1681,7 +1681,7 @@ theorem final_of_alt (hP : Hypotheses₂) (hG : _root_.UpperTheory.GalC.CutGives
     _root_.GlobalTheory.Fc.RL.LinkedAt (_root_.GlobalTheory.Mem.Top.Bl.parametersOfDependence hL cDep) (fun Q L => _root_.GlobalTheory.Fc.R1.SlotNormCondition Q L fun 𝒞 => Formalism.MainNotions.Closed 𝒞 fun Fm _ => Formalism.MainNotions.LinkN Fm) := by
   have hW : WitMv (_root_.GlobalTheory.Mem.Top.Bl.parametersOfDependence hL cDep).s :=
     GlobalTheory.T.witnesses_pass_along_set_division _ (_root_.GlobalTheory.NLink.Final.slot_mv_extension_with_list_geo_cl hL cDep)
-  have hTf := _root_.GlobalTheory.T.tieChi_at_members_of_depthZero hX.ht prN dzs hL
+  have hTf := _root_.GlobalTheory.TypePrimesFinished.locComp_of_isRc_classMapD_cenLoc hX.ht prN dzs hL
   have hTr := (_root_.GlobalTheory.Mem.AtPtTransport.atMem_at_wit_alt hL (_root_.GlobalTheory.HeightCounting.Up.extensionWithList hL cDep) SExt.none hW
     (fun _ _ _ _ _ _ _ _ _ _ _ _ _ e => ⟨e.1⟩)).2
   exact _root_.UpperTheory.GalC.linkedAt_linkN_of_boundAtTwoThree hP hG hL (_root_.GlobalTheory.Mem.Top.Bl.parametersOfDependence hL cDep)

@@ -282,7 +282,6 @@ theorem dv_Arow_newer (hV : F.Valid L₁ N₁) (hn : Even n') (hr : 1 ≤ r) (x 
 theorem dv_Arow_ge (hV : F.Valid L₁ N₁) (hn : Even n') (hr : 1 ≤ r) (j x : ℤ) (hx : F.fr (j - 1) (r - 1) < x)
     (l : ℕ) (hl : l < r) : F.fr (j - 1) 0 ≤ Arow F x l := by
   by_contra hc
-  have hc' : Arow F x l < F.fr (j - 1) 0 := not_le.1 hc
   have hex : ∀ i : Fin r, ∃ l' : Fin l, F.fr (j - 1) i.val = Arow F x l'.val := by
     intro i
     have h1 := frame_row_monotone F L₁ N₁ hV (j - 1) i.val i.2

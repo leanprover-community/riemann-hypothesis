@@ -86,10 +86,6 @@ theorem contDiffAt_valAt {m : ℕ} {O : Set (Fin m → ℂ)} {γ : (Fin m → �
 
 end ToTwin
 
-section OfTwin
-
-end OfTwin
-
 end HermMetric
 
 end GroundTheory.Heights₂.Heights.LowerBoundFree

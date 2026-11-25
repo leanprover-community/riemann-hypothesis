@@ -137,8 +137,7 @@ theorem exists_avg_proj_balForms : ∀ (O : Type) [CommRing O] (bar : O → O) (
       rw [← hQ, h0] at this
       simp at this
     obtain ⟨x, hx⟩ : ∃ x, l x ≠ 0 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact hl (LinearMap.ext h)
     have := hsumL (l ∘ₗ sp x)
     have hz : ∀ s t, (l ∘ₗ sp x) (bar (b s) * b t) = 0 := by

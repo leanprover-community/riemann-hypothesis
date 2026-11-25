@@ -65,8 +65,7 @@ theorem cAF_incAF (σ : E →ₐ[F] E) (e : E) : cAF σ (incAF F E e) = incAF F 
 
 theorem psiV_exists_ne_one {ψ : AddChar (AF F) ℂ} (hψ : IsStd ψ) (v : HeightOneSpectrum (𝓞 F)) :
     ∃ y, psiV F ψ v y ≠ 1 := by
-  by_contra h
-  push_neg at h
+  by_contra! h
   refine Tw.PsiNontriv.psiV_ne_one ψ hψ v (DFunLike.ext _ _ fun t => ?_)
   rw [AddChar.one_apply]
   exact h t

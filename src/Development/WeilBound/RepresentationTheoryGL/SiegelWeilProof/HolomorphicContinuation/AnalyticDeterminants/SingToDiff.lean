@@ -33,8 +33,6 @@ open scoped ContDiff
 
 namespace PositivityTheory.Rg.Sw.LVs
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 namespace STD
 
 variable {n : ℕ}

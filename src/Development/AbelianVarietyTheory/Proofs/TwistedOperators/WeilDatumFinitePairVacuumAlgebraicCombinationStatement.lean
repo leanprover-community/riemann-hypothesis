@@ -72,7 +72,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Form
 open IsDedekindDomain NumberField GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.RowTest GlobalTheory.RowClaim
 open Formalism.L2.Host (HChar)
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.RowEx MeasureTheory
 
 noncomputable section
@@ -277,8 +276,7 @@ theorem om_vac_algComb : ∀ {D : D7} {ψ : AddChar (AF D.host.F) ℂ} {θ : Inf
     exact hw (by rw [h0]; rfl)
   obtain ⟨w, hw, hne⟩ : ∃ w : WO S T, w.map (infPart D) = 0 ∧
       GlobalTheory.RawLift.thetaIP p.1 p.2 (om (x, h) v) (heisO ψ S T w v) ≠ 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     rcases GlobalTheory.VacSchurFin.irr_vac D ψ θ S T hψ hθ sS sT hCS hCT p.1 p.2 hp _ _ hGth hvth hGf hvf hcon with h1 | h1
     exacts [hG h1, hv0 h1]
   have hwth := hlaws.1 w v hvth
@@ -332,7 +330,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Form
 open IsDedekindDomain NumberField GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.RowTest GlobalTheory.RowClaim
 open Formalism.L2.Host (HChar)
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.RowEx MeasureTheory
 
 theorem _root_.GlobalTheory.T.weilDatum_finite_pair_vacuum_algebraic_combination : ∀ {D : D7} {ψ : AddChar (AF D.host.F) ℂ} {θ : InfFam D} {S T : HSp D}

@@ -47,104 +47,20 @@ theorem Intw.smul {S : Sch l →L[ℂ] Sch l} {p q p' q' : Eu l} (hS : Intw S p 
 
 theorem Iso.mul {S T : Sch l →L[ℂ] Sch l} (hS : Iso S) (hT : Iso T) : Iso (S * T) := fun f => (hS _).trans (hT f)
 
-theorem iso_of_integral {S : Sch l →L[ℂ] Sch l} (h : ∀ f : Sch l, ∫ x, ‖S f x‖ ^ (2 : ℝ) = ∫ x, ‖f x‖ ^ (2 : ℝ)) : Iso S :=
-  fun f => by
-    rw [schwartzToL2_apply, schwartzToL2_apply, norm_toLp' (by simp) (by simp), norm_toLp' (by simp) (by simp)]
-    simp only [ENNReal.toReal_ofNat, h]
-
-theorem temperate_quad (S : Eu l →L[ℝ] Eu l) : Function.HasTemperateGrowth fun x : Eu l => ⟪x, S x⟫ :=
-  (innerSL ℝ).bilinear_hasTemperateGrowth Function.HasTemperateGrowth.id' S.hasTemperateGrowth
-
 def ph (S : Eu l →L[ℝ] Eu l) : Sch l →L[ℂ] Sch l :=
   smulLeftCLM ℂ fun x : Eu l => exp (((-π * ⟪x, S x⟫ : ℝ) : ℂ) * I)
-
-theorem ph_apply (S : Eu l →L[ℝ] Eu l) (f : Sch l) (x : Eu l) :
-    ph S f x = exp (((-π * ⟪x, S x⟫ : ℝ) : ℂ) * I) * f x :=
-  _root_.CompanionTheory.ThKR.LL.ph_apply S f x
-
-theorem ph_mul (S T : Eu l →L[ℝ] Eu l) : ph S * ph T = ph (S + T) :=
-  CompanionTheory.ThKR.LL.ph_mul S T
-
-theorem ph_zero : ph (0 : Eu l →L[ℝ] Eu l) = 1 := by
-  ext f x
-  simp [ph_apply]
-
-theorem isUnit_ph (S : Eu l →L[ℝ] Eu l) : IsUnit (ph S) :=
-  ⟨⟨ph S, ph (-S), by rw [ph_mul, add_neg_cancel, ph_zero], by rw [ph_mul, neg_add_cancel, ph_zero]⟩, rfl⟩
-
-theorem iso_ph (S : Eu l →L[ℝ] Eu l) : Iso (ph S) := iso_of_integral fun f => by
-  simp only [ph_apply, norm_mul, norm_exp_ofReal_mul_I, one_mul]
-
-theorem intw_ph {S : Eu l →L[ℝ] Eu l} (hS : ∀ x y, ⟪x, S y⟫ = ⟪y, S x⟫) (p q : Eu l) : Intw (ph S) p q p (q + S p) :=
-  CompanionTheory.ThKR.LL.intw_ph hS p q
 
 
 open Classical in
 def dil (B : Eu l →L[ℝ] Eu l) : Sch l →L[ℂ] Sch l :=
   if h : IsUnit B then compCLMOfContinuousLinearEquiv ℂ (ContinuousLinearEquiv.ofUnit h.unit) else 0
 
-theorem dil_apply {B : Eu l →L[ℝ] Eu l} (h : IsUnit B) (f : Sch l) (x : Eu l) : dil B f x = f (B x) := by
-  rw [dil, dite_eq_left h]
-  rfl
-
-theorem dil_one : dil (1 : Eu l →L[ℝ] Eu l) = 1 := by
-  ext f x
-  simp [dil_apply isUnit_one]
-
-theorem dil_mul {A B : Eu l →L[ℝ] Eu l} (hA : IsUnit A) (hB : IsUnit B) : dil A * dil B = dil (B * A) := by
-  ext f x
-  simp [dil_apply, hA, hB, hB.mul hA]
-
-theorem isUnit_dil {B : Eu l →L[ℝ] Eu l} (h : IsUnit B) : IsUnit (dil B) := by
-  obtain ⟨u, rfl⟩ := h
-  exact ⟨⟨dil u, dil (u⁻¹ : (Eu l →L[ℝ] Eu l)ˣ), by rw [dil_mul u.isUnit u⁻¹.isUnit, Units.inv_mul, dil_one],
-    by rw [dil_mul u⁻¹.isUnit u.isUnit, Units.mul_inv, dil_one]⟩, rfl⟩
-
-theorem iso_dil {B : Eu l →L[ℝ] Eu l} (hB : IsUnit B) {c : ℝ} (hc : c ^ 2 = |B.det|) : Iso ((c : ℂ) • dil B) :=
-  _root_.CompanionTheory.ThKR.LL.iso_dil hB hc
-
 def fou (l : Type) [Fintype l] : Sch l →L[ℂ] Sch l := FourierTransform.fourierCLM ℂ (Sch l)
 
 def fouInv (l : Type) [Fintype l] : Sch l →L[ℂ] Sch l := FourierTransform.fourierInvCLM ℂ (Sch l)
 
-theorem fou_apply (f : Sch l) : fou l f = 𝓕 f := rfl
-
-theorem fouInv_apply (f : Sch l) : fouInv l f = 𝓕⁻ f := rfl
-
-theorem fou_mul_fouInv : fou l * fouInv l = 1 := by
-  ext1 f
-  rw [ContinuousLinearMap.mul_apply, fou_apply, fouInv_apply, FourierTransform.fourier_fourierInv_eq]
-  rfl
-
-theorem fouInv_mul_fou : fouInv l * fou l = 1 := by
-  ext1 f
-  rw [ContinuousLinearMap.mul_apply, fou_apply, fouInv_apply, FourierTransform.fourierInv_fourier_eq]
-  rfl
-
-theorem isUnit_fou : IsUnit (fou l) := ⟨⟨_, _, fou_mul_fouInv, fouInv_mul_fou⟩, rfl⟩
-
-theorem isUnit_fouInv : IsUnit (fouInv l) := ⟨⟨_, _, fouInv_mul_fou, fou_mul_fouInv⟩, rfl⟩
-
-theorem iso_fou : Iso (fou l) := fun f => norm_fourier_toL2_eq f
-
-theorem iso_fouInv : Iso (fouInv l) := fun f => by
-  rw [← iso_fou (fouInv l f), ← ContinuousLinearMap.mul_apply, fou_mul_fouInv, ContinuousLinearMap.one_apply]
-
 def big (Ai B C : Eu l →L[ℝ] Eu l) (c : ℝ) : Sch l →L[ℂ] Sch l :=
   ph (C * Ai) * (((c : ℂ) • dil Ai) * (fou l * (ph (-(Ai * B)) * fouInv l)))
-
-theorem isUnit_big {Ai : Eu l →L[ℝ] Eu l} (h : IsUnit Ai) (B C : Eu l →L[ℝ] Eu l) {c : ℝ} (hc : c ≠ 0) :
-    IsUnit (big Ai B C c) := by
-  refine (isUnit_ph _).mul (IsUnit.mul ?_ (isUnit_fou.mul ((isUnit_ph _).mul isUnit_fouInv)))
-  rw [Algebra.smul_def]
-  exact ((IsUnit.mk0 (c : ℂ) (by simpa using hc)).map _).mul (isUnit_dil h)
-
-theorem iso_big {Ai : Eu l →L[ℝ] Eu l} (h : IsUnit Ai) (B C : Eu l →L[ℝ] Eu l) {c : ℝ} (hc : c ^ 2 = |Ai.det|) :
-    Iso (big Ai B C c) :=
-  (iso_ph _).mul ((iso_dil h hc).mul (iso_fou.mul ((iso_ph _).mul iso_fouInv)))
-
-theorem big_one : big (1 : Eu l →L[ℝ] Eu l) 0 0 1 = 1 := by
-  simp [big, ph_zero, dil_one, fou_mul_fouInv]
 
 end PositivityTheory.ThKR.LL
 end -- clump:auto
@@ -166,21 +82,6 @@ namespace PositivityTheory.ThKR.LL
 
 variable {l : Type} [Fintype l]
 
-theorem exists_decay {F : Type} [NormedAddCommGroup F] [NormedSpace ℝ F] (g : SchwartzMap (EuclideanSpace ℝ l) F) (k : ℕ) :
-    ∃ C : ℝ, 0 ≤ C ∧ ∀ x, (1 + ‖x‖) ^ k * ‖g x‖ ≤ C := by
-  have h := fun x => one_add_le_sup_seminorm_apply (𝕜 := ℝ) (m := (k, 0)) (k := k) (n := 0) le_rfl le_rfl g x
-  simp only [norm_iteratedFDeriv_zero] at h
-  exact ⟨_, le_trans (by positivity) (h 0), h⟩
-
-theorem csmul (r : ℝ) (x : L2 l) : (r : ℂ) • x = r • x := by
-  rw [coe_smul]
-  rfl
-
-theorem hasDerivAt_schwartz_to_L2 {F : ℝ → Sch l} {G : Sch l} {t₀ : ℝ} (hp : ∀ x, HasDerivAt (fun t => F t x) (G x) t₀) {C : ℝ}
-    (hb : ∀ᶠ t in 𝓝 t₀, ∀ x, (1 + ‖x‖) ^ (Module.finrank ℝ (EuclideanSpace ℝ l) + 1) * ‖F t x - F t₀ x‖ ≤ C * |t - t₀|) :
-    HasDerivAt (fun t => schwartzToL2 l (F t)) (schwartzToL2 l G) t₀ := by
-  apply CompanionTheory.ThKR.LL.hasDerivAt_schwartz_to_L2 <;> assumption
-
 def LD (U : ℝ → Sch l →L[ℂ] Sch l) (Q : Sch l → Sch l) (t₀ : ℝ) : Prop :=
   ∀ f, HasDerivAt (fun t => schwartzToL2 l (U t f)) (schwartzToL2 l (Q f)) t₀
 
@@ -192,7 +93,7 @@ theorem weyl_step {V : Sch l →L[ℂ] Sch l} {w v : l ⊕ l → ℝ} (h : ∀ f
   rw [ContinuousLinearMap.mul_apply, h, dRho_eq_sum v]
 
   simp only [ContinuousLinearMap.sum_apply, ContinuousLinearMap.smul_apply, map_sum, map_smul]
-  simp only [csmul]
+  simp only [CompanionTheory.ThKR.LL.csmul]
 
 theorem LD.differentiableAt {V : ℝ → Sch l →L[ℂ] Sch l} {Q : Sch l → Sch l} {t₀ : ℝ} (hV : LD V Q t₀)
     (v : ℝ → (l ⊕ l → ℝ) → (l ⊕ l → ℝ)) (hv : ∀ w a, DifferentiableAt ℝ (fun t => v t w a) t₀)
@@ -234,7 +135,7 @@ theorem LD.hasDerivAt {V : ℝ → Sch l →L[ℂ] Sch l} {Q : Sch l →L[ℂ] S
         simp only [ContinuousLinearMap.sum_apply, ContinuousLinearMap.smul_apply, map_sum, map_smul, hv0, h0,
         ContinuousLinearMap.sub_apply, ContinuousLinearMap.mul_apply, map_sub, neg_smul, ← sub_eq_add_neg,
         Finset.sum_sub_distrib]
-        simp only [csmul]
+        simp only [CompanionTheory.ThKR.LL.csmul]
       · filter_upwards [h] with t ht
         exact weyl_step (ht w) A f
     · intro A B hA hB f
@@ -267,27 +168,6 @@ namespace PositivityTheory.ThKR.LL
 
 variable {l : Type} [Fintype l]
 
-def mq (S : Eu l →L[ℝ] Eu l) : Sch l →L[ℂ] Sch l :=
-  smulLeftCLM ℂ fun x : Eu l => ((-π * ⟪x, S x⟫ : ℝ) : ℂ) * I
-
-theorem norm_exp_sub_le (a b : ℝ) : ‖exp ((a : ℂ) * I) - exp ((b : ℂ) * I)‖ ≤ |a - b| :=
-  CompanionTheory.ThKR.LL.norm_exp_sub_le a b
-
-theorem exists_lip {F : Type} [NormedAddCommGroup F] [NormedSpace ℝ F] {S : ℝ → F} {S' : F} {t₀ : ℝ}
-    (h : HasDerivAt S S' t₀) : ∃ K : ℝ, 0 ≤ K ∧ ∀ᶠ t in 𝓝 t₀, ‖S t - S t₀‖ ≤ K * |t - t₀| := by
-  obtain ⟨K, hK, h⟩ := h.isBigO_sub.exists_nonneg
-  exact ⟨K, hK, h.bound⟩
-
-def vf (H : Eu l →L[ℝ] Eu l) (f : Sch l) : Sch l :=
-  bilinLeftCLM (ContinuousLinearMap.id ℝ (Eu l →L[ℝ] ℂ)) H.hasTemperateGrowth (fderivCLM ℝ (Eu l) ℂ f)
-
-theorem ld_big {Ai B C : ℝ → Eu l →L[ℝ] Eu l} {Ai' B' C' : Eu l →L[ℝ] Eu l} {c : ℝ → ℝ} {c' t₀ : ℝ}
-    (hA : HasDerivAt Ai Ai' t₀) (hB : HasDerivAt B B' t₀) (hC : HasDerivAt C C' t₀) (hc : HasDerivAt c c' t₀)
-    (h : ∀ᶠ t in 𝓝 t₀, IsUnit (Ai t) ∧ c t ^ 2 = |(Ai t).det|) :
-    ∃ Q, LD (fun t => big (Ai t) (B t) (C t) (c t)) Q t₀ ∧ (Ai t₀ = 1 → B t₀ = 0 → C t₀ = 0 → c t₀ = 1 → ∀ f,
-      Q f = mq C' f + vf Ai' f + fou l (mq (-B') (fouInv l f)) + (c' : ℂ) • f) :=
-  CompanionTheory.ThKR.LL.ld_big hA hB hC hc h
-
 end PositivityTheory.ThKR.LL
 end -- clump:auto
 end -- clump:auto
@@ -315,30 +195,6 @@ def bl (i j : l → l ⊕ l) : Matrix (l ⊕ l) (l ⊕ l) ℝ →ₗ[ℝ] (Eu l 
 
 theorem bl_apply (i j : l → l ⊕ l) (g : Matrix (l ⊕ l) (l ⊕ l) ℝ) (x : Eu l) (a : l) :
     bl i j g x a = ∑ b, g (i a) (j b) * x b := rfl
-theorem det_bl (i j : l → l ⊕ l) (g : Matrix (l ⊕ l) (l ⊕ l) ℝ) : (bl i j g).det = (g.submatrix i j).det :=
-  LinearMap.det_toLin (EuclideanSpace.basisFun l ℝ).toBasis _
-
-theorem block_inl_inl_one : bl Sum.inl Sum.inl (1 : Matrix (l ⊕ l) (l ⊕ l) ℝ) = 1 := by
-  ext x a
-  simp [bl_apply, Matrix.one_apply]
-
-theorem block_inl_inr_one : bl Sum.inl Sum.inr (1 : Matrix (l ⊕ l) (l ⊕ l) ℝ) = 0 := by
-  ext x a
-  simp [bl_apply]
-
-theorem block_inr_inl_one : bl Sum.inr Sum.inl (1 : Matrix (l ⊕ l) (l ⊕ l) ℝ) = 0 := by
-  ext x a
-  simp [bl_apply]
-
-theorem hasDerivAt_lin_exp {F : Type} [NormedAddCommGroup F] [NormedSpace ℝ F] (L : Matrix (l ⊕ l) (l ⊕ l) ℝ →ₗ[ℝ] F)
-    (X : Matrix (l ⊕ l) (l ⊕ l) ℝ) (t : ℝ) :
-    HasDerivAt (fun t : ℝ => L (NormedSpace.exp (t • X))) (L (NormedSpace.exp (t • X) * X)) t := by
-  letI := Matrix.linftyOpNormedRing (n := l ⊕ l) (α := ℝ)
-  letI := Matrix.linftyOpNormedAlgebra (n := l ⊕ l) (R := ℝ) (α := ℝ)
-  exact (LinearMap.toContinuousLinearMap L).hasFDerivAt.comp_hasDerivAt t (hasDerivAt_exp_smul_const (𝕂 := ℝ) X t)
-
-theorem exp_mul_exp_neg (X : Matrix (l ⊕ l) (l ⊕ l) ℝ) : NormedSpace.exp X * NormedSpace.exp (-X) = 1 := by
-  rw [← Matrix.exp_add_of_commute _ _ (Commute.refl X).neg_right, add_neg_cancel, NormedSpace.exp_zero]
 
 theorem sympl_exp {X : Matrix (l ⊕ l) (l ⊕ l) ℝ} (hX : X ∈ LieAlgebra.Symplectic.sp l ℝ) (w w' : l ⊕ l → ℝ) :
     sympl (NormedSpace.exp X *ᵥ w) (NormedSpace.exp X *ᵥ w') = sympl w w' := by
@@ -350,22 +206,11 @@ theorem sympl_exp {X : Matrix (l ⊕ l) (l ⊕ l) ℝ} (hX : X ∈ LieAlgebra.Sy
   have h1 : Xᵀ = Matrix.J l ℝ * -X * (Matrix.J l ℝ)⁻¹ := by
     rw [← h, Matrix.mul_assoc, Matrix.mul_nonsing_inv _ hd, Matrix.mul_one]
   have h2 : (NormedSpace.exp X)ᵀ * (Matrix.J l ℝ * NormedSpace.exp X) = Matrix.J l ℝ := by
-    have := exp_mul_exp_neg (-X)
+    have := CompanionTheory.ThKR.LL.exp_mul_exp_neg (-X)
     rw [neg_neg] at this
     rw [← Matrix.exp_transpose, h1, Matrix.exp_conj _ _ hu, Matrix.mul_assoc, ← Matrix.mul_assoc _ (Matrix.J l ℝ),
       Matrix.nonsing_inv_mul _ hd, Matrix.one_mul, Matrix.mul_assoc, this, Matrix.mul_one]
   rw [sympl_eq, sympl_eq, mulVec_mulVec, ← Matrix.vecMul_transpose, ← dotProduct_mulVec, mulVec_mulVec, h2]
-
-theorem intw_of_sympl {g : Matrix (l ⊕ l) (l ⊕ l) ℝ} (hg : ∀ w w', sympl (g *ᵥ w) (g *ᵥ w') = sympl w w')
-    (h : IsUnit (bl Sum.inl Sum.inl g)) (c : ℝ) (w : l ⊕ l → ℝ) :
-    Intw (big (Ring.inverse (bl Sum.inl Sum.inl g)) (bl Sum.inl Sum.inr g) (bl Sum.inr Sum.inl g) c) (pPart w) (qPart w)
-      (pPart (g *ᵥ w)) (qPart (g *ᵥ w)) :=
-  CompanionTheory.ThKR.LL.intw_of_sympl (g := g) hg h c w
-
-theorem quad_eq {X : Matrix (l ⊕ l) (l ⊕ l) ℝ} (hX : X ∈ LieAlgebra.Symplectic.sp l ℝ) (f : Sch l) :
-    quad X f = mq (bl Sum.inr Sum.inl X) f + vf (-bl Sum.inl Sum.inl X) f +
-      fou l (mq (-bl Sum.inl Sum.inr X) (fouInv l f)) - ((X.toBlocks₁₁.trace / 2 : ℝ) : ℂ) • f := by
-  apply CompanionTheory.ThKR.LL.quad_eq <;> assumption
 
 theorem differentiableAt_det {M : ℝ → Matrix l l ℝ} {t : ℝ} (h : ∀ i j, DifferentiableAt ℝ (fun t => M t i j) t) :
     DifferentiableAt ℝ (fun t => (M t).det) t := by
@@ -376,8 +221,10 @@ end PositivityTheory.ThKR.LL
 
 namespace PositivityTheory.ThKR
 
-open LL
+open LL hiding big bl
 
+open CompanionTheory.ThKR.LL (big big_one bl block_inl_inl_one block_inl_inr_one block_inr_inl_one det_bl
+  exp_mul_exp_neg hasDerivAt_lin_exp intw_of_sympl isUnit_big iso_big ld_big quad_eq) in
 theorem localLift_holds : LocalLift := by
   intro l _ _ X hX
   letI : HasSummableGeomSeries (Eu l →L[ℝ] Eu l) := by
@@ -434,7 +281,7 @@ theorem localLift_holds : LocalLift := by
   · rw [← ContinuousLinearMap.mul_apply, Ring.mul_inverse_cancel _ (hU t (hA ht)), ContinuousLinearMap.one_apply]
   · rw [← ContinuousLinearMap.mul_apply, Ring.inverse_mul_cancel _ (hU t (hA ht)), ContinuousLinearMap.one_apply]
   · obtain ⟨Q, hQ, -⟩ := hL t (hA ht) _ ((hd Sum.inl Sum.inl t).differentiableAt.inverse (hA ht)).hasDerivAt
-    exact hQ.differentiableAt v (fun w a => (hv t w a).differentiableAt) ((hopen t (hA ht)).mono hw) f lam
+    exact LL.LD.differentiableAt (V := V) hQ v (fun w a => (hv t w a).differentiableAt) ((hopen t (hA ht)).mono hw) f lam
   · have h1 : HasDerivAt (fun t => Ring.inverse (A t)) (-bl Sum.inl Sum.inl X) 0 := by
       have h2 := (hasFDerivAt_ringInverse (𝕜 := ℝ) (1 : (Eu l →L[ℝ] Eu l)ˣ)).comp_hasDerivAt_of_eq 0
         (hd Sum.inl Sum.inl 0) A0.symm
@@ -451,7 +298,7 @@ theorem localLift_holds : LocalLift := by
         add_smul]
       abel
     rw [h4] at hQ
-    refine hQ.hasDerivAt (fun f => ?_) v (fun w => X *ᵥ w) (fun w => by simp [v]) (fun w a => ?_) (fun w => ?_)
+    refine LL.LD.hasDerivAt (V := V) hQ (fun f => ?_) v (fun w => X *ᵥ w) (fun w => by simp [v]) (fun w a => ?_) (fun w => ?_)
       ((hopen 0 h0).mono hw) f lam
     · exact congrArg (fun T : Sch l →L[ℂ] Sch l => T f) V0
     · simpa [neg_mulVec] using hv 0 w a

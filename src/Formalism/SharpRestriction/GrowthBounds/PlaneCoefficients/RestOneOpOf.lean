@@ -229,8 +229,6 @@ theorem thDrop_of (hB : Base Fr p Dt) {x0 : TL J Dt.nL r} (hG : TouchAt Fr Dt x0
       rcases hx with ⟨l, hl⟩ | ⟨m', hlt, hm'⟩
       · exact Or.inl ⟨l, hl, by have := l.isLt; omega⟩
       · refine Or.inr ⟨m', hm', ?_⟩
-        have h1 : mm.val < m'.val := hlt
-        have h2 := m'.isLt
         omega
     unfold thLUp
     rw [touch_cost_eq_one Fr _ _ _ ht]
@@ -311,7 +309,6 @@ theorem var_cases (x0 : TL J nL r) (b : Fin (m + 1)) :
     unfold Formalism.MainNotions.TestSideWords.plVar
     exact Prod.ext rfl (Fin.ext rfl)
   · right
-    have h1 := b.isLt
     refine ⟨⟨b.val - r, by omega⟩, ?_⟩
     unfold Formalism.MainNotions.TestSideWords.noVar
     refine Prod.ext rfl (Fin.ext ?_)

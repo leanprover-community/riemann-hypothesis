@@ -184,8 +184,7 @@ theorem exists_prodForm_ne (y : ⨂[ℂ] i, V i) (hy : y ≠ 0) : ∃ ℓ : ∀ 
   let b := fun i => Module.Basis.ofVectorSpace ℂ (V i)
   let B := Basis.piTensorProduct b
   obtain ⟨α, hα⟩ : ∃ α, B.repr y α ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     apply hy
     apply B.repr.injective
     ext α

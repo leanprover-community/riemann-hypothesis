@@ -160,8 +160,7 @@ theorem main : ∀ (D : D7) (V : HSp D) (n : ℕ) (hF : D.host.F = maximalRealSu
     rw [e3, ← hM, Matrix.sub_apply, hent, map_sub, map_sub, c.apply_symm_apply, Matrix.one_apply, Matrix.one_apply]
     split_ifs <;> simp
   rw [e2]
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   have := GlobalTheory.FixedAtSplit.valued_lt_one_of_map c.symm hc' (c _) (by rw [c.symm_apply_apply]; exact hv)
   exact absurd this (not_lt.2 hne)
 

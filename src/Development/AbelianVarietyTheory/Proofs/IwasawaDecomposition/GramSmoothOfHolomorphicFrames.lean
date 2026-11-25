@@ -54,7 +54,6 @@ open GlobalTheory.TrueCx.TorHolo GlobalTheory.TrueCx.TorFrHolo
 open ReciprocityTheory.ChartRestriction.G.PullbackSections.ExpRows (isDerivAt0_comp_hom isDerivAt0_unique)
 open Filter Topology
 open scoped ContDiff CategoryTheory.Obj
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.GramFamily
 

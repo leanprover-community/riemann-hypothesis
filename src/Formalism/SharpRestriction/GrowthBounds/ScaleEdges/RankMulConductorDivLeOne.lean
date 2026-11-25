@@ -160,8 +160,6 @@ theorem level_lower_bound_terms (Cdeg CLa C Ct0 : ℝ) (h1 : |Cdeg| ≤ Ct0) (h3
       (k : ℝ) * (p : ℝ) ^ G') ≤ t0 C Ct0 p N N₁ L₁ G' k a := by
   unfold t0 tableLineDegreeFive.La
   have hlog : 0 ≤ Real.log a := Real.log_nonneg ha
-  have hp0 : (0 : ℝ) < p := by exact_mod_cast hp
-  have hk0 : (0 : ℝ) < k := by exact_mod_cast hk
   have hNs' : (Ns : ℝ) ^ 2 ≤ (N₁ : ℝ) ^ 2 := by
     have : (Ns : ℝ) ≤ N₁ := by exact_mod_cast hNs
     exact pow_le_pow_left₀ (Nat.cast_nonneg _) this 2

@@ -26,11 +26,27 @@ theorem haar_norm (K : Type) [Field K] [NumberField K] (n : ℕ) (x : Pl K) [Mea
     rw [ho.interior_eq]; exact ⟨1, one_mem _⟩⟩
   exact ⟨Measure.haarMeasure P, inferInstance, Measure.haarMeasure_self⟩
 
-theorem coreDesc_of (hAbs : AbsLast) (hPull : PullBack) (hUnit : UnitTrace) (hOne : OneTerm) (hSum : SideSum) (hPS : PickS)
+theorem coreDesc_of_data (hAbs : AbsLast) (hPull : PullBack) (hUnit : UnitTrace) (hOne : OneTerm) (hSum : SideSum)
     (hPI : PickInf) (hTy : TyEx) (hTE : TermE) (hGood : GoodEx) (hPl : Places) (hOcc : OccursBasics)
-    (hEig : EigBasic) (hCI : CI) (hGM : GM.GM) : CoreDesc := by
-  intro F E _ _ _ _ _ _ _ _ σ hσ hp n hn μE _ μF _ θ hθ V Λ t hV hVθ hAt hOffA v w hv τ' hτ'
-  obtain ⟨S, q, w₀, hvS, hqS, hq, hunr, hsph, hS'⟩ := hPS F E σ hσ hp n hn μE V Λ t hV hAt v
+    (hEig : EigBasic) (hCI : CI) (hGM : GM.GM)
+    (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] [IsGalois F E]
+    [_root_.NumberField.IsTotallyComplex F] [_root_.NumberField.IsTotallyComplex E]
+    (σ : E ≃ₐ[F] E) (hσ : ∀ τ, τ ∈ Subgroup.zpowers σ) (hp : (Module.finrank F E).Prime) (n : ℕ) (hn : 0 < n)
+    (μE : Measure (normOneGL (K := E) (n := n))) [μE.IsHaarMeasure]
+    (μF : Measure (normOneGL (K := F) (n := n))) [μF.IsHaarMeasure] (θ : Twist μE) (hθ : IsGalTwist σ θ)
+    (V : Submodule ℂ (LL μE)) (Λ : (E →+* ℂ) → Multiset ℂ) (t : Pl E → Multiset ℂ)
+    (hV : IsSummand μE V) (hVθ : V.map (θ.U : LL μE →ₗ[ℂ] LL μE) = V) (hOffA : OffAll F n Λ t)
+    (v : Pl F) (w : PlacesOver E v) (hv : GM.Split E v) (τ' : SmIrr (Gw n w.1)) (hτ' : Occurs μE V w.1 τ')
+    (S : Finset (Pl F)) (q : Pl F) (w₀ : PlacesOver E q)
+    (hvS : v ∈ S) (hqS : q ∉ S) (hq : GM.Split E q) (hunr : ∀ u ∉ S, GM.Unr E u)
+    (hsph : ∀ w : Pl E, w.under (𝓞 F) ∉ S → V ⊓ fixL μE w (GLnLocal.integralGL (w.adicCompletion E) n) ≠ ⊥)
+    (hS' : ∀ S' : Set (Pl E), (∀ w, w ∈ S' ↔ w.under (𝓞 F) ∈ S ∨ w.under (𝓞 F) = q) →
+      At μE S' V Λ t ∧ (∀ τ, (Λ τ).card = n) ∧ ∀ w ∉ S', (t w).card = n ∧ 0 ∉ t w) :
+    ∃ (V₀ : Submodule ℂ (LL μF)) (Λ' : (F →+* ℂ) → Multiset ℂ) (t' : Pl F → Multiset ℂ),
+      IsSummand μF V₀ ∧ At μF {y | y ∈ S ∨ y = q} V₀ Λ' t' ∧ Λ = bcInf Λ' ∧
+      (∀ y : Pl E, y.under (𝓞 F) ∉ ({y | y ∈ S ∨ y = q} : Set (Pl F)) → t y = bcSat t' y) ∧
+      (∀ᶠ y in cofinite, t y = bcSat t' y) ∧
+      ∃ τv : SmIrr (Gw n v), Occurs μF V₀ v τv ∧ LocIso w τv τ' := by
   have hne := (hPl F E hp).2.2.1
   obtain ⟨T, hTS, hmk, htyped, hrank, c, f₀, UF, hUF, hL⟩ := hTy F E σ hσ hp n hn μE V hV q w₀ hq S hqS hunr hsph
     (Function.update (fun u => (hne u).some) v w)
@@ -137,10 +153,20 @@ theorem coreDesc_of (hAbs : AbsLast) (hPull : PullBack) (hUnit : UnitTrace) (hOn
         _ = _ := hj
         _ = _ := Finset.sum_congr rfl fun i _ => by ring)
   obtain ⟨Λ', t', hA, hΛ, ht⟩ := (hι i).2.1
-  have hSFf : SF.Finite := (S.finite_toSet.union (Set.finite_singleton q)).subset fun y hy => hy
-  refine ⟨V₀ i, Λ', t', (hι i).1, ⟨SF, hSFf, hA⟩, hΛ, ?_, τ₀ i v, (hι i).2.2.2 v, hiso _ hi⟩
+  refine ⟨V₀ i, Λ', t', (hι i).1, hA, hΛ, ht, ?_, τ₀ i v, (hι i).2.2.2 v, hiso _ hi⟩
   obtain ⟨𝔢, -, h𝔢, -⟩ := hG L₁ ν hν
   have heS : 𝔢.S = SE := Set.ext fun y => by rw [h𝔢.2.2.1, hL₁S]; rfl
   exact Filter.mem_of_superset (heS ▸ 𝔢.finS : SE.Finite).compl_mem_cofinite fun y hy => ht y hy
+
+theorem coreDesc_of (hAbs : AbsLast) (hPull : PullBack) (hUnit : UnitTrace) (hOne : OneTerm) (hSum : SideSum) (hPS : PickS)
+    (hPI : PickInf) (hTy : TyEx) (hTE : TermE) (hGood : GoodEx) (hPl : Places) (hOcc : OccursBasics)
+    (hEig : EigBasic) (hCI : CI) (hGM : GM.GM) : CoreDesc := by
+  intro F E _ _ _ _ _ _ _ _ σ hσ hp n hn μE _ μF _ θ hθ V Λ t hV hVθ hAt hOffA v w hv τ' hτ'
+  obtain ⟨S, q, w₀, hvS, hqS, hq, hunr, hsph, hS'⟩ := hPS F E σ hσ hp n hn μE V Λ t hV hAt v
+  obtain ⟨V₀, Λ', t', hV₀, hA, hΛ, -, hcof, τv, hτv, hiso⟩ :=
+    coreDesc_of_data hAbs hPull hUnit hOne hSum hPI hTy hTE hGood hPl hOcc hEig hCI hGM
+      F E σ hσ hp n hn μE μF θ hθ V Λ t hV hVθ hOffA v w hv τ' hτ' S q w₀ hvS hqS hq hunr hsph hS'
+  have hSFf : ({y : Pl F | y ∈ S ∨ y = q}).Finite := (S.finite_toSet.union (Set.finite_singleton q)).subset fun y hy => hy
+  exact ⟨V₀, Λ', t', hV₀, ⟨_, hSFf, hA⟩, hΛ, hcof, τv, hτv, hiso⟩
 
 end UpperTheory.ConvolutionTheory.T

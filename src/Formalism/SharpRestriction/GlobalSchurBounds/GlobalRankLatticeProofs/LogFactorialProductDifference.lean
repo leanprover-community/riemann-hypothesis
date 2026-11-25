@@ -615,8 +615,7 @@ theorem log_X_upper_arithmetic (f k m L CY lv l2v SL lg S5 S6 X : ℝ) (hf : 0 <
   have hm0 : 0 < m := by linarith
   have hL0 : 0 < L := by linarith
   have hCY : 0 ≤ CY := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     have : 2 * CY * L < 0 := by nlinarith
     linarith
   have ht1 : f * ((m - 1) * k + m * (m - 1) / 2) * lv ≤ f * ((m - 1) * k + m * (m - 1) / 2) * L :=

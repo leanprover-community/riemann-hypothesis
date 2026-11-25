@@ -468,19 +468,16 @@ theorem numNV (N m t : ℝ) (hN : 6 ≤ N) (hm : m ≤ N) (hm0 : 0 ≤ m) (ht : 
   have h1 : N + m * t ≤ 3 * N ^ 2 := by
     subst ht
     have hm1 : m * (N + 6) ≤ N * (N + 6) := mul_le_mul_of_nonneg_right hm (by linarith)
-    have heq : N * (N + 6) = N ^ 2 + 6 * N := by ring
     linarith
   have h0 : 0 ≤ N + m * t := by
     subst ht
     have : 0 ≤ m * (N + 6) := mul_nonneg hm0 (by linarith)
     linarith
   have h3 : (N + m * t) ^ 3 ≤ (3 * N ^ 2) ^ 3 := pow_le_pow_left₀ h0 h1 3
-  have h4 : (3 * N ^ 2) ^ 3 = 27 * N ^ 6 := by ring
   have h6 : (6 : ℝ) ^ 6 ≤ N ^ 6 := pow_le_pow_left₀ (by norm_num) hN 6
   have h13 : (6 : ℝ) ^ 13 ≤ N ^ 13 := pow_le_pow_left₀ (by norm_num) hN 13
   have h5 : t + 3 ≤ N ^ 6 := by
     have h2 : N ^ 2 ≤ N ^ 6 := pow_le_pow_right₀ (by linarith) (by norm_num)
-    have h22 : N + 9 ≤ N ^ 2 := by linarith
     subst ht; linarith
   have h19 : N ^ 19 = N ^ 6 * N ^ 13 := by ring
   have hpos : 0 < N ^ 6 := by positivity

@@ -1,5 +1,6 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.IwSimpleOrbit
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.HeckePairTop
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.IwLenStep
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.IwMemIwC
@@ -16,16 +17,7 @@ namespace UpperTheory.V.AlgebraTools.PermCard
 private theorem conj_apply {R : Type} [CommRing R] {n : ℕ} (w : Equiv.Perm (Fin n)) (g : GL (Fin n) R) (a b : Fin n) :
     (((pm R n w)⁻¹ * g * pm R n w : GL (Fin n) R) : Matrix (Fin n) (Fin n) R) a b =
       (g : Matrix (Fin n) (Fin n) R) (w a) (w b) := by
-  rw [← map_inv, Units.val_mul, Units.val_mul]
-  simp only [Matrix.mul_apply, pm_apply]
-  rw [Fintype.sum_eq_single (w b), Fintype.sum_eq_single (w a)]
-  · simp
-  · intro x hx
-    rw [if_neg, zero_mul]
-    rintro rfl
-    exact hx (by simp)
-  · intro x hx
-    rw [if_neg hx, mul_zero]
+  apply _root_.conj_apply <;> assumption
 
 private theorem map_pm {R S : Type} [CommRing R] [CommRing S] {n : ℕ} (f : R →+* S) (w : Equiv.Perm (Fin n)) :
     GeneralLinearGroup.map (n := Fin n) f (pm R n w) = pm S n w := by

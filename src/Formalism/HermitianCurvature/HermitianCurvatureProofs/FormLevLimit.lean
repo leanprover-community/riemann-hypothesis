@@ -21,8 +21,6 @@ namespace Formalism.FourierDecayAlt.P.PBE
 
 open Formalism.FourierDecayAlt Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.P.JCTx6.Lev0
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 theorem lev0Q {k ρ : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
     [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wq]
     (z z' : Fin (2 * (0 + ρ) + k + 1) → ℂ) (χ : ℝ → ℝ) (hχ : C6.IsCut0 χ) (ε : ℝ) (hε : 0 < ε)

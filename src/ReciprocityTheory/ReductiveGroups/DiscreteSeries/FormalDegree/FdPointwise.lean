@@ -1,5 +1,6 @@
 module
 
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.SCoefGeTwoOfHc
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.LaplaceFoundations.RaisingLoweringNormIdentities
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.FdDefs
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.PmatIsHermitian
@@ -38,32 +39,7 @@ theorem pmat_herm_apply {ε : Fin n → Bool} (y : PCoord ε → ℂ) (a b : Fin
 theorem sum_pairs_pmat_fp {ε : Fin n → Bool} (w : Fin n → Fin n → ℝ) (z : PCoord ε → ℂ) :
     ∑ x : Fin n × Fin n, (if x.2 < x.1 then w x.1 x.2 * ‖pmat z x.1 x.2‖ ^ 2 else 0) =
       ∑ ab : PCoord ε, w ab.1.1 ab.1.2 * ‖z ab‖ ^ 2 := by
-  classical
-  have key : ∀ x : Fin n × Fin n, (if x.2 < x.1 then w x.1 x.2 * ‖pmat z x.1 x.2‖ ^ 2 else 0) =
-      (if h : x.2 < x.1 ∧ ε x.1 ≠ ε x.2 then w x.1 x.2 * ‖z ⟨x, h⟩‖ ^ 2 else 0) := by
-    rintro ⟨a, b⟩
-    dsimp only
-    by_cases h : b < a ∧ ε a ≠ ε b
-    · rw [dif_pos h, if_pos h.1]
-      have hp : pmat z a b = z ⟨(a, b), h⟩ := by
-        simp only [pmat, dif_pos h]
-      rw [hp]
-    · rw [dif_neg h]
-      split_ifs with hab
-      · have h2 : ¬ (a < b ∧ ε b ≠ ε a) := fun h' => lt_asymm hab h'.1
-        have hp : pmat z a b = 0 := by
-          simp only [pmat, dif_neg h, dif_neg h2]
-        rw [hp]; simp
-      · rfl
-  rw [Finset.sum_congr rfl (fun x _ => key x)]
-  rw [← Finset.sum_filter_of_ne (p := fun x : Fin n × Fin n => x.2 < x.1 ∧ ε x.1 ≠ ε x.2)
-    (fun x _ hx => by
-      by_contra h
-      exact hx (dif_neg h))]
-  rw [Finset.sum_subtype (p := fun x : Fin n × Fin n => x.2 < x.1 ∧ ε x.1 ≠ ε x.2) _
-    (fun x => by simp)]
-  refine Finset.sum_congr rfl fun ab _ => ?_
-  exact dif_pos ab.2
+  apply ReciprocityTheory.ChartRestriction.DS.sum_pairs_pmat <;> assumption
 
 theorem qForm_term {ε : Fin n → Bool} (y : PCoord ε → ℂ) (a b : Fin n) :
     -((((Dvec n a : ℝ) : ℂ) - ((Dvec n b : ℝ) : ℂ)) * (pmat y a b * Lap.Base.partNM ε (Dvec n) (pmat y) b a)) =

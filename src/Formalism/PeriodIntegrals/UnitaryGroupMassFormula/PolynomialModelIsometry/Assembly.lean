@@ -69,8 +69,7 @@ theorem modelIso_of_steps (hA : PolyExt) (hI : LamInt) (hT : TorusEig) (hL : Low
   obtain ⟨ν, F, hν, hFmem, hF0, hFint⟩ := hM N S P w0 μ K hP hw0ne hT'' hL'
   have hanti : Antitone ν := by
     intro l j hlj
-    by_contra hlt
-    push_neg at hlt
+    by_contra! hlt
     rcases eq_or_lt_of_le hlj with h | h
     · subst h; exact lt_irrefl _ hlt
     · have hbot := dualWeylNonDom ℂ N N ν ⟨l, j, h, hlt⟩

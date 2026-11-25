@@ -49,8 +49,7 @@ def mulC (a : ℝ → ℂ) (ha : Continuous a) (f : C₀(ℝ, ℂ)) (R : ℝ) (h
     refine (tendsto_const_nhds (x := (0 : ℂ))).congr' ?_
     filter_upwards [hK] with y hy
     have hR : R ≤ |y| := by
-      by_contra hlt
-      push_neg at hlt
+      by_contra! hlt
       exact hy ⟨(abs_lt.mp hlt).1.le, (abs_lt.mp hlt).2.le⟩
     show (0 : ℂ) = a y * f y
     rw [hf y hR]⟩
@@ -299,13 +298,11 @@ theorem exists_bdd (hd : Dense (M : Set H)) (hs : ∀ x y : M, ⟪(Ω x : H), y�
     have hx0 := norm_nonneg (x : H)
     have hΩ0 := norm_nonneg (Ω v : H)
     have hvN : ‖(v : H)‖ ≤ ‖Z₀ x‖ := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       nlinarith
     rw [one_mul]
     change ‖Z₀ x‖ ≤ ‖(x : H)‖
-    by_contra h
-    push_neg at h
+    by_contra! h
     nlinarith
   let Z₁ : M →L[ℂ] H := Z₀.mkContinuous 1 hb
   refine ⟨Z₁.extend M.subtypeL, fun x v hv => ?_⟩

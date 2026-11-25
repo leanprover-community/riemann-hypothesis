@@ -111,13 +111,11 @@ theorem connectedSpace_specialFibre_of_morphisms : GlobalTheory.Published.Formal
   have hcl : Topology.IsClosedEmbedding (GlobalTheory.IndefiniteRowSideFullHecke.SpecialFibreUnits.specialι f) :=
     (GlobalTheory.IndefiniteRowSideFullHecke.SpecialFibreUnits.specialι f).isClosedEmbedding
   refine { toPreconnectedSpace := preconnectedSpace_iff_clopen.2 fun U hU => ?_, toNonempty := ‹_› }
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   obtain ⟨hU0, hU1⟩ := hcon
   obtain ⟨u, hu⟩ := hU0
   obtain ⟨u', hu'⟩ : ∃ u', u' ∉ U := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hU1 (Set.eq_univ_of_forall h)
   let A := GlobalTheory.IndefiniteRowSideFullHecke.SpecialFibreUnits.specialι f '' U
   let B := GlobalTheory.IndefiniteRowSideFullHecke.SpecialFibreUnits.specialι f '' Uᶜ

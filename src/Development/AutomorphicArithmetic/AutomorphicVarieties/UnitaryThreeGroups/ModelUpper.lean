@@ -1,5 +1,6 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.UnitaryThreeGroups.PtShape
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.UnitaryThreeGroups.Rigid0
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.SelmerTransport.NormO
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.UnitaryThreeGroups.ModelSigns
@@ -291,18 +292,7 @@ private theorem spans_of_der {O A K ι : Type} [CommRing O] [IsDomain O] [CommRi
 
 private theorem norm_lt_one_of_mem {l : ℕ} [Fact l.Prime] (c : Coef l) (a : c.O) (ha : ¬ IsUnit a) :
     ‖(a : PadicAlgCl l)‖ < 1 := by
-  by_cases h0 : a = 0
-  · subst h0; simp
-  have h := UpperTheory.V.Base.normO l c.O a h0
-  have h1 : IsDiscreteValuationRing.addVal c.O a ≠ 0 := fun h =>
-    ha (IsDiscreteValuationRing.addVal_eq_zero_iff.1 h)
-  have h2 : IsDiscreteValuationRing.addVal c.O a ≠ ⊤ := fun h => h0 (IsDiscreteValuationRing.addVal_eq_top_iff.1 h)
-  have h3 : (IsDiscreteValuationRing.addVal c.O a).toNat ≠ 0 := by
-    rw [Ne, ENat.toNat_eq_zero]; tauto
-  have hl : (1 : ℝ) < l := by exact_mod_cast (Fact.out : l.Prime).one_lt
-  have h4 := pow_lt_one₀ (a := (l : ℝ)⁻¹) (by positivity) (inv_lt_one_of_one_lt₀ hl) h3
-  by_contra hn
-  exact absurd (h ▸ h4) (not_lt.2 (one_le_pow₀ (not_lt.1 hn)))
+  apply _root_.norm_lt_one_of_nonunit <;> assumption
 
 private theorem local_of_res {O R : Type} [CommRing O] [IsLocalRing O] [CommRing R] [Algebra O R] [IsCO O R]
     (x : R →ₐ[O] O) (y : R) (hy : y ∈ maximalIdeal R) : ¬ IsUnit (x y) := by
@@ -468,8 +458,7 @@ private theorem norm_coe_coefO_le_one {l : ℕ} [Fact l.Prime] (c : Coef l) (x :
     have hx : IsIntegral ℤ_[l] x := Algebra.IsIntegral.isIntegral x
     exact hx.map c.O.val
   obtain ⟨p, hmon, hp⟩ := hint
-  by_contra hgt
-  push_neg at hgt
+  by_contra! hgt
   rw [hmon.as_sum, Polynomial.eval₂_add, Polynomial.eval₂_X_pow, Polynomial.eval₂_finsetSum] at hp
   have hcoef : ∀ i ∈ Finset.range p.natDegree,
       ‖Polynomial.eval₂ (algebraMap ℤ_[l] (PadicAlgCl l)) (x : PadicAlgCl l)

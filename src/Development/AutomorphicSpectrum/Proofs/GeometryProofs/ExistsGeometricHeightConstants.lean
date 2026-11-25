@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RootHeightDifferenceBound
 public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.IsAdapted
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ExistsUniqueLeftBasisCoordsAdicCompletion
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.LieMultIffExistsFrame
@@ -149,8 +150,7 @@ theorem Pre.orth {s s' : Ψ ⊕ Ψ} (h : s ≠ s') (ι : L →+* ℂ) {x y : V�
     (hy : P.j y ∈ eigSp P.ρ (P.σ s')) :
     (B.metric.form ι).inner ((1 : ComplexAt ι) ⊗ₜ[𝓞 L] P.f x) ((1 : ComplexAt ι) ⊗ₜ[𝓞 L] P.f y) = 0 := by
   obtain ⟨a, ha⟩ : ∃ a, P.σ s a ≠ P.σ s' a := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact h (P.σ_bij.1 (RingHom.ext hc))
   have key : ∀ (c : 𝓞 L) (u : B.carrier), ((1 : ComplexAt ι) ⊗ₜ[𝓞 L] (c • u) : Fibre ι B.carrier) =
       (ι (c : L) : ℂ) • ((1 : ComplexAt ι) ⊗ₜ[𝓞 L] u) := by
@@ -599,33 +599,7 @@ variable {L : Type} [Field L] [NumberField L]
 
 lemma log_iSup_support {Jx : Type} [Fintype Jx] (x : Jx → L) (hx : ∃ i, x i ≠ 0) :
     (Function.support fun v : FinitePlace L => Real.log (⨆ i, v (x i))).Finite := by
-  classical
-  obtain ⟨i₀, hi₀⟩ := hx
-  haveI : Nonempty Jx := ⟨i₀⟩
-  have hS : (⋃ i ∈ Finset.univ.filter (fun i => x i ≠ 0),
-      Function.mulSupport fun v : FinitePlace L => v (x i)).Finite := by
-    refine Set.Finite.biUnion (Finset.finite_toSet _) fun i hi => ?_
-    exact FinitePlace.hasFiniteMulSupport (by simpa using hi)
-  refine hS.subset fun v hv => ?_
-  by_contra hn
-  apply hv
-  have h1 : ∀ i, x i ≠ 0 → v (x i) = 1 := by
-    intro i hi
-    by_contra h
-    exact hn (Set.mem_biUnion (by simpa using hi) h)
-  have h2 : ∀ i, v (x i) ≤ 1 := by
-    intro i
-    by_cases hi : x i = 0
-    · simp [hi]
-    · exact (h1 i hi).le
-  have h3 : (⨆ i, v (x i)) = 1 := by
-    have hle : (⨆ i, v (x i)) ≤ 1 := ciSup_le h2
-    have hge : (1 : ℝ) ≤ ⨆ i, v (x i) := by
-      have hb : BddAbove (Set.range fun i => v (x i)) := (Set.finite_range _).bddAbove
-      calc (1 : ℝ) = v (x i₀) := (h1 i₀ hi₀).symm
-        _ ≤ _ := le_ciSup hb i₀
-    exact le_antisymm hle hge
-  simp [h3]
+  apply _root_.GlobalTheory.CompanionTheory.Ar.Ht.CloseHt.log_sup_support <;> assumption
 
 lemma blocks_support {K : Type} [Fintype K] {Jx : K → Type} [∀ k, Fintype (Jx k)] (a : K → ℝ)
     (x : ∀ k, Jx k → L) (hx : ∀ k, ∃ i, x k i ≠ 0) :

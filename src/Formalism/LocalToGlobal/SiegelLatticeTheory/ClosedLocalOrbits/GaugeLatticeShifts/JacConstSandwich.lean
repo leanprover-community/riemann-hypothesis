@@ -1338,18 +1338,7 @@ theorem Log_sgI_val (i : Fin (2 * r + k + 1)) : ((sgI k r i).val = r + k ↔ i.v
   split_ifs <;> simp_all <;> omega
 
 theorem hpk_sq : Hpk k r * Hpk k r = 1 := by
-  ext i j
-  rw [Matrix.mul_apply, Finset.sum_eq_single (sgI k r i)]
-  · rw [Log_Hpk_eq, Log_Hpk_eq, if_pos rfl, Log_sgI_sgI, Matrix.one_apply]
-    have hv := (Log_sgI_val (k := k) (r := r) i)
-    by_cases h : j = i
-    · subst h
-      by_cases h2 : j.val = r + k
-      · rw [if_pos h2, if_pos rfl, if_pos (hv.2 h2), if_pos rfl]; norm_num
-      · rw [if_neg h2, if_pos rfl, if_neg (fun h' => h2 (hv.1 h')), if_pos rfl]; norm_num
-    · rw [if_neg h, if_neg (Ne.symm h), mul_zero]
-  · intro l _ hl; rw [Log_Hpk_eq, if_neg hl, zero_mul]
-  · simp
+  apply _root_.PI.SwBig.GU.Hpk_sq <;> assumption
 
 theorem logG : LogG := by
   intro k r

@@ -367,14 +367,6 @@ set_option autoImplicit false
 noncomputable section
 
 open MvPolynomial NumberField
-
-namespace GlobalTheory.ChowHt
-
-attribute [local instance] MvPolynomial.gradedAlgebra
-
-
-
-end GlobalTheory.ChowHt
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto

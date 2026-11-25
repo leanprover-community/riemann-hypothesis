@@ -17,8 +17,6 @@ namespace PositivityTheory.Rg.Sw.HSt.LoweringDerivative
 
 open PositivityTheory.Rg.Sw PositivityTheory.Rg.Sw.LVs PositivityTheory.Rg.Sw.HSt
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 variable {n : ℕ}
 
 theorem inG_of_inK {g : M2 n} (h : InK g) : InG g := h.1

@@ -135,8 +135,7 @@ theorem flatTensor_support : ∀ {k : Type} [Field k] [ValuativeRel k] [Topologi
   choose N hN using fun b : Edge => exists_bound_conj hϖ (Assignment.one.read (g b.tgt)) (Assignment.one.read (g b.src))
   refine ⟨(oppositePath G.m).toFinset.sup N, fun x y hne => ?_⟩
   obtain ⟨v, hv⟩ : ∃ v, flatIntegrand hs ψ (moved G keep g T) x y v ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     apply hne
     unfold flatTensor
     simp [h]

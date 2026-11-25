@@ -456,8 +456,7 @@ theorem scalar_eq_one_of_split_left : _root_.GlobalTheory.FunPr.ThetaLocalInputs
       ring
     rw [← e1, hfix]
   obtain ⟨y, hy⟩ : ∃ y, G.M'.vac v y ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hne (funext h)
   let x : Fin a' × Fin (a + a') → AF F := fun i => GlobalTheory.LatVac.liftV v (y i)
   have hRx : R x = R 0 := by
@@ -633,8 +632,7 @@ theorem cm_exists_moved (σ : E →ₐ[F] E) (h : IsCMExt F E σ) : ∃ x : E, �
   haveI : IsTotallyComplex E := h.2.1
   obtain ⟨w⟩ : Nonempty (InfinitePlace E) := inferInstance
   have hc := InfinitePlace.isComplex_iff.1 (IsTotallyComplex.isComplex w)
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   apply hc
   ext x
   have hx := h.2.2.2 w.embedding x

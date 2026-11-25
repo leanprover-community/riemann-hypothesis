@@ -21,9 +21,6 @@ variable (D : D7)
 def Conclusion1 (large₂ : SizeData₂ D) (u u' : D.what₂.Word) (C' Cl Cg cb Cu cT CT C0 A C c : ℝ) : Prop :=
   UnitaryVolumeMass.stX D large₂ u u' C' Cl Cg cb Cu cT CT C0 A C c
 
-def Conclusion2 : Prop :=
-  UnitaryVolumeMass.stLem3 D
-
 def PointsLemma (u : D.what₂.Word) : Prop :=
   UnitaryVolumeMass.stLem3L0 D u
 

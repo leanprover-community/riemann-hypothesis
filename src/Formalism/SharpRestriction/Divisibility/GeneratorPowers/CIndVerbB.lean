@@ -1,5 +1,6 @@
 module
 
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.HfEqInner
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.CIndVerb
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.ExpOfPf
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.LinEigPf
@@ -16,14 +17,7 @@ open Matrix
 
 theorem emb_sep {E : Type} [Field E] [NumberField E] (τ τ' : E →+* ℂ) (h : τ ≠ τ') :
     ∃ a : 𝓞 E, τ (a : E) ≠ τ' (a : E) := by
-  by_contra hall
-  push Not at hall
-  apply h
-  ext x
-  obtain ⟨a, b, hb, rfl⟩ := IsFractionRing.div_surjective (A := 𝓞 E) x
-  simp only [map_div₀]
-  rw [show (algebraMap (𝓞 E) E a) = (a : E) from rfl, show (algebraMap (𝓞 E) E b) = (b : E) from rfl,
-    hall a, hall b]
+  apply _root_.ReciprocityTheory.ChartRestriction.G.I2.emb_sep <;> assumption
 
 theorem pair_of_balanced {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H}
     (c : Coeff l) {S : Type} [CommRing S] [Algebra c.F S] {d : ℕ} (A : 𝓞 E → Matrix (Fin d) (Fin d) S)

@@ -94,22 +94,4 @@ theorem numTrivMod_of_gen {ξ : Spec (CommRingCat.of Ω) ⟶ X} {L : Lat ξ Ω} 
 
 end General
 
-namespace FibLine
-
-open ProjectiveLinePlaces Crv.Inhab
-
-section Proj
-
-open MvPolynomial HomogeneousLocalization ProjCoord
-
-attribute [local instance] MvPolynomial.gradedAlgebra
-
-variable {o Ω : Type} [CommRing o] [Field Ω] [Algebra o Ω]
-
-end Proj
-
-attribute [local instance] MvPolynomial.gradedAlgebra
-
-end FibLine
-
 end GlobalTheory.CompanionTheory.Ar.Flat

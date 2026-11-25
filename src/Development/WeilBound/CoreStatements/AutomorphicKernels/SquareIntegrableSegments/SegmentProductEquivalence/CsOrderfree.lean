@@ -17,20 +17,8 @@ section OrderFree
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
 theorem irrGL_eq_of_isLSeg_same {Δ : Segment k} {x y : IrrGL (k := k)} (hx : IsLSeg Δ x.rep) (hy : IsLSeg Δ y.rep) :
-    x = y := by
-  obtain ⟨n, a⟩ := x
-  obtain ⟨m, b⟩ := y
-  obtain rfl : n = m := hx.deg_eq.symm.trans hy.deg_eq
-  have key : IrrGL.of a.rep.ρ a.rep.smooth a.rep.irr = IrrGL.of b.rep.ρ b.rep.smooth b.rep.irr :=
-    IrrGL.of_eq_of.mpr (IsLSeg.unique hy hx)
-  have ea : IrrGL.of a.rep.ρ a.rep.smooth a.rep.irr = ⟨n, a⟩ := by
-    conv_rhs => rw [← a.cl_rep]
-    rfl
-  have eb : IrrGL.of b.rep.ρ b.rep.smooth b.rep.irr = ⟨n, b⟩ := by
-    conv_rhs => rw [← b.cl_rep]
-    rfl
-  rw [← ea, ← eb]
-  exact key
+    x = y :=
+  _root_.CompanionTheory.PfEss.Zc2.irrGL_eq_of_isLSeg_same hx hy
 
 theorem perm_of_univ_map_eq {α : Type*} {l : ℕ} {x y : Fin l → α}
     (h : Finset.univ.val.map y = Finset.univ.val.map x) : ∃ e : Equiv.Perm (Fin l), ∀ a, y a = x (e a) :=

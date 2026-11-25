@@ -53,7 +53,6 @@ noncomputable section
 open CategoryTheory Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open scoped TensorProduct
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.AbMonoIsoAny
 

@@ -1,5 +1,6 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.CuspidalTwists.ComplexConjugationsConjugateCaseThree
 public import Mathlib.NumberTheory.DirichletCharacter.Basic
 public import Mathlib.RingTheory.RootsOfUnity.Basic
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.WeakShimuraTheory.NearSplit
@@ -199,48 +200,7 @@ private theorem fieldsEx {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ 
     (J : Subgroup (G ℚ Ω)), Module.finrank ℚ K = 2 ∧ Even (Module.finrank ℚ F) ∧
     (∀ p ∈ S, ∀ A : ValuationSubring Ω, A.valuation (p : Ω) < 1 → Dec (F := ℚ) A ≤ J) ∧ (∀ g : G ℚ Ω, g ^ 2 ∈ J) ∧ J ≤ K.fixingSubgroup ∧
     F.fixingSubgroup ≤ H ∧ F.fixingSubgroup ⊓ K.fixingSubgroup = H ⊓ J ∧ ∀ A : ValuationSubring Ω, Ine (F := ℚ) A ⊓ F.fixingSubgroup ≤ K.fixingSubgroup := by
-  obtain ⟨p, η, h⟩ := quadEx Ω (-1) S hS
-  obtain ⟨p', η', h'⟩ := quadEx Ω (-1) (insert p S) fun q hq => (Finset.mem_insert.1 hq).elim (fun e => e ▸ h.prime) (hS q)
-  have hk : ∀ g, g ∈ (η * η'⁻¹).ker ↔ η g = η' g := fun g => by
-    rw [MonoidHom.mem_ker, MonoidHom.mul_apply, MonoidHom.inv_apply, mul_inv_eq_one]
-  have ho : IsOpen ((η * η'⁻¹).ker : Set (G ℚ Ω)) :=
-    Subgroup.isOpen_mono (H₁ := η.ker ⊓ η'.ker) (fun g hg => (hk g).2 (Eq.trans hg.1 (Eq.symm hg.2))) (h.opn.inter h'.opn)
-  obtain ⟨K, _, _, hK, dK⟩ := fixAb Ω η.ker h.opn (Abelianization.commutator_subset_ker _)
-  obtain ⟨F, _, _, hF, dF⟩ := fixAb Ω (H ⊓ (η * η'⁻¹).ker) (hH.inter ho) (le_inf hc (Abelianization.commutator_subset_ker _))
-  have hN : H.Normal := Subgroup.Normal.of_commutator_le _ hc
-  refine ⟨K, F, inferInstance, inferInstance, (fixInf Ω K).2 (fun σ hσ e => ?_) (dK.trans h.idx), (fixInf Ω F).1 fun σ hσ => ?_, inferInstance,
-    η.ker ⊓ η'.ker, dK.trans h.idx, ?_, fun q hq A hA => le_inf (h.split q hq A hA) (h'.split q (Finset.mem_insert_of_mem hq) A hA),
-    fun g => ⟨?_, ?_⟩, hK ▸ inf_le_left, hF ▸ inf_le_left, ?_, fun A g hg => ?_⟩
-  · rw [hK, MonoidHom.mem_ker, h.cc σ hσ] at e
-    exact absurd e (by decide)
-  · obtain ⟨g, hg⟩ := complex_conjugations_conjugate hσ hcc
-    have e : σ = g * cc * g⁻¹ := by rw [hg, mul_inv_cancel_right]
-    rw [hF]
-    exact ⟨e ▸ hN.conj_mem cc hm g, (hk σ).2 ((h.cc σ hσ).trans (h'.cc σ hσ).symm)⟩
-  · obtain ⟨A, hA⟩ := hpl p h.prime
-    obtain ⟨g, hg, e⟩ := h.ram A hA
-    have e' : η' g = 1 := h'.split p (Finset.mem_insert_self _ _) A hA (Ine_le_Dec A hg)
-    have h2 : (η * η'⁻¹).ker.index = 2 := by
-      rw [Subgroup.index_ker]
-      have ht : (η * η'⁻¹).range = ⊤ := eq_top_iff.2 fun u _ => by
-        rcases Int.units_eq_one_or u with rfl | rfl
-        exacts [one_mem _, ⟨g, by simp [e, e']⟩]
-      rw [ht, Subgroup.card_top, Nat.card_eq_fintype_card]; rfl
-    rw [dF, even_iff_two_dvd, ← h2]
-    exact Subgroup.index_dvd_of_le inf_le_right
-  · show η (g ^ 2) = 1
-    rw [map_pow, Int.units_sq]
-  · show η' (g ^ 2) = 1
-    rw [map_pow, Int.units_sq]
-  · rw [hF, hK]
-    ext g
-    exact ⟨fun ⟨⟨a, b⟩, d⟩ => ⟨a, d, ((hk g).1 b).symm.trans d⟩, fun ⟨a, b, d⟩ => ⟨⟨a, (hk g).2 (Eq.trans b (Eq.symm d))⟩, b⟩⟩
-  · rw [hK]
-    by_cases hA : A.valuation (p : Ω) < 1
-    · have e := hg.2
-      rw [hF] at e
-      exact ((hk g).1 e.2).trans (h'.split p (Finset.mem_insert_self _ _) A hA (Ine_le_Dec A hg.1))
-    · exact h.unr A hA hg.1
+  apply _root_.exists_cm_and_real_fields <;> assumption
 
 noncomputable section SlopeTestRemainingChoices
 

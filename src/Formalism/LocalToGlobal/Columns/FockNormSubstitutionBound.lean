@@ -207,8 +207,7 @@ theorem fock_norm_substitution_bound (U : ι → Matrix (Fin n) (Fin n) ℂ) : �
   | succ D ih =>
     intro d hd F hF
     obtain ⟨τ₀, hτ₀⟩ : ∃ τ₀, d τ₀ ≠ 0 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       rw [Finset.sum_eq_zero fun τ _ => h τ] at hd
       omega
     obtain ⟨e, he⟩ := Nat.exists_eq_succ_of_ne_zero hτ₀

@@ -1,5 +1,6 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.DeterminantRepresentations.RepApi
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.SelmerScaling.SelmerSpannedByKappaLaurent
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebraHeight.DGmap
 
@@ -9,12 +10,7 @@ open IsLocalRing Matrix UpperTheory.V.Alg UpperTheory.V.W UpperTheory.V.AlgebraT
 
 private theorem chi_rep {n : ℕ} {A G : Type} [CommRing A] [Group G] (ρ : G →* Matrix (Fin n) (Fin n) A) (g : G) :
     (GDet.ofRep ρ).chi (MonoidAlgebra.single g 1) = (ρ g).charpoly := by
-  change (GDet.repAlg ρ (Polynomial A) _).det = _
-  rw [Matrix.charpoly, Matrix.charmatrix]
-  congr 1
-  rw [map_sub, MonoidAlgebra.mapRingHom_single, map_one]
-  ext i j : 2
-  simp [GDet.repAlg, Matrix.one_apply, Matrix.diagonal_apply]
+  apply _root_.UpperTheory.V.AlgebraTools.Det.chi_single <;> assumption
 
 private theorem rep_single {n : ℕ} {A B G : Type} [CommRing A] [CommRing B] [Algebra B A] [Group G]
     (ρ : G →* Matrix (Fin n) (Fin n) A) (g : G) (b : B) :

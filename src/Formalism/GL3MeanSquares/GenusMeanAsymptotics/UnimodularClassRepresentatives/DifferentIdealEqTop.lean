@@ -18,8 +18,7 @@ variable {K F : Type} [Field K] [NumberField K] [StarRing K] [Field F] [NumberFi
 
 theorem exists_star_ne (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) : ∃ a : K, star a ≠ a := by
   obtain ⟨hTC, hconj, -⟩ := hK
-  by_contra h
-  push_neg at h
+  by_contra! h
   obtain ⟨w⟩ : Nonempty (NumberField.InfinitePlace K) := inferInstance
   have hc := hTC.isComplex w
   rw [NumberField.InfinitePlace.isComplex_iff] at hc
@@ -134,8 +133,7 @@ theorem minpoly_eq (hF : ∀ a : K, star a = a ↔ a ∈ Set.range (algebraMap F
       | exact Algebra.IsIntegral.isIntegral θ
   have hdvd : minpoly (𝓞 F) θ ∣ q := minpoly.isIntegrallyClosed_dvd hint hroot
   have hdeg2 : 2 ≤ (minpoly (𝓞 F) θ).natDegree := by
-    by_contra hlt
-    push_neg at hlt
+    by_contra! hlt
     have h1 : (minpoly (𝓞 F) θ).natDegree = 1 := by
       have := minpoly.natDegree_pos hint
       omega

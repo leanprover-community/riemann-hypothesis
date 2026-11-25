@@ -14,8 +14,6 @@ open Formalism.FourierDecayAlt.P.CapelliWordSumExpansion
 
 noncomputable section
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 theorem qminorWordSum (k r t : ℕ) (a b : Fin t → Fin (2 * r + k + 1)) (u : ℂ) :
     ∃ L : List (ℂ × List (B.Mat k r)),
       (∀ cw ∈ L, (∀ X ∈ cw.2, B.unitLie k r X) ∧ cw.2.length ≤ t) ∧
@@ -91,29 +89,9 @@ theorem inLie_zero : B.inLie k r 0 := by
   unfold B.inLie
   simp
 
-private theorem foldr_max_le_lemma (t : ℕ) : ∀ l : List ℕ, (∀ x ∈ l, x ≤ t) → l.foldr max 0 ≤ t := by
-  intro l
-  induction l with
-  | nil => intro _; simp
-  | cons a l ih =>
-    intro h
-    simp only [List.foldr_cons]
-    exact max_le (h a (by simp)) (ih fun x hx => h x (by simp [hx]))
-
-private theorem le_foldr_max_lemma_2 : ∀ (l : List ℕ) (x : ℕ), x ∈ l → x ≤ l.foldr max 0 := by
-  intro l
-  induction l with
-  | nil => intro x hx; simp at hx
-  | cons a l ih =>
-    intro x hx
-    simp only [List.foldr_cons]
-    rcases List.mem_cons.mp hx with rfl | hx
-    · exact le_max_left _ _
-    · exact le_trans (ih x hx) (le_max_right _ _)
-
 theorem foldr_max_eq (t : ℕ) : ∀ l : List ℕ, (∀ x ∈ l, x ≤ t) → t ∈ l → l.foldr max 0 = t := by
   intro l hl ht
-  exact le_antisymm (foldr_max_le_lemma t l hl) (le_foldr_max_lemma_2 l t ht)
+  exact le_antisymm (List.max_le_of_forall_le l t hl) (List.le_max_of_le' 0 ht le_rfl)
 
 end terms
 

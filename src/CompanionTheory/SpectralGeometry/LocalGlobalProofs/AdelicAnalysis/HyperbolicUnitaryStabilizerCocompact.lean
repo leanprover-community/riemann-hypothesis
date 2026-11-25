@@ -57,8 +57,7 @@ theorem reduce_of_equiv {K : Type} [CommRing K] [TopologicalSpace K] {W : Type} 
   have hmax : ∀ w, ∃ i, (∀ j, ‖Φ (y 0 j) w‖ ≤ ‖Φ (y 0 i) w‖) ∧ Φ (y 0 i) w ≠ 0 := by
     intro w
     obtain ⟨i₀, hi₀⟩ : ∃ i, Φ (y 0 i) w ≠ 0 := by
-      by_contra hall
-      push_neg at hall
+      by_contra! hall
       have := hsum w
       simp [hall] at this
     haveI : Nonempty (Fin M) := ⟨i₀⟩
@@ -123,8 +122,7 @@ theorem exists_delta (σ : E →ₐ[F] E) (h : IsCMExt F E σ) : ∃ δ : E, σ 
     InfinitePlace.not_isReal_iff_isComplex.mpr (hC.isComplex (InfinitePlace.mk τ₀))
       (InfinitePlace.isReal_mk_iff.mpr hr)
   obtain ⟨x, hx⟩ : ∃ x, σ x ≠ x := by
-    by_contra hall
-    push_neg at hall
+    by_contra! hall
     apply hnr
     rw [ComplexEmbedding.isReal_iff]
     ext x
@@ -334,8 +332,7 @@ theorem primitiveCompact_of_multiplicative {K : Type*} [CommRing K] [Nontrivial 
   refine ⟨Set.pi Set.univ fun _ => {x | ν x ≤ 1}, isCompact_univ_pi fun _ => hc, ?_⟩
   rintro y ⟨z, hz⟩
   have hex : ∃ j, y j ≠ 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     have hy0 : y = 0 := funext hcon
     rw [hy0, dotProduct_zero] at hz
     exact zero_ne_one hz
@@ -638,8 +635,7 @@ theorem exists_delta [CharZero F] (h2 : Module.finrank F E = 2) :
     ∃ (b : Module.Basis (Fin 2) F E) (Δ : F), b 0 = 1 ∧ b 1 * b 1 = algebraMap F E Δ ∧ Δ ≠ 0 := by
   haveI : FiniteDimensional F E := Module.finite_of_finrank_pos (by omega)
   obtain ⟨x, hx⟩ : ∃ x : E, x ∉ (algebraMap F E).range := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     have : (⊥ : Subalgebra F E) = ⊤ := by
       ext y
       simpa [Algebra.mem_bot] using hcon y

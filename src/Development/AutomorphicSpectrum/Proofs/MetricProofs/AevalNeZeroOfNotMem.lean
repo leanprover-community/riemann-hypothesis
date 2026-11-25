@@ -1,5 +1,6 @@
 module
 
+import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FrameDefinitions.Values
 public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.GenericBlockMatrixIsBlockDiag
 import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.CoordinateIdeals.MemMCoordIdealOfAevalEqZero
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.SelM
@@ -47,17 +48,7 @@ theorem exists_isValueAt {x : (Σ k, ι k) → Ω} {z : (Σ k, ι k) → ℂ}
 
 theorem isValueAt_add {x : (Σ k, ι k) → Ω} {s t : Ω} {z : (Σ k, ι k) → ℂ} {v w : ℂ}
     (hv : IsValueAt x s z v) (hw : IsValueAt x t z w) : IsValueAt x (s + t) z (v + w) := by
-  obtain ⟨d, g, h, hg, hh, hy, heq, hz0, rfl⟩ := hv
-  obtain ⟨d', g', h', hg', hh', hy', heq', hz0', rfl⟩ := hw
-  refine ⟨d + d', g * h' + g' * h, h * h', isMultiHomog_add (isMultiHomog_mul hg hh') ?_,
-    isMultiHomog_mul hh hh', ?_, ?_, ?_, ?_⟩
-  · rw [add_comm d d']
-    exact isMultiHomog_mul hg' hh
-  · rw [map_mul]; exact mul_ne_zero hy hy'
-  · simp only [map_add (f := _), map_mul, heq, heq']; ring
-  · simp only [map_mul]; exact mul_ne_zero hz0 hz0'
-  · simp only [map_add (f := _), map_mul]
-    field_simp
+  apply _root_.GroundTheory.Heights₂.Heights.LowerBoundFree.isValueAt_add <;> assumption
 
 theorem regAt_mul {x : (Σ k, ι k) → Ω} {z : (Σ k, ι k) → ℂ} {s t : Ω}
     (hs : RegAt x (mCoordIdeal z) s) (ht : RegAt x (mCoordIdeal z) t) :

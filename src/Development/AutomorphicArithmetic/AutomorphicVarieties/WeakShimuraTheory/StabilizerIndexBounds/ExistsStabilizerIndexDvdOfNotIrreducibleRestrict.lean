@@ -1,5 +1,6 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.WeakShimuraTheory.StabilizerIndexBounds.NonComm
 public import Mathlib.Algebra.Module.Submodule.Defs
 public import Mathlib.Data.Matrix.Mul
 public import Mathlib.FieldTheory.IsAlgClosed.Basic
@@ -64,29 +65,7 @@ private theorem exists_eigenbasis_of_separable_charpoly {K : Type} [Field K] [Is
     (A : Matrix (Fin n) (Fin n) K) (hA : A.charpoly.Separable) :
     ∃ (b : Module.Basis (Fin n) K (Fin n → K)) (l : Fin n → K), Function.Injective l ∧
       ∀ i, A *ᵥ b i = l i • b i := by
-  classical
-  have hnd : A.charpoly.roots.Nodup := Polynomial.nodup_roots hA
-  have hcard : A.charpoly.roots.toFinset.card = n := by
-    rw [Multiset.toFinset_card_of_nodup hnd, ← (IsAlgClosed.splits A.charpoly).natDegree_eq_card_roots,
-      Matrix.charpoly_natDegree_eq_dim, Fintype.card_fin]
-  let e : A.charpoly.roots.toFinset ≃ Fin n := Finset.equivFinOfCardEq hcard
-  let l : Fin n → K := fun i => (e.symm i : K)
-  have hl : Function.Injective l := fun i j h => e.symm.injective (Subtype.ext h)
-  have hev : ∀ i, Module.End.HasEigenvalue (Matrix.toLin' A) (l i) := by
-    intro i
-    rw [Module.End.hasEigenvalue_iff_isRoot_charpoly, Matrix.charpoly_toLin']
-    have := (e.symm i).2
-    rw [Multiset.mem_toFinset] at this
-    exact Polynomial.isRoot_of_mem_roots this
-  choose v hv using fun i => (hev i).exists_hasEigenvector
-  have hli : LinearIndependent K v :=
-    Module.End.eigenvectors_linearIndependent' (Matrix.toLin' A) l hl v hv
-  have hsp : Submodule.span K (Set.range v) = ⊤ :=
-    hli.span_eq_top_of_card_eq_finrank' (by rw [Module.finrank_fintype_fun_eq_card])
-  refine ⟨Module.Basis.mk hli hsp.ge, l, hl, fun i => ?_⟩
-  rw [Module.Basis.mk_apply]
-  have := (hv i).apply_eq_smul
-  rwa [Matrix.toLin'_apply] at this
+  apply _root_.monomial_eigenbasis <;> assumption
 
 theorem UpperTheory.V.Ws.invariant_submodule_eq_span_eigenbasis_of_separable :
     ∀ (K : Type) [Field K] [IsAlgClosed K] (n : ℕ) (M : Matrix (Fin n) (Fin n) K), M.charpoly.Separable →

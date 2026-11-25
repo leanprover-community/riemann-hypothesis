@@ -466,8 +466,7 @@ theorem supp_gen_pos {N : ℕ} (pos : κ → Bool) (ρ : Fin N → κ) (hρ : �
       simp
     · rw [if_neg hc]
       simp
-  by_contra hk
-  push_neg at hk
+  by_contra! hk
   let w : σ → ℕ := fun y => if ∃ c, pos c = false ∧ v c = y then 1 else 0
   have hwu : ∀ j c, w (u j c) = 0 := by
     intro j c

@@ -1,5 +1,6 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.SymplecticGSp4.QuotientSaturatedSquareTorsionFree
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.WeakShimuraTheory.NearSplit
 import Mathlib.Tactic.Linter.HaveILetI
 
@@ -10,14 +11,7 @@ open NumberField IsDedekindDomain Formalism.ConjugateSelfDual Formalism.HC Recip
 private theorem cont_of_adic {Γ R K : Type} [TopologicalSpace Γ] [CommRing R] [NormedRing K] (I : Ideal R)
     (y : R →+* K) (a : ℝ) (ha1 : a < 1) (hy : ∀ n, ∀ x ∈ I ^ n, ‖y x‖ ≤ a ^ n)
     (f : Γ → R) (hf : AdicCont I f) : Continuous fun g => y (f g) := by
-  have ha0 : 0 ≤ a := by simpa using hy 1 0 (Ideal.zero_mem _)
-  rw [Metric.continuous_iff']
-  intro g0 ε hε
-  obtain ⟨N, hN⟩ := exists_pow_lt_of_lt_one hε ha1
-  have hopen := (hf N).isOpen_fiber ((Ideal.Quotient.mk (I ^ N)) (f g0))
-  filter_upwards [hopen.mem_nhds rfl] with g hg
-  rw [dist_eq_norm, ← map_sub]
-  exact lt_of_le_of_lt (hy N _ (Ideal.Quotient.eq.mp hg)) hN
+  apply _root_.UpperTheory.V.GradeZeroInterpolatingElement.TangentGlobal.cont_of_adic <;> assumption
 
 theorem UpperTheory.V.Ws.smallCont :
     ∀ {l : ℕ} [Fact l.Prime] (𝔞 : Amb l) (e : 𝔞.K ≃+* PadicAlgCl l), 𝔞.IsZero e → ∀ {ι Γ : Type} [Group Γ] [TopologicalSpace Γ]

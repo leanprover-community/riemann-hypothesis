@@ -53,7 +53,6 @@ open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj Alg
 open scoped CategoryTheory.Obj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open ReciprocityTheory.ChartRestriction.G.Out GlobalTheory.ZH Classical
-attribute [local instance] SplitExt.free SplitExt.finite MvPolynomial.gradedAlgebra
 
 namespace GlobalTheory.ZH.TestCrit
 
@@ -97,8 +96,7 @@ theorem exists_ne_zero_iff {O K k J : Type} [CommRing O] [Field K] [Algebra O K]
     rw [← hA, map_eq_zero_iff _ hinj] at h1
     exact hi' (by rw [h1, map_zero, zero_mul])
   · rintro ⟨i, hI, hw⟩
-    by_contra hz
-    push_neg at hz
+    by_contra! hz
     have hm : b i ∈ Submodule.span O (Set.range fun i j => algebraMap O K (A i j)) :=
       hs ▸ Submodule.subset_span ⟨i, hI, rfl⟩
     obtain ⟨c, hc⟩ := (Submodule.mem_span_range_iff_exists_fun O).1 hm

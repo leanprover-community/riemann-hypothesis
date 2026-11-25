@@ -58,21 +58,6 @@ structure Laws (R : RealDat D A Ks) (F : Face D A) : Prop where
   models : R.IsModels
   thP : R.IsThP
 
-def IsRaw (R : RealDat D A Ks) (i : Fin D.R.m) (t : T) (th : (R.HV i t).H →ₗ[ℂ] (R.HW i (sg0 D A)).H) : Prop :=
-  ∀ x, (R.HW i (sg0 D A)).e (th x) = R.thF i t x
-
-def UpInj (R : RealDat D A Ks) (i : Fin D.R.m) (t : T) : Prop :=
-  ∀ th, IsRaw R i t th → Function.Injective (LinearMap.adjoint th)
-
-def part (R : RealDat D A Ks) (i : Fin D.R.m) (S : Finset (HeightOneSpectrum (𝓞 D.host.F)))
-    (c : HeightOneSpectrum (𝓞 D.host.E) → List ℤ → ℂ) : Submodule ℂ (R.HW i (sg0 D A)).H :=
-  (partFull R.θ (R.MW i (sg0 D A)) (levS _ (R.βW i) (R.datWp i R.triv)) (levChi _ (R.βW i) (R.datWp i R.triv)) S c).comap
-    (R.HW i (sg0 D A)).e
-
-def InnerNe (R : RealDat D A Ks) (i : Fin D.R.m) (t : T) (S : Finset (HeightOneSpectrum (𝓞 D.host.F))) : Prop :=
-  ∀ th, IsRaw R i t th → ∀ c, ∃ l : ℂ, l ≠ 0 ∧ ∀ x ∈ part R i S c, ∀ y,
-    ⟪LinearMap.adjoint th x, LinearMap.adjoint th y⟫_ℂ = l * ⟪x, y⟫_ℂ
-
 def thetaIP {S T' : HSp D} (μ : Measure (WO S T')) (𝓕 : Set (WO S T')) (f f' : WO S T' → ℂ) : ℂ :=
   ∫ w in 𝓕, star (f w) * f' w ∂μ
 
@@ -95,10 +80,6 @@ def RallisConv (D : D7) : Prop :=
         Integrable (fun g => thetaIP μ 𝓕 (om (1, g) f₂) f₁ * ∫ x in 𝓖, star (φ₁ x) * φ₂ (x * g) ∂νW) νW ∧
         ∫ h in 𝓗, star (upLift om νW 𝓖 f₁ φ₁ h) * upLift om νW 𝓖 f₂ φ₂ h ∂νV =
           ((νV 𝓗).toReal : ℂ) * ∫ g, thetaIP μ 𝓕 (om (1, g) f₂) f₁ * (∫ x in 𝓖, star (φ₁ x) * φ₂ (x * g) ∂νW) ∂νW
-
-theorem Laws.posDef {R : RealDat D A Ks} {F : Face D A} (h : Laws R F) (i : Fin D.R.m) :
-    (Vc D i).SigOK ∧ (Vc D i).IsPosDef :=
-  ⟨D.sp.V_sig _, h.models.vpos i⟩
 
 
 

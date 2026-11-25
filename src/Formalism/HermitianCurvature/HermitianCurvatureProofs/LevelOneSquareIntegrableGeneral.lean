@@ -25,8 +25,6 @@ namespace Formalism.FourierDecayAlt.P5.HerD
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.Q Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.P5 Formalism.FourierDecayAlt.P5.HerA Formalism.FourierDecayAlt.P5.HerB Formalism.FourierDecayAlt.P5.HerC
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 theorem fsv_add (s s' t : ℂ) : fsv s t * fsv s' t = fsv (s + s') t := by
   unfold fsv
   rw [← Complex.exp_add]

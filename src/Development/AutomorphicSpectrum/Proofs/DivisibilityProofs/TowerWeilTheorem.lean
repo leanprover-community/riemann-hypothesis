@@ -1096,8 +1096,7 @@ theorem RootFieldNumerics.intersection_section_log_integral : ReciprocityTheory.
     (fun j z => Real.log (((Fin.snoc L B : Fin (e + 1) → HermLine ι) j).h z)) (fun _ => 1)
   set PA := ptsIntegral (mCoordIdeal y)
     (fun j z => Real.log (((Fin.snoc L A : Fin (e + 1) → HermLine ι) j).h z)) (fun _ => 1)
-  by_contra hneg
-  push_neg at hneg
+  by_contra! hneg
   have hpos : 0 < -PA := by linarith
   obtain ⟨n, hn⟩ := exists_nat_gt (PB / -PA)
   have h1 := (div_lt_iff₀ hpos).mp hn
@@ -1125,15 +1124,7 @@ variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
 
 theorem smooth_comb {J : Type} [Fintype J] {ℓ : J → HermLine ι} (hℓ : ∀ j, IsSmoothHerm (ℓ j))
     (n : J → ℤ) : IsSmoothHerm (combLine ℓ n) := by
-  refine contDiffOn_prod fun a _ => ?_
-  intro z hz
-  have h0 : (ℓ a).h z ≠ 0 := ((ℓ a).pos z hz).ne'
-  have hf := hℓ a z hz
-  cases n a with
-  | ofNat k => simpa only [Int.ofNat_eq_natCast, zpow_natCast] using hf.pow k
-  | negSucc k =>
-    simp only [zpow_negSucc]
-    exact (hf.pow (k + 1)).inv (pow_ne_zero _ h0)
+  apply _root_.GlobalTheory.CompanionTheory.Ar.Top.GeoMix.smooth_comb <;> assumption
 
 theorem geomDeg_comb (II : IntersectionSystem) (hII : IsFullIntersectionSystem II) {J : Type} [Fintype J]
     {ℓ : J → HermLine ι} (hℓ : ∀ j, IsSmoothHerm (ℓ j)) (n : J → ℤ) (W : Ideal (MRing ι))
@@ -1521,15 +1512,8 @@ namespace WallBound
 variable {Ψ : Type} [Fintype Ψ] [DecidableEq Ψ] {N : ℕ}
 
 theorem l1_le_card_mul_of_norm_le_one' (lam : Wt Ψ N) (h : ‖lam‖ ≤ 1) : l1 lam ≤ (Fintype.card Ψ : ℝ) * N := by
-  have hb : ∀ τ i, |lam τ i| ≤ 1 := fun τ i => by
-    have h1 : ‖lam τ‖ ≤ ‖lam‖ := norm_le_pi_norm lam τ
-    have h2 : ‖lam τ i‖ ≤ ‖lam τ‖ := norm_le_pi_norm (lam τ) i
-    rw [Real.norm_eq_abs] at h2
-    linarith
-  unfold l1
-  calc ∑ τ, ∑ i, |lam τ i| ≤ ∑ _τ : Ψ, ∑ _i : Fin N, (1 : ℝ) :=
-        Finset.sum_le_sum fun τ _ => Finset.sum_le_sum fun i _ => hb τ i
-    _ = (Fintype.card Ψ : ℝ) * N := by simp
+  intros
+  apply _root_.GlobalTheory.CompanionTheory.Ar.Top.l1_le_card_mul_of_norm_le_one <;> assumption
 
 theorem toA_linRoot_pow (lam : Wt Ψ N) (d : ℕ) : toA (linRoot lam ^ d) = linA lam 0 ^ d := by
   simp [toA, linA, map_pow]

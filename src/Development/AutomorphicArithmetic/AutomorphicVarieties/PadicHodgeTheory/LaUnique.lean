@@ -1,5 +1,6 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.FiniteEmb
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.WeilGroupCharacters.ContinuousResP
 import Mathlib.FieldTheory.Galois.Profinite
 import Mathlib.Tactic.Linter.HaveILetI
@@ -14,16 +15,7 @@ open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.
 
 private theorem finite_emb {F : Type} [Field F] [NumberField F] (l : ℕ) [Fact l.Prime] (w : Plc F) :
     Finite (Emb l w) := by
-  classical
-  let φ : Emb l w → (F →+* Qbar l) := fun j =>
-    (j.1).comp (algebraMap F (HeightOneSpectrum.adicCompletion F w))
-  refine Finite.of_injective φ ?_
-  intro i j hij
-  apply Subtype.ext
-  have hd := HeightOneSpectrum.denseRange_algebraMap (K := F) w
-  have hfun : (i.1 : HeightOneSpectrum.adicCompletion F w → Qbar l) = j.1 :=
-    hd.equalizer i.2 j.2 (funext fun x => DFunLike.congr_fun hij x)
-  exact DFunLike.coe_injective hfun
+  apply _root_.finite_emb <;> assumption
 
 private theorem lin_term {ι L : Type} [Fintype ι] [Field L] [CharZero L] (c : ι → L) (p q : ι → ℕ)
     (H : ∀ n : ℕ, ∏ i, (1 + c i * n) ^ p i = ∏ i, (1 + c i * n) ^ q i) :

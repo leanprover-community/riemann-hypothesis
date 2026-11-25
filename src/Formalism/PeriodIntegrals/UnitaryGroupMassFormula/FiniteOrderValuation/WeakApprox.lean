@@ -84,8 +84,7 @@ theorem weakApprox_units (T : Finset (HeightOneSpectrum (𝓞 L)))
       Valued.v (x w : w.adicCompletion L) = 1 := by
     rw [← Valuation.map_mul, Units.inv_mul, Valuation.map_one]
   rw [Units.val_mk0, key, Valuation.map_mul]
-  by_contra hle
-  push_neg at hle
+  by_contra! hle
   have h2 := mul_le_mul_of_nonneg_right hle (zero_le' : 0 ≤ Valued.v (x w : w.adicCompletion L))
   rw [mul_assoc, hinv, mul_one] at h2
   exact absurd h (not_lt.mpr h2)

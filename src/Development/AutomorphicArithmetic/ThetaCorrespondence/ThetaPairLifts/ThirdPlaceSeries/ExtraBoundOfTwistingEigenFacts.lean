@@ -980,7 +980,7 @@ theorem main_alt_alt : GlobalTheory.Published.GlobalArtinReciprocity → GlobalT
   have hN5g : TypePrimeChoiceLemmas (D := D) := _root_.GlobalTheory.typePrimeCongruences_forall D ⟨hadm5, h41, hN9, hO⟩
   have hTB : admTB (D := D) HW F := _root_.GlobalTheory.TheoremTBRecords.aux_of_blochKato_tateDuality_eulerChar hBKL hLTD hLEC D HW F Cm
   have hBK : admBK (D := D) := _root_.GlobalTheory.BlochKatoLocalAllOfTateDualityEulerChar₂.aux_of_blochKato_tateDuality_eulerChar₂ hBKL hLTD hLEC D
-  exact _root_.GlobalTheory.T.admT_of_artin_reciprocity_and_local_conditions hGAR D P HW F C CT hC hadm5 hEig hIne hT hLOC hRbar hN5g hDZ
+  exact _root_.GlobalTheory.admT_of_adm5_eigSpan_tieInePoly hGAR D P HW F C CT hC hadm5 hEig hIne hT hLOC hRbar hN5g hDZ
     (_root_.GlobalTheory.ClosingLocalInputs.galoisFamilyConditions_of_sumRepresentations_alt D h41) hG5 hG6 hSer hTB hBK hadm1 hadm2 htie0 hChi
 end GlobalTheory.ClosingLocalInputs
 end

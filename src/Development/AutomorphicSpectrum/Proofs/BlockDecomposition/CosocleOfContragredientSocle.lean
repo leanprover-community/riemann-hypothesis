@@ -103,8 +103,7 @@ theorem isCosocle_of_isSocle_contra : ∀ {k : Type} [Field k] [ValuativeRel k] 
     exact hat _ (isAtom_range (GlobalTheory.ContraRefl.contra_isIrreducible hG (hA k N _ _ (hsm S) hirr) hirr) _
       (pullContra_injective S))
   obtain ⟨x, hx⟩ : ∃ x, f x ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     refine hat0.1 (eq_bot_iff.2 ?_)
     rintro _ ⟨x, rfl⟩
     exact (h x).symm ▸ zero_mem (⊥ : Subrepresentation (contra π)).toSubmodule

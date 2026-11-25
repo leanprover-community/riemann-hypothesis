@@ -167,8 +167,7 @@ theorem isLocalHom_jetTan (ℓ : Fin 1 × Fin g) :
       rw [MvPolynomial.coeff_sub, MvPolynomial.coeff_C, if_pos rfl]
       exact sub_self _
     obtain ⟨i, hi⟩ : ∃ i, m i ≠ 0 := by
-      by_contra hne
-      push_neg at hne
+      by_contra! hne
       exact hm0 (Finsupp.ext hne)
     exact ⟨i, Set.mem_univ _, hi⟩
   have hnil : IsNilpotent (Ideal.Quotient.mk (orig ℂ (Fin 1 × Fin g) ^ (0 + 1 + 1))

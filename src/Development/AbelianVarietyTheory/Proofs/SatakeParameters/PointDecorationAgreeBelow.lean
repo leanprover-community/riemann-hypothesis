@@ -117,7 +117,6 @@ section -- clump:auto
 @[expose] public section
 
 open NumberField IsDedekindDomain Matrix Formalism.BasicNotions Formalism.UG Formalism.L2.Col Formalism.L2.PairingIndexBounds.F Formalism.MainNotions.G.KAat Formalism.L2.Forms Formalism.L2.Ker Formalism.MainNotions Formalism.L2.DIV Formalism.MainNotions.G GlobalTheory.TwU GlobalTheory.TwV
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 open scoped TensorProduct
 
@@ -287,8 +286,7 @@ theorem mem_localization_of_mem_localLattice : ∀ (F E : Type) [Field F] [Numbe
   haveI := v.isMaximal
   obtain ⟨Q, hQ, hI⟩ := Ideal.eq_prime_pow_mul_coprime hJ0 v.asIdeal
   obtain ⟨d, hdQ, hdv⟩ : ∃ d ∈ Q, d ∉ v.asIdeal := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     rw [sup_eq_left.2 (show Q ≤ v.asIdeal from h)] at hQ
     exact v.isPrime.ne_top hQ
   refine ⟨algebraMap (𝓞 F) (𝓞 E) d, fun h => hdv (by rw [← hq]; exact h), ?_⟩
@@ -299,8 +297,7 @@ theorem mem_localization_of_mem_localLattice : ∀ (F E : Type) [Field F] [Numbe
     exact Submodule.smul_mem (GlobalTheory.IndefiniteRowSideFullHecke.SplittingProjection.locLat w B)
       (⟨_, Subring.subset_closure (Or.inl ⟨⟨_, ⟨algebraMap (𝓞 F) (𝓞 E) d, rfl⟩⟩, rfl⟩)⟩ : intV E w) hx
   · obtain ⟨π, hπ, hπw⟩ : ∃ π ∈ v.asIdeal ^ (UniqueFactorizationMonoid.normalizedFactors (J.comap (algebraMap (𝓞 F) (𝓞 E)))).count v.asIdeal, π ∉ w.asIdeal := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       haveI := w.isPrime
       have h1 : v.asIdeal ≤ w.asIdeal := Ideal.IsPrime.le_of_pow_le h
       exact hw (HeightOneSpectrum.ext (v.isMaximal.eq_of_le w.isPrime.ne_top h1).symm)

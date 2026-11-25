@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.JacquetModuleInStagesRefinedBlocks
 public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.StandardMaximalParabolic
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -55,30 +56,7 @@ variable {R : Type} [CommRing R] {α β n : Type} {m : α → Type} {m' : β →
 
 theorem mem_unipRad_entries {e : (Σ a, m a) ≃ n} {g : GL n R} :
     g ∈ unipRad R e ↔ ∀ i j, ¬ blk e i < blk e j → (g : Matrix n n R) i j = (1 : Matrix n n R) i j := by
-  rw [mem_unipRad, mem_parab]
-  constructor
-  · rintro ⟨hP, hD⟩ i j hij
-    rcases lt_or_eq_of_le (not_lt.mp hij) with hlt | heq
-    · have hne : i ≠ j := fun hh => (ne_of_lt hlt) (by rw [hh])
-      rw [hP i j hlt, Matrix.one_apply_ne hne]
-    · obtain ⟨⟨a, i'⟩, rfl⟩ := e.surjective i
-      obtain ⟨⟨b, j'⟩, rfl⟩ := e.surjective j
-      simp only [blk_apply] at heq
-      subst heq
-      rw [hD]
-      by_cases hs : i' = j'
-      · subst hs
-        simp
-      · rw [Matrix.one_apply_ne hs, Matrix.one_apply_ne (fun hh => hs (by simpa using e.injective hh))]
-  · intro H
-    refine ⟨fun i j hji => ?_, fun a i j => ?_⟩
-    · have hne : i ≠ j := fun hh => (ne_of_lt hji) (by rw [hh])
-      rw [H i j (not_lt.mpr hji.le), Matrix.one_apply_ne hne]
-    · rw [H _ _ (by simp)]
-      by_cases hs : i = j
-      · subst hs
-        simp
-      · rw [Matrix.one_apply_ne hs, Matrix.one_apply_ne (fun hh => hs (by simpa using e.injective hh))]
+  first | exact _root_.GlobalTheory.JacStagesProof.mem_unipRad_iff_entries' | exact @_root_.GlobalTheory.JacStagesProof.mem_unipRad_iff_entries' | apply _root_.GlobalTheory.JacStagesProof.mem_unipRad_iff_entries' <;> assumption
 
 
 omit [Fintype α] [∀ a, Fintype (m a)] [∀ a, DecidableEq (m a)] [Fintype β] [∀ a, Fintype (m' a)]

@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.PadicIntegersFiniteExtGoodCoefficientRing
 public import Formalism.SharpRestriction.LevelLetterCocycles.JointConditionsZpowers.GaloisConditionFiveExtraOf
 public import Formalism.LocalRingCardinality.SpanPowerMembership.NDLocE
 import Mathlib.Topology.Connected.Separation
@@ -34,23 +35,5 @@ namespace Formalism.MainNotions.N.T2
 
 open Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations in
 theorem litGoodO : Formalism.MainNotions.N.LitGoodO := by
-  intro l _ LL
-  haveI : FiniteDimensional ℚ_[l] LL.1 := LL.2
-  refine ⟨⟨inferInstance, inferInstance, inferInstance⟩, LL.2, isModuleTopologyOfFiniteDimensional,
-    inferInstance, ?_⟩
-  have hr : Set.range (algebraMap (OL LL) LL.1) = ((OL LL).toSubring.toAddSubgroup : Set LL.1) := by
-    ext x
-    constructor
-    · rintro ⟨y, rfl⟩
-      exact y.2
-    · intro hx
-      exact ⟨⟨x, hx⟩, rfl⟩
-  rw [hr]
-  refine AddSubgroup.isOpen_of_mem_nhds _ (g := 0)
-    (Filter.mem_of_superset (Metric.ball_mem_nhds 0 one_pos) ?_)
-  intro x hx
-  show x ∈ OL LL
-  rw [Formalism.BasicNotions.Examples₂.LB.mem_OL]
-  have : ‖x‖ < 1 := by simpa using hx
-  exact le_of_lt this
+  apply _root_.GlobalTheory.LitGood.litGoodO <;> assumption
 end Formalism.MainNotions.N.T2

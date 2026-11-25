@@ -1,5 +1,6 @@
 module
 
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.IsotropicSpanOrthogonalAnisotropicVector
 public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.IdLiftDef
 public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.LTheta
 public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.LadjFrame
@@ -1066,19 +1067,8 @@ theorem retr_conj {X : Submodule D.host.E (VS D).V} {Λ : Submodule (𝓞 D.host
     rw [hz', hP0z, map_zero]
 
 theorem iso_X {T : D.host.E} (F0 : FlagG (VS D) D.R.rS T) : ∀ x ∈ F0.X, ∀ y ∈ F0.X, (VS D).hT x y = 0 := by
-  have h1 : ∀ a, ∀ y ∈ F0.X, (VS D).hT (F0.e a) y = 0 := by
-    intro a y hy
-    have hle : F0.X ≤ LinearMap.ker ((VS D).hT (F0.e a)) := by
-      rw [Formalism.MainNotions.S.FlagG.X, Submodule.span_le]
-      rintro _ ⟨b, rfl⟩
-      exact F0.e_iso a b
-    exact hle hy
-  intro x hx y hy
-  have hle : F0.X ≤ LinearMap.ker ((VS D).hT.flip y) := by
-    rw [Formalism.MainNotions.S.FlagG.X, Submodule.span_le]
-    rintro _ ⟨a, rfl⟩
-    exact h1 a y hy
-  exact hle hx
+  intros
+  apply _root_.Formalism.L2.SG.Pf.FrameGlobalPatching.FStar.SpanOmPf.iso_X <;> assumption
 
 theorem class_red (u : D.what₂.Word) (F0 : FlagG (VS D) D.R.rS (Tn u)) {Λ Λ' : Submodule (𝓞 D.host.E) (VS D).V}
     (hΛ : IsRowLat D F0 Λ) (hΛ' : IsRowLat D F0 Λ') {γ : (VS D).V ≃ₗ[D.host.E] (VS D).V}

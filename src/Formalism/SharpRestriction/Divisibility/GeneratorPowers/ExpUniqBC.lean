@@ -22,8 +22,6 @@ open CategoryTheory Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalC
 open MvPolynomial Formalism.L2.Pj Formalism.MainNotions.ModuliIntegralCharts.H1.ExpUniqJet Formalism.MainNotions.ModuliIntegralCharts.H1.ExpUniqLoc
 open ReciprocityTheory.ChartRestriction.G.Chart (JetR zR IsUnivChart sp spMap spMap_comp comp_one')
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 variable {R : Type} [CommRing R]
 
 theorem jetTan_alt {κ : Type} [DecidableEq κ] (ℓ j : κ) :
@@ -218,8 +216,6 @@ open MvPolynomial Formalism.L2.Pj Formalism.MainNotions.ModuliIntegralCharts.H1.
 open ReciprocityTheory.ChartRestriction.G.Chart (JetR zR IsUnivChart sp spMap spMap_comp comp_one')
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor (Sp)
 open scoped CategoryTheory.Obj
-
-attribute [local instance] Over.cartesianMonoidalCategory
 
 section Bridge
 

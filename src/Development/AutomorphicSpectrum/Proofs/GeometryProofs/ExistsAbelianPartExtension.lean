@@ -57,8 +57,6 @@ namespace GlobalTheory.CompanionTheory.Ar.AbB
 
 open GlobalTheory GlobalTheory.UU GlobalTheory.UU.PackageDescent GlobalTheory.BiextTriv GlobalTheory.GeneratorLaw GlobalTheory.TorusUnit GlobalTheory.CompanionTheory.TorusPic
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 theorem pic_inj_field : ∀ (k : Type) [Field k] (G : Over (Sp k)) [GrpObj G] [IsCommMonObj G], IsSemiAbelian G → ∀ (T : TorusExtension G) (Y : Over (Sp k)), Smooth Y.hom → GeometricallyConnected Y.hom → ∀ (y₀ : 𝟙_ (Over (Sp k)) ⟶ Y) (c : Pic (T.B ⊗ Y).left), pull (lift (fst G Y ≫ T.q) (snd G Y)).left c = 0 → pull (lift (𝟙 T.B) (toUnit T.B ≫ y₀)).left c = 0 → c = 0 := by
   intro k _ G _ _ hG T Y hYs hYc y₀ c h₁ h₂
   obtain ⟨N, hN, rfl⟩ := cls_surj c

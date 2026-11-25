@@ -183,8 +183,7 @@ theorem descent_core {K Ω C : Type} [Field K] [Field Ω] [Algebra K Ω] [Field 
   have hυ0 : υ ≠ 0 := fun h => one_ne_zero (by rw [← hτυ, h, mul_zero] : (1 : Ω ⊗[K] C) = 0)
   have hne : ∀ z : Ω ⊗[K] C, z ≠ 0 → ∃ j, B.repr z j ≠ 0 := by
     intro z hz
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hz (B.repr.map_eq_zero_iff.1 (Finsupp.ext h))
   obtain ⟨j, hj⟩ := hne τ hτ0
   obtain ⟨k, hk⟩ := hne υ hυ0

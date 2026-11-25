@@ -91,8 +91,6 @@ namespace GlobalTheory.DiffCoprimeP
 open GlobalTheory.Idele WithZero
 open GlobalTheory.StdDual (codiff codiff_ne_zero one_le_codiff)
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 theorem not_le_differentIdeal_of_psiUnr {F : Type} [Field F] [NumberField F] {ψ : AddChar (AF F) ℂ} (hψ : IsStd ψ)
     (v : Pl (F := F)) (hu : PsiUnr ψ v) : ¬ differentIdeal ℤ (𝓞 F) ≤ v.asIdeal := by
   classical
@@ -154,8 +152,7 @@ theorem not_le_differentIdeal_of_psiUnr {F : Type} [Field F] [NumberField F] {ψ
     omega
 
   have hc1 : 0 ≤ c := by
-    by_contra hneg
-    push_neg at hneg
+    by_contra! hneg
     obtain ⟨π, hπ⟩ := HeightOneSpectrum.valuation_exists_uniformizer F v
     have hπ0 : π ≠ 0 := by
       rintro rfl

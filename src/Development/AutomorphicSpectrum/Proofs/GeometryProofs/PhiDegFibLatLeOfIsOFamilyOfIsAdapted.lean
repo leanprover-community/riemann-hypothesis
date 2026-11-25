@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.CmTypeExteriorLatticeComparison
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsConstMul
 public import Formalism.LocalToGlobal.ProjectiveLattices.IsGenFrGenFr
 public import Formalism.LocalToGlobal.ProjectiveLattices.PetersonNormSubspace
@@ -272,8 +273,7 @@ theorem exists_max_det {n : ℕ} (E : Submodule (𝓞 L) (Fin n → 𝓞 L)) (hD
     norm_pos_iff.2 (fun h => ha0 (hj'inj (by rw [h, map_zero])))
   obtain ⟨v, hvE, hv⟩ : ∃ v : Fin n → Fin n → 𝓞 L, (∀ i, v i ∈ E) ∧
       ‖(j.comp (algebraMap (𝓞 L) L)) a‖ ≤ ‖(j.comp (algebraMap (𝓞 L) L)) (Matrix.of v).det‖ := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     have hall : ∀ x ∈ detIdeal E, ‖(j.comp (algebraMap (𝓞 L) L)) x‖ < ‖(j.comp (algebraMap (𝓞 L) L)) a‖ := by
       intro x hx
       induction hx using Submodule.span_induction with
@@ -703,38 +703,10 @@ open MonoidalCategory CartesianMonoidalCategory MonObj
 namespace LevelTowerAlt.Gram
 
 theorem exists_gram : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (S : Scheme.{0}) (t : SAB H S), IsProper t.G.hom → Out.RelAmple t.G t.PP.L → Out.KTriv t.G t.PP.L → ∀ (x : Sp ℂ ⟶ S) (n : ℕ) (v : Fin n → (epsAt x ⟶ t.G)), (∀ i, IsTanAt t.G x (v i)) → ∃ Γ : Matrix (Fin n) (Fin n) ℂ, IsHodgeGram t.G t.PP.L x v Γ := by
-  intro E _ _ _ H S t hp hA hK x n v hv
-  obtain ⟨Q, ψ, -, hQ, hQL, -⟩ := GlobalTheory.exists_polAV_pullback_of_isLocalRing E H S t hp hA hK ℂ x
-  obtain ⟨rig, hrig⟩ := Q.rigid
-  obtain ⟨u, Hm, χ, -, hAH, -, d₁, -⟩ := GlobalTheory.thetaUnifAV_all Q rig hrig
-  have hl : ∀ a, ∃ t' : epsR ℂ ⟶ Q.A, t'.left ≫ ψ = (v a).left ∧ IsTangent t' := by
-    intro a
-    have sq : (v a).left ≫ t.G.hom = spMap (algebraMap ℂ (DualNumber ℂ)) ≫ x := Over.w (v a)
-    let t' : epsR ℂ ⟶ Q.A := Over.homMk (hQ.1.lift _ _ sq) (hQ.1.lift_snd _ _ _)
-    have h1 : t'.left ≫ ψ = (v a).left := hQ.1.lift_fst _ _ _
-    refine ⟨t', h1, (ReciprocityTheory.ChartRestriction.G.Chart.tan_push hQ t').2 ?_⟩
-    rw [h1]
-    exact hv a
-  choose t' h1 h2 using hl
-  choose W hW _ using fun a => d₁ (t' a) (h2 a)
-  exact ⟨Matrix.of fun a b => Real.pi * hermForm Hm (W a) (W b), Q, ψ, t', u, Hm, χ, W, hQ, hQL.symm, hAH,
-    fun a => ⟨h1 a, hW a⟩, fun _ _ => rfl⟩
+  apply _root_.GlobalTheory.CompanionTheory.Ar.Flat.HodgeFr.exists_gram <;> assumption
 
 theorem gram_eq : ∀ (S : Scheme.{0}) (G : Over S) [GrpObj G] (L : LB G.left) (x : Sp ℂ ⟶ S) (n : ℕ) (v : Fin n → (epsAt x ⟶ G)) (Γ Γ' : Matrix (Fin n) (Fin n) ℂ), L.IsLB → (∀ i, IsTanAt G x (v i)) → IsHodgeGram G L x v Γ → (∀ p q, HodgeIP G L x (v p) (v q) (Γ' p q)) → Γ' = Γ.transpose := by
-  intro S G _ L x n v Γ Γ' hL hv hG hIP
-  obtain ⟨Q, ψ, v', u, Hm, χ, W, hp, hiso, hAH, hvW, hΓ⟩ := hG
-  have hM := pull_isLB hL ψ
-  obtain ⟨w, hw⟩ := LBIso.symm hiso
-  obtain ⟨ht₁, ht₂, -⟩ := GlobalTheory.AnyUnif.tangent_and_unimodular GlobalTheory.thetaUnifAV_all Q u
-  have htan : ∀ a, IsTangent (v' a) := fun a =>
-    (ReciprocityTheory.ChartRestriction.G.Chart.tan_push hp (v' a)).2 (by rw [(hvW a).1]; exact hv a)
-  ext p q
-  obtain ⟨-, -, -, A, _, φ, g, u', Hm', χ', a', b', a, b, h1, h2, h3, h4, h5, h6, e⟩ :=
-    hodgeInnerProduct_iff_hodgeForm.1 (hIP p q)
-  have key := _root_.GlobalTheory.CompanionTheory.Ar.HodgeUniq.hermForm_eq_of_pullbacks S G L x Q.A A ψ φ Q.g g (GlobalTheory.TorsionTauCompare.transport Q.isLB hM hw u) u' Hm Hm' χ χ'
-    hL Q.isAb hp h1 ht₁ ht₂ (GlobalTheory.TorsionTauCompare.isAH_transport Q.isLB hM hw u hAH) h2 (v' q) (v' p) a' b' (W q) (W p) a b
-    (htan q) (htan p) (h3.trans (hvW q).1.symm) (h4.trans (hvW p).1.symm) (hvW q).2 (hvW p).2 h5 h6
-  rw [e, key, Matrix.transpose_apply, hΓ]
+  apply _root_.GlobalTheory.CompanionTheory.Ar.Flat.HodgeFr.gram_eq <;> assumption
 
 end LevelTowerAlt.Gram
 end -- clump:auto

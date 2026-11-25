@@ -88,8 +88,7 @@ private theorem powerSeries_algHom_injective_of_X_ne_zero {R : Type*} [CommRing 
   intro F hF
   by_contra hF0
   have hex : ∃ n, coeff n F ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hF0 (PowerSeries.ext fun n => by rw [h n, _root_.map_zero])
   classical
   obtain ⟨n, hn, hmin⟩ : ∃ n, coeff n F ≠ 0 ∧ ∀ i < n, coeff i F = 0 :=

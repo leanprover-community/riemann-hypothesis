@@ -68,8 +68,6 @@ open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCate
   AlgebraicGeometry
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Out
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.LevelCompare
 
 theorem rel_of_basis {G U J : Type} [CommGroup G] [CommGroup U] [Fintype J] [DecidableEq J]

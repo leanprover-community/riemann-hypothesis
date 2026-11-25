@@ -140,8 +140,7 @@ private lemma Hf_e_e_eq_ite {E : Type} [Field E] [CharZero E] (σ : E →+* E) (
     obtain ⟨p, hpW, hp⟩ := hermC_ppos_col_castLE σ hσ J hJ v hvo hvd z y0 hy0W hz
     have key : ∃ y, (∀ a, PI.NormGramAtOrigin.hform σ J (v a) y = 0) ∧
         PI.NormGramAtOrigin.hform σ J y y ≠ 0 := by
-      by_contra hcon
-      push_neg at hcon
+      by_contra! hcon
       refine hform_add_smul_self_ne_zero_of_isotropic_pair σ hσ J hJ p y0 (hcon p hpW) (hcon y0 hy0W) _ rfl hp (hcon _ fun a => ?_)
       rw [hform_add_right_orbital_bounds_conclusion, hform_smul_right_orbital_bounds_conclusion, hpW a, hy0W a, mul_zero, add_zero]
     obtain ⟨y, hyW, hyy⟩ := key

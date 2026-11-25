@@ -95,8 +95,7 @@ theorem eq_zero_or_single {ι : Type} [Fintype ι] [DecidableEq ι] (γ : ι →
   · exact Or.inl h0
   right
   obtain ⟨s, hs⟩ : ∃ s, γ s ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact h0 (Finsupp.ext hc)
   rw [Finsupp.degree_eq_sum] at h
   have hsum : ∑ i, γ i = γ s + ∑ i ∈ Finset.univ.erase s, γ i :=

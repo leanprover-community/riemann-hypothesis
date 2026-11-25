@@ -74,8 +74,7 @@ theorem core (n k : ℕ) (ν c : ℕ → ℝ)
     have := hP k hkn
     linarith
   have hb : ∃ b, b < k ∧ b ∉ I := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     apply hEq
     symm
     apply Finset.eq_of_subset_of_card_le
@@ -83,8 +82,7 @@ theorem core (n k : ℕ) (ν c : ℕ → ℝ)
       exact hcon i (Finset.mem_range.1 hi)
     · simp [hk]
   have ha : ∃ a ∈ I, k ≤ a := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     apply hEq
     apply Finset.eq_of_subset_of_card_le
     · intro i hi

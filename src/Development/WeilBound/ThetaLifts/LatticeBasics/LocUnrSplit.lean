@@ -1128,8 +1128,6 @@ open GlobalTheory.Doubling (absE)
 open GlobalTheory.SplitFlip (invT)
 open Matrix (fromBlocks fromRows GeneralLinearGroup)
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E} {n : ℕ}
   {v : Pl F} {Y : Spc F E n}
 
@@ -1227,9 +1225,6 @@ open scoped TensorProduct NNReal Matrix
 open NumberField IsDedekindDomain MeasureTheory Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.UG GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 open PositivityTheory.ThK PositivityTheory.ThKH.Iwas PositivityTheory.ThKH.Locpair
 open Matrix (fromBlocks fromRows GeneralLinearGroup)
-
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 
 theorem locUnrSplit : LocUnrSplit := by
   rintro F E _ _ _ _ _ σ B n Y r s hB hY χ - hr K e hK he v ⟨τ⟩ hu μ hμ hμ1 z f hz hf

@@ -1,5 +1,7 @@
 module
 
+import GroundTheory.HeightsAndTheta.Heights.Regularisation.PosSemidefOfIntQuadNonneg
+
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ContDiffUncentre
 public import Mathlib.Analysis.Calculus.FDeriv.Star
 
@@ -29,15 +31,7 @@ theorem expCover_star {n : ℕ} (a : ℕ) (w : Fin n → ℂ) : expCover a (star
   · rfl
 
 theorem isOpen_logCover {n a : ℕ} (h : a ≤ n) : IsOpen (logCover h) := by
-  have : logCover h = (⋂ i : Fin a, {w : Fin n → ℂ | (w (Fin.castLE h i)).re < 0}) ∩
-      ⋂ k : Fin n, {w : Fin n → ℂ | a ≤ k.val → ‖w k‖ < 1} := by
-    ext w; simp [logCover]
-  rw [this]
-  refine (isOpen_iInter_of_finite fun i => ?_).inter (isOpen_iInter_of_finite fun k => ?_)
-  · exact isOpen_lt (Complex.continuous_re.comp (continuous_apply _)) continuous_const
-  · by_cases hk : a ≤ k.val
-    · simpa [hk] using isOpen_lt (continuous_norm.comp (continuous_apply k)) continuous_const
-    · simp [hk]
+  apply _root_.GroundTheory.Heights₂.Heights.Regular.isOpen_logCover <;> assumption
 
 theorem star_mem_ball {n : ℕ} {z : Fin n → ℂ} (hz : z ∈ Metric.ball (0 : Fin n → ℂ) 1) :
     star z ∈ Metric.ball (0 : Fin n → ℂ) 1 := by

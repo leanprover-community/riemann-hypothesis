@@ -1,5 +1,7 @@
 module
 
+
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SpanRangeEmb4EqTop
 public import Formalism.LocalToGlobal.KernelLattices.ColumnData
 public import Formalism.LocalToGlobal.KernelLattices.ColumnData.IsAdmissibleFlagPairOfUnitriangularLeftAutomorph
 public import Formalism.LocalToGlobal.KernelLattices.ColumnData.HfArith
@@ -10,7 +12,6 @@ import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.Cayley
 import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.CayleyGaussianIntegrals.MatrixFormFourfoldBlockFirstBlockEmb
 import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.CayleyGaussianIntegrals.Th0CharMulOpUTh0HalfPeriodEq
 import Mathlib.Tactic.TypeStar
-
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.LocalToGlobal.KernelLattices.ColumnData.Family, Formalism.LocalToGlobal.KernelLattices.ColumnData.StdOKP
 
@@ -93,74 +94,19 @@ open Formalism.L2.Th1.F (cmTheta)
 theorem selfDual_img {V W : Type*} [AddCommGroup V] [Module ℂ V] [AddCommGroup W] [Module ℂ W] (H : Sesq V) (H' : Sesq W)
     (g : V ≃ₗ[ℂ] W) (hg : IsIsom H H' (g : V →ₗ[ℂ] W)) (Λ : AddSubgroup V) (h : IsSelfDual H Λ) :
     IsSelfDual H' (imgLat (g : V →ₗ[ℂ] W) Λ) := by
-  apply le_antisymm
-  · intro x hx
-    refine ⟨g.symm x, ?_, g.apply_symm_apply x⟩
-    rw [← h]
-    intro y hy
-    obtain ⟨m, hm⟩ := hx (g y) ⟨y, hy, rfl⟩
-    refine ⟨m, ?_⟩
-    rw [← hm]
-    have := hg (g.symm x) y
-    simp only [LinearEquiv.coe_coe, LinearEquiv.apply_symm_apply] at this
-    simp only [altE, this]
-  · rintro _ ⟨x, hx, rfl⟩ _ ⟨y, hy, rfl⟩
-    rw [← h] at hx
-    obtain ⟨m, hm⟩ := hx y hy
-    refine ⟨m, ?_⟩
-    rw [← hm]
-    have := hg x y
-    simp only [altE]
-    exact congrArg Complex.im this
+  apply +allowSynthFailures _root_.GlobalTheory.FourthRootStd.selfDual_image <;> assumption
 
 theorem exists_nat_mul (F : Type*) [Field F] [NumberField F] (T : Finset F) :
     ∃ m : ℕ, 0 < m ∧ ∀ x ∈ T, IsIntegral ℤ ((m : F) * x) := by
-  obtain ⟨b, hb⟩ := IsLocalization.exist_integer_multiples_of_finset (nonZeroDivisors (𝓞 F)) T
-  have hn : Ideal.absNorm (Ideal.span {(b : 𝓞 F)}) ≠ 0 := by
-    rw [Ne, Ideal.absNorm_eq_zero_iff, Ideal.span_singleton_eq_bot]; exact nonZeroDivisors.ne_zero b.2
-  obtain ⟨t, ht⟩ := Ideal.mem_span_singleton'.mp (Ideal.absNorm_mem (Ideal.span {(b : 𝓞 F)}))
-  refine ⟨_, Nat.pos_of_ne_zero hn, fun x hx => ?_⟩
-  obtain ⟨r, hr⟩ := hb x hx
-  have : ((Ideal.absNorm (Ideal.span {(b : 𝓞 F)}) : ℕ) : F) * x = ((t * r : 𝓞 F) : F) := by
-    rw [Algebra.smul_def] at hr
-    have h1 : ((Ideal.absNorm (Ideal.span {(b : 𝓞 F)}) : ℕ) : F) = (t : F) * ((b : 𝓞 F) : F) := by
-      have := congrArg (fun y : 𝓞 F => (y : F)) ht
-      simpa using this.symm
-    rw [h1, mul_assoc]
-    push_cast
-    exact congrArg ((t : F) * ·) hr.symm
-  rw [this]; exact RingOfIntegers.isIntegral_coe _
+  apply +allowSynthFailures _root_.GlobalTheory.FourthRootStd.exists_nat_mul <;> assumption
 
 theorem denom (E K : Type*) [Field E] [NumberField E] [Field K] [NumberField K] {ι : Type*} [Fintype ι] (f : ι → E →+ K) :
     ∃ m : ℕ, 0 < m ∧ ∀ i, ∀ x : 𝓞 E, IsIntegral ℤ ((m : K) * f i (x : E)) := by
-  let bs := RingOfIntegers.basis E
-  obtain ⟨m, hm, h⟩ := exists_nat_mul K
-    (Finset.univ.image fun p : ι × Module.Free.ChooseBasisIndex ℤ (𝓞 E) => f p.1 ((bs p.2 : 𝓞 E) : E))
-  refine ⟨m, hm, fun i x => ?_⟩
-  have hx : (x : E) = ∑ j, (bs.repr x j) • ((bs j : 𝓞 E) : E) := by
-    conv_lhs => rw [← bs.sum_repr x]
-    simp
-
-  rw [hx, map_sum, Finset.mul_sum]
-  refine IsIntegral.sum _ fun j _ => ?_
-  rw [map_zsmul, mul_smul_comm]
-  exact (h _ (Finset.mem_image.2 ⟨(i, j), Finset.mem_univ _, rfl⟩)).zsmul _
+  apply +allowSynthFailures _root_.GlobalTheory.FourthRootStd.denom <;> assumption
 
 theorem fg_of_nsmul_le {ι : Type} (M M' : AddSubgroup (ι → ℂ)) [AddGroup.FG M'] (N : ℕ) (hN : 0 < N)
     (h : ∀ x ∈ M, N • x ∈ M') : AddGroup.FG M := by
-  rw [← Module.Finite.iff_addGroup_fg]
-  have : Module.Finite ℤ M' := Module.Finite.iff_addGroup_fg.2 inferInstance
-  let f : M →+ M' :=
-    { toFun := fun x => ⟨N • x.1, h x.1 x.2⟩
-      map_zero' := by ext; simp
-      map_add' := fun x y => by ext; simp }
-  refine Module.Finite.of_injective f.toIntLinearMap ?_
-  intro x y hxy
-  have h1 : N • x.1 = N • y.1 := congrArg (fun z : M' => z.1) hxy
-  ext i
-  have h2 := congrFun h1 i
-  simp only [Pi.smul_apply, nsmul_eq_mul] at h2
-  exact mul_left_cancel₀ (by exact_mod_cast hN.ne') h2
+  apply +allowSynthFailures _root_.GlobalTheory.FourthRootStd.fg_of_nsmul_le <;> assumption
 
 def e4 : Fin 2 × Fin 2 ≃ Fin 4 := finProdFinEquiv
 

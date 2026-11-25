@@ -1182,7 +1182,7 @@ theorem GlobalTheory.Shares.exists_anFacts_record : ∀ (D : D7) (T : Top D) (h 
     _root_.GlobalTheory.Shares.LeadDeep.main D T h j hj n R e hR N wL wF w Tn _ A t Fl _ xs en hxs,
     _root_.GlobalTheory.UpperRecord.upper D T h j hj n R e hR N wL wF w Tn _ A t Fl _ xs en hxs,
     _root_.GlobalTheory.LowerBound.lower_bound D T h j hj n R e hR N wL wF w Tn _ A t Fl _ xs en hxs CR c rfl hM,
-    _root_.GlobalTheory.Containment.main D T h j hj n R e hR N wL wF w Tn _ A t Fl _ xs en hxs hOn CR c rfl ?_⟩
+    _root_.GlobalTheory.Containment.main D T h j hj n R e hR N wL wF w Tn _ A t Fl _ xs en hxs hOn CR c ?_⟩
   · intro Q hQ
     have hσ : R.σ = T.σ₀ := RingHom.ext hR.1
     rw [hσ]

@@ -223,8 +223,7 @@ theorem exists_place {σ : E →ₐ[F] E} (hCM : IsCMExt F E σ) (J : Matrix (Fi
     (hJ : IsHermND σ J) (t : F) (ht : t ≠ 0) (hne : ∀ x : Fin 2 → E, hE σ J x x ≠ algebraMap F E t) :
     ∃ (τ : E →+* ℂ) (c : ℝ), c ≠ 0 ∧ τ (algebraMap F E t) = c ∧
       ∀ w : Fin 2 → ℂ, c * (star w ⬝ᵥ (J.map τ *ᵥ w)).re ≤ 0 := by
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   haveI : IsTotallyReal F := hCM.1
   haveI : IsTotallyComplex E := hCM.2.1
   haveI : Algebra.IsQuadraticExtension F E := ⟨hCM.2.2.1⟩

@@ -2,6 +2,7 @@ module
 
 public import Formalism.SharpRestriction.CuspSpanNormBounds.IsPrimitiveSub
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PairCorankPositivity.EqZeroOfMulVec
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsFrameFixingIsometrySplitRowLatticeStatement
 
 @[expose] public section
 
@@ -36,13 +37,7 @@ theorem hT_smul_left (a : E) (x v : S.V) : S.hT (a • x) v = star a * S.hT x v 
 
 theorem mem_orth_span {s : Set S.V} {v : S.V} :
     v ∈ orth S (Submodule.span E s) ↔ ∀ x ∈ s, S.hT x v = 0 := by
-  rw [mem_orth]
-  refine ⟨fun h x hx => h x (Submodule.subset_span hx), fun h x hx => ?_⟩
-  induction hx using Submodule.span_induction with
-  | mem x hx => exact h x hx
-  | zero => rw [map_zero, LinearMap.zero_apply]
-  | add x y _ _ hx hy => rw [hT_add_left, hx, hy, add_zero]
-  | smul a x _ hx => rw [hT_smul_left, hx, mul_zero]
+  apply _root_.GlobalTheory.LoopC.RowSplit.mem_orth_span <;> assumption
 
 theorem finrank_orth (U : Submodule E S.V) :
     finrank E U + finrank E (orth S U) = finrank E S.V := by

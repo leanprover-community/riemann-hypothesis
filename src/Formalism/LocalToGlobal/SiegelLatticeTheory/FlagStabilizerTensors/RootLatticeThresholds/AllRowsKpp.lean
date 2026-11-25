@@ -49,8 +49,7 @@ theorem jPred_iff (kk s : ℕ) {N g : ℕ} (hN : N = kk + 2 * s + 1) (M : Matrix
     refine ⟨fun i j hij => ?_, fun i => (hU i i).2 rfl, fun i j _ hji => (hU i j).1 hji,
       fun i j hj hij hbi => ?_⟩
     · have hji : j < i := by
-        by_contra h
-        push_neg at h
+        by_contra! h
         have := blk_mono s kk (Fin.le_def.1 h)
         omega
       exact (hU i j).1 hji

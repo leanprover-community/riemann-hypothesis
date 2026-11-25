@@ -69,13 +69,6 @@ theorem wach_cocycle_class_mem_latticeFiniteCohomology (hs : W.s = 1) (hp : PD.p
   have hg : W.gamK = W.gam := W.gamK_eq_one hs hp
   have hr := ((h9 T hT hs hp).2.2 hfr).1
   obtain ⟨_, _, hπ, _, hq, _⟩ := hr
-  have hq' : ∃ w : (LetA O n)ˣ, W.q = (w : LetA O n) * (W.π₀ + ((PD.p : ℕ) : LetA O n)) := by
-    obtain ⟨w, hw⟩ := hq
-    refine ⟨w, ?_⟩
-    rw [hw]
-    congr 1
-    funext i
-    simp [Formalism.MainNotions.DeltaInvariantLattices.Eat]
   have hmem : (x : W.DD T × W.DD T) ∈ W.divisibleCocycles T := by
     have h1 := (Submodule.mem_inf.mp x.2).1
     rw [hg] at h1

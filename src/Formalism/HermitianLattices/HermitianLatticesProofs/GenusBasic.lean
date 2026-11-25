@@ -3,7 +3,6 @@ module
 public import Formalism.HermitianLattices.HermitianLatticesProofs.LocBasic
 public import Formalism.HermitianLattices.HermitianLatticesProofs.DualBasic
 public import Formalism.HermitianLattices.HermitianLatticesProofs.IsomAct
-import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

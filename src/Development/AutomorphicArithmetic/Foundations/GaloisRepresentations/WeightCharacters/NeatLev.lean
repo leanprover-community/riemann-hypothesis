@@ -165,7 +165,7 @@ open UpperTheory.Gal.Wt
 theorem UpperTheory.Gal.Wt.neatLev_of :
     UpperTheory.Gal.Wt.NeatLev := by
   intro E _ _ _ l hl a ha w₀ hmem hs v' hv' hap K hK hint Kv hKv W f hf
-  obtain ⟨N, hN, hNf⟩ := UpperTheory.Gal.Gen.smoothAt_holds E a w₀ hs W f
+  obtain ⟨N, hN, hNf⟩ := _root_.UpperTheory.Gal.Gen.smoothAt_pf E a w₀ hs W f
   obtain ⟨J, hJ, hJN, hJt, -⟩ := UpperTheory.Gal.Gen.tower_holds E w₀ a l hl hmem ha N hN
   obtain ⟨hLev, hmemC, hcJ, -, -, -⟩ :=
     UpperTheory.Gal.Gen.levFacts_holds E a w₀ hs K hK (J 0) (hJ.isOpen 0) (hJ.compact 0)

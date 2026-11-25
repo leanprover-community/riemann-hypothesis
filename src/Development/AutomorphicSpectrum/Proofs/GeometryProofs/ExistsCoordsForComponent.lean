@@ -242,8 +242,7 @@ theorem isIntegrallyClosed_of_snc {K : Type} [Fintype K] {J : K → Type} [∀ k
     rw [AddSubmonoidClass.coe_finsetSum]
     exact hs1
   obtain ⟨l, hl⟩ : ∃ l, IsUnit (f' l) := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     have h1 : (1 : regAt ξ q) ∈ IsLocalRing.maximalIdeal (regAt ξ q) := by
       rw [← hsum']
       exact Ideal.sum_mem _ fun l _ => Ideal.mul_mem_left _ _ ((IsLocalRing.mem_maximalIdeal _).2 (hcon l))

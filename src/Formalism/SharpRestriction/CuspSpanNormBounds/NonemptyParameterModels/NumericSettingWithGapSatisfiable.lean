@@ -1,5 +1,6 @@
 module
 
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.SigZeroCayley
 import Formalism.SharpRestriction.CuspSpanNormBounds.NonemptyParameterModels.AmpTensorDSdNonemptyOfSubsingleton
 public import Formalism.SharpRestriction.CuspSpanNormBounds.RelevantZeroGramTerms
 public import Formalism.FormalDegreeBessel.FormalDegreeRatio.GBasic
@@ -214,14 +215,7 @@ theorem obj_isHCParam_u (R : Formalism.BasicNotions.Ranks) (P : Formalism.BasicN
 
 open Formalism.MainNotions.CayleySignature in
 theorem exists_isCayleyU_eps48 (k r : ℕ) (hk : 1 ≤ k) : ∃ P, IsCayleyU k r (eps48 k r) P := by
-  apply obj_cayleyU_of_card
-  have e : (Finset.univ.filter fun i => eps48 k r i = true) =
-      Finset.univ.filter (fun i : Fin (2 * r + k + 1) => i.val < k - 1 ∨ (i.val - (k - 1)) % 2 = 0) := by
-    apply Finset.filter_congr
-    intro i _
-    unfold eps48
-    by_cases h : i.val < k - 1 <;> simp [h]
-  rw [e, obj_card_fin (2 * r + k + 1) (fun i => i < k - 1 ∨ (i - (k - 1)) % 2 = 0), obj_count k r hk]
+  apply _root_.ReciprocityTheory.ChartRestriction.DS.exists_cayley_unitary <;> assumption
 
 
 end obj

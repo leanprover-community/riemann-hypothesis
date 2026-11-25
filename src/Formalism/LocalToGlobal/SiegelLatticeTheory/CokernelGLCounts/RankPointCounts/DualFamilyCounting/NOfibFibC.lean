@@ -1060,29 +1060,7 @@ theorem im_inj {t t' : D.host.E} (ht : D.host.conj t = -t) (ht' : D.host.conj t'
   exact sub_eq_zero.mp ((map_eq_zero_iff _ (RingHom.injective _)).mp h0)
 
 theorem aaLb_inW {b : Fin D.R.rS} {y : (VS D).V} (hy : y ∈ aaLb X b) : InW X y := by
-  have hL : ∀ l ∈ X.Lb, InW X l := by
-    intro l hl
-    have hp := Alg.pW_inW (X := X) l
-    have he : pW X l = l := by
-      have h1 := Level.prV_Lb (X := X) l hl
-      rw [Level.prV_apply] at h1
-      simpa only [pW] using h1
-    rwa [he] at hp
-  simp only [aaLb, SetLike.mem_coe] at hy
-  induction hy using Submodule.span_induction with
-  | mem x hx =>
-    obtain ⟨c, -, l, hl, rfl⟩ := hx
-    intro d
-    exact ⟨by rw [map_smul, ((hL l hl) d).1, smul_zero], by rw [map_smul, ((hL l hl) d).2, smul_zero]⟩
-  | zero => intro d; exact ⟨map_zero _, map_zero _⟩
-  | add x z _ _ hx hz =>
-    intro d
-    exact ⟨by rw [map_add (f := _), (hx d).1, (hz d).1, add_zero], by rw [map_add (f := _), (hx d).2, (hz d).2, add_zero]⟩
-  | smul o x _ hx =>
-    intro d
-    refine ⟨?_, ?_⟩
-    · rw [← algebraMap_smul D.host.E o x, map_smul, (hx d).1, smul_zero]
-    · rw [← algebraMap_smul D.host.E o x, map_smul, (hx d).2, smul_zero]
+  apply _root_.Formalism.L2.SG.Pf.NcReal.JX.NOf.Onto.aaLb_inW <;> assumption
 
 end Formalism.L2.SG.Pf.NcReal.JX.NOf
 end -- clump:auto
@@ -1111,10 +1089,7 @@ theorem star_eq_conj' (t : D.host.E) : star t = D.host.conj t := by
   rw [Formalism.BasicNotions.Examples₂.emb_star, Formalism.BasicNotions.Examples₂.emb_conj]
 
 theorem theta_spec : IsIntegral ℤ (theta D) ∧ theta D + D.host.conj (theta D) = 1 := by
-  have h := thetaEx_holds D
-  unfold theta
-  rw [dite_eq_left h]
-  exact h.choose_spec
+  apply _root_.Formalism.L2.SG.Pf.NcReal.JX.NOf.Onto.theta_spec <;> assumption
 
 theorem entry_rel {X0 : Matrix (Fin D.R.rS) (Fin D.R.rS) D.host.E} {xs : Fin D.R.rS → (VS D).V}
     {M : Matrix (Fin D.R.rS) (Fin D.R.rS) D.host.E} (hok : DataOK X X0 xs M) (b a : Fin D.R.rS) :
@@ -1215,10 +1190,7 @@ theorem theta_int_mem {I : FractionalIdeal (nonZeroDivisors (𝓞 D.host.E)) D.h
     exact (I : Submodule (𝓞 D.host.E) D.host.E).zero_mem
 
 theorem inW_sub {X : HidaSetting D} {x y : (VS D).V} (hx : InW X x) (hy : InW X y) : InW X (x - y) := by
-  intro c
-  obtain ⟨h1, h2⟩ := hx c
-  obtain ⟨h3, h4⟩ := hy c
-  exact ⟨by rw [map_sub, h1, h3, sub_zero], by rw [map_sub, h2, h4, sub_zero]⟩
+  apply _root_.Formalism.L2.SG.Pf.NcReal.JX.NOf.Ex.inW_sub <;> assumption
 
 theorem xblk {X : HidaSetting D} (u : D.what₂.Word) (X0 : Matrix (Fin D.R.rS) (Fin D.R.rS) D.host.E)
     (xs : Fin D.R.rS → (VS D).V) (M : Matrix (Fin D.R.rS) (Fin D.R.rS) D.host.E)

@@ -124,8 +124,7 @@ theorem exists_finset {T : Type} (z : T → (Σ k, J k) → ℂ) (f : T → MRin
   obtain ⟨s, hs⟩ := IsCompactElement.exists_finset_of_le_iSup hc
     (fun t => Ideal.span {f t}) le_rfl
   refine ⟨s, fun t => ?_⟩
-  by_contra hno
-  push_neg at hno
+  by_contra! hno
   let φ : MRing J →+* ℂ := (MvPolynomial.eval (z t)).comp (MvPolynomial.map (Int.castRingHom ℂ))
   have hle : (⨆ t' ∈ s, Ideal.span {f t'}) ≤ RingHom.ker φ :=
     iSup₂_le fun t' ht' => (Ideal.span_singleton_le_iff_mem _).2 (RingHom.mem_ker.2 (hno t' ht'))
@@ -304,13 +303,11 @@ theorem pres_off {y : (Σ k, J k) → Ω} (hP : IsMultiHomogIdeal (mCoordIdeal y
     ∃ g h dg dh, Pres y a c₀ g h dg dh ∧ evC w g ≠ 0 ∧ evC w h ≠ 0 := by
   classical
   have hne : ∃ f ∈ mCoordIdeal y, evC w f ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact hn ⟨hw, fun f hf => hc f hf⟩
   obtain ⟨S, hS, hPS⟩ := hP
   have hgen : ∃ s0 ∈ S, evC w s0 ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     obtain ⟨f, hf, hfw⟩ := hne
     let φ : MRing J →+* ℂ := (MvPolynomial.eval w).comp (MvPolynomial.map (Int.castRingHom ℂ))
     have hle : mCoordIdeal y ≤ RingHom.ker φ := by

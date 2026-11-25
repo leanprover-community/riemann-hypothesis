@@ -1,5 +1,6 @@
 module
 
+import all ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.UnipotentOnHyperbolicComplement
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.FundamentalDomainPointBound
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.FlowMatMulVec
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.IsIntegralCc
@@ -470,14 +471,9 @@ theorem Mmat_comb (β : Fin n → ℂ) : Mmat τ G p f g *ᵥ (∑ c, β c • f
   rw [Matrix.mulVec_smul, Mmat_f τ G p f g hG hf]
 
 private lemma hermC_eq_conj_hermC_swap (u v : Fin r → ℂ) : hermC τ G u v = conj (hermC τ G v u) := by
-  unfold hermC
-
-  simp only [map_sum, map_mul, Complex.conj_conj]
-  rw [Finset.sum_comm]
-  refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
-  rw [← hG i j]
-  simp only [cc, IsCMField.complexEmbedding_complexConj]
-  ring
+  first
+    | exact _root_.ReciprocityTheory.ChartRestriction.G.FD.hC_symm
+    | apply _root_.ReciprocityTheory.ChartRestriction.G.FD.hC_symm <;> first | assumption | rfl | infer_instance
 
 theorem Mmat_unitary (hgf : ∀ k, g k ∈ Submodule.span ℂ (Set.range f))
     (hg : ∀ k l, hermC τ G (g k) (g l) = if k = l then (if (k : ℕ) < p then 1 else -1) else 0)

@@ -199,8 +199,6 @@ theorem lgN_le (hS : SegFacts C0 CE1 CE2 X) : (lgN X.p (aBig X) X.r : ℝ) ≤ l
   have hlog : ((Nat.log X.p (8 * aBig X + X.r) : ℕ) : ℝ) ≤ Real.logb X.p ((8 * aBig X + X.r : ℕ) : ℝ) := by
     rw [Real.le_logb_iff_rpow_le hp1 hyR, Real.rpow_natCast]
     exact_mod_cast hpow
-  have hs0 : (0 : ℝ) ≤ X.s := Nat.cast_nonneg _
-  have hr0 : (0 : ℝ) ≤ X.r := Nat.cast_nonneg _
   have hyle : ((8 * aBig X + X.r : ℕ) : ℝ) ≤ (3 * (X.s : ℝ) + 2) * (8 * X.L.a + X.r) := by
     unfold aBig
     push_cast
@@ -221,7 +219,6 @@ theorem lgN_le (hS : SegFacts C0 CE1 CE2 X) : (lgN X.p (aBig X) X.r : ℝ) ≤ l
 
 theorem initial_point_numeric_bound (t s r L lam : ℝ) (ht0 : 0 ≤ t) (hts : t ≤ s) (hr4 : 4 ≤ r) (hL : L ≤ 2 * lam)
     (hlam : 0 ≤ lam) : ((t + 1) * (r + 1) + ((2 * s + 1 + 1) * r + (t + 1) * 2)) * L + L ≤ 3 * (s + 2) * r ^ 2 * lam := by
-  have hs0 : 0 ≤ s := le_trans ht0 hts
   have hC0 : 0 ≤ (t + 1) * (r + 1) + ((2 * s + 1 + 1) * r + (t + 1) * 2) + 1 := by nlinarith
   have key := mul_le_mul_of_nonneg_left hL hC0
   have hcoef : 2 * ((t + 1) * (r + 1) + ((2 * s + 1 + 1) * r + (t + 1) * 2) + 1) ≤ 3 * (s + 2) * r ^ 2 := by
@@ -239,7 +236,6 @@ private theorem one_le_lgA_of_segFacts (hS : SegFacts C0 CE1 CE2 X) : 1 ≤ lgA 
     show (1 : ℝ) < X.L.p
     linarith
   have ha1 : (1 : ℝ) ≤ X.L.a := hS.hF.a1
-  have hr0 : (0 : ℝ) ≤ X.r := Nat.cast_nonneg _
   unfold lgA
   have : 0 ≤ Real.logb X.p (8 * X.L.a + X.r) := Real.logb_nonneg hp1 (by linarith)
   linarith
@@ -284,9 +280,6 @@ theorem q_num (J W a k Y b' p : ℝ) (hY : 1 ≤ Y) (hk : 5 ≤ k) (hb : 0 < b')
   have hp0 : 0 < p := by
     have : 0 < k ^ 2 * Y ^ 2 := by positivity
     linarith
-  have ha0 : 0 < a := by
-    have := mul_pos hp0 hb
-    linarith
   have hW1 : k * Y * b' < a / (k * Y) := by
     rw [lt_div_iff₀ hkY]
     have e : k * Y * b' * (k * Y) = k ^ 2 * Y ^ 2 * b' := by ring
@@ -308,7 +301,6 @@ theorem kap_facts (hS : SegFacts C0 CE1 CE2 X) (CM : ℝ) (hCM : 1 ≤ CM) :
   have hF := hS.hF
   have hlam1 := one_le_lgA_of_segFacts hS
   have hr4 : (4 : ℝ) ≤ X.r := by exact_mod_cast hF.m4
-  have hs0 : (0 : ℝ) ≤ X.s := Nat.cast_nonneg _
   have hc : 1 ≤ 3 * ((X.s : ℝ) + 2) * (X.r : ℝ) ^ 2 := by nlinarith
   have hk : lgA X.p X.L.a X.r ≤ kapS X := by
     unfold kapS
@@ -367,7 +359,6 @@ theorem restWinNum_proved (hS : SegFacts C0 CE1 CE2 X) (hpk : X.L.k ^ 2 * X.L.Y 
   have hh0 : (0 : ℝ) ≤ (Nat.clog X.p (X.L.a + 1) : ℝ) := Nat.cast_nonneg _
   have hhk : (Nat.clog X.p (X.L.a + 1) : ℝ) ≤ kapS X := by
     have h1 := clog_le_lg X.p hp1N (X.L.a + 1) (by omega)
-    have hr0 : (0 : ℝ) ≤ X.r := Nat.cast_nonneg _
     have hlog : Real.logb X.p ((X.L.a + 1 : ℕ) : ℝ) ≤ Real.logb X.p (8 * X.L.a + X.r) :=
       Real.logb_le_logb_of_le hp1 (by positivity) (by push_cast; linarith)
     unfold lgA at hlk
@@ -925,7 +916,6 @@ theorem mX_zero (J : ℕ) (u v : MvPolynomial σ ℚ_[p]) : mX w e J 0 u v = M.f
 theorem neglog_pow_mul (x0 : ℕ) (c : ℚ_[p]) (hc : c ≠ 0) :
     -Real.logb p ‖(p : ℚ_[p]) ^ x0 * c‖ = (x0 : ℝ) + c.valuation := by
   have hp1 : (1 : ℝ) < p := by exact_mod_cast hp.out.one_lt
-  have hp0 : (p : ℚ_[p]) ≠ 0 := by exact_mod_cast hp.out.ne_zero
   rw [norm_mul, norm_pow, Padic.norm_p, Padic.norm_eq_zpow_neg_valuation hc,
     Real.logb_mul (pow_ne_zero _ (inv_ne_zero (by linarith))) (zpow_ne_zero _ (by linarith)), Real.logb_pow,
     Real.logb_inv, Real.logb_self_eq_one hp1, neg_add, Formalism.GM.MeanGammaLemmas.neglog_zpow]
@@ -1166,7 +1156,6 @@ theorem bnd_phisB (hB : G.BlockOK) (A : ℕ) (hdeg : ∀ x, G.LL.deg x ≤ 2 * A
         have h1 := congrArg Fin.val h.1
         have h2 : min (G.T.pos i) N = min (G.T.pos i + 1) N := h1
         have h3 := hB.2.1 i
-        have h4 := G.uPos.2
         omega
       · refine log_le_lgN p A _ ?_
         have h1 := (lettersAt_le G j jp (G.letterAt (G.T.pos i))).trans (hdeg _)

@@ -64,8 +64,7 @@ theorem eq_zero_of_forms {N : ℕ} {V : Type} [AddCommGroup V] [Module ℂ V]
     rwa [Ne, Submodule.mkQ_apply, Submodule.Quotient.mk_eq_zero]
   obtain ⟨f, hf⟩ : ∃ f : Module.Dual ℂ (V ⧸ twKer π (Zls.Km k N m) 1),
       f ((twKer π (Zls.Km k N m) 1).mkQ w) ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact hq ((Module.forall_dual_apply_eq_zero_iff ℂ _).1 hc)
   refine hf (h (f ∘ₗ (twKer π (Zls.Km k N m) 1).mkQ) fun x hx => LinearMap.ext fun u => ?_)
   show f ((twKer π (Zls.Km k N m) 1).mkQ (π x u)) = f ((twKer π (Zls.Km k N m) 1).mkQ u)

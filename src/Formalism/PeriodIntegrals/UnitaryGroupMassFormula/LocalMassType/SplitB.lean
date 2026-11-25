@@ -154,8 +154,7 @@ theorem sigma_invol (hCM : IsCMExt F E σ) (y : E) : σ (σ y) = y := by
   rw [hCM.2.2.2 τ (σ y), hCM.2.2.2 τ y, star_star]
 
 theorem sigma_ne_id (hCM : IsCMExt F E σ) : ∃ y, σ y ≠ y := by
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   obtain ⟨τ⟩ := (inferInstance : Nonempty (E →+* ℂ))
   have hR : ComplexEmbedding.IsReal τ := by
     rw [ComplexEmbedding.isReal_iff]

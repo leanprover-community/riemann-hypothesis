@@ -106,8 +106,6 @@ open Formalism.BasicNotions NumberField IsDedekindDomain Formalism.MainNotions F
 open Formalism.L2.KerInert Formalism.L2.KerInert.PullbackComparison Formalism.L2.KerInert.RepComb
 open scoped TensorProduct
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Abs
 
 variable {V : Type} [AddCommGroup V] [Module ℂ V] [DecidableEq V] (H : Sesq V) (α : V → ℂ) (T : V ≃+ V)

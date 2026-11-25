@@ -148,8 +148,7 @@ theorem ann_core {K : Type} [CommRing K] [TopologicalSpace K] [T2Space K] [Measu
     rw [Set.indicator_of_notMem (show -z ∉ (U : Set K) from fun h' => hzU (by simpa using U.neg_mem h'))] at hz
     exact one_ne_zero hz
   · intro hzU
-    by_contra h
-    push_neg at h
+    by_contra! h
     rw [integral_indicator_mul_char_eq_zero μ p hadd A z h, mul_zero,
       Set.indicator_of_mem (show -z ∈ (U : Set K) from U.neg_mem hzU)] at hz
     exact zero_ne_one hz

@@ -95,8 +95,7 @@ theorem et_equiv (L : LocBessel k r) {γ : Matrix (Fin (2 * r + k + 1)) (Fin (2 
 
 theorem at_pos {γ : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ} {μR : Measure (Mt k r)}
     (hR0 : μR ≠ 0) (hRc : μR {x | Matrix.of x ∉ RStab k r γ} = 0) : ∃ T : ℕ, μR (AT (k := k) (r := r) γ T) ≠ 0 := by
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   have hU : μR {x : Mt k r | Matrix.of x ∈ RStab k r γ} = 0 := by
     refine measure_mono_null (fun y hy => ?_) (measure_iUnion_null hcon)
     obtain ⟨T, hT⟩ := exists_nat_ge (Formalism.FourierDecayAlt.B.gN (Matrix.of y))

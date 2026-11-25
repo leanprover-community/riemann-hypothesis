@@ -344,8 +344,7 @@ private lemma exists_orthogonal_vector_norm_coprime {q : ℕ} (hq : q.Prime) (S 
     intro y
     rw [hP (P y)]
     simp [hPorth]
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   have hdivall : ∀ y ∈ S.La, ∃ m : ℤ, _root_.Formalism.L2.Ker.JMB.beta S.d S.Hm (P y) (P y) = q * m := by
     intro y hy
     by_cases h0 : P y = 0
@@ -374,8 +373,7 @@ private lemma exists_orthogonal_vector_norm_coprime {q : ℕ} (hq : q.Prime) (S 
     obtain ⟨u, v, huv⟩ := (mem_OK_iff' _ _).1 hb
     exact ⟨v, im_hf_eq_of_beta_eq hd huv⟩
   have hex : ∃ y ∈ S.La, P y ≠ 0 := by
-    by_contra hall
-    push_neg at hall
+    by_contra! hall
     have hle : Submodule.span ℝ (S.La : Set (Fin g → ℂ)) ≤ LinearMap.ker (P.restrictScalars ℝ) :=
       Submodule.span_le.2 fun y hy => hall y hy
     rw [hspan, top_le_iff] at hle

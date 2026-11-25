@@ -20,8 +20,7 @@ variable {F : Type} [Field F] [NumberField F]
 theorem adl_exists_place_ge_one (r : 𝓞 F) (hr : r ≠ 0) :
     ∃ w : InfinitePlace F, 1 ≤ w (r : F) := by
   classical
-  by_contra h
-  push_neg at h
+  by_contra! h
   have hnn : ∀ w : InfinitePlace F, 0 ≤ w (r : F) := fun w => by
     first | positivity
   have hN : (1 : ℝ) ≤ ((|Algebra.norm ℚ (r : F)| : ℚ) : ℝ) := by

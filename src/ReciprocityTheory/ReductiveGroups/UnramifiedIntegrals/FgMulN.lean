@@ -65,8 +65,7 @@ theorem mulN_integral {lam : PowerSeries K} {Φ : MvPowerSeries (Fin 2) K} (h : 
         by_cases hd : d = 0
         · rw [hd, MvPowerSeries.coeff_zero_eq_constantCoeff_apply, h.Φ0, zero_smul]
         · obtain ⟨s, hs⟩ : ∃ s, d s ≠ 0 := by
-            by_contra hc
-            push_neg at hc
+            by_contra! hc
             exact hd (Finsupp.ext hc)
           rw [MvPowerSeries.coeff_zero_eq_constantCoeff_apply, Finsupp.prod, map_prod,
             Finset.prod_eq_zero (Finsupp.mem_support_iff.mpr hs) (by rw [map_pow, hP0 s, zero_pow hs]),

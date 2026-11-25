@@ -199,8 +199,7 @@ theorem exists_dvd_of_span_mul_eq {R : Type*} [CommRing R] (P : Ideal R) [P.IsPr
     conv_rhs => rw [hfc]
     exact Finset.sum_congr rfl fun k _ => (ht k k).symm
   obtain ⟨k, hk⟩ : ∃ k, t k k ∉ P := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     exact (Ideal.IsPrime.ne_top inferInstance) ((Ideal.eq_top_iff_one _).2
       (hsum ▸ Ideal.sum_mem _ fun k _ => hcon k))
   refine ⟨k, t k k, hk, fun k' => ⟨t k k', ?_⟩⟩

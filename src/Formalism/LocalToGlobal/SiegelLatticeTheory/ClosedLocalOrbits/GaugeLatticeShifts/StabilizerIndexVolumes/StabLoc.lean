@@ -1,5 +1,6 @@
 module
 
+import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.ScalarFramePfA
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.PairVal
 import Mathlib.Tactic.TypeStar
 
@@ -169,17 +170,7 @@ def ρOf (p : PlF D) (a b : MatR D) : Matrix (Fin (D.R.rS + 1)) (Fin (D.R.rS + 1
   | some g => ρG g.e (D.s.atP p).ιE (frFac δ p) a b
 
 theorem unitAt_ne (p : PlF D) : (uP p : D.host.E) ≠ 0 := by
-  have h1 : (gpart p : ℚ) ≠ 0 := by
-    unfold gpart; split_ifs
-    · exact_mod_cast (D.host.g_prime 0).ne_zero
-    · exact_mod_cast (D.host.g_prime 1).ne_zero
-    · norm_num
-  have h2 : (Lat.gS D : ℚ) ≠ 0 := by
-    unfold Lat.gS
-    push_cast
-    exact mul_ne_zero (by exact_mod_cast (D.host.g_prime 0).ne_zero) (by exact_mod_cast (D.host.g_prime 1).ne_zero)
-  unfold uP
-  exact_mod_cast div_ne_zero h1 h2
+  apply _root_.Formalism.L2.SG.Pf.ScalarFramePf.unitAt_ne <;> assumption
 
 theorem frFac_unit {p : PlF D} (hA : Agree δ M p) (i : Fin (D.R.rS + 1)) : IsUnit (frFac δ p i) := by
   unfold frFac

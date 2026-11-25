@@ -144,8 +144,7 @@ theorem ratGen_of_birOn : ∀ {Y : Model Xo c (RingHom.id c.F)} (X : FlagCover Y
     refine (map_div₀ ψ _ _).trans ?_
     rw [hv, hv, mul_div_mul_left _ _ hT]
   obtain ⟨v₀, hv₀⟩ : ∃ v₀ : Cusp Z U la, genVal Z v₀.1 ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact hB.1 (LinearMap.ext fun v => hc v)
   have hsub : (⊤ : IntermediateField c.F (Om Z)).toSubfield ≤
       (ratField (Set.range (cuspSec X Z U la)) (ptOf (z ≫ M.σ)) hη).map ψ := by

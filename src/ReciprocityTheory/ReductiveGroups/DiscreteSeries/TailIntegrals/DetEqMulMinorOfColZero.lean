@@ -296,64 +296,9 @@ private lemma phiV'_one_add_sc_eq_liftVec (b : Fin (r' + 1)) :
   simp only [phiV']
   rw [phiV_one_add_sc_eq_liftVec, Hpk_lift]
 
-private lemma lev_apply_succ_succ (g : Mat k r') (a b : Fin (2 * r' + k + 1)) :
-    ιLev k 1 r' g ⟨a.val + 1, by omega⟩ ⟨b.val + 1, by omega⟩ = g a b := by
-  first
-  | (simp [ιLev]; done)
-  | (simp only [ιLev, Fin.val_mk]; rw [dite_eq_left (by omega), dite_eq_left (by omega)]; rfl)
-
-private lemma w0_apply_succ_succ (c : ℂ) (a b : Fin (2 * r' + k + 1)) :
-    w0 k r' c ⟨a.val + 1, by omega⟩ ⟨b.val + 1, by omega⟩ = if a = b then 1 else 0 := by
-  simp only [w0, Fin.val_mk, Fin.ext_iff, and_false, false_and, and_true, true_and]
-  (try split_ifs) <;> (first | rfl | omega)
-
-private lemma lev_mulVec_liftVec (g : Mat k r') (u : Fin (2 * r' + k + 1) → ℂ) :
-    ιLev k 1 r' g *ᵥ liftVec k 1 r' u = liftVec k 1 r' (g *ᵥ u) := by
-  funext i
-  simp only [Matrix.mulVec, dotProduct]
-  rw [sum_eq_sum_succ_of_zero_at_edges]
-  · by_cases hi : i.val = 0 ∨ i.val = 2 * (1 + r') + k
-    · rw [liftVec_apply_of_edge k r' _ i hi]
-      apply Finset.sum_eq_zero
-      intro b _
-      have h0 : ιLev k 1 r' g i ⟨b.val + 1, by omega⟩ = 0 := by
-        simp only [ιLev, Fin.val_mk, Fin.ext_iff, and_false, false_and, and_true, true_and]
-        (try split_ifs) <;> (first | rfl | omega)
-      rw [h0, zero_mul]
-    · obtain ⟨a, rfl⟩ : ∃ a : Fin (2 * r' + k + 1),
-          (⟨a.val + 1, by omega⟩ : Fin (2 * (1 + r') + k + 1)) = i :=
-        ⟨⟨i.val - 1, by omega⟩, Fin.ext (by show i.val - 1 + 1 = i.val; omega)⟩
-      simp only [liftVec_apply_succ, lev_apply_succ_succ, Matrix.mulVec, dotProduct]
-  · intro j hj
-    rw [liftVec_apply_of_edge k r' u j hj, mul_zero]
-
-private lemma w0_mulVec_liftVec (c : ℂ) (u : Fin (2 * r' + k + 1) → ℂ) :
-    w0 k r' c *ᵥ liftVec k 1 r' u = liftVec k 1 r' u := by
-  funext i
-  simp only [Matrix.mulVec, dotProduct]
-  rw [sum_eq_sum_succ_of_zero_at_edges]
-  · by_cases hi : i.val = 0 ∨ i.val = 2 * (1 + r') + k
-    · rw [liftVec_apply_of_edge k r' _ i hi]
-      apply Finset.sum_eq_zero
-      intro b _
-      have h0 : w0 k r' c i ⟨b.val + 1, by omega⟩ = 0 := by
-        have hb := b.isLt
-        have hil := i.isLt
-        simp only [w0]
-        split_ifs with h1 h2 h3 <;>
-          first | rfl | (exfalso; (try simp only [Fin.val_mk, Fin.ext_iff, and_false, false_and, and_true, true_and] at *); all_goals omega)
-      rw [h0, zero_mul]
-    · obtain ⟨a, rfl⟩ : ∃ a : Fin (2 * r' + k + 1),
-          (⟨a.val + 1, by omega⟩ : Fin (2 * (1 + r') + k + 1)) = i :=
-        ⟨⟨i.val - 1, by omega⟩, Fin.ext (by show i.val - 1 + 1 = i.val; omega)⟩
-      simp only [liftVec_apply_succ, w0_apply_succ_succ]
-      simp
-  · intro j hj
-    rw [liftVec_apply_of_edge k r' u j hj, mul_zero]
-
 private lemma w0_mul_lev_mulVec_liftVec (c : ℂ) (g : Mat k r') (u : Fin (2 * r' + k + 1) → ℂ) :
     (w0 k r' c * ιLev k 1 r' g) *ᵥ liftVec k 1 r' u = liftVec k 1 r' (g *ᵥ u) := by
-  rw [← Matrix.mulVec_mulVec, lev_mulVec_liftVec, w0_mulVec_liftVec]
+  rw [← Matrix.mulVec_mulVec, _root_.ReciprocityTheory.ChartRestriction.DS.Xi.StepA.lev_lift, _root_.ReciprocityTheory.ChartRestriction.DS.Xi.StepA.rankOneMatrix_lift]
 
 private lemma w0_mul_lev_mulVec_e0_eq_smul_es0 (c : ℂ) (g : Mat k r') :
     (w0 k r' c * ιLev k 1 r' g) *ᵥ e0 k r' = c • es0 k r' := by

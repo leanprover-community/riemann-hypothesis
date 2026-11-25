@@ -166,16 +166,12 @@ theorem hboB_arith (Y Pr1 G η c Nm kappaThresholdTwo Q DIf N k lb n' C31 lx DI 
     (hD : DIf ≤ DI * Np * v ^ 2 * (N1 ^ 5 + k ^ 3) * lb + 1) :
     Pr1 * G * (η + c + Nm) + kappaThresholdTwo * (Q * (8 * (DIf + 1) + kappaThresholdTwo * N * k * lb + 4 * N * c + 2 * n' * c) + k * Q +
       k * lb + c) + 2 * G * c + 40 * C31 * lx * (DI * v ^ 2 * (N1 ^ 5 + k ^ 3) * lb) + 3 ≤ Y ^ 13 := by
-  have hY0 : 0 ≤ Y := by linarith
   have hY1 : 1 ≤ Y := by linarith
   have hD' : DIf ≤ Y * Y * Y ^ 2 * (Y ^ 5 + Y ^ 3) * Y + 1 := le_trans hD (by gcongr)
   have h1 : Pr1 * G * (η + c + Nm) + kappaThresholdTwo * (Q * (8 * (DIf + 1) + kappaThresholdTwo * N * k * lb + 4 * N * c + 2 * n' * c) + k * Q +
       k * lb + c) + 2 * G * c + 40 * C31 * lx * (DI * v ^ 2 * (N1 ^ 5 + k ^ 3) * lb) + 3 ≤
       Y * Y * (Y + Y + Y) + Y * (Y * (8 * ((Y * Y * Y ^ 2 * (Y ^ 5 + Y ^ 3) * Y + 1) + 1) + Y * Y * Y * Y + 4 * Y * Y +
         2 * Y * Y) + Y * Y + Y * Y + Y) + 2 * Y * Y + 40 * Y * Y * (Y * Y ^ 2 * (Y ^ 5 + Y ^ 3) * Y) + 3 := by gcongr
-  have h2 : Y * Y * (Y + Y + Y) + Y * (Y * (8 * ((Y * Y * Y ^ 2 * (Y ^ 5 + Y ^ 3) * Y + 1) + 1) + Y * Y * Y * Y + 4 * Y * Y +
-        2 * Y * Y) + Y * Y + Y * Y + Y) + 2 * Y * Y + 40 * Y * Y * (Y * Y ^ 2 * (Y ^ 5 + Y ^ 3) * Y) + 3 =
-      8 * Y ^ 12 + 40 * Y ^ 11 + 8 * Y ^ 10 + 40 * Y ^ 9 + Y ^ 6 + 6 * Y ^ 4 + 5 * Y ^ 3 + 19 * Y ^ 2 + 3 := by ring
   have p : ∀ i : ℕ, i ≤ 12 → Y ^ i ≤ Y ^ 12 := fun i hi => pow_le_pow_right₀ hY1 hi
   have p11 := p 11 (by norm_num)
   have p10 := p 10 (by norm_num)
@@ -193,10 +189,8 @@ theorem hboB_arith (Y Pr1 G η c Nm kappaThresholdTwo Q DIf N k lb n' C31 lx DI 
 theorem hDII_arith (Y DII N1 r k lb : ℝ) (hY : 130 ≤ Y) (b1 : DII ≤ Y) (a2 : 0 ≤ N1) (b2 : N1 ≤ Y)
     (a3 : 0 ≤ r) (b3 : r ≤ Y) (a4 : 0 ≤ k) (b4 : k ≤ Y) (a5 : 0 ≤ lb) (b5 : lb ≤ Y) :
     DII * (N1 ^ 3 + r ^ 5 + k ^ 2) * lb ≤ Y ^ 8 := by
-  have hY0 : 0 ≤ Y := by linarith
   have hY1 : 1 ≤ Y := by linarith
   have h1 : DII * (N1 ^ 3 + r ^ 5 + k ^ 2) * lb ≤ Y * (Y ^ 3 + Y ^ 5 + Y ^ 2) * Y := by gcongr
-  have h2 : Y * (Y ^ 3 + Y ^ 5 + Y ^ 2) * Y = Y ^ 5 + Y ^ 7 + Y ^ 4 := by ring
   have p5 : Y ^ 5 ≤ Y ^ 7 := pow_le_pow_right₀ hY1 (by norm_num)
   have p4 : Y ^ 4 ≤ Y ^ 7 := pow_le_pow_right₀ hY1 (by norm_num)
   have p8 : 130 * Y ^ 7 ≤ Y ^ 8 := by
@@ -266,7 +260,6 @@ theorem facts_ev (eps : ℝ) (K : Consts) (hK : K.Nonneg) (C31 : ℝ) (hC31 : 0 
     unfold Scale.A; rw [show (26 / 2 : ℝ) = ((13 : ℕ) : ℝ) by norm_num, Real.rpow_natCast]
   have hn3 : (D.R.n : ℝ) ≤ L.sc.x ^ 3 := by rw [← nat3]; exact le_trans hSN.2 (mono _ _ (by linarith))
   rw [nat6] at hk6
-  have hxe1 : 1 ≤ L.sc.x ^ L.sc.eps := Real.one_le_rpow hx1.le he0.le
   have hb : L.sc.b = Real.exp (L.sc.x ^ L.sc.eps) := rfl
   have ha : L.sc.a = L.sc.x * L.sc.b := rfl
   have hY130 : 130 ≤ (Real.exp (L.sc.x ^ (23 * L.sc.eps / 48))) := f2

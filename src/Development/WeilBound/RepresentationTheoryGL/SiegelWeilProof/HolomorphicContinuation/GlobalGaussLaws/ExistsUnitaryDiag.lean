@@ -3,6 +3,7 @@ module
 public import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.GlobalGaussLaws.FourierZeroN
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.BitVec
+import Development.AutomorphicArithmetic.AutomorphicVarieties.LiteratureResults.KTheoryStability.ReductionBoundsTorsion.PartitionUnitySmooth.GProdScale
 
 @[expose] public section
 
@@ -25,32 +26,7 @@ theorem exists_unitary_diag {k : ℕ} {T : Matrix (Fin k) (Fin k) ℂ} (hT : T.I
 
 theorem exists_normal {k : ℕ} {M : Matrix (Fin k) (Fin k) ℂ} (hM : M.PosDef) : ∃ C : Matrix (Fin k) (Fin k) ℂ,
     Cᴴ * M * C = 1 := by
-  have hpos := hM.eigenvalues_pos
-  have hUU : (hM.1.eigenvectorUnitary : Matrix (Fin k) (Fin k) ℂ)ᴴ * (hM.1.eigenvectorUnitary : Matrix (Fin k) (Fin k) ℂ) = 1 := by
-    rw [← star_eq_conjTranspose]; exact Unitary.coe_star_mul_self _
-  have hd : (hM.1.eigenvectorUnitary : Matrix (Fin k) (Fin k) ℂ)ᴴ * M * (hM.1.eigenvectorUnitary : Matrix (Fin k) (Fin k) ℂ) =
-      diagonal (fun i => (hM.1.eigenvalues i : ℂ)) := by
-    have := hM.1.conjStarAlgAut_star_eigenvectorUnitary
-    rw [Unitary.conjStarAlgAut_apply] at this
-    simpa [star_eq_conjTranspose, Function.comp_def] using this
-  generalize (hM.1.eigenvectorUnitary : Matrix (Fin k) (Fin k) ℂ) = U at hUU hd
-  generalize hM.1.eigenvalues = μ at hpos hd
-  refine ⟨U * diagonal (fun i => ((Real.sqrt (μ i))⁻¹ : ℂ)), ?_⟩
-  have hCd : (diagonal (fun i => ((Real.sqrt (μ i))⁻¹ : ℂ)))ᴴ = diagonal (fun i => ((Real.sqrt (μ i))⁻¹ : ℂ)) := by
-    rw [diagonal_conjTranspose]; congr 1; funext i; simp [Complex.conj_ofReal]
-  rw [conjTranspose_mul, hCd]
-  calc diagonal (fun i => ((Real.sqrt (μ i))⁻¹ : ℂ)) * Uᴴ * M * (U * diagonal (fun i => ((Real.sqrt (μ i))⁻¹ : ℂ)))
-      = diagonal (fun i => ((Real.sqrt (μ i))⁻¹ : ℂ)) * (Uᴴ * M * U) * diagonal (fun i => ((Real.sqrt (μ i))⁻¹ : ℂ)) := by
-        simp only [Matrix.mul_assoc]
-    _ = 1 := by
-        rw [hd, diagonal_mul_diagonal, diagonal_mul_diagonal, ← diagonal_one]
-        congr 1; funext i
-        have hp := hpos i
-        have hs : (Real.sqrt (μ i)) ^ 2 = μ i := Real.sq_sqrt hp.le
-        have hs0 : Real.sqrt (μ i) ≠ 0 := (Real.sqrt_pos.mpr hp).ne'
-        have hc : ((Real.sqrt (μ i) : ℝ) : ℂ) ≠ 0 := by exact_mod_cast hs0
-        field_simp
-        rw [← Complex.ofReal_pow, hs]
+  apply _root_.PositivityTheory.KB.SmoothPartitionUnityBasic.LipschitzAlgebraNorm.exT <;> assumption
 
 theorem frame_of_cartan {k : ℕ} (G S : Matrix (Fin k) (Fin k) ℂ) (h : IsCartanInv G S) :
     ∃ (ε : Fin k → Bool) (fr : Matrix (Fin k) (Fin k) ℂ), IsUnit fr.det ∧ frᴴ * G * fr = diagonal (sgn ε) ∧

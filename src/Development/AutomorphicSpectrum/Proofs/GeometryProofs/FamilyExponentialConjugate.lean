@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeInnerProductConjugate
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.DifferentiableOnStarStar
 public import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.DifferentiableOnOfTendstoLocallyUniformlyOn
 import Mathlib.Tactic.Linter.Style
@@ -72,15 +73,8 @@ theorem eval_spMap {X : Scheme.{0}} (φ : A →+* B) (x : Sp A ⟶ X) (U : X.Ope
     (h' : ⊤ ≤ (spMap φ ≫ x) ⁻¹ᵁ U) (f : Γ(X, U)) :
     (Scheme.ΓSpecIso (CommRingCat.of B)).hom.hom (((spMap φ ≫ x).appLE U ⊤ h').hom f) =
       φ ((Scheme.ΓSpecIso (CommRingCat.of A)).hom.hom ((x.appLE U ⊤ h).hom f)) := by
-  have e1 : (spMap φ ≫ x).appLE U ⊤ h' = x.appLE U ⊤ h ≫ (spMap φ).appTop := by
-    rw [Scheme.Hom.appTop, Scheme.Hom.app_eq_appLE]
-    exact (Scheme.Hom.appLE_comp_appLE _ _ _ _ _ _ _).symm
-  have e2 := Scheme.ΓSpecIso_naturality (CommRingCat.ofHom φ)
-  have e3 : x.appLE U ⊤ h ≫ (spMap φ).appTop ≫ (Scheme.ΓSpecIso (CommRingCat.of B)).hom =
-      x.appLE U ⊤ h ≫ (Scheme.ΓSpecIso (CommRingCat.of A)).hom ≫ CommRingCat.ofHom φ := by
-    rw [e2]
-  rw [e1]
-  exact congrArg (fun q => CommRingCat.Hom.hom q f) e3
+  intros
+  apply _root_.GlobalTheory.CompanionTheory.Ar.HodgeConj.val_spMap <;> assumption
 
 theorem valAt'_conj {X : Scheme.{0}} (y : Sp ℂ ⟶ X) (U : X.Opens) (f : Γ(X, U)) :
     valAt' (κ ≫ y) U f = starRingEnd ℂ (valAt' y U f) := by

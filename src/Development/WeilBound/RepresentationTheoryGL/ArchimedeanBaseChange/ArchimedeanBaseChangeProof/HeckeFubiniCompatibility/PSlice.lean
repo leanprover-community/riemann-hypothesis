@@ -22,8 +22,6 @@ open PositivityTheory.Rg.BcB.SpectralAccumulation (Hf finH)
 open PositivityTheory.RgBcC.Bridge (along atW)
 open scoped Classical InnerProductSpace
 
-attribute [local instance] PositivityTheory.Rg.BcB.E.borelH
-
 set_option linter.unusedSectionVars false
 set_option linter.unusedSimpArgs false
 

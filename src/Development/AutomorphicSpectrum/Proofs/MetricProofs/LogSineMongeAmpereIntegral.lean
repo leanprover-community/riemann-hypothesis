@@ -462,8 +462,7 @@ theorem ae_prod_self {V : Set ℂ} (hV : volume Vᶜ = 0) :
 
 theorem null_dom (hg : IsUnit g.det) : volume (dom g)ᶜ = 0 := by
   have hne : g 0 0 ≠ 0 ∨ g 0 1 ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     apply hg.ne_zero
     rw [GlobalTheory.CompanionTheory.Ar.PB.FibPt.CovSq.det_eq, h.1, h.2]
     ring
@@ -473,8 +472,7 @@ theorem null_dom (hg : IsUnit g.det) : volume (dom g)ᶜ = 0 := by
 
 theorem null_cod (hg : IsUnit g.det) : volume (cod g)ᶜ = 0 := by
   have hne : g 1 1 ≠ 0 ∨ -g 0 1 ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     have h01 : g 0 1 = 0 := neg_eq_zero.1 h.2
     apply hg.ne_zero
     rw [GlobalTheory.CompanionTheory.Ar.PB.FibPt.CovSq.det_eq, h.1, h01]

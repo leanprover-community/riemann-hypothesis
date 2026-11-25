@@ -477,8 +477,6 @@ namespace GlobalTheory.ThK.Dbl
 
 open NumberField Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 
-attribute [local instance] GlobalTheory.LocalData.complRel
-
 theorem locDist : LocDist := by
   intro F _ _ v n d ξ hξ l hl
   have : IsNonarchimedeanLocalField (Fv F v) := GlobalTheory.LocalData.isLocalField v

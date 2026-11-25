@@ -48,8 +48,6 @@ open CategoryTheory AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory
 open scoped CategoryTheory.Obj CategoryTheory.MonObj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.AbDual GlobalTheory.AbLaw GlobalTheory.AbLaw.CubeGen
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.CubeModel
 
 variable {S : Scheme.{0}} {A : Over S} [GrpObj A]
@@ -90,7 +88,6 @@ open AlgebraicGeometry CategoryTheory CategoryTheory.Limits MonoidalCategory Car
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open scoped CategoryTheory.Obj CategoryTheory.MonObj TensorProduct
 open GlobalTheory.ZM GlobalTheory.AbLaw GlobalTheory.AbLaw.CubeGen GlobalTheory.Biadditive GlobalTheory.CubeNoeth GlobalTheory.CubeModel
-attribute [local instance] Over.cartesianMonoidalCategory
 
 variable {S : Scheme.{0}} {A : Over S} [GrpObj A]
 

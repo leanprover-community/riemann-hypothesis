@@ -220,8 +220,7 @@ theorem exists_eq_of_sum_eq {m d : ℕ} [NeZero m] (hm : 1 < m) (ζ ζ' : ℕ �
     simp only [Finset.card_range] at h1 h2
     omega
   have hzero : ∀ z, ∑ φ ∈ S, c φ * (φ z : ℂ) = 0 := by
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     have key := GlobalTheory.GLm.card_le_card_mul_card_support (Multiplicative (ZMod m)) S c hne
     have hcard : Fintype.card (Multiplicative (ZMod m)) = m := by
       simp [ZMod.card]

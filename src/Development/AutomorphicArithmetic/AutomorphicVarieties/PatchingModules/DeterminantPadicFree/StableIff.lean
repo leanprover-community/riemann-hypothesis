@@ -1,5 +1,6 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.CurveDVRSpecialization.SeedOf
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.PairedDualFirstOrderDualMatrixSpace
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.IrredIffSpan
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebraHeight.DGmap
@@ -27,18 +28,7 @@ open UpperTheory.V.CA
 private theorem tr_of_map {n : ℕ} {A G K : Type} [CommRing A] [Group G] [CommRing K] (hn : 1 ≤ n)
     (D : GDet n A G) (f : A →+* K) (ρ : G →* Matrix (Fin n) (Fin n) K) (h : D.map f = GDet.ofRep ρ) (g : G) :
     f (D.tr (MonoidAlgebra.single g 1)) = (ρ g).trace := by
-  obtain ⟨-, -, hm, -⟩ := UpperTheory.V.CA.d_gmap D
-  have e1 := (hm f (MonoidAlgebra.single g 1)).2 1
-  have hs : (MonoidAlgebra.mapRingHom G f) (MonoidAlgebra.single g 1) = MonoidAlgebra.single g 1 := by
-    simp [MonoidAlgebra.mapRingHom]
-  rw [hs, h] at e1
-  have e2 : (GDet.ofRep ρ).tr (MonoidAlgebra.single g 1) = (ρ g).trace := by
-    rw [← (UpperTheory.V.CA.d_toDet (GDet.ofRep ρ) _).2.2.1, (UpperTheory.V.CA.d_toDet_ofRep).1 ρ,
-      ((UpperTheory.V.CA.d_ofRep _ _ _).2.2.1 (by simpa using hn))]
-    simp [GDet.repAlg]
-  unfold GDet.tr at e2
-  unfold GDet.tr
-  rw [← e1, e2]
+  apply _root_.UpperTheory.V.Pr.tr_single <;> assumption
 
 private theorem span_of_gram {n : ℕ} {K : Type} [Field K] (s : Set (Matrix (Fin n) (Fin n) K))
     (x y : Fin (n * n) → Matrix (Fin n) (Fin n) K) (hx : ∀ a, x a ∈ s)

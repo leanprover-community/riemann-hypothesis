@@ -1237,8 +1237,7 @@ theorem exists_homogIdeal {K : Type} [Fintype K] {J : K → Type} [∀ k, Fintyp
   · intro hIP
     obtain ⟨m, f, a, -, -, hsum, hl⟩ := hs c hc
     obtain ⟨l, hfl⟩ : ∃ l, f l ≠ 0 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       rw [Finset.sum_eq_zero fun l _ => by rw [h l, mul_zero]] at hsum
       exact zero_ne_one hsum
     obtain ⟨-, z, n', -, hli, -, hq⟩ := hl l hfl _ rfl

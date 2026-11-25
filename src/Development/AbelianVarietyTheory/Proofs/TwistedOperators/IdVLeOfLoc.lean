@@ -183,8 +183,7 @@ theorem exists_modul {T : Type} {L : LevCh D T} (P : Places L) (sc : Consts) {v 
   classical
   have hu : ∀ u ∈ P.S0, ∃ t : 𝓞 D.host.F, t ∈ u.asIdeal ∧ t ∉ v.asIdeal := by
     intro u hu
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     have e : u = v := IsDedekindDomain.HeightOneSpectrum.ext
       (u.isMaximal.eq_of_le v.isPrime.ne_top hcon)
     exact hv (e ▸ hu)

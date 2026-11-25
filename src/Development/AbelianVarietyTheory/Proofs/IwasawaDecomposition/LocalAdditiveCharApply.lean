@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsIsResOfTameAt
 public import Mathlib.NumberTheory.NumberField.Basic
 public import Mathlib.RingTheory.Ideal.Norm.AbsNorm
 public import Formalism.LocalToGlobal.Columns.FiniteSumNonzeroLargeDepth
@@ -185,37 +186,8 @@ end ZMod
 theorem locK_congr {L : Type} [Field L] [NumberField L] (χ : HChar L) (w : HeightOneSpectrum (𝓞 L)) (ht : χ.TameAt w)
     (x x' : Lˣ) (y y' : 𝓞 L) (hx : (x : L) = y) (hx' : (x' : L) = y') (hy : y' ∉ w.asIdeal)
     (hyy : y - y' ∈ w.asIdeal) : χ.locK w x = χ.locK w x' := by
-  have hv' : w.valuation L (y' : L) = 1 := (HeightOneSpectrum.valuation_eq_one_iff_notMem w).2 hy
-  have hlt : w.valuation L ((y - y' : 𝓞 L) : L) < 1 := (HeightOneSpectrum.valuation_lt_one_iff_mem w _).2 hyy
-  have hy0 : (y' : L) ≠ 0 := hx' ▸ x'.ne_zero
-  have e : ((x * x'⁻¹ : Lˣ) : L) - 1 = ((y - y' : 𝓞 L) : L) * (y' : L)⁻¹ := by
-    rw [Units.val_mul, Units.val_inv_eq_inv_val, hx, hx']
-    push_cast
-    field_simp
-  have h1 : w.valuation L (((x * x'⁻¹ : Lˣ) : L) - 1) < 1 := by
-    rw [e, map_mul, map_inv₀, hv', inv_one, mul_one]
-    exact hlt
-  have h2 : Valued.v (((atFin w (x * x'⁻¹) : (w.adicCompletion L)ˣ) : w.adicCompletion L) - 1) < 1 := by
-    have h3 : ((atFin w (x * x'⁻¹) : (w.adicCompletion L)ˣ) : w.adicCompletion L) - 1
-        = algebraMap L (w.adicCompletion L) (((x * x'⁻¹ : Lˣ) : L) - 1) := by
-      rw [map_sub, map_one]
-      rfl
-    rw [h3, ReciprocityTheory.Aut.adic_valued_algebraMap]
-    exact h1
-  have h4 : IsUnitAt w (atFin w (x * x'⁻¹)) := by
-    have := Valuation.map_eq_of_sub_lt Valued.v (x := (1 : w.adicCompletion L))
-      (y := ((atFin w (x * x'⁻¹) : (w.adicCompletion L)ˣ) : w.adicCompletion L)) (by rwa [map_one])
-    rwa [map_one] at this
-  have h5 : χ.locK w (x * x'⁻¹) = 1 := by
-    refine ht _ h4 ?_
-    generalize Valued.v (((atFin w (x * x'⁻¹) : (w.adicCompletion L)ˣ) : w.adicCompletion L) - 1) = g at h2
-    by_cases hg : g = 0
-    · rw [hg]; exact zero_le
-    · rw [← WithZero.exp_log hg] at h2 ⊢
-      rw [← WithZero.exp_zero, WithZero.exp_lt_exp] at h2
-      rw [WithZero.exp_le_exp]
-      omega
-  rwa [map_mul, map_inv, mul_inv_eq_one] at h5
+  intros
+  apply _root_.GlobalTheory.TameResidue.locK_eq_of_congr <;> assumption
 
 theorem absNorm_span_of_mul_eq {K : Type} [Field K] [NumberField K] (h2 : Module.finrank ℚ K = 2) {p : ℕ} (hp : p.Prime)
     {a b : 𝓞 K} (hab : a * b = p) (ha : ¬ IsUnit a) (hb : ¬ IsUnit b) : Ideal.absNorm (Ideal.span {b}) = p := by

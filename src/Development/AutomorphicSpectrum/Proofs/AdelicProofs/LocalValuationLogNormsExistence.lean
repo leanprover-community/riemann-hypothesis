@@ -115,8 +115,7 @@ def placeOf (κ : K →+* ℂ_[p]) : HeightOneSpectrum (𝓞 K) where
     refine ⟨fun h => ?_, fun {a b} hab => ?_⟩
     · have : (1 : 𝓞 K) ∈ ballIdeal κ := h ▸ Submodule.mem_top
       simp [mem_ballIdeal] at this
-    · by_contra hn
-      push_neg at hn
+    · by_contra! hn
       rw [mem_ballIdeal, mem_ballIdeal, not_lt, not_lt] at hn
       rw [mem_ballIdeal, map_mul, map_mul, norm_mul] at hab
       have h1 := le_antisymm (norm_int_le κ a) hn.1

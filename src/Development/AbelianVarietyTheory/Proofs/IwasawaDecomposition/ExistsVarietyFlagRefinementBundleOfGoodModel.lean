@@ -60,11 +60,6 @@ private theorem eq_spMap_of_specializes {X : Scheme.{0}} {K : Type} [Field K] (g
   show Spec.map _ ≫ _ = Spec.map _ ≫ _
   simp only [CommRingCat.ofHom_hom, Spec.map_comp, Category.assoc]
 
-private theorem spMap_comp_spMap_divisor {A B C : Type} [CommRing A] [CommRing B] [CommRing C] (g : B →+* C) (f : A →+* B) :
-    spMap (g.comp f) = spMap g ≫ spMap f := by
-  show Spec.map _ = Spec.map _ ≫ Spec.map _
-  rw [CommRingCat.ofHom_comp, Spec.map_comp]
-
 theorem exists_isHom_of_generic (M : RatModel F Ω) (M' : RatModel F Ω') (f : M'.Z ⟶ M.Z) (hs : f ≫ M.s = M'.s)
     (hg : f (genericPoint M'.Z) = genericPoint M.Z) : ∃ φ : Ω →ₐ[F] Ω', M.IsHom M' φ f := by
   classical
@@ -90,9 +85,9 @@ theorem exists_isHom_of_generic (M : RatModel F Ω) (M' : RatModel F Ω') (f : M
     show α (E.symm (E a)) = α a
     rw [E.symm_apply_apply]
   have hpt : M'.pt ≫ f = spMap φ₀ ≫ M.pt := by
-    rw [eq_spMap_of_specializes (M'.pt ≫ f) hp, hq, ← Category.assoc, ← spMap_comp_spMap_divisor, key]
+    rw [eq_spMap_of_specializes (M'.pt ≫ f) hp, hq, ← Category.assoc, ← spMap_comp, key]
   have hc : spMap (φ₀.comp (algebraMap F Ω)) = spMap (algebraMap F Ω') := by
-    rw [spMap_comp_spMap_divisor, ← M.pt_s, ← Category.assoc, ← hpt, Category.assoc, hs, M'.pt_s]
+    rw [spMap_comp, ← M.pt_s, ← Category.assoc, ← hpt, Category.assoc, hs, M'.pt_s]
   have hinj : φ₀.comp (algebraMap F Ω) = algebraMap F Ω' := by
     have h2 : CommRingCat.ofHom (φ₀.comp (algebraMap F Ω)) = CommRingCat.ofHom (algebraMap F Ω') :=
       Spec.map_injective hc

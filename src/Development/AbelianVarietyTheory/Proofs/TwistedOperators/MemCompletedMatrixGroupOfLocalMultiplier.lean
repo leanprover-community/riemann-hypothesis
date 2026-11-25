@@ -82,8 +82,7 @@ theorem mem_mulG (I : Ideal (𝓞 F)) {γ : Af F} (hγ : γ ∈ intAf F)
   by_cases h0 : γ = 0
   · rw [h0]; exact zero_mem _
   obtain ⟨w₀, hw₀⟩ : ∃ w, γ w ≠ 0 := by
-    by_contra H
-    push_neg at H
+    by_contra! H
     exact h0 (FiniteAdeleRing.ext F fun v => H v)
   obtain ⟨t₁, ht₁I, ht₁w⟩ := (h w₀).resolve_left hw₀
   have ht₁0 : t₁ ≠ 0 := fun e => ht₁w (e ▸ w₀.asIdeal.zero_mem)

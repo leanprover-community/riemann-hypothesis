@@ -14,8 +14,6 @@ open scoped CategoryTheory.Obj CategoryTheory.MonObj
 open GlobalTheory.CechPic GlobalTheory.AbDual
 open GlobalTheory.IndefiniteRowSideFullHecke.ZeroSectionBase (IsPrincipalPol sqToBase)
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 open ReciprocityTheory.ChartRestriction.G.Chart (sp spMap)
 
 namespace PositivityTheory.Tls2.Zar3.Ch1

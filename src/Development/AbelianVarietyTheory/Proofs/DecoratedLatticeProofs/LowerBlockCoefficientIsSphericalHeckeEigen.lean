@@ -638,8 +638,7 @@ theorem realKey (a n : ℕ) (c q Hm Hmg : ℝ) (hc : 0 < c) (hq0 : 0 < q) (hq : 
   rcases h with h0 | hpos
   · simp [h0]
   · have hHmg : 0 < Hmg := by
-      by_contra hle
-      push_neg at hle
+      by_contra! hle
       have h3 : c ^ 2 * Hmg ≤ 0 := mul_nonpos_of_nonneg_of_nonpos (sq_nonneg _) hle
       have h4 : 0 < q ^ n * Hm := mul_pos (pow_pos hq0 _) hpos
       linarith
@@ -650,8 +649,7 @@ theorem realKey (a n : ℕ) (c q Hm Hmg : ℝ) (hc : 0 < c) (hq0 : 0 < q) (hq : 
 
 theorem realNeg (n : ℕ) (c q Hm Hmg : ℝ) (hc : 0 < c) (hq0 : 0 ≤ q) (hq : c ^ 2 * Hmg = q ^ n * Hm)
     (h : Hm ≤ 0) : Hmg ≤ 0 := by
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   have h3 : 0 < c ^ 2 * Hmg := mul_pos (pow_pos hc 2) hlt
   have h4 : q ^ n * Hm ≤ 0 := mul_nonpos_of_nonneg_of_nonpos (pow_nonneg hq0 _) h
   linarith

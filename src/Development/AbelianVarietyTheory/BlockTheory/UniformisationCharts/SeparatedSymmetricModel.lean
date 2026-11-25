@@ -12,8 +12,6 @@ open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory
 open scoped CategoryTheory.Obj
 open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.IndefiniteRowSideFullHecke.SeparatedSymmetricModel
 
 section BaseChange

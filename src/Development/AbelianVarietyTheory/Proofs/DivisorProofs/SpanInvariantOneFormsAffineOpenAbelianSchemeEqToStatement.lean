@@ -61,8 +61,6 @@ open scoped TensorProduct
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CatCoh GlobalTheory.Cris GlobalTheory.CechDR GlobalTheory.LiftSys GlobalTheory.Obs
 open GlobalTheory.AbTan GlobalTheory.AbTan.Transl GlobalTheory.TanForms GlobalTheory.InvForm
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.InvSpan
 
 variable {R : Type} [CommRing R]

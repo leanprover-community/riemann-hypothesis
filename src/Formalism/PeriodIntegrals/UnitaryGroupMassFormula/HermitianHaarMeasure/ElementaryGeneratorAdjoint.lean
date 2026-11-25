@@ -11,6 +11,7 @@ import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Lemma
 import Mathlib.Topology.UniformSpace.Matrix
 public import Mathlib.Analysis.Calculus.Deriv.Shift
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.SumDualVectorEqZeta
 
 @[expose] public section
 
@@ -68,16 +69,7 @@ lemma exp_mem_uh {Y : Mx k r} (hY : Yᴴ * Hpk k r + Hpk k r * Y = 0) :
 
 lemma glev_mul_exp {i : Fin (r + 1)} {g X : Mx k r} (hg : g ∈ Glev k r i) (hX : inLieLev k r i X)
     (t : ℝ) : g * NormedSpace.exp ((t : ℂ) • X) ∈ Glev k r i := by
-  have hg' : g ∈ UH (Hpk k r) ∧ ∀ a : Fin r, a.val < i.val →
-      g *ᵥ bvec (eI k r a) = bvec (eI k r a) ∧ g *ᵥ bvec (esI k r a) = bvec (esI k r a) := hg
-  have e : ∀ v, X *ᵥ v = 0 → (g * NormedSpace.exp ((t : ℂ) • X)) *ᵥ v = g *ᵥ v := by
-    intro v hv
-    rw [← Matrix.mulVec_mulVec, exp_mulVec_fix _ v (by rw [Matrix.smul_mulVec, hv, smul_zero])]
-  show _ ∈ UH (Hpk k r) ∧ ∀ a : Fin r, a.val < i.val → _
-  refine ⟨WeylGroupFacts.uh_mul hg'.1 (exp_mem_uh (inU_rsmul hX.1 t)), fun a ha => ?_⟩
-  obtain ⟨h1, h2⟩ := hX.2 a ha
-  obtain ⟨g1, g2⟩ := hg'.2 a ha
-  exact ⟨by rw [e _ h1, g1], by rw [e _ h2, g2]⟩
+  apply _root_.Formalism.FourierDecayAlt.P.Qx2.curve_lev <;> assumption
 
 lemma rd_ext {i : Fin (r + 1)} {f : Mx k r → ℂ} (hf : SmoothLev k r i Set.univ f) {g : Mx k r}
     (hg : g ∈ Glev k r i) : ∃ L : Mx k r →L[ℝ] ℂ, ∀ X, inLieLev k r i X → RdV X f g = L (g * X) := by
@@ -176,29 +168,11 @@ lemma supp_hpart2 {i : Fin (r + 1)} {W : Mx k r} (hW : SuppV i W) : SuppV i (hpa
 
 lemma inU_hpart1 (W : Mx k r) :
     (hpart1 (Hpk k r) W)ᴴ * Hpk k r + Hpk k r * hpart1 (Hpk k r) W = 0 := by
-  unfold hpart1
-  rw [hpk_inv, Matrix.conjTranspose_smul, Matrix.conjTranspose_sub, Matrix.conjTranspose_mul,
-    Matrix.conjTranspose_mul, Matrix.conjTranspose_conjTranspose, hpk_ct, Matrix.smul_mul,
-    Matrix.mul_smul, Matrix.sub_mul, Matrix.mul_sub]
-  simp only [Matrix.mul_assoc, WeylGroupFacts.hpk_sq, hpk_hpk, Matrix.mul_one]
-  have hs : star (1 / 2 : ℂ) = 1 / 2 := by simp
-  rw [hs, ← smul_add]
-  convert smul_zero (1 / 2 : ℂ) using 2
-  abel
+  apply _root_.Formalism.FourierDecayAlt.P.Qx2.hpart1_lie <;> assumption
 
 lemma inU_hpart2 (W : Mx k r) :
     (hpart2 (Hpk k r) W)ᴴ * Hpk k r + Hpk k r * hpart2 (Hpk k r) W = 0 := by
-  unfold hpart2
-  rw [hpk_inv, Matrix.conjTranspose_smul, Matrix.conjTranspose_add, Matrix.conjTranspose_mul,
-    Matrix.conjTranspose_mul, Matrix.conjTranspose_conjTranspose, hpk_ct, Matrix.smul_mul,
-    Matrix.mul_smul, Matrix.add_mul, Matrix.mul_add]
-  simp only [Matrix.mul_assoc, WeylGroupFacts.hpk_sq, hpk_hpk, Matrix.mul_one]
-  have hs : star (1 / (2 * Complex.I) : ℂ) = -(1 / (2 * Complex.I)) := by
-    rw [star_div₀, star_one, star_mul', Complex.star_def, Complex.conj_I]
-    simp [mul_neg, div_neg, map_ofNat]
-  rw [hs, neg_smul, neg_add_eq_zero]
-  congr 1
-  abel
+  apply _root_.Formalism.FourierDecayAlt.P.Qx2.hpart2_lie <;> assumption
 
 lemma lie_of {i : Fin (r + 1)} {X : Mx k r} (hU : Xᴴ * Hpk k r + Hpk k r * X = 0) (hS : SuppV i X) :
     inLieLev k r i X := by

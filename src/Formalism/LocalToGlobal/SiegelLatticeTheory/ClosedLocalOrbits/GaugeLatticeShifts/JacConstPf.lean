@@ -10,6 +10,7 @@ public import Formalism.SharpRestriction.CuspSpanNormBounds.BridgeCSB
 public import Formalism.SharpRestriction.CuspSpanNormBounds.BridgeLemma3
 import Mathlib.Analysis.Matrix.MeasurableSpace
 import Mathlib.Tactic.TypeStar
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeightedLimitGauge.RhsTest
 
 @[expose] public section
 
@@ -266,14 +267,7 @@ theorem jacConst_nonneg {T T' a a' κ : ℝ} (hT : 0 < T) (hT' : 0 < T') (ha : 0
   unfold jacConst; positivity
 
 theorem sphere_null (t : ℝ) (ht : 0 ≤ t) : (volume : Measure ℂ) {ζ | Complex.normSq ζ = t} = 0 := by
-  have e : {ζ : ℂ | Complex.normSq ζ = t} = Metric.sphere 0 (Real.sqrt t) := by
-    ext ζ
-    simp only [Set.mem_setOf_eq, mem_sphere_iff_norm, sub_zero]
-    constructor
-    · intro h; rw [← h, Complex.normSq_eq_norm_sq, Real.sqrt_sq (norm_nonneg _)]
-    · intro h; rw [Complex.normSq_eq_norm_sq, h, Real.sq_sqrt ht]
-  rw [e]
-  exact Measure.addHaar_sphere volume 0 _
+  apply _root_.PI.RhsWLim.W.circle_null <;> assumption
 
 theorem aemeas_F {φ : Mt k r → ℝ≥0∞} (hφ : Measurable φ) (μW μW' : Measure (Mt k r)) [SFinite μW] [SFinite μW']
     {z z' : Fin (2 * r + k + 1) → ℂ} (hT : 0 < Tz k r z) (hT' : 0 < Tz k r z')

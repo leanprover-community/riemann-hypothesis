@@ -11,6 +11,7 @@ import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
 import Mathlib.GroupTheory.Nilpotent
+import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.RedBasicsPf
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.MemWLat0OfIv, Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.ReductionConjugacy
@@ -35,16 +36,7 @@ section
 variable (I : AutInst) (w : IsDedekindDomain.HeightOneSpectrum (𝓞 I.E))
 
 theorem wLat0_eq : wLat0 I w = w.asIdeal • I.L := by
-  apply le_antisymm
-  · refine Submodule.span_le.2 ?_
-    rintro _ ⟨a, ha, y, hy, rfl⟩
-    have e : ((a : 𝓞 I.E) : I.E) • y = a • y := by first | rfl
-    rw [SetLike.mem_coe, e]
-    exact Submodule.smul_mem_smul ha hy
-  · refine Submodule.smul_le.2 ?_
-    intro a ha y hy
-    have e : ((a : 𝓞 I.E) : I.E) • y = a • y := by first | rfl
-    exact Submodule.subset_span ⟨a, ha, y, hy, e.symm⟩
+  apply _root_.Formalism.L2.SG.Pf.RedBasicsPf.wLat0_eq <;> assumption
 
 theorem wLat0_le : wLat0 I w ≤ I.L := by
   rw [wLat0_eq]
@@ -102,28 +94,8 @@ theorem Lw_decomp (p : ℕ) (hp0 : 0 < p) {z : Fin I.n → I.E ⊗[I.F] Af I.F} 
 
 theorem mem_wLat0_of_iv (p : ℕ) (hp0 : 0 < p) (hpw : (p : 𝓞 I.E) ∈ w.asIdeal) (y : Fin I.n → I.E)
     (hy : iv I y ∈ Lw I w) : y ∈ wLat0 I w := by
-  obtain ⟨l, hl, y', hy', he⟩ := Lw_decomp I w p hp0 hy
-  have hpE : (p : I.E) ≠ 0 := by exact_mod_cast hp0.ne'
-  have hsub : iv I (y - l) = (p : I.E ⊗[I.F] Af I.F) • y' := by
-    have e : iv I (y - l) = iv I y - iv I l := by funext i; simp [iv]
-    rw [e, he]; abel
-  have hu : iv I ((p : I.E)⁻¹ • (y - l)) = y' := by
-    have e : iv I ((p : I.E)⁻¹ • (y - l)) =
-        Formalism.UG.inclE (F := I.F) (Af I.F) ((p : I.E)⁻¹) • iv I (y - l) := by
-      funext i; simp [iv]
-    rw [e, hsub, smul_smul]
-    have e2 : Formalism.UG.inclE (F := I.F) (Af I.F) ((p : I.E)⁻¹) * (p : I.E ⊗[I.F] Af I.F) = 1 := by
-      rw [← map_natCast (Formalism.UG.inclE (F := I.F) (Af I.F)) p, ← map_mul, inv_mul_cancel₀ hpE, map_one]
-    rw [e2, one_smul]
-  have huL : (p : I.E)⁻¹ • (y - l) ∈ I.L := lattice_intersection' I _ (hu ▸ hy')
-  have hyl : y - l ∈ wLat0 I w := by
-    have e : y - l = ((p : 𝓞 I.E) : I.E) • ((p : I.E)⁻¹ • (y - l)) := by
-      rw [smul_smul]; push_cast; rw [mul_inv_cancel₀ hpE, one_smul]
-    rw [e]
-    exact Submodule.subset_span ⟨p, hpw, _, huL, rfl⟩
-  have e : y = l + (y - l) := by abel
-  rw [e]
-  exact (wLat0 I w).add_mem hl hyl
+  intros
+  apply _root_.Formalism.L2.SG.Pf.RedBasicsPf.inter <;> assumption
 
 theorem charP_res (p : ℕ) (hp : p.Prime) (hcard : Nat.card (𝓞 I.E ⧸ w.asIdeal) = p) :
     CharP (𝓞 I.E ⧸ w.asIdeal) p := by

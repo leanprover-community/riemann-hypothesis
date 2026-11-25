@@ -638,8 +638,7 @@ theorem four_of_classSums : ∀ (O : Type) [CommRing O] (bar : O → O) (q s : �
   refine ⟨hSfin.toFinset, fun mu hmu => (hSfin.mem_toFinset.1 hmu).1, fun mu hmu hmuS => ?_, ?_⟩
   · rw [hSfin.mem_toFinset] at hmuS
     obtain ⟨i, hi⟩ : ∃ i, (fun u => mu (i, u)) ∉ T := by
-      by_contra hcon
-      push_neg at hcon
+      by_contra! hcon
       exact hmuS ⟨hmu, hcon⟩
     obtain ⟨gm, g1, g2, g3, g4⟩ := hmu
     obtain ⟨c', hc', hcc⟩ := hC3 (fun idx => gm (a idx)) ⟨gm, g1, g2, g3, fun idx => OrbTrace.cm_refl _⟩

@@ -433,8 +433,7 @@ open ValuativeRel Matrix GlobalTheory.SmGL GlobalTheory.SplitWeil UpperTheory.V.
 private theorem chi_orth {Q : Type} [Group Q] [Fintype Q] (f g : Q →* ℂˣ) (h : f ≠ g) :
     ∑ x, (((f x)⁻¹ : ℂˣ) : ℂ) * ((g x : ℂˣ) : ℂ) = 0 := by
   obtain ⟨y, hy⟩ : ∃ y, f y ≠ g y := by
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     exact h (MonoidHom.ext hne)
   have ha : ((f y)⁻¹ * g y : ℂˣ) ≠ 1 := by
     intro h1
@@ -556,8 +555,7 @@ private theorem character_orthogonality_distinct {Q I : Type} [Group Q] [Fintype
     ∑ x, (((χ s x)⁻¹ : ℂˣ) : ℂ) * ((χ t x : ℂˣ) : ℂ) = 0 := by
   have hne : χ s ≠ χ t := fun h => hst (hχ h)
   obtain ⟨y, hy⟩ : ∃ y, χ s y ≠ χ t y := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hne (MonoidHom.ext h)
   have hshift : ∑ x, (((χ s x)⁻¹ : ℂˣ) : ℂ) * ((χ t x : ℂˣ) : ℂ) =
       ((((χ s y)⁻¹ * χ t y : ℂˣ)) : ℂ) * ∑ x, (((χ s x)⁻¹ : ℂˣ) : ℂ) * ((χ t x : ℂˣ) : ℂ) := by

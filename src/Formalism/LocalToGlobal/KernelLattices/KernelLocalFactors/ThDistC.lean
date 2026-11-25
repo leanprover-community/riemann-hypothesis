@@ -16,6 +16,8 @@ import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.TotallySplit
+import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.RatTermOfRatStep
+import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.StarDetMulDetMem
 
 @[expose] public section
 
@@ -36,31 +38,7 @@ theorem desc_map {K : Type} [Field K] (σ : K →+* ℂ) (k : K) : desc σ (σ k
 theorem sdLat_span {E : Type} [Field E] [NumberField E] [StarRing E] {n : ℕ}
     (L : Submodule (𝓞 E) (Sp E n)) (hL : IsSdLat L) :
     Submodule.span E (L : Set (Sp E n)) = ⊤ := by
-  let W := Submodule.span E (L : Set (Sp E n))
-  change W = ⊤
-  by_contra h
-  let e : Sp E n ≃ₗ⋆[E] Sp E n := starLinearEquiv E
-  let g : Sp E n →ₗ[E] Module.Dual E W :=
-    (LinearMap.domRestrict' W).comp ((hStd E n).comp e.toLinearMap)
-  have hdim : Module.finrank E (Module.Dual E W) < Module.finrank E (Sp E n) := by
-    rw [Subspace.dual_finrank_eq]
-    exact Submodule.finrank_lt h
-  obtain ⟨x, hx, hx₀⟩ :=
-    Submodule.exists_mem_ne_zero_of_ne_bot (LinearMap.ker_ne_bot_of_finrank_lt (f := g) hdim)
-  have hsmul (a : E) : a • e x ∈ L := by
-    rw [← hL.2, dualBasic_mem_dual]
-    intro y hy
-    apply hStd_mem_one_symm
-    have hxy : hStd E n (e x) y = 0 :=
-      congrArg (fun f : Module.Dual E W => f ⟨y, Submodule.subset_span hy⟩) (LinearMap.mem_ker.mp hx)
-    simp [LinearMap.map_smulₛₗ, LinearMap.smul_apply, hxy]
-  let i : E →ₗ[𝓞 E] L :=
-    ((LinearMap.toSpanSingleton E _ (e x)).restrictScalars (𝓞 E)).codRestrict L hsmul
-  let : Module.Finite (𝓞 E) L := Module.Finite.iff_fg.mpr hL.1.fg
-  let : Module.Finite (𝓞 E) E := Module.Finite.of_injective i fun a b hab =>
-    smul_left_injective E (fun hzero => hx₀ (e.map_eq_zero_iff.mp hzero)) (congrArg Subtype.val hab)
-  exact RingOfIntegers.not_isField E
-    (isField_of_isIntegral_of_isField (IsFractionRing.injective (𝓞 E) E) (Field.toIsField E))
+  apply _root_.GlobalTheory.DetSelfDual.span_eq_top_of_isSdLat <;> assumption
 
 section Jet
 
@@ -145,15 +123,7 @@ variable (D : ℕ)
 theorem thDistC_cong (N : Submodule (𝓞 X.E) (Sp X.E a)) (fr : Frs X.E a SB) (N' : Submodule (𝓞 X.E) (Sp X.E b)) (fr' : Frs X.E b SB)
     (c : ℕ) (x x' : HomE X.E a b) (h : x - x' ∈ mulLat c (homAt Sall N N')) :
     thDistC A Sall SB D sel mU mI lam lam' n N fr N' fr' c x = thDistC A Sall SB D sel mU mI lam lam' n N fr N' fr' c x' := by
-  have h1 : A.thInd Sall N N' c x = A.thInd Sall N N' c x' := by
-    unfold Amb.thInd Amb.liftW
-    rw [isLift_congr A Sall N N' c x x' h]
-  have h2 : (c ∣ D ∧ x ∈ divLat D (homAt Sall N N')) = (c ∣ D ∧ x' ∈ divLat D (homAt Sall N N')) := by
-    rw [mem_divLat_congr D c _ h]
-  unfold thDistC Amb.jetK
-  by_cases hx : c ∣ D ∧ x ∈ divLat D (homAt Sall N N')
-  · rw [if_pos hx, if_pos (h2 ▸ hx), h1]
-  · rw [if_neg hx, if_neg (h2 ▸ hx)]
+  apply _root_.GlobalTheory.KerRat.thDistC_class <;> assumption
 
 theorem thDistC_det (sS sT : SB → X.E → X.K) (ha : MuDetLaw a mI sS) (hb : MuDetLaw b mI sS) (hi : UnitInv sS sT)
     (N : Submodule (𝓞 X.E) (Sp X.E a)) (fr : Frs X.E a SB) (N' : Submodule (𝓞 X.E) (Sp X.E b)) (fr' : Frs X.E b SB)

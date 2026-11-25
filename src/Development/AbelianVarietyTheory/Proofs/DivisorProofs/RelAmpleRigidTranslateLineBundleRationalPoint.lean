@@ -54,7 +54,6 @@ open GlobalTheory GlobalTheory.CxPts GlobalTheory.VB
 open MonoidalCategory CartesianMonoidalCategory MonObj Limits
 open scoped CategoryTheory.Obj
 open GlobalTheory.CechPic (Pic cls lam)
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.RigidTranslate
 

@@ -1,5 +1,6 @@
 module
 
+import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.BesselFrame
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TailIntegrals.InductiveHeisenbergInputs
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TailIntegrals.MatExtBvec
 
@@ -82,18 +83,7 @@ variable (k n : ℕ)
 
 theorem hpk_ww (j j' : Fin (k + 1)) :
     Hpk k n (wI k n j) (wI k n j') = if j = j' then (if j.val = k then -1 else 1) else 0 := by
-  rw [hpk_apply]
-  have hj := j.2
-  have e1 : (wI k n j).val = n + j.val := rfl
-  have e2 : (wI k n j').val = n + j'.val := rfl
-  have hs : sg k n (n + j.val) = n + j.val := by unfold sg; rw [if_neg (by omega)]
-  rw [e1, e2, hs]
-  by_cases h : j = j'
-  · subst h; rw [if_pos rfl, if_pos rfl]
-    by_cases h' : j.val = k
-    · rw [if_pos (by omega : n + j.val = n + k), if_pos h']
-    · rw [if_neg (by omega : ¬ n + j.val = n + k), if_neg h']
-  · rw [if_neg h, if_neg (fun e => h (Fin.ext (by omega)))]
+  apply Formalism.L2.SG.Pf.WFL.Hpk_ww <;> assumption
 
 theorem phi_iso (hk : 1 ≤ k) (a b : Fin (n + 1)) : herm (Hpk k n) (phiV k n a) (phiV k n b) = 0 := by
   unfold phiV

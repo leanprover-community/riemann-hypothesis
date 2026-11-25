@@ -13,8 +13,6 @@ open GlobalTheory.CuspRep GlobalTheory.UnitaryBC PositivityTheory.Rg.BcB.E Posit
 open PositivityTheory.RgTw (Mat G)
 open scoped Classical
 
-attribute [local instance] PositivityTheory.Rg.BcB.F.borelG PositivityTheory.Rg.BcB.F.borelF borelH
-
 namespace PositivityTheory.Rg.BcB.F.Rd
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]

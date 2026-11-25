@@ -1212,8 +1212,7 @@ theorem topRatio : TopRatio := by
     generalize I.xpoly S.G.k (M.rho (D.parOf S v) ρ) (y + 1) = X at hIR ⊢
     generalize |y + 1 / 2 + (D.parOf S v).u (S.l + 1)| * |y + 1 / 2 + (D.parOf S v).u' (S.l + 1)| = U at hIR hul
     have hAB : A * B < 0 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       have h3 := mul_nonneg hTT.le h
       have h4 : -(S.T * S.T') * (A * B) = -(S.T * S.T' * (A * B)) := by ring
       linarith
@@ -1230,8 +1229,7 @@ theorem topRatio : TopRatio := by
 
   have hroot : ∀ t ∈ Icc 1 (Cf.k + Cf.m - 1), -Cf.lam t < α ∨ β < -Cf.lam t := by
     intro t ht
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     have hmem : -Cf.lam t ∈ Cf.cutI S.l := by rw [hCf, cutI_eq]; exact ⟨hcon.1, hcon.2⟩
     have hfac := (Formalism.FourierDecayAlt.P.betaFactorisation Cf S.de S.de' S.G.ka S.T S.T' (-Cf.lam t) S.l (hOkp v)
       hw hw' hT hT' hl1 hlk hne hmem).2.1

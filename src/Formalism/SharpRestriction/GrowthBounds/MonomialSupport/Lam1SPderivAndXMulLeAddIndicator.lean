@@ -113,14 +113,7 @@ variable {p : ℕ} {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing
   (Dt : SignedChainData p O r J) (d : TL J Dt.nL r → ℕ) (th : ∀ j, Fin (Dt.nch j) → ℝ) (thL : ZMod J → Fin r → ℝ)
 
 private theorem geZ_of_le {a b : WithTop ℤ} {t : ℝ} (ha : geZ a t) (hab : a ≤ b) : geZ b t := by
-  intro k hk
-  subst hk
-  induction a using WithTop.recTopCoe with
-  | top => exact absurd hab (by simp)
-  | coe a =>
-    have h1 := ha a rfl
-    have h2 : a ≤ k := WithTop.coe_le_coe.1 hab
-    exact le_trans h1 (by exact_mod_cast h2)
+  apply _root_.Formalism.MainNotions.TestSideWords.geZ_mono <;> assumption
 
 private theorem valS_inf_le_valS_add {R : Type} [CommRing R] {ι : Type} {n : ℕ} [NeZero n] (LL : Letters ι) (S : Set ι)
     (F G : MvPolynomial (ι × Fin n) R) : valS LL S F ⊓ valS LL S G ≤ valS LL S (F + G) := by

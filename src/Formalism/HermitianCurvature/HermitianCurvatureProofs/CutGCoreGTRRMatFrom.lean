@@ -17,8 +17,6 @@ namespace Formalism.FourierDecayAlt.P.CutMP.Gauge.GC
 
 noncomputable section
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 namespace RRMat
 
 theorem normSq_rot (ζ : ℂ) (φ : ℝ) :

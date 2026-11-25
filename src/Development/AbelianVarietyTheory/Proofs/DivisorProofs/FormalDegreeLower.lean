@@ -126,8 +126,6 @@ open scoped TensorProduct
 
 namespace GlobalTheory.BlockSizes
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 def rowsP (D : D7) (j : ℕ) (τ : D.what₂.Tau) (i : Fin (D.R.sigW j).1) : ℕ := ⌊DV.aPlusQ D j τ i⌋₊
 
 def rowsM (D : D7) (j : ℕ) (τ : D.what₂.Tau) (i : Fin (D.R.sigW j).2) : ℕ :=

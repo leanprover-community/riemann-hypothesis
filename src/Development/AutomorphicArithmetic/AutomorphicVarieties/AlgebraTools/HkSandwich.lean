@@ -1,5 +1,6 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.SwapOne
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.HkDefs
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.EqOneOfStrictMono
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.HkBern
@@ -19,33 +20,7 @@ open MvPolynomial Equiv UpperTheory.V.AlgebraTools.Hk
 
 private theorem simple_one {R : Type} [CommRing R] {n : ℕ} {q : R} {H : Type} [Ring H] [Algebra R H]
     (b : Bern n q H) {a c : Fin n} (h : a.val + 1 = c.val) : b.T (swap a c) * b.one = q • b.one := by
-  have hac : a ≠ c := fun e => by rw [e] at h; omega
-  let s := swap a c
-  let d (w : Perm (Fin n)) := b.T s * b.T w - q • b.T w
-  have hpair (w : Perm (Fin n)) (hw : w⁻¹ a < w⁻¹ c) : d w + d (s * w) = 0 := by
-    dsimp [d, s]
-    rw [b.T_mul a c h w hw, ← mul_assoc, b.T_sq a c h, add_mul, smul_mul_assoc,
-      smul_mul_assoc, one_mul]
-    module
-  have hcancel (w : Perm (Fin n)) : d w + d (s * w) = 0 := by
-    rcases lt_or_gt_of_ne (show w⁻¹ a ≠ w⁻¹ c from fun e => hac (w⁻¹.injective e)) with hw | hw
-    · exact hpair w hw
-    · have hw' : (s * w)⁻¹ a < (s * w)⁻¹ c := by
-        simpa [s, Perm.mul_apply, mul_inv_rev, swap_inv, swap_apply_left, swap_apply_right] using hw
-      have e := hpair (s * w) hw'
-      rw [show s * (s * w) = w by simp [s, swap_mul_self_mul], add_comm] at e
-      exact e
-  have hsum : ∑ w, d w = 0 := by
-    refine Finset.sum_ninvolution (fun w => s * w) hcancel ?_ (fun _ => Finset.mem_univ _) ?_
-    · intro w _ e
-      apply hac
-      have he := congrArg (fun x : Perm (Fin n) => (x * w⁻¹) a) e
-      simpa [s, mul_assoc] using he.symm
-    · intro w
-      simp [s, swap_mul_self_mul]
-  unfold Bern.one
-  rw [Finset.mul_sum, Finset.smul_sum, ← sub_eq_zero, ← Finset.sum_sub_distrib]
-  exact hsum
+  apply _root_.swap_one <;> assumption
 
 private theorem symm_of_eigen {R : Type} [CommRing R] [IsDomain R] {n : ℕ} {q : R} {H : Type} [Ring H]
     [Algebra R H] (b : Bern n q H) (hb : b.Faithful) (y : MvPolynomial (Fin n) R)

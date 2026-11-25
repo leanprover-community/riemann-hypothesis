@@ -5,6 +5,7 @@ public import Mathlib.Analysis.CStarAlgebra.Classes
 public import Mathlib.Analysis.Distribution.SchwartzSpace.Basic
 public import GroundTheory.GlobalFields.TateThesis.GaussianSchwartz
 import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.IsSingTest
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsSchwartzPolyMulGauss
 
 @[expose] public section
 
@@ -20,19 +21,7 @@ def coordX {m n : ℕ} (k : Fin m × Fin n × Bool) (x : Fin m → Fin n → ℂ
   if k.2.2 then star (x k.1 k.2.1) else x k.1 k.2.1
 
 theorem coordX_temperate {m n : ℕ} (k : Fin m × Fin n × Bool) : Function.HasTemperateGrowth (coordX k) := by
-  rcases k with ⟨a, i, β⟩
-  cases β
-  · have h := ((ContinuousLinearMap.proj (R := ℝ) (φ := fun _ : Fin n => ℂ) i).comp
-      (ContinuousLinearMap.proj (R := ℝ) (φ := fun _ : Fin m => Fin n → ℂ) a)).hasTemperateGrowth
-    convert h using 1
-    funext x
-    simp [coordX]
-  · have h := ((Complex.conjCLE.toContinuousLinearMap).comp
-      ((ContinuousLinearMap.proj (R := ℝ) (φ := fun _ : Fin n => ℂ) i).comp
-      (ContinuousLinearMap.proj (R := ℝ) (φ := fun _ : Fin m => Fin n → ℂ) a))).hasTemperateGrowth
-    convert h using 1
-    funext x
-    simp [coordX]
+  apply _root_.GlobalTheory.CompanionTheory.PolyGaussSchwartz.coord_temperate <;> assumption
 
 theorem evX_temperate {m n : ℕ} (P : PX m n) : Function.HasTemperateGrowth (fun x => evX P x) := by
   have hev : (fun x => evX P x) = fun x => MvPolynomial.eval (fun k => coordX k x) P := by

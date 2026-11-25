@@ -151,8 +151,6 @@ open NumberField IsDedekindDomain ValuativeRel Matrix Polynomial
 open Formalism.ConjugateSelfDual ReciprocityTheory.Gal
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.LocGL GlobalTheory.WeilDeligne GlobalTheory.LocLanglands GlobalTheory.Whittaker
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace PositivityTheory.LocalParametersCuspidal.DepthZeroGlueing
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
@@ -282,7 +280,6 @@ open NumberField IsDedekindDomain Matrix GlobalTheory.UPel.HT GlobalTheory.LKTri
 open UpperTheory.Gal.CertificateRingHomMap (GUf Plc comp lev GLw IsCen mat sim)
 open UpperTheory.Gal.W2.Seed UpperTheory.Gal.Int.Geo UpperTheory.Gal.Int.Geo.Pl UpperTheory.Gal.Spc
 open scoped TensorProduct Classical
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 theorem UpperTheory.Gal.W2.Seed.pCuspTh :
     CuspTh := by
@@ -385,7 +382,6 @@ open GlobalTheory.CuspRep (pLoc)
 open UpperTheory.Gal.CertificateRingHomMap (GUf Plc GLw mat)
 open UpperTheory.Gal.W2.Seed UpperTheory.Gal.Int.Geo.Pl
 open scoped TensorProduct Classical Topology
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 namespace UpperTheory.Gal.Spc
 
@@ -902,7 +898,6 @@ open UpperTheory.Gal.Int.Geo UpperTheory.Gal.Int.Geo.Pl
 open GlobalTheory.LFun (KGL)
 open Formalism.UG (Hecke conv hAct)
 open scoped TensorProduct Classical
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 namespace UpperTheory.Gal.Spc
 
@@ -979,7 +974,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N
 open GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.Pst GlobalTheory.LocLanglands GlobalTheory.HeckeGal GlobalTheory.LocGL GlobalTheory.GalOfCusp
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 open GlobalTheory.GalCut GlobalTheory.UnitaryBC GlobalTheory.Cong GlobalTheory.CongW Formalism.UG GlobalTheory.DefU GlobalTheory.PRep GlobalTheory.CongSc
 
 namespace GlobalTheory.LadicPair
@@ -1176,7 +1170,6 @@ open UpperTheory.Gal.LocalSmoothExtension UpperTheory.Gal.W2.Seed
 open UpperTheory.Gal.Int.Geo UpperTheory.Gal.Int.Geo.Pl
 open Formalism.UG (Hecke conv dosetInd IsCommensurated)
 open scoped TensorProduct Classical
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 namespace UpperTheory.Gal.Spc
 
@@ -1720,7 +1713,6 @@ open UpperTheory.Gal.LocalSmoothExtension UpperTheory.Gal.W2.Seed
 open UpperTheory.Gal.Int.Geo UpperTheory.Gal.Int.Geo.Pl
 open Formalism.UG (Hecke conv)
 open scoped TensorProduct Classical
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 namespace UpperTheory.Gal.Spc
 

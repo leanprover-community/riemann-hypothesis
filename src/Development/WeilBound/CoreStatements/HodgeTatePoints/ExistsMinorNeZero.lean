@@ -27,8 +27,7 @@ theorem minor_mul_upper {B : Type} [CommRing B] {N i : ℕ} (hi : i ≤ N) (g U 
     · rfl
     · intro k _ hk
       have hki : i ≤ (k : ℕ) := by
-        by_contra hlt
-        push_neg at hlt
+        by_contra! hlt
         exact hk (Finset.mem_map.2 ⟨⟨k, hlt⟩, Finset.mem_univ _, Fin.ext rfl⟩)
       have hlt : Fin.castLE hi b < k := by
         rw [Fin.lt_def, Fin.coe_castLE]

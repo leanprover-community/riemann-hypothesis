@@ -1004,8 +1004,7 @@ theorem complement_minor_order_pos (hV : Fr.Valid L₁ N₁) (hn : Even n') (hr 
   have hfr := hV.2.2.2.2.1
 
   obtain ⟨c, hcI, hc⟩ : ∃ c ∈ I, c ∉ Ifirst r k := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     have : I ∩ Ifirst r k = I := Finset.inter_eq_left.2 hcon
     rw [this] at hIi
     omega
@@ -1953,18 +1952,15 @@ theorem bd_count_real (n N G N1 u M P de h lx R B : ℝ)
   have hMR : 0 ≤ (M + 5) * R := by positivity
   have hup : G * de ≤ (M + 5) * R * 2 := by rw [hGde]; exact mul_le_mul_of_nonneg_left hud2 hMR
   have hlo : (M + 5) * R ≤ G * de := by rw [hGde]; exact le_mul_of_one_le_right hMR hud1
-  have hc0 : 0 ≤ (h + 3) / P := by positivity
   have hM5 : M + 5 ≤ ((h + 3) / P + 6) * lx := by
     have e : (h + 3) * lx / P = (h + 3) / P * lx := by ring
     rw [e] at hM2
     nlinarith
-  have hR0 : 0 ≤ R := by linarith
   have hCe : G * de ≤ (((h + 3) / P + 6) * R * 2) * lx := by
     calc G * de ≤ (M + 5) * R * 2 := hup
       _ ≤ (((h + 3) / P + 6) * lx) * R * 2 := by gcongr
       _ = _ := by ring
   have hMR5 : M + 5 ≤ (M + 5) * R := le_mul_of_one_le_right (by linarith) (by linarith)
-  have hG5 : 5 ≤ G * de := by linarith
   have hGpos : 0 < G := by
     by_contra hneg
     have : G * de ≤ 0 := mul_nonpos_of_nonpos_of_nonneg (not_lt.mp hneg) hde.le
@@ -1988,7 +1984,6 @@ theorem bd_count_real (n N G N1 u M P de h lx R B : ℝ)
         _ ≤ (16.8 * (G * de)) * (4 / 3 * n) := by gcongr
         _ = (22.4 * de * n) * G := by ring
     have := le_of_mul_le_mul_right hfin hGpos
-    have hnd : 0 ≤ n * de := by positivity
     linarith
 
 def bd_Ce (r : ℕ) (h : ℝ) : ℝ := ((h + 3) / (10 : ℝ) ^ (-((6 * r + 1 : ℕ) : ℤ)) + 6) * (6 * (r : ℝ) + 1) * 2
@@ -2431,7 +2426,6 @@ theorem bf_gapGt {L₂ : ℕ} (hL : L₂ < u) (j : ℤ) {b : ℤ} (h : bf_MT TT 
   intro y hy hlt _
   have hy' : posOf n' y ∈ TT := (mem_filter.1 hy).2
   have := bf_gap TT r u h h1 h2 he hy' hlt
-  have hL' : (L₂ : ℤ) < u := by exact_mod_cast hL
   linarith
 
 theorem bf_cell {b : ℤ} (h : bf_MT TT r u b) (s : ℕ) (q : ℤ)
@@ -3438,7 +3432,6 @@ theorem window_holds_even_tops : RowsEvenTopsInWindow := by
       exact heT
     · intro i _ j _ hij
       have h2 : (n' : ℤ) * ((i : ℤ) - q) = (n' : ℤ) * ((j : ℤ) - q) := by
-        have h3 : Fr.fr 0 0 + (n' : ℤ) * ((i : ℤ) - q) = Fr.fr 0 0 + (n' : ℤ) * ((j : ℤ) - q) := hij
         linarith
       have h4 := mul_left_cancel₀ hn0.ne' h2
       have h5 : (i : ℤ) = j := by linarith
@@ -5157,7 +5150,6 @@ theorem level_degree_ge_ratio {n' r : ℕ} [NeZero n'] (CLa CD Csz : ℝ) (p : �
   have hp' : (1 : ℝ) ≤ p := by exact_mod_cast hp
   have hpow : (p : ℝ) ^ (Fr.dist j (Fr.oldest j x)) ≤ (p : ℝ) ^ G' := pow_le_pow_right₀ hp' hdist
   have hpos : 0 < (p : ℝ) ^ (Fr.dist j (Fr.oldest j x)) := pow_pos (by linarith) _
-  have hc : (0 : ℝ) ≤ c'' := Nat.cast_nonneg _
   exact div_le_div₀ (Nat.cast_nonneg _) (by linarith) hpos hpow
 
 theorem slope_bounds_on_letters : ∃ C : ℝ, 1 ≤ C ∧

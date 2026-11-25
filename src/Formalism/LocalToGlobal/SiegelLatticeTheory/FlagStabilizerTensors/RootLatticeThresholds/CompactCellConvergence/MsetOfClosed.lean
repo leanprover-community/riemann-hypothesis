@@ -1,5 +1,6 @@
 module
 
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.SigIntIntegrable
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.OrbitQuotientTopology.IsClosedRStab
 public import Formalism.SharpRestriction.CuspSpanNormBounds.RootMeasBig
 public import Formalism.FormalDegreeBessel.FormalDegreeRatio.UnitaryWeylNormalHolds
@@ -41,18 +42,7 @@ theorem nset_closed : IsClosed (Nset k r) := by
   apply PI.AmpOrbQuot.isClosed_Nset
 
 theorem uw_closed (z : Fin (2 * r + k + 1) → ℂ) : IsClosed (UWset k r z) := by
-  have hU : IsClosed {g : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ | gᴴ * Hpk k r * g = Hpk k r} :=
-    isClosed_eq ((continuous_id.matrix_conjTranspose.matrix_mul continuous_const).matrix_mul continuous_id)
-      continuous_const
-  have h2 : IsClosed {g : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ |
-      ∀ a : Fin r, g *ᵥ bvec (eI k r a) = bvec (eI k r a) ∧ g *ᵥ bvec (esI k r a) = bvec (esI k r a)} := by
-    simp only [Set.setOf_forall, Set.setOf_and]
-    exact isClosed_iInter fun a =>
-      (isClosed_eq (continuous_id.matrix_mulVec continuous_const) continuous_const).inter
-        (isClosed_eq (continuous_id.matrix_mulVec continuous_const) continuous_const)
-  have h3 : IsClosed {g : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ | g *ᵥ z = z} :=
-    isClosed_eq (continuous_id.matrix_mulVec continuous_const) continuous_const
-  exact hU.inter (h2.inter h3)
+  apply _root_.ReciprocityTheory.ChartRestriction.DS.Mult1.TopH.uw_closed <;> assumption
 
 theorem mset_of_closed {s : Set (Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ)} (hs : IsClosed s) :
     MeasurableSet {x : Mt k r | Matrix.of x ∈ s} := by

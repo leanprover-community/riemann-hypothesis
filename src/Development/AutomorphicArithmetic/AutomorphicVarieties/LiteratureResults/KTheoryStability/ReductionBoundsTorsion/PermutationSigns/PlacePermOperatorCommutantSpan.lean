@@ -304,8 +304,7 @@ theorem nu_iff (f : Fin q → Fin q) :
   · intro h
     have hs : Function.Surjective f := by
       intro k
-      by_contra hk
-      push_neg at hk
+      by_contra! hk
       have := congrArg (fun g : Fin q →₀ ℕ => g k) h
       simp only [Finsupp.coe_finsetSum, Finset.sum_apply, Finsupp.single_apply] at this
       simpa [hk] using this

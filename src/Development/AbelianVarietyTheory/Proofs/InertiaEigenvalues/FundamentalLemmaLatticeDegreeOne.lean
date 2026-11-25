@@ -1163,8 +1163,7 @@ theorem flAt_one : FLAt 1 := by
     have := congrFun hc' (e.symm k)
     simpa using this
   have hunit : ∃ k, lam k ∉ Fil P 1 := by
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     have := hind (Pi.single ⟨0, by omega⟩ 1) (Fil_sum fun j _ => by
       rw [Algebra.smul_def]; exact Fil_mul_left (q_mem_Fil P _) (hne j))
     simpa using congrFun this ⟨0, by omega⟩
@@ -1220,8 +1219,7 @@ theorem flAt_one : FLAt 1 := by
   let μ : Fin h → P.R.BdR := fun k => V y2 (e.symm k)
   have hμ0 : ∀ k, μ k ∈ Fil P 0 := fun k => hU'u.2 _ _
   have hμu : ∃ k, μ k ∉ Fil P 1 := by
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     have h1 : (V * Um) y2 y2 ∈ Fil P 1 := by
       rw [Matrix.mul_apply]
       exact Fil_sum fun j _ => Fil_mul_right (by simpa [μ] using hne (e j)) (hUm0 j y2)

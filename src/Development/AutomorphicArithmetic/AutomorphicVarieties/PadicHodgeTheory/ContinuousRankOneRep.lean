@@ -171,8 +171,7 @@ private theorem exists_root_near_of_aeval_small (l : ℕ) [Fact l.Prime] (g : �
     apply Multiset.map_congr rfl
     intro b _
     simp
-  by_contra hno
-  push_neg at hno
+  by_contra! hno
   have hle : δ ^ n ≤ ‖aeval α g‖ := by
     rw [hev]
     show δ ^ n ≤ (normHom : Om l →*₀ ℝ) _

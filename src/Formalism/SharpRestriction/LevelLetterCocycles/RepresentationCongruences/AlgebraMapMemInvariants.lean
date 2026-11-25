@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.LevelLetterCocycles.UniversalGeneralOfRestriction
 public import Formalism.SharpRestriction.LevelLetterCocycles.RepresentationCongruences.ArcGamLiftCore
 public import Formalism.SharpRestriction.LevelLetterCocycles.RepresentationCongruences.Pi0MemADelta
 import Formalism.SharpRestriction.LevelLetterCocycles.AdmBoundsBOfAdm
@@ -55,21 +56,7 @@ theorem repVV_smul_invariant {c' : ZMod n} {e M : ℕ} {Λ : LetA O n} {d : ℕ}
     {sol : Fin d → ℕ → Fin d → LL} (a : LetA O n) (ha : a ∈ W.AΔ) {x : W.DD T} {f : Fin d → W.EE}
     (h : RepVV W T c' e M Λ b sol x f) :
     RepVV W T c' e M Λ b sol (a • x) (fun k => algebraMap (LetA O n) W.EE a * f k) := by
-  obtain ⟨κ, κ', H, a', hH, ha', hP⟩ := h
-  refine ⟨κ, κ', H, fun k => a * a' k, hH,
-    fun k => ⟨W.AΔ.mul_mem ha (ha' k).1, ?_⟩, ?_⟩
-  · rw [map_mul, ← (ha' k).2]
-    ring
-  · have hs : ∑ k, (a * a' k) • ((W.φD T) ^ e) (H k) = a • ∑ k, a' k • ((W.φD T) ^ e) (H k) := by
-      rw [Finset.smul_sum]
-      exact Finset.sum_congr rfl fun k _ => mul_smul _ _ _
-    rw [hs]
-    have key : lA W ^ κ' • (lA W ^ κ • Λ • (a • x) - a • ∑ k, a' k • ((W.φD T) ^ e) (H k)) =
-        a • (lA W ^ κ' • (lA W ^ κ • Λ • x - ∑ k, a' k • ((W.φD T) ^ e) (H k))) := by
-      simp only [smul_sub]
-      rw [smul_comm Λ a x, smul_comm (lA W ^ κ) a, smul_comm (lA W ^ κ') a, smul_comm (lA W ^ κ') a]
-    rw [key]
-    exact inMultiple_smul W ha hP
+  apply _root_.Formalism.MainNotions.UnusedSlot80.UnivF.repVV_smul <;> assumption
 
 end Smul
 

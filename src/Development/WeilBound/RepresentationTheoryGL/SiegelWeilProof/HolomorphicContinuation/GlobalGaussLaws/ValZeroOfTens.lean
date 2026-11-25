@@ -17,6 +17,7 @@ import Mathlib.Tactic.Linter.Style
 import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.InfFam
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.EqZeroOfLintegralEqZero
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsInverseChart
+import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.GlobalGaussLaws.LocRhoB
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.GlobalGaussLaws.SplitA, Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.GlobalGaussLaws.ValZeroOfTens
@@ -33,8 +34,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.MixModel
 open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
 open GlobalTheory.StdUnn
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace PositivityTheory.Rg.Sw.Glob
 
@@ -65,23 +64,8 @@ theorem comm_of_trivial {θ : InfFam D} (hθ : IsInfFam θ) {τ : D.what₂.Tau}
 
 theorem iota_mem_K {θ : InfFam D} (hθ : IsInfFam θ) {τ : D.what₂.Tau} {ι : GR n →* G D n} (hι : IsPlaceEmb θ τ ι)
     {y : GR n} (hy : InK (mR y)) : ι y ∈ K D n := by
-  obtain ⟨h1, h2, h3⟩ := hι.2 y
-  show ι y ∈ GlobalTheory.AdelicU.levelAll D.sp.cm.sig (Jst D n) (stdLattice D.host.E (n + n)) 1
-  rw [GlobalTheory.AdelicU.mem_levelAll]
-  refine ⟨fun v => ?_, fun w => ?_⟩
-  · have hinf : ι y ∈ GlobalTheory.AdelicU.infPts D.sp.cm.sig (Jst D n) := Units.ext h3
-    rw [GlobalTheory.AdelicU.mem_infPts_iff_forall.1 hinf v]; exact one_mem _
-  · obtain ⟨ρ, rfl⟩ := (GlobalTheory.AdelicU.placeOf_bijective D).2 w
-    rw [GlobalTheory.Doubling.mem_stabArch_iff_unitary (GlobalTheory.AdelicU.isCMExt_host D) (GlobalTheory.AdelicU.embOverOf D ρ) (Jst D n) 1 (ι y)]
-    rw [inv_one, Units.val_one, Matrix.map_one _ (map_zero _) (map_one _), Matrix.map_one _ (map_zero _) (map_one _)]
-    simp only [Matrix.one_mul, Matrix.mul_one]
-    have e1 : Formalism.MainNotions.StandardLattice.infMat D.sp.cm.sig (Jst D n) (GlobalTheory.AdelicU.infProj (GlobalTheory.AdelicU.embOverOf D ρ)) (ι y) =
-        compAt θ ρ (mat (ι y)) := by
-      rw [← GlobalTheory.AdelicU.eq_infProj hθ (GlobalTheory.AdelicU.embOverOf D ρ) rfl]; rfl
-    rw [e1]
-    by_cases hρ : ρ = τ
-    · subst hρ; rw [h1, ← reidx_ct, ← reidx_mul, hy.2, reidx_one]
-    · rw [h2 ρ hρ]; simp
+  intros
+  apply _root_.PositivityTheory.Rg.Sw.Glob.RhoH.iota_mem_K <;> assumption
 
 theorem K_split {θ : InfFam D} (hθ : IsInfFam θ) {τ : D.what₂.Tau} {ι : GR n →* G D n} (hι : IsPlaceEmb θ τ ι)
     {k : G D n} (hk : k ∈ K D n) : ∃ y : GR n, InK (mR y) ∧ (ι y)⁻¹ * k ∈ K D n ∧ compAt θ τ (mat ((ι y)⁻¹ * k)) = 1 := by
@@ -247,8 +231,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.MixModel
 open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
 open GlobalTheory.StdUnn
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace PositivityTheory.Rg.Sw.Glob
 

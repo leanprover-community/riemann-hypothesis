@@ -189,8 +189,7 @@ private theorem spans_setOf_q_le_ten_mul_of_covering {L : Type} [Field L] [Numbe
     rw [LinearMap.pi_apply_eq_sum_univ f x]
     simp [ha, smul_eq_mul]
   have ha0 : ∃ i, a i ≠ 0 := by
-    by_contra h0
-    push_neg at h0
+    by_contra! h0
     exact hf0 (LinearMap.ext fun x => by simp [hfv, h0])
   obtain ⟨i0, hi0⟩ := ha0
   let b : VR L N := fun w i => star (w.embedding (a i))

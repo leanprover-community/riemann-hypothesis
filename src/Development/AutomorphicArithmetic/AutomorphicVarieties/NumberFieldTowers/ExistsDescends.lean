@@ -35,48 +35,7 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.NumberField
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.NumberFieldTowers.LayerGen
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.NumberFieldTowers.LayerUniq
 public import Formalism.GaloisCohomology.GaloisCohomologyProofs.LdataNonempty
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
 import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.GaloisCohomologyLength.LevelInertiaLeLevelDec
 import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.SelmerTransport.RestrictionMemInvariantH1
 import Mathlib.FieldTheory.Galois.Profinite
@@ -84,12 +43,6 @@ import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
 import Mathlib.Tactic.Linter.Style
 import Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Separation.CompletelyRegular
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Topology.Algebra.Group.Units
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicArithmetic.AutomorphicVarieties.NumberFieldTowers.QzSep, Development.AutomorphicArithmetic.AutomorphicVarieties.NumberFieldTowers.LenDual, Development.AutomorphicArithmetic.AutomorphicVarieties.NumberFieldTowers.CokerDual, Development.AutomorphicArithmetic.AutomorphicVarieties.NumberFieldTowers.ExistsGen, Development.AutomorphicArithmetic.AutomorphicVarieties.NumberFieldTowers.GenGal, Development.AutomorphicArithmetic.AutomorphicVarieties.NumberFieldTowers.IdealNormClassCongr, Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.KummerTheory.VanishCyc, Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.KummerTheory.ExtCocycle, Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.KummerTheory.ResInfOnto, Development.AutomorphicArithmetic.AutomorphicVarieties.NumberFieldTowers.DinfTransport, Development.AutomorphicArithmetic.AutomorphicVarieties.NumberFieldTowers.Imports, Development.AutomorphicArithmetic.AutomorphicVarieties.NumberFieldTowers.DinfTors, Development.AutomorphicArithmetic.AutomorphicVarieties.NumberFieldTowers.ShaDGen, Development.AutomorphicArithmetic.AutomorphicVarieties.NumberFieldTowers.ExistsDescends
@@ -502,8 +455,7 @@ open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.
 
 private theorem exists_level_pow_dvd_of_not_finOrder (l : ℕ) [hl : Fact l.Prime] (u : ℤ_[l]ˣ) (hu : ¬ IsOfFinOrder u) (a : ℕ) :
     ∃ j : ℕ, ∀ m : ℤ, PadicInt.toZModPow j ((u ^ m : ℤ_[l]ˣ) : ℤ_[l]) = 1 → (l : ℤ) ^ (a + 1) ∣ m := by
-  by_contra h
-  push_neg at h
+  by_contra! h
   apply hu
   have hK : 0 < l ^ a * (l - 1) :=
     Nat.mul_pos (pow_pos hl.out.pos a) (Nat.sub_pos_of_lt hl.out.one_lt)
@@ -536,8 +488,7 @@ private theorem exists_level_pow_dvd_of_not_finOrder (l : ℕ) [hl : Fact l.Prim
       rw [← Nat.dvd_gcd_mul_iff_dvd_mul] at hcard
       obtain ⟨b, -, hb⟩ := (Nat.dvd_prime_pow hl.out).mp (Nat.gcd_dvd_right (orderOf w) (l ^ i))
       have hba : b ≤ a := by
-        by_contra hba
-        push_neg at hba
+        by_contra! hba
         apply hnd
         have h1 : (l : ℤ) ^ b ∣ m := by
           have : l ^ b ∣ orderOf w := hb ▸ Nat.gcd_dvd_left _ _

@@ -606,8 +606,7 @@ theorem exists_regular_exponent_of_sum_sq_eq :
     ((Nat.modEq_iff_dvd' h1.le).2 dvd_rfl).symm
   generalize q ^ d - 1 = N at *
   obtain ⟨k, hk⟩ : ∃ k, a k ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     simp [h] at hsum
     omega
   refine ⟨k, hk, fun i hi hid hki => ?_⟩

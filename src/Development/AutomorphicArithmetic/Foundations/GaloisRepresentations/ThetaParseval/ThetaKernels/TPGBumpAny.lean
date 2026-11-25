@@ -188,12 +188,8 @@ private theorem core_pk {A : Type} [CommRing A] (S : Subring A) (s : A →+* A) 
     rw [← Matrix.transpose_mul, ← Matrix.map_mul, hΓG, Matrix.map_one _ (map_zero _) (map_one _), Matrix.transpose_one]
   have hTΓ : T * Γ = -1 := by rw [← neg_neg (T * Γ), ← Matrix.mul_neg, ← hsk]; exact congrArg Neg.neg hTQ
   have mapT : T.map s = G'ᵀ := Matrix.ext fun i j => by simp [T, ss]
-  have he2 : e * e = e := by
-    have : e * (e + s e) = e := by rw [h1, mul_one]
-    rwa [mul_add, h2, add_zero] at this
-  have hs2 : s e * s e = s e := by
-    have : s e * (e + s e) = s e := by rw [h1, mul_one]
-    rwa [mul_add, mul_comm, h2, zero_add] at this
+  have he2 : e * e = e := by linear_combination e * h1 - h2
+  have hs2 : s e * s e = s e := by linear_combination s e * h1 - h2
   have h2' : s e * e = 0 := by rw [mul_comm, h2]
   refine ⟨e • E₁ᵀ + s e • (E₂ᵀ * T), e • E₁ + s e • (Q * E₂),
     fun i j => add_mem (mul_mem he (intE f₁ j i)) (mul_mem (hS _ he) (by
@@ -451,17 +447,17 @@ private theorem sep_dual_pk {F : Type} [Field F] [NumberField F] (v : HeightOneS
   obtain ⟨b, hb⟩ := (IsPrincipalIdealRing.principal I).principal
   have hbI : b ∈ I := by rw [hb]; exact Submodule.mem_span_singleton_self b
   have hmem : ∀ o, o ∈ I ↔ ∃ t : O, o = t * b := fun o => by rw [hb, Submodule.mem_span_singleton]; simp [eq_comm]
+  have hin : ∀ x hx, (⟨_, key x hx⟩ : O) ∈ I := fun x hx y hy => by
+    simpa [hx0, mul_assoc, mul_inv_cancel_left₀] using hx y hy
   have hb0 : (b : Fv F v) ≠ 0 := fun h0 => by
     have h0' : b = 0 := by exact_mod_cast h0
-    have hin : (⟨_, key 1 ha⟩ : O) ∈ I := fun y hy => by simpa [hx0, mul_assoc, mul_inv_cancel_left₀] using ha y hy
-    obtain ⟨t, ht⟩ := (hmem _).1 hin; rw [h0', mul_zero] at ht
+    obtain ⟨t, ht⟩ := (hmem _).1 (hin 1 ha); rw [h0', mul_zero] at ht
     have := congrArg Subtype.val ht; simp [hx0] at this
   let c : Fv F v := x₀ * b
   have hc0 : c ≠ 0 := mul_ne_zero hx0 hb0
   have hc : ∀ x, (∀ y ∈ O, ψ₀ (x * y) = 1) ↔ c⁻¹ * x ∈ O := fun x =>
     ⟨fun hx => by
-      have hin : (⟨_, key x hx⟩ : O) ∈ I := fun y hy => by simpa [hx0, mul_assoc, mul_inv_cancel_left₀] using hx y hy
-      obtain ⟨t, ht⟩ := (hmem _).1 hin
+      obtain ⟨t, ht⟩ := (hmem _).1 (hin x hx)
       have h2 : x₀⁻¹ * x = t * b := by simpa using congrArg Subtype.val ht
       rw [show c⁻¹ * x = t by dsimp [c]; rw [mul_inv, mul_comm x₀⁻¹, mul_assoc, h2]; field_simp]; exact t.2,
      fun hx y hy => by

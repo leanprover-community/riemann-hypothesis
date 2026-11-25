@@ -262,18 +262,6 @@ theorem thmBpOfPartsSh (C₃ CΛ C₀ C₂ Cκ : ℝ) (hC₃ : 0 ≤ C₃) (hCΛ
         rw [e]
         exact mul_le_mul_of_nonneg_right key (by positivity)
 
-section dec
-
-variable {P : M.Par} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
-  [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wp] [FiniteDimensional ℂ Wq]
-
-def EigDec (p : KB.Pl P Wp Wq) (f : B.Mat P.k P.r → (Wq →L[ℂ] Wp)) (n : ℕ)
-    (h : Fin n → B.Mat P.k P.r → (Wq →L[ℂ] Wp)) : Prop :=
-  (∀ i, jN2 p (h i) ≤ jN2 p f) ∧
-    ∀ γ : C.LPt, D.IsLocPt γ (P.r + 1) → 0 < Gp p γ → p.V f γ = ∑ i, p.V (h i) γ
-
-end dec
-
 end
 
 end Formalism.FourierDecayAlt.P.CutBP2

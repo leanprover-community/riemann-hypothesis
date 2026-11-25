@@ -14,6 +14,8 @@ public import Mathlib.RingTheory.Derivation.Lie
 import Std.Tactic.BVDecide.Normalize.Prop
 import Formalism.RealPlaceAnalysis.RealPlaceTaylor.ProdFactorialSupportSubSingle
 import Mathlib.Tactic.Linter.Style
+import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.ArchimedeanSchwartz.ArchimedeanDerivatives.ContDiffFderivApply
+import Formalism.LocalToGlobal.Divisibility.BrJoint
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.PeriodIntegrals.UnitaryGroupMassFormula.HookLengthBound.DetShift, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.HookLengthBound.DeterminantAdjugate, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.HookLengthBound.HighestWeightLastZero, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.HookLengthBound.HookBoundOfSteps, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.HookLengthBound.HookNorm, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.HookLengthBound.DiagonalMonomialFactorial, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.HookLengthBound.ProdFactorialLe, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.HookLengthBound.Assemble, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.HookLengthBound.CapelliOps, Formalism.PeriodIntegrals.OrbitalBoundsConclusion.HookBound
@@ -469,8 +471,7 @@ theorem diagHom_monomial {N : ℕ} (m : Fin N × Fin N →₀ ℕ) (c : ℚ) :
       exact (Finsupp.mem_support_iff.1 hv) (h v hne)
     rw [if_pos this]
   · have : ∃ v, v.1 ≠ v.2 ∧ m v ≠ 0 := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       exact h fun v hv => by_contra fun h0 => h0 (hc v hv)
     obtain ⟨v, hv, hmv⟩ := this
     rw [Finsupp.prod, Finset.prod_eq_zero (i := v) (Finsupp.mem_support_iff.2 hmv), mul_zero]
@@ -537,15 +538,7 @@ theorem coeff_diagonal_monomial_hw {N : ℕ} (ν : Fin N → ℕ) : AddMonoidAlg
 
 theorem weight_rowW_apply {N : ℕ} (m : Fin N × Fin N →₀ ℕ) (a : Fin N) :
     (Finsupp.weight (rowW N N) m) a = ∑ b : Fin N, m (a, b) := by
-  classical
-  rw [Finsupp.weight_apply, Finsupp.sum_fintype _ _ (by intro i; simp)]
-  rw [Finset.sum_apply, Fintype.sum_prod_type]
-  simp only [Pi.smul_apply, rowW, smul_eq_mul, Pi.single_apply]
-  rw [Finset.sum_eq_single a]
-  · simp
-  · intro b _ hb
-    simp [Ne.symm hb]
-  · simp
+  apply _root_.PI.WSF.evA_weight_rowW <;> assumption
 
 theorem diagonal_monomial_apply {N : ℕ} (ν : Fin N → ℕ) (hν : Antitone ν) (a : Fin N) : M0 ν (a, a) = ν a := by
   classical
@@ -771,15 +764,7 @@ theorem xw_xo (N : ℕ) : ∀ (k : ℕ) (r s : Fin k → Fin N),
 theorem sum_perm_of_noninj {M : Type} [AddCommMonoid M] (N : ℕ) (F : (Fin N → Fin N) → M)
     (hF : ∀ s, ¬ Function.Injective s → F s = 0) :
     ∑ s, F s = ∑ π : Equiv.Perm (Fin N), F π := by
-  classical
-  have himg : ∑ π : Equiv.Perm (Fin N), F π =
-      ∑ s ∈ Finset.univ.image (fun π : Equiv.Perm (Fin N) => (π : Fin N → Fin N)), F s :=
-    (Finset.sum_image fun π _ σ _ h => Equiv.ext (congrFun h)).symm
-  rw [himg]
-  symm
-  refine Finset.sum_subset (Finset.subset_univ _) fun s _ hs => hF s fun hinj => hs ?_
-  exact Finset.mem_image.2
-    ⟨Equiv.ofBijective s (Finite.injective_iff_bijective.1 hinj), Finset.mem_univ _, rfl⟩
+  apply _root_.GlobalTheory.CapelliWeyl.sum_perm_of_not_injective <;> assumption
 
 theorem detD_eq (N : ℕ) : detD N = ∑ π : Equiv.Perm (Fin N), ((Equiv.Perm.sign π : ℤˣ) : ℤ) •
     dw (dop N) (id : Fin N → Fin N) (fun j => π j) := by

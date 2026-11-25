@@ -112,7 +112,6 @@ theorem liftForm_mul_newVar_sub_mem (P : Ideal (MRing ι R)) (u : J → MRing ι
 end BlowUp
 
 
-set_option maxHeartbeats 400000 in
 theorem BlowUpLocalChart.proof : BlowUpLocalChart.Statement.{u} := by
   intro R _ _ K _ ι _ J _ P hP u G' y hy hG' hrel x hx hG G₀ _ hG₀ W₀ _ hW₀
   have : P.IsPrime := hP

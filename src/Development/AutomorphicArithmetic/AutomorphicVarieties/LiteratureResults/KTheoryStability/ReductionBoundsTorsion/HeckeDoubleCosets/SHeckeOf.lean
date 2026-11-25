@@ -1153,8 +1153,7 @@ theorem pKey (hT : PTransfer) : PKey := by
   intro c hc H hH w hw
   have hlow : ∃ i : Fin r, ((c⁻¹ : Gm L (n + r)) : Matrix (Fin (n + r)) (Fin (n + r)) (𝓞 L))
       (Fin.natAdd n i) ⟨0, by omega⟩ ∉ Ideal.span {π} := by
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     obtain ⟨c', hc'⟩ := pLow L π hπ n r hn1 c hne
     exact hc c' hc'
   have h := pStabVan hCh hEv hAff L hC k hk π hπ n r hn1 hr1 c hlow F hFinv hFcoc H hH w hw

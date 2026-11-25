@@ -44,8 +44,7 @@ theorem exists_trace_one (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (h
 theorem exists_tr_notMem (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF : IsFixF K F) {𝔭 : Ideal (𝓞 F)}
     (h𝔭 : 𝔭.IsMaximal) {N : ℕ} {z : 𝓞 K} (hz : z ∉ extP K 𝔭 ^ N) :
     ∃ b : 𝓞 K, trF hF (b * z) ∉ 𝔭 ^ N := by
-  by_contra hall
-  push_neg at hall
+  by_contra! hall
   obtain ⟨θ, hθ⟩ := exists_theta hK hF h𝔭
   have htr : ∀ b : 𝓞 K, b * z + conjO K (b * z) ∈ extP K 𝔭 ^ N := by
     intro b

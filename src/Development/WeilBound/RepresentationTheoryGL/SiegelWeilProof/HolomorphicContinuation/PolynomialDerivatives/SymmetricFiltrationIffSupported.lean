@@ -331,8 +331,7 @@ theorem op_inj {s : Sym m n} (h : ∀ f, op s f = 0) : s = 0 := by
     split_ifs with hc
     · apply mul_eq_zero_of_right
       rw [Finset.prod_eq_zero_iff]
-      by_contra hnz
-      push_neg at hnz
+      by_contra! hnz
       have hle : ∀ k, b (Sum.inr k) ≤ t0 (Sum.inr k) := by
         intro k
         have hk := hnz k (Finset.mem_univ _)

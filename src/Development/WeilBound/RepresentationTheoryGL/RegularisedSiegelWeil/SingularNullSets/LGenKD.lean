@@ -217,8 +217,7 @@ theorem isUnit_of_absBar (y : intLoc F E v) (h : ∀ τ : E →ₐ[F] FvBar F v,
 theorem emb_cases (σ : E →ₐ[F] E) (hσ1 : σ ≠ AlgHom.id F E) (h2 : Module.finrank F E = 2) (τ0 τ : E →ₐ[F] FvBar F v) :
     τ = τ0 ∨ τ = τ0.comp σ := by
   classical
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   have hd : τ0 ≠ τ0.comp σ := by
     intro h
     apply hσ1

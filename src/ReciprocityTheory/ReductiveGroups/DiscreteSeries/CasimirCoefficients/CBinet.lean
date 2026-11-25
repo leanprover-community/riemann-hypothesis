@@ -3,6 +3,7 @@ module
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.IsClosedKset
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.TypeStar
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.CauchyBinet
 
 @[expose] public section
 
@@ -75,44 +76,9 @@ theorem det_mul_eq_sum_submatrix {R : Type*} [CommRing R] {i N : ℕ} (A : Matri
     (B : Matrix (Fin N) (Fin i) R) :
     (A * B).det = ∑ S : {S : Finset (Fin N) // S.card = i},
       (A.submatrix id (S.1.orderEmbOfFin S.2)).det * (B.submatrix (S.1.orderEmbOfFin S.2) id).det := by
-  classical
-  have hz : ∀ f : Fin i → Fin N, ¬ Function.Injective f →
-      (∏ a, A a (f a)) * (B.submatrix f id).det = 0 := by
-    intro f hf
-    simp only [Function.Injective, not_forall] at hf
-    obtain ⟨a, b, hab, hne⟩ := hf
-    rw [Matrix.det_zero_of_row_eq hne (by funext c; simp [hab]), mul_zero]
-  have hS : ∀ S : {S : Finset (Fin N) // S.card = i},
-      ∑ σ : Equiv.Perm (Fin i), (∏ a, A a (cbPar ⟨S, σ⟩ a)) * (B.submatrix (cbPar ⟨S, σ⟩) id).det =
-        (A.submatrix id (S.1.orderEmbOfFin S.2)).det * (B.submatrix (S.1.orderEmbOfFin S.2) id).det := by
-    intro S
-    have hA : (A.submatrix id (S.1.orderEmbOfFin S.2)).det =
-        ∑ σ : Equiv.Perm (Fin i), ((Equiv.Perm.sign σ : ℤ) : R) *
-          ∏ a, A a (S.1.orderEmbOfFin S.2 (σ a)) := by
-      rw [← Matrix.det_transpose, Matrix.det_apply']
-      rfl
-    rw [hA, Finset.sum_mul]
-    refine Finset.sum_congr rfl fun σ _ => ?_
-    have hB : B.submatrix (cbPar ⟨S, σ⟩) id = (B.submatrix (S.1.orderEmbOfFin S.2) id).submatrix σ id := rfl
-    rw [hB, Matrix.det_permute]
-    change (∏ a, A a (S.1.orderEmbOfFin S.2 (σ a))) * _ = _
-    ring
-  calc (A * B).det = ∑ f : Fin i → Fin N, (∏ a, A a (f a)) * (B.submatrix f id).det :=
-        cb_det_mul_fun A B
-    _ = ∑ f ∈ univ.filter Function.Injective, (∏ a, A a (f a)) * (B.submatrix f id).det :=
-        (Finset.sum_filter_of_ne fun f _ hf => by
-          by_contra hni
-          exact hf (hz f hni)).symm
-    _ = ∑ x : {f : Fin i → Fin N // Function.Injective f},
-          (∏ a, A a (x.1 a)) * (B.submatrix x.1 id).det :=
-        Finset.sum_subtype _ (fun f => by simp) _
-    _ = ∑ g : Fin i ↪ Fin N, (∏ a, A a (g a)) * (B.submatrix g id).det :=
-        Fintype.sum_equiv (Equiv.subtypeInjectiveEquivEmbedding _ _) _ _ (fun _ => rfl)
-    _ = ∑ p, (∏ a, A a (cbPar p a)) * (B.submatrix (cbPar p) id).det :=
-        (cbPar_bij.sum_comp (fun g : Fin i ↪ Fin N => (∏ a, A a (g a)) * (B.submatrix g id).det)).symm
-    _ = ∑ S, ∑ σ : Equiv.Perm (Fin i), (∏ a, A a (cbPar ⟨S, σ⟩ a)) * (B.submatrix (cbPar ⟨S, σ⟩) id).det :=
-        Fintype.sum_sigma _
-    _ = _ := Finset.sum_congr rfl fun S _ => hS S
+  first
+    | exact _root_.ReciprocityTheory.ChartRestriction.DS.cauchyBinet
+    | apply _root_.ReciprocityTheory.ChartRestriction.DS.cauchyBinet <;> first | assumption | rfl | infer_instance
 
 theorem lead_unitary_diag {U : Matrix (Fin n) (Fin n) ℂ} (d : Fin n → ℂ) (i : ℕ) (hi : i ≤ n) :
     lead i (U * Matrix.diagonal d * Uᴴ) =

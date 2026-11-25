@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.MaxSlopeLeLogOfIntegralHermitianForm
 public import Formalism.LocalRingCardinality.DataArith
 public import Formalism.LocalToGlobal.Divisibility.FramesLemmas
 import Mathlib.Algebra.Order.Floor.Extended
@@ -57,20 +58,7 @@ namespace GlobalTheory.Mem
 theorem cnorm_mulVec_eq_of_gram {ι κ μ : Type} [Fintype ι] [Fintype κ] [Fintype μ]
     (M : Matrix ι μ ℂ) (N : Matrix κ μ ℂ) (h : Mᴴ * M = Nᴴ * N) (u : μ → ℂ) :
     Formalism.HermitianLatticesTheory.cnorm (M.mulVec u) = Formalism.HermitianLatticesTheory.cnorm (N.mulVec u) := by
-  have key : ∀ {ι : Type} [Fintype ι] (M : Matrix ι μ ℂ),
-      ((∑ i, ‖M.mulVec u i‖ ^ 2 : ℝ) : ℂ) = star u ⬝ᵥ (Mᴴ * M).mulVec u := by
-    intro ι _ M
-    rw [← Matrix.mulVec_mulVec, Matrix.dotProduct_mulVec, ← Matrix.star_mulVec]
-    push_cast
-    simp only [dotProduct, Pi.star_apply]
-    refine Finset.sum_congr rfl fun i _ => ?_
-    rw [RCLike.star_def, Complex.conj_mul']
-  have h2 : (∑ i, ‖M.mulVec u i‖ ^ 2 : ℝ) = ∑ i, ‖N.mulVec u i‖ ^ 2 := by
-    have := key M
-    rw [h, ← key N] at this
-    exact_mod_cast this
-  unfold Formalism.HermitianLatticesTheory.cnorm
-  rw [h2]
+  first | exact _root_.GlobalTheory.LcvSub.cnorm_mulVec_eq | exact @_root_.GlobalTheory.LcvSub.cnorm_mulVec_eq | apply _root_.GlobalTheory.LcvSub.cnorm_mulVec_eq <;> assumption
 
 theorem exists_restricted_frames : ∀ (K : Type) [Field K] [NumberField K] [StarRing K] (A : HLat K)
     (U : Submodule K A.V) (L : Submodule (𝓞 K) U), (∀ v, IsUnit (A.X v).det) →

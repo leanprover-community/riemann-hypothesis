@@ -1,5 +1,6 @@
 module
 
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.RightSingleRule.PatEntryZero
 public import Formalism.SharpRestriction.CuspSpanNormBounds.FrobeniusCoefficientMemLp.AmpUnif
 public import Formalism.FormalDegreeBessel.FinalBF
 public import Formalism.FormalDegreeBessel.FormalDegreeRatio.UnitaryWeylNormalHolds
@@ -29,17 +30,7 @@ theorem hsNormSq_nonneg' {Wp Wq : Type*} [NormedAddCommGroup Wp] [InnerProductSp
 
 theorem ell_one {k r : ℕ} {z : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z) :
     ell k r z (1 : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ) = 0 := by
-  simp only [inWb] at hz
-  simp only [ell, eI]
-  apply Finset.sum_eq_zero
-  intro a _
-  split_ifs with h
-  · apply Matrix.one_apply_ne
-    intro heq
-    have h' := congrArg Fin.val heq
-    simp [eI] at h'
-  · rw [Matrix.one_mulVec]
-    exact hz _ (Or.inl (by simp [a.isLt]))
+  apply _root_.Formalism.FourierDecayAlt.Q.QRR.ell_one <;> assumption
 
 theorem psi_one {k r : ℕ} {z : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z) (c : ℂ) :
     psi k r z c (1 : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ) = 1 := by

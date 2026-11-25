@@ -53,8 +53,7 @@ theorem UpperTheory.V.AlgebraTools.frob_form_trunc :
     obtain ⟨j, hj, hfj⟩ := hnot
     have hnd := (traceForm_nondegenerate (ZMod l) k).1 (PowerSeries.coeff j f)
     have hex : ∃ b : k, Algebra.trace (ZMod l) k (PowerSeries.coeff j f * b) ≠ 0 := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       exact hfj (hnd fun b => by rw [Algebra.traceForm_apply]; exact hc b)
     obtain ⟨b, hb⟩ := hex
     apply hb

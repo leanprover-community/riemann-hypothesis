@@ -511,8 +511,7 @@ theorem norm_root_sub_pow (l : ℕ) (hl : 2 ≤ l) (hlt1 : ‖(l : K)‖ < 1) {�
       rw [norm_pow]; exact pow_lt_one₀ (norm_nonneg _) hlt1 (by norm_num)
     apply le_antisymm
     · exact (_root_.Formalism.InvariantFactorPaths.G7.LemOne.norm_sub_le_max _ _).trans (max_le hq.le (by simp))
-    · by_contra hc
-      push_neg at hc
+    · by_contra! hc
       have h1 : ‖(1 : K)‖ ≤ max ‖(l : K) ^ 2‖ ‖(l : K) ^ 2 - 1‖ := by
         have := _root_.Formalism.InvariantFactorPaths.G7.LemOne.norm_sub_le_max ((l : K) ^ 2) ((l : K) ^ 2 - 1)
         simpa using this

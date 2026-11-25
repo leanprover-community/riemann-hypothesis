@@ -528,8 +528,7 @@ namespace WordTransvectionCongruences
 variable {L : Type} [Field L] [NumberField L] {N : ℕ}
 
 theorem exists_third {N : ℕ} (hN : 3 ≤ N) (i j : Fin N) : ∃ k : Fin N, k ≠ i ∧ k ≠ j := by
-  by_contra hc
-  push_neg at hc
+  by_contra! hc
   have hsub : (Finset.univ : Finset (Fin N)) ⊆ {i, j} := by
     intro k _
     by_cases hk : k = i

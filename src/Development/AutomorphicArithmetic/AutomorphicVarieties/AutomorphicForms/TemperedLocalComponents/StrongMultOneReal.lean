@@ -15,6 +15,7 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.Automorphic
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.SmoothRepresentationsGL.DenseAway
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.SmoothRepresentationsGL.EigOfSat
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.SmoothRepresentationsGL.FinKir
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.SmoothRepresentationsGL.FinKir
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.SmoothRepresentationsGL.HalfBound
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.SmoothRepresentationsGL.IsYBlockGL
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.SmoothRepresentationsGL.LevelS
@@ -477,13 +478,7 @@ open scoped SchwartzMap FourierTransform RealInnerProductSpace ContDiff Topology
 
 private theorem isY_map {R R' : Type} [CommRing R] [CommRing R'] {n m : ℕ} (f : R →+* R') (p : GL (Fin n) R)
     (hp : IsY m p.val) : IsY m (GeneralLinearGroup.map f p).val := by
-  intro i hi
-  obtain ⟨h1, h2⟩ := hp i hi
-  refine ⟨?_, fun j hj => ?_⟩
-  · change f (p.val i i) = 1
-    rw [h1, map_one]
-  · change f (p.val i j) = 0
-    rw [h2 j hj, map_zero]
+  apply _root_.isY_map <;> assumption
 
 private theorem chart_smul {E : Type} [Field E] [NumberField E] [IsTotallyReal E] {n : ℕ} (f f' : GA E n → ℂ)
     (g g' : GA E n) (a : ℂ) (h : ∀ y, f (g * infGL E n y) = a * f' (g' * infGL E n y)) (x : Lie E n) :

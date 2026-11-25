@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SimplicialLabellingOfBarycentricStageZeroStatement
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.MarkValEqZeroOrOne
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsBaryStageStart
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.BilinFormExistsPrimitiveOfNeZero
@@ -97,22 +98,8 @@ theorem cone_sum {S : Finset (LinearMap.BilinForm ℤ X)} (h : ∀ x ∈ S, InRC
   exact cone_add (h a (Finset.mem_insert_self a S)) (ih fun x hx => h x (Finset.mem_insert_of_mem hx))
 
 theorem cone_smul_iff {g : ℕ} (hg : 0 < g) {x : LinearMap.BilinForm ℤ X} : InRCone γ ((g : ℤ) • x) ↔ InRCone γ x := by
-  have hg' : (g : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr hg.ne'
-  have hv : ∀ a b, ((((g : ℤ) • x) a b : ℤ) : ℝ) = g * x a b := fun a b => by simp
-  constructor
-  · rintro ⟨c, hc, h⟩
-    refine ⟨fun i => c i / g, fun i => div_nonneg (hc i) (Nat.cast_nonneg g), _root_.GlobalTheory.PolFan.Mark.Exist.toReal_eq_sum_smul_of_coe_eq_sum fun a b => ?_⟩
-    have e := apply_of_cone h a b
-    rw [hv] at e
-    have hs : ∑ i, c i / g * (γ i a b : ℝ) = (∑ i, c i * (γ i a b : ℝ)) / g := by
-      rw [Finset.sum_div]
-      exact Finset.sum_congr rfl fun i _ => by ring
-    rw [hs, ← e]
-    field_simp
-  · rintro ⟨c, hc, h⟩
-    refine ⟨fun i => g * c i, fun i => mul_nonneg (Nat.cast_nonneg g) (hc i), _root_.GlobalTheory.PolFan.Mark.Exist.toReal_eq_sum_smul_of_coe_eq_sum fun a b => ?_⟩
-    rw [hv, apply_of_cone h a b, Finset.mul_sum]
-    exact Finset.sum_congr rfl fun i _ => by ring
+  intros
+  apply _root_.GlobalTheory.PolFan.BaryFin.inRCone_smul_iff <;> assumption
 
 theorem cone_nonneg (hγ : ∀ i y, 0 ≤ γ i y y) {x : LinearMap.BilinForm ℤ X} (hx : InRCone γ x) (y : X) : 0 ≤ x y y := by
   obtain ⟨c, hc, h⟩ := hx

@@ -159,8 +159,7 @@ theorem exists_finPart_zero_ne : ∀ {D : D7} (ψ : AddChar (AF D.host.F) ℂ) (
   have hne := GlobalTheory.TwistFactorProof.vac_ne_zero hv
   have hth : IsThetaFunO ψ S T f := hv.2.theta
   obtain ⟨w0, hw0⟩ : ∃ w, f w ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hne (funext h)
   obtain ⟨U, hUo, hU⟩ := hth.level
   obtain ⟨γ, u, huU, hu0, r, hr0, rfl⟩ := decomp_WO U hUo w0

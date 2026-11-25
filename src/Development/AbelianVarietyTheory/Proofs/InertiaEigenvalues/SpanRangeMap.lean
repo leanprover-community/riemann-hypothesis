@@ -1010,8 +1010,7 @@ theorem exists_det_ne_zero {A C Q ι : Type} [CommRing A] [Field C] [Fintype Q] 
     congr 1
     ext i k
     simp [Matrix.sum_apply]
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   have h0 : F = 0 := by
     refine MvPolynomial.funext_set (fun _ => S) (fun _ => hS) fun x hx => ?_
     choose a ha using fun i => hSA (x i) (hx i trivial)

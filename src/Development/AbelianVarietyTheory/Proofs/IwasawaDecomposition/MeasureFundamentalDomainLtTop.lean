@@ -43,6 +43,7 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.BesselDatumAdelicVectorDecompositionStatement
 
 @[expose] public section
 
@@ -94,14 +95,7 @@ theorem vecA_add (x y : B.V) : vecA B (x + y) = vecA B x + vecA B y := by
   funext k; simp [vecA]
 
 theorem vecA_iota (a : A.V) : vecA B (ι a) = iA ι (vecA A a) := by
-  rw [iA_eq_sum]
-  funext k
-  have h : B.frame.repr (ι a) k = ∑ c, A.frame.repr a c * B.frame.repr (ι (A.frame c)) k := by
-    conv_lhs => rw [← A.frame.sum_repr a]
-
-    simp only [map_sum, map_smul, Finsupp.finsetSum_apply, Finsupp.smul_apply, smul_eq_mul]
-
-  simp only [vecA, h, map_sum, map_mul, Finset.sum_apply, Pi.smul_apply, smul_eq_mul]
+  apply _root_.GlobalTheory.BesselDecomp.vecA_iota <;> assumption
 
 theorem embRel_fix {g : GA D B} {h : GA D A} (e : EmbRel B A ι g h) {w : B.V} (hw : ∀ x, B.hD w (ι x) = 0) :
     (mt B g).mulVec (vecA B w) = vecA B w :=

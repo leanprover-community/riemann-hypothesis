@@ -1,5 +1,7 @@
 module
 
+import all Formalism.SharpRestriction.GrowthBounds.BinomialRatio.PairLift
+import Formalism.SharpRestriction.GrowthBounds.CountingStatementReduction
 public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.ExtendedStatementOfParts
 public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.KeptFin
 import Mathlib.Algebra.Order.Star.Rat
@@ -29,20 +31,7 @@ theorem toNat_addVal_mul {a b : O} (ha : a ≠ 0) (hb : b ≠ 0) :
 
 private theorem vO_eq_addVal_div_ramE_of_ne_zero (p : ℕ) {z : O} (hz : z ≠ 0) :
     vO p z = ((((IsDiscreteValuationRing.addVal O z).toNat : ℚ) / (ramE p O : ℚ) : ℚ) : WithTop ℚ) := by
-  have hz' : algebraMap O (KK O) z ≠ 0 := by
-    intro h
-    exact hz ((IsFractionRing.to_map_eq_zero_iff).mp h)
-  have hspec := Classical.choose_spec (IsLocalization.surj (nonZeroDivisors O) (algebraMap O (KK O) z))
-  simp only [vO, vK, ordW, if_neg hz']
-  generalize Classical.choose (IsLocalization.surj (nonZeroDivisors O) (algebraMap O (KK O) z)) = ab at hspec ⊢
-  rw [← map_mul] at hspec
-  have hmul : z * (ab.2 : O) = ab.1 := IsFractionRing.injective O (KK O) hspec
-  have hb : (ab.2 : O) ≠ 0 := nonZeroDivisors.coe_ne_zero ab.2
-  rw [← hmul, toNat_addVal_mul hz hb]
-  simp only [WithTop.map_coe]
-  congr 1
-  push_cast
-  ring
+  apply _root_.Formalism.MainNotions.ColumnSystems.Pf.vO_eq_addVal_div_ramE_of_ne_zero' <;> assumption
 
 theorem vK_alg_nonneg (p : ℕ) (o : O) : (0 : WithTop ℚ) ≤ vK p (algebraMap O (KK O) o) := by
   by_cases ho : o = 0
@@ -198,36 +187,7 @@ def degBound (D : BlockData N) : ℕ :=
 
 theorem gens_totalDegree [NeZero r] (D : BlockData N) (j : Fin D.T.t → ℕ) (jp : ℕ) (hl : D.LevelOK j jp)
     (x : MvPolynomial (BVar N r D.T.t) (KK O)) (hx : x ∈ D.gens O (r := r) j jp) : x.totalDegree ≤ degBound D := by
-  obtain ⟨y, hy, g, hg, rfl⟩ := hx
-  have hy1 : y.totalDegree ≤ ∑ a, D.LL.deg a := by
-    have h1 : y ∈ chPol (KK O) r (D.lettersAt j jp) := hy.1.1
-    refine (totalDegree_chPol _ y h1).trans (Finset.sum_le_sum fun a _ => ?_)
-    show D.LL.deg a - _ - _ ≤ D.LL.deg a
-    omega
-  have hg1 : g.totalDegree ≤ D.B := (totalDegree_xi _ _ g hg).trans (Nat.sub_le _ _)
-  have hE : (∏ i, D.Ehat O (r := r) i ^ j i).totalDegree ≤ ∑ i, D.LL.deg (D.letterAt (D.T.pos i)) * 2 := by
-    refine (totalDegree_finsetProd _ _).trans (Finset.sum_le_sum fun i _ => ?_)
-    refine (totalDegree_pow _ _).trans ?_
-    exact Nat.mul_le_mul (hl.1 i).1 (totalDegree_Ehat D i)
-  have hP : (D.Eplus O (r := r) ^ jp).totalDegree ≤ D.B * 2 := by
-    refine (totalDegree_pow _ _).trans ?_
-    exact Nat.mul_le_mul (le_trans hl.2 (min_le_right _ _)) (totalDegree_Eplus D)
-  have hZ : (∏ i, (X (scalZ N r D.T.t (Fin.castSucc i)) : MvPolynomial (BVar N r D.T.t) (KK O)) ^ D.T.z i).totalDegree ≤
-      ∑ i, D.T.z i := by
-    refine (totalDegree_finsetProd _ _).trans (Finset.sum_le_sum fun i _ => ?_)
-    refine (totalDegree_pow _ _).trans ?_
-    rw [totalDegree_X, mul_one]
-  have hX : ((X (scalZ N r D.T.t (Fin.last D.T.t)) : MvPolynomial (BVar N r D.T.t) (KK O)) ^ D.zPlus).totalDegree ≤
-      D.zPlus := by
-    refine (totalDegree_pow _ _).trans ?_
-    rw [totalDegree_X, mul_one]
-  have hr : (rename (chainEmb N r D.T.t) y).totalDegree ≤ ∑ a, D.LL.deg a := (totalDegree_rename_le _ _).trans hy1
-  unfold degBound
-  refine (totalDegree_mul _ _).trans (Nat.add_le_add ?_ hg1)
-  refine (totalDegree_mul _ _).trans (Nat.add_le_add ?_ hr)
-  refine (totalDegree_mul _ _).trans (Nat.add_le_add ?_ hX)
-  refine (totalDegree_mul _ _).trans (Nat.add_le_add ?_ hZ)
-  exact (totalDegree_mul _ _).trans (Nat.add_le_add hE hP)
+  apply _root_.Formalism.MainNotions.G.CountingStatementReduction.gens_totalDegree_le <;> assumption
 
 theorem spanSSZ_le [NeZero r] (D : BlockData N) :
     Submodule.span (KK O) ((D.SSZ O (r := r) : Submodule O (MvPolynomial (BVar N r D.T.t) (KK O))) :

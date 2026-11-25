@@ -395,8 +395,7 @@ private theorem v_sub_one_add_le_v_pow_l_sub_one (n : ℕ) (G : Matrix (Fin (n +
     (δ : ℝ) (hδ : 0 < δ) (hD : TZ.Dual G δ) :
     ∃ v : Fin (n + 1) → ℤ, v ≠ 0 ∧
       TZ.cz v ⬝ᵥ G *ᵥ TZ.cz v ≤ 2 * (4 * ((n : ℝ) + 1)) ^ 2 / δ := by
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   have hdet := hG.det_pos
   have ha : 0 < 4 * ((n : ℝ) + 1) := by positivity
   have h1 := isHermitian_real_smul_add_real_smul G hG (2 * (4 * ((n : ℝ) + 1)) ^ 2 / δ) (by positivity)

@@ -79,8 +79,7 @@ theorem mem_span_of_twistedDualGens (E : ChartBundle O (mseg x) N V) {M : ℕ} {
   classical
   obtain ⟨k, f, c, hf, hc, hsum, hb⟩ := E.frame s₀ hs
   have hne : ∃ l, f l ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     simp [h] at hsum
   obtain ⟨l, hl⟩ := hne
   obtain ⟨b, hli, hsp, hiff⟩ := hb l

@@ -196,8 +196,7 @@ theorem commuting_multiplier_eq_const_smul_generator
   haveI : FiniteDimensional ℂ W := Module.Finite.of_basis bW
   have Tc_ne : Tc ≠ 0 := by
     obtain ⟨f, hf⟩ : ∃ f, T f ≠ 0 := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       exact hT (LinearMap.ext hc)
     have hfA : (T f : A) ≠ 0 := fun hz => hf (Subtype.ext hz)
     have li1 : LinearIndependent ℂ (fun _ : Fin 1 => rd (T f : A)) :=

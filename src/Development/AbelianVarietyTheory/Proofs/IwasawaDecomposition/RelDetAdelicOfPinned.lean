@@ -623,8 +623,6 @@ section Record
 
 open Formalism.MainNotions.TaylorLogMetric Formalism.L2.Herm Formalism.UG
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem detId_eq (D : D7) {N : ℕ} (L L' : SDLat D.host.E N) : detId D L.1 L'.1 =
     ((detFI L'.1 L'.2.1 * (detFI L.1 L.2.1)⁻¹ : FractionalIdeal (𝓞 D.host.E)⁰ D.host.E) : IdE D) :=
   span_det_eq L.2.1 L.2.2.1 L'.2.1 L'.2.2.1

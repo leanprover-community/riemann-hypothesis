@@ -1685,8 +1685,7 @@ theorem locVac_mem_span_vac : ∀ (L : Type) [Field L] [CharZero L] [Valued L (W
   have hzero : ∀ c, c ≠ 0 → f c = 0 := by
     intro c hc
     obtain ⟨u, hu, hχu⟩ : ∃ u ∈ intMatSub (L := L) n n', χ c u ≠ 1 := by
-      by_contra hcon
-      push_neg at hcon
+      by_contra! hcon
       have hint := intMat_of_psi hU hδ.1 hSint hTint ψ hpsi_ne c.out hcon
       apply hc
       rw [hΛ] at hint

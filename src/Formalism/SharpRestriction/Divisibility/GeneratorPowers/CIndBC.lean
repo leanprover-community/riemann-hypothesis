@@ -14,8 +14,6 @@ open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor NumberField Formalism.L2.Pj
 open MvPolynomial (X C)
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 section Jet
 
 variable {S S' : Type} [CommRing S] [CommRing S'] (ψ : S →+* S')

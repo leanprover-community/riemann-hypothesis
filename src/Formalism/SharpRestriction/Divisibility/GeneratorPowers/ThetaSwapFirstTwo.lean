@@ -40,8 +40,7 @@ theorem mem_orig_of_cc {κ : Type} (P : MvPolynomial κ S) (h : constantCoeff P 
     rintro rfl
     exact hm h
   obtain ⟨i, hi⟩ : ∃ i, m i ≠ 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     exact hm0 (Finsupp.ext fun a => by simp [hcon a])
   exact ⟨i, Set.mem_univ _, hi⟩
 

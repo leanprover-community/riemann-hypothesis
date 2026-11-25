@@ -1,8 +1,10 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.IwFundNorm
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.HeckePairTop
 public import Development.AbelianVarietyTheory.Definitions.Divisors.T2SpaceGeneralLinearGroup
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.IwDomMul
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.IwDomMul
 import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.IwHeckePairIwC
 import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.IwHkApply
 import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.IwHkNorm
@@ -21,17 +23,7 @@ variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchim
 
 private theorem unif_lt {x : kˣ} (hx : IsUnif x) (y : k) :
     valuation k y < 1 ↔ valuation k y ≤ valuation k (x : k) := by
-  obtain ⟨p, hp, e⟩ := hx
-  have hI := Valuation.integer.integers (valuation k)
-  have h1 : valuation k (x : k) < 1 := by
-    rw [← e]
-    refine lt_of_le_of_ne p.2 fun h => hp.not_isUnit (hI.isUnit_iff_valuation_eq_one.2 h)
-  refine ⟨fun h => ?_, fun h => h.trans_lt h1⟩
-  let z : 𝒪[k] := ⟨y, h.le⟩
-  have hz : z ∈ IsLocalRing.maximalIdeal 𝒪[k] := fun hu => h.ne (hI.isUnit_iff_valuation_eq_one.1 hu)
-  rw [hp.maximalIdeal_eq, Ideal.mem_span_singleton] at hz
-  rw [← e]
-  exact hI.le_of_dvd hz
+  apply _root_.unif_lt <;> assumption
 
 private def Bd (x : kˣ) (g : GL (Fin n) k) : Prop :=
   ∀ i j, valuation k ((g : Matrix (Fin n) (Fin n) k) i j) ≤ valuation k (x : k) ^ (if j < i then 1 else 0 : ℤ)
@@ -59,20 +51,7 @@ private theorem mem_iw_iff {x : kˣ} (hx : IsUnif x) (g : GL (Fin n) k) :
 private theorem conj_entry (x : kˣ) (a : Fin n → ℤ) (w : Equiv.Perm (Fin n)) (g : GL (Fin n) k) (i j : Fin n) :
     ((pm k n w * pw x a * g * (pm k n w * pw x a)⁻¹ : GL (Fin n) k) : Matrix (Fin n) (Fin n) k) (w i) (w j) =
       (x : k) ^ (a i - a j) * (g : Matrix (Fin n) (Fin n) k) i j := by
-  have e : pm k n w * pw x a * g * (pm k n w * pw x a)⁻¹ =
-      pm k n w * (pw x a * g * diagT k (Fin n) (fun i => x ^ a i)⁻¹) * pm k n w⁻¹ := by
-    rw [map_inv, map_inv, pw]; group
-  rw [e]
-  simp only [Units.val_mul, pw, val_diagT]
-  generalize hM : (diagonal (fun i => ((x ^ a i : kˣ) : k)) * (g : Matrix (Fin n) (Fin n) k) *
-    diagonal fun i => (((fun i => x ^ a i)⁻¹ i : kˣ) : k)) = M
-  have hM' : M i j = (x : k) ^ (a i - a j) * (g : Matrix (Fin n) (Fin n) k) i j := by
-    rw [← hM, mul_diagonal, diagonal_mul, zpow_sub₀ x.ne_zero]
-    simp only [Pi.inv_apply, Units.val_inv_eq_inv_val, Units.val_zpow_eq_zpow_val]
-    ring
-  rw [← hM']
-  simp only [Matrix.mul_apply, pm_apply]
-  simp
+  apply _root_.conj_entry <;> assumption
 
 private theorem bd_conj (x : kˣ) (a : Fin n → ℤ) (w : Equiv.Perm (Fin n))
     (hw : ∀ i j, (if w j < w i then 1 else 0 : ℤ) = (a i - a j) + (if j < i then 1 else 0)) (g : GL (Fin n) k) :
@@ -85,19 +64,7 @@ private theorem bd_conj (x : kˣ) (a : Fin n → ℤ) (w : Equiv.Perm (Fin n))
 
 private theorem exists_rot (n m : ℕ) (hm : m ≤ n) : ∃ w : Equiv.Perm (Fin n),
     ∀ i j, (if w j < w i then 1 else 0 : ℤ) = (fund n m i - fund n m j) + (if j < i then 1 else 0) := by
-  let f : Fin n → Fin n := fun i => ⟨if (i : ℕ) < m then n - m + i else i - m, by
-    have := i.2; split_ifs <;> omega⟩
-  have hf : Function.Injective f := by
-    intro i j h
-    have h' := congrArg Fin.val h
-    have := i.2; have := j.2
-    simp only [f] at h'
-    ext
-    split_ifs at h' <;> omega
-  refine ⟨Equiv.ofBijective f (Finite.injective_iff_bijective.1 hf), fun i j => ?_⟩
-  have := i.2; have := j.2
-  simp only [Equiv.ofBijective_apply, f, fund, Fin.lt_def]
-  split_ifs <;> omega
+  apply _root_.exists_rot <;> assumption
 
 private theorem dom_zpow {x : kˣ} (hx : IsUnif x) {a : Fin n → ℤ} (ha : Antitone a) : Dom fun i => x ^ a i := by
   intro i j hij
@@ -107,15 +74,7 @@ private theorem dom_zpow {x : kˣ} (hx : IsUnif x) {a : Fin n → ℤ} (ha : Ant
 
 private theorem exists_cut (a : Fin n → ℤ) (ha : Antitone a) (c : ℤ) :
     ∃ m ≤ n, ∀ i : Fin n, (i : ℕ) < m ↔ c < a i := by
-  classical
-  have hex : ∃ m : ℕ, ∀ i : Fin n, m ≤ (i : ℕ) → a i ≤ c := ⟨n, fun i hi => absurd i.2 (not_lt.2 hi)⟩
-  refine ⟨Nat.find hex, Nat.find_min' hex fun i hi => absurd i.2 (not_lt.2 hi), fun i => ⟨fun hi => ?_, fun hi => ?_⟩⟩
-  · have := Nat.find_min hex hi
-    push Not at this
-    obtain ⟨j, hj, hc⟩ := this
-    exact hc.trans_le (ha (Fin.le_def.2 hj))
-  · by_contra h
-    exact absurd (Nat.find_spec hex i (not_lt.1 h)) (not_le.2 hi)
+  apply _root_.exists_cut <;> assumption
 
 private theorem const_central (y : kˣ) : diagT k (Fin n) (fun _ => y) ∈ Subgroup.center (GL (Fin n) k) := by
   rw [Subgroup.mem_center_iff]

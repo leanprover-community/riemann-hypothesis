@@ -197,8 +197,7 @@ private theorem fin_lemma_3 {Ω : Type} [Field Ω] [Algebra ℚ Ω] (A : Valuati
     rw [← hQ'Ω]
     exact (Polynomial.aeval_algHom_apply A.subtype.toIntAlgHom a Q.primPart).symm
   obtain ⟨i, hi⟩ : ∃ i, ¬ (l : ℤ) ∣ Q.primPart.coeff i := by
-    by_contra hall
-    push_neg at hall
+    by_contra! hall
     have hd : Polynomial.C (l : ℤ) ∣ Q.primPart := Polynomial.C_dvd_iff_dvd_coeff _ _ |>.2 hall
     have hu := Polynomial.isPrimitive_primPart Q _ hd
     rw [Int.isUnit_iff] at hu
@@ -249,8 +248,7 @@ private theorem exists_r0_valuation_sub_lt_one_of_isAlgebraic {Ω : Type} [Field
   have hv : A.valuation (T.eval (a : Ω)) < 1 := by simpa [T] using haq
   rw [hev, map_multiset_prod, Multiset.map_map] at hv
   obtain ⟨w, hw, hwv⟩ : ∃ w ∈ T.roots, A.valuation ((a : Ω) - w) < 1 := by
-    by_contra hno
-    push_neg at hno
+    by_contra! hno
     have h1 : (T.roots.map (A.valuation ∘ fun w => (a : Ω) - w)).prod = 1 := by
       apply Multiset.prod_eq_one
       intro x hx

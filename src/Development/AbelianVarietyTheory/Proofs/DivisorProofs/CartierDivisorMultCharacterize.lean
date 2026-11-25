@@ -100,8 +100,7 @@ theorem eff_supp_eq_of_mult : ∀ (X : Scheme.{0}) [IsIntegral X] [IsLocallyNoet
     · have := (_root_.GlobalTheory.RegCodimOne.regularAt_iff_forall_specializes X F x 1).2 fun z _ => by simpa [Units.val_one, ord_one] using h z
       simpa using this
   refine ⟨hEff D, fun x => ⟨fun hx => ?_, fun ⟨z, hz, hm⟩ => ?_⟩, fun E h => ?_, fun x g h => ?_⟩
-  · by_contra hne
-    push_neg at hne
+  · by_contra! hne
     obtain ⟨g, hg⟩ := D.exists_isEqn x
     refine (hg.mem_supp_iff.1 hx) (unitAt_of_ord x g fun z hz => ?_)
     rw [← (IsEqn.of_specializes hg hz).mult_eq]

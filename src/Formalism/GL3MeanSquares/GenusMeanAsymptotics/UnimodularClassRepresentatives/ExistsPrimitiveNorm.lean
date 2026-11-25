@@ -96,8 +96,7 @@ theorem exists_primitive_norm (hS : IsHermSemilocal S) (hd : ∀ x, h x x = 0 �
 
 theorem IsSD.exists_not_dv (hπ : IsUnif S π) (hM : IsSD S h W M) {y : V} (hy : y ∈ M)
     (hprim : ∀ c : K, c • y ∈ M → c ∈ S) : ∃ w ∈ M, ¬ Dv S π (h w y) := by
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   have hmem : π⁻¹ • y ∈ M := hM.dual _ (W.smul_mem _ (hM.le y hy)) (fun m hm => by
     rw [map_smul, smul_eq_mul, mul_comm]
     exact hcon m hm)

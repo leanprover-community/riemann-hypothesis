@@ -1,5 +1,6 @@
 module
 
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CovariantHatPairReindex.QnCovHat2OfLin
 public import Formalism.RealPlaceAnalysis.StatementE
 public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ContinuousConjFin
@@ -196,23 +197,8 @@ theorem qminor_swap_adjacent {n m : ℕ} (E : Fin n → Fin n → A) (hE : GlRel
 theorem qminor_comp_perm {n t : ℕ} (E : Fin n → Fin n → A) (hE : GlRel E)
     (a : Fin t → Fin n) (u : ℂ) (τ : Equiv.Perm (Fin t)) (b : Fin t → Fin n) :
     qminor E a (b ∘ τ) u = (((Equiv.Perm.sign τ : ℤˣ) : ℤ) : ℂ) • qminor E a b u := by
-  cases t with
-  | zero =>
-    rw [Subsingleton.elim τ 1]; simp
-  | succ m =>
-    have hτ : τ ∈ Submonoid.closure
-        (Set.range fun i : Fin m => Equiv.swap i.castSucc i.succ) := by
-      rw [Equiv.Perm.mclosure_swap_castSucc_succ]; trivial
-    induction hτ using Submonoid.closure_induction generalizing b with
-    | mem x hx =>
-      obtain ⟨i, rfl⟩ := hx
-      have hne : i.castSucc ≠ i.succ := (Fin.castSucc_lt_succ (i := i)).ne
-      rw [qminor_swap_adjacent E hE]
-      simp [Equiv.Perm.sign_swap hne]
-    | one => simp
-    | mul x y _ _ hx hy =>
-      rw [Equiv.Perm.coe_mul, ← Function.comp_assoc, hy, hx, smul_smul]
-      simp [mul_comm]
+  intros
+  apply _root_.PI.QnCovHat2W.qminor_col_alt <;> assumption
 
 theorem qminor_eq_zero {n t : ℕ} (E : Fin n → Fin n → A) (hE : GlRel E)
     (a : Fin t → Fin n) (u : ℂ) (b : Fin t → Fin n) (hb : ¬ Function.Injective b) :

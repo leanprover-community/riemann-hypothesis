@@ -1007,11 +1007,7 @@ theorem _root_.GlobalTheory.T.generic_points_finite_nonempty :
       (l : Tor.Level H) (Xo : Moduli D l) (c : Coeff l) (Y : Model Xo c (algebraMap (𝓞 c.F) c.F)),
       {x : Y.X | ∀ x' : Y.X, x' ⤳ x → x' = x}.Finite ∧
       {x : Y.X | ∀ x' : Y.X, x' ⤳ x → x' = x}.Nonempty := by
-  intro hG E _ _ _ H D l Xo c Y
-  have : NumberField c.F := { to_charZero := inferInstance, to_finiteDimensional := c.fin }
-  have : TopologicalSpace.NoetherianSpace Y.X := GlobalTheory.ModelSum.noetherianSpace_of_isProjOver Y.proj
-  have : Nonempty Y.X := Comps.model_nonempty Y (Comps.moduli_nonempty hG.1.2.2.1 Xo)
-  exact ⟨Comps.finite_maximal_points Y.X, Comps.nonempty_maximal_points Y.X⟩
+  apply _root_.GlobalTheory.CompanionTheory.Ar.Comps.finite_nonempty_maximal <;> assumption
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.GeometryProofs.GenericPointsFiniteNonemptyStatement =====

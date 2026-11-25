@@ -104,8 +104,7 @@ theorem weight_support_sum_eq_zero [CharZero (KK O)] (E : GLOps n (KK O) V) (Pr 
       intro f hF hw hs
       have hne : mu0 ≠ nu := hF mu0 (Finset.mem_insert_self _ _)
       obtain ⟨a, ha⟩ : ∃ a, mu0 a ≠ nu a := by
-        by_contra h
-        push_neg at h
+        by_contra! h
         exact hne (funext h)
       let g : (Fin n → ℤ) → V := fun mu => (((mu a : ℤ) : KK O) - ((mu0 a : ℤ) : KK O)) • f mu
       have hES : ∑ mu ∈ insert mu0 F, E a a (f mu) = ∑ mu ∈ insert mu0 F, ((mu a : ℤ) : KK O) • f mu :=

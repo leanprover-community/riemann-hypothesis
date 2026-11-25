@@ -1173,7 +1173,6 @@ end Ring
 section Unif
 open IsLocalRing ReciprocityTheory.ChartRestriction.G.Out GlobalTheory.UU GlobalTheory.LN
 open scoped CategoryTheory.Obj
-attribute [local instance] Over.cartesianMonoidalCategory
 
 theorem exists_unif {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E}
     (V : Type) [CommRing V] [IsDomain V] [IsLocalRing V] [IsIntegrallyClosed V] [CharZero V] [IsAlgClosed (FractionRing V)]
@@ -1473,7 +1472,6 @@ section Rep
 open GlobalTheory.CompanionTheory.Ar.GR
 open ReciprocityTheory.ChartRestriction.G.Chart (sp)
 open scoped CategoryTheory.Obj CategoryTheory.MonObj
-attribute [local instance] Over.cartesianMonoidalCategory
 
 theorem exists_rep (V : Type) [CommRing V] [IsDomain V] [IsLocalRing V] [IsIntegrallyClosed V] (C : Type) [Field C]
     [Algebra V C] (T : Type) [CommGroup T] [Finite T] (Γ : QFGroup V T) (G : Over (Spec (CommRingCat.of V))) [GrpObj G]
@@ -1719,7 +1717,6 @@ theorem val_facts {C V : Type} [Field C] [IsAlgClosed C] [CharZero C] [CommRing 
 section Core
 open IsLocalRing ReciprocityTheory.ChartRestriction.G.Out GlobalTheory.CompanionTheory.Ar.GR ReciprocityTheory.PGsh.L2 ReciprocityTheory.PGsh.Up
 open scoped CategoryTheory.Obj
-attribute [local instance] Over.cartesianMonoidalCategory
 
 theorem core (hD : HodgeTateDatumStatement) (hO : OrdinaryCurveStatement) (p : ℕ) [Fact p.Prime] (C : Type) [Field C]
     [IsAlgClosed C] [CharZero C] (v : Valuation C NNReal) (V : Type) [CommRing V] [IsDomain V] [IsLocalRing V]

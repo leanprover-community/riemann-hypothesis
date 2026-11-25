@@ -448,8 +448,7 @@ theorem exists_integral_cob1_congr_of_frobenius_congr : ∀ (p : ℕ) [Fact p.Pr
       rw [coeff_smul_pow_char, coeff_map, hu, ← map_pow, hrt]
     · rw [coeff_pow_char_of_not _ _ _ h, ← hres]
       apply ht
-      by_contra hall
-      push_neg at hall
+      by_contra! hall
       refine h ⟨Finsupp.mapRange (· / p) (Nat.zero_div p) γ, ?_⟩
       ext i
       simp [Nat.mul_div_cancel' (hall i)]
@@ -814,8 +813,7 @@ theorem isLocalRing_of_integers {C : Type} [Field C] (v : Valuation C NNReal) (O
     [Algebra O C] (hv : v.Integers O) : IsLocalRing O := by
   haveI : Nontrivial O := (algebraMap O C).domain_nontrivial
   refine IsLocalRing.of_isUnit_or_isUnit_one_sub_self fun a => ?_
-  by_contra h
-  push_neg at h
+  by_contra! h
   have h1 : v (algebraMap O C a) < 1 :=
     lt_of_le_of_ne (hv.map_le_one a) (fun e => h.1 (hv.isUnit_of_one' e))
   have h2 : v (algebraMap O C (1 - a)) < 1 :=

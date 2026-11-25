@@ -50,8 +50,6 @@ open scoped ComplexOrder
 
 namespace GlobalTheory.ShFam
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 section Domain
 
 open ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Inst ReciprocityTheory.ChartRestriction.G.AR.Up Formalism.DegreeFormula Formalism.MJ GlobalTheory.HodgeDomain GlobalTheory.TrueCx

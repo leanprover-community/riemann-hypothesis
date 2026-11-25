@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.LevelLetterCocycles.SplittingOfExactnessAndData
 public import Formalism.SharpRestriction.LevelLetterCocycles.JumpsLetOfWin
 public import Formalism.SharpRestriction.LevelLetterCocycles.FiltrationSaturationKiller
 public import Formalism.SharpRestriction.LevelLetterCocycles.AnnihilatorGeneralOfRingCondition
@@ -385,20 +386,7 @@ theorem arc_down [NeZero n] (hs : W.s = 1) (hR : Formalism.MainNotions.DeltaInva
 
 theorem Pp_letter (T : LocLat G Qp LL O) (c : ZMod n) (e : ℕ) (y : W.DD T)
     (hy : y ∈ Formalism.MainNotions.ArcLiftingSetup.Pp W T c e) : (letE (c + (e : ZMod n)) : LetA O n) • y = y := by
-  let S : AddSubgroup (W.DD T) :=
-    { carrier := {y | (letE (c + (e : ZMod n)) : LetA O n) • y = y}
-      add_mem' := fun {a b} ha hb => by
-        simp only [Set.mem_ofPred_eq] at ha hb ⊢; rw [smul_add, ha, hb]
-      zero_mem' := by simp only [Set.mem_ofPred_eq, smul_zero]
-      neg_mem' := fun {a} ha => by simp only [Set.mem_ofPred_eq] at ha ⊢; rw [smul_neg, ha] }
-  have hgen : {z | ∃ a ∈ W.AΔ, ∃ x, Formalism.MainNotions.LiftingTheory.InNΔi W T c x ∧ z = a • ((W.φD T) ^ e) x} ⊆
-      (S : Set (W.DD T)) := by
-    rintro _ ⟨a, -, x, ⟨-, ⟨y', -, hyx⟩⟩, rfl⟩
-    have hxc : (letE c : LetA O n) • x = x := by
-      rw [← hyx, LinearMap.smul_apply, LinearMap.id_apply, smul_smul, letE_mul_self]
-    show (letE (c + (e : ZMod n)) : LetA O n) • (a • ((W.φD T) ^ e) x) = a • ((W.φD T) ^ e) x
-    rw [smul_comm, φD_pow_letter W T c x hxc e]
-  exact (AddSubgroup.closure_le S).2 hgen hy
+  apply _root_.Formalism.MainNotions.UnusedSlot80.Split.Pp_letter <;> assumption
 
 theorem arc_sat (hCA : Formalism.MainNotions.LiftingTheory.CaseA W) (hsat : Formalism.MainNotions.ArcLiftingSetup.SATcore W)
     (hR : Formalism.MainNotions.DeltaInvariantLattices.wachRingRelations W 1 (PD.p - 1) W.π₀

@@ -3,6 +3,7 @@ module
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.LocalUnfoldPfB
 import Mathlib.Tactic.Lemma
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.OntoStatementPfS
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.ExhaustFStatementPfC
 
 @[expose] public section
 
@@ -32,20 +33,7 @@ theorem mat_uL (x : Frame X.Ψ r) (τ : X.Ψ) :
     mat (uL X x1' b1 x) τ = mat x1' τ * (mat b1 τ)⁻¹ * (mat x1' τ)⁻¹ * mat x τ := rfl
 
 private lemma det_mat_ne_zero_of_isOrth {x : Frame X.Ψ r} (ho : IsOrth X x) (τ : X.Ψ) : (mat x τ).det ≠ 0 := by
-  intro h0
-  have hg := ho τ
-  have e : gram τ.1 X.Gm (mat x τ) =
-      (mat x τ).transpose * X.Gm.map τ.1 * (mat x τ).map (starRingEnd ℂ) := by
-    ext a b
-    simp only [gram, hermC, col, Matrix.of_apply, Matrix.mul_apply, Matrix.transpose_apply,
-      Matrix.map_apply, Finset.sum_mul]
-    rw [Finset.sum_comm]
-  have hd := congrArg Matrix.det hg
-  rw [e, Matrix.det_mul, Matrix.det_mul, Matrix.det_transpose, h0, zero_mul, zero_mul,
-    Matrix.det_diagonal] at hd
-  refine (Finset.prod_ne_zero_iff.mpr fun a _ => ?_) hd.symm
-  unfold sgn
-  split_ifs <;> norm_num
+  apply _root_.ReciprocityTheory.ChartRestriction.G.AR.Up.ExF.det_ne_of_orth <;> assumption
 
 theorem uL_cpt (ho' : IsOrth X x1') (hb1 : b1 ∈ Bor X.Ψ r) (z : V (nd X)) (b : Frame X.Ψ r) :
     uL X x1' b1 (rmul (cpt X (rmul x1' b1) z) b) = rmul (cpt X x1' z) b := by

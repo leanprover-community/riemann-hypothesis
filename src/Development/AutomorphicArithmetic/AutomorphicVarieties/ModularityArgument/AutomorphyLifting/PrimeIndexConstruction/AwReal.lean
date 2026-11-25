@@ -524,8 +524,7 @@ theorem UpperTheory.V.Z.Win.splitCM :
   obtain ⟨ε, -, e0, he, -⟩ := UpperTheory.exists_quadratic_sign_character F E Ω l hE
   have c1 := card_bad (resG F E Ω) ε he.1 he.2 e0 δ hδi (fun i => (hδ i).2) _ hr
   obtain ⟨i, hi⟩ : ∃ i, ¬ RepIso (r.comp (resG F E Ω)) (tw (r.comp (resG F E Ω)) ((δ i).comp (resG F E Ω))) := by
-    by_contra hall
-    push_neg at hall
+    by_contra! hall
     rw [Finset.filter_true_of_mem fun i _ => hall i, Finset.card_univ, Fintype.card_fin] at c1
     omega
   have hne : (IsScalarTower.toAlgHom F E Ω).fieldRange ≠ (Q i).K := fun heq => hi (by

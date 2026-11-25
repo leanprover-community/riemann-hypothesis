@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GramAtPosDef
 public import Development.AbelianVarietyTheory.Definitions.Divisors.CmHostImaginaryGeneratorNeZero
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TotalDegreeSubstFLe
 public import Formalism.LocalToGlobal.IndefiniteReal.DatumVec
@@ -59,28 +60,13 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open IsDedekindDomain NumberField Matrix GlobalTheory.ChiGrid GlobalTheory.FunObj
 open scoped ComplexOrder
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 namespace GlobalTheory.FockReal
 
 variable {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc}
 
 theorem cartan_eq_one {k : ℕ} {A s : Matrix (Fin k) (Fin k) ℂ} (hA : A.PosDef) (h : IsCartanInv A s) : s = 1 := by
-  obtain ⟨h1, -, h3⟩ := h
-  have hs : ∀ v : Fin k → ℂ, (s - 1) *ᵥ v = 0 := by
-    intro v
-    by_contra hw
-    have hsw : s *ᵥ ((s - 1) *ᵥ v) = -((s - 1) *ᵥ v) := by
-      rw [Matrix.mulVec_mulVec, Matrix.mul_sub, h1, Matrix.mul_one, ← Matrix.neg_mulVec, neg_sub]
-    have p1 := h3.dotProduct_mulVec_pos hw
-    have p2 := hA.dotProduct_mulVec_pos hw
-    rw [← Matrix.mulVec_mulVec, hsw, Matrix.mulVec_neg, dotProduct_neg] at p1
-    have := add_pos p1 p2
-    rw [neg_add_cancel] at this
-    exact lt_irrefl _ this
-  ext i j
-  have := congrFun (hs (Pi.single j 1)) i
-  simpa [Matrix.sub_mulVec, sub_eq_zero, Matrix.one_apply] using this
+  intros
+  apply _root_.GlobalTheory.FockPos.cartan_eq_one <;> assumption
 
 theorem negGA_mem_GinfC (V : HSp D) {g : GA D V} (hg : g ∈ GinfC V) : negGA V g ∈ GinfC (negSp V) := by
   have e : matHom (negSp V) (negGA V g) = matHom V g := Units.ext (mt_negGA V g)

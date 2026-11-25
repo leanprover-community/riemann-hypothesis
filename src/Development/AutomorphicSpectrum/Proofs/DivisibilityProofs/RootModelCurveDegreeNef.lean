@@ -1,5 +1,7 @@
 module
 
+import Development.WeilBound.CoreStatements.HodgeTatePoints.GfForms
+import GroundTheory.HeightsAndTheta.Heights.SemipositiveHeights.KleimanNef
 public import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.Birational
 
 -- This file was produced by scripts/clump.py from the modules listed below.
@@ -16,15 +18,7 @@ namespace RootFieldNumerics
 
 theorem geoNum_one_linear_in_degree {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] (W : Ideal (MRing ι)) :
     ∃ c : K → ℤ, ∀ a : K → ℤ, geoNum 1 W (fun _ => a) = ∑ k, a k * c k := by
-  classical
-  refine ⟨fun k => geoNum 1 W (fun _ => Pi.single k 1), fun a => ?_⟩
-  have hs : ∀ b : K → ℤ, (Fin.init (fun _ : Fin 1 => b) : Fin 0 → K → ℤ) = fun i => i.elim0 :=
-    fun b => Subsingleton.elim _ _
-  rw [geoNum.eq_2 (n := 0)]
-  simp only [geoNum.eq_2 (n := 0), hs]
-  split_ifs with h
-  · simp [Pi.single_apply]
-  · simp
+  apply _root_.PositivityTheory.HtPt.Gf.geoNum_one_linear <;> assumption
 
 theorem geoNum_linear_combination {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] (W : Ideal (MRing ι))
     {J : Type} [Fintype J] (n : J → ℤ) (b : J → K → ℤ) :
@@ -38,20 +32,7 @@ theorem geoNum_linear_combination {K : Type} [Fintype K] {ι : K → Type} [∀ 
 
 theorem char_prime_of_prime_ideal {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] (W : Ideal (MRing ι))
     (hW : W.IsPrime) (h : charOf W ≠ 0) : (charOf W).Prime := by
-  classical
-  set I : Ideal ℤ := Ideal.comap (C : ℤ →+* MRing ι) W with hI
-  have hp : I.IsPrime := Ideal.IsPrime.comap _
-  have hne : I ≠ ⊥ := by
-    intro hb
-    apply h
-    have : Submodule.IsPrincipal.generator I = 0 :=
-      (Submodule.IsPrincipal.eq_bot_iff_generator_eq_zero I).mp hb
-    simp [charOf, ← hI, this]
-  have hg := Submodule.IsPrincipal.prime_generator_of_isPrime I hne
-  have : charOf W = (Submodule.IsPrincipal.generator I).natAbs := by
-    simp [charOf, ← hI]
-  rw [this]
-  exact Int.prime_iff_natAbs_prime.mp hg
+  apply _root_.GroundTheory.Heights₂.Heights.HilbertSamuel.SemiampleNefAlt.charOf_prime <;> assumption
 
 theorem root_line_a_independent {Ψ : Type} [Fintype Ψ] {N : ℕ} (M : RootModel Ψ N) (t : ℝ) (j : Option (Ψ × Fin N)) :
     (M.line t j).a = (M.line 1 j).a := by

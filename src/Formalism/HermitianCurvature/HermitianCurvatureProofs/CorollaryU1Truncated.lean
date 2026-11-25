@@ -1165,8 +1165,6 @@ noncomputable section
 
 namespace PI.UnitaryGroupMassFormula.UsCost.DB
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 open PI.UnitaryGroupMassFormula.UsCost PI.UnitaryGroupMassFormula.UsCost.DA
 
 lemma leviDifferential_add (k j ρ : ℕ) (Q Q' : Matrix (Fin j) (Fin j) ℂ) :

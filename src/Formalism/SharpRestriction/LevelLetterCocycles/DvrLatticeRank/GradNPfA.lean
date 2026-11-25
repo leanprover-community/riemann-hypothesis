@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.UnivLinkPfA
 public import Formalism.SharpRestriction.LevelLetterCocycles.SplitROfSteps
 import Formalism.SharpRestriction.LevelLetterCocycles.MapCompZero
 
@@ -56,12 +57,7 @@ theorem gradNPf_PiNS_DelS (π' : LetA O n) (k : ℕ) {x : W.DD T} (hx : x ∈ Pi
 
 theorem gradNPf_PiNS_anti (π' : LetA O n) {j k : ℕ} (h : j ≤ k) {x : W.DD T}
     (hx : x ∈ PiNS W T π' k) : x ∈ PiNS W T π' j := by
-  simp only [PiNS, Formalism.MainNotions.DeltaInvariantLattices.aN, Submodule.mem_inf, Submodule.restrictScalars_mem,
-    Submodule.mem_map] at hx ⊢
-  obtain ⟨⟨y, hy, rfl⟩, h2⟩ := hx
-  refine ⟨⟨π' ^ (k - j) • y, Submodule.smul_mem _ _ hy, ?_⟩, h2⟩
-  change π' ^ j • (π' ^ (k - j) • y) = π' ^ k • y
-  rw [smul_smul, ← pow_add, Nat.add_sub_of_le h]
+  apply _root_.Formalism.MainNotions.N.Ln34.UnivLinkPf.univLinkPf_PiNS_anti <;> assumption
 
 theorem exists_gam_pow_smul_sub_eq (π' f t : LetA O n) (c₀ : O) (hf : W.γA W.gam π' = π' * f)
     (ht : f - algebraMap O (LetA O n) c₀ = π' * t)

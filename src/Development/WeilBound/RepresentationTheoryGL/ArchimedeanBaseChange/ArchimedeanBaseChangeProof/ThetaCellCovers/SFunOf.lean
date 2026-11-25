@@ -12,8 +12,6 @@ open scoped ENNReal
 
 namespace PositivityTheory.Rg.BcB.E1
 
-attribute [local instance] borelH
-
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {a b : ℕ}
 
 def lInt {ι : Type} [Fintype ι] (D : Dom E a b) (k₁ k₂ : H E a b → ι → Hs (ι := ι) D) (τ : ℝ)

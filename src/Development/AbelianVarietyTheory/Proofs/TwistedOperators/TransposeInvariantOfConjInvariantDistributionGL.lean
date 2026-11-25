@@ -309,8 +309,7 @@ theorem eq_zero : ∀ (G : Type) [Group G] [TopologicalSpace G] [IsTopologicalGr
     rw [hψ, Set.support_indicator] at hy
     simpa using hm (hC' hy.1)
   suffices hall : ∀ x, x ∈ O from LinearMap.ext fun φ => h1 φ fun x _ => hall x
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   let Z : ι → Set G := fun i => {x | ∀ (m : ℕ) (φ : SB G), φ.1 =
     Set.indicator {g : G | ∃ a ∈ K i m, ∃ b ∈ K i m, g = a * x * b} (fun _ => (1 : ℂ)) → D φ = 0}
   haveI : LocallyCompactSpace (Oᶜ : Set G) := hO.isClosed_compl.locallyCompactSpace

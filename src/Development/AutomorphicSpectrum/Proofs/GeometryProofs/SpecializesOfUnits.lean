@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.CentreSetDominatingPoint
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.CoordsAt
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ArithmeticHilbertSamuelLowerBound
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RegAtIffChartLocalization
@@ -174,16 +175,7 @@ instance isLocalRing_regAt (p : Cpt ξ) : IsLocalRing (regAt ξ p) := by
   exact IsLocalRing.of_surjective' (genMap ξ p).rangeRestrict (genMap ξ p).rangeRestrict_surjective
 
 theorem isUnit_iff (p : Cpt ξ) (a : regAt ξ p) : IsUnit a ↔ unitAt ξ p (a : Ω) := by
-  constructor
-  · intro h
-    obtain ⟨b, hb⟩ := isUnit_iff_exists_inv.1 h
-    have hab : (a : Ω) * (b : Ω) = 1 := congrArg Subtype.val hb
-    have h0 : (a : Ω) ≠ 0 := left_ne_zero_of_mul_eq_one hab
-    refine ⟨h0, a.2, ?_⟩
-    rw [← eq_inv_of_mul_eq_one_right hab]
-    exact b.2
-  · rintro ⟨h0, -, hi⟩
-    exact isUnit_iff_exists_inv.2 ⟨⟨(a : Ω)⁻¹, hi⟩, Subtype.ext (mul_inv_cancel₀ h0)⟩
+  apply _root_.GlobalTheory.CompanionTheory.Ar.Centre.isUnit_regAt_iff <;> assumption
 
 theorem residue_eq_zero_iff (p : Cpt ξ) (a : regAt ξ p) :
     IsLocalRing.residue (regAt ξ p) a = 0 ↔ ¬ unitAt ξ p (a : Ω) := by

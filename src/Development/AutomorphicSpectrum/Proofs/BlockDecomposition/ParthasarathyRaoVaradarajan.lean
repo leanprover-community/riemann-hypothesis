@@ -352,8 +352,7 @@ theorem exists_cliff_model : ∀ n : ℕ, ∃ (ι : Type) (_ : Fintype ι) (_ : 
       star_coefC hs', modeOf_comm a b]
     rw [add_comm]
   · obtain ⟨i, j, hij⟩ : ∃ i j, Q i j ≠ 0 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact hQ (by ext i j; exact h i j)
     refine ⟨fun i => Q i j, fun h => hij (congrFun h i), ?_⟩
     intro a b hab

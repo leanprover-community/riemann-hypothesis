@@ -217,18 +217,6 @@ theorem fibLatGen_holds : FibLatGen := by
       intro n
       rw [← hD0, ← hD0]
       exact AddSubgroup.map_mono (hΛa (Nat.zero_le n))
-    have hsat : ∀ y ∈ Pn 0, ∀ Z ∈ Λ 0, y + Z ∈ Pn 0 := by
-      rintro y ⟨hyL, hyS⟩ Z hZ
-      obtain ⟨D, hD, hG⟩ := hyp y hyL hyS
-      refine ⟨hQcos y hyL Z hZ, ?_⟩
-      have h1 := hG 0 0 (Λ 0).zero_mem Z hZ
-      simp only [add_zero] at h1
-      have h2 : D Z ∈ H 0 := hD 0 ▸ AddSubgroup.mem_map_of_mem D hZ
-      have hyS' : G y - T ∈ H 0 := hyS
-      show G (y + Z) - T ∈ H 0
-      have e : G (y + Z) - T = (G (y + Z) - G y - D Z) + D Z + (G y - T) := by abel
-      rw [e]
-      exact (H 0).add_mem ((H 0).add_mem (hHa 1 h1) h2) hyS'
     have : DiscreteTopology (V ⧸ Λ 0) := QuotientAddGroup.discreteTopology (hΛo 0)
     let q : V → V ⧸ Λ 0 := QuotientAddGroup.mk
     have hq : Continuous q := continuous_quot_mk

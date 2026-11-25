@@ -399,8 +399,7 @@ theorem exists_pow_eq {p : ℕ} [Fact p.Prime] (hp2 : p ≠ 2) {m n i : ℕ} (hm
   have hi0 : i ≠ 0 := by rintro rfl; exact hi (dvd_zero _)
   obtain ⟨v, u, hu, rfl⟩ := Nat.exists_eq_pow_mul_and_not_dvd hi0 p hp.ne_one
   have hv : v < n - m := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hi (Dvd.dvd.mul_right (pow_dvd_pow p h) _)
   refine ⟨by omega, ?_⟩
   have hodd : Odd p := hp.odd_of_ne_two hp2
@@ -732,8 +731,7 @@ theorem mem_of_inZl {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω
   have e : (u : Ω) * D + v * p = 1 := by exact_mod_cast congrArg (fun x : ℤ => (x : Ω)) huv
   have hv : A.valuation (D : Ω) = 1 := by
     refine le_antisymm ((A.valuation_le_one_iff _).2 (nat_mem D)) ?_
-    by_contra hlt
-    push_neg at hlt
+    by_contra! hlt
     have hp1 : A.valuation (p : Ω) < 1 := A.mem_nonunits_iff.1 hp
     have hu1 : A.valuation (u : Ω) ≤ 1 := (A.valuation_le_one_iff _).2 (int_mem u)
     have hv1 : A.valuation (v : Ω) ≤ 1 := (A.valuation_le_one_iff _).2 (int_mem v)

@@ -121,8 +121,7 @@ theorem UpperTheory.V.Ws.sxGma :
       exact mul_mem (hdiag x hx i) (ih _ hlen rest rfl hrest hs)
     · have hpos := UpperTheory.V.Ws.gdot_self i j hij
       have hneg : ∃ b ∈ rest, UpperTheory.V.Ws.gdot (wt i j) (wt b.2.1 b.2.2) < 0 := by
-        by_contra hcon
-        push_neg at hcon
+        by_contra! hcon
         have h0 := UpperTheory.V.Ws.gdot_sum (fun b : M4 A × Fin 4 × Fin 4 => wt b.2.1 b.2.2) (wt i j) rest hcon
         have e : UpperTheory.V.Ws.gdot (wt i j) (wt i j + (rest.map fun b => wt b.2.1 b.2.2).sum) =
             UpperTheory.V.Ws.gdot (wt i j) (wt i j) + UpperTheory.V.Ws.gdot (wt i j) (rest.map fun b => wt b.2.1 b.2.2).sum := by

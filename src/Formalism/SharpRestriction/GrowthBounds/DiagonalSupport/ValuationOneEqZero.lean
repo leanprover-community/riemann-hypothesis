@@ -291,12 +291,10 @@ theorem dg_posOf_inj {y a b : ℤ} (ha : y ≤ a ∧ a < y + n') (hb : y ≤ b �
   have hgt : -(n' : ℤ) < a - b := by linarith [ha.1, hb.2]
   rw [hk] at hlt hgt
   have h1 : a / n' - b / n' < 1 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     nlinarith
   have h2 : -1 < a / n' - b / n' := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     nlinarith
   have h3 : a / n' - b / n' = 0 := by omega
   rw [h3, mul_zero] at hk

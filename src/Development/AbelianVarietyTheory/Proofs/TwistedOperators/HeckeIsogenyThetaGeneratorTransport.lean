@@ -1,5 +1,6 @@
 module
 
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FirstCohomology.GenProd
 public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.IsPointedOfIsHkIsog
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HeckePointLawsOfTransport
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsHeckeQuotientTriple
@@ -91,8 +92,6 @@ open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
 open GlobalTheory.ThetaTrace GlobalTheory.HeckeFrCompare
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 theorem fn_ext_of_surjective {W Y : Scheme.{0}} (Ψ : W ⟶ Y) [Surjective Ψ] [IsReduced Y] {U : Y.Opens}
     {a b : Γ(Y, U)} (h : ∀ w, Ψ w ∈ U → gs Ψ w U a = gs Ψ w U b) : a = b := by
   rw [← sub_eq_zero]
@@ -135,8 +134,6 @@ open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.DVR Formalism.L2.Pj
 open GlobalTheory.IndefiniteRowSideFullHecke.FibrePushforwardExistenceTori GlobalTheory.HeckeFrCompare GlobalTheory.ThetaTrace
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.ThetaTransport
 
 section General
@@ -149,15 +146,8 @@ theorem exists_const {S₀ : Scheme.{0}} (hM : M.IsLB) {φ : K → (Y ⟶ X)} {�
     {u : LB.Gen (LB.LinComb M φ ε)} (hu : u.IsGen) :
     ∃ a : Γ(S₀, ⊤), ∀ (Z : Scheme.{0}) (r : Z ⟶ Y) (z : Z) (J), Good M z J →
       (val u r z J).val = gs (r ≫ p) z ⊤ a := by
-  obtain ⟨t, -, hv⟩ := exists_gen hM (K' := PEmpty) (φ' := PEmpty.elim) (ε' := PEmpty.elim)
-    (fun U _ h => (hF U h).trans (Fintype.prod_empty _).symm) u hu
-  have le : (⊤ : Y.Opens) ≤ LB.wchart M (PEmpty.elim : PEmpty → (Y ⟶ X)) PEmpty.elim := fun _ _ =>
-    Set.mem_iInter.2 fun k => k.elim
-  obtain ⟨a, ha⟩ := hp (res le (t.s PEmpty.elim)).val
-  refine ⟨a, fun Z r z J hJ => ?_⟩
-  rw [← hv Z r z J hJ, val_of t r z J PEmpty.elim (fun k => k.elim)]
-  exact (congrArg Units.val (gm_res r z le trivial _)).symm.trans ((gs_unit r z ⊤ trivial _).symm.trans
-    ((congrArg (gs r z ⊤) ha.symm).trans (gs_pull r p z ⊤ trivial a)))
+  intros
+  apply _root_.ReciprocityTheory.ChartRestriction.G.H1.exists_const <;> assumption
 
 theorem exists_sec_of_invariant (hM : M.IsLB) (φ : K → (Y ⟶ X)) (ε : K → ℤ) (m : Y' ⟶ Y) {I : Type}
     (t : I → (Y' ⟶ Y')) (ht : ∀ i, t i ≫ m = m)

@@ -85,13 +85,6 @@ abbrev hostLevelData (Ts Gam : ℝ) : Rows.Data R :=
   rowsG H.E H.φ₀ (@placesOf H.E _ _ H.cmStar) (Tau2 R) (card_realPlaces_eq_degree R) (dstarOfRanks R Ts Gam) (shaExample H)
     (shaExample_nonneg H) (exampleClassGroupCard H) (exampleClassGroupCard_pos H)
 
-def hostSpacesOfNorm (T : ℕ) [hT : Fact T.Prime] (pz : H.E) (hpz : pz * H.conj pz = (T : H.E)) :
-    @Spaces R H.F H.E _ _ _ _ H.cmStar _ :=
-  letI := H.cmStar
-  spacesOfRanks R star_isIntegral (cmData H) T hT.out pz
-    (by rw [star_eq_conj H pz, mul_comm]; exact hpz)
-    (exists_adelic_neg_one H (cmData H).sig (fun x => star_eq_conj H x))
-
 end Record
 
 end Formalism.BasicNotions.Examples₂

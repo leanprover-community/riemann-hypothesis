@@ -549,8 +549,6 @@ namespace Formalism.FourierDecayAlt.P.CutMP.JA.SSn.Rep.Core.TC.PR.CP
 
 noncomputable section
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 theorem radial_coefficient_commutation : RcComm := by
   intro k r E _ _ D f _ hf Z₁ Z₂ h₁ h₂ g hg
   exact Qx5.RZ_comm hf hg h₁ h₂
@@ -574,8 +572,6 @@ open scoped ContDiff
 namespace Formalism.FourierDecayAlt.P.CutMP.JA.SSn.Rep.Core.TC.PR.CP
 
 noncomputable section
-
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 variable {k r : ℕ} {i : Fin (r + 1)}
 
@@ -750,8 +746,6 @@ open scoped ContDiff
 namespace Formalism.FourierDecayAlt.P.CutMP.JA.SSn.Rep.Core.TC.PR.CP
 
 noncomputable section
-
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 theorem radial_coefficient_smoothness : RcSmooth := by
   intro k r E _ _ D f f' _ hf hf' Z hZ

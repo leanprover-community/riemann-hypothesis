@@ -349,7 +349,6 @@ theorem rowInc_le (S : SegData s) (LL : ChainLetters (2 * s + 1)) (J : ℕ) (ez 
             have e1 : ((∑ c, ez i c : ℕ) : ℤ) ≤ Qe := by exact_mod_cast h1 i
             have e2 := hv (chW i)
             have e3 : (0 : ℤ) ≤ ((∑ c, ez i c : ℕ) : ℤ) := Nat.cast_nonneg _
-            have e4 : (0 : ℤ) ≤ (vWt LL J (chW i) : ℤ) := Nat.cast_nonneg _
             nlinarith
       _ = (s : ℤ) * Qe := by simp
   have hpw := pWt_sum_le S LL J
@@ -602,11 +601,7 @@ theorem segCoreAt_of_num {C0 CYb Cde Ck CD Cb CE1 CE2 Cc : ℝ} (hN : NumCoreAt 
             (pWt ((blockData X.p (X.seg C0 CE1 CE2 j) (segATop X.TT X.aT j) (segAPlus X.TT X.aT j) (mm + (n : ℝ) * ka1 X) (β j)).T.J k) (chW (uTop (X.seg C0 CE1 CE2 j) l)) (chE (uTop (X.seg C0 CE1 CE2 j) l)) : ℤ) ≤
           ((X.N1 : ℤ) + 1) * (((X.m : ℤ) + 1) + (X.p : ℤ) ^ X.G' * e) := by
         refine le_trans hinc ?_
-        have b1 : ((segS X.TT j : ℕ) : ℤ) ≤ X.N1 := by exact_mod_cast hsN
-        have b2 : (0 : ℤ) ≤ ((X.p ^ X.G' * e : ℕ) : ℤ) := Int.natCast_nonneg _
         have b3 : ((X.p ^ X.G' * e : ℕ) : ℤ) = (X.p : ℤ) ^ X.G' * e := by push_cast; ring
-        have b4 : (0 : ℤ) ≤ (X.m : ℤ) := Int.natCast_nonneg _
-        have b5 : (0 : ℤ) ≤ (X.N1 : ℤ) := Int.natCast_nonneg _
         rw [← b3]
         nlinarith
       have hfin := hthr (capIdx (X.seg C0 CE1 CE2 j) k) _ hV

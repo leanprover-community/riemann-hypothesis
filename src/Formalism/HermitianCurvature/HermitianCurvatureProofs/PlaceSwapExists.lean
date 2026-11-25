@@ -17,8 +17,6 @@ open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.TBB Formalism.QuantumDe
 
 noncomputable section
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 theorem place_swap_exists : PlaceSwapExists := by
   intro P Wp Wq Wq' _ _ _ _ _ _ _ _ _ p u'' π'' l0 hty hok hl1 hl2
   let Bs : B.RealPlaceData P.k P.r Wp Wq' :=

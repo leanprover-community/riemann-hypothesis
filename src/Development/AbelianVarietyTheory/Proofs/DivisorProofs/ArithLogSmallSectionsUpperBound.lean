@@ -133,8 +133,7 @@ theorem le_add_mul_log_sq_of_le_add_mul_log :
   have ht0 : 0 ≤ t := Real.sqrt_nonneg r
   have htt : t * t = r := Real.mul_self_sqrt hr0.le
   have ht1 : 1 ≤ t := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     nlinarith
   have htpos : 0 < t := by linarith
   have hlog : Real.log r ≤ 2 * t - 2 := by
@@ -143,8 +142,7 @@ theorem le_add_mul_log_sq_of_le_add_mul_log :
     have h2 := Real.log_le_sub_one_of_pos htpos
     linarith
   have hle : t ≤ α + 2 * β + 1 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     nlinarith [mul_lt_mul_of_pos_left h htpos, mul_nonneg hα (sub_nonneg.mpr ht1),
       mul_le_mul_of_nonneg_left hlog hβ]
   have hrc : r ≤ (α + 2 * β + 1) ^ 2 := by
@@ -295,8 +293,7 @@ theorem encard_ball_le_pow_mul : ∀ (G : Type) [AddCommGroup G] [IsAddTorsionFr
     (∀ (n : ℕ) (e : Fin n → G), LinearIndependent ℤ e → (∀ j, e j ∈ B R) → n ≤ r) →
     (B R).encard ≤ ((q ^ r : ℕ) : ℕ∞) * (B (2 * R / q)).encard := by
   intro G _ _ Λ B hB R q r hq hr
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   have hC := hlt.ne_top
   obtain ⟨t, hts, htc⟩ := Set.exists_subset_encard_eq (Order.add_one_le_of_lt hlt)
   obtain ⟨m, hm⟩ := ENat.ne_top_iff_exists.1 hC
@@ -324,12 +321,10 @@ theorem exists_linearIndependent_finCons_of_lt {G : Type} [AddCommGroup G] {m k 
     (e : Fin m → G) (he : LinearIndependent ℤ e) (f : Fin k → G) (hf : LinearIndependent ℤ f)
     (hmk : m < k) : ∃ j, LinearIndependent ℤ (Fin.cons (f j) e : Fin m.succ → G) := by
   classical
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   have hc : ∀ j, ∃ c : ℤ, c ≠ 0 ∧ c • f j ∈ Submodule.span ℤ (Set.range e) := by
     intro j
-    by_contra h
-    push_neg at h
+    by_contra! h
     apply hcon j
     refine LinearIndependent.finCons' (f j) e he fun c y hy hxy => ?_
     by_contra hc0
@@ -1057,8 +1052,7 @@ theorem exists_idealSheaf_principalises_of_ne_zero : ∀ (X : Scheme.{0}) [IsInt
     obtain ⟨k, hk⟩ := hA j
     have hb : X.basicOpen (A j k) ≠ ⊥ := fun h0 => hk ((basicOpen_eq_bot_iff _).1 h0)
     obtain ⟨x, hx⟩ : ∃ x, x ∈ X.basicOpen (A j k) := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       exact hb (eq_bot_iff.2 fun x hx => (hc x hx).elim)
     have hηb : genericPoint X ∈ X.basicOpen (A j k) := gen_mem hx
     have hηU : genericPoint X ∈ U j := X.basicOpen_le _ hηb

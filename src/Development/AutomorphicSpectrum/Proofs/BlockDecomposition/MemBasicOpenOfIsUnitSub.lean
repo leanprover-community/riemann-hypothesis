@@ -25,8 +25,7 @@ theorem mem_basicOpen_prod {U : Scheme.{0}} {ι : Type} (t : Finset ι) (s : ι 
 
 theorem exists_notMem_basicOpen {U : Scheme.{0}} {ι : Type} (t : Finset ι) (s : ι → Γ(U, ⊤))
     (h : ∏ a ∈ t, s a = 0) (u : U) : ∃ a ∈ t, u ∉ U.basicOpen (s a) := by
-  by_contra hc
-  push_neg at hc
+  by_contra! hc
   have hm := mem_basicOpen_prod t s u hc
   rw [h, Scheme.basicOpen_zero] at hm
   exact hm

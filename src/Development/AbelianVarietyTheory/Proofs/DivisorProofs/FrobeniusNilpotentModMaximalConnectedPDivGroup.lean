@@ -123,8 +123,7 @@ theorem aeval_mem_span {A R : Type} [CommRing A] [CommRing R] [Algebra R A] {d :
     rintro rfl
     exact (MvPolynomial.mem_support_iff.1 hm) (by rwa [MvPolynomial.constantCoeff_eq] at h0)
   obtain ⟨i, hi⟩ : ∃ i, m i ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hm0 (Finsupp.ext h)
   refine Ideal.mul_mem_left _ _ ?_
   have hdvd : x i ∣ ∏ j ∈ m.support, x j ^ m j :=

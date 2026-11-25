@@ -1,5 +1,7 @@
 module
 
+
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.SABBaseChangeSt
 public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.GenericExistsUniqueOActOfIsGrpPullback
 public import Mathlib.AlgebraicGeometry.Normalization
 public import Mathlib.RingTheory.RegularLocalRing.Defs
@@ -40,7 +42,6 @@ import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.T
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.PrecompleteBases.PsaRos
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ChartPullbacks.BaseChangeKernels.PullbackSquarePartialSum
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.CubicalStructures.CubeSymmetricSwapFirst
-
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.WeilBound.CoreStatements.TorusUniformisation.ChowMahlerFamilies.IsPreimmersionToNormalization, Development.AutomorphicSpectrum.Proofs.GeometryProofs.FiniteNormalCoverGenericPoint, Development.WeilBound.CoreStatements.TorusUniformisation.ChowMahlerFamilies.StratumGenericTorsionPoints, Development.AutomorphicSpectrum.Proofs.GeometryProofs.TorusExtensionTwoTorsion, Development.WeilBound.CoreStatements.TorusUniformisation.ChowMahlerFamilies.TorusKernelTrivialSpreadsOpen, Development.AutomorphicSpectrum.Proofs.GeometryProofs.TorusKernelTrivialOpen, Development.WeilBound.CoreStatements.TorusUniformisation.ChowMahlerFamilies.TwoTorsionPointsSpreadOpen, Development.AutomorphicSpectrum.Proofs.GeometryProofs.TwoTorsionSpreadOpen, Development.WeilBound.CoreStatements.TorusUniformisation.ChowMahlerFamilies.TwoTorsionRankBound, Development.AutomorphicSpectrum.Proofs.GeometryProofs.TwoTorsionCardBound, Development.WeilBound.CoreStatements.TorusUniformisation.ChowMahlerFamilies.MaximalTorusInFibre, Development.AutomorphicSpectrum.Proofs.GeometryProofs.TorusExtensionRankBound, Development.WeilBound.CoreStatements.TorusUniformisation.ChowMahlerFamilies.FiniteSurjectiveImageOpen, Development.AutomorphicSpectrum.Proofs.GeometryProofs.FiniteSurjectiveOpenImage, Development.WeilBound.CoreStatements.TorusUniformisation.ChowMahlerFamilies.ExistsSplitTorusExtension, Development.AutomorphicSpectrum.Proofs.GeometryProofs.TorusExtensionSplitMap, Development.AutomorphicSpectrum.Proofs.GeometryProofs.SemiabelianFiniteCoverTorus
 
@@ -1289,24 +1290,7 @@ theorem core (hE : GlobalTheory.Published.SemiAbelianHomExtension) (Z : Scheme.{
   have hsm := hG.smooth
   have hsep := hG.separated
   have hG' : IsSemiAbelian ((Over.pullback π).obj G) := by
-    refine ⟨?_, ?_, ?_, ?_, ?_, ?_⟩
-    · have := hG.comm
-      infer_instance
-    · have := hG.smooth
-      change Smooth (pullback.snd G.hom π)
-      infer_instance
-    · have := hG.separated
-      change IsSeparated (pullback.snd G.hom π)
-      infer_instance
-    · have := hG.quasiCompact
-      change QuasiCompact (pullback.snd G.hom π)
-      infer_instance
-    · have := hG.geomConnected
-      change GeometricallyConnected (pullback.snd G.hom π)
-      infer_instance
-    · intro Ω _ _ q
-      obtain ⟨E⟩ := hG.fibres Ω (q ≫ π)
-      exact ⟨torusExtOfIso (pullCompIso q π G) E⟩
+    apply _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.IsSemiAbelian.pullback <;> assumption
   have hsep' := hG'.separated
   have hLN : IsLocallyNoetherian Z' := LocallyOfFiniteType.isLocallyNoetherian π
   have hCS : CompactSpace Z' := QuasiCompact.compactSpace_of_compactSpace π

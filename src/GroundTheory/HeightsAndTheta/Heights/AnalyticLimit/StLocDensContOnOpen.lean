@@ -16,9 +16,4 @@ def LocDensContOnOpen.Statement : Prop :=
     ∀ j, ContinuousOn (locDens A (fun i => potForm (th i) (u i)) j)
       ((A.chart j).target ∩ (A.chart j).symm ⁻¹' Yo)
 
-section Inhabitants
-
-
-end Inhabitants
-
 end GroundTheory.Heights₂.Heights.AnalyticLimit

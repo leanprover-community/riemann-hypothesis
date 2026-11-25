@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsFiniteExtensionDegreeDvdCardInvariants
 public import Mathlib.FieldTheory.IsAlgClosed.Basic
 public import Mathlib.RingTheory.Ideal.GoingUp
 public import Mathlib.RingTheory.Valuation.ValuationSubring
@@ -130,33 +131,8 @@ theorem UpperTheory.Reformulated.B.IntegralExtensionAlgClosed.exists_ringHom_ext
     [inst_2 : Algebra R S] [Algebra.IsIntegral R S] [inst_4 : Field K] [IsAlgClosed K],
     Function.Injective (⇑(Algebra.algebraMap R S) : R → S) →
       ∀ (b : R →+* K), ∃ (Φ : S →+* K), Φ.comp (Algebra.algebraMap R S) = b := by
-  intro R S K _ _ _ _ _ _ hinj b
-  haveI hp : (RingHom.ker b).IsPrime := RingHom.ker_isPrime b
-  obtain ⟨Q, -, hQ, hQp⟩ := Ideal.exists_ideal_over_prime_of_isIntegral (S := S)
-    (RingHom.ker b) ⊥ (by
-      intro x hx
-      have hx0 : algebraMap R S x = 0 := by simpa using hx
-      have : x = 0 := hinj (by simpa using hx0)
-      simp [this])
-  haveI : Q.LiesOver (RingHom.ker b) := ⟨hQp.symm⟩
-  letI : Algebra (R ⧸ RingHom.ker b) K := (RingHom.kerLift b).toAlgebra
-  haveI : FaithfulSMul (R ⧸ RingHom.ker b) K :=
-    (faithfulSMul_iff_algebraMap_injective _ _).2 (RingHom.kerLift_injective b)
-  haveI : Algebra.IsIntegral (R ⧸ RingHom.ker b) (S ⧸ Q) := inferInstance
-  haveI : FaithfulSMul (R ⧸ RingHom.ker b) (S ⧸ Q) := inferInstance
-  haveI : Module.IsTorsionFree (R ⧸ RingHom.ker b) (S ⧸ Q) :=
-    Module.isTorsionFree_iff_faithfulSMul.2 inferInstance
-  haveI : Module.IsTorsionFree (R ⧸ RingHom.ker b) K :=
-    Module.isTorsionFree_iff_faithfulSMul.2 inferInstance
-  haveI : Algebra.IsAlgebraic (R ⧸ RingHom.ker b) (S ⧸ Q) := Algebra.IsIntegral.isAlgebraic
-  let ψ : (S ⧸ Q) →ₐ[R ⧸ RingHom.ker b] K := (by
-    refine @_root_.IsAlgClosed.lift _ _ _ _ _ _ _ _ _ _ _ ?_ ?_ ?_
-    solve_by_elim* (maxDepth := 2) only [*,
-      @_root_.DivisionSemiring.to_moduleIsTorsionFree,
-      @_root_.Algebra.IsIntegral.isAlgebraic, @_root_.inferInstance])
-  refine ⟨ψ.toRingHom.comp (Ideal.Quotient.mk Q), ?_⟩
-  ext x
-  exact ψ.commutes (Ideal.Quotient.mk (RingHom.ker b) x)
+  intros
+  apply _root_.GlobalTheory.InvariantSpecialisation.exists_extension <;> assumption
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.IntegralExtensionAlgClosed =====
@@ -360,8 +336,7 @@ theorem UpperTheory.V.Ws.Po.dimOne :
     exact map_nonunit (algebraMap O B) x hx
   have hex : ∃ Q : Ideal B, Q.IsPrime ∧ (maximalIdeal O).map (algebraMap O B) ≤ Q ∧
       Q ≠ maximalIdeal B := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     obtain ⟨n, hn⟩ := pow_le_of_primes _ (fun Q hQ hIQ => hcon Q hQ hIQ)
     exact hnf (UpperTheory.V.Ws.Po.finPow hIm IsCO.res_surj n hn)
   obtain ⟨P, ⟨hP, hIP, hPm⟩, hmax⟩ :=
@@ -941,8 +916,7 @@ private theorem xr_agree {O R X K : Type} [CommRing O] [CommRing R] [Algebra O R
   refine Ideal.mul_mem_left _ _ ?_
   obtain ⟨-, hm2⟩ := hμ (Finset.mem_coe.2 hm)
   have hex : ∃ s0, k < m s0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     exact hm2 (Finsupp.le_def.2 fun s => by simpa [n'] using hcon s)
   obtain ⟨s0, hs0⟩ := hex
   exact prod_pow_mem_ideal_pow_of_mem_of_le_exponent I _ hz m k s0 hs0.le
@@ -1196,8 +1170,7 @@ theorem UpperTheory.V.Ws.Po.nonAlg :
       ∀ u ∈ Algebra.adjoin O (mono ρ 0), y u ∈ maximalIdeal V → y u ≠ 0 →
       ∃ x ∈ mono (mapRep y ρ) 0, ∀ n : ℕ, 0 < n → x ^ l ^ n ≠ x := by
   intro l _ O _ _ _ Γ _ R _ _ ρ V _ _ _ y hy u hu hum hu0
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   have key : ∀ v ∈ Algebra.adjoin O (mono ρ 0), ∃ n : ℕ, 0 < n ∧ (y v) ^ l ^ n = y v := by
     intro v hv
     induction hv using Algebra.adjoin_induction with

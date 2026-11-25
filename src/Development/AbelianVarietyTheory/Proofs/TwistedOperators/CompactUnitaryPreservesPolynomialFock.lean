@@ -47,6 +47,7 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Definitions.Divisors.MatchingOfParts
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PolynomialFockSpaceStableArchimedeanMaximalCompa
 
 @[expose] public section
 
@@ -60,14 +61,6 @@ namespace GlobalTheory.FockCompactW
 
 open GlobalTheory.RealLift
 
-def liftI {F : Type} [Field F] [NumberField F] {κ : Type} [Fintype κ]
-    (t : κ → mixedEmbedding.mixedSpace F) : κ → AF F :=
-  GlobalTheory.ArchLocalAct.liftI t
-
-alias evI_add' := GlobalTheory.ArchLocalAct.evI_add'
-alias evI_mul' := GlobalTheory.ArchLocalAct.evI_mul'
-alias comm_offI := GlobalTheory.ArchLocalAct.comm_offI
-alias schr_trans' := GlobalTheory.ArchLocalAct.schr_trans'
 alias exists_op_of_UAt := GlobalTheory.ArchLocalAct.exists_op_of_UAt
 
 section Der
@@ -98,18 +91,7 @@ theorem sd_intertwine {M : Model σ Y W} {ψ : AddChar (AF F) ℂ} {χ₁ χ₂ 
     (hw : M.IsWeil ψ χ₁ χ₂ om) (h : UA σ W.J) {f f₁ g g₁ : SInf F (Fin n × Fin d)}
     (hf : Acts (evI F) (om (1, h)) f g) (hf₁ : Acts (evI F) (om (1, h)) f₁ g₁) {u : Matrix (Fin n) (Fin d) (AE F E)}
     (hD : SD (M.heisLine ψ u) f f₁) : SD (M.heisLine ψ (u * (mat h)ᵀ)) g g₁ := by
-  have hS := IsUWeilPair.isUSplitting hw
-  intro r hr l hl
-  have h1 := hD r hr _ (hS.adm (1, h) l hl)
-  simp only [LinearMap.comp_apply] at h1
-  rw [sa_of_acts hf₁ r hr] at h1
-  refine h1.congr_of_eventuallyEq (.of_forall fun t => ?_)
-  have h2 := hS.impl (1, h) (realAd F t • u) (pureA F f r) (Submodule.subset_span ⟨f, r, hr, rfl⟩)
-  have h3 : actAB (cA σ) ((1, h) : UA σ Y.J × UA σ W.J) (realAd F t • u) = realAd F t • (u * (mat h)ᵀ) := by
-    change (1 : Matrix (Fin n) (Fin n) (AE F E)) * (realAd F t • u) * (mat h)ᵀ = _
-    rw [Matrix.one_mul, Matrix.smul_mul]
-  rw [h3, sa_of_acts hf r hr] at h2
-  exact congrArg l h2.symm
+  apply _root_.GlobalTheory.KInfPol.sd_intertwine <;> assumption
 
 end Der
 

@@ -412,7 +412,6 @@ theorem svBound_of (X : Inst D L) (K : Consts) (hK : K.Nonneg) (P : ParameterCho
     exact Finset.sum_le_card_nsmul _ _ _ (fun s hs => (hal s hs).2)
   set q : ℝ := L.sc.a / p with hq
   have hq0 : L.sc.b' ≤ q := by
-    have hX : 0 < L.sc.X' := by unfold Scale.X'; exact Real.exp_pos _
     rw [hq]
     unfold Scale.b'
     exact div_le_div_of_nonneg_left (by linarith) hp0 hpX.le
@@ -1477,7 +1476,6 @@ theorem rG_lt_k {eps : ℝ} (Fm : FamP eps) : Ev Fm fun x i => rG (Fm.L x i).sc 
   have h3 : (Fm.L x i).sc.x ≤ (Fm.L x i).sc.x ^ (9 / 2 + 10 * (Fm.L x i).sc.eps - szTh (Fm.L x i)) := by
     calc (Fm.L x i).sc.x = (Fm.L x i).sc.x ^ (1 : ℝ) := (Real.rpow_one _).symm
       _ ≤ _ := Real.rpow_le_rpow_of_exponent_le hx1' hexp
-  have hge' : 32 / eps + 66 ≤ (Fm.L x i).sc.x := by rw [hxx]; exact hge
   have h4 : (rG (Fm.L x i).sc : ℝ) < ((Fm.D x i).R.k : ℝ) := by linarith
   exact_mod_cast h4
 

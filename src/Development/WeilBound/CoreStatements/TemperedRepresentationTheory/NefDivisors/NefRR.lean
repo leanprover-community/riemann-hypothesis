@@ -953,20 +953,20 @@ theorem nefRR : GlobalTheory.CompanionTheory.Ar.Pub.NefRR := by
     exact hmem a τ s hs
   have hfd : ∀ τ : ℕ, FiniteDimensional ℚ (Submodule.span ℚ (chartLatNm y a τ : Set Ω)) := by
     intro τ
-    haveI := _root_.GlobalTheory.CompanionTheory.GenericFibre.finiteDimensional_chartLatQ K ι Ω y D ((τ : ℤ) • a + fun k => (e k : ℤ)) hV
-    haveI : FiniteDimensional ℚ ((Submodule.span ℚ (chartLatNm y a τ : Set Ω)).map (LinearMap.mulLeft ℚ c)) :=
+    have := _root_.GlobalTheory.CompanionTheory.GenericFibre.finiteDimensional_chartLatQ K ι Ω y D ((τ : ℤ) • a + fun k => (e k : ℤ)) hV
+    have : FiniteDimensional ℚ ((Submodule.span ℚ (chartLatNm y a τ : Set Ω)).map (LinearMap.mulLeft ℚ c)) :=
       Submodule.finiteDimensional_of_le (hle τ)
     exact LinearEquiv.finiteDimensional (Submodule.equivMapOfInjective _ hinj _).symm
   have hup : ∀ τ : ℕ, Module.finrank ℚ (Submodule.span ℚ (chartLatNm y a τ : Set Ω)) ≤
       Module.finrank ℚ (chartLatQ y ((τ : ℤ) • a + fun k => (e k : ℤ)) 1) := by
     intro τ
-    haveI := _root_.GlobalTheory.CompanionTheory.GenericFibre.finiteDimensional_chartLatQ K ι Ω y D ((τ : ℤ) • a + fun k => (e k : ℤ)) hV
+    have := _root_.GlobalTheory.CompanionTheory.GenericFibre.finiteDimensional_chartLatQ K ι Ω y D ((τ : ℤ) • a + fun k => (e k : ℤ)) hV
     rw [(Submodule.equivMapOfInjective _ hinj (Submodule.span ℚ (chartLatNm y a τ : Set Ω))).finrank_eq]
     exact Submodule.finrank_mono (hle τ)
   have hlow : ∀ τ : ℕ, Module.finrank ℚ (chartLatQ y ((τ : ℤ) • a + 0) 1) ≤
       Module.finrank ℚ (Submodule.span ℚ (chartLatNm y a τ : Set Ω)) := by
     intro τ
-    haveI := hfd τ
+    have := hfd τ
     have hsub : chartLatQ y ((τ : ℤ) • a + 0) 1 ≤ Submodule.span ℚ (chartLatNm y a τ : Set Ω) := by
       rw [add_zero, ← chartLatQ_eq_smul_one]
       exact _root_.GlobalTheory.CompanionTheory.Ar.ChartDenom.chartLatQ_le_span_chartLatNm K ι Ω y a τ

@@ -536,8 +536,7 @@ theorem norm_le_one_of_compact {Γ K : Type} [Group Γ] [TopologicalSpace Γ] [C
   have hpow : ∀ k : ℕ, ‖((t g : Kˣ) : K)‖ ^ k ≤ M := fun k => by
     have := hM ⟨g ^ k, Set.mem_univ _, rfl⟩
     simpa [map_pow, Units.val_pow_eq_pow_val, norm_pow] using this
-  by_contra h
-  push_neg at h
+  by_contra! h
   obtain ⟨k, hk⟩ := ((tendsto_pow_atTop_atTop_of_one_lt h).eventually_gt_atTop M).exists
   exact absurd (hpow k) (not_le.2 hk)
 
@@ -1608,8 +1607,6 @@ open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions F
 noncomputable section
 
 namespace GlobalTheory.ExpModel
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem exists_lift_subquot {A V : Type} [Ring A] [AddCommGroup V] [Module A V] (S : Submodule A V) (E : Submodule A (V ⧸ S))
     (N' : Submodule A E) : ∃ (U : Submodule A V) (π : U →ₗ[A] (E ⧸ N')), Function.Surjective π ∧ ∀ x : U, (x : V) ∈ S → π x = 0 := by

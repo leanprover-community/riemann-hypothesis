@@ -53,8 +53,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.DefiningCoordinates (IsDefSum iterD
 open GlobalTheory.IndefiniteRowSideFullHecke.LatticeNormTransport (upIdele IsLatOf)
 open scoped Classical
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.LatJet
 
 section Alg

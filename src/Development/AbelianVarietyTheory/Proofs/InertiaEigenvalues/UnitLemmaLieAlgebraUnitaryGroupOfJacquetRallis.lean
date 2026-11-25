@@ -926,8 +926,7 @@ theorem torus_mod_intUnits_structure : ∀ (K : UQ) (B : InvAlg K), B.LieReg →
     rw [B.σ_alg, ha.2.2]
   have hαpos : ∀ m, 0 < Multiplicative.toAdd (w m α) := by
     intro m
-    by_contra hle
-    push_neg at hle
+    by_contra! hle
     have h1 : 0 ≤ Multiplicative.toAdd (w m α⁻¹) := by
       rw [map_inv, toAdd_inv]
       linarith

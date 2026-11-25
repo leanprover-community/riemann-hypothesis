@@ -366,8 +366,7 @@ theorem restriction_of_blocks_and_jordan (hB : BlocksCycle) (hJ : JordanTransiti
     exact le_bot_iff.mp hWY
   have hcov : ∀ j, ∃ g, e j ∈ W.map (ρ g) := by
     intro j
-    by_contra hj
-    push_neg at hj
+    by_contra! hj
     have h1 : e j ∈ Y := by
       rw [hYtop]
       exact Submodule.mem_top

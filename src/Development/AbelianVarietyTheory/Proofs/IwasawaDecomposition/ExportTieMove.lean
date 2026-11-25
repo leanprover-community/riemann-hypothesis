@@ -73,8 +73,6 @@ open GlobalTheory.TwSys GlobalTheory.TwAll GlobalTheory.SupLaw GlobalTheory.Lift
 open scoped TensorProduct
 
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 namespace GlobalTheory.TwInputs.Move.RatUp
 
 variable {D : D7} (r : Rest D)
@@ -269,8 +267,6 @@ open Formalism.L2.Host (embLL0 CharFrame)
 open GlobalTheory.TwSys GlobalTheory.TwAll GlobalTheory.SupLaw GlobalTheory.LiftLeaf
 open scoped TensorProduct
 
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
@@ -539,8 +535,6 @@ open Formalism.L2.Host (embLL0 CharFrame)
 open GlobalTheory.TwSys GlobalTheory.TwAll GlobalTheory.SupLaw GlobalTheory.LiftLeaf
 open scoped TensorProduct
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 noncomputable section
 
 namespace GlobalTheory.TwInputs.Move
@@ -616,8 +610,6 @@ open GlobalTheory.TwSys GlobalTheory.TwAll GlobalTheory.SupLaw GlobalTheory.Lift
 open scoped TensorProduct
 
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 namespace GlobalTheory.TwInputs.Move
 
 theorem isExtremalVector_of_realSideBaseChange : ∀ {D D' : D7} {ι : D.what₂.LL →+* D'.what₂.LL} {e : ↥D'.LL0 ≃+* ↥D.LL0} (h : CopyTw D D' ι e) {X : RealSide D} {X' : RealSide D'} (m : RealMove X X' ι), (∀ j, FWT.IsChosenExtremalVector X.R.toRealDat j (sg0 D X.A3.A) (X.geo.v₀ j _)) →
@@ -641,8 +633,6 @@ open Formalism.L2.Host (embLL0 CharFrame)
 open GlobalTheory.TwSys GlobalTheory.TwAll GlobalTheory.SupLaw GlobalTheory.LiftLeaf
 open scoped TensorProduct
 
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
@@ -682,8 +672,6 @@ open Formalism.MainNotions.IntegralHeckeForms (TwOK ClsQ HkIdx V0 Fm0 FullRk SgJ
 open Formalism.L2.Host (embLL0 CharFrame)
 open GlobalTheory.TwSys GlobalTheory.TwAll GlobalTheory.SupLaw GlobalTheory.LiftLeaf
 open scoped TensorProduct
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
@@ -763,8 +751,6 @@ open Formalism.MainNotions.IntegralHeckeForms (TwOK ClsQ HkIdx V0 Fm0 FullRk SgJ
 open Formalism.L2.Host (embLL0 CharFrame)
 open GlobalTheory.TwSys GlobalTheory.TwAll GlobalTheory.SupLaw GlobalTheory.LiftLeaf
 open scoped TensorProduct
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
@@ -867,8 +853,6 @@ open GlobalTheory.TwSys GlobalTheory.TwAll GlobalTheory.SupLaw GlobalTheory.Lift
 open scoped TensorProduct
 
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 namespace GlobalTheory.TwInputs.Move
 
 theorem setup_move : ∀ {D D' : D7} {ι : D.what₂.LL →+* D'.what₂.LL} {e : ↥D'.LL0 ≃+* ↥D.LL0} (h : CopyTw D D' ι e) {X : RealSide D} {X' : RealSide D'} (m : RealMove X X' ι) (ρ : Setup D.ntw), ρ.Good → RealPin X.R X.cG ρ →
@@ -891,8 +875,6 @@ open Formalism.L2.Host (embLL0 CharFrame)
 open GlobalTheory.TwSys GlobalTheory.TwAll GlobalTheory.SupLaw GlobalTheory.LiftLeaf
 open scoped TensorProduct
 
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
@@ -936,12 +918,7 @@ theorem vecAt_up {S T : HSp D} (B : Base S T) (Q φ) :
 
 private theorem series_eq {S T : HSp D} (B : Base S T) :
     @series (overD D r) S T (baseUp r B).F = @series D S T B.F := by
-  funext ω f g
-  refine LinearMap.ext fun P => funext fun x => ?_
-  delta series thetaKO
-  refine congrArg (fun v : WO S T → ℂ => ω (g, x) v 0) ?_
-  dsimp only [Frame.fock, pureTensorO, aPlusAll, aPlus, crea, Datum.dRho, baseUp]
-  rfl
+  apply _root_.GlobalTheory.TwInputs.Move.RatUp.series_up <;> assumption
 
 theorem series_up {S T : HSp D} (B : Base S T) (ω : PairRep S T) (Q φ h) :
     series (baseUp r B).F ω ((baseUp r B).vecAt Q φ) h = series B.F ω (B.vecAt Q φ) h := by
@@ -1025,16 +1002,10 @@ section Setup
 variable (ρ : Setup D.ntw) (i : D.ntw.Tw) (j : Fin D.R.m) (b : Bool)
 
 theorem liftSetupOverExtendedData_theta_eq : (setupUp r ρ).theta ((i)) ((j)) b = (ρ.theta i j b) := by
-  funext h
-  delta Setup.theta
-  dsimp only [setupUp]
-  exact congrArg DFunLike.coe (theta_up r (ρ.B i j b) (ρ.om i j b 1) h)
+  apply _root_.GlobalTheory.TwInputs.Move.RatUp.se_theta <;> assumption
 
 theorem liftSetupOverExtendedData_gens_eq : (setupUp r ρ).gens ((i)) ((j)) b = (ρ.gens i j b) := by
-  funext k Q ψ h P
-  delta Setup.gens Setup.tw
-  dsimp only [setupUp]
-  exact genSet_up r (ρ.B i j b) (ρ.om i j b 1) (ρ.tw i b k Q ψ) h P
+  apply _root_.GlobalTheory.TwInputs.Move.RatUp.se_gens <;> assumption
 
 theorem liftSetupOverExtendedData_classSum_eq : (setupUp r ρ).sum ((i)) ((j)) b = (ρ.sum i j b) := by
   funext k Q ψ
@@ -1049,18 +1020,7 @@ private theorem univOf_up (Q : Finset (Pl D.host.E)) (M : ℕ) :
   rfl
 
 theorem liftSetupOverExtendedData_xi_eq : (setupUp r ρ).xi ((i)) ((j)) b (overD D r).nexp = (ρ.xi i j b D.nexp) := by
-  funext Q M h P
-  let Q₀ := admissibleConjugatePairPlaces (overD D r).ntw i Q M
-  let u := univOf D.nexp i Q₀ M ρ.rc
-  let ω := ρ.om i j b 1
-  let Φ := ExportSeries.Base.univFam u (ρ.β j)
-  have atFam := xiCoef_up r (ρ.B i j b) ω u (half (ρ.ch i) Q₀) Φ h P
-  delta Setup.xi
-  rw [univOf_up r ρ i Q₀ M]
-  dsimp only [setupUp, ω, Φ, u, Q₀, univUp, ExportSeries.Base.univFam,
-    admissibleConjugatePairPlaces, Formalism.MainNotions.NAdm.AdmQ,
-    Formalism.MainNotions.NAdm.TWSet] at atFam ⊢
-  exact atFam
+  apply _root_.GlobalTheory.TwInputs.Move.RatUp.se_xi <;> assumption
 
 private theorem twistOf_up (ρ : Setup D.ntw) (i : D.ntw.Tw) (b : Bool) (k : ℕ) (Q : Finset (Pl D.host.E))
     (ψ : G D.host.E D.nd.Om →* (D.ntw.Ok i k)ˣ) :
@@ -1151,8 +1111,6 @@ open GlobalTheory.TwSys GlobalTheory.TwAll GlobalTheory.SupLaw GlobalTheory.Lift
 open scoped TensorProduct
 
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 noncomputable section
 
 namespace GlobalTheory.TwInputs.Move.TieUp
@@ -1193,7 +1151,6 @@ section -- clump:auto
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.L2 Formalism.L2.Host Formalism.L2.NT Formalism.IndefR.NX NumberField IsDedekindDomain GlobalTheory.HeightCounting GlobalTheory.TwInputs.Move GlobalTheory.HeightCounting.SideCopy
 open Formalism.L2.DIV Formalism.L2.Theta
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 noncomputable section
@@ -1360,7 +1317,6 @@ section -- clump:auto
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links IsDedekindDomain NumberField GlobalTheory.SeriesTie GlobalTheory.TwInputs GlobalTheory.HeightCounting
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 
@@ -1484,7 +1440,6 @@ section -- clump:auto
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.L2 Formalism.L2.Host Formalism.IndefR.NX NumberField IsDedekindDomain GlobalTheory.HeightCounting GlobalTheory.TwInputs.Move GlobalTheory.HeightCounting.SideCopy
 open Formalism.L2.DIV Formalism.L2.Theta
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 namespace GlobalTheory.HeightCounting.SideCopy.LamCopy
@@ -1537,7 +1492,6 @@ open GlobalTheory.TwSys GlobalTheory.TwAll GlobalTheory.SupLaw GlobalTheory.Lift
 open scoped TensorProduct
 
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open Formalism.L2 (NExpTied)
 open Formalism.AUTREP (GAf)
 open GlobalTheory.HeightCounting GlobalTheory.HeightCounting.SideCopy GlobalTheory.TwInputs.Move.Forms

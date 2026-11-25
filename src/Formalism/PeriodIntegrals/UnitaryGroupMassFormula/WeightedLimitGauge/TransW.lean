@@ -3,6 +3,7 @@ module
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeightedLimitGauge.ConstCut
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeightedLimitGauge.MBaseMem
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeightedLimitGauge.RhsTest
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeightedLimitGauge.RhsWInvT
 
 @[expose] public section
 
@@ -103,11 +104,7 @@ theorem boost_mem (y : Fin k → ℂ) (c : ℂ)
 
 theorem hermHb_self (v : Fin (k + 1) → ℂ) :
     herm (Hb k) v v = ((∑ l : Fin k, Complex.normSq (v l.castSucc) - Complex.normSq (v (Fin.last k)) : ℝ) : ℂ) := by
-  unfold herm
-  rw [dotProduct, Fin.sum_univ_castSucc]
-  simp only [Hb, Matrix.mulVec_diagonal, Fin.castSucc_ne_last, if_false, if_true, Pi.star_apply, Complex.star_def]
-  push_cast [Complex.normSq_eq_conj_mul_self]
-  ring_nf
+  apply _root_.PI.RhsWLim.W.RI.herm_self_hb <;> assumption
 
 theorem emb_mulVec_out (μ : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ) (v : Fin (2 * r + k + 1) → ℂ)
     (i : Fin (2 * r + k + 1)) (hi : i.val < r ∨ r + k < i.val) : (embWb k r μ *ᵥ v) i = v i := by

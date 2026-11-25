@@ -4,7 +4,6 @@ public import Formalism.ThetaLiftIndependence.Statement
 public import Mathlib.NumberTheory.NumberField.Discriminant.Defs
 public import Mathlib.NumberTheory.NumberField.InfinitePlace.TotallyRealComplex
 public import Mathlib.RingTheory.Ideal.Norm.AbsNorm
-import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

@@ -6,6 +6,7 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalUnitaryOrbi
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalUnitaryOrbits.GenSmulMem
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalUnitaryOrbits.MemUniformizerHermitianIdeal
 import Mathlib.RingTheory.Valuation.LocalSubring
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalUnitaryOrbits.BHRSmulRight
 
 @[expose] public section
 
@@ -65,27 +66,7 @@ theorem sc_mem {c : Fv F v} (hc : c ∈ v.adicCompletionIntegers F) : sc (E := E
   simpa using sc_mul_mem_oEv (E := E) v hc (one_mem_oEv v)
 
 theorem sc_mem_int {a : Fv F v} (ha : sc (E := E) v a ∈ OEv (E := E) v) : a ∈ v.adicCompletionIntegers F := by
-  have hle : OEv (E := E) v ⊆ {z | IsIntegral (v.adicCompletionIntegers F) z} := by
-    show (Submodule.span (v.adicCompletionIntegers F)
-      ((fun x : 𝓞 E => inclR (F := F) (Fv F v) (x : E)) '' Set.univ) : Set (Fv F v ⊗[F] E)) ⊆ _
-    intro z hz
-    have hsp : Submodule.span (v.adicCompletionIntegers F)
-        ((fun x : 𝓞 E => inclR (F := F) (Fv F v) (x : E)) '' Set.univ) ≤
-        (integralClosure (v.adicCompletionIntegers F) (Fv F v ⊗[F] E)).toSubmodule := by
-      rw [Submodule.span_le]
-      rintro _ ⟨x, -, rfl⟩
-      exact IsIntegral.map_of_comp_eq (Int.castRingHom (v.adicCompletionIntegers F)) (inclR (F := F) (Fv F v))
-        (RingHom.ext_int _ _) (RingOfIntegers.isIntegral_coe x)
-    exact hsp hz
-  have hint : IsIntegral (v.adicCompletionIntegers F) (algebraMap (Fv F v) (Fv F v ⊗[F] E) a) := by
-    rw [← sc_eq]
-    exact hle ha
-  have hint' : IsIntegral (v.adicCompletionIntegers F) a :=
-    (isIntegral_algHom_iff (IsScalarTower.toAlgHom (v.adicCompletionIntegers F) (Fv F v) (Fv F v ⊗[F] E))
-      (algebraMap (Fv F v) (Fv F v ⊗[F] E)).injective).mp hint
-  obtain ⟨y, hy⟩ := IsIntegrallyClosed.isIntegral_iff.mp hint'
-  rw [← hy]
-  exact y.2
+  apply +allowSynthFailures _root_.PI.OmLocU.SdB.b_int_of_sc <;> assumption
 
 theorem fix_int (hcm : IsCMExt F E σ) {z : Fv F v ⊗[F] E} (hz0 : z ∈ OEv (E := E) v) (hz : sigR (Fv F v) σ z = z) :
     ∃ a ∈ v.adicCompletionIntegers F, z = sc (E := E) v a := by

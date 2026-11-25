@@ -62,8 +62,6 @@ open scoped TensorProduct InnerProductSpace
 
 namespace GlobalTheory.Mem.R3.Res
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 open Formalism.IndefR.FWT Formalism.L2.Pj
 
 variable {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T T' : Type} {A : FamIn D.what₂.LL G Pl0 T D.R.m} {f : T' → T} {μ : T'}
@@ -131,8 +129,6 @@ open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.L2.Rows Fo
 open scoped TensorProduct InnerProductSpace
 
 namespace GlobalTheory.Mem.R3.Res
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 I0 T T' : Type}
   {A3 : FamIn3 D.what₂.LL G Pl0 I0 (List ℕ) T D.R.m} {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL]
@@ -246,8 +242,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Numb
   Formalism.IndefR.Cx GlobalTheory.Mem.Col2
 
 namespace GlobalTheory.Mem.R3
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 section Record
 
@@ -442,8 +436,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Numb
   Formalism.IndefR.Cx GlobalTheory.Mem.Col2
 
 namespace GlobalTheory.Mem.R3
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 section Cx
 

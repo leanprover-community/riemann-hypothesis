@@ -3,7 +3,6 @@ module
 public import Formalism.HermitianLattices.StatementLat
 public import Mathlib.Algebra.Module.ZLattice.Covolume
 public import Mathlib.Analysis.Normed.Lp.MeasurableSpace
-import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

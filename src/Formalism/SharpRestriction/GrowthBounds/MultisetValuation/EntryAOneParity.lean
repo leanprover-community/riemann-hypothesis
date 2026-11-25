@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.RowTwUHolds
 public import Formalism.SharpRestriction.GrowthBounds.FormalGroupSystem
 
 @[expose] public section
@@ -18,16 +19,7 @@ variable {p : ℕ} [Fact p.Prime] {X : Sys p}
 theorem ea_applyD_map {σ τ K K' : Type} [Field K] [Field K'] (φ : K →+* K')
     (P : MvPolynomial σ (MvPolynomial τ ℤ)) (f : MvPowerSeries σ K) :
     applyD P (MvPowerSeries.map φ f) = MvPolynomial.map φ (applyD P f) := by
-  unfold applyD
-
-  rw [map_sum]
-  refine Finset.sum_congr rfl fun n _ => ?_
-  have e : φ.comp (Int.castRingHom K) = Int.castRingHom K' := RingHom.ext_int _ _
-  have e2 : φ (∏ x ∈ n.support, ((n x).factorial : K)) = ∏ x ∈ n.support, ((n x).factorial : K') := by
-    rw [map_prod]
-    exact Finset.prod_congr rfl fun x _ => map_natCast φ _
-  rw [MvPolynomial.smul_eq_C_mul, MvPolynomial.smul_eq_C_mul, map_mul (MvPolynomial.map φ), MvPolynomial.map_C,
-    MvPolynomial.map_map, e, MvPowerSeries.coeff_map, map_mul φ, e2]
+  apply _root_.GlobalTheory.TwU.LowGen.applyD_map <;> assumption
 
 def ea_InClassA (X : Sys p) {K' : Type} [Field K'] (R' : Subring K') (j : ℕ) (h F : MvPowerSeries (X.ZA j) K') : Prop :=
   ∃ g : ℕ → MvPowerSeries (X.ZA j) K', (∀ i, IntR R' (g i)) ∧ ∀ α : X.ZA j →₀ ℕ,

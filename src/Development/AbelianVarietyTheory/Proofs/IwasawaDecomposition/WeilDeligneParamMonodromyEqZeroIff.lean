@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.NormVEqAbsNorm
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.WeilDeligneParamMonodromyEqZeroIff
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.TeichmullerInertiaLabelCondition
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsTameGenAtOfValuationSubring
@@ -459,17 +460,7 @@ open Pointwise in
 omit [IsAlgClosure E Ω] in
 theorem MonodromyThm.isFrob_conj {q : ℕ} {g σ : G E Ω} (hσ : IsFrob (g • A) q σ) :
     IsFrob A q (g⁻¹ * σ * g) := by
-  have hm : ∀ x, g x ∈ g • A ↔ x ∈ A := fun x => ValuationSubring.smul_mem_pointwise_smul_iff
-  refine ⟨?_, fun x hx => ?_⟩
-  · have h1 : σ • g • A = g • A := hσ.1
-    show (g⁻¹ * σ * g) • A = A
-    rw [mul_smul, mul_smul, h1, inv_smul_smul]
-  · have h1 := hσ.2 (g x) (by rwa [ValuationSubring.valuation_le_one_iff, hm,
-      ← ValuationSubring.valuation_le_one_iff])
-    have e : σ (g x) - g x ^ q = g ((g⁻¹ * σ * g) x - x ^ q) := by
-      rw [map_sub, map_pow, AlgEquiv.mul_apply, AlgEquiv.mul_apply, mul_inv_apply]
-    rwa [e, valuation_lt_one_iff', ← map_inv₀, hm, hm, map_eq_zero_iff _ g.injective,
-      ← valuation_lt_one_iff'] at h1
+  first | exact _root_.GlobalTheory.ChiLocGal.isFrob_conj | exact @_root_.GlobalTheory.ChiLocGal.isFrob_conj | apply _root_.GlobalTheory.ChiLocGal.isFrob_conj <;> assumption
 
 
 include hr in

@@ -162,7 +162,6 @@ open scoped NNReal ENNReal Matrix
 open PositivityTheory.Rg.Rsw PositivityTheory.Rg.Rsw.L
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj Formalism.IndefR.Datum GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.MixModel
 open GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctions.BC PositivityTheory.PfSWUS
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
@@ -601,7 +600,6 @@ open scoped NNReal ENNReal Matrix
 open PositivityTheory.Rg.Rsw PositivityTheory.Rg.Rsw.L
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj Formalism.IndefR.Datum GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.MixModel
 open GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctions.BC PositivityTheory.PfSWUS
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.CompanionTheory.NullFr
 
@@ -1017,8 +1015,7 @@ theorem net : ∀ {A : Type} [CommRing A] [TopologicalSpace A] [IsTopologicalRin
     · exact ⟨c, hcP, 0, mem_of_mem_nhds hU, by simp, by simp⟩
     · obtain ⟨p, hp, hpc⟩ : ∃ p ∈ P, ¬ Disjoint ((fun x : A => p + (u : A) * x) '' K)
           ((fun x : A => c + (u : A) * x) '' K) := by
-        by_contra hcon
-        push_neg at hcon
+        by_contra! hcon
         have hQ : (∀ p ∈ insert c P, f * p = p ∧ p ∈ C) ∧ ∀ p ∈ insert c P, ∀ q ∈ insert c P,
             p ≠ q → Disjoint ((fun x : A => p + (u : A) * x) '' K)
               ((fun x : A => q + (u : A) * x) '' K) := by
@@ -1634,7 +1631,6 @@ section
 open PositivityTheory.Rg.Rsw PositivityTheory.Rg.Rsw.L
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj Formalism.IndefR.Datum GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.MixModel
 open GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctions.BC PositivityTheory.PfSWUS
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.CompanionTheory.NullFr
 

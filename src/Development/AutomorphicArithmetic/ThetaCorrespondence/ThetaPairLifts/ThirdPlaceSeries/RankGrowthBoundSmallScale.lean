@@ -306,7 +306,7 @@ theorem covering_goodAt_shift (hP : _root_.GlobalTheory.CovTop.PublishedHodgeBun
     (h : Y.GoodAt (wtOf _ (uWt (T.Q.Dw j) a n kc + s • hodgeWt (T.Q.Dw j)) 0)) : Y.GoodAt (shiftG (T.Q.Dw j) a n s) := by
   obtain ⟨m, rfl⟩ := hn
   have h1 := (((_root_.GlobalTheory.FlatRootTwist.flat_root_twist hP.p5 D T.Q.H (T.Q.Dw j) Y.d.l₂ Y.d.Xo₂ Y.d.c₂ D.R.r Y.U _ Y.dict hC hY.geo hpq hl hF
-    (_root_.GlobalTheory.T.unramified_points_of_deep_cover hP D T j Y e o hL hj hY) (anchor (T.Q.Dw j) a (m + m) kc) m).2 _ 0).2 h).1
+    (_root_.GlobalTheory.UnramCover.unramified_points_at_deep_level hP D T j Y e o hL hj hY) (anchor (T.Q.Dw j) a (m + m) kc) m).2 _ 0).2 h).1
   have e1 : uWt (T.Q.Dw j) a (m + m) kc + s • hodgeWt (T.Q.Dw j) +
       GlobalTheory.FlatLine.parWt (T.Q.Dw j) (anchor (T.Q.Dw j) a (m + m) kc) =
       laOf (T.Q.Dw j) a (m + m) + s • hodgeWt (T.Q.Dw j) := by

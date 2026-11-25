@@ -145,8 +145,7 @@ open scoped Kronecker ComplexOrder TensorProduct in
 theorem _root_.GlobalTheory.ClassFin.exists_rat_of_forall_ringEquiv_fixed :
     ∀ z : ℂ, (∀ σ : ℂ ≃+* ℂ, σ z = z) → ∃ q : ℚ, z = q := by
   intro z hz
-  by_contra h
-  push_neg at h
+  by_contra! h
   by_cases ha : IsAlgebraic ℚ z
   · obtain ⟨σ, hσ⟩ := _root_.GlobalTheory.ClassFin.exists_ringEquiv_apply_ne_of_isAlgebraic z ha h
     exact hσ (hz σ)

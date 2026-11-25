@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.MemCompletedHomLatticeIffFrameStabiliserAction
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SmulMtCutPartCompl
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SumProdPartialEqZero
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemGLintOfEntries
@@ -163,18 +164,8 @@ theorem inBasis_mix {n : ℕ} (β X Y : GL (Fin n) (Lev.EAf D)) (c : Lev.EAf D)
 theorem mulVec_mem_hatL_of_St {n : ℕ} {β : GL (Fin n) (Lev.EAf D)} {Λ : Submodule (𝓞 D.host.E) (Fin n → D.host.E)}
     (hβ : IsFrame β Λ) {x : GL (Fin n) (Lev.EAf D)} (hx : x ∈ St β) (v : Fin n → Lev.EAf D)
     (hv : v ∈ Formalism.L2.Herm.hatL (F := D.host.F) Λ) : x.val *ᵥ v ∈ Formalism.L2.Herm.hatL (F := D.host.F) Λ := by
-  obtain ⟨y, rfl⟩ := hx
-  rw [hβ] at hv ⊢
-  intro i
-  have e0 : β⁻¹ * frGL β y = intGL D.host.F D.host.E n y * β⁻¹ := by
-    simp only [frGL, MonoidHom.coe_comp, MulEquiv.coe_toMonoidHom, Function.comp_apply, MulAut.conj_apply]
-    group
-  have e : ((β⁻¹ : GL (Fin n) (Lev.EAf D)) : Matrix (Fin n) (Fin n) (Lev.EAf D)) * (frGL β y).val =
-      (intGL D.host.F D.host.E n y).val * (β⁻¹ : GL (Fin n) (Lev.EAf D)).val := by
-    rw [← Units.val_mul, e0, Units.val_mul]
-  rw [Matrix.mulVec_mulVec, e, ← Matrix.mulVec_mulVec]
-  simp only [Matrix.mulVec, dotProduct]
-  exact Subring.sum_mem _ fun k _ => Subring.mul_mem _ (y.val i k).2 (hv k)
+  intros
+  apply _root_.GlobalTheory.LatStab.mulVec_mem_of_mem_St <;> assumption
 
 theorem actO_mem_latO_of (S T : HSp D) (g : GA D S) (h : GA D T)
     (ΛS : Submodule (𝓞 D.host.E) (Fin S.rank → D.host.E)) (ΛT : Submodule (𝓞 D.host.E) (Fin T.rank → D.host.E))

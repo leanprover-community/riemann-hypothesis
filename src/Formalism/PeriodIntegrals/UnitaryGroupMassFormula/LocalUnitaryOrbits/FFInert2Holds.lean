@@ -86,12 +86,10 @@ variable {K : Type} [Field K] {σ : K →+* K} {V : Type} [AddCommGroup V] [Modu
 
 theorem exists_aniso2 (h2 : ∃ z : K, z + σ z ≠ 0) (hs : IsHS σ h) (x : V) (hx : x ≠ 0) :
     ∃ e, h e e ≠ 0 := by
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   obtain ⟨z, hz⟩ := h2
   obtain ⟨y, hy⟩ : ∃ y, h x y ≠ 0 := by
-    by_contra hy
-    push_neg at hy
+    by_contra! hy
     exact hx (hs.nondeg x hy)
   have hσσ : σ (σ (h x y)) = h x y := by
     rw [← hs.herm x y, ← hs.herm y x]
@@ -324,8 +322,7 @@ def FFInert2 : Prop :=
 
 theorem exists_tr_ne {k K : Type} [Field k] [Field K] [Algebra k K] (σ : K ≃ₐ[k] K)
     (hne : σ ≠ AlgEquiv.refl) : ∃ z : K, z + (σ : K →+* K) z ≠ 0 := by
-  by_contra hall
-  push_neg at hall
+  by_contra! hall
   apply hne
   ext z
   have h1 : (1 : K) + 1 = 0 := by

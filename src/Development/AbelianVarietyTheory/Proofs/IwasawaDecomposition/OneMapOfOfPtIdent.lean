@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsCoeffExtRationalFormsValuesField
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LiftsSpanOfOnto
 public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.ActLevAndActBC
 public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.SecBCAndCuspBC
@@ -112,21 +113,8 @@ theorem exists_coef_ext {K K' : Type} [Field K] [Field K'] {σ : K →+* ℂ} {�
     {I : Type} [Fintype I] {n : ℕ} (lam : I → DomWeight n) {W : Type} [AddCommGroup W] [Module ℂ W] (c₀ : VV K lam →ₛₗ[σ] W) :
     ∃ c' : VV K' lam →ₛₗ[σ'] W, ∀ v : VV K lam, ∃ v' : VV K' lam,
       (v' : Pol K' I n) = MvPolynomial.map ι (v : Pol K I n) ∧ c' v' = c₀ v := by
-  classical
-  obtain ⟨π, hπ⟩ := LinearMap.exists_leftInverse_of_injective (VV K lam).subtype (Submodule.ker_subtype _)
-  letI : Module K' W := Module.compHom W σ'
-  let g : Pol K' I n →ₗ[K'] W := (MvPolynomial.basisMonomials _ K').constr K' fun m => c₀ (π (MvPolynomial.monomial m 1))
-  have hg : ∀ P : Pol K I n, g (MvPolynomial.map ι P) = c₀ (π P) := fun P => by
-    induction P using MvPolynomial.induction_on' with
-    | monomial m a =>
-      have e1 : MvPolynomial.map ι (MvPolynomial.monomial m a) = ι a • MvPolynomial.basisMonomials _ K' m := by
-        simp [MvPolynomial.smul_monomial]
-      have e2 : MvPolynomial.monomial m a = a • MvPolynomial.monomial m (1 : K) := by simp [MvPolynomial.smul_monomial]
-      rw [e1, map_smul, Module.Basis.constr_basis, e2, map_smul, map_smulₛₗ, ← RingHom.congr_fun hσ a]
-      rfl
-    | add p q hp hq => rw [map_add (f := _), map_add (f := _), hp, hq, map_add (f := _), map_add (f := _)]
-  refine ⟨{ toFun := fun v => g v, map_add' := fun x y => g.map_add _ _, map_smul' := fun a x => g.map_smul a _ },
-    fun v => ⟨⟨_, GlobalTheory.Proof.TensorMapDescent.map_mem_VV ι lam _ v.2⟩, rfl, (hg v).trans (congrArg c₀ (LinearMap.congr_fun hπ v))⟩⟩
+  intros
+  apply _root_.GlobalTheory.Mem.PlaceVal.exists_ext_VV <;> assumption
 
 end Algebra
 

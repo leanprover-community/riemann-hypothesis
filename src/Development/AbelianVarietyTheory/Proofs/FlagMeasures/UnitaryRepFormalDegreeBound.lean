@@ -658,8 +658,7 @@ theorem linear_of_le (L : ℝ →+ ℝ) (A K : ℝ) (h : ∀ s, L s ≤ A + K * 
 
   have hup : ∀ s, L s ≤ K * |s| := by
     intro s
-    by_contra hlt
-    push_neg at hlt
+    by_contra! hlt
     have hpos : 0 < L s - K * |s| := by linarith
     obtain ⟨m, hm⟩ := exists_nat_gt (A / (L s - K * |s|))
     have hA : A < (m : ℝ) * (L s - K * |s|) := by rwa [div_lt_iff₀ hpos] at hm
@@ -805,8 +804,7 @@ theorem modulus (N : Subgroup G) (hN : IsClosed (N : Set G)) {ν : Measure G} (h
   choose T hT using fun s => exists_exp_smul N hN hν (hconj s)
 
   obtain ⟨r0, hr0⟩ : ∃ k : ℕ, ν {m | d m ≤ (k : ℝ)} ≠ 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     apply hν.1
     rw [← Measure.measure_univ_eq_zero]
     have hU : (Set.univ : Set G) = ⋃ k : ℕ, {m | d m ≤ (k : ℝ)} := by
@@ -858,8 +856,7 @@ theorem modulus (N : Subgroup G) (hN : IsClosed (N : Set G)) {ν : Measure G} (h
       · exact h
       · linarith
     have hC : 0 < C := by
-      by_contra hC
-      push_neg at hC
+      by_contra! hC
       nlinarith [Real.exp_pos (c * ((r0 : ℝ) + 2 * |s|))]
     have hlog := Real.log_le_log hpos hle'
     rw [Real.log_mul (Real.exp_pos _).ne' hm0.ne', Real.log_mul hC.ne' (Real.exp_pos _).ne', Real.log_exp,

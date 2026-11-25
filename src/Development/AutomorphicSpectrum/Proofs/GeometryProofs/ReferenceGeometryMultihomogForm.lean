@@ -330,8 +330,7 @@ theorem exists_chart_form (G : RefGeo Y) : ∃ (c : ∀ k, G.J k) (g : MRing G.J
     exact hno ⟨c, g, hg, hy, h⟩
   obtain ⟨m, f, a, -, -, hsum, hS⟩ := G.snc c hy
   obtain ⟨l, hl⟩ : ∃ l, f l ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     simp [h] at hsum
   obtain ⟨-, z, n, -, hli, -, hq⟩ := hS l hl _ rfl
   obtain ⟨i, -, hi⟩ := (hq ⊥ Ideal.isPrime_bot).1 fun g hg s hs =>

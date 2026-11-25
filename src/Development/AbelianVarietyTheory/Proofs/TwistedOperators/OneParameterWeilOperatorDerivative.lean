@@ -51,6 +51,7 @@ import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ThetaEqB
 import Formalism.LocalToGlobal.IndefiniteForms.IndefSide
 import Formalism.LocalToGlobal.IndefiniteReal.IndefiniteWeightData
 import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
+import Development.WeilBound.ThetaLifts.FrameEstimates.ContinuousMixedSymm
 
 @[expose] public section
 
@@ -88,14 +89,7 @@ theorem evI_add (a b : AF F) : evI F (a + b) = evI F a + evI F b := map_add evIH
 theorem evI_mul (a b : AF F) : evI F (a * b) = evI F a * evI F b := map_mul evIHom a b
 
 theorem continuous_evI : Continuous (evI F) := by
-  have h : Continuous (InfiniteAdeleRing.ringEquiv_mixedSpace F) := by
-    change Continuous fun x : InfiniteAdeleRing F =>
-      ((fun (v : {w : InfinitePlace F // w.IsReal}) => InfinitePlace.Completion.extensionEmbeddingOfIsReal v.2 (x v)),
-       (fun (v : {w : InfinitePlace F // w.IsComplex}) => InfinitePlace.Completion.extensionEmbedding v.1 (x v)))
-    refine Continuous.prodMk (continuous_pi fun v => ?_) (continuous_pi fun v => ?_)
-    · exact (InfinitePlace.Completion.isometry_extensionEmbeddingOfIsReal v.2).continuous.comp (continuous_apply _)
-    · exact (InfinitePlace.Completion.isometry_extensionEmbedding v.1).continuous.comp (continuous_apply _)
-  exact h.comp continuous_fst
+  apply _root_.PositivityTheory.ThKEst.W.cont_evI <;> assumption
 
 theorem fst_eq_zero {a : AF F} (h : evI F a = 0) : a.1 = 0 :=
   (InfiniteAdeleRing.ringEquiv_mixedSpace F).injective (by rw [map_zero]; exact h)

@@ -615,8 +615,7 @@ theorem det_delta {R : Type} [CommRing R] {m d : ℕ} (I L : Idx m d) :
     rw [e, Matrix.det_one]
   · rw [if_neg h]
     have hk : ∃ k, ∀ l, I.1 k ≠ L.1 l := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       apply h
       have hsub : Finset.univ.image I.1 ⊆ Finset.univ.image L.1 := by
         intro x hx

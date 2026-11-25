@@ -98,8 +98,7 @@ theorem kerProj_isUnit_reg (T : E →L[ℂ] F) {t : ℝ} (ht : 0 < t) :
     simp only [inner_zero_right, Complex.zero_re] at h
     have h1 : t * ‖w‖ ^ 2 ≤ 0 := by nlinarith [sq_nonneg ‖T w‖]
     have h2 : ‖w‖ ^ 2 ≤ 0 := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       nlinarith [mul_pos ht hc]
     have : ‖w‖ = 0 := by nlinarith [norm_nonneg w]
     exact norm_eq_zero.mp this

@@ -38,8 +38,6 @@ namespace PositivityTheory.Rg.Sw.LVs.TC
 
 open PositivityTheory.Rg.Sw PositivityTheory.Rg.Sw.LVs
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 variable {n : ℕ}
 
 def matrixBlockRestriction (s t : Finset (Fin n)) (x : Matrix (Fin n) (Fin n) ℂ) : Matrix (Fin n) (Fin n) ℂ :=

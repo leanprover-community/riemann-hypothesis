@@ -835,8 +835,7 @@ private theorem lead_add_smul_mul_of_isLowerTri {X z : Matrix (Fin n) (Fin n) �
     refine Fintype.sum_of_injective e (Fin.castLE_injective hi) _ _ ?_ (fun r => rfl)
     intro c hc
     have hc' : (i : ℕ) + 1 ≤ c := by
-      by_contra hlt
-      push_neg at hlt
+      by_contra! hlt
       exact hc ⟨⟨c, hlt⟩, Fin.ext rfl⟩
     have hlt : e p < c := by
       show (p : ℕ) < c
@@ -879,8 +878,7 @@ private theorem lead_add_smul_mul_of_isUpperTri {X z : Matrix (Fin n) (Fin n) �
     refine Fintype.sum_of_injective e (Fin.castLE_injective hi) _ _ ?_ (fun r => rfl)
     intro c hc
     have hc' : (i : ℕ) + 1 ≤ c := by
-      by_contra hlt
-      push_neg at hlt
+      by_contra! hlt
       exact hc ⟨⟨c, hlt⟩, Fin.ext rfl⟩
     have hlt : e q < c := by
       show (q : ℕ) < c

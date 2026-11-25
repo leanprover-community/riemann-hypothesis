@@ -23,8 +23,6 @@ def wq (θ : A → A → A → U) (N : ℕ) (x z : A) : U := cubN θ N 1 z x * (
 
 end Alg
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 variable {S : Scheme.{0}} {G : Over S} [GrpObj G] [IsCommMonObj G] {L : RigLB G}
 
 theorem exists_weilUnit (c : CubicalStr G L) (N : ℕ) {T : Over S} (x y : T ⟶ G) (hx : x ^ N = 1) (hy : y ^ N = 1) :

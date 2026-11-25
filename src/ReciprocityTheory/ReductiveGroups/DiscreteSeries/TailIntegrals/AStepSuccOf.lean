@@ -1,5 +1,6 @@
 module
 
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TailIntegrals.GaNonneg
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TailIntegrals.HeisenbergFactsOfInductiveInput
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TailIntegrals.Phi2
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TailIntegrals.FixOfPerp
@@ -155,18 +156,7 @@ open Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.Fourier
 namespace ThFin
 
 theorem ga_nn (k r : ℕ) (l : Fin (r + 1)) (Y : Fin (r + 1) → Fin (2 * r + k + 1) → ℂ) : 0 ≤ Ga k r l Y := by
-  unfold Ga
-  open scoped ComplexOrder in
-  have key : ∀ {m : ℕ} (W : Fin m → Fin (2 * r + k + 1) → ℂ),
-      0 ≤ (Matrix.of fun a b => star (W a) ⬝ᵥ W b).det.re := by
-    intro m W
-    have h : (Matrix.of fun a b => star (W a) ⬝ᵥ W b) =
-        (Matrix.of fun i a => W a i)ᴴ * Matrix.of fun i a => W a i := by
-      ext a b
-      simp [Matrix.mul_apply, dotProduct, Matrix.conjTranspose_apply]
-    rw [h]
-    exact (Complex.nonneg_iff.mp (Matrix.posSemidef_conjTranspose_mul_self _).det_nonneg).1
-  exact key _
+  apply ReciprocityTheory.ChartRestriction.DS.Xi.XI.ga_nonneg <;> assumption
 
 theorem dot_unit {n : ℕ} {U : Matrix (Fin n) (Fin n) ℂ} (hU : Uᴴ * U = 1) (u v : Fin n → ℂ) :
     star (U *ᵥ u) ⬝ᵥ (U *ᵥ v) = star u ⬝ᵥ v := by

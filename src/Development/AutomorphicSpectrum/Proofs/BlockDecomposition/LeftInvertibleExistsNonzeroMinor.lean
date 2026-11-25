@@ -35,8 +35,7 @@ theorem exists_mnr_ne_zero_of_left_inverse :
       (M : Matrix ι (Fin n) R) (L : Matrix (Fin n) ι R),
       L * M = 1 → ∃ f, mnr M f ≠ 0 := by
   intro R _ _ ι _ _ n M L h
-  by_contra hc
-  push_neg at hc
+  by_contra! hc
   have key := det_mul_eq_sum_mnr M L
   rw [h, Matrix.det_one] at key
   simp [hc] at key

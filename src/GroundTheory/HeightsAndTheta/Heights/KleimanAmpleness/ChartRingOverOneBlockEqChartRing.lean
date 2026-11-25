@@ -106,24 +106,6 @@ theorem chartRingOver_oneBlock_eq_chartRing {N : ℕ} (x : Fin (N + 1) → Ω) (
 
 end Frac
 
-section Dom
-
-variable {N N' : ℕ}
-
-
-end Dom
-
-section Join
-
-variable {N N' m : ℕ}
-
-
-
-variable {x' : Fin (N' + 1) → Ω} {x : Fin (N + 1) → Ω}
-
-
-end Join
-
 end
 
 end GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization

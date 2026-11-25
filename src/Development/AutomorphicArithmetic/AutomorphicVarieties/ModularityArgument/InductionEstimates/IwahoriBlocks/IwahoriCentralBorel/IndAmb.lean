@@ -865,8 +865,7 @@ private theorem prodStep (P : Subgroup A) (j : H →* B) (hj : Topology.IsEmbedd
     (hIH : SimpleG (IndF j (y.comp (MonoidHom.inl H (P × Γ))) ⊤) fun c : P × Γ => y (1, c)) :
     SimpleG (IndF (MonoidHom.prodMap P.subtype j) (y3 P y) ⊤) fun c : Γ => y (1, (1, c)) := by
   obtain ⟨v₀, hv₀⟩ : ∃ v, f v ≠ 0 := by
-    by_contra hh
-    push_neg at hh
+    by_contra! hh
     exact hf (LinearMap.ext hh)
   obtain ⟨U, F, hU, hF⟩ := indSeed j y (f v₀) hj hsm (hopen _)
   let Wf : Submodule ℂ V :=
@@ -906,8 +905,7 @@ private theorem prodStep (P : Subgroup A) (j : H →* B) (hj : Topology.IsEmbedd
     fun _ _ _ => rfl
   have hZn : Nontrivial Z := by
     obtain ⟨v, hv⟩ : ∃ v, fz v ≠ 0 := by
-      by_contra hh
-      push_neg at hh
+      by_contra! hh
       exact hfz (LinearMap.ext hh)
     exact ⟨⟨_, _, hv⟩⟩
   have hy₂ : y₂.IsIrreducible := by
@@ -1123,8 +1121,7 @@ theorem UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.IwahoriBlocks.indProdG
     obtain ⟨V, a1, a2, ρ, f, hL, hf, hfr⟩ := hloc 0
     have hYn : Nontrivial Y := by
       obtain ⟨v, hv⟩ : ∃ v, f v ≠ 0 := by
-        by_contra hh
-        push_neg at hh
+        by_contra! hh
         exact hf (LinearMap.ext hh)
       exact ⟨⟨_, _, hv⟩⟩
     have hy' : y'.IsIrreducible := by

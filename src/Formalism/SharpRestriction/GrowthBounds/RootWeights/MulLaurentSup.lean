@@ -140,8 +140,7 @@ theorem mul_degs_eq {σ A : Type*} [CommRing A] (P : MvPolynomial σ (LaurentPol
     simp
   · intro h
     obtain ⟨m, hm⟩ : ∃ m, AddMonoidAlgebra.coeff ((mul_Phi σ A P).coeff k) m ≠ 0 := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       exact h (by ext m; simpa using hc m)
     rw [mul_Phi_coeff] at hm
     exact ⟨m, fun h0 => hm (by rw [h0]; simp), hm⟩

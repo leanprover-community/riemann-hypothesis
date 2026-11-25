@@ -557,8 +557,7 @@ theorem pet_self_pos (N l : ℕ) (k : ℤ) (hN : 0 < N) (hl : 0 < l) (f : CuspFo
   have hI0 : ∀ q, 0 ≤ I q := fun q => integral_nonneg fun z => hr0 _
 
   obtain ⟨z₀, hz₀⟩ : ∃ z, f z ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hf (CuspForm.ext h)
   obtain ⟨g, hg⟩ := ModularGroup.exists_smul_mem_fd z₀
   obtain ⟨h, hh⟩ := QuotientGroup.mk_out_eq_mul (lev N l) g

@@ -129,8 +129,7 @@ theorem pb_abs {O K V : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing
     ring
   have hsurj : Function.Surjective S.f := by
     intro j
-    by_contra hj
-    push_neg at hj
+    by_contra! hj
     have hvan : ∀ r ∈ Nsub, S.bM.coord j r = 0 := by
       intro r hr
       obtain ⟨s, hs⟩ := hNcoord r hr j

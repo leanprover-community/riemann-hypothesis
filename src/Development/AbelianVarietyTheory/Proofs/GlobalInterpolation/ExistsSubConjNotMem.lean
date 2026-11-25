@@ -97,8 +97,7 @@ theorem _root_.GlobalTheory.UnramConjUnit.exists_sub_conj_notMem (h : _root_.For
     (by rw [Nat.card_eq_fintype_card, hcard, hrank])
   have hG : ∀ g : E ≃ₐ[F] E, g = 1 ∨ g = τ := by
     intro g
-    by_contra hg
-    push_neg at hg
+    by_contra! hg
     have h3 : ({g, 1, τ} : Finset (E ≃ₐ[F] E)).card = 3 := by
       rw [Finset.card_insert_of_notMem (by simp [hg.1, hg.2]), Finset.card_pair (Ne.symm hτ1)]
     have := h3 ▸ Finset.card_le_univ ({g, 1, τ} : Finset (E ≃ₐ[F] E))

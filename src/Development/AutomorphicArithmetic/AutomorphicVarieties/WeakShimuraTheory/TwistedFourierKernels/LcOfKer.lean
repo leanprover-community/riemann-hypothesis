@@ -1,5 +1,6 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.WeilGroupCharacters.LamFree
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.WeakShimuraTheory.TwistedFourierKernels.IsTwistTwD
 public import Mathlib.FieldTheory.IsAlgClosed.Basic
 public import Mathlib.GroupTheory.FiniteAbelian.Duality
@@ -31,18 +32,7 @@ open IsLocalRing Polynomial UpperTheory.V UpperTheory.V.Alg UpperTheory.V.W Uppe
 
 private theorem pow_pow_sub_one_mem {R : Type} [CommRing R] (I : Ideal R) (l : ℕ) (hl : (l : R) ∈ I) (x : R)
     (hx : x - 1 ∈ I) (k : ℕ) : x ^ (l ^ k) - 1 ∈ I ^ (k + 1) := by
-  induction k with
-  | zero => simpa using hx
-  | succ k ih =>
-    have h1 : x ^ (l ^ k) - 1 ∈ I := Ideal.pow_le_self (Nat.succ_ne_zero k) ih
-    rw [pow_succ l k, pow_mul, ← mul_geom_sum, pow_succ I (k + 1)]
-    refine Ideal.mul_mem_mul ih ?_
-    rw [← Ideal.Quotient.eq_zero_iff_mem] at hl h1 ⊢
-    rw [map_sub, map_one, sub_eq_zero] at h1
-
-    rw [map_sum]
-    simp only [map_pow (Ideal.Quotient.mk I) (x ^ (l ^ k)), h1, one_pow]
-    simpa using hl
+  apply _root_.zl_pow <;> assumption
 
 theorem UpperTheory.V.Ws.H5.finQuot :
     ∀ {l : ℕ} [Fact l.Prime] (F : GFrame l) {R : Type} [CommRing R] [IsLocalRing R], ((l : ℕ) : R) ∈ maximalIdeal R → ∀ γ : F.G₀ →* Rˣ, TwCh F γ → ∀ N : ℕ, ∃ (Q : Type) (_ : CommGroup Q) (_ : Finite Q) (q : F.G₀ →* Q) (j : Q →* (R ⧸ maximalIdeal R ^ N)ˣ), IsPGroup l Q ∧ IsOpen (q.ker : Set F.G₀) ∧ Anti F q ∧ j.comp q = pushCh (Ideal.Quotient.mk (maximalIdeal R ^ N)) γ := by

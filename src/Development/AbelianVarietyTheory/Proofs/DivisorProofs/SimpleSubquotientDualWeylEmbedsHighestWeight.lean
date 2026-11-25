@@ -733,8 +733,7 @@ theorem lduHom_coeff_smul_injective : ∀ (O : Type) [CommRing O] (N : ℕ) (M :
   · intro m _
     rw [← one_smul O (c m), Subsingleton.elim (1 : O) 0, zero_smul]
   classical
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   obtain ⟨m1, hm1, hc1⟩ := hne
   have hT : (s.filter fun m => c m ≠ 0).Nonempty := ⟨m1, Finset.mem_filter.2 ⟨hm1, hc1⟩⟩
   obtain ⟨m0, hm0, hmax⟩ := Finset.exists_max_image _ (fun m => (ord N).toSyn (leadExp N m)) hT
@@ -1669,8 +1668,7 @@ theorem jointWt_bounds : ∀ (O : Type) [CommRing O] [IsDomain O] [IsDiscreteVal
   have hmem : a0 ∈ alg O N lam := Algebra.subset_adjoin (Or.inr ⟨τ, w τ, ha0⟩)
   have hex : ∃ x : ∀ τ, dualWeyl O N N (res N (lam τ)),
       weightedHomogeneousComponent (rowW N N) (w τ) (x τ : MvPolynomial (Fin N × Fin N) O) ≠ 0 := by
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     have ha0z : a0 = 0 := by
       apply PiTensorProduct.ext
       apply MultilinearMap.ext

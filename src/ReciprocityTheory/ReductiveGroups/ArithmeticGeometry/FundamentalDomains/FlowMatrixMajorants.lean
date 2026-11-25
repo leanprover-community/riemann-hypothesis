@@ -1,5 +1,6 @@
 module
 
+import all ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.MajorantNormalForms
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.LminorSubmatrixCastSucc
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.RingTheory.PiTensorProduct
@@ -119,30 +120,12 @@ theorem Hf_add_right (x : Frame X.Ψ r) (u w w' : Fin r → ℂ) :
 private lemma hermC_sum_left_lemma {ι : Type} [Fintype ι] (σ : E →+* ℂ)
     (G : Matrix (Fin r) (Fin r) E) (u : ι → ℂ) (v : ι → Fin r → ℂ) (y : Fin r → ℂ) :
     hermC σ G (∑ k, u k • v k) y = ∑ k, u k * hermC σ G (v k) y := by
-  let f : (Fin r → ℂ) →ₗ[ℂ] ℂ :=
-    { toFun := fun x => hermC σ G x y
-      map_add' := fun x x' => by
-        simp only [hermC, Pi.add_apply, add_mul, Finset.sum_add_distrib]
-      map_smul' := fun c x => by
-        simp only [hermC, Pi.smul_apply, smul_eq_mul, RingHom.id_apply, Finset.mul_sum]
-        exact Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => by ring }
-  have h := map_sum f (fun k => u k • v k) Finset.univ
-  simp only [map_smul, smul_eq_mul] at h
-  exact h
+  apply _root_.ReciprocityTheory.ChartRestriction.G.FD.MajorantNormalForms.hermC_sum_left_lemma <;> assumption
 
 private lemma hermC_sum_right_lemma_2 {ι : Type} [Fintype ι] (σ : E →+* ℂ)
     (G : Matrix (Fin r) (Fin r) E) (x : Fin r → ℂ) (w : ι → ℂ) (z : ι → Fin r → ℂ) :
     hermC σ G x (∑ l, w l • z l) = ∑ l, conj (w l) * hermC σ G x (z l) := by
-  let g : (Fin r → ℂ) →ₗ⋆[ℂ] ℂ :=
-    { toFun := fun y => hermC σ G x y
-      map_add' := fun y y' => by
-        simp only [hermC, Pi.add_apply, map_add (f := _), mul_add, Finset.sum_add_distrib]
-      map_smul' := fun c y => by
-        simp only [hermC, Pi.smul_apply, smul_eq_mul, map_mul, Finset.mul_sum]
-        exact Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => by ring }
-  have h := map_sum g (fun l => w l • z l) Finset.univ
-  simp only [map_smulₛₗ, smul_eq_mul] at h
-  exact h
+  apply _root_.ReciprocityTheory.ChartRestriction.G.FD.MajorantNormalForms.hermC_sum_right_lemma_2 <;> assumption
 
 private lemma hermC_smul_sub_left_lemma_3 (σ : E →+* ℂ) (G : Matrix (Fin r) (Fin r) E) (a : ℂ)
     (p q y : Fin r → ℂ) : hermC σ G (a • p - q) y = a * hermC σ G p y - hermC σ G q y := by

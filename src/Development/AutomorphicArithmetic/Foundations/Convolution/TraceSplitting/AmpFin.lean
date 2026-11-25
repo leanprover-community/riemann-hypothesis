@@ -52,8 +52,7 @@ private theorem exists_pos_eig {H : Type} [NormedAddCommGroup H] [InnerProductSp
     rfl
   obtain ⟨v, hv, hv0⟩ := h
   obtain ⟨i, hi⟩ : ∃ i, l i ≠ 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     have h0 : HasSum (fun i => (((l i : ℝ) : ℂ) * ⟪b i, v⟫_ℂ) • b i) (0 : H) := by
       simp only [hcon, Complex.ofReal_zero, zero_mul, zero_smul]
       exact hasSum_zero

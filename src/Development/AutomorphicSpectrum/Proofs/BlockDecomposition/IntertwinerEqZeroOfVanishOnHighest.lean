@@ -97,8 +97,7 @@ theorem wts_nonempty (hg : Formalism.REAL.GlRel G) (hs : ∀ a b (x y : H), ⟪G
     (fun i j _ => diagOn_commute hg hst i j)
   haveI : Nontrivial N := Submodule.nontrivial_iff_ne_bot.2 hN
   obtain ⟨χ, hχ⟩ : ∃ χ : Fin n → ℂ, (⨅ c, Module.End.eigenspace (diagOn G N hst c) (χ c)) ≠ ⊥ := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     rw [iSup_congr hcon, iSup_bot] at htop
     exact bot_ne_top htop
   obtain ⟨x, hx, hx0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hχ

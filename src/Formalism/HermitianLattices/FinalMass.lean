@@ -1,6 +1,5 @@
 module
 
-public import Formalism.HermitianLattices.StatementMass
 public import Formalism.HermitianLattices.HermitianLatticesProofs.MassBasic
 
 @[expose] public section

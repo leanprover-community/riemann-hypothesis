@@ -4,6 +4,7 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PolynomialProper
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PolynomialProperness.ZhatNormLinearBound
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Tactic.TypeStar
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.HermitianFormFlagVector
 
 @[expose] public section
 
@@ -87,11 +88,7 @@ theorem fmulBound : FmulBound := by
 theorem herm_sum_left {n : ℕ} {ι : Type*} [Fintype ι] (H : Matrix (Fin n) (Fin n) ℂ) (u : ι → ℂ)
     (x : ι → Fin n → ℂ) (y : Fin n → ℂ) :
     herm H (∑ c, u c • x c) y = ∑ c, u c * herm H (x c) y := by
-  unfold herm
-
-  rw [← mulVecLin_apply, map_sum, dotProduct_sum]
-  refine Finset.sum_congr rfl fun c _ => ?_
-  rw [map_smul, mulVecLin_apply, dotProduct_smul, smul_eq_mul]
+  apply _root_.Formalism.FourierDecayAlt.P.C2x5.herm_sum_smul <;> assumption
 
 theorem herm_sum_right {n : ℕ} {ι : Type*} [Fintype ι] (H : Matrix (Fin n) (Fin n) ℂ) (x : Fin n → ℂ)
     (w : ι → ℂ) (y : ι → Fin n → ℂ) :

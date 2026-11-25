@@ -516,9 +516,7 @@ theorem Vsp_bot (K : Type) [Field K] {n' m : ℕ} (lam0 : Fin n' → Fin (m + 1)
     · intro ha
       apply hs
       intro a b hab
-      have h1 := ha (Fin.rev_le_rev.2 hab)
-      simp only [Fin.rev_rev] at h1
-      exact neg_le_neg_iff.1 h1
+      simpa only [Fin.rev_rev, neg_le_neg_iff] using ha (Fin.rev_le_rev.2 hab)
   unfold Vsp tensorLat
   rw [Submodule.span_eq_bot]
   rintro _ ⟨F, hF, rfl⟩
@@ -814,8 +812,7 @@ theorem geo_chain (hV : Fr.Valid L₁ N₁) (hT : TieS Fr Dt) (j : ZMod J) (i : 
   · rw [hm, chain_mem Dt hT]
     have hl := l.isLt
     refine ⟨⟨fun h => Or.inr ⟨l, rfl, ?_⟩, ?_⟩, ?_⟩
-    · by_contra hc
-      push_neg at hc
+    · by_contra! hc
       have hi' : i.val < Dt.nL j := lt_of_le_of_lt hc hl
       rw [Formalism.MainNotions.Proposition5Numerics.posU_ll' (Fr := Fr) (segZ j) (Dt.nL j) i.val hi'] at h
       rcases Nat.eq_or_lt_of_le hc with he | hlt

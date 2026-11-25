@@ -4,6 +4,7 @@ public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LocalConjugationInvolutiveValuationPreservingStatement
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnitaryRankOneSphericalIntegrandDiagonalTorusFac
 import Std.Tactic.BVDecide.Normalize.Prop
+import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.IwahoriFactorisation.TwistedConjugationNorms.HilbertNinetyNorms.InertDeltaFirstCaseEqPower
 
 @[expose] public section
 
@@ -59,19 +60,7 @@ theorem prod_emb {n m : ℕ} {M : Type*} [CommMonoid M] (S : Finset (Fin n)) (h 
 
 theorem symIdx_rev (n : ℕ) (mid : Prop) [Decidable mid] (s : Finset (Fin (n / 2))) (i : Fin n)
     (hi : i ∈ symIdx n mid s) : i.rev ∈ symIdx n mid s := by
-  have hlt := i.isLt
-  simp only [symIdx, Finset.mem_filter, Finset.mem_univ, true_and, Fin.val_rev] at hi ⊢
-  rcases hi with ⟨h, hs⟩ | ⟨h, hs⟩ | ⟨hm, ho, he⟩
-  · right; left
-    refine ⟨by omega, ?_⟩
-    convert hs using 2
-    omega
-  · left
-    refine ⟨by omega, ?_⟩
-    convert hs using 2
-    omega
-  · right; right
-    exact ⟨hm, ho, by omega⟩
+  apply _root_.PositivityTheory.Rg.Bc.ArchbcB.B.M4.V1.mem_rev <;> assumption
 
 theorem symIdx_congr (n : ℕ) (mid mid' : Prop) [Decidable mid] [Decidable mid'] (hm : mid ↔ mid')
     (s : Finset (Fin (n / 2))) : symIdx n mid s = symIdx n mid' s := by

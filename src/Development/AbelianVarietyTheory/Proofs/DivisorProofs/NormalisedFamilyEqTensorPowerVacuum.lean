@@ -994,8 +994,6 @@ end GlobalTheory.CharModOne
 
 namespace GlobalTheory.CharModOne
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem star_eq_conj (D : D7) (x : D.host.E) : star x = D.host.conj x := by
   apply D.host.φ₀.injective
   letI := D.host.isCMField_hostE

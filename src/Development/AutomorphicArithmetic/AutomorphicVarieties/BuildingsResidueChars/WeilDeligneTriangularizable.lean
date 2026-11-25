@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.EqZeroOfIsNilpotentOfFinrankEqOne
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.WdDefs
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FinrankLetterHomComp
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.BuildingsResidueChars.WeilDeligneFunctorExactness
@@ -217,24 +218,7 @@ open GlobalTheory.WeilDeligne GlobalTheory.Pst GlobalTheory.Pst.DpstMap UpperThe
 
 private theorem nil_line {k W : Type} [Field k] [AddCommGroup W] [Module k W] (h1 : finrank k W = 1) {N : End k W}
     (hN : IsNilpotent N) : N = 0 := by
-  obtain ⟨y, hy0, hy⟩ := finrank_eq_one_iff'.1 h1
-  obtain ⟨c, hc⟩ := hy (N y)
-  obtain ⟨n, hn⟩ := hN
-  have hp : ∀ m : ℕ, (N ^ m) y = c ^ m • y := by
-    intro m
-    induction m with
-    | zero => simp
-    | succ m ih => rw [pow_succ', End.mul_apply, ih, map_smul, ← hc, smul_smul, pow_succ]
-  have h2 := hp n
-  rw [hn, LinearMap.zero_apply] at h2
-  have hc0 : c = 0 := by
-    rcases smul_eq_zero.1 h2.symm with h | h
-    · exact (pow_eq_zero_iff'.1 h).1
-    · exact absurd h hy0
-  ext x
-  obtain ⟨a, rfl⟩ := hy x
-  rw [map_smul, ← hc, hc0]
-  simp
+  apply _root_.GlobalTheory.PotCrysRankOne.eq_zero_of_isNilpotent_of_finrank_eq_one <;> assumption
 
 private theorem snoc_ops {k W' W W'' Γ : Type} [Field k] [AddCommGroup W'] [Module k W'] [AddCommGroup W] [Module k W]
     [AddCommGroup W''] [Module k W''] {n : ℕ} {N' : End k W'} {N : End k W} {N'' : End k W''} {R' : Γ → End k W'}

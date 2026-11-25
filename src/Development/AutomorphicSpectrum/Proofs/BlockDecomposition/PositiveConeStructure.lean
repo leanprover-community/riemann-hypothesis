@@ -182,7 +182,6 @@ open scoped ContDiff ENNReal ComplexOrder Pointwise
 open PositivityTheory.RgTw (Mat G hb)
 open PositivityTheory.RgBcC
 open GlobalTheory.CompanionTheory.ConeHaar
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 theorem _root_.GlobalTheory.T.compact_group_disintegration : ∀ {Γ K X : Type} [Group Γ] [TopologicalSpace Γ] [IsTopologicalGroup Γ] [T2Space Γ] [LocallyCompactSpace Γ] [SecondCountableTopology Γ] [MeasurableSpace Γ] [BorelSpace Γ] [Group K] [TopologicalSpace K] [IsTopologicalGroup K] [T2Space K] [CompactSpace K] [SecondCountableTopology K] [MeasurableSpace K] [BorelSpace K] (e : K →* Γ) (_ : Continuous e) [MeasurableSpace X] (ρ : Measure X) [SFinite ρ] (s : X → Γ) (_ : Measurable s) (_ : ρ ≠ 0) (_ : ∀ g : Γ, ∃ a : X → X, Measurable a ∧ Measure.map a ρ = ρ ∧ ∀ᵐ x ∂ρ, ∃ k, g * s x = s (a x) * e k) (_ : ∀ A : Set Γ, IsCompact A → ρ (s ⁻¹' (A * Set.range e)) < ⊤) (μ : Measure Γ) [μ.IsHaarMeasure], ∃ c : ℝ, 0 < c ∧ ∀ F : Γ → ℂ, Continuous F → HasCompactSupport F → (∀ y k, F (y * e k) = F y) → ∫ y, F y ∂μ = c * ∫ x, F (s x) ∂ρ := by
   first | exact @GlobalTheory.CompanionTheory.ConeHaar.leftInvariant_of_section
@@ -496,7 +495,6 @@ open scoped ContDiff ENNReal ComplexOrder Pointwise
 open PositivityTheory.RgTw (Mat G hb)
 open PositivityTheory.RgBcC
 open GlobalTheory.CompanionTheory.ConeHaar
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 theorem _root_.GlobalTheory.T.congruence_action_determinant : ∀ (n : ℕ) (g : Mat n), g.det ≠ 0 → ∃ T : (Fin n × Fin n → ℝ) →ₗ[ℝ] (Fin n × Fin n → ℝ), (∀ v, hOf (T v) = g * hOf v * gᴴ) ∧ LinearMap.det T = ‖g.det‖ ^ (2 * n) := by
   first | exact @GlobalTheory.CompanionTheory.ConeLin.cone_lin
@@ -726,7 +724,6 @@ open scoped ContDiff ENNReal ComplexOrder Pointwise
 open PositivityTheory.RgTw (Mat G hb)
 open PositivityTheory.RgBcC
 open GlobalTheory.CompanionTheory.ConeHaar
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 end -- clump:auto
 end -- clump:auto

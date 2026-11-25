@@ -192,8 +192,7 @@ theorem vGeK_iff_of_rep (hfr : IsFractionRing X.G.O X.G.Kf) {x : X.G.Kf} {N : �
   · intro h
     obtain ⟨a, ha⟩ := (vGeK_iff X).1 h
     rw [vsc_def] at ha
-    by_contra hlt
-    push_neg at hlt
+    by_contra! hlt
     have hc : N < ⌈g * (X.eO : ℝ)⌉ := Int.lt_ceil.mpr hlt
     obtain ⟨k, hk⟩ := Int.eq_ofNat_of_zero_le (sub_nonneg.mpr hc.le)
     have e : ⌈g * (X.eO : ℝ)⌉ = N + k := by omega
@@ -226,8 +225,7 @@ theorem vEqK_iff_of_rep (hfr : IsFractionRing X.G.O X.G.Kf) {x : X.G.Kf} {N : �
       linarith
     refine ⟨he, le_antisymm h1 ?_⟩
     have hepos : (0 : ℝ) < X.eO := by exact_mod_cast he
-    by_contra hlt
-    push_neg at hlt
+    by_contra! hlt
     have h5 : (N : ℝ) / X.eO * X.eO = N := by field_simp
     linarith [h2 ((N : ℝ) / X.eO) (by rw [lt_div_iff₀ hepos]; exact hlt)]
   · rintro ⟨he, h⟩
@@ -421,7 +419,6 @@ theorem clExp_eq (j l : ℕ) (hl : l ≤ r) :
 theorem tail_nonneg (h : Std p n' k1 t m c r TT a b lam0 w) (j l : ℕ) :
     0 ≤ ((n' / 2 : ℕ) : ℤ) * l * ((NN k1 t (j + 1) : ℤ) - 2 * r + l - t) := by
   have hr := h.two_r
-  have hr' : (2 * r : ℤ) ≤ k1 + 1 := by exact_mod_cast hr
   apply mul_nonneg (mul_nonneg (by positivity) (by positivity))
   unfold NN
   push_cast

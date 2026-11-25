@@ -358,8 +358,7 @@ theorem exists_mixLat_form : ∀ (L : Type) [Field L] [Valued L (WithZero (Multi
         exacts [hzi _ _, zero_mem _]
       rw [h.fixes _ hm, h1]
     · obtain ⟨i, j, hij⟩ : ∃ i j, z i j ∉ intL L := by
-        by_contra hc
-        push_neg at hc
+        by_contra! hc
         exact hzi hc
       have he : embLow n' n z (hi n' i) (hi n j) = z i j := by
         simp [embLow, hi]

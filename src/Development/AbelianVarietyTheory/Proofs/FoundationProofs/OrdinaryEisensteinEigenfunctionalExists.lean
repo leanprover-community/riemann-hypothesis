@@ -1173,8 +1173,7 @@ theorem exists_char_parity_mul_ne_one_mul_inv_ne_one : ∀ (N r : ℕ) (χ : Dir
       right
       have := eq_inv_of_mul_eq_one_left h2
       rwa [inv_inv] at this
-  by_contra hno
-  push_neg at hno
+  by_contra! hno
   have ha := key θ₀ (fun h => by have := hno θ₀ hθ₀ h.1; exact h.2 this)
   have hb := key (θ₀ * η) (fun h => by
     have := hno (θ₀ * η) (by rw [MulChar.mul_apply, hθ₀, hη2, mul_one]) h.1; exact h.2 this)
@@ -1309,8 +1308,7 @@ theorem unitRoot_split : ∀ (l : ℕ) [Fact l.Prime] (ι : PadicAlgCl l ≃+* �
     have hmulN : ‖ι.symm a‖ * ‖ι.symm b‖ = ‖ι.symm D‖ := by
       rw [← norm_mul, ← map_mul, hmul]
     have hb : ‖ι.symm b‖ < 1 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       have : 1 ≤ ‖ι.symm a‖ * ‖ι.symm b‖ := by nlinarith
       linarith
     have hta : ι.symm a = ι.symm t + (-ι.symm b) := by

@@ -66,8 +66,6 @@ open scoped TensorProduct InnerProductSpace Classical
 
 namespace GlobalTheory.FlagGS
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem sgn_mul_self (p a : ℕ) : ((sgn p a : ℝ) : ℂ) * ((sgn p a : ℝ) : ℂ) = 1 := by
   unfold sgn
   split_ifs <;> simp

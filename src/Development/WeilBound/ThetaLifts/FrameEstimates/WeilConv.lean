@@ -462,8 +462,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK
 open GlobalTheory.EmbChart (atPlace atPlace_mul_right evFin_atPlace)
 open scoped TensorProduct
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 noncomputable section
 namespace PositivityTheory.ThKEst
 

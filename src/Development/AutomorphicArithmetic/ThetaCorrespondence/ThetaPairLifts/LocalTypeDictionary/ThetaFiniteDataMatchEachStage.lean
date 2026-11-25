@@ -82,8 +82,7 @@ theorem tmul_right_prop {K V U : Type*} [Field K] [AddCommGroup V] [Module K V] 
   have ha : a ≠ 0 := by rintro rfl; exact hne (TensorProduct.zero_tmul _ _)
   have hb : b ≠ 0 := by rintro rfl; exact hne (TensorProduct.tmul_zero _ _)
   obtain ⟨φ, hφ⟩ : ∃ φ : Module.Dual K V, φ a ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact ha ((Module.forall_dual_apply_eq_zero_iff K a).mp hc)
   have k := congrArg (fun z => TensorProduct.lid K U (LinearMap.rTensor U φ z)) h
   simp only [LinearMap.rTensor_tmul, TensorProduct.lid_tmul] at k

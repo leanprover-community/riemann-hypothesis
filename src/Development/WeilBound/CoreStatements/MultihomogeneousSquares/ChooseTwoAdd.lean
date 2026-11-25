@@ -960,8 +960,7 @@ theorem exists_unitAt_of_sum (hg : IsCptGen ξ) (p : Cpt ξ) {ι : Type} (s : Fi
   have hs : ∑ i ∈ s, g i = 1 := hg.inj p (by
 
     rw [map_sum, map_one, Finset.sum_congr rfl (fun i hi => hgf i hi), h1])
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   have hnu : ∀ i ∈ s, g i ∈ IsLocalRing.maximalIdeal (X.presheaf.stalk p.1) := by
     intro i hi
     rw [IsLocalRing.mem_maximalIdeal, mem_nonunits_iff]

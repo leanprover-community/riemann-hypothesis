@@ -178,8 +178,7 @@ theorem extend_swap : ∀ (n n₁ : ℕ) (M : Matrix (Fin n) (Fin n) ℂ) (X Yv 
     by_cases hu : u = 0
     · subst hu
       have hab : a ≠ 0 ∨ b ≠ 0 := by
-        by_contra h
-        push_neg at h
+        by_contra! h
         apply hx
         simp [h.1, h.2]
       simp only [mulVec_zero, zero_dotProduct, Complex.zero_re, zero_add]

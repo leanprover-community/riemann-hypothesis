@@ -111,8 +111,7 @@ theorem form_bound {k σ : Type} [Field k] [Infinite k] [Fintype σ] (n : ℕ)
     · intro h
       exact absurd hm0 h
   obtain ⟨lam, hlam⟩ : ∃ lam : σ → k, MvPolynomial.eval lam G ≠ 0 := by
-    by_contra hall
-    push_neg at hall
+    by_contra! hall
     exact hG0 (MvPolynomial.funext fun x => by simpa using hall x)
   refine ⟨c, lam, ?_, ?_⟩
   · intro d p hp
@@ -224,12 +223,6 @@ namespace GlobalTheory.NormDegree
 noncomputable section
 
 variable {k A : Type} [Field k] [CommRing A] [Algebra k[X] A] {n : ℕ}
-
-theorem natDegree_norm_of_coord_degree : ∀ (k A : Type) [Field k] [Infinite k] [CommRing A] [IsDomain A] [Algebra k[X] A] (n : ℕ) (b : Module.Basis (Fin n) k[X] A), ∃ (c : ℕ) (lam : Fin n → k),
- (∀ (d : ℕ) (p : Fin n → k[X]), (∀ i, (p i).natDegree ≤ d) → (Algebra.norm k[X] (∑ i, p i • b i)).natDegree ≤ n * d + c) ∧
- (∀ (d : ℕ) (p : Fin n → k[X]), (∀ i, (p i).degree < d) → (∑ i, (C (lam i) * X ^ d + p i) • b i) ≠ 0 ∧ (Algebra.norm k[X] (∑ i, (C (lam i) * X ^ d + p i) • b i)).natDegree = n * d + c) := by
-  first
-  | exact @_root_.GlobalTheory.NormFormBound.norm_degree
 
 end
 

@@ -1,5 +1,6 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.NilpotentLevelLowering.HkHypOf
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.NilpotentLevelLowering.ActUVariableEqPow
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.IwDomSum
 import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.IwFactTorus
@@ -228,16 +229,7 @@ private theorem trOf_ext {T A M₁ M₂ : Type} [Group T] [CommRing A] [AddCommG
 private theorem trOf_commdc {A H M : Type} [CommRing A] [Group H] [AddCommGroup M] [Module A M]
     (ρ : Representation A H M) (K K' : Subgroup H) (x : H) (φ : Module.End A M) (h : ∀ g, Commute φ (ρ g)) :
     Commute φ (dc ρ K K' x) := by
-  have gen : ∀ {ι : Type} (f : ι → Module.End A M), (∀ i, Commute φ (f i)) → Commute φ (∑ᶠ i, f i) := by
-    intro ι f hf
-    by_cases hs : (Function.support f).Finite
-    · show φ * (∑ᶠ i, f i) = (∑ᶠ i, f i) * φ
-      rw [mul_finsum' _ _ hs, finsum_mul' _ _ hs]
-      exact finsum_congr fun i => hf i
-    · rw [finsum_of_infinite_support hs]
-      exact Commute.zero_right φ
-  unfold dc
-  exact gen _ fun q => h _
+  apply _root_.comm_dc <;> assumption
 
 private theorem trOf_sum {A G M : Type} [CommRing A] [Group G] [AddCommGroup M] [Module A M]
     (ρ : Representation A G M) (K I : Subgroup G) (S : Set G) (hf : S.Finite) (hS : ∀ τ ∈ S, τ ∈ K)

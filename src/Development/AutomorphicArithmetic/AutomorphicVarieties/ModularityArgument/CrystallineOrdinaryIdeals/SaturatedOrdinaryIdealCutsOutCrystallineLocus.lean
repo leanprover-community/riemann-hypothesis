@@ -1108,7 +1108,7 @@ theorem ideal_cuts_crystalline_locus : LocalPublishedTheorems → ∀ {l : ℕ} 
     [IsAdicComplete (maximalIdeal O) O] (D : Dat3 l O) (U : _root_.UpperTheory.V.U3.Univ (_root_.UpperTheory.V.U3.GCond.noCondition O D.η D.Ψ)),
     GlobalTheory.OrdLoc.PtsCr D U (GlobalTheory.OrdLoc.IY D U) ∧ GlobalTheory.OrdLoc.CrPts D U (GlobalTheory.OrdLoc.IY D U) := by
   intro hP l _ O _ _ _ _ _ _ _ D U
-  exact ⟨GlobalTheory.T.saturatedOrdIdeal_points_isLCrystalline hP D U, _root_.GlobalTheory.OrdLoc.crPts_IY hP D U⟩
+  exact ⟨_root_.GlobalTheory.OrdLoc.ptsCr_IY hP D U, _root_.GlobalTheory.OrdLoc.crPts_IY hP D U⟩
 
 end GlobalTheory.OrdLoc
 end -- clump:auto

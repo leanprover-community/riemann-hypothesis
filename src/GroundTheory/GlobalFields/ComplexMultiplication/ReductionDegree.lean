@@ -222,8 +222,7 @@ theorem degree_reduceIsogeny : (reduceIsogeny K W W' φ).degree = φ.degree := b
   have hpos := φ.degree_pos
   have hpos' := (reduceIsogeny K W W' φ).degree_pos
   apply le_antisymm h1
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   have : (reduceIsogeny K W' W (dualOver φ)).degree * (reduceIsogeny K W W' φ).degree <
       φ.degree ^ 2 := by
     calc (reduceIsogeny K W' W (dualOver φ)).degree * (reduceIsogeny K W W' φ).degree

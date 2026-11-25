@@ -757,8 +757,7 @@ theorem exists_isUnit_mem_of_forall_point :
     exact ht (hx t this)
   have hne := Subspace.biUnion_ne_univ_of_top_notMem (k := k) (s := s) htop
   obtain ⟨w, hw⟩ : ∃ w : U, w ∉ ⋃ p ∈ s, (p : Set U) := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     exact hne (Set.eq_univ_of_forall hcon)
   refine ⟨w, w.2, ?_⟩
   by_contra hnu

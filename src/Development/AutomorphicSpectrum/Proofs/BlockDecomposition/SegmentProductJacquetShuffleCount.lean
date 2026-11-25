@@ -542,8 +542,7 @@ theorem GlobalTheory.CompanionTheory.FineProd.jmL_prodIrr : ∀ {k : Type} [Fiel
         exact _root_.GlobalTheory.CompanionTheory.FineProd.CellMulti.jhMult_cell_eq_zero hA x (fun j => W.get j) (fun j => hW _ (List.get_mem _ _)) b.1 (hr b) (hc b) j i i' hii h1 h2
       · push_neg at hm
         have hex : ∀ j, ∃ i, b.1 i j ≠ 0 := fun j => by
-          by_contra hne
-          push_neg at hne
+          by_contra! hne
           have := hc b j
           rw [Finset.sum_eq_zero fun i _ => hne i] at this
           exact (hpos j).ne this
@@ -561,8 +560,7 @@ theorem GlobalTheory.CompanionTheory.FineProd.jmL_prodIrr : ∀ {k : Type} [Fiel
           · exact hzero i j hij
         have hcS : c ∉ S := fun hcS => hb ⟨c, hcS, hbc⟩
         have hex2 : ∃ i, sub W c i ≠ decWord (Γ i) := by
-          by_contra hne
-          push_neg at hne
+          by_contra! hne
           exact hcS (Finset.mem_filter.2 ⟨Finset.mem_univ _, hne⟩)
         obtain ⟨i, hi⟩ := hex2
         rw [_root_.GlobalTheory.CompanionTheory.FineProdCell.jhMult_cell_colour x W b.1 (hr b) (hc b) c (fun i j => by rw [hbc]; rfl)]

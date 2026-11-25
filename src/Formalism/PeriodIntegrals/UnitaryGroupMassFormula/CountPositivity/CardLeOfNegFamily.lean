@@ -3,6 +3,7 @@ module
 public import Formalism.LocalRingCardinality.DataSpaces
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.HopfAlgebra.Basic
+import Formalism.SharpRestriction.CuspSpanNormBounds.LatticeGluingRadicals
 
 @[expose] public section
 
@@ -16,16 +17,7 @@ variable {E : Type} [Field E] [NumberField E] [StarRing E]
 
 theorem hT_expand' (S : Formalism.BasicNotions.HSpace E) (x y : S.V) :
     S.hT x y = ∑ a, ∑ b, star (S.frame.repr x a) * S.gram a b * S.frame.repr y b := by
-  have hx := S.frame.sum_repr x
-  have hy := S.frame.sum_repr y
-  conv_lhs => rw [← hx, ← hy]
-
-  simp only [map_sum, LinearMap.map_smulₛₗ, LinearMap.sum_apply,
-  LinearMap.smul_apply, smul_eq_mul, starRingEnd_apply, Finset.mul_sum, Formalism.BasicNotions.HSpace.gram]
-  rw [Finset.sum_comm]
-  refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => ?_
-  rw [RingHom.id_apply]
-  ring
+  apply _root_.Formalism.MainNotions.LatticeGluingRadicals.p_hT_expand <;> assumption
 
 theorem hT_map (S : Formalism.BasicNotions.HSpace E) (τ : E →+* ℂ) (hτ : ∀ a, τ (star a) = starRingEnd ℂ (τ a))
     (x y : S.V) :

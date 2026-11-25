@@ -1,5 +1,7 @@
 module
 
+import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.FiniteSupportHeight
+
 public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.IsOrthFull
 public import GroundTheory.HeightsAndTheta.Heights.ArithDegree
 public import Mathlib.Order.CompletePartialOrder
@@ -82,23 +84,7 @@ theorem degree_sup (E : HermitianBundle.{0} K) {F G : Submodule (𝓞 K) E.carri
   ring
 
 theorem degree_bot (E : HermitianBundle.{0} K) : E.degree ⊥ = 0 := by
-  have hrk : Fintype.card (Fin 0) = E.rank ⊥ := by
-    unfold GroundTheory.Heights₂.Heights.HermitianBundle.rank
-    simp
-  obtain ⟨-, hdeg⟩ := CoverDenseAlt.deg_eq E ⊥ (s := (Fin.elim0 : Fin 0 → E.carrier)) linearIndependent_empty_type
-    (fun i => i.elim0) hrk
-  have h1 : CoverDenseAlt.idx (Submodule.span (𝓞 K) (Set.range (Fin.elim0 : Fin 0 → E.carrier))) ⊥ = 1 := by
-    rw [CoverDenseAlt.idx_eq_card]
-    refine Nat.card_eq_one_iff_unique.mpr ⟨⟨fun a b => ?_⟩, ⟨0⟩⟩
-    obtain ⟨a, rfl⟩ := Submodule.Quotient.mk_surjective _ a
-    obtain ⟨b, rfl⟩ := Submodule.Quotient.mk_surjective _ b
-    rw [Subsingleton.elim a b]
-  have hg : ∀ σ : K →+* ℂ, GroundTheory.Heights₂.Heights.gramDet E.metric σ (Fin.elim0 : Fin 0 → E.carrier) = 1 := by
-    intro σ
-    unfold GroundTheory.Heights₂.Heights.gramDet
-    rw [Matrix.det_isEmpty, Complex.one_re]
-  rw [hdeg, h1]
-  simp only [hg, Real.log_one, Nat.cast_one, Finset.sum_const_zero, mul_zero, sub_zero]
+  apply _root_.GroundTheory.Heights₂.Heights.HermitianBundle.degree_bot <;> assumption
 
 theorem orth_biSup (E : HermitianBundle.{0} K) {F : Submodule (𝓞 K) E.carrier} {I : Type}
     (G : I → Submodule (𝓞 K) E.carrier) (S : Finset I) (h : ∀ b ∈ S, OrthAt E F (G b)) :

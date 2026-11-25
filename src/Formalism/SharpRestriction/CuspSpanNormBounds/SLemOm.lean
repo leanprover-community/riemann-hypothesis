@@ -1,5 +1,6 @@
 module
 
+import Formalism.FormalDegreeBessel.FormalDegreeRatio.BFCell
 public import Formalism.PeriodIntegrals.StabBig
 public import Formalism.FormalDegreeBessel.FormalDegreeRatio.UnitaryWeylNormalHolds
 public import Formalism.SharpRestriction.CuspSpanNormBounds.RootMeasBig
@@ -217,14 +218,7 @@ theorem g_mid_col (c : Fin r → ℂ) (μ : Matrix (Fin (k + 1)) (Fin (k + 1)) �
 
 theorem g_wI (c : Fin r → ℂ) (μ : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ) (s t : Fin (k + 1)) :
     bigCell k r c μ (wI k r s) (wI k r t) = μ s t := by
-  have hs := s.isLt
-  have ht := t.isLt
-  have h1 : ¬ (wI k r t).val < r := by rw [wI_val]; omega
-  have h2 : (wI k r t).val ≤ r + k := by rw [wI_val]; omega
-  have h3 : r ≤ (wI k r s).val ∧ (wI k r s).val ≤ r + k := by rw [wI_val]; omega
-  simp only [bigCell, dif_neg h1, dif_pos h2, dif_pos h3]
-  exact congrArg₂ μ (Fin.ext (by show r + s.val - r = s.val; omega))
-    (Fin.ext (by show r + t.val - r = t.val; omega))
+  apply _root_.Formalism.QuantumDeterminants.BruhatBigCell.mid_mid <;> assumption
 
 theorem g_row_out (c : Fin r → ℂ) (μ : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ)
     (i m : Fin (2 * r + k + 1)) (hi : i.val < r ∨ r + k < i.val) :
@@ -265,21 +259,7 @@ theorem g_mul_out (c : Fin r → ℂ) (μ : Matrix (Fin (k + 1)) (Fin (k + 1)) �
 theorem sum_mid (f : Fin (2 * r + k + 1) → ℂ)
     (hf : ∀ m : Fin (2 * r + k + 1), (m.val < r ∨ r + k < m.val) → f m = 0) :
     ∑ m, f m = ∑ s : Fin (k + 1), f (wI k r s) := by
-  have himg : ∑ s : Fin (k + 1), f (wI k r s) = ∑ m ∈ Finset.univ.image (wI k r), f m :=
-    (Finset.sum_image (fun u _ t _ h => wI_inj h)).symm
-  rw [himg]
-  symm
-  apply Finset.sum_subset (Finset.subset_univ _)
-  intro m _ hm
-  apply hf
-  by_contra hc
-  apply hm
-  have hml := m.isLt
-  rw [Finset.mem_image]
-  refine ⟨⟨m.val - r, by omega⟩, Finset.mem_univ _, ?_⟩
-  ext
-  simp only [wI_val]
-  omega
+  apply _root_.Formalism.QuantumDeterminants.BruhatBigCell.sum_mid <;> assumption
 
 theorem mul_g_mid (c : Fin r → ℂ) (μ : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ)
     (A : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ)

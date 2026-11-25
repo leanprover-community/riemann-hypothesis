@@ -39,8 +39,6 @@ open PositivityTheory.KCo PositivityTheory.ThK.SplitDict PositivityTheory.ThKG.L
 open GlobalTheory.Doubling (absE)
 open scoped TensorProduct
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E} {v : Pl F}
   {t : E →ₐ[F] Fv F v} {sec : Fv F v × Fv F v → AE F E}
 
@@ -384,8 +382,6 @@ open NumberField IsDedekindDomain GlobalTheory.WeilM GlobalTheory.AdelicU Global
 open PositivityTheory.KCo PositivityTheory.ThK.SplitDict PositivityTheory.ThKG.Loc MeasureTheory ValuativeRel Topology GlobalTheory.ThK
 open GlobalTheory.Doubling (absE)
 open scoped TensorProduct
-
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E} {v : Pl F}
   {t : E →ₐ[F] Fv F v} {sec : Fv F v × Fv F v → AE F E}

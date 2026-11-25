@@ -80,11 +80,7 @@ theorem exists_tied : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H 
     obtain ⟨_, _, _, _, _, m, -⟩ := sabPull Out.CubePf.cubePull y.x Xo.univ.t
     exact ⟨_, ⟨m⟩⟩
   obtain ⟨⟨T, rfl, hTg⟩, -⟩ := GlobalTheory.CM.PAT.exists_of_sabMap E H _ _ y.x U t (hU ▸ m)
-  have hpos : 1 ≤ Module.finrank ℚ E / 2 := by
-    have h1 := (letI : Module.Free (maximalRealSubfield E) E := Module.Free.of_divisionRing _ _; Module.finrank_mul_finrank ℚ (maximalRealSubfield E) E)
-    rw [Algebra.IsQuadraticExtension.finrank_eq_two (maximalRealSubfield E) E] at h1
-    have h2 : 0 < Module.finrank ℚ (maximalRealSubfield E) := Module.finrank_pos
-    omega
+  have hpos : 1 ≤ Module.finrank ℚ E / 2 := GlobalTheory.Models.one_le_finrank_div_two
   have hgp : 1 ≤ T.g := by
     rw [hTg, hg]
     exact Nat.mul_pos hpos hpq

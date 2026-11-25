@@ -57,8 +57,6 @@ open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestrictio
 open GlobalTheory.ShFam.Hor.LogCh
 open scoped Matrix CategoryTheory.Obj Topology
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.ShFam.Hor.LogCh
 
 theorem unitOn_injective : Function.Injective (unitOn (R := ℂ)) := by

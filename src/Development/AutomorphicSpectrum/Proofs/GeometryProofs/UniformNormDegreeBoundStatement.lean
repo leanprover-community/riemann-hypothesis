@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.CuspIntersectionHeight
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.CInfGood
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.BcMapBcVec
 public import Development.AbelianVarietyTheory.Definitions.Foundations.IsProbabilityMeasureMuPart
@@ -512,28 +513,7 @@ namespace GlobalTheory.CompanionTheory.Ar.Plug.Count
 
 theorem cmType_nonempty {E : Type} [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) :
     Nonempty (CMType H) := by
-  obtain ⟨τ⟩ : Nonempty (E →+* ℂ) := inferInstance
-  have h0 : ((H.rt : E)) ^ 2 = -(H.d : E) := by
-    have := congrArg (algebraMap (𝓞 E) E) H.rt_sq
-    simpa using this
-  have h1 : τ (H.rt : E) ^ 2 = -(H.d : ℂ) := by rw [← map_pow, h0]; simp
-  have hd : (0 : ℝ) < H.d := by exact_mod_cast H.d_prime.pos
-  have hre : (τ (H.rt : E)).re = 0 := by
-    have a := congrArg Complex.re h1
-    have b := congrArg Complex.im h1
-    simp [sq] at a b
-    by_contra hne
-    have : (τ (H.rt : E)).im = 0 := by
-      have : (τ (H.rt : E)).re * (τ (H.rt : E)).im = 0 := by linarith
-      exact (mul_eq_zero.1 this).resolve_left hne
-    rw [this] at a
-    nlinarith [mul_self_nonneg (τ (H.rt : E)).re]
-  rcases sq_eq_sq_iff_eq_or_eq_neg.1 (h1.trans H.sqrt_neg_disc_sq.symm) with h | h
-  · exact ⟨⟨τ, h⟩⟩
-  · refine ⟨⟨(starRingEnd ℂ).comp τ, ?_⟩⟩
-    have : H.rt0 = -τ (H.rt : E) := by rw [h, neg_neg]
-    rw [this]
-    apply Complex.ext <;> simp [hre]
+  apply _root_.GlobalTheory.CompanionTheory.Ar.Cusp.PtHt.cm_nonempty <;> assumption
 
 end GlobalTheory.CompanionTheory.Ar.Plug.Count
 
@@ -1206,10 +1186,7 @@ theorem degOf_nsmul {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Reci
 
 theorem nonempty_cmType {E : Type} [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) :
     Nonempty (CMType H) := by
-  obtain ⟨τ⟩ : Nonempty (E →+* ℂ) := inferInstance
-  by_cases h : τ (H.rt : E) = H.rt0
-  · exact ⟨⟨τ, h⟩⟩
-  · exact ⟨⟨conjEmb τ, Small.conjEmb_rt_of_ne h⟩⟩
+  apply _root_.GlobalTheory.CompanionTheory.Ar.Plug.Count.cmType_nonempty <;> assumption
 
 theorem dimFl_pos {Ψ : Type} [Fintype Ψ] [Nonempty Ψ] {N : ℕ} (hN : 2 ≤ N) : 1 ≤ Top.dimFl Ψ N := by
   have h1 : 0 < Fintype.card Ψ := Fintype.card_pos

@@ -5,6 +5,7 @@ public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.BridgeFinK
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicLocalCompactness.AdeleLC
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicLocalCompactness.T2SpaceTensorProductFiniteExtension
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeColumns.IdxGroup
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LevelSplitting.UnitaryGroupSecondCountableT2
 
 @[expose] public section
 
@@ -31,20 +32,7 @@ variable {F E : Type} [Field F] [NumberField F] [Field E] [Algebra F E] [FiniteD
 
 theorem isClosed_stabT_Af {a : ℕ} (X0 : Fin a → Fin n → E) :
     IsClosed ((stabT (Af F) σ J X0 : Subgroup (HA (Af F) σ J)) : Set (HA (Af F) σ J)) := by
-  have : IsTopologicalRing (Af F ⊗[F] E) := PI.AdicCompletionValuation.isTopologicalRing_tens (F := F) (E := E) (Af F)
-  have : T2Space (Af F ⊗[F] E) := PI.AdicCompletionValuation.t2Space_tensorProduct_finiteExtension (F := F) (E := E) (Af F)
-  have hcont : Continuous fun g : HA (Af F) σ J => g • ratTup (F := F) (Af F) X0 := by
-    show Continuous fun g : HA (Af F) σ J => actTup (Af F) (HA.mat (Af F) σ J g) (ratTup (F := F) (Af F) X0)
-    unfold actTup HA.mat
-    refine continuous_pi fun b => Continuous.matrix_mulVec ?_ continuous_const
-    exact Units.continuous_val.comp
-      (continuous_subtype_val : Continuous fun g : HR (Af F) σ J => (g : GL (Fin n) (Af F ⊗[F] E)))
-  have : ((stabT (Af F) σ J X0 : Subgroup (HA (Af F) σ J)) : Set (HA (Af F) σ J)) =
-      {g | g • ratTup (F := F) (Af F) X0 = ratTup (F := F) (Af F) X0} := by
-    ext g
-    exact MulAction.mem_stabilizer_iff
-  rw [this]
-  exact isClosed_eq hcont continuous_const
+  apply _root_.PI.LevelKSplit.W.ExC.isClosed_stabT <;> assumption
 
 end Gen
 

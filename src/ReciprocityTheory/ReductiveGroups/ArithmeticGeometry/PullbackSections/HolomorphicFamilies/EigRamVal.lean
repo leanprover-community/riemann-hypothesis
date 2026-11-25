@@ -142,8 +142,7 @@ theorem primeOf_isPrime (ψ : E →+* k) (hψ : Function.Injective ψ) : (primeO
     have hxy' := hxy.resolve_right (mul_ne_zero hx0 hy0)
     have hc : ((x * y : 𝓞 E) : E) = (x : E) * (y : E) := by simp
     rw [hc, map_mul, hmul _ _ (psi_ne_zero ψ hψ hx0) (psi_ne_zero ψ hψ hy0)] at hxy'
-    by_contra hno
-    push_neg at hno
+    by_contra! hno
     have := hno.1.1
     have := hno.2.1
     linarith

@@ -221,8 +221,6 @@ theorem rowA : RowA := by
   have hbl := blocks_le D L u j τ hj1 hj2
   have hr1 := nuRow_le_Sc_add_wSz D L u j τ 1 le_rfl (by omega)
   rw [hw] at hcl hr1
-  have e : ((D.R.k : ℝ) - 1) * (L.Sc + wj D j τ) + (L.Sc + wj D j τ) =
-      (D.R.k : ℝ) * (L.Sc + wj D j τ) := by ring
   rw [hsplit]
   linarith
 
@@ -266,8 +264,6 @@ theorem rowB : RowB := by
   have hcl := cloudRows_le D L u j τ
   have hbl := blocks_le D L u j τ hj1 hj2
   rw [hw] at hcl
-  have e : ((D.R.k : ℝ) - 1) * (L.Sc + wj D j τ) + (3 * L.Sc + wj D j τ) =
-      ((D.R.k : ℝ) + 2) * L.Sc + (D.R.k : ℝ) * wj D j τ := by ring
   rw [hsplit]
   linarith
 
@@ -427,11 +423,6 @@ theorem ct_le (hA : RowA) (hB : RowB) (hC : RowC) (hS : SizeFacts) (hP : PlaceFa
   have hwx : L.sc.w'' D.R.n / L.sc.x ≤ L.sc.w'' D.R.n := by nlinarith
   have h3Sc : 3 * L.Sc ≤ (D.R.k : ℝ) * L.Sc := by nlinarith
   have hkb' : 5 * L.sc.b' ≤ (D.R.k : ℝ) * L.sc.b' := mul_le_mul_of_nonneg_right hk5 hb'0
-  have hmη0 : 0 ≤ (D.R.m : ℝ) * ((D.R.t : ℝ) + 1) * L.etaSz := by
-    have : (0 : ℝ) ≤ L.etaSz := by
-      obtain ⟨-, -, -, -, -, -, -, -, -, -, -, -, -, hEta, -⟩ := hSz
-      exact le_trans (Nat.cast_nonneg _) hEta.1
-    positivity
   by_cases ht : t ∈ D.host.TT
   · simp only [ctD, if_pos ht]
     have hRA := hA D L j hj u (tauPl D (false, t))
@@ -457,8 +448,6 @@ theorem ct_le (hA : RowA) (hB : RowB) (hC : RowC) (hS : SizeFacts) (hP : PlaceFa
       mul_le_mul_of_nonneg_left (by linarith) hk0
     have k3 : (D.R.k : ℝ) * L.etaSz ≤ (D.R.k : ℝ) * (L.sc.b' / 3) :=
       mul_le_mul_of_nonneg_left (by linarith) hk0
-    have e3 : (D.R.k : ℝ) * (5 / 4 * L.sc.b') + (D.R.k : ℝ) * (L.sc.b' / 3) +
-        (D.R.k : ℝ) * (L.sc.b' / 3) = 23 / 12 * ((D.R.k : ℝ) * L.sc.b') := by ring
     have e4 : 4 * (D.R.k : ℝ) * L.sc.b' = 4 * ((D.R.k : ℝ) * L.sc.b') := by ring
     rcases hwT with hT | hT <;> linarith
   · simp only [ctD, if_neg ht]
@@ -497,9 +486,6 @@ theorem szCt_of (hA : RowA) (hB : RowB) (hC : RowC) (hS : SizeFacts) (hP : Place
     push_cast
     ring
   rw [hf]
-  have e : (D.R.n : ℝ) * (4 * (D.R.k : ℝ) * L.sc.b') = 2 * (2 * (D.R.n : ℝ)) * (D.R.k : ℝ) * L.sc.b' := by
-    ring
-  have e2 : (D.host.TT.card : ℝ) * (2 * L.sc.b) = 2 * (D.host.TT.card : ℝ) * L.sc.b := by ring
   linarith
 
 end PI.SzCt.UnitaryGroupMassFormula

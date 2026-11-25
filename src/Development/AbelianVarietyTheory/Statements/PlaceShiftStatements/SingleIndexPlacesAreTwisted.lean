@@ -683,8 +683,6 @@ open Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMas
 open GlobalTheory.OnTies GlobalTheory.IndefiniteRowSideFullHecke.PlaceBelowAllPowers
 open GlobalTheory.IndefiniteRowSideFullHecke.ToricLatticeDenominators (FmExt)
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 theorem induces_embW (c : NChoice D) (w : D.what₂.places.Pl) : Induces (c.embW w) (D.plEq w) := fun x => by
@@ -810,8 +808,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.DIV.Cons
 open Formalism.IndefR.FWT GlobalTheory.BigTop GlobalTheory.OntoChain GlobalTheory.RealIndexBound GlobalTheory.OnTies
 
 namespace GlobalTheory.BigOn
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 section Record
 

@@ -52,8 +52,7 @@ theorem diag_prod (d : ℕ) : ∀ e : (Σ k, ι k) → ℕ, (∀ k, ∑ i, e ⟨
     intro e he
     have hex : ∀ k, ∃ i, 0 < e ⟨k, i⟩ := by
       intro k
-      by_contra hne
-      push_neg at hne
+      by_contra! hne
       have h1 := he k
       rw [Finset.sum_eq_zero (fun i _ => Nat.le_zero.1 (hne i))] at h1
       omega

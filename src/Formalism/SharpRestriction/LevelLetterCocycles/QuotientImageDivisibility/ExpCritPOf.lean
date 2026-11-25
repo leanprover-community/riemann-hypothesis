@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.LevelLetterCocycles.UniversalGeneralOfRestriction
 public import Mathlib.RingTheory.AdicCompletion.Basic
 public import Mathlib.RingTheory.LocalRing.MaximalIdeal.Defs
 public import Mathlib.RingTheory.PowerSeries.Basic
@@ -184,14 +185,7 @@ variable {G : Type} [Group G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field 
     {V : Type} [AddCommGroup V] [Module LL V] [Module Qp V] [IsScalarTower Qp LL V]
 
 theorem φVB_inj : Function.Injective (φVB PD (LL := LL) (V := V)) := by
-  have h : ∀ y, φVB PD (LL := LL) (V := V) y = ((PD.φ.toLinearMap).lTensor V) y := fun y => by
-    induction y using TensorProduct.induction_on with
-    | zero => simp
-    | tmul x b => simp [φVB]
-    | add x y hx hy => rw [map_add (f := _), map_add (f := _), hx, hy]
-  intro a b hab
-  rw [h, h] at hab
-  exact Module.Flat.lTensor_preserves_injective_linearMap _ PD.φ_inj hab
+  apply _root_.Formalism.MainNotions.UnusedSlot80.UnivF.φVB_inj <;> assumption
 
 end PhiInj
 

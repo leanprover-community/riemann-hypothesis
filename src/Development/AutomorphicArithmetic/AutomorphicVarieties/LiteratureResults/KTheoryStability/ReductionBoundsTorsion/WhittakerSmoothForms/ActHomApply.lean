@@ -550,20 +550,7 @@ private theorem wf_zero_ext'_eq {k : ℕ} (c : (Fin (k + 2) → Γ) → ℝ) (o 
 private theorem eta_succ_congr_of_coc_of_mem (H : Hyp U A φ) (hD : PDep A φ) (hC : PCoc U A φ) {k : ℕ}
     (c : (Fin (k + 2) → Γ) → ℝ) (hc : Coc c) (σ σ' : ℕ → Γ) {h : V} (hh : h ∈ U) :
     eta A φ c (k + 1) σ h = eta A φ c (k + 1) σ' h := by
-  have e := hC H k c hc (k + 1) le_rfl (cons (σ 0) σ') h hh
-  have h1 : eta A φ c (k + 1) (skip 0 (cons (σ 0) σ')) = eta A φ c (k + 1) σ' :=
-    hD k c (k + 1) _ _ (fun n hn => by
-      obtain rfl : n = 0 := by omega
-      rfl)
-  have h2 : eta A φ c (k + 1) (skip 1 (cons (σ 0) σ')) = eta A φ c (k + 1) σ :=
-    hD k c (k + 1) _ _ (fun n hn => by
-      obtain rfl : n = 0 := by omega
-      rfl)
-  rw [Nat.sub_self] at e
-  simp only [delG, Finset.sum_range_succ, Finset.sum_range_zero, zero_add, Finset.sum_apply,
-    Pi.smul_apply, pow_zero, pow_one, one_smul, neg_smul, h1, h2] at e
-  rw [add_neg_eq_zero] at e
-  exact e.symm
+  apply _root_.PositivityTheory.KB.WhittakerCocycle.eta_top <;> assumption
 
 theorem pComp (hH : PHom U A φ) (hSm : PSmooth U A φ) (hD : PDep A φ) (hC : PCoc U A φ)
     (hE : PEquiv U A φ) : PComp U A φ := by

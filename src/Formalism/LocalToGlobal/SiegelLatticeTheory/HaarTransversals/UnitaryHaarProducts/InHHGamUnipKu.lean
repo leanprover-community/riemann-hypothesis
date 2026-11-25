@@ -1,5 +1,6 @@
 module
 
+import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.TypedLoc
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.InHHGamUnipKuDefs
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.LevelSubgroupCharacterUnitary
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.HermitianETransportInvariant
@@ -315,20 +316,7 @@ theorem hermitian_z0_congruent {v : VA X.B.I} (hv : YP X u v) : ZMod' X.B.I X.B.
 
 theorem mL_exists {m : VA X.B.I} (hm : m ∈ mL X.B.I X.B.g) :
     ∃ x ∈ X.B.I.Lf, m = (X.B.g : X.B.I.E ⊗[X.B.I.F] Af X.B.I.F) • x := by
-  unfold mL at hm
-  induction hm using Submodule.span_induction with
-  | mem y hy => exact hy
-  | zero => exact ⟨0, zero_mem _, (smul_zero _).symm⟩
-  | add y z _ _ hy hz =>
-    obtain ⟨x1, h1, rfl⟩ := hy
-    obtain ⟨x2, h2, rfl⟩ := hz
-    exact ⟨x1 + x2, add_mem h1 h2, (smul_add _ _ _).symm⟩
-  | smul a y _ hy =>
-    obtain ⟨x1, h1, rfl⟩ := hy
-    refine ⟨a • x1, Submodule.smul_mem _ a h1, ?_⟩
-    funext i
-    simp only [Pi.smul_apply, Subring.smul_def, smul_eq_mul]
-    ring
+  apply +allowSynthFailures _root_.Formalism.L2.SG.Pf.TypedLoc.mL_smul <;> assumption
 
 theorem xu_inv_fix {w : VA X.B.I} (hw : X.B.I.fmat (X.xu u) *ᵥ w = w) : X.B.I.fmat (X.xu u)⁻¹ *ᵥ w = w := by
   conv_lhs => rw [← hw]

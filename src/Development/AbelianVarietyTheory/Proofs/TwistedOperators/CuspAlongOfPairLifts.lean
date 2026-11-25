@@ -79,6 +79,7 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LowestKTypesJointSh
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HermitianAdjointLawsStandardCharacterStatement
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SignedUnitaryGroupCompatStatement
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.TendstoInfMulProd
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.FirstOccurrenceRuleThetaChainStepBothDirections
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.TwistedOperators.CuspAlongOfPairLifts
@@ -93,46 +94,12 @@ noncomputable section
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum
 open MeasureTheory Matrix GlobalTheory.Chain GlobalTheory.ChainFr GlobalTheory.Grid
 open scoped TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.PairLift
 
 theorem rulePar_of_pairPar {X : ProvA} (h3 : Formalism.MainNotions.SchurIrreducible.ArchimedeanRallisUpDownLine X) (h4 : Formalism.MainNotions.SchurIrreducible.ArchimedeanRallisFourth X) (h5 : Formalism.MainNotions.SchurIrreducible.ArchimedeanRallisFifth X)
     {S S' : SPar} {aS aT : ℚ} (h : PairPar S S' aS aT) : RulePar X S S' aS aT := by
-  have far : ∀ {t : ℕ} {al be ga de : List ℚ}, GlobalTheory.SignedHC.FarFrom aT (((t : ℚ) + 3) / 2) (signed (al ++ be) (ga ++ de) aT) →
-      ¬ ∃ a, lamA al be ga de a = ((t : ℚ) + 1) / 2 := by
-    rintro t al be ga de hF ⟨a, ha⟩
-    have hm : (((t : ℚ) + 1) / 2, a.isLeft) ∈ GlobalTheory.SignedHC.ofIx (lamA al be ga de) :=
-      Finset.mem_image.2 ⟨a, Finset.mem_univ _, by rw [ha]⟩
-    rw [lamA, GlobalTheory.SignedHC.mem_ofIx_ofBlocks (by simp) (by simp)] at hm
-    have : ∃ s, (((t : ℚ) + 1) / 2 + aT, s) ∈ signed (al ++ be) (ga ++ de) aT := by
-      rcases hm with ⟨h1, -⟩ | ⟨h1, -⟩
-      · exact ⟨true, Finset.mem_union_left _ (List.mem_toFinset.2 (List.mem_map.2 ⟨_, h1, rfl⟩))⟩
-      · exact ⟨false, Finset.mem_union_right _ (List.mem_toFinset.2 (List.mem_map.2 ⟨_, h1, rfl⟩))⟩
-    have := hF _ (GlobalTheory.SignedHC.mem_entries.2 this)
-    rw [add_sub_cancel_right, abs_of_nonneg (by positivity)] at this
-    linarith
-  have hb : ∀ t, (block t).length = t := fun t => by simp [block]
-  obtain ⟨t, P, P', e, e', ⟨⟨al, be, ga, de, rfl, ⟨hd, rfl⟩ | ⟨hd, rfl⟩⟩, hF⟩ | ⟨al, be, ga, de, rfl, ⟨hd, rfl⟩ | ⟨hd, rfl⟩⟩⟩ := h
-  all_goals
-    have ht := hd.1.1
-    have hn := hd.1.2.1
-    obtain ⟨-, p1, p2, -⟩ := _root_.GlobalTheory.LowestTypes.lowest_types t al be ga de hd.1
-    obtain ⟨-, p3, -⟩ := _root_.GlobalTheory.TypesMirror.types_mirror t al be ga de hd.1
-  · exact ⟨_, _, _, _, _, _, _, _, by simp, by simp, by simp [hb]; omega, by simp,
-      ⟨by omega, by omega, p1, p2, (h3.1 t al be ga de hd).2.1, (h3.1 t al be ga de hd).2.2,
-        h5.1 t al be ga de hd (Or.inl (far hF))⟩, e, e'⟩
-  · exact ⟨_, _, _, _, _, _, _, _, by simp, by simp, by simp, by simp [hb]; omega,
-      ⟨by omega, by omega, p1, p3, (h3.2 t al be ga de hd).2.1, (h3.2 t al be ga de hd).2.2,
-        h5.2 t al be ga de hd (Or.inl (far hF))⟩, e, e'⟩
-  · have sw := _root_.GlobalTheory.SwapRule.swap_rule X _ _ _ _ (lamA al be ga de) (lamA' t al be ga de)
-    exact ⟨_, _, _, _, _, _, _, _, by simp [hb]; omega, by simp, by simp, by simp,
-      ⟨by omega, by omega, p2, p1, sw.1 (h3.1 t al be ga de hd).1, sw.2.1 (h3.1 t al be ga de hd).2.2,
-        sw.2.2 (h4.1 t al be ga de hd)⟩, e, e'⟩
-  · have sw := _root_.GlobalTheory.SwapRule.swap_rule X _ _ _ _ (lamA al be ga de) (lamM' t al be ga de)
-    exact ⟨_, _, _, _, _, _, _, _, by simp, by simp [hb]; omega, by simp, by simp,
-      ⟨by omega, by omega, p3, p1, sw.1 (h3.2 t al be ga de hd).1, sw.2.1 (h3.2 t al be ga de hd).2.2,
-        sw.2.2 (h4.2 t al be ga de hd)⟩, e, e'⟩
+  apply _root_.GlobalTheory.StepRule.rulePar_of_pairPar <;> assumption
 
 def IdOrConj (σ : ℂ →+* ℂ) : Prop := σ = RingHom.id ℂ ∨ σ = starRingEnd ℂ
 

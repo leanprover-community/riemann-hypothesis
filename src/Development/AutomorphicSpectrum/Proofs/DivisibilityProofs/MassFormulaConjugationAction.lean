@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsConjugateModelSameThetaFunctions
 public import Mathlib.Algebra.Group.End
 public import Mathlib.Tactic.Continuity
 public import Mathlib.Data.Fintype.Card
@@ -32,16 +33,7 @@ end ListOfFnPermExistsEquivPerm
 
 theorem UpperTheory.Reformulated.B.Yde7.main :
     ∀ {α : Type} {n : ℕ} (v w : Fin n → α),
-      (List.ofFn v).Perm (List.ofFn w) → ∃ (s : Equiv.Perm (Fin n)), v = w ∘ (⇑s : Fin n → Fin n) := by
-  intro α n v w h
-  classical
-  have hc : ∀ c, Fintype.card {i // v i = c} = Fintype.card {i // w i = c} := by
-    intro c
-    rw [Fintype.card_subtype, Fintype.card_subtype]
-    convert (ListOfFnPermExistsEquivPerm.card_count v c).trans ((h.count_eq c).trans (ListOfFnPermExistsEquivPerm.card_count w c).symm)
-  refine ⟨Equiv.ofFiberEquiv (fun c => Fintype.equivOfCardEq (hc c)), ?_⟩
-  funext i
-  exact (Equiv.ofFiberEquiv_map _ i).symm
+      (List.ofFn v).Perm (List.ofFn w) → ∃ (s : Equiv.Perm (Fin n)), v = w ∘ (⇑s : Fin n → Fin n) := @_root_.GlobalTheory.FiberCardPermutation.exists_perm_of_ofFn_perm
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.CardCount =====

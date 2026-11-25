@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.SplitTermWeightLeNearReferenceLattice
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaussSumFiltrations.EvenPos
 public import Mathlib.Algebra.AffineMonoid.Basic
 import Mathlib.NumberTheory.NumberField.Discriminant.Different
@@ -214,22 +215,8 @@ variable {F : Type} [Field F] [NumberField F] {κ : Type} [Fintype κ] [Decidabl
 theorem relIndex_pi_const {ι G : Type} [Fintype ι] [AddCommGroup G] (L L' : AddSubgroup G) :
     (AddSubgroup.pi Set.univ fun _ : ι => L').relIndex (AddSubgroup.pi Set.univ fun _ : ι => L) =
       L'.relIndex L ^ Fintype.card ι := by
-  let f : (ι → L) →+ (ι → G) := AddMonoidHom.compLeft L.subtype ι
-  have hr : f.range = AddSubgroup.pi Set.univ fun _ : ι => L := by
-    ext x
-    simp only [AddMonoidHom.mem_range, AddSubgroup.mem_pi, Set.mem_univ, true_implies]
-    constructor
-    · rintro ⟨y, rfl⟩ i
-      exact (y i).2
-    · intro hx
-      exact ⟨fun i => ⟨x i, hx i⟩, rfl⟩
-  have hc : (AddSubgroup.pi Set.univ fun _ : ι => L').comap f =
-      AddSubgroup.pi Set.univ fun _ : ι => L'.comap L.subtype := by
-    ext x
-    simp only [AddSubgroup.mem_comap, AddSubgroup.mem_pi, Set.mem_univ, true_implies]
-    rfl
-  rw [← hr, ← AddSubgroup.index_comap, hc, AddSubgroup.index_pi, Finset.prod_const, Finset.card_univ,
-    AddSubgroup.index_comap, AddSubgroup.range_subtype]
+ intros
+ apply @_root_.GlobalTheory.DegCnt.MidLayer.relIndex_pi_const <;> assumption
 
 theorem det_pos_of_evenPos {G : Matrix κ κ ℤ} (hG : EvenPos G) : 0 < G.det := by
   obtain ⟨hpd, -⟩ := hG

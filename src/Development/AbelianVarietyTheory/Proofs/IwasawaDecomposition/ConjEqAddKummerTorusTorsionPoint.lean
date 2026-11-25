@@ -55,7 +55,6 @@ open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open scoped CategoryTheory.Obj
 open ReciprocityTheory.ChartRestriction.G.DVR
-attribute [local instance] Over.cartesianMonoidalCategory
 
 noncomputable section
 

@@ -115,8 +115,7 @@ namespace GlobalTheory.CompanionTheory.Ggeo.KeydegPrimes
 theorem exists_multiple_not_mem :
     ∀ (R : Type) [CommRing R] [IsDomain R] [IsDedekindDomain R] (M : Type) [AddCommGroup M] [Module R M], (∀ (a : R) (m : M), a ≠ 0 → a • m = 0 → m = 0) → ∀ t : M, t ≠ 0 → ∀ d₀ : R, d₀ ≠ 0 → (∀ (x d : R) (u : M), d ≠ 0 → d • u = x • t → d ∣ d₀ * x) → ∀ (V : Set M) (P : Ideal R), P.IsMaximal → P ≠ ⊥ → (∀ u ∈ V, ∀ c e : R, e ≠ 0 → (∀ π ∈ P, e ∣ c * π) → ∃ u' : M, e • u' = c • u) → ∃ (x : R) (u : M), d₀ • u = x • t ∧ u ∉ V := by
   intro R _ _ _ M _ _ htf t _ d₀ hd₀ hb V P hP hP0 hV
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   let I : Ideal R :=
     { carrier := {x | ∃ u : M, d₀ • u = x • t}
       add_mem' := by
@@ -598,8 +597,7 @@ theorem bounded_denominators : ∀ (R : Type) [CommRing R] [IsDomain R] [IsNoeth
   have : CompactSpace G.left := QuasiCompact.compactSpace_of_compactSpace G.hom
   have hsurj : Function.Surjective G.hom := (inferInstance : Surjective G.hom).surj
   obtain ⟨i₀, hi₀⟩ : ∃ i, LB.Sec.f t i ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact ht (SecMod.ext fun i => by rw [hc i]; rfl)
   have hc : ∀ y : G.left, ∃ j, y ∈ M.U j := fun y => by
     have : y ∈ (⨆ i, M.U i : G.left.Opens) := by rw [hM.cover]; trivial

@@ -353,8 +353,7 @@ theorem hE_conj (hσ : ∀ a, σ (σ a) = a) (hJ : ∀ i j, σ (J j i) = J i j) 
 
 theorem exists_hE_ne_zero (hdet : J.det ≠ 0) {x : Fin M → E} (hx : x ≠ 0) :
     ∃ w, hE σ J x w ≠ 0 := by
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   have hu : (fun i => σ (x i)) ᵥ* J = 0 := by
     funext j
     have h := hcon (Pi.single j 1)

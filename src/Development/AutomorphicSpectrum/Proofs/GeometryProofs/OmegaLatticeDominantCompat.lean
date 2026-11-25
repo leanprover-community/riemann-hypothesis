@@ -54,25 +54,7 @@ theorem lieBC {S : Scheme.{0}} {G : Over S} [GrpObj G] {A B : Type} [CommRing A]
     ∃ j : E →+ E', (∀ e, (M'.pt (j e)).left = Spec.map (CommRingCat.ofHom (dualMap c)) ≫ (M.pt e).left) ∧
       (∀ (a : A) e, j (a • e) = c a • j e) ∧ Submodule.span B (Set.range j) = ⊤ ∧
       ∀ l : Module.Dual A E, ∃ l' : Module.Dual B E', ∀ e, l' (j e) = c (l e) := by
-  subst hy
-  letI : Algebra A B := c.toAlgebra
-  letI : Module A E' := Module.compHom E' c
-  haveI : IsScalarTower A B E' := ⟨fun a b e => by
-    show (c a * b) • e = c a • b • e
-    rw [mul_smul]⟩
-  haveI : Smooth G.hom := hsm
-  obtain ⟨j, h1, h2, -⟩ := _root_.GlobalTheory.CompanionTheory.Ar.lieModel_baseChange S G A B x E E' M M'
-  let β : E →ₗ[A] E' := { toFun := j, map_add' := map_add j, map_smul' := fun a e => h2 a e }
-  have hbc : IsBaseChange B β := (_root_.GlobalTheory.CompanionTheory.Ar.LieProj.lie_finite_projective_baseChange S G A x E M).2.2 B E' M' β h1
-  refine ⟨j, h1, h2, ?_, ?_⟩
-  · refine eq_top_iff.2 fun e _ => ?_
-    refine hbc.inductionOn e ?_ ?_ ?_
-    · exact fun m => Submodule.subset_span ⟨m, rfl⟩
-    · exact fun s n h => Submodule.smul_mem _ s h
-    · exact fun a b ha hb => Submodule.add_mem _ ha hb
-  · intro l
-    refine ⟨hbc.lift ((Algebra.linearMap A B).comp l), fun e => ?_⟩
-    exact hbc.lift_eq _ e
+  apply _root_.GlobalTheory.CompanionTheory.Ar.HTPullK.lieBC <;> assumption
 
 section Setup
 

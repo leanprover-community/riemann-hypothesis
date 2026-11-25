@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.CuspSpanNormBounds.LatticeGluingRadicals
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.TermDef
 import Mathlib.Tactic.Linter.Style
 
@@ -36,15 +37,7 @@ theorem Xflag_r {T : E} (F : LFlag S r T) : F.fl.Xa r = Xsp F := by
   simp
 
 theorem z_mem_orth {T : E} (F : LFlag S r T) : F.fl.z ∈ orth S (Xsp F) := by
-  simp only [orth, Submodule.mem_iInf, LinearMap.mem_ker]
-  intro x hx
-  induction hx using Submodule.span_induction with
-  | mem y hy =>
-    obtain ⟨a, rfl⟩ := hy
-    exact F.fl.z_orth a
-  | zero => simp
-  | add y w _ _ hy hw => simp [hy, hw]
-  | smul c y _ hy => simp [hy]
+  apply _root_.Formalism.MainNotions.LatticeGluingRadicals.d_z_orthX <;> assumption
 
 theorem inSF_of_isIdF (Λ : Submodule (𝓞 E) S.V) {T T' : E} {F : LFlag S r T} {F' : LFlag S r T'}
     (h : IsIdF Λ F F') : InSF F F' := by

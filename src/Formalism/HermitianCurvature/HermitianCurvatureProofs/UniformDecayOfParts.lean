@@ -786,8 +786,6 @@ namespace Formalism.FourierDecayAlt.P.StandardPairingDecay
 
 open Formalism.FourierDecayAlt Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Matrix Filter Topology
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 def OnOldBound : Prop :=
   ∀ (k ρ : ℕ) (Wp Wq : Type) [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
     [InnerProductSpace ℂ Wq] (Bs : B.RealPlaceData k ρ Wp Wq) (w : List C.Letter) (m : ℕ),
@@ -1139,8 +1137,6 @@ namespace Formalism.FourierDecayAlt.P.StandardPairingDecay
 
 open Formalism.FourierDecayAlt Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Matrix
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 section one
 
 variable {k ρ : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
@@ -1271,8 +1267,6 @@ noncomputable section
 namespace Formalism.FourierDecayAlt.P.StandardPairingDecay
 
 open Formalism.FourierDecayAlt Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Matrix
-
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 theorem bound_on_earlier_region : OnOldBound := by
   intro k ρ Wp Wq _ _ _ _ Bs w m

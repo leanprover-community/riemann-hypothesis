@@ -437,8 +437,7 @@ theorem basisOne_holds : BasisOne := by
   · haveI := hlam h0
     exact ⟨0, Module.Basis.empty M, fun t => t.elim0⟩
   obtain ⟨x, hx⟩ : ∃ x, lam x ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact h0 (LinearMap.ext hc)
   set v : M := (lam x)⁻¹ • x with hvdef
   have hv : lam v = 1 := by
@@ -730,8 +729,7 @@ theorem UpperTheory.Gal.KunnethLefschetz.dualL_holds :
       haveI : Subsingleton (V l X 0) := ⟨fun x y => by rw [hz x, hz y]⟩
       simp [Module.finrank_zero_of_subsingleton]
   obtain ⟨x0, hx0⟩ : ∃ x, lam x ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact hlam (LinearMap.ext hc)
   have surj : Function.Surjective lam := fun r => ⟨(r / lam x0) • x0, by
     rw [map_smul, smul_eq_mul, div_mul_cancel₀ _ hx0]⟩

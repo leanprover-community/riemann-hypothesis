@@ -1,6 +1,7 @@
 module
 
 public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.ArchimedeanGelfandKernels.LeftEquivariantFunctions.ComplexMatrixCalculus.SwapLaws
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TraceSingleMulSingle
 
 @[expose] public section
 
@@ -34,22 +35,8 @@ theorem hb_herm (p : Fin n × Fin n) : (hb p).IsHermitian := by
   · simp [IsHermitian, conjTranspose_smul, conjTranspose_sub, conjTranspose_single]
     rw [← smul_neg, neg_sub]
 
-theorem hb_ortho (p q : Fin n × Fin n) : (hb p * hb q).trace = if p = q then 1 else 0 := by
-  obtain ⟨i, j⟩ := p
-  obtain ⟨k, l⟩ := q
-  have s2 := sq_inv_sqrt_two
-  simp only [PositivityTheory.RgTw.hb, Prod.mk.injEq]
-  split_ifs with h1 h2 h3 h4 h5 h6 h7 h8 h9 h10 h11 h12 h13 h14 h15 h16 h17 h18 h19 h20 <;>
-  simp only [Matrix.smul_mul, Matrix.mul_smul, Matrix.add_mul, Matrix.mul_add, Matrix.sub_mul, Matrix.mul_sub,
-    trace_add, trace_sub, trace_smul, trace_single_mul_single, smul_eq_mul] <;>
-  simp only [Fin.ext_iff, Fin.lt_iff_val_lt_val] at * <;>
-  split_ifs <;>
-  (try (exfalso; omega)) <;>
-  (try simp) <;>
-  (try ring_nf) <;>
-  first
-  | linear_combination 2 * s2
-  | linear_combination 2 * s2 - 2 * ((Real.sqrt 2 : ℂ))⁻¹ ^ 2 * Complex.I_sq
+theorem hb_ortho (p q : Fin n × Fin n) : (hb p * hb q).trace = if p = q then 1 else 0 :=
+  _root_.GlobalTheory.CompanionTheory.TopClass.trace_hb_mul_hb p q
 
 theorem trace_mul_single (D : Mat n) (a b : Fin n) (c : ℂ) : (D * single a b c).trace = D b a * c := by
   simp only [Matrix.trace, Matrix.diag, Matrix.mul_apply, Matrix.single_apply, ite_and]

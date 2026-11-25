@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.UnitaryGroupGaugeVolumeInHermitianUnitary
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.JacConstGVol
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.JacConst
 public import Formalism.SharpRestriction.CuspSpanNormBounds.BridgeCSB
@@ -504,43 +505,7 @@ theorem cE_pow (Y : Matrix (Fin k) (Fin k) ℂ) (m : ℕ) :
     · simp only [add_zero, pow_succ, Matrix.mul_assoc, h1]
 
 theorem exp_cE (Y : Matrix (Fin k) (Fin k) ℂ) : NormedSpace.exp (cE k r Y) = iota (r := r) (NormedSpace.exp Y) := by
-  letI : SeminormedRing (Matrix (Fin k) (Fin k) ℂ) := Matrix.linftyOpSemiNormedRing
-  letI : NormedRing (Matrix (Fin k) (Fin k) ℂ) := Matrix.linftyOpNormedRing
-  letI : NormedAlgebra ℂ (Matrix (Fin k) (Fin k) ℂ) := Matrix.linftyOpNormedAlgebra
-  letI : SeminormedRing (Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ) := Matrix.linftyOpSemiNormedRing
-  letI : NormedRing (Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ) := Matrix.linftyOpNormedRing
-  letI : NormedAlgebra ℂ (Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ) := Matrix.linftyOpNormedAlgebra
-  let L0 : Matrix (Fin k) (Fin k) ℂ →ₗ[ℂ] Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ :=
-    { toFun := fun M => Ew k r * M * (Ew k r)ᵀ
-      map_add' := fun M N => by rw [Matrix.mul_add, Matrix.add_mul]
-      map_smul' := fun c M => by rw [RingHom.id_apply, Matrix.mul_smul, Matrix.smul_mul] }
-  let L : Matrix (Fin k) (Fin k) ℂ →L[ℂ] Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ :=
-    LinearMap.toContinuousLinearMap L0
-  have hL : ∀ M, L M = Ew k r * M * (Ew k r)ᵀ := fun M => rfl
-  set Q : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ := 1 - Ew k r * (Ew k r)ᵀ with hQ
-  rw [NormedSpace.exp_eq_tsum (𝕂 := ℂ), NormedSpace.exp_eq_tsum (𝕂 := ℂ)]
-  have hs := NormedSpace.expSeries_summable' (𝕂 := ℂ) Y
-  simp_rw [cE_pow, smul_add]
-  have hs1 : Summable fun m : ℕ => ((m.factorial : ℂ)⁻¹) • (Ew k r * Y ^ m * (Ew k r)ᵀ) := by
-    have := (L.summable hs)
-    simpa [hL, Matrix.mul_smul, Matrix.smul_mul] using this
-  have hs2 : Summable fun m : ℕ => ((m.factorial : ℂ)⁻¹) • (if m = 0 then Q else 0) := by
-    refine summable_of_ne_finset_zero (s := {0}) fun m hm => ?_
-    rw [Finset.mem_singleton] at hm
-    rw [if_neg hm, smul_zero]
-  rw [hs1.tsum_add hs2]
-  have t2 : ∑' m : ℕ, ((m.factorial : ℂ)⁻¹) • (if m = 0 then Q else 0) = Q := by
-    rw [tsum_eq_single 0]
-    · simp
-    · intro m hm; rw [if_neg hm, smul_zero]
-  have t1 : ∑' m : ℕ, ((m.factorial : ℂ)⁻¹) • (Ew k r * Y ^ m * (Ew k r)ᵀ) =
-      Ew k r * (∑' m : ℕ, ((m.factorial : ℂ)⁻¹) • Y ^ m) * (Ew k r)ᵀ := by
-    rw [← hL, L.map_tsum hs]
-    refine tsum_congr fun m => ?_
-    rw [map_smul, hL]
-  rw [t1, t2, hQ]
-  unfold iota
-  abel
+  apply _root_.GlobalTheory.GaugeVolFixer.exp_cE <;> assumption
 
 end Formalism.L2.SG.Pf.GV
 

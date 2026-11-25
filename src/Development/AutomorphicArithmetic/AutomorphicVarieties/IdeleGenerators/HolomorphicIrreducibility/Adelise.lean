@@ -20,6 +20,7 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.Automorphic
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.NewformCoefficients.OrthCases
 import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.NewformCoefficients.Places
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.IdeleGenerators.HolomorphicIrreducibility.ExistsIdele
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.IdeleGenerators.HolomorphicIrreducibility.ExistsIdele
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.IdeleGenerators.HolomorphicIrreducibility.ExpInj
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.IdeleGenerators.HolomorphicIrreducibility.ExpUnique
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.IdeleGenerators.HolomorphicIrreducibility.HolLin
@@ -131,16 +132,7 @@ private theorem unr_of_hol [IsTotallyReal F] {k : ℕ} {c : Pl F → ℕ} {ω : 
 
 private theorem chi_prime (ω : HChar F) (c : Pl F → ℕ) (w : Pl F) :
     chiI ω c w.asIdeal = if c w = 0 then ((ω.val w : ℂˣ) : ℂ) else 0 := by
-  unfold chiI
-  rw [finprod_eq_single _ w]
-  · have : ordI w w.asIdeal = 1 := Associates.count_self w.associates_irreducible
-    rw [this, pow_one]
-  · intro v hv
-    have : ordI v w.asIdeal = 0 := by
-      by_contra h0
-      have h1 := (Associates.count_ne_zero_iff_dvd w.ne_bot v.irreducible).1 h0
-      exact hv (HeightOneSpectrum.ext (associated_iff_eq.1 ((v.prime.dvd_prime_iff_associated w.prime).1 h1)))
-    rw [this, pow_zero]
+  apply _root_.UpperTheory.V.Sd.chi_prime <;> assumption
 
 end Gen
 

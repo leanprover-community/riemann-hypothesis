@@ -3,6 +3,7 @@ module
 public import Formalism.HermitianCurvature.StatementQ
 import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 import Mathlib.RingTheory.SimpleRing.Principal
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.BesselDecayBounds.BesselUnitNorm.BesselNormSteps.BesselLine.ConvGrp
 
 @[expose] public section
 
@@ -23,20 +24,11 @@ variable {k r : ℕ}
 
 theorem ffa_hpk_esI_row (a : Fin r) (j : Fin (2 * r + k + 1)) :
     Hpk k r (esI k r a) j = if j = eI k r a then 1 else 0 := by
-  have ha := a.isLt
-  have hj := j.isLt
-  unfold Hpk
-  simp only [esI, eI, Fin.ext_iff, Fin.val_mk]
-  split_ifs <;> first | rfl | (exfalso; omega)
+  apply _root_.PI.WBL.Cv.hpk_row_esI <;> assumption
 
 theorem ffa_herm_esI (x : Fin (2 * r + k + 1) → ℂ) (a : Fin r) :
     herm (Hpk k r) x (bvec (esI k r a)) = x (eI k r a) := by
-  have hs : star (bvec (esI k r a)) = bvec (esI k r a) := by
-    funext j
-    by_cases h : j = esI k r a <;> simp [bvec, h]
-  unfold herm
-  rw [hs]
-  simp [bvec, mulVec, dotProduct, Pi.single_apply, ffa_hpk_esI_row]
+  apply _root_.PI.WBL.Cv.herm_esI <;> assumption
 
 theorem ffa_herm_UH {n : Mx k r} (hn : n ∈ UH (Hpk k r)) (x y : Fin (2 * r + k + 1) → ℂ) :
     herm (Hpk k r) (n *ᵥ x) (n *ᵥ y) = herm (Hpk k r) x y := by

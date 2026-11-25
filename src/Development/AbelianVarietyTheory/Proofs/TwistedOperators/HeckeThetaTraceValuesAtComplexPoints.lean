@@ -59,8 +59,6 @@ open ReciprocityTheory.ChartRestriction.G.Out GlobalTheory.ThetaTrace GlobalTheo
 
 noncomputable section
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.HeckeValues
 
 section Gen

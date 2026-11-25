@@ -7,7 +7,6 @@ import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.Tactic.TypeStar
 public import Mathlib.Algebra.Module.FinitePresentation
 public import Mathlib.Algebra.Module.Torsion.Basic
 public import Mathlib.RingTheory.Flat.EquationalCriterion

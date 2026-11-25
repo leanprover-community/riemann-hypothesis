@@ -25,6 +25,7 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTool
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.IwHkEv
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.NilpotentLevelLowering.IsoFix
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.NilpotentLevelLowering.NilKill
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.NilpotentLevelLowering.NilKill
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -392,12 +393,7 @@ private theorem sphScalar_int {W W' κ : Type} [AddCommGroup W] [Module ℂ W] [
     (act : MvPolynomial κ ℂ →ₐ[ℂ] Module.End ℂ W) (act' : MvPolynomial κ ℂ →ₐ[ℂ] Module.End ℂ W') (g : W →ₗ[ℂ] W')
     (h : ∀ a v, act' (MvPolynomial.X a) (g v) = g (act (MvPolynomial.X a) v)) (F : MvPolynomial κ ℂ) (v : W) :
     act' F (g v) = g (act F v) := by
-  induction F using MvPolynomial.induction_on generalizing v with
-  | C c =>
-    rw [← MvPolynomial.algebraMap_eq, AlgHom.commutes, AlgHom.commutes]
-    simp
-  | add p q hp hq => simp [hp, hq]
-  | mul_X p a hp => simp [h, hp]
+  apply _root_.nilKill_int <;> assumption
 
 private theorem sphScalar_tr {W W' κ : Type} [AddCommGroup W] [Module ℂ W] [AddCommGroup W'] [Module ℂ W']
     (act : MvPolynomial κ ℂ →ₐ[ℂ] Module.End ℂ W) (act' : MvPolynomial κ ℂ →ₐ[ℂ] Module.End ℂ W') (g : W →ₗ[ℂ] W')

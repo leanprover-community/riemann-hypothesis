@@ -72,12 +72,10 @@ theorem mulOk (h2 : MultAlg) (h4 : TensMul) (t t' : PT B) (ht : t.Ok) (ht' : t'.
   · intro x y g hg
     have hg' : ∑ z, ∫ h, t.ψ x z h * t'.ψ z y (h⁻¹ * g) ∂B.ν ≠ 0 := hg
     obtain ⟨z, hz⟩ : ∃ z, ∫ h, t.ψ x z h * t'.ψ z y (h⁻¹ * g) ∂B.ν ≠ 0 := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       exact hg' (Finset.sum_eq_zero fun z _ => hc z)
     obtain ⟨h, hh⟩ : ∃ h, t.ψ x z h * t'.ψ z y (h⁻¹ * g) ≠ 0 := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       exact hz (by simp [hc])
     have s1 := ht.size x z h (left_ne_zero_of_mul hh)
     have s2 := ht'.size z y (h⁻¹ * g) (right_ne_zero_of_mul hh)

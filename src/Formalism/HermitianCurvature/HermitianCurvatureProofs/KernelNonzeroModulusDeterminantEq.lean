@@ -889,8 +889,7 @@ variable [TopologicalSpace K] [IsTopologicalRing K] {ψ : AddChar K ℂ}
 theorem kernel_nonzero_modulus_determinant_eq (hd : LocalDatum K R ψ) (w w' : Point K) (h : Kp R ψ w w' ≠ 0) :
     modK R (pt w.1 w.2).det = modK R (pt w'.1 w'.2).det := by
   obtain ⟨q, hq⟩ : ∃ q, pairTerm R ψ w w' q ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact h (finsum_eq_zero_of_forall_eq_zero hc)
   unfold pairTerm at hq
   by_cases hc : IsInt R (orbZ w (rep R q.1)) ∧ IsInt R (orbZ w' (rep R q.2))

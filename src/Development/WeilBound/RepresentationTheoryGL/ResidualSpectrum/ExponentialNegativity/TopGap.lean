@@ -40,8 +40,7 @@ theorem card_dotProduct_eq_one :
   Fintype.card k * (Finset.univ.filter (fun x : Fin (n + 1) → k => a ⬝ᵥ x = 1)).card = Fintype.card k ^ (n + 1) := by
   intro k _ _ n a ha
   obtain ⟨i, hi⟩ : ∃ i, a i ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact ha (funext h)
   have hax₀ : a ⬝ᵥ Pi.single i (a i)⁻¹ = 1 := by
     rw [dotProduct_single, mul_inv_cancel₀ hi]

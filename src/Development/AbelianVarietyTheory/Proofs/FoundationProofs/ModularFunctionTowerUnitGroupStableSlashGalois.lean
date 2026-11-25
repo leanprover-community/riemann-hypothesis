@@ -64,8 +64,7 @@ theorem vs_valuation_eq_one_iff {K : Type} [Field K] (V : ValuationSubring K) {x
   · intro h; simp [h]
   · rintro ⟨h1, h2⟩
     refine le_antisymm h1 ?_
-    by_contra hlt
-    push_neg at hlt
+    by_contra! hlt
     have := one_lt_inv₀ (pos_iff_ne_zero.2 h0) |>.2 hlt
     exact absurd h2 (not_le.2 this)
 

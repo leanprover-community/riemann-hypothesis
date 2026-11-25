@@ -18,8 +18,6 @@ open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Meas
 
 namespace Formalism.FourierDecayAlt.P.CutMP.JA.FFS.AC
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 variable {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
   [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq]
 

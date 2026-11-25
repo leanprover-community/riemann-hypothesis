@@ -157,8 +157,7 @@ theorem blk_cartan {m : ℕ} (G₁ θ₁ : Matrix (Fin m) (Fin m) ℂ) (h : IsCa
     have n1 := Complex.normSq_nonneg (y (Sum.inr 1))
     by_cases h0 : y ∘ Sum.inl = 0
     · have hc : y (Sum.inr 0) ≠ 0 ∨ y (Sum.inr 1) ≠ 0 := by
-        by_contra hc
-        push_neg at hc
+        by_contra! hc
         apply hy; funext i; rcases i with i | i
         · exact congrFun h0 i
         · fin_cases i

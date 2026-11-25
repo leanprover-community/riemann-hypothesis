@@ -215,8 +215,7 @@ theorem map_liftV (x : HahnSeries ℚ Ω) (h : ∀ r, x.coeff r ∈ V) : hahnSer
 
 theorem mem_of_pow_eq_one {w : Ω} {n : ℕ} (hn : n ≠ 0) (hw : w ^ n = 1) : w ∈ V := by
   rw [← ValuationSubring.valuation_le_one_iff]
-  by_contra h
-  push_neg at h
+  by_contra! h
   have := one_lt_pow₀ h hn
   rw [← map_pow, hw, map_one] at this
   exact lt_irrefl _ this

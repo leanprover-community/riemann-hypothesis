@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.GrowthBounds.HermitianTensor.DerivativeRepresentation
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJDHatJDRInvEig
 public import Formalism.LocalToGlobal.GroupLattices.FockModels.FlatModels.Letter
 public import Formalism.SharpRestriction.GrowthBounds.ObjSeg
@@ -153,19 +154,7 @@ theorem Nv_mem (R : Type) [CommRing R] (m : ℕ) (vec : Bool) (c : Fin (m + 1)) 
 
 theorem dw_pow {R : Type} [CommRing R] {r n : ℕ} {ν : Fin n → ℕ} {f : MvPolynomial (Fin r × Fin n) R}
     (hf : f ∈ dualWeyl R r n ν) (a : ℕ) : f ^ a ∈ dualWeyl R r n (a • ν) := by
-  induction a with
-  | zero =>
-    have e : (0 : ℕ) • ν = 0 := by
-      funext t
-      simp
-    rw [pow_zero, e]
-    exact one_mem_dualWeyl
-  | succ a ih =>
-    have e : (a + 1) • ν = a • ν + ν := by
-      funext t
-      simp [add_mul]
-    rw [pow_succ, e]
-    exact Formalism.GradedWeylDivisibility.dualWeyl_mul ih hf
+  apply +allowSynthFailures _root_.Formalism.MainNotions.flipOneThree.Pf.qc_pow_mem <;> assumption
 
 theorem dw_prod {R : Type} [CommRing R] {r n : ℕ} {ν : Fin n → ℕ} {J : Type} (s : Finset J)
     (f : J → MvPolynomial (Fin r × Fin n) R) (a : J → ℕ) (hf : ∀ i, f i ∈ dualWeyl R r n ν) :

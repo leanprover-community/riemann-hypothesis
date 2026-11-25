@@ -105,8 +105,7 @@ private theorem span_fixed_eq_whole_of_semilinear_injective {K E : Type} [Field 
   set W : ℕ → Submodule K E := fun i => U ⊔ Submodule.span K (Set.range fun j : Fin i => w j)
     with hW
   have hex : ∃ r, w r ∈ W r := by
-    by_contra hno
-    push_neg at hno
+    by_contra! hno
     have hmono : ∀ i, i ≤ Module.finrank K (W i) := by
       intro i
       induction i with

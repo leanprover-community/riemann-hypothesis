@@ -13,7 +13,6 @@ public import Mathlib.Analysis.Complex.Trigonometric
 public import Mathlib.Analysis.SpecialFunctions.ExpDeriv
 public import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic
 public import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
-import Lemmata.FunctionAtZero.FZero
 
 @[expose] public section
 
@@ -29,6 +28,6 @@ theorem goal1 :
             ∀ (t : Real),
               Eq.{1} (f t) (Complex.exp (HMul.hMul.{0, 0, 0} (Complex.ofReal (HMul.hMul.{0, 0, 0} m t)) Complex.I)) := by
   intro f hf hmul _ hnorm
-  exact FunctionAtZero.goal1 f hf hmul hnorm
+  exact general_b_fact_third_further.goal1 f hf hmul hnorm
 
 end Bl.general_b_fact_left_variant

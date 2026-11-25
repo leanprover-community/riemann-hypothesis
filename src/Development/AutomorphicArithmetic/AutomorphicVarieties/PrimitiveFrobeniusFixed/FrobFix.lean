@@ -936,8 +936,7 @@ theorem UpperTheory.V.ML.count :
     obtain ⟨c, hc, hc0⟩ := (Submodule.ne_bot_iff _).1 hne
     have hsc := shtNu Ω l O N₀ m F α hD δ hδ a₀ ha₀l c hc.1
     have hcu : ∃ u ∈ fixMu ℚ Ω F, c u ≠ 0 := by
-      by_contra hcon
-      push_neg at hcon
+      by_contra! hcon
       exact hc0 (hsc.2.1 hcon)
     have hP := isCrys_isDR_prod l F r L hL
     obtain ⟨q, A, φ, hAdm, hqT, hA, hφ, hcφ, hgen⟩ :=

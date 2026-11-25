@@ -32,15 +32,13 @@ theorem fIwasawa_exists_max_pivot (hσv : ∀ x, Valued.v (σ x) = Valued.v x) (
     Finset.mem_filter.2 ⟨Finset.mem_univ _, h1, h2⟩
   have hout : ∀ i, i ∉ W → i < ρ ∨ Fin.rev ρ < i := by
     intro i hi
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hi (hmem i h.1 h.2)
   have hρW : ρ ∈ W := hmem ρ le_rfl hρ.le
   have hcz := fIwasawa_col_zero σ M hM r hT ρ hρr hρ
 
   have hex : ∃ j ∈ W, M j ρ ≠ 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     have hgram := fIwasawa_gram_un σ M hM (Fin.rev ρ) ρ
     rw [if_pos (Fin.rev_rev ρ).symm] at hgram
     have h0 : ∑ j, σ (M (Fin.rev j) (Fin.rev ρ)) * M j ρ = 0 := by
@@ -69,8 +67,7 @@ theorem fIwasawa_exists_max_pivot (hσv : ∀ x, Valued.v (σ x) = Valued.v x) (
   obtain ⟨a, haW, hamax, hne⟩ : ∃ a ∈ W, (∀ i ∈ W, Valued.v (M i ρ) ≤ Valued.v (M a ρ)) ∧
       a ≠ Fin.rev a := by
     by_cases h₀ : a₀ = Fin.rev a₀
-    · by_contra hcon
-      push_neg at hcon
+    · by_contra! hcon
       have hlt : ∀ i ∈ W, i ≠ a₀ → Valued.v (M i ρ) < Valued.v (M a₀ ρ) := by
         intro i hi hia
         refine lt_of_le_of_ne (ha₀max i hi) fun heq => ?_

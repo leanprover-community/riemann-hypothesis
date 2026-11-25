@@ -1,5 +1,6 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.UnitaryThreeGroups.NormUniq
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.WeakShimuraTheory.NearSplit
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.SymplecticGSp4.SgnMulSelf
 import Mathlib.Tactic.Linter.Style
@@ -121,12 +122,7 @@ theorem Cg.adj {X Y : M4 R} (h : Cg I X Y) : Cg I (adj X) (adj Y) := by
   exact zsmul_mem (h _ _) _
 
 theorem unit_of_sub_mem [IsLocalRing R] {x y : R} (hy : IsUnit y) (h : x - y ∈ maximalIdeal R) : IsUnit x := by
-  by_contra hx
-  have hxm : x ∈ maximalIdeal R := (IsLocalRing.mem_maximalIdeal x).2 hx
-  have : y ∈ maximalIdeal R := by
-    have := (maximalIdeal R).sub_mem hxm h
-    simpa using this
-  exact (IsLocalRing.mem_maximalIdeal y).1 this hy
+  apply _root_.unit_of_sub_mem <;> assumption
 
 end Mat
 

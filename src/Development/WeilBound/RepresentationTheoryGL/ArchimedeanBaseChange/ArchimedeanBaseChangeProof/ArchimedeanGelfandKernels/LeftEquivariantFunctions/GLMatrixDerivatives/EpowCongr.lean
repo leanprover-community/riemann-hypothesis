@@ -3,6 +3,7 @@ module
 public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.ArchimedeanGelfandKernels.LeftEquivariantFunctions.GLMatrixDerivatives.ChainOfSt
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DifferentiableAtOfSmooth
 import Mathlib.Tactic.Linter.Style
+import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.ArchimedeanGelfandKernels.LeftEquivariantFunctions.GelfandFlags.KerComm
 
 @[expose] public section
 
@@ -39,17 +40,7 @@ theorem eu_congr {f f' : Mat n → V} (h : EqOn f f' (GLs n)) (s : Bool) (a b : 
 
 theorem epow_congr {f f' : Mat n → V} (h : EqOn f f' (GLs n)) (s : Bool) (m : ℕ) :
     ∀ a b, EqOn (Epow s m a b f) (Epow s m a b f') (GLs n) := by
-  induction m with
-  | zero =>
-    intro a b g hg
-    simp only [Epow]
-    split_ifs
-    · exact h hg
-    · rfl
-  | succ m ih =>
-    intro a b g hg
-    simp only [Epow, Finset.sum_apply]
-    exact Finset.sum_congr rfl fun c _ => eu_congr (ih c b) s a c hg
+  apply _root_.PositivityTheory.RgBcC.VC.KC.epow_congr <;> assumption
 
 theorem gel_congr {f f' : Mat n → V} (h : EqOn f f' (GLs n)) (s : Bool) (m : ℕ) :
     EqOn (gel s m f) (gel s m f') (GLs n) := by

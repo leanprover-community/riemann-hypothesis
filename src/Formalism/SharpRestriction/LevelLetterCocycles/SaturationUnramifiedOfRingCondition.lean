@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.LevelLetterCocycles.JumpsLetOfWin
 public import Formalism.SharpRestriction.LevelLetterCocycles.FiltrationSaturationKiller
 
 @[expose] public section
@@ -165,11 +166,7 @@ theorem γD_smulA' (W : LocWach PD LL O v n) (T : LocLat G Qp LL O) (g : W.Gam) 
 
 theorem smul_mem_NΔ (W : LocWach PD LL O v n) (T : LocLat G Qp LL O) {a : LetA O n} (ha : a ∈ W.AΔ)
     {b : W.DD T} (hb : b ∈ W.NΔ T) : a • b ∈ W.NΔ T := by
-  have ha' : ∀ δ ∈ W.DelF, W.γA δ a = a := ha
-  have hb' : b ∈ W.N T ∧ ∀ δ ∈ W.DelF, W.γD T δ b = b := hb
-  show a • b ∈ W.N T ∧ ∀ δ ∈ W.DelF, W.γD T δ (a • b) = a • b
-  refine ⟨(W.N T).smul_mem a hb'.1, fun δ hδ => ?_⟩
-  rw [γD_smulA' W T δ a b, ha' δ hδ, hb'.2 δ hδ]
+  apply _root_.Formalism.MainNotions.UnusedSlot80.PhiPowers.smul_mem_NΔ <;> assumption
 
 theorem mem_AΔ_of_p_pow (W : LocWach PD LL O v n) (hO : ∀ c : O, ((PD.p : ℕ) : O) * c = 0 → c = 0)
     (k : ℕ) {a : LetA O n} (ha : ((PD.p : ℕ) : LetA O n) ^ k * a ∈ W.AΔ) : a ∈ W.AΔ := by

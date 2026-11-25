@@ -133,8 +133,6 @@ namespace PositivityTheory.RgBcC.CxeAvg
 
 open PositivityTheory.RgTw (Mat)
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 variable {n : ℕ}
 
 theorem adjoint_clm (lam : Fin n → ℤ) (U : Matrix (Ix n lam) (Ix n lam) ℂ) :

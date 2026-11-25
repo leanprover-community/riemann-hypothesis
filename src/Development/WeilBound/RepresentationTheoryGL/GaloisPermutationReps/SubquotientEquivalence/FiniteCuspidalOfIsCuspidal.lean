@@ -44,8 +44,7 @@ private theorem exists_block_lt_unipotent_lemma {K : Type} [Field K] {n s : ℕ}
 theorem exists_block_lt_unipotent {K : Type} [Field K] {n s : ℕ} {d : Fin s → ℕ}
     (e : (Σ a, Fin (d a)) ≃ Fin n) (h : GlobalTheory.SmGL.unipRad K e ≠ ⊥) :
     ∃ i j : Fin n, GlobalTheory.SmGL.blk e i < GlobalTheory.SmGL.blk e j := by
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   apply h
   rw [eq_bot_iff]
   intro g hg

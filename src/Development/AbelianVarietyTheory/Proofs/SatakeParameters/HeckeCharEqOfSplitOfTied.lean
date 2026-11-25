@@ -108,8 +108,7 @@ namespace GlobalTheory.HeckeSplit
 
 theorem exists_int_moved (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E]
     [Algebra F E] (c : E ≃ₐ[F] E) (hc : c ≠ 1) : ∃ θ : 𝓞 E, c (θ : E) ≠ (θ : E) := by
-  by_contra h
-  push_neg at h
+  by_contra! h
   apply hc
   ext z
   obtain ⟨a, b, hb, rfl⟩ := IsFractionRing.div_surjective (A := 𝓞 E) z

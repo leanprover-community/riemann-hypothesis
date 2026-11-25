@@ -1,5 +1,6 @@
 module
 
+import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.ZetaEulerProducts.SummablePrimesRpow
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.DataInst
 public import Mathlib.Algebra.Order.Field.GeomSum
 import Mathlib.Algebra.Order.Star.Real
@@ -46,8 +47,7 @@ theorem exists_int_approx (x : F) (hx : p.valuation F x ≤ 1) :
   have hp0 : p.asIdeal ≠ ⊥ := p.ne_bot
   have htop : p.asIdeal ≠ ⊤ := p.isPrime.ne_top
   have hex : ∃ n : ℕ, (s : 𝓞 F) ∉ p.asIdeal ^ (n + 1) := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     apply hs0
     have hmem : (s : 𝓞 F) ∈ ⨅ i, p.asIdeal ^ i := by
       rw [Ideal.mem_iInf]
@@ -233,13 +233,7 @@ theorem etaP_pm {D : Formalism.BasicNotions.D7} (p : PlF D) : eta₃ p = 1 ∨ e
 
 theorem absNorm_two_le {F : Type} [Field F] [NumberField F] (p : HeightOneSpectrum (𝓞 F)) :
     2 ≤ Ideal.absNorm p.asIdeal := by
-  have h0 : Ideal.absNorm p.asIdeal ≠ 0 := by
-    rw [Ne, Ideal.absNorm_eq_zero_iff]
-    exact p.ne_bot
-  have h1 : Ideal.absNorm p.asIdeal ≠ 1 := by
-    rw [Ne, Ideal.absNorm_eq_one_iff]
-    exact p.isPrime.ne_top
-  omega
+  apply _root_.PositivityTheory.Lord.two_le_absNorm' <;> assumption
 
 theorem aPD_bounds {D : Formalism.BasicNotions.D7} (p : PlF D) (T : ℕ) (hk : 1 ≤ D.R.k) :
     Real.exp (-(4 * ((Ideal.absNorm p.asIdeal : ℕ) : ℝ)⁻¹ ^ D.R.k)) ≤ aPD p T ∧

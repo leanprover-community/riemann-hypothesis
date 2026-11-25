@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsLogAExtends
 public import Mathlib.Algebra.Algebra.Defs
 public import Mathlib.LinearAlgebra.Span.Defs
 public import Mathlib.Algebra.Ring.Divisibility.Basic
@@ -222,18 +223,7 @@ theorem mem_of_forall (hu : ∀ n : ℕ, IsUnit ((n.factorial : ℕ) : A)) (ξ :
   linear_combination hc
 
 theorem exists_eps (l : ℕ) [Fact l.Prime] : ∃ e : Per.Fl l, IsEps e := by
-  obtain ⟨ζ, e, h0, -, h1, hr⟩ := exists_zeta_eps l
-  refine ⟨e, ?_, fun h => ?_⟩
-  · have h := hr 0
-    rw [h0, map_one] at h
-    exact Subtype.ext h
-  · have h' := hr 1
-    have h2 : rootT e 1 = 1 := h
-    rw [h2] at h'
-    apply h1
-    apply (algebraMap (Om l) ℂ_[l]).injective
-    rw [map_one, ← h']
-    rfl
+  first | exact _root_.GlobalTheory.MemLoc.Model.exists_isEps | exact @_root_.GlobalTheory.MemLoc.Model.exists_isEps | apply _root_.GlobalTheory.MemLoc.Model.exists_isEps <;> assumption
 
 theorem xi_sat_pow {l : ℕ} [Fact l.Prime] {e : Per.Fl l} (he : IsEps e) (k : ℕ) (a : Per.Ainf l)
     (h : xi e ∣ (l : Per.Ainf l) ^ k * a) : xi e ∣ a := by

@@ -391,8 +391,7 @@ theorem det_pos_of_posForm {V : Type*} [AddCommGroup V] [Module ℝ V] [FiniteDi
     (T : V →ₗ[ℝ] V) (B : V →ₗ[ℝ] V →ₗ[ℝ] ℝ) (hBs : ∀ v w, B v w = B w v)
     (hB : ∀ v, v ≠ 0 → 0 < B v v) (hT : ∀ v w, B v (T w) = B (T v) w)
     (hTp : ∀ v, v ≠ 0 → 0 < B v (T v)) : 0 < LinearMap.det T := by
-  by_contra hneg
-  push_neg at hneg
+  by_contra! hneg
   set f : ℝ → ℝ := fun t => LinearMap.det (t • T + (1 - t) • LinearMap.id) with hf
   have hcont : Continuous f := by
     let b := Module.finBasis ℝ V
@@ -455,10 +454,7 @@ theorem shc_pos (u : ℝ) : 0 < shc u := by
     · exact div_pos (Real.sinh_pos_iff.2 hu) hu
 
 theorem shc_neg (u : ℝ) : shc (-u) = shc u := by
-  unfold shc
-  by_cases h : u = 0
-  · simp [h]
-  · rw [if_neg (neg_ne_zero.2 h), if_neg h, Real.sinh_neg, neg_div_neg_eq]
+  apply _root_.ReciprocityTheory.ChartRestriction.DS.dpb_shc_neg <;> assumption
 
 section U
 variable {ε : Fin n → Bool} (y : PCoord ε → ℂ)
@@ -506,8 +502,7 @@ theorem trF_shcAd_pos (X : Matrix (Fin n) (Fin n) ℂ) (hX : X ≠ 0) : 0 < trF 
             Matrix.mul_assoc, Uy_mul_star, Matrix.mul_one]
       _ = 0 := by rw [h, Matrix.mul_zero, Matrix.zero_mul]
   obtain ⟨i0, j0, hij⟩ : ∃ i j, W i j ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hW0 (Matrix.ext fun i j => h i j)
   have hterm : ∀ i j, (((shc (pev y i - pev y j) : ℝ) : ℂ) * (star (W i j) * W i j)).re =
       shc (pev y i - pev y j) * Complex.normSq (W i j) := by
@@ -560,8 +555,7 @@ theorem trF_smul_right (c : ℝ) (X Z : Matrix (Fin n) (Fin n) ℂ) : trF X (c �
 theorem trF_self_pos (X : Matrix (Fin n) (Fin n) ℂ) (hX : X ≠ 0) : 0 < trF X X := by
   unfold trF
   obtain ⟨i0, j0, hij⟩ : ∃ i j, X i j ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hX (Matrix.ext fun i j => h i j)
   have hterm : ∀ i j, (star (X i j) * X i j).re = Complex.normSq (X i j) := by
     intro i j

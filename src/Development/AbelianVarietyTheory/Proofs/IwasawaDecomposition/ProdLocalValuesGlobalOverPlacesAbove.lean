@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsSupersetMemSUnits
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LocUnitApply
 public import Formalism.LocalToGlobal.UnitaryNorms.IsUnitaryNormOf
 public import Mathlib.NumberTheory.NumberField.Basic
@@ -76,17 +77,7 @@ theorem prod_zpow_const {ι B : Type} [CommGroup B] (c : B) (s : Finset ι) (e :
 
 theorem finite_setOf_valuation_ne_one (F : Type) [Field F] [NumberField F] (x : Fˣ) :
     {v : HeightOneSpectrum (𝓞 F) | v.valuation F (x : F) ≠ 1}.Finite := by
-  refine ((HeightOneSpectrum.Support.finite (𝓞 F) (x : F)).union
-    (HeightOneSpectrum.Support.finite (𝓞 F) ((x : F)⁻¹))).subset ?_
-  intro v hv
-  have h0 : v.valuation F (x : F) ≠ 0 := by simp
-  rcases lt_or_gt_of_ne hv with h | h
-  · right
-    show 1 < v.valuation F ((x : F)⁻¹)
-    rw [map_inv₀]
-    exact (one_lt_inv₀ (zero_lt_iff.2 h0)).2 h
-  · left
-    exact h
+  first | exact _root_.GlobalTheory.QNorm.finite_valuation_ne_one | exact @_root_.GlobalTheory.QNorm.finite_valuation_ne_one | apply _root_.GlobalTheory.QNorm.finite_valuation_ne_one <;> assumption
 
 theorem valued_locUnit (F : Type) [Field F] [NumberField F] (v : HeightOneSpectrum (𝓞 F)) (b : Fˣ) :
     Valued.v ((Units.map (algebraMap F (v.adicCompletion F)).toMonoidHom b : (v.adicCompletion F)ˣ) :

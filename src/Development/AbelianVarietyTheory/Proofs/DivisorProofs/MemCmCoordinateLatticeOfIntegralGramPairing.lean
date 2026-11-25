@@ -128,7 +128,6 @@ section -- clump:auto
 open NumberField
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.CM
-attribute [local instance] Over.cartesianMonoidalCategory
 
 noncomputable section
 namespace GlobalTheory.DivisibleLinear
@@ -766,8 +765,7 @@ theorem UpperTheory.exists_nsmul_mem_sum_image_lattice_of_surjective_mod :
   haveI : Countable ΛB := TopologicalSpace.separableSpace_iff_countable.mp inferInstance
   have hΦs : ∀ u, ∃ v, Φ v = u := by
     intro u
-    by_contra hu
-    push_neg at hu
+    by_contra! hu
     choose v hv using fun t : ℝ => hsurj (t • u)
     let f : ℝ → ΛB := fun t => ⟨t • u - Φ (v t), by rw [hΦapp]; exact hv t⟩
     have hf : Function.Injective f := by

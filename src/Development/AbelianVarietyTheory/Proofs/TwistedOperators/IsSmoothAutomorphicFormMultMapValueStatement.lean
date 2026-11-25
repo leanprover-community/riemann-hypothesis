@@ -62,8 +62,6 @@ open Classical Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNo
 open Formalism.MainNotions.StandardLattice Formalism.MainNotions.S GlobalTheory.SmVec GlobalTheory.MultGelf Filter
 open scoped TensorProduct ContDiff InnerProductSpace Topology
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 namespace GlobalTheory.EquivValues
 
 variable {D : D7} {V : HSp D} {S : D.what₂.Tau → SPar}
@@ -194,7 +192,6 @@ section -- clump:auto
 @[expose] public section
 
 open Classical Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum MeasureTheory NumberField Matrix
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 end -- clump:auto
 end -- clump:auto

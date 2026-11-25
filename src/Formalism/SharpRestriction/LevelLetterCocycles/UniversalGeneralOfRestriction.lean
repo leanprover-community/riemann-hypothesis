@@ -1,5 +1,7 @@
 module
 
+import Formalism.SharpRestriction.LevelLetterCocycles.HorTrUnique
+import Formalism.SharpRestriction.LevelLetterCocycles.LevelKernelDetection.PfLvFil
 public import Formalism.SharpRestriction.LevelLetterCocycles.LatticeMembershipPolynomialGamma
 public import Formalism.SharpRestriction.LevelLetterCocycles.FrobeniusPowUniformizerFactorisation
 public import Formalism.SharpRestriction.LevelLetterCocycles.SaturationUnramifiedOfRingCondition
@@ -342,27 +344,10 @@ variable {G : Type} [Group G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field 
     {V : Type} [AddCommGroup V] [Module LL V] [Module Qp V] [IsScalarTower Qp LL V]
 
 theorem ιV_inj : Function.Injective (ιV PD (LL := LL) (V := V)) := by
-  have h : ∀ x, ιV PD (LL := LL) (V := V) x =
-      ((PD.ι.toLinearMap.restrictScalars Qp).lTensor V) x := by
-    intro x
-    induction x using TensorProduct.induction_on with
-    | zero => simp
-    | tmul v b => simp [ιV]
-    | add x y hx hy => rw [map_add (f := _), map_add (f := _), hx, hy]
-  intro x y hxy
-  rw [h, h] at hxy
-  exact Module.Flat.lTensor_preserves_injective_linearMap (M := V) _ PD.ι_inj hxy
+  apply +allowSynthFailures _root_.Formalism.MainNotions.N.Ln03.Pf.lvFil_ιV_injective <;> assumption
 
 theorem φVB_inj : Function.Injective (φVB PD (LL := LL) (V := V)) := by
-  have h : ∀ x, φVB PD (LL := LL) (V := V) x = (PD.φ.toLinearMap.lTensor V) x := by
-    intro x
-    induction x using TensorProduct.induction_on with
-    | zero => simp
-    | tmul v b => simp [φVB]
-    | add x y hx hy => rw [map_add (f := _), map_add (f := _), hx, hy]
-  intro x y hxy
-  rw [h, h] at hxy
-  exact Module.Flat.lTensor_preserves_injective_linearMap (M := V) _ PD.φ_inj hxy
+  apply +allowSynthFailures _root_.Formalism.MainNotions.N.Ln03.Pf.lvFil_φVB_injective <;> assumption
 
 theorem φVB_pow_inj (k : ℕ) :
     Function.Injective ((φVB PD (LL := LL) (V := V)) ^ k : Module.End LL (V ⊗[Qp] B)) := by
@@ -370,53 +355,13 @@ theorem φVB_pow_inj (k : ℕ) :
   exact (φVB_inj PD).iterate k
 
 theorem filV_sep (x : V ⊗[Qp] BdR) (h : ∀ a, x ∈ FilV PD (LL := LL) (V := V) a) : x = 0 := by
-  let bV := Basis.ofVectorSpace Qp V
-  apply (TensorProduct.equivFinsuppOfBasisLeft bV).injective
-  rw [map_zero]
-  ext i
-  rw [TensorProduct.equivFinsuppOfBasisLeft_apply, Finsupp.coe_zero, Pi.zero_apply]
-  apply PD.Fil_sep
-  intro a
-  have key : ∀ z : V ⊗[Qp] ↥((PD.Fil a).restrictScalars Qp),
-      TensorProduct.lid Qp BdR ((bV.coord i).rTensor BdR
-        (AlgebraTensorModule.map (LinearMap.id : V →ₗ[LL] V) ((PD.Fil a).restrictScalars Qp).subtype z))
-        ∈ PD.Fil a := by
-    intro z
-    induction z using TensorProduct.induction_on with
-    | zero => simp
-    | tmul v f =>
-      simp only [AlgebraTensorModule.map_tmul, LinearMap.id_coe, id_eq, Submodule.coe_subtype,
-        LinearMap.rTensor_tmul, TensorProduct.lid_tmul]
-      exact ((PD.Fil a).restrictScalars Qp).smul_mem _ f.2
-    | add x y hx hy =>
-      rw [map_add (f := _), map_add (f := _), map_add (f := _)]
-      exact (PD.Fil a).add_mem hx hy
-  obtain ⟨z, hz⟩ := h a
-  rw [← hz]
-  exact key z
+  apply +allowSynthFailures _root_.Formalism.MainNotions.N.Ln03.Pf.lvFil_FilV_sep <;> assumption
 
 theorem filV_anti : Antitone (FilV PD (LL := LL) (V := V)) := by
-  intro a b hab
-  have hle : (PD.Fil b).restrictScalars Qp ≤ (PD.Fil a).restrictScalars Qp :=
-    antitone_int_of_succ_le PD.Fil_anti hab
-  unfold FilV
-  rw [← Submodule.subtype_comp_inclusion _ _ hle, ← LinearMap.id_comp (LinearMap.id : V →ₗ[LL] V),
-    TensorProduct.AlgebraTensorModule.map_comp]
-  exact LinearMap.range_comp_le_range _ _
+  apply +allowSynthFailures _root_.Formalism.MainNotions.N.Ln03.Pf.lvFil_FilV_anti <;> assumption
 
 theorem filV_exh (x : V ⊗[Qp] BdR) : ∃ a : ℤ, x ∈ FilV PD (LL := LL) (V := V) a := by
-  induction x using TensorProduct.induction_on with
-  | zero => exact ⟨0, Submodule.zero_mem _⟩
-  | tmul v b =>
-    obtain ⟨a, ha⟩ := PD.Fil_exh b
-    refine ⟨a, ?_⟩
-    refine ⟨v ⊗ₜ (⟨b, ha⟩ : ↥((PD.Fil a).restrictScalars Qp)), ?_⟩
-    simp
-  | add x y hx hy =>
-    obtain ⟨a, ha⟩ := hx
-    obtain ⟨a', ha'⟩ := hy
-    exact ⟨min a a', Submodule.add_mem _ (filV_anti PD (min_le_left a a') ha)
-      (filV_anti PD (min_le_right a a') ha')⟩
+  apply +allowSynthFailures _root_.Formalism.MainNotions.N.Ln03.Pf.lvFil_FilV_exh <;> assumption
 
 variable (ρ : Representation LL G V)
 
@@ -1033,17 +978,8 @@ theorem horTr_unique (hinj : Function.Injective (algebraMap O LL)) {R κ : ℕ} 
 
 theorem horTr_scale {R κ : ℕ} {k : Fin d} {x : W.DD T} (h : IsHorTr W T b sol R κ k x) (t : ℕ) :
     IsHorTr W T b sol R (κ + t) k (lA W ^ t • x) := by
-  obtain ⟨y, hy, rfl⟩ := h
-  refine ⟨fun r m => ((PD.p : ℕ) : O) ^ t * y r m, fun r hr m => ?_, ?_⟩
-  · rw [map_mul, hy r hr m, map_pow, map_natCast, pow_add]; ring
-  · rw [Finset.smul_sum]
-    refine Finset.sum_congr rfl fun r _ => ?_
-    rw [smul_comm, ← Relay2.lsmul_eq W T t]
-    congr 1
-    unfold Formalism.MainNotions.LiftingTheory.vecB
-    rw [Finset.smul_sum]
-    refine Finset.sum_congr rfl fun m _ => ?_
-    rw [smul_smul]
+  intros
+  apply _root_.Formalism.MainNotions.UnusedSlot80.LevC.horTr_scale <;> assumption
 
 theorem γ_horTr {c' : ZMod n} {R κ : ℕ} {k : Fin d} (hs : Formalism.MainNotions.LiftingTheory.IsSol W T c' b 0 (sol k))
     {x : W.DD T} (h : IsHorTr W T b sol R κ k x) :
@@ -2455,8 +2391,7 @@ theorem nn_bounds [Fintype (K →ₐ[Qp] LL)] (hinj : Function.Injective (algebr
   · rw [hty] at hJ
     refine ⟨?_, fun bs h => absurd h (by simp)⟩
     simp only [eMM]
-    by_contra hlt
-    push_neg at hlt
+    by_contra! hlt
     refine hzero (filS_bot W T₂ c s (filCris_bot W hCA T₂ _ _ fun a ha => ?_))
     have := hJ a ha
     simp only [Formalism.MainNotions.LocalTheoryWindows.LT.win, Set.mem_Icc] at this
@@ -2465,8 +2400,7 @@ theorem nn_bounds [Fintype (K →ₐ[Qp] LL)] (hinj : Function.Injective (algebr
     simp only [Formalism.MainNotions.LocalTheoryWindows.LT.ok] at hok
     refine ⟨?_, fun bs' h => absurd h (by simp)⟩
     simp only [eMM]
-    by_contra hlt
-    push_neg at hlt
+    by_contra! hlt
     refine hzero (filS_bot W T₂ c s (filCris_bot W hCA T₂ _ _ fun a ha => ?_))
     have := hJ a ha
     simp only [Formalism.MainNotions.LocalTheoryWindows.LT.win, Set.mem_union, Set.mem_Icc] at this
@@ -2475,8 +2409,7 @@ theorem nn_bounds [Fintype (K →ₐ[Qp] LL)] (hinj : Function.Injective (algebr
   · rw [hty] at hJ hok
     simp only [Formalism.MainNotions.LocalTheoryWindows.LT.ok] at hok
     have hb : (bs : ℤ) ≤ α s := by
-      by_contra hlt
-      push_neg at hlt
+      by_contra! hlt
       have hle : FilS W T₂ c s (-(α s)) ≤ FilS W T₂ c s (-(A.η : ℤ)) := by
         apply filS_mono_le
         rcases le_or_gt (-(α s)) (-(A.η : ℤ)) with h | h

@@ -490,7 +490,6 @@ open MeasureTheory Matrix Finset
 open scoped ContDiff ENNReal
 open PositivityTheory.RgTw (Mat G)
 open PositivityTheory.RgBcC GlobalTheory.CompanionTheory.SobGL
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 namespace GlobalTheory.CompanionTheory.SobCube
 

@@ -1117,8 +1117,7 @@ lemma bounded_of_exp_sqrt_lt_pow (A c : ℝ) (hA : 0 < A) (hc : 0 < c) :
   have hb := ho.bound (show (0:ℝ) < 1 / 2 by norm_num)
   obtain ⟨N, hN⟩ := Filter.eventually_atTop.mp hb
   refine ⟨max N 0, le_max_right _ _, fun L hL hlt => ?_⟩
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   have hLN : N ≤ L := le_trans (le_max_left _ _) hcon.le
   have h2 : ‖Real.sqrt L ^ (2 * A)‖ ≤ 1 / 2 * ‖Real.exp (c * Real.sqrt L)‖ := hN L hLN
   have hs : Real.sqrt L ^ (2 * A) = L ^ A := by
@@ -1368,8 +1367,7 @@ theorem chebyshev_character_explicit_general (hP : PerronChi) (hRS : RectShiftCh
     obtain ⟨-, -, hz, hd⟩ := hBz β hβ.1
     refine ⟨hβ.2, ?_, hd⟩
     have hβ1 : β < 1 := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       exact DirichletCharacter.LFunction_ne_zero_of_one_le_re χ (Or.inl hχ) (by simpa using hc) hz
     linarith
   have hB₁z : ∀ β ∈ B.filter (fun β => σ₁ < β), DirichletCharacter.LFunction χ (β : ℂ) = 0 := by
@@ -1453,8 +1451,7 @@ theorem chebyshev_character_explicit_general (hP : PerronChi) (hRS : RectShiftCh
       (mul_nonneg (Real.rpow_nonneg hy0.le _) (div_pos (by linarith) hc₁).le) (fun β hβ => ?_)
     rw [Finset.mem_sdiff] at hβ
     have hβσ : β ≤ σ₁ := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       exact hβ.2 (Finset.mem_filter.mpr ⟨hβ.1, hc⟩)
     have hreg := (hBz β hβ.1).2.1
     unfold InRegion at hreg

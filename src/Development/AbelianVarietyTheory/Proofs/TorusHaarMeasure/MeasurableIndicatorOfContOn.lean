@@ -253,8 +253,7 @@ theorem vanish_off : (MeasInvStatement (E := E)) → (VanishAtSStatement (E := E
     by_cases hz : cpt X x0 z ∈ U
     · have hzO : z ∈ OmF X x0 := hz.1
       have hzδ : δ ≤ ‖z‖ := by
-        by_contra h
-        push_neg at h
+        by_contra! h
         exact hz.2 (cpt_mem_satBall X x0 δ (mem_closedBall_zero_iff.mpr h.le))
       simp only [Set.indicator_of_mem hz]
       rw [hχ z hzδ, ← hPF z hzO, zero_sub, norm_neg, pnorm_eq X la P, mul_pow,

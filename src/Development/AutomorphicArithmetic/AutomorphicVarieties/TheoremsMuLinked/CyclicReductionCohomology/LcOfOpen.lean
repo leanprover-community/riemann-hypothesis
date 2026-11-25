@@ -1,5 +1,6 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.DegreeCountCohomology.LcOfOpen
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.TheoremsMuLinked.CyclicReductionCohomology.DualPair
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.TheoremsMuLinked.CyclicReductionCohomology.OmFacts
 import Mathlib.Algebra.Order.Floor.Extended
@@ -94,20 +95,7 @@ private theorem adEx_ext {l : ℕ} [Fact l.Prime] (F : GFrame l) {M : Type} [Mon
 private theorem lc_of_open {R Γ M : Type} [CommRing R] [Group Γ] [TopologicalSpace Γ] [IsTopologicalGroup Γ]
     [AddCommGroup M] [Module R M] (ρ : Representation R Γ M) (H : Subgroup Γ) (hH : IsOpen (H : Set Γ))
     (h : ∀ m, IsLocallyConstant fun g : H => ρ g m) : LC ρ := by
-  intro m
-  rw [IsLocallyConstant.iff_eventually_eq]
-  intro g0
-  have h1 : IsOpen {g : H | ρ g (ρ g0 m) = ρ g0 m} := (h (ρ g0 m)).isOpen_fiber _
-  have h2 : IsOpen (Subtype.val '' {g : H | ρ g (ρ g0 m) = ρ g0 m}) := hH.isOpenMap_subtype_val _ h1
-  have h3 : IsOpen ((fun g : Γ => g * g0⁻¹) ⁻¹' (Subtype.val '' {g : H | ρ g (ρ g0 m) = ρ g0 m})) :=
-    h2.preimage (by fun_prop)
-  have h4 : g0 ∈ ((fun g : Γ => g * g0⁻¹) ⁻¹' (Subtype.val '' {g : H | ρ g (ρ g0 m) = ρ g0 m})) :=
-    ⟨1, by simp, by simp⟩
-  filter_upwards [h3.mem_nhds h4] with g hg
-  obtain ⟨u, hu, e⟩ := hg
-  have e' : g = (u : Γ) * g0 := by rw [e]; simp
-  rw [e', map_mul]
-  exact hu
+  apply _root_.lc_of_open <;> assumption
 
 private theorem lc_mat {Γ R : Type} [TopologicalSpace Γ] {n : ℕ} (f : Γ → Matrix (Fin n) (Fin n) R)
     (h : ∀ i j, IsLocallyConstant fun g => f g i j) : IsLocallyConstant f := by

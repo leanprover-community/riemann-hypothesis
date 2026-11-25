@@ -75,8 +75,6 @@ section Poly
 
 open MvPolynomial HomogeneousLocalization
 
-attribute [local instance] MvPolynomial.gradedAlgebra
-
 variable {o κ Ω : Type} [CommRing o] [Field Ω] [Algebra o Ω]
 
 theorem aeval_mul_of_isHomogeneous {B : Type} [CommRing B] [Algebra o B] (x : κ → B) (t : B)
@@ -93,7 +91,5 @@ theorem aeval_mul_of_isHomogeneous {B : Type} [CommRing B] [Algebra o B] (x : κ
 end Poly
 
 end ProjCoord
-
-attribute [local instance] MvPolynomial.gradedAlgebra
 
 end GlobalTheory.CompanionTheory.Ar

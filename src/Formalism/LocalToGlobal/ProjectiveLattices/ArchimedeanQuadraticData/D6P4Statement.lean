@@ -116,8 +116,7 @@ theorem cover_round {N : ℕ} (b : Fin N → Fin N → ℝ) (hb : LinearIndepend
     intro j
     have h := hℓ j
     rw [dot_self_eq_sq_norm, ← sq_abs ℓ] at h
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     nlinarith [abs_nonneg ℓ]
   have hnorm : ‖(WithLp.linearEquiv 2 ℝ (Fin N → ℝ)).symm (∑ j, (c j - round (c j)) • b j)‖ ≤
       (N : ℝ) * |ℓ| / 2 := by

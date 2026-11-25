@@ -606,8 +606,7 @@ theorem mul_submatrix_castLE {Φ : Type*} [CommRing Φ] {n r a : ℕ} (ha : a �
   refine Finset.sum_subset (Finset.subset_univ _) ?_
   intro k _ hk
   have hka : a ≤ k.val := by
-    by_contra hlt
-    push_neg at hlt
+    by_contra! hlt
     exact hk (Finset.mem_map.2 ⟨⟨k.val, hlt⟩, Finset.mem_univ _, by ext; simp⟩)
   have : U k (Fin.castLE ha y) = 0 := by
     apply hU

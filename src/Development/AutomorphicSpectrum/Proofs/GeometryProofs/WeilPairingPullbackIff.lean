@@ -12,8 +12,6 @@ noncomputable section
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.H1 ReciprocityTheory.ChartRestriction.G.DVR
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.CompanionTheory.Ar.WeilPull
 
 theorem cg_cancel {M : Type*} [CommGroup M] (P Q A : M) : Q⁻¹ * P * (Q * A) = P * A := by

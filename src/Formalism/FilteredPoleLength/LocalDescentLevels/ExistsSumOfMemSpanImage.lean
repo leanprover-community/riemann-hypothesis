@@ -37,32 +37,6 @@ theorem exists_orth_split {ι : Type*} (v : ι → V) (T : Finset ι) (a : V) :
   rw [hwz, norm_add_sq_real, hz w hw]
   nlinarith [sq_nonneg ‖w‖]
 
-private theorem exists_sum_repr_of_mem_span_image {R M ι : Type*} [Semiring R] [AddCommMonoid M] [Module R M]
-    (v : ι → M) (T : Finset ι) (x : M) (hx : x ∈ Submodule.span R (v '' (T : Set ι))) :
-    ∃ r : ι → R, x = ∑ i ∈ T, r i • v i := by
-  classical
-  let S : Submodule R M :=
-    { carrier := {y | ∃ r : ι → R, y = ∑ i ∈ T, r i • v i}
-      add_mem' := by
-        rintro y₁ y₂ ⟨r₁, rfl⟩ ⟨r₂, rfl⟩
-        exact ⟨r₁ + r₂, by simp only [Pi.add_apply, add_smul, Finset.sum_add_distrib]⟩
-      zero_mem' := ⟨0, by simp⟩
-      smul_mem' := by
-        rintro c y ⟨r, rfl⟩
-        exact ⟨c • r, by simp only [Pi.smul_apply, smul_eq_mul, Finset.smul_sum, smul_smul]⟩ }
-  have hle : Submodule.span R (v '' (T : Set ι)) ≤ S := by
-    rw [Submodule.span_le]
-    rintro _ ⟨j, hj, rfl⟩
-    show ∃ r : ι → R, v j = ∑ i ∈ T, r i • v i
-    refine ⟨fun i => if i = j then 1 else 0, ?_⟩
-    rw [Finset.sum_eq_single j]
-    · simp
-    · intro i _ hij
-      simp [hij]
-    · intro hjT
-      exact absurd (Finset.mem_coe.mp hj) hjT
-  exact hle hx
-
 theorem nearestPlane_finset {ι : Type*} [DecidableEq ι] (v : ι → V) (T : Finset ι) :
     ∀ x ∈ Submodule.span ℝ (v '' (T : Set ι)),
       ∃ c : ι → ℤ, ‖x - ∑ i ∈ T, (c i : ℝ) • v i‖ ^ 2 ≤ (1 / 4) * ∑ i ∈ T, ‖v i‖ ^ 2 := by
@@ -73,7 +47,7 @@ theorem nearestPlane_finset {ι : Type*} [DecidableEq ι] (v : ι → V) (T : Fi
     subst hx
     simp
   · intro a s ha ih x hx
-    obtain ⟨r, hr⟩ := exists_sum_repr_of_mem_span_image v (insert a s) x hx
+    obtain ⟨r, hr⟩ := (Submodule.mem_span_image_finset_iff_exists_fun' ℝ).mp hx
     rw [Finset.sum_insert ha] at hr
     obtain ⟨w, hw, z, hz, hwz, hzle⟩ := exists_orth_split v s (v a)
     have hyK : (∑ i ∈ s, r i • v i) ∈ Submodule.span ℝ (v '' (s : Set ι)) :=
@@ -98,7 +72,7 @@ theorem nearestPlane_finset {ι : Type*} [DecidableEq ι] (v : ι → V) (T : Fi
     rw [Finset.sum_insert ha, Finset.sum_insert ha, if_pos rfl, hsum]
     have hdecomp : x - ((k : ℝ) • v a + ∑ i ∈ s, (c' i : ℝ) • v i) =
         (r a - k) • z + ((∑ i ∈ s, r i • v i) + (r a - k) • w - ∑ i ∈ s, (c' i : ℝ) • v i) := by
-      rw [hr, hwz]
+      rw [← hr, hwz]
       module
     have horth : inner ℝ ((r a - k) • z)
         ((∑ i ∈ s, r i • v i) + (r a - k) • w - ∑ i ∈ s, (c' i : ℝ) • v i) = 0 := by

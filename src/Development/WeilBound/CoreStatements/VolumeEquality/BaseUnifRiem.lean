@@ -18,19 +18,6 @@ open GlobalTheory.CompanionTheory.Ar.Cusp.EigCoef
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {g : ℕ} {Λ : Type} [AddCommGroup Λ] [Module (𝓞 E) Λ]
 
-def imB (M : Matrix (Fin g) (Fin g) ℂ) : (Fin g → ℂ) →ₗ[ℝ] (Fin g → ℂ) →ₗ[ℝ] ℝ :=
-  LinearMap.mk₂ ℝ (fun z w => (z ⬝ᵥ M *ᵥ star w).im)
-    (fun z z' w => by rw [add_dotProduct, Complex.add_im])
-    (fun r z w => by rw [smul_dotProduct, Complex.smul_im])
-    (fun z w w' => by rw [star_add, mulVec_add, dotProduct_add, Complex.add_im])
-    (fun r z w => by
-      have h : star (r • w) = (r : ℂ) • star w := by
-        ext i
-        simp
-      rw [h, mulVec_smul, dotProduct_smul, smul_eq_mul, Complex.im_ofReal_mul, smul_eq_mul])
-
-theorem imB_P (R : RiemLat E g Λ) (x y : Λ) : imB R.Hm (R.P x) (R.P y) = R.form x y := R.im x y
-
 theorem inj (R : RiemLat E g Λ) : Function.Injective R.P :=
   _root_.LevelTowerAlt.precomp_injective R
 
@@ -83,11 +70,6 @@ theorem sum_eigComp {V : Type} [AddCommGroup V] [Module ℂ V] (ρ : 𝓞 E →+
   exact (Fintype.sum_equiv (_root_.LevelTowerAlt.embEquiv E) _
     (fun t => _root_.LevelTowerAlt.proj ρ t x)
     fun s => _root_.LevelTowerAlt.eigComp_eq ρ _ x).trans (_root_.LevelTowerAlt.sum_proj ρ x)
-
-theorem adj_herm (R : RiemLat E g Λ) (a a' : 𝓞 E) (ha : (a' : E) = IsCMField.complexConj E (a : E)) (z w : Fin g → ℂ) :
-    R.B a z ⬝ᵥ R.Hm *ᵥ star w = z ⬝ᵥ R.Hm *ᵥ star (R.B a' w) := by
-  obtain rfl : a' = IsCMField.ringOfIntegersComplexConj E a := Subtype.ext ha
-  exact _root_.LevelTowerAlt.ip_adj R a z w
 
 theorem orth (R : RiemLat E g Λ) (s s' : 𝓞 E →+* ℂ) (hne : s ≠ s') (x : Fin g → ℂ) (hx : x ∈ eigSp R.B s)
     (y : Fin g → ℂ) (hy : y ∈ eigSp R.B s') : R.ip x y = 0 := by

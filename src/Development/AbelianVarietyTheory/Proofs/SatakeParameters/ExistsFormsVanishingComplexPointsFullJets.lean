@@ -280,8 +280,7 @@ theorem lin_mem (c : Fin (N + 1) → ℂ) : lin c ∈ ProjSpace.grading ℂ N 1 
 
 theorem exists_X_notMem (z : PSpace ℂ N) :
     ∃ l, (MvPolynomial.X l : MvPolynomial (Fin (N + 1)) ℂ) ∉ z.asHomogeneousIdeal.toIdeal := by
-  by_contra h
-  push_neg at h
+  by_contra! h
   have hle : Ideal.span (Set.range (MvPolynomial.X : Fin (N + 1) → MvPolynomial (Fin (N + 1)) ℂ)) ≤
       z.asHomogeneousIdeal.toIdeal := by
     rw [Ideal.span_le]

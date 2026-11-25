@@ -802,15 +802,7 @@ open ReciprocityTheory.ChartRestriction.DS
 namespace IdentityBound
 
 theorem npq_le (n : ℕ) (ε : Fin n → Bool) : (n : ℝ) * (pOf ε : ℝ) * (qOf ε : ℝ) ≤ (n : ℝ) ^ 3 := by
-  have hp : pOf ε ≤ n := (Finset.card_filter_le _ _).trans (by simp)
-  have hq : qOf ε ≤ n := (Finset.card_filter_le _ _).trans (by simp)
-  have hp' : (pOf ε : ℝ) ≤ n := by exact_mod_cast hp
-  have hq' : (qOf ε : ℝ) ≤ n := by exact_mod_cast hq
-  have h0 : (0 : ℝ) ≤ n := Nat.cast_nonneg n
-  have h1 : (0 : ℝ) ≤ pOf ε := Nat.cast_nonneg _
-  have h2 : (0 : ℝ) ≤ qOf ε := Nat.cast_nonneg _
-  calc (n : ℝ) * (pOf ε : ℝ) * (qOf ε : ℝ) ≤ (n : ℝ) * n * n := by gcongr
-    _ = (n : ℝ) ^ 3 := by ring
+  apply _root_.PositivityTheory.RgHe3.DiscreteSeriesData.npq_le <;> assumption
 
 end IdentityBound
 
@@ -1238,15 +1230,7 @@ namespace PositivityTheory.RgHe3.DropRoots
 open ReciprocityTheory.ChartRestriction.DS
 
 theorem abs_rhoC_le {n : ℕ} (ε : Fin n → Bool) (a : Fin n) : |rhoC ε a| ≤ (n : ℝ) / 2 := by
-  unfold rhoC
-  have h1 : ((univ.filter fun b => a < b ∧ ε b = ε a).card : ℝ) ≤ n := by
-    exact_mod_cast (card_filter_le _ _).trans (by simp)
-  have h2 : ((univ.filter fun b => b < a ∧ ε b = ε a).card : ℝ) ≤ n := by
-    exact_mod_cast (card_filter_le _ _).trans (by simp)
-  have h3 : (0 : ℝ) ≤ ((univ.filter fun b => a < b ∧ ε b = ε a).card : ℝ) := Nat.cast_nonneg _
-  have h4 : (0 : ℝ) ≤ ((univ.filter fun b => b < a ∧ ε b = ε a).card : ℝ) := Nat.cast_nonneg _
-  rw [abs_le]
-  constructor <;> linarith
+  apply _root_.PositivityTheory.RgHe3.HarishChandraParameter.abs_rhoC_le <;> assumption
 
 theorem dot_root {n : ℕ} (x : Fin n → ℝ) {a b : Fin n} (hab : a ≠ b) : dot x (root a b) = x a - x b := by
   simp [dot, root, Pi.single_apply, mul_sub, Finset.sum_sub_distrib]

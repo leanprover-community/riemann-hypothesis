@@ -77,8 +77,7 @@ theorem exists_place_of_prim {R : Type} [CommRing R] (j : Ainf F ⊗[F] E ≃+* 
     ∃ w : InfinitePlace F, ∀ w', w' ≠ w → infComp w' y = 0 := by
   classical
   have hyy : y * y = y := j.injective (by rw [map_mul, hy, he])
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   obtain ⟨w0⟩ : Nonempty (InfinitePlace F) := inferInstance
   obtain ⟨w1, -, h1⟩ := hne w0
   obtain ⟨w2, h12, h2⟩ := hne w1

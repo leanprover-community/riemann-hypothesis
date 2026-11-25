@@ -93,8 +93,7 @@ theorem sum_sq_ge (hL : IsTotallyComplex L) {d : ℤ} (hd : d ≠ 0) {β : L} (h
     rw [hαc] at h1
     exact mul_ne_zero (Int.cast_ne_zero.mpr hd) hβ h1
   obtain ⟨w, hw⟩ : ∃ w : InfinitePlace L, 1 ≤ w ((α : 𝓞 L) : L) := by
-    by_contra H
-    push_neg at H
+    by_contra! H
     obtain ⟨w0⟩ : Nonempty (InfinitePlace L) := inferInstance
     exact absurd (InfinitePlace.one_le_of_lt_one hα0 (fun z _ => H z)) (not_le.mpr (H w0))
   have hwα : w ((α : 𝓞 L) : L) = |(d : ℝ)| * ‖w.embedding β‖ := by

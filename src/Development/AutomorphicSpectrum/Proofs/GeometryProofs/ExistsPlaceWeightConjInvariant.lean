@@ -1,5 +1,6 @@
 module
 
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PEmbeddingWeight
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ExistsPowSubMemSpanOfIsUnitModOfIsAlgClosed
 public import Mathlib.Order.CompletePartialOrder
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ComplexPointConjugate
@@ -134,23 +135,7 @@ theorem orbit_of_prMap_eq {z z' : (Σ k, ι k) → ℂ} (hz : z ∈ nzBlocks K �
   linear_combination (-1 : ℂ) * e
 
 theorem isCompact_unitBlocks : IsCompact (unitBlocks K ι) := by
-  apply Metric.isCompact_of_isClosed_isBounded
-  · have h : unitBlocks K ι = ⋂ k, (fun z : (Σ k, ι k) → ℂ => blockSq z k) ⁻¹' {1} := by
-      ext z
-      simp [unitBlocks]
-    rw [h]
-    exact isClosed_iInter fun k => isClosed_singleton.preimage (blockSq_contDiff (n := 0) k).continuous
-  · rw [Metric.isBounded_iff_subset_closedBall 0]
-    refine ⟨1, fun z hz => ?_⟩
-    rw [mem_closedBall_zero_iff, pi_norm_le_iff_of_nonneg zero_le_one]
-    rintro ⟨k, i⟩
-    have h1 : blockSq z k = 1 := (show ∀ k, blockSq z k = 1 from hz) k
-    have h2 : ‖z ⟨k, i⟩‖ ^ 2 ≤ blockSq z k := by
-      unfold blockSq
-      exact Finset.single_le_sum (f := fun j => ‖z ⟨k, j⟩‖ ^ 2) (fun j _ => by positivity)
-        (Finset.mem_univ i)
-    rw [h1] at h2
-    nlinarith [norm_nonneg (z ⟨k, i⟩)]
+  apply _root_.GroundTheory.Heights₂.Heights.HilbertSamuel.EmbeddingWeight.isCompact_sphere <;> assumption
 
 theorem unitBlocks_subset : unitBlocks K ι ⊆ nzBlocks K ι := by
   intro z hz

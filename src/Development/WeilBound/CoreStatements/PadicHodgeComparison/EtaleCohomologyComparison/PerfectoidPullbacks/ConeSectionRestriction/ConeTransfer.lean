@@ -198,8 +198,7 @@ theorem key {s : ℕ} {V : X.Opens} {n : ℕ} {t : Fin (n + 1) → Γ(X, V)} {E 
       simp [cc]
     · intro I _ hI
       obtain ⟨k, hk'⟩ : ∃ k, I k ≠ k := by
-        by_contra h
-        push_neg at h
+        by_contra! h
         exact hI (funext h)
       have h0' : ∏ k, cc k (I k) = 0 := Finset.prod_eq_zero (Finset.mem_univ k) (by simp [cc, Ne.symm hk'])
       rw [h0']
@@ -763,8 +762,7 @@ theorem form_id_eq {n : ℕ} (E : Frame Φ n) (σ : ∀ T : C, E.D ⟶ T) (w : �
     rw [e, mul_one]
   · intro I _ hI
     obtain ⟨k, hk⟩ : ∃ k, I k ≠ k := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       exact hI (funext hc)
     have e : ∏ k, ee E k (I k) = 0 := Finset.prod_eq_zero (Finset.mem_univ k) (by simp [ee, hk])
     rw [e, mul_zero]

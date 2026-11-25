@@ -9,6 +9,7 @@ public import Development.AutomorphicSpectrum.Proofs.MembershipProofs.ExistsInva
 public import Development.AutomorphicSpectrum.Proofs.MembershipProofs.IntegrablePair
 import Mathlib.Tactic.Linter.Style
 public import Development.AutomorphicSpectrum.Definitions.MembershipCriteria.LaEqSqrtSmulLam
+import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.PfDictMod
 
 @[expose] public section
 
@@ -49,26 +50,7 @@ theorem t2Space_local_field_bis : T2Space k := by
 
 theorem cyc (hc : Continuous ψ) (hn : ∀ x, ‖ψ x‖ = 1) (h1 : ψ ≠ 1) {φ₀ : (κ → k) → ℂ} (h₀ : φ₀ ∈ SB (κ → k)) (hne : φ₀ ≠ 0)
     (l : ((κ → k) → ℂ) →ₗ[ℂ] ℂ) (hl : ∀ w, l (schr ψ w φ₀) = 0) : ∀ φ ∈ SB (κ → k), l φ = 0 := by
-  have := t2Space_local_field_bis (k := k)
-  obtain ⟨u, hu⟩ := (GlobalTheory.CompanionTheory.VacLoc.GoodInh.exists_goodChar k).2 ψ hc hn h1
-  let d : Darboux (R := k) (W := (κ → k) × (κ → k)) (fun w w' => w.1 ⬝ᵥ w'.2 - w'.1 ⬝ᵥ w.2) κ :=
-    ⟨LinearEquiv.refl _ _, fun _ _ => rfl⟩
-  let : MeasurableSpace (κ → k) := borel _
-  have : BorelSpace (κ → k) := ⟨rfl⟩
-  obtain ⟨S, hS⟩ := GlobalTheory.CompanionTheory.SchrSys.exists_isModel ψ _ u d Measure.addHaar hu inferInstance
-  have hcyc := (GlobalTheory.CompanionTheory.VacLoc.ModelLine.cyclic_and_line ψ _ u d _ S ⊥ (fun _ => 1) ⟨φ₀, h₀⟩ ⟨φ₀, h₀⟩ hu hS).1
-    (fun h => hne (congrArg Subtype.val h))
-  intro φ hφ
-  have hle : Submodule.span ℂ (Set.range fun x => S.rho x ⟨φ₀, h₀⟩) ≤ LinearMap.ker (l ∘ₗ (SB (κ → k)).subtype) := by
-    rw [Submodule.span_le]
-    rintro _ ⟨w, rfl⟩
-    show l _ = 0
-    rw [Submodule.subtype_apply, hS.1]
-    exact hl w
-  have hm : (⟨φ, hφ⟩ : SB (κ → k)) ∈ Submodule.span ℂ (Set.range fun x => S.rho x ⟨φ₀, h₀⟩) := by
-    rw [show Submodule.span ℂ (Set.range fun x => S.rho x ⟨φ₀, h₀⟩) = ⊤ from hcyc]
-    trivial
-  exact hle hm
+  apply _root_.PositivityTheory.KCo.Mod.cyc <;> assumption
 
 theorem core (hc : Continuous ψ) (hn : ∀ x, ‖ψ x‖ = 1) (h1 : ψ ≠ 1) {φ₀ : (κ → k) → ℂ} (h₀ : φ₀ ∈ SB (κ → k)) (hne : φ₀ ≠ 0)
     (A : Set ((κ → k) × (κ → k))) (l : ((κ → k) → ℂ) →ₗ[ℂ] ℂ) (hA : ∀ a ∈ A, ∀ φ ∈ SB (κ → k), l (schr ψ a φ) = l φ)
