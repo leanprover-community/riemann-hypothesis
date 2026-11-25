@@ -44,33 +44,3 @@ noncomputable section
 open CategoryTheory AlgebraicGeometry TopologicalSpace NumberField IsDedekindDomain
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open GlobalTheory GlobalTheory.Cartier GlobalTheory.ProjVar GlobalTheory.TrueGeo Formalism.BasicNotions
-
-namespace GlobalTheory.TrueGeo.OfModel
-
-section Values
-
-variable {K : Type} [Field K] {Z : Scheme.{0}} [IsIntegral Z] (y : Sp K ⟶ Z)
-
-theorem valAt_algebraMap (a : Z.presheaf.stalk (below y)) :
-    valAt y (algebraMap _ Z.functionField a) = (Scheme.stalkClosedPointTo y).hom a := by
-  have h : RegAt (below y) (algebraMap _ Z.functionField a) := ⟨a, rfl⟩
-  rw [valAt, dif_pos h]
-  exact congrArg _ (IsFractionRing.injective (Z.presheaf.stalk (below y)) Z.functionField h.choose_spec)
-
-theorem valAt_fnOf {U : Z.Opens} (hU : below y ∈ U) (h : ⊤ ≤ y ⁻¹ᵁ U) (a : Γ(Z, U)) :
-    valAt y (fnOf U (gen_mem hU) a) =
-      (y.appLE U ⊤ h ≫ (Scheme.ΓSpecIso (CommRingCat.of K)).hom).hom a := by
-  have e : Z.presheaf.germ U _ hU ≫ Scheme.stalkClosedPointTo (R := CommRingCat.of K) y =
-      y.appLE U ⊤ h ≫ (Scheme.ΓSpecIso (CommRingCat.of K)).hom := by
-    rw [Scheme.germ_stalkClosedPointTo]
-    simp [Iso.trans_hom, Scheme.Hom.app_eq_appLE, Scheme.Hom.appLE_map_assoc]
-  rw [← algebraMap_germ hU, valAt_algebraMap, ← e]
-  rfl
-
-end Values
-
-variable {F : Type} [Field F] [NumberField F]
-
-variable {Y : Var F} (M : TrueGeo.Model Y) (B : LB M.X)
-
-end GlobalTheory.TrueGeo.OfModel

@@ -80,9 +80,6 @@ def diagForm (b : Module.Basis n ℂ M) (a : n → ℝ) : M →ₗ[ℂ] M →ₗ
     (fun _ _ _ => by simp [mul_add, Finset.sum_add_distrib])
     (fun _ _ _ => by simp [Finset.mul_sum, mul_left_comm])
 
-theorem diagForm_apply (b : Module.Basis n ℂ M) (a : n → ℝ) (v w : M) :
-    diagForm b a v w = ∑ i, a i * (b.repr v i * starRingEnd ℂ (b.repr w i)) := rfl
-
 theorem diagForm_symm (b : Module.Basis n ℂ M) (a : n → ℝ) (v w : M) :
     diagForm b a w v = starRingEnd ℂ (diagForm b a v w) := by
   simp [diagForm_apply, mul_comm]
@@ -97,12 +94,6 @@ theorem diagForm_pos (b : Module.Basis n ℂ M) {a : n → ℝ} (ha : ∀ i, 0 <
 variable [DecidableEq n]
 
 def dualGram (M : Matrix n n ℂ) : Matrix n n ℂ := M⁻¹ᵀ
-
-theorem dualGram_posDef {A : Matrix n n ℂ} (hA : A.PosDef) : (dualGram A).PosDef := hA.inv.transpose
-
-theorem dualGram_conj (A T : Matrix n n ℂ) : dualGram (Tᴴ * A * T) = (T⁻¹ᵀ)ᴴ * dualGram A * T⁻¹ᵀ := by
-  simp only [dualGram, Matrix.mul_inv_rev, transpose_mul, Matrix.mul_assoc, ← conjTranspose_nonsing_inv]
-  rfl
 
 end Gram
 
@@ -132,7 +123,6 @@ theorem isComb_iff {m : ℕ} (u : Fin m → TanM x t.G) (a : Fin m → S) (w : T
 section Push
 
 variable {f : X' ⟶ X} (m : SABMap t' t f) (x' : Sp S ⟶ X') (hx : x' ≫ f = x)
-
 
 include hx in
 theorem isTan_push {v : Sp (DualNumber S) ⟶ t'.G.left} (hv : IsTanAtG t' x' v) : IsTanAtG t x (v ≫ m.φ) := by
@@ -222,7 +212,6 @@ instance finite_tanM (y : Sp ℂ ⟶ X) : Module.Finite ℂ (TanM y t.G) := by
   obtain ⟨a, ha, -⟩ := h' (isTan_tv w)
   rw [(isComb_iff (fun i => tanOf (isTan_map _ e (hD i))) a w).1 ha]
   exact Submodule.sum_mem _ fun i _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨i, rfl⟩)
-
 
 variable (t) in
 theorem exists_isBlockMetric (y : Sp ℂ ⟶ X) : ∃ h : TanM y t.G →ₗ[ℂ] TanM y t.G →ₗ⋆[ℂ] ℂ, IsBlockMetric h := by

@@ -310,12 +310,7 @@ theorem domPt_lact [Fintype Tau] (hp : X.p0 = r - j) (γ : GL (Fin r) E) {x : Fr
 
 def hodgeC (t : Tau) : ℝ := Real.pi * X.c (ι t)
 
-theorem hodgeC_pos (t : Tau) : 0 < hodgeC X ι t :=
-  mul_pos Real.pi_pos (mul_pos two_pos (norm_pos_iff.2 ((map_ne_zero _).2 X.ξ0_ne)))
-
 alias psi_nonempty := _root_.GlobalTheory.LineHeight.nonempty_cmType
-
-theorem sum_nonempty {r j : ℕ} (hj : j ≤ r) (hr : 0 < r) : Nonempty (Fin j ⊕ Fin (r - j)) := ⟨idx hj ⟨0, hr⟩⟩
 
 section Models
 
@@ -349,9 +344,6 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj Formalism.L2.P
 
 variable {H : Host E} {Dw : Datum H} {l : Level H} {Xo : Moduli Dw l} {c : Coeff l} {σ : c.F →+* ℂ}
   (U : Unf Xo c σ r) (hU : IsUnf U) (e : Dw.p = j)
-
-include hU e in
-theorem le_of_isUnf : j ≤ r := by have := hU.1; omega
 
 include hU e in
 theorem first_index_eq_of_unfolded (k : U.Comp) : (U.X k).p0 = r - j := by

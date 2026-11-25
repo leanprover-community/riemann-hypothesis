@@ -62,7 +62,6 @@ variable {X : Scheme.{0}} [IsIntegral X]
 theorem gen_mem {U : X.Opens} {x : X} (hx : x ∈ U) : genericPoint X ∈ U :=
   ((genericPoint_spec X).mem_open_set_iff U.isOpen).2 ⟨x, trivial, hx⟩
 
-
 omit [IsIntegral X] in
 theorem memInf {U V : X.Opens} {x : X} (h : x ∈ U) (h' : x ∈ V) : x ∈ U ⊓ V := ⟨h, h'⟩
 
@@ -267,7 +266,6 @@ theorem germOf_eq_iff {x : X} {f g : X.functionFieldˣ} :
   change UnitAt x ((f⁻¹ * g : X.functionFieldˣ) : X.functionField) ↔ _
   rw [Units.val_mul, Units.val_inv_eq_inv_val, div_eq_inv_mul]
 
-
 variable (X) in
 def cartierGroup : AddSubgroup (∀ x : X, Germ x) where
   carrier := {D | ∀ x, ∃ U : X.Opens, x ∈ U ∧ ∃ f, ∀ y ∈ U, D y = germOf y f}
@@ -279,7 +277,6 @@ def cartierGroup : AddSubgroup (∀ x : X, Germ x) where
   neg_mem' {D} hD x :=
     have ⟨U, hU, f, hf⟩ := hD x
     ⟨U, hU, f⁻¹, fun y hy => congrArg (- ·) (hf y hy)⟩
-
 
 variable (X) in
 def CartierDiv : Type := cartierGroup X
@@ -402,10 +399,6 @@ theorem vanishesAt_iff : D.VanishesAt x f ↔ D.RegularAt x f ∧ ¬ D.Generates
   obtain ⟨g, hg⟩ := D.exists_isEqn x
   rw [hg.vanishesAt_iff, hg.regularAt_iff, hg.generatesAt_iff, zeroAt_iff]
 
-theorem GeneratesAt.regularAt (h : D.GeneratesAt x f) : D.RegularAt x f := by
-  obtain ⟨g, hg, hu⟩ := h
-  exact ⟨g, hg, hu.regAt⟩
-
 theorem GeneratesAt.ne_zero (h : D.GeneratesAt x f) : f ≠ 0 := by
   obtain ⟨g, hg, hu⟩ := h
   rintro rfl
@@ -472,22 +465,8 @@ theorem GeneratesAt.mul (h : D.GeneratesAt x f) (h' : E.GeneratesAt x f') :
   rw [e]
   exact r.mul r'
 
-theorem VanishesAt.mul (h : D.VanishesAt x f) (h' : E.RegularAt x f') :
-    (D + E).VanishesAt x (f * f') := by
-  obtain ⟨g, hg, r⟩ := h
-  obtain ⟨g', hg', r'⟩ := h'
-  refine ⟨g * g', hg.add hg', ?_⟩
-  have e : f * f' * ((g * g' : X.functionFieldˣ) : X.functionField) =
-      (f * g) * (f' * g') := by
-    rw [Units.val_mul]; ring
-  rw [e]
-  exact r.mul r'
-
 theorem regularAt_zero_iff : (0 : CartierDiv X).RegularAt x f ↔ RegAt x f := by
   rw [(isEqn_zero x).regularAt_iff, Units.val_one, mul_one]
-
-theorem generatesAt_zero_iff : (0 : CartierDiv X).GeneratesAt x f ↔ UnitAt x f := by
-  rw [(isEqn_zero x).generatesAt_iff, Units.val_one, mul_one]
 
 theorem RegularAt.regAt_mul (h : D.RegularAt x f) (h' : RegAt x f') : D.RegularAt x (f' * f) := by
   obtain ⟨g, hg, r⟩ := h
@@ -640,7 +619,6 @@ theorem Presents.unique (h : Presents D L r) (h' : Presents E L r) : D = E := by
   refine ext_of_isEqn fun x => ?_
   obtain ⟨i, hi⟩ := exists_chart h.isLB x
   exact ⟨r i, h.isEqn i x hi, h'.isEqn i x hi⟩
-
 
 open Classical in
 def frameRat (L : LB X) (i₀ : L.ι) (h₀ : genericPoint X ∈ L.U i₀) (i : L.ι) : X.functionFieldˣ :=
@@ -1026,7 +1004,6 @@ theorem isDivOfForm_canonical : IsDivOfForm (canonical p d) (baseForm p d) := by
   rw [hE.iff_unitAt, key, mul_div_cancel_left₀ _ (Units.ne_zero _)]
   exact hu
 
-
 variable {p d} in
 theorem IsDivOfForm.unique {η : RatForms p d} (hη : η ≠ 0) (h : IsDivOfForm D η)
     (h' : IsDivOfForm E η) : D = E := by
@@ -1040,7 +1017,6 @@ theorem IsDivOfForm.unique {η : RatForms p d} (hη : η ≠ 0) (h : IsDivOfForm
     exact hη (by rw [← ha, zero_smul])
   exact ⟨Units.mk0 a ha0, h U ω hω x hx _ (by rw [Units.val_mk0, ha]),
     h' U ω hω x hx _ (by rw [Units.val_mk0, ha])⟩
-
 
 omit [SmoothOfRelativeDimension d p] in
 variable {p d} in

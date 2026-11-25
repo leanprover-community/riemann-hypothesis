@@ -64,7 +64,6 @@ section General
 
 variable {K : Type u} [Field K] [IsAlgClosed K]
 
-
 set_option autoImplicit false in
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj in
 variable {K : Type u} [Field K] [IsAlgClosed K] in
@@ -78,22 +77,6 @@ theorem _root_.GlobalTheory.ComplexPoints.exists_point_mem {X : Scheme.{u}}
   exact ⟨pointOfClosedPoint p y hy, pointOfClosedPoint_comp p y hy,
     fun a => by rw [pointOfClosedPoint_apply]; exact hyZ⟩
 
-theorem exists_geomPoint_mem {X S : Scheme.{u}} (p : X ⟶ S) [LocallyOfFiniteType p]
-    (t : Spec (.of K) ⟶ S) [Surjective t]
-    {Z : Set X} (hZ : IsLocallyClosed Z) (hne : Z.Nonempty) :
-    ∃ x : Spec (.of K) ⟶ X, x ≫ p = t ∧ ∀ a, x a ∈ Z := by
-  obtain ⟨z, hz⟩ := hne
-  obtain ⟨w, hw⟩ := (pullback.fst p t).surjective z
-  obtain ⟨y, hy, hyZ⟩ := exists_point_mem (pullback.snd p t)
-    (hZ.preimage (pullback.fst p t).continuous) ⟨w, show pullback.fst p t w ∈ Z from hw ▸ hz⟩
-  refine ⟨y ≫ pullback.fst p t, ?_, fun a => hyZ a⟩
-  rw [Category.assoc, pullback.condition, reassoc_of% hy]
-
-theorem surjective_specMap_field {k L : Type u} [Field k] [Field L] (σ : k →+* L) :
-    Surjective (Spec.map (CommRingCat.ofHom σ)) :=
-  ⟨fun x => ⟨IsLocalRing.closedPoint L, Subsingleton.elim (α := PrimeSpectrum k) _ _⟩⟩
-
-
 set_option autoImplicit false in
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj in
 variable {K : Type u} [Field K] [IsAlgClosed K] in
@@ -105,7 +88,6 @@ theorem _root_.GlobalTheory.ComplexPoints.top_le_preimage_iff {L : Type u} [Fiel
   · intro h b _
     rw [Subsingleton.elim b a]
     exact h
-
 
 set_option autoImplicit false in
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj in
@@ -133,7 +115,6 @@ theorem _root_.GlobalTheory.ComplexPoints.surjective_of_geomPoints_lift {A B S :
   apply hy2 a
   exact ⟨w a, by rw [← Scheme.Hom.comp_apply, hw, Scheme.Hom.comp_apply]⟩
 
-
 set_option autoImplicit false in
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj in
 variable {K : Type u} [Field K] [IsAlgClosed K] in
@@ -153,7 +134,6 @@ theorem _root_.GlobalTheory.ComplexPoints.hom_ext_of_points {X Y S : Scheme.{u}}
 end General
 
 variable {X Y : Scheme.{0}}
-
 
 set_option autoImplicit false in
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj in
@@ -194,7 +174,6 @@ private theorem opens_le_of_forall_complex_section (p : X ⟶ _root_.Reciprocity
   have hU : ⊤ ≤ x ⁻¹ᵁ U := (_root_.GlobalTheory.ComplexPoints.top_le_preimage_iff x U a).mpr (hx2 a).1
   exact (hx2 a).2 ((_root_.GlobalTheory.ComplexPoints.top_le_preimage_iff x V a).mp (h x hx1 hU))
 
-
 set_option autoImplicit false in
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj in
 variable {X Y : Scheme.{0}} in
@@ -215,7 +194,6 @@ theorem _root_.GlobalTheory.ComplexPoints.eq_of_valAt'_eq (p : X ⟶ _root_.Reci
   rw [map_sub, map_sub, he, sub_self] at hne
   exact (hne rfl).elim
 
-
 set_option autoImplicit false in
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj in
 variable {X Y : Scheme.{0}} in
@@ -235,7 +213,6 @@ theorem _root_.GlobalTheory.ComplexPoints.isUnit_of_valAt'_ne_zero (p : X ⟶ _r
   erw [← CommRingCat.comp_apply, ← Functor.map_comp, hid, CategoryTheory.Functor.map_id,
     CommRingCat.id_apply]
 
-
 set_option autoImplicit false in
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj in
 variable {X Y : Scheme.{0}} in
@@ -248,12 +225,10 @@ theorem _root_.GlobalTheory.ComplexPoints.over_hom_ext_of_complexPoints {A B : O
   have := h (Over.homMk x (by simpa using hx))
   simpa using congrArg (fun k => k.left) this
 
-
 set_option autoImplicit false in
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj in
 variable {X Y : Scheme.{0}} in
 alias _root_.GlobalTheory.ComplexPoints.opens_le_of_complexPoints := _root_.GlobalTheory.ComplexPoints.opens_le_of_forall_complex_section
-
 
 set_option autoImplicit false in
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj in

@@ -91,7 +91,6 @@ theorem fg_extLat {M : Submodule (𝓞 K) X} (h : M.FG) : (extLat ι M).FG := by
   obtain ⟨S, rfl⟩ := h
   exact extLat_span ι S ▸ Submodule.fg_span (S.finite_toSet.image ι)
 
-
 variable {ι} in
 theorem IsExtension.span_extLat (hι : IsExtension ι) {M : Submodule (𝓞 K) X}
     (h : Submodule.span K (M : Set X) = ⊤) : Submodule.span E (extLat ι M : Set X') = ⊤ := by
@@ -122,10 +121,6 @@ theorem IsFull.latRank_eq [NumberField K] (h : IsFull M) : ReciprocityTheory.Geo
 
 theorem IsFull.extLat (h : IsFull M) (hι : IsExtension ι) : IsFull (extLat ι M) :=
   ⟨fg_extLat ι h.fg, hι.span_extLat h.span⟩
-
-theorem isFull_span {n : Type*} [Finite n] (b : Module.Basis n K X) :
-    IsFull (Submodule.span (𝓞 K) (Set.range b)) :=
-  ⟨Submodule.fg_span (Set.finite_range b), by rw [Submodule.span_span_of_tower, b.span_eq]⟩
 
 end GlobalTheory.HermTools
 
@@ -174,7 +169,6 @@ theorem finite_top (hp : IsProjOver p) (hB : B.IsLB) : Module.Finite k (H0 p B �
 variable [Algebra k E] {q : T ⟶ Sp E} {r : T ⟶ Y} (H : IsPullback r q p (spMap (algebraMap k E)))
   {B' : LB T} (hB : B.IsLB) (hB' : B'.IsLB) (a : ChartPull B' B r) {W : T.Opens}
 
-
 include hB hB' in
 theorem linearIndependent_pullChart (h : W ≤ r ⁻¹ᵁ O) (h' : r ⁻¹ᵁ O ≤ W) {ι : Type*} [Fintype ι]
     {f : ι → H0 p B O} (hf : LinearIndependent k f) :
@@ -207,7 +201,6 @@ theorem linearIndependent_pullChart (h : W ≤ r ⁻¹ᵁ O) (h' : r ⁻¹ᵁ O 
   simp only [map_sum, germ_smul, map_zero]
   refine Eq.trans (Finset.sum_congr rfl fun i _ => ?_) e₃
   exact congrArg (· * _) (ger_algX y hyV _).symm
-
 
 include hB hB' in
 theorem isExtension_pullChart_top (hp : IsProjOver p) (hq : IsProjOver q) :
@@ -252,7 +245,6 @@ theorem restr_pullChart (a : ChartPull B' B r) (hq : r ≫ p = q ≫ spMap φ) (
 def polarMap (C : ProdChart P B N) (t : P.Sec) (ht : O ≤ nonzeroLocus t) : H0 p N ⊤ →ₗ[k] H0 p B O :=
   (C.mulEquiv (σ := H0.ofSec p O t) fun y hy i hi => by
     rw [germ_ofSec, isUnit_ger_iff]; exact ht hy).symm.toLinearMap ∘ₗ restr le_top
-
 
 variable (p B) in
 def polar (hP : P.IsLB) (hB : B.IsLB) (t : P.Sec) (ht : O ≤ nonzeroLocus t) : Submodule k (H0 p B O) :=

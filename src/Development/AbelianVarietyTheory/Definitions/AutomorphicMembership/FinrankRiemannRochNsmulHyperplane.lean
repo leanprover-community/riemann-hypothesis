@@ -68,15 +68,6 @@ namespace GlobalTheory.PositivityModel
 
 variable {k : Type} [Field k] {X : Scheme.{0}} [Algebra k Γ(X, ⊤)] {H L N A : LB X}
 
-theorem genericPoint_mem [IsIntegral X] (hd : topologicalKrullDim X = 1) {Z : Closeds X}
-    (hZ : IsCompleteCurve k Z) : genericPoint X ∈ Z := by
-  by_contra hn
-  have h := topologicalKrullDim_add_one_le Z.isClosed isClosed_univ fun x _ =>
-    ⟨genericPoint X, trivial, hn, genericPoint_specializes x⟩
-  have h' := h.trans ((topologicalKrullDim_subspace_le X Set.univ).trans hd.le)
-  rw [hZ.2] at h'
-  exact absurd h' (by decide)
-
 section Space
 open ProjSpace
 variable (k) (D : ℕ)
@@ -120,17 +111,6 @@ def chi (Δ : Y.Dv) : ℤ := GlobalTheory.chi F (Y.sheaf Δ)
 
 def hZeroEquiv (Δ : Y.Dv) : Y.H 0 Δ ≃ₗ[F] Y.H0 Δ := cohEquiv (presents_toLB Δ)
 
-
-variable {Y} in
-theorem hdim_eq_of_toPic_eq {Δ : Y.Dv} {L : LB Y.X} (hL : L.IsLB) (e : toPic Δ = cls L hL) (i : ℕ) :
-    Y.hdim i Δ = GlobalTheory.hdim F (twist (structureModule Y.X) L) i :=
-  (nonempty_twist_iso_of_cls_eq _ (isLB_toLB Δ) hL e).elim (hdim_congr F i)
-
-
-variable {Y} in
-theorem hdim_congr {Δ Δ' : Y.Dv} (e : toPic Δ = toPic Δ') (i : ℕ) : Y.hdim i Δ = Y.hdim i Δ' :=
-  hdim_eq_of_toPic_eq (isLB_toLB Δ') e i
-
 def inter (Δ : Fin Y.dim → Y.Dv) : ℤ := interNum F (structureModule Y.X) fun i => Y.lb (Δ i)
 
 theorem inter_eq_multiDiff (Δ : Fin Y.dim → Y.Dv) : Y.inter Δ = multiDiff Δ Y.chi 0 := by
@@ -138,13 +118,11 @@ theorem inter_eq_multiDiff (Δ : Fin Y.dim → Y.Dv) : Y.inter Δ = multiDiff Δ
   rw [Function.comp_apply, map_zero] at e
   exact (interNum_eq_multiDiff F _ fun i => isLB_toLB (Δ i)).trans e.symm
 
-
 variable {Y} in
 theorem inter_eq_of_toPic_eq {Δ : Fin Y.dim → Y.Dv} {L : Fin Y.dim → LB Y.X}
     (hL : ∀ i, (L i).IsLB) (e : ∀ i, toPic (Δ i) = cls (L i) (hL i)) :
     Y.inter Δ = interNum F (structureModule Y.X) L :=
   interNum_congr_cls F _ (fun i => isLB_toLB (Δ i)) hL e
-
 
 theorem inter_comp_perm (Δ : Fin Y.dim → Y.Dv) (σ : Equiv.Perm (Fin Y.dim)) :
     Y.inter (Δ ∘ σ) = Y.inter Δ :=
@@ -170,20 +148,7 @@ def IsCurve (Z : Y.Cl) : Prop :=
 
 def deg (C : Y.Cl) (Δ : Y.Dv) : ℤ := interNumRed F C ![Y.lb Δ]
 
-
-
-
-
-
-theorem isCurve_iff (Z : Y.Cl) : Y.IsCurve Z ↔ IsCompleteCurve F Z := (Y.isCompleteCurve_iff Z).symm
-
-
 variable {Y}
-
-theorem deg_principal (C : Y.Cl) (g : Y.Fnˣ) : Y.deg C (principal g) = 0 :=
-  interNumRed_one_eq_zero (isLB_toLB _) (toPic_principal g) C
-
-@[simp] theorem deg_zero (C : Y.Cl) : Y.deg C 0 = 0 := deg_principal C 1
 
 namespace IsCurve
 
@@ -199,25 +164,16 @@ def degHom : Y.Dv →+ ℤ := AddMonoidHom.mk' (Y.deg C) hC.deg_add
 
 end IsCurve
 
-
 variable (Y) in
 def nef (Δ : Y.Dv) : Prop := IsNef F (Y.lb Δ)
 
-
 variable (Y) in
 def big (Δ : Y.Dv) : Prop := IsBig F (Y.lb Δ)
-
 
 variable (Y) in
 def ample (Δ : Y.Dv) : Prop := IsAmpleLB (Y.lb Δ)
 
 variable {Δ A B : Y.Dv} {L : LB Y.X}
-
-
-
-theorem hasNonzeroSec_iff : HasNonzeroSec (Y.lb Δ) ↔ Y.H0 Δ ≠ ⊥ :=
-  hasNonzeroSec_iff_nontrivial.trans
-    ((Y.hZeroEquiv Δ).toEquiv.nontrivial_congr.trans Submodule.nontrivial_iff_ne_bot)
 
 end Var
 

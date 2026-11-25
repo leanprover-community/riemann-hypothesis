@@ -126,87 +126,6 @@ namespace GlobalTheory.TrueGeo.HorizPt
 def strHom {R : Type} [CommRing R] {X : Scheme.{0}} (q : X ⟶ Sp R) (U : X.Opens) : CommRingCat.of R ⟶ Γ(X, U) :=
   (Scheme.ΓSpecIso (CommRingCat.of R)).inv ≫ q.appLE ⊤ U le_top
 
-theorem fromSpec_str {R : Type} [CommRing R] {X : Scheme.{0}} (q : X ⟶ Sp R) {U : X.Opens} (hU : IsAffineOpen U) :
-    hU.fromSpec ≫ q = Spec.map (strHom q U) := by
-  rw [← IsAffineOpen.SpecMap_appLE_fromSpec q (isAffineOpen_top _) hU le_top, IsAffineOpen.fromSpec_top,
-    Scheme.isoSpec_Spec_inv, ← Spec.map_comp]
-  rfl
-
-theorem charZero {X : Scheme.{0}} (q : X ⟶ Sp ℤ) [Flat q] {U : X.Opens} (hU : IsAffineOpen U)
-    [Nontrivial Γ(X, U)] : CharZero Γ(X, U) := by
-  have h₁ : (q.appLE ⊤ U le_top).hom.Flat :=
-    HasRingHomProperty.appLE @Flat q inferInstance ⟨⊤, isAffineOpen_top _⟩ ⟨U, hU⟩ le_top
-  have h₂ : (strHom q U).hom.Flat :=
-    RingHom.Flat.comp (RingHom.Flat.of_bijective
-      (ConcreteCategory.bijective_of_isIso (Scheme.ΓSpecIso (CommRingCat.of ℤ)).inv)) h₁
-  have h₃ : (algebraMap ℤ Γ(X, U)).Flat := by
-    rwa [Subsingleton.elim (algebraMap ℤ Γ(X, U)) (strHom q U).hom]
-  have := RingHom.flat_algebraMap_iff.1 h₃
-  exact charZero_of_injective_algebraMap (FaithfulSMul.algebraMap_injective ℤ Γ(X, U))
-
-theorem main : ∀ (F : Type) [Field F] [NumberField F] (Y : Var F) (N : TrueGeo.Model Y) (W : N.X.Opens) (z : N.X) (g : Γ(N.X, W)), z ∈ W → g ≠ 0 → z ∉ N.X.basicOpen g → ∃ (v : HeightOneSpectrum (𝓞 F)) (e : Ext v) (y : AlgPt Y) (yt : Sp e.O ⟶ N.X), spMap e.O.subtype ≫ yt = y.1 ≫ N.j ∧ ⊤ ≤ yt ⁻¹ᵁ W ∧ yt (IsLocalRing.closedPoint e.O) ∉ N.X.basicOpen g ∧ N.j (below y.1) ∈ N.X.basicOpen g := by
-  intro F _ _ Y N W z g hz hg hzg
-  have := N.ar.isIntegral
-  have := N.ar.flat
-  have : IsProper N.p := by
-    obtain ⟨n, c, hc, h⟩ := N.ar.isProjOver
-    have := isProper_str (𝓞 F) n
-    rw [← h]
-    infer_instance
-  obtain ⟨U, hU, hzU, hUW⟩ := exists_isAffineOpen_mem_and_subset hz
-  have hle : U ≤ W := hUW
-  have : Nonempty U := ⟨⟨z, hzU⟩⟩
-  have : CharZero Γ(N.X, U) := charZero (N.p ≫ spMap (Int.castRingHom (𝓞 F))) hU
-  let _ : Algebra (𝓞 F) Γ(N.X, U) := (strHom N.p U).hom.toAlgebra
-  have : Algebra.FiniteType (𝓞 F) Γ(N.X, U) :=
-    RingHom.FiniteType.comp (N.p.finiteType_appLE (isAffineOpen_top _) hU le_top)
-      (RingHom.FiniteType.of_surjective _
-        (ConcreteCategory.bijective_of_isIso (Scheme.ΓSpecIso (CommRingCat.of (𝓞 F))).inv).2)
-  set g' : Γ(N.X, U) := N.X.presheaf.map (homOfLE hle).op g with hg'
-  have hg0 : g' ≠ 0 := fun h => hg (map_injective_of_isIntegral N.X (homOfLE hle) (by rw [← hg', h, map_zero]))
-  have hb : ∀ x : PrimeSpectrum Γ(N.X, U), hU.fromSpec x ∈ N.X.basicOpen g ↔ g' ∉ x.asIdeal := by
-    intro x
-    have h₁ : hU.fromSpec x ∈ U := by
-      have := hU.range_fromSpec
-      exact (Set.ext_iff.1 this _).1 ⟨x, rfl⟩
-    have h₂ : hU.fromSpec x ∈ N.X.basicOpen g' ↔ g' ∉ x.asIdeal := by
-      change x ∈ hU.fromSpec ⁻¹ᵁ N.X.basicOpen g' ↔ _
-      rw [hU.fromSpec_preimage_basicOpen]
-      rfl
-    rw [← h₂, hg', Scheme.basicOpen_res]
-    exact ⟨fun h => ⟨h₁, h⟩, fun h => h.2⟩
-  have hp : g' ∈ (hU.primeIdealOf ⟨z, hzU⟩).asIdeal := by
-    by_contra h
-    have := (hb _).2 h
-    rw [hU.fromSpec_primeIdealOf] at this
-    exact hzg this
-  obtain ⟨𝔪, h𝔪, hle'⟩ := Ideal.exists_le_maximal _ (hU.primeIdealOf ⟨z, hzU⟩).isPrime.ne_top
-  obtain ⟨v, e, φ, h₁, h₂, h₃⟩ := _root_.GlobalTheory.TrueGeo.HorizRing.main F Γ(N.X, U) 𝔪 h𝔪 g' hg0
-  let yt : Sp e.O ⟶ N.X := Spec.map (CommRingCat.ofHom φ) ≫ hU.fromSpec
-  have hw : (spMap e.O.subtype ≫ yt) ≫ N.p =
-      spMap (algebraMap F (AlgebraicClosure F)) ≫ spMap (algebraMap (𝓞 F) F) := by
-    simp only [yt, Category.assoc]
-    rw [fromSpec_str, ← Spec.map_comp, ← Spec.map_comp, ← Spec.map_comp]
-    congr 1
-    ext a
-    exact h₁ a
-  have hy := N.pb.lift_fst _ _ hw
-  refine ⟨v, e, ⟨N.pb.lift _ _ hw, N.pb.lift_snd _ _ hw⟩, yt, hy.symm, ?_, ?_, ?_⟩
-  · intro x _
-    exact hle ((Set.ext_iff.1 hU.range_fromSpec _).1 ⟨_, rfl⟩)
-  · intro h
-    refine (hb (PrimeSpectrum.comap φ (IsLocalRing.closedPoint e.O))).1 h ?_
-    have := hle' hp
-    rw [← h₂] at this
-    exact this
-  · change (N.pb.lift _ _ hw ≫ N.j) (IsLocalRing.closedPoint (AlgebraicClosure F)) ∈ _
-    rw [hy]
-    refine (hb (PrimeSpectrum.comap φ (PrimeSpectrum.comap e.O.subtype
-      (IsLocalRing.closedPoint (AlgebraicClosure F))))).2 fun h => h₃ ?_
-    have h' : ((φ g' : e.O) : AlgebraicClosure F) ∈ IsLocalRing.maximalIdeal (AlgebraicClosure F) := h
-    rw [IsLocalRing.maximalIdeal_eq_bot, Ideal.mem_bot] at h'
-    exact Subtype.ext h'
-
 end GlobalTheory.TrueGeo.HorizPt
 end -- clump:auto
 end -- clump:auto
@@ -222,20 +141,6 @@ noncomputable section
 
 open CategoryTheory AlgebraicGeometry TopologicalSpace NumberField IsDedekindDomain ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory GlobalTheory.Cartier GlobalTheory.CxPts GlobalTheory.ProjVar GlobalTheory.TrueGeo Formalism.BasicNotions
 
-namespace GlobalTheory.TrueGeo.RegCrit
-
-theorem isUnit_of_one_le {F : Type} [Field F] [NumberField F] {v : HeightOneSpectrum (𝓞 F)} (e : Ext v) (c : e.O)
-    (hc : 1 ≤ e.w c) : IsUnit c := by
-  have h0 : (c : AlgebraicClosure F) ≠ 0 := by
-    intro h
-    rw [h, map_zero] at hc
-    exact absurd hc (by norm_num)
-  have h1 : (c : AlgebraicClosure F)⁻¹ ∈ e.O := by
-    rw [e.mem_O, map_inv₀]
-    exact inv_le_one_of_one_le₀ hc
-  exact IsUnit.of_mul_eq_one ⟨_, h1⟩ (Subtype.ext (mul_inv_cancel₀ h0))
-
-end GlobalTheory.TrueGeo.RegCrit
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -260,95 +165,6 @@ theorem mem_basicOpen_iff {X : Scheme.{0}} {U : X.Opens} (hU : IsAffineOpen U) {
     rw [hU.fromSpec_preimage_basicOpen]
     rfl
   rwa [hU.fromSpec_primeIdealOf] at h₂
-
-theorem eval_fromSpec {X : Scheme.{0}} {U : X.Opens} (hU : IsAffineOpen U) {R : Type} [CommRing R]
-    (κ : Γ(X, U) →+* R) (h : ⊤ ≤ (Spec.map (CommRingCat.ofHom κ) ≫ hU.fromSpec) ⁻¹ᵁ U) (s : Γ(X, U)) :
-    (((Spec.map (CommRingCat.ofHom κ) ≫ hU.fromSpec).appLE U ⊤ h) ≫
-      (Scheme.ΓSpecIso (CommRingCat.of R)).hom).hom s = κ s := by
-  have hfs : ⊤ ≤ hU.fromSpec ⁻¹ᵁ U := by rw [hU.fromSpec_preimage_self]
-  have e1 : (Spec.map (CommRingCat.ofHom κ) ≫ hU.fromSpec).appLE U ⊤ h =
-      hU.fromSpec.appLE U ⊤ hfs ≫ (Spec.map (CommRingCat.ofHom κ)).appTop := by
-    rw [Scheme.Hom.comp_appLE]
-    rfl
-  have e2 : hU.fromSpec.appLE U ⊤ hfs = (Scheme.ΓSpecIso Γ(X, U)).inv := by
-    rw [Scheme.Hom.appLE, IsAffineOpen.fromSpec_app_self, Category.assoc, ← Functor.map_comp]
-    convert Category.comp_id _
-    exact (Spec Γ(X, U)).presheaf.map_id _
-  have e3 : (Scheme.ΓSpecIso Γ(X, U)).inv ≫ (Spec.map (CommRingCat.ofHom κ)).appTop =
-      CommRingCat.ofHom κ ≫ (Scheme.ΓSpecIso (CommRingCat.of R)).inv :=
-    (Scheme.ΓSpecIso_inv_naturality (CommRingCat.ofHom κ)).symm
-  rw [e1, e2, e3]
-  simp
-
-theorem ideal_ne_top {X : Scheme.{0}} [IsIntegral X] {U : X.Opens} [Nonempty U] (hU : IsAffineOpen U) {x : X}
-    (hx : x ∈ U) (hN : IsIntegrallyClosed (X.presheaf.stalk x)) {𝔪 : Ideal Γ(X, U)} (h𝔪 : 𝔪 ≠ ⊤)
-    (hP : (hU.primeIdealOf ⟨x, hx⟩).asIdeal ≤ 𝔪) {g : X.functionField} (hg : g ≠ 0) (hreg : ¬ RegAt x g) :
-    𝔪.map (algebraMap Γ(X, U) (Algebra.adjoin Γ(X, U) {g⁻¹})) ⊔
-      Ideal.span {(⟨g⁻¹, Algebra.subset_adjoin rfl⟩ : Algebra.adjoin Γ(X, U) {g⁻¹})} ≠ ⊤ := by
-  intro heq
-  letI := invertibleOfNonzero (inv_ne_zero hg)
-  obtain ⟨p, hp, hpx⟩ := Algebra.exists_aeval_invOf_eq_zero_of_idealMap_adjoin_sup_span_eq_top g⁻¹ 𝔪 h𝔪 heq
-  rw [invOf_eq_inv, inv_inv] at hpx
-  have hlc : p.leadingCoeff ∉ (hU.primeIdealOf ⟨x, hx⟩).asIdeal := fun h =>
-    h𝔪 ((Ideal.eq_top_iff_one _).2 (by simpa using sub_mem (hP h) hp))
-  have hu : IsUnit (X.presheaf.germ U x hx p.leadingCoeff) :=
-    (X.mem_basicOpen _ _ hx).1 ((mem_basicOpen_iff hU hx _).2 hlc)
-  have hgm : ∀ a : Γ(X, U), algebraMap (X.presheaf.stalk x) X.functionField (X.presheaf.germ U x hx a) =
-      algebraMap Γ(X, U) X.functionField a := fun a => algebraMap_germ hx a
-  let q := p.map (X.presheaf.germ U x hx).hom
-  have hq : Polynomial.aeval g q = 0 := by
-    rw [Polynomial.aeval_def, Polynomial.eval₂_map]
-    convert hpx using 1
-    rw [Polynomial.aeval_def]
-    congr 1
-    ext a
-    exact hgm a
-  have hlq : q.leadingCoeff = X.presheaf.germ U x hx p.leadingCoeff :=
-    Polynomial.leadingCoeff_map_of_leadingCoeff_ne_zero _ hu.ne_zero
-  have hint : IsIntegral (X.presheaf.stalk x) g := by
-    refine ⟨Polynomial.C (hu.unit⁻¹ : (X.presheaf.stalk x)ˣ).1 * q,
-      Polynomial.monic_C_mul_of_mul_leadingCoeff_eq_one (by rw [hlq]; simp), ?_⟩
-    rw [← Polynomial.aeval_def, map_mul, hq, mul_zero]
-  obtain ⟨y, hy⟩ := (IsIntegrallyClosed.isIntegral_iff (R := X.presheaf.stalk x) (K := X.functionField)).1 hint
-  exact hreg ⟨y, hy⟩
-
-theorem valAt_chart {X : Scheme.{0}} [IsIntegral X] {U : X.Opens} [Nonempty U] (hU : IsAffineOpen U) {K : Type} [Field K]
-    (κ : Γ(X, U) →+* K) (s : Γ(X, U)) :
-    RegAt (below (Spec.map (CommRingCat.ofHom κ) ≫ hU.fromSpec)) (algebraMap Γ(X, U) X.functionField s) ∧
-    valAt (Spec.map (CommRingCat.ofHom κ) ≫ hU.fromSpec) (algebraMap Γ(X, U) X.functionField s) = κ s := by
-  have ht : ⊤ ≤ (Spec.map (CommRingCat.ofHom κ) ≫ hU.fromSpec) ⁻¹ᵁ U := fun x _ =>
-    (Set.ext_iff.1 hU.range_fromSpec _).1 ⟨_, rfl⟩
-  have hb : below (Spec.map (CommRingCat.ofHom κ) ≫ hU.fromSpec) ∈ U := ht trivial
-  refine ⟨⟨_, algebraMap_germ hb s⟩, ?_⟩
-  rw [← eval_fromSpec hU κ ht s, ← OfModel.valAt_fnOf _ hb ht]
-  rfl
-
-theorem valAt_div {X : Scheme.{0}} [IsIntegral X] {U : X.Opens} [Nonempty U] (hU : IsAffineOpen U) {K : Type} [Field K]
-    (κ : Γ(X, U) →+* K) (a b : Γ(X, U)) (hb : κ b ≠ 0) {g : X.functionField}
-    (hg : g * algebraMap Γ(X, U) X.functionField b = algebraMap Γ(X, U) X.functionField a) :
-    valAt (Spec.map (CommRingCat.ofHom κ) ≫ hU.fromSpec) g * κ b = κ a := by
-  set y : Sp K ⟶ X := Spec.map (CommRingCat.ofHom κ) ≫ hU.fromSpec with hy
-  obtain ⟨⟨b', hb'⟩, hvb⟩ := valAt_chart hU κ b
-  obtain ⟨⟨a', ha'⟩, hva⟩ := valAt_chart hU κ a
-  rw [← hy] at hvb hva
-  have hb1 : (Scheme.stalkClosedPointTo y).hom b' = κ b := by rw [← hvb, ← hb', Base.valAt_stalk]
-  have ha1 : (Scheme.stalkClosedPointTo y).hom a' = κ a := by rw [← hva, ← ha', Base.valAt_stalk]
-  have hu : IsUnit b' := (isUnit_map_iff (Scheme.stalkClosedPointTo y).hom b').1 (by rw [hb1]; exact hb.isUnit)
-  obtain ⟨c, hc⟩ := hu.exists_right_inv
-  have hg' : g = algebraMap _ X.functionField (a' * c) := by
-    rw [map_mul, ha', ← hg, ← hb', mul_assoc, ← map_mul, hc, map_one, mul_one]
-  rw [hg', Base.valAt_stalk, ← hb1, ← ha1, ← map_mul, mul_assoc, mul_comm c, hc, mul_one]
-
-theorem place_eq {F : Type} [Field F] [NumberField F] {v v' : HeightOneSpectrum (𝓞 F)} (e : Ext v')
-    (h : ∀ a ∈ v.asIdeal, ∃ c : e.O, (c : AlgebraicClosure F) = algebraMap F _ (algebraMap (𝓞 F) F a) ∧ ¬ IsUnit c) :
-    v' = v := by
-  have hle : v.asIdeal ≤ v'.asIdeal := fun a ha => by
-    obtain ⟨c, hc, hu⟩ := h a ha
-    have h1 : e.w c < 1 := not_le.1 fun h' => hu (RegCrit.isUnit_of_one_le e c h')
-    rw [hc, e.w_alg] at h1
-    rw [← FinitePlace.norm_lt_one_iff_mem F v' a, FinitePlace.norm_embedding]
-    exact h1
-  exact HeightOneSpectrum.ext (v.isMaximal.eq_of_le v'.isPrime.ne_top hle).symm
 
 theorem exists_hom (F : Type) [Field F] [NumberField F] (A K : Type) [CommRing A] [Field K] [Algebra A K]
     (hinj : Function.Injective (algebraMap A K)) [Algebra (𝓞 F) A] [Algebra.FiniteType (𝓞 F) A] [CharZero A]
@@ -377,7 +193,6 @@ theorem exists_hom (F : Type) [Field F] [NumberField F] (A K : Type) [CommRing A
   simp only [RingHom.comp_apply]
   rw [← map_mul]
   exact congrArg φ (Subtype.ext hab)
-
 
 open GlobalTheory.TrueGeo.HorizPt in
 theorem main : RegLocSt := by
@@ -1087,12 +902,10 @@ namespace GlobalTheory.EtLog
 
 variable {X : Scheme.{0}} [IsIntegral X] {U : X.Opens} (hU : IsAffineOpen U)
 
-
 include hU in
 theorem unitAt_fnOf_iff_not_mem {y : X} (hy : y ∈ U) (s : Γ(X, U)) :
     UnitAt y (fnOf U (gen_mem hy) s) ↔ s ∉ (hU.primeIdealOf ⟨y, hy⟩).asIdeal := by
   rw [unitAt_fnOf_iff hy, GlobalTheory.DetHT.RegLoc.mem_basicOpen_iff hU hy]
-
 
 include hU in
 theorem regAt_iff_frac {y : X} (hy : y ∈ U) (g : X.functionField) :
@@ -1107,7 +920,6 @@ theorem regAt_iff_frac {y : X} (hy : y ∈ U) (g : X.functionField) :
       rw [← e, mul_inv_cancel_right₀ hu.ne_zero]
     rw [eg]
     exact (regAt_fnOf hy _ a).mul hu.inv.regAt
-
 
 include hU in
 theorem unitAt_iff_frac {y : X} (hy : y ∈ U) (g : X.functionField) :
@@ -1127,7 +939,6 @@ theorem unitAt_iff_frac {y : X} (hy : y ∈ U) (g : X.functionField) :
     rw [eg]
     exact hua.mul hu.inv
 
-
 include hU in
 theorem primeIdealOf_le_of_specializes {y z : X} (hy : y ∈ U) (hz : z ∈ U) (hzy : z ⤳ y) :
     (hU.primeIdealOf ⟨z, hz⟩).asIdeal ≤ (hU.primeIdealOf ⟨y, hy⟩).asIdeal := by
@@ -1135,7 +946,6 @@ theorem primeIdealOf_le_of_specializes {y z : X} (hy : y ∈ U) (hz : z ∈ U) (
   by_contra hs'
   rw [← GlobalTheory.DetHT.RegLoc.mem_basicOpen_iff hU hy] at hs'
   exact (GlobalTheory.DetHT.RegLoc.mem_basicOpen_iff hU hz s).1 (hzy.mem_open (X.basicOpen s).isOpen hs') hs
-
 
 include hU in
 theorem exists_specializes_of_le {y : X} (hy : y ∈ U) (Q : Ideal Γ(X, U)) (hQ : Q.IsPrime)
@@ -1227,7 +1037,6 @@ section -- clump:auto
 @[expose] public section
 
 namespace GlobalTheory.DI
-
 
 set_option autoImplicit false in
 theorem _root_.GlobalTheory.DI.logLift_of_unit_mem_map : ∀ {K Kt : Type} [Field K] [CommRing Kt] (p : ℕ) [Fact p.Prime] [CharP K p]
@@ -1342,7 +1151,6 @@ section -- clump:auto
 open CategoryTheory AlgebraicGeometry TopologicalSpace GlobalTheory GlobalTheory.DI GlobalTheory.LogDR GlobalTheory.LogPair GlobalTheory.Cartier ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 
 namespace GlobalTheory.LogPair
-
 
 set_option autoImplicit false in
 open CategoryTheory AlgebraicGeometry TopologicalSpace in
@@ -1606,7 +1414,6 @@ section -- clump:auto
 open CategoryTheory AlgebraicGeometry TopologicalSpace GlobalTheory GlobalTheory.DI GlobalTheory.LogDR GlobalTheory.LogPair GlobalTheory.Cartier ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 
 namespace GlobalTheory.DI
-
 
 open CategoryTheory AlgebraicGeometry TopologicalSpace in
 theorem _root_.GlobalTheory.DI.mem_locRing_iff_exists_stalkIm : ∀ {X Y : Scheme.{0}} [IsIntegral X] (π : X ⟶ Y) (y : X) (h : π (genericPoint X) ⤳ π y), Function.Surjective (π.stalkMap y).hom → ∀ c : X.functionField, c ∈ _root_.GlobalTheory.LogDR.locRing y ↔ ∃ z ∈ _root_.GlobalTheory.DI.stalkIm h, (π.stalkMap (genericPoint X)).hom z = c := by

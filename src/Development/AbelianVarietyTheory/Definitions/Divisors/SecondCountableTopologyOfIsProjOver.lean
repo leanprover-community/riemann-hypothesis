@@ -80,7 +80,6 @@ namespace AnRead
 
 variable {p : Y ⟶ Sp k} {σ : k →+* ℂ} {D : ℕ}
 
-
 variable (p σ D) in
 def all [SmoothOfRelativeDimension D p] : AnRead p σ D := ⟨_, id, AlgChart.exists_mem_source⟩
 
@@ -160,9 +159,6 @@ theorem continuousOn_of_charts {E : Type*} [TopologicalSpace E] {f : CxPts p σ 
 theorem HoloOn.continuousOn {f : CxPts p σ → ℂ} (h : R.HoloOn S f) (hS : IsOpen S) :
     ContinuousOn f S := continuousOn_of_charts hS fun i => (h i).continuousOn
 
-theorem SmoothOn.continuousOn {f : CxPts p σ → ℝ} (h : R.SmoothOn S f) (hS : IsOpen S) :
-    ContinuousOn f S := continuousOn_of_charts hS fun i => (h i).continuousOn
-
 theorem HoloOn.smoothOn_log {f : CxPts p σ → ℂ} (h : R.HoloOn S f) (hS : IsOpen S)
     (h0 : ∀ y ∈ S, f y ≠ 0) : R.SmoothOn S fun y => Real.log (‖f y‖ ^ 2) :=
   fun i => contDiffOn_log_normSq (isOpen_over _ hS) (h i) fun _ hv => h0 _ hv.2
@@ -205,10 +201,6 @@ theorem HoloOn.mul {f g : CxPts p σ → ℂ} (hf : R.HoloOn S f) (hg : R.HoloOn
 theorem HoloOn.zpow {f : CxPts p σ → ℂ} (hf : R.HoloOn S f) (h0 : ∀ y ∈ S, f y ≠ 0) (n : ℤ) :
     R.HoloOn S fun y => f y ^ n := fun i => (hf i).zpow (Or.inl fun _ hv => h0 _ hv.2)
 
-theorem HoloOn.inv {f : CxPts p σ → ℂ} (hf : R.HoloOn S f) (h0 : ∀ y ∈ S, f y ≠ 0) :
-    R.HoloOn S fun y => (f y)⁻¹ := fun i => (hf i).inv fun _ hv => h0 _ hv.2
-
-
 variable (R B) in
 def holSec : Submodule ℂ (B.ι → CxPts p σ → ℂ) where
   carrier := {s | s ∈ fibSec p σ B ∧ ∀ i, R.HoloOn (ptsIn p σ (B.U i)) (s i)}
@@ -216,11 +208,9 @@ def holSec : Submodule ℂ (B.ι → CxPts p σ → ℂ) where
   add_mem' hs ht := ⟨add_mem hs.1 ht.1, fun i j => (hs.2 i j).add (ht.2 i j)⟩
   smul_mem' c _ hs := ⟨Submodule.smul_mem _ c hs.1, fun i j => (hs.2 i j).const_smul c⟩
 
-
 variable (R) in
 theorem secVal_mem_holSec (s : B.Sec) : secVal p σ s ∈ R.holSec B :=
   ⟨secVal_mem s, fun _ => R.holoOn_ev _ _⟩
-
 
 variable (R B) in
 def valC : SecC p σ B →ₗ[ℂ] R.holSec B :=
@@ -249,10 +239,6 @@ def StrictPos (φ : Weight p σ B) (R : AnRead p σ D) : Prop :=
 
 theorem IsSmooth.addFn (h : φ.IsSmooth R) {u : CxPts p σ → ℝ} (hu : R.SmoothOn univ u) :
     (φ.addFn u).IsSmooth R := fun i c => (h i c).add (hu.mono (subset_univ _) c)
-
-theorem IsSmooth.tens {ψ : Weight p σ A} (h' : ψ.IsSmooth R) (h : φ.IsSmooth R) :
-    (ψ.tens φ).IsSmooth R := fun i c =>
-  ((h' i.1).mono (ptsIn_mono inf_le_left) c).add ((h i.2).mono (ptsIn_mono inf_le_right) c)
 
 theorem IsSmooth.zpow (h : φ.IsSmooth R) (n : ℤ) : (φ.zpow n).IsSmooth R := fun j =>
   SmoothOn.congr (f := fun y => n * φ.φ (j PUnit.unit) y)
@@ -306,35 +292,6 @@ def topDens (y : CxPts p σ) : ℝ :=
   2 ^ D * (‖c.topCoeff K f (pick K.isLB y) (pick φ.isLB y) y‖ ^ 2 *
     Real.exp (-φ.φ (pick φ.isLB y) y))
 
-
-variable {f} in
-theorem topDens_eq (hf : f ∈ fibSec p σ (tens K.bundle B)) (hy : y ∈ c.e.source) {a : K.bundle.ι}
-    {b : B.ι} (ha : y ∈ ptsIn p σ (K.bundle.U a)) (hb : y ∈ ptsIn p σ (B.U b)) :
-    c.topDens K φ f y = 2 ^ D * (‖c.topCoeff K f a b y‖ ^ 2 * Real.exp (-φ.φ b y)) := by
-  have ha' := mem_pick K.isLB y
-  have hb' := mem_pick φ.isLB y
-  have e : y ∈ ptsIn p σ ((tens K.bundle B).U (a, b)) := mem_ptsIn_inf.2 ⟨ha, hb⟩
-  have e' : y ∈ ptsIn p σ ((tens K.bundle B).U (pick K.isLB y, pick φ.isLB y)) :=
-    mem_ptsIn_inf.2 ⟨ha', hb'⟩
-  rw [topDens, ← normSq_mul_exp (gv_ne_zero hb hb'), φ.trans b _ y hb hb', sub_add_cancel, topCoeff,
-    topCoeff, hf.1 _ _ y e e', gv_tens e e', gv_canon,
-    ← rv_mul _ (K.isFrame a) _ (c.source_subset hy) ha ha']
-  congr 4
-  ring
-
-theorem topDens_trans (hy : y ∈ c.e.source) (hy' : y ∈ c'.e.source) :
-    c.topDens K φ f y = ‖transDet c.e c'.e y‖ ^ 2 * c'.topDens K φ f y := by
-  rw [topDens, topDens, topCoeff, topCoeff, ← rv_mul _ c'.isFrame _ (c.source_subset hy)
-    (c'.source_subset hy') (mem_pick K.isLB y), rv_chart c c' hy hy', mul_assoc (transDet _ _ _),
-    norm_mul]
-  ring
-
-theorem chartMeas_topDens {A : Set (CxPts p σ)} (hA : MeasurableSet A) (h : A ⊆ c.e.source)
-    (h' : A ⊆ c'.e.source) : chartMeas c.e (fun y => ENNReal.ofReal (c.topDens K φ f y)) A =
-      chartMeas c'.e (fun y => ENNReal.ofReal (c'.topDens K φ f y)) A :=
-  chartMeas_eq _ _ (c.holo_trans c') hA h h' fun y hy => by
-    rw [c.topDens_trans K φ f c' (h hy) (h' hy), ENNReal.ofReal_mul (sq_nonneg _)]
-
 end AlgChart
 
 namespace AnRead
@@ -345,23 +302,6 @@ def topMeasure : Measure (CxPts p σ) :=
   glueMeas (fun i => (R.chart i).e) fun i y => ENNReal.ofReal ((R.chart i).topDens K φ f y)
 
 variable [SecondCountableTopology (CxPts p σ)]
-
-theorem topMeasure_apply (c : AlgChart p σ D) {A : Set (CxPts p σ)} (hA : MeasurableSet A)
-    (h : A ⊆ c.e.source) : R.topMeasure K φ f A =
-      ∫⁻ v in c.e '' A, ENNReal.ofReal (c.topDens K φ f (c.e.symm v)) := by
-  have key : (R.topMeasure K φ f).restrict A =
-      (chartMeas c.e fun y => ENNReal.ofReal (c.topDens K φ f y)).restrict A :=
-    ext_of_cover _ (fun i => (R.chart i).e.open_source) R.cover fun i T hT hi => by
-      rw [Measure.restrict_apply hT, Measure.restrict_apply hT, topMeasure,
-        glueMeas_apply _ _ (fun i j => (R.chart i).holo_trans (R.chart j)) (fun i j y hi hj => by
-          rw [(R.chart i).topDens_trans K φ f _ hi hj, ENNReal.ofReal_mul (sq_nonneg _)])
-        i (hT.inter hA) (inter_subset_left.trans hi)]
-      exact AlgChart.chartMeas_topDens K φ f _ c (hT.inter hA) (inter_subset_left.trans hi)
-        (inter_subset_right.trans h)
-  rw [← chartMeas_apply_of_subset c.e (fun y => ENNReal.ofReal (c.topDens K φ f y)) hA h,
-    ← Measure.restrict_apply_self, key, Measure.restrict_apply_self]
-
-
 
 end AnRead
 
@@ -507,22 +447,9 @@ def read : (B.ι → CxPts p σ → ℂ) →ₗ[ℂ] (F.Idx → CxPts p σ → �
   map_add' _ _ := funext₂ fun _ _ => mul_add _ _ _
   map_smul' _ _ := funext₂ fun _ _ => mul_left_comm _ _ _
 
-theorem g_self (m : Option κ → ℤ) (h : y ∈ (F.atlas.chart c).source) : F.atlas.g m c c y = 1 :=
-  mul_left_cancel₀ (F.atlas.g_ne m c c y h h)
-    ((F.atlas.g_cocycle m c c c y h h h).symm.trans (mul_one _).symm)
-
-theorem read_eq (hs : s ∈ fibSec p σ B) (h : y ∈ (F.atlas.chart c).source) {i : B.ι}
-    (hi : y ∈ ptsIn p σ (B.U i)) : r.read s c y = r.u c i y * s i y := by
-  have e := r.compat c c i _ y h h hi (mem_pick r.isLB y)
-  rw [g_self m h, one_mul] at e
-  rw [hs.1 i _ y hi (mem_pick r.isLB y), ← mul_assoc, ← e]
-  rfl
-
 def Isometric (φ : Weight p σ B) : Prop :=
   ∀ c i y, y ∈ (F.atlas.chart c).source → y ∈ ptsIn p σ (B.U i) →
     F.atlas.ph m c y = φ.φ i y + Real.log (‖r.u c i y‖ ^ 2)
-
-
 
 variable (F) in
 def ofMem (a : κ) : F.Reading (F.L a) (wt a) where
@@ -534,9 +461,6 @@ def ofMem (a : κ) : F.Reading (F.L a) (wt a) where
     rw [atlas_g_wt, gv_mul (F.φ a).isLB (mem_L h a) (mem_L h' a) hi',
       gv_mul (F.φ a).isLB (mem_L h a) hi hi']
 
-
-
-
 def tens (r' : F.Reading A m') (r : F.Reading B m) : F.Reading (tens A B) (m' + m) where
   isLB := isLB_tens r'.isLB r.isLB
   u c i y := r'.u c i.1 y * r.u c i.2 y
@@ -547,7 +471,6 @@ def tens (r' : F.Reading A m') (r : F.Reading B m) : F.Reading (tens A B) (m' + 
     rw [F.atlas.g_add _ _ _ _ _ h h', gv_tens hi hi', mul_mul_mul_comm,
       r'.compat c c' i.1 i'.1 y h h' (mem_ptsIn_inf.1 hi).1 (mem_ptsIn_inf.1 hi').1,
       r.compat c c' i.2 i'.2 y h h' (mem_ptsIn_inf.1 hi).2 (mem_ptsIn_inf.1 hi').2, mul_mul_mul_comm]
-
 
 def zpow (n : ℤ) : F.Reading (LB.LinComb B (K := PUnit) (fun _ => 𝟙 Y) fun _ => n) (n • m) where
   isLB := Semi.LB.isLB_linComb r.isLB _ _
@@ -562,11 +485,6 @@ def zpow (n : ℤ) : F.Reading (LB.LinComb B (K := PUnit) (fun _ => 𝟙 Y) fun 
     simp only [Pi.smul_apply, smul_eq_mul, mul_comm n, zpow_mul]
 
 abbrev pow (n : ℕ) : F.Reading (lbPow B n) ((n : ℤ) • m) := r.zpow n
-
-
-
-
-
 
 end Reading
 

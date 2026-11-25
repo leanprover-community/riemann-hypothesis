@@ -114,7 +114,6 @@ def baseChange : Tuple E where
   j₀ := T.j₀
   th := GlobalTheory.chartSec (chartPullZPow (GlobalTheory.chartPullPull T.L (T.bcFst E)) T.j₀) T.th
 
-
 variable {T} in
 theorem IsGeometric.baseChange (h : T.IsGeometric) : (T.baseChange E).IsGeometric := by
   refine ⟨h.alg.baseChange E, fun e => h.bd_ne (top_le_iff.1 fun y _ => ?_)⟩
@@ -122,7 +121,6 @@ theorem IsGeometric.baseChange (h : T.IsGeometric) : (T.baseChange E).IsGeometri
   have : Surjective (T.bcFst E) := MorphismProperty.of_isPullback (T.isPullback_baseChange E).flip this
   obtain ⟨z, rfl⟩ := (T.bcFst E).surjective y
   exact e.ge (Set.mem_univ z)
-
 
 variable {T} in
 theorem IsGeometric.nonempty_U (h : T.IsGeometric) : (T.U : Set T.Y).Nonempty :=
@@ -212,16 +210,6 @@ instance finiteDimensional_global (j : ℕ) : FiniteDimensional F (G.global j) :
 theorem finrank_global (j : ℕ) : Module.finrank F (G.global j) = lbH0 F (G.adj j) :=
   (LinearMap.finrank_range_of_inj (G.restr_injective _)).trans (H0.finrank_top _ _)
 
-private theorem finrank_global_pos_of_hasNonzeroSec (j : ℕ) (h : HasNonzeroSec (G.adj j)) :
-    0 < Module.finrank F (G.global j) := by
-  obtain ⟨s, hs⟩ := h
-  let ofSec := H0.ofSec (B := G.adj j) G.str ⊤
-  let res : H0 G.str (G.adj j) ⊤ →ₗ[F] G.Sec j := H0.restr le_top
-  refine Module.finrank_pos_iff_exists_ne_zero.2 ⟨res.rangeRestrict (ofSec s), fun h => hs ?_⟩
-  have hz : res (ofSec s) = 0 := congrArg (fun x : G.global j => x.val) h
-  have hr : ofSec s = 0 := G.restr_injective (G.adj j) (hz.trans (map_zero res).symm)
-  exact H0.bijective_ofSec_top.1 (hr.trans (map_zero ofSec).symm)
-
 def mulW (j : ℕ) : (Fin G.N → F) →ₗ[F] G.Sec j →ₗ[F] G.Sec (j + 1) :=
   (oneChart (isLB_tens G.K.isLB G.isLBA) G.isLB (Nat.cast_succ j).symm).mul ∘ₗ
     Fintype.linearCombination F fun k => H0.ofSec G.str G.U (G.b k)
@@ -252,7 +240,6 @@ structure IsGood : Prop where
 abbrev SecOn (j : ℕ) : Type := sectionsOnClosedSubscheme G.str (tw G.L₂ G.L j) (G.ideal s)
 
 variable {G s} (hs : G.IsGood s)
-
 
 include hs in
 theorem IsGood.suppIn_e : SuppIn (nonzeroLocus G.e) (G.ideal s) := fun y hy => G.U_le (hs.inU y hy)
@@ -322,7 +309,6 @@ theorem extSpace_global (j : ℕ) : extSpace (G.toExt E j) (G.global j) = (G.bas
     (congrArg _ ?_))))
   rw [global, LinearMap.coe_range, ← Set.range_comp, ← Set.range_comp]
   exact congrArg _ (funext fun f => restr_pullChart _ _ _ _ _ _ f)
-
 
 variable {G E} in
 theorem isGood_baseChange_iff {s : Fin G.D → Fin G.N → E} : (G.baseChange E).IsGood s ↔ G.IsGoodSection E s :=
@@ -479,10 +465,6 @@ theorem MulStable.mem (h : X.MulStable) {j : ℕ} (hj : j < X.T) (u : Fin X.N �
 
 end Data
 
-private theorem Geo.d_pos_globalData {F : Type} [Field F] [NumberField F] (G : Geo F) {T : ℕ}
-    (hT : G.D + 1 ≤ T) (h : 0 < Module.finrank F (G.global T)) : 0 < (G.globalData T hT).d :=
-  h.trans_eq (G.globalData T hT).d_eq_finrank.symm
-
 namespace Proj
 
 open ProjSpace
@@ -499,24 +481,7 @@ abbrev tuple : Tuple F where
   j₀ := 1
   th := secToPow (coord F M (Fin.last M)) 1
 
-theorem U_eq : (tuple F M).U = nonzeroLocus (coord F M (Fin.last M)) :=
-  (Opens.compl_compl _).trans (nonzeroLocus_coord F M _).symm
-
-theorem isAlgebraicData (hM : 1 ≤ M) : (tuple F M).IsAlgebraicData :=
-  ⟨projSys.isVariety F M hM, projSys.indep F M, top_le_iff.1 fun u _ => by
-    rw [pi_eq_sum_univ' u]
-    refine Submodule.sum_mem _ fun k _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨k, funext fun j => ?_⟩)
-    simp [Matrix.one_apply, Pi.single_apply], projSys.basePointFree F M⟩
-
 abbrev bundleA : LB (PSpace F M) := tens (O1 F M) (tw (O1 F M) (O1 F M) M)
-
-theorem isLB_bundleA : (bundleA F M).IsLB := isLB_tens (O1_isLB F M) (isLB_tw (O1_isLB F M) (O1_isLB F M) M)
-
-theorem exists_e : ∃ e : (LB.div (bundleA F M) (tw (O1 F M) (O1 F M) M)).Sec,
-    nonzeroLocus e = nonzeroLocus (coord F M (Fin.last M)) :=
-  have h := isLB_tw (O1_isLB F M) (O1_isLB F M) M
-  exists_sec_nonzeroLocus_eq_of_lbIso (LB.isLB_div (isLB_bundleA F M) h) (O1_isLB F M)
-    ((cls_eq_iff (LB.isLB_div (isLB_bundleA F M) h) _).1 (by rw [cls_div (isLB_bundleA F M) h, cls_tens (O1_isLB F M) h, add_sub_cancel_right])) _
 
 variable {M} (hM : 1 ≤ M)
 
@@ -541,60 +506,7 @@ def geo : Geo F where
   e := (exists_e F M).choose
   U_le := ((U_eq F M).trans (exists_e F M).choose_spec.symm).le
 
-theorem hasNonzeroSec_pow (M n : ℕ) : HasNonzeroSec (lbPow (O1 F M) n) :=
-  lineBundleHasNonzeroSection_of_globalSectionsDim_pos (k := F) (by rw [sectionDim_twistingSheaf_pow]; exact Nat.choose_pos (by omega))
-
-theorem positivity : (geo F hM).Positivity := by
-  have hl : nonzeroLocus (tuple F M).th = chart F M (Fin.last M) :=
-    (nonzeroLocus_secToPow _ le_rfl).trans (nonzeroLocus_coord F M (Fin.last M))
-  have := (geo F hM).isIntegral
-  have hc : cls _ (isLB_bundleA F M) = cls _ (isLB_lbPow (O1_isLB F M) (M + 2)) := by
-    rw [cls_tens (O1_isLB F M) (isLB_tw (O1_isLB F M) (O1_isLB F M) M),
-      cls_tens (O1_isLB F M) (Twist.isLB_lbZPow (O1_isLB F M) M), cls_lbZPow (O1_isLB F M), cls_lbPow (O1_isLB F M)]
-    module
-  have key : IsNef F (bundleA F M) ∧ IsBig F (bundleA F M) :=
-    ⟨((isNef_twistingSheaf F M).pow (isAmple_projective_O_one F M) _).of_cls_eq _ hc,
-      (@IsBig.pow _ _ _ _ _ this _ (algebraMap_top_eq F M) (isProjOver_str F M) (isBig_twistingSheaf F M) _
-        (by omega)).of_cls_eq _ hc⟩
-  rw [← projSys.algebraΓ_eq] at key
-  refine ⟨⟨projSys.birational F M, projSys.noContract F M _, le_rfl, fun h => ?_, fun y hy => hl ▸ hy⟩, key.1, key.2⟩
-  have := hl.ge (projSys.gen_mem F M _)
-  rw [show (tuple F M).th = 0 from h] at this
-  exact nonzeroLocus_secZero.le this
-
-
-omit hM in
-theorem cls_adj {Y : Scheme.{0}} {K L : LB Y} (hK : K.IsLB) (hL : L.IsLB) (M j : ℕ) (h₁ h₂ h₃) :
-    cls (tw (tens K (tens L (tw L L M))) L j) h₁ = cls (tens K (lbPow L (M + 1))) h₂ + cls (lbPow L (j + 1)) h₃ := by
-  have h := isLB_tens hL (isLB_tw hL hL M)
-  rw [cls_tens (isLB_tens hK h) (Twist.isLB_lbZPow hL j), cls_tens hK h, cls_tens hL (isLB_tw hL hL M),
-    cls_tens hL (Twist.isLB_lbZPow hL M), cls_tens hK (isLB_lbPow hL _), cls_lbZPow hL, cls_lbZPow hL, cls_lbPow hL,
-    cls_lbPow hL]
-  module
-
-omit [NumberField F] in
-private theorem hasNonzeroSec_jacobian (M : ℕ) [SmoothOfRelativeDimension M (PSpace.str F M)]
-    (K : CanonLB (PSpace.str F M) M) : HasNonzeroSec (K.adj (O1 F M) (M + 1)) := by
-  let s := K.jacSec (coord F M)
-  obtain ⟨c, hc⟩ := exists_chart (K.isLB_adj (O1_isLB F M) (M + 1)) (projSys.gen F M)
-  have hu := (isUnit_jacSec_coord F M K c).map (ger (projSys.gen F M) hc)
-  exact ⟨s, sec_ne_zero_of_mem ((isUnit_ger_iff s hc).1 hu)⟩
-
-theorem finrank_global_pos (j : ℕ) : 0 < Module.finrank F ((geo F hM).global j) := by
-  let G := geo F hM
-  have h₁ : HasNonzeroSec (G.K.adj G.L (M + 1)) :=
-    @hasNonzeroSec_jacobian F _ M G.smooth G.K
-  have h₂ : HasNonzeroSec (lbPow G.L (j + 1)) := hasNonzeroSec_pow F M (j + 1)
-  have hA := G.K.isLB_adj G.isLB (M + 1)
-  have hB := isLB_lbPow G.isLB (j + 1)
-  have hN := G.isLB_adj j
-  have hc : cls (G.adj j) hN = cls _ hA + cls _ hB := cls_adj G.K.isLB G.isLB M j hN hA hB
-  exact G.finrank_global_pos_of_hasNonzeroSec j (h₁.of_cls_eq_add h₂ hN hA hB hc)
-
 def data (T : ℕ) (hT : M + 1 ≤ T) : Data F := (geo F hM).globalData T hT
-
-theorem d_pos (T : ℕ) (hT : M + 1 ≤ T) : 0 < (data F hM T hT).d :=
-  (geo F hM).d_pos_globalData hT (finrank_global_pos F hM T)
 
 end Proj
 

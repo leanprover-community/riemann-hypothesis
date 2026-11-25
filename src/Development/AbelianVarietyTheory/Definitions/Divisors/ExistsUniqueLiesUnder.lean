@@ -176,30 +176,6 @@ abbrev basePt (y : Pt s) : (Φ.C (compPt s y)).Y.X := baseOn Φ (compPt s y) y
 
 variable {Φ}
 
-theorem LiesUnder.compPt_eq {k : s.Comp} {y : Pt s} {x : (Φ.C k).Y.X} (h : LiesUnder Φ k y x) : compPt s y = k := by
-  obtain ⟨p, hp, -, -⟩ := h
-  let o : Sp Qb := IsLocalRing.closedPoint Qb
-  refine (PtComp.existsUnique_onComp s (y.y o)).unique (PtComp.onComp_compPt s y o) ?_
-  obtain ⟨z, hz⟩ : ((s.U κ.σ₀).X k).dom.Nonempty := GlobalTheory.OrbitScalar.exists_mem_dom _
-  refine ⟨⟨z, hz⟩, fun pt => ?_⟩
-  exact (isPreconnected_range (Φ.C k).π.continuous).subset_connectedComponent ⟨p o, by rw [← hp]; rfl⟩
-    (Φ.label k ⟨z, hz⟩ pt)
-
-
-variable (Φ) in
-theorem existsUnique_liesUnder (y : Pt s) : ∃! x, LiesUnder Φ (compPt s y) y x := by
-  have : IsAlgClosed Qb := (algebraicClosure.isAlgClosure ℚ ℂ).isAlgClosed
-  obtain ⟨⟨k, p⟩, hp, hu⟩ := Φ.lifts Qb y.fK y.y y.y_over y.frame
-  obtain rfl : compPt s y = k := LiesUnder.compPt_eq ⟨p, hp.1, hp.2, rfl⟩
-  refine ⟨below p, ⟨p, hp.1, hp.2, rfl⟩, ?_⟩
-  rintro _ ⟨q, h₁, h₂, rfl⟩
-  rw [eq_of_heq (Sigma.mk.inj (hu ⟨_, q⟩ ⟨h₁, h₂⟩)).2]
-
-
-variable (Φ) in
-theorem liesUnder_basePt (y : Pt s) : LiesUnder Φ (compPt s y) y (basePt Φ y) :=
-  Classical.epsilon_spec (existsUnique_liesUnder Φ y).exists
-
 end Base
 
 section Roots
@@ -207,12 +183,6 @@ section Roots
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} (Dw : Datum H)
 
 def rootEx (τ : E →+* ℂ) (i : ℕ) : Letter Dw → ℤ := expo Dw (rootSym Dw (fun _ => false) none τ i)
-
-
-open Classical in
-theorem expo_single (a : Sym E) (n : ℤ) (x : Letter Dw) :
-    expo Dw (Finsupp.single a n) x = if letterOf Dw a.2.2 = some x then n else 0 :=
-  Finsupp.sum_single_index (by simp)
 
 end Roots
 

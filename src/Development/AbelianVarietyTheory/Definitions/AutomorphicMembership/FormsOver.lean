@@ -59,10 +59,6 @@ section One
 
 variable {N j : ℕ} {S : Sig A N j} {κ : Lv A} (s : FinalTheorems S κ) (L : CmList A)
 
-theorem Lv.good_σ₀ (κ : Lv A) : Formalism.L2.PjFree.GoodEmb κ.c κ.σ₀ := rfl
-
-theorem FinalTheorems.isUnf : Formalism.L2.PjFree.IsUnf (s.U κ.σ₀) := (s.unf _ κ.good_σ₀).1
-
 instance FinalTheorems.compNe : Nonempty s.Comp := (s.unf _ κ.good_σ₀).2.1
 
 abbrev FinalTheorems.Bd : Type :=

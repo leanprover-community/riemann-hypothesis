@@ -111,9 +111,6 @@ structure NoContract (bd : Set X) : Prop where
 
 variable {k D V}
 
-theorem BasePointFree.exists_ne_zero (h : D.BasePointFree V) : ∃ f ∈ V, f ≠ 0 :=
-  have ⟨f, hf, h'⟩ := h.2 (genericPoint X); ⟨f, hf, h'.ne_zero⟩
-
 end CartierDiv
 
 namespace Presents
@@ -123,8 +120,6 @@ open CartierDiv
 variable {k : Type} [Field k] {S : LinSys k} [IsIntegral S.Y] [Algebra k S.Y.functionField]
   [IsScalarTower k Γ(S.Y, ⊤) S.Y.functionField] {D : CartierDiv S.Y}
   {r : S.L.ι → S.Y.functionFieldˣ} (h : Presents D S.L r)
-
-
 
 end Presents
 
@@ -211,19 +206,15 @@ theorem topologicalKrullDim_eq : topologicalKrullDim Y.X = Y.dim := by
       (Opens.mem_top (genericPoint Y.X))
     exact (hc U hU ⟨_, hx⟩).ge.trans (topologicalKrullDim_subspace_le _ _)
 
-
 attribute [local instance] MvPolynomial.gradedAlgebra in
 def coneIdeal : Ideal (MvPolynomial (Fin (Y.N + 1)) F) :=
   (show ProjectiveSpectrum (ProjSpace.grading F Y.N) from
     Y.ι (genericPoint Y.X)).asHomogeneousIdeal.toIdeal
 
-
-
 section OfImmersion
 
 variable {Z : Scheme.{0}} {N : ℕ} (i : Z ⟶ PSpace F N) [IsClosedImmersion i] (d : ℕ)
   [SmoothOfRelativeDimension d (i ≫ PSpace.str F N)] [GeometricallyIntegral (i ≫ PSpace.str F N)]
-
 
 omit [SmoothOfRelativeDimension d (i ≫ PSpace.str F N)]
   [GeometricallyIntegral (i ≫ PSpace.str F N)] in
@@ -279,34 +270,23 @@ def Eff (Δ : Y.Dv) : Prop := Δ.Eff
 
 def H0 (Δ : Y.Dv) : Submodule F Y.Fn := Δ.sections.restrictScalars F
 
-
 variable {Y} in
 theorem mem_riemannRochSpace_iff_regularAt_everywhere {Δ : Y.Dv} {f : Y.Fn} : f ∈ Y.H0 Δ ↔ ∀ x, Δ.RegularAt x f := mem_sections
-
-
 
 variable {Y} in
 theorem eff_iff_one_mem {Δ : Y.Dv} : Y.Eff Δ ↔ (1 : Y.Fn) ∈ Y.H0 Δ := mem_riemannRochSpace_iff_regularAt_everywhere.symm
 
 theorem eff_zero : Y.Eff 0 := CartierDiv.eff_zero
 
-theorem eff_add (a b : Y.Dv) (ha : Y.Eff a) (hb : Y.Eff b) : Y.Eff (a + b) :=
-  CartierDiv.Eff.add ha hb
-
 theorem mul_mem_riemannRochSpace_add (Δ Δ' : Y.Dv) (f g : Y.Fn) (hf : f ∈ Y.H0 Δ) (hg : g ∈ Y.H0 Δ') :
     f * g ∈ Y.H0 (Δ + Δ') := mem_riemannRochSpace_iff_regularAt_everywhere.2 fun x => (mem_riemannRochSpace_iff_regularAt_everywhere.1 hf x).mul (mem_riemannRochSpace_iff_regularAt_everywhere.1 hg x)
 
-theorem riemannRoch_mono (Δ Δ' : Y.Dv) (h : Y.Eff (Δ' - Δ)) : Y.H0 Δ ≤ Y.H0 Δ' := fun f hf => by
-  simpa using Y.mul_mem_riemannRochSpace_add Δ (Δ' - Δ) f 1 hf (eff_iff_one_mem.1 h)
-
 abbrev lb (Δ : Y.Dv) : LB Y.X := toLB Δ
-
 
 variable {Y} in
 def cohEquiv {Δ : Y.Dv} {L : LB Y.X} {r : L.ι → Y.Fnˣ} (h : Presents Δ L r) :
     coh (twist (structureModule Y.X) L) 0 ≃ₗ[F] Y.H0 Δ :=
   ((cohZeroTwistEquiv L).trans h.secEquiv).restrictScalars F
-
 
 instance finiteDimensional_riemannRochSpace (Δ : Y.Dv) : FiniteDimensional F (Y.H0 Δ) :=
   have := finite_coh_zero_twist_of_isProjOver Y.algebraMap_Γ Y.isProjOver (isLB_toLB Δ)
@@ -330,12 +310,6 @@ def phiBir (Δ : Y.Dv) (V : Set Y.Fn) : Prop := Δ.Birational F V
 
 def phiNoContr (Δ : Y.Dv) (V : Set Y.Fn) (bd : Y.Cl) : Prop := Δ.NoContract F V bd
 
-
-
-theorem isCompleteCurve_iff (Z : Y.Cl) : IsCompleteCurve F Z ↔
-    IsIrreducible (Z : Set Y.X) ∧ topologicalKrullDim (Z : Set Y.X) = 1 :=
-  GlobalTheory.isCompleteCurve_iff Y.algebraMap_Γ
-
 abbrev sysOf {L : LB Y.X} (hL : L.IsLB) {n : ℕ} (s : Fin n → L.Sec) : LinSys F where
   Y := Y.X
   str := Y.str
@@ -344,8 +318,6 @@ abbrev sysOf {L : LB Y.X} (hL : L.IsLB) {n : ℕ} (s : Fin n → L.Sec) : LinSys
   isLB := hL
   N := n
   b := s
-
-
 
 section LinSys
 
@@ -361,9 +333,6 @@ abbrev O1 : LB Y.X := (ProjSpace.O1 F Y.N).pull Y.ι
 
 theorem isLineBundle_twistingSheafOne : Y.O1.IsLB := LB.isLB_pull (O1_isLB F Y.N) _
 
-theorem isAmple_projective_O_one : IsAmpleLB Y.O1 :=
-  (GlobalTheory.isAmple_projective_O_one F Y.N).pull_of_isClosedImmersion _
-
 def coordSec (j : Fin (Y.N + 1)) : Y.O1.Sec := secPull (coord F Y.N j) Y.ι
 
 def idx (i : Fin (Y.N + 1)) : Y.O1.ι := fun _ => i
@@ -375,10 +344,7 @@ def chartHom (i : Fin (Y.N + 1)) :
     Γ(PSpace F Y.N, chart F Y.N i) →+* Γ(Y.X, Y.O1.U (Y.idx i)) :=
   (Y.ι.appLE _ _ (Y.twistingSheafOne_chart_eq_preimage_standardChart i).le).hom
 
-
-
 variable {i : Fin (Y.N + 1)} (hi : Y.ι (genericPoint Y.X) ∈ chart F Y.N i)
-
 
 include hi in
 theorem genericPoint_mem_twistingSheafOne_chart : genericPoint Y.X ∈ Y.O1.U (Y.idx i) := (Y.twistingSheafOne_chart_eq_preimage_standardChart i).ge hi
@@ -396,8 +362,6 @@ end Var
 
 def RiemannRochFinite (F : Type) [Field F] : Prop :=
   ∀ (Y : Var F) (Δ : Y.Dv), FiniteDimensional F (Y.H0 Δ)
-
-theorem riemannRoch_finite (F : Type) [Field F] : RiemannRochFinite F := Var.finiteDimensional_riemannRochSpace
 
 section Proj
 

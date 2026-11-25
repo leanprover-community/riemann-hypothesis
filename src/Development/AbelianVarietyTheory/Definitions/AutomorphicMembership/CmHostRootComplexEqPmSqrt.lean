@@ -70,33 +70,6 @@ section -- clump:auto
 
 noncomputable section
 
-namespace GlobalTheory.Member.Inhab
-
-section Sign
-
-open NumberField Formalism.BasicNotions ComplexConjugate Matrix Formalism.L2.Pj Formalism.L2.Pj.DatLin
-open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-attribute [local instance] Classical.propDecidable
-
-theorem sqrt_im_pos (D : D7) : 0 < (D.host.φ₀ D.host.sqrtMinusD).im := by
-  have hφ : D.host.φ₀ D.host.sqrtMinusD = Complex.I * (Real.sqrt D.host.d : ℂ) := D.host.φ₀_mem
-  rw [hφ]
-  have hd : (0 : ℝ) < D.host.d := by exact_mod_cast d_pos D
-  simpa using hd
-
-
-end Sign
-
-open NumberField IsDedekindDomain ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Pj
-open scoped TensorProduct Matrix Topology
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
-variable {D : D7}
-
-variable {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host D.host.E} {Dw : Datum H} {l : Level H}
-
-end GlobalTheory.Member.Inhab
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -214,41 +187,9 @@ def noUnf (Xo : Moduli Dw l) (c : Coeff l) (σ : c.F →+* ℂ) (N : ℕ) : Form
   X := PEmpty.elim
   un := fun k => k.elim
 
-
 open Classical in
 def UnfFam.U (u : UnfFam Xo c N ξ) (σ : c.F →+* ℂ) : Formalism.L2.PjFree.Unf Xo c σ N :=
   if h : Formalism.L2.PjFree.GoodEmb c σ then u.good σ h else noUnf Xo c σ N
-
-theorem UnfFam.U_eq (u : UnfFam Xo c N ξ) {σ : c.F →+* ℂ} (h : Formalism.L2.PjFree.GoodEmb c σ) : u.U σ = u.good σ h :=
-  dif_pos h
-
-theorem UnfFam.isEmpty_comp (u : UnfFam Xo c N ξ) {σ : c.F →+* ℂ} (h : ¬ Formalism.L2.PjFree.GoodEmb c σ) :
-    IsEmpty (u.U σ).Comp := by
-  rw [UnfFam.U, dite_eq_right h]
-  exact inferInstanceAs (IsEmpty PEmpty)
-
-theorem nonempty_comp_of_isUnf {σ : c.F →+* ℂ} (hσ : Formalism.L2.PjFree.GoodEmb c σ) {U : Formalism.L2.PjFree.Unf Xo c σ N}
-    (h : Formalism.L2.PjFree.IsUnf U) (hN : 1 ≤ N) : Nonempty U.Comp := by
-  obtain ⟨U', hU, -⟩ := GlobalTheory.UnifFamily.exists_unf_family E H Dw l Xo c (h.1 ▸ hN)
-  obtain ⟨-, ⟨k⟩, hd, -⟩ := hU σ hσ
-  obtain ⟨x, hx⟩ := hd k
-  obtain ⟨k', -⟩ := h.2.2.1 ((U' σ).un k ⟨x, hx⟩)
-  exact ⟨k'⟩
-
-theorem UnfFam.unf (u : UnfFam Xo c N ξ) (hN : 1 ≤ N) (σ : c.F →+* ℂ) (h : Formalism.L2.PjFree.GoodEmb c σ) :
-    Formalism.L2.PjFree.IsUnf (u.U σ) ∧ Nonempty (u.U σ).Comp ∧ (∀ k la γ, ((u.U σ).X k).χ la γ = 1) ∧
-      ∀ k x, FromTest (K := c.F) (fun R _ _ => FrPt Xo c R) (fun φ y z => FrMap φ y z) ((u.U σ).un k x) := by
-  rw [u.U_eq h]
-  exact ⟨u.law σ h, nonempty_comp_of_isUnf h (u.law σ h) hN, u.chi σ h, fun k x =>
-    @GlobalTheory.Frames.allTest_of_secBaseChange GlobalTheory.abelianSchemeLaws_all.1.secBaseChange E _ _ _ H Dw l Xo c (CAt σ) _
-      (inferInstanceAs (_root_.IsReduced ℂ)) _ _⟩
-
-theorem UnfFam.xi_eq (u : UnfFam Xo c N ξ) (σ : c.F →+* ℂ) (k : (u.U σ).Comp) : ((u.U σ).X k).ξ0 = ξ := by
-  by_cases h : Formalism.L2.PjFree.GoodEmb c σ
-  · revert k
-    rw [u.U_eq h]
-    exact u.xi σ h
-  · exact (u.isEmpty_comp h).elim k
 
 end Unif
 
@@ -267,25 +208,6 @@ structure Amb (D : D7) : Type where
 def ambD (D : D7) : Amb D := ⟨hostOfRecord D, rfl, rfl, rfl⟩
 
 variable {D : D7}
-
-theorem Amb.cm (A : Amb D) (t : D.what₂.Tau) : DV.tauEmb D t (A.H.rt : D.host.E) = A.H.rt0 := by
-  rw [A.rt_eq, A.cmHost_rootComplex_eq_pm_sqrt, tauEmb_sqrt]
-
-theorem Amb.im_neg_xi_neg (A : Amb D) (τ : D.host.E →+* ℂ) (hτ : τ (A.H.rt : D.host.E) = A.H.rt0) :
-    (τ (-D.host.xi0)).im < 0 := by
-  rw [A.rt_eq, A.cmHost_rootComplex_eq_pm_sqrt] at hτ
-  have h := xi0_embedding_im_pos D τ ((mem_cm_type_iff D τ).2 hτ)
-  rw [if_pos (GlobalTheory.Member.Inhab.sqrt_im_pos D), Int.cast_one, one_mul] at h
-  simpa using h
-
-theorem norm_embedding_xi_zero (D : D7) (τ : D.host.E →+* ℂ) : ‖τ D.host.xi0‖ = xiR D := by
-  unfold xiR
-  have hs : ∀ σ : D.host.E →+* ℂ, ‖σ D.host.sqrtMinusD‖ ^ 2 = ‖(D.host.d : ℂ)‖ := fun σ => by
-    rw [← norm_pow, ← map_pow, D.host.sqrtMinusD_sq, map_neg, map_natCast, norm_neg]
-  have hn : ‖τ D.host.sqrtMinusD‖ = ‖D.host.φ₀ D.host.sqrtMinusD‖ :=
-    (pow_left_inj₀ (norm_nonneg _) (norm_nonneg _) two_ne_zero).1 ((hs τ).trans (hs _).symm)
-  rw [show D.host.xi0 = -1 / ((Ideal.absNorm D.host.ccK : D.host.E) * D.host.sqrtMinusD) from rfl]
-  simp only [map_div₀, map_neg, map_one, map_mul, map_natCast, norm_div, norm_neg, norm_one, norm_mul, hn]
 
 structure Lv (A : Amb D) : Type where
 
@@ -343,32 +265,7 @@ variable (s : FinalTheorems S κ)
 
 abbrev Comp : Type := (s.U κ.σ₀).Comp
 
-theorem glob : IsGlob S.sys.Y κ.good s.Ygl := S.tor.glob κ.l κ.c κ.good
-
-theorem isRec : IsRecTor s.T := S.tor.isRec κ.l κ.c κ.good
-
-theorem unf (σ : κ.c.F →+* ℂ) (h : Formalism.L2.PjFree.GoodEmb κ.c σ) :
-    Formalism.L2.PjFree.IsUnf (s.U σ) ∧ Nonempty (s.U σ).Comp ∧ (∀ k la γ, ((s.U σ).X k).χ la γ = 1) ∧
-      ∀ k x, FromTest (K := κ.c.F) (fun R _ _ => FrPt (S.Xo κ.l) κ.c R) (fun φ y z => FrMap φ y z) ((s.U σ).un k x) :=
-  s.unif.unf (one_le_two.trans S.two_le) σ h
-
-theorem xi_eq (σ : κ.c.F →+* ℂ) (k : (s.U σ).Comp) : ((s.U σ).X k).ξ0 = -D.host.xi0 := s.unif.xi_eq σ k
-
-theorem xiAbs (σ : κ.c.F →+* ℂ) (k : (s.U σ).Comp) (τ : D.host.E →+* ℂ) : ‖τ ((s.U σ).X k).ξ0‖ = xiR D := by
-  rw [s.xi_eq, map_neg, norm_neg, norm_embedding_xi_zero]
-
-theorem gen : GenFrEx s.Xo κ.c := (GlobalTheory.Reg.genFrEx_and_genFromTest _ A.H S.Dw κ.l (S.Xo κ.l) κ.c).1
-
-theorem geo : FnAlgClosed (Xo := s.Xo) (c := κ.c) :=
-  GeomComp.fnAlgClosed_of_curveOver _ _ ((one_le_two.trans S.two_le).trans S.rank_eq.ge)
-    (GlobalTheory.RankOneDatum.exists_datum_of_rt D A.H A.rt_eq A.cmHost_rootComplex_eq_pm_sqrt) κ.curve
-
-theorem trans {κ₂ : Lv A} (s₂ : FinalTheorems S κ₂) (h : κ.l.Dvd κ₂.l) (b : 𝓞 κ.c.F →+* 𝓞 κ₂.c.F)
-    (hb : ∀ x, (((b x : 𝓞 κ₂.c.F) : κ₂.c.F) : ℂ) = ((x : κ.c.F) : ℂ)) : IsTorTrans s.T s₂.T b :=
-  S.tor.trans _ _ _ _ _ _ b h hb
-
 end FinalTheorems
-
 
 open Formalism.L2.Geo (datW datW_N datW_j) in
 structure SrcFam (A : Amb D) : Type 1 where
@@ -409,7 +306,6 @@ abbrev «at» (w : Formalism.L2.Geo.Dat D (Lv A)) : FinalTheorems (F.sig w.N w.j
   F.src w.N w.j w.two_le w.j_le w.κ
 
 end SrcFam
-
 
 end GlobalTheory.ShFam
 end -- clump:auto
