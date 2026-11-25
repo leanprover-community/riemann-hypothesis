@@ -143,8 +143,8 @@ lists as left out; and those the branch merged and then reverted, read from the 
 parents of its commits. Pull requests under any other heading are neither checked as included nor
 told they are left out. Each one reverted is told once that the batch would land it although its
 changes did not, unless it is labelled `deferred`. The comment is posted once there is something
-to say, and edited in place after that, also to say that all is well again. The note remembers a digest of it, so a run that would say
-the same costs nothing.
+to say, and edited in place after that, also to say that all is well again. The note remembers a
+digest of it, so a run that would say the same costs nothing.
 
 The batch being assembled is built on top of the batch assembled by hand labelled `latest batch`,
 when exactly one into main is: its branch starts at that batch's head, and its pull request is
@@ -1322,9 +1322,9 @@ def tell_members(gh, batch, pulls, main, log):
     batch already has, as when the merge of `main` that the batch was built from is pushed to the
     pull request afterwards. The batch is asked first (see `takes`). If it has the new head, and the
     new head has the commit in the note in it, the new head becomes the member's commit in the
-    note, and no new comment is posted: if it was told it is frozen at the old one, that comment is edited to name the new head, and so is a comment of
-    `pushed` about the old one, which also takes off the `awaiting-author` it put on (see
-    `retell`). If they cannot be edited, the member stays at the old commit until the next run."""
+    note, and no new comment is posted: if it was told it is frozen at the old one, that comment is
+    edited to name the new head, and so is a comment of `pushed` about the old one, which also
+    takes off the `awaiting-author` it put on (see `retell`). If they cannot be edited, the member stays at the old commit until the next run."""
     note, number, since = batch["note"], batch["number"], 0
     found, told, pushed, waiting = note["members"], note["told"], note["pushed"], note["waiting"]
     for key, commit in sorted(found.items(), key=lambda entry: int(entry[0])):
@@ -1766,8 +1766,8 @@ def describe_by_hand(note, under=""):
             f"to push until this has landed. Those this description lists as left out are told why, unless they "
             f"are `{DEFERRED}` or a batch being built contains them: the comment only informs. Where the description "
             "and the branch disagree, or the branch reverts a pull request, it says so in another comment. When this "
-            f"is merged the pull requests in it lose "
-            f"`{MEMBER}` and `{FROZEN}`. If it is closed without being merged they lose them too, and the ones that "
+            f"is merged the pull requests in it lose `{MEMBER}` and `{FROZEN}`. If it is closed without being merged "
+            "they lose them too, and the ones that "
             f"were queued go back to `{QUEUED}`, except those that a batch stacked on this one still holds. See "
             "`verification/BATCHES.md`.\n\n"
             f"{stacked}In this batch: {listed}.\n")
