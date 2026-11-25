@@ -81,9 +81,9 @@ the workflow does").
      included: the batch carries their changes. Those under any other heading, such as `Held by
      the maintainers:`, are neither: they are not checked against the branch as included, and are
      not told they are left out. A pull request listed as included is never told it conflicts
-     with the batch or with `main`, even when its own head is not in the branch, as when `main`
-     was merged into it for the batch and the push to its branch was refused. The description
-     check still names it, since GitHub will not mark it merged.
+     with the batch or with `main`, even when its own head is not in the branch, as when it was
+     pushed to after the batch merged it in. The description check still names it, since GitHub
+     will not mark it merged.
    - Each one is a list entry starting with `- ` and then a link to the pull request, either
      `#123` or its full URL. The rest of the entry is the reason. Lines indented under an entry,
      and entries that don't start with a link, are not read.
