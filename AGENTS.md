@@ -68,7 +68,7 @@ Drop the part from `---` on if the pull request depends on no other.
 A pull request that depends on another still targets `main`. Merge the dependency's branch into
 yours, and never rebase onto it. Keep the `depends on` line: once the dependency is on `main` or
 in a batch being built, a workflow ticks its box and marks it `(main)` or `(batched)`, as in
-`- [x] depends on: (batched) #123`. A line that names a batch is ticked, without a mark, once the
+`- [x] depends on: (batched) #123`. Don't type those marks yourself. A line that names a batch is ticked, without a mark, once the
 batch is on `main`. Leave the ticked line there; it still declares the dependency.
 
 ## Batches

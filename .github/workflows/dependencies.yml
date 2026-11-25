@@ -2,28 +2,33 @@ name: dependencies
 
 # Ticks the `depends on` boxes in open pull requests' descriptions once the dependency is on main
 # or in a batch being built, and says which before the pull requests the line names:
-# `- [ ] depends on: #123` becomes `- [x] depends on: (batched) #123` once #123's head commit is in
-# the head of a batch being built (any open pull request labelled `building` from a `batch/...`
-# branch of this repository, at any position in a stack), and `- [x] depends on: (main) #123` once
-# it is in main, or #123 was merged into main. Being marked merged is not enough: a pull request
-# merged into a batch's branch is marked merged long before it reaches main. A line that names
-# several pull requests counts once all of them do. A line marked `(batched)` is unticked again,
-# and loses the mark, if one of them leaves every batch before reaching main. A line marked
-# `(main)`, and a box ticked by hand, are left as they are. A line that names a batch, or that is in
-# a batch's own description, gets no mark: it is ticked once the batches are on main, and never
-# unticked. Only the box and the mark change, and a ticked line still declares the dependency.
+# `- [ ] depends on: #123` becomes `- [x] depends on: (batched) #123` once the batch queue's record
+# of a batch being built (any open pull request labelled `building` from a `batch/...` branch of
+# this repository, at any position in a stack) holds #123, even if #123 was pushed to since, and
+# `- [x] depends on: (main) #123` once #123's head is in main, or #123 was merged into main. Being
+# marked merged is not enough: a pull request merged into a batch's branch is marked merged long
+# before it reaches main. A line that names several pull requests counts once all of them do. A
+# line marked `(batched)` is unticked again, and loses the mark, if one of them leaves every batch
+# before reaching main, and has not been in the record of a batch closed less than an hour ago,
+# since a batch is often closed and opened again under a new number. A line marked `(main)`, and a
+# box ticked by hand, are left as they are. A line that names a batch, or that is in a batch's own
+# description, gets no mark: it is ticked once the batches are on main, and never unticked. Only
+# the box and the mark change, and a ticked line still declares the dependency.
 #
-# When a pull request that a description depends on is closed without landing, neither on main
-# nor in a batch being built, its box stays empty. The pull request that depends on it is labelled `awaiting-author` and told, once for
-# each closed pull request, that its branch probably still carries those changes: its author
-# should merge main and take them out, or take over the work, then edit the description and
-# comment `ready`. `scripts/pr-dependencies.py` has the forms a `depends on` line can take, and
-# `scripts/dependency-ticks.py` the exact rules.
+# When a pull request that a description depends on, on a line with a box, is closed without
+# landing, neither on main nor in a batch being built, its box stays empty. The pull request that
+# depends on it is labelled `awaiting-author` and told, once for each closed pull request, that
+# its branch probably still carries those changes: its author should merge main and take them
+# out, or take over the work, then edit the description and comment `ready`. A batch closed
+# without landing is no reason: it is usually opened again, rebuilt, under a new number.
+# `scripts/pr-dependencies.py` has the forms a `depends on` line can take, and
+# `scripts/dependency-ticks.py` the exact rules and what it cannot tell apart.
 #
 # A run looks at the open pull requests whose description names a pull request when that one is
 # closed, merged or not; at one pull request when it is opened or reopened or its description is
 # edited, since what it depends on may have landed already; at every open pull request every
-# hour; and, when started by hand, at one pull request or at all of them. GitHub starts no run
+# hour; and, when started by hand, at one pull request or at all of them, as a dry run if asked,
+# which only says what it would change. GitHub starts no run
 # for changes made with a workflow token, such as the batch queue closing a pull request that
 # landed through a batch or this workflow's own edits, so the hourly sweep catches those, and a
 # batch that starts or stops being built. The sweep is offset from those of the inbox and the
@@ -44,6 +49,10 @@ on:
         description: Pull request to look at (optional; without one, every open pull request is)
         type: number
         required: false
+      dry_run:
+        description: Only say what would change
+        type: boolean
+        default: false
 
 permissions: {}
 
@@ -59,11 +68,13 @@ jobs:
             (github.event.action == 'edited' && github.event.changes.body))) ) }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    # One sweep at a time, and one run at a time for each pull request, whether it is about the
-    # pull request itself or about those that depend on it. A run that is dropped while it waits
-    # loses nothing that the next one for the same pull request, or the next sweep, does not do.
+    # One run at a time for each pull request opened, reopened or edited, and one at a time for
+    # everything else: the sweeps, and the runs for closed pull requests, which look at the pull
+    # requests that depend on the one closed. A burst of closes, as when a batch lands, then
+    # collapses to the run under way and one waiting, and GitHub drops the others. What a dropped
+    # run would have done, the next sweep, within the hour, does.
     concurrency:
-      group: dependencies-${{ (github.event_name == 'pull_request_target' && github.event.pull_request.number) || inputs.pr || 'sweep' }}
+      group: dependencies-${{ (github.event_name == 'pull_request_target' && github.event.action != 'closed' && github.event.pull_request.number) || inputs.pr || 'sweep' }}
       cancel-in-progress: false
     permissions:
       contents: read
@@ -84,8 +95,10 @@ jobs:
           # At most one of these is set; neither for a sweep.
           PR: ${{ (github.event_name == 'pull_request_target' && github.event.action != 'closed' && github.event.pull_request.number) || inputs.pr }}
           CLOSED: ${{ github.event_name == 'pull_request_target' && github.event.action == 'closed' && github.event.pull_request.number || '' }}
+          DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run }}
         run: |
           which=()
           if [ -n "$PR" ]; then which=(--pr "$PR"); fi
           if [ -n "$CLOSED" ]; then which=(--closed "$CLOSED"); fi
+          if [ "$DRY_RUN" = true ]; then which+=(--dry-run); fi
           python3 scripts/dependency-ticks.py --repo "$REPO" "${which[@]}" --summary "$GITHUB_STEP_SUMMARY"

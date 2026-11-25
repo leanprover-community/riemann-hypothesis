@@ -11,14 +11,17 @@ or run. `pr-dependencies.py` says which lines declare a dependency, such as
 
 A pull request is on main when its head commit is in main, or when it was merged into main. Being
 marked merged is not enough: one merged into a batch's branch, or into any other branch, is marked
-merged long before its changes reach main. A pull request is in a batch being built when its head
-commit is in the head of an open pull request labelled `building` that holds a batch (see
-`holds_batch` in `batch-labels.py`): any batch of a stack, not only the outermost, so that a lower
-batch being repaired counts before the batch on top of it has merged its new head. One compare
-request answers each question: the branch is `ahead_by` nothing on the head when the head is in
-it. Each pull request is compared with main, unless it is open, and then with the head of each
-batch being built, the outermost of a stack first, until one holds it; each comparison is made
-once a run.
+merged long before its changes reach main. One compare request answers whether its head is in
+main: the branch is `ahead_by` nothing on the head when the head is in it. A pull request that is
+not open is compared with main, once a run. A pull request is in a batch being built when the
+batch-queue workflow's record of an open pull request labelled `building` that holds a batch (see
+`holds_batch` in `batch-labels.py`) lists it: any batch of a stack, each of which lists what it
+contains of its own. A member pushed to after the batch took it still counts, since the batch
+holds the commit it took, and a member the record says the branch reverts does not. A line marked
+`(batched)` is not unticked while a batch closed without being merged less than an hour ago
+(`GRACE`) held its pull requests: a batch is often closed and opened again, rebuilt, under a new
+number within a minute or two, and a run in between would untick it, and the next one tick it
+again. A line that is not ticked yet is not ticked for such a batch.
 
 GitHub's task boxes have only two states, so a line the workflow ticks says why, in an annotation
 before the pull requests it names, where GitHub shows them as their titles:
@@ -42,30 +45,45 @@ counts as being in a batch.
 Only the box's character and the annotation change: the rest of the description stays as it
 was, byte for byte, line endings included. Lines without a box or with `[]`, lines in code or
 comments and pull requests of other repositories are left alone. The description is read again
-just before it is written, the changes are made on that fresh copy, and nothing is written if
-they change nothing, so an author's edit made at the same time is lost only if it falls in those
-few seconds.
+before the changes are worked out, and the changes are made on that fresh copy; nothing is
+written if they change nothing. Once everything is worked out and the pause between writes has
+passed, it is read once more, right before the write, and if it changed meanwhile nothing is
+written and the next run looks again. So an author's edit is lost only if it falls in the moment
+between that last read and the write.
+
+What this cannot tell apart, since it keeps nothing between runs: an annotation typed by hand is
+taken for the workflow's. A `(batched)` typed by hand is removed, along with the tick, when the
+pull requests on its line leave every batch, and a `(main)` typed by hand is trusted for good. And
+a dependency that GitHub marked merged because a batch carrying its head commit landed counts as
+on main even if the batch reverted its changes before it landed: while the batch is open its
+record says so, and the line is not ticked, but afterwards nothing does. Batches should be rebuilt
+without a pull request rather than revert it (see `AGENTS.md`).
 
 A pull request named on a line whose box is empty may have been closed without landing: neither
 merged nor on main, nor in a batch being built. The pull request that depends on it is then
 labelled `awaiting-author` and sent a comment: its branch probably still carries the closed pull
 request's changes, so its author should merge main and take them out, or take over the work, then
 edit the description and comment `ready`. A hidden marker in the comment names the closed pull
-request, so it is sent once for each. Nothing is said about a dependency that is still open, or
-that was merged into a branch other than main.
+request, so it is sent once for each. Nothing is said about a dependency that is still open, that
+was merged into a branch other than main, or that holds a batch, since a batch closed without
+landing is usually opened again, rebuilt, under a new number; nor about one named on a line
+without a box, which may be prose such as "Needs #123 first".
 
 Pull requests and their descriptions are read through GitHub's GraphQL API, whose allowance is
-separate from the 1,000 REST requests an hour that the workflow's token shares with every other
-workflow here. What each named pull request is, which batches are being built and the comments of
-a pull request about to be told something are each read once a run. REST is used for the
-compares and to write. Writes are spaced a second apart, the run stops when few REST requests are
-left this hour, and the next run carries on. A write counts as done only once GitHub has accepted
-it.
+separate from the REST requests that the workflow's token shares with every other workflow here.
+What each named pull request is, which batches are being built, a page at a time, and their
+records, and the comments of a pull request about to be told something are each read once a run.
+REST is used for the compares and to write. Writes are spaced a second apart, the run stops when
+few REST requests or GraphQL points are left this hour, and the next run carries on. A write
+counts as done only once GitHub has accepted it. A dependency that cannot be looked up stops only
+the pull requests that name it.
 """
 from __future__ import annotations
 
 import argparse
 from dataclasses import dataclass
+import datetime
+import json
 import importlib.util
 from pathlib import Path
 import re
@@ -83,6 +101,16 @@ WAITING, BUILDING, LATEST = _labels.WAITING, _labels.BUILDING, _labels.LATEST
 BOT = _rest.GRAPHQL_BOT
 # Stop when fewer REST requests than this are left for the hour (see `github-rest.py`).
 RESERVE = _rest.RESERVE
+# Stop, too, when fewer GraphQL points than this are left for the hour: a run that reads every
+# open pull request costs a few, and the other workflows here read through GraphQL as well.
+GRAPHQL_RESERVE = 200
+# How long a batch closed without being merged still counts for a line already marked `(batched)`:
+# a batch is often closed and opened again under a new number within a minute or two, and a run in
+# between would otherwise untick the line, and the next one tick it again.
+GRACE = datetime.timedelta(hours=1)
+# The batch-queue workflow's record of what a batch assembled by hand contains, at the start of
+# one of its own comments on the batch's pull request (see `batch-queue-sync.py`).
+RECORD = re.compile(r"<!-- batch-queue-by-hand (\{.*\}) -->")
 # Hidden at the start of the comment sent about a dependency closed without landing.
 MARKER = "<!-- dependency-ticks-closed {number} -->"
 TOLD = re.compile(r"<!-- dependency-ticks-closed (\d+) -->")
@@ -94,6 +122,9 @@ BATCHED, MAIN = "batched", "main"
 # known, or not a pull request.
 LANDED, IN_BATCH, OPEN, ELSEWHERE, DROPPED, UNKNOWN, MISSING = (
     "landed", "in a batch", "open", "elsewhere", "dropped", "unknown", "missing")
+# In the record of a batch closed without being merged less than GRACE ago, and of no batch being
+# built: a line marked `(batched)` keeps its mark, and nothing else changes.
+RECENT = "recently in a batch"
 
 HEAD = "headRefName headRefOid headRepository { nameWithOwner }"
 FIELDS = f"number state body {HEAD} labels(first: 100) {{ nodes {{ name }} }}"
@@ -115,12 +146,21 @@ ONE = """query($owner: String!, $name: String!, $number: Int!) {
   }
 }""" % FIELDS
 # The open pull requests labelled `building`, of which those that hold a batch are being built.
-BUILT = """query($owner: String!, $name: String!) {
+BUILT = """query($owner: String!, $name: String!, $after: String) {
   rateLimit { cost remaining }
   repository(owner: $owner, name: $name) {
-    pullRequests(states: OPEN, labels: ["%s"], first: 100) { nodes { number %s labels(first: 100) { nodes { name } } } }
+    pullRequests(states: OPEN, labels: ["%s"], first: 100, after: $after) {
+      pageInfo { hasNextPage endCursor }
+      nodes { number %s labels(first: 100) { nodes { name } } }
+    }
   }
 }""" % (BUILDING, HEAD)
+# The pull requests closed without being merged since a time, of which those that hold a batch
+# were batches closed lately (see GRACE).
+CLOSED = """query($q: String!) {
+  rateLimit { cost remaining }
+  search(query: $q, type: ISSUE, first: 100) { nodes { ... on PullRequest { number %s } } }
+}""" % HEAD
 # Issues and pull requests by number. `%s` is a list of `p123: issueOrPullRequest(number: 123)
 # { ... }`, so that a number that is an issue is not an error.
 STATES = """query($owner: String!, $name: String!) {
@@ -160,12 +200,21 @@ class GitHub(_rest.GitHub):
         if self.short():
             raise Stopped(f"only {self.remaining} REST requests left this hour")
 
+    def check_graphql(self):
+        """Stop before a query if the hour's GraphQL allowance is nearly used up."""
+        if self.graphql_left is not None and self.graphql_left < GRAPHQL_RESERVE:
+            raise Stopped(f"only {self.graphql_left} GraphQL points left this hour")
+
+    def now(self):
+        return datetime.datetime.now(datetime.timezone.utc)
+
     # Reading.
 
     def everything(self):
         """The default branch, and every open pull request as {number: pull request}."""
         found, after = {}, None
         while True:
+            self.check_graphql()
             data = self.graphql(EVERY, owner=self.owner, name=self.name, after=after)["repository"]
             page = data["pullRequests"]
             for node in page["nodes"]:
@@ -176,6 +225,7 @@ class GitHub(_rest.GitHub):
 
     def one(self, number):
         """The default branch, and pull request `number`, open or not, or None if there is none."""
+        self.check_graphql()
         data = self.graphql(ONE, missing=True, owner=self.owner, name=self.name, number=number)["repository"]
         node = data["pullRequest"]
         return data["defaultBranchRef"]["name"], (pull(node, self.repo) if node else None)
@@ -188,6 +238,7 @@ class GitHub(_rest.GitHub):
         for start in range(0, len(numbers), 100):
             chunk = numbers[start:start + 100]
             parts = " ".join(f"p{number}: issueOrPullRequest(number: {int(number)}) {{ {STATE} }}" for number in chunk)
+            self.check_graphql()
             data = self.graphql(STATES % parts, missing=True, owner=self.owner, name=self.name)["repository"]
             for number in chunk:
                 node = data.get(f"p{number}") or {}
@@ -199,15 +250,64 @@ class GitHub(_rest.GitHub):
         return found
 
     def batches(self):
-        """The batches being built, as [(number, head commit)], read once a run: the outermost of
-        each stack (`latest batch`) first, then by number."""
+        """Which pull requests the batches being built hold, by the batch-queue workflow's records
+        of them, read once a run: ({number: the batch whose record holds it}, {number: the batch
+        closed lately whose record held it}). A member the record says the branch reverts is not
+        held. The second covers batches closed without being merged less than GRACE ago, and leaves
+        out what a batch being built holds."""
         if getattr(self, "_built", None) is None:
-            nodes = self.graphql(BUILT, owner=self.owner, name=self.name)["repository"]["pullRequests"]["nodes"]
-            found = [node for node in nodes if is_batch(node, self.repo) and node.get("headRefOid")]
-            found.sort(key=lambda node: (LATEST not in {label["name"] for label in node["labels"]["nodes"]},
-                                         node["number"]))
-            self._built = [(node["number"], node["headRefOid"]) for node in found]
+            nodes, after = [], None
+            while True:
+                self.check_graphql()
+                page = self.graphql(BUILT, owner=self.owner, name=self.name, after=after)["repository"]["pullRequests"]
+                nodes += page["nodes"]
+                if not page["pageInfo"]["hasNextPage"]:
+                    break
+                after = page["pageInfo"]["endCursor"]
+            held = {}
+            for node in sorted(nodes, key=lambda node: node["number"]):
+                if is_batch(node, self.repo):
+                    for member in self.record(node["number"]):
+                        held.setdefault(member, node["number"])
+            since = (self.now() - GRACE).strftime("%Y-%m-%dT%H:%M:%SZ")
+            self.check_graphql()
+            closed = self.graphql(CLOSED, q=f"repo:{self.repo} is:pr is:closed is:unmerged closed:>={since}")
+            recent = {}
+            for node in sorted((node for node in closed["search"]["nodes"] if node), key=lambda node: node["number"]):
+                if is_batch(node, self.repo):
+                    for member in self.record(node["number"]):
+                        if member not in held:
+                            recent.setdefault(member, node["number"])
+            self._built = held, recent
         return self._built
+
+    def record(self, number):
+        """The pull requests that the batch-queue workflow's record on the batch `number` says it
+        contains, as a set of numbers, leaving out those it says the branch reverts. Empty when
+        there is no record."""
+        after = None
+        while True:
+            self.check_graphql()
+            data = self.graphql(COMMENTS, owner=self.owner, name=self.name, number=number, after=after)
+            page = data["repository"]["pullRequest"]["comments"]
+            for comment in page["nodes"]:
+                author = comment.get("author") or {}
+                match = RECORD.match(comment.get("body") or "")
+                if not match or author.get("__typename") != "Bot" or author.get("login") != BOT:
+                    continue
+                try:
+                    note = json.loads(match.group(1))
+                except ValueError:
+                    return set()
+                members = note.get("members") if isinstance(note, dict) else None
+                reverted = note.get("reverted") if isinstance(note, dict) else None
+                if not isinstance(members, dict):
+                    return set()
+                return {int(key) for key in members if str(key).isdigit()} - {
+                    int(key) for key in (reverted if isinstance(reverted, dict) else {}) if str(key).isdigit()}
+            if not page["pageInfo"]["hasNextPage"]:
+                return set()
+            after = page["pageInfo"]["endCursor"]
 
     def contains(self, base, head):
         """Whether commit `head` is in `base`, a branch or a commit, or None if GitHub does not know
@@ -272,8 +372,10 @@ def resolve(gh, main, numbers, known):
     {number: Fate}.
 
     One merged into main is on it. Any other with a head commit, unless it is open, is compared
-    with main; then, unless it holds a batch, with the head of each batch being built in turn,
-    until one holds it. Raises Stopped when few REST requests are left this hour.
+    with main; then, unless it holds a batch, it is in a batch being built when the batch-queue
+    workflow's record of one says so (see `GitHub.batches`): a member pushed to after the batch
+    took it is still in the batch at the commit taken. Raises Stopped when few REST requests, or
+    GraphQL points, are left this hour.
     """
     new = sorted(set(numbers) - set(known))
     if not new:
@@ -299,10 +401,13 @@ def resolve(gh, main, numbers, known):
             if found:
                 known[number] = Fate(LANDED, f"#{number} was closed, and its head is in `{main}`", info["batch"])
                 continue
-        holder = None if info["batch"] else next(
-            (batch for batch, head in gh.batches() if gh.contains(head, info["head"])), None)
+        held, recent = gh.batches()
+        holder = None if info["batch"] else held.get(number)
         if holder is not None:
             known[number] = Fate(IN_BATCH, f"#{number} is in the batch #{holder}, which is being built")
+        elif not info["batch"] and number in recent:
+            known[number] = Fate(RECENT, f"#{number} was in the batch #{recent[number]}, closed without being "
+                                         "merged less than an hour ago")
         elif info["state"] == "OPEN":
             known[number] = Fate(OPEN, f"#{number} is open", info["batch"])
         elif info["state"] == "MERGED":
@@ -326,6 +431,9 @@ def target(pr, line, known):
         return "x", MAIN
     if all(fate.kind in (LANDED, IN_BATCH) for fate in fates):
         return "x", BATCHED
+    if line.ticked and line.note == BATCHED and all(fate.kind in (LANDED, IN_BATCH, RECENT) for fate in fates):
+        # Its batch was closed lately, and may be opened again under a new number.
+        return None
     if any(fate.kind == UNKNOWN for fate in fates):
         return None
     return " ", None
@@ -334,7 +442,10 @@ def target(pr, line, known):
 def plan(pr, repo, known):
     """What to change on an open pull request, given `known` (see `resolve`): (the new description,
     the changes made to it as [(Declaration, box, note)], and the pull requests named on lines whose
-    box is empty afterwards that were closed without landing)."""
+    box is empty afterwards that were closed without landing). Only a line with a box counts for
+    that, and never a pull request that holds a batch: a batch closed without landing is usually
+    opened again, rebuilt, under a new number, and a line in prose without a box, such as "Needs
+    #123 first", may say anything."""
     lines = _dependencies.declarations(pr["body"], repo)
     changes = []
     for line in lines:
@@ -342,8 +453,10 @@ def plan(pr, repo, known):
         if wish is not None and wish != ("x" if line.ticked else " ", line.note):
             changes.append((line, *wish))
     boxes = {line.index: box for line, box, _ in changes}
-    dropped = sorted({number for line in lines if boxes.get(line.index, "x" if line.ticked else " ") != "x"
-                      for number in line.numbers if number in known and known[number].kind == DROPPED})
+    dropped = sorted({number for line in lines if line.box in (" ", "x", "X")
+                      and boxes.get(line.index, "x" if line.ticked else " ") != "x"
+                      for number in line.numbers
+                      if number in known and known[number].kind == DROPPED and not known[number].batch})
     return _dependencies.mark(pr["body"], changes), changes, dropped
 
 
@@ -415,17 +528,26 @@ def handle(gh, main, pr, known):
         return []
     gh.check()
     verb, said = "would " if gh.dry_run else "", []
-    if changes:
-        where = ", ".join(str(line.index + 1) for line, _, _ in sorted(changes, key=lambda change: change[0].index))
-        gh.describe(number, body, f"(change line {where} of the description)")
-        for line, box, note in sorted(changes, key=lambda change: change[0].index):
-            said.append(verb + describe_change(line, box, note, known))
     if notes:
         # Asked once a run (see `github-rest.py`).
         if not gh.label_exists(WAITING):
             if not gh.dry_run:
                 raise Refused(f"There is no `{WAITING}` label in {repo}. Was it renamed?")
             said.append(f"there is no `{WAITING}` label yet, so a real run would stop here")
+    if changes:
+        # Everything is worked out, and the pause between writes waited out, before the
+        # description is read once more, right before it is written: an edit made since the copy
+        # the changes were made on leaves it to the next run, rather than being overwritten.
+        gh.pace()
+        _, latest = gh.one(number)
+        if latest is None or not latest["open"] or latest["body"] != fresh["body"]:
+            return ["skipped, because its description changed while this run worked on it: the next run "
+                    "looks again"]
+        where = ", ".join(str(line.index + 1) for line, _, _ in sorted(changes, key=lambda change: change[0].index))
+        gh.describe(number, body, f"(change line {where} of the description)")
+        for line, box, note in sorted(changes, key=lambda change: change[0].index):
+            said.append(verb + describe_change(line, box, note, known))
+    if notes:
         # The label first: if a comment then fails, the next run sends it and finds the label there.
         if WAITING not in fresh["labels"]:
             gh.add_labels(number, [WAITING])
@@ -442,25 +564,34 @@ def sync(gh, number=None, closed=None):
     log, known, counts = [], {}, {"changed": 0, "told": 0}
     # Compares and the batches being built are read at most once a run.
     gh._compares, gh._built = {}, None
-    if number is not None:
-        main, found = gh.one(number)
-        if found is None:
-            raise Refused(f"There is no pull request #{number} in {gh.repo}.")
-        if not found["open"]:
-            return [f"#{number}: nothing to change, because it is closed"]
-        everyone, targets = None, [found]
-    else:
-        main, everyone = gh.everything()
-        targets = [pr for _, pr in sorted(everyone.items())
-                   if any(line.numbers for line in _dependencies.declarations(pr["body"], gh.repo))]
-        if closed is not None:
-            targets = [pr for pr in targets if closed in _dependencies.dependencies(pr["body"], gh.repo)]
-            if targets:
-                log.append(f"open pull requests that depend on #{closed}: "
-                           + ", ".join(f"#{pr['number']}" for pr in targets))
     try:
-        # Everything named at once: a hundred pull requests to a query, and each compared once.
-        resolve(gh, main, sorted({other for pr in targets for other in wanted(pr, gh.repo)}), known)
+        if number is not None:
+            main, found = gh.one(number)
+            if found is None:
+                raise Refused(f"There is no pull request #{number} in {gh.repo}.")
+            if not found["open"]:
+                return [f"#{number}: nothing to change, because it is closed"]
+            everyone, targets = None, [found]
+        else:
+            main, everyone = gh.everything()
+            targets = [pr for _, pr in sorted(everyone.items())
+                       if any(line.numbers for line in _dependencies.declarations(pr["body"], gh.repo))]
+            if closed is not None:
+                targets = [pr for pr in targets if closed in _dependencies.dependencies(pr["body"], gh.repo)]
+                if targets:
+                    log.append(f"open pull requests that depend on #{closed}: "
+                               + ", ".join(f"#{pr['number']}" for pr in targets))
+    except Stopped as error:
+        return log + [f"{error}: stopped, and the next run carries on"]
+    try:
+        # Everything named at once: a hundred pull requests to a query, and each compared once. If
+        # that fails, each pull request's own are looked up as it comes, so that one description
+        # cannot stop the rest.
+        try:
+            resolve(gh, main, sorted({other for pr in targets for other in wanted(pr, gh.repo)}), known)
+        except RuntimeError as error:
+            log.append(f"could not look up every dependency at once, so each pull request's are looked up "
+                       f"on their own: {error}")
         for pr in targets:
             try:
                 said = handle(gh, main, pr, known)

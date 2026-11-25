@@ -86,6 +86,9 @@ class GitHub:
         self.owner, _, self.name = repo.partition("/")
         self.calls, self.queries, self.points, self.wrote = 0, 0, 0, 0
         self.remaining, self.changed, self.failed = None, None, False
+        # How many GraphQL points GitHub last said were left this hour, from a query that asks for
+        # `rateLimit`, or None before it has said.
+        self.graphql_left = None
         # Whether each label looked up exists, by name.
         self.known_labels = {}
 
@@ -120,6 +123,12 @@ class GitHub:
             return status, (json.loads(body) if body.strip() else None)
         except json.JSONDecodeError:
             return status, None
+
+    def pace(self):
+        """Wait until a request that changes something may be sent (see PACE), so that a caller can
+        read what it is about to change just before it sends the change."""
+        if self.changed is not None:
+            time.sleep(max(0.0, self.changed + PACE - time.monotonic()))
 
     def get(self, path):
         status, data = self.call("GET", path)
@@ -170,7 +179,10 @@ class GitHub:
                 or (done.returncode != 0 and not allowed):
             sys.stderr.write(done.stderr.decode("utf-8", "replace"))
             raise RuntimeError(f"GraphQL query failed: {json.dumps(errors) if errors else 'no answer'}")
-        self.points += (answer["data"].get("rateLimit") or {}).get("cost", 0)
+        limit = answer["data"].get("rateLimit") or {}
+        self.points += limit.get("cost", 0)
+        if isinstance(limit.get("remaining"), int):
+            self.graphql_left = limit["remaining"]
         return answer["data"]
 
     def rate_limit(self):

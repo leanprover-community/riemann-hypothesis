@@ -273,11 +273,20 @@ GitHub shows their titles:
 - `- [x] depends on: (main) #123`: each of them is on `main`.
 
 A pull request is on `main` once its head commit is, or once it was merged into `main`; one merged
-into a batch's branch is not. A line marked `(batched)` becomes `(main)` once the batch lands, and
-is unticked again, losing the mark, if one of its pull requests leaves every batch before
-reaching `main`. A line marked `(main)`, and a box ticked by hand, are left as they are. A line
-that names a batch, like every line in a batch's own description, gets no mark: it is ticked once
-the batches it names are on `main`, and never unticked.
+into a batch's branch is not. It is in a batch being built when the batch queue's record of that
+batch lists it, even if it was pushed to after the batch took it, unless the record says the
+branch reverts it. A line marked `(batched)` becomes `(main)` once the batch lands, and is
+unticked again, losing the mark, if one of its pull requests leaves every batch before reaching
+`main`, but not while a batch closed without being merged less than an hour ago held it: a batch
+is often closed and opened again under a new number. A line marked `(main)`, and a box ticked by
+hand, are left as they are. A line that names a batch, like every line in a batch's own
+description, gets no mark: it is ticked once the batches it names are on `main`, and never
+unticked.
+
+The workflow keeps nothing between runs, so it takes a `(batched)` or `(main)` that you type for
+its own: don't type them. And a pull request that GitHub marked merged because a batch carrying
+its head commit landed counts as on `main`, even if the batch reverted it: rebuild a batch
+without a pull request rather than revert it.
 
 ### If the batch you build on is rebuilt
 

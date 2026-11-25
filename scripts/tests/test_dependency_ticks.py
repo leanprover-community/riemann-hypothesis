@@ -2,10 +2,13 @@
 """Checks of the ticking of `depends on` boxes against an in-memory stand-in for GitHub; no network
 calls."""
 import contextlib
+import datetime
 import importlib.util
 import io
+import json
 from pathlib import Path
 import re
+import sys
 import unittest
 
 SCRIPTS = Path(__file__).resolve().parents[1]
@@ -26,6 +29,8 @@ ticks = load("dependency_ticks", "dependency-ticks.py")
 
 REPO = "o/r"
 WAITING, BUILDING, LATEST = ticks.WAITING, ticks.BUILDING, ticks.LATEST
+NOW = datetime.datetime(2026, 11, 25, 6, 0, tzinfo=datetime.timezone.utc)
+BOT_AUTHOR = {"__typename": "Bot", "login": ticks.BOT}
 
 
 class Fake(ticks.GitHub):
@@ -35,9 +40,8 @@ class Fake(ticks.GitHub):
         super().__init__(REPO, dry_run)
         self.pulls, self.comments, self.sent, self.missing = {}, {}, [], set(missing)
         # Head commits that are in main, head commits GitHub no longer has, and the issues, which
-        # are not pull requests. `holds` says which head commits each batch's head holds.
-        self.in_main_heads, self.gone, self.issues = set(), set(), set()
-        self.holds = {}
+        # are not pull requests. `closed_lately` is the pull requests closed less than an hour ago.
+        self.in_main_heads, self.gone, self.issues, self.closed_lately = set(), set(), set(), set()
         # The compares made, as (base, head), and the pull requests read on their own.
         self.compared, self.reads = [], []
         # Called with the pull request's number each time it is read on its own, as an author's
@@ -50,11 +54,26 @@ class Fake(ticks.GitHub):
                               "head": head if head is not None else f"{number:040x}", "base": base,
                               "ref": ref or f"topic-{number}", "home": REPO if own else "fork/r"}
 
-    def batch(self, number, *members, latest=False, body=""):
-        """An open batch being built, holding the heads of `members`."""
+    def batch(self, number, *members, latest=False, body="", reverted=()):
+        """An open batch being built, whose record says it holds the heads of `members`."""
         self.add(number, body, ref=f"batch/b{number}", own=True,
                  labels_=[BUILDING, LATEST] if latest else [BUILDING])
-        self.holds[self.pulls[number]["head"]] = {self.pulls[member]["head"] for member in members}
+        self.holds(number, *members, reverted=reverted)
+
+    def holds(self, number, *members, reverted=()):
+        """The batch-queue workflow's record on the batch `number` now says it holds `members`, of
+        which it says the branch reverts `reverted`."""
+        note = {"head": self.pulls[number]["head"],
+                "members": {str(member): self.pulls[member]["head"] for member in members},
+                "reverted": {str(member): "f" * 40 for member in reverted}}
+        others = [(body, author) for body, author in self.comments.get(number, [])
+                  if not body.startswith("<!-- batch-queue-by-hand") and body != "Something someone said."]
+        self.comments[number] = [("Something someone said.", {"__typename": "User", "login": "kim"}),
+                                 (f"<!-- batch-queue-by-hand {json.dumps(note)} -->\nWhile this ...", BOT_AUTHOR),
+                                 *others]
+
+    def now(self):
+        return NOW
 
     def head(self, number):
         found = self.pulls[number]
@@ -81,9 +100,17 @@ class Fake(ticks.GitHub):
             return {"repository": {"defaultBranchRef": {"name": "main"},
                                    "pullRequest": self.node(number) if number in self.pulls else None}}
         if query == ticks.BUILT:
+            # One to a page, so that the pages are followed.
             nodes = [self.node(n) for n in sorted(self.pulls)
                      if self.pulls[n]["state"] == "OPEN" and BUILDING in self.pulls[n]["labels"]]
-            return {"repository": {"pullRequests": {"nodes": nodes}}}
+            start = int(variables["after"] or 0)
+            return {"repository": {"pullRequests": {"nodes": nodes[start:start + 1], "pageInfo": {
+                "hasNextPage": start + 1 < len(nodes), "endCursor": str(start + 1)}}}}
+        if query == ticks.CLOSED:
+            self.searched = variables["q"]
+            nodes = [{"number": n, **self.head(n)} for n in sorted(self.closed_lately)
+                     if self.pulls[n]["state"] == "CLOSED"]
+            return {"search": {"nodes": nodes}}
         if query == ticks.COMMENTS:
             nodes = [{"body": body, "author": author} for body, author in self.comments.get(variables["number"], [])]
             return {"repository": {"pullRequest": {"comments": {
@@ -201,8 +228,29 @@ class Ticking(unittest.TestCase):
             gh.pulls[number]["body"] = "Now with a summary.\n\n- [ ] depends on: #1\n"
         gh.meanwhile = edit
         run(gh)
-        self.assertEqual(gh.reads, [2])
+        # Read again before the changes are made, and once more right before the write.
+        self.assertEqual(gh.reads, [2, 2])
         self.assertEqual(gh.sent, [("PATCH", "pulls/2", {"body": "Now with a summary.\n\n- [x] depends on: (main) #1\n"})])
+
+    def test_an_edit_made_after_the_changes_were_worked_out_is_not_overwritten(self):
+        gh = Fake()
+        gh.add(1, state="MERGED")
+        gh.add(2, "- [ ] depends on: #1\n")
+        reads = []
+
+        def edit(number):
+            reads.append(number)
+            if len(reads) == 2:  # the read right before the write
+                gh.pulls[number]["body"] = "Edited by the author.\n\n- [ ] depends on: #1\n"
+        gh.meanwhile = edit
+        log = run(gh)
+        self.assertEqual(gh.sent, [])
+        self.assertEqual(gh.pulls[2]["body"], "Edited by the author.\n\n- [ ] depends on: #1\n")
+        self.assertIn("#2: skipped, because its description changed while this run worked on it: the next run looks "
+                      "again", log)
+        gh.meanwhile = None
+        run(gh)
+        self.assertEqual(gh.pulls[2]["body"], "Edited by the author.\n\n- [x] depends on: (main) #1\n")
 
     def test_no_write_when_the_fresh_copy_needs_none(self):
         gh = Fake()
@@ -303,11 +351,19 @@ class ClosedWithoutLanding(unittest.TestCase):
         run(gh)
         self.assertEqual(gh.sent, [])
 
-    def test_a_line_without_a_box_still_counts(self):
+    def test_a_line_without_a_box_does_not_hand_it_back(self):
         gh = self.scene()
-        gh.pulls[2]["body"] = "Depends on #1.\n"
+        gh.pulls[2]["body"] = "Depends on #1.\n- needs #1 first\n"
         run(gh)
-        self.assertEqual(gh.told_about(2), [1])
+        self.assertEqual((gh.told_about(2), gh.pulls[2]["labels"], gh.sent), ([], set(), []))
+
+    def test_a_batch_closed_without_landing_does_not_hand_it_back(self):
+        # A batch closed without landing is usually opened again, rebuilt, under a new number.
+        gh = self.scene()
+        gh.add(900, state="CLOSED", ref="batch/b9", own=True)
+        gh.pulls[2]["body"] = "- [ ] depends on: #900\n"
+        run(gh)
+        self.assertEqual((gh.told_about(2), gh.pulls[2]["labels"], gh.sent), ([], set(), []))
 
     def test_a_marker_from_someone_else_does_not_count(self):
         gh = self.scene()
@@ -362,8 +418,8 @@ class OnMainOrInABatch(unittest.TestCase):
         log = run(gh)
         self.assertEqual(gh.pulls[2]["body"], "Text.\r\n\r\n---\r\n\r\n- [x] depends on: (batched) #1\r\n")
         self.assertIn("#2: tick line 5 as `(batched)`, because #1 is in the batch #900, which is being built", log)
-        # An open pull request is not compared with main.
-        self.assertEqual(gh.compared, [(gh.pulls[900]["head"], gh.pulls[1]["head"])])
+        # An open pull request is not compared with anything: the batch's record says where it is.
+        self.assertEqual(gh.compared, [])
         # Nothing to do while it stays there.
         gh.sent.clear()
         run(gh)
@@ -378,7 +434,7 @@ class OnMainOrInABatch(unittest.TestCase):
         self.assertEqual(gh.sent, [])
 
     def test_a_lower_batch_counts_too(self):
-        # #901 is stacked on #900, which was repaired with a new head of #1 that #901 has not merged.
+        # #901 is stacked on #900, whose record holds #1.
         gh = Fake()
         gh.add(1)
         gh.batch(900, 1)
@@ -387,9 +443,63 @@ class OnMainOrInABatch(unittest.TestCase):
         log = run(gh)
         self.assertEqual(gh.pulls[2]["body"], "- [x] depends on: (batched) #1\n")
         self.assertIn("#2: tick line 1 as `(batched)`, because #1 is in the batch #900, which is being built", log)
-        # The outermost batch is asked first, and each batch once.
-        self.assertEqual(gh.compared, [(gh.pulls[901]["head"], gh.pulls[1]["head"]),
-                                       (gh.pulls[900]["head"], gh.pulls[1]["head"])])
+
+    def test_a_member_pushed_to_after_the_batch_took_it_still_counts(self):
+        gh = Fake()
+        gh.add(1)
+        gh.batch(900, 1, latest=True)
+        gh.pulls[1]["head"] = "e" * 40  # pushed to: the batch still holds the commit it took
+        gh.add(2, "- [ ] depends on: #1\n")
+        run(gh)
+        self.assertEqual(gh.pulls[2]["body"], "- [x] depends on: (batched) #1\n")
+
+    def test_a_member_the_batch_reverts_does_not_count(self):
+        gh = Fake()
+        gh.add(1)
+        gh.batch(900, 1, latest=True, reverted=[1])
+        gh.add(2, "- [ ] depends on: #1\n")
+        run(gh)
+        self.assertEqual(gh.sent, [])
+
+    def test_the_batches_being_built_are_read_page_by_page(self):
+        gh = Fake()
+        for number in (1, 3, 4):
+            gh.add(number)
+        gh.batch(900, 1)
+        gh.batch(901, 3)
+        gh.batch(902, 4, latest=True)
+        gh.add(2, "- [ ] depends on: #1, #3, #4\n")
+        run(gh)
+        self.assertEqual(gh.pulls[2]["body"], "- [x] depends on: (batched) #1, #3, #4\n")
+
+    def test_a_batch_closed_and_opened_again_under_a_new_number_keeps_the_mark(self):
+        gh = Fake()
+        gh.add(1)
+        gh.batch(900, 1, latest=True)
+        gh.add(2, "- [ ] depends on: #1\n")
+        run(gh)
+        self.assertEqual(gh.pulls[2]["body"], "- [x] depends on: (batched) #1\n")
+        # #900 is closed; a run comes before the batch is opened again as #901.
+        gh.pulls[900]["state"] = "CLOSED"
+        gh.closed_lately.add(900)
+        gh.sent.clear()
+        log = run(gh, 2)
+        self.assertEqual(gh.sent, [])
+        self.assertIn("closed:>=2026-11-25T05:00:00Z", gh.searched)
+        self.assertIn("#1 was in the batch #900, closed without being merged less than an hour ago", log[-1])
+        # A line not ticked yet is not ticked for it.
+        gh.pulls[3] = dict(gh.pulls[2], number=3, body="- [ ] depends on: #1\n")
+        run(gh, 3)
+        self.assertEqual(gh.pulls[3]["body"], "- [ ] depends on: #1\n")
+        # #901 is open, and nothing has changed for #2.
+        gh.batch(901, 1, latest=True)
+        run(gh)
+        self.assertEqual(gh.pulls[2]["body"], "- [x] depends on: (batched) #1\n")
+        # Once an hour has passed without a batch holding it, the line is unticked.
+        gh.pulls[901]["state"] = "CLOSED"
+        gh.closed_lately.clear()
+        run(gh)
+        self.assertEqual(gh.pulls[2]["body"], "- [ ] depends on: #1\n")
 
     def test_only_batches_being_built_count(self):
         gh = Fake()
@@ -397,7 +507,9 @@ class OnMainOrInABatch(unittest.TestCase):
         gh.batch(900, 1)
         gh.pulls[900]["labels"].discard(BUILDING)
         gh.add(901, ref="batch/b901", labels_=[BUILDING])  # from a fork: not a batch
-        gh.holds[gh.pulls[901]["head"]] = {gh.pulls[1]["head"]}
+        gh.holds(901, 1)
+        gh.add(902, ref="batch/b902", labels_=[BUILDING], own=True)
+        gh.comments[902] = [(gh.comments[901][1][0], {"__typename": "User", "login": "kim"})]  # not the bot's record
         gh.add(2, "- [ ] depends on: #1\n")
         run(gh)
         self.assertEqual((gh.sent, gh.compared), ([], []))
@@ -420,13 +532,13 @@ class OnMainOrInABatch(unittest.TestCase):
         run(gh)
         self.assertEqual(gh.pulls[2]["body"], "- [x] depends on: (batched) #1\r\n- [x] depends on: #1\r\n")
         # The batch is rebuilt without #1. The line ticked by hand stays as it is.
-        gh.holds[gh.pulls[900]["head"]] = set()
+        gh.holds(900)
         log = run(gh)
         self.assertEqual(gh.pulls[2]["body"], "- [ ] depends on: #1\r\n- [x] depends on: #1\r\n")
         self.assertIn("#2: untick line 1, because #1 is open", log)
-        self.assertEqual(gh.comments, {})
+        self.assertEqual(gh.told_about(2), [])
         # The batch is closed with #1 still in it.
-        gh.holds[gh.pulls[900]["head"]] = {gh.pulls[1]["head"]}
+        gh.holds(900, 1)
         run(gh)
         gh.pulls[900]["state"] = "CLOSED"
         run(gh)
@@ -438,8 +550,8 @@ class OnMainOrInABatch(unittest.TestCase):
         gh.batch(900, 1, latest=True)
         gh.add(2, "- [ ] depends on: #1\n")
         run(gh)
-        self.assertEqual((gh.pulls[2]["body"], gh.comments), ("- [x] depends on: (batched) #1\n", {}))
-        gh.holds[gh.pulls[900]["head"]] = set()
+        self.assertEqual((gh.pulls[2]["body"], gh.told_about(2)), ("- [x] depends on: (batched) #1\n", []))
+        gh.holds(900)
         log = run(gh)
         self.assertEqual(gh.pulls[2]["body"], "- [ ] depends on: #1\n")
         self.assertIn(f"#2: untick line 1, because #1 was closed without landing; add `{WAITING}`; tell it that #1 "
@@ -483,8 +595,7 @@ class Batches(unittest.TestCase):
         gh = Fake()
         gh.add(1)
         gh.batch(900, 1)
-        gh.batch(901, latest=True)
-        gh.holds[gh.pulls[901]["head"]] = {gh.pulls[1]["head"], gh.pulls[900]["head"]}
+        gh.batch(901, 900, latest=True)  # a record from before batches were stacked
         gh.add(2, "- [ ] depends on: #900\n- [ ] depends on: #1, #900\n")
         run(gh)
         # In a batch being built, but a batch counts only once it is on main.
@@ -557,7 +668,8 @@ class Runs(unittest.TestCase):
             log = ticks.sync(gh)
         self.assertEqual(gh.sent, [])
         self.assertEqual(gh.pulls[2]["body"], "- [ ] depends on: #1\n")
-        self.assertEqual(sorted(gh.reads), [2, 3, 9])
+        # Read again before the changes are made, and once more before a description is written.
+        self.assertEqual(sorted(gh.reads), [2, 2, 3, 3, 9])
         self.assertIn("would PATCH pulls/2 (change line 1 of the description)", printed.getvalue())
         self.assertIn("would POST issues/9/comments", printed.getvalue())
         self.assertIn("#2: would tick line 1 as `(main)`, because #1 was merged into `main`", log)
@@ -595,6 +707,42 @@ class Runs(unittest.TestCase):
         self.assertEqual(gh.edits(), ["pulls/2"])
         self.assertTrue(any("stopped" in line for line in log), log)
 
+    def test_a_run_stops_before_the_graphql_allowance_runs_out(self):
+        gh = self.scene()
+        gh.graphql_left = ticks.GRAPHQL_RESERVE - 1
+        log = run(gh)
+        self.assertEqual((gh.sent, gh.queries), ([], 0))
+        self.assertEqual(log[0], f"only {ticks.GRAPHQL_RESERVE - 1} GraphQL points left this hour: stopped, and the "
+                                 "next run carries on")
+        # Partway through, it stops between pull requests too.
+        gh = self.scene()
+        original = gh.graphql
+
+        def graphql(query, missing=False, **variables):
+            found = original(query, missing, **variables)
+            if query == ticks.ONE:
+                gh.graphql_left = ticks.GRAPHQL_RESERVE - 1
+            return found
+        gh.graphql = graphql
+        log = run(gh)
+        self.assertEqual(gh.edits(), [])
+        self.assertTrue(any("GraphQL points left this hour: stopped" in line for line in log), log)
+
+    def test_one_dependency_that_cannot_be_looked_up_does_not_stop_the_sweep(self):
+        gh = self.scene()
+        gh.add(6, "- [ ] depends on: #66\n")
+        original = gh.graphql
+
+        def graphql(query, missing=False, **variables):
+            if "p66:" in query:
+                raise RuntimeError("GraphQL query failed: something about #66")
+            return original(query, missing, **variables)
+        gh.graphql = graphql
+        log = run(gh)
+        self.assertEqual(sorted(gh.edits()), ["pulls/2", "pulls/3"])
+        self.assertIn("#6: skipped, because GraphQL query failed: something about #66", log)
+        self.assertTrue(gh.failed)
+
     def test_a_failed_write_does_not_hold_up_the_rest(self):
         gh = self.scene()
         original = gh.call
@@ -612,6 +760,19 @@ class Runs(unittest.TestCase):
 
 
 class Workflow(unittest.TestCase):
+    def test_runs_for_closed_pull_requests_share_the_sweeps_group(self):
+        # A burst of closes, as when a batch lands, then collapses to one run waiting, and the hourly
+        # sweep catches what a dropped run would have done.
+        text = (WORKFLOWS / "dependencies.yml").read_text()
+        group = re.search(r"group: (.*)", text).group(1)
+        self.assertIn("github.event.action != 'closed'", group)
+        self.assertIn("'sweep'", group)
+
+    def test_a_run_started_by_hand_can_be_a_dry_run(self):
+        text = (WORKFLOWS / "dependencies.yml").read_text()
+        self.assertIn("dry_run:", text)
+        self.assertIn("--dry-run", text)
+
     def test_the_sweep_runs_at_minutes_no_other_workflow_uses(self):
         minutes = {}
         for path in sorted(WORKFLOWS.glob("*.yml")):
