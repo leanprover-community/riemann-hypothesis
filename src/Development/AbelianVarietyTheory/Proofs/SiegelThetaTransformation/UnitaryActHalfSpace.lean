@@ -131,8 +131,7 @@ theorem det_den' (h1 : Aᴴ * C = Cᴴ * A) (h2 : Aᴴ * D = Cᴴ * B + 1) (h3 :
     noncomm_ring
   have e3 : fromBlocks A B C D * fromBlocks 1 Z 0 1 =
       fromBlocks 1 W 0 1 * fromBlocks (A - W * C) 0 C (C * Z + D) := by
-    rw [fromBlocks_multiply, fromBlocks_multiply]
-    simp [e1]
+    simp [fromBlocks_multiply, fromBlocks_multiply, e1]
   have e4 := congrArg det e3
   rw [det_mul, det_mul, det_fromBlocks_zero₂₁, det_fromBlocks_zero₂₁, det_fromBlocks_zero₁₂] at e4
   simp only [det_one, mul_one, one_mul] at e4
@@ -176,8 +175,7 @@ alias map_ccT := _root_.GlobalTheory.SW.Base.ccT_map
 
 theorem left_inv {γ : M2 E N} (h : γ ∈ UU E N) :
     -(Matrix.J (Fin N) E * ccT γ * Matrix.J (Fin N) E) * γ = 1 := by
-  have h' : ccT γ * Matrix.J (Fin N) E * γ = Matrix.J (Fin N) E := h
-  rw [Matrix.neg_mul, Matrix.mul_assoc, Matrix.mul_assoc, ← Matrix.mul_assoc (ccT γ), h',
+  rw [Matrix.neg_mul, Matrix.mul_assoc, Matrix.mul_assoc, ← Matrix.mul_assoc (ccT γ), h,
     Matrix.J_squared, neg_neg]
 
 theorem mul_mem {γ γ' : M2 E N} (h : γ ∈ UU E N) (h' : γ' ∈ UU E N) : γ' * γ ∈ UU E N := by
@@ -203,8 +201,7 @@ theorem group_part {γ : M2 E N} (h : γ ∈ UU E N) :
       _ = _ := by rw [hi, ccT_one, Matrix.one_mul, Matrix.mul_one]
   · change ccT (ccT γ) * Matrix.J (Fin N) E * ccT γ = Matrix.J (Fin N) E
     rw [ccT_ccT]
-    have hr : γ * -(Matrix.J (Fin N) E * ccT γ * Matrix.J (Fin N) E) = 1 := mul_eq_one_comm.1 hl
-    have h2 := congrArg (· * Matrix.J (Fin N) E) hr
+    have h2 := congrArg (· * Matrix.J (Fin N) E) (mul_eq_one_comm.1 hl)
     simp only [Matrix.mul_neg, Matrix.neg_mul, Matrix.mul_assoc, Matrix.J_squared, Matrix.mul_one,
       neg_neg, Matrix.one_mul] at h2
     rw [Matrix.mul_assoc, h2]
@@ -216,12 +213,11 @@ theorem map_blocks (τ : E →+* ℂ) (γ : M2 E N) :
 
 theorem map_mem (τ : E →+* ℂ) {γ : M2 E N} (h : γ ∈ UU E N) :
     (γ.map τ)ᴴ * Matrix.J (Fin N) ℂ * γ.map τ = Matrix.J (Fin N) ℂ := by
-  have h1 : ccT γ * Matrix.J (Fin N) E * γ = Matrix.J (Fin N) E := h
   have hJ : (Matrix.J (Fin N) E).map τ = Matrix.J (Fin N) ℂ := by
     ext i j
     rcases i with i | i <;> rcases j with j | j <;> by_cases hij : i = j <;>
       simp [Matrix.J, hij]
-  simpa only [Matrix.map_mul, map_ccT, hJ] using congrArg (fun X => X.map τ) h1
+  simpa only [Matrix.map_mul, map_ccT, hJ] using congrArg (fun X => X.map τ) h
 
 theorem norm_det (τ : E →+* ℂ) {γ : M2 E N} (h : γ ∈ UU E N) : ‖τ γ.det‖ = 1 := by
   have h2 := congrArg det (map_mem τ h)
@@ -291,6 +287,5 @@ theorem GlobalTheory.SW.unitary_act_halfSpace : ∀ (E : Type) [Field E] [Number
         den'_act (hb τ).1 (hb τ).2.1 (hb τ).2.2.1 (hb τ).2.2.2 (hQ τ)
       rw [hDen', m3, m4, hDen', hDen', Matrix.mul_add (_ + _), ← Matrix.mul_assoc (_ + _)]
       rw [hDen'] at hd
-      rw [hd]
-      simp only [conjTranspose_add, conjTranspose_mul]
+      simp only [hd, conjTranspose_add, conjTranspose_mul]
       noncomm_ring

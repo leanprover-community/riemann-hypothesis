@@ -108,7 +108,7 @@ theorem exists_prime_of_not_dvd {A : Type*} [CommRing A] [IsDomain A] [IsNoether
   have hla : ∀ r : A, b ∣ r * a → r ∈ p := fun r hr => hac ((hJ a r).2 hr)
   have hbp : b ∈ p := (hpc b).2 (dvd_mul_right b c)
 
-  have key : ∃ q w : A, q ∈ p ∧ w ∉ p ∧ b * w = q * c := by
+  obtain ⟨q, w, hq, hw, hbw⟩ : ∃ q w : A, q ∈ p ∧ w ∉ p ∧ b * w = q * c := by
     by_contra hne
     push Not at hne
     let K := FractionRing A
@@ -137,7 +137,6 @@ theorem exists_prime_of_not_dvd {A : Type*} [CommRing A] [IsDomain A] [IsNoether
       apply IsFractionRing.injective A K
       rw [map_mul, hz', mul_div_cancel₀ _ hb']
     exact hp.ne_top ((Ideal.eq_top_iff_one p).2 ((hpc 1).2 ⟨z, by rw [_root_.one_mul, hbc]⟩))
-  obtain ⟨q, w, hq, hw, hbw⟩ := key
   let R := Localization.AtPrime p
   have : IsDomain R := IsLocalization.isDomain_localization p.primeCompl_le_nonZeroDivisors
   have : IsNoetherianRing R := IsLocalization.isNoetherianRing p.primeCompl R inferInstance
@@ -177,8 +176,7 @@ theorem exists_prime_of_not_dvd {A : Type*} [CommRing A] [IsDomain A] [IsNoether
   rcases hz2 with e | e
   · rw [IsLocalization.mul_mk'_eq_mk'_of_mul, IsLocalization.mk'_eq_iff_eq_mul, ← map_mul] at e
     have e' : a * r = b * s := hinj e
-    have hr : r ∈ p := hla r ⟨s, by rw [_root_.mul_comm r a, e']⟩
-    exact ⟨p, hp, s, r, hs, hr, e'.symm⟩
+    exact ⟨p, hp, s, r, hs, (hla r ⟨s, by rw [_root_.mul_comm r a, e']⟩), e'.symm⟩
   · rw [IsLocalization.mul_mk'_eq_mk'_of_mul, IsLocalization.mk'_eq_iff_eq_mul, ← map_mul] at e
     have e' : b * r = a * s := hinj e
     exact absurd (hla s ⟨r, by rw [_root_.mul_comm (s : A) a, e']⟩) hs
@@ -202,8 +200,7 @@ private theorem valAt'_ne_zero_iff_top_le_preimage_basicOpen {X : Scheme.{0}} (x
     simpa using hu.map (Scheme.ΓSpecIso (CommRingCat.of ℂ)).inv.hom
   · intro h1 h0
     have hz : (x.appLE U ⊤ h).hom f = 0 := by
-      have := congrArg (Scheme.ΓSpecIso (CommRingCat.of ℂ)).inv.hom h0
-      simpa using this
+      simpa using congrArg (Scheme.ΓSpecIso (CommRingCat.of ℂ)).inv.hom h0
     rw [hz, Scheme.basicOpen_zero] at h1
     obtain ⟨pt⟩ : Nonempty (Sp ℂ) := inferInstance
     exact (h1 (show pt ∈ (⊤ : (Sp ℂ).Opens) from trivial)).elim
@@ -252,8 +249,7 @@ theorem exists_point_of_prime (X : Over (Sp ℂ)) [LocallyOfFiniteType X.hom] {U
     intro h0
     apply hsm
     have : Ideal.Quotient.mk m s = 0 := by
-      have := congrArg E h0
-      simpa [e] using this
+      simpa [e] using congrArg E h0
     exact Ideal.Quotient.eq_zero_iff_mem.1 this
   · rw [hxv]
     simp [e, Ideal.Quotient.eq_zero_iff_mem.2 (hpm hr)]
@@ -344,8 +340,7 @@ theorem dense_preimage (W : A.left.Opens) (hW : ∃ z, ⊤ ≤ (u.ex z).left ⁻
     change ℓ 1 ∈ Metric.ball zs ε
     rw [hℓ1]; exact hz1b
   apply hf1'
-  have := hzero h1T
-  simpa only [h, hℓ1, Pi.zero_apply] using this
+  simpa only [h, hℓ1, Pi.zero_apply] using hzero h1T
 
 end GlobalTheory.ContinuousQuotient
 

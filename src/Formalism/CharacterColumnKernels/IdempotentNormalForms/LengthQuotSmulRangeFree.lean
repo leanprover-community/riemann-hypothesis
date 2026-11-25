@@ -102,11 +102,9 @@ private theorem length_quot_span_pow_irreducible {ϖ : O} (hϖ : Irreducible ϖ)
       obtain ⟨b, hb⟩ := h0
       rw [Submodule.mkQ_apply, Submodule.Quotient.mk_eq_zero, Ideal.mem_span_singleton']
       refine ⟨b, ?_⟩
-      have hne : ϖ ^ k ≠ 0 := pow_ne_zero _ hϖ.ne_zero
-      apply mul_left_cancel₀ hne
+      apply mul_left_cancel₀ (pow_ne_zero _ hϖ.ne_zero)
       rw [← hb]
       ring
-    have hg : Function.Surjective g := Submodule.factor_surjective hle
     have hex : Function.Exact f g := by
       intro z
       constructor
@@ -124,7 +122,7 @@ private theorem length_quot_span_pow_irreducible {ϖ : O} (hϖ : Irreducible ϖ)
         show (Submodule.Quotient.mk (ϖ ^ k * b) : O ⧸ Ideal.span {ϖ ^ k}) = 0
         rw [Submodule.Quotient.mk_eq_zero, Ideal.mem_span_singleton']
         exact ⟨b, mul_comm _ _⟩
-    have hlen := Module.length_eq_add_of_exact f g hf hg hex
+    have hlen := Module.length_eq_add_of_exact f g hf (Submodule.factor_surjective hle) hex
     have h1 : Module.length O (O ⧸ Ideal.span {ϖ}) = 1 := by
       rw [Module.length_eq_one_iff, isSimpleModule_iff_isCoatom]
       first
@@ -144,10 +142,9 @@ private theorem length_quot_smulRange_eq_addVal (l : O) :
     · rintro ⟨y, rfl⟩
       exact ⟨y, by rw [smul_eq_mul, mul_comm]⟩
   rw [hspan]
-  have hirr : ∃ ϖ : O, Irreducible ϖ := by
+  obtain ⟨ϖ, hϖ⟩ : ∃ ϖ : O, Irreducible ϖ := by
     first
       | exact IsDiscreteValuationRing.exists_irreducible O
-  obtain ⟨ϖ, hϖ⟩ := hirr
   by_cases hl : l = 0
   · subst hl
     rw [addVal_zero]
@@ -329,7 +326,6 @@ lemma split {M P : Type*} [AddCommGroup M] [Module O M] [AddCommGroup P] [Module
     (hiB : ∀ p, i p ∈ B) (hC : C ≤ A.comap i) (hB : B ≤ A ⊔ LinearMap.range i) :
     Module.length O (M ⧸ A) ≤ Module.length O (M ⧸ B) + Module.length O (P ⧸ C) := by
   let q : (M ⧸ A) →ₗ[O] (M ⧸ B) := Submodule.factor hAB
-  have hqs : Function.Surjective q := Submodule.factor_surjective hAB
   have hC' : C ≤ LinearMap.ker (A.mkQ ∘ₗ i) := by
     intro p hp
     rw [LinearMap.mem_ker, LinearMap.comp_apply, Submodule.mkQ_apply, Submodule.Quotient.mk_eq_zero]
@@ -356,7 +352,7 @@ lemma split {M P : Type*} [AddCommGroup M] [Module O M] [AddCommGroup P] [Module
     first
       | exact LinearMap.exact_subtype_ker_map q
   have hlen := Module.length_eq_add_of_exact (LinearMap.ker q).subtype q
-    (LinearMap.ker q).injective_subtype hqs hex
+    (LinearMap.ker q).injective_subtype (Submodule.factor_surjective hAB) hex
   have h1 : Module.length O (LinearMap.ker q) ≤ Module.length O (LinearMap.range φ) :=
     Module.length_le_of_injective (Submodule.inclusion hker) (Submodule.inclusion_injective hker)
   have h2 : Module.length O (LinearMap.range φ) ≤ Module.length O (P ⧸ C) :=

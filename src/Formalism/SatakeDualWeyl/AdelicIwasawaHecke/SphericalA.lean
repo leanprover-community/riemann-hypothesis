@@ -42,8 +42,7 @@ theorem spherical_upper_mul (b c : GL (Fin n) L) (hb : (b : Matrix (Fin n) (Fin 
 theorem spherical_diag_ne_zero (b : GL (Fin n) L) (hb : (b : Matrix (Fin n) (Fin n) L).BlockTriangular id)
     (i : Fin n) : (b : Matrix (Fin n) (Fin n) L) i i ≠ 0 := by
   have hd : (b : Matrix (Fin n) (Fin n) L).det ≠ 0 := by
-    have := (Matrix.isUnit_iff_isUnit_det _).1 b.isUnit
-    exact this.ne_zero
+    exact ((Matrix.isUnit_iff_isUnit_det _).1 b.isUnit).ne_zero
   rw [Matrix.det_of_isUpperTriangular hb] at hd
   exact Finset.prod_ne_zero_iff.1 hd i (Finset.mem_univ _)
 
@@ -64,13 +63,11 @@ theorem spherical_ordV_mul (x y : v.adicCompletion F)
 
 theorem spherical_ordV_unit (x y : v.adicCompletion F) (hx : x ∈ Ov F v) (hy : y ∈ Ov F v)
     (hxy : y * x = 1) : ordV F v x = 0 := by
-  have hx1 : Valued.v x ≤ 1 := hx
-  have hy1 : Valued.v y ≤ 1 := hy
   have hm : Valued.v y * Valued.v x = 1 := by rw [← map_mul, hxy, map_one]
   have h1 : Valued.v x = 1 := by
-    refine le_antisymm hx1 ?_
+    refine le_antisymm hx ?_
     calc (1 : WithZero (Multiplicative ℤ)) = Valued.v y * Valued.v x := hm.symm
-      _ ≤ 1 * Valued.v x := mul_le_mul' hy1 le_rfl
+      _ ≤ 1 * Valued.v x := mul_le_mul' hy le_rfl
       _ = Valued.v x := one_mul _
   unfold ordV
   have h0 : Valued.v x ≠ 0 := by rw [h1]; exact one_ne_zero

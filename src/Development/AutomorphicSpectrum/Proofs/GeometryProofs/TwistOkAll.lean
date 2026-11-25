@@ -60,8 +60,7 @@ private theorem isLieEigen_twistAct_iff {O : Type} [CommRing O] {S : Scheme.{0}}
   constructor
   · rintro ⟨h0, h1⟩
     refine ⟨h0, fun a => ?_⟩
-    have := h1 (s.symm a)
-    simpa [twistAct] using this
+    simpa [twistAct] using h1 (s.symm a)
   · rintro ⟨h0, h1⟩
     refine ⟨h0, fun a => ?_⟩
     simpa [twistAct] using h1 (s a)
@@ -195,10 +194,9 @@ theorem tw_sub : ∀ (O : Type) [CommRing O] (s : O ≃+* O) (L : Type) [AddComm
   intro O _ s L _ _ f I hI x hx
   refine Submodule.smul_induction_on hx ?_ ?_
   · intro a ha y _
-    have hsa : s a ∈ I := hI (Ideal.mem_map_of_mem (s : O →+* O) ha)
     have key : (show L from f (a • y)) = s a • (show L from f y) := f.map_smul a y
     rw [key]
-    exact Submodule.smul_mem_smul hsa Submodule.mem_top
+    exact Submodule.smul_mem_smul (hI (Ideal.mem_map_of_mem (s : O →+* O) ha)) Submodule.mem_top
   · intro y z hy hz
     have key : (show L from f (y + z)) = (show L from f y) + (show L from f z) := f.map_add y z
     rw [key]
@@ -252,10 +250,9 @@ theorem tw_tate : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Ho
       exact ⟨_, rfl⟩
   · intro n m hn hm x
     obtain ⟨f, hf⟩ := a.compat n m hn hm x
-    have h4 : I.ev (n * m) (a.a (n * m) x) ^ m = I.ev n (a.a (n * m) x) := I.tower n m hn hm _
     have h5 : I.ev n (a.a (n * m) x) = I.ev n (((a.a n x + n • f : TwMod g.s D.La)) : D.La) := by
       rw [hf]
-    exact h4.trans (h5.trans (ev_split n hn x f))
+    exact (I.tower n m hn hm _).trans (h5.trans (ev_split n hn x f))
   · intro n hn x y
     have h := I.isom n hn (a.a n x) (a.a n y)
     obtain ⟨t, ht⟩ := a.isom n hn x y

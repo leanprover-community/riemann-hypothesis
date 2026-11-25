@@ -207,10 +207,9 @@ theorem skew_approx (hAE : ApproxE) {F E : Type} [Field F] [NumberField F] [Fiel
     (hY : ∀ v ∈ T, PI.UnitaryApproxDefs.cT (PI.UnitaryApproxDefs.sigR σ (v.adicCompletion F)) (Y v) = -Y v) (δ : 𝓞 F) (hδ : δ ≠ 0) :
     ∃ Y' : Matrix n n E, PI.UnitaryApproxDefs.cT (σ : E →+* E) Y' = -Y' ∧
       ∀ v ∈ T, MC E v δ (Y'.map (PI.UnitaryApproxDefs.inclE (F := F) (v.adicCompletion F)) - Y v) := by
-  have h2δ : (2 * δ : 𝓞 F) ≠ 0 := mul_ne_zero two_ne_zero hδ
   have hz : ∀ i j, ∃ e : E, ∀ v ∈ T,
       Cong E v (2 * δ) (Y v i j - PI.UnitaryApproxDefs.inclE (F := F) (v.adicCompletion F) e) :=
-    fun i j => hAE F E T (fun v => Y v i j) (2 * δ) h2δ
+    fun i j => hAE F E T (fun v => Y v i j) (2 * δ) (mul_ne_zero two_ne_zero hδ)
   choose Z hZ using hz
   refine ⟨Matrix.of fun i j => (2⁻¹ : E) * (Z i j - σ (Z j i)), ?_, fun v hv => ?_⟩
   · ext i j
@@ -512,8 +511,7 @@ theorem bd_main (v : HeightOneSpectrum (𝓞 F)) (x : E ⊗[F] v.adicCompletion 
     have e1 : ((N₁ * N₂ : ℤ) : E ⊗[F] v.adicCompletion F) * (e ⊗ₜ[F] t) =
         ((N₁ : E) * e) ⊗ₜ[F] (1 : v.adicCompletion F) *
           ((1 : E) ⊗ₜ[F] ((N₂ : v.adicCompletion F) * t)) := by
-      rw [Int.cast_mul, hL, hR]
-      simp only [Algebra.TensorProduct.tmul_mul_tmul, mul_one, one_mul]
+      simp only [Int.cast_mul, hL, hR, Algebra.TensorProduct.tmul_mul_tmul, mul_one, one_mul]
     rw [e1]
     refine Subring.mul_mem _ (Subring.subset_closure (Set.mem_union_left _ ⟨⟨(N₁ : E) * e,
       RingHom.mem_range.2 ⟨⟨_, h₁⟩, rfl⟩⟩, rfl⟩))
@@ -580,8 +578,7 @@ theorem ea_finite_bad {E R : Type*} [Field E] [CommRing R] (ι : E →+* R)
   have hP0 : P ≠ 0 := by
     intro h
     have h0 := hev 0
-    rw [h] at h0
-    simp at h0
+    simp [h] at h0
   have hfin : {c : R ⧸ m | P.eval c = 0}.Finite := by
     apply (P.roots.toFinset.finite_toSet).subset
     intro c hc

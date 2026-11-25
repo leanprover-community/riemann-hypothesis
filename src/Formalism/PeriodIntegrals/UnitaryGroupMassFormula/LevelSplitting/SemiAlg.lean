@@ -146,8 +146,7 @@ theorem isW_pW (H : D.Hyp) (v : n → A) : IsW D (D.pW v) := by
 
 theorem pU_of_isW {w : n → A} (hw : IsW D w) : D.pU w = 0 := by
   obtain ⟨h1, h2, h3⟩ := hw
-  rw [pU_apply, pX_apply, pXv_apply, pz_apply]
-  simp [h1, h2, h3]
+  simp [pU_apply, pX_apply, pXv_apply, pz_apply, h1, h2, h3]
 
 theorem pW_of_isW {w : n → A} (hw : IsW D w) : D.pW w = w := by
   rw [pW_apply, pU_of_isW hw, sub_zero]
@@ -165,16 +164,13 @@ theorem pW_pU (H : D.Hyp) (v : n → A) : D.pW (D.pU v) = 0 := by
   rw [pW_apply, pU_pU H, sub_self]
 
 theorem pU_e (H : D.Hyp) (b : Fin r) : D.pU (D.e b) = D.e b := by
-  rw [pU_apply, pX_apply, pXv_apply, pz_apply]
-  simp [fe H, H.ee, ze H]
+  simp [pU_apply, pX_apply, pXv_apply, pz_apply, fe H, H.ee, ze H]
 
 theorem pU_f (H : D.Hyp) (b : Fin r) : D.pU (D.f b) = D.f b := by
-  rw [pU_apply, pX_apply, pXv_apply, pz_apply]
-  simp [H.ff, H.ef, zf H]
+  simp [pU_apply, pX_apply, pXv_apply, pz_apply, H.ff, H.ef, zf H]
 
 theorem pU_z_eq (H : D.Hyp) : D.pU D.z = D.z := by
-  rw [pU_apply, pX_apply, pXv_apply, pz_apply]
-  simp [H.fz, H.ez, H.zz]
+  simp [pU_apply, pX_apply, pXv_apply, pz_apply, H.fz, H.ez, H.zz]
 
 theorem pW_e (H : D.Hyp) (b : Fin r) : D.pW (D.e b) = 0 := by
   rw [pW_apply, pU_e H, sub_self]
@@ -551,14 +547,12 @@ theorem span_le_spanR :
 theorem S_e {g : HA R σ J} (hg : g ∈ Ssub R σ J P) (b : Fin r) :
     lin R σ J g (ratV (F := F) R (P.e b)) - ratV (F := F) R (P.e b) ∈
       spanR (F := F) R P.e {a | a < b} := by
-  have hu : UniC R σ J (F0 P) g := hg
-  have h := hu (Fin.castSucc b)
+  have h := hg (Fin.castSucc b)
   rwa [F0_castSucc, span_frame_castSucc] at h
 
 theorem stabilizer_fixes_tail_coords {g : HA R σ J} (hg : g ∈ Ssub R σ J P) :
     lin R σ J g (ratV (F := F) R P.z) - ratV (F := F) R P.z ∈ spanR (F := F) R P.e Set.univ := by
-  have hu : UniC R σ J (F0 P) g := hg
-  have h := hu (Fin.last r)
+  have h := hg (Fin.last r)
   rwa [frameInitialVectors_last, span_frame_last] at h
 
 theorem H_fix_e {h : HA R σ J} (hh : h ∈ Hsub R σ J P) (a : Fin r) :

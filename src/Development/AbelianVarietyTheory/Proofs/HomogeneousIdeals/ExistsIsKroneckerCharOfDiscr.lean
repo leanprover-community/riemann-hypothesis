@@ -70,8 +70,7 @@ theorem eq_coord (b : Basis (Fin 2) ℤ R) (h0 : b 0 = 1) (x : R) :
 theorem repr_coord (b : Basis (Fin 2) ℤ R) (h0 : b 0 = 1) (x y : ℤ) :
     b.repr (x + y * b 1) 0 = x ∧ b.repr (x + y * b 1) 1 = y := by
   have : (x + y * b 1 : R) = x • b 0 + y • b 1 := by simp [h0]
-  rw [this]
-  simp [-zsmul_eq_mul]
+  simp [this, -zsmul_eq_mul]
 
 theorem discr_eq (b : Basis (Fin 2) ℤ R) (h0 : b 0 = 1) {t n : ℤ} (hw : b 1 ^ 2 = t * b 1 - n) :
     Algebra.discr ℤ b = t ^ 2 - 4 * n := by
@@ -124,7 +123,7 @@ theorem exists_basis (h2 : finrank ℚ K = 2) :
     conv_lhs => rw [← e.sum_repr 1]
     simp
   generalize e.repr 1 0 = x, e.repr 1 1 = y at h1
-  have hc : IsCoprime x y := by
+  obtain ⟨u, v, huv⟩ : IsCoprime x y := by
     refine isCoprime_of_dvd x y (fun h => by simp [h.1, h.2] at h1) ?_
     rintro z hz - ⟨x', rfl⟩ ⟨y', rfl⟩
     apply hz
@@ -133,10 +132,8 @@ theorem exists_basis (h2 : finrank ℚ K = 2) :
     have := hu.map (Algebra.norm ℤ)
     rw [Algebra.norm_algebraMap_of_basis e] at this
     exact (isUnit_pow_iff (by simp)).1 this
-  obtain ⟨u, v, huv⟩ := hc
   have hd : IsUnit (e.det ![x • e 0 + y • e 1, -v • e 0 + u • e 1]) := by
-    rw [Basis.det_apply, Matrix.det_fin_two]
-    simp only [Basis.toMatrix_apply]
+    simp only [Basis.det_apply, Matrix.det_fin_two, Basis.toMatrix_apply]
     simp [-zsmul_eq_mul]
     convert isUnit_one using 1
     linarith
@@ -533,8 +530,7 @@ theorem exists_isKroneckerChar {d : ℕ} (hd0 : d ≠ 0) (hd : d % 4 = 0 ∨ d %
         exact ⟨h.pos.ne', by rwa [Int.neg_gcd, Int.gcd_natCast_natCast, Nat.gcd_comm]⟩
       · simp
     · change ((f (n : ZMod d).val : ℤ) : ℂ) = _
-      rw [ZMod.val_natCast, hf]
-      simp [f, hn]
+      simp [ZMod.val_natCast, hf, f, hn]
   · have hf : ∀ n : ℕ, J(((n % d : ℕ) : ℤ) | d) = J(n | d) := fun n => by
       rw [jacobiSym.mod_left n]; simp
     refine ⟨⟨⟨⟨fun x => (J(x.val | d) : ℤ), ?_⟩, fun x y => ?_⟩, fun x hx => ?_⟩,
@@ -566,8 +562,7 @@ theorem dedekindZeta_eq_mul_LFunction [NeZero d] (h2 : finrank ℚ K = 2) (hD : 
     (LSeriesSummable_one_iff.2 hs) (χ.LSeriesSummable_of_one_lt_re hs), dedekindZeta]
   refine LSeries_congr (fun {n} hn => ?_) s
   have := idealCount_eq_sum h2 (fun n => χ n) (by simp) (by simp) hκ hn
-  rw [LSeries.convolution_def]
-  simp only [Pi.one_apply, one_mul]
+  simp only [LSeries.convolution_def, Pi.one_apply, one_mul]
   rw [Nat.sum_divisorsAntidiagonal' (fun _ e => χ e), ← this]
   rfl
 

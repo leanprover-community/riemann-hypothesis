@@ -64,9 +64,7 @@ theorem edge_cup_props : ∀ (Γ : Type) [Group Γ] (N : ℕ) (Δ : Subgroup Γ)
     rw [hmul, hmul, z.map_inv, toAdd_inv]; ring
   refine ⟨?_, ?_, ?_⟩
   · intro σ h hh h' hh'
-    have m1 : σ * h * σ⁻¹ ∈ Δ := hN.conj_mem h hh σ
-    have m2 : σ * h' * σ⁻¹ ∈ Δ := hN.conj_mem h' hh' σ
-    have e1 := hC _ m1 _ m2
+    have e1 := hC _ (hN.conj_mem h hh σ) _ (hN.conj_mem h' hh' σ)
     have e2 := hC h hh h' hh'
     have g : σ * (h * h') * σ⁻¹ = (σ * h * σ⁻¹) * (σ * h' * σ⁻¹) := by group
     simp only [edge]
@@ -79,8 +77,7 @@ theorem edge_cup_props : ∀ (Γ : Type) [Group Γ] (N : ℕ) (Δ : Subgroup Γ)
     rw [g, hmul x σ τ, hmul y σ τ, hconj x τ h, hconj y τ h]
     ring
   · intro σ hσ h hh
-    have m1 : σ * h * σ⁻¹ ∈ Δ := hN.conj_mem h hh σ
-    have e1 := hC _ m1 σ hσ
+    have e1 := hC _ (hN.conj_mem h hh σ) σ hσ
     have e2 := hC σ hσ h hh
     have g : σ * h * σ⁻¹ * σ = σ * h := by group
     rw [g, hconj x] at e1

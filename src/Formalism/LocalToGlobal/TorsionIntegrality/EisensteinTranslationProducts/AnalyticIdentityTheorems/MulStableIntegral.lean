@@ -56,8 +56,7 @@ theorem matrix_data (L : PeriodPair) (α : ℂ) (h : MulStable L α) :
       rw [ha, hd, hb, hc]
       ring
   · have hq' : (starRingEnd ℂ α) ^ 2 - ((a + d : ℤ) : ℂ) * starRingEnd ℂ α + ((a * d - b * c : ℤ) : ℂ) = 0 := by
-      have := congrArg (starRingEnd ℂ) hq
-      simpa using this
+      simpa using congrArg (starRingEnd ℂ) hq
     have hne : α - starRingEnd ℂ α ≠ 0 := by
       intro h0
       apply him
@@ -122,8 +121,7 @@ theorem mk_eq_iff (L : PeriodPair) (α : ℂ) (h : MulStable L α) (u v : L.latt
   constructor
   · rintro ⟨x, hx⟩
     refine ⟨x, x.2, ?_⟩
-    have := congrArg Subtype.val hx
-    simpa [mulEnd] using this.symm
+    simpa [mulEnd] using (congrArg Subtype.val hx).symm
   · rintro ⟨x, hx, hxe⟩
     exact ⟨⟨x, hx⟩, Subtype.ext (by simp [mulEnd, hxe])⟩
 
@@ -256,9 +254,8 @@ theorem kernel_reps_exist : KerRepsExist := by
     have h5 := hout q
     rw [hqdef, mk_eq_iff] at h5
     obtain ⟨x, hx, hxe⟩ := h5
-    have hxe' : ((Quotient.out q : L.lattice) : ℂ) - α * z = α * x := hxe
     have hzx : z - ((Quotient.out q : L.lattice) : ℂ) / α = -x :=
-      mul_left_cancel₀ hα (by rw [mul_sub, hdiv]; linear_combination -hxe')
+      mul_left_cancel₀ hα (by rw [mul_sub, hdiv]; linear_combination -hxe)
     rw [hzx]
     exact neg_mem hx
 

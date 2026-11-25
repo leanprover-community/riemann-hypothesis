@@ -83,8 +83,7 @@ theorem exists_den (F : Type*) [Field F] [NumberField F] [Algebra F Ω] [IsAlgCl
     have key : ∀ z : E, z ∈ (1 : FractionalIdeal (𝓞 E)⁰ E) → IsIntegral ℤ (z : Ω) := by
       intro z hz
       obtain ⟨z', rfl⟩ := (FractionalIdeal.mem_one_iff _).mp hz
-      have : IsIntegral ℤ (algebraMap (𝓞 E) E z') := z'.2
-      exact this.map (IsScalarTower.toAlgHom ℤ E Ω)
+      exact (z'.2 : IsIntegral ℤ (algebraMap (𝓞 E) E z')).map (IsScalarTower.toAlgHom ℤ E Ω)
     exact ⟨by simpa using key _ (hγ 1 h1M), key _ (hγ x' hxM)⟩
   have hle : ∀ γ ∈ M⁻¹, A.valuation (γ : Ω) ≤ 1 := fun γ hγ =>
     (A.valuation_le_one_iff _).mpr (mem_of_isIntegral_int A (hint γ hγ).1)
@@ -93,16 +92,13 @@ theorem exists_den (F : Type*) [Field F] [NumberField F] [Algebra F Ω] [IsAlgCl
   by_cases hb : A.valuation (β : Ω) = 1
   · exact ⟨β, _, (hint β hβ).1, (hint β hβ).2, hb, by simp [x', mul_comm]⟩
   exfalso
-  have ha' : A.valuation (α : Ω) < 1 := lt_of_le_of_ne (hle α hα) ha
-  have hb' : A.valuation (β : Ω) < 1 := lt_of_le_of_ne (hle β hβ) hb
   have e' : (α : Ω) + x * (β : Ω) = 1 := by
-    have := congrArg (fun z : E => (z : Ω)) e
-    simpa [x'] using this
+    simpa [x'] using congrArg (fun z : E => (z : Ω)) e
   have : A.valuation ((α : Ω) + x * (β : Ω)) < 1 := by
-    refine Valuation.map_add_lt _ ha' ?_
+    refine Valuation.map_add_lt _ (lt_of_le_of_ne (hle α hα) ha) ?_
     rw [Valuation.map_mul]
     calc A.valuation x * A.valuation (β : Ω) ≤ 1 * A.valuation (β : Ω) := mul_le_mul_left hx _
-      _ < 1 := by rw [one_mul]; exact hb'
+      _ < 1 := by rw [one_mul]; exact lt_of_le_of_ne (hle β hβ) hb
   rw [e', Valuation.map_one] at this
   exact lt_irrefl _ this
 

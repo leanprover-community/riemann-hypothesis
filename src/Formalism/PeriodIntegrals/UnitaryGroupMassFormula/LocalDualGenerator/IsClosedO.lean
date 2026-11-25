@@ -134,8 +134,7 @@ theorem n_step (hcont : Continuous (algebraMap ℚ_[l] K)) (huni : Irreducible (
     obtain ⟨c, y, hxy⟩ := ih
     obtain ⟨c', y', hy⟩ := one_step K l hcont huni y
     refine ⟨c + ((l : ℤ_[l]) ^ j) • c', y', ?_⟩
-    rw [Phi_add, hxy, hy]
-    simp only [map_pow, map_natCast]
+    simp only [Phi_add, hxy, hy, map_pow, map_natCast]
     ring
 
 theorem span (hcont : Continuous (algebraMap ℚ_[l] K)) (huni : Irreducible ((l : ℕ) : 𝒪[K]))
@@ -155,8 +154,7 @@ theorem span (hcont : Continuous (algebraMap ℚ_[l] K)) (huni : Irreducible ((l
     have hp : Filter.Tendsto (fun j => (l : ℚ_[l]) ^ j) Filter.atTop (nhds 0) :=
       tendsto_pow_atTop_nhds_zero_of_norm_lt_one Padic.norm_p_lt_one
     have hp' : Filter.Tendsto (fun j => (l : K) ^ j) Filter.atTop (nhds 0) := by
-      have := (hcont.tendsto 0).comp hp
-      simpa [Function.comp_def, map_pow, map_natCast] using this
+      simpa [Function.comp_def, map_pow, map_natCast] using (hcont.tendsto 0).comp hp
     rw [(IsValuativeTopology.hasBasis_nhds_zero K).tendsto_right_iff] at hp' ⊢
     intro γ _
     filter_upwards [hp' γ trivial] with j hj

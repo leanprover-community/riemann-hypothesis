@@ -725,8 +725,7 @@ theorem _root_.GlobalTheory.SiegQ.sg_expansion_int : ∀ (c M a : ℕ), 0 < M �
     congr 1
     ring
   have hvn : ‖v‖ = 1 := by
-    rw [hvdef, _root_.GlobalTheory.Sieg.Model.norm_ee]
-    simp
+    simp [hvdef, _root_.GlobalTheory.Sieg.Model.norm_ee]
   have hv0 : v ≠ 0 := by
     rw [hvdef]
     exact _root_.GlobalTheory.Sieg.Model.ee_ne_zero _
@@ -797,12 +796,11 @@ theorem _root_.GlobalTheory.SiegQ.sg_expansion_int : ∀ (c M a : ℕ), 0 < M �
     have hvK : v ∈ K := by
       rw [hvζ]
       exact pow_mem hζK b
-    have hvK' : v⁻¹ ∈ K := K.inv_mem hvK
     have hcK : (1 - v ^ c)⁻¹ ∈ K := K.inv_mem (K.sub_mem K.one_mem (pow_mem hvK c))
     have h3K : (1 - v) ^ (c ^ 2) * (1 - v ^ c)⁻¹ ∈ K :=
       K.mul_mem (pow_mem (K.sub_mem K.one_mem hvK) (c ^ 2)) hcK
     have hK := _root_.GlobalTheory.SiegQ.good_unitPart (R := K.toSubalgebra.toSubring)
-      hc0 hM ha hvn hvK hvK' (fun _ => h3K) (fun _ hd => ⟨hv1 hd, hcK⟩)
+      hc0 hM ha hvn hvK (K.inv_mem hvK) (fun _ => h3K) (fun _ hd => ⟨hv1 hd, hcK⟩)
     exact hK.2 n
   · intro hcop n
     rw [← hζ]
@@ -862,8 +860,7 @@ theorem _root_.GlobalTheory.SiegQ.sg_expansion_int : ∀ (c M a : ℕ), 0 < M �
     exact hS.2 n
   · rintro rfl n
     have hv1' : v = 1 := by
-      rw [hvdef]
-      simp [_root_.GlobalTheory.Sieg.ee]
+      simp [hvdef, _root_.GlobalTheory.Sieg.ee]
     have hZ := _root_.GlobalTheory.SiegQ.good_unitPart (R := (Int.castRingHom ℂ).range)
       hc0 hM ha hvn (by rw [hv1']; exact Subring.one_mem _)
       (by rw [hv1', inv_one]; exact Subring.one_mem _)

@@ -75,10 +75,9 @@ theorem iter_inj {s : T → T} (hs : Function.Injective s)
     intro a b hab h
     obtain ⟨k, rfl⟩ := Nat.exists_eq_add_of_le hab
     rw [Function.iterate_add_apply] at h
-    have h' : s^[k] t = t := ((hs.iterate a) h).symm
     rcases Nat.eq_zero_or_pos k with hk | hk
     · simp [hk]
-    · exact absurd h' (hp t k hk)
+    · exact absurd (((hs.iterate a) h).symm) (hp t k hk)
   rcases le_total a b with hab | hab
   · exact key a b hab h
   · exact (key b a hab h.symm).symm
@@ -370,9 +369,7 @@ theorem count_le (s : T → T) (hs : Function.Injective s)
     have h0 : us.countP (fun x => decide (Con s u d x)) = 0 := by
       rw [List.countP_eq_zero]
       intro x hx hc
-      have hc0 : Con s u d x := of_decide_eq_true hc
-      have hc' : u ∈ x ∧ s^[d] u ∈ x := hc0
-      have := shuffle_mem hus hx hc'.1
+      have := shuffle_mem hus hx (of_decide_eq_true hc).1
       simp at this
     rw [h0]
     exact Nat.zero_le _
@@ -481,8 +478,7 @@ theorem rank_le (s : T → T) (hs : Function.Injective s)
   subst hL'
   unfold rank
   rw [Multiset.coe_countP, Multiset.coe_countP]
-  have hB : L.reverse.Pairwise (fun a b => ¬ APrecedes s b a) := List.pairwise_reverse.2 hL
-  have h := count_le s hs hp L.reverse hB (L'.map (ASeg.dec s)) hsh
+  have h := count_le s hs hp L.reverse (List.pairwise_reverse.2 hL) (L'.map (ASeg.dec s)) hsh
     (fun x hx => by
       obtain ⟨Δ, _, rfl⟩ := List.mem_map.1 hx
       exact ⟨Δ.start, Δ.len, dec_eq_word s Δ⟩) u d

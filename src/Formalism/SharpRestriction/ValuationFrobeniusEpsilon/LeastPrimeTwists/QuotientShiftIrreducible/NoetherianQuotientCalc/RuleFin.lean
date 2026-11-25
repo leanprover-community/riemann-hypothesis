@@ -43,8 +43,7 @@ theorem length_ne_top_of_pow [IsNoetherianRing B] (N : ℕ) :
       have hy := h 1 (by simp) y
       rw [one_smul] at hx hy
       rw [hx, hy]⟩
-    rw [Module.length_eq_zero]
-    simp
+    simp [Module.length_eq_zero]
   | succ N ih =>
     intro M _ _ _ h
     let P : Submodule B M := maximalIdeal B • ⊤
@@ -98,14 +97,13 @@ theorem deg_induction {P : Deg k → Prop} (h0 : P 0)
       rwa [this]
     | succ n ih =>
       intro m hm hsum
-      have hex : ∃ i, 0 < m i := by
+      obtain ⟨i, hi⟩ : ∃ i, 0 < m i := by
         by_contra hcon
         push Not at hcon
         have h1 : ∑ i, m i ≤ 0 := Finset.sum_nonpos (fun i _ => hcon i)
         rw [hsum] at h1
         push_cast at h1
         omega
-      obtain ⟨i, hi⟩ := hex
       have h1 : 0 ≤ m - e i := by
         intro j
         by_cases hj : j = i

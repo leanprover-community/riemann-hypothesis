@@ -59,8 +59,7 @@ lemma thrS_norm (hF : FrameProducts) (hv : G.v = S6.rd E / 2) (hg : 0 < G.g) (b 
   rw [hm, h, ← hka]
   congr 1
   unfold supA supBS
-  rw [hm]
-  simp only [decide_eq_true_eq]
+  simp only [hm, decide_eq_true_eq]
   field_simp
 
 lemma thrP_norm (hF : FrameProducts) (hv : G.v = S6.rd E / 2) (hg : 0 < G.g) (b : ℕ) (hb : 1 ≤ b)
@@ -77,8 +76,7 @@ lemma thrP_norm (hF : FrameProducts) (hv : G.v = S6.rd E / 2) (hg : 0 < G.g) (b 
   rw [hm, h, ← hka]
   congr 1
   unfold supA
-  rw [hm]
-  simp only [Bool.false_eq_true, ite_false]
+  simp only [hm, Bool.false_eq_true, ite_false]
   field_simp
 
 end
@@ -101,8 +99,7 @@ theorem instance_sizes : InstSizes := by
   obtain ⟨_, hcard, hdeg⟩ := hDF E
   have hfd : G.f = S6.deg E := hcard
   have hfD : D.f = G.f := by
-    have := Fintype.card_congr e
-    simpa [Sz.Glob.f] using this
+    simpa [Sz.Glob.f] using Fintype.card_congr e
   have hka0 : 0 < G.ka := by rw [ka_eq G hv]; positivity
   have hN0 : 0 ≤ G.N := by unfold Sz.Glob.N; positivity
   have hND : ∀ ν : ℤ, √(FractionalIdeal.absNorm (S6.dualIdl E (G.g1 * G.g2) ν) : ℝ) =
@@ -196,8 +193,7 @@ theorem instance_sizes : InstSizes := by
     refine ⟨?_, ?_, ?_, ?_⟩
     · intro h0
       simp only at h0
-      rw [h0] at hn
-      simp at hn
+      simp [h0] at hn
     · intro x hx
       rw [hLad] at hx
       exact (hLG E hU (G.g1 * G.g2) (S6.nuBlock G.r i 1) 1 hgN).2.2.2.2.1 hx
@@ -219,8 +215,7 @@ theorem instance_sizes : InstSizes := by
     refine ⟨?_, ?_, ?_, ?_⟩
     · intro h0
       simp only at h0
-      rw [h0] at hn
-      simp at hn
+      simp [h0] at hn
     · intro x hx
       rw [hLap] at hx
       exact (hLG E hU (G.g1 * G.g2) (S6.nuBlock G.r b s) s hgN).2.2.2.2.2.2.1 hx
@@ -324,11 +319,10 @@ theorem global_positive : GlobPositive := by
   refine ⟨hg1, hg2, ?_⟩
   have hm2 : 2 ≤ G.m := by unfold Sz.Glob.m; omega
   have hf2 : 2 ≤ G.f := le_trans hm2 hyp.hmf
-  have hne : Nonempty ι := by
+  obtain ⟨w⟩ : Nonempty ι := by
     apply Fintype.card_pos_iff.1
     have : G.f = Fintype.card ι := rfl
     omega
-  obtain ⟨w⟩ := hne
   have h1 : (G.k : ℝ) ^ Cb ≤ G.b w 1 := hyp.hnode w 1 le_rfl (by omega)
   have h2 : G.b w 1 ≤ bb ^ 2 := (hyp.hsmall w).hbj 1 le_rfl (by
     show 1 ≤ 2 * G.r + 2

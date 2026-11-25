@@ -189,14 +189,12 @@ private theorem colMat_zero (k : Type) [Field k] (n : ℕ) :
 private theorem one_add_mul_one_sub (k : Type) [Field k] (n : ℕ) (v : Fin n → k) :
     ((1 : Matrix (Fin (n + (1 : ℕ))) (Fin (n + (1 : ℕ))) k) + UpperTheory.Reformulated.B.DYhc8.colMat k n v) *
       ((1 : Matrix (Fin (n + (1 : ℕ))) (Fin (n + (1 : ℕ))) k) - UpperTheory.Reformulated.B.DYhc8.colMat k n v) = 1 := by
-  rw [add_mul, mul_sub, mul_sub, colMat_mul]
-  simp
+  simp [add_mul, mul_sub, mul_sub, colMat_mul]
 
 private theorem one_sub_mul_one_add (k : Type) [Field k] (n : ℕ) (v : Fin n → k) :
     ((1 : Matrix (Fin (n + (1 : ℕ))) (Fin (n + (1 : ℕ))) k) - UpperTheory.Reformulated.B.DYhc8.colMat k n v) *
       ((1 : Matrix (Fin (n + (1 : ℕ))) (Fin (n + (1 : ℕ))) k) + UpperTheory.Reformulated.B.DYhc8.colMat k n v) = 1 := by
-  rw [sub_mul, mul_add, mul_add, colMat_mul]
-  simp
+  simp [sub_mul, mul_add, mul_add, colMat_mul]
 
 theorem UpperTheory.Reformulated.B.DYhc8.laurent_T_neg_one_mul_T_one :
     ∀ (k : Type) [inst : Field k] (n : ℕ) (v : Multiplicative (Fin n → k)),
@@ -312,8 +310,7 @@ theorem UpperTheory.Reformulated.B.DYhc8.complex_normed_instance_compat :
       UpperTheory.Reformulated.B.DYhc8.colMat k n (Multiplicative.toAdd v)) *
     ((1 : Matrix (Fin (n + (1 : ℕ))) (Fin (n + (1 : ℕ))) k) +
       UpperTheory.Reformulated.B.DYhc8.colMat k n (Multiplicative.toAdd w))
-  rw [colMat_add, add_mul, mul_add, mul_add, colMat_mul]
-  simp only [one_mul, mul_one, add_zero]
+  simp only [colMat_add, add_mul, mul_add, mul_add, colMat_mul, one_mul, mul_one, add_zero]
   abel
 
 noncomputable def UpperTheory.Reformulated.B.DYhc8.unip :
@@ -696,8 +693,7 @@ theorem continuous_glEmbHom (n : ℕ) : Continuous (glEmbHom k n) := by
       exact (continuous_apply j).comp (continuous_apply i)
 
 theorem continuous_levi (n : ℕ) : Continuous (levi k n) := by
-  have h : Continuous (glEmb k n) := Continuous.units_map _ (continuous_glEmbHom k n)
-  exact h.subtype_mk _
+  exact (Continuous.units_map _ (continuous_glEmbHom k n)).subtype_mk _
 
 theorem smPsiMinus : SmPsiMinus k :=
   by apply _root_.UpperTheory.Reformulated.B.DYhc8.main

@@ -201,8 +201,7 @@ theorem exists_phase {Y : Type} [AddCommGroup Y] [Module ℂ Y] (b : Y →ₗ⋆
     rw [Finset.prod_eq_one fun i _ => inner_self_eq_one_of_norm_eq_one (𝕜 := ℂ) (n2 i),
       inner_self_eq_one_of_norm_eq_one (𝕜 := ℂ) n4, one_mul]
   have hl1 : conj l * l = 1 := by
-    rw [Complex.conj_mul', hl]
-    simp
+    simp [Complex.conj_mul', hl]
   have e1 : b (F v₀ w₀) (F v₀ w₀) = c₁ := by rw [h1, P1, mul_one]
   have e2 : b (F' v₀' w₀') (F' v₀' w₀') = c₂ := by rw [h2, P2, mul_one]
   have hc : c₁ = c₂ := by
@@ -211,15 +210,13 @@ theorem exists_phase {Y : Type} [AddCommGroup Y] [Module ℂ Y] (b : Y →ₗ⋆
     linear_combination b (F' v₀' w₀') (F' v₀' w₀') * hl1
   have hA : c₃ * ((∏ i, ⟪v₀ i, v₀' i⟫_ℂ) * ⟪w₀, w₀'⟫_ℂ) = conj l * c₁ := by
     have t := h3 v₀ w₀ v₀' w₀'
-    rw [hm] at t
-    simp only [LinearMap.map_smulₛₗ, LinearMap.smul_apply, smul_eq_mul] at t
+    simp only [hm, LinearMap.map_smulₛₗ, LinearMap.smul_apply, smul_eq_mul] at t
     rw [e2, ← hc] at t
     exact t.symm
   have hB : c₃ = conj l * c₁ * ((∏ i, ⟪v₀' i, v₀ i⟫_ℂ) * ⟪w₀', w₀⟫_ℂ) := by
     have t1 := h3 v₀ w₀ v₀ w₀
     have t2 := h2 v₀' w₀' v₀ w₀
-    rw [P1, mul_one, hm] at t1
-    simp only [LinearMap.map_smulₛₗ, LinearMap.smul_apply, smul_eq_mul] at t1
+    simp only [P1, mul_one, hm, LinearMap.map_smulₛₗ, LinearMap.smul_apply, smul_eq_mul] at t1
     rw [t2] at t1
     rw [← t1, hc]
     ring
@@ -231,8 +228,7 @@ theorem exists_phase {Y : Type} [AddCommGroup Y] [Module ℂ Y] (b : Y →ₗ⋆
   · set p := (∏ i, ⟪v₀ i, v₀' i⟫_ℂ) * ⟪w₀, w₀'⟫_ℂ with hp
     set q := (∏ i, ⟪v₀' i, v₀ i⟫_ℂ) * ⟪w₀', w₀⟫_ℂ with hq
     have hqp : q = conj p := by
-      rw [hp, hq]
-      simp [map_prod]
+      simp [hp, hq, map_prod]
     have hl0 : conj l ≠ 0 := by
       intro h
       rw [map_eq_zero] at h

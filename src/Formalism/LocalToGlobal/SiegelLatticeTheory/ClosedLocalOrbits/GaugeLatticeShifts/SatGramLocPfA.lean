@@ -24,15 +24,13 @@ variable {K : Type} [Field K] [NumberField K]
 theorem liesOver_natCast (p : ℕ) (hp : p.Prime)
     (v : HeightOneSpectrum (𝓞 K)) (hv : ((p : ℕ) : 𝓞 K) ∈ v.asIdeal) :
     v.asIdeal.LiesOver (Ideal.span {(p : ℤ)}) := by
-  have hpZ : Prime (p : ℤ) := Nat.prime_iff_prime_int.mp hp
   have hmax : (Ideal.span {(p : ℤ)}).IsMaximal :=
-    PrincipalIdealRing.isMaximal_of_irreducible hpZ.irreducible
-  have hne : Ideal.comap (algebraMap ℤ (𝓞 K)) v.asIdeal ≠ ⊤ := Ideal.comap_ne_top _ v.isPrime.ne_top
+    PrincipalIdealRing.isMaximal_of_irreducible (Nat.prime_iff_prime_int.mp hp).irreducible
   have hle : Ideal.span {(p : ℤ)} ≤ Ideal.comap (algebraMap ℤ (𝓞 K)) v.asIdeal := by
     rw [Ideal.span_singleton_le_iff_mem, Ideal.mem_comap]
     simpa using hv
   constructor
-  exact hmax.eq_of_le hne hle
+  exact hmax.eq_of_le (Ideal.comap_ne_top _ v.isPrime.ne_top) hle
 
 theorem image_places_primesOver (p : ℕ) (hp : p.Prime) :
     (fun v : HeightOneSpectrum (𝓞 K) => v.asIdeal) '' {v | ((p : ℕ) : 𝓞 K) ∈ v.asIdeal} =
@@ -96,8 +94,7 @@ theorem intValuation_split (p : ℕ) (hp : p.Prime)
   have := v.isPrime
   have hr : ((p : ℕ) : 𝓞 K) ≠ 0 := Nat.cast_ne_zero.2 hp.ne_zero
   have hmap : (Ideal.span {((p : ℕ) : ℤ)}).map (algebraMap ℤ (𝓞 K)) = Ideal.span {((p : ℕ) : 𝓞 K)} := by
-    rw [Ideal.map_span, Set.image_singleton]
-    simp
+    simp [Ideal.map_span, Set.image_singleton]
   have hne : (Ideal.span {((p : ℕ) : ℤ)}).map (algebraMap ℤ (𝓞 K)) ≠ ⊥ := by
     rw [hmap, Ne, Ideal.span_singleton_eq_bot]; exact hr
   have := liesOver_natCast p hp v hv

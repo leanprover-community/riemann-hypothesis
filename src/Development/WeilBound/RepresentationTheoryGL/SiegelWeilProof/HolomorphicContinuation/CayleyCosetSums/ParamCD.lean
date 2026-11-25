@@ -85,14 +85,12 @@ theorem Good.dK (hΩ : IsOpen Ω) (hK : Good Ω K) : Good Ω (fun x u => fderiv 
       (LinearIsometryEquiv.continuous _).comp_continuousOn (hK.cont (N + 1))
     refine h.congr fun p _ => ?_
     simp only
-    rw [iteratedFDeriv_succ_eq_comp_right]
-    simp
+    simp [iteratedFDeriv_succ_eq_comp_right]
   · obtain ⟨V, hV, hxV, C, hC, hKV⟩ := hK.supp x hx
     refine ⟨V, hV, hxV, C, hC, fun x' hx' u hu => ?_⟩
     have : (K · u) =ᶠ[𝓝 x'] fun _ => 0 := by
       filter_upwards [hV.mem_nhds hx'] with y hy using hKV y hy u hu
-    rw [this.fderiv_eq]
-    simp
+    simp [this.fderiv_eq]
 
 theorem Good.integrable (hK : Good Ω K) (ν : Measure X) [IsFiniteMeasureOnCompacts ν] {x : F} (hx : x ∈ Ω) :
     Integrable (K x) ν := by
@@ -130,8 +128,7 @@ theorem Good.hasFDerivAt [CompleteSpace E] (hΩ : IsOpen Ω) (hK : Good Ω K) (�
     · rw [indicator_of_notMem hu]
       have : (K · u) =ᶠ[𝓝 x] fun _ => 0 := by
         filter_upwards [hV.mem_nhds (hball hx).2] with y hy using hKV y hy u hu
-      rw [this.fderiv_eq]
-      simp
+      simp [this.fderiv_eq]
   · exact (integrableOn_const (C := M) hC.measure_lt_top.ne).integrable_indicator hC.isClosed.measurableSet
   · refine Filter.Eventually.of_forall fun u x hx => ?_
     have hxΩ := (hball hx).1

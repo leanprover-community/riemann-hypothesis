@@ -69,19 +69,17 @@ private lemma mul_eq_zero_of_mem_of_sq_eq_bot (hI : I ^ 2 = ⊥) {s t : B} (hs :
 
 theorem pow_eq_of_sub_one_mem (hI : I ^ 2 = ⊥) {u : B} (hu : u - 1 ∈ I) (N : ℕ) :
     u ^ N = 1 + N * (u - 1) := by
-  have hsq : (u - 1) * (u - 1) = 0 := mul_eq_zero_of_mem_of_sq_eq_bot hI hu hu
   induction N with
   | zero => simp
   | succ n ih =>
     rw [pow_succ, ih]
     push_cast
-    linear_combination (↑n : B) * hsq
+    linear_combination (↑n : B) * (mul_eq_zero_of_mem_of_sq_eq_bot hI hu hu)
 
 theorem eq_of_pow_eq (hI : I ^ 2 = ⊥) {N : ℕ} (hN : IsUnit (N : B)) {u v : B} (hu : u - 1 ∈ I)
     (hv : v - 1 ∈ I) (h : u ^ N = v ^ N) : u = v := by
   rw [pow_eq_of_sub_one_mem hI hu N, pow_eq_of_sub_one_mem hI hv N] at h
-  have h3 : (N : B) * (u - 1) = N * (v - 1) := add_left_cancel h
-  have h4 := hN.mul_left_cancel h3
+  have h4 := hN.mul_left_cancel (add_left_cancel h)
   linear_combination h4
 
 theorem exists_lift_splitting (hI : I ^ 2 = ⊥) {C : Type} [CommGroup C] [Finite C]
@@ -114,8 +112,7 @@ theorem exists_lift_splitting (hI : I ^ 2 = ⊥) {C : Type} [CommGroup C] [Finit
     intro x y z
     have hP : IsUnit (a₀ x * a₀ y * a₀ z) := ((hu x).mul (hu y)).mul (hu z)
     have E : (c x y : B) * c (x * y) z = c y z * c x (y * z) := by
-      have := congrArg (fun t : Bˣ => (t : B)) (hc x y z)
-      simpa using this
+      simpa using congrArg (fun t : Bˣ => (t : B)) (hc x y z)
     have h12 := mul_eq_zero_of_mem_of_sq_eq_bot hI (hδI x y) (hδI (x * y) z)
     have h34 := mul_eq_zero_of_mem_of_sq_eq_bot hI (hδI y z) (hδI x (y * z))
     have A := hδ x y
@@ -140,13 +137,12 @@ theorem exists_lift_splitting (hI : I ^ 2 = ⊥) {C : Type} [CommGroup C] [Finit
     rw [hre] at hs
     simpa [hFeq] using hs
   set ν : B := ↑hN.unit⁻¹ with hνeq
-  have hνN : ν * (Fintype.card C : B) = 1 := hN.val_inv_mul
   set η : C → B := fun x => ν * F x with hηeq
   have hηI : ∀ x, η x ∈ I := fun x => I.mul_mem_left _ (I.sum_mem fun z _ => hδI x z)
   have hsum : ∀ x y, δ x y = η x + η y - η (x * y) := by
     intro x y
     simp only [hηeq]
-    linear_combination ν * hF x y - δ x y * hνN
+    linear_combination ν * hF x y - δ x y * hN.val_inv_mul
   refine ⟨fun x => a₀ x * (1 + η x), fun x => ?_, fun x y => ?_⟩
   · have h0 : Ideal.Quotient.mk I (η x) = 0 := Ideal.Quotient.eq_zero_iff_mem.2 (hηI x)
     simp [ha₀, h0]
@@ -168,8 +164,7 @@ theorem exists_twisted_algebra (R : Type) [CommRing R] (C : Type) [CommGroup C] 
     simp [hTeq, Finsupp.linearCombination_single, Finsupp.smul_single]
   have hcR : ∀ x y z, (c x y : R) * c (x * y) z = c y z * c x (y * z) := by
     intro x y z
-    have := congrArg (fun t : Rˣ => (t : R)) (hc x y z)
-    simpa using this
+    simpa using congrArg (fun t : Rˣ => (t : R)) (hc x y z)
   have hc1 : ∀ z, c 1 z = c 1 1 := by
     intro z
     have h := hc 1 1 z
@@ -263,8 +258,7 @@ theorem etale_of_twisted_basis {R : Type} [CommRing R] {C : Type} [CommGroup C] 
   have hafp : Algebra.FinitePresentation R A := Algebra.FinitePresentation.of_finitePresentation R A
   have hcR : ∀ x y z, (c x y : R) * c (x * y) z = c y z * c x (y * z) := by
     intro x y z
-    have := congrArg (fun t : Rˣ => (t : R)) (hc x y z)
-    simpa using this
+    simpa using congrArg (fun t : Rˣ => (t : R)) (hc x y z)
   have hmap : ∀ {T : Type} [CommRing T] [Algebra R T] (g : A →ₐ[R] T) (x y : C),
       algebraMap R T (c x y) * g (e (x * y)) = g (e x) * g (e y) := by
     intro T _ _ g x y
@@ -275,8 +269,7 @@ theorem etale_of_twisted_basis {R : Type} [CommRing R] {C : Type} [CommGroup C] 
   rw [Algebra.FormallyEtale.iff_comp_bijective]
   intro B _ _ I hI
   have hN' : IsUnit ((Nat.card C : ℕ) : B) := by
-    have := hN.map (algebraMap R B)
-    simpa using this
+    simpa using hN.map (algebraMap R B)
   constructor
   · intro g₁ g₂ hg
     apply AlgHom.toLinearMap_injective
@@ -285,8 +278,7 @@ theorem etale_of_twisted_basis {R : Type} [CommRing R] {C : Type} [CommGroup C] 
     show g₁ (e x) = g₂ (e x)
     have hq : ∀ x, Ideal.Quotient.mk I (g₂ (e x)) = Ideal.Quotient.mk I (g₁ (e x)) := by
       intro x
-      have := congrArg (fun g : A →ₐ[R] B ⧸ I => g (e x)) hg
-      simpa using this.symm
+      simpa using (congrArg (fun g : A →ₐ[R] B ⧸ I => g (e x)) hg).symm
     set v : C → B := fun x => ↑((hu x).map g₁).unit⁻¹ with hveq
     have hinv : ∀ x, g₁ (e x) * v x = 1 := fun x => ((hu x).map g₁).mul_val_inv
     set w : C → B := fun x => g₂ (e x) * v x with hweq
@@ -322,18 +314,15 @@ theorem etale_of_twisted_basis {R : Type} [CommRing R] {C : Type} [CommGroup C] 
     have hx1 : w x = 1 := by
       refine eq_of_pow_eq hI hN' (hw1 x) (by simp) ?_
       rw [hpow, pow_card_eq_one', hw1', one_pow]
-    have hx1' : g₂ (e x) * v x = 1 := hx1
-    linear_combination g₂ (e x) * hinv x - g₁ (e x) * hx1'
+    linear_combination g₂ (e x) * hinv x - g₁ (e x) * hx1
   · intro f
     set c' : C → C → Bˣ := fun x y => Units.map (algebraMap R B).toMonoidHom (c x y) with hcpeq
     have hc' : ∀ x y z, c' x y * c' (x * y) z = c' y z * c' x (y * z) := by
       intro x y z
-      have := congrArg (Units.map (algebraMap R B).toMonoidHom) (hc x y z)
-      simpa [hcpeq] using this
+      simpa [hcpeq] using congrArg (Units.map (algebraMap R B).toMonoidHom) (hc x y z)
     have hbc : ∀ x y, Ideal.Quotient.mk I (c' x y : B) * f (e (x * y)) = f (e x) * f (e y) := by
       intro x y
-      have := hmap f x y
-      simpa [hcpeq] using this
+      simpa [hcpeq] using hmap f x y
     obtain ⟨a, ha, hac⟩ := exists_lift_splitting hI hN' c' hc' (fun x => f (e x))
       (fun x => (hu x).map f) hbc
     have ha1u : IsUnit (a 1) :=
@@ -341,8 +330,7 @@ theorem etale_of_twisted_basis {R : Type} [CommRing R] {C : Type} [CommGroup C] 
     have ha1 : a 1 = algebraMap R B (c 1 1) := by
       have h := hac 1 1
       rw [one_mul] at h
-      have h' : (c' 1 1 : B) * a 1 = a 1 * a 1 := h
-      exact ((ha1u.mul_left_inj).1 h').symm
+      exact ((ha1u.mul_left_inj).1 h).symm
     set L : A →ₗ[R] B := e.constr R a with hLeq
     have hLe : ∀ x, L (e x) = a x := fun x => e.constr_basis R a x
     have hL1 : L 1 = 1 := by
@@ -359,8 +347,7 @@ theorem etale_of_twisted_basis {R : Type} [CommRing R] {C : Type} [CommGroup C] 
       rfl
     have hLmul : ∀ p q, L (p * q) = L p * L q := by
       intro p q
-      have := LinearMap.congr_fun (LinearMap.congr_fun hbil p) q
-      simpa using this.symm
+      simpa using (LinearMap.congr_fun (LinearMap.congr_fun hbil p) q).symm
     refine ⟨AlgHom.ofLinearMap L hL1 hLmul, ?_⟩
     apply AlgHom.toLinearMap_injective
     apply e.ext

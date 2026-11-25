@@ -44,8 +44,7 @@ lemma permExp_apply {ι : Type} [Fintype ι] {N : ℕ} (σ : ι → Equiv.Perm (
 
 lemma permExp_sum' {ι : Type} [Fintype ι] {N : ℕ} (σ : ι → Equiv.Perm (Fin N)) :
     ∑ x : ι × Fin N, permExp σ x = dimFl ι N := by
-  rw [Fintype.sum_prod_type]
-  simp only [permExp_apply, sum_perm_rev]
+  simp only [Fintype.sum_prod_type, permExp_apply, sum_perm_rev]
   rw [Fin.sum_univ_eq_sum_range (fun i => i) N, Finset.sum_range_id, Finset.sum_const,
     Finset.card_univ, smul_eq_mul]
   rfl
@@ -83,8 +82,7 @@ lemma coeff_pow {ι : Type} [Fintype ι] [DecidableEq ι] {N : ℕ} (lam : ι �
       Finset.prod_congr rfl (fun τ _ => prod_perm_rev (σ τ) Nat.factorial), Finset.prod_const,
       Finset.card_univ]
     rfl
-  rw [linRoot_eq, Finset.sum_pow_eq_sum_piAntidiag, coeff_sum]
-  simp only [hterm, coeff_monomial]
+  simp only [linRoot_eq, Finset.sum_pow_eq_sum_piAntidiag, coeff_sum, hterm, coeff_monomial]
   rw [Finset.sum_eq_single (fun x : ι × Fin N => N - 1 - ((σ x.1 x.2 : Fin N) : ℕ))]
   · rw [ite_eq_left (show Finsupp.equivFunOnFinite.symm
         (fun x : ι × Fin N => N - 1 - ((σ x.1 x.2 : Fin N) : ℕ)) = permExp σ from rfl)]

@@ -621,9 +621,8 @@ theorem DiagScalar_of (hC : CycleCount) : DiagScalar := by
     simp only [Equiv.Perm.sameCycle_one] at hij hpv hpw
     obtain ⟨μ, hμ, h1⟩ := key i l v hv hyv hpv
     obtain ⟨μ', hμ', h2⟩ := key j l w hw hyw hpw
-    have hne : e i ≠ e j := he.ne hij
     have hμμ : μ - μ' ≠ 0 := by
-      intro h; apply hne
+      intro h; apply (he.ne hij)
       have : μ = μ' := sub_eq_zero.mp h
       subst this; linear_combination h1 - h2
     apply hs
@@ -1128,8 +1127,7 @@ theorem TanLie_of (hF : TanField) : TanLie := by
     have h2 := hZ' _ (hY' f hf) x hx
     simp only [ev, map_sub] at h1 h2 ⊢
     rw [h1, h2, sub_zero]
-  have := (Tan (S : Set (Mat C N))).neg_mem h
-  simpa using this
+  simpa using (Tan (S : Set (Mat C N))).neg_mem h
 
 end LateralTheory.DivDb
 end -- clump:auto

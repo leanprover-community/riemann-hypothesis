@@ -68,8 +68,7 @@ theorem simultaneous_normal_form_majorant :
   have hCPC : Cᵀ * P * C = 1 := by
     rw [hB]
     calc Cᵀ * (Bᵀ * B) * C = (B * C)ᵀ * (B * C) := by
-          rw [transpose_mul]
-          simp only [Matrix.mul_assoc]
+          simp only [transpose_mul, Matrix.mul_assoc]
       _ = 1 := by rw [hBC, transpose_one, Matrix.one_mul]
   have hPCC : P * (C * Cᵀ) = 1 := by
     rw [hB]
@@ -126,12 +125,10 @@ theorem simultaneous_normal_form_majorant :
       rw [det_mul, h, mul_zero, det_one] at h'
       exact zero_ne_one h'
   · calc (C * U)ᵀ * P * (C * U) = Uᵀ * (Cᵀ * P * C) * U := by
-          rw [transpose_mul]
-          simp only [Matrix.mul_assoc]
+          simp only [transpose_mul, Matrix.mul_assoc]
       _ = 1 := by rw [hCPC, Matrix.mul_one, hU1]
   · calc (C * U)ᵀ * S * (C * U) = Uᵀ * A * U := by
-          rw [transpose_mul]
-          simp only [hAdef, Matrix.mul_assoc]
+          simp only [transpose_mul, hAdef, Matrix.mul_assoc]
       _ = diagonal e := hD
 
 end GlobalTheory.CompanionTheory.SW.Diag
@@ -346,8 +343,7 @@ theorem fourier_gaussian_real_place : ∀ (ι : Type) [Fintype ι] [DecidableEq 
       have hb0 : beta τ (e i) ≠ 0 := by
         intro h0
         have := beta_re τ (e := e i)
-        rw [h0] at this
-        simp at this
+        simp [h0] at this
         exact hτ.ne this
       have he2 : ((e i : ℝ) : ℂ) ^ 2 = 1 := by
         rcases he i with h | h <;> simp [h]

@@ -79,19 +79,16 @@ theorem exists_ne_zero_forall_point_extend_subalgebra :
   have hfinj : Function.Injective (algebraMap A S) := by
     intro x y h
     apply hinj
-    have := congrArg Subtype.val h
-    exact this
-  have hfp : Algebra.FinitePresentation A S := Algebra.FinitePresentation.of_finiteType.1 ‹_›
+    exact congrArg Subtype.val h
   have hc := PrimeSpectrum.isConstructible_range_comap
-    (RingHom.finitePresentation_algebraMap.mpr hfp)
+    (RingHom.finitePresentation_algebraMap.mpr (Algebra.FinitePresentation.of_finiteType.1 ‹_›))
   obtain ⟨q, hq, H⟩ := exists_basicOpen_subset_of_isConstructible_of_bot_mem hc
     ⟨⟨⊥, Ideal.isPrime_bot⟩, PrimeSpectrum.ext (Ideal.comap_bot_of_injective _ hfinj)⟩
   refine ⟨q, S, hξ, hq, hT, fun φ hφ => ?_⟩
   obtain ⟨ψ, hψ⟩ := exists_ringHom_extend_of_ker_mem_range_comap (A := S) φ.toRingHom
     (H ⟨RingHom.ker φ.toRingHom, RingHom.ker_isPrime _⟩ (by simpa [RingHom.mem_ker] using hφ))
   have hψu : ∀ u, ψ ⟨ξ u, hξ u⟩ = φ u := fun u => by
-    have := RingHom.congr_fun hψ u
-    exact this
+    exact RingHom.congr_fun hψ u
   refine ⟨{ ψ with commutes' := fun c => ?_ }, hψu⟩
   have h1 : (algebraMap k S c) = ⟨ξ (algebraMap k A c), hξ _⟩ := by
     ext; simp

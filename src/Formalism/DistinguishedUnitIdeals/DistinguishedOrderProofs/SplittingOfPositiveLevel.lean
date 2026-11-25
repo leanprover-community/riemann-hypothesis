@@ -130,8 +130,7 @@ theorem mem_pull (c : ZMod n) (k : ℕ) {u : V} (hu : u ∈ L.N c) : L.phiIt c k
 
 theorem gam_N (h1 : ∀ i, ∀ v ∈ L.N i, L.γ i v - v ∈ sm X (L.N i)) (i : ZMod n) {v : V}
     (hv : v ∈ L.N i) : L.γ i v ∈ L.N i := by
-  have := (L.N i).add_mem (sm_le _ _ (h1 i v hv)) hv
-  simpa using this
+  simpa using (L.N i).add_mem (sm_le _ _ (h1 i v hv)) hv
 
 theorem gam_pull (h1 : ∀ i, ∀ v ∈ L.N i, L.γ i v - v ∈ sm X (L.N i)) (c : ZMod n) (k : ℕ) {v : V}
     (hv : v ∈ L.pull c k) : L.γ (c + (k : ZMod n)) v ∈ L.pull c k := by
@@ -422,8 +421,7 @@ theorem splitting_of_positive_level :
       ∀ c, ξ c = B.lc ^ sig • L₂.phiIt c j (z c) - (L₂.γ (c + j) (τ c) - τ c) := ⟨_, fun _ => rfl⟩
   have hιξ : ∀ c, Y.ι.f (ξ c) = Y.LY.γ (c + j) (R c) - R c := by
     intro c
-    rw [hR, hξ]
-    simp only [map_sub, map_smul, hom_phiIt, hzx, Y.ι.γ_comm, phiIt_sub, gam_lc_smul]
+    simp only [hR, hξ, map_sub, map_smul, hom_phiIt, hzx, Y.ι.γ_comm, phiIt_sub, gam_lc_smul]
     rw [gam_phiIt Y.LY c _ j rfl]
     simp only [smul_sub]
     abel
@@ -511,8 +509,7 @@ theorem splitting_of_positive_level :
     unfold Lat.dγ Lat.dφ
     rw [map_sub, Y.ι.γ_comm, hYid, gam_lc_smul, LinearMap.map_smul, map_sub, Y.ι.φ_comm, hιZ, hιZ]
     unfold Lat.dφ
-    rw [map_sub, map_sub, Y.LY.comm]
-    simp only [smul_sub]
+    simp only [map_sub, map_sub, Y.LY.comm, smul_sub]
     abel
   have htM : ∀ i, B.lc ^ sig • L₂.dφ (Efun Cu L₂ j ξ) i ∈ sm (X ^ M) (L₂.N i) := fun i =>
     Submodule.smul_mem _ _ (Submodule.sub_mem _ (h2 i _ (hZM (i - 1))) (hZM i))
@@ -576,8 +573,7 @@ theorem splitting_of_positive_level :
           = -(B.lc ^ sig • ((L₂.γ c v - v) - B.lc ^ K • z c)) - B.lc ^ K •
             L₂.phiIt (c - (Cu.ell c : ZMod n) + j) (Cu.ell c - j)
               (ξ (c - (Cu.ell c : ZMod n))) := by
-        rw [map_neg, gam_lc_smul]
-        simp only [smul_sub, smul_smul, mul_comm (B.lc ^ K) (B.lc ^ sig)]
+        simp only [map_neg, gam_lc_smul, smul_sub, smul_smul, mul_comm (B.lc ^ K) (B.lc ^ sig)]
         abel
       rw [e]
       exact Submodule.sub_mem _ (Submodule.neg_mem _ (Submodule.smul_mem _ _ e1))

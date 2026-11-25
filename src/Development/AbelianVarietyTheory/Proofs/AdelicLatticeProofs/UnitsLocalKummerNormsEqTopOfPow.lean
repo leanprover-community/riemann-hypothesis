@@ -90,8 +90,7 @@ theorem exists_unit_norm_eq_of_algHom : ∀ (K A : Type) [Field K] [CommRing A] 
   have hff : f * f = f := by rw [hmul, hψf, one_smul]
   have hinv : (1 + (c - 1) • f) * (1 + (c⁻¹ - 1) • f) = 1 := by
     have : (c⁻¹ - 1) + (c - 1) + (c - 1) * (c⁻¹ - 1) = 0 := by field_simp; ring
-    rw [mul_add, add_mul, add_mul, smul_mul_smul_comm, hff]
-    simp only [one_mul, mul_one]
+    simp only [mul_add, add_mul, add_mul, smul_mul_smul_comm, hff, one_mul, mul_one]
     rw [add_assoc, ← add_smul, ← add_smul]
     have h3 : c - 1 + (c⁻¹ - 1 + (c - 1) * (c⁻¹ - 1)) = 0 := by linear_combination this
     rw [h3]; simp
@@ -101,8 +100,7 @@ theorem exists_unit_norm_eq_of_algHom : ∀ (K A : Type) [Field K] [CommRing A] 
     ext a
     simp [LinearMap.transvection.apply, hmul, smul_smul, mul_comm]
   change LinearMap.det (LinearMap.mul K A (1 + (c - 1) • f)) = c
-  rw [hT, LinearMap.transvection.det]
-  simp [hψf]
+  simp [hT, LinearMap.transvection.det, hψf]
 
 end GlobalTheory.CNorm
 end -- clump:auto
@@ -121,15 +119,13 @@ namespace GlobalTheory.CNorm
 
 theorem kNorm_eq_top_of_pow : ∀ (p : ℕ) (F L : Type) [Field F] [Field L] [CharZero L] (φ : F →+* L) (δ : F) (r : L), 0 < p → δ ≠ 0 → r ^ p = φ δ → kNorm p φ δ = ⊤ := by
   intro p F L _ _ _ φ δ r hp hδ hr
-  have hφ : φ δ ≠ 0 := (map_ne_zero φ).2 hδ
   have hsep : (X ^ p - C (φ δ) : L[X]).Separable :=
-    separable_X_pow_sub_C (φ δ) (Nat.cast_ne_zero.2 hp.ne') hφ
-  have hm : (X ^ p - C (φ δ) : L[X]).Monic := monic_X_pow_sub_C _ hp.ne'
+    separable_X_pow_sub_C (φ δ) (Nat.cast_ne_zero.2 hp.ne') ((map_ne_zero φ).2 hδ)
   have : IsReduced (AdjoinRoot (X ^ p - C (φ δ) : L[X])) :=
     (Ideal.isRadical_iff_quotient_reduced _).1
       (isRadical_iff_span_singleton.1 hsep.squarefree.isRadical)
   have : Module.Finite L (AdjoinRoot (X ^ p - C (φ δ) : L[X])) :=
-    (AdjoinRoot.powerBasis' hm).finite
+    (AdjoinRoot.powerBasis' (monic_X_pow_sub_C _ hp.ne')).finite
   let ψ : AdjoinRoot (X ^ p - C (φ δ) : L[X]) →ₐ[L] L :=
     AdjoinRoot.liftAlgHom _ (AlgHom.id L L) r (by simp [hr])
   rw [eq_top_iff]

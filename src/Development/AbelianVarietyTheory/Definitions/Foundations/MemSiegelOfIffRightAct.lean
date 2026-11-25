@@ -91,8 +91,7 @@ theorem cT_blkMat (σ : A →+* A) (x : Matrix m m A) (y : Matrix n n A) :
 
 theorem blkMat_inj {x x' : Matrix m m A} {y y' : Matrix n n A} : blkMat e x y = blkMat e x' y' ↔ x = x' ∧ y = y' := by
   refine ⟨fun h => ?_, fun h => by rw [h.1, h.2]⟩
-  have := congrArg (fun X => X.submatrix e e) h
-  simpa [submatrix_blkMat] using this
+  simpa [submatrix_blkMat] using congrArg (fun X => X.submatrix e e) h
 
 variable [Fintype m] [Fintype n] [Fintype ι]
 
@@ -284,8 +283,7 @@ theorem mem_stabGL_diagSub {p : GL ι A} : p ∈ stabGL (diagSub A e) ↔ KeepsD
     show ((fun i => (p.1 *ᵥ pairVec e x y) (e (.inl i))) - fun i => (p.1 *ᵥ pairVec e x y) (e (.inr i))) =
       quotMat e p.1 *ᵥ (x - y) from funext (h.mulVec_quot x y)]
   refine ⟨fun h0 => by rw [h0, mulVec_zero], fun h0 => ?_⟩
-  have := congrArg (fun v => (quotMat e p.1)⁻¹ *ᵥ v) h0
-  simpa [mulVec_mulVec, nonsing_inv_mul _ hu] using this
+  simpa [mulVec_mulVec, nonsing_inv_mul _ hu] using congrArg (fun v => (quotMat e p.1)⁻¹ *ᵥ v) h0
 
 theorem leviMat_mul {M N : Matrix ι ι A} (hM : KeepsDiag e M) (hN : KeepsDiag e N) :
     leviMat e (M * N) = leviMat e M * leviMat e N := by

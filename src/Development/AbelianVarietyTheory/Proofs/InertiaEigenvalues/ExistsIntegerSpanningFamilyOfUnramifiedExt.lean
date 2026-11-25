@@ -98,9 +98,8 @@ theorem exists_int_basis_of_unr (K K' : UQ) (d : ℕ) (φ : K.E →+* K'.E) (hU 
     (HeightOneSpectrum.valuation_lt_one_iff_mem (IsDiscreteValuationRing.maximalIdeal K'.O) a).symm
   haveI : IsLocalHom ψ := ⟨fun a ha => by
     by_contra hna
-    have h1 : a ∈ maximalIdeal K.O := (mem_maximalIdeal a).2 hna
     have h2 : ψ a ∈ maximalIdeal K'.O := by
-      rw [memK', hψ, hv]; exact (memK a).1 h1
+      rw [memK', hψ, hv]; exact (memK a).1 ((mem_maximalIdeal a).2 hna)
     exact (mem_maximalIdeal _).1 h2 ha⟩
   letI : Algebra (ResidueField K.O) (ResidueField K'.O) := (ResidueField.map ψ).toAlgebra
   letI : Fintype (ResidueField K.O) := Fintype.ofFinite _
@@ -122,8 +121,7 @@ theorem exists_int_basis_of_unr (K K' : UQ) (d : ℕ) (φ : K.E →+* K'.E) (hU 
     intro c j hj hmem
     have h0 : residue K'.O (∑ i, ψ (c i) * u i) = 0 := (IsLocalRing.residue_eq_zero_iff _).2 hmem
 
-    rw [map_sum] at h0
-    simp only [map_mul, ← ResidueField.map_residue, hu] at h0
+    simp only [map_sum, map_mul, ← ResidueField.map_residue, hu] at h0
     have h1 : ∑ i, residue K.O (c i) • b i = 0 := by
       simpa only [Algebra.smul_def, RingHom.algebraMap_toAlgebra] using h0
     have := Fintype.linearIndependent_iff.1 b.linearIndependent _ h1 j
@@ -135,10 +133,9 @@ theorem exists_int_basis_of_unr (K K' : UQ) (d : ℕ) (φ : K.E →+* K'.E) (hU 
   have key : ∀ e : Fin d → K.E, ∀ j, (∀ i, v (e i) ≤ v (e j)) → e j ≠ 0 →
       v (e j) ≤ v' (∑ i, φ (e i) * U i) := by
     intro e j hmax hj
-    have hpos : 0 < v (e j) := zero_lt_iff.2 (by simpa using hj)
     have hc : ∀ i, ∃ a : K.O, algebraMap K.O K.E a = e i / e j := fun i =>
       IsDiscreteValuationRing.exists_lift_of_le_one (by
-        rw [map_div₀]; exact (div_le_one₀ hpos).2 (hmax i))
+        rw [map_div₀]; exact (div_le_one₀ (zero_lt_iff.2 (by simpa using hj))).2 (hmax i))
     choose a ha using hc
     have haj : a j = 1 := IsFractionRing.injective K.O K.E (by rw [ha, div_self hj, map_one])
     have h1 := hres a j haj
@@ -160,20 +157,18 @@ theorem exists_int_basis_of_unr (K K' : UQ) (d : ℕ) (φ : K.E →+* K'.E) (hU 
     intro g hg i
     by_contra hi
     obtain ⟨j, -, hj⟩ := Finset.exists_max_image Finset.univ (fun i => v (g i)) ⟨i, Finset.mem_univ i⟩
-    have hgi : 0 < v (g i) := zero_lt_iff.2 (by simpa using hi)
     have hgj : g j ≠ 0 := by
       intro h0
       have := hj i (Finset.mem_univ i)
       rw [h0, map_zero] at this
-      exact absurd this (not_le.2 hgi)
+      exact absurd this (not_le.2 (zero_lt_iff.2 (by simpa using hi)))
     have := key g j (fun i => hj i (Finset.mem_univ i)) hgj
     simp only [← hsmul] at this
     rw [hg, map_zero] at this
     exact hgj ((map_eq_zero v).1 (le_antisymm this zero_le'))
   have hd : Module.finrank K.E K'.E = d := hU.2.2.2.2
   haveI : Nonempty (Fin d) := by
-    have : 0 < d := hfr ▸ Module.finrank_pos
-    exact ⟨⟨0, this⟩⟩
+    exact ⟨⟨0, (hfr ▸ Module.finrank_pos : 0 < d)⟩⟩
   have hspan := hli.span_eq_top_of_card_eq_finrank (by rw [Fintype.card_fin, hd])
   refine ⟨u, fun y => ?_⟩
   have hy : algebraMap K'.O K'.E y ∈ Submodule.span K.E (Set.range U) := hspan ▸ Submodule.mem_top

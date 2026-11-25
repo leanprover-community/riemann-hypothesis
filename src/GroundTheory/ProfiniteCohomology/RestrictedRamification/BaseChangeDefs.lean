@@ -185,8 +185,7 @@ theorem exists_le_of_algebraMap_mem (hL : ∀ x : L, algebraMap L Ω x ∈ (maxU
     conv_lhs => rw [← b.sum_repr x]
     change IsScalarTower.toAlgHom F L Ω _ = _
 
-    rw [map_sum]
-    simp only [map_smul]
+    simp only [map_sum, map_smul]
     rfl
   rw [hx]
   exact sum_mem fun i _ => E.smul_mem (hE _ (Finset.mem_image_of_mem _ (Finset.mem_univ i)))

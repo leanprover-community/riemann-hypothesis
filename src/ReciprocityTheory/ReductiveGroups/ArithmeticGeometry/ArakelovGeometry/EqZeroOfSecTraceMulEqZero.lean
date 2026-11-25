@@ -62,8 +62,7 @@ private theorem coord_ne_zero_of_coordIdeal_eq_bot (y : Fin (D + 1) → Ω) (hfr
     y i ≠ 0 := by
   intro h0
   have hmem : (MvPolynomial.X i : MvPolynomial (Fin (D + 1)) ℤ) ∈ coordIdeal ℤ y := by
-    rw [coordIdeal, RingHom.mem_ker]
-    simp [coneMap, h0]
+    simp [coordIdeal, RingHom.mem_ker, coneMap, h0]
   rw [hfree, Ideal.mem_bot] at hmem
   exact MvPolynomial.X_ne_zero i hmem
 
@@ -122,7 +121,6 @@ theorem X_zero_pow_dvd_of_isHomogeneous_aeval (y : Fin (D + 1) → Ω) (hfree : 
 theorem mem_sec_of_charts (y : Fin (D + 1) → Ω) (hfree : coordIdeal ℤ y = ⊥) (u : Ω) (n m : ℕ)
     (H : Fin (D + 1) → MvPolynomial (Fin (D + 1)) ℤ) (hH : ∀ l, (H l).IsHomogeneous (m + n))
     (hu : ∀ l, y l ^ m * u = MvPolynomial.aeval y (H l)) : u ∈ sec ℤ y n := by
-  have hy0 : y 0 ≠ 0 := coord_ne_zero_of_coordIdeal_eq_bot y hfree 0
   obtain ⟨G, hG⟩ := X_zero_pow_dvd_of_isHomogeneous_aeval y hfree u n m H hH hu
   have hG' : MvPolynomial.X 0 ^ m * MvPolynomial.homogeneousComponent n G = H 0 := by
     rw [← hc_mul_homog (MvPolynomial.isHomogeneous_X_pow (0 : Fin (D + 1)) m) G n, ← hG,
@@ -132,7 +130,7 @@ theorem mem_sec_of_charts (y : Fin (D + 1) → Ω) (hfree : coordIdeal ℤ y = �
   show MvPolynomial.aeval y (MvPolynomial.homogeneousComponent n G) = u
   have h2 := hu 0
   rw [← hG', map_mul, map_pow, MvPolynomial.aeval_X] at h2
-  exact (mul_left_cancel₀ (pow_ne_zero m hy0) h2).symm
+  exact (mul_left_cancel₀ (pow_ne_zero m (coord_ne_zero_of_coordIdeal_eq_bot y hfree 0)) h2).symm
 
 theorem trace_chart_eq [Fintype κ] (x : κ → Ω) (e : Fin (D + 1) → κ) (h0 : x (e 0) ≠ 0)
     (l : Fin (D + 1)) (hl : x (e l) ≠ 0) (n : ℕ) {s : Ω} (hs : s ∈ sec ℤ x n) :
@@ -277,8 +275,7 @@ theorem eq_zero_of_secTrace_mul_eq_zero (x : κ → Ω) (e : Fin (D + 1) → κ)
   have hx0 : x (e 0) ≠ 0 := by
     intro h0
     have hmem : (MvPolynomial.X 0 : MvPolynomial (Fin (D + 1)) ℤ) ∈ coordIdeal ℤ (x ∘ e) := by
-      rw [coordIdeal, RingHom.mem_ker]
-      simp [coneMap, h0]
+      simp [coordIdeal, RingHom.mem_ker, coneMap, h0]
     rw [h.free] at hmem
     exact MvPolynomial.X_ne_zero 0 ((Ideal.mem_bot).1 hmem)
   refine TraceNormBounds.eq_zero_of_trace' x e h ε hε hli n hs (fun l => ?_)

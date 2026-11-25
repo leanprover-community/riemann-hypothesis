@@ -57,8 +57,7 @@ theorem siegelGram_eq (X Y : Matrix (Fin g) (Fin g) ℝ) (hX : X.IsSymm) :
 theorem unip_mem (X : Matrix (Fin g) (Fin g) ℝ) (hX : X.IsSymm) :
     unip X ∈ symplecticGroup (Fin g) ℝ := by
   have hXt : Xᵀ = X := hX
-  rw [SymplecticGroup.mem_iff]
-  simp [unip, Matrix.J, fromBlocks_transpose, fromBlocks_multiply, hXt]
+  simp [SymplecticGroup.mem_iff, unip, Matrix.J, fromBlocks_transpose, fromBlocks_multiply, hXt]
 
 theorem diagInv_mem (Y : Matrix (Fin g) (Fin g) ℝ) (hY : Y.PosDef) :
     diagInv Y ∈ symplecticGroup (Fin g) ℝ := by
@@ -72,18 +71,16 @@ theorem diagInv_mem (Y : Matrix (Fin g) (Fin g) ℝ) (hY : Y.PosDef) :
     Matrix.nonsing_inv_mul _ hdet, Matrix.mul_nonsing_inv _ hdet]
 
 theorem unip_isUnit (X : Matrix (Fin g) (Fin g) ℝ) : IsUnit (unip X) := by
-  rw [Matrix.isUnit_iff_isUnit_det]
-  simp [unip]
+  simp [Matrix.isUnit_iff_isUnit_det, unip]
 
 theorem siegelGram_mem_posDef (X Y : Matrix (Fin g) (Fin g) ℝ) (hX : X.IsSymm) (hY : Y.PosDef) :
     siegelGram X Y ∈ symplecticGroup (Fin g) ℝ ∧ (siegelGram X Y).PosDef := by
   rw [siegelGram_eq X Y hX]
   refine ⟨Submonoid.mul_mem _ (Submonoid.mul_mem _
     (SymplecticGroup.transpose_mem (unip_mem X hX)) (diagInv_mem Y hY)) (unip_mem X hX), ?_⟩
-  have hD : (diagInv Y).PosDef := posDef_fromBlocks_diag hY.inv hY
   have hinj : Function.Injective (unip X).mulVec :=
     Matrix.mulVec_injective_iff_isUnit.mpr (unip_isUnit X)
-  have := hD.conjTranspose_mul_mul_same hinj
+  have := (posDef_fromBlocks_diag hY.inv hY).conjTranspose_mul_mul_same hinj
   rwa [Matrix.conjTranspose_eq_transpose_of_trivial] at this
 
 end KCoord
@@ -130,9 +127,8 @@ theorem existsUnique_siegelGram (G : Matrix (Fin g ⊕ Fin g) (Fin g ⊕ Fin g) 
   have hX : (A⁻¹ * B).IsSymm := by
     show (A⁻¹ * B)ᵀ = A⁻¹ * B
     rw [Matrix.transpose_mul, hAit, hCt, k]
-  have hY : (A⁻¹).PosDef := hA.inv
   have hYinv : (A⁻¹)⁻¹ = A := Matrix.nonsing_inv_nonsing_inv A hAdet
-  refine ⟨(A⁻¹ * B, A⁻¹), ⟨hX, hY, ?_⟩, ?_⟩
+  refine ⟨(A⁻¹ * B, A⁻¹), ⟨hX, hA.inv, ?_⟩, ?_⟩
   · show G = siegelGram (A⁻¹ * B) A⁻¹
     rw [siegelGram, hYinv]
     conv_lhs => rw [← hGb]

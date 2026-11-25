@@ -79,8 +79,7 @@ theorem pEvDC : PEvDC := by
     rw [hbd, ev_smul, ev_single]
     congr 1
     simp only [bd, Finsupp.linearCombination_single, one_smul]
-    rw [ev_add, ev_single, one_mul, ev_finset_sum]
-    simp only [ev_smul, ev_single, one_mul]
+    simp only [ev_add, ev_single, one_mul, ev_finset_sum, ev_smul, ev_single, one_mul]
     simp only [dC]
     rw [Fin.sum_univ_succ]
     congr 1
@@ -92,8 +91,7 @@ theorem pEvDC : PEvDC := by
         rfl
       rw [this, hE (g 0)]
     · refine Finset.sum_congr rfl fun j _ => ?_
-      rw [Fin.partialProd_contractNth]
-      simp [Fin.val_succ]
+      simp [Fin.partialProd_contractNth, Fin.val_succ]
 
 theorem pCob : PCob := by
   intro G _ m F hF hz
@@ -109,8 +107,7 @@ theorem pCob : PCob := by
   have hψbd : ∀ z, ψ (bd G m z) = φ z := fun z => by
     have h1 := LinearMap.congr_fun hψ ⟨bd G m z, LinearMap.mem_range_self _ z⟩
     simp only [LinearMap.coe_comp, Function.comp_apply, Submodule.coe_subtype] at h1
-    rw [h1]
-    simp [ψ₀, LinearMap.quotKerEquivRange_symm_apply_image]
+    simp [h1, ψ₀, LinearMap.quotKerEquivRange_symm_apply_image]
   let E : (Fin (m + 1) → G) → ℝ := fun y =>
     ψ (Finsupp.single (fun j : Fin m => (y j.castSucc)⁻¹ * y j.succ) 1)
   have hEinv : Inv (MonoidHom.id G) E := by
@@ -122,8 +119,7 @@ theorem pCob : PCob := by
     · simp [ev_zero]
     · intro a b ha hb; rw [ev_add, ha, hb, map_add (f := _)]
     · intro g a
-      rw [ev_single]
-      simp only [E, MonoidHom.id_apply, smul_eq_mul, mul_one, Fin.partialProd_right_inv]
+      simp only [ev_single, E, MonoidHom.id_apply, smul_eq_mul, mul_one, Fin.partialProd_right_inv]
       rw [← smul_eq_mul, ← map_smul, Finsupp.smul_single, smul_eq_mul, mul_one]
   refine ⟨E, hEinv, ?_⟩
   funext y

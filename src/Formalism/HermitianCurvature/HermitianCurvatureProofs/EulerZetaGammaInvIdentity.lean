@@ -110,8 +110,7 @@ theorem der_fn (a b : Fn r) (v w : Var r) (f fb : Fn r) :
     abel
 
 theorem euler_one (v : Var r) : euler v (1 : Fn r) = 0 := by
-  have := (eulerCoord r v v 1).2
-  simpa using this
+  simpa using (eulerCoord r v v 1).2
 
 theorem euler_inv (v : Var r) (f : Fn r) (hf : f ≠ 0) : euler v f⁻¹ = -(f⁻¹ * f⁻¹ * euler v f) := by
   have h := eulerLeibniz r v f f⁻¹
@@ -236,8 +235,7 @@ theorem curv (a TT : ℝ) :
       simp only [map_ofNat]
       ring
     rw [← this]
-  rw [e4]
-  simp only [add_mul, mul_add, neg_mul, mul_neg]
+  simp only [e4, add_mul, mul_add, neg_mul, mul_neg]
   rw [e1, e2, e3, dz_comm]
   abel
 
@@ -617,8 +615,7 @@ theorem kap_eq (P : Par) (f : Ty P → ℂ) :
 
 theorem ioR_sR (P : Par) (l : ℕ) : ioR P (sR P l) = SS P l := by
   ext π' π
-  rw [ioR_apply]
-  simp only [sR, SS, Matrix.of_apply]
+  simp only [ioR_apply, sR, SS, Matrix.of_apply]
   split_ifs
   · rfl
   · simp
@@ -645,8 +642,7 @@ theorem sR_neg {P : Par} {l : ℕ} {π π' : Ty P} (h : ¬ Up P l π π') : sR P
 theorem r_norm (P : Par) (hP : P.OK) (l : ℕ) (hl : l ∈ Icc 1 (P.k - 1)) :
     (sR P l).transpose * sR P l = Matrix.diagonal (Nrm P l) := by
   ext π1 π2
-  rw [Matrix.mul_apply]
-  simp only [Matrix.transpose_apply]
+  simp only [Matrix.mul_apply, Matrix.transpose_apply]
   by_cases h : π1 = π2
   · subst h
     rw [Matrix.diagonal_apply_eq]
@@ -670,8 +666,7 @@ theorem r_norm (P : Par) (hP : P.OK) (l : ℕ) (hl : l ∈ Icc 1 (P.k - 1)) :
 theorem r_normDown (P : Par) (hP : P.OK) (l : ℕ) (hl : l ∈ Icc 1 (P.k - 1)) :
     sR P l * (sR P l).transpose = Matrix.diagonal (NrmDown P l) := by
   ext π1 π2
-  rw [Matrix.mul_apply]
-  simp only [Matrix.transpose_apply]
+  simp only [Matrix.mul_apply, Matrix.transpose_apply]
   by_cases h : π1 = π2
   · subst h
     rw [Matrix.diagonal_apply_eq]
@@ -724,8 +719,7 @@ theorem r_comm (P : Par) (hP : P.OK) (l j : ℕ) (hl : l ∈ Icc 1 (P.k - 1)) (h
 theorem r_mixed (P : Par) (hP : P.OK) (l j : ℕ) (hl : l ∈ Icc 1 (P.k - 1)) (hj : j ∈ Icc 1 (P.k - 1)) (hjl : j ≠ l) :
     (sR P l).transpose * sR P j = sR P j * (sR P l).transpose := by
   ext π2 π
-  rw [Matrix.mul_apply, Matrix.mul_apply]
-  simp only [Matrix.transpose_apply]
+  simp only [Matrix.mul_apply, Matrix.mul_apply, Matrix.transpose_apply]
   by_cases h : ∃ π1, Up P j π π1 ∧ Up P l π2 π1
   · obtain ⟨π1, h1, h2⟩ := h
     obtain ⟨π3, h3, h4⟩ := up_mixed1 P l j hjl π π1 π2 h1 h2

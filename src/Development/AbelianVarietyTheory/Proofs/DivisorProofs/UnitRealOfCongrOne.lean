@@ -76,8 +76,7 @@ theorem unit_real_of_congr_one : ∀ (E : Type) [Field E] [NumberField E] [IsCMF
     simpa only [Units.val_mul, map_mul, a1, a2, mul_one] using this
   have ht : ζ ^ Nat.card (Units.torsion E) = 1 := by
     have h4 : (IsCMField.unitsMulComplexConjInv E u) ^ Nat.card (Units.torsion E) = 1 := pow_card_eq_one'
-    have := congrArg Subtype.val h4
-    simpa only [SubmonoidClass.coe_pow, OneMemClass.coe_one] using this
+    simpa only [SubmonoidClass.coe_pow, OneMemClass.coe_one] using congrArg Subtype.val h4
   have hζeq : ζ = 1 := by
     by_contra hne
     have hne' : (ζ : 𝓞 E) - 1 ≠ 0 := by
@@ -108,8 +107,7 @@ theorem unit_real_of_congr_one : ∀ (E : Type) [Field E] [NumberField E] [IsCMF
     exact hqt (hq.dvd_of_dvd_pow hdvd')
   have huv : (v : 𝓞 E) = u := by rw [← hζv, hζeq, one_mul]
   have hE : IsCMField.complexConj E ((u : 𝓞 E) : E) = ((u : 𝓞 E) : E) := by
-    have := congrArg (fun x : 𝓞 E => (x : E)) huv
-    exact this
+    exact congrArg (fun x : 𝓞 E => (x : E)) huv
   rw [← IsCMField.complexEmbedding_complexConj, hE]
 
 end GlobalTheory.UnitReal

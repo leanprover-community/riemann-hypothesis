@@ -66,8 +66,7 @@ private theorem mulPow_ker {R : Type} [CommRing R] {ϖ : R} (hr : IsSMulRegular 
   constructor
   · rintro ⟨c, hc⟩
     refine ⟨c, ?_⟩
-    have hinj : Function.Injective (fun y : R => ϖ ^ k • y) := hr.pow k
-    apply hinj
+    apply (hr.pow k)
     show ϖ ^ k • a = ϖ ^ k • (ϖ ^ 1 * c)
     rw [smul_eq_mul, smul_eq_mul, hc]
     ring
@@ -95,10 +94,8 @@ theorem card_quot_lev_succ {R : Type} [CommRing R] {ϖ : R} (hr : IsSMulRegular 
       exact ⟨c, by rw [mulPow_apply, ← hc]⟩
     · rintro ⟨c, hc⟩
       rw [mulPow_apply, Ideal.Quotient.eq] at hc
-      have h1 : ϖ ^ k * c - a ∈ lev ϖ k := lev_succ_le ϖ k hc
       have h2 : ϖ ^ k * c ∈ lev ϖ k := Ideal.mul_mem_right _ _ (Ideal.mem_span_singleton_self _)
-      have := sub_mem h2 h1
-      simpa using this
+      simpa using sub_mem h2 (lev_succ_le ϖ k hc)
   have e1 := AddSubgroup.card_eq_card_quotient_mul_card_addSubgroup φ.ker
   have e2 : Nat.card ((R ⧸ lev ϖ (k + 1)) ⧸ φ.ker) = Nat.card (R ⧸ lev ϖ k) :=
     Nat.card_congr (QuotientAddGroup.quotientKerEquivOfSurjective φ hsurj).toEquiv

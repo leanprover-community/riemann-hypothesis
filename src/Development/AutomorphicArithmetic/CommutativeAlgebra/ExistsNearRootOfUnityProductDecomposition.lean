@@ -396,7 +396,6 @@ theorem UpperTheory.exists_twoChart_quotient_of_finite_coord :
         (Ideal.Quotient.mk J T.s ^ j * Ideal.Quotient.mk J b) = 0
       rw [← mul_assoc, ← mul_pow, h1, one_pow, one_mul, sub_self]
     have hcoord := coord_mem_of_mem β I hbw
-    have hbU : ↑(β.repr b).support ⊆ U := β.mem_span_image.1 (by rw [← hU]; exact hb)
     have hwV : ↑(β.repr (T.t ^ j * c)).support ⊆ V j := β.mem_span_image.1 hw
     set f := Finsupp.filter (· ∈ V j) (β.repr b) with hf
     have hrx : β.repr (β.repr.symm f) = f := β.repr.apply_symm_apply f
@@ -405,7 +404,7 @@ theorem UpperTheory.exists_twoChart_quotient_of_finite_coord :
       rw [hU, β.mem_span_image, hrx]
       intro i hi
       rw [Finset.mem_coe, hf, Finsupp.support_filter, Finset.mem_filter] at hi
-      exact hbU hi.1
+      exact (β.mem_span_image.1 (by rw [← hU]; exact hb)) hi.1
     · show β.repr.symm f ∈ Submodule.comap (LinearMap.mulLeft A (T.s ^ j)) (Subalgebra.toSubmodule T.C)
       rw [(hV j).1, β.mem_span_image, hrx]
       intro i hi
@@ -590,8 +589,7 @@ theorem UpperTheory.exists_common_zero_of_jacobian_isUnit_henselian :
   · rw [← residue_eq_zero_iff]
     show residue A (σ (algebraMap _ (Localization.Away d)
       (Ideal.Quotient.mk I (MvPolynomial.X j)))) = 0
-    rw [hσ]
-    simp [π, hπ0]
+    simp [hσ, π, hπ0]
 
 end
 end -- clump:auto
@@ -1077,8 +1075,7 @@ theorem UpperTheory.exists_monic_laurent_polynomial_near_root_of_unity :
       ext j
       rw [Polynomial.coeff_map, Polynomial.coeff_zero, Ideal.Quotient.eq_zero_iff_mem]
       exact hcoef j
-    rw [this]
-    simp
+    simp [this]
 
 end
 end -- clump:auto
@@ -1563,8 +1560,7 @@ private lemma qth_root {A D : Type} [CommRing A] [CommRing D] [IsDomain D] [Alge
     (by rw [Polynomial.natDegree_X_pow_sub_C _]; exact hq)
   refine ⟨a, a.2, ?_⟩
   simp only [Polynomial.eval_sub, Polynomial.eval_pow, Polynomial.eval_X, Polynomial.eval_C] at ha
-  have := congrArg Subtype.val (sub_eq_zero.mp ha)
-  simpa using this
+  simpa using congrArg Subtype.val (sub_eq_zero.mp ha)
 
 private lemma pow_root_mem {A : Type} [CommRing A] [IsLocalRing A] (P : Polynomial (LaurentPolynomial A))
     (q n : ℕ)

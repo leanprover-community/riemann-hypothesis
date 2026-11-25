@@ -93,8 +93,6 @@ lemma isIntegrallyClosed [IsDomain S] (Si : ι → Subalgebra R S) (hmono : Mono
   obtain ⟨i, hi⟩ := exists_mem_of_finset Si hmono hcov (insert a (insert b p.coeffs))
   haveI := (hic i).1
   haveI := (hic i).2
-  have ha : a ∈ Si i := hi a (by simp)
-  have hb' : b ∈ Si i := hi b (by simp)
   have hb0 : b ≠ 0 := nonZeroDivisors.ne_zero hb
   set g : Si i →+* FractionRing S := (algebraMap S (FractionRing S)).comp (algebraMap (Si i) S)
     with hg_def
@@ -110,8 +108,8 @@ lemma isIntegrallyClosed [IsDomain S] (Si : ι → Subalgebra R S) (hmono : Mono
     · exact ⟨0, by simp [hn]⟩
     · exact ⟨⟨p.coeff n, hi _ (by simp [Polynomial.coeff_mem_coeffs hn])⟩, rfl⟩
   obtain ⟨q, hq, -, hqm⟩ := Polynomial.lifts_and_degree_eq_and_monic hlift hpm
-  set y : FractionRing (Si i) := algebraMap (Si i) (FractionRing (Si i)) ⟨a, ha⟩ /
-    algebraMap (Si i) (FractionRing (Si i)) ⟨b, hb'⟩ with hy_def
+  set y : FractionRing (Si i) := algebraMap (Si i) (FractionRing (Si i)) ⟨a, (hi a (by simp))⟩ /
+    algebraMap (Si i) (FractionRing (Si i)) ⟨b, (hi b (by simp))⟩ with hy_def
   have hφy : φ y = algebraMap S (FractionRing S) a / algebraMap S (FractionRing S) b := by
     rw [hy_def, map_div₀, hφ, hφ]
     rfl

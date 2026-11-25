@@ -60,14 +60,11 @@ theorem regAt_isLocalRing (q : Cpt ξ) : IsLocalRing (regAt ξ q) :=
 theorem not_inFibre_of_isUnit {q : Cpt ξ} {p : ℕ} (h : IsUnit (p : regAt ξ q)) : ¬ InFibre ξ p q := by
   obtain ⟨v, hv⟩ := h.exists_right_inv
   have e : (p : Ω) * (v : Ω) = 1 := by
-    have := congrArg (Subtype.val) hv
-    simpa using this
-  have hp : (p : Ω) ≠ 0 := left_ne_zero_of_mul_eq_one e
-  have hreg : (p : Ω) ∈ regAt ξ q := natCast_mem (regAt ξ q) p
+    simpa using congrArg (Subtype.val) hv
   have hinv : (p : Ω)⁻¹ ∈ regAt ξ q := by
     rw [eq_comm.1 (eq_inv_of_mul_eq_one_right e)]
     exact v.2
-  exact not_not.2 ⟨hp, hreg, hinv⟩
+  exact not_not.2 ⟨(left_ne_zero_of_mul_eq_one e), (natCast_mem (regAt ξ q) p), hinv⟩
 
 theorem inFibre_unique {q : Cpt ξ} {p p' : ℕ} (hp : p.Prime) (hp' : p'.Prime) (h : InFibre ξ p q)
     (h' : InFibre ξ p' q) : p' = p := by

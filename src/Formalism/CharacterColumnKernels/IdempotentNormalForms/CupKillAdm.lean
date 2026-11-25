@@ -129,8 +129,7 @@ private theorem colFreeMap_colGen (φY : Ymod r χ E →ₗ[A] V) (n : ι → V)
     (y : Ymod r χ E) (l : ι) (c : A) (sv : Fin (j l) → A) (c₀ : A) :
     colFreeMap φY n s s0 (colGenJ y l c sv c₀) =
       φY y + (c • n l + ∑ a, sv a • s l a + c₀ • s0 l) := by
-  rw [colGenJ]
-  simp only [colFreeMap, LinearMap.coe_mk, AddHom.coe_mk]
+  simp only [colGenJ, colFreeMap, LinearMap.coe_mk, AddHom.coe_mk]
   congr 1
   rw [Finset.sum_eq_single l]
   · simp
@@ -154,14 +153,12 @@ private theorem colHom_exists (e₁ : A) (δ : T') (D : ι → Subgroup G) (Kc :
   rw [Submodule.span_le]
   refine Set.union_subset (Set.union_subset (Set.union_subset ?_ ?_) ?_) ?_
   · rintro _ ⟨l, rfl⟩
-    rw [SetLike.mem_coe, LinearMap.mem_ker, colFreeMap_colGen]
-    simp [h1]
+    simp [SetLike.mem_coe, LinearMap.mem_ker, colFreeMap_colGen, h1]
   · rintro _ ⟨l, a, rfl⟩
     rw [SetLike.mem_coe, LinearMap.mem_ker, colFreeMap_colGen]
     simp [Pi.single_apply, ite_smul, sub_smul, h2]
   · rintro _ ⟨l, rfl⟩
-    rw [SetLike.mem_coe, LinearMap.mem_ker, colFreeMap_colGen]
-    simp [algebraMap_smul, sub_smul, hδ, h3]
+    simp [SetLike.mem_coe, LinearMap.mem_ker, colFreeMap_colGen, algebraMap_smul, sub_smul, hδ, h3]
   · rintro _ ⟨l, g, hg, rfl⟩
     rw [SetLike.mem_coe, LinearMap.mem_ker, colFreeMap_colGen]
     have key := h4 l g hg
@@ -242,8 +239,7 @@ theorem columnJ : StatColumnJ := by
         · subst hl
           have hsum : ∀ a, Kc l a g • ((P l).2.1 a • s1) = (P l).2.1 a • (Kc l a g • s1) :=
             fun a => smul_comm _ _ _
-          rw [LinearMap.zero_apply, zero_add]
-          simp only [hsum]
+          simp only [LinearMap.zero_apply, zero_add, hsum]
           rw [smul_comm (k0 l g) (P l).2.2 η, hPrel l g hg, smul_sub,
             smul_comm ((((χ g)⁻¹ : T'ˣ) : T') • r g) δx (P l).1]
         · simp)
@@ -252,11 +248,10 @@ theorem columnJ : StatColumnJ := by
         (fun l a => if l = l0 then (P l).2.1 a • s1 else 0)
         (fun l => if l = l0 then (P l).2.2 • η else 0) x = 0 := by
       intro x; rw [← hφ, h0, LinearMap.zero_apply]
-    have hne : (P l0).1 ≠ 0 ∨ (∃ a, (P l0).2.1 a ≠ 0) ∨ (P l0).2.2 ≠ 0 := by
+    obtain hv | ⟨a, ha⟩ | hc0 : (P l0).1 ≠ 0 ∨ (∃ a, (P l0).2.1 a ≠ 0) ∨ (P l0).2.2 ≠ 0 := by
       by_contra hc
       push Not at hc
       exact hP0 (Prod.ext hc.1 (Prod.ext (funext hc.2.1) hc.2.2))
-    rcases hne with hv | ⟨a, ha⟩ | hc0
     · have := key (colGenJ 0 l0 1 0 0)
       simp only [colFreeMap_colGen] at this
       simp [hv, hδx] at this
@@ -292,8 +287,7 @@ theorem columnJ : StatColumnJ := by
         intro l g hg
         have hsum : ∀ a, Kc l a g • ((P l).2.1 a • s1) = (P l).2.1 a • (Kc l a g • s1) :=
           fun a => smul_comm _ _ _
-        rw [hφY]
-        simp only [hsum]
+        simp only [hφY, hsum]
         rw [smul_comm (k0 l g) (P l).2.2 η, hPrel l g hg, smul_sub, smul_sub,
           smul_comm ((((χ g)⁻¹ : T'ˣ) : T') • r g) δx (P l).1]
         abel)

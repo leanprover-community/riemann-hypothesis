@@ -98,17 +98,15 @@ theorem continuous_of_congruence {ι X : Type} [Fintype ι] [DecidableEq ι] [To
     have h1 : (T x).adjugateᵀ * ((T x)ᵀ * G x * T x) * (T x).adjugate = (T x).det ^ 2 • G x := by
       calc (T x).adjugateᵀ * ((T x)ᵀ * G x * T x) * (T x).adjugate
           = (T x * (T x).adjugate)ᵀ * G x * (T x * (T x).adjugate) := by
-            rw [Matrix.transpose_mul]
-            simp only [Matrix.mul_assoc]
+            simp only [Matrix.transpose_mul, Matrix.mul_assoc]
         _ = (T x).det ^ 2 • G x := by
             simp only [Matrix.mul_adjugate, Matrix.transpose_smul, Matrix.transpose_one, Matrix.smul_mul,
               Matrix.mul_smul, Matrix.one_mul, Matrix.mul_one, smul_smul, sq]
     rw [h x] at h1
     rw [h1, smul_smul, inv_mul_cancel₀ (pow_ne_zero 2 (hdet x)), one_smul]
   have hcont : Continuous fun x => ((T x).det ^ 2)⁻¹ • ((T x).adjugateᵀ * W * (T x).adjugate) := by
-    have hd : Continuous fun x => (T x).det := hT.matrix_det
     have ha : Continuous fun x => (T x).adjugate := hT.matrix_adjugate
-    exact ((hd.pow 2).inv₀ fun x => pow_ne_zero 2 (hdet x)).smul
+    exact ((hT.matrix_det.pow 2).inv₀ fun x => pow_ne_zero 2 (hdet x)).smul
       ((ha.matrix_transpose.matrix_mul continuous_const).matrix_mul ha)
   rw [show G = fun x => ((T x).det ^ 2)⁻¹ • ((T x).adjugateᵀ * W * (T x).adjugate) from funext hG]
   exact hcont
@@ -141,8 +139,7 @@ theorem continuous_Hm (E : Type) [Field E] [NumberField E] [IsCMField E] (g : �
     have h0 := GlobalTheory.CompanionTheory.Ar.Cusp.HmCont.gram_det_ne_zero b form hinj
     have hmap : W = (Int.castRingHom ℝ).mapMatrix (Matrix.of fun i j => form (b i) (b j)) := by
       ext i j
-      rw [hWdef, RingHom.mapMatrix_apply, Matrix.map_apply, Matrix.of_apply, Matrix.of_apply]
-      simp
+      simp [hWdef, RingHom.mapMatrix_apply, Matrix.map_apply, Matrix.of_apply, Matrix.of_apply]
     rw [hmap, ← RingHom.map_det]
     simpa using h0
   have hT : Continuous fun x =>

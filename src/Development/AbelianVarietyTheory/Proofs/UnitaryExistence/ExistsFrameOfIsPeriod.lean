@@ -73,11 +73,9 @@ open NumberField ReciprocityTheory.ChartRestriction.G.Geo.Tor
 theorem conj_eq_neg_of_sq {x : ℂ} {d : ℝ} (hd : 0 < d) (hx : x ^ 2 = -(d : ℂ)) :
     (starRingEnd ℂ) x = -x := by
   have hre : x.re * x.re - x.im * x.im = -d := by
-    have := congrArg Complex.re hx
-    simpa [sq] using this
+    simpa [sq] using congrArg Complex.re hx
   have him : x.re * x.im + x.im * x.re = 0 := by
-    have := congrArg Complex.im hx
-    simpa [sq] using this
+    simpa [sq] using congrArg Complex.im hx
   have h0 : x.re = 0 := by
     by_contra h
     have hi : x.im = 0 := by
@@ -107,8 +105,7 @@ theorem mem_iff_conjugate_notMem {E : Type} [Field E] [NumberField E] [IsCMField
     τ ∈ Ψ ↔ ComplexEmbedding.conjugate τ ∉ Ψ := by
   have hd : (0 : ℝ) < (H.d : ℝ) := by exact_mod_cast H.d_prime.pos
   have hE : (H.rt : E) ^ 2 = -(H.d : E) := by
-    have := congrArg (algebraMap (𝓞 E) E) H.rt_sq
-    simpa using this
+    simpa using congrArg (algebraMap (𝓞 E) E) H.rt_sq
   have hx : (τ (H.rt : E)) ^ 2 = -(((H.d : ℝ) : ℂ)) := by
     rw [← map_pow, hE]; simp
   have hr : H.rt0 ^ 2 = -(((H.d : ℝ) : ℂ)) := by
@@ -264,8 +261,7 @@ theorem lminor_sign {r q : ℕ} (X : Matrix (Fin r) (Fin r) ℂ) (h : (sgnMat r 
   have h3 : (∏ a : Fin i, ((FD.sgn q a : ℝ) : ℂ)) = ((FD.psgn q i : ℝ) : ℂ) := by
     rw [FD.psgn, ← Fin.prod_univ_eq_prod_range, Complex.ofReal_prod]
   rw [h3] at h1
-  have := (Complex.pos_iff.mp h1).1
-  simpa [FD.lminor] using this
+  simpa [FD.lminor] using (Complex.pos_iff.mp h1).1
 
 theorem exists_frame {r q : ℕ} (G M Mi : Matrix (Fin r) (Fin r) ℂ) (hM : M * Mi = 1)
     (hc : sgnMat r q * (Miᵀ * G * Mi.map conj) = (Miᵀ * G * Mi.map conj) * sgnMat r q)
@@ -303,8 +299,7 @@ theorem exists_frame {r q : ℕ} (G M Mi : Matrix (Fin r) (Fin r) ℂ) (hM : M *
           simp [this]
       exact h1.ne' h2
     intro u u' huu
-    have := this (u - u') (by rw [mulVec_sub, huu, sub_self])
-    exact sub_eq_zero.mp this
+    exact sub_eq_zero.mp (this (u - u') (by rw [mulVec_sub, huu, sub_self]))
   obtain ⟨Y, hNY⟩ := hNu.exists_right_inv
   have hYN : Y * N = 1 := mul_eq_one_comm.mp hNY
   have hYc : sgnMat r q * Y = Y * sgnMat r q := by
@@ -335,8 +330,7 @@ theorem exists_frame {r q : ℕ} (G M Mi : Matrix (Fin r) (Fin r) ℂ) (hM : M *
     rw [mulVec_injective_iff_isUnit]
     exact IsUnit.of_mul_eq_one N hYN
   · have h1 : G * (Mi * Y.map conj).map conj = Mᵀ * (A * Y) := by
-      rw [Matrix.map_mul, hcc, hA]
-      simp only [← Matrix.mul_assoc]
+      simp only [Matrix.map_mul, hcc, hA, ← Matrix.mul_assoc]
       rw [← transpose_mul, hM', transpose_one, Matrix.one_mul]
     have hAY : sgnMat r q * (A * Y) = (A * Y) * sgnMat r q := by
       rw [← Matrix.mul_assoc, hc, Matrix.mul_assoc A, hYc, Matrix.mul_assoc A]
@@ -504,8 +498,7 @@ theorem block_sign (A : ι → Matrix (Fin r) (Fin r) ℂ) (hA : ∀ t, (A t).Is
   have hz : ofBlock idx q t (star u) ≠ 0 := by
     intro h0
     have := blockOf_ofBlock idx q t t (star u)
-    rw [h0] at this
-    simp only [map_zero, ite_true] at this
+    simp only [h0, map_zero, ite_true] at this
     exact hu (star_eq_zero.mp this.symm)
   have h2 := hpos _ hz
   rw [← hI', I_smul_ofBlock, h1] at h2

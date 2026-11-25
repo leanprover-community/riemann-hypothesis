@@ -59,8 +59,7 @@ theorem unip_idem_eq_zero {K : Type*} [Field K] [CharZero K] {r : ℕ} (E : Matr
   have h0 : ((Module.finrank K (LinearMap.range f) : ℕ) : K) = 0 := by
     rw [← hf.trace, htr, ht]
   have h1 : Module.finrank K (LinearMap.range f) = 0 := by exact_mod_cast h0
-  have h2 : LinearMap.range f = ⊥ := Submodule.finrank_eq_zero.mp h1
-  have h3 : f = 0 := LinearMap.range_eq_bot.mp h2
+  have h3 : f = 0 := LinearMap.range_eq_bot.mp (Submodule.finrank_eq_zero.mp h1)
   exact Matrix.toLin'.injective (h3.trans (map_zero _).symm)
 
 theorem unip_pow_card_eq_zero {K : Type*} [Field K] [CharZero K] {r : ℕ} (N : Matrix (Fin r) (Fin r) K)
@@ -122,8 +121,7 @@ theorem unip_pow_card_eq_zero {K : Type*} [Field K] [CharZero K] {r : ℕ} (N : 
     rw [h, hP, Polynomial.mul_coeff_zero, Polynomial.coeff_X_pow, ite_eq_right (by omega), mul_zero]
   have htr : (aeval N P).trace = 0 := by
     rw [← hPeq, unip_trace_aeval_zero N hN P' hP'deg, hP'0, zero_mul]
-  have hE : aeval N P = 0 := unip_idem_eq_zero _ hPP htr
-  have hmP : m ∣ P := minpoly.dvd K N hE
+  have hmP : m ∣ P := minpoly.dvd K N (unip_idem_eq_zero _ hPP htr)
   have hqu : q ∣ u := by
     rw [hq, hP, mul_comm u] at hmP
     exact (mul_dvd_mul_iff_left (pow_ne_zero k Polynomial.X_ne_zero)).mp hmP
@@ -213,8 +211,7 @@ theorem unip_hs_sub_one {r : ℕ} (A : Matrix (Fin r) (Fin r) ℂ) :
       ring
     · simp [Matrix.sub_apply, Matrix.one_apply_ne h, h]
   simp_rw [key, Finset.sum_sub_distrib, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
-  rw [Matrix.trace, Complex.re_sum]
-  simp [Finset.sum_sub_distrib, Finset.mul_sum]
+  simp [Matrix.trace, Complex.re_sum, Finset.sum_sub_distrib, Finset.mul_sum]
   ring
 
 theorem unip_exp_bound (r : ℕ) (hr : 1 ≤ r) : (r : ℝ) * (Real.exp (2 / (3 * r)) - 1) < 1 := by

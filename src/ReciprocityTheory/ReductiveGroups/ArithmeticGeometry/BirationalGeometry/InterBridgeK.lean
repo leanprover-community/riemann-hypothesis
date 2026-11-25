@@ -61,8 +61,7 @@ theorem eventually_surjective_clm {F : Type*} [NormedAddCommGroup F] [NormedSpac
   obtain ⟨S, hS⟩ := hy.exists_right_inv
   intro v
   refine ⟨B (S v), ?_⟩
-  have := congrArg (fun T : F →L[ℂ] F => T v) hS
-  simpa using this
+  simpa using congrArg (fun T : F →L[ℂ] F => T v) hS
 
 theorem exists_infinite_fibre {W : Set (Fin e → ℂ)} (hW : IsOpen W) (hne : W.Nonempty)
     {Q : (Fin e → ℂ) → (Fin e → ℂ)} (hQ : AnalyticOnNhd ℂ Q W)
@@ -86,9 +85,8 @@ theorem exists_infinite_fibre {W : Set (Fin e → ℂ)} (hW : IsOpen W) (hne : W
       rw [hR0, finrank_fin_fun]
       exact le_antisymm (hru0 ▸ (Submodule.finrank_le _).trans (le_of_eq (finrank_fin_fun ℂ)))
         (not_lt.mp hge)
-    have htop : R0 = ⊤ := Submodule.eq_top_of_finrank_eq hre
     have hsurj : Function.Surjective (L0 : (Fin e → ℂ) →ₗ[ℂ] (Fin e → ℂ)) :=
-      LinearMap.range_eq_top.mp htop
+      LinearMap.range_eq_top.mp (Submodule.eq_top_of_finrank_eq hre)
     have hbij : Function.Bijective (L0 : (Fin e → ℂ) →ₗ[ℂ] (Fin e → ℂ)) :=
       ⟨LinearMap.injective_iff_surjective.mpr hsurj, hsurj⟩
     have hu : IsUnit (L0 : (Fin e → ℂ) →ₗ[ℂ] (Fin e → ℂ)) := (Module.End.isUnit_iff _).mpr hbij
@@ -118,10 +116,8 @@ theorem exists_infinite_fibre {W : Set (Fin e → ℂ)} (hW : IsOpen W) (hne : W
   have hinj : Function.Injective Φl := by
     rw [← LinearMap.ker_eq_bot, LinearMap.ker_eq_bot']
     intro v hv
-    have h1 : Df0 v = 0 := congrArg Prod.fst hv
     have h2 : gL v = 0 := congrArg Prod.snd hv
-    have hvK : v ∈ K0 := h1
-    have := hgL ⟨v, hvK⟩
+    have := hgL ⟨v, (congrArg Prod.fst hv)⟩
     rw [h2] at this
     exact (congrArg Subtype.val this).symm
   have hdim : finrank ℂ (Fin e → ℂ) = finrank ℂ (R0 × K0) := by
@@ -233,8 +229,7 @@ theorem exists_infinite_fibre {W : Set (Fin e → ℂ)} (hW : IsOpen W) (hne : W
   · intro k hk k' hk' hkk
     have h1 := (hball _ (hιball k hk)).1
     have h2 := (hball _ (hιball k' hk')).1
-    have : ι k = ι k' := H.symm.injOn h1 h2 hkk
-    simpa [hιdef] using this
+    simpa [hιdef] using (H.symm.injOn h1 h2 hkk : ι k = ι k')
   · rintro _ ⟨k, hk, rfl⟩
     refine ⟨(hball _ (hιball k hk)).2.2.1, ?_⟩
     show Q (H.symm (ι k)) = Q u0

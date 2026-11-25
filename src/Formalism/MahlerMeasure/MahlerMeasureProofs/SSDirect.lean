@@ -339,8 +339,7 @@ noncomputable def kap (F : (τ →₀ ℕ) → (σ →₀ ℕ)) (hF : Function.I
 lemma coeff_kap (F : (τ →₀ ℕ) → (σ →₀ ℕ)) (hF : Function.Injective F) (Q : MvPolynomial σ K) (n : τ →₀ ℕ) :
     AddMonoidAlgebra.coeff (kap F hF Q) n = AddMonoidAlgebra.coeff Q (F n) := by
   classical
-  rw [kap, coeff_sum]
-  simp only [coeff_monomial]
+  simp only [kap, coeff_sum, coeff_monomial]
   rw [Finset.sum_ite_eq']
   split_ifs with h
   · rfl
@@ -367,8 +366,7 @@ lemma coeff_rename_mul (he : Function.Injective e) (n : τ →₀ ℕ) (μ : σ 
   rw [coeff_mul, Finset.sum_eq_single (Finsupp.mapDomain e n, μ)]
   · rw [coeff_rename_mapDomain e he]
   · rintro ⟨u, w⟩ huw hne
-    rw [Finset.HasAntidiagonal.mem_antidiagonal] at huw
-    simp only at huw
+    simp only [Finset.HasAntidiagonal.mem_antidiagonal] at huw
     by_contra hc
     have hu : AddMonoidAlgebra.coeff (rename e y) u ≠ 0 := left_ne_zero_of_mul hc
     have hw : AddMonoidAlgebra.coeff g w ≠ 0 := right_ne_zero_of_mul hc
@@ -735,9 +733,8 @@ lemma SSZ_int (x : MvPolynomial (BVar N r D.T.t) ℚ_[p]) (hx : x ∈ D.SSZ p (r
   simp only [Set.mem_iUnion] at hx
   obtain ⟨j, jp, _, y, hy, g, hg, rfl⟩ := hx
   have hyI : y ∈ IntPol p (Fin N × Fin r) := (Submodule.mem_inf.mp (Submodule.mem_inf.mp hy).2).2
-  have hgI : g ∈ IntPol p (BVar N r D.T.t) := (Submodule.mem_inf.mp hg).2
   refine intPol_mul' (intPol_mul' (intPol_mul' (intPol_mul' (intPol_mul' ?_ ?_) ?_) ?_)
-    (intPol_rename' _ hyI)) hgI
+    (intPol_rename' _ hyI)) ((Submodule.mem_inf.mp hg).2)
   · exact intPol_prod' _ _ fun i _ => intPol_pow' (Ehat_int D i) _
   · exact intPol_pow' (Eplus_int D) _
   · exact intPol_prod' _ _ fun i _ => intPol_pow' (intPol_X' _) _

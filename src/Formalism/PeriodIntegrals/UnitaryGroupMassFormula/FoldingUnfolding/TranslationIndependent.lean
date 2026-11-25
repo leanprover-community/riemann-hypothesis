@@ -97,9 +97,7 @@ theorem translation_product : TransProd.{u} := by
     have hγ : (e₁ : G) * d₁ ∈ Γ := Γ.mul_mem (hSΓ (hE.1 e₁.2)) (hD.1 d₁.2)
     have u := (hD.2 _ hγ).unique (y₁ := (⟨e₁, hE.1 e₁.2⟩, d₁)) (y₂ := (⟨e₂, hE.1 e₂.2⟩, d₂))
       rfl h.symm
-    have hd : d₁ = d₂ := congrArg Prod.snd u
-    have he : (e₁ : G) = e₂ := congrArg (fun p : S × D => ((p.1 : S) : G)) u
-    exact ⟨Subtype.ext he, hd⟩
+    exact ⟨Subtype.ext (congrArg (fun p : S × D => ((p.1 : S) : G)) u), (congrArg Prod.snd u)⟩
   refine ⟨fun p q h => ?_, ?_, ?_⟩
   · obtain ⟨h1, h2⟩ := key p.1 q.1 p.2 q.2 h
     exact Prod.ext h1 h2
@@ -108,20 +106,16 @@ theorem translation_product : TransProd.{u} := by
   · intro γ hγ
     obtain ⟨⟨s, d⟩, hsd, hsd_u⟩ := hD.2 γ hγ
     obtain ⟨⟨h, e⟩, hhe, hhe_u⟩ := hE.2 s s.2
-    have hsd' : (s : G) * d = γ := hsd
     have hhe' : (h : G) * e = s := hhe
     refine ⟨(h, ⟨(e : G) * d, ⟨(e, d), rfl⟩⟩), ?_, ?_⟩
     · show (h : G) * ((e : G) * d) = γ
       rw [← mul_assoc, hhe']
-      exact hsd'
+      exact hsd
     · rintro ⟨h', ⟨x, ⟨⟨e', d'⟩, rfl⟩⟩⟩ hx
-      have hx' : (h' : G) * ((e' : G) * d') = γ := hx
-      have hs' : (h' : G) * e' ∈ S := S.mul_mem (hHS h'.2) (hE.1 e'.2)
-      have u1 := hsd_u (⟨(h' : G) * e', hs'⟩, d')
-        (by show (h' : G) * e' * d' = γ; rw [mul_assoc]; exact hx')
+      have u1 := hsd_u (⟨(h' : G) * e', (S.mul_mem (hHS h'.2) (hE.1 e'.2))⟩, d')
+        (by show (h' : G) * e' * d' = γ; rw [mul_assoc]; exact hx)
       have hd' : d' = d := congrArg Prod.snd u1
-      have hs1 : (h' : G) * e' = s := congrArg (fun p : S × D => ((p.1 : S) : G)) u1
-      have u2 := hhe_u (h', e') hs1
+      have u2 := hhe_u (h', e') (congrArg (fun p : S × D => ((p.1 : S) : G)) u1)
       have hh : h' = h := congrArg Prod.fst u2
       have he : e' = e := congrArg Prod.snd u2
       subst hd' hh he

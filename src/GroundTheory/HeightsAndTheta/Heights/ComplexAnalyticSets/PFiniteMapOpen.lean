@@ -60,9 +60,8 @@ theorem eventually_exists_root {d : ℕ} {F : Polynomial (MvPolynomial (Fin d) �
   by_contra! hfar
   have hle : ∀ r ∈ G.roots, ε ≤ ‖t₀ - r‖ := by
     intro r hr
-    have hr0 : G.eval r = 0 := (Polynomial.mem_roots hGm.ne_zero).1 hr
     by_contra! hlt
-    refine hfar r (hball ?_) hr0
+    refine hfar r (hball ?_) ((Polynomial.mem_roots hGm.ne_zero).1 hr)
     rwa [Metric.mem_ball, dist_comm, dist_eq_norm]
   have hprod : ‖G.eval t₀‖ = (G.roots.map fun r => ‖t₀ - r‖).prod := by
     rw [hsplit.eval_eq_prod_roots_of_monic hGm]
@@ -82,8 +81,7 @@ theorem norm_le_of_monic_root {G : Polynomial ℂ} (hG : G.Monic) {t : ℂ} (ht 
     gcongr
     exact Finset.sup_le fun k hk =>
       Finset.single_le_sum (f := fun k => ‖G.coeff k‖₊) (fun _ _ => zero_le) hk
-  have h3 : ‖t‖₊ ≤ ∑ k ∈ Finset.range G.natDegree, ‖G.coeff k‖₊ + 1 := (h1.trans_le h2).le
-  simpa using NNReal.coe_le_coe.2 h3
+  simpa using NNReal.coe_le_coe.2 ((h1.trans_le h2).le)
 
 variable {n d : ℕ}
 
@@ -187,8 +185,7 @@ theorem FiniteMapOpen.proof : FiniteMapOpen.Statement := by
   choose g hgm hg0 using fun j : Fin n => hint (Ideal.Quotient.mk J (X j))
   have hcoord : ∀ z (hz : z ∈ zeroLocus J) j, evalYT (g j) (φ z) (z j) = 0 := by
     intro z hz j
-    have := evalYT_eq_zero J p (hg0 j) hz
-    simpa [evalAt_mk] using this
+    simpa [evalAt_mk] using evalYT_eq_zero J p (hg0 j) hz
 
   have hfib : {w | w ∈ zeroLocus J ∧ φ w = y₀}.Finite := by
     refine (Set.Finite.pi (t := fun j => {t : ℂ | evalYT (g j) y₀ t = 0}) fun j => ?_).subset ?_

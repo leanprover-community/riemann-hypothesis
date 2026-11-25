@@ -102,8 +102,7 @@ private theorem pow_tmul (A : Type) [CommRing A] [Algebra k A] (σ : R ≃ₐ[k]
   induction j with
   | zero => simp
   | succ j ih =>
-    rw [pow_succ', pow_succ', AlgEquiv.mul_apply, AlgEquiv.mul_apply, ih]
-    simp
+    simp [pow_succ', pow_succ', AlgEquiv.mul_apply, AlgEquiv.mul_apply, ih]
 
 end
 

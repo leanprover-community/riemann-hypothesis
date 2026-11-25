@@ -119,10 +119,9 @@ theorem finite_involution_hilbert90 {S : Type} [CommRing S] [Finite S] (c : S �
         rw [Ideal.eq_top_iff_one]
         have hs := m.add_mem hem h
         rwa [add_sub_cancel] at hs
-      have hxω : ω + y * c ω ∈ m := (hp.mem_or_mem h2).resolve_left h1e
       apply hnot
       rw [← hid]
-      exact m.sub_mem (m.mul_mem_left ω hx1) hxω
+      exact m.sub_mem (m.mul_mem_left ω hx1) ((hp.mem_or_mem h2).resolve_left h1e)
     · have hee : e * (1 - e) = 0 := by rw [mul_sub, mul_one, hM, sub_self]
       have h1e : 1 - e ∈ m := by
         refine (hp.mem_or_mem ?_).resolve_left hem
@@ -131,10 +130,9 @@ theorem finite_involution_hilbert90 {S : Type} [CommRing S] [Finite S] (c : S �
         have hr : e * (1 + y)
             = (e * (1 + y) + (1 - e) * (ω + y * c ω)) - (1 - e) * (ω + y * c ω) := by ring
         rw [hr]; exact m.sub_mem hxm (m.mul_mem_right _ h1e)
-      have hx1 : 1 + y ∈ m := (hp.mem_or_mem h2).resolve_left hem
       apply hem
       rw [he]
-      exact Ideal.pow_mem_of_mem m (m.mul_mem_right _ hx1) M hM0
+      exact Ideal.pow_mem_of_mem m (m.mul_mem_right _ ((hp.mem_or_mem h2).resolve_left hem)) M hM0
   · simp only [map_add (f := _), map_mul, map_sub, map_one, hc, hce]
     linear_combination (-(e + (1 - e) * ω)) * hy
 
@@ -167,12 +165,10 @@ theorem finite_involution_fixed_unit_isNorm :
     have e1 := N.ker.card_mul_index
     have e2 := ψ.ker.card_mul_index
     rw [Subgroup.index_ker] at e1 e2
-    have hle : Nat.card N.ker ≤ Nat.card ψ.range := Subgroup.card_le_of_le hker
-    have hpos : 0 < Nat.card ψ.range := Nat.card_pos
     have h3 : Nat.card ψ.ker * Nat.card ψ.range ≤ Nat.card N.range * Nat.card ψ.range := by
       rw [e2, ← e1, mul_comm (Nat.card N.range)]
-      exact Nat.mul_le_mul_right _ hle
-    exact Nat.le_of_mul_le_mul_right h3 hpos
+      exact Nat.mul_le_mul_right _ (Subgroup.card_le_of_le hker)
+    exact Nat.le_of_mul_le_mul_right h3 Nat.card_pos
   have heq : N.range = ψ.ker := Subgroup.eq_of_le_of_card_ge hrange hcard
   have hmem : hu.unit ∈ ψ.ker := by
     rw [MonoidHom.mem_ker, hψ, div_eq_one]

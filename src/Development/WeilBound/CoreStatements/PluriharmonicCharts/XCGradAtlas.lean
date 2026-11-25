@@ -69,13 +69,12 @@ theorem mono_bd {r a c C t : ℝ} (hr : 1 ≤ r) (ha : 0 ≤ a) (ht : t ≤ c * 
   have h3 : a * t ≤ a * (c * r ^ c) := mul_le_mul_of_nonneg_left ht ha
   rcases le_or_gt 0 c with hc | hc
   · have hcC : c ≤ C := le_trans (le_abs_self c) h2
-    have hrc : r ^ c ≤ r ^ C := Real.rpow_le_rpow_of_exponent_le hr hcC
     have hac : a * c ≤ C := by
       rwa [abs_of_nonneg hc] at h1
     calc a * t ≤ a * (c * r ^ c) := h3
       _ = (a * c) * r ^ c := by ring
       _ ≤ C * r ^ c := mul_le_mul_of_nonneg_right hac hrc0.le
-      _ ≤ C * r ^ C := mul_le_mul_of_nonneg_left hrc hC
+      _ ≤ C * r ^ C := mul_le_mul_of_nonneg_left (Real.rpow_le_rpow_of_exponent_le hr hcC) hC
   · have h4 : c * r ^ c ≤ 0 := mul_nonpos_of_nonpos_of_nonneg hc.le hrc0.le
     have h5 : a * (c * r ^ c) ≤ 0 := mul_nonpos_of_nonneg_of_nonpos ha h4
     nlinarith [mul_nonneg hC hrC.le]
@@ -121,13 +120,12 @@ theorem local_bd {e : ℕ} {X : Type} [TopologicalSpace X] (A B : FinHolAtlas e 
   have hx₀ψ : φ.symm y₀ ∈ ψ.source := hVs hx
   obtain ⟨k, hk⟩ := A.cover (φ.symm y₀)
   have hτan : AnalyticAt ℂ τ y₀ := by
-    have h1 : AnalyticAt ℂ (A.chart k ∘ φ.symm) y₀ := hAB.2 j k y₀ ⟨hy₀, hk⟩
     have h2 : AnalyticAt ℂ (ψ ∘ (A.chart k).symm) ((A.chart k ∘ φ.symm) y₀) := by
       apply (hψ k).1
       refine ⟨(A.chart k).map_source hk, ?_⟩
       simp only [Set.mem_preimage, Function.comp_apply, (A.chart k).left_inv hk]
       exact hx₀ψ
-    have h3 := h2.comp h1
+    have h3 := h2.comp (hAB.2 j k y₀ ⟨hy₀, hk⟩)
     apply h3.congr
     have hnb : φ.symm ⁻¹' (A.chart k).source ∈ 𝓝 y₀ :=
       (φ.continuousAt_symm hy₀).preimage_mem_nhds ((A.chart k).open_source.mem_nhds hk)
@@ -205,7 +203,6 @@ theorem local_bd {e : ℕ} {X : Type} [TopologicalSpace X] (A B : FinHolAtlas e 
     linarith
   have hm := mono_bd (t := c * rW L s (φ.symm y) ^ c) hr1 hK0 le_rfl
     (le_trans (le_max_left _ _) hC) (le_trans (le_max_right _ _) hC)
-  have hE : 0 < Real.exp (rW L s (φ.symm y) / 2) := Real.exp_pos _
   rw [hfeq, hchain]
   calc ‖(fderiv ℝ (ph ∘ ψ.symm) (τ y)).comp (fderiv ℝ τ y)‖
       ≤ ‖fderiv ℝ (ph ∘ ψ.symm) (τ y)‖ * ‖fderiv ℝ τ y‖ := ContinuousLinearMap.opNorm_comp_le _ _
@@ -213,7 +210,7 @@ theorem local_bd {e : ℕ} {X : Type} [TopologicalSpace X] (A B : FinHolAtlas e 
       mul_le_mul hgb hτn (norm_nonneg _) (le_trans (norm_nonneg _) hgb)
     _ = (K * (c * rW L s (φ.symm y) ^ c)) * Real.exp (rW L s (φ.symm y) / 2) := by ring
     _ ≤ (C * rW L s (φ.symm y) ^ C) * Real.exp (rW L s (φ.symm y) / 2) :=
-      mul_le_mul_of_nonneg_right hm hE.le
+      mul_le_mul_of_nonneg_right hm (Real.exp_pos _).le
 
 end PositivityTheory.Xgp.c_grad_atlas
 

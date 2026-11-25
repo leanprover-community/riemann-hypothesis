@@ -62,8 +62,7 @@ private theorem algHom_coe_polynomial_eq_aeval {O : Type} [CommRing O] (f : O⟦
     (p : Polynomial O) : f (p : O⟦X⟧) = Polynomial.aeval (f X) p := by
   have hfp : f.comp (Polynomial.coeToPowerSeries.algHom O) = Polynomial.aeval (f X) :=
     Polynomial.algHom_ext (by simp)
-  have := DFunLike.congr_fun hfp p
-  simpa using this
+  simpa using DFunLike.congr_fun hfp p
 
 open PowerSeries in
 private theorem X_pow_dvd_algHom_sub_aeval_trunc {O : Type} [CommRing O] (f : O⟦X⟧ →ₐ[O] O⟦X⟧)
@@ -148,8 +147,7 @@ open PowerSeries in
 variable {l : ℕ} [Fact l.Prime] (O : Type) [CommRing O] [Algebra ℤ_[l] O] in
 variable {O} in
 theorem _root_.GlobalTheory.CycFr.act_C (c : ℤ_[l]) (x : O) : _root_.GlobalTheory.CycFr.act O c (C x) = C x := by
-  rw [_root_.GlobalTheory.CycFr.algHom_C]
-  simp
+  simp [_root_.GlobalTheory.CycFr.algHom_C]
 
 open PowerSeries in
 variable {l : ℕ} [Fact l.Prime] (O : Type) [CommRing O] [Algebra ℤ_[l] O] in
@@ -373,8 +371,7 @@ theorem _root_.GlobalTheory.CycFr.dvd_bin_sub (k : ℕ) (c d : ℤ_[l]) (h : (l 
   have h2 : _root_.GlobalTheory.CycFr.bin O c - _root_.GlobalTheory.CycFr.bin O d =
       _root_.GlobalTheory.CycFr.bin O d *
         (_root_.GlobalTheory.CycFr.bin O ((l : ℤ_[l]) ^ k * e) - 1) := by
-    rw [hc]
-    simp only [_root_.GlobalTheory.CycFr.bin, binomialSeries_add]
+    simp only [hc, _root_.GlobalTheory.CycFr.bin, binomialSeries_add]
     ring
   rw [h2, h1]
   exact Dvd.dvd.mul_left (dvd_mul_right _ _) _
@@ -390,8 +387,7 @@ theorem _root_.GlobalTheory.CycFr.dvd_algHom_sub [IsNoetherianRing O] (f g : O�
   have hX : Ideal.span {(X : O⟦X⟧)} ≤ Ring.jacobson O⟦X⟧ := by
     rw [Ideal.span_le, Set.singleton_subset_iff, SetLike.mem_coe, Ring.mem_jacobson_iff]
     intro y
-    rw [isUnit_iff_constantCoeff]
-    simp
+    simp [isUnit_iff_constantCoeff]
   have hH := IsHausdorff.of_le_jacobson (Ideal.span {(X : O⟦X⟧)}) (O⟦X⟧ ⧸ Ideal.span {h}) hX
   have key : (Submodule.Quotient.mk (f a - g a) : O⟦X⟧ ⧸ Ideal.span {h}) = 0 := by
     refine hH.haus _ fun n => ?_

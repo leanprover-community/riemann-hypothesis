@@ -171,11 +171,9 @@ theorem isFreeGen_ιMulti {D : ℕ} (b : Module.Basis (Fin D) A M) :
       exteriorPower.alternatingMapLinearEquiv b.det = LinearMap.id := by
     apply exteriorPower.linearMap_ext
     refine Module.Basis.ext_alternating b fun v hv => ?_
-    have hb : Function.Bijective v := Finite.injective_iff_bijective.mp hv
-    let σ : Equiv.Perm (Fin D) := Equiv.ofBijective v hb
+    let σ : Equiv.Perm (Fin D) := Equiv.ofBijective v (Finite.injective_iff_bijective.mp hv)
     have e1 : (fun i => b (v i)) = b ∘ σ := rfl
-    rw [e1, AlternatingMap.map_perm, AlternatingMap.map_perm]
-    simp [Module.Basis.det_self]
+    simp [e1, AlternatingMap.map_perm, AlternatingMap.map_perm, Module.Basis.det_self]
   refine ⟨fun a a' h => ?_, fun x => ⟨_, LinearMap.congr_fun key x⟩⟩
   simpa [Module.Basis.det_self] using congrArg (exteriorPower.alternatingMapLinearEquiv b.det) h
 
@@ -255,8 +253,7 @@ def formMap (ρ : A →+* B) (h : ρ.comp α = β) : Forms α D →ₛₗ[ρ] Fo
   haveI : IsScalarTower k A B := IsScalarTower.of_algebraMap_eq' h.symm
   change exteriorPowerMapOver (B := B) (D := D) (KaehlerDifferential.map k k A B)
     (exteriorPower.ιMulti A D _) = _
-  rw [exteriorPowerMapOver_ιMulti, dForm_eq]
-  simp only [KaehlerDifferential.map_D]
+  simp only [exteriorPowerMapOver_ιMulti, dForm_eq, KaehlerDifferential.map_D]
   rfl
 
 theorem forms_ext {M : Type*} [AddCommGroup M] [Module B M] {ρ : A →+* B}

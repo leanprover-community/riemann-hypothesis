@@ -361,14 +361,11 @@ private theorem int_U (O : Type) [CommRing O] [Algebra O K] {c : K} {d m : EL Δ
   rw [e] at hI
   refine isInt_inter (O := O) (fun z => P (0, ofE Δ z)) ?_ ?_ ?_ _ (quo s) ?_ hI
   · intro z hz
-    have h3 : ((0 : Lsq K Δ), ofE Δ z) = 0 := P.injective (hz.trans (map_zero P).symm)
-    have h4 : ofE Δ z = 0 := congrArg Prod.snd h3
+    have h4 : ofE Δ z = 0 := congrArg Prod.snd (P.injective (hz.trans (map_zero P).symm))
     have inj : Function.Injective (algebraMap K (Lsq K Δ)) := (algebraMap K (Lsq K Δ)).injective
-    have h5 : algebraMap K (Lsq K Δ) z.re = 0 := congrArg QuadraticAlgebra.re h4
-    have h6 : algebraMap K (Lsq K Δ) z.im = 0 := congrArg QuadraticAlgebra.im h4
     ext
-    · exact inj (h5.trans (map_zero _).symm)
-    · exact inj (h6.trans (map_zero _).symm)
+    · exact inj ((congrArg QuadraticAlgebra.re h4).trans (map_zero _).symm)
+    · exact inj ((congrArg QuadraticAlgebra.im h4).trans (map_zero _).symm)
   · intro a b
     rw [← map_add (f := _)]
     simp [ofE_add]

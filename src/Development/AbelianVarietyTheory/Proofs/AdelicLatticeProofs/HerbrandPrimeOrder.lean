@@ -194,8 +194,7 @@ theorem herb_nrm_apply_sigma {A : Type} [CommGroup A] (σ : A →* A) (p : ℕ)
     (h : ∀ a, σ^[p] a = a) (a : A) : nrm σ p (σ a) = nrm σ p a := by
   have e1 := Finset.prod_range_succ (fun i => σ^[i] a) p
   have e2 := Finset.prod_range_succ' (fun i => σ^[i] a) p
-  rw [e1] at e2
-  simp only [h, Function.iterate_zero, id, Function.iterate_succ_apply] at e2
+  simp only [e1, h, Function.iterate_zero, id, Function.iterate_succ_apply] at e2
   rw [nrm_apply, nrm_apply]
   exact (mul_right_cancel e2).symm
 
@@ -439,8 +438,7 @@ theorem _root_.GlobalTheory.CNorm.pows_eq_range_dif_pow : ∀ (p : ℕ) (M : Typ
     rw [hlam, ← ofMul_mul, div_mul_cancel]
   have hT : aeval T (cyclotomic p ℤ) = 0 := by
 
-    rw [cyclotomic_prime, map_sum]
-    simp only [map_pow, aeval_X]
+    simp only [cyclotomic_prime, map_sum, map_pow, aeval_X]
     refine DFunLike.ext _ _ fun x => ?_
     obtain ⟨a, rfl⟩ : ∃ a, Additive.ofMul a = x := ⟨_, ofMul_toMul x⟩
     have hs := map_sum (AddMonoidHom.mk' (fun g : AddMonoid.End (Additive M) =>
@@ -511,8 +509,7 @@ theorem herbPhi_arith (q h0 h1 a t bI bT cI cT i c : ℕ) (hi : i ≠ 0) (hcT : 
     (e1 : a * bT * cT = bI * cI * t) (e2 : cI * c ^ q = i ^ q * cT)
     (e3 : h0 * i * bT = bI * h1 * c) :
     h0 ^ q * a * bT ^ (q + 1) = h1 ^ q * t * bI ^ (q + 1) := by
-  have hne : i ^ q * cT ≠ 0 := mul_ne_zero (pow_ne_zero _ hi) hcT
-  apply mul_right_cancel₀ hne
+  apply mul_right_cancel₀ (mul_ne_zero (pow_ne_zero _ hi) hcT)
   calc h0 ^ q * a * bT ^ (q + 1) * (i ^ q * cT) = (h0 * i * bT) ^ q * (a * bT * cT) := by ring
     _ = (bI * h1 * c) ^ q * (bI * cI * t) := by rw [e1, e3]
     _ = h1 ^ q * t * bI ^ (q + 1) * (cI * c ^ q) := by ring
@@ -546,8 +543,7 @@ theorem herbPhi_stable (p : ℕ) (A : Type) [CommGroup A] (σ : A →* A) (hp : 
     apply Subtype.ext
     have := hn a a.2
     rw [nrm_apply] at this ⊢
-    rw [SubmonoidClass.coe_finsetProd]
-    simp only [hit]
+    simp only [SubmonoidClass.coe_finsetProd, hit]
     exact this
   obtain ⟨h1, h2⟩ := _root_.GlobalTheory.CNorm.pows_eq_range_dif_pow p C τ lam hp (fun _ => rfl) hnτ
   obtain ⟨k, hk⟩ : ∃ k, p - 1 = k + 1 := ⟨p - 2, by have := hp.two_le; omega⟩

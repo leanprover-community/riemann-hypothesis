@@ -39,8 +39,7 @@ theorem length_pi_quot_smul_top (t : ℕ) (a : R) :
     constructor
     · intro h
       have hx : ∀ i, x i ∈ Ideal.span {a} := fun i => by
-        have := congrFun h i
-        exact Ideal.Quotient.eq_zero_iff_mem.mp (by simpa [f] using this)
+        exact Ideal.Quotient.eq_zero_iff_mem.mp (by simpa [f] using (congrFun h i))
       choose c hc using fun i => Ideal.mem_span_singleton'.mp (hx i)
       exact ⟨c, funext fun i => by simp [← hc i, mul_comm]⟩
     · rintro ⟨b, rfl⟩
@@ -110,10 +109,9 @@ theorem length_quot_smul_eq {N F₀ : Type*} [AddCommGroup N] [Module R N]
       exact ⟨Submodule.Quotient.mk b, rfl⟩
     · rintro ⟨q, hq⟩
       obtain ⟨b, rfl⟩ := Submodule.Quotient.mk_surjective _ q
-      have hb : a • b - x ∈ a • P := (Submodule.Quotient.eq _).mp hq
       refine (Quotient.mk_eq_zero _).mpr ?_
       have h1 : a • b ∈ (a • ⊤ : Submodule R N) := smul_mem_pointwise_smul b a ⊤ mem_top
-      simpa using sub_mem h1 (hPa hb)
+      simpa using sub_mem h1 (hPa ((Submodule.Quotient.eq _).mp hq))
   have hf2 : Function.Injective f2 := by
     refine (injective_iff_map_eq_zero _).mpr fun q hq => ?_
     obtain ⟨y, rfl⟩ := Submodule.Quotient.mk_surjective _ q
@@ -129,9 +127,8 @@ theorem length_quot_smul_eq {N F₀ : Type*} [AddCommGroup N] [Module R N]
       exact ⟨Submodule.Quotient.mk z, rfl⟩
     · rintro ⟨q, hq⟩
       obtain ⟨z, rfl⟩ := Submodule.Quotient.mk_surjective _ q
-      have hb : φ z - x ∈ a • P := (Submodule.Quotient.eq _).mp hq
       refine (Quotient.mk_eq_zero _).mpr ?_
-      have := sub_mem (LinearMap.mem_range_self φ z) (hPP hb)
+      have := sub_mem (LinearMap.mem_range_self φ z) (hPP ((Submodule.Quotient.eq _).mp hq))
       rwa [sub_sub_cancel] at this
   have e1 := Module.length_eq_add_of_exact f1 g1 hf1 (Submodule.factor_surjective hPa) hex1
   have e2 := Module.length_eq_add_of_exact f2 g2 hf2 (Submodule.factor_surjective hPP) hex2

@@ -88,12 +88,10 @@ theorem lterm_pair (q : W → ℕ) (hq : ∀ w, 2 ≤ q w) {α β : Type} [Finty
     rw [cpow_real, Complex.conj_ofReal]
   have h1 : ∑ x, (a p.1 x * (q p.1 : ℂ) ^ (-(t : ℂ))) ^ (p.2 + 1) =
       (∑ x, a p.1 x ^ (p.2 + 1)) * ((q p.1 : ℂ) ^ (-(t : ℂ))) ^ (p.2 + 1) := by
-    rw [Finset.sum_mul]
-    simp only [mul_pow]
+    simp only [Finset.sum_mul, mul_pow]
   have h2 : ∑ y, (b p.1 y * (q p.1 : ℂ) ^ (-(t' : ℂ))) ^ (p.2 + 1) =
       (∑ y, b p.1 y ^ (p.2 + 1)) * ((q p.1 : ℂ) ^ (-(t' : ℂ))) ^ (p.2 + 1) := by
-    rw [Finset.sum_mul]
-    simp only [mul_pow]
+    simp only [Finset.sum_mul, mul_pow]
   rw [h1, h2, map_mul, map_pow, hr', e]
   ring
 

@@ -252,8 +252,7 @@ theorem green_periodic_rectangle : ∀ (G D : ℂ → ℂ) (T a b : ℝ), 0 < T 
     have : φL (y, T) = φL (y, 0) + (T : ℂ) := by rw [hφ, hφ]; push_cast; ring
     rw [this, hper _ (by rw [him]; exact hy')]
   rw [hL, hg, sub_self, zero_add] at key
-  rw [key]
-  simp only [hφ]
+  simp only [key, hφ]
 
 end GlobalTheory
 end -- clump:auto
@@ -414,8 +413,7 @@ theorem periodic_of_dbar : ∀ (U : ℂ → ℂ) (h : ℍ → ℂ) (w : ℕ) (T 
   obtain ⟨L0, hL0, e0⟩ := hd s hs
   obtain ⟨L1, hL1, e1⟩ := hd (s + T) hsT
   have hshift : HasFDerivAt (fun z : ℂ => U (z + T)) L1 s := by
-    have := hL1.comp s ((hasFDerivAt_id (𝕜 := ℝ) s).add_const (T : ℂ))
-    simpa [Function.comp_def] using this
+    simpa [Function.comp_def] using hL1.comp s ((hasFDerivAt_id (𝕜 := ℝ) s).add_const (T : ℂ))
   have hev : U =ᶠ[nhds s] fun z : ℂ => U (z + T) :=
     ((Complex.continuous_im.tendsto s).eventually (lt_mem_nhds hs)).mono fun z hz => (hp z hz).symm
   have hL : L0 = L1 := hL0.unique (hshift.congr_of_eventuallyEq hev)
@@ -578,9 +576,8 @@ theorem cuspForm_eq_zero_of_periodic_of_bound : ∀ (Γ : Subgroup SL(2, ℤ)) (
         (fun a b ha hab => fourier_sub_eq _ ⇑h (k - 2) (h₀ : ℝ) (n + 1) a b hT ha hab hd hUper
           hholo hperh hbdd)
       simpa using hc
-  have hfun : (⇑h : ℍ → ℂ) = 0 := (qExpansion_eq_zero_iff hT hperh hholo hbdd).1 hq
   ext τ
-  simpa using congrFun hfun τ
+  simpa using congrFun ((qExpansion_eq_zero_iff hT hperh hholo hbdd).1 hq) τ
 
 end GlobalTheory.EichlerPositivity
 end -- clump:auto
@@ -698,9 +695,8 @@ theorem cauchy_parallelogram_upper_half_plane :
       HasFDerivAt (fun x => g (φ x)) (F' x) x := by
     intro x hx
     rw [min_eq_left zero_le_one, max_eq_right zero_le_one, min_eq_left hS, max_eq_right hS] at hx
-    have hz : 0 < (φ x).im := hpos x hx.1.1.le hx.1.2.le hx.2.1.le
     have hgd : HasDerivAt g (deriv g (φ x)) (φ x) :=
-      (hg.differentiableAt (hopen.mem_nhds hz)).hasDerivAt
+      (hg.differentiableAt (hopen.mem_nhds (hpos x hx.1.1.le hx.1.2.le hx.2.1.le))).hasDerivAt
     have hφd : HasFDerivAt φ L x := by
       rw [hφL]; exact L.hasFDerivAt.const_add _
     exact (hgd.hasFDerivAt.restrictScalars ℝ).comp x hφd
@@ -1026,10 +1022,8 @@ theorem trunc_mem (w : ℕ) (R : ℂ[X]) :
 
 theorem trunc_coeff (w : ℕ) (R : ℂ[X]) {j : ℕ} (hj : j ≤ w) :
     (∑ i ∈ Finset.range (w + 1), C (R.coeff i) * X ^ i).coeff j = R.coeff j := by
-  rw [finsetSum_coeff]
-  simp only [coeff_C_mul_X_pow]
-  rw [Finset.sum_ite_eq]
-  simp [Finset.mem_range, Nat.lt_succ_of_le hj]
+  simp only [finsetSum_coeff, coeff_C_mul_X_pow]
+  simp [Finset.sum_ite_eq, Finset.mem_range, Nat.lt_succ_of_le hj]
 
 theorem eichler_mem (w : ℕ) (f : ℍ → ℂ) (τ : ℍ) : eichler w f τ ∈ degreeLT ℂ (w + 1) := by
   unfold eichler
@@ -1297,8 +1291,7 @@ theorem norm_eval_smul_mul_im_rpow : ∀ (w : ℕ) (σ : SL(2, ℤ)) (P : ℂ[X]
     rw [← hden]; exact denom_ne_zero _ _
   have hc : ((σ • τ : ℍ) : ℂ) = (((mat σ 0 0 : ℤ) : ℂ) * (τ : ℂ) + ((mat σ 0 1 : ℤ) : ℂ)) /
       (((mat σ 1 0 : ℤ) : ℂ) * (τ : ℂ) + ((mat σ 1 1 : ℤ) : ℂ)) := by
-    rw [specialLinearGroup_apply]
-    simp
+    simp [specialLinearGroup_apply]
   have him := ModularGroup.im_smul_eq_div_normSq σ τ
   rw [hden] at him
   rw [eval_polySlash w (mat σ) P τ hP hj, ← hc, him]
@@ -1600,8 +1593,7 @@ open scoped MatrixGroups ModularForm in
 open scoped Manifold in
 private lemma im_sl_smul_eq_im_div_normSq_denom (γ : SL(2, ℤ)) (τ : ℍ) :
     (γ • τ).im = τ.im / Complex.normSq (((γ 1 0 : ℤ) : ℂ) * τ + ((γ 1 1 : ℤ) : ℂ)) := by
-  rw [ModularGroup.sl_moeb, UpperHalfPlane.im_smul_eq_div_normSq]
-  simp [UpperHalfPlane.denom]
+  simp [ModularGroup.sl_moeb, UpperHalfPlane.im_smul_eq_div_normSq, UpperHalfPlane.denom]
 
 open Polynomial UpperHalfPlane in
 open scoped MatrixGroups ModularForm in
@@ -1729,8 +1721,7 @@ theorem _root_.GlobalTheory.HeckeFamilyMatrices.Positivity.eq_zero_of_per_sub_cj
   have hcoc : ∀ γ : Γ, _root_.GlobalTheory.HeckeFamilyMatrices.slP (k - 2) (_root_.GlobalTheory.HeckeFamilyMatrices.mat γ) q - q =
       _root_.GlobalTheory.HeckeFamilyMatrices.per Γ (k - 2) ⇑f γ -
         map (starRingEnd ℂ) (_root_.GlobalTheory.HeckeFamilyMatrices.per Γ (k - 2) ⇑h γ) := fun γ => by
-    have := congrFun hqe γ
-    simpa [_root_.GlobalTheory.HeckeFamilyMatrices.cj] using this
+    simpa [_root_.GlobalTheory.HeckeFamilyMatrices.cj] using congrFun hqe γ
   have hper : ∀ g : CuspForm (Subgroup.map (Matrix.SpecialLinearGroup.mapGL ℝ) Γ) k,
       ∀ (γ : Γ) (τ : ℍ), _root_.GlobalTheory.HeckeFamilyMatrices.per Γ (k - 2) ⇑g γ =
         _root_.GlobalTheory.HeckeFamilyMatrices.slP (k - 2) (_root_.GlobalTheory.HeckeFamilyMatrices.mat γ)

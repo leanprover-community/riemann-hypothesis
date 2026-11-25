@@ -128,8 +128,7 @@ lemma mem_Nof (S : Frames M.L r k) (f : Fin (r + 1) → S.V) (g : S.GLV) :
       rw [← hiso v y]
       exact hv (g y) ((hX y).2 hy)
     · intro hv y hy
-      have hy' : g.symm y ∈ S.spanTo f r := (hX _).1 (by simpa using hy)
-      have := hv (g.symm y) hy'
+      have := hv (g.symm y) ((hX _).1 (by simpa using hy))
       rwa [← hiso v (g.symm y), LinearEquiv.apply_symm_apply] at this
 
 section Frame
@@ -157,8 +156,7 @@ lemma mem_Fj (hf : ∀ a, f a = e (Fr.f a)) (j : ℕ) (hj : j ≤ r) (x : V) :
       rfl
     · rintro ⟨_, ⟨a, ha, rfl⟩, rfl⟩
       exact ⟨a.castSucc, by simpa using ha, by rw [hf]; rfl⟩
-  rw [hs, Submodule.mem_map_equiv]
-  simp
+  simp [hs, Submodule.mem_map_equiv]
 
 lemma mem_X (hf : ∀ a, f a = e (Fr.f a)) (x : V) : x ∈ H.X Fr.f ↔ e x ∈ S.spanTo f r := by
   rw [← Fj_r Fr]
@@ -179,8 +177,7 @@ lemma mem_perp (he : ∀ x y, S.h (e x) (e y) = H.h x y) (hf : ∀ a, f a = e (F
 lemma mem_NSet (he : ∀ x y, S.h (e x) (e y) = H.h x y) (hf : ∀ a, f a = e (Fr.f a))
     (g : V ≃ₗ[E] V) (g' : S.GLV) (hg : ∀ v, g' (e v) = e (g v)) :
     g ∈ Fr.NSet ↔ g' ∈ S.Nof f := by
-  rw [mem_Nof]
-  simp only [LocNG.FrameD.NSet, Set.mem_ofPred_eq, LocNG.IsUnitary]
+  simp only [mem_Nof, LocNG.FrameD.NSet, Set.mem_ofPred_eq, LocNG.IsUnitary]
   have hgS : ∀ v w, S.h (g' (e v)) (g' (e w)) = H.h (g v) (g w) := fun v w => by rw [hg, hg, he]
   have hsub : ∀ v, g' (e v) - e v = e (g v - v) := fun v => by rw [hg, map_sub]
   constructor

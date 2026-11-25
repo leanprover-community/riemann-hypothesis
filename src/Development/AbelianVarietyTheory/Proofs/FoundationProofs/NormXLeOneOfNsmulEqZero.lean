@@ -77,8 +77,7 @@ lemma norm_add_of_lt {a b : K} (h : ‖b‖ < ‖a‖) : ‖a + b‖ = ‖a‖ :
   rw [IsUltrametricDist.norm_add_eq_max_of_norm_ne_norm h.ne', max_eq_left h.le]
 
 lemma norm_one_add {b : K} (h : ‖b‖ < 1) : ‖1 + b‖ = 1 := by
-  have := norm_add_of_lt (a := (1 : K)) (b := b) (by simpa using h)
-  simpa using this
+  simpa using norm_add_of_lt (a := (1 : K)) (b := b) (by simpa using h)
 
 omit [IsUltrametricDist K] in
 lemma mul_le {a b : K} {r s : ℝ} (ha : ‖a‖ ≤ r) (hb : ‖b‖ ≤ s) : ‖a * b‖ ≤ r * s := by
@@ -144,8 +143,7 @@ lemma line_bounds {A B z₁ z₂ w₁ w₂ : K} {s : ℝ} (hA : ‖A‖ ≤ 1) (
     ring
   have hD0 : 1 - A * (z₁ * (w₁ + w₂)) - B * (w₁ * w₁ + w₁ * w₂ + w₂ * w₂) ≠ 0 := by
     intro h
-    rw [h] at hD
-    simp at hD
+    simp [h] at hD
   have hN : ‖z₁ * z₁ + z₁ * z₂ + z₂ * z₂ + A * (w₂ * w₂)‖ ≤ s * s :=
     add_le (add_le (add_le (mul_le hz₁ hz₁) (mul_le hz₁ hz₂)) (mul_le hz₂ hz₂))
       (one_mul_le hA (mul_le hw₂ hw₂))
@@ -177,8 +175,7 @@ lemma third_point {A B x₁ x₂ x₃ y₁ y₂ y₃ m n : K} {M : ℝ} (hA : �
     exact norm_one_add (by rw [norm_neg]; exact (one_mul_le hB hm).trans_lt hMi)
   have hE0 : 1 - B * (m * m) ≠ 0 := by
     intro h
-    rw [h] at hE
-    simp at hE
+    simp [h] at hE
   have hx₃0 : x₃ ≠ 0 := by
     rintro rfl
     apply hE0
@@ -189,8 +186,7 @@ lemma third_point {A B x₁ x₂ x₃ y₁ y₂ y₃ m n : K} {M : ℝ} (hA : �
       (one_mul_le hB (one_mul_le hn1 (one_mul_le hn1 hn)))).trans_lt hMi)
   have hD0 : 1 + (A * (n * n) + B * (n * (n * n))) ≠ 0 := by
     intro h
-    rw [h] at hD
-    simp at hD
+    simp [h] at hD
   have hm2 : m ^ 2 ≠ 0 := pow_ne_zero 2 hm0
   have u₁ : m * y₁ = 1 - n * x₁ := by linear_combination l₁
   have u₂ : m * y₂ = 1 - n * x₂ := by linear_combination l₂
@@ -355,11 +351,9 @@ theorem large_add : (let d1 : {K : Type} → [inst : NormedField K] → {W : Wei
   have hx₁ : M ≤ ‖x₁‖ := hP
   have hx₂ : M ≤ ‖x₂‖ := hQ
   have c₁ : y₁ ^ 2 = x₁ ^ 3 + A * x₁ + B := by
-    have := (WeierstrassCurve.Affine.equation_iff _ _).mp h₁.1
-    simpa using this
+    simpa using (WeierstrassCurve.Affine.equation_iff _ _).mp h₁.1
   have c₂ : y₂ ^ 2 = x₂ ^ 3 + A * x₂ + B := by
-    have := (WeierstrassCurve.Affine.equation_iff _ _).mp h₂.1
-    simpa using this
+    simpa using (WeierstrassCurve.Affine.equation_iff _ _).mp h₂.1
   by_cases hxy : x₁ = x₂ ∧ y₁ = (WeierstrassCurve.toAffine
     { a₁ := (0 : K), a₂ := (0 : K), a₃ := (0 : K), a₄ := A, a₆ := B : WeierstrassCurve K }).negY x₂ y₂
   · rw [WeierstrassCurve.Affine.Point.add_of_Y_eq hxy.1 hxy.2, z2]
@@ -455,8 +449,7 @@ theorem norm_x_le_one_of_nsmul_eq_zero (K : Type) [NormedField K] [IsUltrametric
       obtain ⟨s1, s2⟩ := add_step hA hB hx _ _ ih.1 hP
       rw [succ_nsmul]
       refine ⟨s1, ?_⟩
-      have := (norm_add_le_max _ _).trans (max_le s2 ih.2)
-      refine le_of_eq_of_le (congrArg norm ?_) this
+      refine le_of_eq_of_le (congrArg norm ?_) ((norm_add_le_max _ _).trans (max_le s2 ih.2))
       simp only [param]
       push_cast
       ring

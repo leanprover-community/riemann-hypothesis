@@ -184,7 +184,7 @@ lemma divGlob (e : E) (N : ℕ) (hN : 0 < N) (he : IsInt e)
     (h : ∀ P : Ideal (𝓞 E), P.IsPrime → (N : 𝓞 E) ∈ P → LocIn P e N) :
     ∃ β : 𝓞 E, e = (N : E) * (β : E) := by
   have hN0 : (N : E) ≠ 0 := Nat.cast_ne_zero.mpr hN.ne'
-  have hx : IsInt (e / (N : E)) := by
+  obtain ⟨β, hβ⟩ : IsInt (e / (N : E)) := by
     apply locGlob
     intro P hP
     by_cases hNP : (N : 𝓞 E) ∈ P
@@ -197,7 +197,6 @@ lemma divGlob (e : E) (N : ℕ) (hN : 0 < N) (he : IsInt e)
       convert he using 1
       push_cast
       field_simp
-  obtain ⟨β, hβ⟩ := hx
   refine ⟨β, ?_⟩
   rw [hβ]
   field_simp
@@ -426,14 +425,12 @@ theorem theorem_B_statement : Formalism.HermitianLatticeCounting.LocalIntegralSt
     have hs0 : s ≠ 0 := by
       rw [hs1]
       have hσc : σ c ≠ 0 := fun h => hc0 (σ.injective (by rw [h, map_zero]))
-      have hT0 : (T : E) ≠ 0 := Nat.cast_ne_zero.mpr hTpos.ne'
       have hT'0 : (T' : E) ≠ 0 := Nat.cast_ne_zero.mpr hT'pos.ne'
-      exact div_ne_zero (mul_ne_zero (mul_ne_zero hT'0 hc0) hσc) hT0
+      exact div_ne_zero (mul_ne_zero (mul_ne_zero hT'0 hc0) hσc) (Nat.cast_ne_zero.mpr hTpos.ne')
     have hβ0 : β ≠ 0 := by
       rintro rfl
-      have hg0 : (g : E) ≠ 0 := Nat.cast_ne_zero.mpr (by omega)
       have h0 : (g : E) ^ 2 * s = 0 := by rw [hβ]; simp
-      exact hs0 ((mul_eq_zero.mp h0).resolve_left (pow_ne_zero 2 hg0))
+      exact hs0 ((mul_eq_zero.mp h0).resolve_left (pow_ne_zero 2 (Nat.cast_ne_zero.mpr (by omega))))
     set q : ℝ := (T : ℝ) * T' / (g : ℝ) ^ 2 with hq_def
     have hq : 0 < q := div_pos (mul_pos hTr hT'r) (pow_pos hgr 2)
     have key : ∀ w : InfinitePlace E, q ^ 2 * (w (β : E)) ^ 2 ≤ (x w ^ 2) ^ 2 := by

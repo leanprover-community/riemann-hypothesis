@@ -105,8 +105,7 @@ theorem norm_norm (hML : M ≤ L) (hLK : L ≤ K) [(L.subgroupOf K).FiniteIndex]
         have h := hq.2
         rw [Subgroup.quotientMapOfLE_apply_mk, QuotientGroup.eq] at h
         have hmem : (σ : G)⁻¹ * ρ ∈ L := by
-          have := L.inv_mem h
-          simpa [Subgroup.mem_subgroupOf, mul_inv_rev] using this
+          simpa [Subgroup.mem_subgroupOf, mul_inv_rev] using L.inv_mem h
         refine ⟨((⟨(σ : G)⁻¹ * ρ, hmem⟩ : L) : L ⧸ M.subgroupOf L), Finset.mem_univ _, ?_⟩
         rw [cosetShift_mk]
         congr 1

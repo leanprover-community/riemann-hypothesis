@@ -84,8 +84,7 @@ private lemma exists_retr {C D : Type*} [CommRing C] [CommRing D] [Algebra C D] 
     intro d
     have hd : d = ∑ i, g d i • f (Pi.single i 1) := by
       have e1 : d = f (g d) := by
-        have := LinearMap.congr_fun hfg d
-        simpa using this.symm
+        simpa using (LinearMap.congr_fun hfg d).symm
       conv_lhs => rw [e1, ← Finset.univ_sum_single (g d)]
 
       rw [map_sum]
@@ -102,8 +101,7 @@ private lemma exists_retr {C D : Type*} [CommRing C] [CommRing D] [Algebra C D] 
     (Module.Finite.fg_top) (fun d _ => key d)
   have hr : r = 0 := h (by simpa [Algebra.smul_def] using hr0 1 trivial)
   have h1 : (1 : C) ∈ J := by
-    have := J.neg_mem hr1
-    simpa [hr] using this
+    simpa [hr] using J.neg_mem hr1
   obtain ⟨π, hπ⟩ := LinearMap.mem_range.1 h1
   exact ⟨π, by simpa using hπ⟩
 
@@ -154,8 +152,7 @@ theorem ker_fg_of_projective {P C M : Type*} [CommRing P] [CommRing C] [Algebra 
     ext j
     simp [Pi.single_apply, eq_comm]
   have hπC : ∀ x, π x = ∑ i, algebraMap P C (x i) • b i := fun x => by
-    rw [hπb]
-    simp only [algebraMap_smul]
+    simp only [hπb, algebraMap_smul]
   let πC : (Fin n → C) →ₗ[C] M := Fintype.linearCombination C b
   have hπCs : Function.Surjective πC := by
     intro m
@@ -164,21 +161,18 @@ theorem ker_fg_of_projective {P C M : Type*} [CommRing P] [CommRing C] [Algebra 
     rw [hπC, Fintype.linearCombination_apply]
   obtain ⟨s, hs⟩ := Module.projective_lifting_property πC LinearMap.id hπCs
   have hs' : ∀ m, ∑ i, s m i • b i = m := fun m => by
-    have := LinearMap.congr_fun hs m
-    simpa [πC, Fintype.linearCombination_apply] using this
+    simpa [πC, Fintype.linearCombination_apply] using LinearMap.congr_fun hs m
   choose v hv using fun (p : Fin n × Fin n) => hsurj (s (b p.1) p.2)
   let E : (Fin n → P) → Fin n → P := fun x j => ∑ i, x i * v (i, j)
   have key1 : ∀ x j, algebraMap P C (E x j) = s (π x) j := fun x j => by
     have hsx : s (π x) = ∑ i, algebraMap P C (x i) • s (b i) := by
 
-      rw [hπC, map_sum]
-      simp only [map_smul]
+      simp only [hπC, map_sum, map_smul]
     rw [hsx, Finset.sum_apply]
 
     simp only [E, map_sum, map_mul, hv, Pi.smul_apply, smul_eq_mul]
   have key2 : ∀ x, π (fun j => E x j) = π x := fun x => by
-    rw [hπC]
-    simp only [key1]
+    simp only [hπC, key1]
     exact hs' _
   obtain ⟨G, hG⟩ := hker
   let I₀ : Ideal P := Ideal.span ((fun q : (Fin n → P) × Fin n => E q.1 q.2) ''
@@ -221,8 +215,7 @@ theorem ker_fg_of_projective {P C M : Type*} [CommRing P] [CommRing C] [Algebra 
       · subst hk
         rw [Pi.single_eq_same, RingHom.mem_ker.1 ha, zero_smul]
       · rw [Pi.single_eq_of_ne hk, map_zero, zero_smul]
-    have := key3 _ hx j
-    simpa [E, Pi.single_apply] using this
+    simpa [E, Pi.single_apply] using key3 _ hx j
   have key6 : ∀ a ∈ RingHom.ker (algebraMap P C), ∀ t ∈ T, a * t ∈ I₀ := by
     intro a ha t ht
     induction ht using Submodule.span_induction with
@@ -242,11 +235,10 @@ theorem ker_fg_of_projective {P C M : Type*} [CommRing P] [CommRing C] [Algebra 
   have heq : RingHom.ker (algebraMap P C) = I₀ ⊔ Ideal.span {r} := by
     apply le_antisymm
     · intro a ha
-      have h1 : a * (r - 1) ∈ I₀ := key6 a ha _ hr
       have h2 : a * r ∈ Ideal.span {r} := Ideal.mul_mem_left _ a (Ideal.mem_span_singleton_self r)
       have : a = a * r + -(a * (r - 1)) := by ring
       rw [this]
-      exact Submodule.add_mem_sup h2 (I₀.neg_mem h1) |> fun h => by
+      exact Submodule.add_mem_sup h2 (I₀.neg_mem (key6 a ha _ hr)) |> fun h => by
         rw [sup_comm]; exact h
     · refine sup_le hI₀le ?_
       rw [Ideal.span_singleton_le_iff_mem]

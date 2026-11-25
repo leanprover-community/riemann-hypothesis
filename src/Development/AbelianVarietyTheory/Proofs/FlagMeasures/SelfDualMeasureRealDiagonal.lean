@@ -74,7 +74,6 @@ theorem selfDual_of_transport {V E : Type} [NormedAddCommGroup V] [NormedSpace �
   have hφc : Continuous φ := hΦc.comp (T.symm.continuous.comp continuous_neg)
   have hφs : HasCompactSupport φ :=
     (hΦs.comp_homeomorph T.symm.toHomeomorph).comp_homeomorph (Homeomorph.neg E)
-  have hφi : Integrable φ := hφc.integrable_of_hasCompactSupport hφs
   have hψφ : 𝓕⁻ ψ = 𝓕 φ := Real.fourierInv_eq_fourier_comp_neg ψ
 
   have hhat : ∀ y, ∫ x, Φ x * Complex.exp (2 * Real.pi * Complex.I * ((B x y : ℝ) : ℂ)) ∂μ
@@ -104,7 +103,7 @@ theorem selfDual_of_transport {V E : Type} [NormedAddCommGroup V] [NormedSpace �
     exact (hiff _).1 hint'
   have hinv : 𝓕⁻ (𝓕⁻ ψ) = φ := by
     rw [hψφ]
-    exact hφc.fourierInv_fourier_eq hφi hFi
+    exact hφc.fourierInv_fourier_eq (hφc.integrable_of_hasCompactSupport hφs) hFi
   have hsym : ∀ y, B y z = inner ℝ (R y) (T z) := fun y => by
     rw [hs, hR, real_inner_comm]
   have hlast : ∫ u, 𝓕⁻ ψ u * Complex.exp (2 * Real.pi * Complex.I * ((inner ℝ u (T z) : ℝ) : ℂ))
@@ -129,8 +128,7 @@ theorem selfDual_of_transport {V E : Type} [NormedAddCommGroup V] [NormedSpace �
         rw [integral_const_mul, hlast, hinv]
         ring
     _ = Φ (-z) := by
-        rw [hab, one_mul, hφdef, hψdef]
-        simp only [map_neg, ContinuousLinearEquiv.symm_apply_apply]
+        simp only [hab, one_mul, hφdef, hψdef, map_neg, ContinuousLinearEquiv.symm_apply_apply]
 
 theorem exists_diag_equiv (κ : Type) [Fintype κ] (d : κ → ℝ) (hd : ∀ k, d k ≠ 0) :
     ∃ D : (κ → ℝ) ≃L[ℝ] (κ → ℝ), (∀ y k, D y k = d k * y k) ∧
@@ -206,8 +204,7 @@ theorem selfDual_diag (κ : Type) [Fintype κ] (d : κ → ℝ) (hd : ∀ k, d k
       ∫ x, g ((D.trans T) x) ∂(ENNReal.ofReal s • (volume : Measure (κ → ℝ))) =
         ((s : ℂ) * ((|∏ k, d k|⁻¹ : ℝ) : ℂ)) * ∫ w, g w := by
     intro g
-    rw [hint]
-    simp only [ContinuousLinearEquiv.trans_apply]
+    simp only [hint, ContinuousLinearEquiv.trans_apply]
     rw [hDI (fun x => g (T x)), hTI]
     ring
   exact selfDual_of_transport (V := κ → ℝ) (E := EuclideanSpace ℝ κ)

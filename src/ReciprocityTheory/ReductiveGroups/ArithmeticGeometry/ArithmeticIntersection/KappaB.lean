@@ -164,8 +164,7 @@ noncomputable def coneConst : ℝ≥0∞ :=
   volume (Ioo (-π) π) * ∫⁻ r in Ioi (0 : ℝ), ENNReal.ofReal (r ^ 2) * (Iio (1 : ℝ)).indicator 1 r
 
 lemma norm_eq_sqrt_coord (y : E3) : ‖y‖ = Real.sqrt (y 0 ^ 2 + (y 1 ^ 2 + y 2 ^ 2)) := by
-  rw [EuclideanSpace.norm_eq, Fin.sum_univ_three]
-  simp only [Real.norm_eq_abs, sq_abs]
+  simp only [EuclideanSpace.norm_eq, Fin.sum_univ_three, Real.norm_eq_abs, sq_abs]
   ring_nf
 
 lemma measurableSet_cone0 {s : Set ℝ} (hs : MeasurableSet s) :
@@ -379,8 +378,7 @@ theorem moment1_perp (hI : Integrable (fun n : S2 => f (inner ℝ (n : E3) u)) s
   have hRa : (ℝ ∙ a)ᗮ.reflection a = -a :=
     Submodule.reflection_orthogonalComplement_singleton_eq_neg a
   have h := moment1_inv hI ((ℝ ∙ a)ᗮ.reflection) hRu a
-  rw [hRa] at h
-  simp only [inner_neg_right, mul_neg, integral_neg] at h
+  simp only [hRa, inner_neg_right, mul_neg, integral_neg] at h
   linarith
 
 theorem moment2_perp (hI : Integrable (fun n : S2 => f (inner ℝ (n : E3) u)) sphereMeasure)
@@ -392,8 +390,7 @@ theorem moment2_perp (hI : Integrable (fun n : S2 => f (inner ℝ (n : E3) u)) s
   have hRa : (ℝ ∙ a)ᗮ.reflection a = -a :=
     Submodule.reflection_orthogonalComplement_singleton_eq_neg a
   have h := moment2_inv hI ((ℝ ∙ a)ᗮ.reflection) hRu a c
-  rw [hRa, hRc] at h
-  simp only [inner_neg_right, mul_neg, neg_mul, integral_neg] at h
+  simp only [hRa, hRc, inner_neg_right, mul_neg, neg_mul, integral_neg] at h
   linarith
 
 theorem moment2_swap (hI : Integrable (fun n : S2 => f (inner ℝ (n : E3) u)) sphereMeasure)
@@ -402,9 +399,8 @@ theorem moment2_swap (hI : Integrable (fun n : S2 => f (inner ℝ (n : E3) u)) s
       ∫ n : S2, f (inner ℝ (n : E3) u) * inner ℝ (n : E3) a * inner ℝ (n : E3) a
         ∂sphereMeasure := by
   have hdu : inner ℝ (a - c) u = 0 := by rw [inner_sub_left, ha, hc, sub_zero]
-  have hRu : (ℝ ∙ (a - c))ᗮ.reflection u = u := reflection_fix hdu
   have hRa : (ℝ ∙ (a - c))ᗮ.reflection a = c := Submodule.reflection_sub hac
-  have h := moment2_inv hI ((ℝ ∙ (a - c))ᗮ.reflection) hRu a a
+  have h := moment2_inv hI ((ℝ ∙ (a - c))ᗮ.reflection) (reflection_fix hdu) a a
   rwa [hRa] at h
 
 end moments

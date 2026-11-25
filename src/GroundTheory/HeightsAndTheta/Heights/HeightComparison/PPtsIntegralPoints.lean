@@ -57,8 +57,7 @@ theorem sheetDensity_eq (P : Ideal (Geo.MRing ι))
   have hmem : hex.choose y ∈ Geo.mcPts P := hev.self_of_nhds.2.1
   obtain ⟨c, hc, hcz⟩ := Geo.sameOrbit_of_segre (z := z) hmem.1 1 one_ne_zero (by rw [one_smul, hseg])
   have hgz : g z = g (hex.choose y) := (congrArg g hcz).trans (hg c _ hc hmem)
-  rw [hgz]
-  simp [Geo.maDensity, Geo.mixedDisc]
+  simp [hgz, Geo.maDensity, Geo.mixedDisc]
 
 theorem ptsIntegralAt_eq [Nonempty K] (P : Ideal (Geo.MRing ι)) (hP : Geo.IsMultiHomogIdeal P)
     (g : ((Σ k, ι k) → ℂ) → ℝ)

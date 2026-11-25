@@ -191,19 +191,16 @@ theorem levi_rh_nonneg (hGrad : RhGradFStatement (E := E)) (hx0 : IsOrth X x0) {
         simpa using congrArg Complex.re h2
       have hq : q = 0 := by
         simpa using congrArg Complex.im h2
-      rw [hp, hq]
-      simp
+      simp [hp, hq]
     have hL : leviV (nd X) (fun w => ((rhF X x0 w : ℝ) : ℂ)) z ξ = 0 := by
       unfold leviV
       refine Finset.sum_eq_zero fun j _ => Finset.sum_eq_zero fun k _ => ?_
       have hev : wdb (nd X) k (fun w => ((rhF X x0 w : ℝ) : ℂ)) =ᶠ[𝓝 z] fun _ => (0 : ℂ) := by
         filter_upwards [(isOpen_OmF X x0).mem_nhds hz] with w hw using hwdb w hw k
       have hfd : fderiv ℝ (wdb (nd X) k (fun w => ((rhF X x0 w : ℝ) : ℂ))) z = 0 := by
-        rw [hev.fderiv_eq]
-        simp
+        simp [hev.fderiv_eq]
       simp [wd, hfd]
-    rw [hL]
-    simp
+    simp [hL]
   · have hCpos : (0 : ℝ) < ((X.Ψ.card * min X.p0 (r - X.p0) : ℕ) : ℝ) :=
       lt_of_le_of_ne (Nat.cast_nonneg _) (Ne.symm hC)
     have h0 : ((X.Ψ.card * min X.p0 (r - X.p0) : ℕ) : ℝ) * 0 ≤

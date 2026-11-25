@@ -132,8 +132,7 @@ theorem exists_det_add_mul_one_sub_mul_ne_zero {k : Type*} [Field k] {n : ℕ}
     change U.subtype ((e : K →ₗ[k] U) ⟨v, hvK⟩) = 0
     simpa only [f, LinearMap.comp_apply, hp] using this
   have he' : e ⟨v, hvK⟩ = e 0 := he.trans (map_zero (e : K →ₗ[k] U)).symm
-  have : (⟨v, hvK⟩ : K) = 0 := e.injective he'
-  simpa using congrArg Subtype.val this
+  simpa using congrArg Subtype.val (e.injective he' : (⟨v, hvK⟩ : K) = 0)
 
 theorem exists_GL_of_span_range_eq : ∀ (O M : Type) [CommRing O] [IsLocalRing O] [AddCommGroup M]
     [Module O M] (n : ℕ) (x y : Fin n → M),
@@ -215,8 +214,7 @@ theorem mem_span_indicator_lowerSets :
         | some m =>
           have h1 : (∃ l', some m = some l' ∧ l' ≤ l) ↔ m ≤ l := by simp
           simp only [Option.some.injEq]
-          rw [Finset.sum_ite_eq]
-          simp only [Finset.mem_filter, Finset.mem_univ, true_and]
+          simp only [Finset.sum_ite_eq, Finset.mem_filter, Finset.mem_univ, true_and]
           by_cases hml : m = l
           · subst hml; simp
           · by_cases hle : m ≤ l
@@ -451,14 +449,12 @@ theorem _root_.GlobalTheory.DownLift.SplitGen.exists_same_images_matrix (hr : r 
       constructor
       · intro h
         have : x = z.map ι * A := by rw [← h, Matrix.mul_assoc, hAinv, Matrix.mul_one]
-        rw [this, hzB]
-        simp [A, Matrix.mul_smul, smul_smul, hιd]
+        simp [this, hzB, A, Matrix.mul_smul, smul_smul, hιd]
       · intro h
         have : x = z.map ι * A := by
           apply smul_right_injective _ hιd
           simp only
-          rw [h, hzB]
-          simp [A, Matrix.mul_smul, smul_smul, hιd]
+          simp [h, hzB, A, Matrix.mul_smul, smul_smul, hιd]
         rw [this, Matrix.mul_assoc, hAA, Matrix.mul_one]
     ext x
     simp only [Set.mem_setOf_eq, hgA]

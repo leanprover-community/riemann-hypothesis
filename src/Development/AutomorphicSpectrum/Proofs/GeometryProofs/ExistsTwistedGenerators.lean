@@ -78,8 +78,7 @@ theorem isUnit_germ_iff (h : IsCptGen ξ) {U : X.Opens} (θ : Γ(X, U) →+* Ω)
     obtain ⟨u, hu⟩ := hu
     have e1 : θ r * genMap ξ q (u⁻¹ : (X.presheaf.stalk q.1)ˣ).1 = 1 := by
       rw [← hθ q hq r, ← hu, ← map_mul, Units.mul_inv, map_one]
-    have e0 : θ r ≠ 0 := left_ne_zero_of_mul_eq_one e1
-    exact ⟨e0, ⟨_, hθ q hq r⟩, ⟨_, eq_inv_of_mul_eq_one_right e1⟩⟩
+    exact ⟨(left_ne_zero_of_mul_eq_one e1), ⟨_, hθ q hq r⟩, ⟨_, eq_inv_of_mul_eq_one_right e1⟩⟩
   · rintro ⟨h0, -, ⟨y, hy⟩⟩
     refine IsUnit.of_mul_eq_one y (h.inj q ?_)
     rw [map_mul, hθ q hq r, hy, map_one, mul_inv_cancel₀ h0]
@@ -151,9 +150,7 @@ theorem chart_data (h : CoordTie ℤ ξ x) {c : κ} (hc : x c ≠ 0) :
       obtain ⟨h', hcq⟩ := (hq y).1 hy
       obtain ⟨u, v, hv, e'⟩ := (prime_facts h.gen hU θ hθ ⟨y, h'⟩ hy).2 a (hreg _ hcq)
       apply hv
-      have : v ∈ J := ⟨u, by rw [mul_comm]; exact e'⟩
-      have := hJM this
-      simpa [e] using this
+      simpa [e] using hJM (⟨u, by rw [mul_comm]; exact e'⟩ : v ∈ J)
     obtain ⟨r, hr⟩ : (1 : Γ(X, U)) ∈ J := hJ ▸ Submodule.mem_top
     exact ⟨r, by rw [← hr, map_one, one_mul]⟩
 
@@ -239,7 +236,7 @@ theorem chart_denom (h : CoordTie ℤ ξ x) {c : κ} (hc : x c ≠ 0) (s : chart
           ring
         rw [e]
         exact mul_mem t.2 hN }
-  have hrad : s ∈ J.radical := by
+  obtain ⟨M, N, hN⟩ : s ∈ J.radical := by
     rw [Ideal.radical_eq_sInf, Ideal.mem_sInf]
     rintro Q ⟨hJQ, hQ⟩
     by_contra hsQ
@@ -253,7 +250,6 @@ theorem chart_denom (h : CoordTie ℤ ξ x) {c : κ} (hc : x c ≠ 0) (s : chart
     refine ⟨0, ?_⟩
     rw [pow_zero, one_mul, mul_comm, e]
     exact u.2
-  obtain ⟨M, N, hN⟩ := hrad
   refine ⟨N + M, ?_⟩
   have e : (s : Ω) ^ (N + M) * g = (s : Ω) ^ N * ((((s ^ M : chartR x c)) : Ω) * g) := by
     push_cast
@@ -317,7 +313,7 @@ theorem isSec_pow (j : κ) (e : ℕ) : IsSec x e (x j ^ e) := by
 
 theorem exists_isSec {c : κ} (hc : x c ≠ 0) {s : Ω} (hs : s ∈ chartR x c) :
     ∃ d, ∀ d', d ≤ d' → IsSec x d' (s * x c ^ d') := by
-  have key : ∃ d, IsSec x d (s * x c ^ d) := by
+  obtain ⟨d, hd⟩ : ∃ d, IsSec x d (s * x c ^ d) := by
     induction hs using Algebra.adjoin_induction with
     | mem y hy =>
       obtain ⟨j, rfl⟩ := hy
@@ -346,7 +342,6 @@ theorem exists_isSec {c : κ} (hc : x c ≠ 0) {s : Ω} (hs : s ∈ chartR x c) 
       have : a * b * x c ^ (d + e) = a * x c ^ d * (b * x c ^ e) := by ring
       rw [this]
       exact hd.mul he
-  obtain ⟨d, hd⟩ := key
   refine ⟨d, fun d' hd' => ?_⟩
   obtain ⟨e, rfl⟩ := Nat.exists_eq_add_of_le hd'
   have : s * x c ^ (d + e) = s * x c ^ d * x c ^ e := by ring
@@ -450,8 +445,7 @@ theorem compare (h : CoordTie ℤ ξ x) {L : Lat ξ E} {c c' : κ} (hc : x c ≠
   have ha := hd' c' hc'
   set a := s * x c ^ (d + 1) / x c' ^ (d + 1) with hadef
   refine chart_denom h hc' (⟨a, ha⟩ * s') _ fun q hq hu => ?_
-  have hu' : unitAt ξ q (a * (s' : Ω)) := hu
-  obtain ⟨h0, -, hi⟩ := hu'
+  obtain ⟨h0, -, hi⟩ : unitAt ξ q (a * (s' : Ω)) := hu
   have har : a ∈ regAt ξ q := chartR_le h hc' ha hq
   have hsr : (s' : Ω) ∈ regAt ξ q := chartR_le h hc' s'.2 hq
   have ha0 : a ≠ 0 := left_ne_zero_of_mul h0
@@ -568,8 +562,7 @@ theorem exists_twistGen : ∀ (X : Scheme.{0}) (Ω : Type) [Field Ω] (ξ : Spec
         have e2 : φ (j, l) e / x c ^ ((d + 1) * M) = (s' : Ω) ^ M * β j l e := by
           show (((s' : Ω) * x c ^ (d + 1)) ^ M • β j l) e / x c ^ ((d + 1) * M) = _
           rw [twist_eval, mul_div_cancel_right₀ _ (pow_ne_zero _ hp.1)]
-        rw [e2]
-        simp only [ite_true]
+        simp only [e2, ite_true]
         have := hs'u.1
         rw [inv_pow]
         field_simp

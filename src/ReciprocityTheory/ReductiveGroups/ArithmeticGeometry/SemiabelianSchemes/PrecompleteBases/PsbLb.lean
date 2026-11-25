@@ -227,8 +227,7 @@ theorem isGen_pullGen (φ : K → (Y ⟶ X)) (ε : K → ℤ) (c : Gen (LinComb 
   have key := congrArg (fun x => res (wchart_comp_le₂ L h φ i j) (pullU h _ x))
     ((isGen_iff L c).1 hc i j)
   simp only [map_mul, pullU_res, res_res] at key
-  rw [ts_pullGen, ts_pullGen, lcg_comp]
-  simp only [res_res]
+  simp only [ts_pullGen, ts_pullGen, lcg_comp, res_res]
   exact key
 
 lemma wchart_inl_le (φ : K → (Y ⟶ X)) (φ' : K' → (Y ⟶ X)) (j : K ⊕ K' → L.ι) :
@@ -272,8 +271,7 @@ theorem isGen_mulGen (φ : K → (Y ⟶ X)) (ε : K → ℤ) (φ' : K' → (Y �
   have k₂ := congrArg (res (wchart_inr_le₂ L φ φ' j j'))
     ((isGen_iff L t').1 ht' (j ∘ Sum.inr) (j' ∘ Sum.inr))
   simp only [map_mul, res_res] at k₁ k₂
-  rw [ts_mulGen, ts_mulGen, lcg_sum]
-  simp only [map_mul, res_res]
+  simp only [ts_mulGen, ts_mulGen, lcg_sum, map_mul, res_res]
   rw [k₁, k₂]
   exact mul_mul_mul_comm _ _ _ _
 
@@ -316,8 +314,7 @@ theorem isGen_genPull (M : LB X) (c : Gen M) (hc : c.IsGen) (f : Y ⟶ X) :
   have key := congrArg (fun x => res (wchart_pu_le M f i j) (pullU f _ x))
     (hc (i PUnit.unit) (j PUnit.unit))
   simp only [map_mul, pullU_res, res_res] at key
-  rw [ts_genPull, ts_genPull, lcg_pull]
-  simp only [res_res]
+  simp only [ts_genPull, ts_genPull, lcg_pull, res_res]
   exact key
 
 end LB

@@ -192,8 +192,7 @@ theorem isDiscreteValuationRing_stalk {X : Scheme.{u}} [IsNormalScheme X] [IsLoc
   have h1 : Ring.KrullDimLE 1 (X.presheaf.stalk x) := krullDimLE_of_coheight_le hx.le
   have hf : ¬ IsField (X.presheaf.stalk x) := fun h ↦ by
     have := ringKrullDim_eq_zero_of_isField h
-    rw [ringKrullDim_stalk_eq_coheight, hx] at this
-    simp at this
+    simp [ringKrullDim_stalk_eq_coheight, hx] at this
   have hm := IsLocalRing.isField_iff_maximalIdeal_eq.not.mp hf
   have h3 : IsIntegrallyClosed (X.presheaf.stalk x) ∧
       ∃! P : Ideal (X.presheaf.stalk x), P ≠ ⊥ ∧ P.IsPrime :=
@@ -390,7 +389,6 @@ theorem isIntegrallyClosedIn_localization {A B Aₘ Bₘ : Type*} [CommRing A] [
     [Algebra A Bₘ] [IsScalarTower A B Bₘ] [IsScalarTower A Aₘ Bₘ] (M : Submonoid A)
     [IsLocalization M Aₘ] [IsLocalization (Algebra.algebraMapSubmonoid B M) Bₘ]
     [IsIntegrallyClosedIn A B] : IsIntegrallyClosedIn Aₘ Bₘ := by
-  have hinj : Function.Injective (algebraMap A B) := IsIntegralClosure.algebraMap_injective A A B
   refine isIntegrallyClosedIn_iff.mpr ⟨?_, fun {s} hs ↦ ?_⟩
   · rw [injective_iff_map_eq_zero]
     intro x hx
@@ -400,7 +398,7 @@ theorem isIntegrallyClosedIn_localization {A B Aₘ Bₘ : Type*} [CommRing A] [
         hx, zero_mul]
     obtain ⟨⟨_, c, hc, rfl⟩, h2⟩ :=
       (IsLocalization.map_eq_zero_iff (Algebra.algebraMapSubmonoid B M) Bₘ _).mp h1
-    have h3 : c * a = 0 := hinj (by simpa using h2)
+    have h3 : c * a = 0 := (IsIntegralClosure.algebraMap_injective A A B) (by simpa using h2)
     have h4 : algebraMap A Aₘ a = 0 :=
       (IsLocalization.map_eq_zero_iff M Aₘ _).mpr ⟨⟨c, hc⟩, h3⟩
     rw [h4] at e

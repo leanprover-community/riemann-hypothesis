@@ -98,9 +98,7 @@ theorem interior_bdry_eq_empty {e : ℕ} {X : Type} [TopologicalSpace X] {A : Fi
         hc.continuousAt.eventually_ne (by simpa using h0)
       exact nhdsWithin_le_nhds h2
   obtain ⟨t, ⟨z, ⟨hzI, hzψ⟩, hzt⟩, hne⟩ := hev.exists
-  have hzb : z ∈ bdry s := interior_subset hzI
-  have hzU : z ∈ L.U y := hsrc hzψ
-  have h1 : s y z = 0 := (bdry_iff hS hzU).1 hzb
+  have h1 : s y z = 0 := (bdry_iff hS (hsrc hzψ)).1 (interior_subset hzI)
   rw [hfac z hzψ] at h1
   rcases mul_eq_zero.1 h1 with h2 | h2
   · exact hu z hzψ h2
@@ -109,8 +107,7 @@ theorem interior_bdry_eq_empty {e : ℕ} {X : Type} [TopologicalSpace X] {A : Fi
     · simp [hσ] at hk
     · simp only [hσ] at hk
       have hzi : ψ z i = ψ y i + t := by
-        rw [hzt]
-        simp
+        simp [hzt]
       exact hne i (by rw [← hzi]; by_contra hz0; exact pow_ne_zero _ hz0 hk)
 
 theorem levi_sub_const {D : ℕ} (f : (Fin D → ℂ) → ℝ) (a : ℝ) (z w : Fin D → ℂ) :

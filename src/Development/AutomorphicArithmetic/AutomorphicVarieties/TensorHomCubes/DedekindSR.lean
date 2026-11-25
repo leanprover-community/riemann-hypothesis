@@ -134,13 +134,11 @@ theorem UpperTheory.V.KL.dedekindSR :
       obtain ⟨h1, h2⟩ := ht P hP haP
       by_cases hc : r k.castSucc ∈ P
       · have htr : t * r (Fin.last n) ∈ P := by
-          have := P.sub_mem hk hc
-          simpa using this
+          simpa using P.sub_mem hk hc
         rcases hP.isPrime.mem_or_mem htr with htP | hrP
         · apply hP.ne_top
           rw [Ideal.eq_top_iff_one]
-          have := P.sub_mem htP (h1 hc)
-          simpa using this
+          simpa using P.sub_mem htP (h1 hc)
         · apply hr P hP
           intro i
           induction i using Fin.lastCases with
@@ -150,8 +148,6 @@ theorem UpperTheory.V.KL.dedekindSR :
             · rwa [hm]
             · exact hother m hm
       · apply hc
-        have := P.sub_mem hk (P.mul_mem_right (r (Fin.last n)) (h2 hc))
-        simpa using this
+        simpa using P.sub_mem hk (P.mul_mem_right (r (Fin.last n)) (h2 hc))
     · apply haP
-      have := hall j
-      simpa [Ne.symm hkj] using this
+      simpa [Ne.symm hkj] using hall j

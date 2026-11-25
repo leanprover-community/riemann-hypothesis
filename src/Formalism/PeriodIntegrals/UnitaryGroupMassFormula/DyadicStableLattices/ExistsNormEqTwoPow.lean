@@ -83,8 +83,7 @@ theorem repr_int (d : ℕ) (hd : Squarefree d) (hdm : d + 1 = 4 * m) (z : Kq m)
   have hn : IsIntegral ℤ (a ^ 2 + a * b + m * b ^ 2) := by
     have h := hz.mul hstar
     have e : (⟨a, b⟩ : Kq m) * star ⟨a, b⟩ = algebraMap ℚ (Kq m) (a ^ 2 + a * b + m * b ^ 2) := by
-      rw [QuadraticAlgebra.mul_star]
-      simp only [← map_mul, ← map_add (f := _), ← map_sub]
+      simp only [QuadraticAlgebra.mul_star, ← map_mul, ← map_add (f := _), ← map_sub]
       congr 1
       ring
     rw [e] at h
@@ -105,13 +104,12 @@ theorem repr_int (d : ℕ) (hd : Squarefree d) (hdm : d + 1 = 4 * m) (z : Kq m)
       ring
     exact_mod_cast h1
   have hev : Even ((T - B) * (T + B)) := ⟨2 * (N - m * B ^ 2), by linear_combination (-1 : ℤ) * hZ⟩
-  have hevTB : Even (T - B) := by
+  obtain ⟨k, hk⟩ : Even (T - B) := by
     rcases Int.even_mul.1 hev with h | h
     · exact h
     · have e : T - B = (T + B) - 2 * B := by ring
       rw [e]
       exact h.sub (even_two_mul B)
-  obtain ⟨k, hk⟩ := hevTB
   refine ⟨k, B, ?_⟩
   have ha : a = k := by
     have h1 : (T : ℚ) - B = k + k := by exact_mod_cast hk
@@ -302,7 +300,7 @@ theorem core (m : ℕ) [Fact (∀ r : ℚ, r ^ 2 ≠ -(m : ℚ) + 1 * r)] (d : �
   by_contra hyo
   rw [Int.not_odd_iff_even] at hyo
   obtain ⟨l, hl⟩ := hyo
-  have hx : Even x := by
+  obtain ⟨j, hj⟩ : Even x := by
     by_contra hxo
     rw [Int.not_even_iff_odd] at hxo
     obtain ⟨j, hj⟩ := hxo
@@ -311,7 +309,6 @@ theorem core (m : ℕ) [Fact (∀ r : ℚ, r ^ 2 ≠ -(m : ℚ) + 1 * r)] (d : �
     have h1 : (1 : ℤ) = 2 * (2 ^ (n - 1) - 2 * j ^ 2 - 2 * j - 2 * j * l - l - 2 * m * l ^ 2) := by
       subst hj hl; linear_combination hNeq + h2n
     exact absurd (Dvd.intro _ h1.symm) (by norm_num)
-  obtain ⟨j, hj⟩ := hx
   have hα2 : α = 2 * mkO m j l := by
     rw [hxy, hj, hl, two_O m, mkO_mul]; congr 1 <;> ring
   have hPnQ : P ^ n ≤ Q := by

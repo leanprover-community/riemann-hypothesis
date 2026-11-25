@@ -69,8 +69,7 @@ def IVP (p : ℕ) [Fact p.Prime] (D : ℕ) (g : ℕ → ℚ_[p]) : Prop :=
   (∃ P : Polynomial ℚ_[p], P.natDegree ≤ D ∧ ∀ m : ℕ, g m = P.eval (m : ℚ_[p])) ∧ ∀ m, ‖g m‖ ≤ 1
 
 theorem norm_natCast_le_one' (n : ℕ) : ‖(n : ℚ_[p])‖ ≤ 1 := by
-  have := Padic.norm_int_le_one (p := p) (n : ℤ)
-  simpa using this
+  simpa using Padic.norm_int_le_one (p := p) (n : ℤ)
 
 theorem norm_sum_le_one {ι : Type} (s : Finset ι) (f : ι → ℚ_[p]) (h : ∀ i ∈ s, ‖f i‖ ≤ 1) :
     ‖∑ i ∈ s, f i‖ ≤ 1 := by
@@ -193,8 +192,7 @@ theorem choose_sub_expand (D : ℕ) : ∀ S k : ℕ, k ≤ D → ∃ e : ℕ →
     intro k hk
     refine ⟨fun i => if i = k then 1 else 0, fun n _ => ?_⟩
     simp only [Nat.sub_zero, ite_mul, one_mul, zero_mul]
-    rw [sum_ite_eq']
-    simp [show k < D + 1 by omega]
+    simp [sum_ite_eq', show k < D + 1 by omega]
   | succ S ih =>
     intro k
     induction k with
@@ -202,8 +200,7 @@ theorem choose_sub_expand (D : ℕ) : ∀ S k : ℕ, k ≤ D → ∃ e : ℕ →
       intro _
       refine ⟨fun i => if i = 0 then 1 else 0, fun n _ => ?_⟩
       simp only [ite_mul, one_mul, zero_mul]
-      rw [sum_ite_eq']
-      simp
+      simp [sum_ite_eq']
     | succ k ihk =>
       intro hk
       obtain ⟨e1, he1⟩ := ih (k + 1) hk
@@ -504,8 +501,7 @@ theorem pderiv_X_pow_mul (i y : σ) (hiy : i ≠ y) (m : ℕ) (G : MvPolynomial 
     pderiv i (X y ^ m * G) = X y ^ m * pderiv i G := by
   rw [Derivation.leibniz, X_pow_eq_monomial, pderiv_monomial]
   have : (Finsupp.single y m : σ →₀ ℕ) i = 0 := by simp [Ne.symm hiy]
-  rw [this]
-  simp
+  simp [this]
 
 theorem Dop_X_pow_mul (u v y : σ) (huy : u ≠ y) (hvy : v ≠ y) (m : ℕ) (G : MvPolynomial σ ℚ_[p]) :
     Dop u v (X y ^ m * G) = X y ^ m * Dop u v G := by
@@ -903,8 +899,7 @@ theorem aeval_good (LL : Letters (N + 1)) (ρ : Fin r) (hW : LL.vec (Fin.last N)
   apply AllMono.sum
   intro μ hμ
   have hmd : MultiDeg LL μ := by
-    have hsub : (f.support : Set (Fin (N + 1) × Fin r →₀ ℕ)) ⊆ {m | MultiDeg LL m} := hf
-    exact hsub (Finset.mem_coe.mpr hμ)
+    exact hf (Finset.mem_coe.mpr hμ)
   apply AllMono.C_mul
   have h := AllMono.prod (p := p) (GoodQ ρ) (GoodQ_add ρ) (GoodQ_zero ρ) univ (fun v => μ v • dv v.1)
     (fun v => freezeSub p LL ρ v ^ μ v)

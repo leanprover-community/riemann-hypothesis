@@ -92,16 +92,13 @@ theorem not_isUnit {l : Level H} (c : Coeff l) (W : ValuationSubring ℂ) (p : �
     ¬ IsUnit (p : c.V W) := by
   intro hu
   obtain ⟨v, hv⟩ := hu.exists_right_inv
-  have hvW : ((v : c.F) : ℂ) ∈ W := v.2
   have h1 : (p : ℂ) * ((v : c.F) : ℂ) = 1 := by
-    have := congrArg (fun z : c.V W => ((z : c.F) : ℂ)) hv
-    simpa using this
+    simpa using congrArg (fun z : c.V W => ((z : c.F) : ℂ)) hv
   rw [ValuationSubring.mem_nonunits_iff] at hW
-  have h2 := (W.valuation_le_one_iff _).2 hvW
+  have h2 := (W.valuation_le_one_iff _).2 v.2
   have h3 := congrArg W.valuation h1
   rw [map_mul, map_one] at h3
-  have : W.valuation p * W.valuation ((v : c.F) : ℂ) < 1 := mul_lt_one_of_lt_of_le hW h2
-  exact this.ne h3
+  exact (mul_lt_one_of_lt_of_le hW h2 : W.valuation p * W.valuation ((v : c.F) : ℂ) < 1).ne h3
 
 theorem goodAt_of_coprime (l : Level H) (a b : ℕ) (ha : 3 ≤ a) (hb : 3 ≤ b) (hab : a.Coprime b)
     (hM : l.M = a * b) (p : ℕ) (hp : p.Prime) : l.GoodAt p := by
@@ -127,8 +124,7 @@ theorem exists_good_level (H : Host E) : ∃ l : Level H, l.A = 1 ∧ ∀ p : �
       have h4 := IsCMField.complexEmbedding_complexConj E φ (H.rt : E)
       rw [h3] at h4
       have h5 : φ (H.rt : E) ^ 2 = -(H.d : ℂ) := by
-        have := congrArg (fun z : 𝓞 E => φ (z : E)) H.rt_sq
-        simpa using this
+        simpa using congrArg (fun z : 𝓞 E => φ (z : E)) H.rt_sq
       have h6 : (φ (H.rt : E)).im = 0 := Complex.conj_eq_iff_im.1 h4.symm
       have h7 := congrArg Complex.re h5
       simp [sq, h6] at h7
@@ -184,9 +180,8 @@ theorem exists_good_level (H : Host E) : ∃ l : Level H, l.A = 1 ∧ ∀ p : �
   have hmap : (Ideal.span {α}).map (H.bar : 𝓞 E →+* 𝓞 E) = Ideal.span {H.bar α} := by
     rw [Ideal.map_span, Set.image_singleton]; rfl
   have hmem : α ∈ Algebra.adjoin ℤ {H.w0} := by
-    have hw : H.w0 ∈ Algebra.adjoin ℤ {H.w0} := Algebra.subset_adjoin rfl
     have hr' : r ∈ Algebra.adjoin ℤ {H.w0} := by
-      rw [hrt]; exact sub_mem (mul_mem (ofNat_mem _ 2) hw) (one_mem _)
+      rw [hrt]; exact sub_mem (mul_mem (ofNat_mem _ 2) (Algebra.subset_adjoin rfl)) (one_mem _)
     exact mul_mem (add_mem (ofNat_mem _ 2) hr') (add_mem (mul_mem (ofNat_mem _ 2) (natCast_mem _ _)) hr')
   let l : Level H :=
     { M := N₁ * N₂

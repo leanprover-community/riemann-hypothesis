@@ -168,8 +168,7 @@ theorem symmetricLaurent_le {A : Subalgebra ℂ (LaurentRing n)}
     have hsub := AddMonoidAlgebra.support_coeff_mul_subset c p hl
     obtain ⟨a, ha, b, hb, rfl⟩ := Finset.mem_add.1 hsub
     have ha' : a = fun _ => (N : ℤ) := by
-      have := Finsupp.support_single_subset ha
-      simpa using this
+      simpa using Finsupp.support_single_subset ha
     subst ha'
     have := hN b hb i
     simp only [Pi.add_apply]
@@ -208,8 +207,7 @@ def orbitSum (ν : Fin n → ℤ) : LaurentRing (n := n) :=
 theorem orbitSum_mem (ν : Fin n → ℤ) : orbitSum ν ∈ symmetricLaurent (n := n) := by
   intro τ
 
-  rw [orbitSum, map_sum]
-  simp only [monomial, permAct_single]
+  simp only [orbitSum, map_sum, monomial, permAct_single]
   exact Fintype.sum_equiv (Equiv.mulLeft τ) _ _ fun σ => by congr 1
 
 theorem coeff_orbitSum (ν l : Fin n → ℤ) :
@@ -247,8 +245,7 @@ theorem comp_eq_of_antitone {ν : Fin n → ℤ} (hν : Antitone ν) (σ : Equiv
     rw [e1, ← e2]
     rfl
   funext i
-  have := congrFun this i
-  simpa [f] using this
+  simpa [f] using congrFun this i
 
 end Spherical
 

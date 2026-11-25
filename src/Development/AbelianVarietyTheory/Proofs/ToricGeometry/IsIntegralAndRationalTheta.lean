@@ -88,11 +88,9 @@ theorem exists_analytic_leftInverse {Θ : E → W} (hΘ : Differentiable ℂ Θ)
     (LinearMap.ker_eq_bot.2 hinj)
   set P' : W →L[ℂ] E := LinearMap.toContinuousLinearMap P with hP'
   have hd : HasFDerivAt (fun x => P' (Θ x)) ((ContinuousLinearEquiv.refl ℂ E : E ≃L[ℂ] E) : E →L[ℂ] E) e := by
-    have := P'.hasFDerivAt.comp e (hΘ e).hasFDerivAt
-    refine this.congr_fderiv ?_
+    refine (P'.hasFDerivAt.comp e (hΘ e).hasFDerivAt).congr_fderiv ?_
     ext v
-    have := LinearMap.congr_fun hP v
-    simpa [hP'] using this
+    simpa [hP'] using LinearMap.congr_fun hP v
   have hc : ContDiffAt ℂ ω (fun x => P' (Θ x)) e :=
     (P'.contDiff.comp (GlobalTheory.SCV.contDiff_of_differentiable hΘ ω)).contDiffAt
   have hn : (ω : WithTop ℕ∞) ≠ 0 := by simp
@@ -106,9 +104,8 @@ omit [FiniteDimensional ℂ W] [NormedAddCommGroup W] [NormedSpace ℂ W] in
 theorem eq_zero_of_mul_eq_zero {u v : E → ℂ} (hu : Continuous u) (hv : Differentiable ℂ v)
     (hu0 : u ≠ 0) (h : ∀ e, u e ≠ 0 → v e = 0) : v = 0 := by
   obtain ⟨e, he⟩ := Function.ne_iff.1 hu0
-  have h1 : v =ᶠ[𝓝 e] 0 := (hu.continuousAt.eventually_ne he).mono h
   have := GlobalTheory.SCV.eqOn_of_eventuallyEq isOpen_univ isPreconnected_univ hv.differentiableOn
-    (differentiableOn_const (0 : ℂ)) (Set.mem_univ e) h1
+    (differentiableOn_const (0 : ℂ)) (Set.mem_univ e) ((hu.continuousAt.eventually_ne he).mono h)
   exact funext fun x => this (Set.mem_univ x)
 
 end Analytic
@@ -253,8 +250,7 @@ theorem exists_analytic_descent (hK : IsCompact K) (hθ : Differentiable ℂ θ)
     have h3 : fderiv ℂ θ e.2 v.2 = (-(e.1⁻¹ * v.1)) • θ e.2 := by
       rw [neg_smul, mul_smul, ← smul_neg, ← eq_neg_of_add_eq_zero_left hv, inv_smul_smul₀ ht]
     have h4 := hT _ _ _ h3
-    rw [h4] at hv
-    simp [hN] at hv
+    simp [h4, hN] at hv
     exact Prod.ext hv h4
   obtain ⟨L, hLa, hLe⟩ := exists_analytic_leftInverse hΘ hinj
   refine ⟨fun y => (L y).1 ^ d * f (L y).2, ?_, ?_⟩
@@ -279,8 +275,7 @@ theorem algHom_eval₂ (j : MvPolynomial (Fin n) ℂ →ₐ[ℂ] A) (χ : A →�
     χ (r.eval₂ j.toRingHom a) =
       (r.map (MvPolynomial.eval fun i => χ (j (MvPolynomial.X i)))).eval (χ a) := by
   rw [Polynomial.eval_map]
-  have := Polynomial.hom_eval₂ r j.toRingHom χ.toRingHom a
-  refine this.trans ?_
+  refine (Polynomial.hom_eval₂ r j.toRingHom χ.toRingHom a).trans ?_
   congr 1
   refine MvPolynomial.ringHom_ext (fun c => ?_) (fun i => by simp)
   rw [MvPolynomial.eval_C]

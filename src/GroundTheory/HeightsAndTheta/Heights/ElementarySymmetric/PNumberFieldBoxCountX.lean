@@ -289,11 +289,9 @@ theorem normAtPlace_lt_of_mem (F : Type) [Field F] [NumberField F] (g : Infinite
     {x : mixedSpace F} (hx : x ∈ convexBodyLT F g) (w : InfinitePlace F) : normAtPlace w x < g w := by
   rcases isReal_or_isComplex w with hw | hw
   · rw [normAtPlace_apply_of_isReal hw]
-    have := hx.1 ⟨w, hw⟩ (Set.mem_univ _)
-    simpa [mem_ball_zero_iff] using this
+    simpa [mem_ball_zero_iff] using hx.1 ⟨w, hw⟩ (Set.mem_univ _)
   · rw [normAtPlace_apply_of_isComplex hw]
-    have := hx.2 ⟨w, hw⟩ (Set.mem_univ _)
-    simpa [mem_ball_zero_iff] using this
+    simpa [mem_ball_zero_iff] using hx.2 ⟨w, hw⟩ (Set.mem_univ _)
 
 end MixedBoxCount
 

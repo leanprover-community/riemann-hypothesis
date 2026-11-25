@@ -61,10 +61,9 @@ theorem levi_comp {φ : (κ → ℂ) → ℝ} {τ : (ι → ℂ) → (κ → ℂ
     (hφ.fderiv_right (m := 1) (by norm_num)).differentiableAt one_ne_zero
   have hdB : DifferentiableAt ℝ (fderiv ℝ τ) z :=
     ((hτR 2).fderiv_right (m := 1) (by norm_num)).differentiableAt one_ne_zero
-  have hτz : HasFDerivAt τ (fderiv ℝ τ z) z := ((hτR 1).differentiableAt one_ne_zero).hasFDerivAt
   have hc : HasFDerivAt (fun y => fderiv ℝ φ (τ y))
       ((fderiv ℝ (fderiv ℝ φ) (τ z)).comp (fderiv ℝ τ z)) z :=
-    hdA.hasFDerivAt.comp z hτz
+    hdA.hasFDerivAt.comp z (((hτR 1).differentiableAt one_ne_zero).hasFDerivAt)
 
   have hD := hc.clm_comp hdB.hasFDerivAt
   have hB : fderiv ℝ τ z = (fderiv ℂ τ z).restrictScalars ℝ :=

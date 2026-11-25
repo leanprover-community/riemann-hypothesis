@@ -330,8 +330,7 @@ theorem lower_deriv (τ : X.Ψ) (A : Matrix (Fin r) (Fin r) ℂ) (U : Set (V (nd
         exact hup w hw a c hca
     have h0 : HasFDerivAt (fun w => G w a c) (0 : V (nd X) →L[ℂ] ℂ) z :=
       (hasFDerivAt_const (0 : ℂ) z).congr_of_eventuallyEq heq
-    have := congrArg (fun T => T h) (hE.unique h0)
-    exact this
+    exact congrArg (fun T => T h) (hE.unique h0)
   have hLHS := hMd.mul' hGd'
   have hRHS : HasFDerivAt (fun w => A * mat (nmat X w) τ)
       (A • LinearMap.toContinuousLinearMap (Lin X τ)) z := (hasFDerivAt_nmat X τ z).const_mul A
@@ -342,8 +341,7 @@ theorem lower_deriv (τ : X.Ψ) (A : Matrix (Fin r) (Fin r) ℂ) (U : Set (V (nd
       exact (hrel w hw).symm
   have hU2 := (hLHS.congr_of_eventuallyEq heq2).unique hRHS
   have I : mat (nmat X (Φ z)) τ * fderiv ℂ G z h + Lin X τ (Φ' h) * G z = A * Lin X τ h := by
-    have := congrArg (fun T => T h) hU2
-    exact this
+    exact congrArg (fun T => T h) hU2
   have e1 : Ring.inverse (mat (nmat X (Φ z)) τ) * mat (nmat X (Φ z)) τ = 1 :=
     Ring.inverse_mul_cancel _ (isUnit_nmat X τ (Φ z))
   have e2 : mat (nmat X z) τ * Ring.inverse (mat (nmat X z) τ) = 1 :=
@@ -353,8 +351,7 @@ theorem lower_deriv (τ : X.Ψ) (A : Matrix (Fin r) (Fin r) ℂ) (U : Set (V (nd
     rw [← I, add_sub_cancel_right, ← mul_assoc, e1, one_mul]
   have hGz : G z * (Ring.inverse (mat (nmat X z) τ) * Lin X τ h) =
       Ring.inverse (mat (nmat X (Φ z)) τ) * A * Lin X τ h := by
-    rw [hG]
-    simp only
+    simp only [hG]
     rw [mul_assoc (Ring.inverse (mat (nmat X (Φ z)) τ) * A), ← mul_assoc (mat (nmat X z) τ), e2, one_mul]
   rw [hbfG z hz, hGz, ← hent, hGh, mul_sub]
   simp only [mul_assoc]

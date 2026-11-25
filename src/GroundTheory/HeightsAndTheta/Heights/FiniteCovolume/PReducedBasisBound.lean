@@ -40,8 +40,7 @@ theorem discreteTopology_of_sep {L : Submodule ℤ W} {lam : ℝ} (hlam : 0 < la
   refine DiscreteTopology.of_forall_le_dist hlam fun x y hxy => ?_
   show lam ≤ dist x y
   rw [Subtype.dist_eq, dist_eq_norm]
-  have hne : (x : W) - y ≠ 0 := sub_ne_zero.2 fun h' => hxy (Subtype.ext h')
-  exact h _ (L.sub_mem x.2 y.2) hne
+  exact h _ (L.sub_mem x.2 y.2) (sub_ne_zero.2 fun h' => hxy (Subtype.ext h'))
 
 theorem finite_of_sep {L : Submodule ℤ W} {lam : ℝ} (hlam : 0 < lam) (h : Sep L lam) (r : ℝ) :
     {x : W | x ∈ L ∧ ‖x‖ ≤ r}.Finite := by
@@ -94,11 +93,9 @@ theorem det_gram_eq_of_span_eq {n : ℕ} {b b' : Fin n → W} (hb : LinearIndepe
         = 0 := by
       simp only [sub_smul, Finset.sum_sub_distrib, Matrix.mul_apply, of_apply, Finset.sum_smul,
         mul_smul]
-      rw [Finset.sum_comm]
-      simp only [← Finset.smul_sum, hQ, hP]
+      simp only [Finset.sum_comm, ← Finset.smul_sum, hQ, hP]
       simp [Matrix.one_apply]
-    have := Fintype.linearIndependent_iff.1 hb _ key l
-    exact sub_eq_zero.1 this
+    exact sub_eq_zero.1 (Fintype.linearIndependent_iff.1 hb _ key l)
   have hdet : (Matrix.of P).det = 1 ∨ (Matrix.of P).det = -1 := by
     have := congrArg Matrix.det hPQ
     rw [det_mul, det_one] at this
@@ -323,8 +320,7 @@ theorem decompose {m : ℕ} (b : Fin (m + 1) → W) (hb : LinearIndependent ℝ 
         L.sub_mem hx (L.sum_mem fun i _ => L.smul_mem _ (hwL i))
       have hy0 : proj v (x - ∑ i, k i • w i) = 0 := by
 
-        rw [map_sub, map_sum]
-        simp only [map_zsmul, hw, hk, sub_self]
+        simp only [map_sub, map_sum, map_zsmul, hw, hk, sub_self]
       obtain ⟨k0, hk0⟩ := mem_zsmul_of_proj_eq_zero hvL hv hmin hyL hy0
       have hx' : x = k0 • v + ∑ i, k i • w i := by
         rw [← hk0]
@@ -369,8 +365,7 @@ theorem bounds (m : ℕ) :
       obtain ⟨v, c, -, -, hlv, -, hc, -, hsepc, hdet⟩ := decompose b hb hlam hsep
       rw [hdet]
       have h1 := hgb c hc hsepc
-      have h2 : lam ^ 2 ≤ ‖v‖ ^ 2 := pow_le_pow_left₀ hlam.le hlv 2
-      exact mul_le_mul h2 h1 hg.le (sq_nonneg _)
+      exact mul_le_mul (pow_le_pow_left₀ hlam.le hlv 2) h1 hg.le (sq_nonneg _)
     · obtain ⟨g, hg, hgb⟩ := ih.1 (lam / 2) (half_pos hlam)
       obtain ⟨R', hR'⟩ := ih.2 (lam / 2) (half_pos hlam) (C / lam ^ 2)
       refine ⟨|R'| + Real.sqrt (C / g), fun b hb hsep hC => ?_⟩

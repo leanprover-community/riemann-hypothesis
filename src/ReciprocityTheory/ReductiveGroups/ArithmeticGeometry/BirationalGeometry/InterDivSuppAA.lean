@@ -146,8 +146,7 @@ theorem dim_quot_add_height [IsNoetherianRing A] [IsJacobsonRing A] [FiniteRingK
       rw [Ideal.IsPrime.inf_le' inferInstance]
       rintro ⟨P, hPT, hPq⟩
       have hP : P ∈ I.minimalPrimes := hfin.mem_toFinset.mp (Finset.mem_of_mem_erase hPT)
-      have : q ≤ P := hs.2 hP.1 hPq
-      exact Finset.ne_of_mem_erase hPT (le_antisymm hPq this)
+      exact Finset.ne_of_mem_erase hPT (le_antisymm hPq (hs.2 hP.1 hPq : q ≤ P))
     obtain ⟨g, hgT, hgq⟩ := SetLike.not_le_iff_exists.mp hT
     have hjac : q.jacobson = q := IsJacobsonRing.out' q (Ideal.IsPrime.isRadical inferInstance)
     rw [← hjac, Ideal.jacobson, Submodule.mem_sInf] at hgq

@@ -49,8 +49,7 @@ theorem mem_TSet (Ψ : Finset (E →+* ℂ)) (γ γ' : GL (Fin r) E) {x b : Fram
     exact h0
   have h2 : adjugate (mat x τ) * ((γ'⁻¹ * γ : GL (Fin r) E) : Matrix (Fin r) (Fin r) E).map τ.1 *
       mat x τ = (mat x τ).det • mat b τ := by
-    rw [map_gl_mul]
-    simp only [Matrix.mul_assoc]
+    simp only [map_gl_mul, Matrix.mul_assoc]
     rw [h1, ← Matrix.mul_assoc _ ((γ' : Matrix (Fin r) (Fin r) E).map τ.1), map_gl_inv_mul,
       Matrix.one_mul, ← Matrix.mul_assoc, Matrix.adjugate_mul, Matrix.smul_mul, Matrix.one_mul]
   rw [h2, Matrix.smul_apply, smul_eq_mul]
@@ -104,14 +103,12 @@ theorem scalar_step {Ψ : Finset (E →+* ℂ)} (τ₀ : Ψ) (g : Matrix (Fin r)
         rw [Fin.lt_iff_val_lt_val]
         exact Nat.pos_of_ne_zero fun h => ha (Fin.ext h))
       have h2 : z a = (X.adjugate * M * X) a i0 := by
-        rw [hz, Matrix.mulVec_mulVec]
-        simp only [Matrix.mulVec, dotProduct, Matrix.mul_apply, hcol]
+        simp only [hz, Matrix.mulVec_mulVec, Matrix.mulVec, dotProduct, Matrix.mul_apply, hcol]
       rw [h2]
       exact h1
     have hXz : X *ᵥ z = X.det • (M *ᵥ v) := by
       calc X *ᵥ z = (X * X.adjugate) *ᵥ (M *ᵥ v) := by
-            rw [hz]
-            simp only [Matrix.mulVec_mulVec, Matrix.mul_assoc]
+            simp only [hz, Matrix.mulVec_mulVec, Matrix.mul_assoc]
         _ = X.det • (M *ᵥ v) := by
             rw [Matrix.mul_adjugate]
             first
@@ -131,8 +128,7 @@ theorem scalar_step {Ψ : Finset (E →+* ℂ)} (τ₀ : Ψ) (g : Matrix (Fin r)
       ∀ a b, (M *ᵥ v) a * v b = (M *ᵥ v) b * v a := by
     intro v h1 h2 a b
     obtain ⟨l, hl⟩ := hB v h1 h2
-    rw [hl]
-    simp only [Pi.smul_apply, smul_eq_mul]
+    simp only [hl, Pi.smul_apply, smul_eq_mul]
     ring
   have hall : ∀ u : Fin r → ℂ, ∀ a b, (M *ᵥ u) a * u b = (M *ᵥ u) b * u a := by
     intro u a b
@@ -168,8 +164,7 @@ theorem scalar_step {Ψ : Finset (E →+* ℂ)} (τ₀ : Ψ) (g : Matrix (Fin r)
     by_cases hab : a = b
     · rw [hab]
     have h := hall (Pi.single a 1 + Pi.single b 1) a b
-    rw [Matrix.mulVec_add] at h
-    simp only [Pi.add_apply, hcolv] at h
+    simp only [Matrix.mulVec_add, Pi.add_apply, hcolv] at h
     simp [hab, Ne.symm hab, hoff a b hab, hoff b a (Ne.symm hab)] at h
     linear_combination h
   refine ⟨M i0 i0, ?_⟩

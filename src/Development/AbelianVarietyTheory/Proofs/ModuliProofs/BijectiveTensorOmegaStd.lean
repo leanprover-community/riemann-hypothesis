@@ -99,8 +99,7 @@ theorem im_realForm_period (T : Matrix ι ι ℂ) (M N : Matrix ι ι ℝ)
       star (T *ᵥ ofRealVec m' + ofRealVec n')).im = m ⬝ᵥ N *ᵥ n' - n ⬝ᵥ N *ᵥ m' := by
   have e : ∀ (A : Matrix ι ι ℝ) (a b : ι → ℝ), (A *ᵥ a) ⬝ᵥ b = a ⬝ᵥ Aᵀ *ᵥ b := fun A a b => by
     rw [dotProduct_mulVec, vecMul_transpose]
-  rw [im_realForm]
-  simp only [im_mulVec_ofRealVec_add, re_mulVec_ofRealVec_add]
+  simp only [im_realForm, im_mulVec_ofRealVec_add, re_mulVec_ofRealVec_add]
   rw [e, mulVec_mulVec, h1, mulVec_mulVec, h2, add_dotProduct, e, mulVec_add, dotProduct_add,
     mulVec_mulVec, mulVec_mulVec, h3]
   ring
@@ -165,8 +164,7 @@ theorem re_hermForm_eq_of_span {g : ℕ} (H H' : Matrix (Fin g) (Fin g) ℂ) (s 
     | smul c z _ e =>
       simp only [hermForm, smul_dotProduct, Complex.smul_im] at e ⊢
       rw [e]
-  have := h2 (Complex.I • z) w
-  simpa [hermForm, smul_dotProduct] using this
+  simpa [hermForm, smul_dotProduct] using h2 (Complex.I • z) w
 
 section Kron
 
@@ -289,10 +287,8 @@ theorem im_formMatrix_period (G : Matrix (Fin r) (Fin r) ℤ) {τ : Matrix (Fin 
     (hermForm (formMatrix σ (G.map (Int.cast : ℤ → ℝ)) τ) (period σ τ x) (period σ τ y)).im =
       ((∑ u, ∑ v, G u v * omegaStd (x u) (y v) : ℤ) : ℝ) := by
   have hu : IsUnit (τ.map Complex.im).det := (isUnit_iff_isUnit_det _).1 hτ.isUnit
-  have hY : (τ.map Complex.im)ᵀ = τ.map Complex.im := hs.map _
   have hX : (τ.map Complex.re)ᵀ = τ.map Complex.re := hs.map _
-  rw [hermForm, formMatrix, period_def, period_def]
-  simp only [ofIntVec_eq_ofRealVec]
+  simp only [hermForm, formMatrix, period_def, period_def, ofIntVec_eq_ofRealVec]
   rw [im_realForm_period _ _ (kron σ (G.map (Int.cast : ℤ → ℝ)) 1)]
   · simp only [dotProduct]
     rw [← σ.sum_comp, ← σ.sum_comp]
@@ -303,7 +299,7 @@ theorem im_formMatrix_period (G : Matrix (Fin r) (Fin r) ℤ) {τ : Matrix (Fin 
     rw [Finset.sum_comm]
     refine Finset.sum_congr rfl fun v _ => Finset.sum_congr rfl fun i _ => ?_
     ring
-  · rw [kron_one_map_im, kron_transpose, kron_mul, hY, mul_nonsing_inv _ hu, transpose_one,
+  · rw [kron_one_map_im, kron_transpose, kron_mul, (hs.map _), mul_nonsing_inv _ hu, transpose_one,
       Matrix.one_mul]
   · rw [kron_one_map_im, kron_mul, nonsing_inv_mul _ hu, Matrix.mul_one]
   · rw [kron_one_map_re, kron_transpose, kron_mul, kron_mul, hX]
@@ -383,8 +379,7 @@ theorem hermForm_smul_sub (c : ℝ) (S S' : Matrix (Fin r) (Fin r) ℝ)
     ext i j
     simp [formMatrix, kron]
     ring
-  rw [e, hermForm, hermForm, hermForm, sub_mulVec, smul_mulVec, dotProduct_sub, dotProduct_smul]
-  simp
+  simp [e, hermForm, hermForm, hermForm, sub_mulVec, smul_mulVec, dotProduct_sub, dotProduct_smul]
 
 end Kron
 
@@ -394,8 +389,7 @@ theorem bijective_tensor_omegaStd {r h : ℕ} (G : Matrix (Fin r) (Fin r) ℤ) (
   have hl : ∀ x v i, EF x (Pi.single v (Pi.single (.inl i) 1)) =
       -((fun u => x u (.inr i)) ᵥ* G) v := by
     intro x v i
-    rw [hE]
-    simp only [vecMul, dotProduct, ← Finset.sum_neg_distrib]
+    simp only [hE, vecMul, dotProduct, ← Finset.sum_neg_distrib]
     refine Finset.sum_congr rfl fun u _ => ?_
     rw [Finset.sum_eq_single v]
     · simp [omegaStd, Pi.single_apply, mul_comm]
@@ -405,8 +399,7 @@ theorem bijective_tensor_omegaStd {r h : ℕ} (G : Matrix (Fin r) (Fin r) ℤ) (
   have hr : ∀ x v i, EF x (Pi.single v (Pi.single (.inr i) 1)) =
       ((fun u => x u (.inl i)) ᵥ* G) v := by
     intro x v i
-    rw [hE]
-    simp only [vecMul, dotProduct]
+    simp only [hE, vecMul, dotProduct]
     refine Finset.sum_congr rfl fun u _ => ?_
     rw [Finset.sum_eq_single v]
     · simp [omegaStd, Pi.single_apply, mul_comm]
@@ -414,8 +407,7 @@ theorem bijective_tensor_omegaStd {r h : ℕ} (G : Matrix (Fin r) (Fin r) ℤ) (
       simp [omegaStd, hw]
     · simp
   have hi : ∀ z : Fin r → ℤ, z ᵥ* G = 0 → z = 0 := fun z hz => by
-    have := congrArg (· ᵥ* G⁻¹) hz
-    simpa [vecMul_vecMul, mul_nonsing_inv _ hG] using this
+    simpa [vecMul_vecMul, mul_nonsing_inv _ hG] using congrArg (· ᵥ* G⁻¹) hz
   refine ⟨(injective_iff_map_eq_zero _).2 fun x hx => ?_, fun φ => ?_⟩
   · ext u (i | i)
     · refine congrFun (hi (fun u => x u (.inl i)) (funext fun v => ?_)) u

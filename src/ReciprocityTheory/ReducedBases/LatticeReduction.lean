@@ -45,10 +45,9 @@ private lemma nu_eq_add_sum_mu (b : Fin d → E) (hb : LinearIndependent ℝ b) 
   · intro l hl hlj
     simp only [Finset.mem_filter, Finset.mem_univ, true_and, not_le] at hl
     have h1 : l.val ≠ j.val := fun h => hlj (Fin.ext h)
-    have hlt : l < j := Fin.lt_iff_val_lt_val.mpr (by omega)
     have h0 : ⟪gs b j, b l⟫_ℝ = 0 := by
       first
-      | exact gramSchmidt_inv_triangular ℝ b hlt
+      | exact gramSchmidt_inv_triangular ℝ b (Fin.lt_iff_val_lt_val.mpr (by omega))
     simp [mu, h0]
   · intro hj
     exfalso
@@ -76,8 +75,7 @@ lemma babai (b : Fin d → E) (hb : LinearIndependent ℝ b) (c : Fin d → ℝ)
     · intro l hl
       have hne : l ≠ ⟨t, htd⟩ := by
         intro h
-        rw [h] at hl
-        simp at hl
+        simp [h] at hl
       simp [hw0 l (by omega), hne]
     · intro j hj
       have hnu : nu b (fun l => c l - N * ((w l + if l = ⟨t, htd⟩ then k else 0 : ℤ) : ℝ)) j =
@@ -175,8 +173,7 @@ lemma coeff_bound (b : Fin d → E) (hb : LinearIndependent ℝ b)
         intro l _
         have := l.isLt
         omega
-      rw [he, Finset.sum_empty]
-      simp
+      simp [he, Finset.sum_empty]
     | succ m ih =>
       intro k hk
       have hkd : k < d := by omega

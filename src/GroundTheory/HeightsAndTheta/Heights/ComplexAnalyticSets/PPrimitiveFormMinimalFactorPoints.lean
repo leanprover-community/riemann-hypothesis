@@ -98,16 +98,14 @@ theorem roots_near_centred {E : Type*} [TopologicalSpace E] {n : ℕ} (b : Fin n
           rw [norm_mul, norm_pow]
           exact mul_le_mul_of_nonneg_left (pow_le_pow_right₀ hx1.le (by omega)) (norm_nonneg _)
         _ = S y * ‖x‖ ^ (n - 1) := by rw [hS, Finset.sum_mul]
-    have hpos : 0 < ‖x‖ ^ (n - 1) := pow_pos (zero_lt_one.trans hx1) _
     have : ‖x‖ * ‖x‖ ^ (n - 1) ≤ S y * ‖x‖ ^ (n - 1) := by
       rw [← pow_succ', Nat.sub_add_cancel hn]; exact hle
-    have hxS : ‖x‖ ≤ S y := le_of_mul_le_mul_right this hpos
+    have hxS : ‖x‖ ≤ S y := le_of_mul_le_mul_right this (pow_pos (zero_lt_one.trans hx1) _)
     exact hxS.trans (hSy.le.trans (le_max_right _ _))
   have hid : (x - u) ^ n = ∑ j, (b j y₀ - b j y) * x ^ (j : ℕ) := by
     rw [← h0 x]
     have : x ^ n = -∑ j, b j y * x ^ (j : ℕ) := eq_neg_of_add_eq_zero_left hx
-    rw [this]
-    simp only [sub_mul, Finset.sum_sub_distrib]
+    simp only [this, sub_mul, Finset.sum_sub_distrib]
     ring
   have hle : ‖x - u‖ ^ n ≤ ∑ j, ‖b j y₀ - b j y‖ * B ^ (j : ℕ) := by
     calc ‖x - u‖ ^ n = ‖∑ j, (b j y₀ - b j y) * x ^ (j : ℕ)‖ := by rw [← norm_pow, hid]
@@ -116,8 +114,7 @@ theorem roots_near_centred {E : Type*} [TopologicalSpace E] {n : ℕ} (b : Fin n
         refine Finset.sum_le_sum fun j _ => ?_
         rw [norm_mul, norm_pow]
         exact mul_le_mul_of_nonneg_left (pow_le_pow_left₀ (norm_nonneg _) hxB _) (norm_nonneg _)
-  have : ‖x - u‖ ^ n < ε ^ n := hle.trans_lt hDy
-  exact lt_of_pow_lt_pow_left₀ n hε.le this
+  exact lt_of_pow_lt_pow_left₀ n hε.le (hle.trans_lt hDy : ‖x - u‖ ^ n < ε ^ n)
 
 theorem proof (hMin : GermMinimalPolynomialDivides.Statement) (hCen : FiniteFibreCentredEquation.Statement)
     (hRem : PrimitiveFormRemainder.Statement) : PrimitiveFormMinimalFactorPoints.Statement := by

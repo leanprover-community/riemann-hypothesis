@@ -163,8 +163,7 @@ theorem gram_minor_swap_columns : ∀ (N : ℕ) (k : Matrix (Fin N) (Fin N) ℝ)
   intro N k a n g g' p q hk hn1 hn0 hq hg hg'
 
   have hG : gᵀ * g = (diagonal a * n)ᵀ * (diagonal a * n) := by
-    rw [hg]
-    simp only [Matrix.transpose_mul, Matrix.mul_assoc]
+    simp only [hg, Matrix.transpose_mul, Matrix.mul_assoc]
     rw [← Matrix.mul_assoc kᵀ k, hk, Matrix.one_mul]
   have hG' : g'ᵀ * g' = (gᵀ * g).submatrix (Equiv.swap p q) (Equiv.swap p q) := by
     rw [hg']
@@ -345,8 +344,7 @@ theorem exists_orthogonal_mul_upper (N : ℕ) (g : Matrix (Fin N) (Fin N) ℝ) :
   · ext i j
     have := congrArg (fun v : EuclideanSpace ℝ (Fin N) => v i) (b.sum_repr' (f j))
     simp only [WithLp.ofLp_sum, Finset.sum_apply, WithLp.ofLp_smul, Pi.smul_apply, smul_eq_mul] at this
-    rw [Matrix.mul_apply]
-    simp only [Matrix.of_apply]
+    simp only [Matrix.mul_apply, Matrix.of_apply]
     calc g i j = f j i := rfl
       _ = _ := this.symm
       _ = _ := Finset.sum_congr rfl fun x _ => mul_comm _ _

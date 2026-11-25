@@ -26,18 +26,15 @@ theorem FiniteModuloEliminate.proof (hG : FiniteModuloGeneralEquation.Statement)
   intro g hg
   obtain ⟨b, h, hb, hh, hev⟩ := hgen g hg
   choose q a hq ha hdiv using fun m => hW τ (L x) c d F (b m) hFan (hb m) hord
-  have hLt : Tendsto L (𝓝 x) (𝓝 (L x)) := L.continuous.tendsto x
   refine ⟨fun p y => a (ix p).1 (ix p).2 y, fun i z => h i z + ∑ m, q m (L z) * e m z * hF i z,
     fun p => by simpa using ha (ix p).1 (ix p).2, fun i => ?_, ?_⟩
   · refine (hh i).add (Finset.univ.analyticAt_fun_sum fun m _ => ?_)
-    have hqL : AnalyticAt ℂ (fun z => q m (L z)) x := (hq m).comp (L.analyticAt x)
-    exact (hqL.mul (he m)).mul (hhF i)
+    exact (((hq m).comp (L.analyticAt x)).mul (he m)).mul (hhF i)
   · have hdivL : ∀ᶠ z in 𝓝 x, ∀ m, b m (L z) = q m (L z) * F (L z) +
         ∑ j : Fin d, a m j (zeroCoordinate c (L z)) * (L z c - L x c) ^ (j : ℕ) :=
-      eventually_all.2 fun m => hLt.eventually (hdiv m)
+      eventually_all.2 fun m => (L.continuous.tendsto x).eventually (hdiv m)
     filter_upwards [hev, hdivL, hFev] with z hz hzd hzF
-    rw [hz]
-    simp only [hzd, hzF, ContinuousLinearMap.comp_apply]
+    simp only [hz, hzd, hzF, ContinuousLinearMap.comp_apply]
     have hre : ∀ φ : Fin n × Fin d → ℂ, ∑ p : Fin (n * d), φ (ix p) = ∑ m, ∑ j, φ (m, j) := fun φ => by
       rw [← Fintype.sum_prod_type']
       exact finProdFinEquiv.symm.sum_comp φ

@@ -164,8 +164,7 @@ theorem c_one_of_finite_extension : ∀ (K L : Type) [Field K] [Field L] [Algebr
     intro h
     apply hz0
     funext k
-    have := congrFun h (e.symm k)
-    simpa [hy] using this
+    simpa [hy] using congrFun h (e.symm k)
   refine ⟨fun i => ∑ j, algebraMap K L (y (i, j)) * Module.finBasis K L j, ?_, ?_⟩
   · intro hx
     apply hy0

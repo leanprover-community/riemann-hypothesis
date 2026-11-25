@@ -28,8 +28,7 @@ theorem mu_nonneg (P : PPath n N LL dd) :
   | zero =>
     intro hs m _
     have h0 : (⟨0, hs⟩ : Fin (N + 1)) = 0 := Fin.ext (by simp)
-    rw [h0, P.zero]
-    simp
+    simp [h0, P.zero]
   | succ s ih =>
     intro hs m hm
     have hsN : s < N := by omega
@@ -50,8 +49,7 @@ theorem mu_nonpos (P : PPath n N LL dd) :
   | zero =>
     intro hs m _
     have h0 : (⟨0, hs⟩ : Fin (N + 1)) = 0 := Fin.ext (by simp)
-    rw [h0, P.zero]
-    simp
+    simp [h0, P.zero]
   | succ s ih =>
     intro hs m hm
     have hsN : s < N := by omega

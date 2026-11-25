@@ -25,8 +25,7 @@ theorem FibreSectionsCovering.proof : FibreSectionsCovering.Statement := by
 
   have key : ∀ x₀ (h₀ : x₀ ∈ X) x, x ∈ X → x ∈ V' x₀ h₀ → g x₀ h₀ (A *ᵥ x) = x := by
     intro x₀ h₀ x hx hxv
-    have hx' : x ∈ g x₀ h₀ '' O x₀ h₀ := hXV' x₀ h₀ ▸ ⟨hx, hxv⟩
-    obtain ⟨o, ho, rfl⟩ := hx'
+    obtain ⟨o, ho, rfl⟩ : x ∈ g x₀ h₀ '' O x₀ h₀ := hXV' x₀ h₀ ▸ ⟨hx, hxv⟩
     rw [hAg x₀ h₀ o ho]
 
   have inX : ∀ x₀ (h₀ : x₀ ∈ X) w, w ∈ O x₀ h₀ → g x₀ h₀ w ∈ X ∧ g x₀ h₀ w ∈ V' x₀ h₀ := by
@@ -143,12 +142,10 @@ theorem FibreSectionsCovering.proof : FibreSectionsCovering.Statement := by
       exact hWd w hxW i j hij h
     have heq : Set.range (fun i => G i w) = {x' | x' ∈ X ∧ A *ᵥ x' = w} := by
       refine ((Set.finite_of_encard_eq_coe hFw).subset hsub).eq_of_subset_of_encard_le hsub ?_
-      rw [hFw, hinj.encard_range]
-      simp
-    have hxmem : (x : Fin n → ℂ) ∈ Set.range (fun i => G i w) := by
+      simp [hFw, hinj.encard_range]
+    obtain ⟨i, hi⟩ : (x : Fin n → ℂ) ∈ Set.range (fun i => G i w) := by
       rw [heq]
       exact ⟨x.2, rfl⟩
-    obtain ⟨i, hi⟩ := hxmem
     refine Set.mem_iUnion.2 ⟨i, ?_, hxW⟩
     show (x : Fin n → ℂ) ∈ VV i
     rw [← hi]

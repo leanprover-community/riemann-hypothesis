@@ -226,7 +226,6 @@ theorem ext_all (hE : Ext) [Fintype A] [Fintype B] {p : PV ι A B} (hp : IsInv p
       (continuous_act_eval continuous_const (c1.matrix_transpose.mul (c1.matrix_map continuous_star)) z p)
   let S := {t : ℂ | (Matrix.charpoly (-M)).IsRoot t}
   have hS : S.Countable := (Polynomial.finite_setOfPred_isRoot (Matrix.charpoly_monic (-M)).ne_zero).countable
-  have hd : Dense Sᶜ := hS.dense_compl ℂ
   have hz : Set.EqOn F (fun _ => 0) Sᶜ := by
     intro t ht
     have hdet : (M + t • (1 : Matrix ι ι ℂ)).det ≠ 0 := by
@@ -238,7 +237,7 @@ theorem ext_all (hE : Ext) [Fintype A] [Fintype B] {p : PV ι A B} (hp : IsInv p
         rw [sub_neg_eq_add, Matrix.scalar_apply, ← Matrix.smul_one_eq_diagonal, add_comm]
       rw [e]; exact h0
     simp only [F, key _ hdet, sub_self]
-  have h0 := congrFun (hF.ext_on hd continuous_const hz) 0
+  have h0 := congrFun (hF.ext_on (hS.dense_compl ℂ) continuous_const hz) 0
   simp only [F, zero_smul, add_zero] at h0
   exact sub_eq_zero.mp h0
 
@@ -452,8 +451,7 @@ theorem Tlin_injective (hS : Stable) (hE : Ext) (hA : Avg) (hP : Pos) (d : ℕ) 
     have h := hc ⟨_, hsubW k⟩
     simp only [LinearMap.comp_apply, Submodule.subtype_apply, Finsupp.sum] at h
     change gip (sub 1 (Mk k) (q : PV ι A B)) (q : PV ι A B) = _ at h
-    rw [h]
-    simp only [AsmA.eval_sub]
+    simp only [h, AsmA.eval_sub]
   have hΨc : Continuous fun k => gip (sub 1 (Mk (ι := ι) (A := A) (B := B) k) (q : PV ι A B)) (q : PV ι A B) := by
     simp_rw [hΨ]
     exact continuous_finsetSum _ fun z _ => continuous_const.mul (continuous_act_eval continuous_const continuous_Mk z _)
@@ -487,8 +485,7 @@ theorem Tlin_injective (hS : Stable) (hE : Ext) (hA : Avg) (hP : Pos) (d : ℕ) 
       ∂(Formalism.REAL.muK (fun _ : Fin (NN ι A B) => true))).re =
       ∫ k, (gip (sub 1 (Mk (ι := ι) (A := A) (B := B) k) (q : PV ι A B)) (q : PV ι A B)).re
       ∂(Formalism.REAL.muK (fun _ : Fin (NN ι A B) => true)) := by
-    have := Complex.reCLM.integral_comp_comm hint
-    simpa using this.symm
+    simpa using (Complex.reCLM.integral_comp_comm hint).symm
   rw [← hgipT, hgip0] at hcomm
   simp at hcomm
   linarith

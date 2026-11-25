@@ -333,8 +333,7 @@ theorem trace_aeval_powMat_map {R S : Type*} [CommRing R] [CommRing S] (f : R �
     rw [h2] at h1
     rw [aeval_def, eval₂_map]
     exact h1.symm
-  rw [h]
-  simp [Matrix.trace]
+  simp [h, Matrix.trace]
 
 theorem charpoly_powMat {C : Type*} [Field C] {ψ : C[X]} (h : ψ.Monic) (n : ℕ)
     (hn : ψ.natDegree = n) : (powMat n ψ).charpoly = ψ := by

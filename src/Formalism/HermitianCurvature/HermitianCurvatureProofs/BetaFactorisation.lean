@@ -146,19 +146,16 @@ theorem betaFactorisation : Factorisation := by
     by_cases hc : c.top = true ∧ i + 1 = c.k
     · have p := hbp hc.1
       have eB : B i = (c.bp + -Y - 1 / 2) ^ 2 := by
-        rw [hBdef]
-        simp only [Sz6.u_top c de i hi.1 hc.1 hc.2, Sz6.u_top c de' i hi.1 hc.1 hc.2]
+        simp only [hBdef, Sz6.u_top c de i hi.1 hc.1 hc.2, Sz6.u_top c de' i hi.1 hc.1 hc.2]
         ring
       refine ⟨by rw [eB]; positivity, ?_⟩
       rw [eB, abs_of_nonneg (sq_nonneg (c.bp + -Y - 1 / 2)), Real.sqrt_sq p.le, hAdef]
       simp only [Cfg.rho, ite_eq_left hc]
     · have eB : B i = (c.v i - de i * c.Del - -Y) * (c.v i - de' i * c.Del - -Y) := by
-        rw [hBdef]
-        simp only [Sz6.u_succ c de hw i hi.1 hc, Sz6.u_succ c de' hw' i hi.1 hc]
+        simp only [hBdef, Sz6.u_succ c de hw i hi.1 hc, Sz6.u_succ c de' hw' i hi.1 hc]
         ring
       refine ⟨by rw [eB]; exact mul_ne_zero (hW de hw i) (hW de' hw' i), ?_⟩
-      rw [eB, hAdef]
-      simp only [Cfg.rho, ite_eq_right hc]
+      simp only [eB, hAdef, Cfg.rho, ite_eq_right hc]
   have hN : ∀ j ∈ Icc 1 c.m, 0 < Nn j := by
     intro j hj
     rw [mem_Icc] at hj
@@ -471,8 +468,7 @@ theorem Sz6.positionsBefore_of (H1 : PositionBefore) (H2 : ProdOneAddTwoDivLeSqr
       simp only [Cfg.rho, ite_eq_right hnt]; positivity
     · intro i hi
       rw [mem_Ico] at hi
-      have := H1 c de de' Y l i h hw hw' hi.1 hi.2 hlk hY
-      simp only [Nat.cast_sub hi.2.le]; exact this
+      simp only [Nat.cast_sub hi.2.le]; exact H1 c de de' Y l i h hw hw' hi.1 hi.2 hlk hY
   have step2 := Finset.prod_Ico_reflect (fun j : ℕ => (1 + 2 / (4 * (j : ℝ) - 1))) 1 (m := l) (n := l) (by omega)
   rw [step2] at step1
   have a1 : l + 1 - l = 1 := by omega

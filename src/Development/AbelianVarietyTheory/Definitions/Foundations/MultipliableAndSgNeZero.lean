@@ -141,12 +141,10 @@ theorem hasProd_geom {q : ℂ} (hq : ‖q‖ < 1) (a : ℂ) (h : ∀ m : ℕ, 1 
   · simpa [sub_eq_add_neg] using (multipliable_one_add_of_summable hs).hasProd
 
 theorem hasProd_inv {f : ℕ → ℂ} {P : ℂ} (h : HasProd f P) (hP : P ≠ 0) : HasProd (fun m => (f m)⁻¹) P⁻¹ := by
-  have := Filter.Tendsto.inv₀ h hP
-  simpa [HasProd, Finset.prod_inv_distrib] using this
+  simpa [HasProd, Finset.prod_inv_distrib] using Filter.Tendsto.inv₀ h hP
 
 theorem hasProd_pow {f : ℕ → ℂ} {P : ℂ} (h : HasProd f P) (k : ℕ) : HasProd (fun m => (f m) ^ k) (P ^ k) := by
-  have := Filter.Tendsto.pow h k
-  simpa [HasProd, Finset.prod_pow] using this
+  simpa [HasProd, Finset.prod_pow] using Filter.Tendsto.pow h k
 
 theorem ee_pt_pow (c : ℕ) (x : Fin 2 → ℚ) (τ : ℍ) : ee (pt x τ) ^ c = ee (pt (c • x) τ) := by
   rw [← ee_nat_mul]; congr 1; simp [pt]; ring
@@ -198,8 +196,7 @@ theorem summable_pow_exp_abs {a : ℝ} (ha : 0 < a) (k : ℕ) (s : ℝ) :
     rw [div_mul_eq_mul_div, le_div_iff₀ (by positivity)]
     linarith
   have h3 : |(n : ℝ)| ≤ |s + n| + |s| := by
-    have := abs_sub (s + n) s
-    simpa using this
+    simpa using abs_sub (s + n) s
   calc |s + n| ^ k * Real.exp (-(2 * a * |s + n|))
       ≤ ((k.factorial : ℝ) / a ^ k * Real.exp (a * |s + n|)) * Real.exp (-(2 * a * |s + n|)) := by gcongr
     _ = (k.factorial : ℝ) / a ^ k * Real.exp (-(a * |s + n|)) := by

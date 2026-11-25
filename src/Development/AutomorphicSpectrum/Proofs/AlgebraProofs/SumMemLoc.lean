@@ -182,8 +182,7 @@ theorem freeOn_ext {R : Subalgebra o Ω} {f : Ω} (hf : f ∈ R) (i : E₁ →�
   refine ⟨Fin.append (fun p => i (b₁ p)) t, ?_, ?_, fun e => ⟨?_, ?_⟩⟩
   · rw [Fintype.linearIndependent_iff]
     intro g hg
-    rw [Fin.sum_univ_add] at hg
-    simp only [Fin.append_left, Fin.append_right] at hg
+    simp only [Fin.sum_univ_add, Fin.append_left, Fin.append_right] at hg
     have h2 : ∑ p, g (Fin.natAdd r₁ p) • b₂ p = 0 := by
       have := congrArg q hg
 
@@ -206,10 +205,9 @@ theorem freeOn_ext {R : Subalgebra o Ω} {f : Ω} (hf : f ∈ R) (i : E₁ →�
   · rintro ⟨n, hn⟩
     obtain ⟨a₂, ha₂R, ha₂⟩ := (h₂.2.2 (q e)).1 ⟨n, f ^ n • e, hn, by simp⟩
     obtain ⟨x, hx⟩ := hker e a₂ ha₂
-    have hxL : i x ∈ loc R f hf L hL := by
+    obtain ⟨m, hm⟩ : i x ∈ loc R f hf L hL := by
       rw [hx]
       exact AddSubgroup.sub_mem _ ⟨n, hn⟩ (sum_mem_loc hf hL a₂ t ha₂R htL)
-    obtain ⟨m, hm⟩ := hxL
     obtain ⟨a₁, ha₁R, ha₁⟩ := (h₁.2.2 x).1 ⟨m, by
       rw [AddSubgroup.mem_comap]; simpa using hm⟩
     refine ⟨Fin.append a₁ a₂, fun p => ?_, ?_⟩

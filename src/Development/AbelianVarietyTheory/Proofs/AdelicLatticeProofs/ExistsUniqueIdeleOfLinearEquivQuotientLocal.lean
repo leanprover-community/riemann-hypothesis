@@ -200,10 +200,9 @@ theorem mem_localIdeal_iff {I : FractionalIdeal R⁰ K} (hI : I ≠ 0) (v : Heig
     | zero => simp
     | add x y _ _ hx hy => exact (Valuation.map_add _ x y).trans (max_le hx hy)
     | smul a x _ hx =>
-      have ha : Valued.v (a : v.adicCompletion K) ≤ 1 := a.2
       change Valued.v ((a : v.adicCompletion K) * x) ≤ _
       rw [map_mul]
-      exact (mul_le_of_le_one_left' ha).trans hx
+      exact (mul_le_of_le_one_left' a.2).trans hx
   · intro hx
     obtain ⟨y, hy, hvy⟩ := exists_mem_valuation_eq hI v
     rw [← valued_algebraMap] at hvy
@@ -482,8 +481,7 @@ theorem exists_sub_mem_adelicIdeal_of_integral {I : FractionalIdeal R⁰ K} (hI 
     rw [← valued_algebraMap, map_sub, map_sub, Valuation.map_sub_swap] at h2
     rw [← sub_add_sub_cancel (a v) (algebraMap K (v.adicCompletion K) (algebraMap R K (x v)))]
     refine ((Valuation.map_add _ _ _).trans (max_le (hx v) h2)).trans ?_
-    rw [exp_le_exp]
-    simp only [e]
+    simp only [exp_le_exp, e]
     omega
   · have : FractionalIdeal.count K v I = 0 := by simpa using hv
     rw [this]
@@ -641,8 +639,7 @@ theorem exists_adele_of_end_one
   have hπ0 : ∀ v (n : ℕ), π v ^ n ≠ 0 := by
     intro v n h
     have := hπn v n
-    rw [h] at this
-    simp only [ι, map_zero] at this
+    simp only [h, ι, map_zero] at this
     exact exp_ne_zero this.symm
   have hlim : ∀ v, ∃ t : v.adicCompletion K, ∀ n : ℕ,
       Valued.v (t - ι v (π v ^ n) * y (π v ^ n) v) ≤ exp (-(n : ℤ)) := by

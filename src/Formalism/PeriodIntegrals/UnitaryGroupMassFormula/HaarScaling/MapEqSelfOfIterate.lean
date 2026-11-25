@@ -155,7 +155,6 @@ theorem map_eq_self_of_iterate {G : Type*} [Group G] [TopologicalSpace G] [IsTop
   have hid : (⇑ψ)^[N] = id := funext hψ
   have hN' : μ = c ^ N • μ := by rw [← hk N, hid, Measure.map_id]
   obtain ⟨K, hK, hK1⟩ := exists_compact_mem_nhds (1 : G)
-  have h0 : μ K ≠ 0 := (measure_pos_of_mem_nhds μ hK1).ne'
   have htop : μ K ≠ ⊤ := hK.measure_lt_top.ne
   have hKeq : ((c ^ N : NNReal) : ENNReal) * μ K = 1 * μ K := by
     have := congrArg (fun ν : Measure G => ν K) hN'
@@ -165,11 +164,10 @@ theorem map_eq_self_of_iterate {G : Type*} [Group G] [TopologicalSpace G] [IsTop
   have hcN : (c : ℝ) ^ N = 1 := by
     have h3 := congrArg ENNReal.toReal hKeq
     rw [ENNReal.toReal_mul, ENNReal.toReal_mul] at h3
-    have hpos : 0 < (μ K).toReal := ENNReal.toReal_pos h0 htop
+    have hpos : 0 < (μ K).toReal := ENNReal.toReal_pos ((measure_pos_of_mem_nhds μ hK1).ne') htop
     simpa using mul_right_cancel₀ hpos.ne' h3
   have hc1 : c = 1 := by
-    have := (pow_eq_one_iff_of_nonneg c.2 hN).1 hcN
-    exact NNReal.eq (this.trans NNReal.coe_one.symm)
+    exact NNReal.eq (((pow_eq_one_iff_of_nonneg c.2 hN).1 hcN).trans NNReal.coe_one.symm)
   rw [hμc, hc1, one_smul]
 
 theorem card_true {P Q n : ℕ} {ε : Fin n → Bool} (e : Fin P ⊕ Fin Q ≃ Fin n)
@@ -227,8 +225,7 @@ theorem tie_set {P Q n : ℕ} {ε : Fin n → Bool} (e : Fin P ⊕ Fin Q ≃ Fin
   simp only [Set.mem_setOf_eq, Set.mem_preimage]
   constructor
   · rintro ⟨a, ha, h⟩
-    have : a = phi e h1 h2 g := umat_injective (h.trans (umat_phi e h1 h2 g).symm)
-    exact this ▸ ha
+    exact (umat_injective (h.trans (umat_phi e h1 h2 g).symm) : a = phi e h1 h2 g) ▸ ha
   · exact fun hg => ⟨_, hg, umat_phi e h1 h2 g⟩
 
 end PI.UnitaryGroupMassFormula.CdHaarScale.Main

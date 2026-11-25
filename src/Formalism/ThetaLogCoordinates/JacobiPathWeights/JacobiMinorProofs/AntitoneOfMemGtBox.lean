@@ -185,8 +185,7 @@ lemma cond_up {n : ℕ} (μ ν : Fin (n + 1) → ℤ) (l : Fin n → ℤ) (b : �
     (HStrip ν μ b ∧ l ∈ gtBox ν) ↔
       (∀ j, Lo μ l j ≤ ν j) ∧ (∀ i, ν i.succ ≤ Hi μ l i) ∧ ∑ j, ν j - ∑ j, μ j = (b : ℤ) := by
   unfold HStrip
-  rw [mem_gtBox, Lo_le_iff, strip2_iff]
-  simp only [Hi, le_min_iff]
+  simp only [mem_gtBox, Lo_le_iff, strip2_iff, Hi, le_min_iff]
   constructor
   · rintro ⟨⟨h1, h2, h3⟩, h4⟩
     exact ⟨⟨h1, fun i => (h4 i).2⟩, fun i => ⟨h2 i, (h4 i).1⟩, h3⟩
@@ -196,8 +195,7 @@ lemma cond_up {n : ℕ} (μ ν : Fin (n + 1) → ℤ) (l : Fin n → ℤ) (b : �
 lemma cond_low {n : ℕ} (μ : Fin (n + 1) → ℤ) (κ l : Fin n → ℤ) (b : ℕ) :
     (κ ∈ gtBox μ ∧ l ∈ sLe κ b) ↔
       (∀ i, Lo μ l i.succ ≤ κ i) ∧ (∀ i, κ i ≤ Hi μ l i) ∧ ∑ i, l i - ∑ i, κ i ≤ (b : ℤ) := by
-  rw [mem_gtBox, mem_sLe, Lo_succ_le_iff]
-  simp only [Hi, le_min_iff]
+  simp only [mem_gtBox, mem_sLe, Lo_succ_le_iff, Hi, le_min_iff]
   constructor
   · rintro ⟨h1, h2, h3, h4⟩
     exact ⟨⟨fun i => (h1 i).1, h3⟩, fun i => ⟨(h1 i).2, h2 i⟩, h4⟩
@@ -299,12 +297,10 @@ theorem up (n : ℕ) : ∀ (μ : Fin n → ℤ) (b : ℕ), Antitone μ →
         · rintro rfl
           unfold HStrip
           simp
-      rw [e, Finset.sum_singleton]
-      simp
+      simp [e, Finset.sum_singleton]
     · have e : stripsUp μ b = ∅ := by
         ext ν
-        rw [mem_stripsUp]
-        simp [HStrip]
+        simp [mem_stripsUp, HStrip]
         omega
       rw [e, Finset.sum_empty, Nat.choose_eq_zero_of_lt (by omega), mul_zero]
   | succ n ih =>

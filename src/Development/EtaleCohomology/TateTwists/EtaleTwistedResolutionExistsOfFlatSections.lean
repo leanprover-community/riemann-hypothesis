@@ -104,7 +104,6 @@ theorem zmod_P (q : ℕ) [NeZero q] (a : ZMod q) :
   set g := Nat.gcd n q with hg
   have hgq : g ∣ q := Nat.gcd_dvd_right n q
   have hgn : g ∣ n := Nat.gcd_dvd_left n q
-  have hgpos : 0 < g := Nat.gcd_pos_of_pos_right n hq
   have ha : (n : ZMod q) = a := ZMod.natCast_zmod_val a
   refine ⟨((q / g : ℕ) : ZMod q), ?_, fun r hr => ?_⟩
   · rw [← ha, ← Nat.cast_mul, ZMod.natCast_eq_zero_iff]
@@ -113,11 +112,10 @@ theorem zmod_P (q : ℕ) [NeZero q] (a : ZMod q) :
     rw [ht, ← mul_assoc, Nat.div_mul_cancel hgq]
   · have hr' : (r.val : ZMod q) = r := ZMod.natCast_zmod_val r
     rw [← hr', ← Nat.cast_mul, ZMod.natCast_eq_zero_iff] at hr
-    have hqg : 0 < q / g := Nat.div_pos (Nat.le_of_dvd hq hgq) hgpos
-    have hdiv : g ∣ r.val := by
+    have hqg : 0 < q / g := Nat.div_pos (Nat.le_of_dvd hq hgq) (Nat.gcd_pos_of_pos_right n hq)
+    obtain ⟨j, hj⟩ : g ∣ r.val := by
       have h1 : g * (q / g) ∣ r.val * (q / g) := by rwa [Nat.mul_div_cancel' hgq]
       exact Nat.dvd_of_mul_dvd_mul_right hqg h1
-    obtain ⟨j, hj⟩ := hdiv
     have hbez : ((g : ℤ) : ZMod q) = (n : ZMod q) * ((Nat.gcdA n q : ℤ) : ZMod q) := by
       rw [hg, Nat.gcd_eq_gcd_ab n q]
       push_cast

@@ -68,9 +68,8 @@ theorem det_mem_span_prod {R : Type*} [CommRing R] [IsLocalRing R] :
       obtain ⟨g, hg⟩ := (Submodule.mem_span_range_iff_exists_fun R).1
         (hq ▸ Submodule.mem_top : (Pi.single (0 : Fin (m + 1)) (1 : R ⧸ Ideal.span {c 0}) :
           (j : Fin (m + 1)) → R ⧸ Ideal.span {c j}) ∈ Submodule.span R (Set.range q))
-      have hc0m : c 0 ∈ IsLocalRing.maximalIdeal R := (IsLocalRing.mem_maximalIdeal _).2 hc0
       have hspan_le : Ideal.span {c 0} ≤ IsLocalRing.maximalIdeal R :=
-        (Ideal.span_singleton_le_iff_mem _).2 hc0m
+        (Ideal.span_singleton_le_iff_mem _).2 ((IsLocalRing.mem_maximalIdeal _).2 hc0)
       have h1 : ∑ i, g i * a i - 1 ∈ Ideal.span {c 0} := by
         rw [← Ideal.Quotient.eq_zero_iff_mem, map_sub, ← hfst g a ha, hg]
         simp
@@ -108,8 +107,7 @@ theorem det_mem_span_prod {R : Type*} [CommRing R] [IsLocalRing R] :
           simp only [q'', ite_eq_right hne, smul_sub, smul_smul]
         have hw' : c 0 * w = r i₀ + ∑ i ∈ Finset.univ.erase i₀, r i * β i := by
           rw [hw, ← Finset.add_sum_erase _ _ (Finset.mem_univ i₀), hβ0, mul_one]
-        rw [hrest]
-        simp only [q'', ite_eq_left rfl, smul_smul, ↓reduceIte]
+        simp only [hrest, q'', ite_eq_left rfl, smul_smul, ↓reduceIte]
         rw [mul_comm w, hw', add_smul]
         abel
 
@@ -155,8 +153,7 @@ theorem det_mem_span_prod {R : Type*} [CommRing R] [IsLocalRing R] :
         ext k i
         by_cases hi : i = i₀
         · subst hi
-          rw [updateCol_self]
-          simp only [T'', Matrix.of_apply, ↓reduceIte]
+          simp only [updateCol_self, T'', Matrix.of_apply, ↓reduceIte]
           rw [ht k, ← Finset.add_sum_erase _ _ (Finset.mem_univ i), hβ0, mul_one]
           have : ∑ x ∈ Finset.univ.erase i, β x * (if x = i then t k else T k x) =
               ∑ x ∈ Finset.univ.erase i, T k x * β x :=
@@ -178,10 +175,9 @@ lemma isLocal_of_integers {C : Type} [Field C] {v : Valuation C NNReal} {R : Typ
   refine @IsLocalRing.of_nonunits_add R _ hne ?_
   intro a b ha hb
   rw [mem_nonunits_iff, hv.isUnit_iff_valuation_eq_one] at ha hb ⊢
-  have ha' : v (algebraMap R C a) < 1 := lt_of_le_of_ne (hv.map_le_one a) ha
   have hb' : v (algebraMap R C b) < 1 := lt_of_le_of_ne (hv.map_le_one b) hb
   rw [map_add (f := _)]
-  exact ne_of_lt (lt_of_le_of_lt (v.map_add _ _) (max_lt ha' hb'))
+  exact ne_of_lt (lt_of_le_of_lt (v.map_add _ _) (max_lt (lt_of_le_of_ne (hv.map_le_one a) ha) hb'))
 
 theorem prod_le_of_gen {C : Type} [Field C] {v : Valuation C NNReal} {R : Type} [CommRing R]
     [Algebra R C] (hv : v.Integers R) {M : Type} [AddCommGroup M] [Module R M] {x : NNReal}

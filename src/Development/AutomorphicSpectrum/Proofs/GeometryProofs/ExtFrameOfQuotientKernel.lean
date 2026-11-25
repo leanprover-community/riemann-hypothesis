@@ -67,9 +67,8 @@ theorem ext_frame_of_quotient_kernel (Ω M V : Type) [Field Ω] [AddCommGroup M]
   classical
   have hlift : ∀ i, ∃ y ∈ H, π y = ∑ j, P i j • v j := by
     intro i
-    have hmem : (∑ j, P i j • v j) ∈ H.map (π.restrictScalars R) := by
+    obtain ⟨y, hy, e⟩ : (∑ j, P i j • v j) ∈ H.map (π.restrictScalars R) := by
       rw [hmap]; exact Submodule.subset_span ⟨i, rfl⟩
-    obtain ⟨y, hy, e⟩ := hmem
     exact ⟨y, hy, e⟩
   choose h hH hπh using hlift
   have hT : ∀ i, ∃ t : Fin (p + q) → Ω, ∑ k, t k • u k = h i := fun i =>
@@ -106,8 +105,7 @@ theorem ext_frame_of_quotient_kernel (Ω M V : Type) [Field Ω] [AddCommGroup M]
     simp only [hA11, hA12, hTP]
   have hw2 : ∀ i, ∑ j, A (Fin.natAdd p i) j • u j = ∑ k, C i k • u (Fin.natAdd p k) := by
     intro i
-    rw [Fin.sum_univ_add]
-    simp only [hA21, hA22, zero_smul, Finset.sum_const_zero, zero_add]
+    simp only [Fin.sum_univ_add, hA21, hA22, zero_smul, Finset.sum_const_zero, zero_add]
   refine ⟨A, hdet, ?_, ?_⟩
   · rw [Fintype.linearIndependent_iff]
     intro c hc
@@ -139,7 +137,6 @@ theorem ext_frame_of_quotient_kernel (Ω M V : Type) [Field Ω] [AddCommGroup M]
         rw [← this]; exact Submodule.subset_span ⟨_, rfl⟩
       have hsumH : ∑ i, r i • h i ∈ H := Submodule.sum_mem _ fun i _ => H.smul_mem _ (hH i)
       have hsumS : ∑ i, r i • h i ∈ S := Submodule.sum_mem _ fun i _ => S.smul_mem _ (hhS i)
-      have hdiff : y - ∑ i, r i • h i ∈ H := H.sub_mem hy hsumH
       have hπd : π (y - ∑ i, r i • h i) = 0 := by
         have e : π (∑ i, r i • h i) = ∑ i, r i • ∑ j, P i j • v j := by
 
@@ -147,8 +144,7 @@ theorem ext_frame_of_quotient_kernel (Ω M V : Type) [Field Ω] [AddCommGroup M]
           refine Finset.sum_congr rfl fun i _ => ?_
           rw [← hπh i, Subring.smul_def, Subring.smul_def, map_smul]
         rw [map_sub, e, hr, sub_self]
-      have := hCS (hker _ hdiff hπd)
-      simpa using S.add_mem this hsumS
+      simpa using S.add_mem (hCS (hker _ (H.sub_mem hy hsumH) hπd)) hsumS
     · rw [Submodule.span_le]
       rintro _ ⟨i, rfl⟩
       refine Fin.addCases (fun i => ?_) (fun i => ?_) i

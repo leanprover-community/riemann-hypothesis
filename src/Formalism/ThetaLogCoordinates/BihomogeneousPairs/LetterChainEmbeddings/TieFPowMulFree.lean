@@ -52,8 +52,7 @@ noncomputable def ehP : MvPolynomial σ k := X zv * X sv + ∑ c, X (w c) * X (e
 
 private lemma pderiv_X_pow_of_ne' (i j : σ) (h : i ≠ j) (n : ℕ) : pderiv i (X j ^ n : MvPolynomial σ k) = 0 := by
   classical
-  rw [Derivation.leibniz_pow]
-  simp [pderiv_X, Ne.symm h]
+  simp [Derivation.leibniz_pow, pderiv_X, Ne.symm h]
 
 theorem harmonicProjection_expand (hz : ∀ c, w c ≠ zv ∧ e c ≠ zv) (o n z : ℕ) (x : MvPolynomial σ k) :
     M.tieP w e zv sv o n z x = ∑ m ∈ range (o + 1),
@@ -84,8 +83,7 @@ private lemma add_single_mem_support_of_mem_support_pderiv (i : σ) (p : MvPolyn
   · have hsi : s i ≠ 0 := by
       intro h0
       apply hne
-      rw [h0]
-      simp
+      simp [h0]
     have hts : t + Finsupp.single i 1 = s := by
       rw [← hst]
       ext j

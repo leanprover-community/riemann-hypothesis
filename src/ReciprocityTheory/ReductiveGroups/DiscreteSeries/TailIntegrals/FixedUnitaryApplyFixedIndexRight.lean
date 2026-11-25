@@ -61,8 +61,7 @@ lemma fixedUnitary_projection_identities {k : ℕ} {h : Mat k 0} (hh : h ∈ U0 
   have hU' : hᴴ * Hpk k 0 * h = Hpk k 0 := hU
   have hcol : ∀ i, h i (iK k) = if i = iK k then 1 else 0 := by
     intro i
-    have := congrFun hv i
-    simpa [Matrix.mulVec, dotProduct, bvec, Pi.single_apply] using this
+    simpa [Matrix.mulVec, dotProduct, bvec, Pi.single_apply] using congrFun hv i
   have hP : h * Pk k = Pk k := by
     ext i j
     by_cases hj : iK k = j
@@ -78,8 +77,7 @@ lemma fixedUnitary_projection_identities {k : ℕ} {h : Mat k 0} (hh : h ∈ U0 
     rw [Matrix.mul_assoc, hP, hpk0, Matrix.mul_assoc, one_sub_mul_Pk, Matrix.mul_neg] at e1
     exact neg_inj.mp e1
   have hPh : Pk k * h = Pk k := by
-    have := congrArg Matrix.conjTranspose hsP
-    simpa [Matrix.conjTranspose_mul, Pk_conjTranspose] using this
+    simpa [Matrix.conjTranspose_mul, Pk_conjTranspose] using congrArg Matrix.conjTranspose hsP
   refine ⟨?_, hP, hsP, hPh⟩
   have e2 := hU'
   rw [hpk0, Matrix.mul_sub, Matrix.sub_mul, Matrix.mul_one, Matrix.mul_smul, Matrix.smul_mul,
@@ -91,8 +89,7 @@ lemma mem_fixedUnitary_of_unitary_fixes {k : ℕ} {R : Mat k 0} (hu : Rᴴ * R =
     calc Rᴴ * Pk k = Rᴴ * (R * Pk k) := by rw [hP]
       _ = Pk k := by rw [← Matrix.mul_assoc, hu, Matrix.one_mul]
   have hPR : Pk k * R = Pk k := by
-    have := congrArg Matrix.conjTranspose hsP
-    simpa [Matrix.conjTranspose_mul, Pk_conjTranspose] using this
+    simpa [Matrix.conjTranspose_mul, Pk_conjTranspose] using congrArg Matrix.conjTranspose hsP
   refine ⟨?_, fun a => a.elim0, ?_⟩
   · show Rᴴ * Hpk k 0 * R = Hpk k 0
     rw [hpk0, Matrix.mul_sub, Matrix.sub_mul, Matrix.mul_one, hu, Matrix.mul_smul, Matrix.smul_mul,
@@ -222,8 +219,7 @@ lemma exists_fixedUnitary_sending_basis {k : ℕ} (hk : 1 ≤ k) (u : Fin (2 * 0
   obtain ⟨α, hα⟩ : ∃ α : ℂ, α = star μ * u (iW k) := ⟨_, rfl⟩
   have hxv : ∀ v, star x ⬝ᵥ v = star μ * v (iW k) := by
     intro v
-    rw [hx]
-    simp only [dotProduct]
+    simp only [hx, dotProduct]
     rw [Finset.sum_eq_single (iW k)]
     · simp [bvec]
     · intro j _ hj
@@ -231,8 +227,7 @@ lemma exists_fixedUnitary_sending_basis {k : ℕ} (hk : 1 ≤ k) (u : Fin (2 * 0
     · exact fun h => absurd (Finset.mem_univ _) h
   have hvx : ∀ v, star v ⬝ᵥ x = star (v (iW k)) * μ := by
     intro v
-    rw [hx]
-    simp only [dotProduct]
+    simp only [hx, dotProduct]
     rw [Finset.sum_eq_single (iW k)]
     · simp [bvec]
     · intro j _ hj
@@ -263,8 +258,7 @@ lemma exists_fixedUnitary_sending_basis {k : ℕ} (hk : 1 ≤ k) (u : Fin (2 * 0
   · rw [Matrix.conjTranspose_mul, hHhs, Matrix.mul_assoc, ← Matrix.mul_assoc Hh Hh, hHH,
       Matrix.one_mul, hDu]
   · have hwk : w (iK k) = 0 := by
-      rw [hw, hx]
-      simp [hu0, bvec, Ne.symm hWK]
+      simp [hw, hx, hu0, bvec, Ne.symm hWK]
     have hWP : W * Pk k = 0 := by
       ext i j
       simp [hW, Pk, Matrix.mul_apply, Matrix.vecMulVec_apply, Matrix.single_apply]

@@ -26,8 +26,7 @@ theorem fockInner_eq_support (P Q : MvPolynomial σ ℂ) :
     rw [ite_eq_right (Ne.symm hβ), mul_zero]
   · intro hα
     have h : AddMonoidAlgebra.coeff Q α = 0 := by simpa [MvPolynomial.mem_support_iff] using hα
-    rw [h]
-    simp
+    simp [h]
 
 theorem fockInner_eq_sum (P Q : MvPolynomial σ ℂ) (S : Finset (σ →₀ ℕ))
     (hS : ∀ α, α ∉ S → (starRingEnd ℂ) (AddMonoidAlgebra.coeff P α) * AddMonoidAlgebra.coeff Q α = 0) :
@@ -38,8 +37,7 @@ theorem fockInner_eq_sum (P Q : MvPolynomial σ ℂ) (S : Finset (σ →₀ ℕ)
       ∑ α ∈ P.support ∪ S, (starRingEnd ℂ) (AddMonoidAlgebra.coeff P α) * AddMonoidAlgebra.coeff Q α * wt α := by
     refine Finset.sum_subset (fun x hx => Finset.mem_union_left _ hx) (fun α _ hα => ?_)
     have h : AddMonoidAlgebra.coeff P α = 0 := by simpa [MvPolynomial.mem_support_iff] using hα
-    rw [h]
-    simp
+    simp [h]
   have h2 : (∑ α ∈ S, (starRingEnd ℂ) (AddMonoidAlgebra.coeff P α) * AddMonoidAlgebra.coeff Q α * wt α) =
       ∑ α ∈ P.support ∪ S, (starRingEnd ℂ) (AddMonoidAlgebra.coeff P α) * AddMonoidAlgebra.coeff Q α * wt α := by
     refine Finset.sum_subset (fun x hx => Finset.mem_union_right _ hx) (fun α _ hα => ?_)
@@ -53,8 +51,7 @@ theorem fockInner_eq_sum_left (P Q : MvPolynomial σ ℂ) (S : Finset (σ →₀
   have h : AddMonoidAlgebra.coeff P α = 0 := by
     by_contra h'
     exact hα (hS (MvPolynomial.mem_support_iff.mpr h'))
-  rw [h]
-  simp
+  simp [h]
 
 theorem fockInner_eq_sum_right (P Q : MvPolynomial σ ℂ) (S : Finset (σ →₀ ℕ))
     (hS : Q.support ⊆ S) :
@@ -66,12 +63,10 @@ theorem fockInner_eq_sum_right (P Q : MvPolynomial σ ℂ) (S : Finset (σ →�
   rw [h, mul_zero]
 
 theorem fockInner_zero_left (Q : MvPolynomial σ ℂ) : fockInner 0 Q = 0 := by
-  rw [fockInner_eq_support]
-  simp
+  simp [fockInner_eq_support]
 
 theorem fockInner_zero_right (P : MvPolynomial σ ℂ) : fockInner P 0 = 0 := by
-  rw [fockInner_eq_support]
-  simp
+  simp [fockInner_eq_support]
 
 theorem fockInner_add_right (P Q₁ Q₂ : MvPolynomial σ ℂ) :
     fockInner P (Q₁ + Q₂) = fockInner P Q₁ + fockInner P Q₂ := by

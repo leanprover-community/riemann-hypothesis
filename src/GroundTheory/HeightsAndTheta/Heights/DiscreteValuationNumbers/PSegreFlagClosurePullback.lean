@@ -121,8 +121,7 @@ theorem pointIdeal_map_rename {K₁ K₂ : Type*} {ι₁ : K₁ → Type*} {ι�
         simp [pointConeMap, MvPolynomial.algebraMap_eq]
       · intro v
         simp [pointConeMap, hσ]
-    have := RingHom.congr_fun h f
-    simpa using this
+    simpa using RingHom.congr_fun h f
   apply le_antisymm
   · rw [Ideal.map_le_iff_le_comap]
     intro f hf
@@ -131,8 +130,7 @@ theorem pointIdeal_map_rename {K₁ K₂ : Type*} {ι₁ : K₁ → Type*} {ι�
     rw [key, hf, map_zero]
   · intro f hf
     have hf' : rename σ (rename σ.symm f) = f := by
-      rw [rename_rename]
-      simp
+      simp [rename_rename]
     rw [← hf']
     apply Ideal.mem_map_of_mem
     simp only [pointIdeal, RingHom.mem_ker] at hf ⊢
@@ -152,8 +150,7 @@ theorem pointIdeal_algebraMap {K : Type*} {ι : K → Type*} {O Ω Φ : Type*} [
         simp [pointConeMap, IsScalarTower.algebraMap_apply O Ω Φ]
       · intro v
         simp [pointConeMap]
-    have := RingHom.congr_fun h f
-    simpa using this
+    simpa using RingHom.congr_fun h f
   ext f
   simp only [pointIdeal, RingHom.mem_ker, key]
   exact ⟨fun h => map_injective _ (algebraMap Ω Φ).injective (by rw [h, map_zero]),

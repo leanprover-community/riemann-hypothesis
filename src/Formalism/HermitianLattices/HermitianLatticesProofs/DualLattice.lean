@@ -280,8 +280,7 @@ theorem dualLattice :
       exact e.symm
     intro x hx
     have ex : x = ∑ k, h (w k) x • (g k : V) := by
-      have := LinearMap.congr_fun hP x
-      simpa [Pm] using this.symm
+      simpa [Pm] using (LinearMap.congr_fun hP x).symm
     rw [ex]
     refine Submodule.sum_mem _ fun k _ => ?_
     obtain ⟨r, hr⟩ := (mem_dual _ x).mp hx (w k) (hwd k)
@@ -299,16 +298,14 @@ theorem dualLattice :
       intro z hz
       obtain ⟨r, hr⟩ := hx (a • z) ⟨z, hz, rfl⟩
       refine ⟨r, ?_⟩
-      rw [hr, LinearMap.map_smulₛₗ₂, LinearMap.map_smul]
-      simp only [starRingEnd_apply, smul_eq_mul]
+      simp only [hr, LinearMap.map_smulₛₗ₂, LinearMap.map_smul, starRingEnd_apply, smul_eq_mul]
     · rintro ⟨y, hy, rfl⟩
       rw [mem_dual] at hy ⊢
       rintro _ ⟨z, hz, rfl⟩
       obtain ⟨r, hr⟩ := hy z hz
       refine ⟨r, ?_⟩
       simp only [LinearMap.restrictScalars_apply, LinearMap.lsmul_apply]
-      rw [hr, LinearMap.map_smulₛₗ₂, LinearMap.map_smul]
-      simp only [starRingEnd_apply, smul_eq_mul]
+      simp only [hr, LinearMap.map_smulₛₗ₂, LinearMap.map_smul, starRingEnd_apply, smul_eq_mul]
       rw [← mul_assoc, mul_inv_cancel₀ hsa, one_mul]
 
 end Formalism.HermitianLatticesTheory

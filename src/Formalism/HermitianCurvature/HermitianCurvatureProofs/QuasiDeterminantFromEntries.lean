@@ -268,8 +268,7 @@ theorem frame_gives_one_letter_hyps : FrameModHyp := by
       rw [hT Y hY.1, hT (Y + 1) hY.2]
       simp only [Matrix.map_apply, hc_mul]
       simp only [← sub_mul, ← mul_sub]
-      rw [e]
-      simp only [Matrix.smul_apply, smul_eq_mul]
+      simp only [e, Matrix.smul_apply, smul_eq_mul]
       rw [← Algebra.smul_def, mul_smul_comm, smul_mul_assoc, hJ]
     · rw [hq0 Y hY, zero_smul]
       by_cases h1 : Y ∈ f.reg
@@ -290,8 +289,7 @@ theorem frame_gives_one_letter_hyps : FrameModHyp := by
       rw [hT Y hY.1, hT (Y + 1) hY.2]
       simp only [Matrix.map_apply, hc_mul]
       simp only [← sub_mul, ← mul_sub]
-      rw [e]
-      simp only [Matrix.smul_apply, smul_eq_mul]
+      simp only [e, Matrix.smul_apply, smul_eq_mul]
       rw [← Algebra.smul_def, mul_smul_comm, smul_mul_assoc, hJ]
     · rw [hq0 Y hY, zero_smul]
       by_cases h1 : Y ∈ f.reg

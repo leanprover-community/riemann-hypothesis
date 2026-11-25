@@ -70,8 +70,6 @@ theorem main {L : Type} [Field L] [IsAlgClosed L] {ι V : Type} [AddCommGroup V]
     haveI : Nontrivial W := Submodule.nontrivial_iff_ne_bot.mpr hW.1
     obtain ⟨μ, hμ⟩ := Module.End.exists_eigenvalue ((f b).restrict hWb)
     obtain ⟨w, hw⟩ := hμ.exists_hasEigenvector
-    have hw1 : (f b).restrict hWb w = μ • w := hw.apply_eq_smul
-    have hw0 : w ≠ 0 := hw.2
     let W' : Submodule L V := W ⊓ LinearMap.ker (f b - μ • 1)
     have hmem : ∀ x, x ∈ W' ↔ x ∈ W ∧ f b x = μ • x := by
       intro x
@@ -80,12 +78,11 @@ theorem main {L : Type} [Field L] [IsAlgClosed L] {ι V : Type} [AddCommGroup V]
     have hW'S : W' ∈ S := by
       refine ⟨?_, ?_⟩
       · intro h
-        apply hw0
+        apply hw.2
         have : (w : V) ∈ W' := by
           rw [hmem]
           refine ⟨w.2, ?_⟩
-          have := congrArg Subtype.val hw1
-          simpa using this
+          simpa using congrArg Subtype.val hw.apply_eq_smul
         rw [h, Submodule.mem_bot] at this
         exact Subtype.ext this
       · intro c x hx
@@ -93,13 +90,11 @@ theorem main {L : Type} [Field L] [IsAlgClosed L] {ι V : Type} [AddCommGroup V]
         refine ⟨hW.2 c x hx.1, ?_⟩
         have h1 : f b (f c x) = (f b * f c) x := rfl
         rw [h1, hc b c, Module.End.mul_apply, hx.2, map_smul]
-    have hle : W' ≤ W := inf_le_left
     have heq : W' = W := by
       by_contra hne
-      exact hmin W' hW'S (lt_of_le_of_ne hle hne)
+      exact hmin W' hW'S (lt_of_le_of_ne inf_le_left hne)
     refine ⟨μ, fun x hx => ?_⟩
-    have : x ∈ W' := heq ▸ hx
-    exact ((hmem x).1 this).2
+    exact ((hmem x).1 (heq ▸ hx : x ∈ W')).2
   obtain ⟨v, hvW, hv0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hW.1
   refine ⟨v, hv0, fun b => ?_⟩
   obtain ⟨μ, hμ⟩ := key b

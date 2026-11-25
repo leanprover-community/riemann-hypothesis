@@ -45,12 +45,10 @@ theorem exists_lt_norm_pow_sub_pow_lt {p : ℕ} [hp : Fact (Nat.Prime p)] {c : P
   obtain ⟨a, -, φ, hφ, hlim⟩ := (isCompact_closedBall (0 : S) 1).tendsto_subseq hx
   obtain ⟨N, hN⟩ := Metric.tendsto_atTop.mp hlim (ε / 2) (half_pos hε)
   refine ⟨φ N, φ (N + 1), hφ (Nat.lt_succ_self N), ?_⟩
-  have h1 : dist (x (φ (N + 1))) a < ε / 2 := hN (N + 1) (Nat.le_succ N)
-  have h2 : dist (x (φ N)) a < ε / 2 := hN N le_rfl
   have h3 : dist (x (φ (N + 1))) (x (φ N)) < ε :=
     calc dist (x (φ (N + 1))) (x (φ N)) ≤ dist (x (φ (N + 1))) a + dist (x (φ N)) a :=
           dist_triangle_right _ _ _
-      _ < ε / 2 + ε / 2 := add_lt_add h1 h2
+      _ < ε / 2 + ε / 2 := add_lt_add (hN (N + 1) (Nat.le_succ N)) (hN N le_rfl)
       _ = ε := add_halves ε
   rwa [dist_eq_norm] at h3
 
@@ -156,8 +154,7 @@ theorem exists_eq_of_pow_eq_self {ω : ℂ_[p]} {r : ℕ} (hr : 1 ≤ r) (h : ω
 
   set P : (PadicAlgCl p)[X] := X ^ n - 1
   have hmon : P.Monic := monic_X_pow_sub_C 1 (by omega)
-  have hsplit : P.Splits := IsAlgClosed.splits P
-  have hP := hsplit.eq_prod_roots_of_monic hmon
+  have hP := (IsAlgClosed.splits P).eq_prod_roots_of_monic hmon
   have hev : (P.map (algebraMap (PadicAlgCl p) ℂ_[p])).eval ω = 0 := by
     simp [P, hω]
   rw [hP] at hev
@@ -268,11 +265,10 @@ theorem exists_approx_of_pow_sub {z : ℂ_[p]} (hz : ‖z‖ ≤ 1) {r m : ℕ} 
       (continuous_norm.tendsto _).comp (hω.sub_const z)
     exact le_of_tendsto ht (Eventually.of_forall hclose)
   have hfix : ω ^ q = ω := by
-    have h1 : Tendsto (fun j => u j ^ q) atTop (𝓝 (ω ^ q)) := hω.pow q
     have h2 : Tendsto (fun j => u j ^ q) atTop (𝓝 ω) := by
       simp_rw [← hsucc]
       exact (tendsto_add_atTop_iff_nat 1).2 hω
-    exact tendsto_nhds_unique h1 h2
+    exact tendsto_nhds_unique (hω.pow q) h2
   obtain ⟨v, hv, hvω⟩ := exists_eq_of_pow_eq_self hr hfix
   refine ⟨v, hv, ?_⟩
   rwa [hvω, ← norm_neg, neg_sub]

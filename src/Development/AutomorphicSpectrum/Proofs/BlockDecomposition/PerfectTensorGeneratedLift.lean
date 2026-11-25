@@ -72,8 +72,7 @@ theorem pq_baseChange : ∀ (p : ℕ) [Fact p.Prime] (A : Type) [CommRing A](S :
   have hkill : ∀ x ∈ I.map j, i₁ x = 0 := by
     have hle : I.map j ≤ RingHom.ker i₁ := by
       refine Ideal.map_le_iff_le_comap.2 fun s hs => ?_
-      have h0 : (i : S →+* B) s = 0 := (hQ.ker s).2 ⟨0, by simpa using hs⟩
-      have h1 : i s = 0 := h0
+      have h1 : i s = 0 := (hQ.ker s).2 ⟨0, by simpa using hs⟩
       rw [Ideal.mem_comap, RingHom.mem_ker, hj, h1, TensorProduct.zero_tmul]
     exact fun x hx => hle hx
   refine ⟨hT, ?_, ?_⟩
@@ -119,11 +118,9 @@ theorem pq_baseChange : ∀ (p : ℕ) [Fact p.Prime] (A : Type) [CommRing A](S :
         refine RingHom.eq_of_eqOn_set_dense hgen ?_
         rintro y (⟨a, rfl⟩ | ⟨s, rfl⟩)
         · change ρ (i₁ (κ a)) = i' (κ a)
-          rw [hκ]
-          simp [ρ, κA]
+          simp [hκ, ρ, κA]
         · change ρ (i₁ (j s)) = i' (j s)
-          rw [hj]
-          simp [ρ, ψA, hψs]
+          simp [hj, ρ, ψA, hψs]
       have h0 : i' x = 0 := by
         rw [← hρ, RingHom.comp_apply, hx, map_zero]
       exact (hQ'.ker x).1 h0

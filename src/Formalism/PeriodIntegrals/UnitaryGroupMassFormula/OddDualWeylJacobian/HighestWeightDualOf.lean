@@ -40,8 +40,7 @@ lemma nu_anti {m : ℕ} (lam : Fin (m + 1) → ℤ) (hlam : Antitone lam) (t : F
 lemma expo_castSucc {m : ℕ} (lam : Fin (m + 1) → ℤ) (hlam : Antitone lam) (s : Fin m) :
     nuOf (lamStar lam) s.castSucc - nuNext (nuOf (lamStar lam)) s.castSucc =
       nuOf lam s.rev.castSucc - nuNext (nuOf lam) s.rev.castSucc := by
-  rw [nuNext_castSucc, nuNext_castSucc]
-  simp only [nuStar_apply, Fin.rev_castSucc, Fin.rev_succ]
+  simp only [nuNext_castSucc, nuNext_castSucc, nuStar_apply, Fin.rev_castSucc, Fin.rev_succ]
   simp only [PI.OddDualWeyl.nuOf]
   have h1 := hlam (Fin.zero_le s.rev.castSucc)
   have h2 := hlam (show s.rev.castSucc ≤ s.rev.succ from Fin.castSucc_lt_succ.le)
@@ -50,13 +49,11 @@ lemma expo_castSucc {m : ℕ} (lam : Fin (m + 1) → ℤ) (hlam : Antitone lam) 
 
 lemma expo_star_last {m : ℕ} (lam : Fin (m + 1) → ℤ) :
     nuOf (lamStar lam) (Fin.last m) - nuNext (nuOf (lamStar lam)) (Fin.last m) = 0 := by
-  rw [nuNext_last, nuStar_apply, Fin.rev_last]
-  simp
+  simp [nuNext_last, nuStar_apply, Fin.rev_last]
 
 lemma expo_last {m : ℕ} (lam : Fin (m + 1) → ℤ) :
     nuOf lam (Fin.last m) - nuNext (nuOf lam) (Fin.last m) = 0 := by
-  rw [nuNext_last]
-  simp [PI.OddDualWeyl.nuOf]
+  simp [nuNext_last, PI.OddDualWeyl.nuOf]
 
 lemma prod_minors {m : ℕ} (lam : Fin (m + 1) → ℤ) (hlam : Antitone lam) (σ : Equiv.Perm (Fin (m + 1))) :
     ∏ s : Fin (m + 1), pMinor R σ (m + 1 - 1 - s.val) (by omega) ^

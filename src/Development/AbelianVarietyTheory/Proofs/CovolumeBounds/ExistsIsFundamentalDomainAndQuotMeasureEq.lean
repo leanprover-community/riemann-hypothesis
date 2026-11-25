@@ -79,8 +79,7 @@ theorem exists_measurableSet_orbitSection_of_discreteOrbits [Countable G] [Topol
   obtain ⟨b, hbc, -, hb⟩ := TopologicalSpace.exists_countable_basis X
   obtain ⟨B, hB⟩ := (hbc.insert ∅).exists_eq_range (insert_nonempty _ _)
   have hBo : ∀ n, IsOpen (B n) := fun n => by
-    have : B n ∈ insert ∅ b := hB ▸ mem_range_self n
-    rcases this with h | h
+    rcases (hB ▸ mem_range_self n : B n ∈ insert ∅ b) with h | h
     · rw [h]; exact isOpen_empty
     · exact hb.isOpen h
   let S : ℕ → Set X := fun n => B n ∩ ⋂ g : G, (((g • ·) ⁻¹' B n)ᶜ ∪ {x | g • x = x})
@@ -93,8 +92,7 @@ theorem exists_measurableSet_orbitSection_of_discreteOrbits [Countable G] [Topol
   have hS : ∀ x, ∃ n, x ∈ S n := fun x => by
     obtain ⟨U, hU, h⟩ := hdisc x
     obtain ⟨t, ht, hxt, htU⟩ := hb.mem_nhds_iff.1 hU
-    have : t ∈ range B := hB ▸ mem_insert_of_mem _ ht
-    obtain ⟨n, rfl⟩ := this
+    obtain ⟨n, rfl⟩ := (hB ▸ mem_insert_of_mem _ ht : t ∈ range B)
     exact ⟨n, (hSmem n x).2 ⟨hxt, fun g hg => h g (htU hg)⟩⟩
   let T : ℕ → Set X := fun n => ⋃ g : G, (g • ·) ⁻¹' S n
   have hTm : ∀ n, MeasurableSet (T n) := fun n =>
@@ -153,13 +151,11 @@ theorem measure_le_of_ae_unique_of_ae_covers [Countable G] [MeasurableConstSMul 
     exact Nat.find_min hex (hg ▸ hk) ⟨k, rfl, h⟩
   have h2 : Pairwise (Function.onFun (AEDisjoint μ) Q) := by
     intro g h hgh
-    have := (hq g⁻¹).ae hu
-    refine measure_mono_null (fun y hy => ?_) this
+    refine measure_mono_null (fun y hy => ?_) ((hq g⁻¹).ae hu)
     intro hy'
     obtain ⟨⟨⟨hg1, hg2⟩, hg3⟩, ⟨hh1, hh2⟩, hh3⟩ := hy
     have key : h⁻¹ • y = g⁻¹ • y := by
-      have := hy' hg1 (h⁻¹ * g) (by simpa [mul_smul] using hh1)
-      simpa [mul_smul] using this
+      simpa [mul_smul] using hy' hg1 (h⁻¹ * g) (by simpa [mul_smul] using hh1)
     rcases lt_trichotomy (e g) (e h) with hl | hl | hl
     · exact hh3 (mem_iUnion₂.2 ⟨g, hl, by rw [mem_preimage]; beta_reduce; rw [key]; exact hg2⟩)
     · exact hgh (he hl)

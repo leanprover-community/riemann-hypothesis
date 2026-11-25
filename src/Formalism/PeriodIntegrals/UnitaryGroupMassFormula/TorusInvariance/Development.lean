@@ -199,12 +199,10 @@ lemma Tf_mem {φ : Pt k r i D → E} (hφ : φ ∈ Sm E k r i D) (a b : Fin (mdi
 
 lemma Tf_add {φ ψ : Pt k r i D → E} (hφ : φ ∈ Sm E k r i D) (hψ : ψ ∈ Sm E k r i D)
     (a b : Fin (mdim k r i)) : Tf a b (φ + ψ) = Tf a b φ + Tf a b ψ := by
-  have hφ' : SmoothLev k r i D (ext k r i D φ) := hφ
-  have hψ' : SmoothLev k r i D (ext k r i D ψ) := hψ
   funext p
   have e : ext k r i D (φ + ψ) = fun x => ext k r i D φ x + (1 : ℂ) • ext k r i D ψ x := by
     funext g; unfold ext; split_ifs <;> simp
-  have h3 := (hP E k r (fun _ => 0) i D a b (ext k r i D φ) (ext k r i D ψ) 1 hD hφ' hψ').2.2 p.1 p.2
+  have h3 := (hP E k r (fun _ => 0) i D a b (ext k r i D φ) (ext k r i D ψ) 1 hD hφ hψ).2.2 p.1 p.2
   show EH k r (posL k r i a) (posL k r i b) (ext k r i D (φ + ψ)) p.1 =
     EH k r (posL k r i a) (posL k r i b) (ext k r i D φ) p.1 + EH k r (posL k r i a) (posL k r i b) (ext k r i D ψ) p.1
   rw [e, h3, one_smul]
@@ -321,8 +319,7 @@ variable (hRS : StepRSm) (hs'G : s' ∈ Glev k r i)
 include hRS hs'G
 
 lemma Rf_mem {φ : Pt k r i D → E} (hφ : φ ∈ Sm E k r i D) : Rf hs' φ ∈ Sm E k r i D := by
-  have hφ' : SmoothLev k r i D (ext k r i D φ) := hφ
-  have h1 := hRS E k r i D (ext k r i D φ) s' hs'G (fun g hg => (hs' g hg).2) hφ'
+  have h1 := hRS E k r i D (ext k r i D φ) s' hs'G (fun g hg => (hs' g hg).2) hφ
   show SmoothLev k r i D (ext k r i D (Rf hs' φ))
   refine lev_congr hD (fun g hg => ?_) h1
   show ext k r i D φ (g * s') = ext k r i D (Rf hs' φ) g
@@ -396,14 +393,11 @@ lemma left_step (hL : QMinorLeftH) {E : Type} [NormedAddCommGroup E] [NormedSpac
     rw [tl00, tl00]
     exact hq _ _ _
   | 0, 1 =>
-    rw [tl01, tl01]
-    simp only [Pi.neg_apply, chatL, hq, hyb]
+    simp only [tl01, tl01, Pi.neg_apply, chatL, hq, hyb]
   | 1, 0 =>
-    rw [tl10, tl10]
-    simp only [Pi.neg_apply, chatL, hq, hy]
+    simp only [tl10, tl10, Pi.neg_apply, chatL, hq, hy]
   | 1, 1 =>
-    rw [tl11, tl11]
-    simp only [Pi.neg_apply, chat2L, hq, hy, hyb]
+    simp only [tl11, tl11, Pi.neg_apply, chat2L, hq, hy, hyb]
 
 theorem tInvariant_of_contractions (hCC : ContractionsCovariant) (hP : EabPres) (hG : EabGlLev) (hL : QMinorLeftH)
     (hS : StepS) (hGr : StepGrp) (hV : StepVec) (hC : StepCongr) (hRt : StepRight) (hRS : StepRSm) :
@@ -411,15 +405,12 @@ theorem tInvariant_of_contractions (hCC : ContractionsCovariant) (hP : EabPres) 
   intro E _ _ k r z z' i D f Y p q hz hz' hDom hf s hs s' hs' g hg
   have hDo : IsOpen D := hDom.1
   obtain ⟨hVl, hVr⟩ := hV k r z z' i hz hz'
-  have hsG : s ∈ Glev k r i := ((hS k r z i hz).2 s hs).1
   have hs'G : s' ∈ Glev k r i := ((hS k r z' i hz').2 s' hs').1
-  have h1z : (1 : Mx k r) ∈ Slev k r z i := (hS k r z i hz).1
-  have h1z' : (1 : Mx k r) ∈ Slev k r z' i := (hS k r z' i hz').1
   have hh : s * g ∈ Glev k r i ∩ D := by
-    refine ⟨hGr k r i s hsG g hg.1, ?_⟩
-    simpa using hDom.2 g hg s hs 1 h1z'
+    refine ⟨hGr k r i s (((hS k r z i hz).2 s hs).1) g hg.1, ?_⟩
+    simpa using hDom.2 g hg s hs 1 ((hS k r z' i hz').1)
   have hR : ∀ y ∈ Glev k r i ∩ D, y * s' ∈ Glev k r i ∩ D := fun y hy =>
-    ⟨hGr k r i y hy.1 s' hs'G, by simpa using hDom.2 y hy 1 h1z s' hs'⟩
+    ⟨hGr k r i y hy.1 s' hs'G, by simpa using hDom.2 y hy 1 ((hS k r z i hz).1) s' hs'⟩
   rw [left_step hL k r z z' i Y p q (fun y => f (y * s')) s g (hVl s hs g).1 (hVl s hs g).2]
   obtain ⟨hQP, hPQ, hxv, hxbv, hyv⟩ := hVr s' hs'
   have hf' : SmoothLev k r i D (ext k r i D (fun p : Pt k r i D => f p.1)) :=

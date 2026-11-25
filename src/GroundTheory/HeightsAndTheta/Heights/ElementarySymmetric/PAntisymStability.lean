@@ -51,14 +51,12 @@ lemma exists_uniform_coeff_bound {E : Type*} [NormedAddCommGroup E] [NormedSpace
   have hy : G y = ∑ i, b.repr y i • G (b i) := by
     conv_lhs => rw [← b.sum_repr y]
 
-    rw [map_sum]
-    simp only [map_smul]
+    simp only [map_sum, map_smul]
   rw [hy, coeff_sum, Finset.sum_mul]
   refine (Finset.abs_sum_le_sum_abs _ _).trans (Finset.sum_le_sum fun i _ => ?_)
   rw [MvPolynomial.coeff_smul, smul_eq_mul, abs_mul]
   have h1 : |b.repr y i| ≤ ‖c i‖ * ‖y‖ := by
-    have := (c i).le_opNorm y
-    simpa [c, Real.norm_eq_abs] using this
+    simpa [c, Real.norm_eq_abs] using (c i).le_opNorm y
   calc |b.repr y i| * |(G (b i)).coeff m|
       ≤ (‖c i‖ * ‖y‖) * ∑ m' ∈ (G (b i)).support, |(G (b i)).coeff m'| :=
         mul_le_mul h1 (abs_coeff_le_sum_abs_coeff _ _) (abs_nonneg _)
@@ -85,13 +83,11 @@ theorem AntisymStability.proof (hB1 : AntisymDivisible.Statement) : AntisymStabi
   let y := Φ.rangeRestrict P'
   let Q : antisymSpace T N j := g y
   have hQ : Φ Q = Φ P' := by
-    have h1 : Φ.rangeRestrict Q = y := LinearMap.congr_fun hg y
-    exact congrArg Subtype.val h1
+    exact congrArg Subtype.val (LinearMap.congr_fun hg y)
   have hker : Φ (P' - Q) = 0 := by rw [map_sub, hQ, sub_self]
   have hvan : ∀ x ∈ Ω, eval x ((P' - Q : antisymSpace T N j) : MvPolynomial (T × Fin N) ℝ) = 0 := by
     intro x hx
-    have := congrArg (fun f : C(Ω, ℝ) => f ⟨x, hx⟩) hker
-    simpa [Φ, antisymEvalOn] using this
+    simpa [Φ, antisymEvalOn] using congrArg (fun f : C(Ω, ℝ) => f ⟨x, hx⟩) hker
   obtain ⟨l, hl, hPl⟩ := hB1 T N j _ (P' - Q).2 (fun τ a b ha hb => by
     obtain ⟨_, _, O, hO, hne, hOsub⟩ := hOm τ a b ha hb
     refine ⟨O, hO, hne, fun x hx => hvan x ?_⟩

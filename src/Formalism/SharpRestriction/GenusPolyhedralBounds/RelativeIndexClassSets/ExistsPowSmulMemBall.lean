@@ -169,8 +169,7 @@ theorem vL_eq_top_iff (a : ↥(As O A)) : vL ζ a = ⊤ ↔ algebraMap ↥(As O 
 theorem vL_ne_top {a : ↥(As O A)} (ha : a ∈ nonZeroDivisors ↥(As O A)) : vL ζ a ≠ ⊤ := by
   rw [Ne, vL_eq_top_iff, IsLocalization.map_eq_zero_iff ζ.asIdeal.primeCompl]
   rintro ⟨⟨m, hm⟩, h⟩
-  have : m = 0 := (mem_nonZeroDivisors_iff_right.1 ha) m h
-  exact hm (this ▸ ζ.asIdeal.zero_mem)
+  exact hm (((mem_nonZeroDivisors_iff_right.1 ha) m h : m = 0) ▸ ζ.asIdeal.zero_mem)
 
 theorem vL_eq_zero_iff (a : ↥(As O A)) : vL ζ a = 0 ↔ a ∉ ζ.asIdeal := by
   rw [vL_eq_addVal, IsDiscreteValuationRing.addVal_eq_zero_iff,
@@ -188,8 +187,7 @@ theorem unif_mem_nonZeroDivisors (h : IsUnif (A := A) ϖ) :
   rw [mem_nonZeroDivisors_iff_right]
   intro b hb
   have h1 : (b : A) * algebraMap O A ϖ = 0 := by
-    have := congrArg (Subtype.val) hb
-    simpa using this
+    simpa using congrArg (Subtype.val) hb
   exact Subtype.ext (by simpa using (h.isUnit.mul_left_eq_zero).1 h1)
 
 theorem unif_mem (h : IsUnif (A := A) ϖ) (ζ : Pts O A) : algebraMap O ↥(As O A) ϖ ∈ ζ.asIdeal := by
@@ -386,8 +384,7 @@ theorem mem_As_iff [∀ ζ : Pts O A, IsDVRAt ζ] (h : IsUnif (A := A) ϖ) (x : 
     exact Ideal.mem_of_localization_maximal (fun P hP => h0 ⟨P, hP⟩)
   obtain ⟨b, hb⟩ := Ideal.mem_span_singleton.1 key
   have h2 : (algebraMap O A ϖ) ^ n * x = (algebraMap O A ϖ) ^ n * (b : A) := by
-    have := congrArg Subtype.val hb
-    simpa [Algebra.smul_def] using this
+    simpa [Algebra.smul_def] using congrArg Subtype.val hb
   rw [(h.isUnit.pow n).mul_right_inj.1 h2]
   exact b.2
 

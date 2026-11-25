@@ -62,17 +62,13 @@ theorem gramE_consTup (σ : E →ₐ[F] E) {M : ℕ} (J : Matrix (Fin M) (Fin M)
   ext a b
   refine Fin.cases ?_ (fun a => ?_) a <;> refine Fin.cases ?_ (fun b => ?_) b
   · change hE σ (blockOne t J) (Fin.cons 1 (fun _ => 0)) (Fin.cons 1 (fun _ => 0)) = t
-    rw [hE_blockOne_cons, hz, hE_zero_left]
-    simp
+    simp [hE_blockOne_cons, hz, hE_zero_left]
   · change hE σ (blockOne t J) (Fin.cons 1 (fun _ => 0)) (Fin.cons 0 (X b)) = 0
-    rw [hE_blockOne_cons, hz, hE_zero_left]
-    simp
+    simp [hE_blockOne_cons, hz, hE_zero_left]
   · change hE σ (blockOne t J) (Fin.cons 0 (X a)) (Fin.cons 1 (fun _ => 0)) = 0
-    rw [hE_blockOne_cons, hz, hE_zero_right]
-    simp
+    simp [hE_blockOne_cons, hz, hE_zero_right]
   · change hE σ (blockOne t J) (Fin.cons 0 (X a)) (Fin.cons 0 (X b)) = hE σ J (X a) (X b)
-    rw [hE_blockOne_cons]
-    simp
+    simp [hE_blockOne_cons]
 
 theorem exists_consTup_of_gramE (σ : E →ₐ[F] E) {M : ℕ} (J : Matrix (Fin M) (Fin M) E) {t : E}
     (ht : t ≠ 0) {n : ℕ} (T : Matrix (Fin n) (Fin n) E) (Y : Fin (n + 1) → Fin (M + 1) → E)

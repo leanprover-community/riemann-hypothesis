@@ -134,21 +134,18 @@ theorem exists_orthonormal_of_linearIndependent {x : ι → E} (hx : LinearIndep
     ∃ (e : ι → E) (m : Matrix ι ι 𝕜), Orthonormal 𝕜 e ∧ ∀ j, x j = ∑ i, m i j • e i := by
   set S := Submodule.span 𝕜 (Set.range x)
   haveI : FiniteDimensional 𝕜 S := FiniteDimensional.span_of_finite 𝕜 (Set.finite_range x)
-  have h : finrank 𝕜 S = Fintype.card ι := finrank_span_eq_card hx
   let b : OrthonormalBasis ι 𝕜 S :=
-    (stdOrthonormalBasis 𝕜 S).reindex (Fintype.equivFinOfCardEq h.symm).symm
+    (stdOrthonormalBasis 𝕜 S).reindex (Fintype.equivFinOfCardEq (finrank_span_eq_card hx).symm).symm
   let y : ι → S := fun j => ⟨x j, Submodule.subset_span ⟨j, rfl⟩⟩
   refine ⟨fun i => (b i : E), of fun i j => b.repr (y j) i,
     b.orthonormal.comp_linearIsometry S.subtypeₗᵢ, fun j => ?_⟩
-  have := congrArg (fun s : S => (s : E)) (b.sum_repr (y j))
-  simpa using this.symm
+  simpa using (congrArg (fun s : S => (s : E)) (b.sum_repr (y j))).symm
 
 omit [DecidableEq ι] [Fintype κ] [DecidableEq κ] in
 theorem norm_sum_smul_sq {e : ι → E} (he : Orthonormal 𝕜 e) (c : ι → 𝕜) :
     ‖∑ i, c i • e i‖ ^ 2 = ∑ i, ‖c i‖ ^ 2 := by
   have h := he.inner_sum c c Finset.univ
-  rw [inner_self_eq_norm_sq_to_K] at h
-  simp only [RCLike.conj_mul] at h
+  simp only [inner_self_eq_norm_sq_to_K, RCLike.conj_mul] at h
   exact_mod_cast h
 
 theorem re_det_gram_le_prod (x : ι → E) : RCLike.re (gram 𝕜 x).det ≤ ∏ k, ‖x k‖ ^ 2 := by
@@ -200,8 +197,7 @@ theorem norm_det_apply_sq_le (φ : ι → E →L[𝕜] 𝕜) (x : ι → E) :
     have h0 : (of fun j k => φ j (x k)).det = 0 := by
       refine exists_mulVec_eq_zero_iff.mp ⟨g, fun h => hi (congrFun h i), ?_⟩
       funext j
-      have := congrArg (φ j) hg
-      simpa [mulVec, dotProduct, mul_comm] using this
+      simpa [mulVec, dotProduct, mul_comm] using congrArg (φ j) hg
     rw [h0, norm_zero]
     exact (by norm_num : (0 : ℝ) ^ 2 ≤ 0).trans
       (mul_nonneg (re_det_gram_nonneg x) (by positivity))

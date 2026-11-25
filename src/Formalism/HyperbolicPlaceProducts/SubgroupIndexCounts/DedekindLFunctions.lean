@@ -21,7 +21,7 @@ private theorem exists_span_singleton_eq_of_le_span_singleton {R M : Type} [Comm
     show f r ∈ N
     rw [LinearMap.mem_ker.1 hr]
     exact N.zero_mem
-  have key : ∃ x, J ⊔ Ideal.span {x} = I := by
+  obtain ⟨x, hx⟩ : ∃ x, J ⊔ Ideal.span {x} = I := by
     by_cases hJ : J = ⊥
     ·
       have hinj : Function.Injective f := LinearMap.ker_eq_bot.1 hJ
@@ -34,7 +34,6 @@ private theorem exists_span_singleton_eq_of_le_span_singleton {R M : Type} [Comm
         have hIt : I = ⊤ := (Ideal.eq_top_iff_one I).2 (by rw [← hb]; exact I.mul_mem_right b ha)
         exact ⟨1, by rw [hIt, Ideal.span_singleton_one, sup_top_eq]⟩
     · exact IsDedekindDomain.exists_sup_span_eq hJI hJ
-  obtain ⟨x, hx⟩ := key
   refine ⟨x • v, le_antisymm ?_ ?_⟩
   · rw [Submodule.span_singleton_le_iff_mem]
     have hxI : x ∈ I := hx ▸ Ideal.mem_sup_right (Ideal.mem_span_singleton_self x)
@@ -83,8 +82,7 @@ theorem exists_family_span_eq_of_le {R M : Type} [CommRing R] [IsDedekindDomain 
       rw [hb0, add_zero]
       exact Submodule.smul_mem _ _ (Submodule.mem_span_singleton_self _)
     obtain ⟨t', ht'⟩ := exists_span_singleton_eq_of_le_span_singleton (S'.mkQ (v 0)) (N.map S'.mkQ) hπ
-    have ht'm : t' ∈ N.map S'.mkQ := ht' ▸ Submodule.mem_span_singleton_self t'
-    obtain ⟨n0, hn0, hn0t⟩ := ht'm
+    obtain ⟨n0, hn0, hn0t⟩ : t' ∈ N.map S'.mkQ := ht' ▸ Submodule.mem_span_singleton_self t'
     obtain ⟨u, hu⟩ := ih (Fin.tail v) (N ⊓ S') inf_le_right
     refine ⟨Fin.cons n0 u, ?_⟩
     rw [Fin.range_cons, Submodule.span_insert, hu]

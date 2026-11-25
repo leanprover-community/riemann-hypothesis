@@ -179,18 +179,16 @@ theorem relIndex_mul_measure {G : Type*} [Group G] [MeasurableSpace G] [Measurab
     · intro hx
       obtain ⟨⟨b, h⟩, hbh, -⟩ := hs.existsUnique ⟨x, hx⟩
       refine ⟨b, (h.val : G), Subgroup.mem_subgroupOf.mp h.2, ?_⟩
-      have := congrArg Subtype.val hbh
-      exact this
+      exact congrArg Subtype.val hbh
   have hdisj : Pairwise (Function.onFun Disjoint fun a : s => (a.val : L) • (H : Set G)) := by
     intro a b hab
     rw [Function.onFun, Set.disjoint_left]
     rintro x ⟨h1, hh1, rfl⟩ ⟨h2, hh2, he⟩
     apply hab
-    have hh1' : (⟨h1, hHL hh1⟩ : L) ∈ H.subgroupOf L := Subgroup.mem_subgroupOf.mpr hh1
     have hh2' : (⟨h2, hHL hh2⟩ : L) ∈ H.subgroupOf L := Subgroup.mem_subgroupOf.mpr hh2
     have e : (a.val : L) * ⟨h1, hHL hh1⟩ = (b.val : L) * ⟨h2, hHL hh2⟩ := Subtype.ext he.symm
     have := (hs.existsUnique ((a.val : L) * ⟨h1, hHL hh1⟩)).unique
-      (y₁ := (a, ⟨_, hh1'⟩)) (y₂ := (b, ⟨_, hh2'⟩)) rfl e.symm
+      (y₁ := (a, ⟨_, (Subgroup.mem_subgroupOf.mpr hh1)⟩)) (y₂ := (b, ⟨_, hh2'⟩)) rfl e.symm
     exact congrArg Prod.fst this
   calc (H.relIndex L : ENNReal) * μ H = ∑' a : s, μ ((a.val : L) • (H : Set G)) := by
         simp [measure_smul, hs.encard_left, Subgroup.relIndex]

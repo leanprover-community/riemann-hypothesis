@@ -77,8 +77,7 @@ theorem upq_iff {g : GL (Fin p ⊕ Fin q) ℂ} : g ∈ Upq p q ↔
 
 theorem Jpq_sq : Jpq p q * Jpq p q = 1 := by
   unfold Jpq
-  rw [fromBlocks_multiply]
-  simp
+  simp [fromBlocks_multiply]
 
 theorem upq_right {g : GL (Fin p ⊕ Fin q) ℂ} (hg : g ∈ Upq p q) :
     (g : Matrix (Fin p ⊕ Fin q) (Fin p ⊕ Fin q) ℂ) * Jpq p q * (g : Matrix (Fin p ⊕ Fin q) (Fin p ⊕ Fin q) ℂ)ᴴ =
@@ -229,8 +228,7 @@ theorem hP_moeb {g : GL (Fin p ⊕ Fin q) ℂ} (hg : g ∈ Upq p q) {z : Matrix 
 
 theorem hP_mul_eq_one {z : Matrix (Fin p) (Fin q) ℂ} (hz : z ∈ hcDom p q) :
     hP z * (1 + z * (hQ z)⁻¹ * zᴴ) = 1 := by
-  have hpd : (hQ z).PosDef := hz
-  have hu : IsUnit (hQ z).det := isUnit_iff_ne_zero.mpr hpd.det_pos.ne'
+  have hu : IsUnit (hQ z).det := isUnit_iff_ne_zero.mpr hz.det_pos.ne'
   have key : z * (hQ z * (hQ z)⁻¹) * zᴴ = z * zᴴ := by rw [Matrix.mul_nonsing_inv _ hu, Matrix.mul_one]
   generalize (hQ z)⁻¹ = R at key ⊢
   unfold hQ at key
@@ -243,8 +241,7 @@ theorem hP_mul_eq_one {z : Matrix (Fin p) (Fin q) ℂ} (hz : z ∈ hcDom p q) :
 theorem hP_inv_posDef {z : Matrix (Fin p) (Fin q) ℂ} (hz : z ∈ hcDom p q) : (hP z)⁻¹.PosDef := by
   have e : (hP z)⁻¹ = 1 + z * (hQ z)⁻¹ * zᴴ := Matrix.inv_eq_right_inv (hP_mul_eq_one hz)
   rw [e]
-  have hq : (hQ z).PosDef := hz
-  exact Matrix.PosDef.one.add_posSemidef (hq.inv.posSemidef.mul_mul_conjTranspose_same z)
+  exact Matrix.PosDef.one.add_posSemidef (hz.inv.posSemidef.mul_mul_conjTranspose_same z)
 
 theorem hP_posDef {z : Matrix (Fin p) (Fin q) ℂ} (hz : z ∈ hcDom p q) : (hP z).PosDef := by
   have hu : IsUnit (hP z).det := Matrix.isUnit_det_of_right_inverse (hP_mul_eq_one hz)

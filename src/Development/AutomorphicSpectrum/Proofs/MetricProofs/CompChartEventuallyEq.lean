@@ -99,15 +99,13 @@ theorem smoothOn_pull {A : FinHolAtlas e X} {A' : FinHolAtlas e' X'} {h : X' →
       ContDiffAt ℝ ∞ ((f ∘ h) ∘ (A'.chart j).symm) t := by
     rintro t ⟨ht, htU⟩
     obtain ⟨k, hk⟩ := A.cover (h ((A'.chart j).symm t))
-    have hF : AnalyticAt ℂ (A.chart k ∘ h ∘ (A'.chart j).symm) t := hh.2 j k t ⟨ht, hk⟩
-    have hF' : ContDiffAt ℂ ∞ (A.chart k ∘ h ∘ (A'.chart j).symm) t := hF.contDiffAt
     have hci := chart_image_mem (A := A) (A' := A') (h := h) j k hk
     have hzU : (A.chart k).symm ((A.chart k ∘ h ∘ (A'.chart j).symm) t) ∈ U := by
       rw [hci.2]; exact htU
     have hfk : ContDiffAt ℝ ∞ (f ∘ (A.chart k).symm) ((A.chart k ∘ h ∘ (A'.chart j).symm) t) :=
       contDiffAt_of_smoothOn hU hf k hci.1 hzU
     have hcomp : ContDiffAt ℝ ∞ ((f ∘ (A.chart k).symm) ∘ (A.chart k ∘ h ∘ (A'.chart j).symm)) t :=
-      hfk.comp t (hF'.restrict_scalars ℝ)
+      hfk.comp t ((hh.2 j k t ⟨ht, hk⟩).contDiffAt.restrict_scalars ℝ)
     exact hcomp.congr_of_eventuallyEq (comp_chart_eventuallyEq hh f j k ht hk)
   exact fun t ht => (key t ht).contDiffWithinAt
 
@@ -117,9 +115,8 @@ theorem isPsh_pull {A : FinHolAtlas e X} {A' : FinHolAtlas e' X'} {h : X' → X}
   intro x j y hy w
   obtain ⟨k, hk⟩ := A.cover (h ((A'.chart j).symm y))
   have hci := chart_image_mem (A := A) (A' := A') (h := h) j k hk
-  have hyP : h ((A'.chart j).symm y) ∈ P.U (h x) := hy.2
   have hzU : (A.chart k).symm ((A.chart k ∘ h ∘ (A'.chart j).symm) y) ∈ P.U (h x) := by
-    rw [hci.2]; exact hyP
+    rw [hci.2]; exact hy.2
   have h2 : (2 : WithTop ℕ∞) ≤ ∞ := WithTop.coe_le_coe.mpr le_top
   have hg : ContDiffAt ℝ 2 (P.φ (h x) ∘ (A.chart k).symm)
       ((A.chart k ∘ h ∘ (A'.chart j).symm) y) :=
@@ -133,17 +130,14 @@ theorem isPshOn_pull {A : FinHolAtlas e X} {A' : FinHolAtlas e' X'} {h : X' → 
   intro x j y hy w
   obtain ⟨k, hk⟩ := A.cover (h ((A'.chart j).symm y))
   have hci := chart_image_mem (A := A) (A' := A') (h := h) j k hk
-  have hyP : h ((A'.chart j).symm y) ∈ P.U (h x) := hy.2.1.1
-  have hyU : h ((A'.chart j).symm y) ∈ U := hy.2.2
   have hzP : (A.chart k).symm ((A.chart k ∘ h ∘ (A'.chart j).symm) y) ∈ P.U (h x) := by
-    rw [hci.2]; exact hyP
+    rw [hci.2]; exact hy.2.1.1
   have hzU : (A.chart k).symm ((A.chart k ∘ h ∘ (A'.chart j).symm) y) ∈ U := by
-    rw [hci.2]; exact hyU
-  have h2 : (2 : WithTop ℕ∞) ≤ ∞ := WithTop.coe_le_coe.mpr le_top
+    rw [hci.2]; exact hy.2.2
   have hg : ContDiffAt ℝ 2 ((fun z => P.φ (h x) z + f z) ∘ (A.chart k).symm)
       ((A.chart k ∘ h ∘ (A'.chart j).symm) y) :=
     ((contDiffAt_of_smoothOn (P.isOpen_U (h x)) (hP.1 (h x)) k hci.1 hzP).add
-      (contDiffAt_of_smoothOn hU hf k hci.1 hzU)).of_le h2
+      (contDiffAt_of_smoothOn hU hf k hci.1 hzU)).of_le (WithTop.coe_le_coe.mpr le_top)
   have hmem : (A.chart k ∘ h ∘ (A'.chart j).symm) y ∈
       (A.chart k).target ∩ (A.chart k).symm ⁻¹' ((P + LocPot.ofFun f).U (h x) ∩ U) :=
     ⟨hci.1, ⟨hzP, Set.mem_univ _⟩, hzU⟩

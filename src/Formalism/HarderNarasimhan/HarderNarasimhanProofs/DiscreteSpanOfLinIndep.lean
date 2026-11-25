@@ -99,8 +99,7 @@ theorem linIndep_real (b : Basis ι K V) (X : InfinitePlace K → Matrix ι ι �
   intro t ht p
   have hcoord : ∀ v i r, ∑ q, t q * (Formalism.HermitianLatticesTheory.realize b X (integralBasis K q.1 • c • b q.2)) (v, i, r) = 0 := by
     intro v i r
-    have := congrArg (fun z => z (v, i, r)) ht
-    simpa using this
+    simpa using congrArg (fun z => z (v, i, r)) ht
   have hC : ∀ v i, ∑ q, (t q : ℂ) * Formalism.HermitianLatticesTheory.fcoord b X v (integralBasis K q.1 • c • b q.2) i = 0 := by
     intro v i
     apply Complex.ext
@@ -131,8 +130,7 @@ theorem linIndep_real (b : Basis ι K V) (X : InfinitePlace K → Matrix ι ι �
       rw [Finset.sum_mul]
       simpa [mul_assoc] using h1
     exact (mul_eq_zero.mp h2).resolve_right hc'
-  have := sum_embedding_eq_zero hS
-  exact congrFun this p.1
+  exact congrFun (sum_embedding_eq_zero hS) p.1
 
 theorem discrete_span_of_linIndep {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
     [FiniteDimensional ℝ E] {ι' : Type*} {f : ι' → E} (hf : LinearIndependent ℝ f) :
@@ -167,9 +165,8 @@ theorem discrete_span_of_linIndep {E : Type*} [NormedAddCommGroup E] [InnerProdu
       (⟨ψ x, hmem x x.2⟩ : Submodule.span ℤ (Set.range (Pi.basisFun ℝ ι')))) ?_ ?_
   · fun_prop
   · intro x y hxy
-    have h1 : ψ x = ψ y := congrArg Subtype.val hxy
     have h2 : (⟨(x : E), hW _ x.2⟩ : Submodule.span ℝ (Set.range f)) = ⟨y, hW _ y.2⟩ :=
-      (Basis.span hf).equivFun.injective (by rw [← hψW, ← hψW]; exact h1)
+      (Basis.span hf).equivFun.injective (by rw [← hψW, ← hψW]; exact (congrArg Subtype.val hxy))
     exact Subtype.ext (Subtype.mk.inj h2)
 
 end PlaceLattice
@@ -186,8 +183,7 @@ theorem zl_span_eq {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
     zl ρ (Submodule.span (𝓞 K) (Set.range e)) =
       Submodule.span ℤ (Set.range fun p : Free.ChooseBasisIndex ℤ (𝓞 K) × ι' =>
         ρ (integralBasis K p.1 • e p.2)) := by
-  have hs : Submodule.span ℤ (Set.range (RingOfIntegers.basis K)) = ⊤ := (RingOfIntegers.basis K).span_eq
-  have h1 := Submodule.span_smul_of_span_eq_top hs (Set.range e)
+  have h1 := Submodule.span_smul_of_span_eq_top ((RingOfIntegers.basis K).span_eq) (Set.range e)
   open Pointwise in
   have hset : Set.range (RingOfIntegers.basis K) • Set.range e =
       Set.range fun p : Free.ChooseBasisIndex ℤ (𝓞 K) × ι' => integralBasis K p.1 • e p.2 := by
@@ -242,7 +238,6 @@ theorem exists_denom {ι' : Type} [Fintype ι'] (e : ι' → V) (N : Submodule (
   refine ⟨y, hy0, ?_⟩
   rw [Submodule.span_le]
   intro x hx
-  have hyK : (y : K) ≠ 0 := Int.cast_ne_zero.2 hy0
   suffices h : ∑ j, c ⟨x, hx⟩ j • e j ∈ Submodule.span (𝓞 K) (Set.range fun a => ((y : K)⁻¹) • e a) by
     rwa [hc ⟨x, hx⟩] at h
   refine Submodule.sum_mem _ fun j _ => ?_
@@ -251,7 +246,7 @@ theorem exists_denom {ι' : Type} [Fintype ι'] (e : ι' → V) (N : Submodule (
       Finset.mem_image_of_mem _ (Finset.mem_univ j)⟩))
   have : c ⟨x, hx⟩ j • e j = r • ((y : K)⁻¹ • e j) := by
     rw [← algebraMap_smul K r, hr, smul_smul, zsmul_eq_mul, mul_assoc, mul_comm (c _ _),
-      ← mul_assoc, mul_inv_cancel₀ hyK, one_mul]
+      ← mul_assoc, mul_inv_cancel₀ (Int.cast_ne_zero.2 hy0), one_mul]
   rw [this]
   exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨j, rfl⟩)
 
@@ -302,9 +297,8 @@ theorem place_lattice_structure : PlLat := by
       rw [Subtype.range_coe, hspan]
       exact Submodule.subset_span hx
     obtain ⟨z, hz0, hzL⟩ := exists_denom (K := K) ((↑) : t → V) L hL hsub
-    have hzK : ((z : K))⁻¹ ≠ 0 := inv_ne_zero (Int.cast_ne_zero.mpr hz0)
     have hli' : LinearIndependent K (fun a : t => ((z : K))⁻¹ • (a : V)) :=
-      hli.units_smul (fun _ => Units.mk0 _ hzK)
+      hli.units_smul (fun _ => Units.mk0 _ (inv_ne_zero (Int.cast_ne_zero.mpr hz0)))
     have hlow : Submodule.span (𝓞 K) (Set.range ((↑) : t → V)) ≤ L := by
       rw [Submodule.span_le, Subtype.range_coe]
       exact htL

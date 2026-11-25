@@ -95,8 +95,7 @@ theorem single_quad (B : Matrix (Fin N) (Fin N) ℂ) (k : Fin N) :
     star (Pi.single k (1 : ℂ) : Fin N → ℂ) ⬝ᵥ (B *ᵥ Pi.single k 1) = B k k := by
   have : star (Pi.single k (1 : ℂ) : Fin N → ℂ) = Pi.single k 1 := by
     ext a; by_cases h : a = k <;> simp [h]
-  rw [this]
-  simp
+  simp [this]
 
 theorem sum_eq_sum_subtype (p : Fin N → Prop) [DecidablePred p] (f : Fin N → ℂ)
     (h : ∀ a, ¬ p a → f a = 0) : ∑ a, f a = ∑ a : {a // p a}, f a := by
@@ -228,8 +227,7 @@ theorem neg_quad (d : Fin N → ℝ) (g : Matrix (Fin N) (Fin N) ℂ) (n : ℕ)
     rw [h3]
     rfl
   rw [neg_mulVec, dotProduct_neg, h2] at h1
-  have := (Complex.lt_def.1 h1).1
-  simpa using this
+  simpa using (Complex.lt_def.1 h1).1
 
 theorem pivot_neg (d : Fin N → ℝ) (g c : Matrix (Fin N) (Fin N) ℂ) (n : ℕ)
     (hneg : (-gramHead d n g).PosDef) (hc : c.BlockTriangular id) (hcu : IsUnit c.det)
@@ -244,8 +242,7 @@ theorem pivot_neg (d : Fin N → ℝ) (g c : Matrix (Fin N) (Fin N) ℂ) (n : �
   have hs : ∀ a : Fin N, n ≤ (a : ℕ) → (c *ᵥ (Pi.single k 1 : Fin N → ℂ)) a = 0 := by
     intro a ha
     have hka : k < a := Fin.lt_def.2 (by omega)
-    have := hc (i := a) (j := k) hka
-    simpa using this
+    simpa using hc (i := a) (j := k) hka
   have h := neg_quad d g n hneg _ hy hs
   have e1 := single_quad (gramOf d (g * c)) k
   rw [quad_gramOf] at e1

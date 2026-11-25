@@ -58,8 +58,7 @@ theorem dpbH_conjTranspose (U : Matrix (Fin n) (Fin n) ℂ) (x : Fin n → ℝ) 
       simp only [Matrix.conjTranspose_mul, Matrix.conjTranspose_conjTranspose, Matrix.mul_assoc]
     have h2 : h (x j - x i) = h (x i - x j) := by rw [← neg_sub, he]
     simp only [Matrix.conjTranspose_apply, Matrix.of_apply]
-    rw [h1, h2, star_mul']
-    simp [Complex.conj_ofReal]
+    simp [h1, h2, star_mul', Complex.conj_ofReal]
   rw [dpbH, dpbH, Matrix.conjTranspose_mul, Matrix.conjTranspose_mul,
     Matrix.conjTranspose_conjTranspose, key]
   exact (Matrix.mul_assoc _ _ _).symm
@@ -174,8 +173,7 @@ private theorem unitary_conj_mul_unitary_conj_of_conjTranspose_mul_self {U : Mat
     (A B : Matrix (Fin n) (Fin n) ℂ) : U * A * Uᴴ * (U * B * Uᴴ) = U * (A * B) * Uᴴ := by
   calc U * A * Uᴴ * (U * B * Uᴴ) = U * A * (Uᴴ * U) * B * Uᴴ := by simp only [Matrix.mul_assoc]
     _ = U * (A * B) * Uᴴ := by
-        rw [hU, mul_one]
-        simp only [Matrix.mul_assoc]
+        simp only [hU, mul_one, Matrix.mul_assoc]
 
 theorem dpbH_ad_left {U : Matrix (Fin n) (Fin n) ℂ} (x : Fin n → ℝ) (hU : Uᴴ * U = 1) (h : ℝ → ℝ)
     (W : Matrix (Fin n) (Fin n) ℂ) :
@@ -184,8 +182,7 @@ theorem dpbH_ad_left {U : Matrix (Fin n) (Fin n) ℂ} (x : Fin n → ℝ) (hU : 
   rw [unitary_conj_mul_unitary_conj_of_conjTranspose_mul_self hU, unitary_conj_mul_unitary_conj_of_conjTranspose_mul_self hU, ← sub_mul, ← mul_sub]
   congr 2
   ext i j
-  rw [dpb_comm_D]
-  simp only [Matrix.of_apply, Complex.ofReal_mul]
+  simp only [dpb_comm_D, Matrix.of_apply, Complex.ofReal_mul]
   ring
 
 theorem dpbH_ad_right {U : Matrix (Fin n) (Fin n) ℂ} (x : Fin n → ℝ) (hU : Uᴴ * U = 1) (h : ℝ → ℝ)

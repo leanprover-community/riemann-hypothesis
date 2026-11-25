@@ -281,8 +281,7 @@ lemma LIMf_shift_gen (e : ι → Λ) (c : ℕ → Λ) (g : Λ → ℂ) (hg : Bdd
     rw [mul_zero] at this
     refine this.congr (fun n => ?_)
     rw [mul_one_div]
-  have := h0.add (tendsto_LIMf e c g hg')
-  simpa using this
+  simpa using h0.add (tendsto_LIMf e c g hg')
 
 lemma bdd_shift {g : Λ → ℂ} (hg : Bdd g) (σ : Λ) : Bdd (fun x => g (x + σ)) := by
   obtain ⟨B, hB⟩ := hg; exact ⟨B, fun x => hB _⟩
@@ -376,8 +375,7 @@ lemma exists_far {f : ℕ} (La : Submodule ℤ (V f)) [DiscreteTopology La] [IsZ
   let w : V f := fun _ => ((|T| + γ : ℝ) : ℂ)
   refine ⟨(ZSpan.floor bR w : V f), ?_, ?_⟩
   · have h := (ZSpan.floor bR w).2
-    have hs : Submodule.span ℤ (Set.range bR) = La := Module.Basis.ofZLatticeBasis_span ℝ La b
-    exact hs.le h
+    exact (Module.Basis.ofZLatticeBasis_span ℝ La b).le h
   · intro v
     have h1 := ZSpan.norm_fract_le bR w
     rw [ZSpan.fract_apply] at h1
@@ -470,8 +468,7 @@ theorem meanExists : MeanExists := by
     rw [add_sub_cancel_right] at htri
     have hnT : T ≤ (n : ℝ) := le_trans (Nat.le_ceil T) (by exact_mod_cast hn)
     linarith
-  have := hts hmem
-  simpa using this
+  simpa using hts hmem
 
 end Lattice
 

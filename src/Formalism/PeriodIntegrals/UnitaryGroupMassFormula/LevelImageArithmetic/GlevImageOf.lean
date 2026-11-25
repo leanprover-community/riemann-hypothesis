@@ -72,13 +72,11 @@ theorem glevImage_of (_hH : LevHom) (hU : LevUH) : GlevImage := by
       · have h := (hfix ⟨q.val, by omega⟩ (by simpa using hqi)).1
         have e : eI k (i + r') ⟨q.val, by omega⟩ = q := Fin.ext (by simp [eI])
         rw [e, mulVec_bvec] at h
-        have := congrFun h p
-        simpa [bvec, Pi.single_apply] using this
+        simpa [bvec, Pi.single_apply] using congrFun h p
       · have h := (hfix ⟨2 * (i + r') + k - q.val, by omega⟩ (by simp; omega)).2
         have e : esI k (i + r') ⟨2 * (i + r') + k - q.val, by omega⟩ = q := Fin.ext (by simp [esI]; omega)
         rw [e, mulVec_bvec] at h
-        have := congrFun h p
-        simpa [bvec, Pi.single_apply] using this
+        simpa [bvec, Pi.single_apply] using congrFun h p
     have hrow : ∀ p : Fin (2 * (i + r') + k + 1), ¬(i ≤ p.val ∧ p.val < 2 * r' + k + 1 + i) →
         ∀ Q, g p Q = if Q = p then 1 else 0 := by
       intro p hp Q
@@ -88,8 +86,7 @@ theorem glevImage_of (_hH : LevHom) (hU : LevUH) : GlevImage := by
       have hX : ¬(i ≤ X.val ∧ X.val < 2 * r' + k + 1 + i) := by omega
       have h1 : ∀ y, (gᴴ * Hpk k (i + r')) X y = Hpk k (i + r') X y := by
         intro y
-        rw [Matrix.mul_apply]
-        simp only [conjTranspose_apply, hcol X hX]
+        simp only [Matrix.mul_apply, conjTranspose_apply, hcol X hX]
         rw [Finset.sum_eq_single X (fun b _ hb => by simp [hb]) (fun h => absurd (Finset.mem_univ X) h)]
         simp
       have h2 := congrFun (congrFun hg' X) Q

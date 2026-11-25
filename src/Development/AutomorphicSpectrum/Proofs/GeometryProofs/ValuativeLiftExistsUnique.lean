@@ -130,9 +130,8 @@ theorem gm_specializes (ξ : Spec (CommRingCat.of Ω) ⟶ X) {p q : X} (hp : gen
 theorem gm_germ (ξ : Spec (CommRingCat.of Ω) ⟶ X) {U : X.Opens} {p q : X} (hp : genPt ξ ⤳ p)
     (hq : genPt ξ ⤳ q) (hpU : p ∈ U) (hqU : q ∈ U) (g : Γ(X, U)) :
     gm ξ hp ((X.presheaf.germ U p hpU).hom g) = gm ξ hq ((X.presheaf.germ U q hqU).hom g) := by
-  have hg : genPt ξ ∈ U := hp.mem_open U.2 hpU
   have e : ∀ (r : X) (hr : genPt ξ ⤳ r) (hrU : r ∈ U), gm ξ hr ((X.presheaf.germ U r hrU).hom g) =
-      (X.presheaf.germ U (genPt ξ) hg ≫ gpC ξ).hom g := by
+      (X.presheaf.germ U (genPt ξ) (hp.mem_open U.2 hpU) ≫ gpC ξ).hom g := by
     intro r hr hrU
     change (X.presheaf.germ U r hrU ≫ X.presheaf.stalkSpecializes hr ≫ gpC ξ).hom g = _
     rw [TopCat.Presheaf.germ_stalkSpecializes_assoc]
@@ -154,8 +153,7 @@ theorem exists_goodChart {ξ : Spec (CommRingCat.of Ω) ⟶ X} {κ : Type} [Fini
   have hr : val zC (s d) ≠ 0 := by
     intro h0
     have h1 := hd c
-    rw [hv1, h0] at h1
-    simp at h1
+    simp [hv1, h0] at h1
   have hunit : IsUnit (s d) := isUnit_of_map_unit (val zC) _ hr.isUnit
   have hne : x d / x c ≠ 0 := by
     rw [← hs d]
@@ -259,8 +257,7 @@ theorem inChart_of_goodChart {ξ : Spec (CommRingCat.of Ω) ⟶ X} {κ : Type} {
     apply Subtype.ext
     have := congrArg (val (Spec.map (CommRingCat.ofHom (algebraMap V C)) ≫ z)) hmul
     rwa [map_mul, map_one, hv] at this
-  have hunit : IsUnit t := isUnit_of_map_unit (val z) _ (IsUnit.of_mul_eq_one _ hvu)
-  obtain ⟨e, rfl⟩ := hunit
+  obtain ⟨e, rfl⟩ : IsUnit t := isUnit_of_map_unit (val z) _ (IsUnit.of_mul_eq_one _ hvu)
   refine ⟨hc, fun j => ?_⟩
   obtain ⟨b, hb⟩ := exists_gm (hreg j)
   have h1 : gm ξ hz (↑e⁻¹ : X.presheaf.stalk (centre z)) * (x c / x c') = 1 := by

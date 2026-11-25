@@ -19,9 +19,8 @@ theorem continuousOn_of_holoOn {X : Type} [TopologicalSpace X] {D : ℕ} (A : Fi
     ⟨(A.chart j).map_source hj, by
       show (A.chart j).symm (A.chart j x) ∈ W
       rw [(A.chart j).left_inv hj]; exact hx⟩
-  have h1 : ContinuousAt (g ∘ (A.chart j).symm) (A.chart j x) := (hg j _ hmem).continuousAt
   have h2 : ContinuousAt ((g ∘ (A.chart j).symm) ∘ A.chart j) x :=
-    ContinuousAt.comp h1 ((A.chart j).continuousAt hj)
+    ContinuousAt.comp ((hg j _ hmem).continuousAt) ((A.chart j).continuousAt hj)
   have heq : (g ∘ (A.chart j).symm) ∘ A.chart j =ᶠ[nhds x] g := by
     filter_upwards [(A.chart j).open_source.mem_nhds hj] with z hz
     simp [Function.comp, (A.chart j).left_inv hz]

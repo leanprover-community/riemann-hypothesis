@@ -159,9 +159,8 @@ theorem exists_prodExp_coord {d : ℕ} (b : Module.Basis (Fin d) ℝ 𝔤) :
   have hΦU : ContDiffOn ℝ ∞ Φ U := contDiffOn_prodExpCoord b
   let F₀ := (contDiffAt_prodExpCoord_zero b).toOpenPartialHomeomorph Φ
     (hasFDerivAt_prodExpCoord_zero b) (by simp)
-  have hcont : ContinuousOn (fderiv ℝ Φ) U := hΦU.continuousOn_fderiv_of_isOpen hU (by simp)
   have hS₁ : IsOpen (U ∩ fderiv ℝ Φ ⁻¹' {u | IsUnit u}) :=
-    hcont.isOpen_inter_preimage hU Units.isOpen
+    (hΦU.continuousOn_fderiv_of_isOpen hU (by simp)).isOpen_inter_preimage hU Units.isOpen
   have hN : IsOpen {t | prodExpVal (fun i => (b i : 𝔸)) t ∈ h.nhdOne} :=
     h.isOpen_nhdOne.preimage (contDiff_prodExpVal _).continuous
   set S₂ := (U ∩ fderiv ℝ Φ ⁻¹' {u | IsUnit u}) ∩
@@ -184,8 +183,7 @@ theorem exists_prodExp_coord {d : ℕ} (b : Module.Basis (Fin d) ℝ 𝔤) :
   · intro z hz; rw [← hF]; exact F.map_source hz
   · intro w hw
     apply ContDiffAt.contDiffWithinAt
-    have hz : F.symm w ∈ F.source := F.map_target hw
-    have hzS : F.symm w ∈ S₂ := hz.2
+    have hzS : F.symm w ∈ S₂ := (F.map_target hw).2
     have hu : IsUnit (fderiv ℝ Φ (F.symm w)) := hzS.1.2
     have hΦz : ContDiffAt ℝ ∞ Φ (F.symm w) := hΦU.contDiffAt (hU.mem_nhds hzS.1.1)
     have hdiff : HasFDerivAt Φ (fderiv ℝ Φ (F.symm w)) (F.symm w) :=
@@ -210,8 +208,7 @@ theorem val_prodExp {d : ℕ} (X : Fin d → 𝔤) (t : Fin d → ℝ) :
     (((h.prodExp X t : G) : 𝔸ˣ) : 𝔸) = prodExpVal (fun i => (X i : 𝔸)) t := by
   let f : G →* 𝔸 := (Units.coeHom 𝔸).comp G.subtype
   show f (List.ofFn fun i => h.expG (t i • X i)).prod = _
-  rw [map_list_prod, List.map_ofFn]
-  simp [prodExpVal, f, Function.comp_def]
+  simp [map_list_prod, List.map_ofFn, prodExpVal, f, Function.comp_def]
 
 theorem continuous_prodExp {d : ℕ} (X : Fin d → 𝔤) : Continuous (h.prodExp X) := by
   rw [isEmbedding_coe_coe.continuous_iff]
@@ -226,7 +223,6 @@ theorem prodExp_coord_eq {d : ℕ} (b : Module.Basis (Fin d) ℝ 𝔤) {T : Set 
     h.prodExp (⇑b) (ψ (logCoord b ((y : 𝔸ˣ) : 𝔸))) = y := by
   set w := logCoord b ((y : 𝔸ˣ) : 𝔸)
   set z := ψ w
-  have hz : logCoord b (prodExpVal (fun i => (b i : 𝔸)) z) = w := hψT w hyT
   have hPz : (((h.prodExp (⇑b) z : G) : 𝔸ˣ) : 𝔸) = prodExpVal (fun i => (b i : 𝔸)) z :=
     h.val_prodExp _ z
   have hzN : (((h.prodExp (⇑b) z : G) : 𝔸ˣ) : 𝔸) ∈ h.nhdOne := hPz ▸ hN w hyT
@@ -236,7 +232,7 @@ theorem prodExp_coord_eq {d : ℕ} (b : Module.Basis (Fin d) ℝ 𝔤) {T : Set 
       (((h.prodExp (⇑b) z : G) : 𝔸ˣ) : 𝔸)) =
       subspaceProj 𝔤 ((expPartialHomeomorph ℝ 𝔸).symm ((y : 𝔸ˣ) : 𝔸)) := by
     apply b.equivFun.toContinuousLinearEquiv.injective
-    rw [hPz]; exact hz
+    rw [hPz]; exact hψT w hyT
   have e2 := congrArg Subtype.val e1
   rw [subspaceProj_of_mem h1, subspaceProj_of_mem h2] at e2
   have e3 := congrArg exp e2

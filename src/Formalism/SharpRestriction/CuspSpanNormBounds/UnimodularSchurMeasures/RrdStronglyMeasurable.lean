@@ -244,15 +244,12 @@ theorem rr_cont_of_meas' [SigmaFinite μ] [IsLocallyFiniteMeasure μ] (hμ : μ 
   let W : Submodule ℂ H :=
     { carrier := {w | Tendsto (fun h => π h w) (𝓝 1) (𝓝 w)}
       add_mem' := fun {a b} ha hb => by
-        have ha' : Tendsto (fun h => π h a) (𝓝 1) (𝓝 a) := ha
-        have hb' : Tendsto (fun h => π h b) (𝓝 1) (𝓝 b) := hb
-        exact (ha'.add hb').congr fun h => (map_add (π h) a b).symm
+        exact (ha.add hb).congr fun h => (map_add (π h) a b).symm
       zero_mem' := by
         show Tendsto (fun h => π h 0) (𝓝 1) (𝓝 0)
         simpa only [map_zero] using tendsto_const_nhds
       smul_mem' := fun c {w} hw => by
-        have hw' : Tendsto (fun h => π h w) (𝓝 1) (𝓝 w) := hw
-        exact (hw'.const_smul c).congr fun h => (map_smul (π h) c w).symm }
+        exact (hw.const_smul c).congr fun h => (map_smul (π h) c w).symm }
   have memW : ∀ w, w ∈ W ↔ Tendsto (fun h => π h w) (𝓝 1) (𝓝 w) := fun w => Iff.rfl
   have hclosed : IsClosed (W : Set H) := by
     refine isClosed_of_closure_subset fun w hw => ?_
@@ -291,8 +288,7 @@ theorem rr_cont_of_meas' [SigmaFinite μ] [IsLocallyFiniteMeasure μ] (hμ : μ 
         (isClosed_eq (continuous_const.inner (π g).continuous) continuous_const) hg
     have e : π g ∘L π g⁻¹ = 1 := by rw [← hmul, mul_inv_cancel, hone]
     have e2 : π g (π g⁻¹ u) = u := by
-      have := congrArg (fun T : H →L[ℂ] H => T u) e
-      simpa using this
+      simpa using congrArg (fun T : H →L[ℂ] H => T u) e
     have hu' : ⟪u, u⟫_ℂ = 0 := by
       have := hzero (π g⁻¹ u)
       rwa [e2] at this

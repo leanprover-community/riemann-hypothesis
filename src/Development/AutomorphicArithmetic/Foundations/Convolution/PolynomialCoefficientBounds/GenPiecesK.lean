@@ -310,8 +310,7 @@ private theorem gt_mono_hom {σ ρ : Type} (f : σ → MvPolynomial ρ ℂ) (w :
   rw [aeval_monomial, Finsupp.prod]
   have h := IsHomogeneous.prod α.support (fun i => f i ^ α i) (fun i => w i * α i)
     (fun i _ => (hf i).pow (α i))
-  have h0 : (algebraMap ℂ (MvPolynomial ρ ℂ) c).IsHomogeneous 0 := isHomogeneous_C ρ c
-  simpa using h0.mul h
+  simpa using (isHomogeneous_C ρ c).mul h
 
 private theorem gt_gen {σ ρ : Type} [DecidableEq σ] (f : σ → MvPolynomial ρ ℂ) (w : σ → ℕ)
     (hw : ∀ i, 1 ≤ w i) (hf : ∀ i, (f i).IsHomogeneous (w i)) (k : ℕ) (G : MvPolynomial σ ℂ)
@@ -323,8 +322,7 @@ private theorem gt_gen {σ ρ : Type} [DecidableEq σ] (f : σ → MvPolynomial 
   set S := G.support.filter (fun α => W α ≤ k) with hS
   have hc : ∀ β, (∑ α ∈ S, monomial α (G.coeff α)).coeff β = if β ∈ S then G.coeff β else 0 := by
     intro β
-    rw [coeff_sum]
-    simp only [coeff_monomial]
+    simp only [coeff_sum, coeff_monomial]
     rw [Finset.sum_ite_eq']
   have hsupp : (∑ α ∈ S, monomial α (G.coeff α)).support ⊆ S := by
     intro β hβ
@@ -644,8 +642,7 @@ theorem UpperTheory.ConvolutionTheory.FX.gen_piecesK :
       aeval blockE (G k) = piece k (F.coeff β) ∧ (G k).totalDegree ≤ k ∧
         l1 (G k) ≤ K ^ (k + 1) / k.factorial := fun β =>
     UpperTheory.ConvolutionTheory.FX.gen_pieces τ n (F.coeff β) (fun w => by
-      have := congrArg (fun P => AddMonoidAlgebra.coeff P β) (hF w)
-      simpa only [coeff_map] using this)
+      simpa only [coeff_map] using (congrArg (fun P => AddMonoidAlgebra.coeff P β) (hF w)))
   choose K G hG using h
   have hc : ∀ k β, (∑ γ ∈ F.support, monomial γ (G γ k) :
       MvPolynomial κ (MvPolynomial (τ × Fin n) ℂ)).coeff β = if β ∈ F.support then G β k else 0 := by

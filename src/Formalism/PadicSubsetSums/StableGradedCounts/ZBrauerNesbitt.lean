@@ -81,10 +81,9 @@ theorem charpoly_mem_closure_simple {k A : Type} [Field k] [Ring A] [Algebra k A
   by_cases h0 : Module.finrank k V = 0
   · have : (cp k V : A → k[X]) = 1 := by
       funext a
-      have hm : (cp k V a).Monic := LinearMap.charpoly_monic _
       have hd : (cp k V a).natDegree = 0 := by
         unfold cp; rw [LinearMap.charpoly_natDegree, h0]
-      exact (Polynomial.Monic.natDegree_eq_zero hm).mp hd
+      exact (Polynomial.Monic.natDegree_eq_zero (LinearMap.charpoly_monic _)).mp hd
     rw [this]; exact one_mem _
   · have hnt : Nontrivial V := Module.nontrivial_of_finrank_pos (R := k) (Nat.pos_of_ne_zero h0)
     have hart : IsArtinian A V := isArtinian_of_tower k inferInstance
@@ -159,8 +158,7 @@ theorem exponents_eq_of_monic_products {K Γ ι : Type} [Field K] (t : Finset ι
           rw [this]
           exact (Nat.modEq_iff_dvd' hle).mp (hmod i hi).symm
       have hle : c i ≤ a i := by simp [hcdef]
-      rw [ha'def]
-      simp only
+      simp only [ha'def]
       rw [Nat.mul_div_cancel' hd]
       omega
     have hb : ∀ i ∈ t, b i = c i + p * b' i := by
@@ -172,8 +170,7 @@ theorem exponents_eq_of_monic_products {K Γ ι : Type} [Field K] (t : Finset ι
           rw [this]
           exact (Nat.modEq_iff_dvd' hle).mp (hmod i hi)
       have hle : c i ≤ b i := by simp [hcdef]
-      rw [hb'def]
-      simp only
+      simp only [hb'def]
       rw [Nat.mul_div_cancel' hd]
       omega
     have hsplit : ∀ (e e' : ι → ℕ), (∀ i ∈ t, e i = c i + p * e' i) → ∀ g,
@@ -264,13 +261,12 @@ theorem exists_kills {K A : Type} [Field K] [Ring A] [Algebra K A]
     have hne : (cp K S0 : A → K[X]) ≠ F := fun h => h0 (by simp [h])
     obtain ⟨a, ha, s', hs'⟩ := ih ht' h0'
     obtain ⟨S1, i1, i2, i3, i4, i5, i6, hF⟩ := ht (show F ∈ ↑(insert F t) by simp)
-    have hx : ∃ x : A, (∀ w : S1, x • w = 0) ∧ ∃ s : S0, x • s ≠ 0 := by
+    obtain ⟨x, hx1, s, hs⟩ : ∃ x : A, (∀ w : S1, x • w = 0) ∧ ∃ s : S0, x • s ≠ 0 := by
       by_contra hcon
       push Not at hcon
       obtain ⟨f, hf⟩ := _root_.Bl.general_b_fact_second_version.goal1 (k := K) (A := A) (W := S1) (S := S0) hcon
       have e : S1 ≃ₗ[A] S0 := LinearEquiv.ofBijective f (LinearMap.bijective_of_ne_zero hf)
       exact hne (by rw [hF]; funext b; exact (cp_congr e b).symm)
-    obtain ⟨x, hx1, s, hs⟩ := hx
     obtain ⟨u, hu⟩ := IsSimpleModule.toSpanSingleton_surjective A hs s'
     refine ⟨a * (u * x), ?_, s, ?_⟩
     · intro G hG
@@ -298,8 +294,7 @@ theorem lin_indep {K A : Type} [Field K] [IsAlgClosed K] [Ring A] [Algebra K A]
     ext v
     simp [hu]
   have h1 : (F0 (u * a)).nextCoeff = - l (a • s) := by
-    rw [hF, nextCoeff_cp, hlin, LinearMap.trace_smulRight]
-    simp
+    simp [hF, nextCoeff_cp, hlin, LinearMap.trace_smulRight]
   have h2 := h (u * a)
   rw [← Finset.add_sum_erase t _ hF0, Finset.sum_eq_zero (fun G hG => by
     rw [(ha.mul_left u).nextCoeff hG, mul_zero]), add_zero, h1] at h2

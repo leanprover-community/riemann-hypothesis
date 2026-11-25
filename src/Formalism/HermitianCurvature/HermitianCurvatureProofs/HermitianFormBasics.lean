@@ -190,12 +190,10 @@ lemma sig_split {p q : ℕ} (G : Matrix (Fin p ⊕ Fin q) (Fin p ⊕ Fin q) ℂ)
       rw [Module.finrank_fintype_fun_eq_card, Module.finrank_fintype_fun_eq_card, Fintype.card_fin]; exact hlt)
     obtain ⟨c, hc, hc0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hne
     have hL : ψ₁ (U *ᵥ (E *ᵥ c)) = 0 := by
-      have : L c = 0 := hc
-      simpa [L, Matrix.mulVecLin_apply, Matrix.mulVec_mulVec] using this
+      simpa [L, Matrix.mulVecLin_apply, Matrix.mulVec_mulVec] using (hc : L c = 0)
     have hle := h₁ _ hL
     rw [hform, hext _ c _ (hEv _ c)] at hle
-    rw [Complex.re_sum] at hle
-    simp only [star_mul_real] at hle
+    simp only [Complex.re_sum, star_mul_real] at hle
     obtain ⟨j, hj⟩ : ∃ j, c j ≠ 0 := by
       by_contra hall; exact hc0 (funext fun j => not_not.mp (fun h => hall ⟨j, h⟩))
     have hpos : 0 < ∑ j : {i // 0 < lam i}, lam j.1 * Complex.normSq (c j) := by
@@ -212,12 +210,10 @@ lemma sig_split {p q : ℕ} (G : Matrix (Fin p ⊕ Fin q) (Fin p ⊕ Fin q) ℂ)
       rw [Module.finrank_fintype_fun_eq_card, Module.finrank_fintype_fun_eq_card, Fintype.card_fin]; exact hlt)
     obtain ⟨c, hc, hc0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hne
     have hL : ψ₂ (U *ᵥ (E *ᵥ c)) = 0 := by
-      have : L c = 0 := hc
-      simpa [L, Matrix.mulVecLin_apply, Matrix.mulVec_mulVec] using this
+      simpa [L, Matrix.mulVecLin_apply, Matrix.mulVec_mulVec] using (hc : L c = 0)
     have hle := h₂ _ hL
     rw [hform, hext _ c _ (hEv _ c)] at hle
-    rw [Complex.re_sum] at hle
-    simp only [star_mul_real] at hle
+    simp only [Complex.re_sum, star_mul_real] at hle
     obtain ⟨j, hj⟩ : ∃ j, c j ≠ 0 := by
       by_contra hall; exact hc0 (funext fun j => not_not.mp (fun h => hall ⟨j, h⟩))
     have hneg : ∀ j : {i // ¬ 0 < lam i}, lam j.1 < 0 := fun j => lt_of_le_of_ne (not_lt.mp j.2) (hlam0 j.1)

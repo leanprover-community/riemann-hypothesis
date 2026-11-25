@@ -408,12 +408,10 @@ lemma adjoin_coord_eq_top :
         exact add_mem ha hb
   rw [eq_top_iff]
   intro f _
-  have hf : (f : Polynomial Ω) ∈ S' := by
+  obtain ⟨s, hs, hsf⟩ : (f : Polynomial Ω) ∈ S' := by
     rw [Polynomial.as_sum_support (f : Polynomial Ω)]
     exact sum_mem fun i _ => hM i _ (f.2 i)
-  obtain ⟨s, hs, hsf⟩ := hf
-  have : s = f := Subtype.ext hsf
-  exact this ▸ hs
+  exact (Subtype.ext hsf : s = f) ▸ hs
 
 def zeroMap : o →+* grading o x 0 where
   toFun r := ⟨algebraMap o (rees o x) r, algebraMap_mem_grading r⟩
@@ -518,10 +516,9 @@ lemma spec_of_injective {B : Type} [CommRing B] (θ : B →+* Ω) (hθ : Functio
     (p : Spec (.of B)) : genPt (Spec.map (CommRingCat.ofHom θ)) ⤳ p := by
   refine (PrimeSpectrum.le_iff_specializes _ _).1 ?_
   intro b hb
-  have h1 : θ b ∈ (IsLocalRing.closedPoint Ω).asIdeal := hb
   have h2 : θ b = 0 := by
     by_contra h
-    exact ((IsLocalRing.mem_maximalIdeal _).1 h1) (isUnit_iff_ne_zero.2 h)
+    exact ((IsLocalRing.mem_maximalIdeal _).1 hb) (isUnit_iff_ne_zero.2 h)
   rw [(map_eq_zero_iff θ hθ).1 h2]
   exact Ideal.zero_mem _
 

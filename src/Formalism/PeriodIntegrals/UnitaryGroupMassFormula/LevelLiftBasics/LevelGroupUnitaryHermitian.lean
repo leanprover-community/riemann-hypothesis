@@ -60,8 +60,7 @@ theorem ιLev_eq (g : Matrix (Fin (2 * r' + k + 1)) (Fin (2 * r' + k + 1)) ℂ) 
   rw [Matrix.submatrix_apply]
   obtain ⟨s, rfl⟩ := (split k i r').symm.surjective p
   obtain ⟨t, rfl⟩ := (split k i r').symm.surjective q
-  rw [Equiv.apply_symm_apply, Equiv.apply_symm_apply]
-  simp only [ιLev]
+  simp only [Equiv.apply_symm_apply, Equiv.apply_symm_apply, ιLev]
   rcases s with a | b <;> rcases t with a' | b'
   · have ha := a.isLt
     have ha' := a'.isLt
@@ -94,8 +93,7 @@ theorem liftVec_eq (v : Fin (2 * r' + k + 1) → ℂ) :
     liftVec k i r' v = (Sum.elim v 0) ∘ (split k i r') := by
   funext p
   obtain ⟨s, rfl⟩ := (split k i r').symm.surjective p
-  rw [Function.comp_apply, Equiv.apply_symm_apply]
-  simp only [liftVec]
+  simp only [Function.comp_apply, Equiv.apply_symm_apply, liftVec]
   rcases s with a | b
   · have ha := a.isLt
     have h1 : i ≤ ((split k i r').symm (Sum.inl a)).val ∧ ((split k i r').symm (Sum.inl a)).val < 2 * r' + k + 1 + i := by rw [split_symm_inl]; omega
@@ -127,8 +125,7 @@ theorem mulVec_lift (g : Matrix (Fin (2 * r' + k + 1)) (Fin (2 * r' + k + 1)) �
 
 theorem dot_lift (v w : Fin (2 * r' + k + 1) → ℂ) :
     star (liftVec k i r' w) ⬝ᵥ liftVec k i r' v = star w ⬝ᵥ v := by
-  rw [liftVec_eq, liftVec_eq]
-  simp only [dotProduct, Pi.star_apply, Function.comp_apply]
+  simp only [liftVec_eq, liftVec_eq, dotProduct, Pi.star_apply, Function.comp_apply]
   rw [Fintype.sum_equiv (split k i r') _ (fun s => star (Sum.elim w 0 s) * Sum.elim v 0 s) (fun _ => rfl)]
   simp [Fintype.sum_sum_type]
 

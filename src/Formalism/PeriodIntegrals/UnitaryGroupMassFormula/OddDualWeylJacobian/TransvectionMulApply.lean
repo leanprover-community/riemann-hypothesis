@@ -70,8 +70,7 @@ theorem rowGen_genM (a b : Fin k) :
       transvection b a (Polynomial.X) *
         (Polynomial.C : MvPolynomial (Fin k × Fin k) R →+* _).mapMatrix (genM R k) := by
   ext i s
-  rw [transvection_mul_apply]
-  simp [PI.OddDualWeyl.genM, PI.OddDualWeyl.rowGen]
+  simp [transvection_mul_apply, PI.OddDualWeyl.genM, PI.OddDualWeyl.rowGen]
 
 theorem rowGen_det (a b : Fin k) (hab : a ≠ b) :
     rowGen R a b (genM R k).det = Polynomial.C (genM R k).det := by
@@ -91,8 +90,7 @@ theorem rowGen_dualM (a b : Fin k) (hab : a ≠ b) (i j : Fin k) :
     rw [RingHom.map_adjugate, rowGen_genM, adjugate_mul_distrib,
       adjugate_transvection (Ne.symm hab), ← RingHom.map_adjugate]
   have h2 := congrFun (congrFun hadj (Fin.rev j)) i
-  rw [mul_transvection_apply] at h2
-  simp only [RingHom.mapMatrix_apply, map_apply] at h2
+  simp only [mul_transvection_apply, RingHom.mapMatrix_apply, map_apply] at h2
   have e1 : dualM R k i j = adjugate (genM R k) (Fin.rev j) i := rfl
   have e2 : dualM R k b j = adjugate (genM R k) (Fin.rev j) b := rfl
   rw [e1, e2]

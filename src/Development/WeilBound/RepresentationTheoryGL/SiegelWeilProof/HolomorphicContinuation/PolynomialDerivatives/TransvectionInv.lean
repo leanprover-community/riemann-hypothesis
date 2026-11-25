@@ -175,8 +175,7 @@ theorem fix_of_exp (δ : Derivation ℂ (MvPolynomial (FinalTheorems m n) ℂ) (
   have hΦδ : ∀ v, Φ (δ (X v)) = Polynomial.C (δ (X v)) := by
     intro v
     obtain ⟨w, r, h1, h2⟩ := hδ v
-    rw [h1]
-    simp [Φ, h2, MvPolynomial.algebraMap_eq, Polynomial.C_mul]
+    simp [h1, Φ, h2, MvPolynomial.algebraMap_eq, Polynomial.C_mul]
   have hC : Φ (C c) = Polynomial.C (C c) := by
     simp [Φ, MvPolynomial.algebraMap_eq, Polynomial.algebraMap_apply]
   have hX : ∀ v, Φ (X v) = Polynomial.C (X v) + Polynomial.X * Polynomial.C (C c * δ (X v)) := by
@@ -201,8 +200,7 @@ theorem fix_of_exp (δ : Derivation ℂ (MvPolynomial (FinalTheorems m n) ℂ) (
     · intro p q hp hq
       simp only [map_add (f := _), Polynomial.eval_add, hp, hq]
     · intro p v hp
-      rw [map_mul, map_mul, Polynomial.eval_mul, hp, hX, hφ]
-      simp
+      simp [map_mul, map_mul, Polynomial.eval_mul, hp, hX, hφ]
   have hev0 : ∀ q, Polynomial.eval 0 (Φ q) = q := by
     intro q
     refine MvPolynomial.induction_on (motive := fun q => Polynomial.eval 0 (Φ q) = q) q ?_ ?_ ?_
@@ -211,8 +209,7 @@ theorem fix_of_exp (δ : Derivation ℂ (MvPolynomial (FinalTheorems m n) ℂ) (
     · intro p q hp hq
       simp only [map_add (f := _), Polynomial.eval_add, hp, hq]
     · intro p v hp
-      rw [map_mul, Polynomial.eval_mul, hp, hX]
-      simp
+      simp [map_mul, Polynomial.eval_mul, hp, hX]
   have h0 : Polynomial.derivative (Φ p) = 0 := by rw [hder, hp, mul_zero, map_zero]
   have hdeg : (Φ p).natDegree = 0 := Polynomial.derivative_eq_zero.mp h0
   calc φ p = Polynomial.eval 1 (Φ p) := (hev1 p).symm
@@ -319,8 +316,7 @@ theorem coeff_Dsrc (l : Fin n) (p : MvPolynomial (FinalTheorems m n) ℂ) (d : F
     AddMonoidAlgebra.coeff (Dsrc (m := m) l l p) d = ((wgt l d : ℤ) : ℂ) * AddMonoidAlgebra.coeff p d := by
   conv_lhs => rw [p.as_sum]
 
-  rw [map_sum, coeff_sum]
-  simp only [Dsrc_monomial, coeff_C_mul, coeff_monomial]
+  simp only [map_sum, coeff_sum, Dsrc_monomial, coeff_C_mul, coeff_monomial]
   rw [Finset.sum_eq_single d]
   · simp
   · intro b _ hb; simp [hb]
@@ -330,8 +326,7 @@ theorem act_diag (D : Fin n → ℂ) (hD : ∀ l, D l ≠ 0) (p : MvPolynomial (
     (hp : ∀ l, Dsrc (m := m) l l p = 0) : act (Matrix.diagonal D) p = p := by
   have hinv : (Matrix.diagonal D)⁻¹ = Matrix.diagonal (fun l => (D l)⁻¹) := by
     apply Matrix.inv_eq_right_inv
-    rw [Matrix.diagonal_mul_diagonal]
-    simp [mul_inv_cancel₀ (hD _)]
+    simp [Matrix.diagonal_mul_diagonal, mul_inv_cancel₀ (hD _)]
   let cv : FinalTheorems m n → ℂ := Sum.elim (fun x => D x.1) (fun y => (D y.1)⁻¹)
   have hgen : ∀ v, act (m := m) (Matrix.diagonal D) (X v) = C (cv v) * X v := by
     rintro (⟨l, a⟩ | ⟨l, b⟩)

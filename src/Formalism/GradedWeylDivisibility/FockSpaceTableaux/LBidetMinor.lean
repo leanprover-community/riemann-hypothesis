@@ -16,8 +16,7 @@ def initW (n s : ℕ) : Fin n → ℕ := fun t => if t.val < s then 1 else 0
 theorem sum_single_castLE {n s : ℕ} (hs : s ≤ n) :
     (∑ q : Fin s, (Pi.single (Fin.castLE hs q) 1 : Fin n → ℕ)) = initW n s := by
   funext t
-  rw [Finset.sum_apply]
-  simp only [initW]
+  simp only [Finset.sum_apply, initW]
   by_cases h : t.val < s
   · rw [ite_eq_left h, Finset.sum_eq_single ⟨t.val, h⟩]
     · have e : Fin.castLE hs ⟨t.val, h⟩ = t := Fin.ext rfl
@@ -65,8 +64,7 @@ theorem initMinor_invariant {R : Type*} [CommRing R] {r n s : ℕ}
     (I : Fin s → Fin r) (hs : s ≤ n) (l j : Fin n) (hlj : l < j) :
     colAddGen R l j (initMinor R I hs) = rename some (initMinor R I hs) := by
   unfold initMinor
-  rw [algHom_det_of, algHom_det_of]
-  simp only [colAddGen_X, rename_X]
+  simp only [algHom_det_of, algHom_det_of, colAddGen_X, rename_X]
   by_cases hj : j.val < s
   · have hl : l.val < s := Nat.lt_trans (show l.val < j.val from hlj) hj
     have hjl : (⟨j.val, hj⟩ : Fin s) ≠ ⟨l.val, hl⟩ := by
@@ -82,8 +80,7 @@ theorem initMinor_invariant {R : Type*} [CommRing R] {r n s : ℕ}
     · subst hq
       have e1 : Fin.castLE hs ⟨j.val, hj⟩ = j := Fin.ext rfl
       have e2 : Fin.castLE hs ⟨l.val, hl⟩ = l := Fin.ext rfl
-      rw [e1, e2]
-      simp
+      simp [e1, e2]
     · have hne : Fin.castLE hs q ≠ j := by
         intro h
         have hv := congrArg Fin.val h

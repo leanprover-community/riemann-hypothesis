@@ -32,8 +32,7 @@ lemma dgl_apply_off (u : ℂ) (i j : Fin (2 * r + 0 + 1)) (h : ¬ (i = cI r ∧ 
   · simp [hij]
 
 lemma rev_eq_c_iff (p : Fin (2 * r + 0 + 1)) : Fin.rev p = cI r ↔ p = cI r := by
-  rw [Fin.ext_iff, Fin.ext_iff, Fin.val_rev]
-  simp only [cI]
+  simp only [Fin.ext_iff, Fin.ext_iff, Fin.val_rev, cI]
   have := p.isLt
   omega
 
@@ -97,10 +96,8 @@ lemma conjT_mul_H {g : Mat 0 r} (hg : g ∈ UWb 0 r) (p : Fin (2 * r + 0 + 1)) (
 lemma col_c {g : Mat 0 r} (hg : g ∈ UWb 0 r) (q : Fin (2 * r + 0 + 1)) (hq : q ≠ cI r) :
     g q (cI r) = 0 := by
   have hp : Fin.rev q ≠ cI r := fun h => hq ((rev_eq_c_iff q).1 h)
-  have hU : gᴴ * Hpk 0 r * g = Hpk 0 r := hg.1
-  have h1 := congrFun (congrFun hU (Fin.rev q)) (cI r)
-  rw [Matrix.mul_apply] at h1
-  simp only [conjT_mul_H hg _ hp] at h1
+  have h1 := congrFun (congrFun hg.1 (Fin.rev q)) (cI r)
+  simp only [Matrix.mul_apply, conjT_mul_H hg _ hp] at h1
   simp [Hpk_apply, Fin.rev_rev, hp, Ne.symm hq] at h1
   exact h1
 
@@ -121,13 +118,11 @@ lemma eq_dgl {g : Mat 0 r} (hg : g ∈ UWb 0 r) : g = dgl r (g (cI r) (cI r)) :=
     · simp [hij]
 
 lemma dgl_norm {u : ℂ} (h : dgl r u ∈ UWb 0 r) : (starRingEnd ℂ) u * u = 1 := by
-  have hU : (dgl r u)ᴴ * Hpk 0 r * dgl r u = Hpk 0 r := h.1
-  have h1 := congrFun (congrFun hU (cI r)) (cI r)
+  have h1 := congrFun (congrFun h.1 (cI r)) (cI r)
   have hc : Fin.rev (cI r) = cI r := (rev_eq_c_iff (cI r)).2 rfl
   simp only [dgl, Matrix.diagonal_conjTranspose, Matrix.diagonal_mul, Matrix.mul_diagonal,
     Pi.star_apply, ite_true] at h1
-  rw [Hpk_apply] at h1
-  simp only [hc, ite_true] at h1
+  simp only [Hpk_apply, hc, ite_true] at h1
   show (starRingEnd ℂ) u * u = 1
   rw [show (starRingEnd ℂ) u = star u from rfl]
   linear_combination -h1

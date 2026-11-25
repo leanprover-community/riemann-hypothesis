@@ -171,8 +171,7 @@ theorem det_actL (u : Matrix (Fin m) (Fin m) ℂ) : LinearMap.det (actL (n := n)
       (e.symm : _ →ₗ[ℂ] _) := by
     apply LinearMap.ext; intro x; funext a i
     simp [actL, act, e, Matrix.toLin'_apply, Matrix.mulVec, dotProduct, Fintype.sum_prod_type, Matrix.kroneckerMap_apply, Matrix.one_apply]
-  rw [hL, LinearMap.det_conj, LinearMap.det_toLin', Matrix.det_kronecker]
-  simp
+  simp [hL, LinearMap.det_conj, LinearMap.det_toLin', Matrix.det_kronecker]
 
 theorem mp_act (u : Matrix (Fin m) (Fin m) ℂ) (hu : uᴴ * u = 1) :
     MeasurePreserving (act (n := n) u) volume volume := by
@@ -496,8 +495,7 @@ theorem muK_univ : (Formalism.REAL.muK ε) Set.univ = 1 := by
 
 theorem coeff_avg (P : PX m n) (t) : AddMonoidAlgebra.coeff (avg ε P) t = ∫ k, AddMonoidAlgebra.coeff (subR (gK ε k) P) t ∂(Formalism.REAL.muK ε) := by
   unfold avg
-  rw [coeff_sum]
-  simp only [coeff_monomial]
+  simp only [coeff_sum, coeff_monomial]
   by_cases ht : t ∈ D m n P.totalDegree
   · rw [Finset.sum_eq_single t (fun b _ hb => ite_eq_right hb) (fun h => absurd ht h), ite_eq_left rfl]
   · rw [Finset.sum_eq_zero (fun b hb => ite_eq_right (fun h : b = t => ht (h ▸ hb)))]
@@ -597,8 +595,7 @@ theorem mom_avg {c : ℝ} (hc : 0 < c) {R : PX m n}
     refine Finset.sum_congr rfl fun s _ => ?_
     rw [smul_eq_C_mul, mono_eq s (AddMonoidAlgebra.coeff _ s)]; ring
   simp_rw [e2]
-  rw [integral_const]
-  simp [Measure.real, muK_univ]
+  simp [integral_const, Measure.real, muK_univ]
 
 end PositivityTheory.Rg.Sw.FFTSteps.CA
 
@@ -616,9 +613,8 @@ theorem cycAvg : CycAvg := by
       by_cases h : ε a = ε b
       · rw [h, mul_comm]
       · rw [hblock a b h]; simp
-    have hr : u ∈ Set.range (fun k : Formalism.REAL.KG ε => Formalism.REAL.toMK k) := by
+    obtain ⟨kv, hkv⟩ : u ∈ Set.range (fun k : Formalism.REAL.KG ε => Formalism.REAL.toMK k) := by
       rw [Formalism.REAL.range_toMK]; exact hK
-    obtain ⟨kv, hkv⟩ := hr
     change subR u (avg ε P) = avg ε P
     rw [← hkv]
     exact avg_inv ε P kv

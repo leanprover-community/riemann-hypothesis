@@ -90,8 +90,7 @@ theorem proof : BlockImageMetrics.Statement := by
   · intro K _ _ ι _ k₀ P
     refine isSemipositiveRel_of_linear _ (blockCLM k₀) ?_ ?_ ⊥ P
     · funext z
-      rw [blockCLM_apply]
-      simp only [HermLine.ofMetrics]
+      simp only [blockCLM_apply, HermLine.ofMetrics]
       rw [Finset.prod_eq_single k₀ (fun k _ hk => by simp [unitDeg, hk]) (by simp)]
       simp [unitDeg]
     · intro z hz h0

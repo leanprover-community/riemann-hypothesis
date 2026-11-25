@@ -375,8 +375,7 @@ theorem firstPositionSlice_positionAction_succ_apply (α' : Fin j → Fin n × F
     sliceLin V n α' (factorAction k.succ a b F) β =
       (if (α' k).1 = a then F (Fin.cons (β 0) (Function.update α' k (b, (α' k).2))) else 0) -
       (if (α' k).2 = b then F (Fin.cons (β 0) (Function.update α' k ((α' k).1, a))) else 0) := by
-  rw [firstPositionSlice_apply, factorAction_apply]
-  simp only [Fin.cons_succ, ← Fin.cons_update]
+  simp only [firstPositionSlice_apply, factorAction_apply, Fin.cons_succ, ← Fin.cons_update]
 
 theorem firstPositionSlice_positionAction_succ (α' : Fin j → Fin n × Fin n) (k : Fin j) (a b : Fin n)
     (F : Arr V n (j+1)) :
@@ -512,8 +511,7 @@ variable {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℂ V] {n j : ℕ
 
 theorem inner_permutePositions (σ : Equiv.Perm (Fin j)) (F G : Arr V n j) :
     ⟪permArr V n σ F, permArr V n σ G⟫_ℂ = ⟪F, G⟫_ℂ := by
-  rw [indexArray_inner, indexArray_inner]
-  simp only [permutePositions_apply]
+  simp only [indexArray_inner, indexArray_inner, permutePositions_apply]
   exact Fintype.sum_equiv (Equiv.arrowCongr σ.symm (Equiv.refl _)) _ _ (fun α => rfl)
 
 theorem inner_eq_sum_firstPositionSlice (F G : Arr V n (j+1)) :

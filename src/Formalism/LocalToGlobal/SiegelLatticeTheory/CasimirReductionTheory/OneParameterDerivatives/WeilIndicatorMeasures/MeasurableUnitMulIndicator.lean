@@ -44,10 +44,9 @@ lemma measure_coset_le (κ : Measure H) [κ.IsMulLeftInvariant] (y : G) (E : Set
         ≤ κ ((fun h : H => h₀⁻¹ * h) ⁻¹' {h : H | (h : G) ∈ E⁻¹ * E}) := by
           apply measure_mono
           intro h hh
-          have hh' : y * (h : G) ∈ E := hh
           show ((h₀⁻¹ * h : H) : G) ∈ E⁻¹ * E
           rw [Set.mem_mul]
-          refine ⟨(y * h₀)⁻¹, by rw [Set.mem_inv, inv_inv]; exact hh₀, y * h, hh', ?_⟩
+          refine ⟨(y * h₀)⁻¹, by rw [Set.mem_inv, inv_inv]; exact hh₀, y * h, hh, ?_⟩
           push_cast
           group
       _ = κ {h : H | (h : G) ∈ E⁻¹ * E} := measure_preimage_mul κ _ _
@@ -105,7 +104,6 @@ lemma exists_fib_eq_one (hH : IsClosed (H : Set G)) (κ : Measure H) [SFinite κ
       by_cases hh : (d n)⁻¹ * (x * (h : G)) ∈ V
       · simp [Set.indicator_of_mem, hh, mul_assoc]
       · simp [Set.indicator_of_notMem, hh, mul_assoc]
-    have hC : κ {h : H | (h : G) ∈ V⁻¹ * V} < ∞ := measure_coset_lt_top hH κ hVc
     refine ⟨fun x => ∑' n, (2⁻¹ : ℝ≥0∞) ^ n * V.indicator 1 ((d n)⁻¹ * x), ?_, ?_, ?_⟩
     · exact Measurable.tsum (fun n => measurable_const.mul
         ((measurable_one.indicator hVm).comp (measurable_const_mul _)))
@@ -114,12 +112,11 @@ lemma exists_fib_eq_one (hH : IsClosed (H : Set G)) (κ : Measure H) [SFinite κ
       have hopen : IsOpen {g : G | g⁻¹ * x ∈ interior V} :=
         isOpen_interior.preimage (continuous_inv.mul continuous_const)
       obtain ⟨n, hn⟩ := hd.exists_mem_open hopen ⟨x, by simpa using mem_interior_iff_mem_nhds.2 hV1⟩
-      have hn' : (d n)⁻¹ * x ∈ interior V := hn
       have hnb : {z : G | (d n)⁻¹ * x * z ∈ V} ∈ 𝓝 (1 : G) := by
         have hc : ContinuousAt (fun z : G => (d n)⁻¹ * x * z) 1 :=
           (continuous_const.mul continuous_id).continuousAt
         have hV' : V ∈ 𝓝 ((fun z : G => (d n)⁻¹ * x * z) 1) := by
-          simpa using mem_interior_iff_mem_nhds.1 hn'
+          simpa using mem_interior_iff_mem_nhds.1 hn
         exact hc.preimage_mem_nhds hV'
       have hpos' := measure_nhds_pos κ hnb
       calc (0 : ℝ≥0∞) < (2⁻¹ : ℝ≥0∞) ^ n * κ {h : H | (d n)⁻¹ * x * (h : G) ∈ V} :=
@@ -139,7 +136,7 @@ lemma exists_fib_eq_one (hH : IsClosed (H : Set G)) (κ : Measure H) [SFinite κ
       refine lt_of_le_of_lt hle ?_
       rw [ENNReal.tsum_mul_right, ENNReal.tsum_geometric]
       first
-      | exact ENNReal.mul_lt_top (by simp) hC
+      | exact ENNReal.mul_lt_top (by simp) (measure_coset_lt_top hH κ hVc)
   refine ⟨fun x => φ x * (fib κ φ x)⁻¹, ?_, ?_⟩
   · first
     | exact hφ.mul (measurable_fib κ hφ).inv

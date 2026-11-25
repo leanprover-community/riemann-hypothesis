@@ -64,12 +64,10 @@ private lemma stdJ_form' {D : Type} [CommRing D] {g : ℕ}
 
 private lemma stdJ_eq (D : Type) [CommRing D] (g : ℕ) :
     stdJ D g = fromBlocks 1 (-1) 0 1 * fromBlocks 1 0 1 1 * fromBlocks 1 (-1) 0 1 := by
-  rw [stdJ]
-  simp [Matrix.fromBlocks_multiply]
+  simp [stdJ, Matrix.fromBlocks_multiply]
 
 private lemma det_stdJ (D : Type) [CommRing D] (g : ℕ) : (stdJ D g).det = 1 := by
-  rw [stdJ_eq, Matrix.det_mul, Matrix.det_mul]
-  simp
+  simp [stdJ_eq, Matrix.det_mul, Matrix.det_mul]
 
 theorem u1 : IsotypicAveragingStatement := by
   intro S _ g m Ht Bt E cp εT εL π hπ hT hT1 hL hL1 hHt hE hBH

@@ -188,8 +188,7 @@ theorem isClosed_isLog : ∀ (ι : Type) [Fintype ι] [DecidableEq ι],
     · rintro ⟨U, d, h1, h2, h3⟩
       have hUK : U ∈ K := by
         intro i _ j _
-        have hu : U ∈ Matrix.unitaryGroup ι ℂ := Matrix.mem_unitaryGroup_iff.mpr h1
-        simpa using entry_norm_bound_of_unitary hu i j
+        simpa using entry_norm_bound_of_unitary (Matrix.mem_unitaryGroup_iff.mpr h1) i j
       have h1' : Uᴴ * U = 1 := mul_eq_one_comm.mp h1
       have hd : D (⟨U, hUK⟩, p) = d := by
         funext i
@@ -241,8 +240,7 @@ private lemma energy_entry_sq_le {ι : Type} [Fintype ι] (x : Matrix ι ι ℂ)
 private lemma energy_trace_conj {ι : Type} [Fintype ι] [DecidableEq ι] (U : Matrix ι ι ℂ) (hU : U * Uᴴ = 1)
     (d : ι → ℝ) : (Matrix.trace (U * diagonal (fun i => (d i : ℂ)) * Uᴴ)).re = ∑ i, d i := by
   have hU' : Uᴴ * U = 1 := mul_eq_one_comm.mp hU
-  rw [Matrix.trace_mul_cycle, hU', one_mul, Matrix.trace_diagonal, Complex.re_sum]
-  simp
+  simp [Matrix.trace_mul_cycle, hU', one_mul, Matrix.trace_diagonal, Complex.re_sum]
 
 theorem entries_le_of_energy_le : ∀ (ι : Type) [Fintype ι] [DecidableEq ι] (E : ℝ), ∃ C : ℝ, ∀ x H : Matrix ι ι ℂ, IsLog H (xᴴ * x) → (Matrix.trace (H * H)).re ≤ E → ∀ i j, ‖x i j‖ ≤ C ∧ ‖H i j‖ ≤ C := by
   intro ι _ _ E
@@ -341,8 +339,7 @@ theorem exists_det_one (P : Matrix ι ι ℂ) (hP : IsUnit P.det) :
     rw [this, Matrix.smul_mul, Matrix.smul_mul, Matrix.mul_smul, smul_smul, inv_mul_cancel₀ hc0, one_smul]
 
 theorem inv_eq_adj {P : Matrix ι ι ℂ} (hP : P.det = 1) : P⁻¹ = P.adjugate := by
-  rw [Matrix.inv_def, hP]
-  simp
+  simp [Matrix.inv_def, hP]
 
 end GlobalTheory.ClassFin.EnergyMin
 
@@ -506,8 +503,7 @@ private lemma sum_normSq_apply_right_eq_one_of_mul_conjTranspose (W : Matrix ι 
   simp only [Matrix.mul_apply, conjTranspose_apply, Matrix.one_apply_eq, Complex.one_re, Complex.re_sum] at h1
   rw [← h1]
   refine Finset.sum_congr rfl fun j _ => ?_
-  rw [Complex.normSq_apply]
-  simp [Complex.mul_re]
+  simp [Complex.normSq_apply, Complex.mul_re]
 
 open Matrix in
 variable {ι : Type} [Fintype ι] [DecidableEq ι] in
@@ -579,11 +575,9 @@ private lemma le_eigenvalue_of_add (U V Y : Matrix ι ι ℂ) (x y : ι → ℝ)
     generalize Uᴴ * V = W
     have hd : Wᴴ * diagonal (fun i => (x i : ℂ)) = Matrix.of fun a b => Wᴴ a b * (x b : ℂ) := by
       ext a b; simp [Matrix.mul_diagonal]
-    rw [hd]
-    simp only [Matrix.mul_apply, Matrix.of_apply, conjTranspose_apply, Complex.re_sum]
+    simp only [hd, Matrix.mul_apply, Matrix.of_apply, conjTranspose_apply, Complex.re_sum]
     refine Finset.sum_congr rfl fun i _ => ?_
-    rw [Complex.normSq_apply]
-    simp [Complex.mul_re]
+    simp [Complex.normSq_apply, Complex.mul_re]
     ring
   have hlow : m ≤ ∑ i, x i * Complex.normSq ((Uᴴ * V) i j) := by
     calc m = ∑ i, m * Complex.normSq ((Uᴴ * V) i j) := by
@@ -886,8 +880,7 @@ private lemma isLog_neg_inv {ι : Type} [Fintype ι] [DecidableEq ι] {H A : Mat
         = U * (diagonal (fun i => ((Real.exp (d i) : ℝ) : ℂ)) * diagonal (fun i => ((Real.exp (-d i) : ℝ) : ℂ))) * Uᴴ := by
           simp only [Matrix.mul_assoc]; rw [← Matrix.mul_assoc Uᴴ U, hU', Matrix.one_mul]
       _ = 1 := by
-          rw [diagonal_mul_diagonal]
-          simp [← Complex.exp_add, hU]
+          simp [diagonal_mul_diagonal, ← Complex.exp_add, hU]
 
 open Matrix Polynomial in
 open scoped Kronecker ComplexOrder TensorProduct in
@@ -909,8 +902,7 @@ private lemma eq_zero_of_trace_zero_of_re_trace_squareZero {ι : Type} [Fintype 
     have h1 := hV (single i j 1) (single_mul_single_of_ne 1 i j i hij.symm 1)
     have h2 := hV (single i j Complex.I) (single_mul_single_of_ne _ i j i hij.symm _)
     have hc : M j i = star (M i j) := by
-      have := congrFun (congrFun hM j) i
-      simpa [conjTranspose_apply] using this.symm
+      simpa [conjTranspose_apply] using (congrFun (congrFun hM j) i).symm
     simp [conjTranspose_single, Matrix.mul_add, trace_add, trace_mul_single, hc] at h1 h2
     apply Complex.ext <;> simp <;> linarith
   have hdiag : ∀ i j, M i i = M j j := by
@@ -939,8 +931,7 @@ private lemma eq_zero_of_trace_zero_of_re_trace_squareZero {ι : Type} [Fintype 
   by_cases hij : i = j
   · subst hij
     have ht : M.trace = (Fintype.card ι : ℂ) * M i i := by
-      rw [Matrix.trace]
-      simp [hdiag _ i]
+      simp [Matrix.trace, hdiag _ i]
     rw [htr] at ht
     have hcard : (Fintype.card ι : ℂ) ≠ 0 := by
       have : 0 < Fintype.card ι := Fintype.card_pos_iff.mpr ⟨i⟩
@@ -1182,22 +1173,20 @@ theorem _root_.GlobalTheory.ClassFin.exists_conj_harm_of_span : ∀ (ι : Type) 
       intro s
       have hcdet : IsUnit ((h s)ᴴ).det := by rw [Matrix.det_conjTranspose]; exact (hhdet s).star
       have hAdet : IsUnit ((h s)ᴴ * h s).det := by rw [Matrix.det_mul]; exact hcdet.mul (hhdet s)
-      have hAinv : ((h s)ᴴ * h s)⁻¹ = (h s)⁻¹ * ((h s)ᴴ)⁻¹ := Matrix.mul_inv_rev _ _
       have hc' : ((h s)ᴴ)⁻¹ * (h s)ᴴ = 1 := Matrix.nonsing_inv_mul _ hcdet
       have hA1 : ((h s)ᴴ * h s)⁻¹ * ((h s)ᴴ * h s) = 1 := Matrix.nonsing_inv_mul _ hAdet
-      have hA2 : ((h s)ᴴ * h s) * ((h s)ᴴ * h s)⁻¹ = 1 := Matrix.mul_nonsing_inv _ hAdet
       have hcomm := isLog_commute (hH' s)
       have t1 : Matrix.trace (H s * ((h s)ᴴ * h s)⁻¹ * ((h s)ᴴ * (N + Nᴴ) * h s)) =
           -Matrix.trace (H (τ s) * (N + Nᴴ)) := by
         have hτ' : H (τ s) = -(h s * H s * (h s)⁻¹) := by rw [← hconj s, neg_neg]
-        rw [hAinv, hτ', Matrix.neg_mul, trace_neg, neg_neg,
+        rw [(Matrix.mul_inv_rev _ _), hτ', Matrix.neg_mul, trace_neg, neg_neg,
           show H s * ((h s)⁻¹ * ((h s)ᴴ)⁻¹) * ((h s)ᴴ * (N + Nᴴ) * h s) = (H s * (h s)⁻¹ * (N + Nᴴ)) * h s by
             simp only [Matrix.mul_assoc]; rw [← Matrix.mul_assoc ((h s)ᴴ)⁻¹, hc', Matrix.one_mul],
           trace_mul_comm]
         simp only [Matrix.mul_assoc]
       have t2 : Matrix.trace (H s * ((h s)ᴴ * h s)⁻¹ * (Nᴴ * ((h s)ᴴ * h s))) = Matrix.trace (H s * Nᴴ) := by
         rw [← Matrix.mul_assoc, trace_mul_comm, ← Matrix.mul_assoc, ← Matrix.mul_assoc, ← hcomm,
-          Matrix.mul_assoc (H s), hA2, Matrix.mul_one]
+          Matrix.mul_assoc (H s), (Matrix.mul_nonsing_inv _ hAdet), Matrix.mul_one]
       have t3 : Matrix.trace (H s * ((h s)ᴴ * h s)⁻¹ * ((h s)ᴴ * h s * N)) = Matrix.trace (H s * N) := by
         rw [Matrix.mul_assoc, ← Matrix.mul_assoc _ _ N, hA1, Matrix.one_mul]
       rw [Matrix.mul_sub, Matrix.mul_sub, trace_sub, trace_sub, t1, t2, t3, Matrix.mul_add (H s) N Nᴴ, trace_add]
@@ -1505,11 +1494,9 @@ theorem harm_kronecker : ∀ (ι : Type) [Fintype ι] [DecidableEq ι] (κ : Typ
     simpa only [conjTranspose_kronecker, ← mul_kronecker_mul] using this
   · ext ⟨i, k⟩ ⟨j, l⟩
     have h1 : ∑ s, H s i j = 0 := by
-      have := congrFun (congrFun hs i) j
-      simpa [Matrix.sum_apply] using this
+      simpa [Matrix.sum_apply] using congrFun (congrFun hs i) j
     have h2 : ∑ s, H' s k l = 0 := by
-      have := congrFun (congrFun hs' k) l
-      simpa [Matrix.sum_apply] using this
+      simpa [Matrix.sum_apply] using congrFun (congrFun hs' k) l
     simp only [Matrix.sum_apply, Matrix.add_apply, kroneckerMap_apply, Finset.sum_add_distrib,
       ← Finset.sum_mul, ← Finset.mul_sum, h1, h2, Matrix.zero_apply]
     simp

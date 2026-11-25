@@ -17,8 +17,7 @@ section One
 variable {G : Type} [Group G] [Fintype G]
 
 theorem tau_mul_comm (a b : MonoidAlgebra ℂ G) : (a * b).coeff 1 = (b * a).coeff 1 := by
-  rw [coeff_mul_fin, coeff_mul_fin]
-  simp only [mul_one]
+  simp only [coeff_mul_fin, coeff_mul_fin, mul_one]
   exact Fintype.sum_equiv (Equiv.inv G) _ _ (fun h => by rw [Equiv.inv_apply, inv_inv, mul_comm])
 
 theorem tau_conj (P : G) (a : MonoidAlgebra ℂ G) :
@@ -28,8 +27,7 @@ theorem tau_conj (P : G) (a : MonoidAlgebra ℂ G) :
 
 theorem tau_normSq (x : MonoidAlgebra ℂ G) :
     (conjA x * x).coeff 1 = ((∑ h : G, Complex.normSq (x.coeff h) : ℝ) : ℂ) := by
-  rw [coeff_mul_fin, Complex.ofReal_sum]
-  simp only [conjA_coeff, mul_one]
+  simp only [coeff_mul_fin, Complex.ofReal_sum, conjA_coeff, mul_one]
   exact Fintype.sum_equiv (Equiv.inv G) _ _
     (fun h => by rw [Equiv.inv_apply, Complex.star_def, mul_comm, Complex.mul_conj])
 
@@ -55,8 +53,7 @@ theorem pA_coeff (f : ∀ i, MonoidAlgebra ℂ (G i)) (γ : ∀ i, G i) : (pA f)
 theorem pA_mul (f g : ∀ i, MonoidAlgebra ℂ (G i)) : pA f * pA g = pA (fun i => f i * g i) := by
   apply MonoidAlgebra.ext
   ext γ
-  rw [coeff_mul_fin, pA_coeff]
-  simp only [pA_coeff, coeff_mul_fin]
+  simp only [coeff_mul_fin, pA_coeff, pA_coeff, coeff_mul_fin]
   rw [Finset.prod_univ_sum, Fintype.piFinset_univ]
   refine Finset.sum_congr rfl (fun h _ => ?_)
   rw [← Finset.prod_mul_distrib]

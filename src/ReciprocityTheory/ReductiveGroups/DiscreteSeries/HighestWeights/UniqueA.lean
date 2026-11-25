@@ -138,10 +138,8 @@ lemma uq_bij {P U : Type} [NormedAddCommGroup P] [InnerProductSpace ℂ P] [Fini
           · simpa using B.zero_mem
     intro a b hab y hy
     have hy' := key hy
-    rw [Submodule.mem_inf] at hy'
-    simp only [Submodule.mem_iInf, Submodule.mem_comap] at hy'
+    simp only [Submodule.mem_inf, Submodule.mem_iInf, Submodule.mem_comap] at hy'
     exact hy'.2 a b hab
-  have hMB : kSpan ε G x ≤ B := uq_kSpan_le ε G hxB hBst
   refine ⟨?_, ?_⟩
   · obtain ⟨N, hNdef⟩ : ∃ N : Submodule ℂ P, N = LinearMap.ker p ⊓ kSpan ε G x := ⟨_, rfl⟩
     have hNst : KStable ε G N := by
@@ -165,7 +163,7 @@ lemma uq_bij {P U : Type} [NormedAddCommGroup P] [InnerProductSpace ℂ P] [Fini
       have h1 : G c d nn = -G c d mm := eq_neg_of_add_eq_zero_left h0
       refine hzero _ (hNst c d hε nn hnn) ?_
       rw [h1]; exact Nᗮ.neg_mem (hNo c d hε mm hmm)
-    have hnB : nn ∈ B := hMB (Submodule.mem_inf.1 (hNdef ▸ hnn)).2
+    have hnB : nn ∈ B := (uq_kSpan_le ε G hxB hBst) (Submodule.mem_inf.1 (hNdef ▸ hnn)).2
     have hmB : mm ∈ B := by
       have hme : mm = x - nn := by rw [hxnm]; abel
       rw [hme]; exact B.sub_mem hxB hnB
@@ -289,8 +287,7 @@ private theorem eq_bot_of_KStable_of_highest_not_mem (ε : Fin n → Bool) (F : 
       if h : ε a = ε b then S.mapQ S (F a b) (fun y hy => hS a b h y hy) else 0 := ⟨_, rfl⟩
   have hFU : ∀ a b, ε a = ε b → ∀ y, S.mkQ (F a b y) = FU a b (S.mkQ y) := by
     intro a b h y
-    rw [hFUdef]
-    simp only [dite_eq_left h]
+    simp only [hFUdef, dite_eq_left h]
     rfl
   have hTU : kSpan ε FU (S.mkQ w) = ⊤ := by
     refine eq_top_iff.2 fun z _ => ?_
@@ -308,9 +305,8 @@ private theorem eq_bot_of_KStable_of_highest_not_mem (ε : Fin n → Bool) (F : 
   rw [eq_bot_iff]
   intro y hy
   have hy' : y ∈ kSpan ε F w := by rw [hT]; exact Submodule.mem_top
-  have h0 : (0 : V) ∈ kSpan ε F w := Submodule.zero_mem _
   have key := hbij.1 (show (S.mkQ.domRestrict (kSpan ε F w)) ⟨y, hy'⟩ =
-      (S.mkQ.domRestrict (kSpan ε F w)) ⟨0, h0⟩ by simpa using hy)
+      (S.mkQ.domRestrict (kSpan ε F w)) ⟨0, (Submodule.zero_mem _)⟩ by simpa using hy)
   rw [Submodule.mem_bot]
   exact congrArg Subtype.val key
 

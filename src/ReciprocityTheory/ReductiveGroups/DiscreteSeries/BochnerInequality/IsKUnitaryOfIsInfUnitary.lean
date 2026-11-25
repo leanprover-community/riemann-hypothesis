@@ -122,8 +122,7 @@ theorem starProjection_comm (hU : IsKUnitary ε A) {S : Submodule ℂ X} [S.HasO
   · exact hS a b hab _ (Submodule.starProjection_apply_mem S x)
   · intro w hw
     rw [← map_sub]
-    have h1 : x - S.starProjection x ∈ Sᗮ := Submodule.sub_starProjection_mem_orthogonal x
-    have h2 := orthogonal_kStable hU hS a b hab _ h1
+    have h2 := orthogonal_kStable hU hS a b hab _ (Submodule.sub_starProjection_mem_orthogonal x)
     rw [Submodule.mem_orthogonal] at h2
     rw [inner_eq_zero_symm]
     exact h2 w hw

@@ -41,8 +41,7 @@ theorem mem_K {r : R} {x : M} : x ∈ K M r ↔ r • x = 0 := by
 theorem smul_top_eq_range (r : R) :
     (r • ⊤ : Submodule R M) = LinearMap.range (r • LinearMap.id : M →ₗ[R] M) := by
   ext x
-  rw [Submodule.mem_smul_pointwise_iff_exists, LinearMap.mem_range]
-  simp
+  simp [Submodule.mem_smul_pointwise_iff_exists, LinearMap.mem_range]
 
 theorem len_sub_add_quot (N : Submodule R M) :
     Module.length R M = Module.length R N + Module.length R (M ⧸ N) :=
@@ -77,7 +76,6 @@ theorem len_quot_pow {t : R} (ht : Irreducible t) (k : ℕ) :
   have h1 : Module.length R (R ⧸ Ideal.span {t}) = 1 := by
     rw [Module.length_eq_one_iff]
     exact isSimpleModule_iff_isCoatom.2 (Ideal.isMaximal_def.1 hmax)
-  have ht0 : t ≠ 0 := ht.ne_zero
   induction k with
   | zero =>
     haveI : Subsingleton (R ⧸ Ideal.span {t ^ 0}) :=
@@ -107,7 +105,7 @@ theorem len_quot_pow {t : R} (ht : Irreducible t) (k : ℕ) :
       rw [Ideal.mem_span_singleton']
       refine ⟨y, ?_⟩
       have : t ^ k * (y * t) = t ^ k * x := by rw [← hy]; ring
-      exact mul_left_cancel₀ (pow_ne_zero _ ht0) this
+      exact mul_left_cancel₀ (pow_ne_zero _ ht.ne_zero) this
     have hg : Function.Surjective g := by
       intro y
       obtain ⟨z, rfl⟩ := Ideal.Quotient.mk_surjective y
@@ -263,8 +261,7 @@ theorem rankLen_holds : RankLenStatement.{u} := by
   have hrange : ∀ n, LinearMap.range (i.H n) = (t ^ m) • (⊤ : Submodule R (L.H n)) := by
     intro n
     ext x
-    rw [hiH, LinearMap.mem_range, Submodule.mem_smul_pointwise_iff_exists]
-    simp
+    simp [hiH, LinearMap.mem_range, Submodule.mem_smul_pointwise_iff_exists]
   have hlen : ∀ n, Module.length R (C.H n) =
       Module.length R (QuotSMulTop (t ^ m) (L.H n)) + Module.length R (K (L.H (n + 1)) (t ^ m)) := by
     intro n
@@ -274,8 +271,7 @@ theorem rankLen_holds : RankLenStatement.{u} := by
       · intro hy
         refine ⟨⟨y, ?_⟩, rfl⟩
         rw [LinearMap.mem_ker]
-        have := congrArg Subtype.val hy
-        simpa using this
+        simpa using congrArg Subtype.val hy
       · rintro ⟨z, rfl⟩
         apply Subtype.ext
         simpa using z.2

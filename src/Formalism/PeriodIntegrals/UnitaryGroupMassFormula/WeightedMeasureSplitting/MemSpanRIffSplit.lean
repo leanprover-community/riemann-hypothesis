@@ -64,8 +64,7 @@ theorem hR_mapV (x y : Fin n → R ⊗[F] E) :
   have h1 : tensMap (E := E) φ (sigR R σ (x i)) = sigR R' σ (tensMap (E := E) φ (x i)) := by
     have := congrArg (fun f : R ⊗[F] E →+* R' ⊗[F] E => f (x i)) (tensMap_sigR (E := E) φ σ)
     simpa using this
-  rw [h1]
-  simp [JR, tensMap_inclR]
+  simp [h1, JR, tensMap_inclR]
 
 theorem hR_zero_right (x : Fin n → R ⊗[F] E) : hR R σ J x 0 = 0 := by
   simp [hR, Formalism.UG.hform]
@@ -145,17 +144,15 @@ variable {F E : Type} [Field F] [NumberField F] [Field E] [Algebra F E] (σ : E 
 theorem splitA_injective (hinj : Function.Injective (splT (F := F) (E := E))) :
     Function.Injective (splitA σ J) := by
   intro g g' h
-  have h1 : haMap σ J (fstA F) g = haMap σ J (fstA F) g' := congrArg Prod.fst h
-  have h2 : haMap σ J (sndA F) g = haMap σ J (sndA F) g' := congrArg Prod.snd h
   have hm : HA.mat (AF F) σ J g = HA.mat (AF F) σ J g' := by
     refine Units.ext (Matrix.ext fun i j => ?_)
     apply hinj
     rw [splT_apply, splT_apply]
     refine Prod.ext ?_ ?_
     · exact congrArg (fun k => ((HA.mat (Ainf F) σ J k : GL (Fin n) (Ainf F ⊗[F] E)) :
-        Matrix (Fin n) (Fin n) (Ainf F ⊗[F] E)) i j) h1
+        Matrix (Fin n) (Fin n) (Ainf F ⊗[F] E)) i j) (congrArg Prod.fst h)
     · exact congrArg (fun k => ((HA.mat (Af F) σ J k : GL (Fin n) (Af F ⊗[F] E)) :
-        Matrix (Fin n) (Fin n) (Af F ⊗[F] E)) i j) h2
+        Matrix (Fin n) (Fin n) (Af F ⊗[F] E)) i j) (congrArg Prod.snd h)
   exact Subtype.ext hm
 
 theorem mem_Hsub_iff (hinj : Function.Injective (splT (F := F) (E := E))) {r : ℕ} (P : Frame E n r)

@@ -65,8 +65,7 @@ theorem exists_coord {Ω E : Type} [Field Ω] [AddCommGroup E] [Module Ω E] {r 
   · rw [key]
     simp
   · intro k hk
-    rw [key]
-    simp [Ne.symm hk]
+    simp [key, Ne.symm hk]
 
 theorem gr_isGenAt : ∀ (X : Scheme.{0}) (Ω : Type) [Field Ω] (ξ : Spec (CommRingCat.of Ω) ⟶ X) (E : Type) [AddCommGroup E] [Module Ω E] (L : Lat ξ E) (r : ℕ) (b₀ b : Fin r → E) (p : Cpt ξ) (i : Fin r) (t : Ω), LinearIndependent Ω b₀ → (∀ s, flagStep Ω b s = flagStep Ω b₀ s) → L.IsFrameAt b p → b i - t • b₀ i ∈ flagStep Ω b₀ i → (L.gr b₀ i).IsGenAt p t := by
   intro X Ω _ ξ E _ _ L r b₀ b p i t hb₀ hflag hframe hti

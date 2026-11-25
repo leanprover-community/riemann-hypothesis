@@ -553,8 +553,7 @@ theorem exists_data (h2 : (2 : F) ≠ 0) (hB : B.IsAlt) (hn : B.Nondegenerate) {
     intro s
     have : ∀ᶠ x in 𝓝 (0 : W), ∀ i, ∀ o ∈ 𝒪[F], ψ (o * (s * B x (b i))) = 1 := by
       refine eventually_all.2 fun i => ?_
-      have hc : Continuous fun x => s * B x (b i) := continuous_const.mul (hcw _)
-      exact (hc.tendsto' 0 0 (by simp)).eventually (eventually_psi hψ)
+      exact ((continuous_const.mul (hcw _)).tendsto' 0 0 (by simp)).eventually (eventually_psi hψ)
     filter_upwards [this] with x hx using (hmem s x).2 hx
   have fC : ∀ N ∈ 𝓝 (0 : W), ∀ C, IsCompact C → ∃ r : F, r ≠ 0 ∧ ∀ y ∈ C, r • y ∈ N := by
     intro N hN C hC
@@ -609,8 +608,7 @@ theorem apply_eq (hπ : ∀ t v, π ⟨0, t⟩ v = ψ t • v) (g : Heisenberg B
 theorem ops_of_central (hπ : ∀ t v, π ⟨0, t⟩ v = ψ t • v) : Ops (fun x y => ψ (B x y / 2)) fun x => π ⟨x, 0⟩ := by
   constructor
   · intro v
-    rw [hπ]
-    simp
+    simp [hπ]
   · intro x y v
     rw [← Module.End.mul_apply, ← map_mul, apply_eq hπ]
     simp [mul_vec, mul_cen]
@@ -700,8 +698,7 @@ theorem irr_of_span (hψ : Continuous ψ) (hπ : ∀ t v, π ⟨0, t⟩ v = ψ t
     | smul r a _ ha => filter_upwards [ha] with u ha using by rw [map_smul, ha]
   refine ⟨hs, ?_, hπ⟩
   have : Nontrivial (Subrepresentation π) := ⟨⊥, ⊤, fun h => he0 (by
-    have : e ∈ (⊥ : Subrepresentation π).toSubmodule := h ▸ Submodule.mem_top
-    exact this)⟩
+    exact (h ▸ Submodule.mem_top : e ∈ (⊥ : Subrepresentation π).toSubmodule))⟩
   refine ⟨fun P => or_iff_not_imp_left.2 fun hP => ?_⟩
   obtain ⟨e', hP', he0', he'⟩ := exists_eigen_mem hB hα h1 h2 hπ hs P hP
   obtain ⟨r, rfl⟩ := eigen_line (alt_psi hB ψ) (ops_of_central hπ) hα hA he (v := e') (hsp ▸ Submodule.mem_top) he'

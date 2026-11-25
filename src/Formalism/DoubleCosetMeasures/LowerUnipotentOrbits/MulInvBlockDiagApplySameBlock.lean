@@ -175,8 +175,7 @@ def ptI (s : List ℕ) (t : ℕ → Kˣ) : Matrix (Fin s.sum) (Fin s.sum) K :=
 theorem pt_mul_ptI (s : List ℕ) (t : ℕ → Kˣ) : pt s t * ptI s t = (1 : Matrix _ _ K) := by
   rw [pt_eq_mono]
   ext a c
-  rw [mono_mul]
-  simp only [ptI, mono, revF_revF, blk_revF, Matrix.one_apply]
+  simp only [mono_mul, ptI, mono, revF_revF, blk_revF, Matrix.one_apply]
   by_cases h : c = a
   · subst h; simp
   · simp [h, Ne.symm h]
@@ -184,8 +183,7 @@ theorem pt_mul_ptI (s : List ℕ) (t : ℕ → Kˣ) : pt s t * ptI s t = (1 : Ma
 theorem ptI_mul_pt (s : List ℕ) (t : ℕ → Kˣ) : ptI s t * pt s t = (1 : Matrix _ _ K) := by
   rw [pt_eq_mono]
   ext a c
-  rw [ptI, mono_mul]
-  simp only [mono, revF_revF, blk_revF, Matrix.one_apply]
+  simp only [ptI, mono_mul, mono, revF_revF, blk_revF, Matrix.one_apply]
   by_cases h : c = a
   · subst h; simp
   · simp [h, Ne.symm h]
@@ -193,8 +191,7 @@ theorem ptI_mul_pt (s : List ℕ) (t : ℕ → Kˣ) : ptI s t * pt s t = (1 : Ma
 theorem conj_apply (s : List ℕ) (t : ℕ → Kˣ) (M : Matrix (Fin s.sum) (Fin s.sum) K)
     (a c : Fin s.sum) : (ptI s t * M * pt s t) a c =
       (((t (blk s a))⁻¹ : Kˣ) : K) * M (revF s a) (revF s c) * ((t (blk s c) : Kˣ) : K) := by
-  rw [pt_eq_mono, mul_mono, ptI, mono_mul]
-  simp only [blk_revF]
+  simp only [pt_eq_mono, mul_mono, ptI, mono_mul, blk_revF]
 
 theorem low_zero {n : ℕ} {x : Matrix (Fin n) (Fin n) K} (hx : IsLowUni x) {i j : Fin n}
     (h : i < j) : x i j = 0 := by
@@ -308,8 +305,7 @@ theorem phase_main : PhaseWellDef := by
   have hz : ∀ a c, y⁻¹ (revF s a) (revF s c) =
       ↑(t (blk s a))⁻¹ * x a c * ↑(t (blk s c)) := by
     intro a c
-    rw [hyinv, conj_apply]
-    simp only [revF_revF, blk_revF]
+    simp only [hyinv, conj_apply, revF_revF, blk_revF]
   have hxz : ∀ a c : Fin s.sum, (a : ℕ) = c + 1 → blk s a ≠ blk s c → x a c = 0 := by
     intro a c hac hb
     have hlt : blk s c < blk s a :=

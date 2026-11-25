@@ -103,10 +103,9 @@ theorem subframe_inv_bounds (Y : Matrix (Fin g) (Fin g) ℝ) {c D : ℝ} (hc : 0
     by_cases hij : i = j <;> simp [hij, Complex.real_smul]
   have hc1 : (c • (1 : Matrix (Fin g) (Fin g) ℝ)).PosDef := Matrix.PosDef.one.smul hc
   have hle1 : c • (1 : Matrix (Fin g) (Fin g) ℝ) ≤ Y := Matrix.le_iff.mpr h1
-  have hle2 : Y ≤ D • (1 : Matrix (Fin g) (Fin g) ℝ) := Matrix.le_iff.mpr h2
   have hY : Y.PosDef := GlobalTheory.posDef_of_le hc1 hle1
   have hlo : D⁻¹ • (1 : Matrix (Fin g) (Fin g) ℝ) ≤ Y⁻¹ :=
-    GlobalTheory.inv_smul_one_le_inv_of_le_smul_one hY hD hle2
+    GlobalTheory.inv_smul_one_le_inv_of_le_smul_one hY hD (Matrix.le_iff.mpr h2)
   have hhi : Y⁻¹ ≤ c⁻¹ • (1 : Matrix (Fin g) (Fin g) ℝ) := by
     have := GlobalTheory.inv_le_inv_of_posDef_of_le hc1 hle1
     rwa [GlobalTheory.inv_real_smul_of_posDef Matrix.PosDef.one hc.ne', inv_one] at this
@@ -158,8 +157,7 @@ theorem subframe_gram_posDef (F : Matrix (Fin g) (Fin k) ℂ) (h : F.rank = k) :
     intro v w hvw
     have h0 : (F.map star).mulVec (v - w) = 0 := by
       rw [Matrix.mulVec_sub, hvw, sub_self]
-    have := (Matrix.ker_mulVecLin_eq_bot_iff.mp hbot) (v - w) h0
-    exact sub_eq_zero.mp this
+    exact sub_eq_zero.mp ((Matrix.ker_mulVecLin_eq_bot_iff.mp hbot) (v - w) h0)
   exact Matrix.PosDef.conjTranspose_mul_self _ hinj
 
 theorem subframe_continuous_det :
@@ -184,8 +182,7 @@ theorem subframe_det_log_growth : ∀ (g k : ℕ) (X : Type) [TopologicalSpace X
     intro x hx
     have hpd := subframe_gram_posDef (F x) (hrank x hx)
     rw [hT] at hpd
-    have := GlobalTheory.re_det_pos_of_posDef hpd
-    simpa using this
+    simpa using GlobalTheory.re_det_pos_of_posDef hpd
   obtain ⟨m, hm⟩ : ∃ m, m = (((F x₀)ᵀ * (F x₀).map star).det).re := ⟨_, rfl⟩
   have hmpos : 0 < m := by rw [hm]; exact hGpos x₀ hx₀K
   have hA0 : 0 ≤ c⁻¹ ^ k * |M| := mul_nonneg (pow_nonneg (inv_nonneg.2 hc.le) k) (abs_nonneg M)
@@ -222,8 +219,7 @@ theorem subframe_det_log_growth : ∀ (g k : ℕ) (X : Type) [TopologicalSpace X
       simp only [Real.norm_eq_abs] at this
       exact le_trans (le_abs_self _) (le_trans this (le_abs_self M))
     have hGx_ge : m ≤ (((F x)ᵀ * (F x).map star).det).re := by
-      have := isMinOn_iff.mp hx₀ x hx
-      rw [hm]; exact this
+      rw [hm]; exact isMinOn_iff.mp hx₀ x hx
     rw [hd]
     generalize (((F x)ᵀ * (Y⁻¹).map Complex.ofReal * (F x).map star).det).re = D at hlo hhi ⊢
     generalize (((F x)ᵀ * (F x).map star).det).re = Gx at hlo hhi hGx_le hGx_ge

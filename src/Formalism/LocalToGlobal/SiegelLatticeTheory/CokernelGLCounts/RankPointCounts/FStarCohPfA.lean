@@ -91,14 +91,11 @@ theorem le_of_Lset {r : ℕ} {ι : Type} [Fintype ι] [DecidableEq ι] {v : ι �
     (hv1 : ∀ i, v i ∈ Λ₁) (hv2 : ∀ i, v i ∈ Λ₂) (hL : H.Lset Λ₁ f ⊆ H.Lset Λ₂ f) : Λ₁ ≤ Λ₂ := by
   intro x hx
   obtain ⟨c, hcO, hc⟩ := decomp hN hI1 hv1 hx
-  have hs2 : ∑ j, c j • v j ∈ Λ₂ := comb_mem_lat hv2 hcO
   have hperp : x - ∑ j, c j • v j ∈ H.perp (H.X f) := fun z hz => h_right_zero hc (hX hz)
-  have hx0 : x - ∑ j, c j • v j ∈ Λ₁ := Λ₁.sub_mem hx (comb_mem_lat hv1 hcO)
   have hmem : H.mkW f ⟨x - ∑ j, c j • v j, hperp⟩ ∈ H.Lset Λ₁ f :=
-    ⟨⟨x - ∑ j, c j • v j, hperp⟩, hx0, rfl⟩
+    ⟨⟨x - ∑ j, c j • v j, hperp⟩, (Λ₁.sub_mem hx (comb_mem_lat hv1 hcO)), rfl⟩
   obtain ⟨y, hyΛ, hyeq⟩ := hL hmem
   obtain ⟨d, hdO, hd⟩ := decomp hN hI2 hv2 hyΛ
-  have ht2 : ∑ j, d j • v j ∈ Λ₂ := comb_mem_lat hv2 hdO
   have hdiff : (y : V) - (x - ∑ j, c j • v j) ∈ H.X f := by
     have hk := LinearMap.sub_mem_ker_iff.2 hyeq
     rw [Formalism.MainNotions.S.Loc.HermSp.mkW, Submodule.ker_mkQ, Submodule.mem_comap] at hk
@@ -106,17 +103,16 @@ theorem le_of_Lset {r : ℕ} {ι : Type} [Fintype ι] [DecidableEq ι] {v : ι �
   have hzero : (x - ∑ j, c j • v j) - ((y : V) - ∑ j, d j • v j) = 0 := by
     apply eq_zero_of_orth hN
     · have h1 : (y : V) - (x - ∑ j, c j • v j) ∈ Submodule.span E (Set.range v) := hX hdiff
-      have h2 : ∑ j, d j • v j ∈ Submodule.span E (Set.range v) := comb_mem_span v d
       have h3 : (x - ∑ j, c j • v j) - ((y : V) - ∑ j, d j • v j) =
           ∑ j, d j • v j - ((y : V) - (x - ∑ j, c j • v j)) := by abel
       rw [h3]
-      exact Submodule.sub_mem _ h2 h1
+      exact Submodule.sub_mem _ (comb_mem_span v d) h1
     · intro i
       rw [h_sub_left', hc i, hd i, sub_zero]
   have hx0' : x - ∑ j, c j • v j ∈ Λ₂ := by
     rw [sub_eq_zero.1 hzero]
-    exact Λ₂.sub_mem hyΛ ht2
-  have h4 := Λ₂.add_mem hx0' hs2
+    exact Λ₂.sub_mem hyΛ (comb_mem_lat hv2 hdO)
+  have h4 := Λ₂.add_mem hx0' (comb_mem_lat hv2 hcO)
   rwa [sub_add_cancel] at h4
 
 theorem lat_eq_of_Lset {r : ℕ} {ι : Type} [Fintype ι] [DecidableEq ι] {v : ι → V} (hN : GramInv H v)

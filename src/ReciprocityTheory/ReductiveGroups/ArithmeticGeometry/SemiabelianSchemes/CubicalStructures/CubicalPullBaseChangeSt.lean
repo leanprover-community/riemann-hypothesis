@@ -54,8 +54,7 @@ lemma rigPull_le (F : G'.left ⟶ G.left) (e : (𝟙_ (Over S')).left ⟶ (𝟙_
     LB.wchart (L.pull F) (fun _ : PUnit.{u+1} => eSec G') j ≤
       e ⁻¹ᵁ LB.wchart L (fun _ : PUnit.{u+1} => eSec G) (fun _ => j ⟨⟩ ⟨⟩) := by
   intro x hx
-  have h0 : (eSec G').base x ∈ (L.pull F).U (j ⟨⟩) := Set.mem_iInter.1 hx ⟨⟩
-  have h1 : x ∈ (eSec G' ≫ F) ⁻¹ᵁ L.U (j ⟨⟩ ⟨⟩) := Set.mem_iInter.1 h0 ⟨⟩
+  have h1 : x ∈ (eSec G' ≫ F) ⁻¹ᵁ L.U (j ⟨⟩ ⟨⟩) := Set.mem_iInter.1 (Set.mem_iInter.1 hx ⟨⟩) ⟨⟩
   rw [he] at h1
   exact Set.mem_iInter.2 fun _ => h1
 
@@ -71,9 +70,8 @@ lemma theta_le (m : CubeMap G' G) (L : LB G.left) (j : thK.{u} → PUnit.{u+1} �
       m.F3 ⁻¹ᵁ LB.wchart L (thφ G (x3 G)) (fun I => j I ⟨⟩) := by
   intro x hx
   refine Set.mem_iInter.2 fun I => ?_
-  have h0 : (thφ G' (x3 G') I).base x ∈ (L.pull m.F).U (j I) := Set.mem_iInter.1 hx I
   have h1 : x ∈ ((psum G' (x3 G') I.down).left ≫ m.F) ⁻¹ᵁ L.U (j I ⟨⟩) :=
-    Set.mem_iInter.1 h0 ⟨⟩
+    Set.mem_iInter.1 (Set.mem_iInter.1 hx I) ⟨⟩
   rw [m.psum_comm I.down] at h1
   exact h1
 

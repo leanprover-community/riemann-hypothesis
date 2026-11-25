@@ -125,8 +125,7 @@ theorem colOp_lie [Fintype I] [DecidableEq J] (z : I × J → σ) (hz : Function
         polar K (z (b, k)) (z (b, l)) * polar K (z (a, i)) (z (a, j))) := by
     simp only [colOp, Finset.sum_mul_sum, Finset.sum_sub_distrib]
     exact congrArg₂ (· - ·) rfl Finset.sum_comm
-  rw [h]
-  simp only [polar_lie, hz.eq_iff, Prod.mk.injEq, Finset.sum_sub_distrib]
+  simp only [h, polar_lie, hz.eq_iff, Prod.mk.injEq, Finset.sum_sub_distrib]
   refine congrArg₂ (· - ·) ?_ ?_
   · by_cases hjk : j = k <;> simp [hjk, colOp]
   · by_cases hli : l = i <;> simp [hli, colOp]
@@ -170,8 +169,7 @@ theorem commute_rowOp_colOp_self [Fintype I] [Fintype J] (z : I × J → σ)
     simp only [colOp, rowOp, Finset.sum_mul_sum, Finset.sum_sub_distrib]
     exact congrArg₂ (· - ·) rfl Finset.sum_comm
   refine sub_eq_zero.mp ?_
-  rw [h]
-  simp [polar_lie, hz.eq_iff, ite_and]
+  simp [h, polar_lie, hz.eq_iff, ite_and]
 
 theorem mixedOp_lie [Fintype I] [Fintype I'] [DecidableEq J] (z : I × J → σ)
     (hz : Function.Injective z) (y : I' × J → σ) (hy : Function.Injective y)

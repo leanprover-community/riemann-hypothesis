@@ -60,30 +60,27 @@ theorem delta_ne_zero (c : Matrix (Fin m) (Fin m) K) : delta c ≠ 0 := by
   classical
   obtain ⟨b, hb⟩ := IsLocalization.exist_integer_multiples (nonZeroDivisors (𝓞 K))
     (Finset.univ : Finset (Fin m × Fin m)) (fun p => c p.1 p.2)
-  have hb0 : (b : 𝓞 K) ≠ 0 := nonZeroDivisors.ne_zero b.2
   choose r hr using fun (i j : Fin m) => RingHom.mem_rangeS.1 (hb (i, j) (Finset.mem_univ _))
   have hr' : ∀ i j, algebraMap (𝓞 K) K (r i j) = algebraMap (𝓞 K) K (b : 𝓞 K) * c i j := by
     intro i j
     rw [hr i j, Algebra.smul_def]
   let I : Ideal (𝓞 K) := Ideal.span {(b : 𝓞 K)}
-  have hI : I ≠ ⊥ := fun h => hb0 (Ideal.span_singleton_eq_bot.1 h)
+  have hI : I ≠ ⊥ := fun h => (nonZeroDivisors.ne_zero b.2) (Ideal.span_singleton_eq_bot.1 h)
   haveI : Finite (𝓞 K ⧸ I) := Ideal.finiteQuotientOfFreeOfNeBot I hI
   let π : (Fin m → 𝓞 K) →+ (Fin m → 𝓞 K ⧸ I) :=
     AddMonoidHom.pi (fun i => (Ideal.Quotient.mk I).toAddMonoidHom.comp
       (Pi.evalAddMonoidHom (fun _ : Fin m => 𝓞 K) i))
   have hker : π.ker ≤ Kc c := by
     intro y hy
-    have h0 : π y = 0 := AddMonoidHom.mem_ker.1 hy
     have hyI : ∀ j, y j ∈ I := fun j =>
-      Ideal.Quotient.eq_zero_iff_mem.1 (congrFun h0 j)
+      Ideal.Quotient.eq_zero_iff_mem.1 (congrFun (AddMonoidHom.mem_ker.1 hy) j)
     choose z hz using fun j => Ideal.mem_span_singleton'.1 (hyI j)
     change ∀ i : Fin m, ∃ o : 𝓞 K,
       algebraMap (𝓞 K) K o = c.mulVec (fun j => algebraMap (𝓞 K) K (y j)) i
     intro i
     refine ⟨∑ j, r i j * z j, ?_⟩
 
-    rw [map_sum]
-    simp only [Matrix.mulVec, dotProduct]
+    simp only [map_sum, Matrix.mulVec, dotProduct]
     refine Finset.sum_congr rfl (fun j _ => ?_)
     rw [map_mul, hr' i j, ← hz j, map_mul]
     ring

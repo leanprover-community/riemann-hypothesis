@@ -178,8 +178,7 @@ theorem tateNorm_grMk {n : ℕ} (x : S.F n) :
 
 theorem augMap_grMk {n : ℕ} (m : G → S.F n) :
     augMap G (S.gr n) (fun g => S.grMk n (m g)) = S.grMk n (augMap G (S.F n) m) := by
-  rw [augMap_apply, augMap_apply, map_prod]
-  simp only [map_div, smul_grMk]
+  simp only [augMap_apply, augMap_apply, map_prod, map_div, smul_grMk]
 
 theorem tateNorm_mem {n : ℕ} {x : V} (hx : x ∈ S.F n) : tateNorm G V x ∈ S.F n :=
   Subgroup.prod_mem _ fun g _ => S.smul_mem n g hx
@@ -271,12 +270,11 @@ theorem subsingleton_tateZero_of_complete (S : StableFiltration G V) (h0 : S.F 0
         rw [h.2 g, div_self']
         exact Subgroup.one_mem _
       exact ⟨y, hy, Subgroup.mem_subgroupOf.mpr hhy⟩)
-  have hx0 : (⟨x, (mem_invariants G V).mpr hx⟩ : invariants G V) ∈ (S.F 0).map f := by
+  obtain ⟨y, -, hy⟩ : (⟨x, (mem_invariants G V).mpr hx⟩ : invariants G V) ∈ (S.F 0).map f := by
     rw [key]
     change _ ∈ E 0
     rw [Subgroup.mem_subgroupOf, h0]
     exact Subgroup.mem_top _
-  obtain ⟨y, -, hy⟩ := hx0
   exact ⟨y, congrArg Subtype.val hy⟩
 
 theorem subsingleton_tateNegOne_of_complete (S : StableFiltration G V) (h0 : S.F 0 = ⊤)
@@ -302,12 +300,11 @@ theorem subsingleton_tateNegOne_of_complete (S : StableFiltration G V) (h0 : S.F
         exact Subgroup.one_mem _
       obtain ⟨m, hm, hhm⟩ := (S.subsingleton_tateNegOne_gr_iff n).mp (hgr n) h hh' hN
       exact ⟨m, (Subgroup.mem_pi _).mpr fun g _ => hm g, Subgroup.mem_subgroupOf.mpr hhm⟩)
-  have hx0 : (⟨x, MonoidHom.mem_ker.mpr hx⟩ : (tateNorm G V).ker) ∈ (P 0).map f := by
+  obtain ⟨m, -, hm⟩ : (⟨x, MonoidHom.mem_ker.mpr hx⟩ : (tateNorm G V).ker) ∈ (P 0).map f := by
     rw [key]
     change _ ∈ E 0
     rw [Subgroup.mem_subgroupOf, h0]
     exact Subgroup.mem_top _
-  obtain ⟨m, -, hm⟩ := hx0
   exact ⟨m, congrArg Subtype.val hm⟩
 
 theorem subsingleton_tate_of_complete (S : StableFiltration G V) (h0 : S.F 0 = ⊤)

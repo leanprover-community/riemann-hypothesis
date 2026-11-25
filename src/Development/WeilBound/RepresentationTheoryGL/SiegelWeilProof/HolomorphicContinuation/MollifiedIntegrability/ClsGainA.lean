@@ -154,13 +154,12 @@ theorem isOpen_OmS (s : ℂ) : IsOpen (OmS (n := n) s) := by
     continuous_const.add (continuous_of'.mul continuous_of')
   have h1 : Continuous fun B : MC n => (1 - (Complex.I * s) • Matrix.of B).det := g1.matrix_det
   have h2 : Continuous fun B : MC n => (1 + (Complex.I * s) • Matrix.of B).det := g2.matrix_det
-  have h3 : Continuous fun B : MC n => (1 + Matrix.of B * Matrix.of B).det := g3.matrix_det
   have e : OmS (n := n) s = {B | (1 - (Complex.I * s) • Matrix.of B).det ≠ 0} ∩
       ({B | (1 + (Complex.I * s) • Matrix.of B).det ≠ 0} ∩
         (fun B : MC n => (1 + Matrix.of B * Matrix.of B).det) ⁻¹' Complex.slitPlane) := rfl
   rw [e]
   exact (isOpen_ne_fun h1 continuous_const).inter ((isOpen_ne_fun h2 continuous_const).inter
-    (Complex.isOpen_slitPlane.preimage h3))
+    (Complex.isOpen_slitPlane.preimage g3.matrix_det))
 
 theorem herm_mem_OmS (s : ℂ) (hs : s = 1 ∨ s = -1) (y : E n) : (herm y : MC n) ∈ OmS s := by
   refine ⟨det_X_ne s hs y, det_Y_ne s hs y, ?_⟩
@@ -237,8 +236,6 @@ theorem an_clsC (s z : ℂ) (p q : ℕ) (R : MvPolynomial (Bool × Fin n × Fin 
   have hv := entAn_inv (entAn_Y (Complex.I * s) B₀) h2
   have hexp : AnalyticAt ℂ (fun B : MC n => Complex.exp (-z * Complex.log (1 + Matrix.of B * Matrix.of B).det)) B₀ :=
     (analyticAt_const.mul ((an_det (entAn_sq B₀)).clog h3)).cexp'
-  have hdu : AnalyticAt ℂ (fun B : MC n => ((1 - (Complex.I * s) • Matrix.of B)⁻¹).det ^ p) B₀ := (an_det hu).pow p
-  have hdv : AnalyticAt ℂ (fun B : MC n => ((1 + (Complex.I * s) • Matrix.of B)⁻¹).det ^ q) B₀ := (an_det hv).pow q
   have hf : ∀ k : Bool × Fin n × Fin n, AnalyticAt ℂ (fun B : MC n => if k.1 then (1 + (Complex.I * s) • Matrix.of B)⁻¹ k.2.1 k.2.2
       else (1 - (Complex.I * s) • Matrix.of B)⁻¹ k.2.1 k.2.2) B₀ := by
     rintro ⟨_ | _, a, b⟩
@@ -247,7 +244,7 @@ theorem an_clsC (s z : ℂ) (p q : ℕ) (R : MvPolynomial (Bool × Fin n × Fin 
   have hev := an_eval (fun k B => if k.1 then (1 + (Complex.I * s) • Matrix.of B)⁻¹ k.2.1 k.2.2
       else (1 - (Complex.I * s) • Matrix.of B)⁻¹ k.2.1 k.2.2) B₀ hf R
   unfold clsC
-  exact ((hexp.mul hdu).mul hdv).mul hev
+  exact ((hexp.mul ((an_det hu).pow p)).mul ((an_det hv).pow q)).mul hev
 
 theorem clsC_herm (s z : ℂ) (p q : ℕ) (R : MvPolynomial (Bool × Fin n × Fin n) ℂ) (y : E n) :
     clsC s z p q R (herm y) = cls s z p q R y := by

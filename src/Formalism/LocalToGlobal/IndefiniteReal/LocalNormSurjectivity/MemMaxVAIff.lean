@@ -29,14 +29,12 @@ theorem isUnit_VA_iff (a : VA L) : IsUnit a ↔ Valued.v (a : L) = 1 := by
   · rintro ⟨u, rfl⟩
     have hmul : ((u : VA L) : L) * (((u⁻¹ : (VA L)ˣ) : VA L) : L) = 1 := by
       exact congrArg (fun x : VA L => (x : L)) u.mul_inv
-    have hu : Valued.v ((u : VA L) : L) ≤ 1 := mem_VA.1 (u : VA L).2
-    have hu' : Valued.v (((u⁻¹ : (VA L)ˣ) : VA L) : L) ≤ 1 := mem_VA.1 (u⁻¹ : (VA L)ˣ).1.2
     have hprod := congrArg Valued.v hmul
     rw [map_mul, map_one] at hprod
-    refine le_antisymm hu ?_
+    refine le_antisymm (mem_VA.1 (u : VA L).2) ?_
     calc (1 : WithZero (Multiplicative ℤ)) = Valued.v ((u : VA L) : L) *
           Valued.v (((u⁻¹ : (VA L)ˣ) : VA L) : L) := hprod.symm
-      _ ≤ Valued.v ((u : VA L) : L) := mul_le_of_le_one_right' hu'
+      _ ≤ Valued.v ((u : VA L) : L) := mul_le_of_le_one_right' (mem_VA.1 (u⁻¹ : (VA L)ˣ).1.2)
   · intro h
     have ha0 : (a : L) ≠ 0 := by
       intro h0
@@ -155,10 +153,9 @@ theorem normSurj [CompleteSpace L] (hF : FinNormSurj) (hS : HenselSqrt) {ϖ : L}
     rw [← IsLocalRing.residue_eq_zero_iff, map_sub, hy, sub_self]
   rw [mem_max_VA_iff] at hdiff
   have hcv : Valued.v (c : L) = 1 := (isUnit_VA_iff c).1 hc
-  have hdiff' : Valued.v (σ (y : L) * (y : L) - c) < 1 := hdiff
   have hav : Valued.v (σ (y : L) * (y : L)) = 1 := by
     have h1 : Valued.v ((c : L) + (σ (y : L) * (y : L) - c)) = Valued.v (c : L) :=
-      Valuation.map_add_eq_of_lt_left _ (by rw [hcv]; exact hdiff')
+      Valuation.map_add_eq_of_lt_left _ (by rw [hcv]; exact hdiff)
     rwa [add_sub_cancel, hcv] at h1
   have ha0 : σ (y : L) * (y : L) ≠ 0 := fun h => by
     rw [h, map_zero] at hav

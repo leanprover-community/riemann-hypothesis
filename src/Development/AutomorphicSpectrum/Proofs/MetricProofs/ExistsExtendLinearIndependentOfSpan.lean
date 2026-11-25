@@ -73,14 +73,12 @@ theorem exists_completion_by_members (g m r : ℕ) (w : Fin r → Fin g → ℂ)
     refine Fin.addCases (fun i => ?_) (fun l => ?_) l
     · simpa only [φ, Fin.append_left] using hsB ⟨i, rfl⟩
     · simp only [φ, Fin.append_right, Function.comp_apply]
-      have := hJS l
-      simpa [S] using this
+      simpa [S] using hJS l
   have hBφ : B ⊆ Set.range φ := by
     rintro (i | j) hx
     · exact ⟨Fin.castAdd _ i, by simp [φ]⟩
     · have hj : j ∈ Set.range (S.orderEmbOfFin rfl) := by
-        rw [Finset.range_orderEmbOfFin]
-        simp [S, hx]
+        simp [Finset.range_orderEmbOfFin, S, hx]
       obtain ⟨l, hl⟩ := hj
       exact ⟨Fin.natAdd _ l, by simp [φ, J, hl]⟩
   have hu : LinearIndependent ℂ (v ∘ φ) := by
@@ -97,12 +95,11 @@ theorem exists_completion_by_members (g m r : ℕ) (w : Fin r → Fin g → ℂ)
   have hle2 : Submodule.span ℂ (Set.range b) ≤ Submodule.span ℂ (Set.range (v ∘ φ)) := by
     rw [Submodule.span_le]
     rintro _ ⟨j, rfl⟩
-    have h1 : b j ∈ Submodule.span ℂ (v '' B) := hspan ⟨Sum.inr j, Set.mem_univ _, rfl⟩
     have h2 : v '' B ⊆ Set.range (v ∘ φ) := by
       rintro _ ⟨x, hx, rfl⟩
       obtain ⟨l, rfl⟩ := hBφ hx
       exact ⟨l, rfl⟩
-    exact Submodule.span_mono h2 h1
+    exact Submodule.span_mono h2 (hspan ⟨Sum.inr j, Set.mem_univ _, rfl⟩)
   have hueq : (Fin.append w fun j => b (J j)) = v ∘ φ := by
     funext l
     refine Fin.addCases (fun i => ?_) (fun l => ?_) l

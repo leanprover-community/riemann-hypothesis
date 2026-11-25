@@ -116,8 +116,7 @@ theorem avgH_refine {H H' : Subgroup L} {x : V} (hle : H' ≤ H) (hH : H ≤ sta
     simp_rw [hcv]
     rw [Equiv.sum_comp e (fun p => cv π L H x p.1), Fintype.sum_prod_type]
     simp only [Finset.sum_const, Finset.card_univ]
-    rw [Finset.smul_sum]
-    simp [Nat.cast_smul_eq_nsmul]
+    simp [Finset.smul_sum, Nat.cast_smul_eq_nsmul]
   have hc : Fintype.card (H ⧸ H'.subgroupOf H) = H'.relIndex H := by
     rw [Fintype.card_eq_nat_card]; rfl
   rw [hsum, hc, ← hrel, smul_smul]

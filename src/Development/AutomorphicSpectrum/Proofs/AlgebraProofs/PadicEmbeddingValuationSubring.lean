@@ -102,8 +102,7 @@ theorem exists_valuationSubring_of_padicEmbedding :
           _ < 1 := by simpa using hx }
   have hI : I ≠ ⊤ := by
     intro htop
-    have h1 : (1 : A) ∈ I := by rw [htop]; trivial
-    obtain ⟨x, hx1, hx⟩ := h1
+    obtain ⟨x, hx1, hx⟩ : (1 : A) ∈ I := by rw [htop]; trivial
     have hx1' : x = 1 := by
       apply Subtype.ext
       simpa using hx1
@@ -120,8 +119,7 @@ theorem exists_valuationSubring_of_padicEmbedding :
         ← map_natCast (algebraMap ℚ_[p] (PadicAlgCl p)), PadicAlgCl.norm_extends,
         Padic.norm_p]
       exact inv_lt_one_of_one_lt₀ (by exact_mod_cast p.2.one_lt)
-    have := key ((p : ℕ) : F) (by simpa using hnorm)
-    simpa using this
+    simpa using key ((p : ℕ) : F) (by simpa using hnorm)
   · by_contra hlt
     have hlt' : 1 < ‖κ x‖ := not_le.mp hlt
     have hx0 : x ≠ 0 := by
@@ -133,7 +131,6 @@ theorem exists_valuationSubring_of_padicEmbedding :
       exact inv_lt_one_of_one_lt₀ hlt'
     have hnu := key x⁻¹ hinv
     rw [ValuationSubring.mem_nonunits_iff] at hnu
-    have hle : W.valuation (x : ℂ) ≤ 1 := (W.valuation_le_one_iff _).2 hxW
     have hprod : W.valuation (x : ℂ) * W.valuation ((x⁻¹ : F) : ℂ) = 1 := by
       rw [← map_mul]
       have : (x : ℂ) * ((x⁻¹ : F) : ℂ) = 1 := by
@@ -141,7 +138,7 @@ theorem exists_valuationSubring_of_padicEmbedding :
         simp [h0]
       rw [this, map_one]
     have : W.valuation (x : ℂ) * W.valuation ((x⁻¹ : F) : ℂ) < 1 :=
-      lt_of_le_of_lt (mul_le_of_le_one_left' hle) hnu
+      lt_of_le_of_lt (mul_le_of_le_one_left' ((W.valuation_le_one_iff _).2 hxW)) hnu
     exact absurd hprod this.ne
 
 end GlobalTheory.CompanionTheory.Ar.Flat

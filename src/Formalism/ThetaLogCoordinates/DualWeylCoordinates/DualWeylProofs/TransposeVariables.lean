@@ -51,13 +51,11 @@ theorem qn_D_apply (n : ℕ) (a b : Fin n) (f : MvPolynomial (Fin n × Fin n) �
 
 theorem qn_E_eq (n : ℕ) (a b : Fin n) (f : MvPolynomial (Fin n × Fin n) ℚ) :
     glOps ℚ n (rowLetters n) Set.univ a b f = qn_D n a b f := by
-  rw [qn_D_apply]
-  simp [glOps, glAct, rowLetters, LinearMap.sum_apply]
+  simp [qn_D_apply, glOps, glAct, rowLetters, LinearMap.sum_apply]
 
 theorem qn_D_X (n : ℕ) (a b : Fin n) (l c : Fin n) :
     qn_D n a b (X (l, c)) = if c = b then X (l, a) else 0 := by
-  rw [qn_D_apply]
-  simp only [MvPolynomial.pderiv_X, Pi.single_apply, Prod.mk.injEq]
+  simp only [qn_D_apply, MvPolynomial.pderiv_X, Pi.single_apply, Prod.mk.injEq]
   by_cases hc : c = b
   · subst hc
     simp

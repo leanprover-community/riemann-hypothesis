@@ -148,8 +148,7 @@ theorem exists_linear_of_mul_period {g : ℕ} {F : (Fin g → ℂ) → ℂ} (hF 
   rw [zero_add] at e2
   rw [e2, map_zero, neg_zero, Complex.exp_zero, mul_one, mul_right_comm] at e1
   have e3 : b l * cexp (-L l) = 1 := by
-    have := mul_right_cancel₀ (h0 0) (e1.trans (one_mul _).symm)
-    exact this
+    exact mul_right_cancel₀ (h0 0) (e1.trans (one_mul _).symm)
   rw [Complex.exp_neg, mul_inv_eq_one₀ (Complex.exp_ne_zero _)] at e3
   simpa only [ContinuousLinearMap.coe_coe] using e3
 
@@ -179,7 +178,7 @@ theorem exists_functional {ι : Type*} (δ : ι → R) (hδ : ∃ i, δ i ≠ 0)
   classical
   set m := IsLocalRing.maximalIdeal R
   set N : Submodule ℂ R := Submodule.span ℂ {x | ∃ r ∈ m, ∃ i, x = r * δ i} with hN
-  have hex : ∃ i, δ i ∉ N := by
+  obtain ⟨i, hi⟩ : ∃ i, δ i ∉ N := by
     by_contra! hall
     set J : Ideal R := Ideal.span (Set.range δ) with hJ
     have hNJ : ∀ x ∈ N, x ∈ m • J := by
@@ -205,7 +204,6 @@ theorem exists_functional {ι : Type*} (δ : ι → R) (hδ : ∃ i, δ i ≠ 0)
     have : δ i ∈ J := Ideal.subset_span ⟨i, rfl⟩
     rw [hJ0] at this
     exact (Submodule.mem_bot R).mp this
-  obtain ⟨i, hi⟩ := hex
   obtain ⟨lam, hlam, hker⟩ := Submodule.exists_le_ker_of_notMem hi
   refine ⟨lam, ⟨i, hlam⟩, fun j r hr => ?_⟩
   exact hker (Submodule.subset_span ⟨r, hr, j, rfl⟩)

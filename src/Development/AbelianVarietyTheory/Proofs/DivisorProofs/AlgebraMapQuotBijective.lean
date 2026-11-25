@@ -103,10 +103,8 @@ private theorem mul_sup_span_singleton_eq_of_mem_of_not_mem_mul (A : Type) [Comm
   have hle : I * P ⊔ Ideal.span {x} ≤ I :=
     sup_le (Ideal.mul_le_inf.trans inf_le_left) ((Ideal.span_singleton_le_iff_mem I).mpr hxI)
   obtain ⟨M, hM⟩ := Ideal.dvd_iff_le.mpr hle
-  have hMP : M ∣ P := by
-    have : I * M ∣ I * P := Ideal.dvd_iff_le.mpr (hM ▸ le_sup_left)
-    exact (mul_dvd_mul_iff_left hI).mp this
-  obtain ⟨N, hN⟩ := hMP
+  obtain ⟨N, hN⟩ : M ∣ P := by
+    exact (mul_dvd_mul_iff_left hI).mp (Ideal.dvd_iff_le.mpr (hM ▸ le_sup_left) : I * M ∣ I * P)
   rcases (Ideal.prime_of_isPrime hP0 hP.isPrime).irreducible.isUnit_or_isUnit hN with hu | hu
   · rw [hM, Ideal.isUnit_iff.mp hu, Ideal.mul_top]
   · rw [Ideal.isUnit_iff.mp hu, Ideal.mul_top] at hN
@@ -149,10 +147,9 @@ private theorem finrank_quotient_mul_maximal_eq_finrank_add_one (k A : Type) [Fi
       refine Submodule.mem_span_singleton.mpr ⟨c, ?_⟩
       rw [← Ideal.Quotient.mkₐ_eq_mk k, ← map_smul, Ideal.Quotient.mkₐ_eq_mk, Ideal.Quotient.eq,
         Algebra.smul_def]
-      have h1 : x * (r - algebraMap k A c) ∈ I * P := Ideal.mul_mem_mul hxI hc
       have h2 : algebraMap k A c * x - (b + r * x) = -(b + x * (r - algebraMap k A c)) := by ring
       rw [h2]
-      exact (I * P).neg_mem ((I * P).add_mem hb h1)
+      exact (I * P).neg_mem ((I * P).add_mem hb (Ideal.mul_mem_mul hxI hc))
     · rw [Submodule.span_singleton_le_iff_mem, LinearMap.mem_ker]
       exact Ideal.Quotient.eq_zero_iff_mem.mpr hxI
   have hx0 : Ideal.Quotient.mk (I * P) x ≠ 0 := fun h => hxIP (Ideal.Quotient.eq_zero_iff_mem.mp h)

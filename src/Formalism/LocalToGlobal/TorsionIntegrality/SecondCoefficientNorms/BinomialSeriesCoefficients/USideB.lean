@@ -50,8 +50,7 @@ theorem subst_rescale {l linv : PowerSeries K} (h : IsLogPair l linv) (al : K) (
 theorem l_ne_zero {l linv : PowerSeries K} (h : IsLogPair l linv) : l ≠ 0 := by
   intro h0
   have h1 := h.2.1
-  rw [h0] at h1
-  simp at h1
+  simp [h0] at h1
 
 theorem subst_wpShift {e l A : PowerSeries K} {c0 : K} (hl : PowerSeries.constantCoeff l = 0)
     (hX : XIsWp e l A c0) (x : K) :
@@ -286,9 +285,8 @@ theorem phNormUnit_of (hE : MvExpLaws) (hH : LGHalf) (hU : IsogenyU) :
       _ = PowerSeries.C al⁻¹ ^ 2 * F * (PowerSeries.C (al ^ 2) * E2 * Q) := by rw [h1]
       _ = PowerSeries.C (al⁻¹ ^ 2 * al ^ 2) * (E2 * F) * Q := by simp only [map_mul, map_pow]; ring
       _ = Q := by rw [hEF, inv_pow, inv_mul_cancel₀ (pow_ne_zero 2 hal0), map_one]; ring
-  have hAm : A ∈ intSub R := mem_intSub.2 hA.2
   have hQi : IntPS R Q := mem_intSub.1 (prod_mem fun P _ =>
-    sub_mem hAm (mul_mem (C_mem_intSub (hxP P)) (pow_mem (X_mem_intSub R) 2)))
+    sub_mem (mem_intSub.2 hA.2) (mul_mem (C_mem_intSub (hxP P)) (pow_mem (X_mem_intSub R) 2)))
   have hI1 : IntPS R (mvExp (-(D + D)) : PowerSeries K) := int_of_mul hv1 hQi hkey
   have cD : PowerSeries.constantCoeff D = 0 := by simp [hD, hsc, hph.1]
   have cDD : PowerSeries.constantCoeff (D + D) = 0 := by simp [cD]

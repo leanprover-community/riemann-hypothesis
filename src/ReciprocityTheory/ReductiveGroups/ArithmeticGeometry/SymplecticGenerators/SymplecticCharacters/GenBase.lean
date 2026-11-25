@@ -30,8 +30,7 @@ theorem spTransl_mem_sp {S : Matrix (Fin g) (Fin g) ℤ} (hS : S.IsSymm) :
   rw [SymplecticGroup.mem_iff]
   have hS' : Sᵀ = S := hS
   unfold spTransl
-  rw [Matrix.J, fromBlocks_transpose, fromBlocks_multiply, fromBlocks_multiply]
-  simp [hS']
+  simp [Matrix.J, fromBlocks_transpose, fromBlocks_multiply, fromBlocks_multiply, hS']
 
 theorem spDiag_mem_sp (U : (Matrix (Fin g) (Fin g) ℤ)ˣ) : spDiag U ∈ symplecticGroup (Fin g) ℤ := by
 
@@ -60,8 +59,7 @@ theorem spLow_eq (S : Matrix (Fin g) (Fin g) ℤ) :
 
   rw [J_cube]
   unfold spLow spTransl
-  rw [Matrix.J, fromBlocks_neg, fromBlocks_multiply, fromBlocks_multiply]
-  simp
+  simp [Matrix.J, fromBlocks_neg, fromBlocks_multiply, fromBlocks_multiply]
 
 theorem spLow_mem {S : Matrix (Fin g) (Fin g) ℤ} (hS : S.IsSymm) : spLow S ∈ spH g := by
 
@@ -116,8 +114,7 @@ theorem row_inr_of_col_inl {M : Matrix (Fin g ⊕ Fin g) (Fin g ⊕ Fin g) ℤ}
     (q : Fin g ⊕ Fin g) :
     M (Sum.inr i) q = (1 : Matrix (Fin g ⊕ Fin g) (Fin g ⊕ Fin g) ℤ) (Sum.inr i) q := by
 
-  have h1 : Mᵀ * J (Fin g) ℤ * M = J (Fin g) ℤ := SymplecticGroup.mem_iff'.mp hM
-  have h2 := congrFun (congrFun h1 q) (Sum.inl i)
+  have h2 := congrFun (congrFun (SymplecticGroup.mem_iff'.mp hM) q) (Sum.inl i)
   rw [mul_col_of_unit h, Matrix.mul_apply] at h2
   have hJ : ∀ r, J (Fin g) ℤ r (Sum.inl i) = if r = Sum.inr i then 1 else 0 := by
     intro r

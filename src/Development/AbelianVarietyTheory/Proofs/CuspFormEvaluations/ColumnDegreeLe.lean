@@ -83,8 +83,7 @@ theorem eval_rowOps_eq {K σ : Type*} [Field K] [DecidableEq σ] {p n : ℕ} (z 
       with hy_def
     have hy : ∀ k, y (z (q.1, k)) = x (z (q.1, k)) := by
       intro k
-      rw [hy_def]
-      simp only [add_eq_left]
+      simp only [hy_def, add_eq_left]
       refine Finset.sum_eq_zero fun q' hq'T => Finset.sum_eq_zero fun k' _ => ?_
       rw [ite_eq_right]
       intro h
@@ -116,8 +115,7 @@ theorem eval_scale_eq {K σ : Type*} [Field K] (w : σ → ℕ) (P : MvPolynomia
         (AddMonoidAlgebra.coeff P m * ∏ s ∈ m.support, x s ^ m s)).eval t := by
   rw [eval_eq, Polynomial.eval_finsetSum]
   refine Finset.sum_congr rfl fun m _ => ?_
-  rw [Polynomial.eval_monomial]
-  simp only [mul_pow, Finset.prod_mul_distrib, ← pow_mul]
+  simp only [Polynomial.eval_monomial, mul_pow, Finset.prod_mul_distrib, ← pow_mul]
   rw [Finset.prod_pow_eq_pow_sum]
   ring
 
@@ -145,8 +143,7 @@ theorem column_degree_le {K σ : Type*} [Field K] [CharZero K] [DecidableEq σ] 
     intro a k
     show (if z (a, k) ∈ Finset.image z (Finset.univ ×ˢ S) then 1 else 0) = _
     have hm : z (a, k) ∈ Finset.image z (Finset.univ ×ˢ S) ↔ k ∈ S := by
-      rw [hz.mem_finset_image]
-      simp
+      simp [hz.mem_finset_image]
     by_cases hk : k ∈ S
     · rw [ite_eq_left (hm.2 hk), ite_eq_left hk]
     · rw [ite_eq_right (fun h => hk (hm.1 h)), ite_eq_right hk]

@@ -291,10 +291,9 @@ theorem block_form (g κ₂ : GL (Ix n) L) (dd : GL (Fin n) L)
   have hXeq : X.1 = fromBlocks (toBlocks₁₁ X.1) (toBlocks₁₂ X.1) 0 (dd⁻¹).1 := by
     rw [← h21, ← h22]
     exact (Matrix.fromBlocks_toBlocks X.1).symm
-  have hdetX : X.1.det ≠ 0 := (Matrix.isUnits_det_units X).ne_zero
   have hdetA : (toBlocks₁₁ X.1).det ≠ 0 := by
     intro h0
-    apply hdetX
+    apply ((Matrix.isUnits_det_units X).ne_zero)
     rw [hXeq, Matrix.det_fromBlocks_zero₂₁, h0, zero_mul]
   have hpar : GlobalTheory.CompanionTheory.Jp.pM (Matrix.GeneralLinearGroup.mkOfDetNeZero _ hdetA) dd⁻¹
       (toBlocks₁₂ X.1) = X := Units.ext hXeq.symm
@@ -443,15 +442,13 @@ theorem exists_decomp (ϖ : O) (hϖ : Irreducible ϖ) (w : Lˣ) (hw : (w : L) = 
       algebraMap O L ((P.1 * GlobalTheory.CompanionTheory.Jp.lowerLeftBlock κ) j c) := by
     intro j c
 
-    rw [Matrix.mul_apply, map_sum]
-    simp only [map_mul]
+    simp only [Matrix.mul_apply, map_sum, map_mul]
   have hPD : ∀ j c, ∑ m, algebraMap O L (P.1 j m) *
       (algebraMap O L (GlobalTheory.CompanionTheory.Jp.dBlk κ m c) * ((w⁻¹ : Lˣ) : L)) =
       algebraMap O L ((P.1 * GlobalTheory.CompanionTheory.Jp.dBlk κ) j c) * ((w⁻¹ : Lˣ) : L) := by
     intro j c
 
-    rw [Matrix.mul_apply, map_sum, Finset.sum_mul]
-    simp only [map_mul, mul_assoc]
+    simp only [Matrix.mul_apply, map_sum, Finset.sum_mul, map_mul, mul_assoc]
   have hbot : dd.1 * X.1.submatrix Sum.inr id =
       (GlobalTheory.CompanionTheory.Jp.inL κ₂).1.submatrix Sum.inr id := by
     ext j col

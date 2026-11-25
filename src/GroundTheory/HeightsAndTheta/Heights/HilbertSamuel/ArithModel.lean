@@ -88,8 +88,7 @@ theorem hasFDerivAt_normSqE (z : J → ℂ) : HasFDerivAt normSqE (2 • reInner
 theorem normSqE_pos {z : J → ℂ} (hz : z ≠ 0) : 0 < normSqE z := by
   unfold normSqE
   have : eL z ≠ 0 := fun h => hz (by
-    have := congrArg (fun v : EuclideanSpace ℂ J => v.ofLp) h
-    simpa [eL_apply] using this)
+    simpa [eL_apply] using (congrArg (fun v : EuclideanSpace ℂ J => v.ofLp) h))
   positivity
 
 theorem log_fs_eq : (fun z => Real.log ((fsMetric (ι := J)).ρ z)) = fun z => (1 / 2) * Real.log (normSqE z) := by
@@ -169,15 +168,13 @@ theorem isSmoothMetric_fs : IsSmoothMetric (fsMetric (ι := J)) := by
   have h : (fsMetric (ι := J)).ρ = fun z => ‖eL z‖ := rfl
   rw [h]
   have hne : eL z ≠ 0 := fun h0 => hz (by
-    have := congrArg (fun v : EuclideanSpace ℂ J => v.ofLp) h0
-    simpa [eL_apply] using this)
+    simpa [eL_apply] using (congrArg (fun v : EuclideanSpace ℂ J => v.ofLp) h0))
   exact ((contDiffAt_norm ℝ hne).comp z (ContinuousLinearMap.contDiff (eL (J := J))).contDiffAt).contDiffWithinAt
 
 theorem isConjInvariant_fs : IsConjInvariant (fsMetric (ι := J)) := by
   intro z
   change ‖WithLp.toLp 2 _‖ = ‖WithLp.toLp 2 z‖
-  rw [EuclideanSpace.norm_eq, EuclideanSpace.norm_eq]
-  simp
+  simp [EuclideanSpace.norm_eq, EuclideanSpace.norm_eq]
 
 end FS
 
