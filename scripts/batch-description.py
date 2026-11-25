@@ -157,21 +157,6 @@ def reverts(commits, found):
     return result
 
 
-def absorbed(commits, found):
-    """The pull requests that a batch's merge commit brought into its branch at another commit than
-    any the batch is known to hold of them (`found`, {number: commit}), as {number: the commit
-    merged}: a pull request into which `main` was merged for the batch, with that merge never pushed
-    to its branch, or one pushed to after it was merged in but before the workflow first looked
-    through the batch. `commits` is as for `reverts`, and a batch's merge commit is one whose first
-    line follows `BATCH_MERGE`. The last such merge of each counts."""
-    found_ = {}
-    for _, (message, parents) in commits.items():
-        match = BATCH_MERGE.match(message.split("\n", 1)[0])
-        if match and len(parents) > 1 and match.group(1) not in found:
-            found_[match.group(1)] = parents[1]
-    return found_
-
-
 def description_check(number, body, repo, note, pulls, below=(), fates=None):
     """What the comment comparing the description of the batch #`number` with its branch says, and
     whether all is well. `note` is the batch's note, and `pulls` the open pull requests, as
@@ -184,10 +169,9 @@ def description_check(number, body, repo, note, pulls, below=(), fates=None):
     request, saying which of those are still in the branch and so land with it although GitHub
     will not mark them merged. `fates` says which is which, as {number: "merged" or "closed"}: one
     it does not know is "not an open pull request". It names what it lists as included that is
-    open but whose head commit is not in the branch. One that a batch's merge commit brought in at
-    another commit (see `absorbed`) is named apart, for information: it lands with the batch, and
-    GitHub does not mark it merged, which nothing done to the batch changes, so it does not count
-    against all being well. It names what is in the branch that the description does not
+    open but whose head commit is not in the branch, as one pushed to after it was merged in but
+    before the workflow first looked through the batch: the batch lands its earlier commit, and
+    GitHub does not mark it merged. It names what is in the branch that the description does not
     list at all, unless the description lists nothing as included or it holds a batch itself; what
     is in the branch that it lists as left out; and what the branch reverts, which is named for that
     alone. What is in the branch is what the note records, at the commit it was found at, so a pull
@@ -207,10 +191,7 @@ def description_check(number, body, repo, note, pulls, below=(), fates=None):
     closed = [entry for entry in gone if fates.get(entry) == "closed"]
     unknown = [entry for entry in gone if entry not in merged and entry not in closed]
     landing = [entry for entry in closed + unknown if entry in found | set(below)]
-    elsewhere = {int(key): commit for key, commit in (note.get("absorbed") or {}).items()}
     missing = sorted(entry for entry in included - found - set(below) if entry in pulls)
-    other_commit = [entry for entry in missing if entry in elsewhere]
-    missing = [entry for entry in missing if entry not in elsewhere]
     undone = sorted((int(key), undo) for key, undo in note["reverted"].items() if int(key) in pulls)
     found -= {entry for entry, _ in undone}
     unlisted = sorted(entry for entry in found - anywhere if included and entry in pulls and not pulls[entry]["batch"])
@@ -240,11 +221,6 @@ def description_check(number, body, repo, note, pulls, below=(), fates=None):
                   "not count: GitHub marks a pull request merged only when its head commit lands. To leave such a one "
                   "out instead, rebuild the branch without it, since its earlier commit would still land, and take it "
                   "off the list. One that is not in the branch at all only needs to come off the list."]
-    if other_commit:
-        lines += ["", "In this branch at another commit than their head, merged in by the batch's own merge commit: "
-                  + ", ".join(f"#{entry} at `{elsewhere[entry][:10]}`" for entry in other_commit)
-                  + ". This is for information: their changes land with the batch, but GitHub does not mark them "
-                  "merged, so close each by hand once the batch has landed, or push that commit to its branch first."]
     if unlisted:
         lines += ["", f"In this branch, but not listed in the description: {links(unlisted)}."]
     if against:
@@ -257,9 +233,8 @@ def description_check(number, body, repo, note, pulls, below=(), fates=None):
                   "Each one whose head has not moved since is told so, unless it is labelled `deferred`."]
     clear = not (merged or closed or unknown or missing or unlisted or against or undone)
     if clear and included:
-        lines += ["", "Nothing else to report: everything in this branch is listed, and nothing in it is reverted."
-                  if other_commit else "Nothing to report: every pull request listed as included is in this branch, "
-                  "everything in it is listed, and nothing in it is reverted."]
+        lines += ["", "Nothing to report: every pull request listed as included is in this branch, everything in it "
+                  "is listed, and nothing in it is reverted."]
     elif clear:
         lines += ["", "Nothing to report: nothing in this branch is listed as left out or reverted."]
     return "\n".join(lines) + "\n", clear

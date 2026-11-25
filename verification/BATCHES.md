@@ -128,16 +128,12 @@ comment of its own on the batch's pull request. It names:
 - pull requests listed as included that are closed without being merged, or are no pull request,
   and which of them are still in the branch. The changes of those land with the batch, but GitHub
   does not mark a closed pull request merged. The workflow asks GitHub once what became of each;
-- pull requests listed as included whose head commit is not in the branch. Merge its head in;
-  one that is not in the branch at all only needs to come off the list;
-- for information only, pull requests listed as included that the batch's own merge commit,
-  `Merge PR #123 into batch` or `Merge #123 head (...) into batch/...`, brought in at another
-  commit than their head: one into which `main` was merged for the batch, with that merge never
-  pushed to its branch, or one pushed to after it was merged in but before the workflow first
-  looked through the batch. Its changes land with the batch, but GitHub does not mark it merged:
-  close it by hand once the batch has landed, or push that commit to its branch first. Since
-  nothing done to the batch changes that, these alone neither get a comment posted nor keep the
-  comment from saying that all else is well;
+- pull requests listed as included whose head commit is not in the branch. That includes one
+  pushed to after it was merged in but before the workflow first looked through the batch: the
+  workflow cannot count its old commit as in the batch, and GitHub would not mark it merged. Merge
+  its new head in. To leave it out instead, rebuild the branch without it, since its old commit
+  would still land, and take it off the list; one that is not in the branch at all only needs to
+  come off the list;
 - pull requests in the branch that the description does not list at all. This is left out when
   the description lists nothing as included, so a batch that does not follow this format is not
   flooded;
