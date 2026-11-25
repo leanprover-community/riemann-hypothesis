@@ -61,11 +61,6 @@ theorem cpt_add_smul' (Bs : B.RealPlaceData k r Wp Wq) {F₁ F₂ : B.Mat k r �
       exact (min_le_right _ _).trans (hG₂ g hg this)
     · exact (min_le_left _ _).trans (hG₁ g hg h0)
 
-theorem cpt_add (Bs : B.RealPlaceData k r Wp Wq) {F₁ F₂ : B.Mat k r → (Wq →L[ℂ] Wp)}
-    (h₁ : KB.CptCoef Bs F₁) (h₂ : KB.CptCoef Bs F₂) : KB.CptCoef Bs (fun g => F₁ g + F₂ g) := by
-  have := cpt_add_smul' Bs (1 : ℂ) h₁ h₂
-  simpa [one_smul] using this
-
 theorem cpt_sub (Bs : B.RealPlaceData k r Wp Wq) {F₁ F₂ : B.Mat k r → (Wq →L[ℂ] Wp)}
     (h₁ : KB.CptCoef Bs F₁) (h₂ : KB.CptCoef Bs F₂) : KB.CptCoef Bs (fun g => F₁ g - F₂ g) := by
   have := cpt_add_smul' Bs (-1 : ℂ) h₁ h₂

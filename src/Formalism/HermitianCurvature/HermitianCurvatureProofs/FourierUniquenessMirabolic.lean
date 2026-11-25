@@ -18,35 +18,6 @@ private alias wMat_mul_apply_eq_rev := _root_.Formalism.FourierDecayAlt.P.G2.wMa
 
 private alias wMat_mulVec_apply_eq_rev := _root_.Formalism.FourierDecayAlt.P.G2.wMat_mulVec_apply
 
-theorem wM_succ_last {n : ℕ} (t : ℂ) (X : Matrix (Fin n) (Fin n) ℂ) (B ρ : Fin n → ℂ) (σ : ℂ) (i : Fin n) :
-    (wMat (n + 1) * Mcoord t X B ρ σ) i.succ (Fin.last n) = B i := by
-  rw [wMat_mul_apply_eq_rev]
-  first
-    | simp [Mcoord, blk, Fin.rev_succ, wMat_mulVec_apply_eq_rev]
-
-theorem wM_succ_cast {n : ℕ} (t : ℂ) (X : Matrix (Fin n) (Fin n) ℂ) (B ρ : Fin n → ℂ) (σ : ℂ) (i j : Fin n) :
-    (wMat (n + 1) * Mcoord t X B ρ σ) i.succ j.castSucc = t * (1 : Matrix (Fin n) (Fin n) ℂ) i j + X i j := by
-  rw [wMat_mul_apply_eq_rev]
-  first
-    | simp [Mcoord, blk, Fin.rev_succ, wMat_mulVec_apply_eq_rev, wMat_mul_apply_eq_rev]
-
-theorem wM_zero_cast {n : ℕ} (t : ℂ) (X : Matrix (Fin n) (Fin n) ℂ) (B ρ : Fin n → ℂ) (σ : ℂ) (j : Fin n) :
-    (wMat (n + 1) * Mcoord t X B ρ σ) 0 j.castSucc = ρ j := by
-  rw [wMat_mul_apply_eq_rev]
-  first
-    | simp [Mcoord, blk, Fin.rev_zero, wMat_mulVec_apply_eq_rev]
-
-theorem wM_zero_last {n : ℕ} (t : ℂ) (X : Matrix (Fin n) (Fin n) ℂ) (B ρ : Fin n → ℂ) (σ : ℂ) :
-    (wMat (n + 1) * Mcoord t X B ρ σ) 0 (Fin.last n) = σ := by
-  rw [wMat_mul_apply_eq_rev]
-  first
-    | simp [Mcoord, blk, Fin.rev_zero, wMat_mulVec_apply_eq_rev]
-
-theorem diagonal_cons_succ {n : ℕ} (a b : ℂ) (x : Fin n → ℂ) (i : Fin n) (j : Fin (n + 1)) :
-    Matrix.diagonal (Fin.cons a x : Fin (n + 1) → ℂ) i.succ j =
-      Matrix.diagonal (Fin.cons b x : Fin (n + 1) → ℂ) i.succ j := by
-  simp only [Matrix.diagonal_apply, Fin.cons_succ]
-
 theorem xOf_redOf (m : ℕ) (p : XY m) (k : Fin (m + 1)) :
     xOf (strictUpper (redOf m p).2.2.1) (redOf m p).2.2.2 k = p.1 k := by
   refine Fin.lastCases ?_ (fun k => ?_) k

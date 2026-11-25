@@ -38,8 +38,4 @@ theorem Ranks.two_le_fN (R : Ranks) : 2 ≤ R.f * R.N R.m := by
   calc 2 = 2 * 1 := rfl
     _ ≤ R.f * R.N R.m := Nat.mul_le_mul hf hN
 
-theorem DGamMink.mem {D : D7} (h : DGamMink D) (hD : DGamDef D) (u : D.what₂.Word) :
-    (D.mem u).C.DGam = minkM (2 * D.R.f * D.R.N D.R.m) := by
-  rw [← hD.one u D.u₀ D.what₂.mu0, hD.one D.u₀ D.u₀ D.what₂.mu0]; exact h
-
 end Formalism.BasicNotions

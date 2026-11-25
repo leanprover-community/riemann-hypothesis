@@ -60,8 +60,6 @@ def dopL (w : V × V) : 𝓢(V, ℂ) →ₗ[ℂ] 𝓢(V, ℂ) where
     simp only [SchwartzMap.smul_apply, dop_apply, this, smul_eq_mul, RingHom.id_apply]
     ring
 
-theorem dopL_apply (w : V × V) (f : 𝓢(V, ℂ)) : dopL lam w f = dop w.1 (lam w.2) f := rfl
-
 def evD (f : 𝓢(V, ℂ)) (x : V) : V × V →ₗ[ℝ] ℂ where
   toFun w := dopL lam w f x
   map_add' a b := by

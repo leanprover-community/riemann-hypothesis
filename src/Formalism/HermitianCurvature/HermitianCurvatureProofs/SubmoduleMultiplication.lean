@@ -18,10 +18,6 @@ section Top
 
 variable {K : Type} [CommRing K] [TopologicalSpace K] [IsTopologicalRing K]
 
-theorem small_mul {C : Set K} (hC : IsCompact C) {W : Set K} (hW : W ∈ 𝓝 (0 : K)) :
-    ∃ U ∈ 𝓝 (0 : K), ∀ u ∈ U, ∀ c ∈ C, u * c ∈ W :=
-  by apply _root_.Formalism.FourierDecayAlt.P.AdicNeighbourhood.small_mul <;> assumption
-
 def I (R : Subring K) (a : K) : Set K := {x | ∃ r ∈ R, x = a * r}
 
 theorem I_compact {R : Subring K} (hc : IsCompact (R : Set K)) (a : K) : IsCompact (I R a) := by
@@ -41,11 +37,6 @@ theorem I_nhds {R : Subring K} (ho : IsOpen (R : Set K)) (a : Kˣ) : I R (a : K)
       exact ⟨_, hx, by simp⟩
   rw [h]
   exact (ho.preimage (continuous_const.mul continuous_id)).mem_nhds (by simp)
-
-theorem inter_zero {R : Subring K} [T2Space K] [IsReduced K] (hc : IsCompact (R : Set K))
-    (hn : ∀ n : ℕ, n ≠ 0 → IsUnit (n : K)) (ϖ : K) (hu : ∀ x : K, ∃ m : ℕ, ϖ ^ m * x ∈ R)
-    (x : K) (hx : ∀ n, x ∈ I R (ϖ ^ n)) : x = 0 :=
-  Formalism.FourierDecayAlt.P.AdicNeighbourhood.inter_zero hc hn ϖ hu x hx
 
 structure Adic (R : Subring K) (ϖ : Kˣ) : Prop where
   t2 : T2Space K

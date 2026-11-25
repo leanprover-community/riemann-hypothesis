@@ -73,7 +73,6 @@ def sd {m : ℕ} (i : Fin m) : Pr (m + 1) := ⟨(i.castSucc, i.succ), Fin.castSu
 def g1 {m : ℕ} (D' : K) (x : Fin m → K) (y : Pr (m + 1) → K) : K :=
   x0 D' x * ∑ i : Fin m, y (sd i) * Ring.inverse (xt D' x i.castSucc) * Ring.inverse (xt D' x i.succ)
 
-
 open Classical in
 def GG (R : Subring K) (ψ : AddChar K ℂ) (Φ : ∀ n : ℕ, Matrix (Fin n) (Fin n) K → ℂ) {m : ℕ} (D' : K)
     (x : Fin m → K) (y : Pr (m + 1) → K) : ℂ :=
@@ -164,8 +163,6 @@ theorem Sm.mem (hϖ : (ϖ : K) ∈ R) {k : ℕ} {x : K} (hx : Sm R ϖ k x) : x �
   obtain ⟨r, hr, rfl⟩ := hx
   exact R.mul_mem (R.pow_mem hϖ k) hr
 
-theorem Sm.zero (k : ℕ) : Sm R ϖ k 0 := ⟨0, R.zero_mem, by simp⟩
-
 theorem Sm.add {k : ℕ} {x y : K} (hx : Sm R ϖ k x) (hy : Sm R ϖ k y) : Sm R ϖ k (x + y) := by
   obtain ⟨r, hr, rfl⟩ := hx
   obtain ⟨q, hq, rfl⟩ := hy
@@ -175,23 +172,9 @@ theorem Sm.neg {k : ℕ} {x : K} (hx : Sm R ϖ k x) : Sm R ϖ k (-x) := by
   obtain ⟨r, hr, rfl⟩ := hx
   exact ⟨-r, R.neg_mem hr, by ring⟩
 
-theorem Sm.sum {ι : Type} {k : ℕ} (S : Finset ι) (f : ι → K) (h : ∀ i ∈ S, Sm R ϖ k (f i)) :
-    Sm R ϖ k (∑ i ∈ S, f i) := by
-  classical
-  induction S using Finset.induction_on with
-  | empty => simpa using Sm.zero k
-  | insert i S hi ih =>
-    rw [Finset.sum_insert hi]
-    exact (h i (Finset.mem_insert_self _ _)).add (ih fun j hj => h j (Finset.mem_insert_of_mem hj))
-
 theorem Sm.mul_mem {k : ℕ} {x y : K} (hx : Sm R ϖ k x) (hy : y ∈ R) : Sm R ϖ k (x * y) := by
   obtain ⟨r, hr, rfl⟩ := hx
   exact ⟨r * y, R.mul_mem hr hy, by ring⟩
-
-theorem Sm.mul {k l : ℕ} {x y : K} (hx : Sm R ϖ k x) (hy : Sm R ϖ l y) : Sm R ϖ (k + l) (x * y) := by
-  obtain ⟨r, hr, rfl⟩ := hx
-  obtain ⟨q, hq, rfl⟩ := hy
-  exact ⟨r * q, R.mul_mem hr hq, by ring⟩
 
 theorem Sm.mul_bd {k l : ℕ} {x y : K} (hx : Sm R ϖ (k + l) x) (hy : Bd R ϖ l y) :
     Sm R ϖ k (x * y) := by
@@ -2783,14 +2766,6 @@ theorem fa_sub_mul {n : ℕ} (A r : Matrix (Fin n) (Fin n) K) :
     (A * r).submatrix Fin.rev id = 1 * A.submatrix Fin.rev id * r := by
   ext i j
   simp [Matrix.mul_apply]
-
-theorem fa_sUp {m : ℕ} (u : Matrix (Fin (m + 1)) (Fin (m + 1)) K) :
-    sUp u = ∑ i : Fin m, u i.castSucc i.succ := by
-  unfold sUp
-  rw [Fin.sum_univ_castSucc]
-  simp only [Fin.val_last, lt_self_iff_false, dite_false, add_zero, Fin.val_castSucc,
-    add_lt_add_iff_right, Fin.is_lt, dite_true]
-  rfl
 
 theorem fa_smul_EE {n : ℕ} (z : K) (N : Pr n → K) :
     z • (1 + EE N) = HH 0 (fun _ => z) (z • N) := by

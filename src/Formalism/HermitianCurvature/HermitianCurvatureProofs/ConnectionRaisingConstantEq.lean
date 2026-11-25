@@ -2550,8 +2550,6 @@ end Formalism.FourierDecayAlt.P.NFx2
 
 namespace Formalism.FourierDecayAlt.P
 
-theorem theorem_S_of_steps : Formalism.FourierDecayAlt.NF.ThmSOfSteps := NFx2.thmSOfSteps
-
 theorem theorem_S_ring : Formalism.FourierDecayAlt.NF.ThmSRing :=
   NFx2.thmSOfSteps Mx3.tyInterlaces Mx3.tyComplete Mx3.rhoUp Mx3.nrmFacts Mx3.realPoints Mx3.wExact
     NFx2.sb_main NFx2.sc_main NFx2.sn_main NFx2.relIsCoreNorm

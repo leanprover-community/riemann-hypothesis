@@ -260,40 +260,10 @@ section -- clump:auto
 theorem Formalism.FourierDecayAlt.P.sign_permutation_identity : Formalism.FourierDecayAlt.C3.SignE :=
   Formalism.FourierDecayAlt.P.SignAntidiagonal.sign_permutation_identity
 
-theorem Formalism.FourierDecayAlt.P.derivative_leading_zb : Formalism.FourierDecayAlt.C3.DleadZb :=
-  Formalism.FourierDecayAlt.P.SignAntidiagonal.derivative_leading_zb
-
-theorem Formalism.FourierDecayAlt.P.minors_first_case : Formalism.FourierDecayAlt.C3.MinorsFirstCase :=
-  Formalism.FourierDecayAlt.P.SignAntidiagonal.minors_first_case
-
 theorem Formalism.FourierDecayAlt.P.third_polynomial_expansion : Formalism.FourierDecayAlt.C3.MinorsThirdCase :=
   Formalism.FourierDecayAlt.P.SignAntidiagonal.third_polynomial_expansion
 
-theorem Formalism.FourierDecayAlt.P.first_peeling_identity : Formalism.FourierDecayAlt.C3.PeelingOmittedColumn :=
-  Formalism.FourierDecayAlt.P.SignAntidiagonal.first_peeling_identity
-
-theorem Formalism.FourierDecayAlt.P.second_peeling_identity : Formalism.FourierDecayAlt.C3.PeelingCovector :=
-  Formalism.FourierDecayAlt.P.SignAntidiagonal.second_peeling_identity
-
-theorem Formalism.FourierDecayAlt.P.third_peeling_identity : Formalism.FourierDecayAlt.C3.PeelingDualColumn :=
-  Formalism.FourierDecayAlt.P.SignAntidiagonal.third_peeling_identity
-
-theorem Formalism.FourierDecayAlt.P.first_expansion_identity : Formalism.FourierDecayAlt.C3.ExpansionOmittedColumn :=
-  Formalism.FourierDecayAlt.P.SignAntidiagonal.first_expansion_identity
-
-theorem Formalism.FourierDecayAlt.P.second_expansion_identity : Formalism.FourierDecayAlt.C3.ExpansionDualColumn :=
-  Formalism.FourierDecayAlt.P.SignAntidiagonal.second_expansion_identity
-
-theorem Formalism.FourierDecayAlt.P.column_indicator_expansion : Formalism.FourierDecayAlt.C3.ExpansionCovector :=
-  Formalism.FourierDecayAlt.P.SignAntidiagonal.column_indicator_expansion
-
 alias Formalism.FourierDecayAlt.P.chain_first_identity := _root_.Formalism.FourierDecayAlt.P.SignAntidiagonal.chain_first_identity
-
-theorem Formalism.FourierDecayAlt.P.leading_term_identity : Formalism.FourierDecayAlt.C3.LeadAA :=
-  Formalism.FourierDecayAlt.P.SignAntidiagonal.leading_term_identity
-
-theorem Formalism.FourierDecayAlt.P.leading_term_vector_identity : Formalism.FourierDecayAlt.C3.LeadAAv :=
-  Formalism.FourierDecayAlt.P.SignAntidiagonal.leading_term_vector_identity
 
 theorem Formalism.FourierDecayAlt.P.isotropicNormalFormFull_statement : Formalism.FourierDecayAlt.C3.IsotropicNormalFormFull :=
   Formalism.FourierDecayAlt.P.SignAntidiagonal.isotropicNormalFormFull_statement

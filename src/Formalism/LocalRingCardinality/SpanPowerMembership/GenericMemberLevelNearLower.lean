@@ -113,11 +113,6 @@ abbrev rowsG : Rows.Data R where
 
 end RowsG
 
-theorem N_even (R : Ranks) (j : ℕ) : ∃ a : ℕ, R.N j = 2 * a := by
-  obtain ⟨a, ha⟩ := R.k_even
-  obtain ⟨b, hb⟩ := R.t_odd
-  exact ⟨a + j * (b + 1), by unfold Ranks.N; rw [ha, hb]; ring⟩
-
 theorem sInt (R : Ranks) (hc : HCParam R) (i : Fin R.m) :
     (∃ a : ℤ, sExp R (hc.e i) (i.1 + 1) = a) ∧ (∃ a : ℤ, sExp' R (hc.e i) (i.1 + 1) = a) := by
   obtain ⟨z, hz⟩ := hc.e_int i
@@ -134,6 +129,5 @@ variable {R : Ranks} (hc : HCParam R) (Tau : Type) [Fintype Tau]
 variable (T : ℕ) [hT : Fact T.Prime]
 
 end MemberG
-
 
 end Formalism.BasicNotions.Examples₂

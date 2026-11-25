@@ -265,12 +265,5 @@ theorem exists_full_lattice (hK : Formalism.HermitianLatticesTheory.IsCMUnram K)
   rcases hx₀ with rfl | ⟨i, hi⟩
   · exact Submodule.subset_span ⟨0, by rw [he, Fin.cons_zero]⟩
   · exact Submodule.subset_span ⟨i.succ, by rw [he, Fin.cons_succ, hi]⟩
-theorem exists_lattice (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF : IsFixF K F)
-    {h : V →ₗ⋆[K] V →ₗ[K] K} (hs : h.IsSymm) (hd : IsTotPosDef h)
-    (h𝔭 : 𝔭.IsMaximal) {x₀ : V} {n : 𝓞 F} (hx : h x₀ x₀ = κ (ι n)) (hn : n ∉ 𝔭) :
-    ∃ L₀ : Submodule (𝓞 K) V, Submodule.IsLattice K L₀ ∧ Formalism.HermitianLatticesTheory.IsIntegralLat h L₀ ∧
-      x₀ ∈ L₀ ∧ vd h L₀ 𝔭 ≤ 1 := by
-  obtain ⟨L, hL, hI, hxL, hv⟩ := exists_full_lattice hK hF hs hd h𝔭 hx hn
-  exact ⟨L, hL.toIsLattice, hI, hxL, hv⟩
 
 end Formalism.HermitianLattices.Ext.L3.Cell

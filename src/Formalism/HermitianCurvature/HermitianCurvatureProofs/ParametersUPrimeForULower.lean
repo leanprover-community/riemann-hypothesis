@@ -783,12 +783,6 @@ theorem vecw_rho_bounds {Q : M.Par} (h : Q.OK) (π : M.Ty Q) {i : ℕ} (hi : i �
     linarith
   constructor <;> [ (rw [he]; have : (0 : ℝ) ≤ n := Nat.cast_nonneg n; linarith) ; (rw [he]; linarith) ]
 
-theorem vecw_u_step {Q : M.Par} (h : Q.OK) {l : ℕ} (hl : l ∈ Icc 1 (Q.k - 1)) : Q.u (l + 1) + 1 ≤ Q.u l := by
-  have h2 : max (Q.u (l + 1)) (Q.u' (l + 1)) + 1 / 2 ≤ min (Q.u l) (Q.u' l) - 1 / 2 := h.gap l hl
-  have a1 := le_max_left (Q.u (l + 1)) (Q.u' (l + 1))
-  have a2 := min_le_left (Q.u l) (Q.u' l)
-  linarith
-
 theorem vecw_rho_int {Q : M.Par} (h : Q.OK) (π : M.Ty Q) {i : ℕ} (hi : i ∈ Icc 1 (Q.k - 1)) :
     ∃ n : ℤ, M.rho Q π i - Q.u 1 - 1 / 2 = n := by
   obtain ⟨N, -, he⟩ := vecw_rho_eq π hi

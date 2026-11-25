@@ -79,13 +79,6 @@ theorem psd_iff_qf {γ : Type} (Y : Finset γ) (k : γ → γ → ℂ) :
     exact Complex.le_def.mpr ⟨by simpa using hre,
       by simpa using (hH.im_star_dotProduct_mulVec_self x).symm⟩
 
-theorem block_quad {a : α → α → ℂ} {w : α → β → ℂ} {b : β → β → ℂ} (h : KB.BlockPSD Y₁ Y₂ a w b)
-    (c : α → ℂ) (d : β → ℂ) :
-    0 ≤ (qf Y₁ a c).re + (qf Y₂ b d).re + 2 * (∑ p ∈ Y₁, ∑ q ∈ Y₂, conj (c p) * w p q * d q).re := by
-  have h1 := ((psd_iff_qf _ _).1 ((blockPSD_iff Y₁ Y₂ a w b).1 h)).2 (Sum.elim c d)
-  rw [qf_block] at h1
-  simpa using h1
-
 end block
 
 theorem cross_le {A B x : ℝ} (hA : 0 ≤ A) (hB : 0 ≤ B) (h : x ^ 2 ≤ A * B) (hx : 0 ≤ x) : 2 * x ≤ A + B := by
@@ -140,13 +133,6 @@ theorem blockPSD_mul {α β : Type} {Y₁ : Finset α} {Y₂ : Finset β} {a a' 
   refine Jx7.psd_congr ?_ (Jx7.psd_mul h h')
   intro x _ y _
   rcases x with p | q <;> rcases y with p' | q' <;> simp [blockK, map_mul]
-
-theorem blockPSD_ones {α β : Type} (Y₁ : Finset α) (Y₂ : Finset β) :
-    KB.BlockPSD Y₁ Y₂ (fun _ _ => 1) (fun _ _ => 1) (fun _ _ => 1) := by
-  rw [blockPSD_iff]
-  refine Jx7.psd_congr ?_ Jx7.psd_one
-  intro x _ y _
-  cases x <;> cases y <;> simp [blockK]
 
 theorem blockPSD_prod {α β ι : Type} {Y₁ : Finset α} {Y₂ : Finset β} (s : Finset ι) (a : ι → α → α → ℂ)
     (w : ι → α → β → ℂ) (b : ι → β → β → ℂ) (h : ∀ v ∈ s, KB.BlockPSD Y₁ Y₂ (a v) (w v) (b v)) :

@@ -58,15 +58,6 @@ theorem liftVec_inj (o ρ : ℕ) {v w : Fin (2 * ρ + k + 1) → ℂ} (h : liftV
 theorem mulVec_bvec_apply {m : ℕ} (G : Matrix (Fin m) (Fin m) ℂ) (q p : Fin m) : (G *ᵥ bvec q) p = G p q := by
   simp [bvec, Matrix.mulVec, dotProduct, Pi.single_apply]
 
-theorem herm_bvec_r {m : ℕ} (H : Matrix (Fin m) (Fin m) ℂ) (v : Fin m → ℂ) (p : Fin m) :
-    herm H v (bvec p) = ∑ x, H p x * v x := by
-  simp only [herm, bvec, Matrix.mulVec, dotProduct]
-  rw [Finset.sum_eq_single p]
-  · simp
-  · intro b _ hb
-    simp [hb]
-  · simp
-
 def midB (o ρ : ℕ) (G : B.Mat k (o + ρ)) : B.Mat k ρ := fun a b => G (levPos k o ρ a) (levPos k o ρ b)
 
 theorem midB_lev (o ρ : ℕ) (y : B.Mat k ρ) : midB o ρ (ιLev k o ρ y) = y := by

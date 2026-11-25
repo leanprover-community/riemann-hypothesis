@@ -90,17 +90,6 @@ open Polynomial
 noncomputable def legPoly {K : Type*} [Field K] (j : K) : K[X] :=
   C 256 * (X ^ 2 - X + 1) ^ 3 - C j * (X * (X - 1)) ^ 2
 
-theorem legPoly_natDegree {K : Type*} [Field K] (h : (256 : K) ≠ 0) (j : K) :
-    (legPoly j).natDegree = 6 := by
-  unfold legPoly
-  compute_degree!
-
-theorem norm_one_add {K : Type*} [NormedField K] [IsUltrametricDist K] {t : K} (ht : ‖t‖ ≠ 1) :
-    ‖1 + t‖ = max 1 ‖t‖ := by
-  have := IsUltrametricDist.norm_add_eq_max_of_norm_ne_norm (x := (1 : K)) (y := t)
-    (by rw [norm_one]; exact fun h => ht h.symm)
-  simpa using this
-
 end LegendreModelEllipticTorsion
 
 end Formalism.ELL
@@ -115,41 +104,6 @@ section -- clump:auto
 
 universe u
 
-namespace Formalism.ELL.unitAtAlt
-
-open Formalism.ELL
-
-lemma two_or_three {K : Type u} [NormedField K] [IsUltrametricDist K] :
-    ‖(2 : K)‖ = 1 ∨ ‖(3 : K)‖ = 1 := by
-  have h2 : ‖(2 : K)‖ ≤ 1 := by
-    simpa using IsUltrametricDist.norm_natCast_le_one K 2
-  have h3 : ‖(3 : K)‖ ≤ 1 := by
-    simpa using IsUltrametricDist.norm_natCast_le_one K 3
-  have h1 : ‖(1 : K)‖ ≤ max ‖(3 : K)‖ ‖(2 : K)‖ := by
-    have : (1 : K) = 3 + -2 := by norm_num
-    rw [this]
-    simpa [norm_neg] using IsUltrametricDist.norm_add_le_max (3 : K) (-2)
-  rw [norm_one] at h1
-  by_cases h : ‖(2 : K)‖ = 1
-  · exact Or.inl h
-  · right
-    have hlt : ‖(2 : K)‖ < 1 := lt_of_le_of_ne h2 h
-    rcases le_max_iff.mp h1 with h' | h'
-    · exact le_antisymm h3 h'
-    · exact absurd h' (not_le.mpr hlt)
-
-lemma of_model {K : Type u} [NormedField K] (W : WeierstrassCurve K) (j : K)
-    (hI : IntegralModel W) (hc : W.c₄ ^ 3 = j * W.Δ) (hΔ : ‖W.Δ‖ = 1) :
-    ∃ (W : WeierstrassCurve K) (_ : W.IsElliptic),
-      IntegralModel W ∧ ‖W.Δ‖ = 1 ∧ W.j = j := by
-  have hne : W.Δ ≠ 0 := by
-    intro h; rw [h, norm_zero] at hΔ; exact zero_ne_one hΔ
-  have : W.IsElliptic := ⟨hne.isUnit⟩
-  refine ⟨W, inferInstance, hI, hΔ, ?_⟩
-  rw [WeierstrassCurve.j, hc, Units.val_inv_eq_inv_val, WeierstrassCurve.coe_Δ']
-  field_simp
-
-end Formalism.ELL.unitAtAlt
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Formalism.EllipticTorsion.EllipticTorsionProofs.ModelUnitOf =====
@@ -166,8 +120,6 @@ namespace Formalism.ELL
 theorem formal_group_points_subgroup : FormalGroupPointsSubgroup'.{u} := formal_group_points_subgroup_holds
 theorem formal_group_points_no_torsion : FormalGroupPointsTorsionFree.{u} := formal_group_points_no_prime_to_p_torsion
 theorem torsionIntegral : TorsionIntegral.{u} := torsionIntegral_of formal_group_points_no_torsion
-
-
 
 alias wSeriesUnique := _root_.Formalism.ELL.wSeriesExistsUnique_holds
 alias wSeriesLead := _root_.Formalism.ELL.wSeriesLeadingTerm_holds

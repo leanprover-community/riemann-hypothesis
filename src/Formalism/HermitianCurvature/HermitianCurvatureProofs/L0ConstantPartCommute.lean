@@ -179,14 +179,6 @@ lemma di_d (hf : IsFrame L f) : f.di L * f.d L = 1 := by
   unfold FrameData.di FrameData.d
   rw [mul_assoc, ← mul_assoc (wti L ^ f.N), p, one_mul, hf.c_ci.2]
 
-omit [StarRing A] [StarModule ℂ A] [Algebra ℂ A] [Fintype S] [DecidableEq S] in
-lemma cancel2 {B : Type} [Ring B] {P Pi Q Qi X Y : B} (h1 : Pi * P = 1) (h2 : Q * Qi = 1)
-    (h : P * X * Q = P * Y * Q) : X = Y := by
-  calc X = Pi * P * X * (Q * Qi) := by rw [h1, h2, one_mul, mul_one]
-    _ = Pi * (P * X * Q) * Qi := by noncomm_ring
-    _ = Pi * P * Y * (Q * Qi) := by rw [h]; noncomm_ring
-    _ = Y := by rw [h1, h2, one_mul, mul_one]
-
 lemma hat_herm (hf : IsFrame L f) {Z : ℂ} (hZ : Z ∈ f.reg) (hr : star Z = Z) (i j : Fin 2) :
     star (f.d L * f.hatT Z i j) = f.d L * f.hatT Z j i := by
   apply Formalism.FourierDecayAlt.P.Fr9.hat_herm <;> assumption

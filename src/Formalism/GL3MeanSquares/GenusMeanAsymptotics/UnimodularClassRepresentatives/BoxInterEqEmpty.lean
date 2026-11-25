@@ -164,22 +164,6 @@ open NumberField Module
 
 noncomputable section
 
-namespace Formalism.HermitianLattices.Ext.L3
-
-variable {K F : Type} [Field K] [NumberField K] [StarRing K] [Field F] [NumberField F] [Algebra F K]
-variable {V : Type} [AddCommGroup V] [Module K V] [FiniteDimensional K V] [Module (𝓞 K) V]
-  [IsScalarTower (𝓞 K) K V]
-
-theorem box_inter_eq_empty (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF : IsFixF K F) {b : Ideal (𝓞 F)}
-    {T : ℝ} (hbT : T ^ Formalism.HermitianLatticesTheory.fDeg K < (Ideal.absNorm b : ℝ)) :
-    {n : 𝓞 F | n ∈ boxSet K F T ∧ n ∈ b} = ∅ := by
-  ext n
-  simp only [Set.mem_ofPred_eq, Set.mem_empty_iff_false, iff_false, not_and]
-  intro hn hb
-  have := BoxCube.absNorm_le_pow hK hF hn hb
-  linarith
-
-end Formalism.HermitianLattices.Ext.L3
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto

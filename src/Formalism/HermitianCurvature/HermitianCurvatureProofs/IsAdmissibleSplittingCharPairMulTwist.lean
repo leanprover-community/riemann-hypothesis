@@ -2370,7 +2370,6 @@ section S_F_F12
 set_option linter.unusedVariables false
 set_option linter.unusedSimpArgs false
 
-
 namespace Formalism.FourierDecayAlt.P.MAx3.F
 
 open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.MA Formalism.YangianSpanCharacter.T Matrix
@@ -2428,7 +2427,6 @@ end S_F_F12
 section S_F_F13
 set_option linter.unusedVariables false
 set_option linter.unusedSimpArgs false
-
 
 namespace Formalism.FourierDecayAlt.P.MAx3.F
 
@@ -2494,7 +2492,6 @@ end S_F_F13
 section S_F_F14
 set_option linter.unusedVariables false
 set_option linter.unusedSimpArgs false
-
 
 namespace Formalism.FourierDecayAlt.P.MAx3.F
 
@@ -2578,7 +2575,6 @@ end S_F_F14
 section S_F_F15
 set_option linter.unusedVariables false
 set_option linter.unusedSimpArgs false
-
 
 namespace Formalism.FourierDecayAlt.P.MAx3.F
 
@@ -2675,7 +2671,6 @@ section S_F_F16
 set_option linter.unusedVariables false
 set_option linter.unusedSimpArgs false
 
-
 namespace Formalism.FourierDecayAlt.P.MAx3.F
 
 open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.MA Formalism.YangianSpanCharacter.T Matrix
@@ -2767,7 +2762,6 @@ end S_F_F16
 section S_F_F17
 set_option linter.unusedVariables false
 set_option linter.unusedSimpArgs false
-
 
 namespace Formalism.FourierDecayAlt.P.MAx3.F
 
@@ -2888,7 +2882,6 @@ section S_F_F18
 set_option linter.unusedVariables false
 set_option linter.unusedSimpArgs false
 
-
 namespace Formalism.FourierDecayAlt.P.MAx3.F
 
 open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.MA Formalism.YangianSpanCharacter.T Matrix
@@ -2966,7 +2959,6 @@ end S_F_F18
 section S_F_F19
 set_option linter.unusedVariables false
 set_option linter.unusedSimpArgs false
-
 
 namespace Formalism.FourierDecayAlt.P.MAx3.F
 
@@ -3056,7 +3048,6 @@ section S_F_F20
 set_option linter.unusedVariables false
 set_option linter.unusedSimpArgs false
 
-
 namespace Formalism.FourierDecayAlt.P.MAx3.F
 
 open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.MA Formalism.YangianSpanCharacter.T Matrix Formalism.FourierDecayAlt.P.MAx1.An
@@ -3137,7 +3128,6 @@ section S_F_F21
 set_option linter.unusedVariables false
 set_option linter.unusedSimpArgs false
 
-
 namespace Formalism.FourierDecayAlt.P.MAx3.F
 
 open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.MA Formalism.YangianSpanCharacter.T Matrix
@@ -3209,7 +3199,6 @@ section S_F_F22
 set_option linter.unusedVariables false
 set_option linter.unusedSimpArgs false
 
-
 namespace Formalism.FourierDecayAlt.P.MAx3.F
 
 open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.MA Formalism.YangianSpanCharacter.T Matrix
@@ -3278,7 +3267,6 @@ section S_F_F23
 set_option linter.unusedVariables false
 set_option linter.unusedSimpArgs false
 
-
 namespace Formalism.FourierDecayAlt.P.MAx3.F
 
 open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.MA Formalism.YangianSpanCharacter.T Matrix
@@ -3319,7 +3307,6 @@ end S_F_F23
 section S_F_F24
 set_option linter.unusedVariables false
 set_option linter.unusedSimpArgs false
-
 
 namespace Formalism.FourierDecayAlt.P.MAx3.F
 
@@ -3371,7 +3358,6 @@ end S_F_F24
 section S_F_F25
 set_option linter.unusedVariables false
 set_option linter.unusedSimpArgs false
-
 
 namespace Formalism.FourierDecayAlt.P.MAx3.F
 
@@ -3442,7 +3428,6 @@ end S_F_F25
 section S_F_F26
 set_option linter.unusedVariables false
 set_option linter.unusedSimpArgs false
-
 
 namespace Formalism.FourierDecayAlt.P.MAx3.F
 
@@ -3745,14 +3730,6 @@ namespace Formalism.FourierDecayAlt.P.MAx3.R
 open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.Wd
 
 noncomputable section
-
-theorem wordS_plus : ∀ v : List (Bool × ℝ), (wordS v).map Letter.plus = v.map Prod.fst
-  | [] => rfl
-  | x :: v => by
-    simp only [wordS, List.map_cons, List.map_map]
-    congr 1
-    rw [← wordS_plus v]
-    rfl
 
 alias plusWord_letters_plus := _root_.Formalism.FourierDecayAlt.P.MAx3.F.plusWord_letters_plus
 
@@ -6918,7 +6895,6 @@ theorem Ctx.summand_nonneg (h : Ctx P l α β Lb Ntot w Y s) (π : M.Ty P) (m : 
   unfold summand
   exact div_nonneg (mul_nonneg (hf.resA_nonneg h.hOK.k_pos m hm) (abs_nonneg _)) (by positivity)
 
-
 theorem Ctx.ss_bound (h : Ctx P l α β Lb Ntot w Y s) (q : Qp P.r P.TT) (v : Iota P w.length → ℂ) :
     ∑ i, dwW P l (Y :: w) q (true, i) * ‖∑ i', dSS P w Y (Y + s) q (ixOf P w.length i).1 (ixOf P w.length i').1
       (ixOf P w.length i).2 (ixOf P w.length i').2 * v i'‖ ^ 2 ≤
@@ -7023,7 +6999,6 @@ noncomputable section
 section
 variable {P : M.Par} {l : ℕ} {α β Lb : ℝ} {Ntot : ℕ} {w : List ℝ} {Y s : ℝ}
 
-
 theorem Ctx.let_bound (h : Ctx P l α β Lb Ntot w Y s) (q : Qp P.r P.TT) (v : Iota P w.length → ℂ) :
     ∑ i, dwW P l (Y :: w) q (true, i) * ‖∑ i', dL P w Y (Y + s) (ixOf P w.length i).1 (ixOf P w.length i').1
       (ixOf P w.length i).2 (ixOf P w.length i').2 * v i'‖ ^ 2 ≤
@@ -7099,7 +7074,6 @@ theorem norm_sub_sq_le (a b : ℂ) : ‖a - b‖ ^ 2 ≤ 2 * ‖a‖ ^ 2 + 2 * �
   have h := norm_sub_le a b
   have h0 : 0 ≤ ‖a - b‖ := norm_nonneg _
   nlinarith [sq_nonneg (‖a‖ - ‖b‖), norm_nonneg a, norm_nonneg b]
-
 
 theorem residues : Formalism.FourierDecayAlt.MA.ResiduesQ := by
   refine ⟨Real.sqrt (176 * Real.exp 7 + 2 * Real.exp 14), Real.sqrt_nonneg _, ?_⟩
@@ -7201,7 +7175,6 @@ theorem memDrbi : L.Drbi ∈ Subring.closure (FS L) :=
   Subring.list_prod_mem _ fun x hx => by obtain ⟨i, rfl⟩ := List.mem_ofFn.1 hx; exact memF L (m_cbi L i)
 theorem memD : L.D ∈ Subring.closure (FS L) := Subring.mul_mem _ (memDr L) (memF L (m_ζ L))
 theorem memDi : L.Di ∈ Subring.closure (FS L) := Subring.mul_mem _ (memF L (m_ζi L)) (memDri L)
-theorem memDb : L.Db ∈ Subring.closure (FS L) := Subring.mul_mem _ (memDrb L) (memF L (m_ζb L))
 theorem memDbi : L.Dbi ∈ Subring.closure (FS L) := Subring.mul_mem _ (memF L (m_ζbi L)) (memDrbi L)
 
 theorem comm_cl {z : A} (hz : ∀ x ∈ FS L, z * x = x * z) {y : A} (hy : y ∈ Subring.closure (FS L)) :
@@ -7473,7 +7446,6 @@ theorem SS_hyps (i : ℕ) (hi : i ∈ Set.Icc 1 (P.k - 1)) :
   · rw [hn, hzb, hgi]; exact h1
   · rw [hns, hz, hgi]; exact h2
 
-
 include hTT in
 theorem BB_la {β : A P (DQ P)} (hβ : β ∈ BB P L) (y : ℂ) : la L y * β = β * la L y := by
   have hle : BB P L ≤ Subalgebra.centralizer ℂ ({la L y} : Set (A P (DQ P))) := by
@@ -7489,7 +7461,6 @@ theorem BB_la {β : A P (DQ P)} (hβ : β ∈ BB P L) (y : ℂ) : la L y * β = 
   have := hle hβ
   rw [Subalgebra.mem_centralizer_iff] at this
   exact this _ rfl
-
 
 include hTT in
 theorem BB_lb {β : A P (DQ P)} (hβ : β ∈ BB P L) :
@@ -7613,7 +7584,6 @@ theorem frame_memB :
       · exact mul_mem (hxi Y) (insert_two_mem_bounded P L _ _ _ _ _ (Subalgebra.smul_mem _ h1 _) h0 h0 h1)
 
 end Frame
-
 
 open Classical in
 def deB (β : A P (DQ P)) : A P (DQ P) :=
@@ -16016,37 +15986,6 @@ open MeasureTheory ComplexConjugate
 noncomputable section
 
 variable {P : M.Par}
-
-theorem ipA_add_right {f g1 g2 : M.Ty P → SmQ P.r P.TT}
-    (h1 : ∀ π, Integrable (fun q => evQ P (f π) q * conj (evQ P (g1 π) q)) (mu0 P.r P.TT))
-    (h2 : ∀ π, Integrable (fun q => evQ P (f π) q * conj (evQ P (g2 π) q)) (mu0 P.r P.TT)) :
-    ipA P f (g1 + g2) = ipA P f g1 + ipA P f g2 := by
-  rw [ipA_eq, ipA_eq, ipA_eq, ← Finset.sum_add_distrib]
-  refine Finset.sum_congr rfl fun π _ => ?_
-  rw [← integral_add (h1 π) (h2 π)]
-  congr 1; funext q
-  show evQ P (f π) q * conj (evQ P (g1 π) q + evQ P (g2 π) q) = _
-  rw [map_add (f := _)]; ring
-
-theorem ipA_smul_right (c : ℂ) (f g : M.Ty P → SmQ P.r P.TT) :
-    ipA P f (fun π => c • g π) = conj c * ipA P f g := by
-  rw [ipA_eq, ipA_eq, Finset.mul_sum]
-  refine Finset.sum_congr rfl fun π _ => ?_
-  rw [← integral_const_mul]
-  congr 1; funext q
-  show evQ P (f π) q * conj (c * evQ P (g π) q) = _
-  rw [map_mul]; ring
-
-theorem ipA_zero_right (f : M.Ty P → SmQ P.r P.TT) : ipA P f 0 = 0 := by
-  rw [ipA_eq]
-  refine Finset.sum_eq_zero fun π _ => ?_
-  have : (fun q => evQ P (f π) q * conj (evQ P ((0 : M.Ty P → SmQ P.r P.TT) π) q)) = fun _ => 0 := by
-    funext q; show _ * conj (0 : ℂ) = 0; simp
-  rw [this, integral_zero]
-
-variable {L : LevelData (A P (DQ P)) P.r} {j : M.Ty P → SmQ P.r P.TT}
-variable (hTTp : 0 < P.TT) (hL : IsModelLevel P (DQ P) L) (hLaw : (DQ P).Laws P.TT)
-include hTTp hL hLaw
 
 end
 

@@ -8,10 +8,6 @@ import Mathlib.Tactic.Linter.Style
 
 namespace Formalism.G
 
-theorem homComp : HomComp := by
-  apply Formalism.G.homComp_statement
-theorem logIffHomGa : LogIffHomGa := by
-  apply Formalism.G.log_iff_hom_additive
 alias substInjective := _root_.Formalism.G.substInjective_statement
 
 end Formalism.G

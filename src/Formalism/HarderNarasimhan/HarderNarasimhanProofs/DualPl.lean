@@ -842,12 +842,6 @@ theorem twist_le (𝔟 : Ideal (𝓞 K)) (h𝔟 : 𝔟 ≠ ⊥) : ∀ (X : Submo
     rw [map_mul, mul_pow]
     exact Nat.mul_le_mul h1 h2
 
-omit [FiniteDimensional K W] in
-include K in
-theorem twist_torsionFree : IsAddTorsionFree W := ⟨fun n hn a c _ h => by
-  have h' : (n : K) • a = (n : K) • c := by simpa [Nat.cast_smul_eq_nsmul] using h
-  exact smul_right_injective W (Nat.cast_ne_zero.2 hn) h'⟩
-
 end Twist
 
 section TwistInt

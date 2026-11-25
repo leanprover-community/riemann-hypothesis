@@ -50,10 +50,6 @@ theorem isUnitIn_of_mul {a b : K} (ha : a ∈ S) (hb : b ∈ S) (hab : IsUnitIn 
   rw [show b⁻¹ = a * (a * b)⁻¹ by field_simp]
   exact S.mul_mem ha hab.2.2
 
-theorem Dv.mem (hπ : IsUnif S π) {a : K} (ha : Dv S π a) : a ∈ S := by
-  rw [show a = a * π⁻¹ * π by field_simp [hπ.ne]]
-  exact S.mul_mem ha hπ.mem
-
 theorem Dv.add {a b : K} (ha : Dv S π a) (hb : Dv S π b) : Dv S π (a + b) := by
   first | (apply GlobalTheory.AddMulInvMembership.add_mul_inv_mem <;> assumption)
 
