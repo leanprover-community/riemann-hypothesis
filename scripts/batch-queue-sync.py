@@ -143,8 +143,8 @@ lists as left out; and those the branch merged and then reverted, read from the 
 parents of its commits. Pull requests under any other heading are neither checked as included nor
 told they are left out. Each one reverted is told once that the batch would land it although its
 changes did not, unless it is labelled `deferred`. The comment is posted once there is something
-to say, and edited in place after that, also to say that all is well again. The note remembers a digest of it, so a run that would say
-the same costs nothing.
+to say, and edited in place after that, also to say that all is well again. The note remembers a
+digest of it, so a run that would say the same costs nothing.
 
 The batch being assembled is built on top of the batch assembled by hand labelled `latest batch`,
 when exactly one into main is: its branch starts at that batch's head, and its pull request is
