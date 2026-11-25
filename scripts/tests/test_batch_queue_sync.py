@@ -1546,6 +1546,19 @@ class ConflictWorkflow(unittest.TestCase):
         sync(gh)
         self.assertEqual(gh.dispatched, ["main"])  # only when it is first labelled
 
+    def test_a_batch_that_becomes_the_outermost_of_its_stack_starts_it_too(self):
+        # It compares pull requests with the outermost batch of each stack only.
+        gh = Fake()
+        queue(gh, 11, 12, 13)
+        by_hand(gh, 11, 12)
+        by_hand(gh, 1018, 13, number=1050, ref="batch/b5-on-1018", name="b5")
+        sync(gh)
+        self.assertEqual(gh.dispatched, ["main"])  # once, although two batches got labels
+        gh.close(1050)
+        log = sync(gh)
+        self.assertIn(f"#1018 is the outermost batch of its stack: now `{LATEST}`", log)
+        self.assertEqual(gh.dispatched, ["main", "main"])
+
     def test_conflict_entries_are_left_to_it_only_for_pull_requests_it_looks_at(self):
         gh = Fake()
         gh.add_pull(11, "head11")

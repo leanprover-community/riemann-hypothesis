@@ -237,8 +237,9 @@ LEFT_OUT_HEADING = re.compile(r"\b(?:left out|not included)\b", re.IGNORECASE)
 # A left-out heading for conflicts. `conflict-labels.py` finds those itself, from git, and tells
 # the pull request with `batch-conflict`, so they are not told again from the description.
 CONFLICT_HEADING = re.compile(r"\bconflicts?\s+with\b", re.IGNORECASE)
-# The workflow that labels conflicts, started when a batch is first labelled `building`: that
-# label is put on with the workflow's token, which starts no run of it by itself.
+# The workflow that labels conflicts, started when a batch is first labelled `building` or
+# `latest batch`: those labels are put on with the workflow's token, which starts no run of it by
+# itself.
 CONFLICT_WORKFLOW = "conflict-labels.yml"
 # In a batch pull request's text: the part this script writes, and its note to itself.
 BODY = "<!-- batch-queue -->"
@@ -1358,8 +1359,10 @@ def stranded(gh, done, hand, pulls, log):
 
 def mark_latest(gh, hand, pulls, log):
     """Label `latest batch` the outermost batch of each stack, and take the label off every
-    other open pull request. A batch that was merged or closed loses it in `finish`."""
-    tops = outermost(hand)
+    other open pull request. A batch that was merged or closed loses it in `finish`. Returns
+    whether a batch was labelled, which changes what the conflict-labels workflow compares pull
+    requests with."""
+    tops, added = outermost(hand), False
     for number in sorted(tops):
         pr = pulls[number]
         if LATEST in pr["labels"]:
@@ -1367,12 +1370,24 @@ def mark_latest(gh, hand, pulls, log):
         if not gh.label_exists(LATEST):
             log.append(f"there is no `{LATEST}` label in this repository: was it renamed?")
             break
-        relabel(gh, pr, add=LATEST)
+        added = relabel(gh, pr, add=LATEST) or added
         log.append(f"#{number} is the outermost batch of its stack: now `{LATEST}`")
     for pr in sorted(pulls.values(), key=lambda pr: pr["number"]):
         if LATEST in pr["labels"] and pr["number"] not in tops:
             relabel(gh, pr, remove=LATEST)
             log.append(f"#{pr['number']} is not the outermost batch of a stack: `{LATEST}` removed")
+    return added
+
+
+def start_conflict_labels(gh, main, log):
+    """Start the conflict-labels workflow, which compares pull requests with the batches being
+    built, the outermost of each stack (see `conflict-labels.py`). A label put on with this
+    workflow's token starts no run, so without this they would wait for its next sweep. Returns
+    whether GitHub took it."""
+    status, _ = gh.write("POST", f"actions/workflows/{CONFLICT_WORKFLOW}/dispatches", {"ref": main})
+    log.append(f"started {CONFLICT_WORKFLOW}" if status in (0, 204)
+               else f"could not start {CONFLICT_WORKFLOW} ({status}): its next sweep looks at the batches")
+    return status in (0, 204)
 
 
 # ---------------------------------------------------------------------------------------------
@@ -1785,12 +1800,8 @@ def assemble(gh, now):
     pulls = open_pulls(gh)
     found, leftover = batches(gh, pulls)
     hand = built_by_hand(gh, pulls, log)
-    if any(batch["commits"] is not None for batch in hand):
-        # A batch labelled `building` just now. Without this, the conflict labels wait for their
-        # next sweep, since a label put on with this workflow's token starts no run.
-        status, _ = gh.write("POST", f"actions/workflows/{CONFLICT_WORKFLOW}/dispatches", {"ref": main})
-        log.append(f"started {CONFLICT_WORKFLOW}" if status in (0, 204)
-                   else f"could not start {CONFLICT_WORKFLOW} ({status}): its next sweep looks at the new batch")
+    # A batch labelled `building` just now.
+    started = any(batch["commits"] is not None for batch in hand) and start_conflict_labels(gh, main, log)
     closed_building = gh.pages(f"issues?state=closed&labels={quoted(BUILDING)}")
     closed = closed_building + [item for label in (MEMBER, FROZEN)
                                 for item in gh.pages(f"issues?state=closed&labels={quoted(label)}")]
@@ -1813,7 +1824,8 @@ def assemble(gh, now):
     requeued |= more
     unlabel_closed(gh, closed, cleared, log)
     stranded(gh, done, hand, pulls, log)
-    mark_latest(gh, hand, pulls, log)
+    if mark_latest(gh, hand, pulls, log) and not started:
+        start_conflict_labels(gh, main, log)
 
     if not ASSEMBLE:
         # A batch of this script's own whose pull request was merged or closed was tidied up

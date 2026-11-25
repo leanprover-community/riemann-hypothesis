@@ -29,7 +29,7 @@ Comparison = labels._conflicts.Comparison
 
 REPO = "o/r"
 MAIN_CONFLICT, BATCH_CONFLICT = labels.MAIN_CONFLICT, labels.BATCH_CONFLICT
-BUILDING, MEMBER, WAITING = labels.BUILDING, labels.MEMBER, labels.WAITING
+BUILDING, LATEST, MEMBER, WAITING = labels.BUILDING, labels.LATEST, labels.MEMBER, labels.WAITING
 
 
 # ---------------------------------------------------------------------------------------------
@@ -119,6 +119,24 @@ class Decide(unittest.TestCase):
     def test_nothing_being_built_means_no_batch_conflict(self):
         self.assertIs(labels.decide(pr(1), "main", {901: batch(901, building=False)}, {})["batch"], False)
         self.assertIs(labels.decide(pr(1), "main", {}, {})["batch"], False)
+
+    def test_only_the_outermost_batch_of_a_stack_counts(self):
+        # #901 is stacked on #900 and holds its changes, so a conflict with #900 alone is not one.
+        stack = {900: batch(900), 901: pr(901, labels_=[BUILDING, LATEST], ref="batch/b10-on-900", own=True)}
+        self.assertEqual(labels.compared(stack), [901])
+        found = labels.decide(pr(1), "main", stack, {900: CONFLICT, 901: Comparison("apart")})
+        self.assertEqual((found["batch"], found["why"][BATCH_CONFLICT]), (False, "it merges with #901"))
+        found = labels.decide(pr(1), "main", stack, {901: CONFLICT})
+        self.assertEqual((found["batch"], sorted(found["conflicts"])), (True, [901]))
+
+    def test_without_latest_batch_every_batch_being_built_counts(self):
+        self.assertEqual(labels.compared({900: batch(900), 901: batch(901), 902: batch(902, building=False)}),
+                         [900, 901])
+
+    def test_each_stack_counts_once(self):
+        stacks = {900: batch(900), 901: pr(901, labels_=[BUILDING, LATEST], ref="batch/b10-on-900", own=True),
+                  910: pr(910, labels_=[BUILDING, LATEST], ref="batch/c1", own=True)}
+        self.assertEqual(labels.compared(stacks), [901, 910])
 
     def test_one_conflict_is_enough_when_another_batch_is_unknown(self):
         batches = {900: B, 901: batch(901)}
@@ -305,6 +323,18 @@ class Runs(unittest.TestCase):
         gh.add(2, mergeable="CONFLICTING")
         gh.add(3, labels_=[MEMBER])
         return gh
+
+    def test_stacked_batches_are_compared_through_the_outermost_one(self):
+        gh = self.scene()
+        gh.add(901, ref="batch/b10-on-900", own=True, labels_=[BUILDING, LATEST])
+        compare = comparing({(1, 900): CONFLICT, (1, 901): CONFLICT})
+        with contextlib.redirect_stdout(io.StringIO()):
+            log = labels.sync(gh, None, compare=compare)
+        self.assertEqual(compare.seen, [([901], [1, 2])])
+        self.assertIn("compared with the batches being built: #901 (`batch/b10-on-900`); not with #900 on its own: "
+                      "a batch stacked on it holds its changes", log)
+        # Told about the batch on top only, which it has to merge and depend on.
+        self.assertEqual((gh.pulls[1]["labels"], gh.told_about(1)), ({BATCH_CONFLICT, WAITING}, ["901"]))
 
     def test_a_pull_request_pushed_to_during_a_sweep_is_left_to_its_own_run(self):
         gh = self.scene()

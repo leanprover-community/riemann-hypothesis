@@ -21,7 +21,12 @@ forms such a line can take). There is no comment: GitHub already shows the confl
 request.
 
 `batch-conflict`: the pull request conflicts with the head of an open batch labelled `building`.
-A pull request labelled `batch-building` is in a batch, and does not get it. The comparison is
+When batches are stacked, the branch of the upper one merges the lower one's and lands right after
+it, so a pull request is compared with the outermost batch of each stack only, the one the batch
+queue labels `latest batch`: what it conflicts with there is what stands between it and main
+once the stack has landed. Until the batch queue has labelled any batch being built `latest
+batch`, every batch being built is compared with. A pull request labelled `batch-building` is in
+a batch, and does not get it. The comparison is
 the one `batch-queue-conflicts.py` makes: git cannot merge a file that both change since they
 left main, or one of the two deletes a Lean file that the other starts to import. Most pull
 requests change no file that the batch changes, and need no trial merge. When the comparison
@@ -59,7 +64,7 @@ _conflicts = _rest.load("batch-queue-conflicts.py")
 _dependencies = _rest.load("pr-dependencies.py")
 dependencies = _dependencies.dependencies
 MAIN_CONFLICT, BATCH_CONFLICT = _labels.MAIN_CONFLICT, _labels.BATCH_CONFLICT
-BUILDING, MEMBER, WAITING = _labels.BUILDING, _labels.MEMBER, _labels.WAITING
+BUILDING, LATEST, MEMBER, WAITING = _labels.BUILDING, _labels.LATEST, _labels.MEMBER, _labels.WAITING
 OURS = (MAIN_CONFLICT, BATCH_CONFLICT)
 # How GraphQL names the workflow's own account, which REST calls github-actions[bot].
 BOT = _rest.GRAPHQL_BOT
@@ -215,6 +220,17 @@ def comparable(pr, main):
     return unavailable(pr, main) is None and MEMBER not in pr["labels"]
 
 
+def compared(batches):
+    """The batches that pull requests are compared with, as sorted numbers, from every open batch
+    as {number: pull request}: those being built (`building`) that are the outermost of their
+    stack (`latest batch`). A batch under another is part of the one on top of it, which merges
+    its branch. When no batch being built carries `latest batch`, as before the batch queue has
+    labelled any, every batch being built."""
+    building = [number for number, batch in batches.items() if BUILDING in batch["labels"]]
+    latest = [number for number in building if LATEST in batches[number]["labels"]]
+    return sorted(latest or building)
+
+
 def found_conflict(result):
     return result is not None and (result.kind == "conflict" or bool(result.stale))
 
@@ -224,8 +240,8 @@ def decide(pr, main, batches, results):
 
     `pr["depends"]` holds the pull requests its description says it depends on (see
     `pr-dependencies.py`). `batches` is every open batch as {number: pull request}, and `results`
-    the pull request's comparison with each one being built, as {batch number: Comparison, or None
-    when it could not be made}. Returns {"main": wanted, "batch": wanted, "conflicts": {batch
+    the pull request's comparison with each one it is compared with (see `compared`), as {batch
+    number: Comparison, or None when it could not be made}. Returns {"main": wanted, "batch": wanted, "conflicts": {batch
     number: Comparison}, "why": {label: reason}}, where wanted is True or False, or None to leave
     the label as it is.
     """
@@ -243,7 +259,7 @@ def decide(pr, main, batches, results):
     else:
         wanted_main, why[MAIN_CONFLICT] = None, "GitHub has not worked out whether it merges"
 
-    building = sorted(number for number, batch in batches.items() if BUILDING in batch["labels"])
+    building = compared(batches)
     conflicts = {number: results[number] for number in building if found_conflict(results.get(number))}
     if MEMBER in pr["labels"]:
         wanted_batch, why[BATCH_CONFLICT] = False, f"it is labelled `{MEMBER}`"
@@ -266,10 +282,9 @@ def needs_told(pr, decision, batches):
     """Whether to read a pull request's comments to see which batches it was told about.
 
     That is only needed when it is about to be told something: it conflicts with a batch, and
-    either does not carry the label yet or more than one batch is being built.
+    either does not carry the label yet or it is compared with more than one batch.
     """
-    building = [number for number, batch in batches.items() if BUILDING in batch["labels"]]
-    return bool(decision["conflicts"]) and (BATCH_CONFLICT not in pr["labels"] or len(building) > 1)
+    return bool(decision["conflicts"]) and (BATCH_CONFLICT not in pr["labels"] or len(compared(batches)) > 1)
 
 
 def plan(pr, decision, told, batches):
@@ -462,10 +477,14 @@ def sync(gh, number=None, compare=compare_all):
     for pr in pulls.values():
         pr["depends"] = dependencies(pr["body"], gh.repo)
     batches = {key: pr for key, pr in pulls.items() if pr["open"] and is_batch(pr)}
-    building = {key: pr for key, pr in batches.items() if BUILDING in pr["labels"]}
+    building = {key: batches[key] for key in compared(batches)}
     candidates = {key: pulls[key] for key in targets if comparable(pulls[key], main)}
     if building:
-        log.append("being built: " + ", ".join(f"#{key} (`{pr['ref']}`)" for key, pr in sorted(building.items())))
+        under = [key for key, pr in sorted(batches.items()) if BUILDING in pr["labels"] and key not in building]
+        log.append("compared with the batches being built: "
+                   + ", ".join(f"#{key} (`{pr['ref']}`)" for key, pr in sorted(building.items()))
+                   + ("; not with " + ", ".join(f"#{key}" for key in under) + " on its own: a batch stacked on it "
+                      "holds its changes" if under else ""))
     results = {}
     if building and candidates:
         try:

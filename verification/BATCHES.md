@@ -23,7 +23,7 @@ request still under review adds. Until it lands, the label exists but nothing pu
 | `priority` | a queued pull request that goes first | `p` | by hand |
 | `awaiting-author` | a pull request handed back to its author | `aa`; it is pushed to while in a batch; the description leaves it out; a batch lands an older commit of it; `batch-conflict` is first put on it | `ready`, by the author or a maintainer |
 | `main-conflict` | a pull request that conflicts with `main` | GitHub says so, unless it declares `depends on:` an open batch | the conflict is gone, or it declares that dependency |
-| `batch-conflict` | a pull request that conflicts with a batch being built | git cannot merge it with the batch's head | the conflict is gone; the batch lands or is closed; it joins the batch |
+| `batch-conflict` | a pull request that conflicts with a batch being built, the outermost of its stack | git cannot merge it with the batch's head | the conflict is gone; the batch lands or is closed; it joins the batch |
 
 `batch queue`, `building`, `batch-building`, `frozen`, `awaiting-author` and `batch-conflict`
 keep a pull request out of the inbox (`inbox`, see `.github/workflows/inbox.yml`). The names are in `scripts/batch-labels.py`.
@@ -146,9 +146,11 @@ not batches:
   because GitHub shows the conflict too. A pull request that depends on an open batch does not
   get it (see below).
 - `batch-conflict`: the pull request conflicts with the head of a batch being built, one labelled
-  `building`. git cannot merge a file that both change since they left `main`, or one of the two
-  deletes a Lean file that the other starts to import. The pull requests in the batch, labelled
-  `batch-building`, never get it. The first time a pull request gets it for a batch, it is also
+  `building`. Of a stack of batches, only the outermost one, labelled `latest batch`, is compared
+  with: its branch holds the batches under it, and the stack lands as a whole, so that is the
+  batch to merge and to depend on. git cannot merge a file that both change since they left
+  `main`, or one of the two deletes a Lean file that the other starts to import. The pull requests
+  in the batch, labelled `batch-building`, never get it. The first time a pull request gets it for a batch, it is also
   labelled `awaiting-author` and told in a comment which files conflict and what to do.
 
 Both labels come off by themselves once the reason has gone: the conflict was resolved, the pull
