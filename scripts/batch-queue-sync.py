@@ -1661,7 +1661,8 @@ def describe_by_hand(note, under=""):
             f"stacked on, is now `{MEMBER}` and `{FROZEN}`, in place of `{QUEUED}` if it had that, and is asked not "
             f"to push until this has landed. Those this description lists as left out are told why, unless they "
             f"are `{DEFERRED}` or a batch being built contains them: the comment only informs. When this is "
-            f"merged the pull requests in it lose `{MEMBER}` and `{FROZEN}`. If it is closed without being merged they lose them too, and the ones that "
+            f"merged the pull requests in it lose `{MEMBER}` and `{FROZEN}`. If it is closed without being merged "
+            "they lose them too, and the ones that "
             f"were queued go back to `{QUEUED}`, except those that a batch stacked on this one still holds. See "
             "`verification/BATCHES.md`.\n\n"
             f"{stacked}In this batch: {listed}.\n")
