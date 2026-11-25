@@ -37,18 +37,9 @@ instance : IsCMField Em :=
 
 def ζ : Em := IsCyclotomicExtension.zeta 4 ℚ Em
 
-theorem hζ : IsPrimitiveRoot ζ 4 := IsCyclotomicExtension.zeta_spec 4 ℚ Em
-
 abbrev cc : Em ≃ₐ[maximalRealSubfield Em] Em := IsCMField.complexConj Em
 
 def φ₀ : Em →+* ℂ := Classical.choice inferInstance
-
-theorem ringHom_ext {σ σ' : Em →+* ℂ} (h : σ ζ = σ' ζ) : σ = σ' := by
-  have : σ.toRatAlgHom = σ'.toRatAlgHom :=
-    AlgHom.ext_of_adjoin_eq_top (IsCyclotomicExtension.adjoin_primitive_root_eq_top hζ)
-      (fun x hx => by rw [Set.mem_singleton_iff] at hx; subst hx; exact h)
-  ext x
-  exact congrArg (fun f : Em →ₐ[ℚ] ℂ => f x) this
 
 end GroundTheory.Heights₂.Heights.NineStatements.Gauss
 end -- clump:auto
@@ -76,7 +67,6 @@ variable {Em : Type} [Field Em] [NumberField Em] {K : Type} [Field K] [NumberFie
 def baseChangeLat (K : Type) [Field K] [NumberField K] (I : Submodule (𝓞 Em) (Fin N → Em)) :
     Submodule (𝓞 K) ((Em →+* K) → Fin N → K) :=
   Submodule.span (𝓞 K) ((fun v σ a => σ (v a)) '' (I : Set (Fin N → Em)))
-
 
 open Classical in
 def eigenLat (I : Submodule (𝓞 Em) (Fin N → Em)) (s : Em →+* K) : Submodule (𝓞 K) (Fin N → K) :=

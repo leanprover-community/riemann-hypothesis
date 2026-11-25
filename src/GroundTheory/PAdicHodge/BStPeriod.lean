@@ -24,7 +24,6 @@ local notation "𝒪♭" => PreTilt 𝒪 p
 local notation "𝔹" => BDeRhamPlus 𝒪 p
 local notation "𝔪" => maximalIdeal 𝔹
 
-
 variable (p) in
 def pRootSeq : ℕ → ℂ_[p]
   | 0 => p
@@ -49,14 +48,12 @@ theorem norm_pRootSeq_le (n : ℕ) : ‖pRootSeq p n‖ ≤ 1 := by
   have : 1 < ‖pRootSeq p n‖ ^ p ^ n := one_lt_pow₀ hlt (pow_ne_zero _ hp.out.ne_zero)
   linarith
 
-
 variable (p) in
 def pRootSeqInt (n : ℕ) : 𝒪 :=
   ⟨pRootSeq p n, mem_normInteger.2 (norm_pRootSeq_le n)⟩
 
 theorem pRootSeqInt_succ_pow (n : ℕ) : pRootSeqInt p (n + 1) ^ p = pRootSeqInt p n :=
   Subtype.ext (by simp [pRootSeqInt, pRootSeq_succ_pow])
-
 
 variable (p) in
 def pFlat : 𝒪♭ :=
@@ -74,12 +71,6 @@ theorem natCast_p_ne_zero_cp : (p : ℂ_[p]) ≠ 0 := Nat.cast_ne_zero.2 hp.out.
 
 def qBdR : 𝔹 := algebraMap ℚ 𝔹 (p : ℚ)⁻¹ * wittToBDeRhamPlus 𝒪 p (teichmuller p (pFlat p)) - 1
 
-omit hp in
-theorem one_add_qBdR [Fact p.Prime] :
-    1 + qBdR (p := p) = algebraMap ℚ 𝔹 (p : ℚ)⁻¹ * wittToBDeRhamPlus 𝒪 p (teichmuller p (pFlat p)) := by
-  rw [qBdR]
-  ring
-
 theorem qBdR_mem : qBdR (p := p) ∈ 𝔪 := by
   rw [IsPerfectoidField.maximalIdeal_bDeRhamPlus, RingHom.mem_ker, qBdR, map_sub, map_mul,
     IsPerfectoidField.thetaBDeRhamPlusField_wittToBDeRhamPlus, fontaineTheta_teichmuller, untilt_pFlat,
@@ -87,7 +78,6 @@ theorem qBdR_mem : qBdR (p := p) ∈ 𝔪 := by
   have h : ((p : 𝒪) : ℂ_[p]) = p := by simp
   simp only [eq_ratCast, Rat.cast_inv, Rat.cast_natCast, h]
   rw [inv_mul_cancel₀ natCast_p_ne_zero_cp, sub_self]
-
 
 variable (p) in
 def uBdR : 𝔹 := logOnePlus 𝔪 (qBdR (p := p)) qBdR_mem

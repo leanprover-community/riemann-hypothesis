@@ -120,9 +120,6 @@ theorem cf_mapC_mul {α β γ : Type*} [Fintype β] (n : ℕ) (A : Matrix α β 
   ext i j
   simp only [cf, Matrix.map_apply, Matrix.mul_apply, Polynomial.finsetSum_coeff, Polynomial.coeff_C_mul]
 
-theorem coeff_X_mul_C (a : ℂ) (n : ℕ) : (X * C a).coeff n = if n = 1 then a else 0 := by
-  rw [mul_comm, Polynomial.coeff_C_mul_X]
-
 theorem eq_X_sq_mul (q : ℂ[X]) (h0 : q.coeff 0 = 0) (h1 : q.coeff 1 = 0) :
     q = X ^ 2 * q.divX.divX := by
   have e1 := Polynomial.X_mul_divX_add q

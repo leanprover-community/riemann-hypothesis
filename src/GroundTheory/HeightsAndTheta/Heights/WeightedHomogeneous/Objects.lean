@@ -15,7 +15,6 @@ noncomputable section
 
 variable {ι : Type} [Fintype ι] [DecidableEq ι] {n : ι → ℕ}
 
-
 namespace ArithVariety
 
 variable (P : ArithVariety n)
@@ -88,15 +87,9 @@ def inv (A : Heights.HermLine n) : Heights.HermLine n where
 end HermLine
 
 omit [DecidableEq ι] in
-theorem chartMonomial_add (c : (k : ι) → Fin (n k + 1)) (d d' : ι → ℕ) :
-    chartMonomial c (d + d') = chartMonomial c d * chartMonomial c d' := by
-  simp only [chartMonomial, Pi.add_apply, pow_add, Finset.prod_mul_distrib]
-
-omit [DecidableEq ι] in
 theorem chartMonomial_nsmul (c : (k : ι) → Fin (n k + 1)) (m : ℕ) (d : ι → ℕ) :
     chartMonomial c (m • d) = chartMonomial c d ^ m := by
   simp only [chartMonomial, Pi.smul_apply, smul_eq_mul, ← Finset.prod_pow, ← pow_mul, mul_comm]
-
 
 namespace IntegralSection
 
@@ -129,7 +122,6 @@ end IntegralSection
 def blockIncl (k₀ : ι) : Coord (fun _ : Unit ↦ n k₀) → Coord n := fun v ↦ ⟨k₀, v.2⟩
 
 variable {K : Type*} [Field K] [NumberField K] {e r : ℕ}
-
 
 end
 

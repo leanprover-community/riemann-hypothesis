@@ -36,9 +36,6 @@ section OverZ
 
 def toSpecZ (X : Scheme.{0}) : X ⟶ Spec (.of ℤ) := specZIsTerminal.from X
 
-theorem specZ_hom_ext {X : Scheme.{0}} (f g : X ⟶ Spec (.of ℤ)) : f = g :=
-  specZIsTerminal.hom_ext f g
-
 def IsFiniteTypeOverZ (X : Scheme.{0}) : Prop :=
   LocallyOfFiniteType (toSpecZ X) ∧ QuasiCompact (toSpecZ X)
 
@@ -69,7 +66,6 @@ end Generic
 section Unit
 
 variable {X Y : Scheme.{u}}
-
 
 end Unit
 
@@ -126,7 +122,6 @@ end AlgebraStatements
 
 section NumberStatements
 
-
 def MertensUpper.Statement : Prop :=
   ∃ C : ℝ, ∀ B : ℝ, 2 ≤ B →
     ∑ p ∈ Finset.filter Nat.Prime (Finset.range (⌊B⌋₊ + 1)), Real.log p / p ≤ Real.log B + C
@@ -140,7 +135,6 @@ def SumCp.Statement : Prop :=
 end NumberStatements
 
 section Inhabitants
-
 
 end Inhabitants
 

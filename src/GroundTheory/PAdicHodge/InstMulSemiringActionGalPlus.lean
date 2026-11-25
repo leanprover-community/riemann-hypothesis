@@ -16,8 +16,6 @@ set_option maxSynthPendingDepth 1
 
 noncomputable section
 
-
-
 namespace GroundTheory.PAdicHodge
 
 namespace ACris
@@ -279,10 +277,6 @@ instance instMulSemiringActionGalPlus :
 instance (priority := high) instSMulGalPlus :
     SMul Gal(PadicAlgCl p/K) (BCrisPlus ℂ_[p] p) :=
   instMulSemiringActionGalPlus.toSMul
-
-theorem gal_smul_plus_def (σ : Gal(PadicAlgCl p/K)) (x : BCrisPlus ℂ_[p] p) :
-    σ • x = galPlus σ x :=
-  rfl
 
 theorem gal_smul_algebraMap_plus (σ : Gal(PadicAlgCl p/K)) (x : ACris (K := ℂ_[p]) (p := p)) :
     σ • algebraMap (ACris (K := ℂ_[p]) (p := p)) (BCrisPlus ℂ_[p] p) x =

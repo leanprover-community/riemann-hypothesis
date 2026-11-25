@@ -74,14 +74,6 @@ theorem Kur_eq (hK : FiniteDimensional ℚ_[p] K) :
     rintro ζ ⟨m, hm, hζ⟩
     exact mem_Kur_of_pow hK hm hζ
 
-theorem Kur_eq_sup (hK : FiniteDimensional ℚ_[p] K) (hL : FiniteDimensional ℚ_[p] L) (h : K ≤ L) :
-    MaximalUnramifiedExtension p L = L ⊔ MaximalUnramifiedExtension p K := by
-  rw [Kur_eq hK, Kur_eq hL, ← sup_assoc, sup_eq_left.2 h]
-
-theorem Kur_le_Kur (hK : FiniteDimensional ℚ_[p] K) (hL : FiniteDimensional ℚ_[p] L) (h : K ≤ L) :
-    MaximalUnramifiedExtension p K ≤ MaximalUnramifiedExtension p L := by
-  rw [Kur_eq_sup L hK hL h]; exact le_sup_right
-
 theorem exists_teichmuller_bar (x : PadicAlgCl p) (hx : ‖x‖ = 1) :
     ∃ (ζ : PadicAlgCl p) (m : ℕ), ¬ p ∣ m ∧ ζ ^ m = 1 ∧ ‖x - ζ‖ < 1 := by
   have hfd : FiniteDimensional ℚ_[p] (IntermediateField.adjoin ℚ_[p] {x}) :=
@@ -152,18 +144,6 @@ theorem isFrob_frobK (hK : FiniteDimensional ℚ_[p] K) : IsFrob p K (frobK p K)
 theorem IsFrob.isFrobOn {σ : GK p K} (h : IsFrob p K σ) (n : ℕ) : IsFrobOn p K n σ :=
   fun x _ hx => h x hx
 
-theorem mk_eq_mk_iff {M : IntermediateField ℚ_[p] (PadicAlgCl p)} (σ τ : GK p K) :
-    (QuotientGroup.mk σ : GalLK p K M) = QuotientGroup.mk τ ↔ ∀ x ∈ M, σ x = τ x := by
-  rw [QuotientGroup.eq, mem_subG_iff]
-  constructor
-  · intro h x hx
-    have := congrArg σ (h x hx)
-    rw [AlgEquiv.mul_apply, ← AlgEquiv.mul_apply, mul_inv_cancel] at this
-    exact this.symm
-  · intro h x hx
-    rw [AlgEquiv.mul_apply, ← h x hx, ← AlgEquiv.mul_apply, inv_mul_cancel]
-    rfl
-
 theorem mem_subG_Kur_iff (hK : FiniteDimensional ℚ_[p] K) (σ : GK p K) :
     σ ∈ subG p K (MaximalUnramifiedExtension p K) ↔ ∀ x : PadicAlgCl p, ‖x‖ ≤ 1 → ‖σ x - x‖ < 1 := by
   have hum : ∀ a b : PadicAlgCl p, ‖a - b‖ ≤ max ‖a‖ ‖b‖ := fun a b => by
@@ -185,29 +165,11 @@ theorem mem_subG_Kur_iff (hK : FiniteDimensional ℚ_[p] K) (σ : GK p K) :
     have h3 := norm_sub_eq_one_of_pow_eq_one p hm h1 hζ hne
     exact absurd h3 (ne_of_lt (h ζ (UnramifiedExtensions.norm_eq_one_of_pow hm0 hζ).le))
 
-theorem subG_Kur_eq_inertiaK (hK : FiniteDimensional ℚ_[p] K) : subG p K (MaximalUnramifiedExtension p K) = inertiaK p K := by
-  have h : inertiaSet p K = (subG p K (MaximalUnramifiedExtension p K) : Set (GK p K)) := by
-    ext σ
-    exact (mem_subG_Kur_iff hK σ).symm
-  rw [inertiaK, h, Subgroup.closure_eq]
-
 theorem degLK_Kn (hK : FiniteDimensional ℚ_[p] K) {n : ℕ} (hn : 0 < n) : degLK p K (Kn p K n) = n := by
   have h1 := finrank_eq_degLK_mul (le_Kn p K n) (finiteDimensional_Kn p K hK hn)
   rw [finrank_Kn p K hK hn] at h1
   have hd : 0 < Module.finrank ℚ_[p] K := Module.finrank_pos
   exact (Nat.eq_of_mul_eq_mul_right hd h1).symm
-
-theorem frobLK_pow (M : IntermediateField ℚ_[p] (PadicAlgCl p)) [(subG p K M).Normal] (i : ℕ) :
-    frobLK p K M ^ i = QuotientGroup.mk (frobK p K ^ i) := rfl
-
-theorem mem_zpowers_frobLK_Kn (hK : FiniteDimensional ℚ_[p] K) {n : ℕ} (hn : 0 < n)
-    (g : GalLK p K (Kn p K n)) : g ∈ Subgroup.zpowers (frobLK p K (Kn p K n)) := by
-  obtain ⟨σ, rfl⟩ := QuotientGroup.mk_surjective g
-  obtain ⟨i, -, hi⟩ := IsFrobOn.exists_pow p K hK hn ((isFrob_frobK hK).isFrobOn n) σ
-  refine ⟨i, ?_⟩
-  change frobLK p K (Kn p K n) ^ (i : ℤ) = _
-  rw [zpow_natCast, frobLK_pow]
-  exact ((mk_eq_mk_iff _ _).2 hi).symm
 
 theorem mem_of_frobK_fixed (hK : FiniteDimensional ℚ_[p] K) {x : PadicAlgCl p} (hx : x ∈ MaximalUnramifiedExtension p K)
     (h : frobK p K x = x) : x ∈ K := by
@@ -220,51 +182,6 @@ theorem mem_of_frobK_fixed (hK : FiniteDimensional ℚ_[p] K) {x : PadicAlgCl p}
   induction i with
   | zero => rfl
   | succ k ih => rw [pow_succ, AlgEquiv.mul_apply, h, ih]
-
-theorem isZHat_GalKur (hK : FiniteDimensional ℚ_[p] K) :
-    IsZHat (GalLK p K (MaximalUnramifiedExtension p K)) (frobLK p K (MaximalUnramifiedExtension p K)) := by
-  constructor
-  · set C : Subgroup (GalLK p K (MaximalUnramifiedExtension p K)) :=
-      (Subgroup.zpowers (frobLK p K (MaximalUnramifiedExtension p K))).topologicalClosure with hC
-    have hCcl : IsClosed (C : Set (GalLK p K (MaximalUnramifiedExtension p K))) := Subgroup.isClosed_topologicalClosure _
-    set H : Subgroup (GK p K) := C.comap (QuotientGroup.mk' (subG p K (MaximalUnramifiedExtension p K))) with hH
-    have hHcl : IsClosed (H : Set (GK p K)) := hCcl.preimage continuous_quot_mk
-    obtain ⟨M, hKM, hM⟩ := exists_subG_eq H hHcl
-    have hNH : subG p K (MaximalUnramifiedExtension p K) ≤ subG p K M := by
-      rw [hM]
-      intro σ hσ
-      change (QuotientGroup.mk σ : GalLK p K (MaximalUnramifiedExtension p K)) ∈ C
-      rw [(QuotientGroup.eq_one_iff σ).2 hσ]
-      exact C.one_mem
-    have hMur : M ≤ MaximalUnramifiedExtension p K := by
-      have := (subG_le_iff hKM).1 hNH
-      rwa [sup_eq_right.2 le_Kur] at this
-    have hfr : frobK p K ∈ subG p K M := by
-      rw [hM]
-      change frobLK p K (MaximalUnramifiedExtension p K) ∈ C
-      exact Subgroup.le_topologicalClosure _ (Subgroup.mem_zpowers _)
-    have hMK : M ≤ K := fun x hx => mem_of_frobK_fixed hK (hMur hx) (hfr x hx)
-    have htop : H = ⊤ := by
-      rw [← hM, eq_top_iff]
-      intro σ _ x hx
-      exact σ.commutes ⟨x, hMK hx⟩
-    have hCtop : C = ⊤ := by
-      rw [eq_top_iff]
-      intro g _
-      obtain ⟨σ, rfl⟩ := QuotientGroup.mk_surjective g
-      have : σ ∈ H := by rw [htop]; trivial
-      exact this
-    rw [dense_iff_closure_eq]
-    have h1 : closure (Subgroup.zpowers (frobLK p K (MaximalUnramifiedExtension p K)) : Set (GalLK p K (MaximalUnramifiedExtension p K))) =
-        (C : Set (GalLK p K (MaximalUnramifiedExtension p K))) := rfl
-    rw [h1, hCtop]
-    rfl
-  · intro k hk
-    refine ⟨(subG p K (Kn p K k)).map (QuotientGroup.mk' (subG p K (MaximalUnramifiedExtension p K))), ?_, ?_⟩
-    · exact QuotientGroup.isOpenMap_coe _ (isOpen_subG (finiteDimensional_Kn p K hK hk))
-    · rw [Subgroup.index_map, QuotientGroup.ker_mk', sup_eq_left.2 (subG_anti (Kn_le_Kur hk)),
-        MonoidHom.range_eq_top.2 (QuotientGroup.mk'_surjective _), Subgroup.index_top, mul_one]
-      exact degLK_Kn hK hk
 
 theorem exists_le_Kn_of_le_Kur (hK : FiniteDimensional ℚ_[p] K) {M : IntermediateField ℚ_[p] (PadicAlgCl p)}
     (hM : FiniteDimensional ℚ_[p] M) (h : M ≤ MaximalUnramifiedExtension p K) : ∃ n, 0 < n ∧ M ≤ Kn p K n := by
@@ -280,33 +197,5 @@ theorem exists_le_Kn_of_le_Kur (hK : FiniteDimensional ℚ_[p] K) {M : Intermedi
   rw [hx']
   refine sum_mem fun i _ => ?_
   exact (Kn p K (∏ i, N i)).smul_mem (Kn_mono p K hK (Finset.dvd_prod_of_mem N (Finset.mem_univ i)) (hb i))
-
-theorem exists_Kn_of_isOpen (hK : FiniteDimensional ℚ_[p] K) (U : Subgroup (GK p K))
-    (hU : IsOpen (U : Set (GK p K))) (h : subG p K (MaximalUnramifiedExtension p K) ≤ U) :
-    ∃ n, 0 < n ∧ U = subG p K (Kn p K n) := by
-  obtain ⟨M, hKM, hM, rfl⟩ := exists_subG_eq_of_isOpen hK U hU
-  have hMur : M ≤ MaximalUnramifiedExtension p K := by
-    have := (subG_le_iff hKM).1 h
-    rwa [sup_eq_right.2 le_Kur] at this
-  obtain ⟨N, hN, hMN⟩ := exists_le_Kn_of_le_Kur hK hM hMur
-  refine ⟨degLK p K M, degLK_pos hM, ?_⟩
-  rw [← eq_Kn_of_norm p K hK hKM (degLK_pos hM) (finrank_eq_degLK_mul hKM hM)
-    (fun x hx => norm_Kn p K hK hN (hMN hx))]
-
-theorem IsFrob.pow_apply (hK : FiniteDimensional ℚ_[p] K) {σ : GK p K} (h : IsFrob p K σ) {m : ℕ}
-    (hm : ¬ p ∣ m) (i : ℕ) {ζ : PadicAlgCl p} (hζ : ζ ^ m = 1) : (σ ^ i) ζ = ζ ^ (qK p K ^ i) := by
-  induction i with
-  | zero => simp
-  | succ k ih =>
-    rw [pow_succ', AlgEquiv.mul_apply, ih, map_pow, (isFrob_iff hK σ).1 h ζ m hm hζ, ← pow_mul, ← pow_succ']
-
-theorem resGK_frobK (hK : FiniteDimensional ℚ_[p] K) (hL : FiniteDimensional ℚ_[p] L) (h : K ≤ L) {f : ℕ}
-    (hf : qK p L = qK p K ^ f) :
-    (QuotientGroup.mk (resGK h (frobK p L)) : GalLK p K (MaximalUnramifiedExtension p K)) = frobLK p K (MaximalUnramifiedExtension p K) ^ f := by
-  rw [frobLK_pow, mk_eq_mk_iff]
-  intro x hx
-  refine eqOn_Kur (fun ζ m hm hζ => ?_) hK hx
-  rw [resGK_apply, (isFrob_iff hL _).1 (isFrob_frobK hL) ζ m hm hζ, hf,
-    IsFrob.pow_apply hK (isFrob_frobK hK) hm f hζ]
 
 end ReciprocityTheory.DiscreteGroups.LocalClassField

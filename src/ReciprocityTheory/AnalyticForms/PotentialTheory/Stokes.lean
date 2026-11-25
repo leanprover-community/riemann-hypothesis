@@ -107,7 +107,6 @@ variable [CompactSpace X] [T2Space X] (A : FinHolAtlas (e + 1) X) (Φ : Fin e �
   (hΦ : ∀ i, IsPotential A (Φ i)) (j : Fin A.n) (G : Set X) (hGo : IsOpen G)
   (hG : G ⊆ (A.chart j).source) (x0 : Fin e → X) (hGU : ∀ i, G ⊆ (Φ i).U (x0 i))
 
-
 include hΦ hGo hG hGU in
 theorem st_partsHyp_piece (w ψ : X → ℝ) (hw : A.Smooth w) (hψ : A.Smooth ψ)
     (hψG : tsupport ψ ⊆ G) :
@@ -142,7 +141,6 @@ theorem st_partsHyp_piece (w ψ : X → ℝ) (hw : A.Smooth w) (hψ : A.Smooth �
   · exact hK.of_isClosed_subset (isClosed_tsupport _) htsK
   · exact ((hw j).mono fun y (hy : y ∈ (A.chart j).target ∩ (A.chart j).symm ⁻¹' G) => ⟨hy.1, Set.mem_univ _⟩).of_le h3
   · exact (((hΦ i).1 (x0 i) j).mono fun y (hy : y ∈ (A.chart j).target ∩ (A.chart j).symm ⁻¹' G) => ⟨hy.1, hGU i hy.2⟩).of_le h3
-
 
 include hΦ hGo hG hGU in
 theorem st_nonpos_piece (hP : PartsStatement) (v θ : X → ℝ) (hv : A.Smooth v)
@@ -431,10 +429,6 @@ def LocalSymmStatement : Prop :=
     (A : FinHolAtlas (e + 1) X) (j : Fin A.n) (χ w : X → ℝ), A.Smooth χ → A.Smooth w →
     tsupport χ ⊆ (A.chart j).source → ∀ Φ : Fin e → LocPot X, (∀ i, IsPotential A (Φ i)) →
       mInt A (Fin.cons (LocPot.ofFun w) Φ) χ = mInt A (Fin.cons (LocPot.ofFun χ) Φ) w
-
-theorem localSymm : LocalSymmStatement := by
-  intro e X _ _ _ A _ χ w hχ hw _ Φ hΦ
-  exact st_byPartsSymm_of ReciprocityTheory.AnForm.A.parts_thm A χ w hχ hw Φ hΦ
 
 theorem stokes : StokesStatement := st_stokes_of ReciprocityTheory.AnForm.A.parts_thm
 theorem byPartsSymm : ByPartsSymmStatement := st_byPartsSymm_of ReciprocityTheory.AnForm.A.parts_thm

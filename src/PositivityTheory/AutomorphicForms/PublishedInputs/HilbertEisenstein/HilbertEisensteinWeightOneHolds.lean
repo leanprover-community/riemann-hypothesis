@@ -202,7 +202,6 @@ def archE (ε : InfinitePlace F → Bool) (x y : UpperTheory.V.TR.Rinf F) : ℂ 
   ∏ v, (((x v : ℂ) + (sgn (ε v) : ℂ) * Complex.I * (y v : ℂ)) *
     Complex.exp (-(Real.pi : ℂ) * ((x v : ℂ) ^ 2 + (y v : ℂ) ^ 2)))
 
-
 open Classical in
 def PhiE (c : HeightOneSpectrum (𝓞 F) → ℕ) (ε : InfinitePlace F → Bool) (ξ : Fin 2 → Ad F) : ℂ :=
   archE ε (UpperTheory.V.TR.pInf F (ξ 0)) (UpperTheory.V.TR.pInf F (ξ 1)) *
@@ -515,7 +514,6 @@ theorem finite_support {ω : HChar F} {c : HeightOneSpectrum (𝓞 F) → ℕ} (
   refine hS.subset fun w hw => ?_
   by_contra hwS
   exact hw (Nat.le_zero.1 ((hH.cond w).2 fun x hu _ => MonoidHom.mem_ker.1 (key w x hu fun h => absurd h hwS)))
-
 
 variable (F) in
 def Kc (c : HeightOneSpectrum (𝓞 F) → ℕ) : Subgroup (GL (Fin 2) (Af F)) :=
@@ -947,15 +945,8 @@ def coordCLM (i : Fin 2) (v : InfinitePlace F) : (Fin 2 → mixedSpace F) →L[�
       map_add' := fun _ _ => rfl
       map_smul' := fun _ _ => rfl }
 
-theorem coordCLM_apply (i : Fin 2) (v : InfinitePlace F) (u : Fin 2 → mixedSpace F) :
-    coordCLM F i v u = toR F (u i) v := rfl
-
 def lin (v : InfinitePlace F) : (Fin 2 → mixedSpace F) →L[ℝ] ℂ :=
   Complex.ofRealCLM.comp (coordCLM F 0 v) + Complex.I • Complex.ofRealCLM.comp (coordCLM F 1 v)
-
-theorem lin_apply (v : InfinitePlace F) (u : Fin 2 → mixedSpace F) :
-    lin F v u = (toR F (u 0) v : ℂ) + Complex.I * (toR F (u 1) v : ℂ) := by
-  simp [lin, coordCLM_apply]
 
 theorem hasTemperateGrowth_prod {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] {ι : Type*}
     (s : Finset ι) (f : ι → E → ℂ) (hf : ∀ i, (f i).HasTemperateGrowth) :
@@ -1651,7 +1642,6 @@ end -- clump:auto
 -- clump-header: {"m": "PositivityTheory.AutomorphicForms.PublishedInputs.HilbertEisenstein.HilbertEisensteinWeightOneHolds", "h": "module\n\npublic import Development.AutomorphicArithmetic.AutomorphicVarieties.PublishedTheorems.Hilbert\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\npublic import PositivityTheory.AutomorphicForms.PublishedInputs.HilbertEisenstein.CenterFinitenessHolds\npublic import PositivityTheory.AutomorphicForms.PublishedInputs.HilbertEisenstein.CentralCharacterHolds\npublic import PositivityTheory.AutomorphicForms.PublishedInputs.HilbertEisenstein.ContDiffOnOfContDiffAtOne\npublic import PositivityTheory.AutomorphicForms.PublishedInputs.HilbertEisenstein.EisensteinLowWeight\npublic import PositivityTheory.AutomorphicForms.PublishedInputs.HilbertEisenstein.FourierExpansionHolds\npublic import PositivityTheory.AutomorphicForms.PublishedInputs.HilbertEisenstein.ImportsAlt\npublic import PositivityTheory.AutomorphicForms.PublishedInputs.HilbertEisenstein.InvMulVecScalarMul\npublic import PositivityTheory.AutomorphicForms.PublishedInputs.HilbertEisenstein.KFinitenessHolds\npublic import PositivityTheory.AutomorphicForms.PublishedInputs.HilbertEisenstein.LeftInvarianceHolds\npublic import PositivityTheory.AutomorphicForms.PublishedInputs.HilbertEisenstein.OpenKernelHolds\npublic import PositivityTheory.AutomorphicForms.PublishedInputs.HilbertEisenstein.PoissonSummationHolds\npublic import PositivityTheory.AutomorphicForms.PublishedInputs.HilbertEisenstein.SGrowth\npublic import PositivityTheory.AutomorphicForms.PublishedInputs.HilbertEisenstein.SLevel\npublic import PositivityTheory.AutomorphicForms.PublishedInputs.HilbertEisenstein.ScalarActionHolds\npublic import PositivityTheory.AutomorphicForms.PublishedInputs.HilbertEisenstein.WeightHolds\n\n"}
 section -- clump:auto
 @[expose] public section
-
 
 open UpperTheory.HilbertEisensteinWeightOne in
 theorem UpperTheory.V.Published.hilbert_eisenstein_weight_one_holds : UpperTheory.V.Published.HilbertEisOne :=

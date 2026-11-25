@@ -97,14 +97,4 @@ theorem withBot_enat_cancel {h : ℕ∞} {a b : WithBot ℕ∞} {N : ℕ}
       | top => simp at ha'
       | coe h => exact WithTop.add_left_cancel (ENat.coe_ne_top h) (ha'.trans hb'.symm)
 
-theorem ringKrullDim_of_mem_minimalPrimes_map (𝔭 : Ideal (MvPolynomial σ ℚ)) [𝔭.IsPrime]
-    (Q : Ideal (MvPolynomial σ ℂ))
-    (hQ : Q ∈ (Ideal.map (MvPolynomial.map (algebraMap ℚ ℂ)) 𝔭).minimalPrimes) :
-    ringKrullDim (MvPolynomial σ ℂ ⧸ Q) = ringKrullDim (MvPolynomial σ ℚ ⧸ 𝔭) := by
-  have : Q.IsPrime := hQ.1.1
-  have h1 := height_add_ringKrullDim_quotient_fintype ℂ Q
-  have h2 := height_add_ringKrullDim_quotient_fintype ℚ 𝔭
-  rw [height_eq_of_mem_minimalPrimes_map 𝔭 Q hQ] at h1
-  exact withBot_enat_cancel h1 h2
-
 end ReciprocityTheory.AnForm.R.BaseChangeC

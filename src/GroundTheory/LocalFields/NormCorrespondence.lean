@@ -29,7 +29,6 @@ end Index
 
 section Lattice
 
-
 omit [ValuativeRel K] [TopologicalSpace K] [IsNonarchimedeanLocalField K] [IsSepClosure K Ω] in
 theorem mul_comm_of_isAbelianGalois' (L : IntermediateField K Ω) [IsAbelianGalois K L]
     (σ τ : L ≃ₐ[K] L) : σ * τ = τ * σ :=
@@ -52,11 +51,9 @@ end Lattice
 
 section OrderIso
 
-
 variable (K) in
 def openFiniteIndexSubgroups : Set (Subgroup Kˣ) :=
   {H | IsOpen (H : Set Kˣ) ∧ H.FiniteIndex}
-
 
 variable (K Ω) in
 def normGroupMap (L : finiteAbelianExtensions K Ω) : openFiniteIndexSubgroups K :=
@@ -88,17 +85,11 @@ theorem normGroupMap_le_iff {L L' : finiteAbelianExtensions K Ω} :
   have := L'.2.2
   exact range_normUnits_le_iff
 
-
 variable (K Ω) in
 def normGroupOrderIso : finiteAbelianExtensions K Ω ≃o (openFiniteIndexSubgroups K)ᵒᵈ where
   toEquiv := (Equiv.ofBijective _ ⟨normGroupMap_injective, normGroupMap_surjective⟩).trans
     OrderDual.toDual
   map_rel_iff' := normGroupMap_le_iff
-
-theorem normGroupOrderIso_apply (L : finiteAbelianExtensions K Ω) :
-    (OrderDual.ofDual (normGroupOrderIso K Ω L)).1 =
-      (have := L.2.1; (normUnits K (L : IntermediateField K Ω)).range) :=
-  rfl
 
 end OrderIso
 

@@ -12,18 +12,3 @@ public import Mathlib.RingTheory.LocalRing.MaximalIdeal.Basic
 noncomputable section
 
 open PowerSeries
-
-namespace ReciprocityTheory.PGsh
-
-namespace TowerExample
-
-variable (p : ℕ) [Fact p.Prime]
-
-lemma ne_top (m : ℕ) (hm : 0 < m) : Ideal.span {(X : (ZMod p)⟦X⟧) ^ m} ≠ ⊤ := by
-  rw [Ne, Ideal.span_singleton_eq_top, PowerSeries.isUnit_iff_constantCoeff]
-  simp [zero_pow hm.ne']
-
-end TowerExample
-
-
-end ReciprocityTheory.PGsh

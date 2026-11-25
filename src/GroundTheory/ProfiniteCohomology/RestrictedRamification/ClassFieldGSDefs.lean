@@ -66,8 +66,6 @@ namespace SIdeleClassGroupPos
 
 def mk : IdeleGroup K →* SIdeleClassGroupPos S := QuotientGroup.mk' _
 
-theorem mk_surjective : Function.Surjective (mk S) := QuotientGroup.mk'_surjective _
-
 theorem mk_diagonal (a : Kˣ) : mk S (diagonal K a) = 1 :=
   (QuotientGroup.eq_one_iff _).2 (Subgroup.mem_sup_left ⟨a, rfl⟩)
 

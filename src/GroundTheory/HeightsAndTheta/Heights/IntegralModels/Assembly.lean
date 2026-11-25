@@ -24,47 +24,6 @@ section -- clump:auto
 
 set_option maxSynthPendingDepth 1
 
-namespace GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.Model
-
-theorem BlowUpChart.comap_eq_maximalIdeal {A K : Type} [CommRing A] [IsDomain A] [IsLocalRing A]
-    [Field K] [Algebra A K] [IsFractionRing A K] {n : ℕ} {x : Fin n → A}
-    (hx : Ideal.span (Set.range x) = IsLocalRing.maximalIdeal A) {i : Fin n} (hi : x i ≠ 0)
-    (P : Ideal (blowUpChart A K x i)) (hP : P.IsPrime) (hxP : algebraMap A _ (x i) ∈ P) :
-    P.comap (algebraMap A (blowUpChart A K x i)) = IsLocalRing.maximalIdeal A := by
-  apply le_antisymm
-  · exact IsLocalRing.le_maximalIdeal (Ideal.IsPrime.comap (algebraMap A (blowUpChart A K x i)) (hK := hP)).ne_top
-  · rw [← hx, Ideal.span_le]
-    rintro _ ⟨j, rfl⟩
-    have hxi : algebraMap A K (x i) ≠ 0 := by
-      rw [map_ne_zero_iff _ (IsFractionRing.injective A K)]
-      exact hi
-    have hmem : algebraMap A K (x j) / algebraMap A K (x i) ∈ blowUpChart A K x i :=
-      Algebra.subset_adjoin ⟨j, rfl⟩
-    have hfac : algebraMap A (blowUpChart A K x i) (x j) =
-        ⟨_, hmem⟩ * algebraMap A (blowUpChart A K x i) (x i) := by
-      apply Subtype.ext
-      simp [div_mul_cancel₀ _ hxi]
-    show algebraMap A _ (x j) ∈ P
-    rw [hfac]
-    exact P.mul_mem_left _ hxP
-
-theorem BlowUpChart.equiv :
-    _root_.GroundTheory.Heights₂.Heights.Model.BlowUpChart.Statement ↔
-      _root_.GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.Model.BlowUpChart.Statement := by
-  constructor
-  · intro h A K _ _ _ _ _ _ _ n x hx hne
-    obtain ⟨i, hi, hu, -⟩ := h A K n x hx hne
-    exact ⟨i, hi, hu, fun P hP hxP => BlowUpChart.comap_eq_maximalIdeal hx hi P hP hxP⟩
-  · intro h A _ _ _ _ K _ _ _ n x hx hne
-    obtain ⟨i, hi, hu, -⟩ := h A K n x hx hne
-    have hne' : Ideal.span {algebraMap A (blowUpChart A K x i) (x i)} ≠ ⊤ := by
-      rw [Ne, Ideal.span_singleton_eq_top]
-      exact hu
-    obtain ⟨Q, hQ, hle⟩ := Ideal.exists_le_maximal _ hne'
-    exact ⟨i, hi, hu, Q, hQ.isPrime, hle (Ideal.subset_span rfl),
-      BlowUpChart.comap_eq_maximalIdeal hx hi Q hQ.isPrime (hle (Ideal.subset_span rfl))⟩
-
-end GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.Model
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: GroundTheory.HeightsAndTheta.Heights.IntegralModels.ComapEqMaximalIdeal =====
@@ -76,74 +35,6 @@ section -- clump:auto
 
 set_option maxSynthPendingDepth 1
 
-namespace GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.Model
-
-theorem cp_eq_primeWeight (p : ℕ) : cp p = GroundTheory.Heights₂.Heights.Model.primeWeight p := rfl
-
-theorem cp_nonneg {p : ℕ} (hp : p.Prime) : 0 ≤ cp p := by
-  unfold cp
-  split_ifs
-  · norm_num
-  · have : (2 : ℝ) ≤ p := by exact_mod_cast hp.two_le
-    exact div_nonneg zero_le_one (by linarith)
-
-theorem sumCp_term_nonneg (d : ℤ) {p : ℕ} (hp : p.Prime) :
-    0 ≤ (cp p + 2 * (padicValInt p d : ℝ)) * Real.log p :=
-  mul_nonneg (add_nonneg (cp_nonneg hp) (by positivity))
-    (Real.log_nonneg (by exact_mod_cast hp.one_lt.le))
-
-theorem SumCp.equiv :
-    GroundTheory.Heights₂.Heights.Model.SumCp.Statement ↔ SumCp.Statement := by
-  constructor
-  · intro hA d hd
-    obtain ⟨C, hC⟩ := hA d hd
-    refine ⟨C, fun B hB S hS => ?_⟩
-    have h := hC B hB S fun p hp => ⟨(hS p hp).1, Or.inl (hS p hp).2⟩
-    simpa [cp_eq_primeWeight] using h
-  · intro hB d hd
-    obtain ⟨C, hC⟩ := hB d hd
-    set T := d.natAbs.primeFactors
-    set K : ℝ := ∑ p ∈ T, (cp p + 2 * (padicValInt p d : ℝ)) * Real.log p
-    have hK : 0 ≤ K := Finset.sum_nonneg fun p hp =>
-      sumCp_term_nonneg d (Nat.mem_primeFactors.mp hp).1
-    have hl2 : 0 < Real.log 2 := Real.log_pos (by norm_num)
-    refine ⟨C + K / Real.log 2, fun B hB2 S hS => ?_⟩
-    have hlogB : Real.log 2 ≤ Real.log B := Real.log_le_log (by norm_num) hB2
-    have hterm : ∀ p ∈ S, (GroundTheory.Heights₂.Heights.Model.primeWeight p +
-        2 * (padicValInt p d : ℝ)) * Real.log p =
-        (cp p + 2 * (padicValInt p d : ℝ)) * Real.log p := fun p _ => by
-      rw [cp_eq_primeWeight]
-    have hsum : ∑ p ∈ S, (GroundTheory.Heights₂.Heights.Model.primeWeight p +
-        2 * (padicValInt p d : ℝ)) * Real.log p =
-        ∑ p ∈ S, (cp p + 2 * (padicValInt p d : ℝ)) * Real.log p :=
-      Finset.sum_congr rfl hterm
-
-    have h1 : ∑ p ∈ S.filter (fun p : ℕ => (p : ℝ) ≤ B),
-        (cp p + 2 * (padicValInt p d : ℝ)) * Real.log p ≤ C * Real.log B :=
-      hC B hB2 _ fun p hp => by
-        obtain ⟨hpS, hpB⟩ := Finset.mem_filter.mp hp
-        exact ⟨(hS p hpS).1, hpB⟩
-
-    have h2 : ∑ p ∈ S.filter (fun p : ℕ => ¬ (p : ℝ) ≤ B),
-        (cp p + 2 * (padicValInt p d : ℝ)) * Real.log p ≤ K := by
-      refine Finset.sum_le_sum_of_subset_of_nonneg (fun p hp => ?_) (fun p hp _ => ?_)
-      · obtain ⟨hpS, hpB⟩ := Finset.mem_filter.mp hp
-        obtain ⟨hpp, hor⟩ := hS p hpS
-        have hpd : (p : ℤ) ∣ d := hor.resolve_left hpB
-        exact Nat.mem_primeFactors.mpr ⟨hpp, Int.natCast_dvd.mp hpd, Int.natAbs_ne_zero.mpr hd⟩
-      · exact sumCp_term_nonneg d (Nat.mem_primeFactors.mp hp).1
-    have h3 : K ≤ K / Real.log 2 * Real.log B := by
-      rw [div_mul_eq_mul_div, le_div_iff₀ hl2]
-      exact mul_le_mul_of_nonneg_left hlogB hK
-    have hsplit := Finset.sum_filter_add_sum_filter_not S (fun p : ℕ => (p : ℝ) ≤ B)
-      (fun p => (cp p + 2 * (padicValInt p d : ℝ)) * Real.log p)
-    have : ∑ p ∈ S, (GroundTheory.Heights₂.Heights.Model.primeWeight p +
-        2 * (padicValInt p d : ℝ)) * Real.log p ≤ (C + K / Real.log 2) * Real.log B := by
-      rw [hsum, ← hsplit, add_mul]
-      linarith
-    exact this
-
-end GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.Model
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: GroundTheory.HeightsAndTheta.Heights.IntegralModels.CpEqPrimeWeight =====
@@ -155,20 +46,6 @@ section -- clump:auto
 
 set_option maxSynthPendingDepth 1
 
-namespace GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.Model
-
-theorem MertensUpper.Iic_eq_range (n : ℕ) : Finset.Iic n = Finset.range (n + 1) := by
-  ext m
-  simp
-
-theorem MertensUpper.equiv :
-    GroundTheory.Heights₂.Heights.Model.MertensUpper.Statement ↔
-      GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.Model.MertensUpper.Statement := by
-  unfold GroundTheory.Heights₂.Heights.Model.MertensUpper.Statement
-    GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.Model.MertensUpper.Statement
-  simp only [MertensUpper.Iic_eq_range]
-
-end GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.Model
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: GroundTheory.HeightsAndTheta.Heights.IntegralModels.IicEqRange =====
@@ -180,20 +57,6 @@ section -- clump:auto
 
 set_option maxSynthPendingDepth 1
 
-namespace GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.Model
-
-theorem KrullAkizuki.equiv :
-    GroundTheory.Heights₂.Heights.Model.KrullAkizuki.Statement ↔
-      GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.Model.KrullAkizuki.Statement := by
-  constructor
-  · rintro ⟨h₁, h₂⟩ R K L _ _ _ _ _ _ _ _ _ _ _ hR
-    exact ⟨h₁ R hR K L, h₂ R hR K⟩
-  · intro h
-    refine ⟨fun R _ _ _ hR K _ _ _ L _ _ _ _ _ S => (h R K L hR).1 S, ?_⟩
-    intro R _ _ _ hR K _ _ _
-    exact (h R K K hR).2
-
-end GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.Model
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: GroundTheory.HeightsAndTheta.Heights.IntegralModels.ImportsAlt =====
@@ -330,32 +193,8 @@ theorem DominatingDVR.full : DominatingDVR.Statement :=
 theorem SumCp.full : SumCp.Statement :=
   SumCp.proof MertensUpper.full
 
-theorem FiniteNormalization.full : FiniteNormalization.Statement :=
-  GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.Model.FiniteIntegralClosure.normalization_of_scheme
-    (GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.Model.FiniteIntegralClosure.scheme_of_alg
-      (GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.Model.FiniteIntegralClosure.alg_iff.mp FiniteIntegralClosure.full))
-
 end GroundTheory.Heights₂.Heights.Model
 
-namespace GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.Model
-
-theorem BlowUpChart.full : BlowUpChart.Statement :=
-  BlowUpChart.equiv.mp GroundTheory.Heights₂.Heights.Model.BlowUpChart.full
-
-theorem KrullAkizuki.full : KrullAkizuki.Statement :=
-  KrullAkizuki.equiv.mp GroundTheory.Heights₂.Heights.Model.KrullAkizuki.full
-
-theorem MertensUpper.full : MertensUpper.Statement :=
-  MertensUpper.equiv.mp GroundTheory.Heights₂.Heights.Model.MertensUpper.full
-
-theorem SumCp.full : SumCp.Statement :=
-  SumCp.equiv.mp GroundTheory.Heights₂.Heights.Model.SumCp.full
-
-theorem FiniteIntegralClosure.full : FiniteIntegralClosure.Statement :=
-  FiniteIntegralClosure.equiv.mp ⟨GroundTheory.Heights₂.Heights.Model.FiniteIntegralClosure.full,
-    GroundTheory.Heights₂.Heights.Model.FiniteNormalization.full⟩
-
-end GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.Model
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: GroundTheory.HeightsAndTheta.Heights.IntegralModels.Assembly =====

@@ -59,13 +59,6 @@ theorem cohomologyπ_galUnits_eq_zero_of_coboundary (z : cocycles (galUnits.{0} 
   rw [hzw]
   exact cohomologyπ_toCycles _ 1 2 _
 
-
-omit [IsGalois Kv Ωv] in
-theorem toMul_galUnitsZ_coboundary (σ : Gal(Ωv/Kv)) (a b c : Additive Ωvˣ) :
-    Additive.toMul ((galUnitsZ Kv Ωv).ρ σ a - b + c) =
-      σ • Additive.toMul a / Additive.toMul b * Additive.toMul c :=
-  rfl
-
 end CoboundaryUnits
 
 section ClassZero
@@ -322,7 +315,6 @@ variable {K L : Type} [Field K] [NumberField K] [Field L] [NumberField L] [Algeb
 
 open AdicLiesOver
 
-
 include v in
 theorem isMulCoboundary₂_of_valuation (he : w.asIdeal.ramificationIdx (𝓞 K) = 1)
     (α : MulAction.stabilizer Gal(L/K) w.asIdeal × MulAction.stabilizer Gal(L/K) w.asIdeal →
@@ -436,15 +428,12 @@ variable {K : FiniteSubfield} {v : HeightOneSpectrum (𝓞 K.1)}
   (ι : ℚ̄ →ₐ[K.1] AlgebraicClosure (v.adicCompletion K.1))
   (F : FiniteSubfield) [Fact (K ≤ F)] [Normal K.1 F.1]
 
-
 instance mulDistribMulAction_gal_units_finiteSubfield :
     MulDistribMulAction Gal(F.1/K.1) F.1ˣ :=
   AlgEquiv.instMulDistribMulActionUnits
 
 def ordPlace (f : F.1ˣ) : ℤ :=
   -WithZero.log ((placeOfEmbedding ι F).1.valuation F.1 (f : F.1))
-
-
 
 theorem placeDecompHom_surjective : Function.Surjective (placeDecompHom ι F) := by
   intro d
@@ -468,7 +457,6 @@ theorem placeDecompHom_surjective : Function.Surjective (placeDecompHom ι F) :=
         (e.symm_apply_apply (i x))).trans (decompositionAlgEquiv_algebraMap v (placeOfEmbedding ι F).1 d x)))
   exact (hi _).symm.trans ((congrArg j hτx.symm).trans
     ((τ.liftNormal_commutes _ (e (i x))).symm.trans (congrArg lift (hi x))))
-
 
 private theorem map_coboundary₂ {G H M N : Type} [Monoid G] [Monoid H]
     [Group M] [Group N] [SMul H M] [SMul G N] (r : G →* H) (j : M →* N)
@@ -567,9 +555,6 @@ theorem ordComp_sub (y y' : Additive (compField ι F)ˣ) :
     ((ordComp_add ι F y (-y')).trans
       ((congrArg (ordComp ι F y + ·) (ordComp_neg ι F y')).trans (sub_eq_add_neg _ _).symm))
 
-
-
-
 theorem ordComp_smul (γ : Gal(compField ι F/v.adicCompletion K.1)) (y : (compField ι F)ˣ) :
     ordComp ι F (Additive.ofMul (Units.map (γ : compField ι F →* compField ι F) y)) =
       ordComp ι F (Additive.ofMul y) := by
@@ -596,8 +581,6 @@ theorem ordComp_embedComp (f : F.1ˣ) :
 
 abbrev compDecomp : Gal(compField ι F/v.adicCompletion K.1) →* Gal(F.1/K.1) :=
   decompHom (v.adicCompletion K.1) (embedComp ι F)
-
-
 
 theorem compDecomp_restrictNormalHom
     (σ : Gal(AlgebraicClosure (v.adicCompletion K.1)/v.adicCompletion K.1)) :
@@ -649,7 +632,6 @@ theorem compCocycleFun_mem (c : Gal(F.1/K.1) × Gal(F.1/K.1) → F.1ˣ) (hc : Is
     (c (compDecomp ι F g, compDecomp ι F (h * j)))
   exact congrArg Additive.ofMul (mm1.symm.trans (key.trans (mm2.trans (congrArg (· * _) s))))
 
-
 theorem exists_compCocycle_coboundary
     (c : Gal(F.1/K.1) × Gal(F.1/K.1) → F.1ˣ) (hc : IsMulCocycle₂ c)
     (b : Gal(AlgebraicClosure (v.adicCompletion K.1)/v.adicCompletion K.1) →
@@ -687,9 +669,6 @@ theorem exists_compCocycle_coboundary
   have hφ := hz1.trans hz0
   have hc'0 := brauerInflation_injective E (hφ.trans (map_zero φ).symm)
   exact (groupCohomology.H2π_eq_zero_iff _).1 hc'0
-
-
-
 
 theorem ordComp_coboundary_eq (c : Gal(F.1/K.1) × Gal(F.1/K.1) → F.1ˣ)
     (β' : Gal(compField ι F/v.adicCompletion K.1) → Additive (compField ι F)ˣ)
@@ -731,7 +710,6 @@ theorem ordComp_coboundary_eq (c : Gal(F.1/K.1) × Gal(F.1/K.1) → F.1ˣ)
   exact (congrArg (fun γ => ordComp ι F (β' (AlgEquiv.restrictNormalHom (compField ι F) τ)) -
     ordComp ι F (β' γ) + ordComp ι F (β' (AlgEquiv.restrictNormalHom (compField ι F) σ))) hmul).trans
     (k1.trans k2)
-
 
 theorem exists_ord_coboundary_of_mulCoboundary
     (c : Gal(F.1/K.1) × Gal(F.1/K.1) → F.1ˣ) (hc : IsMulCocycle₂ c)

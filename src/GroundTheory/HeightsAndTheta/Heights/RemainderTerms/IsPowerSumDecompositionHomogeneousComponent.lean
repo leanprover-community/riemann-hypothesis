@@ -24,10 +24,6 @@ def rootRingToReal (f N j k : ℕ) (h : N = j + k) : RootRing f N →+* Indefini
   simp only [rootRingToReal, RingHom.comp_apply, map_X, AlgHom.toRingHom_eq_coe, RingHom.coe_coe,
     rename_X] <;> rfl
 
-@[simp] theorem rootRingToReal_C (f N j k : ℕ) (h : N = j + k) (q : ℚ) :
-    rootRingToReal f N j k h (C q) = C (q : ℝ) := by
-  simp [rootRingToReal]
-
 theorem rootRingToReal_isHomogeneous_iff (f N j k : ℕ) (h : N = j + k) (P : RootRing f N) (n : ℕ) :
     (rootRingToReal f N j k h P).IsHomogeneous n ↔ P.IsHomogeneous n := by
   rw [rootRingToReal, RingHom.comp_apply, AlgHom.toRingHom_eq_coe, RingHom.coe_coe,

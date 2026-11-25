@@ -33,17 +33,6 @@ theorem awaySMulHom_algebraMap (σ : G) (x : R) :
       algebraMap R (Localization.Away t) (σ • x) :=
   IsLocalization.lift_eq _ x
 
-theorem awaySMulHom_comm (f : Localization.Away t →+* Localization.Away t) (F : R →+* R)
-    (hf : ∀ x, f (algebraMap R (Localization.Away t) x) = algebraMap R (Localization.Away t) (F x))
-    (hF : ∀ (σ : G) x, F (σ • x) = σ • F x) (σ : G) (x : Localization.Away t) :
-    f (awaySMulHom t h σ x) = awaySMulHom t h σ (f x) := by
-  have e : f.comp (awaySMulHom t h σ) = (awaySMulHom t h σ).comp f := by
-    apply IsLocalization.ringHom_ext (Submonoid.powers t)
-    refine RingHom.ext fun y => ?_
-    simp only [RingHom.comp_apply]
-    rw [awaySMulHom_algebraMap, hf, hf, awaySMulHom_algebraMap, hF]
-  exact congrArg (fun g => g x) e
-
 end AwayAction
 
 namespace ACris

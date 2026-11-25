@@ -1555,9 +1555,6 @@ theorem row_mul {F : Type} [Field F] [NumberField F] (t : Af F) (k : GF F) (M : 
   ext i
   simp [Matrix.vecMul, dotProduct, Matrix.mul_apply, Fin.sum_univ_two, mul_add, mul_assoc]
 
-theorem zc_val {F : Type} [Field F] [NumberField F] (z : (Af F)ˣ) :
-    (zc F z).val = Matrix.scalar (Fin 2) (z : Af F) := rfl
-
 theorem det_zc {F : Type} [Field F] [NumberField F] (z : (Af F)ˣ) :
     Matrix.GeneralLinearGroup.det (zc F z) = z * z := by
   apply Units.ext

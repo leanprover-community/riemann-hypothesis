@@ -90,23 +90,6 @@ theorem gramR_posDef (h : HermFam K V) {r : ℕ} {v : Fin r → V} (hli : Linear
     rw [finsupp_sum_sum_star_mul_eq_qR]
     simpa [gramR] using h1
 
-private lemma form_sum_smul_right (h : HermFam K V) (σ : K →+* ℂ) (x : V) {ι : Type*}
-    (s : Finset ι) (a : ι → K) (u : ι → V) :
-    h.form σ x (∑ i ∈ s, a i • u i) = ∑ i ∈ s, σ (a i) * h.form σ x (u i) := by
-  classical
-  refine Finset.induction_on s ?_ ?_
-  · simpa using h.smul_right σ 0 x 0
-  · intro j t hj ih
-    rw [Finset.sum_insert hj, Finset.sum_insert hj, h.add_right, h.smul_right, ih]
-
-private lemma form_sum_smul_left (h : HermFam K V) (σ : K →+* ℂ) (y : V) {ι : Type*}
-    (s : Finset ι) (a : ι → K) (u : ι → V) :
-    h.form σ (∑ i ∈ s, a i • u i) y = ∑ i ∈ s, starRingEnd ℂ (σ (a i)) * h.form σ (u i) y := by
-
-  rw [← h.conj_symm σ y, form_sum_smul_right h σ y s a u, map_sum]
-  refine Finset.sum_congr rfl fun i _ => ?_
-  rw [map_mul, h.conj_symm]
-
 def psi (K : Type*) [Field K] [NumberField K] (r : ℕ) (y : Fin r → mixedEmbedding.mixedSpace K) :
     ({w : InfinitePlace K // w.IsReal} → Fin r → ℝ) × ({w : InfinitePlace K // w.IsComplex} → Fin r → ℂ) :=
   (fun w i => (y i).1 w, fun w i => (y i).2 w)

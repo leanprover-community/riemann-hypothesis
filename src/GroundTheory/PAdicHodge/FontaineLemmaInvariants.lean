@@ -106,10 +106,6 @@ theorem Localization.Away.exists_algebraMap_eq_pow_mul (t : R) (x : Localization
   refine ⟨m, a, ?_⟩
   rw [← hs, ← hm, map_pow, mul_comm]
 
-theorem map_pow_mul_pow (g : S →+* R) {c : S} {c' : R} (hc : g c = c') (n m : ℕ) (t : S) :
-    g ((c ^ n * t) ^ m) = (c' ^ n * g t) ^ m := by
-  rw [map_pow, map_mul, map_pow, hc]
-
 theorem map_eq_zero_of_pow_mul_eq_zero [IsDomain T] (g : S →+* T) {c z : S} {d : ℕ}
     (h : c ^ d * z = 0) (hc : g c ≠ 0) : g z = 0 := by
   have h1 := congrArg g h
@@ -202,7 +198,6 @@ theorem exists_algebraMap_eq_periodTCris_pow_mul (x : BCris hε) :
 variable [CharZero F]
   (hζ : PreTilt.untilt ((_root_.frobeniusEquiv (PreTilt (normInteger F) p) p).symm ε) ≠ 1)
 
-
 include hζ in
 
 theorem exists_algebraMap_eq_periodTCris_pow_mul_phiB {x : BCris hε} {m : ℕ} {y : BCrisPlus F p}
@@ -265,7 +260,6 @@ theorem thetaField_iota_periodT :
     IsPerfectoidField.thetaBDeRhamPlusField (K := ℂ_[p]) p (iota ℂ_[p] p (periodT hε)) = 0 :=
   (thetaField_iota _).trans (by rw [theta_periodT]; rfl)
 
-
 include hζ in
 
 theorem exists_bCrisPlus_fixed_eq_of_mem_maxUnramified {x : BCris hε} {k : PadicAlgCl p}
@@ -277,7 +271,6 @@ theorem exists_bCrisPlus_fixed_eq_of_mem_maxUnramified {x : BCris hε} {k : Padi
     ((iotaB_algebraMap hε hζ y').trans ((congrArg (algebraMap 𝔹 𝔹dR) hy'.2).trans hx.symm))⟩
 
 variable [FiniteDimensional ℚ_[p] K]
-
 
 include hζ in
 
@@ -295,7 +288,6 @@ theorem thetaField_iotaPlus_iterate_eq_zero {x : BCris hε}
     ((map_natCast (iotaB hε hζ) p).trans (map_natCast (algebraMap 𝔹 𝔹dR) p).symm)
     (iotaB_periodTCris hε hζ)
     (hk.trans (algebraMap_intermediateField_bDeRham K k)) (thetaField_iota_periodT hε)
-
 
 include hζ in
 
@@ -318,14 +310,6 @@ theorem exists_iterate_phiB_eq (m : ℕ) (x : BCris hε)
         (thetaField_iotaPlus_iterate_eq_zero hε hζ (K := K) (x := z) hz (m := d) (y := y) hy)
   exact exists_eq_iterate_of_step g φ t fixed hfixed hstep m x hx hxy
 
-theorem iterate_phiPlus_algebraMap_padic (n : ℕ) (q : ℚ_[p]) :
-    (phiPlus ℂ_[p] p)^[n] (algebraMap ℚ_[p] (BCrisPlus ℂ_[p] p) q) =
-      algebraMap ℚ_[p] (BCrisPlus ℂ_[p] p) q := by
-  induction n with
-  | zero => rfl
-  | succ n ih => rw [Function.iterate_succ_apply', ih, phiPlus_algebraMap_padic]
-
-
 include hζ in
 theorem algebraMap_bCrisPlus_bCris_injective :
     Function.Injective (algebraMap (BCrisPlus ℂ_[p] p) (BCris hε)) := fun a b h =>
@@ -333,11 +317,9 @@ theorem algebraMap_bCrisPlus_bCris_injective :
     ((iotaB_algebraMap hε hζ a).symm.trans ((congrArg (iotaB hε hζ) h).trans
       (iotaB_algebraMap hε hζ b))))
 
-
 include hζ in
 theorem iota_periodT_ne_zero : iota ℂ_[p] p (periodT hε) ≠ 0 := by
   exact fun h => fontaineT_ne_zero hε hζ ((iota_periodT hε).symm.trans h)
-
 
 include hζ in
 
@@ -360,7 +342,6 @@ theorem aeval_minpoly_eq_zero_of_iterate {y x₁ : BCrisPlus ℂ_[p] p} {m : ℕ
     (map_natCast (phiPlus ℂ_[p] p) p) hφt (iotaPlus_algebraMap (periodT hε)) hιy hιx₁ hφy
     (fun h => hp₀ ((map_natCast (iotaPlus ℂ_[p] p) p).symm.trans h))
     (iota_periodT_ne_zero hε hζ) (minpoly.aeval ℚ_[p] β)
-
 
 include hζ in
 
@@ -396,7 +377,6 @@ theorem exists_bCrisPlus_fixed_eq_of_iterate {x : BCris hε}
       (mem_unramifiedClosure_of_iotaPlus_eq hιx₁)⟩
   exact exists_bCrisPlus_fixed_eq_of_mem_maxUnramified hε hζ (K := K) (x := x) hk0 hk'
 
-
 include hζ in
 
 theorem exists_bCrisPlus_fixed_eq (x : BCris hε)
@@ -407,8 +387,6 @@ theorem exists_bCrisPlus_fixed_eq (x : BCris hε)
   refine (exists_iterate_phiB_eq hε hζ (K := K) m x hx hxy).elim fun x₁ hx₁ => ?_
   exact hxy.elim fun y hy =>
     exists_bCrisPlus_fixed_eq_of_iterate hε hζ (K := K) (x := x) hx (m := m) (y := y) (x₁ := x₁) hy hx₁
-
-
 
 include hζ in
 

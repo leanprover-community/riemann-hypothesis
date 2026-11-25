@@ -251,7 +251,6 @@ theorem AETopologicalRing.exists_anti (c : E ≃ₐ[F] E) (h2 : Module.finrank F
   rw [map_sub, hx2]
   ring
 
-
 omit [NumberField F] in
 theorem AETopologicalRing.linearIndependent_one_anti (c : E ≃ₐ[F] E) {δ : E} (hδ : c δ = -δ)
     (h0 : δ ≠ 0) : LinearIndependent F ![(1 : E), δ] := by
@@ -281,7 +280,6 @@ theorem AETopologicalRing.sigALinear_apply (c : E ≃ₐ[F] E) (a : AE F E) :
   | add x y hx hy => rw [map_add (f := _), map_add (f := _), hx, hy]
 
 end
-
 
 open scoped RestrictedProduct in
 theorem AETopologicalRing.t2Space_finiteAdeleRing (F : Type) [Field F] [NumberField F] :
@@ -630,7 +628,6 @@ theorem param_mem
   have hh := hf_symm hσ hJ (perpProj σ J e f p.1) (perpProj σ J e f p.1)
   rw [map_sub, map_sub, map_mul, hσ, hσκ, hh]
   linear_combination (-(hf σ J (perpProj σ J e f p.1) (perpProj σ J e f p.1))) * hκ
-
 
 omit hσ hJ in
 theorem eq_param
@@ -1031,20 +1028,17 @@ section Lemmas
 
 variable {F : Type} [Field F] [NumberField F] {E : Type} [Field E] [Algebra F E]
 
-
 open Classical in
 theorem evalAt_singleF_self (v : HeightOneSpectrum (𝓞 F)) (x : v.adicCompletion F) :
     evalAt F v (singleF F v x) = x := by
   show Pi.single v x v = x
   simp
 
-
 open Classical in
 theorem evalAt_singleF_ne {v w : HeightOneSpectrum (𝓞 F)} (h : w ≠ v) (x : v.adicCompletion F) :
     evalAt F w (singleF F v x) = 0 := by
   show Pi.single v x w = 0
   simp [h]
-
 
 open Classical in
 theorem singleF_mul (v : HeightOneSpectrum (𝓞 F)) (x y : v.adicCompletion F) :
@@ -1054,7 +1048,6 @@ theorem singleF_mul (v : HeightOneSpectrum (𝓞 F)) (x y : v.adicCompletion F) 
   by_cases h : w = v
   · subst h; simp
   · simp [h]
-
 
 open Classical in
 theorem singleF_mul_ne {v w : HeightOneSpectrum (𝓞 F)} (h : w ≠ v) (x : v.adicCompletion F)
@@ -1232,8 +1225,6 @@ theorem intersectionNumber_baseChange : PlaceMaps.Statement := by
           (J.map (inclA F E)).map (compAt E v) := by rw [hJ]
       rw [form_map_compAt, inclA_map_compAt] at this
       exact this
-
-theorem proof : PlaceMaps.Statement := intersectionNumber_baseChange
 
 end PlaceMaps
 

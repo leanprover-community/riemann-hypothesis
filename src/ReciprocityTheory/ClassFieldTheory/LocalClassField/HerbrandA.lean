@@ -48,9 +48,6 @@ def kerMap (f : A →+ B) (fD : ∀ a, f (DA a) = DB (f a)) : DA.ker →+ DB.ker
     change DB (f a) = 0
     rw [← fD, ha, map_zero])
 
-@[simp] theorem kerMap_coe (f : A →+ B) (fD : ∀ a, f (DA a) = DB (f a)) (a : DA.ker) :
-    ((kerMap f fD a : DB.ker) : B) = f a := rfl
-
 def Tmap (f : A →+ B) (fD : ∀ a, f (DA a) = DB (f a)) (fN : ∀ a, f (NA a) = NB (f a)) :
     T DA NA →+ T DB NB :=
   QuotientAddGroup.map _ _ (kerMap f fD) (by
@@ -59,12 +56,6 @@ def Tmap (f : A →+ B) (fD : ∀ a, f (DA a) = DB (f a)) (fN : ∀ a, f (NA a) 
     obtain ⟨x, hx⟩ := ha
     rw [AddSubgroup.mem_comap, AddSubgroup.mem_addSubgroupOf]
     exact ⟨f x, by rw [← fN, hx]; rfl⟩)
-
-@[simp] theorem Tmap_mk (f : A →+ B) (fD : ∀ a, f (DA a) = DB (f a)) (fN : ∀ a, f (NA a) = NB (f a))
-    (a : DA.ker) : Tmap f fD fN (QuotientAddGroup.mk a) = QuotientAddGroup.mk (kerMap f fD a) := rfl
-
-theorem SES.swap (h : SES DA NA DB NB DC NC f g) : SES NA DA NB DB NC DC f g :=
-  ⟨h.inj, h.exact, h.surj, h.fN, h.fD, h.gN, h.gD, h.ND, h.DN⟩
 
 def Rel (DB : B →+ B) (f : A →+ B) (g : B →+ C) (c : C) (a : A) : Prop := ∃ b, g b = c ∧ f a = DB b
 

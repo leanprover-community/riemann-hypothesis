@@ -16,18 +16,12 @@ variable {R K : Type*} [CommRing R] [IsDedekindDomain R] [Field K] [Algebra R K]
 
 def IsInt (y : FiniteAdeleRing R K) : Prop := ∀ v : HeightOneSpectrum R, y v ∈ v.adicCompletionIntegers K
 
-theorem isInt_mul {x y : FiniteAdeleRing R K} (hx : IsInt x) (hy : IsInt y) : IsInt (x * y) :=
-  fun v => mul_mem (hx v) (hy v)
-
 theorem val_R (v : HeightOneSpectrum R) (r : R) :
     Valued.v (algebraMap K (v.adicCompletion K) (algebraMap R K r)) = v.intValuation r :=
   ReciprocityTheory.ChartRestriction.G.Lib.AdeleIntA.val_R v r
 
 theorem isInt_R (r : R) : IsInt (algebraMap K (FiniteAdeleRing R K) (algebraMap R K r)) :=
   fun v => ReciprocityTheory.ChartRestriction.G.Lib.AdeleIntA.int_R v r
-
-theorem val_le_one_of_mem {v : HeightOneSpectrum R} {x : v.adicCompletion K} (h : x ∈ v.adicCompletionIntegers K) :
-    Valued.v x ≤ 1 := (HeightOneSpectrum.mem_adicCompletionIntegers R K v).1 h
 
 theorem exists_approx (y : FiniteAdeleRing R K) (hy : ∀ v : HeightOneSpectrum R, y v ∈ v.adicCompletionIntegers K)
     (m : R) (hm : m ≠ 0) : ∃ a : R, ∀ v : HeightOneSpectrum R,

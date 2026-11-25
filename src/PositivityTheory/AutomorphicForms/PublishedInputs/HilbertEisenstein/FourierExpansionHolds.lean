@@ -1124,11 +1124,7 @@ def xAd (x : UpperTheory.V.TR.Rinf F) : Ad F := ((UpperTheory.V.TR.infEq F x, 0)
 theorem pInf_sInf (z : UpperTheory.V.TR.Rinf F) : UpperTheory.V.TR.pInf F (UpperTheory.V.TR.sInf F z) = z :=
   (UpperTheory.V.TR.infEq F).symm_apply_apply z
 
-theorem pFin_sInf (z : UpperTheory.V.TR.Rinf F) : pFin F (UpperTheory.V.TR.sInf F z) = 0 := rfl
-
 theorem pInf_sFin (z : Af F) : UpperTheory.V.TR.pInf F (sFin F z) = 0 := map_zero (UpperTheory.V.TR.infEq F).symm
-
-theorem pFin_sFin (z : Af F) : pFin F (sFin F z) = z := rfl
 
 theorem yAd_eq (y : (UpperTheory.V.TR.Rinf F)ˣ) (yf : (Af F)ˣ) :
     yAd y yf = (1 - UpperTheory.V.TR.sInf F 1 + UpperTheory.V.TR.sInf F (y : UpperTheory.V.TR.Rinf F)) *
@@ -1394,7 +1390,6 @@ theorem summable_kern {ω : HChar F} {c : HeightOneSpectrum (𝓞 F) → ℕ} (h
         gcongr
         exact kernF_le c _ _
     _ = _ := by ring
-
 
 open Classical in
 def rowEquiv : Fˣ ⊕ (Fˣ × F) ≃ {ξ : Fin 2 → F // ξ ≠ 0} where
