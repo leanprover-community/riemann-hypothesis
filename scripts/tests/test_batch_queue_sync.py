@@ -1640,10 +1640,10 @@ class Reconciling(unittest.TestCase):
         self.assertEqual(gh.pulls[31]["labels"], QF)
         self.assertIn("#31 is queued: now `frozen`", log)
 
-    def test_only_what_is_queued_and_not_yet_frozen_is_looked_at(self):
+    def test_every_queued_pull_request_is_looked_at(self):
         # With `ASSEMBLE` off nothing else reads what was queued. This costs a request for each pull
-        # request labelled `batch queue` without `frozen`: once for one queued before `frozen`
-        # existed, and every run for one labelled by hand, which no `batch` stands for.
+        # request labelled `batch queue`, every run: one pushed to is labelled `changed after
+        # frozen` by the sync too, not only by the `pushed` job.
         gh = Fake()
         queue(gh, 33)
         gh.add_pull(31, "head31")
@@ -1652,11 +1652,11 @@ class Reconciling(unittest.TestCase):
         gh.add_pull(34, "head34", labels=[QUEUED])  # labelled by hand: no `batch` stands for it
         sync(gh)
         self.assertEqual([gh.pulls[n]["labels"] for n in (31, 33, 34)], [QF, QF, {QUEUED}])
-        self.assertEqual([path for path in gh.reads if path.startswith("issues/") and "/comments" in path],
-                         ["issues/31/comments?per_page=100&page=1", "issues/34/comments?per_page=100&page=1"])
+        every = [f"issues/{n}/comments?per_page=100&page=1" for n in (31, 33, 34)]
+        self.assertEqual([path for path in gh.reads if path.startswith("issues/") and "/comments" in path], every)
         gh.reads = []
         sync(gh)
-        self.assertEqual([path for path in gh.reads if "/comments" in path], ["issues/34/comments?per_page=100&page=1"])
+        self.assertEqual([path for path in gh.reads if "/comments" in path], every)
 
     def test_labels_of_a_batch_nothing_holds_come_off(self):
         gh = Fake()
@@ -1952,10 +1952,7 @@ class ChangedAfterFrozen(unittest.TestCase):
         queue(gh, 11)
         sync(gh)
         gh.push(11, "head11-later")
-        # A sync does not read the comments of a queued pull request that is `frozen` already, to
-        # save requests: the push runs `pushed`, which does.
-        sync(gh)
-        self.assertEqual(gh.pulls[11]["labels"], QF)
+        # The push runs `pushed`, which labels it.
         log = batch.pushed(gh, 11)
         self.assertEqual(gh.pulls[11]["labels"], QF | {CHANGED})
         self.assertIn(f"#11 was pushed to after `{short('head11')}` was taken: now `changed after frozen`", log)
@@ -1966,6 +1963,29 @@ class ChangedAfterFrozen(unittest.TestCase):
         self.assertEqual(gh.pulls[11]["labels"], QF)
         self.assertIn(f"#11 is at `{short('head11-later')}`, the commit that was taken: `changed after frozen` removed",
                       log)
+
+    def test_a_queued_pull_request_is_labelled_by_a_sync_when_the_pushed_job_failed(self):
+        gh = Fake()
+        queue(gh, 11)
+        sync(gh)
+        gh.push(11, "head11-later")
+        log = sync(gh)
+        self.assertEqual(gh.pulls[11]["labels"], QF | {CHANGED})
+        self.assertIn(f"#11 was pushed to after `{short('head11')}` was taken: now `changed after frozen`", log)
+
+    def test_a_member_pushed_to_with_a_commit_its_batch_has_already_is_not_changed_after_frozen(self):
+        gh = Fake()
+        gh.add_pull(14, "head14")
+        by_hand(gh, 14)
+        sync(gh)
+        merged = sha("head14-merged")
+        gh.inside[gh.pulls[1018]["sha"]].add(merged)
+        gh.push(14, "head14-merged")
+        batch.pushed(gh, 14)
+        self.assertEqual(gh.pulls[14]["labels"], IN)
+        sync(gh)
+        self.assertEqual(gh.pulls[14]["labels"], IN)
+        self.assertEqual(note(gh.said(1018)[0])["members"]["14"], merged)
 
     def test_a_member_pushed_to_until_its_batch_lands(self):
         gh = Fake()
