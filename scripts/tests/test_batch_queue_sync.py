@@ -1163,6 +1163,9 @@ class Members(unittest.TestCase):
     def left(self, gh, number):
         return [body for body in gh.said(number) if body.startswith("<!-- batch-queue-left-out")]
 
+    def frozen(self, gh, number):
+        return [item for item in gh.comments.get(number, []) if item["body"].startswith("<!-- batch-queue-frozen")]
+
     def test_each_member_is_told_once_that_it_is_frozen(self):
         gh = self.built()
         log = sync(gh)
@@ -1396,13 +1399,32 @@ class Members(unittest.TestCase):
     def test_a_new_head_merged_into_the_branch_is_what_the_batch_holds(self):
         gh = self.built()
         sync(gh)
+        [first] = self.frozen(gh, 12)
         gh.push(12, "head12-later")
         by_hand(gh, 11, 12, 14, name="kim-with-12-later")  # merged in again before the next run
-        sync(gh)
+        gh.reads, gh.writes = [], []
+        log = sync(gh)
         self.assertEqual(gh.pulls[12]["labels"], IN)
-        notes = gh.said(12)
-        self.assertEqual([note.split(" -->")[0] for note in notes],
-                         [f"<!-- batch-queue-frozen 1018 {sha('head12')}", f"<!-- batch-queue-frozen 1018 {sha('head12-later')}"])
+        # The comment that told it it is frozen names the new head now, marker and all: it is
+        # edited, after one read of its comments, and nothing is posted.
+        [said] = self.frozen(gh, 12)
+        self.assertEqual(len(gh.said(12)), 1)
+        self.assertEqual(said["id"], first["id"])
+        self.assertTrue(said["body"].startswith(f"<!-- batch-queue-frozen 1018 {sha('head12-later')} -->\n"))
+        self.assertIn(f"Commit `{short('head12-later')}` of this pull request is in batch #1018", said["body"])
+        self.assertNotIn(short("head12"), said["body"].replace(short("head12-later"), ""))
+        self.assertEqual([(method, path) for method, path, _ in gh.writes
+                          if path.startswith("issues/12/") or path == f"issues/comments/{first['id']}"],
+                         [("PATCH", f"issues/comments/{first['id']}")])
+        self.assertEqual(gh.reads.count("issues/12/comments?per_page=100&page=1"), 1)
+        self.assertIn(f"#12 is in the batch #1018 at its new head `{short('head12-later')}`: its comments say so now",
+                      log)
+        record = note(gh.said(1018)[0])
+        self.assertEqual((record["members"]["12"], record["told"]["12"]), (sha("head12-later"),) * 2)
+        # Nothing more on the next run.
+        gh.reads, gh.writes = [], []
+        sync(gh)
+        self.assertEqual((gh.writes, [path for path in gh.reads if path.startswith("issues/12/")]), ([], []))
 
     def test_members_labelled_before_the_labels_were_split_are_relabelled(self):
         gh = self.built()
@@ -1764,10 +1786,12 @@ class Pushed(unittest.TestCase):
         # The sync records the new commit, says nothing, and asks no more once it has.
         log = sync(gh)
         self.assertIn(f"#12 was pushed to with `{merged[:10]}`, which the batch #1018 has already: recorded at that "
-                      "commit, and nothing said", log)
+                      "commit", log)
         record = note(gh.said(1018)[0])
         self.assertEqual((record["members"]["12"], record["told"]["12"]), (merged, merged))
-        self.assertEqual([body for body in gh.said(12) if not body.startswith("<!-- batch-queue-frozen 1018")], [])
+        # Its one comment names the new commit now.
+        [said] = gh.said(12)
+        self.assertTrue(said.startswith(f"<!-- batch-queue-frozen 1018 {merged} -->"))
         gh.reads = []
         sync(gh)
         self.assertFalse([path for path in gh.reads if path.startswith("compare/")])
@@ -1914,6 +1938,147 @@ class BackAtItsHead(unittest.TestCase):
         by_hand(gh, 11, 12, name="kim-with-12-latest")
         sync(gh)
         self.assertEqual(gh.pulls[12]["labels"], IN)
+
+
+class NewHeadTaken(unittest.TestCase):
+    """When a batch assembled by hand takes a member's new head, the comments that named the commit
+    it took before are edited to name the new one: nothing new is posted."""
+
+    def built(self):
+        gh = Fake()
+        queue(gh, 11, 12)
+        by_hand(gh, 11, 12)
+        sync(gh)
+        return gh
+
+    def taken(self, gh):
+        """The new head of #12 is merged into the batch."""
+        by_hand(gh, 11, 12, name="kim-with-12-later")
+
+    def held_already(self, gh):
+        """#12 is pushed to with a commit that the batch's branch has already."""
+        gh.inside[gh.pulls[1018]["sha"]].add(sha("head12-merged"))
+        gh.push(12, "head12-merged")
+
+    def ours(self, gh, number):
+        """This script's comments on a pull request, as they stand."""
+        return [item for item in gh.comments.get(number, [])
+                if not item["body"].startswith(("<!-- batch-queue-approved", "<!-- batch-queue-withdrawn"))]
+
+    def pushed_to(self, gh, by_sync):
+        """#12 is pushed to with a commit the batch does not have, and told so. Returns the ids of
+        its two comments."""
+        gh.push(12, "head12-later")
+        if by_sync:
+            sync(gh)
+        else:
+            batch.pushed(gh, 12)
+        self.assertEqual(gh.pulls[12]["labels"], IN | {WAITING})
+        return [item["id"] for item in self.ours(gh, 12)]
+
+    def check(self, gh, ids, new="head12-later", handed=True):
+        frozen, notice = self.ours(gh, 12)
+        self.assertEqual([frozen["id"], notice["id"]], ids)
+        self.assertTrue(frozen["body"].startswith(f"<!-- batch-queue-frozen 1018 {sha(new)} -->\n"))
+        self.assertIn(f"Commit `{short(new)}` of this pull request is in batch #1018", frozen["body"])
+        self.assertTrue(notice["body"].startswith(f"<!-- batch-queue-pushed-then-taken 1018 {sha('head12')} -->\n"))
+        self.assertIn(f"pushed to after batch #1018 took its commit `{short('head12')}`. The batch has since taken "
+                      f"its new head `{short(new)}`, and builds and lands that instead, so nothing more is needed "
+                      "here.", notice["body"])
+        self.assertEqual(batch.HANDED_BACK in notice["body"], handed)
+        self.assertEqual(gh.pulls[12]["labels"], IN if handed else IN | {WAITING})
+        record = note(gh.said(1018)[0])
+        self.assertEqual((record["members"]["12"], record["told"]["12"]), (sha(new), sha(new)))
+        self.assertNotIn("12", record.get("pushed", {}))
+        # Nothing more on the next run.
+        gh.reads, gh.writes = [], []
+        sync(gh)
+        self.assertEqual(([(method, path) for method, path, _ in gh.writes if "/12/" in path],
+                          [path for path in gh.reads if path.startswith("issues/12/")]), ([], []))
+
+    def test_when_a_sync_told_it_it_was_pushed_to(self):
+        gh = self.built()
+        ids = self.pushed_to(gh, by_sync=True)
+        self.taken(gh)
+        gh.reads, gh.writes = [], []
+        log = sync(gh)
+        self.assertEqual(gh.reads.count("issues/12/comments?per_page=100&page=1"), 1)
+        self.assertFalse([path for method, path, _ in gh.writes if method == "POST" and path == "issues/12/comments"])
+        self.check(gh, ids)
+        self.assertIn(f"#12 is in the batch #1018 at its new head `{short('head12-later')}`: its comments say so now",
+                      log)
+        self.assertIn("#12 is in the batch #1018 at its head again: `awaiting-author` removed", log)
+
+    def test_when_pushed_told_it_before_a_sync_noted_it(self):
+        gh = self.built()
+        ids = self.pushed_to(gh, by_sync=False)
+        self.taken(gh)
+        gh.reads = []
+        sync(gh)
+        # The comments `retell` read tell `unwait` that the label was the workflow's.
+        self.assertEqual(gh.reads.count("issues/12/comments?per_page=100&page=1"), 1)
+        self.check(gh, ids)
+
+    def test_a_label_a_person_put_on_stays(self):
+        gh = self.built()
+        gh.label(12, add=WAITING, login="maintainer")  # `aa`
+        ids = self.pushed_to(gh, by_sync=True)
+        self.taken(gh)
+        sync(gh)
+        self.check(gh, ids, handed=False)
+
+    def test_a_push_of_a_commit_the_batch_has_already_after_pushed_told_it(self):
+        # `pushed` tells the first push, and says nothing about the second, which the batch has
+        # already: the sync records it, edits both comments and takes the label off.
+        gh = self.built()
+        ids = self.pushed_to(gh, by_sync=False)
+        self.held_already(gh)
+        gh.writes = []
+        self.assertEqual(batch.pushed(gh, 12), [f"#12 was pushed to with `{short('head12-merged')}`, which the batch "
+                                                "#1018 has already: nothing to say"])
+        self.assertEqual(gh.writes, [])
+        self.assertEqual(gh.pulls[12]["labels"], IN | {WAITING})
+        gh.reads = []
+        log = sync(gh)
+        self.assertEqual(gh.reads.count("issues/12/comments?per_page=100&page=1"), 1)
+        self.check(gh, ids, new="head12-merged")
+        self.assertIn("#12 is in the batch #1018 at its head again: `awaiting-author` removed", log)
+
+    def test_a_comment_that_cannot_be_edited_is_tried_again_by_the_next_run(self):
+        for has_head in (False, True):
+            with self.subTest(has_head=has_head):
+                gh = self.built()
+                [frozen] = self.ours(gh, 12)
+                if has_head:
+                    self.held_already(gh)
+                else:
+                    gh.push(12, "head12-later")
+                    self.taken(gh)
+                new = "head12-merged" if has_head else "head12-later"
+                gh.fail("PATCH", rf"issues/comments/{frozen['id']}", 403)
+                log = sync(gh)
+                self.assertEqual([line for line in log if line.startswith("GitHub would not")],
+                                 [f"GitHub would not bring up to date what #12 was told about the batch #1018: it "
+                                  f"stays at `{short('head12')}` until the next run"])
+                record = note(gh.said(1018)[0])
+                self.assertEqual((record["members"]["12"], record["told"]["12"]), (sha("head12"),) * 2)
+                self.assertTrue(self.ours(gh, 12)[0]["body"].startswith(f"<!-- batch-queue-frozen 1018 {sha('head12')}"))
+                sync(gh)
+                [said] = self.ours(gh, 12)
+                self.assertEqual(said["id"], frozen["id"])
+                self.assertTrue(said["body"].startswith(f"<!-- batch-queue-frozen 1018 {sha(new)} -->"))
+                self.assertEqual(note(gh.said(1018)[0])["members"]["12"], sha(new))
+
+    def test_with_its_comment_gone_it_is_told_afresh(self):
+        gh = self.built()
+        gh.comments[12] = [item for item in gh.comments[12] if not item["body"].startswith("<!-- batch-queue-frozen")]
+        gh.push(12, "head12-later")
+        self.taken(gh)
+        log = sync(gh)
+        [said] = self.ours(gh, 12)
+        self.assertTrue(said["body"].startswith(f"<!-- batch-queue-frozen 1018 {sha('head12-later')} -->"))
+        self.assertIn(f"#12 is in the batch #1018 at its new head `{short('head12-later')}`: told that it is frozen "
+                      "at that commit", log)
 
 
 class LeftOutDigests(unittest.TestCase):
