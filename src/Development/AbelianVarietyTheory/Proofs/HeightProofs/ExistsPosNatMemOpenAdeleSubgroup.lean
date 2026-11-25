@@ -88,12 +88,4 @@ theorem tendsto_factorial_finiteAdele (F : Type) [Field F] [NumberField F] :
     (𝓕 := cofinite)).continuous.tendsto _).comp h1
   exact h2
 
-theorem exists_nat_mem_of_isOpen : ∀ (F : Type) [Field F] [NumberField F] (U : AddSubgroup (AF F)),
-    IsOpen (U : Set (AF F)) → ∃ N : ℕ, 0 < N ∧ pairA F 0 (N : Af F) ∈ U := by
-  intro F _ _ U hU
-  have h : Tendsto (fun n : ℕ => pairA F 0 ((n.factorial : ℕ) : Af F)) atTop (𝓝 (0 : AF F)) :=
-    (tendsto_const_nhds (x := (0 : Ainf F))).prodMk_nhds (tendsto_factorial_finiteAdele F)
-  obtain ⟨n, hn⟩ := (h.eventually (hU.mem_nhds U.zero_mem)).exists
-  exact ⟨n.factorial, n.factorial_pos, hn⟩
-
 end GlobalTheory.AdelicFactorial

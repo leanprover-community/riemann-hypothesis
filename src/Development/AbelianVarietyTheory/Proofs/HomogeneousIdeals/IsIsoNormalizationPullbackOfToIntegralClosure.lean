@@ -118,7 +118,6 @@ theorem eq_normalizationLift {m : f.normalization ⟶ T} (h₁ : f.toNormalizati
     (h₂ : m ≫ g = f.fromNormalization ≫ b) : m = normalizationLift f a g b H :=
   normalization_hom_ext f g (by simp [h₁]) (by rw [normalizationLift_comp, h₂])
 
-
 instance isIntegralHom_normalizationLift [IsIntegralHom b] :
     IsIntegralHom (normalizationLift f a g b H) :=
   have : IsIntegralHom (normalizationLift f a g b H ≫ g) := by
@@ -232,7 +231,6 @@ instance isIso_toNormalization_fromNormalization {X Y : Scheme.{u}} (f : X ⟶ Y
     normalization_hom_ext f f.fromNormalization (by simp) (by simp)
   rw [this]
   infer_instance
-
 
 open TensorProduct in
 theorem isIso_normalizationPullback_of_toIntegralClosure {X S Y : Scheme.{u}} (f : X ⟶ S)
@@ -461,19 +459,16 @@ section Mono
 
 variable {X Y V : Scheme.{u}} (f' : X ⟶ V) (b : V ⟶ Y) [Mono b] (f : X ⟶ Y) (H : f = f' ≫ b)
 
-
 include H in
 theorem isPullback_id_of_mono : IsPullback (𝟙 X) f' f b :=
   IsPullback.of_horiz_isIso_mono ⟨by simp [H]⟩
 
 variable [QuasiCompact f] [QuasiSeparated f] [PreservesNormalization b]
 
-
 include H in
 theorem isPullback_toNormalization_of_mono [IsIntegralHom f'] :
     IsPullback f.toNormalization f' f.fromNormalization b := by
   simpa using isPullback_toNormalization_of_isIntegralHom (isPullback_id_of_mono f' b f H)
-
 
 include H in
 theorem isOpenImmersion_lift_toNormalization_of_mono [QuasiCompact f'] [LocallyQuasiFinite f']
@@ -487,7 +482,6 @@ theorem isOpenImmersion_lift_toNormalization_of_mono [QuasiCompact f'] [LocallyQ
   isOpenImmersion_of_isPullback_normalization (isPullback_id_of_mono f' b f H)
     (.of_hasPullback _ _) (by simp [pullback.lift_fst]) (pullback.lift_snd ..)
 
-
 end Mono
 
 section Localization
@@ -496,14 +490,11 @@ variable {R R' : Type u} [CommRing R] [CommRing R'] [Algebra R R'] (M : Submonoi
   [IsLocalization M R'] {Y Y' : Scheme.{u}} {b : Y' ⟶ Y} {t : Y' ⟶ Spec (.of R')}
   {s : Y ⟶ Spec (.of R)}
 
-
 include M in
 theorem isPreimmersion_of_isPullback_localization
     (hb : IsPullback b t s (Spec.map (CommRingCat.ofHom (algebraMap R R')))) :
     IsPreimmersion b :=
   MorphismProperty.of_isPullback (P := @IsPreimmersion) hb.flip (.of_isLocalization M)
-
-
 
 include M in
 theorem isPullback_toNormalization_of_isLocalization
@@ -514,7 +505,6 @@ theorem isPullback_toNormalization_of_isLocalization
   have := PreservesNormalization.of_isPullback_localization M hb
   have := isPreimmersion_of_isPullback_localization M hb
   isPullback_toNormalization_of_mono f' (i ≫ b) f H
-
 
 include M in
 theorem isOpenImmersion_lift_toNormalization_of_isLocalization
@@ -552,7 +542,6 @@ theorem isIso_toNormalization_morphismRestrict {X Y : Scheme.{u}} (f : X ⟶ Y) 
     (by simp) rfl
   rw [← hi]
   infer_instance
-
 
 theorem flat_of_isSchemeTheoreticallyDominant {R : Type u} [CommRing R] [IsDomain R]
     (hR : ∀ (A : Type u) [CommRing A] [Algebra R A], Submodule.torsion R A = ⊥ → Module.Flat R A)
@@ -745,11 +734,6 @@ noncomputable def normalizationActionOver (ρ : G →* Aut X) (H : ∀ g, (ρ g)
 
 variable (ρ : G →* Aut X) (H : ∀ g, (ρ g).asIso.hom ≫ f = f)
 
-@[reassoc (attr := simp)]
-theorem toNormalization_normalizationActionOver (g : G) :
-    f.toNormalization ≫ (normalizationActionOver f ρ H g).asIso.hom = (ρ g).asIso.hom ≫ f.toNormalization :=
-  toNormalization_normalizationAction ..
-
 end Action
 
 section Invariants
@@ -782,15 +766,6 @@ theorem IsInvariantSection.res {ρ : G →* Aut X} {W : X.Opens} {s : Γ(X, W)}
     (hs : IsInvariantSection ρ W s) {U : X.Opens} (hU : ∀ g, U ≤ (ρ g).asIso.hom ⁻¹ᵁ U) (e : U ≤ W) :
     IsInvariantSection ρ U (X.presheaf.map (homOfLE e).op s) :=
   hs.appLE (𝟙 X) (by simp) hU e
-
-theorem IsInvariantSection.mem_range_app {ρ : G →* Aut X} (π : X ⟶ X') [QuasiCompact π]
-    [IsSchemeTheoreticallyDominant π] (hπ : ∀ g, (ρ g).asIso.hom ≫ π = π)
-    (hinv : ∀ W : X'.Opens, IsAffineOpen W → ∀ s : Γ(X, π ⁻¹ᵁ W),
-      IsInvariantSection ρ _ s → s ∈ Set.range (π.app W))
-    {W : X'.Opens} {s : Γ(X, π ⁻¹ᵁ W)} (hs : IsInvariantSection ρ _ s) :
-    s ∈ Set.range (π.app W) :=
-  mem_range_app_of_forall_isAffineOpen π W s fun V hV hVW ↦
-    hinv V hV _ (hs.res (preimage_le_of_invariant ρ π hπ V) (π.preimage_mono hVW))
 
 theorem IsInvariantSection.mem_range_app_basicOpen [Finite G] {ρ : G →* Aut X} (π : X ⟶ X')
     [QuasiCompact π] [QuasiSeparated π] (hπ : ∀ g, (ρ g).asIso.hom ≫ π = π) {W : X'.Opens}
@@ -920,8 +895,6 @@ theorem apply_eq_iff_exists_aut_of_invariant [Finite G] (ρ : G →* Aut X) (π 
 variable (f : X ⟶ Y) (f' : X' ⟶ Y) [QuasiCompact f] [QuasiSeparated f] [QuasiCompact f']
   [QuasiSeparated f'] (π : X ⟶ X') (hf : π ≫ f' = f ≫ 𝟙 Y) (ρ : G →* Aut X)
   (hπ : ∀ g, (ρ g).asIso.hom ≫ π = π) (hρ : ∀ g, (ρ g).asIso.hom ≫ f = f)
-
-
 
 end Invariants
 

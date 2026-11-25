@@ -55,7 +55,6 @@ namespace TopExt
 variable {R F H L : Type*} [CommRing R] [AddCommGroup F] [Module R F] [AddCommGroup H] [Module R H]
   [AddCommGroup L] [Module R L]
 
-
 variable (R H) in
 noncomputable def wedgeMul (a b : ℕ) : (⋀[R]^a H) ⊗[R] (⋀[R]^b H) →ₗ[R] ⋀[R]^(a + b) H :=
   LinearMap.codRestrict _
@@ -67,16 +66,6 @@ noncomputable def wedgeMul (a b : ℕ) : (⋀[R]^a H) ⊗[R] (⋀[R]^b H) →ₗ
       simp only [LinearMap.comp_apply, TensorProduct.map_tmul, LinearMap.mul'_apply,
         ExteriorAlgebra.exteriorPower, pow_add]
       exact Submodule.mul_mem_mul x.2 y.2
-
-theorem coe_map (n : ℕ) (i : F →ₗ[R] H) (x : ⋀[R]^n F) :
-    (exteriorPower.map n i x : ExteriorAlgebra R H) =
-      ExteriorAlgebra.map i (x : ExteriorAlgebra R F) := by
-  have : (⋀[R]^n H).subtype ∘ₗ exteriorPower.map n i =
-      (ExteriorAlgebra.map i).toLinearMap ∘ₗ (⋀[R]^n F).subtype := by
-    apply exteriorPower.linearMap_ext
-    ext v
-    simp
-  exact LinearMap.congr_fun this x
 
 noncomputable def wedgeMap (i : F →ₗ[R] H) (s : L →ₗ[R] H) (a b : ℕ) :
     (⋀[R]^a F) ⊗[R] (⋀[R]^b L) →ₗ[R] ⋀[R]^(a + b) H :=
@@ -101,9 +90,6 @@ variable {i : F →ₗ[R] H} {π : H →ₗ[R] L}
 end Exact
 
 section Dual
-
-
-
 
 variable (F) in
 theorem rankAtStalk_dual [Module.Finite R F] [Module.Projective R F] (p : PrimeSpectrum R) :

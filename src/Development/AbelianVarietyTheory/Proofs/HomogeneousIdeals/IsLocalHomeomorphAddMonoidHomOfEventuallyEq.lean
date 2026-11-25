@@ -80,7 +80,6 @@ theorem isLocalHomeomorph_addMonoidHom_of_eventuallyEq {ψ : OpenPartialHomeomor
     simp only [map_sub] at this
     simp [← this]
 
-
 omit [IsTopologicalAddGroup A] in
 theorem discreteTopology_ker_of_isLocalHomeomorph (he : IsLocalHomeomorph e) :
     DiscreteTopology e.ker := by
@@ -194,7 +193,6 @@ theorem doubling_law :
 
 theorem analyticAt_doubling : AnalyticAt ℂ (fun x => m (x, x)) 0 :=
   AnalyticAt.comp (f := fun x : V => (x, x)) h.analyticAt (analyticAt_id.prod analyticAt_id)
-
 
 omit h in
 noncomputable def twoEquiv (V : Type*) [NormedAddCommGroup V] [NormedSpace ℂ V] : V ≃L[ℂ] V :=
@@ -405,9 +403,6 @@ theorem zero_mem_target : (0 : V) ∈ φ.target := h.map_zero ▸ φ.map_source 
 
 theorem symm_zero : φ.symm 0 = 0 := by simpa [h.map_zero] using φ.left_inv h.zero_mem_source
 
-theorem tendsto : Tendsto φ (𝓝 0) (𝓝 0) := by
-  simpa [ContinuousAt, h.map_zero] using φ.continuousAt h.zero_mem_source
-
 theorem tendsto_symm : Tendsto φ.symm (𝓝 0) (𝓝 0) := by
   simpa [ContinuousAt, h.symm_zero] using φ.continuousAt_symm h.zero_mem_target
 
@@ -484,7 +479,6 @@ theorem exp_log : ∀ᶠ a in 𝓝 (0 : A), h.exp (h.log (φ a)) = a := by
   rw [← h.map_exp_nhds_zero, eventually_map]
   filter_upwards [h.log_exp] with v hv
   rw [hv]
-
 
 theorem chart_exp_eventuallyEq :
     (fun v => φ (h.exp v)) =ᶠ[𝓝 0] h.isLocalCommGroupLaw.logChart.symm := by

@@ -242,9 +242,6 @@ def apW (D : D7) (j l g n : ℕ) (hn : Even n) : WeightFamilies.Wt D j where
 
 variable {D : D7}
 
-theorem apW_aP (j l g n : ℕ) (hn : Even n) (τ : D.what₂.Tau) (i : Fin (D.R.sigW j).1) :
-    (apW D j l g n hn).aP τ i = l + ((D.R.sigW j).1 - 1 - i.1) * g := rfl
-
 theorem apW_aM (j l g n : ℕ) (hn : Even n) (τ : D.what₂.Tau) (i : Fin (D.R.sigW j).2) :
     (apW D j l g n hn).aM τ i = 0 := rfl
 
@@ -679,14 +676,6 @@ section Run
 variable (T : ParamsT D L P) (S : SizesAt L) (hZ : 10 ^ 60 ≤ zBase L)
 
 def h0R (T : ParamsT D L P) : ℝ := 4 * (T.TO : ℝ) ^ 2 + D.R.t + 1
-
-theorem two_mul_order_sq_le_length : 2 * (T.TO : ℝ) ^ 2 ≤ ((runOf T S hZ).kl : ℝ) := by
-  have hR := rn_of T S hZ
-  have h1 := hR.sq_mul_sq_le; have h4 := hR.forty_eight_le_constant
-  have h5 : 2 * (T.TO : ℝ) ^ 2 ≤ ((D.R.f : ℝ) * D.R.r) ^ 2 * (T.TO : ℝ) ^ 2 := by
-    have : (2 : ℝ) ≤ ((D.R.f : ℝ) * D.R.r) ^ 2 := by nlinarith
-    exact mul_le_mul_of_nonneg_right this (sq_nonneg _)
-  linarith [b_le_kl T S hZ]
 
 theorem A_le_kf : (D.R.f : ℝ) * D.R.r ≤ 2 * ((D.R.k : ℝ) * D.R.f) := by
   have h1 : D.R.r ≤ 2 * D.R.k := by

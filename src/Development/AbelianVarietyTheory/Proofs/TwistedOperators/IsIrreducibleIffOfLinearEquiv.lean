@@ -146,7 +146,6 @@ def ev {P : Subgroup H} (ρ : Representation F P W) (x : H) : smoothPart (ind P 
   map_add' _ _ := rfl
   map_smul' _ _ := rfl
 
-
 omit [TopologicalSpace G] [IsTopologicalGroup G] [TopologicalSpace H] [IsTopologicalGroup H] in
 def coord (l : V →ₗ[F] F) (W : Type) [AddCommGroup W] [Module F W] : V ⊗[F] W →ₗ[F] W :=
   (TensorProduct.lid F W).toLinearMap ∘ₗ l.rTensor W
@@ -179,7 +178,6 @@ theorem exists_sum_coord {ι : Type} (b : Module.Basis ι F V) (x : V ⊗[F] W) 
       conv_lhs => rw [this, TensorProduct.sum_tmul]
       simp [coord, TensorProduct.smul_tmul]
 
-
 omit [TopologicalSpace G] [IsTopologicalGroup G] in
 theorem eq_zero_of_ev {P : Subgroup H} (ρ : Representation F P W) (t : V ⊗[F] smoothPart (ind P ρ))
     (h : ∀ x, (ev ρ x).lTensor V t = 0) : t = 0 := by
@@ -192,7 +190,6 @@ theorem eq_zero_of_ev {P : Subgroup H} (ρ : Representation F P W) (t : V ⊗[F]
       rw [h, map_zero] at this
       exact this.symm))
   rw [this, TensorProduct.tmul_zero]
-
 
 omit [TopologicalSpace G] [IsTopologicalGroup G] in
 theorem exists_tensor {P : Subgroup H} (ρ : Representation F P W) {K : Set H} (hK : IsCompact K)
@@ -374,35 +371,6 @@ theorem isIrreducible_ind₂_iff (e : a ⊕ b ≃ n) (e' : a' ⊕ b' ≃ n') (ea
   rw [h2, ← h1, deltaHalf_two, deltaHalf_two, MulEquiv.symm_apply_apply, MulEquiv.symm_apply_apply, map_smul, h,
     det_relabel, det_relabel, Fintype.card_congr ea, Fintype.card_congr eb]
 
-theorem isIrreducible_ind₂ (H : GlobalTheory.Published.BernsteinUnitaryProductIrreducible) (e : a ⊕ b ≃ n)
-    {π₁ : Representation ℂ (GL a k) V} {π₂ : Representation ℂ (GL b k) W}
-    (s₁ : IsSmooth π₁) (i₁ : π₁.IsIrreducible) (u₁ : IsUnitarisable π₁)
-    (s₂ : IsSmooth π₂) (i₂ : π₂.IsIrreducible) (u₂ : IsUnitarisable π₂) :
-    (ind₂ e (extTensor π₁ π₂)).IsIrreducible := by
-  let ea := (Fintype.equivFin a).symm
-  let eb := (Fintype.equivFin b).symm
-  have := H k _ _ V W (π₁.comp (relabel k ea).toMonoidHom) (π₂.comp (relabel k eb).toMonoidHom)
-    (isSmooth_comp s₁ _ (continuous_relabel ea))
-    ((isIrreducible_iff_of_linearEquiv _ (relabel k ea).surjective (.refl ℂ V) fun _ _ => rfl).2 i₁)
-    (UnitInd.isUnitarisable_comp u₁ _) (isSmooth_comp s₂ _ (continuous_relabel eb))
-    ((isIrreducible_iff_of_linearEquiv _ (relabel k eb).surjective (.refl ℂ W) fun _ _ => rfl).2 i₂)
-    (UnitInd.isUnitarisable_comp u₂ _)
-  exact (isIrreducible_ind₂_iff _ e ea eb (.refl ℂ _) fun _ _ => rfl).1 this
-
-theorem isIrreducible_ind₂Lower (H : GlobalTheory.Published.BernsteinUnitaryProductIrreducible) (e : a ⊕ b ≃ n)
-    {π₁ : Representation ℂ (GL a k) V} {π₂ : Representation ℂ (GL b k) W}
-    (s₁ : IsSmooth π₁) (i₁ : π₁.IsIrreducible) (u₁ : IsUnitarisable π₁)
-    (s₂ : IsSmooth π₂) (i₂ : π₂.IsIrreducible) (u₂ : IsUnitarisable π₂) :
-    (ind₂Lower e (extTensor π₁ π₂)).IsIrreducible := by
-  obtain ⟨E⟩ := (SwapBlocks.lower_equiv_upper_swap k a b n e _).1 (extTensor π₁ π₂)
-  refine (isIrreducible_iff_of_equiv E).2 ((isIrreducible_ind₂_iff _ _ (.refl b) (.refl a)
-    (TensorProduct.comm ℂ W V) fun g x => ?_).1
-      (isIrreducible_ind₂ H ((Equiv.sumComm b a).trans e) s₂ i₂ u₂ s₁ i₁ u₁))
-  show _ = extTensor π₁ π₂ (g.2, g.1) _
-  induction x with
-  | add x y hx hy => simp only [map_add (f := _), hx, hy]
-  | tmul v w => simp
-
 theorem exists_parab_mul {α : Type} {m : α → Type} [Fintype α] [LinearOrder α] [∀ i, Fintype (m i)]
     [∀ i, DecidableEq (m i)] (e : (Σ i, m i) ≃ n) (x : GL n k) :
     ∃ p : parab k e, ∃ w ∈ (KO k n : Set (GL n k)), x = p * w := by
@@ -424,11 +392,9 @@ def headTail (m : Fin (s + 1) → Type) : m 0 ⊕ (Σ i : Fin s, m i.succ) ≃ �
     | zero => exact ⟨.inl x, rfl⟩
     | succ i => exact ⟨.inr ⟨i, x⟩, rfl⟩⟩
 
-
 omit [∀ i, DecidableEq (m i)] in
 theorem modExp_zero : modExp m 0 = Fintype.card (Σ i : Fin s, m i.succ) := by
   simp [modExp, Finset.sum_filter, Fin.sum_univ_succ]
-
 
 omit [∀ i, DecidableEq (m i)] in
 theorem modExp_succ (i : Fin s) :
@@ -530,38 +496,6 @@ theorem isIrreducible_multiProd_zero {m : Fin 0 → Type} [∀ i, Fintype (m i)]
   rw [Subsingleton.elim g 1]
   simp
 
-theorem isIrreducible_multiProd (H : GlobalTheory.Published.BernsteinUnitaryProductIrreducible) {s : ℕ} :
-    ∀ {m : Fin s → Type} [∀ i, Fintype (m i)] [∀ i, DecidableEq (m i)] {n : Type} [Fintype n] [DecidableEq n]
-    (e : (Σ i, m i) ≃ n) {X : Fin s → Type} [∀ i, AddCommGroup (X i)] [∀ i, Module ℂ (X i)]
-    {σ : ∀ i, Representation ℂ (GL (m i) k) (X i)}, (∀ i, IsSmooth (σ i)) → (∀ i, (σ i).IsIrreducible) →
-    (∀ i, IsUnitarisable (σ i)) → (multiProd e σ).IsIrreducible := by
-  induction s with
-  | zero => exact fun e _ _ _ σ _ _ _ => isIrreducible_multiProd_zero e σ
-  | succ s ih =>
-    intro m _ _ n _ _ e X _ _ σ hs hi hu
-    obtain ⟨E⟩ := multiProd_succ_equiv e σ
-    exact (isIrreducible_iff_of_equiv E).1 (isIrreducible_ind₂ H _ (hs 0) (hi 0) (hu 0) (isSmooth_parInd _ _)
-      (ih _ (fun i => hs i.succ) (fun i => hi i.succ) fun i => hu i.succ)
-      (UnitInd.isUnitarisable_multiProd _ fun i => hu i.succ))
-
 end Local
-
-theorem products_irreducible (H : GlobalTheory.Published.BernsteinUnitaryProductIrreducible)
-    (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] :
-    (∀ (s : ℕ) (d : Fin s → ℕ) (n : Type) [Fintype n] [DecidableEq n] (e : (Σ a, Fin (d a)) ≃ n)
-      (X : Fin s → Type) [∀ a, AddCommGroup (X a)] [∀ a, Module ℂ (X a)]
-      (σ : ∀ a, Representation ℂ (GL (Fin (d a)) k) (X a)),
-      (∀ a, IsSmooth (σ a)) → (∀ a, (σ a).IsIrreducible) → (∀ a, IsUnitarisable (σ a)) →
-      IsSmooth (multiProd e σ) ∧ (multiProd e σ).IsIrreducible ∧ IsUnitarisable (multiProd e σ)) ∧
-    ∀ (a b n : Type) [Fintype a] [DecidableEq a] [Fintype b] [DecidableEq b] [Fintype n] [DecidableEq n]
-      (e : a ⊕ b ≃ n) (V W : Type) [AddCommGroup V] [Module ℂ V] [AddCommGroup W] [Module ℂ W]
-      (π₁ : Representation ℂ (GL a k) V) (π₂ : Representation ℂ (GL b k) W),
-      IsSmooth π₁ → π₁.IsIrreducible → IsUnitarisable π₁ →
-      IsSmooth π₂ → π₂.IsIrreducible → IsUnitarisable π₂ →
-      (ind₂ e (extTensor π₁ π₂)).IsIrreducible ∧ (ind₂Lower e (extTensor π₁ π₂)).IsIrreducible :=
-  ⟨fun _ _ _ _ _ e _ _ _ _ hs hi hu => ⟨isSmooth_parInd _ _, isIrreducible_multiProd H e hs hi hu,
-      UnitInd.isUnitarisable_multiProd e hu⟩,
-    fun _ _ _ _ _ _ _ _ _ e _ _ _ _ _ _ _ _ s₁ i₁ u₁ s₂ i₂ u₂ =>
-      ⟨isIrreducible_ind₂ H e s₁ i₁ u₁ s₂ i₂ u₂, isIrreducible_ind₂Lower H e s₁ i₁ u₁ s₂ i₂ u₂⟩⟩
 
 end GlobalTheory.SmGL.MultiIrr

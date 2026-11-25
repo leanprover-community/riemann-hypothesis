@@ -66,7 +66,6 @@ namespace GlobalTheory.RandomTops
 def ex (δ : ℝ) (S : Finset ℕ) (f : Finset ℕ → ℝ) : ℝ :=
   ∑ T ∈ S.powerset, δ ^ T.card * (1 - δ) ^ (S.card - T.card) * f T
 
-
 open Classical in
 def ind (p : Prop) : ℝ := by
   classical
@@ -79,9 +78,6 @@ theorem ind_neg {p : Prop} (h : ¬ p) : ind p = 0 := by
   unfold ind
   rw [if_neg h]
 theorem ind_nonneg (p : Prop) : 0 ≤ ind p := by
-  unfold ind
-  split_ifs <;> norm_num
-theorem ind_le_one (p : Prop) : ind p ≤ 1 := by
   unfold ind
   split_ifs <;> norm_num
 theorem ind_le {p : Prop} {x : ℝ} (h0 : 0 ≤ x) (h1 : p → 1 ≤ x) : ind p ≤ x := by
@@ -186,40 +182,6 @@ theorem ex_restrict {A S : Finset ℕ} (hA : A ⊆ S) (f : Finset ℕ → ℝ) :
   simp only [mul_one, ex_const] at h
   exact h
 
-theorem ex_prod {ι : Type*} (J : Finset ι) (A : ι → Finset ℕ) (g : ι → Finset ℕ → ℝ)
-    (hd : ∀ i ∈ J, ∀ j ∈ J, i ≠ j → Disjoint (A i) (A j)) (S : Finset ℕ)
-    (hS : ∀ j ∈ J, A j ⊆ S) :
-    ex δ S (fun T => ∏ j ∈ J, g j (T ∩ A j)) = ∏ j ∈ J, ex δ (A j) (g j) := by
-  classical
-  revert hd S
-  induction J using Finset.induction_on with
-  | empty => intro _ S _; simp [ex_const]
-  | insert j J hj ih =>
-    intro hd S hS
-    have hdj : ∀ i ∈ J, Disjoint (A i) (A j) := fun i hi =>
-      hd i (mem_insert_of_mem hi) j (mem_insert_self j J) (fun h => hj (h ▸ hi))
-    have hd' : ∀ i ∈ J, ∀ k ∈ J, i ≠ k → Disjoint (A i) (A k) := fun i hi k hk =>
-      hd i (mem_insert_of_mem hi) k (mem_insert_of_mem hk)
-    have hS' : ∀ i ∈ J, A i ⊆ S \ A j := by
-      intro i hi x hx
-      exact mem_sdiff.mpr ⟨hS i (mem_insert_of_mem hi) hx, fun hxj => disjoint_left.mp (hdj i hi) hx hxj⟩
-    have e : ∀ T ⊆ S, ∏ i ∈ insert j J, g i (T ∩ A i) =
-        g j (T ∩ A j) * ∏ i ∈ J, g i ((T \ A j) ∩ A i) := by
-      intro T _
-      rw [prod_insert hj]
-      congr 1
-      refine prod_congr rfl fun i hi => ?_
-      congr 1
-      ext x
-      simp only [mem_inter, mem_sdiff]
-      constructor
-      · rintro ⟨hxT, hxi⟩
-        exact ⟨⟨hxT, fun hxj => disjoint_left.mp (hdj i hi) hxi hxj⟩, hxi⟩
-      · rintro ⟨⟨hxT, _⟩, hxi⟩
-        exact ⟨hxT, hxi⟩
-    rw [ex_congr e, ex_split (hS j (mem_insert_self j J)) (g j) (fun U => ∏ i ∈ J, g i (U ∩ A i)),
-      ih hd' (S \ A j) hS', prod_insert hj]
-
 theorem ex_contains {Q B : Finset ℕ} (hQ : Q ⊆ B) :
     ex δ B (fun T => ind (Q ⊆ T)) = δ ^ Q.card := by
   have e : ex δ B (fun T => ind (Q ⊆ T)) = ex δ B (fun T => ind (Q ⊆ T ∩ Q)) :=
@@ -312,50 +274,6 @@ theorem tile_disjoint {r u s s' : ℕ} (h : s ≠ s') : Disjoint (tile r u s) (t
   have := ico_disjoint (a := 0) (m := (6 * r + 1) * u) h
   simpa [tile] using this
 
-theorem ex_isEmpty (C : Finset ℕ) : ex δ C (fun V => ind (V = ∅)) = (1 - δ) ^ C.card := by
-  unfold ex
-  rw [sum_eq_single ∅]
-  · simp [ind]
-  · intro T _ hne
-    beta_reduce
-    rw [ind_neg hne, mul_zero]
-  · intro h
-    exact absurd (empty_mem_powerset C) h
-
-theorem ex_single_even (h0 : 0 ≤ δ) (h1 : δ ≤ 1) (a u : ℕ) :
-    ((u / 2 : ℕ) : ℝ) * δ * (1 - δ) ^ (u - 1) ≤
-      ex δ (Finset.Ico a (a + u)) (fun V => ind (∃ x, V = {x} ∧ Even x)) := by
-  have hIc : #(Ico a (a + u)) = u := by rw [Nat.card_Ico]; omega
-  have hinj : Function.Injective (fun k => ({a + a % 2 + 2 * k} : Finset ℕ)) := by
-    intro k₁ k₂ h
-    have := singleton_inj.mp h
-    omega
-  have hPc : #((range (u / 2)).image (fun k => ({a + a % 2 + 2 * k} : Finset ℕ))) = u / 2 := by
-    rw [card_image_of_injective _ hinj, card_range]
-  have hPsub : (range (u / 2)).image (fun k => ({a + a % 2 + 2 * k} : Finset ℕ)) ⊆ (Ico a (a + u)).powerset := by
-    intro V hV
-    rw [mem_image] at hV
-    obtain ⟨k, hk, rfl⟩ := hV
-    rw [mem_powerset, singleton_subset_iff, mem_Ico]
-    rw [mem_range] at hk
-    omega
-  have hw : ∀ V ∈ (range (u / 2)).image (fun k => ({a + a % 2 + 2 * k} : Finset ℕ)),
-      δ ^ #V * (1 - δ) ^ (#(Ico a (a + u)) - #V) * ind (∃ x, V = {x} ∧ Even x) = δ * (1 - δ) ^ (u - 1) := by
-    intro V hV
-    rw [mem_image] at hV
-    obtain ⟨k, _, rfl⟩ := hV
-    rw [card_singleton, hIc, ind_pos ⟨_, rfl, Nat.even_iff.mpr (by omega)⟩]
-    ring
-  unfold ex
-  beta_reduce
-  calc ((u / 2 : ℕ) : ℝ) * δ * (1 - δ) ^ (u - 1)
-      = ∑ V ∈ (range (u / 2)).image (fun k => ({a + a % 2 + 2 * k} : Finset ℕ)),
-          δ ^ #V * (1 - δ) ^ (#(Ico a (a + u)) - #V) * ind (∃ x, V = {x} ∧ Even x) := by
-        rw [sum_congr rfl hw, sum_const, hPc, nsmul_eq_mul]
-        ring
-    _ ≤ _ := sum_le_sum_of_subset_of_nonneg hPsub fun V _ _ =>
-        mul_nonneg (mul_nonneg (pow_nonneg h0 _) (pow_nonneg (by linarith) _)) (ind_nonneg _)
-
 theorem prod_alternate (a b : ℝ) (m : ℕ) :
     ∏ c ∈ Finset.range (2 * m + 1), (if Even c then a else b) = a ^ (m + 1) * b ^ m := by
   induction m with
@@ -366,90 +284,6 @@ theorem prod_alternate (a b : ℝ) (m : ℕ) :
     rw [show 2 * (m + 1) + 1 = 2 * m + 1 + 1 + 1 by ring, prod_range_succ, prod_range_succ, ih,
       if_neg h1, if_pos h2]
     ring
-
-theorem marked_ge (h0 : 0 ≤ δ) (h1 : δ ≤ 1) (r u s : ℕ) :
-    markedBound δ r u ≤ ex δ (tile r u s) (fun T => ind (Marked T r u s)) := by
-  have hm : 6 * r + 1 = 2 * (3 * r) + 1 := by ring
-  have hcell : ∀ c, cell r u s (c + 1) =
-      Ico (s * ((6 * r + 1) * u) + c * u) (s * ((6 * r + 1) * u) + c * u + u) := by
-    intro c
-    unfold cell
-    rw [Nat.add_sub_cancel]
-    congr 1
-    ring
-  have hX : 0 ≤ ((u / 2 : ℕ) : ℝ) * δ * (1 - δ) ^ (u - 1) :=
-    mul_nonneg (mul_nonneg (Nat.cast_nonneg _) h0) (pow_nonneg (by linarith) _)
-  have hP0 : 0 ≤ (1 - δ) ^ u := pow_nonneg (by linarith) _
-  have hind : ∀ (c' : ℕ) (V : Finset ℕ),
-      0 ≤ (if Even c' then ind (V = ∅) else ind (∃ x, V = {x} ∧ Even x)) ∧
-        (if Even c' then ind (V = ∅) else ind (∃ x, V = {x} ∧ Even x)) ≤ 1 := by
-    intro c' V
-    split_ifs
-    · exact ⟨ind_nonneg _, ind_le_one _⟩
-    · exact ⟨ind_nonneg _, ind_le_one _⟩
-  have hpt : ∀ T ⊆ tile r u s, ∏ c' ∈ range (6 * r + 1),
-      (if Even c' then ind (T ∩ cell r u s (c' + 1) = ∅)
-        else ind (∃ x, T ∩ cell r u s (c' + 1) = {x} ∧ Even x)) ≤ ind (Marked T r u s) := by
-    intro T _
-    by_cases hM : Marked T r u s
-    · rw [ind_pos hM]
-      exact prod_le_one₀ (fun c' _ => (hind c' _).1) (fun c' _ => (hind c' _).2)
-    · rw [ind_neg hM]
-      refine le_of_eq (prod_eq_zero_iff.mpr ?_)
-      by_contra hall
-      push Not at hall
-      apply hM
-      intro c hc1 hc2
-      have h := hall (c - 1) (by rw [mem_range]; omega)
-      have hcc : c - 1 + 1 = c := by omega
-      rw [hcc] at h
-      constructor
-      · intro hodd
-        have he : Even (c - 1) := by
-          obtain ⟨k, hk⟩ := hodd
-          exact ⟨k, by omega⟩
-        rw [if_pos he] at h
-        by_contra hne
-        exact h (ind_neg hne)
-      · intro hev
-        have he : ¬ Even (c - 1) := by
-          rintro ⟨k, hk⟩
-          obtain ⟨k', hk'⟩ := hev
-          omega
-        rw [if_neg he] at h
-        by_contra hne
-        exact h (ind_neg hne)
-  calc markedBound δ r u
-      = ∏ c' ∈ range (6 * r + 1),
-          (if Even c' then (1 - δ) ^ u else ((u / 2 : ℕ) : ℝ) * δ * (1 - δ) ^ (u - 1)) := by
-        unfold markedBound
-        rw [hm, prod_alternate]
-    _ ≤ ∏ c' ∈ range (6 * r + 1), ex δ (cell r u s (c' + 1))
-          (fun V => if Even c' then ind (V = ∅) else ind (∃ x, V = {x} ∧ Even x)) := by
-        refine prod_le_prod₀ (fun c' _ => ?_) (fun c' _ => ?_)
-        · split_ifs
-          · exact hP0
-          · exact hX
-        · by_cases he : Even c'
-          · simp only [if_pos he]
-            exact le_of_eq (by rw [ex_isEmpty, cell_card (c := c' + 1) (by omega)])
-          · simp only [if_neg he]
-            rw [hcell]
-            exact ex_single_even h0 h1 _ u
-    _ = ex δ (tile r u s) (fun T => ∏ c' ∈ range (6 * r + 1),
-          (if Even c' then ind (T ∩ cell r u s (c' + 1) = ∅)
-            else ind (∃ x, T ∩ cell r u s (c' + 1) = {x} ∧ Even x))) := by
-        refine (ex_prod (range (6 * r + 1)) (fun c' => cell r u s (c' + 1))
-          (fun c' V => if Even c' then ind (V = ∅) else ind (∃ x, V = {x} ∧ Even x)) ?_ (tile r u s) ?_).symm
-        · intro i _ j _ hij
-          show Disjoint (cell r u s (i + 1)) (cell r u s (j + 1))
-          rw [hcell, hcell]
-          have := ico_disjoint (a := s * ((6 * r + 1) * u)) (m := u) hij
-          convert this using 2 <;> ring
-        · intro c' hc'
-          rw [mem_range] at hc'
-          exact cell_subset (c := c' + 1) (by omega)
-    _ ≤ _ := ex_mono h0 h1 hpt
 
 theorem marked_congr {T T' : Finset ℕ} {r u s : ℕ} (h : T ∩ tile r u s = T' ∩ tile r u s)
     (hM : Marked T r u s) : Marked T' r u s := by

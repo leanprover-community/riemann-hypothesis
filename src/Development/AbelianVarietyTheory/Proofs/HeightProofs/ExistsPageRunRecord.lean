@@ -270,13 +270,6 @@ open NumberField Formalism.BasicNotions Formalism.MainNotions Formalism.MainNoti
 
 def prog (p l g : ℕ) (i : Fin p) : ℕ := l + (p - 1 - i.1) * g
 
-theorem prog_anti (p l g : ℕ) : Antitone (prog p l g) := by
-  intro i k hik
-  have h : i.1 ≤ k.1 := hik
-  show l + (p - 1 - k.1) * g ≤ l + (p - 1 - i.1) * g
-  have : p - 1 - k.1 ≤ p - 1 - i.1 := by omega
-  exact Nat.add_le_add_left (Nat.mul_le_mul_right g this) l
-
 def twoW (D : D7) (j l l' g n : ℕ) (hn : Even n) : WeightFamilies.Wt D j where
   aP _ := prog _ l g
   aM _ := prog _ l' g

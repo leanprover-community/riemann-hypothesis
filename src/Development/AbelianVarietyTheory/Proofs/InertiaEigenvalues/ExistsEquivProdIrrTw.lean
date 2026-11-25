@@ -59,14 +59,6 @@ section General
 
 variable {G V W : Type} [Group G] [AddCommGroup V] [Module ℂ V] [AddCommGroup W] [Module ℂ W]
 
-theorem IsSocle.twist {σ : Representation ℂ G W} {π : Representation ℂ G V} (h : IsSocle σ π) (χ : G →* ℂˣ) :
-    IsSocle (SmGL.twist σ χ) (SmGL.twist π χ) := by
-  obtain ⟨hi, f, hf, hS⟩ := h
-  refine ⟨isIrreducible_twist hi χ, twistMap f χ, hf, fun S hS' => ?_⟩
-  have hA : IsAtom (subrepTwist π χ S) := ((subrepTwist π χ).isAtom_iff S).2 hS'
-  have hE := congrArg Subrepresentation.toSubmodule (hS _ hA)
-  exact Subrepresentation.ext hE
-
 theorem IsCosocle.twist {σ : Representation ℂ G W} {π : Representation ℂ G V} (h : IsCosocle σ π) (χ : G →* ℂˣ) :
     IsCosocle (SmGL.twist σ χ) (SmGL.twist π χ) := by
   obtain ⟨hi, f, hf, hS⟩ := h
@@ -280,13 +272,6 @@ section Classifications
 
 variable {π : Representation ℂ (GL (Fin N) k) V} {Δ : Segment k} {𝔪 : Multiset (Segment k)}
 
-theorem IsZSeg.tw (h : IsZSeg Δ π) (χ : kˣ →* ℂˣ) (hχ : IsSmoothChar χ) :
-    IsZSeg (Δ.tw χ hχ) (twist π (detChar (Fin N) χ)) := by
-  obtain ⟨hd, hs⟩ := h
-  obtain ⟨hd', ⟨E⟩⟩ := exists_equiv_prodIrr_tw (y := (Δ.tw χ hχ).term) hd (hχ := hχ)
-    (fun a => Segment.term_tw Δ χ hχ a)
-  exact ⟨hd', (hs.twist _).of_equiv (.refl _) E⟩
-
 theorem IsLSeg.tw (h : IsLSeg Δ π) (χ : kˣ →* ℂˣ) (hχ : IsSmoothChar χ) :
     IsLSeg (Δ.tw χ hχ) (twist π (detChar (Fin N) χ)) := by
   obtain ⟨hd, hs⟩ := h
@@ -311,13 +296,6 @@ theorem IsL.tw (h : IsL 𝔪 π) (χ : kˣ →* ℂˣ) (hχ : IsSmoothChar χ) :
   obtain ⟨h', x, hd, hz, hs⟩ := h
   exact ⟨h', fun a => (x a).tw χ hχ, hd, hz.tw χ hχ,
     (hs.twist _).of_equiv (.refl _) (prodIrrTwistEquiv x hd χ hχ)⟩
-
-theorem IsSpeh.tw {x : IrrGL (k := k)} {d : ℕ} (h : IsSpeh x d π) (χ : kˣ →* ℂˣ) (hχ : IsSmoothChar χ) :
-    IsSpeh (x.tw χ hχ) d (twist π (detChar (Fin N) χ)) := by
-  obtain ⟨hd, hs⟩ := h
-  obtain ⟨hd', ⟨E⟩⟩ := exists_equiv_prodIrr_tw (y := spehFactor (x.tw χ hχ) d) hd (hχ := hχ)
-    (fun a => IrrGL.tw_nu x χ hχ _)
-  exact ⟨hd', (hs.twist _).of_equiv (.refl _) E⟩
 
 end Classifications
 

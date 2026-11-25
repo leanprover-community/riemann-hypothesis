@@ -123,23 +123,6 @@ theorem exists_eq_of_nonneg {R F L : Type*} [CommRing R] [IsDomain R] [IsDiscret
       rw [hs] at hpos
       exact lt_irrefl _ hpos
 
-section
-variable {O A : Type*} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [CommRing A]
-  [Algebra O A] {ϖ : O}
-
-theorem ord_pos_iff (h : IsUnif (A := A) ϖ) (ζ : Pts O A) [IsDVRAt ζ] (a : As O A) :
-    0 < ord ϖ ζ (a : A) ↔ a ∈ ζ.asIdeal := by
-  rw [ord_of_mem ζ h a.2, ← not_not (a := a ∈ ζ.asIdeal), ← vL_eq_zero_iff ζ a]
-  change 0 < (vL ζ a).map (Nat.cast : ℕ → ℤ) ↔ _
-  generalize vL ζ a = v
-  cases v with
-  | top => simp
-  | coe n =>
-    rw [ENat.map_natCast, WithTop.coe_pos]
-    simp [Nat.pos_iff_ne_zero]
-
-end
-
 theorem pos_of_sub_pos {S : Type*} [CommRing S] (u : AddValuation S (WithTop ℤ)) {x y : S}
     (h : 0 < u (x - y)) (hy : 0 < u y) : 0 < u x := by
   have := u.map_lt_add h hy

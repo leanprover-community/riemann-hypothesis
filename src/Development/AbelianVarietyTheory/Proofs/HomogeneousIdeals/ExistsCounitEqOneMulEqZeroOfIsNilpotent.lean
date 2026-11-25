@@ -351,10 +351,6 @@ noncomputable def closureIdeal [Algebra V H] (J : Ideal (K ⊗[V] H)) : Ideal H 
 
 variable {K}
 
-@[simp]
-theorem mem_closureIdeal [Algebra V H] {J : Ideal (K ⊗[V] H)} {x : H} :
-    x ∈ closureIdeal K J ↔ (1 : K) ⊗ₜ[V] x ∈ J := Iff.rfl
-
 section Algebra
 
 variable [Algebra V H] [IsFractionRing V K] (J : Ideal (K ⊗[V] H))

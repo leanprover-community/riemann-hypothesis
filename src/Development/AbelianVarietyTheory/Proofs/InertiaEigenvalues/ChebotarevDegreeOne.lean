@@ -296,7 +296,6 @@ private theorem one_sub_mul_natCast_cpow_neg_ne_zero {c : ℂ} (hc : ‖c‖ ≤
   rw [norm_mul, norm_one] at h3
   nlinarith [norm_nonneg c, norm_nonneg ((n : ℂ) ^ (-s))]
 
-
 open NumberField IsDedekindDomain NumberField.mixedEmbedding MeasureTheory Complex Classical in
 open scoped ContDiff nonZeroDivisors in
 theorem _root_.GlobalTheory.idealCharacterL_continuation_ne_zero_one :
@@ -820,7 +819,6 @@ open scoped ContDiff Classical
 
 namespace GlobalTheory
 
-
 open NumberField IsDedekindDomain NumberField.mixedEmbedding Filter Topology Asymptotics Polynomial in
 open scoped ContDiff Classical in
 theorem _root_.GlobalTheory.not_forall_exists_two_liesOver_absNorm_eq :
@@ -881,7 +879,6 @@ theorem split_trivial (K M : Type) [Field K] [NumberField K] [Field M] [NumberFi
   have := hP'.2
   exact ⟨⟨P, hP.1, Ideal.ne_bot_of_liesOver_of_ne_bot v.ne_bot P⟩, ⟨P', hP'.1, Ideal.ne_bot_of_liesOver_of_ne_bot v.ne_bot P'⟩,
     fun e => hne (congrArg HeightOneSpectrum.asIdeal e), hP.2, hP'.2, hN P hP, hN P' hP'⟩
-
 
 open NumberField IsDedekindDomain NumberField.mixedEmbedding Filter Topology Asymptotics Polynomial in
 open scoped ContDiff Classical in
@@ -1041,17 +1038,6 @@ section -- clump:auto
 open NumberField IsDedekindDomain Polynomial
 
 namespace GlobalTheory
-
-private lemma natAbs_eq_one_of_dvd_prime_pow_not_dvd {d : ℤ} {m k : ℕ} (hm : m.Prime) (h1 : d ∣ (m : ℤ) ^ k)
-    (h2 : ¬ (m : ℤ) ∣ d) : d.natAbs = 1 := by
-  have h1' : d.natAbs ∣ m ^ k := by
-    have := Int.natAbs_dvd_natAbs.mpr h1
-    simpa [Int.natAbs_pow] using this
-  have hc : Nat.Coprime m d.natAbs := by
-    rw [hm.coprime_iff_not_dvd]
-    intro h
-    exact h2 (Int.natCast_dvd.mpr h)
-  exact Nat.Coprime.eq_one_of_dvd (Nat.Coprime.pow_left k hc).symm h1'
 
 theorem irreducible_cyclotomic_of_not_dvd_discr (K : Type) [Field K] [NumberField K] (m : ℕ)
     (hm : m.Prime) (hd : ¬ (m : ℤ) ∣ discr K) : Irreducible (cyclotomic m K) := by

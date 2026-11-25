@@ -96,9 +96,6 @@ lemma ne_zero_of_im {σ t : ℝ} (h : t ≠ 0) : (σ : ℂ) + t * I ≠ 0 := by
 lemma cont_vinv {σ : ℝ} (h : σ ≠ 0) : Continuous fun t : ℝ => ((σ : ℂ) + t * I)⁻¹ := by
   exact (by fun_prop : Continuous fun t : ℝ => (σ : ℂ) + t * I).inv₀ fun t => ne_zero_of_re h
 
-lemma cont_hinv {t : ℝ} (h : t ≠ 0) : Continuous fun σ : ℝ => ((σ : ℂ) + t * I)⁻¹ := by
-  exact (by fun_prop : Continuous fun σ : ℝ => (σ : ℂ) + t * I).inv₀ fun σ => ne_zero_of_im h
-
 private lemma hasDerivAt_half_log_sub_I_mul_arctan_eq_inv {s : ℝ} (hs : s ≠ 0) (x : ℝ) :
     HasDerivAt (fun x : ℝ => ((Real.log (x ^ 2 + s ^ 2) / 2 : ℝ) : ℂ) - I * (Real.arctan (x / s) : ℂ))
       ((x : ℂ) + s * I)⁻¹ x := by
@@ -149,18 +146,6 @@ lemma truncated_perron_kernel_one {c : ℝ} (hc : c ≠ 0) (T : ℝ) :
   rw [vinv hc T]
   push_cast
   field_simp
-
-lemma hinv {T : ℝ} (h : T ≠ 0) (a b : ℝ) :
-    (∫ x in a..b, ((x : ℂ) + ((-T : ℝ) : ℂ) * I)⁻¹) - ∫ x in a..b, ((x : ℂ) + T * I)⁻¹
-      = 2 * I * ((Real.arctan (b / T) - Real.arctan (a / T) : ℝ) : ℂ) := by
-  have hs : -T ≠ 0 := neg_ne_zero.mpr h
-  rw [intervalIntegral.integral_eq_sub_of_hasDerivAt (fun x _ => hasDerivAt_half_log_sub_I_mul_arctan_eq_inv hs x)
-      ((cont_hinv hs).intervalIntegrable _ _),
-    intervalIntegral.integral_eq_sub_of_hasDerivAt (fun x _ => hasDerivAt_half_log_sub_I_mul_arctan_eq_inv h x)
-      ((cont_hinv h).intervalIntegrable _ _)]
-  simp only [neg_sq, div_neg, Real.arctan_neg]
-  push_cast
-  ring
 
 lemma norm_exp (L σ t : ℝ) : ‖cexp (L * ((σ : ℂ) + t * I))‖ = Real.exp (L * σ) := by
   rw [Complex.norm_exp]

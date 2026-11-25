@@ -101,7 +101,6 @@ theorem isClosedImmersion_equalizer_ι_of_isSeparated {X S T : Scheme.{u}} (f : 
   MorphismProperty.of_isPullback (P := @IsClosedImmersion)
     (isPullback_equalizer_diagonal f hab) inferInstance
 
-
 set_option backward.isDefEq.respectTransparency false in
 theorem isOpenImmersion_equalizer_ι_left_of_unramified {S : Scheme.{u}} {T X : Over S}
     [FormallyUnramified X.hom] [LocallyOfFiniteType X.hom] (a b : T ⟶ X) :
@@ -192,7 +191,6 @@ theorem surjective_of_isNilpotent_ker {T₀ T : Scheme.{u}} (i : T₀ ⟶ T) [Is
       ← i.ker.support_pow (n + 1) (by simp), pow_succ, hn]
     simp
   exact surjective_of_isDominant_of_isClosed_range _ i.isClosedEmbedding.isClosed_range
-
 
 set_option backward.isDefEq.respectTransparency false in
 theorem exists_local_lift_of_smooth {X S T₀ T : Scheme.{u}} (f : X ⟶ S) [Smooth f]
@@ -310,7 +308,6 @@ theorem existsUnique_lift_of_etale_of_surjective {X S : Scheme.{u}} (f : X ⟶ S
   have := IsClosedImmersion.spec_of_surjective π hπ
   existsUnique_lift_of_etale f _ (isNilpotent_ker_specMap π hπ') g h w
 
-
 open Polynomial in
 theorem exists_algHom_lift_of_henselian {B A : Type*} {R K : Type u} [CommRing B] [CommRing A]
     [CommRing R] [Field K] [Algebra B A] [Algebra B R] [Algebra B K] [Algebra.Etale B A]
@@ -397,21 +394,5 @@ theorem existsUnique_lift_of_etale_of_henselian {X S : Scheme.{u}} (f : X ⟶ S)
 def restrictPoints {X S T₀ T : Scheme.{u}} (f : X ⟶ S) (h : T ⟶ S) (i : T₀ ⟶ T) :
     {l : T ⟶ X // l ≫ f = h} → {g : T₀ ⟶ X // g ≫ f = i ≫ h} :=
   fun l ↦ ⟨i ≫ l.1, by rw [Category.assoc, l.2]⟩
-
-theorem bijective_restrictPoints_of_existsUnique {X S T₀ T : Scheme.{u}} (f : X ⟶ S) (h : T ⟶ S)
-    (i : T₀ ⟶ T)
-    (H : ∀ g : T₀ ⟶ X, g ≫ f = i ≫ h → ∃! l : T ⟶ X, i ≫ l = g ∧ l ≫ f = h) :
-    Function.Bijective (restrictPoints f h i) := by
-  rw [Function.bijective_iff_existsUnique]
-  rintro ⟨g, hg⟩
-  obtain ⟨l, ⟨h₁, h₂⟩, h₃⟩ := H g hg
-  exact ⟨⟨l, h₂⟩, Subtype.ext h₁, fun y hy ↦ Subtype.ext (h₃ _ ⟨congr(($hy).1), y.2⟩)⟩
-
-theorem bijective_restrictPoints_of_etale_of_henselian {X S : Scheme.{u}} (f : X ⟶ S) [Etale f]
-    (R : Type u) [CommRing R] [HenselianLocalRing R] (h : Spec (.of R) ⟶ S) :
-    Function.Bijective (restrictPoints f h
-      (Spec.map (CommRingCat.ofHom (IsLocalRing.residue R)))) :=
-  bijective_restrictPoints_of_existsUnique f h _ fun g w ↦
-    existsUnique_lift_of_etale_of_henselian f _ IsLocalRing.residue_surjective g h w
 
 end GlobalTheory

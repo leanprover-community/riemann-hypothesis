@@ -69,8 +69,6 @@ open GlobalTheory.ExportSeries (Base Twist Weight PairRep GLR detChar detFam foc
 open scoped TensorProduct Classical
 open GlobalTheory.SingleDatum
 
-
-
 namespace GlobalTheory.ConjHalfInt
 variable {D : D7}
 
@@ -192,8 +190,6 @@ theorem adj_shape {m n : ℕ} (c : EAf D) (C : Matrix (Fin m) (Fin 1) (EAf D)) (
   rw [map_mul, map_sum]
   congr 1
   exact Finset.sum_congr rfl fun z _ => by rw [map_mul, mul_comm]
-
-theorem cF_eToEAf (x : D.host.E) : GlobalTheory.AdelicLatMove.cF D (eToEAf D x) = eToEAf D (star x) := rfl
 
 end GlobalTheory.ConjHalfInt
 

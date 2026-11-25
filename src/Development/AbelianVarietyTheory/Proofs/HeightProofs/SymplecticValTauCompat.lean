@@ -83,32 +83,4 @@ theorem trace_AE (D : D7) (z : AE D) :
     algebraMap (AF D.host.F) (AE D) (Algebra.trace (AF D.host.F) (AE D) z) = z + cA D z :=
   trace_tensor D.sp.cm.deg2 D.sp.cm.sig (fun e => star_star e) (fun e he => (D.sp.cm.fixed e).1 he) _ z
 
-theorem map_sum4 {A : Type} [CommRing A] (φ : A →+* ℂ) (c : A →+* A) (hc : ∀ a, φ (c a) = starRingEnd ℂ (φ a))
-    {m n : ℕ} (x y : Fin m → Fin n → A) (P Q : Fin m → Fin n → Fin m → Fin n → A) :
-    φ (∑ i, ∑ j, ∑ k, ∑ l, c (x i j) * P i j k l * Q i j k l * y k l) =
-      ∑ i, ∑ j, ∑ k, ∑ l, starRingEnd ℂ (φ (x i j)) * φ (P i j k l) * φ (Q i j k l) * φ (y k l) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_mul, hc]
-
-theorem comp_hHom {D : D7} {θ : InfFam D} (hθ : IsInfFam θ) (V W : HSp D) (τ : D.what₂.Tau) (x y : WA V W) :
-    θ τ (infPart D (hHom V W x y)) = hC V W τ (wAt θ V W τ x) (wAt θ V W τ y) := by
-  have hi : ∀ e, ((θ τ).comp (infPart D)) (incA D e) = tauE D τ e := comp_incA hθ τ
-  unfold hHom hC
-  split_ifs
-  · refine (map_sum4 ((θ τ).comp (infPart D)) (cA D) (comp_cA hθ τ) x y
-      (fun i j k l => incA D (V.gram k i)) (fun i j k l => incA D (W.gram j l))).trans ?_
-    simp only [hi]
-    rfl
-  · refine (map_sum4 ((θ τ).comp (infPart D)) (cA D) (comp_cA hθ τ) x y
-      (fun i j k l => incA D (V.gram i k)) (fun i j k l => incA D (W.gram l j))).trans ?_
-    simp only [hi]
-    rfl
-
-theorem valTau_sympl : ∀ (D : D7) (θ : InfFam D), IsInfFam θ → ∀ (V W : HSp D) (τ : D.what₂.Tau) (x y : WA V W),
-    valTau θ τ (sympl V W x y) = symplC V W τ (wAt θ V W τ x) (wAt θ V W τ y) := by
-  intro D θ hθ V W τ x y
-  unfold valTau sympl symplC
-  rw [trace_AE, RingHom.map_add (f := _), RingHom.map_add (f := _), comp_cA hθ, RingHom.map_mul, RingHom.map_mul, comp_incA hθ,
-    comp_hHom hθ, Complex.add_re, Complex.conj_re, two_mul]
-
 end GlobalTheory.FockCompare.SymplVal

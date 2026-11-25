@@ -240,7 +240,6 @@ theorem exists_dual {r : ℕ} (C : Matrix (Fin V.rank) (Fin r) E) (hC : LinearIn
       Matrix.smul_mul, Matrix.smul_mul, Matrix.mul_smul, e3, Matrix.mul_assoc s, hcd1, ← hs, Matrix.mul_one]
     module
 
-
 omit [StarRing E] in
 theorem tens_cocompact : ∃ K : Set (AF F ⊗[F] E), IsCompact K ∧ ∀ z, ∃ x : E, z - inclR (F := F) (AF F) x ∈ K := by
   obtain ⟨K, hK, h⟩ := _root_.GlobalTheory.AdeleCocompact.exists_compact_adele F
@@ -528,9 +527,6 @@ section Functions
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [StarRing E] [Algebra F E]
   (hc : CMData F E) (V : HSpace E)
-
-theorem range_ofFin : (ofFin hc V).range = finPts hc V :=
-  le_antisymm (by rintro _ ⟨y, rfl⟩; exact projInf_ofFin hc V y) fun g hg => ⟨_, ofFin_projFin hc V hg⟩
 
 theorem embH_spec (B A : HSpace E) (ι : B.V →ₗ[E] A.V) (hι : HSpace.IsIsomEmb B A ι) (R : Type) [CommRing R]
     [Algebra F R] (g' : HA R hc.sig B.gram) :

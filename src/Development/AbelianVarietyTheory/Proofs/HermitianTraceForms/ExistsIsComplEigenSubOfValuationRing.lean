@@ -123,7 +123,6 @@ theorem isEquivariant_equiv (hf : ∀ a x, f (ρ a x) = ρ' a (f x)) (hb : IsBas
 
 variable [Module.Finite ℤ O] [Module.Flat R R']
 
-
 variable (R' ρ) in
 theorem eigenSub_baseChangeAction_of_flat (χ : O →+* R) :
     eigenSub (baseChangeAction R' ρ) ((algebraMap R R').comp χ)
@@ -152,7 +151,6 @@ variable (A : Type*) [CommRing A] (S : Type*) [CommRing S] (T : Type*) [CommRing
   [Algebra A S] [Algebra A T] [Algebra S T] [IsScalarTower A S T]
   (N : Type*) [AddCommGroup N] [Module A N]
 
-
 end Tower
 
 section Determinant
@@ -161,11 +159,8 @@ variable {O : Type*} [CommRing O] [Module.Finite ℤ O] {A : Type*} [CommRing A]
   {ι : Type*} [Fintype ι] {σ : ι → O →+* A}
   {N : Type*} [AddCommGroup N] [Module A N] [Module.Finite A N] {ρ : O →+* Module.End A N}
 
-
-
 variable (h : IsSplitting fun i => (algebraMap A (FractionRing A)).comp (σ i))
 include h
-
 
 variable [Module.Flat A N] {S : Type*} [CommRing S] [Algebra A S]
   {M : Type*} [AddCommGroup M] [Module A M] [Module S M] [IsScalarTower A S M]
@@ -225,7 +220,6 @@ section Valuation
 variable {O : Type*} [CommRing O] {V : Type*} [CommRing V] [IsDomain V] [ValuationRing V]
   {M : Type*} [AddCommGroup M] [Module V M]
 
-
 variable [Module.Finite V M] [Module.IsTorsionFree V M] (ρ : O →+* Module.End V M) (χ : O →+* V)
 
 end Valuation
@@ -239,7 +233,6 @@ variable {R : Type*} [CommRing R] {K : Type*} [CommRing K] [Algebra R K]
 
 variable [LinearOrder ι]
 
-
 variable {O : Type*} [CommRing O] {M M' : Type*} [AddCommGroup M] [Module R M] [AddCommGroup M']
   [Module R M'] {ρ : O →+* Module.End R M} {ρ' : O →+* Module.End R M'}
 
@@ -249,13 +242,6 @@ section Integers
 
 variable {E : Type*} [Field E] [NumberField E] {A : Type*} [CommRing A] [IsDomain A] [CharZero A]
   {ι : Type*} [Fintype ι] {σ : ι → 𝓞 E →+* A}
-
-
-omit [CharZero A] in
-theorem flat_int_iff_charZero : Module.Flat ℤ A ↔ CharZero A := by
-  rw [Module.Flat.flat_iff_torsion_eq_bot_of_isBezout,
-    ← Submodule.isTorsionFree_iff_torsion_eq_bot, Module.isTorsionFree_iff_algebraMap_injective]
-  exact ⟨fun h => charZero_of_injective_algebraMap h, fun _ => RingHom.injective_int _⟩
 
 omit [IsDomain A] [CharZero A] in
 theorem isUnit_discr_of_charZero (K : Type*) [Field K] [CharZero K] :
@@ -277,7 +263,5 @@ end Integers
 end EigenSplit
 
 universe u v
-
-
 
 end GlobalTheory

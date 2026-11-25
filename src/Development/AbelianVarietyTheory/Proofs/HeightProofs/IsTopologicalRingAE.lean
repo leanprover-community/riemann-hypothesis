@@ -136,8 +136,6 @@ def omR (V W : HSp D) : RW V W →ₗ[ℝ] RW V W →ₗ[ℝ] ℝ :=
     (fun x y y' => by rw [← Finset.sum_add_distrib]; exact Finset.sum_congr rfl fun τ _ => symplC_add_right V W τ _ _ _)
     (fun c x y => by rw [smul_eq_mul, Finset.mul_sum]; exact Finset.sum_congr rfl fun τ _ => symplC_smul_right V W τ c _ _)
 
-theorem omR_apply (V W : HSp D) (x y : RW V W) : omR V W x y = ∑ τ, symplC V W τ (x τ) (y τ) := rfl
-
 theorem jAt_add (V W : HSp D) (τ : D.what₂.Tau) (s s') (x y : WC V W) :
     jAt V W τ s s' (x + y) = jAt V W τ s s' x + jAt V W τ s s' y := by
   unfold jAt actC
@@ -152,9 +150,6 @@ def jR (V W : HSp D) (s : InvFam V) (s' : InvFam W) : RW V W →ₗ[ℝ] RW V W 
   toFun x := fun τ => jAt V W τ (s τ) (s' τ) (x τ)
   map_add' x y := by funext τ; exact jAt_add V W τ _ _ _ _
   map_smul' c x := by funext τ; exact jAt_smul V W τ _ _ c _
-
-theorem jR_apply (V W : HSp D) (s : InvFam V) (s' : InvFam W) (x : RW V W) (τ : D.what₂.Tau) :
-    jR V W s s' x τ = jAt V W τ (s τ) (s' τ) (x τ) := rfl
 
 variable {θ : InfFam D} {σ : (D.what₂.Tau → ℂ) →+ AE D}
 

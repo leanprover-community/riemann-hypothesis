@@ -252,13 +252,6 @@ namespace GlobalTheory.UnitLemma.Desc
 
 open GlobalTheory.UnitLemma Polynomial
 
-theorem isIntegral_or_of_fieldFactor : ∀ (K : UQ) (B : InvAlg K) (f y z : B.A), IsIdempotentElem f →
-    (∀ w, f * w ≠ 0 → ∃ v, f * w * v = f) → f * y * z = f →
-    IsIntegral K.O (f * y) ∨ IsIntegral K.O (f * z) := _root_.GlobalTheory.UnitLemma.Desc.isIntegral_or_isIntegral_of_fieldFactor
-
-theorem exists_pow_smul_mem_adjoin_g : ∀ (K : UQ) (B : InvAlg K) (a : K.O), B.P.Separable → K.Small a →
-    ∃ N : ℕ, ∀ r : B.A, IsIntegral K.O r → (al K a ^ N) • r ∈ Algebra.adjoin K.O {B.g} := _root_.GlobalTheory.UnitLemma.Desc.pow_smul_mem_adjoin_gen
-
 variable {K : UQ} (B : InvAlg K)
 
 theorem al_ne (a : K.O) (ha : K.Small a) : al K a ≠ 0 := by

@@ -134,7 +134,6 @@ theorem isSplitting_of_idem [Fintype ι] {σ : ι → O →+* R} (e : ι → R �
   · ext j
     simp [h1, Pi.single_apply]
 
-
 omit [DecidableEq ι] in
 theorem IsSplitting.map [Finite ι] {σ : ι → O →+* R} (h : IsSplitting σ) {R' : Type*}
     [CommRing R'] (f : R →+* R') : IsSplitting (fun i => f.comp (σ i)) := by
@@ -164,7 +163,6 @@ theorem IsSplitting.map [Finite ι] {σ : ι → O →+* R} (h : IsSplitting σ)
   · have : ((1 : R') ⊗ₜ[ℤ] a) = F (1 ⊗ₜ a) := by simp [F]
     rw [this, ← map_mul, one_tmul_mul_idem, hF']
     rfl
-
 
 omit [DecidableEq ι] in
 theorem IsSplitting.injective [Nontrivial R] {σ : ι → O →+* R} (h : IsSplitting σ) :
@@ -239,11 +237,6 @@ def IsEquivariant (ρ : O →+* Module.End R N) (ρ' : O →+* Module.End R N') 
 theorem isEquivariant_action (ρ : O →+* Module.End R N) (c : O) : IsEquivariant ρ ρ (ρ c) :=
   fun a x => by
     rw [← Module.End.mul_apply, ← Module.End.mul_apply, ← map_mul, ← map_mul, mul_comm]
-
-theorem IsEquivariant.comp {ρ : O →+* Module.End R N} {ρ' : O →+* Module.End R N'}
-    {ρ'' : O →+* Module.End R N''} {g : N' →ₗ[R] N''} {f : N →ₗ[R] N'}
-    (hg : IsEquivariant ρ' ρ'' g) (hf : IsEquivariant ρ ρ' f) : IsEquivariant ρ ρ'' (g ∘ₗ f) :=
-  fun a x => by simp [hf a, hg a]
 
 theorem IsEquivariant.tensorAction {ρ : O →+* Module.End R N} {ρ' : O →+* Module.End R N'}
     {f : N →ₗ[R] N'} (hf : IsEquivariant ρ ρ' f) (t : R ⊗[ℤ] O) (x : N) :
@@ -335,7 +328,6 @@ theorem eigenEquiv_symm_apply [Fintype ι] (v : ∀ i, eigenSub ρ (σ i)) :
     (eigenEquiv h ρ).symm v = ∑ i, (v i : N) := by
   simp [eigenEquiv]
 
-
 include h in
 theorem isInternal_eigenSub [Finite ι] : DirectSum.IsInternal fun i => eigenSub ρ (σ i) := by
   have := Fintype.ofFinite ι
@@ -387,11 +379,6 @@ theorem IsEquivariant.eigenMap_exact {f : N →ₗ[R] N'} {g : N' →ₗ[R] N''}
     exact Subtype.ext ((he _).2 ⟨x, rfl⟩)
 
 variable (ρ)
-
-theorem finite_eigenSub [Module.Finite R N] (i : ι) : Module.Finite R (eigenSub ρ (σ i)) := by
-  classical
-  exact Module.Finite.of_surjective (projTo h ρ i) fun y =>
-    ⟨y, LinearMap.congr_fun (projTo_comp_subtype h ρ i) y⟩
 
 end Exact
 
@@ -479,35 +466,6 @@ theorem mk_equivariant (a : O) (x : N) :
 
 end BaseChange
 
-section Charpoly
-
-variable {O : Type*} [CommRing O] {R : Type*} [CommRing R] {ι : Type*} [Fintype ι]
-  {N : Type*} [AddCommGroup N] [Module R N]
-
-variable {σ : ι → O →+* R} (h : IsSplitting σ) (ρ : O →+* Module.End R N)
-  [Module.Free R N] [Module.Finite R N]
-include h
-
-theorem charpoly_eq_prod (hfree : ∀ i, Module.Free R (eigenSub ρ (σ i))) (a : O) :
-    (ρ a).charpoly = ∏ i, (X - C (σ i a)) ^ Module.finrank R (eigenSub ρ (σ i)) := by
-  classical
-  nontriviality R
-  have hfin := fun i => finite_eigenSub h ρ i
-  let b := (isInternal_eigenSub h ρ).collectedBasis
-    fun i => Module.Free.chooseBasis R (eigenSub ρ (σ i))
-  have hm : LinearMap.toMatrix b b (ρ a) = Matrix.diagonal fun k => σ k.1 a := by
-    ext k l
-    have hl : b l ∈ eigenSub ρ (σ l.1) := (isInternal_eigenSub h ρ).collectedBasis_mem _ l
-    rw [LinearMap.toMatrix_apply, mem_eigenSub.1 hl a]
-    rcases eq_or_ne k l with rfl | hkl
-    · simp
-    · simp [hkl]
-  rw [← LinearMap.charpoly_toMatrix (ρ a) b, hm, Matrix.charpoly_diagonal, Fintype.prod_sigma]
-  refine Finset.prod_congr rfl fun i _ => ?_
-  simp [Module.finrank_eq_card_chooseBasisIndex]
-
-end Charpoly
-
 section Stalk
 
 variable {O : Type*} [CommRing O] {R : Type*} [CommRing R] {ι : Type*} [Fintype ι]
@@ -515,14 +473,12 @@ variable {O : Type*} [CommRing O] {R : Type*} [CommRing R] {ι : Type*} [Fintype
   {σ : ι → O →+* R} (h : IsSplitting σ) (ρ : O →+* Module.End R N)
 include h
 
-
 end Stalk
 
 section Discr
 
 variable {E : Type*} [Field E] [NumberField E] {R : Type*} [CommRing R] {ι : Type*} [Fintype ι]
   [DecidableEq ι]
-
 
 omit [DecidableEq ι] in
 theorem nonempty_basis (hc : Fintype.card ι = Module.finrank ℚ E) :
@@ -596,13 +552,10 @@ theorem det_sq_eq_discr_of_isDomain {S : Type*} [CommRing S] [IsDomain S] [CharZ
   ext i j
   simp [hφσ]
 
-
 theorem isSplitting_of_isUnit_discr {σ : ι → 𝓞 E →+* R} (b : Module.Basis ι ℤ (𝓞 E))
     (hd : (Matrix.of fun i j => σ i (b j)).det ^ 2 = (NumberField.discr E : R))
     (hu : IsUnit (NumberField.discr E : R)) : IsSplitting σ :=
   (isSplitting_iff_isUnit_det σ b).2 ((isUnit_pow_iff two_ne_zero).1 (hd ▸ hu))
-
-
 
 omit [DecidableEq ι] in
 theorem isSplitting_of_isDomain {S : Type*} [CommRing S] [IsDomain S] [CharZero S]
@@ -624,6 +577,5 @@ theorem isSplitting_complex (E : Type*) [Field E] [NumberField E] :
 end Discr
 
 end EigenSplit
-
 
 end GlobalTheory
