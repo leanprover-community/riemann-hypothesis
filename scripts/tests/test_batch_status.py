@@ -415,6 +415,8 @@ class Workflows(unittest.TestCase):
         job = text.split("\n  status:\n", 1)[1]
         self.assertIn("needs: [pushed, sync]", job)
         self.assertIn("actions/workflows/batch-status.yml/dispatches", job)
+        # A failure to start it only warns, so that the batch queue's run does not fail.
+        self.assertIn('-f ref="$MAIN" ||\n            echo "::warning::Could not start the batch status workflow."', job)
 
     def test_it_follows_no_workflow_run(self):
         # Following every batch queue run would show most of them as skipped runs here.
