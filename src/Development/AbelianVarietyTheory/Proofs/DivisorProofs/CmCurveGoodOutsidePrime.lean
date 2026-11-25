@@ -445,7 +445,7 @@ theorem isMinimal_of_discr_eq_unit_mul_neg_cube : ∀ (p : ℕ) (F : Type) [Fiel
     calc _ ≤ 1 * _ := mul_le_mul_left hy1 _
       _ = _ := one_mul _
   have hvx0 : w.valuation F (x : F) ≠ 0 := by simpa using hxF
-  have hvp0 : w.valuation F (p : F) ≠ 0 := (lt_of_le_of_lt zero_le' hp').ne'
+  have hvp0 : w.valuation F (p : F) ≠ 0 := (lt_of_le_of_lt zero_le hp').ne'
   rw [← WithZero.exp_log hvx0] at hle hx1
   rw [← WithZero.exp_log hvp0] at hle hp'
   rw [← WithZero.exp_nsmul, ← WithZero.exp_nsmul, WithZero.exp_le_exp] at hle
@@ -470,7 +470,7 @@ open NumberField IsDedekindDomain
 namespace GlobalTheory.CMModel
 
 theorem exists_prime_natCast_mem_pow_of_ringHom :
-    ∀ (F H : Type) [Field F] [NumberField F] [Field H] [NumberField H] (f : F →+* H) (w : HeightOneSpectrum (𝓞 F)) (p n : ℕ), (p : 𝓞 F) ∈ w.asIdeal ^ n → ∃ P : Ideal (𝓞 H), P.IsPrime ∧ P ≠ ⊥ ∧ (p : 𝓞 H) ∈ P ^ n := by
+    ∀ (F H : Type) [Field F] [NumberField F] [Field H] [NumberField H] (_f : F →+* H) (w : HeightOneSpectrum (𝓞 F)) (p n : ℕ), (p : 𝓞 F) ∈ w.asIdeal ^ n → ∃ P : Ideal (𝓞 H), P.IsPrime ∧ P ≠ ⊥ ∧ (p : 𝓞 H) ∈ P ^ n := by
   intro F H _ _ _ _ f w p n hp
   let : Algebra F H := f.toAlgebra
   have := w.isMaximal
@@ -668,9 +668,9 @@ theorem modelAt_shortTwist_four_mul_add_one : ∀ (V : ValuationSubring ℂ) (F 
   obtain ⟨C, hu, hr, hs, ht, ⟨h1, h2, h3, h4, h6⟩, hΔ⟩ := h
   set d : ℂ := 4 * (k : ℂ) + 1 with hd
   have hkV : (k : ℂ) ∈ V := intCast_mem V k
-  have hdV : d ∈ V := add_mem (mul_mem (by exact_mod_cast intCast_mem V 4 : (4 : ℂ) ∈ V) hkV) (one_mem V)
-  have hkF : (k : ℂ) ∈ F := by simpa using IntermediateField.intCast_mem F k
-  have hdF : d ∈ F := F.add_mem (F.mul_mem (by simpa using IntermediateField.intCast_mem F 4) hkF) F.one_mem
+  have hdV : d ∈ V := add_mem (mul_mem (by simp : (4 : ℂ) ∈ V) hkV) (one_mem V)
+  have hkF : (k : ℂ) ∈ F := by simp
+  have hdF : d ∈ F := F.add_mem (F.mul_mem (by simp) hkF) F.one_mem
   let W₀ : WeierstrassCurve ℂ := ⟨0, 0, 0, a₄, a₆⟩
   let C' : VariableChange ℂ := ⟨C.u, d * C.r, C.s, d * C.t⟩
   refine ⟨C', hu, F.mul_mem hdF hr, hs, F.mul_mem hdF ht, ?_, ?_⟩
@@ -684,7 +684,7 @@ theorem modelAt_shortTwist_four_mul_add_one : ∀ (V : ValuationSubring ℂ) (F 
       simp only [variableChange_a₁, variableChange_a₃, variableChange_a₄, shortTwist, W₀, C', hd]; ring
     have e6 : (C' • shortTwist d a₄ a₆).a₆ = d ^ 3 * (C • W₀).a₆ + k * d ^ 2 * (C • W₀).a₃ ^ 2 := by
       simp only [variableChange_a₃, variableChange_a₆, shortTwist, W₀, C', hd]; ring
-    have h2V : (2 : ℂ) ∈ V := by simpa using intCast_mem V 2
+    have h2V : (2 : ℂ) ∈ V := by simp
     refine ⟨?_, ?_, ?_, ?_, ?_⟩
     · rw [e1]; exact h1
     · rw [e2]; exact add_mem (mul_mem hdV h2) (mul_mem hkV (pow_mem h1 2))
@@ -732,7 +732,7 @@ theorem exists_intV_variableChange (W : WeierstrassCurve ℂ) [W.IsElliptic] (V 
     exact hΔ
   have hv : V.valuation (u : ℂ) = V.valuation (C.u : ℂ) := by
     rw [hΔ', map_pow] at hu
-    exact (pow_left_inj₀ zero_le' zero_le' (by norm_num)).1 hu
+    exact (pow_left_inj₀ zero_le zero_le (by norm_num)).1 hu
   have hw : (C.u : ℂ) / u ∈ V := by
     rw [← V.valuation_le_one_iff, map_div₀, hv, div_self]
     exact (map_ne_zero _).2 hCu
@@ -776,8 +776,7 @@ theorem mem_of_duplication_eq :
   intro V W x y δ hW hE hl hδ h
   obtain ⟨h₁, h₂, h₃, h₄, h₆⟩ := hW
   have hr : ∀ z : ℂ, z ∈ V → z ∈ (algebraMap V ℂ).range := fun z hz => ⟨⟨z, hz⟩, rfl⟩
-  have hr' : ∀ z : ℂ, z ∈ (algebraMap V ℂ).range → z ∈ V := by
-    rintro z ⟨w, rfl⟩; exact w.2
+  have hr' : ∀ z : ℂ, z ∈ (algebraMap V ℂ).range → z ∈ V := by simp
   have hb₄ : W.b₄ ∈ V := by
     rw [WeierstrassCurve.b₄]
     exact add_mem (mul_mem (ofNat_mem V 2) h₄) (mul_mem h₁ h₃)
@@ -939,8 +938,8 @@ theorem GlobalTheory.CMModel.tangentSlope_mem : ∀ (V : ValuationSubring ℂ) (
     exact (Valuation.ne_zero_iff _).2 hY
   have hE : 3 * ((X - r) / (u : ℂ) ^ 2) ^ 2 + 2 * W'.a₂ * ((X - r) / (u : ℂ) ^ 2) + W'.a₄
       - W'.a₁ * ((Y - t - s * (X - r)) / (u : ℂ) ^ 3) ∈ V := by
-    have h3 : (3 : ℂ) ∈ V := by simpa using natCast_mem V 3
-    have h2' : (2 : ℂ) ∈ V := by simpa using natCast_mem V 2
+    have h3 : (3 : ℂ) ∈ V := by simp
+    have h2' : (2 : ℂ) ∈ V := by simp
     exact sub_mem (add_mem (add_mem (mul_mem h3 (pow_mem hx 2)) (mul_mem (mul_mem h2' h2) hx)) h4)
       (mul_mem h1 hy)
   have key : ((3 * X ^ 2 + a₄) / (2 * Y) - s) / (u : ℂ) =
@@ -1083,7 +1082,7 @@ theorem modelAt_one_of_sqProd_mem : ∀ (p : ℕ) (F : IntermediateField ℚ ℂ
   have hβ : (sqrtNegNat p).im ≠ 0 := sqrtNegNat_im_ne_zero hp.pos
   have hΔF : (latticeCurve L).Δ ∈ F := by
     rw [latticeCurve_Δ]
-    exact sub_mem (pow_mem hD.g₂_mem 3) (mul_mem (by simpa using (algebraMap_mem F (27 : ℚ))) (pow_mem hD.g₃_mem 2))
+    exact sub_mem (pow_mem hD.g₂_mem 3) (mul_mem (by simp) (pow_mem hD.g₃_mem 2))
   obtain ⟨A, hAF, hA0, hAv⟩ := _root_.GlobalTheory.CMModel.exists_mem_valuation_cube_eq_Δ p F L t hp hp4 hp3 hD V
   obtain ⟨u, huF, hu0, huv⟩ := _root_.GlobalTheory.valuation_twelfth_power_of_cube p V F (latticeCurve L).Δ A (sqProd p L t) hp4 hΔF hAF hQ
     (latticeCurve_Δ_ne_zero L) hA0 hAv (_root_.GlobalTheory.CMModel.sqProd_pow_eight_mul p F L t hp hp4 hp3 hD)
@@ -1159,11 +1158,11 @@ end GlobalTheory.CMModel.LocAll
 open GlobalTheory.CMModel.LocAll in
 theorem GlobalTheory.CMModel.twist_modelAt_all : ∀ (p : ℕ) (F : IntermediateField ℚ ℂ) (L : PeriodPair) (t : ℂ), p.Prime → p % 4 = 3 → 3 < p → Datum p F L t → sqProd p L t ∈ F → ∀ V : ValuationSubring ℂ, ModelAt V F (shortTwist (if p % 8 = 3 then 1 else -(p : ℂ)) (-L.g₂ / 4) (-L.g₃ / 4)) (-(p : ℂ) ^ 3) := by
   intro p F L t hp h4 h3 hD hsq V
-  have h27 : (27 : ℂ) ∈ F := by simpa using F.algebraMap_mem (27 : ℚ)
-  have h4F : (4 : ℂ) ∈ F := by simpa using F.algebraMap_mem (4 : ℚ)
+  have h27 : (27 : ℂ) ∈ F := by simp
+  have h4F : (4 : ℂ) ∈ F := by simp
   have hg2 : -L.g₂ / 4 ∈ F := div_mem (neg_mem hD.g₂_mem) h4F
   have hg3 : -L.g₃ / 4 ∈ F := div_mem (neg_mem hD.g₃_mem) h4F
-  have hpF : (p : ℂ) ∈ F := by simpa using F.algebraMap_mem (p : ℚ)
+  have hpF : (p : ℂ) ∈ F := by simp
   have hp0 : (p : ℂ) ≠ 0 := Nat.cast_ne_zero.2 hp.ne_zero
   by_cases hv : V.valuation (p : ℂ) = 1
   · have hgood : ModelAt V F ⟨0, 0, 0, -L.g₂ / 4, -L.g₃ / 4⟩ 1 := _root_.GlobalTheory.CMModel.modelAt_one_of_sqProd_mem p F L t hp h4 h3 hD hsq V hv
