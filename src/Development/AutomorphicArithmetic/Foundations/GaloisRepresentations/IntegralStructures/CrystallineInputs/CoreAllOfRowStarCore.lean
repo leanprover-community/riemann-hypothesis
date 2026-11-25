@@ -482,7 +482,7 @@ namespace GlobalTheory.RealGal.ConjUnr
 
 theorem unr_of_conj_res : ∀ (E Ω : Type) [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω] (Q : GlobalTheory.RealGal.QCM E Ω) (l : ℕ) [Fact l.Prime] (a : ℕ) (ρ : G E Ω →* GL (Fin a) (Qbar l)) (r : G ↥Q.K Ω →* GL (Fin a) (Qbar l)), UpperTheory.V.Af.RepIso r (ρ.comp (UpperTheory.V.Af.Bc.res E Ω ↥Q.K)) → (∀ᶠ w : HeightOneSpectrum (𝓞 ↥Q.K) in Filter.cofinite, ∀ A : ValuationSubring Ω, IsPlaceOver A w → ∀ s ∈ Ine (F := ↥Q.K) A, r s = 1) → ∀ᶠ w : HeightOneSpectrum (𝓞 E) in Filter.cofinite, ∀ A : ValuationSubring Ω, IsPlaceOver A w → ∀ s ∈ Ine (F := E) A, ρ s = 1 := by
   intro E Ω _ _ _ _ _ Q l _ a ρ r hiso hr
-  haveI : FiniteDimensional E Q.K := Module.finite_of_finrank_eq_succ Q.two
+  have : FiniteDimensional E Q.K := Module.finite_of_finrank_eq_succ Q.two
   have hS1 := GlobalTheory.InertiaAlmostAll.finite_ramified E Ω Q.K
   have hbad := Filter.eventually_cofinite.mp hr
   have hS2 := hbad.image (fun u : HeightOneSpectrum (𝓞 ↥Q.K) => u.under (𝓞 E))
@@ -1002,7 +1002,7 @@ theorem _root_.UpperTheory.Gal.Int.Inp.ex_all_of_good : UpperTheory.Gal.Int.Inp.
   choose χ' r hχ' hr using key
   obtain ⟨ρ, hρc, hρs, hev⟩ := GlobalTheory.CMBasePatch.main hAF E Ω l ι a π S hS P r fun Q => ⟨(hP Q).1, hr Q⟩
   refine ⟨ρ, hρc, hρs, ?_⟩
-  haveI : Infinite ↥S := hS.to_subtype
+  have : Infinite ↥S := hS.to_subtype
   obtain ⟨Q0, hQ0⟩ := hev.exists
   have hunr := GlobalTheory.RealGal.ConjUnr.unr_of_conj_res E Ω Q0.1 l a ρ (r Q0) hQ0 ((hr Q0).2.2.mono fun w' hw' A hA => by
     obtain ⟨B, -, hF⟩ := hw'
