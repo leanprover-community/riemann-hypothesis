@@ -132,7 +132,7 @@ open IsLocalRing in
 private theorem fpd_complete {R R' : Type} [CommRing R] [IsLocalRing R] [IsNoetherianRing R]
     [IsAdicComplete (maximalIdeal R) R] [CommRing R'] [Algebra R R'] [Module.Finite R R']
     [IsLocalRing R'] : IsAdicComplete (maximalIdeal R') R' := by
-  haveI hN : IsNoetherianRing R' := IsNoetherianRing.of_finite R R'
+  have hN : IsNoetherianRing R' := IsNoetherianRing.of_finite R R'
   have hcomap : (maximalIdeal R').comap (algebraMap R R') = maximalIdeal R :=
     eq_maximalIdeal (Ideal.isMaximal_comap_of_isIntegral_of_isMaximal (algebraMap _ _) (RingHom.Finite.to_isIntegral (RingHom.finite_algebraMap.mpr inferInstance)) (maximalIdeal R'))
   have hle : (maximalIdeal R).map (algebraMap R R') ≤ maximalIdeal R' :=
@@ -164,11 +164,11 @@ private theorem fpd_ext {A k k₁ : Type} [CommRing A] [IsDomain A] [IsDiscreteV
   classical
   let K := FractionRing A
   let Kb := AlgebraicClosure K
-  letI : Algebra k k₁ := f.toAlgebra
-  letI : Algebra k Kb := ((algebraMap A Kb).comp j).toAlgebra
-  haveI : Module.Finite k k₁ := Module.Finite.of_finite
-  haveI : Module.IsTorsionFree k k₁ := DivisionSemiring.to_moduleIsTorsionFree
-  haveI : Module.IsTorsionFree k Kb := DivisionSemiring.to_moduleIsTorsionFree
+  let : Algebra k k₁ := f.toAlgebra
+  let : Algebra k Kb := ((algebraMap A Kb).comp j).toAlgebra
+  have : Module.Finite k k₁ := Module.Finite.of_finite
+  have : Module.IsTorsionFree k k₁ := DivisionSemiring.to_moduleIsTorsionFree
+  have : Module.IsTorsionFree k Kb := DivisionSemiring.to_moduleIsTorsionFree
   let g : k₁ →ₐ[k] Kb := (by
     refine @_root_.IsAlgClosed.lift _ _ _ _ _ _ _ _ _ _ _ ?_ ?_ ?_
     solve_by_elim* (maxDepth := 2) only [*,
@@ -185,8 +185,8 @@ private theorem fpd_ext {A k k₁ : Type} [CommRing A] [IsDomain A] [IsDiscreteV
       rw [← map_pow, h3, map_one]
       exact isIntegral_one
   let L := IntermediateField.adjoin K (Set.range g)
-  haveI : Finite (Set.range g) := (Set.finite_range g).to_subtype
-  haveI : FiniteDimensional K L :=
+  have : Finite (Set.range g) := (Set.finite_range g).to_subtype
+  have : FiniteDimensional K L :=
     IntermediateField.finiteDimensional_adjoin (by
       rintro _ ⟨x, rfl⟩
       exact (hint x).tower_top)
@@ -200,7 +200,7 @@ private theorem fpd_ext {A k k₁ : Type} [CommRing A] [IsDomain A] [IsDiscreteV
     rw [IsScalarTower.algebraMap_apply A K L, IsScalarTower.algebraMap_apply A K L y] at h'
     exact IsFractionRing.injective A K ((algebraMap K L).injective h')
   have hf : (algebraMap A (integralClosure A L)).Finite := RingHom.finite_algebraMap.2 hfin
-  haveI hl : IsLocalHom (algebraMap A (integralClosure A L)) := hf.to_isIntegral.isLocalHom hinj
+  have hl : IsLocalHom (algebraMap A (integralClosure A L)) := hf.to_isIntegral.isLocalHom hinj
   refine ⟨integralClosure A L, inferInstance, inferInstance, hdvr, algebraMap _ _,
     gL.codRestrict (integralClosure A L) hmem, fpd_complete (R := A), Module.finite_of_finite (ResidueField A),
     hinj, hl, fun a => ?_⟩
@@ -222,15 +222,15 @@ open IsLocalRing UpperTheory.V.Fr in
 theorem UpperTheory.V.Pr.finPtDown :
     UpperTheory.V.Pr.FinPtDown := by
   intro l _ c c₁ f _ _ Φ n H A _ _ hA _ _ ρ hρ hψ g
-  haveI : IsDiscreteValuationRing A := hA.toIsDiscreteValuationRing
-  haveI := UpperTheory.V.UnitaryThreeInertia.Coef.finite_residue c₁
+  have : IsDiscreteValuationRing A := hA.toIsDiscreteValuationRing
+  have := UpperTheory.V.UnitaryThreeInertia.Coef.finite_residue c₁
   obtain ⟨B, _, _, hB, φ, j₁, hc, hfin, hinj, hloc, hj⟩ :=
     fpd_ext (A := A) f (algebraMap (ResidueField c.O) A)
-  letI : Algebra (ResidueField c₁.O) B := j₁.toAlgebra
-  letI : Algebra c₁.O B := (j₁.comp (residue c₁.O)).toAlgebra
-  haveI : IsScalarTower c₁.O (ResidueField c₁.O) B := IsScalarTower.of_algebraMap_eq fun _ => rfl
-  haveI hl : IsLocalHom (algebraMap c₁.O B) := RingHom.isLocalHom_comp j₁ (residue c₁.O)
-  haveI : IsCD c₁.O B := { toIsDiscreteValuationRing := hB, complete := hc, isLocalHom := hl, fin := hfin }
+  let : Algebra (ResidueField c₁.O) B := j₁.toAlgebra
+  let : Algebra c₁.O B := (j₁.comp (residue c₁.O)).toAlgebra
+  have : IsScalarTower c₁.O (ResidueField c₁.O) B := IsScalarTower.of_algebraMap_eq fun _ => rfl
+  have hl : IsLocalHom (algebraMap c₁.O B) := RingHom.isLocalHom_comp j₁ (residue c₁.O)
+  have : IsCD c₁.O B := { toIsDiscreteValuationRing := hB, complete := hc, isLocalHom := hl, fin := hfin }
   let ρ₀ := ρ.map φ
   let ρ₁ : NRep (Φ.ext f) n B := ⟨ρ₀.r, ρ₀.ψ, ρ₀.pol, ρ₀.diag, ρ₀.ord⟩
   have key : ∀ a, ResidueField.map φ (ResidueField.map (algebraMap c.O A) a) =
@@ -318,7 +318,7 @@ private theorem char_eq {l : ℕ} [Fact l.Prime] {G A : Type} [Group G] [Topolog
       (Ideal.pow_mem_pow (hm1 g) _)
   have key : ∀ (N : ℕ) g, ((χ g : Aˣ) : A) ^ h - 1 ∈ m ^ N := by
     intro N
-    haveI : Finite (A ⧸ m ^ N) := Ideal.finite_quotient_pow (IsNoetherian.noetherian m) N
+    have : Finite (A ⧸ m ^ N) := Ideal.finite_quotient_pow (IsNoetherian.noetherian m) N
     let q := Ideal.Quotient.mk (m ^ N)
     let χN : G →* (A ⧸ m ^ N)ˣ := (Units.map (q : A →* A ⧸ m ^ N)).comp χ
     let S : Subgroup (A ⧸ m ^ N)ˣ := (powMonoidHom (l ^ N) : (A ⧸ m ^ N)ˣ →* (A ⧸ m ^ N)ˣ).ker
@@ -381,7 +381,7 @@ private theorem diag_eq {l : ℕ} [Fact l.Prime] {k : Type} [Field k] [CharP k l
     (hmul : ∀ g h i, ρ.r (g * h) i i = ρ.r g i i * ρ.r h i i)
     (h1 : ∀ v, ∀ g ∈ F.Iv v, F.Ψ (F.loc v g) = 1 → ∀ i, ρ.r (F.loc0 v g) i i = 1) (g : F.G0) (i : Fin 3) :
     ρ.r g i i = j ((F.Ψ g ^ w 3 i : kˣ) : k) := by
-  haveI : CharP A l := charP_of_injective_ringHom j.injective l
+  have : CharP A l := charP_of_injective_ringHom j.injective l
   obtain ⟨h, h0, hcl⟩ := hF.cl
   choose u a₀ hu _ hgen using hF.gen
   have hstar := UpperTheory.V.Fr.star hF
@@ -450,9 +450,9 @@ private theorem diag_eq {l : ℕ} [Fact l.Prime] {k : Type} [Field k] [CharP k l
 
 theorem finPtOf : FinPtOf := by
   intro l _ O _ _ _ _ F C₀ hF S hoff A _ _ _ _ _ ρ hρ hψ g
-  haveI : IsLocalHom (algebraMap O A) := UpperTheory.V.Pr.IsCD.isLocalHom
-  haveI : Finite (IsLocalRing.ResidueField A) := UpperTheory.V.Pr.IsCD.fin (O := O)
-  haveI : IsNoetherianRing A := PrincipalIdealRing.isNoetherianRing
+  have : IsLocalHom (algebraMap O A) := UpperTheory.V.Pr.IsCD.isLocalHom
+  have : Finite (IsLocalRing.ResidueField A) := UpperTheory.V.Pr.IsCD.fin (O := O)
+  have : IsNoetherianRing A := PrincipalIdealRing.isNoetherianRing
   have hCL : UpperTheory.V.CA.IsCL O A :=
     ⟨inferInstance, UpperTheory.V.Pr.IsCD.complete (O := O), inferInstance, Module.Finite.of_finite⟩
   have hres : ∀ x : ResidueField O,
@@ -670,7 +670,7 @@ theorem modularity_linked_ends (hMod : _root_.UpperTheory.V.W.ModUAlt) (hLam : W
   refine ⟨J, ⟨⟨Λ, hJ.ring.fin⟩, ?_, fun g hg => (hJ.ring.unr0 R.v0 g hg).1,
     n4Of Ω l ι c N e ψ η σ g₁ B M H L Φ k c₁ f n ka R, hJ.p1, hJ.p3, hs J hJ.pt⟩, hJ.end2⟩
   intro Z hZ
-  haveI : IsDiscreteValuationRing c₁.O := c₁.dvr
+  have : IsDiscreteValuationRing c₁.O := c₁.dvr
   have := dimOf c₁.O Λ.Λ R.B₀.B (Λ.toPair R.B₀.u : Λ.Λ →+* R.B₀.B) J _ hΛ hJ.ring.fin hJ.ring.tf Z hZ
   rw [← hd] at this
   exact this
@@ -928,7 +928,7 @@ theorem UpperTheory.Gal.projectedFormsSystemPart.linked_endomorphism_dense :
     GlobalTheory.Published.GlobalArtinReciprocity → UpperTheory.V.W.LocCFTAll → _root_.UpperTheory.V.W.ModUAlt → UpperTheory.V.W.LevEx → UpperTheory.V.W.LamEx → UpperTheory.V.W.ProModularRingExists → _root_.UpperTheory.V.Z.Sym.UnitaryThreeAutomorphyDense → _root_.UpperTheory.V.Sd.Seed2Alt → UpperTheory.V.Sd.Twist → UpperTheory.V.Sd.AlgCyc → UpperTheory.V.Sd.AlgRes → _root_.UpperTheory.V.Z.Sym.Pl.LinkedEndEAlt := by
   intro hA _ hMod hLev hLam hB0 hS3 hS2 hTw hCyc hRes Ω _ _ _ l _ ι c _ N _ e ψ he hev η σ g₁ B M hM hram L _ _ _ _ Φ C₀ k hB hok hbig hseed
   obtain ⟨K, _, _, _, N', w, χ', η', θ, j, hD, hne, hord, hη, hcong, hdisc⟩ := hseed
-  haveI : IsAlgClosure L Ω :=
+  have : IsAlgClosure L Ω :=
     { isAlgClosed := IsAlgClosure.isAlgClosed ℚ
       isAlgebraic := haveI : Algebra.IsAlgebraic ℚ Ω := IsAlgClosure.isAlgebraic
         Algebra.IsAlgebraic.tower_top (K := ℚ) L }
@@ -956,12 +956,12 @@ theorem UpperTheory.Gal.projectedFormsSystemPart.linked_endomorphism_dense :
     ext s
     rw [MonoidHom.mem_ker, MonoidHom.mem_ker, ← Units.val_eq_one, ← Units.val_eq_one, hη s]
     exact_mod_cast Iff.rfl
-  haveI := hD.imag
+  have := hD.imag
   obtain ⟨κ, hκ⟩ := hTw K Ω hD.quad l hok.l_odd hdisc ι σ hD.cc
   obtain ⟨hk3, hk2⟩ := UpperTheory.V.Pr.kaOf hCyc hRes Ω l ι c N e ψ η σ g₁ B M H L Φ k
   obtain ⟨ka, hk2, hka⟩ := hk2 K hker κ hκ
   obtain ⟨c₁, hle, hL, hv3, hv2, f, hf⟩ := UpperTheory.V.Pr.coefEx l c L Ω _ _ hk3.alg.1 hk2.alg.1
-  haveI := UpperTheory.V.Pr.coefIs l c₁
+  have := UpperTheory.V.Pr.coefIs l c₁
   obtain ⟨m₃, hm₃, -, r₃, -, s₃⟩ := hS3 K L Ω l ι σ N' w χ' η' θ j hD hne M hM0
     (by rw [mul_comm]; exact (Nat.mul_dvd_mul_left l hev.two_dvd).trans hM)
     (UpperTheory.V.Z.Sym.Pl.linkUnr Ω l _ η _ σ g₁ B M L Φ k) (UpperTheory.V.Z.Sym.Pl.chiUnr Ω l c N e ψ χ' j hord hcong M hM L) 2

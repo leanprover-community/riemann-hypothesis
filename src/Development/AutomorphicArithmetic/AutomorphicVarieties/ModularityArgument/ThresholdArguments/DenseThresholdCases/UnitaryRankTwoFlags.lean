@@ -170,10 +170,10 @@ end Lift
 
 theorem det : Det := by
   intro l _ O _ _ _ _ F n S ξ D hD hr hψ
-  haveI hc : IsAdicComplete (maximalIdeal O) O := UpperTheory.V.Fr.IsCoef.complete (l := l)
-  haveI hn : IsNoetherianRing O := PrincipalIdealRing.isNoetherianRing
-  haveI : IsCO O O := IsCO.self O
-  haveI : IsCO O (TrivSqZeroExt O O) := co_sqz O O O (fun c => rfl)
+  have hc : IsAdicComplete (maximalIdeal O) O := UpperTheory.V.Fr.IsCoef.complete (l := l)
+  have hn : IsNoetherianRing O := PrincipalIdealRing.isNoetherianRing
+  have : IsCO O O := IsCO.self O
+  have : IsCO O (TrivSqZeroExt O O) := co_sqz O O O (fun c => rfl)
   obtain ⟨y, hy⟩ := (der_hom O S.R O O ξ D).1 ⟨D, hD, rfl⟩
   let z : S.R →ₐ[O] TrivSqZeroExt O O := (TrivSqZeroExt.inlAlgHom O O O).comp ξ
   have key : ∀ a : S.R, D a = 0 → y a = z a := fun a ha =>
@@ -328,8 +328,8 @@ end Der
 
 theorem tor : Tor := by
   intro l _ O _ _ _ _ F S ξ hTI D hD D' hD' hB hB' hli
-  haveI : Nontrivial O := IsDomain.toNontrivial
-  haveI : (RingHom.ker ξ).IsPrime := RingHom.ker_isPrime ξ
+  have : Nontrivial O := IsDomain.toNontrivial
+  have : (RingHom.ker ξ).IsPrime := RingHom.ker_isPrime ξ
   obtain ⟨⟨p, hp, hpP⟩, ⟨q, hq, hqP⟩⟩ := exists_mon S.ρ (RingHom.ker ξ) hTI
   have hξp : ξ p ≠ 0 := fun h => hpP (RingHom.mem_ker.mpr h)
   have hξq : ξ q ≠ 0 := fun h => hqP (RingHom.mem_ker.mpr h)
@@ -450,7 +450,7 @@ namespace UpperTheory.V.J
 
 private theorem norm_lt_of_mem {l : ℕ} [Fact l.Prime] (c : Coef l) (x : c.O) (hx : x ∈ maximalIdeal c.O) :
     ‖(x : Qbar l)‖ < 1 := by
-  haveI := c.dvr
+  have := c.dvr
   obtain ⟨ϖ, hϖ⟩ := IsDiscreteValuationRing.exists_irreducible c.O
   by_cases hx0 : x = 0
   · subst hx0
@@ -767,7 +767,7 @@ private theorem ap_det {n : ℕ} {A B G H : Type} [CommRing A] [CommRing B] [Gro
     (ρ : G →* Matrix (Fin n) (Fin n) A) (f : A →+* B) (p : H →* G) (τ : H →* Matrix (Fin n) (Fin n) B)
     (h : ∀ g, τ g = (ρ (p g)).map f) : ((W.GDet.ofRep ρ).map f).comap p = W.GDet.ofRep τ := by
   refine W.GDet.ext fun C _ _ x => ?_
-  letI : Algebra A C := ((algebraMap B C).comp f).toAlgebra
+  let : Algebra A C := ((algebraMap B C).comp f).toAlgebra
   change (W.GDet.repAlg ρ C (MonoidAlgebra.mapDomainRingHom C p x)).det = (W.GDet.repAlg τ C x).det
   congr 1
   induction x using MonoidAlgebra.induction_linear with
@@ -827,8 +827,8 @@ private theorem ap_psi {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω
 theorem UpperTheory.V.J.xiArith :
     GlobalTheory.Published.GlobalArtinReciprocity → UpperTheory.V.J.XiArith := by
   intro hG Ω _ _ _ l _ ι c _ N _ e ψ η σ g₁ B M H L _ _ _ _ _ Φ k c₁ _ f R hka φ hφ ξ r hr hirr hψ
-  letI : CommRing R.S.B := Subalgebra.toCommRing R.S.B
-  letI : Algebra c₁.O R.S.B := Subalgebra.algebra R.S.B
+  let : CommRing R.S.B := Subalgebra.toCommRing R.S.B
+  let : Algebra c₁.O R.S.B := Subalgebra.algebra R.S.B
   obtain ⟨hD1, hP1⟩ := hφ
   have hD0 : R.B₀.u.D.map ((R.S.B.val.comp φ : R.B₀.B →ₐ[c₁.O] R.S.R) : R.B₀.B →+* R.S.R) =
       W.GDet.ofRep (R.K.tw R.S.ρ) := hD1
@@ -906,7 +906,7 @@ theorem mod_l_open_existence
   refine ⟨⟨Λ, hJ.ring.fin⟩, ?_, fun g hg => (hJ.ring.unr0 R.v0 g hg).1,
     n4Of Ω l ι c N e ψ η σ g₁ B M H L Φ k c₁ f n ka R, hJ.p1, hJ.p3, hs⟩
   intro Z hZ
-  haveI : IsDiscreteValuationRing c₁.O := c₁.dvr
+  have : IsDiscreteValuationRing c₁.O := c₁.dvr
   have := dimOf c₁.O Λ.Λ R.B₀.B (Λ.toPair R.B₀.u : Λ.Λ →+* R.B₀.B) J _ hΛ hJ.ring.fin hJ.ring.tf Z hZ
   rw [← hd] at this
   exact this
@@ -980,7 +980,7 @@ theorem openEx2E_alt :
     ext s
     rw [MonoidHom.mem_ker, MonoidHom.mem_ker, ← Units.val_eq_one, ← Units.val_eq_one, hη s]
     exact_mod_cast Iff.rfl
-  haveI := hD.imag
+  have := hD.imag
   obtain ⟨κ, hκ⟩ := hTw K Ω hD.quad l hok.l_odd hdisc ι σ hD.cc
   obtain ⟨hk3, hk2⟩ := UpperTheory.V.Pr.kaOf hCyc hRes Ω l ι c N e ψ η σ g₁ B M H L Φ k
   obtain ⟨ka, hk2, hka⟩ := hk2 K hker κ hκ
@@ -995,7 +995,7 @@ theorem openEx2E_alt :
       (φ : R →ₐ[ℤ_[l]] PadicAlgCl l) :
       ∃ E : IntermediateField ℚ_[l] (PadicAlgCl l), FiniteDimensional ℚ_[l] E ∧ ∀ x, φ x ∈ E ∧ ‖φ x‖ ≤ 1 := by
     obtain ⟨t, ht⟩ := Module.Finite.fg_top (R := ℤ_[l]) (M := R)
-    haveI := (t.finite_toSet.image φ).to_subtype
+    have := (t.finite_toSet.image φ).to_subtype
     refine ⟨IntermediateField.adjoin ℚ_[l] (φ '' (t : Set R)),
       IntermediateField.finiteDimensional_adjoin fun x _ => Algebra.IsIntegral.isIntegral x, fun x => ⟨?_,
         oe_norm ((Algebra.IsIntegral.isIntegral (R := ℤ_[l]) x).map φ)⟩⟩
@@ -1008,7 +1008,7 @@ theorem openEx2E_alt :
       rw [map_smul, ← algebraMap_smul ℚ_[l] a]
       exact IntermediateField.smul_mem _ hb
   have ⟨c₂, hcc, hAc⟩ : ∃ c₂ : Coef l, c.O ≤ c₂.O ∧ ∀ x ∈ A, x ∈ c₂.O := by
-    haveI : Module.Finite ℤ_[l] A := Module.Finite.trans c.O A
+    have : Module.Finite ℤ_[l] A := Module.Finite.trans c.O A
     obtain ⟨E₁, f₁, m₁⟩ := oe_field c.O.val
     obtain ⟨E₂, f₂, m₂⟩ := oe_field (A.val.restrictScalars ℤ_[l])
     obtain ⟨c₂, hc⟩ := UpperTheory.V.X.So.coefOf l (E₁ ⊔ E₂)
@@ -1020,16 +1020,16 @@ theorem openEx2E_alt :
       ∀ (a : c.O) (b : c₁.O), a.1 = b.1 → f (residue c.O a) = residue c₁.O b := by
     let i : c.O →+* c₁.O := (Subalgebra.inclusion hle).toRingHom
     have hi : i.IsIntegral := by
-      haveI : Algebra.IsIntegral ℤ_[l] c₁.O := Algebra.IsIntegral.of_finite ℤ_[l] c₁.O
+      have : Algebra.IsIntegral ℤ_[l] c₁.O := Algebra.IsIntegral.of_finite ℤ_[l] c₁.O
       have e : i.comp (algebraMap ℤ_[l] c.O) = algebraMap ℤ_[l] c₁.O := (Subalgebra.inclusion hle).comp_algebraMap
       refine RingHom.IsIntegral.tower_top (algebraMap ℤ_[l] c.O) i ?_
       rw [e]
       exact fun x => Algebra.IsIntegral.isIntegral x
-    haveI : IsLocalHom i := hi.isLocalHom (Subalgebra.inclusion_injective hle)
+    have : IsLocalHom i := hi.isLocalHom (Subalgebra.inclusion_injective hle)
     exact ⟨ResidueField.map i, fun a b h => by
       rw [ResidueField.map_residue]
       exact congrArg _ (Subtype.ext h)⟩
-  haveI hco := UpperTheory.V.Pr.coefIs l c₁
+  have hco := UpperTheory.V.Pr.coefIs l c₁
   obtain ⟨R₂⟩ := UpperTheory.V.Pr.cRealEx hA hLoc hLev hB0 Ω l ι c N e ψ η σ g₁ B M H L Φ k c₁ f 2 ka C₀ (Or.inl rfl)
     hok hbig hle hf hk2 hv2
   obtain ⟨R₃⟩ := UpperTheory.V.Pr.cRealEx hA hLoc hLev hB0 Ω l ι c N e ψ η σ g₁ B M H L Φ k c₁ f 3 _ C₀ (Or.inr rfl)
