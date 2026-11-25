@@ -93,7 +93,6 @@ structure UnitaryGroupThirdPlaceHypotheses : Prop where
   cMCurveGoodOutsidePrimeSt : GlobalTheory.Published.CMCurveGoodOutsidePrimeSt
   weberRayFieldSt : GlobalTheory.Published.WeberRayFieldSt
   discreteSeriesCoverExists : GlobalTheory.Published.DiscreteSeriesCoverExists
-  siegelWeilUnitarySchrodinger : GlobalTheory.Published.SiegelWeilUnitarySchrodinger
   siegelEisensteinContinuation : GlobalTheory.Published.SiegelEisensteinContinuation
   siegelEisensteinSimplePole : _root_.GlobalTheory.Published.UnusedSlot72
   schurOrthogonalitySquareIntegrable : GlobalTheory.Published.SchurOrthogonalitySquareIntegrable

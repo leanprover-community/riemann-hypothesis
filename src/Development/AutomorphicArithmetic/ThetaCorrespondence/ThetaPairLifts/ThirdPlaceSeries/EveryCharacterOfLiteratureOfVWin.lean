@@ -837,8 +837,6 @@ theorem UpperTheory.LiteratureTheorems.siegel_eisenstein_simple_pole : GlobalThe
   trivial
 theorem UpperTheory.LiteratureTheorems.siegel_set_unitary_of_literature : GlobalTheory.Published.SiegelSetUnitary :=
   _root_.GlobalTheory.CompanionTheory.SiegelRed.siegelSetUnitary
-theorem UpperTheory.LiteratureTheorems.siegel_weil_unitary_schrodinger_of_literature : GlobalTheory.Published.SiegelWeilUnitarySchrodinger :=
-  PositivityTheory.SiegelWeilCoefficients.field
 theorem UpperTheory.LiteratureTheorems.strong_approx_su_of_literature : GlobalTheory.Published.StrongApproxSU :=
   GlobalTheory.StrongApproxSUProof.strongApproxSU
 theorem UpperTheory.LiteratureTheorems.toroidal_compactification_of_literature : GlobalTheory.Published.ToroidalCompactification :=
@@ -1027,7 +1025,6 @@ theorem UpperTheory.LiteratureTheorems.published_results_eigen (hLiteratureRow :
     cMCurveGoodOutsidePrimeSt := (_root_.UpperTheory.LiteratureTheorems.cm_curve_good_outside_prime_st_of_literature),
     weberRayFieldSt := (_root_.UpperTheory.LiteratureTheorems.weber_ray_field_st_of_literature),
     discreteSeriesCoverExists := (_root_.UpperTheory.LiteratureTheorems.discrete_series_cover_exists_of_literature),
-    siegelWeilUnitarySchrodinger := (_root_.UpperTheory.LiteratureTheorems.siegel_weil_unitary_schrodinger_of_literature),
     siegelEisensteinContinuation := (_root_.UpperTheory.LiteratureTheorems.siegel_eisenstein_continuation_of_literature),
     siegelEisensteinSimplePole := (_root_.UpperTheory.LiteratureTheorems.siegel_eisenstein_simple_pole),
     schurOrthogonalitySquareIntegrable := (_root_.UpperTheory.LiteratureTheorems.schur_orthogonality_square_integrable_of_literature),
