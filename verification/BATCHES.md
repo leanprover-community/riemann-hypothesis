@@ -20,7 +20,7 @@ The sections below give the details.
 | `changed after frozen` | a frozen pull request whose head has moved on from the commit taken | it is pushed to after a batch or the queue took a commit of it | its head is that commit again, or it is no longer frozen |
 | `batch queue` | a pull request wanted in a batch | a maintainer or reviewer comments `batch` or `p` | `-batch`; it joins a batch assembled by hand (in exchange for `batch-building`); its queued commit lands; it is closed |
 | `priority` | a queued pull request that goes first | `p` | by hand |
-| `awaiting-author` | a pull request handed back to its author | `aa`; it is pushed to while in a batch; the description leaves it out; a batch lands an older commit of it; `batch-conflict` is first put on it | `ready`, by the author or a maintainer; the batch takes the new head of a pull request it was put on for a push, or it is pushed back |
+| `awaiting-author` | a pull request handed back to its author | `aa`; it is pushed to while in a batch; the description leaves it out; a batch lands an older commit of it; `batch-conflict` is first put on it; a batch it builds on is rebuilt without a pull request it carries | `ready`, by the author or a maintainer; the batch takes the new head of a pull request it was put on for a push, or it is pushed back |
 | `main-conflict` | a pull request that conflicts with `main` | GitHub says so, unless it declares `depends on:` an open batch | the conflict is gone, or it declares that dependency |
 | `batch-conflict` | a pull request that conflicts with a batch being built, the outermost of its stack | git cannot merge it with the batch's head | the conflict is gone; the batch lands or is closed; it joins the batch |
 
@@ -226,6 +226,10 @@ heading about conflicts.
 Or wait until the batch has landed, then merge `main` into your branch, resolve the conflicts
 there and comment `ready`.
 
+A line counts as a dependency when it starts with `depends on`, `depend on` or `depends upon`,
+optionally after `- [ ]` or `- [x]`, and names the batch's pull request as `#123` or by its
+address.
+
 ### If the batch you build on is rebuilt
 
 A pull request that merged a batch's branch carries the batch's commits. If the batch is then
@@ -237,10 +241,6 @@ batch, or share commits with a batch's branch. Your pull request is then labelle
 new branch from the batch's current branch, copy only your own commits onto it with
 `git cherry-pick`, push that to your pull request and comment `ready`. From then on, merge the
 batch's branch into yours; never rebase onto it.
-
-A line counts as a dependency when it starts with `depends on`, `depend on` or `depends upon`,
-optionally after `- [ ]` or `- [x]`, and names the batch's pull request as `#123` or by its
-address.
 
 A batch that was already being built before the workflow first told anyone (its record on the
 pull request is older than these notices) is not announced afresh: its pull requests are
