@@ -57,7 +57,7 @@ pull requests on its line leave every batch, and a `(main)` typed by hand is tru
 a dependency that GitHub marked merged because a batch carrying its head commit landed counts as
 on main even if the batch reverted its changes before it landed: while the batch is open its
 record says so, and the line is not ticked, but afterwards nothing does. Batches should be rebuilt
-without a pull request rather than revert it (see `AGENTS.md`).
+without a pull request rather than revert it (see rule 5 of `verification/BATCHES.md`).
 
 A pull request named on a line whose box is empty may have been closed without landing: neither
 merged nor on main, nor in a batch being built. The pull request that depends on it is then
