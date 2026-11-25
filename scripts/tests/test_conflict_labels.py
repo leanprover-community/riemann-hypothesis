@@ -378,8 +378,13 @@ def run(gh, number=None, table=None, stale=None, known=None):
 
 class Included(unittest.TestCase):
     def test_only_headings_that_include_count(self):
-        batches = {900: dict(batch(900), body="Included:\n\n- #1 a\n\nThese can be dropped:\n\n- #2 b\n\n"
-                                              "Left out:\n\n- #3 c\n\nA paragraph.\n- #4 d\n"),
+        # As batches 13 to 17 headed them. "Held by the maintainers:" says neither, so #6 is
+        # compared like any other pull request.
+        batches = {900: dict(batch(900), body="Included:\n\n- #1 a\n\n"
+                                              "Included, but borderline; these can be dropped if the maintainers prefer:\n\n"
+                                              "- #2 b\n\nLeft out:\n\n- #3 c\n\nA paragraph.\n- #4 d\n\n"
+                                              "Borderline and not included, for a maintainer to decide:\n\n- #7 g\n\n"
+                                              "Held by the maintainers:\n\n- #6 f\n"),
                    901: dict(batch(901, building=False), body="Included:\n\n- #5 e\n")}
         self.assertEqual(labels.included_in(batches, REPO), {1: {900}, 2: {900}})
 

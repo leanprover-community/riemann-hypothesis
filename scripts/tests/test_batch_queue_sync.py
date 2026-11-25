@@ -1912,6 +1912,64 @@ class DescriptionCheck(unittest.TestCase):
         [told] = self.reverted(gh, 13)
         self.assertTrue(told.startswith(f"<!-- batch-queue-reverted 1018 {undo} -->"))
 
+    def test_a_heading_that_says_neither_lists_neither(self):
+        # As batch 16 held four pull requests: not in the branch, and not left out either. #13 is
+        # not named as missing its head, nor told it is left out; #14, under a heading that says
+        # "included", is still included.
+        gh = self.built(LISTED.replace("These can be dropped if the maintainers prefer:",
+                                       "Included, but borderline; these can be dropped if the maintainers prefer:")
+                        + "\nHeld by the maintainers:\n\n- #13 Waits for a decision (@dan)\n")
+        log = sync(gh)
+        self.assertEqual(self.checks(gh), [])
+        self.assertEqual(gh.said(13), [])
+        self.assertNotIn("told #13 that the batch #1018 leaves it out", log)
+        # Under "Included:", it is missing its head.
+        gh.pulls[1018]["body"] = gh.pulls[1018]["body"].replace("- #12 Prune", "- #13 Not merged in (@dan)\n- #12 Prune")
+        gh.touch(1018)
+        sync(gh)
+        [check] = self.checks(gh)
+        self.assertIn("Listed as included, but their head commit is not in this branch: #13.", check)
+
+    def merge_with_main_and_revert(self, gh, subject="Merge PR #13 into batch"):
+        """As batch 15's ten reverts: `main` was merged into #13 for the batch, the batch merged
+        that, and git reverted the batch's merge. Its head is a grandparent of that merge. Returns
+        the revert."""
+        old, head = gh.refs[HAND], gh.pulls[13]["sha"]
+        with_main, merge, undo = sha("13 with main"), sha("kim merge 13"), sha("kim revert 13")
+        gh.commits[with_main] = {"message": "Merge main into this branch", "parents": [{"sha": head}, {"sha": MAIN}]}
+        gh.inside[with_main] = gh.inside[head] | {head, MAIN}
+        gh.commits[merge] = {"message": subject, "parents": [{"sha": old}, {"sha": with_main}]}
+        gh.inside[merge] = gh.inside[old] | gh.inside[with_main] | {old, with_main}
+        gh.commits[undo] = {"message": f'Revert "{subject}"\n\nThis reverts commit {merge}, reversing\nchanges made '
+                                       f"to {old}.", "parents": [{"sha": merge}]}
+        gh.inside[undo] = gh.inside[merge] | {merge}
+        move(gh, undo)
+        return undo
+
+    def test_a_revert_of_a_batch_merge_that_brought_main_in_with_it_counts(self):
+        # The description lists it as left out, as batch 15's did: it is named as reverted, not as
+        # in the branch although left out, and told.
+        gh = self.built(LISTED.replace("- {URL}23".format(URL=URL), f"- #13 Taken out (@dan)\n- {URL}23"))
+        sync(gh)
+        undo = self.merge_with_main_and_revert(gh)
+        log = sync(gh)
+        self.assertEqual(note(self.record(gh))["reverted"], {"13": undo})
+        [check] = self.checks(gh)
+        self.assertIn(f"Reverted in this branch: #13 in `{undo[:10]}`.", check)
+        self.assertNotIn("listed as left out", check)
+        [told] = self.reverted(gh, 13)
+        self.assertTrue(told.startswith(f"<!-- batch-queue-reverted 1018 {undo} -->"))
+        self.assertIn("told #13 that the batch #1018 reverts it", log)
+
+    def test_a_batch_merge_naming_a_pull_request_it_did_not_bring_in_does_not_count_it(self):
+        # Named #12, which the merge does not hold: only #13's head is in it.
+        gh = self.built()
+        sync(gh)
+        self.merge_with_main_and_revert(gh, subject="Merge PR #12 into batch")
+        sync(gh)
+        self.assertEqual(note(self.record(gh))["reverted"], {})
+        self.assertEqual((self.reverted(gh, 12), self.reverted(gh, 13)), ([], []))
+
     def test_a_short_id_counts_only_for_a_merge_that_brought_a_pull_request_in(self):
         gh = self.built()
         undo = merge_and_revert(gh, 13)
@@ -1934,36 +1992,45 @@ class DescriptionCheck(unittest.TestCase):
         [check] = self.checks(gh)
         self.assertIn(f"Reverted in this branch: #13 in `{undo[:10]}`.", check)
 
-    def test_one_merged_in_at_another_commit_is_named_for_information_only(self):
-        # As #1513 in batch 13: `main` was merged into it for the batch, and that merge was never
-        # pushed to its branch.
-        gh = self.built()
-        sync(gh)
-        gh.pulls[1018]["body"] = WITH_13
+    def merged_with_main(self, gh):
+        """`main` is merged into #13 for the batch, and that merge into the batch. Returns the
+        first merge."""
         old, head = gh.refs[HAND], gh.pulls[13]["sha"]
         with_main, merge = sha("13 with main"), sha("kim merge 13")
         gh.commits[with_main] = {"message": "Merge main into this branch", "parents": [{"sha": head}, {"sha": MAIN}]}
         gh.inside[with_main] = gh.inside[head] | {head, MAIN}
         gh.commits[merge] = {"message": "Merge PR #13 into batch", "parents": [{"sha": old}, {"sha": with_main}]}
         gh.inside[merge] = gh.inside[old] | gh.inside[with_main] | {old, with_main}
-        gh.push(13, "head13-later")  # its head moved on, without that merge
         move(gh, merge)
-        log = sync(gh)
-        self.assertEqual(note(self.record(gh))["absorbed"], {"13": with_main})
-        self.assertEqual(self.checks(gh), [])  # nothing is posted for it alone
-        self.assertNotIn("posted on the batch #1018 what its description and its branch disagree on", log)
-        # A comment that is there already shows it, and says all is well otherwise.
-        gh.pulls[1018]["body"] = WITH_13.replace("- #12 Prune", "- #24 Not merged in (@eve)\n- #12 Prune")
-        gh.touch(1018)
+        return with_main
+
+    def test_one_merged_in_with_main_is_in_the_batch_at_its_head(self):
+        # Its head is the first parent of the merge of `main`, so it is in the branch.
+        gh = self.built()
         sync(gh)
         gh.pulls[1018]["body"] = WITH_13
-        gh.touch(1018)
+        self.merged_with_main(gh)
         sync(gh)
+        self.assertEqual(note(self.record(gh))["members"]["13"], gh.pulls[13]["sha"])
+        self.assertEqual(self.checks(gh), [])
+
+    def test_one_pushed_to_before_the_batch_was_looked_through_is_missing_its_head(self):
+        # As #1513 and #1731 in batch 13: pushed to after they were merged in, a few minutes
+        # before the workflow first looked through the batch. The batch lands the older commit,
+        # and GitHub does not mark them merged.
+        gh = self.built()
+        sync(gh)
+        gh.pulls[1018]["body"] = WITH_13
+        self.merged_with_main(gh)
+        gh.push(13, "head13-later")  # its head moved on, without that merge
+        sync(gh)
+        self.assertNotIn("13", note(self.record(gh))["members"])
         [check] = self.checks(gh)
-        self.assertIn(f"In this branch at another commit than their head, merged in by the batch's own merge commit: "
-                      f"#13 at `{with_main[:10]}`. This is for information", check)
-        self.assertIn("Nothing else to report", check)
-        self.assertNotIn("head commit is not in this branch", check)
+        self.assertIn("Listed as included, but their head commit is not in this branch: #13. Merge the head commit "
+                      "of each into the branch. One whose earlier commit is in the branch, for example because it was "
+                      "pushed to after it was merged in but before the workflow first looked through the batch, does "
+                      "not count", check)
+        self.assertNotIn("Nothing to report", check)
 
     def test_a_revert_that_is_reverted_again_puts_it_back(self):
         gh = self.built()
@@ -3006,13 +3073,12 @@ class Notes(unittest.TestCase):
                          ([14], [12], [14], [12]))
 
     def test_what_the_description_check_remembers_is_kept_and_left_out_when_empty(self):
-        full = dict(self.QUEUED_ONLY, reverted={}, absorbed={"13": sha("13 with main")}, fates={"15": "merged"})
+        full = dict(self.QUEUED_ONLY, reverted={}, fates={"15": "merged"})
         self.assertEqual(batch.load_note(batch.dump_note(full)), full)
-        empty = dict(full, absorbed={}, fates={})
+        empty = dict(full, fates={})
         stored = json.loads(batch.dump_note(empty))
-        self.assertNotIn("absorbed", stored)
         self.assertNotIn("fates", stored)
-        self.assertEqual(batch.load_note(batch.dump_note(empty)), dict(self.QUEUED_ONLY, reverted={}, absorbed={}))
+        self.assertEqual(batch.load_note(batch.dump_note(empty)), dict(self.QUEUED_ONLY, reverted={}))
 
     def test_queued_is_kept_as_the_shorter_list(self):
         stored = json.loads(batch.dump_note(self.QUEUED_ONLY))
