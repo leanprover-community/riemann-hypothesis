@@ -1031,12 +1031,6 @@ open UpperTheory.ConvolutionTheory.R2.C
 private lemma psi_add {F : Type} [Field F] [NumberField F] (x y : A F) : ψ (x + y) = ψ x * ψ y := by
   simp [ψ, AddChar.map_add_eq_mul]
 
-private lemma ab_one {F : Type} [Field F] [NumberField F] : ab (1 : (A F)ˣ) = 1 := by
-  simp [ab]
-
-private lemma ab_mul {F : Type} [Field F] [NumberField F] (a a' : (A F)ˣ) : ab (a * a') = ab a * ab a' := by
-  simp [ab]
-
 private lemma quadraticForm_scalar_mul {F : Type} [Field F] [NumberField F] (δ : F) (a : A F) (v : V4 F) :
     q4 δ (fun i => a * v i) = a ^ 2 * q4 δ v := by
   simp only [q4]; ring

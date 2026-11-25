@@ -685,11 +685,6 @@ open UpperTheory.ConvolutionTheory.R2
 open scoped Classical
 open UpperTheory.ConvolutionTheory.R2.C
 
-private theorem ab_one {F : Type} [Field F] [NumberField F] : ab (1 : (A F)ˣ) = 1 := by
-  unfold ab
-  rw [map_one]
-  rfl
-
 private theorem idx_unique {F : Type} [Field F] [NumberField F] [IsTotallyReal F] {δ : F} (hδ : δ ≠ 0)
     {b : (A F)ˣ} {c c' : ℂ} (h : IsIdx δ (b : A F) c) (h' : IsIdx δ (b : A F) c') : c = c' :=
   (idxEx F δ hδ b).unique h h'

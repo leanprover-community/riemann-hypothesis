@@ -20,11 +20,6 @@ private lemma dL_mul {K : Type} [Field K] [NumberField K] {v : P K} (a d a' d' :
   ext i j
   fin_cases i <;> fin_cases j <;> simp [dL, Matrix.mul_apply, Fin.sum_univ_two]
 
-private lemma dL_one {K : Type} [Field K] [NumberField K] {v : P K} : (dL (1 : (Kv v)ˣ) 1) = 1 := by
-  refine Units.ext ?_
-  ext i j
-  fin_cases i <;> fin_cases j <;> simp [dL]
-
 private lemma dL_nL {K : Type} [Field K] [NumberField K] {v : P K} (a : (Kv v)ˣ) (b : Kv v) :
     dL a 1 * nL b = nL ((a : Kv v) * b) * dL a 1 := by
   refine Units.ext ?_

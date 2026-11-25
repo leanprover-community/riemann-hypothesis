@@ -15,8 +15,6 @@ open Polynomial
 
 private def evalX {A : Type} [CommRing A] (a : A) : ℤ[X] →+* A := Polynomial.eval₂RingHom (Int.castRingHom A) a
 
-private lemma evalX_X {A : Type} [CommRing A] (a : A) : evalX a X = a := by simp [evalX]
-
 private abbrev TT : Scheme.{0} := Spec (CommRingCat.of ℤ[X])
 
 end UpperTheory

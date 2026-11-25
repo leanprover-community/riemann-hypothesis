@@ -78,11 +78,6 @@ private theorem right_tr {E : Type} [Field E] [NumberField E] (N : MeasE E) (u :
   rw [h3]
   exact hfd.setIntegral_eq N.fund hinv
 
-private theorem diag_inv_val (E : Type) [Field E] [NumberField E] (t : Eˣ) :
-    (((IdeleGroup.diagonal E t : (A E)ˣ)⁻¹ : (A E)ˣ) : A E) = rt ((t : E)⁻¹) := by
-  rw [← map_inv, ← Units.val_inv_eq_inv_val]
-  rfl
-
 private def cR {E : Type} [Field E] (t : Eˣ) (g : Matrix.SpecialLinearGroup (Fin 2) E) :
     Matrix.SpecialLinearGroup (Fin 2) E :=
   ⟨!![g 0 0, g 0 1 * (t : E)⁻¹; (t : E) * g 1 0, g 1 1], by
@@ -93,15 +88,6 @@ private def cR {E : Type} [Field E] (t : Eˣ) (g : Matrix.SpecialLinearGroup (Fi
     have : g 0 1 * (t : E)⁻¹ * ((t : E) * g 1 0) = g 0 1 * g 1 0 := by field_simp
     rw [this]
     exact h⟩
-
-private theorem cD_ratS {E : Type} [Field E] [NumberField E] (t : Eˣ)
-    (g : Matrix.SpecialLinearGroup (Fin 2) E) :
-    cD (IdeleGroup.diagonal E t) (ratS E g) = ratS E (cR t g) := by
-  refine Subtype.ext ?_
-  rw [M.val_ratS]
-  ext i j
-  fin_cases i <;> fin_cases j <;>
-    simp [cD, cR, M.val_ratS, diag_inv_val, UpperTheory.ConvolutionTheory.R2.rt, map_mul]
 
 private theorem conj_int {E : Type} [Field E] [NumberField E] (N : MeasE E) (u : G1 E → ℂ)
     (hu : ∀ γ g, u (ratS E γ * g) = u g) (t : Eˣ) :

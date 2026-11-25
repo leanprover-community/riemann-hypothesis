@@ -143,12 +143,6 @@ def InPow (l : ℕ) [Fact l.Prime] (t : ℕ) (x : ℚ) : Prop := x / (l : ℚ) ^
 theorem intAt_iff {Γ : Type} [CommGroup Γ] (l : ℕ) [Fact l.Prime] (t : ℕ) (z : MonoidAlgebra ℚ Γ) :
     IntAt l t z ↔ ∀ g, InPow l t (z.coeff g) := Iff.rfl
 
-theorem InPow.zero (l : ℕ) [Fact l.Prime] (t : ℕ) : InPow l t 0 := by
-  simp [InPow]
-
-theorem InPow.add {l : ℕ} [Fact l.Prime] {t : ℕ} {x y : ℚ} (hx : InPow l t x) (hy : InPow l t y) : InPow l t (x + y) := by
-  rw [InPow, add_div]; exact (Zl l).add_mem hx hy
-
 theorem InPow.mem {l : ℕ} [Fact l.Prime] {t : ℕ} {x : ℚ} (hx : InPow l t x) : x ∈ Zl l := by
   have hl : (l : ℚ) ^ t ≠ 0 := pow_ne_zero _ (Nat.cast_ne_zero.2 (Fact.out : l.Prime).ne_zero)
   have := (Zl l).mul_mem hx (pow_mem (natCast_mem (Zl l) l) t)

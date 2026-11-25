@@ -17,38 +17,6 @@ section SlopeTestRemainingChoices
 variable {G : Type*} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [MeasurableSpace G] [BorelSpace G]
   [LocallyCompactSpace G] [T2Space G] [TotallyDisconnectedSpace G] (μ : Measure G) [μ.IsHaarMeasure]
 
-private theorem cv_assoc {a b c : G → ℂ} (ha : a ∈ locallyConstantCompactSupport G ℂ ℂ)
-    (hb : b ∈ locallyConstantCompactSupport G ℂ ℂ) (hc : c ∈ locallyConstantCompactSupport G ℂ ℂ) :
-    groupConv μ (groupConv μ a b) c = groupConv μ a (groupConv μ b c) :=
-  congrArg (fun x : HeckeAlgebra μ => (x : G → ℂ))
-    (mul_assoc (HeckeAlgebra.mk μ a ha) (HeckeAlgebra.mk μ b hb) (HeckeAlgebra.mk μ c hc))
-
-private theorem cv_smul_left (c : ℂ) (a b : G → ℂ) : groupConv μ (c • a) b = c • groupConv μ a b := by
-  funext x
-  simp only [groupConv, Pi.smul_apply, smul_eq_mul, mul_assoc, integral_const_mul]
-
-private theorem cv_smul_right (c : ℂ) (a b : G → ℂ) : groupConv μ a (c • b) = c • groupConv μ a b := by
-  funext x
-  simp only [groupConv, Pi.smul_apply, smul_eq_mul, mul_left_comm _ c, integral_const_mul]
-
-private theorem cv_sum_right {ι : Type*} (S : Finset ι) {a : G → ℂ} {b : ι → G → ℂ}
-    (ha : a ∈ locallyConstantCompactSupport G ℂ ℂ)
-    (hb : ∀ i ∈ S, b i ∈ locallyConstantCompactSupport G ℂ ℂ) :
-    groupConv μ a (∑ i ∈ S, b i) = ∑ i ∈ S, groupConv μ a (b i) := by
-  funext x
-  simp only [groupConv, Finset.sum_apply, Finset.mul_sum]
-  exact integral_finsetSum _ fun i hi => integrable_mul_of_mem ha
-    ((hb i hi).1.continuous.comp (continuous_inv.mul continuous_const))
-
-private theorem cv_sum_left {ι : Type*} (S : Finset ι) {a : G → ℂ} {b : ι → G → ℂ}
-    (ha : a ∈ locallyConstantCompactSupport G ℂ ℂ)
-    (hb : ∀ i ∈ S, b i ∈ locallyConstantCompactSupport G ℂ ℂ) :
-    groupConv μ (∑ i ∈ S, b i) a = ∑ i ∈ S, groupConv μ (b i) a := by
-  funext x
-  simp only [groupConv, Finset.sum_apply, Finset.sum_mul]
-  exact integral_finsetSum _ fun i hi => integrable_mul_of_mem (hb i hi)
-    (ha.1.continuous.comp (continuous_inv.mul continuous_const))
-
 private theorem cv_mul_left {a b : G → ℂ} {k : G} (hk : ∀ g, a (k * g) = a g) (x : G) :
     groupConv μ a b (k * x) = groupConv μ a b x := by
   unfold groupConv
@@ -107,12 +75,6 @@ section Aux3
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] {n : ℕ}
   [MeasurableSpace (GL (Fin n) F)] (μ : Measure (GL (Fin n) F))
 
-private theorem theta_sum₂ {ι : Type*} (S : Finset ι) (c : ι → ℂ) (y : ι → LaurentRing n) :
-    thP μ (∑ i ∈ S, c i • y i) = ∑ i ∈ S, c i • thP μ (y i) := by
-  have h : ∀ r : LaurentRing n, thP μ r = Finsupp.linearCombination ℂ (th μ) r.coeff := fun r => rfl
-
-  simp only [h, AddMonoidAlgebra.coeff_sum, AddMonoidAlgebra.coeff_smul, map_sum, map_smul]
-
 variable [BorelSpace (GL (Fin n) F)] [μ.IsHaarMeasure]
 
 private theorem oneK_eq (hK : μ (integralGL F n : Set (GL (Fin n) F)) = 1) :
@@ -120,12 +82,6 @@ private theorem oneK_eq (hK : μ (integralGL F n : Set (GL (Fin n) F)) = 1) :
   funext x
   rw [HeckeAlgebra.idem_apply, Measure.real, hK]
   simp [oneK, Set.indicator]
-
-private theorem oneK_mul (hK : μ (integralGL F n : Set (GL (Fin n) F)) = 1) :
-    groupConv μ (oneK F n) (oneK F n) = oneK F n := by
-  rw [oneK_eq μ hK]
-  exact congrArg (fun x : HeckeAlgebra μ => (x : GL (Fin n) F → ℂ))
-    (HeckeAlgebra.isIdempotentElem_idem (μ := μ) (isCompact_integralGL F n) (isOpen_integralGL F n)).eq
 
 end Aux3
 

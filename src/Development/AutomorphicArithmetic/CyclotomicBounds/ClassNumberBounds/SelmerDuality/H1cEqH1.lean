@@ -79,10 +79,6 @@ def hyperbolic (β : H →ₗ[k] H' →ₗ[k] k) : LinearMap.BilinForm k (H × H
   β.compl₁₂ (LinearMap.fst k H H') (LinearMap.snd k H H') +
     β.flip.compl₁₂ (LinearMap.snd k H H') (LinearMap.fst k H H')
 
-theorem hyperbolic_apply (β : H →ₗ[k] H' →ₗ[k] k) (v w : H × H') :
-    hyperbolic β v w = β v.1 w.2 + β w.1 v.2 := by
-  simp [hyperbolic]
-
 end Lagrangian
 
 end KStar.Selmer

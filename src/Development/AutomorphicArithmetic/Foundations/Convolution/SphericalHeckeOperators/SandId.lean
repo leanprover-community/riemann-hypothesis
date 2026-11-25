@@ -628,15 +628,6 @@ private theorem cv_sum_right {ι : Type*} (S : Finset ι) {a : G → ℂ} {b : �
   exact integral_finsetSum _ fun i hi => integrable_mul_of_mem ha
     ((hb i hi).1.continuous.comp (continuous_inv.mul continuous_const))
 
-private theorem cv_sum_left {ι : Type*} (S : Finset ι) {a : G → ℂ} {b : ι → G → ℂ}
-    (ha : a ∈ locallyConstantCompactSupport G ℂ ℂ)
-    (hb : ∀ i ∈ S, b i ∈ locallyConstantCompactSupport G ℂ ℂ) :
-    groupConv μ (∑ i ∈ S, b i) a = ∑ i ∈ S, groupConv μ (b i) a := by
-  funext x
-  simp only [groupConv, Finset.sum_apply, Finset.sum_mul]
-  exact integral_finsetSum _ fun i hi => integrable_mul_of_mem (hb i hi)
-    (ha.1.continuous.comp (continuous_inv.mul continuous_const))
-
 private theorem cv_mul_left {a b : G → ℂ} {k : G} (hk : ∀ g, a (k * g) = a g) (x : G) :
     groupConv μ a b (k * x) = groupConv μ a b x := by
   unfold groupConv

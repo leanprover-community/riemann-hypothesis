@@ -22,8 +22,6 @@ structure AwR (x y : WD h) : Prop where
   pol : ∀ g : ↥(Weil h), x.charPol g = y.charPol g
   n0 : y.mono0 → x = y
 
-theorem AwR.of_eq {x y : WD h} (e : x = y) : AwR x y := ⟨fun _ => by rw [e], fun _ => e⟩
-
 theorem AwR.eq_unr {x y : WD h} (k : AwR x y) (hy : y.unr) : x = y := k.n0 (WD.unr_mono0 _ hy)
 
 def RatioW (x : WD h) : Prop :=
