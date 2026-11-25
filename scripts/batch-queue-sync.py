@@ -1898,8 +1898,10 @@ def reconcile(gh, pulls, held, approved, log):
     stands for is frozen at the commit that was queued (`approved`, the same), since the queue
     takes only that commit. One labelled `batch queue` by hand, or whose `batch` was not looked at in this run, is left
     as it is. A frozen pull request whose head has moved on from the commit it is frozen at is
-    labelled `changed after frozen`, and loses that label again once its head is what is frozen,
-    for instance after another `batch`. One that is neither queued nor in a batch being built
+    labelled `changed after frozen`, and loses that label again once its head is what is frozen:
+    on a queued one, after another `batch`, which queues the new head; on one in a batch, once its
+    own batch merges in the new head, or when it is pushed back to the commit its batch took (a
+    `batch` comment changes nothing there). One that is neither queued nor in a batch being built
     loses `frozen`, `batch-building` and `changed after frozen`: whatever put them there is over.
     This writes nothing when every label is where it should be.
     """
