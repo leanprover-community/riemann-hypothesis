@@ -30,25 +30,9 @@ section Models
 variable {K : Type*} [Fintype K] {ι : K → Type*} [∀ k, Fintype (ι k)]
 variable {O : Type*} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
 
-def redMap : MRingOver O ι →+* MRingOver (IsLocalRing.ResidueField O) ι :=
-  MvPolynomial.map (IsLocalRing.residue O)
-
 def IsModelOver (P : Ideal (MRingOver O ι)) (d : ℕ) : Prop :=
   IsMultiProjPrime P ∧ P.comap (C : O →+* MRingOver O ι) = ⊥ ∧
     ringKrullDim (MRingOver O ι ⧸ P) = ((d + 1 + Fintype.card K : ℕ) : WithBot ℕ∞)
-
-def intCyc {R : Type*} [CommRing R] (Z : Ideal (MRingOver R ι) →₀ ℕ) : Ideal (MRingOver R ι) →₀ ℤ :=
-  Finsupp.mapRange (fun m : ℕ => (m : ℤ)) Nat.cast_zero Z
-
-def specCyc (ϖ : O) (P : Ideal (MRingOver O ι)) : Ideal (MRingOver O ι) →₀ ℕ :=
-  divCycle P (C ϖ)
-
-def divO (P : Ideal (MRingOver O ι)) (f g : MRingOver O ι) : Ideal (MRingOver O ι) →₀ ℤ :=
-  intCyc (divCycle P f) - intCyc (divCycle P g)
-
-def redEval (J : Ideal (MRingOver (IsLocalRing.ResidueField O) ι) → ℤ)
-    (Z : Ideal (MRingOver O ι) →₀ ℤ) : ℤ :=
-  Z.sum fun W m => m * J (W.map redMap)
 
 end Models
 
@@ -134,13 +118,7 @@ variable {K : Type*} [Fintype K] {ι : K → Type*} [∀ k, Fintype (ι k)]
 def monoList {N : ℕ} (mono : Fin N →₀ ℕ) : List (Fin N) :=
   (List.finRange N).flatMap fun l => List.replicate (mono l) l
 
-def tupleOfList {α : Type*} [Zero α] {n : ℕ} (L : List α) : Fin n → α := fun j => L.getD j 0
-
 variable {F : Type*} [Field F]
-
-def polyNum (I : IFamily F ι) (V : Ideal (MRingOver F ι)) (n : ℕ) {N : ℕ} (cls : Fin N → K → ℤ)
-    (Q : MvPolynomial (Fin N) ℤ) (Y : List (K → ℤ)) : ℤ :=
-  ∑ mono ∈ Q.support, Q.coeff mono * I V n (tupleOfList ((monoList mono).map cls ++ Y))
 
 end PolyNum
 
@@ -159,19 +137,6 @@ structure VPair (K : Type*) [Fintype K] (O : Type*) [CommRing O] (ι : K → Typ
   g : MRingOver O ι
 
 variable {O : Type*} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
-
-def vNum (P : Ideal (MRingOver O ι)) (Iκ : IFamily (IsLocalRing.ResidueField O) ι) (n : ℕ)
-    (p : VPair K O ι) (L : List (K → ℤ)) : ℤ :=
-  redEval (fun W => Iκ W n (tupleOfList L)) (divO P p.f p.g)
-
-def monoPairNum (P : Ideal (MRingOver O ι)) (Iκ : IFamily (IsLocalRing.ResidueField O) ι) (n : ℕ)
-    {r : ℕ} (pr : Fin r → VPair K O ι) (ls : List (Fin r)) : ℤ :=
-  ∑ k : Fin ls.length, vNum P Iκ n (pr (ls.get k))
-    ((ls.take k).map (fun l => (pr l).y - (pr l).b) ++ (ls.drop (k + 1)).map fun l => (pr l).y)
-
-def pairNum (P : Ideal (MRingOver O ι)) (Iκ : IFamily (IsLocalRing.ResidueField O) ι) (n : ℕ)
-    {r : ℕ} (pr : Fin r → VPair K O ι) (Q : MvPolynomial (Fin r) ℤ) : ℤ :=
-  ∑ mono ∈ Q.support, Q.coeff mono * monoPairNum P Iκ n pr (monoList mono)
 
 variable {Ω : Type*} [Field Ω] [Algebra O Ω] {E : Type*} [AddCommGroup E] [Module Ω E] {N : ℕ}
 
