@@ -526,34 +526,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Form
 open IsDedekindDomain NumberField Matrix GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.RowTest GlobalTheory.RowClaim GlobalTheory.TestLat
 open Formalism.DivisionValues (vw lw)
 
-namespace GlobalTheory.SumSize.Model
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
-variable {D : D7}
-
-
-theorem loss_mono {dl : PlL D → ℝ} {B B' : ℝ} (h : Loss dl B) (hB : B ≤ B') : Loss dl B' :=
-  ⟨h.1, h.2.1, fun s => (h.2.2 s).trans hB⟩
-
-theorem lossLe_mul {w : PlL D} {z z' : ℂ} {a a' : ℝ} (h : LossLe w z a) (h' : LossLe w z' a') : LossLe w (z * z') (a + a') := by
-  obtain ⟨y, rfl, h⟩ := h
-  obtain ⟨y', rfl, h'⟩ := h'
-  refine ⟨y * y', map_mul _ _ _, ?_⟩
-  by_cases hy : y = 0
-  · exact Or.inl (by rw [hy, zero_mul])
-  by_cases hy' : y' = 0
-  · exact Or.inl (by rw [hy', mul_zero])
-  refine Or.inr ?_
-  have e : vw w (y * y') = vw w y + vw w y' := by
-    rw [vw, vw, vw, ← FractionalIdeal.spanSingleton_mul_spanSingleton, FractionalIdeal.count_mul] <;>
-      simpa [FractionalIdeal.spanSingleton_eq_zero_iff]
-  have a1 := h.resolve_left hy
-  have a2 := h'.resolve_left hy'
-  rw [e]; push_cast; linarith
-
-end GlobalTheory.SumSize.Model
-
 end
 end -- clump:auto
 end -- clump:auto
@@ -710,7 +682,7 @@ theorem lossLe_prod (w : PlL D) {ι : Type} (s : Finset ι) (z : ι → ℂ) {a 
   | empty => simpa using lossLe_one w
   | insert i s hi ih =>
     rw [Finset.prod_insert hi, Finset.card_insert_of_notMem hi]
-    have := GlobalTheory.SumSize.Model.lossLe_mul (h i (Finset.mem_insert_self _ _))
+    have := GlobalTheory.UnfoldLoss.MovedChosen.lossLe_mul (h i (Finset.mem_insert_self _ _))
       (ih fun j hj => h j (Finset.mem_insert_of_mem hj))
     refine this.mono (le_of_eq ?_)
     push_cast; ring
@@ -799,7 +771,7 @@ theorem sig_nonneg {T : Type} {L : Formalism.IndefR.Links.LevCh D T} {sc : Const
 theorem finGamAt_of {Γ : Type} [Group Γ] [Fintype Γ] {Pl0 T : Type} {A : Formalism.L2.DIV.FamIn D.what₂.LL Γ Pl0 T D.R.m}
     {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] {R : Formalism.IndefR.Links.RealDat D A Ks} (ch : Choice R)
     {C b : ℝ} (hC : 90 ≤ C) (hb : 1 ≤ b) (hlb : 1 ≤ Real.log b) : FinGamAt ch C b := by
-  refine ⟨_, GlobalTheory.SumSize.Model.loss_mono loss_mk ?_, fun t w Φ β c => ?_⟩
+  refine ⟨_, GlobalTheory.FunDat.loss_mono loss_mk ?_, fun t w Φ β c => ?_⟩
   · have hm : (2 : ℝ) ≤ D.R.m := by exact_mod_cast D.R.two_le_m
     have hs := sig_nonneg ch.G
     have hL := log_mk_le D
@@ -821,7 +793,7 @@ theorem finGamAt_of {Γ : Type} [Group Γ] [Fintype Γ] {Pl0 T : Type} {A : Form
           mul_le_mul_of_nonneg_left (le_mul_of_one_le_right h1 hX) (by positivity)
       _ = _ := by ring
   · unfold GridChoice.invGam
-    refine (GlobalTheory.SumSize.Model.lossLe_mul (lossLe_prod w Finset.univ _ (a := (vw w (mk D : D.what₂.LL) : ℝ)) ?_)
+    refine (GlobalTheory.UnfoldLoss.MovedChosen.lossLe_mul (lossLe_prod w Finset.univ _ (a := (vw w (mk D : D.what₂.LL) : ℝ)) ?_)
       (lossLe_prod w Finset.univ _ (a := (vw w (mk D : D.what₂.LL) : ℝ)) ?_)).mono (le_of_eq ?_)
     · intro j _
       exact lossLe_inv w (gamOrd_zero_or_dvd_mk _ (by rw [rank_top ch.G j.2.le]; exact rankX_le D j.2.le) _ _)

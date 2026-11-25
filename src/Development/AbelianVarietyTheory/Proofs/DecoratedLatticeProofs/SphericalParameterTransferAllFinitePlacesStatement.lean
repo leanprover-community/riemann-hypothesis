@@ -141,7 +141,6 @@ end GlobalTheory.ChainOnto.CosetSymGL
 
 namespace GlobalTheory.ChainOnto.CosetSymGL
 
-
 open GlobalTheory.LFun.ConjPlace in
 theorem invT_of_symm {L : Type} [Field L] {n : ℕ} (d : GL (Fin n) L)
     (hd : (d : Matrix (Fin n) (Fin n) L)ᵀ = (d : Matrix (Fin n) (Fin n) L)) : invT (RingEquiv.refl L) n d = d⁻¹ := by
@@ -154,7 +153,6 @@ open GlobalTheory.LFun.ConjPlace in
 theorem invT_mem_iff {L : Type} [Field L] {n : ℕ} (O : Subring L) (g : GL (Fin n) L) :
     invT (RingEquiv.refl L) n g ∈ Formalism.UG.GLint (Fin n) O ↔ g ∈ Formalism.UG.GLint (Fin n) O :=
   (mem_iff_invT (RingEquiv.refl L) (O := O) (O' := O) (fun _ => Iff.rfl) g).symm
-
 
 open GlobalTheory.LFun.ConjPlace in
 theorem invT_mem_doset (E : Type) [Field E] [NumberField E] (w : HeightOneSpectrum (𝓞 E)) (n : ℕ)
@@ -182,7 +180,6 @@ theorem invT_mem_doset (E : Type) [Field E] [NumberField E] (w : HeightOneSpectr
   group
 
 end GlobalTheory.ChainOnto.CosetSymGL
-
 
 open GlobalTheory.ChainOnto.CosetSymGL GlobalTheory.LFun.ConjPlace in
 theorem GlobalTheory.ChainOnto.kGL_commensurated_cosetSym : ∀ (E : Type) [Field E] [NumberField E] (w : HeightOneSpectrum (𝓞 E)) (n : ℕ), IsCommensurated (KGL w (n := n)) ∧ CosetSym (KGL w (n := n)) := fun E _ _ w n =>
@@ -518,8 +515,6 @@ open GlobalTheory.SphTheta (IsStd CayleyRule intMat liftPar)
 open Formalism.UG (IsUnifV qV IsUnramInv GU KU IsInertAt Hecke IsCommensurated Tj SatU ordL Ov)
 open Formalism.MainNotions.SchurIrreducible (IsSplit)
 
-theorem _root_.GlobalTheory.T.satake_esymm_scaled_multiset_add_segment : ∀ (E : Type) [Field E] [NumberField E] (w : HeightOneSpectrum (𝓞 E)) (a t k : ℕ) (B : Multiset ℂˣ) (z y : ℂˣ), B.card = a → k ≤ a + t → satEig (qV E w) (a + t) (B.map (z * y⁻¹ * ·) + seg w z t) k = ∑ j ∈ Finset.range (a + 1), (if j ≤ k then (qV E w : ℂ) ^ ((a - j) * (k - j)) * (Formalism.L2.Col.gaussBin (qV E w) t (k - j) : ℂ) * ((z : ℂ) * ((Real.sqrt (qV E w) : ℂ) ^ a)⁻¹) ^ k * (((y : ℂ))⁻¹ * (Real.sqrt (qV E w) : ℂ) ^ (a + t)) ^ j else 0) * satEig (qV E w) a B j := by
-  first | exact @GlobalTheory.ChainOnto.satEig_map_add_seg
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.SatakeEsymmScaledMultisetAddSegmentStatement =====
@@ -538,8 +533,6 @@ open GlobalTheory.SphTheta (IsStd CayleyRule intMat liftPar)
 open Formalism.UG (IsUnifV qV IsUnramInv GU KU IsInertAt Hecke IsCommensurated Tj SatU ordL Ov)
 open Formalism.MainNotions.SchurIrreducible (IsSplit)
 
-theorem _root_.GlobalTheory.T.satake_vector_iff_inverse_doubleCosets : ∀ (E : Type) [Field E] [NumberField E] (w : HeightOneSpectrum (𝓞 E)) (n : ℕ) (V : Type) [AddCommGroup V] [Module ℂ V] (ρ : Representation ℂ (GL (Fin n) (w.adicCompletion E)) V) (x : V) (B : Multiset ℂˣ), x ≠ 0 → x ∈ fixed ρ (KGL w (n := n)) → B.card = n → (IsSatVecGL w ρ x B ↔ ∀ ϖ, IsUnifV E w ϖ → ∀ j ≤ n, heckeVec ρ (KGL w (n := n)) (fun g => Tj ℂ n (Ov E w) ϖ j g⁻¹) x = satEig (qV E w) n (B.map (·⁻¹)) j • x) := by
-  first | exact @GlobalTheory.ChainOnto.SatInv.satVec_iff_inv
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.SatakeVectorIffInverseDoubleCosetsStatement =====
@@ -588,8 +581,6 @@ theorem seg_map_inv {K : Type} [Field K] [NumberField K] (w : HeightOneSpectrum 
   rw [Nat.cast_sub (by omega), Nat.cast_sub (by omega)]
   push_cast
   ring
-
-
 
 theorem transferOn_isSplit : ∀ D : D7, TransferOn D fun v => IsSplit (E := D.host.E) v := by
   intro D ψ S T χS χT om hW t ht v hv hunr w h U hU f hf X _ _ ρ x B hx X' _ _ ρ' b hb hne
@@ -645,11 +636,11 @@ theorem transferOn_isSplit : ∀ D : D7, TransferOn D fun v => IsSplit (E := D.h
     congr 1
     refine Multiset.map_congr rfl fun c _ => ?_
     simp only [Function.comp_apply, mul_inv]
-  refine Or.inl ⟨hv, eT, heT, (GlobalTheory.T.satake_vector_iff_inverse_doubleCosets D.host.E w T.rank X' ρT (b f x) _ hne hbfix hcard).2 fun ϖ hϖ k hk => ?_⟩
+  refine Or.inl ⟨hv, eT, heT, (GlobalTheory.ChainOnto.SatInv.satVec_iff_inv D.host.E w T.rank X' ρT (b f x) _ hne hbfix hcard).2 fun ϖ hϖ k hk => ?_⟩
   have hsubT : ∀ g (y : U), U.subtype (πU g y) = πF g (U.subtype y) := fun g y => rfl
   have hsubS : ∀ g (y : U), U.subtype (σU g y) = σF g (U.subtype y) := fun g y => rfl
   have hInvT : (fun g => Tj ℂ T.rank (Ov D.host.E w) ϖ k g⁻¹) ∈ Hecke ℂ (KGL w (n := T.rank)) :=
-    (GlobalTheory.T.hecke_operator_move_across_invariant_bilinear _ (KGL w (n := T.rank)) hcT hsT ℂ ℂ ℂ 1 1 0 (fun _ _ _ => by simp) 0 (zero_mem _) 0 (zero_mem _) _
+    (GlobalTheory.ChainOnto.heckeVec_move _ (KGL w (n := T.rank)) hcT hsT ℂ ℂ ℂ 1 1 0 (fun _ _ _ => by simp) 0 (zero_mem _) 0 (zero_mem _) _
       (Tj_mem_hecke hϖ k)).1
   let cf : ℕ → ℂ := fun j => if j ≤ k then (qV D.host.E w : ℂ) ^ ((S.rank - j) * (k - j)) *
     (Formalism.L2.Col.gaussBin (qV D.host.E w) t (k - j) : ℂ) *
@@ -674,10 +665,10 @@ theorem transferOn_isSplit : ∀ D : D7, TransferOn D fun v => IsSplit (E := D.h
   have hmove : ∀ j ∈ Finset.range (S.rank + 1), b (heckeVec σU (KGL w (n := S.rank)) (Tj ℂ S.rank (Ov D.host.E w) ϖ j) f) x =
       satEig (qV D.host.E w) S.rank (B.map (·⁻¹)) j • b f x := by
     intro j hj
-    rw [(GlobalTheory.T.hecke_operator_move_across_invariant_bilinear _ _ hcS hsS U X X' σU ρS b hinv f hfS x hxS.2.1 _ (Tj_mem_hecke hϖ j)).2,
-      (GlobalTheory.T.satake_vector_iff_inverse_doubleCosets D.host.E w S.rank X ρS x B hxS.1 hxS.2.1 hxS.2.2.1).1 hxS ϖ hϖ j
+    rw [(GlobalTheory.ChainOnto.heckeVec_move _ _ hcS hsS U X X' σU ρS b hinv f hfS x hxS.2.1 _ (Tj_mem_hecke hϖ j)).2,
+      (GlobalTheory.ChainOnto.SatInv.satVec_iff_inv D.host.E w S.rank X ρS x B hxS.1 hxS.2.1 hxS.2.2.1).1 hxS ϖ hϖ j
         (Nat.lt_succ_iff.1 (Finset.mem_range.1 hj)), map_smul]
-  have hsym := GlobalTheory.T.satake_esymm_scaled_multiset_add_segment D.host.E w S.rank t k (B.map (·⁻¹)) (val (F := D.host.F) χS w)⁻¹
+  have hsym := GlobalTheory.ChainOnto.satEig_map_add_seg D.host.E w S.rank t k (B.map (·⁻¹)) (val (F := D.host.F) χS w)⁻¹
     (val (F := D.host.F) χT w)⁻¹ (by rw [Multiset.card_map, hxS.2.2.1]) (ht ▸ hk)
   calc heckeVec ρT (KGL w (n := T.rank)) (fun g => Tj ℂ T.rank (Ov D.host.E w) ϖ k g⁻¹) (b f x)
       = b (heckeVec πU (KGL w (n := T.rank)) (fun g => Tj ℂ T.rank (Ov D.host.E w) ϖ k g⁻¹) f) x :=
@@ -741,8 +732,6 @@ open Formalism.MainNotions.SchurIrreducible (IsSplit)
 noncomputable section
 
 namespace GlobalTheory.ChainOnto
-
-
 
 theorem transferOn_inert : GlobalTheory.Hk3.HoweUnram → ∀ D : D7, TransferOn D fun v => ¬ IsSplit (E := D.host.E) v := by
   intro hH D ψ S T χS χT om hW t ht v hv hunr w h U hU f hf X _ _ ρ x B hx X' _ _ ρ' b hb hbne
@@ -820,7 +809,7 @@ theorem transferOn_inert : GlobalTheory.Hk3.HoweUnram → ∀ D : D7, TransferOn
         have m4 := map_heckeVec hcom1.1 hh0 U.subtype (ρ' := RS) (fun g u => hπS g u) f
         simp only [Submodule.subtype_apply] at m1 m2 m3 m4
         rw [m1, m4, ← hsf, ← m2, ← m3, heq]
-      have sC := (GlobalTheory.T.hecke_operator_move_across_invariant_bilinear (GU c S.rank) (KU c S.rank) hcom1.1 hcom1.2.1 U X X' πS (ρ.comp eS.symm.toMonoidHom) b
+      have sC := (GlobalTheory.ChainOnto.heckeVec_move (GU c S.rank) (KU c S.rank) hcom1.1 hcom1.2.1 U X X' πS (ρ.comp eS.symm.toMonoidHom) b
         (fun g u y => hbS g u y) f (GlobalTheory.LGrp.mem_fixed.2 hfixS) x hxS.2.1 h0 hh0).2
       have hev : (fun g => h0 g⁻¹) = h0 := funext fun g => hcom1.2.2 h0 hh0 g
       rw [← sA, sB, sC, hev, hxS.2.2 h0 hh0, map_smul, hsat]

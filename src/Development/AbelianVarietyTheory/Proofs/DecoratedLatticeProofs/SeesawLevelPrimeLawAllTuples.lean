@@ -133,7 +133,6 @@ theorem card_withLat_eq (Q Q₀ : Pair k n) : (withLat Q.lat).card = (withLat Q�
 theorem card_withLat_pos (Q : Pair k n) : 0 < (withLat Q.lat).card :=
   Finset.card_pos.2 ⟨Q, mem_withLat.2 rfl⟩
 
-
 open Classical in
 def pairCount (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
     (n : Type) [Fintype n] [DecidableEq n] : ℕ :=
@@ -155,7 +154,6 @@ end Count
 end GlobalTheory.FinPl.VertexExactCount
 
 namespace GlobalTheory.FinPl.VertexExactCount
-
 
 open Classical in
 theorem vertexExact (D : D7) : VertexExact D := by
@@ -237,7 +235,6 @@ theorem over_self {ψ : AddChar (AF D.host.F) ℂ} {S T : HSp D} {LS : Lat S} {L
   rw [hE, hv]
 
 end GlobalTheory.FinPl.VertexAllProof
-
 
 open GlobalTheory.FinPl.VertexAllProof in
 theorem GlobalTheory.FinPl.vertexAll : ∀ D : D7, GlobalTheory.FinPl.VertexAll D := by
@@ -398,7 +395,7 @@ theorem swap_fwd (hstd : IsStdChar D ψ (-1)) (hunit : ∀ i, (p i).UnitAA) (hin
     have hil' : i ∉ l := fun h' => hil (List.mem_cons_of_mem _ h')
     obtain ⟨m, hm, hmO⟩ := ValDbl.overAll_cons.1 hh
     have hmv := ValDbl.overAll_vac hstd hinj l b m hm i hil' hb
-    obtain ⟨g', hg'1, hg'2⟩ := GlobalTheory.T.splitPlaceData_distinct_places_commute D k (p j) (p i) n n' n n' ψ hstd (hunit j) (hunit i)
+    obtain ⟨g', hg'1, hg'2⟩ := GlobalTheory.FinPl.overSwap D k (p j) (p i) n n' n n' ψ hstd (hunit j) (hunit i)
       (fun e => hij (hinj e.symm)) S T (α j) (β j) (α i) (β i) NS NT m h f' (Ψ j) (Ψ i) hmv hmO hO
     obtain ⟨k', hk', hl⟩ := ih hil' g' ⟨m, hm, hg'1⟩
     exact ⟨k', hk', ValDbl.overAll_cons.2 ⟨g', hl, hg'2⟩⟩
@@ -421,7 +418,7 @@ theorem swap_bwd (hstd : IsStdChar D ψ (-1)) (hunit : ∀ i, (p i).UnitAA) (hin
     obtain ⟨m, hm, hmO⟩ := ValDbl.overAll_cons.1 hl
     obtain ⟨h₀, hh₀, hO₀⟩ := ih hnd.2 hil' (fun j' hj' => hb j' (List.mem_cons_of_mem _ hj')) m ⟨k', hk', hm⟩
     have hv := ValDbl.overAll_vac hstd hinj l b h₀ hh₀ j hnd.1 (hb j List.mem_cons_self)
-    obtain ⟨g', hg'1, hg'2⟩ := GlobalTheory.T.splitPlaceData_distinct_places_commute D k (p i) (p j) n n' n n' ψ hstd (hunit i) (hunit j)
+    obtain ⟨g', hg'1, hg'2⟩ := GlobalTheory.FinPl.overSwap D k (p i) (p j) n n' n n' ψ hstd (hunit i) (hunit j)
       (fun e => hij (hinj e)) S T (α i) (β i) (α j) (β j) NS NT h₀ m f' (Ψ i) (Ψ j) hv hO₀ hmO
     exact ⟨g', ValDbl.overAll_cons.2 ⟨h₀, hh₀, hg'1⟩, hg'2⟩
 
@@ -466,7 +463,6 @@ section Gen
 
 variable {ι : Type} {p : ι → SplitPt D k} {n n' : Type} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n']
   {ψ : AddChar (AF D.host.F) ℂ} {S T : HSp D} {α : ∀ i, Frame (p i) S n'} {β : ∀ i, Frame (p i) T n}
-
 
 open Classical in
 theorem gen (hstd : IsStdChar D ψ (-1)) {I : List ι} {P : Pl D → Prop} (hPl : Places p I P) (l : List ι) :
@@ -857,7 +853,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 namespace GlobalTheory.LevPrimeAll
 
 variable {D : D7}
-
 
 open GlobalTheory.FinPl.AllBij in
 theorem ram_sOp {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] {ι : Type}

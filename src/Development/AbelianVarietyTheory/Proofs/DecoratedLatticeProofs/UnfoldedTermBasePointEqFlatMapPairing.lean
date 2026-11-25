@@ -65,8 +65,6 @@ open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Grow
 open scoped TensorProduct
 open GlobalTheory.Unf GlobalTheory.Unf.FB
 
-theorem _root_.GlobalTheory.T.heisenbergIntegral_fourierBesselBasePoint_eq_pairing : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ), IsStdChar D ψ (-1) → ∀ (σ : ℕ) (S : HSp D) (B : BesLev D σ) (vB : VolM D (σ + 1) S.rank) (vT : VolM D σ S.rank) (vL : VolM D B.L.rank S.rank) (f : WO S B.V → ℂ) (y : WO S B.L → ℂ), Quasi ψ S B.V f → Quasi ψ S B.L y → (∫ b in vB.𝓕, f (x0 B ⬝ b) * star (y (zl B ⬝ b)) ∂vB.μ = contractT B.o S vL.μ vL.𝓕 (B.d.mixT S ψ vT.μ vT.𝓕 f 0) y 0) ∧ ∫⁻ v in vL.𝓕, ‖B.d.mixT S ψ vT.μ vT.𝓕 f 0 ((B.o.resT S).symm (0, v))‖ₑ ∂vL.μ ≤ ∫⁻ b in vB.𝓕, ‖f (x0 B ⬝ b)‖ₑ ∂vB.μ := by
-  first | exact @GlobalTheory.Unf.FB.heis_base
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.HeisenbergIntegralFourierBesselBasePointEqPairinStatement =====
@@ -131,7 +129,7 @@ theorem fl_base_eq_tFlat : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (σ : �
   intro D ψ σ J B s vb vL y Ψ hy hΨ
   have hstd : IsStdChar D ψ (-1) := s.weil.std
   have hchar := hstd.1
-  obtain ⟨-, ⟨My, hMy, -⟩, -, -, -, hlaw⟩ := GlobalTheory.T.fourierBesselThetaCharIntegrand_laws D ψ hstd σ J B y hy
+  obtain ⟨-, ⟨My, hMy, -⟩, -, -, -, hlaw⟩ := GlobalTheory.Unf.FB.ThLaws.th_laws D ψ hstd σ J B y hy
   have hnorm : ∀ u : UX D (σ + 1), ‖psiUni ψ u.1‖ = 1 := fun u => hchar.2.1 _
 
   have hfl : ∀ u : UX D (σ + 1), (∫ b in vb.𝓕, flFun ψ J.d B.V s.vS (th J ψ B y) (x0 B) Ψ u b ∂vb.μ) =
@@ -141,7 +139,7 @@ theorem fl_base_eq_tFlat : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (σ : �
     have hf : Quasi ψ J.W₀ B.V (J.d.mixS B.V ψ s.vS.μ s.vS.𝓕 Ψ (x0 B ⬝ u.1.1)) := by
       have h := (GlobalTheory.T.mixedCoordinates_of_thetaFunction_are_thetaFunctions D ψ hstd).1 J.W J.W₀ B.V (σ + 1) J.d s.vS.μ s.vS.𝓕 s.vS.covol Ψ hΨ (x0 B ⬝ u.1.1)
       exact ⟨h.quasi, h.cont⟩
-    have hh := (GlobalTheory.T.heisenbergIntegral_fourierBesselBasePoint_eq_pairing D ψ hstd σ J.W₀ B vb s.vT vL _ y hf hy).1
+    have hh := (GlobalTheory.Unf.FB.heis_base D ψ hstd σ J.W₀ B vb s.vT vL _ y hf hy).1
     calc (∫ b in vb.𝓕, flFun ψ J.d B.V s.vS (th J ψ B y) (x0 B) Ψ u b ∂vb.μ)
         = ∫ b in vb.𝓕, star (psiUni ψ u.1) * (J.d.mixS B.V ψ s.vS.μ s.vS.𝓕 Ψ (x0 B ⬝ u.1.1) (x0 B ⬝ b) *
             star (y (zl B ⬝ b))) ∂vb.μ := by
@@ -161,7 +159,7 @@ theorem fl_base_eq_tFlat : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (σ : �
     exact integral_congr_ae (Filter.Eventually.of_forall hfl)
 
   obtain ⟨x, hxo, hx⟩ := GlobalTheory.T.exists_mem_orb_rat_eq_x0 D σ B
-  obtain ⟨M, hMi, hMb⟩ := GlobalTheory.T.flatThetaIntegrand_locallyUniform_majorant D ψ J.W J.W₀ B.V B.V₀ (σ + 1) σ J.d B.d s.vS s.vT s.χV s.χW s.om s.weil s.vU x
+  obtain ⟨M, hMi, hMb⟩ := GlobalTheory.Unf.flatFun_majorant D ψ J.W J.W₀ B.V B.V₀ (σ + 1) σ J.d B.d s.vS s.vT s.χV s.χW s.om s.weil s.vU x
     hxo.1 Ψ hΨ {1} isCompact_singleton
   have hom1 : s.om 1 Ψ = Ψ := by rw [map_one]; rfl
   have hbound : ∀ (u : UX D (σ + 1)) (v : WO J.W₀ B.L),
@@ -178,7 +176,7 @@ theorem fl_base_eq_tFlat : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (σ : �
   have : SecondCountableTopology (WO J.W₀ B.L) := (lattice_Mx D B.L.rank J.W₀.rank).2.2.1
   have hE : Continuous fun p : UX D (σ + 1) × WO J.W₀ B.L =>
       evalAt ψ J.d B.d s.vS.μ s.vS.𝓕 s.vT.μ s.vT.𝓕 Ψ (x0 B ⬝ p.1.1.1) 0 ((B.o.resT J.W₀).symm (0, p.2)) := by
-    have hmc := (GlobalTheory.T.weilMixedCoordinates_continuous_bounded_supNorm D ψ J.W J.W₀ B.V B.V₀ (σ + 1) σ J.d B.d s.vS s.vT s.χV s.χW s.om s.weil Ψ hΨ).2
+    have hmc := (GlobalTheory.MixCont.mixed_coords_continuous D ψ J.W J.W₀ B.V B.V₀ (σ + 1) σ J.d B.d s.vS s.vT s.χV s.χW s.om s.weil Ψ hΨ).2
     have hc : Continuous fun p : UX D (σ + 1) × WO J.W₀ B.L => (p.1.1.1 : Mx D (σ + 1) (σ + 1)) :=
       (Units.continuous_val.comp continuous_subtype_val).comp continuous_fst
     have hin : Continuous fun p : UX D (σ + 1) × WO J.W₀ B.L =>

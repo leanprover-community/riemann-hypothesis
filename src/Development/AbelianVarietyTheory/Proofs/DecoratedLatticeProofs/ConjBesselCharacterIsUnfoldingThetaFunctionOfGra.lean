@@ -90,7 +90,7 @@ theorem psi_qS_eq_one : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ), IsStdChar
 
 theorem conjBessel_isTh : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ), IsStdChar D ψ (-1) → ∀ (ρ : ℕ) (B : BesLev D ρ) (W : HSp D) (x₀ : Matrix (Fin W.rank) (Fin ρ) D.host.E), gramQ W x₀ = 0 → IsTh ψ B.d W x₀ fun n => star (psiBes ψ B.d 1 (vecB B.o B.ζ) n) := by
   intro D ψ hψ ρ B W x₀ hx₀
-  have hC := GlobalTheory.T.flag_unipotent_bessel_character_laws D ψ hψ.1 B.V B.V₀ B.A B.L ρ B.d B.o B.ζ 1
+  have hC := GlobalTheory.MixPer.charLaws D ψ hψ.1 B.V B.V₀ B.A B.L ρ B.d B.o B.ζ 1
   set z := vecB B.o B.ζ with hz
   refine ⟨?_, ?_, ?_, ?_⟩
   · exact continuous_star.comp ((hC.1 z).comp continuous_subtype_val)

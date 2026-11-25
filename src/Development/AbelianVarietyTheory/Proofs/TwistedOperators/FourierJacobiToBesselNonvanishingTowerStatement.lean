@@ -352,7 +352,7 @@ namespace GlobalTheory.Asc.FromBes
 theorem conjBessel_isTh (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (hψ : IsStdChar D ψ (-1)) (ρ : ℕ) (B : BesL D ρ) (W : HSp D)
     (x₀ : Matrix (Fin W.rank) (Fin ρ) D.host.E) (hx₀ : gramQ W x₀ = 0) :
     IsTh ψ B.d W x₀ fun n => star (psiBes ψ B.d 1 (vecB B.o B.ζ) n) := by
-  have hC := GlobalTheory.T.flag_unipotent_bessel_character_laws D ψ hψ.1 B.V B.V₀ B.A B.L ρ B.d B.o B.ζ 1
+  have hC := GlobalTheory.MixPer.charLaws D ψ hψ.1 B.V B.V₀ B.A B.L ρ B.d B.o B.ζ 1
   set z := vecB B.o B.ζ with hz
   refine ⟨?_, ?_, ?_, ?_⟩
   · exact continuous_star.comp ((hC.1 z).comp continuous_subtype_val)
@@ -475,9 +475,6 @@ theorem ptT_rat {T T₀ : HSp D} {ρ : ℕ} (d : HypDec T T₀ ρ) (S : HSp D) (
   exact ratMx_mul (rat_mem _) (ratMx_mul ((mem_GQ_iff T _).1 (inv_mem hn))
     (ratMx_mul (rat_mem _) (ratMx_smul _ (ratMx_mul (ratMx_adj hy) (rat_mem _)))))
 
-theorem heisO_zero_pt (S T : HSp D) (w : WO S T) (f : WO S T → ℂ) : heisO ψ S T w f 0 = f w := by
-  rw [heisO, symplOH_zero_left, AddChar.map_zero_eq_one, one_mul, zero_add]
-
 variable {ρ : ℕ} {B : BesL D ρ} {J : JacL D ρ} (s : StBF ψ B J) {Φ : WO B.V J.W → ℂ}
 
 def ker (Φ : WO B.V J.W → ℂ) (h₀ : GA D B.A) (g : GA D J.W) : ℂ := flBF s (s.om (embA B.d B.o h₀, g) Φ) 0
@@ -528,7 +525,7 @@ theorem ker_right (hΦ : IsThetaFunO ψ B.V J.W Φ) (h₀ : GA D B.A) {n : GA D 
   have h2 := (s.weil₀.om_pres (1, h') _ hΞ).quasi δ 0
   rw [add_zero, s.weil₀.om_aut 1 (one_mem _) h' hhq _ hΞ] at h2
   rw [ker, e, GlobalTheory.AscFlatEqui.flBF_equivariant D ψ ρ B J s _ hΨ 1 n hn h', e2, map_one, Module.End.one_apply,
-    Pi.smul_apply, smul_eq_mul, norm_mul, hp, one_mul, opA, jacT, Pi.smul_apply, heisO_zero_pt, ← hδ, smul_eq_mul,
+    Pi.smul_apply, smul_eq_mul, norm_mul, hp, one_mul, opA, jacT, Pi.smul_apply, GlobalTheory.Unf.EvalCont.heisO_apply_zero, ← hδ, smul_eq_mul,
     norm_mul, hψ, one_mul]
   refine (congrArg norm h2).trans ?_
   rw [norm_mul, hψ, one_mul]
@@ -765,7 +762,7 @@ theorem gen_is {φ : GA D B.A → ℂ} (hφ : RapidDec B.A φ) : (gen s φ).Is :
   have hTh := (GlobalTheory.T.besselLevel_unfolding_character_and_flatMap D ψ ρ B J s).1
   have hg : Continuous fun h₀ : GA D B.A => B.o.emb (h₀, 1) :=
     B.o.continuous_emb.comp (continuous_id.prodMk continuous_const)
-  refine ⟨s.weil, (GlobalTheory.T.unfolding_base_point_fourierJacobi_group D J.W J.W₀ ρ J.d).1, inferInstanceAs (SFinite (B.vA.μ.restrict B.vA.𝓕)), hg,
+  refine ⟨s.weil, (GlobalTheory.Unf.base_point D J.W J.W₀ ρ J.d).1, inferInstanceAs (SFinite (B.vA.μ.restrict B.vA.𝓕)), hg,
     fun y => isTh_const_mul hTh (φ y), (hφ.2.1.comp continuous_fst).mul (hTh.cont.comp continuous_snd),
     fun y => ‖φ y‖, hφ.2.1.norm.measurable, fun y n _ => ?_, fun k => ?_⟩
   · change ‖φ y * star (psiBes ψ B.d 1 (vecB B.o B.ζ) n)‖ ≤ ‖φ y‖
@@ -800,7 +797,7 @@ theorem gen_ker (φ : GA D B.A → ℂ) (G : GA D J.W → ℂ) {Φ : WO B.V J.W 
 theorem flBF_rat {Ψ : WO B.V J.W → ℂ} (hΨ : IsThetaFunO ψ B.V J.W Ψ) {γ : GA D J.W}
     (hγ : γ ∈ GQ J.W ⊓ jacGrp J.d) : flBF s (s.om (1, γ) Ψ) 0 = flBF s Ψ 0 := by
   obtain ⟨n, hn, h', rfl⟩ := (GlobalTheory.MixPer.Decomp.mem_jacGrp_iff J.d).1 hγ.2
-  obtain ⟨hnQ, hh'⟩ := ((GlobalTheory.T.unfolding_base_point_fourierJacobi_group D J.W J.W₀ ρ J.d).2.2.2.2.2 n hn h').1 hγ.1
+  obtain ⟨hnQ, hh'⟩ := ((GlobalTheory.Unf.base_point D J.W J.W₀ ρ J.d).2.2.2.2.2 n hn h').1 hγ.1
   have hψ := s.weil.std.1
   have hΞ := _root_.GlobalTheory.BesMean.theta_flBF s hΨ
   have hy : yZero B.V₀ ρ (vecB B.o B.ζ) ∈ ratMx D B.V₀.rank ρ := neg_mem (GlobalTheory.UnfKer.zEll_rat _ _ _)
@@ -817,12 +814,11 @@ end GlobalTheory.Asc.VanBessel
 
 namespace GlobalTheory.Asc
 
-
 open VanBessel in
 theorem vanBF : ∀ D : D7, VanBF D := by
   intro D ψ ρ B J s 𝒮 Γ₀ K hL φ G hφ hG hGK hvan Φ hΦ𝒮
   have hΦ := hL.theta Φ hΦ𝒮
-  obtain ⟨hb, -, hx, hR, hemb, hrat⟩ := GlobalTheory.T.unfolding_base_point_fourierJacobi_group D J.W J.W₀ ρ J.d
+  obtain ⟨hb, -, hx, hR, hemb, hrat⟩ := GlobalTheory.Unf.base_point D J.W J.W₀ ρ J.d
   obtain ⟨i1, i2, i3⟩ := GlobalTheory.MemberAdelicTop.locallyCompact_secondCountable_t2 D B.A
   obtain ⟨j1, j2, j3⟩ := GlobalTheory.MemberAdelicTop.locallyCompact_secondCountable_t2 D J.W
   haveI : BorelSpace (GA D B.A) := ⟨rfl⟩
@@ -830,12 +826,12 @@ theorem vanBF : ∀ D : D7, VanBF D := by
   haveI := B.vA.haar
   haveI := s.vW.haar
   have ha := gen_is s hφ
-  obtain ⟨-, -, hfd⟩ := GlobalTheory.T.rational_unitary_subgroup_countable_discrete_fundDomain D J.W (GQ J.W ⊓ jacGrp J.d) inf_le_left
+  obtain ⟨-, -, hfd⟩ := GlobalTheory.RationalSubgroupFund.countable_discrete_exists_fundamentalDomain D J.W (GQ J.W ⊓ jacGrp J.d) inf_le_left
   obtain ⟨𝓑, h𝓑⟩ := hfd s.vW.μ s.vW.haar
   have h𝓑' := h𝓑
   rw [← hR] at h𝓑'
   have hint := (GlobalTheory.T.thetaLift_unfolding_integrated_over_family D ψ B.V B.V₀ J.W ρ (GA D B.A) (gen s φ) ha G Φ hG hΦ 𝓑 h𝓑').2.1
-  have hcut := GlobalTheory.T.integral_strip_eq_zero_of_real_modulation_vanishing D ψ B.V B.V₀ J.W ρ (GA D B.A) (gen s φ) ha G hG Φ hΦ (fun c hc => by
+  have hcut := GlobalTheory.StripVanish.integral_strip_eq_zero D ψ B.V B.V₀ J.W ρ (GA D B.A) (gen s φ) ha G hG Φ hΦ (fun c hc => by
     rw [gen_lhs]
     refine hvan _ (hL.real Φ hΦ𝒮 _ ?_)
     change (c ⬝ B.d.pY).map (finPart D) = 0
@@ -877,7 +873,7 @@ theorem vanBF : ∀ D : D7, VanBF D := by
     ring
 
   obtain ⟨-, -, -, -, hconj, hinj, -⟩ := GlobalTheory.MixPer.flag_jacobi_structure D J.W J.W₀ ρ J.d
-  have hclN := (GlobalTheory.T.flag_subgroups_closed_normal_cocompact' D J.W J.W₀ ρ J.d).1
+  have hclN := (GlobalTheory.Unf.FlagSub.flag_subgroups_closed_normal_cocompact D J.W J.W₀ ρ J.d).1
   let Z : HSp D := {
     V := Fin 0 → D.host.E
     hT := 0
@@ -904,11 +900,11 @@ theorem vanBF : ∀ D : D7, VanBF D := by
     isoB := by ext i; exact Fin.elim0 (show Fin 0 from i)
     orth := by ext i; exact Fin.elim0 (show Fin 0 from i)
     rank_add := rfl }
-  obtain ⟨⟨hRcl, hRhaar⟩, -⟩ := GlobalTheory.T.fourierJacobi_bessel_groups_closed_haar_product D J.W J.W₀ J.W₀ Z ρ J.d o
+  obtain ⟨⟨hRcl, hRhaar⟩, -⟩ := GlobalTheory.MixPer.jacGrp_besGrp_haar D J.W J.W₀ J.W₀ Z ρ J.d o
     J.vN.ν J.vN.𝓝 J.vN.unit
   obtain ⟨hνh, h𝓝, -⟩ := J.vN.unit
   have hμR : (semiMeas (flagN J.d) J.d.emb0 J.v0.μ J.vN.ν).IsHaarMeasure := hRhaar J.v0.μ J.v0.haar
-  obtain ⟨𝓡, h𝓡, hsem⟩ := GlobalTheory.T.semidirect_haar_measure_fundamental_domain D J.W J.W₀ (flagN J.d) J.d.emb0 hemb hclN hconj hinj hrat J.v0 J.vN.ν J.vN.𝓝
+  obtain ⟨𝓡, h𝓡, hsem⟩ := GlobalTheory.Unf.semiFd_iterated D J.W J.W₀ (flagN J.d) J.d.emb0 hemb hclN hconj hinj hrat J.v0 J.vN.ν J.vN.𝓝
     hνh h𝓝 hμR
   obtain ⟨hsplit, hunim, -⟩ := ((GlobalTheory.T.unitaryAdelic_inf_fin_split_periods_unimodular D J.W).2.2.2.2.2 J.W₀ ρ J.d).1
   obtain ⟨habs, hTc⟩ := GlobalTheory.T.besselMean_period_converges_continuous D ψ ρ B J s φ G Φ hφ hG hΦ
@@ -937,7 +933,7 @@ theorem vanBF : ∀ D : D7, VanBF D := by
       simp only [fjAllFun, fjKer, opA, OneMemClass.coe_one, jacT_one, map_zero, id, Pi.zero_apply, mul_zero, integral_zero])
     (fun C hC hCi => by
       rw [← hR]
-      exact ⟨(GlobalTheory.T.adelicStripSet_measurable_read_on_realPart D J.W ρ J.d.e hb C hC hCi).1, hcut C hC hCi⟩)
+      exact ⟨(GlobalTheory.StripBorel.strip_measurable D J.W ρ J.d.e hb C hC hCi).1, hcut C hC hCi⟩)
   have h1 := hfun 1
   simp only [mul_one] at h1
   rw [show rTrans 1 G = G from funext fun h => congrArg G (mul_one h), Prod.mk_one_one, map_one, Module.End.one_apply] at h1

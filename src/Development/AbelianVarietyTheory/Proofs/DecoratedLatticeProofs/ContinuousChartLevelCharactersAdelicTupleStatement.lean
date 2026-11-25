@@ -43,9 +43,6 @@ open GlobalTheory.SeeSaw GlobalTheory.Unf
 open GlobalTheory.Mem.Col2.AdT
 open Filter Topology
 
-
-theorem _root_.GlobalTheory.T.eventually_nhds_one_adelicMatrixCongruentOneAtPrime : ∀ {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (n N : ℕ) (P : HeightOneSpectrum (𝓞 E)), letI := tensTopL (F := F) (E := E) (FiniteAdeleRing (𝓞 F) F); ∀ᶠ u : GL (Fin n) (E ⊗[F] FiniteAdeleRing (𝓞 F) F) in nhds 1, GlobalTheory.TwU.CongAt P N u := by
-  first | exact @GlobalTheory.TwU.NearOne.congAt_eventually_nhds_one
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.EventuallyNhdsOneAdelicMatrixCongruentOneAtPrimeStatement =====
@@ -88,7 +85,6 @@ open GlobalTheory.SeeSaw GlobalTheory.Unf
 open GlobalTheory.Mem.Col2.AdT
 open Filter Topology
 
-
 theorem _root_.GlobalTheory.T.exists_badPrime_over_chart_bad_place : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok → TC.Pins B X → ∀ (l : I.Laws) (Z : TC.Later B (I.cols l)) (a : I.ι) (v : HeightOneSpectrum (𝓞 (I.rec7 l Z).host.F)), v ∈ Formalism.L2.Forms.badG (I.rec7 l Z) ∨ I.UnderQ a v → ∃ P : SBof I a, Formalism.L2.Col.IsOver v (GlobalTheory.TwU.seamP (sm I l Z) P.1) := by
   exact @GlobalTheory.Mem.Col2.AdT.exists_SBof_over_sub
 end -- clump:auto
@@ -108,7 +104,6 @@ open GlobalTheory.SeeSaw GlobalTheory.Unf
 open GlobalTheory.Mem.Col2.AdT
 open Filter Topology
 
-
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.LevelCharacterEqOneOfDeepAtSplitBadPlaceStatement =====
@@ -126,9 +121,6 @@ open GlobalTheory.SeeSaw GlobalTheory.Unf
 open GlobalTheory.Mem.Col2.AdT
 open Filter Topology
 
-
-theorem _root_.GlobalTheory.T.levelCharacter_trivial_near_one_of_local_bad_places : ∀ {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) {n : ℕ} (J : Matrix (Fin n) (Fin n) E) (T f : ℕ) (bad : Set (HeightOneSpectrum (𝓞 F))) (S : StepLevel F E σ J T f bad) (Vs : Set (HeightOneSpectrum (𝓞 F))), Vs.Finite → (∀ v ∈ bad, v ∈ Vs) → (letI := tensTopL (F := F) (E := E) (FiniteAdeleRing (𝓞 F) F); ∀ v ∈ Vs, ∀ᶠ u : GL (Fin n) (E ⊗[F] FiniteAdeleRing (𝓞 F) F) in nhds 1, ∀ x : S.U, (∀ v', v' ≠ v → bc (prV (E := E) v') x.1 = 1) → bc (prV (E := E) v) x.1 = bc (prV (E := E) v) u → S.chi x = 1) → (letI := tensTopL (F := F) (E := E) (FiniteAdeleRing (𝓞 F) F); ∀ᶠ u : GL (Fin n) (E ⊗[F] FiniteAdeleRing (𝓞 F) F) in nhds 1, ∀ κ : S.U, κ.1 = u → S.chi κ = 1) := by
-  first | exact @GlobalTheory.ChiCont.main
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.LevelCharacterTrivialNearOneOfLocalBadPlacesStatement =====
@@ -150,8 +142,6 @@ noncomputable section
 
 namespace GlobalTheory.AdForm.ChiCont
 
-
-
 theorem chi_continuous : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok → TC.Pins B X → ∀ (l : I.Laws) (Z : TC.Later B (I.cols l)), ∀ (u : B.Word) (a : I.ι) (Ch : ℕ → Type) (A : TwDat I l Z u a Ch), A.Is → ∀ (i : ℕ) (hi : i ≤ B.R.m) β, Continuous fun κ => ((A.chi i β κ : ℂˣ) : ℂ) := by
   intro B X I hI hP l Z u a Ch A hA i hi β
   obtain ⟨n, hn, hfin⟩ := hA.fin i hi β
@@ -165,11 +155,11 @@ theorem chi_continuous : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok �
     intro v hv w hw
     exact HeightOneSpectrum.ext (hv.trans hw.symm)
   have hbad : ∀ v ∈ A.bad i, v ∈ Vs := fun v hv => GlobalTheory.T.exists_badPrime_over_chart_bad_place I hI hP l Z a v (hA.bad_le i hi v hv)
-  have hker := GlobalTheory.T.levelCharacter_trivial_near_one_of_local_bad_places (F := (I.rec7 l Z).host.F) (E := (I.rec7 l Z).host.E) (sigD (I.rec7 l Z)) (gramN (I.rec7 l Z) i hi)
+  have hker := GlobalTheory.ChiCont.main (F := (I.rec7 l Z).host.F) (E := (I.rec7 l Z).host.E) (sigD (I.rec7 l Z)) (gramN (I.rec7 l Z) i hi)
     (B.T u) (I.rec7 l Z).R.f (A.bad i) (A.K i hi β).lev Vs hVs hbad (by
     rintro v ⟨P, hv⟩
     obtain ⟨N, hN⟩ := _root_.GlobalTheory.Mem.Col2.AdT.SplitChi.chi_eq_one_of_deep I hI hP l Z a (B.T u) i hi (A.bad i) (A.K i hi β).lev n hn hfin P v hv
-    have h2 := GlobalTheory.T.eventually_nhds_one_adelicMatrixCongruentOneAtPrime (F := (I.rec7 l Z).host.F) (E := (I.rec7 l Z).host.E) ((I.rec7 l Z).R.N i) N
+    have h2 := GlobalTheory.TwU.NearOne.congAt_eventually_nhds_one (F := (I.rec7 l Z).host.F) (E := (I.rec7 l Z).host.E) ((I.rec7 l Z).R.N i) N
       (GlobalTheory.TwU.seamP (sm I l Z) P.1)
     exact h2.mono fun w hw x hx hxw => hN x hx w hw hxw)
 

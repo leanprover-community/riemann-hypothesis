@@ -124,20 +124,13 @@ theorem root_ne {z : ℂ} (h : ∃ n : ℕ, 0 < n ∧ z ^ n = 1) : z ≠ 0 := by
 theorem comb_lc (ψ : AddChar (AF D.host.F) ℂ) (S T : HSp D) (e : WO S T →₀ ℂ) (f : WO S T → ℂ) :
     comb ψ S T e f = Finsupp.linearCombination ℂ (fun x => heisO ψ S T x f) e := rfl
 
-theorem comb_smul_left (ψ : AddChar (AF D.host.F) ℂ) (S T : HSp D) (a : ℂ) (e : WO S T →₀ ℂ) (f : WO S T → ℂ) :
-    comb ψ S T (a • e) f = a • comb ψ S T e f := by
-  rw [comb_lc, comb_lc, map_smul]
-
 theorem trc_lc {V : HSp D} (e : GA D V →₀ ℂ) (f : GA D V → ℂ) :
     trc e f = Finsupp.linearCombination ℂ (fun g => rTrans g f) e := rfl
-
-theorem trc_smul_left {V : HSp D} (a : ℂ) (e : GA D V →₀ ℂ) (f : GA D V → ℂ) : trc (a • e) f = a • trc e f := by
-  rw [trc_lc, trc_lc, map_smul]
 
 theorem biComb_smul2 (ψ : AddChar (AF D.host.F) ℂ) (A S A' : HSp D) (a b : ℂ) (e : WO A S →₀ ℂ) (e' : WO S A' →₀ ℂ)
     (C : WO A S → WO S A' → ℂ) : biComb ψ A S A' (a • e) (b • e') C = (a * b) • biComb ψ A S A' e e' C := by
   funext u x
-  simp only [biComb, comb_smul_left, Pi.smul_apply, smul_eq_mul]
+  simp only [biComb, GlobalTheory.LocComb.comb_smul, Pi.smul_apply, smul_eq_mul]
   have : (fun u' => b * comb ψ S A' e' (C u') x) = b • fun u' => comb ψ S A' e' (C u') x := rfl
   rw [this]
   have h2 : ∀ f : WO A S → ℂ, comb ψ A S e (b • f) = b • comb ψ A S e f := fun f => by
@@ -202,7 +195,7 @@ theorem qlast_resc (v : VCom c) (w : VTup t) (s : ∀ j, t.Ch j → ℂ) (hs : �
     rfl
   · congr 1
     funext h'
-    have e : trc ((resc w s).εT (j + 1 + 1) h β) f = s (j + 1 + 1) β • trc (w.εT (j + 1 + 1) h β) f := trc_smul_left _ _ _
+    have e : trc ((resc w s).εT (j + 1 + 1) h β) f = s (j + 1 + 1) β • trc (w.εT (j + 1 + 1) h β) f := GlobalTheory.QLawPf.trc_smul_left _ _ _
     rw [e, Pi.smul_apply, Pi.smul_apply, smul_eq_mul, smul_eq_mul, mul_mul_mul_comm, mul_inv_cancel₀ (hs _ _), one_mul]
     rfl
 
@@ -221,7 +214,7 @@ theorem qlaw_resc (v : VCom c) (w : VTup t) (s : ∀ j, t.Ch j → ℂ) (hs : �
     rw [one_smul, mul_one, ← hand_smul_fun] at e
     exact e.symm
   · refine congrArg _ (Finset.sum_congr rfl fun β _ => ?_)
-    have e : trc ((resc w s).ε (j + 1 + 1) β) f = s (j + 1 + 1) β • trc (w.ε (j + 1 + 1) β) f := trc_smul_left _ _ _
+    have e : trc ((resc w s).ε (j + 1 + 1) β) f = s (j + 1 + 1) β • trc (w.ε (j + 1 + 1) β) f := GlobalTheory.QLawPf.trc_smul_left _ _ _
     rw [e]
     refine (GlobalTheory.HandHom.per_smul _ _ _ _ _ _).trans ?_
     rw [inv_mul_cancel₀ (hs _ _), one_mul]
@@ -338,7 +331,7 @@ theorem GlobalTheory.QSuppTwo.main : ∀ (D : D7) (c : Comm D) (v : VCom c) (t :
     rw [← hax i']
     have hr : (F.Q i').gl j (2 * σ + 2 + 1) (by have := (F.Q i').hs; omega) (a i') ∈ GlobalTheory.FinPl.grpAt (c.V j) (· = (F.Q i').q.v) := by
       rw [← (I i').2.1]; exact ⟨_, rfl⟩
-    exact (GlobalTheory.T.unitaryFiniteAdelicGroup_split_finitePlaceSet D (c.V j) ∅).2.2.2.2.2.2.1 _ _ (fun p hp hn => hi' (hF.inj (hp.symm.trans hn))) hr
+    exact (GlobalTheory.FinPl.SetCut.grp_split D (c.V j) ∅).2.2.2.2.2.2.1 _ _ (fun p hp hn => hi' (hF.inj (hp.symm.trans hn))) hr
   · intro y hy
     rw [← hax i]
     exact (I i).2.2.2.1 (a i) y hy

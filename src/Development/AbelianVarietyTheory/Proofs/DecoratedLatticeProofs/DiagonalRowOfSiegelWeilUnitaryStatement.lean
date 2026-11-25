@@ -252,7 +252,6 @@ open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Fo
 
 namespace GlobalTheory.Core.One
 
-
 open Formalism.L2.SG.NGCut.CorankRelation in
 theorem corankOne_isEquivalence_nonzeroGram_terms : CorankOneIsEquivalenceOnRow := by
   intro D X Y u u' _hT
@@ -332,47 +331,6 @@ open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Fo
 
 namespace GlobalTheory.Core.OneCoset
 
-section Gen
-
-variable {E : Type} [Field E] [NumberField E] [StarRing E] {S : HSpace E} {r : ℕ} {T : E}
-
-theorem frame_mapLF (γ : S.V ≃ₗ[E] S.V) (hγ : γ ∈ Formalism.HermitianLatticesTheory.isom S.hT) (F : LFlag S r T) (a : Fin (r + 1)) :
-    frame (mapLF γ F) a = γ (frame F a) := by
-  unfold mapLF
-  rw [dite_eq_left hγ]
-  induction a using Fin.lastCases with
-  | last => simp [frame, FlagG.fvec, mapFlag]
-  | cast i => simp [frame, FlagG.fvec, mapFlag]
-
-theorem orth_mapLF (γ : S.V ≃ₗ[E] S.V) (hγ : γ ∈ Formalism.HermitianLatticesTheory.isom S.hT) (F : LFlag S r T) (x : S.V)
-    (hx : x ∈ orth S (Xsp (mapLF γ F))) : γ.symm x ∈ orth S (Xsp F) := by
-  simp only [orth, Submodule.mem_iInf, LinearMap.mem_ker] at hx ⊢
-  intro y hy
-  have hy' : γ y ∈ Xsp (mapLF γ F) := by
-    rw [Formalism.L2.SG.NGCut.CorankRelation.mem_Xsp_mapLF γ hγ]; simpa using hy
-  have := hx (γ y) hy'
-  rw [← hγ y (γ.symm x)]
-  simpa using this
-
-end Gen
-
-theorem conj_mem_NRat {D : D7} {T : D.host.E} (γ : (VS D).V ≃ₗ[D.host.E] (VS D).V)
-    (hγ : γ ∈ Formalism.HermitianLatticesTheory.isom (VS D).hT) (F : LFlag (D.sp.Y 0) D.R.rS T) (n : (VS D).V ≃ₗ[D.host.E] (VS D).V)
-    (hn : n ∈ NRat F) : γ * n * γ⁻¹ ∈ NRat (mapLF γ F) := by
-  obtain ⟨hn0, hn1, hn2⟩ := hn
-  refine ⟨(Formalism.HermitianLatticesTheory.isom _).mul_mem ((Formalism.HermitianLatticesTheory.isom _).mul_mem hγ hn0) ((Formalism.HermitianLatticesTheory.isom _).inv_mem hγ), ?_, ?_⟩
-  · intro j x hx
-    rw [Formalism.L2.SG.Pf.RowForm.ScalT.xflag_mapLF γ hγ] at hx ⊢
-    obtain ⟨y, hy, rfl⟩ := hx
-    refine ⟨n y - y, hn1 j y hy, ?_⟩
-    show γ (n y - y) = γ (n (γ.symm (γ y))) - γ y
-    simp
-  · intro x hx
-    have h := hn2 _ (orth_mapLF γ hγ F x hx)
-    rw [Formalism.L2.SG.NGCut.CorankRelation.mem_Xsp_mapLF γ hγ]
-    show γ.symm (γ (n (γ.symm x)) - x) ∈ Xsp F
-    simpa using h
-
 theorem corankOne_of_same_flagDoubleCoset : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u u' : D.what₂.Word),
     ∀ t t' : TauC Y u u', t.G ≠ 0 → (Y.tO u u').rowOf t = (Y.tO u u').rowOf t' →
       nmlOf Y u u' t = nmlOf Y u u' t' → (Y.tO u u').s0 t t' = 1 := by
@@ -395,12 +353,12 @@ theorem corankOne_of_same_flagDoubleCoset : ∀ (D : D7) (X : HidaSetting D) (Y 
   have hmem : t'.lin ∈ nmlOf Y u u' t := by
     rw [hn]; exact ⟨1, hone _, 1, hone _, by simp⟩
   obtain ⟨n, hn1, n', hn2, heq⟩ := hmem
-  have hm : t.lin * n' * t.lin⁻¹ ∈ NRat t.frame := conj_mem_NRat t.lin t.rep.2.2.1 _ n' hn2
+  have hm : t.lin * n' * t.lin⁻¹ ∈ NRat t.frame := GlobalTheory.SnFamCoset.conj_mem_NRat t.lin t.rep.2.2.1 _ n' hn2
   have hβ : t'.lin * t.lin⁻¹ = n * (t.lin * n' * t.lin⁻¹) := by rw [heq]; group
   have hfr : ∀ a, frame t'.frame a = (n * (t.lin * n' * t.lin⁻¹)) (frame t.frame a) := by
     intro a
     unfold GTerm.frame
-    rw [frame_mapLF t'.lin t'.rep.2.2.1, frame_mapLF t.lin t.rep.2.2.1, ← hβ]
+    rw [GlobalTheory.MovedFrames.frame_mapLF t'.lin t'.rep.2.2.1, GlobalTheory.MovedFrames.frame_mapLF t.lin t.rep.2.2.1, ← hβ]
     show t'.lin _ = t'.lin (t.lin.symm (t.lin _))
     simp
   have hTh := GlobalTheory.DcosetCompl.th_eq_hp D t.lam (lf D (X.Fu u)) t.frame t'.frame hlat rfl hLt.2 hLt'.2 n hn1 _ hm hfr

@@ -47,12 +47,12 @@ theorem grpAt_off {V : HSp D} {P R : Pl D → Prop} (h : ∀ p, P p → ¬ R p) 
   exact fun u => h1.2 ⟨u.1, fun hp => h _ hp u.2⟩
 
 theorem grpAt_fin {V : HSp D} {P : Pl D → Prop} {g : GA D V} (hg : g ∈ grpAt V P) : g ∈ GfC V :=
-  (GlobalTheory.T.unitaryFiniteAdelicGroup_split_finitePlaceSet D V ∅).2.2.2.1 (grpAt_mono (fun p _ => Finset.notMem_empty p) hg)
+  (GlobalTheory.FinPl.SetCut.grp_split D V ∅).2.2.2.1 (grpAt_mono (fun p _ => Finset.notMem_empty p) hg)
 
 theorem split_two {V : HSp D} (G Q : Finset (Pl D)) {x : GA D V} (hx : x ∈ GfC V)
     (hx' : x ∈ grpOff V fun p => p ∉ G ∧ p ∉ Q) :
     ∃ y ∈ grpAt V (· ∈ Q), ∃ z ∈ grpAt V (· ∈ G), x = y * z := by
-  obtain ⟨-, -, hQ, -, -, ⟨e, he⟩, -, hinf, -⟩ := GlobalTheory.T.unitaryFiniteAdelicGroup_split_finitePlaceSet D V Q
+  obtain ⟨-, -, hQ, -, -, ⟨e, he⟩, -, hinf, -⟩ := GlobalTheory.FinPl.SetCut.grp_split D V Q
   obtain ⟨p, hp⟩ := e.surjective ⟨x, hx⟩
   have hxe : x = p.1.1 * p.2.1 := by rw [← he p, hp]
   refine ⟨p.1.1, p.1.2, p.2.1, ?_, hxe⟩
@@ -129,7 +129,7 @@ theorem integ_support : ∀ (D : D7) (c : Comm D) (v : VCom c) (t : Tup c) (w : 
     rw [this]
     exact mul_mem (mul_mem (inv_mem (grpAt_fin hrP)) hq₂) (inv_mem (grpAt_fin hκ.1))
   obtain ⟨yQ, hyQ, z, hz, rfl⟩ := split_two v.gP w.Q hyf hy
-  have comm := (GlobalTheory.T.unitaryFiniteAdelicGroup_split_finitePlaceSet D (c.V (j + 1 + 1)) v.gP).2.2.2.2.1
+  have comm := (GlobalTheory.FinPl.SetCut.grp_split D (c.V (j + 1 + 1)) v.gP).2.2.2.2.1
   have hQG : ∀ p, p ∈ w.Q → p ∉ v.gP := fun p hp => Finset.disjoint_left.mp hF.disjG hp
   have hyQ' := grpAt_mono hQG hyQ
   have hκ' : κ ∈ grpAt _ (· ∉ v.gP) := grpAt_mono (fun p hp => hp.1) hκ.1

@@ -468,8 +468,6 @@ open GlobalTheory.Mem.Th (CptF)
 open GlobalTheory.Core.Rk.IP
 open GlobalTheory.Core.Rk.Exh GlobalTheory.RegSW
 
-theorem _root_.GlobalTheory.T.weilRep_average_kills_theta_of_dense_family : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (S T : HSp D) (χS χT : (AE D)ˣ →* Circle) (om : WRep S T), IsWeilDatumO ψ S T χS χT om → ∀ (X : Type) [TopologicalSpace X] [MeasurableSpace X] [BorelSpace X] [SecondCountableTopology X] (μ : Measure X) [IsFiniteMeasure μ] (p : X → GA D S × GA D T) (c : X → ℂ) (K : Set (GA D S × GA D T)), Continuous p → Continuous c → (∃ C : ℝ, ∀ x, ‖c x‖ ≤ C) → IsCompact K → (∀ᵐ x ∂μ, p x ∈ K) → ∀ M : Submodule ℂ (WO S T → ℂ), (∀ g ∈ M, IsThetaFunO ψ S T g) → (∀ g ∈ M, ∀ w, heisO ψ S T w g ∈ M) → (∀ g ∈ M, ∫ x, c x * om (p x) g 0 ∂μ = 0) → ∀ f, IsThetaFunO ψ S T f → GlobalTheory.IndefiniteRowSideFullHecke.ConjugateAdjointDagger.UnifLimit M f → ∫ x, c x * om (p x) f 0 ∂μ = 0 := by
-  first | exact @GlobalTheory.AvgKill.average_kills_theta
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.WeilRepAverageKillsThetaOfDenseFamilyStatement =====
@@ -620,7 +618,7 @@ theorem kills_of_noLift : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (A W : H
       simp only [map_smul, Pi.smul_apply, smul_eq_mul]
       simp_rw [mul_left_comm _ a]
       rw [integral_const_mul, ih, mul_zero]
-  exact GlobalTheory.T.weilRep_average_kills_theta_of_dense_family D ψ (dblSp A) W 1 χW omh homh (GA D A × GA D A) μ p c (p '' (K ×ˢ K)) hpc hcc ⟨C * C, hcb⟩ hK'
+  exact GlobalTheory.AvgKill.average_kills_theta D ψ (dblSp A) W 1 χW omh homh (GA D A × GA D A) μ p c (p '' (K ×ˢ K)) hpc hcc ⟨C * C, hcb⟩ hK'
     hae M hMθ hMh hkill φ hφ (hMlim φ hφ)
 
 end GlobalTheory.Core.Rk.Kill
@@ -841,8 +839,6 @@ open GlobalTheory.Mem.Th (CptF)
 open GlobalTheory.Core.Rk.IP
 open GlobalTheory.Core.Rk.Exh GlobalTheory.RegSW
 
-theorem _root_.GlobalTheory.T.principalCongruence_fixes_definiteStepVector : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) (A H : HSp D) (χA : (AE D)ˣ →* Circle) (om : WRep A H) (sA : RealMat A) (sH : RealMat H), IsInfFam θ → (∃ η, GlobalTheory.WeilParts.IsEtaTilde D η) → IsWeilDatumO ψ A H χA 1 om → (∀ τ, IsCartanInv (gramAt D A τ) (sA τ)) → (∀ τ, IsCartanInv (gramAt D H τ) (sH τ)) → A.rank ≤ H.rank → ∀ (β : GL (Fin A.rank) (Formalism.IndefR.Lev.EAf D)) (Z : Finset (Formalism.L2.DIV.Pl D.host.E)), Places A β Z → ∀ (βH : GL (Fin H.rank) (Formalism.IndefR.Lev.EAf D)) (f₀ f : WO A H → ℂ), Formalism.L2.DIV.IsFrame βH (frameLat H) → IsStepVecOf ψ θ A H sA sH (frameLat A) (frameLat H) β βH (prinDat A Z) (fun _ => 1) ∅ (fun _ => 1) f₀ f → IsThetaFunO ψ A H f → ∀ κ ∈ prin A β Z, om (κ, 1) f = f := by
-  first | exact @GlobalTheory.SmallFix.prin_fixes_stepVec
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.PrincipalCongruenceFixesDefiniteStepVectorStatement =====
@@ -881,7 +877,7 @@ theorem wcoef_eq_zero_off_prin : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (
     obtain ⟨PP, hPP, hPPv⟩ := hmem
     exact hv PP (hPg ▸ hPP) hPPv
   have hsupp := fun x hx => by_contra fun h => hnot
-    (GlobalTheory.T.finitePart_mem_level_of_thetaDatum_ne_zero D A H (frameLat A) β βH (prinDat A Z) (fun _ => 1) (fun _ => 1) e sdA hP.frame hrank hQ he g hint x hx h)
+    (GlobalTheory.SuppLevO.finE_mem_lev D A H (frameLat A) β βH (prinDat A Z) (fun _ => 1) (fun _ => 1) e sdA hP.frame hrank hQ he g hint x hx h)
   have hsb := GlobalTheory.T.thetaChainStep_finiteDatum_isSchwartzBruhat_half D A H (frameLat A) (frameLat H) β βH (prinDat A Z) (fun _ => 1) (fun _ => 1)
     ((prinDat A Z).Pg ∪ ∅) e sdA sdH hP.frame hβH he
   obtain ⟨n, a, y, -, h1, h2⟩ := GlobalTheory.T.heisenberg_fix_and_kill_theta_off_support_move D ψ A H hW.std (frameLat A) (frameLat H) sdA sdH
@@ -914,7 +910,7 @@ theorem exists_small_vac_vec : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (θ
   obtain ⟨βH, f₀, f, hfr, hs⟩ := _root_.GlobalTheory.Core.Rk.SmallEx.exists_small_stepVec D ψ θ A H χA om sA sH hθ hη hW hA hH hr β Z hZ
   obtain ⟨h1, h2, h3, h4⟩ := _root_.GlobalTheory.Core.Rk.SmallVac.smallVec_vac_sph D ψ θ A H χA om sA sH hθ hη hW hA hH hr β Z hZ βH f₀ f hfr hs
   exact ⟨f, h1, h2, h3, h4,
-    GlobalTheory.T.principalCongruence_fixes_definiteStepVector D ψ θ A H χA om sA sH hθ hη hW hA hH hr β Z hZ βH f₀ f hfr hs h1,
+    GlobalTheory.SmallFix.prin_fixes_stepVec D ψ θ A H χA om sA sH hθ hη hW hA hH hr β Z hZ βH f₀ f hfr hs h1,
     _root_.GlobalTheory.Core.Rk.Exh.SmallSupp.wcoef_eq_zero_off_prin D ψ θ A H χA om sA sH hθ hη hW hA hH hr β Z hZ βH f₀ f hfr hs h1⟩
 
 end GlobalTheory.Core.Rk.Small

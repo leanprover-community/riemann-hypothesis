@@ -54,8 +54,6 @@ theorem halfB_mem_locP {E : Type} [Field E] [NumberField E] [StarRing E] {a b : 
   have := nsmul_mem h c
   rwa [← Nat.cast_smul_eq_nsmul E, smul_smul, mul_inv_cancel₀ hc', one_smul] at this
 
-
-
 theorem ybmem : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) (S T : HSp D) (δ : ℂ) (sc : ℝ), StdPair θ S T δ sc ψ → ∀ (e : AE D) (SS : Finset (Formalism.L2.DIV.Pl D.host.E)), IsIdemSum e SS → (∀ Q ∈ SS, ((D.host.QS * D.host.q * D.host.d : ℕ) : 𝓞 D.host.E) ∉ Q.asIdeal) → ∀ (N : Submodule (𝓞 D.host.E) (Fin S.rank → D.host.E)) (N' : Submodule (𝓞 D.host.E) (Fin T.rank → D.host.E)), IsSelfDualC S N → IsSelfDualC T N' → ∀ (c : ℕ), 0 < c → Odd c → ∀ y' ∈ halfBO SS (perO (D.host.AA0 : Submodule (𝓞 D.host.E) D.host.E) N N') c, (GlobalTheory.VacUnique.finRat S T (LinearMap.toMatrix' y')) - ((LinearMap.toMatrix' y').map fun r => cA D e * incA D r) ∈ (latO S T (N : Set (Fin S.rank → D.host.E)) (N' : Set (Fin T.rank → D.host.E)) fun _ => True) := by
   intro D ψ θ S T δ sc hP e SS hE h2 N N' hN hN' c hc hcQ x' hx
   have hc0 : (c : D.host.E) ≠ 0 := Nat.cast_ne_zero.2 hc.ne'
@@ -82,9 +80,9 @@ theorem ybmem : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) (S
     have he : expS SS Q = 0 := by
       unfold expS; rw [ite_eq_right fun h => hQ (Or.inl h), ite_eq_right fun h => hQ (Or.inr h)]
     rwa [he, zpow_zero, _root_.inv_one, one_smul] at h
-  obtain ⟨d, hd0, hdx, hdQ⟩ := GlobalTheory.T.exists_denominator_avoiding_given_primes D.host.E S.rank T.rank _
+  obtain ⟨d, hd0, hdx, hdQ⟩ := GlobalTheory.OffDen.exists_den_avoid D.host.E S.rank T.rank _
     (fun Q => Q ∈ SS ∨ Formalism.L2.Col.conjPrime₂ Q ∈ SS) c hc x' hcx hloc
-  obtain ⟨a₁, a₂, ha₁, ha₂, ho⟩ := GlobalTheory.T.offIdempotent_mem_ideal_two_integers D e SS hE c hc d hd0 hdQ
+  obtain ⟨a₁, a₂, ha₁, ha₂, ho⟩ := GlobalTheory.OffIdemTwo.off_two D e SS hE c hc d hd0 hdQ
   have hB : a₁ • GlobalTheory.LatVac.finTens 1 (LinearMap.toMatrix' ((c : D.host.E) • x')) ∈
       latO S T (N : Set (Fin S.rank → D.host.E)) (N' : Set (Fin T.rank → D.host.E)) fun _ => True :=
     GlobalTheory.LatticeStable.smul_mem_latO D S T _ _ _ _ ha₁ _
@@ -144,16 +142,6 @@ theorem finPart_finRat_sub {S T : HSp D} (M : Matrix (Fin T.rank) (Fin S.rank) D
   rw [RingHom.map_sub]
   exact sub_eq_zero.2 ((GlobalTheory.LatVac.finPart_pair 1 (M i j)).trans (GlobalTheory.LatVac.finPart_incA (M i j)).symm)
 
-theorem infPart_of_idemSum {e : AE D} {SS : Finset (Formalism.L2.DIV.Pl D.host.E)} (hI : IsIdemSum e SS) :
-    infPart D e = 0 := by
-  obtain ⟨⟨es, hes, he⟩, -⟩ := hI
-  subst he
-  induction SS using Finset.induction_on with
-  | empty => rw [Finset.sum_empty, RingHom.map_zero]
-  | insert a s ha ih =>
-    rw [Finset.sum_insert ha, RingHom.map_add (f := _), GlobalTheory.SplitScalar.infPart_splitIdem (hes a (Finset.mem_insert_self a s)).1,
-      ih fun PP hPP => hes PP (Finset.mem_insert_of_mem hPP), add_zero]
-
 theorem smul_rest_eq_zero {S T : HSp D} {e : AE D} (hee : e * e = e) (hinf : infPart D e = 0)
     (M : Matrix (Fin T.rank) (Fin S.rank) D.host.E) :
     e • (GlobalTheory.VacUnique.finRat S T M - M.map (fun r => e * incA D r)) = 0 := by
@@ -168,7 +156,7 @@ theorem char_sympl_rest_eq_one : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (
   intro D ψ θ S T δ sc hP e SS hI h2 N N' hN hN' c hc hcP x' hx' y' hy'
   have hZ := GlobalTheory.T.halfA_components_mem_completedLattice_offPrimes D ψ θ S T δ sc hP e SS hI h2 N N' hN hN' c hc hcP x' hx'
   have hY := _root_.GlobalTheory.HalfBComp.ybmem D ψ θ S T δ sc hP e SS hI h2 N N' hN hN' c hc hcP y' hy'
-  have heZ := smul_rest_eq_zero (S := S) (T := T) (GlobalTheory.PlaceDatum.idemSum_mul_self hI) (infPart_of_idemSum hI)
+  have heZ := smul_rest_eq_zero (S := S) (T := T) (GlobalTheory.PlaceDatum.idemSum_mul_self hI) (GlobalTheory.PlaceVec.idemSum_infPart hI)
     (LinearMap.toMatrix' x')
   have hsplit : GlobalTheory.VacUnique.finRat S T (LinearMap.toMatrix' y') =
       (GlobalTheory.VacUnique.finRat S T (LinearMap.toMatrix' y') -

@@ -82,26 +82,12 @@ open scoped TensorProduct InnerProductSpace ComplexConjugate
 open GlobalTheory.ChainOnto
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-section
-open GlobalTheory.ChainOnto GlobalTheory.LFun GlobalTheory.AdelicU GlobalTheory.PRep
-open GlobalTheory.FinZeta (Gv embV Kv VacFin IsLocKer KerU)
-open GlobalTheory.SphTheta (IsStd CayleyRule intMat liftPar)
-open Formalism.UG (IsUnifV qV IsUnramInv GU KU IsInertAt Hecke IsCommensurated Tj SatU ordL Ov)
-open Formalism.MainNotions.SchurIrreducible (IsSplit)
-
-theorem _root_.GlobalTheory.T.thetaChainUpwardLift_heckeParam_transferred : GlobalTheory.Published.CuspRapidDecay → GlobalTheory.Hk3.HoweUnram → ∀ D : D7, LevFacts D → UpPar D := by
-  first | exact @GlobalTheory.ChainOnto.upPar_of_transfer
-end
-
-theorem _root_.GlobalTheory.T.multiplicitySpace_span_fullSphericalHecke_eigenparts : GlobalTheory.Published.CuspRapidDecay → ∀ D : D7, FinDim D → LevFacts D → ForStage D fun c _ s => Submodule.span ℂ {u : s.CC c | ∃ e : HeightOneSpectrum (𝓞 D.host.E) → List ℤ → ℂ, PiTensorProduct.lift.symm (u : SmT s.M →ₗ[ℂ] (GA D s.V → ℂ)) ∈ partFull c.θ s.M (levS s.V s.β s.L) (Lev.levChi s.V s.β s.L) c.S e} = ⊤ := by
-  first | exact @GlobalTheory.OntoDecomp.multT_span_partFull
-
 namespace GlobalTheory.ChainOnto
 
 theorem eigSpan_of_parts : GlobalTheory.Published.CuspRapidDecay → ∀ D : D7, FinDim D → MetEx D → LevFacts D → EigSpan D := by
   intro hC D hF _ hL c hc j hj s hs
-  have hspan := GlobalTheory.T.multiplicitySpace_span_fullSphericalHecke_eigenparts hC D hF hL c hc j hj s hs
-  have hpar := GlobalTheory.T.thetaChain_eigenPart_has_heckeParameters hC D c hc j hj s hs
+  have hspan := GlobalTheory.OntoDecomp.multT_span_partFull hC D hF hL c hc j hj s hs
+  have hpar := GlobalTheory.ChainOnto.partPar hC D c hc j hj s hs
   rw [eq_top_iff, ← hspan]
   refine Submodule.span_le.2 ?_
   rintro u ⟨e, he⟩
@@ -140,7 +126,7 @@ theorem coefSupp : ∀ D : D7, CoefSupp D := by
     obtain ⟨PP, hPP, hPPv⟩ := hmem
     exact hv PP (hPg ▸ hPP) hPPv
   have hsupp := fun x hx => by_contra fun h => hnot
-    (GlobalTheory.T.finitePart_mem_level_of_thetaDatum_ne_zero D s.V s'.V s.Λ s.β s'.β s.L (c.chi (k + 1)) ξ e hs.selfDual hs.frame hrank hQ he g hint x hx h)
+    (GlobalTheory.SuppLevO.finE_mem_lev D s.V s'.V s.Λ s.β s'.β s.L (c.chi (k + 1)) ξ e hs.selfDual hs.frame hrank hQ he g hint x hx h)
   have hsb := GlobalTheory.T.thetaChainStep_finiteDatum_isSchwartzBruhat_half D s.V s'.V s.Λ s'.Λ s.β s'.β s.L (c.chi (k + 1)) ξ (s.L.Pg ∪ ∅) e
     hs.selfDual hs'.selfDual hs.frame hs'.frame he
   obtain ⟨n, a, y, hy, h1, h2⟩ := GlobalTheory.T.heisenberg_fix_and_kill_theta_off_support_move D c.ψ s.V s'.V hc.std s.Λ s'.Λ hs.selfDual hs'.selfDual
@@ -165,18 +151,12 @@ end
 theorem _root_.GlobalTheory.T.thetaChainCoef_vanishes_off_level : ∀ D : D7, CoefSupp D := by
   first | exact @GlobalTheory.ChainOnto.CoefSuppPf.coefSupp
 
-theorem _root_.GlobalTheory.T.thetaChainCuspSpaceFiniteDim_of_harishChandra : GlobalTheory.Published.HarishChandraFinite → ∀ D : D7, LevFacts D → FinDim D := by
-  first | exact @GlobalTheory.ChainOnto.finDim_of_levFacts
-
-theorem _root_.GlobalTheory.T.linearIndependent_of_ne_zero_of_isParamFunV_of_separated : ∀ (D : D7) (V : HSp D) (Sb : Finset (HeightOneSpectrum (𝓞 D.host.F))) (ι : Type) (f : ι → (GA D V → ℂ)) (B : ι → GlobalTheory.LFun.Fam D.host.E), (∀ i, f i ≠ 0) → (∀ i, GlobalTheory.LFun.IsParamFunV V Sb (f i) (B i)) → (∀ i i', i ≠ i' → ∃ w ∉ GlobalTheory.LFun.above D.host.E (Sb : Set (HeightOneSpectrum (𝓞 D.host.F))), B i w ≠ B i' w) → LinearIndependent ℂ f := by
-  first | exact @GlobalTheory.ChainOnto.linearIndependent_of_isParamFunV
-
 namespace GlobalTheory.ChainOnto
 
 theorem parIndep : ∀ D : D7, ParIndep D := by
   intro D c hc j hj s hs ι x B hpar hB
   classical
-  have hlat := (GlobalTheory.T.thetaChainStage_lattice_stabilizer_params_off_set D c hc j hj s hs).2
+  have hlat := (GlobalTheory.ChainOnto.stabLoc_isParamFun_frameLat D c hc j hj s hs).2
   rw [linearIndependent_iff']
   intro t a hsum i₀ hi₀
   obtain ⟨hne0, _⟩ := hpar i₀
@@ -191,7 +171,7 @@ theorem parIndep : ∀ D : D7, ParIndep D := by
   let p : ι → Prop := fun i => PiLocalization₂.val (x i) v ≠ 0
   let f : {i // p i} → (GA D s.V → ℂ) := fun i g => conj (PiLocalization₂.val (x i.1) v g)
   have hli : LinearIndependent ℂ f := by
-    refine GlobalTheory.T.linearIndependent_of_ne_zero_of_isParamFunV_of_separated D s.V c.S {i // p i} f (fun i => B i.1) ?_ ?_ ?_
+    refine GlobalTheory.ChainOnto.linearIndependent_of_isParamFunV D s.V c.S {i // p i} f (fun i => B i.1) ?_ ?_ ?_
     · intro i h0
       apply i.2
       funext g
@@ -227,14 +207,8 @@ end GlobalTheory.ChainOnto
 theorem _root_.GlobalTheory.T.thetaChain_heckeParameters_linearIndependent : ∀ D : D7, ParIndep D := by
   first | exact @GlobalTheory.ChainOnto.parIndep
 
-theorem _root_.GlobalTheory.T.thetaChainInnerProductsExist_of_rapidDecay : GlobalTheory.Published.CuspRapidDecay → ∀ D : D7, MetEx D := by
-  first | exact @GlobalTheory.ChainMetric.metEx
-
 theorem _root_.GlobalTheory.T.thetaChain_LValues_nonvanishing : ∀ D : D7, ChainLW D := by
   first | exact @GlobalTheory.ChainOnto.chainLW_holds
-
-theorem _root_.GlobalTheory.T.thetaChainLocalZetaNonvanishing_of_real : ∀ D : D7, MetEx D → LevFacts D → LevelLaw D → CoefSupp D → RealZeta D → ZetaNe D := by
-  first | exact @GlobalTheory.ChainOnto.ZetaNeProof.zetaNe_of_real
 
 namespace GlobalTheory.ChainOnto
 
@@ -252,7 +226,6 @@ theorem _root_.GlobalTheory.T.theta_chain_occurring_params_norm_half_rank_bound 
 
 section
 open GlobalTheory.Chain GlobalTheory.ChainFr GlobalTheory.PairLift GlobalTheory.Chain.RealIt
-
 
 namespace GlobalTheory.RealZetaProof
 
@@ -290,8 +263,8 @@ theorem realZeta_core (D : D7)
               ((s₁ : ℂ) - (t : ℂ) / 2)) mR := by
   refine ⟨glue Φ, w, hwk, ?_⟩
   intro mR hmR z
-  have hfac := GlobalTheory.T.thetaInner_fockProduct_eq_prod_realPlaces D V V' par par' M M' θ ψ χS χT ω hinf hW m X hmX f hvac
-  obtain ⟨cst, hcst, hhaar⟩ := GlobalTheory.T.integral_realUnitary_haar_eq_prod_Upq_haar D V par M θ hinf mR (fun τ => Formalism.REAL.muG (M.ε τ)) hmR
+  have hfac := GlobalTheory.FockProdCoef.ipTh_ptOf_glue D V V' par par' M M' θ ψ χS χT ω hinf hW m X hmX f hvac
+  obtain ⟨cst, hcst, hhaar⟩ := GlobalTheory.HaarReal.integral_prod_eq D V par M θ hinf mR (fun τ => Formalism.REAL.muG (M.ε τ)) hmR
     (fun τ => inferInstance)
   set i0 := ipTh m X f f with hi0
   set F : D.what₂.Tau → Matrix (Fin V.rank) (Fin V.rank) ℂ → ℂ := fun τ h =>
@@ -379,12 +352,10 @@ theorem ip_unique_of_schur {D : D7} {V : HSp D} {par : D.what₂.Tau → SPar}
   rw [← hpure] at hschur
   exact mul_right_cancel₀ dne hschur
 
-
-
 open GlobalTheory.IndefiniteRowSideFullHecke.ThetaSourceAction in
 theorem realZeta : GlobalTheory.Published.HarishChandraModules → ∀ D : D7, GlobalTheory.IndefiniteRowSideFullHecke.ThetaSourceAction.ArchOnRecord D → GlobalTheory.ChainOnto.RealZeta D := by
   intro hHC D hA hgap c hc k hk s s' hs hs' p hp m X hmX
-  obtain ⟨hWexp, hvac⟩ := GlobalTheory.T.thetaChainStep_weilDatum_nonzero_fockVacuum D hgap c hc k hk s s' hs hs' p hp hk
+  obtain ⟨hWexp, hvac⟩ := GlobalTheory.ChainOnto.StepExp.stepExpVac D hgap c hc k hk s s' hs hs' p hp hk
   obtain ⟨χS, χT, hW, hexp⟩ := hWexp
   have hCT := (hA.2 hgap).1
   have hfock : ∀ τ, IsFockAt c.ψ c.θ s.V s'.V τ (cart s.M τ) (cart s'.M τ) (onb s.M τ) (onb s'.M τ) p.f :=
@@ -429,7 +400,6 @@ theorem _root_.GlobalTheory.T.thetaChain_realZeta_nonvanishing : GlobalTheory.Pu
 end
 
 namespace GlobalTheory.ChainOnto
-
 
 theorem exists_tprod_ne_zero_of_cc {D : D7} {c : Com D} {s : PiLocalization₂ D} (z : s.CC c) (hz : z ≠ 0) :
     ∃ v : s.M.Vec, PiTensorProduct.tprod ℂ v ≠ 0 :=
@@ -482,15 +452,7 @@ theorem chainUp_of : ∀ D : D7, MetEx D → ParBoundW D → ChainLW D → StepU
 
 end GlobalTheory.ChainOnto
 
-theorem _root_.GlobalTheory.T.thetaLiftChain_adjoint_nonvanishing_step : ∀ D : D7, FinDim D → ParOfVal D → UpSpan D → UpAdj D → UpPar D → UpNe D → StepUp D := by
-  first | exact @GlobalTheory.ChainOnto.stepUp
-
-theorem _root_.GlobalTheory.T.levelPlacesDatum_inv_left_mul_target_level : ∀ (D : D7) (a b r t k : ℕ) (ha : r ≤ a) (hb : r ≤ b), a = r + k * t → b = r + (k + 1) * t → ∀ (Pg : Finset (Pl D.host.E)) (P : LevelP Pg r ℂ) (χ : ℕ → ∀ PP : Pl D.host.E, (kP PP)ˣ →* ℂˣ) (ξ : ∀ PP : Pl D.host.E, (kP PP)ˣ →* ℂˣ) (H : ∀ PP : Pl D.host.E, GL (Fin b) (kP PP)), (∀ PP ∈ Pg, H PP ∈ blockTri (blkOf r t)) → ∀ hP : (fun PP : ↥Pg => upperLeftBlock hb (H PP.1)) ∈ P.H, ∀ y : ∀ PP : Pl D.host.E, Matrix (Fin b) (Fin a) (kP PP), omegaG (Lev.datY a r t k ha Pg ∅ P χ ξ Lev.Frm.B) (χ (k + 1)) (fun PP => ((H PP)⁻¹).val * y PP) = (((P.chi ⟨_, hP⟩ * ∏ PP ∈ Pg, ∏ i ∈ Finset.range (k + 1), χ (i + 1) PP (dBlk (blkOf r t) (i + 1) (H PP)))⁻¹ * ∏ PP ∈ Pg, χ (k + 1) PP (Matrix.GeneralLinearGroup.det (H PP)) : ℂˣ) : ℂ) * omegaG (Lev.datY a r t k ha Pg ∅ P χ ξ Lev.Frm.B) (χ (k + 1)) y := by
-  first | exact @GlobalTheory.ChainOnto.omegaG_levelP_move
-
 namespace GlobalTheory.ChainOnto.StepVecLawBoth
-
-
 
 open Classical in
 theorem stepLevLawT (D : D7) (c : Com D) (hc : c.Is) (k : ℕ) (hk : k < D.R.m) (s s' : PiLocalization₂ D) (hs : s.Is c k)
@@ -529,7 +491,7 @@ theorem stepLevLawT (D : D7) (c : Com D) (hc : c.Is) (k : ℕ) (hk : k < D.R.m) 
     congr 2
     refine Finset.prod_congr rfl fun PP _ => ?_
     simp only [map_one, redFn_one, MonoidHom.inv_apply, inv_one, one_mul, hH]
-  have hoT := GlobalTheory.T.levelPlacesDatum_inv_left_mul_target_level D s.V.rank s'.V.rank D.R.r D.R.t k hr hr' ea eb c.Pg c.P c.chi ξ1 H hBT hP
+  have hoT := GlobalTheory.ChainOnto.omegaG_levelP_move D s.V.rank s'.V.rank D.R.r D.R.t k hr hr' ea eb c.Pg c.P c.chi ξ1 H hBT hP
   have h2 := GlobalTheory.T.weilRep_theta_datum_half_eq_smul D c.ψ s.V s'.V _ _ ω hW e _ f₀ _ f
     (GlobalTheory.T.schrodingerIntertwiner_schwartzBruhat_isTheta D c.ψ hW.std s.V s'.V s.Λ s'.Λ hs.selfDual hs'.selfDual e (GlobalTheory.PlaceDatum.idemSum_mul_self he)
       (GlobalTheory.PlaceDatum.infPart_idemSum he) f₀ hf.2.theta) hΘ 1 κ
@@ -588,12 +550,6 @@ end GlobalTheory.ChainOnto
 theorem _root_.GlobalTheory.T.thetaLiftChain_fockVector_levelLaws : ∀ D : D7, LevelLaw D := by
   first | exact @GlobalTheory.ChainOnto.levelLaw
 
-theorem _root_.GlobalTheory.T.thetaChainHeckeParam_add_smul_of_agree_off_set : ∀ (D : D7) (c : Com D) (s : PiLocalization₂ D), (∀ (u u' : s.CC c) B B' (a : ℂ), IsPar u B → IsPar u' B' → (∀ w ∉ (GlobalTheory.LFun.above D.host.E (c.S : Set (HeightOneSpectrum (𝓞 D.host.F)))), B w = B' w) → u + a • u' ≠ 0 → IsPar (u + a • u') B) ∧ ∀ (u : s.CC c) B (a : ℂ), IsPar u B → a ≠ 0 → IsPar (a • u) B := by
-  first | exact @GlobalTheory.ChainOnto.isPar_add_smul
-
-theorem _root_.GlobalTheory.T.thetaLiftChainHeckeParameter_injective_placewise : ∀ (D : D7) (c : Com D) (k : ℕ) (B B' : GlobalTheory.LFun.Fam D.host.E) (w : HeightOneSpectrum (𝓞 D.host.E)), chainPar c B k w = chainPar c B' k w → B w = B' w := by
-  first | exact @GlobalTheory.ChainOnto.chainPar_inj
-
 namespace GlobalTheory.ChainOnto
 
 theorem ontoAll_of_chainUp : ∀ D : D7, FinDim D → MetEx D → EigSpan D → ParIndep D → ChainUp D → OntoAll D := by
@@ -606,12 +562,12 @@ theorem ontoAll_of_chainUp : ∀ D : D7, FinDim D → MetEx D → EigSpan D → 
   let R : GlobalTheory.LFun.Fam D.host.E → GlobalTheory.LFun.Fam D.host.E → Prop := fun B B' => ∀ w ∉ Sab, B w = B' w
   have hRe : Equivalence R :=
     ⟨fun _ _ _ => rfl, fun h w hw => (h w hw).symm, fun h h' w hw => (h w hw).trans (h' w hw)⟩
-  have hlin₀ := GlobalTheory.T.thetaChainHeckeParam_add_smul_of_agree_off_set D c s₀
+  have hlin₀ := GlobalTheory.ChainOnto.isPar_add_smul D c s₀
   refine _root_.GlobalTheory.ChainOnto.surjective_of_adjoint_separates (s₀.CC c) (s.CC c) (GlobalTheory.LFun.Fam D.host.E) (GlobalTheory.LFun.Fam D.host.E) ip₀ ip Θ
     (fun u B => IsPar u B) (fun x B => IsPar x B) R R (fun B => chainPar c B k)
     hm₀.herm hm₀.pos hm.pos hRe (hEig c hc 0 (Nat.zero_le _) s₀ hs₀) hlin₀.1 hlin₀.2 ?_ ?_ ?_
   · intro B B' h w hw
-    exact GlobalTheory.T.thetaLiftChainHeckeParameter_injective_placewise D c k B B' w (h w hw)
+    exact GlobalTheory.ChainOnto.chainPar_inj D c k B B' w (h w hw)
   · intro ι x B hx hne
     refine hInd c hc k hk s hs ι x B hx ?_
     intro i i' hii'
@@ -627,26 +583,13 @@ end GlobalTheory.ChainOnto
 theorem _root_.GlobalTheory.T.thetaLiftChain_surjective_of_adjoint_nonvanishing : ∀ D : D7, FinDim D → MetEx D → EigSpan D → ParIndep D → ChainUp D → OntoAll D := by
   first | exact @GlobalTheory.ChainOnto.ontoAll_of_chainUp
 
-theorem _root_.GlobalTheory.T.thetaLiftUpwardsAdjoint_of_rapidDecay : GlobalTheory.Published.CuspRapidDecay → ∀ D : D7, UpAdj D := by
-  first | exact @GlobalTheory.ChainOnto.upAdj_of_cuspRapidDecay
-
-section
-open GlobalTheory.Chain GlobalTheory.ChainFr GlobalTheory.PairLift GlobalTheory.Chain.RealIt
-
-theorem _root_.GlobalTheory.T.thetaLiftUpwards_in_cuspSpan : GlobalTheory.Published.DiscreteSeriesCover → GlobalTheory.Published.HarishChandraModules → GlobalTheory.Published.CuspRapidDecay → GlobalTheory.Published.CasselmanWallach → ∀ D : D7, GlobalTheory.ChainOnto.LevFacts D → GlobalTheory.ChainOnto.LevelLaw D → GlobalTheory.ChainOnto.UpSpan D := by
-  first | exact @GlobalTheory.ChainOnto.upSpan_of
-end
-
-theorem _root_.GlobalTheory.T.thetaLiftUpwards_ne_zero_of_lValue : ∀ D : D7, GlobalTheory.Core.Rk.IP.HeckeForm D → MetEx D → LevFacts D → ZetaNe D → UpNe D := by
-  first | exact @GlobalTheory.ChainOnto.upNe_of_heckeForm
-
 namespace GlobalTheory.ChainOnto
 
 theorem ontoAll_of_classicalTheorems : GlobalTheory.Published.HarishChandraFinite → GlobalTheory.Published.CuspRapidDecay → GlobalTheory.Published.DiscreteSeriesCover → GlobalTheory.Published.HarishChandraModules → GlobalTheory.Published.CasselmanWallach → ∀ D : D7, GlobalTheory.Core.Rk.IP.HeckeForm D → UpPar D → OntoAll D := by
   intro hHCF hCRD hDSC hHCM hCW D hHF hUP
   have hLF : LevFacts D := GlobalTheory.T.thetaChain_level_properties D
-  have hFD : FinDim D := GlobalTheory.T.thetaChainCuspSpaceFiniteDim_of_harishChandra hHCF D hLF
-  have hMet : MetEx D := GlobalTheory.T.thetaChainInnerProductsExist_of_rapidDecay hCRD D
+  have hFD : FinDim D := GlobalTheory.ChainOnto.finDim_of_levFacts hHCF D hLF
+  have hMet : MetEx D := GlobalTheory.ChainMetric.metEx hCRD D
   have hES : EigSpan D := GlobalTheory.T.multiplicity_space_spanned_by_satake_eigen_elements hCRD D hFD hMet hLF
   have hPI : ParIndep D := GlobalTheory.T.thetaChain_heckeParameters_linearIndependent D
   have hPOV : ParOfVal D := GlobalTheory.T.hecke_parameters_of_element_from_one_nonzero_value hCRD D hMet hLF
@@ -655,11 +598,11 @@ theorem ontoAll_of_classicalTheorems : GlobalTheory.Published.HarishChandraFinit
   have hCS : CoefSupp D := GlobalTheory.T.thetaChainCoef_vanishes_off_level D
   have hArch : GlobalTheory.IndefiniteRowSideFullHecke.ThetaSourceAction.ArchOnRecord D := _root_.GlobalTheory.TwArch.archOnRecord_closed hDSC hHCM D
   have hRZ : RealZeta D := GlobalTheory.T.thetaChain_realZeta_nonvanishing hHCM D hArch
-  have hZN : ZetaNe D := GlobalTheory.T.thetaChainLocalZetaNonvanishing_of_real D hMet hLF hLL hCS hRZ
-  have hUN : UpNe D := GlobalTheory.T.thetaLiftUpwards_ne_zero_of_lValue D hHF hMet hLF hZN
-  have hUS : UpSpan D := GlobalTheory.T.thetaLiftUpwards_in_cuspSpan hDSC hHCM hCRD hCW D hLF hLL
-  have hUA : UpAdj D := GlobalTheory.T.thetaLiftUpwardsAdjoint_of_rapidDecay hCRD D
-  have hSU : StepUp D := GlobalTheory.T.thetaLiftChain_adjoint_nonvanishing_step D hFD hPOV hUS hUA hUP hUN
+  have hZN : ZetaNe D := GlobalTheory.ChainOnto.ZetaNeProof.zetaNe_of_real D hMet hLF hLL hCS hRZ
+  have hUN : UpNe D := GlobalTheory.ChainOnto.upNe_of_heckeForm D hHF hMet hLF hZN
+  have hUS : UpSpan D := GlobalTheory.ChainOnto.upSpan_of hDSC hHCM hCRD hCW D hLF hLL
+  have hUA : UpAdj D := GlobalTheory.ChainOnto.upAdj_of_cuspRapidDecay hCRD D
+  have hSU : StepUp D := GlobalTheory.ChainOnto.stepUp D hFD hPOV hUS hUA hUP hUN
   have hCL : ChainLW D := GlobalTheory.T.thetaChain_LValues_nonvanishing D
   have hCU : ChainUp D := chainUp_of D hMet hPB hCL hSU
   exact GlobalTheory.T.thetaLiftChain_surjective_of_adjoint_nonvanishing D hFD hMet hES hPI hCU
@@ -675,6 +618,6 @@ theorem ontoAll_of_hecke_alt : GlobalTheory.Published.HarishChandraFinite → Gl
   fun hHC hCusp hDS hHCM hCW hHowe hWeil hSW hSWc hDoub hUnr D =>
     GlobalTheory.T.thetaLiftChain_onto_cuspForms_of_innerProduct hHC hCusp hDS hHCM hCW D
       (_root_.GlobalTheory.T.heckeForm_of_doubling hWeil hCusp hSW hSWc hDoub hUnr D)
-      (GlobalTheory.T.thetaChainUpwardLift_heckeParam_transferred hCusp hHowe D (GlobalTheory.T.thetaChain_level_properties D))
+      (GlobalTheory.ChainOnto.upPar_of_transfer hCusp hHowe D (GlobalTheory.T.thetaChain_level_properties D))
 end GlobalTheory.ChainOnto
 end

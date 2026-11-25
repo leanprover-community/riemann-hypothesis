@@ -26,8 +26,6 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.S Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes MeasureTheory IsDedekindDomain NumberField Matrix Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.AutomorphicEvaluation Formalism.L2.SG.HidaSetting Formalism.L2.SG.PoincareInHH.PoincareSetting Formalism.L2.SG.RowDict Formalism.L2.SG.RowsJoinPinned GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Unf GlobalTheory.Core.Rk GlobalTheory.Core.Mi
 open scoped TensorProduct InnerProductSpace Classical
 
-theorem _root_.GlobalTheory.T.realTranslation_cuspFormMaps_eq_smooth_linear_map : ∀ (D : D7) (θ : InfFam D) (V : HSp D) (S : D.what₂.Tau → SPar) (M : DSModel V S), IsInfFam θ → ∀ g ∈ GinfC V, ∃ σ : SmT M →ₗ[ℂ] SmT M, ∀ (J : Set (GA D V)) (χ : GA D V → ℂ), ∀ T ∈ MultT θ M J χ, ∀ x, T (σ x) = rTrans g (T x) := by
-  first | exact @GlobalTheory.RealTransSm.rTrans_eq_map
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.RealTranslationCuspFormMapsEqSmoothLinearMapStatement =====
@@ -71,7 +69,7 @@ theorem valMove : ∀ D : D7, ValMove D := by
       simp only [rTrans, map_add (f := _), Pi.add_apply, Pi.smul_apply, smul_eq_mul] at hx' hy' ⊢
       rw [hx', hy', mul_add]
   · intro a ha v
-    obtain ⟨σ, hσ⟩ := GlobalTheory.T.realTranslation_cuspFormMaps_eq_smooth_linear_map D θ V S M hθ a ha
+    obtain ⟨σ, hσ⟩ := GlobalTheory.RealTransSm.rTrans_eq_map D θ V S M hθ a ha
     exact ⟨σ v, fun G hG => (hσ J χ G hG v).symm⟩
 
 end GlobalTheory.ValMoveProof

@@ -32,8 +32,6 @@ open NumberField IsDedekindDomain Matrix MeasureTheory GlobalTheory.Mem GlobalTh
 open scoped TensorProduct Classical
 open GlobalTheory.KJInf Formalism.L2.Ker
 
-theorem _root_.GlobalTheory.T.weilData_differ_by_splittingFactorQuotient : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (S T : HSp D) (χS χT χS' χT' : (AE D)ˣ →* Circle) (om om' : Om S T), IsWeilDatumO ψ S T χS χT om → IsWeilDatumO ψ S T χS' χT' om' → ∀ g h x y, IsDetRoot S g x → IsDetRoot T h y → ∀ f, IsThetaFunO ψ S T f → om' (g, h) f = ((splitFacO χS' χT' x y : ℂ) * (splitFacO χS χT x y : ℂ)⁻¹) • om (g, h) f := by
-  first | exact @GlobalTheory.WeilChange.weilData_differ_by_splitFac
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.WeilDataDifferBySplittingFactorQuotientStatement =====
@@ -47,7 +45,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Form
 open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Unf GlobalTheory.SeeSaw GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.StepData GlobalTheory.LocMod GlobalTheory.MiS ValuativeRel
 open scoped TensorProduct Classical
 open GlobalTheory.Fam
-
 
 noncomputable section
 
@@ -91,7 +88,7 @@ theorem twist_eq {S T : HSp D} {ψ : AddChar (AF D.host.F) ℂ} {χS χT ν : (A
     (hW' : IsWeilDatumO ψ S T (χS * ν) (χT * ν) om') {g : GA D S} {h : GA D T} {x y : (AE D)ˣ}
     (hx : IsDetRoot S g x) (hy : IsDetRoot T h y) {f : WO S T → ℂ} (hf : IsThetaFunO ψ S T f) :
     om' (g, h) f = (((ν x)⁻¹ * ν y : Circle) : ℂ) • om (g, h) f := by
-  rw [GlobalTheory.T.weilData_differ_by_splittingFactorQuotient D ψ S T χS χT _ _ om om' hW hW' g h x y hx hy f hf]
+  rw [GlobalTheory.WeilChange.weilData_differ_by_splitFac D ψ S T χS χT _ _ om om' hW hW' g h x y hx hy f hf]
   congr 1
   have e : splitFacO (χS * ν) (χT * ν) x y = (ν x)⁻¹ * ν y * splitFacO χS χT x y := by
     simp only [splitFacO, MonoidHom.mul_apply]

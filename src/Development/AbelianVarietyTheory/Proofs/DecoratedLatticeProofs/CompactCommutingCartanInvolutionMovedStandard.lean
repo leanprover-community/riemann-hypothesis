@@ -26,9 +26,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
 open GlobalTheory.IndefiniteRowSideFullHecke.SphericalVolumeLift (RealMat IsFockVec)
 open GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero (swSec sZero)
 
-
-theorem _root_.GlobalTheory.T.isCartanInv_standardInvolution_doubledGram : ∀ (D : D7) (A : HSp D) (μ : D.host.E), IsSkew μ → ∀ s : RealMat (dblSp A), IsStdInv A μ s → ∀ τ, IsCartanInv (gramAt D (dblSp A) τ) (s τ) := by
-  first | exact @GlobalTheory.CartStd.isCartanInv_stdInv
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.IsCartanInvStandardInvolutionDoubledGramStatement =====
@@ -122,7 +119,7 @@ theorem cartan_move_std : ∀ (D : D7) (A : HSp D) (μ : D.host.E), IsSkew μ �
   rw [_root_.GlobalTheory.RatAut.compAt_mul, _root_.GlobalTheory.RatAut.compAt_mul] at hc
   have hcar' : IsCartanInv (gramAt D (dblSp A) τ) (Pi * sS τ * P) :=
     isCartanInv_conj (hsS τ) hPi hPPi (GlobalTheory.RealWeil.compAt_unitary hθ _ _ τ)
-  have hcar : IsCartanInv (gramAt D (dblSp A) τ) S1 := GlobalTheory.T.isCartanInv_standardInvolution_doubledGram D A μ hμ _ hstd τ
+  have hcar : IsCartanInv (gramAt D (dblSp A) τ) S1 := GlobalTheory.CartStd.isCartanInv_stdInv D A μ hμ _ hstd τ
   have hcm : S1 * (Pi * sS τ * P) = Pi * sS τ * P * S1 := by
     calc S1 * (Pi * sS τ * P) = (Pi * P) * S1 * Pi * sS τ * P := by rw [hPi, Matrix.one_mul]; simp only [Matrix.mul_assoc]
       _ = Pi * (P * S1 * Pi * sS τ) * P := by simp only [Matrix.mul_assoc]

@@ -91,8 +91,6 @@ open GlobalTheory.FinPl (Lat idAt idOff intAt grpAt grpOff MxAt latV latA InK Mo
 open scoped nonZeroDivisors ContDiff
 open GlobalTheory.AscFin
 
-theorem _root_.GlobalTheory.T.besselLevel_columns_carry_latticeLines_offExceptional : OnStd fun {D} _ _ {sc} {G} W F => ∀ ρ (h : 2 * ρ + 2 ≤ D.R.m), ∀ v ∉ G.pl.S0, ColsAt (F.dB ρ h) (xZero (F.dJ ρ h)) (G.Λ (.grid (2 * ρ + 2) 0)) (G.Λ (.grid (2 * ρ + 1) 0)) v := by
-  first | exact @GlobalTheory.StairCols.colsAt_xZero
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.LatticeColumnsOffFiniteSetStatement =====
@@ -144,7 +142,6 @@ theorem lineLat_smul {D : D7} (L : HSp D) (I : FractionalIdeal (𝓞 D.host.E)�
     rw [smul_smul, e]
 
 end GlobalTheory.ZLineIdeal
-
 
 open GlobalTheory.SeeSaw in
 theorem GlobalTheory.ZLineIdeal.bessel_core_lattice_meets_line_of_z_ideal : OnStd fun {D} _ _ {sc} {G} _ F => ∀ ρ (h : 2 * ρ + 2 ≤ D.R.m) (v : GlobalTheory.FinPl.Pl D), GlobalTheory.SeeSaw.LineId (F.oB ρ h) (F.ζ (ρ + 1)) (lat0 F ρ h) (FractionalIdeal.spanSingleton _ ((-D.host.xi0) ^ (ρ + 1))⁻¹ * (G.pl.stA sc ^ (ρ + 1) * (G.pl.stAbar sc ^ (ρ + 1))⁻¹)) v := by
@@ -274,8 +271,6 @@ theorem incAdj_yZero_mulVec_gen {D : D7} {S A L T T₀ : HSp D} (o : OrthDec S A
   refine Finset.sum_congr rfl fun l _ => Finset.sum_congr rfl fun m _ => ?_
   ring
 
-
-
 theorem incAdj_yZero_mem_latO_iff_gen : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ), IsStdChar D ψ (-1) → ∀ (S A L T T₀ : HSp D) (o : OrthDec S A L) (ζ : Fin L.rank → D.host.E) (ρ : ℕ) (d : HypDec T T₀ ρ) (M : Lat S) (LW : Lat T) (LW₀ : Lat T₀) (𝔟 : ℕ → GlobalTheory.SeeSaw.FI D) (𝔠 : GlobalTheory.SeeSaw.FI D) (v : GlobalTheory.FinPl.Pl D), IsSelfDualC S M → IsSelfDualC T LW → GlobalTheory.SeeSaw.MonoId d LW LW₀ 𝔟 v → GlobalTheory.SeeSaw.LineId o ζ M 𝔠 v → 𝔠 ≠ 0 → 𝔟 (ρ - 1) ≠ 0 → (∀ s, s ∈ GlobalTheory.SeeSaw.idV ((D.host.AAbar : GlobalTheory.SeeSaw.FI D) * (𝔟 (ρ - 1))⁻¹) v ↔ s ∈ GlobalTheory.SeeSaw.idV (FractionalIdeal.spanSingleton _ D.host.xi0⁻¹ * 𝔠⁻¹) v) → 0 < ρ → ∀ a ∈ idAt D (· = v), d.incAdj S (a • yZero S ρ (vecB o ζ)) ∈ latO S T (M : Set _) (LW : Set _) (· = v) ↔ a ∈ intAt D (· = v) := by
   intro D ψ hψ S A L T T₀ o ζ ρ d M LW LW₀ 𝔟 𝔠 v hM hLW hmono hline hc hb0 hid hρ a ha
   obtain ⟨h1, h2, h3, h4, -, h6, -⟩ := GlobalTheory.T.fractionalIdealCompletion_properties_at_place D ψ hψ v
@@ -324,7 +319,7 @@ theorem incAdj_yZero_mem_latO_iff_gen : ∀ (D : D7) (ψ : AddChar (AF D.host.F)
       refine (congrArg (· ∈ idAt D (· = v)) e5).mpr ?_
       exact Ideal.mul_mem_right _ _ (Ideal.mul_mem_right _ _ (Ideal.mul_mem_left _ _ hcA))
     · have hmul := (h2 𝔠⁻¹ 𝔠⁻¹ hci hci a ha).2 (by rw [mul_inv_cancel₀ hci]; exact (h1 a).2 haI)
-      exact hmul _ (GlobalTheory.T.lineVector_pairing_mem_inverseIdealCompletion D ψ hψ S A L o ζ M 𝔠 v hM hline hc y hy)
+      exact hmul _ (GlobalTheory.LineDual.line_pair_mem_idV D ψ hψ S A L o ζ M 𝔠 v hM hline hc y hy)
 
 end GlobalTheory.LastGen
 
@@ -378,8 +373,6 @@ open GlobalTheory.FinPl (Lat idAt idOff intAt grpAt grpOff MxAt latV latA InK Mo
 open scoped nonZeroDivisors ContDiff
 open GlobalTheory.AscFin
 
-theorem _root_.GlobalTheory.T.psi_primitive_standardFrames_besselLevel : OnStd fun {D} _ _ {sc} {G} W F => ∀ ρ (h : 2 * ρ + 2 ≤ D.R.m), ∀ v ∉ G.pl.S0, PrimAt W.ψ (F.dB ρ h) (G.Λ (.grid (2 * ρ + 2) 0)) v := by
-  first | exact @GlobalTheory.AscFin.primAt_std_bessel
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.PsiPrimitiveStandardFramesBesselLevelStatement =====
@@ -705,7 +698,7 @@ theorem goodPosition_offBadPlaces_from_besselLevel : OnStd fun {D} _ _ {sc} {G} 
     sd _ ⟨by omega, Nat.zero_le _⟩ (fun j e => by cases e),
     sd (.core (2 * ρ + 1)) (show 2 * ρ + 1 ≤ D.R.m by omega) (fun j e => by cases e),
     ((I.2.1 ρ h).2.1 v).1, ((I.2.1 ρ h).2.1 v).2,
-    GlobalTheory.T.psi_primitive_standardFrames_besselLevel D hq T L μ0 hL sc G W M hM F hF ρ h v hv, GlobalTheory.T.besselLevel_columns_carry_latticeLines_offExceptional D hq T L μ0 hL sc G W M hM F hF ρ h v hv⟩,
+    GlobalTheory.AscFin.primAt_std_bessel D hq T L μ0 hL sc G W M hM F hF ρ h v hv, GlobalTheory.StairCols.colsAt_xZero D hq T L μ0 hL sc G W M hM F hF ρ h v hv⟩,
     GlobalTheory.T.standard_lattice_off_S0 D hq T L μ0 hL sc G W M hM F hF ρ h v hv, GlobalTheory.T.lattice_membership_adjoint_iff D hq T L μ0 hL sc G W M hM F hF ρ h v hv⟩
 
 end GlobalTheory.GoodPosBF

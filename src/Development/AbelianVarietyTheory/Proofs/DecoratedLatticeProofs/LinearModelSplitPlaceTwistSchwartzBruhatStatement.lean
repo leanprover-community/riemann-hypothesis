@@ -236,7 +236,6 @@ theorem ip_double_sum {D : D7} {S T : HSp D} (μ : Measure (WO S T)) (𝓕 : Set
   rw [integral_finsetSum _ (fun j _ => (hI i j).const_mul _)]
   exact Finset.sum_congr rfl fun j _ => integral_const_mul _ _
 
-
 open Classical in
 def monoFactor {D : D7} {m n : ℕ} (k : FVar D m n →₀ ℕ) (τ : D.what₂.Tau) : MvPolynomial (FVar D m n) ℂ :=
   ∏ y ∈ k.support with y.1 = τ, MvPolynomial.X y ^ k y
@@ -750,7 +749,6 @@ namespace GlobalTheory.TwistLinModel
 open GlobalTheory.IndefiniteRowSideFullHecke.RestrictedTensorSplitting (FinPl)
 variable {D : D7}
 
-
 theorem detAt_exists {v : FinPl D} (φ : SplitProj D v) {e : AE D} (he : IsIdemOf φ e) (V : HSp D)
     (B : GL (Fin V.rank) (Fv D.host.F v)) (g : GA D V) :
     ∃ a : (AE D)ˣ, IsDetAt e V g a ∧ (1 - e) * (a : AE D) = 1 - e ∧
@@ -831,8 +829,6 @@ theorem placeModel_isometry_borel (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (θ 
 
 end GlobalTheory.TwistLinModel
 
-
-
 open GlobalTheory.IndefiniteRowSideFullHecke.RestrictedTensorSplitting (IsBase IsPure IsBaseOff StepVecLocal onHalf mapCo ipO wAt idem FinPl Place) in
 theorem GlobalTheory.TwistLinModel.linearModel_at_twist : ∀ D : D7, ForStepQ D fun c w k s s' p => ∀ PP ∈ w.Q, ∀ (v : HeightOneSpectrum (𝓞 D.host.F)) (φ : SplitProj D v), IsProjAt φ PP → ∀ ι ι', IsChart s k φ ι → IsChart s' (k + 1) φ ι' → ∀ μS μT ξl : (Fv D.host.F v)ˣ →* ℂˣ, (∀ (x : (AE D)ˣ) (y : (Fv D.host.F v)ˣ), (∃ e, IsIdemOf φ e ∧ (1 - e) * (x : AE D) = 1 - e ∧ rdA φ (x : AE D) = y) → μS y = Circle.toUnits (c.chS (k + 1) x)) → (∀ (x : (AE D)ˣ) (y : (Fv D.host.F v)ˣ), (∃ e, IsIdemOf φ e ∧ (1 - e) * (x : AE D) = 1 - e ∧ rdA φ (x : AE D) = y) → μT y = Circle.toUnits (c.chT (k + 1) x)) → LiftsChar φ PP ξl (w.ξ PP) → ∀ P m X, IsCovolOne (ratL s'.V s.V) m X → ∃ (hW : ∀ g h, ∀ u ∈ GlobalTheory.SplitWeil.SB (Matrix (Fin D.R.r ⊕ Blocks (k + 1) D.R.t) (Fin D.R.r ⊕ Blocks k D.R.t) (Fv D.host.F v)), GlobalTheory.ParHecke.omTwo μS μT g h u ∈ GlobalTheory.SplitWeil.SB (Matrix (Fin D.R.r ⊕ Blocks (k + 1) D.R.t) (Fin D.R.r ⊕ Blocks k D.R.t) (Fv D.host.F v))) (hΦ : datum ξl⁻¹ ∈ GlobalTheory.SplitWeil.SB (Matrix (Fin D.R.r ⊕ Blocks (k + 1) D.R.t) (Fin D.R.r ⊕ Blocks k D.R.t) (Fv D.host.F v))) (T : GlobalTheory.SplitWeil.SB (Matrix (Fin D.R.r ⊕ Blocks (k + 1) D.R.t) (Fin D.R.r ⊕ Blocks k D.R.t) (Fv D.host.F v)) →ₗ[ℂ] (WO s.V s'.V → ℂ)), T ⟨_, hΦ⟩ = p.pt P ∧ (∀ u, IsThetaFunO c.ψ s.V s'.V (T u)) ∧ (∀ g h (u : GlobalTheory.SplitWeil.SB (Matrix (Fin D.R.r ⊕ Blocks (k + 1) D.R.t) (Fin D.R.r ⊕ Blocks k D.R.t) (Fv D.host.F v))), p.ω (ι g, ι' h) (T u) = T ⟨_, hW g h u u.2⟩) ∧ ∀ [MeasurableSpace (Fv D.host.F v)] [BorelSpace (Fv D.host.F v)] (ν : Measure (Fv D.host.F v)), GlobalTheory.SplitWeil.IsUnitVol ν → ∀ x : GA D s.V, gAt s.V (.inl v) x = 1 → ∃ C : ℂ, ∀ u u' : GlobalTheory.SplitWeil.SB (Matrix (Fin D.R.r ⊕ Blocks (k + 1) D.R.t) (Fin D.R.r ⊕ Blocks k D.R.t) (Fv D.host.F v)), ∫ z in X, p.ω (x, 1) (T u) z * conj (T u' z) ∂m = C * GlobalTheory.SplitWeil.ip ν u.1 u'.1 := by
   classical
@@ -859,7 +855,7 @@ theorem GlobalTheory.TwistLinModel.linearModel_at_twist : ∀ D : D7, ForStepQ D
     s.L (w.chi (k + 1)) w.Q w.ξ f₀ p.f m X D.R.t ht _ _ hLP hbase hX hsf.frame hsf'.frame hdisj hvec
   have hxpure := hxall x ⟨hxoff, hxloc⟩
 
-  obtain ⟨e, he⟩ := ((GlobalTheory.T.exists_charts_at_twist_places_chain D c w hw k hk.le s hs0 PP hPP).2 v φ hφ).1
+  obtain ⟨e, he⟩ := ((GlobalTheory.TwistChart.charts_at_twist D c w hw k hk.le s hs0 PP hPP).2 v φ hφ).1
 
   obtain ⟨ε, hε, hιy⟩ := hι
   obtain ⟨ε', hε', hιy'⟩ := hι'

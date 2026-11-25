@@ -283,8 +283,6 @@ theorem isUnit_res {E : Type} [Field E] [NumberField E] (PP : Formalism.L2.DIV.P
   letI : Field (Formalism.L2.DIV.kP PP) := Ideal.Quotient.field PP.asIdeal
   exact isUnit_iff_ne_zero.mpr hx
 
-
-
 theorem exists_diag_frame : ∀ {D : D7} {n : ℕ} (ρ k : ℕ) (Pg : Finset (Pl D.host.E)) (Λ : Submodule (𝓞 D.host.E) (Fin n → D.host.E)) (β₀ : GL (Fin n) (Formalism.IndefR.Lev.EAf D)), Formalism.L2.DIV.IsFrame β₀ Λ → ∀ a : ∀ PP : Pl D.host.E, Fin n → Fin n → kP PP, (∀ PP ∈ Pg, ∀ i j, Formalism.L2.DIV.symEdge ρ k i j → a PP i j ≠ 0) → ∃ β₃ : GL (Fin n) (Formalism.IndefR.Lev.EAf D), Formalism.L2.DIV.IsFrame β₃ Λ ∧ Formalism.L2.DIV.St β₃ = Formalism.L2.DIV.St β₀ ∧ ∀ PP ∈ Pg, ∀ y ∈ Formalism.L2.DIV.St β₀, (Formalism.L2.DIV.redFn β₃ PP y ∈ Formalism.L2.DIV.unipSym (kP PP) n ρ k ↔ Formalism.L2.DIV.redFn β₀ PP y ∈ Formalism.L2.DIV.unipSym (kP PP) n ρ k) ∧ (∑ i, ∑ j, if Formalism.L2.DIV.symEdge ρ k i j then a PP i j * ((Formalism.L2.DIV.redFn β₀ PP y : GL (Fin n) (kP PP)) : Matrix (Fin n) (Fin n) (kP PP)) i j else 0) = Formalism.L2.DIV.edgeSum (Formalism.L2.DIV.symEdge ρ k) (Formalism.L2.DIV.redFn β₃ PP y) := by
   intro D n ρ k Pg Λ β₀ hβ a ha
   classical
@@ -397,12 +395,9 @@ noncomputable section
 namespace GlobalTheory.FlagBasis.GramLift
 open Formalism.L2.SG.Pf.unitaryCongruence
 
-theorem hatL_eq (I : AutInst) : Formalism.L2.Herm.hatL (F := I.F) I.L = I.Lf := by
-  apply _root_.GlobalTheory.FlagChi.hatL_eq_Lf <;> assumption
-
 theorem col_mem (I : AutInst) {β : GL (Fin I.n) (I.E ⊗[I.F] Formalism.MainNotions.S.Af I.F)} (hF : IsFrame β I.L) (j : Fin I.n) :
     (fun i => (β : Matrix (Fin I.n) (Fin I.n) (I.E ⊗[I.F] Formalism.MainNotions.S.Af I.F)) i j) ∈ I.Lf := by
-  rw [← hatL_eq]
+  rw [← GlobalTheory.LiftFrameMod.hatL_eq_Lf]
   refine (hF _).2 fun i => ?_
   have h1 : ((β⁻¹ : GL (Fin I.n) (I.E ⊗[I.F] Formalism.MainNotions.S.Af I.F)) : Matrix (Fin I.n) (Fin I.n) (I.E ⊗[I.F] Formalism.MainNotions.S.Af I.F)) * β = 1 := Units.inv_mul β
   have h2 : ((β⁻¹ : GL (Fin I.n) (I.E ⊗[I.F] Formalism.MainNotions.S.Af I.F)) : Matrix (Fin I.n) (Fin I.n) (I.E ⊗[I.F] Formalism.MainNotions.S.Af I.F)).mulVec
@@ -826,16 +821,13 @@ theorem col_iff (B C m X : Matrix (Fin n) (Fin n) A) (hCB : C * B = 1) (hX : X *
 
 end Gen
 
-theorem hatL_eq (I : AutInst) : Formalism.L2.Herm.hatL (F := I.F) I.L = I.Lf := by
-  apply _root_.GlobalTheory.FlagChi.hatL_eq_Lf <;> assumption
-
 theorem mem_mL_iff (I : AutInst) (g : ℕ) (β : GL (Fin I.n) (I.E ⊗[I.F] Formalism.MainNotions.S.Af I.F)) (hβ : IsFrame β I.L) (y : VA I) :
     y ∈ mL I g ↔ ∀ i, ∃ t ∈ IntAf I.F I.E,
       (((β⁻¹ : GL (Fin I.n) (I.E ⊗[I.F] Formalism.MainNotions.S.Af I.F)) : Matrix (Fin I.n) (Fin I.n) (I.E ⊗[I.F] Formalism.MainNotions.S.Af I.F)) *ᵥ y) i =
         (g : I.E ⊗[I.F] Formalism.MainNotions.S.Af I.F) * t := by
   have hL : ∀ x : VA I, x ∈ I.Lf ↔ ∀ i,
       (((β⁻¹ : GL (Fin I.n) (I.E ⊗[I.F] Formalism.MainNotions.S.Af I.F)) : Matrix (Fin I.n) (Fin I.n) (I.E ⊗[I.F] Formalism.MainNotions.S.Af I.F)) *ᵥ x) i ∈
-        IntAf I.F I.E := fun x => by rw [← hatL_eq]; exact hβ x
+        IntAf I.F I.E := fun x => by rw [← GlobalTheory.LiftFrameMod.hatL_eq_Lf]; exact hβ x
   constructor
   · intro hy i
     induction hy using Submodule.span_induction with

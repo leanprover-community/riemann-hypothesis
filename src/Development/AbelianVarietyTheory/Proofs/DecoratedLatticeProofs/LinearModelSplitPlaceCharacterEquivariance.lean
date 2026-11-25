@@ -45,7 +45,7 @@ theorem linFirst (D : D7) (k : Type) [Field k] [ValuativeRel k] [TopologicalSpac
       fun h1 => hV.2.2 _ hec u (latHalf D k p S T LS LT u hu hh) h1
   refine ⟨hsS, hsT, hV, sbSubst hΨ g h _, hth.1, fun Tm hTm => ?_⟩
   have hTm' := (placeModel_congr hA hle).1 hTm
-  have hSB := (sbHalf_congr hA hle).1 (sbHalf D k p S T n n' α β LS LT hsS hsT Ψ hΨ)
+  have hSB := (sbHalf_congr hA hle).1 (GlobalTheory.FinPl.SBHalfAt.isSBHalf_extFun_latO D k p S T n n' α β LS LT hsS hsT Ψ hΨ)
   rw [hth.2 Tm hTm, GlobalTheory.SplitLinearHalf.law_half D ψ S T χS χT om LS LT p.e f₀ Tm hW hsS hsT he hV.1 hfix hTm' (α.gl g) (β.gl h)
     (α.gl_supp g) (β.gl_supp h) _ _ (detFrame α g) (detFrame β h) _ hSB, ← map_smul, fac_lam]
   congr 1

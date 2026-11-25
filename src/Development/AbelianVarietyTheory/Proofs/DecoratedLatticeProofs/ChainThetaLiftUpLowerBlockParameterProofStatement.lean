@@ -114,7 +114,6 @@ theorem isGen_of_injective {k : Type} [Field k] [ValuativeRel k] [TopologicalSpa
       rw [map_smul, map_sum, h3 s R d hR]
       simp only [map_smul, hf]
 
-
 open ValuativeRel in
 theorem seg_eq_segL {D : D7} {v : HeightOneSpectrum (𝓞 D.host.F)} (φ : SplitProj D v) (PP : Pl D.host.E) (hP : IsProjAt φ PP)
     {ϖ : (Fv D.host.F v)ˣ} (hϖ : valuation (Fv D.host.F v) (ϖ : Fv D.host.F v) = uniformizer (Fv D.host.F v))
@@ -161,7 +160,6 @@ theorem isUnram_of_lifts {D : D7} {v : HeightOneSpectrum (𝓞 D.host.F)} (φ : 
 
 end GlobalTheory.ChainTw.UpQProof
 
-
 open GlobalTheory.ChainTw.UpQProof in
 
 theorem GlobalTheory.ChainTw.upQ_holds : GlobalTheory.Published.CuspRapidDecay → ∀ D : D7, UpQ D := by
@@ -183,9 +181,9 @@ theorem GlobalTheory.ChainTw.upQ_holds : GlobalTheory.Published.CuspRapidDecay �
   have hQ := hres PP (hw.union ▸ Finset.mem_union_right _ hPP)
   rw [hw.chiQ (k + 1) PP hPP, inv_inv] at hQ
   have hunS : GlobalTheory.SplitWeil.IsUnram (μS * ξl⁻¹) :=
-    isUnram_of_lifts φv PP hφv (w.ξ PP) μS ξl (GlobalTheory.T.liftsChar_of_residueChar_at_splitPlace D _ PP _ hQ.1 v φv hφv μS hμS) hξl
+    isUnram_of_lifts φv PP hφv (w.ξ PP) μS ξl (GlobalTheory.ResLift.liftsChar_of_resAt D _ PP _ hQ.1 v φv hφv μS hμS) hξl
   have hunT : GlobalTheory.SplitWeil.IsUnram (μT * ξl⁻¹) :=
-    isUnram_of_lifts φv PP hφv (w.ξ PP) μT ξl (GlobalTheory.T.liftsChar_of_residueChar_at_splitPlace D _ PP _ hQ.2 v φv hφv μT hμT) hξl
+    isUnram_of_lifts φv PP hφv (w.ξ PP) μT ξl (GlobalTheory.ResLift.liftsChar_of_resAt D _ PP _ hQ.2 v φv hφv μT hμT) hξl
   have hcard : Fintype.card (Blocks (k + 1) D.R.t) = Fintype.card (Blocks k D.R.t) + D.R.t := by
     simp [Blocks, Fintype.card_sigma]
     ring

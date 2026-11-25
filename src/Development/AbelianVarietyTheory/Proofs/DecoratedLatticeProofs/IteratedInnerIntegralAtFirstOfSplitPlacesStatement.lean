@@ -323,7 +323,6 @@ theorem side {A T : HSp D} (E₀ : AE D) (hc : cA D E₀ = E₀) (hsq : E₀ * E
 
 end GlobalTheory.QVal.InnerSupp
 
-
 open GlobalTheory.QVal.InnerSupp in
 theorem GlobalTheory.QVal.inner_supp : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (σ : ℕ) (S : Dbl2 ψ σ) (r : ℕ) (Q : Fin (r + 1) → QStep S), Function.Injective (fun i => (Q i).q.v) → (IsFinComb (aconv (List.ofFn fun i : Fin r => (Q i.succ).D₁)) ∧ (Q 0).Away (aconv (List.ofFn fun i : Fin r => (Q i.succ).D₁)) ∧ ∀ x ∈ (Q 0).D₁.support, ∀ y ∈ (aconv (List.ofFn fun i : Fin r => (Q i.succ).D₁)).support, symplO _ _ x y = 0) ∧ (IsFinComb (aconv (List.ofFn fun i : Fin r => (Q i.succ).D₂)) ∧ (Q 0).Away (aconv (List.ofFn fun i : Fin r => (Q i.succ).D₂)) ∧ ∀ x ∈ (Q 0).D₂.support, ∀ y ∈ (aconv (List.ofFn fun i : Fin r => (Q i.succ).D₂)).support, symplO _ _ x y = 0) := by
   intro D ψ σ S r Q hinj
@@ -382,12 +381,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.FourierJacobiAverage (app HasTensor
 open GlobalTheory.IndefiniteRowSideFullHecke.FramePositiveSum (IsCO)
 open scoped TensorProduct
 
-theorem _root_.GlobalTheory.T.rootExchange_entries_mem_schwartzBruhat : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [MeasurableSpace k] [BorelSpace k]
-    (n n' : Type) [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] (c : ℕ) (ψ : AddChar k Circle), Continuous ψ →
-  ∀ (ν : Measure k), ν.IsAddHaarMeasure → ∀ (μ : kˣ →* ℂˣ) (Φ : SB (Matrix (n ⊕ Fin c) (n' ⊕ Fin (c + 1)) k))
-    (J : Subgroup (GL (n ⊕ Fin c) k)) (b : GL (n ⊕ Fin c) k) (h' : GL (n' ⊕ Fin (c + 1)) k) (h : GL (n ⊕ Fin c) k),
-    xi ψ ν μ Φ.1 J b h' h ∈ SB (Matrix n n' k) := by
-  first | exact @GlobalTheory.StepData.xi_mem_SB
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.RootExchangeEntriesMemSchwartzBruhatStatement =====
@@ -552,18 +545,17 @@ theorem coe_sum_sub {G X : Type} [AddCommGroup X] [Module ℂ X] {A : Submodule 
     (((e.sum fun b a => a • v b : A)) : X) = e.sum fun b a => a • (v b : X) := by
   simp only [Finsupp.sum, Submodule.coe_sum, Submodule.coe_smul]
 
-
 theorem valOne_all : ∀ D : D7, ValOne D := by
   intro D ψ hψ σ S Q G₁ G₂ hG₁ hG₂ hK₁ hK₂ c₁ c₂ hc₁ hc₂ f₁ f₂ hvac φ f hφ hf hTy g hg h₁ hh₁ h₂ hh₂
   obtain ⟨⟨T₁, O₁, hT₁, hO₁, rfl⟩, ⟨T₂, O₂, hT₂, hO₂, rfl⟩⟩ := hvac
   have hcQ : Q.c + 1 + 1 = 2 * (σ + 1) := by have := Q.F.bes.1; omega
-  obtain ⟨hψc, hψ1⟩ := GlobalTheory.T.addChar_conductor_integers_continuous_ne_one Q.k Q.ψk Q.cond
+  obtain ⟨hψc, hψ1⟩ := GlobalTheory.hasConductor_one_continuous_ne_one Q.k Q.ψk Q.cond
   have hsd : IsSelfDual Q.ψk Q.ν := ((GlobalTheory.SplitWeil.selfDual_measure Q.k Q.ψk hψc hψ1).2.1 Q.cond Q.ν).1 Q.unitVol
   obtain ⟨-, -, -, cm₀, -⟩ := GlobalTheory.T.splitPlace_local_group_closedEmbedding_integral D Q.k Q.q S.B.V _ Q.F.G₀ Q.gl₀ Q.loc₀
   obtain ⟨-, -, -, cm₁, -⟩ := GlobalTheory.T.splitPlace_local_group_closedEmbedding_integral D Q.k Q.q S.J.W _ Q.F.G₁ Q.gl₁ Q.loc₁
   obtain ⟨-, -, -, cm₂, -⟩ := GlobalTheory.T.splitPlace_local_group_closedEmbedding_integral D Q.k Q.q S.B'.V _ Q.F.G₂ Q.gl₂ Q.loc₂
-  have hT₁' := GlobalTheory.T.local_model_weil_operator_trivialAtPlace_isModel D Q.k Q.q ψ hψ S.B.V S.J.W S.s₁.χV S.s₁.χW S.s₁.om S.s₁.weil _ _ Q.F.G₀ Q.F.G₁ T₁ hT₁ g hg h₁ hh₁
-  have hT₂' := GlobalTheory.T.local_model_weil_operator_trivialAtPlace_isModel D Q.k Q.q ψ hψ S.J.W S.B'.V S.s₂.χV S.s₂.χW S.s₂.om S.s₂.weil _ _ Q.F.G₁ Q.F.G₂ T₂ hT₂ h₁ hh₁ h₂ hh₂
+  have hT₁' := GlobalTheory.LocModMove.isModel_weil_off D Q.k Q.q ψ hψ S.B.V S.J.W S.s₁.χV S.s₁.χW S.s₁.om S.s₁.weil _ _ Q.F.G₀ Q.F.G₁ T₁ hT₁ g hg h₁ hh₁
+  have hT₂' := GlobalTheory.LocModMove.isModel_weil_off D Q.k Q.q ψ hψ S.J.W S.B'.V S.s₂.χV S.s₂.χW S.s₂.om S.s₂.weil _ _ Q.F.G₁ Q.F.G₂ T₂ hT₂ h₁ hh₁ h₂ hh₂
   have hf' : IsContAut S.B'.V (rTrans h₂ f) :=
     ⟨fun γ hγ x => by simp only [rTrans, mul_assoc]; exact hf.1 γ hγ _, hf.2.comp (continuous_mul_const h₂)⟩
   have hTy' : Q.Typed (rTrans h₂ f) := fun j => by
@@ -572,7 +564,7 @@ theorem valOne_all : ∀ D : D7, ValOne D := by
     simp only [rTrans, Pi.smul_apply] at this ⊢
     rw [mul_assoc, cm₂ j h₂ hh₂, ← mul_assoc, this]
   obtain ⟨A, τ, T, hsm, hτ, hmem, htri, hval, hlast⟩ :=
-    GlobalTheory.T.splitPlace_doubleStep_trilinearForm_properties D ψ hψ σ S Q c₁ c₂ hc₁ hc₂ _ _ hT₁' hT₂' φ hφ
+    GlobalTheory.TriStep.tri D ψ hψ σ S Q c₁ c₂ hc₁ hc₂ _ _ hT₁' hT₂' φ hφ
   set F : A := ⟨rTrans h₂ f, hmem _ hf' hTy'⟩ with hFdef
   let Φa : GL (Q.n₀ ⊕ Fin (Q.c + 1 + 1 + 1)) Q.k → GL (Q.n₁ ⊕ Fin (Q.c + 1 + 1)) Q.k →
       SB (Matrix (Q.n₁ ⊕ Fin (Q.c + 1 + 1)) (Q.n₀ ⊕ Fin (Q.c + 1 + 1 + 1)) Q.k) :=
@@ -625,8 +617,8 @@ theorem valOne_all : ∀ D : D7, ValOne D := by
       (xi Q.ψk Q.ν Q.μ₂ Q.Φ₂.1 Q.L₂.J 1 γ.1 β.1) (τ b F)) =
       S.val (aconv [c₁, Q.d₁ γ]) (aconv [c₂, Q.d₂ γ β]) (T₁ O₁) (T₂ O₂) φ (trc ((Q.e₂ β).mapDomain Q.gl₂) f) g h₁ h₂ := by
     intro γ β
-    have s1 := GlobalTheory.T.rootExchange_entries_mem_schwartzBruhat Q.k Q.n₁ Q.n₀ (Q.c + 1 + 1) Q.ψk hψc Q.ν Q.unitVol.1 Q.μ₁ Q.Φ₁ Q.L₁.J 1 Q.α γ.1
-    have s2 := GlobalTheory.T.rootExchange_entries_mem_schwartzBruhat Q.k Q.n₂ Q.n₁ (Q.c + 1) Q.ψk hψc Q.ν Q.unitVol.1 Q.μ₂ Q.Φ₂ Q.L₂.J 1 γ.1 β.1
+    have s1 := GlobalTheory.StepData.xi_mem_SB Q.k Q.n₁ Q.n₀ (Q.c + 1 + 1) Q.ψk hψc Q.ν Q.unitVol.1 Q.μ₁ Q.Φ₁ Q.L₁.J 1 Q.α γ.1
+    have s2 := GlobalTheory.StepData.xi_mem_SB Q.k Q.n₂ Q.n₁ (Q.c + 1) Q.ψk hψc Q.ν Q.unitVol.1 Q.μ₂ Q.Φ₂ Q.L₂.J 1 γ.1 β.1
     rw [show xi Q.ψk Q.ν Q.μ₁ Q.Φ₁.1 Q.L₁.J 1 Q.α γ.1 = ((⟨_, s1⟩ : SB _) : _ → ℂ) from rfl, GlobalTheory.IndefiniteRowSideFullHecke.FourierJacobiAverage.app_coe,
       show xi Q.ψk Q.ν Q.μ₂ Q.Φ₂.1 Q.L₂.J 1 γ.1 β.1 = ((⟨_, s2⟩ : SB _) : _ → ℂ) from rfl, GlobalTheory.IndefiniteRowSideFullHecke.FourierJacobiAverage.app_coe]
     have hl := hlast ⟨_, s1⟩ ⟨_, s2⟩ (Q.d₁ γ) (Q.d₂ γ β) (Q.ent₁ γ) (Q.ent₂ γ β) O₁ O₂ hO₁ hO₂

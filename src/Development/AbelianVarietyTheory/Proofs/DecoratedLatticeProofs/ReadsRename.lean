@@ -104,8 +104,6 @@ theorem reads_rename {B : Base} {X : PreX B.toPre} {I : TC B X} {u : B.Word} {a 
 
 variable {B : Base} {X : PreX B.toPre}
 
-
-
 theorem exists_charts (I : TC B X) (hI : I.Ok) (hP : TC.Pins B X) (l : I.Laws) (Z : TC.Later B (I.cols l)) (u : B.Word) (a : I.ι)
     (i : ℕ) (hi : i ≤ B.R.m) (h1 : 1 ≤ i) (h2 : i < B.R.m) {C : Type} (chOf : (I.stp u a i).Cl → C)
     (key : ∀ c c', chOf c = chOf c' ↔ c.1 = c'.1 ∧ cosetIn ((I.stp u a i).rep c) = cosetIn ((I.stp u a i).rep c'))
@@ -170,9 +168,6 @@ def StepOk {I : TC B X} {l : I.Laws} {Z : TC.Later B (I.cols l)} {u : B.Word} {a
     (∀ β c, h β c ∈ GfC _ ∧ finM _ (rankN (I.rec7 l Z) i hi) (h β c) = ((K hi β).y c).1.1) ∧
     (∀ β, ∃ n : ℕ, 0 < n ∧ ∀ κ, (K hi β).lev.chi κ ^ n = 1) ∧ ∀ v ∈ bad, v ∈ Formalism.L2.Forms.badG (I.rec7 l Z) ∨ I.UnderQ a v
 
-
-
-
 theorem exists_step {I : TC B X} (hI : I.Ok) (hP : TC.Pins B X) {l : I.Laws} {Z : TC.Later B (I.cols l)} {u : B.Word} {a : I.ι}
     {Ch : ℕ → Type} (A : TwDat I l Z u a Ch) (hA : A.Is) (i : ℕ) (hm : i + 1 = B.R.m)
     (q : Ch i → Formalism.L2.Col.ChPt (Pr := B.primes X) (R := B.R) I.sel (I.tup a) u i) (κ : Ch i → TC.GA B (B.R.N i))
@@ -219,12 +214,10 @@ theorem exists_step {I : TC B X} (hI : I.Ok) (hP : TC.Pins B X) {l : I.Laws} {Z 
   choose kA hkA using fun β => GlobalTheory.T.exists_adelicUnitaryLift_of_chartBasePoint I hI hP l Z i hi _ (hR.k_std β)
   choose xr hxr using fun β => GlobalTheory.RecDict.exists_isDetRoot (I.rec7 l Z) _ (kA β)
   choose b0 p0 hp1 hp2 hp3 using fun β => GlobalTheory.KxPoint.pointOf_base I hI hP u a i hi _ _ _ _ _ _ _ hR β ⟨q β, hq β⟩ (hone β)
-  choose U chi h hU hchi hh using fun β => GlobalTheory.T.chartLevelCharacterReps_on_adelicUnitaryPoints I l Z i hi (K β)
+  choose U chi h hU hchi hh using fun β => GlobalTheory.ChartLevRead.levData I l Z i hi (K β)
   refine ⟨bad, fun _ => K, kA, xr, p0, U, chi, h, fun _ => ⟨hR, fun β => ⟨(hkA β).1, (hkA β).2, hxr β⟩, fun β => ⟨hp1 β, hp2 β⟩,
     fun c => (hp3 _ c rfl).2, hU, hchi, hh, hfin, hbad⟩, fun β => ?_⟩
   exact GlobalTheory.Mem.Col2.PtUniq.isPtOf_unique _ _ _ _ (IsPtOf.of_extTo (I.Q_subset_SQ a) hd (hp1 β)) (hq β)
-
-
 
 theorem exists_moved {I : TC B X} (hI : I.Ok) (hP : TC.Pins B X) {l : I.Laws} {Z : TC.Later B (I.cols l)} {u : B.Word} {a : I.ι}
     {Ch : ℕ → Type} (A : TwDat I l Z u a Ch) (hA : A.Is)
@@ -257,7 +250,6 @@ theorem exists_moved {I : TC B X} (hI : I.Ok) (hP : TC.Pins B X) {l : I.Laws} {Z
     obtain ⟨c, rfl⟩ := (hA.reads i hi).onto β
     exact ((hS i hi).2.2.2.1 c).symm.trans (hA.rep i hi c).2
 
-
 open Formalism.L2.Col in
 theorem exists_frames {I : TC B X} (hI : I.Ok) {u : B.Word} {a : I.ι} {i : ℕ}
     (p : ChPt (Pr := B.primes X) (R := B.R) I.sel (I.tup a) u i) (k : TC.GA B (B.R.N i)) (hk : TC.PtOf k (extTo I.SQ p))
@@ -276,7 +268,6 @@ theorem exists_frames {I : TC B X} (hI : I.Ok) {u : B.Word} {a : I.ι} {i : ℕ}
   obtain ⟨κ, h1, h2⟩ := exists_move B.sp.cm Q p q rfl (fun P h => (hQ _).2 ⟨P, h, rfl⟩)
     (fun P hP hv => GlobalTheory.Mem.Col2.ZeroMove.not_underQ I hI u a hP ((hQ _).1 hv)) k g1 hk hg1
   exact ⟨q, κ, rfl, fun _ => rfl, fun v hv => h1 v fun h => hv ((hQ v).1 h), h2⟩
-
 
 open Formalism.L2.Col in
 theorem repY_cong {X : Fields} {Pr : Primes X} {R : Ranks} {sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)} {S : Set ℕ}

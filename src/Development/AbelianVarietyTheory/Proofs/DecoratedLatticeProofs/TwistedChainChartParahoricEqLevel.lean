@@ -83,8 +83,6 @@ theorem val_lt_one_iff {v : HeightOneSpectrum (𝓞 D.host.F)} (x : Fv D.host.F 
   rw [map_one, map_one] at h
   rw [← not_le, ← not_le, h]
 
-
-
 theorem redFn_entry_eq_zero_iff {V : HSp D} {β : GL (Fin V.rank) (Lev.EAf D)} {g : GA D V}
     (hS : Lev.finE V g ∈ St β) {v : HeightOneSpectrum (𝓞 D.host.F)} {φ : SplitProj D v} {PP : Pl D.host.E}
     (hφ : IsProjAt φ PP) (a b : Fin V.rank) :
@@ -149,7 +147,6 @@ theorem lower_iff {r n : ℕ} {B K : Type} (ε : Fin r ⊕ B ≃ Fin n) (hε : �
 
 end GlobalTheory.ChartLevel
 
-
 open GlobalTheory.ChartLevel in
 theorem GlobalTheory.chart_level_iff : ∀ (D : D7) (c : Com D) (w : Twist D), w.Is c → ∀ j ≤ D.R.m, ∀ s : PiLocalization₂ D, IsStage c w j s → ∀ PP ∈ w.Q, ∀ (v : HeightOneSpectrum (𝓞 D.host.F)) (φ : SplitProj D v), IsProjAt φ PP → ∀ ι, IsChart s j φ ι → ∀ y, ι y ∈ Lev.levG s.V s.β s.L ↔ y ∈ parahoric (Fv D.host.F v) (Fin D.R.r) (Blocks j D.R.t) := by
   intro D c w hw j hj s hs PP hPP v φ hφ ι hι y
@@ -157,7 +154,7 @@ theorem GlobalTheory.chart_level_iff : ∀ (D : D7) (c : Com D) (w : Twist D), w
   have hsd : IsSelfDualC s.V s.Λ := hfl.selfDual
   have hfr : IsFrame s.β s.Λ := hfl.frame
   obtain ⟨e, he⟩ := GlobalTheory.ChartSplitIso.exists_equiv_emb D s j v φ ι hsd hfr hι
-  have hstab := GlobalTheory.T.parahoric_chart_integral_GL_eq_lattice_stabilizer D s j v φ ι hsd hfr hι e he y
+  have hstab := GlobalTheory.ChartStab.chart_stab D s j v φ ι hsd hfr hι e he y
   have hv : v = (_root_.IsDedekindDomain.HeightOneSpectrum.under (𝓞 D.host.F) PP) := (GlobalTheory.PlaceProjAt.under_resCard D v φ PP hφ).1
   obtain ⟨ε, hε, hch⟩ := hι
   have hSt : Lev.finE s.V (ι y) ∈ St s.β ↔ y ∈ GlobalTheory.SplitWeil.KO (Fv D.host.F v) _ := by

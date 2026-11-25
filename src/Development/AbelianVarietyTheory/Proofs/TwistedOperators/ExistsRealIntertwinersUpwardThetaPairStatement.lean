@@ -73,7 +73,7 @@ theorem upPair_itW : GlobalTheory.Published.DiscreteSeriesCover → GlobalTheory
     ∃ It : PolF D V.rank W.rank →ₗ[ℂ] SmT M →ₗ[ℂ] SmT M', ∀ ω f, GlobalTheory.PairLift.IsWeilExp ψ W V aT aS ω →
       GlobalTheory.Chain.IsVacVec ψ θ M' M f → IsItW θ M' M ω (GlobalTheory.Chain.ptOf ψ θ M' M f) It := by
   intro hDS hHC D t V W S S' M M' aS aT θ ψ hθ hP
-  obtain ⟨X, hX, h1, h2, -⟩ := GlobalTheory.T.exists_real_discreteSeries_data_theta_properties hDS hHC
+  obtain ⟨X, hX, h1, h2, -⟩ := GlobalTheory.RealPlaceTheta.exists_record_theta_all hDS hHC
   have hB := GlobalTheory.T.thetaModels_are_coverDiscreteSeries_of_harishChandra hDS hHC D
   have key : ∀ τ, (0 < V.rank ∧ 0 < W.rank) ∧ ∃ A, LocIt M M' τ (aS τ) (aT τ) A := fun τ => by
     obtain ⟨al, be, ga, de, hd, -, e1, e2⟩ := hP τ

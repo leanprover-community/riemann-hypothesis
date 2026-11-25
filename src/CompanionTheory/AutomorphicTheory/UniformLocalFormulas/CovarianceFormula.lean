@@ -78,12 +78,6 @@ theorem rowM_mp {ν : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ} (hν : Complex.nor
   show Measure.map L volume = volume
   simpa using this
 
-theorem meas_conjM (a : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ) : Measurable (conjM (k := k) (r := r) a) := by
-  have : Continuous (conjM (k := k) (r := r) a) := by
-    show Continuous fun x : Mt k r => (a * (Matrix.of x : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ) * a⁻¹ : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ)
-    exact (continuous_const.matrix_mul (continuous_id : Continuous fun x : Mt k r => x)).matrix_mul continuous_const
-  exact this.measurable
-
 theorem conj_uwb {ρ : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ} (hρ : ρ ∈ B2.UWb k r) :
     (haarLie (Nset k r) 1).map (conjM ρ) = haarLie (Nset k r) 1 := by
   have hρ0 : ρ ∈ UWset k r 0 := ⟨hρ.1, hρ.2, by simp⟩
@@ -133,7 +127,7 @@ theorem conj_uwb {ρ : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ} (
     · rw [← p2]; unfold psiR; rw [hm]
   have hH : haarLie (Nset k r) 1 = ENNReal.ofReal ((2 : ℝ) ^ (r ^ 2 + r * k)) •
       (volume : Measure ((CI k r → ℂ) × (Fin r → ℝ))).map Φ := Formalism.L2.SG.Pf.NcReal.JX.exponential_chart_haar k r
-  rw [hH, Measure.map_smul _ (meas_conjM _).aemeasurable, Measure.map_map (meas_conjM _) hΦ, key, ← Measure.map_map hΦ hmp.measurable]
+  rw [hH, Measure.map_smul _ (Formalism.L2.SG.Pf.Jac.meas_conjM _).aemeasurable, Measure.map_map (Formalism.L2.SG.Pf.Jac.meas_conjM _) hΦ, key, ← Measure.map_map hΦ hmp.measurable]
   exact congrArg (fun m => ENNReal.ofReal ((2 : ℝ) ^ (r ^ 2 + r * k)) • Measure.map Φ m) hmp.map_eq
 
 theorem aDil_e (t : ℝ) (a : Fin r) :
@@ -174,7 +168,7 @@ theorem conj_levi {d : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ} (
     simp only [Matrix.mul_assoc]
     rw [B2x7.aDil_mul_inv k r t ht.ne', Matrix.mul_one, ← Matrix.mul_assoc (B.aDil k r t), B2x7.aDil_mul_inv k r t ht.ne',
       Matrix.one_mul]
-  rw [e, ← Measure.map_map (meas_conjM _) (meas_conjM _), conj_uwb hρ]
+  rw [e, ← Measure.map_map (Formalism.L2.SG.Pf.Jac.meas_conjM _) (Formalism.L2.SG.Pf.Jac.meas_conjM _), conj_uwb hρ]
   exact dilation_jacobian_unipotent k r _ (Formalism.MainNotions.BridgeLemma₃.lbHaarUp_proved.2 _ _ _
     (Formalism.MainNotions.BridgeCSB.haarLieN k r 1 one_ne_zero ENNReal.one_ne_top)) t ht
 
@@ -257,7 +251,7 @@ theorem place_eq {n r k : ℕ} (hn : n = 2 * r + k + 1) (ε : Fin n → Bool) (e
   congr 1
   have h3 := congrArg (fun m : Measure (Mt k r) => m (cM (ε := ε) P' P '' s)) hmap
   simp only [Measure.smul_apply, smul_eq_mul] at h3
-  rw [← h3, Measure.map_apply (meas_conjM _) (emb.measurableSet_image.2 hs), hcomp, Set.image_comp,
+  rw [← h3, Measure.map_apply (Formalism.L2.SG.Pf.Jac.meas_conjM _) (emb.measurableSet_image.2 hs), hcomp, Set.image_comp,
     Set.preimage_image_eq _ hinj]
 
 theorem pi_smul {ι : Type} [Fintype ι] {α : ι → Type} [∀ i, MeasurableSpace (α i)] (μ : ∀ i, Measure (α i))

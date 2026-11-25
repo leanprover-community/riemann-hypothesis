@@ -134,9 +134,6 @@ theorem zpow_congr {G : Type} [CommGroup G] {ζ : G} {k : ℕ} (h : ζ ^ k = 1) 
   obtain ⟨d, hd⟩ := hab
   rw [sub_eq_iff_eq_add.1 hd, zpow_add, zpow_mul, zpow_natCast, h, one_zpow, _root_.one_mul]
 
-theorem unitOn_bijective (R : Type) [CommRing R] : Function.Bijective (unitOn (R := R)) :=
-  (Units.mapEquiv (Scheme.ΓSpecIso (CommRingCat.of R)).symm.commRingCatIsoToRingEquiv.toMulEquiv).bijective
-
 variable (Xo : Moduli Dw l) (c : Coeff l)
 
 def halfPt (k : ℕ) {S : Type} [CommRing S] (x0 : Sp S ⟶ Xo.X) (a : Dw.La) : ptO Xo x0 ⟶ Xo.univ.t.G :=
@@ -229,9 +226,8 @@ theorem weilIs_baseChange {k : ℕ} {S T : Type} [CommRing S] [CommRing T] (ψ :
 theorem weilIs_unique {k : ℕ} {S : Type} [CommRing S] {x0 : Sp S ⟶ Xo.X} {p q : ptO Xo x0 ⟶ Xo.univ.t.G} {u v : Sˣ}
     (hu : WeilIs Xo.univ.t.G Xo.univ.t.PP.L k p q (unitOn u))
     (hv : WeilIs Xo.univ.t.G Xo.univ.t.PP.L k p q (unitOn v)) : u = v :=
-  (unitOn_bijective S).1
+  (GlobalTheory.HeckePoint.unitOn_bijective S).1
     (CommutatorPairing.weilIs_unique GlobalTheory.firstFiveLaws.1.globalFns (UnivPol.pol Xo).isAb (UnivPol.pol Xo).isLB hu hv)
-
 
 variable {Xo} in
 theorem IsLevWith.baseChange {k : ℕ} {S T : Type} [CommRing S] [CommRing T] (ψ : S →+* T) {x0 : Sp S ⟶ Xo.X}
@@ -243,7 +239,6 @@ theorem IsLevWith.baseChange {k : ℕ} {S T : Type} [CommRing S] [CommRing T] (�
     rw [hev.2.1 a ha, comp_halfPt]
   · rw [← map_zpow]
     exact weilIs_baseChange Xo ψ h hh (hev.2.2 a b)
-
 
 variable {Xo} in
 theorem IsLevWith.unique_field {k : ℕ} (hk : k ∣ l.M) {K : Type} [Field K] {x0 : Sp K ⟶ Xo.X} {ζ : Kˣ}
@@ -275,7 +270,6 @@ theorem IsLevWith.unique_field {k : ℕ} (hk : k ∣ l.M) {K : Type} [Field K] {
   obtain ⟨x, hx⟩ := h1
   obtain ⟨y, hy⟩ := h2
   exact ⟨x + y, by rw [smul_add, ← hx, ← hy, sub_smul, one_smul, smul_sub]; abel⟩
-
 
 variable {Xo c} in
 theorem IsLevOf.unique {k : ℕ} {S : Type} [CommRing S] [Algebra c.F S] {x0 : Sp S ⟶ Xo.X}
@@ -383,8 +377,8 @@ theorem exists_isLevWith_cover {k : ℕ} (hk : k ∣ l.M) {S : Type} [CommRing S
     intro a b
     obtain ⟨u, hu, -⟩ := (hL.weil Xo.X (UnivPol.pol Xo) k _).1 (w a) (w b) (hw a) (hw b)
     have h1 := UnivPairing.weilIs_pow_eq_one hL.weil (UnivPol.pol Xo) k _ _ (hw a) (hw b) u hu
-    obtain ⟨u, rfl⟩ := (unitOn_bijective B).2 u
-    exact ⟨u, hu, (unitOn_bijective B).1 ((map_pow _ _ _).trans (h1.trans (map_one _).symm))⟩
+    obtain ⟨u, rfl⟩ := (GlobalTheory.HeckePoint.unitOn_bijective B).2 u
+    exact ⟨u, hu, (GlobalTheory.HeckePoint.unitOn_bijective B).1 ((map_pow _ _ _).trans (h1.trans (map_one _).symm))⟩
   choose u hu hu1 using hex
   let v : LatMod Dw k × LatMod Dw k → Bˣ := fun p => u p.1 p.2 / Units.map φ.toMonoidHom ζ ^ Dw.EF (r p.1) (r p.2)
   have hζB : Units.map φ.toMonoidHom ζ ^ k = 1 := by rw [← map_pow, hζ1, map_one]
@@ -466,7 +460,6 @@ theorem exists_isLevWith_cover {k : ℕ} (hk : k ∣ l.M) {S : Type} [CommRing S
     rw [(hvχ _ lo p).1 h3, zpow_congr (by rw [← map_pow, hζ1, map_one]) (dvd_EF_sub (hra a) (hra b))] at h4
     exact h4
 
-
 variable {Xo c} in
 theorem IsLevOf.baseChange {k : ℕ} {S T : Type} [CommRing S] [Algebra c.F S] [CommRing T] [Algebra c.F T]
     (ψ : S →ₐ[c.F] T) {x0 : Sp S ⟶ Xo.X} {x1 : Sp T ⟶ Xo.X} (h : ptO Xo x1 ⟶ ptO Xo x0)
@@ -531,7 +524,6 @@ def IsAdm (R : ℕ) {n : ℕ} (x₀ : Fin n → Dw.La) : Prop :=
 theorem IsAdm.spans {R : ℕ} (hR : 1 < R) {n : ℕ} {x₀ : Fin n → Dw.La} (h : IsAdm R x₀) :
     EtaAn.Spans (shiftFam R x₀ : (Fin n → LatMod Dw R) → Fin n → LatMod Dw (R ^ 4)) := fun u =>
   (EtaCard.card_levGrp_and_span E H Dw R hR).2.2.2.2.2.2 n x₀ h u (LinearEquiv.refl _ _)
-
 
 variable (Dw) in
 theorem exists_isAdm {R : ℕ} (hR : 1 < R) : ∃ x₀ : Fin (Dw.p + Dw.q) → Dw.La, IsAdm R x₀ :=
@@ -625,7 +617,6 @@ theorem exists_cover (hR : Odd R) (hM : R ^ 4 ∣ l.M) {S : Type} [CommRing S] [
   choose w hw using fun q => (existsUnique_nullVal GlobalTheory.firstFiveLaws.1 hR hev.2.1 q).exists
   exact ⟨B, inferInstance, inferInstance, φ, y', ev, w, hφ, hm, hev, hw⟩
 
-
 variable (cf x) in
 theorem exists_tauValAt (hR : Odd R) (hM : R ^ 4 ∣ l.M) {S : Type} [CommRing S] [Algebra c.F S] (y : FrPt Xo c S) :
     ∃ v, TauValAt Xo c R cf x y v := by
@@ -660,7 +651,6 @@ theorem TauValAt.frBor {S : Type} [CommRing S] [Algebra c.F S] {t : Ix Dw → S�
   refine ⟨S', _, _, φ, z', ev', fun q => φ (t none) * w q, hφ, hz', hev', fun q => ?_, ?_⟩
   · exact NullValue.triangular hb (ev q) (ev' q) (he q) (hw q)
   · rw [tauExpr_scale, map_mul, map_pow, hv]
-
 
 variable (Xo c cf x) in
 theorem existsUnique_isTauRule (hR : Odd R) (hM : R ^ 4 ∣ l.M) : ∃! f, IsTauRule Xo c R cf x f :=

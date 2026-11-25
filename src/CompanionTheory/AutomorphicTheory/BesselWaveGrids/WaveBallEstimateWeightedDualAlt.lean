@@ -110,25 +110,6 @@ open scoped InnerProductSpace ENNReal
 
 namespace GlobalTheory
 
-theorem comp_eq_sum_inner_smul_rankOne {H Wp Wq : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
-    [CompleteSpace H] [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [CompleteSpace Wp]
-    [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] {ι κ : Type} [Fintype ι] [Fintype κ]
-    (b : OrthonormalBasis ι ℂ Wp) (c : OrthonormalBasis κ ℂ Wq)
-    (P : H →L[ℂ] Wp) (A : H →L[ℂ] H) (Q : Wq →L[ℂ] H) :
-    P.comp (A.comp Q) = ∑ p : ι × κ, ⟪ContinuousLinearMap.adjoint P (b p.1), A (Q (c p.2))⟫_ℂ •
-      (innerSL ℂ (c p.2)).smulRight (b p.1) := by
-  ext x
-  simp only [ContinuousLinearMap.adjoint_inner_left, ContinuousLinearMap.comp_apply,
-    ContinuousLinearMap.sum_apply, ContinuousLinearMap.smul_apply, ContinuousLinearMap.smulRight_apply,
-    innerSL_apply_apply, Fintype.sum_prod_type, smul_smul]
-  conv_lhs => rw [← c.sum_repr' x]
-
-  simp only [map_sum, map_smul]
-  rw [Finset.sum_comm]
-  refine Finset.sum_congr rfl fun j _ => ?_
-  conv_lhs => rw [← b.sum_repr' (P (A (Q (c j))))]
-  simp only [Finset.smul_sum, smul_smul, mul_comm]
-
 theorem isCoef_of_translate_smul_exists : PI.KFinSmooth → ∀ (k r : ℕ) (ε : Fin (2 * r + k + 1) → Bool) (mu : Fin (2 * r + k + 1) → ℝ) (R : Rep k r) (Wp : Type) [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [CompleteSpace Wp] [FiniteDimensional ℂ Wp] (Wq : Type) [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [CompleteSpace Wq] [FiniteDimensional ℂ Wq] (l : R.H → Wp) (l' : R.H → Wq), R.IsDG ε mu → (∀ f : Mx k r → (Wq →L[ℂ] Wp), PI.CapelliEig.IsKFinCoefT (k := k) (r := r) R.σ f → ∃ s, IsCoef R l l' f s) ∧ (∀ F s (t : ℂ), IsCoef R l l' F s → IsCoef R l l' (fun g => t • F g) (t * s)) ∧ ((∃ x ∈ R.TK, l x ≠ 0) → (∃ y ∈ R.TK, l' y ≠ 0) → ∀ s : ℂ, ∃ F, IsCoef R l l' F s) := by
   intro hK k r ε mu R Wp _ _ _ _ Wq _ _ _ _ l l' hR
   obtain ⟨hmul, hone, hinner, -, -, hTK, hKF, -, -⟩ := rep_basic_of_isDS hK k r ε mu R hR
@@ -337,15 +318,6 @@ open scoped InnerProductSpace ENNReal
 
 namespace GlobalTheory.SuppliedPieri
 
-theorem n1_add_eZ_le {n : ℕ} (ν : Fin n → ℤ) (I : Finset (Fin n)) : n1 (ν + eZ I) ≤ n1 ν + I.card := by
-  unfold n1
-  have h1 : I.card = ∑ i : Fin n, (if i ∈ I then 1 else 0) := by
-    rw [Finset.sum_boole]; simp
-  rw [h1, ← Finset.sum_add_distrib]
-  refine Finset.sum_le_sum fun i _ => ?_
-  simp only [Pi.add_apply, eZ]
-  split_ifs <;> omega
-
 theorem JF_zero {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
     [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] (D : B.RealPlaceData k r Wp Wq) (g : B.Mat k r) :
     B.JF D 0 g = 0 := by
@@ -461,23 +433,12 @@ open scoped InnerProductSpace ENNReal
 
 namespace GlobalTheory.BesselPieri
 
-theorem gg_mul {k r : ℕ} {a b : Mx k r} (ha : a ∈ GG k r) (hb : b ∈ GG k r) : a * b ∈ GG k r := by
-  have ha' : aᴴ * Formalism.QuantumDeterminants.Hpk k r * a = Formalism.QuantumDeterminants.Hpk k r := ha
-  have hb' : bᴴ * Formalism.QuantumDeterminants.Hpk k r * b = Formalism.QuantumDeterminants.Hpk k r := hb
-  show (a * b)ᴴ * Formalism.QuantumDeterminants.Hpk k r * (a * b) = Formalism.QuantumDeterminants.Hpk k r
-  calc (a * b)ᴴ * Formalism.QuantumDeterminants.Hpk k r * (a * b) = bᴴ * (aᴴ * Formalism.QuantumDeterminants.Hpk k r * a) * b := by
-        rw [conjTranspose_mul]; simp only [Matrix.mul_assoc]
-    _ = _ := by rw [ha', hb']
-
 theorem one_gg (k r : ℕ) : (1 : Mx k r) ∈ GG k r := by
   show (1 : Mx k r)ᴴ * Formalism.QuantumDeterminants.Hpk k r * 1 = Formalism.QuantumDeterminants.Hpk k r
   simp
 
 theorem one_N (k r : ℕ) : (1 : Mx k r) ∈ Formalism.QuantumDeterminants.Nset k r :=
   ⟨one_gg k r, fun _ _ _ => Matrix.one_apply, fun _ _ _ _ _ => Matrix.one_apply⟩
-
-theorem one_UW (k r : ℕ) (z : Fin (2 * r + k + 1) → ℂ) : (1 : Mx k r) ∈ Formalism.QuantumDeterminants.UWset k r z :=
-  ⟨one_gg k r, fun _ => ⟨Matrix.one_mulVec _, Matrix.one_mulVec _⟩, Matrix.one_mulVec _⟩
 
 theorem herm_iso {ι : Type} [Fintype ι] [DecidableEq ι] {Γ A : Matrix ι ι ℂ} (hA : Aᴴ * Γ * A = Γ) (x y : ι → ℂ) :
     Formalism.QuantumDeterminants.herm Γ (A *ᵥ x) (A *ᵥ y) = Formalism.QuantumDeterminants.herm Γ x y := by
@@ -494,12 +455,12 @@ theorem coef_inv {k r : ℕ} {ι : Type} [Fintype ι] [DecidableEq ι] {ρ : Mx 
   obtain ⟨-, -, -, hmul, hiso, -⟩ := hρ
   have hi := PI.MirrorSection₂.uw_inv hh
   have ni := PI.MirrorSection₂.n_inv hn
-  have ha : (Matrix.of p.1.1)⁻¹ * (Matrix.of p.1.2)⁻¹ ∈ GG k r := gg_mul hi.1 ni.1
+  have ha : (Matrix.of p.1.1)⁻¹ * (Matrix.of p.1.2)⁻¹ ∈ GG k r := Gp91.CompanionTheory.FamilyDerivativeExpansion.Kap.mul_mem_GG hi.1 ni.1
   have e1 := h1 _ ⟨_, hi, _, ni, rfl⟩
   have e2 : ρ (Matrix.of p.2.1) *ᵥ om' = om' := h2 _ ⟨_, hh', 1, one_N k r, (Matrix.mul_one _).symm⟩
-  have e3 : ρ (Matrix.of p.2.2) *ᵥ om' = om' := h2 _ ⟨1, one_UW k r _, _, hn', (Matrix.one_mul _).symm⟩
+  have e3 : ρ (Matrix.of p.2.2) *ᵥ om' = om' := h2 _ ⟨1, Gp91.GlobalTheory.MomentPointwise.one_mem_UW k r _, _, hn', (Matrix.one_mul _).symm⟩
   unfold B.sgs
-  rw [hmul _ (gg_mul (gg_mul ha hγ) hn'.1) _ hh'.1, hmul _ (gg_mul ha hγ) _ hn'.1, hmul _ ha _ hγ,
+  rw [hmul _ (Gp91.CompanionTheory.FamilyDerivativeExpansion.Kap.mul_mem_GG (Gp91.CompanionTheory.FamilyDerivativeExpansion.Kap.mul_mem_GG ha hγ) hn'.1) _ hh'.1, hmul _ (Gp91.CompanionTheory.FamilyDerivativeExpansion.Kap.mul_mem_GG ha hγ) _ hn'.1, hmul _ ha _ hγ,
     ← mulVec_mulVec, e2, ← mulVec_mulVec, e3, ← mulVec_mulVec]
   conv_lhs => rw [← e1]
   exact herm_iso (hiso _ ha) _ _
@@ -825,7 +786,7 @@ theorem supplied_pieri : HypsG → ∀ (P : M.Par) (Wp Wq : Type) [NormedAddComm
   have hν0 : n1 ν ≤ q0 := by omega
   have hνI : ∀ I : Sub (2 * P.r + P.k + 1) (P.r + 1), n1 (ν + eZ I.1) ≤ q0 := by
     intro I
-    have h1 := GlobalTheory.SuppliedPieri.n1_add_eZ_le ν I.1
+    have h1 := Gp91.GlobalTheory.WedgeKappa.n1_add_eZ_le_add_card ν I.1
     rw [I.2] at h1
     have h2 : P.r + 1 ≤ (P.r + 1) * (P.r + 2) := Nat.le_mul_of_pos_right _ (by omega)
     omega
@@ -1032,8 +993,6 @@ theorem bigCellDerivativeExpansion_of_isDS_of_coefOf (H : HypsG) (C : ℝ) (hC :
   exact Formalism.FourierDecayAlt.P.CutBP.big_cell_expansion_of_family p f b (C / 2 + 6) a₁ (by linarith [hb.1, hb.2.1])
     (familyDerivativeExpansion_of_isDS_of_coefOf H C hC P Wp Wq p lam b bv ga h q0 a₁ R0 f ν₀ hN hN' hT hT' hq hDS hf)
 
-
-
 theorem product_moment : HypsG → ∀ (k r : ℕ) (Wp : Type) [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [CompleteSpace Wp] [FiniteDimensional ℂ Wp] (lam : Fin (2 * r + k + 1) → ℝ) (u : ℕ → ℝ) (b bv ga h : ℝ) (q0 : ℕ) (z : Fin (2 * r + k + 1) → ℂ) (π : Mx k r → (Wp →L[ℂ] Wp)) (μW μN μG νq : Measure (Formalism.QuantumDeterminants.Mt k r)) (R : (Fin (2 * r + k + 1) → ℤ) → Rep k r) (l : ∀ ν, (R ν).H → Wp) (dg : (Fin (2 * r + k + 1) → ℤ) → ℝ), SetupG lam u b bv ga h q0 z π μW μN μG νq R l dg → ∀ (j : ℕ) (hj : j ≤ r) ν, n1 ν + (r + 1) ^ 2 ≤ q0 → NzOn (R ν) (l ν) → ∃ w ∈ (R ν).sm, ‖w‖ = 1 ∧ ∫⁻ x, ENNReal.ofReal ((∏ a : Fin (j + 1), lenA k r z (Matrix.of x) (Fin.castLE (Nat.succ_le_succ hj) a) ^ 2) * (dg ν * ‖l ν ((R ν).σ (Matrix.of x) w)‖ ^ 2)) ∂νq ≤ ENNReal.ofReal (Hsq r (Formalism.QuantumDeterminants.Tz k r z) b ^ (r + 1)) := by
   intro hH k r Wp _ _ _ _ lam u b bv ga h q0 z π μW μN μG νq R l dg hS j hj ν hν hnz
   classical
@@ -1061,7 +1020,7 @@ theorem product_moment : HypsG → ∀ (k r : ℕ) (Wp : Type) [NormedAddCommGro
   have hw1' : ‖(w : (R ν).H)‖ = 1 := hw1
   have hwsm : (w : (R ν).H) ∈ (R ν).sm := w.2
   refine ⟨(w : (R ν).H), hwsm, hw1', ?_⟩
-  obtain ⟨hG, -, hlen, hmeas⟩ := GlobalTheory.T.quotientMeasure_ae_mem_and_measurable_besselModel hK k r _ _ (R ν) Wp z π u μW μN μG νq hDS hSide
+  obtain ⟨hG, -, hlen, hmeas⟩ := GlobalTheory.quotMeas_ae_mem_and_measurable hK k r _ _ (R ν) Wp z π u μW μN μG νq hDS hSide
   obtain ⟨hBeL, hdg, -⟩ := hSF ν hν0
   have hT : 0 < Formalism.QuantumDeterminants.Tz k r z := hSide.2.1
   obtain ⟨⟨hb1, hb2, -, -, -⟩, -⟩ := GlobalTheory.NumFam.num_fam k r lam u b bv ga h q0 hNum
@@ -1089,7 +1048,7 @@ theorem product_moment : HypsG → ∀ (k r : ℕ) (Wp : Type) [NormedAddCommGro
       simpa only [one_mul, hw1', one_pow, ENNReal.ofReal_one] using this)
     hA (one_le_pow₀ hb)
     (fun q hq => by
-      have := GlobalTheory.T.family_setup_cayley_recursion hH k r Wp lam u b bv ga h q0 z π μW μN μG νq R l dg Q E hS hQ hE q ν
+      have := Gp91.GlobalTheory.Moment.moment_first_length hH k r Wp lam u b bv ga h q0 z π μW μN μG νq R l dg Q E hS hQ hE q ν
         (by omega) 0 (hq2 q (hq.trans hjr)) w hLev
       rw [← e0] at this
       simpa only [hw1, one_pow, mul_one] using this)
@@ -1172,7 +1131,7 @@ theorem kappa_bound : HypsG → ∀ (k r : ℕ) (Wp : Type) [NormedAddCommGroup 
         rw [ite_eq_right hJ, this]
         simp)
     I ((hmass _ (hνJ0 I)).2 hnzI).1 w hw
-  have hae := (GlobalTheory.T.quotientMeasure_ae_mem_and_measurable_besselModel hyp.1.2.2.1 k r _ _ (R ν) Wp z π u μW μN μG νq hDS hG).1
+  have hae := (GlobalTheory.quotMeas_ae_mem_and_measurable hyp.1.2.2.1 k r _ _ (R ν) Wp z π u μW μN μG νq hDS hG).1
   rw [ite_eq_left hnzI, hκI I rfl, hw1] at h8
   have h9 := h8.trans (le_trans (le_of_eq (lintegral_congr_ae ?_)) hint)
   · have hH : 0 ≤ Hsq r (Formalism.QuantumDeterminants.Tz k r z) b ^ (r + 1) := by
@@ -1323,7 +1282,7 @@ theorem supplied_pieriL : HypsG → ∀ (P : M.Par) (Wp Wq : Type) [NormedAddCom
   have hν0 : n1 ν ≤ q0 := by omega
   have hνI : ∀ I : Sub (2 * P.r + P.k + 1) (j + 1), n1 (ν + eZ I.1) ≤ q0 := by
     intro I
-    have h1 := GlobalTheory.SuppliedPieri.n1_add_eZ_le ν I.1
+    have h1 := Gp91.GlobalTheory.WedgeKappa.n1_add_eZ_le_add_card ν I.1
     rw [I.2] at h1
     have h2 : P.r + 1 ≤ (P.r + 1) * (P.r + 2) := Nat.le_mul_of_pos_right _ (by omega)
     omega
@@ -1410,7 +1369,7 @@ theorem momL_le (H : HypsG) (C : ℝ) (hC : 0 ≤ C) (P : M.Par) (Wp Wq : Type) 
       have hν1 : n1 ν + (P.r + 1) * (P.r + 2) ≤ q0 := by nlinarith
       have hν0 : n1 ν ≤ q0 := by omega
       have hI : ∀ I ∈ S, n1 (ν + eZ I) + (P.r + 1) * a + (P.r + 1) * (P.r + 2) ≤ q0 := fun I hI => by
-        have h1 := GlobalTheory.SuppliedPieri.n1_add_eZ_le ν I
+        have h1 := Gp91.GlobalTheory.WedgeKappa.n1_add_eZ_le_add_card ν I
         rw [(mem_powersetCard.1 hI).2] at h1
         nlinarith
       have hτ : ∀ I ∈ S, ‖tau ν I‖ ≤ Hh := fun I hI =>

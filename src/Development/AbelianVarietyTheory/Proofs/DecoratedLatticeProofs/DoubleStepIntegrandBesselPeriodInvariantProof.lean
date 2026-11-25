@@ -122,12 +122,10 @@ theorem mixT_zero_heis {S T T₀ : HSp D} {ρ : ℕ} (d : HypDec T T₀ ρ) (v :
 
 theorem fourierBessel_centralTerm_const_on_orbit {σ : ℕ} (B : BesLev D σ) {S S₀ : HSp D} (d : HypDec S S₀ (σ + 1)) (c : skewA D (σ + 1))
     (v : UX D (σ + 1)) : d.qS B.V c (x0 B ⬝ v.1.1) = d.qS B.L c (zl B) := by
-  obtain ⟨-, -, -, -, -, h⟩ := GlobalTheory.T.fourierBesselBasePoint_isUnfoldingBasePoint_spec D σ B
+  obtain ⟨-, -, -, -, -, h⟩ := GlobalTheory.Unf.FB.basePoint_spec D σ B
   obtain ⟨n, -, hn, -⟩ := (GlobalTheory.T.flagUnipotentRadical_surjects_unitriangular_characters_agree D σ B).1 v
   rw [← h S S₀ d c, ← cenS_nC, ← cenS_nC, ← neg_inj, LinkPoint.neg_cenS_eq, LinkPoint.neg_cenS_eq, ← hn,
     GlobalTheory.MixPer.Decomp.gram_mt]
-
-
 
 theorem flatFB_source {σ : ℕ} {J : JacLev D (σ + 1)} {B : BesLev D σ} (s : StepFB ψ J B) {Ψ : WO J.W B.V → ℂ}
     (hΨ : IsThetaFunO ψ J.W B.V Ψ) {n : GA D J.W} (hn : n ∈ flagN J.d) :

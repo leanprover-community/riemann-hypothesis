@@ -94,7 +94,7 @@ theorem GlobalTheory.Transport.TwistCpl.psiAt_transport_tw : ∀ {B : Base} {X :
     have hq0 : ((Formalism.L2.Col.qOf P.1 : ℕ) : B.fields.E) ≠ 0 := Nat.cast_ne_zero.2 hq0n
     refine ⟨Formalism.L2.Col.qOf P.1 ^ (I.cst a).B, pow_pos (Nat.pos_of_ne_zero hq0n) _, ?_⟩
     rintro _ ⟨c, rfl⟩ x x₀ hx
-    have hr := GlobalTheory.T.twist_prime_congruent_maps_frame_readings_bound I u a i P hPQ (GlobalTheory.Mem.Df.disjoint_vGs_Q I hI l a) p q p' q' k y k' y' hp hN hp' hN' hq hq' _ x x₀ hx
+    have hr := GlobalTheory.Transport.TwistRead.qread I u a i P hPQ (GlobalTheory.Mem.Df.disjoint_vGs_Q I hI l a) p q p' q' k y k' y' hp hN hp' hN' hq hq' _ x x₀ hx
     have hm' : i + 1 + 1 = B.R.m := by omega
     set x₁ := Formalism.L2.Col.inFr (Formalism.L2.Col.frsF I.sel (I.tup a) p.1.1 P) (Formalism.L2.Col.frsF I.sel (I.tup a) p'.1.1 P) x₀ with hx₁
     set x₂ := Formalism.L2.Col.inFr (Formalism.L2.Col.frsF I.sel (I.tup a) q.1.1 P) (Formalism.L2.Col.frsF I.sel (I.tup a) q'.1.1 P) x with hx₂
@@ -383,12 +383,6 @@ theorem mle_frame {g : GL (Fin a) (AfE F E)} {p : DecoF E a ST SG Q} (h : IsPtOf
   rw [map_mul, adAt_inclE]
   simp
 
-omit [NumberField E] [StarRing E] in
-theorem frame_mul_inFr (f : Sp E a ≃ₗ[E] Sp E a) (f' : Sp E b ≃ₗ[E] Sp E b) (x : HomE E a b) :
-    LinearMap.toMatrix' f'.toLinearMap * LinearMap.toMatrix' (inFr f f' x) = LinearMap.toMatrix' x * LinearMap.toMatrix' f.toLinearMap := by
-  rw [← LinearMap.toMatrix'_comp, ← LinearMap.toMatrix'_comp]
-  exact congrArg _ (LinearMap.ext fun z => f'.apply_symm_apply _)
-
 theorem exists_modulus {k y : GL (Fin a) (AfE F E)} {k' y' : GL (Fin b) (AfE F E)} {p q : DecoF E a ST SG Q} {p' q' : DecoF E b ST SG Q}
     (hp : IsPtOf hc k p) (hp' : IsPtOf hc k' p') (hq : IsPtOf hc (y * k) q) (hq' : IsPtOf hc (y' * k') q') (w : SG) {d : E} (hd : d ≠ 0) :
     ∃ M : ℕ, 0 < M ∧ ∀ M₀ : ℕ, M ∣ M₀ → ∀ x x₀ : HomE E a b,
@@ -433,8 +427,8 @@ theorem exists_modulus {k y : GL (Fin a) (AfE F E)} {k' y' : GL (Fin b) (AfE F E
       (LinearMap.toMatrix' x₀).map ι) (m'⁻¹ * w.1.valuation E d * m⁻¹) := fun r s => by
     rw [← hin, ← hin, ← Matrix.map_mul, ← Matrix.map_mul, ← Matrix.map_sub _ (map_sub _)]
     exact (hx r s).trans hM₀
-  have f1 := congrArg (fun A => Matrix.map A ι) (frame_mul_inFr (q.deco.1.liftFr w) (q'.deco.1.liftFr w) x)
-  have f2 := congrArg (fun A => Matrix.map A ι) (frame_mul_inFr (p.deco.1.liftFr w) (p'.deco.1.liftFr w) x₀)
+  have f1 := congrArg (fun A => Matrix.map A ι) (GlobalTheory.Transport.TwistRead.toMatrix_inFr (q.deco.1.liftFr w) (q'.deco.1.liftFr w) x)
+  have f2 := congrArg (fun A => Matrix.map A ι) (GlobalTheory.Transport.TwistRead.toMatrix_inFr (p.deco.1.liftFr w) (p'.deco.1.liftFr w) x₀)
   simp only [Matrix.map_mul] at f1 f2
   have i1 := hinv (y * k)
   have i2 := hinv k
@@ -723,7 +717,6 @@ variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algeb
 
 def ratM (P : HeightOneSpectrum (𝓞 E)) {a b : ℕ} (x : HomE E a b) : Matrix (Fin b) (Fin a) (P.adicCompletion E) :=
   (LinearMap.toMatrix' x).map (algebraMap E (P.adicCompletion E))
-
 
 variable (F) in
 def locM (P : HeightOneSpectrum (𝓞 E)) {n : ℕ} (g : GL (Fin n) (AfE F E)) : Matrix (Fin n) (Fin n) (P.adicCompletion E) :=
@@ -1164,7 +1157,7 @@ theorem locTop_transport_tw : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X) (l 
     have hq0 := GlobalTheory.TopStep.qOf_ne_zero (P := P.1)
     refine ⟨Formalism.L2.Col.qOf P.1 ^ ((I.cst a).M + 1), pow_pos hqpos _, ?_⟩
     rintro _ ⟨c, rfl⟩ x x₀ hx
-    have H := GlobalTheory.T.twist_prime_congruent_maps_frame_readings_bound I u a (n + 1) P hQ (GlobalTheory.Mem.Df.disjoint_vGs_Q I ok l a) p q p' q' k y k' y' hp hN hp' hN' hq hq' _ x x₀ hx
+    have H := GlobalTheory.Transport.TwistRead.qread I u a (n + 1) P hQ (GlobalTheory.Mem.Df.disjoint_vGs_Q I ok l a) p q p' q' k y k' y' hp hN hp' hN' hq hq' _ x x₀ hx
     have hqv := GlobalTheory.TopStep.Model.repY_intQ q.1.1 (q.mem_ybSet h) hP
     rw [locTop_shiftQ hc hP hD _ hqv (rep_sub_intQ h p q e hP)]
     have key : ∀ s r, Formalism.L2.Col.IntAt P.1 (((Formalism.L2.Col.qOf P.1 : B.fields.E) ^ ((I.cst a).M + 1))⁻¹ *

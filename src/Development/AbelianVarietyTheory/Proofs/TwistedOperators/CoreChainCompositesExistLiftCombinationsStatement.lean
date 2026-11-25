@@ -741,7 +741,6 @@ open IsDedekindDomain NumberField MeasureTheory GlobalTheory.ChiGrid GlobalTheor
 open GlobalTheory.IndefiniteRowSideFullHecke.LevelPlusSubgroup (coefPlus Cols SizeRows)
 open GlobalTheory.SepRows GlobalTheory.CoreOnto
 
-
 namespace GlobalTheory.IdemHalf
 
 theorem infPart_eq_zero_of_isSplitIdem {D : D7} {e : AE D} (h : IsSplitIdem D e) :
@@ -1222,7 +1221,7 @@ theorem preOK (hDF : DepFixed) : PreOK := by
       have h1 : GlobalTheory.AdelicU.proj D.sp.cm.sig (G.V (.core i)).gram w g ∈
           GlobalTheory.AdelicU.stabLoc D.sp.cm.sig (G.V (.core i)).gram (GlobalTheory.AdelicU.frameLat r.sp) w := h0
       have hΛ : GlobalTheory.AdelicU.frameLat r.sp = scaleLat ((D.host.AAbar * D.host.AA⁻¹) ^ i) (G.Λ (.core i)) := hr
-      rw [hΛ, (GlobalTheory.T.polarisationTwist_lattice_selfDual_same_stabilisers D (G.V (.core i)) (G.Λ (.core i)) hsd i).2.1 w] at h1
+      rw [hΛ, (GlobalTheory.ScaleSelfDual.scaleLat_twist_selfDual D (G.V (.core i)) (G.Λ (.core i)) hsd i).2.1 w] at h1
       exact h1
     have hfin := GlobalTheory.T.cosetSupported_coefficient_congruenceSubgroup D hQ T L μ0 hL sc G W Mv hM i hi x₀ hx₀ _ (hcos φ) m' X' hX' g hstab hne'
     obtain ⟨a, ha, k, hk, rfl⟩ := (GlobalTheory.UnitarySplit.real_finite_split D (G.V (.core i))).1 g
@@ -1254,13 +1253,11 @@ noncomputable section
 
 namespace GlobalTheory.EvenOnto.StepExists
 
-
-
 theorem stepEx : GlobalTheory.Published.DiscreteSeriesCover → GlobalTheory.Published.HarishChandraModules → GlobalTheory.Published.CuspRapidDecay →
     GlobalTheory.Published.CasselmanWallach → ∀ D : D7, StepEx D := by
   intro h1 h2 h3 h4 D c hc k hk s s' hs hs' ω f hpre
-  obtain ⟨X, hX, -, -, hX3, hX4, hX5⟩ := GlobalTheory.T.exists_real_discreteSeries_data_theta_properties h1 h2
-  have I : Inputs D X := GlobalTheory.T.thetaPairAnalyticHypotheses_of_discreteSeries h1 h2 h3 h4 D X hX
+  obtain ⟨X, hX, -, -, hX3, hX4, hX5⟩ := GlobalTheory.RealPlaceTheta.exists_record_theta_all h1 h2
+  have I : Inputs D X := GlobalTheory.PairLift.inputs_of_chosenSeries h1 h2 h3 h4 D X hX
   have hPL : PairLifts D X :=
     GlobalTheory.T.pairThetaLift_factors_through_intertwiner D X I (GlobalTheory.T.thetaLifts_cuspidal_of_lower_tower_lifts_vanish D X I (GlobalTheory.T.lowerTowerLiftsVanish_of_vanish_on_fock D X I (GlobalTheory.T.lowerTowerLifts_vanish_on_fock D X I)))
   have hrule : ∀ τ, RulePar X (s.par τ) (s'.par τ) (c.a k τ) (c.a k τ) := fun τ =>
@@ -1290,7 +1287,7 @@ theorem stepEx : GlobalTheory.Published.DiscreteSeriesCover → GlobalTheory.Pub
       rw [hm, map_mul, Module.End.mul_apply, hpre.law P κ hκ 1 (one_mem _)]
     refine GlobalTheory.T.mem_multiplicitySpace_level_of_KFinite_tensors D s.V s.par s.M c.θ hc.inf _ _ (fun κ hκ => hs.fin hκ) F' hF' ?_
     intro w hw κ hκ g
-    have hx := GlobalTheory.T.kFiniteSpan_le_span_realIntertwiner_values h1 h2 D s.V s'.V s.par s'.par s.M s'.M c.θ c.ψ (c.a k) (c.a k) ω f It hc.inf hwe
+    have hx := GlobalTheory.ItOnto.kfinSpan_le_span_it h1 h2 D s.V s'.V s.par s'.par s.M s'.M c.θ c.ψ (c.a k) (c.a k) ω f It hc.inf hwe
       hpre.vac hItW hw
     suffices e : F' w (g * κ) = F' w g by rw [e]; simp
     clear hw

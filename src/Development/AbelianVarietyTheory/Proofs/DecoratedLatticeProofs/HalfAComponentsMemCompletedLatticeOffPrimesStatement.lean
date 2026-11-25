@@ -133,8 +133,6 @@ theorem halfA_mem_locP_off {E : Type} [Field E] [NumberField E] [StarRing E] {a 
     unfold expS; rw [ite_eq_right (fun h => hQ (Or.inl h)), ite_eq_right (fun h => hQ (Or.inr h))]
   rwa [he, neg_zero, zpow_zero, inv_one, one_smul] at h
 
-
-
 theorem zmem : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) (S T : HSp D) (δ : ℂ) (sc : ℝ), StdPair θ S T δ sc ψ → ∀ (e : AE D) (SS : Finset (Formalism.L2.DIV.Pl D.host.E)), IsIdemSum e SS → (∀ Q ∈ SS, ((D.host.QS * D.host.q * D.host.d : ℕ) : 𝓞 D.host.E) ∉ Q.asIdeal) → ∀ (N : Submodule (𝓞 D.host.E) (Fin S.rank → D.host.E)) (N' : Submodule (𝓞 D.host.E) (Fin T.rank → D.host.E)), IsSelfDualC S N → IsSelfDualC T N' → ∀ (c : ℕ), 0 < c → Odd c → ∀ x' ∈ halfAO SS (perO (D.host.AA0 : Submodule (𝓞 D.host.E) D.host.E) N N') c, (GlobalTheory.VacUnique.finRat S T (LinearMap.toMatrix' x')) - ((LinearMap.toMatrix' x').map fun r => e * incA D r) ∈ (latO S T (N : Set (Fin S.rank → D.host.E)) (N' : Set (Fin T.rank → D.host.E)) fun _ => True) := by
   intro D ψ θ S T δ sc hP e SS hE h2 N N' hN hN' c hc _ x' hx
   have hA : ((LinearMap.toMatrix' x').map fun r => cA D e * incA D r : WO S T) ∈
@@ -154,9 +152,9 @@ theorem zmem : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) (S 
       rw [Finset.mem_singleton.1 hQ]; exact hes PP hPP, (Finset.sum_singleton _ _).symm⟩, (hes PP hPP).1.2.1⟩
   have hcx : ((c : D.host.E) • x') ∈ perO (D.host.AA0 : Submodule (𝓞 D.host.E) D.host.E) N N' :=
     GlobalTheory.ThetaMove.mem_of_locP fun Q => halfA_smul_mem_locP hc hx Q
-  obtain ⟨d, hd0, hdx, hdG⟩ := GlobalTheory.T.exists_denominator_avoiding_given_primes D.host.E _ _ _ (fun Q => Q ∈ SS ∨ Formalism.L2.Col.conjPrime₂ Q ∈ SS) c hc x' hcx
+  obtain ⟨d, hd0, hdx, hdG⟩ := GlobalTheory.OffDen.exists_den_avoid D.host.E _ _ _ (fun Q => Q ∈ SS ∨ Formalism.L2.Col.conjPrime₂ Q ∈ SS) c hc x' hcx
     (fun Q hQ => halfA_mem_locP_off hx Q hQ)
-  obtain ⟨a₁, a₂, ha₁, ha₂, ho⟩ := GlobalTheory.T.offIdempotent_mem_ideal_two_integers D e SS hE c hc d hd0 hdG
+  obtain ⟨a₁, a₂, ha₁, ha₂, ho⟩ := GlobalTheory.OffIdemTwo.off_two D e SS hE c hc d hd0 hdG
   have hB : a₁ • GlobalTheory.LatVac.finTens 1 (LinearMap.toMatrix' ((c : D.host.E) • x')) ∈
       latO S T (N : Set (Fin S.rank → D.host.E)) (N' : Set (Fin T.rank → D.host.E)) fun _ => True :=
     GlobalTheory.LatticeStable.smul_mem_latO D S T _ _ _ _ ha₁ _

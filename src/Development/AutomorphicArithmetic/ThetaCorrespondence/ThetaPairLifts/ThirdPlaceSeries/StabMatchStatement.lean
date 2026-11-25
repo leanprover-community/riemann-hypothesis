@@ -305,7 +305,6 @@ noncomputable section
 
 namespace GlobalTheory.Core.Mi.LevRow
 
-
 open GlobalTheory.FinPl.OrbitCoset in
 theorem embA_mem_grpAt {D : D7} {S S₀ A B : HSp D} {ρ : ℕ} (d : HypDec S S₀ ρ) (o : OrthDec S₀ A B) (P : GlobalTheory.FinPl.Pl D → Prop)
     {a : GA D A} (ha : a ∈ grpAt A P) : embA d o a ∈ grpAt S P :=
@@ -503,7 +502,6 @@ namespace GlobalTheory.Core.Mi.ChainLast
 
 variable {D : D7}
 
-
 open GlobalTheory.SeeSaw.LastPrim in
 
 theorem last_sameAt {ψ : AddChar (AF D.host.F) ℂ} (hψ : IsStdChar D ψ (-1)) {ρ : ℕ} {B : BesLev D ρ} {J : JacLev D ρ}
@@ -555,7 +553,7 @@ theorem last_sameAt {ψ : AddChar (AF D.host.F) ℂ} (hψ : IsStdChar D ψ (-1))
     exact (key a ha y hy).1 (hu y hy)
   · intro h
     have hcA : cA D a ∈ idAt D (· = v) := cA_mem_idAt'' ha
-    refine ⟨fun k l => ?_, fun y hy => (key a ha y hy).2 (h _ (GlobalTheory.T.lineVector_pairing_mem_inverseIdealCompletion D ψ hψ B.V₀ B.A B.L B.o B.ζ LV₀ 𝔷 v hG.sdV₀ h𝔷 h𝔷0 y hy))⟩
+    refine ⟨fun k l => ?_, fun y hy => (key a ha y hy).2 (h _ (GlobalTheory.LineDual.line_pair_mem_idV D ψ hψ B.V₀ B.A B.L B.o B.ζ LV₀ 𝔷 v hG.sdV₀ h𝔷 h𝔷0 y hy))⟩
     have e6 := congrFun (incAdj_yZero_mulVec D ρ B J hρ a (Pi.single l 1)) k
     rw [Matrix.mulVec_single_one] at e6
     refine (congrArg (· ∈ idAt D (· = v)) e6).mpr ?_
@@ -578,19 +576,18 @@ theorem ideal_eq (𝔟 𝔷 : FI D) (h𝔟0 : 𝔟 ≠ 0) (h𝔷0 : 𝔷 ≠ 0) 
 
 end GlobalTheory.Core.Mi.ChainLast
 
-
 open GlobalTheory.Core.Mi.ChainLast in
 theorem GlobalTheory.Core.Mi.LatMatch.lastAt_of_goodBF : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ), IsStdChar D ψ (-1) → ∀ (ρ : ℕ) (B : BesLev D ρ) (J : JacLev D ρ) (LV : Lat B.V) (LV₀ : Lat B.V₀) (LW : Lat J.W) (LW₀ : Lat J.W₀) (v : GlobalTheory.FinPl.Pl D), GoodBF ψ B J LV LV₀ LW LW₀ v → LastAt ψ B.d (vecB B.o B.ζ) LV LV₀ v := by
   intro D ψ hψ ρ B J LV LV₀ LW LW₀ v hG i hi s hs
   obtain ⟨-, h2, -, -, h5, -, -⟩ := GlobalTheory.T.fractionalIdealCompletion_properties_at_place D ψ hψ v
-  obtain ⟨𝔢, h𝔢0, -, h𝔢⟩ := GlobalTheory.T.selfDualLattice_rationalLineTrace_fractionalIdeal D B.V LV (col B.d i) hG.sdV (col_ne_zero _ _)
-  obtain ⟨𝔷, h𝔷0, -, h𝔷⟩ := GlobalTheory.T.selfDualLattice_rationalLineTrace_fractionalIdeal D B.V₀ LV₀ (vecB B.o B.ζ) hG.sdV₀ (vecB_ne_zero B.o B.line)
+  obtain ⟨𝔢, h𝔢0, -, h𝔢⟩ := GlobalTheory.Core.Mi.LatLine.line_trace D B.V LV (col B.d i) hG.sdV (col_ne_zero _ _)
+  obtain ⟨𝔷, h𝔷0, -, h𝔷⟩ := GlobalTheory.Core.Mi.LatLine.line_trace D B.V₀ LV₀ (vecB B.o B.ζ) hG.sdV₀ (vecB_ne_zero B.o B.line)
   let 𝔟 : ℕ → FI D := fun n => if h : n < ρ then
-    Classical.choose (GlobalTheory.T.selfDualLattice_rationalLineTrace_fractionalIdeal D J.W LW (col J.d ⟨n, h⟩) hG.sdW (col_ne_zero _ _)) else 1
+    Classical.choose (GlobalTheory.Core.Mi.LatLine.line_trace D J.W LW (col J.d ⟨n, h⟩) hG.sdW (col_ne_zero _ _)) else 1
   have h𝔟 : ∀ j : Fin ρ, 𝔟 j ≠ 0 ∧
       ∀ a ∈ idAt D (· = v), a • ratV (col J.d j) ∈ latV J.W LW (· = v) ↔ a ∈ idV (𝔟 j) v := by
     intro j
-    have hs := Classical.choose_spec (GlobalTheory.T.selfDualLattice_rationalLineTrace_fractionalIdeal D J.W LW (col J.d j) hG.sdW (col_ne_zero _ _))
+    have hs := Classical.choose_spec (GlobalTheory.Core.Mi.LatLine.line_trace D J.W LW (col J.d j) hG.sdW (col_ne_zero _ _))
     simp only [𝔟, dite_eq_left j.2, Fin.eta]
     exact ⟨hs.1, hs.2.2 v⟩
   have hmono : GlobalTheory.SeeSaw.MonoId J.d LW LW₀ 𝔟 v :=
@@ -689,8 +686,6 @@ open scoped TensorProduct Classical
 noncomputable section
 
 namespace GlobalTheory.LevZero
-
-
 
 theorem latV_normalFrame_zero_loc : ∀ {D : D7} {c : Comm D} {v : VCom c} (G : GLoc v) (PP : Formalism.L2.DIV.Pl D.host.E) (b : GA D (c.V 0)) (β : GL (Fin (c.V 0).rank) (Lev.EAf D)), GlobalTheory.LevZero.LocAt G PP b β → ∀ (a : ℕ) (ha : 0 + a = G.s + 1) (Λ L : GlobalTheory.FinPl.Lat (c.V 0)), Formalism.L2.DIV.IsFrame β Λ → GlobalTheory.FinPl.Moves (c.V 0) b Λ L (· = G.q.v) → ∀ y : XIx (Fin D.R.k) (Fin D.R.t) 0 ⊕ Fin a → G.k, (fun r => G.q.sec (((G.FY 0 a ha).β *ᵥ y) r)) ∈ GlobalTheory.FinPl.latV (c.V 0) L (· = G.q.v) ↔ (∀ z, y (Sum.inl z) ∈ 𝒪[G.k]) ∧ ∀ i : Fin a, ((((G.S.ϖ : G.kˣ) : G.k) ^ (i.1 + 1))⁻¹ * y (Sum.inr i)) ∈ 𝒪[G.k] := by
   intro D c v G PP b β hloc n hn Λ L hβ hmv y
@@ -960,7 +955,6 @@ theorem sMoves_of_moves {S : HSp D} {t g : GA D S} {Λ L L' M : Lat S} {p : Glob
   rw [mul_inv_cancel, mt_one', Matrix.one_mulVec] at this
   exact this.trans (hs y hy)
 
-
 end GlobalTheory.LevZero.StabMatch
 
 end
@@ -1024,8 +1018,6 @@ namespace GlobalTheory.Core.Mi.LatGlue
 
 variable {D : D7}
 
-
-
 theorem glue_finset {V A : HSp D} (e : GA D A →* GA D V)
     (he : ∀ v : GlobalTheory.FinPl.Pl D, ∀ a ∈ grpAt A (· = v), e a ∈ grpAt V (· = v))
     (a : GlobalTheory.FinPl.Pl D → GA D A) (c : GlobalTheory.FinPl.Pl D → AE D) (z : GlobalTheory.FinPl.Pl D → GA D V)
@@ -1066,8 +1058,6 @@ theorem glue_finset {V A : HSp D} (e : GA D A →* GA D V)
       refine ⟨?_, ?_⟩
       · rw [map_mul, mt_mul, ← Matrix.mulVec_mulVec, h1, mulVec_fix hvw (he w _ (ha w).1) hy]
       · rw [mt_mul, ← Matrix.mulVec_mulVec, h2, mulVec_fix hvw (hz w).1 hy]
-
-
 
 theorem glue : ∀ (D : D7) (V A : HSp D) (e : GA D A →* GA D V) (g : GA D V) (L M : Lat V), IsSelfDualC V L → IsSelfDualC V M → (∀ v : GlobalTheory.FinPl.Pl D, ∀ a ∈ grpAt A (· = v), e a ∈ grpAt V (· = v)) → (∀ v : GlobalTheory.FinPl.Pl D, ∃ (a : GA D A) (c : AE D), CenAt A v a ∧ NormOneAt v c ∧ SMoves V c (g * e a) L M v) → ∃ a ∈ GfC A, a ∈ Subgroup.center (GA D A) ∧ ∃ z ∈ Subgroup.center (GA D V), Moves V (z * (g * e a)) L M (fun _ => True) := by
   intro D V A e g L M hL hM he hloc
@@ -1206,8 +1196,6 @@ open GlobalTheory.SeeSaw (idV dI FI)
 open ValuativeRel
 open GlobalTheory.Core.Mi.LatMatch
 
-theorem _root_.GlobalTheory.T.isFrame_finitePart_mul_of_carries_lattice : ∀ (D : D7) (V : HSp D) (t : GA D V) (Λ M : Lat V) (β : GL (Fin V.rank) (Formalism.IndefR.Lev.EAf D)), Moves V t Λ M (fun _ => True) → Formalism.L2.DIV.IsFrame β Λ → Formalism.L2.DIV.IsFrame (finE V t * β) M := by
-  first | exact @GlobalTheory.Core.Mi.FrameMove.isFrame_of_moves
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.IsFrameFinitePartMulOfCarriesLatticeStatement =====
@@ -1366,10 +1354,6 @@ open ValuativeRel
 open GlobalTheory.Core.Mi.LatMatch
 
 noncomputable section
-
-
-
-
 
 open Formalism.MainNotions.StandardLattice (intAf)
 
@@ -1552,8 +1536,6 @@ open GlobalTheory.SeeSaw (idV dI FI)
 open ValuativeRel
 open GlobalTheory.Core.Mi.LatMatch
 
-
-
 theorem GlobalTheory.Core.Mi.LatMatch.coreOff_homothetic : ∀ (D : D7) (S A L : HSp D) (o : OrthDec S A L) (ζ : Fin L.rank → D.host.E) (M M' : Lat S) (LA : Lat A) (LL : Lat L) (μ : D.host.E) (T : ℕ) (v : GlobalTheory.FinPl.Pl D) (a₀ : GA D A), IsLineVec L ζ → IsSelfDualC L LL → OrthAt o M LA LL v → TraceAt o a₀ LA M' v → SplitsAt o M' v → μ ≠ 0 → LineAt (vecB o ζ) μ M' v → star ζ ⬝ᵥ L.gram *ᵥ ζ = -(μ * star μ * (T : D.host.E)) → (T : 𝓞 D.host.F) ∉ v.asIdeal → ∃ (a : GA D A) (c : AE D), CenAt A v a ∧ NormOneAt v c ∧ SMoves S c (o.emb (a₀ * a, 1)) M M' v := by
   intro D S A L o ζ M M' LA LL μ T v a₀ hζ hLL hM hTr hSp hμ hline hn hT
   obtain ⟨Λ', hΛ', hmem⟩ := GlobalTheory.T.exists_selfDual_lineLatticeTrace_at_place D S A L o ζ M' μ T v hζ hμ hline hn hT
@@ -1646,8 +1628,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-
-
 section
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Datum MeasureTheory IsDedekindDomain NumberField Matrix
 open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Unf GlobalTheory.SeeSaw GlobalTheory.StepData GlobalTheory.SymChain GlobalTheory.LocMod GlobalTheory.MiS GlobalTheory.MiTop GlobalTheory.Fam GlobalTheory.Core.Mi ValuativeRel
@@ -1736,7 +1716,7 @@ theorem exists_center_stab_at_of_transport_correction : ∀ {D : D7} {L : SizeDa
     (latS D) hLm s1 (fun v a ha => embA_mem_grpAt _ _ ha) (fun v => by simpa only [map_mul] using loc v)
   rw [← map_mul] at hmvz
   exact ⟨a, haf, hac, stab_of_frame W.S.X W.Q.instEq u ((_root_.GlobalTheory.Fam.pk_z W).βY 0) _ _ z hz
-    (GlobalTheory.T.isFrame_finitePart_mul_of_carries_lattice D (D.sp.Y 0) _ ((_root_.GlobalTheory.Fam.pk_z W).ΛY 0) (latS D) ((_root_.GlobalTheory.Fam.pk_z W).βY 0) (moves_trans (hmv _) hmvz) hfr)⟩
+    (GlobalTheory.Core.Mi.FrameMove.isFrame_of_moves D (D.sp.Y 0) _ ((_root_.GlobalTheory.Fam.pk_z W).ΛY 0) (latS D) ((_root_.GlobalTheory.Fam.pk_z W).βY 0) (moves_trans (hmv _) hmvz) hfr)⟩
 end GlobalTheory.LevZero.StabMatch
 end
 end
@@ -1748,8 +1728,6 @@ end -- clump:auto
 -- clump-header: {"m": "Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.StabMatchStatement", "h": "module\n\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.PlacedBy\npublic import Development.AbelianVarietyTheory.Definitions.LatticeFrames.Framed\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.StabMatch\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Development.AbelianVarietyTheory.Definitions.LatticeFrames.MiStarOfMid\n\n"}
 section -- clump:auto
 @[expose] public section
-
-
 
 end -- clump:auto
 end -- clump:auto

@@ -119,7 +119,7 @@ theorem exists_continuous_section_localHomProduct_twAt (J : _root_.GlobalTheory.
 theorem isCompact_relax' (hW : _root_.GlobalTheory.Fam.AllFamilyConditions W) (J : _root_.GlobalTheory.Fam.QuadraticExtensionData a t) (hR : J.Reads) (j : ℕ) (hj : j + 2 ≤ B.R.m) (α : J.Ch j) :
     IsCompact (_root_.GlobalTheory.LevProd.relaxedLevelSubgroup J j hj α : Set (GA (I.rec7 l Z) ((I.rec7 l Z).sp.X j))) := by
   classical
-  have hU := (GlobalTheory.T.chartLevels_reps_represent_unitaryDoubleCosets I hW.tr.ok hW.tr.pins.some l Z u (W.P.I.tup t) J.Ch₀ J.A hR.is j (by omega) (J.ι j α)).1
+  have hU := (GlobalTheory.ChartReps.twDat_reps I hW.tr.ok hW.tr.pins.some l Z u (W.P.I.tup t) J.Ch₀ J.A hR.is j (by omega) (J.ι j α)).1
   haveI hNn : (GlobalTheory.FinPl.grpAt ((I.rec7 l Z).sp.X j) (_root_.GlobalTheory.LevProd.quadraticTwistAtPlace J)).Normal := by
     unfold GlobalTheory.FinPl.grpAt GlobalTheory.FinPl.congGrp
     infer_instance
@@ -272,8 +272,6 @@ section Rat
 open Formalism.L2.Col Formalism.UG
 attribute [local instance] GlobalTheory.Mem.Col2.starE
 
-
-
 theorem mem_lev_of_rat {B : GlobalTheory.Mem.Base} {X : PreX B.toPre} (I : TC B X) (hI : I.Ok) (l : I.Laws) (Z : TC.Later B (I.cols l))
     (u : B.Word) (a : I.ι) {Ch : ℕ → Type} (A : TwDat I l Z u a Ch) (hA : A.Is) (j : ℕ) (hj : j + 2 ≤ B.R.m) (β : Ch j)
     (hβ : A.kb j β = TC.kStd X u (B.R.N j)) (P : rowSG (B.primes X) I.sel (I.tup a)) (hP : P.1 ∉ (B.primes X).vGs)
@@ -356,8 +354,6 @@ theorem entry_of_std {k : Type} [Field k] {N : ℕ} {Y : Type} [Fintype Y] [Deci
   rw [he] at h2
   simpa [Matrix.mul_apply, Matrix.one_apply] using h2
 
-
-
 open GlobalTheory.FinPl in
 theorem grpAt_empty {D : D7} (V : HSp D) {P : Pl D → Prop} (hP : ∀ w, ¬ P w) (n : GA D V) (hn : n ∈ grpAt V P) : n = 1 := by
   rw [GlobalTheory.FinPl.SetCut.mem_grpAt_iff_parts] at hn
@@ -368,7 +364,6 @@ theorem grpAt_empty {D : D7} (V : HSp D) {P : Pl D → Prop} (hP : ∀ w, ¬ P w
   rw [Matrix.sub_apply, sub_eq_zero] at this
   exact this
 
-
 open GlobalTheory.FinPl in
 theorem locHom_one_of_off {D : D7} {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
     {Y : Type} [Fintype Y] [DecidableEq Y] (q : GlobalTheory.FinPl.SplitPt D k) (S : HSp D) (F : GlobalTheory.LocMod.Frame k S.rank Y)
@@ -377,7 +372,6 @@ theorem locHom_one_of_off {D : D7} {k : Type} [Field k] [ValuativeRel k] [Topolo
   symm
   rw [← GlobalTheory.LevIdx.eq_locHom_iff, h2]
   simp [F.βγ]
-
 
 open GlobalTheory.FinPl in
 theorem grpAt_le_of {D : D7} (V : HSp D) {P P' : Pl D → Prop} (h : ∀ w, P w → P' w) {n : GA D V} (hn : n ∈ grpAt V P) :
@@ -838,8 +832,6 @@ theorem levGAt_eq (hTw : I.IsTw) (a : I.ι) (j : ℕ) (hj : j < B.R.m) (b : Idx 
     rw [hTw.idx_eq a]
     exact fun _ => rfl
   rw [h1, h2]
-
-
 
 theorem mem_lev_iff (hI : I.Ok) (hTw : I.IsTw) (hPr : (B.primes X).Ok) (u : B.Word) (a : I.ι) (j : ℕ) (hj : j + 1 < B.R.m)
     [NeZero (B.R.N j)] {Ch : Type} {chOf : (I.stp u a j).Cl → Ch}

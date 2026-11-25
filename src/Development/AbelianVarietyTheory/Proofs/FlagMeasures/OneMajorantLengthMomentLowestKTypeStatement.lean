@@ -224,7 +224,7 @@ theorem oneLength_moment_lowestType_largeGap (hH : GlobalTheory.GapIn.Hyp) (k r 
           simpa only [one_mul, hv1, one_pow, ENNReal.ofReal_one] using this)
         hA (one_le_pow₀ hb)
         (fun q' hq' => by
-          have := Gp91.GlobalTheory.T.family_setup_cayley_recursion hHG k r Wp lam u b bv ga h q0 z π μW μN μG νq R l dg Q E hSG hQ hE
+          have := Gp91.GlobalTheory.Moment.moment_first_length hHG k r Wp lam u b bv ga h q0 z π μW μN μG νq R l dg Q E hSG hQ hE
             q' ν (by omega) 0 (by omega) ⟨v, hvs⟩ hLev
           simpa only [hv1', one_pow, mul_one] using this)
         (fun a q' hq' => by

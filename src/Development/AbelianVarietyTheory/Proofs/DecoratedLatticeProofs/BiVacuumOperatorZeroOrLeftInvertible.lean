@@ -163,9 +163,6 @@ def twoT (x : WO A S × WO S A') : (WO A S → WO S A' → ℂ) →ₗ[ℂ] (WO 
 theorem twoT_apply (x : WO A S × WO S A') (C : WO A S → WO S A' → ℂ) (u : WO A S) (v : WO S A') :
     twoT ψ A S A' x C u v = ψ (symplOH A S u x.1) * (ψ (symplOH S A' v x.2) * C (u + x.1) (v + x.2)) := rfl
 
-theorem symplO_skew' (T T' : HSp D) (x y : WO T T') : symplO T T' y x = -symplO T T' x y := by
-  rw [← GlobalTheory.SplitScalar.symplOH_add_self, ← GlobalTheory.SplitScalar.symplOH_add_self, symplOH_skew, neg_add]
-
 theorem psi_ne_zero (z : AF D.host.F) : ψ z ≠ 0 := by
   intro h
   have h1 := ψ.map_add_eq_mul z (-z)
@@ -301,7 +298,6 @@ theorem psi_eq_one_of_neg {z : AF D.host.F} (h : ψ (-z) = 1) : ψ z = 1 := by
 
 end GlobalTheory.ZeroOrInv
 
-
 open GlobalTheory.ZeroOrInv GlobalTheory.LatVac in
 theorem GlobalTheory.FinPl.biInv_main : ∀ D : D7, GlobalTheory.FinPl.BiInv D := by
   intro D k _ _ _ _ ι p I P hP ψ hψ A S A' op hop
@@ -353,7 +349,7 @@ theorem GlobalTheory.FinPl.biInv_main : ∀ D : D7, GlobalTheory.FinPl.BiInv D :
       rw [hx1, symplO_add_right, AddChar.map_add_eq_mul] at heq
       have h1 : ψ (symplO A S l (x - y).1) = 1 :=
         mul_right_cancel₀ (psi_ne_zero ψ _) (heq.trans (one_mul _).symm)
-      rw [symplO_skew'] at h1
+      rw [GlobalTheory.WeilVacMove.symplO_skew] at h1
       exact psi_eq_one_of_neg ψ h1
     · rw [GlobalTheory.SelfDualAt.latO_ann_at D ψ hψ S A' LS LA' hS hA' P (x - y).2 hd.2] at h
       push Not at h
@@ -364,7 +360,7 @@ theorem GlobalTheory.FinPl.biInv_main : ∀ D : D7, GlobalTheory.FinPl.BiInv D :
       rw [hx2, symplO_add_right, AddChar.map_add_eq_mul] at heq
       have h1 : ψ (symplO S A' l (x - y).2) = 1 :=
         mul_right_cancel₀ (psi_ne_zero ψ _) (heq.trans (one_mul _).symm)
-      rw [symplO_skew'] at h1
+      rw [GlobalTheory.WeilVacMove.symplO_skew] at h1
       exact psi_eq_one_of_neg ψ h1
   rcases _root_.GlobalTheory.isolate_abstract (WO A S × WO S A') Γ (goodG A S A' P) (WO A S → WO S A' → ℂ) (twoT ψ A S A')
       {C | BiVacAt ψ LA LS LA' P C} (bet ψ A S A') aF (chi ψ A S A') hΓG (twoT_zero ψ A S A') (twoT_mul ψ A S A')

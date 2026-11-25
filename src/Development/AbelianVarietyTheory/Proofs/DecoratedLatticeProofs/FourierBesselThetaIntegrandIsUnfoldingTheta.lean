@@ -122,7 +122,6 @@ theorem transv_null {S : HSp D} {y v w : GlobalTheory.IndefiniteRowSideFullHecke
   unfold GlobalTheory.IndefiniteRowSideFullHecke.TransvectionAction.transv
   rw [hvv, mul_zero, zero_mul, zero_smul, sub_zero]
 
-
 theorem levi_isTransv {S S₀ : HSp D} {ρ : ℕ} (d : HypDec S S₀ ρ) (A B : Fin ρ → AE D)
     (h : (fun k => cA D (B k)) ⬝ᵥ A = 0) :
     GlobalTheory.IndefiniteRowSideFullHecke.TransvectionAction.IsTransv S (d.jX *ᵥ A) (d.jY *ᵥ B) (d.levi (tvGL A B h)) := by
@@ -168,8 +167,8 @@ theorem GlobalTheory.th_isTh : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ), Is
     ∀ x₀ : Matrix (Fin B.V.rank) (Fin (σ + 1)) D.host.E, (rat x₀ : Mx D B.V.rank (σ + 1)) = x0 B →
       IsTh ψ J.d B.V x₀ (th J ψ B y) := by
   intro D ψ hψ σ J B y hy x₀ hx₀
-  obtain ⟨hcont, -, hleft, hcen, -, -⟩ := GlobalTheory.T.fourierBesselThetaCharIntegrand_laws D ψ hψ σ J B y hy
-  obtain ⟨x₁, hx₁, -, -, hlast, hq⟩ := GlobalTheory.T.fourierBesselBasePoint_isUnfoldingBasePoint_spec D σ B
+  obtain ⟨hcont, -, hleft, hcen, -, -⟩ := GlobalTheory.Unf.FB.ThLaws.th_laws D ψ hψ σ J B y hy
+  obtain ⟨x₁, hx₁, -, -, hlast, hq⟩ := GlobalTheory.Unf.FB.basePoint_spec D σ B
   have e : x₁ = x₀ := rat_injective (hx₁.trans hx₀.symm)
   refine ⟨hcont.comp continuous_subtype_val, fun γ hγQ hγN n hn => hleft γ hγN hγQ n hn, fun c n hn => ?_, ?_⟩
   · rw [hcen c n hn, hx₀, hq]

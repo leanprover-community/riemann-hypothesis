@@ -237,12 +237,6 @@ open PI.UpqRep (rhoC)
 
 variable {n : ℕ} {V : Type} [AddCommGroup V] [Module ℂ V]
 
-theorem suppIn_sub {P : Pos n → Prop} {x y : Cn n V} (hx : SuppIn P x) (hy : SuppIn P y) : SuppIn P (x - y) := by
-  intro A hA
-  by_cases h : x A = 0
-  · exact hy A fun h' => hA (by simp [h, h'])
-  · exact hx A h
-
 theorem suppIn_sum {ι : Type} {P : Pos n → Prop} (s : Finset ι) (f : ι → Cn n V) (h : ∀ b ∈ s, SuppIn P (f b)) :
     SuppIn P (∑ b ∈ s, f b) := by
   intro A hA
@@ -377,7 +371,7 @@ theorem injR_of_vanKG (hV : VanKG) : InjR := by
           exact h0 ⟨h, Ne.symm h'⟩
       choose t t1 t2 t3 t4 t5 using hex
       refine ih (y - ∑ B, bd (allT n) E (t B)) (fun A hA => ?_)
-        (suppIn_sub hys (suppIn_sum _ _ fun B _ => suppIn_bd hcl E (t5 B))) (fun c => ?_) ?_
+        (GlobalTheory.CompanionTheory.GenCOUP.supp_sub hys (suppIn_sum _ _ fun B _ => suppIn_bd hcl E (t5 B))) (fun c => ?_) ?_
       · have e : (y - ∑ B, bd (allT n) E (t B)) A =
             ∑ B, ((if pot B = N then 0 else r B A) - (bd (allT n) E (t B) - bd ε E (t B)) A) := by
           rw [Pi.sub_apply, congrFun hsum A, Finset.sum_apply, Finset.sum_apply, ← Finset.sum_sub_distrib]

@@ -71,8 +71,6 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR.Datum MeasureTheory IsDedekindDomain NumberField Matrix GlobalTheory.MixModel GlobalTheory.MixPer
 open scoped TensorProduct
 
-theorem _root_.GlobalTheory.T.exists_homeomorph_wittFlagCoordinates : ∀ (D : D7) (S S₀ : HSp D) (ρ : ℕ) (d : HypDec S S₀ ρ), ∃ e : UX D ρ × (Mx D ρ S₀.rank × skewA D ρ) ≃ₜ flagN d, ∀ p, (e p : GA D S) = d.levi p.1.1 * (d.nB p.2.1 * d.nC p.2.2) := by
-  first | exact @GlobalTheory.MixPer.flagCoord_homeo
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsHomeomorphWittFlagCoordinatesStatement =====
@@ -111,7 +109,7 @@ theorem flagCoord_measEquiv : ∀ (D : D7) (V V₀ : HSp D) (ρ : ℕ) (d : HypD
     ∃ e : skewA D ρ × (Mx D ρ V₀.rank × UX D ρ) ≃ᵐ flagN d,
       ∀ p, (e p : GA D V) = d.nC p.1 * (d.nB p.2.1 * d.levi p.2.2.1) := by
   intro D V V₀ ρ d
-  obtain ⟨Φ, hΦ⟩ := GlobalTheory.T.exists_homeomorph_wittFlagCoordinates D V V₀ ρ d
+  obtain ⟨Φ, hΦ⟩ := GlobalTheory.MixPer.flagCoord_homeo D V V₀ ρ d
   haveI : SecondCountableTopology (Mx D ρ V₀.rank) := (lattice_Mx D ρ V₀.rank).2.2.1
   haveI : SecondCountableTopology (Mx D ρ ρ) := (lattice_Mx D ρ ρ).2.2.1
   haveI : SecondCountableTopology (UX D ρ) := (GlobalTheory.UnitU.topology D ρ).2.1
@@ -261,8 +259,6 @@ noncomputable section
 
 namespace GlobalTheory.RatCoord
 
-
-
 theorem coords_rat {D : D7} {V V₀ : HSp D} {ρ : ℕ} (d : HypDec V V₀ ρ) (c' : skewA D ρ) (b' : Mx D ρ V₀.rank)
     (u : GL (Fin ρ) (AE D)) (hQ : d.nC c' * (d.nB b' * d.levi u) ∈ GQ V) :
     c'.1 ∈ ratMx D ρ ρ ∧ b' ∈ ratMx D ρ V₀.rank ∧ u.1 ∈ ratMx D ρ ρ ∧ (u⁻¹).1 ∈ ratMx D ρ ρ := by
@@ -364,7 +360,6 @@ open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Grow
 open scoped TensorProduct
 open GlobalTheory.Unf
 
-
 theorem _root_.GlobalTheory.T.exists_rational_wittFlagCoordinates_of_mem_unipotent : ∀ (D : D7) (V V₀ : HSp D) (ρ : ℕ) (d : HypDec V V₀ ρ) (γ : GA D V), γ ∈ GQ V → γ ∈ flagN d → ∃ (c : skewA D ρ) (b : Mx D ρ V₀.rank) (u : UX D ρ), γ = d.nC c * (d.nB b * d.levi u.1) ∧ c.1 ∈ ratMx D ρ ρ ∧ b ∈ ratMx D ρ V₀.rank ∧ u ∈ UXQ D ρ := by
   first | exact @GlobalTheory.RatCoord.rat_coords_of_mem_flagN
 end -- clump:auto
@@ -380,8 +375,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Grow
 open scoped TensorProduct
 open GlobalTheory.Unf
-
-
 
 namespace GlobalTheory.LeftUniQmp
 
@@ -422,7 +415,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Grow
 open scoped TensorProduct
 open GlobalTheory.Unf
-
 
 theorem _root_.GlobalTheory.T.quasiMeasurePreserving_adelicUnitriangular_left_mul : ∀ (D : D7) (ρ n : ℕ) (μ : Measure (Mx D ρ n)), μ.IsAddHaarMeasure → ∀ u : UX D ρ, Measure.QuasiMeasurePreserving (fun b : Mx D ρ n => u.1.1 ⬝ b) μ μ := by
   first | exact @GlobalTheory.LeftUniQmp.qmp_left_uni
@@ -474,8 +466,6 @@ noncomputable def skewConjEquiv {D : D7} {ρ : ℕ} (g : GL (Fin ρ) (AE D)) : s
     rw [this, skewConj_matOne]
   map_add' := skewConj_addArg _
 
-
-
 theorem quasiMeasurePreserving_skewConj : ∀ (D : D7) (ρ : ℕ) (lC : Measure (skewA D ρ)), lC.IsAddHaarMeasure →
     ∀ u : UX D ρ, Measure.QuasiMeasurePreserving (skewConj u.1.1) lC lC := by
   intro D ρ lC hC u
@@ -508,7 +498,6 @@ open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Grow
 open scoped TensorProduct
 open GlobalTheory.Unf
 
-
 theorem _root_.GlobalTheory.T.quasiMeasurePreserving_skewHermitianCongruence_unitriangular : ∀ (D : D7) (ρ : ℕ) (lC : Measure (skewA D ρ)), lC.IsAddHaarMeasure → ∀ u : UX D ρ, Measure.QuasiMeasurePreserving (skewConj u.1.1) lC lC := by
   first | exact @GlobalTheory.Unf.SkewConjQmp.quasiMeasurePreserving_skewConj
 end -- clump:auto
@@ -527,9 +516,6 @@ open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Grow
 open scoped TensorProduct
 open GlobalTheory.Unf
 
-
-
-
 namespace GlobalTheory.ThreeLayers
 
 section Abstract
@@ -540,14 +526,12 @@ variable {A B U X G : Type} [AddCommGroup A] [MeasurableSpace A] [MeasurableAdd�
   [Group U] [MeasurableSpace U] [MeasurableSpace X] [Group G] [MulAction G X]
   {mA : Measure A} {mB : Measure B} {ν : Measure U} [SFinite mA] [SFinite mB] [SFinite ν]
 
-
 omit [AddCommGroup A] [MeasurableAdd₂ A] [AddGroup B] [Group U] in
 theorem null_last {N : Set U} (hN : ν N = 0) : (mA.prod (mB.prod ν)) {p | p.2.2 ∈ N} = 0 := by
   have h : {p : A × (B × U) | p.2.2 ∈ N} = Set.univ ×ˢ (Set.univ ×ˢ N) := by
     ext p; simp
   rw [h, Measure.prod_prod, Measure.prod_prod, hN]
   simp
-
 
 omit [AddCommGroup A] [MeasurableAdd₂ A] [AddGroup B] [Group U] in
 theorem null_mid {β : B → B} (hβ : Measure.QuasiMeasurePreserving β mB mB) {N : Set B} (hN : mB N = 0) :
@@ -556,7 +540,6 @@ theorem null_mid {β : B → B} (hβ : Measure.QuasiMeasurePreserving β mB mB) 
     ext p; simp
   rw [h, Measure.prod_prod, Measure.prod_prod, MeasureTheory.QuasiMeasurePreserving.preimage_null hβ hN]
   simp
-
 
 omit [AddGroup B] [Group U] in
 theorem null_first [mA.IsAddLeftInvariant] {α : A → A} (hα : Measure.QuasiMeasurePreserving α mA mA) {φ : B → A}
@@ -776,7 +759,6 @@ open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Grow
 open scoped TensorProduct
 open GlobalTheory.Unf
 
-
 theorem _root_.GlobalTheory.T.isFundamentalDomain_flagUnipotent_coords : ∀ (D : D7) (V V₀ : HSp D) (ρ : ℕ) (d : HypDec V V₀ ρ) (vb : VolM D ρ V₀.rank) (vU : VolU D ρ) (e : skewA D ρ × (Mx D ρ V₀.rank × UX D ρ) ≃ᵐ flagN d), (∀ p, (e p : GA D V) = d.nC p.1 * (d.nB p.2.1 * d.levi p.2.2.1)) → ∀ (lC : Measure (skewA D ρ)) (𝓒 : Set (skewA D ρ)) (𝓤 : Set (UX D ρ)), lC.IsAddHaarMeasure → SFinite lC → IsAddFundamentalDomain ((ratMx D ρ ρ).addSubgroupOf (skewA D ρ)) 𝓒 lC → IsFundamentalDomain (UXQ D ρ) 𝓤 vU.ν → IsFundamentalDomain (NFlagQ V d.e) (e '' (𝓒 ×ˢ (vb.𝓕 ×ˢ 𝓤))) ((lC.prod (vb.μ.prod vU.ν)).map e) := by
   first | exact @GlobalTheory.ThreeLayers.fundDomain_coords
 end -- clump:auto
@@ -793,9 +775,6 @@ open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Grow
 open scoped TensorProduct
 open GlobalTheory.Unf
 
-
-theorem _root_.GlobalTheory.T.isMulRightInvariant_map_wittFlagCoordinates_haar : ∀ (D : D7) (V V₀ : HSp D) (ρ : ℕ) (d : HypDec V V₀ ρ) (vb : VolM D ρ V₀.rank) (vU : VolU D ρ) (e : skewA D ρ × (Mx D ρ V₀.rank × UX D ρ) ≃ᵐ flagN d), (∀ p, (e p : GA D V) = d.nC p.1 * (d.nB p.2.1 * d.levi p.2.2.1)) → ∀ (lC : Measure (skewA D ρ)), lC.IsAddHaarMeasure → SFinite lC → ((lC.prod (vb.μ.prod vU.ν)).map e).IsMulRightInvariant := by
-  first | exact @GlobalTheory.Unf.HaarCoord.isMulRightInvariant_map_coord
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.IsMulRightInvariantMapWittFlagCoordinatesHaarStatement =====
@@ -811,9 +790,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Grow
 open scoped TensorProduct
 open GlobalTheory.Unf
-
-
-
 
 namespace GlobalTheory.HaarCoordsUnit
 
@@ -861,7 +837,7 @@ theorem volN_eq_map_coords : ∀ (D : D7) (V V₀ : HSp D) (ρ : ℕ) (d : HypDe
   haveI : SigmaFinite vb.μ := inferInstance
   haveI : SigmaFinite vU.ν := inferInstance
   haveI hm : SigmaFinite ((lC.prod (vb.μ.prod vU.ν)).map e) := e.sigmaFinite_map
-  have hR := GlobalTheory.T.isMulRightInvariant_map_wittFlagCoordinates_haar D V V₀ ρ d vb vU e he lC hC hCs
+  have hR := GlobalTheory.Unf.HaarCoord.isMulRightInvariant_map_coord D V V₀ ρ d vb vU e he lC hC hCs
   have hF := GlobalTheory.T.isFundamentalDomain_flagUnipotent_coords D V V₀ ρ d vb vU e he lC 𝓒 𝓤 hC hCs hCF hU𝓤
   have h1 : (lC.prod (vb.μ.prod vU.ν)).map e (e '' (𝓒 ×ˢ (vb.𝓕 ×ˢ 𝓤))) = 1 := by
     rw [MeasurableEquiv.map_apply, e.preimage_image, Measure.prod_prod, Measure.prod_prod, hC1, hb1, hU1, one_mul, one_mul]
@@ -900,8 +876,6 @@ open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Grow
 open scoped TensorProduct
 open GlobalTheory.Unf
 
-theorem _root_.GlobalTheory.T.sFinite_covolume_one_matrix_unitriangular_measures : ∀ (D : D7) (ρ m : ℕ) (vb : VolM D ρ m) (vU : VolU D ρ), SFinite vb.μ ∧ SFinite vU.ν := by
-  first | exact @GlobalTheory.Unf.sFinite_vol
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.SFiniteCovolumeOneMatrixUnitriangularMeasuresStatement =====
@@ -934,13 +908,11 @@ noncomputable section
 
 namespace GlobalTheory.Unf
 
-
-
 theorem layers_integral : ∀ (D : D7) (V V₀ : HSp D) (ρ : ℕ) (d : HypDec V V₀ ρ) (vN : VolN d) (vb : VolM D ρ V₀.rank) (vU : VolU D ρ), ∃ 𝓐 : Set (flagN d), IsFundamentalDomain ((GQ V ⊓ radX d).subgroupOf (flagN d)) 𝓐 vN.ν ∧ ∀ f : GA D V → ENNReal, Measurable f → (∀ c, ∀ n ∈ flagN d, f (d.nC c * n) = f n) → ∫⁻ n in 𝓐, f n.1 ∂vN.ν = ∫⁻ u, ∫⁻ b in vb.𝓕, f (d.nB b * d.levi u.1) ∂vb.μ ∂vU.ν := by
   intro D V V₀ ρ d vN vb vU
   obtain ⟨e, he⟩ := GlobalTheory.T.exists_flagUnipotent_coordinate_measurableEquiv D V V₀ ρ d
   obtain ⟨lC, 𝓒, hH, hS, hF, h1⟩ := GlobalTheory.T.exists_haar_covolume_one_skewHermitian_adelic D ρ
-  obtain ⟨sb, su⟩ := GlobalTheory.T.sFinite_covolume_one_matrix_unitriangular_measures D ρ V₀.rank vb vU
+  obtain ⟨sb, su⟩ := GlobalTheory.Unf.sFinite_vol D ρ V₀.rank vb vU
   have hν := GlobalTheory.T.flagUnipotentHaar_eq_map_coordinates D V V₀ ρ d vN vb vU e he lC 𝓒 hH hS hF h1
   refine ⟨e '' (𝓒 ×ˢ (vb.𝓕 ×ˢ Set.univ)), ?_, ?_⟩
   · rw [hν]; exact GlobalTheory.Layers.fundDomain_layers D V V₀ ρ d e he lC 𝓒 hH hS hF vb vU.ν sb su

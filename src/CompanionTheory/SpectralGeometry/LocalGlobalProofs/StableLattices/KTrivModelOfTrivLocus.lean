@@ -96,7 +96,6 @@ theorem preimage_dimLocus_eq_top {X S T : Scheme.{0}} (p : X ⟶ S) [Smooth p] (
   obtain rfl : n = g := ReciprocityTheory.ChartRestriction.G.H1.dim_base (IsPullback.of_hasPullback p b) d h y hW
   exact TopologicalSpace.Opens.mem_iSup.2 ⟨⟨W, d⟩, hW⟩
 
-
 open GlobalTheory.Spread in
 theorem exists_fg_smoothOfRelativeDimension : ∀ (k V : Type) [CommRing k] [IsNoetherianRing k]
     [CommRing V] [Algebra k V] (X : Scheme.{0}) (p : X ⟶ Sp k) (g : ℕ), Smooth p → QuasiCompact p →
@@ -134,8 +133,6 @@ open CategoryTheory AlgebraicGeometry Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open scoped CategoryTheory.Obj CategoryTheory.MonObj
 
-theorem _root_.GlobalTheory.T.line_bundle_spreads_out : ∀ (k V : Type) [CommRing k] [CommRing V] [Algebra k V] (X₀ X : Scheme.{0}) (p₀ : X₀ ⟶ Sp k) (p : X ⟶ Sp V) (φ : X ⟶ X₀), QuasiCompact p₀ → IsSeparated p₀ → IsPullback φ p p₀ (spMap (algebraMap k V)) → ∀ L : LB X, L.IsLB → ∃ R : Subalgebra k V, R.FG ∧ ∃ M : LB (pullback p₀ (spMap (algebraMap k R))), M.IsLB ∧ ∀ σ : X ⟶ pullback p₀ (spMap (algebraMap k R)), σ ≫ pullback.fst _ _ = φ → σ ≫ pullback.snd _ _ = p ≫ spMap R.val.toRingHom → LBIso L (M.pull σ) := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Approx.lb_descends_fg
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: CompanionTheory.SpectralGeometry.LocalGlobalProofs.SmoothMorphisms.LineBundleSpreadsOutStatement =====
@@ -163,8 +160,8 @@ theorem exists_model_abelian_lb : ∀ (R : Type) [CommRing R] (A : Over (Sp R)) 
   have hqc : QuasiCompact B.hom := inferInstance
   have hsep : IsSeparated B.hom := inferInstance
   obtain ⟨R', hR', M, hM, hσ⟩ :=
-    GlobalTheory.T.line_bundle_spreads_out S0 R B.left A.left B.hom A.hom φ hqc hsep hpb'.1 L hL
-  obtain ⟨gB', φ₁, hB'B, hAB', hφ₁⟩ := GlobalTheory.T.abelianScheme_model_baseChange_subalgebra S0 R A B φ hpb' R'
+    GlobalTheory.CompanionTheory.Ar.Approx.lb_descends_fg S0 R B.left A.left B.hom A.hom φ hqc hsep hpb'.1 L hL
+  obtain ⟨gB', φ₁, hB'B, hAB', hφ₁⟩ := GlobalTheory.CompanionTheory.Ar.Approx.model_passes_to_subalgebra S0 R A B φ hpb' R'
   refine ⟨R'.toSubring, Over.mk (pullback.snd B.hom (spMap (algebraMap S0 R'))), gB', φ₁, M,
     ?_, ?_, hAB', hM, ?_⟩
   · have h1 : Algebra.FiniteType S0 R' := (Subalgebra.fg_iff_finiteType R').mp hR'
