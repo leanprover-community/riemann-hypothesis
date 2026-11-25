@@ -436,6 +436,27 @@ class Runs(unittest.TestCase):
             run(gh, table={(1, 900): CONFLICT, (4, 900): CONFLICT})
         self.assertEqual(gh.pulls[4]["labels"], set())
 
+    def test_a_refused_label_is_not_lost(self):
+        # The labels go on first. Had the comment gone first, the next run would find it, and
+        # `awaiting-author` would never be added.
+        gh = self.scene()
+        original = gh.call
+
+        def call(method, path, payload=None):
+            if method == "POST" and path == "issues/1/labels":
+                gh.calls += 1
+                return 403, {"message": "You have exceeded a secondary rate limit."}
+            return original(method, path, payload)
+        gh.call = call
+        with self.assertRaises(labels.Refused):
+            run(gh, table={(1, 900): CONFLICT})
+        self.assertEqual((gh.pulls[1]["labels"], gh.told_about(1)), (set(), []))
+        gh.call = original
+        run(gh, table={(1, 900): CONFLICT})
+        self.assertEqual((gh.pulls[1]["labels"], gh.told_about(1)), ({BATCH_CONFLICT, WAITING}, ["900"]))
+        self.assertEqual([(method, path) for method, path, _ in gh.sent if path.startswith("issues/1/")],
+                         [("POST", "issues/1/labels"), ("POST", "issues/1/comments")])
+
     def test_a_conflict_with_the_batch_is_told_once(self):
         gh = self.scene()
         run(gh, table={(1, 900): CONFLICT})

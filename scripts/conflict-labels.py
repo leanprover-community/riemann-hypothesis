@@ -699,6 +699,13 @@ def sync(gh, number=None, compare=compare_all, known=None):
                     if not gh.dry_run:
                         raise Refused(f"There is no `{label}` label in {gh.repo}. Was it renamed?")
                     log.append(f"there is no `{label}` label yet, so a real run would stop here")
+            # The labels before the comments: a pull request labelled but not yet told has its
+            # comments read by the next run, which then tells it (see `needs_told`), while one told
+            # but not labelled would never get `awaiting-author`.
+            if add:
+                gh.add_labels(key, add)
+            for label in sorted(remove):
+                gh.remove_label(key, label)
             for batch, text in notes:
                 gh.comment(key, text)
                 record = known.setdefault(key, {"told": set(), "stale": set()})
@@ -706,10 +713,6 @@ def sync(gh, number=None, compare=compare_all, known=None):
                     record["stale"].add((batch, batches[batch]["sha"]))
                 else:
                     record["told"].add(batch)
-            if add:
-                gh.add_labels(key, add)
-            for label in sorted(remove):
-                gh.remove_label(key, label)
             pr["labels"] = (pr["labels"] | add) - remove
             verb = "would " if gh.dry_run else ""
             said = [f"{verb}add `{label}`, because {decision['why'].get(label, 'it is told about a batch')}"
